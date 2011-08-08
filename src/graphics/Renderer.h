@@ -104,7 +104,7 @@ public:
 		Stream
 	};
 	
-	virtual ~Renderer() { };
+	virtual ~Renderer();
 	
 	virtual void Initialize() = 0;
 	
@@ -155,11 +155,11 @@ public:
 	virtual void SetFillMode(FillMode mode) = 0;
 	
 	// Texturing
-	virtual unsigned int GetTextureStageCount() const = 0;
-	virtual TextureStage* GetTextureStage(unsigned int textureStage) = 0;
-	virtual void ResetTexture(unsigned int textureStage) = 0;
-	virtual void SetTexture(unsigned int textureStage, Texture * pTexture) = 0;
-	virtual void SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer) = 0;
+	inline unsigned int GetTextureStageCount() const { return m_TextureStages.size(); }
+	TextureStage * GetTextureStage(unsigned int textureStage);
+	void ResetTexture(unsigned int textureStage);
+	void SetTexture(unsigned int textureStage, Texture * pTexture);
+	void SetTexture(unsigned int textureStage, TextureContainer * pTextureContainer);
 	
 	virtual float GetMaxAnisotropy() const = 0;
 	
@@ -177,7 +177,7 @@ public:
 	
 protected:
 	
-	std::vector<TextureStage*> m_TextureStages;
+	std::vector<TextureStage *> m_TextureStages;
 	
 };
 

@@ -158,7 +158,7 @@ aalError aalSetStreamLimit(size_t limit) {
 	return AAL_OK;
 }
 
-aalError aalSetSamplePath(const string & path) {
+aalError aalSetSamplePath(const fs::path & path) {
 	
 	AAL_ENTRY
 	
@@ -167,7 +167,7 @@ aalError aalSetSamplePath(const string & path) {
 	return AAL_OK;
 }
 
-aalError aalSetAmbiancePath(const string & path) {
+aalError aalSetAmbiancePath(const fs::path & path) {
 	
 	AAL_ENTRY
 	
@@ -176,7 +176,7 @@ aalError aalSetAmbiancePath(const string & path) {
 	return AAL_OK;
 }
 
-aalError aalSetEnvironmentPath(const string & path) {
+aalError aalSetEnvironmentPath(const fs::path & path) {
 	
 	AAL_ENTRY
 	
@@ -246,7 +246,7 @@ MixerId aalCreateMixer() {
 	return id;
 }
 
-SampleId aalCreateSample(const string & name) {
+SampleId aalCreateSample(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -262,7 +262,7 @@ SampleId aalCreateSample(const string & name) {
 	return Backend::clearSource(s_id);
 }
 
-AmbianceId aalCreateAmbiance(const string & name) {
+AmbianceId aalCreateAmbiance(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -271,14 +271,12 @@ AmbianceId aalCreateAmbiance(const string & name) {
 	if(ambiance->load() || (a_id = _amb.add(ambiance)) == INVALID_ID) {
 		delete ambiance;
 		LogError << "Ambiance " << name << " not found";
-	} else {
-		ambiance->setId(a_id);
 	}
 	
 	return a_id;
 }
 
-EnvId aalCreateEnvironment(const string & name) {
+EnvId aalCreateEnvironment(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -317,12 +315,12 @@ aalError aalDeleteAmbiance(AmbianceId a_id) {
 	return AAL_OK;
 }
 
-AmbianceId aalGetAmbiance(const string & name) {
+AmbianceId aalGetAmbiance(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
 	for(size_t i = 0; i < _amb.size(); i++) {
-		if(_amb[i] && !strcasecmp(name, _amb[i]->getName())) {
+		if(_amb[i] && name == _amb[i]->getName()) {
 			return i;
 		}
 	}
@@ -330,12 +328,12 @@ AmbianceId aalGetAmbiance(const string & name) {
 	return INVALID_ID;
 }
 
-EnvId aalGetEnvironment(const string & name) {
+EnvId aalGetEnvironment(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
 	for(size_t i = 0; i < _env.size(); i++) {
-		if(_env[i] && !strcasecmp(name, _env[i]->name)) {
+		if(_env[i] && name == _env[i]->name) {
 			return i;
 		}
 	}
@@ -544,7 +542,7 @@ aalError aalSetSamplePosition(SourceId sample_id, const Vec3f & position) {
 
 // Sample status
 
-aalError aalGetSampleName(SampleId sample_id, string & name) {
+aalError aalGetSampleName(SampleId sample_id, fs::path & name) {
 	
 	name.clear();
 	
@@ -713,7 +711,7 @@ aalError aalSetAmbianceVolume(AmbianceId a_id, float volume) {
 
 // Ambiance status
 
-aalError aalGetAmbianceName(AmbianceId a_id, string & name) {
+aalError aalGetAmbianceName(AmbianceId a_id, fs::path & name) {
 	
 	name.clear();
 	

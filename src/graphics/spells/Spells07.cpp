@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
@@ -297,7 +298,7 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 		falpha = 1.f; 
 
 		LIGHTNING LInfo;
-		ZeroMemory(&LInfo, sizeof(LIGHTNING));
+		memset(&LInfo, 0, sizeof(LIGHTNING));
 
 		LInfo.eStart = eSrc;
 		LInfo.eVect.x = eDest.x - eSrc.x;
@@ -342,7 +343,7 @@ void CLightning::ReCreate()
 		falpha = 1.f;
 
 		LIGHTNING LInfo;
-		ZeroMemory(&LInfo, sizeof(LIGHTNING));
+		memset(&LInfo, 0, sizeof(LIGHTNING));
 
 		LInfo.eStart = eSrc;
 		LInfo.eVect.x = eDest.x - eSrc.x;
@@ -399,7 +400,7 @@ void GetChestPos(long num, Vec3f * p)
 
 	if (ValidIONum(num))
 	{
-		long idx = GetGroupOriginByName(inter.iobj[num]->obj, "CHEST");
+		long idx = GetGroupOriginByName(inter.iobj[num]->obj, "chest");
 
 		if(idx >= 0) {
 			*p = inter.iobj[num]->obj->vertexlist3[idx].v;
@@ -441,7 +442,7 @@ float CLightning::Render()
 	falpha = 0.f;
 
 	// Create hand position if a hand is defined
-	//	spells[spellinstance].hand_group=inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj,"PRIMARY_ATTACH");
+	//	spells[spellinstance].hand_group=inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj,"primary_attach");
 	// Player source
 	if (spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE)
 	{
@@ -457,7 +458,7 @@ float CLightning::Render()
 	{
 		if (spells[spellinstance].caster == 0)
 		{
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "CHEST");
+			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx >= 0)
 			{
@@ -478,7 +479,7 @@ float CLightning::Render()
 		// IO source
 		else
 		{
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "CHEST");
+			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx >= 0)
 			{
@@ -766,15 +767,15 @@ CConfuse::CConfuse()
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_trail = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
 	if (!spapi)
-		spapi = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.teo");
+		spapi = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
 
 	spapi_count++;
 
-	const char tex[] = "Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.tea";
+	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 
 	fColor[0] = 0.3f;
@@ -1021,7 +1022,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
 
-	pPSStream.SetTexture("graph\\particles\\firebase", 4, 100);
+	pPSStream.SetTexture("graph/particles/firebase", 4, 100);
 
 	pPSStream.fParticleFreq = 150.0f;
 	pPSStream.SetPos(*pos);
@@ -1079,7 +1080,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	pPSStream1.SetParams(cp);
 	pPSStream1.ulParticleSpawn = 0;
 
-	pPSStream1.SetTexture("graph\\particles\\fire.bmp", 0, 500);
+	pPSStream1.SetTexture("graph/particles/fire", 0, 500);
 
 	pPSStream1.fParticleFreq = 150.0f;
 	Vec3f ea;
@@ -1159,16 +1160,16 @@ CIceField::CIceField()
 
 	iNumber = 50;
 
-	tex_p1 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
+	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 
 	if (!stite)
-		stite = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
+		stite = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
 		
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\Stalagmite\\motte.teo");
+		smotte = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
 
 	smotte_count++;
 }

@@ -7,8 +7,21 @@
 
 #include "math/MathFwd.h"
 
-#define cross ^
-#define dot |
+/*!
+ * Compute the cross product of two vectors.
+ * @brief Cross product.
+ * @return A new vector that is the result of the cross product of the two vectors.
+ */
+template<class T>
+Vector3<T> cross(const Vector3<T> & a, const Vector3<T> & b);
+
+/*!
+ * Compute the dot product of two vectors.
+ * @brief Dot product of two vectors.
+ * @return Result of the dot product of the two vectors.
+ */
+template<class T>
+T dot(const Vector3<T> & a, const Vector3<T> & b);
 
 /*!
  * Representation of a vector in 3d space.
@@ -181,26 +194,6 @@ public:
 	}
 	
 	/*!
-	 * Compute the cross product of two vectors.
-	 * @brief Cross product.
-	 * @param other vector to compute the cross product.
-	 * @return A new vector that is the result of the cross product of the two vectors.
-	 */
-	Vector3 operator cross(const Vector3 & other) const {
-		return Vector3(y*other.z - z*other.y, z*other.x - x*other.z, x*other.y - y*other.x);
-	}
-	
-	/*!
-	 * Compute the dot product of two vectors.
-	 * @brief Dot product of two vectors.
-	 * @param other vector to compute the dot product.
-	 * @return Result of the dot product of the two vectors.
-	 */
-	T operator dot(const Vector3 & other) const {
-		return (x*other.x + y*other.y + z*other.z);
-	}
-	
-	/*!
 	 * Access vector elements by their indexes.
 	 * @brief Subscript operator used to access vector elements(const).
 	 * @param pIndex Index of the element to obtain.
@@ -331,7 +324,7 @@ public:
 	 * @return The angle between the two vectors, in radians.
 	 */
 	T angleBetween(const Vector3 & other) const {
-		return std::acos((*this dot other) /(length()*other.length()));
+		return std::acos(dot(*this, other) /(length()*other.length()));
 	}
 	
 	/*!
@@ -384,6 +377,16 @@ inline bool closerThan(const Vector3<T> & a, const Vector3<T> & b, T d) {
 template<class T>
 inline bool fartherThan(const Vector3<T> & a, const Vector3<T> & b, T d) {
 	return (distSqr(a, b) > (d * d));
+}
+
+template<class T>
+Vector3<T> cross(const Vector3<T> & a, const Vector3<T> & b) {
+	return Vector3<T>(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+}
+
+template<class T>
+T dot(const Vector3<T> & a, const Vector3<T> & b) {
+	return (a.x*b.x + a.y*b.y + a.z*b.z);
 }
 
 #endif // ARX_MATH_VECTOR3_H

@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include <cstdio>
-#include <cassert>
 
 #include "animation/Animation.h"
 
@@ -74,8 +73,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsModes.h"
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"
 
@@ -88,10 +89,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 using std::min;
 using std::max;
+using std::string;
 
 extern long CHANGE_LEVEL_ICON;
 extern float FrameDiff;
@@ -212,7 +214,6 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 	if (EDITMODE) return;
 
 	static long count = 1;
-	std::string temp;
 
 	long f	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 
@@ -236,7 +237,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			   )
 			{
 				ARX_PATH * p = ARX_PATH_CheckInZone(io);
-				ARX_PATH * op = (ARX_PATH *)io->inzone;
+				ARX_PATH * op = io->inzone;
 
 				if ((op == NULL) && (p == NULL)) goto next; // Not in a zone
 
@@ -250,17 +251,15 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 				else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 				{
-					temp = op->name;
-					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, op->name); 
 
-					if (op->controled[0] != 0)
+					if (!op->controled.empty())
 					{
-						long t = GetTargetByNameTarget(op->controled);
+						long t = inter.getById(op->controled);
 
 						if (t >= 0)
 						{
-							std::string str = io->long_name() + ' ' + temp;
+							string str = io->long_name() + ' ' + op->name;
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
@@ -270,66 +269,56 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					io->inzone_show = io->show;
 				entering:
 					;
-					temp = p->name;
-					MakeUpcase(temp);
 
 
-					if ((JUST_RELOADED)
-					        &&	((!strcasecmp(p->name, "INGOT_MAKER")) || (!strcasecmp(p->name, "MAULD_USER"))))
-					{
+					if(JUST_RELOADED && (p->name == "ingot_maker" || p->name == "mauld_user")) {
 						ARX_DEAD_CODE(); 
-					}
-					else
-					{
-						SendIOScriptEvent(io, SM_ENTERZONE, temp); 
+					} else {
+						SendIOScriptEvent(io, SM_ENTERZONE, p->name); 
 
-						if (p->controled[0] != 0)
+						if (!p->controled.empty())
 						{
-							long t = GetTargetByNameTarget(p->controled);
+							long t = inter.getById(p->controled);
 
 							if (t >= 0)
 							{
-								std::string str = io->long_name() + ' ' + temp;
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str); 
+								string params = io->long_name() + ' ' + p->name;
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, params); 
 							}
 						}
 					}
 				}
 				else 
 				{
-					temp = op->name;
-					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, op->name); 
 
-					if (op->controled[0] != 0)
+					if (!op->controled.empty())
 					{
-						long t = GetTargetByNameTarget(op->controled);
+						long t = inter.getById(op->controled);
 
 						if (t >= 0)
 						{
-							std::string str = io->long_name() + ' ' + temp;
+							string str = io->long_name() + ' ' + op->name;
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str); 
 						}
 					}
 
 					io->inzone_show = io->show;
-					temp = p->name;
-					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_ENTERZONE, temp); 
+					SendIOScriptEvent(io, SM_ENTERZONE, p->name); 
 
-					if (p->controled[0] != 0)
+					if (!p->controled.empty())
 					{
-						long t = GetTargetByNameTarget(p->controled);
+						long t = inter.getById(p->controled);
 
 						if (t >= 0)
 						{
-							std::string str = io->long_name() + ' ' + temp;
+							string str = io->long_name() + ' ' + p->name;
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
 				}
 
-				io->inzone = (void *)p;
+				io->inzone = p;
 			}
 
 		next:
@@ -353,30 +342,24 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 		{
-			temp = op->name;
-			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp); 
+			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, op->name); 
 			CHANGE_LEVEL_ICON = -1;
 
-			if (op->controled[0] != 0)
+			if (!op->controled.empty())
 			{
-				long t = GetTargetByNameTarget(op->controled);
+				long t = inter.getById(op->controled);
 
 				if (t >= 0)
 				{
-					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
 				}
 			}
 		}
 		else if ((op == NULL) && (p != NULL)) // Entering Zone P
 		{
-			temp = p->name;
-			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp); 
+			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, p->name); 
 
-			if (p->flags & PATH_AMBIANCE && p->ambiance[0])
+			if (p->flags & PATH_AMBIANCE && !p->ambiance.empty())
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
 
 			if (p->flags & PATH_FARCLIP)
@@ -395,47 +378,36 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				desired.depthcolor = p->rgb;
 			}
 
-			if (p->controled[0] != 0)
+			if (!p->controled.empty())
 			{
-				long t = GetTargetByNameTarget(p->controled);
+				long t = inter.getById(p->controled);
 
 				if (t >= 0)
 				{
-					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
 		}
 		else 
 		{
-			temp = op->name;
-			MakeUpcase(temp);
 
-			if (op->controled[0] != 0)
+			if (!op->controled.empty())
 			{
-				long t = GetTargetByNameTarget(op->controled);
+				long t = inter.getById(op->controled);
 
 				if (t >= 0)
 				{
-					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
 				}
 			}
 
-			temp = p->name;
-			MakeUpcase(temp);
-
 			if (p->controled[0] != 0)
 			{
-				long t = GetTargetByNameTarget(p->controled);
+				long t = inter.getById(p->controled);
 
 				if (t >= 0)
 				{
-					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
 		}
@@ -447,6 +419,22 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 suite:
 	;
 	JUST_RELOADED = 0;
+}
+
+ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos) : name(_name), initpos(_pos), pos(_pos) {
+	
+	flags = 0;
+	nb_pathways = 0;
+	pathways = NULL;
+	height = 0; // 0 NOT A ZONE
+	
+	rgb = Color3f::black;
+	farclip = 0.f;
+	reverb = 0.f;
+	amb_max_vol = 0.f;
+	bbmin = Vec3f::ZERO;
+	bbmax = Vec3f::ZERO;
+	
 }
 
 //*************************************************************************************
@@ -463,32 +451,29 @@ void ARX_PATH_ClearAllUsePath()
 			}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
-void ARX_PATH_ClearAllControled()
-{
-	for (long i = 0; i < nbARXpaths; i++)
-	{
-		if (ARXpaths[i])
-		{
-			ARXpaths[i]->controled[0] = 0;
+
+void ARX_PATH_ClearAllControled() {
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i]) {
+			ARXpaths[i]->controled.clear();
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name)
-{
 
-	if ( !(name).empty() && (ARXpaths) )
-		for (long i = 0; i < nbARXpaths; i++)
-		{
-			if (ARXpaths[i])
-			{
-				if (!strcasecmp(ARXpaths[i]->name, name)) return ARXpaths[i];
-			}
+ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
+	
+	// TODO this is almost the same as ARX_PATHS_ExistName()
+	
+	if(name.empty() || !ARXpaths) {
+		return NULL;
+	}
+	
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i] && ARXpaths[i]->name == name) {
+			return ARXpaths[i];
 		}
-
+	}
+	
 	return NULL;
 }
 //*************************************************************************************
@@ -504,8 +489,7 @@ void ARX_PATH_ReleaseAllPath()
 			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
 
 			ARXpaths[i]->pathways = NULL;
-			free(ARXpaths[i]);
-			ARXpaths[i] = NULL;
+			delete ARXpaths[i], ARXpaths[i] = NULL;
 		}
 	}
 
@@ -514,22 +498,22 @@ void ARX_PATH_ReleaseAllPath()
 	ARXpaths = NULL;
 	nbARXpaths = 0;
 }
-//*************************************************************************************
-//*************************************************************************************
-ARX_PATH * ARX_PATHS_ExistName(char * name)
-{
-	if (ARXpaths == NULL) return NULL;
 
-	for (long i = 0; i < nbARXpaths; i++)
-	{
-		if (!strcasecmp(ARXpaths[i]->name, name))
-			return ARXpaths[i];
+ARX_PATH * ARX_PATHS_ExistName(const string & name) {
+	
+	if(!ARXpaths) {
+		return NULL;
 	}
-
+	
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i]->name == name) {
+			return ARXpaths[i];
+		}
+	}
+	
 	return NULL;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
 {
 	ARX_PATH * ap = aup->path;
@@ -798,7 +782,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * ( 1.0f / 5 )))
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW") != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
 				critical = true;
 		}
 
@@ -808,7 +792,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 		{
 			if (rnd() * 100.f <= player.Full_Skill_Stealth)
 			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "BOW") != REFUSE)
+				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "bow") != REFUSE)
 					backstab = 1.5f;
 			}
 		}
@@ -837,25 +821,21 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	}
 
 	char wmat[64];
-	char amat[64];
-
-	strcpy(wmat, "DAGGER");
-	strcpy(amat, "FLESH");
-
-	if (io_target->armormaterial)
-	{
-		strcpy(amat, io_target->armormaterial);
+	
+	string _amat = "flesh";
+	const string * amat = &_amat;
+	
+	strcpy(wmat, "dagger");
+	
+	if(!io_target->armormaterial.empty()) {
+		amat = &io_target->armormaterial;
 	}
-
-	if (io_target == inter.iobj[0])
-	{
-		if (player.equiped[EQUIP_SLOT_ARMOR] > 0)
-		{
-			INTERACTIVE_OBJ * io	=	inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
-
-			if ((io) && (io->armormaterial))
-			{
-				strcpy(amat, io->armormaterial);
+	
+	if(io_target == inter.iobj[0]) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] > 0) {
+			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+			if(io && !io->armormaterial.empty()) {
+				amat = &io->armormaterial;
 			}
 		}
 	}
@@ -867,7 +847,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	power	=	power * 0.15f + 0.85f;
 
-	ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
+	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
 
 	dmgs	*=	backstab;
 	dmgs	-=	dmgs * (absorb * ( 1.0f / 100 ));
@@ -1064,7 +1044,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						while (notok-- > 0)
 						{
 							num = (rnd() *(float)Thrown[i].obj->facelist.size());
-							assert(num < Thrown[i].obj->facelist.size());
+							arx_assert(num < Thrown[i].obj->facelist.size());
 
 							if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
 
@@ -1186,11 +1166,11 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
-						char weapon_material[64]	= "DAGGER";
-						std::string bkg_material = "EARTH";
+						char weapon_material[64]	= "dagger";
+						string bkg_material = "earth";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-							bkg_material = GetMaterialString( ep->tex->m_texName );
+							bkg_material = GetMaterialString(ep->tex->m_texName);
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
@@ -1209,8 +1189,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
-						char weapon_material[64]	= "DAGGER";
-						char bkg_material[64]		= "EARTH";
+						char weapon_material[64]	= "dagger";
+						char bkg_material[64]		= "earth";
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
@@ -1547,7 +1527,7 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
 	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
 	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
-	Dterm = (deltaV dot deltaP) * PHYSICS_Damp * divdist; // Damping Term
+	Dterm = dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
 	Dterm = (-(Hterm + Dterm));
 	divdist *= Dterm;
 	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector

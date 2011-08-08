@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 
 #include "input/Input.h"
@@ -1165,8 +1166,8 @@ void ARX_BOOMS_ClearAll()
 //-----------------------------------------------------------------------------
 void ARX_BOOMS_Add(Vec3f * poss,long type)
 {
-	static TextureContainer * tc1=TextureContainer::Load("Graph\\Particles\\fire_hit.bmp");
-	static TextureContainer * tc2=TextureContainer::Load("Graph\\Particles\\boom.bmp");
+	static TextureContainer * tc1=TextureContainer::Load("graph/particles/fire_hit");
+	static TextureContainer * tc2=TextureContainer::Load("graph/particles/boom");
 	long x0,x1;
 	long z0,z1,i,j;
 	unsigned long tim;
@@ -1529,24 +1530,23 @@ void UpdateObjFx() {
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_FirstInit() 
-{
-	smokeparticle=TextureContainer::Load("Graph\\Particles\\smoke.bmp");
-    bloodsplat[0]=bloodsplatter=TextureContainer::Load("Graph\\Particles\\new_blood.bmp");	
-	bloodsplat[1]=TextureContainer::Load("Graph\\Particles\\new_blood_splat1.bmp");	
-	bloodsplat[2]=TextureContainer::Load("Graph\\Particles\\new_blood_splat2.bmp");	
-	bloodsplat[3]=TextureContainer::Load("Graph\\Particles\\new_blood_splat3.bmp");	
-	bloodsplat[4]=TextureContainer::Load("Graph\\Particles\\new_blood_splat4.bmp");	
-	bloodsplat[5]=TextureContainer::Load("Graph\\Particles\\new_blood_splat5.bmp");	
-	water_splat[0]=TextureContainer::Load("Graph\\Particles\\[fx]_Water01.bmp");
-	water_splat[1]=TextureContainer::Load("Graph\\Particles\\[fx]_Water02.bmp");
-	water_splat[2]=TextureContainer::Load("Graph\\Particles\\[fx]_Water03.bmp");
-	water_drop[0]=TextureContainer::Load("Graph\\Particles\\[fx]_Water_drop01.bmp");
-	water_drop[1]=TextureContainer::Load("Graph\\Particles\\[fx]_Water_drop02.bmp");
-	water_drop[2]=TextureContainer::Load("Graph\\Particles\\[fx]_Water_drop03.bmp");
-	healing=TextureContainer::Load("Graph\\Particles\\heal_0005.bmp");
-	tzupouf=TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_tsu_greypouf.bmp");
-	fire2=TextureContainer::Load("Graph\\Particles\\fire2.bmp");
+void ARX_PARTICLES_FirstInit() {
+	smokeparticle=TextureContainer::Load("graph/particles/smoke");
+	bloodsplat[0]=bloodsplatter=TextureContainer::Load("graph/particles/new_blood");
+	bloodsplat[1]=TextureContainer::Load("graph/particles/new_blood_splat1");
+	bloodsplat[2]=TextureContainer::Load("graph/particles/new_blood_splat2");
+	bloodsplat[3]=TextureContainer::Load("graph/particles/new_blood_splat3");
+	bloodsplat[4]=TextureContainer::Load("graph/particles/new_blood_splat4");
+	bloodsplat[5]=TextureContainer::Load("graph/particles/new_blood_splat5");
+	water_splat[0]=TextureContainer::Load("graph/particles/[fx]_water01");
+	water_splat[1]=TextureContainer::Load("graph/particles/[fx]_water02");
+	water_splat[2]=TextureContainer::Load("graph/particles/[fx]_water03");
+	water_drop[0]=TextureContainer::Load("graph/particles/[fx]_water_drop01");
+	water_drop[1]=TextureContainer::Load("graph/particles/[fx]_water_drop02");
+	water_drop[2]=TextureContainer::Load("graph/particles/[fx]_water_drop03");
+	healing=TextureContainer::Load("graph/particles/heal_0005");
+	tzupouf=TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_greypouf");
+	fire2=TextureContainer::Load("graph/particles/fire2");
 }
 
 //-----------------------------------------------------------------------------

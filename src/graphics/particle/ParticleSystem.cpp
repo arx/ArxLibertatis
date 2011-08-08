@@ -26,10 +26,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleSystem.h"
 
 #include <cstdio>
+#include <cstring>
 
 #include "core/GameTime.h"
 
+#include "graphics/Math.h"
 #include "graphics/GraphicsTypes.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
@@ -296,8 +299,8 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 
 		for (int i = 0; i < _iNbTex; i++)
 		{
-			ZeroMemory(cBuf, 256);
-			sprintf(cBuf, "%s_%04d.bmp", _pszTex, i + 1);
+			memset(cBuf, 0, 256);
+			sprintf(cBuf, "%s_%04d", _pszTex, i + 1);
 			tex_tab[i] = TextureContainer::Load(cBuf);
 		}
 

@@ -26,24 +26,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_IO_SCREENSHOT_H
 #define ARX_IO_SCREENSHOT_H
 
+#include "io/FilePath.h"
+
 class SnapShot {
 	
 private:
 	
-	char * pName;
-	unsigned long ulNum;
+	fs::path file;
 	
 public:
 	
-	SnapShot(const char *, const char *, bool _bReplace = false);
+	SnapShot(const fs::path & name, bool replace = false);
 	~SnapShot();
 	
 	bool GetSnapShot();
-	bool GetSnapShotDim(int, int);
+	bool GetSnapShotDim(int width, int height);
 	
 };
 
-void InitSnapShot(const char *, const char *);
+void InitSnapShot(const fs::path & name);
 void GetSnapShot();
 void FreeSnapShot();
 

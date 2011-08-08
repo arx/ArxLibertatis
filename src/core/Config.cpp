@@ -75,7 +75,9 @@ const int
 	sfxVolume = 10,
 	speechVolume = 10,
 	ambianceVolume = 10,
-	mouseSensitivity = 4;
+	mouseSensitivity = 4,
+	migration = Config::OriginalAssets,
+	quicksaveSlots = 2;
 
 const bool
 	first_run = true,
@@ -143,7 +145,6 @@ namespace Section {
 
 const string
 	Language = "language",
-	FirstRun = "firstrun",
 	Video = "video",
 	Audio = "audio",
 	Input = "input",
@@ -152,9 +153,6 @@ const string
 }
 
 namespace Key {
-
-// First run options
-const string firstRun = "int";
 
 // Language options
 const string language = "string";
@@ -242,7 +240,9 @@ const string
 	forceZBias = "forcezbias",
 	forceToggle = "forcetoggle",
 	gore = "fg",
-	newControl = "newcontrol";
+	newControl = "newcontrol",
+	migration = "migration",
+	quicksaveSlots = "quicksave_slots";
 
 } // namespace Key
 
@@ -366,10 +366,6 @@ bool Config::save() {
 	
 	ConfigWriter writer(out);
 	
-	// firstrun
-	writer.beginSection(Section::FirstRun);
-	writer.writeKey(Key::firstRun, firstRun);
-	
 	// language
 	writer.beginSection(Section::Language);
 	writer.writeKey(Key::language, language);
@@ -422,11 +418,13 @@ bool Config::save() {
 	writer.writeKey(Key::newControl, misc.newControl);
 	writer.writeKey(Key::forceToggle, misc.forceToggle);
 	writer.writeKey(Key::gore, misc.gore);
+	writer.writeKey(Key::migration, misc.migration);
+	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
 	
 	return writer.flush();
 }
 
-bool Config::init(const string & file, const string & defaultFile) {
+bool Config::init(const string & file, const string & defaultFile) { // TODO use fs::path
 	
 	this->file = file;
 	
@@ -442,9 +440,6 @@ bool Config::init(const string & file, const string & defaultFile) {
 	if(!reader.read(ifs)) {
 		LogWarning << "errors while parsing config file";
 	}
-	
-	// Check if this is the first run of the game
-	firstRun = reader.getKey(Section::FirstRun, Key::firstRun, Default::first_run);
 	
 	// Get locale language
 	language = reader.getKey(Section::Language, Key::language, Default::language);
@@ -502,6 +497,8 @@ bool Config::init(const string & file, const string & defaultFile) {
 	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
 	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
 	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);
+	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
+	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
 	
 	return loaded;
 }

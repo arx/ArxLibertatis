@@ -61,38 +61,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "math/MathFwd.h"
-#include "Configure.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
-// TODO why is this in LoadLevel?
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-void LogDirCreation(const std::string & dir);
-
-void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string & dir);
+namespace fs {
+class path;
+}
 
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
-long DanaeSaveLevel(const std::string & file);
+long DanaeSaveLevel(const fs::path & file);
+void LogDirCreation(const fs::path & dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
+void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 #endif
 
-long DanaeLoadLevel(const std::string & file);
+long DanaeLoadLevel(const fs::path & file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
-// TODO editor-specific?
-void CheckIO_NOT_SAVED();
 
-INTERACTIVE_OBJ * LoadInter_Ex(const std::string & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
+INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 
 extern Vec3f MSP;
 
 #ifdef BUILD_EDITOR
 void BIG_PURGE();
 void ARX_SAVELOAD_CheckDLFs();
+void CheckIO_NOT_SAVED();
 #endif
 
 #endif // ARX_SCENE_LOADLEVEL_H

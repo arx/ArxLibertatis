@@ -104,7 +104,10 @@ enum EquipmentSlot {
 void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io);
 void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags);
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val);
+
+//! Sets/unsets an object type flag
+bool ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ & io, const std::string & temp, bool set);
+
 ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
 void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip);
 void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip, long flags = 0);

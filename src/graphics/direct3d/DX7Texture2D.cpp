@@ -62,7 +62,7 @@ bool DX7Texture2D::Create()
 	// Setup the new surface desc for the texture. Note how we are using the
 	// texture manage attribute, so Direct3D does alot of dirty work for us
 	DDSURFACEDESC2 ddsd;
-	ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
+	memset(&ddsd, 0, sizeof(DDSURFACEDESC2));
 	ddsd.dwSize          = sizeof(DDSURFACEDESC2);
 	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
@@ -431,8 +431,8 @@ void DX7Texture2D::CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSU
 	arx_assert_msg(res == S_OK, "res=%08x", res);
 	ARX_UNUSED(res);
 
-	arx_assert_msg(descDst.dwWidth == (descSrc.dwWidth >> 1), "src width = %d, dst width = %d (%s)", descSrc.dwWidth, descDst.dwWidth, mFileName.c_str());
-	arx_assert_msg(descDst.dwHeight == (descSrc.dwHeight >> 1), "src height = %d, dst height = %d (%s)", descSrc.dwHeight, descDst.dwHeight, mFileName.c_str());
+	arx_assert_msg(descDst.dwWidth == (descSrc.dwWidth >> 1), "src width = %d, dst width = %d (%s)", descSrc.dwWidth, descDst.dwWidth, mFileName.string().c_str());
+	arx_assert_msg(descDst.dwHeight == (descSrc.dwHeight >> 1), "src height = %d, dst height = %d (%s)", descSrc.dwHeight, descDst.dwHeight, mFileName.string().c_str());
 
 	DWORD pitchIncrementSrc = (descSrc.lPitch >> 2) - descSrc.dwWidth;
 	DWORD pitchIncrementDst = (descDst.lPitch >> 2) - descDst.dwWidth;

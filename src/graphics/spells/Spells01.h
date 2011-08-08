@@ -55,10 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_CSPELLFX_LVL01_H
-#define ARX_CSPELLFX_LVL01_H
+#ifndef ARX_GRAPHICS_DATA_SPELLS_SPELLS01_H
+#define ARX_GRAPHICS_DATA_SPELLS_SPELLS01_H
 
-#include "graphics/data/Texture.h"
 #include "graphics/effects/SpellEffects.h"
 
 // Done By : Didier Pédreno
@@ -78,7 +77,7 @@ public:
 	Anglef angles;
 	TextureContainer * tex_mm;
 	TexturedVertex pathways[6];
-	ArxSound snd_loop;
+	audio::SourceId snd_loop;
 	
 	CMagicMissile();
 	~CMagicMissile();
@@ -119,130 +118,120 @@ class CIgnit : public CSpellFx {
 	
 private:
 	
-	Vec3f	pos;
-	float		perimetre;
-	short		key;
-	int			duration;
-	int			currduration;
-	float		interp;
+	Vec3f pos;
+	float perimetre;
+	short key;
+	int duration;
+	int currduration;
+	float interp;
 	
-		TextureContainer	* tp;
-		float				r, g, b;
-		int					mask;
+	TextureContainer * tp;
+	float r, g, b;
+	int mask;
 	
-		struct T_LINKLIGHTTOFX
-		{
-			Vec3f	poslight;
-			Vec3f	posfx;
-			int			actif;
-			int			idl;
-			int			iLightNum;
-		};
-
-	public:
-		unsigned char		nblight;
-		T_LINKLIGHTTOFX		tablight[256];
-
-		CIgnit();
-		~CIgnit();
-
-		unsigned long GetDuration(void)
-		{
-			return this->duration;
-		};
-
-		void	Create(Vec3f * posc, float perim, int speed);
-		void	Update(unsigned long);
-		float	Render();
-		void	Kill();
-		void	AddLight(int iLight);
-		void	Action(int);
-		void	ChangeRGBMask(float r, float g, float b, int mask)
-		{
-			this->r = r;
-			this->g = g;
-			this->b = b;
-			this->mask = mask;
-		};
-		void	ChangeTexture(TextureContainer * tc)
-		{
-			this->tp = tc;
-		};
-		float	GetPerimetre(void)
-		{
-			return this->perimetre;
-		}
+	struct T_LINKLIGHTTOFX {
+		Vec3f poslight;
+		Vec3f posfx;
+		int actif;
+		int idl;
+		int iLightNum;
+	};
+	
+public:
+	
+	unsigned char nblight;
+	T_LINKLIGHTTOFX tablight[256];
+	
+	CIgnit();
+	~CIgnit();
+	
+	unsigned long GetDuration(void) {
+		return this->duration;
+	};
+	
+	void Create(Vec3f * posc, float perim, int speed);
+	void Update(unsigned long);
+	float Render();
+	void Kill();
+	void AddLight(int iLight);
+	void Action(int);
+	
+	void ChangeRGBMask(float r, float g, float b, int mask) {
+		this->r = r;
+		this->g = g;
+		this->b = b;
+		this->mask = mask;
+	}
+	
+	void	ChangeTexture(TextureContainer * tc) {
+		this->tp = tc;
+	}
+	
+	float	GetPerimetre(void) {
+		return this->perimetre;
+	}
+	
 };
 
-//-----------------------------------------------------------------------------
 // Done By : Sébastien Scieux
-// Status  :
-//-----------------------------------------------------------------------------
-class CDoze: public CIgnit
-{
-	public:
-		void CreateDoze(Vec3f * posc, float perim, int speed)
-		{
-			this->Create(posc, perim, speed);
-			this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\doze_hit.bmp"));
-			this->ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
-		};
-		void	AddLightDoze(int iLight);
+class CDoze: public CIgnit {
+	
+public:
+	
+	void CreateDoze(Vec3f * posc, float perim, int speed);
+	
+	void AddLightDoze(int iLight);
+	
 };
 
-//-----------------------------------------------------------------------------
 // Done By : Sébastien Scieux
-// Status  :
-//-----------------------------------------------------------------------------
-class CPortal: public CSpellFx
-{
-	private:
-		short		key;
-		int			duration;
-		int			currduration, currframe;
-		Vec3f	pos;
-		float		r;
-		TextureContainer	* tp, *te;
-
-		struct T_ECLAIR
-		{
-			short			actif, nbseg;
-			int				duration;
-			int				currduration;
-			int				numpt;
-			Vec3f	*	seg;
-		};
-
-		int			timeneweclair;
-		int			nbeclair;				//eclair
-		T_ECLAIR	tabeclair[256];
-
-		TextureContainer	* spheretc;		//sphere
-		Vec3f			sphereposdep;
-		Vec3f			sphereposend;
-		float				spherescale;
-		Vec3f		*	spherevertex;
-		unsigned short	*	sphereind;
-		int					spherenbpt;
-		int					spherenbfaces;
-		float				spherealpha;
-		TexturedVertex		*	sphered3d;
-
- 
-	public:
- 
-		~CPortal();
-
-		unsigned long GetDuration(void)
-		{
-			return this->duration;
-		};
-
-		void	AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt);
-		void	DrawAllEclair();
-		void	Update(unsigned long);
-		float	Render();
- 
+class CPortal: public CSpellFx {
+	
+private:
+	
+	short key;
+	int duration;
+	int currduration, currframe;
+	Vec3f pos;
+	float r;
+	TextureContainer * tp, * te;
+	
+	struct T_ECLAIR {
+		short actif, nbseg;
+		int duration;
+		int currduration;
+		int numpt;
+		Vec3f * seg;
+	};
+	
+	int timeneweclair;
+	int nbeclair; // eclair
+	T_ECLAIR tabeclair[256];
+	
+	TextureContainer * spheretc; // sphere
+	Vec3f sphereposdep;
+	Vec3f sphereposend;
+	float spherescale;
+	Vec3f * spherevertex;
+	unsigned short * sphereind;
+	int spherenbpt;
+	int spherenbfaces;
+	float spherealpha;
+	TexturedVertex * sphered3d;
+	
+public:
+	
+	~CPortal();
+	
+	unsigned long GetDuration(void) {
+		return this->duration;
+	};
+	
+	void AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt);
+	void DrawAllEclair();
+	void Update(unsigned long);
+	float Render();
+	
 };
 
-#endif
+#endif // ARX_GRAPHICS_DATA_SPELLS_SPELLS01_H

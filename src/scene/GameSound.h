@@ -36,9 +36,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+#include "audio/AudioTypes.h"
 #include "math/MathFwd.h"
 
 struct INTERACTIVE_OBJ;
+
+namespace  fs {
+class path;
+}
 
 enum SoundLoopMode {
 	ARX_SOUND_PLAY_LOOPED = 0,
@@ -49,6 +54,9 @@ typedef s32 ArxSound;
 typedef s32 ArxMixer;
 
 const ArxSound ARX_SOUND_INVALID_RESOURCE = -1;
+
+
+const audio::SampleId ARX_SOUND_TOO_FAR = -2;
 
 extern ArxMixer ARX_SOUND_MixerGame;
 extern ArxMixer ARX_SOUND_MixerGameSample;
@@ -201,7 +209,6 @@ extern ArxSound SND_SPELL_VISION_START;
 extern ArxSound SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
-long ARX_MATERIAL_GetIdByName(const std::string & name);
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
 bool ARX_SOUND_Init();
@@ -212,19 +219,19 @@ long ARX_SOUND_IsEnabled();
 
 void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Vec3f * up);
 
-ArxSound ARX_SOUND_Load(const std::string & name);
+ArxSound ARX_SOUND_Load(const fs::path & name);
 void ARX_SOUND_Free(const ArxSound & sample);
 
 long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayInterface(ArxSound & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-long ARX_SOUND_PlaySpeech(const std::string & name, const INTERACTIVE_OBJ * io = NULL);
+long ARX_SOUND_PlaySpeech(const fs::path & name, const INTERACTIVE_OBJ * io = NULL);
 long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source);
 long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, Vec3f* position, INTERACTIVE_OBJ* source);
 
-long ARX_SOUND_PlayScript(const std::string & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlayScript(const fs::path & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position = NULL);
-long ARX_SOUND_PlayCinematic(const std::string & name);
+long ARX_SOUND_PlayCinematic(const fs::path & name);
 long ARX_SOUND_PlayMenu(ArxSound & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_IsPlaying(ArxSound & sample_id);
 float ARX_SOUND_GetDuration(ArxSound & sample_id);
@@ -236,13 +243,13 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 
 void ARX_SOUND_Stop(ArxSound & sample_id);
 
-long ARX_SOUND_PlayScriptAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
-long ARX_SOUND_PlayZoneAmbiance(const std::string & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
-long ARX_SOUND_PlayMenuAmbiance(const std::string & ambiance_name);
-long ARX_SOUND_SetAmbianceTrackStatus(const std::string & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on
+bool ARX_SOUND_PlayScriptAmbiance(const fs::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+bool ARX_SOUND_PlayZoneAmbiance(const fs::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+audio::AmbianceId ARX_SOUND_PlayMenuAmbiance(const fs::path & ambiance_name);
+audio::AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const fs::path & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on TODO this is wrong?
 void ARX_SOUND_KillAmbiances();
-void ARX_SOUND_AmbianceSavePlayList(void ** play_list, unsigned long * size);
-void ARX_SOUND_AmbianceRestorePlayList(void * play_list, unsigned long size);
+char * ARX_SOUND_AmbianceSavePlayList(size_t & size);
+void ARX_SOUND_AmbianceRestorePlayList(const char * play_list, size_t size);
 
 void ARX_SOUND_MixerSetVolume(ArxMixer mixer_id, float volume);
 void ARX_SOUND_MixerStop(ArxMixer mixer_id);

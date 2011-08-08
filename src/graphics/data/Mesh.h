@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEPOLY_H
 #define EERIEPOLY_H
 
+#include <set>
+
 #include "graphics/GraphicsTypes.h"
 // TODO move INTERCATIVE_OBJ somewhere else / move flags here
 #include "game/Damage.h"
@@ -66,20 +68,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Rectangle.h"
 #include "platform/Flags.h"
 // TODO Remove when this header is cleaned up
-#include "scripting/Script.h"
+#include "script/Script.h"
+
+struct ARX_PATH;
+struct SYMBOL_DRAW;
+struct INVENTORY_DATA;
+struct ARX_USE_PATH;
+struct INTERACTIVE_OBJ;
 
 void specialEE_RTP(TexturedVertex*,TexturedVertex*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
 
-//-----------------------------------------------------------------------------
-struct ANIM_HANDLE
-{
-	char			path[256]; // path[0]==0 means an unallocated slot
-	EERIE_ANIM **	anims;
-	long *			sizes;
-	short			alt_nb;
-	long			locks;
+struct ANIM_HANDLE {
+	
+	ANIM_HANDLE();
+	
+	fs::path path; // empty path means an unallocated slot
+	
+	EERIE_ANIM ** anims;
+	short alt_nb;
+	
+	long locks;
+	
 };
 
 struct EERIE_TRANSFORM
@@ -227,16 +238,15 @@ struct EERIE_BACKGROUND
 	char		name[256];
 };
 
-struct IO_EQUIPITEM_ELEMENT
-{
-	float	value;
-	short	flags;
-	short	special;
+struct IO_EQUIPITEM_ELEMENT {
+	float value;
+	short flags;
+	short special; // TODO unused?
 };
 
-#define IO_EQUIPITEM_ELEMENT_Number				29
-struct IO_EQUIPITEM
-{
+#define IO_EQUIPITEM_ELEMENT_Number 29
+
+struct IO_EQUIPITEM {
 	IO_EQUIPITEM_ELEMENT elements[IO_EQUIPITEM_ELEMENT_Number];
 };
 
@@ -254,15 +264,41 @@ struct ANIM_USE
 	long			fr;
 };
 
+enum BehaviourFlag {
+	BEHAVIOUR_NONE          = (1<<0), // no pathfind
+	BEHAVIOUR_FRIENDLY      = (1<<1), // no pathfind
+	BEHAVIOUR_MOVE_TO       = (1<<2),
+	BEHAVIOUR_WANDER_AROUND = (1<<3), //behavior_param = distance
+	BEHAVIOUR_FLEE          = (1<<4), //behavior_param = distance
+	BEHAVIOUR_HIDE          = (1<<5), //behavior_param = distance
+	BEHAVIOUR_LOOK_FOR      = (1<<6), //behavior_param = distance
+	BEHAVIOUR_SNEAK         = (1<<7),
+	BEHAVIOUR_FIGHT         = (1<<8),
+	BEHAVIOUR_DISTANT       = (1<<9),
+	BEHAVIOUR_MAGIC         = (1<<10),
+	BEHAVIOUR_GUARD         = (1<<11),
+	BEHAVIOUR_GO_HOME       = (1<<12),
+	BEHAVIOUR_LOOK_AROUND   = (1<<13),
+	BEHAVIOUR_STARE_AT      = (1<<14)
+};
+DECLARE_FLAGS(BehaviourFlag, Behaviour)
+DECLARE_FLAGS_OPERATORS(Behaviour)
+
+enum MoveMode {
+	WALKMODE = 0,
+	RUNMODE = 1,
+	NOMOVEMODE = 2,
+	SNEAKMODE = 3
+};
+
 #define MAX_ANIM_LAYERS	4
-struct IO_BEHAVIOR_DATA
-{
+struct IO_BEHAVIOR_DATA {
 	long			exist;
-	unsigned long	behavior;
+	Behaviour behavior;
 	float			behavior_param;
 	long			tactics;		// 0=none ; 1=side ; 2=side+back
 	long			target;
-	long			movemode;
+	MoveMode movemode;
 	ANIM_USE		animlayer[MAX_ANIM_LAYERS];
 };
 
@@ -303,88 +339,88 @@ struct EERIE_EXTRA_ROTATE {
 
 #define MAX_STACKED_BEHAVIOR 5
 
-struct IO_NPCDATA
-{
-	float		maxlife;
-	float		life;
-	float		maxmana;
-	float		mana;
-	unsigned long	reachedtime;
-	long		reachedtarget;	//Is target in REACHZONE ?
-	void *		weapon;			//Linked Weapon (r-hand)
-	long		detect;
-	long		movemode;
-	float		armor_class;
-	float		absorb;
-	float		damages;
-	float		tohit;
-	float		aimtime;
-	float		critical;
-	float		reach;
-	float		backstab_skill;
-
-	unsigned long	behavior;
-	float			behavior_param;
-	long			tactics;		 // 0=none ; 1=side ; 2=side+back
-	long		xpvalue;
-	long		cut;
-
-	float				moveproblem;
+struct IO_NPCDATA {
+	
+	IO_NPCDATA();
+	~IO_NPCDATA();
+	
+	float maxlife;
+	float life;
+	float maxmana;
+	float mana;
+	unsigned long reachedtime;
+	long reachedtarget;	//Is target in REACHZONE ?
+	INTERACTIVE_OBJ * weapon; // Linked Weapon (r-hand)
+	long detect;
+	MoveMode movemode;
+	float armor_class;
+	float absorb;
+	float damages;
+	float tohit;
+	float aimtime;
+	float critical;
+	float reach;
+	float backstab_skill;
+	
+	Behaviour behavior;
+	float behavior_param;
+	long tactics; // 0=none ; 1=side ; 2=side+back
+	long xpvalue;
+	long cut;
+	
+	float moveproblem;
 	ItemType weapontype;
-	long		weaponinhand;
-	long		fightdecision;
-	char		weaponname[256];
-
-	float		look_around_inc;
+	long weaponinhand;
+	long fightdecision;
+	
+	float look_around_inc;
 	unsigned long collid_time;
-	long		collid_state;
-	float		speakpitch;
-	float		lastmouth;
-	long		ltemp;
-
-	IO_BEHAVIOR_DATA	stacked[MAX_STACKED_BEHAVIOR];
-	float		poisonned;
-	unsigned char	resist_poison;
-	unsigned char	resist_magic;
-	unsigned char	resist_fire;
-	unsigned char	padd;
-
-	short		strike_time;
-	short		walk_start_time;
-	long		aiming_start;
-	long		npcflags;
+	long collid_state;
+	float speakpitch;
+	float lastmouth;
+	long ltemp;
+	
+	IO_BEHAVIOR_DATA stacked[MAX_STACKED_BEHAVIOR];
+	float poisonned;
+	unsigned char resist_poison;
+	unsigned char resist_magic;
+	unsigned char resist_fire;
+	
+	short strike_time;
+	short walk_start_time;
+	long aiming_start;
+	long npcflags;
 	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE * ex_rotate;
 	Color blood_color;
-
+	
 	short SPLAT_DAMAGES;
 	short SPLAT_TOT_NB;
 	Vec3f last_splat_pos;
 	float vvpos;
-
+	
 	float climb_count;
 	float stare_factor;
 	float fDetect;
-	short				cuts;
-	short				unused;
+	short cuts;
+	short unused;
+	
 };
 
-struct IO_ITEMDATA
-{
-	IO_EQUIPITEM *		equipitem;			// Equipitem Datas
-	long				price;
-	short				maxcount;			// max number cumulable
-	short				count;				// current number
-	char				food_value;
-	char				stealvalue;
-	short				playerstacksize;
-	short				LightValue;
+struct IO_ITEMDATA {
+	IO_EQUIPITEM * equipitem; // Equipitem Datas
+	long price;
+	short maxcount; // max number cumulable
+	short count; // current number
+	char food_value;
+	char stealvalue;
+	short playerstacksize;
+	short LightValue;
 };
 
-struct IO_FIXDATA
-{
-	char				trapvalue;
-	char				padd[3];
+struct IO_FIXDATA {
+	char trapvalue;
+	char padd[3];
 };
 
 
@@ -409,24 +445,13 @@ struct IO_PHYSICS
 	Vec3f		forces;
 };
 
-struct IO_TWEAKER_INFO
-{
-	 char			filename[256];
-	 char			skintochange[256];
-	 char			skinchangeto[256];
+struct IO_TWEAKER_INFO {
+	fs::path filename;
+	std::string skintochange;
+	fs::path skinchangeto;
 };
 
-struct IO_GROUP_DATA
-{
-	 char			name[64];
-};
-
-struct TWEAK_INFO
-{
-	long type;
-	char param1[256];
-	char param2[256];
-};
+struct TWEAK_INFO;
 
 #define IO_NPC_AFLAG_HIT_BACKGROUND			1
 #define IO_NPC_AFLAG_HIT_CLEAR				(1)
@@ -434,192 +459,198 @@ struct TWEAK_INFO
 #define SFX_TYPE_YLSIDE_DEATH	1
 #define SFX_TYPE_INCINERATE		2
 
-#define MAX_ANIMS 200		// max loadable anims per character
+#define MAX_ANIMS 200 // max loadable anims per character
 
-typedef s32 ArxSound;
+// ARX_COLLISIONS flags (cylinder move)
+enum CollisionFlag {
+	CFLAG_LEVITATE          = (1<<0),
+	CFLAG_NO_INTERCOL       = (1<<1),
+	CFLAG_SPECIAL           = (1<<2),
+	CFLAG_EASY_SLIDING      = (1<<3),
+	CFLAG_CLIMBING          = (1<<4),
+	CFLAG_JUST_TEST         = (1<<5),
+	CFLAG_NPC               = (1<<6),
+	CFLAG_PLAYER            = (1<<7),
+	CFLAG_RETURN_HEIGHT     = (1<<8),
+	CFLAG_EXTRA_PRECISION   = (1<<9),
+	CFLAG_CHECK_VALID_POS   = (1<<10),
+	CFLAG_ANCHOR_GENERATION = (1<<11),
+	CFLAG_COLLIDE_NOCOL     = (1<<12),
+	CFLAG_NO_NPC_COLLIDE    = (1<<13),
+	CFLAG_NO_HEIGHT_MOD     = (1<<14)
+};
+DECLARE_FLAGS(CollisionFlag, CollisionFlags)
+DECLARE_FLAGS_OPERATORS(CollisionFlags)
 
-struct INTERACTIVE_OBJ
-{
-	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
+enum IOCollisionFlag {
+	COLLIDE_WITH_PLAYER = (1<<0),
+	COLLIDE_WITH_WORLD  = (1<<1)
+};
+DECLARE_FLAGS(IOCollisionFlag, IOCollisionFlags)
+DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
 
-	long				ioflags;	// IO type
-	Vec3f			lastpos;	// IO last position
-	Vec3f			pos;		// IO position
-	Vec3f			move;
-	Vec3f			lastmove;
-	Vec3f			forcedmove;
-
-	Anglef angle;		// IO angle
-	IO_PHYSICS			physics;	// Movement Collision Data
-	short				room;
-	short				room_flags; // 1==need_update
-	float				original_height;
-	float				original_radius;
-	TextureContainer *	inv;		// Object Icon
-	EERIE_3DOBJ *		obj;		// IO Mesh data
-	ANIM_HANDLE *		anims[MAX_ANIMS];	// Object Animations
-	ANIM_USE			animlayer[MAX_ANIM_LAYERS];
-	Vec3f *			lastanimvertex;		// Last Animation Positions of Vertex
-	long				nb_lastanimvertex;
-	unsigned long		lastanimtime;
-
-	EERIE_3D_BBOX		bbox3D;
-	Vec2s			bbox1;		// 2D bounding box1
-	Vec2s			bbox2;		// 2D bounding box2
-	char *				usemesh;	// Alternate Mesh/path
-	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
-	ArxSound				sound;
-	ItemType type_flags;			// object type (weapon,goblin...)
-	long				scriptload;			// Is This object Loaded by Script ?
-	Vec3f			target;				// Target position
-	long				targetinfo;			// Target Type/Ident
-
-	long				cstep;
-	union
-	{
-		IO_ITEMDATA *		_itemdata;			// ITEM Datas
-		IO_FIXDATA	*		_fixdata;			// FIX Datas
-		IO_NPCDATA *		_npcdata;			// NPC Datas
-		IO_CAMDATA *		_camdata;			// Camera Datas
+struct INTERACTIVE_OBJ {
+	
+	INTERACTIVE_OBJ(long num);
+	~INTERACTIVE_OBJ();
+	
+	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
+	
+	long ioflags; // IO type
+	Vec3f lastpos; // IO last position
+	Vec3f pos; // IO position
+	Vec3f move;
+	Vec3f lastmove;
+	Vec3f forcedmove;
+	
+	Anglef angle; // IO angle
+	IO_PHYSICS physics;	// Movement Collision Data
+	short room;
+	short room_flags; // 1==need_update
+	float original_height;
+	float original_radius;
+	TextureContainer * inv; // Object Icon
+	EERIE_3DOBJ * obj; // IO Mesh data
+	ANIM_HANDLE * anims[MAX_ANIMS];	// Object Animations
+	ANIM_USE animlayer[MAX_ANIM_LAYERS];
+	Vec3f * lastanimvertex; // Last Animation Positions of Vertex
+	long nb_lastanimvertex;
+	unsigned long lastanimtime;
+	
+	EERIE_3D_BBOX bbox3D;
+	Vec2s bbox1; // 2D bounding box1
+	Vec2s bbox2; // 2D bounding box2
+	fs::path usemesh; // Alternate Mesh/path
+	EERIE_3DOBJ * tweaky; // tweaked original obj backup
+	audio::SourceId sound;
+	ItemType type_flags; // object type (weapon,goblin...)
+	long scriptload; // Is This object Loaded by Script ?
+	Vec3f target; // Target position
+	long targetinfo; // Target Type/Ident
+	
+	union {
+		IO_ITEMDATA * _itemdata; // ITEM Datas
+		IO_FIXDATA * _fixdata; // FIX Datas
+		IO_NPCDATA * _npcdata; // NPC Datas
+		IO_CAMDATA * _camdata; // Camera Datas
 	};
-
-	void *				inventory;			// Inventory Data
-	short				show;				// Show Status (In Scene, In Inventory...)
-	short				collision;			// collision type
-	char 				mainevent[64];
+	
+	INVENTORY_DATA * inventory; // Inventory Data
+	short show; // Show Status (In Scene, In Inventory...)
+	IOCollisionFlags collision; // collision type
+	std::string mainevent;
 	Color3f infracolor; // Improve Vision Color (Heat)
-	long				changeanim;
+	long changeanim;
+	
+	long ident; // Ident num
+	float weight;
+	std::string locname; //localisation
+	unsigned short EditorFlags; // 1 NOTSAVED 2 selected
+	unsigned short GameFlags; // GFLAGS
+	Vec3f velocity; // velocity
+	float fall;
 
-	long				ident;				// Ident num
-	float				weight;
-	char				locname[64];		//localisation
-	unsigned short		EditorFlags; // 1 NOTSAVED 2 selected
-	unsigned short		GameFlags; // GFLAGS
-	Vec3f			velocity;			// velocity
-	float				fall;
-
-	long				stopped;
-	Vec3f			initpos;			// Initial Position
-	Anglef			initangle;			// Initial Angle
-	char				filename[256];
-	float				scale;
-
-	void *				usepath;
-	void *				symboldraw;
-	short				dynlight;
-	short				lastspeechflag;
-	void *				inzone;
-	IO_HALO				halo;
-	IO_HALO				halo_native;
-
-	EERIE_SCRIPT		script;				// Primary Script
-	EERIE_SCRIPT		over_script;		// Overriding Script
-	short				stat_count;
-	short				stat_sent;
-	IO_TWEAKER_INFO *	tweakerinfo; // optional tweaker infos
-	long				material;
-
-
-	IO_GROUP_DATA *		iogroups;
-	short				nb_iogroups;
-	char				sizex;		// Inventory Icon sizeX
-	char				sizey;		// Inventory Icon sizeY
-	unsigned long		soundtime;
-	unsigned long		soundcount;
-
-	short				level;
-	short				truelevel;
-	unsigned long		sfx_time;
-	unsigned long		collide_door_time;
-	unsigned long		ouch_time;
-	float				dmg_sum;
-
-	IO_SPELLCAST_DATA	spellcast_data;
-	short				flarecount;
-	short				no_collide;
-	float				invisibility;
-	float				frameloss;
-	float				basespeed;
-
-	float				speed_modif;
-	long *				spells_on;
-	short				nb_spells_on;
-	short				padding;
-	long				damagedata;
-
-	float				rubber;
-	float				max_durability;
-	float				durability;
-	short				poisonous;
-	short				poisonous_count;
-
-	float				ignition;
-	long				ignit_light;
-	ArxSound				ignit_sound;
-	float				head_rot;
-
-	short				damager_damages;
-	short				padding2;
+	long stopped;
+	Vec3f initpos; // Initial Position
+	Anglef initangle; // Initial Angle
+	fs::path filename;
+	float scale;
+	
+	ARX_USE_PATH * usepath;
+	SYMBOL_DRAW * symboldraw;
+	short dynlight;
+	short lastspeechflag;
+	ARX_PATH * inzone;
+	IO_HALO halo;
+	IO_HALO halo_native;
+	
+	EERIE_SCRIPT script; // Primary Script
+	EERIE_SCRIPT over_script; // Overriding Script
+	short stat_count;
+	short stat_sent;
+	IO_TWEAKER_INFO * tweakerinfo; // optional tweaker infos
+	Material material;
+	
+	std::set<std::string> groups;
+	char sizex; // Inventory Icon sizeX
+	char sizey; // Inventory Icon sizeY
+	unsigned long soundtime;
+	unsigned long soundcount;
+	
+	short level;
+	short truelevel;
+	unsigned long sfx_time;
+	unsigned long collide_door_time;
+	unsigned long ouch_time;
+	float dmg_sum;
+	
+	IO_SPELLCAST_DATA spellcast_data;
+	short flarecount;
+	short no_collide;
+	float invisibility;
+	float frameloss;
+	float basespeed;
+	
+	float speed_modif;
+	long * spells_on;
+	short nb_spells_on;
+	long damagedata;
+	
+	float rubber;
+	float max_durability;
+	float durability;
+	short poisonous;
+	short poisonous_count;
+	
+	float ignition;
+	long ignit_light;
+	audio::SampleId ignit_sound;
+	float head_rot;
+	
+	short damager_damages;
 	DamageType damager_type;
-	char *				stepmaterial;
-	char *				armormaterial;
-	char *				weaponmaterial;
-	char *				strikespeech;
-
-	short				sfx_flag;
-	short				Tweak_nb;
-	TWEAK_INFO	*		Tweaks;
-	char				secretvalue;
-	char				padddd[3];
-
-	char *				shop_category;
-	float				shop_multiply;
-	char *				inventory_skin;
-	long				aflags;		// additionnal flags
-	short				inzone_show;
-	short				summoner;
+	std::string stepmaterial;
+	std::string armormaterial;
+	std::string weaponmaterial;
+	std::string strikespeech;
+	
+	short sfx_flag;
+	std::vector<TWEAK_INFO> tweaks;
+	char secretvalue;
+	
+	std::string shop_category;
+	float shop_multiply;
+	fs::path inventory_skin;
+	long aflags; // additionnal flags
+	short inzone_show;
+	short summoner;
 	long spark_n_blood;
-
-	/**
+	
+	/*!
 	 * Return the short name for this Object where only the name
 	 * of the file is returned
 	 * @return The name of the file at the end of the filename path
 	 */
 	std::string short_name() const;
-
-	/**
+	
+	/*!
 	 *  Returns the long name for this Object where the short name
 	 * is combined with the identifying number
-	 * in the form of "%s_4ld"
+	 * in the form of "%s_%04ld"
 	 * @return The short name combined with a 4 digit ident, padded with 0
 	 */
 	std::string long_name() const;
-
-	/**
+	
+	/*!
 	 *  Returns the full name for this Object where the
 	 * directory portion of the filename member is combined
 	 * with the the result of long_name()
 	 * @return The directory of filename + long_name()
 	 */
-	std::string full_name() const;
+	fs::path full_name() const;
+	
 };
 
-//-----------------------------------------------------------------------------
-#define BEHAVIOUR_NONE			1		// no pathfind
-#define BEHAVIOUR_FRIENDLY		(1<<1)		// no pathfind
-#define BEHAVIOUR_MOVE_TO		(1<<2)
-#define BEHAVIOUR_WANDER_AROUND	(1<<3)	//behavior_param = distance
-#define BEHAVIOUR_FLEE			(1<<4)	//behavior_param = distance
-#define BEHAVIOUR_HIDE			(1<<5)	//behavior_param = distance
-#define BEHAVIOUR_LOOK_FOR		(1<<6)	//behavior_param = distance
-#define BEHAVIOUR_SNEAK			(1<<7)
-#define BEHAVIOUR_FIGHT			(1<<8)
-#define BEHAVIOUR_DISTANT		(1<<9)
-#define BEHAVIOUR_MAGIC			(1<<10)
-#define BEHAVIOUR_GUARD			(1<<11)
-#define BEHAVIOUR_GO_HOME		(1<<12)
-#define BEHAVIOUR_LOOK_AROUND	(1<<13)
-#define BEHAVIOUR_STARE_AT		(1<<14)
 #define MAX_EQUIPED 12
 #define MORE_COMPATIBILITY
 
@@ -628,23 +659,6 @@ struct INTERACTIVE_OBJ
 
 #define CAM_SUBJVIEW 0
 #define CAM_TOPVIEW 1
-
-// ARX_COLLISIONS flags (cylinder move)
-#define CFLAG_LEVITATE			1
-#define CFLAG_NO_INTERCOL		(1<<1)
-#define CFLAG_SPECIAL			(1<<2)
-#define CFLAG_EASY_SLIDING		(1<<3)
-#define CFLAG_CLIMBING			(1<<4)
-#define CFLAG_JUST_TEST			(1<<5)
-#define CFLAG_NPC				(1<<6)
-#define CFLAG_PLAYER			(1<<7)
-#define CFLAG_RETURN_HEIGHT		(1<<8)
-#define CFLAG_EXTRA_PRECISION	(1<<9)
-#define CFLAG_CHECK_VALID_POS	(1<<10)
-#define CFLAG_ANCHOR_GENERATION	(1<<11)
-#define CFLAG_COLLIDE_NOCOL		(1<<12)
-#define CFLAG_NO_NPC_COLLIDE	(1<<13)
-#define CFLAG_NO_HEIGHT_MOD		(1<<14)
 
 #define IO_UNDERWATER			1
 #define	IO_FREEZESCRIPT			(1<<1)
@@ -677,11 +691,6 @@ struct INTERACTIVE_OBJ
 #define IO_FIERY				(1<<28)
 #define IO_NO_NPC_COLLIDE		(1<<29)
 #define IO_CAN_COMBINE			(1<<30)
-
-#define WALKMODE	0
-#define RUNMODE		1
-#define NOMOVEMODE	2
-#define SNEAKMODE	3
 
 //-----------------------------------------------------------------------------
 //	INTERACTIVE_OBJ Structs Start
@@ -776,7 +785,6 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 //-----------------------------------------------------------------------------
 float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
-void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0);
 //	INTERACTIVE_OBJ Struct End
 //****************************************************************************
 
@@ -839,10 +847,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
 long PhysicalDrawBkgVLine(Vec3f * orgn,Vec3f * dest);
 
 // FAST SAVE LOAD
-bool FastSceneLoad(const std::string & path);
-bool CheckUniqueIdent(char * pathh);
-bool CreateUniqueIdent(char * pathh);
-
+bool FastSceneLoad(const fs::path & path);
 
 //****************************************************************************
 // DRAWING FUNCTIONS START
@@ -952,11 +957,10 @@ float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void ResetWorlds();
 float GetSWorld(float x,float y,float z);
 
-void EERIE_ANIMMANAGER_Init();
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const std::string& path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);

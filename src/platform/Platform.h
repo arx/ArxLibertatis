@@ -62,8 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <climits>
 
-const std::string arxVersion = "0.1";
-
 /* ---------------------------------------------------------
                           Platforms
 ------------------------------------------------------------*/
@@ -117,23 +115,19 @@ const std::string arxVersion = "0.1";
 
 #define ARX_COMPILER_MSVC ((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))
 
-// TODO: Move this in a platform specific file
 #if ARX_COMPILER_MSVC
 	#include <direct.h>
-	// Windows like to be non-standard... sigh
-	inline int strcasecmp(const char* str1, const char* str2) { return _stricmp(str1, str2); }
-	inline int strncasecmp(const char* str1, const char* str2, size_t maxCount) { return _strnicmp(str1, str2, maxCount); }
-	inline int chdir(const char* path) { return _chdir(path); }
 #endif
 
 // TODO check for these in CMakeLists.txt
 #if ARX_COMPILER_MSVC || ARX_COMPILER == ARX_COMPILER_MINGW
-	#define PRINT_SIZE_T "%Iu"
+	#define PRINT_SIZE_T_F "Iu"
 #elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG
-	#define PRINT_SIZE_T "%zu"
+	#define PRINT_SIZE_T_F "zu"
 #else
-	#define PRINT_SIZE_T "%lu"
+	#define PRINT_SIZE_T_F "lu"
 #endif
+#define PRINT_SIZE_T "%" PRINT_SIZE_T_F
 
 /* ---------------------------------------------------------
                            Types
@@ -240,7 +234,7 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define ARX_CHECK( _expr )      arx_assert(_expr)
 
 // Get the number of items in a static array
-#define ARX_ARRAY_NB_ITEMS(a)	((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
+#define ARRAY_SIZE(a) ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
 /* ---------------------------------------------------------
                            Pragma
@@ -282,9 +276,10 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 
 // TODO move into a separate header
 
-template <class STYPE>
-inline const char * safeGetString(const char * & pos, STYPE & size) {	
-	const char * begin = pos;
+template <class CTYPE, class STYPE>
+inline CTYPE * safeGetString(CTYPE * & pos, STYPE & size) {	
+	
+	CTYPE * begin = pos;
 	
 	for(size_t i = 0; i < size; i++) {
 		if(pos[i] == 0) {
@@ -297,8 +292,9 @@ inline const char * safeGetString(const char * & pos, STYPE & size) {
 	return NULL;
 }
 
-template <class T, class STYPE>
-inline bool safeGet(T & data, const char * & pos, STYPE & size) {
+template <class T, class CTYPE, class STYPE>
+inline bool safeGet(T & data, CTYPE * & pos, STYPE & size) {
+	
 	if(size < sizeof(T)) {
 		return false;
 	}

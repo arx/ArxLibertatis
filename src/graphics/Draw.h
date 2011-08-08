@@ -42,13 +42,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef EERIEDRAW_H
-#define EERIEDRAW_H
+#ifndef ARX_GRAPHICS_DRAW_H
+#define ARX_GRAPHICS_DRAW_H
 
-#include "graphics/data/Mesh.h"
-#include "graphics/data/Texture.h"
-#include "graphics/Math.h"
-#include "core/Application.h"
+#include "graphics/Renderer.h"
+#include "math/MathFwd.h"
+
+struct EERIEPOLY;
+struct EERIE_3DOBJ;
+struct EERIE_CYLINDER;
+struct TexturedVertex;
 
 extern long ARX_ALTERNATE_3D;
 extern Vec3f SPRmins;
@@ -89,10 +92,9 @@ extern TextureContainer * EERIE_DRAW_sphere_particle;
 extern TextureContainer * EERIE_DRAW_square_particle;
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
-void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
-                        float u0, float v0, float u1, float v1);
-void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col,
-                        float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
 
-#endif
+void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1);
 
+void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col, float u0, float v0, float u1, float v1, float u2, float v2, float u3, float v3);
+
+#endif // ARX_GRAPHICS_DRAW_H

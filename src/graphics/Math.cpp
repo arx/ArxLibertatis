@@ -1013,7 +1013,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 	U.y -= D.y * t;
 	U.z -= D.y * t; // TODO is this really supposed to be D.y?
 	U.normalize();
-	R = U cross D;
+	R = cross(U, D);
 	m->_11 = R.x;
 	m->_12 = R.y;
 	m->_21 = U.x;
@@ -1042,10 +1042,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const f
 		yAxis = Vec3f(0.f, 1.f, 0.f);
 
 	// Build the X axis vector based on the two existing vectors
-	Vec3f xAxis = (yAxis cross zAxis).getNormalized();
+	Vec3f xAxis = cross(yAxis, zAxis).getNormalized();
 
 	// Correct the Y reference vector
-	yAxis = (xAxis cross zAxis).getNormalized();
+	yAxis = cross(xAxis, zAxis).getNormalized();
 	yAxis.x = -yAxis.x;
 	yAxis.y = -yAxis.y;
 	yAxis.z = -yAxis.z;
@@ -1089,7 +1089,7 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 	float * pB = (float *)b;
 	float  pM[16];
 
-	ZeroMemory(pM, sizeof(EERIEMATRIX));
+	memset(pM, 0, sizeof(EERIEMATRIX));
 
 	for (WORD i = 0; i < 4; i++)
 		for (WORD j = 0; j < 4; j++)
@@ -1136,3 +1136,6 @@ float GetNearestSnappedAngle(float angle)
 	return 0.f;
 }
 
+#undef X
+#undef Y
+#undef Z

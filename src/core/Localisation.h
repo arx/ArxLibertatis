@@ -42,6 +42,4 @@ std::string getLocalised( const std::string& name, const std::string& default_va
 
 long getLocalisedKeyCount(const std::string & sectionname);
 
-long MakeLocalised(const std::string & text, std::string & output);
-
 #endif // ARX_CORE_LOCALISATION_H

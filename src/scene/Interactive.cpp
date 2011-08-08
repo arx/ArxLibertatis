@@ -85,6 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/FTL.h"
 #include "graphics/data/Progressive.h"
@@ -92,7 +94,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -112,10 +114,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Object.h"
 
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 using std::min;
 using std::string;
+using std::vector;
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
@@ -151,27 +154,24 @@ long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
 static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
-static INTERACTIVE_OBJ * AddCamera(const std::string & file);
-static INTERACTIVE_OBJ * AddMarker(const std::string & file);
+static INTERACTIVE_OBJ * AddCamera(const fs::path & file);
+static INTERACTIVE_OBJ * AddMarker(const fs::path & file);
 
 
 /* Return the short name for this Object where only the name
  * of the file is returned
  */
-std::string INTERACTIVE_OBJ::short_name() const
-{
-	return GetName( filename );
+std::string INTERACTIVE_OBJ::short_name() const {
+	return filename.basename();
 }
 
 /* Returns the long name for this Object where the filename
  * is combined with the identifying number
  * in the form of "%s_4ld"
  */
-std::string INTERACTIVE_OBJ::long_name() const
-{
+std::string INTERACTIVE_OBJ::long_name() const {
 	std::stringstream ss;
-	ss << short_name() << '_'
-	   << std::setw(4) << std::setfill('0') << ident;
+	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
 	return ss.str();
 }
 
@@ -179,9 +179,8 @@ std::string INTERACTIVE_OBJ::long_name() const
  * directory portion of the filename member is combined
  * with the the result of long_name()
  */
-std::string INTERACTIVE_OBJ::full_name() const
-{
-	return GetDirectory( filename ) + long_name();
+fs::path INTERACTIVE_OBJ::full_name() const {
+	return filename.parent() / long_name();
 }
 
 float STARTED_ANGLE = 0;
@@ -219,7 +218,7 @@ long ValidIONum(long num)
 
 	return 1;
 }
-long ValidIOAddress(INTERACTIVE_OBJ * io)
+long ValidIOAddress(const INTERACTIVE_OBJ * io)
 {
 	if (!io) return 0;
 
@@ -252,19 +251,18 @@ long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
 
 static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 	
-	ARX_PATH * op = (ARX_PATH *)io->inzone;
+	ARX_PATH * op = io->inzone;
 
 	if (op)
 	{
 		std::string temp = op->name;
-		MakeUpcase(temp);
 
 		if (flags & 1) // no need when being destroyed !
 			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
-		if (op->controled[0] != 0)
+		if(!op->controled.empty())
 		{
-			long t = GetTargetByNameTarget(op->controled);
+			long t = inter.getById(op->controled);
 
 			if (t >= 0)
 			{
@@ -449,7 +447,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.find("GORE") != std::string::npos ) )
+		if (io->obj->texturecontainer[nn] && ( io->obj->texturecontainer[nn]->m_texName.string().find("gore") != std::string::npos ) )
 		{
 			gorenum = nn;
 			break;
@@ -484,7 +482,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 
 	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
-		if (io->obj->texturecontainer[nn] && strstr(io->obj->texturecontainer[nn]->m_texName.c_str(), "GORE"))
+		if (io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != string::npos)
 		{
 			gorenum = nn;
 			break;
@@ -803,9 +801,8 @@ void PrepareIOTreatZone(long flag)
 				io->GameFlags |= GFLAG_ISINTREATZONE;
 				TREATZONE_AddIO(io, i, 0);
 
-				if ((io->ioflags & IO_NPC) && (io->_npcdata->weapon))
-				{
-					INTERACTIVE_OBJ * iooo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
+					INTERACTIVE_OBJ * iooo = io->_npcdata->weapon;
 					iooo->room = io->room;
 					iooo->room_flags = io->room_flags;
 				}
@@ -1094,14 +1091,14 @@ void MakeNodeName(long i)
 	char name[64];
 	long o;
 	//float f;
-	sprintf(name, "NODE_%08ld", i);
+	sprintf(name, "node_%08ld", i);
 
 	while (ExistNodeName(name))
 	{
 		//f=rnd()*99999999.f;
 		//o=(long)f;
 		o = rnd() * 99999999.f;
-		sprintf(name, "NODE_%08ld", o);
+		sprintf(name, "node_%08ld", o);
 	}
 
 	strcpy(nodes.nodes[i].name, name);
@@ -1115,7 +1112,7 @@ void InitNodes(long nb)
 
 	nodes.init = 1;
 	nodes.nbmax = nb;
-	nodes.nodes = (ARX_NODE *)malloc(sizeof(ARX_NODE) * nodes.nbmax); //"NODES Structure"
+	nodes.nodes = (ARX_NODE *)malloc(sizeof(ARX_NODE) * nodes.nbmax);
 	memset(nodes.nodes, 0, sizeof(ARX_NODE)*nodes.nbmax);
 	ClearNodes();
 }
@@ -1146,20 +1143,18 @@ void ReleaseNode()
 //*************************************************************************************
 // Initialises Interactive Objects Main Structure (pointer list)
 //*************************************************************************************
-void InitInter(long nb)
-{
+void InitInter(long nb) {
 	if (nb < 10) nb = 10;
 
 	inter.nbmax = nb;
 
-	if (inter.init)
-	{
+	if(inter.init) {
 		free(inter.iobj);
 		inter.iobj = NULL;
 	}
 
 	inter.init = 1;
-	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax); //,"Interactive Objects Structure");
+	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
 	memset(inter.iobj, 0, sizeof(INTERACTIVE_OBJ *)*inter.nbmax);
 }
 
@@ -1198,83 +1193,62 @@ void RestoreInitialIOStatus()
 	}
 }
 
-void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
-{
-    if ((!io)
-            ||	(temp.empty()))
-        return;
-
-    std::string tex;
-    std::string tex2;
-
-    if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
-    else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp;
-    else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp;
-    else tex2.clear();
-
-    File_Standardize(tex2, tex);
-
-    if ( tex.empty() )
-    {
-        if (io->usemesh == NULL)
-            io->usemesh = (char *)malloc(256);
-        else if (!strcasecmp(io->usemesh, tex)) return; //already tweaked with this mesh !
-
-        strcpy(io->usemesh, tex.c_str());
-
-        if(io->obj) {
-            delete io->obj;
-            io->obj = NULL;
-        }
-
-        bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
-        io->obj = loadObject(tex, pbox);
-
-		EERIE_COLLISION_Cylinder_Create(io);
-	}
-}
-
-static void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io) {
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp) {
 	
-	if(io->Tweaks) {
-		free(io->Tweaks);
+	if(!io || temp.empty()) {
+		return false;
 	}
-	io->Tweaks = NULL;
-	io->Tweak_nb = 0;
+	
+	if(io->ioflags & IO_NPC) {
+		io->usemesh = "graph/obj3d/interactive/npc" / temp;
+	} else if(io->ioflags & IO_FIX) {
+		io->usemesh = "graph/obj3d/interactive/fix_inter" / temp;
+	} else if (io->ioflags & IO_ITEM) {
+		io->usemesh = "graph/obj3d/interactive/items" / temp;
+	} else {
+		io->usemesh.clear();
+	}
+	
+	if(io->usemesh.empty() ) {
+		return false;
+	}
+	
+	if(io->obj) {
+		delete io->obj;
+		io->obj = NULL;
+	}
+	
+	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
+	io->obj = loadObject(io->usemesh, pbox);
+	
+	EERIE_COLLISION_Cylinder_Create(io);
+	return true;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2)
-{
-	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
-	memset(&io->Tweaks[io->Tweak_nb], 0, sizeof(TWEAK_INFO));
-	io->Tweaks[io->Tweak_nb].type = type;
-
-	if (!param1.empty()) strcpy(io->Tweaks[io->Tweak_nb].param1, param1.c_str());
-
-	if (!param2.empty()) strcpy(io->Tweaks[io->Tweak_nb].param2, param2.c_str());
-
-	io->Tweak_nb++;
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2) {
+	
+	io->tweaks.resize(io->tweaks.size() + 1);
+	
+	io->tweaks.back().type = type;
+	io->tweaks.back().param1 = param1;
+	io->tweaks.back().param2 = param2;
 }
-void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io)
-{
-	for (long ii = 0; ii < io->Tweak_nb; ii++)
-	{
-		if (io->Tweaks[ii].type == TWEAK_REMOVE)
-			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, string());
-		else if (io->Tweaks[ii].type == TWEAK_TYPE_SKIN)
-			EERIE_MESH_TWEAK_Skin(io->obj, io->Tweaks[ii].param1, io->Tweaks[ii].param2);
-		else if (io->Tweaks[ii].type == TWEAK_TYPE_ICON)
-			ARX_INTERACTIVE_TWEAK_Icon(io, io->Tweaks[ii].param1);
-		else if (io->Tweaks[ii].type == TWEAK_TYPE_MESH)
-			ARX_INTERACTIVE_USEMESH(io, io->Tweaks[ii].param1);
-		else
-		{
-			EERIE_MESH_TWEAK_Do(io, io->Tweaks[ii].type, io->Tweaks[ii].param1);
+
+void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
+	
+	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
+		switch(i->type) {
+			case TWEAK_REMOVE: EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, fs::path()); break;
+			case TWEAK_TYPE_SKIN: EERIE_MESH_TWEAK_Skin(io->obj, i->param1, i->param2); break;
+			case TWEAK_TYPE_ICON: ARX_INTERACTIVE_TWEAK_Icon(io, i->param1); break;
+			case TWEAK_TYPE_MESH: ARX_INTERACTIVE_USEMESH(io, i->param1); break;
+			default: EERIE_MESH_TWEAK_Do(io, i->type, i->param1);
 		}
 	}
 }
-void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
-{
+
+void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io) {
+	
 	if (io)
 	{
 		if (ValidDynLight(io->dynlight))
@@ -1294,61 +1268,26 @@ void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io)
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
+
 void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 {
 	if (io)
 	{
-		//		ARX_SCRIPT_Timer_Clear_For_IO(io);
-		if (ValidDynLight(io->dynlight))
-			DynLight[io->dynlight].exist = 0;
+		ARX_INTERACTIVE_ClearIODynData(io);
 
-		io->dynlight = -1;
+		io->shop_category.clear();
+		io->inventory_skin.clear();
 
-		if (ValidDynLight(io->halo.dynlight))
-			DynLight[io->halo.dynlight].exist = 0;
-
-		io->halo.dynlight = -1;
-
-		if (io->symboldraw)
-			free(io->symboldraw);
-
-		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = SPELL_NONE;
-
-		if (io->shop_category)
-			free(io->shop_category);
-
-		io->shop_category = NULL;
-
-		if (io->inventory_skin)
-			free(io->inventory_skin);
-
-		io->inventory_skin = NULL;
-		ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
-		ARX_IOGROUP_Release(io);
+		io->tweaks.clear();
+		io->groups.clear();
 		ARX_INTERACTIVE_HideGore(io);
 		MOLLESS_Clear(io->obj);
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
 
-		if (io->stepmaterial)
-			free(io->stepmaterial);
-
-		io->stepmaterial = NULL;
-
-		if (io->armormaterial)
-			free(io->armormaterial);
-
-		io->armormaterial = NULL;
-
-		if (io->weaponmaterial)
-			free(io->weaponmaterial);
-
-		io->weaponmaterial = NULL;
-
-		if (io->strikespeech)
-			free(io->strikespeech);
-
-		io->strikespeech = NULL;
+		io->stepmaterial.clear();
+		io->armormaterial.clear();
+		io->weaponmaterial.clear();
+		io->strikespeech.clear();
 
 		if (io->lastanimvertex)
 			free(io->lastanimvertex);
@@ -1377,15 +1316,13 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 			ARX_NPC_Behaviour_Reset(io);
 		}
 
-		if (io->tweakerinfo != NULL)
-		{
-			free(io->tweakerinfo);
-			io->tweakerinfo = NULL;
+		if(io->tweakerinfo) {
+			delete io->tweakerinfo, io->tweakerinfo = NULL;
 		}
 
 		if (io->inventory != NULL)
 		{
-			INVENTORY_DATA * id = (INVENTORY_DATA *)io->inventory;
+			INVENTORY_DATA * id = io->inventory;
 
 			for (long nj = 0; nj < id->sizey; nj++)
 				for (long ni = 0; ni < id->sizex; ni++)
@@ -1529,7 +1466,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->sound = -1;
 		io->soundtime = 0;
 		io->soundcount = 0;
-		io->material = 11;
+		io->material = MATERIAL_STONE;
 		io->collide_door_time = 0;
 		io->ouch_time = 0;
 		io->dmg_sum = 0;
@@ -1591,7 +1528,6 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 			io->_npcdata->stare_factor = 1.f;
 
 			io->_npcdata->weapon = NULL;
-			io->_npcdata->weaponname[0] = 0;
 			io->_npcdata->weaponinhand = 0;
 			io->_npcdata->weapontype = 0;
 			io->_npcdata->weaponinhand = 0;
@@ -1611,7 +1547,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 			io->infracolor.g = 0.f;
 			io->infracolor.b = 0.2f;
 			io->_npcdata->detect = 0;
-			io->_npcdata->movemode = 0;
+			io->_npcdata->movemode = WALKMODE;
 			io->_npcdata->reach = 20.f;
 			io->_npcdata->armor_class = 0;
 			io->_npcdata->absorb = 0;
@@ -1627,7 +1563,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 
 		if (io->ioflags & IO_ITEM)
 		{
-			io->collision = 1;
+			io->collision = COLLIDE_WITH_PLAYER;
 			io->_itemdata->count = 1;
 			io->_itemdata->maxcount = 1;
 			io->_itemdata->food_value = 0;
@@ -1645,21 +1581,16 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const fs::path & s1)
 {
 	if ((!io) || (s1.empty()))
 		return;
 
-	std::string icontochange;
-
-	icontochange = io->filename;
-	RemoveName(icontochange);
-	icontochange += s1;
-	SetExt(icontochange, ".bmp");
+	fs::path icontochange = io->filename.parent() / s1;
 
 	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp");
+		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 
 	if (tc != NULL)
 	{
@@ -1715,6 +1646,134 @@ void FreeAllInter()
 	inter.iobj = (INTERACTIVE_OBJ **)realloc(inter.iobj, sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
 }
 
+INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
+	
+	ioflags = 0;
+	lastpos = Vec3f::ZERO;
+	pos = Vec3f::ZERO;
+	move = Vec3f::ZERO;
+	lastmove = Vec3f::ZERO;
+	forcedmove = Vec3f::ZERO;
+	
+	angle = Anglef::ZERO;
+	memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
+	room = -1;
+	room_flags = 1;
+	original_height = 0.f;
+	original_radius = 0.f;
+	inv = NULL;
+	obj = NULL;
+	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
+	memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
+	lastanimvertex = NULL;
+	nb_lastanimvertex = 0;
+	lastanimtime = 0;
+	
+	memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
+	
+	bbox1 = Vec2s(-1, -1);
+	bbox2 = Vec2s(-1, -1);
+	tweaky = NULL;
+	sound = audio::INVALID_ID;
+	type_flags = 0;
+	scriptload = 0;
+	target = Vec3f::ZERO;
+	targetinfo = TARGET_NONE;
+	
+	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
+	
+	inventory = NULL;
+	show = SHOW_FLAG_IN_SCENE;
+	collision = 0;
+	infracolor = Color3f::blue;
+	changeanim = -1;
+	
+	ident = 0;
+	weight = 1.f;
+	EditorFlags = 0;
+	GameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
+	velocity = Vec3f::ZERO;
+	fall = 0.f;
+	
+	stopped = 1;
+	initpos = Vec3f::ZERO;
+	initangle = Anglef::ZERO;
+	scale = 1.f;
+	
+	usepath = NULL;
+	symboldraw = NULL;
+	dynlight = -1;
+	lastspeechflag = 2;
+	inzone = NULL;
+	memset(&halo, 0, sizeof(IO_HALO)); // TODO use constructor
+	memset(&halo_native, 0, sizeof(IO_HALO)); // TODO use constructor
+	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
+	halo_native.radius = 45.f;
+	halo_native.flags = 0;
+	halo_native.dynlight = -1;
+	ARX_HALO_SetToNative(this);
+	halo.dynlight = -1;
+	
+	memset(&script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
+	memset(&over_script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
+	stat_count = 0;
+	stat_sent = 0;
+	tweakerinfo = NULL;
+	material = MATERIAL_NONE;
+	
+	sizex = 1;
+	sizey = 1;
+	soundtime = 0;
+	soundcount = 0;
+	
+	if(CURRENTLEVEL == -1) {
+		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
+	}
+	level = truelevel = CURRENTLEVEL;
+	
+	sfx_time = 0;
+	collide_door_time = 0;
+	ouch_time = 0;
+	dmg_sum = 0.f;
+	
+	memset(&spellcast_data, 0, sizeof(IO_SPELLCAST_DATA));
+	flarecount = 0;
+	no_collide = -1;
+	invisibility = 0.f;
+	frameloss = 0.f;
+	basespeed = 1.f;
+	
+	speed_modif = 0.f;
+	spells_on = NULL;
+	nb_spells_on = 0;
+	damagedata = -1;
+	
+	rubber = BASE_RUBBER;
+	max_durability = durability = 100.f;
+	poisonous = 0;
+	poisonous_count = 0;
+	
+	ignition = 0.f;
+	ignit_light = -1;
+	ignit_sound = audio::INVALID_ID;
+	head_rot = 0.f;
+	
+	damager_damages = 0;
+	damager_type = 0;
+	
+	sfx_flag = 0;
+	secretvalue = -1;
+	
+	shop_multiply = 1.f;
+	aflags = 0;
+	inzone_show = 0;
+	summoner = 0;
+	spark_n_blood = 0;
+	
+	ARX_SCRIPT_SetMainEvent(this, "main");
+	
+}
+
 //*************************************************************************************
 // Creates a new free Interactive Object
 //*************************************************************************************
@@ -1754,90 +1813,18 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 	create:
 		;
 		i = tocreate;
-		INTERACTIVE_OBJ * io;
-		//todo free
-
-		inter.iobj[i] = (INTERACTIVE_OBJ *)malloc(sizeof(INTERACTIVE_OBJ)); 
-
-		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
-		io = inter.iobj[i];
-		// Nuky - added num which caches the index position in global ios table
-		io->num = i;
-		io->room_flags = 1;
-		io->room = -1;
-		io->no_collide = -1;
-		io->shop_multiply = 1.f;
-		io->Tweaks = NULL;
-		io->Tweak_nb = 0;
-		io->ignition = 0.f;
-		io->ignit_light = -1;
-		io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
-
-		if (CURRENTLEVEL == -1) CURRENTLEVEL = GetLevelNumByName(LastLoadedScene);
-
-		io->truelevel = io->level = (short)CURRENTLEVEL;
-		io->usemesh = NULL;
-		io->lastspeechflag = 2;
-		io->damagedata = -1;
-		io->flarecount = 0;
-		io->rubber = BASE_RUBBER;
-
-		io->halo_native.color.r = 0.2f;
-		io->halo_native.color.g = 0.5f;
-		io->halo_native.color.b = 1.f;
-		io->halo_native.radius = 45.f;
-		io->halo_native.flags = 0;
-		io->halo_native.dynlight = -1;
-		ARX_HALO_SetToNative(io);
-		io->halo.dynlight = -1;
-
-		io->symboldraw = NULL;
-		io->dynlight = -1;
-		io->sfx_flag = 0;
-
-		io->max_durability = io->durability = 100.f;
-		io->speed_modif = 0.f;
-		io->basespeed = 1.f;
-		io->frameloss = 0.f;
-
-		io->GameFlags |= GFLAG_NEEDINIT;
-		io->poisonous = 0;
-		io->poisonous_count = 0;
-		io->secretvalue = -1;
-
-		// Already set to 0 by memset
-		io->infracolor.b = 1.f;
-		io->show = SHOW_FLAG_IN_SCENE;
-		io->sound = -1;
-		io->sizex = 1;
-		io->sizey = 1;
-
-		io->GameFlags |= GFLAG_INTERACTIVITY;
-		io->scale = 1.f;
-		io->stopped = 1;
-
-		io->changeanim = -1;
-		io->bbox1.x = -1;
-		io->bbox1.y = -1;
-		io->bbox2.x = -1;
-		io->bbox2.y = -1;
-
-		ARX_SCRIPT_SetMainEvent(io, "MAIN");
-		io->targetinfo = TARGET_NONE;
-
-		io->weight = 1.f;
-		memset(io->animlayer, 0, sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
-		return (io);
-
+		
+		return inter.iobj[i] = new INTERACTIVE_OBJ(i);
+		
 	}
-
+	
 	return NULL;
 }
 // Be careful with this func...
-INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
-{
+INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
+	
 	INTERACTIVE_OBJ * dest;
-	dest = AddItem( src->filename);
+	dest = AddItem(src->filename);
 
 	if (!dest) return NULL;
 
@@ -1862,7 +1849,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
 		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem, sizeof(IO_EQUIPITEM));
 	}
 
-	strcpy(dest->locname, src->locname);
+	dest->locname = src->locname;
 
 	if ((dest->obj->pbox == NULL) && (src->obj->pbox))
 	{
@@ -1926,7 +1913,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 {
 	if (!io) return;
 
-	if (ARX_SCRIPT_GetSystemIOScript(io, "_R_A_T_") < 0)
+	if (ARX_SCRIPT_GetSystemIOScript(io, "_r_a_t_") < 0)
 	{
 		long num = ARX_SCRIPT_Timer_GetFree();
 
@@ -1938,7 +1925,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
 			scr_timer[num].msecs = rnd() * 3000 + 3000;
-			scr_timer[num].name = "_R_A_T_";
+			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = ARXTimeUL();
 			scr_timer[num].times = 1;
@@ -2086,249 +2073,206 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags)
 	MOLLESS_Clear(io->obj, 1);
 	ResetVVPos(io);
 }
-//*************************************************************************************
+
 // Finds IO number by name
-//*************************************************************************************
-long GetTargetByNameTarget( const std::string& name )
-{
-	if (name.empty()) return -1;
-
-	if ( !strcasecmp(name, "self"))		return -2;
-
-	if ( !strcasecmp(name, "none"))		return -1;
-
-	if ( !strcasecmp(name, "me"))		return -2;
-
-	if ( !strcasecmp(name, "player"))	return 0;     ///player is now an io with index 0
-
-	for (long i = 0 ; i < inter.nbmax ; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->ident > -1))
-		{
-			if ( !strcasecmp(name, inter.iobj[i]->long_name() ) )
+long INTERACTIVE_OBJECTS::getById(const string & name) {
+	
+	if(name.empty() || name == "none") {
+		return -1;
+	} else if(name == "self" || name == "me") {
+		return -2;
+	} else if(name == "player") {
+		return 0; // player is an IO with index 0
+	}
+	
+	for(long i = 0 ; i < nbmax ; i++) {
+		if(iobj[i] != NULL && iobj[i]->ident > -1) {
+			if(name == iobj[i]->long_name()) {
 				return i;
+			}
 		}
 	}
-
+	
 	return -1;
 }
 
+INTERACTIVE_OBJ * INTERACTIVE_OBJECTS::getById(const string & name, INTERACTIVE_OBJ * self) {
+	long index = getById(name);
+	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
+}
+
 extern long TOTAL_BODY_CHUNKS_COUNT;
+
+INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
+	
+	if(!FAST_RELEASE) {
+		TREATZONE_RemoveIO(this);
+	}
+	
+	if(ioflags & IO_BODY_CHUNK) {
+		TOTAL_BODY_CHUNKS_COUNT--;
+		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
+	}
+	
+	if(ignit_light > -1) {
+		DynLight[ignit_light].exist = 0, ignit_light = -1;
+	}
+	
+	if(ignit_sound != ARX_SOUND_INVALID_RESOURCE) {
+		ARX_SOUND_Stop(ignit_sound), ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+	}
+	
+	if(this == FlyingOverIO) {
+		FlyingOverIO = NULL;
+	}
+	
+	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
+		MasterCamera.exist = 0;
+	}
+	
+	if((MasterCamera.exist & 2) && MasterCamera.want_io == this) {
+		MasterCamera.exist = 0;
+	}
+	
+	ARX_INTERACTIVE_DestroyDynamicInfo(this);
+	IO_UnlinkAllLinkedObjects(this);
+	
+	// Releases ToBeDrawn Transparent Polys linked to this object !
+	tweaks.clear();
+	ARX_SCRIPT_Timer_Clear_For_IO(this);
+	
+	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
+		delete obj, obj = NULL;
+	}
+	
+	ARX_SPELLS_RemoveAllSpellsOn(this);
+	
+	if(tweakerinfo) {
+		delete tweakerinfo;
+	}
+
+	if(tweaky) {
+		delete tweaky, tweaky = NULL;
+	}
+	
+	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t j = 0; j < INVENTORY_Y; j++) for(size_t i = 0; i < INVENTORY_X; i++) {
+			if(::inventory[iNbBag][i][j].io == this) {
+				::inventory[iNbBag][i][j].io = NULL;
+			}
+		}
+	}
+	
+	ReleaseScript(&script);
+	ReleaseScript(&over_script);
+	
+	for(long n = 0; n < MAX_ANIMS; n++) {
+		if(anims[n]) {
+			EERIE_ANIMMANAGER_ReleaseHandle(anims[n]);
+			anims[n] = NULL;
+		}
+	}
+	
+	if(damagedata >= 0) {
+		damages[damagedata].exist = 0;
+	}
+	
+	if(ValidDynLight(dynlight)) {
+		DynLight[dynlight].exist = 0, dynlight = -1;
+	}
+	
+	if(ValidDynLight(halo.dynlight)) {
+		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
+	}
+	
+	if(lastanimvertex) {
+		free(lastanimvertex);
+	}
+	
+	if(usepath) {
+		free(usepath);
+	}
+	
+	if(symboldraw) {
+		free(symboldraw), symboldraw = NULL;
+	}
+	
+	if(ioflags & IO_NPC) {
+		delete _npcdata;
+		
+	} else if(ioflags & IO_ITEM) {
+		if(_itemdata->equipitem) {
+			free(_itemdata->equipitem);
+		}
+		_itemdata->equipitem = NULL;
+		free(_itemdata);
+		
+	} else if(ioflags & IO_FIX) {
+		free(_fixdata);
+		
+	} else if(ioflags & IO_CAMERA && _camdata) {
+		if(ACTIVECAM == &_camdata->cam) {
+			ACTIVECAM = &subj;
+		}
+		free(_camdata);
+	}
+	
+	if(TSecondaryInventory && TSecondaryInventory->io == this) {
+		TSecondaryInventory = NULL;
+	}
+	
+	if(inventory != NULL) {
+		free(inventory);
+	}
+	
+	long ion = GetInterNum(this);
+	if(ion > -1) {
+		inter.iobj[ion] = NULL;
+	}
+	
+}
+
 //*************************************************************************************
 // Releases An Interactive Object from memory
 //*************************************************************************************
 void ReleaseInter(INTERACTIVE_OBJ * io) {
-	
-	if (!io) return;
-
-	if (!FAST_RELEASE)
-		TREATZONE_RemoveIO(io);
-
-	if (io->ioflags & IO_BODY_CHUNK)
-	{
-		TOTAL_BODY_CHUNKS_COUNT--;
-
-		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
+	if(io) {
+		delete io;
 	}
-
-	if (io->ignit_light > -1)
-	{
-		DynLight[io->ignit_light].exist = 0;
-		io->ignit_light = -1;
-	}
-
-	if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
-	{
-		ARX_SOUND_Stop(io->ignit_sound);
-		io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
-	}
-
-	if (io == FlyingOverIO)
-		FlyingOverIO = NULL;
-
-	if ((MasterCamera.exist & 1) && (MasterCamera.io == io))
-		MasterCamera.exist = 0;
-
-	if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io))
-		MasterCamera.exist = 0;
-
-	ARX_INTERACTIVE_DestroyDynamicInfo(io);
-	IO_UnlinkAllLinkedObjects(io);
-
-
-	// Releases "ToBeDrawn" Transparent Polys linked to this object !
-	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
-	ARX_SCRIPT_Timer_Clear_For_IO(io);
-
-	if(io->obj && !(io->ioflags & IO_CAMERA) && !(io->ioflags & IO_MARKER) && !(io->ioflags & IO_GOLD)) {
-		delete io->obj;
-		io->obj = NULL;
-	}
-
-	ARX_SPELLS_RemoveAllSpellsOn(io);
-
-	if(io->tweakerinfo) {
-		free(io->tweakerinfo);
-		io->tweakerinfo = NULL;
-	}
-
-	if(io->tweaky) {
-		delete io->tweaky;
-		io->tweaky = NULL;
-	}
-
-	for (long iNbBag = 0; iNbBag < 3; iNbBag++)
-		for (size_t j = 0; j < INVENTORY_Y; j++)
-			for (size_t i = 0; i < INVENTORY_X; i++)
-			{
-				if (inventory[iNbBag][i][j].io == io)
-					inventory[iNbBag][i][j].io = NULL;
-			}
-
-	ReleaseScript(&io->script);
-	ReleaseScript(&io->over_script);
-
-	for (long n = 0; n < MAX_ANIMS; n++)
-	{
-		if (io->anims[n] != NULL)
-		{
-			EERIE_ANIMMANAGER_ReleaseHandle(io->anims[n]);
-			io->anims[n] = NULL;
-		}
-	}
-
-	if (io->shop_category)
-		free(io->shop_category);
-
-	if (io->inventory_skin)
-		free(io->inventory_skin);
-
-	if (io->damagedata >= 0)
-		damages[io->damagedata].exist = 0;
-
-	ARX_IOGROUP_Release(io);
-
-	if (io->usemesh)
-		free(io->usemesh);
-
-	if (ValidDynLight(io->dynlight))
-		DynLight[io->dynlight].exist = 0;
-
-	io->dynlight = -1;
-
-	if (ValidDynLight(io->halo.dynlight))
-		DynLight[io->halo.dynlight].exist = 0;
-
-	io->halo.dynlight = -1;
-
-	if (io->lastanimvertex)
-		free(io->lastanimvertex);
-
-	if (io->usepath)
-		free(io->usepath);
-
-	if (io->symboldraw != NULL)
-	{
-		free(io->symboldraw);
-		io->symboldraw = NULL;
-	}
-
-	if (io->ioflags & IO_NPC)
-	{
-		if (io->_npcdata->ex_rotate != NULL) free(io->_npcdata->ex_rotate);
-
-		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-		free(io->_npcdata);
-	}
-
-	if (io->ioflags & IO_ITEM)
-	{
-		if (io->_itemdata->equipitem) free(io->_itemdata->equipitem);
-
-		io->_itemdata->equipitem = NULL;
-	}
-
-	if (io->ioflags & IO_FIX)
-		free(io->_fixdata);
-
-	if (io->ioflags & IO_ITEM)
-		free(io->_itemdata);
-
-	if (io->ioflags & IO_CAMERA)
-	{
-		if (io->_camdata)
-		{
-			void * ptr = (void *)ACTIVECAM;
-
-			if (ptr == io->_camdata)
-				ACTIVECAM = &subj;
-
-			free(io->_camdata);
-		}
-
-		io->_camdata = NULL;
-	}
-
-	if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
-	{
-		TSecondaryInventory = NULL;
-	}
-
-	if (io->inventory != NULL) free(io->inventory);
-
-	if (io->weaponmaterial)
-		free(io->weaponmaterial);
-
-	if (io->strikespeech)
-		free(io->strikespeech);
-
-	if (io->stepmaterial)
-		free(io->stepmaterial);
-
-	if (io->armormaterial)
-		free(io->armormaterial);
-
-	long ion = GetInterNum(io);
-
-	if (ion > -1)
-		inter.iobj[ion] = NULL;
-
-	free(io);//
-	io = NULL;
 }
 
 
-INTERACTIVE_OBJ * AddInteractive(const string & file, long id, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddInteractive(const fs::path & file, long id, AddInteractiveFlags flags) {
 	
 	INTERACTIVE_OBJ * io = NULL;
-	std::string ficc;
-	ficc = file;
-	MakeUpcase(ficc);
-
-	if (IsIn(ficc, "ITEMS"))
+	const string & ficc = file.string();
+	
+	if(IsIn(ficc, "items")) {
 		io = AddItem(file, flags);
-	else if (IsIn(ficc, "NPC"))
+	} else if(IsIn(ficc, "npc")) {
 		io = AddNPC(file, flags);
-	else if (IsIn(ficc, "FIX"))
+	} else if(IsIn(ficc, "fix")) {
 		io = AddFix(file, flags);
-	else if (IsIn(ficc, "CAMERA"))
+	} else if(IsIn(ficc, "camera")) {
 		io = AddCamera(file);
-	else if (IsIn(ficc, "MARKER"))
+	} else if (IsIn(ficc, "marker")) {
 		io = AddMarker(file);
-
-	if (io)
-	{
-		if ((id == 0)
-		        &&	!(flags & NO_IDENT))
-			MakeIOIdent(io);
-		else if (id == -1)
-			MakeTemporaryIOIdent(io);
-		else
-			io->ident = id;
 	}
-
+	
+	if(io) {
+		if(id == 0 && !(flags & NO_IDENT)) {
+#ifdef BUILD_EDITOR
+			MakeIOIdent(io);
+#else
+			arx_assert(false);
+#endif
+		} else if(id == -1) {
+			MakeTemporaryIOIdent(io);
+		} else {
+			io->ident = id;
+		}
+	}
+	
 	return io;
 }
 //***********************************************************************************
@@ -2342,27 +2286,25 @@ void SetWeapon_On(INTERACTIVE_OBJ * io) {
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
-
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
-
-	if ((ioo)
-	        &&	(ioo->obj))
-	{
+	
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	
+	if(ioo && ioo->obj) {
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
-		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "PRIMARY_ATTACH", "PRIMARY_ATTACH", ioo);
+		EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "primary_attach", "primary_attach", ioo);
 	}
 }
-void SetWeapon_Back(INTERACTIVE_OBJ * io)
-{
-	if (!io
-	        ||	!(io->ioflags & IO_NPC))
+
+void SetWeapon_Back(INTERACTIVE_OBJ * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
-
-	if ((ioo)
-	        &&	(ioo->obj))
-	{
+	}
+	
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	
+	if(ioo && ioo->obj) {
+		
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 
 		if (io->GameFlags & GFLAG_HIDEWEAPON) return;
@@ -2370,71 +2312,48 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io)
 		long ni = io->obj->fastaccess.weapon_attach;
 
 		if (ni >= 0)
-			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", ioo);
+			EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "weapon_attach", "primary_attach", ioo);
 		else
 		{
 			ni = io->obj->fastaccess.secondary_attach;
 
 			if (ni >= 0)
-				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "SECONDARY_ATTACH", "PRIMARY_ATTACH", ioo);
+				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, ioo->obj, "secondary_attach", "primary_attach", ioo);
 		}
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
-{
-	if (!io
-	        ||	!(io->ioflags & IO_NPC))
-		return;
-
-	if (io->_npcdata->weapon)
-	{
-		INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp) {
+	
+	arx_assert(io && (io->ioflags & IO_NPC));
+	
+	if(io->_npcdata->weapon) {
+		INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		io->_npcdata->weapon = NULL;
 		ReleaseInter(ioo);
 	}
-
-	std::string tex;
-	const std::string tex1 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
-	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
-	File_Standardize(tx, tex);
 	
-	io->_npcdata->weapon = AddItem( tex, IO_IMMEDIATELOAD);
+	fs::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
+	
+	io->_npcdata->weapon = AddItem(file, IO_IMMEDIATELOAD);
 
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
-
-	if (ioo)
-	{
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	if(ioo) {
+		
 		MakeTemporaryIOIdent(ioo);
 		SendIOScriptEvent(ioo, SM_INIT);
 		SendIOScriptEvent(ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
-
+		
 		SetWeapon_Back(io);
 	}
 }
 
-void GetIOScript( INTERACTIVE_OBJ * io, const std::string& texscript )
-{
-	if (PAK_FileExist(texscript))
-	{
-		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
-
-		if (io->script.data)
-		{
-			io->script.size = FileSize;
-			InitScript(&io->script);
-		}
-	}
-	else
-	{
-		io->script.size = 0;
-		io->script.data = NULL;
-	}
+static void GetIOScript(INTERACTIVE_OBJ * io, const fs::path & script) {
+	loadScript(io->script, resources->getFile(script));
 }
 
 //***********************************************************************************
@@ -2451,20 +2370,13 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string&
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 	
-	std::string tex1 = file;
-	std::string texscript = file;
-	SetExt(texscript, "asl");
-	SetExt(tex1, "teo");
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
 
-	std::string file2 = "GAME\\";
-	file2 += file;
-	SetExt(file2, ".FTL");
-
-	if (!PAK_FileExist(file2)
-	   && !PAK_FileExist(file))
-	{
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2476,12 +2388,12 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		return NULL;
 
 
-	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA)); //"IO FIXdata"
+	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
 
-	GetIOScript( io, texscript );
+	GetIOScript(io, scriptfile);
 
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
@@ -2512,7 +2424,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
 
 	if (!io->obj)
 	{
@@ -2523,7 +2435,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		}
 		else
 		{
-			io->obj = loadObject(tex1, false);
+			io->obj = loadObject(object, false);
 		}
 	}
 
@@ -2531,7 +2443,7 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 1.f;
 	TextureContainer * tc;
-	tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp"); 
+	tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
 
 	if (tc)
 	{
@@ -2553,26 +2465,18 @@ INTERACTIVE_OBJ * AddFix(const string & file, AddInteractiveFlags flags) {
 		io->inv = tc;
 	}
 
-	io->collision = 1;
+	io->collision = COLLIDE_WITH_PLAYER;
 
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddCamera(const string & file) {
+static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
 	
-	std::string tex1 = file;;
-	std::string texscript = file;
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
 
-	SetExt(texscript, "asl");
-	SetExt(tex1, "teo");
-
-	std::string file2 = "GAME\\";
-    file2 += file;
-	SetExt(file2, ".FTL");
-
-	if (!PAK_FileExist(file2)
-	        && !PAK_FileExist(file))
-	{
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
@@ -2583,7 +2487,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 
 	if (!io) return NULL;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, scriptfile);
 
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2608,7 +2512,7 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
  
 	io->obj = cameraobj;
 
@@ -2621,33 +2525,24 @@ static INTERACTIVE_OBJ * AddCamera(const string & file) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddMarker(const string & file) {
+static INTERACTIVE_OBJ * AddMarker(const fs::path & file) {
 	
-	std::string tex1 = file;
-	std::string texscript = file;
-
-	SetExt(texscript, "asl");
-	SetExt(tex1, "teo");
-
-	std::string file2;
-	file2 = "GAME\\";
-    file2 += file;
-	SetExt(file2, ".FTL");
-
-	if (!PAK_FileExist(file2)
-	        &&	!PAK_FileExist(file))
-	{
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
+	
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
-
+	
 	LogDebug << "AddMarker " << file;
-
+	
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
-
+	
 	if (!io) return NULL;
-
-	GetIOScript(io, texscript);
+	
+	GetIOScript(io, scriptfile);
 	
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2674,7 +2569,7 @@ static INTERACTIVE_OBJ * AddMarker(const string & file) {
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
  
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
@@ -2793,46 +2688,21 @@ void RotateSelectedIO(Anglef * op)
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	
-	if ((i < 1) || (i >= inter.nbmax))
+	if(i < 1 || i >= inter.nbmax || !inter.iobj[i]) {
 		return;
-
-	if (inter.iobj[i] != NULL)
-	{
-		//Must "KILL" dir...
-		if (inter.iobj[i]->scriptload == 0)
-		{
-			if (inter.iobj[i]->ident > 0)
-			{
-				std::string temp = inter.iobj[i]->full_name() + '.';
-
-				if (DirectoryExist(temp))
-				{
-					long _delete = 0;
-					std::string temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
-
-					if (flag & FLAG_NOCONFIRM)
-					{
-						_delete = 1;
-					}
-					else if (OKBox(temp3, "WARNING"))
-					{
-						_delete = 1;
-					}
-
-					if (flag & FLAG_DONTKILLDIR) _delete = 0;
-
-					if (_delete)
-					{
-						temp += "\\";
-						KillAllDirectory(temp);
-					}
-				}
-			}
-		}
-
-		ReleaseInter(inter.iobj[i]);
-		inter.iobj[i] = NULL;
 	}
+	
+	//Must KILL dir...
+	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
+		
+		fs::path dir = inter.iobj[i]->full_name();
+		
+		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
+			LogError << "Could not remove directory " << dir;
+		}
+	}
+	
+	ReleaseInter(inter.iobj[i]), inter.iobj[i] = NULL;
 }
 
 void DeleteSelectedIO()
@@ -2878,23 +2748,91 @@ void GroundSnapSelectedIO()
 
 #endif // BUILD_EDITOR
 
-INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
+IO_NPCDATA::IO_NPCDATA() {
 	
-    // creates script filename
-    std::string texscript = file;;
-    SetExt(texscript, "asl");
+	life = maxlife = 20.f;
+	mana = maxmana = 0.f;
+	
+	reachedtime = 0ul;
+	reachedtarget = 0l;
+	weapon = NULL;
+	detect = 0;
+	movemode = WALKMODE;
+	armor_class = 0.f;
+	absorb = 0.f;
+	damages = 0.f;
+	tohit = 0.f;
+	aimtime = 0.f;
+	critical = 0.f;
+	reach = 0.f;
+	backstab_skill = 0.f;
+	
+	behavior = 0;
+	behavior_param = 0.f;
+	tactics = 0l;
+	xpvalue = 0l;
+	cut = 0l;
+	
+	moveproblem = 0.f;
+	weapontype = 0;
+	weaponinhand = 0l;
+	fightdecision = 0l;
+	
+	look_around_inc = 0.f;
+	collid_time = 0ul;
+	collid_state = 0l;
+	speakpitch = 1.f;
+	lastmouth = 0.f;
+	ltemp = 0l;
+	
+	memset(stacked, 0, sizeof(IO_BEHAVIOR_DATA) * MAX_STACKED_BEHAVIOR); // TODO use constructor
+	
+	poisonned = 0.f;
+	resist_poison = 0;
+	resist_magic = 0;
+	resist_fire = 0;
+	
+	strike_time = 0;
+	walk_start_time = 0;
+	aiming_start = 0l;
+	npcflags = 0l;
+	memset(&pathfind, 0, sizeof(IO_PATHFIND)); // TODO use constructor
+	ex_rotate = 0;
+	blood_color = Color::red;
+	
+	SPLAT_DAMAGES = 0;
+	SPLAT_TOT_NB = 0;
+	last_splat_pos = Vec3f::ZERO;
+	vvpos = 0.f;
+	
+	climb_count = 0.f;
+	stare_factor = 0.f;
+	fDetect = 0.f;
+	cuts = 0;
+	unused = 0;
+	
+}
 
-    // creates teo filename
-    std::string tex1 = file;
-    SetExt(tex1, "teo");
+IO_NPCDATA::~IO_NPCDATA() {
+	
+	if(ex_rotate) {
+		free(ex_rotate);
+	}
+	
+	if(pathfind.list) {
+		free(pathfind.list);
+	}
+}
 
-    std::string file2;
-    file2 = "GAME\\";
-    file2 += file;
-    SetExt(file2, ".FTL");
-
-	if ( ( !PAK_FileExist(file2) ) && ( !PAK_FileExist(file) ) )
+INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
+	
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path scriptfile = fs::path(file).set_ext("asl");
+	
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
+	}
 
 	LogDebug << "AddNPC " << file;
 
@@ -2903,38 +2841,28 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 
 	if (io == NULL) return NULL;
 
-	io->forcedmove.x = 0.f;
-	io->forcedmove.y = 0.f;
-	io->forcedmove.z = 0.f;
-	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA)); //"NPC DATA"
-	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
+	io->forcedmove = Vec3f::ZERO;
+	
+	io->_npcdata = new IO_NPCDATA;
+	
 	io->ioflags = IO_NPC;
 
-	GetIOScript( io, texscript );
+	GetIOScript(io, scriptfile);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->_npcdata->life = io->_npcdata->maxlife = 20.f;
 	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;
-	io->_npcdata->poisonned = 0.f;
 	io->_npcdata->critical = 5.f;
-	io->_npcdata->strike_time = 0;
-	io->_npcdata->walk_start_time = 0;
 	io->_npcdata->reach = 20.f;
-	io->_npcdata->aimtime = 0.f;
-	io->_npcdata->aiming_start = 0;
-	io->_npcdata->npcflags = 0;
-	io->_npcdata->backstab_skill = 0;
-	io->_npcdata->blood_color = Color::red;
 	io->_npcdata->stare_factor = 1.f;
 
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
 
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
+	io->pos = player.pos + Vec3f(-(float)sin(radians(player.angle.b)) * 140.f, 0, (float)cos(radians(player.angle.b)) * 140.f);
+	
+	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
+	io->lastpos.y = io->initpos.y = io->pos.y;
+	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
 
 	if (ep)
@@ -2954,7 +2882,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	}
 
 	
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
 
 	if (!io->obj)
 	{
@@ -2965,11 +2893,10 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 		}
 		else
 		{
-			io->obj = loadObject(tex1, false);
+			io->obj = loadObject(object, false);
 		}
 	}
 
-	io->_npcdata->speakpitch = 1.f;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
 	io->_npcdata->pathfind.truetarget = -1;
@@ -2981,7 +2908,7 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 	io->infracolor.r = 1.f;
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 0.2f;
-	io->collision = 1;
+	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
 
 	ARX_INTERACTIVE_HideGore(io);
@@ -2991,50 +2918,14 @@ INTERACTIVE_OBJ * AddNPC(const string & file, AddInteractiveFlags flags) {
 //*************************************************************************************
 // Reload Scripts (Class & Local) for an IO
 //*************************************************************************************
-void ReloadScript(INTERACTIVE_OBJ * io)
-{
-	std::string texscript = io->filename;
-	SetExt(texscript, "asl");
+void ReloadScript(INTERACTIVE_OBJ * io) {
+	
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	if ( PAK_FileExist(texscript) )
-	{
-		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
-
-		if (io->script.data != NULL)
-		{
-			io->script.size = FileSize;
-			InitScript(&io->script);
-		}
-	}
-	else
-	{
-		io->script.size = 0;
-		io->script.data = NULL;
-	}
-
-	texscript = io->full_name() + '\\' + io->short_name() + ".asl";
-
-	if (PAK_FileExist(texscript))
-	{
-		size_t FileSize = 0;
-		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
-
-		if (io->over_script.data != NULL)
-		{
-			io->over_script.size = FileSize;
-			InitScript(&io->over_script);
-			io->over_script.master = (void *)&io->script;
-		}
-	}
-	else
-	{
-		io->over_script.size = 0;
-		io->over_script.data = NULL;
-	}
+	loadScript(io->script, resources->getFile(fs::path(io->filename).set_ext("asl")));
+	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
 
 	long num = GetInterNum(io);
 
@@ -3068,13 +2959,13 @@ void ReloadAllScripts()
 	}
 }
 
+#ifdef BUILD_EDIT_LOADSAVE
+
 //*************************************************************************************
 // Creates an unique identifier for an IO
 //*************************************************************************************
-void MakeIOIdent(INTERACTIVE_OBJ * io)
-{
-	long t = 1;
-
+void MakeIOIdent(INTERACTIVE_OBJ * io) {
+	
 	if(!io) {
 		return;
 	}
@@ -3085,70 +2976,57 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 	}
 #endif
 	
-	while (io->ident == 0)
-	{
-		std::string temp = io->full_name() + '.';
-
-		if (!DirectoryExist(temp))
-		{
+	long t = 1;
+	
+	while(io->ident == 0) {
+		
+		fs::path temp = io->full_name();
+		
+		if(!fs::is_directory(temp)) {
 			io->ident = t;
-			CreateFullPath(temp);
-			LogDirCreation(temp);
-			WriteIOInfo(io, temp);
+			
+			if(fs::create_directories(temp)) {
+				LogDirCreation(temp);
+				WriteIOInfo(io, temp);
+			} else {
+				LogError << "Could not create a unique identifier " << temp;
+			}
 		}
 
 		t++;
 	}
 }
 
+#endif // BUILD_EDIT_LOADSAVE
+
 //*************************************************************************************
 // Tells if an ident corresponds to a temporary IO
-// NEED TO OPEN "if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();"
 // And close after seek session
 //*************************************************************************************
 static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 	
-	if (!io)
+	if(!io) {
 		return false;
-
-	char name1[256];
-	char ident[256];;
-	strcpy(name1, GetName(io->filename).c_str());
-	sprintf(ident, "%s_%04ld", name1, t);
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i])
-		{
-			if ((inter.iobj[i]->ident == t)
-			        &&	(io != inter.iobj[i]))
-			{
-				char name2[256];
-				strcpy(name2, GetName(inter.iobj[i]->filename).c_str());
-
-				if (!strcasecmp(name1, name2))
-				{
+	}
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i]) {
+			if(inter.iobj[i]->ident == t && io != inter.iobj[i]) {
+				if (inter.iobj[i]->short_name() == io->short_name()) {
 					return true;
 				}
 			}
 		}
 	}
-
-	std::string file2 = io->filename;
-	RemoveName(file2);
-	file2 += ident;
-
-	if (PAK_DirectoryExist(file2))
+	
+	if(resources->getDirectory(io->full_name())) {
 		return true;
-
-	if (LAST_CHINSTANCE != -1)
-	{
-		ARX_CHANGELEVEL_MakePath();
-
-		if (ARX_Changelevel_CurGame_Seek(ident))
-			return true;
 	}
-
+	
+	if(ARX_Changelevel_CurGame_Seek(io->long_name())) {
+		return true;
+	}
+	
 	return false;
 }
 //*************************************************************************************
@@ -3161,7 +3039,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 	if (!io) return;
 
 	// TODO do we really need to open this every time?
-	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
+	ARX_Changelevel_CurGame_Open();
 
 	for (;;)
 	{
@@ -3169,10 +3047,9 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 		{
 			io->ident = t;
 
-			if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Close();
+			ARX_Changelevel_CurGame_Close();
 
 			return;
-			//	}
 		}
 
 		t++;
@@ -3181,49 +3058,34 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddItem(const fs::path & fil, AddInteractiveFlags flags) {
 	
-	std::string tex1;
-	std::string tex2;
-	std::string texscript;
 	long type = IO_ITEM;
 
-	string file = fil;
-	MakeUpcase(file);
+	fs::path file = fil;
 	
-	if (!specialstrcmp(GetName(file), "GOLD_COIN")) {
-		RemoveName(file);
-		file += "GOLD_COIN.asl";
+	if(!specialstrcmp(file.filename(), "gold_coin")) {
+		file.up() /= "gold_coin.asl";
 		type = IO_ITEM | IO_GOLD;
 	}
 
-	if (IsIn(file, "MOVABLE"))
-	{
+	if(IsIn(file.string(), "movable")) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
+	
+	fs::path script = fs::path(file).set_ext("asl");
+	
+	fs::path object = fs::path(file).set_ext("teo");
+	
+	fs::path icon = fs::path(file).remove_ext().append_basename("[icon]");
 
-	texscript = file;
-	SetExt(texscript, "asl");
-	tex1 = file;
-	SetExt(tex1, "teo");
-
-	// TODO clean up
-	tex2 = file;
-	SetExt(tex2, "bmp");
-	std::string temp;
-	temp = tex2;
-	AddToName( temp, "[Icon]");
-	tex2 = temp;
-
-	std::string file2;
-	file2 = "GAME\\" + file;
-	SetExt(file2, ".FTL");
-
-	if ( !PAK_FileExist(file2) && !PAK_FileExist(file) )
+	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
+	}
 
-	if (!PAK_FileExist(tex2))
+	if(!resources->getFile(fs::path(icon).set_ext("bmp"))) {
 		return NULL;
+	}
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
@@ -3250,7 +3112,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 
 	io->_itemdata->playerstacksize = 1;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, script);
 
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD);
@@ -3280,8 +3142,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
-
-	strcpy(io->filename, tex1.c_str());
+	io->filename = object;
 
 	if (io->ioflags & IO_GOLD)
 		io->obj = GoldCoinsObj[0];
@@ -3291,7 +3152,7 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 		if(flags & NO_MESH) {
 			io->obj = NULL;
 		} else {
-			io->obj = loadObject(tex1);
+			io->obj = loadObject(object);
 		}
 	}
 
@@ -3302,10 +3163,10 @@ INTERACTIVE_OBJ * AddItem(const string & fil, AddInteractiveFlags flags) {
 	else if (io->ioflags & IO_GOLD)
 		tc = GoldCoinsTC[0];
 	else
-		tc = TextureContainer::LoadUI(tex2, TextureContainer::Level);
+		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
 
 	if (tc == NULL)
-		tc = TextureContainer::LoadUI("Graph\\Interface\\misc\\Default[Icon].bmp");
+		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 
 	if (tc)
 	{
@@ -3910,10 +3771,10 @@ void UpdateCameras()
 
 		if (io)
 		{
-			if (io->usepath) // interpolate & send events
-			{
+			// interpolate & send events
+			if(io->usepath) {
 
-				ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+				ARX_USE_PATH * aup = io->usepath;
 				float diff = ARXTime - aup->_curtime;
 
 				if (aup->aupflags & ARX_USEPATH_FORWARD)
@@ -3949,7 +3810,7 @@ void UpdateCameras()
 						sprintf(str, "%ld", aup->path->nb_pathways - 1);
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
-						sprintf(str, "WAYPOINT%ld", aup->path->nb_pathways - 1);
+						sprintf(str, "waypoint%ld", aup->path->nb_pathways - 1);
 						SendIOScriptEvent(io, SM_NULL, "", str);
 						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
@@ -3970,7 +3831,7 @@ void UpdateCameras()
 						sprintf(str, "%ld", ii);
 						EVENT_SENDER = NULL;
 						SendIOScriptEvent(io, SM_WAYPOINT, str);
-						sprintf(str, "WAYPOINT%ld", ii);
+						sprintf(str, "waypoint%ld", ii);
 						SendIOScriptEvent(io, SM_NULL, "", str);
 
 						if (ii == aup->path->nb_pathways)
@@ -4182,12 +4043,6 @@ void RenderInter(float from, float to) {
 				dist = fdist(ACTIVECAM->pos, io->obj->pbox->vert[0].pos);
 			}
 			else dist = fdist(ACTIVECAM->pos, io->pos);
-
-			if ((0) && (inter.iobj[i]->stepmaterial))
-			{
-				free(inter.iobj[i]->stepmaterial);
-				inter.iobj[i]->stepmaterial = NULL;
-			}
 
 			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
 			{
@@ -4466,7 +4321,7 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
-	        ||	(strcasecmp(io->filename, ioo->filename))
+	        ||	io->filename != ioo->filename
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))
@@ -4475,33 +4330,45 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if	((io->ioflags & IO_ITEM)
 	        &&	(ioo->ioflags & IO_ITEM)
 	        &&	(io->over_script.data == NULL)
-	        &&	(ioo->over_script.data == NULL))
-	{
-		if ((io->locname) && (ioo->locname))
-		{
-			if (strcmp(io->locname, ioo->locname) == 0)
-				return true;
-		}
-		else
+	        &&	(ioo->over_script.data == NULL)) {
+		if(io->locname == ioo->locname) {
 			return true;
+		}
 	}
 
 	return false;
 }
-bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
-{
-	if ((!io) || (!ioo)) return false;
 
-	for (long i = 0; i < io->nb_iogroups; i++)
-	{
-		for (long k = 0; k < ioo->nb_iogroups; k++)
-		{
-			if (!strcasecmp(io->iogroups[i].name, ioo->iogroups[k].name))
-				return true;
+static bool intersect(const std::set<std::string> & set1, const std::set<std::string> & set2) {
+	
+	if(set1.empty() || set2.empty()) {
+		return false;
+	}
+	
+	typedef std::set<std::string>::const_iterator itr;
+	
+	itr it1 = set1.begin();
+	itr it2 = set2.begin();
+	
+	if(*it1 > *set2.rbegin() || *it2 > *set1.rbegin()) {
+		return false;
+	}
+	
+	while(it1 != set1.end() && it2 != set2.end()) {
+		if(*it1 == *it2) {
+			return true;
+		} else if(*it1 < *it2) {
+			it1++;
+		} else {
+			it2++;
 		}
 	}
-
+	
 	return false;
+}
+
+bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
 //***********************************************************************************************
@@ -4596,32 +4463,34 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 }
 
 //-------------------------------------------------------------------------
-std::string GetMaterialString( const std::string& origin )
-{
+string GetMaterialString(const fs::path & texture) {
+	
+	const string & origin = texture.string();
+	
 	// need to be precomputed !!!
-	if (IsIn(origin, "STONE")) return "STONE";
-	else if (IsIn(origin, "MARBLE")) return "STONE";
-	else if (IsIn(origin, "ROCK")) return "STONE";
-	else if (IsIn(origin, "WOOD")) return "WOOD";
-	else if (IsIn(origin, "WET")) return "WET";
-	else if (IsIn(origin, "MUD")) return "WET";
-	else if (IsIn(origin, "BLOOD")) return "WET";
-	else if (IsIn(origin, "BONE")) return "WET";
-	else if (IsIn(origin, "FLESH")) return "WET";
-	else if (IsIn(origin, "SHIT")) return "WET";
-	else if (IsIn(origin, "SOIL")) return "GRAVEL";
-	else if (IsIn(origin, "GRAVEL")) return "GRAVEL";
-	else if (IsIn(origin, "EARTH")) return "GRAVEL";
-	else if (IsIn(origin, "DUST")) return "GRAVEL";
-	else if (IsIn(origin, "SAND")) return "GRAVEL";
-	else if (IsIn(origin, "STRAW")) return "GRAVEL";
-	else if (IsIn(origin, "METAL")) return "METAL";
-	else if (IsIn(origin, "IRON")) return "METAL";
-	else if (IsIn(origin, "GLASS")) return "METAL";
-	else if (IsIn(origin, "RUST")) return "METAL";
-	else if (IsIn(origin, "EARTH")) return "EARTH";
-	else if (IsIn(origin, "ICE")) return "ICE";
-	else if (IsIn(origin, "FABRIC")) return "CARPET";
-	else if (IsIn(origin, "MOSS")) return "CARPET";
-	else return "UNKNOWN";
+	if(IsIn(origin, "stone")) return "stone";
+	else if(IsIn(origin, "marble")) return "stone";
+	else if(IsIn(origin, "rock")) return "stone";
+	else if(IsIn(origin, "wood")) return "wood";
+	else if(IsIn(origin, "wet")) return "wet";
+	else if(IsIn(origin, "mud")) return "wet";
+	else if(IsIn(origin, "blood")) return "wet";
+	else if(IsIn(origin, "bone")) return "wet";
+	else if(IsIn(origin, "flesh")) return "wet";
+	else if(IsIn(origin, "shit")) return "wet";
+	else if(IsIn(origin, "soil")) return "gravel";
+	else if(IsIn(origin, "gravel")) return "gravel";
+	else if(IsIn(origin, "earth")) return "gravel";
+	else if(IsIn(origin, "dust")) return "gravel";
+	else if(IsIn(origin, "sand")) return "gravel";
+	else if(IsIn(origin, "straw")) return "gravel";
+	else if(IsIn(origin, "metal")) return "metal";
+	else if(IsIn(origin, "iron")) return "metal";
+	else if(IsIn(origin, "glass")) return "metal";
+	else if(IsIn(origin, "rust")) return "metal";
+	else if(IsIn(origin, "earth")) return "earth";
+	else if(IsIn(origin, "ice")) return "ice";
+	else if(IsIn(origin, "fabric")) return "carpet";
+	else if(IsIn(origin, "moss")) return "carpet";
+	else return "unknown";
 }

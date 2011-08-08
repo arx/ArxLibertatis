@@ -57,15 +57,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 
 #include <cstdlib>
-#include <cassert>
+
+#include <boost/static_assert.hpp>
 
 #include "core/Application.h"
 
 #include "graphics/data/FTLFormat.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/FileStream.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
@@ -77,12 +79,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 using std::string;
+using std::vector;
 
 extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
+bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
 	
@@ -91,11 +94,11 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	string gamefic = "Game\\" + file;
-	SetExt(gamefic, ".FTL");
+	fs::path gamefic = "game" / file;
+	gamefic.set_ext("ftl");
 	
-	if(!CreateFullPath(gamefic)) {
-		return NULL;
+	if(!fs::create_directories(gamefic.parent())) {
+		return false;
 	}
 	
 	// Compute allocsize...
@@ -156,9 +159,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	
 	// Identification
 	char check[512];
-	string filename = file;
-	MakeUpcase(filename);
-	HERMES_CreateFileCheck(filename.c_str(), check, 512, CURRENT_FTL_VERSION);
+	HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 	
@@ -226,7 +227,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 		memset(ficc, 0, 256);
 
 		if (obj->texturecontainer[i])
-			strcpy(ficc, obj->texturecontainer[i]->m_texName.c_str());
+			strcpy(ficc, obj->texturecontainer[i]->m_texName.string().c_str());
 
 		memcpy(dat + pos, ficc, 256);
 		pos += 256;
@@ -273,7 +274,7 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 
-		strcpy(af3Ddh->name, obj->file.c_str());
+		strncpy(af3Ddh->name, obj->file.string().c_str(), sizeof(af3Ddh->name));
 	}
 
 	// Progressive DATA
@@ -345,65 +346,61 @@ bool ARX_FTL_Save(const string & file, const EERIE_3DOBJ * obj) {
 	delete[] dat;
 	
 	// Now Saving Whole Buffer
-	FileHandle handle;
-	if(!(handle = FileOpenWrite(gamefic.c_str()))) {
+	fs::ofstream ofs(gamefic, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	if(!ofs.is_open()) {
 		LogError << "Unable to Open " << gamefic << " for Write...";
 		return false;
 	}
 	
-	if((size_t)FileWrite(handle, compressed, cpr_pos) != cpr_pos) {
+	ofs.write(compressed, cpr_pos);
+	delete[] compressed;
+	
+	
+	if(ofs.fail()) {
 		LogError <<  "Unable to Write to " << gamefic;
 		return false;
 	}
 	
-	FileClose(handle);
-	
-	delete[] compressed;
-	
 	return true;
-	
 }
 
 #endif // BUILD_EDIT_LOADSAVE
 
 // MESH cache structure definition & Globals
 struct MCACHE_DATA {
-	string name;
-	char* data;
+	fs::path name;
+	char * data;
 	size_t size;
 };
 static vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
-static long MCache_Get( const string file)
-{
-    string fic;
-
-    File_Standardize(file, fic);
-
-    for (size_t i = 0; i < meshCache.size(); i++)
-        if ( !strcasecmp(meshCache[i].name.c_str(), fic.c_str() ) ) return i;
-
-    return -1;
+static long MCache_Get(const fs::path & file) {
+	
+	for(size_t i = 0; i < meshCache.size(); i++) {
+		if(meshCache[i].name == file) {
+			return i;
+		}
+	}
+	
+	return -1;
 }
 
 // Pushes a Mesh In Mesh Cache
-static bool MCache_Push( const string& file, char * data, size_t size)
-{
-	string fic;
-
-	File_Standardize(file, fic);
-
-	if (MCache_Get(fic.c_str()) != -1) return false; // already cached
-
-	LogDebug << fic  << " " << file << " #" << meshCache.size();
-
+static bool MCache_Push(const fs::path & file, char * data, size_t size) {
+	
+	if(MCache_Get(file) != -1) {
+		return false; // already cached
+	}
+	
+	LogDebug << file << " #" << meshCache.size();
+	
 	MCACHE_DATA newMesh;
 	newMesh.size = size;
 	newMesh.data = data;
-	newMesh.name = fic;
+	newMesh.name = file;
 	meshCache.push_back(newMesh);
-
+	
 	return true;
 }
 
@@ -412,26 +409,25 @@ void MCache_ClearAll(){
 }
 
 // Retreives a Mesh File pointer from cache...
-static char* MCache_Pop( const string& file, size_t& size)
-{
+static char * MCache_Pop(const fs::path & file, size_t & size) {
+	
 	long num = MCache_Get(file);
-
-	if (num == -1) return NULL;
-
+	if(num == -1) {
+		return NULL;
+	}
+	
 	size = meshCache[num].size;
 	return meshCache[num].data;
 }
 
-EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
+EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 	
 	// Creates FTL file name
-	string filename = "Game\\";
-	filename += file;
-	SetExt(filename, ".FTL");
+	fs::path filename = (fs::path("game") / file).set_ext("ftl");
 	
 	// Checks for FTL file existence
-	if(!PAK_FileExist(filename.c_str())) {
-		LogError << "ARX_FTL_Load: not found in PAK " << filename;
+	PakFile * pf = resources->getFile(filename);
+	if(!pf) {
 		return NULL;
 	}
 	
@@ -441,7 +437,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	
 	bool NOrelease = true;
 	if(!compressedData) {
-		compressedData = (char *)PAK_FileLoadMalloc(filename, compressedSize);
+		compressedData = pf->readAlloc();
+		compressedSize = pf->size();
 		NOrelease = MCache_Push(filename, compressedData, compressedSize) ? 1 : 0;
 	}
 	
@@ -450,10 +447,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		return NULL;
 	}
 	
-	size_t allocsize; // The size of the data
-	char * dat = blastMemAlloc(compressedData, compressedSize, allocsize);//pos,&cpr_pos);
-	// TODO size ignored
-	
+	size_t allocsize; // The size of the data TODO size ignored
+	char * dat = blastMemAlloc(compressedData, compressedSize, allocsize);
 	if(!dat) {
 		LogError << "ARX_FTL_Load: error decompressing " << filename;
 		return NULL;
@@ -466,7 +461,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	size_t pos = 0; // The position within the data
 	
 	// Pointer to Primary Header
-	ARX_FTL_PRIMARY_HEADER * afph = (ARX_FTL_PRIMARY_HEADER *)(dat + pos);
+	const ARX_FTL_PRIMARY_HEADER * afph = reinterpret_cast<const ARX_FTL_PRIMARY_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_PRIMARY_HEADER);
 	
 	// Verify FTL file Signature
@@ -488,7 +483,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	pos += 512;
 	
 	// Pointer to Secondary Header
-	ARX_FTL_SECONDARY_HEADER * afsh = (ARX_FTL_SECONDARY_HEADER *)(dat + pos);
+	const ARX_FTL_SECONDARY_HEADER * afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
 	
 	if(afsh->offset_3Ddata == -1) {
@@ -501,7 +496,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	EERIE_3DOBJ * obj = new EERIE_3DOBJ();
 	
 	pos = afsh->offset_3Ddata;
-	ARX_FTL_3D_DATA_HEADER * af3Ddh = reinterpret_cast<ARX_FTL_3D_DATA_HEADER*>(dat + pos);
+	const ARX_FTL_3D_DATA_HEADER * af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 	
 	obj->vertexlist.resize(af3Ddh->nb_vertex);
@@ -511,7 +506,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
-	obj->file = af3Ddh->name;
+	obj->file = fs::path::load(safestring(af3Ddh->name));
 	
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
@@ -520,16 +515,14 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		for(size_t ii = 0; ii < obj->vertexlist.size(); ii++) {
 			
 			// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
-			obj->vertexlist[ii] = *reinterpret_cast<EERIE_OLD_VERTEX*>(dat + pos);
+			obj->vertexlist[ii] = *reinterpret_cast<const EERIE_OLD_VERTEX *>(dat + pos);
 			pos += sizeof(EERIE_OLD_VERTEX);
 			
 			obj->vertexlist[ii].vert.color = 0xFF000000;
 		}
 		
 		// Set the origin point of the mesh
-		obj->point0.x = obj->vertexlist[obj->origin].v.x;
-		obj->point0.y = obj->vertexlist[obj->origin].v.y;
-		obj->point0.z = obj->vertexlist[obj->origin].v.z;
+		obj->point0 = obj->vertexlist[obj->origin].v;
 		
 		obj->vertexlist3 = obj->vertexlist;
 	}
@@ -540,7 +533,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		// Copy the face data in
 		for(long ii = 0; ii < af3Ddh->nb_faces; ii++) {
 			
-			EERIE_FACE_FTL * eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
+			const EERIE_FACE_FTL * eff = reinterpret_cast<const EERIE_FACE_FTL*>(dat + pos);
 			pos += sizeof(EERIE_FACE_FTL); 
 			
 			obj->facelist[ii].facetype = PolyType::load(eff->facetype);
@@ -550,7 +543,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 			obj->facelist[ii].norm = eff->norm;
 			
 			// Copy in all the texture and normals data
-			assert(IOPOLYVERT_FTL == IOPOLYVERT);
+			BOOST_STATIC_ASSERT(IOPOLYVERT_FTL == IOPOLYVERT);
 			for(size_t kk = 0; kk < IOPOLYVERT_FTL; kk++) {
 				obj->facelist[ii].nrmls[kk] = eff->nrmls[kk];
 				obj->facelist[ii].vid[kk] = eff->vid[kk];
@@ -569,11 +562,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		// Copy in the texture containers
 		for(long i = 0; i < af3Ddh->nb_maps; i++) {
 			
-			Texture_Container_FTL * tex = reinterpret_cast<Texture_Container_FTL*>(dat + pos);
+			const Texture_Container_FTL * tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
 			pos += sizeof(Texture_Container_FTL);
 			
-			string name;
-			File_Standardize( tex->name, name );
+			fs::path name = fs::path::load(safestring(tex->name)).remove_ext();
 			
 			// Create the texture and put it in the container list
 			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
@@ -589,10 +581,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		// Copy in the grouplist data
 		for(long i = 0 ; i < obj->nbgroups ; i++) {
 			
-			EERIE_GROUPLIST_FTL* group = reinterpret_cast<EERIE_GROUPLIST_FTL*>(dat + pos);
+			const EERIE_GROUPLIST_FTL* group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
 			
-			obj->grouplist[i].name = group->name;
+			obj->grouplist[i].name = toLowercase(safestring(group->name));
 			obj->grouplist[i].origin = group->origin;
 			obj->grouplist[i].indexes.resize(group->nb_index);
 			obj->grouplist[i].siz = group->siz;
@@ -604,30 +596,30 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 			if(!obj->grouplist[i].indexes.empty()) {
 				size_t oldpos = pos;
 				pos += sizeof(s32) * obj->grouplist[i].indexes.size(); // Advance to the next index block
-				std::copy((s32*)(dat+oldpos), (s32*)(dat + pos), obj->grouplist[i].indexes.begin());
+				std::copy((const s32 *)(dat+oldpos), (const s32 *)(dat + pos), obj->grouplist[i].indexes.begin());
 			}
 		}
 	}
 	
 	// Copy in the action points data
 	for(size_t i = 0 ; i < obj->actionlist.size(); i++) {
-		obj->actionlist[i] = *reinterpret_cast<EERIE_ACTIONLIST_FTL*>(dat + pos);
+		obj->actionlist[i] = *reinterpret_cast<const EERIE_ACTIONLIST_FTL *>(dat + pos);
 		pos += sizeof(EERIE_ACTIONLIST_FTL);
 	}
 	
 	// Copy in the selections data
 	for(size_t i = 0 ; i < obj->selections.size(); i++) {
 		
-		EERIE_SELECTIONS_FTL * selection = reinterpret_cast<EERIE_SELECTIONS_FTL*>(dat + pos);
+		const EERIE_SELECTIONS_FTL * selection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
-		obj->selections[i].name = selection->name;
+		obj->selections[i].name = toLowercase(safestring(selection->name));
 		obj->selections[i].selected.resize(selection->nb_selected);
 	}
 	
 	// Copy in the selections selected data
 	for(long i = 0; i < af3Ddh->nb_selections; i++) {
-		std::copy((s32*)(dat + pos), (s32*)(dat + pos) + obj->selections[i].selected.size(), obj->selections[i].selected.begin() );
+		std::copy((const s32 *)(dat + pos), (const s32 *)(dat + pos) + obj->selections[i].selected.size(), obj->selections[i].selected.begin() );
 		pos += sizeof(s32) * obj->selections[i].selected.size(); // Advance to the next selection data block
 	}
 	
@@ -637,9 +629,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 	if(afsh->offset_collision_spheres != -1) {
 		
 		// Cast to header
-		ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
-		size_t pos = afsh->offset_collision_spheres;
-		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
+		pos = afsh->offset_collision_spheres;
+		const ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
+		afcsdh = reinterpret_cast<const ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
 		
 		// Alloc the collision sphere data object
@@ -647,9 +639,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		obj->sdata->spheres.resize(afcsdh->nb_spheres);
 		
 		// Alloc the collision speheres
-		COLLISION_SPHERE_FTL * begin = (COLLISION_SPHERE_FTL*)(dat + pos);
+		const COLLISION_SPHERE_FTL * begin = reinterpret_cast<const COLLISION_SPHERE_FTL *>(dat + pos);
 		pos += sizeof(COLLISION_SPHERE_FTL) * obj->sdata->spheres.size();
-		COLLISION_SPHERE_FTL * end = (COLLISION_SPHERE_FTL*)(dat + pos);
+		const COLLISION_SPHERE_FTL * end = reinterpret_cast<const COLLISION_SPHERE_FTL *>(dat + pos);
 		std::copy(begin, end, obj->sdata->spheres.begin());
 	}
 	
@@ -663,8 +655,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		
 		obj->cdata = new CLOTHES_DATA();
 		
-		ARX_FTL_CLOTHES_DATA_HEADER 	*	afcdh;
-		afcdh = reinterpret_cast<ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
+		const ARX_FTL_CLOTHES_DATA_HEADER * afcdh;
+		afcdh = reinterpret_cast<const ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
 		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
 		obj->cdata->springs.resize(afcdh->nb_springs);
 		size_t pos = afsh->offset_clothes_data;
@@ -673,14 +665,14 @@ EERIE_3DOBJ * ARX_FTL_Load(const string & file) {
 		// now load cvert
 		obj->cdata->cvert = new CLOTHESVERTEX[obj->cdata->nb_cvert];
 		obj->cdata->backup = new CLOTHESVERTEX[obj->cdata->nb_cvert];
-		std::copy((CLOTHESVERTEX_FTL*)(dat + pos), (CLOTHESVERTEX_FTL*)(dat + pos) + obj->cdata->nb_cvert, obj->cdata->cvert);
+		std::copy(reinterpret_cast<const CLOTHESVERTEX_FTL *>(dat + pos), reinterpret_cast<const CLOTHESVERTEX_FTL *>(dat + pos) + obj->cdata->nb_cvert, obj->cdata->cvert);
 		memcpy(obj->cdata->backup, obj->cdata->cvert, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 		pos += sizeof(CLOTHESVERTEX_FTL) * obj->cdata->nb_cvert;
 		
 		// now load springs
-		EERIE_SPRINGS_FTL * begin = (EERIE_SPRINGS_FTL*)(dat + pos);
+		const EERIE_SPRINGS_FTL * begin = reinterpret_cast<const EERIE_SPRINGS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SPRINGS_FTL) * obj->cdata->springs.size();
-		EERIE_SPRINGS_FTL * end = (EERIE_SPRINGS_FTL*)(dat + pos);
+		const EERIE_SPRINGS_FTL * end = reinterpret_cast<const EERIE_SPRINGS_FTL *>(dat + pos);
 		std::copy(begin, end, obj->cdata->springs.begin());
 	}
 	

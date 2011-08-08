@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells05.h"
 
-#include <cassert>
 #include <climits>
 
 #include "animation/AnimationRender.h"
@@ -70,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -179,7 +179,7 @@ void CCurePoison::Create()
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
-	pPS->SetTexture("graph\\particles\\cure_poison.bmp", 0, 100); //5
+	pPS->SetTexture("graph/particles/cure_poison", 0, 100); //5
 
 	pPS->lLightId = GetFreeDynLight();
 
@@ -224,7 +224,7 @@ void CCurePoison::Update(unsigned long aulTime)
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	assert(ulCalc <= LONG_MAX);
+	arx_assert(ulCalc <= LONG_MAX);
 	long ff = 	static_cast<long>(ulCalc);
 
 
@@ -307,20 +307,20 @@ CRuneOfGuarding::CRuneOfGuarding() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 
 	if (!ssol)
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 	
 	ssol_count++;
 
 	if (!slight)
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
 	
 	slight_count++;
 
 	if (!srune)
-		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 	
 	srune_count++;
 }
@@ -560,7 +560,7 @@ void LaunchPoisonExplosion(Vec3f * aePos)
 	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-	pPS->SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
+	pPS->SetTexture("graph/particles/big_greypouf", 0, 200);
 
 	pPS->SetPos(*aePos);
 	pPS->Update(0);
@@ -695,7 +695,7 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 	pPS.SetParams(cp);
 	pPS.ulParticleSpawn = 0;
 
-	pPS.SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
+	pPS.SetTexture("graph/particles/big_greypouf", 0, 200);
 
 	pPS.fParticleFreq = -1;
 
@@ -775,7 +775,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;
 
-			pPSStream.SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
+			pPSStream.SetTexture("graph/particles/big_greypouf", 0, 200);
 
 			pPSStream.fParticleFreq = 80;
 			pPSStream.bParticleFollow = true;
@@ -902,8 +902,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 	pTab	 = NULL;
 	pTab	 = new CPoisonProjectile*[uiNumber]();
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
-	{
+	for(unsigned int i = 0 ; i < uiNumber ; i++) {
 		pTab[i] = new CPoisonProjectile();
 		pTab[i]->spellinstance = this->spellinstance;
 	}
@@ -912,7 +911,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 //-----------------------------------------------------------------------------
 CMultiPoisonProjectile::~CMultiPoisonProjectile()
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		if (pTab[i]->lLightId != -1)
 		{
@@ -981,7 +980,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 	long lMax = 0;
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + (long) rnd() * 5000;
@@ -1015,7 +1014,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 //-----------------------------------------------------------------------------
 void CMultiPoisonProjectile::Update(unsigned long _ulTime)
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Update(_ulTime);
 	}
@@ -1026,7 +1025,7 @@ float CMultiPoisonProjectile::Render()
 {
  
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		float fa = pTab[i]->Render();
 
@@ -1081,20 +1080,20 @@ CRepelUndead::CRepelUndead()
 
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_blueting.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 
 	if (!ssol) // Pentacle
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 
 	ssol_count++;
 
 	if (!slight) // Twirl
-		slight = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard02.teo");
+		slight = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
 
 	slight_count++; //runes
 
 	if (!srune)
-		srune = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard03.teo");
+		srune = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 
 	srune_count++;
 }
@@ -1276,13 +1275,13 @@ CLevitate::CLevitate()
 	}
 
 	if(!stone0) {
-		stone0 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone01.teo");
+		stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
 	}
 
 	stone0_count++;
 
 	if(!stone1) {
-		stone1 = loadObject("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_raise_dead\\stone02.teo");
+		stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
 	}
 
 	stone1_count++;
@@ -1368,7 +1367,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 	this->scale = 0.f;
 	this->ang = 0.f;
 	this->def = (short)def;
-	this->tsouffle = TextureContainer::Load("Graph\\Obj3D\\Textures\\(FX)_sebsouffle.bmp");
+	this->tsouffle = TextureContainer::Load("graph/obj3d/textures/(fx)_sebsouffle");
 
 	this->timestone = 0;
 	this->nbstone = 0;
@@ -1439,7 +1438,7 @@ void CLevitate::DrawStone()
 				this->tstone[nb].actif = 0;
 			}
 
-			int col = RGBA_MAKE(255, 255, 255, (int)(255.f * (1.f - a)));
+			int col = Color4f(Color3f::white, 1.f - a).toBGRA();
 
 			if (this->stone[this->tstone[nb].numstone])
 				DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
@@ -1593,7 +1592,7 @@ float CLevitate::Render()
 					col	= ARX_CLEAN_WARN_CAST_INT(fRandom);
 
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(col, col, col, col);
+					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 0.f;
@@ -1613,7 +1612,7 @@ float CLevitate::Render()
 					col = ARX_CLEAN_WARN_CAST_INT(fRandom);
 
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(0, 0, 0, col);
+					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 0.9999999f;
@@ -1680,7 +1679,7 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(col, col, col, col);
+					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 0.f;
@@ -1694,7 +1693,7 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
-					if (!ARXPausedTimer) d3dv->color = RGBA_MAKE(0, 0, 0, col);
+					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
 
 					d3dv->tu = u;
 					d3dv->tv = 1; 

@@ -1,0 +1,584 @@
+
+#include "script/ScriptUtils.h"
+
+#include <set>
+
+#include "graphics/data/Mesh.h"
+#include "io/Logger.h"
+#include "platform/String.h"
+
+using std::string;
+
+namespace script {
+
+static inline bool isWhitespace(char c) {
+	return (((unsigned char)c) <= 32 || c == '(' || c == ')');
+}
+
+string loadUnlocalized(const std::string & str) {
+	
+	// if the section name has the qualifying brackets "[]", cut them off
+	if(!str.empty() && str[0] == '[' && str[str.length() - 1] == ']') {
+		return str.substr(1, str.length() - 2);
+	}
+	
+	return str;
+}
+
+Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io, ScriptMessage msg) : script(_script), pos(_pos), io(_io), message(msg) { };
+
+string Context::getStringVar(const string & var) const {
+	return GetVarValueInterpretedAsText(var, getMaster(), io);
+}
+
+#define ScriptParserWarning Logger(__FILE__,__LINE__, isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
+
+std::string Context::getCommand(bool skipNewlines) {
+	
+	const char * esdat = script->data;
+	
+	skipWhitespace(skipNewlines);
+	
+	string word;
+	
+	// now take chars until it finds a space or unused char
+	for(; pos != script->size && !isWhitespace(esdat[pos]); pos++) {
+		
+		char c = esdat[pos];
+		if(c == '"') {
+			ScriptParserWarning << "unexpected '\"' in command name";
+		} else if(c == '~') {
+			ScriptParserWarning << "unexpected '~' in command name";
+		} else if(c == '\n') {
+			break;
+		} else if(c == '/' && pos + 1 != script->size && esdat[pos + 1] == '/') {
+			pos = std::find(esdat + pos + 2, esdat + script->size, '\n') - esdat;
+			if(!word.empty()) {
+				break;
+			}
+			skipWhitespace(skipNewlines), pos--;
+		} else {
+			word.push_back(c);
+		}
+	}
+	
+	return word;
+}
+
+string Context::getWord() {
+	
+	skipWhitespace();
+	
+	if(pos >= script->size) {
+		return string();
+	}
+	
+	const char * esdat = script->data;
+	
+	bool tilde = false; // number of tildes
+	
+	string word;
+	string var;
+	
+	if(pos != script->size && esdat[pos] == '"') {
+		
+		for(pos++; pos != script->size && esdat[pos] != '"'; pos++) {
+			if(esdat[pos] == '\n') {
+				if(tilde) {
+					ScriptParserWarning << "unmatched '\"' before end of line";
+				}
+				return word;
+			} else if(esdat[pos] == '~') {
+				if(tilde) {
+					word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
+					var.clear();
+				}
+				tilde = !tilde;
+			} else if(tilde) {
+				var.push_back(esdat[pos]);
+			} else {
+				word.push_back(esdat[pos]);
+			}
+		}
+		
+		if(pos != script->size) {
+			pos++;
+		} else {
+			ScriptParserWarning << "unmatched '\"'";
+		}
+		
+	} else {
+		
+		// now take chars until it finds a space or unused char
+		for(; pos != script->size && !isWhitespace(esdat[pos]); pos++) {
+			
+			if(esdat[pos] == '"') {
+				ScriptParserWarning << "unexpected '\"' inside token";
+			} else if(esdat[pos] == '~') {
+				if(tilde) {
+					word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
+					var.clear();
+				}
+				tilde = !tilde;
+			} else if(tilde) {
+				var.push_back(esdat[pos]);
+			} else if(esdat[pos] == '/' && pos + 1 != script->size && esdat[pos + 1] == '/') {
+				pos = std::find(esdat + pos + 2, esdat + script->size, '\n') - esdat;
+				break;
+			} else {
+				word.push_back(esdat[pos]);
+			}
+			
+		}
+		
+	}
+	
+	if(tilde) {
+		ScriptParserWarning << "unmatched '~'";
+	}
+	
+	return word;
+}
+
+void Context::skipWord() {
+	
+	skipWhitespace();
+	
+	const char * esdat = script->data;
+	
+	if(pos != script->size && esdat[pos] == '"') {
+		
+		for(pos++; pos != script->size && esdat[pos] != '"'; pos++) {
+			if(esdat[pos] == '\n') {
+				ScriptParserWarning << "missing '\"' before end of line";
+				return;
+			}
+		}
+		
+		if(pos != script->size) {
+			pos++;
+		} else {
+			ScriptParserWarning << "unmatched '\"'";
+		}
+		
+	} else {
+		
+		// now take chars until it finds a space or unused char
+		for(; pos != script->size && !isWhitespace(esdat[pos]); pos++) {
+			if(esdat[pos] == '"') {
+				ScriptParserWarning << "unexpected '\"' inside token";
+			} else if(esdat[pos] == '/' && pos + 1 != script->size && esdat[pos + 1] == '/') {
+				pos = std::find(esdat + pos + 2, esdat + script->size, '\n') - esdat;
+				break;
+			}
+		}
+		
+	}
+}
+
+void Context::skipWhitespace(bool skipNewlines) {
+	
+	const char * esdat = script->data;
+	
+	// First ignores spaces & unused chars
+	for(; pos != script->size && isWhitespace(esdat[pos]); pos++) {
+		if(!skipNewlines && esdat[pos] == '\n') {
+			return;
+		}
+	}
+}
+
+string Context::getFlags() {
+	
+	skipWhitespace();
+	
+	if(pos < script->size && script->data[pos] == '-') {
+		return getWord();
+	}
+	
+	return string();
+}
+
+float Context::getFloat() {
+	return getFloatVar(getWord());
+}
+
+bool Context::getBool() {
+	
+	string word = getWord();
+	
+	return (word == "on" || word == "yes");
+}
+
+float Context::getFloatVar(const std::string & name) const {
+	return GetVarValueInterpretedAsFloat(name, getMaster(), io);
+}
+
+size_t Context::skipCommand() {
+	
+	skipWhitespace();
+	
+	const char * esdat = script->data;
+	
+	if(pos == script->size || esdat[pos] == '\n') {
+		return (size_t)-1;
+	}
+	
+	size_t oldpos = pos;
+	
+	if(esdat[pos] == '/' && pos + 1 != script->size && esdat[pos + 1] == '/') {
+		oldpos = (size_t)-1;
+		pos += 2;
+	}
+	
+	pos = std::find(esdat + pos, esdat + script->size, '\n') - esdat;
+	
+	return oldpos;
+}
+
+bool Context::jumpToLabel(const string & target, bool substack) {
+	
+	if(substack) {
+		stack.push_back(pos);
+	}
+	
+	long targetpos = FindScriptPos(script, ">>" + target);
+	if(targetpos == -1) {
+		return false;
+	}
+	
+	pos = targetpos + target.length() + 2;
+	return true;
+}
+
+bool Context::returnToCaller() {
+	
+	if(stack.empty()) {
+		return false;
+	}
+	
+	pos = stack.back();
+	stack.pop_back();
+	return true;
+}
+
+void Context::skipStatement() {
+	
+	string word = getCommand();
+	if(pos == script->size) {
+		ScriptParserWarning << "missing statement before end of script";
+		return;
+	}
+	
+	if(word == "{") {
+		long brackets = 1;
+		while(brackets > 0) {
+			
+			if(script->data[pos] == '\n') {
+				pos++;
+			}
+			word = getWord(); // TODO should not evaluate ~var~
+			if(pos == script->size) {
+				ScriptParserWarning << "missing '}' before end of script";
+				return;
+			}
+			
+			if(word == "{") {
+				brackets++;
+			} else if(word == "}") {
+				brackets--;
+			}
+		}
+	} else {
+		skipCommand();
+	}
+	
+	skipWhitespace(true);
+	size_t oldpos = pos;
+	word = getCommand();
+	if(word != "else") {
+		pos = oldpos;
+	}
+}
+
+namespace {
+
+typedef std::set<string> SuppressedCommands;
+typedef std::map<string, SuppressedCommands> SuppressionsForFile;
+typedef std::map<size_t, SuppressionsForFile> SuppressionsForPos;
+
+SuppressionsForPos suppressions;
+SuppressionsForPos blockSuppressions;
+
+void suppress(const string & script, size_t pos, const string & command) {
+	suppressions[pos][script].insert(command);
+}
+
+void suppressBlockEnd(const string & script, size_t pos, const string & command) {
+	blockSuppressions[pos][script].insert(command);
+}
+
+bool contains(const SuppressionsForPos & list, const Context & context, const string & command) {
+	
+	SuppressionsForPos::const_iterator i0 = list.find(context.getPosition());
+	if(i0 == list.end()) {
+		return false;
+	}
+	
+	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown");
+	if(i1 == i0->second.end()) {
+		return false;
+	}
+	
+	return (i1->second.find(command) != i1->second.end());
+}
+
+}
+
+void initSuppressions() {
+	
+	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
+	
+	suppressBlockEnd("goblin_base_0021", 617, "on"); // missing '}'
+	
+	suppressBlockEnd("goblin_base_0031", 974, "on"); // missing '}'
+	
+	// TODO(broken-scripts)
+	// TODO move to external file
+	
+	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
+	
+	suppress("black_thing", 3703, "play"); // variable is never set
+	
+	suppress("chest_metal_0011", 78, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	
+	suppress("chest_metal_0012", 389, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	
+	suppress("chest_metal_0020", 54, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0020", 99, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0020", 149, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/ring_darkaa/ring_darkaa.teo" (should be 'ring_daarka/ring_daarka'?)
+	
+	suppress("chest_metal_0029", 224, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 317, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 461, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 557, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	suppress("chest_metal_0029", 650, "inventory add"); // missing object: "graph/obj3d/interactive/items/provisions/candle/candle.teo" (should be 'candle/candel'?)
+	
+	suppress("chest_metal_0045", 242, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life"
+	
+	suppress("chest_metal_0095", 143, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/legging_leatherac/legging_leatherac.teo" (should be 'legging_leather_ac'?)
+	
+	suppress("chest_metal_0100", 629, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	suppress("chest_metal_0100", 693, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
+	
+	suppress("chicken_base", 2037, "gosub"); // missing label 'save_behavior'
+	suppress("chicken_base", 2410, "}"); // missing accept/refuse before end of event block
+	
+	suppress("corpse_0003", 399, "inventory addfromscene"); // bad target ident: "magic\\potion_life\\potion_life" (should be 'inventory add'?)
+	
+	suppress("corpse_0006", 172, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/helmet_leather/helmet_leather.teo"
+	
+	suppress("corpse_0084", 274, "inventory add"); // missing object: "graph/obj3d/interactive/items/weapons/chest_leather_ac/chest_leather_ac.teo"
+	
+	suppress("demon", 3571, "loadanim"); // missing animation 'demon_fight_left_start'
+	suppress("demon", 3634, "loadanim"); // missing animation 'demon_fight_left_cycle'
+	suppress("demon", 3698, "loadanim"); // missing animation 'demon_fight_left_strike'
+	suppress("demon", 3762, "loadanim"); // missing animation 'demon_fight_right_start'
+	suppress("demon", 3826, "loadanim"); // missing animation 'demon_fight_right_cycle'
+	suppress("demon", 3891, "loadanim"); // missing animation 'demon_fight_right_strike'
+	suppress("demon", 18479, "play"); // sound number is sometimes too high
+	
+	suppress("diamond", 139, "play"); // unknown flag -e (ignored) note: fix_inter/diamond_inwall/diamond.asl!
+	
+	suppress("dog", 19669, "play"); // sound number is sometimes too high
+	
+	suppress("dog_0011", 31, "playanim"); // animation 'action2' not loaded
+	
+	suppress("dragon_ice_0001", 93, "loadanim"); // missing animation: "dragon_talk_head"
+	
+	suppress("dragon's_lair_ice_wall", 41, "satangular"); // unknown command 'satangular', should be setangular
+	
+	suppress("emerald_inwall", 136, "play"); // unknown flag -e (ignored)
+	
+	suppress("fake_golden_snake", 185, "setinternalname"); // obsolete command (ignored)
+	
+	suppress("flour_bag", 41, "collison"); // unknown command 'collison', should be collision
+	
+	suppress("gem_inwall", 114, "play"); // unknown flag -e (ignored)
+	
+	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
+	
+	suppress("goblin_base_0034", 771, "detach"); // object mug_full_0003 already destroyed
+	suppress("goblin_base_0034", 831, "destroy"); // object mug_full_0003 already destroyed
+	
+	suppress("goblin_base_0041", 3063, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
+	
+	suppress("goblin_base_0046", 2924, "if"); // unknown operator '=>' (should be '>='?), interpreted as constant true
+	
+	suppress("gold_chunk_inwall", 144, "play"); // unknown flag -e (ignored)
+	
+	suppress("golden_snake", 156, "setinternalname"); // obsolete command
+	
+	suppress("hammer_club", 66, "settwohanded"); // obsolete command
+	
+	suppress("human_base", 5872, "loadanim"); // bad animation id: "bae_ready"
+	suppress("human_base", 13711, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
+	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
+	suppress("human_base", 45586, "goto"); // missing label "main_alert"
+	
+	suppress("human_base_0006", 83, "playanim"); // animation 'wait' not loaded yet
+	
+	suppress("human_base_0012", 1519, "goto"); // missing label 'stop'
+	
+	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
+	
+	suppress("human_base_0041", 4279, "if"); // missing space between oprateor '==' and argument
+	
+	suppress("human_base_0051", 5396, "/"); // unknown command, should be '//' instead of '/ /'
+	
+	suppress("human_base_0051", 6083, "set"); // bad variable name: "waiting"
+	
+	suppress("human_base_0046", 679, "goto"); // missing label 'next_step02', should be 'next_step01'?
+	
+	suppress("human_base_0076", 642, "destroy"); // target 'seat_stool1_0007' might already be destroyed TODO consider removing this warning
+	
+	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
+	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
+	
+	suppress("human_base_0085", 426, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
+	
+	suppress("human_base_0086", 787, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
+	
+	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
+	
+	suppress("human_base_0099", 997, "errata"); // unknown command 'errata', should be 'goto errata'
+	
+	suppress("human_base_0118", 101, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0119", 179, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0120", 101, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0121", 135, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0122", 350, "collisions"); // unknown command 'collisions', should be 'collision'
+	
+	suppress("human_base_0138", 2439, "setcontrolledzone"); // unknown zone 'shani_flee'
+	
+	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
+	
+	suppress("lamp_goblin2_0003", 737, "no"); // unknown command 'no' should be 'nop'?
+	
+	suppress("light_door", 422, "set"); // bad variable name: "durability"
+	
+	suppress("light_door_0019", 105, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("light_door_0020", 230, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("light_door_0021", 234, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("light_door_0029", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("light_door_0030", 162, "setevent"); // unsupported event: "npc_open"
+	suppress("light_door_0030", 488, "setevent"); // unsupported event: "npc_open"
+	suppress("light_door_0030", 717, "setevent"); // unsupported event: "npc_open"
+	
+	suppress("light_door_0100", 69, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("light_door_0102", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("light_door_0106", 110, "setcontrolledzone"); // unknown zone 'city_entrance'
+	
+	suppress("light_door_0121", 88, "setspeakpitch"); // setspeakpitch only applies to NPCs
+	
+	suppress("lockpicks", 462, "play"); // missing sound file 'brokenweapon.wav', should be 'broken_weapon'
+	
+	suppress("long_sword_recovery", 591, "setequip"); // unknown flag '-s' (ignored)
+	
+	suppress("marker_0025", 288, "sendevent"); // unknown zone 'cooking' (should be 'cook_gary'?)
+	
+	suppress("marker_0247", 44, "setcontrolledzone"); // unknown zone 'level3_zone4'
+	
+	suppress("marker_0811", 536, "worldface"); // unknown command 'worldface', should be 'worldfade'
+	
+	suppress("metal_chunk_inwall", 143, "play"); // unknown flag -e (ignored)
+	
+	suppress("orb_crypt", 76, "setsteal"); // setsteal only applies to items
+	
+	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
+	
+	suppress("player", 7725, "loadanim"); // bad animation id: "cast_hold"
+	suppress("player", 8463, "loadanim"); // bad animation id: "lean_left_cycle"
+	suppress("player", 8531, "loadanim"); // bad animation id: "lean_left_out"
+	suppress("player", 8666, "loadanim"); // bad animation id: "lean_right_cycle"
+	suppress("player", 8733, "loadanim"); // bad animation id: "lean_right_out"
+	suppress("player", 9284, "loadanim"); // missing animation "human_death_cool"
+	suppress("player", 9558, "loadanim"); // missing animation "human_talk_happyneutral_headonly"
+	
+	suppress("porticullis_0039", 806, "setevent"); // unsupported event: "custom"
+	
+	suppress("porticullis_0049", 231, "?"); // missing '}' before end of script
+	suppress("porticullis_0049", 231, ""); // missing accept / refuse / return before script end
+	
+	suppress("pressurepad_gob_0029", 74, "goto"); // missing label 'stress'
+	
+	suppress("public_notice_0011", 965, "magicoff"); // unknown command 'magicoff', should be 'magic off'
+	
+	suppress("rat_base", 17145, "play"); // sound number is sometimes too high
+	
+	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
+	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
+	
+	suppress("ratman_base_0024", 608, "goto"); // missing label 'test'
+	
+	suppress("rock_akbaa", 135, "setinternalname"); // obsolete command 'setinternalname'
+	
+	suppress("ruby_inwall", 135, "play"); // unknown flag -e (ignored)
+	
+	suppress("secret_door_council_2b", 609, "}"); // extraneous '}'
+	
+	suppress("shiny_orb", 103, "setinternalname"); // obsolete command
+	
+	suppress("snake_woman_base", 26358, "goto"); // missing label 'main_alert'
+	
+	suppress("snake_woman_base_0004", 1660, "goto"); // unreachable code after goto
+	
+	suppress("snake_woman_base_0007", 1138, "goto"); // missing label 'short'
+	
+	suppress("snake_woman_base_0010", 122, "collions"); // unknown command 'collions', should be 'collision'
+	
+	suppress("snake_woman_base_0015", 113, "setevent"); // unsupported event: "misc_reflection"
+	
+	suppress("snake_woman_base_0016", 138, "setevent"); // unsupported event: "misc_reflection"
+	
+	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
+	
+	suppress("torch_rotating_0004", 68, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0004", 88, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0004", 89, "rotatingtorchdown"); // 'playanim' only takes one parameter
+	
+	suppress("torch_rotating_0005", 68, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0005", 88, "?"); // 'playanim' only takes one parameter
+	suppress("torch_rotating_0005", 89, "rotatingtorchdown"); // 'playanim' only takes one parameter
+	
+	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
+	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
+	suppress("troll_base", 19054, "goto"); // missing label "main_alert"
+	
+	suppress("undead_base_0039", 102, "}"); // missing accept/refuse before end of event block
+	
+	suppress("undead_base_0046", 110, "playanim"); // animation 'wait' not loaded yet
+	
+	suppress("wall_breakable", 523, "}"); // missing accept/refuse before end of event block
+	
+}
+
+bool isSuppressed(const Context & context, const string & command) {
+	return contains(suppressions, context, command);
+}
+
+bool isBlockEndSuprressed(const Context & context, const string & command) {
+	return contains(blockSuppressions, context, command);
+}
+
+}

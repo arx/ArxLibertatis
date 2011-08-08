@@ -70,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
@@ -84,10 +84,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 using std::min;
 using std::max;
+using std::string;
 
 struct EQUIP_INFO
 {
@@ -110,17 +111,17 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-ItemType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
-{
-	if ( temp.empty() ) return 0;
-
+ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
+	
+	if(temp.empty()) {
+		return 0;
+	}
+	
 	char c = temp[0];
-
-	if ((temp[0] >= 'A') && (temp[0] <= 'Z'))
-		c = _tolower(temp[0]);
-
-	switch (c)
-	{
+	
+	arx_assert(tolower(c) == c);
+	
+	switch(c) {
 		case 'w':
 			return OBJECT_TYPE_WEAPON;
 		case 'd':
@@ -146,7 +147,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag( const std::string& temp)
 		case 'l':
 			return OBJECT_TYPE_LEGGINGS;
 	}
-
+	
 	return 0;
 }
 //***********************************************************************************************
@@ -200,187 +201,87 @@ extern long EXITING;
 //***********************************************************************************************
 // Recreates player mesh from scratch
 //***********************************************************************************************
-void ARX_EQUIPMENT_RecreatePlayerMesh()
-{
-	if (EXITING) return;
 
+
+static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selection) {
+	
+	if(!player.equiped[equip] || !ValidIONum(player.equiped[equip])) {
+		return;
+	}
+	
 	INTERACTIVE_OBJ * io = inter.iobj[0];
+	
+	arx_assert(inter.iobj[player.equiped[equip]]->tweakerinfo != NULL);
+	
+	const IO_TWEAKER_INFO & tweak = *inter.iobj[player.equiped[equip]]->tweakerinfo;
+	
+	if(!tweak.filename.empty()) {
+		fs::path mesh = "graph/obj3d/interactive/npc/human_base/tweaks" / tweak.filename;
+		EERIE_MESH_TWEAK_Do(io, tw, mesh);
+	}
+	
+	if(tweak.skintochange.empty() || tweak.skinchangeto.empty()) {
+		return;
+	}
+	
+	fs::path file = "graph/obj3d/textures" / tweak.skinchangeto;
+	TextureContainer * temp = TextureContainer::Load(file, TextureContainer::Level);
+	
+	long mapidx = ObjectAddMap(io->obj, temp);
+	
+	long sel = -1;
+	for(size_t i = 0; i < io->obj->selections.size(); i++) {
+		if(io->obj->selections[i].name == selection) {
+			sel = i;
+			break;
+		}
+	}
+	if(sel == -1) {
+		return;
+	}
+	
+	long textochange = -1;
+	for(size_t i = 0; i < io->obj->texturecontainer.size(); i++) {
+		if(tweak.skintochange == io->obj->texturecontainer[i]->m_texName.filename()) {
+			textochange = i;
+		}
+	}
+	if(textochange == -1) {
+		return;
+	}
+	
+	for(size_t i = 0; i < io->obj->facelist.size(); i++) {
+		if(IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel) != -1
+		   && IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel) != -1
+		   && IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel) != -1) {
+			if(io->obj->facelist[i].texid == textochange) {
+				io->obj->facelist[i].texid = (short)mapidx;
+			}
+		}
+	}
+	
+}
 
-	if (io == NULL) return;
-
+void ARX_EQUIPMENT_RecreatePlayerMesh() {
+	
+	if(EXITING) {
+		return;
+	}
+	
+	INTERACTIVE_OBJ * io = inter.iobj[0];
+	if(!io) {
+		return;
+	}
+	
 	if(io->obj != hero) {
 		delete io->obj;
 	}
-
-	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
-	io->obj = loadObject(OBJECT_HUMAN_BASE, false);
+	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false);
 	
-	long sel_ = -1;
-	char pathh[256];
-
-	if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_HELMET]))
-	{
-		INTERACTIVE_OBJ * tweaker = inter.iobj[player.equiped[EQUIP_SLOT_HELMET]];
-
-		if (tweaker)
-		{
-			if (tweaker->tweakerinfo->filename[0] != 0)
-			{
-				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
-				EERIE_MESH_TWEAK_Do(io, TWEAK_HEAD, pathh);
-			}
-
-			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
-			{
-				char path[256];
-				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
-
-				long mapidx = ObjectAddMap(io->obj, temp);
-
-				// retreives head sel
-				for (size_t i = 0; i < io->obj->selections.size(); i++)
-				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name, "head"))
-					{
-						sel_ = i;
-						break;
-					}
-				}
-
-				long textochange = -1;
-
-				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
-						textochange = i;
-				}
-
-				if ((sel_ != -1) && (textochange != -1))
-					for (size_t i = 0; i < io->obj->facelist.size(); i++)
-					{
-						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel_) != -1))
-						{
-							if (io->obj->facelist[i].texid == textochange)
-								io->obj->facelist[i].texid = (short)mapidx;
-						}
-					}
-			}
-		}
-	}
-
-	if ((player.equiped[EQUIP_SLOT_ARMOR] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
-	{
-		INTERACTIVE_OBJ * tweaker = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
-
-		if (tweaker)
-		{
-			if (tweaker->tweakerinfo->filename[0] != 0)
-			{
-				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
-				EERIE_MESH_TWEAK_Do(io, TWEAK_TORSO, pathh);
-			}
-
-			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
-			{
-				char path[256];
-				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
-
-				long mapidx = ObjectAddMap(io->obj, temp);
-
-				// retreives head sel
-				for (size_t i = 0; i < io->obj->selections.size(); i++)
-				{ // TODO iterator
-					if (!strcasecmp(io->obj->selections[i].name, "chest"))
-					{
-						sel_ = i;
-						break;
-					}
-				}
-
-				long textochange = -1;
-
-				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
-						textochange = i;
-				}
-
-				if ((sel_ != -1) && (textochange != -1))
-					for (size_t i = 0; i < io->obj->facelist.size(); i++)
-					{
-						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel_) != -1))
-						{
-							if (io->obj->facelist[i].texid == textochange)
-								io->obj->facelist[i].texid = (short)mapidx;
-						}
-					}
-			}
-		}
-	}
-
-	if ((player.equiped[EQUIP_SLOT_LEGGINGS] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
-	{
-		INTERACTIVE_OBJ * tweaker = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-		if (tweaker)
-		{
-			if (tweaker->tweakerinfo->filename[0] != 0)
-			{
-				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
-				EERIE_MESH_TWEAK_Do(io, TWEAK_LEGS, pathh);
-			}
-
-			if ((tweaker->tweakerinfo->skintochange[0] != 0) && (tweaker->tweakerinfo->skinchangeto[0] != 0))
-			{
-				char path[256];
-				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
-				TextureContainer * temp = TextureContainer::Load(path, TextureContainer::Level);
-
-				long mapidx = ObjectAddMap(io->obj, temp);
-
-				// retreives head sel
-				for (size_t i = 0; i < io->obj->selections.size(); i++)
-				{ // TODO iterator
-					if ( !strcasecmp(io->obj->selections[i].name, "leggings") )
-					{
-						sel_ = i;
-						break;
-					}
-				}
-
-				long textochange = -1;
-
-				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
-				{
-					if ( !strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_texName) ) )
-						textochange = i;
-				}
-
-				if ((sel_ != -1) && (textochange != -1))
-					for (size_t i = 0; i < io->obj->facelist.size(); i++)
-					{
-						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
-						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[2], sel_) != -1))
-						{
-							if (io->obj->facelist[i].texid == textochange)
-								io->obj->facelist[i].texid = (short)mapidx;
-						}
-					}
-			}
-		}
-	}
-
-
+	applyTweak(EQUIP_SLOT_HELMET, TWEAK_HEAD, "head");
+	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
+	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
+	
 	INTERACTIVE_OBJ * target = inter.iobj[0];
 	INTERACTIVE_OBJ * toequip = NULL;
 
@@ -406,14 +307,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 					}
 					else
 					{
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", toequip); //
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 					}
 				}
 				else if (toequip->type_flags & OBJECT_TYPE_SHIELD)
 				{
 					if (player.equiped[EQUIP_SLOT_SHIELD] != 0)
 					{
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "SHIELD_ATTACH", "SHIELD_ATTACH", toequip);
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 					}
 
 				}
@@ -552,7 +453,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 				   )
 				{
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "PRIMARY_ATTACH", "PRIMARY_ATTACH", toequip); //
+					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "primary_attach", "primary_attach", toequip); //
 					return;
 				}
 			}
@@ -586,12 +487,12 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 					if (toequip->type_flags & OBJECT_TYPE_BOW)
 					{
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "TEST", toequip); //
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "test", toequip); //
 						return;
 					}
 
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", toequip); //
+					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 					return;
 				}
 			}
@@ -694,24 +595,20 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	float attack, ac, damages;
 	float backstab = 1.f;
 
-	char wmat[64];
-	char amat[64];
-
-	strcpy(wmat, "BARE");
-	strcpy(amat, "FLESH");
+	string _wmat = "bare";
+	const string * wmat = &_wmat;
+	
+	string _amat = "flesh";
+	const string * amat = &_amat;
 
 	bool critical = false;
 
-	if (io_source == inter.iobj[0]) 
-	{
-		if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
-		        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
-		{
+	if(io_source == inter.iobj[0]) {
+		
+		if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
-
-			if ((io) && (io->weaponmaterial))
-			{
-				strcpy(wmat, io->weaponmaterial);
+			if(io && !io->weaponmaterial.empty()) {
+				wmat = &io->weaponmaterial;
 			}
 		}
 
@@ -739,19 +636,17 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	{
 		if (!(io_source->ioflags & IO_NPC)) return 0.f; // no NPC source...
 
-		if (io_source->weaponmaterial)
-		{
-			strcpy(wmat, io_source->weaponmaterial);
+		if(!io_source->weaponmaterial.empty()){
+			wmat = &io_source->weaponmaterial;
 		}
-
-		if (io_source->_npcdata->weapon != NULL)
-		{
-			INTERACTIVE_OBJ * iow = (INTERACTIVE_OBJ *)io_source->_npcdata->weapon;
-
-			if (iow->weaponmaterial)
-				strcpy(wmat, iow->weaponmaterial);
+		
+		if(io_source->_npcdata->weapon != NULL) {
+			INTERACTIVE_OBJ * iow = io_source->_npcdata->weapon;
+			if(!iow->weaponmaterial.empty()) {
+				wmat = &iow->weaponmaterial;
+			}
 		}
-
+		
 		attack = io_source->_npcdata->tohit;
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
@@ -804,21 +699,15 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	}
 
 
-	if (io_target->armormaterial)
-	{
-		strcpy(amat, io_target->armormaterial);
+	if(!io_target->armormaterial.empty()) {
+		amat = &io_target->armormaterial;
 	}
 
-	if (io_target == inter.iobj[0])
-	{
-		if ((player.equiped[EQUIP_SLOT_ARMOR] > 0)
-		        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
-		{
+	if(io_target == inter.iobj[0]) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] > 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
-
-			if ((io) && (io->armormaterial))
-			{
-				strcpy(amat, io->armormaterial);
+			if(io && !io->armormaterial.empty()) {
+				amat = &io->armormaterial;
 			}
 		}
 	}
@@ -834,12 +723,10 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	power = dmgs * ( 1.0f / 20 );
 
 	if (power > 1.f) power = 1.f;
-
-	if (!strcasecmp(wmat, "BARE"))
-		power = power * 0.1f + 0.9f;
-	else power = power * 0.1f + 0.9f;
-
-	ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &pos, io_source);
+	
+	power = power * 0.1f + 0.9f;
+	
+	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, &pos, io_source);
 
 
 	float chance = 100.f - (ac - attack); 
@@ -847,8 +734,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (dice <= chance) 
 	{
-		strcpy(amat, "FLESH");
-		ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &pos, io_source);
+		ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
 
 		Vec3f pos;
 		pos.x = io_target->pos.x;
@@ -1166,16 +1052,17 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							}
 							else
 							{
-								char weapon_material[64] = "";
+								string _weapon_material = "metal";
+								const string * weapon_material = &_weapon_material;
 
-								if (io_weapon && io_weapon->weaponmaterial) strcpy(weapon_material, io_weapon->weaponmaterial);
-								else
-									strcpy(weapon_material, "METAL");
+								if(io_weapon && !io_weapon->weaponmaterial.empty()) {
+									weapon_material = &io_weapon->weaponmaterial;
+								}
 
 								char bkg_material[128];
 
 								if (ARX_MATERIAL_GetNameById(target->material, bkg_material))
-									ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, NULL);
+									ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, NULL);
 							}
 						}
 					}
@@ -1201,18 +1088,18 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					}
 					else
 					{
-						char weapon_material[64] = "";
+						string _weapon_material = "metal";
+						const string * weapon_material = &_weapon_material;
+						if(io_weapon && !io_weapon->weaponmaterial.empty()) {
+							weapon_material = &io_weapon->weaponmaterial;
+						}
 
-						if (io_weapon && io_weapon->weaponmaterial) strcpy(weapon_material, io_weapon->weaponmaterial);
-						else
-							strcpy(weapon_material, "METAL");
-
-						std::string bkg_material = "EARTH";
+						std::string bkg_material = "earth";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
 							bkg_material = GetMaterialString( ep->tex->m_texName );
 
-						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
+						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
 					}
 				}
 			}
@@ -1337,11 +1224,11 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 
 		if (toequip->type_flags & OBJECT_TYPE_BOW)
 		{
-			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "TEST", toequip); //
+			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "test", toequip); //
 		}
 		else
 		{
-			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "WEAPON_ATTACH", "PRIMARY_ATTACH", toequip); //
+			EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
 		}
 
 		if ((toequip->type_flags & OBJECT_TYPE_2H) || (toequip->type_flags & OBJECT_TYPE_BOW))
@@ -1361,7 +1248,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		}
 
 		player.equiped[EQUIP_SLOT_SHIELD] = (short)validid;
-		EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "SHIELD_ATTACH", "SHIELD_ATTACH", toequip);
+		EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 
 		if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
@@ -1447,22 +1334,17 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-//***********************************************************************************************
-// Sets/unsets an object type flag
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const std::string& temp, long val)
-{
-	// avoid erroneous objects
-	if (!io) return;
-
-	// retrieves flag
-	ItemType flagg = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
-
-	if (val)	// add flag
-		io->type_flags |= flagg;
-	else		// remove flag
-		io->type_flags &= ~flagg;
+bool ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ & io, const string & temp, bool set) {
+	
+	ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
+	
+	if(set) {
+		io.type_flags |= flag;
+	} else {
+		io.type_flags &= ~flag;
+	}
+	
+	return (flag != 0);
 }
 
 //***********************************************************************************************
@@ -1590,7 +1472,7 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 
 	if (!io->_itemdata->equipitem)
 	{
-		io->_itemdata->equipitem = (IO_EQUIPITEM *) malloc(sizeof(IO_EQUIPITEM)); //"IOequip"
+		io->_itemdata->equipitem = (IO_EQUIPITEM *) malloc(sizeof(IO_EQUIPITEM));
 
 		if (io->_itemdata->equipitem == NULL) return;
 
@@ -1601,16 +1483,16 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value = 0;
 	}
 
-	if (!strcasecmp(param1, "-s"))
-	{
+	if(param1 == "-s") {
 		for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
 		{
 			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
 			{
-				if (!strcasecmp(param2, "PARALYSE"))
+				if(param2 == "paralyse") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_PARALYZE;
-				else if (!strcasecmp(param2, "DRAINLIFE"))
+				} else if(param2 == "drainlife") {
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_DRAIN_LIFE;
+				}
 
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].flags = flags;
@@ -1620,17 +1502,16 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 
 		return;
 	}
-	else
-		for (long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++)
-		{
-			if (!strcasecmp(param2, equipinfo[i].name))
-			{
+	else {
+		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
+			if(param2 == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].special = 0;
 				io->_itemdata->equipitem->elements[i].flags = flags;
 				return;
 			}
 		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1666,9 +1547,9 @@ float GetHitValue( const std::string& name)
 
 	if (len < 5) return -1;
 
-	if (((name[0] == 'H') || (name[0] == 'h'))
-	        && ((name[1] == 'I') || (name[1] == 'i'))
-	        && ((name[2] == 'T') || (name[1] == 't'))
+	if ((name[0] == 'h')
+	        && (name[1] == 'i')
+	        && (name[2] == 't')
 	        && (name[3] == '_'))
 	{
 		long val = atoi( name.substr(4) ); // Get the number after the first 4 characters in the string

@@ -100,9 +100,6 @@ class Config {
 	
 public:
 	
-	// section FIRSTRUN
-	bool firstRun;
-	
 	// section LANGUAGE
 	std::string language;
 	
@@ -155,6 +152,11 @@ public:
 	// section KEY
 	ActionKey actions[NUM_ACTION_KEY];
 	
+	enum MigrationStatus {
+		OriginalAssets = 0,
+		CaseSensitiveFilenames = 1
+	};
+	
 	// section MISC
 	struct {
 		
@@ -162,6 +164,10 @@ public:
 		bool forceToggle; // should be in input?
 		bool gore;
 		bool newControl; // what is this?
+		
+		MigrationStatus migration;
+		
+		int quicksaveSlots;
 		
 	} misc;
 	

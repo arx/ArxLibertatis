@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/font/Font.h"
 
 #include "io/FilePath.h"
@@ -80,8 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 
-#include "scripting/Script.h"
-#include "scripting/ScriptEvent.h"
+#include "script/ScriptEvent.h"
 
 using std::min;
 using std::max;
@@ -400,16 +400,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 
 	long flg = 0;
 
-	// TODO move to caller
-	std::string section = data;
-	if(!section.empty() && section[0] == '[' && section[section.length() - 1] == ']') {
-		section = section.substr(1, section.length() - 2);
-	}
-	transform(section.begin(), section.end(), section.begin(), ::tolower);
-
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
-		std::string _output = getLocalised(section);
+		std::string _output = getLocalised(data);
 
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
@@ -418,13 +411,13 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	}
 	
 	
-	LogDebug << "speech \"" << section << "\" \"" << data << "\"";
+	LogDebug << "speech \"" << data << '"';
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)
 	{
 		long count = 0;
 
-		count = getLocalisedKeyCount(section);
+		count = getLocalisedKeyCount(data);
 
 		do {
 			flg = rnd() * count + 1;
@@ -440,14 +433,17 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 
 	char speech_sample[256];
 	if (flg > 1)
-		sprintf(speech_sample, "%s%ld", section.c_str(), flg);
+		sprintf(speech_sample, "%s%ld", data.c_str(), flg);
 	else
-		strcpy(speech_sample, section.c_str());
+		strcpy(speech_sample, data.c_str());
 
 	if (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)
 		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample);
 	else
 		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample, io);
+	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
+		aspeech[num].sample = audio::INVALID_ID;
+	}
 
 	//Next lines must be removed (use callback instead)
 	aspeech[num].duration = (unsigned long)ARX_SOUND_GetDuration(aspeech[num].sample);

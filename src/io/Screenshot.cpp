@@ -59,88 +59,36 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <string>
-#include <cassert>
 #include <climits>
 #include <sstream>
 
 #include "core/Core.h"
 #include "graphics/image/Image.h"
 #include "io/Filesystem.h"
+#include "io/FilePath.h"
 
 using std::ostringstream;
 
 static SnapShot * pSnapShot;
 
-SnapShot::SnapShot(const char * _pDir, const char * _pName, bool _bReplace) {
-	ulNum = 0;
-
-	if (_pName)
-	{
-		char tTxt[256];
-
-		if (_pDir)
-		{
-			strcpy(tTxt, _pDir);
-		}
-		else
-		{
-			*tTxt = 0;
-		}
-
-		strcat(tTxt, _pName);
-		pName = strdup(tTxt);
-//		strupr(pName);
-
-		tTxt[0] = '\0';
-
-		if (_pDir)
-		{
-			strcpy(tTxt, _pDir);
-		}
-
-		strcat(tTxt, "*.bmp");
-
-		if (!_bReplace)
-		{
-			char tTemp[sizeof(WIN32_FIND_DATA)+2];
-			WIN32_FIND_DATA * w32fdata = (WIN32_FIND_DATA *)tTemp;
-			HANDLE h = FindFirstFile((const char *)tTxt, w32fdata);
-
-			if (h == INVALID_HANDLE_VALUE) return;
-
-			do
-			{
-				if (!(w32fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-				{
-					strcpy(tTxt, w32fdata->cFileName);
-//					strupr(tTxt);
-
-					if (strstr(tTxt, pName)) ulNum++;
-				}
-			}
-			while (FindNextFile(h, w32fdata));
-
-			FindClose(h);
-		}
-	}
-	else
-	{
-		pName = NULL;
-	}
+SnapShot::SnapShot(const fs::path & name, bool replace) {
+	
+	int num = 0;
+	
+	do {
+		
+		ostringstream oss;
+		oss << name.filename() << '_' << num << ".bmp";
+		
+		file = name.parent() / oss.str();
+		
+		num++;
+	} while(!replace && fs::exists(file));
+	
 }
 
-//-----------------------------------------------------------------------------
-SnapShot::~SnapShot()
-{
-	if (pName)
-	{
-		free((void *)pName);
-		pName = NULL;
-	}
-}
+SnapShot::~SnapShot() { }
 
-//-----------------------------------------------------------------------------
-//Sauvegarde en BMP 32bits
 bool SnapShot::GetSnapShot() {
 	
 	Image image;
@@ -149,54 +97,37 @@ bool SnapShot::GetSnapShot() {
 		return false;
 	}
 	
-	ostringstream oss;
-	oss << pName << '_' << ulNum << ".bmp";
-	
-	image.save(oss.str());
+	image.save(file);
 	
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-//Sauvegarde en BMP 24bits
-bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight) {
+bool SnapShot::GetSnapShotDim(int width, int height) {
 	
 	Image image;
 	
-	if(!GRenderer->getSnapshot(image, _iWith, _iHeight)) {
+	if(!GRenderer->getSnapshot(image, width, height)) {
 		return false;
 	}
 	
-	ostringstream oss;
-	oss << pName << '_' << ulNum << ".bmp";
-	
-	image.save(oss.str());
+	image.save(file);
 	
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-void InitSnapShot(const char * _pDir, const char * _pName)
-{
+void InitSnapShot(const fs::path & name) {
 	FreeSnapShot();
-	pSnapShot = new SnapShot(_pDir, _pName);
+	pSnapShot = new SnapShot(name);
 }
 
-//-----------------------------------------------------------------------------
-void GetSnapShot()
-{
-	if (pSnapShot)
-	{
+void GetSnapShot() {
+	if(pSnapShot) {
 		pSnapShot->GetSnapShot();
 	}
 }
 
-//-----------------------------------------------------------------------------
-void FreeSnapShot()
-{
-	if (pSnapShot)
-	{
-		delete pSnapShot;
-		pSnapShot = NULL;
+void FreeSnapShot() {
+	if(pSnapShot) {
+		delete pSnapShot, pSnapShot = NULL;
 	}
 }

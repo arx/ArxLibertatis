@@ -827,7 +827,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								io->collide_door_time = ARXTimeUL(); 	
 
 								if (CollidedFromBack(io,ioo))
-									SendIOScriptEvent(io,SM_COLLIDE_NPC,"BACK");
+									SendIOScriptEvent(io,SM_COLLIDE_NPC,"back");
 								else
 									SendIOScriptEvent(io,SM_COLLIDE_NPC);
 
@@ -835,7 +835,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								io->collide_door_time = ARXTimeUL(); 
 
 								if (CollidedFromBack(ioo,io))
-									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"BACK");
+									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"back");
 								else
 									SendIOScriptEvent(ioo,SM_COLLIDE_NPC);
 							}
@@ -862,7 +862,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 									if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
 
 									io->_npcdata->pathfind.list=NULL;
-									SendIOScriptEvent(io,SM_NULL,"","PATHFINDER_END");
+									SendIOScriptEvent(io,SM_NULL,"","pathfinder_end");
 								}							
 
 								if (!io->_npcdata->reachedtarget)
@@ -1486,7 +1486,7 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, CollisionFlags flags)
 {
 	PUSHABLE_NPC=NULL;
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
@@ -1656,7 +1656,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 //flags & 32 Just Test !!!
 //flags & 64 NPC mode
 //----------------------------------------------------------------------------------------------
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags)
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP, CollisionFlags flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);
 //	+5 on 15

@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
@@ -85,7 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 using std::min;
 using std::max;
@@ -106,7 +107,7 @@ static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 
 	if ((io->ignition <= 0.f) && (io->ignition + dmg > 1.f))
 	{
-		SendIOScriptEvent(io, SM_ENTERZONE, "COOK_S");
+		SendIOScriptEvent(io, SM_ENTERZONE, "cook_s");
 	}
 
 	if (io->ioflags & IO_FIX) io->ignition += dmg * ( 1.0f / 10 );
@@ -285,7 +286,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 			if (inter.iobj[source]->ioflags & IO_NPC)
 			{
-				pio = (INTERACTIVE_OBJ *)inter.iobj[source]->_npcdata->weapon;
+				pio = inter.iobj[source]->_npcdata->weapon;
 
 				if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0)))
 					pio = NULL;
@@ -340,16 +341,13 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 							EVENT_SENDER = inter.iobj[0];
 							std::string killer;
 
-							if (source == 0) killer = "PLAYER";
-							else if (source <= -1) killer = "NONE";
-							else if (ValidIONum(source)
-							         &&	(inter.iobj[source]->filename)
-							         &&	(inter.iobj[source]->filename[0] != 0))
-							{
+							if (source == 0) killer = "player";
+							else if (source <= -1) killer = "none";
+							else if(ValidIONum(source) && !inter.iobj[source]->filename.empty()) {
 								killer = inter.iobj[source]->long_name();
 							}
 
-							SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "TARGET_DEATH");
+							SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "target_death");
 						}
 					}
 				}
@@ -506,24 +504,24 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 		{
 			if (flags & 1)
 			{
-				sprintf(dmm, "%f SPELL", dmg);
+				sprintf(dmm, "%f spell", dmg);
 			}
 			else switch	(ARX_EQUIPMENT_GetPlayerWeaponType())
 				{
 					case WEAPON_BARE:
-						sprintf(dmm, "%f BARE", dmg);
+						sprintf(dmm, "%f bare", dmg);
 						break;
 					case WEAPON_DAGGER:
-						sprintf(dmm, "%f DAGGER", dmg);
+						sprintf(dmm, "%f dagger", dmg);
 						break;
 					case WEAPON_1H:
-						sprintf(dmm, "%f 1H", dmg);
+						sprintf(dmm, "%f 1h", dmg);
 						break;
 					case WEAPON_2H:
-						sprintf(dmm, "%f 2H", dmg);
+						sprintf(dmm, "%f 2h", dmg);
 						break;
 					case WEAPON_BOW:
-						sprintf(dmm, "%f ARROW", dmg);
+						sprintf(dmm, "%f arrow", dmg);
 						break;
 					default:
 						sprintf(dmm, "%f", dmg);
@@ -539,10 +537,11 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
 
-void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer)
-{
-	if (!strcasecmp(io_dead->mainevent, "DEAD"))
+void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer) {
+	
+	if(io_dead->mainevent == "dead") {
 		return;
+	}
 
 	INTERACTIVE_OBJ * old_sender = EVENT_SENDER;
 	EVENT_SENDER = io_killer;
@@ -576,13 +575,16 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	//Kill all Timers...
 	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
 
-	if (strcasecmp(io_dead->mainevent, "DEAD"))
-		NotifyIOEvent(io_dead, SM_DIE);
-
+	if(io_dead->mainevent != "dead") {
+		if(SendIOScriptEvent(io_dead, SM_DIE) != REFUSE && ValidIOAddress(io_dead)) {
+			io_dead->infracolor = Color3f::blue;
+		}
+	}
+	
 	if (!ValidIOAddress(io_dead))
 		return;
 
-	ARX_SCRIPT_SetMainEvent(io_dead, "DEAD");
+	ARX_SCRIPT_SetMainEvent(io_dead, "dead");
 
 	if(fartherThan(io_dead->pos, ACTIVECAM->pos, 3200.f)) {
 		io_dead->animlayer[0].ctime = 9999999;
@@ -596,7 +598,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 
 	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
 
-	if (io_killer == inter.iobj[0]) killer = "PLAYER";
+	if (io_killer == inter.iobj[0]) killer = "player";
 	else
 	{
 		if (io_killer)
@@ -616,7 +618,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 				if (inter.iobj[ioo->targetinfo] == io_dead)
 				{
 					EVENT_SENDER = io_dead; 
-					Stack_SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "TARGET_DEATH");
+					Stack_SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "target_death");
 					ioo->targetinfo = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}
@@ -625,7 +627,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 				if (inter.iobj[ioo->_npcdata->pathfind.truetarget] == io_dead)
 				{
 					EVENT_SENDER = io_dead; 
-					Stack_SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "TARGET_DEATH");
+					Stack_SendIOScriptEvent(inter.iobj[i], SM_NULL, killer, "target_death");
 					ioo->_npcdata->pathfind.truetarget = TARGET_NONE;
 					ioo->_npcdata->reachedtarget = 0;
 				}
@@ -641,12 +643,9 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	{
 		io_dead->_npcdata->life = 0;
 
-		if (io_dead->_npcdata->weapon != NULL)
-		{
-			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io_dead->_npcdata->weapon;
-
-			if (ValidIOAddress(ioo))
-			{
+		if(io_dead->_npcdata->weapon) {
+			INTERACTIVE_OBJ * ioo = io_dead->_npcdata->weapon;
+			if(ValidIOAddress(ioo)) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
 				ioo->pos.x = ioo->obj->vertexlist3[ioo->obj->origin].v.x;
@@ -874,7 +873,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 		if (EVENT_SENDER && (EVENT_SENDER->summoner == 0))
 		{
 			EVENT_SENDER = inter.iobj[0];
-			sprintf(tex, "%5.2f SUMMONED", io->dmg_sum);
+			sprintf(tex, "%5.2f summoned", io->dmg_sum);
 		}
 		else
 			sprintf(tex, "%5.2f", io->dmg_sum);
@@ -907,14 +906,12 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 					}
 				}
 			}
-			else
-			{
-				if (inter.iobj[source]->ioflags & IO_NPC)
-				{
-					pio = (INTERACTIVE_OBJ *)inter.iobj[source]->_npcdata->weapon;
-
-					if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0)))
+			else {
+				if(inter.iobj[source]->ioflags & IO_NPC) {
+					pio = inter.iobj[source]->_npcdata->weapon;
+					if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) {
 						pio = NULL;
+					}
 				}
 			}
 
@@ -947,24 +944,24 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 				{
 					if (flags & 1)
 					{
-						sprintf(dmm, "%f SPELL", dmg);
+						sprintf(dmm, "%f spell", dmg);
 					}
 					else switch	(ARX_EQUIPMENT_GetPlayerWeaponType())
 						{
 							case WEAPON_BARE:
-								sprintf(dmm, "%f BARE", dmg);
+								sprintf(dmm, "%f bare", dmg);
 								break;
 							case WEAPON_DAGGER:
-								sprintf(dmm, "%f DAGGER", dmg);
+								sprintf(dmm, "%f dagger", dmg);
 								break;
 							case WEAPON_1H:
-								sprintf(dmm, "%f 1H", dmg);
+								sprintf(dmm, "%f 1h", dmg);
 								break;
 							case WEAPON_2H:
-								sprintf(dmm, "%f 2H", dmg);
+								sprintf(dmm, "%f 2h", dmg);
 								break;
 							case WEAPON_BOW:
-								sprintf(dmm, "%f ARROW", dmg);
+								sprintf(dmm, "%f arrow", dmg);
 								break;
 							default:
 								sprintf(dmm, "%f", dmg);
@@ -977,7 +974,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 				        &&	(EVENT_SENDER->summoner == 0))
 				{
 					EVENT_SENDER = inter.iobj[0];
-					sprintf(dmm, "%f SUMMONED", dmg);
+					sprintf(dmm, "%f summoned", dmg);
 				}
 
 				if (SendIOScriptEvent(io, SM_HIT, dmm) != ACCEPT) return damagesdone;
@@ -1242,10 +1239,10 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 								param[0] = 0;
 
 								if (damages[j].type & DAMAGE_TYPE_FIRE)
-									strcpy(param, "FIRE");
+									strcpy(param, "fire");
 
 								if (damages[j].type & DAMAGE_TYPE_COLD)
-									strcpy(param, "COLD");
+									strcpy(param, "cold");
 
 								SendIOScriptEvent(io, SM_COLLIDE_FIELD, param);
 

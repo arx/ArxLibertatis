@@ -30,45 +30,120 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
-class HashMap;
-typedef void * FileHandle;
+#include <boost/unordered_map.hpp>
 
+#include "platform/Platform.h"
+#include "io/FilePath.h"
+#include "io/FileStream.h"
 
+/*!
+ * Interface to read and write save block files. (used for savegames)
+ */
 class SaveBlock {
 	
 private:
 	
-	struct File;
-	typedef std::vector<File> FileList;
+	struct File {
+		
+		struct Chunk {
+			
+			size_t size;
+			size_t offset;
+			
+			Chunk() : size(0), offset(0) { };
+			Chunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { };
+			
+		};
+		
+		typedef std::vector<Chunk> ChunkList;
+		
+		enum Compression {
+			Unknown,
+			None,
+			ImplodeCrypt,
+			Deflate
+		};
+		
+		size_t storedSize;
+		size_t uncompressedSize;
+		ChunkList chunks;
+		Compression comp;
+		
+		const char * compressionName() const;
+		
+		bool loadOffsets(std::istream & handle, u32 version);
+		
+		void writeEntry(std::ostream & handle, const std::string & name) const;
+		
+		char * loadData(std::istream & handle, size_t & size, const std::string & name) const;
+		
+	};
 	
-	FileHandle handle;
+	typedef boost::unordered_map<std::string, File> Files;
+	
+	fs::path savefile;
+	fs::fstream handle;
 	size_t totalSize;
-	FileList files;
-	bool firstSave;
-	HashMap * hashMap;
-	std::string savefile;
+	size_t usedSize;
+	size_t chunkCount;
+	Files files;
 	
-	File * getFile(const std::string & name);
 	bool defragment();
 	bool loadFileTable();
-	void writeFileTable();
+	void writeFileTable(const std::string & important);
 	
 public:
 	
-	SaveBlock(const std::string & savefile);
+	SaveBlock(const fs::path & savefile);
+	
+	/*!
+	 * Destructor: this will not finalize the save block.
+	 * 
+	 * If the SaveBlock vas changed (via save()) and not flushed since, the save fill will be corrupted.
+	 */
 	~SaveBlock();
 	
-	bool BeginSave();
-	bool flush();
+	/*!
+	 * Open a save block.
+	 * @param writable must be true if the block is going to be changed
+	 */
+	bool open(bool writable = false);
+	
+	/*!
+	 * Finalize the save block: defragment if needed and write the file table.
+	 */
+	bool flush(const std::string & important);
+	
+	/*!
+	 * Save a file to the save block.
+	 * This only writes the file data and does not add the file to the file table.
+	 * Also, it may destroy any previous on-disk file table.
+	 * flush() should be called before destructing this SaveBlock instance
+	 */
 	bool save(const std::string & name, const char * data, size_t size);
 	
-	bool BeginRead();
-	char * load(const std::string & name, size_t & size) const;
+	char * load(const std::string & name, size_t & size);
 	bool hasFile(const std::string & name) const;
 	
 	std::vector<std::string> getFiles() const;
 	
-	static char * load(const std::string & save, const std::string & name, size_t & size);
+	/*!
+	 * Load a single file from the save block.
+	 * 
+	 * This is semantically equivalent to, but hopefully faster than:
+	 * <pre>
+	 *  SaveBlock block(savefile);
+	 *  return block.open(false) ? block.load(name, size) : NULL
+	 * </pre>
+	 * 
+	 * This is optimized for loading the file named in flush().
+	 * 
+	 * @param savefile the save block to load from
+	 * @param name the file to load
+	 * @param size will be set to the loaded size
+	 * @return a new, malloc-allocated buffer or NULL if eiether the saveblock could not be opened or doesn't contain a file with the given name.
+	 */
+	static char * load(const fs::path & savefile, const std::string & name, size_t & size);
 	
 };
 

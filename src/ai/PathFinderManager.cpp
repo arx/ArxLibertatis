@@ -160,7 +160,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 		temp->next = NULL;
 		pathfinder_queue_start = temp;
 	}
-	else if (req->ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE | BEHAVIOUR_LOOK_FOR) && cur->next)
+	else if ((req->ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE | BEHAVIOUR_LOOK_FOR)) && cur->next)
 	{
 		// priority: insert as second element of queue
 		temp->next = cur->next;

@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-//#include "core/Core.h"
 
 #ifndef ARX_GAME_LEVELS_H
 #define ARX_GAME_LEVELS_H

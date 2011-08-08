@@ -59,13 +59,6 @@ public:
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	
-	// Texturing
-	unsigned int GetTextureStageCount() const;
-	TextureStage* GetTextureStage(unsigned int textureStage);
-	void ResetTexture(unsigned int textureStage);
-	void SetTexture(unsigned int textureStage, Texture* pTexture);
-	void SetTexture(unsigned int textureStage, TextureContainer* pTextureContainer);
-	
 	float GetMaxAnisotropy() const;
 	
 	// Utilities...

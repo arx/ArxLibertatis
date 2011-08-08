@@ -57,9 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Clothes.h"
 
+#include <cstring>
+
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+
+using std::vector;
 
 #define MOLLESS_USEGRAVITY 1
 #define MOLLESS_USEDAMPING 1
@@ -135,19 +139,15 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 	long sel = -1;
 	long selmounocol = -1;
 
-	for (size_t i = 0; i < obj->selections.size(); i++)
-	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name.c_str(), "mou"))
-		{
+	for(size_t i = 0; i < obj->selections.size(); i++) { // TODO iterator
+		if(obj->selections[i].name == "mou") {
 			sel = i;
 			break;
 		}
 	}
-
-	for (size_t i = 0; i < obj->selections.size(); i++)
-	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name.c_str(), "mounocol"))
-		{
+	
+	for(size_t i = 0; i < obj->selections.size(); i++) { // TODO iterator
+		if(obj->selections[i].name == "mounocol") {
 			selmounocol = i;
 			break;
 		}

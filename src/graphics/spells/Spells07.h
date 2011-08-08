@@ -55,11 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-//TODO(lubosz): empty file
-
 #ifndef ARX_CSPELLFX_LVL07_H
 #define ARX_CSPELLFX_LVL07_H
 
+#include "graphics/data/Mesh.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
 #include "graphics/GraphicsTypes.h"

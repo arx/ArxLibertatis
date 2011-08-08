@@ -33,10 +33,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "platform/String.h"
@@ -289,12 +289,12 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	}
 }
 
-CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
+CinematicBitmap* CreateCinematicBitmap(const fs::path & path, int scale) {
 
 	int nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
 	
-	string name = GetName(path);
+	string name = path.basename();
 	if(name.empty()) {
 		return 0;
 	}
@@ -305,23 +305,15 @@ CinematicBitmap* CreateCinematicBitmap(const string & path, int scale) {
 
 	LogDebug << "loading cinematic texture " << path;
 
-	char * data = 0;
 	size_t size = 0;
 	
-	string filename = path;
-	SetExt(filename, ".bmp");
-	if (PAK_FileExist(filename))
-	{
-		data = (char*)PAK_FileLoadMalloc(filename, size);
+	fs::path filename = path;
+	filename.set_ext("bmp");
+	char * data = resources->readAlloc(filename, size);
+	if(!data) {
+		filename.set_ext("tga");
+		data = resources->readAlloc(filename, size);
 	}
-	else
-	{
-		SetExt(filename, ".tga");
-		if (PAK_FileExist(filename))
-		{
-			data = (char*)PAK_FileLoadMalloc(filename, size);
-			}
-		}
 
 	if(!data)
 		{

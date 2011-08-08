@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/VertexBuffer.h"
 #include "graphics/GraphicsEnum.h"
+#include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 
 using std::min;
@@ -108,7 +110,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 	CalcFaceNormal(ep,ep->v);
 
-	if (EEfabs(ep->norm dot ep2->norm) < 1.f - tolerance) return false;
+	if (fabs(dot(ep->norm, ep2->norm)) < 1.f - tolerance) return false;
 	
 	for (long i=0;i<3;i++)
 	{

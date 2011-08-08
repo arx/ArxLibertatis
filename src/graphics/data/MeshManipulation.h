@@ -42,33 +42,43 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef EERIE_MESH_TWEAK_H
-#define EERIE_MESH_TWEAK_H
+#ifndef ARX_GRAPHICS_DATA_MESHMANIPULATION_H
+#define ARX_GRAPHICS_DATA_MESHMANIPULATION_H
 
 #include <string>
+
+#include "platform/Flags.h"
+#include "io/FilePath.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 class TextureContainer;
 
-#define	TWEAK_ERROR	0
-#define TWEAK_HEAD	2
-#define TWEAK_TORSO 4
-#define	TWEAK_LEGS	8
-#define	TWEAK_ALL	TWEAK_HEAD | TWEAK_TORSO | TWEAK_LEGS
-#define	TWEAK_UPPER	TWEAK_HEAD | TWEAK_TORSO
-#define TWEAK_LOWER TWEAK_TORSO | TWEAK_LEGS
-#define	TWEAK_UP_LO	TWEAK_HEAD | TWEAK_LEGS
-#define TWEAK_REMOVE 1
-#define	TWEAK_TYPE_SKIN	16
-#define TWEAK_TYPE_ICON	32
-#define TWEAK_TYPE_MESH	64
+enum TweakFlag {
+	TWEAK_REMOVE    = (1<<0),
+	TWEAK_HEAD      = (1<<1),
+	TWEAK_TORSO     = (1<<2),
+	TWEAK_LEGS      = (1<<3),
+	TWEAK_TYPE_SKIN = (1<<4),
+	TWEAK_TYPE_ICON = (1<<5),
+	TWEAK_TYPE_MESH = (1<<6)
+};
+DECLARE_FLAGS(TweakFlag, TweakType);
+DECLARE_FLAGS_OPERATORS(TweakType);
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string & path);
+struct TWEAK_INFO {
+	
+	TweakType type;
+	fs::path param1;
+	fs::path param2;
+	
+};
+
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path);
 long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string & skintochange, const std::string & skinname);
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & skintochange, const fs::path & skinname);
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);
 void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj);
 
-#endif
+#endif // ARX_GRAPHICS_DATA_MESHMANIPULATION_H

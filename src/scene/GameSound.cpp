@@ -36,10 +36,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 #include <vector>
 #include <sstream>
+#include <cstdio>
 
 #include "animation/Animation.h"
 
 #include "audio/Audio.h"
+#include "audio/Sample.h"
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -54,26 +56,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
 #include "io/PakReader.h"
-#include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/IniReader.h"
 
+#include "platform/Platform.h"
 #include "platform/String.h"
 #include "platform/Thread.h"
 
 #include "scene/Interactive.h"
 
-#include "scripting/Script.h"
-#include <audio/Sample.h>
+#include "script/Script.h"
 
 using std::map;
 using std::string;
 using std::istringstream;
 using std::ostringstream;
 using std::vector;
+using std::sprintf;
 
 using namespace audio;
 
@@ -108,16 +109,16 @@ static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
-static const string ARX_SOUND_PATH_INI = "localisation\\";
-static const char ARX_SOUND_PATH_SAMPLE[] = "sfx\\";
-static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx\\ambiance\\";
-static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx\\environment\\";
-static const string ARX_SOUND_PRESENCE_NAME = "presence";
-static const char ARX_SOUND_FILE_EXTENSION_WAV[] = ".wav";
+static const fs::path ARX_SOUND_PATH_INI = "localisation";
+static const char ARX_SOUND_PATH_SAMPLE[] = "sfx";
+static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance";
+static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
+static const fs::path ARX_SOUND_PRESENCE_NAME = "presence";
+static const string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
 static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
 static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
-static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
+static const fs::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 	"snd_armor",
 	"snd_step",
 	"snd_weapon"
@@ -126,8 +127,8 @@ static const string ARX_SOUND_COLLISION_MAP_NAMES[] = {
 static bool bIsActive(false);
 
 
-static long ambiance_zone(INVALID_ID);
-static long ambiance_menu(INVALID_ID);
+static AmbianceId ambiance_zone(INVALID_ID);
+static AmbianceId ambiance_menu = INVALID_ID;
 
 static long Inter_Materials[MAX_MATERIALS][MAX_MATERIALS][MAX_VARIANTS];
 
@@ -166,7 +167,7 @@ namespace Section {
 static const string presence = "presence";
 }
 
-typedef map<string, float> PresenceFactors;
+typedef map<fs::path, float> PresenceFactors;
 static PresenceFactors presence;
 
 }
@@ -324,7 +325,7 @@ ArxSound SND_SPELL_TELEPORTED(INVALID_ID);
 ArxSound SND_SPELL_VISION_START(INVALID_ID);
 ArxSound SND_SPELL_VISION_LOOP(INVALID_ID);
 
-static void ARX_SOUND_EnvironmentSet(const std::string & name);
+static void ARX_SOUND_EnvironmentSet(const fs::path & name);
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
@@ -332,7 +333,7 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
-static float GetSamplePresenceFactor(const string & name);
+static float GetSamplePresenceFactor(const fs::path & name);
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
@@ -341,7 +342,7 @@ bool ARX_SOUND_Init()
 {
 	if (bIsActive) ARX_SOUND_Release();
 
-	arx_assert(ARX_SOUND_INVALID_RESOURCE == INVALID_ID);
+	BOOST_STATIC_ASSERT(ARX_SOUND_INVALID_RESOURCE == INVALID_ID);
 	
 	if(aalInit(config.audio.backend,  config.audio.eax)) {
 		aalClean();
@@ -470,7 +471,7 @@ void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Ve
 	}
 }
 
-void ARX_SOUND_EnvironmentSet(const string & name) {
+void ARX_SOUND_EnvironmentSet(const fs::path & name) {
 	
 	if(bIsActive) {
 		EnvId e_id = aalGetEnvironment(name);
@@ -497,7 +498,7 @@ long ARX_SOUND_PlaySFX(ArxSound & sample_id, const Vec3f * position, float pitch
 			return -1;
 	}
 
-	string sample_name;
+	fs::path sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -584,20 +585,21 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
 	}
 }
 
-long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
+long ARX_SOUND_PlaySpeech(const fs::path & name, const INTERACTIVE_OBJ * io)
 {
 	if (!bIsActive) return INVALID_ID;
 
 	Channel channel;
 	SampleId sample_id;
 
-	string file_name = "speech\\" + config.language + "\\" + name + ".wav";
+	fs::path file_name = fs::path("speech") / config.language / name;
+	file_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 
 	sample_id = aalCreateSample(file_name);
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_AUTOFREE | FLAG_FALLOFF;
-	channel.volume = 1.0F;
+	channel.volume = 1.f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
 
@@ -608,15 +610,14 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
 		{
-			channel.position.x = io->pos.x;
-			channel.position.y = io->pos.y;
-			channel.position.z = io->pos.z;
+			channel.position = io->pos;
 		}
 
-		if (ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE))
-			return -1;
+		if(ACTIVECAM && distSqr(ACTIVECAM->pos, io->pos) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+			return ARX_SOUND_TOO_FAR; // TODO sample is never freed!
+		}
 
-		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.0F)
+		if (io->ioflags & IO_NPC && io->_npcdata->speakpitch != 1.f)
 		{
 			channel.flags |= FLAG_PITCH;
 			channel.pitch = io->_npcdata->speakpitch;
@@ -626,9 +627,7 @@ long ARX_SOUND_PlaySpeech(const string & name, const INTERACTIVE_OBJ * io)
 	else
 	{
 		channel.flags |= FLAG_RELATIVE;
-		channel.position.x = 0.0F;
-		channel.position.y = 0.0F;
-		channel.position.z = 100.0F;
+		channel.position = Vec3f::Z_AXIS * 100.f;
 	}
 
 	aalSamplePlay(sample_id, channel);
@@ -658,7 +657,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 
-	string sample_name;
+	fs::path sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -691,19 +690,15 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
+long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
 	
 	if(!bIsActive) {
 		return 0;
 	}
 	
-	if( _name1.empty() || _name2.empty()) {
+	if(name1.empty() || name2.empty()) {
 		return 0;
 	}
-	
-	// TODO move to caller
-	string name1 = toLowercase(_name1);
-	string name2 = toLowercase(_name2);
 	
 	if(name2 == "water") {
 		ARX_PARTICLES_SpawnWaterSplash(position);
@@ -728,7 +723,7 @@ long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
-	string sample_name;
+	fs::path sample_name;
 	aalGetSampleName(sample_id, sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -758,54 +753,47 @@ long ARX_SOUND_PlayCollision(const string & _name1, const string & _name2, float
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayScript(const string & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
+long ARX_SOUND_PlayScript(const fs::path & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
 {
-	if (!bIsActive) return INVALID_ID;
+	if (!bIsActive) {
+		return INVALID_ID;
+	}
 
 	Channel channel;
-	s32 sample_id;
+	SampleId sample_id;
 
 	sample_id = aalCreateSample(name);
 
-	if (sample_id == INVALID_ID) return INVALID_ID;
-
+	if (sample_id == INVALID_ID) {
+		return INVALID_ID;
+	}
+	
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	channel.volume = 1.0F;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * GetSamplePresenceFactor(name);
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
-
-	if (io)
-	{
-		GetItemWorldPositionSound(io, &channel.position); // TODO this cast is wrong
-
-		if (loop != ARX_SOUND_PLAY_LOOPED)
-		{
-			Vec3f ePos;
-			ePos.x = channel.position.x;
-			ePos.y = channel.position.y;
-			ePos.z = channel.position.z;
-
-			if (ACTIVECAM && distSqr(ACTIVECAM->pos, ePos) > square(ARX_SOUND_REFUSE_DISTANCE))
-				return -1;
+	
+	if(io) {
+		GetItemWorldPositionSound(io, &channel.position);
+		if(loop != ARX_SOUND_PLAY_LOOPED) {
+			if (ACTIVECAM && distSqr(ACTIVECAM->pos, channel.position) > square(ARX_SOUND_REFUSE_DISTANCE)) {
+				// TODO the sample will never be freed!
+				return ARX_SOUND_TOO_FAR;
+			}
 		}
-	}
-	else
-	{
+	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position.x = 0.0F;
-		channel.position.y = 0.0F;
-		channel.position.z = 100.0F;
+		channel.position = Vec3f::Z_AXIS * 100.f;
 	}
-
-	if (pitch != 1.0F)
-	{
+	
+	if(pitch != 1.0F) {
 		channel.flags |= FLAG_PITCH;
 		channel.pitch = pitch;
 	}
-
+	
 	aalSamplePlay(sample_id, channel, loop);
-
+	
 	return sample_id;
 }
 
@@ -821,7 +809,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 
 	if(position) {
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-		string sample_name;
+		fs::path sample_name;
 		aalGetSampleName(sample_id, sample_name);
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -839,7 +827,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const string & name) {
+long ARX_SOUND_PlayCinematic(const fs::path & name) {
 	
 	LogDebug << "playing cinematic sound";
 	
@@ -949,13 +937,13 @@ void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ
 	aalSetSamplePosition(sample_id, position);
 }
 
-ArxSound ARX_SOUND_Load(const string & name) {
+ArxSound ARX_SOUND_Load(const fs::path & name) {
 	
 	if (!bIsActive) return INVALID_ID;
 
-	string sample_name = name + ARX_SOUND_FILE_EXTENSION_WAV;
+	fs::path sample_name = name;
 
-	return aalCreateSample(sample_name);
+	return aalCreateSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
 
 void ARX_SOUND_Free(const ArxSound & sample)
@@ -970,20 +958,23 @@ void ARX_SOUND_Stop(ArxSound & sample_id)
 	if (bIsActive && sample_id != INVALID_ID) aalSampleStop(sample_id);
 }
 
-long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayScriptAmbiance(const fs::path & name, SoundLoopMode loop, float volume) {
 	
 	if (!bIsActive) return INVALID_ID;
 
-	string temp = name;
-	SetExt(temp, ".amb");
+	fs::path temp = fs::path(name).set_ext("amb");
 
-	long ambiance_id(aalGetAmbiance(temp));
+	AmbianceId ambiance_id = aalGetAmbiance(temp);
 
 	if (ambiance_id == INVALID_ID)
 	{
-		if (volume == 0.0F) return INVALID_ID;
+		if (volume == 0.f) return true;
 
 		ambiance_id = aalCreateAmbiance(temp);
+		if(ambiance_id == INVALID_ID) {
+			return false;
+		}
+		
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_SCRIPT);
 
 		Channel channel;
@@ -999,38 +990,39 @@ long ARX_SOUND_PlayScriptAmbiance(const string & name, SoundLoopMode loop, float
 		if (volume <= 0.0F)
 		{
 			aalDeleteAmbiance(ambiance_id);
-			return INVALID_ID;
+			return true;
 		}
 
 		aalSetAmbianceVolume(ambiance_id, volume);
 	}
 
-	return ambiance_id;
+	return true;
 }
 
-long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayZoneAmbiance(const fs::path & name, SoundLoopMode loop, float volume) {
 	
-	if (!bIsActive) return INVALID_ID;
+	if (!bIsActive) return true;
 
-	string temp = name;
-	SetExt(temp, ".amb");
-
-	if (!strcasecmp(name, "NONE"))
-	{
+	if(name == "none") {
 		aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 		ambiance_zone = INVALID_ID;
-		return INVALID_ID;
+		return true;
 	}
 
-	long ambiance_id(aalGetAmbiance(temp));
+	fs::path temp = fs::path(name).set_ext("amb");
+
+	AmbianceId ambiance_id = aalGetAmbiance(temp);
 
 	if (ambiance_id == INVALID_ID)
 	{
 		ambiance_id = aalCreateAmbiance(temp);
+		if(ambiance_id == INVALID_ID) {
+			return false;
+		}
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_ZONE);
 	}
 	else if (ambiance_id == ambiance_zone)
-		return ambiance_zone;
+		return true;
 
 	Channel channel;
 
@@ -1041,23 +1033,22 @@ long ARX_SOUND_PlayZoneAmbiance(const string & name, SoundLoopMode loop, float v
 	aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 	aalAmbiancePlay(ambiance_zone = ambiance_id, channel, loop == ARX_SOUND_PLAY_LOOPED, AMBIANCE_FADE_TIME);
 
-	return ambiance_zone;
+	return true;
 }
 
-long ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {
+AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const string & track_name, unsigned long status) {
 	
-	if (!bIsActive) return INVALID_ID;
-
-	s32 ambiance_id;
-	string temp = ambiance_name;
-	SetExt(temp, ".amb");
-
-	ambiance_id = aalGetAmbiance(temp);
-
-	if (ambiance_id == INVALID_ID) return INVALID_ID;
-
+	if(!bIsActive) {
+		return INVALID_ID;
+	}
+	
+	AmbianceId ambiance_id = aalGetAmbiance(fs::path(ambiance_name).set_ext("amb"));
+	if(ambiance_id == INVALID_ID) {
+		return INVALID_ID;
+	}
+	
 	aalMuteAmbianceTrack(ambiance_id, track_name, status != 0);
-
+	
 	return ambiance_id;
 }
 
@@ -1077,7 +1068,7 @@ void ARX_SOUND_KillAmbiances() {
 	ambiance_zone = INVALID_ID;
 }
 
-long ARX_SOUND_PlayMenuAmbiance(const string & ambiance_name) {
+AmbianceId ARX_SOUND_PlayMenuAmbiance(const fs::path & ambiance_name) {
 	
 	if (!bIsActive) return INVALID_ID;
 
@@ -1137,7 +1128,7 @@ void ARX_SOUND_PushAnimSamples()
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0])
+		if (!animations[i].path.empty())
 		{
 			for (long j = 0; j < animations[i].alt_nb; j++)
 			{
@@ -1149,11 +1140,11 @@ void ARX_SOUND_PushAnimSamples()
 
 					if (anim->frames[k].sample != -1)
 					{
-						string dest;
+						fs::path dest;
 						aalGetSampleName(anim->frames[k].sample, dest);
 						if(!dest.empty()) {
 							elems = (char **)realloc(elems, sizeof(char *) * (nbelems + 1));
-							elems[nbelems] = strdup(dest.c_str());
+							elems[nbelems] = strdup(dest.string().c_str());
 							numbers = (long *)realloc(numbers, sizeof(long) * (nbelems + 1));
 							numbers[nbelems] = number;
 							nbelems++;
@@ -1177,7 +1168,7 @@ void ARX_SOUND_PopAnimSamples()
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0])
+		if (!animations[i].path.empty())
 		{
 			for (long j = 0; j < animations[i].alt_nb; j++)
 			{
@@ -1201,8 +1192,8 @@ void ARX_SOUND_PopAnimSamples()
 	ARX_SOUND_FreeAnimSamples();
 }
 
-void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
-{
+char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
+	
 	unsigned long count(0);
 	PlayingAmbiance * play_list = NULL;
 	long ambiance_id(INVALID_ID);
@@ -1228,10 +1219,10 @@ void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
 			
 			memset(playing->name, 0, sizeof(playing->name));
 			
-			string name;
+			fs::path name;
 			aalGetAmbianceName(ambiance_id, name);
-			arx_assert(name.length() + 1 < sizeof(playing->name)/sizeof(*playing->name));
-			strcpy(playing->name, name.c_str());
+			arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
+			strcpy(playing->name, name.string().c_str());
 			aalGetAmbianceVolume(ambiance_id, playing->volume);
 			playing->loop = aalIsAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 			playing->type = type;
@@ -1242,79 +1233,44 @@ void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
 		ambiance_id = aalGetNextAmbiance(ambiance_id);
 	}
 
-	*_play_list = play_list;
-	*size = count * sizeof(PlayingAmbiance);
+	size = count * sizeof(PlayingAmbiance);
+	return reinterpret_cast<char *>(play_list);
 }
 
-void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
-{
-	unsigned long count = size / sizeof(PlayingAmbiance);
-	PlayingAmbiance * play_list = (PlayingAmbiance *)_play_list;
-
-	for (unsigned long i(0); i < count; i++)
-	{
-		PlayingAmbiance * playing = &play_list[i];
-
-		switch (playing->type)
-		{
-			case PLAYING_AMBIANCE_SCRIPT :
-				// TODO save/load enum
-				ARX_SOUND_PlayScriptAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
-				break;
-
-			case PLAYING_AMBIANCE_ZONE :
-				ARX_SOUND_PlayZoneAmbiance(playing->name, (SoundLoopMode)playing->loop, playing->volume);
-				break;
-		}
-	}
-}
-
-// PâBôMéJèMçA
-extern PakManager * pPakManager;
-static void ARX_SOUND_CreateEnvironments()
-{
-	if (FINAL_RELEASE)
-	{
-		const char PAK_SFX[] = "sfx.pak";
+void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
+	
+	size_t count = size / sizeof(PlayingAmbiance);
+	const PlayingAmbiance * play_list = reinterpret_cast<const PlayingAmbiance *>(_play_list);
+	
+	for(size_t i = 0; i < count; i++) {
 		
-		if (!pPakManager) pPakManager = new PakManager;
-
-		if (!pPakManager->AddPak(PAK_SFX)) return;
-
-		vector<PakDirectory*> directories;
-		pPakManager->GetDirectories(ARX_SOUND_PATH_ENVIRONMENT, directories);
-
-		vector<PakDirectory *>::iterator iv;
-		for (iv = directories.begin(); iv < directories.end(); ++iv)
-		{
-			int nb = (*iv)->nbfiles;
-			PakFile * et = (*iv)->files;
-
-			while (nb--)
-			{
-				aalCreateEnvironment(et->name);
-				et = et->next;
-			}
+		const PlayingAmbiance * playing = &play_list[i];
+		
+		fs::path name = fs::path::load(safestring(playing->name));
+		
+		// TODO save/load enum
+		switch (playing->type) {
+			
+			case PLAYING_AMBIANCE_SCRIPT :
+				ARX_SOUND_PlayScriptAmbiance(name, (SoundLoopMode)playing->loop, playing->volume);
+				break;
+			
+			case PLAYING_AMBIANCE_ZONE :
+				ARX_SOUND_PlayZoneAmbiance(name, (SoundLoopMode)playing->loop, playing->volume);
+				break;
 		}
 	}
-	else
-	{
-		char path[512] = "";
-		WIN32_FIND_DATA fdata;
-		HANDLE fhandle;
+}
 
-		sprintf(path, "sfx\\environment\\*.aef");
-
-		if ((fhandle = FindFirstFile(path, &fdata)) != INVALID_HANDLE_VALUE)
-		{
-			do
-			{
-				aalCreateEnvironment(fdata.cFileName);
-			}
-			while (FindNextFile(fhandle, &fdata));
-
-			FindClose(fhandle);
-		}
+static void ARX_SOUND_CreateEnvironments() {
+	
+	PakDirectory * dir = resources->getDirectory(ARX_SOUND_PATH_ENVIRONMENT);
+	if(!dir) {
+		return;
+	}
+	
+	for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
+		aalCreateEnvironment(i->first);
 	}
 }
 
@@ -1389,11 +1345,11 @@ static void ARX_SOUND_CreateStaticSamples()
 	SND_SPELL_ARMOR_START              = aalCreateSample("magic_spell_armor_start.wav");
 	SND_SPELL_ARMOR_END                = aalCreateSample("magic_spell_armor_end.wav");
 	SND_SPELL_ARMOR_LOOP               = aalCreateSample("magic_spell_armor_loop.wav");
-	SND_SPELL_LOWER_ARMOR              = aalCreateSample("Magic_Spell_decrease_Armor.wav");
+	SND_SPELL_LOWER_ARMOR              = aalCreateSample("magic_spell_decrease_armor.wav");
 	SND_SPELL_BLESS                    = aalCreateSample("magic_spell_bless.wav");
-	SND_SPELL_COLD_PROTECTION_START    = aalCreateSample("Magic_Spell_Cold_Protection.wav");
-	SND_SPELL_COLD_PROTECTION_LOOP     = aalCreateSample("Magic_Spell_Cold_Protection_loop.wav");
-	SND_SPELL_COLD_PROTECTION_END      = aalCreateSample("Magic_Spell_Cold_Protection_end.wav");
+	SND_SPELL_COLD_PROTECTION_START    = aalCreateSample("magic_spell_cold_protection.wav");
+	SND_SPELL_COLD_PROTECTION_LOOP     = aalCreateSample("magic_spell_cold_protection_loop.wav");
+	SND_SPELL_COLD_PROTECTION_END      = aalCreateSample("magic_spell_cold_protection_end.wav");
 	SND_SPELL_CONFUSE                  = aalCreateSample("magic_spell_confuse.wav");
 	SND_SPELL_CONTROL_TARGET           = aalCreateSample("magic_spell_control_target.wav");
 	SND_SPELL_CREATE_FIELD             = aalCreateSample("magic_spell_create_field.wav");
@@ -1401,7 +1357,7 @@ static void ARX_SOUND_CreateStaticSamples()
 	SND_SPELL_CURE_POISON              = aalCreateSample("magic_spell_cure_poison.wav");
 	SND_SPELL_CURSE                    = aalCreateSample("magic_spell_curse.wav");
 	SND_SPELL_DETECT_TRAP              = aalCreateSample("magic_spell_detect_trap.wav");
-	SND_SPELL_DETECT_TRAP_LOOP         = aalCreateSample("magic_spell_detect_trap_Loop.wav");
+	SND_SPELL_DETECT_TRAP_LOOP         = aalCreateSample("magic_spell_detect_trap_loop.wav");
 	SND_SPELL_DISARM_TRAP              = aalCreateSample("magic_spell_disarm_trap.wav");
 	SND_SPELL_DISPELL_FIELD            = aalCreateSample("magic_spell_dispell_field.wav");
 	SND_SPELL_DISPELL_ILLUSION         = aalCreateSample("magic_spell_dispell_illusion.wav");
@@ -1606,114 +1562,77 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_SPELL_VISION_LOOP = INVALID_ID;
 }
 
-long ARX_MATERIAL_GetIdByName(const string & name) {
-	
-	if (!strcasecmp(name, "WEAPON")) return MATERIAL_WEAPON;
-
-	if (!strcasecmp(name, "FLESH")) return MATERIAL_FLESH;
-
-	if (!strcasecmp(name, "METAL")) return MATERIAL_METAL;
-
-	if (!strcasecmp(name, "GLASS")) return MATERIAL_GLASS;
-
-	if (!strcasecmp(name, "CLOTH")) return MATERIAL_CLOTH;
-
-	if (!strcasecmp(name, "WOOD")) return MATERIAL_WOOD;
-
-	if (!strcasecmp(name, "EARTH")) return MATERIAL_EARTH;
-
-	if (!strcasecmp(name, "WATER")) return MATERIAL_WATER;
-
-	if (!strcasecmp(name, "ICE")) return MATERIAL_ICE;
-
-	if (!strcasecmp(name, "GRAVEL")) return MATERIAL_GRAVEL;
-
-	if (!strcasecmp(name, "STONE")) return MATERIAL_STONE;
-
-	if (!strcasecmp(name, "FOOT_LARGE")) return MATERIAL_FOOT_LARGE;
-
-	if (!strcasecmp(name, "FOOT_BARE")) return MATERIAL_FOOT_BARE;
-
-	if (!strcasecmp(name, "FOOT_SHOE")) return MATERIAL_FOOT_SHOE;
-
-	if (!strcasecmp(name, "FOOT_METAL")) return MATERIAL_FOOT_METAL;
-
-	if (!strcasecmp(name, "FOOT_STEALTH")) return MATERIAL_FOOT_STEALTH;
-
-	return MATERIAL_NONE;
-}
-
 bool ARX_MATERIAL_GetNameById(long id, char * name)
 {
 	switch (id)
 	{
 		case MATERIAL_WEAPON:
-			strcpy(name, "WEAPON");
+			strcpy(name, "weapon");
 			return true;
 			break;
 		case MATERIAL_FLESH:
-			strcpy(name, "FLESH");
+			strcpy(name, "flesh");
 			return true;
 			break;
 		case MATERIAL_METAL:
-			strcpy(name, "METAL");
+			strcpy(name, "metal");
 			return true;
 			break;
 		case MATERIAL_GLASS:
-			strcpy(name, "GLASS");
+			strcpy(name, "glass");
 			return true;
 			break;
 		case MATERIAL_CLOTH:
-			strcpy(name, "CLOTH");
+			strcpy(name, "cloth");
 			return true;
 			break;
 		case MATERIAL_WOOD:
-			strcpy(name, "WOOD");
+			strcpy(name, "wood");
 			return true;
 			break;
 		case MATERIAL_EARTH:
-			strcpy(name, "EARTH");
+			strcpy(name, "earth");
 			return true;
 			break;
 		case MATERIAL_WATER:
-			strcpy(name, "WATER");
+			strcpy(name, "water");
 			return true;
 			break;
 		case MATERIAL_ICE:
-			strcpy(name, "ICE");
+			strcpy(name, "ice");
 			return true;
 			break;
 		case MATERIAL_GRAVEL:
-			strcpy(name, "GRAVEL");
+			strcpy(name, "gravel");
 			return true;
 			break;
 		case MATERIAL_STONE:
-			strcpy(name, "STONE");
+			strcpy(name, "stone");
 			return true;
 			break;
 		case MATERIAL_FOOT_LARGE:
-			strcpy(name, "FOOT_LARGE");
+			strcpy(name, "foot_large");
 			return true;
 			break;
 		case MATERIAL_FOOT_BARE:
-			strcpy(name, "FOOT_BARE");
+			strcpy(name, "foot_bare");
 			return true;
 			break;
 		case MATERIAL_FOOT_SHOE:
-			strcpy(name, "FOOT_SHOE");
+			strcpy(name, "foot_shoe");
 			return true;
 			break;
 		case MATERIAL_FOOT_METAL:
-			strcpy(name, "FOOT_METAL");
+			strcpy(name, "foot_metal");
 			return true;
 			break;
 		case MATERIAL_FOOT_STEALTH:
-			strcpy(name, "FOOT_STEALTH");
+			strcpy(name, "foot_stealth");
 			return true;
 			break;
 	}
 
-	strcpy(name, "NONE");
+	strcpy(name, "none");
 	return false;
 }
 static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name)
@@ -1736,10 +1655,11 @@ static void ARX_SOUND_CreateCollisionMaps() {
 	
 	for(size_t i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++) {
 		
-		string file = ARX_SOUND_PATH_INI + ARX_SOUND_COLLISION_MAP_NAMES[i] + ARX_SOUND_FILE_EXTENSION_INI;
+		fs::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
+		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 		
 		size_t fileSize;
-		char * data = (char *)PAK_FileLoadMalloc(file.c_str(), fileSize);
+		char * data = resources->readAlloc(file, fileSize);
 		if(!data) {
 			LogWarning << "could not find collision map " << file;
 			return;
@@ -1764,7 +1684,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
 					
 					ostringstream oss;
-					oss << key.getValue();
+					oss << toLowercase(key.getValue());
 					if(mi) {
 						oss << mi;
 					}
@@ -1773,7 +1693,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					
 					if(sample == INVALID_ID) {
 						ostringstream oss2;
-						oss2 << key.getValue() << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
+						oss2 << toLowercase(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = aalCreateSample(oss2.str());
 					}
 					
@@ -1802,82 +1722,82 @@ static void ARX_SOUND_CreateMaterials()
 {
 	memset(Inter_Materials, -1, sizeof(long) * MAX_MATERIALS * MAX_MATERIALS * MAX_VARIANTS);
 
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WEAPON,       "WEAPON_on_WEAPON");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_FLESH,        "WEAPON_on_FLESH");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_METAL,        "WEAPON_on_METAL");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GLASS,        "WEAPON_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_CLOTH,        "WEAPON_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WOOD,         "WEAPON_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_EARTH,        "WEAPON_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WATER,        "WEAPON_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_ICE,          "WEAPON_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GRAVEL,       "WEAPON_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_STONE,        "WEAPON_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WEAPON,       "weapon_on_weapon");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_FLESH,        "weapon_on_flesh");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_METAL,        "weapon_on_metal");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GLASS,        "weapon_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_CLOTH,        "weapon_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WOOD,         "weapon_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_EARTH,        "weapon_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_WATER,        "weapon_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_ICE,          "weapon_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_GRAVEL,       "weapon_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_WEAPON, MATERIAL_STONE,        "weapon_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_FLESH,        "FLESH_on_FLESH");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_METAL,        "FLESH_on_METAL");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GLASS,        "FLESH_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_CLOTH,        "FLESH_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WOOD,         "FLESH_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_EARTH,        "FLESH_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WATER,        "FLESH_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_ICE,          "FLESH_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GRAVEL,       "FLESH_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_STONE,        "FLESH_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_FLESH,        "flesh_on_flesh");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_METAL,        "flesh_on_metal");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GLASS,        "flesh_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_CLOTH,        "flesh_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WOOD,         "flesh_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_EARTH,        "flesh_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_WATER,        "flesh_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_ICE,          "flesh_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_GRAVEL,       "flesh_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_FLESH,  MATERIAL_STONE,        "flesh_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_METAL,        "METAL_on_METAL");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GLASS,        "METAL_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_CLOTH,        "METAL_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WOOD,         "METAL_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_EARTH,        "METAL_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WATER,        "METAL_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_ICE,          "METAL_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GRAVEL,       "METAL_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_STONE,        "METAL_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_METAL,        "metal_on_metal");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GLASS,        "metal_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_CLOTH,        "metal_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WOOD,         "metal_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_EARTH,        "metal_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_WATER,        "metal_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_ICE,          "metal_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_GRAVEL,       "metal_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_METAL,  MATERIAL_STONE,        "metal_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GLASS,        "GLASS_on_GLASS");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_CLOTH,        "GLASS_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WOOD,         "GLASS_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_EARTH,        "GLASS_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WATER,        "GLASS_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_ICE,          "GLASS_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GRAVEL,       "GLASS_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_STONE,        "GLASS_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GLASS,        "glass_on_glass");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_CLOTH,        "glass_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WOOD,         "glass_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_EARTH,        "glass_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_WATER,        "glass_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_ICE,          "glass_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_GRAVEL,       "glass_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_GLASS,  MATERIAL_STONE,        "glass_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_CLOTH,        "CLOTH_on_CLOTH");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WOOD,         "CLOTH_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_EARTH,        "CLOTH_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WATER,        "CLOTH_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_ICE,          "CLOTH_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_GRAVEL,       "CLOTH_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_STONE,        "CLOTH_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_CLOTH,        "cloth_on_cloth");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WOOD,         "cloth_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_EARTH,        "cloth_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_WATER,        "cloth_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_ICE,          "cloth_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_GRAVEL,       "cloth_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_CLOTH,  MATERIAL_STONE,        "cloth_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WOOD,         "WOOD_on_WOOD");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_EARTH,        "WOOD_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WATER,        "WOOD_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_ICE,          "WOOD_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_GRAVEL,       "WOOD_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_STONE,        "WOOD_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WOOD,         "wood_on_wood");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_EARTH,        "wood_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_WATER,        "wood_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_ICE,          "wood_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_GRAVEL,       "wood_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_WOOD,   MATERIAL_STONE,        "wood_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_EARTH,        "EARTH_on_EARTH");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_WATER,        "EARTH_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_ICE,          "EARTH_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_GRAVEL,       "EARTH_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_STONE,        "EARTH_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_EARTH,        "earth_on_earth");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_WATER,        "earth_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_ICE,          "earth_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_GRAVEL,       "earth_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_EARTH,  MATERIAL_STONE,        "earth_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_WATER,        "WATER_on_WATER");
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_ICE,          "WATER_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_GRAVEL,       "WATER_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_STONE,        "WATER_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_WATER,        "water_on_water");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_ICE,          "water_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_GRAVEL,       "water_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_WATER,  MATERIAL_STONE,        "water_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_ICE,          "ICE_on_ICE");
-	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_GRAVEL,       "ICE_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_STONE,        "ICE_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_ICE,          "ice_on_ice");
+	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_GRAVEL,       "ice_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_ICE,    MATERIAL_STONE,        "ice_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_GRAVEL,       "GRAVEL_on_GRAVEL");
-	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_STONE,        "GRAVEL_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_GRAVEL,       "gravel_on_gravel");
+	ARX_SOUND_LoadCollision(MATERIAL_GRAVEL, MATERIAL_STONE,        "gravel_on_stone");
 
-	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "STONE_on_STONE");
+	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "stone_on_stone");
 }
 
 
@@ -1885,10 +1805,10 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	presence.clear();
 	
-	string file = ARX_SOUND_PATH_INI + ARX_SOUND_PRESENCE_NAME + ARX_SOUND_FILE_EXTENSION_INI;
+	fs::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 	
 	size_t fileSize;
-	char * data = (char *)PAK_FileLoadMalloc(file.c_str(), fileSize);
+	char * data = resources->readAlloc(file, fileSize);
 	if(!data) {
 		LogWarning << "could not find presence map " << file;
 		return;
@@ -1910,15 +1830,16 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
 		float factor = i->getValue(100.f) / 100.f;
-		presence[i->getName() + ARX_SOUND_FILE_EXTENSION_WAV] = factor;
+		presence[fs::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
 	}
 	
 }
 
-static float GetSamplePresenceFactor(const string & _name) {
+static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
+
+static float GetSamplePresenceFactor(const fs::path & name) {
 	
-	// TODO move to caller
-	string name = toLowercase(_name);
+	arx_assert(name.string().find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
 	
 	PresenceFactors::const_iterator it = presence.find(name);
 	if(it != presence.end()) {

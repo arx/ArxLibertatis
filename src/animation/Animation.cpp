@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 
 #include <cstdio>
-#include <cassert>
 #include <climits>
+#include <sstream>
 
 #include "animation/AnimationRender.h"
 
@@ -74,11 +74,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "physics/Clothes.h"
@@ -89,9 +90,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
+#include <platform/String.h>
 
 using std::min;
 using std::max;
+using std::string;
+using std::ostringstream;
+using std::vector;
 
 extern float IN_FRONT_DIVIDER_ITEMS;
 long MAX_LLIGHTS=18;
@@ -107,7 +112,9 @@ extern long FRAME_COUNT;
 extern Color ulBKGColor;
 extern long ZMAPMODE;
 extern float fZFogStart;
+
 ANIM_HANDLE animations[MAX_ANIMATIONS];
+
 bool MIPM;
 TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
@@ -216,21 +223,24 @@ void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim)
 	au->flags&=~EA_FORCEPLAY;	
 }
 
-void EERIE_ANIMMANAGER_Init() {
-	memset(animations, 0, sizeof(ANIM_HANDLE) * MAX_ANIMATIONS);
+ANIM_HANDLE::ANIM_HANDLE() : path() {
+	
+	anims = NULL, alt_nb = 0;
+	
+	locks = 0;
 }
 
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (	(animations[i].path[0]!=0)
+		if (	(!animations[i].path.empty())
 			&&	(animations[i].locks==0)	)
 		{
 			for (long k=0;k<animations[i].alt_nb;k++)
 			{
 				ReleaseAnim(animations[i].anims[k]);
-				animations[i].anims[k]=NULL;					
+				animations[i].anims[k]=NULL;
 			}
 
 			if (animations[i].anims)
@@ -238,11 +248,7 @@ void EERIE_ANIMMANAGER_PurgeUnused() {
 
 			animations[i].anims=NULL;
 
-			if (animations[i].sizes)
-				free(animations[i].sizes);
-
-			animations[i].sizes=NULL;
-			animations[i].path[0]=0;				
+			animations[i].path.clear();
 		}
 	}
 }
@@ -258,10 +264,10 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 	}
 }
 
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path) {
+static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const fs::path & path) {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(!strcasecmp(animations[i].path, path)) {
+		if(animations[i].path == path) {
 			return &animations[i];
 		}
 	}
@@ -269,88 +275,83 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path) {
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
-long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
+static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const fs::path & path) {
 	
-	if(!ah || !ah->path[0]) {
-		return 0;
+	if(!ah || ah->path.empty()) {
+		return false;
 	}
 	
 	size_t FileSize;
-	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc( path, FileSize );
+	char * adr = resources->readAlloc(path, FileSize);
 	if(!adr) {
-		return 0;
+		return false;
 	}
 	
-	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path);
+	EERIE_ANIM * temp = TheaToEerie(adr, FileSize, path);
 	free(adr);
 	if(!temp) {
-		return 0;
+		return false;
 	}
 	
 	ah->alt_nb++;
-	ah->anims=(EERIE_ANIM **)realloc(ah->anims,sizeof(EERIE_ANIM *)*ah->alt_nb);
-	ah->sizes=(long *)realloc(ah->sizes,sizeof(long)*ah->alt_nb);
-	ah->anims[ah->alt_nb-1]=temp;
-	ah->sizes[ah->alt_nb-1]=FileSize;		
-	return 1;
+	ah->anims = (EERIE_ANIM **)realloc(ah->anims, sizeof(EERIE_ANIM *) * ah->alt_nb);
+	ah->anims[ah->alt_nb - 1] = temp;
+	
+	return true;
 }
 
-//-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
-{
-	std::string path = _path;
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path) {
+	
+	ANIM_HANDLE * anim = EERIE_ANIMMANAGER_Load_NoWarning(path);
+	if(!anim) {
+		LogWarning << "Animation not found: " << path;
+	}
+	
+	return anim;
+}
 
-	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path.c_str());
-
-	if (handl) 
-	{
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path) {
+	
+	ANIM_HANDLE * handl = EERIE_ANIMMANAGER_GetHandle(path);
+	if(handl) {
 		handl->locks++;
 		return handl;
 	}
-
-	unsigned char * adr;
-	size_t FileSize;
-	char path2[256];
-	int pathcount = 2;
-
+	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0]==0)
-		{				
-			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
-			{
-				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
-				animations[i].sizes=(long *)malloc(sizeof(long));
-
-				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str());
-				animations[i].sizes[0]=FileSize;
-				animations[i].alt_nb=1;
-				free(adr);
-
-				if (animations[i].anims[0]==NULL) return NULL;			
-
-				strcpy(animations[i].path,path.c_str());				
-				animations[i].locks=1;
-
-				//remove extension
-				path = path.substr(0, path.size()-4);
-
-				sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
-
-				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
-				{
-					pathcount++;
-					sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
-				}
-
-				return &animations[i];
-			}				
-			
+		if(!animations[i].path.empty()) {
+			continue;
+		}
+		
+		size_t FileSize;
+		char * adr = resources->readAlloc(path, FileSize);
+		if(!adr) {
 			return NULL;
 		}
+		
+		animations[i].anims = (EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
+		animations[i].anims[0] = TheaToEerie(adr, FileSize, path);
+		animations[i].alt_nb = 1;
+		
+		free(adr);
+		
+		if(!animations[i].anims[0]) {
+			return NULL;
+		}
+		
+		animations[i].path = path;
+		animations[i].locks = 1;
+		
+		int pathcount = 2;
+		fs::path altpath;
+		do {
+			altpath = fs::path(path).append_basename(itoa(pathcount++));
+		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], altpath));
+		
+		return &animations[i];
 	}
-
+	
 	return NULL;
 }
 
@@ -364,18 +365,14 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		
-		if (animations[i].path[0]!=0)
+		if(!animations[i].path.empty())
 		{
 			count++;
 			char txx[256];
-			strcpy(txx,animations[i].path);
-			GetName(txx);
+			strcpy(txx,animations[i].path.string().c_str());
 			long totsize=0;
 
-			for (long k=0;k<animations[i].alt_nb;k++)
-				totsize+=animations[i].sizes[k];
-
-			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,(long)i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
+			sprintf(temp,"%3ld[%3" PRINT_SIZE_T_F "] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
 			tex += temp;
 		}
@@ -679,7 +676,7 @@ void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 void specialEE_P(TexturedVertex *in,TexturedVertex *out);
 
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private 
-TextureContainer TexSpecialColor("SPECIALCOLOR_LIST", TextureContainer::NoInsert);
+TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
 //-----------------------------------------------------------------------------
 TexturedVertex * PushVertexInTableCull(TextureContainer *pTex)
@@ -1979,17 +1976,13 @@ void EERIE_ANIMMANAGER_Clear(long i)
 
 	animations[i].anims=NULL;
 
-	if (animations[i].sizes)
-		free(animations[i].sizes);
-
-	animations[i].sizes=NULL;
-	animations[i].path[0]=0;
+	animations[i].path.clear();
 }
 
 void EERIE_ANIMMANAGER_ClearAll() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(animations[i].path[0] != '\0') {
+		if(!animations[i].path.empty()) {
 			EERIE_ANIMMANAGER_Clear(i);
 		}
 	}
@@ -2024,11 +2017,10 @@ void EERIE_ANIMMANAGER_ReloadAll()
 	}
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		if(animations[i].path[0] != '\0') {
-			char pathhh[256];
-			strcpy(pathhh,animations[i].path);
+		if(!animations[i].path.empty()) {
+			fs::path path = animations[i].path;
 			EERIE_ANIMMANAGER_Clear(i);
-			EERIE_ANIMMANAGER_Load(pathhh);			
+			EERIE_ANIMMANAGER_Load(path);
 		}
 	}
 }

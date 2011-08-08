@@ -47,9 +47,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <vector>
 
+#include "audio/AudioTypes.h"
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
+
+#include "io/FilePath.h"
 
 #include "math/Vector2.h"
 #include "math/Angle.h"
@@ -73,8 +76,6 @@ struct EERIE_3D_BBOX {
 	Vec3f min;
 	Vec3f max;
 };
-
-typedef s32 ArxSound;
 
 struct EERIE_LIGHT {
 	char exist;
@@ -106,7 +107,7 @@ struct EERIE_LIGHT {
 	long tl;
 	unsigned long time_creation;
 	long duration; // will start to fade before the end of duration...
-	ArxSound sample;
+	audio::SourceId sample;
 };
 
 enum EERIE_TYPES_EXTRAS_MODE
@@ -183,23 +184,25 @@ struct EERIEPOLY {
 	unsigned short	uslInd[4];
 };
 
-#define MATERIAL_NONE		0
-#define MATERIAL_WEAPON		1
-#define MATERIAL_FLESH		2
-#define MATERIAL_METAL		3
-#define MATERIAL_GLASS		4
-#define MATERIAL_CLOTH		5
-#define MATERIAL_WOOD		6
-#define MATERIAL_EARTH		7
-#define MATERIAL_WATER		8
-#define MATERIAL_ICE		9
-#define MATERIAL_GRAVEL		10
-#define MATERIAL_STONE		11
-#define MATERIAL_FOOT_LARGE	12
-#define MATERIAL_FOOT_BARE	13
-#define MATERIAL_FOOT_SHOE	14
-#define MATERIAL_FOOT_METAL	15
-#define MATERIAL_FOOT_STEALTH	16
+enum Material {
+	MATERIAL_NONE,
+	MATERIAL_WEAPON,
+	MATERIAL_FLESH,
+	MATERIAL_METAL,
+	MATERIAL_GLASS,
+	MATERIAL_CLOTH,
+	MATERIAL_WOOD,
+	MATERIAL_EARTH,
+	MATERIAL_WATER,
+	MATERIAL_ICE,
+	MATERIAL_GRAVEL,
+	MATERIAL_STONE,
+	MATERIAL_FOOT_LARGE,
+	MATERIAL_FOOT_BARE,
+	MATERIAL_FOOT_SHOE,
+	MATERIAL_FOOT_METAL,
+	MATERIAL_FOOT_STEALTH
+};
 
 #define IOPOLYVERT 3
 struct EERIE_FACE {
@@ -349,7 +352,7 @@ struct EERIE_MOD_INFO {
 	Vec3f link_position;
 	Vec3f scale;
 	Anglef rot;
-	unsigned long	flags;
+	unsigned long	flags; // TODO unused?
 };
 
 struct EERIE_LINKED
@@ -497,7 +500,7 @@ struct EERIE_3DOBJ
 	~EERIE_3DOBJ();
 	
 	std::string name;
-	std::string file;
+	fs::path file;
 	Vec3f pos;
 	Vec3f point0;
 	Anglef angle;
@@ -534,18 +537,15 @@ struct EERIE_3DOBJ
 
 
 struct EERIE_3DSCENE {
-	long			nbobj;
-	EERIE_3DOBJ **	objs;
-	Vec3f		pos;
-	Vec3f		point0;
-	long			nbtex;
+	long nbobj;
+	EERIE_3DOBJ ** objs;
+	Vec3f pos;
+	Vec3f point0;
+	long nbtex;
 	TextureContainer ** texturecontainer;
-	long			nblight;
-	EERIE_LIGHT  ** light;
-	float			ambient_r;
-	float			ambient_g;
-	float			ambient_b;
-	CUB3D			cub;
+	long nblight;
+	EERIE_LIGHT ** light;
+	CUB3D cub;
 };
 
 
@@ -570,7 +570,7 @@ struct EERIE_FRAME
 	float		time;
 	Vec3f	translate;
 	EERIE_QUAT	quat;
-	ArxSound	sample;
+	audio::SampleId	sample;
 };
 
 struct EERIE_GROUP

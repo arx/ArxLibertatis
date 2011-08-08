@@ -60,10 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include "graphics/Math.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "platform/String.h"
@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::max;
 using std::string;
+using std::vector;
 
 void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
 	
@@ -93,7 +94,7 @@ void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
 	}
 }
  
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & s2) {
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & s1, const fs::path & s2) {
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
@@ -105,10 +106,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
-	string skintochange = "Graph\\Obj3D\\Textures\\" + s1 + ".bmp";
-	MakeUpcase(skintochange);
+	fs::path skintochange = "graph/obj3d/textures" / s1;
 	
-	string skinname = "Graph\\Obj3D\\Textures\\" + s2 + ".bmp";
+	fs::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
 
 	if (obj->originaltextures == NULL)
@@ -119,7 +119,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
 			if (obj->texturecontainer[i])
-				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.c_str());
+				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.string().c_str());
 
 		}
 	}
@@ -128,7 +128,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 	{
 		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
-			if ((strstr(obj->originaltextures + 256 * i, skintochange.c_str())))
+			if ((strstr(obj->originaltextures + 256 * i, skintochange.string().c_str())))
 			{
 				skintochange = obj->texturecontainer[i]->m_texName;
 				break;
@@ -197,8 +197,9 @@ static long GetActionPoint(const EERIE_3DOBJ * obj, const char * name) {
 
 	for (size_t n = 0; n < obj->actionlist.size(); n++)
 	{ // TODO iterator
-		if (!strcasecmp(obj->actionlist[n].name, name))
+		if(obj->actionlist[n].name == name) {
 			return obj->actionlist[n].idx;
+		}
 	}
 
 	return -1;
@@ -340,18 +341,24 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	long sel_legs2 = -1;
 
 	// First we retreive selection groups indexes
-	for (size_t i = 0; i < obj1->selections.size(); i++)
-	{ // TODO iterator
-		if (!strcasecmp(obj1->selections[i].name, "head")) sel_head1 = i;
-		else if (!strcasecmp(obj1->selections[i].name, "chest")) sel_torso1 = i;
-		else if (!strcasecmp(obj1->selections[i].name, "leggings")) sel_legs1 = i;
+	for(size_t i = 0; i < obj1->selections.size(); i++) { // TODO iterator
+		if(obj1->selections[i].name == "head") {
+			sel_head1 = i;
+		} else if(obj1->selections[i].name == "chest") {
+			sel_torso1 = i;
+		} else if(obj1->selections[i].name == "leggings") {
+			sel_legs1 = i;
+		}
 	}
 
-	for (size_t i = 0; i < obj2->selections.size(); i++)
-	{ // TODO iterator
-		if (!strcasecmp(obj2->selections[i].name, "head")) sel_head2 = i;
-		else if (!strcasecmp(obj2->selections[i].name, "chest")) sel_torso2 = i;
-		else if (!strcasecmp(obj2->selections[i].name, "leggings")) sel_legs2 = i;
+	for(size_t i = 0; i < obj2->selections.size(); i++) { // TODO iterator
+		if(obj2->selections[i].name == "head") {
+			sel_head2 = i;
+		} else if(obj2->selections[i].name == "chest") {
+			sel_torso2 = i;
+		} else if(obj2->selections[i].name == "leggings") {
+			sel_legs2 = i;
+		}
 	}
 
 	if (sel_head1 == -1) return NULL;
@@ -470,10 +477,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
 		        || (IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
-		        || (!strcasecmp(obj1->actionlist[i].name, "head2chest"))
-		        || (!strcasecmp(obj1->actionlist[i].name, "chest2leggings"))
-		   )
-		{
+		        || obj1->actionlist[i].name == "head2chest"
+		        || obj1->actionlist[i].name == "chest2leggings") {
 			ObjectAddAction(work, obj1->actionlist[i].name, obj1->actionlist[i].act,
 			                obj1->actionlist[i].sfx, &obj1vertexlist2[obj1->actionlist[i].idx]);
 		}
@@ -483,10 +488,8 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for (size_t i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
-		        || (!strcasecmp(obj2->actionlist[i].name, "head2chest"))
-		        || (!strcasecmp(obj2->actionlist[i].name, "chest2leggings"))
-		   ) // Was obj1 in both strcasecmp calls
-		{
+		        || obj2->actionlist[i].name == "head2chest"
+		        || obj2->actionlist[i].name == "chest2leggings") {
 			ObjectAddAction(work, obj2->actionlist[i].name, obj2->actionlist[i].act,
 			                obj2->actionlist[i].sfx, &obj2vertexlist2[obj2->actionlist[i].idx]);
 		}
@@ -786,23 +789,15 @@ long ALLOW_MESH_TWEAKING = 1;
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path)
 {
 	if (!ALLOW_MESH_TWEAKING) return;
 
-	string file2;
-	string filet;
-	string path;
-	File_Standardize(_path, path);
+	fs::path ftl_file = ("game" / path).set_ext("ftl");
 
-	filet = "GAME\\" + path;
+	if ((!resources->getFile(ftl_file)) && (!resources->getFile(path))) return;
 
-	SetExt(filet, ".FTL");
-	File_Standardize(filet, file2);
-
-	if ((!PAK_FileExist(file2)) && (!PAK_FileExist(path))) return;
-
-	if (tw == TWEAK_ERROR) return;
+	if (!tw) return;
 
 	if (io == NULL) return;
 
@@ -826,7 +821,6 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 	EERIE_3DOBJ * result = NULL;
 	EERIE_3DOBJ * result2 = NULL;
 
-	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
 	{
 		tobj = loadObject(path);
 
@@ -834,7 +828,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 
 		switch (tw)
 		{
-			case TWEAK_ALL:
+			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO | (u32)TWEAK_LEGS:
 
 				if (!io->tweaky)
 					io->tweaky = io->obj;
@@ -844,17 +838,17 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 				io->obj = tobj;
 				return;
 				break;
-			case TWEAK_UPPER:
+			case (u32)TWEAK_HEAD | (u32)TWEAK_TORSO:
 				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_HEAD);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_TORSO);
 				delete result2;
 				break;
-			case TWEAK_LOWER:
+			case (u32)TWEAK_TORSO | (u32)TWEAK_LEGS:
 				result2 = CreateIntermediaryMesh(io->obj, tobj, TWEAK_TORSO);
 				result = CreateIntermediaryMesh(result2, tobj, TWEAK_LEGS);
 				delete result2;
 				break;
-			case TWEAK_UP_LO:
+			case (u32)TWEAK_HEAD | (u32)TWEAK_LEGS:
 				result = CreateIntermediaryMesh(tobj, io->obj, TWEAK_TORSO);
 				break;
 			default:

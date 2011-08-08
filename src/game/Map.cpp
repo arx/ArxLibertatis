@@ -37,11 +37,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/GraphicsUtility.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "io/FileStream.h"
+#include "io/FilePath.h"
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
@@ -520,12 +522,11 @@ float oldposx,oldposz;
 
 	this->surfacetemp->Unlock(NULL);
 
-	FileHandle f = FileOpenWrite(name);
-	FileWrite(f, &bm, sizeof(BITMAPFILEHEADER));
-	FileWrite(f, &bi, sizeof(BITMAPINFO) - 4);
-	FileWrite(f, mem, tailleraw);
-	FileClose(f);
-
+	fs::ofstream f(name, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+	fs::write(f, bm);
+	fs::write(f, &bi, sizeof(BITMAPINFO) - 4);
+	fs::write(f, mem, tailleraw);
+	
 	free((void*)mem);
 	SAFE_RELEASE(this->surfacetemp);
 
@@ -535,15 +536,11 @@ float oldposx,oldposz;
 }
 
 //-----------------------------------------------------------------------------
-bool NeedMapCreation()
-{
+bool NeedMapCreation() {
 	char name[256];
-	GetLevelNameByNum(CURRENTLEVEL,name);	
-	sprintf(ThisLevelMap,"\\Graph\\Levels\\Level%s\\map.bmp",name);
-
-	if (PAK_FileExist(ThisLevelMap)) return false;
-
-	return true;
+	GetLevelNameByNum(CURRENTLEVEL, name);
+	sprintf(ThisLevelMap, "graph/levels/level%s/map.bmp", name);
+	return (resources->getFile(ThisLevelMap) == NULL);
 }
 
 //***********************************************************************************************

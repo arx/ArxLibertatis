@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
-const float DANAE_VERSION = 1.864f;
+const std::string arxVersion = "Arx Libertatis 0.1";
 
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 
@@ -86,11 +86,12 @@ extern EERIE_3DOBJ * nodeobj;
 extern Vec3f Mscenepos;
 #ifdef BUILD_EDIT_LOADSAVE
 extern EERIE_MULTI3DSCENE * mse;
+extern long ADDED_IO_NOT_SAVED;
 #endif
 extern EERIE_CAMERA * Kam;
 extern EERIE_BACKGROUND DefaultBkg;
 extern INTERACTIVE_OBJ * COMBINE;
-extern char LastLoadedScene[256];
+extern fs::path LastLoadedScene;
 extern char TELEPORT_TO_LEVEL[64];
 extern char TELEPORT_TO_POSITION[64];
 extern float PULSATE;
@@ -124,7 +125,6 @@ const long EDITMODE = 0;
 extern long SHOW_TORCH;
 extern long CURRENTLEVEL;
 extern long TELEPORT_TO_ANGLE;
-extern long ADDED_IO_NOT_SAVED;
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern long DANAECENTERX;
@@ -135,6 +135,9 @@ extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
 extern float Original_framedelay;
 extern long LOADEDD;
+extern std::string WILL_LAUNCH_CINE;
+extern long PLAY_LOADED_CINEMATIC;
+extern long CINE_PRELOAD;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
@@ -180,9 +183,7 @@ void ManageNONCombatModeAnimations();
 
 #ifdef BUILD_EDITOR
 
-// TODO move to Script.h?
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 #endif
 
 INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos);

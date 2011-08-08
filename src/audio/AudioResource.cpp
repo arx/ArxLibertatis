@@ -25,22 +25,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioResource.h"
 
-#include "io/PakManager.h"
-
-using std::string;
+#include "io/PakReader.h"
 
 namespace audio {
 
-PakFileHandle * OpenResource(const string & name, const string & resource_path) {
+PakFileHandle * OpenResource(const fs::path & name, const fs::path & resource_path) {
 	
 	PakFileHandle * file = NULL;
 	
 	if(!resource_path.empty()) {
-		file = PAK_fopen(resource_path + name);
+		file = resources->open(resource_path / name); // TODO do this earlier
 	}
 	
 	if(!file) {
-		file = PAK_fopen(name);
+		file = resources->open(name);
 	}
 	
 	return file;

@@ -81,6 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsEnum.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
@@ -2792,7 +2793,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		pos.x=epp->center.x-ACTIVECAM->pos.x;
 		pos.y=epp->center.y-ACTIVECAM->pos.y;
 		pos.z=epp->center.z-ACTIVECAM->pos.z;
-		float fRes = pos dot epp->norm;
+		float fRes = dot(pos, epp->norm);
 
 		long ret=1;
 

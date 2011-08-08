@@ -62,7 +62,6 @@ enum ChannelFlag {
 	FLAG_REVERBERATION = 0x00000400, // Enable environment reverberation
 	FLAG_RELATIVE      = 0x00001000, // Compute position relative to the listener
 	FLAG_AUTOFREE      = 0x00008000, // Free resource when playing is finished
-	FLAG_CALLBACK      = 0x00010000, // Enable sample callback management
 };
 DECLARE_FLAGS(ChannelFlag, ChannelFlags)
 DECLARE_FLAGS_OPERATORS(ChannelFlags)
@@ -127,9 +126,6 @@ struct Channel {
 	SourceCone cone;
 	SourceFalloff falloff;
 };
-
-// Callbacks prototype
-typedef void(*aalSampleCallback)(void * reserved, const SourceId & sample_id, void * data);
 
 } // namespace audio
 

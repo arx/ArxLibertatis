@@ -46,9 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 
-#include "scripting/ScriptDebuggerDialog.h"
-
-#ifdef BUILD_EDITOR
+#include "script/ScriptDebuggerDialog.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -296,7 +294,7 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
 	
 	if (!gbDialog)
 	{
-		ZeroMemory(&iInfo, sizeof(info));
+		memset(&iInfo, 0, sizeof(info));
 		// TODO script debugger
 		// HINSTANCE ghInstance;
 		// ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
@@ -496,5 +494,3 @@ void SCRIPT_DEBUGGER_Destroy()
 	if (gbDialog)
 		SendMessage(ghDialog, WM_CLOSE, 0, 0);
 }
-
-#endif // BUILD_EDITOR

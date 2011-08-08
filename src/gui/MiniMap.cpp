@@ -68,10 +68,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Text.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 
 #include "physics/Box.h"
 
@@ -81,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];
@@ -103,7 +107,7 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 		char LevelMap[256];
 		GetLevelNameByNum(SHOWLEVEL, name);
 
-		sprintf(LevelMap, "Graph\\Levels\\Level%s\\map.bmp", name);
+		sprintf(LevelMap, "graph/levels/level%s/map", name);
 		minimap[SHOWLEVEL].tc = TextureContainer::Load(LevelMap);
 
 		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
@@ -205,33 +209,38 @@ void ARX_MINIMAP_ValidatePlayerPos()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Load_Offsets()
 {
-	const char INI_MINI_OFFSETS[] = "Graph\\Levels\\mini_offsets.ini";
-
-	if (PAK_FileExist(INI_MINI_OFFSETS))
-	{
-		size_t siz = 0;
-		char * dat = (char *)PAK_FileLoadMallocZero(INI_MINI_OFFSETS, siz);
-
-		if(dat) {
-			size_t pos = 0;
-			for (long i = 0; i < 29; i++)
-			{
-				char t[512];
-				int nRead = sscanf(dat + pos, "%s %f %f", t, &mini_offset_x[i], &mini_offset_y[i]);
-				if(nRead != 3) {
-					LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
-				}
-
-				while ((pos < siz) && (dat[pos] != '\n')) pos++;
-
-				pos++;
-
-				if (pos >= siz) break;
+	const char INI_MINI_OFFSETS[] = "graph/levels/mini_offsets.ini";
+	
+	PakFile * file = resources->getFile(INI_MINI_OFFSETS);
+	if(!file) {
+		LogError << "missing " << INI_MINI_OFFSETS;
+		return;
+	}
+	
+	size_t siz = file->size();
+	char * dat = new char[siz + 2];
+	dat[siz] = dat[siz + 1] = '\0'; // TODO remove
+	
+	file->read(dat);
+	
+	if(dat) {
+		size_t pos = 0;
+		for (long i = 0; i < 29; i++)
+		{
+			char t[512];
+			int nRead = sscanf(dat + pos, "%s %f %f", t, &mini_offset_x[i], &mini_offset_y[i]);
+			if(nRead != 3) {
+				LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
 			}
-
-			free(dat);
+			
+			while ((pos < siz) && (dat[pos] != '\n')) pos++;
+						 
+						 pos++;
+			
+			if (pos >= siz) break;
 		}
-
+		
+		delete[] dat;
 	}
 
 	mini_offset_x[0] = 0;
@@ -317,7 +326,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 	static const float FL2_PLAYERSIZE = 4.f;
 
 	if (!pTexDetect)
-		pTexDetect = TextureContainer::Load("Graph\\particles\\flare.bmp");
+		pTexDetect = TextureContainer::Load("graph/particles/flare");
 
 	//	SHOWLEVEL=8;
 	// First Load Minimap TC & DATA if needed
@@ -878,21 +887,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 					if (!fl2 && MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy))
 					{
-						if (Mapmarkers[i].tstring.empty())
-						{
-							std::string output;
-							MakeLocalised(Mapmarkers[i].string, output);
-							Mapmarkers[i].tstring = output;
-						}
 
-						if ( !Mapmarkers[i].tstring.empty() )
-						{
-							std::string output;
-							MakeLocalised( Mapmarkers[i].string, output);
-							Mapmarkers[i].tstring = output;
-						}
-
-						if ( !Mapmarkers[i].tstring.empty() )
+						if (!Mapmarkers[i].text.empty())
 						{
 							Rect bRect(140, 290, 140 + 205, 358);
 
@@ -908,19 +904,14 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 							Rect rRect = Rect(Rect::Num(fLeft), Rect::Num(fTop), Rect::Num(fRight), Rect::Num(fBottom));
 
-							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].tstring, rRect);
+							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].text, rRect);
 
-							char Page_Buffer[256];
-							//_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
-							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
-							Page_Buffer[lLengthDraw] = '\0';
-
-							DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Page_Buffer, Color::none);
+							DrawBookTextInRect(hFontInGameNote, float(bRect.left), float(bRect.top), float(bRect.right), Mapmarkers[i].text.substr(0, lLengthDraw), Color::none);
 						}
 					}
 
 					if (MapMarkerTc == NULL)
-						MapMarkerTc = TextureContainer::Load("Graph\\interface\\icons\\mapmarker.bmp");
+						MapMarkerTc = TextureContainer::Load("graph/interface/icons/mapmarker");
 
 					GRenderer->SetTexture(0, MapMarkerTc);
 
@@ -946,28 +937,28 @@ void ARX_MAPMARKER_Init() {
 	Mapmarkers.clear();
 }
 
-long ARX_MAPMARKER_Get( const std::string& str) {
+static long ARX_MAPMARKER_Get(const string & name) {
+	
 	for(size_t i = 0; i < Mapmarkers.size(); i++) {
-		if(!strcasecmp(Mapmarkers[i].string, str.c_str()))
+		if(Mapmarkers[i].name == name) {
 			return i;
+		}
 	}
+	
 	return -1;
 }
 
-void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
-{
-	long num = ARX_MAPMARKER_Get(temp);
-
-	if (num >= 0) // already exists
-	{
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const string & name) {
+	
+	long num = ARX_MAPMARKER_Get(name);
+	
+	if(num >= 0)  {
+		
+		// already exists
 		Mapmarkers[num].lvl = lvl;
 		Mapmarkers[num].x = x;
 		Mapmarkers[num].y = y;
-
-		if (!Mapmarkers[num].tstring.empty())
-			Mapmarkers[num].tstring.clear();
-
-		strcpy(Mapmarkers[num].string, temp.c_str());
+		
 		return;
 	}
 	
@@ -976,15 +967,17 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 	Mapmarkers.back().lvl = lvl;
 	Mapmarkers.back().x = x;
 	Mapmarkers.back().y = y;
-	Mapmarkers.back().tstring.clear();
-	strcpy(Mapmarkers.back().string, temp.c_str());
+	Mapmarkers.back().name = name;
+	Mapmarkers.back().text = getLocalised(name);
+	
 }
 
-void ARX_MAPMARKER_Remove( const std::string& temp)
-{
-	long num = ARX_MAPMARKER_Get(temp);
-
-	if (num < 0) return; // Doesn't exists
-
-	Mapmarkers.erase( Mapmarkers.begin() + num );
+void ARX_MAPMARKER_Remove(const string & name) {
+	
+	long num = ARX_MAPMARKER_Get(name);
+	if(num < 0) {
+		return; // Doesn't exist
+	}
+	
+	Mapmarkers.erase(Mapmarkers.begin() + num);
 }

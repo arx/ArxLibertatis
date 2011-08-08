@@ -114,7 +114,7 @@ struct FAST_EP_DATA {
 	s16 idx;
 	s16 padd;
 	
-	operator EP_DATA() {
+	operator EP_DATA() const {
 		EP_DATA b;
 		b.px = px;
 		b.py = py;

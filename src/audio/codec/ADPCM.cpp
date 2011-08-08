@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "audio/AudioTypes.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 
 namespace audio {
 
@@ -136,7 +136,7 @@ aalError CodecADPCM::setPosition(size_t _position) {
 	
 	size_t i = (_position >> shift) / header->samplesPerBlock;
 	
-	if(PAK_fseek(stream, i * header->wfx.blockAlign, SEEK_CUR) == -1) {
+	if(stream->seek(SeekCur, i * header->wfx.blockAlign) == -1) {
 		return AAL_ERROR_FILEIO;
 	}
 	
@@ -217,7 +217,7 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 		if(sample_i >= header->samplesPerBlock) {
 			
 			if(padding) {
-				PAK_fseek(stream, padding, SEEK_CUR);
+				stream->seek(SeekCur, padding);
 			}
 			
 			if(aalError error = getNextBlock()) {
@@ -254,19 +254,19 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 aalError CodecADPCM::getNextBlock() {
 	
 	// Load and check block header
-	if(!PAK_fread(predictor, sizeof(char) << shift, 1, stream)) {
+	if(!stream->read(predictor, sizeof(char) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!PAK_fread(delta, sizeof(s16) << shift, 1, stream)) {
+	if(!stream->read(delta, sizeof(s16) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!PAK_fread(samp1, sizeof(s16) << shift, 1, stream)) {
+	if(!stream->read(samp1, sizeof(s16) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!PAK_fread(samp2, sizeof(s16) << shift, 1, stream)) {
+	if(!stream->read(samp2, sizeof(s16) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
@@ -283,7 +283,7 @@ aalError CodecADPCM::getNextBlock() {
 		((s16 *)cache_l)[i] = samp2[i];
 	}
 	
-	if(!PAK_fread(nybble_l, nybble_c, 1, stream)) {
+	if(!stream->read(nybble_l, nybble_c)) {
 		return AAL_ERROR_FILEIO;
 	}
 	

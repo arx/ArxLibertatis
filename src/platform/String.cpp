@@ -9,10 +9,6 @@
 using std::string;
 using std::transform;
 
-void MakeUpcase(string & str) {
-	transform(str.begin(), str.end(), str.begin(), ::toupper);
-}
-
 void makeLowercase(string & str) {
 	transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
@@ -23,22 +19,12 @@ string toLowercase(const string & str) {
 	return copy;
 }
 
-bool NC_IsIn(string t1, string t2) {
-	MakeUpcase(t1);
-	MakeUpcase(t2);
-	return (t1.find(t2) != string::npos);
+string safestring(const char * data, size_t maxLength) {
+	return string(data, std::find(data, data + maxLength, '\0'));
 }
 
 bool IsIn(const string & strin, const string & str) {
 	return (strin.find( str ) != string::npos);
-}
-
-int strcasecmp(const string & str1, const string & str2) {
-	return strcasecmp(str1.c_str(), str2.c_str());
-}
-
-int strcmp(const string & str1, const string & str2) {
-	return str1.compare(str2);
 }
 
 long specialstrcmp(const string & text, const string & seek) {

@@ -201,10 +201,8 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 	float div = 0.f;
 	long sel = -1;
 
-	for (size_t i = 0; i < obj->selections.size(); i++)
-	{ // TODO iterator
-		if (!strcasecmp(obj->selections[i].name, "mou"))
-		{
+	for(size_t i = 0; i < obj->selections.size(); i++) { // TODO iterator
+		if(obj->selections[i].name == "mou") {
 			sel = i;
 			break;
 		}
@@ -236,10 +234,9 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 		targvect.x *= divdist;
 		targvect.y *= divdist;
 		targvect.z *= divdist;
-		float val = *dirvect dot targvect;
+		float val = dot(*dirvect, targvect);
 
-		if (EEfabs(val) < 1.2f)
-		{
+		if(fabs(val) < 1.2f) {
 			if (distance > maxi) distance = maxi;
 
 			curradius += distance;

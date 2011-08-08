@@ -1,65 +1,45 @@
 
 #include <string>
-#include <cassert>
-using std::string;
-
-#include <sys/stat.h>
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
-using std::ostringstream;
-
 #include <algorithm>
-using std::transform;
 
 #include "io/Filesystem.h"
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
+#include "io/FilePath.h"
+#include "io/FileStream.h"
 
-void dump(PakReader & pak, const PakDirectory * dir, const string  & where = string()) {
+using std::transform;
+using std::ostringstream;
+using std::string;
+
+void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
-	if(!dir) {
-		return;
-	}
+	fs::create_directories(dirname);
 	
-	string dirname = where;
-	if(dir->name) {
-		string n = dir->name;
-		transform(n.begin(), n.end(), n.begin(), tolower);
-		if(!n.empty() && *n.rbegin() == '\\') {
-			dirname += n.substr(0, n.size() - 1);
-		} else {
-			dirname += n;
-		}
-		dirname += "/";
-	}
-	
-	CreateFullPath(dirname);
-	
-	PakFile * file = dir->files;
-	while(file != NULL) {
+	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		
-		string fn = file->name;
-		transform(fn.begin(), fn.end(), fn.begin(), tolower);
-		string filename = dirname + fn;
+		fs::path filename = dirname / i->first;
 		
-		printf("%s\n", filename.c_str());
+		PakFile * file = i->second;
 		
-		FILE * f = fopen(filename.c_str(), "wb");
-		if(!f) {
-			printf("error opening file for writing: %s\n", filename.c_str());
+		printf("%s\n", filename.string().c_str());
+		
+		fs::ofstream ofs(filename, fs::fstream::out | fs::fstream::binary | fs::fstream::trunc);
+		if(!ofs.is_open()) {
+			printf("error opening file for writing: %s\n", filename.string().c_str());
 			exit(1);
 		}
 		
-		if(file->size && (!(file->flags & PAK_FILE_COMPRESSED) || file->uncompressedSize)) {
+		if(file->size() > 0) {
 			
-			size_t size;
-			char * data = (char*)pak.ReadAlloc(filename, size);
-			assert(data != NULL);
+			char * data = (char*)file->readAlloc();
+			arx_assert(data != NULL);
 			
-			if(fwrite(data, size, 1, f) != 1) {
-				printf("error writing to file: %s\n", filename.c_str());
-				fclose(f);
+			if(ofs.write(data, file->size()).fail()) {
+				printf("error writing to file: %s\n", filename.string().c_str());
 				exit(1);
 			}
 			
@@ -67,18 +47,17 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 			
 		}
 		
-		fclose(f);
-		
-		file = file->next;
 	}
 	
-	dump(pak, dir->children, dirname);
-	
-	dump(pak, dir->next, where);
+	for(PakDirectory::dirs_iterator i = dir.dirs_begin(); i != dir.dirs_end(); ++i) {
+		dump(i->second, dirname / i->first);
+	}
 	
 }
 
 int main(int argc, char ** argv) {
+	
+	ARX_UNUSED(resources);
 	
 	if(argc < 2) {
 		printf("usage: unpak <pakfile> [<pakfile>...]\n");
@@ -88,12 +67,12 @@ int main(int argc, char ** argv) {
 	for(int i = 1; i < argc; i++) {
 		
 		PakReader pak;
-		if(!pak.Open(argv[i])) {
+		if(!pak.addArchive(argv[i])) {
 			printf("error opening PAK file\n");
 			return 1;
 		}
 		
-		dump(pak, pak.root);
+		dump(pak);
 		
 	}
 	

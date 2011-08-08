@@ -71,7 +71,7 @@ bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
-	float fDotProduct = vWorldUp dot vView;
+	float fDotProduct = dot(vWorldUp, vView);
 
 	Vec3f vUp = vWorldUp - vView * fDotProduct;
 
@@ -96,7 +96,7 @@ bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 
 	// The x basis vector is found simply with the cross product of the y
 	// and z basis vectors
-	Vec3f vRight = vUp cross vView;
+	Vec3f vRight = cross(vUp, vView);
 
 	// Start building the matrix. The first three rows contains the basis
 	// vectors used to rotate the view to point at the lookat point
@@ -112,9 +112,9 @@ bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom,
 	mat._33 = vView.z;
 
 	// Do the translation values (rotations are still about the eyepoint)
-	mat._41 = - vFrom dot vRight;
-	mat._42 = - vFrom dot vUp;
-	mat._43 = - vFrom dot vView;
+	mat._41 = -dot(vFrom, vRight);
+	mat._42 = -dot(vFrom, vUp);
+	mat._43 = -dot(vFrom, vView);
 
 	return true;
 }

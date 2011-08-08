@@ -4,6 +4,7 @@
 
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
+#include "platform/String.h"
 
 #define CURRENT_FTL_VERSION  0.83257f
 
@@ -110,9 +111,9 @@ struct EERIE_ACTIONLIST_FTL {
 	s32 action;
 	s32 sfx;
 	
-	inline operator EERIE_ACTIONLIST() {
+	inline operator EERIE_ACTIONLIST() const {
 		EERIE_ACTIONLIST a;
-		a.name = name;
+		a.name = toLowercase(safestring(name));
 		a.idx = idx;
 		a.act = action;
 		a.sfx = sfx;
@@ -150,7 +151,7 @@ struct COLLISION_SPHERE_FTL {
 	s16 flags;
 	f32 radius;
 	
-	inline operator COLLISION_SPHERE() {
+	inline operator COLLISION_SPHERE() const {
 		COLLISION_SPHERE a;
 		a.idx = idx;
 		a.flags = flags;
@@ -176,7 +177,7 @@ struct EERIE_SPRINGS_FTL {
 	f32 damping; // spring damping
 	s32 type;
 	
-	inline operator EERIE_SPRINGS() {
+	inline operator EERIE_SPRINGS() const {
 		EERIE_SPRINGS a;
 		a.startidx = startidx;
 		a.endidx = endidx;
@@ -205,7 +206,7 @@ struct EERIE_OLD_VERTEX {
 	SavedVec3 v;
 	SavedVec3 norm;
 	
-	inline operator EERIE_VERTEX() {
+	inline operator EERIE_VERTEX() const {
 		EERIE_VERTEX a;
 		a.vert = vert, a.v = v, a.norm = norm;
 		return a;
@@ -234,7 +235,7 @@ struct CLOTHESVERTEX_FTL {
 	
 	SavedVec3 lastpos;
 	
-	inline operator CLOTHESVERTEX() {
+	inline operator CLOTHESVERTEX() const {
 		CLOTHESVERTEX a;
 		a.idx = idx;
 		a.flags = flags;

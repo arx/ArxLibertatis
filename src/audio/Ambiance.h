@@ -26,7 +26,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AMBIANCE_H
 #define ARX_AUDIO_AMBIANCE_H
 
-#include "AudioTypes.h"
+#include <vector>
+
+#include "audio/AudioTypes.h"
+#include "io/FilePath.h"
 
 namespace audio {
 
@@ -34,7 +37,7 @@ class Ambiance {
 	
 public:
 	
-	Ambiance(const std::string & name);
+	Ambiance(const fs::path & name);
 	~Ambiance();
 	
 	aalError load();
@@ -43,7 +46,7 @@ public:
 	inline void * getUserData() const { return data; }
 	
 	const Channel & getChannel() const { return channel; }
-	const std::string & getName() const { return name; }
+	const fs::path & getName() const { return name; }
 	
 	aalError setVolume(float volume);
 	
@@ -60,13 +63,10 @@ public:
 	
 	aalError muteTrack(const std::string & track, bool mute);
 	
-	void setId(AmbianceId id);
-	
 	struct Track;
+	typedef std::vector<Track> TrackList;
 	
 private:
-	
-	static void OnAmbianceSampleEnd(void *, const SourceId &, void * data);
 	
 	enum Fade {
 		None,
@@ -87,9 +87,10 @@ private:
 	Channel channel;
 	float fade_time, fade_interval, fade_max;
 	s32 start, time;
-	size_t track_c;
-	Track * track_l;
-	std::string name;
+	
+	TrackList tracks;
+	
+	fs::path name;
 	
 	void * data;
 	

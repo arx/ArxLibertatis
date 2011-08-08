@@ -3,25 +3,27 @@
 #define ARX_SCENE_CINEMATICSOUND_H
 
 #include "scene/GameSound.h"
+#include "io/FilePath.h"
 
 class Cinematic;
 
 #define MAX_SOUND 256
 
 struct CinematicSound {
-	short active, load;
-	char * dir;
-	char * name;
-	char * sound;
-	ArxSound idhandle;
+	
+	CinematicSound();
+	
+	short active;
+	fs::path file;
+	ArxSound handle;
+	
 };
 
 void DeleteAllSound();
 
-void InitSound();
 CinematicSound * GetFreeSound(int * num);
 bool DeleteFreeSound(int num);
-int AddSoundToList(const std::string & path);
+int AddSoundToList(const fs::path & path);
 bool PlaySoundKeyFramer(int id);
 void StopSoundKeyFramer(void);
 

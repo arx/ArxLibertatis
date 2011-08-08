@@ -67,12 +67,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells05.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "physics/Collisions.h"
 
@@ -134,7 +134,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		cp.fEndColor[1] = 40;
 		cp.fEndColor[2] = 120;
 		cp.fEndColor[3] = 10;//55;
-		pPS->SetTexture("graph\\particles\\(fx)_mr.bmp", 0, 500);
+		pPS->SetTexture("graph/particles/(fx)_mr", 0, 500);
 	}
 	else
 	{
@@ -151,7 +151,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 		cp.fEndColor[1] = 0;
 		cp.fEndColor[2] = 120;
 		cp.fEndColor[3] = 10;
-		pPS->SetTexture("graph\\particles\\magicexplosion.bmp", 0, 500);
+		pPS->SetTexture("graph/particles/magicexplosion", 0, 500);
 	}
 
 	cp.fEndColorRandom[0] = 50;
@@ -213,10 +213,10 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_mm = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_bandelette_blue.bmp");
+	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
 	if (!smissile)
-		smissile = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_magic_missile\\fx_magic_missile.teo");
+		smissile = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
 
@@ -503,7 +503,7 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			pTab[i] = NULL;
 			pTab[i] = new CMagicMissile();
@@ -515,7 +515,7 @@ CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 //-----------------------------------------------------------------------------
 CMultiMagicMissile::~CMultiMagicMissile()
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		if (pTab[i])
 		{
@@ -542,7 +542,7 @@ void CMultiMagicMissile::Create()
 	{
 		
 
-		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "PRIMARY_ATTACH");
+		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "primary_attach");
 
 		if (spells[spellinstance].hand_group != -1)
 		{
@@ -607,7 +607,7 @@ void CMultiMagicMissile::Create()
 			}
 		}
 
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -677,7 +677,7 @@ void CMultiMagicMissile::CheckCollision()
 {
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -733,7 +733,7 @@ void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -751,7 +751,7 @@ float CMultiMagicMissile::Render()
 
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -826,8 +826,8 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 		this->tablight[nb].idl = -1;
 	}
 
-	this->ChangeTexture(TextureContainer::Load("Graph\\Particles\\fire_hit.bmp"));
-	this->ChangeRGBMask(1.f, 1.f, 1.f, RGBA_MAKE(255, 200, 0, 255));
+	this->ChangeTexture(TextureContainer::Load("graph/particles/fire_hit"));
+	this->ChangeRGBMask(1.f, 1.f, 1.f, Color(255, 200, 0).toBGRA());
 }
 
 //-----------------------------------------------------------------------------
@@ -925,6 +925,12 @@ void CIgnit::Update(unsigned long _ulTime)
 	if (!ARXPausedTimer) this->currduration += _ulTime;
 }
 
+void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
+	this->Create(posc, perim, speed);
+	this->ChangeTexture(TextureContainer::Load("graph/particles/doze_hit"));
+	this->ChangeRGBMask(0.f, .7f, 1.f, 0xFF0000FF);
+}
+
 //-----------------------------------------------------------------------------
 void CDoze::AddLightDoze(int aiLight)
 {
@@ -1016,7 +1022,7 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 
 	GRenderer->SetTexture(0, tex);
 	
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = RGBA_MAKE(tsp, tsp, tsp, 255);
+	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::grayb(tsp).toBGR();
 
 	float xx;
 	float zz;
@@ -1242,7 +1248,7 @@ float CPortal::Render()
 	int			nb = this->spherenbpt;
 	TexturedVertex * v = this->sphered3d, d3dvs;
 	Vec3f	* pt = this->spherevertex;
-	int col = RGBA_MAKE(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha), 255);
+	int col = Color(0, (int)(200.f * this->spherealpha), (int)(255.f * this->spherealpha)).toBGRA();
 
 	while (nb)
 	{
@@ -1285,7 +1291,7 @@ float CPortal::Render()
 
 				if (b > 255) b = 255;
 
-				if (!ARXPausedTimer) this->sphered3d[this->tabeclair[nb].numpt].color = RGBA_MAKE(r, g, b, 255);
+				if (!ARXPausedTimer) this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
 			}
 
 		}

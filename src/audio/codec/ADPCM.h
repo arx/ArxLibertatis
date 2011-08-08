@@ -30,8 +30,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/codec/Codec.h"
 #include "audio/codec/WAVFormat.h"
 
-struct PakFileHandle;
-
 namespace audio {
 
 class CodecADPCM : public Codec {

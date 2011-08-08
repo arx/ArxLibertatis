@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 
-#include <cassert>
 #include <cstdio>
 
 #include "ai/Paths.h"
@@ -78,8 +77,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
+
+#include "io/FilePath.h"
 
 #include "physics/Box.h"
 #include "physics/Anchors.h"
@@ -94,11 +96,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 using std::sprintf;
 using std::min;
 using std::max;
+using std::string;
 
 void CheckNPCEx(INTERACTIVE_OBJ * io);
 
@@ -291,7 +294,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 		TSecondaryInventory = NULL;
 	}
 
-	ARX_SCRIPT_SetMainEvent(io, "MAIN");
+	ARX_SCRIPT_SetMainEvent(io, "main");
 
 	if (io->ioflags & IO_NPC)
 	{
@@ -315,7 +318,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 	{
 		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "GORE")))
+		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -342,7 +345,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, long behavior, long behavior_param)
+void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long behavior_param)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -870,99 +873,44 @@ failure:
 	return false;
 }
 
-//***********************************************************************************************
-//***********************************************************************************************
-void ARX_NPC_SetStat( INTERACTIVE_OBJ& io, const std::string& statname, float value )
-{
-	if ( !(io.ioflags & IO_NPC) )
-		return;
-
-	if (!strcasecmp(statname, "ARMOR_CLASS"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->armor_class = value;
-	}
-	else if (!strcasecmp(statname, "BACKSTAB_SKILL"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->backstab_skill = value;
-	}
-	else if (!strcasecmp(statname, "BACKSTAB"))
-	{
+bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) {
+	
+	arx_assert(io.ioflags & IO_NPC);
+	
+	if(statname == "armor_class") {
+		io._npcdata->armor_class = value < 0 ? 0 : value;
+	} else if(statname == "backstab_skill" || statname == "backstabskill") {
+		io._npcdata->backstab_skill = value < 0 ? 0 : value;
+	} else if(statname == "backstab") {
 		if (value == 0) io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
 		else io._npcdata->npcflags |= NPCFLAG_BACKSTAB;
+	} else if(statname == "reach") {
+		io._npcdata->reach = value < 0 ? 0 : value;
+	} else if(statname == "critical") {
+		io._npcdata->critical = value < 0 ? 0 : value;
+	} else if(statname == "absorb") {
+		io._npcdata->absorb = value < 0 ? 0 : value;
+	} else if(statname == "damages") {
+		io._npcdata->damages = value < 0 ? 0 : value;
+	} else if(statname == "tohit") {
+		io._npcdata->tohit = value < 0 ? 0 : value;
+	} else if(statname == "aimtime") {
+		io._npcdata->aimtime = value < 0 ? 0 : value;
+	} else if(statname == "life") {
+		io._npcdata->maxlife = io._npcdata->life = value < 0 ? 0.0000001f : value;
+	} else if(statname == "mana") {
+		io._npcdata->maxmana = io._npcdata->mana = value < 0 ? 0 : value;
+	} else if(statname == "resistfire") {
+		io._npcdata->resist_fire = (unsigned char)clamp(value, 0.f, 100.f);
+	} else if(statname == "resistpoison") {
+		io._npcdata->resist_poison = (unsigned char)clamp(value, 0.f, 100.f);
+	} else if(statname == "resistmagic") {
+		io._npcdata->resist_magic = (unsigned char)clamp(value, 0.f, 100.f);
+	} else {
+		return false;
 	}
-	else if (!strcasecmp(statname, "REACH"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->reach = value;
-	}
-	else if (!strcasecmp(statname, "CRITICAL"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->critical = value;
-	}
-	else if (!strcasecmp(statname, "ABSORB"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->absorb = value;
-	}
-	else if (!strcasecmp(statname, "DAMAGES"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->damages = value;
-	}
-	else if (!strcasecmp(statname, "TOHIT"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->tohit = value;
-	}
-	else if (!strcasecmp(statname, "AIMTIME"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->aimtime = value;
-	}
-	else if (!strcasecmp(statname, "LIFE"))
-	{
-		if (value < 0) value = 0.0000001f;
-
-		io._npcdata->maxlife = io._npcdata->life = value;
-	}
-	else if (!strcasecmp(statname, "MANA"))
-	{
-		if (value < 0) value = 0;
-
-		io._npcdata->maxmana = io._npcdata->mana = value;
-	}
-	else if (!strcasecmp(statname, "RESISTFIRE"))
-	{
-		if (value < 0) value = 0;
-		else if (value > 100) value = 100;
-
-		io._npcdata->resist_fire = (unsigned char)value;
-	}
-	else if (!strcasecmp(statname, "RESISTPOISON"))
-	{
-		if (value < 0) value = 0;
-		else if (value > 100) value = 100;
-
-		io._npcdata->resist_poison = (unsigned char)value;
-	}
-	else if (!strcasecmp(statname, "RESISTMAGIC"))
-	{
-		if (value < 0) value = 0;
-		else if (value > 100) value = 100;
-
-		io._npcdata->resist_magic = (unsigned char)value;
-	}
+	
+	return true;
 }
 
 extern long CUR_COLLISION_MATERIAL;
@@ -1005,7 +953,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, long MOVEMODE)
+void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -1520,17 +1468,13 @@ extern INTERACTIVE_OBJ * EVENT_SENDER;
 //***********************************************************************************************
 // Checks If a NPC is dead
 //***********************************************************************************************
-bool IsDeadNPC(INTERACTIVE_OBJ * io)
-{
-	if (!io) return false;
-
-	if (!(io->ioflags & IO_NPC)) return false;
-
-	if (io->_npcdata->life <= 0) return true;
-
-	if ((io->mainevent) && !strcmp(io->mainevent, "DEAD")) return true;
-
-	return false;
+bool IsDeadNPC(INTERACTIVE_OBJ * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC)) {
+		return false;
+	}
+	
+	return (io->_npcdata->life <= 0 || io->mainevent == "dead");
 }
 //***********************************************************************************************
 //***********************************************************************************************
@@ -1598,7 +1542,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
 		if (from->texturecontainer[k]
-		        && (IsIn(from->texturecontainer[k]->m_texName, "GORE")))
+		        && (IsIn(from->texturecontainer[k]->m_texName.string(), "gore")))
 		{
 			gore = k;
 			break;
@@ -1748,7 +1692,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
-			        && (IsIn(from->texturecontainer[k]->m_texName, "GORE")))
+			        && (IsIn(from->texturecontainer[k]->m_texName.string(), "gore")))
 			{
 				gore = k;
 				break;
@@ -1787,7 +1731,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->script.data	=	NULL;
 	io->GameFlags	|=	GFLAG_NO_PHYS_IO_COL;
 	
-	strcpy(io->filename, "NoName");
+	io->filename = "noname";
 
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);
@@ -1796,21 +1740,15 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		return;
 	}
 
-	io->infracolor.r	=	0.f;
-	io->infracolor.g	=	0.f;
-	io->infracolor.b	=	0.8f;
-	io->collision		=	1;
-	io->inv				=	NULL;
-	io->scriptload		=	1;
-	io->obj				=	nouvo;
-	io->lastpos.x		=	io->initpos.x	=	io->pos.x	=	ioo->obj->vertexlist3[inpos].v.x;
-	io->lastpos.y		=	io->initpos.y	=	io->pos.y	=	ioo->obj->vertexlist3[inpos].v.y;
-	io->lastpos.z		=	io->initpos.z	=	io->pos.z	=	ioo->obj->vertexlist3[inpos].v.z;
-	io->angle.a			=	ioo->angle.a;
-	io->angle.b			=	ioo->angle.b;
-	io->angle.g			=	ioo->angle.g;
-
-	io->GameFlags		=	ioo->GameFlags;
+	io->infracolor = Color3f::blue * 0.8f;
+	io->collision = COLLIDE_WITH_PLAYER;
+	io->inv = NULL;
+	io->scriptload = 1;
+	io->obj = nouvo;
+	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
+	io->angle = ioo->angle;
+	
+	io->GameFlags = ioo->GameFlags;
 	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
 	ioo->halo.dynlight	=	-1;
 	io->ioflags			|=	IO_MOVABLE;
@@ -1860,26 +1798,22 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 #define	FLAG_CUT_LLEG	(1<<4)
 #define	FLAG_CUT_RLEG	(1<<5)
 
-short GetCutFlag( const std::string& str )
-{
-	if (!strcasecmp(str, "CUT_HEAD"))
+static short GetCutFlag(const string & str) {
+	
+	if(str == "cut_head") {
 		return FLAG_CUT_HEAD;
-
-	if (!strcasecmp(str, "CUT_TORSO"))
+	} else if(str == "cut_torso") {
 		return FLAG_CUT_TORSO;
-
-	if (!strcasecmp(str, "CUT_LARM"))
+	} else if(str == "cut_larm") {
 		return FLAG_CUT_LARM;
-
-	if (!strcasecmp(str, "CUT_RARM"))
+	} else if(str == "cut_rarm") {
 		return FLAG_CUT_HEAD;
-
-	if (!strcasecmp(str, "CUT_LLEG"))
+	} else if(str == "cut_lleg") {
 		return FLAG_CUT_LLEG;
-
-	if (!strcasecmp(str, "CUT_RLEG"))
+	} else if(str == "cut_rleg") {
 		return FLAG_CUT_RLEG;
-
+	}
+	
 	return 0;
 }
 
@@ -1891,27 +1825,28 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	std::string tx;
 
 	if (flag == FLAG_CUT_HEAD)
-		tx =  "CUT_HEAD";
+		tx =  "cut_head";
 	else if (flag == FLAG_CUT_TORSO)
-		tx = "CUT_TORSO";
+		tx = "cut_torso";
 	else if (flag == FLAG_CUT_LARM)
-		tx = "CUT_LARM";
+		tx = "cut_larm";
 
 	if (flag == FLAG_CUT_RARM)
-		tx = "CUT_RARM";
+		tx = "cut_rarm";
 
 	if (flag == FLAG_CUT_LLEG)
-		tx = "CUT_LLEG";
+		tx = "cut_lleg";
 
 	if (flag == FLAG_CUT_RLEG)
-		tx = "CUT_RLEG";
+		tx = "cut_rleg";
 
 	if ( !tx.empty() )
 	{
 		typedef std::vector<EERIE_SELECTIONS>::iterator iterator; // Convenience
 		for(iterator iter = io->obj->selections.begin(); iter != io->obj->selections.end(); ++iter) {
-			if ( ( iter->selected.size() > 0 ) && ( !strcasecmp( iter->name, tx)))
+			if(iter->selected.size() > 0 && iter->name == tx) {
 				return iter - io->obj->selections.begin();
+			}
 		}
 	}
 
@@ -1966,7 +1901,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
 		if (io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName, "GORE")))
+		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -2033,7 +1968,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
 		if (target->obj->texturecontainer[i]
-		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName, "GORE")))
+		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -2043,7 +1978,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
 		if ((target->obj->selections[i].selected.size() > 0)
-		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
+		        &&	(IsIn(target->obj->selections[i].name, "cut_")))
 		{
 			short fll = GetCutFlag( target->obj->selections[i].name );
 
@@ -2100,7 +2035,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 
 	if (hid)
 	{
-		ARX_SOUND_PlayCinematic("Flesh_Critical.wav");
+		ARX_SOUND_PlayCinematic("flesh_critical.wav");
 		ARX_NPC_SpawnMember(target, numsel);
 	}
 }
@@ -2200,7 +2135,7 @@ void ARX_NPC_Manage_Fight(INTERACTIVE_OBJ * io)
 {
 	if (!(io->ioflags & IO_NPC)) return;
 
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2449,7 +2384,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 
 
 
-	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
+	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
 
 	if (ValidIOAddress(ioo))
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2627,7 +2562,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
 					ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT+j*3]);
-					SendIOScriptEvent(io, SM_STRIKE, "BARE");
+					SendIOScriptEvent(io, SM_STRIKE, "bare");
 				}
 			}
 			else if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3])
@@ -2678,8 +2613,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(ause1->cur_anim)
 			        &&	(ause1->flags & EA_ANIMEND))
 			{
-				if (io->_npcdata->weaponname[0] != 0)
-					SetWeapon_Back(io);
+				SetWeapon_Back(io);
 
 				AcquireLastAnim(io);
 				FinishAnim(io, ause1->cur_anim);
@@ -2709,8 +2643,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(ause1->cur_anim)
 			        &&	(ause1->flags & EA_ANIMEND))
 			{
-				if (io->_npcdata->weaponname[0] != 0)
-					SetWeapon_On(io);
+				SetWeapon_On(io);
 
 				AcquireLastAnim(io);
 				FinishAnim(io, ause1->cur_anim);
@@ -2787,13 +2720,13 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 						ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT+j*3+ANIMBase]);
 
 						if (io->_npcdata->weapontype & OBJECT_TYPE_1H)
-							SendIOScriptEvent(io, SM_STRIKE, "1H");
+							SendIOScriptEvent(io, SM_STRIKE, "1h");
 
 						if (io->_npcdata->weapontype & OBJECT_TYPE_2H)
-							SendIOScriptEvent(io, SM_STRIKE, "2H");
+							SendIOScriptEvent(io, SM_STRIKE, "2h");
 
 						if (io->_npcdata->weapontype & OBJECT_TYPE_DAGGER)
-							SendIOScriptEvent(io, SM_STRIKE, "DAGGER");
+							SendIOScriptEvent(io, SM_STRIKE, "dagger");
 					}
 				}
 				else if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3+ANIMBase])
@@ -2814,11 +2747,11 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 						{
 							if (!(io->ioflags & IO_HIT))
 							{
-								if (ARX_EQUIPMENT_Strike_Check(io, (INTERACTIVE_OBJ *)io->_npcdata->weapon, 1, 0, io->targetinfo))
+								if (ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 0, io->targetinfo))
 									io->ioflags |= IO_HIT;
 							}
 							else
-								ARX_EQUIPMENT_Strike_Check(io, (INTERACTIVE_OBJ *)io->_npcdata->weapon, 1, 1, io->targetinfo);
+								ARX_EQUIPMENT_Strike_Check(io, io->_npcdata->weapon, 1, 1, io->targetinfo);
 
 						}
 					}
@@ -2952,7 +2885,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	//	AnchorData_GetNearest_2(io->angle.b,&io->pos,&io->physics.cyl);
 	// Specific USEPATH management
-	ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
+	ARX_USE_PATH * aup = io->usepath;
 
 	if ((aup)
 	        &&	(aup->aupflags & ARX_USEPATH_WORM_SPECIFIC))
@@ -3234,6 +3167,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 		return;
 	}
+	
+	{
 
 	// XS : Moved to top of func
 	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
@@ -3486,12 +3421,10 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
 
-	long levitate;
-	levitate = 0;
+	CollisionFlags levitate = 0;
 
-	if (ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0)
-	{
-		levitate = 1;
+	if(ARX_SPELLS_GetSpellOn(io, SPELL_LEVITATE) >= 0) {
+		levitate = CFLAG_LEVITATE;
 		io->physics.targetpos.y = io->pos.y + io->move.y + ForcedMove.y;
 	}
 	else  // Gravity 'simulation'
@@ -3624,6 +3557,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		}
 	}
 
+	}
 
 	// We are still too far from our target...
 	if (io->_npcdata->pathfind.pathwait == 0)
@@ -3760,7 +3694,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 					if ((io->_npcdata->behavior & BEHAVIOUR_FLEE)
 					        && (!io->_npcdata->pathfind.pathwait))
-						SendIOScriptEvent(io, SM_NULL, "", "FLEE_END");
+						SendIOScriptEvent(io, SM_NULL, "", "flee_end");
 
 					if ((io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE) &&
 					        (io->_npcdata->pathfind.pathwait == 0))
@@ -3773,7 +3707,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 							if (io->targetinfo != num)
 							{
-								SendIOScriptEvent(io, SM_REACHEDTARGET, "FAKE");
+								SendIOScriptEvent(io, SM_REACHEDTARGET, "fake");
 								io->targetinfo = num;
 							}
 						}
@@ -4134,13 +4068,14 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 }
 
 //-------------------------------------------------------------------------
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power)
-{
-	char step_material[64] = "Foot_bare";
-	std::string floor_material = "EARTH";
+void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power) {
+	
+	string _step_material = "foot_bare";
+	const string * step_material = &_step_material;
+	string floor_material = "earth";
 
 	if (EEIsUnderWater(pos))
-		floor_material = "WATER";
+		floor_material = "water";
 	else
 	{
 		EERIEPOLY * ep;
@@ -4149,22 +4084,21 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume
 		if (ep &&  ep->tex && !ep->tex->m_texName.empty())
 			floor_material = GetMaterialString( ep->tex->m_texName );
 	}
-
-	if (io && io->stepmaterial)
-		strcpy(step_material, io->stepmaterial);
-
-	if ((io == inter.iobj[0]) && (player.equiped[EQUIP_SLOT_LEGGINGS] > 0))
-	{
-		if (ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
-		{
+	
+	if(io && !io->stepmaterial.empty()) {
+		step_material = &io->stepmaterial;
+	}
+	
+	if(io == inter.iobj[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
+		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 			INTERACTIVE_OBJ * ioo = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-			if (ioo->stepmaterial)
-				strcpy(step_material, ioo->stepmaterial);
+			if(!ioo->stepmaterial.empty()) {
+				step_material = &ioo->stepmaterial;
+			}
 		}
 	}
-
-	ARX_SOUND_PlayCollision(step_material, floor_material, volume, power, pos, io);
+	
+	ARX_SOUND_PlayCollision(*step_material, floor_material, volume, power, pos, io);
 }
 //-------------------------------------------------------------------------
 //***********************************************************************************************
@@ -4281,7 +4215,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				{
 					num = rnd() * io->obj->facelist.size();
 					
-					assert(num < io->obj->facelist.size());
+					arx_assert(num < io->obj->facelist.size());
 					
 					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 					
@@ -4413,7 +4347,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				while (notok-- > 0)
 				{
 					num = rnd() * io->obj->facelist.size();
-					assert(num < io->obj->facelist.size());
+					arx_assert(num < io->obj->facelist.size());
 
 					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 
@@ -4532,3 +4466,143 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 		}
 	}
 }
+
+
+extern EERIE_BACKGROUND * ACTIVEBKG;
+
+void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
+{
+	if (io == NULL) return;
+
+	if (io->ioflags & IO_NPC)
+	{
+		if (io->_npcdata->behavior & BEHAVIOUR_NONE)
+		{
+			io->target.x = io->pos.x;
+			io->target.y = io->pos.y;
+			io->target.z = io->pos.z;
+			return;
+		}
+
+		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
+		{
+			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
+			{
+				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
+				io->target.x = ACTIVEBKG->anchors[pos].pos.x;
+				io->target.y = ACTIVEBKG->anchors[pos].pos.y;
+				io->target.z = ACTIVEBKG->anchors[pos].pos.z;
+				return;
+			}
+
+			io->target.x = io->initpos.x;
+			io->target.y = io->initpos.y;
+			io->target.z = io->initpos.z;
+			return;
+		}
+
+		if ((io->_npcdata) && (io->_npcdata->pathfind.listnb != -1) && (io->_npcdata->pathfind.list)
+				&& (!(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)))// Targeting Anchors !
+		{
+			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
+			{
+				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
+				io->target.x = ACTIVEBKG->anchors[pos].pos.x;
+				io->target.y = ACTIVEBKG->anchors[pos].pos.y;
+				io->target.z = ACTIVEBKG->anchors[pos].pos.z;
+			}
+			else if (ValidIONum(io->_npcdata->pathfind.truetarget))
+			{
+				INTERACTIVE_OBJ * ioo = inter.iobj[io->_npcdata->pathfind.truetarget];
+				io->target.x = ioo->pos.x;
+				io->target.y = ioo->pos.y;
+				io->target.z = ioo->pos.z;
+			}
+
+
+			return;
+		}
+	}
+
+
+
+	if (io->targetinfo == TARGET_PATH)
+	{
+		if (io->usepath == NULL)
+		{
+			io->target.x = io->pos.x;
+			io->target.y = io->pos.y;
+			io->target.z = io->pos.z;
+			return;
+		}
+
+		ARX_USE_PATH * aup = io->usepath;
+		aup->_curtime += smoothing + 100;
+		Vec3f tp;
+		long wp = ARX_PATHS_Interpolate(aup, &tp);
+
+		if (wp < 0)
+		{
+			if (io->ioflags & IO_CAMERA)
+				io->_camdata->cam.lastinfovalid = false;
+		}
+		else
+		{
+
+			io->target.x = tp.x;
+			io->target.y = tp.y;
+			io->target.z = tp.z;
+
+		}
+
+		return;
+	}
+
+	if (io->targetinfo == TARGET_NONE)
+	{
+		io->target.x = io->pos.x;
+		io->target.y = io->pos.y;
+		io->target.z = io->pos.z;
+		return;
+	}
+
+
+
+
+
+
+
+
+	if ((io->targetinfo == TARGET_PLAYER) || (io->targetinfo == -1))
+	{
+		io->target.x = player.pos.x;
+		io->target.y = player.pos.y + player.size.y;
+		io->target.z = player.pos.z;
+		return;
+	}
+	else
+	{
+		if (ValidIONum(io->targetinfo))
+		{
+			Vec3f pos;
+
+			if (GetItemWorldPosition(inter.iobj[io->targetinfo], &pos))
+			{
+				io->target.x = pos.x;
+				io->target.y = pos.y;
+				io->target.z = pos.z;
+				return;
+			}
+
+			io->target.x = inter.iobj[io->targetinfo]->pos.x;
+			io->target.y = inter.iobj[io->targetinfo]->pos.y;
+			io->target.z = inter.iobj[io->targetinfo]->pos.z;
+			return;
+		}
+	}
+
+	io->target.x = io->pos.x;
+	io->target.y = io->pos.y;
+	io->target.z = io->pos.z;
+}
+

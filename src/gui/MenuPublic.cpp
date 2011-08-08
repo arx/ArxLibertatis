@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuPublic.h"
 
 #include <cstdio>
+#include <iomanip>
 
 #include "animation/Cinematic.h"
 
@@ -51,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "io/FilePath.h"
 
 #include "scene/GameSound.h"
 
@@ -72,9 +74,6 @@ extern int iFadeAction;
 extern long ZMAPMODE;
 extern long MAX_LLIGHTS;
 extern long FRAME_COUNT;
-
-void		*	pAmbiancePlayList = NULL;
-unsigned long	ulSizeAmbiancePlayList = 0;
 
 void ARX_SOUND_PushAnimSamples();
 void ARX_SOUND_PopAnimSamples();
@@ -124,15 +123,13 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 
 			ARX_CHECK_NOT_NEG(_iBpp);
 
-			if (mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT(_iBpp))
-			{
+			if(mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)_iBpp) {
+				
 				ARX_CHECK_NOT_NEG(_iWidth);
 				ARX_CHECK_NOT_NEG(_iHeight);
 
-				if ((mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT(_iWidth)) &&
-					    (mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT(_iHeight)))
-				{
-
+				if(mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)_iWidth
+				   && mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)_iHeight) {
 					mainApp->m_pDeviceInfo->ddsdFullscreenMode = mainApp->m_pDeviceInfo->pddsdModes[i];
 					mainApp->m_pDeviceInfo->dwCurrentMode = i;
 				}
@@ -399,7 +396,8 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	config.audio.eax = _bEnable;
 	
 	ARX_SOUND_PushAnimSamples();
-	ARX_SOUND_AmbianceSavePlayList(&pAmbiancePlayList, &ulSizeAmbiancePlayList);
+	size_t ulSizeAmbiancePlayList;
+	char * pAmbiancePlayList = ARX_SOUND_AmbianceSavePlayList(ulSizeAmbiancePlayList);
 	
 	ARX_SOUND_Release();
 	ARX_SOUND_Init();
@@ -412,8 +410,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 
-	if (pAmbiancePlayList)
-	{
+	if(pAmbiancePlayList) {
 		ARX_SOUND_AmbianceRestorePlayList(pAmbiancePlayList, ulSizeAmbiancePlayList);
 		free((void *)pAmbiancePlayList);
 	}
@@ -540,16 +537,17 @@ void ARXMenu_LoadQuest(long num)
 	GRenderer->BeginScene();
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_DeleteQuest(long num)
-{
-	if (num != 0)
-	{
-		char temp[256];
-
-		sprintf(temp, "Save%s\\save%04ld\\", LOCAL_SAVENAME, save_l[num].num);
-		KillAllDirectory(temp);
+void ARXMenu_DeleteQuest(long num) {
+	
+	if(num != 0) {
+		
+		std::ostringstream oss;
+		oss << "save/save" << std::setfill('0') << std::setw(4) << save_l[num].num;
+		
+		fs::remove_all(oss.str());
+		
 		CreateSaveGameList();
+		
 	}
 }
 

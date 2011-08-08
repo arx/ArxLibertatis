@@ -57,10 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include <cstdio>
-#include <cassert>
 #include <limits>
 #include <iomanip>
 #include <sstream>
@@ -74,9 +73,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
+#include "graphics/texture/Texture.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 #include "platform/Platform.h"
@@ -125,13 +125,13 @@ long CountTextures( std::string& tex, long * memsize, long * memmip)
 
 		if (ptcTexture->m_dwFlags & TextureContainer::NoMipmap) {
 			std::stringstream ss;
-			ss << std::setw(3) << count << std::setw(0) << ' ' << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << GetName(ptcTexture->m_texName) << "\r\n";
+			ss << std::setw(3) << count << std::setw(0) << ' ' << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->m_texName.filename() << "\r\n";
 			temp = ss.str();
 		}
 		else
 		{
 			std::stringstream ss;
-			ss << std::setw(3) << count << ' ' << std::setw(0) << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << " MIP " << GetName(ptcTexture->m_texName) << "\r\n";
+			ss << std::setw(3) << count << ' ' << std::setw(0) << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << " MIP " << ptcTexture->m_texName.filename() << "\r\n";
 			temp = ss.str();
 
 			for (long k = 1; k <= NB_MIPMAP_LEVELS; k++)
@@ -217,15 +217,14 @@ void ResetVertexLists(TextureContainer * ptcTexture)
 // Name: TextureContainer()
 // Desc: Constructor for a texture object
 //-----------------------------------------------------------------------------
-TextureContainer::TextureContainer(const std::string& strName, TCFlags flags) {
+TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) : m_texName(strName) {
 	
-	m_texName = strName;
-	MakeUpcase( m_texName );
-
-	m_dwWidth		= 0;
-	m_dwHeight		= 0;
-	m_dwBPP			= 0;
-	m_dwFlags		= flags;
+	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"), "bad texture name: \"%s\"", strName.string().c_str()); // TODO(case-sensitive) remove
+	
+	m_dwWidth = 0;
+	m_dwHeight = 0;
+	m_dwBPP = 0;
+	m_dwFlags = flags;
 
 	m_pTexture = NULL;
 
@@ -298,23 +297,19 @@ TextureContainer::~TextureContainer()
 	ResetVertexLists(this);
 }
 
-bool TextureContainer::LoadFile(const std::string& strPathname)
-{
-	bool bLoaded = false;
-
-	m_texName = strPathname;
-	MakeUpcase( m_texName );
+bool TextureContainer::LoadFile(const fs::path & strPathname) {
 	
-	std::string tempPath = m_texName;
-	bool foundPath = PAK_FileExist(SetExt(tempPath, ".png"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".jpg"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".jpeg"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".bmp"));
-	foundPath = foundPath || PAK_FileExist(SetExt(tempPath, ".tga"));
+	bool bLoaded = false;
+	
+	fs::path tempPath = strPathname;
+	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
+	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpg"));
+	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpeg"));
+	foundPath = foundPath || resources->getFile(tempPath.set_ext("bmp"));
+	foundPath = foundPath || resources->getFile(tempPath.set_ext("tga"));
 
-	if(!foundPath)
-	{
-		LogError << m_texName << " not found";
+	if(!foundPath) {
+		LogError << strPathname << " not found";
 		return false;
 	}
 	
@@ -352,7 +347,7 @@ bool TextureContainer::LoadFile(const std::string& strPathname)
 
 extern void MakeUserFlag(TextureContainer * tc);
 
-TextureContainer * TextureContainer::Load(const string & name, TCFlags flags) {
+TextureContainer * TextureContainer::Load(const fs::path & name, TCFlags flags) {
 	
 	// Check first to see if the texture is already loaded
 	TextureContainer * newTexture = Find(name);
@@ -388,20 +383,17 @@ TextureContainer * TextureContainer::Load(const string & name, TCFlags flags) {
 	return newTexture;
 }
 
-TextureContainer * TextureContainer::LoadUI(const string & strName, TCFlags flags) {
+TextureContainer * TextureContainer::LoadUI(const fs::path & strName, TCFlags flags) {
 	return Load(strName, flags | UI);
 }
 
-TextureContainer * TextureContainer::Find(const std::string& strTextureName) {
+TextureContainer * TextureContainer::Find(const fs::path & strTextureName) {
 	
 	TextureContainer * ptcTexture = g_ptcTextureList;
 	
-	std::string strTexNameUpper = strTextureName;
-	MakeUpcase(strTexNameUpper);
-	
 	while(ptcTexture) {
 		
-		if(strTexNameUpper.find(ptcTexture->m_texName) != std::string::npos) {
+		if(strTextureName == ptcTexture->m_texName) {
 			return ptcTexture;
 		}
 		
@@ -450,10 +442,10 @@ static void ConvertData(string & dat) {
 	dat = dat.substr(substrStart, substrLen);
 }
 
-static void LoadRefinementMap(const string & fileName, map<string, string> & refinementMap) {
+static void LoadRefinementMap(const fs::path & fileName, map<fs::path, fs::path> & refinementMap) {
 	
 	size_t fileSize = 0;
-	char * from = (char *)PAK_FileLoadMalloc(fileName, fileSize);
+	char * from = resources->readAlloc(fileName, fileSize);
 	if(!from) {
 		return;
 	}
@@ -485,13 +477,13 @@ static void LoadRefinementMap(const string & fileName, map<string, string> & ref
 			name = data;
 		} else if(count == 1) {
 			
-			MakeUpcase(name);
-			MakeUpcase(data);
 			
-			if(data != "NONE") {
-				refinementMap[name] = data;
+			makeLowercase(data);
+			
+			if(data != "none") {
+				refinementMap[fs::path::load(name)] = fs::path::load(data);
 			} else {
-				refinementMap[name].clear();
+				refinementMap[fs::path::load(name)].clear();
 			}
 		}
 		
@@ -507,29 +499,24 @@ void TextureContainer::LookForRefinementMap(TCFlags flags) {
 	
 	static bool loadedRefinements = false;
 	if(!loadedRefinements) {
-		const char INI_REFINEMENT_GLOBAL[] = "Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
-		const char INI_REFINEMENT[] = "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
+		const char INI_REFINEMENT_GLOBAL[] = "graph/obj3d/textures/refinement/globalrefinement.ini";
+		const char INI_REFINEMENT[] = "graph/obj3d/textures/refinement/refinement.ini";
 		LoadRefinementMap(INI_REFINEMENT_GLOBAL, s_GlobalRefine);
 		LoadRefinementMap(INI_REFINEMENT, s_Refine);
 		loadedRefinements = true;
 	}
 	
-	std::string name = GetName(m_texName);
-	MakeUpcase(name);
-	
-	RefinementMap::const_iterator it = s_Refine.find(name);
+	RefinementMap::const_iterator it = s_Refine.find(m_texName);
 	if(it != s_Refine.end()) {
 		if(!it->second.empty()) {
-			string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
-			TextureRefinement = Load(file, flags);
+			TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
 		}
 		return;
 	}
 	
-	it = s_GlobalRefine.find(name);
+	it = s_GlobalRefine.find(m_texName);
 	if(it != s_GlobalRefine.end() && !it->second.empty()) {
-		string file = "Graph\\Obj3D\\Textures\\Refinement\\" + it->second + ".bmp";
-		TextureRefinement = Load(file, flags);
+		TextureRefinement = Load("graph/obj3d/textures/refinement" / it->second, flags);
 	}
 	
 	

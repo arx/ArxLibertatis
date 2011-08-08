@@ -218,7 +218,6 @@ public:
 
 extern Application * mainApp;
 
-bool OKBox(const std::string& text, const std::string& title);
 void CalcFPS(bool reset = false);
 void SetZBias(int);
 

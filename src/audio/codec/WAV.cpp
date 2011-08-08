@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/codec/RAW.h"
 #include "audio/codec/ADPCM.h"
 #include "audio/codec/WAVFormat.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 
 namespace {
@@ -63,7 +63,7 @@ ChunkFile::ChunkFile(PakFileHandle * ptr) : file(ptr), offset(0) {
 
 bool ChunkFile::read(void * buffer, size_t size) {
 	
-	if(PAK_fread(buffer, 1, size, file) != size) {
+	if(!file->read(buffer, size)) {
 		return false;
 	}
 	
@@ -76,7 +76,7 @@ bool ChunkFile::read(void * buffer, size_t size) {
 
 bool ChunkFile::skip(size_t size) {
 	
-	if(PAK_fseek(file, size, SEEK_CUR) == -1) {
+	if(file->seek(SeekCur, size) == -1) {
 		return false;
 	}
 	
@@ -89,19 +89,19 @@ bool ChunkFile::skip(size_t size) {
 
 bool ChunkFile::find(const char * id) {
 	
-	PAK_fseek(file, offset, SEEK_CUR);
+	file->seek(SeekCur, offset);
 	
 	u8 cc[4];
-	while(PAK_fread(cc, 4, 1, file)) {
+	while(file->read(cc, 4)) {
 		u32 _offset;
-		if(!PAK_fread(&_offset, 4, 1, file)) {
+		if(!file->read(&_offset, 4)) {
 			return false;
 		}
 		offset = _offset;
 		if(!memcmp(cc, id, 4)) {
 			return true;
 		}
-		if(PAK_fseek(file, offset, SEEK_CUR) == -1) {
+		if(file->seek(SeekCur, offset) == -1) {
 			return false;
 		}
 	}
@@ -112,7 +112,7 @@ bool ChunkFile::find(const char * id) {
 bool ChunkFile::check(const char * id) {
 	
 	u8 cc[4];
-	if(!PAK_fread(cc, 4, 1, file)) {
+	if(!file->read(cc, 4)) {
 		return false;
 	}
 	
@@ -131,7 +131,7 @@ bool ChunkFile::restart() {
 	
 	offset = 0;
 	
-	return (PAK_fseek(file, 0, SEEK_SET) != -1);
+	return (file->seek(SeekSet, 0) != -1);
 }
 
 } // anonymous namespace
@@ -229,7 +229,7 @@ aalError StreamWAV::setStream(PakFileHandle * _stream) {
 		outsize *= AS_FORMAT_PCM(header)->channels;
 	}
 	
-	offset = PAK_ftell(stream);
+	offset = stream->tell();
 	
 	codec->setStream(stream);
 	
@@ -249,7 +249,7 @@ aalError StreamWAV::setPosition(size_t position) {
 	cursor = position;
 	
 	// Reset stream position at the begining of data chunk
-	if(PAK_fseek(stream, offset, SEEK_SET) == -1) {
+	if(stream->seek(SeekSet, offset) == -1) {
 		return AAL_ERROR_FILEIO;
 	}
 	

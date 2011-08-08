@@ -26,7 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicLoad.h"
 
 #include <stddef.h>
-#include <algorithm>
 #include <climits>
 #include <cstring>
 #include <cstdlib>
@@ -38,102 +37,90 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/CinematicTexture.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 #include "io/FilePath.h"
 #include "io/CinematicFormat.h"
 
 #include "platform/Platform.h"
+#include "platform/String.h"
 
 #include "scene/CinematicSound.h"
 
-using std::search;
 using std::string;
 using std::copy;
 using std::strcmp;
 using std::free;
 
-extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-
-bool charCaseEqual(char ch1, char ch2) {
-	return toupper(ch1) == toupper(ch2);
-}
-
-// TODO useful elsewhere too -> move to shared file
-size_t strcasefind(const string & haystack, const string & needle) {
-	string::const_iterator pos = search(haystack.begin(), haystack.end(), needle.begin(),
-	                                    needle.end(), charCaseEqual);
-	if(pos == haystack.end()) {
-		return string::npos;
-	} else {
-		return pos - haystack.begin();
-	}
-}
-
-void clearAbsDirectory(string & path, const string & delimiter) {
+static fs::path fixTexturePath(const string & path) {
 	
-	size_t abs_dir = strcasefind(path, delimiter);
+	string copy = toLowercase(path);
+	
+	size_t abs_dir = copy.find("arx\\");
 	
 	if(abs_dir != std::string::npos) {
-		path = path.substr(abs_dir + delimiter.length());
+		return fs::path::load(copy.substr(abs_dir + 4));
+	} else {
+		return fs::path::load(copy);
 	}
 }
 
-void fixSoundPath(string & path) {
+static fs::path fixSoundPath(const string & str) {
 	
-	size_t sfx_pos = strcasefind(path, "sfx");
+	string path = toLowercase(str);
 	
+	size_t sfx_pos = path.find("sfx");
+	
+	// Sfx
 	if(sfx_pos != string::npos) {
-		// Sfx
 		path.erase(0, sfx_pos);
 		
-		size_t uk_pos = strcasefind(path, "uk");
+		size_t uk_pos = path.find("uk");
 		if(uk_pos != string::npos) {
 			path.replace(uk_pos, 3, "english\\");
 		}
 		
-		size_t fr_pos = strcasefind(path, "fr");
+		size_t fr_pos = path.find("fr");
 		if(fr_pos != string::npos) {
 			path.replace(fr_pos, 3, "francais\\");
 		}
 		
-		size_t sfxspeech_pos = strcasefind(path, "sfx\\speech\\");
+		size_t sfxspeech_pos = path.find("sfx\\speech\\");
 		if(sfxspeech_pos != string::npos) {
 			path.erase(0, sfxspeech_pos + 4);
 		}
 		
-	} else {
-		// Speech
-		path = "speech\\" + config.language + "\\" + GetName(path);
+		return fs::path::load(path);
 	}
 	
+	// Speech
+	
+	size_t namepos = path.find_last_of('\\');
+	namepos = (namepos == string::npos) ? 0 : namepos + 1;
+	
+	return fs::path("speech") / config.language / path.substr(namepos);
 }
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
 
-bool LoadProject(Cinematic * c, const char * dir, const char * name) {
+bool loadCinematic(Cinematic * c, const fs::path & file) {
 	
-	LogInfo << "loading cinematic " << dir << name;
-	
-	InitSound();
-	
-	string projectfile = dir;
-	projectfile += name;
+	LogInfo << "loading cinematic " << file;
 	
 	size_t size;
-	char * data = (char*)PAK_FileLoadMalloc(projectfile, size);
+	char * data = resources->readAlloc(file, size);
 	if(!data) {
-		LogError << "cinematic " << dir << name << " not found";
+		LogError << "cinematic " << file << " not found";
 		return false;
 	}
 	
 	bool ret = parseCinematic(c, data, size);
 	free(data);
 	if(!ret) {
-		LogError << "loading cinematic " << dir << name;
+		LogError << "loading cinematic " << file;
 		c->New();
 	}
 	
@@ -195,9 +182,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading bitmap path";
 			return false;
 		}
-		string path = str;
-		
-		clearAbsDirectory(path, "ARX\\");
+		fs::path path = fixTexturePath(str);
 		
 		LogDebug << "adding bitmap " << i << ": " << path;
 		
@@ -233,11 +218,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
-		string path = str;
-		
-		LogDebug << "raw sound path " << i << ": " << path;
-		
-		fixSoundPath(path);
+		fs::path path = fixSoundPath(str);
 		
 		LogDebug << "adding sound " << i << ": " << path;
 		

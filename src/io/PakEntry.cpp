@@ -25,350 +25,154 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakEntry.h"
 
+#include <cstdlib>
 #include <cstring>
-#include <cassert>
+#include <algorithm>
 
-#include "io/HashMap.h"
+#include "io/FilePath.h"
+#include "io/Logger.h"
 #include "platform/Platform.h"
 
-static char* GetFirstDir(const std::string& dir, size_t& l);
+using std::string;
+using std::find_first_of;
+using std::malloc;
 
-PakFile::PakFile( const std::string& n )
-{
-	this->size = 0;
-	this->offset = this->flags = this->uncompressedSize = 0;
-	this->prev = this->next = NULL;
-
-    name = n;
-}
-//#############################################################################
-PakFile::~PakFile()
-{
-    if (this->prev)
-    {
-        this->prev->next = this->next;
-    }
-
-    if (this->next)
-    {
-        this->next->prev = this->prev;
-    }
-}
-//#############################################################################
-//#############################################################################
-//                             PakDirectory
-//#############################################################################
-//#############################################################################
-PakDirectory::PakDirectory( PakDirectory * p, const std::string& n )
-{
-    filesMap = NULL;
-    this->prev = this->next = NULL;
-    this->parent = p;
-    this->children = NULL;
-    this->files = NULL;
-    this->nbsousreps = this->nbfiles = 0;
-
-    if ( !n.empty() )
-    {
-        size_t l = 0;
-        this->name = GetFirstDir(n, l);
-
-        if (this->name)
-        {
-            if (l != n.length() )
-            {
-                this->nbsousreps = 1;
-                this->children = new PakDirectory(this, n.c_str() + l);
-            }
-
-            return;
-        }
-    }
-
-    this->name = NULL;
-}
-//#############################################################################
-PakDirectory::~PakDirectory()
-{
-	if(name) {
-		delete[] name;
-		name = NULL;
-	}
+PakFile::~PakFile() {
 	
-	if(filesMap) {
-		delete filesMap;
-		filesMap = NULL;
+	if(_alternative) {
+		delete _alternative;
 	}
-	
-	PakFile * f = files;
-	while(f) {
-		PakFile * fnext = f->next;
-		delete f;
-		f = fnext;
-	}
-	files = NULL;
-	
-	PakDirectory * r = children;
-	while(r) {
-		PakDirectory * rnext = r->next;
-		delete r;
-		r = rnext;
-	}
-	children = NULL;
-}
-//#############################################################################
-PakDirectory * PakDirectory::addDirectory(const std::string& sname)
-{
-	unsigned int nbs = this->nbsousreps;
-	size_t l = 0;
-	PakDirectory	* rf = this->children;
-
-	const char * fdir = GetFirstDir(sname, l);
-
-	while (nbs--)
-	{
-		if (!strcasecmp(fdir, rf->name))
-		{
-			delete[] fdir;
-			return rf->addDirectory( sname.substr(l) );
-		}
-
-		rf = rf->next;
-	}
-
-	delete[] fdir;
-	this->nbsousreps++;
-	rf = new PakDirectory(this, sname);
-	rf->prev = NULL;
-	rf->next = this->children;
-
-	if (this->children) this->children->prev = rf;
-
-	this->children = rf;
-	
-	return rf;
-}
-//#############################################################################
-bool PakDirectory::removeDirectory(const std::string& sname)
-{
-	unsigned int nbs = this->nbsousreps;
-	size_t l = 0;
-	PakDirectory * rf = this->children;
-	
-	const char * fdir = GetFirstDir(sname, l);
-	
-	while (nbs--)
-	{
-		if (!strcasecmp(fdir, rf->name))
-		{
-			delete[] fdir;
-			bool ok;
-
-			if ( l == sname.length() )
-			{
-				ok = true;
-			}
-			else
-			{
-				ok = rf->removeDirectory( sname.substr(l) );
-				return ok;
-			}
-
-			if (ok)
-			{
-				if (rf == this->children)
-				{
-					this->children = rf->next;
-
-					if (this->children) this->children->prev = NULL;
-				}
-				else
-				{
-					rf->prev->next = rf->next;
-
-					if (rf->next)
-					{
-						rf->next->prev = rf->prev;
-					}
-				}
-
-				this->nbsousreps--;
-				delete rf;
-			}
-
-			return ok;
-		}
-
-		rf = rf->next;
-	}
-
-	delete[] fdir;
-	return false;
 }
 
-#include <stdio.h>
+char * PakFile::readAlloc() const {
+	
+	char * buffer = (char*)malloc(size());
+	
+	read(buffer);
+	
+	return buffer;
+}
 
-//#############################################################################
-PakDirectory * PakDirectory::getDirectory(const std::string& sname)
-{
-	unsigned int nbs = this->nbsousreps;
-	size_t l = 0;
-	PakDirectory	* rf = this->children;
+PakDirectory::PakDirectory() { }
+
+PakDirectory::~PakDirectory() {
 	
-	// TODO this can be done without allocating
-	const char * fdir = GetFirstDir(sname, l);
+	for(files_iterator file = files_begin(); file != files_end(); ++file) {
+		delete file->second;
+	}
+}
+
+PakDirectory * PakDirectory::addDirectory(const fs::path & path) {
 	
-	while (nbs--)
-	{
+	if(path.empty()) {
+		return this;
+	}
+	
+	PakDirectory * dir = this;
+	size_t pos = 0;
+	while(true) {
 		
-		if (!strcasecmp(fdir, rf->name))
-		{
-			delete[] fdir;
-
-			if ( l == sname.length() )
-			{
-				return rf;
-			}
-			else
-			{
-				return rf->getDirectory( sname.substr(l) );
-			}
+		size_t end = path.string().find(fs::path::dir_sep, pos);
+		
+		if(end == string::npos) {
+			return &dir->dirs[path.string().substr(pos)];
 		}
-
-		rf = rf->next;
+		dir = &dir->dirs[path.string().substr(pos, end - pos)];
+		
+		pos = end + 1;
 	}
-
-	delete[] fdir;
-	return NULL;
+	
 }
-//#############################################################################
-PakFile * PakDirectory::addFile(const std::string& name) {
+
+static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\"; // TODO(case-sensitive) remove
+
+PakDirectory * PakDirectory::getDirectory(const fs::path & path) {
 	
-	PakFile * f;
+	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
 	
-	f = new PakFile(name);
-	if(!f) {
-		return NULL;
+	if(path.empty()) {
+		return this;
+	} else if(path.is_up()) {
+		LogWarning << "bad path: " << path;
 	}
-			
-	// Add file to hash map.
-	if(filesMap) {
-		if(!filesMap->add(name, (void *)f)) {
-			delete f;	// Probably already inserted in map...
+	
+	PakDirectory * dir = this;
+	size_t pos = 0;
+	while(true) {
+		
+		size_t end = path.string().find(fs::path::dir_sep, pos);
+		
+		string name;
+		if(end == string::npos) {
+			name = path.string().substr(pos);
+		} else {
+			name = path.string().substr(pos, end - pos);
+		}
+		
+		dirs_iterator entry = dir->dirs.find(name);
+		if(entry == dir->dirs.end()) {
 			return NULL;
 		}
+		dir = &entry->second;
+		
+		if(end == string::npos) {
+			return dir;
+		}
+		pos = end + 1;
+	};
+	
+}
+
+PakFile * PakDirectory::getFile(const fs::path & path) {
+	
+	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
+	
+	if(path.empty()) {
+		return NULL;
+	} if(path.is_up()) {
+		LogWarning << "bad path: " << path;
+	}
+	
+	PakDirectory * dir = this;
+	size_t pos = 0;
+	while(true) {
+		
+		size_t end = path.string().find(fs::path::dir_sep, pos);
+		
+		if(end == string::npos) {
+			files_iterator file = dir->files.find(path.string().substr(pos));
+			return (file == dir->files.end()) ? NULL : file->second;
+		}
+		
+		dirs_iterator entry = dir->dirs.find(path.string().substr(pos, end - pos));
+		if(entry == dir->dirs.end()) {
+			return NULL;
+		}
+		dir = &entry->second;
+		
+		pos = end + 1;
+	}
+	
+}
+
+void PakDirectory::addFile(const string & name, PakFile * file) {
+	
+	std::map<std::string, PakFile *>::iterator old = files.find(name);
+	
+	if(old == files.end()) {
+		files[name] = file;
 	} else {
-		printf("file added befor initializing files map\n");
+		file->_alternative = old->second;
+		old->second = file;
 	}
-	
-	// Link file into list.
-	f->prev = NULL;
-	f->next = files;
-	if(files) {
-		files->prev = f;
-	}
-	files = f;
-	
-	nbfiles++;
-	
-	return f;
 }
 
-static size_t getFileNamePosition(const std::string& dirplusname)
-{
-    size_t i = dirplusname.length();
-
-    while(i != 0) {
-        i--;
-        if(dirplusname[i] == '\\' || dirplusname[i] == '/') {
-            // Found dir seperator.
-            return i + 1;
-        }
-    }
-
-    return i;
-}
-
-PakFile * PakDirectory::getFile( const std::string& name )
-{
-    PakDirectory * d = this;
-
-    // Get the directory.
-    size_t fpos = getFileNamePosition(name);
-    if(fpos) {
-        d = this->getDirectory( name.substr( 0, fpos ) );
-        if(!d) {
-            // directory not found
-            return NULL;
-        }
-    }
-
-    if(!d->filesMap) {
-        assert(d->files == NULL);
-        // Empty directory.
-        return NULL;
-    }
-
-    return (PakFile *)d->filesMap->get( name.substr( fpos ) );
-}
-
-// TODO is this even used?
-void Kill(PakDirectory * r)
-{
-	PakFile * f = r->files;
-
-	while (r->nbfiles--)
-	{
-		PakFile * fnext = f->next;
-		delete f;
-		f = fnext;
+void PakDirectory::removeFile(const string & name) {
+	
+	std::map<std::string, PakFile *>::iterator old = files.find(name);
+	
+	if(old != files.end()) {
+		delete old->second;
+		files.erase(old);
 	}
-
-	r->files = NULL;
-
-	PakDirectory * brep = r->children;
-	int nb = r->nbsousreps;
-
-	while (nb--)
-	{
-		PakDirectory * brepnext = brep->next;
-		Kill(brep);
-		brep = brepnext;
-	}
-
-	r->children = NULL;
-	delete r;
-}
-
-static char * GetFirstDir(const std::string & dir, size_t & l) {
-	
-	for(l = 0; l < dir.size(); l++) {
-		if(dir[l] == '\\' || dir[l] == '/') {
-			break;
-		}
-	}
-	
-	if(l == dir.size()) {
-		return NULL;
-	}
-	
-	l++;
-	
-	char * fdir = new char[l + 1];
-	if(!fdir) {
-		return NULL;
-	}
-	
-	strncpy(fdir, dir.c_str(), l);
-	fdir[l] = 0;
-	fdir[l - 1] = '\\'; // TODO use "/" seperator
-	
-	// Skip multiple slashes.
-	for(; l < dir.size(); l++) {
-		if(dir[l] != '\\' && dir[l] != '/') {
-			break;
-		}
-	}
-	
-	return fdir;
 }

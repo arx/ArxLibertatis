@@ -36,7 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <cassert>
 
 #include "core/Config.h"
 #include "core/Core.h"
@@ -56,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/spells/Spells01.h"
@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 
 #include "io/FilePath.h"
+#include "io/Logger.h"
 
 #include "physics/Collisions.h"
 
@@ -608,36 +609,36 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	int iPosX = 0;
 	int iPosY = 0;
 
-	if(!name.compare("AAM"))              iPosX = 0, iPosY = 2, sequence = "6666";
-	else if(!name.compare("CETRIUS"))     iPosX = 1, iPosY = 1, sequence = "33388886666";
-	else if(!name.compare("COMUNICATUM")) iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
-	else if(!name.compare("COSUM"))       iPosX = 0, iPosY = 2, sequence = "66666222244448888";
-	else if(!name.compare("FOLGORA"))     iPosX = 0, iPosY = 3, sequence = "99993333";
-	else if(!name.compare("FRIDD"))       iPosX = 0, iPosY = 4, sequence = "888886662222";
-	else if(!name.compare("KAOM"))        iPosX = 3, iPosY = 0, sequence = "44122366";
-	else if(!name.compare("MEGA"))        iPosX = 2, iPosY = 4, sequence = "88888";
-	else if(!name.compare("MORTE"))       iPosX = 0, iPosY = 2, sequence = "66666222";
-	else if(!name.compare("MOVIS"))       iPosX = 0, iPosY = 0, sequence = "666611116666";
-	else if(!name.compare("NHI"))         iPosX = 4, iPosY = 2, sequence = "4444";
-	else if(!name.compare("RHAA"))        iPosX = 2, iPosY = 0, sequence = "22222";
-	else if(!name.compare("SPACIUM"))     iPosX = 4, iPosY = 0, sequence = "44444222266688";
-	else if(!name.compare("STREGUM"))     iPosX = 0, iPosY = 4, sequence = "8888833338888";
-	else if(!name.compare("TAAR"))        iPosX = 0, iPosY = 1, sequence = "666222666";
-	else if(!name.compare("TEMPUS"))      iPosX = 0, iPosY = 4, sequence = "88886662226668866";
-	else if(!name.compare("TERA"))        iPosX = 0, iPosY = 3, sequence = "99922266";
-	else if(!name.compare("VISTA"))       iPosX = 1, iPosY = 0, sequence = "333111";
-	else if(!name.compare("VITAE"))       iPosX = 0, iPosY = 2, sequence = "66666888";
-	else if(!name.compare("YOK"))         iPosX = 0, iPosY = 0, sequence = "222226666888";
-	else if(!name.compare("AKBAA"))       iPosX = 0, iPosY = 0, sequence = "22666772222";
+	if(name == "aam")              iPosX = 0, iPosY = 2, sequence = "6666";
+	else if(name == "cetrius")     iPosX = 1, iPosY = 1, sequence = "33388886666";
+	else if(name == "comunicatum") iPosX = 0, iPosY = 0, sequence = "6666622244442226666";
+	else if(name == "cosum")       iPosX = 0, iPosY = 2, sequence = "66666222244448888";
+	else if(name == "folgora")     iPosX = 0, iPosY = 3, sequence = "99993333";
+	else if(name == "fridd")       iPosX = 0, iPosY = 4, sequence = "888886662222";
+	else if(name == "kaom")        iPosX = 3, iPosY = 0, sequence = "44122366";
+	else if(name == "mega")        iPosX = 2, iPosY = 4, sequence = "88888";
+	else if(name == "morte")       iPosX = 0, iPosY = 2, sequence = "66666222";
+	else if(name == "movis")       iPosX = 0, iPosY = 0, sequence = "666611116666";
+	else if(name == "nhi")         iPosX = 4, iPosY = 2, sequence = "4444";
+	else if(name == "rhaa")        iPosX = 2, iPosY = 0, sequence = "22222";
+	else if(name == "spacium")     iPosX = 4, iPosY = 0, sequence = "44444222266688";
+	else if(name == "stregum")     iPosX = 0, iPosY = 4, sequence = "8888833338888";
+	else if(name == "taar")        iPosX = 0, iPosY = 1, sequence = "666222666";
+	else if(name == "tempus")      iPosX = 0, iPosY = 4, sequence = "88886662226668866";
+	else if(name == "tera")        iPosX = 0, iPosY = 3, sequence = "99922266";
+	else if(name == "vista")       iPosX = 1, iPosY = 0, sequence = "333111";
+	else if(name == "vitae")       iPosX = 0, iPosY = 2, sequence = "66666888";
+	else if(name == "yok")         iPosX = 0, iPosY = 0, sequence = "222226666888";
+	else if(name == "akbaa")       iPosX = 0, iPosY = 0, sequence = "22666772222";
 	else {
 		return;
 	}
 
-	io->symboldraw = realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
+	io->symboldraw = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
 	if (!io->symboldraw) return;
 
-	SYMBOL_DRAW *sd = (SYMBOL_DRAW *)io->symboldraw;
+	SYMBOL_DRAW *sd = io->symboldraw;
 
 	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
 	strcpy(sd->sequence, sequence);
@@ -731,14 +732,14 @@ static void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, Rune symb, float 
 			return;
 	}
 
-	void *ptr;
-	ptr = realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
+	SYMBOL_DRAW * ptr;
+	ptr = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
 	if (!ptr) return;
 
 	io->symboldraw = ptr;
 
-	SYMBOL_DRAW *sd = (SYMBOL_DRAW *)io->symboldraw;
+	SYMBOL_DRAW *sd = io->symboldraw;
 	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
 	strcpy(sd->sequence, sequence);
 	sd->starttime = ARXTimeUL();
@@ -763,27 +764,27 @@ static void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, Rune symb, float 
 //-----------------------------------------------------------------------------
 void ARX_SPELLS_RequestSymbolDraw3(const char *_pcName,char *_pcRes)
 {
-	if		(!strcmp(_pcName, "AAM"))		strcpy(_pcRes, "6666");
-	else if (!strcmp(_pcName, "CETRIUS"))	strcpy(_pcRes, "33388886666");
-	else if (!strcmp(_pcName, "COMUNICATUM")) 	strcpy(_pcRes, "6666622244442226666");
-	else if (!strcmp(_pcName, "COSUM"))     strcpy(_pcRes, "66666222244448888");
-	else if (!strcmp(_pcName, "FOLGORA"))   strcpy(_pcRes, "99993333");
-	else if (!strcmp(_pcName, "FRIDD"))		strcpy(_pcRes, "888886662222");
-	else if (!strcmp(_pcName, "KAOM"))		strcpy(_pcRes, "44122366");
-	else if (!strcmp(_pcName, "MEGA"))		strcpy(_pcRes, "88888");
-	else if (!strcmp(_pcName, "MORTE"))		strcpy(_pcRes, "66666222");
-	else if (!strcmp(_pcName, "MOVIS"))		strcpy(_pcRes, "666611116666");
-	else if (!strcmp(_pcName, "NHI"))		strcpy(_pcRes, "4444");
-	else if (!strcmp(_pcName, "RHAA"))		strcpy(_pcRes, "22222");
-	else if (!strcmp(_pcName, "SPACIUM"))	strcpy(_pcRes, "44444222266688");
-	else if (!strcmp(_pcName, "STREGUM"))	strcpy(_pcRes, "8888833338888");
-	else if (!strcmp(_pcName, "TAAR"))		strcpy(_pcRes, "666222666");
-	else if (!strcmp(_pcName, "TEMPUS"))	strcpy(_pcRes, "88886662226668866");
-	else if (!strcmp(_pcName, "TERA"))		strcpy(_pcRes, "99922266");
-	else if (!strcmp(_pcName, "VISTA"))		strcpy(_pcRes, "333111");
-	else if (!strcmp(_pcName, "VITAE"))		strcpy(_pcRes, "66666888");
-	else if (!strcmp(_pcName, "YOK"))		strcpy(_pcRes, "222226666888");
-	else if (!strcmp(_pcName, "AKBAA"))		strcpy(_pcRes, "22666772222");
+	if		(!strcmp(_pcName, "aam"))		strcpy(_pcRes, "6666");
+	else if (!strcmp(_pcName, "cetrius"))	strcpy(_pcRes, "33388886666");
+	else if (!strcmp(_pcName, "comunicatum")) 	strcpy(_pcRes, "6666622244442226666");
+	else if (!strcmp(_pcName, "cosum"))     strcpy(_pcRes, "66666222244448888");
+	else if (!strcmp(_pcName, "folgora"))   strcpy(_pcRes, "99993333");
+	else if (!strcmp(_pcName, "fridd"))		strcpy(_pcRes, "888886662222");
+	else if (!strcmp(_pcName, "kaom"))		strcpy(_pcRes, "44122366");
+	else if (!strcmp(_pcName, "mega"))		strcpy(_pcRes, "88888");
+	else if (!strcmp(_pcName, "morte"))		strcpy(_pcRes, "66666222");
+	else if (!strcmp(_pcName, "movis"))		strcpy(_pcRes, "666611116666");
+	else if (!strcmp(_pcName, "nhi"))		strcpy(_pcRes, "4444");
+	else if (!strcmp(_pcName, "rhaa"))		strcpy(_pcRes, "22222");
+	else if (!strcmp(_pcName, "spacium"))	strcpy(_pcRes, "44444222266688");
+	else if (!strcmp(_pcName, "stregum"))	strcpy(_pcRes, "8888833338888");
+	else if (!strcmp(_pcName, "taar"))		strcpy(_pcRes, "666222666");
+	else if (!strcmp(_pcName, "tempus"))	strcpy(_pcRes, "88886662226668866");
+	else if (!strcmp(_pcName, "tera"))		strcpy(_pcRes, "99922266");
+	else if (!strcmp(_pcName, "vista"))		strcpy(_pcRes, "333111");
+	else if (!strcmp(_pcName, "vitae"))		strcpy(_pcRes, "66666888");
+	else if (!strcmp(_pcName, "yok"))		strcpy(_pcRes, "222226666888");
+	else if (!strcmp(_pcName, "akbaa"))		strcpy(_pcRes, "22666772222");
 }
 
 #define OFFSET_X 8*2//0
@@ -826,258 +827,184 @@ void GetSymbVector(char c,Vec2s * vec)
 
 static bool MakeSpellName(char * spell, Spell num) {
 	
+	// TODO(spells) use map
+	
 	switch (num)
 	{
 		// Level 1
 		case SPELL_MAGIC_SIGHT           :
-			strcpy(spell, "MAGIC_SIGHT");
+			strcpy(spell, "magic_sight");
 			break;
 		case SPELL_MAGIC_MISSILE         :
-			strcpy(spell, "MAGIC_MISSILE");
+			strcpy(spell, "magic_missile");
 			break;
 		case SPELL_IGNIT                 :
-			strcpy(spell, "IGNIT");
+			strcpy(spell, "ignit");
 			break;
 		case SPELL_DOUSE                 :
-			strcpy(spell, "DOUSE");
+			strcpy(spell, "douse");
 			break;
 		case SPELL_ACTIVATE_PORTAL       :
-			strcpy(spell, "ACTIVATE_PORTAL");
+			strcpy(spell, "activate_portal");
 			break;
 
 		// Level 2
 		case SPELL_HEAL                  :
-			strcpy(spell, "HEAL");
+			strcpy(spell, "heal");
 			break;
 		case SPELL_DETECT_TRAP           :
-			strcpy(spell, "DETECT_TRAP");
+			strcpy(spell, "detect_trap");
 			break;
 		case SPELL_ARMOR                 :
-			strcpy(spell, "ARMOR");
+			strcpy(spell, "armor");
 			break;
 		case SPELL_LOWER_ARMOR           :
-			strcpy(spell, "LOWER_ARMOR");
+			strcpy(spell, "lower_armor");
 			break;
 		case SPELL_HARM                  :
-			strcpy(spell, "HARM");
+			strcpy(spell, "harm");
 			break;
 
 		// Level 3
 		case SPELL_SPEED                 :
-			strcpy(spell, "SPEED");
+			strcpy(spell, "speed");
 			break;
 		case SPELL_DISPELL_ILLUSION      :
-			strcpy(spell, "DISPELL_ILLUSION");
+			strcpy(spell, "dispell_illusion");
 			break;
 		case SPELL_FIREBALL              :
-			strcpy(spell, "FIREBALL");
+			strcpy(spell, "fireball");
 			break;
 		case SPELL_CREATE_FOOD           :
-			strcpy(spell, "CREATE_FOOD");
+			strcpy(spell, "create_food");
 			break;
 		case SPELL_ICE_PROJECTILE        :
-			strcpy(spell, "ICE_PROJECTILE");
+			strcpy(spell, "ice_projectile");
 			break;
 
 		// Level 4 
 		case SPELL_BLESS                 :
-			strcpy(spell, "BLESS");
+			strcpy(spell, "bless");
 			break;
 		case SPELL_DISPELL_FIELD         :
-			strcpy(spell, "DISPELL_FIELD");
+			strcpy(spell, "dispell_field");
 			break;
 		case SPELL_FIRE_PROTECTION       :
-			strcpy(spell, "FIRE_PROTECTION");
+			strcpy(spell, "fire_protection");
 			break;
 		case SPELL_TELEKINESIS           :
-			strcpy(spell, "TELEKINESIS");
+			strcpy(spell, "telekinesis");
 			break;
 		case SPELL_CURSE                 :
-			strcpy(spell, "CURSE");
+			strcpy(spell, "curse");
 			break;
 		case SPELL_COLD_PROTECTION       :
-			strcpy(spell, "COLD_PROTECTION");
+			strcpy(spell, "cold_protection");
 			break;
 
 		// Level 5 
 		case SPELL_RUNE_OF_GUARDING      :
-			strcpy(spell, "RUNE_OF_GUARDING");
+			strcpy(spell, "rune_of_guarding");
 			break;
 		case SPELL_LEVITATE              :
-			strcpy(spell, "LEVITATE");
+			strcpy(spell, "levitate");
 			break;
 		case SPELL_CURE_POISON           :
-			strcpy(spell, "CURE_POISON");
+			strcpy(spell, "cure_poison");
 			break;
 		case SPELL_REPEL_UNDEAD          :
-			strcpy(spell, "REPEL_UNDEAD");
+			strcpy(spell, "repel_undead");
 			break;
 		case SPELL_POISON_PROJECTILE     :
-			strcpy(spell, "POISON_PROJECTILE");
+			strcpy(spell, "poison_projectile");
 			break;
 
 		// Level 6 
 		case SPELL_RISE_DEAD             :
-			strcpy(spell, "RAISE_DEAD");
+			strcpy(spell, "raise_dead");
 			break;
 		case SPELL_PARALYSE              :
-			strcpy(spell, "PARALYSE");
+			strcpy(spell, "paralyse");
 			break;
 		case SPELL_CREATE_FIELD          :
-			strcpy(spell, "CREATE_FIELD");
+			strcpy(spell, "create_field");
 			break;
 		case SPELL_DISARM_TRAP           :
-			strcpy(spell, "DISARM_TRAP");
+			strcpy(spell, "disarm_trap");
 			break;
 		case SPELL_SLOW_DOWN             :
-			strcpy(spell, "SLOWDOWN");
+			strcpy(spell, "slowdown");
 			break;
 
 		// Level 7  
 		case SPELL_FLYING_EYE            :
-			strcpy(spell, "FLYING_EYE");
+			strcpy(spell, "flying_eye");
 			break;
 		case SPELL_FIRE_FIELD            :
-			strcpy(spell, "FIRE_FIELD");
+			strcpy(spell, "fire_field");
 			break;
 		case SPELL_ICE_FIELD             :
-			strcpy(spell, "ICE_FIELD");
+			strcpy(spell, "ice_field");
 			break;
 		case SPELL_LIGHTNING_STRIKE      :
-			strcpy(spell, "LIGHTNING_STRIKE");
+			strcpy(spell, "lightning_strike");
 			break;
 		case SPELL_CONFUSE               :
-			strcpy(spell, "CONFUSE");
+			strcpy(spell, "confuse");
 			break;
 
 		// Level 8
 		case SPELL_INVISIBILITY          :
-			strcpy(spell, "INVISIBILITY");
+			strcpy(spell, "invisibility");
 			break;
 		case SPELL_MANA_DRAIN            :
-			strcpy(spell, "MANA_DRAIN");
+			strcpy(spell, "mana_drain");
 			break;
 		case SPELL_EXPLOSION             :
-			strcpy(spell, "EXPLOSION");
+			strcpy(spell, "explosion");
 			break;
 		case SPELL_ENCHANT_WEAPON        :
-			strcpy(spell, "ENCHANT_WEAPON");
+			strcpy(spell, "enchant_weapon");
 			break;
 		case SPELL_LIFE_DRAIN            :
-			strcpy(spell, "LIFE_DRAIN");
+			strcpy(spell, "life_drain");
 			break;
 
 		// Level 9
 		case SPELL_SUMMON_CREATURE       :
-			strcpy(spell, "SUMMON_CREATURE");
+			strcpy(spell, "summon_creature");
 			break;
 		case SPELL_FAKE_SUMMON		     :
-			strcpy(spell, "FAKE_SUMMON");
+			strcpy(spell, "fake_summon");
 			break;
 		case SPELL_NEGATE_MAGIC          :
-			strcpy(spell, "NEGATE_MAGIC");
+			strcpy(spell, "negate_magic");
 			break;
 		case SPELL_INCINERATE            :
-			strcpy(spell, "INCINERATE");
+			strcpy(spell, "incinerate");
 			break;
 		case SPELL_MASS_PARALYSE         :
-			strcpy(spell, "MASS_PARALYSE");
+			strcpy(spell, "mass_paralyse");
 			break;
 
 		// Level 10
 		case SPELL_MASS_LIGHTNING_STRIKE :
-			strcpy(spell, "MASS_LIGHTNING_STRIKE");
+			strcpy(spell, "mass_lightning_strike");
 			break;
 		case SPELL_CONTROL_TARGET        :
-			strcpy(spell, "CONTROL");
+			strcpy(spell, "control");
 			break;
 		case SPELL_FREEZE_TIME           :
-			strcpy(spell, "FREEZE_TIME");
+			strcpy(spell, "freeze_time");
 			break;
 		case SPELL_MASS_INCINERATE       :
-			strcpy(spell, "MASS_INCINERATE");
+			strcpy(spell, "mass_incinerate");
 			break;
 		default :
 			return false;
 	}
 
 	return true;
-}
-
-Spell GetSpellId(const string & spell) {
-	
-	// TODO use map
-	
-	if(!strcasecmp(spell, "ACTIVATE_PORTAL"))       return SPELL_ACTIVATE_PORTAL;		
-	if(!strcasecmp(spell, "DOUSE"))                 return SPELL_DOUSE;
-	if(!strcasecmp(spell, "IGNIT"))                 return SPELL_IGNIT;
-	if(!strcasecmp(spell, "MAGIC_SIGHT"))           return SPELL_MAGIC_SIGHT;
-	if(!strcasecmp(spell, "MAGIC_MISSILE"))         return SPELL_MAGIC_MISSILE;
-	
-	// Level 2
-	if(!strcasecmp(spell, "ARMOR"))                 return SPELL_ARMOR;
-	if(!strcasecmp(spell, "DETECT_TRAP"))           return SPELL_DETECT_TRAP;		
-	if(!strcasecmp(spell, "HARM"))                  return SPELL_HARM;				
-	if(!strcasecmp(spell, "HEAL"))                  return SPELL_HEAL;		
-	if(!strcasecmp(spell, "LOWER_ARMOR"))           return SPELL_LOWER_ARMOR;		
-	
-	// Level 3
-	if(!strcasecmp(spell, "CREATE_FOOD"))           return SPELL_CREATE_FOOD;		
-	if(!strcasecmp(spell, "DISPELL_ILLUSION"))      return SPELL_DISPELL_ILLUSION;		
-	if(!strcasecmp(spell, "FIREBALL"))              return SPELL_FIREBALL;				
-	if(!strcasecmp(spell, "ICE_PROJECTILE"))        return SPELL_ICE_PROJECTILE;		
-	if(!strcasecmp(spell, "SPEED"))                 return SPELL_SPEED;
-	
-	// Level 4
-	if(!strcasecmp(spell, "BLESS"))                 return SPELL_BLESS;
-	if(!strcasecmp(spell, "COLD_PROTECTION"))       return SPELL_COLD_PROTECTION;		
-	if(!strcasecmp(spell, "CURSE"))                 return SPELL_CURSE;		
-	if(!strcasecmp(spell, "DISPELL_FIELD"))         return SPELL_DISPELL_FIELD;		
-	if(!strcasecmp(spell, "FIRE_PROTECTION"))       return SPELL_FIRE_PROTECTION;		
-	if(!strcasecmp(spell, "TELEKINESIS"))           return SPELL_TELEKINESIS;		
-	
-	// Level 5
-	if(!strcasecmp(spell, "CURE_POISON"))           return SPELL_CURE_POISON;
-	if(!strcasecmp(spell, "LEVITATE"))              return SPELL_LEVITATE;
-	if(!strcasecmp(spell, "POISON_PROJECTILE"))     return SPELL_POISON_PROJECTILE;
-	if(!strcasecmp(spell, "REPEL_UNDEAD"))          return SPELL_REPEL_UNDEAD;
-	if(!strcasecmp(spell, "RUNE_OF_GUARDING"))      return SPELL_RUNE_OF_GUARDING;
-	
-	// Level 6
-	if(!strcasecmp(spell, "CREATE_FIELD"))          return SPELL_CREATE_FIELD;		
-	if(!strcasecmp(spell, "DISARM_TRAP"))           return SPELL_DISARM_TRAP;		
-	if(!strcasecmp(spell, "PARALYSE"))              return SPELL_PARALYSE;	
-	if(!strcasecmp(spell, "RAISE_DEAD"))            return SPELL_RISE_DEAD;
-	if(!strcasecmp(spell, "SLOWDOWN"))              return SPELL_SLOW_DOWN;				
-	
-	// Level 7
-	if(!strcasecmp(spell, "CONFUSE"))               return SPELL_CONFUSE;				
-	if(!strcasecmp(spell, "FIRE_FIELD"))            return SPELL_FIRE_FIELD;		
-	if(!strcasecmp(spell, "FLYING_EYE"))            return SPELL_FLYING_EYE;		
-	if(!strcasecmp(spell, "ICE_FIELD"))             return SPELL_ICE_FIELD;		
-	if(!strcasecmp(spell, "LIGHTNING_STRIKE"))      return SPELL_LIGHTNING_STRIKE;		
-	
-	// Level 8
-	if(!strcasecmp(spell, "ENCHANT_WEAPON"))        return SPELL_ENCHANT_WEAPON;		
-	if(!strcasecmp(spell, "EXPLOSION"))             return SPELL_EXPLOSION;		
-	if(!strcasecmp(spell, "INVISIBILITY"))          return SPELL_INVISIBILITY;		
-	if(!strcasecmp(spell, "LIFE_DRAIN"))            return SPELL_LIFE_DRAIN;		
-	if(!strcasecmp(spell, "MANA_DRAIN"))            return SPELL_MANA_DRAIN;		
-	
-	// Level 9
-	if(!strcasecmp(spell, "INCINERATE"))            return SPELL_INCINERATE;		
-	if(!strcasecmp(spell, "MASS_PARALYSE"))         return SPELL_MASS_PARALYSE;		
-	if(!strcasecmp(spell, "NEGATE_MAGIC"))          return SPELL_NEGATE_MAGIC;		
-	if(!strcasecmp(spell, "SUMMON_CREATURE"))       return SPELL_SUMMON_CREATURE;		
-	if(!strcasecmp(spell, "FAKE_SUMMON"))           return SPELL_FAKE_SUMMON;		
-	
-	// Level 10
-	if(!strcasecmp(spell, "CONTROL"))               return SPELL_CONTROL_TARGET;
-	if(!strcasecmp(spell, "FREEZE_TIME"))           return SPELL_FREEZE_TIME;
-	if(!strcasecmp(spell, "MASS_INCINERATE"))       return SPELL_MASS_INCINERATE;
-	if(!strcasecmp(spell, "MASS_LIGHTNING_STRIKE")) return SPELL_MASS_LIGHTNING_STRIKE;
-	
-	return SPELL_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -1288,9 +1215,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				io->dynlight=-1;
 			}
 
-			if (io->symboldraw)
-			{
-				SYMBOL_DRAW * sd=(SYMBOL_DRAW *)inter.iobj[i]->symboldraw;
+			if(io->symboldraw) {
+				SYMBOL_DRAW * sd = inter.iobj[i]->symboldraw;
 				long tim=curtime-sd->starttime;
  
 
@@ -2125,8 +2051,20 @@ struct SpellDefinition {
 };
 
 static SpellDefinition definedSpells;
+typedef std::map<string, Spell> SpellNames;
+static SpellNames spellNames;
 
-static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell) {
+static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell, const string & name) {
+	
+	typedef std::pair<SpellNames::const_iterator, bool> Res;
+	Res res = spellNames.insert(std::make_pair(name, spell));
+	if(!res.second) {
+		LogWarning << "duplicate spell name: " + name;
+	}
+	
+	if(symbols[0] == RUNE_NONE) {
+		return;
+	}
 	
 	SpellDefinition * def = &definedSpells;
 	
@@ -2134,14 +2072,14 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell) {
 		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
+		arx_assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			def->next[symbols[i]] = new SpellDefinition();
 		}
 		def = def->next[symbols[i]];
 	}
 	
-	assert(def->spell == SPELL_NONE);
+	arx_assert(def->spell == SPELL_NONE);
 	
 	def->spell = spell;
 }
@@ -2154,7 +2092,7 @@ static Spell getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 		if(symbols[i] == RUNE_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
+		arx_assert(symbols[i] >= 0 && (size_t)symbols[i] < RUNE_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			return SPELL_NONE;
 		}
@@ -2164,62 +2102,71 @@ static Spell getSpell(const Rune symbols[MAX_SPELL_SYMBOLS]) {
 	return def->spell;
 }
 
+Spell GetSpellId(const string & spell) {
+	
+	SpellNames::const_iterator it = spellNames.find(spell);
+	
+	return (it == spellNames.end()) ? SPELL_NONE : it->second;
+}
+
 struct RawSpellDefinition {
 	Rune symbols[MAX_SPELL_SYMBOLS];
 	Spell spell;
+	std::string name;
 };
 
 // TODO move to external file
 static const RawSpellDefinition allSpells[] = {
-	{{RUNE_RHAA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_CURSE}, // level 4
-	{{RUNE_RHAA, RUNE_TEMPUS, RUNE_NONE}, SPELL_FREEZE_TIME}, // level 10
-	{{RUNE_RHAA, RUNE_KAOM, RUNE_NONE}, SPELL_LOWER_ARMOR}, // level 2
-	{{RUNE_RHAA, RUNE_MOVIS, RUNE_NONE}, SPELL_SLOW_DOWN}, // level 6
-	{{RUNE_RHAA, RUNE_VITAE, RUNE_NONE}, SPELL_HARM}, // level 2
-	{{RUNE_RHAA, RUNE_VISTA, RUNE_NONE}, SPELL_CONFUSE}, // level 7
-	{{RUNE_MEGA, RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_MASS_PARALYSE}, // level 9
-	{{RUNE_MEGA, RUNE_KAOM, RUNE_NONE}, SPELL_ARMOR}, // level 2
-	{{RUNE_MEGA, RUNE_VISTA, RUNE_NONE}, SPELL_MAGIC_SIGHT}, // level 1
-	{{RUNE_MEGA, RUNE_VITAE, RUNE_NONE}, SPELL_HEAL}, // level 2
-	{{RUNE_MEGA, RUNE_MOVIS, RUNE_NONE}, SPELL_SPEED}, // level 3
-	{{RUNE_MEGA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_BLESS}, // level 4
-	{{RUNE_MEGA, RUNE_STREGUM, RUNE_COSUM, RUNE_NONE}, SPELL_ENCHANT_WEAPON}, // level 8
-	{{RUNE_MEGA, RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_MASS_INCINERATE}, // level 10
-	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_NONE}, SPELL_ACTIVATE_PORTAL}, // level ?
-	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_MOVIS, RUNE_NONE}, SPELL_LEVITATE}, // level 5
-	{{RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_PARALYSE}, // level 6
-	{{RUNE_NHI, RUNE_CETRIUS, RUNE_NONE}, SPELL_CURE_POISON}, // level 5
-	{{RUNE_NHI, RUNE_YOK, RUNE_NONE}, SPELL_DOUSE}, // level 1
-	{{RUNE_NHI, RUNE_STREGUM, RUNE_VISTA, RUNE_NONE}, SPELL_DISPELL_ILLUSION}, // level 3
-	{{RUNE_NHI, RUNE_STREGUM, RUNE_SPACIUM, RUNE_NONE}, SPELL_NEGATE_MAGIC}, // level 9
-	{{RUNE_NHI, RUNE_SPACIUM, RUNE_NONE}, SPELL_DISPELL_FIELD}, // level 4
-	{{RUNE_NHI, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_DISARM_TRAP}, // level 6
-	{{RUNE_NHI, RUNE_VISTA, RUNE_NONE}, SPELL_INVISIBILITY}, // level ?
-	{{RUNE_VISTA, RUNE_MOVIS, RUNE_NONE}, SPELL_FLYING_EYE}, // level 7
-	{{RUNE_MORTE, RUNE_KAOM, RUNE_NONE}, SPELL_REPEL_UNDEAD}, // level 5
-	{{RUNE_MORTE, RUNE_COSUM, RUNE_VISTA, RUNE_NONE}, SPELL_DETECT_TRAP}, // level 2
-	{{RUNE_MOVIS, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_CONTROL_TARGET}, // level 10
-	{{RUNE_STREGUM, RUNE_MOVIS, RUNE_NONE}, SPELL_MANA_DRAIN}, // level 8
-	{{RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_INCINERATE}, // level 9
-	{{RUNE_AAM, RUNE_MEGA, RUNE_MORTE, RUNE_NONE}, SPELL_EXPLOSION}, // level 8
-	{{RUNE_AAM, RUNE_KAOM, RUNE_SPACIUM, RUNE_NONE}, SPELL_CREATE_FIELD}, // level 6
-	{{RUNE_AAM, RUNE_MORTE, RUNE_VITAE, RUNE_NONE}, SPELL_RISE_DEAD}, // level 6
-	{{RUNE_AAM, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_RUNE_OF_GUARDING}, // level 5
-	{{RUNE_AAM, RUNE_VITAE, RUNE_TERA, RUNE_NONE}, SPELL_SUMMON_CREATURE}, // level 9
-	{{RUNE_AAM, RUNE_VITAE, RUNE_COSUM, RUNE_NONE}, SPELL_CREATE_FOOD}, // level 3
-	{{RUNE_AAM, RUNE_FOLGORA, RUNE_TAAR, RUNE_NONE}, SPELL_LIGHTNING_STRIKE}, // level 7
-	{{RUNE_AAM, RUNE_FOLGORA, RUNE_SPACIUM, RUNE_NONE}, SPELL_MASS_LIGHTNING_STRIKE}, // level 10
-	{{RUNE_AAM, RUNE_YOK, RUNE_NONE}, SPELL_IGNIT}, // level 1
-	{{RUNE_AAM, RUNE_YOK, RUNE_SPACIUM, RUNE_NONE}, SPELL_FIRE_FIELD}, // level 7
-	{{RUNE_AAM, RUNE_YOK, RUNE_TAAR, RUNE_NONE}, SPELL_FIREBALL}, // level 3
-	{{RUNE_AAM, RUNE_FRIDD, RUNE_SPACIUM, RUNE_NONE}, SPELL_ICE_FIELD}, // level 7
-	{{RUNE_AAM, RUNE_FRIDD, RUNE_TAAR, RUNE_NONE}, SPELL_ICE_PROJECTILE}, // level 3
-	{{RUNE_AAM, RUNE_CETRIUS, RUNE_TAAR, RUNE_NONE}, SPELL_POISON_PROJECTILE}, // level 5
-	{{RUNE_AAM, RUNE_TAAR, RUNE_NONE}, SPELL_MAGIC_MISSILE}, // level 1
-	{{RUNE_YOK, RUNE_KAOM, RUNE_NONE}, SPELL_FIRE_PROTECTION}, // level 4
-	{{RUNE_FRIDD, RUNE_KAOM, RUNE_NONE}, SPELL_COLD_PROTECTION}, // level 4
-	{{RUNE_VITAE, RUNE_MOVIS, RUNE_NONE}, SPELL_LIFE_DRAIN}, // level 8
-	{{RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_TELEKINESIS}, // level 4
+	{{RUNE_RHAA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_CURSE, "curse"}, // level 4
+	{{RUNE_RHAA, RUNE_TEMPUS, RUNE_NONE}, SPELL_FREEZE_TIME, "freeze_time"}, // level 10
+	{{RUNE_RHAA, RUNE_KAOM, RUNE_NONE}, SPELL_LOWER_ARMOR, "lower_armor"}, // level 2
+	{{RUNE_RHAA, RUNE_MOVIS, RUNE_NONE}, SPELL_SLOW_DOWN, "slowdown"}, // level 6
+	{{RUNE_RHAA, RUNE_VITAE, RUNE_NONE}, SPELL_HARM, "harm"}, // level 2
+	{{RUNE_RHAA, RUNE_VISTA, RUNE_NONE}, SPELL_CONFUSE, "confuse"}, // level 7
+	{{RUNE_MEGA, RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_MASS_PARALYSE, "mass_paralyse"}, // level 9
+	{{RUNE_MEGA, RUNE_KAOM, RUNE_NONE}, SPELL_ARMOR, "armor"}, // level 2
+	{{RUNE_MEGA, RUNE_VISTA, RUNE_NONE}, SPELL_MAGIC_SIGHT, "magic_sight"}, // level 1
+	{{RUNE_MEGA, RUNE_VITAE, RUNE_NONE}, SPELL_HEAL, "heal"}, // level 2
+	{{RUNE_MEGA, RUNE_MOVIS, RUNE_NONE}, SPELL_SPEED, "speed"}, // level 3
+	{{RUNE_MEGA, RUNE_STREGUM, RUNE_VITAE, RUNE_NONE}, SPELL_BLESS, "bless"}, // level 4
+	{{RUNE_MEGA, RUNE_STREGUM, RUNE_COSUM, RUNE_NONE}, SPELL_ENCHANT_WEAPON, "enchant_weapon"}, // level 8
+	{{RUNE_MEGA, RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_MASS_INCINERATE, "mass_incinerate"}, // level 10
+	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_NONE}, SPELL_ACTIVATE_PORTAL, "activate_portal"}, // level ?
+	{{RUNE_MEGA, RUNE_SPACIUM, RUNE_MOVIS, RUNE_NONE}, SPELL_LEVITATE, "levitate"}, // level 5
+	{{RUNE_NHI, RUNE_MOVIS, RUNE_NONE}, SPELL_PARALYSE, "paralyse"}, // level 6
+	{{RUNE_NHI, RUNE_CETRIUS, RUNE_NONE}, SPELL_CURE_POISON, "cure_poison"}, // level 5
+	{{RUNE_NHI, RUNE_YOK, RUNE_NONE}, SPELL_DOUSE, "douse"}, // level 1
+	{{RUNE_NHI, RUNE_STREGUM, RUNE_VISTA, RUNE_NONE}, SPELL_DISPELL_ILLUSION, "dispell_illusion"}, // level 3
+	{{RUNE_NHI, RUNE_STREGUM, RUNE_SPACIUM, RUNE_NONE}, SPELL_NEGATE_MAGIC, "negate_magic"}, // level 9
+	{{RUNE_NHI, RUNE_SPACIUM, RUNE_NONE}, SPELL_DISPELL_FIELD, "dispell_field"}, // level 4
+	{{RUNE_NHI, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_DISARM_TRAP, "disarm_trap"}, // level 6
+	{{RUNE_NHI, RUNE_VISTA, RUNE_NONE}, SPELL_INVISIBILITY, "invisibility"}, // level ?
+	{{RUNE_VISTA, RUNE_MOVIS, RUNE_NONE}, SPELL_FLYING_EYE, "flying_eye"}, // level 7
+	{{RUNE_MORTE, RUNE_KAOM, RUNE_NONE}, SPELL_REPEL_UNDEAD, "repel_undead"}, // level 5
+	{{RUNE_MORTE, RUNE_COSUM, RUNE_VISTA, RUNE_NONE}, SPELL_DETECT_TRAP, "detect_trap"}, // level 2
+	{{RUNE_MOVIS, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_CONTROL_TARGET, "control"}, // level 10
+	{{RUNE_STREGUM, RUNE_MOVIS, RUNE_NONE}, SPELL_MANA_DRAIN, "mana_drain"}, // level 8
+	{{RUNE_AAM, RUNE_MEGA, RUNE_YOK, RUNE_NONE}, SPELL_INCINERATE, "incinerate"}, // level 9
+	{{RUNE_AAM, RUNE_MEGA, RUNE_MORTE, RUNE_NONE}, SPELL_EXPLOSION, "explosion"}, // level 8
+	{{RUNE_AAM, RUNE_KAOM, RUNE_SPACIUM, RUNE_NONE}, SPELL_CREATE_FIELD, "create_field"}, // level 6
+	{{RUNE_AAM, RUNE_MORTE, RUNE_VITAE, RUNE_NONE}, SPELL_RISE_DEAD, "raise_dead"}, // level 6
+	{{RUNE_AAM, RUNE_MORTE, RUNE_COSUM, RUNE_NONE}, SPELL_RUNE_OF_GUARDING, "rune_of_guarding"}, // level 5
+	{{RUNE_AAM, RUNE_VITAE, RUNE_TERA, RUNE_NONE}, SPELL_SUMMON_CREATURE, "summon_creature"}, // level 9
+	{{RUNE_AAM, RUNE_VITAE, RUNE_COSUM, RUNE_NONE}, SPELL_CREATE_FOOD, "create_food"}, // level 3
+	{{RUNE_AAM, RUNE_FOLGORA, RUNE_TAAR, RUNE_NONE}, SPELL_LIGHTNING_STRIKE, "lightning_strike"}, // level 7
+	{{RUNE_AAM, RUNE_FOLGORA, RUNE_SPACIUM, RUNE_NONE}, SPELL_MASS_LIGHTNING_STRIKE, "mass_lightning_strike"}, // level 10
+	{{RUNE_AAM, RUNE_YOK, RUNE_NONE}, SPELL_IGNIT, "ignit"}, // level 1
+	{{RUNE_AAM, RUNE_YOK, RUNE_SPACIUM, RUNE_NONE}, SPELL_FIRE_FIELD, "fire_field"}, // level 7
+	{{RUNE_AAM, RUNE_YOK, RUNE_TAAR, RUNE_NONE}, SPELL_FIREBALL, "fireball"}, // level 3
+	{{RUNE_AAM, RUNE_FRIDD, RUNE_SPACIUM, RUNE_NONE}, SPELL_ICE_FIELD, "ice_field"}, // level 7
+	{{RUNE_AAM, RUNE_FRIDD, RUNE_TAAR, RUNE_NONE}, SPELL_ICE_PROJECTILE, "ice_projectile"}, // level 3
+	{{RUNE_AAM, RUNE_CETRIUS, RUNE_TAAR, RUNE_NONE}, SPELL_POISON_PROJECTILE, "poison_projectile"}, // level 5
+	{{RUNE_AAM, RUNE_TAAR, RUNE_NONE}, SPELL_MAGIC_MISSILE, "magic_missile"}, // level 1
+	{{RUNE_YOK, RUNE_KAOM, RUNE_NONE}, SPELL_FIRE_PROTECTION, "fire_protection"}, // level 4
+	{{RUNE_FRIDD, RUNE_KAOM, RUNE_NONE}, SPELL_COLD_PROTECTION, "cold_protection"}, // level 4
+	{{RUNE_VITAE, RUNE_MOVIS, RUNE_NONE}, SPELL_LIFE_DRAIN, "life_drain"}, // level 8
+	{{RUNE_SPACIUM, RUNE_COMUNICATUM, RUNE_NONE}, SPELL_TELEKINESIS, "telekinesis"}, // level 4
+	{{RUNE_NONE}, SPELL_FAKE_SUMMON, "fake_summon"}
 };
 
 //! Plays the sound of Fizzling spell
@@ -2633,8 +2580,8 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 			ARX_SPELLS_FizzleNoMana(num);
 
 			if(_bSound) {
-				ARX_SPEECH_AddLocalised("[player_cantcast]");
-				ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
+				ARX_SPEECH_Add("player_cantcast");
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
 			return 0;
@@ -2731,27 +2678,27 @@ void ARX_SPELLS_Init_Rects() {
 	lMaxSymbolDrawSizeX=INT_MIN;
 	lMaxSymbolDrawSizeY=INT_MIN;
 
-	ARX_SPEELS_GetMaxRect("AAM");
-	ARX_SPEELS_GetMaxRect("CETRIUS");
-	ARX_SPEELS_GetMaxRect("COMUNICATUM");
-	ARX_SPEELS_GetMaxRect("COSUM");
-	ARX_SPEELS_GetMaxRect("FOLGORA");
-	ARX_SPEELS_GetMaxRect("FRIDD");
-	ARX_SPEELS_GetMaxRect("KAOM");
-	ARX_SPEELS_GetMaxRect("MEGA");
-	ARX_SPEELS_GetMaxRect("MORTE");
-	ARX_SPEELS_GetMaxRect("MOVIS");
-	ARX_SPEELS_GetMaxRect("NHI");
-	ARX_SPEELS_GetMaxRect("RHAA");
-	ARX_SPEELS_GetMaxRect("SPACIUM");
-	ARX_SPEELS_GetMaxRect("STREGUM");
-	ARX_SPEELS_GetMaxRect("TAAR");
-	ARX_SPEELS_GetMaxRect("TEMPUS");
-	ARX_SPEELS_GetMaxRect("TERA");
-	ARX_SPEELS_GetMaxRect("VISTA");
-	ARX_SPEELS_GetMaxRect("VITAE");
-	ARX_SPEELS_GetMaxRect("YOK");
-	ARX_SPEELS_GetMaxRect("AKBAA");
+	ARX_SPEELS_GetMaxRect("aam");
+	ARX_SPEELS_GetMaxRect("cetrius");
+	ARX_SPEELS_GetMaxRect("comunicatum");
+	ARX_SPEELS_GetMaxRect("cosum");
+	ARX_SPEELS_GetMaxRect("folgora");
+	ARX_SPEELS_GetMaxRect("fridd");
+	ARX_SPEELS_GetMaxRect("kaom");
+	ARX_SPEELS_GetMaxRect("mega");
+	ARX_SPEELS_GetMaxRect("morte");
+	ARX_SPEELS_GetMaxRect("movis");
+	ARX_SPEELS_GetMaxRect("nhi");
+	ARX_SPEELS_GetMaxRect("rhaa");
+	ARX_SPEELS_GetMaxRect("spacium");
+	ARX_SPEELS_GetMaxRect("stregum");
+	ARX_SPEELS_GetMaxRect("taar");
+	ARX_SPEELS_GetMaxRect("tempus");
+	ARX_SPEELS_GetMaxRect("tera");
+	ARX_SPEELS_GetMaxRect("vista");
+	ARX_SPEELS_GetMaxRect("vitae");
+	ARX_SPEELS_GetMaxRect("yok");
+	ARX_SPEELS_GetMaxRect("akbaa");
 }
 
 //-----------------------------------------------------------------------------
@@ -2763,9 +2710,8 @@ void ARX_SPELLS_Init() {
 		spells[i].pSpellFx = NULL;
 	}
 	
-	size_t nspells = sizeof(allSpells)/sizeof(*allSpells);
-	for(size_t i = 0; i < nspells; i++) {
-		addSpell(allSpells[i].symbols, allSpells[i].spell);
+	for(size_t i = 0; i < ARRAY_SIZE(allSpells); i++) {
+		addSpell(allSpells[i].symbols, allSpells[i].spell, allSpells[i].name);
 	}
 	
 }
@@ -2900,8 +2846,8 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 	ARX_SPELLS_FizzleNoMana(num);
 
 	if(_bSound) {
-		ARX_SPEECH_AddLocalised("[player_cantcast]");
-		ARX_SPEECH_AddSpeech(inter.iobj[0], "[player_cantcast]", ANIM_TALK_NEUTRAL);
+		ARX_SPEECH_Add("player_cantcast");
+		ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 
 	return 0;
@@ -3261,7 +3207,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				if ( !( player.rune_flags & (RuneFlag)( 1 << SpellSymbol[i] ) ) )
 				{
-					ARX_SOUND_PlaySpeech( "player_cantcast" );
+					ARX_SOUND_PlaySpeech("player_cantcast");
 					CurrSpellSymbol = 0;
 					ARX_SPELLS_ResetRecognition();
 					
@@ -3325,7 +3271,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		Player_Magic_Level = ARX_CLEAN_WARN_CAST_FLOAT(level);
 	}
 
-	static TextureContainer * tc4 = TextureContainer::Load("Graph\\Particles\\smoke.bmp");
+	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 
 
 	if ((target < 0)
@@ -3379,11 +3325,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	( ioo->ioflags & IO_NPC )
 					&&	( ioo->_npcdata->life > 0.f )
 					&&	( ioo->show == SHOW_FLAG_IN_SCENE )
-					&&	( IsIOGroup( ioo, "DEMON") )	
+					&&	( ioo->groups.find("demon") != ioo->groups.end())
 					&&	( distSqr(ioo->pos, cpos) < square(900.f))
 					)
 				{
-					tcount++;					
+					tcount++;
 				}
 			}
 
@@ -3393,7 +3339,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return false;
 			}
 
-			ARX_SOUND_PlaySpeech( "Player_follower_attack" );
+			ARX_SOUND_PlaySpeech("player_follower_attack");
 				LOOKING_FOR_SPELL_TARGET_TIME	= ARXTimeUL();
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
@@ -4484,7 +4430,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (valid>dispelled)
 			{
-				ARX_SPEECH_AddSpeech(inter.iobj[0],"[player_not_skilled_enough]",ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_not_skilled_enough", ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 
 				if (dispelled>0)
 				{
@@ -5168,13 +5114,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				pCSpellFx->spellinstance=i;
 				char tmptext[256];
-				strcpy(tmptext,"Graph\\Obj3D\\Interactive\\Fix_inter\\blue_cube\\blue_cube.asl");
+				strcpy(tmptext,"graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl");
 				INTERACTIVE_OBJ * io;
 				io=AddFix(tmptext,IO_IMMEDIATELOAD);
 
 				if (io)
 				{
-					ARX_INTERACTIVE_HideGore(io);								
+					ARX_INTERACTIVE_HideGore(io);
 					RestoreInitialIOStatusOfIO(io);
 					spells[i].longinfo=GetInterNum(io);
 					io->scriptload=1;
@@ -6329,14 +6275,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	(ioo->ioflags & IO_NPC)
 					&&	(ioo->_npcdata->life>0.f)
 					&&	(ioo->show==SHOW_FLAG_IN_SCENE)
-					&&	(IsIOGroup(ioo,"DEMON"))	
+					&&	(ioo->groups.find("demon") != ioo->groups.end())
 					&&	(distSqr(ioo->pos, spells[i].caster_pos) < square(900.f))
 					)
 				{
 					tcount++;
 					long n = spells[i].caster_level;
 					std::string str = tmp_io->long_name() + ' ' + itoa(n);
-					SendIOScriptEvent( ioo, SM_NULL, str, "NPC_CONTROL" );
+					SendIOScriptEvent( ioo, SM_NULL, str, "npc_control" );
 				}
 			}
 
@@ -6461,7 +6407,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 //*************************************************************************************
 void ARX_SPELLS_Kill(long i) {
 	
-	static TextureContainer * tc4=TextureContainer::Load("Graph\\Particles\\smoke.bmp");
+	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
 
 	if (!spells[i].exist) return;
 
@@ -7637,7 +7583,7 @@ void ARX_SPELLS_Update()
 								DynLight[id].time_creation = ARXTimeUL();
 					}
 
-					unsigned long tim=pCSpellFX->GetCurrentTime();
+					unsigned long tim=pCSpellFX->getCurrentTime();
 
 					if ((tim>3000) && (spells[i].longinfo==-1))
 					{
@@ -7657,13 +7603,13 @@ void ARX_SPELLS_Update()
 
 							if (EEfabs(anything)<30)
 							{
-								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Undead_base\\Undead_base.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/undead_base/undead_base.asl");
 								INTERACTIVE_OBJ * io;
 								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 
 								if (io)
 								{
-									ARX_INTERACTIVE_HideGore(io);								
+									ARX_INTERACTIVE_HideGore(io);
 									RestoreInitialIOStatusOfIO(io);
 											
 
@@ -8056,7 +8002,7 @@ void ARX_SPELLS_Update()
 							if (spells[i].caster_level>=9)
 							{
 								tokeep=1;
-								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Demon\\Demon.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/demon/demon.asl");
 							}
 							else 
 							{
@@ -8064,22 +8010,22 @@ void ARX_SPELLS_Update()
 
 								if (rnd()>0.98f)
 								{
-									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
 									tokeep=-1;
 								}
 								else
-									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/chicken_base/chicken_base.asl");
 							}
 
 							if ((rnd()>0.997f) || ((cur_rf>=3) && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
 							{
-								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
 								tokeep=-1;
 							}
 
 							if ((rnd()>0.997f) || (sp_max && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
 							{
-								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Y_mx\\Y_mx.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/y_mx/y_mx.asl");
 								tokeep=0;
 							}
 
@@ -8087,12 +8033,12 @@ void ARX_SPELLS_Update()
 							{
 								if (rnd()>0.5) 
 								{
-									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
 									tokeep=-1;
 								}
 								else
 								{
-									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Y_mx\\Y_mx.asl");
+									strcpy(tmptext,"graph/obj3d/interactive/npc/y_mx/y_mx.asl");
 									tokeep=0;
 								}
 							}
@@ -8102,7 +8048,7 @@ void ARX_SPELLS_Update()
 
 							if (!io)
 							{
-								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl");
+								strcpy(tmptext,"graph/obj3d/interactive/npc/chicken_base/chicken_base.asl");
 								tokeep=0;
 								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 							}
@@ -8648,11 +8594,10 @@ static void ApplySPWep() {
 	if (!sp_wep)
 	{		
 		ARX_SPSound();
-		std::string tex;
-		std::string tex2;
-		tex2 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo";
-		File_Standardize(tex2,tex);
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex,IO_IMMEDIATELOAD);
+		
+		fs::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
+		
+		INTERACTIVE_OBJ * ioo = AddItem(file,IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -8662,7 +8607,7 @@ static void ApplySPWep() {
 			ioo->scriptload=1;
 			MakeTemporaryIOIdent(ioo);
 			SendInitScriptEvent(ioo);
-			ioo->show=SHOW_FLAG_IN_INVENTORY;									
+			ioo->show = SHOW_FLAG_IN_INVENTORY;
 
 			if (!CanBePutInInventory(ioo))
 				PutInFrontOfPlayer(ioo);
@@ -8716,8 +8661,8 @@ static void ApplyCurSOS() {
 static void ApplySPBow() {
 	
 	ARX_SPSound();
-	const char OBJ_BOW[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\bow_mx\\bow_mx.teo";
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(OBJ_BOW,IO_IMMEDIATELOAD);
+	const char OBJ_BOW[] = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
+	INTERACTIVE_OBJ * ioo = AddItem(OBJ_BOW, IO_IMMEDIATELOAD);
 	
 	if(ioo!=NULL) {
 		MakeCoolFx(&player.pos);
@@ -8739,27 +8684,24 @@ static void ApplySPBow() {
 
 static void ApplySPArm() {
 	ARX_SPSound();
-	std::string tex;
-	std::string tex2;
-
-	switch (sp_arm)
-	{
+	
+	fs::path file;
+	switch (sp_arm) {
 		case 0:
-			tex2 = "%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Helmet_plate_cm\\Helmet_plate_cm.teo";
+			file = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm.teo";
 		break;
 		case 1:
-			tex2 = "%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Legging_plate_cm\\Legging_plate_cm.teo";
+			file = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm.teo";
 		break;
 		case 2:
-			tex2 = "%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Chest_plate_cm\\Chest_plate_cm.teo";
+			file = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm.teo";
 		break;
 		default:
 			return;
 		break;
 	}
 
-	File_Standardize(tex2,tex);
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex,IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * ioo = AddItem(file, IO_IMMEDIATELOAD);
 
 	if (ioo!=NULL)
 	{			
@@ -8769,7 +8711,7 @@ static void ApplySPArm() {
 		ioo->scriptload=1;
 		MakeTemporaryIOIdent(ioo);
 		SendInitScriptEvent(ioo);
-		ioo->show=SHOW_FLAG_IN_INVENTORY;									
+		ioo->show=SHOW_FLAG_IN_INVENTORY;
 
 		if (!CanBePutInInventory(ioo))
 			PutInFrontOfPlayer(ioo);
@@ -8884,14 +8826,14 @@ static void ApplySPMax() {
 	}
 	else
 	{
-		TextureContainer * tcm=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp");
+		TextureContainer * tcm=TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
 
 		if (tcm)
 		{
 			delete tcm;
-			player.heads[0]=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");	
-			player.heads[1]=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp");	
-			player.heads[2]=TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp");	
+			player.heads[0]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
+			player.heads[1]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
+			player.heads[2]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		}
 	}	

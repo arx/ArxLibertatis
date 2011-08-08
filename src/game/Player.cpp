@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
-#include <cassert>
-
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -79,13 +77,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/GraphicsModes.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -100,6 +100,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+
+using std::vector;
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
@@ -445,7 +447,7 @@ void ARX_PLAYER_Quest_Init() {
 // void ARX_Player_Rune_Add(unsigned long _ulRune)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Add "_ulRune" to player runes
+//   Add _ulRune to player runes
 //*************************************************************************************
 void ARX_Player_Rune_Add(RuneFlag _ulRune)
 {
@@ -514,7 +516,7 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 // void ARX_Player_Rune_Remove(unsigned long _ulRune
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Remove "_ulRune" from player runes
+//   Remove _ulRune from player runes
 //*************************************************************************************
 void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 {
@@ -527,19 +529,18 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 // FUNCTION/RESULT:
 //   Add quest "quest" to player Questbook
 //*************************************************************************************
-void ARX_PLAYER_Quest_Add( const std::string& quest, bool _bLoad)
-{
-    std::string output;
-    MakeLocalised(quest, output);
-
-    if (output[0] == 0) return;
-
-    PlayerQuest.push_back(STRUCT_QUEST());
-    PlayerQuest.back().ident = quest;
-    PlayerQuest.back().localised = output;
-    PlayerQuest.back().localised = output;
-    bBookHalo = !_bLoad;//true;
-    ulBookHaloTime = 0;
+void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
+	
+	std::string output = getLocalised(quest);
+	if(output.empty()) {
+		return;
+	}
+	
+	PlayerQuest.push_back(STRUCT_QUEST());
+	PlayerQuest.back().ident = quest;
+	PlayerQuest.back().localised = output;
+	bBookHalo = !_bLoad;
+	ulBookHaloTime = 0;
 }
 
 //*************************************************************************************
@@ -1143,7 +1144,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 // void ARX_PLAYER_MakeFreshHero()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Creates a "Fresh" hero
+//   Creates a Fresh hero
 //*************************************************************************************
 void ARX_PLAYER_MakeFreshHero()
 {
@@ -1226,7 +1227,7 @@ void ARX_PLAYER_MakeSpHero()
 // void ARX_PLAYER_MakePowerfullHero()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Creates a "POWERFULL" hero
+//   Creates a POWERFULL hero
 //*************************************************************************************
 void ARX_PLAYER_MakePowerfullHero()
 {
@@ -1266,7 +1267,7 @@ void ARX_PLAYER_MakePowerfullHero()
 // void ARX_PLAYER_MakeAverageHero()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Creates an "Average" hero
+//   Creates an Average hero
 //*************************************************************************************
 void ARX_PLAYER_MakeAverageHero()
 {
@@ -1482,7 +1483,7 @@ void ARX_PLAYER_LEVEL_UP()
 	player.Old_Skill_Projectile			=	player.Skill_Projectile;
 	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat;
 	player.Old_Skill_Defense			=	player.Skill_Defense;
-	SendIOScriptEvent(inter.iobj[0], SM_NULL, "", "LEVEL_UP");
+	SendIOScriptEvent(inter.iobj[0], SM_NULL, "", "level_up");
 }
 
 //*************************************************************************************
@@ -1558,7 +1559,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 					}
 
 					if (bOk)
-						ARX_SPEECH_AddSpeech(inter.iobj[0], "[Player_Off_Hungry]", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+						ARX_SPEECH_AddSpeech(inter.iobj[0], "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 
@@ -1608,73 +1609,74 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 }
 TextureContainer * PLAYER_SKIN_TC = NULL;
 
-void ARX_PLAYER_Restore_Skin()
-{
-	std::string tx;
-	std::string tx2;
-	std::string tx3;
-	std::string tx4;
-
-	switch (player.skin)
-	{
+void ARX_PLAYER_Restore_Skin() {
+	
+	fs::path tx;
+	fs::path tx2;
+	fs::path tx3;
+	fs::path tx4;
+	
+	switch(player.skin) {
 		case 0:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head";
 			break;
 		case 1:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero2_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero2_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero2_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero2_head";
 			break;
 		case 2:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero3_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero3_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero3_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero3_head";
 			break;
 		case 3:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_base_hero4_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero4_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero4_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero4_head";
 			break;
 		case 4:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human_cm_hero_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head";
 			break;
 		case 5:
-			tx  = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human__base_hero_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head";
 			break;
 		case 6: //just in case
-			tx  = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
-			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
-			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
-			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
+			tx  = "graph/obj3d/textures/npc_human__base_hero_head";
+			tx2 = "graph/obj3d/textures/npc_human_chainmail_hero_head";
+			tx3 = "graph/obj3d/textures/npc_human_chainmail_mithril_hero_head";
+			tx4 = "graph/obj3d/textures/npc_human_leather_hero_head";
 			break;
 	}
 
 	TextureContainer * tmpTC;
+	
+	// TODO maybe it would be better to replace the textures in the player object instead of replacing the texture data for all objects that use these textures
 
 	if (PLAYER_SKIN_TC && !tx.empty())
 		PLAYER_SKIN_TC->LoadFile(tx);
 
-	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_hero_head");
 	if (tmpTC && !tx2.empty())
 		tmpTC->LoadFile(tx2);
 
-	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_chainmail_mithril_hero_head");
 	if (tmpTC && !tx3.empty())
 		tmpTC->LoadFile(tx3);
 
-	tmpTC = TextureContainer::Find("Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	tmpTC = TextureContainer::Find("graph/obj3d/textures/npc_human_leather_hero_head");
 	if (tmpTC && !tx4.empty())
 		tmpTC->LoadFile(tx4);
 }
@@ -1687,15 +1689,15 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo"; 
+	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo"; 
 	hero = loadObject(OBJECT_HUMAN_BASE, false);
-	PLAYER_SKIN_TC = TextureContainer::Load("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
+	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
 
-	const char ANIM_WAIT_BOOK[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea";
+	const char ANIM_WAIT_BOOK[] = "graph/obj3d/anims/npc/human_wait_book.tea";
 	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
-	const char ANIM_WAIT_NORMAL[] = "graph\\Obj3D\\Anims\\NPC\\human_normal_wait.tea";
+	const char ANIM_WAIT_NORMAL[] = "graph/obj3d/anims/npc/human_normal_wait.tea";
 	herowait2 = EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
-	const char ANIM_WAIT_TWOHANDED[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book_2handed.tea";
+	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter(0);
@@ -1709,37 +1711,16 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	io->ident = -1;
 
 	//todo free
-	io->_npcdata = (IO_NPCDATA *)malloc(sizeof(IO_NPCDATA));
-	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
-	io->_npcdata->blood_color = Color::red;
+	io->_npcdata = new IO_NPCDATA;
+	
 	io->ioflags = IO_NPC;
-	io->_npcdata->maxlife = io->_npcdata->life = 10;
+	io->_npcdata->maxlife = io->_npcdata->life = 10.f;
 	io->_npcdata->vvpos = -99999.f;
-	io->_npcdata->speakpitch = 1.f;
 
 	//todo free
-	io->armormaterial = strdup("LEATHER");
-	strcpy(io->filename, "graph\\obj3D\\Interactive\\Player\\Player.teo");
-	std::string texscript = io->filename;
-	SetExt(texscript, ".asl");
-
-	if ( PAK_FileExist(texscript) )
-	{
-		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMalloc(texscript, FileSize);
-
-		if (io->script.data != NULL)
-		{
-			io->script.size = FileSize;
-			InitScript(&io->script);
-		}
-	}
-	else
-	{
-		io->script.size = 0;
-		io->script.data = NULL;
-	}
-
+	io->armormaterial = "leather";
+	io->filename = "graph/obj3d/interactive/player/player.teo";
+	loadScript(io->script, resources->getFile("graph/obj3d/interactive/player/player.asl"));
 
 	if ((EERIE_OBJECT_GetGroup(io->obj, "head") != -1)
 	        &&	(EERIE_OBJECT_GetGroup(io->obj, "neck") != -1)
@@ -1748,7 +1729,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	{
 		io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
 
-		if (io->_npcdata->ex_rotate)
+		if(io->_npcdata->ex_rotate)
 		{
 			io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 			io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
@@ -1757,9 +1738,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 
 			for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
 			{
-				io->_npcdata->ex_rotate->group_rotate[n].a = 0;
-				io->_npcdata->ex_rotate->group_rotate[n].b = 0;
-				io->_npcdata->ex_rotate->group_rotate[n].g = 0;
+				io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 			}
 
 			io->_npcdata->ex_rotate->flags = 0;
@@ -2257,7 +2236,7 @@ void ARX_PLAYER_Manage_Visual()
 				if (pouet == 2)
 					id = io->obj->fastaccess.primary_attach;
 				else
-					id = GetActionPointIdx(io->obj, "LEFT_ATTACH");
+					id = GetActionPointIdx(io->obj, "left_attach");
 
 				pouet--;
 
@@ -2501,10 +2480,7 @@ nochanges:
 // FUNCTION/RESULT:
 //   Init Local Player Data
 //*************************************************************************************
-void ARX_PLAYER_InitPlayer()
-{
-	char tex[256];
-	strcpy(tex, "Beware of the EXE that sleeps... :) ");
+void ARX_PLAYER_InitPlayer() {
 	player.Interface = INTER_MINIBOOK | INTER_MINIBACK | INTER_LIFE_MANA;
 	player.physics.cyl.height = PLAYER_BASE_HEIGHT;
 	player.physics.cyl.radius = PLAYER_BASE_RADIUS;
@@ -2854,7 +2830,7 @@ void PlayerMovementIterate(float DeltaTime)
 			{
 				REQUEST_JUMP = 0;
 				ARX_NPC_SpawnAudibleSound(&player.pos, inter.iobj[0]);
-				ARX_SPEECH_Launch_No_Unicode_Seek("[Player_Jump]", inter.iobj[0]);
+				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", inter.iobj[0]);
 				player.onfirmground = 0;
 				player.jumpphase = 1;
 
@@ -2876,10 +2852,11 @@ void PlayerMovementIterate(float DeltaTime)
 
 	if ((!EDITMODE) && (USE_PLAYERCOLLISIONS))
 	{
-		long levitate = 0;
+		CollisionFlags levitate = 0;
 
-		if (player.climbing)
-			levitate = 1;
+		if(player.climbing) {
+			levitate = CFLAG_LEVITATE;
+		}
 
 		if (player.levitate)
 		{
@@ -2904,9 +2881,8 @@ void PlayerMovementIterate(float DeltaTime)
 				}
 			}
 
-			if (player.physics.cyl.height == PLAYER_LEVITATE_HEIGHT)
-			{
-				levitate = 1;
+			if(player.physics.cyl.height == PLAYER_LEVITATE_HEIGHT) {
+				levitate = CFLAG_LEVITATE;
 				player.climbing = 0;
 				bGCroucheToggle = false;
 				player.Current_Movement &= ~PLAYER_CROUCH;
@@ -3493,7 +3469,7 @@ lasuite:
 
 			if (player.Interface & INTER_STEAL || ioSteal)
 			{
-				SendIOScriptEvent(ioSteal, SM_STEAL, "OFF");
+				SendIOScriptEvent(ioSteal, SM_STEAL, "off");
 				player.Interface &= ~INTER_STEAL;
 				ioSteal = NULL;
 			}
@@ -3625,7 +3601,7 @@ void ARX_PLAYER_AddGold(long _lValue) {
 
 void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 	
-	assert(gold->ioflags & IO_GOLD);
+	arx_assert(gold->ioflags & IO_GOLD);
 	
 	ARX_PLAYER_AddGold(gold->_itemdata->price * max((short)1, gold->_itemdata->count));
 	
@@ -3641,9 +3617,8 @@ void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
 	
 }
 
-void ARX_PLAYER_Start_New_Quest()
-{
-
+void ARX_PLAYER_Start_New_Quest() {
+	
 	SKIN_MOD = 0;
 	QUICK_MOD = 0;
 	EERIE_PATHFINDER_Clear();
@@ -3654,10 +3629,12 @@ void ARX_PLAYER_Start_New_Quest()
 	SecondaryInventory = NULL;
 	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
+	
 	//Empty Current Game Directory to restart a new game...
-	ARX_CHANGELEVEL_MakePath();
-	KillAllDirectory(CurGamePath);
-	CreateDirectory(CurGamePath, NULL);
+	if(!fs::remove_all(CurGamePath) || !fs::create_directory(CurGamePath)) {
+		LogWarning << "failed to clear " << CurGamePath;
+	}
+	
 	inter.iobj[0]->halo.flags = 0;
 }
 

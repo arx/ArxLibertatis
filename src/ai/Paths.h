@@ -91,20 +91,25 @@ DECLARE_FLAGS_OPERATORS(PathFlags)
 
 struct ARX_PATH {
 	
-	char name[64];
-	short idx;
+	ARX_PATH(const std::string & name, const Vec3f & pos);
+	
+	std::string name;
 	PathFlags flags;
 	Vec3f initpos;
 	Vec3f pos;
 	long nb_pathways;
 	ARX_PATHWAY * pathways;
-	long height; // 0 NOT A ZONE
-	char controled[64];
 	
-	char ambiance[128];
+	long height; // 0 NOT A ZONE
+	
+	//! name of IO to be notified of other IOs interacting with the path
+	std::string controled; // TODO why store the name and not a pointer?
+	
+	fs::path ambiance;
+	
 	Color3f rgb;
 	float farclip;
-	float reverb;
+	float reverb; // TODO unused
 	float amb_max_vol;
 	Vec3f bbmin;
 	Vec3f bbmax;
@@ -171,11 +176,11 @@ void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
 void ARX_PATH_ClearAllUsePath();
 void ARX_PATH_ReleaseAllPath();
-ARX_PATH * ARX_PATH_GetAddressByName( const std::string& name);
+ARX_PATH * ARX_PATH_GetAddressByName(const std::string & name);
 void ARX_PATH_ClearAllControled();
 void ARX_PATH_ComputeAllBoundingBoxes();
 
-ARX_PATH * ARX_PATHS_ExistName(char * name);
+ARX_PATH * ARX_PATHS_ExistName(const std::string & name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos);
 

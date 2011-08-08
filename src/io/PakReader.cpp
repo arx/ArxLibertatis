@@ -48,24 +48,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakReader.h"
 
-#include <cstdlib>
 #include <cstring>
 #include <algorithm>
-#include <cassert>
+#include <iomanip>
 
 #include "io/Blast.h"
 #include "io/PakEntry.h"
-#include "io/HashMap.h"
 #include "io/Logger.h"
-
-#include "platform/Platform.h"
-#include <iomanip>
+#include "io/Filesystem.h"
+#include "io/FileStream.h"
+#include "platform/String.h"
 
 using std::min;
-using std::max;
 using std::strlen;
+using std::string;
+using std::vector;
 
-#define PAK_READ_BUF_SIZE 1024
+namespace {
+
+const size_t PAK_READ_BUF_SIZE = 1024;
 
 static const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
 static const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
@@ -81,198 +82,144 @@ static const char * selectKey(u32 first_bytes) {
 	}
 }
 
-PakReader::PakReader() {
+/*! Uncompressed file in a .pak file archive. */
+class UncompressedFile : public PakFile {
 	
-	file = 0;
-	root = NULL;
-	fat = NULL;
+	std::istream & archive;
+	size_t offset;
 	
-	int iI = PACK_MAX_FREAD;
-	while(--iI) {
-		tPackFile[iI].reader = this;
-		tPackFile[iI].active = false;
-		tPackFile[iI].iID = 0;
-		tPackFile[iI].offset = 0;
-	}
+public:
+	
+	UncompressedFile(std::istream * _archive, size_t _offset, size_t size) : PakFile(size), archive(*_archive), offset(_offset) { };
+	
+	void read(void * buf) const;
+	
+	PakFileHandle * open() const;
+	
+	friend class UncompressedFileHandle;
+	
+};
+
+class UncompressedFileHandle : public PakFileHandle {
+	
+	const UncompressedFile & file;
+	size_t offset;
+	
+public:
+	
+	UncompressedFileHandle(const UncompressedFile * _file) : file(*_file), offset(0) { };
+	
+	size_t read(void * buf, size_t size);
+	
+	int seek(Whence whence, int offset);
+	
+	size_t tell();
+	
+	~UncompressedFileHandle() { };
+	
+};
+
+void UncompressedFile::read(void * buf) const {
+	
+	archive.seekg(offset);
+	
+	fs::read(archive, buf, size());
+	
+	arx_assert(!archive.fail());
 }
 
-PakReader::~PakReader() {
-	Close();
+PakFileHandle * UncompressedFile::open() const {
+	return new UncompressedFileHandle(this);
 }
 
-static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
+size_t UncompressedFileHandle::read(void * buf, size_t size) {
 	
-	size_t keysize = strlen((const char *)key);
-	
-	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
-		fat[i] ^= key[ki];
+	if(offset >= file.size()) {
+		return 0;
 	}
 	
+	file.archive.seekg(file.offset + offset);
+	
+	if(file.size() < offset + size) {
+		size = (offset > file.size()) ? 0 : (file.size() - offset);
+	}
+	
+	fs::read(file.archive, buf, size);
+	
+	size_t nread = file.archive.gcount();
+	offset += nread;
+	
+	return nread;
 }
 
-bool PakReader::Open(const std::string& name) {
-
-	FILE * newfile = fopen(name.c_str(), "rb");
+int UncompressedFileHandle::seek(Whence whence, int _offset) {
 	
-	if(!newfile) {
-		return false;
+	size_t base;
+	switch(whence) {
+		case SeekSet: base = 0; break;
+		case SeekEnd: base = file.size(); break;
+		case SeekCur: base = offset; break;
+		default: return -1;
 	}
 	
-	// Read fat location and size.
-	u32 fat_offset;
-	u32 fat_size;
-	if(fread(&fat_offset, sizeof(fat_offset), 1, newfile) != 1) {
-		LogError << "error reading FAT offset";
-		fclose(newfile);
-		return false;
-	}
-	if(fseek(newfile, fat_offset, SEEK_SET)) {
-		LogError << "error seeking to FAT offset " << fat_offset;
-		fclose(newfile);
-		return false;
-	}
-	if(fread(&fat_size, sizeof(fat_size), 1, newfile) != 1) {
-		LogError << "error reading FAT size at offset " << fat_offset;
-		fclose(newfile);
-		return false;
+	if((int)base + _offset < 0) {
+		return -1;
 	}
 	
-	// Read the whole FAT.
-	char * newfat = new char[fat_size];
-	if(fread(newfat, fat_size, 1, newfile) != 1) {
-		LogError << "error reading FAT";
-		delete[] newfat;
-		fclose(newfile);
-		return false;
-	}
+	offset = (int)base + _offset;
 	
-	// Decrypt the FAT.
-	const char * key = selectKey(*(u32*)newfat);
-	if(key) {
-		pakDecrypt(newfat, fat_size, key);
-	} else {
-		LogWarning << "WARNING: unknown PAK key ID 0x" << std::hex << std::setfill('0') << std::setw(8) << *(u32*)newfat << ", assuming no key";
-	}
-	
-	PakDirectory * newroot = new PakDirectory();
-	
-	const char * pos = newfat;
-	
-	while(fat_size) {
-		
-		const char * dirname = safeGetString(pos, fat_size);
-		if(!dirname) {
-			LogError << "error reading directory name from FAT, wrong key?";
-			goto error;
-		}
-		
-		PakDirectory * dir;
-		if(*dirname != '\0') {
-			dir = newroot->addDirectory(dirname);
-		} else {
-			dir = newroot;
-		}
-		
-		u32 nfiles;
-		if(!safeGet(nfiles, pos, fat_size)) {
-			LogError << "error reading file count from FAT, wrong key?";
-			goto error;
-		}
-		
-		if(nfiles && !dir->filesMap) {
-			size_t hashsize = 1;
-			while(hashsize < nfiles) {
-				hashsize <<= 1;
-			}
-			size_t n = (hashsize * 3) / 4;
-			if(nfiles > n) {
-				hashsize <<= 1;
-			}
-			dir->filesMap = new HashMap(hashsize);
-		}
-		
-		while(nfiles--) {
-			
-			const char * filename =  safeGetString(pos, fat_size);
-			if(!filename) {
-				LogError << "error reading file name from FAT, wrong key?";
-				goto error;
-			}
-			
-			PakFile * file = dir->addFile(filename);
-			if(!file) {
-				LogError << "could not add file while loading PAK";
-				goto error;
-			}
-			
-			u32 offset;
-			u32 flags;
-			u32 uncompressedSize;
-			u32 size;
-			
-			if(!safeGet(offset, pos, fat_size) || !safeGet(flags, pos, fat_size)
-			   || !safeGet(uncompressedSize, pos, fat_size) || !safeGet(size, pos, fat_size)) {
-				LogError << "error reading file attributes from FAT, wrong key?";
-				goto error;
-			}
-			
-			file->offset = offset;
-			file->flags = flags;
-			file->uncompressedSize = uncompressedSize;
-			file->size = size;
-		}
-		
-	}
-	
-	Close();
-	
-	root = newroot;
-	pakname = name;
-	fat = newfat;
-	file = newfile;
-	
-	LogInfo << "Loaded PAK " << name;
-	return true;
-	
-	
-error:
-	
-	delete newroot;
-	delete[] newfat;
-	fclose(newfile);
-	
-	return false;
-	
+	return offset;
 }
 
-void PakReader::Close() {
-
-	pakname.clear();
-
-	if(file) {
-		fclose(file);
-		file = 0;
-	}
-
-	if(root) {
-		delete root;
-		root = NULL;
-	}
-
-	if(fat) {
-		delete[] fat;
-		fat = NULL;
-	}
-
+size_t UncompressedFileHandle::tell() {
+	return offset;
 }
+
+/*! Compressed file in a .pak file archive. */
+class CompressedFile : public PakFile {
+	
+	std::ifstream & archive;
+	size_t offset;
+	size_t storedSize;
+	
+public:
+	
+	CompressedFile(std::ifstream * _archive, size_t _offset, size_t size, size_t _storedSize) : PakFile(size), archive(*_archive), offset(_offset), storedSize(_storedSize) { };
+	
+	void read(void * buf) const;
+	
+	PakFileHandle * open() const;
+	
+	friend class CompressedFileHandle;
+	
+};
+
+class CompressedFileHandle : public PakFileHandle {
+	
+	const CompressedFile & file;
+	size_t offset;
+	
+public:
+	
+	CompressedFileHandle(const CompressedFile * _file) : file(*_file), offset(0) { };
+	
+	size_t read(void * buf, size_t size);
+	
+	int seek(Whence whence, int offset);
+	
+	size_t tell();
+	
+	~CompressedFileHandle() { };
+	
+};
 
 struct BlastFileInBuffer {
 	
-	FILE * file;
+	std::ifstream & file;
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
-	BlastFileInBuffer(FILE * f) : file(f) {};
+	BlastFileInBuffer(std::ifstream * f) : file(*f) {};
 	
 };
 
@@ -282,146 +229,30 @@ size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
 	*buf = p->readbuf;
 	
-	return fread(p->readbuf, 1, PAK_READ_BUF_SIZE, p->file);
+	return fs::read(p->file, p->readbuf, PAK_READ_BUF_SIZE).gcount();
 }
 
-static int blast(FILE * file, char * buf, size_t size) {
+static int blast(std::ifstream & file, char * buf, size_t size) {
 	
-	BlastFileInBuffer in(file);
+	BlastFileInBuffer in(&file);
 	BlastMemOutBuffer out(buf, size);
 	
 	return blast(blastInFile, &in, blastOutMem, &out);
 }
 
-PakFile * PakReader::getFile(const std::string& name) {
-
-	if( name.empty() || !root ) {
-		// Not loaded.
-		return NULL;
+void CompressedFile::read(void * buf) const {
+	
+	archive.seekg(offset);
+	
+	int r = blast(archive, (char *)buf, size());
+	if(r) {
+		LogError << "PakReader::Read: blast error " << r << " outSize=" << size();
 	}
-
-	return root->getFile(name);
+	
 }
 
-
-// TODO unchecked buffer size
-bool PakReader::Read(const std::string& name, void * buf) {
-	
-	PakFile * f = getFile(name);
-	if(!f) {
-		return false;
-	}
-	
-	fseek(file, f->offset, SEEK_SET);
-	
-	if(f->flags & PAK_FILE_COMPRESSED) {
-		int r = blast(file, (char *)buf, f->uncompressedSize);
-		if(r) {
-			LogError << "PakReader::Read: blast error " << r << " outSize=" << f->uncompressedSize;
-			return false;
-		}
-	} else {
-		if(fread(buf, f->size, 1, file) != 1) {
-			return false;
-		}
-	}
-	
-	return true;
-}
-
-void* PakReader::ReadAlloc( const std::string& name, size_t& sizeRead ) {
-
-	PakFile * f = getFile(name);
-	if(!f) {
-		return NULL;
-	}
-
-	fseek(file, f->offset, SEEK_SET);
-
-	void* mem;
-	if(f->flags & PAK_FILE_COMPRESSED) {
-
-		mem = malloc(f->uncompressedSize);
-		if(!mem) {
-			sizeRead = 0;
-			return NULL;
-		}
-	
-		int r = blast(file, (char*)mem, f->uncompressedSize);
-		if(r) {
-			LogError << "PakReader::ReadAlloc: blast error " << r << " outSize=" << f->uncompressedSize;
-			free(mem);
-			sizeRead = 0;
-			return NULL;
-		}
-
-		sizeRead = f->uncompressedSize;
-	
-	} else {
-
-		mem = malloc(f->size);
-		if(!mem) {
-			sizeRead = 0;
-			return NULL;
-		}
-
-		if(fread(mem, f->size, 1, file) != 1) {
-			LogError << "PakReader::ReadAlloc: read error" << f->size;
-			free(mem);
-			sizeRead = 0;
-			return NULL;
-		}
-
-		sizeRead = f->size;
-	}
-
-	return mem;
-}
-
-int PakReader::GetSize(const std::string& name) {
-	
-	PakFile * f = getFile(name);
-	if(!f) {
-		return -1;
-	}
-	
-	if(f->flags & PAK_FILE_COMPRESSED) {
-		return f->uncompressedSize;
-	} else {
-		return f->size;
-	}
-}
-
-PakFileHandle * PakReader::fOpen(const std::string& name )
-{
-	PakFile * f = getFile(name);
-	if(!f) {
-		return NULL;
-	}
-	
-	int iNb = PACK_MAX_FREAD;
-	
-	while(--iNb) {
-		if(!tPackFile[iNb].active) {
-			assert(tPackFile[iNb].reader == this);
-			tPackFile[iNb].iID = (void*)fat; // TODO why use the FAT address here?
-			tPackFile[iNb].active = true;
-			tPackFile[iNb].offset = 0;
-			tPackFile[iNb].file = f;
-			return &tPackFile[iNb];
-		}
-	}
-	
-	LogError << "cannot fopen file in PAK, ran out of handles";
-	return NULL;
-}
-
-int PakReader::fClose(PakFileHandle * fh) {
-	if((!fh) || (!fh->active) || (fh->iID != ((void*)fat))) {
-		return EOF;
-	}
-	fh->active = false;
-	return 0;
+PakFileHandle * CompressedFile::open() const {
+	return new CompressedFileHandle(this);
 }
 
 struct BlastMemOutBufferOffset {
@@ -435,7 +266,7 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
 	BlastMemOutBufferOffset * p = (BlastMemOutBufferOffset *)Param;
 	
-	assert(p->currentOffset <= p->endOffset);
+	arx_assert(p->currentOffset <= p->endOffset);
 	
 	if(p->currentOffset == p->endOffset) {
 		return 1;
@@ -455,7 +286,7 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
 	size_t toCopy = min(len, p->endOffset - p->currentOffset);
 	
-	assert(toCopy != 0);
+	arx_assert(toCopy != 0);
 	
 	memcpy(p->buf, buf, toCopy);
 	
@@ -465,134 +296,366 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	return 0;
 }
 
-size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * fh) {
+size_t CompressedFileHandle::read(void * buf, size_t size) {
 	
-	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
+	if(offset >= file.size()) {
 		return 0;
 	}
 	
-	size_t size = isize * count;
+	if(size < file.size() || offset != 0) {
+		LogWarning << "partially reading a compressed file - inefficent: size=" << size
+		           << " offset=" << offset << " total=" << file.size();
+	}
 	
-	if(!size) {
+	file.archive.seekg(file.offset);
+	
+	BlastFileInBuffer in(&file.archive);
+	BlastMemOutBufferOffset out;
+	
+	out.buf = (char *)buf;
+	out.currentOffset = 0;
+	out.startOffset = offset;
+	out.endOffset = min(offset + size, file.size());
+	
+	if(out.endOffset <= out.startOffset) {
 		return 0;
 	}
 	
-	PakFile * f = fh->file;
-	
-	assert(fh->offset >= 0);
-	
-	if(f->flags & PAK_FILE_COMPRESSED) {
-		
-		if((size_t)fh->offset >= fh->file->uncompressedSize) {
-			return 0;
-		}
-		
-		if(size < fh->file->uncompressedSize) {
-			LogWarning << "partially reading a compressed file - inefficent: " << f->name
-			           << " size=" << size << " offset=" << fh->offset << " total=" << f->uncompressedSize;
-		}
-		
-		fseek(file, f->offset, SEEK_SET);
-		
-		BlastFileInBuffer in(file);
-		BlastMemOutBufferOffset out;
-		
-		out.buf = (char *)buf;
-		out.currentOffset = 0;
-		out.startOffset = fh->offset;
-		out.endOffset = min(fh->offset + size, f->uncompressedSize);
-		
-		if(out.endOffset <= out.startOffset) {
-			return 0;
-		}
-		
-		// TODO this is really inefficient
-		int r = blast(blastInFile, &in, blastOutMemOffset, &out);
-		if(r && (r != 1 || (size == f->uncompressedSize && fh->offset == 0))) {
-			LogError << "PakReader::fRead: blast error " << r << " outSize=" << f->uncompressedSize;
-			return 0;
-		}
-		
-		size = out.currentOffset - out.startOffset;
-		
-	} else {
-		
-		if((size_t)fh->offset >= fh->file->size) {
-			return 0;
-		}
-		
-		fseek(file, f->offset + fh->offset, SEEK_SET);
-		
-		if(f->size < (unsigned int)fh->offset + size) {
-			size -= fh->offset + size - f->size;
-		}
-		
-		size = fread(buf, 1, size, file);
+	// TODO this is really inefficient
+	int r = ::blast(blastInFile, &in, blastOutMemOffset, &out);
+	if(r && (r != 1 || (size == file.size() && offset == 0))) {
+		LogError << "PakReader::fRead: blast error " << r << " outSize=" << file.size();
+		return 0;
 	}
 	
-	fh->offset += size;
+	size = out.currentOffset - out.startOffset;
 	
-	return size; // TODO should this be count?
+	offset += size;
+	
+	return size;
 }
 
-// TODO different return values from fseek in <cstdio>
-int PakReader::fSeek(PakFileHandle * fh, int offset, long whence) {
+int CompressedFileHandle::seek(Whence whence, int _offset) {
 	
-	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
-		return -1;
-	}
-	
-	size_t size;
-	if(fh->file->flags & PAK_FILE_COMPRESSED) {
-		size = fh->file->uncompressedSize;
-	} else {
-		size = fh->file->size;
-	}
-	
+	size_t base;
 	switch(whence) {
-		
-		case SEEK_SET:
-			
-			if(offset < 0) {
-				return -1;
-			}
-			
-			if((size_t)offset > size) {
-				return -1;
-			}
-			fh->offset = offset;
-			break;
-			
-		case SEEK_END:
-			
-			if(offset < 0) {
-				return -1;
-			}
-			
-			if((size_t)offset > size) {
-				return -1;
-			}
-			fh->offset = size - offset;
-			break;
-			
-		case SEEK_CUR:
-			
-			int iOffset = fh->offset + offset;
-			if((iOffset < 0) || ((unsigned int)iOffset > size)) {
-				return -1;
-			}
-			fh->offset = iOffset;
-		
+		case SeekSet: base = 0;
+		case SeekEnd: base = file.size();
+		case SeekCur: base = offset;
+		default: return -1;
 	}
 	
-	return fh->offset;
-}
-
-long PakReader::fTell(PakFileHandle * fh) {
-	
-	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
+	if((int)base + _offset < 0) {
 		return -1;
 	}
 	
-	return fh->offset;
+	offset = (int)base + _offset;
+	
+	return offset;
 }
+
+size_t CompressedFileHandle::tell() {
+	return offset;
+}
+
+/*! Plain file not in a .pak file archive. */
+class PlainFile : public PakFile {
+	
+	fs::path path;
+	
+public:
+	
+	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { };
+	
+	void read(void * buf) const;
+	
+	PakFileHandle * open() const;
+	
+};
+
+class PlainFileHandle : public PakFileHandle {
+	
+	fs::ifstream ifs;
+	
+public:
+	
+	PlainFileHandle(const fs::path & path) : ifs(path, fs::fstream::in | fs::fstream::binary) {
+		arx_assert(ifs.is_open());
+	};
+	
+	size_t read(void * buf, size_t size);
+	
+	int seek(Whence whence, int offset);
+	
+	size_t tell();
+	
+	~PlainFileHandle() { };
+	
+};
+
+void PlainFile::read(void * buf) const {
+	
+	fs::ifstream ifs(path, fs::fstream::in | fs::fstream::binary);
+	arx_assert(ifs.is_open());
+	
+	fs::read(ifs, buf, size());
+	
+	arx_assert(!ifs.fail());
+}
+
+PakFileHandle * PlainFile::open() const {
+	return new PlainFileHandle(path);
+}
+
+size_t PlainFileHandle::read(void * buf, size_t size) {
+	return fs::read(ifs, buf, size).gcount();
+}
+
+std::ios_base::seekdir arxToStlSeekOrigin[] = {
+	std::ios_base::beg,
+	std::ios_base::cur,
+	std::ios_base::end
+};
+
+int PlainFileHandle::seek(Whence whence, int offset) {
+	return ifs.seekg(offset, arxToStlSeekOrigin[whence]).tellg();
+}
+
+size_t PlainFileHandle::tell() {
+	return ifs.tellg();
+}
+
+static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
+	
+	size_t keysize = strlen((const char *)key);
+	
+	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
+		fat[i] ^= key[ki];
+	}
+	
+}
+
+} // anonymous namespace
+
+PakReader::~PakReader() {
+	clear();
+}
+
+bool PakReader::addArchive(const fs::path & pakfile) {
+	
+	fs::ifstream * ifs = new fs::ifstream(pakfile, fs::fstream::in | fs::fstream::binary);
+	
+	if(!ifs->is_open()) {
+		delete ifs;
+		return false;
+	}
+	
+	// Read fat location and size.
+	u32 fat_offset;
+	u32 fat_size;
+	
+	if(fs::read(*ifs, fat_offset).fail()) {
+		LogError << "error reading FAT offset";
+		delete ifs;
+		return false;
+	}
+	if(ifs->seekg(fat_offset).fail()) {
+		LogError << "error seeking to FAT offset " << fat_offset;
+		delete ifs;
+		return false;
+	}
+	if(fs::read(*ifs, fat_size).fail()) {
+		LogError << "error reading FAT size at offset " << fat_offset;
+		delete ifs;
+		return false;
+	}
+	
+	// Read the whole FAT.
+	char * fat = new char[fat_size];
+	if(ifs->read(fat, fat_size).fail()) {
+		LogError << "error reading FAT";
+		delete[] fat;
+		delete ifs;
+		return false;
+	}
+	
+	// Decrypt the FAT.
+	const char * key = selectKey(*(u32*)fat);
+	if(key) {
+		pakDecrypt(fat, fat_size, key);
+	} else {
+		LogWarning << "WARNING: unknown PAK key ID 0x" << std::hex << std::setfill('0') << std::setw(8) << *(u32*)fat << ", assuming no key";
+	}
+	
+	char * pos = fat;
+	
+	paks.push_back(ifs);
+	
+	while(fat_size) {
+		
+		char * dirname = safeGetString(pos, fat_size);
+		if(!dirname) {
+			LogError << "error reading directory name from FAT, wrong key?";
+			goto error;
+		}
+		
+		PakDirectory * dir = addDirectory(fs::path::load(dirname));
+		
+		u32 nfiles;
+		if(!safeGet(nfiles, pos, fat_size)) {
+			LogError << "error reading file count from FAT, wrong key?";
+			goto error;
+		}
+		
+		while(nfiles--) {
+			
+			char * filename =  safeGetString(pos, fat_size);
+			if(!filename) {
+				LogError << "error reading file name from FAT, wrong key?";
+				goto error;
+			}
+			
+			size_t len = strlen(filename);
+			std::transform(filename, filename + len, filename, ::tolower);
+			
+			u32 offset;
+			u32 flags;
+			u32 uncompressedSize;
+			u32 size;
+			if(!safeGet(offset, pos, fat_size) || !safeGet(flags, pos, fat_size)
+			   || !safeGet(uncompressedSize, pos, fat_size) || !safeGet(size, pos, fat_size)) {
+				LogError << "error reading file attributes from FAT, wrong key?";
+				goto error;
+			}
+			
+			const u32 PAK_FILE_COMPRESSED = 1;
+			PakFile * file;
+			if((flags & PAK_FILE_COMPRESSED) && size != 0) {
+				file = new CompressedFile(ifs, offset, uncompressedSize, size);
+			} else {
+				file = new UncompressedFile(ifs, offset, size);
+			}
+			
+			dir->addFile(string(filename, len), file);
+		}
+		
+	}
+	
+	delete[] fat;
+	
+	LogInfo << "Loaded PAK " << pakfile;
+	return true;
+	
+	
+error:
+	
+	delete[] fat;
+	
+	return false;
+}
+
+void PakReader::clear() {
+	
+	files.clear();
+	dirs.clear();
+	
+	for(vector<std::istream *>::const_iterator i = paks.begin(); i != paks.end(); i++) {
+		delete *i;
+	}
+}
+
+bool PakReader::read(const fs::path & name, void * buf) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
+		return false;
+	}
+	
+	f->read(buf);
+	
+	return true;
+}
+
+char * PakReader::readAlloc(const fs::path & name, size_t & sizeRead) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
+		return NULL;
+	}
+	
+	sizeRead = f->size();
+	
+	return f->readAlloc();
+}
+
+PakFileHandle * PakReader::open(const fs::path & name) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
+		return NULL;
+	}
+	
+	return f->open();
+}
+
+bool PakReader::addFiles(const fs::path & path, const fs::path & mount) {
+	
+	if(fs::is_directory(path)) {
+			
+		return addFiles(addDirectory(mount), path);
+			
+	} else if(fs::is_regular_file(path) && !mount.empty()) {
+		
+		PakDirectory * dir = addDirectory(mount.parent());
+		
+		return addFile(dir, path, mount.filename());
+		
+	}
+	
+	return false;
+}
+
+void PakReader::removeFile(const fs::path & file) {
+	
+	PakDirectory * dir = getDirectory(file.parent());
+	if(dir) {
+		dir->removeFile(file.filename());
+	}
+}
+
+bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::string & name) {
+	
+	if(name.empty()) {
+		return false;
+	}
+	
+	u64 size = fs::file_size(path);
+	if(size == (u64)-1) {
+		return false;
+	}
+	
+	dir->addFile(name, new PlainFile(path, size));
+	return true;
+}
+
+bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
+	
+	bool ret = true;
+	
+	for(fs::directory_iterator it(path); !it.end(); ++it) {
+		
+		std::string name = it.name();
+		fs::path entry = path / name;
+			
+		if(it.is_directory()) {
+			ret &= addFiles(dir->addDirectory(name), entry);
+		} else if(it.is_regular_file()) {
+			ret &= addFile(dir, entry, name);
+		}
+		
+	}
+	
+	return ret;
+}
+
+PakReader * resources;

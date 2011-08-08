@@ -65,7 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
+#include "graphics/Math.h"
 #include "graphics/GraphicsEnum.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/effects/Fog.h"
@@ -95,6 +97,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 using std::max;
+using std::string;
+using std::vector;
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -424,34 +428,34 @@ void CreateInterfaceTextureContainers()
 {
     ITC.Reset();
 
-	ITC.Set("aim_empty", "Graph\\Interface\\bars\\aim_empty.bmp");
-	ITC.Set("aim_maxi", "Graph\\Interface\\bars\\aim_maxi.bmp");
-	ITC.Set("aim_hit", "Graph\\Interface\\bars\\flash_gauge.bmp");
-	ITC.Set("hero_inventory", "Graph\\Interface\\Inventory\\hero_inventory.bmp");
-	ITC.Set("hero_inventory_up", "Graph\\Interface\\Inventory\\scroll_up.bmp");
-	ITC.Set("hero_inventory_down", "Graph\\Interface\\Inventory\\scroll_down.bmp");
-	ITC.Set("hero_inventory_link", "Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
-	ITC.Set("inventory_pickall", "Graph\\Interface\\Inventory\\inv_pick.bmp");
-	ITC.Set("inventory_close", "Graph\\Interface\\Inventory\\inv_close.bmp");
-	ITC.Set("Icon_Lvl_Up", "Graph\\Interface\\Icons\\lvl_up.bmp");
+	ITC.Set("aim_empty", "graph/interface/bars/aim_empty");
+	ITC.Set("aim_maxi", "graph/interface/bars/aim_maxi");
+	ITC.Set("aim_hit", "graph/interface/bars/flash_gauge");
+	ITC.Set("hero_inventory", "graph/interface/inventory/hero_inventory");
+	ITC.Set("hero_inventory_up", "graph/interface/inventory/scroll_up");
+	ITC.Set("hero_inventory_down", "graph/interface/inventory/scroll_down");
+	ITC.Set("hero_inventory_link", "graph/interface/inventory/hero_inventory_link");
+	ITC.Set("inventory_pickall", "graph/interface/inventory/inv_pick");
+	ITC.Set("inventory_close", "graph/interface/inventory/inv_close");
+	ITC.Set("icon_lvl_up", "graph/interface/icons/lvl_up");
 
-	ITC.Set("backpack", "Graph\\Interface\\Icons\\Backpack.bmp");
-	ITC.Set("gold", "Graph\\Interface\\Inventory\\Gold.bmp");
-	ITC.Set("book", "Graph\\Interface\\Icons\\Book.bmp");
-	ITC.Set("steal", "Graph\\Interface\\Icons\\Steal.bmp");
-	ITC.Set("item_cant_steal", "Graph\\Interface\\Icons\\cant_steal_item.bmp");
-	ITC.Set("empty_gauge_red", "Graph\\interface\\bars\\Empty_gauge_Red.bmp");
-	ITC.Set("empty_gauge_blue", "Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
-	ITC.Set("filled_gauge_red", "Graph\\interface\\bars\\Filled_gauge_Red.bmp");
-	ITC.Set("filled_gauge_blue", "Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
-	ITC.Set("target_on", "Graph\\Interface\\cursors\\target_on.bmp");
-	ITC.Set("target_off", "Graph\\Interface\\cursors\\target_off.bmp");
-	ITC.Set("interaction_on", "Graph\\Interface\\cursors\\interaction_on.bmp");
-	ITC.Set("interaction_off", "Graph\\Interface\\cursors\\interaction_off.bmp");
-	ITC.Set("magic", "Graph\\Interface\\cursors\\magic.bmp");
+	ITC.Set("backpack", "graph/interface/icons/backpack");
+	ITC.Set("gold", "graph/interface/inventory/gold");
+	ITC.Set("book", "graph/interface/icons/book");
+	ITC.Set("steal", "graph/interface/icons/steal");
+	ITC.Set("item_cant_steal", "graph/interface/icons/cant_steal_item");
+	ITC.Set("empty_gauge_red", "graph/interface/bars/empty_gauge_red");
+	ITC.Set("empty_gauge_blue", "graph/interface/bars/empty_gauge_blue");
+	ITC.Set("filled_gauge_red", "graph/interface/bars/filled_gauge_red");
+	ITC.Set("filled_gauge_blue", "graph/interface/bars/filled_gauge_blue");
+	ITC.Set("target_on", "graph/interface/cursors/target_on");
+	ITC.Set("target_off", "graph/interface/cursors/target_off");
+	ITC.Set("interaction_on", "graph/interface/cursors/interaction_on");
+	ITC.Set("interaction_off", "graph/interface/cursors/interaction_off");
+	ITC.Set("magic", "graph/interface/cursors/magic");
 	
-	BasicInventorySkin = TextureContainer::LoadUI("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
-	ThrowObject = TextureContainer::LoadUI("Graph\\Interface\\cursors\\throw.bmp");
+	BasicInventorySkin = TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
+	ThrowObject = TextureContainer::LoadUI("graph/interface/cursors/throw");
 }
 
 //-----------------------------------------------------------------------------
@@ -674,47 +678,40 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex)
-{
- 
-
-	if (player.Interface & INTER_NOTE)
-		ARX_INTERFACE_NoteClose();
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const string & tex) {
 	
-	std::string output;
+	if(player.Interface & INTER_NOTE) {
+		ARX_INTERFACE_NoteClose();
+	}
+	
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
-	Note.type=type;
-	MakeLocalised(tex,output);
-
-	Note.text = output;
-	player.Interface|=INTER_NOTE;
-
-	if (NoteTexture)
-	{
+	
+	Note.type = type;
+	Note.text = getLocalised(tex);
+	player.Interface |= INTER_NOTE;
+	
+	if(NoteTexture) {
 		delete NoteTexture;
-		NoteTexture=NULL;
-	}
-
-	if (NoteTextureLeft)
-	{
-		delete NoteTextureLeft;
-		NoteTextureLeft=NULL;
-	}
-
-	if (NoteTextureRight)
-	{
-		delete NoteTextureRight;
-		NoteTextureRight=NULL;
+		NoteTexture = NULL;
 	}
 	
-
+	if(NoteTextureLeft) {
+		delete NoteTextureLeft;
+		NoteTextureLeft = NULL;
+	}
+	
+	if(NoteTextureRight) {
+		delete NoteTextureRight;
+		NoteTextureRight = NULL;
+	}
+	
 	Note.curpage = 0;
 	Note.pages[0] = 0;
 	long length = Note.text.length();
 	long curpage = 1;
 
-	NoteTexture = TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
+	NoteTexture = TextureContainer::LoadUI("graph/interface/book/ingame_books");
 
 	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
@@ -813,7 +810,7 @@ void ARX_INTERFACE_NoteManage()
 			switch (Note.type)
 			{
 			case NOTE_TYPE_NOTE:
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph/interface/book/bignote");
 
 				if (NoteTexture)
 				{
@@ -827,7 +824,7 @@ void ARX_INTERFACE_NoteManage()
 
 				break;
 			case NOTE_TYPE_NOTICE:
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph/interface/book/notice");
 
 				if (NoteTexture)
 				{
@@ -845,15 +842,15 @@ void ARX_INTERFACE_NoteManage()
 
 				if (Note.type == NOTE_TYPE_BIGNOTE)
 				{
-					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
-					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("graph/interface/book/very_bignote");
+					NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
+					NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
 				}
 				else
 				{
-					NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
-					NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-					NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+					NoteTexture=TextureContainer::LoadUI("graph/interface/book/ingame_books");
+					NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
+					NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
 				}
 
 				if (NoteTexture)
@@ -1006,7 +1003,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	}
 	else
 	{
-		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","BOOK_OPEN");
+		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","book_open");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
 		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
@@ -1131,7 +1128,6 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 	}
 
 	std::string tcIndent = COMBINE->long_name();
-	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
 
@@ -1139,14 +1135,16 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 			(_pWithIO!=COMBINE)&&
 			(_pWithIO->script.data) )
 		{
-			char* pCopyScript=new char[_pWithIO->script.size];
+			char* pCopyScript=new char[_pWithIO->script.size + 1];
+			pCopyScript[_pWithIO->script.size] = '\0';
 			memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
 
 			char* pCopyOverScript=NULL;
 
 			if(_pWithIO->over_script.data)
 			{
-				pCopyOverScript=new char[_pWithIO->over_script.size];
+				pCopyOverScript=new char[_pWithIO->over_script.size + 1];
+				pCopyOverScript[_pWithIO->over_script.size] = '\0';
 				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
 			}
 
@@ -1154,7 +1152,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 
 			if(pCopyOverScript)
 			{
-				pcFound=strstr((char*)pCopyOverScript,"ON COMBINE");
+				pcFound=strstr((char*)pCopyOverScript,"on combine");
 
 				if(pcFound)
 				{
@@ -1176,8 +1174,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						char* pStartString;
 						char* pEndString;
 
-						if(	strstr(pcToken,"^$PARAM1")&&
-							(pStartString=strstr(pcToken,"ISCLASS")) )
+						if(	strstr(pcToken,"^$param1")&&
+							(pStartString=strstr(pcToken,"isclass")) )
 						{
 							pStartString=strstr(pStartString,"\"");
 
@@ -1191,8 +1189,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
-									{
+									if(tTxtCombineDest == COMBINE->short_name()) {
 										//same class
 										bCanCombine=true;
 									}
@@ -1201,7 +1198,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						}
 						else
 						{
-							if(	strstr(pcToken,"^$PARAM1")&&
+							if(	strstr(pcToken,"^$param1")&&
 								(pStartString=strstr(pcToken,"==")) )
 							{
 								pStartString=strstr(pStartString,"\"");
@@ -1216,7 +1213,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
 
-										if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
+										if(tTxtCombineDest == tcIndent)
 										{
 											//same class
 											bCanCombine=true;
@@ -1226,8 +1223,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 							}
 							else
 							{
-								if(	strstr(pcToken,"^$PARAM1")&&
-									(pStartString=strstr(pcToken,"ISGROUP")) )
+								if(	strstr(pcToken,"^$param1")&&
+									(pStartString=strstr(pcToken,"isgroup")) )
 								{
 									pStartString=strstr(pStartString," ");
 
@@ -1246,19 +1243,9 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										{
 											memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 											tTxtCombineDest[pEndString-pStartString]=0;
-
-											ARX_CHECK_NOT_NEG( COMBINE->nb_iogroups );
-
-											for(	unsigned int uiNbGroups = 0 ;
-													uiNbGroups < ARX_CAST_USHORT( COMBINE->nb_iogroups ) ;
-													uiNbGroups++ )
-											{
-
-												if(!strcasecmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
-												{
+											if(COMBINE->groups.find(tTxtCombineDest) != COMBINE->groups.end()) {
 													//same class
-													bCanCombine=true;
-												}
+													bCanCombine = true;
 											}
 										}
 									}
@@ -1301,7 +1288,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 				return;
 			}
 
-			pcFound=strstr((char*)pCopyScript,"ON COMBINE");
+			pcFound=strstr((char*)pCopyScript,"on combine");
 
 			if(pcFound)
 			{
@@ -1323,8 +1310,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 					char* pStartString;
 					char* pEndString;
 
-					if(	strstr(pcToken,"^$PARAM1")&&
-						(pStartString=strstr(pcToken,"ISCLASS")) )
+					if(	strstr(pcToken,"^$param1")&&
+						(pStartString=strstr(pcToken,"isclass")) )
 					{
 						pStartString=strstr(pStartString,"\"");
 
@@ -1338,8 +1325,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if( !strcasecmp( tTxtCombineDest, COMBINE->short_name() ) )
-								{
+								if(tTxtCombineDest == COMBINE->short_name()) {
 									//same class
 									bCanCombine=true;
 								}
@@ -1348,7 +1334,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 					}
 					else
 					{
-						if(	strstr(pcToken,"^$PARAM1")&&
+						if(	strstr(pcToken,"^$param1")&&
 							(pStartString=strstr(pcToken,"==")) )
 						{
 							pStartString=strstr(pStartString,"\"");
@@ -1363,8 +1349,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
-									{
+									if(tTxtCombineDest == tcIndent) {
 										//same class
 										bCanCombine=true;
 									}
@@ -1373,8 +1358,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						}
 						else
 						{
-							if(	strstr(pcToken,"^$PARAM1")&&
-								(pStartString=strstr(pcToken,"ISGROUP")) )
+							if(	strstr(pcToken,"^$param1")&&
+								(pStartString=strstr(pcToken,"isgroup")) )
 							{
 								pStartString=strstr(pStartString," ");
 
@@ -1393,19 +1378,10 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									{
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
-
-										ARX_CHECK_NOT_NEG( COMBINE->nb_iogroups );
-
-										for(	unsigned int uiNbGroups = 0 ;
-												uiNbGroups < ARX_CAST_USHORT( COMBINE->nb_iogroups ) ;
-												uiNbGroups++ )
-										{
-
-											if(!strcasecmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
-											{
-												//same class
-												bCanCombine=true;
-											}
+										
+										if(COMBINE->groups.find(tTxtCombineDest) != COMBINE->groups.end()) {
+											// same class
+											bCanCombine = true;
 										}
 									}
 								}
@@ -1674,8 +1650,8 @@ bool ArxGame::ManageEditorControls()
 						{
 							INTERACTIVE_OBJ * temp = CURRENT_TORCH;
 
-							if ((temp!=NULL) && temp->locname[0])
-							{
+							if(temp && !temp->locname.empty()) {
+								
 								if (((CURRENT_TORCH->ioflags & IO_ITEM) && CURRENT_TORCH->_itemdata->equipitem)
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -1683,7 +1659,7 @@ bool ArxGame::ManageEditorControls()
 									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 								}
 
-								MakeLocalised(temp->locname,WILLADDSPEECH);
+								WILLADDSPEECH = getLocalised(temp->locname);
 
 								if (temp->ioflags & IO_GOLD)
 								{
@@ -1694,8 +1670,7 @@ bool ArxGame::ManageEditorControls()
 
 								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 								{
-									std::string Text;
-									MakeLocalised("[Description_Poisoned]",Text);
+									std::string Text = getLocalised("description_poisoned", "error");
 									std::stringstream ss;
 									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 									WILLADDSPEECH = ss.str();
@@ -1703,8 +1678,7 @@ bool ArxGame::ManageEditorControls()
 
 								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 								{
-									std::string Text;
-									MakeLocalised("[Description_Durability]",Text);
+									std::string Text = getLocalised("description_durability", "error");
 									std::stringstream ss;
 									ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
 									WILLADDSPEECH = ss.str();
@@ -1989,7 +1963,7 @@ bool ArxGame::ManageEditorControls()
 		switch (Note.type)
 		{
 		case NOTE_TYPE_NOTE:
-			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\BigNote.bmp");
+			NoteTexture=TextureContainer::LoadUI("graph/interface/book/bignote");
 
 			if (NoteTexture)
 			{
@@ -2003,7 +1977,7 @@ bool ArxGame::ManageEditorControls()
 
 			break;
 		case NOTE_TYPE_NOTICE:
-			NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Notice.bmp");
+			NoteTexture=TextureContainer::LoadUI("graph/interface/book/notice");
 
 			if (NoteTexture)
 			{
@@ -2021,15 +1995,15 @@ bool ArxGame::ManageEditorControls()
 
 			if (Note.type ==NOTE_TYPE_BIGNOTE)
 			{
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Very_BigNote.bmp");
-				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph/interface/book/very_bignote");
+				NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
+				NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
 			}
 			else
 			{
-				NoteTexture=TextureContainer::LoadUI("Graph\\Interface\\book\\Ingame_books.bmp");
-				NoteTextureLeft=TextureContainer::LoadUI("Graph\\Interface\\book\\Left_corner.bmp");
-				NoteTextureRight=TextureContainer::LoadUI("Graph\\Interface\\book\\Right_corner.bmp");
+				NoteTexture=TextureContainer::LoadUI("graph/interface/book/ingame_books");
+				NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
+				NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
 			}
 
 			if (NoteTexture)
@@ -2339,7 +2313,7 @@ bool ArxGame::ManageEditorControls()
 			if (COMBINEGOLD)
 			{
 				char temp[256];
-				strcpy(temp,"GOLD_COIN");
+				strcpy(temp,"gold_coin");
 				SendIOScriptEvent(io,SM_COMBINE,temp);
 			}
 			else
@@ -2347,10 +2321,9 @@ bool ArxGame::ManageEditorControls()
 				if (io!=COMBINE)
 				{
 					std::string temp = COMBINE->long_name();
-					MakeUpcase(temp);
 					EVENT_SENDER=COMBINE;
 
-					if (!specialstrcmp( COMBINE->short_name(),"KEYRING"))
+					if (!specialstrcmp( COMBINE->short_name(),"keyring"))
 						ARX_KEYRING_Combine(io);
 					else
 						SendIOScriptEvent(io,SM_COMBINE,temp);
@@ -2389,7 +2362,7 @@ bool ArxGame::ManageEditorControls()
 								{
 									GLight[i]->status = 0;
 									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
-									SendIOScriptEvent(COMBINE, SM_CUSTOM, "DOUSE");
+									SendIOScriptEvent(COMBINE, SM_CUSTOM, "douse");
 								}
 							}
 						}
@@ -2658,7 +2631,7 @@ void ArxGame::ManagePlayerControls()
 							if (player.Interface & INTER_STEAL)
 								if (ioSteal && t != ioSteal)
 								{
-									SendIOScriptEvent(ioSteal, SM_STEAL,"OFF");
+									SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 									player.Interface &= ~INTER_STEAL;
 								}
 
@@ -2688,7 +2661,7 @@ void ArxGame::ManagePlayerControls()
 					if (player.Interface & INTER_STEAL)
 						if (ioSteal && t != ioSteal)
 						{
-							SendIOScriptEvent(ioSteal, SM_STEAL,"OFF");
+							SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 							player.Interface &= ~INTER_STEAL;
 						}
 
@@ -3027,12 +3000,12 @@ void ArxGame::ManagePlayerControls()
 
 	if (GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
 	{
-		SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_LIFE.BMP", SM_INVENTORYUSE);
+		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_life", SM_INVENTORYUSE);
 	}
 
 	if (GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
 	{
-		SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_MANA.BMP", SM_INVENTORYUSE);
+		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_mana", SM_INVENTORYUSE);
 	}
 
 	if (GInput->actionNowPressed(CONTROLS_CUST_TORCH))
@@ -4281,8 +4254,8 @@ void ArxGame::ManageKeyMouse()
 						INTERACTIVE_OBJ * temp;
 					temp = FlyingOverIO;
 
-						if ((temp!=NULL) && temp->locname[0] )
-						{
+						if(temp && !temp->locname.empty()) {
+							
 							if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
 								&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 								>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -4290,7 +4263,7 @@ void ArxGame::ManageKeyMouse()
 								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 							}
 
-							MakeLocalised(temp->locname,WILLADDSPEECH);
+							WILLADDSPEECH = getLocalised(temp->locname);
 
 							if (temp->ioflags & IO_GOLD)
 							{
@@ -4301,20 +4274,18 @@ void ArxGame::ManageKeyMouse()
 
 							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 							{
-								std::string Text;
-								MakeLocalised("[Description_Poisoned]",Text);
+								std::string Text = getLocalised("description_poisoned", "error");
 								std::stringstream ss;
-								ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
-								WILLADDSPEECH = ss.str();
+								ss << " (" << Text << " " << (int)temp->poisonous << ")";
+								WILLADDSPEECH += ss.str();
 							}
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
-								std::string Text;
-								MakeLocalised("[Description_Durability]",Text);
+								std::string Text = getLocalised("description_durability", "error");
 								std::stringstream ss;
-								ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-								WILLADDSPEECH = ss.str();
+								ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+								WILLADDSPEECH += ss.str();
 							}
 
 						WILLADDSPEECHTIME = ARXTimeUL();
@@ -4358,8 +4329,8 @@ void ArxGame::ManageKeyMouse()
 								INTERACTIVE_OBJ * temp;
 						temp = FlyingOverIO;
 
-								if ((temp!=NULL) && temp->locname[0] )
-								{
+								if(temp && !temp->locname.empty()) {
+									
 									if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
 										&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 										>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -4367,7 +4338,7 @@ void ArxGame::ManageKeyMouse()
 										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 									}
 
-									MakeLocalised(temp->locname,WILLADDSPEECH);
+									WILLADDSPEECH = getLocalised(temp->locname);
 
 									if (temp->ioflags & IO_GOLD)
 									{
@@ -4378,8 +4349,7 @@ void ArxGame::ManageKeyMouse()
 
 									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 									{
-										std::string Text;
-										MakeLocalised("[Description_Poisoned]",Text);
+										std::string Text = getLocalised("description_poisoned", "error");
 										std::stringstream ss;
 										ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 										WILLADDSPEECH = ss.str();
@@ -4387,8 +4357,7 @@ void ArxGame::ManageKeyMouse()
 
 									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 									{
-										std::string Text;
-										MakeLocalised("[Description_Durability]",Text);
+										std::string Text = getLocalised("description_durability", "error");
 										std::stringstream ss;
 										ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
 										WILLADDSPEECH = ss.str();
@@ -4441,26 +4410,25 @@ void ArxGame::ManageKeyMouse()
 
 static float fDecPulse;
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
-{
-	// To recode in a better way...
-	if (TSecondaryInventory->io && TSecondaryInventory->io->inventory_skin)
-	{
-		char temp[256];
-		sprintf(temp,"Graph\\Interface\\Inventory\\%s.bmp",TSecondaryInventory->io->inventory_skin);
-		TextureContainer * tc=TextureContainer::LoadUI(temp);
+void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
+	
+	if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
+		
+		fs::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
+		
+		TextureContainer * tc = TextureContainer::LoadUI(file);
 
-		if (tc)
+		if(tc) {
 			ITC.Set("ingame_inventory", tc);
-		else 
+		} else {
 			ITC.Set("ingame_inventory", BasicInventorySkin);
-	}
-	else if (ITC.Get("ingame_inventory") != BasicInventorySkin)
-	{
+		}
+		
+	} else if(ITC.Get("ingame_inventory") != BasicInventorySkin) {
 		ITC.Set("ingame_inventory", BasicInventorySkin);
 	}
 
-	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"),INTERFACE_RATIO(InventoryX),0.f);
+	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"), INTERFACE_RATIO(InventoryX), 0.f);
 
 
 	long i,j;
@@ -4878,7 +4846,7 @@ static void StdDraw(float posx, float posy, Color color, TextureContainer * tcc,
 	if (tcc==NULL)
 	{
 		if (ITC.Get("unknown")==NULL)
-			ITC.Set("unknown", TextureContainer::Load("Graph\\interface\\icons\\spell_unknown.bmp"));
+			ITC.Set("unknown", TextureContainer::Load("graph/interface/icons/spell_unknown"));
 
 		tc=ITC.Get("unknown");
 	}
@@ -5146,83 +5114,83 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 										switch(i)
 										{
 										case RUNE_AAM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "AAM", ARX_SOUND_GetDuration(SND_SYMB_AAM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
 											ARX_SOUND_PlayInterface(SND_SYMB_AAM);
 											break;
 										case RUNE_CETRIUS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "CETRIUS", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
 											ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
 											break;
 										case RUNE_COMUNICATUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "COMUNICATUM", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
 											break;
 										case RUNE_COSUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "COSUM", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
 											break;
 										case RUNE_FOLGORA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "FOLGORA", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
 											ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
 											break;
 										case RUNE_FRIDD:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "FRIDD", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
 											ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
 											break;
 										case RUNE_KAOM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "KAOM", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
 											ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
 											break;
 										case RUNE_MEGA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "MEGA", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
 											ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
 											break;
 										case RUNE_MORTE:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "MORTE", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
 											ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
 											break;
 										case RUNE_MOVIS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "MOVIS", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
 											ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
 											break;
 										case RUNE_NHI:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "NHI", ARX_SOUND_GetDuration(SND_SYMB_NHI));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
 											ARX_SOUND_PlayInterface(SND_SYMB_NHI);
 											break;
 										case RUNE_RHAA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "RHAA", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
 											ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
 											break;
 										case RUNE_SPACIUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "SPACIUM", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
 											break;
 										case RUNE_STREGUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "STREGUM", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
 											break;
 										case RUNE_TAAR:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "TAAR", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
 											ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
 											break;
 										case RUNE_TEMPUS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "TEMPUS", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
 											ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
 											break;
 										case RUNE_TERA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "TERA", ARX_SOUND_GetDuration(SND_SYMB_TERA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
 											ARX_SOUND_PlayInterface(SND_SYMB_TERA);
 											break;
 										case RUNE_VISTA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "VISTA", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
 											ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
 											break;
 										case RUNE_VITAE:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "VITAE", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
 											ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
 											break;
 										case RUNE_YOK:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "YOK", ARX_SOUND_GetDuration(SND_SYMB_YOK));
+											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
 											ARX_SOUND_PlayInterface(SND_SYMB_YOK);
 											break;
 										}
@@ -5413,7 +5381,7 @@ void QuestBook_Update()
 	}
 
 	QuestBook_Cache_Text = new char[lLenght+PlayerQuest.size()*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+PlayerQuest.size()*2+1)*sizeof(char));
+	memset(QuestBook_Cache_Text, 0, (lLenght+PlayerQuest.size()*2+1));
 
 	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
 		if(PlayerQuest[i].localised.size()) {
@@ -5453,11 +5421,11 @@ void QuestBook_Render()
 	if (QuestBook.curpage > 1)
 	{
 		float x0 =   8 + NotePosX;
-		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerLeft")->m_dwHeight;
+		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("ptexcornerleft")->m_dwHeight;
 
-		DrawBookInterfaceItem(ITC.Get("pTexCornerLeft"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("ptexcornerleft"), x0, y0);
 
-		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerLeft")->m_dwWidth, y0 + ITC.Get("pTexCornerLeft")->m_dwHeight))
+		if (MouseInBookRect(x0, y0, x0 + ITC.Get("ptexcornerleft")->m_dwWidth, y0 + ITC.Get("ptexcornerleft")->m_dwHeight))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -5472,12 +5440,12 @@ void QuestBook_Render()
 	// Next page corner
 	if (QuestBook.curpage + 4 < QuestBook.totpages)
 	{
-		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("pTexCornerRight")->m_dwWidth;
-		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerRight")->m_dwHeight;
+		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("ptexcornerright")->m_dwWidth;
+		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("ptexcornerright")->m_dwHeight;
 
-		DrawBookInterfaceItem(ITC.Get("pTexCornerRight"), x0, y0);
+		DrawBookInterfaceItem(ITC.Get("ptexcornerright"), x0, y0);
 
-		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerRight")->m_dwWidth, y0 + ITC.Get("pTexCornerRight")->m_dwHeight))
+		if (MouseInBookRect(x0, y0, x0 + ITC.Get("ptexcornerright")->m_dwWidth, y0 + ITC.Get("ptexcornerright")->m_dwHeight))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -5523,53 +5491,53 @@ void ARX_INTERFACE_ManageOpenedBook()
 	
 	if (ITC.Get("questbook")==NULL)
 	{
-		ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
-		ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
-		ITC.Set("ic_close_combat", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
-		ITC.Set("ic_constitution", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
-		ITC.Set("ic_defense", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
-		ITC.Set("ic_dexterity", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
-		ITC.Set("ic_etheral_link", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
-		ITC.Set("ic_mind", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
-		ITC.Set("ic_intuition", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
-		ITC.Set("ic_mecanism", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
-		ITC.Set("ic_object_knowledge", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
-		ITC.Set("ic_projectile", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
-		ITC.Set("ic_stealth", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
-		ITC.Set("ic_strength", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+		ITC.Set("playerbook", "graph/interface/book/character_sheet/char_sheet_book");
+		ITC.Set("ic_casting", "graph/interface/book/character_sheet/buttons_carac/icone_casting");
+		ITC.Set("ic_close_combat", "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
+		ITC.Set("ic_constitution", "graph/interface/book/character_sheet/buttons_carac/icone_constit");
+		ITC.Set("ic_defense", "graph/interface/book/character_sheet/buttons_carac/icone_defense");
+		ITC.Set("ic_dexterity", "graph/interface/book/character_sheet/buttons_carac/icone_dext");
+		ITC.Set("ic_etheral_link", "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
+		ITC.Set("ic_mind", "graph/interface/book/character_sheet/buttons_carac/icone_intel");
+		ITC.Set("ic_intuition", "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
+		ITC.Set("ic_mecanism", "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
+		ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
+		ITC.Set("ic_projectile", "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
+		ITC.Set("ic_stealth", "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
+		ITC.Set("ic_strength", "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
 		
-		ITC.Set("questbook", "Graph\\Interface\\book\\questbook.bmp");
-		ITC.Set("pTexSpellBook", "Graph\\Interface\\book\\SpellBook.bmp");
-		ITC.Set("bookmark_char", "Graph\\Interface\\book\\bookmark_char.bmp");
-		ITC.Set("bookmark_magic", "Graph\\Interface\\book\\bookmark_magic.bmp");
-		ITC.Set("bookmark_map", "Graph\\Interface\\book\\bookmark_map.bmp");
-		ITC.Set("bookmark_quest", "Graph\\Interface\\book\\bookmark_quest.bmp");
+		ITC.Set("questbook", "graph/interface/book/questbook");
+		ITC.Set("ptexspellbook", "graph/interface/book/spellbook");
+		ITC.Set("bookmark_char", "graph/interface/book/bookmark_char");
+		ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
+		ITC.Set("bookmark_map", "graph/interface/book/bookmark_map");
+		ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
 
-		ITC.Set("accessible_1", "Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
-		ITC.Set("accessible_2", "Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
-		ITC.Set("accessible_3", "Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
-		ITC.Set("accessible_4", "Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
-		ITC.Set("accessible_5", "Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
-		ITC.Set("accessible_6", "Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
-		ITC.Set("accessible_7", "Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
-		ITC.Set("accessible_8", "Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
-		ITC.Set("accessible_9", "Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
-		ITC.Set("accessible_10", "Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
-		ITC.Set("current_1", "Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
-		ITC.Set("current_2", "Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
-		ITC.Set("current_3", "Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
-		ITC.Set("current_4", "Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
-		ITC.Set("current_5", "Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
-		ITC.Set("current_6", "Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
-		ITC.Set("current_7", "Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
-		ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
-		ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
-		ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
+		ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
+		ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
+		ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
+		ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4");
+		ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5");
+		ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6");
+		ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7");
+		ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8");
+		ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9");
+		ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10");
+		ITC.Set("current_1", "graph/interface/book/current_page/current_1");
+		ITC.Set("current_2", "graph/interface/book/current_page/current_2");
+		ITC.Set("current_3", "graph/interface/book/current_page/current_3");
+		ITC.Set("current_4", "graph/interface/book/current_page/current_4");
+		ITC.Set("current_5", "graph/interface/book/current_page/current_5");
+		ITC.Set("current_6", "graph/interface/book/current_page/current_6");
+		ITC.Set("current_7", "graph/interface/book/current_page/current_7");
+		ITC.Set("current_8", "graph/interface/book/current_page/current_8");
+		ITC.Set("current_9", "graph/interface/book/current_page/current_9");
+		ITC.Set("current_10", "graph/interface/book/current_page/current_10");
 		
-		ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
+		ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points");
 		
-		ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
-		ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
+		ITC.Set("ptexcornerleft", "graph/interface/book/left_corner_original");
+		ITC.Set("ptexcornerright", "graph/interface/book/right_corner_original");
 		
 		ITC.Level = getLocalised("system_charsheet_player_lvl");
 		ITC.Xp = getLocalised("system_charsheet_player_xp");
@@ -5590,7 +5558,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if(Book_Mode == BOOKMODE_STATS) {
 			DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
 		} else if(Book_Mode == BOOKMODE_SPELLS) {
-			DrawBookInterfaceItem(ITC.Get("pTexSpellBook"), 97, 64, Color::white, 0.9999f);
+			DrawBookInterfaceItem(ITC.Get("ptexspellbook"), 97, 64, Color::white, 0.9999f);
 		} else if (Book_Mode == 2) {
 			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
 		} else {
@@ -5755,7 +5723,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (Book_Mode == BOOKMODE_SPELLS) Book_Page = Book_SpellPage;
 		else Book_Page = Book_MapPage;
 
-		ZeroMemory(&bOnglet, 11*sizeof(bool));
+		std::fill_n(bOnglet, 11, false);
 
 		// calcul de la page de spells
 		if (Book_Mode == BOOKMODE_SPELLS)
@@ -7518,8 +7486,8 @@ void ArxGame::DrawAllInterface()
 
 						if (amount)
 						{
-							if ((!(temp->shop_category)) ||
-								((temp->shop_category) && (IsIOGroup(FlyingOverIO,temp->shop_category))))
+							if (temp->shop_category.empty() ||
+								FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end())
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 							else
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
@@ -7617,13 +7585,13 @@ void ArxGame::DrawAllInterface()
 			{
 				px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 				py=DANAESIZY - INTERFACE_RATIO(218);
-				ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
+				ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
 
 				if (eMouseState == MOUSE_IN_REDIST_ICON)
 				{
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
+					ARX_INTERFACE_DrawItem(ITC.Get("icon_lvl_up"),px,py);		
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 				}			  
 			}
@@ -8512,7 +8480,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				{
 				case CURSOR_REDIST:
 					{
-						surf = ITC.Get("pTexCursorRedist");
+						surf = ITC.Get("ptexcursorredist");
 					}
 					break;
 				case CURSOR_COMBINEOFF:

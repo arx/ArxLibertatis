@@ -55,89 +55,83 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_MENU_H
-#define ARX_MENU_H
+
+#ifndef ARX_MENU_MENU_H
+#define ARX_MENU_MENU_H
 
 #include <windows.h> // for SYSTEMTIME
 
 #include <string>
 #include <vector>
+#include <ctime>
 
-#include "graphics/data/Texture.h"
+class TextureContainer;
 
-#define MAX_FLYOVER	32
-struct MENU_DYNAMIC_DATA
-{
-	TextureContainer*   Background;
-	TextureContainer*   BookBackground;
-	TextureContainer*   pTexCredits;
-	float               creditspos;
-	float               creditstart;
-	std::string         flyover[MAX_FLYOVER];
-	std::string         str_cre_credits;
+#define MAX_FLYOVER 32
+
+struct MENU_DYNAMIC_DATA {
+	
+	TextureContainer * Background;
+	TextureContainer * BookBackground;
+	TextureContainer * pTexCredits;
+	float creditspos;
+	float creditstart;
+	std::string flyover[MAX_FLYOVER];
+	std::string str_cre_credits;
 	// New Quest Buttons Strings
-	std::string         str_button_quickgen;
-	std::string         str_button_skin;
-	std::string         str_button_done;
+	std::string str_button_quickgen;
+	std::string str_button_skin;
+	std::string str_button_done;
+	
+	MENU_DYNAMIC_DATA() : Background(NULL), BookBackground(NULL),
+	  pTexCredits(NULL), creditspos(0), creditstart(0) { }
+	
+};
 
-	MENU_DYNAMIC_DATA()
-	: Background(NULL), BookBackground(NULL),
-	  pTexCredits(NULL), creditspos(0), creditstart(0)
-	{}
+// Possible values for ARXmenu.currentmode
+enum MenuMode {
+	AMCM_OFF,
+	AMCM_MAIN,
+	AMCM_CREDITS,
+	AMCM_NEWQUEST
 };
 
 // ARX_MENU_DATA contains all Menu-datas
-struct ARX_MENU_DATA
-{
-	long				currentmode;
-	long				mainmenupos;
-	long				optionspos;
-	long				inputpos;
-	long				custompos;
-	MENU_DYNAMIC_DATA	* mda;
+struct ARX_MENU_DATA {
+	MenuMode currentmode;
+	MENU_DYNAMIC_DATA * mda;
 };
 
 extern ARX_MENU_DATA ARXmenu;
 
 struct SaveGame {
 	
+	bool quicksave;
+	
 	long num;
 	std::string name;
 	long level;
 	float version;
-	SYSTEMTIME stime;
+	std::time_t stime;
 	
-	SaveGame()
-	: num(0), level(0), version(0)
-		{}
+	std::string time;
+	
+	SaveGame() : num(0), level(0), version(0) { }
 };
 
-//-----------------------------------------------------------------------------
-// Possible values for ARXmenu.currentmode
-#define AMCM_OFF		0
-#define AMCM_MAIN		1
-#define AMCM_CREDITS	2
-#define AMCM_NEWQUEST	3
-#define AMCM_CDNOTFOUND	4
-
-//-----------------------------------------------------------------------------
 extern std::vector<SaveGame> save_l;
-extern char LOCAL_SAVENAME[64];
 
-//-----------------------------------------------------------------------------
 void ARX_Menu_Manage();
 bool ARX_Menu_Render();
 void ARX_MENU_Launch();
 void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
-void ARX_Menu_Release_Text(void * a);
 void ARX_MENU_Clicked_CREDITS();
 
-//-----------------------------------------------------------------------------
 void LoadSaveGame(const long & i);
 void UpdateSaveGame(const long & i);
 void CreateSaveGameList();
 void FreeSaveGameList();
 
-#endif
+#endif // ARX_MENU_MENU_H

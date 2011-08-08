@@ -88,7 +88,7 @@ struct ArxQuat {
 	f32 y;
 	f32 z;
 	
-	inline operator EERIE_QUAT() {
+	inline operator EERIE_QUAT() const {
 		EERIE_QUAT a;
 		a.x  = x, a.y = y, a.z = z, a.w = w;
 		return a;

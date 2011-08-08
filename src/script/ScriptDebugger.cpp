@@ -23,9 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "scripting/ScriptDebugger.h"
-
-#ifdef BUILD_EDITOR
+#include "script/ScriptDebugger.h"
 
 #include <cstdio>
 #include <cstring>
@@ -38,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/Logger.h"
 #include "scene/Interactive.h"
-#include "scripting/ScriptDebuggerDialog.h"
+#include "script/ScriptDebuggerDialog.h"
 
 typedef void (APIENTRY * CREATEDIALOG)();
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);
@@ -162,8 +160,7 @@ void DANAE_DEBUGGER_Update()
 
 	char temp[256];
 
-	sprintf(temp, "%s_%04ld", GetName(io->filename).c_str(), io->ident);
-	s.lpszObjName = strdup(temp);
+	s.lpszObjName = strdup(io->long_name().c_str());
 	sprintf(buffer, "%5.0f", io->pos.x);
 	s.p3ObjPos[0] = strdup(buffer);
 	sprintf(buffer, "%5.0f", io->pos.y);
@@ -181,8 +178,7 @@ void DANAE_DEBUGGER_Update()
 
 	if (tio)
 	{
-		sprintf(temp, "%s_%04ld", GetName(tio->filename).c_str(), tio->ident);
-		s.lpszTargetName = strdup(temp);
+		s.lpszTargetName = strdup(io->long_name().c_str());
 		sprintf(buffer, "%5.0f", tio->pos.x);
 		s.p3TargetPos[0] = strdup(buffer);
 		sprintf(buffer, "%5.0f", tio->pos.y);
@@ -278,22 +274,22 @@ void DANAE_DEBUGGER_Update()
 	if (io->ioflags & IO_NPC)
 	{
 		if (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-			strcpy(temp, "MOVE_TO");
+			strcpy(temp, "move_to");
 		else if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-			strcpy(temp, "GO_HOME");
+			strcpy(temp, "go_home");
 		else if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-			strcpy(temp, "FLEE");
+			strcpy(temp, "flee");
 		else if (io->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
-			strcpy(temp, "LOOK_FOR");
+			strcpy(temp, "look_for");
 		else if (io->_npcdata->behavior & BEHAVIOUR_HIDE)
-			strcpy(temp, "HIDE");
+			strcpy(temp, "hide");
 		else if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-			strcpy(temp, "WANDER_AROUND");
+			strcpy(temp, "wander_around");
 		else if (io->_npcdata->behavior & BEHAVIOUR_GUARD)
-			strcpy(temp, "GUARD");
+			strcpy(temp, "guard");
 		else if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
-			strcpy(temp, "FRIENDLY");
-		else strcpy(temp, "NONE");
+			strcpy(temp, "friendly");
+		else strcpy(temp, "none");
 
 		if (io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
 			strcat(temp, " Look_Around");
@@ -344,7 +340,7 @@ void DANAE_DEBUGGER_Update()
 	{
 		s.bTimers = true;
 		char buf[16000];
-		ZeroMemory(buf, 16000);
+		memset(buf, 0, 16000);
 
 		for (i = 0; i < MAX_TIMER_SCRIPT; i++)
 		{
@@ -432,18 +428,4 @@ suite:
 			MODIFFF = 1;
 		}
 	}
-
-	if (su.bUpdateGlobalVar)
-	{
-		ARX_SCRIPT_SetVar(NULL, su.globalVar.lpszVarName, su.globalVar.lpszVarValue);
-		MODIFFF = 1;
-	}
-
-	if ((su.bUpdateLocalVar) && (io))
-	{
-		ARX_SCRIPT_SetVar(io, su.localVar.lpszVarName, su.localVar.lpszVarValue);
-		MODIFFF = 1;
-	}
 }
-
-#endif // BUILD_EDITOR

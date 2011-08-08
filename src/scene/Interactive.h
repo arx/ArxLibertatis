@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "graphics/BaseGraphicsTypes.h"
+#include "graphics/data/MeshManipulation.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
 #include "platform/Flags.h"
@@ -70,10 +71,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
+namespace fs {
+class path;
+}
+
 struct INTERACTIVE_OBJECTS {
+	
 	long init;
 	long nbmax;
+	
 	INTERACTIVE_OBJ ** iobj;
+	
+	long getById(const std::string & name);
+	INTERACTIVE_OBJ * getById(const std::string & name, INTERACTIVE_OBJ * self);
+	
 };
 
 const size_t MAX_LINKS = 12;
@@ -129,7 +140,7 @@ extern long NbIOSelected;
 #endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string & s1);
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const fs::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag = 0);
@@ -142,9 +153,9 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string & param1, const std::string& param2);
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
-void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string & temp);
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags = 0);
 
 bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
@@ -155,8 +166,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string 
 
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
 long ValidIONum(long num);
-long ValidIOAddress(INTERACTIVE_OBJ * io);
-long GetTargetByNameTarget(const std::string& name);
+long ValidIOAddress(const INTERACTIVE_OBJ * io);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
 
 void SetWeapon_Back(INTERACTIVE_OBJ * io);
@@ -193,6 +203,10 @@ void DeleteSelectedIO();
 void ResetSelectedIORot();
 #endif
 
+#ifdef BUILD_EDIT_LOADSAVE
+void MakeIOIdent(INTERACTIVE_OBJ * io);
+#endif
+
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 void FreeAllInter();
 
@@ -206,10 +220,10 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef =
  * Creates an IO Ident for added object if necessary
  * @param flags can be IO_IMMEDIATELOAD (1) to FORCE loading
  */
-INTERACTIVE_OBJ * AddInteractive(const std::string & file, long id, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddFix(const std::string & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddNPC(const std::string & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddItem(const std::string & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddInteractive(const fs::path & file, long id, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddItem(const fs::path & file, AddInteractiveFlags flags = 0);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
@@ -219,13 +233,12 @@ void UpdateCameras();
 INTERACTIVE_OBJ * InterClick(Vec2s * pos);
  
 void RenderInter(float from, float to);
-void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
  
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string & temp);
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
-std::string GetMaterialString(const std::string & origin );
+std::string GetMaterialString(const fs::path & origin );
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);

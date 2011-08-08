@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells05.h"
@@ -88,7 +89,7 @@ CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(C
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
 
-	tex_light = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
+	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
 void CSummonCreature::SetDuration(const unsigned long alDuration)
@@ -703,7 +704,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	pPSStream.SetParams(cp);
 	pPSStream.ulParticleSpawn = 0;
 
-	pPSStream.SetTexture("graph\\particles\\smallfire", 4, 10);
+	pPSStream.SetTexture("graph/particles/smallfire", 4, 10);
 
 	pPSStream.fParticleFreq = 250;
 	pPSStream.bParticleFollow = false;
@@ -763,7 +764,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	pPSHit.SetParams(cp);
 	pPSHit.ulParticleSpawn = 0;
 
-	pPSHit.SetTexture("graph\\particles\\firebase", 4, 100);
+	pPSHit.SetTexture("graph/particles/firebase", 4, 100);
 
 	pPSHit.fParticleFreq = -1;
 	pPSHit.SetPos(eSrc);
@@ -867,11 +868,11 @@ CNegateMagic::CNegateMagic()
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 
-	tex_p2 = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_tsu_bluepouf.bmp");
-	tex_sol = TextureContainer::Load("Graph\\Obj3D\\textures\\(Fx)_negate_magic.bmp");
+	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
+	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
 
 	if (!ssol)
-		ssol = _LoadTheObj("Graph\\Obj3D\\Interactive\\Fix_inter\\fx_rune_guard\\fx_rune_guard.teo");
+		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 		
 	ssol_count++;
 	

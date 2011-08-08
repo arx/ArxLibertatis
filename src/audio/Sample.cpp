@@ -30,11 +30,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioBackend.h"
 #include "audio/AudioSource.h"
 
-using std::string;
-
 namespace audio {
 
-Sample::Sample(const string & _name) : ResourceHandle(), name(_name), length(0) {
+Sample::Sample(const fs::path & _name) : ResourceHandle(), name(_name), length(0) {
 }
 
 Sample::~Sample() {
@@ -64,20 +62,6 @@ aalError Sample::load() {
 	stream->getFormat(format);
 	length = stream->getLength();
 	deleteStream(stream);
-	
-	return AAL_OK;
-}
-
-aalError Sample::setCallback(aalSampleCallback func, void * _data, size_t time, TimeUnit unit) {
-	
-	callbacks.resize(callbacks.size() + 1);
-	
-	callbacks.back().func = func;
-	callbacks.back().data = _data;
-	callbacks.back().time = unitsToBytes(time, format, unit);
-	if(callbacks.back().time > length) {
-		callbacks.back().time = length;
-	}
 	
 	return AAL_OK;
 }

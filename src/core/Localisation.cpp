@@ -25,23 +25,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Localisation.h"
 
-#include <list>
 #include <sstream>
-#include <algorithm>
+#include <cstdlib>
 #include <iterator>
 
-#include "core/Application.h"
 #include "core/Unicode.hpp"
 #include "core/Config.h"
 
-#include "io/PakManager.h"
+#include "io/PakReader.h"
 #include "io/Logger.h"
 #include "io/IniReader.h"
 
 #include "platform/Platform.h"
 
 using std::string;
-using std::transform;
 
 namespace {
 IniReader localisation;
@@ -57,22 +54,22 @@ bool InitLocalisation() {
 	localisation.clear();
 
 	// Generate the filename for the localization strings
-	std::string tx = "localisation\\utext_" + config.language + ".ini";
+	std::string tx = "localisation/utext_" + config.language + ".ini";
 	
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
 	// Attempt loading the selected locale file
-	u16 * Localisation = (u16*)PAK_FileLoadMalloc( tx, loc_file_size );
+	u16 * Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
 
 	// if no file was loaded
 	if ( !Localisation )
 	{
 		// Default to english locale
 		config.language = "english";
-		tx = "localisation\\utext_" + config.language + ".ini";
+		tx = "localisation/utext_" + config.language + ".ini";
 
 		// Load the default english locale file
-		Localisation = (u16*)PAK_FileLoadMalloc( tx, loc_file_size );
+		Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
 	}
 	
 	u16 * toFree = Localisation;
@@ -120,7 +117,7 @@ long getLocalisedKeyCount(const string & sectionname) {
 	return localisation.getKeyCount(sectionname);
 }
 
-static const string UPCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO remove
+static const string BADNAMECHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]"; // TODO(case-sensitive) remove
 
 /**
  * Returns the localized string for the given key name
@@ -129,31 +126,7 @@ static const string UPCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO remove
  */
 string getLocalised(const string & name, const string & default_value) {
 	
-	if(name.find_first_of(UPCASE) != string::npos || (!name.empty() && name[0] == '[')) {
-		LogWarning << "upcase char in \"" << name << "\""; // TODO remove
-	}
+	arx_assert(name.find_first_of(BADNAMECHAR) == string::npos); ARX_UNUSED(BADNAMECHAR); // TODO(case-sensitive) remove
 	
 	return localisation.getKey(name, string(), default_value);
-}
-
-// TODO remove
-long MakeLocalised(const std::string & text, std::string & output) {
-	
-	if(text.empty()) {
-		output = "ERROR";
-		return 0;
-	}
-	
-	std::string section = text;
-
-	// if the section name has the qualifying brackets "[]", cut the back one then the front off
-	if(section[0] == '[' && section[section.length() - 1] == ']') {
-		section = section.substr(1, section.length() - 2);
-	}
-
-	transform(section.begin(), section.end(), section.begin(), ::tolower);
-	
-	// TODO move to caller
-	output = getLocalised(section, "error");
-	return 0;
 }

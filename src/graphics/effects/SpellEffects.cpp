@@ -220,6 +220,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "game/Player.h"
 #include "graphics/Draw.h"
+#include "graphics/Math.h"
 
 
 CSpellFx::CSpellFx() :
@@ -247,8 +248,7 @@ void CSpellFx::SetDuration(const unsigned long ulaDuration)
 };
 
 //-----------------------------------------------------------------------------
-unsigned long CSpellFx::GetCurrentTime()
-{
+unsigned long CSpellFx::getCurrentTime() {
 	return ulCurrentTime;
 };
 

@@ -26,6 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOSOURCE_H
 #define ARX_AUDIO_AUDIOSOURCE_H
 
+#include <vector>
+
 #include "audio/AudioTypes.h"
 
 namespace audio {
@@ -39,6 +41,13 @@ class Stream;
 class Source {
 	
 public:
+	
+	class Callback {
+		
+		virtual void onSamplePosition(Source & source, size_t position) = 0;
+		
+		friend class Source;
+	};
 	
 	enum Status {
 		Idle,
@@ -89,7 +98,7 @@ public:
 	virtual aalError stop() = 0;
 	virtual aalError pause() = 0;
 	virtual aalError resume() = 0;
-	virtual aalError update() = 0;
+	aalError update();
 	
 	inline SourceId getId() const { return id; }
 	inline Sample * getSample() const { return sample; }
@@ -103,6 +112,8 @@ public:
 	 */
 	virtual aalError updateVolume() = 0;
 	
+	void addCallback(Callback * callback, size_t time, TimeUnit unit = UNIT_MS);
+	
 protected:
 	
 	Source(Sample * sample);
@@ -114,6 +125,26 @@ protected:
 	
 	Sample * sample;
 	Status status;
+	
+	size_t time; // Elapsed 'time'
+	
+	inline void reset() { time = 0, callback_i = 0; }
+	
+	/**
+	 * Check if this source is too far from the listener and play/pause it accordingly.
+	 * @return true if the source is too far and should not be played
+	 */
+	virtual bool updateCulling() = 0;
+	
+	virtual aalError updateBuffers() = 0;
+	
+private:
+	
+	typedef std::vector<std::pair<Callback*, size_t> > CallbackList;
+	CallbackList callbacks;
+	size_t callback_i;
+	
+	void updateCallbacks();
 	
 };
 

@@ -60,20 +60,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
+namespace fs {
+class path;
+}
+
 struct INTERACTIVE_OBJ;
 
-extern long LAST_CHINSTANCE;
-extern char CurGamePath[256];
-extern long CURRENT_GAME_INSTANCE;
-extern char GameSavePath[256];
+extern const fs::path CurGamePath;
+
 extern long FORBID_SAVE;
 
-void ARX_GAMESAVE_MakePath();
-void ARX_CHANGELEVEL_MakePath();
+void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
-void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle, long confirm);
-
-long ARX_CHANGELEVEL_GetInfo(const std::string & path, std::string & name, float & version, long & level, unsigned long & time);
+long ARX_CHANGELEVEL_GetInfo(const fs::path & path, std::string & name, float & version, long & level, unsigned long & time);
 
 /**
  * Load a GameSave

@@ -70,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
-#include "graphics/data/Texture.h"
+#include "graphics/data/TextureContainer.h"
 
 #include "input/Input.h"
 
@@ -81,7 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 
-#include "scripting/Script.h"
+#include "script/Script.h"
 
 using namespace std;
 
@@ -393,27 +393,12 @@ bool ATRIMAXSIZE::operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * 
 {
 	int iSize0 = x->sizex * x->sizey * x->sizey;
 	int iSize1 = y->sizex * y->sizey * y->sizey;
-
-	if (iSize0 > iSize1)
-	{
-		return true;
+	
+	if(iSize0 == iSize1) {
+		return (x->locname.compare(y->locname) < 0);
 	}
-	else
-	{
-		if (iSize0 == iSize1)
-		{
-			int iRes = strcmp(x->locname, y->locname);	 
-
-			if (!iRes)
-			{
-				return false;
-			}
-
-			return iRes < 0 ? true : false;
-		}
-	}
-
-	return false;
+	
+	return (iSize0 > iSize1);
 }
 
 bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
@@ -1050,7 +1035,7 @@ bool PutInInventory()
 
 		if (io->ioflags & IO_SHOP)
 		{
-			if ((io->shop_category) && (!IsIOGroup(DRAGINTER, io->shop_category)))
+			if(!io->shop_category.empty() && DRAGINTER->groups.find(io->shop_category) == DRAGINTER->groups.end())
 				return false;
 
 			if (cos <= 0) return false;
@@ -1600,7 +1585,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos)
 
 			if (ioo && ioo->inventory)
 			{
-				INVENTORY_DATA * id = (INVENTORY_DATA *)ioo->inventory;
+				INVENTORY_DATA * id = ioo->inventory;
 
 				for (long j = 0; j < id->sizey; j++)
 					for (long k = 0; k < id->sizex; k++)
@@ -1629,8 +1614,6 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos)
 bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos)
 {
 	if (!io) return false;
-
-	INVENTORY_DATA * id;
 	
 	if (DRAGINTER == io) {
 		ARX_PLAYER_FrontPos(pos);
@@ -1664,7 +1647,7 @@ bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos)
 			
 			if (ioo && ioo->inventory)
 			{
-				id = (INVENTORY_DATA *)ioo->inventory;
+				INVENTORY_DATA * id = ioo->inventory;
 
 				for (long j = 0; j < id->sizey; j++)
 					for (long k = 0; k < id->sizex; k++)
@@ -1718,7 +1701,7 @@ void RemoveFromAllInventories(const INTERACTIVE_OBJ * io) {
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i] != NULL) {
 			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				INVENTORY_DATA * id = inter.iobj[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -1757,7 +1740,7 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old) {
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i] != NULL) {
 			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				INVENTORY_DATA * id = inter.iobj[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -1800,7 +1783,7 @@ void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i] && inter.iobj[i] != inter.iobj[ion]) {
 			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = (INVENTORY_DATA *)inter.iobj[i]->inventory;
+				INVENTORY_DATA * id = inter.iobj[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -1942,7 +1925,7 @@ bool TakeFromInventory(Vec2s * pos)
 				{
 					if (io->_itemdata->count - 1 > 0)
 					{
-						ioo = AddItem( io->filename);
+						ioo = AddItem(io->filename);
 						MakeTemporaryIOIdent(ioo);
 						ioo->show = SHOW_FLAG_NOT_DRAWN;
 						ioo->_itemdata->count = 1;
@@ -2069,7 +2052,7 @@ INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability() {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
 					if(inventory[iNbBag][i][j].io) {
-						if(strcmp(inventory[iNbBag][i][j].io->locname, "[description_torch]") == 0) {
+						if(inventory[iNbBag][i][j].io->locname == "description_torch") {
 							if(!io) {
 								io = inventory[iNbBag][i][j].io;
 							} else {
@@ -2123,7 +2106,7 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 	if ((_io && (SecondaryInventory == _io->inventory)) || (_io == NULL)) // CLOSING
 	{
 		if (SecondaryInventory && (SecondaryInventory->io != NULL))
-			SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_CLOSE);
+			SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = -1;
 		TSecondaryInventory = SecondaryInventory;
@@ -2135,14 +2118,14 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 	else
 	{
 		if (TSecondaryInventory
-		        && TSecondaryInventory->io) SendIOScriptEvent((INTERACTIVE_OBJ *)TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
+		        && TSecondaryInventory->io) SendIOScriptEvent(TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = 1;
-		TSecondaryInventory = SecondaryInventory = (INVENTORY_DATA *)_io->inventory;
+		TSecondaryInventory = SecondaryInventory = _io->inventory;
 
 		if (SecondaryInventory && SecondaryInventory->io != NULL)
 		{
-			if (SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
+			if (SendIOScriptEvent(SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
 			{
 				InventoryDir = -1;
 				TSecondaryInventory = SecondaryInventory = NULL;

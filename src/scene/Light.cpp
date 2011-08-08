@@ -454,7 +454,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 				vLight.z = light->pos.z - ep->v[i].sz;
 				vLight.normalize();
 
-				fRes = vLight dot ep->nrml[i];
+				fRes = dot(vLight, ep->nrml[i]);
 
 				if (fRes < 0.0f)
 				{
@@ -585,7 +585,7 @@ void TreatBackgroundDynlights()
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "DOUSE");
+								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -606,7 +606,7 @@ void TreatBackgroundDynlights()
 							GetItemWorldPosition(inter.iobj[l], &_pos2);
 
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "FIRE");
+								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "fire");
 							}
 						}
 					}

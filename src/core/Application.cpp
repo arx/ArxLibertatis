@@ -49,9 +49,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Updates: (date) (person) (update)
 //
-// Code:	Cyril Meynier
-//			S�bastien Scieux	(Zbuffer)
-//			Didier Pedreno		(ScreenSaver Problem Fix)
+// Code: Cyril Meynier
+//   S�bastien Scieux (Zbuffer)
+//   Didier Pedreno  (ScreenSaver Problem Fix)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +78,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 
 #include "io/FilePath.h"
-#include "io/PakManager.h"
 #include "io/Logger.h"
+#include "io/Filesystem.h"
 
 #include "platform/Random.h"
+#include "platform/String.h"
 
 using std::max;
+using std::string;
 
 //-----------------------------------------------------------------------------
 long EERIEMouseButton = 0;
@@ -91,10 +93,10 @@ long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
 
 Application* mainApp = 0;
-EERIE_CAMERA		* Kam;
-LPDIRECT3DDEVICE7	GDevice;
-HWND				MSGhwnd = NULL;
-float				FPS;
+EERIE_CAMERA  * Kam;
+LPDIRECT3DDEVICE7 GDevice;
+HWND    MSGhwnd = NULL;
+float    FPS;
 LightMode ModeLight = 0;
 ViewModeFlags ViewMode = 0;
 
@@ -117,57 +119,131 @@ Application::Application()
 	m_bAppUseZBuffer  = false;
 }
 
-bool Application::Initialize()
-{
+bool Application::Initialize() {
+	
 	bool init;
-
+	
 	init = InitConfig();
 	if(!init) {
 		return false;
 	}
-
+	
 	init = InitWindow();
 	if(!init) {
 		return false;
 	}
-
+	
 	init = InitGraphics();
 	if(!init) {
 		return false;
 	}
-
+	
 	init = InitInput();
 	if(!init) {
 		return false;
 	}
-
+	
 	init = InitSound();
 	if(!init) {
 		return false;
 	}
-
+	
 	Random::seed();
-
+	
 	return true;
 }
 
-bool Application::InitConfig()
-{
+static bool migrateFilenames(fs::path path, bool is_dir) {
+	
+	string name = path.filename();
+	string lowercase = toLowercase(name);
+	
+	bool migrated = true;
+	
+	if(lowercase != name) {
+		
+		fs::path dst = path.parent() / lowercase;
+		
+		LogInfo << "renaming " << path << " to " << dst.filename() << "";
+		
+		if(fs::rename(path, dst)) {
+			path = dst;
+		} else {
+			migrated = false;
+		}
+	}
+	
+	if(is_dir) {
+		for(fs::directory_iterator it(path); !it.end(); ++it) {
+			migrated &= migrateFilenames(path / it.name(), it.is_directory());
+		}
+	}
+	
+	return migrated;
+}
+
+static bool migrateFilenames() {
+	
+	LogInfo << "changing filenames to lowercase...";
+	
+	static const char * files[] = { "cfg.ini", "cfg_default.ini",
+	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak", "loc_default.pak", "speech_default.pak",
+	 "save", "editor", "game", "graph", "localisation", "misc", "sfx", "speech" };
+	
+	std::set<string> fileset;
+	for(size_t i = 0; i < ARRAY_SIZE(files); i++) {
+		fileset.insert(files[i]);
+	}
+	
+	bool migrated = true;
+	
+	for(fs::directory_iterator it(""); !it.end(); ++it) {
+		string file = it.name();
+		if(fileset.find(toLowercase(file)) != fileset.end()) {
+			migrated &= migrateFilenames(file, it.is_directory());
+		}
+	}
+	
+	if(!migrated) {
+		LogError << "Could not rename all files to lowercase, please do so manually and set migration=1 under [misc] in cfg.ini!";
+	}
+	
+	return migrated;
+}
+
+bool Application::InitConfig() {
+	
 	// Initialize config first, before anything else.
-	const char RESOURCE_CONFIG[] = "cfg.ini";
-	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
-	if(!config.init(RESOURCE_CONFIG, RESOURCE_CONFIG_DEFAULT)) {
-		LogWarning << "Could not read config files " << RESOURCE_CONFIG << " and " << RESOURCE_CONFIG_DEFAULT;
+	fs::path configFile = "cfg.ini";
+	
+	bool migrated = false;
+	if(!fs::exists(configFile) && !(migrated = migrateFilenames())) {
 		return false;
 	}
-
+	
+	fs::path defaultConfigFile = "cfg_default.ini";
+	if(!config.init(configFile.string(), defaultConfigFile.string())) {
+		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile;
+	}
+	
+	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {
+		if(!(migrated = migrateFilenames())) {
+			return false;
+		}
+	}
+	if(migrated) {
+		config.misc.migration = Config::CaseSensitiveFilenames;
+	}
+	
+	if(!fs::create_directories("save")) {
+		LogWarning << "failed to create save directory";
+	}
+	
 	return true;
 }
 
-void Application::EvictManagedTextures()
-{
-	if (this->m_pD3D)
-	{
+void Application::EvictManagedTextures() {
+	if(this->m_pD3D) {
 		this->m_pD3D->EvictManagedTextures();
 	}
 }
@@ -197,7 +273,7 @@ void Application::Pause(bool bPause)
 
 //*************************************************************************************
 //*************************************************************************************
-VOID CalcFPS(bool reset)
+void CalcFPS(bool reset)
 {
 	static float fFPS      = 0.0f;
 	static float fLastTime = 0.0f;
@@ -227,26 +303,6 @@ VOID CalcFPS(bool reset)
 			dwFrames  = 0L;
 		}
 	}
-}
-
-
-//******************************************************************************
-// MESSAGE BOXES
-//******************************************************************************
-//*************************************************************************************
-//*************************************************************************************
-//TODO(lubosz): is this needed in the game? replace
-bool OKBox(const std::string& text, const std::string& title)
-
-{
-	int i;
-	mainApp->Pause(true);
-	i = MessageBox((HWND)mainApp->GetWindow()->GetHandle(), text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
-	mainApp->Pause(false);
-
-	if (i == IDCANCEL) return false;
-
-	return true;
 }
 
 void SetZBias(int _iZBias)

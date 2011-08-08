@@ -2,17 +2,28 @@
 #ifndef ARX_SCENE_SAVEFORMAT_H
 #define ARX_SCENE_SAVEFORMAT_H
 
-#include <cassert>
 #include <algorithm>
+#include <cstring>
+
+#include <boost/static_assert.hpp>
 
 #include "gui/MiniMap.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"
+#include "graphics/data/MeshManipulation.h"
 #include "platform/Platform.h"
 
 const s32 SAVEFLAGS_EXTRA_ROTATE = 1;
 const float ARX_GAMESAVE_VERSION = 1.005f;
+
+enum SavedIOType {
+	TYPE_NPC = 1,
+	TYPE_ITEM = 2,
+	TYPE_FIX = 3,
+	TYPE_CAMERA = 4,
+	TYPE_MARKER = 5
+};
 
 enum SystemFlag {
 	SYSTEM_FLAG_TWEAKER_INFO  = (1<<0),
@@ -20,11 +31,6 @@ enum SystemFlag {
 	SYSTEM_FLAG_EQUIPITEMDATA = (1<<2),
 	SYSTEM_FLAG_USEPATH       = (1<<3)
 };
-
-template<class T, size_t N>
-inline size_t array_size(T(&)[N]) {
-	return N;
-}
 
 enum SavePlayerFlag {
 	SP_MAX  = (1<<0),
@@ -74,22 +80,17 @@ struct SavedGlobalMods {
 		flags = b.flags;
 		depthcolor = b.depthcolor;
 		zclip = b.zclip;
-		assert(array_size(b.ambiance) == AMBIANCE_SIZE);
-		std::copy(b.ambiance, b.ambiance + AMBIANCE_SIZE, ambiance);
-		ambiance_vol = b.ambiance_vol;
-		ambiance_maxvol = b.ambiance_maxvol;
+		ambiance[0] = '\0';
+		ambiance_vol = 0.f;
+		ambiance_maxvol = 0.f;
 		return *this;
 	}
 	
-	inline operator GLOBAL_MODS() {
+	inline operator GLOBAL_MODS() const {
 		GLOBAL_MODS a;
-		a.flags = flags;
+		a.flags = GMODFlags::load(flags); // TODO save/load flags
 		a.depthcolor = depthcolor;
 		a.zclip = zclip;
-		assert(array_size(a.ambiance) == AMBIANCE_SIZE);
-		std::copy(ambiance, ambiance + AMBIANCE_SIZE, a.ambiance);
-		a.ambiance_vol = ambiance_vol;
-		a.ambiance_maxvol = ambiance_maxvol;
 		return a;
 	}
 	
@@ -117,7 +118,7 @@ struct ARX_CHANGELEVEL_LIGHT {
 struct ARX_CHANGELEVEL_IO_INDEX {
 	char filename[256];
 	s32 ident;
-	s32 num;
+	s32 num; // unused TODO use this to restore spell targets?
 	s16 level;
 	s16 truelevel;
 	s32 unused;
@@ -136,33 +137,21 @@ struct ARX_CHANGELEVEL_SAVE_GLOBALS {
 	s32 padding[256];
 };
 
-struct SavedMapMakerData {
+struct SavedMapMarkerData {
 	
 	static const size_t STRING_SIZE = 64;
 	
 	f32 x;
 	f32 y;
 	s32 lvl;
-	char string[STRING_SIZE];
+	char name[STRING_SIZE];
 	
-	inline SavedMapMakerData() { }
-	
-	inline SavedMapMakerData(const MAPMARKER_DATA & b) {
+	inline SavedMapMarkerData(const MAPMARKER_DATA & b) {
 		x = b.x;
 		y = b.y;
 		lvl = b.lvl;
-		assert(array_size(b.string) == STRING_SIZE);
-		std::copy(b.string, b.string + STRING_SIZE, string);
-	}
-	
-	inline operator MAPMARKER_DATA() {
-		MAPMARKER_DATA a;
-		a.x = x;
-		a.y = y;
-		a.lvl = lvl;
-		assert(array_size(a.string) == STRING_SIZE);
-		std::copy(string, string + STRING_SIZE, a.string);
-		return a;
+		arx_assert(STRING_SIZE > b.name.length());
+		strcpy(name, b.name.c_str());
 	}
 	
 };
@@ -173,7 +162,7 @@ struct SavedCylinder {
 	f32 radius;
 	f32 height;
 	
-	inline operator EERIE_CYLINDER() {
+	inline operator EERIE_CYLINDER() const {
 		EERIE_CYLINDER a;
 		a.origin = origin, a.radius = radius, a.height = height;
 		return a;
@@ -194,7 +183,7 @@ struct SavedIOPhysics {
 	SavedVec3 velocity;
 	SavedVec3 forces;
 	
-	inline operator IO_PHYSICS() {
+	inline operator IO_PHYSICS() const {
 		IO_PHYSICS a;
 		a.cyl = cyl;
 		a.startpos = startpos;
@@ -232,7 +221,7 @@ struct SavedMiniMap {
 	f32 height;
 	u8 revealed[MAX_X][MAX_Z];
 	
-	inline operator MINI_MAP_DATA() {
+	inline operator MINI_MAP_DATA() const {
 		MINI_MAP_DATA a;
 		a.tc = NULL;
 		a.offsetx = offsetx;
@@ -241,8 +230,8 @@ struct SavedMiniMap {
 		a.yratio = yratio;
 		a.width = width;
 		a.height = height;
-		assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
-		assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
 		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.revealed[0][0]);
 		return a;
 	}
@@ -255,8 +244,8 @@ struct SavedMiniMap {
 		yratio = b.yratio;
 		width = b.width;
 		height = b.height;
-		assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
-		assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
+		BOOST_STATIC_ASSERT(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
 		std::copy(&b.revealed[0][0], &b.revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
 		return *this;
 	}
@@ -273,7 +262,7 @@ struct SavedPrecast {
 	s32 flags;
 	s32 duration;
 	
-	inline operator PRECAST_STRUCT() {
+	inline operator PRECAST_STRUCT() const {
 		PRECAST_STRUCT a;
 		a.typ = (typ < 0) ? SPELL_NONE : (Spell)typ; // TODO save/load enum
 		a.level = level;
@@ -441,7 +430,7 @@ struct SavedModInfo {
 	SavedAnglef rot;
 	u32 flags;
 	
-	inline operator EERIE_MOD_INFO() {
+	inline operator EERIE_MOD_INFO() const {
 		EERIE_MOD_INFO a;
 		a.link_origin = link_origin;
 		a.link_position = link_position;
@@ -485,7 +474,7 @@ struct SavedAnimUse {
 	f32 pour;
 	s32 fr;
 	
-	inline operator ANIM_USE() {
+	inline operator ANIM_USE() const {
 		ANIM_USE a;
 		a.next_anim = NULL;
 		a.cur_anim = NULL;
@@ -525,24 +514,24 @@ struct SavedSpellcastData {
 	s32 target;
 	s32 duration;
 	
-	inline operator IO_SPELLCAST_DATA() {
+	inline operator IO_SPELLCAST_DATA() const {
 		IO_SPELLCAST_DATA a;
 		a.castingspell = (castingspell < 0) ? SPELL_NONE : (Spell)castingspell; // TODO save/load enum
-		assert(array_size(a.symb) == 4);
+		BOOST_STATIC_ASSERT(ARRAY_SIZE(a.symb) == 4);
 		a.symb[0] = (Rune)symb[0]; // TODO save/load enum
 		a.symb[1] = (Rune)symb[1];
 		a.symb[2] = (Rune)symb[2];
 		a.symb[3] = (Rune)symb[3];
 		a.spell_flags = SpellcastFlags::load(spell_flags); // TODO save/load flags
 		a.spell_level = spell_level;
-		a.target = target;
+		a.target = target; // TODO saved internum not valid after loading
 		a.duration = duration;
 		return a;
 	}
 	
 	inline SavedSpellcastData & operator=(const IO_SPELLCAST_DATA & b) {
 		castingspell = (b.castingspell == SPELL_NONE) ? -1 : b.castingspell;
-		assert(array_size(b.symb) == 4);
+		BOOST_STATIC_ASSERT(ARRAY_SIZE(b.symb) == 4);
 		std::copy(b.symb, b.symb + 4, symb);
 		spell_flags = b.spell_flags;
 		spell_level = b.spell_level;
@@ -561,7 +550,7 @@ struct SavedHalo {
 	s32 dynlight;
 	SavedVec3 offset;
 	
-	inline operator IO_HALO() {
+	inline operator IO_HALO() const {
 		IO_HALO a;
 		a.color = color;
 		a.radius = radius;
@@ -598,7 +587,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	SavedAnglef angle;
 	SavedAnglef initangle;
 	f32 scale;
-	u32 savetime;
+	u32 savetime; // unused
 	f32 weight;
 	
 	char locname[64];
@@ -624,7 +613,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
 	// Target Info
 	char id_targetinfo[SIZE_ID];
-	s32 inventory;
+	s32 inventory; // unused
 	// Group Info
 	s32 system_flags;
 	f32 basespeed;
@@ -683,15 +672,15 @@ struct SavedBehaviour {
 	s32 movemode;
 	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
 	
-	inline operator IO_BEHAVIOR_DATA() {
+	inline operator IO_BEHAVIOR_DATA() const {
 		IO_BEHAVIOR_DATA a;
 		a.exist = exist;
-		a.behavior = behavior;
+		a.behavior = Behaviour::load(behavior); // TODO save/load flags
 		a.behavior_param = behavior_param;
 		a.tactics = tactics;
 		a.target = target;
-		a.movemode = movemode;
-		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
+		a.movemode = (MoveMode)movemode; // TODO save/load enum
+		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(animlayer, animlayer + SAVED_MAX_ANIM_LAYERS, a.animlayer);
 		return a;
 	}
@@ -703,7 +692,7 @@ struct SavedBehaviour {
 		tactics = b.tactics;
 		target = b.target;
 		movemode = b.movemode;
-		assert(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
+		BOOST_STATIC_ASSERT(SAVED_MAX_ANIM_LAYERS == MAX_ANIM_LAYERS);
 		std::copy(b.animlayer, b.animlayer + SAVED_MAX_ANIM_LAYERS, animlayer);
 		return *this;
 	}
@@ -715,7 +704,7 @@ struct SavedPathfindTarget {
 	u32 padding[4];
 	s32 truetarget;
 	
-	inline operator IO_PATHFIND() {
+	inline operator IO_PATHFIND() const {
 		IO_PATHFIND a;
 		a.flags = 0;
 		a.listnb = a.listpos = a.pathwait = 0;
@@ -740,10 +729,10 @@ struct SavedExtraRotate {
 	s16 group_number[SAVED_MAX_EXTRA_ROTATE];
 	SavedAnglef group_rotate[SAVED_MAX_EXTRA_ROTATE];
 	
-	inline operator EERIE_EXTRA_ROTATE() {
+	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
 		a.flags = flags;
-		assert(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
+		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
 		std::copy(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
 		return a;
@@ -751,7 +740,7 @@ struct SavedExtraRotate {
 	
 	inline SavedExtraRotate & operator=(const EERIE_EXTRA_ROTATE & b) {
 		flags = b.flags;
-		assert(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
+		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
 		std::copy(b.group_number, b.group_number + SAVED_MAX_EXTRA_ROTATE, group_number);
 		std::copy(b.group_rotate, b.group_rotate + SAVED_MAX_EXTRA_ROTATE, group_rotate);
 		return *this;
@@ -783,7 +772,7 @@ struct ARX_CHANGELEVEL_NPC_IO_SAVE {
 	s32 weapontype;
 	s32 weaponinhand;
 	s32 fightdecision;
-	char weaponname[256];
+	char padding[256];
 	f32 look_around_inc;
 	u32 collid_time;
 	s32 collid_state;
@@ -822,7 +811,7 @@ struct SavedEquipItemElement {
 	s16 flags;
 	s16 special;
 	
-	inline operator IO_EQUIPITEM_ELEMENT() {
+	inline operator IO_EQUIPITEM_ELEMENT() const {
 		IO_EQUIPITEM_ELEMENT a;
 		a.value = value;
 		a.flags = flags;
@@ -845,15 +834,15 @@ struct SavedEquipItem {
 	
 	SavedEquipItemElement elements[SAVED_IO_EQUIPITEM_ELEMENT_Number];
 	
-	inline operator IO_EQUIPITEM() {
+	inline operator IO_EQUIPITEM() const {
 		IO_EQUIPITEM a;
-		assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
+		BOOST_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
 		std::copy(elements, elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, a.elements);
 		return a;
 	}
 	
 	inline SavedEquipItem & operator=(const IO_EQUIPITEM & b) {
-		assert(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
+		BOOST_STATIC_ASSERT(SAVED_IO_EQUIPITEM_ELEMENT_Number == IO_EQUIPITEM_ELEMENT_Number);
 		std::copy(b.elements, b.elements + SAVED_IO_EQUIPITEM_ELEMENT_Number, elements);
 		return *this;
 	}
@@ -889,7 +878,7 @@ struct SavedRect {
 	s32 right;
 	s32 bottom;
 	
-	inline operator Rect() {
+	inline operator Rect() const {
 		Rect a;
 		a.left = left;
 		a.top = top;
@@ -916,26 +905,13 @@ struct SavedTweakerInfo {
 	char skintochange[NAME_SIZE];
 	char skinchangeto[NAME_SIZE];
 	
-	inline operator IO_TWEAKER_INFO() {
-		IO_TWEAKER_INFO a;
-		assert(array_size(a.filename) == NAME_SIZE);
-		std::copy(filename, filename + NAME_SIZE, a.filename);
-		assert(array_size(a.skintochange) == NAME_SIZE);
-		std::copy(skintochange, skintochange + NAME_SIZE, a.skintochange);
-		assert(array_size(a.skinchangeto) == NAME_SIZE);
-		std::copy(skinchangeto, skinchangeto + NAME_SIZE, a.skinchangeto);
-		return a;
-	}
-	
-	inline SavedTweakerInfo() { }
-	
 	inline SavedTweakerInfo(const IO_TWEAKER_INFO & b) {
-		assert(array_size(b.filename) == NAME_SIZE);
-		std::copy(b.filename, b.filename + NAME_SIZE, filename);
-		assert(array_size(b.skintochange) == NAME_SIZE);
-		std::copy(b.skintochange, b.skintochange + NAME_SIZE, skintochange);
-		assert(array_size(b.skinchangeto) == NAME_SIZE);
-		std::copy(b.skinchangeto, b.skinchangeto + NAME_SIZE, skinchangeto);
+		arx_assert(b.filename.string().length() <= sizeof(filename));
+		strncpy(filename, b.filename.string().c_str(), sizeof(filename));
+		arx_assert(b.skintochange.length() <= sizeof(skintochange));
+		strncpy(skintochange, b.skintochange.c_str(), sizeof(skintochange));
+		arx_assert(b.skinchangeto.filename().length() <= sizeof(skinchangeto));
+		strncpy(skinchangeto, b.skinchangeto.string().c_str(), sizeof(skinchangeto));
 	}
 	
 };
@@ -946,20 +922,6 @@ struct SavedGroupData {
 	
 	char name[NAME_SIZE];
 	
-	inline operator IO_GROUP_DATA() {
-		IO_GROUP_DATA a;
-		assert(array_size(a.name) == NAME_SIZE);
-		std::copy(name, name + NAME_SIZE, a.name);
-		return a;
-	}
-	
-	inline SavedGroupData() { }
-	
-	inline SavedGroupData(const IO_GROUP_DATA & b) {
-		assert(array_size(b.name) == NAME_SIZE);
-		std::copy(b.name, b.name + NAME_SIZE, name);
-	}
-	
 };
 
 struct SavedTweakInfo {
@@ -967,27 +929,15 @@ struct SavedTweakInfo {
 	static const size_t PARAM_SIZE = 256;
 	
 	s32 type;
-	char param1[256];
-	char param2[256];
-	
-	inline operator TWEAK_INFO() {
-		TWEAK_INFO a;
-		a.type = type;
-		assert(array_size(a.param1) == PARAM_SIZE);
-		std::copy(param1, param1 + PARAM_SIZE, a.param1);
-		assert(array_size(a.param2) == PARAM_SIZE);
-		std::copy(param2, param2 + PARAM_SIZE, a.param2);
-		return a;
-	}
-	
-	inline SavedTweakInfo() { }
+	char param1[PARAM_SIZE];
+	char param2[PARAM_SIZE];
 	
 	inline SavedTweakInfo(const TWEAK_INFO & b) {
 		type = b.type;
-		assert(array_size(b.param1) == PARAM_SIZE);
-		std::copy(b.param1, b.param1 + PARAM_SIZE, param1);
-		assert(array_size(b.param2) == PARAM_SIZE);
-		std::copy(b.param2, b.param2 + PARAM_SIZE, param2);
+		arx_assert(b.param1.string().length() <= PARAM_SIZE);
+		strncpy(param1, b.param1.string().c_str(), sizeof(param1));
+		arx_assert(b.param2.string().length() <=PARAM_SIZE);
+		strncpy(param2, b.param2.string().c_str(), sizeof(param2));
 	}
 	
 };
@@ -999,7 +949,7 @@ struct SavedMatrix {
 	f32 _31, _32, _33, _34;
 	f32 _41, _42, _43, _44;
 	
-	inline operator EERIEMATRIX() {
+	inline operator EERIEMATRIX() const {
 		EERIEMATRIX a;
 		a._11 = _11, a._12 = _12, a._13 = _13, a._14 = _14;
 		a._21 = _21, a._22 = _22, a._23 = _23, a._24 = _24;
@@ -1032,7 +982,7 @@ struct SavedTransform {
 	f32 ymod;
 	f32 zmod;
 	
-	inline operator EERIE_TRANSFORM() {
+	inline operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
 		a.posx = posx, a.posy = posy, a.posz = posz;
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
@@ -1101,7 +1051,7 @@ struct SavedCamera {
 	
 	SavedAnglef size;
 	
-	inline operator EERIE_CAMERA() {
+	inline operator EERIE_CAMERA() const {
 		
 		EERIE_CAMERA a;
 		

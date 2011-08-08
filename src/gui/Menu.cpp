@@ -61,6 +61,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 #include <iterator>
+#include <iomanip>
+
+#include <boost/smart_ptr/scoped_array.hpp>
 
 #include "Configure.h"
 
@@ -83,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/TextureContainer.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
@@ -91,8 +95,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 
 #include "io/Logger.h"
-#include "io/PakManager.h"
+#include "io/PakReader.h"
+#include "io/FilePath.h"
 #include "io/Screenshot.h"
+#include "io/Filesystem.h"
 
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
@@ -158,73 +164,50 @@ long SP_HEAD = 0;
  
 std::vector<SaveGame> save_l;
 
-int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
-	if(a.stime.wYear != b.stime.wYear) {
-		return (a.stime.wYear > b.stime.wYear);
-	} else 	if(a.stime.wMonth != b.stime.wMonth) {
-		return (a.stime.wMonth > b.stime.wMonth);
-	} else 	if(a.stime.wDay != b.stime.wDay) {
-		return (a.stime.wDay > b.stime.wDay);
-	} else 	if(a.stime.wHour != b.stime.wHour) {
-		return (a.stime.wHour > b.stime.wHour);
-	} else 	if(a.stime.wMinute != b.stime.wMinute) {
-		return (a.stime.wMinute > b.stime.wMinute);
-	} else 	if(a.stime.wSecond != b.stime.wSecond) {
-		return (a.stime.wSecond > b.stime.wSecond);
-	}
-	return (a.stime.wMilliseconds > b.stime.wMilliseconds);
-}
-
-bool operator==(const SYSTEMTIME & a, const SYSTEMTIME & b) {
-	return (a.wYear == b.wYear && a.wMonth == b.wMonth && a.wDay == b.wDay && a.wHour == b.wHour && a.wMinute == b.wMinute && a.wSecond == b.wSecond && a.wMilliseconds == b.wMilliseconds);
+static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
+	return (a.stime > b.stime);
 }
 
 void CreateSaveGameList() {
 	
 	LogDebug << "CreateSaveGameList";
 	
-	string path = "save" + string(LOCAL_SAVENAME) + "\\save*";
-	
 	if(save_l.empty()) {
 		save_l.resize(1);
 		save_l[0].name = "New";
 	}
 	
-	WIN32_FIND_DATA fdata;
-	LogDebug << "looking for " << path;
-	
-	HANDLE h;
-	if((h = FindFirstFile(path.c_str(), &fdata)) == INVALID_HANDLE_VALUE) {
-		LogInfo << "no save files found";
-		save_l.resize(1);
-		return;
-	}
-	
 	size_t oldCount = save_l.size() - 1;
 #ifdef HAVE_DYNAMIC_STACK_ALLOCATION
-	bool found[oldCount];
+	char found[oldCount];
 #else
-	bool * found = new bool[oldCount];
+	boost::scoped_array<char> found(new char[oldCount]);
 #endif
-	for(size_t i = 0; i < oldCount; i++) {
-		found[i] = false;
-	}
+	std::fill_n(&found[0], oldCount, 0);
 	
 	bool newSaves = false;
 	
-	do {
-		if(!(fdata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || fdata.cFileName[0] == '.') {
+	size_t maxlength = 0;
+	
+	fs::path savedir = "save";
+	
+	for(fs::directory_iterator it(savedir); !it.end(); ++it) {
+		
+		string dirname = it.name();
+		fs::path path = savedir / dirname;
+		
+		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
 			continue;
 		}
 		
-		istringstream iss(fdata.cFileName + 4);
+		istringstream iss(dirname.substr(4));
 		long num;
 		iss >> num;
 		
-		SYSTEMTIME stime;
-		FILETIME fTime;
-		FileTimeToLocalFileTime(&fdata.ftLastWriteTime, &fTime);
-		FileTimeToSystemTime(&fTime, &stime);
+		std::time_t stime = fs::last_write_time(path / "gsave.sav");
+		if(stime == 0) {
+			continue;
+		}
 		
 		size_t index = (size_t)-1;
 		for(size_t i = 1; i <= oldCount; i++) {
@@ -233,19 +216,16 @@ void CreateSaveGameList() {
 			}
 		}
 		if(index != (size_t)-1 && save_l[index].stime == stime) {
-			found[index - 1] = true;
+			found[index - 1] = 1;
 			continue;
 		}
-		
-		std::stringstream oss;
-		oss << "save" << LOCAL_SAVENAME << "\\" << fdata.cFileName << "\\";
 		
 		string name;
 		float version;
 		long level;
 		unsigned long ignored;
-		if(ARX_CHANGELEVEL_GetInfo(oss.str(), name, version, level, ignored) == -1) {
-			LogWarning << "unable to get save file info for " << oss.str();
+		if(ARX_CHANGELEVEL_GetInfo(path, name, version, level, ignored) == -1) {
+			LogWarning << "unable to get save file info for " << path;
 			continue;
 		}
 		
@@ -257,10 +237,9 @@ void CreateSaveGameList() {
 			save_l.resize(save_l.size() + 1);
 			save = &save_l.back();
 		} else {
-			found[index - 1] = true;
+			found[index - 1] = 2;
 			save = &save_l[index];
 		}
-		
 		
 		save->name = name;
 		save->version = version;
@@ -268,30 +247,54 @@ void CreateSaveGameList() {
 		save->stime = stime;
 		save->num = num;
 		
-		LogInfo << "found " << fdata.cFileName << ": \""
-			        << name << "\"   v" << version
-			        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
-			        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
-			        << ":" << stime.wMilliseconds;
-			
-	} while(FindNextFile(h, &fdata));
-	
-	for(size_t i = oldCount; i > 0; i--) {
-		if(!found[i - 1]) {
-			save_l.erase(save_l.begin() + i);
+		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
+		
+		fs::path thumbnail = path / "gsave.bmp";
+		if(fs::exists(thumbnail)) {
+			resources->removeFile(thumbnail);
+			resources->addFiles(thumbnail, thumbnail);
 		}
+		
+		maxlength = std::max(save->quicksave ? 9 : name.length(), maxlength);
+		
+		const struct tm & t = *localtime(&stime);
+		std::ostringstream oss;
+		oss << std::setfill('0') << (t.tm_year + 1900) << "-" << std::setw(2) << (t.tm_mon + 1) << "-" << std::setw(2) << t.tm_mday << "   " << std::setfill(' ') << std::setw(2) << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min << ":" << std::setw(2) << t.tm_sec;
+		save->time = oss.str();
 	}
 	
-#ifndef HAVE_DYNAMIC_STACK_ALLOCATION
-	delete[] found;
-#endif
+	size_t o = 1;
+	for(size_t i = 1; i < save_l.size(); i++) {
+		if(i > oldCount || found[i - 1]) {
+			
+			// print new savegames
+			if(i > oldCount || found[i - 1] == 2) {
+				
+				std::ostringstream oss;
+				if(save_l[i].quicksave) {
+					oss << "(quicksave)" << std::setw(maxlength - 8) << ' ';
+				} else {
+					oss << "\"" << save_l[i].name << "\"" << std::setw(maxlength - save_l[i].name.length() + 1) << ' ';
+				}
+				
+				oss << "  " << save_l[i].time << "   v" << save_l[i].version;
+				LogInfo << "found save " << oss.str();
+				
+			}
+			
+			if(o != i) {
+				save_l[o] = save_l[i];
+			}
+			o++;
+		}
+	}
+	save_l.resize(o);
 	
 	if(newSaves && save_l.size() > 2) {
 		std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
 	}
 	
 	LogDebug << "found " << (save_l.size()-1) << " savegames";
-	FindClose(h);
 	
 }
 
@@ -350,8 +353,8 @@ void ARX_Menu_Resources_Create() {
 	}
 
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
-	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("Graph\\Interface\\menus\\Menu_credits.bmp");
-	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
+	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
+	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg");
 
 	ARXmenu.mda->flyover[BOOK_STRENGTH] = getLocalised("system_charsheet_strength");
 	ARXmenu.mda->flyover[BOOK_MIND] = getLocalised("system_charsheet_intel");
@@ -388,10 +391,10 @@ void ARX_Menu_Resources_Create() {
 	
 	// Load credits.
 	
-	string creditsFile = "localisation\\ucredits_" +  config.language + ".txt";
+	string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
-	u16 * creditsData = (u16*)PAK_FileLoadMalloc(creditsFile, creditsSize);
+	u16 * creditsData = (u16*)resources->readAlloc(creditsFile, creditsSize);
 	
 	if(!creditsData) {
 		LogWarning << "unable to read credits file " << creditsFile;
@@ -556,7 +559,7 @@ void ARX_Menu_Manage() {
 				{
 					LogDebug << "snapshot";
 					//create a screenshot temporaire pour la sauvegarde
-					::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
+					SnapShot *pSnapShot = new SnapShot("sct", true);
 					pSnapShot->GetSnapShotDim(160,100);
 					delete pSnapShot;
 
@@ -693,54 +696,56 @@ bool ARX_Menu_Render()
 		{
 			ARX_Menu_Resources_Release(false);
 			ARX_Menu_Resources_Create();
+			
+			// TODO this is also in Interface.cpp
 
-			ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
-			ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
-			ITC.Set("ic_close_combat", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
-			ITC.Set("ic_constitution", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
-			ITC.Set("ic_defense", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
-			ITC.Set("ic_dexterity", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
-			ITC.Set("ic_etheral_link", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
-			ITC.Set("ic_mind", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
-			ITC.Set("ic_intuition", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
-			ITC.Set("ic_mecanism", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
-			ITC.Set("ic_object_knowledge", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
-			ITC.Set("ic_projectile", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
-			ITC.Set("ic_stealth", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
-			ITC.Set("ic_strength", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+			ITC.Set("playerbook", "graph/interface/book/character_sheet/char_sheet_book");
+			ITC.Set("ic_casting", "graph/interface/book/character_sheet/buttons_carac/icone_casting");
+			ITC.Set("ic_close_combat", "graph/interface/book/character_sheet/buttons_carac/icone_close_combat");
+			ITC.Set("ic_constitution", "graph/interface/book/character_sheet/buttons_carac/icone_constit");
+			ITC.Set("ic_defense", "graph/interface/book/character_sheet/buttons_carac/icone_defense");
+			ITC.Set("ic_dexterity", "graph/interface/book/character_sheet/buttons_carac/icone_dext");
+			ITC.Set("ic_etheral_link", "graph/interface/book/character_sheet/buttons_carac/icone_etheral_link");
+			ITC.Set("ic_mind", "graph/interface/book/character_sheet/buttons_carac/icone_intel");
+			ITC.Set("ic_intuition", "graph/interface/book/character_sheet/buttons_carac/icone_intuition");
+			ITC.Set("ic_mecanism", "graph/interface/book/character_sheet/buttons_carac/icone_mecanism");
+			ITC.Set("ic_object_knowledge", "graph/interface/book/character_sheet/buttons_carac/icone_obj_knowledge");
+			ITC.Set("ic_projectile", "graph/interface/book/character_sheet/buttons_carac/icone_projectile");
+			ITC.Set("ic_stealth", "graph/interface/book/character_sheet/buttons_carac/icone_stealth");
+			ITC.Set("ic_strength", "graph/interface/book/character_sheet/buttons_carac/icone_strenght");
 
-			ITC.Set("questbook", "Graph\\Interface\\book\\questbook.bmp");
-			ITC.Set("pTexSpellBook", "Graph\\Interface\\book\\SpellBook.bmp");
-			ITC.Set("bookmark_char", "Graph\\Interface\\book\\bookmark_char.bmp");
-			ITC.Set("bookmark_magic", "Graph\\Interface\\book\\bookmark_magic.bmp");
-			ITC.Set("bookmark_map", "Graph\\Interface\\book\\bookmark_map.bmp");
-			ITC.Set("bookmark_quest", "Graph\\Interface\\book\\bookmark_quest.bmp");
+			ITC.Set("questbook", "graph/interface/book/questbook");
+			ITC.Set("ptexspellbook", "graph/interface/book/spellbook");
+			ITC.Set("bookmark_char", "graph/interface/book/bookmark_char");
+			ITC.Set("bookmark_magic", "graph/interface/book/bookmark_magic");
+			ITC.Set("bookmark_map", "graph/interface/book/bookmark_map");
+			ITC.Set("bookmark_quest", "graph/interface/book/bookmark_quest");
 
-			ITC.Set("accessible_1", "Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
-			ITC.Set("accessible_2", "Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
-			ITC.Set("accessible_3", "Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
-			ITC.Set("accessible_4", "Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
-			ITC.Set("accessible_5", "Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
-			ITC.Set("accessible_6", "Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
-			ITC.Set("accessible_7", "Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
-			ITC.Set("accessible_8", "Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
-			ITC.Set("accessible_9", "Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
-			ITC.Set("accessible_10", "Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
-			ITC.Set("current_1", "Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
-			ITC.Set("current_2", "Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
-			ITC.Set("current_3", "Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
-			ITC.Set("current_4", "Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
-			ITC.Set("current_5", "Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
-			ITC.Set("current_6", "Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
-			ITC.Set("current_7", "Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
-			ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
-			ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
-			ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
+			ITC.Set("accessible_1", "graph/interface/book/accessible/accessible_1");
+			ITC.Set("accessible_2", "graph/interface/book/accessible/accessible_2");
+			ITC.Set("accessible_3", "graph/interface/book/accessible/accessible_3");
+			ITC.Set("accessible_4", "graph/interface/book/accessible/accessible_4");
+			ITC.Set("accessible_5", "graph/interface/book/accessible/accessible_5");
+			ITC.Set("accessible_6", "graph/interface/book/accessible/accessible_6");
+			ITC.Set("accessible_7", "graph/interface/book/accessible/accessible_7");
+			ITC.Set("accessible_8", "graph/interface/book/accessible/accessible_8");
+			ITC.Set("accessible_9", "graph/interface/book/accessible/accessible_9");
+			ITC.Set("accessible_10", "graph/interface/book/accessible/accessible_10");
+			ITC.Set("current_1", "graph/interface/book/current_page/current_1");
+			ITC.Set("current_2", "graph/interface/book/current_page/current_2");
+			ITC.Set("current_3", "graph/interface/book/current_page/current_3");
+			ITC.Set("current_4", "graph/interface/book/current_page/current_4");
+			ITC.Set("current_5", "graph/interface/book/current_page/current_5");
+			ITC.Set("current_6", "graph/interface/book/current_page/current_6");
+			ITC.Set("current_7", "graph/interface/book/current_page/current_7");
+			ITC.Set("current_8", "graph/interface/book/current_page/current_8");
+			ITC.Set("current_9", "graph/interface/book/current_page/current_9");
+			ITC.Set("current_10", "graph/interface/book/current_page/current_10");
 
-			ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
+			ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points");
 
-			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
-			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
+			ITC.Set("ptexcornerleft", "graph/interface/book/left_corner_original");
+			ITC.Set("ptexcornerright", "graph/interface/book/right_corner_original");
 
 			ITC.Level = getLocalised("system_charsheet_player_lvl");
 			ITC.Xp = getLocalised("system_charsheet_player_xp");
@@ -969,71 +974,6 @@ bool ARX_Menu_Render()
 			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), color);
 		}
 	}
-
-	//-------------------------------------------------------------------------
-	if ((ARXmenu.currentmode == AMCM_CDNOTFOUND) && (ARXmenu.mda))
-	{
-		if (ARXmenu.mda->BookBackground != NULL)
-		{
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GRenderer->SetRenderState(Renderer::Fog, false);
-			GRenderer->SetRenderState(Renderer::DepthWrite, false);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
-
-			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, Color::white);
-		}
-
-		Vec3f ePos;
-		Color color = Color::none;
-		std::string szText;
-
-		color = Color(232, 204, 143);
-
-		szText = getLocalised("system_menus_main_cdnotfound");
-		Vec2i textSize = hFontMenu->GetTextSize(szText);
-		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
-		ePos.y = DANAESIZY * 0.4f;
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), color);
-
-		szText = getLocalised("system_yes");
-		textSize = hFontMenu->GetTextSize(szText);
-		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
-		ePos.y = DANAESIZY * 0.5f;
-
-		if(MouseInRect(ePos.x, ePos.y, ePos.x + textSize.x, ePos.y + textSize.y)) {
-			SpecialCursor = CURSOR_INTERACTION_ON;
-			
-			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-				ARX_MENU_CLICKSOUND();
-			}
-			
-			color = Color(255, 255, 255);
-		} else {
-			color = Color(232, 204, 143);
-		}
-
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), color);
-
-		szText = getLocalised("system_no");
-		textSize = hFontMenu->GetTextSize(szText);
-		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
-
-		if(MouseInRect(ePos.x, ePos.y, ePos.x + textSize.x, ePos.y + textSize.y)){
-			SpecialCursor = CURSOR_INTERACTION_ON;
-			
-			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
-				ARX_MENU_CLICKSOUND();
-			}
-			
-			color = Color(255, 255, 255);
-		} else {
-			color = Color(232, 204, 143);
-		}
-
-		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), color);
-	}
-
-	
 
 	DynLight[0].pos.x = 0.f + GInput->getMousePosAbs().x - (DANAESIZX >> 1);
 	DynLight[0].pos.y = 0.f + GInput->getMousePosAbs().y - (DANAESIZY >> 1);

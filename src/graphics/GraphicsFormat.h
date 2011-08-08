@@ -19,7 +19,7 @@ struct SavedColor {
 		return *this;
 	}
 	
-	inline operator Color3f() {
+	inline operator Color3f() const {
 		Color3f a;
 		a.r = r, a.g = g, a.b = b;
 		return a;
@@ -33,7 +33,7 @@ struct SavedVec3 {
 	f32 y;
 	f32 z;
 	
-	inline operator Vec3f() {
+	inline operator Vec3f() const {
 		Vec3f a;
 		a.x = x, a.y = y, a.z = z;
 		return a;
@@ -52,7 +52,7 @@ struct SavedAnglef {
 	f32 b;
 	f32 g;
 	
-	inline operator Anglef() {
+	inline operator Anglef() const {
 		Anglef r;
 		r.a = a, r.b = b, r.g  =g;
 		return r;
@@ -74,7 +74,7 @@ struct SavedTextureVertex {
 	f32 tu;
 	f32 tv;
 	
-	inline operator TexturedVertex() {
+	inline operator TexturedVertex() const {
 		TexturedVertex a;
 		a.sx = pos.x, a.sy = pos.y, a.sz = pos.z;
 		a.rhw = rhw;
