@@ -30,8 +30,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifdef BUILD_EDITOR
 
-#include <windows.h>
-
 void DANAE_DEBUGGER_Launch();
 void DANAE_DEBUGGER_Update();
 
