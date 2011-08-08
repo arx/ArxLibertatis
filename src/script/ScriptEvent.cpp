@@ -407,7 +407,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			}
 			
 		} else if(!word.compare(0, 2, ">>", 2)) {
-			context.skipCommand(); // comments and labels
+			context.skipCommand(); // labels
 		} else if(!word.compare(0, 5, "timer", 5)) {
 			timerCommand(word.substr(5), context);
 		} else if(word == "{") {

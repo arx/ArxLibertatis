@@ -503,6 +503,8 @@ void initSuppressions() {
 	
 	suppress("metal_chunk_inwall", 143, "play"); // unknown flag -e (ignored)
 	
+	suppress("orb_crypt", 76, "setsteal"); // setsteal only applies to items
+	
 	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
 	
 	suppress("player", 7725, "loadanim"); // bad animation id: "cast_hold"
@@ -512,6 +514,11 @@ void initSuppressions() {
 	suppress("player", 8733, "loadanim"); // bad animation id: "lean_right_out"
 	suppress("player", 9284, "loadanim"); // missing animation "human_death_cool"
 	suppress("player", 9558, "loadanim"); // missing animation "human_talk_happyneutral_headonly"
+	
+	suppress("porticullis_0039", 806, "setevent"); // unsupported event: "custom"
+	
+	suppress("porticullis_0049", 231, "?"); // missing '}' before end of script
+	suppress("porticullis_0049", 231, ""); // missing accept / refuse / return before script end
 	
 	suppress("pressurepad_gob_0029", 74, "goto"); // missing label 'stress'
 	
@@ -557,6 +564,10 @@ void initSuppressions() {
 	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
 	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
 	suppress("troll_base", 19054, "goto"); // missing label "main_alert"
+	
+	suppress("undead_base_0039", 102, "}"); // missing accept/refuse before end of event block
+	
+	suppress("undead_base_0046", 110, "playanim"); // animation 'wait' not loaded yet
 	
 	suppress("wall_breakable", 523, "}"); // missing accept/refuse before end of event block
 	

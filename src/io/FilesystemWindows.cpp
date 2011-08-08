@@ -142,7 +142,7 @@ bool remove_all(const path & p) {
 			if(it.is_regular_file()) {
 				succeeded &= remove(p / it.name());
 			} else {
-				succeeded &= remove_all(p / it.name());				
+				succeeded &= remove_all(p / it.name());
 			}
 		}
 	}
