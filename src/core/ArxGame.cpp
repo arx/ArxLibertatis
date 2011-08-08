@@ -325,6 +325,94 @@ bool ArxGame::AddPaks() {
 	return true;
 }
 
+enum APPMSGTYPE {
+	MSG_NONE,
+	MSGERR_APPMUSTEXIT,
+	MSGWARN_SWITCHEDTOSOFTWARE
+};
+
+//*************************************************************************************
+// DisplayFrameworkError()
+// Displays error messages in a message box
+//*************************************************************************************
+static void DisplayFrameworkError(HRESULT hr, APPMSGTYPE dwType) {
+	switch (hr) {
+		case D3DENUMERR_NODIRECTDRAW:
+			LogError << "Unable to create DirectDraw";
+			break;
+		case D3DENUMERR_NOCOMPATIBLEDEVICES:
+			LogError << "Unable to find any compatible Direct3D devices.";
+			break;
+		case D3DENUMERR_SUGGESTREFRAST:
+			LogError << "Unable to find a compatible devices. Try to enable the reference rasterizer using EnableRefRast.reg.";
+			break;
+		case D3DENUMERR_ENUMERATIONFAILED:
+			LogError << "Enumeration failure. Are you missing (32bit) graphics drivers?";
+			break;
+		case D3DFWERR_INITIALIZATIONFAILED:
+			LogError << "Generic initialization error. Enable debug output for detailed information.";
+			break;
+		case D3DFWERR_NODIRECTDRAW:
+			LogError << "No DirectDraw";
+			break;
+		case D3DFWERR_NODIRECT3D:
+			LogError << "No Direct3D";
+			break;
+		case D3DFWERR_INVALIDMODE:
+			LogError << "This Programe requires 16-bits (or higher) display mode to run in a window.";
+			break;
+		case D3DFWERR_COULDNTSETCOOPLEVEL:
+			LogError << "Unable to set Cooperative Level";
+			break;
+		case D3DFWERR_NO3DDEVICE:
+			LogError << "Unable to create Direct3DDevice object.";
+			if (MSGWARN_SWITCHEDTOSOFTWARE == dwType)
+				LogError << "Your 3D hardware chipset may not support rendering in the current display mode.";
+			break;
+		case D3DFWERR_NOZBUFFER:
+			LogError << "No ZBuffer";
+			break;
+		case D3DFWERR_INVALIDZBUFFERDEPTH:
+			LogError << "Invalid Z-buffer depth. Try switching modes from 16- to 32-bit (or vice versa)";
+			break;
+		case D3DFWERR_NOVIEWPORT:
+			LogError << "No Viewport";
+			break;
+		case D3DFWERR_NOPRIMARY:
+			LogError << "No primary";
+			break;
+		case D3DFWERR_NOCLIPPER:
+			LogError << "No Clipper";
+			break;
+		case D3DFWERR_BADDISPLAYMODE:
+			LogError << "Bad display mode";
+			break;
+		case D3DFWERR_NOBACKBUFFER:
+			LogError << "No backbuffer";
+			break;
+		case D3DFWERR_NONZEROREFCOUNT:
+			LogError << "A DDraw object has a non-zero reference count (meaning it was not properly cleaned up).";
+			break;
+		case D3DFWERR_NORENDERTARGET:
+			LogError << "No render target";
+			break;
+		case E_OUTOFMEMORY:
+			LogError << "Not enough memory!";
+			break;
+		case DDERR_OUTOFVIDEOMEMORY:
+			LogError << "There was insufficient video memory to use the hardware device.";
+			break;
+		default:
+			LogError << "Generic application error. Enable debug output for detailed information.";
+	}
+
+	if (MSGERR_APPMUSTEXIT == dwType) {
+		LogError <<"This Program will now exit.";
+	} else if (MSGWARN_SWITCHEDTOSOFTWARE == dwType){
+		LogError <<"Switching to software rasterizer.";
+	}
+}
+
 //*************************************************************************************
 // Create()
 //*************************************************************************************
@@ -450,88 +538,6 @@ bool ArxGame::FrameMove() {
 	}
 	
 	return true;
-}
-
-//*************************************************************************************
-// DisplayFrameworkError()
-// Displays error messages in a message box
-//*************************************************************************************
-void ArxGame::DisplayFrameworkError(HRESULT hr, APPMSGTYPE dwType) {
-	switch (hr) {
-		case D3DENUMERR_NODIRECTDRAW:
-			LogError << "Unable to create DirectDraw";
-			break;
-		case D3DENUMERR_NOCOMPATIBLEDEVICES:
-			LogError << "Unable to find any compatible Direct3D devices.";
-			break;
-		case D3DENUMERR_SUGGESTREFRAST:
-			LogError << "Unable to find a compatible devices. Try to enable the reference rasterizer using EnableRefRast.reg.";
-			break;
-		case D3DENUMERR_ENUMERATIONFAILED:
-			LogError << "Enumeration failure. Are you missing (32bit) graphics drivers?";
-			break;
-		case D3DFWERR_INITIALIZATIONFAILED:
-			LogError << "Generic initialization error. Enable debug output for detailed information.";
-			break;
-		case D3DFWERR_NODIRECTDRAW:
-			LogError << "No DirectDraw";
-			break;
-		case D3DFWERR_NODIRECT3D:
-			LogError << "No Direct3D";
-			break;
-		case D3DFWERR_INVALIDMODE:
-			LogError << "This Programe requires 16-bits (or higher) display mode to run in a window.";
-			break;
-		case D3DFWERR_COULDNTSETCOOPLEVEL:
-			LogError << "Unable to set Cooperative Level";
-			break;
-		case D3DFWERR_NO3DDEVICE:
-			LogError << "Unable to create Direct3DDevice object.";
-			if (MSGWARN_SWITCHEDTOSOFTWARE == dwType)
-				LogError << "Your 3D hardware chipset may not support rendering in the current display mode.";
-			break;
-		case D3DFWERR_NOZBUFFER:
-			LogError << "No ZBuffer";
-			break;
-		case D3DFWERR_INVALIDZBUFFERDEPTH:
-			LogError << "Invalid Z-buffer depth. Try switching modes from 16- to 32-bit (or vice versa)";
-			break;
-		case D3DFWERR_NOVIEWPORT:
-			LogError << "No Viewport";
-			break;
-		case D3DFWERR_NOPRIMARY:
-			LogError << "No primary";
-			break;
-		case D3DFWERR_NOCLIPPER:
-			LogError << "No Clipper";
-			break;
-		case D3DFWERR_BADDISPLAYMODE:
-			LogError << "Bad display mode";
-			break;
-		case D3DFWERR_NOBACKBUFFER:
-			LogError << "No backbuffer";
-			break;
-		case D3DFWERR_NONZEROREFCOUNT:
-			LogError << "A DDraw object has a non-zero reference count (meaning it was not properly cleaned up).";
-			break;
-		case D3DFWERR_NORENDERTARGET:
-			LogError << "No render target";
-			break;
-		case E_OUTOFMEMORY:
-			LogError << "Not enough memory!";
-			break;
-		case DDERR_OUTOFVIDEOMEMORY:
-			LogError << "There was insufficient video memory to use the hardware device.";
-			break;
-		default:
-			LogError << "Generic application error. Enable debug output for detailed information.";
-	}
-
-	if (MSGERR_APPMUSTEXIT == dwType) {
-		LogError <<"This Program will now exit.";
-	} else if (MSGWARN_SWITCHEDTOSOFTWARE == dwType){
-		LogError <<"Switching to software rasterizer.";
-	}
 }
 
 long MouseDragX, MouseDragY;

@@ -55,16 +55,6 @@ protected:
 	void GoFor2DFX();
 	bool BeforeRun();
 	
-	// 3D Framework functions
-	
-	enum APPMSGTYPE {
-		MSG_NONE,
-		MSGERR_APPMUSTEXIT,
-		MSGWARN_SWITCHEDTOSOFTWARE
-	};
-	
-	void DisplayFrameworkError(HRESULT, APPMSGTYPE);
-	
 	bool Initialize3DEnvironment();
 	
 	bool Render3DEnvironment();
