@@ -81,8 +81,6 @@ public:
 	virtual void Cleanup3DEnvironment();
 	virtual bool Change3DEnvironment();
 	
-	virtual bool UpdateGamma();
-	
 	/**
 	 * Writes text to the window
 	 * @param x The x coordinate for the text

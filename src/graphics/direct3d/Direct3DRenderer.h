@@ -2,6 +2,8 @@
 #ifndef ARX_GRAPHICS_DIRECT3D_DIRECT3DRENDERER_H
 #define ARX_GRAPHICS_DIRECT3D_DIRECT3DRENDERER_H
 
+#include <d3d.h>
+
 #include "graphics/Renderer.h"
 
 class Direct3DRenderer : public Renderer {
@@ -72,6 +74,13 @@ public:
 	
 	bool getSnapshot(Image & image);
 	bool getSnapshot(Image & image, size_t width, size_t height);
+	
+	void setGamma(float brightness, float contrast, float gamma);
+	
+private:
+	
+	LPDIRECTDRAWGAMMACONTROL gammaControl; // gamma control
+	DDGAMMARAMP oldGamma; // backup gamma values
 	
 };
 

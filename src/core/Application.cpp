@@ -106,15 +106,10 @@ static int iCurrZBias;
 // Application()
 // Constructor
 //*************************************************************************************
-Application::Application()
-{
-	m_pFramework   = NULL;
-
-	lpDDGammaControl = NULL;
-
-	m_bReady          = false;
-
-	m_bAppUseZBuffer  = false;
+Application::Application() {
+	m_pFramework = NULL;
+	m_bReady = false;
+	m_bAppUseZBuffer = false;
 }
 
 bool Application::Initialize() {

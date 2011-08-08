@@ -113,6 +113,8 @@ HRESULT CD3DFramework7::DestroyObjects()
 	{
 		m_pDD->SetCooperativeLevel(m_hWnd, DDSCL_NORMAL);
 	}
+	
+	delete GRenderer, GRenderer = NULL;
 
 	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
 	if (GDevice)

@@ -154,144 +154,63 @@ void ARXMenu_Options_Video_GetFullscreen(bool & _bEnable)
 	else _bEnable = true;
 }
 
-//-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetFullscreen(bool _bEnable) {
 	DanaeSwitchFullScreen();
 	config.video.fullscreen = _bEnable;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetFogDistance(int & _iFog)
-{
+void ARXMenu_Options_Video_GetFogDistance(int & _iFog) {
 	_iFog = config.video.fogDistance;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetFogDistance(int _iFog)
-{
-	if (_iFog > 10) _iFog = 10;
-
-	if (_iFog < 0) _iFog = 0;
-
-	config.video.fogDistance = _iFog;
+void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
+	config.video.fogDistance = clamp(_iFog, 0, 10);
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetTextureQuality(int & _iQuality)
-{
+void ARXMenu_Options_Video_GetTextureQuality(int & _iQuality) {
+	
 	if (Project.TextureSize == 0) _iQuality = 2;
-
+	
 	if (Project.TextureSize == 2) _iQuality = 1;
-
+	
 	if (Project.TextureSize == 64) _iQuality = 0;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetTextureQuality(int _iQuality)
-{
-	if (_iQuality > 2) _iQuality = 2;
-
-	if (_iQuality < 0) _iQuality = 0;
-
-	newTextureSize = _iQuality;
+void ARXMenu_Options_Video_SetTextureQuality(int _iQuality) {
+	newTextureSize = clamp(_iQuality, 0, 2);
 }
 
-void SetGammaLumContrast()
-{
-
-	float fGammaMax = (1.f / 6.f);
-	float fGammaMin = 2.f;
-
-	float fPuissance = ((fGammaMax - fGammaMin) / 11.f) * ((float)(config.video.gamma + 1)) + fGammaMin;
-
-	float fLuminosityMin = -.2f;
-	float fLuminosityMax = .2f;
-	float fLuminosity = ((fLuminosityMax - fLuminosityMin) / 11.f) * ((float)(config.video.luminosity + 1)) + fLuminosityMin;
-
-	float fContrastMax = -.3f;
-	float fContrastMin = .3f;
-	float fContrast = ((fContrastMax - fContrastMin) / 11.f) * ((float)(config.video.contrast + 1)) + fContrastMin;
-
-	float fRangeMin = 0.f + fContrast;
-	float fRangeMax = 1.f - fContrast;
-	float fdVal = (fRangeMax - fRangeMin) / 256.f;
-	float fVal = 0.f;
-
-	for (int iI = 0; iI < 256; iI++)
-	{
-		int iColor = (int)(65536.f * (fLuminosity + pow(fVal, fPuissance)));
-
-		if (iColor < 0)
-		{
-			iColor = 0;
-		}
-		else
-		{
-			if (iColor > 65535)
-			{
-				iColor = 65535;
-			}
-		}
-
-
-		ARX_CHECK_WORD(iColor);
-		WORD wColor = static_cast<u16>(iColor);
-
-		mainApp->DDGammaRamp.red[iI] = wColor;
-		mainApp->DDGammaRamp.green[iI] = wColor;
-		mainApp->DDGammaRamp.blue[iI] = wColor;
-
-
-		fVal += fdVal;
-	}
-
-	mainApp->UpdateGamma();
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetGamma(int & _iGamma)
-{
+void ARXMenu_Options_Video_GetGamma(int & _iGamma) {
 	_iGamma = config.video.gamma;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetGamma(int _iGamma)
-{
+void ARXMenu_Options_Video_SetGamma(int _iGamma) {
 	config.video.gamma = _iGamma;
-	SetGammaLumContrast();
+	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetLuminosity(int & _iLuminosity)
-{
+void ARXMenu_Options_Video_GetLuminosity(int & _iLuminosity) {
 	_iLuminosity = config.video.luminosity;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetLuminosity(int _iLuminosity)
-{
+void ARXMenu_Options_Video_SetLuminosity(int _iLuminosity) {
 	config.video.luminosity = _iLuminosity;
-	SetGammaLumContrast();
+	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetContrast(int & _iContrast)
-{
+void ARXMenu_Options_Video_GetContrast(int & _iContrast) {
 	_iContrast = config.video.contrast;
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_SetContrast(int _iContrast)
-{
+void ARXMenu_Options_Video_SetContrast(int _iContrast) {
 	config.video.contrast = _iContrast;
-	SetGammaLumContrast();
+	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 }
 
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetDetailsQuality(int & _iQuality)
-{
+void ARXMenu_Options_Video_GetDetailsQuality(int & _iQuality) {
 	_iQuality = config.video.levelOfDetail;
 }
+
 extern long MAX_FRAME_COUNT;
 extern long USEINTERNORM;
 extern long DYNAMIC_NORMALS;

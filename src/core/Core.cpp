@@ -4501,7 +4501,5 @@ void ClearGame() {
 	
 	mainApp->Cleanup3DEnvironment();
 	
-	delete GRenderer;
-	
 	LogInfo << "Clean shutdown";
 }

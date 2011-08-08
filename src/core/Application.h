@@ -170,10 +170,6 @@ public:
 	bool m_bReady;
 	Window * m_MainWindow;
 	
-	/* TODO Should all be privatized eventually */
-	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
-	DDGAMMARAMP DDGammaRamp; // modified ramp value
-	DDGAMMARAMP DDGammaOld; // backup gamma values
 	CD3DFramework7 * m_pFramework;
 	D3DEnum_DeviceInfo * m_pDeviceInfo;
 	
@@ -201,7 +197,6 @@ public:
 	virtual bool Change3DEnvironment() = 0;
 	virtual void Cleanup3DEnvironment() = 0;
 	virtual bool SwitchFullScreen() = 0;
-	virtual bool UpdateGamma() = 0;
 	
 };
 

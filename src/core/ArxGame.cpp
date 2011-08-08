@@ -232,8 +232,12 @@ bool ArxGame::InitWindow() {
 }
 
 bool ArxGame::InitGraphics() {
+	
 	GRenderer = new Direct3DRenderer();
-	return GRenderer != NULL;
+	
+	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	
+	return true;
 }
 
 bool ArxGame::InitInput()
@@ -601,24 +605,16 @@ bool ArxGame::Render3DEnvironment() {
 // Cleanup3DEnvironment()
 // Cleanup scene objects
 //*************************************************************************************
-void ArxGame::Cleanup3DEnvironment()
-{
+void ArxGame::Cleanup3DEnvironment() {
+	
 	m_bReady  = false;
-
-	if (lpDDGammaControl)
-	{
-//  todo: what is DDSGR_CALIBRATE
-//  lpDDGammaControl->SetGammaRamp(DDSGR_CALIBRATE, &DDGammaOld);
-		lpDDGammaControl->Release();
-		lpDDGammaControl = NULL;
-	}
-
+	
 	if(m_pFramework) {
 		DeleteDeviceObjects();
 		delete m_pFramework, m_pFramework = NULL;
 		FinalCleanup();
 	}
-
+	
 	D3DEnum_FreeResources();
 }
 
@@ -626,26 +622,15 @@ void ArxGame::Cleanup3DEnvironment()
 // Change3DEnvironment()
 // Handles driver, device, and/or mode changes for the app.
 //*************************************************************************************
-bool ArxGame::Change3DEnvironment()
-{
+bool ArxGame::Change3DEnvironment() {
+	
 	HRESULT hr;
 	
-	DDGAMMARAMP DDGammaPrevious;
-
-	if (lpDDGammaControl)
-	{
-		lpDDGammaControl->GetGammaRamp(0, &DDGammaPrevious);
-		lpDDGammaControl->SetGammaRamp(0, &DDGammaOld);
-		lpDDGammaControl->Release();
-		lpDDGammaControl = NULL;
-	}
-
 	// Release all scene objects that will be re-created for the new device
 	DeleteDeviceObjects();
 
 	// Release framework objects, so a new device can be created
-	if (FAILED(hr = m_pFramework->DestroyObjects()))
-	{
+	if(FAILED(hr = m_pFramework->DestroyObjects())) {
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		return false;
 	}
@@ -655,31 +640,12 @@ bool ArxGame::Change3DEnvironment()
 	
 	// Inform the framework class of the driver change. It will internally
 	// re-create valid surfaces, a d3ddevice, etc.
-	if (FAILED(hr = Initialize3DEnvironment()))
-	{
+	if(FAILED(hr = Initialize3DEnvironment())) {
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		return false;
 	}
-
-	// Restore gamma ramp...
-	if (lpDDGammaControl)
-	{
-		lpDDGammaControl->SetGammaRamp(0, &DDGammaPrevious);
-		lpDDGammaControl->GetGammaRamp(0, &DDGammaRamp);
-	}
 	
 	return true;
-}
-
-bool ArxGame::UpdateGamma()
-{
-	if (lpDDGammaControl)
-	{
-		lpDDGammaControl->SetGammaRamp(0, &DDGammaRamp);
-		return true;
-	}
-
-	return false;
 }
 
 //*************************************************************************************
@@ -688,48 +654,26 @@ bool ArxGame::UpdateGamma()
 // to initialize device specific objects. This code is structured to
 // handled any errors that may occur during initialization
 //*************************************************************************************
-HRESULT ArxGame::Initialize3DEnvironment()
-{
+HRESULT ArxGame::Initialize3DEnvironment() {
+	
 	HRESULT hr;
 	DWORD dwFrameworkFlags = 0L;
 	dwFrameworkFlags |= (!m_pDeviceInfo->bWindowed ? D3DFW_FULLSCREEN : 0L);
 	dwFrameworkFlags |= (m_pDeviceInfo->bStereo   ? D3DFW_STEREO  : 0L);
 	dwFrameworkFlags |= (m_bAppUseZBuffer    ? D3DFW_ZBUFFER  : 0L);
-
-	if (lpDDGammaControl)
-	{
-		lpDDGammaControl->Release();
-		lpDDGammaControl = NULL;
-	}
-
+	
 	// Initialize the D3D framework
 	if (SUCCEEDED(hr = m_pFramework->Initialize((HWND)m_MainWindow->GetHandle(),
 					   m_pDeviceInfo->pDriverGUID, m_pDeviceInfo->pDeviceGUID,
 					   &m_pDeviceInfo->ddsdFullscreenMode, dwFrameworkFlags)))
 	{
-		if (this->m_pFramework->m_pddsFrontBuffer)
-		{
-			this->m_pFramework->m_pddsFrontBuffer->QueryInterface(IID_IDirectDrawGammaControl, (void **)&lpDDGammaControl);
-
-			if (lpDDGammaControl)
-			{
-				lpDDGammaControl->GetGammaRamp(0, &DDGammaOld);
-				lpDDGammaControl->GetGammaRamp(0, &DDGammaRamp);
-			}
-		}
-
+		
 		if (SUCCEEDED(hr = InitDeviceObjects()))
 		{
 			return S_OK;
 		}
 		else
 		{
-			if (lpDDGammaControl)
-			{
-				lpDDGammaControl->Release();
-				lpDDGammaControl = NULL;
-			}
-
 			DeleteDeviceObjects();
 			m_pFramework->DestroyObjects();
 		}
