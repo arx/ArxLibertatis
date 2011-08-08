@@ -96,7 +96,6 @@ long EERIEMouseGrab = 0;
 Application* mainApp = 0;
 EERIE_CAMERA  * Kam;
 LPDIRECT3DDEVICE7 GDevice;
-HWND    MSGhwnd = NULL;
 float    FPS;
 LightMode ModeLight = 0;
 ViewModeFlags ViewMode = 0;
