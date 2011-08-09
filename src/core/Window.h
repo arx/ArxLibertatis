@@ -1,5 +1,6 @@
-#ifndef  ARX_CORE_WINDOW_H
-#define  ARX_CORE_WINDOW_H
+
+#ifndef ARX_CORE_WINDOW_H
+#define ARX_CORE_WINDOW_H
 
 #include <list>
 #include <string>

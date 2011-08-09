@@ -1,5 +1,6 @@
-#ifndef  ARX_CORE_WIN32WINDOW_H
-#define  ARX_CORE_WIN32WINDOW_H
+
+#ifndef ARX_CORE_WIN32WINDOW_H
+#define ARX_CORE_WIN32WINDOW_H
 
 #include "core/Window.h"
 

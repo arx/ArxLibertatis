@@ -23,8 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef WIN32APPLICATION_H
-#define WIN32APPLICATION_H
+#ifndef ARX_CORE_ARXGAME_H
+#define ARX_CORE_ARXGAME_H
 
 #include "core/Application.h"
 #include "core/Window.h"
@@ -87,5 +87,5 @@ private:
 	
 };
 
-#endif // WIN32APPLICATION_H
+#endif // ARX_CORE_ARXGAME_H
 
