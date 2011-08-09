@@ -67,7 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "core/Window.h"
 #include "graphics/Math.h"
-#include "graphics/Frame.h" // TODO-input: Remove this dependency (CD3DFramework7)
 #include "io/Logger.h"
 #include "platform/Platform.h"
 
@@ -626,8 +625,8 @@ void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 		}
 	}
 
-	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->m_pFramework->m_dwRenderWidth);
-	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->m_pFramework->m_dwRenderHeight);
+	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->GetWindow()->GetSize().x);
+	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->GetWindow()->GetSize().y);
 	
 	if(mainApp->GetWindow()->IsFullScreen()) {
 		absX = iLastMouseX;
