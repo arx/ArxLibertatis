@@ -143,8 +143,11 @@ extern long EERIEMouseButton, EERIEMouseGrab;
 class Application {
 
 protected:
+	
 	bool m_bAppUseZBuffer;
-
+	
+	Window * m_MainWindow;
+	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
 	virtual bool DeleteDeviceObjects() { return true; }
 	virtual bool FrameMove() { return true; }
@@ -152,21 +155,22 @@ protected:
 	virtual bool BeforeRun() { return true; }
 	
 public:
+	
 	virtual bool Initialize();
-
+	
 private:
+	
 	virtual bool InitConfig();
 	virtual bool InitWindow() = 0;
 	virtual bool InitGraphics() = 0;
 	virtual bool InitInput() = 0;
 	virtual bool InitSound() = 0;
-
+	
 public:
 	
 	Window * GetWindow() { return m_MainWindow; }
-
+	
 	bool m_bReady;
-	Window * m_MainWindow;
 	
 	CD3DFramework7 * m_pFramework;
 	D3DEnum_DeviceInfo * m_pDeviceInfo;
