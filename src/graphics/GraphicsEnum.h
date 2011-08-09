@@ -94,19 +94,13 @@ struct D3DEnum_DeviceInfo
 //       called each device, to confirm that the device supports the feature
 //       set required by the app.
 //-----------------------------------------------------------------------------
-HRESULT D3DEnum_EnumerateDevices(HRESULT(*fn)(DDCAPS *, D3DDEVICEDESC7 *));
+HRESULT D3DEnum_EnumerateDevices();
 
 //-----------------------------------------------------------------------------
 // Name: D3DEnum_FreeResources()
 // Desc: Cleans up any memory allocated during device enumeration
 //-----------------------------------------------------------------------------
-VOID D3DEnum_FreeResources();
-
-//-----------------------------------------------------------------------------
-// Name: D3DEnum_GetDevices()
-// Desc: Returns a ptr to the array of enumerated D3DDEVICEINFO structures.
-//-----------------------------------------------------------------------------
-VOID D3DEnum_GetDevices(D3DEnum_DeviceInfo ** ppDevices, DWORD * pdwCount);
+void D3DEnum_FreeResources();
 
 //-----------------------------------------------------------------------------
 // Name: D3DEnum_SelectDefaultDevice()
@@ -115,12 +109,6 @@ VOID D3DEnum_GetDevices(D3DEnum_DeviceInfo ** ppDevices, DWORD * pdwCount);
 //-----------------------------------------------------------------------------
 HRESULT D3DEnum_SelectDefaultDevice(D3DEnum_DeviceInfo ** pDevice,
                                     DWORD dwFlags = 0L);
-
-//-----------------------------------------------------------------------------
-// Name: D3DEnum_UserChangeDevice()
-// Desc: Pops up a dialog which allows the user to select a new device.
-//-----------------------------------------------------------------------------
-HRESULT D3DEnum_UserChangeDevice(D3DEnum_DeviceInfo ** ppDevice);
 
 #endif // D3DENUM_H
 

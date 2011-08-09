@@ -420,9 +420,8 @@ bool ArxGame::Create() {
 	
 	HRESULT hr;
 
-	// Enumerate available D3D devices. The callback is used so the app can
-	// confirm/reject each enumerated device depending on its capabilities.
-	if (FAILED(hr = D3DEnum_EnumerateDevices(NULL)))
+	// Enumerate available D3D devices.
+	if (FAILED(hr = D3DEnum_EnumerateDevices()))
 	{
 		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
 		return false;
