@@ -108,13 +108,13 @@ inline bool In3DBBoxTolerance(const Vec3f * pos, const EERIE_3D_BBOX * bbox, con
 
 
 //-----------------------------------------------------------------------------
-inline unsigned __int8 clipByte(int value)
+inline u8 clipByte(int value)
 {
 	value = (0 & (-(int)(value < 0))) | (value & (-(int)!(value < 0)));
 	value = (255 & (-(int)(value > 255))) | (value & (-(int)!(value > 255)));
 	return  static_cast<unsigned char>(value);
 }
-inline unsigned __int8 clipByte255(int value)
+inline u8 clipByte255(int value)
 {
 	value = (255 & (-(int)(value > 255))) | (value & (-(int)!(value > 255)));
 	return static_cast<unsigned char>(value);

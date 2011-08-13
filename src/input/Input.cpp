@@ -67,7 +67,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/RenderWindow.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
+#ifdef HAVE_DINPUT7
 #include "input/DInput7Backend.h"
+#endif
+#ifdef HAVE_SDL
+#include "input/SDLInputBackend.h"
+#endif
 #include "io/Logger.h"
 
 Input * GInput = NULL;
@@ -227,21 +232,23 @@ Input::Input()
 
 //-----------------------------------------------------------------------------
 
-bool Input::init()
-{
-	backend = new DInput7Backend();
-
+bool Input::init() {
+	
+#if defined(HAVE_SDL)
+	backend = new SDLInputBackend;
+#elif defined(HAVE_DINPUT7)
+	backend = new DInput7Backend;
+#else
+#error "Need either DirectInput 7 or SDL!"
+#endif
+	
 	bool ret = backend->init();
-	if(!ret)
-	{
-		delete backend;
-		backend = NULL;
-	}
-	else
-	{
+	if(!ret) {
+		delete backend, backend = NULL;
+	} else {
 		reset();
 	}
-
+	
 	return ret;
 }
 

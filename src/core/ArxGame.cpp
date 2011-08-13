@@ -37,11 +37,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/GameTime.h"
-#include "core/D3D7Window.h"
 #include "core/Localisation.h"
 #include "core/Resource.h"
 #include "core/RenderWindow.h"
-#include "core/Win32Window.h"
+#ifdef HAVE_D3D7
+#include "core/D3D7Window.h"
+#endif
+#ifdef HAVE_SDL
+#include "core/SDLWindow.h"
+#endif
 
 #include "game/Inventory.h"
 #include "game/Levels.h"
@@ -56,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/VertexBuffer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/direct3d/Direct3DRenderer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/font/Font.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -218,7 +221,13 @@ bool ArxGame::Initialize()
 
 bool ArxGame::InitWindow() {
 	
-	m_MainWindow = new D3D7Window();
+#ifdef HAVE_SDL
+	m_MainWindow = new SDLWindow;
+#elif defined(HAVE_D3D7)
+	m_MainWindow = new D3D7Window;
+#else
+#error "Need either SDL or D3D 7!"
+#endif
 	
 	// Register ourself as a listener for this window messages
 	m_MainWindow->AddListener(this);
@@ -678,7 +687,7 @@ static float _AvgFrameDiff = 150.f;
 		
 		LogDebug << "was resized";
 		
-		//DanaeRestoreFullScreen();
+		DanaeRestoreFullScreen();
 		
 		wasResized = false;
 		

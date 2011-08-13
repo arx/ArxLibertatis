@@ -5,79 +5,77 @@
 #include "graphics/Renderer.h"
 #include "Configure.h"
 
-#ifdef HAVE_OPENGL
-
-class OpenGLRenderer : Renderer {
+class OpenGLRenderer : public Renderer {
 	
-	OpenGLRenderer() { };
-	~OpenGLRenderer() { };
+public:
 	
-	// TODO implement
+	OpenGLRenderer();
+	~OpenGLRenderer();
 	
-	virtual void Initialize() = 0;
+	void Initialize();
 	
 	// Scene begin/end...
-	virtual bool BeginScene() = 0;
-	virtual bool EndScene() = 0;
+	bool BeginScene();
+	bool EndScene();
 	
 	// Matrices
-	virtual void SetViewMatrix(const EERIEMATRIX & matView) = 0;
-	virtual void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) = 0;
-	virtual void GetViewMatrix(EERIEMATRIX & matView) const = 0;
-	virtual void SetProjectionMatrix(const EERIEMATRIX & matProj) = 0;
-	virtual void GetProjectionMatrix(EERIEMATRIX & matProj) const = 0;
+	void SetViewMatrix(const EERIEMATRIX & matView);
+	void SetViewMatrix(const Vec3f & position, const Vec3f & dir, const Vec3f & up);
+	void GetViewMatrix(EERIEMATRIX & matView) const;
+	void SetProjectionMatrix(const EERIEMATRIX & matProj);
+	void GetProjectionMatrix(EERIEMATRIX & matProj) const;
 	
 	// Texture management
-	virtual void ReleaseAllTextures() = 0;
-	virtual void RestoreAllTextures() = 0;
+	void ReleaseAllTextures();
+	void RestoreAllTextures();
 	
 	// Factory
-	virtual Texture2D * CreateTexture2D() = 0;
+	Texture2D * CreateTexture2D();
 	
 	// Render states
 	void SetRenderState(RenderState renderState, bool enable);
 	
 	// Alphablending & Transparency
-	virtual void SetAlphaFunc(PixelCompareFunc func, float fef) = 0; // Ref = [0.0f, 1.0f]
-	virtual void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) = 0;
+	void SetAlphaFunc(PixelCompareFunc func, float fef); // Ref = [0.0f, 1.0f]
+	void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
 	
 	// Viewport
-	virtual void SetViewport(const Rect & viewport) = 0;
-	virtual Rect GetViewport() = 0;
+	void SetViewport(const Rect & viewport);
+	Rect GetViewport();
 	
 	// Projection
-	virtual void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) = 0;
-	virtual void End2DProjection() = 0;
+	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
+	void End2DProjection();
 	
 	// Render Target
-	virtual void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0) = 0;
+	void Clear(BufferFlags bufferFlags, Color clearColor = Color::none, float clearDepth = 1.f, size_t nrects = 0, Rect * rect = 0);
 	
 	// Fog
-	virtual void SetFogColor(Color color) = 0;
-	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f) = 0;
+	void SetFogColor(Color color);
+	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
 	
 	// Rasterizer
-	virtual void SetAntialiasing(bool enable) = 0;
-	virtual void SetCulling(CullingMode mode) = 0;
-	virtual void SetDepthBias(int depthBias) = 0;
-	virtual void SetFillMode(FillMode mode) = 0;
+	void SetAntialiasing(bool enable);
+	void SetCulling(CullingMode mode);
+	void SetDepthBias(int depthBias);
+	void SetFillMode(FillMode mode);
 	
-	virtual float GetMaxAnisotropy() const = 0;
+	float GetMaxAnisotropy() const;
 	
 	// Utilities...
-	virtual void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) = 0;
+	void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color);
 	
-	virtual VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage) = 0;
-	virtual VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage) = 0;
-	virtual VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage) = 0;
+	VertexBuffer<TexturedVertex> * createVertexBufferTL(size_t capacity, BufferUsage usage);
+	VertexBuffer<SMY_VERTEX> * createVertexBuffer(size_t capacity, BufferUsage usage);
+	VertexBuffer<SMY_VERTEX3> * createVertexBuffer3(size_t capacity, BufferUsage usage);
 	
-	virtual void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) = 0;
+	void drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices);
 	
-	virtual bool getSnapshot(Image & image) = 0;
-	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
+	bool getSnapshot(Image & image);
+	bool getSnapshot(Image & image, size_t width, size_t height);
+	
+	void setGamma(float brightness, float contrast, float gamma);
 	
 };
-
-#endif // HAVE_OPENGL
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
