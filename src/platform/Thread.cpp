@@ -113,7 +113,7 @@ void Thread::waitForCompletion() {
 
 #endif
 
-#if defined(HAVE_NANOSLEEP)
+#if defined(HAVE_NANOSLEEP_FUNC)
 
 #include <time.h>
 
@@ -133,5 +133,5 @@ void Thread::sleep(unsigned milliseconds) {
 }
 
 #else
-#error "Sleep not supported: need either HAVE_NANOSLEEP or HAVE_WINAPI"
+#error "Sleep not supported: need either HAVE_NANOSLEEP_FUNC or HAVE_WINAPI"
 #endif

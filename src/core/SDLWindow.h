@@ -2,6 +2,8 @@
 #ifndef ARX_CORE_SDLWINDOW_H
 #define ARX_CORE_SDLWINDOW_H
 
+#include <SDL.h>
+
 #include "core/RenderWindow.h"
 
 class SDLWindow : public RenderWindow {
@@ -24,6 +26,11 @@ public:
 	
 private:
 	
+	bool setMode(Vec2i size, bool fullscreen);
+	
+	static int SDLCALL eventFilter(const SDL_Event * event);
+	
+	SDL_Surface * window;
 	
 };
 

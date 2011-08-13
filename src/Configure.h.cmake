@@ -8,7 +8,7 @@
 #cmakedefine HAVE_PTHREADS
 
 // Timing
-#cmakedefine HAVE_NANOSLEEP
+#cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
 #cmakedefine HAVE_CLOCK_GETTIME
 
 // Audio backend
