@@ -20,7 +20,7 @@ public:
 	
 private:
 	
-	DX7Texture2D();
+	DX7Texture2D(LPDIRECT3DDEVICE7 device);
 	virtual ~DX7Texture2D();
 	
 	virtual bool Create();
@@ -34,6 +34,7 @@ private:
 	void CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSURFACE7 pddsSrc);
 	
 	LPDIRECTDRAWSURFACE7 m_pddsSurface;
+	LPDIRECT3DDEVICE7 device;
 };
 
 // TODO-DX7: This should really be an intrusive list!

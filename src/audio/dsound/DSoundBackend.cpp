@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 
 #include "core/Application.h"
-#include "core/Window.h"
+#include "core/RenderWindow.h"
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
 #include "audio/dsound/DSoundSource.h"

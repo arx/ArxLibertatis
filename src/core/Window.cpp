@@ -71,10 +71,6 @@ bool Window::IsFullScreen() const {
 	return m_IsFullscreen;
 }
 
-const Vec2i& Window::GetSize() const {
-	return m_Size;
-}
-
 bool Window::OnClose() {
 	bool bShouldClose = true;
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end() && bShouldClose; ++it )

@@ -2,12 +2,12 @@
 #ifndef ARX_CORE_WIN32WINDOW_H
 #define ARX_CORE_WIN32WINDOW_H
 
-#include "core/Window.h"
+#include "core/RenderWindow.h"
 
 #include <map>
 #include <windows.h>
 
-class Win32Window : public Window {
+class Win32Window : public RenderWindow {
 	
 public:
 	

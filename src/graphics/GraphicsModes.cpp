@@ -29,8 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <algorithm>
 
-#include <d3d.h>
-
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -40,7 +38,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 
-extern LPDIRECT3DDEVICE7 GDevice; // TODO(core_cleanup) remove
+//extern LPDIRECT3DDEVICE7 GDevice; // TODO(core_cleanup) remove
 
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
@@ -146,9 +144,9 @@ void ARX_GLOBALMODS_Apply()
 	float fogStart = fZFogStart;
 
 	// WORLD COORDINATE
-	D3DDEVICEDESC7 d3dDeviceDesc;
-	GDevice->GetCaps(&d3dDeviceDesc);
-	if (d3dDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG)
+	// TODO(core_cleanup) D3DDEVICEDESC7 d3dDeviceDesc;
+	//GDevice->GetCaps(&d3dDeviceDesc);
+	//if (d3dDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG)
 	{
 		fogEnd   *= ACTIVECAM->cdepth;
 		fogStart *= ACTIVECAM->cdepth;

@@ -65,9 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-struct D3DEnum_DeviceInfo;
-class CD3DFramework7;
-class Window;
+class RenderWindow;
 
 enum HideFlag {
 	HIDE_BACKGROUND = (1<<0),
@@ -146,12 +144,11 @@ protected:
 	
 	bool m_bAppUseZBuffer;
 	
-	Window * m_MainWindow;
+	RenderWindow * m_MainWindow;
 	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
 	virtual bool DeleteDeviceObjects() { return true; }
 	virtual bool FrameMove() { return true; }
-	virtual bool RestoreSurfaces() { return true; }
 	virtual bool BeforeRun() { return true; }
 	
 public:
@@ -162,27 +159,22 @@ private:
 	
 	virtual bool InitConfig();
 	virtual bool InitWindow() = 0;
-	virtual bool InitGraphics() = 0;
 	virtual bool InitInput() = 0;
 	virtual bool InitSound() = 0;
 	
 public:
 	
-	Window * GetWindow() { return m_MainWindow; }
+	RenderWindow * GetWindow() { return m_MainWindow; }
 	
 	bool m_bReady;
 	
-	CD3DFramework7 * m_pFramework;
-	D3DEnum_DeviceInfo * m_pDeviceInfo;
-	
-
 	// Class constructor
 	Application();
-
+	
 	void EvictManagedTextures();
-
+	
 	/* Virtual functions which may be overridden for specific implementations */
-
+	
 	/**
 	 * Writes text to the window
 	 * @param x The x coordinate for the text
@@ -194,11 +186,8 @@ public:
 	virtual void Run() = 0;
 	virtual void Pause(bool bPause);
 	virtual bool Render() { return true; }
-	virtual bool InitDeviceObjects() = 0;
 	virtual bool FinalCleanup() = 0;
-	virtual bool Change3DEnvironment() = 0;
 	virtual void Cleanup3DEnvironment() = 0;
-	virtual bool SwitchFullScreen() = 0;
 	
 };
 

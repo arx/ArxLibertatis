@@ -2602,7 +2602,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			//SUBSTRACTIVE
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive)
 			{
-				if(mainApp->m_pFramework->bitdepth==16)
+				if(Project.bits==16)
 					SetZBias(1);
 				else
 					SetZBias(8);

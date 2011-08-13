@@ -96,9 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 
 #include "graphics/VertexBuffer.h"
-#include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsModes.h"
-#include "graphics/Frame.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/FTL.h"
@@ -160,7 +158,6 @@ extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
 extern long SPECIAL_DRAGINTER_RENDER;
-extern HWND		PRECALC;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
@@ -201,8 +198,6 @@ extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
 extern long LastEERIEMouseButton;
 extern float OLD_PROGRESS_BAR_COUNT;
-
-void DanaeRestoreFullScreen();
 
 extern EERIE_3DOBJ * ssol;
 extern long ssol_count;
@@ -468,6 +463,7 @@ void DANAE_KillCinematic()
 
 void DanaeSwitchFullScreen()
 {
+	/* TODO(core_cleanup)
 	int nb=mainApp->m_pDeviceInfo->dwNumModes;
 
 	for(int i=0;i<nb;i++)
@@ -491,8 +487,8 @@ void DanaeSwitchFullScreen()
 	}
 
 	config.video.bpp = mainApp->m_pFramework->bitdepth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
-	config.video.height = mainApp->m_pFramework->m_dwRenderHeight = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
-	config.video.width = mainApp->m_pFramework->m_dwRenderWidth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwWidth;
+	config.video.height = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
+	config.video.width = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwWidth; */
 
 	if(pMenu)
 	{
@@ -500,7 +496,7 @@ void DanaeSwitchFullScreen()
 	}
 
 	ARX_Text_Close();
-	mainApp->SwitchFullScreen();
+	//mainApp->SwitchFullScreen();
 
 	AdjustUI();
 
@@ -510,8 +506,8 @@ void DanaeSwitchFullScreen()
 void AdjustUI()
 {
 	// Sets Danae Screen size depending on windowed/full-screen state
-	DANAESIZX = mainApp->m_pFramework->m_dwRenderWidth;
-	DANAESIZY = mainApp->m_pFramework->m_dwRenderHeight;
+	DANAESIZX = mainApp->GetWindow()->GetSize().x;
+	DANAESIZY = mainApp->GetWindow()->GetSize().y;
 
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
@@ -528,9 +524,8 @@ void AdjustUI()
 }
 
 void DanaeRestoreFullScreen() {
-
-	mainApp->m_pDeviceInfo->bWindowed=!mainApp->m_pDeviceInfo->bWindowed;
-	mainApp->SwitchFullScreen();
+	
+	mainApp->GetWindow()->SetFullscreen(!mainApp->GetWindow()->IsFullScreen());
 
 	AdjustUI();
 
@@ -782,97 +777,12 @@ void InitializeDanae()
 	
 }
 
-//-----------------------------------------------------------------------------
-
-void forInternalPeople(LPSTR strCmdLine) {
-	
-	LogDebug << "not FOR_EXTERNAL_PEOPLE";
-	
-#ifdef BUILD_EDITOR
-	
-	char * param[10];
-	
-	param[0] = strtok(strCmdLine, " ");
-	
-	for(long j = 1; j < 10; j++) {
-		param[j] = strtok(NULL," ");
-	}
-	
-	long parampos = 0;
-	if((param[parampos] != NULL)) {
-		LogInfo << "PARAMS";
-		FINAL_RELEASE=0;
-		GAME_EDITOR=1;
-		
-		if (!strcmp(param[parampos], "editor")) {
-			LogInfo << "PARAM EDITOR";
-			NEED_ANCHORS=1;
-		} else {
-			NEED_ANCHORS=1;
-			USE_FAST_SCENES=0;
-			LogInfo << "PARAM MOULINEX";
-			
-			if (param[parampos][0]=='-') {
-				long posflags=parampos;
-				PROCESS_NO_POPUP=1;
-				PROCESS_ALL_THEO=0;
-				PROCESS_LEVELS=0;
-				PROCESS_ONLY_ONE_LEVEL=-1;
-				
-				if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
-					parampos++;
-					PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
-				}
-				
-				if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
-					PROCESS_ALL_THEO=1;
-				}
-				
-				if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
-					NEED_ANCHORS=0;
-					USE_FAST_SCENES=1;
-					NOCHECKSUM=1;
-				}
-				
-				if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
-					PROCESS_LEVELS=1;
-				}
-				
-				if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
-					TSU_LIGHTING=1;
-				}
-				
-				parampos++;
-			} else {
-				PROCESS_ALL_THEO=1;
-				PROCESS_LEVELS=1;
-			}
-			
-			if(!strcmp(param[parampos], "moulinex")) {
-				LogInfo << "Launching moulinex";
-				MOULINEX=1;
-				KILL_AT_MOULINEX_END=1;
-			}
-		}
-	} else {
-		LogInfo << "FRGE";
-		GAME_EDITOR=1;
-		if (FINAL_RELEASE)
-			GAME_EDITOR=0;
-	}
-	
-#else
-	ARX_UNUSED(strCmdLine);
-#endif
-}
 
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
 int main(int argc, char ** argv) {
 	
 	(void)argc, (void)argv;
-	
-	LPSTR strCmdLine = GetCommandLine();
 	
 	long i;
 	
@@ -931,9 +841,6 @@ int main(int argc, char ** argv) {
 
 	Project.vsync = true;
 	LogDebug << "Project Init";
-
-	if (!FOR_EXTERNAL_PEOPLE)
-		forInternalPeople(strCmdLine);
 
 	NOCHECKSUM=0;
 	
@@ -996,14 +903,6 @@ int main(int argc, char ** argv) {
 
 	LogDebug << "Launching DANAE";
 
-#ifdef BUILD_EDITOR
-	if (!FINAL_COMMERCIAL_DEMO && !FINAL_COMMERCIAL_GAME) {
-		if (!LoadLibrary("RICHED32.DLL")) {
-			LogError  << "DanaeScriptEditor :: IDS_RICHED_LOAD_FAIL";
-		}
-	}
-#endif
-
 	memset(&Project, 0, sizeof(PROJECT));
 	Project.vsync = true;		
 	
@@ -1043,7 +942,7 @@ int main(int argc, char ** argv) {
 
 	LogInfo << "Application Creation Success";
 
-	mainApp->m_pFramework->bitdepth=Project.bits;
+	// TODO(core_cleanup) mainApp->m_pFramework->bitdepth=Project.bits;
 		
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
@@ -2425,9 +2324,9 @@ void FirstFrameHandling()
 	iCreateMap=0;
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
-		if (NeedMapCreation())	
-			iCreateMap=1;
-		else
+		//if (NeedMapCreation())	
+		//	iCreateMap=1;
+		//else
 			iCreateMap=0;
 	}
 #endif
@@ -4398,7 +4297,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 	ARX_TIME_UnPause();
 	
-	ShowWindow((HWND)mainApp->GetWindow()->GetHandle(), SW_MINIMIZE | SW_HIDE);
+	// TODO(core_cleanup) ShowWindow((HWND)mainApp->GetWindow()->GetHandle(), SW_MINIMIZE | SW_HIDE);
 	
 	ARX_MINIMAP_PurgeTC();
 	

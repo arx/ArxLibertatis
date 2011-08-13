@@ -4,33 +4,32 @@
 
 #include <d3d.h>
 
-#include "core/Application.h"
+#include "core/D3D7Window.h"
 #include "graphics/Frame.h"
 #include "graphics/VertexBuffer.h"
 
 extern const DWORD ARXToDXBufferFlags[];
 extern const D3DPRIMITIVETYPE ARXToDXPrimitiveType[];
-extern LPDIRECT3DDEVICE7 GDevice;
 
 template <class Vertex>
 class DX7VertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	DX7VertexBuffer(DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity) {
+	DX7VertexBuffer(D3D7Window * window, DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity), device(window->getDevice()) {
 		
 		D3DVERTEXBUFFERDESC d3dvbufferdesc;
 		d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
 		
 		d3dvbufferdesc.dwCaps = D3DVBCAPS_WRITEONLY;
-		if(!(mainApp->m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)) {
+		if(!(window->getInfo().device.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)) {
 			d3dvbufferdesc.dwCaps |= D3DVBCAPS_SYSTEMMEMORY;
 		}
 		
 		d3dvbufferdesc.dwFVF = format;
 		d3dvbufferdesc.dwNumVertices = capacity;
 		
-		HRESULT hr = mainApp->m_pFramework->GetDirect3D()->CreateVertexBuffer(&d3dvbufferdesc, &vb, 0);
+		HRESULT hr = window->getD3D()->CreateVertexBuffer(&d3dvbufferdesc, &vb, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
 		
@@ -70,7 +69,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-		HRESULT hr = GDevice->DrawPrimitiveVB(type, vb, offset, count, 0);
+		HRESULT hr = device->DrawPrimitiveVB(type, vb, offset, count, 0);
 		arx_assert_msg(SUCCEEDED(hr), "DrawPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}
@@ -82,7 +81,7 @@ public:
 		arx_assert(indices != NULL);
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-		HRESULT hr = GDevice->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
+		HRESULT hr = device->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
 		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}
@@ -94,6 +93,7 @@ public:
 private:
 	
 	LPDIRECT3DVERTEXBUFFER7 vb;
+	LPDIRECT3DDEVICE7 device;
 	
 };
 

@@ -4,13 +4,14 @@
 
 #include <d3d.h>
 
+#include "core/D3D7Window.h"
 #include "graphics/Renderer.h"
 
 class Direct3DRenderer : public Renderer {
 	
 public:
 	
-	Direct3DRenderer();
+	Direct3DRenderer(D3D7Window * window);
 	~Direct3DRenderer();
 	
 	void Initialize();
@@ -79,6 +80,8 @@ public:
 	
 private:
 	
+	LPDIRECT3DDEVICE7 device;
+	D3D7Window * window;
 	LPDIRECTDRAWGAMMACONTROL gammaControl; // gamma control
 	DDGAMMARAMP oldGamma; // backup gamma values
 	

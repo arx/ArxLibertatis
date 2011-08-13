@@ -33,6 +33,7 @@ option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 option(ARX_USE_OPENGL "Build the OpenGL renderer backend." OFF)
+option(ARX_USE_D3D7 "Build the Direct3D 7 renderer backend." OFF)
 
 if(ARX_FORCE_32BIT)
 	set(CURRENT_ARX_FORCE_32BIT 1)
@@ -301,8 +302,10 @@ set(CORE_SOURCES
 	src/core/ArxGame.cpp
 	src/core/Config.cpp
 	src/core/Core.cpp
+	src/core/D3D7Window.cpp
 	src/core/GameTime.cpp
 	src/core/Localisation.cpp
+	src/core/RenderWindow.cpp
 	src/core/Win32Window.cpp
 	src/core/Window.cpp
 )
@@ -327,8 +330,6 @@ set(GAME_SOURCES
 
 set(GRAPHICS_SOURCES
 	src/graphics/Draw.cpp
-	src/graphics/Frame.cpp
-	src/graphics/GraphicsEnum.cpp
 	src/graphics/GraphicsModes.cpp
 	src/graphics/GraphicsUtility.cpp
 	src/graphics/Math.cpp

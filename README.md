@@ -13,8 +13,8 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
-* DevIL (libil.so)
-* zlib (libz.so)
+* DevIL
+* zlib
 * Boost
 * OpenAL 1.1 or DirectSound
 
@@ -59,7 +59,7 @@ Because ARX is compiled as a winelib application, normal gdb won't work. Instead
 
 ## Build documentation
 
-Run this form the root directory:
+Run this from the root directory:
 
 `$ make doc`
 

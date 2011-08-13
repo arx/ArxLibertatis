@@ -29,6 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/Core.h"
+#include "core/RenderWindow.h"
 
 #include "game/Levels.h"
 
@@ -36,7 +37,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Menu.h"
 
 #include "graphics/Draw.h"
-#include "graphics/Frame.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
@@ -63,7 +63,7 @@ void LoadScreen()
 	if (GRenderer->BeginScene())
 	{
 		GRenderer->EndScene();
-		mainApp->m_pFramework->ShowFrame();
+		mainApp->GetWindow()->showFrame();
 	}
 }
 
@@ -118,7 +118,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 		}
 
 		GRenderer->EndScene();
-		mainApp->m_pFramework->ShowFrame();
+		mainApp->GetWindow()->showFrame();
 	}
 
 	Project.vsync = 1;
@@ -152,7 +152,7 @@ void ARX_INTERFACE_ShowARKANE()
 		}
 
 		GRenderer->EndScene();
-		mainApp->m_pFramework->ShowFrame();
+		mainApp->GetWindow()->showFrame();
 	}
 
 	Project.vsync = 1;
@@ -309,7 +309,7 @@ void LoadLevelScreen(long num)
 			}
 
 			GRenderer->EndScene();
-			mainApp->m_pFramework->ShowFrame();
+			mainApp->GetWindow()->showFrame();
 		}
 
 		if (fFadeSens > 0.f)

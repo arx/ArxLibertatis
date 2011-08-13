@@ -25,12 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Map.h"
 
-#ifdef BUILD_EDITOR
-
 #include <cstdio>
 
 #include "core/Application.h"
 #include "core/Core.h"
+#include "core/Window.h"
 
 #include "game/Levels.h"
 
@@ -50,6 +49,9 @@ extern long CURRENTLEVEL;
 int iCreateMap = 0; // used to create mini-map bitmap
 char ThisLevelMap[256];
 
+
+// TODO(core_cleanup)
+#if 0
 class C_ARX_Carte {
 	
 private:
@@ -555,7 +557,8 @@ void DANAE_Manage_CreateMap()
 
 	if (iCreateMap==1)
 	{			
-		ARXCarte=new C_ARX_Carte(ACTIVEBKG,4,mainApp->m_pFramework->m_dwRenderWidth,mainApp->m_pFramework->m_dwRenderHeight);			
+		const Vec2i & size = mainApp->GetWindow()->GetSize();
+		ARXCarte=new C_ARX_Carte(ACTIVEBKG, 4, size.x, size.y);
 	}
 
 	if (iCreateMap==2)

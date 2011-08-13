@@ -34,6 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/Localisation.h"
+#include "core/RenderWindow.h"
 #include "core/GameTime.h"
 #include "core/Window.h"
 
@@ -46,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
-#include "graphics/GraphicsEnum.h"
-#include "graphics/Frame.h"
 #include "graphics/data/CinematicTexture.h"
 
 #include "input/Input.h"
@@ -85,13 +84,13 @@ void ARXMenu_Options_Video_GetResolution(int & _iWidth, int & _iHeight, int & _i
 {
 	_iWidth		= DANAESIZX;
 	_iHeight	= DANAESIZY;
-	_iBpp		= mainApp->m_pFramework->bitdepth;
+	// TODO(core_cleanup) _iBpp		= mainApp->m_pFramework->bitdepth;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 {
-	_iBpp		= mainApp->m_pFramework->bitdepth;
+	// TODO(core_cleanup) _iBpp		= mainApp->m_pFramework->bitdepth;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,22 +101,21 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	GRenderer->EndScene();
 
-	mainApp->m_pFramework->ShowFrame();
+	mainApp->GetWindow()->showFrame();
 
 	ARX_Text_Close();
+	
+	mainApp->GetWindow()->SetSize(Vec2i(_iWidth, _iHeight));
 
-	HRESULT hr;
 	Project.bits = _iBpp;
+	
+	/* TODO(core_cleanup)
+	
+	HRESULT hr;
 	mainApp->m_pFramework->bitdepth = _iBpp;
-	mainApp->m_pFramework->m_dwRenderHeight = _iHeight;
-	mainApp->m_pFramework->m_dwRenderWidth = _iWidth;
 
-	if (!mainApp->GetWindow()->IsFullScreen())
-	{
-		mainApp->GetWindow()->SetSize(Vec2i(_iWidth, _iHeight));
-	}
-	else
-	{
+	if(!mainApp->GetWindow()->IsFullScreen()) {
+	} else {
 		int nb = mainApp->m_pDeviceInfo->dwNumModes;
 
 		for (int i = 0; i < nb; i++)
@@ -140,18 +138,11 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	}
 
 	if (FAILED(hr = mainApp->Change3DEnvironment()))
-		LogError << "Error Changing Environment";
+		LogError << "Error Changing Environment";*/
 
 	AdjustUI();
 
 	GRenderer->BeginScene();
-}
-
-//-----------------------------------------------------------------------------
-void ARXMenu_Options_Video_GetFullscreen(bool & _bEnable)
-{
-	if (mainApp->m_pDeviceInfo->bWindowed) _bEnable = false;
-	else _bEnable = true;
 }
 
 void ARXMenu_Options_Video_SetFullscreen(bool _bEnable) {

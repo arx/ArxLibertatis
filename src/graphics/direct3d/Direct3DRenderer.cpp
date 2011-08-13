@@ -4,15 +4,11 @@
 #include <list>
 
 #include "graphics/GraphicsUtility.h"
-#include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 #include "graphics/direct3d/DX7VertexBuffer.h"
 #include "graphics/direct3d/DX7TextureStage.h"
 #include "graphics/direct3d/DX7Texture2D.h"
 #include "io/Logger.h"
-
-// TEMP: needed until all D3D code is isolated...
-LPDIRECT3DDEVICE7 GDevice;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
@@ -91,12 +87,16 @@ const DWORD ARXToDXBufferFlags[] = {
 // Renderer - DX7 implementation
 ///////////////////////////////////////////////////////////////////////////////
 
-Direct3DRenderer::Direct3DRenderer() : gammaControl(NULL) { }
+Direct3DRenderer::Direct3DRenderer(D3D7Window * _window) : device(NULL), window(_window), gammaControl(NULL) { }
 
 void Direct3DRenderer::Initialize() {
 	
+	arx_assert(device == NULL);
+	device = window->getDevice();
+	arx_assert(device != NULL);
+	
 	D3DDEVICEDESC7 devicedesc;
-	GDevice->GetCaps(&devicedesc);
+	device->GetCaps(&devicedesc);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Initialize filtering options depending on the card capabilities...
@@ -136,8 +136,8 @@ void Direct3DRenderer::Initialize() {
 
 	for(size_t i = 0; i < m_TextureStages.size(); ++i)
 	{
-		m_TextureStages[i] = new DX7TextureStage(i);
-		GDevice->SetTextureStageState(i, D3DTSS_MAXANISOTROPY, maxAnisotropy);
+		m_TextureStages[i] = new DX7TextureStage(device, i);
+		device->SetTextureStageState(i, D3DTSS_MAXANISOTROPY, maxAnisotropy);
 
         // Set default state
 		m_TextureStages[i]->SetWrapMode(TextureStage::WrapRepeat);
@@ -154,7 +154,7 @@ void Direct3DRenderer::Initialize() {
 	// Backup original gamma values
 	
 	LPVOID _gammaControl;
-	mainApp->m_pFramework->m_pddsFrontBuffer->QueryInterface(IID_IDirectDrawGammaControl, &_gammaControl);
+	window->getFront()->QueryInterface(IID_IDirectDrawGammaControl, &_gammaControl);
 	gammaControl = reinterpret_cast<LPDIRECTDRAWGAMMACONTROL>(_gammaControl);
 	if(gammaControl) {
 		gammaControl->GetGammaRamp(0, &oldGamma);
@@ -163,15 +163,15 @@ void Direct3DRenderer::Initialize() {
 }
 
 bool Direct3DRenderer::BeginScene() {
-	return GDevice->BeginScene() == D3D_OK;
+	return device->BeginScene() == D3D_OK;
 }
 
 bool Direct3DRenderer::EndScene() {
-	return GDevice->EndScene() == D3D_OK;
+	return device->EndScene() == D3D_OK;
 }
 
 void Direct3DRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
+	device->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
 void Direct3DRenderer::SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) {
@@ -179,19 +179,19 @@ void Direct3DRenderer::SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir
 	EERIEMATRIX matView;
 	Util_SetViewMatrix(matView, vPosition, vDir, vUp);
 	
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
+	device->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
 void Direct3DRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
-	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
+	device->GetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
 void Direct3DRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
+	device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
 void Direct3DRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
-	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
+	device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
 Direct3DRenderer::~Direct3DRenderer() {
@@ -217,46 +217,46 @@ void Direct3DRenderer::RestoreAllTextures() {
 }
 
 Texture2D* Direct3DRenderer::CreateTexture2D() {
-	return new DX7Texture2D();
+	return new DX7Texture2D(device);
 }
 
 void Direct3DRenderer::SetRenderState(RenderState renderState, bool enable) {
-	GDevice->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
+	device->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
 }
 
 void Direct3DRenderer::SetAlphaFunc(PixelCompareFunc func, float fef) {
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)fef*255);
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, ARXToDXPixelCompareFunc[func]);
+	device->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)fef*255);
+	device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, ARXToDXPixelCompareFunc[func]);
 }
 
 void Direct3DRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  ARXToDXPixelBlendingFactor[srcFactor]);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
+	device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  ARXToDXPixelBlendingFactor[srcFactor]);
+	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
 }
 
 void Direct3DRenderer::SetViewport(const Rect & viewport) {
 	D3DVIEWPORT7 tmpViewport = { viewport.left, viewport.top, viewport.width(), viewport.height(), 0.f, 1.f };
-	GDevice->SetViewport(&tmpViewport);
+	device->SetViewport(&tmpViewport);
 }
 
 Rect Direct3DRenderer::GetViewport() {
 	
 	D3DVIEWPORT7 tmpViewport;
-	GDevice->GetViewport(&tmpViewport);
+	device->GetViewport(&tmpViewport);
 	
 	return Rect(Vec2i(tmpViewport.dwX, tmpViewport.dwY), tmpViewport.dwWidth, tmpViewport.dwHeight);
 }
 
 void Direct3DRenderer::SetCulling(CullingMode mode) {
-	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
+	device->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
 }
 
 void Direct3DRenderer::SetDepthBias(int depthBias) {
-	GDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, depthBias);
+	device->SetRenderState(D3DRENDERSTATE_ZBIAS, depthBias);
 }
 
 void Direct3DRenderer::SetFillMode(FillMode mode) {
-	GDevice->SetRenderState(D3DRENDERSTATE_FILLMODE, ARXToDXFillMode[mode]);
+	device->SetRenderState(D3DRENDERSTATE_FILLMODE, ARXToDXFillMode[mode]);
 }
 
 static void DX7MatrixIdentity(D3DMATRIX *pout) {
@@ -295,9 +295,9 @@ D3DMATRIX g_MatView;
 
 void Direct3DRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	
-	GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
-	GDevice->GetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
-	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
+	device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
+	device->GetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
+	device->GetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 	
 	D3DMATRIX matOrtho;
 	DX7MatrixOrthoOffCenterLH(&matOrtho, left, right, bottom, top, zNear, zFar);
@@ -305,15 +305,15 @@ void Direct3DRenderer::Begin2DProjection(float left, float right, float bottom, 
 	D3DMATRIX matIdentity;
 	DX7MatrixIdentity(&matIdentity);
 
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matOrtho);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matIdentity);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matIdentity);
+	device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matOrtho);
+	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matIdentity);
+	device->SetTransform(D3DTRANSFORMSTATE_VIEW, &matIdentity);
 }
 
 void Direct3DRenderer::End2DProjection() {
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
+	device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
+	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
+	device->SetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 }
 
 void Direct3DRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearDepth, size_t nrects, Rect * rects) {
@@ -333,18 +333,18 @@ void Direct3DRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float cl
 		d3drects[i].y2 = rects[i].bottom;
 	}
 	
-	GDevice->Clear(DWORD(nrects), nrects != 0 ? d3drects : 0, clearTargets, clearColor.toBGRA(), clearDepth, 0);
+	device->Clear(DWORD(nrects), nrects != 0 ? d3drects : 0, clearTargets, clearColor.toBGRA(), clearDepth, 0);
 }
 
 void Direct3DRenderer::SetFogColor(Color color) {
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color.toBGRA());
+	device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color.toBGRA());
 }
 
 void Direct3DRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity) {
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, reinterpret<DWORD, f32>(fogStart));
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGEND, reinterpret<DWORD, f32>(fogEnd));
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGDENSITY, reinterpret<DWORD, f32>(fogDensity));
+	device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
+	device->SetRenderState(D3DRENDERSTATE_FOGSTART, reinterpret<DWORD, f32>(fogStart));
+	device->SetRenderState(D3DRENDERSTATE_FOGEND, reinterpret<DWORD, f32>(fogEnd));
+	device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, reinterpret<DWORD, f32>(fogDensity));
 }
 
 void Direct3DRenderer::SetAntialiasing(bool enable) {
@@ -352,16 +352,16 @@ void Direct3DRenderer::SetAntialiasing(bool enable) {
 	if(enable)
 	{
 		D3DDEVICEDESC7 ddDesc;
-		GDevice->GetCaps(&ddDesc);
+		device->GetCaps(&ddDesc);
 
 		if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTINDEPENDENT)
-			GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTINDEPENDENT);
+			device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTINDEPENDENT);
 		else if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTDEPENDENT)
-			GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTDEPENDENT);
+			device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTDEPENDENT);
 	}
 	else
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
+		device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
 	}
 }
 
@@ -411,24 +411,24 @@ void Direct3DRenderer::DrawTexturedRect( float pX, float pY, float pW, float pH,
 	rect[3].color = diffuse;
 	rect[3].specular = specular;
 	
-	GDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
+	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
 }
 
 VertexBuffer<TexturedVertex> * Direct3DRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
-	return new DX7VertexBuffer<TexturedVertex>(D3DFVF_TLVERTEX, capacity);
+	return new DX7VertexBuffer<TexturedVertex>(window, D3DFVF_TLVERTEX, capacity);
 }
 
 VertexBuffer<SMY_VERTEX> * Direct3DRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEXTUREFORMAT2;
-	return new DX7VertexBuffer<SMY_VERTEX>(format, capacity);
+	return new DX7VertexBuffer<SMY_VERTEX>(window, format, capacity);
 }
 
 VertexBuffer<SMY_VERTEX3> * Direct3DRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX3 | D3DFVF_TEXTUREFORMAT2;
-	return new DX7VertexBuffer<SMY_VERTEX3>(format, capacity);
+	return new DX7VertexBuffer<SMY_VERTEX3>(window, format, capacity);
 }
 
 void Direct3DRenderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
@@ -436,7 +436,7 @@ void Direct3DRenderer::drawIndexed(Primitive primitive, const TexturedVertex * v
 	arx_assert(vertices != NULL && indices != NULL);
 	
 	D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-	HRESULT hr = GDevice->DrawIndexedPrimitive(type, D3DFVF_TLVERTEX, (LPVOID)vertices, (DWORD)nvertices, (LPWORD)indices, (DWORD)nindices, 0);
+	HRESULT hr = device->DrawIndexedPrimitive(type, D3DFVF_TLVERTEX, (LPVOID)vertices, (DWORD)nvertices, (LPWORD)indices, (DWORD)nindices, 0);
 	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitive failed: %08x", hr);
 	ARX_UNUSED(hr);
 	
@@ -445,7 +445,7 @@ void Direct3DRenderer::drawIndexed(Primitive primitive, const TexturedVertex * v
 bool Direct3DRenderer::getSnapshot(Image & image) {
 	
 	LPDIRECTDRAWSURFACE7 pddsRender;
-	HRESULT hr = GDevice->GetRenderTarget(&pddsRender);
+	HRESULT hr = device->GetRenderTarget(&pddsRender);
 	if(FAILED(hr)) {
 		LogError << "GetRenderTarget failed: " << hr;
 		return false;
@@ -461,7 +461,7 @@ bool Direct3DRenderer::getSnapshot(Image & image) {
 bool Direct3DRenderer::getSnapshot(Image& image, size_t width, size_t height) {
 	
 	LPDIRECTDRAWSURFACE7 pddsRender;
-	HRESULT hr = GDevice->GetRenderTarget(&pddsRender);
+	HRESULT hr = device->GetRenderTarget(&pddsRender);
 	if(FAILED(hr)) {
 		LogError << "GetRenderTarget failed: " << hr;
 		return false;
@@ -479,10 +479,7 @@ bool Direct3DRenderer::getSnapshot(Image& image, size_t width, size_t height) {
 	desc.dwHeight = height;
 	desc.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
 	
-	LPDIRECTDRAW7 pDD;
-	pddsRender->GetDDInterface((VOID **)&pDD);
-	hr = pDD->CreateSurface(&desc, &tempSurface, NULL);
-	pDD->Release();
+	hr = window->getDD()->CreateSurface(&desc, &tempSurface, NULL);
 	if(FAILED(hr)) {
 		pddsRender->Release();
 		return false;

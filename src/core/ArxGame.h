@@ -27,21 +27,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CORE_ARXGAME_H
 
 #include "core/Application.h"
-#include "core/Window.h"
+#include "core/RenderWindow.h"
 
-class ArxGame : public Application, public Window::Listener {
+class ArxGame : public Application, public Window::Listener, public RenderWindow::RendererListener {
 	
 protected:
 	
 	virtual bool Initialize();
 	virtual bool InitWindow();
-	virtual bool InitGraphics();
 	virtual bool InitInput();
 	virtual bool InitSound();
 	bool InitGameData();
 	bool AddPaks();
 	
-	bool DeleteDeviceObjects();
 	bool Render();
 	bool FrameMove();
 	void ManageKeyMouse();
@@ -51,8 +49,6 @@ protected:
 	void DrawAllInterfaceFinish();
 	void GoFor2DFX();
 	bool BeforeRun();
-	
-	bool Initialize3DEnvironment();
 	
 	bool Render3DEnvironment();
 	
@@ -65,7 +61,6 @@ public:
 	bool FinalCleanup();
 	virtual bool SwitchFullScreen();
 	virtual void Cleanup3DEnvironment();
-	virtual bool Change3DEnvironment();
 	
 	/**
 	 * Writes text to the window
@@ -84,6 +79,10 @@ private:
 	virtual void OnDestroyWindow(const Window & pWindow);
 	
 	bool m_RunLoop;
+	bool wasResized;
+	
+	void onRendererInit(RenderWindow &);
+	void onRendererShutdown(RenderWindow &);
 	
 };
 

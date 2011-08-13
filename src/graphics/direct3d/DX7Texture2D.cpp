@@ -3,13 +3,10 @@
 
 #include "graphics/Math.h"
 
-// TEMP: needed until all D3D code is isolated...
-extern LPDIRECT3DDEVICE7 GDevice;
-
 std::list<DX7Texture2D*> g_Textures2D;
 
-DX7Texture2D::DX7Texture2D()
-	: m_pddsSurface(0)
+DX7Texture2D::DX7Texture2D(LPDIRECT3DDEVICE7 _device)
+	: m_pddsSurface(0), device(_device)
 {
 	g_Textures2D.push_back(this);
 }
@@ -56,7 +53,7 @@ bool DX7Texture2D::Create()
 	// Get the device caps so we can check if the device has any constraints
 	// when using textures
 	D3DDEVICEDESC7 ddDesc;
-	if( FAILED( GDevice->GetCaps( &ddDesc ) ) )
+	if( FAILED( device->GetCaps( &ddDesc ) ) )
 		return false;
 
 	// Setup the new surface desc for the texture. Note how we are using the
@@ -137,7 +134,7 @@ bool DX7Texture2D::Create()
 
 	// Enumerate the texture formats, and find the closest device-supported
 	// texture pixel format.
-	GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd);
+	device->EnumTextureFormats( TextureSearchCallback, &ddsd);
 	if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
 		return false;
 
@@ -146,7 +143,7 @@ bool DX7Texture2D::Create()
 	// creating surfaces.
 	LPDIRECTDRAWSURFACE7 pddsRender;
 	LPDIRECTDRAW7        pDD;
-	GDevice->GetRenderTarget( &pddsRender );
+	device->GetRenderTarget( &pddsRender );
 	pddsRender->GetDDInterface( (VOID**)&pDD );
 	pddsRender->Release();
 

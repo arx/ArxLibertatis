@@ -10,7 +10,7 @@ class DX7TextureStage : public TextureStage {
 	
 public:
 	
-	DX7TextureStage(unsigned int textureStage);
+	DX7TextureStage(LPDIRECT3DDEVICE7 device, unsigned int textureStage);
 	
 	void SetTexture(Texture * pTexture);
 	void ResetTexture();
@@ -28,6 +28,10 @@ public:
 	
 	void SetMipMapLODBias(float bias);
 	void SetTextureCoordIndex(int texCoordIdx);
+	
+private:
+	
+	LPDIRECT3DDEVICE7 device;
 	
 };
 

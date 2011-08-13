@@ -48,7 +48,8 @@ public:
 	bool IsMaximized() const;
 	bool IsVisible() const;
 	
-	const Vec2i & GetSize() const;
+	inline const Vec2i & GetSize() const { return m_Size; }
+	
 	bool IsWindowed() const;
 	bool IsFullScreen() const;
 	
@@ -82,4 +83,4 @@ private:
 	
 };
 
-#endif // ARX_CORE_APPLICATION_H
+#endif // ARX_CORE_WINDOW_H

@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "core/Resource.h"
+#include "core/RenderWindow.h"
 #include "core/GameTime.h"
 
 #include "game/Player.h"
@@ -71,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "graphics/GraphicsUtility.h"
-#include "graphics/Frame.h"
 #include "graphics/Renderer.h"
 #include "graphics/data/Mesh.h"
 
@@ -105,8 +105,7 @@ static int iCurrZBias;
 // Application()
 // Constructor
 //*************************************************************************************
-Application::Application() {
-	m_pFramework = NULL;
+Application::Application() : m_MainWindow(NULL) {
 	m_bReady = false;
 	m_bAppUseZBuffer = false;
 }
@@ -121,11 +120,6 @@ bool Application::Initialize() {
 	}
 	
 	init = InitWindow();
-	if(!init) {
-		return false;
-	}
-	
-	init = InitGraphics();
 	if(!init) {
 		return false;
 	}
@@ -235,9 +229,7 @@ bool Application::InitConfig() {
 }
 
 void Application::EvictManagedTextures() {
-	if(this->m_pFramework->GetDirect3D()) {
-		this->m_pFramework->GetDirect3D()->EvictManagedTextures();
-	}
+	GetWindow()->evictManagedTextures();
 }
 
 
@@ -249,7 +241,7 @@ void Application::EvictManagedTextures() {
 //*************************************************************************************
 void Application::Pause(bool bPause)
 {
-	static DWORD dwAppPausedCount = 0L;
+	static u32 dwAppPausedCount = 0L;
 
 	dwAppPausedCount += (bPause ? +1 : -1);
 	m_bReady          = (dwAppPausedCount ? false : true);
@@ -258,8 +250,8 @@ void Application::Pause(bool bPause)
 	if (bPause && (1 == dwAppPausedCount))
 	{
 		// Get a surface for the GDI
-		if (m_pFramework)
-			m_pFramework->FlipToGDISurface(true);
+		//if (m_pFramework)
+		//	m_pFramework->FlipToGDISurface(true); TODO
 	}
 }
 
@@ -269,7 +261,7 @@ void CalcFPS(bool reset)
 {
 	static float fFPS      = 0.0f;
 	static float fLastTime = 0.0f;
-	static DWORD dwFrames  = 0L;
+	static u32 dwFrames  = 0L;
 
 	if (reset)
 	{

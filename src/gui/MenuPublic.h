@@ -38,7 +38,6 @@ void ARXMenu_Options_Video_GetResolution(int &, int &, int &);
 void ARXMenu_Options_Video_GetBitPlane(int & i_Bpp);
  
 
-void ARXMenu_Options_Video_GetFullscreen(bool &);
 void ARXMenu_Options_Video_SetFullscreen(bool);
 
 void ARXMenu_Options_Video_GetFogDistance(int &);

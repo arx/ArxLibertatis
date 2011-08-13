@@ -47,7 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "graphics/GraphicsEnum.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
@@ -932,14 +931,14 @@ bool Menu2_Render() {
 					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
 					pMenuSliderResol =(CMenuSliderText*)me;
-					int nb=mainApp->m_pDeviceInfo->dwNumModes;
+					//int nb=mainApp->m_pDeviceInfo->dwNumModes;
 					std::vector<int> vBpp;
 					vBpp.clear();
 					int i=0;
 
-					for(;i<nb;i++)
+					//for(;i<nb;i++)
 					{
-						{
+						{/* TODO(core_cleanup)
 							std::stringstream ss;
 							ss << mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth << 'x' << mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight;
 							szMenuText = ss.str();
@@ -976,7 +975,7 @@ bool Menu2_Render() {
 							if(!bExist)
 							{
 								vBpp.insert(vBpp.end(),mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount);
-							}
+							}*/
 						}
 					}
 

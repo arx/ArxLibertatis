@@ -37,8 +37,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Dialog.h"
 #include "core/GameTime.h"
+#include "core/D3D7Window.h"
 #include "core/Localisation.h"
 #include "core/Resource.h"
+#include "core/RenderWindow.h"
 #include "core/Win32Window.h"
 
 #include "game/Inventory.h"
@@ -48,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 
 #include "graphics/Draw.h"
-#include "graphics/Frame.h"
-#include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
@@ -188,7 +188,7 @@ INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
 INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
-ArxGame::ArxGame() {
+ArxGame::ArxGame() : wasResized(false) {
 	
 	m_bAppUseZBuffer = true;
 	
@@ -218,22 +218,14 @@ bool ArxGame::Initialize()
 
 bool ArxGame::InitWindow() {
 	
-	m_MainWindow = new Win32Window();
+	m_MainWindow = new D3D7Window();
 	
 	// Register ourself as a listener for this window messages
 	m_MainWindow->AddListener(this);
+	m_MainWindow->addListener(this);
 	
 	return m_MainWindow->Init(arxVersion, config.video.width, config.video.height, true, config.video.fullscreen);
 	
-}
-
-bool ArxGame::InitGraphics() {
-	
-	GRenderer = new Direct3DRenderer();
-	
-	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
-	
-	return true;
 }
 
 bool ArxGame::InitInput()
@@ -325,133 +317,11 @@ bool ArxGame::AddPaks() {
 	return true;
 }
 
-enum APPMSGTYPE {
-	MSG_NONE,
-	MSGERR_APPMUSTEXIT,
-	MSGWARN_SWITCHEDTOSOFTWARE
-};
-
-//*************************************************************************************
-// DisplayFrameworkError()
-// Displays error messages in a message box
-//*************************************************************************************
-static void DisplayFrameworkError(HRESULT hr, APPMSGTYPE dwType) {
-	switch (hr) {
-		case D3DENUMERR_NODIRECTDRAW:
-			LogError << "Unable to create DirectDraw";
-			break;
-		case D3DENUMERR_NOCOMPATIBLEDEVICES:
-			LogError << "Unable to find any compatible Direct3D devices.";
-			break;
-		case D3DENUMERR_SUGGESTREFRAST:
-			LogError << "Unable to find a compatible devices. Try to enable the reference rasterizer using EnableRefRast.reg.";
-			break;
-		case D3DENUMERR_ENUMERATIONFAILED:
-			LogError << "Enumeration failure. Are you missing (32bit) graphics drivers?";
-			break;
-		case D3DFWERR_INITIALIZATIONFAILED:
-			LogError << "Generic initialization error. Enable debug output for detailed information.";
-			break;
-		case D3DFWERR_NODIRECTDRAW:
-			LogError << "No DirectDraw";
-			break;
-		case D3DFWERR_NODIRECT3D:
-			LogError << "No Direct3D";
-			break;
-		case D3DFWERR_INVALIDMODE:
-			LogError << "This Programe requires 16-bits (or higher) display mode to run in a window.";
-			break;
-		case D3DFWERR_COULDNTSETCOOPLEVEL:
-			LogError << "Unable to set Cooperative Level";
-			break;
-		case D3DFWERR_NO3DDEVICE:
-			LogError << "Unable to create Direct3DDevice object.";
-			if (MSGWARN_SWITCHEDTOSOFTWARE == dwType)
-				LogError << "Your 3D hardware chipset may not support rendering in the current display mode.";
-			break;
-		case D3DFWERR_NOZBUFFER:
-			LogError << "No ZBuffer";
-			break;
-		case D3DFWERR_INVALIDZBUFFERDEPTH:
-			LogError << "Invalid Z-buffer depth. Try switching modes from 16- to 32-bit (or vice versa)";
-			break;
-		case D3DFWERR_NOVIEWPORT:
-			LogError << "No Viewport";
-			break;
-		case D3DFWERR_NOPRIMARY:
-			LogError << "No primary";
-			break;
-		case D3DFWERR_NOCLIPPER:
-			LogError << "No Clipper";
-			break;
-		case D3DFWERR_BADDISPLAYMODE:
-			LogError << "Bad display mode";
-			break;
-		case D3DFWERR_NOBACKBUFFER:
-			LogError << "No backbuffer";
-			break;
-		case D3DFWERR_NONZEROREFCOUNT:
-			LogError << "A DDraw object has a non-zero reference count (meaning it was not properly cleaned up).";
-			break;
-		case D3DFWERR_NORENDERTARGET:
-			LogError << "No render target";
-			break;
-		case E_OUTOFMEMORY:
-			LogError << "Not enough memory!";
-			break;
-		case DDERR_OUTOFVIDEOMEMORY:
-			LogError << "There was insufficient video memory to use the hardware device.";
-			break;
-		default:
-			LogError << "Generic application error. Enable debug output for detailed information.";
-	}
-
-	if (MSGERR_APPMUSTEXIT == dwType) {
-		LogError <<"This Program will now exit.";
-	} else if (MSGWARN_SWITCHEDTOSOFTWARE == dwType){
-		LogError <<"Switching to software rasterizer.";
-	}
-}
-
 //*************************************************************************************
 // Create()
 //*************************************************************************************
 bool ArxGame::Create() {
 	
-	HRESULT hr;
-
-	// Enumerate available D3D devices.
-	if (FAILED(hr = D3DEnum_EnumerateDevices()))
-	{
-		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return false;
-	}
-
-	// Select a device. Ask for a hardware device that renders in a window.
-	if (FAILED(hr = D3DEnum_SelectDefaultDevice(&m_pDeviceInfo)))
-	{
-		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return false;
-	}
-
-	// Create a new CD3DFramework class. This class does all of our D3D
-	// initialization and manages the common D3D objects.
-	if (NULL == (m_pFramework = new CD3DFramework7()))
-	{
-		DisplayFrameworkError(E_OUTOFMEMORY, MSGERR_APPMUSTEXIT);
-		return false;
-	}
-	
-	// Initialize the 3D environment for the app
-	if(!Initialize3DEnvironment()) {
-		Cleanup3DEnvironment();
-		return false;
-	}
-	
-	// The app is ready to go
-	m_bReady = true;
-	
-	this->m_pFramework->ShowFrame();
 	return true;
 }
 
@@ -475,8 +345,9 @@ void ArxGame::OnResizeWindow(const Window& window)
 {
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
-	if (window.HasFocus() && m_bReady && !window.IsFullScreen())
-		m_pFramework->m_bHasMoved = true;
+	if(window.HasFocus() && m_bReady && !window.IsFullScreen()) {
+		wasResized = true;
+	}
 }
 
 void ArxGame::OnPaintWindow(const Window& window)
@@ -484,6 +355,7 @@ void ArxGame::OnPaintWindow(const Window& window)
 	ARX_UNUSED(window);
 
 	// Handle paint messages when the app is not ready
+	/* TODO
 	if (m_pFramework && !m_bReady)
 	{
 		if (m_pDeviceInfo->bWindowed)
@@ -494,13 +366,11 @@ void ArxGame::OnPaintWindow(const Window& window)
 		{
 			m_pFramework->FlipToGDISurface(true);
 		}
-	}
+	} */
 }
 
-void ArxGame::OnDestroyWindow(const Window& window)
-{
-	ARX_UNUSED(window);
-
+void ArxGame::OnDestroyWindow(const Window &) {
+	
 	LogInfo << "Application window is being destroyed";
 	m_RunLoop = false;
 }
@@ -509,8 +379,8 @@ void ArxGame::OnDestroyWindow(const Window& window)
 // Run()
 // Message-processing loop. Idle time is used to render the scene.
 //*************************************************************************************
-void ArxGame::Run()
-{
+void ArxGame::Run() {
+	
 	BeforeRun();
 	
 	m_RunLoop = true;
@@ -520,7 +390,9 @@ void ArxGame::Run()
 		m_MainWindow->Tick();
 		
 		if(m_MainWindow->HasFocus() && m_bReady) {
-			m_RunLoop = Render3DEnvironment();
+			if(!(m_RunLoop = Render3DEnvironment())) {
+				LogError << "Fatal rendering error, exiting.";
+			}
 		}
 	}
 }
@@ -547,6 +419,7 @@ long MouseDragX, MouseDragY;
 //*************************************************************************************
 bool ArxGame::Render3DEnvironment() {
 	
+	/* TODO
 	HRESULT hr;
 
 	// Check the cooperative level before rendering
@@ -571,30 +444,24 @@ bool ArxGame::Render3DEnvironment() {
 		}
 		
 		return SUCCEEDED(hr);
-	}
+	} */
 	
 	// Get the relative time, in seconds
 	if(!FrameMove()) {
+		LogError << "FrameMove failed";
 		return false;
 	}
 	
 	// Render the scene as normal
 	if(!Render()) {
+		LogError << "Scene rendering failed.";
 		return false;
 	}
 	
 	// Show the frame on the primary surface.
-	if(FAILED(hr = m_pFramework->ShowFrame())) {
-		
-		printf("ShowFrame FAILED: %d %d <- look for this in ddraw.h\n", hr, hr&0xFFFF);
-		
-		if(DDERR_SURFACELOST != hr) {
-			return false;
-		}
-		
-		printf("RestoreSurfaces\n");
-		m_pFramework->RestoreSurfaces();
-		RestoreSurfaces();
+	if(!GetWindow()->showFrame()) {
+		LogError << "Failed to display the final image.";
+		return false;
 	}
 	
 	return true;
@@ -606,107 +473,19 @@ bool ArxGame::Render3DEnvironment() {
 //*************************************************************************************
 void ArxGame::Cleanup3DEnvironment() {
 	
-	m_bReady  = false;
-	
-	if(m_pFramework) {
-		DeleteDeviceObjects();
-		delete m_pFramework, m_pFramework = NULL;
+	if(GetWindow()) {
 		FinalCleanup();
 	}
 	
-	D3DEnum_FreeResources();
-}
-
-//*************************************************************************************
-// Change3DEnvironment()
-// Handles driver, device, and/or mode changes for the app.
-//*************************************************************************************
-bool ArxGame::Change3DEnvironment() {
-	
-	HRESULT hr;
-	
-	// Release all scene objects that will be re-created for the new device
-	DeleteDeviceObjects();
-	
-	// Release framework objects, so a new device can be created
-	if(FAILED(hr = m_pFramework->DestroyObjects())) {
-		DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-		return false;
-	}
-	
-	// Check if going from fullscreen to windowed mode, or vice versa.
-	m_MainWindow->SetFullscreen(!m_pDeviceInfo->bWindowed);
-	
-	// Inform the framework class of the driver change. It will internally
-	// re-create valid surfaces, a d3ddevice, etc.
-	if(!Initialize3DEnvironment()) {
-		return false;
-	}
-	
-	return true;
-}
-
-//*************************************************************************************
-// Initialize3DEnvironment()
-// Initializes the sample framework, then calls the app-specific function
-// to initialize device specific objects. This code is structured to
-// handled any errors that may occur during initialization
-//*************************************************************************************
-bool ArxGame::Initialize3DEnvironment() {
-	
-	HRESULT hr;
-	DWORD dwFrameworkFlags = 0L;
-	dwFrameworkFlags |= (!m_pDeviceInfo->bWindowed ? D3DFW_FULLSCREEN : 0L);
-	dwFrameworkFlags |= (m_pDeviceInfo->bStereo   ? D3DFW_STEREO  : 0L);
-	dwFrameworkFlags |= (m_bAppUseZBuffer    ? D3DFW_ZBUFFER  : 0L);
-	
-	// Initialize the D3D framework
-	if (SUCCEEDED(hr = m_pFramework->Initialize((HWND)m_MainWindow->GetHandle(),
-					   m_pDeviceInfo->pDriverGUID, m_pDeviceInfo->pDeviceGUID,
-					   &m_pDeviceInfo->ddsdFullscreenMode, dwFrameworkFlags)))
-	{
-		
-		if (SUCCEEDED(hr = InitDeviceObjects()))
-		{
-			return true;
-		}
-		else
-		{
-			DeleteDeviceObjects();
-			m_pFramework->DestroyObjects();
-		}
-	}
-
-	// If we get here, the first initialization passed failed. If that was with a
-	// hardware device, try again using a software rasterizer instead.
-	if (m_pDeviceInfo->bHardware)
-	{
-		// Try again with a software rasterizer
-		DisplayFrameworkError(hr, MSGWARN_SWITCHEDTOSOFTWARE);
-		D3DEnum_SelectDefaultDevice(&m_pDeviceInfo, D3DENUM_SOFTWAREONLY);
-		return Initialize3DEnvironment();
-	}
-	
-	DisplayFrameworkError(hr, MSGERR_APPMUSTEXIT);
-	
-	return false;
 }
 
 //*************************************************************************************
 //*************************************************************************************
-bool ArxGame::SwitchFullScreen()
-{
-	m_bReady = false;
-	m_pDeviceInfo->bWindowed = !m_pDeviceInfo->bWindowed;
+bool ArxGame::SwitchFullScreen() {
+	
+	GetWindow()->SetFullscreen(!GetWindow()->IsFullScreen());
 
-	if (FAILED(Change3DEnvironment()))
-	{
-		LogError << ("ChangeEnvironement Failed");
-		return false;
-	}
-
-	m_bReady = true;
-	m_pFramework->m_bHasMoved = true;
+	wasResized = true;
 
 	return true;
 }
@@ -716,7 +495,7 @@ bool ArxGame::SwitchFullScreen()
 // Draws text on the window.
 //*************************************************************************************
 void ArxGame::OutputText(int x, int y, const string & str) {
-	if(m_pFramework->GetRenderSurface()) {
+	if(m_bReady) {
 		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
 }
@@ -725,7 +504,8 @@ bool ArxGame::BeforeRun() {
 	
 	LogDebug << "Before Run...";
 	
-	ControlCinematique = new Cinematic(mainApp->m_pFramework->m_dwRenderWidth, mainApp->m_pFramework->m_dwRenderHeight);
+	const Vec2i & size = mainApp->GetWindow()->GetSize();
+	ControlCinematique = new Cinematic(size.x, size.y);
 	
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	
@@ -894,14 +674,14 @@ static float _AvgFrameDiff = 150.f;
 
 	ACTIVECAM = &subj;
 
-	if (this->m_pFramework->m_bHasMoved)
-	{
-		LogDebug << "has moved";
+	if(wasResized) {
 		
-		DanaeRestoreFullScreen();
-
-		this->m_pFramework->m_bHasMoved=false;
-
+		LogDebug << "was resized";
+		
+		//DanaeRestoreFullScreen();
+		
+		wasResized = false;
+		
 		AdjustUI();
 	}
 
@@ -2502,13 +2282,22 @@ bool ArxGame::FinalCleanup() {
 	return true;
 }
 
-//*************************************************************************************
-// DeleteDeviceObjects()
-// Called when the app is exitting, or the device is being changed,
-// this function deletes any device dependant objects.
-//*************************************************************************************
+void ArxGame::onRendererInit(RenderWindow & window) {
+	
+	GRenderer = window.getRenderer();
+	
+	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	
+	InitDeviceObjects();
+	
+	// The app is ready to go
+	m_bReady = true;
+	
+}
 
-bool ArxGame::DeleteDeviceObjects() {
+void ArxGame::onRendererShutdown(RenderWindow &) {
+	
+	m_bReady = false;
 	
 	GRenderer->ReleaseAllTextures();
 	
@@ -2524,5 +2313,6 @@ bool ArxGame::DeleteDeviceObjects() {
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	
-	return true;
+	GRenderer = NULL;
+	
 }

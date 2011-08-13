@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //       Windows output is needed, the FlipToGDISurface() provides a GDI
 //       surface to draw on.
 
+/* TODO
 #ifndef EERIEFRAME_H
 #define EERIEFRAME_H
 
@@ -90,60 +91,36 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Desc: The Direct3D sample framework class for DX7. Maintains the D3D
 //       surfaces and device used for 3D rendering.
 //-----------------------------------------------------------------------------
-class CD3DFramework7
-{
-	public:
-		// Internal variables for the framework class
-		HWND                 m_hWnd;               // The window object
-		bool                 m_bIsStereo;          // Stereo view mode
-		LPDIRECTDRAW7        m_pDD;                // The DirectDraw object
-		LPDIRECT3D7          m_pD3D;               // The Direct3D object
-		LPDIRECTDRAWSURFACE7 m_pddsBackBufferLeft; // For stereo modes
-		DWORD                m_dwDeviceMemType;
+class CD3DFramework7 {
+	
+private:
+	
+	
 
-	private:
-		// Internal functions for the framework class
-		HRESULT CreateZBuffer(GUID *);
-		HRESULT CreateFullscreenBuffers(DDSURFACEDESC2 *);
-		HRESULT CreateWindowedBuffers();
-		HRESULT CreateDirectDraw(GUID *, DWORD);
-		HRESULT CreateDirect3D(GUID *);
-		HRESULT CreateEnvironment(GUID *, GUID *, DDSURFACEDESC2 *, DWORD);
-
-	public:
-		bool				m_bIsFullscreen;      // Fullscreen vs. windowed
-
-		// Access functions for DirectX objects
-		long				bitdepth;
-		bool				m_bHasMoved;
-		
-		LPDIRECTDRAWSURFACE7 m_pddsFrontBuffer;    // The primary surface
-		LPDIRECTDRAWSURFACE7 m_pddsBackBuffer;     // The backbuffer surface
-
+	
+public:
+	
+	// Access functions for DirectX objects
+	long bitdepth;
+	
 		DWORD                m_dwRenderWidth;      // Dimensions of the render target
 		DWORD                m_dwRenderHeight;
-
+	
 	public:
+		
 		CD3DFramework7();
 		~CD3DFramework7();
-
-		void SetZBias(int);
-
-		LPDIRECTDRAW7        GetDirectDraw()
-		{
+		
+		LPDIRECTDRAW7 GetDirectDraw() {
 			return m_pDD;
 		}
-		LPDIRECT3D7          GetDirect3D()
-		{
+		
+		LPDIRECT3D7 GetDirect3D() {
 			return m_pD3D;
 		}
-		LPDIRECTDRAWSURFACE7 GetRenderSurface()
-		{
+		
+		LPDIRECTDRAWSURFACE7 GetRenderSurface() {
 			return m_pddsBackBuffer;
-		}
-		LPDIRECTDRAWSURFACE7 GetRenderSurfaceLeft()
-		{
-			return m_pddsBackBufferLeft;
 		}
 
 		// Functions to aid rendering
@@ -155,10 +132,6 @@ class CD3DFramework7
 		HRESULT Initialize(HWND, GUID *, GUID *, DDSURFACEDESC2 *, DWORD);
 		HRESULT DestroyObjects();
 	
-private:
-	
-	LPDIRECTDRAWSURFACE7 m_pddsZBuffer;        // The zbuffer surface
-	
 };
 
-#endif
+#endif*/
