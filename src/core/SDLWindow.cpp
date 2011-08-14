@@ -4,6 +4,7 @@
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDLInputBackend.h"
 #include "io/Logger.h"
+#include "math/Rectangle.h"
 
 SDLWindow * SDLWindow::mainWindow = NULL;
 
@@ -56,6 +57,9 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	renderer = new OpenGLRenderer;
 	renderer->Initialize();
 	
+	// Finally, set the viewport for the newly created device
+	renderer->SetViewport(Rect(width, height));
+	
 	onRendererInit();
 	
 	OnResize(window->w, window->h);
@@ -64,13 +68,14 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	}
 	
 	OnShow(true);
+	OnFocus(true);
 	
 	return true;
 }
 
 bool SDLWindow::setMode(Vec2i size, bool fullscreen) {
 	
-	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL | SDL_DOUBLEBUF;
+	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL;
 	flags |= (fullscreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
 	SDL_Surface * win = SDL_SetVideoMode(size.x, size.y, 32, flags);
 	if(!win) {
@@ -126,7 +131,7 @@ void SDLWindow::Tick() {
 			
 			case SDL_ACTIVEEVENT: {
 				if(event.active.type == SDL_APPINPUTFOCUS) {
-					OnFocus(event.active.gain == 1);
+					// ignored
 				} else if(event.active.type == SDL_APPACTIVE) {
 					if(event.active.gain) {
 						OnRestore();
@@ -177,6 +182,8 @@ void SDLWindow::Tick() {
 }
 
 bool SDLWindow::showFrame() {
+	
+	SDL_GL_SwapBuffers();
 	
 	if(SDL_Flip(window) != 0) {
 		LogError << "Failed to update screen: " << SDL_GetError();

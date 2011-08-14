@@ -1,5 +1,6 @@
 
 #include "graphics/Renderer.h"
+#include "graphics/GraphicsUtility.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/data/TextureContainer.h"
 
@@ -30,4 +31,12 @@ Renderer::~Renderer() {
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		delete m_TextureStages[i];
 	}
+}
+
+void Renderer::SetViewMatrix(const Vec3f & position, const Vec3f & dir, const Vec3f & up) {
+	
+	EERIEMATRIX mat;
+	Util_SetViewMatrix(mat, position, dir, up);
+	
+	SetViewMatrix(mat);
 }

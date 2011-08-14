@@ -22,7 +22,6 @@ public:
 	
 	// Matrices
 	void SetViewMatrix(const EERIEMATRIX & matView);
-	void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp);
 	void GetViewMatrix(EERIEMATRIX & matView) const;
 	void SetProjectionMatrix(const EERIEMATRIX & matProj);
 	void GetProjectionMatrix(EERIEMATRIX & matProj) const;

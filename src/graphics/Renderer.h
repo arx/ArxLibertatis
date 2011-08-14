@@ -114,7 +114,7 @@ public:
 	
 	// Matrices
 	virtual void SetViewMatrix(const EERIEMATRIX & matView) = 0;
-	virtual void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) = 0;
+	void SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp);
 	virtual void GetViewMatrix(EERIEMATRIX & matView) const = 0;
 	virtual void SetProjectionMatrix(const EERIEMATRIX & matProj) = 0;
 	virtual void GetProjectionMatrix(EERIEMATRIX & matProj) const = 0;

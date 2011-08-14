@@ -174,14 +174,6 @@ void Direct3DRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	device->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
-void Direct3DRenderer::SetViewMatrix(const Vec3f & vPosition, const Vec3f & vDir, const Vec3f & vUp) {
-	
-	EERIEMATRIX matView;
-	Util_SetViewMatrix(matView, vPosition, vDir, vUp);
-	
-	device->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
-}
-
 void Direct3DRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
 	device->GetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }

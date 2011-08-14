@@ -397,6 +397,9 @@ void ArxGame::Run() {
 	while(m_RunLoop) {
 		
 		m_MainWindow->Tick();
+		if(!m_RunLoop) {
+			break;
+		}
 		
 		if(m_MainWindow->HasFocus() && m_bReady) {
 			if(!(m_RunLoop = Render3DEnvironment())) {

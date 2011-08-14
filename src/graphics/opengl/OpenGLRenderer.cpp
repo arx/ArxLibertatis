@@ -1,8 +1,6 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
-#include <GL/gl.h>
-
 #include "graphics/Math.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/opengl/GLTexture2D.h"
@@ -15,6 +13,25 @@ OpenGLRenderer::OpenGLRenderer() { };
 OpenGLRenderer::~OpenGLRenderer() { };
 
 void OpenGLRenderer::Initialize() {
+	
+	if(glewInit() != GLEW_OK) {
+		LogError << "GLEW init failed";
+	}
+	
+	if(!GLEW_ARB_vertex_array_bgra) {
+		LogError << "Missing OpenGL extension ARB_vertex_array_bgra";
+	}
+	
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+	
+	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_BLEND);
+	//glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LEQUAL);
+	
+	// glShadeModel(GL_SMOOTH);
 	
 	// TODO get the supported texture stage count
 	m_TextureStages.resize(3);
@@ -32,22 +49,30 @@ void OpenGLRenderer::Initialize() {
 	
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
+	
+	LogInfo << "OpenGL renderer initialized: " << glGetError();
+	
+	CHECK_GL;
 }
 
 bool OpenGLRenderer::BeginScene() {
-	return true; // TODO implement
+	return true; // nothing to do?
 }
 
 bool OpenGLRenderer::EndScene() {
-	return true; // TODO implement
+	
+	glFlush();
+	
+	return true;
 }
 
 void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
-	ARX_UNUSED(matView); // TODO implement
-}
-
-void OpenGLRenderer::SetViewMatrix(const Vec3f & position, const Vec3f & dir, const Vec3f & up) {
-	ARX_UNUSED(position), ARX_UNUSED(dir), ARX_UNUSED(up); // TODO implement
+	
+	glMatrixMode(GL_MODELVIEW);
+	
+	glLoadMatrixf(&matView._11);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
@@ -55,7 +80,12 @@ void OpenGLRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
 }
 
 void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
-	ARX_UNUSED(matProj); // TODO implement
+	
+	glMatrixMode(GL_PROJECTION);
+	
+	glLoadMatrixf(&matProj._11);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
@@ -71,7 +101,7 @@ void OpenGLRenderer::RestoreAllTextures() {
 }
 
 Texture2D * OpenGLRenderer::CreateTexture2D() {
-	return new GLTexture2D; // TODO implement
+	return new GLTexture2D;
 }
 
 static inline void setGLState(GLenum state, bool enable) {
@@ -88,6 +118,11 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		
 		case AlphaBlending: {
 			setGLState(GL_ALPHA_TEST, enable);
+			break;
+		}
+		
+		case ColorKey: {
+			// TODO implement
 			break;
 		}
 		
@@ -120,6 +155,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 			LogWarning << "unsupported render state: " << renderState;
 	}
 	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float fef) {
@@ -131,25 +167,85 @@ void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFa
 }
 
 void OpenGLRenderer::SetViewport(const Rect & viewport) {
-	ARX_UNUSED(viewport); // TODO implement
+	glViewport(viewport.left, viewport.top, viewport.width(), viewport.height());
+	CHECK_GL;
 }
 
 Rect OpenGLRenderer::GetViewport() {
-	return Rect(1024, 768); // TODO implement
+	
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	
+	CHECK_GL;
+	
+	return Rect(Vec2i(viewport[0], viewport[1]), viewport[2], viewport[3]);
 }
 
+static GLfloat oldProjection[16];
+static GLfloat oldModelView[16];
+
 void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
-	ARX_UNUSED(left), ARX_UNUSED(right), ARX_UNUSED(bottom), ARX_UNUSED(top);
-	ARX_UNUSED(zNear), ARX_UNUSED(zFar); // TODO implement
+	
+	glMatrixMode(GL_MODELVIEW);
+	glGetFloatv(GL_MODELVIEW_MATRIX, oldModelView);
+	glLoadIdentity();
+	
+	glMatrixMode(GL_PROJECTION);
+	glGetFloatv(GL_PROJECTION_MATRIX, oldProjection);
+	glLoadIdentity();
+	glOrtho(left, right, bottom, top, zNear, zFar);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::End2DProjection() {
-	// TODO implement
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(oldModelView);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(oldProjection);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearDepth, size_t nrects, Rect * rect) {
-	ARX_UNUSED(bufferFlags), ARX_UNUSED(clearColor), ARX_UNUSED(clearDepth);
-	ARX_UNUSED(nrects), ARX_UNUSED(rect); // TODO implement
+	
+	GLbitfield buffers = 0;
+	
+	if(bufferFlags & ColorBuffer) {
+		Color4f col = clearColor.to<float>();
+		glClearColor(col.r, col.g, col.b, col.a);
+		buffers |= GL_COLOR_BUFFER_BIT;
+	}
+	
+	if(bufferFlags & DepthBuffer) {
+		glClearDepth(clearDepth);
+		buffers |= GL_DEPTH_BUFFER_BIT;
+	}
+	
+	if(bufferFlags & StencilBuffer) {
+		buffers |= GL_STENCIL_BUFFER_BIT;
+	}
+	
+	if(nrects) {
+		
+		glEnable(GL_SCISSOR_TEST);
+		
+		for(size_t i = 0; i < nrects; i++) {
+			glScissor(rect[i].left, rect[i].top, rect[i].width(), rect[i].height()); // TODO bottom instead of top?
+			glClear(buffers);
+		}
+		
+		glDisable(GL_SCISSOR_TEST);
+		
+	} else {
+		
+		glClear(buffers);
+		
+	}
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::SetFogColor(Color color) {
@@ -162,29 +258,82 @@ void OpenGLRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd,
 }
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
-	ARX_UNUSED(enable); // TODO implement
+	
+	setGLState(GL_POLYGON_SMOOTH, enable);
+	setGLState(GL_LINE_SMOOTH, enable);
+	setGLState(GL_POINT_SMOOTH, enable);
+	
+	CHECK_GL;
 }
 
+static GLenum arxToGlCullMode[] = {
+	-1, // CullNone,
+	GL_BACK, // CullCW, TODO check this
+	GL_FRONT // CullCCW,
+};
+
 void OpenGLRenderer::SetCulling(CullingMode mode) {
-	ARX_UNUSED(mode); // TODO implement
+	if(mode == CullNone) {
+		glDisable(GL_CULL_FACE);
+	} else {
+		glEnable(GL_CULL_FACE);
+		glCullFace(arxToGlCullMode[mode]);
+	}
+	CHECK_GL;
 }
 
 void OpenGLRenderer::SetDepthBias(int depthBias) {
-	ARX_UNUSED(depthBias); // TODO implement
+	glPolygonOffset(depthBias, depthBias); // TODO this seems to be what wine is doing
+	CHECK_GL;
 }
 
+static GLenum arxToGlFillMode[] = {
+	GL_POINT, // FillPoint,
+	GL_LINE,  // FillWireframe,
+	GL_FILL,  // FillSolid
+};
+
 void OpenGLRenderer::SetFillMode(FillMode mode) {
-	ARX_UNUSED(mode); // TODO implement
+	glPolygonMode(GL_FRONT_AND_BACK, arxToGlFillMode[mode]);
+	CHECK_GL;
 }
 
 float OpenGLRenderer::GetMaxAnisotropy() const {
-	return std::numeric_limits<float>::max();
+	
+	float maximumAnistropy;
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
+	
+	CHECK_GL;
+	
+	return maximumAnistropy;
 }
 
 void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) {
-	ARX_UNUSED(x), ARX_UNUSED(y), ARX_UNUSED(w), ARX_UNUSED(h);
-	ARX_UNUSED(uStart), ARX_UNUSED(vStart), ARX_UNUSED(uEnd), ARX_UNUSED(vEnd), ARX_UNUSED(color);
-	// TODO implement
+	
+	glColor4ub(color.r, color.g, color.b, color.a);
+	
+	glSecondaryColor3ub(0, 0, 0);
+	
+	x -= 0.5f;
+	y -= 0.5f;
+	
+	glBegin(GL_QUADS);
+		
+		glTexCoord2f(uStart, vStart);
+		glVertex3f(x, y, 0);
+		
+		glTexCoord2f(uEnd, vStart);
+		glVertex3f(x + w, y, 0);
+		
+		glTexCoord2f(uEnd, vEnd);
+		glVertex3f(x + w, y + h, 0);
+		
+		glTexCoord2f(uStart, vEnd);
+		glVertex3f(x, y + h, 0);
+		
+	glEnd();
+	
+	CHECK_GL;
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
@@ -199,9 +348,25 @@ VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity,
 	return new GLVertexBuffer<SMY_VERTEX3>(capacity, usage); 
 }
 
+GLenum arxToGlPrimitiveType[] = {
+	GL_TRIANGLES, // TriangleList,
+	GL_TRIANGLE_STRIP, // TriangleStrip,
+	GL_TRIANGLE_FAN, // TriangleFan,
+	GL_LINES, // LineList,
+	GL_LINE_STRIP // LineStrip
+};
+
 void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
-	ARX_UNUSED(primitive), ARX_UNUSED(vertices), ARX_UNUSED(nvertices);
-	ARX_UNUSED(indices), ARX_UNUSED(nindices); // TODO implement
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	setVertexArray(vertices);
+	
+	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices, nindices, GL_UNSIGNED_SHORT, indices);
+	
+	glDisableClientState(GL_VERTEX_ARRAY);
+	
+	CHECK_GL;
 }
 
 bool OpenGLRenderer::getSnapshot(Image & image) {

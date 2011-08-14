@@ -1,14 +1,24 @@
 
 #include "graphics/opengl/GLTextureStage.h"
 
+#include "graphics/opengl/GLTexture2D.h"
+
 GLTextureStage::GLTextureStage(unsigned stage) : TextureStage(stage) { }
 
-void GLTextureStage::SetTexture(Texture * pTexture) {
-	ARX_UNUSED(pTexture); // TODO implement
+void GLTextureStage::SetTexture(Texture * texture) {
+	
+	arx_assert(texture != NULL);
+	
+	glActiveTexture(GL_TEXTURE0 + mStage);
+	glBindTexture(GL_TEXTURE_2D, reinterpret_cast<GLTexture2D *>(texture)->tex);
+	
+	CHECK_GL;
 }
 
 void GLTextureStage::ResetTexture() {
-	// TODO implement
+	glActiveTexture(GL_TEXTURE0 + mStage);
+	glBindTexture(GL_TEXTURE_2D, GL_NONE);
+	CHECK_GL;
 }
 
 void GLTextureStage::SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2) {

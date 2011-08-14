@@ -525,7 +525,7 @@ void AdjustUI()
 
 void DanaeRestoreFullScreen() {
 	
-	mainApp->GetWindow()->SetFullscreen(!mainApp->GetWindow()->IsFullScreen());
+	//mainApp->GetWindow()->SetFullscreen(!mainApp->GetWindow()->IsFullScreen());
 
 	AdjustUI();
 
