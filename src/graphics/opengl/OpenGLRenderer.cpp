@@ -117,7 +117,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 	switch(renderState) {
 		
 		case AlphaBlending: {
-			setGLState(GL_ALPHA_TEST, enable);
+			setGLState(GL_BLEND, enable);
 			break;
 		}
 		
@@ -151,19 +151,46 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 			break;
 		}
 		
-		default: // TODO implement
+		default:
 			LogWarning << "unsupported render state: " << renderState;
 	}
 	
 	CHECK_GL;
 }
 
-void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float fef) {
-	ARX_UNUSED(func), ARX_UNUSED(fef); // TODO implement
+static const GLenum arxToGlPixelCompareFunc[] = {
+	GL_NEVER, // CmpNever,
+	GL_LESS, // CmpLess,
+	GL_EQUAL, // CmpEqual,
+	GL_LEQUAL, // CmpLessEqual,
+	GL_GREATER, // CmpGreater,
+	GL_NOTEQUAL, // CmpNotEqual,
+	GL_GEQUAL, // CmpGreaterEqual,
+	GL_ALWAYS // CmpAlways
+};
+
+void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float ref) {
+	glAlphaFunc(arxToGlPixelCompareFunc[func], ref);
+	CHECK_GL;
 }
 
+static const GLenum arxToGlBlendFactor[] = {
+	GL_ZERO, // BlendZero,              //!< Zero
+	GL_ONE, // BlendOne,               //!< One
+	GL_SRC_COLOR, // BlendSrcColor,          //!< Source color
+	GL_SRC_ALPHA, // BlendSrcAlpha,          //!< Source alpha
+	GL_ONE_MINUS_SRC_COLOR, // BlendInvSrcColor,       //!< Inverse source color
+	GL_ONE_MINUS_SRC_ALPHA, // BlendInvSrcAlpha,       //!< Inverse source alpha
+	GL_SRC_ALPHA_SATURATE, // BlendSrcAlphaSaturate,  //!< Source alpha saturate
+	GL_DST_COLOR, // BlendDstColor,          //!< Destination color
+	GL_DST_ALPHA, // BlendDstAlpha,          //!< Destination alpha
+	GL_ONE_MINUS_DST_COLOR, // BlendInvDstColor,       //!< Inverse destination color
+	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha        //!< Inverse destination alpha
+};
+
 void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
-	ARX_UNUSED(srcFactor), ARX_UNUSED(dstFactor); // TODO implement
+	glBlendFunc(arxToGlBlendFactor[srcFactor], arxToGlBlendFactor[dstFactor]);
+	CHECK_GL;
 }
 
 void OpenGLRenderer::SetViewport(const Rect & viewport) {
@@ -233,7 +260,7 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 		glEnable(GL_SCISSOR_TEST);
 		
 		for(size_t i = 0; i < nrects; i++) {
-			glScissor(rect[i].left, rect[i].top, rect[i].width(), rect[i].height()); // TODO bottom instead of top?
+			glScissor(rect[i].left, rect[i].top, rect[i].width(), rect[i].height());
 			glClear(buffers);
 		}
 		
@@ -268,7 +295,7 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 
 static GLenum arxToGlCullMode[] = {
 	-1, // CullNone,
-	GL_BACK, // CullCW, TODO check this
+	GL_BACK, // CullCW,
 	GL_FRONT // CullCCW,
 };
 
