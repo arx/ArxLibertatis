@@ -5,11 +5,13 @@
 #include "graphics/opengl/OpenGLUtil.h"
 
 #include "graphics/texture/Texture.h"
+#include "graphics/texture/TextureStage.h"
+
+class GLTextureStage;
 
 class GLTexture2D : public Texture2D {
 	
-	friend class OpenGLRenderer;
-	friend class GLTextureStage;
+public:
 	
 	GLTexture2D();
 	~GLTexture2D();
@@ -18,7 +20,19 @@ class GLTexture2D : public Texture2D {
 	void Upload();
 	void Destroy();
 	
+	void apply();
+	inline void link(GLTextureStage * _stage) { stage = _stage; }
+	
+private:
+	
+	GLTextureStage * stage;
+	
 	GLuint tex;
+	
+	TextureStage::WrapMode wrapMode;
+	TextureStage::FilterMode minFilter;
+	TextureStage::FilterMode magFilter;
+	TextureStage::FilterMode mipFilter;
 	
 };
 

@@ -1,15 +1,25 @@
 
 #include "graphics/opengl/GLTexture2D.h"
 
-GLTexture2D::GLTexture2D() : tex(GL_NONE) { }
+#include "graphics/opengl/GLTextureStage.h"
+
+GLTexture2D::GLTexture2D() : stage(NULL), tex(GL_NONE) { }
 GLTexture2D::~GLTexture2D() { }
 
 bool GLTexture2D::Create() {
+	
+	arx_assert(stage == NULL);
 	
 	glGenTextures(1, &tex);
 	
 	// TODO color keying
 	// TODO mipmapping
+	
+	// Set our state to the default OpenGL state
+	wrapMode = TextureStage::WrapRepeat;
+	mipFilter = TextureStage::FilterLinear;
+	minFilter = TextureStage::FilterNearest;
+	magFilter = TextureStage::FilterLinear;
 	
 	CHECK_GL;
 	
@@ -44,11 +54,6 @@ void GLTexture2D::Upload() {
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, internal, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, mImage.GetData());
 	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
 	CHECK_GL;
 }
 
@@ -60,4 +65,62 @@ void GLTexture2D::Destroy() {
 		glDeleteTextures(1, &tex);
 		CHECK_GL;
 	}
+	
+	if(stage) {
+		arx_assert(stage->tex == this);
+		stage->tex = NULL, stage = NULL;
+	}
+}
+
+static const GLint arxToGlWrapMode[] = {
+	GL_REPEAT, // WrapRepeat,
+	GL_MIRRORED_REPEAT, // WrapMirror
+	GL_CLAMP // WrapClamp
+};
+
+static const GLint arxToGlFilter[][3] = {
+	// Mipmap: FilterNone
+	{
+		-1, // FilterNone
+		GL_NEAREST, // FilterNearest
+		GL_LINEAR   // FilterLinear
+	},
+	// Mipmap: FilterNearest
+	{
+		-1, // FilterNone
+		GL_NEAREST_MIPMAP_NEAREST, // FilterNearest
+		GL_LINEAR_MIPMAP_NEAREST   // FilterLinear
+	},
+	// Mipmap: FilterLinear
+	{
+		-1, // FilterNone
+		GL_NEAREST_MIPMAP_LINEAR, // FilterNearest
+		GL_LINEAR_MIPMAP_LINEAR   // FilterLinear
+	}
+};
+
+void GLTexture2D::apply() {
+	
+	arx_assert(stage != NULL);
+	arx_assert(stage->tex == this);
+	
+	glBindTexture(GL_TEXTURE_2D, tex);
+	
+	if(stage->wrapMode != wrapMode) {
+		GLint glwrap = arxToGlWrapMode[wrapMode = stage->wrapMode];
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glwrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
+	}
+	
+	if(stage->mipFilter != mipFilter || stage->minFilter != minFilter) {
+		minFilter = stage->minFilter, mipFilter = stage->mipFilter;
+		arx_assert(minFilter != TextureStage::FilterNone);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, arxToGlFilter[mipFilter][minFilter]);
+	}
+	
+	if(stage->magFilter != magFilter) {
+		arx_assert(stage->magFilter != TextureStage::FilterNone);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, arxToGlFilter[0][magFilter = stage->magFilter]);
+	}
+	
 }

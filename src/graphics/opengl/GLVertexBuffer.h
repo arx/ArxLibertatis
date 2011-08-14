@@ -5,58 +5,119 @@
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
 #include "graphics/opengl/OpenGLUtil.h"
+#include "graphics/opengl/OpenGLRenderer.h"
 
 template <class Vertex>
 void setVertexArray(const Vertex * vertex);
 
+enum GLArrayClientState {
+	GL_NoArray,
+	GL_TexturedVertex,
+	GL_SMY_VERTEX,
+	GL_SMY_VERTEX3
+};
+
+static GLArrayClientState glArrayClientState = GL_NoArray;
+
 template <>
 void setVertexArray(const TexturedVertex * vertices) {
+	
+	if(glArrayClientState == GL_TexturedVertex) {
+		return;
+	}
+	glArrayClientState = GL_TexturedVertex;
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
 	
 	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
 	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->specular);
+	
 	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(TexturedVertex), &vertices->tu);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE2);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 template <>
 void setVertexArray(const SMY_VERTEX * vertices) {
 	
+	if(glArrayClientState == GL_SMY_VERTEX) {
+		return;
+	}
+	glArrayClientState = GL_SMY_VERTEX;
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+	
 	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->x);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX), &vertices->color);
+	
 	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->tu);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE2);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 template <>
 void setVertexArray(const SMY_VERTEX3 * vertices) {
 	
+	if(glArrayClientState == GL_SMY_VERTEX3) {
+		return;
+	}
+	glArrayClientState = GL_SMY_VERTEX3;
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+	
 	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->x);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX3), &vertices->color);
+	
 	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu);
+	
 	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu2);
+	
 	glClientActiveTexture(GL_TEXTURE2);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu3);
 }
 
-GLenum arxToGlBufferUsage[] = {
+static const GLenum arxToGlBufferUsage[] = {
 	GL_STATIC_DRAW,  // Static,
 	GL_DYNAMIC_DRAW, // Dynamic,
 	GL_STREAM_DRAW   // Stream
 };
 
-extern GLenum arxToGlPrimitiveType[];
+extern const GLenum arxToGlPrimitiveType[];
 
 template <class Vertex>
 class GLVertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	GLVertexBuffer(size_t capacity, Renderer::BufferUsage usage) : VertexBuffer<Vertex>(capacity), buffer(0) {
+	GLVertexBuffer(OpenGLRenderer * _renderer, size_t capacity, Renderer::BufferUsage usage) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(0) {
 		
 		glGenBuffers(1, &buffer);
+		
+		arx_assert(buffer != GL_NONE);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glBufferData(GL_ARRAY_BUFFER, capacity * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
@@ -81,7 +142,9 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		void * buf = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE); // TODO use flags
+		void * buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY); 
+		
+		arx_assert(buf != NULL); // TODO OpenGL doen't guarantee this
 		
 		CHECK_GL;
 		
@@ -92,7 +155,7 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+		glUnmapBuffer(GL_ARRAY_BUFFER); // TODO handle GL_FALSE return (buffer invalidated)
 		
 		CHECK_GL;
 	}
@@ -101,15 +164,13 @@ public:
 		
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		renderer->applyTextureStages();
 		
-		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
 		setVertexArray<Vertex>(NULL);
 		
 		glDrawArrays(arxToGlPrimitiveType[primitive], offset, count);
-		
-		glDisableClientState(GL_VERTEX_ARRAY);
 		
 		CHECK_GL;
 	}
@@ -120,15 +181,13 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		arx_assert(indices != NULL);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		renderer->applyTextureStages();
 		
-		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
 		setVertexArray<Vertex>(NULL);
 		
 		glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, count, nbindices, GL_UNSIGNED_SHORT, indices);
-		
-		glDisableClientState(GL_VERTEX_ARRAY);
 		
 		CHECK_GL;
 	}
@@ -140,6 +199,7 @@ public:
 	
 private:
 	
+	OpenGLRenderer * renderer;
 	GLuint buffer;
 	
 };

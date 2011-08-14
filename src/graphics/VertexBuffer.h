@@ -4,9 +4,9 @@
 
 #include <algorithm>
 
+#include "graphics/Renderer.h"
 #include "platform/Platform.h"
 #include "platform/Flags.h"
-#include "graphics/Renderer.h"
 
 enum BufferFlag {
 	DiscardContents = (1<<0),

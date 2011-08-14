@@ -38,11 +38,6 @@ void OpenGLRenderer::Initialize() {
 	
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		m_TextureStages[i] = new GLTextureStage(i);
-		// Set default state
-		m_TextureStages[i]->SetWrapMode(TextureStage::WrapRepeat);
-		m_TextureStages[i]->SetMinFilter(TextureStage::FilterLinear);
-		m_TextureStages[i]->SetMagFilter(TextureStage::FilterLinear);
-		m_TextureStages[i]->SetMipFilter(TextureStage::FilterLinear);
 	}
 	
 	SetRenderState(ColorKey, true);
@@ -76,7 +71,10 @@ void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 }
 
 void OpenGLRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
-	Util_SetIdentityMatrix(matView); // TODO implement
+	
+	glGetFloatv(GL_MODELVIEW_MATRIX, &matView._11);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
@@ -89,7 +87,10 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 }
 
 void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
-	Util_SetIdentityMatrix(matProj); // TODO implement
+	
+	glGetFloatv(GL_PROJECTION_MATRIX, &matProj._11);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::ReleaseAllTextures() {
@@ -293,7 +294,7 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 	CHECK_GL;
 }
 
-static GLenum arxToGlCullMode[] = {
+static const GLenum arxToGlCullMode[] = {
 	-1, // CullNone,
 	GL_BACK, // CullCW,
 	GL_FRONT // CullCCW,
@@ -310,11 +311,15 @@ void OpenGLRenderer::SetCulling(CullingMode mode) {
 }
 
 void OpenGLRenderer::SetDepthBias(int depthBias) {
-	glPolygonOffset(depthBias, depthBias); // TODO this seems to be what wine is doing
+	
+	float bias = -(float)depthBias; // TODO this seems to be what wine is doing
+	
+	glPolygonOffset(bias, bias);
+	
 	CHECK_GL;
 }
 
-static GLenum arxToGlFillMode[] = {
+static const GLenum arxToGlFillMode[] = {
 	GL_POINT, // FillPoint,
 	GL_LINE,  // FillWireframe,
 	GL_FILL,  // FillSolid
@@ -336,6 +341,8 @@ float OpenGLRenderer::GetMaxAnisotropy() const {
 }
 
 void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) {
+	
+	applyTextureStages();
 	
 	glColor4ub(color.r, color.g, color.b, color.a);
 	
@@ -364,18 +371,18 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<TexturedVertex>(capacity, usage); 
+	return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<SMY_VERTEX>(capacity, usage); 
+	return new GLVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<SMY_VERTEX3>(capacity, usage); 
+	return new GLVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
 }
 
-GLenum arxToGlPrimitiveType[] = {
+const GLenum arxToGlPrimitiveType[] = {
 	GL_TRIANGLES, // TriangleList,
 	GL_TRIANGLE_STRIP, // TriangleStrip,
 	GL_TRIANGLE_FAN, // TriangleFan,
@@ -385,13 +392,11 @@ GLenum arxToGlPrimitiveType[] = {
 
 void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
+	applyTextureStages();
 	
 	setVertexArray(vertices);
 	
 	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices, nindices, GL_UNSIGNED_SHORT, indices);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 	
 	CHECK_GL;
 }
@@ -408,4 +413,12 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 
 void OpenGLRenderer::setGamma(float brightness, float contrast, float gamma) {
 	ARX_UNUSED(brightness), ARX_UNUSED(contrast), ARX_UNUSED(gamma); // TODO implement
+}
+
+void OpenGLRenderer::applyTextureStages() {
+	
+	std::vector<TextureStage *>::const_iterator i = m_TextureStages.begin();
+	for(; i != m_TextureStages.end(); ++i) {
+		reinterpret_cast<GLTextureStage *>(*i)->apply();
+	}
 }

@@ -75,6 +75,12 @@ public:
 	
 	void setGamma(float brightness, float contrast, float gamma);
 	
+private:
+	
+	void applyTextureStages();
+	
+	template <class Vertex>
+	friend class GLVertexBuffer;
 };
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
