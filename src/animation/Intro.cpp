@@ -63,7 +63,7 @@ void LoadScreen()
 	if (GRenderer->BeginScene())
 	{
 		GRenderer->EndScene();
-		mainApp->GetWindow()->showFrame();
+		//mainApp->GetWindow()->showFrame();
 	}
 }
 
@@ -118,7 +118,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 		}
 
 		GRenderer->EndScene();
-		mainApp->GetWindow()->showFrame();
+		//mainApp->GetWindow()->showFrame();
 	}
 
 	Project.vsync = 1;
@@ -152,7 +152,7 @@ void ARX_INTERFACE_ShowARKANE()
 		}
 
 		GRenderer->EndScene();
-		mainApp->GetWindow()->showFrame();
+		//mainApp->GetWindow()->showFrame();
 	}
 
 	Project.vsync = 1;

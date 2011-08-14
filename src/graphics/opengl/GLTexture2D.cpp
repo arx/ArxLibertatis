@@ -19,7 +19,7 @@ bool GLTexture2D::Create() {
 	wrapMode = TextureStage::WrapRepeat;
 	mipFilter = TextureStage::FilterLinear;
 	minFilter = TextureStage::FilterNearest;
-	magFilter = TextureStage::FilterLinear;
+	magFilter = TextureStage::FilterMode(-1); // TODO TextureStage::FilterLinear;
 	
 	CHECK_GL;
 	
@@ -88,14 +88,14 @@ static const GLint arxToGlFilter[][3] = {
 	// Mipmap: FilterNearest
 	{
 		-1, // FilterNone
-		GL_NEAREST_MIPMAP_NEAREST, // FilterNearest
-		GL_LINEAR_MIPMAP_NEAREST   // FilterLinear
+		GL_NEAREST, // FilterNearest TODO should be GL_NEAREST_MIPMAP_NEAREST
+		GL_LINEAR   // FilterLinear TODO should be GL_LINEAR_MIPMAP_NEAREST
 	},
 	// Mipmap: FilterLinear
 	{
 		-1, // FilterNone
-		GL_NEAREST_MIPMAP_LINEAR, // FilterNearest
-		GL_LINEAR_MIPMAP_LINEAR   // FilterLinear
+		GL_NEAREST, // FilterNearest TODO should be GL_NEAREST_MIPMAP_LINEAR
+		GL_LINEAR   // FilterLinear TODO should be GL_LINEAR_MIPMAP_LINEAR
 	}
 };
 

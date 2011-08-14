@@ -44,6 +44,8 @@ void setVertexArray(const TexturedVertex * vertices) {
 	
 	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	CHECK_GL;
 }
 
 template <>
@@ -70,6 +72,8 @@ void setVertexArray(const SMY_VERTEX * vertices) {
 	
 	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	CHECK_GL;
 }
 
 template <>
@@ -98,6 +102,8 @@ void setVertexArray(const SMY_VERTEX3 * vertices) {
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu3);
+	
+	CHECK_GL;
 }
 
 static const GLenum arxToGlBufferUsage[] = {
