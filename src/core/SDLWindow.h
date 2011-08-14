@@ -6,6 +6,8 @@
 
 #include "core/RenderWindow.h"
 
+class SDLInputBackend;
+
 class SDLWindow : public RenderWindow {
 	
 public:
@@ -32,6 +34,11 @@ private:
 	
 	SDL_Surface * window;
 	
+	SDLInputBackend * input;
+	
+	static SDLWindow * mainWindow;
+	
+	friend class SDLInputBackend;
 };
 
 #endif // ARX_CORE_SDLWINDOW_H

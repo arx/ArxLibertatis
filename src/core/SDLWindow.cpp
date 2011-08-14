@@ -2,9 +2,10 @@
 #include "core/SDLWindow.h"
 
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "input/SDLInputBackend.h"
 #include "io/Logger.h"
 
-static SDLWindow * mainWindow = NULL;
+SDLWindow * SDLWindow::mainWindow = NULL;
 
 SDLWindow::SDLWindow() : window(NULL) {
 	mainWindow = this;
@@ -20,6 +21,8 @@ SDLWindow::~SDLWindow() {
 	if(window) {
 		SDL_Quit(), window = NULL;
 	}
+	
+	mainWindow = NULL;
 }
 
 bool SDLWindow::Init(const std::string & title, int width, int height, bool visible, bool fullscreen) {
@@ -35,16 +38,6 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	SDL_SetEventFilter(eventFilter);
 	
 	SDL_EventState(SDL_ACTIVEEVENT, SDL_ENABLE);
-	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
-	SDL_EventState(SDL_KEYUP, SDL_ENABLE);
-	SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
-	SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
-	SDL_EventState(SDL_JOYAXISMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_JOYBALLMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_JOYHATMOTION, SDL_ENABLE);
-	SDL_EventState(SDL_JOYBUTTONDOWN, SDL_ENABLE);
-	SDL_EventState(SDL_JOYBUTTONUP, SDL_ENABLE);
 	SDL_EventState(SDL_QUIT, SDL_ENABLE);
 	SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
 	SDL_EventState(SDL_VIDEORESIZE, SDL_ENABLE);
@@ -72,7 +65,7 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	
 	OnShow(true);
 	
-	return true; // TODO implement
+	return true;
 }
 
 bool SDLWindow::setMode(Vec2i size, bool fullscreen) {
@@ -90,7 +83,7 @@ bool SDLWindow::setMode(Vec2i size, bool fullscreen) {
 }
 
 void * SDLWindow::GetHandle() {
-	return NULL; // TODO implement
+	return window;
 }
 
 void SDLWindow::SetFullscreen(bool fullscreen) {
@@ -156,7 +149,9 @@ void SDLWindow::Tick() {
 			case SDL_JOYHATMOTION:
 			case SDL_JOYBUTTONDOWN:
 			case SDL_JOYBUTTONUP: {
-				// TODO input event
+				if(input) {
+					input->onInputEvent(event);
+				}
 				break;
 			}
 			

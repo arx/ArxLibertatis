@@ -5,6 +5,8 @@
 #include "input/Input.h"
 #include "input/InputBackend.h"
 
+union SDL_Event;
+
 class SDLInputBackend : public InputBackend {
 	
 public:
@@ -30,6 +32,9 @@ public:
 	
 private:
 	
+	void onInputEvent(const SDL_Event & event);
+	
+	friend class SDLWindow;
 };
 
 #endif // ARX_INPUT_SDLINPUTBACKEND_H
