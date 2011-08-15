@@ -3,7 +3,6 @@
 
 #include <cstdio>
 
-#include "core/Application.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
@@ -11,11 +10,18 @@
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
 #include "io/Logger.h"
-#include "window/RenderWindow.h"
 
 OpenGLRenderer::OpenGLRenderer() { };
 
 OpenGLRenderer::~OpenGLRenderer() { };
+
+enum GLTransformMode {
+	GL_UnsetTransform,
+	GL_NoTransform,
+	GL_ModelViewProjectionTransform
+};
+
+static GLTransformMode currentTransform;
 
 void OpenGLRenderer::Initialize() {
 	
@@ -51,12 +57,7 @@ void OpenGLRenderer::Initialize() {
 	
 	LogInfo << "OpenGL renderer initialized: " << glGetError();
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glOrtho(0, 1, 0, 1, -1, 1);
+	currentTransform = GL_UnsetTransform;
 	
 	CHECK_GL;
 }
@@ -84,28 +85,45 @@ static void dump(const EERIEMATRIX & mat) {
 static EERIEMATRIX projection;
 static EERIEMATRIX view;
 
-template <class T>
-void selectTrasform() {
+void OpenGLRenderer::enableTransform() {
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
-	glMultMatrixf(&view._11);
+	if(currentTransform == GL_ModelViewProjectionTransform) {
+		return;
+	}
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glTranslatef(-1.f, 1.f, 0);
-	const Vec2i & s = mainApp->GetWindow()->GetSize();
-	glScalef(2.f/s.x, -2.f/s.y, 1.f);
-	glMultMatrixf(&projection._11);
+	if(currentTransform == GL_NoTransform) {
+		
+		glMatrixMode(GL_MODELVIEW);
+		glMultMatrixf(&view._11);
+		
+		glMatrixMode(GL_PROJECTION);
+		glMultMatrixf(&projection._11);
+		
+	} else {
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
+		glMultMatrixf(&view._11);
+		
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glTranslatef(-1.f, 1.f, 0);
+		glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
+		glMultMatrixf(&projection._11);
+		
+	}
+	
+	currentTransform = GL_ModelViewProjectionTransform;
 	
 	CHECK_GL;
 }
 
-template <>
-void selectTrasform<TexturedVertex>() {
+void OpenGLRenderer::disableTransform() {
 	
-	// TODO cache transformations
+	if(currentTransform == GL_NoTransform) {
+		return;
+	}
 	
 	// D3D doesn't apply any transform for D3DTLVERTEX
 	// but we still need to change from D3D to OpenGL coordinates
@@ -117,8 +135,9 @@ void selectTrasform<TexturedVertex>() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glTranslatef(-1.f, 1.f, 0);
-	const Vec2i & s = mainApp->GetWindow()->GetSize();
-	glScalef(2.f/s.x, -2.f/s.y, 1.f);
+	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
+	
+	currentTransform = GL_NoTransform;
 	
 	CHECK_GL;
 }
@@ -127,6 +146,10 @@ void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	
 	if(!memcmp(&view, &matView, sizeof(EERIEMATRIX))) {
 		return;
+	}
+	
+	if(currentTransform == GL_ModelViewProjectionTransform) {
+		currentTransform = GL_UnsetTransform;
 	}
 	
 	view = matView;
@@ -140,6 +163,10 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	
 	if(!memcmp(&projection, &matProj, sizeof(EERIEMATRIX))) {
 		return;
+	}
+	
+	if(currentTransform == GL_ModelViewProjectionTransform) {
+		currentTransform = GL_UnsetTransform;
 	}
 	
 	projection = matProj;
@@ -250,42 +277,27 @@ void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFa
 	CHECK_GL;
 }
 
-void OpenGLRenderer::SetViewport(const Rect & viewport) {
+void OpenGLRenderer::SetViewport(const Rect & _viewport) {
+	
+	viewport = _viewport;
+	
 	glViewport(viewport.left, viewport.top, viewport.width(), viewport.height());
+	
+	currentTransform = GL_UnsetTransform;
+	
 	CHECK_GL;
 }
 
 Rect OpenGLRenderer::GetViewport() {
-	
-	GLint viewport[4];
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	
-	CHECK_GL;
-	
-	return Rect(Vec2i(viewport[0], viewport[1]), viewport[2], viewport[3]);
+	return viewport;
 }
 
 void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
-	
-	// TODO do we even need this? probably better to just use TexturedVertex for font rendering
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(left, right, bottom, top, zNear, zFar);
-	
-	CHECK_GL;
+	// Do nothing!
 }
 
 void OpenGLRenderer::End2DProjection() {
-	
-	SetProjectionMatrix(projection);
-	
-	SetViewMatrix(view);
-	
-	CHECK_GL;
+	// Do nothing!
 }
 
 void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearDepth, size_t nrects, Rect * rect) {
@@ -394,6 +406,7 @@ float OpenGLRenderer::GetMaxAnisotropy() const {
 void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) {
 	
 	applyTextureStages();
+	disableTransform();
 	
 	glColor4ub(color.r, color.g, color.b, color.a);
 	
@@ -443,8 +456,7 @@ const GLenum arxToGlPrimitiveType[] = {
 
 void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
 	
-	applyTextureStages();
-	selectTrasform<TexturedVertex>();
+	beforeDraw<TexturedVertex>();
 	
 #if 1
 	

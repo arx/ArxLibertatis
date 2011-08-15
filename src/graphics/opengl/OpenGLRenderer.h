@@ -3,7 +3,7 @@
 #define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
 #include "graphics/Renderer.h"
-#include "Configure.h"
+#include "math/Rectangle.h"
 
 class OpenGLRenderer : public Renderer {
 	
@@ -77,12 +77,30 @@ public:
 	
 private:
 	
+	Rect viewport;
+	
 	void applyTextureStages();
+	
+	template <class Vertex>
+	void selectTrasform();
+	
+	void enableTransform();
+	void disableTransform();
+	
+	template <class Vertex>
+	inline void beforeDraw() { applyTextureStages(); selectTrasform<Vertex>(); }
 	
 	template <class Vertex>
 	friend class GLNoVertexBuffer;
 	template <class Vertex>
 	friend class GLVertexBuffer;
 };
+
+
+template <class Vertex>
+inline void OpenGLRenderer::selectTrasform() { enableTransform(); }
+
+template <>
+inline void OpenGLRenderer::selectTrasform<TexturedVertex>() { disableTransform(); }
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H

@@ -7,11 +7,6 @@
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 
-template <class T>
-void selectTrasform();
-template <>
-void selectTrasform<TexturedVertex>();
-
 template <class Vertex>
 void renderVertex(const Vertex & vertex);
 
@@ -94,8 +89,7 @@ public:
 		
 		arx_assert(offset + count <= capacity());
 		
-		renderer->applyTextureStages();
-		selectTrasform<Vertex>();
+		renderer->beforeDraw<Vertex>();
 		
 		glBegin(arxToGlPrimitiveType[primitive]);
 		
@@ -114,8 +108,7 @@ public:
 		arx_assert(offset + count <= capacity());
 		arx_assert(indices != NULL);
 		
-		renderer->applyTextureStages();
-		selectTrasform<Vertex>();
+		renderer->beforeDraw<Vertex>();
 		
 		glBegin(arxToGlPrimitiveType[primitive]);
 		
