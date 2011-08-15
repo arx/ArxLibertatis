@@ -1,10 +1,10 @@
 
-#ifndef ARX_CORE_SDLWINDOW_H
-#define ARX_CORE_SDLWINDOW_H
+#ifndef ARX_WINDOW_SDLWINDOW_H
+#define ARX_WINDOW_SDLWINDOW_H
 
 #include <SDL.h>
 
-#include "core/RenderWindow.h"
+#include "window/RenderWindow.h"
 
 class SDLInputBackend;
 
@@ -41,4 +41,4 @@ private:
 	friend class SDLInputBackend;
 };
 
-#endif // ARX_CORE_SDLWINDOW_H
+#endif // ARX_WINDOW_SDLWINDOW_H

@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/Core.h"
-#include "core/Window.h"
 
 #include "game/Levels.h"
 
@@ -43,6 +42,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/FileStream.h"
 #include "io/FilePath.h"
+
+#include "window/Window.h"
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;

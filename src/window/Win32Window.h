@@ -1,11 +1,11 @@
 
-#ifndef ARX_CORE_WIN32WINDOW_H
-#define ARX_CORE_WIN32WINDOW_H
-
-#include "core/RenderWindow.h"
+#ifndef ARX_WINDOW_WIN32WINDOW_H
+#define ARX_WINDOW_WIN32WINDOW_H
 
 #include <map>
 #include <windows.h>
+
+#include "window/RenderWindow.h"
 
 class Win32Window : public RenderWindow {
 	
@@ -37,4 +37,4 @@ private:
 	
 };
 
-#endif // ARX_CORE_WIN32WINDOW_H
+#endif // ARX_WINDOW_WIN32WINDOW_H

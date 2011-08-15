@@ -4,7 +4,6 @@
 #include <cstdio>
 
 #include "core/Application.h"
-#include "core/RenderWindow.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
@@ -12,6 +11,7 @@
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
 #include "io/Logger.h"
+#include "window/RenderWindow.h"
 
 OpenGLRenderer::OpenGLRenderer() { };
 

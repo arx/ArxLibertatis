@@ -39,13 +39,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Localisation.h"
 #include "core/Resource.h"
-#include "core/RenderWindow.h"
-#ifdef HAVE_D3D7
-#include "core/D3D7Window.h"
-#endif
-#ifdef HAVE_SDL
-#include "core/SDLWindow.h"
-#endif
 
 #include "game/Inventory.h"
 #include "game/Levels.h"
@@ -88,6 +81,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
 #include "scene/Scene.h"
+
+#ifdef HAVE_D3D7
+#include "window/D3D7Window.h"
+#endif
+#ifdef HAVE_SDL
+#include "window/SDLWindow.h"
+#endif
 
 using std::string;
 

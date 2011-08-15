@@ -1,5 +1,5 @@
 
-#include "core/SDLWindow.h"
+#include "window/SDLWindow.h"
 
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDLInputBackend.h"

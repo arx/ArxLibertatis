@@ -1,10 +1,8 @@
 
 #include "input/SDLInputBackend.h"
 
-#include <SDL.h>
-
-#include "core/SDLWindow.h"
 #include "io/Logger.h"
+#include "window/SDLWindow.h"
 
 SDLInputBackend::SDLInputBackend() { }
 

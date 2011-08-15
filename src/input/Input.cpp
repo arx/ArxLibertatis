@@ -64,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/GameTime.h"
-#include "core/RenderWindow.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
 #ifdef HAVE_DINPUT7
@@ -74,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/SDLInputBackend.h"
 #endif
 #include "io/Logger.h"
+#include "window/RenderWindow.h"
 
 Input * GInput = NULL;
 
