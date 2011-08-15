@@ -41,8 +41,8 @@ void GLTextureStage::ResetTexture() {
 }
 
 static const GLint glTexSource[] = {
-	GL_PRIMARY_COLOR_EXT, // ArgDiffuse,
-	GL_PREVIOUS_EXT, // ArgCurrent,
+	GL_PRIMARY_COLOR, // ArgDiffuse,
+	GL_PREVIOUS, // ArgCurrent,
 	GL_TEXTURE // ArgTexture
 };
 

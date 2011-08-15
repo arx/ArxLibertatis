@@ -160,7 +160,7 @@ public:
 		
 		void * buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY); 
 		
-		arx_assert(buf != NULL); // TODO OpenGL doen't guarantee this
+		arx_assert(buf != NULL); // TODO OpenGL doesn't guarantee this
 		
 		CHECK_GL;
 		
