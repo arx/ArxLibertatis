@@ -80,6 +80,8 @@ private:
 	void applyTextureStages();
 	
 	template <class Vertex>
+	friend class GLNoVertexBuffer;
+	template <class Vertex>
 	friend class GLVertexBuffer;
 };
 

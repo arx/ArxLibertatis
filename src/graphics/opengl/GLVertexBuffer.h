@@ -31,7 +31,7 @@ void setVertexArray(const TexturedVertex * vertices) {
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
 	
-	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
+	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
 	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->specular);
 	
@@ -181,7 +181,6 @@ public:
 		CHECK_GL;
 	}
 	
-	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
@@ -193,7 +192,7 @@ public:
 		
 		setVertexArray<Vertex>(NULL);
 		
-		glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, count, nbindices, GL_UNSIGNED_SHORT, indices);
+		glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_SHORT, indices);
 		
 		CHECK_GL;
 	}

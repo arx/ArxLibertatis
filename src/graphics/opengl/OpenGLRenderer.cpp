@@ -7,6 +7,7 @@
 #include "core/RenderWindow.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsUtility.h"
+#include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
@@ -31,7 +32,8 @@ void OpenGLRenderer::Initialize() {
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	
 	glEnable(GL_TEXTURE_2D);
-	glDepthFunc(GL_LEQUAL);
+	
+	glDepthFunc(GL_LESS);
 	
 	// glShadeModel(GL_SMOOTH);
 	
@@ -102,15 +104,19 @@ void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	view = matView;
 	
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	/*
+	EERIEMATRIX mat;
 	
-	EERIEMATRIX mat = matView;
+	EERIEMATRIX a;
+	a._11 = 1.f, a._21 = 0.f, a._31 = 0.f, a._41 = 0.f;
+	a._12 = 0.f, a._22 = 1.f, a._32 = 0.f, a._42 = 0.f;
+	a._13 = 0.f, a._23 = 0.f, a._33 = -1.f, a._43 = 0.f;
+	a._14 = 0.f, a._24 = 0.f, a._34 = 0.f, a._44 = 1.f;
 	
-	mat._13 *= -1;
-	mat._23 *= -1;
-	mat._33 *= -1;
-	mat._43 *= -1;
-	
-	glLoadMatrixf(&mat._11);
+	MatrixMultiply(&mat, &matView, &a);
+	*/
+	//glLoadMatrixf(&matView._11);
 	
 	CHECK_GL;
 }
@@ -137,9 +143,9 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	
 	EERIEMATRIX a;
 	const Vec2i & s = mainApp->GetWindow()->GetSize();
-	a._11 = 2.f/s.x, a._21 = 0.f, a._31 = 0.f, a._41 = 0.f;
-	a._12 = 0.f, a._22 = 2.f/s.y, a._32 = 0.f, a._42 = 0.f;
-	a._13 = 0.f, a._23 = 0.f, a._33 = 1.f, a._43 = 0.f;
+	a._11 = 2.f, a._21 = 0.f, a._31 = 0.f, a._41 = -1.f;
+	a._12 = 0.f, a._22 = -2.f, a._32 = 0.f, a._42 = 1.f;
+	a._13 = 0.f, a._23 = 0.f, a._33 = -1.f, a._43 = 0.f;
 	a._14 = 0.f, a._24 = 0.f, a._34 = 0.f, a._44 = 1.f;
 	
 	MatrixMultiply(&mat, &a, &matProj);
@@ -148,7 +154,7 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	
 	dump(mat);
 	
-	glLoadMatrixf(&mat._11);
+	glLoadMatrixf(&a._11);
 	
 	CHECK_GL;
 }
@@ -192,7 +198,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case DepthTest: {
-			setGLState(GL_DEPTH_TEST, enable);
+			setGLState(GL_DEPTH_TEST, enable); // TODO
 			break;
 		}
 		
@@ -358,8 +364,8 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 
 static const GLenum arxToGlCullMode[] = {
 	-1, // CullNone,
+	GL_FRONT, // CullCCW,
 	GL_BACK, // CullCW,
-	GL_FRONT // CullCCW,
 };
 
 void OpenGLRenderer::SetCulling(CullingMode mode) {
@@ -433,15 +439,15 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
+	return new GLNoVertexBuffer<TexturedVertex>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
+	return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
+	return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
 }
 
 const GLenum arxToGlPrimitiveType[] = {
@@ -456,9 +462,21 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	applyTextureStages();
 	
+	/*
+	
 	setVertexArray(vertices);
 	
-	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices, nindices, GL_UNSIGNED_SHORT, indices);
+	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
+	
+	*/
+	
+	glBegin(arxToGlPrimitiveType[primitive]);
+	
+	for(size_t i = 0; i < nvertices; i++) {
+		renderVertex(vertices[indices[i]]);
+	}
+	
+	glEnd();
 	
 	CHECK_GL;
 }
