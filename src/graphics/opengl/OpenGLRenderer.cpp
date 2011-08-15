@@ -1,6 +1,8 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
+#include <cstdio>
+
 #include "core/Application.h"
 #include "core/RenderWindow.h"
 #include "graphics/Math.h"
@@ -68,106 +70,91 @@ bool OpenGLRenderer::EndScene() {
 	return true;
 }
 
-class GLMatrix {
+static EERIEMATRIX projection;
+static EERIEMATRIX view;
+
+static void transpose(EERIEMATRIX & mat) {
 	
-public:
+	std::swap(mat._12, mat._21);
+	std::swap(mat._13, mat._31);
+	std::swap(mat._14, mat._41);
+	std::swap(mat._23, mat._32);
+	std::swap(mat._24, mat._42);
+	std::swap(mat._34, mat._43);
 	
-	inline operator const GLfloat*() const {
-		return &gl[0][0];
-	}
+}
+
+static void dump(const EERIEMATRIX & mat) {
 	
-	inline operator GLfloat*() {
-		return &gl[0][0];
-	}
+	printf("%8f  %8f  %8f  %8f\n", mat._11, mat._12, mat._13, mat._14);
+	printf("%8f  %8f  %8f  %8f\n", mat._21, mat._22, mat._23, mat._24);
+	printf("%8f  %8f  %8f  %8f\n", mat._31, mat._32, mat._33, mat._34);
+	printf("%8f  %8f  %8f  %8f\n", mat._41, mat._42, mat._43, mat._44);
 	
-	inline operator EERIEMATRIX() const {
-		
-		EERIEMATRIX arx;
-		
-		arx._11 = gl[0][0], arx._21 = gl[0][1], arx._31 = gl[0][2], arx._41 = gl[0][3];
-		arx._12 = gl[1][0], arx._22 = gl[1][1], arx._32 = gl[1][2], arx._42 = gl[1][3];
-		arx._13 = gl[2][0], arx._23 = gl[2][1], arx._33 = gl[2][2], arx._43 = gl[2][3];
-		arx._14 = gl[3][0], arx._24 = gl[3][1], arx._34 = gl[3][2], arx._44 = gl[3][3];
-		
-		return arx;
-	}
-	
-	inline GLMatrix() { }
-	
-	inline GLMatrix(const EERIEMATRIX & b) {
-		
-		EERIEMATRIX arx;
-		
-		EERIEMATRIX a;
-		
-		const Vec2i & s = mainApp->GetWindow()->GetSize();
-		
-		a._11 = 1.f/s.x, a._21 = 0.f, a._31 = 0.f, a._41 = 0.f;
-		a._12 = 0.f, a._22 = 1.f/s.y, a._32 = 0.f, a._42 = 0.f;
-		a._13 = 0.f, a._23 = 0.f, a._33 = 1.f, a._43 = 0.f;
-		a._14 = 0.f, a._24 = 0.f, a._34 = 0.f, a._44 = 1.f;
-		
-		MatrixMultiply(&arx, &b, &a);
-		
-		gl[0][0] = arx._11, gl[0][1] = arx._21, gl[0][2] = arx._31, gl[0][3] = arx._41;
-		gl[1][0] = arx._12, gl[1][1] = arx._22, gl[1][2] = arx._32, gl[1][3] = arx._42;
-		gl[2][0] = arx._13, gl[2][1] = arx._23, gl[2][2] = arx._33, gl[2][3] = arx._43;
-		gl[3][0] = arx._14, gl[3][1] = arx._24, gl[3][2] = arx._34, gl[3][3] = arx._44;
-		
-	}
-	
-private:
-	
-	GLfloat gl[4][4];
-	
-};
+}
 
 void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	
-	LogInfo << "set view matrix";
+	if(!memcmp(&view, &matView, sizeof(EERIEMATRIX))) {
+		return;
+	}
+	
+	view = matView;
 	
 	glMatrixMode(GL_MODELVIEW);
 	
-	GLMatrix mat = matView;
+	EERIEMATRIX mat = matView;
 	
-	glLoadMatrixf(mat);
+	mat._13 *= -1;
+	mat._23 *= -1;
+	mat._33 *= -1;
+	mat._43 *= -1;
+	
+	glLoadMatrixf(&mat._11);
 	
 	CHECK_GL;
 }
 
 void OpenGLRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
-	
-	GLMatrix mat;
-	
-	glGetFloatv(GL_MODELVIEW_MATRIX, mat);
-	
-	matView = mat;
-	
-	CHECK_GL;
+	matView = view;
 }
 
 void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	
-	LogInfo << "set projection matrix";
+	if(!memcmp(&projection, &matProj, sizeof(EERIEMATRIX))) {
+		return;
+	}
+	
+	projection = matProj;
 	
 	glMatrixMode(GL_PROJECTION);
 	
-	GLMatrix mat = matProj;
+	LogInfo << "projection";
 	
-	glLoadMatrixf(mat);
+	dump(matProj);
+	
+	EERIEMATRIX mat;
+	
+	EERIEMATRIX a;
+	const Vec2i & s = mainApp->GetWindow()->GetSize();
+	a._11 = 2.f/s.x, a._21 = 0.f, a._31 = 0.f, a._41 = 0.f;
+	a._12 = 0.f, a._22 = 2.f/s.y, a._32 = 0.f, a._42 = 0.f;
+	a._13 = 0.f, a._23 = 0.f, a._33 = 1.f, a._43 = 0.f;
+	a._14 = 0.f, a._24 = 0.f, a._34 = 0.f, a._44 = 1.f;
+	
+	MatrixMultiply(&mat, &a, &matProj);
+	
+	LogInfo << "---------";
+	
+	dump(mat);
+	
+	glLoadMatrixf(&mat._11);
 	
 	CHECK_GL;
 }
 
 void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
-	
-	GLMatrix mat;
-	
-	glGetFloatv(GL_PROJECTION_MATRIX, mat);
-	
-	matProj = mat;
-	
-	CHECK_GL;
+	matProj = projection;
 }
 
 void OpenGLRenderer::ReleaseAllTextures() {
@@ -286,30 +273,28 @@ Rect OpenGLRenderer::GetViewport() {
 	return Rect(Vec2i(viewport[0], viewport[1]), viewport[2], viewport[3]);
 }
 
-static GLMatrix oldProjection;
-static GLMatrix oldModelView;
-
 void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	
 	glMatrixMode(GL_MODELVIEW);
-	glGetFloatv(GL_MODELVIEW_MATRIX, oldModelView);
 	glLoadIdentity();
 	
 	glMatrixMode(GL_PROJECTION);
-	glGetFloatv(GL_PROJECTION_MATRIX, oldProjection);
 	glLoadIdentity();
 	glOrtho(left, right, bottom, top, zNear, zFar);
+	
+	EERIEMATRIX mat;
+	glGetFloatv(GL_PROJECTION_MATRIX, &mat._11);
+	LogInfo << "2d proj";
+	dump(mat);
 	
 	CHECK_GL;
 }
 
 void OpenGLRenderer::End2DProjection() {
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(oldModelView);
+	SetProjectionMatrix(projection);
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(oldProjection);
+	SetViewMatrix(view);
 	
 	CHECK_GL;
 }
