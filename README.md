@@ -17,8 +17,8 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 * zlib
 * Boost
 * OpenAL 1.1 or DirectSound
-
-Non-Windows systems also need Wine (including development headers and tools). Wine is only a temporary solution.
+* OpenGL 1.5 + GLEW or Direct3D
+* SDL 1.2 or DirectInput
 
 ## Compile
 
@@ -34,7 +34,9 @@ Build options:
 * `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `ARX_FORCE_32BIT` (default=OFF): Force a 32-bit build on 64-bit systems
 * `ARX_USE_OPENAL` (default=ON): Build the OpenAL audio backend
-* `ARX_USE_DSOUND` (default=ON): Build the DirectSound audio backend
+* `ARX_USE_OPENGL` (default=ON): Build the OpenGL renderer backend
+* `ARX_USE_SDL` (default=ON): Build the SDL windowing and input backends
+* `ARX_USE_DSOUND` (default=OFF): Build the DirectSound audio backend
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
