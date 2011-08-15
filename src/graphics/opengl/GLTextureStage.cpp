@@ -133,7 +133,7 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		}
 		
 		case OpModulate4X: {
-			setOp(alpha, GL_MODULATE, 3);
+			setOp(alpha, GL_MODULATE, 4);
 			setArg(alpha, Arg0, args[alpha][Arg0]);
 			setArg(alpha, Arg1, args[alpha][Arg1]);
 			CHECK_GL;
