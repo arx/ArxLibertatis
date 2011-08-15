@@ -52,8 +52,10 @@ public:
 	virtual bool getKeyAsText(int keyId, char& result) const;
 
 private:
+	
 	mutable int iLastMouseX;
 	mutable int iLastMouseY;
+	
 };
 
 #endif // ARX_INPUT_DINPUT7BACKEND_H

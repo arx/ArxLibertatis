@@ -276,11 +276,6 @@ void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, fl
 	glLoadIdentity();
 	glOrtho(left, right, bottom, top, zNear, zFar);
 	
-	EERIEMATRIX mat;
-	glGetFloatv(GL_PROJECTION_MATRIX, &mat._11);
-	LogInfo << "2d proj";
-	dump(mat);
-	
 	CHECK_GL;
 }
 

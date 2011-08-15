@@ -9,6 +9,9 @@
 SDLWindow * SDLWindow::mainWindow = NULL;
 
 SDLWindow::SDLWindow() : window(NULL) {
+	
+	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
+	
 	mainWindow = this;
 }
 
