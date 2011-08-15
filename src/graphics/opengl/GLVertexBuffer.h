@@ -7,6 +7,11 @@
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 
+template <class T>
+void selectTrasform();
+template <>
+void selectTrasform<TexturedVertex>();
+
 template <class Vertex>
 void setVertexArray(const Vertex * vertex);
 
@@ -171,6 +176,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
 		renderer->applyTextureStages();
+		selectTrasform<Vertex>();
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
@@ -187,6 +193,7 @@ public:
 		arx_assert(indices != NULL);
 		
 		renderer->applyTextureStages();
+		selectTrasform<Vertex>();
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		

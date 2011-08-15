@@ -7,6 +7,11 @@
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 
+template <class T>
+void selectTrasform();
+template <>
+void selectTrasform<TexturedVertex>();
+
 template <class Vertex>
 void renderVertex(const Vertex & vertex);
 
@@ -22,7 +27,7 @@ void renderVertex(const TexturedVertex & vertex) {
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
 	GLfloat w = 1.0f / vertex.rhw;
-	glVertex4f(vertex.sx, vertex.sy, vertex.sz, w);
+	glVertex4f(vertex.sx * w, vertex.sy * w, vertex.sz * w, w);
 }
 
 template <>
@@ -88,6 +93,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
 		renderer->applyTextureStages();
+		selectTrasform<Vertex>();
 		
 		glBegin(arxToGlPrimitiveType[primitive]);
 		
@@ -107,6 +113,7 @@ public:
 		arx_assert(indices != NULL);
 		
 		renderer->applyTextureStages();
+		selectTrasform<Vertex>();
 		
 		glBegin(arxToGlPrimitiveType[primitive]);
 		

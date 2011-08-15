@@ -72,20 +72,6 @@ bool OpenGLRenderer::EndScene() {
 	return true;
 }
 
-static EERIEMATRIX projection;
-static EERIEMATRIX view;
-
-static void transpose(EERIEMATRIX & mat) {
-	
-	std::swap(mat._12, mat._21);
-	std::swap(mat._13, mat._31);
-	std::swap(mat._14, mat._41);
-	std::swap(mat._23, mat._32);
-	std::swap(mat._24, mat._42);
-	std::swap(mat._34, mat._43);
-	
-}
-
 static void dump(const EERIEMATRIX & mat) {
 	
 	printf("%8f  %8f  %8f  %8f\n", mat._11, mat._12, mat._13, mat._14);
@@ -95,6 +81,43 @@ static void dump(const EERIEMATRIX & mat) {
 	
 }
 
+static EERIEMATRIX projection;
+static EERIEMATRIX view;
+
+template <class T>
+void selectTrasform() {
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glScalef(1.f, 1.f, -1.f);
+	glMultMatrixf(&view._11);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glTranslatef(-1.f, 1.f, 0);
+	const Vec2i & s = mainApp->GetWindow()->GetSize();
+	glScalef(2.f/s.x, -2.f/s.y, 1.f);
+	glMultMatrixf(&projection._11);
+	
+	CHECK_GL;
+}
+
+template <>
+void selectTrasform<TexturedVertex>() {
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glScalef(1.f, 1.f, -1.f);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glTranslatef(-1.f, 1.f, 0);
+	const Vec2i & s = mainApp->GetWindow()->GetSize();
+	glScalef(2.f/s.x, -2.f/s.y, 1.f);
+	
+	CHECK_GL;
+}
+
 void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	
 	if(!memcmp(&view, &matView, sizeof(EERIEMATRIX))) {
@@ -102,23 +125,6 @@ void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	}
 	
 	view = matView;
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	/*
-	EERIEMATRIX mat;
-	
-	EERIEMATRIX a;
-	a._11 = 1.f, a._21 = 0.f, a._31 = 0.f, a._41 = 0.f;
-	a._12 = 0.f, a._22 = 1.f, a._32 = 0.f, a._42 = 0.f;
-	a._13 = 0.f, a._23 = 0.f, a._33 = -1.f, a._43 = 0.f;
-	a._14 = 0.f, a._24 = 0.f, a._34 = 0.f, a._44 = 1.f;
-	
-	MatrixMultiply(&mat, &matView, &a);
-	*/
-	//glLoadMatrixf(&matView._11);
-	
-	CHECK_GL;
 }
 
 void OpenGLRenderer::GetViewMatrix(EERIEMATRIX & matView) const {
@@ -132,31 +138,6 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	}
 	
 	projection = matProj;
-	
-	glMatrixMode(GL_PROJECTION);
-	
-	LogInfo << "projection";
-	
-	dump(matProj);
-	
-	EERIEMATRIX mat;
-	
-	EERIEMATRIX a;
-	const Vec2i & s = mainApp->GetWindow()->GetSize();
-	a._11 = 2.f, a._21 = 0.f, a._31 = 0.f, a._41 = -1.f;
-	a._12 = 0.f, a._22 = -2.f, a._32 = 0.f, a._42 = 1.f;
-	a._13 = 0.f, a._23 = 0.f, a._33 = -1.f, a._43 = 0.f;
-	a._14 = 0.f, a._24 = 0.f, a._34 = 0.f, a._44 = 1.f;
-	
-	MatrixMultiply(&mat, &a, &matProj);
-	
-	LogInfo << "---------";
-	
-	dump(mat);
-	
-	glLoadMatrixf(&a._11);
-	
-	CHECK_GL;
 }
 
 void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
@@ -198,7 +179,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case DepthTest: {
-			setGLState(GL_DEPTH_TEST, enable); // TODO
+			setGLState(GL_DEPTH_TEST, false); // TODO
 			break;
 		}
 		
@@ -208,12 +189,12 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case Fog: {
-			setGLState(GL_FOG, enable);
+			setGLState(GL_FOG, false); // TODO
 			break;
 		}
 		
 		case Lighting: {
-			setGLState(GL_LIGHTING, enable);
+			setGLState(GL_LIGHTING, false); // TODO
 			break;
 		}
 		
@@ -364,17 +345,17 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 
 static const GLenum arxToGlCullMode[] = {
 	-1, // CullNone,
-	GL_FRONT, // CullCCW,
 	GL_BACK, // CullCW,
+	GL_FRONT, // CullCCW,
 };
 
 void OpenGLRenderer::SetCulling(CullingMode mode) {
-	if(mode == CullNone) {
-		glDisable(GL_CULL_FACE);
-	} else {
-		glEnable(GL_CULL_FACE);
-		glCullFace(arxToGlCullMode[mode]);
-	}
+	//if(mode == CullNone) {
+		glDisable(GL_CULL_FACE); // TODO
+	//} else {
+	//	glEnable(GL_CULL_FACE);
+	//	glCullFace(arxToGlCullMode[mode]);
+	//}
 	CHECK_GL;
 }
 
@@ -461,6 +442,7 @@ const GLenum arxToGlPrimitiveType[] = {
 void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {
 	
 	applyTextureStages();
+	selectTrasform<TexturedVertex>();
 	
 	/*
 	
@@ -470,9 +452,11 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	*/
 	
+	ARX_UNUSED(nvertices);
+	
 	glBegin(arxToGlPrimitiveType[primitive]);
 	
-	for(size_t i = 0; i < nvertices; i++) {
+	for(size_t i = 0; i < nindices; i++) {
 		renderVertex(vertices[indices[i]]);
 	}
 	
