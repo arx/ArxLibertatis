@@ -267,6 +267,8 @@ Rect OpenGLRenderer::GetViewport() {
 
 void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	
+	// TODO do we even need this? probably better to just use TexturedVertex for font rendering
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
