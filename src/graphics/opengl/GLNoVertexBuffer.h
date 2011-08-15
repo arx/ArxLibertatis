@@ -26,8 +26,8 @@ void renderVertex(const TexturedVertex & vertex) {
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
-	GLfloat w = 1.0f / vertex.rhw;
-	glVertex4f(vertex.sx * w, vertex.sy * w, vertex.sz * w, w);
+	// ignore the rhw parameter!
+	glVertex3f(vertex.sx, vertex.sy, vertex.sz);
 }
 
 template <>
@@ -67,6 +67,8 @@ class GLNoVertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
+	using VertexBuffer<Vertex>::capacity;
+	
 	GLNoVertexBuffer(OpenGLRenderer * _renderer, size_t capacity, Renderer::BufferUsage usage) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(new Vertex[capacity]) {
 		ARX_UNUSED(usage);
 	}
@@ -74,7 +76,7 @@ public:
 	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
 		ARX_UNUSED(flags);
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(offset + count <= capacity());
 		
 		std::copy(vertices, vertices + count, buffer + offset);
 	}
@@ -90,7 +92,7 @@ public:
 	
 	void draw(Renderer::Primitive primitive, size_t count, size_t offset) const {
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(offset + count <= capacity());
 		
 		renderer->applyTextureStages();
 		selectTrasform<Vertex>();
@@ -109,7 +111,7 @@ public:
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		ARX_UNUSED(count), ARX_UNUSED(offset);
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(offset + count <= capacity());
 		arx_assert(indices != NULL);
 		
 		renderer->applyTextureStages();

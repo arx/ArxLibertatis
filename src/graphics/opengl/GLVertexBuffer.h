@@ -36,7 +36,10 @@ void setVertexArray(const TexturedVertex * vertices) {
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
 	
-	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
+	arx_assert_msg(false, "this won't work");
+	
+	// ignore the rhw parameter!
+	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
 	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->specular);
 	
@@ -124,6 +127,8 @@ class GLVertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
+	using VertexBuffer<Vertex>::capacity;
+	
 	GLVertexBuffer(OpenGLRenderer * _renderer, size_t capacity, Renderer::BufferUsage usage) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(0) {
 		
 		glGenBuffers(1, &buffer);
@@ -139,7 +144,7 @@ public:
 	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
 		ARX_UNUSED(flags);
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(offset + count <= capacity());
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
@@ -173,7 +178,7 @@ public:
 	
 	void draw(Renderer::Primitive primitive, size_t count, size_t offset) const {
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(offset + count <= capacity());
 		
 		renderer->applyTextureStages();
 		selectTrasform<Vertex>();
@@ -189,7 +194,7 @@ public:
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		
-		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
+		arx_assert(offset + count <= capacity());
 		arx_assert(indices != NULL);
 		
 		renderer->applyTextureStages();

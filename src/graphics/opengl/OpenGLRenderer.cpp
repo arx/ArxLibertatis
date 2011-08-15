@@ -89,7 +89,7 @@ void selectTrasform() {
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glScalef(1.f, 1.f, -1.f);
+	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
 	glMultMatrixf(&view._11);
 	
 	glMatrixMode(GL_PROJECTION);
@@ -105,9 +105,14 @@ void selectTrasform() {
 template <>
 void selectTrasform<TexturedVertex>() {
 	
+	// TODO cache transformations
+	
+	// D3D doesn't apply any transform for D3DTLVERTEX
+	// but we still need to change from D3D to OpenGL coordinates
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glScalef(1.f, 1.f, -1.f);
+	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -227,17 +232,17 @@ void OpenGLRenderer::SetAlphaFunc(PixelCompareFunc func, float ref) {
 }
 
 static const GLenum arxToGlBlendFactor[] = {
-	GL_ZERO, // BlendZero,              //!< Zero
-	GL_ONE, // BlendOne,               //!< One
-	GL_SRC_COLOR, // BlendSrcColor,          //!< Source color
-	GL_SRC_ALPHA, // BlendSrcAlpha,          //!< Source alpha
-	GL_ONE_MINUS_SRC_COLOR, // BlendInvSrcColor,       //!< Inverse source color
-	GL_ONE_MINUS_SRC_ALPHA, // BlendInvSrcAlpha,       //!< Inverse source alpha
-	GL_SRC_ALPHA_SATURATE, // BlendSrcAlphaSaturate,  //!< Source alpha saturate
-	GL_DST_COLOR, // BlendDstColor,          //!< Destination color
-	GL_DST_ALPHA, // BlendDstAlpha,          //!< Destination alpha
-	GL_ONE_MINUS_DST_COLOR, // BlendInvDstColor,       //!< Inverse destination color
-	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha        //!< Inverse destination alpha
+	GL_ZERO, // BlendZero,
+	GL_ONE, // BlendOne,
+	GL_SRC_COLOR, // BlendSrcColor,
+	GL_SRC_ALPHA, // BlendSrcAlpha,
+	GL_ONE_MINUS_SRC_COLOR, // BlendInvSrcColor,
+	GL_ONE_MINUS_SRC_ALPHA, // BlendInvSrcAlpha,
+	GL_SRC_ALPHA_SATURATE, // BlendSrcAlphaSaturate,
+	GL_DST_COLOR, // BlendDstColor,
+	GL_DST_ALPHA, // BlendDstAlpha,
+	GL_ONE_MINUS_DST_COLOR, // BlendInvDstColor,
+	GL_ONE_MINUS_DST_ALPHA // BlendInvDstAlpha
 };
 
 void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
@@ -361,7 +366,7 @@ void OpenGLRenderer::SetCulling(CullingMode mode) {
 
 void OpenGLRenderer::SetDepthBias(int depthBias) {
 	
-	float bias = -(float)depthBias; // TODO this seems to be what wine is doing
+	float bias = -(float)depthBias; // TODO check this
 	
 	glPolygonOffset(bias, bias);
 	
