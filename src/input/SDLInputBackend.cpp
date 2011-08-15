@@ -182,8 +182,8 @@ bool SDLInputBackend::init() {
 	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
 	
 	sdlToArxButton[SDL_BUTTON_LEFT] = Mouse::Button_0;
-	sdlToArxButton[SDL_BUTTON_MIDDLE] = Mouse::Button_1;
-	sdlToArxButton[SDL_BUTTON_RIGHT] = Mouse::Button_2;
+	sdlToArxButton[SDL_BUTTON_MIDDLE] = Mouse::Button_2;
+	sdlToArxButton[SDL_BUTTON_RIGHT] = Mouse::Button_1;
 	
 	wheel = 0;
 	cursor = Vec2i::ZERO;
