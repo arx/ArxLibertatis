@@ -13,7 +13,7 @@ template <>
 void selectTrasform<TexturedVertex>();
 
 template <class Vertex>
-void setVertexArray(const Vertex * vertex);
+static void setVertexArray(const Vertex * vertex);
 
 enum GLArrayClientState {
 	GL_NoArray,
@@ -24,19 +24,30 @@ enum GLArrayClientState {
 
 static GLArrayClientState glArrayClientState = GL_NoArray;
 
+static bool switchVertexArray(const void * vertices, GLArrayClientState type) {
+	
+	if(!vertices) {
+		if(glArrayClientState == type) {
+			return false;
+		}
+		glArrayClientState = type;
+	} else {
+		glArrayClientState = GL_NoArray; // always re-set the array if we don't use a vertex buffer
+	}
+	
+	return true;
+}
+
 template <>
 void setVertexArray(const TexturedVertex * vertices) {
 	
-	if(glArrayClientState == GL_TexturedVertex) {
+	if(!switchVertexArray(vertices, GL_TexturedVertex)) {
 		return;
 	}
-	glArrayClientState = GL_TexturedVertex;
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
-	
-	arx_assert_msg(false, "this won't work");
 	
 	// ignore the rhw parameter!
 	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
@@ -59,10 +70,9 @@ void setVertexArray(const TexturedVertex * vertices) {
 template <>
 void setVertexArray(const SMY_VERTEX * vertices) {
 	
-	if(glArrayClientState == GL_SMY_VERTEX) {
+	if(!switchVertexArray(vertices, GL_SMY_VERTEX)) {
 		return;
 	}
-	glArrayClientState = GL_SMY_VERTEX;
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -87,10 +97,9 @@ void setVertexArray(const SMY_VERTEX * vertices) {
 template <>
 void setVertexArray(const SMY_VERTEX3 * vertices) {
 	
-	if(glArrayClientState == GL_SMY_VERTEX3) {
+	if(!switchVertexArray(vertices, GL_SMY_VERTEX3)) {
 		return;
 	}
-	glArrayClientState = GL_SMY_VERTEX3;
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);

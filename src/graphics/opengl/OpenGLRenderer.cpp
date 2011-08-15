@@ -425,15 +425,15 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	return new GLNoVertexBuffer<TexturedVertex>(this, capacity, usage); 
+	return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
-	return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
+	return new GLVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
-	return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
+	return new GLVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
 }
 
 const GLenum arxToGlPrimitiveType[] = {
@@ -449,13 +449,15 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	applyTextureStages();
 	selectTrasform<TexturedVertex>();
 	
-	/*
+#if 1
 	
 	setVertexArray(vertices);
 	
+	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+	
 	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
 	
-	*/
+#else
 	
 	ARX_UNUSED(nvertices);
 	
@@ -466,6 +468,8 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	}
 	
 	glEnd();
+	
+#endif
 	
 	CHECK_GL;
 }
