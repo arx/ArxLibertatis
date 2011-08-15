@@ -8,7 +8,7 @@
 
 SDLWindow * SDLWindow::mainWindow = NULL;
 
-SDLWindow::SDLWindow() : window(NULL) {
+SDLWindow::SDLWindow() : window(NULL), input(NULL) {
 	
 	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
 	
