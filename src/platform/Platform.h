@@ -117,6 +117,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #if ARX_COMPILER_MSVC
 	#include <direct.h>
+	#define __func__ __FUNCTION__	// MSVC doesn't know about C99 __func__
 #endif
 
 // TODO check for these in CMakeLists.txt
