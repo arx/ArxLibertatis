@@ -96,7 +96,6 @@ extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long GAME_EDITOR;
 extern long PLAY_LOADED_CINEMATIC;
-extern char LAST_LAUNCHED_CINE[256];
 extern long CHANGE_LEVEL_PROC_RESULT;
 extern long FINAL_RELEASE;
 extern long NOBUILDMAP;

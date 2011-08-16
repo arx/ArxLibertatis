@@ -8,7 +8,7 @@ include(CheckTypeSize)
 include(CheckSymbolExists)
 include(CheckCXXSourceCompiles)
 
-include(UnityBuild)
+include(BuildSystem)
 include(CompileCheck)
 
 function(create_source_groups)
@@ -407,9 +407,6 @@ set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 set(IO_SOURCES
 	src/io/Blast.cpp
 	src/io/CinematicLoad.cpp
-	src/io/FilePath.cpp
-	src/io/FileStream.cpp
-	src/io/Filesystem.cpp
 	src/io/Implode.cpp
 	src/io/IniReader.cpp
 	src/io/IniSection.cpp
@@ -420,6 +417,11 @@ set(IO_SOURCES
 	src/io/PakReader.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
+)
+set(IO_FILESYSTEM_SOURCES
+	src/io/FilePath.cpp
+	src/io/FileStream.cpp
+	src/io/Filesystem.cpp
 )
 set(IO_FILESYSTEM_BOOST_SOURCES src/io/FilesystemBoost.cpp)
 set(IO_FILESYSTEM_POSIX_SOURCES src/io/FilesystemPOSIX.cpp)
@@ -490,8 +492,17 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
+set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+if(TIME_LIBRARIES)
+	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
+endif()
+if(HAVE_WINAPI)
+	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
+endif()
+
 if(ARX_USE_OPENAL)
 	list(APPEND AUDIO_SOURCES ${AUDIO_OPENAL_SOURCES})
+	list(APPEND ARX_LIBRARIES ${OPENAL_LIBRARY})
 	include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
 	set(HAVE_OPENAL 1)
 	if(OPENALEFX_FOUND)
@@ -507,11 +518,13 @@ endif()
 if(ARX_USE_D3D7)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D7_SOURCES})
 	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D7_SOURCES})
+	list(APPEND ARX_LIBRARIES dxguid ddraw)
 	set(HAVE_D3D7 1)
 endif()
 
 if(ARX_USE_OPENGL)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
+	list(APPEND ARX_LIBRARIES ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
 	set(HAVE_OPENGL 1)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
@@ -520,46 +533,44 @@ endif()
 if(ARX_USE_SDL)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
+	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
 	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 	set(HAVE_SDL 1)
 endif()
 
 if(ARX_USE_DINPUT7)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT7_SOURCES})
+	list(APPEND ARX_LIBRARIES dinput)
 	set(HAVE_DINPUT7 1)
 endif()
 
 if(HAVE_POSIX_FILESYSTEM)
-	list(APPEND IO_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
+	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(HAVE_WINAPI)
 	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
-	list(APPEND IO_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
+	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
 elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
 	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
 	set(HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
-	list(APPEND IO_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
+	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
 else()
 	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
 endif()
+list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
 
-set(ALL_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
+set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
 
 if(ARX_BUILD_EDITOR)
-	list(APPEND ALL_SOURCES ${EDITOR_SOURCES})
+	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
 	set(BUILD_EDITOR 1)
 endif()
 if(ARX_BUILD_EDIT_LOADSAVE)
 	set(BUILD_EDIT_LOADSAVE 1)
-endif()
-
-#enable unity build if requested
-if(ARX_USE_UNITYBUILD)
-	enable_unity_build(arx ALL_SOURCES)
 endif()
 
 add_definitions(-DBOOST_NO_EXCEPTIONS)
@@ -571,32 +582,62 @@ create_source_groups()
 
 configure_file(${SRC_DIR}/Configure.h.cmake Configure.h)
 
-#build
-add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
-#link
-target_link_libraries(arx ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-if(HAVE_WINAPI)
-	target_link_libraries(arx gdi32 shell32 comdlg32 ole32 comctl32)
+# Add executables
+
+add_executable_shared(arx "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
+
+if(ARX_BUILD_TOOLS)
+	
+	set(SAVETOOL_SOURCES
+		${IO_FILESYSTEM_SOURCES}
+		src/core/Localisation.cpp
+		src/io/PakEntry.cpp
+		src/io/PakReader.cpp
+		src/io/Blast.cpp
+		src/io/Logger.cpp
+		src/io/SaveBlock.cpp
+		src/io/IniReader.cpp
+		src/io/IniSection.cpp
+		src/platform/String.cpp
+		src/platform/Platform.cpp
+		tools/savetool/savetool.cpp
+		tools/savetool/SaveFix.cpp
+		tools/savetool/SaveView.cpp
+	)
+	
+	set(SAVETOOL_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
+	
+	add_executable_shared(savetool "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
+	
+	set(UNPAK_SOURCES
+		${IO_FILESYSTEM_SOURCES}
+		src/io/PakEntry.cpp
+		src/io/PakReader.cpp
+		src/io/Logger.cpp
+		src/io/Blast.cpp
+		src/platform/String.cpp
+		src/platform/Platform.cpp
+		tools/unpak/unpak.cpp
+	)
+	
+	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
+	
+	add_executable_shared(unpak "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
+	
 endif()
-if(HAVE_D3D7)
-	target_link_libraries(arx dxguid ddraw)
+
+
+# Build and link executables
+
+if(ARX_USE_UNITYBUILD)
+	unity_build()
+else()
+	shared_build()
 endif()
-if(HAVE_DINPUT7)
-	target_link_libraries(arx dinput)
-endif()
-if(ARX_USE_OPENAL)
-	target_link_libraries(arx ${OPENAL_LIBRARY})
-endif()
-if(TIME_LIBRARIES)
-	target_link_libraries(arx ${TIME_LIBRARIES})
-endif()
-if(ARX_USE_OPENGL)
-	target_link_libraries(arx ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
-endif()
-if(ARX_USE_SDL)
-	target_link_libraries(arx ${SDL_LIBRARY})
-endif()
+
+
+# Custom make targets
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
@@ -610,18 +651,13 @@ if(DOXYGEN_EXECUTABLE)
 	)
 endif()
 
-#find python2
 if(PYTHONINTERP_FOUND)
 	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int)
 	add_custom_target(style
-		COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
+		COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ARX_SOURCES} ${ALL_INCLUDES}
 	)
 endif()
 
 if(ARX_BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
-endif()
-
-if(ARX_BUILD_TOOLS)
-	add_subdirectory(tools ${CMAKE_SOURCE_DIR}/bin/tools)
 endif()
