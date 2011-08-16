@@ -41,6 +41,9 @@ void OpenGLRenderer::Initialize() {
 	
 	glDepthFunc(GL_LESS);
 	
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	
 	// glShadeModel(GL_SMOOTH);
 	
 	// TODO get the supported texture stage count

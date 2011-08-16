@@ -62,7 +62,6 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(width, height));
-	renderer->Begin2DProjection(0, width, height, 0, -1, 1);
 	
 	onRendererInit();
 	
@@ -171,7 +170,6 @@ void SDLWindow::Tick() {
 			
 			case SDL_VIDEORESIZE: {
 				renderer->SetViewport(Rect(event.resize.w, event.resize.h));
-				renderer->Begin2DProjection(0, event.resize.w, event.resize.h, 0, -1, 1);
 				OnResize(event.resize.w, event.resize.h);
 				break;
 			}
