@@ -424,16 +424,16 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 	
 	glBegin(GL_QUADS);
 		
-		glTexCoord2f(uStart, vStart);
+		glMultiTexCoord2f(GL_TEXTURE0, uStart, vStart);
 		glVertex3f(x, y, 0);
 		
-		glTexCoord2f(uEnd, vStart);
+		glMultiTexCoord2f(GL_TEXTURE0, uEnd, vStart);
 		glVertex3f(x + w, y, 0);
 		
-		glTexCoord2f(uEnd, vEnd);
+		glMultiTexCoord2f(GL_TEXTURE0, uEnd, vEnd);
 		glVertex3f(x + w, y + h, 0);
 		
-		glTexCoord2f(uStart, vEnd);
+		glMultiTexCoord2f(GL_TEXTURE0, uStart, vEnd);
 		glVertex3f(x, y + h, 0);
 		
 	glEnd();
