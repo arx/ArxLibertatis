@@ -61,8 +61,6 @@ void GLTexture2D::Upload() {
 
 void GLTexture2D::Destroy() {
 	
-	LogInfo << "destroying " << mFileName;
-	
 	if(tex) {
 		glDeleteTextures(1, &tex);
 		CHECK_GL;
