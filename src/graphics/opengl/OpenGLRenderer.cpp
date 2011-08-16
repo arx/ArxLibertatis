@@ -288,8 +288,6 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	int height = mainApp->GetWindow()->GetSize().y;
 	
-	LogInfo << viewport.top << " " << viewport.bottom << " " << height << " " << mainApp->GetWindow()->GetSize().x;
-	
 	glViewport(viewport.left, height - viewport.height(), viewport.width(), viewport.height());
 	
 	currentTransform = GL_UnsetTransform;
