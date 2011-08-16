@@ -4,7 +4,9 @@
 #include "graphics/opengl/GLTextureStage.h"
 
 GLTexture2D::GLTexture2D() : stage(NULL), tex(GL_NONE) { }
-GLTexture2D::~GLTexture2D() { }
+GLTexture2D::~GLTexture2D() {
+	Destroy();
+}
 
 bool GLTexture2D::Create() {
 	
