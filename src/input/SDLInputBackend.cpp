@@ -1,10 +1,8 @@
 
 #include "input/SDLInputBackend.h"
 
-#include <SDL.h>
-
-#include "core/SDLWindow.h"
 #include "io/Logger.h"
+#include "window/SDLWindow.h"
 
 SDLInputBackend::SDLInputBackend() { }
 
@@ -17,6 +15,7 @@ SDLInputBackend::~SDLInputBackend() {
 
 static int sdlToArxKey[SDLK_LAST];
 
+static int sdlToArxButton[4];
 
 bool SDLInputBackend::init() {
 	
@@ -24,6 +23,8 @@ bool SDLInputBackend::init() {
 		LogError << "Cannot initialize SDL input without SDL window.";
 		return false;
 	}
+	
+	SDL_ShowCursor(0);
 	
 	SDLWindow::mainWindow->input = this;
 	
@@ -38,27 +39,25 @@ bool SDLInputBackend::init() {
 	SDL_EventState(SDL_JOYBUTTONDOWN, SDL_ENABLE);
 	SDL_EventState(SDL_JOYBUTTONUP, SDL_ENABLE);
 	
-	for(size_t i = 0; i < SDLK_LAST; i++) {
-		sdlToArxKey[i] = -1;
-	}
+	std::fill_n(sdlToArxKey, ARRAY_SIZE(sdlToArxKey), -1);
 	
 	sdlToArxKey[SDLK_BACKSPACE] = Keyboard::Key_Backspace;
 	sdlToArxKey[SDLK_TAB] = Keyboard::Key_Tab;
-	sdlToArxKey[SDLK_CLEAR] = -1; // TODO
+	// sdlToArxKey[SDLK_CLEAR] = -1; // TODO
 	sdlToArxKey[SDLK_RETURN] = Keyboard::Key_Enter;
 	sdlToArxKey[SDLK_PAUSE] = Keyboard::Key_Pause;
 	sdlToArxKey[SDLK_ESCAPE] = Keyboard::Key_Escape;
 	sdlToArxKey[SDLK_SPACE] = Keyboard::Key_Spacebar;
-	sdlToArxKey[SDLK_EXCLAIM] = -1; // TODO
-	sdlToArxKey[SDLK_QUOTEDBL] = -1; // TODO
-	sdlToArxKey[SDLK_HASH] = -1; // TODO
-	sdlToArxKey[SDLK_DOLLAR] = -1; // TODO
-	sdlToArxKey[SDLK_AMPERSAND] = -1; // TODO
-	sdlToArxKey[SDLK_QUOTE] = -1; // TODO
-	sdlToArxKey[SDLK_LEFTPAREN] = -1; // TODO
-	sdlToArxKey[SDLK_RIGHTPAREN] = -1; // TODO
-	sdlToArxKey[SDLK_ASTERISK] = -1; // TODO
-	sdlToArxKey[SDLK_PLUS] = -1; // TODO
+	// sdlToArxKey[SDLK_EXCLAIM] = -1; // TODO
+	// sdlToArxKey[SDLK_QUOTEDBL] = -1; // TODO
+	// sdlToArxKey[SDLK_HASH] = -1; // TODO
+	// sdlToArxKey[SDLK_DOLLAR] = -1; // TODO
+	// sdlToArxKey[SDLK_AMPERSAND] = -1; // TODO
+	// sdlToArxKey[SDLK_QUOTE] = -1; // TODO
+	// sdlToArxKey[SDLK_LEFTPAREN] = -1; // TODO
+	// sdlToArxKey[SDLK_RIGHTPAREN] = -1; // TODO
+	// sdlToArxKey[SDLK_ASTERISK] = -1; // TODO
+	// sdlToArxKey[SDLK_PLUS] = -1; // TODO
 	sdlToArxKey[SDLK_COMMA] = Keyboard::Key_Comma;
 	sdlToArxKey[SDLK_MINUS] = Keyboard::Key_Minus;
 	sdlToArxKey[SDLK_PERIOD] = Keyboard::Key_Period;
@@ -73,19 +72,19 @@ bool SDLInputBackend::init() {
 	sdlToArxKey[SDLK_7] = Keyboard::Key_7;
 	sdlToArxKey[SDLK_8] = Keyboard::Key_8;
 	sdlToArxKey[SDLK_9] = Keyboard::Key_9;
-	sdlToArxKey[SDLK_COLON] = -1; // TODO
+	// sdlToArxKey[SDLK_COLON] = -1; // TODO
 	sdlToArxKey[SDLK_SEMICOLON] = Keyboard::Key_Semicolon;
-	sdlToArxKey[SDLK_LESS] = -1; // TODO
+	// sdlToArxKey[SDLK_LESS] = -1; // TODO
 	sdlToArxKey[SDLK_EQUALS] = Keyboard::Key_Equals;
-	sdlToArxKey[SDLK_GREATER] = -1; // TODO
-	sdlToArxKey[SDLK_QUESTION] = -1; // TODO
-	sdlToArxKey[SDLK_AT] = -1; // TODO
+	// sdlToArxKey[SDLK_GREATER] = -1; // TODO
+	// sdlToArxKey[SDLK_QUESTION] = -1; // TODO
+	// sdlToArxKey[SDLK_AT] = -1; // TODO
 	sdlToArxKey[SDLK_LEFTBRACKET] = Keyboard::Key_LeftBracket;
 	sdlToArxKey[SDLK_BACKSLASH] = Keyboard::Key_Backslash;
 	sdlToArxKey[SDLK_RIGHTBRACKET] = Keyboard::Key_RightBracket;
-	sdlToArxKey[SDLK_CARET] = -1; // TODO
-	sdlToArxKey[SDLK_UNDERSCORE] = -1; // TODO
-	sdlToArxKey[SDLK_BACKQUOTE] = -1; // TODO
+	// sdlToArxKey[SDLK_CARET] = -1; // TODO
+	// sdlToArxKey[SDLK_UNDERSCORE] = -1; // TODO
+	// sdlToArxKey[SDLK_BACKQUOTE] = -1; // TODO
 	sdlToArxKey[SDLK_a] = Keyboard::Key_A;
 	sdlToArxKey[SDLK_b] = Keyboard::Key_B;
 	sdlToArxKey[SDLK_c] = Keyboard::Key_C;
@@ -129,7 +128,7 @@ bool SDLInputBackend::init() {
 	sdlToArxKey[SDLK_KP_MINUS] = Keyboard::Key_NumSubtract;
 	sdlToArxKey[SDLK_KP_PLUS] = Keyboard::Key_NumAdd;
 	sdlToArxKey[SDLK_KP_ENTER] = Keyboard::Key_NumPadEnter;
-	sdlToArxKey[SDLK_KP_EQUALS] = -1; // TODO
+	// sdlToArxKey[SDLK_KP_EQUALS] = -1; // TODO
 	sdlToArxKey[SDLK_UP] = Keyboard::Key_UpArrow;
 	sdlToArxKey[SDLK_DOWN] = Keyboard::Key_DownArrow;
 	sdlToArxKey[SDLK_RIGHT] = Keyboard::Key_RightArrow;
@@ -168,41 +167,60 @@ bool SDLInputBackend::init() {
 	sdlToArxKey[SDLK_LSUPER] = Keyboard::Key_RightWin;
 	sdlToArxKey[SDLK_RSUPER] = Keyboard::Key_LeftWin;
 	sdlToArxKey[SDLK_MODE] = Keyboard::Key_RightAlt;
-	sdlToArxKey[SDLK_COMPOSE] = -1; // TODO
-	sdlToArxKey[SDLK_HELP] = -1; // TODO
+	// sdlToArxKey[SDLK_COMPOSE] = -1; // TODO
+	// sdlToArxKey[SDLK_HELP] = -1; // TODO
 	sdlToArxKey[SDLK_PRINT] = Keyboard::Key_PrintScreen;
-	sdlToArxKey[SDLK_SYSREQ] = -1; // TODO
-	sdlToArxKey[SDLK_BREAK] = -1; // TODO
-	sdlToArxKey[SDLK_MENU] = -1; // TODO
-	sdlToArxKey[SDLK_POWER] = -1; // TODO
-	sdlToArxKey[SDLK_EURO] = -1; // TODO
-	sdlToArxKey[SDLK_UNDO] = -1; // TODO
+	// sdlToArxKey[SDLK_SYSREQ] = -1; // TODO
+	// sdlToArxKey[SDLK_BREAK] = -1; // TODO
+	// sdlToArxKey[SDLK_MENU] = -1; // TODO
+	// sdlToArxKey[SDLK_POWER] = -1; // TODO
+	// sdlToArxKey[SDLK_EURO] = -1; // TODO
+	// sdlToArxKey[SDLK_UNDO] = -1; // TODO
 	
+	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
+	
+	sdlToArxButton[SDL_BUTTON_LEFT] = Mouse::Button_0;
+	sdlToArxButton[SDL_BUTTON_MIDDLE] = Mouse::Button_2;
+	sdlToArxButton[SDL_BUTTON_RIGHT] = Mouse::Button_1;
+	
+	wheel = 0;
+	cursor = Vec2i::ZERO;
+	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
+	std::fill_n(buttonStates, ARRAY_SIZE(buttonStates), false);
+	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
+	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
 	return true;
 }
 
 bool SDLInputBackend::update() {
 	
+	
 	if(SDLWindow::mainWindow) {
 		SDLWindow::mainWindow->Tick();
 	}
+	
+	currentWheel = wheel;
+	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
+	std::copy(unclickCount, unclickCount + ARRAY_SIZE(unclickCount), currentUnclickCount);
+	
+	wheel = 0;
+	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
+	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
 	return true;
 }
 
 void SDLInputBackend::acquireDevices() {
-	 // TODO implement
+	SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
 void SDLInputBackend::unacquireDevices() {
-	// TODO implement
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
 void SDLInputBackend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
-	
-	
-	absX = absY = wheelDir = 0; // TODO implement
+	absX = cursor.x, absY = cursor.y, wheelDir = currentWheel;
 }
 
 void SDLInputBackend::setMouseCoordinates(int absX, int absY) {
@@ -210,19 +228,20 @@ void SDLInputBackend::setMouseCoordinates(int absX, int absY) {
 }
 
 bool SDLInputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
-	ARX_UNUSED(buttonId), deltaTime = 0;
-	return false; // TODO implement
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+	deltaTime = 0; // TODO
+	return buttonStates[buttonId - Mouse::ButtonBase];
 }
 
 void SDLInputBackend::getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const {
-	ARX_UNUSED(buttonId), numClick = numUnClick = 0;
-	// TODO implement
+	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
+	size_t i = buttonId - Mouse::ButtonBase;
+	numClick = currentClickCount[i], numUnClick = currentUnclickCount[i];
 }
 
-bool SDLInputBackend::isKeyboardKeyPressed(int dikkey) const {
-	ARX_UNUSED(dikkey);
-	
-	return false; // TODO implement
+bool SDLInputBackend::isKeyboardKeyPressed(int keyId) const {
+	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
+	return keyStates[keyId - Keyboard::KeyBase];
 }
 
 bool SDLInputBackend::getKeyAsText(int keyId, char & result) const {
@@ -230,21 +249,42 @@ bool SDLInputBackend::getKeyAsText(int keyId, char & result) const {
 	return true; // TODO implement
 }
 
-
-
 void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		
-		case SDL_KEYDOWN: {
-			
+		case SDL_KEYDOWN:
+		case SDL_KEYUP: {
+			SDLKey key = event.key.keysym.sym;
+			if(key >= 0 && key < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
+				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
+			}
 			break;
 		}
 		
-		case SDL_KEYUP:
-		case SDL_MOUSEMOTION:
+		case SDL_MOUSEMOTION: {
+			cursor = Vec2i(event.motion.x, event.motion.y);
+			break;
+		}
+		
 		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEBUTTONUP: {
+			Uint8 button = event.button.button;
+			if(button == SDL_BUTTON_WHEELUP) {
+				wheel++;
+			} else if(button == SDL_BUTTON_WHEELDOWN) {
+				wheel--;
+			} else if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
+				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
+				if((event.button.state == SDL_PRESSED)) {
+					buttonStates[i] = true, clickCount[i]++;
+				} else {
+					buttonStates[i] = false, unclickCount[i]++;
+				}
+			}
+			break;
+		}
+		
 		case SDL_JOYAXISMOTION:
 		case SDL_JOYBALLMOTION:
 		case SDL_JOYHATMOTION:

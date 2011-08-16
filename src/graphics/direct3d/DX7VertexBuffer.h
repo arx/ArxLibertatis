@@ -4,9 +4,9 @@
 
 #include <d3d.h>
 
-#include "core/D3D7Window.h"
 #include "graphics/Frame.h"
 #include "graphics/VertexBuffer.h"
+#include "window/D3D7Window.h"
 
 extern const DWORD ARXToDXBufferFlags[];
 extern const D3DPRIMITIVETYPE ARXToDXPrimitiveType[];

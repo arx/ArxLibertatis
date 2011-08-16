@@ -1,6 +1,6 @@
 
-#ifndef ARX_CORE_WINDOW_H
-#define ARX_CORE_WINDOW_H
+#ifndef ARX_WINDOW_WINDOW_H
+#define ARX_WINDOW_WINDOW_H
 
 #include <list>
 #include <string>
@@ -83,4 +83,4 @@ private:
 	
 };
 
-#endif // ARX_CORE_WINDOW_H
+#endif // ARX_WINDOW_WINDOW_H

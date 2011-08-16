@@ -34,9 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/Localisation.h"
-#include "core/RenderWindow.h"
 #include "core/GameTime.h"
-#include "core/Window.h"
 
 #include "game/Player.h"
 
@@ -56,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 
 #include "scene/GameSound.h"
+
+#include "window/RenderWindow.h"
 
 extern bool bQuickGenFirstClick;
 extern long DANAESIZX;

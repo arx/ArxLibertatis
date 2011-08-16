@@ -34,6 +34,17 @@ private:
 	
 	void onInputEvent(const SDL_Event & event);
 	
+	int wheel;
+	Vec2i cursor;
+	bool keyStates[Keyboard::KeyCount];
+	bool buttonStates[Mouse::ButtonCount];
+	size_t clickCount[Mouse::ButtonCount];
+	size_t unclickCount[Mouse::ButtonCount];
+	
+	int currentWheel;
+	size_t currentClickCount[Mouse::ButtonCount];
+	size_t currentUnclickCount[Mouse::ButtonCount];
+	
 	friend class SDLWindow;
 };
 

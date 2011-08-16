@@ -1,9 +1,9 @@
 
-#ifndef ARX_CORE_D3D7WINDOW_H
-#define ARX_CORE_D3D7WINDOW_H
+#ifndef ARX_WINDOW_D3D7WINDOW_H
+#define ARX_WINDOW_D3D7WINDOW_H
 
-#include "core/Win32Window.h"
-#include "core/RenderWindow.h"
+#include "window/Win32Window.h"
+#include "window/RenderWindow.h"
 
 #include <d3d.h>
 
@@ -75,4 +75,4 @@ private:
 	
 };
 
-#endif // ARX_CORE_D3D7WINDOW_H
+#endif // ARX_WINDOW_D3D7WINDOW_H

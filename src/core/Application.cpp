@@ -62,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "core/Resource.h"
-#include "core/RenderWindow.h"
 #include "core/GameTime.h"
 
 #include "game/Player.h"
@@ -83,6 +82,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Random.h"
 #include "platform/String.h"
+
+#include "window/RenderWindow.h"
 
 using std::max;
 using std::string;

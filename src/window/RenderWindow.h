@@ -1,11 +1,12 @@
 
-#ifndef ARX_CORE_RENDERWINDOW_H
-#define ARX_CORE_RENDERWINDOW_H
+#ifndef ARX_WINDOW_RENDERWINDOW_H
+#define ARX_WINDOW_RENDERWINDOW_H
 
 #include <vector>
 
-#include "core/Window.h"
-#include "graphics/Renderer.h"
+#include "window/Window.h"
+
+class Renderer;
 
 class RenderWindow : public Window {
 	
@@ -58,4 +59,4 @@ private:
 	
 };
 
-#endif // ARX_CORE_RENDERWINDOW_H
+#endif // ARX_WINDOW_RENDERWINDOW_H

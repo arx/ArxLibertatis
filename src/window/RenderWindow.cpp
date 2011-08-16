@@ -1,5 +1,5 @@
 
-#include "core/RenderWindow.h"
+#include "window/RenderWindow.h"
 
 #include <algorithm>
 

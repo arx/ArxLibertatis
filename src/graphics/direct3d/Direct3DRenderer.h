@@ -4,8 +4,8 @@
 
 #include <d3d.h>
 
-#include "core/D3D7Window.h"
 #include "graphics/Renderer.h"
+#include "window/D3D7Window.h"
 
 class Direct3DRenderer : public Renderer {
 	
