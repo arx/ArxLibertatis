@@ -60,18 +60,19 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	renderer = new OpenGLRenderer;
 	renderer->Initialize();
 	
+	OnResize(window->w, window->h);
+	
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(width, height));
 	
-	onRendererInit();
-	
-	OnResize(window->w, window->h);
 	if(fullscreen) {
 		OnMakeFullscreen();
 	}
 	
 	OnShow(true);
 	OnFocus(true);
+	
+	onRendererInit();
 	
 	return true;
 }
@@ -169,8 +170,8 @@ void SDLWindow::Tick() {
 			}
 			
 			case SDL_VIDEORESIZE: {
-				renderer->SetViewport(Rect(event.resize.w, event.resize.h));
 				OnResize(event.resize.w, event.resize.h);
+				renderer->SetViewport(Rect(event.resize.w, event.resize.h));
 				break;
 			}
 			

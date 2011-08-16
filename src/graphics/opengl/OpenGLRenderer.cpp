@@ -3,6 +3,7 @@
 
 #include <cstdio>
 
+#include "core/Application.h"
 #include "graphics/Math.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
@@ -10,6 +11,7 @@
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
 #include "io/Logger.h"
+#include "window/RenderWindow.h"
 
 OpenGLRenderer::OpenGLRenderer() { };
 
@@ -284,7 +286,11 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	viewport = _viewport;
 	
-	glViewport(viewport.left, viewport.top, viewport.width(), viewport.height());
+	int height = mainApp->GetWindow()->GetSize().y;
+	
+	LogInfo << viewport.top << " " << viewport.bottom << " " << height << " " << mainApp->GetWindow()->GetSize().x;
+	
+	glViewport(viewport.left, height - viewport.height(), viewport.width(), viewport.height());
 	
 	currentTransform = GL_UnsetTransform;
 	
