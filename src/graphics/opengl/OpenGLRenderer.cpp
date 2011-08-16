@@ -96,7 +96,7 @@ void OpenGLRenderer::enableTransform() {
 		return;
 	}
 	
-	if(currentTransform == GL_NoTransform) {
+	/* if(currentTransform == GL_NoTransform) {
 		
 		glMatrixMode(GL_MODELVIEW);
 		glMultMatrixf(&view._11);
@@ -104,7 +104,7 @@ void OpenGLRenderer::enableTransform() {
 		glMatrixMode(GL_PROJECTION);
 		glMultMatrixf(&projection._11);
 		
-	} else {
+	} else */ {
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -113,6 +113,21 @@ void OpenGLRenderer::enableTransform() {
 		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+		
+		/*
+		//glMultMatrixf(&projection._11);
+		//glTranslatef(0, 0, 1);
+		gluPerspective(60, 1, 0, 1000);
+		
+		LogInfo << "----gl-----";
+		EERIEMATRIX temp;
+		glGetFloatv(GL_PROJECTION_MATRIX, &temp._11);
+		dump(temp);
+		
+		LogInfo << "----d3d-----";
+		dump(projection);
+		*/
+		
 		glTranslatef(-1.f, 1.f, 0);
 		glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
 		glMultMatrixf(&projection._11);
@@ -288,7 +303,7 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	int height = mainApp->GetWindow()->GetSize().y;
 	
-	glViewport(viewport.left, height - viewport.height(), viewport.width(), viewport.height());
+	glViewport(viewport.left, height - viewport.bottom, viewport.width(), viewport.height());
 	
 	currentTransform = GL_UnsetTransform;
 	
