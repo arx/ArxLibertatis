@@ -88,7 +88,6 @@ function(_shared_build_helper LIB LIST EXESET)
 	
 	# Find sources common to all executables in the current set.
 	set(first 1)
-	set(common_src "")
 	foreach(exe IN LISTS EXESET)
 		if(first)
 			set(first 0)
@@ -125,6 +124,7 @@ function(_shared_build_helper LIB LIST EXESET)
 	
 endfunction(_shared_build_helper)
 
+
 function(_shared_build_cleanup)
 	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
@@ -137,6 +137,7 @@ function(_shared_build_cleanup)
 	
 endfunction(_shared_build_cleanup)
 
+
 # Build each executable separately.
 function(separate_build)
 	
@@ -148,6 +149,7 @@ function(separate_build)
 	_shared_build_cleanup()
 	
 endfunction(separate_build)
+
 
 # Build each source file separately and extract common source files into static libraries.
 function(shared_build)
@@ -169,6 +171,7 @@ function(shared_build)
 	separate_build()
 	
 endfunction(shared_build)
+
 
 # Build each executable by including all the source files into one big master file.
 function(unity_build)
