@@ -47,7 +47,11 @@ void setVertexArray(const TexturedVertex * vertices) {
 	// ignore the rhw parameter!
 	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
-	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->specular);
+	
+	
+	// TODO(broken-GLEW) work around a bug in older GLEW versions (fix is in 1.6.0)
+	GLvoid * ptr = const_cast<ColorBGRA *>(&vertices->specular);
+	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), ptr);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
