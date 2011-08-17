@@ -236,29 +236,25 @@ bool ArxGame::InitWindow() {
 	
 }
 
-bool ArxGame::InitInput()
-{
+bool ArxGame::InitInput() {
+	
 	LogDebug << "Input init";
 	bool init = ARX_INPUT_Init();
-	if(init) {
-		LogInfo << "Input init success";
-	} else {
+	if(!init) {
 		LogError << "Input init failed";
 	}
-
+	
 	return init;
 }
 
-bool ArxGame::InitSound()
-{
+bool ArxGame::InitSound() {
+	
 	LogDebug << "Sound init";
 	bool init = ARX_SOUND_Init();
-	if(init) {
-		LogInfo << "Sound init success";
-	} else {
+	if(!init) {
 		LogWarning << "Sound init failed";
 	}
-
+	
 	return true;
 }
 

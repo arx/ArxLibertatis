@@ -79,6 +79,9 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	
 	onRendererInit();
 	
+	const SDL_version * ver = SDL_Linked_Version();
+	LogInfo << "Using SDL " << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
+	
 	return true;
 }
 

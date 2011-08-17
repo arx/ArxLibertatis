@@ -309,6 +309,8 @@ bool DInput7Backend::init() {
 
 	setMouseCoordinates(iLastMouseX, iLastMouseY);
 	
+	LogInfo << "Using DirectInput 7";
+	
 	return true;
 }
 

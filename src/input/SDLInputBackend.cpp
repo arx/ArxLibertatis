@@ -190,6 +190,8 @@ bool SDLInputBackend::init() {
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
+	LogInfo << "Using SDL input";
+	
 	return true;
 }
 
