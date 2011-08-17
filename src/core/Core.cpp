@@ -542,7 +542,6 @@ void InitializeDanae()
 {
 	InitTileLights();
 	
-	fs::path levelPath = "graph/levels/level";
 	EERIEMathPrecalc();
 	ARX_MISSILES_ClearAll();
 	ARX_SPELLS_Init();
@@ -554,109 +553,14 @@ void InitializeDanae()
 
 	LastLoadedScene.clear();
 
-	switch(Project.demo) {
+	fs::path levelPath;
+	fs::path levelFullPath;
 
-		case NOLEVEL:
-			levelPath.clear();
-			break;
-		case LEVELDEMO:
-			levelPath.append("demo");
-			break;
-		case LEVELDEMO2:
-			levelPath.append("demo2");
-			break;
-		case LEVELDEMO3:
-			levelPath.append("demo3");
-			break;
-		case LEVELDEMO4:
-			levelPath.append("demo4");
-			break;
-		case LEVEL0:
-			levelPath.append("0");
-			break;
-		case LEVEL1:
-			levelPath.append("1");
-			break;
-		case LEVEL2:
-			levelPath.append("2");
-			break;
-		case LEVEL3:
-			levelPath.append("3");
-			break;
-		case LEVEL4:
-			levelPath.append("4");
-			break;
-		case LEVEL5:
-			levelPath.append("5");
-			break;
-		case LEVEL6:
-			levelPath.append("6");
-			break;
-		case LEVEL7:
-			levelPath.append("7");
-			break;
-		case LEVEL8:
-			levelPath.append("8");
-			break;
-		case LEVEL9:
-			levelPath.append("9");
-			break;
-		case LEVEL10:
-			levelPath.append("10");
-			break;
-		case LEVEL11:
-			levelPath.append("11");
-			break;
-		case LEVEL12:
-			levelPath.append("12");
-			break;
-		case LEVEL13:
-			levelPath.append("13");
-			break;
-		case LEVEL14:
-			levelPath.append("14");
-			break;
-		case LEVEL15:
-			levelPath.append("15");
-			break;
-		case LEVEL16:
-			levelPath.append("16");
-			break;
-		case LEVEL17:
-			levelPath.append("17");
-			break;
-		case LEVEL18:
-			levelPath.append("18");
-			break;
-		case LEVEL19:
-			levelPath.append("19");
-			break;
-		case LEVEL20:
-			levelPath.append("20");
-			break;
-		case LEVEL21:
-			levelPath.append("21");
-			break;
-		case LEVEL22:
-			levelPath.append("22");
-			break;
-		case LEVEL23:
-			levelPath.append("23");
-			break;
-		case LEVEL24:
-			levelPath.append("24");
-			break;
-		case LEVEL25:
-			levelPath.append("25");
-			break;
-		case LEVEL26:
-			levelPath.append("26");
-			break;
-		case LEVEL27:
-			levelPath.append("27");
-			break;
-		default:
-			levelPath.clear();
+	if(Project.demo != NOLEVEL) {
+		char levelId[256];
+		GetLevelNameByNum(Project.demo, levelId);
+		levelPath = std::string("graph/levels/level") + levelId;
+		levelFullPath = levelPath.string() + "/level" + levelId + ".dlf";
 	}
 	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
@@ -748,8 +652,6 @@ void InitializeDanae()
 	LoadSysTextures();
 	CreateInterfaceTextureContainers();
 
-//	LaunchDemo = 0;
-
 	if (LaunchDemo) {
 		LogInfo << "Launching Demo";
 
@@ -773,6 +675,7 @@ void InitializeDanae()
 		}
 		EERIEPOLY_Compute_PolyIn();
 		LastLoadedScene = levelPath;
+		USE_PLAYERCOLLISIONS=0;
 	}
 	
 }
