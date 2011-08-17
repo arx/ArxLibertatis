@@ -105,26 +105,22 @@ struct PROJECT {
 	
 	PROJECT()
 		:
-		  compatibility(0), ambient(0),
+		  compatibility(0),
 		  improve(0), detectliving(0), improvespeed(0),
 		  telekinesis(0), demo(0),
-		  bits(0), hide(0), TextureSize(0), TextureBits(0),
-		  interfacergb(Color3f::black), torch(Color3f::black),
+		  hide(0), TextureSize(0),
+		  torch(Color3f::black),
 		  vsync(0) {
 	}
 	
 	long compatibility;
-	long ambient;
 	long improve;
 	long detectliving;
 	long improvespeed;
 	long telekinesis;
 	long demo;
-	long bits;
 	HideFlags hide;
 	long TextureSize;
-	long TextureBits;
-	Color3f interfacergb;
 	Color3f torch;
 	long vsync;
 	

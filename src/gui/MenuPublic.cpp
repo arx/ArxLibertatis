@@ -107,8 +107,6 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 	
 	mainApp->GetWindow()->SetSize(Vec2i(_iWidth, _iHeight));
 
-	Project.bits = _iBpp;
-	
 	/* TODO(core_cleanup)
 	
 	HRESULT hr;

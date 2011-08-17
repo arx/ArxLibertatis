@@ -555,7 +555,7 @@ void InitializeDanae()
 	LastLoadedScene.clear();
 
 	switch(Project.demo) {
-		
+
 		case NOLEVEL:
 			levelPath.clear();
 			break;
@@ -658,7 +658,7 @@ void InitializeDanae()
 		default:
 			levelPath.clear();
 	}
-
+	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	ACTIVEBKG=&DefaultBkg;
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
@@ -909,10 +909,7 @@ int main(int argc, char ** argv) {
 	if (FINAL_RELEASE) {
 		LogDebug << "FINAL_RELEASE";
 		LaunchDemo=1;
-		Project.TextureBits=16;
-		Project.bits=32;
 		Project.demo=LEVEL10;
-		Project.ambient=1;
 		NOCHECKSUM=1;
 	}
 	else {
@@ -942,8 +939,6 @@ int main(int argc, char ** argv) {
 
 	LogInfo << "Application Creation Success";
 
-	// TODO(core_cleanup) mainApp->m_pFramework->bitdepth=Project.bits;
-		
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
 	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
@@ -973,10 +968,6 @@ int main(int argc, char ** argv) {
 		config.language = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
-	
-	Project.interfacergb.r = 0.46f;
-	Project.interfacergb.g = 0.46f;
-	Project.interfacergb.b = 1.f;
 	
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;
