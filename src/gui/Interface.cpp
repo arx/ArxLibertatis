@@ -2821,6 +2821,12 @@ void ArxGame::ManagePlayerControls()
 			tm.x+=(float)EEsin(t)*multi;
 			tm.z-=(float)EEcos(t)*multi;
 
+			if(!USE_PLAYERCOLLISIONS)
+			{
+				t=radians(player.angle.a);
+				tm.y-=(float)EEsin(t)*multi;
+			}
+
 			player.Current_Movement|=PLAYER_MOVE_WALK_BACKWARD;
 
 			if (GInput->actionNowPressed(CONTROLS_CUST_WALKBACKWARD) )
@@ -2849,6 +2855,13 @@ void ArxGame::ManagePlayerControls()
 			multi=10.f*(float)FD*MoveDiv*multi;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
+
+			if(!USE_PLAYERCOLLISIONS)
+			{
+				t=radians(player.angle.a);
+				tm.y+=(float)EEsin(t)*multi;
+			}
+
 			player.Current_Movement|=PLAYER_MOVE_WALK_FORWARD;
 
 			if (GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD) )
@@ -2892,16 +2905,7 @@ void ArxGame::ManagePlayerControls()
 		moveto.y=player.pos.y+tm.y;
 		moveto.z=player.pos.z+tm.z;
 	}
-
-	if (!USE_PLAYERCOLLISIONS)
-	{
-        if (GInput->isKeyPressedNowPressed(Keyboard::Key_PageUp))
-			moveto.y=player.pos.y=player.pos.y-10.f;
-
-		if (GInput->isKeyPressedNowPressed(Keyboard::Key_PageDown))
-			moveto.y=player.pos.y=player.pos.y+10.f;
-	}
-
+	
 	// To remove for FINAL_RELEASE---------------------------------------
 #ifdef BUILD_EDITOR
 	if(ALLOW_CHEATS || GAME_EDITOR) {
