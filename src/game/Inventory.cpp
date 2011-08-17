@@ -516,7 +516,7 @@ bool FastInsert(INTERACTIVE_OBJ * _pIO, long _uiNumBag)
 void OptmizeInventory(unsigned int _uiNumBag)
 {
 
-	ARX_CHECK_NOT_NEG(player.bag);
+	arx_assert(player.bag >= 0);
 
 	if (_uiNumBag < static_cast<unsigned short>(player.bag))
 	{
@@ -1201,7 +1201,7 @@ bool PutInInventory()
 
 
 		//We must enter the for-loop to initialyze tx/ty
-		ARX_CHECK(0 < player.bag);
+		arx_assert(0 < player.bag);
 
 
 		for (int i = 0; i < player.bag; i++)

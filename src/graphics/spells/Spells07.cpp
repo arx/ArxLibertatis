@@ -446,7 +446,7 @@ float CLightning::Render()
 	{
 
 
-		ARX_CHECK( lSrc == -1 );	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
+		arx_assert( lSrc == -1 );	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
 		ePos.x = 0.f;
 		ePos.y = 0.f;
 		ePos.z = 0.f;

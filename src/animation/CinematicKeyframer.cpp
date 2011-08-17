@@ -591,7 +591,7 @@ consequences on light :
 				c->light : color	= (0,0,0); == BLACK
 				c->light : fallin	= fallout		= 0;
 				c->light : intensite = intensiternd	= 0;
-			ARX_CHECK( k->typeinterp != INTERP_BEZIER && k->typeinterp != INTERP_LINEAR );
+			arx_assert( k->typeinterp != INTERP_BEZIER && k->typeinterp != INTERP_LINEAR );
 */
 //ARX_END: jycorbel (2010-07-19)
 			//ARX_END: jycorbel (2010-06-28)
@@ -824,7 +824,7 @@ bool GereTrackNoPlay(Cinematic * c)
 			c->light : color	= (0,0,0); == BLACK
 			c->light : fallin	= fallout		= 0;
 			c->light : intensite = intensiternd	= 0;
-			ARX_CHECK( k->typeinterp != INTERP_BEZIER && k->typeinterp != INTERP_LINEAR );
+			arx_assert( k->typeinterp != INTERP_BEZIER && k->typeinterp != INTERP_LINEAR );
 */
 //ARX_END: jycorbel (2010-07-19)
 			//ARX_END: jycorbel (2010-06-28)

@@ -3226,7 +3226,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 	}
 
-	ARX_CHECK( !( source && (flags & SPELLCAST_FLAG_PRECAST) ) );
+	arx_assert( !( source && (flags & SPELLCAST_FLAG_PRECAST) ) );
 
 
 	if ( flags & SPELLCAST_FLAG_PRECAST )
@@ -5390,7 +5390,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 					else
 					{
-						ARX_CHECK_NO_ENTRY();
+						ARX_DEAD_CODE();
 						target.x = 0;					
 						target.y = 0;
 						target.z = 0;
@@ -5494,7 +5494,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 					else
 					{
-						ARX_CHECK_NO_ENTRY();
+						ARX_DEAD_CODE();
 						target.x = 0;					
 						target.y = 0;
 						target.z = 0;

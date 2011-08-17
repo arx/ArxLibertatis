@@ -1456,7 +1456,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 							break;
 					}
 
-					ARX_CHECK(curhaloInitialized > 0);
+					arx_assert(curhaloInitialized > 0);
 
 					TexturedVertex * workon;
 					workon	= tv;

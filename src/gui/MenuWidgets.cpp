@@ -922,14 +922,14 @@ bool Menu2_Render() {
 							szMenuText = ss.str();
 
 
-							ARX_CHECK_NOT_NEG( iModeBpp );
+							arx_assert(iModeBpp >= 0);
 
 							if(mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)iModeBpp) {
 								
 								((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
 
-								ARX_CHECK_NOT_NEG( iModeX );
-								ARX_CHECK_NOT_NEG( iModeY );
+								arx_assert(iModeX >= 0);
+								arx_assert(iModeY >= 0);
 
 								if(mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)iModeX &&
 								   mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)iModeY) {
@@ -2745,7 +2745,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 	iState ++;
 
 	//NB : It seems that iState cannot be negative (used as tabular index / used as bool) but need further approval
-	ARX_CHECK_NOT_NEG( iState );
+	arx_assert(iState >= 0);
 
 	if ((size_t)iState >= vTex.size())
 	{
@@ -3155,7 +3155,7 @@ void CWindowMenuConsole::AddMenuCenterY( CMenuElement * _pMenuElement )
 	//We can't go inside the for-loop
 	else
 	{
-		ARX_CHECK( !( 0 < iI ) );
+		arx_assert( !( 0 < iI ) );
 	}
 
 	for( int iJ = 0 ; iJ < iI ; iJ++ )
@@ -3217,7 +3217,7 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 	//We can't go inside the for-loop
 	else
 	{
-		ARX_CHECK( !( 0 < iI ) );
+		arx_assert( !( 0 < iI ) );
 	}
 
 	for( int iJ = 0 ; iJ < iI ; iJ++ )
@@ -4217,7 +4217,7 @@ bool CMenuButton::OnMouseClick(int _iMouseButton) {
 	
 	iPos++;
 
-	ARX_CHECK_NOT_NEG( iPos );
+	arx_assert(iPos >= 0);
 
 	if((size_t)iPos >= vText.size() )
 		iPos = 0;
@@ -4452,7 +4452,7 @@ void CMenuSliderText::EmptyFunction()
 		{
 			iPos++;
 
-			ARX_CHECK_NOT_NEG(iPos);
+			arx_assert(iPos >= 0);
 
 			if ((size_t)iPos >= vText.size() - 1 ) iPos = vText.size() - 1;
 
@@ -4494,7 +4494,7 @@ bool CMenuSliderText::OnMouseClick(int)
 		{
 			iPos++;
 
-			ARX_CHECK_NOT_NEG(iPos);
+			arx_assert(iPos >= 0);
 
 			if ((size_t)iPos >= vText.size() - 1 )
 				iPos = vText.size() - 1 ;
@@ -4645,7 +4645,7 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
 	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
-	ARX_CHECK_NOT_NEG( rZone.bottom );
+	arx_assert(rZone.bottom >= 0);
 	rZone.bottom = max( static_cast<unsigned long>( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
 
 

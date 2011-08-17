@@ -1102,7 +1102,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 
 				if (io != NULL)
 				{
-					ARX_CHECK_NOT_NEG(num);
+					arx_assert(num >= 0);
 
 					particle[j].ov.x = io->obj->vertexlist3[num].v.x + rnd() * 10.f - 5.f;;
 					particle[j].ov.y = io->obj->vertexlist3[num].v.y + rnd() * 10.f - 5.f;;

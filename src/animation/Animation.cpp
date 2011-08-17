@@ -1417,7 +1417,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				}
 				else
 				{
-					ARX_CHECK_NO_ENTRY(); //To avoid using special_color when it is not defined, currently equal 0
+					ARX_DEAD_CODE(); //To avoid using special_color when it is not defined, currently equal 0
 				}
 			}
 		}

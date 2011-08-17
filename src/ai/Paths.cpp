@@ -801,7 +801,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	{
 		// TODO treat NPC !!!
 
-		ARX_CHECK_NO_ENTRY();
+		ARX_DEAD_CODE();
 		attack = 0;
 		dmgs = 0;
 
@@ -1253,7 +1253,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 												if ((damages = ARX_THROWN_ComputeDamages(i, Thrown[i].source, EVERYTHING_IN_SPHERE[jj])) > 0.f)
 												{
-													ARX_CHECK(hitpoint >= 0);
+													arx_assert(hitpoint >= 0);
 
 													if (target->ioflags & IO_NPC)
 													{

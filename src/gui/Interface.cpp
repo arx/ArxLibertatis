@@ -2127,7 +2127,7 @@ bool ArxGame::ManageEditorControls()
 										}
 									}
 
-									if (bfound) ARX_CHECK_NO_ENTRY();
+									if (bfound) ARX_DEAD_CODE();
 								}
 
 								bSecondary = true;
@@ -3636,7 +3636,7 @@ void ARX_INTERFACE_SetCinemascope(long status,long smooth)
 		g_TimeStartCinemascope = 0;
 	}
 
-	ARX_CHECK_NOT_NEG(CINEMASCOPE);
+	arx_assert(CINEMASCOPE >= 0);
 
 	if (CINEMASCOPE)
 	{
@@ -8071,7 +8071,7 @@ long Manage3DCursor(long flags)
 
 							if( bCollidposNoInit )
 							{
-					ARX_CHECK_NO_ENTRY();
+					ARX_DEAD_CODE();
 							}
 
 							if (SPECIAL_DRAGINTER_RENDER)
@@ -8384,7 +8384,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 					else
 					{
-						ARX_CHECK_NO_ENTRY();
+						ARX_DEAD_CODE();
 						size.x = 0;
 						size.y = 0;
 					}

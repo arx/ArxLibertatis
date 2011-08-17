@@ -427,7 +427,7 @@ class IfCommand : public Command {
 					}
 					
 					default: {
-						ARX_CHECK_NO_ENTRY();
+						ARX_DEAD_CODE();
 						return TYPE_TEXT;
 					}
 					

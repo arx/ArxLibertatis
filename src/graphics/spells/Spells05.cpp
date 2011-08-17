@@ -878,7 +878,7 @@ float CPoisonProjectile::Render()
 		}
 	}
 	
-	ARX_CHECK_NOT_NEG(arx_check_init);
+	arx_assert(arx_check_init >= 0);
 	
 	eCurPos = lastpos;
 	

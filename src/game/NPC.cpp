@@ -1574,7 +1574,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		equival[k] = -1;
 	}
 
-	ARX_CHECK(0 < from->selections[num].selected.size());
+	arx_assert(0 < from->selections[num].selected.size());
 
 	for(size_t k = 0; k < from->selections[num].selected.size(); k++) {
 		inpos = from->selections[num].selected[k];

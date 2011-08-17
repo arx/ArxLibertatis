@@ -210,11 +210,6 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
                             Define
 ------------------------------------------------------------*/
 
-// TODO use arx_assert directly
-#define ARX_CHECK_NOT_NEG( _x ) arx_assert((_x) >= 0)
-#define ARX_CHECK_NO_ENTRY( )   arx_assert(false)
-#define ARX_CHECK( _expr )      arx_assert(_expr)
-
 // Get the number of items in a static array
 #define ARRAY_SIZE(a) ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 

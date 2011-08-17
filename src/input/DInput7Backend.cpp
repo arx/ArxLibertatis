@@ -379,7 +379,7 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 			flag = DISCL_NONEXCLUSIVE | DISCL_FOREGROUND;
 			break;
 		default:
-			ARX_CHECK_NO_ENTRY();
+			ARX_DEAD_CODE();
 			return false;
 	}
 	

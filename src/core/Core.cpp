@@ -468,12 +468,12 @@ void DanaeSwitchFullScreen()
 
 	for(int i=0;i<nb;i++)
 	{
-		ARX_CHECK_NOT_NEG( config.video.bpp );
+		arx_assert(config.video.bpp >= 0);
 
 		if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == static_cast<unsigned int>( config.video.bpp ) )
 		{
-			ARX_CHECK_NOT_NEG( config.video.width );
-			ARX_CHECK_NOT_NEG( config.video.height );
+			arx_assert(config.video.width >= 0);
+			arx_assert(config.video.height >= 0);
 
 			if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == static_cast<unsigned int>( config.video.width ) ) &&
 				( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == static_cast<unsigned int>( config.video.height ) ) )

@@ -906,7 +906,7 @@ void CSpeed::AddRuban(int * f, int id, int dec)
 			num = this->truban[num].next;
 		}
 
-		if (oldnum < 0) ARX_CHECK_NO_ENTRY();
+		if (oldnum < 0) ARX_DEAD_CODE();
 
 		if (nb > dec)
 		{
