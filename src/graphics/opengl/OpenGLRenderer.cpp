@@ -60,7 +60,7 @@ void OpenGLRenderer::Initialize() {
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
 	
-	LogInfo << "OpenGL renderer initialized: " << glGetError();
+	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
 	
 	currentTransform = GL_UnsetTransform;
 	
