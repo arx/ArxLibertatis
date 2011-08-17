@@ -23,8 +23,6 @@ else()
 endif()
 mark_as_advanced(MinGW32_ROOT)
 
-# TODO use the gcc, g++ and windres executables from MinGW32_ROOT
-
 find_program(MinGW32_GCC NAMES
 	i686-pc-mingw32-gcc
 	i586-pc-mingw32-gcc
