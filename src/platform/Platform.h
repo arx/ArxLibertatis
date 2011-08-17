@@ -190,34 +190,21 @@ typedef double f64; // 64 bits double float
 void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = NULL, ...);
 
 #ifdef _DEBUG
-	#define arx_assert_msg(_Expression, _Message, ...)											\
-		{																						\
-			if(!(_Expression))																	\
-			{																					\
-				assertionFailed(#_Expression, (__FILE__), __LINE__, _Message, ##__VA_ARGS__);	\
-				ARX_DEBUG_BREAK();																\
-			}																					\
+	#define arx_assert_msg(_Expression, _Message, ...) { \
+			if(!(_Expression)) { \
+				assertionFailed(#_Expression, (__FILE__), __LINE__, _Message, ##__VA_ARGS__); \
+				ARX_DEBUG_BREAK(); \
+			} \
 		}
-
-	#define arx_assert(_Expression)																\
-		{																						\
-			if(!(_Expression))																	\
-			{																					\
-				assertionFailed(#_Expression, (__FILE__), __LINE__);							\
-				ARX_DEBUG_BREAK();																\
-			}																					\
-		}
-
 #else // _DEBUG
 	#if ARX_COMPILER_MSVC  // MS compilers support noop which discards everything inside the parens
 		#define arx_assert_msg(_Expression, _Message, ...) __noop
-		#define arx_assert(_Expression) __noop
 	#else
 		#define arx_assert_msg(_Expression, _Message, ...) ((void)0)
-		#define arx_assert(_Expression) ((void)0)
 	#endif
 #endif // _DEBUG
 
+#define arx_assert(_Expression) arx_assert_msg(_Expression, NULL)
 
 /* ---------------------------------------------------------
                             Define
