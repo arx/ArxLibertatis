@@ -35,6 +35,7 @@ option(ARX_USE_DSOUND "Build the DirectSound audio backend." OFF)
 option(ARX_USE_OPENGL "Build the OpenGL renderer backend." ON)
 option(ARX_USE_D3D7 "Build the Direct3D 7 renderer backend." OFF)
 option(ARX_USE_SDL "Build the SDL windowing backend." ON)
+option(ARX_USE_DINPUT7 "Build the DirectInput 7 input backend." OFF)
 
 if(ARX_FORCE_32BIT)
 	set(CURRENT_ARX_FORCE_32BIT 1)
