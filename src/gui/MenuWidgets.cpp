@@ -4646,7 +4646,7 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
 	ARX_CHECK_NOT_NEG( rZone.bottom );
-	rZone.bottom = max( ARX_CAST_ULONG( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
+	rZone.bottom = max( static_cast<unsigned long>( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
 
 
 	pRightButton->Move(pLeftButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0);

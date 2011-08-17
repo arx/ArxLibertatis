@@ -2243,7 +2243,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	{
 		st->times++;
 
-		st->msecs = ARX_CAST_LONG(st->msecs * ( 1.0f / 2 ));
+		st->msecs = static_cast<long>(st->msecs * ( 1.0f / 2 ));
 
 
 		if (st->msecs < 100) st->msecs = 100;

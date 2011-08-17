@@ -223,11 +223,6 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
                             Define
 ------------------------------------------------------------*/
 
-#define ARX_CAST_LONG( _x )		static_cast<long>( _x )
-#define ARX_CAST_ULONG( _x )	static_cast<unsigned long>( _x )
-#define ARX_CAST_UINT( _x )		static_cast<unsigned int>( _x )
-#define ARX_CAST_USHORT( _x )	static_cast<unsigned short>( _x )
-
 // TODO use arx_assert directly
 #define ARX_CHECK_NOT_NEG( _x ) arx_assert((_x) >= 0)
 #define ARX_CHECK_NO_ENTRY( )   arx_assert(false)
@@ -240,7 +235,7 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
                            Pragma
 ------------------------------------------------------------*/
 
-#define ARX_DEAD_CODE()		arx_assert(false)
+#define ARX_DEAD_CODE() arx_assert(false)
 
 // Remove warnings about unused but necessary variable (unused params, variables only used for asserts...)
 #define ARX_UNUSED(x) ((void)&x)

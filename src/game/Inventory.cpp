@@ -518,7 +518,7 @@ void OptmizeInventory(unsigned int _uiNumBag)
 
 	ARX_CHECK_NOT_NEG(player.bag);
 
-	if (_uiNumBag < ARX_CAST_USHORT(player.bag))
+	if (_uiNumBag < static_cast<unsigned short>(player.bag))
 	{
 
 		vector<INTERACTIVE_OBJ *> vIO;
