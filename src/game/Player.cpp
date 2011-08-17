@@ -806,8 +806,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 
 	float fCalc = t * ( 1.0f / 10 ) - 1 ;
-	ARX_CHECK_UCHAR(fCalc);
-	player.armor_class = ARX_CLEAN_WARN_CAST_UCHAR(fCalc);
+	player.armor_class = checked_range_cast<unsigned char>(fCalc);
 
 
 	if (player.armor_class < 1) player.armor_class = 1;
@@ -817,8 +816,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * ( 1.0f / 200 )));
 
 	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * ( 1.0f / 4 )));
-	ARX_CHECK_UCHAR(fCalc);
-	player.resist_poison = ARX_CLEAN_WARN_CAST_UCHAR(fCalc);
+	player.resist_poison = checked_range_cast<unsigned char>(fCalc);
 
 
 	player.damages = (player.Attribute_Strength - 10) * ( 1.0f / 2 );
@@ -913,15 +911,13 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	//CHECK OVERFLOW
 	float fFullAimTime	= ARX_EQUIPMENT_Apply(io, IO_EQUIPITEM_ELEMENT_AimTime, 0);
 	float fCalcHandicap	= (player.Full_Attribute_Dexterity - 10.f) * 20.f;
-	ARX_CHECK_LONG(fFullAimTime);
-	ARX_CHECK_LONG(fCalcHandicap);
 
 	//CAST
-	player.Full_AimTime = ARX_CLEAN_WARN_CAST_LONG(fFullAimTime);
+	player.Full_AimTime = checked_range_cast<long>(fFullAimTime);
 
 	if (player.Full_AimTime <= 0) player.Full_AimTime = player.AimTime;
 
-	player.Full_AimTime -= ARX_CLEAN_WARN_CAST_LONG(fCalcHandicap);
+	player.Full_AimTime -= checked_range_cast<long>(fCalcHandicap);
 
 
 	if (player.Full_AimTime <= 1500) player.Full_AimTime = 1500;
@@ -1305,14 +1301,11 @@ void ARX_PLAYER_MakeAverageHero()
 // FUNCTION/RESULT:
 //   Quickgenerate a random hero
 //*************************************************************************************
-void ARX_PLAYER_QuickGeneration()
-{
-	long old_skin = player.skin;
+void ARX_PLAYER_QuickGeneration() {
+	
+	char old_skin = player.skin;
 	ARX_PLAYER_MakeFreshHero();
-
-
-	ARX_CHECK_CHAR(old_skin);
-	player.skin	= ARX_CLEAN_WARN_CAST_CHAR(old_skin);
+	player.skin = old_skin;
 
 	while (player.Attribute_Redistribute)
 	{
@@ -2625,16 +2618,12 @@ void ARX_PLAYER_Frame_Update()
 	else
 		PLAYER_ARMS_FOCAL = (float)CURRENT_BASE_FOCAL - 80.f + player.angle.a;
 
-	PLAYER_ARMS_FOCAL = ARX_CLEAN_WARN_CAST_FLOAT(CURRENT_BASE_FOCAL);
+	PLAYER_ARMS_FOCAL = static_cast<float>(CURRENT_BASE_FOCAL);
 
 	ARX_PLAYER_ComputePlayerFullStats();
 
-	ARX_CHECK_LONG(player.Full_Skill_Mecanism);
-	ARX_CHECK_LONG(player.Full_Skill_Intuition);
-
-	TRAP_DETECT	=	ARX_CLEAN_WARN_CAST_LONG(player.Full_Skill_Mecanism);
-	TRAP_SECRET	=	ARX_CLEAN_WARN_CAST_LONG(player.Full_Skill_Intuition);
-
+	TRAP_DETECT = checked_range_cast<long>(player.Full_Skill_Mecanism);
+	TRAP_SECRET = checked_range_cast<long>(player.Full_Skill_Intuition);
 
 	if (ARX_SPELLS_GetSpellOn(inter.iobj[0], SPELL_DETECT_TRAP) >= 0)
 		TRAP_DETECT = 100;
@@ -3505,7 +3494,7 @@ void ARX_PLAYER_Manage_Death()
 	{
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-		EERIEDrawBitmap( 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f, NULL, Color::gray(ratio));
+		EERIEDrawBitmap( 0.f, 0.f, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.000091f, NULL, Color::gray(ratio));
 
 	}
 }

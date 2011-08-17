@@ -1078,16 +1078,11 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		
 		ais.usepath_aupflags = aup->aupflags;
 		
-		float ulCurTime = aup->_curtime;
-		ARX_CHECK_ULONG(ulCurTime);
-		ais.usepath_curtime = ARX_CLEAN_WARN_CAST_ULONG(ulCurTime) ;
+		ais.usepath_curtime = checked_range_cast<u32>(aup->_curtime);
 		
 		ais.usepath_initpos = aup->initpos;
 		ais.usepath_lastWP = aup->lastWP;
-		
-		float ulStartTime = aup->_starttime;
-		ARX_CHECK_ULONG(ulStartTime);
-		ais.usepath_starttime = ARX_CLEAN_WARN_CAST_ULONG(ulStartTime);
+		ais.usepath_starttime = checked_range_cast<u32>(aup->_starttime);
 		
 		strncpy(ais.usepath_name, aup->path->name.c_str(), sizeof(ais.usepath_name));
 	}
@@ -1282,16 +1277,11 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 					avs->type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 
-					if (avs->fval > 0)
-					{
-
-						ARX_CHECK_SIZET(avs->fval);
-						memset(dat + pos, 0, ARX_CLEAN_WARN_CAST_SIZET(avs->fval)); //count+1);
-
-
-						if (count > 0)
+					if(avs->fval > 0) {
+						memset(dat + pos, 0, checked_range_cast<size_t>(avs->fval)); //count+1);
+						if(count > 0) {
 							memcpy(dat + pos, io->script.lvar[i].text, count);
-
+						}
 					}
 
 					pos += (long)avs->fval;
@@ -1361,15 +1351,11 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 					avs->type	= TYPE_L_TEXT;
 					pos			+= sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 
-					if (avs->fval > 0)
-					{
-
-						ARX_CHECK_SIZET(avs->fval);
-						memset(dat + pos, 0, ARX_CLEAN_WARN_CAST_SIZET(avs->fval)); //count+1);
-
-
-						if (count > 0)
-							memcpy(dat + pos, io->over_script.lvar[i].text, count); //+1);
+					if(avs->fval > 0) {
+						memset(dat + pos, 0, checked_range_cast<size_t>(avs->fval));
+						if(count > 0) {
+							memcpy(dat + pos, io->over_script.lvar[i].text, count);
+						}
 					}
 
 					pos		+= (long)avs->fval;
@@ -1778,8 +1764,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.desiredangle.a = player.angle.a;
 	player.desiredangle.b = player.angle.b;
 	
-	ARX_CHECK_UCHAR(asp->armor_class);
-	player.armor_class = static_cast<unsigned char>(asp->armor_class);
+	player.armor_class = checked_range_cast<unsigned char>(asp->armor_class);
 	
 	player.Attribute_Constitution = asp->Attribute_Constitution;
 	player.Attribute_Dexterity = asp->Attribute_Dexterity;
@@ -1818,8 +1803,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.jumpstarttime = asp->jumpstarttime;
 	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	
-	ARX_CHECK_UCHAR(asp->level);
-	player.level = static_cast<unsigned char>(asp->level);
+	player.level = checked_range_cast<unsigned char>(asp->level);
 	
 	player.life = asp->life;
 	player.mana = asp->mana;
@@ -1871,15 +1855,11 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	WILL_RESTORE_PLAYER_POSITION = asp->pos;
 	WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
 	
-	ARX_CHECK_UCHAR(asp->resist_magic);
-	ARX_CHECK_UCHAR(asp->resist_poison);
-	player.resist_magic = static_cast<unsigned char>(asp->resist_magic);
-	player.resist_poison = static_cast<unsigned char>(asp->resist_poison);
+	player.resist_magic = checked_range_cast<unsigned char>(asp->resist_magic);
+	player.resist_poison = checked_range_cast<unsigned char>(asp->resist_poison);
 	
-	ARX_CHECK_UCHAR(asp->Attribute_Redistribute);
-	ARX_CHECK_UCHAR(asp->Skill_Redistribute);
-	player.Attribute_Redistribute = static_cast<unsigned char>(asp->Attribute_Redistribute);
-	player.Skill_Redistribute = static_cast<unsigned char>(asp->Skill_Redistribute);
+	player.Attribute_Redistribute = checked_range_cast<unsigned char>(asp->Attribute_Redistribute);
+	player.Skill_Redistribute = checked_range_cast<unsigned char>(asp->Skill_Redistribute);
 	
 	player.rune_flags = RuneFlags::load(asp->rune_flags); // TODO save/load flags
 	player.size = asp->size;
@@ -1893,8 +1873,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Skill_Close_Combat = asp->Skill_Close_Combat;
 	player.Skill_Defense = asp->Skill_Defense;
 	
-	ARX_CHECK_CHAR(asp->skin);
-	player.skin = static_cast<char>(asp->skin);
+	player.skin = checked_range_cast<char>(asp->skin);
 	
 	player.xp = asp->xp;
 	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
@@ -2251,8 +2230,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			ats = reinterpret_cast<const ARX_CHANGELEVEL_TIMERS_SAVE *>(dat + pos);
 			pos += sizeof(ARX_CHANGELEVEL_TIMERS_SAVE);
 			
-			ARX_CHECK_SHORT(ats->flags);
-			short sFlags = static_cast<short>(ats->flags);
+			short sFlags = checked_range_cast<short>(ats->flags);
 			
 			long num = ARX_SCRIPT_Timer_GetFree();
 			if(num == -1) {
@@ -2278,8 +2256,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			if(tt < 0) {
 				scr_timer[num].tim = 0;
 			} else {
-				ARX_CHECK_ULONG(tt);
-				scr_timer[num].tim = static_cast<unsigned long>(tt);
+				scr_timer[num].tim = checked_range_cast<unsigned long>(tt);
 			}
 			
 			scr_timer[num].times = ats->times;
@@ -2836,8 +2813,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LoadLevelScreen(instance);
 	
 	if(FirstTime) {
-		ARX_CHECK_ULONG(ARX_CHANGELEVEL_DesiredTime);
-		unsigned long ulDTime = static_cast<unsigned long>(ARX_CHANGELEVEL_DesiredTime);
+		unsigned long ulDTime = checked_range_cast<unsigned long>(ARX_CHANGELEVEL_DesiredTime);
 		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 			if(scr_timer[i].exist) {
 				scr_timer[i].tim = ulDTime;

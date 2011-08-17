@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_PLATFORM_PLATFORM_H
 
 #include <string>
-#include <climits>
 
 /* ---------------------------------------------------------
                           Platforms
@@ -243,33 +242,8 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 
 #define ARX_DEAD_CODE()		arx_assert(false)
 
-// Remove asserts about unused but necessary variable (unused params, variables only used for asserts...)
-#define ARX_UNUSED(x)		((void)&x)		
-
-#define ARX_CHECK_UCHAR(_x)	arx_assert( static_cast<u16>(_x) <= UCHAR_MAX	&& _x >= 0 )
-#define ARX_CHECK_BYTE(_x)  ARX_CHECK_UCHAR(_x)
-#define ARX_CHECK_CHAR(_x)	arx_assert( static_cast<s16>(_x) <= CHAR_MAX	&& static_cast<s16>(_x) >= CHAR_MIN )
-#define ARX_CHECK_SHORT(_x)	arx_assert( static_cast<s32>(_x) <= SHRT_MAX	&& static_cast<s32>(_x) >= SHRT_MIN )
-#define ARX_CHECK_USHORT(_x)arx_assert( static_cast<u32>(_x) <= USHRT_MAX	&& _x >= 0 )
-#define ARX_CHECK_WORD(_x)	ARX_CHECK_USHORT(_x)
-#define ARX_CHECK_INT(_x)	arx_assert( static_cast<s64>(_x) <= INT_MAX	&& static_cast<s64>(_x) >= INT_MIN )
-#define ARX_CHECK_UINT(_x)  arx_assert( static_cast<u64>(_x) <= UINT_MAX	&& _x >= 0 )
-#define ARX_CHECK_SIZET(_x) ARX_CHECK_UINT(_x)
-#define ARX_CHECK_LONG(_x)	arx_assert( static_cast<s64>(_x) <= LONG_MAX	&& static_cast<s64>(_x) >= LONG_MIN )
-#define ARX_CHECK_ULONG(_x) arx_assert( static_cast<u64>(_x) <= ULONG_MAX	&& _x >= 0	)
-#define ARX_CHECK_DWORD(_x) ARX_CHECK_ULONG(_x)
-
-// TODO remove
-#define ARX_CLEAN_WARN_CAST_FLOAT(_x)	(static_cast<float>( _x ))
-#define ARX_CLEAN_WARN_CAST_UCHAR(_x)	(static_cast<unsigned char>( _x ))
-#define ARX_CLEAN_WARN_CAST_CHAR(_x)	(static_cast<char>( _x ))
-#define ARX_CLEAN_WARN_CAST_SHORT(_x)	(static_cast<short>( _x ))
-#define ARX_CLEAN_WARN_CAST_USHORT(_x)	(static_cast<unsigned short>( _x ))
-#define ARX_CLEAN_WARN_CAST_INT(_x)		(static_cast<int>( _x ))
-#define ARX_CLEAN_WARN_CAST_UINT(_x)	(static_cast<unsigned int>( _x ))
-#define ARX_CLEAN_WARN_CAST_SIZET(_x)	(static_cast<size_t>( _x ))
-#define ARX_CLEAN_WARN_CAST_LONG(_x)	(static_cast<long>( _x ))
-#define ARX_CLEAN_WARN_CAST_ULONG(_x)	(static_cast<unsigned long>( _x ))
+// Remove warnings about unused but necessary variable (unused params, variables only used for asserts...)
+#define ARX_UNUSED(x) ((void)&x)
 
 /* ---------------------------------------------------------
                       String utilities

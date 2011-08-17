@@ -280,19 +280,17 @@ float INTERFACE_RATIO(float a)
 }
 float INTERFACE_RATIO_LONG(const long a)
 {
-	return INTERFACE_RATIO(ARX_CLEAN_WARN_CAST_FLOAT(a));
+	return INTERFACE_RATIO(static_cast<float>(a));
 }
 float INTERFACE_RATIO_DWORD(const u32 a)
 {
-	return INTERFACE_RATIO(ARX_CLEAN_WARN_CAST_FLOAT(a));
+	return INTERFACE_RATIO(static_cast<float>(a));
 }
 
 
-short SHORT_INTERFACE_RATIO(const float _a)
-{
+short SHORT_INTERFACE_RATIO(const float _a) {
 	float fRes = INTERFACE_RATIO(_a);
-	ARX_CHECK_SHORT(fRes);
-	return  ARX_CLEAN_WARN_CAST_SHORT(fRes);
+	return checked_range_cast<short>(fRes);
 }
 
 
@@ -607,7 +605,7 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 	else
 	{
 		player.Interface |= INTER_INVENTORY;
-		InventoryY = ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(100.f));
+		InventoryY = static_cast<long>(INTERFACE_RATIO(100.f));
 
 		if (TRUE_PLAYER_MOUSELOOK_ON)
 		{
@@ -703,20 +701,15 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const string & tex) {
 
 	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
-	ARX_CHECK_INT(fWidth);
-	ARX_CHECK_INT(fHeight);
-
-	int	tNoteTextMinx = 40; 
-	int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
-	int	tNoteTextMiny = 40; 
-		int	tNoteTextMaxy = ARX_CLEAN_WARN_CAST_INT(fHeight);
-		
-		float fMinx		= (tNoteTextMaxx-tNoteTextMinx)*Xratio;
-		float fMiny		= (tNoteTextMaxy-tNoteTextMiny)*Yratio;
-		ARX_CHECK_INT(fMinx);
-		ARX_CHECK_INT(fMiny);
-
-	Rect rRect(0, 0, Rect::Num(fMinx), Rect::Num(fMiny));
+	
+	int tNoteTextMinx = 40; 
+	int tNoteTextMaxx = checked_range_cast<int>(fWidth);
+	int tNoteTextMiny = 40; 
+	int tNoteTextMaxy = checked_range_cast<int>(fHeight);
+	
+	float fMinx = (tNoteTextMaxx-tNoteTextMinx)*Xratio;
+	float fMiny = (tNoteTextMaxy-tNoteTextMiny)*Yratio;
+	Rect rRect(0, 0, checked_range_cast<Rect::Num>(fMinx), checked_range_cast<Rect::Num>(fMiny));
 
 	int lLenghtCurr=0;
 
@@ -874,8 +867,8 @@ void ARX_INTERFACE_NoteManage()
 					if ( Note.type == NOTE_TYPE_BOOK )
 					{
 
-						float fWidth = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureRight->m_dwWidth);
-						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureRight->m_dwHeight);
+						float fWidth = static_cast<float>(x0 + NoteTextureRight->m_dwWidth);
+						float fHeight = static_cast<float>(y0 + NoteTextureRight->m_dwHeight);
 
 						DrawBookInterfaceItem(NoteTextureRight, x0, y0);
 
@@ -901,8 +894,8 @@ void ARX_INTERFACE_NoteManage()
 					if (Note.type == NOTE_TYPE_BOOK)
 					{
 
-						float fWidth  = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureLeft->m_dwWidth);
-						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureLeft->m_dwHeight);
+						float fWidth  = static_cast<float>(x0 + NoteTextureLeft->m_dwWidth);
+						float fHeight = static_cast<float>(y0 + NoteTextureLeft->m_dwHeight);
 
 						DrawBookInterfaceItem(NoteTextureLeft, x0, y0);
 
@@ -1448,11 +1441,8 @@ bool ArxGame::ManageEditorControls()
 
 		float fX =  DANAESIZX * 0.5f;
 		float fY =	DANAESIZY * 0.5f;
-		ARX_CHECK_SHORT(fX);
-		ARX_CHECK_SHORT(fY);
-
-		DANAEMouse.x = ARX_CLEAN_WARN_CAST_SHORT(fX);
-		DANAEMouse.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
+		DANAEMouse.x = checked_range_cast<short>(fX);
+		DANAEMouse.y = checked_range_cast<short>(fY);
 
 
 	}
@@ -1866,9 +1856,8 @@ bool ArxGame::ManageEditorControls()
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								player.Interface |= INTER_INVENTORYALL;
 
-								float fInventoryY	=	INTERFACE_RATIO( 121.f ) * (player.bag);
-								ARX_CHECK_LONG( fInventoryY );
-								InventoryY			=	ARX_CLEAN_WARN_CAST_LONG( fInventoryY );
+								float fInventoryY = INTERFACE_RATIO(121.f) * (player.bag);
+								InventoryY = checked_range_cast<long>(fInventoryY);
 
 								ARX_INTERFACE_NoteClose();
 
@@ -1891,7 +1880,7 @@ bool ArxGame::ManageEditorControls()
 			// steal
 			if (player.Interface & INTER_STEAL)
 			{
-				px = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
+				px = static_cast<float>(-lSLID_VALUE);
 				py = DANAESIZY - INTERFACE_RATIO(78 + 32);
 
 				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
@@ -2159,12 +2148,9 @@ bool ArxGame::ManageEditorControls()
 								if ( TSecondaryInventory && bSecondary )
 								{
 									extern short sInventory, sInventoryX, sInventoryY;
-									sInventory	= 2;
-
-									ARX_CHECK_SHORT(sx);
-									ARX_CHECK_SHORT(sy);
-									sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(sx);
-									sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(sy);
+									sInventory = 2;
+									sInventoryX = checked_range_cast<short>(sx);
+									sInventoryY = checked_range_cast<short>(sy);
 
 									CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
 								}
@@ -2383,11 +2369,9 @@ bool ArxGame::ManageEditorControls()
 				if (sActiveInventory < player.bag-1)
 				{
 
-					float fRatio	= INTERFACE_RATIO(32 + 5) ;
-					ARX_CHECK_INT(posy + fRatio);
+					float fRatio	= INTERFACE_RATIO(32 + 5);
 
-					posy += ARX_CLEAN_WARN_CAST_INT(fRatio);
-
+					posy += checked_range_cast<int>(fRatio);
 
 					if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						bQuitCombine = false;
@@ -3735,11 +3719,8 @@ void ArxGame::ManageKeyMouse()
 
 					float fX =  DANAESIZX * 0.5f;
 					float fY =	DANAESIZY * 0.5f;
-					ARX_CHECK_SHORT(fX);
-					ARX_CHECK_SHORT(fY);
-
-					DANAEMouse.x = ARX_CLEAN_WARN_CAST_SHORT(fX);
-					DANAEMouse.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
+					DANAEMouse.x = checked_range_cast<short>(fX);
+					DANAEMouse.y = checked_range_cast<short>(fY);
 
 
 					pIO = FlyingOverObject(&DANAEMouse);
@@ -4009,11 +3990,9 @@ void ArxGame::ManageKeyMouse()
 			if(!GInput->actionPressed(CONTROLS_CUST_STRAFE))
 			{
 
-				float fTime		= ARX_TIME_Get();
-				ARX_CHECK_INT(fTime);
+				float fTime = ARX_TIME_Get();
 
-				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);
-
+				int	iTime = checked_range_cast<int>(fTime);
 
 				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT))
 				{
@@ -4041,11 +4020,8 @@ void ArxGame::ManageKeyMouse()
 			if (USE_PLAYERCOLLISIONS)
 			{
 
-				float fTime		= ARX_TIME_Get();	
-				ARX_CHECK_INT(fTime);
-
-				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);
-
+				float fTime = ARX_TIME_Get();
+				int iTime = checked_range_cast<int>(fTime);
 
 				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP))
 				{
@@ -4293,19 +4269,14 @@ void ArxGame::ManageKeyMouse()
 									bAddText=false;
 								}
 
-							if (bAddText)
-							{
-
-									//------------ ONLY IN DEBUG
-									ARX_CHECK_LONG( 120 * Xratio );
-									ARX_CHECK_LONG( 14 * Yratio );
-									ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
-									ARX_CHECK_LONG( ( 14  + 200 ) * Yratio );
-									//------------
-									Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500) * Xratio), Rect::Num((14 + 200) * Yratio));
-
+							if(bAddText) {
+									Rect::Num x = checked_range_cast<Rect::Num>(120 * Xratio);
+									Rect::Num y = checked_range_cast<Rect::Num>(14 * Yratio);
+									Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * Xratio);
+									Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * Yratio);
+									Rect rDraw(x, y, w, h);
 									pTextManage->Clear();
-								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,Color(232,204,143),2000+WILLADDSPEECH.length()*60);
+									pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143), 2000 + WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH.clear();
@@ -4365,21 +4336,15 @@ void ArxGame::ManageKeyMouse()
 										bAddText=false;
 									}
 
-							if (bAddText)
-							{
-
-										//------------ ONLY IN DEBUG
-										ARX_CHECK_LONG( 120 * Xratio );
-										ARX_CHECK_LONG( 14 * Yratio );
-										ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
-										ARX_CHECK_LONG( ( 14 + 200 ) * Yratio );
-										//------------
-
-										Rect rDraw(Rect::Num(120 * Xratio), Rect::Num(14 * Yratio), Rect::Num((120 + 500 ) * Xratio), Rect::Num((14 + 200) * Yratio));
-
-										pTextManage->Clear();
-										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,Color(232,204,143));
-									}
+							if(bAddText) {
+								Rect::Num x = checked_range_cast<Rect::Num>(120 * Xratio);
+								Rect::Num y = checked_range_cast<Rect::Num>(14 * Yratio);
+								Rect::Num w = checked_range_cast<Rect::Num>((120 + 500 ) * Xratio);
+								Rect::Num h = checked_range_cast<Rect::Num>((14 + 200 ) * Yratio);
+								Rect rDraw(x, y, w, h);
+								pTextManage->Clear();
+								pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143));
+							}
 
 									WILLADDSPEECH.clear();
 								}
@@ -4518,9 +4483,6 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
-	ARX_CHECK_INT(fCenterX);
-	ARX_CHECK_INT(fSizY);
-
 
 	float fPosX = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 	float fPosY = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
@@ -4719,7 +4681,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 			}
 		}
 
-		currpos += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(33.f));
+		currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
@@ -4943,7 +4905,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 	if ( ( (bOk) && (typ>=0) &&	((size_t)typ<SPELL_COUNT) ) || (flag == 2) )
 		StdDraw(posx,posy,color,spellicons[typ].tc,flag,i);
 
-	currpos += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(33.f));
+	currpos += static_cast<long>(INTERFACE_RATIO(33.f));
 }
 extern float GLOBAL_LIGHT_FACTOR;
 //-----------------------------------------------------------------------------
@@ -5251,7 +5213,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								OLD_FLYING_OVER = FLYING_OVER;
 								pTextManage->Clear();
 								UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-									ARX_CLEAN_WARN_CAST_FLOAT(DANAECENTERX),
+									static_cast<float>(DANAECENTERX),
 									12,
 									(DANAECENTERX)*0.82f,
 									spellicons[i].description,
@@ -5359,9 +5321,7 @@ void QuestBook_Update()
 	float fMinX = (NoteTextMaxx - NoteTextMinx) * Xratio;
 	float fMinY = (NoteTextMaxy - NoteTextMiny) * Yratio;
 
-	ARX_CHECK_INT(fMinX);
-	ARX_CHECK_INT(fMinY);
-	Rect rRect(0, 0, Rect::Num(fMinX), Rect::Num(fMinY));
+	Rect rRect(0, 0, checked_range_cast<Rect::Num>(fMinX), checked_range_cast<Rect::Num>(fMinY));
 
 	int lLenghtCurr = 0;
 	long lLenght = 0;
@@ -5564,8 +5524,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		if ( ITC.Get("playerbook") )
 		{
-			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
-			float y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
+			x = static_cast<float>( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
+			float y = static_cast<float>( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
 			DrawBookInterfaceItem(ITC.Get("playerbook"), x, y);
 		}
@@ -6172,9 +6132,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 
 				float fRandom = rnd() * 2;
-				ARX_CHECK_INT(fRandom);
 
-				int t = ARX_CLEAN_WARN_CAST_INT(fRandom);
+				int t = checked_range_cast<int>(fRandom);
 
 				pTextManage->Clear();
 				OLD_FLYING_OVER=FLYING_OVER;
@@ -6680,9 +6639,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		vector<EERIE_VERTEX> vertexlist = inter.iobj[0]->obj->vertexlist3;
 
 		if(player.useanim.cur_anim != NULL) {
-			ARX_CHECK_ULONG(Original_framedelay);
 			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim, &ePlayerAngle, &pos,
-			                  static_cast<unsigned long>(Original_framedelay), NULL);
+			                  checked_range_cast<unsigned long>(Original_framedelay), NULL);
 		} else {
 			DrawEERIEInter(inter.iobj[0]->obj, &ePlayerAngle, &pos, NULL);
 		}
@@ -6751,18 +6709,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 					float fY1 = (tod->bbox1.y+BOOKDECY) * Yratio ;
 					float fY2 = (tod->bbox2.y+BOOKDECY) * Yratio ;
 
-					ARX_CHECK_SHORT(fX1);
-					ARX_CHECK_SHORT(fY1);
-					ARX_CHECK_SHORT(fX2);
-					ARX_CHECK_SHORT(fY2);
+					tod->bbox1.x = checked_range_cast<short>(fX1);
+					tod->bbox2.x = checked_range_cast<short>(fX2);
+					tod->bbox1.y = checked_range_cast<short>(fY1);
+					tod->bbox2.y = checked_range_cast<short>(fY2);
 
-					tod->bbox1.x = ARX_CLEAN_WARN_CAST_SHORT(fX1);
-					tod->bbox2.x = ARX_CLEAN_WARN_CAST_SHORT(fX2);
-					tod->bbox1.y = ARX_CLEAN_WARN_CAST_SHORT(fY1);
-					tod->bbox2.y = ARX_CLEAN_WARN_CAST_SHORT(fY2);
-
-
-					tod->ioflags|=IO_ICONIC;
+					tod->ioflags |= IO_ICONIC;
 				}
 			}
 
@@ -6785,16 +6737,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 					float fY1 = (tod->bbox1.y+BOOKDECY) * Yratio ;
 					float fY2 = (tod->bbox2.y+BOOKDECY) * Yratio ;
 
-					ARX_CHECK_SHORT(fX1);
-					ARX_CHECK_SHORT(fY1);
-					ARX_CHECK_SHORT(fX2);
-					ARX_CHECK_SHORT(fY2);
-
-					tod->bbox1.x = ARX_CLEAN_WARN_CAST_SHORT(fX1);
-					tod->bbox2.x = ARX_CLEAN_WARN_CAST_SHORT(fX2);
-					tod->bbox1.y = ARX_CLEAN_WARN_CAST_SHORT(fY1);
-					tod->bbox2.y = ARX_CLEAN_WARN_CAST_SHORT(fY2);
-
+					tod->bbox1.x = checked_range_cast<short>(fX1);
+					tod->bbox2.x = checked_range_cast<short>(fX2);
+					tod->bbox1.y = checked_range_cast<short>(fY1);
+					tod->bbox2.y = checked_range_cast<short>(fY2);
 
 					tod->ioflags|=IO_ICONIC;
 				}
@@ -6819,18 +6765,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 					float fY1 = (tod->bbox1.y+BOOKDECY) * Yratio ;
 					float fY2 = (tod->bbox2.y+BOOKDECY) * Yratio ;
 
-					ARX_CHECK_SHORT(fX1);
-					ARX_CHECK_SHORT(fY1);
-					ARX_CHECK_SHORT(fX2);
-					ARX_CHECK_SHORT(fY2);
+					tod->bbox1.x = checked_range_cast<short>(fX1);
+					tod->bbox2.x = checked_range_cast<short>(fX2);
+					tod->bbox1.y = checked_range_cast<short>(fY1);
+					tod->bbox2.y = checked_range_cast<short>(fY2);
 
-					tod->bbox1.x = ARX_CLEAN_WARN_CAST_SHORT(fX1);
-					tod->bbox2.x = ARX_CLEAN_WARN_CAST_SHORT(fX2);
-					tod->bbox1.y = ARX_CLEAN_WARN_CAST_SHORT(fY1);
-					tod->bbox2.y = ARX_CLEAN_WARN_CAST_SHORT(fY2);
-
-
-					tod->ioflags|=IO_ICONIC;
+					tod->ioflags |= IO_ICONIC;
 				}
 			}
 
@@ -6860,31 +6800,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 						ARX_INTERFACE_HALO_Draw(todraw,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
 					}
 
-					float fWidth  = todraw->bbox1.x + ARX_CLEAN_WARN_CAST_FLOAT( tc->m_dwWidth );
-					float fHeight = todraw->bbox1.y + ARX_CLEAN_WARN_CAST_FLOAT( tc->m_dwHeight );
-
-					ARX_CHECK_SHORT(fWidth);
-					ARX_CHECK_SHORT(fHeight);
-
-					todraw->bbox2.x=ARX_CLEAN_WARN_CAST_SHORT(fWidth);
-					todraw->bbox2.y=ARX_CLEAN_WARN_CAST_SHORT(fHeight);
+					float fWidth  = todraw->bbox1.x + static_cast<float>( tc->m_dwWidth );
+					float fHeight = todraw->bbox1.y + static_cast<float>( tc->m_dwHeight );
+					todraw->bbox2.x = checked_range_cast<short>(fWidth);
+					todraw->bbox2.y = checked_range_cast<short>(fHeight);
 
 					float fX1 = (todraw->bbox1.x+BOOKDECX) * Xratio ;
 					float fX2 = (todraw->bbox2.x+BOOKDECX) * Xratio ;
 					float fY1 = (todraw->bbox1.y+BOOKDECY) * Yratio ;
 					float fY2 = (todraw->bbox2.y+BOOKDECY) * Yratio ;
+					todraw->bbox1.x = checked_range_cast<short>(fX1);
+					todraw->bbox2.x = checked_range_cast<short>(fX2);
+					todraw->bbox1.y = checked_range_cast<short>(fY1);
+					todraw->bbox2.y = checked_range_cast<short>(fY2);
 
-					ARX_CHECK_SHORT(fX1);
-					ARX_CHECK_SHORT(fY1);
-					ARX_CHECK_SHORT(fX2);
-					ARX_CHECK_SHORT(fY2);
-
-					todraw->bbox1.x = ARX_CLEAN_WARN_CAST_SHORT(fX1);
-					todraw->bbox2.x = ARX_CLEAN_WARN_CAST_SHORT(fX2);
-					todraw->bbox1.y = ARX_CLEAN_WARN_CAST_SHORT(fY1);
-					todraw->bbox2.y = ARX_CLEAN_WARN_CAST_SHORT(fY2);
-
-					todraw->ioflags|=IO_ICONIC;
+					todraw->ioflags |= IO_ICONIC;
 				}
 			}
 
@@ -6912,35 +6842,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 						ARX_INTERFACE_HALO_Draw(todraw,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
 					}
 
-					float fWidth  = todraw->bbox1.x + ARX_CLEAN_WARN_CAST_FLOAT( tc->m_dwWidth );
-					float fHeight = todraw->bbox1.y + ARX_CLEAN_WARN_CAST_FLOAT( tc->m_dwHeight );
-
-
-					ARX_CHECK_SHORT(fWidth);
-					ARX_CHECK_SHORT(fHeight);
-
-					todraw->bbox2.x = ARX_CLEAN_WARN_CAST_SHORT(fWidth);
-					todraw->bbox2.y = ARX_CLEAN_WARN_CAST_SHORT(fHeight);
-
-
+					float fWidth  = todraw->bbox1.x + static_cast<float>( tc->m_dwWidth );
+					float fHeight = todraw->bbox1.y + static_cast<float>( tc->m_dwHeight );
+					todraw->bbox2.x = checked_range_cast<short>(fWidth);
+					todraw->bbox2.y = checked_range_cast<short>(fHeight);
 
 					float fX1 = (todraw->bbox1.x+BOOKDECX) * Xratio ;
 					float fX2 = (todraw->bbox2.x+BOOKDECX) * Xratio ;
 					float fY1 = (todraw->bbox1.y+BOOKDECY) * Yratio ;
 					float fY2 = (todraw->bbox2.y+BOOKDECY) * Yratio ;
 
-					ARX_CHECK_SHORT(fX1);
-					ARX_CHECK_SHORT(fY1);
-					ARX_CHECK_SHORT(fX2);
-					ARX_CHECK_SHORT(fY2);
+					todraw->bbox1.x = checked_range_cast<short>(fX1);
+					todraw->bbox2.x = checked_range_cast<short>(fX2);
+					todraw->bbox1.y = checked_range_cast<short>(fY1);
+					todraw->bbox2.y = checked_range_cast<short>(fY2);
 
-					todraw->bbox1.x = ARX_CLEAN_WARN_CAST_SHORT(fX1);
-					todraw->bbox2.x = ARX_CLEAN_WARN_CAST_SHORT(fX2);
-					todraw->bbox1.y = ARX_CLEAN_WARN_CAST_SHORT(fY1);
-					todraw->bbox2.y = ARX_CLEAN_WARN_CAST_SHORT(fY2);
-
-
-					todraw->ioflags|=IO_ICONIC;
+					todraw->ioflags |= IO_ICONIC;
 				}
 			}
 
@@ -6980,7 +6897,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 //-----------------------------------------------------------------------------
 void ArxGame::DrawAllInterfaceFinish()
 {
-	currpos = ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(50.f));
+	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 	float rrr;
 	rrr=1.f-PULSATE*( 1.0f / 2 );
 
@@ -7115,7 +7032,7 @@ void ArxGame::DrawAllInterface()
 						bIsAiming = false;
 
 					at=at*(1.f+(1.f-GLOBAL_SLOWDOWN));
-					float aim = ARX_CLEAN_WARN_CAST_FLOAT(player.Full_AimTime);
+					float aim = static_cast<float>(player.Full_AimTime);
 					j=at/aim;
 				}
 
@@ -7144,9 +7061,8 @@ void ArxGame::DrawAllInterface()
 		if (bHitFlash)
 		{
 			float fCalc = ulHitFlash + Original_framedelay ;
-			ARX_CHECK_ULONG(fCalc);
 
-			ulHitFlash = ARX_CLEAN_WARN_CAST_ULONG(fCalc);
+			ulHitFlash = checked_range_cast<unsigned long>(fCalc);
 
 			if (ulHitFlash >= 500)
 			{
@@ -7232,9 +7148,9 @@ void ArxGame::DrawAllInterface()
 				if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
 				{
 					long t = Original_framedelay * ( 1.0f / 5 ) + 2;
-					InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO_LONG(t));
+					InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
-					if ( InventoryY > INTERFACE_RATIO( 110.f ) ) InventoryY = ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( 110.f ) );
+					if ( InventoryY > INTERFACE_RATIO( 110.f ) ) InventoryY = static_cast<long>( INTERFACE_RATIO( 110.f ) );
 
 
 				}
@@ -7243,11 +7159,11 @@ void ArxGame::DrawAllInterface()
 					if (bInventoryClosing)
 					{
 						long t = Original_framedelay * ( 1.0f / 5 ) + 2;
-						InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO_LONG(t));
+						InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
 						if (InventoryY > INTERFACE_RATIO(110))
 						{
-							InventoryY = ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( 110.f ) );
+							InventoryY = static_cast<long>( INTERFACE_RATIO( 110.f ) );
 							bInventoryClosing = false;
 
 								player.Interface &=~ INTER_INVENTORY;
@@ -7258,14 +7174,14 @@ void ArxGame::DrawAllInterface()
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								player.Interface |= INTER_INVENTORYALL;
 								ARX_INTERFACE_NoteClose();
-								InventoryY = ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( 121.f ) * (player.bag) );
+								InventoryY = static_cast<long>( INTERFACE_RATIO( 121.f ) * (player.bag) );
 							lOldInterface=INTER_INVENTORYALL;
 							}
 						}
 					}
 					else if (InventoryY>0)
 					{
-						InventoryY -= ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( ( Original_framedelay * ( 1.0f / 5 ) ) + 2.f ) );
+						InventoryY -= static_cast<long>( INTERFACE_RATIO( ( Original_framedelay * ( 1.0f / 5 ) ) + 2.f ) );
 
 
 						if (InventoryY<0) InventoryY=0;
@@ -7279,14 +7195,9 @@ void ArxGame::DrawAllInterface()
 					arx_assert(ITC.Get("hero_inventory") != NULL);
 					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
-					ARX_CHECK_INT(fCenterX);
-					ARX_CHECK_INT(fSizY);
-
 
 					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
-
-
 
 					if (sActiveInventory > 0)
 					{
@@ -7319,9 +7230,8 @@ void ArxGame::DrawAllInterface()
 					{
 
 						float fRatio = INTERFACE_RATIO(32 + 5);
-						ARX_CHECK_INT(posy + fRatio);
 
-						posy	+= ARX_CLEAN_WARN_CAST_INT(fRatio);
+						posy += checked_range_cast<int>(fRatio);
 
 						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 
@@ -7357,14 +7267,14 @@ void ArxGame::DrawAllInterface()
 					if (InventoryY < INTERFACE_RATIO(121)*player.bag)
 					{
 
-						InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
 					}
 				}
 				else
 				{
 					if (bInventoryClosing)
 					{
-						InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
 
 						if ( InventoryY > INTERFACE_RATIO(121) * player.bag )
 						{
@@ -7380,7 +7290,7 @@ void ArxGame::DrawAllInterface()
 					}
 					else if (InventoryY>0)
 					{
-						InventoryY -= ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
+						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
 
 						if (InventoryY<0)
 						{
@@ -7393,45 +7303,27 @@ void ArxGame::DrawAllInterface()
 				float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320+35);
 				float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
 				const float fOffsetY	= INTERFACE_RATIO(121);
-				ARX_CHECK_INT(fBag);
-				ARX_CHECK_INT(fCenterX);
-				ARX_CHECK_INT(fSizY);
-				ARX_CHECK_INT(fBag + fOffsetY);
 
-				int iOffsetY	= ARX_CLEAN_WARN_CAST_INT(fBag);
-				int posx		= ARX_CLEAN_WARN_CAST_INT(fCenterX);
-				int posy		= ARX_CLEAN_WARN_CAST_INT(fSizY);
-				iOffsetY		+=ARX_CLEAN_WARN_CAST_INT(fOffsetY);
-
+				int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
+				int posx = checked_range_cast<int>(fCenterX);
+				int posy = checked_range_cast<int>(fSizY);
 
 				for (int i=0; i<player.bag; i++)
 				{
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), ARX_CLEAN_WARN_CAST_FLOAT(posy + iOffsetY)) ;
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
 
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx+INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx+INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 
-
-
-					ARX_CHECK_INT(iOffsetY + fOffsetY);
-
-					iOffsetY	+= ARX_CLEAN_WARN_CAST_INT(fOffsetY);
+					iOffsetY += checked_range_cast<int>(fOffsetY);
 				}
 
+				iOffsetY = checked_range_cast<int>(fBag);
 
-
-				iOffsetY = ARX_CLEAN_WARN_CAST_INT(fBag);
-
-				for (short i=0; i<player.bag; i++)
-				{
+				for(short i = 0; i < player.bag; i++) {
 					ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
-
-					ARX_CHECK_INT(iOffsetY + fOffsetY);
-					iOffsetY	+= ARX_CLEAN_WARN_CAST_INT(fOffsetY);
+					iOffsetY += checked_range_cast<int>(fOffsetY);
 				}
-
-
-
 
 			}
 	}
@@ -7451,15 +7343,15 @@ void ArxGame::DrawAllInterface()
 				if (temp->ioflags & IO_SHOP)
 				{
 					float px	=	DANAEMouse.x;
-						float py	=	ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y - 10);
+						float py	=	static_cast<float>(DANAEMouse.y - 10);
 
 					if (InSecondaryInventoryPos(&DANAEMouse))
 					{
 						long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
 						// achat
 						float famount	= amount - amount * ( (float)player.Full_Skill_Intuition ) * 0.005f;
-						ARX_CHECK_LONG( famount ); //Should always be OK because amount is supposed positive
-						amount			= ARX_CLEAN_WARN_CAST_LONG( famount );
+						// check should always be OK because amount is supposed positive
+						amount = checked_range_cast<long>(famount);
 
 
 						if ( amount <= player.gold )
@@ -7469,11 +7361,11 @@ void ArxGame::DrawAllInterface()
 					}
 					else if (InPlayerInventoryPos(&DANAEMouse))
 					{
-						long amount = ARX_CLEAN_WARN_CAST_LONG( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
+						long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 						// achat
 						float famount	= amount + amount * ( (float) player.Full_Skill_Intuition ) * 0.005f;
-						ARX_CHECK_LONG( famount ); //Should always be OK because amount is supposed positive
-						amount			= ARX_CLEAN_WARN_CAST_LONG( famount );
+						// check should always be OK because amount is supposed positive
+						amount = checked_range_cast<long>( famount );
 
 
 						if (amount)
@@ -7526,7 +7418,7 @@ void ArxGame::DrawAllInterface()
 			// Draw/Manage Steal Icon
 			if (player.Interface & INTER_STEAL)
 			{
-					px = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
+					px = static_cast<float>(-lSLID_VALUE);
 				py = DANAESIZY - INTERFACE_RATIO(78.f + 32);
 				ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
 
@@ -7611,8 +7503,7 @@ void ArxGame::DrawAllInterface()
 
 
 				float fCalc = ulGoldHaloTime + Original_framedelay;
-				ARX_CHECK_ULONG(fCalc);
-				ulGoldHaloTime = ARX_CLEAN_WARN_CAST_ULONG(fCalc);
+				ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
 
 
 				if (ulGoldHaloTime >= 1000) //1seconde
@@ -7637,8 +7528,7 @@ void ArxGame::DrawAllInterface()
 
 
 				float fCalc = ulBookHaloTime + Original_framedelay;
-				ARX_CHECK_ULONG(fCalc);
-				ulBookHaloTime = ARX_CLEAN_WARN_CAST_ULONG(fCalc);
+				ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
 
 
 				if (ulBookHaloTime >= 3000) //3secondes
@@ -7806,7 +7696,7 @@ void ArxGame::DrawAllInterface()
 		//---------------------------------------------------------------------
 		//RED GAUGE
 		Color ulcolor = Color::red;
-		float fSLID_VALUE_neg = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
+		float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
 
 		if(player.poison > 0.f) {
 			float val = min(player.poison, 0.2f) * 255.f * 5.f;
@@ -7824,12 +7714,9 @@ void ArxGame::DrawAllInterface()
 				if (MouseInRect(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), DANAESIZY - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
 			{
 				if(	(EERIEMouseButton & 1)&&
-					(!(LastMouseClick & 1)) )
-				{
-					ARX_CHECK_INT(player.life);
-
+					(!(LastMouseClick & 1)) ) {
 					std::stringstream ss;
-					ss << (int)player.life;
+					ss << checked_range_cast<int>(player.life);
 					ARX_SPEECH_Add(ss.str());
 				}
 			}
@@ -7858,11 +7745,9 @@ void ArxGame::DrawAllInterface()
 			if(MouseInRect(DANAESIZX - INTERFACE_RATIO(33) + lSLID_VALUE,DANAESIZY - INTERFACE_RATIO(81),DANAESIZX - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,DANAESIZY - INTERFACE_RATIO(81)+HAUTT))
 			{
 				if(	(EERIEMouseButton & 1)&&
-					(!(LastMouseClick & 1)) )
-				{
-					ARX_CHECK_INT(player.mana);
+					(!(LastMouseClick & 1)) ) {
 					std::stringstream ss;
-					ss << (int)player.mana;
+					ss << checked_range_cast<int>(player.mana);
 					ARX_SPEECH_Add(ss.str());
 				}
 			}
@@ -8381,9 +8266,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 
 					float fHLight	= 100.f*sin(radians(fHighLightAng));
-					ARX_CHECK_INT(fHLight);
 
-					iHighLight	= ARX_CLEAN_WARN_CAST_INT(fHLight);
+					iHighLight = checked_range_cast<int>(fHLight);
 
 
 				}
@@ -8513,8 +8397,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				}
 				case CURSOR_INTERACTION_ON:
 
-					ARX_CHECK_LONG( Original_framedelay );
-					CURCURTIME += ARX_CLEAN_WARN_CAST_LONG( Original_framedelay );
+					CURCURTIME += checked_range_cast<long>(Original_framedelay);
 
 
 					if (CURCURPOS!=3)
@@ -8534,9 +8417,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					if (CURCURPOS!=0)
 					{
 
-						ARX_CHECK_LONG( Original_framedelay );
-						CURCURTIME += ARX_CLEAN_WARN_CAST_LONG( Original_framedelay );
-
+						CURCURTIME += checked_range_cast<long>(Original_framedelay);
 
 						while(CURCURTIME>CURCURDELAY)
 						{
@@ -8679,19 +8560,13 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					}
 					else
 					{
-						if (CURCURPOS != 0)
-						{
-
-								ARX_CHECK_LONG( Original_framedelay );
-								CURCURTIME	+=	ARX_CLEAN_WARN_CAST_LONG( Original_framedelay );
-
-
-								while(CURCURTIME>CURCURDELAY)
-								{
-									CURCURTIME-=CURCURDELAY;
-									CURCURPOS++;
-								}
+						if(CURCURPOS != 0) {
+							CURCURTIME += checked_range_cast<long>(Original_framedelay);
+							while(CURCURTIME > CURCURDELAY) {
+								CURCURTIME -= CURCURDELAY;
+								CURCURPOS++;
 							}
+						}
 
 							if (CURCURPOS>7) CURCURPOS=0;
 
@@ -8718,8 +8593,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				if(fHighLightAng>90.f) fHighLightAng=90.f;
 
 				float fHLight	= 100.f*sin(radians(fHighLightAng));
-				ARX_CHECK_INT(fHLight);
-				iHighLight	= ARX_CLEAN_WARN_CAST_INT(fHLight);
+				iHighLight = checked_range_cast<int>(fHLight);
 			}
 			else
 			{

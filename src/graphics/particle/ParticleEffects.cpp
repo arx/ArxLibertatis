@@ -487,10 +487,10 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	float vratio=size*( 1.0f / 40 );
 
 
-	ARX_CHECK_SHORT(z0);
-	ARX_CHECK_SHORT(x0);
-	ARX_CHECK_SHORT(z1);
-	ARX_CHECK_SHORT(x1);
+	checked_range_cast<short>(z0);
+	checked_range_cast<short>(x0);
+	checked_range_cast<short>(z1);
+	checked_range_cast<short>(x1);
 
 
 
@@ -559,12 +559,9 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 					pb->tc=bloodsplat[num];
 
-
-					float fRandom = rnd()*2;
-					ARX_CHECK_INT(fRandom);
+					float fRandom = rnd() * 2;
 					
-					int t	= ARX_CLEAN_WARN_CAST_INT(fRandom);
-
+					int t = checked_range_cast<int>(fRandom);
 
 					if (flags & 2)
 						pb->tc = water_splat[t];
@@ -576,8 +573,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 					
 					pb->timecreation=tim;
 
-					pb->tx=ARX_CLEAN_WARN_CAST_SHORT(i);
-					pb->tz=ARX_CLEAN_WARN_CAST_SHORT(j);
+					pb->tx = static_cast<short>(i);
+					pb->tz = static_cast<short>(j);
 
 					pb->rgb = *col;
 
@@ -746,7 +743,7 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
 	}
 	else
 	{
-		SPARK_COUNT	-=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+		SPARK_COUNT	-=	static_cast<long>(FrameDiff);
 		return;
 	}
 	
@@ -1258,10 +1255,10 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 	float temp_v1[4];
 	
 
-	ARX_CHECK_SHORT(z0);
-	ARX_CHECK_SHORT(x0);	
-	ARX_CHECK_SHORT(z1);
-	ARX_CHECK_SHORT(x1);
+	checked_range_cast<short>(z0);
+	checked_range_cast<short>(x0);
+	checked_range_cast<short>(z1);
+	checked_range_cast<short>(x1);
 
 	//We never add BOOMS particle with this flag to prevent any render issues. TO DO check for blending of DrawPrimitve and DrawPrimitiveVB
 	for (j=z0;j<=z1;j++) 		
@@ -1305,15 +1302,15 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 					{
 						BoomCount++;
 						POLYBOOM * pb=&polyboom[n];
-						pb->type=(short)typ;						
+						pb->type=(short)typ;
 						pb->exist=1;
 						pb->ep=ep;
 						pb->tc=tc2;
 						pb->tolive=10000;
 						pb->timecreation=tim;
 
-						pb->tx=ARX_CLEAN_WARN_CAST_SHORT(i);
-						pb->tz=ARX_CLEAN_WARN_CAST_SHORT(j);
+						pb->tx = static_cast<short>(i);
+						pb->tz = static_cast<short>(j);
 
 
 						for (int k=0;k<nbvert;k++) 
@@ -1768,12 +1765,9 @@ void ARX_PARTICLES_SpawnWaterSplash(Vec3f *_ePos)
 			pd->timcreation	=	lARXTime;
 			pd->tolive		=	(unsigned long)(1000+rnd()*300);
 			
-
-			float fRandom	=	 rnd()*2;
-			ARX_CHECK_INT(fRandom);
+			float fRandom	=	 rnd() * 2;
 			
-			int t = ARX_CLEAN_WARN_CAST_INT(fRandom);
-
+			int t = checked_range_cast<int>(fRandom);
 			
 			pd->tc=water_drop[t];
 			pd->siz = 0.4f; 

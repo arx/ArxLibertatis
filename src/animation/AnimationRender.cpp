@@ -652,9 +652,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 			{
 
 				float fTime = io->sfx_time + FrameDiff;
-				ARX_CHECK_ULONG(fTime);
-
-				io->sfx_time = 	ARX_CLEAN_WARN_CAST_LONG(fTime);
+				io->sfx_time = checked_range_cast<unsigned long>(fTime);
 
 				if (io->sfx_time >= ARXTimeUL())
 					io->sfx_time = ARXTimeUL();
@@ -772,9 +770,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 	{
 		special_color_flag	=	4;
 
-		special_color.r		=	ARX_CLEAN_WARN_CAST_FLOAT(iHighLight);   //100.f;
-		special_color.g		=	ARX_CLEAN_WARN_CAST_FLOAT(iHighLight);   //100.f;
-		special_color.b		=	ARX_CLEAN_WARN_CAST_FLOAT(iHighLight);   //100.f;
+		special_color.r		=	static_cast<float>(iHighLight);   //100.f;
+		special_color.g		=	static_cast<float>(iHighLight);   //100.f;
+		special_color.b		=	static_cast<float>(iHighLight);   //100.f;
 
 	}
 

@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include "game/Inventory.h"
+#include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "io/FilePath.h"
 #include "scene/Interactive.h"
@@ -193,8 +194,7 @@ class InventoryCommand : public Command {
 					ioo->_itemdata->price = static_cast<long>(count);
 				} else {
 					ioo->_itemdata->maxcount = 9999;
-					ARX_CHECK_SHORT(count);
-					ioo->_itemdata->count = std::max(static_cast<short>(count), (short)1);
+					ioo->_itemdata->count = std::max(checked_range_cast<short>(count), (short)1);
 				}
 				
 			} else {
@@ -305,8 +305,7 @@ class InventoryCommand : public Command {
 					ioo->_itemdata->price = count;
 				} else {
 					ioo->_itemdata->maxcount = 9999;
-					ARX_CHECK_SHORT(count);
-					ioo->_itemdata->count = std::max(static_cast<short>(count), (short)1);
+					ioo->_itemdata->count = std::max(checked_range_cast<short>(count), (short)1);
 				}
 			}
 			

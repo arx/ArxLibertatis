@@ -2072,11 +2072,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				long iz=max(0,pEPDATA->py-1);
 				long az=min(ACTIVEBKG->Zsize-1,pEPDATA->py+1);
 				
-
-				ARX_CHECK_SHORT(iz);
-				ARX_CHECK_SHORT(ix);
-				ARX_CHECK_SHORT(az);
-				ARX_CHECK_SHORT(ax);
+				checked_range_cast<short>(iz);
+				checked_range_cast<short>(ix);
+				checked_range_cast<short>(az);
+				checked_range_cast<short>(ax);
 
 				for (long nz=iz;nz<=az;nz++)
 				for (long nx=ix;nx<=ax;nx++)
@@ -2089,7 +2088,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						feg2->treat=1;
 
 						if (USE_LIGHT_OPTIM) 
-								ComputeTileLights(ARX_CLEAN_WARN_CAST_SHORT(nx), ARX_CLEAN_WARN_CAST_SHORT(nz));
+								ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
 					}
 				}
 			}
@@ -3114,9 +3113,7 @@ if (USE_PORTALS && portals)
 	{
 		ARX_PORTALS_InitDrawnRooms();
 		
-
-		ARX_CHECK_LONG( prec );
-		long lprec = ARX_CLEAN_WARN_CAST_LONG( prec );
+		long lprec = checked_range_cast<long>(prec);
 
 		switch (USE_PORTALS)
 		{
@@ -3125,8 +3122,8 @@ if (USE_PORTALS && portals)
 				bbox.min.x=0;
 				bbox.min.y=0;
 
-				bbox.max.x = ARX_CLEAN_WARN_CAST_FLOAT( DANAESIZX );
-				bbox.max.y = ARX_CLEAN_WARN_CAST_FLOAT( DANAESIZY );
+				bbox.max.x = static_cast<float>( DANAESIZX );
+				bbox.max.y = static_cast<float>( DANAESIZY );
 
 				ARX_PORTALS_ComputeRoom(room_num,&bbox,lprec,tim);
 				ARX_PORTALS_RenderRooms(lprec,tim);
@@ -3337,10 +3334,8 @@ else
 
 	if(USE_PORTALS<3)
 			Delayed_FlushAll();
-
 		
-		ARX_CHECK_ULONG(FrameDiff);
-		ARX_THROWN_OBJECT_Manage(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
+		ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(FrameDiff));
 		
 		RenderInter(0.f, 3200.f);
 		

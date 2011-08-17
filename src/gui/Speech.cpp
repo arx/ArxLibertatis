@@ -545,17 +545,17 @@ void ARX_SPEECH_Update() {
 					{
 						Vec2i sSize = hFontInBook->GetTextSize(speech->text);
 						
-						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.y * 3);
+						float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;
-						float fStartY			=	ARX_CLEAN_WARN_CAST_FLOAT(((int)fStartYY - (int)fZoneClippHeight) >> 1);
+						float fStartY			=	static_cast<float>(((int)fStartYY - (int)fZoneClippHeight) >> 1);
 						float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 						float fZoneClippY		=	fDepY + speech->fDeltaY;
 
 						float fAdd = fZoneClippY + fZoneClippHeight ;
-						ARX_CHECK_INT(fZoneClippY);
-						ARX_CHECK_INT(fAdd);
 
-						Rect clippingRect(0, Rect::Num(fZoneClippY), DANAESIZX, Rect::Num(fAdd));
+						Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
+						Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
+						Rect clippingRect(0, y, DANAESIZX, h);
 						float iTaille = (float)ARX_TEXT_DrawRect(
 						                    hFontInBook,
 						                    10.f,
@@ -604,11 +604,7 @@ void ARX_SPEECH_Update() {
 									speech->iTimeScroll = 0;
 								}
 
-
-								ARX_CHECK_INT(speech->iTimeScroll + FrameDiff);
-								speech->iTimeScroll	+= ARX_CLEAN_WARN_CAST_INT(FrameDiff);
-
-
+								speech->iTimeScroll	+= checked_range_cast<int>(FrameDiff);
 							}
 							else
 							{

@@ -374,9 +374,8 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 {
 	SpawnParticle(pP);
 
-	float	fTTL	=	fParticleLife + rnd() * fParticleLifeRandom;
-	ARX_CHECK_LONG(fTTL);
-	pP->ulTTL		=	ARX_CLEAN_WARN_CAST_LONG(fTTL);
+	float fTTL = fParticleLife + rnd() * fParticleLifeRandom;
+	pP->ulTTL = checked_range_cast<long>(fTTL);
 	pP->fOneOnTTL = 1.0f / (float)pP->ulTTL;
 
 	float fAngleX = rnd() * fParticleAngle; //*0.5f;
@@ -441,11 +440,9 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 	{
 
 
-		float fRandom	= frand2() ;
-		ARX_CHECK_INT(fRandom);
+		float fRandom	= frand2();
 
-		pP->iRot = ARX_CLEAN_WARN_CAST_INT(fRandom);
-
+		pP->iRot = checked_range_cast<int>(fRandom);
 
 		if (pP->iRot < 0)
 			pP->iRot = -1;
@@ -531,14 +528,8 @@ void ParticleSystem::Update(long _lTime)
 	{
 		long t = iParticleNbMax - iParticleNbAlive;
 
-		if (fParticleFreq != -1)
-		{
-
-			ARX_CHECK_LONG(fTimeSec * fParticleFreq);
-			t = min(ARX_CLEAN_WARN_CAST_LONG(fTimeSec * fParticleFreq), t);
-
-
-			if (t < 1) t = 1;
+		if (fParticleFreq != -1) {
+			t = max(min(checked_range_cast<long>(fTimeSec * fParticleFreq), t), 1l);
 		}
 
 		for (iNb = 0; iNb < t; iNb++)
@@ -586,13 +577,9 @@ void ParticleSystem::Render() {
 				{
 
 					float fNbTex	= (p->ulTime * p->fOneOnTTL) * (iNbTex);
-					ARX_CHECK_INT(fNbTex);
 
-					inumtex = ARX_CLEAN_WARN_CAST_INT(fNbTex);
-
-
-					if (inumtex >= iNbTex)
-					{
+					inumtex = checked_range_cast<int>(fNbTex);
+					if(inumtex >= iNbTex) {
 						inumtex = iNbTex - 1;
 					}
 				}

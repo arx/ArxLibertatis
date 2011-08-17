@@ -326,9 +326,8 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 
 
 	float fRandom	= 500 + rnd() * 1000;
-	ARX_CHECK_INT(fRandom);
 
-	iTTL	= ARX_CLEAN_WARN_CAST_INT(fRandom);
+	iTTL = checked_range_cast<int>(fRandom);
 
 }
 
@@ -371,9 +370,8 @@ void CLightning::ReCreate()
 
 
 	float fRandom	= 500 + rnd() * 1000;
-	ARX_CHECK_INT(fRandom);
 
-	iTTL = ARX_CLEAN_WARN_CAST_INT(fRandom);
+	iTTL = checked_range_cast<int>(fRandom);
 
 
 }

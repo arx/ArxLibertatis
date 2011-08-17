@@ -183,10 +183,9 @@ void ARX_QuickSave() {
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
 
-void ARX_DrawAfterQuickLoad()
-{
-	ARX_CHECK_INT(iTimeToDrawD7 - FrameDiff);
-	iTimeToDrawD7    -= ARX_CLEAN_WARN_CAST_INT(FrameDiff);
+void ARX_DrawAfterQuickLoad() {
+	
+	iTimeToDrawD7 -= checked_range_cast<int>(FrameDiff);
 	
 	float fColor;
 
@@ -265,25 +264,14 @@ bool MENU_NoActiveWindow()
 	return false;
 }
 
-void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c)
-{
-	if(pTextManage)
-	{
-		ARX_CHECK_LONG( pos.y );
-		ARX_CHECK_LONG( pos.x );
-		pTextManage->AddText( _pFont, _pText, pos.x, pos.y, _c);
+void FontRenderText(Font* _pFont, Vec3f pos, const std::string& _pText, Color _c) {
+	if(pTextManage) {
+		long x = checked_range_cast<long>(pos.x);
+		long y = checked_range_cast<long>(pos.y);
+		pTextManage->AddText(_pFont, _pText, x, y, _c);
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-void to_lower(std::string & str) {
-	std::transform( str.begin(), str.end(), str.begin(), ::tolower );
-}
-
-//-----------------------------------------------------------------------------
-
-	
 void Check_Apply()
 {
 	if(pMenuElementApply)
@@ -539,10 +527,7 @@ bool Menu2_Render() {
 			}
 		}
 
-
-		ARX_CHECK_INT(ARXDiffTimeMenu);
-		MENUSTATE eMenuState = pMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
-
+		MENUSTATE eMenuState = pMenu->Update(checked_range_cast<int>(ARXDiffTimeMenu));
 
 		if(eOldMenuState!=NOP)
 		{
@@ -601,10 +586,7 @@ bool Menu2_Render() {
 			float fPosX1 = RATIO_X(20);
 			float fPosX2 = RATIO_X(200);
 
-
-			ARX_CHECK_INT(fPosX2);
-			int iPosX2    = ARX_CLEAN_WARN_CAST_INT(fPosX2);
-
+			int iPosX2 = checked_range_cast<int>(fPosX2);
 
 			float fPosBack      = RATIO_X(10);
 			float fPosBackY      = RATIO_Y(190);
@@ -653,11 +635,7 @@ bool Menu2_Render() {
 					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
-
-					ARX_CHECK_INT(fPosBDAY);
-
-					pPanel->Move(0,
-								ARX_CLEAN_WARN_CAST_INT(fPosBDAY)    );
+					pPanel->Move(0, checked_range_cast<int>(fPosBDAY));
 
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -981,9 +959,8 @@ bool Menu2_Render() {
 
 
 					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					ARX_CHECK_INT(fRatio);
 
-					me->Move(    ARX_CLEAN_WARN_CAST_INT(fRatio)    ,0); 
+					me->Move(checked_range_cast<int>(fRatio), 0); 
 
 
 					pc->AddElement(me);
@@ -1007,9 +984,7 @@ bool Menu2_Render() {
 
 
 					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					ARX_CHECK_INT(fRatio);
-
-					me->Move(    ARX_CLEAN_WARN_CAST_INT(fRatio)    ,0); 
+					me->Move(checked_range_cast<int>(fRatio), 0); 
 
 
 					int iSize = me->GetWidth();
@@ -1045,9 +1020,7 @@ bool Menu2_Render() {
 
 
 					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					ARX_CHECK_INT(fRatio);
-
-					me->Move(    ARX_CLEAN_WARN_CAST_INT(fRatio)    ,0); 
+					me->Move(checked_range_cast<int>(fRatio), 0); 
 
 
 					pc->AddElement(me);
@@ -1070,9 +1043,7 @@ bool Menu2_Render() {
 
 					
 					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					ARX_CHECK_INT(fRatio);
-
-					me->Move(    ARX_CLEAN_WARN_CAST_INT(fRatio)    ,0); 
+					me->Move(checked_range_cast<int>(fRatio), 0); 
 
 
 					pc->AddElement(me);
@@ -1352,7 +1323,7 @@ bool Menu2_Render() {
 				#define CUSTOM_CTRL_X0    RATIO_X(20)
 				#define CUSTOM_CTRL_X1    RATIO_X(150)
 				#define CUSTOM_CTRL_X2    RATIO_X(245)
-					long fControlPosY    =    ARX_CLEAN_WARN_CAST_LONG(RATIO_Y(8.f));
+					long fControlPosY    =    static_cast<long>(RATIO_Y(8.f));
 				#define CUSTOM_CTRL_FUNC(a,b,c,d){\
 						pc=new CMenuPanel();\
 						szMenuText = getLocalised(a, "?");\
@@ -1377,7 +1348,7 @@ bool Menu2_Render() {
 						pc->AddElement(me);\
 						pc->Move(0,fControlPosY);\
 						pWindowMenuConsole->AddMenu(pc);\
-						fControlPosY += ARX_CLEAN_WARN_CAST_LONG( pc->GetHeight() + RATIO_Y(3.f) );\
+						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
 					};
 
 
@@ -1406,7 +1377,7 @@ bool Menu2_Render() {
 						pc->AddElement(me);\
 						pc->Move(0,fControlPosY);\
 						pWindowMenuConsole->AddMenu(pc);\
-						fControlPosY += ARX_CLEAN_WARN_CAST_LONG( pc->GetHeight() + RATIO_Y(3.f) );\
+						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
 					};
 
 
@@ -1424,7 +1395,7 @@ bool Menu2_Render() {
 				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
 				me->Move(0,fControlPosY);
 						pWindowMenuConsole->AddMenu(me);
-						fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
+						fControlPosY += static_cast<long>(me->GetHeight() + RATIO_Y(3.f));
 
 						if(config.input.linkMouseLookToUse)
 						{
@@ -1478,7 +1449,7 @@ bool Menu2_Render() {
 
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
 
-					fControlPosY = ARX_CLEAN_WARN_CAST_LONG(RATIO_Y(8.f));
+					fControlPosY = static_cast<long>(RATIO_Y(8.f));
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_book",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookcharsheet",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
@@ -1559,9 +1530,7 @@ bool Menu2_Render() {
 					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
 
-
-					ARX_CHECK_INT(fPosBDAY);
-					pPanel->Move(0,ARX_CLEAN_WARN_CAST_INT(fPosBDAY));
+					pPanel->Move(0, checked_range_cast<int>(fPosBDAY));
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=QUIT;
@@ -1584,8 +1553,7 @@ bool Menu2_Render() {
 			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
 		}
 
-		ARX_CHECK_INT(ARXDiffTimeMenu);
-		pWindowMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
+		pWindowMenu->Update(checked_range_cast<int>(ARXDiffTimeMenu));
 
 		if (pWindowMenu)
 		{
@@ -1640,10 +1608,7 @@ bool Menu2_Render() {
 		{
 			
 			float fOffestY    = iOffsetY - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
-			ARX_CHECK_INT(fOffestY);
-			iOffsetY    =    ARX_CLEAN_WARN_CAST_INT(fOffestY);
-
-
+			iOffsetY = checked_range_cast<int>(fOffestY);
 		}
 
 		EERIEDrawBitmap(static_cast<float>(DANAEMouse.x + iOffsetX),
@@ -1779,12 +1744,9 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 
 	lpszText= _pText;
 
-	ARX_CHECK_LONG(_fPosX);
-	ARX_CHECK_LONG(_fPosY);
-
 	Vec2i textSize = _pFont->GetTextSize(_pText);
-	rZone.left = ARX_CLEAN_WARN_CAST_LONG(_fPosX);
-	rZone.top = ARX_CLEAN_WARN_CAST_LONG(_fPosY);
+	rZone.left = checked_range_cast<Rect::Num>(_fPosX);
+	rZone.top = checked_range_cast<Rect::Num>(_fPosY);
 	rZone.right  = rZone.left + textSize.x;
 	rZone.bottom = rZone.top + textSize.y;
 
@@ -2429,15 +2391,13 @@ void CMenuState::Render()
 	if(bNoMenu) return;
 
 	if (pTexBackGround)
-		EERIEDrawBitmap2(0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, Color::white);
+		EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.999f, pTexBackGround, Color::white);
 
 	//------------------------------------------------------------------------
 
 	int t=pMenuAllZone->GetNbZone();
 
-
-	ARX_CHECK_INT(ARXDiffTimeMenu);
-	int iARXDiffTimeMenu    = ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu);
+	int iARXDiffTimeMenu = checked_range_cast<int>(ARXDiffTimeMenu);
 
 
 	for(int i=0;i<t;++i)
@@ -2516,12 +2476,8 @@ void CMenuZone::SetPos(float _fX,float _fY)
 	int iWidth        = rZone.right - rZone.left;
 	int iHeight        = rZone.bottom - rZone.top;
 
-
-	ARX_CHECK_INT(_fX);
-	ARX_CHECK_INT(_fY);
-	int iX    = ARX_CLEAN_WARN_CAST_INT(_fX);
-	int iY    = ARX_CLEAN_WARN_CAST_INT(_fY);
-
+	int iX = checked_range_cast<int>(_fX);
+	int iY = checked_range_cast<int>(_fY);
 
 	rZone.left        = iX;
 	rZone.top        = iY;
@@ -2702,40 +2658,27 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	iState    = 0;
 	iOldState = -1;
 
-
-	ARX_CHECK_INT(_fPosX);
-	ARX_CHECK_INT(_fPosY);
-	iPosX    = ARX_CLEAN_WARN_CAST_INT(_fPosX);
-	iPosY    = ARX_CLEAN_WARN_CAST_INT(_fPosY);
-
+	iPosX = checked_range_cast<int>(_fPosX);
+	iPosY = checked_range_cast<int>(_fPosY);
 
 	iTaille = _iTaille;
 
 	pText    = _pText;
 
-	if (_pTex1)
-	{
+	if(_pTex1) {
 		float fRatioX = RATIO_X(_pTex1->m_dwWidth) ;
 		float fRatioY = RATIO_Y(_pTex1->m_dwHeight);
-		ARX_CHECK_INT(fRatioX);
-		ARX_CHECK_INT(fRatioY);
-
 		vTex.push_back(_pTex1);
-		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX));
-		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
+		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioX));
+		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioY));
 	}
 
-	if (_pTex2)
-	{
-
+	if(_pTex2) {
 		float fRatioX = RATIO_X(_pTex2->m_dwWidth) ;
 		float fRatioY = RATIO_Y(_pTex2->m_dwHeight);
-		ARX_CHECK_INT(fRatioX);
-		ARX_CHECK_INT(fRatioY);
-
 		vTex.push_back(_pTex2);
-		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX));
-		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
+		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioX));
+		_iTaille = std::max(_iTaille, checked_range_cast<int>(fRatioY));
 	}
 
 	Vec2i textSize(0,0);
@@ -2749,24 +2692,16 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		pText->Move(iPosX, iPosY + (_iTaille - textSize.y) / 2);
 	}
 
-
-
-	ARX_CHECK_LONG( _fPosX );
-	ARX_CHECK_LONG( _fPosY );
-	ARX_CHECK_LONG( _fPosX + _iTaille + textSize.x );
-	ARX_CHECK_LONG( _fPosY + std::max<int>(_iTaille, textSize.y) );
-	//CAST
-	rZone.left = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
-	rZone.top = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
-	rZone.right = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
-	rZone.bottom = ARX_CLEAN_WARN_CAST_LONG( _fPosY + std::max<int>(_iTaille, textSize.y) );
+	rZone.left = checked_range_cast<Rect::Num>(_fPosX);
+	rZone.top = checked_range_cast<Rect::Num>(_fPosY);
+	rZone.right = checked_range_cast<Rect::Num>(_fPosX + _iTaille + textSize.x);
+	rZone.bottom = checked_range_cast<Rect::Num>(_fPosY + std::max<int>(_iTaille, textSize.y));
 	pRef=this;
 
 	if (_pTex2) // TODO should this be _pTex1?
 	{
 		float rZoneR = ( RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f );
-		ARX_CHECK_LONG( rZoneR );
-		rZone.right = ARX_CLEAN_WARN_CAST_LONG ( rZoneR );
+		rZone.right = checked_range_cast<Rect::Num>(rZoneR);
 	}
 
 
@@ -2934,7 +2869,7 @@ void CMenuCheckButton::Render()
 		float iY = 0;
 
 		{
-			iY = ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top);
+			iY = static_cast<float>(rZone.bottom - rZone.top);
 			iY -= iTaille;
 			iY = rZone.top + iY*0.5f;
 		}
@@ -2974,7 +2909,7 @@ void CMenuCheckButton::RenderMouseOver()
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	float iY = 0;
-	iY = ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top);
+	iY = static_cast<float>(rZone.bottom - rZone.top);
 	iY -= iTaille;
 	iY = rZone.top + iY*0.5f;
 
@@ -3001,15 +2936,15 @@ void CMenuCheckButton::ComputeTexturesPosition()
 	// TODO Merge with master
 	/*if (!pText)
 	{
-		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.left);
-		fTexY_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.top);
+		fTexX_ = static_cast<float>(rZone.left);
+		fTexY_ = static_cast<float>(rZone.top);
 		fTexSX_ = RATIO_X(iTaille);
 		fTexSY_ = RATIO_Y(iTaille);
 	}
 	else
 	{
-		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille);
-		fTexY_ = rZone.top + (ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top) - iTaille) * 0.5f;
+		fTexX_ = static_cast<float>(rZone.right - iTaille);
+		fTexY_ = rZone.top + (static_cast<float>(rZone.bottom - rZone.top) - iTaille) * 0.5f;
 		fTexSX_ = RATIO_X(iTaille);
 		fTexSY_ = RATIO_Y(iTaille);
 	}*/
@@ -3045,10 +2980,8 @@ CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _
 
 
 	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
-	ARX_CHECK_INT(fCalc);
 
-	iPosX    = ARX_CLEAN_WARN_CAST_INT(fCalc);
-
+	iPosX = checked_range_cast<int>(fCalc);
 
 	bChangeConsole=false;
 }
@@ -3079,10 +3012,8 @@ void CWindowMenu::Update(int _iDTime)
 
 
 	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
-	ARX_CHECK_INT(fCalc);
 
-	iPosX    = ARX_CLEAN_WARN_CAST_INT(fCalc);
-
+	iPosX = checked_range_cast<int>(fCalc);
 
 	fAngle += _iDTime * 0.08f;
 
@@ -3875,10 +3806,7 @@ int CWindowMenuConsole::Render()
 
 	int t = MenuAllZone.GetNbZone();
 
-
-	ARX_CHECK_INT(ARXDiffTimeMenu);
-	int iARXDiffTimeMenu    = ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu);
-
+	int iARXDiffTimeMenu  = checked_range_cast<int>(ARXDiffTimeMenu);
 
 	for(int i=0;i<t;++i)
 	{
@@ -4214,31 +4142,19 @@ CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX
 	pTexOver=_pTexOver;
 
 
-	if (pTex)
-	{
+	if(pTex) {
 		float rZoneR = rZone.left + RATIO_X(pTex->m_dwWidth);
 		float rZoneB = rZone.top + RATIO_Y(pTex->m_dwHeight);
-
-		ARX_CHECK_LONG( rZoneR );
-		ARX_CHECK_LONG( rZoneB );
-
-		rZone.right  = max((long)rZone.right,  ARX_CLEAN_WARN_CAST_LONG(rZoneR) );
-		rZone.bottom = max((long)rZone.bottom, ARX_CLEAN_WARN_CAST_LONG(rZoneB) );
+		rZone.right  = max(rZone.right,  checked_range_cast<Rect::Num>(rZoneR));
+		rZone.bottom = max(rZone.bottom, checked_range_cast<Rect::Num>(rZoneB));
 	}
 
-	if (pTexOver)
-	{
+	if(pTexOver) {
 		float rZoneR = rZone.left + RATIO_X(pTexOver->m_dwWidth);
 		float rZoneB = rZone.top + RATIO_Y(pTexOver->m_dwHeight);
-
-		ARX_CHECK_LONG( rZoneR );
-		ARX_CHECK_LONG( rZoneB );
-
-		rZone.right  = max((long)rZone.right, ARX_CLEAN_WARN_CAST_LONG(rZoneR) );
-		rZone.bottom = max((long)rZone.bottom, ARX_CLEAN_WARN_CAST_LONG(rZoneB) );
+		rZone.right  = max(rZone.right, checked_range_cast<Rect::Num>(rZoneR));
+		rZone.bottom = max(rZone.bottom, checked_range_cast<Rect::Num>(rZoneB));
 	}
-
-
 
 	iColor=_iColor;
 
@@ -4258,42 +4174,20 @@ void CMenuButton::SetPos(float _iX,float _iY)
 
 	int iWidth = 0;
 	int iHeight = 0;
-
-	if (pTex)
-	{
-		iWidth = pTex->m_dwWidth;
-		iHeight = pTex->m_dwHeight;
-
-		float fRatioX = RATIO_X(iWidth);
-		float fRatioY = RATIO_Y(iHeight);
-
-		ARX_CHECK_INT(fRatioX);
-		ARX_CHECK_INT(fRatioY);
-
-		iWidth = ARX_CLEAN_WARN_CAST_INT(fRatioX);
-		iHeight = ARX_CLEAN_WARN_CAST_INT(fRatioY);
+	if(pTex) {
+		iWidth = checked_range_cast<int>(RATIO_X(pTex->m_dwWidth));
+		iHeight = checked_range_cast<int>(RATIO_Y(pTex->m_dwHeight));
 	}
 
 	int iWidth2 = 0;
 	int iHeight2 = 0;
-
-	if (pTexOver)
-	{
-		iWidth2 = pTexOver->m_dwWidth;
-		iHeight2 = pTexOver->m_dwHeight;
-
-		float fRatioX = RATIO_X(iWidth2);
-		float fRatioY = RATIO_Y(iHeight2);
-
-		ARX_CHECK_INT(fRatioX);
-		ARX_CHECK_INT(fRatioY);
-
-		iWidth2 = ARX_CLEAN_WARN_CAST_INT(fRatioX);
-		iHeight2 = ARX_CLEAN_WARN_CAST_INT(fRatioY);
+	if(pTexOver) {
+		iWidth2 = checked_range_cast<int>(RATIO_X(pTexOver->m_dwWidth));
+		iHeight2 = checked_range_cast<int>(RATIO_Y(pTexOver->m_dwHeight));
 	}
 
-	rZone.right = static_cast<int>(_iX) + max(iWidth,iWidth2);
-	rZone.bottom = static_cast<int>(_iY) + max(iHeight,iHeight2);
+	rZone.right = static_cast<int>(_iX) + max(iWidth, iWidth2);
+	rZone.bottom = static_cast<int>(_iY) + max(iHeight, iHeight2);
 }
 
 //-----------------------------------------------------------------------------
@@ -4494,7 +4388,7 @@ void CMenuSliderText::SetWidth(int _iWidth)
 		Vec2i textSize = pMenuElementText->GetTextSize();
 
 		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
+		pMenuElementText->SetPos(static_cast<float>(pLeftButton->rZone.right + dxx), static_cast<float>(rZone.top));
 	}
 }
 
@@ -4524,7 +4418,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 		textSize = pMenuElementText->GetTextSize();
 
 		int dxx=(dx-textSize.x)>>1;
-		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
+		pMenuElementText->SetPos(static_cast<float>(pLeftButton->rZone.right + dxx), static_cast<float>(rZone.top));
 	}
 }
 
@@ -4879,23 +4773,19 @@ bool CMenuSlider::OnMouseClick(int)
 
 //-----------------------------------------------------------------------------
 
-void CMenuSlider::Update(int _iTime)
-{
+void CMenuSlider::Update(int _iTime) {
+	
 	pLeftButton->Update(_iTime);
 	pRightButton->Update(_iTime);
 	pRightButton->SetPos(rZone.left, rZone.top);
 
 
 	float fWidth = pLeftButton->GetWidth() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) ;
-	ARX_CHECK_INT(fWidth);
+	pRightButton->Move(checked_range_cast<int>(fWidth), 0);
 
-	pRightButton->Move(    ARX_CLEAN_WARN_CAST_INT(fWidth), 0);
-
-	ARX_CHECK_LONG( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
-	rZone.right  = ARX_CLEAN_WARN_CAST_LONG( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
+	rZone.right  = checked_range_cast<Rect::Num>( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
 
 	rZone.bottom = rZone.top + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
-
 }
 
 void CMenuSlider::Render()
@@ -4908,8 +4798,8 @@ void CMenuSlider::Render()
 	pRightButton->Render();
 
 
-	float iX = ARX_CLEAN_WARN_CAST_FLOAT( rZone.left + pLeftButton->GetWidth() );
-	float iY = ARX_CLEAN_WARN_CAST_FLOAT( rZone.top );
+	float iX = static_cast<float>( rZone.left + pLeftButton->GetWidth() );
+	float iY = static_cast<float>( rZone.top );
 
 	float iTexW = 0;
 
@@ -5216,10 +5106,7 @@ void MenuCursor::DrawCursor()
 	DrawOneCursor(GInput->getMousePosAbs());
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-
-	ARX_CHECK_LONG( ARXDiffTimeMenu );
-	lFrameDiff += ARX_CLEAN_WARN_CAST_LONG( ARXDiffTimeMenu );
-
+	lFrameDiff += checked_range_cast<long>(ARXDiffTimeMenu);
 
 	if(lFrameDiff>70)
 	{

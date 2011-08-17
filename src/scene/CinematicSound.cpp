@@ -29,6 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Cinematic.h"
 #include "core/Application.h"
+#include "graphics/Math.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
 #include "platform/String.h"
@@ -111,9 +112,8 @@ int AddSoundToList(const fs::path & path) {
 	cs->file = path;
 	
 	int iActive = 1 | LSoundChoose;
-	ARX_CHECK_SHORT(iActive);
 	
-	cs->active = static_cast<short>(iActive);
+	cs->active = checked_range_cast<short>(iActive);
 	
 	NbSound++;
 	return num;

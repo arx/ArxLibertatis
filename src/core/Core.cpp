@@ -2390,8 +2390,7 @@ long Player_Arrow_Count() {
 					if(io) {
 						if(io->short_name() == "arrows") {
 							if(io->durability >= 1.f) {
-								ARX_CHECK_LONG(io->durability);
-								count += static_cast<long>(io->durability);
+								count += checked_range_cast<long>(io->durability);
 							}
 						}
 					}
@@ -3374,10 +3373,7 @@ void AddQuakeFX(float intensity,float duration,float period,long flags)
 	{
 		QuakeFx.intensity=intensity;
 
-
-		ARX_CHECK_ULONG(FrameTime);
-		QuakeFx.start = ARX_CLEAN_WARN_CAST_ULONG(FrameTime);
-
+		QuakeFx.start = checked_range_cast<unsigned long>(FrameTime);
 
 		QuakeFx.duration=(unsigned long)duration;
 		QuakeFx.frequency=period;

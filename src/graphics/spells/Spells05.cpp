@@ -1056,7 +1056,7 @@ float CMultiPoisonProjectile::Render()
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
 			damages[t].damages	= v * ( 1.0f / 1000 ) * _framedelay;
 			damages[t].area		= DAMAGE_FULL;
-			damages[t].duration	= ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+			damages[t].duration	= static_cast<long>(FrameDiff);
 			damages[t].source	= spells[spellinstance].caster;
 			damages[t].flags	= 0;
 			damages[t].type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
@@ -1586,11 +1586,9 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 
 
-					float fRandom	= rnd() * 80.f ;
-					ARX_CHECK_INT(fRandom);
+					float fRandom	= rnd() * 80.f;
 
-					col	= ARX_CLEAN_WARN_CAST_INT(fRandom);
-
+					col = checked_range_cast<int>(fRandom);
 
 					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
 
@@ -1606,10 +1604,9 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 
 
-					fRandom = rnd() * 80.f ;
-					ARX_CHECK_INT(fRandom);
+					fRandom = rnd() * 80.f;
 
-					col = ARX_CLEAN_WARN_CAST_INT(fRandom);
+					col = checked_range_cast<int>(fRandom);
 
 
 					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);

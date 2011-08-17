@@ -650,13 +650,8 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
 	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	
-
-	ARX_CHECK_CHAR(iPosX);
-	ARX_CHECK_CHAR(iPosY);
-	
-	sd->cPosStartX = ARX_CLEAN_WARN_CAST_CHAR(iPosX);
-	sd->cPosStartY = ARX_CLEAN_WARN_CAST_CHAR(iPosY); 	
-
+	sd->cPosStartX = checked_range_cast<char>(iPosX);
+	sd->cPosStartY = checked_range_cast<char>(iPosY);
 	
 	io->GameFlags &= ~GFLAG_INVISIBILITY;
 }
@@ -750,13 +745,8 @@ static void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, Rune symb, float 
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
 	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	
-
-	ARX_CHECK_CHAR(iPosX);
-	ARX_CHECK_CHAR(iPosY);
-
-	sd->cPosStartX = ARX_CLEAN_WARN_CAST_CHAR(iPosX);
-	sd->cPosStartY = ARX_CLEAN_WARN_CAST_CHAR(iPosY); 	
-
+	sd->cPosStartX = checked_range_cast<char>(iPosX);
+	sd->cPosStartY = checked_range_cast<char>(iPosY);
 
 	io->GameFlags &= ~GFLAG_INVISIBILITY;
 
@@ -1322,31 +1312,25 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 					long lPosX	= (((513>>1)-lMaxSymbolDrawSizeX)>>1);
 					long lPosY	= (313-(((313*3/4)-lMaxSymbolDrawSizeY)>>1));
-					ARX_CHECK_SHORT(pos1.x + lPosX);
-					ARX_CHECK_SHORT(pos1.y + lPosY);
 
-					pos1.x	+= ARX_CLEAN_WARN_CAST_SHORT(lPosX);
-					pos1.y	+= ARX_CLEAN_WARN_CAST_SHORT(lPosY);
+					pos1.x = checked_range_cast<short>(pos1.x + lPosX);
+					pos1.y = checked_range_cast<short>(pos1.y + lPosY);
 
 
 
 					lPosX =  ((lMaxSymbolDrawSizeX-iSizeX)>>1);
 					lPosY =  ((lMaxSymbolDrawSizeY-iSizeY)>>1);
-					ARX_CHECK_SHORT(pos1.x + lPosX);
-					ARX_CHECK_SHORT(pos1.y + lPosY);
 
-					pos1.x	+= ARX_CLEAN_WARN_CAST_SHORT(lPosX);
-					pos1.y	+= ARX_CLEAN_WARN_CAST_SHORT(lPosY);
+					pos1.x += checked_range_cast<short>(pos1.x + lPosX);
+					pos1.y += checked_range_cast<short>(pos1.y + lPosY);
 
 
 
 					int iX = pos1.x-iMinX;
 					int iY = pos1.y-iMinY;
-					ARX_CHECK_SHORT(iX);
-					ARX_CHECK_SHORT(iY);
 
-					pos1.x = ARX_CLEAN_WARN_CAST_SHORT(iX);
-					pos1.y = ARX_CLEAN_WARN_CAST_SHORT(iY);
+					pos1.x = checked_range_cast<short>(iX);
+					pos1.y = checked_range_cast<short>(iY);
 
 
 					for (long j=0;j<nbcomponents;j++)
@@ -1361,11 +1345,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 							float fX = pos1.x + (ratio*vect.x)*0.5f;
 							float fY = pos1.y + (ratio*vect.y)*0.5f; 
-							ARX_CHECK_SHORT(fX);
-							ARX_CHECK_SHORT(fY);
 
-							pos1.x = ARX_CLEAN_WARN_CAST_SHORT(fX);
-							pos1.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
+							pos1.x = checked_range_cast<short>(fX);
+							pos1.y = checked_range_cast<short>(fY);
 
 
 							Vec2s pos;
@@ -3240,7 +3222,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		else 
 		{
-			Player_Magic_Level = ARX_CLEAN_WARN_CAST_FLOAT(level);
+			Player_Magic_Level = static_cast<float>(level);
 		}
 	}
 
@@ -3251,14 +3233,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	{
 		int l = level;
 
-		if (l <= 0)
-		{
-
-
-			ARX_CHECK_INT(Player_Magic_Level);
-			l	= ARX_CLEAN_WARN_CAST_INT(Player_Magic_Level);
-
-
+		if(l <= 0) {
+			l = checked_range_cast<int>(Player_Magic_Level);
 		}
 
 		SpellcastFlags flgs=flags;
@@ -3269,7 +3245,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 	if ( flags & SPELLCAST_FLAG_NOMANA )
 	{
-		Player_Magic_Level = ARX_CLEAN_WARN_CAST_FLOAT(level);
+		Player_Magic_Level = static_cast<float>(level);
 	}
 
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
@@ -3485,15 +3461,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CSpellFx *pCSpellFx = NULL;
 			long number;
 
-			if ( ( sp_max ) || ( cur_rf == 3 ) )
-
-			{
-				ARX_CHECK_LONG(spells[i].caster_level);   
-				number = ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level );
-			}
-
-			else 
-			{
+			if(sp_max || cur_rf == 3) {
+				number = checked_range_cast<long>(spells[i].caster_level);
+			} else {
 						if ( spells[i].caster_level < 3 ) number = 1;
 				else	if ( spells[i].caster_level < 5 ) number = 2;
 				else	if ( spells[i].caster_level < 7 ) number = 3;
@@ -4864,10 +4834,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].exist = true;
 			spells[i].tolive = 900000000;
 			
-			ARX_CHECK_LONG(spells[i].caster_level);
-			
 			CMultiPoisonProjectile * pCSpellFx;
-			pCSpellFx = new CMultiPoisonProjectile(std::max(static_cast<long>(spells[i].caster_level), 1L));
+			pCSpellFx = new CMultiPoisonProjectile(std::max(checked_range_cast<long>(spells[i].caster_level), 1L));
 
 
 			if (pCSpellFx != NULL)
@@ -6209,9 +6177,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				DynLight[id].pos = spells[i].vsource;
 			}
 
-			ARX_CHECK_LONG(spells[i].caster_level); 
 			CMassLightning * pCSpellFx;
-			pCSpellFx = new CMassLightning(std::max(static_cast<long>(spells[i].caster_level), 1L));
+			pCSpellFx = new CMassLightning(std::max(checked_range_cast<long>(spells[i].caster_level), 1L));
 
 		
 			if (pCSpellFx != NULL)
@@ -7432,12 +7399,9 @@ void ARX_SPELLS_Update()
 					if (spells[i].target==0) target.y-=200.f;
 					else target.y+=inter.iobj[spells[i].target]->physics.cyl.height-30.f;
 				}
-					
 				
-
-				ARX_CHECK_ULONG(FrameDiff);
-				curse->Update(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
-
+				curse->Update(checked_range_cast<unsigned long>(FrameDiff));
+				
 				curse->eTarget = target;
 				curse->Render();
 				GRenderer->SetCulling(Renderer::CullNone);
@@ -7615,8 +7579,7 @@ void ARX_SPELLS_Update()
 											
 
 									long lSpellsCaster = spells[i].caster ; 
-									ARX_CHECK_SHORT(lSpellsCaster);
-									io->summoner=ARX_CLEAN_WARN_CAST_SHORT(lSpellsCaster);
+									io->summoner = checked_range_cast<short>(lSpellsCaster);
 
 										
 									io->ioflags|=IO_NOSAVE;
@@ -7767,10 +7730,8 @@ void ARX_SPELLS_Update()
 						pCSpellFX->Render();
 
 
-						float fDiff = FrameDiff/8.f ;
-						ARX_CHECK_INT(fDiff);
-
-						int nTime	= ARX_CLEAN_WARN_CAST_INT(fDiff);
+						float fDiff = FrameDiff / 8.f;
+						int nTime = checked_range_cast<int>(fDiff);
 
 						
 						for (long nn=0;nn<=nTime+1;nn++)
@@ -8060,11 +8021,10 @@ void ARX_SPELLS_Update()
 								
 
 								long lSpellsCaster = spells[i].caster ; 
-								ARX_CHECK_SHORT(lSpellsCaster);
-								io->summoner=ARX_CLEAN_WARN_CAST_SHORT(lSpellsCaster);
+								io->summoner = checked_range_cast<short>(lSpellsCaster);
 
 
-								io->scriptload=1;								
+								io->scriptload=1;
 
 								if (tokeep==1)
 									io->ioflags|=IO_NOSAVE;
@@ -8072,7 +8032,7 @@ void ARX_SPELLS_Update()
 											io->pos.x = phys.origin.x; 
 											io->pos.y = phys.origin.y;
 											io->pos.z = phys.origin.z;
-								MakeTemporaryIOIdent(io);						
+								MakeTemporaryIOIdent(io);
 								SendInitScriptEvent(io);
 
 								if (tokeep<0)
@@ -8569,9 +8529,8 @@ void TryToCastSpell(INTERACTIVE_OBJ * io, Spell spellid, long level, long target
 	io->spellcast_data.castingspell = spellid;
 	
 
-	ARX_CHECK_SHORT(level);
 	io->spellcast_data.spell_flags = flags;
-	io->spellcast_data.spell_level = ARX_CLEAN_WARN_CAST_SHORT(level);
+	io->spellcast_data.spell_level = checked_range_cast<short>(level);
 
 
 	io->spellcast_data.duration = duration;

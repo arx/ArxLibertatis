@@ -45,9 +45,8 @@ Particle::Particle()
 	p3Velocity.y = frand2() * 10;
 	p3Velocity.z = frand2() * 10;
 
-	float frnd	=	2000 + rnd() * 3000;
-	ARX_CHECK_LONG(frnd);
-	ulTTL		=	ARX_CLEAN_WARN_CAST_LONG(frnd);
+	float frnd = 2000 + rnd() * 3000;
+	ulTTL = checked_range_cast<long>(frnd);
 	fOneOnTTL = 1.0f / (float) ulTTL;
 	ulTime		=	0;
 

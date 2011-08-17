@@ -522,7 +522,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	s.x					= aeSrc.x;
 	s.y					= aeSrc.y - 100;
 	s.z					= aeSrc.z;
-	float fspelldist	= ARX_CLEAN_WARN_CAST_FLOAT(iMax * 15);
+	float fspelldist	= static_cast<float>(iMax * 15);
 
 	fspelldist = min(fspelldist, 200.0f);
 	fspelldist = max(fspelldist, 450.0f);
@@ -541,18 +541,12 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 	fd = Distance3D(s.x, s.y, s.z, e.x, e.y, e.z);
 
-
-
-	float fCalc = ulDuration * (fd / fspelldist) ;
-	ARX_CHECK_ULONG(fCalc);
-	SetDuration(ARX_CLEAN_WARN_CAST_ULONG(fCalc));
-
-
+	float fCalc = ulDuration * (fd / fspelldist);
+	SetDuration(checked_range_cast<unsigned long>(fCalc));
 
 	float fDist = (fd / fspelldist) * iMax ;
-	ARX_CHECK_INT(fDist);
 
-	iNumber = ARX_CLEAN_WARN_CAST_INT(fDist);
+	iNumber = checked_range_cast<int>(fDist);
 
 	int end = iNumber / 2;
 	tv1a[0].sx = s.x;
@@ -602,7 +596,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		if (tSizeMax[i].z < zmin)
 			tSizeMax[i].z = zmin;
 
-		int iNum = ARX_CLEAN_WARN_CAST_INT(i / 2);
+		int iNum = static_cast<int>(i / 2);
 
 		if (tType[i] == 0)
 		{
@@ -755,12 +749,8 @@ float CIceProjectile::Render()
 				particle[j].move.z = 2.f - 4.f * rnd();
 				particle[j].siz = 20.f;
 
-
 				float fMin = min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
-				ARX_CHECK_ULONG(fMin);
-					
-				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
-
+				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
 
 				particle[j].scale.x = 1.f;
 				particle[j].scale.y = 1.f;
@@ -794,12 +784,8 @@ float CIceProjectile::Render()
 				particle[j].move.z = 0;
 				particle[j].siz = 0.5f;
 
-
 				float fMin = min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
-				ARX_CHECK_ULONG(fMin);
-
-				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
-
+				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
 
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;

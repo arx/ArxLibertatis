@@ -177,7 +177,7 @@ void Credits::render() {
 			//Display the text only if he is on the viewport
 			if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
 			{
-				hFontCredits->Draw(it->sPos.x, ARX_CLEAN_WARN_CAST_INT(yy), it->sText, it->fColors);
+				hFontCredits->Draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 			}
 			
 			if (yy <= -CreditsData.iFontAverageHeight)

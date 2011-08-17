@@ -532,25 +532,25 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^gamedays"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 864000000);
+				*lcontent = static_cast<long>(ARXTime / 864000000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^gamehours"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 3600000);
+				*lcontent = static_cast<long>(ARXTime / 3600000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^gameminutes"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 60000);
+				*lcontent = static_cast<long>(ARXTime / 60000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^gameseconds"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 1000);
+				*lcontent = static_cast<long>(ARXTime / 1000);
 				return TYPE_LONG;
 			}
 
@@ -571,32 +571,32 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^arxdays"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 7200000);
+				*lcontent = static_cast<long>(ARXTime / 7200000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxhours"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 600000);
+				*lcontent = static_cast<long>(ARXTime / 600000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxminutes"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 10000);
+				*lcontent = static_cast<long>(ARXTime / 10000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxseconds"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 1000);
+				*lcontent = static_cast<long>(ARXTime / 1000);
 				*lcontent *= 6;
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxtime_hours"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 600000);
+				*lcontent = static_cast<long>(ARXTime / 600000);
 
 				while (*lcontent > 12) *lcontent -= 12;
 
@@ -605,7 +605,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^arxtime_minutes"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 10000);
+				*lcontent = static_cast<long>(ARXTime / 10000);
 
 				while (*lcontent > 60) *lcontent -= 60;
 
@@ -614,7 +614,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^arxtime_seconds"))
 			{
-				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime * 6 / 1000);
+				*lcontent = static_cast<long>(ARXTime * 6 / 1000);
 
 				while (*lcontent > 60) *lcontent -= 60;
 
@@ -1123,7 +1123,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			{
 				if ((io) && (io->ioflags & IO_ITEM))
 				{
-					*fcontent = ARX_CLEAN_WARN_CAST_FLOAT(io->_itemdata->price);
+					*fcontent = static_cast<float>(io->_itemdata->price);
 					return TYPE_FLOAT;
 				}
 
@@ -1203,7 +1203,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^player_gold"))
 			{
-				*fcontent = ARX_CLEAN_WARN_CAST_FLOAT(player.gold);
+				*fcontent = static_cast<float>(player.gold);
 				return TYPE_FLOAT;
 			}
 

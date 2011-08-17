@@ -267,13 +267,8 @@ void CSpellFx::SetAngle(float afAngle)
 	fBetaRadSin = (float) sin(fBetaRad);
 }
 
-
-//-----------------------------------------------------------------------------
-
-void CSpellFx::Update(float _fParam)
-{
-	ARX_CHECK_ULONG(_fParam);
-	Update(ARX_CLEAN_WARN_CAST_ULONG(_fParam));
+void CSpellFx::Update(float _fParam) {
+	Update(checked_range_cast<unsigned long>(_fParam));
 }
 
 //-----------------------------------------------------------------------------

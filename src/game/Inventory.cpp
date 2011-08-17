@@ -181,11 +181,9 @@ static INTERACTIVE_OBJ * GetInventoryObj(Vec2s * pos) {
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
-	ARX_CHECK_INT(fCenterX);
-	ARX_CHECK_INT(fSizY);
 
-	int iPosX = ARX_CLEAN_WARN_CAST_INT(fCenterX);
-	int iPosY = ARX_CLEAN_WARN_CAST_INT(fSizY);
+	int iPosX = checked_range_cast<int>(fCenterX);
+	int iPosY = checked_range_cast<int>(fSizY);
 
 
 	if (player.Interface & INTER_INVENTORY)
@@ -196,10 +194,8 @@ static INTERACTIVE_OBJ * GetInventoryObj(Vec2s * pos) {
 		if ((tx >= 0) && (ty >= 0))
 		{
 
-			ARX_CHECK_LONG(tx / INTERFACE_RATIO(32.f));
-			ARX_CHECK_LONG(ty / INTERFACE_RATIO(32.f));
-			tx = ARX_CLEAN_WARN_CAST_LONG(tx / INTERFACE_RATIO(32));
-			ty = ARX_CLEAN_WARN_CAST_LONG(ty / INTERFACE_RATIO(32));
+			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
+			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
 
 			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
@@ -219,9 +215,8 @@ static INTERACTIVE_OBJ * GetInventoryObj(Vec2s * pos) {
 	{
 
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
-		ARX_CHECK_INT(fBag);
 
-		int iY = ARX_CLEAN_WARN_CAST_INT(fBag);
+		int iY = checked_range_cast<int>(fBag);
 
 
 		for (int i = 0; i < player.bag; i++)
@@ -229,12 +224,8 @@ static INTERACTIVE_OBJ * GetInventoryObj(Vec2s * pos) {
 			tx = pos->x - iPosX;
 			ty = pos->y - iPosY - iY;
 
-
-			ARX_CHECK_LONG(tx / INTERFACE_RATIO(32));
-			ARX_CHECK_LONG(ty / INTERFACE_RATIO(32));
-			tx = ARX_CLEAN_WARN_CAST_LONG(tx / INTERFACE_RATIO(32));
-			ty = ARX_CLEAN_WARN_CAST_LONG(ty / INTERFACE_RATIO(32));
-
+			tx = checked_range_cast<long>(tx / INTERFACE_RATIO(32));
+			ty = checked_range_cast<long>(ty / INTERFACE_RATIO(32));
 
 			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 			{
@@ -248,11 +239,7 @@ static INTERACTIVE_OBJ * GetInventoryObj(Vec2s * pos) {
 				return NULL;
 			}
 
-
-			float fRatio	= INTERFACE_RATIO(121);
-			ARX_CHECK_INT(iY + fRatio);
-
-			iY	+= ARX_CLEAN_WARN_CAST_INT(fRatio);
+			iY += checked_range_cast<int>(INTERFACE_RATIO(121));
 		}
 	}
 
@@ -1024,13 +1011,11 @@ bool PutInInventory()
 	{
 		INTERACTIVE_OBJ * io =	(INTERACTIVE_OBJ *)SecondaryInventory->io;
 
-		float	fcos	=	ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
-		ARX_CHECK_LONG(fcos);
-		long	cos		=	ARX_CLEAN_WARN_CAST_LONG(fcos);
-		cos				*=	DRAGINTER->_itemdata->count;
-		fcos	=	cos + cos * ((float)player.Full_Skill_Intuition) * 0.005f;
-		ARX_CHECK_LONG(fcos);
-		cos				=	ARX_CLEAN_WARN_CAST_LONG(fcos);
+		float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
+		long cos = checked_range_cast<long>(fcos);
+		cos *= DRAGINTER->_itemdata->count;
+		fcos = cos + cos * ((float)player.Full_Skill_Intuition) * 0.005f;
+		cos = checked_range_cast<long>(fcos);
 
 
 		if (io->ioflags & IO_SHOP)
@@ -1088,7 +1073,7 @@ bool PutInInventory()
 
 
 
-		tx = DANAEMouse.x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		tx = DANAEMouse.x + static_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		ty = DANAEMouse.y - SHORT_INTERFACE_RATIO(13);
 		tx = tx / SHORT_INTERFACE_RATIO(32);
 		ty = ty / SHORT_INTERFACE_RATIO(32);
@@ -1097,14 +1082,11 @@ bool PutInInventory()
 		if ((tx <= SecondaryInventory->sizex - sx) && (ty <= SecondaryInventory->sizey - sy))
 		{
 
-			float	fcos	=	ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f; //>>1;
-			ARX_CHECK_LONG(fcos);
-			long cos		=	ARX_CLEAN_WARN_CAST_LONG(fcos);
+			float fcos = ARX_INTERACTIVE_GetPrice(DRAGINTER, io) / 3.0f;
+			long cos = checked_range_cast<long>(fcos);
 			cos *= DRAGINTER->_itemdata->count;
-			fcos	=	cos + cos * ((float)player.Full_Skill_Intuition) * 0.005f;
-			ARX_CHECK_LONG(fcos);
-			cos				=	ARX_CLEAN_WARN_CAST_LONG(fcos);
-
+			fcos = cos + cos * ((float)player.Full_Skill_Intuition) * 0.005f;
+			cos = checked_range_cast<long>(fcos);
 
 			for (j = 0; j < sy; j++)
 				for (i = 0; i < sx; i++)
@@ -1189,11 +1171,9 @@ bool PutInInventory()
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
-	ARX_CHECK_SHORT(fCenterX);
-	ARX_CHECK_SHORT(fSizY);
 
-	short iPosX = ARX_CLEAN_WARN_CAST_SHORT(fCenterX);
-	short iPosY = ARX_CLEAN_WARN_CAST_SHORT(fSizY);
+	short iPosX = checked_range_cast<short>(fCenterX);
+	short iPosY = checked_range_cast<short>(fSizY);
 
 
 	if (player.Interface & INTER_INVENTORY)
@@ -1215,9 +1195,8 @@ bool PutInInventory()
 
 
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
-		ARX_CHECK_SHORT(fBag);
 
-		short iY = ARX_CLEAN_WARN_CAST_SHORT(fBag);
+		short iY = checked_range_cast<short>(fBag);
 
 
 
@@ -1246,10 +1225,8 @@ bool PutInInventory()
 
 
 			float fRatio	= INTERFACE_RATIO(121);
-			ARX_CHECK_SHORT(iY + fRatio);
 
-			iY	+= ARX_CLEAN_WARN_CAST_SHORT(fRatio);
-
+			iY += checked_range_cast<short>(fRatio);
 
 		}
 
@@ -1344,9 +1321,7 @@ bool InSecondaryInventoryPos(Vec2s * pos)
 	{
 		short tx, ty;
 
-
-		ARX_CHECK_SHORT(InventoryX);
-		tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		tx = pos->x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		ty = pos->y - SHORT_INTERFACE_RATIO(13);
 		tx = tx / SHORT_INTERFACE_RATIO(32);
 		ty = ty / SHORT_INTERFACE_RATIO(32);
@@ -1375,11 +1350,9 @@ bool InPlayerInventoryPos(Vec2s * pos)
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
-	ARX_CHECK_SHORT(fCenterX);
-	ARX_CHECK_SHORT(fSizY);
 
-	short iPosX = ARX_CLEAN_WARN_CAST_SHORT(fCenterX);
-	short iPosY = ARX_CLEAN_WARN_CAST_SHORT(fSizY);
+	short iPosX = checked_range_cast<short>(fCenterX);
+	short iPosY = checked_range_cast<short>(fSizY);
 
 	short tx, ty;
 
@@ -1403,9 +1376,8 @@ bool InPlayerInventoryPos(Vec2s * pos)
 	else if (player.Interface & INTER_INVENTORYALL)
 	{
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
-		ARX_CHECK_SHORT(fBag);
 
-		short iY = ARX_CLEAN_WARN_CAST_SHORT(fBag);
+		short iY = checked_range_cast<short>(fBag);
 
 		if ((
 		            (pos->x >= iPosX) &&
@@ -1429,9 +1401,8 @@ bool InPlayerInventoryPos(Vec2s * pos)
 			}
 
 			float fRatio	= INTERFACE_RATIO(121);
-			ARX_CHECK_SHORT(iY + fRatio);
 
-			iY	+= ARX_CLEAN_WARN_CAST_SHORT(fRatio);
+			iY = checked_range_cast<short>(iY + fRatio);
 		}
 	}
 
@@ -1464,8 +1435,7 @@ bool IsFlyingOverInventory(Vec2s * pos)
 	if (SecondaryInventory != NULL)
 	{
 
-		ARX_CHECK_SHORT(InventoryX);
-		short tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short tx = pos->x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		short ty = pos->y - SHORT_INTERFACE_RATIO(13);
 		tx /= SHORT_INTERFACE_RATIO(32);
 		ty /= SHORT_INTERFACE_RATIO(32);
@@ -1494,8 +1464,7 @@ INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos)
 
 	if (SecondaryInventory != NULL)
 	{
-		ARX_CHECK_SHORT(InventoryX);
-		short tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
+		short tx = pos->x + checked_range_cast<short>(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		short ty = pos->y - SHORT_INTERFACE_RATIO(13);
 
 		if ((tx >= 0) && (ty >= 0))
@@ -1824,11 +1793,8 @@ bool TakeFromInventory(Vec2s * pos)
 					{
 						long cos = ARX_INTERACTIVE_GetPrice(io, ioo);
 
-
 						float fcos	= cos - cos * ((float)player.Full_Skill_Intuition) * 0.005f;
-						ARX_CHECK_LONG(fcos);
-						cos			= ARX_CLEAN_WARN_CAST_LONG(fcos);
-
+						cos = checked_range_cast<long>(fcos);
 
 						if (player.gold < cos)
 						{
@@ -1871,11 +1837,9 @@ bool TakeFromInventory(Vec2s * pos)
 
 					float fCalcX = (pos->x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
 					float fCalcY = (pos->y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
-					ARX_CHECK_SHORT(fCalcX);
-					ARX_CHECK_SHORT(fCalcY);
 
-					sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(fCalcX);
-					sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(fCalcY);
+					sInventoryX = checked_range_cast<short>(fCalcX);
+					sInventoryY = checked_range_cast<short>(fCalcY);
 
 					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
 
@@ -1897,11 +1861,9 @@ bool TakeFromInventory(Vec2s * pos)
 
 					float fCalcX = (pos->x + InventoryX - INTERFACE_RATIO(2)) / INTERFACE_RATIO(32);
 					float fCalcY = (pos->y - INTERFACE_RATIO(13)) / INTERFACE_RATIO(32);
-					ARX_CHECK_SHORT(fCalcX);
-					ARX_CHECK_SHORT(fCalcY);
 
-					sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(fCalcX);
-					sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(fCalcY);
+					sInventoryX = checked_range_cast<short>(fCalcX);
+					sInventoryY = checked_range_cast<short>(fCalcY);
 
 				}
 			}
@@ -1910,11 +1872,9 @@ bool TakeFromInventory(Vec2s * pos)
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
-	ARX_CHECK_INT(fCenterX);
-	ARX_CHECK_INT(fSizY);
 
-	int iPosX = ARX_CLEAN_WARN_CAST_INT(fCenterX);
-	int iPosY = ARX_CLEAN_WARN_CAST_INT(fSizY);
+	int iPosX = checked_range_cast<int>(fCenterX);
+	int iPosY = checked_range_cast<int>(fSizY);
 
 
 	if (InPlayerInventoryPos(pos))
@@ -1940,12 +1900,9 @@ bool TakeFromInventory(Vec2s * pos)
 
 						float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
 						float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
-						ARX_CHECK_SHORT(fX);
-						ARX_CHECK_SHORT(fY);
 
-						sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(fX);
-						sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(fY);
-
+						sInventoryX = checked_range_cast<short>(fX);
+						sInventoryY = checked_range_cast<short>(fY);
 
 						SendInitScriptEvent(ioo);
 						ARX_INVENTORY_IdentifyIO(ioo);
@@ -1967,11 +1924,9 @@ bool TakeFromInventory(Vec2s * pos)
 						
 						float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
 						float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
-						ARX_CHECK_SHORT(fX);
-						ARX_CHECK_SHORT(fY);
 						
-						sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(fX);
-						sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(fY);
+						sInventoryX = checked_range_cast<short>(fX);
+						sInventoryY = checked_range_cast<short>(fY);
 					}
 				}
 			}
@@ -2166,8 +2121,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory()
 	if (TSecondaryInventory)
 	{
 
-		ARX_CHECK_SHORT(TSecondaryInventory->sizey);
-		ARX_CHECK_SHORT(TSecondaryInventory->sizex);
+		checked_range_cast<short>(TSecondaryInventory->sizey);
+		checked_range_cast<short>(TSecondaryInventory->sizex);
 
 
 		for (long j = 0; j < TSecondaryInventory->sizey; j++)
@@ -2190,8 +2145,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory()
 					{
 						sInventory = 2;
 
-						sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(i);
-						sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(j);
+						sInventoryX = static_cast<short>(i);
+						sInventoryY = static_cast<short>(j);
 
 						sx = i;
 						sy = j;
@@ -2213,8 +2168,8 @@ void ARX_INVENTORY_ReOrder()
 	if (TSecondaryInventory)
 	{
 
-		ARX_CHECK_SHORT(TSecondaryInventory->sizey);
-		ARX_CHECK_SHORT(TSecondaryInventory->sizex);
+		checked_range_cast<short>(TSecondaryInventory->sizey);
+		checked_range_cast<short>(TSecondaryInventory->sizex);
 
 
 		for (long j = 0; j < TSecondaryInventory->sizey; j++)
@@ -2239,8 +2194,8 @@ void ARX_INVENTORY_ReOrder()
 					{
 						sInventory = 2;
 
-						sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(i);
-						sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(j);
+						sInventoryX = static_cast<short>(i);
+						sInventoryY = static_cast<short>(j);
 
 						sx = i;
 						sy = j;

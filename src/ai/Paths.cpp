@@ -215,7 +215,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 	static long count = 1;
 
-	long f	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+	long f	=	static_cast<long>(FrameDiff);
 
 	if (f < 10) f = 10;
 
@@ -1026,7 +1026,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					DynLight[id].pos.z = Thrown[i].position.z;
 					DynLight[id].ex_flaresize = 40.f; 
 					DynLight[id].extras |= EXTRAS_FLARE;
-					DynLight[id].duration	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff * 0.5f);
+					DynLight[id].duration	=	static_cast<long>(FrameDiff * 0.5f);
 				}
 
 				float p = 3.f;

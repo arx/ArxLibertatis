@@ -1321,10 +1321,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			if (io->show==SHOW_FLAG_TELEPORTING)
 			{
-				float fCalc = io->sfx_time + FrameDiff ;
-				ARX_CHECK_ULONG(fCalc);
-
-				io->sfx_time = ARX_CLEAN_WARN_CAST_ULONG(fCalc) ;
+				float fCalc = io->sfx_time + FrameDiff;
+				io->sfx_time = checked_range_cast<unsigned long>(fCalc);
 
 				if (io->sfx_time >= ARXTimeUL())
 					io->sfx_time = ARXTimeUL();

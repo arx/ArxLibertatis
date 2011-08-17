@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Renderer.h"
+#include "graphics/Math.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/font/FontCache.h"
 
@@ -244,12 +245,14 @@ long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string&
 
 
 
-long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
-{
-	ARX_CHECK_LONG(y);
-	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
-	Rect rRect(Rect::Num(x - x2), Rect::Num(y), Rect::Num(x + x2), Rect::Limits::max());
-
+long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, Color col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut) {
+	
+	Rect::Num _x = checked_range_cast<Rect::Num>(x - x2);
+	Rect::Num _y = checked_range_cast<Rect::Num>(y);
+	Rect::Num w = checked_range_cast<Rect::Num>(x + x2);
+	
+	Rect rRect(_x, _y, w, Rect::Limits::max());
+	
 	if (pTextManage)
 	{
 		pTextManage->AddText(font,
@@ -262,7 +265,7 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 							 iNbLigne
 							);
 
-		return ARX_CLEAN_WARN_CAST_LONG(x2);
+		return static_cast<long>(x2);
 	}
 
 	return 0;

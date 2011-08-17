@@ -159,9 +159,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 		particle[j].scale.x		=	0.f;
 		particle[j].scale.y		=	0.f;
 		particle[j].scale.z		=	0.f;
-		float	fArx_Time_Get	=	ARX_TIME_Get();
-		ARX_CHECK_LONG(fArx_Time_Get);
-		particle[j].timcreation	=	ARX_CLEAN_WARN_CAST_LONG(fArx_Time_Get);
+		particle[j].timcreation = checked_range_cast<long>(ARX_TIME_Get());
 		particle[j].tolive		=	tim;
 		particle[j].tc			=	EERIE_DRAW_sphere_particle;
 		particle[j].siz			=	siz;
@@ -364,9 +362,9 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	float foundY = 0.f;
 	short pzi, pza, pxi, pxa;
 
-	ARX_CHECK_SHORT(pz - 1);
-	ARX_CHECK_SHORT(pz + 1);
-	short sPz = ARX_CLEAN_WARN_CAST_SHORT(pz);
+	checked_range_cast<short>(pz - 1);
+	checked_range_cast<short>(pz + 1);
+	short sPz = static_cast<short>(pz);
 
 	if (rz < -40.f)
 	{
@@ -389,9 +387,9 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		pza = sPz;
 	}
 
-	ARX_CHECK_SHORT(px - 1);
-	ARX_CHECK_SHORT(px + 1);
-	short sPx = ARX_CLEAN_WARN_CAST_SHORT(px);
+	checked_range_cast<short>(px - 1);
+	checked_range_cast<short>(px + 1);
+	short sPx = static_cast<short>(px);
 
 	if (rx < -40.f)
 	{
@@ -476,9 +474,9 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 	float foundY = 0.f;
 	short pzi, pza, pxi, pxa;
 
-	ARX_CHECK_SHORT(pz - 1);
-	ARX_CHECK_SHORT(pz + 1);
-	short sPz = ARX_CLEAN_WARN_CAST_SHORT(pz);
+	checked_range_cast<short>(pz - 1);
+	checked_range_cast<short>(pz + 1);
+	short sPz = static_cast<short>(pz);
 
 	if (rz < -40.f)
 	{
@@ -501,9 +499,9 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 		pza = sPz;
 	}
 
-	ARX_CHECK_SHORT(px + 1);
-	ARX_CHECK_SHORT(px - 1);
-	short sPx = ARX_CLEAN_WARN_CAST_SHORT(px);
+	checked_range_cast<short>(px + 1);
+	checked_range_cast<short>(px - 1);
+	short sPx = static_cast<short>(px);
 
 	if (rx < -40.f)
 	{
@@ -1772,10 +1770,9 @@ void UpdateIORoom(INTERACTIVE_OBJ * io)
 	pos.y -= 60.f;
 
 	long roo = ARX_PORTALS_GetRoomNumForPosition(&pos, 2);
-	ARX_CHECK_SHORT(roo);
 
 	if (roo >= 0)
-		io->room = ARX_CLEAN_WARN_CAST_SHORT(roo);
+		io->room = checked_range_cast<short>(roo);
 
 	io->room_flags &= ~1;
 }
@@ -2775,8 +2772,8 @@ void PrepareActiveCamera()
 	ACTIVECAM->matrix._23 = sx * cy ;
 	ACTIVECAM->matrix._33 = cx * cy ;
 
-	EERIE_CreateMatriceProj(ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-							ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY),
+	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
+							static_cast<float>(DANAESIZY),
 							EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
 							1.f,
 							ACTIVECAM->cdepth);
@@ -2816,8 +2813,8 @@ void PrepareCamera(EERIE_CAMERA * cam)
 	cam->transform.posy = cam->pos.y;
 	cam->transform.posz = cam->pos.z;
 
-	EERIE_CreateMatriceProj(ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-							ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY),
+	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
+							static_cast<float>(DANAESIZY),
 							EERIE_TransformOldFocalToNewFocal(cam->focal),
 							1.f,
 							cam->cdepth);
@@ -3115,8 +3112,7 @@ void AcquireLastAnim(INTERACTIVE_OBJ * io)
 			&&	(!io->animlayer[3].cur_anim)) return;
 
 	// Stores Frametime and number of vertex for later interpolation
-	ARX_CHECK_ULONG(FrameTime);
-	io->lastanimtime = ARX_CLEAN_WARN_CAST_ULONG(FrameTime);
+	io->lastanimtime = checked_range_cast<unsigned long>(FrameTime);
 	io->nb_lastanimvertex = 1;
 }
 
@@ -3614,16 +3610,11 @@ long NEED_ANCHORS = 1;
 
 static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx) {
 	
-	ARX_CHECK_SHORT(idx);
-	ARX_CHECK_SHORT(px);
-	ARX_CHECK_SHORT(py);
-	ARX_CHECK_SHORT(nr);
-	
 	portals->room[nr].epdata = (EP_DATA *)realloc(portals->room[nr].epdata, sizeof(EP_DATA) * (portals->room[nr].nb_polys + 1));
-	portals->room[nr].epdata[portals->room[nr].nb_polys].idx = ARX_CLEAN_WARN_CAST_SHORT(idx);
-	portals->room[nr].epdata[portals->room[nr].nb_polys].px = ARX_CLEAN_WARN_CAST_SHORT(px);
-	portals->room[nr].epdata[portals->room[nr].nb_polys].py = ARX_CLEAN_WARN_CAST_SHORT(py);
-	ep->room = ARX_CLEAN_WARN_CAST_SHORT(nr);
+	portals->room[nr].epdata[portals->room[nr].nb_polys].idx = checked_range_cast<short>(idx);
+	portals->room[nr].epdata[portals->room[nr].nb_polys].px = checked_range_cast<short>(px);
+	portals->room[nr].epdata[portals->room[nr].nb_polys].py = checked_range_cast<short>(py);
+	ep->room = checked_range_cast<short>(nr);
 	portals->room[nr].nb_polys++;
 }
 
@@ -3794,10 +3785,8 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	            * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
 	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * ( 1.0f / 2 );
 	
-	ARX_CHECK_SHORT(val1);
-
 	if (type == TYPE_ROOM)
-		epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
+		epp->room = checked_range_cast<short>(val1);
 	else
 		epp->room = -1;
 

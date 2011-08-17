@@ -654,8 +654,8 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 		for (long num=0;num<4;num++)
 		{
 
-				nearx = ARX_CLEAN_WARN_CAST_FLOAT(i * 100);  
-				nearz = ARX_CLEAN_WARN_CAST_FLOAT(j * 100);  
+				nearx = static_cast<float>(i * 100);  
+				nearz = static_cast<float>(j * 100);  
 
 			if ((num==1) || (num==2))
 					nearx += 100;

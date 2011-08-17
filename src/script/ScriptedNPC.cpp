@@ -94,8 +94,7 @@ public:
 		
 		DebugScript(' ' << options << " \"" << command << "\" " << behavior_param);
 		
-		ARX_CHECK_LONG(behavior_param);
-		ARX_NPC_Behaviour_Change(io, behavior, static_cast<long>(behavior_param));
+		ARX_NPC_Behaviour_Change(io, behavior, checked_range_cast<long>(behavior_param));
 		
 		return Success;
 	}
