@@ -97,13 +97,12 @@ void OpenGLRenderer::enableTransform() {
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
-	glMultMatrixf(&view._11);
+	glLoadMatrixf(&view._11);
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, 1, 0, 1000);	
+	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordinate systems
+	glMultMatrixf(&projection._11);
 	
 	currentTransform = GL_ModelViewProjectionTransform;
 	
@@ -121,12 +120,11 @@ void OpenGLRenderer::disableTransform() {
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glTranslatef(-1.f, 1.f, 0);
-	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
+	glScalef(2.f/viewport.width(), -2.f/viewport.height(), -1.f);
 	
 	currentTransform = GL_NoTransform;
 	
