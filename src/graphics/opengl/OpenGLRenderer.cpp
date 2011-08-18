@@ -110,10 +110,13 @@ void OpenGLRenderer::disableTransform() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
+	int height = mainApp->GetWindow()->GetSize().y;
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glTranslatef(-1.f, 1.f, 0);
 	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
+	glTranslatef(-viewport.left, -viewport.top, 0.f);
 	
 	currentTransform = GL_NoTransform;
 	
@@ -258,6 +261,8 @@ void OpenGLRenderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFa
 void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	viewport = _viewport;
+	
+	// TODO maybe it's better to always have the viewport cover the whole window and use glScissor instead?
 	
 	int height = mainApp->GetWindow()->GetSize().y;
 	
