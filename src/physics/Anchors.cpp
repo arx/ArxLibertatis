@@ -1124,7 +1124,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 
 	long lastper	=	-1;
 	long per;
-	float total		=	ARX_CLEAN_WARN_CAST_FLOAT(eb->Zsize * eb->Xsize);
+	float total		=	static_cast<float>(eb->Zsize * eb->Xsize);
 
 	for (long j = 0; j < eb->Zsize; j++)
 		for (long i = 0; i < eb->Xsize; i++)
@@ -1233,7 +1233,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 	float count = 0;
 	long lastper	=	-1;
 	long per;
-	float total		=	ARX_CLEAN_WARN_CAST_FLOAT(eb->Zsize * eb->Xsize * 9);
+	float total		=	static_cast<float>(eb->Zsize * eb->Xsize * 9);
 
 	for (long j = 0; j < eb->Zsize; j++)
 		for (long i = 0; i < eb->Xsize; i++)

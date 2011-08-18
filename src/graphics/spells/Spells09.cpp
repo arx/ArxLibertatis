@@ -632,16 +632,11 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 
 
 	float fDur = ulDuration * (fd / 900.0f);
-	ARX_CHECK_ULONG(fDur);
+	SetDuration(checked_range_cast<unsigned long>(fDur));
 
-	SetDuration(ARX_CLEAN_WARN_CAST_ULONG(fDur));
+	float fCalc = (fd / 900.0f) * iMax;
 
-
-
-	float fCalc = (fd / 900.0f) * iMax ;
-	ARX_CHECK_INT(fCalc);
-
-	iNumber = ARX_CLEAN_WARN_CAST_INT(fCalc);
+	iNumber = checked_range_cast<int>(fCalc);
 
 	int end = 40;
 	tv1a[0].sx = s.x;

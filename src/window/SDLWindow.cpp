@@ -1,6 +1,11 @@
 
 #include "window/SDLWindow.h"
 
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+// TODO don't include this for linux as it includes Xlib.h, which has symbols/defines that conflict with our own! (Window, FillSolid, None)
+#include <SDL_syswm.h>
+#endif
+
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDLInputBackend.h"
 #include "io/Logger.h"
@@ -74,6 +79,9 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	
 	onRendererInit();
 	
+	const SDL_version * ver = SDL_Linked_Version();
+	LogInfo << "Using SDL " << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
+	
 	return true;
 }
 
@@ -92,7 +100,25 @@ bool SDLWindow::setMode(Vec2i size, bool fullscreen) {
 }
 
 void * SDLWindow::GetHandle() {
-	return window;
+	
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	
+	SDL_SysWMinfo wmi;
+	SDL_VERSION(&wmi.version);
+	
+	if(!SDL_GetWMInfo(&wmi)) {
+		return NULL;
+	}
+	
+	return wmi.window;
+	
+#else
+	
+	// TODO X11 needs more than one pointer (display+window)
+	return NULL;
+	
+#endif
+	
 }
 
 void SDLWindow::SetFullscreen(bool fullscreen) {

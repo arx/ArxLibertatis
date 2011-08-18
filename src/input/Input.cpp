@@ -425,10 +425,7 @@ void Input::update()
 		}
 	}
 
-
-	ARX_CHECK_INT(ARX_TIME_Get( false ));
-	const int iArxTime = ARX_CLEAN_WARN_CAST_INT(ARX_TIME_Get( false )) ;
-
+	const int iArxTime = checked_range_cast<int>(ARX_TIME_Get(false));
 
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++)
 	{

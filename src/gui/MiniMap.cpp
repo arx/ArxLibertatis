@@ -115,8 +115,8 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 			//TODO-RENDERING: SpecialBorderSurface...
 			//SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwWidth, minimap[SHOWLEVEL].tc->m_dwHeight);
 
-			minimap[SHOWLEVEL].height = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwHeight); 
-			minimap[SHOWLEVEL].width = ARX_CLEAN_WARN_CAST_FLOAT(minimap[SHOWLEVEL].tc->m_dwWidth);
+			minimap[SHOWLEVEL].height = static_cast<float>(minimap[SHOWLEVEL].tc->m_dwHeight); 
+			minimap[SHOWLEVEL].width = static_cast<float>(minimap[SHOWLEVEL].tc->m_dwWidth);
 
 			float minx = std::numeric_limits<float>::max();
 			float maxx = std::numeric_limits<float>::min();
@@ -441,30 +441,16 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 				MOD20DIV = 1.f / (MOD20);
 				//@PERF do if(fl2){}else{} to make 4 and not 8 flot op if fl2.
 
-				ARX_CHECK_LONG((360 + MOD20)*Xratio);
-				ARX_CHECK_LONG((555 - MOD20)*Xratio);
-				ARX_CHECK_LONG((85 + MOD20)*Yratio);
-				ARX_CHECK_LONG((355 - MOD20)*Yratio);
+				boundaries.left = checked_range_cast<Rect::Num>((360 + MOD20) * Xratio);
+				boundaries.right = checked_range_cast<Rect::Num>((555 - MOD20) * Xratio);
+				boundaries.top = checked_range_cast<Rect::Num>((85 + MOD20) * Yratio);
+				boundaries.bottom = checked_range_cast<Rect::Num>((355 - MOD20) * Yratio);
 
-				//CAST
-				boundaries.left		=	ARX_CLEAN_WARN_CAST_LONG((360 + MOD20) * Xratio);
-				boundaries.right	=	ARX_CLEAN_WARN_CAST_LONG((555 - MOD20) * Xratio);
-				boundaries.top		=	ARX_CLEAN_WARN_CAST_LONG((85 + MOD20) * Yratio);
-				boundaries.bottom	=	ARX_CLEAN_WARN_CAST_LONG((355 - MOD20) * Yratio);
-
-				if (fl2)
-				{
-					//CHECK (DEBUG)
-					ARX_CHECK_LONG((FL2_LEFT + MOD20)*Xratio);
-					ARX_CHECK_LONG((FL2_RIGHT - MOD20)*Xratio);
-					ARX_CHECK_LONG((FL2_TOP + MOD20)*Yratio);
-					ARX_CHECK_LONG((FL2_BOTTOM - MOD20)*Yratio);
-
-					//CAST
-					boundaries.left		=	ARX_CLEAN_WARN_CAST_LONG((FL2_LEFT + MOD20) * Xratio);
-					boundaries.right	=	ARX_CLEAN_WARN_CAST_LONG((FL2_RIGHT - MOD20) * Xratio);
-					boundaries.top		=	ARX_CLEAN_WARN_CAST_LONG((FL2_TOP + MOD20) * Yratio);
-					boundaries.bottom	=	ARX_CLEAN_WARN_CAST_LONG((FL2_BOTTOM - MOD20) * Yratio);
+				if(fl2) {
+					boundaries.left = checked_range_cast<Rect::Num>((FL2_LEFT + MOD20) * Xratio);
+					boundaries.right = checked_range_cast<Rect::Num>((FL2_RIGHT - MOD20) * Xratio);
+					boundaries.top = checked_range_cast<Rect::Num>((FL2_TOP + MOD20) * Yratio);
+					boundaries.bottom = checked_range_cast<Rect::Num>((FL2_BOTTOM - MOD20) * Yratio);
 				}
 			}
 
@@ -550,9 +536,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 
 							long ucLevel =  max(r, (long)minimap[SHOWLEVEL].revealed[i][j]);
-							ARX_CHECK_UCHAR(ucLevel);
 
-							minimap[SHOWLEVEL].revealed[i][j] = ARX_CLEAN_WARN_CAST_UCHAR(ucLevel);
+							minimap[SHOWLEVEL].revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
 
 
 						}
@@ -892,17 +877,11 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						{
 							Rect bRect(140, 290, 140 + 205, 358);
 
-							float fLeft		= (bRect.left) * Xratio ;
-							float fRight	= (bRect.right) * Xratio ;
-							float fTop		= (bRect.top) * Yratio ;
-							float fBottom	= (bRect.bottom) * Yratio ;
-
-							ARX_CHECK_INT(fLeft);
-							ARX_CHECK_INT(fRight);
-							ARX_CHECK_INT(fTop);
-							ARX_CHECK_INT(fBottom);
-
-							Rect rRect = Rect(Rect::Num(fLeft), Rect::Num(fTop), Rect::Num(fRight), Rect::Num(fBottom));
+							Rect::Num left = checked_range_cast<Rect::Num>((bRect.left) * Xratio);
+							Rect::Num right = checked_range_cast<Rect::Num>((bRect.right) * Xratio);
+							Rect::Num top = checked_range_cast<Rect::Num>((bRect.top) * Yratio);
+							Rect::Num bottom = checked_range_cast<Rect::Num>((bRect.bottom) * Yratio);
+							Rect rRect = Rect(left, top, right, bottom);
 
 							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].text, rRect);
 

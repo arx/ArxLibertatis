@@ -326,9 +326,8 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 
 
 	float fRandom	= 500 + rnd() * 1000;
-	ARX_CHECK_INT(fRandom);
 
-	iTTL	= ARX_CLEAN_WARN_CAST_INT(fRandom);
+	iTTL = checked_range_cast<int>(fRandom);
 
 }
 
@@ -371,9 +370,8 @@ void CLightning::ReCreate()
 
 
 	float fRandom	= 500 + rnd() * 1000;
-	ARX_CHECK_INT(fRandom);
 
-	iTTL = ARX_CLEAN_WARN_CAST_INT(fRandom);
+	iTTL = checked_range_cast<int>(fRandom);
 
 
 }
@@ -448,7 +446,7 @@ float CLightning::Render()
 	{
 
 
-		ARX_CHECK( lSrc == -1 );	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
+		arx_assert( lSrc == -1 );	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
 		ePos.x = 0.f;
 		ePos.y = 0.f;
 		ePos.z = 0.f;

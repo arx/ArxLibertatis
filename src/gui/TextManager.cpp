@@ -9,6 +9,7 @@
 
 #include "core/Core.h"
 #include "gui/Text.h"
+#include "graphics/Math.h"
 #include "graphics/font/Font.h"
 #include "io/Logger.h"
 
@@ -84,8 +85,7 @@ bool TextManager::AddText( Font* font, const std::string& str, long x, long y, C
 
 void TextManager::Update(float _fDiffFrame) {
 	
-	ARX_CHECK_INT(_fDiffFrame);
-	int _iDiffFrame = ARX_CLEAN_WARN_CAST_INT(_fDiffFrame);
+	int _iDiffFrame = checked_range_cast<int>(_fDiffFrame);
 	
 	// TODO-slussier: Until we fix the ARX_TIME_Get() mess, it's easy to have a FrameDiff of 0...
 	if(_iDiffFrame == 0)

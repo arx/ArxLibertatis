@@ -390,8 +390,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			dlpw.rpos = ARXpaths[i]->pathways[j].rpos;
 			
 			float fValue = ARXpaths[i]->pathways[j]._time ;
-			ARX_CHECK_ULONG(fValue);
-			dlpw.time = ARX_CLEAN_WARN_CAST_ULONG(fValue);
+			dlpw.time = checked_range_cast<u32>(fValue);
 			
 			memcpy(dat + pos, &dlpw, sizeof(DANAE_LS_PATHWAYS));
 			pos += sizeof(DANAE_LS_PATHWAYS);
@@ -928,8 +927,7 @@ long DanaeLoadLevel(const fs::path & file) {
 				el->pos = dlight->pos;
 				el->rgb = dlight->rgb;
 				
-				ARX_CHECK_SHORT(dlight->extras);
-				el->extras = static_cast<short>(dlight->extras);
+				el->extras = checked_range_cast<short>(dlight->extras);
 				
 				el->ex_flicker = dlight->ex_flicker;
 				el->ex_radius = dlight->ex_radius;
@@ -1139,8 +1137,7 @@ long DanaeLoadLevel(const fs::path & file) {
 			
 			el->rgb = dlight->rgb;
 			
-			ARX_CHECK_SHORT(dlight->extras);
-			el->extras = static_cast<short>(dlight->extras);
+			el->extras = checked_range_cast<short>(dlight->extras);
 			
 			el->ex_flicker = dlight->ex_flicker;
 			el->ex_radius = dlight->ex_radius;

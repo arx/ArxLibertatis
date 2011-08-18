@@ -119,12 +119,12 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 		for (int i = 0; i < nb; i++)
 		{
 
-			ARX_CHECK_NOT_NEG(_iBpp);
+			arx_assert(_iBpp >= 0);
 
 			if(mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)_iBpp) {
 				
-				ARX_CHECK_NOT_NEG(_iWidth);
-				ARX_CHECK_NOT_NEG(_iHeight);
+				arx_assert(_iWidth >= 0);
+				arx_assert(_iHeight >= 0);
 
 				if(mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)_iWidth
 				   && mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)_iHeight) {

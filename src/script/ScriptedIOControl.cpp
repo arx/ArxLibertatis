@@ -709,8 +709,7 @@ public:
 		
 		DebugScript(' ' << io->damager_type << damages);
 		
-		ARX_CHECK_SHORT(damages);
-		io->damager_damages = static_cast<short>(damages);
+		io->damager_damages = checked_range_cast<short>(damages);
 		
 		return Success;
 	}

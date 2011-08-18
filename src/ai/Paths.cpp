@@ -215,7 +215,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 	static long count = 1;
 
-	long f	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+	long f	=	static_cast<long>(FrameDiff);
 
 	if (f < 10) f = 10;
 
@@ -801,7 +801,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	{
 		// TODO treat NPC !!!
 
-		ARX_CHECK_NO_ENTRY();
+		ARX_DEAD_CODE();
 		attack = 0;
 		dmgs = 0;
 
@@ -1026,7 +1026,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					DynLight[id].pos.z = Thrown[i].position.z;
 					DynLight[id].ex_flaresize = 40.f; 
 					DynLight[id].extras |= EXTRAS_FLARE;
-					DynLight[id].duration	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff * 0.5f);
+					DynLight[id].duration	=	static_cast<long>(FrameDiff * 0.5f);
 				}
 
 				float p = 3.f;
@@ -1253,7 +1253,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 												if ((damages = ARX_THROWN_ComputeDamages(i, Thrown[i].source, EVERYTHING_IN_SPHERE[jj])) > 0.f)
 												{
-													ARX_CHECK(hitpoint >= 0);
+													arx_assert(hitpoint >= 0);
 
 													if (target->ioflags & IO_NPC)
 													{

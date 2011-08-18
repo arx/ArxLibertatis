@@ -1,21 +1,4 @@
 
-##############################################################################
-# Check that the configured CMAKE_CXX_COMPILER works.
-function(check_compiler)
-	if(NOT CHECK_COMPILER)
-		message(STATUS "Checking compiler: ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}")
-		
-		# See if we can compile a simple program.
-		set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_test.cpp)
-		file(WRITE ${compile_test_file} "int main(){}\n")
-		try_compile(CHECK_COMPILER ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" OUTPUT_VARIABLE ERRORLOG)
-		
-		if(NOT CHECK_COMPILER)
-			message(FATAL_ERROR "\n${ERRORLOG}\n\n!! Compiler does not work, tried ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n")
-		endif()
-	endif()
-endfunction(check_compiler)
-
 function(check_compiler_flag RESULT FLAG)
 	
 	if(DEFINED CHECK_COMPILER_FLAG_${FLAG})

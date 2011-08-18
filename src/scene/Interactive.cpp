@@ -281,9 +281,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 
 	long n = GetInterNum(io);
 
-	ARX_CHECK_SHORT(n);
-	short sN = ARX_CLEAN_WARN_CAST_SHORT(n);
-
+	short sN = checked_range_cast<short>(n);
 
 	ARX_INTERACTIVE_ForceIOLeaveZone(io, 0);
 
@@ -630,9 +628,8 @@ void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num)
 	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
 	{
 
-		ARX_CHECK_LONG(io->animlayer[num].cur_anim->anims[ io->animlayer[num].altidx_cur ]->anim_time - 1);
 		io->animlayer[num].ctime =
-		    ARX_CLEAN_WARN_CAST_LONG(io->animlayer[num].cur_anim->anims[ io->animlayer[num].altidx_cur ]->anim_time - 1);
+		    checked_range_cast<long>(io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1.f);
 
 	}
 }
@@ -665,10 +662,7 @@ void PrepareIOTreatZone(long flag)
 	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
 	TREATZONE_AddIO(inter.iobj[0], 0, 0);
 
-
-	ARX_CHECK_SHORT(GLOBAL_Player_Room);
-	short sGlobalPlayerRoom = ARX_CLEAN_WARN_CAST_SHORT(GLOBAL_Player_Room);
-
+	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
@@ -4113,7 +4107,7 @@ void RenderInter(float from, float to) {
 
 				if (io->animlayer[0].flags & EA_PAUSED)
 					diff = 0;
-				else diff = ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+				else diff = static_cast<long>(FrameDiff);
 
 				if ((io == FlyingOverIO)
 				        &&	(!(io->ioflags & IO_NPC))

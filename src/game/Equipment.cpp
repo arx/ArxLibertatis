@@ -906,7 +906,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 						color = (target->ioflags & IO_NPC) ? target->_npcdata->blood_color : Color::white;
 						pos = target->obj->vertexlist3[hitpoint].v;
 					}
-					else ARX_CHECK_NO_ENTRY(); 
+					else ARX_DEAD_CODE(); 
 					
 					float dmgs = 0.f;
 					if (!(flags & 1))

@@ -524,4 +524,10 @@ inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);
 }
 
+template <class T, class V>
+inline T checked_range_cast(V value) {
+	arx_assert(value >= std::numeric_limits<T>::min() && value <= std::numeric_limits<T>::max());
+	return static_cast<T>(value);
+}
+
 #endif

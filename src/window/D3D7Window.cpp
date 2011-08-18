@@ -280,6 +280,9 @@ bool D3D7Window::Init(const std::string & title, int width, int height, bool vis
 			for(vector<DDSURFACEDESC2>::iterator m = dev->modes.begin(); m != dev->modes.end(); ++m) {
 				displayModes.push_back(Vec2i(m->dwWidth, m->dwHeight));
 			}
+			
+			LogInfo << "Using Win32 windowing";
+			
 			return true;
 		} else {
 			LogWarning << "Failed to initialize " << dev->name << " (" << dev->desc << ") using " << dev->driver;

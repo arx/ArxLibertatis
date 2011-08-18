@@ -1574,7 +1574,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		equival[k] = -1;
 	}
 
-	ARX_CHECK(0 < from->selections[num].selected.size());
+	arx_assert(0 < from->selections[num].selected.size());
 
 	for(size_t k = 0; k < from->selections[num].selected.size(); k++) {
 		inpos = from->selections[num].selected[k];
@@ -1777,8 +1777,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 
 	long long_no_collide = GetInterNum(ioo);
-	ARX_CHECK_SHORT(long_no_collide);
-	io->no_collide = ARX_CLEAN_WARN_CAST_SHORT(long_no_collide);
+	io->no_collide = checked_range_cast<short>(long_no_collide);
 
 
 
@@ -3589,9 +3588,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 
 					float fCalc = io->_npcdata->walk_start_time + FrameDiff ;
-					ARX_CHECK_SHORT(fCalc);
 
-					io->_npcdata->walk_start_time = ARX_CLEAN_WARN_CAST_SHORT(fCalc);
+					io->_npcdata->walk_start_time = checked_range_cast<short>(fCalc);
 
 
 					if (io->_npcdata->walk_start_time > 600)
@@ -3676,9 +3674,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 
 				long lMax = max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
-				ARX_CHECK_USHORT(io->_npcdata->pathfind.listpos + lMax);
 
-				io->_npcdata->pathfind.listpos	+= ARX_CLEAN_WARN_CAST_USHORT(lMax);
+				io->_npcdata->pathfind.listpos = checked_range_cast<unsigned short>(io->_npcdata->pathfind.listpos + lMax);
 
 
 				if ((io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb)) // || (dis<=120.f))

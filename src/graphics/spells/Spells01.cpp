@@ -622,8 +622,7 @@ void CMultiMagicMissile::Create()
 				pTab[i]->Create(aePos, angles);  
 
 				float	fTime	= ulDuration + frand2() * 1000.0f;
-				ARX_CHECK_LONG(fTime);
-				long	lTime	= ARX_CLEAN_WARN_CAST_LONG(fTime);
+				long lTime = checked_range_cast<long>(fTime);
 
 				lTime		= std::max(1000L, lTime);
 				lMax		= std::max(lMax, lTime);
@@ -834,9 +833,7 @@ void CIgnit::Create(Vec3f * posc, float perim, int speed)
 void CIgnit::Action(int aiMode)
 {
 
-
-	ARX_CHECK_SHORT(aiMode);
-	short sMode = ARX_CLEAN_WARN_CAST_SHORT(aiMode);
+	short sMode = checked_range_cast<short>(aiMode);
 
 	for (int i = 0; i < nblight; i++)
 	{
@@ -1135,7 +1132,7 @@ void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 	if ((this->nbeclair > 255) || (nbseg > 256)) return;
 
 
-	short sNbSeg = ARX_CLEAN_WARN_CAST_SHORT(nbseg);
+	short sNbSeg = static_cast<short>(nbseg);
 
 	while (nb--)
 	{

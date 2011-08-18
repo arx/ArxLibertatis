@@ -31,14 +31,33 @@ Build options:
 * `ARX_USE_UNITYBUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `ARX_DEBUG` (default=ON): Normal debug options
 * `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
-* `ARX_FORCE_32BIT` (default=OFF): Force a 32-bit build on 64-bit systems
 * `ARX_USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `ARX_USE_OPENGL` (default=ON): Build the OpenGL renderer backend
 * `ARX_USE_SDL` (default=ON): Build the SDL windowing and input backends
+
+Windows-only options:
+
 * `ARX_USE_DSOUND` (default=OFF): Build the DirectSound audio backend
-* `ARX_USE_D3D` (default=OFF): Build the Direct3D 7 renderer backend
+* `ARX_USE_D3D7` (default=OFF): Build the Direct3D 7 renderer backend
+* `ARX_USE_DINPUT7` (default=OFF): Build the DirectInput 7 input backend
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
+
+To build 32-bit binaries on a 64-bit (multilib) system, pass `-DCMAKE_CXX_FLAGS=-m32` to cmake.
+
+## Cross compiling
+
+To build the windows version on linux (with the optional D3D, DSound and DInput backends) use winelib or mingw32.
+
+### Winelib
+
+For a winelib build pass `-DCMAKE_TOOLCHAIN_FILE=cmake/wine-toolchain.cmake` to cmake.
+Make sure your default wineprefix (~/.wine)  is up to date or running cmake might fail!
+Using wine will automatically disable ARX_USE_OPENGL and ARX_USE_SDL.
+
+### MinGW32
+
+Once you have a ming32 cross compiler installed you can use it for arx by passing `-DCMAKE_TOOLCHAIN_FILE=cmake/wine-toolchain.cmake` to cmake.
 
 ## Run
 

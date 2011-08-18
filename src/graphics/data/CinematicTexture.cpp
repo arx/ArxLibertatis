@@ -32,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Cinematic.h"
 
+#include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 
@@ -201,22 +202,17 @@ void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, i
 	*i4 = *i3 + 1;
 }
 /*-----------------------------------------------------------*/
-void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2)
-{
-	ARX_CHECK_USHORT(i0);
-	ARX_CHECK_USHORT(i1);
-	ARX_CHECK_USHORT(i2);
-
-
+void AddPoly(CinematicGrid * grille, int matIdx, int i0, int i1, int i2) {
+	
 	if (grille->nbinds == grille->nbindsmalloc)
 	{
 		grille->nbindsmalloc += 100;
 		grille->inds = (C_IND *)realloc((void *)grille->inds, grille->nbindsmalloc * sizeof(C_IND));
 	}
 
-	grille->inds[grille->nbinds].i1 = ARX_CLEAN_WARN_CAST_USHORT(i0);
-	grille->inds[grille->nbinds].i2 = ARX_CLEAN_WARN_CAST_USHORT(i1);
-	grille->inds[grille->nbinds++].i3 = ARX_CLEAN_WARN_CAST_USHORT(i2);
+	grille->inds[grille->nbinds].i1 = checked_range_cast<unsigned short>(i0);
+	grille->inds[grille->nbinds].i2 = checked_range_cast<unsigned short>(i1);
+	grille->inds[grille->nbinds++].i3 = checked_range_cast<unsigned short>(i2);
 	grille->mats[matIdx].nbind += 3;
 
 }

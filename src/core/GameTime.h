@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_GAMETIME_H
 #define ARX_CORE_GAMETIME_H
 
+#include "graphics/Math.h"
 #include "platform/Platform.h"
 
 extern float ARXPausedTime;
@@ -90,13 +91,11 @@ inline float ARX_TIME_Get(bool _bUsePause = true) {
 
 inline unsigned long ARX_TIME_GetUL(bool _bUsePause = true) {
 	float time = ARX_TIME_Get(_bUsePause);
-	ARX_CHECK_ULONG(time);
-	return static_cast<unsigned long>(time);
+	return checked_range_cast<unsigned long>(time);
 }
 
 inline unsigned long ARXTimeUL() {
-	ARX_CHECK_ULONG(ARXTime);
-	return static_cast<unsigned long>(ARXTime);
+	return checked_range_cast<unsigned long>(ARXTime);
 }
 
 #endif // ARX_CORE_GAMETIME_H

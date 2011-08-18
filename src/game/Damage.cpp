@@ -236,7 +236,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 			if (duration > Blood_Duration)
 				Blood_Pos += (float)FrameDiff * ( 1.0f / 300 );
 
-			duration += ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+			duration += static_cast<long>(FrameDiff);
 		}
 		else Blood_Pos += (float)FrameDiff * ( 1.0f / 40 );
 	}
@@ -1102,7 +1102,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 
 				if (io != NULL)
 				{
-					ARX_CHECK_NOT_NEG(num);
+					arx_assert(num >= 0);
 
 					particle[j].ov.x = io->obj->vertexlist3[num].v.x + rnd() * 10.f - 5.f;;
 					particle[j].ov.y = io->obj->vertexlist3[num].v.y + rnd() * 10.f - 5.f;;
@@ -1759,12 +1759,8 @@ void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float percent)
 		{
 			float mloss = 1.f;
 
-			if (io->ioflags & IO_ITEM)
-			{
-
-				ARX_CHECK_LONG(io->_itemdata->price / io->max_durability);
-				io->_itemdata->price -= ARX_CLEAN_WARN_CAST_LONG(io->_itemdata->price / io->max_durability);
-
+			if(io->ioflags & IO_ITEM) {
+				io->_itemdata->price -= checked_range_cast<long>(io->_itemdata->price / io->max_durability);
 			}
 
 			io->max_durability -= mloss;
@@ -1779,7 +1775,7 @@ void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float percent)
 
 			if (io->ioflags & IO_ITEM)
 			{
-				io->_itemdata->price -= ARX_CLEAN_WARN_CAST_LONG(io->_itemdata->price * v);
+				io->_itemdata->price -= static_cast<long>(io->_itemdata->price * v);
 			}
 
 			io->max_durability -= mloss;

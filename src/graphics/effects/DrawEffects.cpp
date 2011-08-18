@@ -434,16 +434,14 @@ void ARXDRAW_DrawPolyBoom()
 			{	
 				if (polyboom[i].timecreation - FrameDiff > 0)
 				{
-					float fCalc	=	polyboom[i].timecreation - FrameDiff;	
-					ARX_CHECK_ULONG( fCalc );
-					polyboom[i].timecreation	=	ARX_CLEAN_WARN_CAST_ULONG( fCalc );
+					float fCalc	=	polyboom[i].timecreation - FrameDiff;
+					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 
 				if (polyboom[i].timecreation - FrameDiff > 0)
 				{
-					float fCalc	= 	polyboom[i].timecreation - FrameDiff;	
-					ARX_CHECK_ULONG( fCalc );
-					polyboom[i].timecreation	=	ARX_CLEAN_WARN_CAST_ULONG( fCalc );
+					float fCalc	= 	polyboom[i].timecreation - FrameDiff;
+					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 
 			}
@@ -766,7 +764,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					TexturedVertex verts[4];
 					GRenderer->SetTexture(0, enviro );
 
-				ARX_CHECK(to > 0);
+				arx_assert(to > 0);
 
 					for ( long j = 0 ; j < to ; j++ )
 					{
@@ -810,7 +808,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 				GRenderer->SetTexture(0, enviro );
 
-			ARX_CHECK(to > 0);
+			arx_assert(to > 0);
 
 				for ( long j = 0 ; j < to ; j++ )
 				{

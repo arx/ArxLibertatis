@@ -176,9 +176,8 @@ void AddPoisonFog(Vec3f * pos, float power)
 {
 	int iDiv = 4 - config.video.levelOfDetail;
 
-	float flDiv =	ARX_CLEAN_WARN_CAST_FLOAT(1 << iDiv);
-	ARX_CHECK_LONG(FrameDiff / flDiv);
-	long count	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff / flDiv);
+	float flDiv = static_cast<float>(1 << iDiv);
+	long count = checked_range_cast<long>(FrameDiff / flDiv);
 
 	if (count < 1) count = 1;
 
@@ -203,7 +202,7 @@ void AddPoisonFog(Vec3f * pos, float power)
 			particle[j].move.y		=	(speed - speed * rnd()) * ( 1.0f / 15 );
 			particle[j].move.z		=	(speed - rnd()) * fval;
 			particle[j].scale.x		=	particle[j].scale.y		=	8;
-			particle[j].timcreation	=	ARX_CLEAN_WARN_CAST_LONG(ARX_TIME_Get());
+			particle[j].timcreation	=	static_cast<long>(ARX_TIME_Get());
 			particle[j].tolive		=	4500 + (unsigned long)(rnd() * 4500);
 			particle[j].tc			=	TC_smoke;
 			particle[j].siz			=	(80 + rnd() * 80 * 2.f) * ( 1.0f / 3 );
@@ -220,7 +219,7 @@ void ARX_FOGS_Render() {
 
 	int iDiv = 4 - config.video.levelOfDetail;
 
-	float flDiv = ARX_CLEAN_WARN_CAST_FLOAT(1 << iDiv);
+	float flDiv = static_cast<float>(1 << iDiv);
 
 	for (long i = 0; i < MAX_FOG; i++)
 	{
@@ -228,9 +227,7 @@ void ARX_FOGS_Render() {
 		{
 			float fval;
 
-			ARX_CHECK_LONG(FrameDiff / flDiv);
-			long count	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff / flDiv);
-
+			long count = checked_range_cast<long>(FrameDiff / flDiv);
 
 			if (count < 1) count = 1;
 

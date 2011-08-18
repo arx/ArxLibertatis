@@ -57,10 +57,8 @@ public:
 		if(poisonous_count == 0) {
 			io->poisonous_count = 0;
 		} else {
-			ARX_CHECK_SHORT(poisonous);
-			ARX_CHECK_SHORT(poisonous_count);
-			io->poisonous = static_cast<short>(poisonous);
-			io->poisonous_count = static_cast<short>(poisonous_count);
+			io->poisonous = checked_range_cast<short>(poisonous);
+			io->poisonous_count = checked_range_cast<short>(poisonous_count);
 		}
 		
 		return Success;

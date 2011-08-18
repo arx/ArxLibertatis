@@ -236,29 +236,25 @@ bool ArxGame::InitWindow() {
 	
 }
 
-bool ArxGame::InitInput()
-{
+bool ArxGame::InitInput() {
+	
 	LogDebug << "Input init";
 	bool init = ARX_INPUT_Init();
-	if(init) {
-		LogInfo << "Input init success";
-	} else {
+	if(!init) {
 		LogError << "Input init failed";
 	}
-
+	
 	return init;
 }
 
-bool ArxGame::InitSound()
-{
+bool ArxGame::InitSound() {
+	
 	LogDebug << "Sound init";
 	bool init = ARX_SOUND_Init();
-	if(init) {
-		LogInfo << "Sound init success";
-	} else {
+	if(!init) {
 		LogWarning << "Sound init failed";
 	}
-
+	
 	return true;
 }
 
@@ -788,8 +784,8 @@ static float _AvgFrameDiff = 150.f;
 	subj.centery = DANAECENTERY;
 
 	//Casting long to float
-	subj.posleft = subj.transform.xmod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERX );
-	subj.postop  = subj.transform.ymod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERY );
+	subj.posleft = subj.transform.xmod = static_cast<float>( DANAECENTERX );
+	subj.postop  = subj.transform.ymod = static_cast<float>( DANAECENTERY );
 
 	// Finally computes current focal
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
@@ -970,8 +966,7 @@ static float _AvgFrameDiff = 150.f;
 			rectz[0].left = rectz[1].left = 0;
 			rectz[0].right = rectz[1].right = DANAESIZX;
 			rectz[0].top = 0;
-			ARX_CHECK_LONG(CINEMA_DECAL * Yratio);
-			long lMulResult = static_cast<long>(CINEMA_DECAL * Yratio);
+			long lMulResult = checked_range_cast<long>(CINEMA_DECAL * Yratio);
 			rectz[0].bottom = lMulResult;
 			rectz[1].top = DANAESIZY - lMulResult;
 			rectz[1].bottom = DANAESIZY;
@@ -1022,11 +1017,10 @@ static float _AvgFrameDiff = 150.f;
 
 
 				float iCalc = step*speedfactor ;
-				ARX_CHECK_ULONG(iCalc);
 
 				arx_assert(inter.iobj[0]->obj != NULL);
 				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(iCalc), inter.iobj[0], false);
+				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -1050,13 +1044,12 @@ static float _AvgFrameDiff = 150.f;
 
 
 			float val=(float)tFrameDiff*speedfactor;
-			ARX_CHECK_LONG(val);
 
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
 			arx_assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			                  &inter.iobj[0]->pos, ARX_CLEAN_WARN_CAST_ULONG(val), inter.iobj[0], false);
+			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
@@ -1486,7 +1479,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (player.life<=0)
 	{
-			DeadTime += ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
+			DeadTime += static_cast<long>(FrameDiff);
 		float mdist = EEfabs(player.physics.cyl.height)-60;
 		DeadCameraDistance+=(float)FrameDiff*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
 
@@ -1656,8 +1649,8 @@ static float _AvgFrameDiff = 150.f;
 	ACTIVECAM->centerx = DANAECENTERX;
 	ACTIVECAM->centery = DANAECENTERY;
 	// casting long to float
-	ACTIVECAM->posleft = ACTIVECAM->transform.xmod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERX );
-	ACTIVECAM->postop = ACTIVECAM->transform.ymod = ARX_CLEAN_WARN_CAST_FLOAT( DANAECENTERY );
+	ACTIVECAM->posleft = ACTIVECAM->transform.xmod = static_cast<float>( DANAECENTERX );
+	ACTIVECAM->postop = ACTIVECAM->transform.ymod = static_cast<float>( DANAECENTERY );
 
 
 	// Set Listener Position
@@ -1742,7 +1735,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		if (pParticleManager)
 		{
-			pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
+			pParticleManager->Update(static_cast<long>(FrameDiff));
 			pParticleManager->Render();
 		}
 
@@ -2169,12 +2162,8 @@ void ArxGame::GoFor2DFX()
 						ee3dlv.y = lv.sy;
 						ee3dlv.z = lv.sz;
 
-
-						ARX_CHECK_SHORT(ltvv.sx) ;
-						ARX_CHECK_SHORT(ltvv.sy) ;
-
-						ees2dlv.x = ARX_CLEAN_WARN_CAST_SHORT(ltvv.sx) ;
-						ees2dlv.y = ARX_CLEAN_WARN_CAST_SHORT(ltvv.sy) ;
+						ees2dlv.x = checked_range_cast<short>(ltvv.sx);
+						ees2dlv.y = checked_range_cast<short>(ltvv.sy);
 
 
 						if( !bComputeIO )

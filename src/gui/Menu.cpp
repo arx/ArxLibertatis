@@ -796,9 +796,8 @@ bool ARX_Menu_Render()
 				{
 
 					float fRandom	= rnd() * 2;
-					ARX_CHECK_INT(fRandom);
 
-					int t	= ARX_CLEAN_WARN_CAST_INT(fRandom);
+					int t = checked_range_cast<int>(fRandom);
 
 
 					pTextManage->Clear();
@@ -853,10 +852,7 @@ bool ARX_Menu_Render()
 						ARX_PLAYER_QuickGeneration();
 					}
 
-
-					ARX_CHECK_CHAR(iSkin);
-					player.skin = ARX_CLEAN_WARN_CAST_CHAR(iSkin);
-
+					player.skin = checked_range_cast<char>(iSkin);
 				}
 
 				color = Color(255, 255, 255);

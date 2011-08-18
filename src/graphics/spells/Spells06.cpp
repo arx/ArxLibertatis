@@ -1971,9 +1971,7 @@ float CParalyse::Render()
 
 
 				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
-				ARX_CHECK_ULONG(fMin);
-
-				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
+				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
 
 
 				particle[j].scale.x = 1.f;
@@ -2008,12 +2006,8 @@ float CParalyse::Render()
 				particle[j].move.z = 0;
 				particle[j].siz = 0.5f;
 
-
 				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
-				ARX_CHECK_ULONG(fMin);
-
-				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
-
+				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
 
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;

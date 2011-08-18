@@ -516,8 +516,7 @@ void Direct3DRenderer::setGamma(float brightness, float contrast, float gamma) {
 		
 		int iColor = clamp((int)(65536.f * (fLuminosity + pow(fVal, fGamma))), 0, 65535);
 		
-		ARX_CHECK_WORD(iColor);
-		WORD wColor = static_cast<WORD>(iColor);
+		WORD wColor = checked_range_cast<WORD>(iColor);
 		
 		ramp.red[iI] = wColor;
 		ramp.green[iI] = wColor;

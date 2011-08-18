@@ -468,15 +468,15 @@ void DanaeSwitchFullScreen()
 
 	for(int i=0;i<nb;i++)
 	{
-		ARX_CHECK_NOT_NEG( config.video.bpp );
+		arx_assert(config.video.bpp >= 0);
 
-		if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( config.video.bpp ) )
+		if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == static_cast<unsigned int>( config.video.bpp ) )
 		{
-			ARX_CHECK_NOT_NEG( config.video.width );
-			ARX_CHECK_NOT_NEG( config.video.height );
+			arx_assert(config.video.width >= 0);
+			arx_assert(config.video.height >= 0);
 
-			if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( config.video.width ) ) &&
-				( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( config.video.height ) ) )
+			if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == static_cast<unsigned int>( config.video.width ) ) &&
+				( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == static_cast<unsigned int>( config.video.height ) ) )
 			{
 
 				mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
@@ -2390,8 +2390,7 @@ long Player_Arrow_Count() {
 					if(io) {
 						if(io->short_name() == "arrows") {
 							if(io->durability >= 1.f) {
-								ARX_CHECK_LONG(io->durability);
-								count += static_cast<long>(io->durability);
+								count += checked_range_cast<long>(io->durability);
 							}
 						}
 					}
@@ -3374,10 +3373,7 @@ void AddQuakeFX(float intensity,float duration,float period,long flags)
 	{
 		QuakeFx.intensity=intensity;
 
-
-		ARX_CHECK_ULONG(FrameTime);
-		QuakeFx.start = ARX_CLEAN_WARN_CAST_ULONG(FrameTime);
-
+		QuakeFx.start = checked_range_cast<unsigned long>(FrameTime);
 
 		QuakeFx.duration=(unsigned long)duration;
 		QuakeFx.frequency=period;

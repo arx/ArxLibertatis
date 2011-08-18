@@ -157,17 +157,11 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	long lPrimAttach	=	GetActionPointIdx(eerie, "primary_attach");
 	long lLeftAttach	=	GetActionPointIdx(eerie, "left_attach");
 
-	ARX_CHECK_SHORT(lVRight);
-	ARX_CHECK_SHORT(lURight);
-	ARX_CHECK_SHORT(lViewAttach);
-	ARX_CHECK_SHORT(lPrimAttach);
-	ARX_CHECK_SHORT(lLeftAttach);
-
-	eerie->fastaccess.V_right		=	ARX_CLEAN_WARN_CAST_SHORT(lVRight);
-	eerie->fastaccess.U_right		=	ARX_CLEAN_WARN_CAST_SHORT(lURight);
-	eerie->fastaccess.view_attach	=	ARX_CLEAN_WARN_CAST_SHORT(lViewAttach);
-	eerie->fastaccess.primary_attach =	ARX_CLEAN_WARN_CAST_SHORT(lPrimAttach);
-	eerie->fastaccess.left_attach	=	ARX_CLEAN_WARN_CAST_SHORT(lLeftAttach);
+	eerie->fastaccess.V_right = checked_range_cast<short>(lVRight);
+	eerie->fastaccess.U_right = checked_range_cast<short>(lURight);
+	eerie->fastaccess.view_attach = checked_range_cast<short>(lViewAttach);
+	eerie->fastaccess.primary_attach = checked_range_cast<short>(lPrimAttach);
+	eerie->fastaccess.left_attach = checked_range_cast<short>(lLeftAttach);
 
 
 	long lWeapAttach				=	GetActionPointIdx(eerie, "weapon_attach");
@@ -175,15 +169,10 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	long lJaw						=	EERIE_OBJECT_GetGroup(eerie, "jaw");
 	long lMouthAll					=	EERIE_OBJECT_GetGroup(eerie, "mouth all");
 
-	ARX_CHECK_SHORT(lWeapAttach);
-	ARX_CHECK_SHORT(lSecAttach);
-	ARX_CHECK_SHORT(lJaw);
-	ARX_CHECK_SHORT(lMouthAll);
-
-	eerie->fastaccess.weapon_attach		=	ARX_CLEAN_WARN_CAST_SHORT(lWeapAttach);
-	eerie->fastaccess.secondary_attach	=	ARX_CLEAN_WARN_CAST_SHORT(lSecAttach);
-	eerie->fastaccess.jaw_group			=	ARX_CLEAN_WARN_CAST_SHORT(lJaw);
-	eerie->fastaccess.mouth_group		=	ARX_CLEAN_WARN_CAST_SHORT(lMouthAll);
+	eerie->fastaccess.weapon_attach		=	checked_range_cast<short>(lWeapAttach);
+	eerie->fastaccess.secondary_attach	=	checked_range_cast<short>(lSecAttach);
+	eerie->fastaccess.jaw_group			=	checked_range_cast<short>(lJaw);
+	eerie->fastaccess.mouth_group		=	checked_range_cast<short>(lMouthAll);
 
 
 	if (eerie->fastaccess.mouth_group == -1)
@@ -191,21 +180,18 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	else
 	{
 		long lMouthOrigin = eerie->grouplist[eerie->fastaccess.mouth_group].origin;
-		ARX_CHECK_SHORT(lMouthOrigin);
-		eerie->fastaccess.mouth_group_origin = ARX_CLEAN_WARN_CAST_SHORT(lMouthOrigin);
+		eerie->fastaccess.mouth_group_origin = checked_range_cast<short>(lMouthOrigin);
 	}
 
 	long lHeadGroup					=	EERIE_OBJECT_GetGroup(eerie, "head");
-	ARX_CHECK_SHORT(lHeadGroup);
-	eerie->fastaccess.head_group	=	ARX_CLEAN_WARN_CAST_SHORT(lHeadGroup);
+	eerie->fastaccess.head_group	=	checked_range_cast<short>(lHeadGroup);
 
 	if (eerie->fastaccess.head_group == -1)
 		eerie->fastaccess.head_group_origin = -1;
 	else
 	{
 		long lHeadOrigin  = eerie->grouplist[eerie->fastaccess.head_group].origin;
-		ARX_CHECK_SHORT(lHeadOrigin);
-		eerie->fastaccess.head_group_origin = ARX_CLEAN_WARN_CAST_SHORT(lHeadOrigin);
+		eerie->fastaccess.head_group_origin = checked_range_cast<short>(lHeadOrigin);
 	}
 
 
@@ -214,18 +200,12 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	long lHead = EERIE_OBJECT_GetSelection(eerie, "head");
 	long lChest = EERIE_OBJECT_GetSelection(eerie, "chest");
 	long lLeggings = EERIE_OBJECT_GetSelection(eerie, "leggings") ;
-
-	ARX_CHECK_SHORT(lFire);
-	ARX_CHECK_SHORT(lCarryAttach);
-	ARX_CHECK_SHORT(lHead);
-	ARX_CHECK_SHORT(lChest);
-	ARX_CHECK_SHORT(lLeggings);
-
-	eerie->fastaccess.fire = ARX_CLEAN_WARN_CAST_SHORT(lFire);
-	eerie->fastaccess.carry_attach = ARX_CLEAN_WARN_CAST_SHORT(lCarryAttach);
-	eerie->fastaccess.sel_head = ARX_CLEAN_WARN_CAST_SHORT(lHead);
-	eerie->fastaccess.sel_chest = ARX_CLEAN_WARN_CAST_SHORT(lChest);
-	eerie->fastaccess.sel_leggings = ARX_CLEAN_WARN_CAST_SHORT(lLeggings);
+	
+	eerie->fastaccess.fire = checked_range_cast<short>(lFire);
+	eerie->fastaccess.carry_attach = checked_range_cast<short>(lCarryAttach);
+	eerie->fastaccess.sel_head = checked_range_cast<short>(lHead);
+	eerie->fastaccess.sel_chest = checked_range_cast<short>(lChest);
+	eerie->fastaccess.sel_leggings = checked_range_cast<short>(lLeggings);
 }
 
 //-----------------------------------------------------------------------------------------------------
@@ -351,10 +331,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 		
 		long lKeyOrient = tkf2015->key_orient;
 		long lKeyMove = tkf2015->key_move;
-		ARX_CHECK_SHORT(lKeyOrient);
-		ARX_CHECK_SHORT(lKeyMove);
-		eerie->frames[i].f_rotate = static_cast<short>(lKeyOrient);
-		eerie->frames[i].f_translate = static_cast<short>(lKeyMove);
+		eerie->frames[i].f_rotate = checked_range_cast<short>(lKeyOrient);
+		eerie->frames[i].f_translate = checked_range_cast<short>(lKeyMove);
 		
 		s32 time_frame = tkf2015->num_frame * 1000;
 		eerie->frames[i].time = time_frame * (1.f/24);

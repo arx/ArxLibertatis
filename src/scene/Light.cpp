@@ -628,7 +628,7 @@ void TreatBackgroundDynlights()
 					DynLight[n].intensity	=	GLight[i]->intensity;
 					DynLight[n].ex_flaresize =	GLight[i]->ex_flaresize;
 					DynLight[n].extras		=	GLight[i]->extras;
-					DynLight[n].duration	=	(long) LONG_MAX;
+					DynLight[n].duration = std::numeric_limits<long>::max();
 
 					DynLight[n].rgb.r = GLight[i]->rgb.r - GLight[i]->rgb.r * GLight[i]->ex_flicker.r * rnd() * ( 1.0f / 2 ); 
 					DynLight[n].rgb.g = GLight[i]->rgb.g - GLight[i]->rgb.g * GLight[i]->ex_flicker.g * rnd() * ( 1.0f / 2 ); 
