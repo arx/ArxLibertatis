@@ -78,15 +78,6 @@ bool OpenGLRenderer::EndScene() {
 	return true;
 }
 
-static void dump(const EERIEMATRIX & mat) {
-	
-	printf("%8f  %8f  %8f  %8f\n", mat._11, mat._12, mat._13, mat._14);
-	printf("%8f  %8f  %8f  %8f\n", mat._21, mat._22, mat._23, mat._24);
-	printf("%8f  %8f  %8f  %8f\n", mat._31, mat._32, mat._33, mat._34);
-	printf("%8f  %8f  %8f  %8f\n", mat._41, mat._42, mat._43, mat._44);
-	
-}
-
 static EERIEMATRIX projection;
 static EERIEMATRIX view;
 
@@ -100,9 +91,7 @@ void OpenGLRenderer::enableTransform() {
 	glLoadMatrixf(&view._11);
 		
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordinate systems
-	glMultMatrixf(&projection._11);
+	glLoadMatrixf(&projection._11);
 	
 	currentTransform = GL_ModelViewProjectionTransform;
 	
