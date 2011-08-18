@@ -464,29 +464,6 @@ bool ArxGame::Render3DEnvironment() {
 		LogError << "Scene rendering failed.";
 		return false;
 	}
-	/*
-	sleep(1);
-	
-	GRenderer->BeginScene();
-	
-	GRenderer->Begin2DProjection(-3, 3, -3, 3, -1, 1);
-	
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpSelectArg1, TextureStage::ArgTexture, TextureStage::ArgTexture);
-	
-	//GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-	//GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-	//GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
-	
-	GRenderer->Clear(Renderer::ColorBuffer);
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	
-	GRenderer->SetTexture(0, TextureContainer::LoadUI("misc/logo"));
-	
-	GRenderer->DrawTexturedRect(-1 + .5, -1 + .5, 2, 2, 0, 1, 1, 0, Color::white);
-	
-	GRenderer->EndScene();*/
 	
 	// Show the frame on the primary surface.
 	if(!GetWindow()->showFrame()) {
