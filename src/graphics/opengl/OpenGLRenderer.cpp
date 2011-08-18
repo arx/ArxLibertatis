@@ -110,8 +110,6 @@ void OpenGLRenderer::disableTransform() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	int height = mainApp->GetWindow()->GetSize().y;
-	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glTranslatef(-1.f, 1.f, 0);
@@ -489,13 +487,37 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 }
 
 bool OpenGLRenderer::getSnapshot(Image & image) {
-	ARX_UNUSED(image);
-	return false; // TODO implement
+	
+	Vec2i size = mainApp->GetWindow()->GetSize();
+	
+	image.Create(size.x, size.y, Image::Format_R8G8B8);
+	
+	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, image.GetData()); 
+	
+	CHECK_GL;
+	
+	return true;
 }
 
 bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
-	ARX_UNUSED(image), ARX_UNUSED(width), ARX_UNUSED(height);
-	return false; // TODO implement
+	
+	// TODO handle scaling on the GPU so we don't need to download the whole image
+	
+	Image fullsize;
+	
+	getSnapshot(fullsize);
+	
+	image.Create(width, height, Image::Format_R8G8B8);
+	
+	GLint ret = gluScaleImage(GL_RGB, fullsize.GetWidth(), fullsize.GetHeight(), GL_UNSIGNED_BYTE,
+	                          fullsize.GetData(), width, height, GL_UNSIGNED_BYTE, image.GetData());
+	
+	if(ret) {
+		LogWarning << "Failed to scaled down screen capture: " << ret << " = " << gluErrorString(ret);
+		return false;
+	}
+	
+	return true;
 }
 
 void OpenGLRenderer::setGamma(float brightness, float contrast, float gamma) {
