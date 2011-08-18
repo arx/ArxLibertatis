@@ -10,7 +10,11 @@ GLTextureStage::GLTextureStage(unsigned stage) : TextureStage(stage), tex(NULL) 
 	minFilter = TextureStage::FilterLinear;
 	magFilter = TextureStage::FilterLinear;
 	mipFilter = TextureStage::FilterLinear;
-	
+
+	args[Color][Arg0] = TextureStage::ArgTexture;
+	args[Color][Arg1] = TextureStage::ArgCurrent;
+	args[Alpha][Arg0] = TextureStage::ArgTexture;
+	args[Alpha][Arg1] = TextureStage::ArgCurrent;	
 }
 
 GLTextureStage::~GLTextureStage() {
