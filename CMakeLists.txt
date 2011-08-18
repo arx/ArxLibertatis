@@ -50,6 +50,24 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_CO
 	set(LAST_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE INTERNAL "The last C++ compiler.")
 endif()
 
+if(WIN32 OR WINE)
+	set(HAVE_WINAPI 1)
+else()
+	set(HAVE_WINAPI 0)
+endif()
+
+if(NOT HAVE_WINAPI)
+	# The is no DirectX under linux
+	set(ARX_USE_D3D7 OFF)
+	set(ARX_USE_DSOUND OFF)
+	set(ARX_USE_DINPUT7 OFF)
+endif()
+if(WINE)
+	# Cannot use native OpenGL and SDL libraries with wine.
+	set(ARX_USE_OPENGL OFF)
+	set(ARX_USE_SDL OFF)
+endif()
+
 find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -79,24 +97,6 @@ mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)
 mark_as_advanced(ILU_LIBRARIES)
 mark_as_advanced(IL_LIBRARIES)
-
-if(WIN32 OR WINE)
-	set(HAVE_WINAPI 1)
-else()
-	set(HAVE_WINAPI 0)
-endif()
-
-if(NOT HAVE_WINAPI)
-	# The is no DirectX under linux
-	set(ARX_USE_D3D7 OFF)
-	set(ARX_USE_DSOUND OFF)
-	set(ARX_USE_DINPUT7 OFF)
-endif()
-if(WINE)
-	# Cannot use native OpenGL and SDL libraries with wine.
-	set(ARX_USE_OPENGL OFF)
-	set(ARX_USE_SDL OFF)
-endif()
 
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
