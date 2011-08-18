@@ -415,9 +415,6 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 	
 	glSecondaryColor3ub(0, 0, 0);
 	
-	x -= 0.5f;
-	y -= 0.5f;
-	
 	glBegin(GL_QUADS);
 		
 		glMultiTexCoord2f(GL_TEXTURE0, uStart, vStart);
