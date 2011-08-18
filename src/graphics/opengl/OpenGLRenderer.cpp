@@ -101,7 +101,7 @@ void OpenGLRenderer::enableTransform() {
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordinate systems
+	//glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordinate systems
 	glMultMatrixf(&projection._11);
 	
 	currentTransform = GL_ModelViewProjectionTransform;
@@ -124,7 +124,7 @@ void OpenGLRenderer::disableTransform() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glTranslatef(-1.f, 1.f, 0);
-	glScalef(2.f/viewport.width(), -2.f/viewport.height(), -1.f);
+	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
 	
 	currentTransform = GL_NoTransform;
 	
@@ -200,7 +200,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case DepthTest: {
-			setGLState(GL_DEPTH_TEST, false); // TODO
+			setGLState(GL_DEPTH_TEST, enable);
 			break;
 		}
 		
@@ -367,7 +367,7 @@ void OpenGLRenderer::SetCulling(CullingMode mode) {
 
 void OpenGLRenderer::SetDepthBias(int depthBias) {
 	
-	float bias = -(float)depthBias; // TODO check this
+	float bias = -(float)depthBias / 16.f; // TODO check this
 	
 	glPolygonOffset(bias, bias);
 	
