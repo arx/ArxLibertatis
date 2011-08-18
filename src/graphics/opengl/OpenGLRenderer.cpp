@@ -356,12 +356,12 @@ static const GLenum arxToGlCullMode[] = {
 };
 
 void OpenGLRenderer::SetCulling(CullingMode mode) {
-	//if(mode == CullNone) {
-		glDisable(GL_CULL_FACE); // TODO
-	//} else {
-	//	glEnable(GL_CULL_FACE);
-	//	glCullFace(arxToGlCullMode[mode]);
-	//}
+	if(mode == CullNone) {
+		glDisable(GL_CULL_FACE);
+	} else {
+		glEnable(GL_CULL_FACE);
+		glCullFace(arxToGlCullMode[mode]);
+	}
 	CHECK_GL;
 }
 
