@@ -524,10 +524,25 @@ inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);
 }
 
-template <class T, class V>
-inline T checked_range_cast(V value) {
-	arx_assert(value >= std::numeric_limits<T>::min() && value <= std::numeric_limits<T>::max());
-	return static_cast<T>(value);
-}
+struct _checked_range_cast {
+	
+	const char * file;
+	size_t line;
+	
+	inline _checked_range_cast(const char * _file, size_t _line) : file(_file), line(_line) { }
+	
+	template <class T, class V>
+	inline T cast(V value) {
+		arx_assert_impl(value >= std::numeric_limits<T>::min() && value <= std::numeric_limits<T>::max(), file, line, NULL);
+		return static_cast<T>(value);
+	}
+	
+};
+
+#ifdef _DEBUG
+#define checked_range_cast _checked_range_cast(__FILE__, __LINE__).cast
+#else
+#define checked_range_cast static_cast
+#endif
 
 #endif
