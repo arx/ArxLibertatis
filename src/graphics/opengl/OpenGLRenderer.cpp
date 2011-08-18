@@ -96,43 +96,14 @@ void OpenGLRenderer::enableTransform() {
 		return;
 	}
 	
-	/* if(currentTransform == GL_NoTransform) {
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
+	glMultMatrixf(&view._11);
 		
-		glMatrixMode(GL_MODELVIEW);
-		glMultMatrixf(&view._11);
-		
-		glMatrixMode(GL_PROJECTION);
-		glMultMatrixf(&projection._11);
-		
-	} else */ {
-		
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glScalef(1.f, 1.f, -1.f); // switch between LHS and RHS coordnate systems
-		glMultMatrixf(&view._11);
-		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		
-		/*
-		//glMultMatrixf(&projection._11);
-		//glTranslatef(0, 0, 1);
-		gluPerspective(60, 1, 0, 1000);
-		
-		LogInfo << "----gl-----";
-		EERIEMATRIX temp;
-		glGetFloatv(GL_PROJECTION_MATRIX, &temp._11);
-		dump(temp);
-		
-		LogInfo << "----d3d-----";
-		dump(projection);
-		*/
-		
-		glTranslatef(-1.f, 1.f, 0);
-		glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
-		glMultMatrixf(&projection._11);
-		
-	}
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60, 1, 0, 1000);	
 	
 	currentTransform = GL_ModelViewProjectionTransform;
 	
@@ -171,7 +142,7 @@ void OpenGLRenderer::SetViewMatrix(const EERIEMATRIX & matView) {
 	if(currentTransform == GL_ModelViewProjectionTransform) {
 		currentTransform = GL_UnsetTransform;
 	}
-	
+
 	view = matView;
 }
 
@@ -188,7 +159,7 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	if(currentTransform == GL_ModelViewProjectionTransform) {
 		currentTransform = GL_UnsetTransform;
 	}
-	
+
 	projection = matProj;
 }
 
@@ -457,15 +428,15 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
+	return new GLNoVertexBuffer<TexturedVertex>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
+	return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
 }
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
-	return new GLVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
+	return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
 }
 
 const GLenum arxToGlPrimitiveType[] = {

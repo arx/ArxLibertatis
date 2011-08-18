@@ -21,8 +21,8 @@ void renderVertex(const TexturedVertex & vertex) {
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
-	// ignore the rhw parameter!
-	glVertex3f(vertex.sx, vertex.sy, vertex.sz);
+	GLfloat w = 1.0f / vertex.rhw; 
+	glVertex4f(vertex.sx * w, vertex.sy * w, vertex.sz * w, w);
 }
 
 template <>
@@ -109,11 +109,13 @@ public:
 		arx_assert(indices != NULL);
 		
 		renderer->beforeDraw<Vertex>();
+
+		Vertex * pBuf = buffer + offset;
 		
 		glBegin(arxToGlPrimitiveType[primitive]);
 		
 		for(size_t i = 0; i < nbindices; i++) {
-			renderVertex(buffer[indices[i]]);
+			renderVertex(pBuf[indices[i]]);
 		}
 		
 		glEnd();
