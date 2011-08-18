@@ -284,6 +284,7 @@ Rect OpenGLRenderer::GetViewport() {
 }
 
 void OpenGLRenderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
+	ARX_UNUSED(left), ARX_UNUSED(right), ARX_UNUSED(bottom), ARX_UNUSED(top), ARX_UNUSED(zNear), ARX_UNUSED(zFar);
 	// Do nothing!
 }
 
