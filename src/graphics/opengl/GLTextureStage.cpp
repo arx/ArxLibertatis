@@ -14,10 +14,7 @@ GLTextureStage::GLTextureStage(unsigned stage) : TextureStage(stage), tex(NULL) 
 }
 
 GLTextureStage::~GLTextureStage() {
-	
-	if(tex) {
-		tex->link(NULL), tex = NULL;
-	}
+	ResetTexture();
 }
 
 void GLTextureStage::SetTexture(Texture * texture) {
@@ -30,7 +27,11 @@ void GLTextureStage::SetTexture(Texture * texture) {
 	
 	ResetTexture();
 	
-	tex = reinterpret_cast<GLTexture2D *>(texture), tex->link(this);
+	tex = reinterpret_cast<GLTexture2D *>(texture);
+	
+	arx_assert_msg(tex->stage == NULL, "texture used in multiple texture stages");
+	
+	tex->link(this);
 }
 
 void GLTextureStage::ResetTexture() {
