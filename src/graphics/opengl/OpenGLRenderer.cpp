@@ -204,7 +204,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case Lighting: {
-			setGLState(GL_LIGHTING, false); // TODO
+			setGLState(GL_LIGHTING, enable);
 			break;
 		}
 		
