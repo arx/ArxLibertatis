@@ -29,7 +29,7 @@ void GLTextureStage::SetTexture(Texture * texture) {
 	
 	tex = reinterpret_cast<GLTexture2D *>(texture);
 	
-	arx_assert_msg(tex->stage == NULL, "texture used in multiple texture stages");
+	arx_assert_msg(tex->getStage() == NULL, "texture used in multiple texture stages");
 	
 	tex->link(this);
 }

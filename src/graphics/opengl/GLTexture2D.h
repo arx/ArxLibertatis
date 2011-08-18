@@ -22,6 +22,7 @@ public:
 	
 	void apply();
 	inline void link(GLTextureStage * _stage) { stage = _stage; }
+	inline GLTextureStage * getStage() { return stage; }
 	
 private:
 	
