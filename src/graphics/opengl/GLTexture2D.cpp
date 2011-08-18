@@ -54,7 +54,20 @@ void GLTexture2D::Upload() {
 		arx_assert_msg(false, "Unsupported image format");
 	}
 	
-	glTexImage2D(GL_TEXTURE_2D, 0, internal, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, mImage.GetData());
+	if(mHasMipmaps) {
+		
+		GLint ret = gluBuild2DMipmaps(GL_TEXTURE_2D, internal, mWidth, mHeight, format, GL_UNSIGNED_BYTE, mImage.GetData());
+		
+		if(ret) {
+			LogWarning << "Failed to generate mipmaps for " << mFileName << ": " << ret << " = " << gluErrorString(ret);
+			mHasMipmaps = false;
+		}
+		
+	}
+	
+	if(!mHasMipmaps) {
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, mWidth, mHeight, 0, format, GL_UNSIGNED_BYTE, mImage.GetData());
+	}
 	
 	CHECK_GL;
 }
@@ -88,14 +101,14 @@ static const GLint arxToGlFilter[][3] = {
 	// Mipmap: FilterNearest
 	{
 		-1, // FilterNone
-		GL_NEAREST, // FilterNearest TODO should be GL_NEAREST_MIPMAP_NEAREST
-		GL_LINEAR   // FilterLinear TODO should be GL_LINEAR_MIPMAP_NEAREST
+		GL_NEAREST_MIPMAP_NEAREST, // FilterNearest
+		GL_LINEAR_MIPMAP_NEAREST   // FilterLinear
 	},
 	// Mipmap: FilterLinear
 	{
 		-1, // FilterNone
-		GL_NEAREST, // FilterNearest TODO should be GL_NEAREST_MIPMAP_LINEAR
-		GL_LINEAR   // FilterLinear TODO should be GL_LINEAR_MIPMAP_LINEAR
+		GL_NEAREST_MIPMAP_LINEAR, // FilterNearest
+		GL_LINEAR_MIPMAP_LINEAR   // FilterLinear
 	}
 };
 
@@ -112,8 +125,10 @@ void GLTexture2D::apply() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
 	}
 	
-	if(stage->mipFilter != mipFilter || stage->minFilter != minFilter) {
-		minFilter = stage->minFilter, mipFilter = stage->mipFilter;
+	TextureStage::FilterMode newMipFilter = mHasMipmaps ? stage->mipFilter : TextureStage::FilterNone;
+	
+	if(newMipFilter != mipFilter || stage->minFilter != minFilter) {
+		minFilter = stage->minFilter, mipFilter = newMipFilter;
 		arx_assert(minFilter != TextureStage::FilterNone);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, arxToGlFilter[mipFilter][minFilter]);
 	}

@@ -263,7 +263,9 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	glViewport(viewport.left, height - viewport.bottom, viewport.width(), viewport.height());
 	
-	currentTransform = GL_UnsetTransform;
+	if(currentTransform == GL_NoTransform) {
+		currentTransform = GL_UnsetTransform;
+	}
 	
 	CHECK_GL;
 }
