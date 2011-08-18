@@ -199,7 +199,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		case Fog: {
-			setGLState(GL_FOG, false); // TODO
+			setGLState(GL_FOG, enable);
 			break;
 		}
 		
@@ -323,12 +323,29 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 }
 
 void OpenGLRenderer::SetFogColor(Color color) {
-	ARX_UNUSED(color); // TODO implement
+	Color4f colorf = color.to<float>();
+	GLfloat fogColor[4]= {colorf.r, colorf.g, colorf.b, colorf.a};
+	glFogfv(GL_FOG_COLOR, fogColor);
+	CHECK_GL;
 }
 
+static const GLint arxToGlFogMode[] = {
+	-1, // FogNone, TODO(unused) why is there a FogNone if there is also a separate Fog render state?
+	GL_EXP, // FogExp,
+	GL_EXP2, // FogExp2,
+	GL_LINEAR, // FogLinear
+};
+
+
 void OpenGLRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity) {
-	ARX_UNUSED(fogMode), ARX_UNUSED(fogStart), ARX_UNUSED(fogEnd), ARX_UNUSED(fogDensity);
-	// TODO implement
+	
+	glFogi(GL_FOG_MODE, arxToGlFogMode[fogMode]);
+	
+	glFogf(GL_FOG_START, fogStart);
+	glFogf(GL_FOG_END, fogEnd);
+	glFogf(GL_FOG_DENSITY, fogDensity);
+	
+	CHECK_GL;
 }
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
