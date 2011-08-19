@@ -2,15 +2,16 @@
 #include "graphics/opengl/GLTexture2D.h"
 
 #include "graphics/opengl/GLTextureStage.h"
+#include "graphics/opengl/OpenGLRenderer.h"
 
-GLTexture2D::GLTexture2D() : stage(NULL), tex(GL_NONE) { }
+GLTexture2D::GLTexture2D(OpenGLRenderer * _renderer) : renderer(_renderer), tex(GL_NONE) { }
 GLTexture2D::~GLTexture2D() {
 	Destroy();
 }
 
 bool GLTexture2D::Create() {
 	
-	arx_assert(stage == NULL);
+	arx_assert_msg(tex == NULL, "leaking OpenGL texture");
 	
 	glGenTextures(1, &tex);
 	
@@ -30,6 +31,8 @@ void GLTexture2D::Upload() {
 	arx_assert(tex != GL_NONE);
 	
 	glBindTexture(GL_TEXTURE_2D, tex);
+	
+	renderer->GetTextureStage(0)->current = this;
 	
 	GLint internal;
 	GLenum format;
@@ -76,9 +79,14 @@ void GLTexture2D::Destroy() {
 		CHECK_GL;
 	}
 	
-	if(stage) {
-		arx_assert(stage->tex == this);
-		stage->tex = NULL, stage = NULL;
+	for(size_t i = 0; i < renderer->GetTextureStageCount(); i++) {
+		GLTextureStage * stage = renderer->GetTextureStage(i);
+		if(stage->tex == this) {
+			stage->tex = NULL;
+		}
+		if(stage->current == this) {
+			stage->current = NULL;
+		}
 	}
 }
 
@@ -109,15 +117,14 @@ static const GLint arxToGlFilter[][3] = {
 	}
 };
 
-void GLTexture2D::apply() {
+void GLTexture2D::apply(GLTextureStage * stage) {
 	
 	arx_assert(stage != NULL);
 	arx_assert(stage->tex == this);
 	
-	glBindTexture(GL_TEXTURE_2D, tex);
-	
 	if(stage->wrapMode != wrapMode) {
-		GLint glwrap = arxToGlWrapMode[wrapMode = stage->wrapMode];
+		wrapMode = stage->wrapMode;
+		GLint glwrap = arxToGlWrapMode[wrapMode];
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glwrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
 	}
@@ -131,8 +138,9 @@ void GLTexture2D::apply() {
 	}
 	
 	if(stage->magFilter != magFilter) {
-		arx_assert(stage->magFilter != TextureStage::FilterNone);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, arxToGlFilter[0][magFilter = stage->magFilter]);
+		magFilter = stage->magFilter;
+		arx_assert(magFilter != TextureStage::FilterNone);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, arxToGlFilter[0][magFilter]);
 	}
 	
 }

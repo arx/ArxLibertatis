@@ -2,8 +2,9 @@
 #include "graphics/opengl/GLTextureStage.h"
 
 #include "graphics/opengl/GLTexture2D.h"
+#include "graphics/opengl/OpenGLRenderer.h"
 
-GLTextureStage::GLTextureStage(unsigned stage) : TextureStage(stage), tex(NULL) {
+GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : TextureStage(stage), renderer(_renderer), tex(NULL), current(NULL) {
 	
 	// Set default state
 	wrapMode = TextureStage::WrapRepeat;
@@ -29,20 +30,11 @@ void GLTextureStage::SetTexture(Texture * texture) {
 		return;
 	}
 	
-	ResetTexture();
-	
 	tex = reinterpret_cast<GLTexture2D *>(texture);
-	
-	arx_assert_msg(tex->getStage() == NULL, "texture used in multiple texture stages");
-	
-	tex->link(this);
 }
 
 void GLTextureStage::ResetTexture() {
-	
-	if(tex) {
-		tex->link(NULL), tex = NULL;
-	}
+	tex = NULL;
 }
 
 static const GLint glTexSource[] = {
@@ -188,19 +180,19 @@ void GLTextureStage::SetAlphaOp(TextureOp op) {
 }
 
 void GLTextureStage::SetWrapMode(WrapMode _wrapMode) {
-	wrapMode = _wrapMode;
+	wrapMode = _wrapMode, current = NULL;
 }
 
 void GLTextureStage::SetMinFilter(FilterMode filterMode) {
-	minFilter = filterMode;
+	minFilter = filterMode, current = NULL;
 }
 
 void GLTextureStage::SetMagFilter(FilterMode filterMode) {
-	magFilter = filterMode;
+	magFilter = filterMode, current = NULL;
 }
 
 void GLTextureStage::SetMipFilter(FilterMode filterMode) {
-	mipFilter = filterMode;
+	mipFilter = filterMode, current = NULL;
 }
 
 void GLTextureStage::SetMipMapLODBias(float bias) {
@@ -218,11 +210,39 @@ void GLTextureStage::SetTextureCoordIndex(int texCoordIdx) {
 
 void GLTextureStage::apply() {
 	
-	glActiveTexture(GL_TEXTURE0 + mStage);
+	if(!tex && !current) {
+		return;
+	}
+	
+	if(mStage != 0) {
+		glActiveTexture(GL_TEXTURE0 + mStage);
+	}
+	
+	if(tex != current) {
+		glBindTexture(GL_TEXTURE_2D, tex ? tex->tex : GL_NONE), current = tex;
+	}
+	
 	if(tex) {
-		tex->apply();
-	} else {
-		glBindTexture(GL_TEXTURE_2D, GL_NONE);
+		
+		bool apply = true;
+		if(mStage != 0 && renderer->GetTextureStage(0)->tex == tex) {
+			apply = false;
+			GLTextureStage * stage0 = renderer->GetTextureStage(0);
+			if(stage0->wrapMode != wrapMode || stage0->minFilter != minFilter || stage0->magFilter != magFilter || stage0->mipFilter != mipFilter) {
+				static bool warned = false;
+				if(!warned) {
+					LogWarning << "Same texture used in multiple stages with different attributes.";
+				}
+			}
+		}
+		
+		if(apply) {
+			tex->apply(this);
+		}
+	}
+	
+	if(mStage != 0) {
+		glActiveTexture(GL_TEXTURE0);
 	}
 	
 	CHECK_GL;

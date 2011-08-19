@@ -52,7 +52,7 @@ void OpenGLRenderer::Initialize() {
 	m_TextureStages.resize(3);
 	
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
-		m_TextureStages[i] = new GLTextureStage(i);
+		m_TextureStages[i] = new GLTextureStage(this, i);
 	}
 	
 	SetRenderState(ColorKey, true);
@@ -168,7 +168,7 @@ void OpenGLRenderer::RestoreAllTextures() {
 }
 
 Texture2D * OpenGLRenderer::CreateTexture2D() {
-	return new GLTexture2D;
+	return new GLTexture2D(this);
 }
 
 static inline void setGLState(GLenum state, bool enable) {

@@ -5,13 +5,14 @@
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/texture/TextureStage.h"
 
+class OpenGLRenderer;
 class GLTexture2D;
 
 class GLTextureStage : public TextureStage {
 	
 public:
 	
-	GLTextureStage(unsigned textureStage);
+	GLTextureStage(OpenGLRenderer * renderer, unsigned textureStage);
 	~GLTextureStage();
 	
 	void SetTexture(Texture * pTexture);
@@ -35,6 +36,8 @@ public:
 	
 private:
 	
+	OpenGLRenderer * renderer;
+	
 	enum OpType {
 		Color,
 		Alpha
@@ -54,6 +57,7 @@ private:
 	void setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1);
 	
 	GLTexture2D * tex;
+	GLTexture2D * current;
 	
 	WrapMode wrapMode;
 	FilterMode minFilter;

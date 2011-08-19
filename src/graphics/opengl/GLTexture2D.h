@@ -7,26 +7,25 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
+class OpenGLRenderer;
 class GLTextureStage;
 
 class GLTexture2D : public Texture2D {
 	
 public:
 	
-	GLTexture2D();
+	GLTexture2D(OpenGLRenderer * renderer);
 	~GLTexture2D();
 	
 	bool Create();
 	void Upload();
 	void Destroy();
 	
-	void apply();
-	inline void link(GLTextureStage * _stage) { stage = _stage; }
-	inline GLTextureStage * getStage() { return stage; }
+	void apply(GLTextureStage * stage);
 	
 private:
 	
-	GLTextureStage * stage;
+	OpenGLRenderer * renderer;
 	
 	GLuint tex;
 	
@@ -35,6 +34,7 @@ private:
 	TextureStage::FilterMode magFilter;
 	TextureStage::FilterMode mipFilter;
 	
+	friend class GLTextureStage;
 };
 
 #endif // ARX_GRAPHICS_OPENGL_GLTEXTURE2D_H
