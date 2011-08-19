@@ -467,9 +467,9 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	if(GLEW_ARB_vertex_array_bgra) {
 		
-		setVertexArray(vertices);
-		
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		
+		setVertexArray(vertices);
 		
 		glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
 		
