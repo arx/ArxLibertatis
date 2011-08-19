@@ -60,6 +60,8 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 		return false;
 	}
 	
+	SDL_WM_SetCaption(title.c_str(), title.c_str());
+	
 	OnCreate();
 	
 	renderer = new OpenGLRenderer;
