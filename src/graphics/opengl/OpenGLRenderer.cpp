@@ -112,9 +112,13 @@ void OpenGLRenderer::disableTransform() {
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glTranslatef(-1.f, 1.f, 0);
+	
+	// Change coordinate system from [0, width] x [0, height] to [-1, 1] x [-1, 1] and flip the y axis
+	glTranslatef(-1.f, 1.f, 0.f);
 	glScalef(2.f/viewport.width(), -2.f/viewport.height(), 1.f);
-	glTranslatef(-viewport.left, -viewport.top, 0.f);
+	
+	// Change the viewport and pixel origins
+	glTranslatef(.5f - viewport.left, .5f - viewport.top, 0.f);
 	
 	currentTransform = GL_NoTransform;
 	
@@ -417,6 +421,9 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 	
 	applyTextureStages();
 	disableTransform();
+	
+	x -= .5f;
+	y -= .5f;
 	
 	glColor4ub(color.r, color.g, color.b, color.a);
 	
