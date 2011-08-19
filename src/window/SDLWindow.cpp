@@ -62,6 +62,9 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	
 	SDL_WM_SetCaption(title.c_str(), title.c_str());
 	
+	const SDL_version * ver = SDL_Linked_Version();
+	LogInfo << "Using SDL " << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
+	
 	OnCreate();
 	
 	renderer = new OpenGLRenderer;
@@ -80,9 +83,6 @@ bool SDLWindow::Init(const std::string & title, int width, int height, bool visi
 	OnFocus(true);
 	
 	onRendererInit();
-	
-	const SDL_version * ver = SDL_Linked_Version();
-	LogInfo << "Using SDL " << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
 	
 	return true;
 }

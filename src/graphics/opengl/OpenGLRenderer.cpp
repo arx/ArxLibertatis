@@ -32,7 +32,7 @@ void OpenGLRenderer::Initialize() {
 	}
 	
 	if(!GLEW_ARB_vertex_array_bgra) {
-		LogError << "Missing OpenGL extension ARB_vertex_array_bgra";
+		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra";
 	}
 	
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -465,27 +465,27 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	beforeDraw<TexturedVertex>();
 	
-#if 1
-	
-	setVertexArray(vertices);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-	
-	glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
-	
-#else
-	
-	ARX_UNUSED(nvertices);
-	
-	glBegin(arxToGlPrimitiveType[primitive]);
-	
-	for(size_t i = 0; i < nindices; i++) {
-		renderVertex(vertices[indices[i]]);
+	if(GLEW_ARB_vertex_array_bgra) {
+		
+		setVertexArray(vertices);
+		
+		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		
+		glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
+		
+	} else {
+		
+		ARX_UNUSED(nvertices);
+		
+		glBegin(arxToGlPrimitiveType[primitive]);
+		
+		for(size_t i = 0; i < nindices; i++) {
+			renderVertex(vertices[indices[i]]);
+		}
+		
+		glEnd();
+		
 	}
-	
-	glEnd();
-	
-#endif
 	
 	CHECK_GL;
 }

@@ -44,10 +44,9 @@ void setVertexArray(const TexturedVertex * vertices) {
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
 	
-	// ignore the rhw parameter!
+	// TODO ignoring the rhw parameter!
 	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
-	
 	
 	// TODO(broken-GLEW) work around a bug in older GLEW versions (fix is in 1.6.0)
 	GLvoid * ptr = const_cast<ColorBGRA *>(&vertices->specular);
@@ -179,7 +178,12 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		glUnmapBuffer(GL_ARRAY_BUFFER); // TODO handle GL_FALSE return (buffer invalidated)
+		GLboolean ret = glUnmapBuffer(GL_ARRAY_BUFFER);
+		
+		if(ret == GL_FALSE) {
+			// TODO handle GL_FALSE return (buffer invalidated)
+			LogWarning << "vertex buffer invalidated";
+		}
 		
 		CHECK_GL;
 	}
@@ -201,6 +205,8 @@ public:
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		
+		// TODO nees GL_ARB_draw_elements_base_vertex, doesn't work
+		
 		arx_assert(offset + count <= capacity());
 		arx_assert(indices != NULL);
 		
@@ -210,7 +216,7 @@ public:
 		
 		setVertexArray<Vertex>(NULL);
 		
-		glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_SHORT, indices);
+		glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1, nbindices, GL_UNSIGNED_SHORT, indices, offset);
 		
 		CHECK_GL;
 	}
