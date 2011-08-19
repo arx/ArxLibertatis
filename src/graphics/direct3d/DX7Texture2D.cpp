@@ -25,7 +25,7 @@ HRESULT CALLBACK DX7Texture2D::TextureSearchCallback(DDPIXELFORMAT* pddpf, VOID 
 	
 	DDSURFACEDESC2 * ddsd = (DDSURFACEDESC2*)param;
 	
-	DWORD flags = DDPF_RGB | ((ddsd->dwFlags & DDSD_CKSRCBLT) ? 0 : DDPF_ALPHAPIXELS);
+	DWORD flags = DDPF_RGB | DDPF_ALPHAPIXELS;
 	
 	// Since we'll get rid of this DX7 renderer as soon as possible, I won't invest any more time figuring out the optimal texture matches
 	// Always use 32 bit RGBA (8-8-8-8)... with no support for DXT (arx doesn't use them yet anyway!
@@ -65,13 +65,6 @@ bool DX7Texture2D::Create()
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
 	ddsd.dwWidth         = mWidth;
 	ddsd.dwHeight        = mHeight;
-
-	// Specify black as our color key
-	if(!mImage.HasAlpha()) {
-		ddsd.dwFlags |= DDSD_CKSRCBLT;
-		ddsd.ddckCKSrcBlt.dwColorSpaceHighValue = RGB(0, 0, 0);
-		ddsd.ddckCKSrcBlt.dwColorSpaceLowValue = RGB(0, 0, 0);
-	}
 
 	// Turn on texture management for hardware devices
 	if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
@@ -160,10 +153,6 @@ bool DX7Texture2D::Create()
 
 	// Done with DDraw
 	pDD->Release();
-
-	// Set color key
-	if( m_pddsSurface )
-		m_pddsSurface->SetColorKey(DDCKEY_SRCBLT, &ddsd.ddckCKSrcBlt);
 
 	return m_pddsSurface != NULL;
 }

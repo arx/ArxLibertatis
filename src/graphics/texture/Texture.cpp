@@ -12,6 +12,11 @@ bool Texture2D::Init(const fs::path & strFileName, bool pCreateMipmaps) {
 		mFileName.clear();
 		return false;
 	}
+
+	// Original arx only applied color keying to bmp textures...
+	if(strFileName.ext() == ".bmp")	{
+		mImage.ApplyColorKeyToAlpha();
+	}
 	
 	mFormat = mImage.GetFormat();
 	mWidth  = mImage.GetWidth();

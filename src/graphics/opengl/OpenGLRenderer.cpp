@@ -184,8 +184,15 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 			break;
 		}
 		
+		case AlphaTest: {
+			setGLState(GL_ALPHA_TEST, enable);
+			break;
+		}
+
 		case ColorKey: {
-			// TODO implement
+			SetRenderState(AlphaTest, enable);
+			if(enable)
+				SetAlphaFunc(CmpNotEqual, 0.0f);
 			break;
 		}
 		

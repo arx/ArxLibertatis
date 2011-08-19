@@ -16,12 +16,13 @@
 
 const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,
+						D3DRENDERSTATE_ALPHATESTENABLE,		// AlphaTest,
 						D3DRENDERSTATE_COLORKEYENABLE,		// ColorKey,
-						D3DRENDERSTATE_ZENABLE,				// DepthTest,
+						D3DRENDERSTATE_ZENABLE,			// DepthTest,
 						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite,
-						D3DRENDERSTATE_FOGENABLE,			// Fog,
-						D3DRENDERSTATE_LIGHTING,            // Lighting,
-						D3DRENDERSTATE_ZBIAS				// ZBias
+						D3DRENDERSTATE_FOGENABLE,		// Fog,
+						D3DRENDERSTATE_LIGHTING,		// Lighting,
+						D3DRENDERSTATE_ZBIAS			// ZBias
 										};
 				   
 const D3DCMPFUNC ARXToDXPixelCompareFunc[] = {
@@ -213,7 +214,16 @@ Texture2D* Direct3DRenderer::CreateTexture2D() {
 }
 
 void Direct3DRenderer::SetRenderState(RenderState renderState, bool enable) {
-	device->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
+	if(renderState == ColorKey)
+	{
+		SetRenderState(AlphaTest, enable);
+		if(enable)
+			SetAlphaFunc(CmpNotEqual, 0.0f);
+	}
+	else
+	{
+		device->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
+	}
 }
 
 void Direct3DRenderer::SetAlphaFunc(PixelCompareFunc func, float fef) {

@@ -415,6 +415,91 @@ void Image::ChangeGamma(float pGamma) {
 	}
 }
 
+void Image::ApplyColorKeyToAlpha(const Color3f& colorKey)
+{
+	arx_assert_msg(!IsCompressed(), "[Image::ApplyColorKeyToAlpha] Not supported yet for compressed textures!");
+	arx_assert_msg(!IsVolume(), "[Image::ApplyColorKeyToAlpha] Not supported yet for 3d textures!");
+
+	u8 c1 = Format_R8G8B8 ? colorKey.r : colorKey.b;
+	u8 c2 = Format_R8G8B8 ? colorKey.g : colorKey.g;
+	u8 c3 = Format_R8G8B8 ? colorKey.b : colorKey.r;
+
+	// For RGB or BGR textures, first check if an alpha channel is really needed, then create it if it's the case
+	if(mFormat == Format_R8G8B8 || mFormat == Format_B8G8R8)
+	{
+		bool needsAlphaChannel = false;
+		
+		// Check if we've got pixels matching the color key
+		unsigned char* pImg = mData;
+		for(unsigned int y = 0; y < mHeight; y++)
+		{
+			for(unsigned int x = 0; x < mWidth; x++)
+			{
+				if(pImg[0] == c1 && pImg[1] == c2 && pImg[2] == c3)
+				{
+					needsAlphaChannel = true;
+					break;
+				}
+
+				pImg += 3;
+			}
+
+			if(needsAlphaChannel)
+				break;
+		}
+
+		// If we need to add an alpha channel
+		if(needsAlphaChannel)
+		{
+			// Create a temp buffer
+			unsigned int dataSize = Image::GetSizeWithMipmaps(Format_R8G8B8A8, mWidth, mHeight, mDepth, mNumMipmaps);
+			unsigned char* dataTemp = new unsigned char[dataSize];
+		
+			// Fill temp image and apply color key to alpha channel
+			unsigned char* pImgDst = dataTemp;
+			pImg = mData;
+			for(unsigned int y = 0; y < mHeight; y++)
+			{
+				for(unsigned int x = 0; x < mWidth; x++)
+				{
+					pImgDst[0] = pImg[0];
+					pImgDst[1] = pImg[1];
+					pImgDst[2] = pImg[2];
+					pImgDst[3] = pImg[0] == c1 && pImg[1] == c2 && pImg[2] == c3 ? 0 : 0xFF;
+					
+					pImg += 3;
+					pImgDst += 4;
+				}
+			}
+
+			// Swap data with temp data and ajust internal state
+			delete[] mData;
+			mData = dataTemp;
+			mDataSize = dataSize;
+			mFormat = mFormat == Format_R8G8B8 ? Format_R8G8B8A8 : Format_B8G8R8A8;
+		}
+	}
+	// For RGBA or BGRA textures, simply remplace the alpha of pixels matching the color key with 0
+	else if(mFormat == Format_R8G8B8A8 || mFormat == Format_B8G8R8A8)
+	{
+		unsigned char* pImg = mData;
+		for(unsigned int y = 0; y < mHeight; y++)
+		{
+			for(unsigned int x = 0; x < mWidth; x++)
+			{
+				if(pImg[0] == c1 && pImg[1] == c2 && pImg[2] == c3)
+					pImg[3] = 0;
+
+				pImg += 3;
+			}
+		}
+	}
+	else
+	{
+		ARX_DEAD_CODE();
+	}
+}
+
 bool Image::ToGrayscale() {
 	
 	int numChannels = GetNumChannels();

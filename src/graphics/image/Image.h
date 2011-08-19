@@ -2,6 +2,7 @@
 #ifndef ARX_GRAPHICS_IMAGE_IMAGE_H
 #define ARX_GRAPHICS_IMAGE_IMAGE_H
 
+#include "graphics/Color.h"
 #include "platform/Platform.h"
 
 namespace fs {
@@ -67,6 +68,9 @@ public:
 	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height);
 	
 	void ChangeGamma(float pGamma);
+
+	// Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
+	void ApplyColorKeyToAlpha(const Color3f& colorKey = Color3f::black);
 	
 	bool ToGrayscale();
 	bool ToNormalMap();

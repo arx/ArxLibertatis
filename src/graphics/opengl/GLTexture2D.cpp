@@ -14,7 +14,6 @@ bool GLTexture2D::Create() {
 	
 	glGenTextures(1, &tex);
 	
-	// TODO color keying
 	// TODO mipmapping
 	
 	// Set our state to the default OpenGL state
