@@ -411,10 +411,12 @@ void OpenGLRenderer::SetFillMode(FillMode mode) {
 
 float OpenGLRenderer::GetMaxAnisotropy() const {
 	
-	float maximumAnistropy;
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
+	float maximumAnistropy = 1.f;
 	
-	CHECK_GL;
+	if(GLEW_EXT_texture_filter_anisotropic) {
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
+		CHECK_GL;
+	}
 	
 	return maximumAnistropy;
 }
@@ -520,7 +522,7 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	
 	getSnapshot(fullsize);
 	
-	image.Create(width, height, Image::Format_R8G8B8);
+ 	image.Create(width, height, Image::Format_R8G8B8);
 	
 	GLint ret = gluScaleImage(GL_RGB, fullsize.GetWidth(), fullsize.GetHeight(), GL_UNSIGNED_BYTE,
 	                          fullsize.GetData(), width, height, GL_UNSIGNED_BYTE, image.GetData());
