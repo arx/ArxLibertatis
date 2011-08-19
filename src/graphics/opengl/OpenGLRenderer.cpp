@@ -320,8 +320,10 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 		
 		glEnable(GL_SCISSOR_TEST);
 		
+		int height = mainApp->GetWindow()->GetSize().y;
+		
 		for(size_t i = 0; i < nrects; i++) {
-			glScissor(rect[i].left, rect[i].top, rect[i].width(), rect[i].height());
+			glScissor(rect[i].left, height - rect[i].bottom, rect[i].width(), rect[i].height());
 			glClear(buffers);
 		}
 		
