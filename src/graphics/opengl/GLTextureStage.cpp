@@ -196,12 +196,9 @@ void GLTextureStage::SetMipFilter(FilterMode filterMode) {
 }
 
 void GLTextureStage::SetMipMapLODBias(float bias) {
-	
-	if(GLEW_EXT_texture_lod_bias) {
-		glActiveTexture(GL_TEXTURE0 + mStage);
-		glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, bias);
-		CHECK_GL;
-	}
+	glActiveTexture(GL_TEXTURE0 + mStage);
+	glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, bias);
+	CHECK_GL;
 }
 
 void GLTextureStage::SetTextureCoordIndex(int texCoordIdx) {
