@@ -14,13 +14,11 @@ bool GLTexture2D::Create() {
 	
 	glGenTextures(1, &tex);
 	
-	// TODO mipmapping
-	
 	// Set our state to the default OpenGL state
 	wrapMode = TextureStage::WrapRepeat;
 	mipFilter = TextureStage::FilterLinear;
 	minFilter = TextureStage::FilterNearest;
-	magFilter = TextureStage::FilterMode(-1); // TODO TextureStage::FilterLinear;
+	magFilter = TextureStage::FilterLinear;
 	
 	CHECK_GL;
 	
