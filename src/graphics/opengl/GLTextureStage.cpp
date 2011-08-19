@@ -222,14 +222,20 @@ void GLTextureStage::apply() {
 	if(tex) {
 		
 		bool apply = true;
-		if(mStage != 0 && renderer->GetTextureStage(0)->tex == tex) {
-			apply = false;
-			GLTextureStage * stage0 = renderer->GetTextureStage(0);
-			if(stage0->wrapMode != wrapMode || stage0->minFilter != minFilter || stage0->magFilter != magFilter || stage0->mipFilter != mipFilter) {
-				static bool warned = false;
-				if(!warned) {
-					LogWarning << "Same texture used in multiple stages with different attributes.";
+		for(size_t i = 0; i != mStage; i++) {
+			if(renderer->GetTextureStage(0)->tex == tex) {
+				apply = false;
+#ifdef _DEBUG
+				GLTextureStage * stage0 = renderer->GetTextureStage(0);
+				if(stage0->wrapMode != wrapMode || stage0->minFilter != minFilter || stage0->magFilter != magFilter || stage0->mipFilter != mipFilter) {
+					static bool warned = false;
+					if(!warned) {
+						LogWarning << "Same texture used in multiple stages with different attributes.";
+					}
 				}
+#else
+				break;
+#endif
 			}
 		}
 		

@@ -6,7 +6,8 @@ set(CMAKE_SYSTEM_NAME Windows)
 if(DEFINED MINGW32_ROOT)
 	set(MinGW32_ROOT "${MINGW32_ROOT}" CACHE INTERNAL)
 else()
-	find_path(MinGW32_ROOT NAMES
+	find_path(MinGW32_ROOT mingw
+		PATH_SUFFIXES
 		i686-pc-mingw32
 		i586-pc-mingw32
 		i486-pc-mingw32
