@@ -602,8 +602,14 @@ bool PakReader::addFiles(const fs::path & path, const fs::path & mount) {
 	
 	if(fs::is_directory(path)) {
 			
-		return addFiles(addDirectory(mount), path);
-			
+		bool ret = addFiles(addDirectory(mount), path);
+	
+		if(ret) {
+			LogInfo << "Added dir " << path;
+		}
+		
+		return ret;
+		
 	} else if(fs::is_regular_file(path) && !mount.empty()) {
 		
 		PakDirectory * dir = addDirectory(mount.parent());
