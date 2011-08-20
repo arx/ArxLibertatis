@@ -4,7 +4,6 @@
 
 #include <d3d.h>
 
-#include "graphics/Frame.h"
 #include "graphics/VertexBuffer.h"
 #include "window/D3D7Window.h"
 
