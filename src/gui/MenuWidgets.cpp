@@ -1386,6 +1386,34 @@ bool Menu2_Render() {
 						pWindowMenuConsole->AddMenu(pc);\
 						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
 					};
+					
+					
+				#define CUSTOM_CTRL_FUNC3(a,default,b,c,d){\
+						pc=new CMenuPanel();\
+						szMenuText = getLocalised(a, default);\
+						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+						me->SetCheckOff();\
+						pc->AddElement(me);\
+						me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+						me->eState=GETTOUCH;\
+						if((!b)||(c<0))\
+						{\
+							me->SetCheckOff();\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
+						}\
+						pc->AddElement(me);\
+						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+						me->eState=GETTOUCH;\
+						if(d<0)\
+						{\
+							me->SetCheckOff();\
+							((CMenuElementText*)me)->lColor=Color(127,127,127);\
+						}\
+						pc->AddElement(me);\
+						pc->Move(0,fControlPosY);\
+						pWindowMenuConsole->AddMenu(pc);\
+						fControlPosY += static_cast<long>( pc->GetHeight() + RATIO_Y(3.f) );\
+					};
 
 
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -1483,6 +1511,8 @@ bool Menu2_Render() {
 
 					CUSTOM_CTRL_FUNC2("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
 
+					CUSTOM_CTRL_FUNC3("system_menus_options_input_customize_controls_toggle_fullscreen", "Toggle fullscreen", 1,  BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2);
+
 					pc=new CMenuPanel();
 
 					pTex = TextureContainer::Load("graph/interface/menus/back");
@@ -1504,6 +1534,7 @@ bool Menu2_Render() {
 					#undef CUSTOM_CTRL_X2
 					#undef CUSTOM_CTRL_FUNC
 					#undef CUSTOM_CTRL_FUNC2
+					#undef CUSTOM_CTRL_FUNC3
 				//------------------ END CUSTOM CONTROLS
 
 					pWindowMenu->eCurrentMenuState=OPTIONS;
@@ -3766,8 +3797,12 @@ static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId input
 			bChange=config.setActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,inputKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1:
-		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:    
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:
 			bChange=config.setActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,inputKeyId);
+			break;
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1:
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN2:
+			bChange=config.setActionKey(CONTROLS_CUST_TOGGLE_FULLSCREEN,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TOGGLE_FULLSCREEN1,inputKeyId);
 			break;
 		}
 	}

@@ -898,6 +898,14 @@ static float _AvgFrameDiff = 150.f;
 
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
+	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
+		if(mainApp->GetWindow()->IsFullScreen()) {
+			mainApp->GetWindow()->setWindowSize(config.window.size);
+		} else {
+			mainApp->GetWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
+		}
+	}
+	
 	if(ARX_Menu_Render()) {
 		goto norenderend;
 	}

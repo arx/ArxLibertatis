@@ -167,7 +167,7 @@ bool SDLInputBackend::init() {
 	sdlToArxKey[SDLK_LSUPER] = Keyboard::Key_RightWin;
 	sdlToArxKey[SDLK_RSUPER] = Keyboard::Key_LeftWin;
 	sdlToArxKey[SDLK_MODE] = Keyboard::Key_RightAlt;
-	// sdlToArxKey[SDLK_COMPOSE] = -1; // TODO
+	sdlToArxKey[SDLK_COMPOSE] = Keyboard::Key_RightAlt;
 	// sdlToArxKey[SDLK_HELP] = -1; // TODO
 	sdlToArxKey[SDLK_PRINT] = Keyboard::Key_PrintScreen;
 	// sdlToArxKey[SDLK_SYSREQ] = -1; // TODO

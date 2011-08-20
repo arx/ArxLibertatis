@@ -111,7 +111,7 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	SDL_EventState(SDL_USEREVENT, SDL_IGNORE);
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	// TODO SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 	
 	m_Size = Vec2i::ZERO;
 	depth = 0;

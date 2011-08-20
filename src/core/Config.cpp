@@ -140,6 +140,7 @@ ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_B), // UNEQUIPWEAPON
 	ActionKey(Keyboard::Key_4), // CANCELCURSPELL
 	ActionKey(Keyboard::Key_R, Keyboard::Key_M), // MINIMAP
+	ActionKey((Keyboard::Key_LeftAlt << 16) | Keyboard::Key_Enter, (Keyboard::Key_RightAlt << 16) | Keyboard::Key_Enter), // TOGGLE_FULLSCREEN
 };
 
 } // namespace Default
@@ -242,7 +243,8 @@ const string actions[NUM_ACTION_KEY] = {
 	"crouch_toggle",
 	"unequip_weapon",
 	"cancel_current_spell",
-	"minimap"
+	"minimap",
+	"toggle_fullscreen"
 };
 
 // Misc options
