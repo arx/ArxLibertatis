@@ -529,8 +529,8 @@ void Input::update()
 			fSens = pow( .7f, fSens ) * 2.f;
 
 			Vec2f fD;
-			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens * ( ( (float)wndSize.x ) / 640.f );
-			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens * ( ( (float)wndSize.y ) / 480.f );
+			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens;
+			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens;
 
 			iMouseR.x = (int)fD.x;
 			iMouseR.y = (int)fD.y;
