@@ -47,12 +47,14 @@ To build 32-bit binaries on a 64-bit (multilib) system, pass `-DCMAKE_CXX_FLAGS=
 
 ## Cross compiling
 
-To build the windows version on linux (with the optional D3D, DSound and DInput backends) use winelib or mingw32.
+To build the windows version on linux (with the optional D3D, DSound and DInput backends) use winelib or mingw32 by specifying the appropriate toolchain file.
+
+Always remove the cmake cache and object files when switching toolchains: `make clean && rm CMakeCache.txt`
 
 ### Winelib
 
 For a winelib build pass `-DCMAKE_TOOLCHAIN_FILE=cmake/wine-toolchain.cmake` to cmake.
-Make sure your default wineprefix (~/.wine)  is up to date or running cmake might fail!
+Make sure your default WINEPREFIX (~/.wine)  is up to date or running cmake might fail!
 Using wine will automatically disable ARX_USE_OPENGL and ARX_USE_SDL.
 
 ### MinGW32
