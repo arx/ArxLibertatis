@@ -320,28 +320,30 @@ void ARX_Text_Init() {
 	FontCache::Initialize();
 
 	hFontMainMenu = _CreateFont(fontFile, "system_font_mainmenu_size", 58);
-	LogInfo << "Created hFontMainMenu, size " << hFontMainMenu->GetSize();
+	LogDebug << "Created hFontMainMenu, size " << hFontMainMenu->GetSize();
 
 	hFontMenu	  = _CreateFont(fontFile, "system_font_menu_size", 32);
-	LogInfo << "Created hFontMenu, size " << hFontMenu->GetSize();
+	LogDebug << "Created hFontMenu, size " << hFontMenu->GetSize();
 
 	hFontControls = _CreateFont(fontFile, "system_font_menucontrols_size", 22);
-	LogInfo << "Created hFontControls, size " << hFontControls->GetSize();
+	LogDebug << "Created hFontControls, size " << hFontControls->GetSize();
 
 	hFontCredits  = _CreateFont(fontFile, "system_font_menucredits_size", 36);
-	LogInfo << "Created hFontCredits, size " << hFontCredits->GetSize();
+	LogDebug << "Created hFontCredits, size " << hFontCredits->GetSize();
 
 	// Keep small font small when increasing resolution
 	float smallFontRatio = Yratio > 1.0f ? Yratio * 0.8f : Yratio;
 
 	hFontInGame     = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
-	LogInfo << "Created hFontInGame, size " << hFontInGame->GetSize();
+	LogDebug << "Created hFontInGame, size " << hFontInGame->GetSize();
 
 	hFontInGameNote = _CreateFont(fontFile, "system_font_note_size", 18, smallFontRatio);
-	LogInfo << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
+	LogDebug << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
 
 	hFontInBook		= _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
-	LogInfo << "Created InBookFont, size " << hFontInBook->GetSize();
+	LogDebug << "Created InBookFont, size " << hFontInBook->GetSize();
+	
+	LogInfo << "Loaded font " << fontFile << " with sizes " << hFontMainMenu->GetSize() << ", " << hFontMenu->GetSize() << ", " << hFontControls->GetSize() << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", " << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
 }
 
 //-----------------------------------------------------------------------------
