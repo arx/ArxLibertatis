@@ -14,10 +14,11 @@ public:
 	Win32Window();
 	virtual ~Win32Window();
 
-	virtual bool Init(const std::string& Title, int Width, int Height, bool bVisible, bool bFullscreen);
+	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
+	
 	virtual void * GetHandle();
-	virtual void SetFullscreen(bool bFullscreen);
-	virtual void SetSize(Vec2i Size);
+	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
+	virtual void setWindowSize(Vec2i size);
 	virtual void Tick();
 	
 private:
@@ -33,7 +34,6 @@ private:
 	static std::map<HWND,Win32Window*> m_WindowsMap;
 	
 	DWORD dwSavedStyle;
-	RECT  rcSaved;
 	
 };
 

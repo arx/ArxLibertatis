@@ -28,6 +28,8 @@
 
 #include "input/InputKey.h"
 
+#include "math/Vector2.h"
+
 //! Enum for all the controlling actions
 enum ControlAction {
 	
@@ -100,15 +102,15 @@ class Config {
 	
 public:
 	
-	// section LANGUAGE
+	// section 'language'
 	std::string language;
 	
-	// section VIDEO
+	// section 'video'
 	struct {
 		
-		int width;
-		int height;
+		Vec2i resolution;
 		int bpp;
+		
 		bool fullscreen;
 		bool bumpmap;
 		int textureSize;
@@ -123,7 +125,16 @@ public:
 	
 	} video;
 	
-	// section AUDIO
+	// section 'window'
+	struct {
+		
+		Vec2i size;
+		
+		std::string framework;
+		
+	} window;
+	
+	// section 'audio'
 	struct {
 		
 		float volume;
@@ -137,7 +148,7 @@ public:
 	
 	} audio;
 	
-	// section INPUT
+	// section 'input'
 	struct {
 		
 		bool invertMouse;
@@ -147,9 +158,11 @@ public:
 		int mouseSensitivity;
 		bool linkMouseLookToUse;
 		
+		std::string backend;
+		
 	} input;
 	
-	// section KEY
+	// section 'key'
 	ActionKey actions[NUM_ACTION_KEY];
 	
 	enum MigrationStatus {
@@ -157,7 +170,7 @@ public:
 		CaseSensitiveFilenames = 1
 	};
 	
-	// section MISC
+	// section 'misc'
 	struct {
 		
 		bool forceZBias; // should be in video? TODO can we remove this?

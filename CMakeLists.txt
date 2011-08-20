@@ -62,11 +62,6 @@ if(NOT HAVE_WINAPI)
 	set(ARX_USE_DSOUND OFF)
 	set(ARX_USE_DINPUT7 OFF)
 endif()
-if(WINE)
-	# Cannot use native OpenGL and SDL libraries with wine.
-	set(ARX_USE_OPENGL OFF)
-	set(ARX_USE_SDL OFF)
-endif()
 
 find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)

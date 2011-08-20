@@ -3,6 +3,17 @@
 
 #include <algorithm>
 
+bool RenderWindow::DisplayMode::operator<(const DisplayMode & o) const {
+	
+	if(resolution.x != o.resolution.x) {
+		return (resolution.x < o.resolution.x);
+	} else if(resolution.y != o.resolution.y) {
+		return (resolution.y < o.resolution.y);
+	} else {
+		return (depth < o.depth);
+	}
+}
+
 void RenderWindow::addListener(RendererListener * listener) {
 	renderListeners.push_back(listener);
 }

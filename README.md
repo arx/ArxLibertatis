@@ -55,7 +55,7 @@ Always remove the cmake cache and object files when switching toolchains: `make 
 
 For a winelib build pass `-DCMAKE_TOOLCHAIN_FILE=cmake/wine-toolchain.cmake` to cmake.
 Make sure your default WINEPREFIX (~/.wine)  is up to date or running cmake might fail!
-Using wine will automatically disable ARX_USE_OPENGL and ARX_USE_SDL.
+Unless you disable them manually, this will still build the SDL, OpenGL and OpenAL backends. To use the D3D backends either disable `ARX_USE_SDL`, `ARX_USE_OPENGL` and `ARX_USE_OPENAL` or manually select the backends in cfg.ini.
 
 ### MinGW32
 

@@ -44,28 +44,23 @@ bool Win32Window::InitWindowClass() {
 	return m_WindowClassInitialized;
 }
 
-bool Win32Window::Init(const std::string& Title, int Width, int Height, bool bVisible, bool bFullscreen) {
-	bool init;
-
-	init = Window::Init(Title, Width, Height, bVisible, bFullscreen);
-	if(!init)
+bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth) {
+	ARX_UNUSED(depth);
+	
+	if(!InitWindowClass()) {
 		return false;
-
-	init = InitWindowClass();
-	if(!init)
-		return false;
+	}
 
 	DWORD windowStyle = WS_OVERLAPPEDWINDOW;       // Define Our Window Style
 	DWORD windowExtendedStyle = WS_EX_APPWINDOW;      // Define The Window's Extended Style
 
 	RECT rcWnd;
 
-	SetRect(&rcWnd, 0, 0, m_Size.x, m_Size.y);
-	init = AdjustWindowRectEx( &rcWnd,
-								 windowStyle,
-								 GetMenu(m_hWnd) != NULL,
-								 windowExtendedStyle ) == TRUE;
-
+	SetRect(&rcWnd, 0, 0, size.x, size.y);
+	if(AdjustWindowRectEx(&rcWnd, windowStyle, GetMenu(m_hWnd) != NULL, windowExtendedStyle) != TRUE) {
+		return false;
+	}
+	
 	// Bound the window size to the desktop
 	HWND hWndDesktop = GetDesktopWindow();
 	RECT rcDesktop;
@@ -94,14 +89,22 @@ bool Win32Window::Init(const std::string& Title, int Width, int Height, bool bVi
 		LogError << "Couldn't create window";
 		return false;
 	}
-
-	init = SetWindowText( m_hWnd, m_Title.c_str() ) == TRUE;
-	if(!init)
+	
+	RECT rect;
+	GetClientRect(m_hWnd, &rect);
+	m_Size = Vec2i(rect.right - rect.left, rect.bottom - rect.top);
+	
+	if(SetWindowText(m_hWnd, title.c_str()) == TRUE) {
+		m_Title = title;
+	} else {
 		LogWarning << "Couldn't change the window's title";
-
-	if( m_IsVisible )
-		ShowWindow( m_hWnd, SW_SHOW );
-
+	}
+	
+	ShowWindow(m_hWnd, SW_SHOW);
+	m_IsVisible = true;
+	
+	m_IsFullscreen = fullscreen;
+	
 	return true;
 }
 
@@ -237,45 +240,35 @@ void* Win32Window::GetHandle() {
 	return m_hWnd;
 }
 
-void Win32Window::SetFullscreen(bool bFullscreen) {
-	if(bFullscreen == m_IsFullscreen)
-		return; // Nothing to do here!
-
-	if (!bFullscreen)
-	{
-		// Coming from fullscreen mode, so restore window properties
-		SetWindowLong(m_hWnd, GWL_STYLE, dwSavedStyle);
-		SetWindowPos(m_hWnd, HWND_NOTOPMOST, rcSaved.left, rcSaved.top,
-						(rcSaved.right - rcSaved.left),
-						(rcSaved.bottom - rcSaved.top), SWP_SHOWWINDOW);
-	}
-	else
-	{
+void Win32Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
+	
+	if(!m_IsFullscreen) {
 		// Going to fullscreen mode, save/set window properties as needed
 		dwSavedStyle = GetWindowLong(m_hWnd, GWL_STYLE);
-		GetWindowRect(m_hWnd, &rcSaved);
-
-		if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
-			SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-		else
-			SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_SYSMENU | WS_VISIBLE);
+		SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		m_IsFullscreen = true;
 	}
-
-	m_IsFullscreen = bFullscreen;
+	
+	m_Size = resolution;
+	depth = _depth;
 }
 
-void Win32Window::SetSize(Vec2i Size) {
+void Win32Window::setWindowSize(Vec2i size) {
+	
+	if(m_IsFullscreen) {
+		// Coming from fullscreen mode, so restore window properties
+		SetWindowLong(m_hWnd, GWL_STYLE, dwSavedStyle);
+		m_IsFullscreen = false;
+	}
+	
 	RECT rRect;
 	RECT rRect2;
 	GetClientRect(m_hWnd, &rRect);
 	GetWindowRect(m_hWnd, &rRect2);
 	int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
 	int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
-	SetWindowPos(m_hWnd,
-					HWND_TOP,
-					rRect2.left,
-					rRect2.top,
-					Size.x + dx,
-					Size.y + dy,
-					SWP_SHOWWINDOW);
+	SetWindowPos(m_hWnd, HWND_TOP, rRect2.left, rRect2.top, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
+	
+	m_Size = size;
+	depth = 0;
 }

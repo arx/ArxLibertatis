@@ -62,6 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 
+#include "window/RenderWindow.h"
+
 using std::wistringstream;
 using std::min;
 using std::max;
@@ -277,8 +279,8 @@ void Check_Apply()
 	if(pMenuElementApply)
 	{
 		if((config.video.textureSize!=newTextureSize)||
-		   (config.video.width!=newWidth)||
-		   (config.video.height!=newHeight)||
+		   (config.video.resolution.x!=newWidth)||
+		   (config.video.resolution.y!=newHeight)||
 		   (config.video.bpp!=newBpp)) {
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
@@ -899,6 +901,19 @@ bool Menu2_Render() {
 				//------------------ START VIDEO
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
+					
+					szMenuText = getLocalised("system_menus_options_videos_full_screen");
+					szMenuText += "  ";
+					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+					TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_FULLSCREEN, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+
+					((CMenuCheckButton*)me)->iState= config.video.fullscreen ? 1 : 0;
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+					
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_video_resolution");
 					szMenuText += "  ";
@@ -909,54 +924,47 @@ bool Menu2_Render() {
 					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
 					pMenuSliderResol =(CMenuSliderText*)me;
-					//int nb=mainApp->m_pDeviceInfo->dwNumModes;
-					std::vector<int> vBpp;
-					vBpp.clear();
-					int i=0;
-
-					//for(;i<nb;i++)
-					{
-						{/* TODO(core_cleanup)
-							std::stringstream ss;
-							ss << mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth << 'x' << mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight;
-							szMenuText = ss.str();
-
-
-							arx_assert(iModeBpp >= 0);
-
-							if(mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)iModeBpp) {
-								
-								((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
-
-								arx_assert(iModeX >= 0);
-								arx_assert(iModeY >= 0);
-
-								if(mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)iModeX &&
-								   mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)iModeY) {
-									((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
-									mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
-									mainApp->m_pDeviceInfo->dwCurrentMode=i;
-								}
+					
+					std::vector<unsigned> vBpp;
+					
+					const RenderWindow::DisplayModes & modes = mainApp->GetWindow()->getDisplayModes();
+					for(size_t i = 0; i != modes.size(); ++i) {
+						
+						const RenderWindow::DisplayMode & mode = modes[i];
+						
+						if(std::find(vBpp.begin(), vBpp.end(), mode.depth) == vBpp.end()) {
+							vBpp.push_back(mode.depth);
+						}
+						
+						if(mode.depth != (unsigned)iModeBpp) {
+							continue;
+						}
+						
+						// find the aspect ratio
+						unsigned a = mode.resolution.x;
+						unsigned b = mode.resolution.y;
+						while(b != 0) {
+							unsigned t = a % b;
+							a = b, b = t;
+						}
+						Vec2i aspect = mode.resolution / a;
+						
+						std::stringstream ss;
+						ss << mode.resolution.x << 'x' << mode.resolution.y;
+						
+						if(aspect.x < 100 && aspect.y < 100) {
+							if(aspect == Vec2i(8, 5)) {
+								aspect = Vec2i(16, 10);
 							}
-
-							//bpp
-							bool bExist=false;
-							std::vector<int>::iterator ii;
-
-							for(ii = vBpp.begin(); ii != vBpp.end(); ++ii) {
-								if((DWORD)*ii == mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount) {
-									bExist=true;
-									break;
-								}
-							}
-
-							if(!bExist)
-							{
-								vBpp.insert(vBpp.end(),mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount);
-							}*/
+							ss << " (" << aspect.x << ':' << aspect.y << ')';
+						}
+						
+						((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
+						
+						if(mode.resolution == config.video.resolution) {
+							((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
 						}
 					}
-
 
 					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
 
@@ -1002,16 +1010,17 @@ bool Menu2_Render() {
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_BPP, 0, 0);
 					pMenuSliderBpp = (CMenuSliderText*)me;
 
-					std::vector<int>::iterator ii;
+					
+					std::sort(vBpp.begin(), vBpp.end());
 
+					std::vector<unsigned>::iterator ii;
 					for(ii=vBpp.begin();ii!=vBpp.end();++ii)
 					{
 						std::stringstream bpp;
 						bpp << *ii;
-						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, bpp.str(), 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
+						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, bpp.str(), 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP)));
 
-						if(*ii==iModeBpp)
-						{
+						if(*ii == unsigned(config.video.bpp)) {
 							((CMenuSliderText*)me)->iPos = ((CMenuSliderText*)me)->vText.size()-1;
 						}
 					}
@@ -1106,9 +1115,7 @@ bool Menu2_Render() {
 
 					szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
 					szMenuText += " ";
-					TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-					TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
@@ -1900,8 +1907,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	// MENULOADQUEST
 	case BUTTON_MENUOPTIONSVIDEO_INIT:
 		{
-			newWidth = config.video.width;
-			newHeight = config.video.height;
+			newWidth = config.video.resolution.x;
+			newHeight = config.video.resolution.y;
 			newBpp = config.video.bpp;
 			newTextureSize = config.video.textureSize;
 
@@ -2067,16 +2074,11 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			//----------END_CHANGE_TEXTURE
 
 			//----------RESOLUTION
-			if(    (newWidth!=config.video.width)||
-				(newHeight!=config.video.height)||
+			if(    (newWidth!=config.video.resolution.x)||
+				(newHeight!=config.video.resolution.y)||
 				(newBpp!=config.video.bpp) )
 			{
-				config.video.width=newWidth;
-				config.video.height=newHeight;
-				config.video.bpp=newBpp;
-				ARXMenu_Private_Options_Video_SetResolution(    config.video.width,
-																config.video.height,
-																config.video.bpp);
+				ARXMenu_Private_Options_Video_SetResolution(newWidth, newHeight, newBpp);
 
 				pMenuSliderResol->iOldPos=-1;
 				pMenuSliderBpp->iOldPos=-1;
@@ -2812,8 +2814,8 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 		{
 			pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
 			pMenuSliderResol->iOldPos=-1;
-			newWidth=config.video.width;
-			newHeight=config.video.height;
+			newWidth=config.video.resolution.x;
+			newHeight=config.video.resolution.y;
 		}
 		
 		if(    (pMenuSliderBpp)&&
@@ -4508,11 +4510,10 @@ bool CMenuSliderText::OnMouseClick(int)
 		{
 			std::string pcText = (vText.at(iPos))->lpszText;
 			std::stringstream ss( pcText );
-			int iX = config.video.width;
-			int iY = config.video.height;
+			int iX = config.video.resolution.x;
+			int iY = config.video.resolution.y;
 			char tmp;
 			ss >> iX >> tmp >> iY;
-//            pcText, "%dx%d"), &iX, &iY);
 			{
 				newWidth = iX;
 				newHeight = iY;

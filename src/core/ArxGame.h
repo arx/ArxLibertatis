@@ -59,7 +59,6 @@ public:
 	virtual void Run();
 	bool InitDeviceObjects();
 	bool FinalCleanup();
-	virtual bool SwitchFullScreen();
 	virtual void Cleanup3DEnvironment();
 	
 	/**
@@ -76,13 +75,16 @@ private:
 	virtual void OnWindowLostFocus(const Window & window);
 	virtual void OnResizeWindow(const Window & window);
 	virtual void OnPaintWindow(const Window & window);
-	virtual void OnDestroyWindow(const Window & pWindow);
+	virtual void OnDestroyWindow(const Window & window);
+	virtual void OnToggleFullscreen(const Window & window);
 	
 	bool m_RunLoop;
 	bool wasResized;
 	
 	void onRendererInit(RenderWindow &);
 	void onRendererShutdown(RenderWindow &);
+	
+	bool initWindow(RenderWindow * window);
 	
 };
 

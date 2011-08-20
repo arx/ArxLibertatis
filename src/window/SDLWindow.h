@@ -14,11 +14,12 @@ public:
 	
 	SDLWindow();
 	virtual ~SDLWindow();
-
-	bool Init(const std::string & title, int width, int height, bool visible, bool fullscreen);
+	
+	bool initFramework();
+	bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
 	void * GetHandle();
-	void SetFullscreen(bool fullscreen);
-	void SetSize(Vec2i size);
+	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
+	void setWindowSize(Vec2i size);
 	void Tick();
 	
 	bool showFrame();
@@ -28,7 +29,8 @@ public:
 	
 private:
 	
-	bool setMode(Vec2i size, bool fullscreen);
+	bool setMode(DisplayMode mode, bool fullscreen);
+	void updateSize();
 	
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	
@@ -37,6 +39,8 @@ private:
 	SDLInputBackend * input;
 	
 	static SDLWindow * mainWindow;
+	
+	DisplayMode desktopMode;
 	
 	friend class SDLInputBackend;
 };

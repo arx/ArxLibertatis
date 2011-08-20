@@ -59,8 +59,11 @@ namespace Default {
 
 const std::string
 	language = "english",
-	resolution = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT),
-	audioBackend = "auto";
+	resolution = "auto",
+	audioBackend = "auto",
+	windowFramework = "auto",
+	windowSize = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT),
+	inputBackend = "auto";
 
 const int
 	bpp = 16,
@@ -146,6 +149,7 @@ namespace Section {
 const string
 	Language = "language",
 	Video = "video",
+	Window = "window",
 	Audio = "audio",
 	Input = "input",
 	Key = "key",
@@ -173,6 +177,11 @@ const string
 	showCrosshair = "show_crosshair",
 	antialiasing = "antialiasing";
 
+// Window options
+const string
+	windowSize = "size",
+	windowFramework = "framework";
+
 // Audio options
 const string
 	volume = "master_volume",
@@ -189,7 +198,8 @@ const string
 	mouseLookToggle = "mouse_look_toggle",
 	mouseSensitivity = "mouse_sensitivity",
 	autoDescription = "auto_description",
-	linkMouseLookToUse = "link_mouse_look_to_use";
+	linkMouseLookToUse = "link_mouse_look_to_use",
+	inputBackend = "backend";
 
 // Input key options
 const string actions[NUM_ACTION_KEY] = {
@@ -372,9 +382,13 @@ bool Config::save() {
 	
 	// video
 	writer.beginSection(Section::Video);
-	ostringstream oss;
-	oss << video.width << 'x' << video.height;
-	writer.writeKey(Key::resolution, oss.str());
+	if(video.resolution == Vec2i::ZERO) {
+		writer.writeKey(Key::resolution, "auto");
+	} else {
+		ostringstream oss;
+		oss << video.resolution.x << 'x' << video.resolution.y;
+		writer.writeKey(Key::resolution, oss.str());
+	}
 	writer.writeKey(Key::bpp, video.bpp);
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::bumpmap, video.bumpmap);
@@ -387,6 +401,13 @@ bool Config::save() {
 	writer.writeKey(Key::contrast, video.contrast);
 	writer.writeKey(Key::showCrosshair, video.showCrosshair);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
+	
+	// window
+	writer.beginSection(Section::Window);
+	ostringstream oss;
+	oss << window.size.x << 'x' << window.size.y;
+	writer.writeKey(Key::windowSize, oss.str());
+	writer.writeKey(Key::windowFramework, window.framework);
 	
 	// audio
 	writer.beginSection(Section::Audio);
@@ -405,6 +426,7 @@ bool Config::save() {
 	writer.writeKey(Key::mouseSensitivity, input.mouseSensitivity);
 	writer.writeKey(Key::autoDescription, input.autoDescription);
 	writer.writeKey(Key::linkMouseLookToUse, input.linkMouseLookToUse);
+	writer.writeKey(Key::inputBackend, input.backend);
 	
 	// key
 	writer.beginSection(Section::Key);
@@ -422,6 +444,23 @@ bool Config::save() {
 	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
 	
 	return writer.flush();
+}
+
+static Vec2i parseResolution(const string & resolution) {
+	
+	Vec2i res;
+	
+	istringstream iss(resolution);
+	iss >> res.x;
+	char x = '\0';
+	iss >> x;
+	iss >> res.y;
+	if(iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
+		LogWarning << "bad resolution string: " << resolution;
+		return Vec2i(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	} else {
+		return res;
+	}
 }
 
 bool Config::init(const string & file, const string & defaultFile) { // TODO use fs::path
@@ -445,19 +484,12 @@ bool Config::init(const string & file, const string & defaultFile) { // TODO use
 	language = reader.getKey(Section::Language, Key::language, Default::language);
 	
 	// Get video settings
-	
 	string resolution = reader.getKey(Section::Video, Key::resolution, Default::resolution);
-	istringstream iss(resolution);
-	iss >> video.width;
-	char x = '\0';
-	iss >> x;
-	iss >> video.height;
-	if(iss.fail() || x != 'x' || video.width <= 0 || video.height <= 0) {
-		LogWarning << "bad resolution string: " << resolution;
-		video.width = DEFAULT_WIDTH;
-		video.height = DEFAULT_HEIGHT;
+	if(resolution == "auto") {
+		video.resolution = Vec2i::ZERO;
+	} else {
+		video.resolution = parseResolution(resolution);
 	}
-	
 	video.bpp = reader.getKey(Section::Video, Key::bpp, Default::bpp);
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
 	video.bumpmap = reader.getKey(Section::Video, Key::bumpmap, Default::bumpmap);
@@ -470,6 +502,11 @@ bool Config::init(const string & file, const string & defaultFile) { // TODO use
 	video.contrast = reader.getKey(Section::Video, Key::contrast, Default::contrast);
 	video.showCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
+	
+	// Get window settings
+	string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
+	window.size = parseResolution(windowSize);
+	window.framework = reader.getKey(Section::Window, Key::windowFramework, Default::windowFramework);
 	
 	// Get audio settings
 	audio.volume = reader.getKey(Section::Audio, Key::volume, Default::volume);
@@ -486,6 +523,7 @@ bool Config::init(const string & file, const string & defaultFile) { // TODO use
 	input.mouseSensitivity = reader.getKey(Section::Input, Key::mouseSensitivity, Default::mouseSensitivity);
 	input.autoDescription = reader.getKey(Section::Input, Key::autoDescription, Default::autoDescription);
 	input.linkMouseLookToUse = reader.getKey(Section::Input, Key::linkMouseLookToUse, Default::linkMouseLookToUse);
+	input.backend = reader.getKey(Section::Input, Key::inputBackend, Default::inputBackend);
 	
 	// Get action key settings
 	for(size_t i = 0; i < NUM_ACTION_KEY; i++) {

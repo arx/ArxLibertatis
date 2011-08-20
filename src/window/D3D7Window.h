@@ -20,6 +20,7 @@ public:
 		
 		// DDraw Driver info
 		std::string driver;
+		std::string driverDesc;
 		GUID driverGUID;
 		
 		// For internal use (apps should not need to use these)
@@ -29,8 +30,10 @@ public:
 	
 	D3D7Window();
 	~D3D7Window();
+	
+	bool initFramework();
 
-	bool Init(const std::string & Title, int Width, int Height, bool bVisible, bool bFullscreen);
+	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
 	
 	bool showFrame();
 	void restoreSurfaces();
@@ -44,8 +47,8 @@ public:
 	inline LPDIRECT3DDEVICE7 getDevice() { return device; }
 	inline const DeviceInfo & getInfo() { return *deviceInfo; }
 	
-	void SetFullscreen(bool fullscreen);
-	void SetSize(Vec2i size);
+	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
+	void setWindowSize(Vec2i size);
 	
 private:
 	
@@ -53,12 +56,10 @@ private:
 	static HRESULT WINAPI modeEnumCallback(DDSURFACEDESC2 *, VOID *);
 	static HRESULT WINAPI deviceEnumCallback(char *, char *, D3DDEVICEDESC7 *, VOID *);
 	
-	void enumerate();
-	
 	// Internal functions for the framework class
-	bool initialize();
+	bool initialize(DisplayMode mode);
 	bool createZBuffer(GUID * device);
-	bool createFullscreenBuffers();
+	bool createFullscreenBuffers(DisplayMode mode);
 	bool createWindowedBuffers();
 	bool createDirectDraw(GUID * driver);
 	bool createDirect3D(GUID * device);

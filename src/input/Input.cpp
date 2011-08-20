@@ -222,11 +222,10 @@ void ARX_INPUT_Release() {
 
 //-----------------------------------------------------------------------------
 
-Input::Input()
-	: backend(0)
-{
+Input::Input() : backend(NULL) {
+	
 	setMouseSensibility(2);
-
+	
 	reset();
 }
 
@@ -234,22 +233,36 @@ Input::Input()
 
 bool Input::init() {
 	
-#if defined(HAVE_SDL)
-	backend = new SDLInputBackend;
-#elif defined(HAVE_DINPUT7)
-	backend = new DInput7Backend;
-#else
-#error "Need either DirectInput 7 or SDL!"
+	arx_assert(backend == NULL);
+	
+	bool autoBackend = (config.input.backend == "auto");
+	bool matched = false;
+	
+#ifdef HAVE_SDL
+	if(autoBackend || config.input.backend == "SDL") {
+		matched = true;
+		backend = new SDLInputBackend;
+		if(!backend->init()) {
+			delete backend, backend = NULL;
+		}
+	}
 #endif
 	
-	bool ret = backend->init();
-	if(!ret) {
-		delete backend, backend = NULL;
-	} else {
-		reset();
+#ifdef HAVE_DINPUT7
+	if(!backend && (autoBackend || config.input.backend == "DirectInput")) {
+		matched = true;
+		backend = new DInput7Backend;
+		if(!backend->init()) {
+			delete backend, backend = NULL;
+		}
+	}
+#endif
+	
+	if(!matched) {
+		LogError << "unknown backend: " << config.input.backend;
 	}
 	
-	return ret;
+	return (backend != NULL);
 }
 
 //-----------------------------------------------------------------------------

@@ -11,7 +11,7 @@ void Window::Listener::OnResizeWindow( const Window& /*pWindow*/ ) {}
 void Window::Listener::OnMinimizeWindow( const Window& /*pWindow*/ ) {}
 void Window::Listener::OnMaximizeWindow( const Window& /*pWindow*/ ) {}
 void Window::Listener::OnRestoreWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnMakeWindowFullscreen( const Window& /*pWindow*/ ) {}
+void Window::Listener::OnToggleFullscreen( const Window& /*pWindow*/ ) {}
 void Window::Listener::OnWindowGotFocus( const Window& /*pWindow*/ ) {}
 void Window::Listener::OnWindowLostFocus( const Window& /*pWindow*/ ) {}
 void Window::Listener::OnPaintWindow( const Window& /*pWindow*/ ) {}
@@ -27,14 +27,6 @@ Window::Window()
 }
 
 Window::~Window() {
-}
-
-bool Window::Init(const std::string& Title, int Width, int Height, bool bVisible, bool bFullscreen) {
-	m_Title = Title;
-	m_Size = Vec2i(Width, Height);
-	m_IsVisible = bVisible;
-	m_IsFullscreen = bFullscreen;
-	return true;
 }
 
 void Window::AddListener( Window::Listener* pListener ) {
@@ -134,9 +126,9 @@ void Window::OnShow( bool bVisible ) {
 	m_IsVisible = bVisible;
 }
 	
-void Window::OnMakeFullscreen() {
+void Window::OnToggleFullscreen() {
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnMakeWindowFullscreen( *this );
+		(*it)->OnToggleFullscreen( *this );
 }
 	
 void Window::OnFocus(bool bHasFocus) {

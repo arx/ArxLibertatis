@@ -84,68 +84,47 @@ void ARXMenu_Options_Video_GetResolution(int & _iWidth, int & _iHeight, int & _i
 {
 	_iWidth		= DANAESIZX;
 	_iHeight	= DANAESIZY;
-	// TODO(core_cleanup) _iBpp		= mainApp->m_pFramework->bitdepth;
+	_iBpp = config.video.bpp;
 }
 
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 {
-	// TODO(core_cleanup) _iBpp		= mainApp->m_pFramework->bitdepth;
+	_iBpp = config.video.bpp;
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int _iBpp)
-{
-	if (!GRenderer) return;
-
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-	GRenderer->EndScene();
-
-	mainApp->GetWindow()->showFrame();
-
-	ARX_Text_Close();
+void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int _iBpp) {
 	
-	mainApp->GetWindow()->SetSize(Vec2i(_iWidth, _iHeight));
-
-	/* TODO(core_cleanup)
-	
-	HRESULT hr;
-	mainApp->m_pFramework->bitdepth = _iBpp;
-
-	if(!mainApp->GetWindow()->IsFullScreen()) {
-	} else {
-		int nb = mainApp->m_pDeviceInfo->dwNumModes;
-
-		for (int i = 0; i < nb; i++)
-		{
-
-			arx_assert(_iBpp >= 0);
-
-			if(mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == (DWORD)_iBpp) {
-				
-				arx_assert(_iWidth >= 0);
-				arx_assert(_iHeight >= 0);
-
-				if(mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == (DWORD)_iWidth
-				   && mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == (DWORD)_iHeight) {
-					mainApp->m_pDeviceInfo->ddsdFullscreenMode = mainApp->m_pDeviceInfo->pddsdModes[i];
-					mainApp->m_pDeviceInfo->dwCurrentMode = i;
-				}
-			}
-		}
+	if(!GRenderer) {
+		return;
 	}
-
-	if (FAILED(hr = mainApp->Change3DEnvironment()))
-		LogError << "Error Changing Environment";*/
-
-	AdjustUI();
-
-	GRenderer->BeginScene();
+	
+	if(mainApp->GetWindow()->IsFullScreen()) {
+		
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
+		GRenderer->EndScene();
+		
+		mainApp->GetWindow()->showFrame();
+		
+		mainApp->GetWindow()->setFullscreenMode(Vec2i(_iWidth, _iHeight), _iBpp);
+		
+		GRenderer->BeginScene();
+		
+	} else {
+		LogInfo << "configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
+		config.video.resolution = Vec2i(_iWidth, _iHeight);
+		config.video.bpp = _iBpp;
+	}
 }
 
 void ARXMenu_Options_Video_SetFullscreen(bool _bEnable) {
-	DanaeSwitchFullScreen();
-	config.video.fullscreen = _bEnable;
+	
+	if(_bEnable) {
+		mainApp->GetWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
+	} else {
+		mainApp->GetWindow()->setWindowSize(config.window.size);
+	}
 }
 
 void ARXMenu_Options_Video_GetFogDistance(int & _iFog) {

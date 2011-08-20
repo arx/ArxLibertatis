@@ -167,6 +167,8 @@ public:
 	// Class constructor
 	Application();
 	
+	virtual ~Application();
+	
 	void EvictManagedTextures();
 	
 	/* Virtual functions which may be overridden for specific implementations */

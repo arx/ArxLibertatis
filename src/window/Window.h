@@ -15,9 +15,17 @@ public:
 	Window();
 	virtual ~Window();
 	
-	virtual bool Init(const std::string & Title, int Width, int Height, bool bVisible, bool bFullscreen);
-	virtual void SetFullscreen(bool bFullscreen) = 0;
-	virtual void SetSize(Vec2i Size) = 0;
+	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0) = 0;
+	
+	/*!
+	 * Enter fullscreen and set the given video mode.
+	 * If all parameters are zero, the desktop mode is used.
+	 */
+	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0) = 0;
+	
+	//! Exits fullscreen mode and sets the window size.
+	virtual void setWindowSize(Vec2i size) = 0;
+	
 	virtual void * GetHandle() = 0;
 	virtual void Tick() = 0;
 	
@@ -33,7 +41,7 @@ public:
 		virtual void OnMinimizeWindow(const Window & pWindow);
 		virtual void OnMaximizeWindow(const Window & pWindow);
 		virtual void OnRestoreWindow(const Window & pWindow);
-		virtual void OnMakeWindowFullscreen(const Window & pWindow);
+		virtual void OnToggleFullscreen(const Window & pWindow);
 		virtual void OnWindowGotFocus(const Window & pWindow);
 		virtual void OnWindowLostFocus(const Window & pWindow);
 		virtual void OnPaintWindow(const Window & pWindow);
@@ -63,7 +71,7 @@ protected:
 	void OnMaximize();
 	void OnRestore();
 	void OnShow(bool bShow);
-	void OnMakeFullscreen();
+	void OnToggleFullscreen();
 	void OnFocus(bool bHasFocus);
 	void OnPaint();
 	void OnCreate();
@@ -76,6 +84,7 @@ protected:
 	bool m_IsVisible; //!< Is visible ?
 	bool m_IsFullscreen; //!< Is fullscreen ?
 	bool m_HasFocus; //!< Has focus ?
+	unsigned depth;
 	
 private:
 	

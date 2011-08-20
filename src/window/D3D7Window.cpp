@@ -66,10 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 using std::vector;
 
-D3D7Window::D3D7Window() : dd(NULL), d3d(NULL), backBuffer(NULL), frontBuffer(NULL), device(NULL), deviceInfo(NULL) {
-	
-	enumerate();
-}
+D3D7Window::D3D7Window() : dd(NULL), d3d(NULL), backBuffer(NULL), frontBuffer(NULL), device(NULL), deviceInfo(NULL) { }
 
 D3D7Window::~D3D7Window() {
 	destroyObjects();
@@ -151,16 +148,12 @@ HRESULT WINAPI D3D7Window::deviceEnumCallback(char * desc, char * name, D3DDEVIC
 		return D3DENUMRET_OK;
 	}
 	
-	LogInfo << "Found Device " << dev->name << " (" << dev->desc << ") using " << dev->driver;
-	
 	return D3DENUMRET_OK;
 }
 
 // Callback function for enumerating drivers.
 BOOL WINAPI D3D7Window::driverEnumCallback(GUID * pGUID, char * desc, char * name,
                                            VOID * window, HMONITOR){
-	
-	LogInfo << "Found DirectDraw driver " << name << " (" << desc << ')';
 	
 	HRESULT hr;
 	
@@ -200,6 +193,7 @@ BOOL WINAPI D3D7Window::driverEnumCallback(GUID * pGUID, char * desc, char * nam
 	DeviceInfo & dev = win->devices.back();
 	
 	dev.driver = name;
+	dev.driverDesc = desc;
 	if(pGUID) {
 		dev.driverGUID = *pGUID;
 	} else {
@@ -223,14 +217,9 @@ BOOL WINAPI D3D7Window::driverEnumCallback(GUID * pGUID, char * desc, char * nam
 	return DDENUMRET_OK;
 }
 
-// Callback function for sorting display modes.
-static bool modesOrdering2(const Vec2i & p1, const Vec2i & p2) {
-	return (p1.x != p2.x) ? (p1.x < p2.x) : (p1.y < p2.y);
-}
-
-void D3D7Window::enumerate() {
+bool D3D7Window::initFramework() {
 	
-	devices.clear();
+	arx_assert(devices.empty() && displayModes.empty());
 	
 	// Enumerate drivers, devices, and modes
 	DirectDrawEnumerateEx(driverEnumCallback, this,
@@ -242,29 +231,31 @@ void D3D7Window::enumerate() {
 	
 	for(vector<DeviceInfo>::const_iterator dev = devices.begin(); dev != devices.end(); ++dev) {
 		for(vector<DDSURFACEDESC2>::const_iterator m = dev->modes.begin(); m != dev->modes.end(); ++m) {
-			Vec2i mode(m->dwWidth, m->dwHeight);
+			DisplayMode mode(Vec2i(m->dwWidth, m->dwHeight), m->ddpfPixelFormat.dwRGBBitCount);
 			if(std::find(displayModes.begin(), displayModes.end(), mode) == displayModes.end()) {
 				displayModes.push_back(mode);
 			}
 		}
 	}
 	
-	std::sort(displayModes.begin(), displayModes.end(), modesOrdering2);
-	
 	if(devices.empty() || displayModes.empty()) {
 		LogError << "No compatible D3D devices found!";
-	}
-}
-
-bool D3D7Window::Init(const std::string & title, int width, int height, bool visible, bool fullscreen) {
-	
-	arx_assert(deviceInfo == NULL);
-	
-	if(devices.empty() || displayModes.empty()) {
 		return false;
 	}
 	
-	if(!Win32Window::Init(title, width, height, visible, fullscreen)) {
+	LogInfo << "Using Win32 windowing";
+	
+	std::sort(displayModes.begin(), displayModes.end());
+	
+	return true;
+}
+
+bool D3D7Window::init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth) {
+	
+	arx_assert(deviceInfo == NULL);
+	arx_assert(!devices.empty() && !displayModes.empty());
+	
+	if(!Win32Window::init(title, size, fullscreen, depth)) {
 		return false;
 	}
 	
@@ -275,10 +266,11 @@ bool D3D7Window::Init(const std::string & title, int width, int height, bool vis
 		}
 		
 		deviceInfo = &*dev;
-		if(initialize()) {
+		if(initialize(DisplayMode(size, depth))) {
 			displayModes.clear();
 			for(vector<DDSURFACEDESC2>::iterator m = dev->modes.begin(); m != dev->modes.end(); ++m) {
-				displayModes.push_back(Vec2i(m->dwWidth, m->dwHeight));
+				DisplayMode mode(Vec2i(m->dwWidth, m->dwHeight), m->ddpfPixelFormat.dwRGBBitCount);
+				displayModes.push_back(mode);
 			}
 			
 			LogInfo << "Using Win32 windowing";
@@ -389,7 +381,7 @@ void D3D7Window::destroyObjects() {
 }
 
 // Internal functions for the framework class
-bool D3D7Window::initialize() {
+bool D3D7Window::initialize(DisplayMode mode) {
 	
 	arx_assert(GetHandle() != NULL);
 	arx_assert(renderer == NULL);
@@ -401,7 +393,7 @@ bool D3D7Window::initialize() {
 	
 	// Create the front and back buffers, and attach a clipper
 	if(IsFullScreen()) {
-		if(!createFullscreenBuffers()) {
+		if(!createFullscreenBuffers(mode)) {
 			return false;
 		}
 	} else {
@@ -470,12 +462,35 @@ bool D3D7Window::createDirectDraw(GUID * driver) {
 	return true;
 }
 
-bool D3D7Window::createFullscreenBuffers() {
+bool D3D7Window::createFullscreenBuffers(DisplayMode req) {
 	
 	arx_assert(frontBuffer == NULL);
 	arx_assert(backBuffer == NULL);
 	
-	DDSURFACEDESC2 * mode = NULL; // TODO choose the display mode
+	// Find the best matching display mode.
+	DDSURFACEDESC2 * mode = NULL;
+	std::vector<DDSURFACEDESC2>::iterator i;
+	for(i = deviceInfo->modes.begin(); i != deviceInfo->modes.end(); ++i) {
+		
+		if(i->dwWidth != DWORD(req.resolution.x) || i->dwHeight != DWORD(req.resolution.y)) {
+			continue;
+		}
+		
+		if(req.depth) {
+			if(i->ddpfPixelFormat.dwRGBBitCount != req.depth) {
+				continue;
+			}
+		}
+		
+		if(mode && mode->dwRefreshRate == 60) {
+			continue;
+		}
+		
+		mode = &*i;
+	}
+	if(!mode) {
+		return false;
+	}
 	
 	// Set the display mode to the requested dimensions. Check for
 	// 640x480x16 modes, and set flag to avoid using ModeX
@@ -491,6 +506,9 @@ bool D3D7Window::createFullscreenBuffers() {
 		LogError << "Unable to set display mode";
 		return false;
 	}
+	
+	m_Size = Vec2i(mode->dwWidth, mode->dwHeight);
+	depth = mode->ddpfPixelFormat.dwRGBBitCount;
 	
 	// Setup to create the primary surface w/backbuffer
 	DDSURFACEDESC2 ddsd;
@@ -679,38 +697,76 @@ void D3D7Window::evictManagedTextures() {
 	}
 }
 
-void D3D7Window::SetFullscreen(bool fullscreen) {
+void D3D7Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
-	if(fullscreen == IsFullScreen()) {
+	if(m_IsFullscreen && m_Size == resolution && depth == _depth) {
 		return;
 	}
+	
+	bool oldFullscreen = m_IsFullscreen;
+	DisplayMode oldMode(m_Size, depth);
 	
 	// Release all scene objects that will be re-created for the new device
 	// Release framework objects, so a new device can be created
 	destroyObjects();
 	
 	// Check if going from fullscreen to windowed mode, or vice versa.
-	Win32Window::SetFullscreen(fullscreen);
+	Win32Window::setFullscreenMode(resolution, _depth);
 	
-	initialize();
+	if(!initialize(DisplayMode(resolution, depth))) {
+		
+		// try to restore the previous resolution
+		
+		destroyObjects();
+		
+		if(oldFullscreen) {
+			Win32Window::setFullscreenMode(oldMode.resolution, oldMode.depth);
+		} else {
+			Win32Window::setWindowSize(oldMode.resolution);
+		}
+		
+		if(!initialize(oldMode)) {
+			LogError << "failed to restore display mode!";
+		}
+		
+	}
 	
 }
 
-void D3D7Window::SetSize(Vec2i size) {
+void D3D7Window::setWindowSize(Vec2i size) {
 	
-	if(size == GetSize()) {
+	if(!m_IsFullscreen && size == GetSize()) {
 		return;
 	}
 	
-	if(IsFullScreen()) {
+	bool oldFullscreen = m_IsFullscreen;
+	DisplayMode oldMode(m_Size, depth);
+	
+	if(oldFullscreen) {
+		destroyObjects();
+	}
+	
+	Win32Window::setWindowSize(size);
+	
+	if(oldFullscreen) {
 		
-		// TODO
-		
-		Win32Window::SetSize(size);
-		
-	} else {
-		
-		Win32Window::SetSize(size);
+		if(!initialize(DisplayMode(size, 0))) {
+			
+			// try to restore the previous resolution
+			
+			destroyObjects();
+			
+			if(oldFullscreen) {
+				Win32Window::setFullscreenMode(oldMode.resolution, oldMode.depth);
+			} else {
+				Win32Window::setWindowSize(oldMode.resolution);
+			}
+			
+			if(!initialize(oldMode)) {
+				LogError << "failed to restore display mode!";
+			}
+			
+		}
 		
 	}
 	

@@ -12,7 +12,21 @@ class RenderWindow : public Window {
 	
 public:
 	
-	typedef std::vector<Vec2i> DisplayModes;
+	struct DisplayMode {
+		
+		Vec2i resolution;
+		unsigned depth;
+		
+		inline DisplayMode() { };
+		inline DisplayMode(const DisplayMode & o) : resolution(o.resolution), depth(o.depth) { };
+		inline DisplayMode(Vec2i res, unsigned bits) : resolution(res), depth(bits) { };
+		bool operator<(const DisplayMode & other) const;
+		inline bool operator==(const DisplayMode & other) const {
+			return resolution == other.resolution && depth == other.depth;
+		}
+	};
+	
+	typedef std::vector<DisplayMode> DisplayModes;
 	
 	inline RenderWindow() : renderer(NULL), vsync(false) { };
 	virtual ~RenderWindow() { };
@@ -26,8 +40,15 @@ public:
 		
 	};
 	
+	/*!
+	 * Initialize the framework.
+	 * This needs to be called before init() or getDisplayModes()
+	 */
+	virtual bool initFramework() = 0;
+	
 	inline Renderer * getRenderer() { return renderer; }
 	
+	//! Get a sorted list of supported fullscreen display modes.
 	inline const DisplayModes & getDisplayModes() { return displayModes; }
 	
 	void addListener(RendererListener * listener);

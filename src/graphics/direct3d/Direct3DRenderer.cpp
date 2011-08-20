@@ -161,6 +161,9 @@ void Direct3DRenderer::Initialize() {
 		gammaControl->GetGammaRamp(0, &oldGamma);
 	}
 	
+	LogInfo << "Using Direct3D 7";
+	LogInfo << "Device: " << window->getInfo().name << " (" << window->getInfo().desc << ')';
+	LogInfo << "Driver: " << window->getInfo().driver << " (" << window->getInfo().driverDesc << ')';
 }
 
 bool Direct3DRenderer::BeginScene() {

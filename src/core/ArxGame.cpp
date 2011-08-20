@@ -218,22 +218,63 @@ bool ArxGame::Initialize()
 	return true;
 }
 
-bool ArxGame::InitWindow() {
+bool ArxGame::initWindow(RenderWindow * window) {
 	
-#ifdef HAVE_SDL
-	m_MainWindow = new SDLWindow;
-#elif defined(HAVE_D3D7)
-	m_MainWindow = new D3D7Window;
-#else
-#error "Need either SDL or D3D 7!"
-#endif
+	arx_assert(m_MainWindow == NULL);
+	
+	m_MainWindow = window;
+	
+	if(!m_MainWindow->initFramework()) {
+		return false;
+	}
 	
 	// Register ourself as a listener for this window messages
 	m_MainWindow->AddListener(this);
 	m_MainWindow->addListener(this);
 	
-	return m_MainWindow->Init(arxVersion, config.video.width, config.video.height, true, config.video.fullscreen);
+	Vec2i size = config.video.fullscreen ? config.video.resolution : config.window.size;
 	
+	if(!m_MainWindow->init(arxVersion, size, config.video.fullscreen, config.video.bpp)) {
+		m_MainWindow = NULL;
+		return false;
+	}
+	
+	return true;
+}
+
+bool ArxGame::InitWindow() {
+	
+	arx_assert(m_MainWindow == NULL);
+	
+	bool matched = false;
+	
+	bool autoFramework = (config.window.framework == "auto");
+	
+#ifdef HAVE_SDL
+	if(autoFramework || config.window.framework == "SDL") {
+		matched = true;
+		RenderWindow * window = new SDLWindow;
+		if(!initWindow(window)) {
+			delete window;
+		}
+	}
+#endif
+	
+#ifdef HAVE_D3D7
+	if(!m_MainWindow && (autoFramework || config.window.framework == "Win32")) {
+		matched = true;
+		RenderWindow * window = new D3D7Window;
+		if(!initWindow(window)) {
+			delete window;
+		}
+	}
+#endif
+	
+	if(!matched) {
+		LogError << "unknown windowing framework: " << config.window.framework;
+	}
+	
+	return (m_MainWindow != NULL);
 }
 
 bool ArxGame::InitInput() {
@@ -345,12 +386,20 @@ void ArxGame::OnWindowLostFocus(const Window &) {
 	}
 }
 
-void ArxGame::OnResizeWindow(const Window& window)
-{
+void ArxGame::OnResizeWindow(const Window & window) {
+	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
-	if(window.HasFocus() && m_bReady && !window.IsFullScreen()) {
+	if(window.HasFocus() && m_bReady) {
 		wasResized = true;
+	}
+	
+	if(window.IsFullScreen()) {
+		LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y;
+		config.video.resolution = window.GetSize();
+	} else {
+		LogInfo << "changed window size to " << window.GetSize().x << 'x' << window.GetSize().y;
+		config.window.size = window.GetSize();
 	}
 }
 
@@ -377,6 +426,10 @@ void ArxGame::OnDestroyWindow(const Window &) {
 	
 	LogInfo << "Application window is being destroyed";
 	m_RunLoop = false;
+}
+
+void ArxGame::OnToggleFullscreen(const Window & window) {
+	config.video.fullscreen = window.IsFullScreen();
 }
 
 //*************************************************************************************
@@ -484,17 +537,6 @@ void ArxGame::Cleanup3DEnvironment() {
 		FinalCleanup();
 	}
 	
-}
-
-//*************************************************************************************
-//*************************************************************************************
-bool ArxGame::SwitchFullScreen() {
-	
-	GetWindow()->SetFullscreen(!GetWindow()->IsFullScreen());
-
-	wasResized = true;
-
-	return true;
 }
 
 //*************************************************************************************
@@ -688,8 +730,6 @@ static float _AvgFrameDiff = 150.f;
 		DanaeRestoreFullScreen();
 		
 		wasResized = false;
-		
-		AdjustUI();
 	}
 
 	// Update input

@@ -461,48 +461,6 @@ void DANAE_KillCinematic()
 	}
 }
 
-void DanaeSwitchFullScreen()
-{
-	/* TODO(core_cleanup)
-	int nb=mainApp->m_pDeviceInfo->dwNumModes;
-
-	for(int i=0;i<nb;i++)
-	{
-		arx_assert(config.video.bpp >= 0);
-
-		if( mainApp->m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == static_cast<unsigned int>( config.video.bpp ) )
-		{
-			arx_assert(config.video.width >= 0);
-			arx_assert(config.video.height >= 0);
-
-			if( ( mainApp->m_pDeviceInfo->pddsdModes[i].dwWidth == static_cast<unsigned int>( config.video.width ) ) &&
-				( mainApp->m_pDeviceInfo->pddsdModes[i].dwHeight == static_cast<unsigned int>( config.video.height ) ) )
-			{
-
-				mainApp->m_pDeviceInfo->ddsdFullscreenMode=mainApp->m_pDeviceInfo->pddsdModes[i];
-				mainApp->m_pDeviceInfo->dwCurrentMode=i;
-				break;
-			}
-		}
-	}
-
-	config.video.bpp = mainApp->m_pFramework->bitdepth = mainApp->m_pDeviceInfo->ddsdFullscreenMode.ddpfPixelFormat.dwRGBBitCount;
-	config.video.height = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwHeight;
-	config.video.width = mainApp->m_pDeviceInfo->ddsdFullscreenMode.dwWidth; */
-
-	if(pMenu)
-	{
-		pMenu->bReInitAll=true;
-	}
-
-	ARX_Text_Close();
-	//mainApp->SwitchFullScreen();
-
-	AdjustUI();
-
-	LoadScreen();
-}
-
 void AdjustUI()
 {
 	// Sets Danae Screen size depending on windowed/full-screen state
@@ -525,8 +483,10 @@ void AdjustUI()
 
 void DanaeRestoreFullScreen() {
 	
-	//mainApp->GetWindow()->SetFullscreen(!mainApp->GetWindow()->IsFullScreen());
-
+	if(pMenu) {
+		pMenu->bReInitAll=true;
+	}
+	
 	AdjustUI();
 
 	LoadScreen();
@@ -654,11 +614,6 @@ void InitializeDanae()
 
 	if (LaunchDemo) {
 		LogInfo << "Launching Demo";
-
-		if ((FINAL_RELEASE) && (config.video.fullscreen || AUTO_FULL_SCREEN )) {
-			LogDebug << "Switching to Fullscreen";
-			DanaeSwitchFullScreen();
-		}
 		LaunchDemo=0;
 		SPLASH_THINGS_STAGE=11;
 	} else if (!levelPath.empty())	{
@@ -723,7 +678,7 @@ int main(int argc, char ** argv) {
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
 		LogError << "Application failed to initialize properly";
-		return false;
+		return -1;
 	}
 	
 	ScriptEvent::init();
@@ -4269,6 +4224,8 @@ void ClearGame() {
 	ARX_INPUT_Release();
 	
 	mainApp->Cleanup3DEnvironment();
+	
+	delete mainApp, mainApp = NULL;
 	
 	LogInfo << "Clean shutdown";
 }

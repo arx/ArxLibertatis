@@ -59,6 +59,8 @@ void OpenGLRenderer::Initialize() {
 	Clear(ColorBuffer | DepthBuffer);
 	
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
+	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
+	LogInfo << "Device: " << glGetString(GL_RENDERER);
 	
 	currentTransform = GL_UnsetTransform;
 	

@@ -111,6 +111,14 @@ Application::Application() : m_MainWindow(NULL) {
 	m_bAppUseZBuffer = false;
 }
 
+Application::~Application() {
+	
+	if(m_MainWindow) {
+		delete m_MainWindow;
+	}
+	
+}
+
 bool Application::Initialize() {
 	
 	bool init;
