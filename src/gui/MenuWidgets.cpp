@@ -4963,28 +4963,21 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 
 //-----------------------------------------------------------------------------
 
-void MenuCursor::Update()
-{
-    Vec2s iDiff;
-
-	if(pTex[eNumTex])
-	{
-		iDiff.x=pTex[eNumTex]->m_dwWidth>>1;
-		iDiff.y=pTex[eNumTex]->m_dwHeight>>1;
+void MenuCursor::Update() {
+	
+	Vec2s iDiff;
+	if(pTex[eNumTex]) {
+		iDiff = Vec2s(pTex[eNumTex]->m_dwWidth / 2, pTex[eNumTex]->m_dwHeight / 2);
+	} else {
+		iDiff = Vec2s::ZERO;
 	}
-	else
-	{
-		iDiff.x=0;
-		iDiff.y=0;
-	}
-
+	
 	iOldCoord[iNbOldCoord] = GInput->getMousePosAbs() + iDiff;
 	iNbOldCoord++;
-
-	if(iNbOldCoord>=iMaxOldCoord)
-	{
-		iNbOldCoord=iMaxOldCoord-1;
-		memmove((void*)iOldCoord,(void*)(iOldCoord+1),sizeof(Vec2s)*iNbOldCoord);
+	
+	if(iNbOldCoord >= iMaxOldCoord) {
+		iNbOldCoord = iMaxOldCoord - 1;
+		memmove(iOldCoord, iOldCoord + 1, sizeof(Vec2s) * iNbOldCoord);
 	}
 
 }
@@ -5016,72 +5009,59 @@ static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Texture
 
 //-----------------------------------------------------------------------------
 
-static void DrawLine2D(const Vec2s * _psPoint1, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
+static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fRed, float _fGreen, float _fBlue) {
 	
-	_iNbPt--;
-
-	if(!_iNbPt) return;
-
-	float fSize=_fSize/_iNbPt;
-	float fTaille=fSize;
-
-	float fDColorRed=_fRed/_iNbPt;
-	float fColorRed=fDColorRed;
-	float fDColorGreen=_fGreen/_iNbPt;
-	float fColorGreen=fDColorGreen;
-	float fDColorBlue=_fBlue/_iNbPt;
-	float fColorBlue=fDColorBlue;
-
+	if(_iNbPt < 2) {
+		return;
+	}
+	
+	float fSize = _fSize / _iNbPt;
+	float fTaille = fSize;
+	
+	float fDColorRed = _fRed / _iNbPt;
+	float fColorRed = fDColorRed;
+	float fDColorGreen = _fGreen / _iNbPt;
+	float fColorGreen = fDColorGreen;
+	float fDColorBlue = _fBlue / _iNbPt;
+	float fColorBlue = fDColorBlue;
+	
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
 	GRenderer->ResetTexture(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	TexturedVertex v[4];
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
-	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
-
-	const Vec2s * psOldPoint = _psPoint1++;
+	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.f;
+	v[0].rhw = v[1].rhw = v[2].rhw = v[3].rhw = 0.999999f;
+	
 	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
-
-	if(!ComputePer(*psOldPoint, *_psPoint1, &v[0], &v[2], fTaille)) {
-		v[0].sx=v[2].sx=(float)psOldPoint->x;
-		v[0].sy=v[2].sy=(float)psOldPoint->y;
+	
+	if(!ComputePer(points[0], points[1], &v[0], &v[2], fTaille)) {
+		v[0].sx = v[2].sx = points[0].x;
+		v[0].sy = v[2].sy = points[1].y;
 	}
-
-	_iNbPt--;
-
-	while(_iNbPt--)
-	{
-		fTaille+=fSize;
-		fColorRed+=fDColorRed;
-		fColorGreen+=fDColorGreen;
-		fColorBlue+=fDColorBlue;
-
-		if(ComputePer(*psOldPoint, *(_psPoint1 + 1), &v[1], &v[3], fTaille)) {
+	
+	for(int i = 1; i < _iNbPt - 1; i++) {
+		
+		fTaille += fSize;
+		fColorRed += fDColorRed;
+		fColorGreen += fDColorGreen;
+		fColorBlue += fDColorBlue;
+		
+		if(ComputePer(points[i], points[i + 1], &v[1], &v[3], fTaille)) {
+			
 			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
-
-			v[0].sx=v[1].sx;
-			v[0].sy=v[1].sy;
-			v[0].color=v[1].color;
-			v[2].sx=v[3].sx;
-			v[2].sy=v[3].sy;
-			v[2].color=v[3].color;
+			
+			v[0].sx = v[1].sx;
+			v[0].sy = v[1].sy;
+			v[0].color = v[1].color;
+			v[2].sx = v[3].sx;
+			v[2].sy = v[3].sy;
+			v[2].color = v[3].color;
 		}
-
-		psOldPoint = _psPoint1++;
+		
 	}
-
-	fTaille+=fSize;
-	fColorRed+=fDColorRed;
-	fColorGreen+=fDColorGreen;
-	fColorBlue+=fDColorBlue;
-
-	if(ComputePer(*_psPoint1, *psOldPoint, &v[1], &v[3], fTaille)) {
-		v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
-		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
-	}
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
@@ -5093,7 +5073,7 @@ void MenuCursor::DrawCursor()
 		return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
+	DrawLine2D(iOldCoord, iNbOldCoord, 10.f, .725f, .619f, 0.56f);
 
 	if(pTex[iNumCursor]) 
 		GRenderer->SetTexture(0, pTex[iNumCursor]);
