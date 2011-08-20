@@ -286,6 +286,7 @@ set(AUDIO_SOURCES
 set(AUDIO_OPENAL_SOURCES
 	src/audio/openal/OpenALBackend.cpp
 	src/audio/openal/OpenALSource.cpp
+	src/audio/openal/OpenALUtils.cpp
 )
 
 set(AUDIO_DSOUND_SOURCES

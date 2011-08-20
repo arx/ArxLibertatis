@@ -48,12 +48,13 @@ OpenALBackend::~OpenALBackend() {
 	sources.clear();
 	
 	if(context) {
+		
 		alcDestroyContext(context);
-	}
-	
-	ALenum error = alcGetError(device);
-	if(error != AL_NO_ERROR) {
-		LogError << "error destroying OpenAL context: " << error;
+		
+		ALenum error = alcGetError(device);
+		if(error != AL_NO_ERROR) {
+			LogError << "error destroying OpenAL context: " << error << " = " << getAlcErrorString(error);
+		}
 	}
 	
 	if(device) {
@@ -61,7 +62,6 @@ OpenALBackend::~OpenALBackend() {
 			LogError << "error closing device";
 		}
 	}
-	
 }
 
 aalError OpenALBackend::init(bool enableEffects) {
@@ -70,20 +70,22 @@ aalError OpenALBackend::init(bool enableEffects) {
 		return AAL_ERROR_INIT;
 	}
 	
-	
 	// clear error
 	alGetError();
 	
 	// Create OpenAL interface
 	device = alcOpenDevice(NULL);
 	if(!device) {
-		LogError << "error opening device: " << alcGetError(NULL);
+		ALenum error = alcGetError(NULL);
+		LogError << "error opening device: " << error << " = " << getAlcErrorString(error);
 		return AAL_ERROR_SYSTEM;
 	}
 	
 	context = alcCreateContext(device, NULL);
 	if(!context) {
-		LogError << "error creating OpenAL context: " << alcGetError(device);
+		ALenum error = alcGetError(device);
+		LogError << "error creating OpenAL context: " << error << " = " << getAlcErrorString(error);
+		return AAL_ERROR_SYSTEM;
 	}
 	alcMakeContextCurrent(context);
 	
