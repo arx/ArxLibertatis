@@ -11,7 +11,7 @@ GLTexture2D::~GLTexture2D() {
 
 bool GLTexture2D::Create() {
 	
-	arx_assert_msg(tex == NULL, "leaking OpenGL texture");
+	arx_assert_msg(!tex, "leaking OpenGL texture");
 	
 	glGenTextures(1, &tex);
 	

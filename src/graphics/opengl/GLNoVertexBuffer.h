@@ -31,7 +31,7 @@ void renderVertex(const SMY_VERTEX & vertex) {
 	Color c = Color::fromBGRA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
-	glSecondaryColor3ub(1, 1, 1);
+	glSecondaryColor3ub(0, 0, 0);
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
@@ -44,7 +44,7 @@ void renderVertex(const SMY_VERTEX3 & vertex) {
 	Color c = Color::fromBGRA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
-	glSecondaryColor3ub(1, 1, 1);
+	glSecondaryColor3ub(0, 0, 0);
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
