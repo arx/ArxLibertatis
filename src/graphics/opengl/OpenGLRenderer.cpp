@@ -41,7 +41,7 @@ void OpenGLRenderer::Initialize() {
 	
 	glEnable(GL_TEXTURE_2D);
 	
-	glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LEQUAL);
 	
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
