@@ -1,8 +1,8 @@
 
-#include "graphics/direct3d/DX7TextureStage.h"
+#include "graphics/d3d7/D3D7TextureStage.h"
 
 #include "graphics/Math.h"
-#include "graphics/direct3d/DX7Texture2D.h"
+#include "graphics/d3d7/D3D7Texture2D.h"
 
 const D3DTEXTUREOP ARXToDX7TextureOp[] = {
 	D3DTOP_DISABLE,    // OpDisable
@@ -44,17 +44,17 @@ const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
 	D3DTADDRESS_CLAMP   // WrapClamp,
 };
 
-DX7TextureStage::DX7TextureStage(LPDIRECT3DDEVICE7 _device, unsigned int textureStage) : TextureStage(textureStage), device(_device) {
+D3D7TextureStage::D3D7TextureStage(LPDIRECT3DDEVICE7 _device, unsigned int textureStage) : TextureStage(textureStage), device(_device) {
 }
 
-void DX7TextureStage::SetColorOp(TextureOp textureOp)
+void D3D7TextureStage::SetColorOp(TextureOp textureOp)
 {
 	// TODO-DX7: Cache states
 	DWORD colorOp = ARXToDX7TextureOp[textureOp];
 	device->SetTextureStageState(mStage, D3DTSS_COLOROP, colorOp);
 }
 
-void DX7TextureStage::SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
+void D3D7TextureStage::SetColorOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
 {
 	// TODO-DX7: Cache states
 	DWORD colorOp = ARXToDX7TextureOp[textureOp];
@@ -78,14 +78,14 @@ void DX7TextureStage::SetColorOp(TextureOp textureOp, TextureArg texArg1, Textur
 	}
 }
 
-void DX7TextureStage::SetAlphaOp(TextureOp textureOp)
+void D3D7TextureStage::SetAlphaOp(TextureOp textureOp)
 {
 	// TODO-DX7: Cache states
 	DWORD colorOp = ARXToDX7TextureOp[textureOp];
 	device->SetTextureStageState(mStage, D3DTSS_ALPHAOP, colorOp);
 }
 
-void DX7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
+void D3D7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, TextureArg texArg2)
 {
 	// TODO-DX7: Cache states
 	DWORD alphaOp = ARXToDX7TextureOp[textureOp];
@@ -109,7 +109,7 @@ void DX7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, Textur
 	}
 }
 
-void DX7TextureStage::SetTexture( Texture* pTexture )
+void D3D7TextureStage::SetTexture( Texture* pTexture )
 {
 	// TODO-DX7: Support multiple texture types
 	DX7Texture2D* tex = (DX7Texture2D*)pTexture;
@@ -117,35 +117,35 @@ void DX7TextureStage::SetTexture( Texture* pTexture )
 	device->SetTexture(mStage, tex->GetTextureID());
 }
 
-void DX7TextureStage::ResetTexture()
+void D3D7TextureStage::ResetTexture()
 {
 	device->SetTexture(mStage, 0);
 }
 
-void DX7TextureStage::SetWrapMode(TextureStage::WrapMode wrapMode)
+void D3D7TextureStage::SetWrapMode(TextureStage::WrapMode wrapMode)
 {
 	device->SetTextureStageState(mStage, D3DTSS_ADDRESS, ARXToDX7WrapMode[wrapMode]);
 }
 
-void DX7TextureStage::SetMinFilter(FilterMode filterMode)
+void D3D7TextureStage::SetMinFilter(FilterMode filterMode)
 {
 	arx_assert_msg(filterMode != TextureStage::FilterNone, "Invalid minification filter");
 	device->SetTextureStageState(mStage, D3DTSS_MINFILTER, ARXToDX7MinFilter[filterMode]);
 }
 
-void DX7TextureStage::SetMagFilter(FilterMode filterMode)
+void D3D7TextureStage::SetMagFilter(FilterMode filterMode)
 {
 	arx_assert_msg(filterMode != TextureStage::FilterNone, "Invalid magnification filter");
 	device->SetTextureStageState(mStage, D3DTSS_MAGFILTER, ARXToDX7MagFilter[filterMode]);
 }
 
-void DX7TextureStage::SetMipFilter(FilterMode filterMode)
+void D3D7TextureStage::SetMipFilter(FilterMode filterMode)
 {
 	D3DTEXTUREMIPFILTER mipFilter = ARXToDX7MipFilter[filterMode];
 	device->SetTextureStageState(mStage, D3DTSS_MIPFILTER, mipFilter);
 }
 
-void DX7TextureStage::SetMipMapLODBias(float bias) {
+void D3D7TextureStage::SetMipMapLODBias(float bias) {
 	if(GetKeyState(VK_F12) != 0) { // TODO what kind of hack is this?
 		float val = 0;
 		device->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, reinterpret<DWORD, f32>(val));
@@ -154,7 +154,7 @@ void DX7TextureStage::SetMipMapLODBias(float bias) {
 	}
 }
 
-void DX7TextureStage::SetTextureCoordIndex(int texCoordIdx)
+void D3D7TextureStage::SetTextureCoordIndex(int texCoordIdx)
 {
 	device->SetTextureStageState(mStage, D3DTSS_TEXCOORDINDEX, texCoordIdx);
 }

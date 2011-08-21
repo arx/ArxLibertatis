@@ -1,5 +1,5 @@
 
-#include "graphics/direct3d/DX7Texture2D.h"
+#include "graphics/d3d7/D3D7Texture2D.h"
 
 #include "graphics/Math.h"
 

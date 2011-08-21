@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
-#include "graphics/direct3d/Direct3DRenderer.h"
+#include "graphics/d3d7/D3D7Renderer.h"
 #include "io/Logger.h"
 #include "math/Rectangle.h"
 
@@ -413,7 +413,7 @@ bool D3D7Window::initialize(DisplayMode mode) {
 		return false;
 	}
 	
-	renderer = new Direct3DRenderer(this);
+	renderer = new D3D7Renderer(this);
 	
 	renderer->Initialize();
 	

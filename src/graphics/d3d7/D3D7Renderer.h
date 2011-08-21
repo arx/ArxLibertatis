@@ -1,18 +1,18 @@
 
-#ifndef ARX_GRAPHICS_DIRECT3D_DIRECT3DRENDERER_H
-#define ARX_GRAPHICS_DIRECT3D_DIRECT3DRENDERER_H
+#ifndef ARX_GRAPHICS_D3D7_D3D7RENDERER_H
+#define ARX_GRAPHICS_D3D7_D3D7RENDERER_H
 
 #include <d3d.h>
 
 #include "graphics/Renderer.h"
 #include "window/D3D7Window.h"
 
-class Direct3DRenderer : public Renderer {
+class D3D7Renderer : public Renderer {
 	
 public:
 	
-	Direct3DRenderer(D3D7Window * window);
-	~Direct3DRenderer();
+	D3D7Renderer(D3D7Window * window);
+	~D3D7Renderer();
 	
 	void Initialize();
 	
@@ -86,4 +86,4 @@ private:
 	
 };
 
-#endif // ARX_GRAPHICS_DIRECT3D_DIRECT3DRENDERER_H
+#endif // ARX_GRAPHICS_D3D7_D3D7RENDERER_H
