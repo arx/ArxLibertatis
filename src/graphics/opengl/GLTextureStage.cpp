@@ -26,10 +26,6 @@ void GLTextureStage::SetTexture(Texture * texture) {
 	
 	arx_assert(texture != NULL);
 	
-	if(texture == tex) {
-		return;
-	}
-	
 	tex = reinterpret_cast<GLTexture2D *>(texture);
 }
 
@@ -78,7 +74,7 @@ static const GLTexEnvParam glTexEnv[] = {
 void GLTextureStage::setArg(OpType alpha, Arg idx, TextureArg arg) {
 	
 	glTexEnvi(GL_TEXTURE_ENV, glTexEnv[alpha].sources[idx], glTexSource[arg & ArgMask]);
-	GLint op = (arg & ArgComplement) ? glTexEnv[alpha].normal : glTexEnv[alpha].complement;
+	GLint op = (arg & ArgComplement) ? glTexEnv[alpha].complement : glTexEnv[alpha].normal;
 	glTexEnvi(GL_TEXTURE_ENV, glTexEnv[alpha].operands[idx], op);
 }
 
@@ -180,19 +176,27 @@ void GLTextureStage::SetAlphaOp(TextureOp op) {
 }
 
 void GLTextureStage::SetWrapMode(WrapMode _wrapMode) {
-	wrapMode = _wrapMode, current = NULL;
+	if(wrapMode != _wrapMode) {
+		wrapMode = _wrapMode, current = NULL;
+	}
 }
 
 void GLTextureStage::SetMinFilter(FilterMode filterMode) {
-	minFilter = filterMode, current = NULL;
+	if(minFilter != filterMode) {
+		minFilter = filterMode, current = NULL;
+	}
 }
 
 void GLTextureStage::SetMagFilter(FilterMode filterMode) {
-	magFilter = filterMode, current = NULL;
+	if(magFilter != filterMode) {
+		magFilter = filterMode, current = NULL;
+	}
 }
 
 void GLTextureStage::SetMipFilter(FilterMode filterMode) {
-	mipFilter = filterMode, current = NULL;
+	if(mipFilter != filterMode) {
+		mipFilter = filterMode, current = NULL;
+	}
 }
 
 void GLTextureStage::SetMipMapLODBias(float bias) {

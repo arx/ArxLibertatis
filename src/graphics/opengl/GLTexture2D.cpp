@@ -31,7 +31,6 @@ void GLTexture2D::Upload() {
 	arx_assert(tex != GL_NONE);
 	
 	glBindTexture(GL_TEXTURE_2D, tex);
-	
 	renderer->GetTextureStage(0)->current = this;
 	
 	GLint internal;
