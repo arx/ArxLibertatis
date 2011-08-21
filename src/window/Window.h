@@ -29,6 +29,8 @@ public:
 	virtual void * GetHandle() = 0;
 	virtual void Tick() = 0;
 	
+	virtual void hide() = 0;
+	
 	class Listener {
 		
 	public:
@@ -51,15 +53,16 @@ public:
 	void AddListener(Listener * pListener);
 	void RemoveListener(Listener * pListener);
 	
-	bool HasFocus() const;
-	bool IsMinimized() const;
-	bool IsMaximized() const;
-	bool IsVisible() const;
+	inline bool HasFocus() const {
+		return m_HasFocus && !m_IsMinimized; // We treat minimized as not having focus
+	}
+	inline bool IsMinimized() const { return m_IsMinimized; }
+	inline bool IsMaximized() const { return m_IsMaximized; }
+	inline bool IsVisible() const { return m_IsVisible; }
 	
 	inline const Vec2i & GetSize() const { return m_Size; }
 	
-	bool IsWindowed() const;
-	bool IsFullScreen() const;
+	inline bool IsFullScreen() const { return m_IsFullscreen; }
 	
 protected:
 	

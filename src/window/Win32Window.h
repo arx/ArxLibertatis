@@ -21,6 +21,8 @@ public:
 	virtual void setWindowSize(Vec2i size);
 	virtual void Tick();
 	
+	virtual void hide();
+	
 private:
 	
 	static bool InitWindowClass();

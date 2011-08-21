@@ -29,6 +29,8 @@ public:
 	
 	void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue);
 	
+	void hide();
+	
 private:
 	
 	bool setMode(DisplayMode mode, bool fullscreen);

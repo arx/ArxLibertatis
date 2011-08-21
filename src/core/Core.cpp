@@ -4142,7 +4142,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 	ARX_TIME_UnPause();
 	
-	// TODO(core_cleanup) ShowWindow((HWND)mainApp->GetWindow()->GetHandle(), SW_MINIMIZE | SW_HIDE);
+	mainApp->GetWindow()->hide();
 	
 	ARX_MINIMAP_PurgeTC();
 	
