@@ -75,6 +75,8 @@ public:
 	bool getSnapshot(Image & image);
 	bool getSnapshot(Image & image, size_t width, size_t height);
 	
+	bool isFogInEyeCoordinates();
+	
 private:
 	
 	LPDIRECT3DDEVICE7 device;

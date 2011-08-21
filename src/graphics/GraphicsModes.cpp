@@ -38,8 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::min;
 
-//extern LPDIRECT3DDEVICE7 GDevice; // TODO(core_cleanup) remove
-
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
@@ -142,15 +140,11 @@ void ARX_GLOBALMODS_Apply()
 	
 	float fogEnd = fZFogEnd;
 	float fogStart = fZFogStart;
-
-	// WORLD COORDINATE
-	// TODO(core_cleanup) D3DDEVICEDESC7 d3dDeviceDesc;
-	//GDevice->GetCaps(&d3dDeviceDesc);
-	//if (d3dDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG)
-	{
-		fogEnd   *= ACTIVECAM->cdepth;
+	
+	if(GRenderer->isFogInEyeCoordinates()) {
+		fogEnd *= ACTIVECAM->cdepth;
 		fogStart *= ACTIVECAM->cdepth;
 	}
-
+	
 	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
 }

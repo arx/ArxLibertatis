@@ -484,3 +484,7 @@ bool Direct3DRenderer::getSnapshot(Image& image, size_t width, size_t height) {
 	
 	return ret;
 }
+
+bool Direct3DRenderer::isFogInEyeCoordinates() {
+	return (window->getInfo().device.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG);
+}

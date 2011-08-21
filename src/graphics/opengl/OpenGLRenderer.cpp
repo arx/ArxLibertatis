@@ -543,3 +543,7 @@ void OpenGLRenderer::applyTextureStages() {
 		reinterpret_cast<GLTextureStage *>(*i)->apply();
 	}
 }
+
+bool OpenGLRenderer::isFogInEyeCoordinates() {
+	return true;
+}
