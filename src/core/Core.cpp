@@ -674,6 +674,9 @@ int main(int argc, char ** argv) {
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
 	
+	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
+	ARX_TIME_Init();
+	
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
 		LogError << "Application failed to initialize properly";
