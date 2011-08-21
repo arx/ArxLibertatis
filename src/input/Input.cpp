@@ -700,8 +700,7 @@ bool Input::isKeyPressedNowUnPressed(int keyId) const {
 
 //-----------------------------------------------------------------------------
 
-bool Input::getKeyAsText(int keyId, char& result) const
-{
+bool Input::getKeyAsText(int keyId, char& result) const {
 	return backend->getKeyAsText(keyId, result);
 }
 
