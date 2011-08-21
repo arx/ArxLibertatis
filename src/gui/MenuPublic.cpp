@@ -154,7 +154,7 @@ void ARXMenu_Options_Video_GetGamma(int & _iGamma) {
 
 void ARXMenu_Options_Video_SetGamma(int _iGamma) {
 	config.video.gamma = _iGamma;
-	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 }
 
 void ARXMenu_Options_Video_GetLuminosity(int & _iLuminosity) {
@@ -163,7 +163,7 @@ void ARXMenu_Options_Video_GetLuminosity(int & _iLuminosity) {
 
 void ARXMenu_Options_Video_SetLuminosity(int _iLuminosity) {
 	config.video.luminosity = _iLuminosity;
-	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 }
 
 void ARXMenu_Options_Video_GetContrast(int & _iContrast) {
@@ -172,7 +172,7 @@ void ARXMenu_Options_Video_GetContrast(int & _iContrast) {
 
 void ARXMenu_Options_Video_SetContrast(int _iContrast) {
 	config.video.contrast = _iContrast;
-	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 }
 
 void ARXMenu_Options_Video_GetDetailsQuality(int & _iQuality) {

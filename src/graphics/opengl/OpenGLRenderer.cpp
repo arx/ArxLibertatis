@@ -536,10 +536,6 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	return true;
 }
 
-void OpenGLRenderer::setGamma(float brightness, float contrast, float gamma) {
-	ARX_UNUSED(brightness), ARX_UNUSED(contrast), ARX_UNUSED(gamma); // TODO implement
-}
-
 void OpenGLRenderer::applyTextureStages() {
 	
 	std::vector<TextureStage *>::const_iterator i = m_TextureStages.begin();

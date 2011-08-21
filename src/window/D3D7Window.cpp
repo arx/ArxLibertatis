@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 using std::vector;
 
-D3D7Window::D3D7Window() : dd(NULL), d3d(NULL), backBuffer(NULL), frontBuffer(NULL), device(NULL), deviceInfo(NULL) { }
+D3D7Window::D3D7Window() : dd(NULL), d3d(NULL), backBuffer(NULL), frontBuffer(NULL), device(NULL), deviceInfo(NULL), gammaControl(NULL) { }
 
 D3D7Window::~D3D7Window() {
 	destroyObjects();
@@ -346,7 +346,12 @@ void D3D7Window::destroyObjects() {
 		onRendererShutdown();
 		delete renderer, renderer = NULL;
 	}
-
+	
+	if(gammaControl) {
+		gammaControl->SetGammaRamp(0, &oldGamma);
+		gammaControl->Release(), gammaControl = NULL;
+	}
+	
 	if(dd) {
 		dd->SetCooperativeLevel((HWND)GetHandle(), DDSCL_NORMAL);
 	}
@@ -411,6 +416,15 @@ bool D3D7Window::initialize(DisplayMode mode) {
 	if(!createZBuffer(&deviceInfo->device.deviceGUID)) {
 		delete renderer, renderer = NULL;
 		return false;
+	}
+	
+	// Backup original gamma values
+	
+	LPVOID _gammaControl;
+	frontBuffer->QueryInterface(IID_IDirectDrawGammaControl, &_gammaControl);
+	gammaControl = reinterpret_cast<LPDIRECTDRAWGAMMACONTROL>(_gammaControl);
+	if(gammaControl) {
+		gammaControl->GetGammaRamp(0, &oldGamma);
 	}
 	
 	renderer = new Direct3DRenderer(this);
@@ -770,4 +784,27 @@ void D3D7Window::setWindowSize(Vec2i size) {
 		
 	}
 	
+}
+
+void D3D7Window::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
+	
+	DDGAMMARAMP ramp;
+	
+	if(!red || !green || !blue) {
+		gammaControl->GetGammaRamp(0, &ramp);
+	}
+	
+	if(red) {
+		std::copy(red, red + 256, ramp.red);
+	}
+	
+	if(green) {
+		std::copy(green, green + 256, ramp.green);
+	}
+	
+	if(blue) {
+		std::copy(blue, blue + 256, ramp.blue);
+	}
+	
+	gammaControl->SetGammaRamp(0, &ramp);
 }

@@ -74,8 +74,6 @@ public:
 	bool getSnapshot(Image & image);
 	bool getSnapshot(Image & image, size_t width, size_t height);
 	
-	void setGamma(float brightness, float contrast, float gamma);
-	
 	inline GLTextureStage * GetTextureStage(unsigned int textureStage) {
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
 	}

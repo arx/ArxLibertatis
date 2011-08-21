@@ -88,7 +88,7 @@ const DWORD ARXToDXBufferFlags[] = {
 // Renderer - DX7 implementation
 ///////////////////////////////////////////////////////////////////////////////
 
-Direct3DRenderer::Direct3DRenderer(D3D7Window * _window) : device(NULL), window(_window), gammaControl(NULL) { }
+Direct3DRenderer::Direct3DRenderer(D3D7Window * _window) : device(NULL), window(_window) { }
 
 void Direct3DRenderer::Initialize() {
 	
@@ -152,15 +152,6 @@ void Direct3DRenderer::Initialize() {
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
 	
-	// Backup original gamma values
-	
-	LPVOID _gammaControl;
-	window->getFront()->QueryInterface(IID_IDirectDrawGammaControl, &_gammaControl);
-	gammaControl = reinterpret_cast<LPDIRECTDRAWGAMMACONTROL>(_gammaControl);
-	if(gammaControl) {
-		gammaControl->GetGammaRamp(0, &oldGamma);
-	}
-	
 	LogInfo << "Using Direct3D 7";
 	LogInfo << "Device: " << window->getInfo().name << " (" << window->getInfo().desc << ')';
 	LogInfo << "Driver: " << window->getInfo().driver << " (" << window->getInfo().driverDesc << ')';
@@ -190,13 +181,7 @@ void Direct3DRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
 	device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
-Direct3DRenderer::~Direct3DRenderer() {
-	
-	if(gammaControl) {
-		gammaControl->SetGammaRamp(0, &oldGamma);
-		gammaControl->Release(), gammaControl = NULL;
-	}
-}
+Direct3DRenderer::~Direct3DRenderer() { }
 
 void Direct3DRenderer::ReleaseAllTextures() {
 	std::list<DX7Texture2D*>::iterator it;
@@ -498,46 +483,4 @@ bool Direct3DRenderer::getSnapshot(Image& image, size_t width, size_t height) {
 	tempSurface->Release();
 	
 	return ret;
-}
-
-void Direct3DRenderer::setGamma(float brightness, float contrast, float gamma) {
-	
-	if(!gammaControl) {
-		return;
-	}
-	
-	float fGammaMax = (1.f / 6.f);
-	float fGammaMin = 2.f;
-	float fGamma = ((fGammaMax - fGammaMin) / 11.f) * (gamma + 1.f) + fGammaMin;
-	
-	float fLuminosityMin = -.2f;
-	float fLuminosityMax = .2f;
-	float fLuminosity = ((fLuminosityMax - fLuminosityMin) / 11.f) * (brightness + 1.f) + fLuminosityMin;
-	
-	float fContrastMax = -.3f;
-	float fContrastMin = .3f;
-	float fContrast = ((fContrastMax - fContrastMin) / 11.f) * (contrast + 1.f) + fContrastMin;
-	
-	float fRangeMin = 0.f + fContrast;
-	float fRangeMax = 1.f - fContrast;
-	float fdVal = (fRangeMax - fRangeMin) / 256.f;
-	float fVal = 0.f;
-	
-	DDGAMMARAMP ramp;
-	
-	for(int iI = 0; iI < 256; iI++) {
-		
-		int iColor = clamp((int)(65536.f * (fLuminosity + pow(fVal, fGamma))), 0, 65535);
-		
-		WORD wColor = checked_range_cast<WORD>(iColor);
-		
-		ramp.red[iI] = wColor;
-		ramp.green[iI] = wColor;
-		ramp.blue[iI] = wColor;
-		
-		fVal += fdVal;
-	}
-	
-	gammaControl->SetGammaRamp(0, &ramp);
-	
 }

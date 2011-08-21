@@ -2334,7 +2334,7 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 	
 	GRenderer = window.getRenderer();
 	
-	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	window.setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 	
 	InitDeviceObjects();
 	
