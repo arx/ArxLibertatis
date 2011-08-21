@@ -176,27 +176,19 @@ void GLTextureStage::SetAlphaOp(TextureOp op) {
 }
 
 void GLTextureStage::SetWrapMode(WrapMode _wrapMode) {
-	if(wrapMode != _wrapMode) {
-		wrapMode = _wrapMode, current = NULL;
-	}
+	wrapMode = _wrapMode;
 }
 
 void GLTextureStage::SetMinFilter(FilterMode filterMode) {
-	if(minFilter != filterMode) {
-		minFilter = filterMode, current = NULL;
-	}
+	minFilter = filterMode;
 }
 
 void GLTextureStage::SetMagFilter(FilterMode filterMode) {
-	if(magFilter != filterMode) {
-		magFilter = filterMode, current = NULL;
-	}
+	magFilter = filterMode;
 }
 
 void GLTextureStage::SetMipFilter(FilterMode filterMode) {
-	if(mipFilter != filterMode) {
-		mipFilter = filterMode, current = NULL;
-	}
+	mipFilter = filterMode;
 }
 
 void GLTextureStage::SetMipMapLODBias(float bias) {

@@ -40,6 +40,7 @@ void OpenGLRenderer::Initialize() {
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_POLYGON_OFFSET_FILL);
 	
 	glDepthFunc(GL_LEQUAL);
 	
@@ -391,7 +392,7 @@ void OpenGLRenderer::SetCulling(CullingMode mode) {
 
 void OpenGLRenderer::SetDepthBias(int depthBias) {
 	
-	float bias = -(float)depthBias / 16.f; // TODO check this
+	float bias = -(float)depthBias;
 	
 	glPolygonOffset(bias, bias);
 	
