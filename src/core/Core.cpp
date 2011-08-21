@@ -635,7 +635,6 @@ void InitializeDanae()
 	
 }
 
-
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
 int main(int argc, char ** argv) {

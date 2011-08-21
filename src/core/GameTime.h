@@ -81,7 +81,7 @@ inline float ARX_TIME_Get(bool _bUsePause = true) {
 	float tim = _ARX_TIME_GetTime();
 	
 	if(ARXPausedTimer && _bUsePause) {
-		ARXTime = tim - ARXTotalPausedTime - (tim - ARXPausedTime);
+		ARXTime = ARXPausedTime - ARXTotalPausedTime;
 	} else {
 		ARXTime = tim - ARXTotalPausedTime;
 	}

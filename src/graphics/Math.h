@@ -533,11 +533,31 @@ struct _checked_range_cast {
 	
 	template <class T, class V>
 	inline T cast(V value) {
-		arx_assert_impl(value >= std::numeric_limits<T>::min() && value <= std::numeric_limits<T>::max(), file, line, NULL);
+		arx_assert_impl(value >= min(T(0)) && value <= std::numeric_limits<T>::max(), file, line, format(value), cast(value));
 		return static_cast<T>(value);
 	}
 	
+private:
+	
+	template <class T>
+	static inline T min(T t) { ARX_UNUSED(t); return std::numeric_limits<T>::min(); }
+	static inline float min(float t) { ARX_UNUSED(t); return -std::numeric_limits<float>::max(); }
+	static inline double min(double t) { ARX_UNUSED(t); return -std::numeric_limits<double>::max(); }
+	
+	static inline const char * format(unsigned long v) { ARX_UNUSED(v); return "value is %ul"; }
+	static inline const char * format(long v) { ARX_UNUSED(v); return "value is %l"; }
+	static inline const char * format(unsigned int v) { ARX_UNUSED(v); return "value is %ud"; }
+	static inline const char * format(int v) { ARX_UNUSED(v); return "value is %d"; }
+	static inline const char * format(double v) { ARX_UNUSED(v); return "value is %f"; }
+	
+	static inline unsigned long cast(unsigned long v) { return v; }
+	static inline long cast(long v) { return v; }
+	static inline unsigned int cast(unsigned int v) { return v; }
+	static inline int cast(int v) { return v; }
+	static inline double cast(double v) { return v; }
+	
 };
+
 
 #ifdef _DEBUG
 #define checked_range_cast _checked_range_cast(__FILE__, __LINE__).cast
