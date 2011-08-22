@@ -6,56 +6,21 @@
 bool Texture2D::Init(const fs::path & strFileName, bool pCreateMipmaps) {
 	
 	mFileName = strFileName;
-	
-	bool bLoaded = mImage.LoadFromFile(strFileName);
-	if(!bLoaded) {
-		mFileName.clear();
-		return false;
-	}
-
-	// Original arx only applied color keying to bmp textures...
-	if(strFileName.ext() == ".bmp")	{
-		mImage.ApplyColorKeyToAlpha();
-	}
-	
-	mFormat = mImage.GetFormat();
-	mWidth  = mImage.GetWidth();
-	mHeight = mImage.GetHeight();
 	mHasMipmaps = pCreateMipmaps;
-	
-	bool bCreated = Create();
-	if(!bCreated) {
-		return false;
-	}
-	
-	Upload();
-	
-	return true;
+	return Restore();
 }
 
 bool Texture2D::Init(const Image & pImage, bool pCreateMipmaps) {
 	
 	mFileName.clear();
-	
-	mImage  = pImage;
-	mFormat = pImage.GetFormat();
-	mWidth  = pImage.GetWidth();
-	mHeight = pImage.GetHeight();
+	mImage = pImage;
 	mHasMipmaps = pCreateMipmaps;
-	
-	bool bCreated = Create();
-	if(!bCreated) {
-		return false;
-	}
-	
-	Upload();
-	
-	return true;
+	return Restore();
 }
 
 bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pFormat) {
 	
-	mFileName = "";
+	mFileName.clear();
 	
 	mImage.Create(pWidth, pHeight, pFormat);
 	mWidth  = pWidth;
@@ -68,25 +33,34 @@ bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pF
 
 bool Texture2D::Restore() {
 	
-	if(mImage.IsValid()) {
-		bool bCreated = Create();
-		if(!bCreated) {
-			return false;
-		}
-		Upload();
-		
-	} else if(!mFileName.empty()) {
-		bool bCreated = Create();
-		if(!bCreated) {
-			return false;
-		}
+	bool bRestored = false;
+
+	if(!mFileName.empty()) {
 		mImage.LoadFromFile(mFileName);
+
+		// Original arx only applied color keying to bmp textures...
+		if(mFileName.ext() == ".bmp")
+			mImage.ApplyColorKeyToAlpha();		
+	}
+
+	if(mImage.IsValid()) {
+		mFormat = mImage.GetFormat();
+		mWidth  = mImage.GetWidth();
+		mHeight = mImage.GetHeight();
+
+		bool bCreated = Create();
+		if(!bCreated) {
+			return false;
+		}
+
 		Upload();
+
+		bRestored = true;
+	} 
+
+	if(!mFileName.empty()) {
 		mImage.Reset();
-		
-	} else {
-		return false;
 	}
 	
-	return true;
+	return bRestored;
 }

@@ -44,7 +44,6 @@ public:
 	inline LPDIRECT3D7 getD3D() { return d3d; }
 	inline LPDIRECTDRAWSURFACE7 getFront() { return frontBuffer; }
 	inline LPDIRECTDRAWSURFACE7 getBack() { return backBuffer; }
-	inline LPDIRECT3DDEVICE7 getDevice() { return device; }
 	inline const DeviceInfo & getInfo() { return *deviceInfo; }
 	
 	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
@@ -71,7 +70,6 @@ private:
 	LPDIRECT3D7 d3d; // The Direct3D object
 	LPDIRECTDRAWSURFACE7 backBuffer; // The backbuffer surface
 	LPDIRECTDRAWSURFACE7 frontBuffer; // The primary surface
-	LPDIRECT3DDEVICE7 device;
 	
 	std::vector<DeviceInfo> devices;
 	DeviceInfo * deviceInfo;

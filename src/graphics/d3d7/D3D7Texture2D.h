@@ -1,6 +1,6 @@
 
-#ifndef ARX_GRAPHICS_DIRECT3D_DX7TEXTURE2D_H
-#define ARX_GRAPHICS_DIRECT3D_DX7TEXTURE2D_H
+#ifndef ARX_GRAPHICS_D3D7_D3D7TEXTURE2D_H
+#define ARX_GRAPHICS_D3D7_D3D7TEXTURE2D_H
 
 #include <list>
 
@@ -10,7 +10,7 @@
 
 class DX7Texture2D : public Texture2D {
 	
-	friend class Direct3DRenderer;
+	friend class D3D7Renderer;
 	
 public:
 	
@@ -20,7 +20,7 @@ public:
 	
 private:
 	
-	DX7Texture2D(LPDIRECT3DDEVICE7 device);
+	DX7Texture2D();
 	virtual ~DX7Texture2D();
 	
 	virtual bool Create();
@@ -34,7 +34,6 @@ private:
 	void CopyNextMipLevel(LPDIRECTDRAWSURFACE7 pddsDst, LPDIRECTDRAWSURFACE7 pddsSrc);
 	
 	LPDIRECTDRAWSURFACE7 m_pddsSurface;
-	LPDIRECT3DDEVICE7 device;
 };
 
 // TODO-DX7: This should really be an intrusive list!
@@ -42,4 +41,4 @@ extern std::list<DX7Texture2D*> g_Textures2D;
 
 bool downloadSurface(LPDIRECTDRAWSURFACE7 surface, Image & image);
 
-#endif // ARX_GRAPHICS_DIRECT3D_DX7TEXTURE2D_H
+#endif // ARX_GRAPHICS_D3D7_D3D7TEXTURE2D_H

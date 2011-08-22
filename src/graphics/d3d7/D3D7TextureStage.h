@@ -1,16 +1,16 @@
 
-#ifndef ARX_GRAPHICS_DIRECT3D_DX7TEXTURESTAGE_H
-#define ARX_GRAPHICS_DIRECT3D_DX7TEXTURESTAGE_H
+#ifndef ARX_GRAPHICS_D3D7_D3D7TEXTURESTAGE_H
+#define ARX_GRAPHICS_D3D7_D3D7TEXTURESTAGE_H
 
 #include <d3d.h>
 
 #include "graphics/texture/TextureStage.h"
 
-class DX7TextureStage : public TextureStage {
+class D3D7TextureStage : public TextureStage {
 	
 public:
 	
-	DX7TextureStage(LPDIRECT3DDEVICE7 device, unsigned int textureStage);
+	D3D7TextureStage(unsigned int textureStage);
 	
 	void SetTexture(Texture * pTexture);
 	void ResetTexture();
@@ -28,15 +28,10 @@ public:
 	
 	void SetMipMapLODBias(float bias);
 	void SetTextureCoordIndex(int texCoordIdx);
-	
-private:
-	
-	LPDIRECT3DDEVICE7 device;
-	
 };
 
 extern D3DTEXTUREMAGFILTER ARXToDX7MagFilter[];
 extern D3DTEXTUREMINFILTER ARXToDX7MinFilter[];
 extern D3DTEXTUREMIPFILTER ARXToDX7MipFilter[];
 
-#endif // ARX_GRAPHICS_DIRECT3D_DX7TEXTURESTAGE_H
+#endif // ARX_GRAPHICS_D3D7_D3D7TEXTURESTAGE_H

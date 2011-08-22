@@ -1,6 +1,6 @@
 
-#ifndef ARX_GRAPHICS_DIRECT3D_DX7VERTEXBUFFER_H
-#define ARX_GRAPHICS_DIRECT3D_DX7VERTEXBUFFER_H
+#ifndef ARX_GRAPHICS_D3D7_D3D7VERTEXBUFFER_H
+#define ARX_GRAPHICS_D3D7_D3D7VERTEXBUFFER_H
 
 #include <d3d.h>
 
@@ -9,13 +9,14 @@
 
 extern const DWORD ARXToDXBufferFlags[];
 extern const D3DPRIMITIVETYPE ARXToDXPrimitiveType[];
+extern LPDIRECT3DDEVICE7 GD3D7Device;
 
 template <class Vertex>
-class DX7VertexBuffer : public VertexBuffer<Vertex> {
+class D3D7VertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	DX7VertexBuffer(D3D7Window * window, DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity), device(window->getDevice()) {
+	D3D7VertexBuffer(D3D7Window * window, DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity) {
 		
 		D3DVERTEXBUFFERDESC d3dvbufferdesc;
 		d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
@@ -63,29 +64,29 @@ public:
 		vb->Unlock();
 	}
 	
-	void draw(Direct3DRenderer::Primitive primitive, size_t count, size_t offset = 0) const {
+	void draw(D3D7Renderer::Primitive primitive, size_t count, size_t offset = 0) const {
 		
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-		HRESULT hr = device->DrawPrimitiveVB(type, vb, offset, count, 0);
+		HRESULT hr = GD3D7Device->DrawPrimitiveVB(type, vb, offset, count, 0);
 		arx_assert_msg(SUCCEEDED(hr), "DrawPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}
 	
 	
-	void drawIndexed(Direct3DRenderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
+	void drawIndexed(D3D7Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		arx_assert(indices != NULL);
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-		HRESULT hr = device->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
+		HRESULT hr = GD3D7Device->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
 		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}
 	
-	~DX7VertexBuffer() {
+	~D3D7VertexBuffer() {
 		vb->Release();
 	};
 	
@@ -96,4 +97,4 @@ private:
 	
 };
 
-#endif // ARX_GRAPHICS_DIRECT3D_D3DVERTEXBUFFER_H
+#endif // ARX_GRAPHICS_D3D7_D3D7VERTEXBUFFER_H

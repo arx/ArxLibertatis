@@ -356,9 +356,9 @@ set(GRAPHICS_SOURCES
 	src/graphics/texture/TextureStage.cpp
 )
 set(GRAPHICS_D3D7_SOURCES
-	src/graphics/direct3d/Direct3DRenderer.cpp
-	src/graphics/direct3d/DX7Texture2D.cpp
-	src/graphics/direct3d/DX7TextureStage.cpp
+	src/graphics/d3d7/D3D7Renderer.cpp
+	src/graphics/d3d7/D3D7Texture2D.cpp
+	src/graphics/d3d7/D3D7TextureStage.cpp
 )
 set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLTexture2D.cpp
