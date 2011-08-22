@@ -62,6 +62,9 @@ public:
 	
 	virtual void evictManagedTextures() = 0;
 	
+	virtual void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) = 0;
+	void setGamma(float brightness, float contrast, float gamma);
+	
 protected:
 	
 	Renderer * renderer;

@@ -40,6 +40,7 @@ void OpenGLRenderer::Initialize() {
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_POLYGON_OFFSET_FILL);
 	
 	glDepthFunc(GL_LEQUAL);
 	
@@ -391,7 +392,7 @@ void OpenGLRenderer::SetCulling(CullingMode mode) {
 
 void OpenGLRenderer::SetDepthBias(int depthBias) {
 	
-	float bias = -(float)depthBias / 16.f; // TODO check this
+	float bias = -(float)depthBias;
 	
 	glPolygonOffset(bias, bias);
 	
@@ -429,7 +430,7 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 	x -= .5f;
 	y -= .5f;
 	
-	glColor4ub(color.r, color.g, color.b, color.a);
+	glColor3ub(color.r, color.g, color.b);
 	
 	glSecondaryColor3ub(0, 0, 0);
 	
@@ -535,14 +536,14 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	return true;
 }
 
-void OpenGLRenderer::setGamma(float brightness, float contrast, float gamma) {
-	ARX_UNUSED(brightness), ARX_UNUSED(contrast), ARX_UNUSED(gamma); // TODO implement
-}
-
 void OpenGLRenderer::applyTextureStages() {
 	
 	std::vector<TextureStage *>::const_iterator i = m_TextureStages.begin();
 	for(; i != m_TextureStages.end(); ++i) {
 		reinterpret_cast<GLTextureStage *>(*i)->apply();
 	}
+}
+
+bool OpenGLRenderer::isFogInEyeCoordinates() {
+	return true;
 }

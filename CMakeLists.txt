@@ -240,13 +240,15 @@ endif()
 if(NOT ARX_USE_OPENAL AND NOT ARX_USE_DSOUND)
 	message(WARNING "No audio backend enabled.")
 endif()
-if((NOT HAVE_NANOSLEEP_FUNC OR NOT HAVE_CLOCK_GETTIME) AND NOT WIN32)
+if((NOT HAVE_NANOSLEEP_FUNC OR NOT HAVE_CLOCK_GETTIME) AND NOT HAVE_WINAPI)
 	message(SEND_ERROR "Need either nanosleep and clock_gettime or WIN32.")
 endif()
 
 # Preprocessor definitions
-add_definitions(-DNOMINMAX)
-add_definitions(-DWIN32_LEAN_AND_MEAN)
+if(HAVE_WINAPI)
+	add_definitions(-DNOMINMAX)
+	add_definitions(-DWIN32_LEAN_AND_MEAN)
+endif(HAVE_WINAPI)
 
 # Sources
 set(AI_SOURCES

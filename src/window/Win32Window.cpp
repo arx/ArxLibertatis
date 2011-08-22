@@ -272,3 +272,8 @@ void Win32Window::setWindowSize(Vec2i size) {
 	m_Size = size;
 	depth = 0;
 }
+
+void Win32Window::hide() {
+	ShowWindow(m_hWnd, SW_MINIMIZE | SW_HIDE);
+	OnShow(false);
+}

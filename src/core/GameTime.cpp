@@ -67,44 +67,21 @@ float ARXTotalPausedTime = 0;
 float ARXTime = 0;
 bool ARXPausedTimer = 0;
 
-bool			bTimerInit = false;
-float			startupTime = 0;
 
-
-void _ARX_TIME_Init()
-{
-	if (bTimerInit)
-	{
-		return;
-	}
-
-	bTimerInit = true;
-
-	ARX_TIME_Init();
-
-	startupTime = _ARX_TIME_GetTime();
-}
 
 float _ARX_TIME_GetTime() {
 	return float(Time::getUs()) / 1000;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_TIME_Init()
-{
-	_ARX_TIME_Init();
-
+void ARX_TIME_Init() {
+	
 	float tim = _ARX_TIME_GetTime();
 	ARXTotalPausedTime = tim;
 	ARXTime = 0;
 	ARXPausedTime = 0;
 	ARXPausedTimer = 0;
-
-//ARX_BEGIN: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
-//Currently when ARX_TIME_Init the substract FrameDiff = FrameTime - LastFrameTime is negative because of resetting ARXTotalPausedTime.
-//This solution reinit FrameTime & LastFrameTime to get a min frameDiff = 0 on ARX_TIME_Init.
+	
 	FrameTime = LastFrameTime = ARXTime;
-//ARX_END: jycorbel (2010-07-19)
 }
 
 //-----------------------------------------------------------------------------

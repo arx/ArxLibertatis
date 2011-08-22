@@ -11,7 +11,7 @@ GLTexture2D::~GLTexture2D() {
 
 bool GLTexture2D::Create() {
 	
-	arx_assert_msg(tex == NULL, "leaking OpenGL texture");
+	arx_assert_msg(!tex, "leaking OpenGL texture");
 	
 	glGenTextures(1, &tex);
 	
@@ -31,7 +31,6 @@ void GLTexture2D::Upload() {
 	arx_assert(tex != GL_NONE);
 	
 	glBindTexture(GL_TEXTURE_2D, tex);
-	
 	renderer->GetTextureStage(0)->current = this;
 	
 	GLint internal;

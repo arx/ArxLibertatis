@@ -635,7 +635,6 @@ void InitializeDanae()
 	
 }
 
-
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
 int main(int argc, char ** argv) {
@@ -674,6 +673,9 @@ int main(int argc, char ** argv) {
 	
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
+	
+	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
+	ARX_TIME_Init();
 	
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
@@ -4142,7 +4144,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 	ARX_TIME_UnPause();
 	
-	// TODO(core_cleanup) ShowWindow((HWND)mainApp->GetWindow()->GetHandle(), SW_MINIMIZE | SW_HIDE);
+	mainApp->GetWindow()->hide();
 	
 	ARX_MINIMAP_PurgeTC();
 	

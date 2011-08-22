@@ -299,7 +299,6 @@ void SDLWindow::Tick() {
 			
 			case SDL_VIDEOEXPOSE: {
 				OnPaint();
-				SDL_UpdateRect(window, 0, 0, m_Size.x, m_Size.y);
 				break;
 			}
 			
@@ -327,4 +326,13 @@ void SDLWindow::restoreSurfaces() {
 
 void SDLWindow::evictManagedTextures() {
 	// nothing to do?
+}
+
+void SDLWindow::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
+	SDL_SetGammaRamp(red, green, blue);
+}
+
+void SDLWindow::hide() {
+	SDL_WM_IconifyWindow();
+	OnShow(false);
 }

@@ -232,11 +232,30 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->AddListener(this);
 	m_MainWindow->addListener(this);
 	
-	Vec2i size = config.video.fullscreen ? config.video.resolution : config.window.size;
+	// Find the next best available fullscreen mode.
+	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
+	RenderWindow::DisplayModes::const_iterator i;
+	RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
+	i = std::lower_bound(modes.begin(), modes.end(), mode);
+	if(i == modes.end()) {
+		mode = *modes.rbegin();
+	} else {
+		mode = *i;
+	}
+	if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
+		LogWarning << "fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y << '@' << mode.depth << " instead";
+	}
 	
-	if(!m_MainWindow->init(arxVersion, size, config.video.fullscreen, config.video.bpp)) {
+	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
+	
+	if(!m_MainWindow->init(arxVersion, size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
+	}
+	
+	if(!m_MainWindow->IsFullScreen()) {
+		config.video.resolution = mode.resolution;
+		config.video.bpp = mode.depth;
 	}
 	
 	return true;
@@ -2334,7 +2353,7 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 	
 	GRenderer = window.getRenderer();
 	
-	GRenderer->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
+	window.setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
 	
 	InitDeviceObjects();
 	

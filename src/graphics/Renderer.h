@@ -148,6 +148,7 @@ public:
 	// Fog
 	virtual void SetFogColor(Color color) = 0;
 	virtual void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f) = 0;
+	virtual bool isFogInEyeCoordinates() = 0;
 	
 	// Rasterizer
 	virtual void SetAntialiasing(bool enable) = 0;
@@ -175,8 +176,6 @@ public:
 	
 	virtual bool getSnapshot(Image & image) = 0;
 	virtual bool getSnapshot(Image & image, size_t width, size_t height) = 0;
-	
-	virtual void setGamma(float brightness, float contrast, float gamma) = 0;
 	
 protected:
 	

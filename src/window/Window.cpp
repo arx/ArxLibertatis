@@ -40,30 +40,6 @@ void Window::RemoveListener( Window::Listener* pListener ) {
 		m_Listeners.erase(it);
 }
 
-bool Window::HasFocus() const {
-	return m_HasFocus && !m_IsMinimized; // We treat minimized as not having focus
-}
-
-bool Window::IsMinimized() const {
-	return m_IsMinimized;
-}
-
-bool Window::IsMaximized() const {
-	return m_IsMaximized;
-}
-
-bool Window::IsVisible() const {
-	return m_IsVisible;
-}
-
-bool Window::IsWindowed() const {
-	return !m_IsFullscreen;
-}
-
-bool Window::IsFullScreen() const {
-	return m_IsFullscreen;
-}
-
 bool Window::OnClose() {
 	bool bShouldClose = true;
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end() && bShouldClose; ++it )
