@@ -449,6 +449,7 @@ void ArxGame::OnDestroyWindow(const Window &) {
 
 void ArxGame::OnToggleFullscreen(const Window & window) {
 	config.video.fullscreen = window.IsFullScreen();
+	GInput->reset();
 }
 
 //*************************************************************************************

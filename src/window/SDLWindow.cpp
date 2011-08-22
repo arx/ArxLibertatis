@@ -254,9 +254,10 @@ void SDLWindow::Tick() {
 		switch(event.type) {
 			
 			case SDL_ACTIVEEVENT: {
-				if(event.active.type == SDL_APPINPUTFOCUS) {
+				if(event.active.state & SDL_APPINPUTFOCUS) {
 					// ignored
-				} else if(event.active.type == SDL_APPACTIVE) {
+				}
+				if(event.active.state & SDL_APPACTIVE) {
 					if(event.active.gain) {
 						setMode(DisplayMode(Vec2i(event.resize.w, event.resize.h), depth), m_IsFullscreen);
 						updateSize();
@@ -264,7 +265,8 @@ void SDLWindow::Tick() {
 					} else {
 						OnMinimize();
 					}
-				} else if(event.active.type == SDL_APPMOUSEFOCUS) {
+				}
+				if(event.active.state & SDL_APPMOUSEFOCUS) {
 					// ignored
 				}
 				break;

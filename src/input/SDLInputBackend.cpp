@@ -216,11 +216,11 @@ bool SDLInputBackend::update() {
 }
 
 void SDLInputBackend::acquireDevices() {
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+	// SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
 void SDLInputBackend::unacquireDevices() {
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	// SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
 void SDLInputBackend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {

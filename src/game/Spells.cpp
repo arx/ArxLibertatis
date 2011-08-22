@@ -2388,7 +2388,7 @@ void ARX_SPELLS_ManageMagic()
 		
 		if (snip >= 2)
 		{	
-			if ((!EERIEMouseButton & 1) && (ARX_FLARES_broken==0)) 
+			if ((!EERIEMouseButton & 1) && (ARX_FLARES_broken==0)) // TODO should this be !(EERIEMouseButton & 1)?
 			{
 				ARX_FLARES_broken=2;
 				PIPOrgb++;
