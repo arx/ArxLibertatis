@@ -430,7 +430,7 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 	x -= .5f;
 	y -= .5f;
 	
-	glColor4ub(color.r, color.g, color.b, color.a);
+	glColor3ub(color.r, color.g, color.b);
 	
 	glSecondaryColor3ub(0, 0, 0);
 	
