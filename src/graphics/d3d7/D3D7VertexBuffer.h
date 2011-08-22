@@ -9,13 +9,14 @@
 
 extern const DWORD ARXToDXBufferFlags[];
 extern const D3DPRIMITIVETYPE ARXToDXPrimitiveType[];
+extern LPDIRECT3DDEVICE7 GD3D7Device;
 
 template <class Vertex>
 class D3D7VertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	D3D7VertexBuffer(D3D7Window * window, DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity), device(window->getDevice()) {
+	D3D7VertexBuffer(D3D7Window * window, DWORD format, size_t capacity) : VertexBuffer<Vertex>(capacity) {
 		
 		D3DVERTEXBUFFERDESC d3dvbufferdesc;
 		d3dvbufferdesc.dwSize = sizeof(D3DVERTEXBUFFERDESC);
@@ -68,7 +69,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-		HRESULT hr = device->DrawPrimitiveVB(type, vb, offset, count, 0);
+		HRESULT hr = GD3D7Device->DrawPrimitiveVB(type, vb, offset, count, 0);
 		arx_assert_msg(SUCCEEDED(hr), "DrawPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}
@@ -80,7 +81,7 @@ public:
 		arx_assert(indices != NULL);
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-		HRESULT hr = device->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
+		HRESULT hr = GD3D7Device->DrawIndexedPrimitiveVB(type, vb, offset, count, indices, nbindices, 0);
 		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}

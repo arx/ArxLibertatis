@@ -10,7 +10,7 @@ class D3D7TextureStage : public TextureStage {
 	
 public:
 	
-	D3D7TextureStage(LPDIRECT3DDEVICE7 device, unsigned int textureStage);
+	D3D7TextureStage(unsigned int textureStage);
 	
 	void SetTexture(Texture * pTexture);
 	void ResetTexture();
@@ -28,11 +28,6 @@ public:
 	
 	void SetMipMapLODBias(float bias);
 	void SetTextureCoordIndex(int texCoordIdx);
-	
-private:
-	
-	LPDIRECT3DDEVICE7 device;
-	
 };
 
 extern D3DTEXTUREMAGFILTER ARXToDX7MagFilter[];

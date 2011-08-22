@@ -78,8 +78,6 @@ public:
 	void setGamma(float brightness, float contrast, float gamma);
 	
 private:
-	
-	LPDIRECT3DDEVICE7 device;
 	D3D7Window * window;
 	LPDIRECTDRAWGAMMACONTROL gammaControl; // gamma control
 	DDGAMMARAMP oldGamma; // backup gamma values

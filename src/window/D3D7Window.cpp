@@ -66,7 +66,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 using std::vector;
 
-D3D7Window::D3D7Window() : dd(NULL), d3d(NULL), backBuffer(NULL), frontBuffer(NULL), device(NULL), deviceInfo(NULL) { }
+LPDIRECT3DDEVICE7 GD3D7Device = NULL;
+
+D3D7Window::D3D7Window() : dd(NULL), d3d(NULL), backBuffer(NULL), frontBuffer(NULL), deviceInfo(NULL) { }
 
 D3D7Window::~D3D7Window() {
 	destroyObjects();
@@ -352,11 +354,11 @@ void D3D7Window::destroyObjects() {
 	}
 	
 	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
-	if(device) {
-		if(0 < device->Release()) {
+	if(GD3D7Device) {
+		if(0 < GD3D7Device->Release()) {
 			LogWarning << "D3DDevice object is still referenced";
 		}
-		device = NULL;
+		GD3D7Device = NULL;
 	}
 	
 	if(backBuffer) {
@@ -603,7 +605,7 @@ bool D3D7Window::createDirect3D(GUID * deviceGUID) {
 	}
 
 	// Create the device
-	if(FAILED(d3d->CreateDevice(*deviceGUID, backBuffer, &device))) {
+	if(FAILED(d3d->CreateDevice(*deviceGUID, backBuffer, &GD3D7Device))) {
 		LogWarning << "Unable to create D3DDevice";
 		return false;
 	}
@@ -681,7 +683,7 @@ bool D3D7Window::createZBuffer(GUID * deviceGUID) {
 		m_pddsZBuffer->Release(), m_pddsZBuffer = NULL;
 		
 		// Finally, this call rebuilds internal structures
-		if(SUCCEEDED(device->SetRenderTarget(backBuffer, 0L))) {
+		if(SUCCEEDED(GD3D7Device->SetRenderTarget(backBuffer, 0L))) {
 			return true;
 		}
 	}

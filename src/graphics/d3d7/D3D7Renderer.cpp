@@ -88,16 +88,16 @@ const DWORD ARXToDXBufferFlags[] = {
 // Renderer - DX7 implementation
 ///////////////////////////////////////////////////////////////////////////////
 
-D3D7Renderer::D3D7Renderer(D3D7Window * _window) : device(NULL), window(_window), gammaControl(NULL) { }
+extern LPDIRECT3DDEVICE7 GD3D7Device;
+
+D3D7Renderer::D3D7Renderer(D3D7Window * _window) : window(_window), gammaControl(NULL) { }
 
 void D3D7Renderer::Initialize() {
-	
-	arx_assert(device == NULL);
-	device = window->getDevice();
-	arx_assert(device != NULL);
+
+	arx_assert(GD3D7Device != NULL);
 	
 	D3DDEVICEDESC7 devicedesc;
-	device->GetCaps(&devicedesc);
+	GD3D7Device->GetCaps(&devicedesc);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Initialize filtering options depending on the card capabilities...
@@ -137,8 +137,8 @@ void D3D7Renderer::Initialize() {
 
 	for(size_t i = 0; i < m_TextureStages.size(); ++i)
 	{
-		m_TextureStages[i] = new D3D7TextureStage(device, i);
-		device->SetTextureStageState(i, D3DTSS_MAXANISOTROPY, maxAnisotropy);
+		m_TextureStages[i] = new D3D7TextureStage(i);
+		GD3D7Device->SetTextureStageState(i, D3DTSS_MAXANISOTROPY, maxAnisotropy);
 
         // Set default state
 		m_TextureStages[i]->SetWrapMode(TextureStage::WrapRepeat);
@@ -167,27 +167,27 @@ void D3D7Renderer::Initialize() {
 }
 
 bool D3D7Renderer::BeginScene() {
-	return device->BeginScene() == D3D_OK;
+	return GD3D7Device->BeginScene() == D3D_OK;
 }
 
 bool D3D7Renderer::EndScene() {
-	return device->EndScene() == D3D_OK;
+	return GD3D7Device->EndScene() == D3D_OK;
 }
 
 void D3D7Renderer::SetViewMatrix(const EERIEMATRIX & matView) {
-	device->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
 void D3D7Renderer::GetViewMatrix(EERIEMATRIX & matView) const {
-	device->GetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
+	GD3D7Device->GetTransform(D3DTRANSFORMSTATE_VIEW, (LPD3DMATRIX)&matView);
 }
 
 void D3D7Renderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
-	device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
 void D3D7Renderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
-	device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
+	GD3D7Device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, (LPD3DMATRIX)&matProj);
 }
 
 D3D7Renderer::~D3D7Renderer() {
@@ -213,7 +213,7 @@ void D3D7Renderer::RestoreAllTextures() {
 }
 
 Texture2D* D3D7Renderer::CreateTexture2D() {
-	return new DX7Texture2D(device);
+	return new DX7Texture2D();
 }
 
 void D3D7Renderer::SetRenderState(RenderState renderState, bool enable) {
@@ -225,43 +225,43 @@ void D3D7Renderer::SetRenderState(RenderState renderState, bool enable) {
 	}
 	else
 	{
-		device->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
+		GD3D7Device->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
 	}
 }
 
 void D3D7Renderer::SetAlphaFunc(PixelCompareFunc func, float fef) {
-	device->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)fef*255);
-	device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, ARXToDXPixelCompareFunc[func]);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)fef*255);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, ARXToDXPixelCompareFunc[func]);
 }
 
 void D3D7Renderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor) {
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  ARXToDXPixelBlendingFactor[srcFactor]);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  ARXToDXPixelBlendingFactor[srcFactor]);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
 }
 
 void D3D7Renderer::SetViewport(const Rect & viewport) {
 	D3DVIEWPORT7 tmpViewport = { viewport.left, viewport.top, viewport.width(), viewport.height(), 0.f, 1.f };
-	device->SetViewport(&tmpViewport);
+	GD3D7Device->SetViewport(&tmpViewport);
 }
 
 Rect D3D7Renderer::GetViewport() {
 	
 	D3DVIEWPORT7 tmpViewport;
-	device->GetViewport(&tmpViewport);
+	GD3D7Device->GetViewport(&tmpViewport);
 	
 	return Rect(Vec2i(tmpViewport.dwX, tmpViewport.dwY), tmpViewport.dwWidth, tmpViewport.dwHeight);
 }
 
 void D3D7Renderer::SetCulling(CullingMode mode) {
-	device->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
 }
 
 void D3D7Renderer::SetDepthBias(int depthBias) {
-	device->SetRenderState(D3DRENDERSTATE_ZBIAS, depthBias);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_ZBIAS, depthBias);
 }
 
 void D3D7Renderer::SetFillMode(FillMode mode) {
-	device->SetRenderState(D3DRENDERSTATE_FILLMODE, ARXToDXFillMode[mode]);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_FILLMODE, ARXToDXFillMode[mode]);
 }
 
 static void DX7MatrixIdentity(D3DMATRIX *pout) {
@@ -300,9 +300,9 @@ D3DMATRIX g_MatView;
 
 void D3D7Renderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	
-	device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
-	device->GetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
-	device->GetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
+	GD3D7Device->GetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
+	GD3D7Device->GetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
+	GD3D7Device->GetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 	
 	D3DMATRIX matOrtho;
 	DX7MatrixOrthoOffCenterLH(&matOrtho, left, right, bottom, top, zNear, zFar);
@@ -310,15 +310,15 @@ void D3D7Renderer::Begin2DProjection(float left, float right, float bottom, floa
 	D3DMATRIX matIdentity;
 	DX7MatrixIdentity(&matIdentity);
 
-	device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matOrtho);
-	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matIdentity);
-	device->SetTransform(D3DTRANSFORMSTATE_VIEW, &matIdentity);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matOrtho);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matIdentity);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_VIEW, &matIdentity);
 }
 
 void D3D7Renderer::End2DProjection() {
-	device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
-	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
-	device->SetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &g_MatProj);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_WORLD, &g_MatWorld);
+	GD3D7Device->SetTransform(D3DTRANSFORMSTATE_VIEW, &g_MatView);
 }
 
 void D3D7Renderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearDepth, size_t nrects, Rect * rects) {
@@ -338,18 +338,18 @@ void D3D7Renderer::Clear(BufferFlags bufferFlags, Color clearColor, float clearD
 		d3drects[i].y2 = rects[i].bottom;
 	}
 	
-	device->Clear(DWORD(nrects), nrects != 0 ? d3drects : 0, clearTargets, clearColor.toBGRA(), clearDepth, 0);
+	GD3D7Device->Clear(DWORD(nrects), nrects != 0 ? d3drects : 0, clearTargets, clearColor.toBGRA(), clearDepth, 0);
 }
 
 void D3D7Renderer::SetFogColor(Color color) {
-	device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color.toBGRA());
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color.toBGRA());
 }
 
 void D3D7Renderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity) {
-	device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
-	device->SetRenderState(D3DRENDERSTATE_FOGSTART, reinterpret<DWORD, f32>(fogStart));
-	device->SetRenderState(D3DRENDERSTATE_FOGEND, reinterpret<DWORD, f32>(fogEnd));
-	device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, reinterpret<DWORD, f32>(fogDensity));
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_FOGSTART, reinterpret<DWORD, f32>(fogStart));
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_FOGEND, reinterpret<DWORD, f32>(fogEnd));
+	GD3D7Device->SetRenderState(D3DRENDERSTATE_FOGDENSITY, reinterpret<DWORD, f32>(fogDensity));
 }
 
 void D3D7Renderer::SetAntialiasing(bool enable) {
@@ -357,16 +357,16 @@ void D3D7Renderer::SetAntialiasing(bool enable) {
 	if(enable)
 	{
 		D3DDEVICEDESC7 ddDesc;
-		device->GetCaps(&ddDesc);
+		GD3D7Device->GetCaps(&ddDesc);
 
 		if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTINDEPENDENT)
-			device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTINDEPENDENT);
+			GD3D7Device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTINDEPENDENT);
 		else if(ddDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ANTIALIASSORTDEPENDENT)
-			device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTDEPENDENT);
+			GD3D7Device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_SORTDEPENDENT);
 	}
 	else
 	{
-		device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
+		GD3D7Device->SetRenderState(D3DRENDERSTATE_ANTIALIAS, D3DANTIALIAS_NONE);
 	}
 }
 
@@ -416,7 +416,7 @@ void D3D7Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, flo
 	rect[3].color = diffuse;
 	rect[3].specular = specular;
 	
-	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
+	GD3D7Device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
 }
 
 VertexBuffer<TexturedVertex> * D3D7Renderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
@@ -441,7 +441,7 @@ void D3D7Renderer::drawIndexed(Primitive primitive, const TexturedVertex * verti
 	arx_assert(vertices != NULL && indices != NULL);
 	
 	D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
-	HRESULT hr = device->DrawIndexedPrimitive(type, D3DFVF_TLVERTEX, (LPVOID)vertices, (DWORD)nvertices, (LPWORD)indices, (DWORD)nindices, 0);
+	HRESULT hr = GD3D7Device->DrawIndexedPrimitive(type, D3DFVF_TLVERTEX, (LPVOID)vertices, (DWORD)nvertices, (LPWORD)indices, (DWORD)nindices, 0);
 	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitive failed: %08x", hr);
 	ARX_UNUSED(hr);
 	
@@ -450,7 +450,7 @@ void D3D7Renderer::drawIndexed(Primitive primitive, const TexturedVertex * verti
 bool D3D7Renderer::getSnapshot(Image & image) {
 	
 	LPDIRECTDRAWSURFACE7 pddsRender;
-	HRESULT hr = device->GetRenderTarget(&pddsRender);
+	HRESULT hr = GD3D7Device->GetRenderTarget(&pddsRender);
 	if(FAILED(hr)) {
 		LogError << "GetRenderTarget failed: " << hr;
 		return false;
@@ -466,7 +466,7 @@ bool D3D7Renderer::getSnapshot(Image & image) {
 bool D3D7Renderer::getSnapshot(Image& image, size_t width, size_t height) {
 	
 	LPDIRECTDRAWSURFACE7 pddsRender;
-	HRESULT hr = device->GetRenderTarget(&pddsRender);
+	HRESULT hr = GD3D7Device->GetRenderTarget(&pddsRender);
 	if(FAILED(hr)) {
 		LogError << "GetRenderTarget failed: " << hr;
 		return false;
