@@ -105,49 +105,6 @@ TextureContainer * GetAnyTexture()
 	return g_ptcTextureList;
 }
 
-#define NB_MIPMAP_LEVELS 5
-
-// tex Must be of sufficient size...
-long CountTextures( std::string& tex, long * memsize, long * memmip)
-{
-	std::string temp;
-	TextureContainer * ptcTexture = g_ptcTextureList;
-	long count = 0;
-	*memsize = 0;
-	*memmip = 0;
-
-	tex.clear();
-
-	while (ptcTexture)
-	{
-		count++;
-
-		if (ptcTexture->m_dwFlags & TextureContainer::NoMipmap) {
-			std::stringstream ss;
-			ss << std::setw(3) << count << std::setw(0) << ' ' << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->m_texName.filename() << "\r\n";
-			temp = ss.str();
-		}
-		else
-		{
-			std::stringstream ss;
-			ss << std::setw(3) << count << ' ' << std::setw(0) << ptcTexture->m_texName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << " MIP " << ptcTexture->m_texName.filename() << "\r\n";
-			temp = ss.str();
-
-			for (long k = 1; k <= NB_MIPMAP_LEVELS; k++)
-			{
-				*memmip += ((long)(ptcTexture->m_dwWidth * ptcTexture->m_dwHeight * ptcTexture->m_dwBPP) >> 3) / (4 * k);
-			}
-		}
-
-		*memsize += (long)(ptcTexture->m_dwWidth * ptcTexture->m_dwHeight * ptcTexture->m_dwBPP) >> 3;
-		tex += temp;
-		
-		ptcTexture = ptcTexture->m_pNext;
-	}
-	
-	return count;
-}
-
 void ResetVertexLists(TextureContainer * ptcTexture)
 {
 	if(!ptcTexture)
@@ -222,7 +179,6 @@ TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) : m_
 	
 	m_dwWidth = 0;
 	m_dwHeight = 0;
-	m_dwBPP = 0;
 	m_dwFlags = flags;
 
 	m_pTexture = NULL;
@@ -322,12 +278,8 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 		bLoaded = m_pTexture->Init(tempPath, bMipmaps);
 		if(bLoaded)
 		{
-			m_dwWidth   = m_pTexture->GetImage().GetWidth();
-			m_dwHeight  = m_pTexture->GetImage().GetHeight();
-			m_dwBPP     = m_pTexture->GetImage().GetNumChannels() * 8;
-
-			// Do not keep image data in memory
-			m_pTexture->GetImage().Reset();
+			m_dwWidth   = m_pTexture->GetWidth();
+			m_dwHeight  = m_pTexture->GetHeight();
 
 			m_dwDeviceWidth = m_pTexture->GetWidth();
 			m_dwDeviceHeight = m_pTexture->GetHeight();

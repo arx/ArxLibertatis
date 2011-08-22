@@ -147,7 +147,6 @@ public:
 	u32 m_dwHeight;
 	u32 m_dwDeviceWidth;
 	u32 m_dwDeviceHeight;
-	u32 m_dwBPP;
 	TCFlags m_dwFlags;
 	u32 userflags;
 	
@@ -217,7 +216,6 @@ DECLARE_FLAGS_OPERATORS(TextureContainer::TCFlags)
 // ASCII name.
  
 TextureContainer * GetTextureList();
-long CountTextures(std::string & tex, long * memsize, long * memmip);
 
 // Texture creation and deletion functions
 
