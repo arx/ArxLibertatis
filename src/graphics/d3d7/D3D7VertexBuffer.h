@@ -49,7 +49,7 @@ public:
 		vb->Unlock();
 	}
 	
-	Vertex * lock(BufferFlags flags = 0) {
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
 		
 		Vertex * dest;
 		

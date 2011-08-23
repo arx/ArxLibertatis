@@ -76,9 +76,9 @@ public:
 		std::copy(vertices, vertices + count, buffer + offset);
 	}
 	
-	Vertex * lock(BufferFlags flags) {
-		ARX_UNUSED(flags);
-		return buffer;
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+		ARX_UNUSED(flags), ARX_UNUSED(count);
+		return buffer + offset;
 	}
 	
 	void unlock() {

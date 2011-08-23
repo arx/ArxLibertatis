@@ -9,8 +9,9 @@
 #include "platform/Flags.h"
 
 enum BufferFlag {
-	DiscardContents = (1<<0),
-	NoOverwrite     = (1<<1)
+	DiscardBuffer = (1<<0),
+	DiscardRange  = (1<<1),
+	NoOverwrite   = (1<<2)
 };
 DECLARE_FLAGS(BufferFlag, BufferFlags);
 DECLARE_FLAGS_OPERATORS(BufferFlags);
@@ -20,11 +21,11 @@ class VertexBuffer {
 	
 public:
 	
-	size_t capacity() const { return _capacity; }
+	inline size_t capacity() const { return _capacity; }
 	
 	virtual void setData(const Vertex * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
 	
-	virtual Vertex * lock(BufferFlags flags = 0) = 0;
+	virtual Vertex * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = (size_t)-1) = 0;
 	virtual void unlock() = 0;
 	
 	virtual void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const = 0;
@@ -71,7 +72,7 @@ public:
 		
 		size_t dst_offset = (pos + num > vb->capacity()) ? 0 : pos;
 		
-		vb->setData(src, num, dst_offset, dst_offset ? NoOverwrite : DiscardContents);
+		vb->setData(src, num, dst_offset, dst_offset ? NoOverwrite : DiscardBuffer);
 		vb->draw(primitive, num, dst_offset);
 		
 		pos = dst_offset + num;
@@ -86,7 +87,7 @@ public:
 			case Renderer::TriangleList: do {
 				num = std::min(count, vb->capacity());
 				num -= num % 3;
-				vb->setData(src, num, 0, DiscardContents);
+				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
 			} while(count); break;
@@ -98,7 +99,7 @@ public:
 					// Draw an even number of triangles so we don't flip front and back faces between draw calls.
 					num -= num & 1;
 				}
-				vb->setData(src, num, 0, DiscardContents);
+				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
 			} while(count); break;
@@ -106,7 +107,7 @@ public:
 			case Renderer::TriangleFan: do {
 				count += 1, src -= 1;
 				num = std::min(count, vb->capacity() - 1);
-				vb->setData(vertices, 1, 0, DiscardContents);
+				vb->setData(vertices, 1, 0, DiscardBuffer);
 				vb->setData(src, num, 1, NoOverwrite);
 				vb->draw(primitive, num + 1);
 				src += num, count -= num, pos = num + 1;
@@ -114,7 +115,7 @@ public:
 			
 			case Renderer::LineList: do {
 				num = std::min(count, vb->capacity()) & ~1;
-				vb->setData(src, num, 0, DiscardContents);
+				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
 				break;
@@ -123,7 +124,7 @@ public:
 			case Renderer::LineStrip: do {
 				count += 1, src -= 1;
 				num = std::min(count, vb->capacity());
-				vb->setData(src, num, 0, DiscardContents);
+				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
 				break;

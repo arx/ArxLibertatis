@@ -173,7 +173,7 @@ public:
 			start = 0;
 		}
 		
-		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardContents : NoOverwrite;
+		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardBuffer : NoOverwrite;
 		
 		vertices =  pDynamicVertexBuffer->vb->lock(flags);
 		
@@ -976,7 +976,7 @@ void ARX_PORTALS_InitDrawnRooms()
 	iTotPoly=0;
 
 	if(pDynamicVertexBuffer) {
-		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardContents);
+		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
 	}
 	

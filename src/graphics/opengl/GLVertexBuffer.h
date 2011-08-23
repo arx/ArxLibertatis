@@ -150,7 +150,7 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		if(flags & DiscardContents) {
+		if(flags & DiscardBuffer) {
 			// avoid waiting if GL is still using the old buffer contents
 			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
 		}
@@ -160,23 +160,50 @@ public:
 		CHECK_GL;
 	}
 	
-	Vertex * lock(BufferFlags flags) {
+	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
 		ARX_UNUSED(flags);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		if(flags & DiscardContents) {
-			// avoid waiting if GL is still using the old buffer contents
-			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+		Vertex * buf;
+		
+		if(GLEW_ARB_map_buffer_range) {
+			
+			GLbitfield glflags = GL_MAP_WRITE_BIT;
+			
+			if(flags & DiscardBuffer) {
+				glflags |= GL_MAP_INVALIDATE_BUFFER_BIT;
+			}
+			if(flags & DiscardRange) {
+				glflags |= GL_MAP_INVALIDATE_RANGE_BIT;
+			}
+			if(flags & NoOverwrite) {
+				glflags |= GL_MAP_UNSYNCHRONIZED_BIT;
+			}
+			
+			size_t obytes = offset * sizeof(Vertex);
+			size_t nbytes = std::min(count, capacity() - offset) * sizeof(Vertex);
+			
+			buf = reinterpret_cast<Vertex *>(glMapBufferRange(GL_ARRAY_BUFFER, obytes, nbytes, glflags));
+			
+		} else {
+			
+			if(flags & DiscardBuffer) {
+				// avoid waiting if GL is still using the old buffer contents
+				glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+			}
+			
+			buf = reinterpret_cast<Vertex *>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+			if(buf) {
+				buf += offset;
+			}
 		}
-		
-		void * buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY); 
-		
-		arx_assert(buf != NULL); // TODO OpenGL doesn't guarantee this
 		
 		CHECK_GL;
 		
-		return reinterpret_cast<Vertex *>(buf);
+		arx_assert(buf != NULL); // TODO OpenGL doesn't guarantee this
+		
+		return buf;
 	}
 	
 	void unlock() {

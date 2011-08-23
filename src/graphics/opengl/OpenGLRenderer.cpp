@@ -38,9 +38,12 @@ void OpenGLRenderer::Initialize() {
 	
 	if(!GLEW_ARB_draw_elements_base_vertex) {
 		// only drawIndexed() needs this
-		LogWarning << "Missing OpenGL extension GL_ARB_draw_elements_base_vertex, not using VBOs!";
+		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex, not using VBOs!";
 	}
 	useVBOs = useVertexArrays && GLEW_ARB_draw_elements_base_vertex;
+	if(useVBOs && !GLEW_ARB_map_buffer_range) {
+		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
+	}
 	
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
