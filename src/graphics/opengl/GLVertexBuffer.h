@@ -5,12 +5,13 @@
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
 #include "graphics/Math.h"
-#include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "graphics/opengl/OpenGLUtil.h"
 
 template <class Vertex>
 static void setVertexArray(const Vertex * vertex, const void * ref);
 
+// cached vertex array definitions
 enum GLArrayClientState {
 	GL_NoArray,
 	GL_TexturedVertex,
@@ -20,11 +21,31 @@ enum GLArrayClientState {
 
 static GLArrayClientState glArrayClientState = GL_NoArray;
 static const void * glArrayClientStateRef = NULL;
+static int glArrayClientStateTexCount = 0;
 
-static bool switchVertexArray(GLArrayClientState type, const void * ref) {
+static void setVertexArrayTexCoord(int index, const float * coord, size_t stride) {
+	
+	glClientActiveTexture(GL_TEXTURE0 + index);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, stride, coord);
+	
+}
+
+static bool switchVertexArray(GLArrayClientState type, const void * ref, int texcount) {
 	
 	if(glArrayClientState == type && glArrayClientStateRef == ref) {
 		return false;
+	}
+	
+	if(glArrayClientState != type) {
+		if(glArrayClientState == GL_TexturedVertex) {
+			glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+		}
+		for(int i = texcount; i < glArrayClientStateTexCount; i++) {
+			glClientActiveTexture(GL_TEXTURE0 + i);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		}
+		glArrayClientStateTexCount = texcount;
 	}
 	
 	glArrayClientState = type;
@@ -36,31 +57,23 @@ static bool switchVertexArray(GLArrayClientState type, const void * ref) {
 template <>
 void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
-	if(!switchVertexArray(GL_TexturedVertex, ref)) {
+	if(!switchVertexArray(GL_TexturedVertex, ref, 1)) {
 		return;
 	}
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
-	
 	// TODO ignoring the rhw parameter!
+	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
+	
+	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
 	
 	// TODO(broken-GLEW) work around a bug in older GLEW versions (fix is in 1.6.0)
 	GLvoid * ptr = const_cast<ColorBGRA *>(&vertices->specular);
+	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
 	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), ptr);
 	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(TexturedVertex), &vertices->tu);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE2);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	setVertexArrayTexCoord(0, &vertices->tu, sizeof(TexturedVertex));
 	
 	CHECK_GL;
 }
@@ -68,26 +81,17 @@ void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 template <>
 void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	
-	if(!switchVertexArray(GL_SMY_VERTEX, ref)) {
+	if(!switchVertexArray(GL_SMY_VERTEX, ref, 1)) {
 		return;
 	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
-	
 	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->x);
+	
+	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX), &vertices->color);
 	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->tu);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE2);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	setVertexArrayTexCoord(0, &vertices->tu, sizeof(SMY_VERTEX));
 	
 	CHECK_GL;
 }
@@ -95,28 +99,19 @@ void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 template <>
 void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	
-	if(!switchVertexArray(GL_SMY_VERTEX3, ref)) {
+	if(!switchVertexArray(GL_SMY_VERTEX3, ref, 3)) {
 		return;
 	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
-	
 	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->x);
+	
+	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX3), &vertices->color);
 	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu2);
-	
-	glClientActiveTexture(GL_TEXTURE2);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->tu3);
+	setVertexArrayTexCoord(0, &vertices->tu, sizeof(SMY_VERTEX3));
+	setVertexArrayTexCoord(1, &vertices->tu2, sizeof(SMY_VERTEX3));
+	setVertexArrayTexCoord(2, &vertices->tu3, sizeof(SMY_VERTEX3));
 	
 	CHECK_GL;
 }

@@ -1280,20 +1280,16 @@ static void RenderWaterBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(1)->DisableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->DisableAlpha();
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 	GRenderer->GetTextureStage(2)->DisableColor();
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 	
 }
 
@@ -1469,11 +1465,9 @@ void RenderLavaBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(1)->DisableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->DisableAlpha();
 	
@@ -1485,9 +1479,7 @@ void RenderLavaBatch() {
 	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 	GRenderer->GetTextureStage(2)->DisableColor();
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 	
 }
 

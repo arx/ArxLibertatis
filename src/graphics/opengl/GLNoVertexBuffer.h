@@ -4,11 +4,14 @@
 
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
-#include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/opengl/OpenGLRenderer.h"
+#include "graphics/opengl/OpenGLUtil.h"
 
 template <class Vertex>
-void renderVertex(const Vertex & vertex);
+static void renderVertex(const Vertex & vertex);
+
+template <class Vertex>
+static void renderVertexCleanup() { }
 
 template <>
 void renderVertex(const TexturedVertex & vertex) {
@@ -26,12 +29,15 @@ void renderVertex(const TexturedVertex & vertex) {
 }
 
 template <>
+void renderVertexCleanup<TexturedVertex>() {
+	glSecondaryColor3ub(0, 0, 0);
+}
+
+template <>
 void renderVertex(const SMY_VERTEX & vertex) {
 	
 	Color c = Color::fromBGRA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
-	
-	glSecondaryColor3ub(0, 0, 0);
 	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
@@ -44,12 +50,8 @@ void renderVertex(const SMY_VERTEX3 & vertex) {
 	Color c = Color::fromBGRA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
-	glSecondaryColor3ub(0, 0, 0);
-	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
-	
 	glMultiTexCoord2f(GL_TEXTURE1, vertex.tu2, vertex.tv2);
-	
 	glMultiTexCoord2f(GL_TEXTURE2, vertex.tu3, vertex.tv3);
 	
 	glVertex3f(vertex.x, vertex.y, vertex.z);
@@ -97,6 +99,8 @@ public:
 		
 		glEnd();
 		
+		renderVertexCleanup<Vertex>();
+		
 		CHECK_GL;
 	}
 	
@@ -117,6 +121,8 @@ public:
 		}
 		
 		glEnd();
+		
+		renderVertexCleanup<Vertex>();
 		
 		CHECK_GL;
 	}

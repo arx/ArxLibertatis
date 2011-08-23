@@ -13,7 +13,7 @@
 #include "io/Logger.h"
 #include "window/RenderWindow.h"
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false) { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0) { };
 
 OpenGLRenderer::~OpenGLRenderer() { };
 
@@ -46,7 +46,6 @@ void OpenGLRenderer::Initialize() {
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
 	
-	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	
 	glDepthFunc(GL_LEQUAL);
@@ -439,8 +438,6 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 	
 	glColor3ub(color.r, color.g, color.b);
 	
-	glSecondaryColor3ub(0, 0, 0);
-	
 	glBegin(GL_QUADS);
 		
 		glMultiTexCoord2f(GL_TEXTURE0, uStart, vStart);
@@ -503,8 +500,6 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 		
 	} else {
 		
-		ARX_UNUSED(nvertices);
-		
 		glBegin(arxToGlPrimitiveType[primitive]);
 		
 		for(size_t i = 0; i < nindices; i++) {
@@ -512,6 +507,8 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 		}
 		
 		glEnd();
+		
+		renderVertexCleanup<TexturedVertex>();
 		
 	}
 	
@@ -553,10 +550,8 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 }
 
 void OpenGLRenderer::applyTextureStages() {
-	
-	std::vector<TextureStage *>::const_iterator i = m_TextureStages.begin();
-	for(; i != m_TextureStages.end(); ++i) {
-		reinterpret_cast<GLTextureStage *>(*i)->apply();
+	for(size_t i = 0; i <= maxTextureStage; i++) {
+		GetTextureStage(i)->apply();
 	}
 }
 

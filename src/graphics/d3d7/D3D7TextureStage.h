@@ -27,7 +27,6 @@ public:
 	void SetMipFilter(FilterMode filterMode);
 	
 	void SetMipMapLODBias(float bias);
-	void SetTextureCoordIndex(int texCoordIdx);
 };
 
 extern D3DTEXTUREMAGFILTER ARXToDX7MagFilter[];
