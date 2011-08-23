@@ -71,9 +71,10 @@ using std::string;
 using std::vector;
 
 int newTextureSize;
-int newWidth;
-int newHeight;
-int newBpp;
+static int newWidth;
+static int newHeight;
+static int newBpp;
+static bool newFullscreen;
 bool changeResolution = false;
 bool changeTextures = false;
 
@@ -109,7 +110,7 @@ extern float PROGRESS_BAR_COUNT;
 float INTERFACE_RATIO(float a);
 bool bNoMenu=false;
 
-void ARXMenu_Private_Options_Video_SetResolution(int _iWidth,int _iHeight,int _bpp );
+void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _bpp);
 
 //-----------------------------------------------------------------------------
 
@@ -121,6 +122,7 @@ CMenuState *pMenu;
 CMenuElement *pMenuElementResume=NULL;
 CMenuElement *pMenuElementApply=NULL;
 CMenuElementText *pLoadConfirm=NULL;
+CMenuCheckButton * fullscreenCheckbox = NULL;
 CMenuSliderText *pMenuSliderResol=NULL;
 CMenuSliderText *pMenuSliderBpp=NULL;
 CMenuSliderText *pMenuSliderTexture=NULL;
@@ -278,9 +280,10 @@ void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if((config.video.textureSize!=newTextureSize)||
-		   (config.video.resolution.x!=newWidth)||
-		   (config.video.resolution.y!=newHeight)||
+		if((config.video.textureSize != newTextureSize) ||
+		   (config.video.resolution.x != newWidth) ||
+		   (config.video.resolution.y != newHeight) ||
+		   (config.video.fullscreen != newFullscreen) ||
 		   (config.video.bpp!=newBpp)) {
 			pMenuElementApply->SetCheckOn();
 			((CMenuElementText*)pMenuElementApply)->lColor=((CMenuElementText*)pMenuElementApply)->lOldColor;
@@ -908,11 +911,11 @@ bool Menu2_Render() {
 					metemp->SetCheckOff();
 					TextureContainer *pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 					TextureContainer *pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_FULLSCREEN, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+					fullscreenCheckbox = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_FULLSCREEN, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
-					((CMenuCheckButton*)me)->iState= config.video.fullscreen ? 1 : 0;
+					fullscreenCheckbox->iState= config.video.fullscreen ? 1 : 0;
 
-					pWindowMenuConsole->AddMenuCenterY(me);
+					pWindowMenuConsole->AddMenuCenterY(fullscreenCheckbox);
 					
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_video_resolution");
@@ -924,6 +927,7 @@ bool Menu2_Render() {
 					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
 					pMenuSliderResol =(CMenuSliderText*)me;
+					pMenuSliderResol->setEnabled(config.video.fullscreen);
 					
 					std::vector<unsigned> vBpp;
 					
@@ -1009,6 +1013,7 @@ bool Menu2_Render() {
 					pc->AddElement(me);
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_BPP, 0, 0);
 					pMenuSliderBpp = (CMenuSliderText*)me;
+					pMenuSliderBpp->setEnabled(config.video.fullscreen);
 
 					
 					std::sort(vBpp.begin(), vBpp.end());
@@ -1710,7 +1715,7 @@ bool Menu2_Render() {
 
 //-----------------------------------------------------------------------------
 
-CMenuElement::CMenuElement(MENUSTATE _ms) : CMenuZone()
+CMenuElement::CMenuElement(MENUSTATE _ms) : CMenuZone(), enabled(true)
 {
 	ePlace=NOCENTER;
 	eState=TNOP;
@@ -1740,6 +1745,10 @@ CMenuElement::~CMenuElement()
 	if( this == pMenuSliderResol )
 	{
 		pMenuSliderResol = NULL;
+	}
+	
+	if(this == fullscreenCheckbox) {
+		fullscreenCheckbox = NULL;
 	}
 
 	if( this == pMenuSliderBpp )
@@ -1863,6 +1872,10 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 // true: block les zones de checks
 bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 	
+	if(!enabled) {
+		return false;
+	}
+	
 	(void)_iMouseButton;
 	
 	switch(eState)
@@ -1940,6 +1953,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		{
 			newWidth = config.video.resolution.x;
 			newHeight = config.video.resolution.y;
+			newFullscreen = config.video.fullscreen;
 			newBpp = config.video.bpp;
 			newTextureSize = config.video.textureSize;
 
@@ -2107,12 +2121,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			//----------RESOLUTION
 			if(    (newWidth!=config.video.resolution.x)||
 				(newHeight!=config.video.resolution.y)||
+				(newFullscreen != config.video.fullscreen) ||
 				(newBpp!=config.video.bpp) )
 			{
-				ARXMenu_Private_Options_Video_SetResolution(newWidth, newHeight, newBpp);
+				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight, newBpp);
 
 				pMenuSliderResol->iOldPos=-1;
 				pMenuSliderBpp->iOldPos=-1;
+				fullscreenCheckbox->iOldState = -1;
 			}
 
 			//----------END_RESOLUTION
@@ -2284,11 +2300,13 @@ void CMenuElementText::Render()
 	ePos.y = (float) rZone.top;
 	ePos.z = 1;
 
-	if (bSelected)
+	if(bSelected) {
 		FontRenderText(pFont, ePos, lpszText, lColorHighlight);
-
-	else
+	} else if(enabled) {
 		FontRenderText(pFont, ePos, lpszText, lColor);
+	} else {
+		FontRenderText(pFont, ePos, lpszText, Color::grayb(127));
+	}
 
 }
 
@@ -2792,8 +2810,15 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 	{
 	case BUTTON_MENUOPTIONSVIDEO_FULLSCREEN:
 		{
-			ARXMenu_Options_Video_SetFullscreen((iState)?true:false);
-			pMenu->bReInitAll=true;
+			newFullscreen = ((iState)?true:false);
+			
+			if(pMenuSliderResol) {
+				pMenuSliderResol->setEnabled(newFullscreen);
+			}
+			if(pMenuSliderBpp) {
+				pMenuSliderBpp->setEnabled(newFullscreen);
+			}
+			
 		}
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_CROSSHAIR:
@@ -2863,6 +2888,12 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
 			pMenuSliderTexture->iOldPos=-1;
 			newTextureSize=config.video.textureSize;
+		}
+		
+		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
+			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
+			fullscreenCheckbox->iOldState = -1;
+			newFullscreen = config.video.fullscreen;
 		}
 		break;
 	}
@@ -4252,6 +4283,10 @@ bool CMenuButton::OnMouseClick(int _iMouseButton) {
 	
 	(void)_iMouseButton;
 	
+	if(!enabled) {
+		return false;
+	}
+	
 	iPos++;
 
 	arx_assert(iPos >= 0);
@@ -4433,6 +4468,9 @@ void CMenuSliderText::SetWidth(int _iWidth)
 
 void CMenuSliderText::AddText(CMenuElementText *_pText)
 {
+	
+	_pText->setEnabled(enabled);
+	
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
 	vText.insert(vText.end(), _pText);
 
@@ -4502,6 +4540,10 @@ void CMenuSliderText::EmptyFunction()
 
 bool CMenuSliderText::OnMouseClick(int)
 {
+	if(!enabled) {
+		return false;
+	}
+	
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	if(iOldPos<0)
@@ -4606,14 +4648,25 @@ void CMenuSliderText::Render()
 	if(WILL_RELOAD_ALL_TEXTURES) return;
 	if(bNoMenu) return;
 
-	pLeftButton->Render();
-	pRightButton->Render();
+	if(enabled) {
+		pLeftButton->Render();
+		pRightButton->Render();
+	}
 
 	if (vText[iPos])
 	{
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		vText[iPos]->Render();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
+}
+
+void CMenuSliderText::setEnabled(bool enable) {
+	CMenuElement::setEnabled(enable);
+	pLeftButton->setEnabled(enable);
+	pRightButton->setEnabled(enable);
+	for(size_t i = 0; i < vText.size(); i++) {
+		vText[i]->setEnabled(enable);
 	}
 }
 
@@ -4629,6 +4682,10 @@ void CMenuSliderText::RenderMouseOver()
 
 	int iX = GInput->getMousePosAbs().x;
 	int iY = GInput->getMousePosAbs().y;
+	
+	if(!enabled) {
+		return;
+	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
