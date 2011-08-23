@@ -64,9 +64,7 @@ public:
 	
 	using VertexBuffer<Vertex>::capacity;
 	
-	GLNoVertexBuffer(OpenGLRenderer * _renderer, size_t capacity, Renderer::BufferUsage usage) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(new Vertex[capacity]) {
-		ARX_UNUSED(usage);
-	}
+	GLNoVertexBuffer(OpenGLRenderer * _renderer, size_t capacity) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(new Vertex[capacity]) { }
 	
 	void setData(const Vertex * vertices, size_t count, size_t offset, BufferFlags flags) {
 		ARX_UNUSED(flags);

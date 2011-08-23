@@ -82,6 +82,9 @@ public:
 	
 private:
 	
+	bool useVertexArrays;
+	bool useVBOs;
+	
 	Rect viewport;
 	
 	void applyTextureStages();

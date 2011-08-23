@@ -13,7 +13,7 @@
 #include "io/Logger.h"
 #include "window/RenderWindow.h"
 
-OpenGLRenderer::OpenGLRenderer() { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false) { };
 
 OpenGLRenderer::~OpenGLRenderer() { };
 
@@ -32,8 +32,15 @@ void OpenGLRenderer::Initialize() {
 	}
 	
 	if(!GLEW_ARB_vertex_array_bgra) {
-		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra";
+		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
 	}
+	useVertexArrays = GLEW_ARB_vertex_array_bgra;
+	
+	if(!GLEW_ARB_draw_elements_base_vertex) {
+		// only drawIndexed() needs this
+		LogWarning << "Missing OpenGL extension GL_ARB_draw_elements_base_vertex, not using VBOs!";
+	}
+	useVBOs = useVertexArrays && GLEW_ARB_draw_elements_base_vertex;
 	
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -454,15 +461,24 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	return new GLNoVertexBuffer<TexturedVertex>(this, capacity, usage); 
+	ARX_UNUSED(usage);
+	return new GLNoVertexBuffer<TexturedVertex>(this, capacity); 
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
-	return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity, usage); 
+	if(useVBOs) {
+		return new GLVertexBuffer<SMY_VERTEX>(this, capacity, usage);
+	} else {
+		return new GLNoVertexBuffer<SMY_VERTEX>(this, capacity);
+	}
 }
 
 VertexBuffer<SMY_VERTEX3> * OpenGLRenderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
-	return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity, usage); 
+	if(useVBOs) {
+		return new GLVertexBuffer<SMY_VERTEX3>(this, capacity, usage);
+	} else {
+		return new GLNoVertexBuffer<SMY_VERTEX3>(this, capacity);
+	}
 }
 
 const GLenum arxToGlPrimitiveType[] = {
@@ -477,11 +493,11 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	beforeDraw<TexturedVertex>();
 	
-	if(GLEW_ARB_vertex_array_bgra) {
+	if(/*useVertexArrays*/ false) { // TODO rhw parameter should not be ignored!
 		
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		
-		setVertexArray(vertices);
+		setVertexArray(vertices, vertices);
 		
 		glDrawRangeElements(arxToGlPrimitiveType[primitive], 0, nvertices - 1, nindices, GL_UNSIGNED_SHORT, indices);
 		

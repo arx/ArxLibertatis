@@ -4,11 +4,12 @@
 
 #include "graphics/VertexBuffer.h"
 #include "graphics/Vertex.h"
+#include "graphics/Math.h"
 #include "graphics/opengl/OpenGLUtil.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 
 template <class Vertex>
-static void setVertexArray(const Vertex * vertex);
+static void setVertexArray(const Vertex * vertex, const void * ref);
 
 enum GLArrayClientState {
 	GL_NoArray,
@@ -18,25 +19,24 @@ enum GLArrayClientState {
 };
 
 static GLArrayClientState glArrayClientState = GL_NoArray;
+static const void * glArrayClientStateRef = NULL;
 
-static bool switchVertexArray(const void * vertices, GLArrayClientState type) {
+static bool switchVertexArray(GLArrayClientState type, const void * ref) {
 	
-	if(!vertices) {
-		if(glArrayClientState == type) {
-			return false;
-		}
-		glArrayClientState = type;
-	} else {
-		glArrayClientState = GL_NoArray; // always re-set the array if we don't use a vertex buffer
+	if(glArrayClientState == type && glArrayClientStateRef == ref) {
+		return false;
 	}
+	
+	glArrayClientState = type;
+	glArrayClientStateRef = ref;
 	
 	return true;
 }
 
 template <>
-void setVertexArray(const TexturedVertex * vertices) {
+void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
-	if(!switchVertexArray(vertices, GL_TexturedVertex)) {
+	if(!switchVertexArray(GL_TexturedVertex, ref)) {
 		return;
 	}
 	
@@ -66,9 +66,9 @@ void setVertexArray(const TexturedVertex * vertices) {
 }
 
 template <>
-void setVertexArray(const SMY_VERTEX * vertices) {
+void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	
-	if(!switchVertexArray(vertices, GL_SMY_VERTEX)) {
+	if(!switchVertexArray(GL_SMY_VERTEX, ref)) {
 		return;
 	}
 	
@@ -93,9 +93,9 @@ void setVertexArray(const SMY_VERTEX * vertices) {
 }
 
 template <>
-void setVertexArray(const SMY_VERTEX3 * vertices) {
+void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	
-	if(!switchVertexArray(vertices, GL_SMY_VERTEX3)) {
+	if(!switchVertexArray(GL_SMY_VERTEX3, ref)) {
 		return;
 	}
 	
@@ -136,7 +136,7 @@ public:
 	
 	using VertexBuffer<Vertex>::capacity;
 	
-	GLVertexBuffer(OpenGLRenderer * _renderer, size_t capacity, Renderer::BufferUsage usage) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(0) {
+	GLVertexBuffer(OpenGLRenderer * _renderer, size_t capacity, Renderer::BufferUsage _usage) : VertexBuffer<Vertex>(capacity), renderer(_renderer), buffer(0), usage(_usage) {
 		
 		glGenBuffers(1, &buffer);
 		
@@ -155,6 +155,11 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
+		if(flags & DiscardContents) {
+			// avoid waiting if GL is still using the old buffer contents
+			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+		}
+		
 		glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
 		
 		CHECK_GL;
@@ -164,6 +169,11 @@ public:
 		ARX_UNUSED(flags);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		
+		if(flags & DiscardContents) {
+			// avoid waiting if GL is still using the old buffer contents
+			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+		}
 		
 		void * buf = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY); 
 		
@@ -196,7 +206,7 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		setVertexArray<Vertex>(NULL);
+		setVertexArray<Vertex>(NULL, this);
 		
 		glDrawArrays(arxToGlPrimitiveType[primitive], offset, count);
 		
@@ -205,7 +215,7 @@ public:
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		
-		// TODO nees GL_ARB_draw_elements_base_vertex, doesn't work
+		// needs GL_ARB_draw_elements_base_vertex!
 		
 		arx_assert(offset + count <= capacity());
 		arx_assert(indices != NULL);
@@ -214,7 +224,7 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		setVertexArray<Vertex>(NULL);
+		setVertexArray<Vertex>(NULL, this);
 		
 		glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1, nbindices, GL_UNSIGNED_SHORT, indices, offset);
 		
@@ -230,6 +240,7 @@ private:
 	
 	OpenGLRenderer * renderer;
 	GLuint buffer;
+	Renderer::BufferUsage usage;
 	
 };
 
