@@ -486,5 +486,5 @@ bool D3D7Renderer::getSnapshot(Image& image, size_t width, size_t height) {
 }
 
 bool D3D7Renderer::isFogInEyeCoordinates() {
-	return (window->getInfo().device.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG);
+	return (window->getInfo().device.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_WFOG) == D3DPRASTERCAPS_WFOG;
 }
