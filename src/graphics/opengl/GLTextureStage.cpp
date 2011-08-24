@@ -7,15 +7,24 @@
 GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : TextureStage(stage), renderer(_renderer), tex(NULL), current(NULL) {
 	
 	// Set default state
-	wrapMode = TextureStage::WrapRepeat;
-	minFilter = TextureStage::FilterLinear;
-	magFilter = TextureStage::FilterLinear;
-	mipFilter = TextureStage::FilterLinear;
-
-	args[Color][Arg0] = TextureStage::ArgTexture;
-	args[Color][Arg1] = TextureStage::ArgCurrent;
-	args[Alpha][Arg0] = TextureStage::ArgTexture;
-	args[Alpha][Arg1] = TextureStage::ArgCurrent;	
+	wrapMode = WrapRepeat;
+	minFilter = FilterLinear;
+	magFilter = FilterLinear;
+	mipFilter = FilterLinear;
+	
+	args[Color][Arg0] = ArgTexture;
+	args[Color][Arg1] = ArgCurrent;
+	args[Alpha][Arg0] = ArgTexture;
+	args[Alpha][Arg1] = ArgCurrent;
+	if(mStage == 0) {
+		ops[Color] = OpModulate;
+		ops[Alpha] = OpSelectArg1;
+		glActiveTexture(GL_TEXTURE0);
+		glEnable(GL_TEXTURE_2D);
+	} else {
+		ops[Color] = OpDisable;
+		ops[Alpha] = OpDisable;
+	}
 }
 
 GLTextureStage::~GLTextureStage() {
@@ -86,6 +95,35 @@ void GLTextureStage::setOp(OpType alpha, GLenum op, GLint scale) {
 
 void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 	
+	if(mStage != 0) {
+		glActiveTexture(GL_TEXTURE0 + mStage);
+	}
+	
+	bool wasEnabled = isEnabled();
+	
+	ops[alpha] = op;
+	
+	bool enabled = isEnabled();
+	if(wasEnabled != enabled) {
+		if(enabled) {
+			glEnable(GL_TEXTURE_2D);
+			renderer->maxTextureStage = std::max<size_t>(mStage, renderer->maxTextureStage);
+		} else {
+			glDisable(GL_TEXTURE_2D);
+			if(renderer->maxTextureStage == mStage) {
+				renderer->maxTextureStage = 0;
+				for(int stage = mStage - 1; stage >= 0; stage--) {
+					if(renderer->GetTextureStage(stage)->isEnabled()) {
+						renderer->maxTextureStage = stage;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	CHECK_GL;
+	
 	switch(op) {
 		
 		case OpDisable: {
@@ -143,6 +181,10 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 		
 	}
 	
+	if(mStage != 0) {
+		glActiveTexture(GL_TEXTURE0);
+	}
+	
 }
 
 void GLTextureStage::setOp(OpType alpha, TextureOp op, TextureArg arg0, TextureArg arg1) {
@@ -192,13 +234,18 @@ void GLTextureStage::SetMipFilter(FilterMode filterMode) {
 }
 
 void GLTextureStage::SetMipMapLODBias(float bias) {
-	glActiveTexture(GL_TEXTURE0 + mStage);
+	
+	if(mStage != 0) {
+		glActiveTexture(GL_TEXTURE0 + mStage);
+	}
+	
 	glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, bias);
+	
+	if(mStage != 0) {
+		glActiveTexture(GL_TEXTURE0);
+	}
+	
 	CHECK_GL;
-}
-
-void GLTextureStage::SetTextureCoordIndex(int texCoordIdx) {
-	ARX_UNUSED(texCoordIdx); // TODO does OpenGL support this?
 }
 
 void GLTextureStage::apply() {
@@ -218,15 +265,16 @@ void GLTextureStage::apply() {
 	if(tex) {
 		
 		bool apply = true;
-		for(size_t i = 0; i != mStage; i++) {
-			if(renderer->GetTextureStage(0)->tex == tex) {
+		for(size_t i = 0; i < mStage; i++) {
+			GLTextureStage * stage = renderer->GetTextureStage(i);
+			if(stage->tex == tex && stage->isEnabled()) {
 				apply = false;
 #ifdef _DEBUG
-				GLTextureStage * stage0 = renderer->GetTextureStage(0);
-				if(stage0->wrapMode != wrapMode || stage0->minFilter != minFilter || stage0->magFilter != magFilter || stage0->mipFilter != mipFilter) {
+				if(stage->wrapMode != wrapMode || stage->minFilter != minFilter || stage->magFilter != magFilter || stage->mipFilter != mipFilter) {
 					static bool warned = false;
 					if(!warned) {
 						LogWarning << "Same texture used in multiple stages with different attributes.";
+						warned = true;
 					}
 				}
 #else

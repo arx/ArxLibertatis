@@ -102,8 +102,12 @@ private:
 	friend class GLNoVertexBuffer;
 	template <class Vertex>
 	friend class GLVertexBuffer;
+	
+	friend class GLTextureStage;
+	
+	size_t maxTextureStage; // the highest active texture stage
+	
 };
-
 
 template <class Vertex>
 inline void OpenGLRenderer::selectTrasform() { enableTransform(); }

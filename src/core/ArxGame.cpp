@@ -89,6 +89,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "window/SDLWindow.h"
 #endif
 
+static bool showFPS = false;
+
 using std::string;
 
 extern long ALLOW_CHEATS;
@@ -924,6 +926,10 @@ static float _AvgFrameDiff = 150.f;
 		} else {
 			mainApp->GetWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
 		}
+	}
+	
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
+		showFPS = !showFPS;
 	}
 	
 	if(ARX_Menu_Render()) {
@@ -2007,7 +2013,7 @@ static float _AvgFrameDiff = 150.f;
 		Manage_sp_max();
 
 	// Some Visual Debug/Info Text
-	CalcFPS();
+	//CalcFPS();
 
 	if (!FINAL_COMMERCIAL_DEMO)
 	{
@@ -2089,6 +2095,11 @@ static float _AvgFrameDiff = 150.f;
 	norenderend:
 		;
 
+	if(showFPS) {
+		CalcFPS();
+		ShowFPS();
+	}
+	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
 	{
 		GetSnapShot();

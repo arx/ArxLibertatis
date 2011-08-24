@@ -30,11 +30,12 @@ public:
 	void SetMipFilter(FilterMode filterMode);
 	
 	void SetMipMapLODBias(float bias);
-	void SetTextureCoordIndex(int texCoordIdx);
 	
 	void apply();
 	
 private:
+	
+	inline bool isEnabled() { return ((ops[Color] != OpDisable) || (ops[Alpha] != OpDisable)); }
 	
 	OpenGLRenderer * renderer;
 	
@@ -48,6 +49,7 @@ private:
 		Arg1
 	};
 	
+	TextureOp ops[2];
 	TextureArg args[2][2];
 	
 	void setArg(OpType alpha, Arg idx, TextureArg arg);

@@ -791,94 +791,66 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 	}
 }
 
-//---------------------------------------------------------------------
-float CPoisonProjectile::Render()
-{
-	int i = 0;
-
-	if (ulCurrentTime >= ulDuration)
-	{
+float CPoisonProjectile::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	// ------------------------------------------------------------------------
+	
 	int n = BEZIERPrecision;
 	float delta = 1.0f / n;
-
-	Vec3f lastpos, newpos;
-	Vec3f v;
-
-	lastpos.x = pathways[0].sx;
-	lastpos.y = pathways[0].sy;
-	lastpos.z = pathways[0].sz;
-
+	
+	Vec3f lastpos(pathways[0].sx, pathways[0].sy, pathways[0].sz);
+	
 	int arx_check_init = -1;
-	newpos.x = 0;
-	newpos.y = 0;
-	newpos.z = 0;
-
-
-	for (i = 0; i < 9; i++)
-	{
-		int kp = i;
-		int kpprec = (i > 0) ? kp - 1 : kp ;
-		int kpsuiv = kp + 1 ;
+	
+	int i = 0;
+	for(i = 0; i < 9; i++) {
+		
+		int kpprec = std::max(i - 1, 0);
+		int kpsuiv = i + 1 ;
 		int kpsuivsuiv = (i < (9 - 2)) ? kpsuiv + 1 : kpsuiv;
-
-		for (int toto = 1; toto < n; toto++)
-		{
-			if (fTrail < i * n + toto) break;
-
+		
+		for(int toto = 1; toto < n; toto++) {
+			
+			if(fTrail < i * n + toto) {
+				break;
+			}
+			
 			float t = toto * delta;
-
-			float t1 = t;
-			float t2 = t1 * t1 ;
-			float t3 = t2 * t1 ;
+			
+			float t2 = t * t ;
+			float t3 = t2 * t ;
 			float f0 = 2.f * t3 - 3.f * t2 + 1.f ;
 			float f1 = -2.f * t3 + 3.f * t2 ;
-			float f2 = t3 - 2.f * t2 + t1 ;
+			float f2 = t3 - 2.f * t2 + t ;
 			float f3 = t3 - t2 ;
-
+			
 			float val = pathways[kpsuiv].sx;
 			float p0 = 0.5f * (val - pathways[kpprec].sx) ;
-			float p1 = 0.5f * (pathways[kpsuivsuiv].sx - pathways[kp].sx) ;
-			v.x = f0 * pathways[kp].sx + f1 * val + f2 * p0 + f3 * p1 ;
-
+			float p1 = 0.5f * (pathways[kpsuivsuiv].sx - pathways[i].sx) ;
+			lastpos.x = f0 * pathways[i].sx + f1 * val + f2 * p0 + f3 * p1 ;
+			
 			val = pathways[kpsuiv].sy ;
 			p0 = 0.5f * (val - pathways[kpprec].sy);
-			p1 = 0.5f * (pathways[kpsuivsuiv].sy - pathways[kp].sy) ;
-			v.y = f0 * pathways[kp].sy + f1 * val + f2 * p0 + f3 * p1 ;
-
+			p1 = 0.5f * (pathways[kpsuivsuiv].sy - pathways[i].sy) ;
+			lastpos.y = f0 * pathways[i].sy + f1 * val + f2 * p0 + f3 * p1 ;
+			
 			val = pathways[kpsuiv].sz ;
 			p0 = 0.5f * (val - pathways[kpprec].sz) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].sz - pathways[kp].sz) ;
-			v.z = f0 * pathways[kp].sz + f1 * val + f2 * p0 + f3 * p1 ;
-
-			newpos.x = v.x;
-			newpos.y = v.y;
-			newpos.z = v.z;
-
-			float nx = lastpos.x;
-			float ny = lastpos.y;
-			float nz = lastpos.z;
-
-			lastpos.x = newpos.x;
-			lastpos.y = newpos.y;
-			lastpos.z = newpos.z;
-
-			newpos.x = nx;
-			newpos.y = ny;
-			newpos.z = nz;
+			p1 = 0.5f * (pathways[kpsuivsuiv].sz - pathways[i].sz) ;
+			lastpos.z = f0 * pathways[i].sz + f1 * val + f2 * p0 + f3 * p1 ;
+			
 			++arx_check_init;
 		}
 	}
 	
-	arx_assert(arx_check_init >= 0);
+	// arx_assert(arx_check_init >= 0); TODO why should this hold?
 	
 	eCurPos = lastpos;
 	

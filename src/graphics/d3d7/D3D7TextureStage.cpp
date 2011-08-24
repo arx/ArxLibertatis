@@ -47,6 +47,7 @@ const D3DTEXTUREADDRESS ARXToDX7WrapMode[] = {
 };
 
 D3D7TextureStage::D3D7TextureStage(unsigned int textureStage) : TextureStage(textureStage) {
+	GD3D7Device->SetTextureStageState(textureStage, D3DTSS_TEXCOORDINDEX, textureStage);
 }
 
 void D3D7TextureStage::SetColorOp(TextureOp textureOp)
@@ -154,9 +155,4 @@ void D3D7TextureStage::SetMipMapLODBias(float bias) {
 	} else {
 		GD3D7Device->SetTextureStageState(mStage, D3DTSS_MIPMAPLODBIAS, reinterpret<DWORD, f32>(bias));
 	}
-}
-
-void D3D7TextureStage::SetTextureCoordIndex(int texCoordIdx)
-{
-	GD3D7Device->SetTextureStageState(mStage, D3DTSS_TEXCOORDINDEX, texCoordIdx);
 }

@@ -371,6 +371,11 @@ class CMenuElement : public CMenuZone
 		{
 			iShortCut = _iShortCut;
 		};
+		virtual void setEnabled(bool enable) {
+			enabled = enable;
+		}
+protected:
+	bool enabled;
 };
 
 //-----------------------------------------------------------------------------
@@ -489,6 +494,7 @@ class CMenuSliderText: public CMenuElement
 		void RenderMouseOver();
 		void EmptyFunction();
 		void SetWidth(int);
+		virtual void setEnabled(bool enable);
 };
 
 //-----------------------------------------------------------------------------
@@ -707,9 +713,6 @@ void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
 
 extern int newTextureSize;
-extern int newWidth;
-extern int newHeight;
-extern int newBpp;
 extern bool changeResolution;
 extern bool changeTextures;
 

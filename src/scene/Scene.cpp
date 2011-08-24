@@ -161,6 +161,7 @@ public:
 	
 	size_t nbindices;
 	unsigned short * indices;
+	size_t offset;
 	
 	DynamicVertexBuffer() : vertices(NULL), nbindices(0), indices(NULL) { }
 	
@@ -173,10 +174,10 @@ public:
 			start = 0;
 		}
 		
-		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardContents : NoOverwrite;
+		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardBuffer : NoOverwrite | DiscardRange;
 		
-		vertices =  pDynamicVertexBuffer->vb->lock(flags);
-		
+		vertices =  pDynamicVertexBuffer->vb->lock(flags, pDynamicVertexBuffer->pos);
+		offset = 0;
 	}
 	
 	SMY_VERTEX3 * append(size_t nbvertices) {
@@ -187,9 +188,9 @@ public:
 			return NULL;
 		}
 		
-		SMY_VERTEX3 * pos = vertices + pDynamicVertexBuffer->pos;
+		SMY_VERTEX3 * pos = vertices + offset;
 		
-		pDynamicVertexBuffer->pos += nbvertices;
+		pDynamicVertexBuffer->pos += nbvertices, offset += nbvertices;
 		
 		return pos;
 	}
@@ -976,7 +977,7 @@ void ARX_PORTALS_InitDrawnRooms()
 	iTotPoly=0;
 
 	if(pDynamicVertexBuffer) {
-		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardContents);
+		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
 	}
 	
@@ -1280,20 +1281,16 @@ static void RenderWaterBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(1)->DisableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->DisableAlpha();
 	
 	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 	GRenderer->GetTextureStage(2)->DisableColor();
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 	
 }
 
@@ -1469,11 +1466,9 @@ void RenderLavaBatch() {
 		return;
 	}
 	
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(1);
 	GRenderer->GetTextureStage(1)->SetColorOp(TextureStage::OpModulate4X, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(1)->DisableAlpha();
 	
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(2);
 	GRenderer->GetTextureStage(2)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
 	GRenderer->GetTextureStage(2)->DisableAlpha();
 	
@@ -1485,9 +1480,7 @@ void RenderLavaBatch() {
 	dynamicVertices.draw(Renderer::TriangleList);
 	
 	GRenderer->GetTextureStage(1)->DisableColor();
-	GRenderer->GetTextureStage(1)->SetTextureCoordIndex(0);
 	GRenderer->GetTextureStage(2)->DisableColor();
-	GRenderer->GetTextureStage(2)->SetTextureCoordIndex(0);
 	
 }
 

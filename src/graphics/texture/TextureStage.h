@@ -72,9 +72,6 @@ public:
 	 */
 	virtual void SetMipMapLODBias(float bias) = 0;
 	
-	//! Set the index of the texture coordinate set to use with this texture stage.
-	virtual void SetTextureCoordIndex(int texCoordIdx) = 0;
-	
 protected:
 	
 	unsigned int mStage;

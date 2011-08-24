@@ -94,36 +94,36 @@ void ARXMenu_Options_Video_GetBitPlane(int & _iBpp)
 }
 
 //-----------------------------------------------------------------------------
-void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int _iBpp) {
+void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, int _iHeight, int _iBpp) {
 	
 	if(!GRenderer) {
 		return;
 	}
 	
-	if(mainApp->GetWindow()->IsFullScreen()) {
+	if(!fullscreen) {
+		LogInfo << "configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
+		config.video.resolution = Vec2i(_iWidth, _iHeight);
+		config.video.bpp = _iBpp;
+	}
+	
+	
+	RenderWindow * window = mainApp->GetWindow();
+	
+	if(window->IsFullScreen() != fullscreen || fullscreen) {
 		
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 		GRenderer->EndScene();
 		
 		mainApp->GetWindow()->showFrame();
 		
-		mainApp->GetWindow()->setFullscreenMode(Vec2i(_iWidth, _iHeight), _iBpp);
+		if(fullscreen) {
+			mainApp->GetWindow()->setFullscreenMode(Vec2i(_iWidth, _iHeight), _iBpp);
+		} else {
+			mainApp->GetWindow()->setWindowSize(config.window.size);
+		}
 		
 		GRenderer->BeginScene();
 		
-	} else {
-		LogInfo << "configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
-		config.video.resolution = Vec2i(_iWidth, _iHeight);
-		config.video.bpp = _iBpp;
-	}
-}
-
-void ARXMenu_Options_Video_SetFullscreen(bool _bEnable) {
-	
-	if(_bEnable) {
-		mainApp->GetWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
-	} else {
-		mainApp->GetWindow()->setWindowSize(config.window.size);
 	}
 }
 

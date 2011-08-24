@@ -4058,7 +4058,7 @@ void ShowFPS()
 
 	sprintf(tex,"%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld INTREAT:%ld"
 	        , EERIEDrawnPolys, FPS, fps2min, fps2, _framedelay, INTER_DRAW, INTER_COMPUTE, INTREATZONECOUNT);
-	mainApp->OutputText( 70, DANAESIZY-100+32, tex );
+	//mainApp->OutputText( 70, DANAESIZY-100+32, tex );
 
 	TOTAL_CHRONO=0;
 //	TODO(lubosz): Don't get this by extern global
@@ -4068,10 +4068,10 @@ void ShowFPS()
 	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
 		strcat(tex," EXCEEDING LIMIT !!!");
 
-	mainApp->OutputText(70,DANAESIZY-170-144,tex);
-	sprintf(tex,"Pos %10.3f Screen %10.3f"
-		,LAST_FZPOS,LAST_FZSCREEN);
-	mainApp->OutputText(320,200,tex);
+	mainApp->OutputText(70,20,tex);
+	//sprintf(tex,"Pos %10.3f Screen %10.3f"
+	//	,LAST_FZPOS,LAST_FZSCREEN);
+	//mainApp->OutputText(320,200,tex);
 }
 
 void ARX_SetAntiAliasing() {
