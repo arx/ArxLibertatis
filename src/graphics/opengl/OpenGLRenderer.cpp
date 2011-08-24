@@ -13,7 +13,27 @@
 #include "io/Logger.h"
 #include "window/RenderWindow.h"
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0) { };
+static const char vertexShaderSource[] = "void main() { \n\
+	// Convert pre-transformed D3D vertices to OpenGL vertices. \n\
+	// This is a nop for non-projected vertices as w should equal 1 \n\
+	float w = 1.f / gl_Vertex.w; \n\
+	vec4 vertex = vec4(gl_Vertex.xyz * w, w); \n\
+	vec4 eyevert = gl_ModelViewMatrix * vertex; \n\
+	gl_Position = gl_ProjectionMatrix * eyevert; \n\
+	gl_FrontColor = gl_BackColor = gl_Color; \n\
+	gl_FrontSecondaryColor = gl_BackSecondaryColor = gl_SecondaryColor; \n\
+	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
+	gl_TexCoord[1] = gl_MultiTexCoord1; \n\
+	gl_TexCoord[2] = gl_MultiTexCoord2; \n\
+	// gl_TexCoord[3] = gl_MultiTexCoord3; \n\
+	// gl_TexCoord[4] = gl_MultiTexCoord4; \n\
+	// gl_TexCoord[5] = gl_MultiTexCoord5; \n\
+	// gl_TexCoord[6] = gl_MultiTexCoord6; \n\
+	// gl_TexCoord[7] = gl_MultiTexCoord7; \n\
+	gl_FogFragCoord = eyevert.z; \n\
+}";
+
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0) { };
 
 OpenGLRenderer::~OpenGLRenderer() { };
 
@@ -24,6 +44,57 @@ enum GLTransformMode {
 };
 
 static GLTransformMode currentTransform;
+
+static bool checkShader(GLuint object, const char * op, GLuint check) {
+	
+	GLint status;
+	glGetObjectParameterivARB(object, check, &status);
+	if(!status) {
+		int logLength;
+		glGetObjectParameterivARB(object, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength);
+		char * log = new char[logLength];
+		glGetInfoLogARB(object, logLength, NULL, log);
+		LogWarning << "failed to " << op << " vertex shader: " << log;
+		delete[] log;
+		return false;
+	}
+	
+	return true;
+}
+
+static GLuint loadVertexShader(const char * source) {
+	
+	GLuint shader = glCreateProgramObjectARB();
+	if(!shader) {
+		LogWarning << "failed to create program object";
+		return 0;
+	}
+	
+	GLuint obj = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+	if(!obj) {
+		LogWarning << "failed to create shader object";
+		glDeleteObjectARB(shader);
+		return 0;
+	}
+	
+	glShaderSourceARB(obj, 1, &source, NULL);
+	glCompileShaderARB(obj);
+	if(!checkShader(obj, "compile", GL_OBJECT_COMPILE_STATUS_ARB)) {
+		glDeleteObjectARB(obj);
+		glDeleteObjectARB(shader);
+		return 0;
+	}
+	
+	glAttachObjectARB(shader, obj);
+	glDeleteObjectARB(obj);
+	
+	glLinkProgramARB(shader);
+	if(!checkShader(shader, "link", GL_OBJECT_LINK_STATUS_ARB)) {
+		glDeleteObjectARB(shader), shader = 0;
+	}
+	
+	return shader;
+}
 
 void OpenGLRenderer::Initialize() {
 	
@@ -68,11 +139,29 @@ void OpenGLRenderer::Initialize() {
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
 	
+	currentTransform = GL_UnsetTransform;
+	
+	CHECK_GL;
+	
+	if(useVertexArrays && useVBOs) {
+		if(!GLEW_ARB_shader_objects) {
+			LogWarning << "Missing OpenGL extension ARB_shader_objects.";
+		} else if(!GLEW_ARB_vertex_program) {
+			LogWarning << "Missing OpenGL extension ARB_vertex_program.";
+		} else {
+			shader = loadVertexShader(vertexShaderSource);
+			CHECK_GL;
+		}
+		if(shader) {
+			glUseProgram(shader);
+		} else {
+			LogWarning << "Missing vertex shader, cannot use vertex arrays for pre-transformed vertices.";
+		}
+	}
+	
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
 	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
 	LogInfo << "Device: " << glGetString(GL_RENDERER);
-	
-	currentTransform = GL_UnsetTransform;
 	
 	CHECK_GL;
 }
@@ -461,8 +550,11 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	ARX_UNUSED(usage);
-	return new GLNoVertexBuffer<TexturedVertex>(this, capacity); 
+	if(useVBOs && shader) {
+		return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
+	} else {
+		return new GLNoVertexBuffer<TexturedVertex>(this, capacity); 
+	}
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
@@ -493,7 +585,7 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	beforeDraw<TexturedVertex>();
 	
-	if(/*useVertexArrays*/ false) { // TODO rhw parameter should not be ignored!
+	if(useVertexArrays && shader) {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		

@@ -61,9 +61,9 @@ void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 		return;
 	}
 	
-	// TODO ignoring the rhw parameter!
+	// rhw -> w conversion is done in a vertex shader
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
+	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);

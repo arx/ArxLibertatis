@@ -107,6 +107,8 @@ private:
 	
 	size_t maxTextureStage; // the highest active texture stage
 	
+	unsigned int shader;
+	
 };
 
 template <class Vertex>
