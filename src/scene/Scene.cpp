@@ -161,6 +161,7 @@ public:
 	
 	size_t nbindices;
 	unsigned short * indices;
+	size_t offset;
 	
 	DynamicVertexBuffer() : vertices(NULL), nbindices(0), indices(NULL) { }
 	
@@ -173,10 +174,10 @@ public:
 			start = 0;
 		}
 		
-		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardBuffer : NoOverwrite;
+		BufferFlags flags = (pDynamicVertexBuffer->pos == 0) ? DiscardBuffer : NoOverwrite | DiscardRange;
 		
-		vertices =  pDynamicVertexBuffer->vb->lock(flags);
-		
+		vertices =  pDynamicVertexBuffer->vb->lock(flags, pDynamicVertexBuffer->pos);
+		offset = 0;
 	}
 	
 	SMY_VERTEX3 * append(size_t nbvertices) {
@@ -187,9 +188,9 @@ public:
 			return NULL;
 		}
 		
-		SMY_VERTEX3 * pos = vertices + pDynamicVertexBuffer->pos;
+		SMY_VERTEX3 * pos = vertices + offset;
 		
-		pDynamicVertexBuffer->pos += nbvertices;
+		pDynamicVertexBuffer->pos += nbvertices, offset += nbvertices;
 		
 		return pos;
 	}

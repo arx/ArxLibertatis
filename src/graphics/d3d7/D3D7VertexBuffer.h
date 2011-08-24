@@ -50,12 +50,17 @@ public:
 	}
 	
 	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
+		ARX_UNUSED(count);
 		
-		Vertex * dest;
+		Vertex * dest = NULL;
 		
 		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
 		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
+		
+		if(dest) {
+			dest += offset;
+		}
 		
 		return dest;
 	}
