@@ -2064,10 +2064,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				long iz=max(0,pEPDATA->py-1);
 				long az=min(ACTIVEBKG->Zsize-1,pEPDATA->py+1);
 				
-				checked_range_cast<short>(iz);
-				checked_range_cast<short>(ix);
-				checked_range_cast<short>(az);
-				checked_range_cast<short>(ax);
+				(void)checked_range_cast<short>(iz);
+				(void)checked_range_cast<short>(ix);
+				(void)checked_range_cast<short>(az);
+				(void)checked_range_cast<short>(ax);
 
 				for (long nz=iz;nz<=az;nz++)
 				for (long nx=ix;nx<=ax;nx++)

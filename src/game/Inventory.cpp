@@ -2121,8 +2121,8 @@ void ARX_INVENTORY_TakeAllFromSecondaryInventory()
 	if (TSecondaryInventory)
 	{
 
-		checked_range_cast<short>(TSecondaryInventory->sizey);
-		checked_range_cast<short>(TSecondaryInventory->sizex);
+		(void)checked_range_cast<short>(TSecondaryInventory->sizey);
+		(void)checked_range_cast<short>(TSecondaryInventory->sizex);
 
 
 		for (long j = 0; j < TSecondaryInventory->sizey; j++)
@@ -2168,8 +2168,8 @@ void ARX_INVENTORY_ReOrder()
 	if (TSecondaryInventory)
 	{
 
-		checked_range_cast<short>(TSecondaryInventory->sizey);
-		checked_range_cast<short>(TSecondaryInventory->sizex);
+		(void)checked_range_cast<short>(TSecondaryInventory->sizey);
+		(void)checked_range_cast<short>(TSecondaryInventory->sizex);
 
 
 		for (long j = 0; j < TSecondaryInventory->sizey; j++)
