@@ -18,12 +18,12 @@ static const char vertexShaderSource[] = "void main() { \n\
 	// This is a nop for non-projected vertices as w should equal 1 \n\
 	float w = 1.f / gl_Vertex.w; \n\
 	vec4 vertex = vec4(gl_Vertex.xyz * w, w); \n\
-	vec4 eyevert = gl_ModelViewMatrix * vertex; \n\
-	gl_Position = gl_ProjectionMatrix * eyevert; \n\
+	// We only need the projection matrix as modelview will always be idenity. \n\
+	gl_Position = gl_ProjectionMatrix * vertex; \n\
 	gl_FrontColor = gl_BackColor = gl_Color; \n\
 	gl_FrontSecondaryColor = gl_BackSecondaryColor = gl_SecondaryColor; \n\
 	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
-	gl_FogFragCoord = eyevert.z; \n\
+	gl_FogFragCoord = vertex.z; \n\
 }";
 
 OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0) { };
@@ -198,15 +198,15 @@ void OpenGLRenderer::disableTransform() {
 		return;
 	}
 	
-	if(shader) {
-		glUseProgram(shader);
-	}
-	
 	// D3D doesn't apply any transform for D3DTLVERTEX
 	// but we still need to change from D3D to OpenGL coordinates
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	if(shader) {
+		glUseProgram(shader);
+	} else {
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

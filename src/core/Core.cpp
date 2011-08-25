@@ -4069,6 +4069,7 @@ void ShowFPS()
 		strcat(tex," EXCEEDING LIMIT !!!");
 
 	mainApp->OutputText(70,20,tex);
+	
 	//sprintf(tex,"Pos %10.3f Screen %10.3f"
 	//	,LAST_FZPOS,LAST_FZSCREEN);
 	//mainApp->OutputText(320,200,tex);

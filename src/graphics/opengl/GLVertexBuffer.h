@@ -150,12 +150,43 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		if(flags & DiscardBuffer) {
-			// avoid waiting if GL is still using the old buffer contents
-			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+		if(GLEW_ARB_map_buffer_range) {
+			
+			GLbitfield glflags = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT;
+			
+			if(flags & DiscardBuffer) {
+				glflags |= GL_MAP_INVALIDATE_BUFFER_BIT;
+			}
+			if(flags & NoOverwrite) {
+				glflags |= GL_MAP_UNSYNCHRONIZED_BIT;
+			}
+			
+			size_t obytes = offset * sizeof(Vertex);
+			size_t nbytes = count * sizeof(Vertex);
+			void * buf = glMapBufferRange(GL_ARRAY_BUFFER, obytes, nbytes, glflags);
+			
+			if(buf) {
+				
+				memcpy(buf, vertices, nbytes);
+				
+				GLboolean ret = glUnmapBuffer(GL_ARRAY_BUFFER);
+				if(ret == GL_FALSE) {
+					// TODO handle GL_FALSE return (buffer invalidated)
+					LogWarning << "vertex buffer invalidated";
+				}
+				
+			}
+			
+		} else {
+			
+			if(flags & DiscardBuffer) {
+				// avoid waiting if GL is still using the old buffer contents
+				glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+			}
+			
+			glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
+			
 		}
-		
-		glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
 		
 		CHECK_GL;
 	}
