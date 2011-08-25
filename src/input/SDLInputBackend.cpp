@@ -1,6 +1,8 @@
 
 #include "input/SDLInputBackend.h"
 
+#include <boost/static_assert.hpp>
+
 #include "io/Logger.h"
 #include "window/SDLWindow.h"
 
@@ -15,7 +17,7 @@ SDLInputBackend::~SDLInputBackend() {
 
 static int sdlToArxKey[SDLK_LAST];
 
-static int sdlToArxButton[4];
+static int sdlToArxButton[10];
 
 bool SDLInputBackend::init() {
 	
@@ -181,9 +183,21 @@ bool SDLInputBackend::init() {
 	
 	std::fill_n(sdlToArxButton, ARRAY_SIZE(sdlToArxButton), -1);
 	
+	BOOST_STATIC_ASSERT(9 < ARRAY_SIZE(sdlToArxButton));
+	sdlToArxButton[8] = Mouse::Button_5;
+	sdlToArxButton[9] = Mouse::Button_6;
+	
+	BOOST_STATIC_ASSERT(SDL_BUTTON_LEFT < ARRAY_SIZE(sdlToArxButton));
 	sdlToArxButton[SDL_BUTTON_LEFT] = Mouse::Button_0;
+	BOOST_STATIC_ASSERT(SDL_BUTTON_MIDDLE < ARRAY_SIZE(sdlToArxButton));
 	sdlToArxButton[SDL_BUTTON_MIDDLE] = Mouse::Button_2;
+	BOOST_STATIC_ASSERT(SDL_BUTTON_RIGHT < ARRAY_SIZE(sdlToArxButton));
 	sdlToArxButton[SDL_BUTTON_RIGHT] = Mouse::Button_1;
+	BOOST_STATIC_ASSERT(SDL_BUTTON_X1 < ARRAY_SIZE(sdlToArxButton));
+	sdlToArxButton[SDL_BUTTON_X1] = Mouse::Button_3;
+	BOOST_STATIC_ASSERT(SDL_BUTTON_X2 < ARRAY_SIZE(sdlToArxButton));
+	sdlToArxButton[SDL_BUTTON_X2] = Mouse::Button_4;
+	
 	
 	wheel = 0;
 	cursor = Vec2i::ZERO;
@@ -404,7 +418,7 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 			if(key >= 0 && key < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
 				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
-				LogWarning << "Unmapped SDL key: " << key;
+				LogWarning << "Unmapped SDL key: " << (int)key;
 			}
 			break;
 		}
@@ -429,7 +443,7 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 					buttonStates[i] = false, unclickCount[i]++;
 				}
 			} else {
-				LogWarning << "Unmapped SDL mouse button: " << button;
+				LogWarning << "Unmapped SDL mouse button: " << (int)button;
 			}
 			break;
 		}
