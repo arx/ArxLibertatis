@@ -225,6 +225,9 @@ else(MSVC)
 	add_cxxflag(-fno-exceptions)
 	add_cxxflag(-fno-rtti)
 	
+	# TODO fix issues first
+	add_cxxflag(-fno-strict-aliasing)
+	
 endif(MSVC)
 
 check_type_size(char CHAR_SIZE)
