@@ -23,13 +23,6 @@ static const char vertexShaderSource[] = "void main() { \n\
 	gl_FrontColor = gl_BackColor = gl_Color; \n\
 	gl_FrontSecondaryColor = gl_BackSecondaryColor = gl_SecondaryColor; \n\
 	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
-	gl_TexCoord[1] = gl_MultiTexCoord1; \n\
-	gl_TexCoord[2] = gl_MultiTexCoord2; \n\
-	// gl_TexCoord[3] = gl_MultiTexCoord3; \n\
-	// gl_TexCoord[4] = gl_MultiTexCoord4; \n\
-	// gl_TexCoord[5] = gl_MultiTexCoord5; \n\
-	// gl_TexCoord[6] = gl_MultiTexCoord6; \n\
-	// gl_TexCoord[7] = gl_MultiTexCoord7; \n\
 	gl_FogFragCoord = eyevert.z; \n\
 }";
 
@@ -152,9 +145,7 @@ void OpenGLRenderer::Initialize() {
 			shader = loadVertexShader(vertexShaderSource);
 			CHECK_GL;
 		}
-		if(shader) {
-			glUseProgram(shader);
-		} else {
+		if(!shader) {
 			LogWarning << "Missing vertex shader, cannot use vertex arrays for pre-transformed vertices.";
 		}
 	}
@@ -186,6 +177,10 @@ void OpenGLRenderer::enableTransform() {
 		return;
 	}
 	
+	if(shader) {
+		glUseProgram(0);
+	}
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(&view._11);
 		
@@ -201,6 +196,10 @@ void OpenGLRenderer::disableTransform() {
 	
 	if(currentTransform == GL_NoTransform) {
 		return;
+	}
+	
+	if(shader) {
+		glUseProgram(shader);
 	}
 	
 	// D3D doesn't apply any transform for D3DTLVERTEX
