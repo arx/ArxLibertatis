@@ -3199,9 +3199,6 @@ INTERACTIVE_OBJ * AddItem(const fs::path & fil, AddInteractiveFlags flags) {
 	return io;
 }
 
-extern float LAST_FZPOS;
-extern float LAST_FZSCREEN;
-
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
 //*************************************************************************************

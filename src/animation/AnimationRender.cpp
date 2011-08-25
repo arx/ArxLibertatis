@@ -436,8 +436,6 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
-extern long INTERPOLATE_BETWEEN_BONES;
-
 /* Transform object vertices  */
 int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
                           Vec3f * pos) {

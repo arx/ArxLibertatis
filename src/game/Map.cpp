@@ -44,14 +44,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/Window.h"
 
-extern long FINAL_RELEASE;
-extern long CURRENTLEVEL;
-int iCreateMap = 0; // used to create mini-map bitmap
-char ThisLevelMap[256];
+#ifdef BUILD_EDITOR
 
+int iCreateMap = 0; // used to create mini-map bitmap
+
+#endif
 
 // TODO(core_cleanup)
 #if 0
+
+extern long FINAL_RELEASE;
+extern long CURRENTLEVEL;
+char ThisLevelMap[256];
+
 class C_ARX_Carte {
 	
 private:
@@ -574,4 +579,4 @@ void DANAE_Manage_CreateMap()
 	}
 }
 
-#endif // BUILD_EDITOR
+#endif
