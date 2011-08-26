@@ -503,6 +503,8 @@ void initSuppressions() {
 	
 	suppress("metal_chunk_inwall", 143, "play"); // unknown flag -e (ignored)
 	
+	suppress("metal_grid_0008", 338, "}"); // missing accept/refuse before end of event block
+	
 	suppress("orb_crypt", 76, "setsteal"); // setsteal only applies to items
 	
 	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
