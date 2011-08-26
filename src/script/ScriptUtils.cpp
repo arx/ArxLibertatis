@@ -465,6 +465,8 @@ void initSuppressions() {
 	
 	suppress("human_base_0138", 2439, "setcontrolledzone"); // unknown zone 'shani_flee'
 	
+	suppress("human_base_0174", 136, "play"); // missing sound file 'loop_crypt1l', should be 'ambiance/loop_crypt1l'
+	
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
 	suppress("lamp_goblin2_0003", 737, "no"); // unknown command 'no' should be 'nop'?
