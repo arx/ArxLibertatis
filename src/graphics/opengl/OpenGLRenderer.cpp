@@ -124,9 +124,12 @@ void OpenGLRenderer::Initialize() {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	
-	// TODO get the supported texture stage count
-	m_TextureStages.resize(3);
-	
+	GLint texunits = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits); // number of conventional fixed-function units
+	if(texunits < 3) {
+		LogWarning << "Number of available texture units is too low: " << texunits;
+	}
+	m_TextureStages.resize(texunits);
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		m_TextureStages[i] = new GLTextureStage(this, i);
 	}
