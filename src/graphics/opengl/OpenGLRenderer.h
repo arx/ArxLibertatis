@@ -60,7 +60,7 @@ public:
 	void SetDepthBias(int depthBias);
 	void SetFillMode(FillMode mode);
 	
-	float GetMaxAnisotropy() const;
+	inline float GetMaxAnisotropy() const { return maximumAnistropy; }
 	
 	// Utilities...
 	void DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color);
@@ -108,6 +108,8 @@ private:
 	size_t maxTextureStage; // the highest active texture stage
 	
 	unsigned int shader;
+	
+	float maximumAnistropy;
 	
 };
 

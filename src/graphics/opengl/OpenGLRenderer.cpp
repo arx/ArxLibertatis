@@ -26,7 +26,7 @@ static const char vertexShaderSource[] = "void main() { \n\
 	gl_FogFragCoord = vertex.z; \n\
 }";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0) { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnistropy(1.f) { };
 
 OpenGLRenderer::~OpenGLRenderer() { };
 
@@ -95,6 +95,10 @@ void OpenGLRenderer::Initialize() {
 		LogError << "GLEW init failed";
 	}
 	
+	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
+	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
+	LogInfo << "Device: " << glGetString(GL_RENDERER);
+	
 	if(!GLEW_ARB_vertex_array_bgra) {
 		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
 	}
@@ -150,9 +154,10 @@ void OpenGLRenderer::Initialize() {
 		}
 	}
 	
-	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
-	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
-	LogInfo << "Device: " << glGetString(GL_RENDERER);
+	if(GLEW_EXT_texture_filter_anisotropic) {
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
+		CHECK_GL;
+	}
 	
 	CHECK_GL;
 }
@@ -505,18 +510,6 @@ static const GLenum arxToGlFillMode[] = {
 void OpenGLRenderer::SetFillMode(FillMode mode) {
 	glPolygonMode(GL_FRONT_AND_BACK, arxToGlFillMode[mode]);
 	CHECK_GL;
-}
-
-float OpenGLRenderer::GetMaxAnisotropy() const {
-	
-	float maximumAnistropy = 1.f;
-	
-	if(GLEW_EXT_texture_filter_anisotropic) {
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
-		CHECK_GL;
-	}
-	
-	return maximumAnistropy;
 }
 
 void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) {
