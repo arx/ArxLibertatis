@@ -92,7 +92,7 @@ void GLTexture2D::Destroy() {
 static const GLint arxToGlWrapMode[] = {
 	GL_REPEAT, // WrapRepeat,
 	GL_MIRRORED_REPEAT, // WrapMirror
-	GL_CLAMP // WrapClamp
+	GL_CLAMP_TO_EDGE // WrapClamp
 };
 
 static const GLint arxToGlFilter[][3] = {

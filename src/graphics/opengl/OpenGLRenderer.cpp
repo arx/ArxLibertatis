@@ -249,7 +249,7 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	if(currentTransform == GL_ModelViewProjectionTransform) {
 		currentTransform = GL_UnsetTransform;
 	}
-
+	
 	projection = matProj;
 }
 

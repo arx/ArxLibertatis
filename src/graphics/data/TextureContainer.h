@@ -153,8 +153,9 @@ public:
 	Texture2D * m_pTexture; // Diffuse
 	
 	// Precalculated values
-	float m_dx; // 1.f / width
-	float m_dy; // 1.f / height
+	// TODO remove these, offset vertex position, not texture position to make sure fragments and texels are aligned
+	float m_dx; //
+	float m_dy; //
 	float m_hdx; // 0.5f / width
 	float m_hdy; // 0.5f / height
 	float m_odx; // 1.f / width
