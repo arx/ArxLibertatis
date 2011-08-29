@@ -26,7 +26,7 @@ static const char vertexShaderSource[] = "void main() { \n\
 	gl_FogFragCoord = vertex.z; \n\
 }";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnistropy(1.f) { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f) { };
 
 OpenGLRenderer::~OpenGLRenderer() { };
 
@@ -158,7 +158,7 @@ void OpenGLRenderer::Initialize() {
 	}
 	
 	if(GLEW_EXT_texture_filter_anisotropic) {
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnisotropy);
 		CHECK_GL;
 	}
 	
