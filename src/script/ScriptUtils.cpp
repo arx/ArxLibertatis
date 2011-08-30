@@ -339,9 +339,15 @@ void initSuppressions() {
 	
 	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
 	
+	suppressBlockEnd("chest_metal_0103", 626, "on"); // missing '}' and accept/refuse
+	
+	suppressBlockEnd("chest_metal_0104", 667, "on"); // missing '}' and accept/refuse
+	
 	suppressBlockEnd("goblin_base_0021", 617, "on"); // missing '}'
 	
 	suppressBlockEnd("goblin_base_0031", 974, "on"); // missing '}'
+	
+	suppressBlockEnd("lever_0028", 402, "}"); // extranous '}'
 	
 	// TODO(broken-scripts)
 	// TODO move to external file
@@ -431,6 +437,8 @@ void initSuppressions() {
 	suppress("human_base_0012", 1519, "goto"); // missing label 'stop'
 	
 	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
+	
+	suppress("human_base_0025", 732, "detach"); // object mug_full_0002 already destroyed
 	
 	suppress("human_base_0041", 4279, "if"); // missing space between oprateor '==' and argument
 	
