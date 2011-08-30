@@ -15,7 +15,6 @@
 
 static const char vertexShaderSource[] = "void main() { \n\
 	// Convert pre-transformed D3D vertices to OpenGL vertices. \n\
-	// This is a nop for non-projected vertices as w should equal 1 \n\
 	float w = 1.f / gl_Vertex.w; \n\
 	vec4 vertex = vec4(gl_Vertex.xyz * w, w); \n\
 	// We only need the projection matrix as modelview will always be idenity. \n\
@@ -28,7 +27,14 @@ static const char vertexShaderSource[] = "void main() { \n\
 
 OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f) { };
 
-OpenGLRenderer::~OpenGLRenderer() { };
+OpenGLRenderer::~OpenGLRenderer() {
+	
+	if(shader) {
+		glDeleteObjectARB(shader);
+		CHECK_GL;
+	}
+	
+};
 
 enum GLTransformMode {
 	GL_UnsetTransform,
@@ -83,7 +89,8 @@ static GLuint loadVertexShader(const char * source) {
 	
 	glLinkProgramARB(shader);
 	if(!checkShader(shader, "link", GL_OBJECT_LINK_STATUS_ARB)) {
-		glDeleteObjectARB(shader), shader = 0;
+		glDeleteObjectARB(shader);
+		return 0;
 	}
 	
 	return shader;
