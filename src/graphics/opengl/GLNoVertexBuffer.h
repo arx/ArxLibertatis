@@ -10,27 +10,16 @@
 template <class Vertex>
 static void renderVertex(const Vertex & vertex);
 
-template <class Vertex>
-static void renderVertexCleanup() { }
-
 template <>
 void renderVertex(const TexturedVertex & vertex) {
 	
 	Color c = Color::fromBGRA(vertex.color);
 	glColor4ub(c.r, c.g, c.b, c.a);
 	
-	Color s = Color::fromBGRA(vertex.specular);
-	glSecondaryColor3ub(s.r, s.g, s.b);
-	
 	glMultiTexCoord2f(GL_TEXTURE0, vertex.tu, vertex.tv);
 	
 	GLfloat w = 1.0f / vertex.rhw; 
 	glVertex4f(vertex.sx * w, vertex.sy * w, vertex.sz * w, w);
-}
-
-template <>
-void renderVertexCleanup<TexturedVertex>() {
-	glSecondaryColor3ub(0, 0, 0);
 }
 
 template <>
@@ -99,8 +88,6 @@ public:
 		
 		glEnd();
 		
-		renderVertexCleanup<Vertex>();
-		
 		CHECK_GL;
 	}
 	
@@ -121,8 +108,6 @@ public:
 		}
 		
 		glEnd();
-		
-		renderVertexCleanup<Vertex>();
 		
 		CHECK_GL;
 	}

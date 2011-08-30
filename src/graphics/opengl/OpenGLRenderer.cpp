@@ -20,7 +20,6 @@ static const char vertexShaderSource[] = "void main() { \n\
 	// We only need the projection matrix as modelview will always be idenity. \n\
 	gl_Position = gl_ProjectionMatrix * vertex; \n\
 	gl_FrontColor = gl_BackColor = gl_Color; \n\
-	gl_FrontSecondaryColor = gl_BackSecondaryColor = gl_SecondaryColor; \n\
 	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
 	gl_FogFragCoord = vertex.z; \n\
 }";
@@ -604,8 +603,6 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 		}
 		
 		glEnd();
-		
-		renderVertexCleanup<TexturedVertex>();
 		
 	}
 	

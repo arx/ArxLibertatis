@@ -38,9 +38,6 @@ static bool switchVertexArray(GLArrayClientState type, const void * ref, int tex
 	}
 	
 	if(glArrayClientState != type) {
-		if(glArrayClientState == GL_TexturedVertex) {
-			glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
-		}
 		for(int i = texcount; i < glArrayClientStateTexCount; i++) {
 			glClientActiveTexture(GL_TEXTURE0 + i);
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -67,11 +64,6 @@ void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 	
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
-	
-	// TODO(broken-GLEW) work around a bug in older GLEW versions (fix is in 1.6.0)
-	GLvoid * ptr = const_cast<ColorBGRA *>(&vertices->specular);
-	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
-	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), ptr);
 	
 	setVertexArrayTexCoord(0, &vertices->tu, sizeof(TexturedVertex));
 	
