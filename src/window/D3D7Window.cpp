@@ -728,15 +728,15 @@ void D3D7Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	if(m_IsFullscreen && m_Size == resolution && depth == _depth) {
 		return;
 	}
-
+	
 	destroyObjects();
-
+	
 	bool oldFullscreen = m_IsFullscreen;
-
+	
 	if(!oldFullscreen || m_Size != resolution) {
-		bool oldFullscreen = m_IsFullscreen;
+		
 		Win32Window::setFullscreenMode(resolution, _depth);
-
+		
 		// If the WM_SIZE message was not sent, restore() was not called
 		// This can happen if our ddraw friend managed to changed the resolution
 		// in destroyObjects()... so much fun
@@ -747,7 +747,6 @@ void D3D7Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 		depth = _depth;
 		restoreContext();
 	}
-
 	
 	if(!oldFullscreen)
 		OnToggleFullscreen();
