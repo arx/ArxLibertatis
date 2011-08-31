@@ -184,7 +184,7 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 				}
 			}
 			break;
-		}		
+		}
 
 		break;
 	}
