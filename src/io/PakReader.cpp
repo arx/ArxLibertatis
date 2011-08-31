@@ -339,9 +339,9 @@ int CompressedFileHandle::seek(Whence whence, int _offset) {
 	
 	size_t base;
 	switch(whence) {
-		case SeekSet: base = 0;
-		case SeekEnd: base = file.size();
-		case SeekCur: base = offset;
+		case SeekSet: base = 0; break;
+		case SeekEnd: base = file.size(); break;
+		case SeekCur: base = offset; break;
 		default: return -1;
 	}
 	

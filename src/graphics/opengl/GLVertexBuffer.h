@@ -38,9 +38,6 @@ static bool switchVertexArray(GLArrayClientState type, const void * ref, int tex
 	}
 	
 	if(glArrayClientState != type) {
-		if(glArrayClientState == GL_TexturedVertex) {
-			glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
-		}
 		for(int i = texcount; i < glArrayClientStateTexCount; i++) {
 			glClientActiveTexture(GL_TEXTURE0 + i);
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -61,17 +58,12 @@ void setVertexArray(const TexturedVertex * vertices, const void * ref) {
 		return;
 	}
 	
-	// TODO ignoring the rhw parameter!
+	// rhw -> w conversion is done in a vertex shader
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
+	glVertexPointer(4, GL_FLOAT, sizeof(TexturedVertex), &vertices->sx);
 	
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), &vertices->color);
-	
-	// TODO(broken-GLEW) work around a bug in older GLEW versions (fix is in 1.6.0)
-	GLvoid * ptr = const_cast<ColorBGRA *>(&vertices->specular);
-	glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
-	glSecondaryColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(TexturedVertex), ptr);
 	
 	setVertexArrayTexCoord(0, &vertices->tu, sizeof(TexturedVertex));
 	
@@ -150,12 +142,43 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		if(flags & DiscardBuffer) {
-			// avoid waiting if GL is still using the old buffer contents
-			glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+		if(GLEW_ARB_map_buffer_range) {
+			
+			GLbitfield glflags = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT;
+			
+			if(flags & DiscardBuffer) {
+				glflags |= GL_MAP_INVALIDATE_BUFFER_BIT;
+			}
+			if(flags & NoOverwrite) {
+				glflags |= GL_MAP_UNSYNCHRONIZED_BIT;
+			}
+			
+			size_t obytes = offset * sizeof(Vertex);
+			size_t nbytes = count * sizeof(Vertex);
+			void * buf = glMapBufferRange(GL_ARRAY_BUFFER, obytes, nbytes, glflags);
+			
+			if(buf) {
+				
+				memcpy(buf, vertices, nbytes);
+				
+				GLboolean ret = glUnmapBuffer(GL_ARRAY_BUFFER);
+				if(ret == GL_FALSE) {
+					// TODO handle GL_FALSE return (buffer invalidated)
+					LogWarning << "vertex buffer invalidated";
+				}
+				
+			}
+			
+		} else {
+			
+			if(flags & DiscardBuffer) {
+				// avoid waiting if GL is still using the old buffer contents
+				glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
+			}
+			
+			glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
+			
 		}
-		
-		glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
 		
 		CHECK_GL;
 	}

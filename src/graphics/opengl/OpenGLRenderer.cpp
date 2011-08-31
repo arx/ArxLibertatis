@@ -13,9 +13,27 @@
 #include "io/Logger.h"
 #include "window/RenderWindow.h"
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0) { };
+static const char vertexShaderSource[] = "void main() { \n\
+	// Convert pre-transformed D3D vertices to OpenGL vertices. \n\
+	float w = 1.f / gl_Vertex.w; \n\
+	vec4 vertex = vec4(gl_Vertex.xyz * w, w); \n\
+	// We only need the projection matrix as modelview will always be idenity. \n\
+	gl_Position = gl_ProjectionMatrix * vertex; \n\
+	gl_FrontColor = gl_BackColor = gl_Color; \n\
+	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
+	gl_FogFragCoord = vertex.z; \n\
+}";
 
-OpenGLRenderer::~OpenGLRenderer() { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f) { };
+
+OpenGLRenderer::~OpenGLRenderer() {
+	
+	if(shader) {
+		glDeleteObjectARB(shader);
+		CHECK_GL;
+	}
+	
+};
 
 enum GLTransformMode {
 	GL_UnsetTransform,
@@ -25,11 +43,67 @@ enum GLTransformMode {
 
 static GLTransformMode currentTransform;
 
+static bool checkShader(GLuint object, const char * op, GLuint check) {
+	
+	GLint status;
+	glGetObjectParameterivARB(object, check, &status);
+	if(!status) {
+		int logLength;
+		glGetObjectParameterivARB(object, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength);
+		char * log = new char[logLength];
+		glGetInfoLogARB(object, logLength, NULL, log);
+		LogWarning << "failed to " << op << " vertex shader: " << log;
+		delete[] log;
+		return false;
+	}
+	
+	return true;
+}
+
+static GLuint loadVertexShader(const char * source) {
+	
+	GLuint shader = glCreateProgramObjectARB();
+	if(!shader) {
+		LogWarning << "failed to create program object";
+		return 0;
+	}
+	
+	GLuint obj = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+	if(!obj) {
+		LogWarning << "failed to create shader object";
+		glDeleteObjectARB(shader);
+		return 0;
+	}
+	
+	glShaderSourceARB(obj, 1, &source, NULL);
+	glCompileShaderARB(obj);
+	if(!checkShader(obj, "compile", GL_OBJECT_COMPILE_STATUS_ARB)) {
+		glDeleteObjectARB(obj);
+		glDeleteObjectARB(shader);
+		return 0;
+	}
+	
+	glAttachObjectARB(shader, obj);
+	glDeleteObjectARB(obj);
+	
+	glLinkProgramARB(shader);
+	if(!checkShader(shader, "link", GL_OBJECT_LINK_STATUS_ARB)) {
+		glDeleteObjectARB(shader);
+		return 0;
+	}
+	
+	return shader;
+}
+
 void OpenGLRenderer::Initialize() {
 	
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
 	}
+	
+	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
+	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
+	LogInfo << "Device: " << glGetString(GL_RENDERER);
 	
 	if(!GLEW_ARB_vertex_array_bgra) {
 		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
@@ -56,9 +130,12 @@ void OpenGLRenderer::Initialize() {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	
-	// TODO get the supported texture stage count
-	m_TextureStages.resize(3);
-	
+	GLint texunits = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits); // number of conventional fixed-function units
+	if(texunits < 3) {
+		LogWarning << "Number of available texture units is too low: " << texunits;
+	}
+	m_TextureStages.resize(texunits);
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		m_TextureStages[i] = new GLTextureStage(this, i);
 	}
@@ -68,11 +145,28 @@ void OpenGLRenderer::Initialize() {
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
 	
-	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
-	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
-	LogInfo << "Device: " << glGetString(GL_RENDERER);
-	
 	currentTransform = GL_UnsetTransform;
+	
+	CHECK_GL;
+	
+	if(useVertexArrays && useVBOs) {
+		if(!GLEW_ARB_shader_objects) {
+			LogWarning << "Missing OpenGL extension ARB_shader_objects.";
+		} else if(!GLEW_ARB_vertex_program) {
+			LogWarning << "Missing OpenGL extension ARB_vertex_program.";
+		} else {
+			shader = loadVertexShader(vertexShaderSource);
+			CHECK_GL;
+		}
+		if(!shader) {
+			LogWarning << "Missing vertex shader, cannot use vertex arrays for pre-transformed vertices.";
+		}
+	}
+	
+	if(GLEW_EXT_texture_filter_anisotropic) {
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnisotropy);
+		CHECK_GL;
+	}
 	
 	CHECK_GL;
 }
@@ -97,6 +191,10 @@ void OpenGLRenderer::enableTransform() {
 		return;
 	}
 	
+	if(shader) {
+		glUseProgram(0);
+	}
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(&view._11);
 		
@@ -117,8 +215,12 @@ void OpenGLRenderer::disableTransform() {
 	// D3D doesn't apply any transform for D3DTLVERTEX
 	// but we still need to change from D3D to OpenGL coordinates
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	if(shader) {
+		glUseProgram(shader);
+	} else {
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+	}
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -161,7 +263,7 @@ void OpenGLRenderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
 	if(currentTransform == GL_ModelViewProjectionTransform) {
 		currentTransform = GL_UnsetTransform;
 	}
-
+	
 	projection = matProj;
 }
 
@@ -419,18 +521,6 @@ void OpenGLRenderer::SetFillMode(FillMode mode) {
 	CHECK_GL;
 }
 
-float OpenGLRenderer::GetMaxAnisotropy() const {
-	
-	float maximumAnistropy = 1.f;
-	
-	if(GLEW_EXT_texture_filter_anisotropic) {
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maximumAnistropy);
-		CHECK_GL;
-	}
-	
-	return maximumAnistropy;
-}
-
 void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, Color color) {
 	
 	applyTextureStages();
@@ -461,8 +551,11 @@ void OpenGLRenderer::DrawTexturedRect(float x, float y, float w, float h, float 
 }
 
 VertexBuffer<TexturedVertex> * OpenGLRenderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
-	ARX_UNUSED(usage);
-	return new GLNoVertexBuffer<TexturedVertex>(this, capacity); 
+	if(useVBOs && shader) {
+		return new GLVertexBuffer<TexturedVertex>(this, capacity, usage); 
+	} else {
+		return new GLNoVertexBuffer<TexturedVertex>(this, capacity); 
+	}
 }
 
 VertexBuffer<SMY_VERTEX> * OpenGLRenderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
@@ -493,7 +586,7 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 	
 	beforeDraw<TexturedVertex>();
 	
-	if(/*useVertexArrays*/ false) { // TODO rhw parameter should not be ignored!
+	if(useVertexArrays && shader) {
 		
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		
@@ -510,8 +603,6 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 		}
 		
 		glEnd();
-		
-		renderVertexCleanup<TexturedVertex>();
 		
 	}
 	

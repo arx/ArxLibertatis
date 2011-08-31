@@ -487,10 +487,10 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	float vratio=size*( 1.0f / 40 );
 
 
-	checked_range_cast<short>(z0);
-	checked_range_cast<short>(x0);
-	checked_range_cast<short>(z1);
-	checked_range_cast<short>(x1);
+	(void)checked_range_cast<short>(z0);
+	(void)checked_range_cast<short>(x0);
+	(void)checked_range_cast<short>(z1);
+	(void)checked_range_cast<short>(x1);
 
 
 
@@ -1255,10 +1255,10 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 	float temp_v1[4];
 	
 
-	checked_range_cast<short>(z0);
-	checked_range_cast<short>(x0);
-	checked_range_cast<short>(z1);
-	checked_range_cast<short>(x1);
+	(void)checked_range_cast<short>(z0);
+	(void)checked_range_cast<short>(x0);
+	(void)checked_range_cast<short>(z1);
+	(void)checked_range_cast<short>(x1);
 
 	//We never add BOOMS particle with this flag to prevent any render issues. TO DO check for blending of DrawPrimitve and DrawPrimitiveVB
 	for (j=z0;j<=z1;j++) 		

@@ -355,7 +355,6 @@ long NO_TEXT_AT_ALL		= 0;
 long FAST_SPLASHES		= 0;
 long FORCE_SHOW_FPS		= 0;
 long FINAL_RELEASE		= 0;
-long AUTO_FULL_SCREEN	= 0;
 long DEBUG_FRUSTRUM		= 0;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
@@ -658,9 +657,6 @@ int main(int argc, char ** argv) {
 		FAST_SPLASHES		= 0;
 		FORCE_SHOW_FPS		= 0;
 		FINAL_RELEASE		= 1;
-#ifdef _DEBUG
-		AUTO_FULL_SCREEN	= 0;
-#endif
 		DEBUG_FRUSTRUM		= 0;
 #ifdef BUILD_EDITOR
 		GAME_EDITOR = 0;
@@ -3766,8 +3762,6 @@ void AdjustMousePosition()
 	}
 }
 
-long INTERPOLATE_BETWEEN_BONES=1;
-
 // TODO what is the point of this function?
 void CorrectValue(unsigned long * cur,unsigned long * dest)
 {
@@ -4030,13 +4024,8 @@ extern long LAST_LLIGHT_COUNT;
 extern float PLAYER_CLIMB_THRESHOLD, player_climb;
 extern float TOTAL_CHRONO;
 
-float LAST_FZPOS;
-float LAST_FZSCREEN;
-
-//-----------------------------------------------------------------------------
-
-void ShowFPS()
-{
+void ShowFPS() {
+	
 	char tex[256];
 	float fpss2=1000.f/_framedelay;	
 	LASTfpscount++;
@@ -4069,9 +4058,6 @@ void ShowFPS()
 		strcat(tex," EXCEEDING LIMIT !!!");
 
 	mainApp->OutputText(70,20,tex);
-	//sprintf(tex,"Pos %10.3f Screen %10.3f"
-	//	,LAST_FZPOS,LAST_FZSCREEN);
-	//mainApp->OutputText(320,200,tex);
 }
 
 void ARX_SetAntiAliasing() {

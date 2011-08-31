@@ -362,8 +362,8 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	float foundY = 0.f;
 	short pzi, pza, pxi, pxa;
 
-	checked_range_cast<short>(pz - 1);
-	checked_range_cast<short>(pz + 1);
+	(void)checked_range_cast<short>(pz - 1);
+	(void)checked_range_cast<short>(pz + 1);
 	short sPz = static_cast<short>(pz);
 
 	if (rz < -40.f)
@@ -387,8 +387,8 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		pza = sPz;
 	}
 
-	checked_range_cast<short>(px - 1);
-	checked_range_cast<short>(px + 1);
+	(void)checked_range_cast<short>(px - 1);
+	(void)checked_range_cast<short>(px + 1);
 	short sPx = static_cast<short>(px);
 
 	if (rx < -40.f)
@@ -474,8 +474,8 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 	float foundY = 0.f;
 	short pzi, pza, pxi, pxa;
 
-	checked_range_cast<short>(pz - 1);
-	checked_range_cast<short>(pz + 1);
+	(void)checked_range_cast<short>(pz - 1);
+	(void)checked_range_cast<short>(pz + 1);
 	short sPz = static_cast<short>(pz);
 
 	if (rz < -40.f)
@@ -499,8 +499,8 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 		pza = sPz;
 	}
 
-	checked_range_cast<short>(px + 1);
-	checked_range_cast<short>(px - 1);
+	(void)checked_range_cast<short>(px + 1);
+	(void)checked_range_cast<short>(px - 1);
 	short sPx = static_cast<short>(px);
 
 	if (rx < -40.f)

@@ -339,9 +339,15 @@ void initSuppressions() {
 	
 	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
 	
+	suppressBlockEnd("chest_metal_0103", 626, "on"); // missing '}' and accept/refuse
+	
+	suppressBlockEnd("chest_metal_0104", 667, "on"); // missing '}' and accept/refuse
+	
 	suppressBlockEnd("goblin_base_0021", 617, "on"); // missing '}'
 	
 	suppressBlockEnd("goblin_base_0031", 974, "on"); // missing '}'
+	
+	suppressBlockEnd("lever_0028", 402, "}"); // extranous '}'
 	
 	// TODO(broken-scripts)
 	// TODO move to external file
@@ -432,6 +438,8 @@ void initSuppressions() {
 	
 	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
 	
+	suppress("human_base_0025", 732, "detach"); // object mug_full_0002 already destroyed
+	
 	suppress("human_base_0041", 4279, "if"); // missing space between oprateor '==' and argument
 	
 	suppress("human_base_0051", 5396, "/"); // unknown command, should be '//' instead of '/ /'
@@ -464,6 +472,8 @@ void initSuppressions() {
 	suppress("human_base_0122", 350, "collisions"); // unknown command 'collisions', should be 'collision'
 	
 	suppress("human_base_0138", 2439, "setcontrolledzone"); // unknown zone 'shani_flee'
+	
+	suppress("human_base_0174", 136, "play"); // missing sound file 'loop_crypt1l', should be 'ambiance/loop_crypt1l'
 	
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
@@ -502,6 +512,8 @@ void initSuppressions() {
 	suppress("marker_0811", 536, "worldface"); // unknown command 'worldface', should be 'worldfade'
 	
 	suppress("metal_chunk_inwall", 143, "play"); // unknown flag -e (ignored)
+	
+	suppress("metal_grid_0008", 338, "}"); // missing accept/refuse before end of event block
 	
 	suppress("orb_crypt", 76, "setsteal"); // setsteal only applies to items
 	
