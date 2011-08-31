@@ -261,6 +261,9 @@ bool D3D7Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 		return false;
 	}
 	
+	bool succeeded = false;
+	bIgnoreResizeEvents = fullscreen;
+
 	for(vector<DeviceInfo>::iterator dev = devices.begin(); dev != devices.end(); ++dev) {
 		
 		if(IsEqualIID(dev->device.deviceGUID, IID_IDirect3DTnLHalDevice)) {
@@ -276,8 +279,8 @@ bool D3D7Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 			}
 			
 			LogInfo << "Using Win32 windowing";
-			
-			return true;
+			succeeded = true;
+			break;
 		} else {
 			LogWarning << "Failed to initialize " << dev->name << " (" << dev->desc << ") using " << dev->driver;
 			destroyObjects();
@@ -285,11 +288,14 @@ bool D3D7Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 		
 	}
 	
-	deviceInfo = NULL;
+	if(!succeeded) {
+		deviceInfo = NULL;
+		LogError << "Could not initialize any D3D device!";
+	}
+
+	bIgnoreResizeEvents = false;
 	
-	LogError << "Could not initialize any D3D device!";
-	
-	return false;
+	return succeeded;
 }
 
 bool D3D7Window::showFrame() {
@@ -344,6 +350,8 @@ void D3D7Window::restoreSurfaces() {
 
 void D3D7Window::destroyObjects() {
 	
+	bIgnoreResizeEvents = m_IsFullscreen;
+
 	if(renderer) {
 		onRendererShutdown();
 		delete renderer, renderer = NULL;
@@ -385,6 +393,8 @@ void D3D7Window::destroyObjects() {
 		}
 		dd = NULL;
 	}
+
+	bIgnoreResizeEvents = false;
 }
 
 // Internal functions for the framework class
@@ -718,35 +728,29 @@ void D3D7Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	if(m_IsFullscreen && m_Size == resolution && depth == _depth) {
 		return;
 	}
-	
-	bool oldFullscreen = m_IsFullscreen;
-	DisplayMode oldMode(m_Size, depth);
-	
-	// Release all scene objects that will be re-created for the new device
-	// Release framework objects, so a new device can be created
+
 	destroyObjects();
-	
-	// Check if going from fullscreen to windowed mode, or vice versa.
-	Win32Window::setFullscreenMode(resolution, _depth);
-	
-	if(!initialize(DisplayMode(resolution, depth))) {
-		
-		// try to restore the previous resolution
-		
-		destroyObjects();
-		
-		if(oldFullscreen) {
-			Win32Window::setFullscreenMode(oldMode.resolution, oldMode.depth);
-		} else {
-			Win32Window::setWindowSize(oldMode.resolution);
-		}
-		
-		if(!initialize(oldMode)) {
-			LogError << "failed to restore display mode!";
-		}
-		
+
+	bool oldFullscreen = m_IsFullscreen;
+
+	if(!oldFullscreen || m_Size != resolution) {
+		bool oldFullscreen = m_IsFullscreen;
+		Win32Window::setFullscreenMode(resolution, _depth);
+
+		// If the WM_SIZE message was not sent, restore() was not called
+		// This can happen if our ddraw friend managed to changed the resolution
+		// in destroyObjects()... so much fun
+		if(!renderer)
+			SendMessage((HWND)GetHandle(), WM_SIZE, SIZE_RESTORED, MAKELONG(resolution.x, resolution.y));
+	} else {
+		// No change to the window itself, just depth
+		depth = _depth;
+		restoreContext();
 	}
+
 	
+	if(!oldFullscreen)
+		OnToggleFullscreen();
 }
 
 void D3D7Window::setWindowSize(Vec2i size) {
@@ -755,37 +759,33 @@ void D3D7Window::setWindowSize(Vec2i size) {
 		return;
 	}
 	
+	destroyObjects();
+
 	bool oldFullscreen = m_IsFullscreen;
-	DisplayMode oldMode(m_Size, depth);
-	
-	if(oldFullscreen) {
-		destroyObjects();
-	}
-	
 	Win32Window::setWindowSize(size);
-	
-	if(oldFullscreen) {
-		
-		if(!initialize(DisplayMode(size, 0))) {
-			
-			// try to restore the previous resolution
-			
-			destroyObjects();
-			
-			if(oldFullscreen) {
-				Win32Window::setFullscreenMode(oldMode.resolution, oldMode.depth);
-			} else {
-				Win32Window::setWindowSize(oldMode.resolution);
-			}
-			
-			if(!initialize(oldMode)) {
-				LogError << "failed to restore display mode!";
-			}
+
+	if(oldFullscreen)
+		OnToggleFullscreen();
+}
+
+void D3D7Window::restoreContext()
+{
+	bIgnoreResizeEvents = m_IsFullscreen;
+
+	if(m_IsFullscreen) {
+		if(initialize(DisplayMode(m_Size, depth))) {
 			
 		}
-		
+	} else {
+		if(initialize(DisplayMode(m_Size, 0))) {
+			
+		}
 	}
-	
+
+	bIgnoreResizeEvents = false;
+
+	// Finally, set the viewport for the newly created device
+	renderer->SetViewport(Rect(m_Size.x, m_Size.y));
 }
 
 void D3D7Window::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {

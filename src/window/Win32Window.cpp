@@ -16,7 +16,9 @@ extern long FINAL_COMMERCIAL_GAME;
 
 Win32Window::Win32Window()
 	: m_hWnd(NULL)
-	, m_HijackedWindowProc(0) {
+	, m_HijackedWindowProc(0)
+	, bResizing(false)
+	, bIgnoreResizeEvents(false) {
 }
 
 Win32Window::~Win32Window() {
@@ -51,8 +53,8 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 		return false;
 	}
 
-	DWORD windowStyle = WS_OVERLAPPEDWINDOW;       // Define Our Window Style
-	DWORD windowExtendedStyle = WS_EX_APPWINDOW;      // Define The Window's Extended Style
+	DWORD windowStyle = fullscreen ?  (WS_POPUP | WS_VISIBLE) : WS_OVERLAPPEDWINDOW;
+	DWORD windowExtendedStyle = WS_EX_APPWINDOW;
 
 	RECT rcWnd;
 
@@ -65,22 +67,23 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 	HWND hWndDesktop = GetDesktopWindow();
 	RECT rcDesktop;
 	GetWindowRect(hWndDesktop, &rcDesktop);
-	LONG wndWidth = rcWnd.right - rcWnd.left;
-	LONG wndHeight = rcWnd.bottom - rcWnd.top;
 	LONG maxWidth = rcDesktop.right - rcDesktop.left;
 	LONG maxHeight = rcDesktop.bottom - rcDesktop.top;
-	wndWidth = std::min(wndWidth, maxWidth);
-	wndHeight = std::min(wndHeight, maxHeight);
 
+	LONG wndWidth = rcWnd.right - rcWnd.left;
+	LONG wndHeight = rcWnd.bottom - rcWnd.top;
+	m_Size.x = std::min(wndWidth, maxWidth);
+	m_Size.y = std::min(wndHeight, maxHeight);
+	
 	// Create a window using our window class.
 	m_hWnd = CreateWindowEx( windowExtendedStyle,
 							m_WindowClass.lpszClassName,
 							"",
-							(m_IsFullscreen ?  (WS_POPUP | WS_VISIBLE) : WS_OVERLAPPEDWINDOW ),
+							windowStyle,
 							CW_USEDEFAULT,
 							CW_USEDEFAULT,
-							wndWidth,
-							wndHeight,
+							m_Size.x,
+							m_Size.y,
 							0,
 							NULL,
 							(HINSTANCE)GetModuleHandle(NULL),
@@ -89,10 +92,6 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 		LogError << "Couldn't create window";
 		return false;
 	}
-	
-	RECT rect;
-	GetClientRect(m_hWnd, &rect);
-	m_Size = Vec2i(rect.right - rect.left, rect.bottom - rect.top);
 	
 	if(SetWindowText(m_hWnd, title.c_str()) == TRUE) {
 		m_Title = title;
@@ -123,6 +122,8 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 
 	bool bProcessed = false;
 
+	RECT rc;
+
 	switch(iMsg)
 	{
 	// Sent prior to the WM_CREATE message when a window is first created.
@@ -140,6 +141,7 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Paint the window's client area.
 	case WM_PAINT:
 		currentWindow->OnPaint();
+		bProcessed = true;
 		break;
 
 	// Sent after a window has been moved.
@@ -151,6 +153,11 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent to a window after its size has changed.
 	case WM_SIZE:
 	{
+		if(currentWindow->bIgnoreResizeEvents)
+			break;
+
+		Vec2i newSize(LOWORD(lParam), HIWORD(lParam));
+
 		switch( wParam )
 		{
 		case SIZE_MINIMIZED:
@@ -158,14 +165,47 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 			break;
 		case SIZE_MAXIMIZED:
 			currentWindow->OnMaximize();
+			if(currentWindow->GetSize() != newSize)
+			{
+				currentWindow->OnResize(newSize.x, newSize.y);
+				currentWindow->restoreContext();
+			}
 			break;
 		case SIZE_RESTORED:
-			currentWindow->OnRestore();
+			if(!currentWindow->bResizing && currentWindow->m_HasFocus)
+			{
+				bool wasMinimized = currentWindow->IsMinimized();
+				currentWindow->OnRestore();
+	
+				if(!wasMinimized && currentWindow->GetSize() != newSize)
+				{
+					currentWindow->OnResize(newSize.x, newSize.y);
+					currentWindow->restoreContext();
+				}
+			}
 			break;
-		}
+		}		
 
-		currentWindow->OnResize( (short)LOWORD(lParam), (short)HIWORD(lParam) );
-		bProcessed = true;
+		break;
+	}
+
+	case WM_EXITSIZEMOVE:
+	{
+		if(currentWindow->bIgnoreResizeEvents || currentWindow->IsFullScreen())
+			break;
+
+		if(currentWindow->bResizing)
+		{
+			GetClientRect(hWnd, &rc);
+			Vec2i newSize(rc.right - rc.left, rc.bottom - rc.top);
+			if(currentWindow->GetSize() != newSize)
+			{
+				currentWindow->OnResize(newSize.x, newSize.y);
+				currentWindow->restoreContext();
+			}
+			currentWindow->bResizing = false;
+		}
+		
 		break;
 	}
 
@@ -197,8 +237,10 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 
 	// To avoid screensaver / monitorpower interference
 	case WM_SYSCOMMAND:
-		if ((wParam & 0xFFF0)== SC_SCREENSAVE || (wParam & 0xFFF0)== SC_MONITORPOWER)
+		if (GET_SC_WPARAM(wParam) == SC_SCREENSAVE || GET_SC_WPARAM(wParam) == SC_MONITORPOWER)
 			bProcessed = true;
+		else if (GET_SC_WPARAM(wParam) == SC_SIZE)
+			currentWindow->bResizing = !currentWindow->IsFullScreen();
 		break;
 
 	case WM_SETCURSOR:
@@ -241,36 +283,36 @@ void* Win32Window::GetHandle() {
 }
 
 void Win32Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
+	bIgnoreResizeEvents = true;
+	SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+	bIgnoreResizeEvents = false;
 	
-	if(!m_IsFullscreen) {
-		// Going to fullscreen mode, save/set window properties as needed
-		dwSavedStyle = GetWindowLong(m_hWnd, GWL_STYLE);
-		SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-		m_IsFullscreen = true;
-	}
-	
-	m_Size = resolution;
+	m_IsFullscreen = true;
 	depth = _depth;
+
+	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, resolution.x, resolution.y, SWP_SHOWWINDOW);
 }
 
 void Win32Window::setWindowSize(Vec2i size) {
-	
-	if(m_IsFullscreen) {
-		// Coming from fullscreen mode, so restore window properties
-		SetWindowLong(m_hWnd, GWL_STYLE, dwSavedStyle);
-		m_IsFullscreen = false;
-	}
-	
-	RECT rRect;
-	RECT rRect2;
-	GetClientRect(m_hWnd, &rRect);
-	GetWindowRect(m_hWnd, &rRect2);
-	int dx = (rRect2.right - rRect2.left) - (rRect.right - rRect.left);
-	int dy = (rRect2.bottom - rRect2.top) - (rRect.bottom - rRect.top);
-	SetWindowPos(m_hWnd, HWND_TOP, rRect2.left, rRect2.top, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
-	
-	m_Size = size;
+	bIgnoreResizeEvents = true;
+	SetWindowLong(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+	bIgnoreResizeEvents = false;
+
+	m_IsFullscreen = false;
 	depth = 0;
+	
+	DWORD windowStyle = WS_OVERLAPPEDWINDOW;
+	DWORD windowExtendedStyle = WS_EX_APPWINDOW;
+
+	RECT rcWnd;
+
+	SetRect(&rcWnd, 0, 0, size.x, size.y);
+	AdjustWindowRectEx(&rcWnd, windowStyle, GetMenu(m_hWnd) != NULL, windowExtendedStyle);
+
+	int dx = rcWnd.right - rcWnd.left - size.x;
+	int dy = rcWnd.bottom - rcWnd.top - size.y;
+
+	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
 }
 
 void Win32Window::hide() {

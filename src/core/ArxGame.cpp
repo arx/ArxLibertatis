@@ -411,9 +411,7 @@ void ArxGame::OnResizeWindow(const Window & window) {
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
-	if(window.HasFocus() && m_bReady) {
-		wasResized = true;
-	}
+	wasResized = true;
 	
 	if(window.IsFullScreen()) {
 		LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y;
@@ -452,6 +450,7 @@ void ArxGame::OnDestroyWindow(const Window &) {
 void ArxGame::OnToggleFullscreen(const Window & window) {
 	config.video.fullscreen = window.IsFullScreen();
 	GInput->reset();
+	wasResized = true;
 }
 
 //*************************************************************************************

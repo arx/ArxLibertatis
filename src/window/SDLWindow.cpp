@@ -2,8 +2,8 @@
 #include "window/SDLWindow.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-// TODO don't include this for linux as it includes Xlib.h, which has symbols/defines that conflict with our own! (Window, FillSolid, None)
-#include <SDL_syswm.h>
+	#undef WIN32_LEAN_AND_MEAN // SDL defines this... Bad SDL!
+	#include <SDL_syswm.h>
 #endif
 
 #include "graphics/opengl/OpenGLRenderer.h"
