@@ -360,6 +360,9 @@ void initSuppressions() {
 	
 	suppress("black_thing", 3703, "play"); // variable is never set
 	
+	suppress("black_thing_0003", 4360, "setevent"); // unsupported event: "eat"
+	suppress("black_thing_0003", 4388, "setevent"); // unsupported event: "no_more_eat"
+	suppress("black_thing_0003", 4411, "setevent"); // unsupported event: "no_eat"
 	suppress("black_thing_0003", 4709, "behvaior"); // unknown command 'behvaior', should be 'behavior'
 	
 	suppress("chest_metal_0011", 78, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
@@ -409,6 +412,15 @@ void initSuppressions() {
 	suppress("dragon_ice_0001", 93, "loadanim"); // missing animation: "dragon_talk_head"
 	
 	suppress("dragon's_lair_ice_wall", 41, "satangular"); // unknown command 'satangular', should be setangular
+	
+	suppress("dwarf_little_crusher_0001", 204, "?"); // 'playanim' only takes one parameter
+	suppress("dwarf_little_crusher_0001", 228, "?"); // 'playanim' only takes one parameter
+	
+	suppress("dwarf_little_crusher_0002", 201, "?"); // 'playanim' only takes one parameter
+	suppress("dwarf_little_crusher_0002", 225, "?"); // 'playanim' only takes one parameter
+	
+	suppress("dwarf_little_crusher_0003", 113, "?"); // 'playanim' only takes one parameter
+	suppress("dwarf_little_crusher_0003", 137, "?"); // 'playanim' only takes one parameter
 	
 	suppress("emerald_inwall", 136, "play"); // unknown flag -e (ignored)
 	
@@ -537,6 +549,8 @@ void initSuppressions() {
 	
 	suppress("metal_grid_0008", 338, "}"); // missing accept/refuse before end of event block
 	
+	suppress("mithril_chunk_inwall", 144, "play"); // unknown flag -e (ignored)
+	
 	suppress("orb_crypt", 76, "setsteal"); // setsteal only applies to items
 	
 	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
@@ -614,6 +628,27 @@ void initSuppressions() {
 	suppress("undead_base_0046", 110, "playanim"); // animation 'wait' not loaded yet
 	
 	suppress("wall_breakable", 523, "}"); // missing accept/refuse before end of event block
+	
+	class FakeCommand : public Command {
+		
+	public:
+		
+		FakeCommand(const string & name) : Command(name) { }
+		
+		Result execute(Context & context) {
+			ARX_UNUSED(context);
+			return Success;
+		}
+		
+	};
+	
+	/* 'playanim' only takes one parameter
+	 * dwarf_little_crusher_0001:229
+	 * dwarf_little_crusher_0002:226
+	 * dwarf_little_crusher_0003:138
+	 * need to use fake command so other commands on same line get executed!
+	*/
+	ScriptEvent::registerCommand(new FakeCommand("dwarflittlecrusherup"));
 	
 }
 
