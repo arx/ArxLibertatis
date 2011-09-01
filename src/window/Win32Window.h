@@ -21,7 +21,9 @@ public:
 	virtual void setWindowSize(Vec2i size);
 	virtual void Tick();
 	
-	virtual void restoreContext() = 0;
+	void updateSize();
+	virtual void destroyObjects() = 0;
+	virtual void restoreObjects() = 0;
 
 	virtual void hide();
 	
@@ -36,10 +38,6 @@ private:
 	static WNDCLASS m_WindowClass;
 	static bool m_WindowClassInitialized;
 	static std::map<HWND,Win32Window*> m_WindowsMap;
-
-protected:
-	bool  bResizing;
-	bool  bIgnoreResizeEvents;
 };
 
 #endif // ARX_WINDOW_WIN32WINDOW_H

@@ -21,9 +21,7 @@ extern long FINAL_COMMERCIAL_GAME;
 
 Win32Window::Win32Window()
 	: m_hWnd(NULL)
-	, m_HijackedWindowProc(0)
-	, bResizing(false)
-	, bIgnoreResizeEvents(false) {
+	, m_HijackedWindowProc(0) {
 }
 
 Win32Window::~Win32Window() {
@@ -127,8 +125,6 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 
 	bool bProcessed = false;
 
-	RECT rc;
-
 	switch(iMsg)
 	{
 	// Sent prior to the WM_CREATE message when a window is first created.
@@ -158,9 +154,6 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent to a window after its size has changed.
 	case WM_SIZE:
 	{
-		if(currentWindow->bIgnoreResizeEvents)
-			break;
-
 		Vec2i newSize(LOWORD(lParam), HIWORD(lParam));
 
 		switch( wParam )
@@ -170,47 +163,12 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 			break;
 		case SIZE_MAXIMIZED:
 			currentWindow->OnMaximize();
-			if(currentWindow->GetSize() != newSize)
-			{
-				currentWindow->OnResize(newSize.x, newSize.y);
-				currentWindow->restoreContext();
-			}
 			break;
 		case SIZE_RESTORED:
-			if(!currentWindow->bResizing && currentWindow->m_HasFocus)
-			{
-				bool wasMinimized = currentWindow->IsMinimized();
-				currentWindow->OnRestore();
-	
-				if(!wasMinimized && currentWindow->GetSize() != newSize)
-				{
-					currentWindow->OnResize(newSize.x, newSize.y);
-					currentWindow->restoreContext();
-				}
-			}
+			currentWindow->OnRestore();
 			break;
 		}
 
-		break;
-	}
-
-	case WM_EXITSIZEMOVE:
-	{
-		if(currentWindow->bIgnoreResizeEvents || currentWindow->IsFullScreen())
-			break;
-
-		if(currentWindow->bResizing)
-		{
-			GetClientRect(hWnd, &rc);
-			Vec2i newSize(rc.right - rc.left, rc.bottom - rc.top);
-			if(currentWindow->GetSize() != newSize)
-			{
-				currentWindow->OnResize(newSize.x, newSize.y);
-				currentWindow->restoreContext();
-			}
-			currentWindow->bResizing = false;
-		}
-		
 		break;
 	}
 
@@ -244,8 +202,6 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	case WM_SYSCOMMAND:
 		if (GET_SC_WPARAM(wParam) == SC_SCREENSAVE || GET_SC_WPARAM(wParam) == SC_MONITORPOWER)
 			bProcessed = true;
-		else if (GET_SC_WPARAM(wParam) == SC_SIZE)
-			currentWindow->bResizing = !currentWindow->IsFullScreen();
 		break;
 
 	case WM_SETCURSOR:
@@ -281,29 +237,51 @@ void Win32Window::Tick() {
 		TranslateMessage( &msg );
 		DispatchMessage( &msg ); // Send message to the WindowProc.
 	}
+
+	if(HasFocus())
+		updateSize();
 }
 
 void* Win32Window::GetHandle() {
 	return m_hWnd;
 }
 
-void Win32Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
-	bIgnoreResizeEvents = true;
-	SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-	bIgnoreResizeEvents = false;
+void Win32Window::updateSize() {
 	
-	m_IsFullscreen = true;
+	RECT rcClient;
+	GetClientRect(m_hWnd, &rcClient);
+	
+	Vec2i newSize = Vec2i(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
+	
+	if(newSize != m_Size) {
+		
+		destroyObjects();
+		OnResize(newSize.x, newSize.y);
+		restoreObjects();
+
+		// Finally, set the viewport for the newly created device
+		renderer->SetViewport(Rect(newSize.x, newSize.y));
+	}
+}
+
+void Win32Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
+	SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+	
 	depth = _depth;
 
 	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, resolution.x, resolution.y, SWP_SHOWWINDOW);
+
+	if(!m_IsFullscreen) {
+		m_IsFullscreen = true;
+		OnToggleFullscreen();
+	}
+
+	OnResize(resolution.x, resolution.y);
 }
 
 void Win32Window::setWindowSize(Vec2i size) {
-	bIgnoreResizeEvents = true;
 	SetWindowLong(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-	bIgnoreResizeEvents = false;
 
-	m_IsFullscreen = false;
 	depth = 0;
 	
 	DWORD windowStyle = WS_OVERLAPPEDWINDOW;
@@ -318,6 +296,13 @@ void Win32Window::setWindowSize(Vec2i size) {
 	int dy = rcWnd.bottom - rcWnd.top - size.y;
 
 	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
+
+	if(m_IsFullscreen) {
+		m_IsFullscreen = false;
+		OnToggleFullscreen();
+	}
+
+	OnResize(size.x, size.y);
 }
 
 void Win32Window::hide() {

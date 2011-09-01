@@ -262,7 +262,6 @@ bool D3D7Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 	}
 	
 	bool succeeded = false;
-	bIgnoreResizeEvents = fullscreen;
 
 	for(vector<DeviceInfo>::iterator dev = devices.begin(); dev != devices.end(); ++dev) {
 		
@@ -293,8 +292,6 @@ bool D3D7Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 		LogError << "Could not initialize any D3D device!";
 	}
 
-	bIgnoreResizeEvents = false;
-	
 	return succeeded;
 }
 
@@ -350,8 +347,6 @@ void D3D7Window::restoreSurfaces() {
 
 void D3D7Window::destroyObjects() {
 	
-	bIgnoreResizeEvents = m_IsFullscreen;
-
 	if(renderer) {
 		onRendererShutdown();
 		delete renderer, renderer = NULL;
@@ -394,7 +389,6 @@ void D3D7Window::destroyObjects() {
 		dd = NULL;
 	}
 
-	bIgnoreResizeEvents = false;
 }
 
 // Internal functions for the framework class
@@ -731,25 +725,9 @@ void D3D7Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
 	destroyObjects();
 	
-	bool oldFullscreen = m_IsFullscreen;
+	Win32Window::setFullscreenMode(resolution, _depth);
 	
-	if(!oldFullscreen || m_Size != resolution) {
-		
-		Win32Window::setFullscreenMode(resolution, _depth);
-		
-		// If the WM_SIZE message was not sent, restore() was not called
-		// This can happen if our ddraw friend managed to changed the resolution
-		// in destroyObjects()... so much fun
-		if(!renderer)
-			SendMessage((HWND)GetHandle(), WM_SIZE, SIZE_RESTORED, MAKELONG(resolution.x, resolution.y));
-	} else {
-		// No change to the window itself, just depth
-		depth = _depth;
-		restoreContext();
-	}
-	
-	if(!oldFullscreen)
-		OnToggleFullscreen();
+	restoreObjects();
 }
 
 void D3D7Window::setWindowSize(Vec2i size) {
@@ -760,14 +738,12 @@ void D3D7Window::setWindowSize(Vec2i size) {
 	
 	destroyObjects();
 
-	bool oldFullscreen = m_IsFullscreen;
 	Win32Window::setWindowSize(size);
 
-	if(oldFullscreen)
-		OnToggleFullscreen();
+	restoreObjects();
 }
 
-void D3D7Window::restoreContext() {
+void D3D7Window::restoreObjects() {
 	
 	if(!deviceInfo) {
 		// not initialized yet!
@@ -776,15 +752,11 @@ void D3D7Window::restoreContext() {
 	
 	if(!renderer) {
 		
-		bIgnoreResizeEvents = m_IsFullscreen;
-		
 		if(m_IsFullscreen) {
 			initialize(DisplayMode(m_Size, depth));
 		} else {
 			initialize(DisplayMode(m_Size, 0));
 		}
-		
-		bIgnoreResizeEvents = false;
 		
 	}
 	
