@@ -3004,21 +3004,26 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 		return false;
 	}
 	
+	string name = io->short_name();
+	
 	for(long i = 0; i < inter.nbmax; i++) {
 		if(inter.iobj[i]) {
 			if(inter.iobj[i]->ident == t && io != inter.iobj[i]) {
-				if (inter.iobj[i]->short_name() == io->short_name()) {
+				if (inter.iobj[i]->short_name() == name) {
 					return true;
 				}
 			}
 		}
 	}
 	
-	if(resources->getDirectory(io->full_name())) {
+	std::stringstream ss;
+	ss << name << '_' << std::setw(4) << std::setfill('0') << t;
+	
+	if(resources->getDirectory(io->filename.parent() / ss.str())) {
 		return true;
 	}
 	
-	if(ARX_Changelevel_CurGame_Seek(io->long_name())) {
+	if(ARX_Changelevel_CurGame_Seek(ss.str())) {
 		return true;
 	}
 	
