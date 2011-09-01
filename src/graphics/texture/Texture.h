@@ -6,6 +6,7 @@
 
 #include "graphics/image/Image.h"
 #include "io/FilePath.h"
+#include "math/Vector2.h"
 
 class Texture {
 	
@@ -16,9 +17,8 @@ public:
 	virtual void Upload() = 0;
 	virtual void Destroy() = 0;
 	
-	unsigned int GetWidth() const { return mWidth; }
-	
-	unsigned int GetHeight() const { return mHeight; }
+	const Vec2i & getSize() const { return size; }
+	const Vec2i & getStoredSize() const { return storedSize; }
 	
 	unsigned int GetDepth() const { return mDepth; }
 	
@@ -28,14 +28,16 @@ public:
 	
 protected:
 	
-	Texture() : mFormat(Image::Format_Unknown), mHasMipmaps(false), mWidth(0), mHeight(0), mDepth(0) { }
+	Texture() : mFormat(Image::Format_Unknown), mHasMipmaps(false), size(Vec2i::ZERO), storedSize(Vec2i::ZERO), mDepth(0) { }
 	
 	virtual bool Create() = 0;
 	
 	Image::Format mFormat;
 	bool mHasMipmaps;
-	unsigned int mWidth;
-	unsigned int mHeight;
+	
+	Vec2i size;
+	Vec2i storedSize;
+	
 	unsigned int mDepth;
 	
 };

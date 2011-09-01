@@ -401,8 +401,8 @@ static void ReajustUV(CinematicBitmap* cb) {
 
 		int w, h;
 
-		w = tex->GetWidth();
-		h = tex->GetHeight();
+		w = tex->getStoredSize().x;
+		h = tex->getStoredSize().y;
 
 		if ((w != (int)mat->bitmapw) || (h != (int)mat->bitmaph))
 		{

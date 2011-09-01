@@ -47,8 +47,8 @@ bool DX7Texture2D::Create()
 {
 	
 	arx_assert_msg(m_pddsSurface == 0, "Texture already created!");
-	arx_assert(mWidth != 0);
-	arx_assert(mHeight != 0);
+	arx_assert(size.x != 0);
+	arx_assert(size.y != 0);
 
 	HRESULT hr;
 
@@ -65,8 +65,8 @@ bool DX7Texture2D::Create()
 	ddsd.dwSize          = sizeof(DDSURFACEDESC2);
 	ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
-	ddsd.dwWidth         = mWidth;
-	ddsd.dwHeight        = mHeight;
+	ddsd.dwWidth         = size.x;
+	ddsd.dwHeight        = size.y;
 
 	// Turn on texture management for hardware devices
 	if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
@@ -150,8 +150,7 @@ bool DX7Texture2D::Create()
 	}
 
 	// Store texture size
-	mWidth = ddsd.dwWidth;
-	mHeight = ddsd.dwHeight;
+	storedSize = Vec2i(ddsd.dwWidth, ddsd.dwHeight);
 
 	// Done with DDraw
 	pDD->Release();

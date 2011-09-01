@@ -278,11 +278,11 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 		bLoaded = m_pTexture->Init(tempPath, bMipmaps);
 		if(bLoaded)
 		{
-			m_dwWidth   = m_pTexture->GetWidth();
-			m_dwHeight  = m_pTexture->GetHeight();
+			m_dwWidth   = m_pTexture->getSize().x;
+			m_dwHeight  = m_pTexture->getSize().y;
 
-			m_dwDeviceWidth = m_pTexture->GetWidth();
-			m_dwDeviceHeight = m_pTexture->GetHeight();
+			m_dwDeviceWidth = m_pTexture->getStoredSize().x;
+			m_dwDeviceHeight = m_pTexture->getStoredSize().y;
 
 			m_odx = (1.f / (float)m_dwWidth);
 			m_hdx = 0.5f * (1.f / (float)m_dwDeviceWidth);

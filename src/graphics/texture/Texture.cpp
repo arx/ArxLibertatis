@@ -22,9 +22,8 @@ bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pF
 	
 	mFileName.clear();
 	
+	size = Vec2i(pWidth, pHeight);	
 	mImage.Create(pWidth, pHeight, pFormat);
-	mWidth  = pWidth;
-	mHeight = pHeight;
 	mFormat = pFormat;
 	mHasMipmaps = false;
 	
@@ -45,8 +44,7 @@ bool Texture2D::Restore() {
 
 	if(mImage.IsValid()) {
 		mFormat = mImage.GetFormat();
-		mWidth  = mImage.GetWidth();
-		mHeight = mImage.GetHeight();
+		size = Vec2i(mImage.GetWidth(), mImage.GetHeight());
 
 		bool bCreated = Create();
 		if(!bCreated) {
