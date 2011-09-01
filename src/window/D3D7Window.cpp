@@ -767,22 +767,27 @@ void D3D7Window::setWindowSize(Vec2i size) {
 		OnToggleFullscreen();
 }
 
-void D3D7Window::restoreContext()
-{
-	bIgnoreResizeEvents = m_IsFullscreen;
-
-	if(m_IsFullscreen) {
-		if(initialize(DisplayMode(m_Size, depth))) {
-			
-		}
-	} else {
-		if(initialize(DisplayMode(m_Size, 0))) {
-			
-		}
+void D3D7Window::restoreContext() {
+	
+	if(!deviceInfo) {
+		// not initialized yet!
+		return;
 	}
-
-	bIgnoreResizeEvents = false;
-
+	
+	if(!renderer) {
+		
+		bIgnoreResizeEvents = m_IsFullscreen;
+		
+		if(m_IsFullscreen) {
+			initialize(DisplayMode(m_Size, depth));
+		} else {
+			initialize(DisplayMode(m_Size, 0));
+		}
+		
+		bIgnoreResizeEvents = false;
+		
+	}
+	
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(m_Size.x, m_Size.y));
 }
