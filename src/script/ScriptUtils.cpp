@@ -360,6 +360,8 @@ void initSuppressions() {
 	
 	suppress("black_thing", 3703, "play"); // variable is never set
 	
+	suppress("black_thing_0003", 4709, "behvaior"); // unknown command 'behvaior', should be 'behavior'
+	
 	suppress("chest_metal_0011", 78, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
 	
 	suppress("chest_metal_0012", 389, "inventory add"); // missing object: "graph/obj3d/interactive/items/magic/dragon_bone_powder/dragon_bone_powder.teo" (should be 'powder_dragon_bone/dragon_bone_powder'?)
