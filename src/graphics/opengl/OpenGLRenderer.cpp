@@ -24,13 +24,14 @@ static const char vertexShaderSource[] = "void main() { \n\
 	gl_FogFragCoord = vertex.z; \n\
 }";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f) { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { };
 
 OpenGLRenderer::~OpenGLRenderer() {
 	
-	if(shader) {
-		glDeleteObjectARB(shader);
-		CHECK_GL;
+	shutdown();
+	
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		LogError << "Texture still loaded: " << it->getFileName();
 	}
 	
 };
@@ -105,6 +106,13 @@ void OpenGLRenderer::Initialize() {
 	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
 	LogInfo << "Device: " << glGetString(GL_RENDERER);
 	
+	reinit();
+}
+
+void OpenGLRenderer::reinit() {
+	
+	arx_assert(!initialized);
+	
 	if(!GLEW_ARB_vertex_array_bgra) {
 		LogWarning << "Missing OpenGL extension ARB_vertex_array_bgra, not using vertex arrays!";
 	}
@@ -146,6 +154,7 @@ void OpenGLRenderer::Initialize() {
 	Clear(ColorBuffer | DepthBuffer);
 	
 	currentTransform = GL_UnsetTransform;
+	glArrayClientState = GL_NoArray;
 	
 	CHECK_GL;
 	
@@ -168,7 +177,26 @@ void OpenGLRenderer::Initialize() {
 		CHECK_GL;
 	}
 	
-	CHECK_GL;
+	initialized = true;
+}
+
+void OpenGLRenderer::shutdown() {
+	
+	arx_assert(initialized);
+	
+	if(shader) {
+		glDeleteObjectARB(shader);
+		CHECK_GL;
+	}
+	
+	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
+		delete m_TextureStages[i];
+	}
+	m_TextureStages.clear();
+	
+	maximumAnisotropy = 1.f;
+	
+	initialized = false;
 }
 
 bool OpenGLRenderer::BeginScene() {
@@ -272,15 +300,21 @@ void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
 }
 
 void OpenGLRenderer::ReleaseAllTextures() {
-	// TODO implement
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		it->Destroy();
+	}
 }
 
 void OpenGLRenderer::RestoreAllTextures() {
-	// TODO implement
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		it->Restore();
+	}
 }
 
 Texture2D * OpenGLRenderer::CreateTexture2D() {
-	return new GLTexture2D(this);
+	GLTexture2D * texture = new GLTexture2D(this);
+	textures.push_back(*texture);
+	return texture;
 }
 
 static inline void setGLState(GLenum state, bool enable) {

@@ -2,10 +2,14 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 #define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
+#include <boost/intrusive/list.hpp>
+
 #include "graphics/Renderer.h"
+#include "graphics/opengl/GLTexture2D.h"
 #include "math/Rectangle.h"
 
 class GLTextureStage;
+
 class OpenGLRenderer : public Renderer {
 	
 public:
@@ -14,6 +18,9 @@ public:
 	~OpenGLRenderer();
 	
 	void Initialize();
+	
+	void shutdown();
+	void reinit();
 	
 	// Scene begin/end...
 	bool BeginScene();
@@ -80,6 +87,8 @@ public:
 		return reinterpret_cast<GLTextureStage *>(Renderer::GetTextureStage(textureStage));
 	}
 	
+	inline bool isInitialized() { return initialized; }
+	
 private:
 	
 	bool useVertexArrays;
@@ -107,9 +116,14 @@ private:
 	
 	size_t maxTextureStage; // the highest active texture stage
 	
-	unsigned int shader;
+	GLuint shader;
 	
 	float maximumAnisotropy;
+	
+	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
+	TextureList textures;
+	
+	bool initialized;
 	
 };
 

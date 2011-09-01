@@ -55,6 +55,7 @@ public:
 	bool Restore();
 	
 	inline Image & GetImage() { return mImage; }
+	inline const fs::path & getFileName() { return mFileName; }
 	
 protected:
 	

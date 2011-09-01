@@ -95,7 +95,7 @@ void GLTexture2D::Upload() {
 void GLTexture2D::Destroy() {
 	
 	if(tex) {
-		glDeleteTextures(1, &tex);
+		glDeleteTextures(1, &tex), tex = GL_NONE;
 		CHECK_GL;
 	}
 	

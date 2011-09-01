@@ -34,7 +34,7 @@ public:
 private:
 	
 	bool setMode(DisplayMode mode, bool fullscreen);
-	void updateSize();
+	void updateSize(bool reinit);
 	
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	
