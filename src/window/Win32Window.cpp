@@ -240,7 +240,7 @@ void Win32Window::Tick() {
 		DispatchMessage( &msg ); // Send message to the WindowProc.
 	}
 
-	if(HasFocus())
+	if(HasFocus() && !IsFullScreen())
 		updateSize();
 }
 
