@@ -1,11 +1,13 @@
 
 #include "window/Win32Window.h"
-#include "core/Resource.h"
-
-#include "io/Logger.h"
 
 #include <windows.h>
 #include <map>
+
+#include "core/Resource.h"
+#include "graphics/Renderer.h"
+#include "io/Logger.h"
+#include "math/Rectangle.h"
 
 // Neither wine nor mingw32 define this.
 #ifndef GET_SC_WPARAM

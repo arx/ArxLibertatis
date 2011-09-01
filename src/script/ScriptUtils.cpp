@@ -339,6 +339,8 @@ void initSuppressions() {
 	
 	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
 	
+	suppressBlockEnd("black_thing_0002", 1075, "on"); // missing '}' and accept/refuse
+	
 	suppressBlockEnd("chest_metal_0103", 626, "on"); // missing '}' and accept/refuse
 	
 	suppressBlockEnd("chest_metal_0104", 667, "on"); // missing '}' and accept/refuse
@@ -351,6 +353,8 @@ void initSuppressions() {
 	
 	// TODO(broken-scripts)
 	// TODO move to external file
+	
+	suppress("akbaa_tentacle", 2432, "on"); // unknown command 'on' (bad newline!)
 	
 	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
 	
@@ -436,6 +440,9 @@ void initSuppressions() {
 	
 	suppress("human_base_0012", 1519, "goto"); // missing label 'stop'
 	
+	suppress("human_base_0016", 7142, "setcontrolledzone"); // unknown zone 'calpale_beer', should be 'calpal_beer'?
+	suppress("human_base_0016", 1270, "inventory addfromscene"); // unknown target 'key_calpale_0003' already taken by player?
+	
 	suppress("human_base_0022", 10108, "behaviormoveto"); // unknown command 'behaviormoveto', should be 'behavior move_to'
 	
 	suppress("human_base_0025", 732, "detach"); // object mug_full_0002 already destroyed
@@ -453,6 +460,9 @@ void initSuppressions() {
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
 	
+	suppress("human_base_0082", 24114, "on"); // unknown command 'on' (bad linebreak!)
+	suppress("human_base_0082", 24141, "hide"); // unknown command 'hide' (bad linebreak!)
+	
 	suppress("human_base_0085", 426, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
 	
 	suppress("human_base_0086", 787, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
@@ -460,6 +470,8 @@ void initSuppressions() {
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
 	
 	suppress("human_base_0099", 997, "errata"); // unknown command 'errata', should be 'goto errata'
+	
+	suppress("human_base_0114", 6541, "teleport"); // unknown target 'marker_0327'
 	
 	suppress("human_base_0118", 101, "collisions"); // unknown command 'collisions', should be 'collision'
 	
@@ -471,6 +483,12 @@ void initSuppressions() {
 	
 	suppress("human_base_0122", 350, "collisions"); // unknown command 'collisions', should be 'collision'
 	
+	suppress("human_base_0135", 939, "detroy"); // unknown command 'detroy', should be 'destroy'
+	
+	suppress("human_base_0136", 995, "detroy"); // unknown command 'detroy', should be 'destroy'
+	
+	suppress("human_base_0137", 992, "detroy"); // unknown command 'detroy', should be 'destroy'
+	
 	suppress("human_base_0138", 2439, "setcontrolledzone"); // unknown zone 'shani_flee'
 	
 	suppress("human_base_0174", 136, "play"); // missing sound file 'loop_crypt1l', should be 'ambiance/loop_crypt1l'
@@ -478,6 +496,8 @@ void initSuppressions() {
 	suppress("jail_wood_grid", 152, "set"); // bad variable name: "material"
 	
 	suppress("lamp_goblin2_0003", 737, "no"); // unknown command 'no' should be 'nop'?
+	
+	suppress("lava_event01_0004", 277, "action1"); // unknown command 'action1' (missing space in '200 playanim')
 	
 	suppress("light_door", 422, "set"); // bad variable name: "durability"
 	
@@ -541,7 +561,11 @@ void initSuppressions() {
 	suppress("rat_base_0059", 62, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	suppress("rat_base_0059", 160, "behavior"); // unknown behavior 'firendly', should be 'friendly'
 	
+	suppress("ratman_base", 22834, "goto"); // missing label "main_alert"
+	
 	suppress("ratman_base_0024", 608, "goto"); // missing label 'test'
+	
+	suppress("ratman_base_0026", 712, "setevent"); // unsupported event: "detect_player"
 	
 	suppress("rock_akbaa", 135, "setinternalname"); // obsolete command 'setinternalname'
 	
@@ -563,7 +587,13 @@ void initSuppressions() {
 	
 	suppress("snake_woman_base_0016", 138, "setevent"); // unsupported event: "misc_reflection"
 	
+	suppress("spider_base_0024", 858, "play"); // missing sound file 'spider_stress'
+	
 	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
+	
+	suppress("timed_lever_0033", 1027, "-smf"); // command wrongly interpreted as event (script parser limitation)
+	
+	suppress("timed_lever_0052", 648, "-smf"); // command wrongly interpreted as event (script parser limitation)
 	
 	suppress("torch_rotating_0004", 68, "?"); // 'playanim' only takes one parameter
 	suppress("torch_rotating_0004", 88, "?"); // 'playanim' only takes one parameter
