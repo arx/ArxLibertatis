@@ -186,9 +186,9 @@ public:
 				return Failed;
 			}
 			
-			fs::path path = "graph/obj3d/interactive/npc" / file;
-			
 			if(type == "npc") {
+				
+				fs::path path = "graph/obj3d/interactive/npc" / file;
 				
 				INTERACTIVE_OBJ * ioo = AddNPC(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
@@ -214,13 +214,14 @@ public:
 				
 			} else {
 				
+				fs::path path = "graph/obj3d/interactive/items" / file;
+				
 				INTERACTIVE_OBJ * ioo = AddItem(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
 					ScriptWarning << "failed to create item " << path;
 					return Failed;
 				}
 				
-				MakeTemporaryIOIdent(ioo);
 				LASTSPAWNED = ioo;
 				ioo->scriptload = 1;
 				ioo->pos = t->pos;
