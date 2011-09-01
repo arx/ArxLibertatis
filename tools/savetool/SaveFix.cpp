@@ -35,7 +35,7 @@ static string makeIdent(const string & file, long ident) {
 	return name.str();
 }
 
-static bool fix_ident(SaveBlock & save, char name[SIZE_ID], Idents & idents, const string & where, Remap & remap);
+static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const string & where, Remap & remap);
 
 static void skip_script_save(const char * dat, size_t & pos) {
 	const ARX_CHANGELEVEL_SCRIPT_SAVE * ass;
@@ -173,6 +173,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	fix_iodata(save, idents, dat, where + ":" + ident, remap);
 	
+	printf("#saving0 %s\n", ident.c_str());
 	save.save(ident, dat, size);
 	
 	return i;
@@ -238,6 +239,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	changed |= fix_iodata(save, idents, dat, where + ":" + name, remap);
 	
 	if(changed) {
+		printf("#saving1 %s\n", savefile.c_str());
 		if(!save.save(savefile, dat, size)) {
 			cerr << "error saving " << savefile;
 		}
@@ -248,7 +250,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	return 0;
 }
 
-static bool patch_ident(char name[SIZE_ID], long newIdent, const string & where) {
+static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & where) {
 	
 	if(newIdent <= 0) {
 		return false;
@@ -265,7 +267,7 @@ static bool patch_ident(char name[SIZE_ID], long newIdent, const string & where)
 	return true;
 }
 
-static bool fix_ident(SaveBlock & save, char name[SIZE_ID], Idents & idents, const string & where, Remap & remap) {
+static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const string & where, Remap & remap) {
 	
 	string lname = toLowercase(safestring(name, SIZE_ID));
 	
@@ -325,6 +327,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	}
 	
 	if(changed) {
+		printf("#saving2 %s\n", loadfile.c_str());
 		save.save(loadfile, dat, size);
 	}
 	
@@ -380,6 +383,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	}
 	
 	if(changed) {
+		printf("#saving3 %s\n", ss.str().c_str());
 		save.save(ss.str(), dat, size);
 	}
 	
