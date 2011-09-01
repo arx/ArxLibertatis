@@ -440,7 +440,6 @@ public:
 		DebugScript(' ' << options << ' ' << target << ' ' << hide);
 		
 		if(!t) {
-			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
