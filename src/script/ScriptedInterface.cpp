@@ -46,6 +46,8 @@ public:
 			ARX_INTERFACE_BookOpenClose(1);
 		} else if(command == "close") {
 			ARX_INTERFACE_BookOpenClose(2);
+		} else if(command == "change") {
+			// Nothing to do, mode already changed by flags.
 		} else {
 			ScriptWarning << "unexpected command: " << options << " \"" << command << "\"";
 		}
