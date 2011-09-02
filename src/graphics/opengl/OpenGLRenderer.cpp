@@ -30,9 +30,10 @@ OpenGLRenderer::~OpenGLRenderer() {
 	
 	shutdown();
 	
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		LogError << "Texture still loaded: " << it->getFileName();
-	}
+	// TODO textures must be destructed before OpenGLRenderer or not at all
+	//for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+	//	LogWarning << "Texture still loaded: " << it->getFileName();
+	//}
 	
 };
 
