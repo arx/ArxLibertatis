@@ -143,7 +143,7 @@ bool isSuppressed(const Context & context, const std::string & command);
 
 bool isBlockEndSuprressed(const Context & context, const std::string & command);
 
-void initSuppressions();
+size_t initSuppressions();
 
 #define ScriptContextPrefix(context) '[' << ((context).getIO() ? (((context).getScript() == &(context).getIO()->script) ? (context).getIO()->short_name() : (context).getIO()->long_name()) : "unknown") << ':' << (context).getPosition() << "] "
 #define ScriptPrefix << ScriptContextPrefix(context) << getName() <<

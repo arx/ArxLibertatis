@@ -307,14 +307,17 @@ typedef std::set<string> SuppressedCommands;
 typedef std::map<string, SuppressedCommands> SuppressionsForFile;
 typedef std::map<size_t, SuppressionsForFile> SuppressionsForPos;
 
+size_t suppressionCount = 0;
 SuppressionsForPos suppressions;
 SuppressionsForPos blockSuppressions;
 
 void suppress(const string & script, size_t pos, const string & command) {
+	suppressionCount++;
 	suppressions[pos][script].insert(command);
 }
 
 void suppressBlockEnd(const string & script, size_t pos, const string & command) {
+	suppressionCount++;
 	blockSuppressions[pos][script].insert(command);
 }
 
@@ -335,7 +338,7 @@ bool contains(const SuppressionsForPos & list, const Context & context, const st
 
 }
 
-void initSuppressions() {
+size_t initSuppressions() {
 	
 	suppressBlockEnd("camera_0027", 1140, "}"); // '}' should be commented out!
 	
@@ -354,11 +357,19 @@ void initSuppressions() {
 	// TODO(broken-scripts)
 	// TODO move to external file
 	
+	suppress("akbaa_phase2", 13884, "play"); // missing sound files 'akbaa_strike1' to 'akbaa_strike3', should be 'akbaa_strike'
+	suppress("akbaa_phase2", 19998, "play"); // sound number is sonetimes too high; missing 'akbaa_hail1', should be 'akbaa_hail'
+	suppress("akbaa_phase2", 18549, "playanim"); // animation 'grunt' not loaded
+	
 	suppress("akbaa_tentacle", 2432, "on"); // unknown command 'on' (bad newline!)
 	
 	suppress("axe_2handed", 26, "settwohanded"); // obsolete command
 	
 	suppress("black_thing", 3703, "play"); // variable is never set
+	
+	suppress("camera_0072", 269, "goto"); // missing label 'dialogue7_2'
+	
+	suppress("camera_0076", 2139, ""); // missing accept/refuse/return/goto/gosub before end of script
 	
 	suppress("black_thing_0003", 4360, "setevent"); // unsupported event: "eat"
 	suppress("black_thing_0003", 4388, "setevent"); // unsupported event: "no_more_eat"
@@ -409,7 +420,10 @@ void initSuppressions() {
 	
 	suppress("dog_0011", 31, "playanim"); // animation 'action2' not loaded
 	
+	suppress("dragon_ice", 9029, "setevent"); // unsupported event 'agression', should be 'aggression'
+	
 	suppress("dragon_ice_0001", 93, "loadanim"); // missing animation: "dragon_talk_head"
+	suppress("dragon_ice_0001", 3687, "playanim"); // animation 'action9' not loaded
 	
 	suppress("dragon's_lair_ice_wall", 41, "satangular"); // unknown command 'satangular', should be setangular
 	
@@ -448,6 +462,7 @@ void initSuppressions() {
 	suppress("human_base", 5872, "loadanim"); // bad animation id: "bae_ready"
 	suppress("human_base", 13711, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
+	suppress("human_base", 39089, "teleport"); // variable dying_marker not set
 	suppress("human_base", 45586, "goto"); // missing label "main_alert"
 	
 	suppress("human_base_0006", 83, "playanim"); // animation 'wait' not loaded yet
@@ -551,6 +566,8 @@ void initSuppressions() {
 	
 	suppress("mithril_chunk_inwall", 144, "play"); // unknown flag -e (ignored)
 	
+	suppress("morning_glory", 971, "playanim"); // animation 'action1' not loaded
+	
 	suppress("orb_crypt", 76, "setsteal"); // setsteal only applies to items
 	
 	suppress("pig", 2409, "}"); // missing accept/refuse before end of event block
@@ -562,6 +579,7 @@ void initSuppressions() {
 	suppress("player", 8733, "loadanim"); // bad animation id: "lean_right_out"
 	suppress("player", 9284, "loadanim"); // missing animation "human_death_cool"
 	suppress("player", 9558, "loadanim"); // missing animation "human_talk_happyneutral_headonly"
+	suppress("player", 18044, "play"); // missing sound file 'bell', should be 'arx_bell'
 	
 	suppress("porticullis_0039", 806, "setevent"); // unsupported event: "custom"
 	
@@ -597,6 +615,8 @@ void initSuppressions() {
 	
 	suppress("snake_woman_base_0007", 1138, "goto"); // missing label 'short'
 	
+	suppress("snake_woman_base_0008", 16149, "goto"); // missing label 'dialogue5_2'
+	
 	suppress("snake_woman_base_0010", 122, "collions"); // unknown command 'collions', should be 'collision'
 	
 	suppress("snake_woman_base_0015", 113, "setevent"); // unsupported event: "misc_reflection"
@@ -606,6 +626,8 @@ void initSuppressions() {
 	suppress("spider_base_0024", 858, "play"); // missing sound file 'spider_stress'
 	
 	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
+	
+	suppress("sylib", 832, "timer"); // unknown flag -t (ignored)
 	
 	suppress("timed_lever_0033", 1027, "-smf"); // command wrongly interpreted as event (script parser limitation)
 	
@@ -650,6 +672,7 @@ void initSuppressions() {
 	*/
 	ScriptEvent::registerCommand(new FakeCommand("dwarflittlecrusherup"));
 	
+	return suppressionCount;
 }
 
 bool isSuppressed(const Context & context, const string & command) {

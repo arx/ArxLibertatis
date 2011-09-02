@@ -473,7 +473,7 @@ void ScriptEvent::registerCommand(Command * command) {
 
 void ScriptEvent::init() {
 	
-	initSuppressions();
+	size_t count = initSuppressions();
 	
 	setupScriptedAnimation();
 	setupScriptedCamera();
@@ -502,7 +502,7 @@ void ScriptEvent::init() {
 	registerCommand(new ObsoleteCommand("setinternalname", 1));
 	registerCommand(new ObsoleteCommand("detachnpcfromplayer"));
 	
-	LogInfo << "scripting system initialized with " << commands.size() << " commands";
+	LogInfo << "scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
 }
 
 ScriptEvent::Commands ScriptEvent::commands;
