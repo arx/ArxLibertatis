@@ -44,9 +44,6 @@ namespace {
 IniReader localisation;
 }
 
-extern long FINAL_COMMERCIAL_GAME;
-extern long FINAL_COMMERCIAL_DEMO;
-
 bool InitLocalisation() {
 	
 	LogDebug << "Starting localization";

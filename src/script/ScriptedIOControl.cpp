@@ -3,6 +3,7 @@
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "game/Levels.h"
 #include "game/Inventory.h"
 #include "game/Player.h"
 #include "game/Missile.h"
@@ -12,6 +13,7 @@
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
 #include "io/FilePath.h"
+#include "io/PakReader.h"
 #include "physics/Collisions.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"

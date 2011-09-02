@@ -132,7 +132,6 @@ extern TextureContainer * Movable;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
 extern long CURRENTLEVEL;
-extern long FINAL_RELEASE;
 extern long FOR_EXTERNAL_PEOPLE;
 extern long NEED_TEST_TEXT;
 

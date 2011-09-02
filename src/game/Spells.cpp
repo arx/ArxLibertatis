@@ -176,8 +176,6 @@ struct SYMBOL_DRAW {
 	char			cPosStartY;
 };
 
-extern long NO_TEXT_AT_ALL;
-
 extern bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere);
 extern bool bGToggleCombatModeWithKey;
 void ARX_INTERFACE_Combat_Mode(long i);
@@ -2006,11 +2004,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 
 			LAST_FAILED_SEQUENCE = SpellMoves;
 
-			if (!NO_TEXT_AT_ALL) 
-			{
-				tex = "Unknown Symbol - " + SpellMoves;
-				ARX_SPEECH_Add(tex);
-			}
+			LogDebug << "Unknown Symbol - " + SpellMoves;
 		}
 	}
 

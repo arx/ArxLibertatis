@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/PakEntry.h"
 #include "io/FilePath.h"
+#include "platform/Flags.h"
 
 enum Whence {
 	SeekSet,
@@ -54,15 +55,16 @@ public:
 
 class PakReader : public PakDirectory {
 	
-private:
-	
-	std::vector<std::istream *> paks;
-	
-	bool addFiles(PakDirectory * dir, const fs::path & path);
-	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name);
-	
 public:
 	
+	enum ReleaseType {
+		Demo     = (1<<0),
+		FullGame = (1<<1),
+		Unknown  = (1<<2)
+	};
+	DECLARE_FLAGS(ReleaseType, ReleaseFlags)
+	
+	inline PakReader() : release(0) { }
 	~PakReader();
 	
 	void removeFile(const fs::path & name);
@@ -77,7 +79,19 @@ public:
 	
 	PakFileHandle * open(const fs::path & name);
 	
+	inline ReleaseFlags getReleaseType() { return release; }
+	
+private:
+	
+	ReleaseFlags release;
+	std::vector<std::istream *> paks;
+	
+	bool addFiles(PakDirectory * dir, const fs::path & path);
+	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name);
+	
 };
+
+DECLARE_FLAGS_OPERATORS(PakReader::ReleaseFlags)
 
 extern PakReader * resources;
 

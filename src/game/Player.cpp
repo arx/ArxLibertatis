@@ -2537,7 +2537,6 @@ extern float PLAYER_ARMS_FOCAL;
 extern long CURRENT_BASE_FOCAL;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
-extern long FINAL_RELEASE;
 
 
 //*************************************************************************************

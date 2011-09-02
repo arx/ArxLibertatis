@@ -100,10 +100,8 @@ using std::string;
 using std::vector;
 
 extern float MagicSightFader;
-extern long FINAL_COMMERCIAL_DEMO;
 extern long NEED_TEST_TEXT;
 extern float Original_framedelay;
-extern long FINAL_COMMERCIAL_GAME;
 extern EERIE_3DOBJ *arrowobj;
 extern void InitTileLights();
 extern long USE_LIGHT_OPTIM;
@@ -155,7 +153,6 @@ extern long LastSelectedIONum;
 extern long lSLID_VALUE;
 
 extern long CHANGE_LEVEL_ICON;
-extern long NO_TEXT_AT_ALL;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long DeadTime;
 extern long HALOCUR;

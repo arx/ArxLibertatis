@@ -6,6 +6,7 @@
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
+#include "io/PakReader.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
@@ -14,7 +15,6 @@ using std::string;
 
 extern float InventoryDir;
 extern long REFUSE_GAME_RETURN;
-extern long FINAL_COMMERCIAL_DEMO;
 
 namespace script {
 
@@ -253,13 +253,9 @@ public:
 		
 		REFUSE_GAME_RETURN = 1;
 		
-		if(FINAL_COMMERCIAL_DEMO) {
-			ARX_INTERFACE_EndIntro();
-		} else {
-			ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-			ARX_MENU_Launch();
-			ARX_MENU_Clicked_CREDITS();
-		}
+		ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
+		ARX_MENU_Launch();
+		ARX_MENU_Clicked_CREDITS();
 		
 		return Success;
 	}

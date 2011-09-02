@@ -107,7 +107,6 @@ using namespace std;
 extern long USE_LIGHT_OPTIM;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
-extern long DEBUG_FRUSTRUM;
 extern long EXTERNALVIEW;
 extern long WATERFX;
 extern long REFLECTFX;

@@ -68,18 +68,34 @@ namespace {
 
 const size_t PAK_READ_BUF_SIZE = 1024;
 
-static const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
-static const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
-
-static const char * selectKey(u32 first_bytes) {
+static PakReader::ReleaseType guessReleaseType(u32 first_bytes) {
 	switch(first_bytes) {
 		case 0x46515641:
-			return PAK_KEY_FULL;
+			return PakReader::FullGame;
 		case 0x4149534E:
-			return PAK_KEY_DEMO;
+			return PakReader::Demo;
 		default:
-			return NULL;
+			return PakReader::Unknown;
 	}
+}
+
+static void pakDecrypt(char * fat, size_t fat_size, PakReader::ReleaseType keyId) {
+	
+	static const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
+	static const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
+	
+	const char * key;
+	size_t keysize;
+	if(keyId == PakReader::FullGame) {
+		key = PAK_KEY_FULL, keysize = ARRAY_SIZE(PAK_KEY_FULL) - 1;
+	} else {
+		key = PAK_KEY_DEMO, keysize = ARRAY_SIZE(PAK_KEY_DEMO) - 1;
+	}
+	
+	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
+		fat[i] ^= key[ki];
+	}
+	
 }
 
 /*! Uncompressed file in a .pak file archive. */
@@ -425,16 +441,6 @@ size_t PlainFileHandle::tell() {
 	return ifs.tellg();
 }
 
-static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
-	
-	size_t keysize = strlen((const char *)key);
-	
-	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
-		fat[i] ^= key[ki];
-	}
-	
-}
-
 } // anonymous namespace
 
 PakReader::~PakReader() {
@@ -480,12 +486,13 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 	}
 	
 	// Decrypt the FAT.
-	const char * key = selectKey(*(u32*)fat);
-	if(key) {
+	ReleaseType key = guessReleaseType(*reinterpret_cast<const u32 *>(fat));
+	if(key != Unknown) {
 		pakDecrypt(fat, fat_size, key);
 	} else {
 		LogWarning << "WARNING: unknown PAK key ID 0x" << std::hex << std::setfill('0') << std::setw(8) << *(u32*)fat << ", assuming no key";
 	}
+	release |= key;
 	
 	char * pos = fat;
 	
@@ -555,6 +562,8 @@ error:
 }
 
 void PakReader::clear() {
+	
+	release = 0;
 	
 	files.clear();
 	dirs.clear();

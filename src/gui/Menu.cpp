@@ -505,8 +505,6 @@ void ARX_MENU_Clicked_CREDITS()
 	Credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
-extern long FINAL_COMMERCIAL_DEMO;
-bool ARX_IsSteam();
 
 void ARX_MENU_Clicked_QUIT_GAME() {
 	

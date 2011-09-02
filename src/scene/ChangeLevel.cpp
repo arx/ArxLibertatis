@@ -319,7 +319,6 @@ void ARX_Changelevel_CurGame_Close() {
 }
 
 extern long JUST_RELOADED;
-extern long FINAL_COMMERCIAL_DEMO;
 
 void ARX_CHANGELEVEL_Change(const string & level, const string & target, long angle) {
 	
@@ -332,13 +331,6 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 		
 	FORBID_SAVE = 1;
 	long num = GetLevelNumByName("level" + level);
-	
-	if ((FINAL_COMMERCIAL_DEMO)
-			&&	(num != 10)
-			&&	(num != 12)
-			&&	(num != 15)
-			&&	(num != 1))
-		return;
 
 	LoadLevelScreen(num);
 

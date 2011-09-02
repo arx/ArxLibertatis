@@ -18,9 +18,6 @@ WNDCLASS      Win32Window::m_WindowClass;
 bool       Win32Window::m_WindowClassInitialized = false;
 std::map<HWND,Win32Window*>  Win32Window::m_WindowsMap;
 
-extern long FINAL_COMMERCIAL_DEMO;
-extern long FINAL_COMMERCIAL_GAME;
-
 Win32Window::Win32Window()
 	: m_hWnd(NULL)
 	, m_HijackedWindowProc(0) {

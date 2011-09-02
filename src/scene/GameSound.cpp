@@ -78,7 +78,6 @@ using std::sprintf;
 
 using namespace audio;
 
-extern long FINAL_RELEASE;
 extern long EXTERNALVIEW;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 

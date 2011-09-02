@@ -142,17 +142,9 @@ using std::max;
 using std::string;
 using std::ostringstream;
 
-void DemoFileCheck();
-
-//-----------------------------------------------------------------------------
-
 #define MAX_EXPLO 24
 
-//-----------------------------------------------------------------------------
-
 void ClearGame();
-
-//-----------------------------------------------------------------------------
 
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
@@ -331,31 +323,15 @@ long SHOW_TORCH=0;
 float FrameDiff=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
-//-----------------------------------------------------------------------------
-// Don't touch FINAL_COMMERCIAL_DEMO anymore
-// Comment #define REAL_DEMO for non-demo Version
-// UNcomment #define REAL_DEMO for demo Version
-//TODO(lubosz): uncommenting this define causes stack overflow
-//#define REAL_DEMO
-#ifdef REAL_DEMO
-long FINAL_COMMERCIAL_DEMO =1;
-#else
-long FINAL_COMMERCIAL_DEMO =0;
-#endif
-
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long USE_NEW_SKILLS=1;
 
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
-long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
-long NO_TEXT_AT_ALL		= 0;
 long FAST_SPLASHES		= 0;
-long FORCE_SHOW_FPS		= 0;
 long FINAL_RELEASE		= 0;
-long DEBUG_FRUSTRUM		= 0;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
@@ -612,7 +588,7 @@ void InitializeDanae()
 	CreateInterfaceTextureContainers();
 
 	if (LaunchDemo) {
-		LogInfo << "Launching Demo";
+		LogInfo << "Launching splash screens.";
 		LaunchDemo=0;
 		SPLASH_THINGS_STAGE=11;
 	} else if (!levelPath.empty())	{
@@ -642,28 +618,16 @@ int main(int argc, char ** argv) {
 	
 	long i;
 	
-	if (FINAL_COMMERCIAL_GAME) {
-		LogDebug << "FINAL_COMMERCIAL_GAME";
-		FOR_EXTERNAL_PEOPLE=1;
-	} else if (FINAL_COMMERCIAL_DEMO)	{
-		LogDebug << "FINAL_COMMERCIAL_DEMO";
-		FOR_EXTERNAL_PEOPLE=1;
-	}
-
-	if(FOR_EXTERNAL_PEOPLE) {
-		LogDebug << "FOR_EXTERNAL_PEOPLE";
-		ALLOW_CHEATS		= 0;
-		NO_TEXT_AT_ALL		= 1;
-		FAST_SPLASHES		= 0;
-		FORCE_SHOW_FPS		= 0;
-		FINAL_RELEASE		= 1;
-		DEBUG_FRUSTRUM		= 0;
+	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
+	
+	ALLOW_CHEATS = 0;
+	FAST_SPLASHES = 0;
+	FINAL_RELEASE = 1;
 #ifdef BUILD_EDITOR
-		GAME_EDITOR = 0;
-		NEED_EDITOR = 0;
-		TRUEFIGHT = 0;
+	GAME_EDITOR = 0;
+	NEED_EDITOR = 0;
+	TRUEFIGHT = 0;
 #endif
-	}
 	
 	LogInfo << "Starting " << arxVersion;
 	
@@ -777,7 +741,6 @@ int main(int argc, char ** argv) {
 	atexit(ClearGame);
 
 	if (LaunchDemo)	{
-		LogInfo << "LaunchDemo";
 
 #ifdef BUILD_EDITOR
 		if(FINAL_RELEASE) {
@@ -792,8 +755,6 @@ int main(int argc, char ** argv) {
 	}
 	
 	AdjustUI();
-
-	LogInfo << "Application Creation Success";
 
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
@@ -831,13 +792,20 @@ int main(int argc, char ** argv) {
 	LogDebug << "InitializeDanae";
 	InitializeDanae();
 	
-	LogInfo << "InitializeDanae Success";
-	LogDebug << "DanaeApp RUN";
+	PakReader::ReleaseFlags rel = resources->getReleaseType();
+	switch(rel) {
+		case 0: LogWarning << "Neither demo nor full game data files loaded."; break;
+		case PakReader::Demo: LogInfo << "Initialized Arx Fatalis (demo)"; break;
+		case PakReader::FullGame: LogInfo << "Initialized Arx Fatalis (full game)"; break;
+		case (int(PakReader::Demo) | int(PakReader::FullGame)): LogWarning << "Mixed demo and full game data files!"; break;
+		default: ARX_DEAD_CODE();
+	}
+	
 	mainApp->m_bReady = true;
-
+	
 	// Init all done, start the main loop
 	mainApp->Run();
-
+	
 	return true;
 }
 
@@ -1783,9 +1751,7 @@ void SetEditMode(long ed, const bool stop_sound) {
 
 	if (!DONT_ERASE_PLAYER)
 	{
-		if (	(!FINAL_RELEASE)
-			&&	(!FINAL_COMMERCIAL_GAME)
-			&&	(!FINAL_COMMERCIAL_DEMO))
+		if(!FINAL_RELEASE)
 			ARX_PLAYER_MakePowerfullHero();
 		else
 			ARX_PLAYER_MakeFreshHero();
@@ -2022,9 +1988,7 @@ void FirstFrameProc() {
 
 		if (!DONT_ERASE_PLAYER)
 		{
-			if (	(!FINAL_RELEASE)
-			&&	(!FINAL_COMMERCIAL_GAME)
-			&&	(!FINAL_COMMERCIAL_DEMO))
+			if(!FINAL_RELEASE)
 				ARX_PLAYER_MakePowerfullHero();
 			else
 				ARX_PLAYER_MakeFreshHero();

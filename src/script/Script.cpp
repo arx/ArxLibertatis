@@ -103,7 +103,6 @@ using std::string;
 
 #define MAX_SSEPARAMS 5
 
-extern long FINAL_COMMERCIAL_DEMO;
 extern long lChangeWeapon;
 extern INTERACTIVE_OBJ * pIOChangeWeapon;
 
@@ -1098,9 +1097,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				}
 			}
 
-			if (!specialstrcmp(name, "^demo"))
-			{
-				*lcontent = FINAL_COMMERCIAL_DEMO;
+			if(!specialstrcmp(name, "^demo")) {
+				*lcontent = (resources->getReleaseType() & PakReader::Demo) ? 1 : 0;
 				return TYPE_LONG;
 			}
 

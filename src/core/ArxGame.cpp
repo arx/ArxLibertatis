@@ -93,13 +93,9 @@ static bool showFPS = false;
 
 using std::string;
 
-extern long ALLOW_CHEATS;
-extern long FINAL_COMMERCIAL_GAME;
-extern long FINAL_COMMERCIAL_DEMO;
 extern long GAME_EDITOR;
 extern long PLAY_LOADED_CINEMATIC;
 extern long CHANGE_LEVEL_PROC_RESULT;
-extern long FINAL_RELEASE;
 extern long NOBUILDMAP;
 extern long NOCHECKSUM;
 extern long START_NEW_QUEST;
@@ -120,8 +116,6 @@ extern long DeadTime;
 extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 extern long FORCE_FRONT_DRAW;
-extern long NO_TEXT_AT_ALL;
-extern long FORCE_SHOW_FPS;
 extern long FOR_EXTERNAL_PEOPLE;
 extern long LAST_ROOM;
 extern long LAST_PORTALS_COUNT;
@@ -2014,56 +2008,37 @@ static float _AvgFrameDiff = 150.f;
 	// Some Visual Debug/Info Text
 	//CalcFPS();
 
-	if (!FINAL_COMMERCIAL_DEMO)
-	{
-		if ((NEED_TEST_TEXT) && (!FINAL_COMMERCIAL_DEMO))
-		{
-			ShowTestText();
+	if(NEED_TEST_TEXT) {
+		
+		ShowTestText();
+		
+		if(ViewMode & VIEWMODE_INFOTEXT) {
+			ShowInfoText();
 		}
-
-		if (!NO_TEXT_AT_ALL)
-		{
-			if (ViewMode & VIEWMODE_INFOTEXT)
-			{
-				ShowInfoText();
-			}
-			else if (FORCE_SHOW_FPS)
-			{
-				ShowFPS();
-			}
-		}
-
-	if ((USE_PORTALS) && (NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
-		{
+		
+		if(USE_PORTALS && !FOR_EXTERNAL_PEOPLE) {
 			char tex[250];
-
-			switch(USE_PORTALS)
-			{
-			case 1:
-				sprintf(tex,"2DPortals_ROOM: %ld",LAST_ROOM);
-				break;
-			case 2:
-				sprintf(tex,"3DPortals_ROOM: %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-				break;
-			case 3:
-				sprintf(tex,"3DPortals_ROOM(Transform): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-				break;
-			case 4:
-				sprintf(tex,"3DPortals_ROOM(TransformSC): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-				break;
+			switch(USE_PORTALS) {
+				case 1:
+					sprintf(tex, "2DPortals_ROOM: %ld", LAST_ROOM);
+					break;
+				case 2:
+					sprintf(tex, "3DPortals_ROOM: %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+					break;
+				case 3:
+					sprintf(tex, "3DPortals_ROOM(Transform): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+					break;
+				case 4:
+					sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+					break;
 			}
-
 			mainApp->OutputText( 320, 240, tex );
 		}
-
-		if((NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
-		{
-			if(bOLD_CLIPP)
-			{
+		
+		if((!FOR_EXTERNAL_PEOPLE)) {
+			if(bOLD_CLIPP) {
 				mainApp->OutputText(0, 240, "New Clipp" );
-			}
-			else
-			{
+			} else {
 				mainApp->OutputText(0,274,"New Clipp");
 			}
 		}
