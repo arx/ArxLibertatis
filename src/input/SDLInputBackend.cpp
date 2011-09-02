@@ -418,7 +418,7 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 			if(key >= 0 && size_t(key) < ARRAY_SIZE(sdlToArxKey) && sdlToArxKey[key] >= 0) {
 				keyStates[sdlToArxKey[key] - Keyboard::KeyBase] = (event.key.state == SDL_PRESSED);
 			} else {
-				LogWarning << "Unmapped SDL key: " << (int)key;
+				LogWarning << "Unmapped SDL key: " << (int)key << " = " << SDL_GetKeyName(key);
 			}
 			break;
 		}
