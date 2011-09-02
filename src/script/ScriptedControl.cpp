@@ -82,7 +82,8 @@ public:
 	
 	Result execute(Context & context) {
 		
-		HandleFlags("v") {
+		HandleFlags("nv") {
+			
 			if(flg & flag('v')) {
 				float volume = context.getFloat();
 				fs::path ambiance = fs::path::load(context.getWord());
@@ -94,6 +95,14 @@ public:
 				}
 				return Success;
 			}
+			
+			if(flg & flag('n')) {
+				fs::path ambiance = fs::path::load(context.getWord());
+				DebugScript(' ' << options << ' ' << ambiance);
+				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_ONCE);
+				return Success;
+			}
+			
 			return Failed;
 		}
 		
