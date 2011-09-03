@@ -6,6 +6,7 @@
 	#include <SDL_syswm.h>
 #endif
 
+#include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDLInputBackend.h"
 #include "io/Logger.h"
@@ -112,6 +113,14 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	
+	if(config.video.antialiasing) {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	} else {
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+	}
 	
 	m_Size = Vec2i::ZERO;
 	depth = 0;

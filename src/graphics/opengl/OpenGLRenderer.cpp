@@ -128,10 +128,6 @@ void OpenGLRenderer::reinit() {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
 	}
 	
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-	glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-	
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	
 	glDepthFunc(GL_LEQUAL);
@@ -513,9 +509,8 @@ void OpenGLRenderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd,
 
 void OpenGLRenderer::SetAntialiasing(bool enable) {
 	
-	setGLState(GL_POLYGON_SMOOTH, enable);
-	setGLState(GL_LINE_SMOOTH, enable);
-	setGLState(GL_POINT_SMOOTH, enable);
+	// This is mostly useless as multisampling must be enabled/disabled at GL context creation.
+	setGLState(GL_MULTISAMPLE, enable);
 	
 	CHECK_GL;
 }
