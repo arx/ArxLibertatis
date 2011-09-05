@@ -266,6 +266,7 @@ public:
 	static const Vector2 X_AXIS; //!< The X axis.
 	static const Vector2 Y_AXIS; //!< The Y axis.
 	static const Vector2 ZERO; //!< A null vector.
+	static const Vector2 ONE; //!< A (1, 1) vector.
 	
 };
 
@@ -293,5 +294,6 @@ inline bool fartherThan(const Vector2<T> & a, const Vector2<T> & b, T d) {
 template<class T> const Vector2<T> Vector2<T>::X_AXIS(T(1), T(0));
 template<class T> const Vector2<T> Vector2<T>::Y_AXIS(T(0), T(1));
 template<class T> const Vector2<T> Vector2<T>::ZERO(T(0), T(0));
+template<class T> const Vector2<T> Vector2<T>::ONE(T(1), T(1));
 
 #endif // ARX_MATH_VECTOR2_H

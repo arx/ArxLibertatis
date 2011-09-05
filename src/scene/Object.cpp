@@ -542,31 +542,25 @@ void MakeUserFlag(TextureContainer * tc) {
 
 static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	
-	if(eerie->texturecontainer.empty()) return;
-
-	float sxx, syy;
-
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		if (eerie->facelist[i].texid == -1) continue;
-
-		if (eerie->texturecontainer[eerie->facelist[i].texid])
-		{
-			sxx = eerie->texturecontainer[eerie->facelist[i].texid]->m_odx;
-			syy = eerie->texturecontainer[eerie->facelist[i].texid]->m_ody;
+	if(eerie->texturecontainer.empty()) {
+		return;
+	}
+	
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
+		
+		if(eerie->facelist[i].texid == -1) {
+			continue;
 		}
-		else
-		{
-			sxx = ( 1.0f / 256 );
-			syy = ( 1.0f / 256 );
-		}
-
-		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * sxx; 
-		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * sxx; 
-		eerie->facelist[i].u[2] = (float)eerie->facelist[i].ou[2] * sxx; 
-		eerie->facelist[i].v[0] = (float)eerie->facelist[i].ov[0] * syy; 
-		eerie->facelist[i].v[1] = (float)eerie->facelist[i].ov[1] * syy; 
-		eerie->facelist[i].v[2] = (float)eerie->facelist[i].ov[2] * syy; 
+		
+		TextureContainer * tex = eerie->texturecontainer[eerie->facelist[i].texid];
+		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f::ONE / 256);
+		
+		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * scale.x; 
+		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * scale.x; 
+		eerie->facelist[i].u[2] = (float)eerie->facelist[i].ou[2] * scale.x; 
+		eerie->facelist[i].v[0] = (float)eerie->facelist[i].ov[0] * scale.y; 
+		eerie->facelist[i].v[1] = (float)eerie->facelist[i].ov[1] * scale.y; 
+		eerie->facelist[i].v[2] = (float)eerie->facelist[i].ov[2] * scale.y; 
 	}
 }
 

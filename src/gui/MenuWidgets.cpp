@@ -766,7 +766,7 @@ bool Menu2_Render() {
 					pWindowMenuConsole->iInterligne = 5;
 
 					pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-					me = new CMenuCheckButton(-1, fPosBack-(pTex?(pTex->m_dwDeviceWidth-pTex->m_dwWidth):0), 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me = new CMenuCheckButton(-1, fPosBack, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 

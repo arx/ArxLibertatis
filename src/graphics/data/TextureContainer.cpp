@@ -278,18 +278,11 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 		bLoaded = m_pTexture->Init(tempPath, bMipmaps);
 		if(bLoaded)
 		{
-			m_dwWidth   = m_pTexture->getSize().x;
-			m_dwHeight  = m_pTexture->getSize().y;
-
-			m_dwDeviceWidth = m_pTexture->getStoredSize().x;
-			m_dwDeviceHeight = m_pTexture->getStoredSize().y;
-
-			m_odx = (1.f / (float)m_dwWidth);
-			m_hdx = 0.5f * (1.f / (float)m_dwDeviceWidth);
-			m_dx  = (m_dwWidth / (float)m_dwDeviceWidth) + this->m_hdx;
-			m_ody = (1.f / (float)m_dwHeight);
-			m_hdy = 0.5f * (1.f / (float)m_dwDeviceHeight);
-			m_dy  = (m_dwHeight / (float)m_dwDeviceHeight) + this->m_hdy;
+			m_dwWidth = m_pTexture->getSize().x;
+			m_dwHeight = m_pTexture->getSize().y;
+			
+			Vec2i storedSize = m_pTexture->getStoredSize();
+			uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
 		}
 	}
 

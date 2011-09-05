@@ -8598,29 +8598,24 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				iHighLight = 0;
 			}
 
-			if (TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair)
-			{
-				if (!(player.Interface & INTER_COMBATMODE))
-				{
-					CURCURPOS=0;
-
-					surf = pTCCrossHair;
-
-					if (!surf)
-					{
-						surf=ITC.Get("target_off");
-					}
-
-					if (surf)
-					{
+			if(TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair) {
+				if(!(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
+					
+					CURCURPOS = 0;
+					
+					surf = pTCCrossHair ? pTCCrossHair : ITC.Get("target_off");
+					
+					if(surf) {
+						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-						float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
-						float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
-
-						EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-						                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
+						
+						float POSX = DANAESIZX * .5f - surf->m_dwWidth * .5f;
+						float POSY = DANAESIZY * .5f - surf->m_dwHeight * .5f;
+						
+						EERIEDrawBitmap(POSX, POSY, float(surf->m_dwWidth),
+						                float(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
+						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}

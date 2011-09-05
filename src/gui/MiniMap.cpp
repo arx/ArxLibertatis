@@ -419,8 +419,8 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 		float div = ( 1.0f / 25 );
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
-		float dw = 1.f / tc->m_dwDeviceWidth; 
-		float dh = 1.f / tc->m_dwDeviceHeight;
+		float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
+		float dh = 1.f / tc->m_pTexture->getStoredSize().y;
 		
 		float vx2 = 4.f * dw * mod_x;
 		float vy2 = 4.f * dh * mod_z;

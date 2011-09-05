@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "io/FilePath.h"
+#include "math/Vector2.h"
 #include "platform/Flags.h"
 
 struct SMY_ARXMAT;
@@ -145,21 +146,15 @@ public:
 	const fs::path m_texName; // Name of texture
 	u32 m_dwWidth;
 	u32 m_dwHeight;
-	u32 m_dwDeviceWidth;
-	u32 m_dwDeviceHeight;
 	TCFlags m_dwFlags;
 	u32 userflags;
 	
 	Texture2D * m_pTexture; // Diffuse
 	
-	// Precalculated values
-	// TODO remove these, offset vertex position, not texture position to make sure fragments and texels are aligned
-	float m_dx; //
-	float m_dy; //
-	float m_hdx; // 0.5f / width
-	float m_hdy; // 0.5f / height
-	float m_odx; // 1.f / width
-	float m_ody; // 1.f / height
+	/*! End of the image in texture coordinates (image size divided by stored size).
+	 * This is usually Vec2f::ONE but may differ if only power of two textures are supported.
+	 */
+	Vec2f uv;
 	
 	TextureContainer * TextureRefinement;
 	TextureContainer * m_pNext; // Linked list ptr

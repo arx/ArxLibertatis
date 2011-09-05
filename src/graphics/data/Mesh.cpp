@@ -4560,24 +4560,24 @@ void ComputePortalVertexBuffer()
 						pVertex->y = -(pPoly->v[0].sy);
 						pVertex->z = pPoly->v[0].sz;
 						pVertex->color = pPoly->v[0].color;
-						pVertex->tu = pPoly->v[0].tu + pTextureContainer->m_hdx;
-						pVertex->tv = pPoly->v[0].tv + pTextureContainer->m_hdy;
+						pVertex->tu = pPoly->v[0].tu;
+						pVertex->tv = pPoly->v[0].tv;
 						pVertex++;
 
 						pVertex->x = pPoly->v[1].sx;
 						pVertex->y = -(pPoly->v[1].sy);
 						pVertex->z = pPoly->v[1].sz;
 						pVertex->color = pPoly->v[1].color;
-						pVertex->tu = pPoly->v[1].tu + pTextureContainer->m_hdx;
-						pVertex->tv = pPoly->v[1].tv + pTextureContainer->m_hdy;
+						pVertex->tu = pPoly->v[1].tu;
+						pVertex->tv = pPoly->v[1].tv;
 						pVertex++;
 
 						pVertex->x = pPoly->v[2].sx;
 						pVertex->y = -(pPoly->v[2].sy);
 						pVertex->z = pPoly->v[2].sz;
 						pVertex->color = pPoly->v[2].color;
-						pVertex->tu = pPoly->v[2].tu + pTextureContainer->m_hdx;
-						pVertex->tv = pPoly->v[2].tv + pTextureContainer->m_hdy;
+						pVertex->tu = pPoly->v[2].tu;
+						pVertex->tv = pPoly->v[2].tv;
 						pVertex++;
 
 						pPoly->uslInd[0] = iIndiceInVertex++;
@@ -4590,8 +4590,8 @@ void ComputePortalVertexBuffer()
 							pVertex->y = -(pPoly->v[3].sy);
 							pVertex->z = pPoly->v[3].sz;
 							pVertex->color = pPoly->v[3].color;
-							pVertex->tu = pPoly->v[3].tu + pTextureContainer->m_hdx;
-							pVertex->tv = pPoly->v[3].tv + pTextureContainer->m_hdy;
+							pVertex->tu = pPoly->v[3].tu;
+							pVertex->tv = pPoly->v[3].tv;
 							pVertex++;
 
 							pPoly->uslInd[3] = iIndiceInVertex++;
