@@ -7791,19 +7791,19 @@ void ArxGame::DrawAllInterface()
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
 					// Left
-					EERIEDrawBitmap(0 + fMove, (DANAESIZY - fSizeY) * .5f, fSizeX, fSizeY, 0.01f,
+					EERIEDrawBitmap(0 + fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
 					               arrow_left_tc, lcolor);
 					
 					// Right
-					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, (DANAESIZY - fSizeY)*.5f, fSizeX, fSizeY,
+					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY,
 					                   .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 					
 					// Up
-					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, 0.f + fMove, fSizeY, fSizeX, .01f,
+					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
 					                   arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 					
 					// Down
-					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
+					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
 					                    .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 				}
 
@@ -8610,8 +8610,8 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						
-						float POSX = DANAESIZX * .5f - surf->m_dwWidth * .5f;
-						float POSY = DANAESIZY * .5f - surf->m_dwHeight * .5f;
+						float POSX = DANAECENTERX - surf->m_dwWidth * .5f;
+						float POSY = DANAECENTERY - surf->m_dwHeight * .5f;
 						
 						EERIEDrawBitmap(POSX, POSY, float(surf->m_dwWidth),
 						                float(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
