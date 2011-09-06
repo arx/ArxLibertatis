@@ -93,10 +93,11 @@ class TextureContainer {
 public:
 	
 	enum TCFlag {
-		NoMipmap     = 0x01,
-		NoInsert     = 0x02,
-		NoRefinement = 0x04,
-		Level        = 0x10
+		NoMipmap     = (1<<0),
+		NoInsert     = (1<<1),
+		NoRefinement = (1<<2),
+		Level        = (1<<3),
+		NoColorKey   = (1<<4)
 	};
 	
 	DECLARE_FLAGS(TCFlag, TCFlags)

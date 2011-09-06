@@ -474,7 +474,7 @@ bool Menu2_Render() {
 		pMenu = new CMenuState(MAIN);
 		pMenu->eOldMenuWindowState=eM;
 
-		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background");
+		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
 		int iPosMenuPrincipaleX = 370;
 	int iPosMenuPrincipaleY=100;
@@ -2340,7 +2340,7 @@ void CMenuElementText::RenderMouseOver()
 			std::ostringstream oss;
 			oss << "save/save" << std::setw(4) << std::setfill('0') << save_l[lData].num << "/gsave";
 			
-			TextureContainer * pTextureTemp = TextureContainer::LoadUI(oss.str());
+			TextureContainer * pTextureTemp = TextureContainer::LoadUI(oss.str(), TextureContainer::NoColorKey);
 			if(pTextureTemp != pTextureLoad) {
 				if(pTextureLoad) {
 					delete pTextureLoad;

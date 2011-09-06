@@ -274,8 +274,18 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 	m_pTexture = GRenderer->CreateTexture2D();
 	if(m_pTexture)
 	{
-		bool bMipmaps = !(m_dwFlags & NoMipmap);
-		bLoaded = m_pTexture->Init(tempPath, bMipmaps);
+		
+		Texture::TextureFlags flags = 0;
+		
+		if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
+			flags |= Texture::HasColorKey;
+		}
+		
+		if(!(m_dwFlags & NoMipmap)) {
+			flags |= Texture::HasMipmaps;
+		}
+		
+		bLoaded = m_pTexture->Init(tempPath, flags);
 		if(bLoaded)
 		{
 			m_dwWidth = m_pTexture->getSize().x;

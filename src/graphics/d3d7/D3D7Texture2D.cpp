@@ -77,7 +77,7 @@ bool DX7Texture2D::Create()
 		ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
 
 	// Adjust width and height, if the driver requires it
-	if( mHasMipmaps || ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2 )
+	if(hasMipmaps() || ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2)
 	{
 		ddsd.dwWidth = GetNextPowerOf2(ddsd.dwWidth);
 		ddsd.dwHeight = GetNextPowerOf2(ddsd.dwHeight);
@@ -100,8 +100,8 @@ bool DX7Texture2D::Create()
 	if (ddsd.dwHeight > dwMaxHeight)
 		ddsd.dwHeight = dwMaxHeight;
 
-	if(mHasMipmaps)
-	{
+	if(hasMipmaps()) {
+		
 		arx_assert_msg(IsPowerOf2(ddsd.dwWidth), "Texture size must be a power of two to support mipmapping");
 
 		// Count how many mip-map levels we need

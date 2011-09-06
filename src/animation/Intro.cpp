@@ -110,7 +110,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	if (GRenderer->BeginScene())
 	{
-		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc/logo");
+		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
 
 		if (FISHTANK_img != NULL)
 		{
@@ -144,7 +144,7 @@ void ARX_INTERFACE_ShowARKANE()
 	if (GRenderer->BeginScene())
 	{
 		if (ARKANE_img == NULL)
-			ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane");
+			ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
 
 		if (ARKANE_img != NULL)
 		{

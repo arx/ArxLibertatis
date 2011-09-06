@@ -3,18 +3,18 @@
 
 #include "graphics/Renderer.h"
 
-bool Texture2D::Init(const fs::path & strFileName, bool pCreateMipmaps) {
+bool Texture2D::Init(const fs::path & strFileName, TextureFlags newFlags) {
 	
 	mFileName = strFileName;
-	mHasMipmaps = pCreateMipmaps;
+	flags = newFlags;
 	return Restore();
 }
 
-bool Texture2D::Init(const Image & pImage, bool pCreateMipmaps) {
+bool Texture2D::Init(const Image & pImage, TextureFlags newFlags) {
 	
 	mFileName.clear();
 	mImage = pImage;
-	mHasMipmaps = pCreateMipmaps;
+	flags = newFlags;
 	return Restore();
 }
 
@@ -25,7 +25,7 @@ bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pF
 	size = Vec2i(pWidth, pHeight);	
 	mImage.Create(pWidth, pHeight, pFormat);
 	mFormat = pFormat;
-	mHasMipmaps = false;
+	flags = 0;
 	
 	return Create();
 }
@@ -37,9 +37,9 @@ bool Texture2D::Restore() {
 	if(!mFileName.empty()) {
 		mImage.LoadFromFile(mFileName);
 
-		// Original arx only applied color keying to bmp textures...
-		if(mFileName.ext() == ".bmp")
-			mImage.ApplyColorKeyToAlpha();		
+		if((flags & HasColorKey) && !mImage.HasAlpha()) {
+			mImage.ApplyColorKeyToAlpha();
+		}
 	}
 
 	if(mImage.IsValid()) {

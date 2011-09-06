@@ -1504,7 +1504,7 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/cursors/cursor06");
 	TextureContainer::LoadUI("graph/interface/cursors/cursor07");
 	TextureContainer::LoadUI("graph/interface/cursors/cruz");
-	TextureContainer::LoadUI("graph/interface/menus/menu_main_background");
+	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 
