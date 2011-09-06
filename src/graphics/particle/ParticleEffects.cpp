@@ -460,8 +460,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 		}
 	}
 
-	x0 = poss->x * ACTIVEBKG->Xmul;
-	z0 = poss->z * ACTIVEBKG->Zmul;
+	x0 = static_cast<long>(poss->x * ACTIVEBKG->Xmul);
+	z0 = static_cast<long>(poss->z * ACTIVEBKG->Zmul);
 	x1 = x0 + 3; 
 	x0 = x0 - 3; 
 	z1 = z0 + 3; 
@@ -518,14 +518,14 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 			for (long k=0;k<nbvert;k++)
 			{
 				if ((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].sx, ep->v[k].sz))
-					&& (EEfabs(ep->v[k].sy-py)<100.f) )
+					&& ((float)fabs(ep->v[k].sy-py) < 100.f) )
 				{
 					 oki=1;
 					break;
 				}
 
 				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].sx+ep->center.x)*( 1.0f / 2 ), (ep->v[k].sz+ep->center.z)*( 1.0f / 2 )))
-					&& (EEfabs(ep->v[k].sy-py)<100.f) )
+					&& ((float)fabs(ep->v[k].sy-py) < 100.f) )
 				{
 					 oki=1;
 					break;
@@ -552,7 +552,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 					pb->exist=1;
 					pb->ep=ep;
-					long num = rnd()*6.f;
+					long num = static_cast<long>(rnd() * 6.f);
 
 					if (num<0) num=0;
 					else if (num>5) num=5;
@@ -1530,15 +1530,22 @@ void UpdateObjFx() {
 //-----------------------------------------------------------------------------
 void ARX_PARTICLES_FirstInit() {
 	smokeparticle=TextureContainer::Load("graph/particles/smoke");
-	bloodsplat[0]=bloodsplatter=TextureContainer::Load("graph/particles/new_blood");
-	bloodsplat[1]=TextureContainer::Load("graph/particles/new_blood_splat1");
-	bloodsplat[2]=TextureContainer::Load("graph/particles/new_blood_splat2");
-	bloodsplat[3]=TextureContainer::Load("graph/particles/new_blood_splat3");
-	bloodsplat[4]=TextureContainer::Load("graph/particles/new_blood_splat4");
-	bloodsplat[5]=TextureContainer::Load("graph/particles/new_blood_splat5");
-	water_splat[0]=TextureContainer::Load("graph/particles/[fx]_water01");
-	water_splat[1]=TextureContainer::Load("graph/particles/[fx]_water02");
-	water_splat[2]=TextureContainer::Load("graph/particles/[fx]_water03");
+	
+	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
+	// this may also apply to other textures
+	
+	bloodsplat[0] = TextureContainer::Load("graph/particles/new_blood", TextureContainer::NoMipmap);
+	bloodsplat[1] = TextureContainer::Load("graph/particles/new_blood_splat1", TextureContainer::NoMipmap);
+	bloodsplat[2] = TextureContainer::Load("graph/particles/new_blood_splat2", TextureContainer::NoMipmap);
+	bloodsplat[3] = TextureContainer::Load("graph/particles/new_blood_splat3", TextureContainer::NoMipmap);
+	bloodsplat[4] = TextureContainer::Load("graph/particles/new_blood_splat4", TextureContainer::NoMipmap);
+	bloodsplat[5] = TextureContainer::Load("graph/particles/new_blood_splat5", TextureContainer::NoMipmap);
+	bloodsplatter = bloodsplat[0];
+	
+	water_splat[0] = TextureContainer::Load("graph/particles/[fx]_water01", TextureContainer::NoMipmap);
+	water_splat[1] = TextureContainer::Load("graph/particles/[fx]_water02", TextureContainer::NoMipmap);
+	water_splat[2] = TextureContainer::Load("graph/particles/[fx]_water03", TextureContainer::NoMipmap);
+	
 	water_drop[0]=TextureContainer::Load("graph/particles/[fx]_water_drop01");
 	water_drop[1]=TextureContainer::Load("graph/particles/[fx]_water_drop02");
 	water_drop[2]=TextureContainer::Load("graph/particles/[fx]_water_drop03");
@@ -1755,27 +1762,27 @@ void ARX_PARTICLES_SpawnWaterSplash(Vec3f *_ePos)
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | GRAVITY;
 			pd->special |= SPLAT_WATER;
 
-			pd->exist		=	true;
-			pd->ov.x 		=	_ePos->x + rnd()*30;
-			pd->ov.y 		=	_ePos->y - rnd()*20;
-			pd->ov.z 		=	_ePos->z + rnd()*30;
-			pd->move.x 		=	(frand2()*5)*1.3f;
-			pd->move.y 		=	-(rnd()*5)*2.3f;
-			pd->move.z 		=	(frand2()*5)*1.3f;
-			pd->timcreation	=	lARXTime;
-			pd->tolive		=	(unsigned long)(1000+rnd()*300);
+			pd->exist = true;
+			pd->ov.x = _ePos->x + rnd()*30;
+			pd->ov.y = _ePos->y - rnd()*20;
+			pd->ov.z = _ePos->z + rnd()*30;
+			pd->move.x = (frand2()*5)*1.3f;
+			pd->move.y = -(rnd()*5)*2.3f;
+			pd->move.z = (frand2()*5)*1.3f;
+			pd->timcreation = lARXTime;
+			pd->tolive = (unsigned long)(1000+rnd()*300);
 			
-			float fRandom	=	 rnd() * 2;
+			float fRandom = rnd() * 2;
 			
 			int t = checked_range_cast<int>(fRandom);
 			
 			pd->tc=water_drop[t];
-			pd->siz = 0.4f; 
+			pd->siz = 0.4f;
 			float s = rnd();
 			pd->scale.x = 1;
-			pd->scale.y = 1; 
-			pd->scale.z = 1; 
-			pd->zdec=1;	
+			pd->scale.y = 1;
+			pd->scale.z = 1;
+			pd->zdec = 1;
 			pd->rgb = Color3f::gray(s);
 		}
 	}
