@@ -248,8 +248,18 @@ bool Input::init() {
 	}
 #endif
 	
+#ifdef HAVE_DINPUT8
+	if(!backend && (autoBackend || config.input.backend == "DirectInput8")) {
+		matched = true;
+		backend = new DInput8Backend;
+		if(!backend->init()) {
+			delete backend, backend = NULL;
+		}
+	}
+#endif
+
 #ifdef HAVE_DINPUT7
-	if(!backend && (autoBackend || config.input.backend == "DirectInput")) {
+	if(!backend && (autoBackend || config.input.backend == "DirectInput7")) {
 		matched = true;
 		backend = new DInput7Backend;
 		if(!backend->init()) {

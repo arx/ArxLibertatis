@@ -32,9 +32,11 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 option(ARX_USE_OPENGL "Build the OpenGL renderer backend." ON)
-option(ARX_USE_D3D7 "Build the Direct3D 7 renderer backend." ON)
+option(ARX_USE_D3D7 "Build the Direct3D 7 renderer backend." OFF)
+option(ARX_USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
 option(ARX_USE_SDL "Build the SDL windowing backend." ON)
-option(ARX_USE_DINPUT7 "Build the DirectInput 7 input backend." ON)
+option(ARX_USE_DINPUT7 "Build the DirectInput 7 input backend." OFF)
+option(ARX_USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -62,8 +64,14 @@ endif()
 if(NOT HAVE_WINAPI)
 	# The is no DirectX under linux
 	set(ARX_USE_D3D7 OFF)
+	set(ARX_USE_D3D9 OFF)
 	set(ARX_USE_DSOUND OFF)
 	set(ARX_USE_DINPUT7 OFF)
+	set(ARX_USE_DINPUT8 OFF)
+else()
+	if(ARX_USE_D3D9)
+		find_package(DirectX REQUIRED)
+	endif()
 endif()
 
 find_package(Freetype REQUIRED)
@@ -125,13 +133,15 @@ if(MSVC)
 	endif()
 	
 	# Add dx7 include & lib paths
-	if("$ENV{DX7SDK_PATH}" STREQUAL "")
-		message(WARNING "DX7SDK_PATH environment variable not found")
-	else("$ENV{DX7SDK_PATH}" STREQUAL "")
-		message(STATUS "Using DirectX 7 SDK found in " $ENV{DX7SDK_PATH})
-		include_directories("$ENV{DX7SDK_PATH}/include")
-		link_directories("$ENV{DX7SDK_PATH}/lib")
-	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
+	if(ARX_USE_D3D7)
+		if("$ENV{DX7SDK_PATH}" STREQUAL "")
+			message(WARNING "DX7SDK_PATH environment variable not found")
+		else()
+			message(STATUS "Using DirectX 7 SDK found in " $ENV{DX7SDK_PATH})
+			include_directories("$ENV{DX7SDK_PATH}/include")
+			link_directories("$ENV{DX7SDK_PATH}/lib")
+		endif()
+	endif()
 
 	# Add boost lib path
 	link_directories(${Boost_LIBRARY_DIRS})
@@ -366,6 +376,11 @@ set(GRAPHICS_D3D7_SOURCES
 	src/graphics/d3d7/D3D7Texture2D.cpp
 	src/graphics/d3d7/D3D7TextureStage.cpp
 )
+set(GRAPHICS_D3D9_SOURCES
+	src/graphics/d3d9/D3D9Renderer.cpp
+	src/graphics/d3d9/D3D9Texture2D.cpp
+	src/graphics/d3d9/D3D9TextureStage.cpp
+)
 set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLTexture2D.cpp
 	src/graphics/opengl/GLTextureStage.cpp
@@ -386,6 +401,7 @@ set(GUI_SOURCES
 
 set(INPUT_SOURCES src/input/Input.cpp)
 set(INPUT_DINPUT7_SOURCES src/input/DInput7Backend.cpp)
+set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
@@ -470,6 +486,7 @@ set(WINDOW_SOURCES
 set(WINDOW_SDL_SOURCES src/window/SDLWindow.cpp)
 set(WINDOW_WIN32_SOURCES src/window/Win32Window.cpp)
 set(WINDOW_D3D7_SOURCES src/window/D3D7Window.cpp)
+set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
@@ -506,6 +523,16 @@ if(ARX_USE_D3D7)
 	set(HAVE_D3D7 1)
 endif()
 
+if(ARX_USE_D3D9)
+	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
+	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
+		
+	list(APPEND ARX_LIBRARIES ${DIRECTX_LIBRARY})
+	include_directories(SYSTEM ${DIRECTX_INCLUDE_DIR})
+	
+	set(HAVE_D3D9 1)
+endif()
+
 if(ARX_USE_OPENGL)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
@@ -526,6 +553,12 @@ if(ARX_USE_DINPUT7)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT7_SOURCES})
 	list(APPEND ARX_LIBRARIES dinput)
 	set(HAVE_DINPUT7 1)
+endif()
+
+if(ARX_USE_DINPUT8)
+	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
+	list(APPEND ARX_LIBRARIES dinput8)
+	set(HAVE_DINPUT8 1)
 endif()
 
 if(HAVE_POSIX_FILESYSTEM)

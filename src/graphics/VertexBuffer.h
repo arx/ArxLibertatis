@@ -16,6 +16,28 @@ enum BufferFlag {
 DECLARE_FLAGS(BufferFlag, BufferFlags);
 DECLARE_FLAGS_OPERATORS(BufferFlags);
 
+template <class Index>
+class IndexBuffer {
+	
+public:
+	
+	inline size_t capacity() const { return _capacity; }
+	
+	virtual void setData(const Index * vertices, size_t count, size_t offset = 0, BufferFlags flags = 0) = 0;
+	
+	virtual Index * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = (size_t)-1) = 0;
+	virtual void unlock() = 0;
+	
+	virtual ~IndexBuffer() { };
+	
+protected:
+	
+	IndexBuffer(size_t capacity) : _capacity(capacity) { }
+	
+	const size_t _capacity;
+	
+};
+
 template <class Vertex>
 class VertexBuffer {
 	

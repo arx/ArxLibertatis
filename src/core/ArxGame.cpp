@@ -85,6 +85,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifdef HAVE_D3D7
 #include "window/D3D7Window.h"
 #endif
+#ifdef HAVE_D3D9
+#include "window/D3D9Window.h"
+#endif
 #ifdef HAVE_SDL
 #include "window/SDLWindow.h"
 #endif
@@ -274,9 +277,19 @@ bool ArxGame::InitWindow() {
 		}
 	}
 #endif
-	
+
+#ifdef HAVE_D3D9
+	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D9")) {
+		matched = true;
+		RenderWindow * window = new D3D9Window;
+		if(!initWindow(window)) {
+			delete window;
+		}
+	}
+#endif
+
 #ifdef HAVE_D3D7
-	if(!m_MainWindow && (autoFramework || config.window.framework == "Win32")) {
+	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D7")) {
 		matched = true;
 		RenderWindow * window = new D3D7Window;
 		if(!initWindow(window)) {
@@ -2063,16 +2076,16 @@ static float _AvgFrameDiff = 150.f;
 		ARX_DrawAfterQuickLoad();
 	}
 
+	if(showFPS) {
+		CalcFPS();
+		ShowFPS();
+	}
+
 	GRenderer->EndScene();
 
 	//--------------NORENDEREND---------------------------------------------------
 	norenderend:
 		;
-
-	if(showFPS) {
-		CalcFPS();
-		ShowFPS();
-	}
 	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
 	{
