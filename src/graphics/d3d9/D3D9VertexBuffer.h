@@ -80,9 +80,9 @@ public:
 		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL)) {
 			usage |= D3DUSAGE_SOFTWAREPROCESSING;
 		}
-
+		
 		fvf = format;
-	
+		
 		HRESULT hr = GD3D9Device->CreateVertexBuffer(capacity * sizeof(Vertex), usage, format, D3DPOOL_SYSTEMMEM, &vb, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);		
@@ -101,8 +101,8 @@ public:
 		Vertex * dest = NULL;
 		
 		if(count == -1)
-			count = capacity();
-
+			count = VertexBuffer<Vertex>::capacity();
+		
 		HRESULT hr = vb->Lock(offset * sizeof(Vertex), count * sizeof(Vertex), (LPVOID*)&dest, ARXToDXBufferFlags[flags]);
 		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
@@ -134,18 +134,18 @@ public:
 		
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		arx_assert(indices != NULL);
-
+		
 		ib.setData(indices, nbindices);
 		
 		GD3D9Device->SetIndices(ib.ib);
 		GD3D9Device->SetStreamSource( 0, vb, offset * sizeof(Vertex), sizeof(Vertex));
 		GD3D9Device->SetFVF(fvf);
-
+		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
 		UINT nbPrimitives = GetNumberOfPrimitives(primitive, nbindices);
-
+		
 		HRESULT hr = GD3D9Device->DrawIndexedPrimitive(type, 0, 0, count, 0, nbPrimitives);
-
+		
 		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08x", hr);
 		ARX_UNUSED(hr);
 	}
