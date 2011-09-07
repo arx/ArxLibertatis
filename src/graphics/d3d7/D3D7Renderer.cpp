@@ -78,11 +78,15 @@ const D3DPRIMITIVETYPE ARXToDXPrimitiveType[] = {
 };
 
 const DWORD ARXToDXBufferFlags[] = {
-	0, // none
-	DDLOCK_DISCARDCONTENTS,                     // DiscardContents
-	DDLOCK_NOOVERWRITE,                         // NoOverwrite
-	DDLOCK_DISCARDCONTENTS | DDLOCK_NOOVERWRITE // DiscardContents | NoOverwrite
-};
+						0,						// None
+						D3DLOCK_DISCARD,				// DiscardContents
+						D3DLOCK_DISCARD,				// DiscardRange
+						D3DLOCK_DISCARD,				// DiscardContents | DiscardRange
+						D3DLOCK_NOOVERWRITE,				// NoOverwrite
+						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE,		// NoOverwrite | DiscardContents
+						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE,		// NoOverwrite | DiscardRange
+						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE		// NoOverwrite | DiscardContents | DiscardRange
+					};
 
 ///////////////////////////////////////////////////////////////////////////////
 // Renderer - DX7 implementation
