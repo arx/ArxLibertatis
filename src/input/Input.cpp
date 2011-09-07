@@ -69,6 +69,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifdef HAVE_DINPUT7
 #include "input/DInput7Backend.h"
 #endif
+#ifdef HAVE_DINPUT8
+#include "input/DInput8Backend.h"
+#endif
 #ifdef HAVE_SDL
 #include "input/SDLInputBackend.h"
 #endif
