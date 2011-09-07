@@ -1,8 +1,9 @@
 
 #include "graphics/d3d9/D3D9Renderer.h"
 
-#include <D3D9Types.h>
 #include <list>
+
+#include <d3d9types.h>
 
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
@@ -79,16 +80,15 @@ const D3DPRIMITIVETYPE ARXToDXPrimitiveType[] = {
 					};
 
 const DWORD ARXToDXBufferFlags[] = {
-						0,											// None
-						D3DLOCK_DISCARD,							// DiscardContents
-						D3DLOCK_DISCARD,							// DiscardRange
-						D3DLOCK_DISCARD,							// DiscardContents | DiscardRange
-						D3DLOCK_NOOVERWRITE,						// NoOverwrite
-						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE,		// NoOverwrite | DiscardContents
-						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE,		// NoOverwrite | DiscardRange
-						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE		// NoOverwrite | DiscardContents | DiscardRange
-					};
-
+	0,                                     // None
+	D3DLOCK_DISCARD,                       // DiscardBuffer
+	D3DLOCK_DISCARD,                       // DiscardRange
+	D3DLOCK_DISCARD,                       // DiscardBuffer | DiscardRange
+	D3DLOCK_NOOVERWRITE,                   // NoOverwrite
+	D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD, // NoOverwrite | DiscardBuffer
+	D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD, // NoOverwrite | DiscardRange
+	D3DLOCK_NOOVERWRITE | D3DLOCK_DISCARD  // NoOverwrite | DiscardBuffer | DiscardRange
+};
 
 UINT GetNumberOfPrimitives(Renderer::Primitive primitive, UINT nindices) {
 	UINT numPrimitives;
@@ -168,8 +168,6 @@ typedef struct _D3DLVERTEX {
 ///////////////////////////////////////////////////////////////////////////////
 // Renderer - DX9 implementation
 ///////////////////////////////////////////////////////////////////////////////
-
-extern LPDIRECT3DDEVICE9 GD3D9Device;
 
 D3D9Renderer::D3D9Renderer(D3D9Window * _window) : window(_window) { }
 

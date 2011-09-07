@@ -7,7 +7,7 @@
 #include "graphics/VertexBuffer.h"
 #include "window/D3D7Window.h"
 
-extern const DWORD ARXToDXBufferFlags[];
+extern const DWORD ARXToDX7BufferFlags[];
 extern const D3DPRIMITIVETYPE ARXToDXPrimitiveType[];
 extern LPDIRECT3DDEVICE7 GD3D7Device;
 
@@ -40,7 +40,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		Vertex * dest;
 		
-		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
+		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDX7BufferFlags[flags], (LPVOID*)&dest, NULL);
 		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
 		
@@ -54,7 +54,7 @@ public:
 		
 		Vertex * dest = NULL;
 		
-		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDXBufferFlags[flags], (LPVOID*)&dest, NULL);
+		HRESULT hr = vb->Lock(DDLOCK_WRITEONLY | ARXToDX7BufferFlags[flags], (LPVOID*)&dest, NULL);
 		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
 		

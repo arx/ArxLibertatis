@@ -1,13 +1,17 @@
 
 #include "graphics/d3d9/D3D9Texture2D.h"
 
-#include <D3D9.h>
-#include <D3D9Types.h>
-#include <D3DX9.h>
-#include <D3DX9Tex.h>
+// TODO(broken-wine) wine's d3dx9math.h requires min and max but doesn't include them!
+#include <algorithm>
+using std::max;
+using std::min;
+
+#include <d3d9.h>
+#include <d3d9types.h>
+#include <d3dx9.h>
+#include <d3dx9tex.h>
 
 #include "graphics/Math.h"
-
 #include "io/Logger.h"
 
 std::list<DX9Texture2D*> g_Textures2D;

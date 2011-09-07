@@ -277,7 +277,7 @@ bool ArxGame::InitWindow() {
 		}
 	}
 #endif
-
+	
 #ifdef HAVE_D3D9
 	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D9")) {
 		matched = true;
@@ -287,7 +287,7 @@ bool ArxGame::InitWindow() {
 		}
 	}
 #endif
-
+	
 #ifdef HAVE_D3D7
 	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D7")) {
 		matched = true;

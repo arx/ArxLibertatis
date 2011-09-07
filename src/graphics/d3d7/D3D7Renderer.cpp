@@ -77,16 +77,16 @@ const D3DPRIMITIVETYPE ARXToDXPrimitiveType[] = {
 	D3DPT_LINESTRIP      // LineStrip
 };
 
-const DWORD ARXToDXBufferFlags[] = {
-						0,						// None
-						D3DLOCK_DISCARD,				// DiscardContents
-						D3DLOCK_DISCARD,				// DiscardRange
-						D3DLOCK_DISCARD,				// DiscardContents | DiscardRange
-						D3DLOCK_NOOVERWRITE,				// NoOverwrite
-						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE,		// NoOverwrite | DiscardContents
-						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE,		// NoOverwrite | DiscardRange
-						D3DLOCK_DISCARD | D3DLOCK_NOOVERWRITE		// NoOverwrite | DiscardContents | DiscardRange
-					};
+const DWORD ARXToDX7BufferFlags[] = {
+	0,                                           // None
+	DDLOCK_DISCARDCONTENTS,                      // DiscardContents
+	0,                                           // DiscardRange
+	DDLOCK_DISCARDCONTENTS,                      // DiscardContents | DiscardRange
+	DDLOCK_NOOVERWRITE,                          // NoOverwrite
+	DDLOCK_NOOVERWRITE | DDLOCK_DISCARDCONTENTS, // NoOverwrite | DiscardContents
+	DDLOCK_NOOVERWRITE | 0,                      // NoOverwrite | DiscardRange
+	DDLOCK_NOOVERWRITE | DDLOCK_DISCARDCONTENTS  // NoOverwrite | DiscardContents | DiscardRange
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 // Renderer - DX7 implementation
