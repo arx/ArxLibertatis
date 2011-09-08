@@ -23,17 +23,20 @@ public:
 		D3DCAPS9 deviceCaps;
 		GD3D9Device->GetDeviceCaps(&deviceCaps);
 
+		D3DPOOL poolType = D3DPOOL_MANAGED;
 		DWORD dwUsage = D3DUSAGE_WRITEONLY;
 
-		if(usage & (Renderer::Dynamic | Renderer::Stream))
+		if(usage & (Renderer::Dynamic | Renderer::Stream) ) {
+			poolType = D3DPOOL_DEFAULT;
 			dwUsage |= D3DUSAGE_DYNAMIC;
+		}
 
 		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL))
 			dwUsage |= D3DUSAGE_SOFTWAREPROCESSING;
 
 		D3DFORMAT format = sizeof(Index) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32;
 
-		HRESULT hr = GD3D9Device->CreateIndexBuffer(capacity * sizeof(Index), dwUsage, format, D3DPOOL_DEFAULT, &ib, 0);
+		HRESULT hr = GD3D9Device->CreateIndexBuffer(capacity * sizeof(Index), dwUsage, format, poolType, &ib, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating index buffer: %08x", hr);
 		ARX_UNUSED(hr);
 	}
@@ -79,17 +82,20 @@ public:
 		D3DCAPS9 deviceCaps;
 		GD3D9Device->GetDeviceCaps(&deviceCaps);
 		
-		DWORD dwUsage = D3DUSAGE_WRITEONLY;
+		D3DPOOL poolType = D3DPOOL_MANAGED;
+		dwUsage = D3DUSAGE_WRITEONLY;
 
-		if(usage & (Renderer::Dynamic | Renderer::Stream) )
+		if(usage & (Renderer::Dynamic | Renderer::Stream) ) {
+			poolType = D3DPOOL_DEFAULT;
 			dwUsage |= D3DUSAGE_DYNAMIC;
+		}
 		
 		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL))
 			dwUsage |= D3DUSAGE_SOFTWAREPROCESSING;
 				
-		fvf = format;
+		dwFVF = format;
 		
-		HRESULT hr = GD3D9Device->CreateVertexBuffer(capacity * sizeof(Vertex), dwUsage, format, D3DPOOL_DEFAULT, &vb, 0);
+		HRESULT hr = GD3D9Device->CreateVertexBuffer(capacity * sizeof(Vertex), dwUsage, dwFVF, poolType, &vb, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);		
 	}
@@ -108,7 +114,7 @@ public:
 		
 		if(count == (size_t)-1)
 			count = VertexBuffer<Vertex>::capacity();
-		
+
 		HRESULT hr = vb->Lock(offset * sizeof(Vertex), count * sizeof(Vertex), (LPVOID*)&dest, ARXToDXBufferFlags[flags]);
 		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);
@@ -125,7 +131,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		
 		GD3D9Device->SetStreamSource( 0, vb, offset * sizeof(Vertex), sizeof(Vertex));
-		GD3D9Device->SetFVF(fvf);
+		GD3D9Device->SetFVF(dwFVF);
 
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
 		UINT nbPrimitives = GetNumberOfPrimitives(primitive, count);
@@ -145,7 +151,7 @@ public:
 		
 		GD3D9Device->SetIndices(ib.ib);
 		GD3D9Device->SetStreamSource( 0, vb, offset * sizeof(Vertex), sizeof(Vertex));
-		GD3D9Device->SetFVF(fvf);
+		GD3D9Device->SetFVF(dwFVF);
 		
 		D3DPRIMITIVETYPE type = ARXToDXPrimitiveType[primitive];
 		UINT nbPrimitives = GetNumberOfPrimitives(primitive, nbindices);
@@ -163,7 +169,8 @@ public:
 private:
 	mutable D3DIndexBuffer<unsigned short> ib;
 	LPDIRECT3DVERTEXBUFFER9 vb;
-	DWORD fvf;
+	DWORD dwFVF;
+	DWORD dwUsage;
 };
 
 #endif // ARX_GRAPHICS_D3D9_D3D9VERTEXBUFFER_H
