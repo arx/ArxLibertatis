@@ -88,6 +88,7 @@ const bool
 	bumpmap = false,
 	showCrosshair = true,
 	antialiasing = false,
+	vsync = true,
 	eax = false,
 	invertMouse = false,
 	autoReadyWeapon = false,
@@ -176,7 +177,8 @@ const string
 	luminosity = "luminosity",
 	contrast = "contrast",
 	showCrosshair = "show_crosshair",
-	antialiasing = "antialiasing";
+	antialiasing = "antialiasing",
+	vsync = "vsync";
 
 // Window options
 const string
@@ -403,6 +405,7 @@ bool Config::save() {
 	writer.writeKey(Key::contrast, video.contrast);
 	writer.writeKey(Key::showCrosshair, video.showCrosshair);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
+	writer.writeKey(Key::vsync, video.vsync);
 	
 	// window
 	writer.beginSection(Section::Window);
@@ -504,6 +507,7 @@ bool Config::init(const string & file, const string & defaultFile) { // TODO use
 	video.contrast = reader.getKey(Section::Video, Key::contrast, Default::contrast);
 	video.showCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
+	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
 	
 	// Get window settings
 	string windowSize = reader.getKey(Section::Window, Key::windowSize, Default::windowSize);
