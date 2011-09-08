@@ -69,7 +69,7 @@ using std::vector;
 
 LPDIRECT3DDEVICE9 GD3D9Device = NULL;
 
-D3D9Window::D3D9Window() : d3d(NULL), deviceInfo(NULL) { }
+D3D9Window::D3D9Window() : deviceInfo(NULL), d3d(NULL) { }
 
 D3D9Window::~D3D9Window() {
 	destroyObjects();
