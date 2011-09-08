@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
+#include "core/Config.h"
 #include "graphics/d3d9/D3D9Renderer.h"
 #include "io/Logger.h"
 #include "math/Rectangle.h"
@@ -203,14 +204,30 @@ bool D3D9Window::initialize(DisplayMode mode) {
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
+	// VSync
+	d3dpp.PresentationInterval = config.video.vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
+	
 	if(IsFullScreen()) {
 		d3dpp.Windowed = FALSE;
 		d3dpp.BackBufferWidth = m_Size.x;
 		d3dpp.BackBufferHeight = m_Size.y;
 		d3dpp.BackBufferFormat = mode.depth == 16 ? D3DFMT_R5G6B5 : D3DFMT_X8R8G8B8;
 	} else {
+		D3DDISPLAYMODE displayMode;
+		d3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &displayMode);
+
 		d3dpp.Windowed = TRUE;
-		d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+		d3dpp.BackBufferFormat = displayMode.Format;
+	}
+
+	// Multisampling - Part 1
+	// Check for availability in the mode we're going to use
+	if(config.video.antialiasing) {
+		DWORD QualityLevels;
+		if(SUCCEEDED(d3d->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.BackBufferFormat, d3dpp.Windowed, D3DMULTISAMPLE_4_SAMPLES, &QualityLevels))) {
+			d3dpp.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;
+			d3dpp.MultiSampleQuality = QualityLevels - 1;
+		}
 	}
 
 	if( FAILED( d3d->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device ) ) )
@@ -220,6 +237,12 @@ bool D3D9Window::initialize(DisplayMode mode) {
 
 	renderer = new D3D9Renderer(this);
 	renderer->Initialize();
+
+	// Multisampling - Part 2
+	// Set the multisampling render state
+	if(d3dpp.MultiSampleType != D3DMULTISAMPLE_NONE) {
+		GD3D9Device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, true);
+	}
 	
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(GetSize().x, GetSize().y));
