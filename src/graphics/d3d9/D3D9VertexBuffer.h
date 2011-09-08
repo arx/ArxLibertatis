@@ -69,7 +69,7 @@ class D3D9VertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	D3D9VertexBuffer(D3D9Window * window, DWORD format, size_t capacity) 
+	D3D9VertexBuffer(DWORD format, size_t capacity) 
 		: VertexBuffer<Vertex>(capacity)
 		, ib(capacity*4) {
 		
@@ -100,7 +100,7 @@ public:
 	Vertex * lock(BufferFlags flags, size_t offset, size_t count) {
 		Vertex * dest = NULL;
 		
-		if(count == -1)
+		if(count == (size_t)-1)
 			count = VertexBuffer<Vertex>::capacity();
 		
 		HRESULT hr = vb->Lock(offset * sizeof(Vertex), count * sizeof(Vertex), (LPVOID*)&dest, ARXToDXBufferFlags[flags]);
