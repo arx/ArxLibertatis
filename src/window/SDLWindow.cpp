@@ -121,6 +121,8 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
+
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
 	m_Size = Vec2i::ZERO;
 	depth = 0;
