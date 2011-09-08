@@ -120,6 +120,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "physics/Attractors.h"
 
+#include "platform/CrashHandler.h"
 #include "platform/String.h"
 #include "platform/Random.h"
 #include "platform/Thread.h"
@@ -616,7 +617,7 @@ int main(int argc, char ** argv) {
 	
 	(void)argc, (void)argv;
 	
-	long i;
+	initCrashHandler();
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
@@ -648,14 +649,13 @@ int main(int argc, char ** argv) {
 	CalcFPS(true);
 	
 	ARX_MAPMARKER_Init();
-
-	for (i=0;i<8;i++)
-		scursor[i]=NULL;
-
+	
+	memset(scursor, 0, sizeof(scursor));
+	
 	ARX_SPELLS_CancelSpellTarget();
-
-	for (i=0;i<MAX_EXPLO;i++) explo[i]=NULL;
-
+	
+	memset(explo, 0, sizeof(explo));
+	
 	USE_FAST_SCENES = 1;
 	LogDebug << "Danae Start";
 

@@ -174,6 +174,9 @@ else(MSVC)
 	
 	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
 	
+	check_include_file("unistd.h" HAVE_UNISTD_H_)
+	check_include_file("signal.h" HAVE_SIGNAL_H)
+	
 	# Warning level
 	add_cxxflag("-Wall")
 	add_cxxflag("-Wextra")
@@ -196,9 +199,12 @@ else(MSVC)
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
 	if(ARX_DEBUG)
+		
 		#Debug
+		
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
 		add_definitions(-D_DEBUG)
+		
 	else()
 		#Release
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3") # TODO fix strict aliasing
@@ -424,6 +430,7 @@ set(PHYSICS_SOURCES
 )
 
 set(PLATFORM_SOURCES
+	src/platform/CrashHandler.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
 	src/platform/Random.cpp
