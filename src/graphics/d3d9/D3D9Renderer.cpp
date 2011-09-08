@@ -481,19 +481,19 @@ void D3D9Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, flo
 
 VertexBuffer<TexturedVertex> * D3D9Renderer::createVertexBufferTL(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
-	return new D3D9VertexBuffer<TexturedVertex>(D3DFVF_TLVERTEX, capacity);
+	return new D3D9VertexBuffer<TexturedVertex>(D3DFVF_TLVERTEX, capacity, usage);
 }
 
 VertexBuffer<SMY_VERTEX> * D3D9Renderer::createVertexBuffer(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEXTUREFORMAT2;
-	return new D3D9VertexBuffer<SMY_VERTEX>(format, capacity);
+	return new D3D9VertexBuffer<SMY_VERTEX>(format, capacity, usage);
 }
 
 VertexBuffer<SMY_VERTEX3> * D3D9Renderer::createVertexBuffer3(size_t capacity, BufferUsage usage) {
 	ARX_UNUSED(usage);
 	const DWORD format = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX3 | D3DFVF_TEXTUREFORMAT2;
-	return new D3D9VertexBuffer<SMY_VERTEX3>(format, capacity);
+	return new D3D9VertexBuffer<SMY_VERTEX3>(format, capacity, usage);
 }
 
 void D3D9Renderer::drawIndexed(Primitive primitive, const TexturedVertex * vertices, size_t nvertices, unsigned short * indices, size_t nindices) {

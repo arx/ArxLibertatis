@@ -18,19 +18,22 @@ class D3DIndexBuffer : public IndexBuffer<Index> {
 
 public:
 
-	D3DIndexBuffer(size_t capacity) : IndexBuffer<Index>(capacity) {
+	D3DIndexBuffer(size_t capacity, Renderer::BufferUsage usage) : IndexBuffer<Index>(capacity) {
 
 		D3DCAPS9 deviceCaps;
 		GD3D9Device->GetDeviceCaps(&deviceCaps);
 
-		DWORD usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL)) {
-			usage |= D3DUSAGE_SOFTWAREPROCESSING;
-		}
+		DWORD dwUsage = D3DUSAGE_WRITEONLY;
+
+		if(usage & (Renderer::Dynamic | Renderer::Stream))
+			dwUsage |= D3DUSAGE_DYNAMIC;
+
+		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL))
+			dwUsage |= D3DUSAGE_SOFTWAREPROCESSING;
 
 		D3DFORMAT format = sizeof(Index) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32;
 
-		HRESULT hr = GD3D9Device->CreateIndexBuffer(capacity * sizeof(Index), usage, format, D3DPOOL_SYSTEMMEM, &ib, 0);
+		HRESULT hr = GD3D9Device->CreateIndexBuffer(capacity * sizeof(Index), dwUsage, format, D3DPOOL_DEFAULT, &ib, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating index buffer: %08x", hr);
 		ARX_UNUSED(hr);
 	}
@@ -69,21 +72,24 @@ class D3D9VertexBuffer : public VertexBuffer<Vertex> {
 	
 public:
 	
-	D3D9VertexBuffer(DWORD format, size_t capacity) 
+	D3D9VertexBuffer(DWORD format, size_t capacity, Renderer::BufferUsage usage) 
 		: VertexBuffer<Vertex>(capacity)
-		, ib(capacity*4) {
+		, ib(capacity*4, Renderer::Dynamic) {
 		
 		D3DCAPS9 deviceCaps;
 		GD3D9Device->GetDeviceCaps(&deviceCaps);
 		
-		DWORD usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL)) {
-			usage |= D3DUSAGE_SOFTWAREPROCESSING;
-		}
+		DWORD dwUsage = D3DUSAGE_WRITEONLY;
+
+		if(usage & (Renderer::Dynamic | Renderer::Stream) )
+			dwUsage |= D3DUSAGE_DYNAMIC;
 		
+		if(!(deviceCaps.DeviceType & D3DDEVTYPE_HAL))
+			dwUsage |= D3DUSAGE_SOFTWAREPROCESSING;
+				
 		fvf = format;
 		
-		HRESULT hr = GD3D9Device->CreateVertexBuffer(capacity * sizeof(Vertex), usage, format, D3DPOOL_SYSTEMMEM, &vb, 0);
+		HRESULT hr = GD3D9Device->CreateVertexBuffer(capacity * sizeof(Vertex), dwUsage, format, D3DPOOL_DEFAULT, &vb, 0);
 		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
 		ARX_UNUSED(hr);		
 	}
@@ -135,7 +141,7 @@ public:
 		arx_assert(offset + count <= VertexBuffer<Vertex>::capacity());
 		arx_assert(indices != NULL);
 		
-		ib.setData(indices, nbindices);
+		ib.setData(indices, nbindices, 0, DiscardBuffer);
 		
 		GD3D9Device->SetIndices(ib.ib);
 		GD3D9Device->SetStreamSource( 0, vb, offset * sizeof(Vertex), sizeof(Vertex));
