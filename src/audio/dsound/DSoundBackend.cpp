@@ -34,6 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/dsound/eax.h"
 #include "window/RenderWindow.h"
 
+#include "io/Logger.h"
+
 namespace audio {
 
 static const PCMFormat globalFormat = { 22050, 16, 2 };
