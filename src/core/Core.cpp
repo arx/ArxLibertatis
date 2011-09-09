@@ -60,33 +60,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <cstdio>
-#include <fstream>
+#include <algorithm>
 #include <sstream>
-#include <set>
-#include <iomanip>
+#include <vector>
 
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
 #include "animation/Animation.h"
+#include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 
+#include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
 #include "core/Dialog.h"
-#include "core/Resource.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
 
 #include "game/Missile.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
-#include "game/Map.h"
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
-#include "game/NPC.h"
+#include "game/Spells.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -95,35 +96,44 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 
-#include "graphics/VertexBuffer.h"
-#include "graphics/GraphicsModes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/FTL.h"
-#include "graphics/data/CinematicTexture.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "gui/Interface.h"
+#include "gui/Text.h"
+
 #include "input/Input.h"
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
 
 #include "io/FilePath.h"
-#include "io/Filesystem.h"
 #include "io/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
+
+#include "math/Angle.h"
+#include "math/Rectangle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
  
 #include "physics/Collisions.h"
 #include "physics/Attractors.h"
 
 #include "platform/CrashHandler.h"
-#include "platform/String.h"
-#include "platform/Random.h"
-#include "platform/Thread.h"
+#include "platform/Flags.h"
+#include "platform/Platform.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -135,8 +145,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Object.h"
 
+#include "script/Script.h"
 #include "script/ScriptEvent.h"
-#include "script/ScriptDebugger.h"
+
+#include "window/RenderWindow.h"
+
+class TextManager;
 
 using std::min;
 using std::max;
@@ -407,6 +421,8 @@ long USE_PORTALS = 3;
 
 Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
+
+EERIE_CAMERA  * Kam;
 
 //-----------------------------------------------------------------------------
 

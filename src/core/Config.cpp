@@ -25,15 +25,19 @@
 
 #include "core/Config.h"
 
+#include <stddef.h>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 
 #include "input/Input.h"
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
 #include "io/IniReader.h"
+#include "io/IniSection.h"
 #include "io/IniWriter.h"
 #include "io/Logger.h"
-#include "platform/String.h"
-#include "platform/Platform.h"
+#include "math/Vector2.h"
 
 using std::string;
 using std::ifstream;
@@ -41,7 +45,6 @@ using std::ostream;
 using std::ofstream;
 using std::istringstream;
 using std::ostringstream;
-using std::map;
 
 // To avoid conflicts with potential other classes/namespaces
 namespace {

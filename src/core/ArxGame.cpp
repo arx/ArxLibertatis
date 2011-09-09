@@ -25,7 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/ArxGame.h"
 
+#include <stddef.h>
 #include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <sstream>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
@@ -35,21 +39,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 #include "core/Config.h"
-#include "core/Dialog.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
-#include "core/Resource.h"
 
+#include "game/Damage.h"
 #include "game/Inventory.h"
 #include "game/Levels.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
 #include "graphics/GraphicsModes.h"
-#include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
@@ -68,11 +76,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 
 #include "input/Input.h"
+#include "input/Keyboard.h"
 
-#include "io/CinematicLoad.h"
+#include "math/Angle.h"
+#include "math/MathFwd.h"
+#include "math/Rectangle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+
+#include "io/FilePath.h"
 #include "io/Logger.h"
 #include "io/PakReader.h"
 #include "io/Screenshot.h"
+
+#include "platform/Flags.h"
+#include "platform/Platform.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Interactive.h"
@@ -81,6 +99,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
 #include "scene/Scene.h"
+
+#include "script/Script.h"
+
+#include "Configure.h"
 
 #ifdef HAVE_D3D7
 #include "window/D3D7Window.h"

@@ -58,8 +58,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_CORE_H
 #define ARX_CORE_CORE_H
 
-#include "graphics/GraphicsTypes.h"
+#include <stddef.h>
+#include <string>
+
+#include "graphics/Color.h"
 #include "graphics/data/Mesh.h"
+#include "io/FilePath.h"
+#include "math/MathFwd.h"
+
+#include "Configure.h"
+
+class TextureContainer;
+struct EERIE_3DOBJ;
+struct EERIE_MULTI3DSCENE;
 
 const std::string arxVersion = "Arx Libertatis 0.1";
 

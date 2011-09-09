@@ -26,7 +26,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_ARXGAME_H
 #define ARX_CORE_ARXGAME_H
 
+#include <string>
+
 #include "core/Application.h"
+#include "window/Window.h"
 #include "window/RenderWindow.h"
 
 class ArxGame : public Application, public Window::Listener, public RenderWindow::RendererListener {
