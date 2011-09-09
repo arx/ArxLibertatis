@@ -25,14 +25,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/PathFinder.h"
 
-#include <climits>
+#include <limits>
+#include <algorithm>
 
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
-
+#include "math/Vector3.h"
+#include "platform/Platform.h"
 #include "platform/Random.h"
-
-#include "scene/Interactive.h"
 
 static const float MIN_RADIUS = 110.0f;
 

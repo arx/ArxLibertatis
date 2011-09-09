@@ -56,13 +56,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_PATHS_H
 #define ARX_AI_PATHS_H
 
-#include "graphics/GraphicsTypes.h"
-#include "platform/Flags.h"
+#include <stddef.h>
+#include <string>
 
-#include "Configure.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "io/FilePath.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
+#include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_CAMERA;
+struct EERIE_3DOBJ;
 
 class CRuban;
 

@@ -58,13 +58,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinderManager.h"
 
 #include <cstring>
+#include <cstdlib>
+#include <algorithm>
 
 #include "ai/PathFinder.h"
 #include "graphics/Math.h"
 #include "platform/Thread.h"
 #include "platform/Lock.h"
 #include "scene/Light.h"
-#include "scene/Interactive.h"
 
 using std::memcpy;
 

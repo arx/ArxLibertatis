@@ -47,7 +47,7 @@ public:
 		return r;
 	}
 	
-	inline void remove(Enum flag) const {
+	inline void remove(Enum flag) {
 		flags &= ~(u32)flag;
 	}
 	
