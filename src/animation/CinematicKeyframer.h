@@ -3,7 +3,7 @@
 #define ARX_ANIMATION_CINEMATICKEYFRAMER_H
 
 #include "animation/Cinematic.h" // for CinematicLight
-#include "graphics/GraphicsTypes.h" // for EERIE_3D
+#include "math/Vector3.h"
 
 #define INTERP_NO     -1
 #define INTERP_BEZIER 0

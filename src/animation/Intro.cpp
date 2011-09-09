@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // TODO header file
 
+#include <algorithm>
 #include <cstdio>
 
 #include "core/Application.h"
@@ -32,11 +33,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Levels.h"
 
-#include "gui/Interface.h"
 #include "gui/Menu.h"
 
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
-#include "graphics/Math.h"
+#include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -172,14 +173,7 @@ static long lastnum = -1;
 static float fFadeSens = 0.f;
 static float fFadeColor = 0.f;
 
-//-----------------------------------------------------------------------------
-void LoadLevelScreen()
-{
-	LoadLevelScreen(-1);
-}
-
-void LoadLevelScreen(long num)
-{
+void LoadLevelScreen(long num) {
 	Project.vsync = 0;
 
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
@@ -336,6 +330,10 @@ void LoadLevelScreen(long num)
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
 
 	Project.vsync = 1;
+}
+
+void LoadLevelScreen() {
+	LoadLevelScreen(-1);
 }
 
 //-----------------------------------------------------------------------------

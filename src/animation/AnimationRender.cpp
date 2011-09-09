@@ -25,6 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
+#include <stddef.h>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+
 #include "animation/Animation.h"
 
 #include "core/Application.h"
@@ -35,19 +40,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "gui/MenuWidgets.h"
+#include "math/Angle.h"
+#include "math/Vector3.h"
 
-#include "physics/Clothes.h"
 #include "physics/Collisions.h"
 
-#include "scene/Object.h"
+#include "platform/Platform.h"
+
 #include "scene/Light.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
@@ -56,28 +68,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern		bool 		MIPM;
-extern		float 		vdist;
-extern		unsigned char * grps;
-extern		long 		max_grps;
-extern		long		FORCE_NO_HIDE;
-extern		long		USEINTERNORM;
-extern 		long 		INTER_DRAW;
+extern unsigned char * grps;
+extern long max_grps;
+extern long FORCE_NO_HIDE;
+extern long USEINTERNORM;
+extern long INTER_DRAW;
 
-extern		float		dists[];
+extern float dists[];
 extern long BH_MODE;
 extern int iHighLight;
 
 extern TextureContainer TexSpecialColor;
 
- 
 extern long FLAG_ALLOW_CLOTHES;
- 
+
 long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
-extern EERIEMATRIX ProjectionMatrix;
-extern float fZFogStart;
 
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)

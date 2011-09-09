@@ -25,15 +25,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Cinematic.h"
 
+#include <cmath>
+#include <algorithm>
+
 #include "animation/CinematicKeyframer.h"
 
 #include "core/Application.h"
 
+#include "graphics/Color.h"
 #include "graphics/Math.h"
-#include "graphics/Draw.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/CinematicEffects.h"
 #include "graphics/texture/TextureStage.h"
+
+#include "math/Angle.h"
 
 #include "scene/CinematicSound.h"
 
@@ -50,7 +58,6 @@ bool			LeftButton, RightButton;
 int				 InsertKey;
 C_KEY		*	KeyCopy;
 int				LargeurRender, HauteurRender;
-TextureContainer * FxTexture[2];
 bool			InRender;
 bool			ProjectModif;
 
@@ -267,7 +274,7 @@ void Cinematic::DeleteDeviceObjects() {
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	
-    GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
@@ -649,12 +656,8 @@ void Cinematic::Render(float FDIFF) {
 				break;
 			case FX_APPEAR:
 
-				if (FxTexture[0]) SpecialFadeEnCours = SpecialFade(FxTexture[0], (float)LargeurRender, (float)HauteurRender, speed, GetTrackFPS(), FPS);
-
 				break;
 			case FX_APPEAR2:
-
-				if (FxTexture[0]) SpecialFadeEnCours = SpecialFadeR(FxTexture[0], (float)LargeurRender, (float)HauteurRender, speed, GetTrackFPS(), FPS);
 
 				break;
 			default:

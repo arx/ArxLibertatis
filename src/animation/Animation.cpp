@@ -57,9 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
 #include <cstdio>
-#include <climits>
+#include <cstring>
 #include <sstream>
+#include <vector>
 
 #include "animation/AnimationRender.h"
 
@@ -70,9 +74,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -82,15 +91,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/Logger.h"
 
-#include "physics/Clothes.h"
-#include "physics/Collisions.h"
+#include "math/Angle.h"
+#include "math/Vector3.h"
+
+#include "platform/Platform.h"
+#include "platform/String.h"
 
 #include "scene/Object.h"
-#include "scene/Light.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
-#include <platform/String.h>
+
+#include "script/Script.h"
 
 using std::min;
 using std::max;

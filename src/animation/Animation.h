@@ -37,6 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  ARX_ANIMATION_ANIMATION_H
 #define  ARX_ANIMATION_ANIMATION_H
 
+#include <stddef.h>
 #include <string>
 
 #include "math/MathFwd.h"
