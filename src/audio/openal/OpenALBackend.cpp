@@ -25,12 +25,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/openal/OpenALBackend.h"
 
+#include <stddef.h>
+
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "audio/openal/OpenALSource.h"
 #include "audio/openal/OpenALUtils.h"
-#include "audio/AudioGlobal.h"
 #include "audio/AudioEnvironment.h"
+#include "audio/AudioGlobal.h"
+#include "audio/AudioSource.h"
+#include "io/Logger.h"
+#include "math/Vector3.h"
+#include "platform/Platform.h"
 
 namespace audio {
+
+class Sample;
 
 #undef ALError
 #define ALError LogError

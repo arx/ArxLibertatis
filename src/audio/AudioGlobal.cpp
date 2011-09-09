@@ -25,8 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioGlobal.h"
 
-#include <ctime>
-
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
 #include "audio/Ambiance.h"

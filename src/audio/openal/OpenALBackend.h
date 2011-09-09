@@ -13,10 +13,13 @@
 #include "audio/AudioBackend.h"
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
+#include "math/MathFwd.h"
 
 namespace audio {
 
+class Environment;
 class OpenALSource;
+class Source;
 
 class OpenALBackend : public Backend {
 	

@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIORESOURCE_H
 #define ARX_AUDIO_AUDIORESOURCE_H
 
+#include <stddef.h>
 #include <cstdlib>
 #include <cstring>
 
@@ -34,9 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class PakFileHandle;
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 namespace audio {
 

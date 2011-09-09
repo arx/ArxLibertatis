@@ -25,9 +25,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/codec/ADPCM.h"
 
-#include <cstdio>
+#include <algorithm>
 
 #include "audio/AudioTypes.h"
+#include "audio/codec/WAVFormat.h"
 #include "io/PakReader.h"
 
 namespace audio {

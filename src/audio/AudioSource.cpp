@@ -1,6 +1,8 @@
 
 #include "audio/AudioSource.h"
 
+#include <algorithm>
+
 #include "audio/AudioGlobal.h"
 #include "audio/Sample.h"
 

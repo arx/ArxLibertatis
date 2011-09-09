@@ -32,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioTypes.h"
 #include "audio/AudioSource.h"
+#include "math/MathFwd.h"
 
 namespace audio {
 

@@ -25,15 +25,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/openal/OpenALSource.h"
 
-#include <cstdio>
+#include <cmath>
+#include <algorithm>
 
 #include "audio/openal/OpenALUtils.h"
 #include "audio/AudioGlobal.h"
+#include "audio/AudioResource.h"
 #include "audio/Stream.h"
 #include "audio/Sample.h"
 #include "audio/Mixer.h"
-
+#include "io/FilePath.h"
 #include "io/Logger.h"
+#include "math/Vector3.h"
 #include "platform/Platform.h"
 
 namespace audio {

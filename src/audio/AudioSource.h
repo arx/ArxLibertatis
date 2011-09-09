@@ -26,14 +26,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOSOURCE_H
 #define ARX_AUDIO_AUDIOSOURCE_H
 
+#include <stddef.h>
 #include <vector>
+#include <utility>
 
 #include "audio/AudioTypes.h"
+#include "math/MathFwd.h"
 
 namespace audio {
 
 class Sample;
-class Stream;
 
 /*!
  * An audio source that can play one sample.

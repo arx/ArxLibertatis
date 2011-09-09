@@ -26,13 +26,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_STREAM_H
 #define ARX_AUDIO_STREAM_H
 
-#include "AudioTypes.h"
+#include <stddef.h>
+
+#include "audio/AudioTypes.h"
 
 class PakFileHandle;
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 namespace audio {
 
