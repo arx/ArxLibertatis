@@ -57,7 +57,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Damage.h"
 
+#include <cstring>
 #include <cstdio>
+#include <algorithm>
+#include <limits>
+#include <string>
+#include <vector>
 
 #include "ai/Paths.h"
 
@@ -68,12 +73,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Equipment.h"
 #include "game/Inventory.h"
+#include "game/Spells.h"
 
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
@@ -82,11 +93,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 
 #include "scene/GameSound.h"
-#include "scene/LinkedObject.h"
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
 #include "script/Script.h"
+
+class TextureContainer;
 
 using std::min;
 using std::max;

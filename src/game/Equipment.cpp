@@ -55,29 +55,40 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <cstdio>
+#include <cctype>
 #include <cstdlib>
-
-#include "core/Core.h"
+#include <cstring>
+#include <algorithm>
+#include <vector>
 
 #include "game/Equipment.h"
 #include "game/NPC.h"
 #include "game/Damage.h"
 #include "game/Player.h"
 #include "game/Inventory.h"
+#include "game/Spells.h"
 
 #include "gui/Interface.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
 
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+
 #include "physics/Collisions.h"
 
 #include "platform/String.h"
+#include "platform/Platform.h"
 
 #include "scene/Object.h"
 #include "scene/LinkedObject.h"
@@ -119,7 +130,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
 	
 	char c = temp[0];
 	
-	arx_assert(tolower(c) == c);
+	arx_assert(std::tolower(c) == c);
 	
 	switch(c) {
 		case 'w':

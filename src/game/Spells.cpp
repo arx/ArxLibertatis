@@ -36,6 +36,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <limits>
+#include <map>
+#include <set>
+#include <utility>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -51,14 +57,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 #include "gui/Menu.h"
 #include "gui/Interface.h"
-#include "gui/MenuWidgets.h"
 #include "gui/MiniMap.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/effects/Fog.h"
+#include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 #include "graphics/spells/Spells01.h"
 #include "graphics/spells/Spells02.h"
 #include "graphics/spells/Spells03.h"
@@ -66,7 +78,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/Spells05.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells07.h"
-#include "graphics/spells/Spells08.h"
 #include "graphics/spells/Spells09.h"
 #include "graphics/spells/Spells10.h"
 
@@ -75,15 +86,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/Logger.h"
 
+#include "math/Angle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+
 #include "physics/Collisions.h"
 
+#include "platform/Platform.h"
 #include "platform/String.h"
 
 #include "scene/Light.h"
-#include "scene/Object.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+
+#include "script/Script.h"
 
 using std::abs;
 using std::string;
@@ -2652,8 +2669,8 @@ static void ARX_SPEELS_GetMaxRect(const char *_pcName)
 //-----------------------------------------------------------------------------
 // Initializes Spell engine (Called once at DANAE startup)
 void ARX_SPELLS_Init_Rects() {
-	lMaxSymbolDrawSizeX=INT_MIN;
-	lMaxSymbolDrawSizeY=INT_MIN;
+	lMaxSymbolDrawSizeX = std::numeric_limits<long>::min();
+	lMaxSymbolDrawSizeY = std::numeric_limits<long>::min();
 
 	ARX_SPEELS_GetMaxRect("aam");
 	ARX_SPEELS_GetMaxRect("cetrius");

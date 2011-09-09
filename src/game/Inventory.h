@@ -2,6 +2,9 @@
 #ifndef ARX_GAME_INVENTORY_H
 #define ARX_GAME_INVENTORY_H
 
+#include <stddef.h>
+#include <string>
+
 #include "math/MathFwd.h"
 #include "script/Script.h"
 

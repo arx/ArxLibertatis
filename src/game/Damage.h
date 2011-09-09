@@ -58,7 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_DAMAGE_H
 #define ARX_GAME_DAMAGE_H
 
-#include "graphics/GraphicsTypes.h"
+#include <stddef.h>
+
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
 #include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;

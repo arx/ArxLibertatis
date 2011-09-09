@@ -33,21 +33,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Missile.h"
 
+#include <stddef.h>
+
 #include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Player.h"
 
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/data/TextureContainer.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "physics/Physics.h"
+#include "math/Vector3.h"
+
+#include "platform/Flags.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
+
+class TextureContainer;
 
 struct ARX_MISSILE
 {

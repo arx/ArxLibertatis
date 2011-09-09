@@ -25,6 +25,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Map.h"
 
+#ifdef BUILD_EDITOR
+
+int iCreateMap = 0; // used to create mini-map bitmap
+
+#endif
+
+// TODO(core_cleanup)
+#if 0
+
 #include <cstdio>
 
 #include "core/Application.h"
@@ -43,15 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 
 #include "window/Window.h"
-
-#ifdef BUILD_EDITOR
-
-int iCreateMap = 0; // used to create mini-map bitmap
-
-#endif
-
-// TODO(core_cleanup)
-#if 0
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;

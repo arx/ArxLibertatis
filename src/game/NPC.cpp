@@ -57,7 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 
+#include <stddef.h>
+#include <cmath>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <limits>
+#include <vector>
 
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
@@ -75,20 +82,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 
-#include "graphics/Draw.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
 
+#include "math/Angle.h"
+#include "math/Vector3.h"
+
 #include "physics/Box.h"
-#include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 
 #include "platform/String.h"
+#include "platform/Flags.h"
+#include "platform/Platform.h"
 
 #include "scene/Object.h"
 #include "scene/Interactive.h"

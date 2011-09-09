@@ -57,6 +57,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
+#include <stddef.h>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <limits>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -77,9 +83,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/MiniMap.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
-#include "graphics/Math.h"
 #include "graphics/GraphicsModes.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleManager.h"
@@ -90,10 +101,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
+#include "math/Angle.h"
+#include "math/Vector3.h"
+
 #include "physics/Collisions.h"
 #include "physics/Attractors.h"
 
-#include "platform/String.h"
+#include "platform/Platform.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
@@ -101,6 +115,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+
+#include "script/Script.h"
 
 using std::vector;
 
@@ -1450,7 +1466,7 @@ long GetXPforLevel(long level)
 			return level * 60000;
 	}
 
-	return LONG_MAX;
+	return std::numeric_limits<long>::max();
 }
 
 //*************************************************************************************

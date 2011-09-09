@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_EQUIPMENT_H
 #define ARX_GAME_EQUIPMENT_H
 
+#include <stddef.h>
 #include <string>
 
 #include "math/MathFwd.h"
