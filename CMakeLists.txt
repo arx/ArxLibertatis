@@ -559,6 +559,10 @@ if(ARX_USE_DINPUT8)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES dinput8)
 	set(HAVE_DINPUT8 1)
+	if(WINE AND NOT ARX_USE_DINPUT7)
+		# TODO(broken-wine) work around missing symbols in wine's dinput8
+		list(APPEND ARX_LIBRARIES dinput)
+	endif()
 endif()
 
 if(HAVE_POSIX_FILESYSTEM)
