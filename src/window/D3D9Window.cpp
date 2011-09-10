@@ -300,7 +300,26 @@ void D3D9Window::restoreObjects() {
 }
 
 void D3D9Window::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
-	// TODO-dx9: Gamma ramp
+
+	D3DGAMMARAMP ramp;
+	
+	if(!red || !green || !blue) {
+		GD3D9Device->GetGammaRamp(0, &ramp);
+	}
+	
+	if(red) {
+		std::copy(red, red + 256, ramp.red);
+	}
+	
+	if(green) {
+		std::copy(green, green + 256, ramp.green);
+	}
+	
+	if(blue) {
+		std::copy(blue, blue + 256, ramp.blue);
+	}
+
+	GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &ramp);
 }
 
 void D3D9Window::evictManagedTextures() {
