@@ -4,6 +4,8 @@
 #include <list>
 
 #include <d3d9types.h>
+#include <d3dx9.h>
+#include <d3dx9tex.h>
 
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
@@ -512,13 +514,79 @@ void D3D9Renderer::drawIndexed(Primitive primitive, const TexturedVertex * verti
 }
 
 bool D3D9Renderer::getSnapshot(Image & image) {
-	// TODO-dx9: Snapshot code...
-	return false;
+	// Use the current backbuffer size
+	return getSnapshot(image, (size_t)-1, (size_t)-1);
 }
 
 bool D3D9Renderer::getSnapshot(Image& image, size_t width, size_t height) {
-	// TODO-dx9: Snapshot code...
-	return false;
+	HRESULT hr;
+	LPDIRECT3DSURFACE9 renderTarget;
+	hr = GD3D9Device->GetRenderTarget( 0, &renderTarget );
+	if( !renderTarget || FAILED(hr) )
+		return false;
+
+	D3DSURFACE_DESC rtDesc;
+	renderTarget->GetDesc( &rtDesc );
+
+	// If -1, use real backbuffer size
+	if(width == (size_t)-1)
+		width = rtDesc.Width;
+	if(height == (size_t)-1)
+		height = rtDesc.Height;
+
+	// If multisampling is enabled OR the size of the snapshot doesn't match the backbuffer size, we need to
+	// create a render surface with the right parameters and copy our backbuffer into it.
+	if( rtDesc.MultiSampleType != D3DMULTISAMPLE_NONE || rtDesc.Width != width || rtDesc.Height != height ) {
+		LPDIRECT3DSURFACE9 resolvedSurface;
+		hr = GD3D9Device->CreateRenderTarget( width, height, rtDesc.Format, D3DMULTISAMPLE_NONE, 0, FALSE, &resolvedSurface, NULL );
+		if( FAILED(hr) ) {
+			renderTarget->Release();
+			return false;
+		}
+
+		// Copy will automatically adjust the size for us
+		hr = GD3D9Device->StretchRect( renderTarget, NULL, resolvedSurface, NULL, D3DTEXF_NONE );
+		if( FAILED(hr) ) {
+			resolvedSurface->Release();
+			renderTarget->Release();
+			return false;
+		}
+		
+		renderTarget->Release();
+
+		renderTarget = resolvedSurface;
+		renderTarget->GetDesc( &rtDesc );
+    }
+
+	// Create a surface in system memory
+	LPDIRECT3DSURFACE9 offscreenSurface;
+	hr = GD3D9Device->CreateOffscreenPlainSurface( rtDesc.Width, rtDesc.Height, rtDesc.Format, D3DPOOL_SYSTEMMEM, &offscreenSurface, NULL );
+	if( FAILED(hr) ) {
+		renderTarget->Release();
+		return false;
+	}
+
+	// Obtain the image from the render target
+	hr = GD3D9Device->GetRenderTargetData( renderTarget, offscreenSurface );
+	bool ok = SUCCEEDED(hr);
+	if( ok ) {
+		// Save to a temp buffer
+		LPD3DXBUFFER pBuffer = NULL;
+		D3DXSaveSurfaceToFileInMemory(&pBuffer, D3DXIFF_BMP, offscreenSurface, NULL, NULL);
+
+		// Load from memory
+		image.LoadFromMemory(pBuffer->GetBufferPointer(), pBuffer->GetBufferSize());
+		image.FlipY();
+
+		// Release buffer provided by D3DXSaveSurfaceToFileInMemory()
+		pBuffer->Release();
+	}
+
+	// Release references to the offscreen surface and render target.
+	renderTarget->Release();
+	offscreenSurface->Release();
+
+	return ok;
 }
 
 bool D3D9Renderer::isFogInEyeCoordinates() {
