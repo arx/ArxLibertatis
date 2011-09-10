@@ -26,8 +26,6 @@ bool SDLInputBackend::init() {
 		return false;
 	}
 	
-	SDL_ShowCursor(0);
-	
 	SDLWindow::mainWindow->input = this;
 	
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
