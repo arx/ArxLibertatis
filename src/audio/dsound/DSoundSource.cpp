@@ -619,8 +619,12 @@ aalError DSoundSource::updateBuffers() {
 	
 	time += read < last ? read + size - last : read - last;
 	
-	if(time >= sample->getLength()) {
+	for(size_t curtime = time; curtime >= sample->getLength(); ) {
+		curtime -= sample->getLength();
 		if(!loop) {
+			// make sure time doesn't advance further than the requested play count
+			// otherwise the callbacks might be called too often
+			time -= curtime;
 			status = Idle;
 			return AAL_OK;
 		}
