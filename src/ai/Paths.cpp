@@ -518,144 +518,121 @@ ARX_PATH * ARX_PATHS_ExistName(const string & name) {
 	return NULL;
 }
 
-long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos)
-{
+long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
+	
 	ARX_PATH * ap = aup->path;
-
+	
 	//compute Delta Time
 	float tim = aup->_curtime - aup->_starttime;
-
-	if (tim < 0)	return -1;
-
+	
+	if(tim < 0) {
+		return -1;
+	}
+	
 	//set pos to startpos
-	pos->x = 0.f; 
-	pos->y = 0.f; 
-	pos->z = 0.f; 
-
-	if (tim == 0) return 0;
-
+	*pos = Vec3f::ZERO;
+	
+	if(tim == 0) {
+		return 0;
+	}
+	
 	//we start at reference waypoint 0  (time & rpos = 0 for this waypoint).
 	long targetwaypoint = 1;
 	aup->aupflags &= ~ARX_USEPATH_FLAG_FINISHED;
 
-	if (ap->pathways)
-	{
+	if(ap->pathways) {
 		ap->pathways[0]._time = 0;
-		ap->pathways[0].rpos.x = 0;
-		ap->pathways[0].rpos.y = 0;
-		ap->pathways[0].rpos.z = 0;
+		ap->pathways[0].rpos = Vec3f::ZERO;
+	} else {
+		return -1;
 	}
-	else return -1;
-
+	
 	// While we have time left, iterate
-	while (tim > 0)
-	{
+	while(tim > 0) {
+		
 		// Path Ended
-		if (targetwaypoint > ap->nb_pathways - 1)
-		{
-			pos->x += ap->pos.x;
-			pos->y += ap->pos.y;
-			pos->z += ap->pos.z;
+		if(targetwaypoint > ap->nb_pathways - 1) {
+			*pos += ap->pos;
 			aup->aupflags |= ARX_USEPATH_FLAG_FINISHED;
 			return -2;
 		}
-
+		
 		// Manages a Bezier block
-		if (ap->pathways[targetwaypoint-1].flag == PATHWAY_BEZIER)
-		{
-
+		if(ap->pathways[targetwaypoint - 1].flag == PATHWAY_BEZIER) {
+			
 			targetwaypoint += 1;
 			float delta = tim - ap->pathways[targetwaypoint]._time;
-
-			if (delta >= 0)
-			{
+			
+			if(delta >= 0) {
+				
 				tim = delta;
-
-				if (targetwaypoint < ap->nb_pathways)
-				{
-					pos->x = ap->pathways[targetwaypoint].rpos.x;
-					pos->y = ap->pathways[targetwaypoint].rpos.y;
-					pos->z = ap->pathways[targetwaypoint].rpos.z;
+				
+				if(targetwaypoint < ap->nb_pathways) {
+					*pos = ap->pathways[targetwaypoint].rpos;
 				}
-
+				
 				targetwaypoint += 1;
-			}
-			else
-			{
-				if (targetwaypoint < ap->nb_pathways)
-				{
-					if (ap->pathways[targetwaypoint]._time == 0)
+				
+			} else {
+				
+				if(targetwaypoint < ap->nb_pathways) {
+					
+					if(ap->pathways[targetwaypoint]._time == 0) {
 						return targetwaypoint - 1;
-					float	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
-
-					float mul = rel;
-					float mull = mul * mul;
- 
-					pos->x = mul * (ap->pathways[targetwaypoint-1].rpos.x - ap->pathways[targetwaypoint-2].rpos.x) + (ap->pathways[targetwaypoint].rpos.x - ap->pathways[targetwaypoint-1].rpos.x) * mull;
-					pos->y = mul * (ap->pathways[targetwaypoint-1].rpos.y - ap->pathways[targetwaypoint-2].rpos.y) + (ap->pathways[targetwaypoint].rpos.y - ap->pathways[targetwaypoint-1].rpos.y) * mull;
-					pos->z = mul * (ap->pathways[targetwaypoint-1].rpos.z - ap->pathways[targetwaypoint-2].rpos.z) + (ap->pathways[targetwaypoint].rpos.z - ap->pathways[targetwaypoint-1].rpos.z) * mull;
-					pos->x += ap->pos.x + ap->pathways[targetwaypoint-2].rpos.x;
-					pos->y += ap->pos.y + ap->pathways[targetwaypoint-2].rpos.y;
-					pos->z += ap->pos.z + ap->pathways[targetwaypoint-2].rpos.z;
+					}
+					
+					float rel = tim / ap->pathways[targetwaypoint]._time;
+					float mull = square(rel);
+					
+					*pos = ap->pos + ap->pathways[targetwaypoint].rpos * mull;
+					*pos += ap->pathways[targetwaypoint - 1].rpos * (rel - mull);
+					*pos += ap->pathways[targetwaypoint - 2].rpos * (1 - rel);
 				}
-
+				
 				return targetwaypoint - 1;
 			}
-		}
-		else
-		{
+			
+		} else {
+			
 			// Manages a non-Bezier block
 			float delta = tim - ap->pathways[targetwaypoint]._time;
-
-			if (delta >= 0)
-			{
+			
+			if(delta >= 0) {
+				
 				tim = delta;
-
-				if (targetwaypoint < ap->nb_pathways)
-				{
-					pos->x = ap->pathways[targetwaypoint].rpos.x;
-					pos->y = ap->pathways[targetwaypoint].rpos.y;
-					pos->z = ap->pathways[targetwaypoint].rpos.z;
+				
+				if(targetwaypoint < ap->nb_pathways) {
+					*pos = ap->pathways[targetwaypoint].rpos;
 				}
-
+				
 				targetwaypoint++;
-			}
-			else
-			{
-				if (targetwaypoint < ap->nb_pathways)
-				{
-					if (ap->pathways[targetwaypoint]._time == 0)
+				
+			} else {
+				
+				if(targetwaypoint < ap->nb_pathways) {
+					
+					if(ap->pathways[targetwaypoint]._time == 0) {
 						return targetwaypoint - 1;
-					float	rel = (float)((float)(tim)) / ((float)(ap->pathways[targetwaypoint]._time));
-
-					pos->x += (ap->pathways[targetwaypoint].rpos.x - pos->x) * rel;
-					pos->y += (ap->pathways[targetwaypoint].rpos.y - pos->y) * rel;
-					pos->z += (ap->pathways[targetwaypoint].rpos.z - pos->z) * rel;
+					}
+					
+					float rel = tim / ap->pathways[targetwaypoint]._time;
+					
+					*pos += (ap->pathways[targetwaypoint].rpos - *pos) * rel;
 				}
-
-				pos->x += ap->pos.x;
-				pos->y += ap->pos.y;
-				pos->z += ap->pos.z;
+				
+				*pos += ap->pos;
+				
 				return targetwaypoint - 1;
 			}
 		}
 	}
 
-	pos->x += ap->pos.x;
-	pos->y += ap->pos.y;
-	pos->z += ap->pos.z;
+	*pos += ap->pos;
+	
 	return targetwaypoint;
 }
 
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-//					THROWN OBJECTS MANAGEMENT
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
+// THROWN OBJECTS MANAGEMENT
 
 ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 long Thrown_Count = 0;
@@ -879,88 +856,75 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	return 0.f;
 }
 
-EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end)
-{
+EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end) {
+	
 	EERIE_TRI pol;
-	EERIE_TRI pol2;
-
 	pol.v[0] = *start;
-	pol.v[2] = *end;
-	pol.v[2].x -= 2.f;
-	pol.v[2].y -= 15.f;
-	pol.v[2].z -= 2.f;
+	pol.v[2] = *end - Vec3f(2.f, 15.f, 2.f);
 	pol.v[1] = *end;
 	
-	long px, pz;
-	px = end->x * ACTIVEBKG->Xmul;
-	pz = end->z * ACTIVEBKG->Zmul;
-
-	long ix, ax, iz, az;
-	ix = std::max(px - 2, 0L);
-	ax = std::min(px + 2, ACTIVEBKG->Xsize - 1L);
-	iz = std::max(pz - 2, 0L);
-	az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-
-	for (long zz = iz; zz <= az; zz++)
-		for (long xx = ix; xx <= ax; xx++)
-		{
-			feg = &ACTIVEBKG->fastdata[xx][zz];
-
-			for (long k = 0; k < feg->nbpolyin; k++)
-			{
-				ep = feg->polyin[k];
-
-				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-					continue;
-
-				memcpy(&pol2.v[0], &ep->v[0], sizeof(Vec3f)); // TODO wrong size for struct
-				memcpy(&pol2.v[1], &ep->v[1], sizeof(Vec3f));
-				memcpy(&pol2.v[2], &ep->v[2], sizeof(Vec3f));
-
-				if (Triangles_Intersect(&pol2, &pol)) return ep;
-
-				if (ep->type & POLY_QUAD)
-				{
-					memcpy(&pol2.v[0], &ep->v[1], sizeof(Vec3f)); // TODO wrong size for struct
-					memcpy(&pol2.v[1], &ep->v[3], sizeof(Vec3f));
-					memcpy(&pol2.v[2], &ep->v[2], sizeof(Vec3f));
-
-					if (Triangles_Intersect(&pol2, &pol)) return ep;
-				}
-
+	long px = end->x * ACTIVEBKG->Xmul;
+	long pz = end->z * ACTIVEBKG->Zmul;
+	
+	long ix = std::max(px - 2, 0L);
+	long ax = std::min(px + 2, ACTIVEBKG->Xsize - 1L);
+	long iz = std::max(pz - 2, 0L);
+	long az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
+	
+	for(long zz = iz; zz <= az; zz++) for(long xx = ix; xx <= ax; xx++) {
+		
+		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[xx][zz];
+		
+		for(long k = 0; k < feg->nbpolyin; k++) {
+			
+			EERIEPOLY * ep = feg->polyin[k];
+			
+			if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) {
+				continue;
 			}
+			
+			EERIE_TRI pol2;
+			pol2.v[0] = ep->v[0].p;
+			pol2.v[1] = ep->v[1].p;
+			pol2.v[2] = ep->v[2].p;
+			
+			if(Triangles_Intersect(&pol2, &pol)) {
+				return ep;
+			}
+			
+			if(ep->type & POLY_QUAD) {
+				pol2.v[0] = ep->v[1].p;
+				pol2.v[1] = ep->v[3].p;
+				pol2.v[2] = ep->v[2].p;
+				if(Triangles_Intersect(&pol2, &pol)) {
+					return ep;
+				}
+			}
+			
 		}
-
+	}
+	
 	return NULL;
 }
 
 void CheckExp(long i) {
 	
-	if ((Thrown[i].flags & ATO_FIERY)
-	        &&	!(Thrown[i].flags & ATO_UNDERWATER))
-	{
+	if((Thrown[i].flags & ATO_FIERY) && !(Thrown[i].flags & ATO_UNDERWATER)) {
+		
 		ARX_BOOMS_Add(&Thrown[i].position);
 		LaunchFireballBoom(&Thrown[i].position, 10);
 		DoSphericDamage(&Thrown[i].position, 4.f * 2, 50.f, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
 		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, inter.iobj[0]);
 		long id = GetFreeDynLight();
-
-		if ((id != -1) && (FrameDiff > 0))
-		{
+		
+		if(id != -1 && FrameDiff > 0) {
 			DynLight[id].exist = 1;
-
 			DynLight[id].intensity = 3.9f;
 			DynLight[id].fallstart = 400.f;
 			DynLight[id].fallend   = 440.f;
-			DynLight[id].rgb.r = (1.f - rnd() * 0.2f);
-			DynLight[id].rgb.g = (0.8f - rnd() * 0.2f);
-			DynLight[id].rgb.b = (0.6f - rnd() * 0.2f);
-			DynLight[id].pos.x = Thrown[i].position.x;
-			DynLight[id].pos.y = Thrown[i].position.y;
-			DynLight[id].pos.z = Thrown[i].position.z;
+			DynLight[id].rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
+			DynLight[id].pos = Thrown[i].position;
 			DynLight[id].ex_flaresize = 40.f; 
 			DynLight[id].duration = 1500;
 		}
@@ -1017,28 +981,20 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			FRAME_COUNT = 0;
 			DrawEERIEInterMatrix(Thrown[i].obj, &mat, &Thrown[i].position, NULL);
 
-			if ((Thrown[i].flags & ATO_FIERY)
-			        &&	(Thrown[i].flags & ATO_MOVING)
-			        &&	!(Thrown[i].flags & ATO_UNDERWATER))
-			{
+			if((Thrown[i].flags & ATO_FIERY) && (Thrown[i].flags & ATO_MOVING)
+			   && !(Thrown[i].flags & ATO_UNDERWATER)) {
+				
 				long id = GetFreeDynLight();
-
-				if ((id != -1) && (FrameDiff > 0))
-				{
+				if(id != -1 && FrameDiff > 0) {
 					DynLight[id].exist = 1;
-
 					DynLight[id].intensity = 1.f;
 					DynLight[id].fallstart = 100.f;
 					DynLight[id].fallend   = 240.f;
-					DynLight[id].rgb.r = (1.f - rnd() * 0.2f);
-					DynLight[id].rgb.g = (0.8f - rnd() * 0.2f);
-					DynLight[id].rgb.b = (0.6f - rnd() * 0.2f);
-					DynLight[id].pos.x = Thrown[i].position.x;
-					DynLight[id].pos.y = Thrown[i].position.y;
-					DynLight[id].pos.z = Thrown[i].position.z;
+					DynLight[id].rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
+					DynLight[id].pos = Thrown[i].position;
 					DynLight[id].ex_flaresize = 40.f; 
 					DynLight[id].extras |= EXTRAS_FLARE;
-					DynLight[id].duration	=	static_cast<long>(FrameDiff * 0.5f);
+					DynLight[id].duration = static_cast<long>(FrameDiff * 0.5f);
 				}
 
 				float p = 3.f;
@@ -1067,31 +1023,24 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						{
 							pos = Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v;
 
-							for (long nn = 0; nn < 2; nn++)
-							{
+							for(long nn = 0; nn < 2; nn++) {
 								long j = ARX_PARTICLES_GetFree();
-
-								if ((j != -1) && (!ARXPausedTimer) && (rnd() < 0.4f))
-								{
+								if(j != -1 && !ARXPausedTimer && rnd() < 0.4f) {
 									ParticleCount++;
 									PARTICLE_DEF * pd = &particle[j];
-									pd->exist	=	true;
-									pd->zdec	=	0;
+									pd->exist = true;
+									pd->zdec = 0;
 									pd->ov = pos;
-									pd->move.x	=	(2.f - 4.f * rnd());
-									pd->move.y	=	(2.f - 22.f * rnd());
-									pd->move.z	=	(2.f - 4.f * rnd());
-									pd->siz		=	7.f;
-									pd->tolive	=	500 + (unsigned long)(rnd() * 1000.f);
-									pd->special	=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-									pd->tc		=	fire2;//tc;
-									pd->fparam	=	0.1f - rnd() * 0.2f;
-									pd->scale.x	=	-8.f;
-									pd->scale.y	=	-8.f;
-									pd->scale.z	=	-8.f;
-									pd->timcreation	=	lARXTime;
+									pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+									pd->siz = 7.f;
+									pd->tolive = 500 + (unsigned long)(rnd() * 1000.f);
+									pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+									pd->tc = fire2;
+									pd->fparam = 0.1f - rnd() * 0.2f;
+									pd->scale = Vec3f(-8.f, -8.f, -8.f);
+									pd->timcreation = lARXTime;
 									pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-									pd->delay	=	nn * 180;
+									pd->delay = nn * 180;
 								}
 							}
 
@@ -1157,15 +1106,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 					if (rad == -1) continue;
 
-					Vec3f * v0;
-					v0 = &Thrown[i].obj->vertexlist3[Thrown[i].obj->actionlist[j].idx].v;
-					Vec3f orgn, dest;
-					dest.x = original_pos.x + Thrown[i].vector.x * 95.f;
-					dest.y = original_pos.y + Thrown[i].vector.y * 95.f;
-					dest.z = original_pos.z + Thrown[i].vector.z * 95.f;
-					orgn.x = original_pos.x - Thrown[i].vector.x * 25.f;
-					orgn.y = original_pos.y - Thrown[i].vector.y * 25.f;
-					orgn.z = original_pos.z - Thrown[i].vector.z * 25.f;
+					Vec3f * v0 = &Thrown[i].obj->vertexlist3[Thrown[i].obj->actionlist[j].idx].v;
+					Vec3f dest = original_pos + Thrown[i].vector * 95.f;
+					Vec3f orgn = original_pos - Thrown[i].vector * 25.f;
 					EERIEPOLY * ep = CheckArrowPolyCollision(&orgn, &dest); 
 
 					if (ep)
@@ -1215,9 +1158,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						for (float precision = 0.5f; precision <= 6.f; precision += 0.5f)
 						{
 							EERIE_SPHERE sphere;
-							sphere.origin.x = v0->x + Thrown[i].vector.x * precision * 4.5f;
-							sphere.origin.y = v0->y + Thrown[i].vector.y * precision * 4.5f;
-							sphere.origin.z = v0->z + Thrown[i].vector.z * precision * 4.5f;
+							sphere.origin = *v0 + Thrown[i].vector * precision * 4.5f;
 							sphere.radius = rad + 3.f; 
 	
 							if (CheckEverythingInSphere(&sphere, Thrown[i].source, -1))
@@ -1388,9 +1329,7 @@ void CRuban::AddRuban(int * f, int dec)
 	{
 		truban[num].actif = 1;
 
-		truban[num].pos.x = Thrown[iNumThrow].position.x;
-		truban[num].pos.y = Thrown[iNumThrow].position.y;
-		truban[num].pos.z = Thrown[iNumThrow].position.z;
+		truban[num].pos = Thrown[iNumThrow].position;
 
 		if (*f < 0)
 		{
@@ -1535,53 +1474,43 @@ void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, fl
 	pv_l->force -= springforce; // - force on particle 2
 }
 
-void ComputeForces(PHYSVERT * phys, long nb)
-{
-	Vec3f PHYSICS_Gravity;
-	PHYSICS_Gravity.x = 0.f;
-	PHYSICS_Gravity.y = 65.f; 
-	PHYSICS_Gravity.z = 0.f;
-
-
-	float PHYSICS_Damping = 0.5f; 
+void ComputeForces(PHYSVERT * phys, long nb) {
+	
+	const Vec3f PHYSICS_Gravity(0.f, 65.f, 0.f);
+	const float PHYSICS_Damping = 0.5f;
+	
 	float lastmass = 1.f;
 	float div = 1.f;
-
-	for (long k = 0; k < nb; k++)
-	{
+	
+	for(long k = 0; k < nb; k++) {
+		
 		PHYSVERT * pv = &phys[k];
+		
 		// Reset Force
-		pv->force.x = pv->inertia.x;
-		pv->force.y = pv->inertia.y;
-		pv->force.z = pv->inertia.z;
-
+		pv->force = pv->inertia;
+		
 		// Apply Gravity
-		if (pv->mass > 0.f)
-		{
+		if(pv->mass > 0.f) {
+			
 			//need to be precomputed...
-			if (lastmass != pv->mass)
-			{
+			if(lastmass != pv->mass) {
 				div = 1.f / pv->mass;
 				lastmass = pv->mass;
 			}
-
-			pv->force.x += (PHYSICS_Gravity.x * div);
-			pv->force.y += (PHYSICS_Gravity.y * div);
-			pv->force.z += (PHYSICS_Gravity.z * div);
+			
+			pv->force += (PHYSICS_Gravity * div);
 		}
-
+		
 		// Apply Damping
-		pv->force.x += (-PHYSICS_Damping * pv->velocity.x);
-		pv->force.y += (-PHYSICS_Damping * pv->velocity.y);
-		pv->force.z += (-PHYSICS_Damping * pv->velocity.z);
+		pv->force += pv->velocity * -PHYSICS_Damping;
 	}
-
-	for (int k = 0; k < nb; k++)
-	{
+	
+	for(int k = 0; k < nb; k++) {
 		// Now Resolves Spring System
-		for (long l = 0; l < nb; l++)
-		{
-			if (l != k) ARX_ApplySpring(phys, l, k, 15.f, 0.99f); //18.f,0.4f);
+		for(long l = 0; l < nb; l++) {
+			if(l != k) {
+				ARX_ApplySpring(phys, l, k, 15.f, 0.99f);
+			}
 		}
 	}
 }
@@ -1591,165 +1520,139 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
 // Function:	RK4Integrate
 // 	Calculate new Positions and Velocities given a deltatime
 // 	DeltaTime that has passed since last iteration
-void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
-{
-
-	/// Local Variables ///////////////////////////////////////////////////////////
-	PHYSVERT	* source, *target, *accum1, *accum2, *accum3, *accum4;
-	///////////////////////////////////////////////////////////////////////////////
-	float		halfDeltaT, sixthDeltaT;
-	halfDeltaT = DeltaTime * .5f;		// SOME TIME VALUES I WILL NEED
+void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime) {
+	
+	PHYSVERT * source, * target, * accum1, * accum2, * accum3, * accum4;
+	float halfDeltaT, sixthDeltaT;
+	halfDeltaT = DeltaTime * .5f; // some time values i will need
 	sixthDeltaT = ( 1.0f / 6 );
-
-	PHYSVERT m_TempSys[5][32];//* pv;
-
-
-	for (long jj = 0; jj < 4; jj++)
-	{
-		memcpy(&m_TempSys[jj+1][0], obj->pbox->vert, sizeof(PHYSVERT)*obj->pbox->nb_physvert);
-
-		if (jj == 3)
+	
+	PHYSVERT m_TempSys[5][32];
+	
+	for(long jj = 0; jj < 4; jj++) {
+		
+		arx_assert(obj->pbox->nb_physvert <= ARRAY_SIZE(m_TempSys[jj + 1]));
+		memcpy(m_TempSys[jj + 1], obj->pbox->vert, sizeof(PHYSVERT) * obj->pbox->nb_physvert);
+		
+		if(jj == 3) {
 			halfDeltaT = DeltaTime;
-
-		for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-		{
-			source = &obj->pbox->vert[kk];
-			accum1 = &m_TempSys[jj+1][kk];
-			target = &m_TempSys[0][kk];
-
-
-			accum1->force.x = halfDeltaT * source->force.x * source->mass;
-			accum1->force.y = halfDeltaT * source->force.y * source->mass;
-			accum1->force.z = halfDeltaT * source->force.z * source->mass;
-
-			accum1->velocity.x = halfDeltaT * source->velocity.x;
-			accum1->velocity.y = halfDeltaT * source->velocity.y;
-			accum1->velocity.z = halfDeltaT * source->velocity.z;
-			// DETERMINE THE NEW VELOCITY FOR THE PARTICLE OVER 1/2 TIME
-			target->velocity.x = source->velocity.x + (accum1->force.x);
-			target->velocity.y = source->velocity.y + (accum1->force.y);
-			target->velocity.z = source->velocity.z + (accum1->force.z);
-
-			target->mass = source->mass;
-
-			// SET THE NEW POSITION
-			target->pos.x = source->pos.x + (accum1->velocity.x);
-			target->pos.y = source->pos.y + (accum1->velocity.y);
-			target->pos.z = source->pos.z + (accum1->velocity.z);
 		}
-
-		ComputeForces(m_TempSys[0], obj->pbox->nb_physvert); // COMPUTE THE NEW FORCES
+		
+		for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
+			
+			source = &obj->pbox->vert[kk];
+			accum1 = &m_TempSys[jj + 1][kk];
+			target = &m_TempSys[0][kk];
+			
+			accum1->force = source->force * (source->mass * halfDeltaT);
+			accum1->velocity = source->velocity * halfDeltaT;
+			
+			// determine the new velocity for the particle over 1/2 time
+			target->velocity = source->velocity + accum1->force;
+			target->mass = source->mass;
+			
+			// set the new position
+			target->pos = source->pos + accum1->velocity;
+		}
+		
+		ComputeForces(m_TempSys[0], obj->pbox->nb_physvert); // compute the new forces
 	}
-
-
-	for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-	{
-		source = &obj->pbox->vert[kk];	// CURRENT STATE OF PARTICLE
+	
+	for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
+		
+		source = &obj->pbox->vert[kk]; // current state of particle
 		target = &obj->pbox->vert[kk];
 		accum1 = &m_TempSys[1][kk];
 		accum2 = &m_TempSys[2][kk];
 		accum3 = &m_TempSys[3][kk];
 		accum4 = &m_TempSys[4][kk];
-
-		// DETERMINE THE NEW VELOCITY FOR THE PARTICLE USING RK4 FORMULA
-		target->velocity.x = source->velocity.x + ((accum1->force.x + ((accum2->force.x + accum3->force.x) * 2.0f) + accum4->force.x) * sixthDeltaT);
-		target->velocity.y = source->velocity.y + ((accum1->force.y + ((accum2->force.y + accum3->force.y) * 2.0f) + accum4->force.y) * sixthDeltaT);
-		target->velocity.z = source->velocity.z + ((accum1->force.z + ((accum2->force.z + accum3->force.z) * 2.0f) + accum4->force.z) * sixthDeltaT);
-		// DETERMINE THE NEW POSITION FOR THE PARTICLE USING RK4 FORMULA
-		target->pos.x = source->pos.x + ((accum1->velocity.x + ((accum2->velocity.x + accum3->velocity.x) * 2.0f) + accum4->velocity.x) * sixthDeltaT * 1.2f);
-		target->pos.y = source->pos.y + ((accum1->velocity.y + ((accum2->velocity.y + accum3->velocity.y) * 2.0f) + accum4->velocity.y) * sixthDeltaT * 1.2f);
-		target->pos.z = source->pos.z + ((accum1->velocity.z + ((accum2->velocity.z + accum3->velocity.z) * 2.0f) + accum4->velocity.z) * sixthDeltaT * 1.2f);
+		
+		// determine the new velocity for the particle using rk4 formula
+		target->velocity = source->velocity + ((accum1->force + ((accum2->force + accum3->force) * 2.0f) + accum4->force) * sixthDeltaT);
+		// determine the new position for the particle using rk4 formula
+		target->pos = source->pos + ((accum1->velocity + ((accum2->velocity + accum3->velocity) * 2.0f) + accum4->velocity) * sixthDeltaT * 1.2f);
 	}
-
+	
 }
 
 static bool IsPointInField(Vec3f * pos) {
 	
-	for (size_t i = 0; i < MAX_SPELLS; i++)
-	{
-		if ((spells[i].exist)
-		        &&	(spells[i].type == SPELL_CREATE_FIELD))
-		{
-			if (ValidIONum(spells[i].longinfo))
-			{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		
+		if(spells[i].exist && spells[i].type == SPELL_CREATE_FIELD) {
+			
+			if(ValidIONum(spells[i].longinfo)) {
+				
 				INTERACTIVE_OBJ * pfrm = inter.iobj[spells[i].longinfo];
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
-				cyl.origin.x = pos->x;
-				cyl.origin.y = pos->y + 17.5f;
-				cyl.origin.z = pos->z;
-
-				if (CylinderPlatformCollide(&cyl, pfrm) != 0.f) return true;
+				cyl.origin = *pos + Vec3f(0.f, 17.5f, 0.f);
+				
+				if(CylinderPlatformCollide(&cyl, pfrm) != 0.f) {
+					return true;
+				}
 			}
 		}
 	}
-
+	
 	return false;
 }
 
 static bool IsObjectInField(EERIE_3DOBJ * obj) {
 	
-	for (size_t i = 0; i < MAX_SPELLS; i++)
-	{
-		if ((spells[i].exist)
-		        &&	(spells[i].type == SPELL_CREATE_FIELD))
-		{
-			if (ValidIONum(spells[i].longinfo))
-			{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		
+		if(spells[i].exist && spells[i].type == SPELL_CREATE_FIELD) {
+			
+			if(ValidIONum(spells[i].longinfo)) {
+				
 				INTERACTIVE_OBJ * pfrm = inter.iobj[spells[i].longinfo];
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
-
-				for (long k = 0; k < obj->pbox->nb_physvert; k++)
-				{
+				
+				for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 					PHYSVERT * pv = &obj->pbox->vert[k];
-					cyl.origin.x = pv->pos.x;
-					cyl.origin.y = pv->pos.y + 17.5f;
-					cyl.origin.z = pv->pos.z;
-
-					if (CylinderPlatformCollide(&cyl, pfrm) != 0.f) return true;
+					cyl.origin = pv->pos + Vec3f(0.f, 17.5f, 0.f);
+					if(CylinderPlatformCollide(&cyl, pfrm) != 0.f) {
+						return true;
+					}
 				}
 			}
 		}
 	}
-
+	
 	return false;
 }
 
-static bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
-{
-	Vec3f pol[3];
-	pol[0].x = ep->v[0].p.x;
-	pol[0].y = ep->v[0].p.y;
-	pol[0].z = ep->v[0].p.z;
-	pol[1].x = ep->v[1].p.x;
-	pol[1].y = ep->v[1].p.y;
-	pol[1].z = ep->v[1].p.z;
-	pol[2].x = ep->v[2].p.x;
-	pol[2].y = ep->v[2].p.y;
-	pol[2].z = ep->v[2].p.z;
-
+static bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd) {
 	
-	if (ep->type & POLY_QUAD)
-	{
-		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
+	Vec3f pol[3];
+	pol[0] = ep->v[0].p;
+	pol[1] = ep->v[1].p;
+	pol[2] = ep->v[2].p;
+	
+	if(ep->type & POLY_QUAD) {
 		
-		pol[1].x = ep->v[2].p.x;
-		pol[1].y = ep->v[2].p.y;
-		pol[1].z = ep->v[2].p.z;
-		pol[2].x = ep->v[3].p.x;
-		pol[2].y = ep->v[3].p.y;
-		pol[2].z = ep->v[3].p.z;
-
-		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
-
+		if(IsObjectVertexCollidingTriangle(obj, pol, k, validd)) {
+			return true;
+		}
+		
+		pol[1] = ep->v[2].p;
+		pol[2] = ep->v[3].p;
+		
+		if(IsObjectVertexCollidingTriangle(obj, pol, k, validd)) {
+			return true;
+		}
+		
 		return false;
 	}
-
-	if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
-
+	
+	if(IsObjectVertexCollidingTriangle(obj, pol, k, validd)) {
+		return true;
+	}
+	
 	return false;
 }
 
@@ -1824,10 +1727,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 						{
 							if (kl != kk)
 							{
-								Vec3f pos;
-								pos.x = (obj->pbox->vert[kk].pos.x + obj->pbox->vert[kl].pos.x) * .5f;
-								pos.y = (obj->pbox->vert[kk].pos.y + obj->pbox->vert[kl].pos.y) * .5f;
-								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * .5f;
+								Vec3f pos = (obj->pbox->vert[kk].pos + obj->pbox->vert[kl].pos) * .5f;
 
 								if(!fartherThan(pos, ep->center, radd)
 								   || !fartherThan(pos, ep->v[0].p, radd)
@@ -1886,12 +1786,8 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 	for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 	{
 		pv = &obj->pbox->vert[kk];
-		oldpos[kk].x = pv->pos.x;
-		oldpos[kk].y = pv->pos.y;
-		oldpos[kk].z = pv->pos.z;
-		pv->inertia.x = 0.f;
-		pv->inertia.y = 0.f;
-		pv->inertia.z = 0.f;
+		oldpos[kk] = pv->pos;
+		pv->inertia = Vec3f::ZERO;
 
 		if (pv->velocity.x > VELOCITY_THRESHOLD) pv->velocity.x = VELOCITY_THRESHOLD;
 		else if (pv->velocity.x < -VELOCITY_THRESHOLD) pv->velocity.x = -VELOCITY_THRESHOLD;
@@ -1910,9 +1806,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 
 	EERIE_SPHERE sphere;
 	pv = &obj->pbox->vert[0];
-	sphere.origin.x = pv->pos.x;
-	sphere.origin.y = pv->pos.y;
-	sphere.origin.z = pv->pos.z;
+	sphere.origin = pv->pos;
 	sphere.radius = obj->pbox->radius;
 	long colidd = 0;
 
@@ -1944,10 +1838,9 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 			ARX_TEMPORARY_TrySound(0.4f + power);
 
 
-		if (!LAST_COLLISION_POLY)
-		{
-			for (long k = 0; k < obj->pbox->nb_physvert; k++)
-			{
+		if(!LAST_COLLISION_POLY) {
+			
+			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 				pv = &obj->pbox->vert[k];
 
 				{
@@ -1958,30 +1851,20 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 
 				pv->pos = oldpos[k];
 			}
-		}
-		else
-		{
-			for (long k = 0; k < obj->pbox->nb_physvert; k++)
-			{
+			
+		} else {
+			
+			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
+				
 				pv = &obj->pbox->vert[k];
-
-
-				float t =	(LAST_COLLISION_POLY->norm.x) * (pv->velocity.x) +
-				            (LAST_COLLISION_POLY->norm.y) * (pv->velocity.y) +
-				            (LAST_COLLISION_POLY->norm.z) * (pv->velocity.z);
-
-				float x = t * LAST_COLLISION_POLY->norm.x;
-				float y = t * LAST_COLLISION_POLY->norm.y;
-				float z = t * LAST_COLLISION_POLY->norm.z;
-
-				pv->velocity.x = pv->velocity.x - 2.f * x;
-				pv->velocity.y = pv->velocity.y - 2.f * y;
-				pv->velocity.z = pv->velocity.z - 2.f * z;
-
+				
+				float t = dot(LAST_COLLISION_POLY->norm, pv->velocity);
+				pv->velocity -= LAST_COLLISION_POLY->norm * (2.f * t);
+				
 				pv->velocity.x *= 0.3f;
 				pv->velocity.z *= 0.3f;
 				pv->velocity.y *= 0.4f;
-
+				
 				pv->pos = oldpos[k];
 			}
 		}
@@ -2016,12 +1899,9 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	PHYSVERT * pv;
 
 	// Memorizes initpos
-	for (long k = 0; k < obj->pbox->nb_physvert; k++)
-	{
+	for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 		pv = &obj->pbox->vert[k];
-		pv->temp.x = pv->pos.x;
-		pv->temp.y = pv->pos.y;
-		pv->temp.z = pv->pos.z;
+		pv->temp = pv->pos;
 	}
 
 	float timing = obj->pbox->storedtiming + framediff * rubber * 0.0055f; 
@@ -2094,32 +1974,19 @@ void ARX_PrepareBackgroundNRMLs()
 				{
 					float ttt = 1.f;
 
-					if (k == 3)
-					{
-						nrml.x = ep->norm2.x;
-						nrml.y = ep->norm2.y;
-						nrml.z = ep->norm2.z;
+					if(k == 3) {
+						nrml = ep->norm2;
 						count = 1.f;
-					}
-					else if ((k > 0) && (nbvert > 3))
-					{
-						nrml.x = (ep->norm.x + ep->norm2.x);
-						nrml.y = (ep->norm.y + ep->norm2.y);
-						nrml.z = (ep->norm.z + ep->norm2.z);
+					} else if(k > 0 && nbvert > 3) {
+						nrml = (ep->norm + ep->norm2);
 						count = 2.f;
 						ttt = .5f;
-					}
-					else
-					{
-						nrml.x = ep->norm.x;
-						nrml.y = ep->norm.y;
-						nrml.z = ep->norm.z;
+					} else {
+						nrml = ep->norm;
 						count = 1.f;
 					}
 
-					cur_nrml.x = nrml.x * ttt;
-					cur_nrml.y = nrml.y * ttt;
-					cur_nrml.z = nrml.z * ttt;
+					cur_nrml = nrml * ttt;
 
 					mai = i + 4;
 					maj = j + 4;
@@ -2155,44 +2022,28 @@ void ARX_PrepareBackgroundNRMLs()
 										        &&	(EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
 										        &&	(EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
 										{
-											if (k2 == 3)
-											{
-												if (LittleAngularDiff(&cur_nrml, &ep2->norm2))
-												{
-													nrml.x += ep2->norm2.x;
-													nrml.y += ep2->norm2.y;
-													nrml.z += ep2->norm2.z;
+											if(k2 == 3) {
+												
+												if(LittleAngularDiff(&cur_nrml, &ep2->norm2)) {
+													nrml += ep2->norm2;
 													count += 1.f;
-													nrml.x += cur_nrml.x;
-													nrml.y += cur_nrml.y;
-													nrml.z += cur_nrml.z;
+													nrml += cur_nrml;
 													count += 1.f;
 												}
-											}
-											else if ((k2 > 0) && (nbvert2 > 3))
-											{
-												Vec3f tnrml;
-												tnrml.x = (ep2->norm.x + ep2->norm2.x) * .5f;
-												tnrml.y = (ep2->norm.y + ep2->norm2.y) * .5f;
-												tnrml.z = (ep2->norm.z + ep2->norm2.z) * .5f;
-
-												if (LittleAngularDiff(&cur_nrml, &tnrml))
-												{
-													nrml.x += tnrml.x * 2.f;
-													nrml.y += tnrml.y * 2.f;
-													nrml.z += tnrml.z * 2.f;
+												
+											} else if(k2 > 0 && nbvert2 > 3) {
+												
+												Vec3f tnrml = (ep2->norm + ep2->norm2) * .5f;
+												if(LittleAngularDiff(&cur_nrml, &tnrml)) {
+													nrml += tnrml * 2.f;
 													count += 2.f;
 												}
-											}
-											else
-											{
-												if (LittleAngularDiff(&cur_nrml, &ep2->norm))
-												{
-													nrml.x += ep2->norm.x;
-													nrml.y += ep2->norm.y;
-													nrml.z += ep2->norm.z;
+												
+											} else {
+												
+												if(LittleAngularDiff(&cur_nrml, &ep2->norm)) {
+													nrml += ep2->norm;
 													count += 1.f;
-
 												}
 											}
 										}
@@ -2201,11 +2052,7 @@ void ARX_PrepareBackgroundNRMLs()
 						}
 
 					count = 1.f / count;
-					ep->tv[k].p.x = nrml.x * count;
-
-					ep->tv[k].p.y = nrml.y * count;
-
-					ep->tv[k].p.z = nrml.z * count;
+					ep->tv[k].p = nrml * count;
 
 				}
 			}
@@ -2223,11 +2070,8 @@ void ARX_PrepareBackgroundNRMLs()
 				if (ep->type & POLY_QUAD) nbvert = 4;
 				else nbvert = 3;
 
-				for (k = 0; k < nbvert; k++)
-				{
-					ep->nrml[k].x = ep->tv[k].p.x;
-					ep->nrml[k].y = ep->tv[k].p.y;
-					ep->nrml[k].z = ep->tv[k].p.z;
+				for(k = 0; k < nbvert; k++) {
+					ep->nrml[k] = ep->tv[k].p;
 				}
 
 				float d = 0.f;
