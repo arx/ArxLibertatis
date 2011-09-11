@@ -1531,7 +1531,7 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime) {
 	
 	for(long jj = 0; jj < 4; jj++) {
 		
-		arx_assert(obj->pbox->nb_physvert <= ARRAY_SIZE(m_TempSys[jj + 1]));
+		arx_assert(size_t(obj->pbox->nb_physvert) <= ARRAY_SIZE(m_TempSys[jj + 1]));
 		memcpy(m_TempSys[jj + 1], obj->pbox->vert, sizeof(PHYSVERT) * obj->pbox->nb_physvert);
 		
 		if(jj == 3) {
