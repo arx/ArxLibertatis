@@ -301,7 +301,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 
 	if(pAmbiancePlayList) {
 		ARX_SOUND_AmbianceRestorePlayList(pAmbiancePlayList, ulSizeAmbiancePlayList);
-		free((void *)pAmbiancePlayList);
+		free(pAmbiancePlayList);
 	}
 
 	ARX_SOUND_PopAnimSamples();

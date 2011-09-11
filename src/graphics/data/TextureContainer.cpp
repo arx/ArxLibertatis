@@ -105,61 +105,56 @@ TextureContainer * GetAnyTexture()
 	return g_ptcTextureList;
 }
 
-void ResetVertexLists(TextureContainer * ptcTexture)
-{
-	if(!ptcTexture)
+void ResetVertexLists(TextureContainer * ptcTexture) {
+	
+	if(!ptcTexture) {
 		return;
-
+	}
+	
 	ptcTexture->ulNbVertexListCull = 0;
 	ptcTexture->ulNbVertexListCull_TNormalTrans = 0;
 	ptcTexture->ulNbVertexListCull_TAdditive = 0;
 	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
 	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
 	ptcTexture->ulNbVertexListCull_TMetal = 0;
-
+	
 	ptcTexture->ulMaxVertexListCull = 0;
 	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
 	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
 	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
 	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
 	ptcTexture->ulMaxVertexListCull_TMetal = 0;
-
+	
 	ptcTexture->vPolyInterZMap.clear();
 	ptcTexture->vPolyZMap.clear();
-
-	if (ptcTexture->pVertexListCull)
-	{
-		free((void *)ptcTexture->pVertexListCull);
+	
+	if(ptcTexture->pVertexListCull) {
+		free(ptcTexture->pVertexListCull);
 		ptcTexture->pVertexListCull = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TNormalTrans)
-	{
-		free((void *)ptcTexture->pVertexListCull_TNormalTrans);
+	
+	if(ptcTexture->pVertexListCull_TNormalTrans) {
+		free(ptcTexture->pVertexListCull_TNormalTrans);
 		ptcTexture->pVertexListCull_TNormalTrans = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TAdditive)
-	{
-		free((void *)ptcTexture->pVertexListCull_TAdditive);
+	
+	if(ptcTexture->pVertexListCull_TAdditive) {
+		free(ptcTexture->pVertexListCull_TAdditive);
 		ptcTexture->pVertexListCull_TAdditive = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TSubstractive)
-	{
-		free((void *)ptcTexture->pVertexListCull_TSubstractive);
+	
+	if(ptcTexture->pVertexListCull_TSubstractive) {
+		free(ptcTexture->pVertexListCull_TSubstractive);
 		ptcTexture->pVertexListCull_TSubstractive = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TMultiplicative)
-	{
-		free((void *)ptcTexture->pVertexListCull_TMultiplicative);
+	
+	if(ptcTexture->pVertexListCull_TMultiplicative) {
+		free(ptcTexture->pVertexListCull_TMultiplicative);
 		ptcTexture->pVertexListCull_TMultiplicative = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TMetal)
-	{
-		free((void *)ptcTexture->pVertexListCull_TMetal);
+	
+	if(ptcTexture->pVertexListCull_TMetal) {
+		free(ptcTexture->pVertexListCull_TMetal);
 		ptcTexture->pVertexListCull_TMetal = NULL;
 	}
 	

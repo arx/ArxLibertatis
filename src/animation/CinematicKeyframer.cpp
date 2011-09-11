@@ -88,11 +88,10 @@ bool DeleteTrack(void)
 {
 	if (!CKTrack) return false;
 
-	if (CKTrack->key) free((void *)CKTrack->key);
+	if (CKTrack->key) free(CKTrack->key);
 
-	free((void *)CKTrack);
-	CKTrack = NULL;
-
+	free(CKTrack), CKTrack = NULL;
+	
 	return true;
 }
 /*----------------------------------------------------------------------*/

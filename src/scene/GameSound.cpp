@@ -973,7 +973,7 @@ bool ARX_SOUND_PlayScriptAmbiance(const fs::path & name, SoundLoopMode loop, flo
 			return false;
 		}
 		
-		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_SCRIPT);
+		aalSetAmbianceUserData(ambiance_id, reinterpret_cast<void *>(PLAYING_AMBIANCE_SCRIPT));
 
 		Channel channel;
 
@@ -1017,7 +1017,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const fs::path & name, SoundLoopMode loop, float
 		if(ambiance_id == INVALID_ID) {
 			return false;
 		}
-		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_ZONE);
+		aalSetAmbianceUserData(ambiance_id, reinterpret_cast<void *>(PLAYING_AMBIANCE_ZONE));
 	}
 	else if (ambiance_id == ambiance_zone)
 		return true;
@@ -1068,21 +1068,23 @@ void ARX_SOUND_KillAmbiances() {
 
 AmbianceId ARX_SOUND_PlayMenuAmbiance(const fs::path & ambiance_name) {
 	
-	if (!bIsActive) return INVALID_ID;
-
+	if(!bIsActive) {
+		return INVALID_ID;
+	}
+	
 	aalDeleteAmbiance(ambiance_menu);
 	ambiance_menu = aalCreateAmbiance(ambiance_name);
-
-	aalSetAmbianceUserData(ambiance_menu, (void *)PLAYING_AMBIANCE_MENU);
-
+	
+	aalSetAmbianceUserData(ambiance_menu, reinterpret_cast<void *>(PLAYING_AMBIANCE_MENU));
+	
 	Channel channel;
-
+	
 	channel.mixer = ARX_SOUND_MixerMenuAmbiance;
 	channel.flags = FLAG_VOLUME;
 	channel.volume = 1.0F;
-
+	
 	aalAmbiancePlay(ambiance_menu, channel, true);
-
+	
 	return ambiance_menu;
 }
 
@@ -1200,8 +1202,9 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 
 	while (ambiance_id != INVALID_ID)
 	{
-		long type;
-		aalGetAmbianceUserData(ambiance_id, (void **)&type);
+		void * storedType;
+		aalGetAmbianceUserData(ambiance_id, &storedType);
+		long type = reinterpret_cast<long>(storedType);
 
 		if (type == PLAYING_AMBIANCE_SCRIPT || type == PLAYING_AMBIANCE_ZONE)
 		{

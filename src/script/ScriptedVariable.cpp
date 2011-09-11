@@ -260,7 +260,7 @@ class UnsetCommand : public Command {
 		}
 		
 		if(svf[i].text) {
-			free((void *)svf[i].text), svf[i].text = NULL;
+			free(svf[i].text), svf[i].text = NULL;
 		}
 		
 		if(i + 1 < nb) {

@@ -1615,7 +1615,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				{
 					tv2 = PushVertexInTableCull(&TexSpecialColor);
 				}
-				memcpy((void *) tv2, (void *)tv, sizeof(TexturedVertex) * 3);
+				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
 
 				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
 			}
@@ -1629,7 +1629,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 				tv2						=	PushVertexInTableCull_TMetal(pTex);
 				pulNbVertexList_TMetal	=	&pTex->ulNbVertexListCull_TMetal;
-				memcpy((void *)tv2, (void *)tv, sizeof(TexturedVertex) * 3);
+				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
 				
 				long r, g, b;
 				long todo = 0;

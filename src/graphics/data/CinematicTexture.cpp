@@ -162,38 +162,31 @@ int AddMaterial(CinematicGrid * grille, Texture2D* tex)
 
 	return matIdx;
 }
-/*-----------------------------------------------------------*/
-void FreeGrille(CinematicGrid * grille)
-{
-	if (grille->vertexs)
-	{
-		free((void *)grille->vertexs);
-		grille->vertexs = NULL;
-	}
 
-	if (grille->uvs)
-	{
-		free((void *)grille->uvs);
-		grille->uvs = NULL;
+void FreeGrille(CinematicGrid * grille) {
+	
+	if(grille->vertexs) {
+		free(grille->vertexs), grille->vertexs = NULL;
 	}
-
-	if (grille->inds)
-	{
-		free((void *)grille->inds);
-		grille->inds = NULL;
+	
+	if(grille->uvs) {
+		free(grille->uvs), grille->uvs = NULL;
 	}
-
-	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it)
-	{
+	
+	if(grille->inds) {
+		free(grille->inds), grille->inds = NULL;
+	}
+	
+	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it) {
 		C_INDEXED* mat = &(*it);
-
-		if (mat->tex)
+		if(mat->tex) {
 			delete mat->tex;
+		}
 	}
-
+	
 	grille->mats.clear();
 }
-/*-----------------------------------------------------------*/
+
 void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
 {
 	*i1 = cy * (grille->nbx + 1) + cx;

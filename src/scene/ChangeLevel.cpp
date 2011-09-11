@@ -432,7 +432,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	// Close secondary inventory before leaving
 	if (SecondaryInventory != NULL)
 	{
-		INTERACTIVE_OBJ * io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+		INTERACTIVE_OBJ * io = SecondaryInventory->io;
 
 		if (io != NULL)
 		{
@@ -960,7 +960,7 @@ void FillTargetInfo(char (&info)[N], long numtarget) {
 	} else if(numtarget == 0) {
 		strcpy(info, "player");
 	} else if(ValidIONum(numtarget)) {
-		FillIOIdent(info, (INTERACTIVE_OBJ *)inter.iobj[numtarget]);
+		FillIOIdent(info, inter.iobj[numtarget]);
 	} else {
 		strcpy(info, "none");
 	}
@@ -1123,7 +1123,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 				ais.linked_data[count].lidx = io->obj->linked[count].lidx;
 				ais.linked_data[count].lidx2 = io->obj->linked[count].lidx2;
 				ais.linked_data[count].modinfo = io->obj->linked[count].modinfo;
-				FillIOIdent(ais.linked_data[count].linked_id, (INTERACTIVE_OBJ *)GetObjIOSource((EERIE_3DOBJ *)io->obj->linked[count].obj));
+				FillIOIdent(ais.linked_data[count].linked_id, GetObjIOSource(io->obj->linked[count].obj));
 				count++;
 			}
 		}
@@ -1512,7 +1512,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		long m, n;
 
 		INVENTORY_DATA * inv = io->inventory;
-		FillIOIdent(aids->io, (INTERACTIVE_OBJ *)inv->io);
+		FillIOIdent(aids->io, inv->io);
 		aids->sizex = inv->sizex;
 		aids->sizey = inv->sizey;
 

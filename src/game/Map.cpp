@@ -534,7 +534,7 @@ float oldposx,oldposz;
 	fs::write(f, &bi, sizeof(BITMAPINFO) - 4);
 	fs::write(f, mem, tailleraw);
 	
-	free((void*)mem);
+	free(mem);
 	SAFE_RELEASE(this->surfacetemp);
 
 	this->posx=oldposx;

@@ -664,12 +664,12 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 			if ((eb->anchors[j].nblinked) &&
 			        (eb->anchors[j].linked))
 			{
-				free((void *)eb->anchors[j].linked);
+				free(eb->anchors[j].linked);
 				eb->anchors[j].linked = NULL;
 			}
 		}
 
-		free((void *)eb->anchors);
+		free(eb->anchors);
 	}
 
 	eb->anchors = NULL;

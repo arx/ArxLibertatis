@@ -2645,19 +2645,17 @@ static void EERIE_PORTAL_Release() {
 						delete portals->room[nn].pVertexBuffer;
 						portals->room[nn].pVertexBuffer = NULL;
 					}
-
-					if (portals->room[nn].pussIndice)
-					{
-						free((void *)portals->room[nn].pussIndice);
+					
+					if(portals->room[nn].pussIndice) {
+						free(portals->room[nn].pussIndice);
 						portals->room[nn].pussIndice = NULL;
 					}
-
-					if (portals->room[nn].ppTextureContainer)
-					{
-						free((void *)portals->room[nn].ppTextureContainer);
+					
+					if(portals->room[nn].ppTextureContainer) {
+						free(portals->room[nn].ppTextureContainer);
 						portals->room[nn].ppTextureContainer = NULL;
 					}
-
+					
 				}
 			}
 
@@ -4269,21 +4267,19 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 				for (long nn = 0; nn < portals->nb_rooms + 1; nn++)
 				{
 					portals->room[nn].usNbTextures = 0;
-
+					
 					if(portals->room[nn].pVertexBuffer) {
 						delete portals->room[nn].pVertexBuffer;
 						portals->room[nn].pVertexBuffer = NULL;
 					}
-
-					if (portals->room[nn].pussIndice)
-					{
-						free((void *)portals->room[nn].pussIndice);
+					
+					if(portals->room[nn].pussIndice) {
+						free(portals->room[nn].pussIndice);
 						portals->room[nn].pussIndice = NULL;
 					}
-
-					if (portals->room[nn].ppTextureContainer)
-					{
-						free((void *)portals->room[nn].ppTextureContainer);
+					
+					if(portals->room[nn].ppTextureContainer) {
+						free(portals->room[nn].ppTextureContainer);
 						portals->room[nn].ppTextureContainer = NULL;
 					}
 				}
@@ -4503,13 +4499,13 @@ void ComputePortalVertexBuffer()
 
 			if(!iNbVertexForRoom) {
 				LogError << "portals " << iNb << " - Zero Vertex" << " Error Portals";
-
+				
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
+				
 				for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-					free((void *)*it);
+					free(*it);
 				}
-
+				
 				continue;
 			}
 
@@ -4643,10 +4639,10 @@ void ComputePortalVertexBuffer()
 								(*it)->iNbIndiceNoCull_TAdditive +
 								(*it)->iNbIndiceCull_TSubstractive +
 								(*it)->iNbIndiceNoCull_TSubstractive;
-
+				
 				iStartVertex += iIndiceInVertex;
-
-				free((void *)(*it));
+				
+				free(*it);
 			}
 			
 			pRoom->pVertexBuffer->unlock();

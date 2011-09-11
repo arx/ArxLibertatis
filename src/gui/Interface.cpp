@@ -968,14 +968,11 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		player.Interface &=~ INTER_MAP;
 		ARX_MINIMAP_PurgeTC();
 
-		if(ARXmenu.mda)
-		{
-			for (long i=0;i<MAX_FLYOVER;i++)
-			{
+		if(ARXmenu.mda) {
+			for(long i = 0; i < MAX_FLYOVER; i++) {
 				ARXmenu.mda->flyover[i].clear();
 			}
-
-			free((void*)ARXmenu.mda);
+			free(ARXmenu.mda);
 			ARXmenu.mda=NULL;
 		}
 	}

@@ -1678,7 +1678,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
 		}
 
-		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(TexturedVertex)*3);
+		memcpy(vert_list_metal, vert_list, sizeof(TexturedVertex)*3);
 		TexturedVertex * tl=vert_list_metal;
 
 		long r = 0, g = 0, b = 0;

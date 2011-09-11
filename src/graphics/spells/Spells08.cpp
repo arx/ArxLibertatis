@@ -76,27 +76,20 @@ CExplosion::~CExplosion()
 	this->Kill();
 }
 
-//-----------------------------------------------------------------------------
-void CExplosion::Kill(void)
-{
-	if (disqued3d)
-	{
-		free((void *)disqued3d);
-		disqued3d = NULL;
+void CExplosion::Kill(void) {
+	
+	if(disqued3d) {
+		free(disqued3d), disqued3d = NULL;
+	}
+	
+	if(disquevertex) {
+		free(disquevertex), disquevertex = NULL;
 	}
 
-	if (disquevertex)
-	{
-		free((void *)disquevertex);
-		disquevertex = NULL;
+	if(disqueind) {
+		free(disqueind), disqueind = NULL;
 	}
-
-	if (disqueind)
-	{
-		free((void *)disqueind);
-		disqueind = NULL;
-	}
-
+	
 	if (tactif)
 	{
 		int nb = (disquenbvertex >> 1);
@@ -109,8 +102,7 @@ void CExplosion::Kill(void)
 			}
 		}
 
-		free((void *)tactif);
-		tactif = NULL;
+		free(tactif), tactif = NULL;
 	}
 }
 

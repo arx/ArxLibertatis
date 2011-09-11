@@ -1279,15 +1279,19 @@ CLevitate::~CLevitate()
 		stone1 = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def, int numcone)
-{
-	if (this->cone[numcone].coned3d) free((void *)this->cone[numcone].coned3d);
 
-	if (this->cone[numcone].conevertex) free((void *)this->cone[numcone].conevertex);
-
-	if (this->cone[numcone].coneind) free((void *)this->cone[numcone].coneind);
-
+void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def, int numcone) {
+	
+	if(cone[numcone].coned3d) {
+		free(cone[numcone].coned3d);
+	}
+	if(cone[numcone].conevertex) {
+		free(cone[numcone].conevertex);
+	}
+	if(cone[numcone].coneind) {
+		free(cone[numcone].coneind);
+	}
+	
 	this->cone[numcone].conenbvertex = def * 2 + 2;
 	this->cone[numcone].conenbfaces = def * 2 + 2;
 	this->cone[numcone].coned3d = (TexturedVertex *)malloc(this->cone[numcone].conenbvertex * sizeof(TexturedVertex));
