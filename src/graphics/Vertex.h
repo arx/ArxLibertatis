@@ -29,17 +29,15 @@ template <class Vertex>
 class VertexBuffer;
 
 struct SMY_VERTEX {
-	float x, y, z;
+	Vec3f p;
 	ColorBGRA color;
-	float tu, tv;
+	Vec2f uv;
 };
 
 struct SMY_VERTEX3 {
-	float x, y, z;
+	Vec3f p;
 	ColorBGRA color;
-	float tu, tv;
-	float tu2, tv2;
-	float tu3, tv3;
+	Vec2f uv[3];
 };
 
 struct EERIE_VERTEX {

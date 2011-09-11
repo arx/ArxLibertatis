@@ -4544,28 +4544,28 @@ void ComputePortalVertexBuffer()
 
 					if (pPoly->tex == pTextureContainer)
 					{
-						pVertex->x = pPoly->v[0].p.x;
-						pVertex->y = -(pPoly->v[0].p.y);
-						pVertex->z = pPoly->v[0].p.z;
+						pVertex->p.x = pPoly->v[0].p.x;
+						pVertex->p.y = -(pPoly->v[0].p.y);
+						pVertex->p.z = pPoly->v[0].p.z;
 						pVertex->color = pPoly->v[0].color;
-						pVertex->tu = pPoly->v[0].uv.x;
-						pVertex->tv = pPoly->v[0].uv.y;
+						pVertex->uv.x = pPoly->v[0].uv.x;
+						pVertex->uv.y = pPoly->v[0].uv.y;
 						pVertex++;
 
-						pVertex->x = pPoly->v[1].p.x;
-						pVertex->y = -(pPoly->v[1].p.y);
-						pVertex->z = pPoly->v[1].p.z;
+						pVertex->p.x = pPoly->v[1].p.x;
+						pVertex->p.y = -(pPoly->v[1].p.y);
+						pVertex->p.z = pPoly->v[1].p.z;
 						pVertex->color = pPoly->v[1].color;
-						pVertex->tu = pPoly->v[1].uv.x;
-						pVertex->tv = pPoly->v[1].uv.y;
+						pVertex->uv.x = pPoly->v[1].uv.x;
+						pVertex->uv.y = pPoly->v[1].uv.y;
 						pVertex++;
 
-						pVertex->x = pPoly->v[2].p.x;
-						pVertex->y = -(pPoly->v[2].p.y);
-						pVertex->z = pPoly->v[2].p.z;
+						pVertex->p.x = pPoly->v[2].p.x;
+						pVertex->p.y = -(pPoly->v[2].p.y);
+						pVertex->p.z = pPoly->v[2].p.z;
 						pVertex->color = pPoly->v[2].color;
-						pVertex->tu = pPoly->v[2].uv.x;
-						pVertex->tv = pPoly->v[2].uv.y;
+						pVertex->uv.x = pPoly->v[2].uv.x;
+						pVertex->uv.y = pPoly->v[2].uv.y;
 						pVertex++;
 
 						pPoly->uslInd[0] = iIndiceInVertex++;
@@ -4574,12 +4574,12 @@ void ComputePortalVertexBuffer()
 
 						if (pPoly->type & POLY_QUAD)
 						{
-							pVertex->x = pPoly->v[3].p.x;
-							pVertex->y = -(pPoly->v[3].p.y);
-							pVertex->z = pPoly->v[3].p.z;
+							pVertex->p.x = pPoly->v[3].p.x;
+							pVertex->p.y = -(pPoly->v[3].p.y);
+							pVertex->p.z = pPoly->v[3].p.z;
 							pVertex->color = pPoly->v[3].color;
-							pVertex->tu = pPoly->v[3].uv.x;
-							pVertex->tv = pPoly->v[3].uv.y;
+							pVertex->uv.x = pPoly->v[3].uv.x;
+							pVertex->uv.y = pPoly->v[3].uv.y;
 							pVertex++;
 
 							pPoly->uslInd[3] = iIndiceInVertex++;

@@ -78,12 +78,12 @@ void setVertexArray(const SMY_VERTEX * vertices, const void * ref) {
 	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->x);
+	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX), &vertices->p.x);
 	
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX), &vertices->color);
 	
-	setVertexArrayTexCoord(0, &vertices->tu, sizeof(SMY_VERTEX));
+	setVertexArrayTexCoord(0, &vertices->uv, sizeof(SMY_VERTEX));
 	
 	CHECK_GL;
 }
@@ -96,14 +96,14 @@ void setVertexArray(const SMY_VERTEX3 * vertices, const void * ref) {
 	}
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->x);
+	glVertexPointer(3, GL_FLOAT, sizeof(SMY_VERTEX3), &vertices->p.x);
 	
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(GL_BGRA, GL_UNSIGNED_BYTE, sizeof(SMY_VERTEX3), &vertices->color);
 	
-	setVertexArrayTexCoord(0, &vertices->tu, sizeof(SMY_VERTEX3));
-	setVertexArrayTexCoord(1, &vertices->tu2, sizeof(SMY_VERTEX3));
-	setVertexArrayTexCoord(2, &vertices->tu3, sizeof(SMY_VERTEX3));
+	setVertexArrayTexCoord(0, &vertices->uv[0], sizeof(SMY_VERTEX3));
+	setVertexArrayTexCoord(1, &vertices->uv[1], sizeof(SMY_VERTEX3));
+	setVertexArrayTexCoord(2, &vertices->uv[2], sizeof(SMY_VERTEX3));
 	
 	CHECK_GL;
 }
