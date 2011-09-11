@@ -211,9 +211,7 @@ else(MSVC)
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
 	if(ARX_DEBUG)
-		
 		#Debug
-		
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
 		add_definitions(-D_DEBUG)
 		
@@ -242,6 +240,12 @@ else(MSVC)
 	# Disable exceptions & rtti
 	add_cxxflag(-fno-exceptions)
 	add_cxxflag(-fno-rtti)
+	
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
+		# The standard library shipped with ekopath failes to compile with -fno-rtti
+		# See https://github.com/pathscale/stdcxx/issues/3
+		add_definitions(-D_RWSTD_NO_DYNAMIC_CAST)
+	endif()
 	
 endif(MSVC)
 
