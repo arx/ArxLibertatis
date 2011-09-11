@@ -48,7 +48,6 @@ public:
 	
 	aalError init(SourceId id, OpenALSource * instance, const Channel & channel);
 	
-	aalError setVolume(float volume);
 	aalError setPitch(float pitch);
 	aalError setPan(float pan);
 	
@@ -57,9 +56,6 @@ public:
 	aalError setDirection(const Vec3f & direction);
 	aalError setCone(const SourceCone & cone);
 	aalError setFalloff(const SourceFalloff & falloff);
-	aalError setMixer(MixerId mixer);
-	
-	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
 	aalError play(unsigned playCount = 1);
 	aalError stop();
