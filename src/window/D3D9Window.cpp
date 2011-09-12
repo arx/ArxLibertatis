@@ -201,12 +201,11 @@ bool D3D9Window::initialize(DisplayMode mode) {
 	D3DPRESENT_PARAMETERS d3dpp; 
 	ZeroMemory( &d3dpp, sizeof(d3dpp) );
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.EnableAutoDepthStencil = TRUE;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-
+	
 	// VSync
 	d3dpp.PresentationInterval = config.video.vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
 	
+	// Backbuffer format
 	if(IsFullScreen()) {
 		d3dpp.Windowed = FALSE;
 		d3dpp.BackBufferWidth = m_Size.x;
@@ -230,6 +229,28 @@ bool D3D9Window::initialize(DisplayMode mode) {
 		}
 	}
 
+	// Depth buffer precision - prefer better precision...
+	D3DFORMAT D32Formats[] = { D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT)0 };
+	D3DFORMAT* pFormatList = D32Formats;
+	while (*pFormatList) {
+		if(SUCCEEDED(d3d->CheckDeviceFormat(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList))) {
+			if (SUCCEEDED(d3d->CheckDepthStencilMatch(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.BackBufferFormat, d3dpp.BackBufferFormat, *pFormatList))) {
+				break;
+			}
+		}
+
+		pFormatList++;
+	};
+	
+	if( *pFormatList != 0 ) {
+		d3dpp.EnableAutoDepthStencil = TRUE;
+		d3dpp.AutoDepthStencilFormat = *pFormatList;
+	} else {
+		LogError << "Could not find any matching zbuffer format!";
+		return false;
+	}
+
+	// Create the D3D9 devices
 	if( FAILED( d3d->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device ) ) )
 		return false;
 
