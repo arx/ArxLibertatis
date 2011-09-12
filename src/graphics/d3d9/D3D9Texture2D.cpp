@@ -71,6 +71,9 @@ bool DX9Texture2D::Create()
 
 void DX9Texture2D::Copy_L8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
+	ARX_UNUSED(dstPixelSize);
+	ARX_UNUSED(srcPixelSize);
+
 	DWORD srcPitchIncrement = srcPitch - imageWidth;
 	DWORD dstPitchIncrement = dstPitch - imageWidth;
 	
@@ -96,6 +99,9 @@ void DX9Texture2D::Copy_L8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD i
 
 void DX9Texture2D::Copy_A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
+	ARX_UNUSED(dstPixelSize);
+	ARX_UNUSED(srcPixelSize);
+
 	DWORD srcPitchIncrement = srcPitch - imageWidth;
 	DWORD dstPitchIncrement = dstPitch - imageWidth;
 	
