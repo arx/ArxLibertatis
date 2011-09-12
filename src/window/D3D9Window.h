@@ -48,6 +48,7 @@ private:
 	DeviceInfo * deviceInfo;
 
 	LPDIRECT3D9 d3d;					// The Direct3D object
+	D3DGAMMARAMP initialGammaRamp;		// Gamma ramp to restore
 };
 
 #endif // ARX_WINDOW_D3D9WINDOW_H

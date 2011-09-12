@@ -185,6 +185,10 @@ void D3D9Window::destroyObjects() {
 	
 	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
 	if(GD3D9Device) {
+
+		// Restore initial gamma ramp - Needed for wine
+		GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &initialGammaRamp);
+
 		if(0 < GD3D9Device->Release()) {
 			LogWarning << "D3DDevice object is still referenced";
 		}
@@ -265,7 +269,10 @@ bool D3D9Window::initialize(DisplayMode mode) {
 	
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(GetSize().x, GetSize().y));
-	
+
+	// Store initial gamma settings to restore them later - Needed for wine
+	GD3D9Device->GetGammaRamp(0, &initialGammaRamp);
+		
 	onRendererInit();
 	
 	return true;
