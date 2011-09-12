@@ -56,6 +56,10 @@ if(WINE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_WIN32 -U__CYGWIN__ -U__WIN32__ -UWIN32")
 	set(HAVE_WINAPI 1)
 elseif(WIN32)
+	if(NOT MSVC)
+		# We need to define WINVER for MinGW32 when requiring anything newer than Win95 / WinNT
+		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
+	endif()
 	set(HAVE_WINAPI 1)
 else()
 	set(HAVE_WINAPI 0)
