@@ -520,13 +520,13 @@ bool D3D9Renderer::getSnapshot(Image & image) {
 
 bool D3D9Renderer::getSnapshot(Image& image, size_t width, size_t height) {
 	HRESULT hr;
-	LPDIRECT3DSURFACE9 renderTarget;
-	hr = GD3D9Device->GetRenderTarget( 0, &renderTarget );
-	if( !renderTarget || FAILED(hr) )
+	LPDIRECT3DSURFACE9 pRenderTarget;
+	hr = GD3D9Device->GetRenderTarget( 0, &pRenderTarget );
+	if( !pRenderTarget || FAILED(hr) )
 		return false;
 
 	D3DSURFACE_DESC rtDesc;
-	renderTarget->GetDesc( &rtDesc );
+	pRenderTarget->GetDesc( &rtDesc );
 
 	// If -1, use real backbuffer size
 	if(width == (size_t)-1)
@@ -534,57 +534,68 @@ bool D3D9Renderer::getSnapshot(Image& image, size_t width, size_t height) {
 	if(height == (size_t)-1)
 		height = rtDesc.Height;
 
-	// If multisampling is enabled OR the size of the snapshot doesn't match the backbuffer size, we need to
-	// create a render surface with the right parameters and copy our backbuffer into it.
-	if( rtDesc.MultiSampleType != D3DMULTISAMPLE_NONE || rtDesc.Width != width || rtDesc.Height != height ) {
-		LPDIRECT3DSURFACE9 resolvedSurface;
-		hr = GD3D9Device->CreateRenderTarget( width, height, rtDesc.Format, D3DMULTISAMPLE_NONE, 0, FALSE, &resolvedSurface, NULL );
+	// If multisampling is enabled
+	//	OR
+	// The size of the snapshot doesn't match the backbuffer size
+	//	OR 
+	// The backbuffer format isn't D3DFMT_X8R8G8B8
+	//	THEN
+	// We need to create a render surface with the right parameters and copy our backbuffer into it.
+	// Will support snapshots from 16-bit backbuffers too.
+	if( rtDesc.MultiSampleType != D3DMULTISAMPLE_NONE || rtDesc.Width != width || rtDesc.Height != height || rtDesc.Format != D3DFMT_X8R8G8B8) {
+		LPDIRECT3DSURFACE9 pResolvedSurface;
+		hr = GD3D9Device->CreateRenderTarget( width, height, D3DFMT_X8R8G8B8, D3DMULTISAMPLE_NONE, 0, FALSE, &pResolvedSurface, NULL );
 		if( FAILED(hr) ) {
-			renderTarget->Release();
+			pRenderTarget->Release();
 			return false;
 		}
 
 		// Copy will automatically adjust the size for us
-		hr = GD3D9Device->StretchRect( renderTarget, NULL, resolvedSurface, NULL, D3DTEXF_NONE );
+		hr = GD3D9Device->StretchRect( pRenderTarget, NULL, pResolvedSurface, NULL, D3DTEXF_NONE );
 		if( FAILED(hr) ) {
-			resolvedSurface->Release();
-			renderTarget->Release();
+			pResolvedSurface->Release();
+			pRenderTarget->Release();
 			return false;
 		}
 		
-		renderTarget->Release();
+		pRenderTarget->Release();
 
-		renderTarget = resolvedSurface;
-		renderTarget->GetDesc( &rtDesc );
+		pRenderTarget = pResolvedSurface;
+		pRenderTarget->GetDesc( &rtDesc );
     }
 
 	// Create a surface in system memory
-	LPDIRECT3DSURFACE9 offscreenSurface;
-	hr = GD3D9Device->CreateOffscreenPlainSurface( rtDesc.Width, rtDesc.Height, rtDesc.Format, D3DPOOL_SYSTEMMEM, &offscreenSurface, NULL );
+	LPDIRECT3DSURFACE9 pSurface;
+	hr = GD3D9Device->CreateOffscreenPlainSurface( rtDesc.Width, rtDesc.Height, rtDesc.Format, D3DPOOL_SYSTEMMEM, &pSurface, NULL );
 	if( FAILED(hr) ) {
-		renderTarget->Release();
+		pRenderTarget->Release();
 		return false;
 	}
 
 	// Obtain the image from the render target
-	hr = GD3D9Device->GetRenderTargetData( renderTarget, offscreenSurface );
+	hr = GD3D9Device->GetRenderTargetData( pRenderTarget, pSurface );
 	bool ok = SUCCEEDED(hr);
 	if( ok ) {
-		// Save to a temp buffer
-		LPD3DXBUFFER pBuffer = NULL;
-		D3DXSaveSurfaceToFileInMemory(&pBuffer, D3DXIFF_BMP, offscreenSurface, NULL, NULL);
+		D3DLOCKED_RECT lockedRect;
+		hr = pSurface->LockRect(&lockedRect, 0, 0);
 
-		// Load from memory
-		image.LoadFromMemory(pBuffer->GetBufferPointer(), pBuffer->GetBufferSize());
-		image.FlipY();
+		if( SUCCEEDED(hr) ) {
+			D3DSURFACE_DESC surfaceDesc;
+			pSurface->GetDesc(&surfaceDesc);
 
-		// Release buffer provided by D3DXSaveSurfaceToFileInMemory()
-		pBuffer->Release();
+			image.Create(surfaceDesc.Width, surfaceDesc.Height, Image::Format_R8G8B8);
+			BYTE* pDst = (BYTE*)image.GetData();
+
+			DX9Texture2D::Copy_R8G8B8(pDst, (BYTE*)lockedRect.pBits, surfaceDesc.Width, surfaceDesc.Height, surfaceDesc.Format, 3, 4, surfaceDesc.Width * 3, lockedRect.Pitch);
+			image.FlipY();
+		}
+		
+		pSurface->UnlockRect();	
 	}
 
 	// Release references to the offscreen surface and render target.
-	renderTarget->Release();
-	offscreenSurface->Release();
+	pRenderTarget->Release();
+	pSurface->Release();
 
 	return ok;
 }

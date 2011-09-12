@@ -69,86 +69,85 @@ bool DX9Texture2D::Create()
 	return true;
 }
 
-template <Image::Format fmt>
-void CopyData(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_L8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	LogError << "CopyData: unsupported source format" << fmt;
-}
-
-template <>
-void CopyData<Image::Format_L8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
-{
-	DWORD pitchIncrement = dstPitch - imageWidth;
-
-	if(dstFormat == D3DFMT_L8) {
-		if(pitchIncrement != 0)	{
+	DWORD srcPitchIncrement = srcPitch - imageWidth;
+	DWORD dstPitchIncrement = dstPitch - imageWidth;
+	
+	if(d3dFormat == D3DFMT_L8) {
+		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
 			for (DWORD y = 0; y < imageHeight; y++) {
 				// D3DFMT_L8 <- Format_L8
 				memcpy(pDst, pSrc, imageWidth);
 		
 				pSrc += imageWidth;
 				pDst += imageWidth;
-				pDst += pitchIncrement;
+
+				pSrc += srcPitchIncrement;
+				pDst += dstPitchIncrement;
 			}
 		} else {
 			memcpy(pDst, pSrc, imageWidth*imageHeight);
 		}
 	} else {
-		LogError << "No conversion possible from Image::Format_L8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_L8 to D3D format #" << d3dFormat;
 	}
 }
 
-template <>
-void CopyData<Image::Format_A8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	DWORD pitchIncrement = dstPitch - imageWidth;
-
-	if(dstFormat == D3DFMT_A8) {
-		if(pitchIncrement != 0)	{
+	DWORD srcPitchIncrement = srcPitch - imageWidth;
+	DWORD dstPitchIncrement = dstPitch - imageWidth;
+	
+	if(d3dFormat == D3DFMT_A8) {
+		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
 			for (DWORD y = 0; y < imageHeight; y++) {
 				// D3DFMT_A8 <- Format_A8
 				memcpy(pDst, pSrc, imageWidth);
 		
 				pSrc += imageWidth;
+				pSrc += srcPitchIncrement;
+
 				pDst += imageWidth;
-				pDst += pitchIncrement;
+				pDst += dstPitchIncrement;				
 			}
 		} else {
 			memcpy(pDst, pSrc, imageWidth*imageHeight);
 		}
 	} else {
-		LogError << "No conversion possible from Image::Format_A8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_A8 to D3D format #" << d3dFormat;
 	}
 }
 
-template <>
-void CopyData<Image::Format_L8A8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_L8A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	DWORD pitchIncrement = dstPitch - imageWidth * 2;
+	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
+	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;	
 
-	if(dstFormat == D3DFMT_A8L8) {
+	if(d3dFormat == D3DFMT_A8L8) {
 		for (DWORD y = 0; y < imageHeight; y++) {
 			for (DWORD x = 0; x < imageWidth; x++) {
 				// D3DFMT_A8L8 <- Format_L8A8
 				pDst[0] = pSrc[1];
 				pDst[1] = pSrc[0];
 
-				pSrc += 2;
-				pDst += 2;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;
 		}
 	} else {
-		LogError << "No conversion possible from Image::Format_L8A8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_L8A8 to D3D format #" << d3dFormat;
 	}
 }
 
-template <>
-void CopyData<Image::Format_R8G8B8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_R8G8B8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	DWORD pitchIncrement = dstPitch - imageWidth * 4;
-
-	switch(dstFormat) {
+	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
+	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
+	
+	switch(d3dFormat) {
 	case D3DFMT_X8B8G8R8:
 		for (DWORD y = 0; y < imageHeight; y++) {
 			for (DWORD x = 0; x < imageWidth; x++) {
@@ -157,10 +156,11 @@ void CopyData<Image::Format_R8G8B8>(BYTE* __restrict pDst, BYTE* __restrict pSrc
 				pDst[1] = pSrc[1];
 				pDst[2] = pSrc[2];
 
-				pSrc += 3;
-				pDst += 4;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;
 		}
 		break;
 	
@@ -172,24 +172,25 @@ void CopyData<Image::Format_R8G8B8>(BYTE* __restrict pDst, BYTE* __restrict pSrc
 				pDst[1] = pSrc[1];
 				pDst[2] = pSrc[0];
 
-				pSrc += 3;
-				pDst += 4;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;
 		}
 		break;
 
 	default:
-		LogError << "No conversion possible from Image::Format_R8G8B8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_R8G8B8 to D3D format #" << d3dFormat;
 	}
 }
 
-template <>
-void CopyData<Image::Format_B8G8R8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_B8G8R8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	DWORD pitchIncrement = dstPitch - imageWidth * 4;
-
-	switch(dstFormat) {
+	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
+	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
+	
+	switch(d3dFormat) {
 	case D3DFMT_X8B8G8R8:
 		for (DWORD y = 0; y < imageHeight; y++) {
 			for (DWORD x = 0; x < imageWidth; x++) {
@@ -198,10 +199,11 @@ void CopyData<Image::Format_B8G8R8>(BYTE* __restrict pDst, BYTE* __restrict pSrc
 				pDst[1] = pSrc[1];
 				pDst[2] = pSrc[0];
 
-				pSrc += 3;
-				pDst += 4;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;			
 		}
 		break;
 
@@ -213,36 +215,39 @@ void CopyData<Image::Format_B8G8R8>(BYTE* __restrict pDst, BYTE* __restrict pSrc
 				pDst[1] = pSrc[1];
 				pDst[2] = pSrc[2];
 
-				pSrc += 3;
-				pDst += 4;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;			
 		}
 		break;
 
 	default:
-		LogError << "No conversion possible from Image::Format_B8G8R8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_B8G8R8 to D3D format #" << d3dFormat;
 	}
 }
 
-template <>
-void CopyData<Image::Format_R8G8B8A8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_R8G8B8A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	DWORD pitchIncrement = dstPitch - imageWidth * 4;
-
-	switch(dstFormat) {
+	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
+	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
+	
+	switch(d3dFormat) {
 	case D3DFMT_A8B8G8R8:
 		// D3DFMT_A8B8G8R8 <- Format_R8G8B8A8
-		if(pitchIncrement != 0)	{
+		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
 			for (DWORD y = 0; y < imageHeight; y++) {
-				memcpy(pDst, pSrc, imageWidth*4);
+				memcpy(pDst, pSrc, imageWidth*dstPixelSize);
 		
-				pSrc += imageWidth*4;
-				pDst += imageWidth*4;
-				pDst += pitchIncrement;
+				pSrc += imageWidth*srcPixelSize;
+				pSrc += srcPitchIncrement;
+
+				pDst += imageWidth*dstPixelSize;
+				pDst += dstPitchIncrement;				
 			}
 		} else {
-			memcpy(pDst, pSrc, imageWidth*imageHeight*4);
+			memcpy(pDst, pSrc, imageWidth*imageHeight*dstPixelSize);
 		}
 		break;
 
@@ -255,24 +260,25 @@ void CopyData<Image::Format_R8G8B8A8>(BYTE* __restrict pDst, BYTE* __restrict pS
 				pDst[2] = pSrc[0];
 				pDst[3] = pSrc[3];
 
-				pSrc += 4;
-				pDst += 4;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;			
 		}
 		break;
 
 	default:
-		LogError << "No conversion possible from Image::Format_R8G8B8A8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_R8G8B8A8 to D3D format #" << d3dFormat;
 	}
 }
 
-template <>
-void CopyData<Image::Format_B8G8R8A8>(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT dstFormat, DWORD dstPitch)
+void DX9Texture2D::Copy_B8G8R8A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
 {
-	DWORD pitchIncrement = dstPitch - imageWidth * 4;
-
-	switch(dstFormat) {
+	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
+	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
+	
+	switch(d3dFormat) {
 	case D3DFMT_A8B8G8R8:
 		for (DWORD y = 0; y < imageHeight; y++) {
 			for (DWORD x = 0; x < imageWidth; x++) {
@@ -282,30 +288,33 @@ void CopyData<Image::Format_B8G8R8A8>(BYTE* __restrict pDst, BYTE* __restrict pS
 				pDst[2] = pSrc[0];
 				pDst[3] = pSrc[3];
 
-				pSrc += 4;
-				pDst += 4;
+				pSrc += srcPixelSize;
+				pDst += dstPixelSize;
 			}
-			pDst += pitchIncrement;
+			pSrc += srcPitchIncrement;
+			pDst += dstPitchIncrement;			
 		}
 		break;
 
 	case D3DFMT_A8R8G8B8:
 		// D3DFMT_A8R8G8B8 <- Format_B8G8R8A8
-		if(pitchIncrement != 0)	{
+		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
 			for (DWORD y = 0; y < imageHeight; y++) {
-				memcpy(pDst, pSrc, imageWidth*4);
+				memcpy(pDst, pSrc, imageWidth*dstPixelSize);
 		
-				pSrc += imageWidth*4;
-				pDst += imageWidth*4;
-				pDst += pitchIncrement;
+				pSrc += imageWidth*srcPixelSize;
+				pSrc += srcPitchIncrement;
+
+				pDst += imageWidth*dstPixelSize;
+				pDst += dstPitchIncrement;				
 			}
 		} else {
-			memcpy(pDst, pSrc, imageWidth*imageHeight*4);
+			memcpy(pDst, pSrc, imageWidth*imageHeight*dstPixelSize);
 		}
 		break;
 
 	default:
-		LogError << "No conversion possible from Image::Format_B8G8R8A8 to D3D format #" << dstFormat;
+		LogError << "No conversion possible from Image::Format_B8G8R8A8 to D3D format #" << d3dFormat;
 	}
 }
 
@@ -340,31 +349,31 @@ void DX9Texture2D::Upload()
 		switch(mFormat)
 		{
 		case Image::Format_L8:
-			CopyData<Image::Format_L8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_L8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 1, 1, lockedRect.Pitch, imageWidth);
 			break;
 
 		case Image::Format_A8:
-			CopyData<Image::Format_A8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 1, 1, lockedRect.Pitch, imageWidth);
 			break;
 
 		case Image::Format_L8A8:
-			CopyData<Image::Format_L8A8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_L8A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 2, 2, lockedRect.Pitch, imageWidth * 2);
 			break;
 
 		case Image::Format_R8G8B8:
-			CopyData<Image::Format_R8G8B8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_R8G8B8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 3, lockedRect.Pitch, imageWidth * 3);
 			break;
 
 		case Image::Format_B8G8R8:
-			CopyData<Image::Format_B8G8R8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_B8G8R8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 3, lockedRect.Pitch, imageWidth * 3);
 			break;
 
 		case Image::Format_R8G8B8A8:
-			CopyData<Image::Format_R8G8B8A8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_R8G8B8A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 4, lockedRect.Pitch, imageWidth * 4);
 			break;
 
 		case Image::Format_B8G8R8A8:
-			CopyData<Image::Format_B8G8R8A8>((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, lockedRect.Pitch);
+			Copy_B8G8R8A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 4, lockedRect.Pitch, imageWidth * 4);
 			break;
 
 		default:
