@@ -594,10 +594,9 @@ bool D3D9Renderer::getSnapshot(Image& image, size_t width, size_t height) {
 			BYTE* pDst = (BYTE*)image.GetData();
 
 			DX9Texture2D::Copy_R8G8B8(pDst, (BYTE*)lockedRect.pBits, surfaceDesc.Width, surfaceDesc.Height, surfaceDesc.Format, 3, 4, surfaceDesc.Width * 3, lockedRect.Pitch);
-			image.FlipY();
 		}
 		
-		pSurface->UnlockRect();	
+		pSurface->UnlockRect();
 	}
 
 	// Release references to the offscreen surface and render target.

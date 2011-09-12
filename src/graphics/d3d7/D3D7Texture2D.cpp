@@ -557,33 +557,33 @@ bool downloadSurface(LPDIRECTDRAWSURFACE7 surface, Image & image) {
 	
 	unsigned char * data = image.GetData();
 	
-	size_t offset = desc.lPitch * (desc.dwHeight - 1);
+	BYTE * bytes = reinterpret_cast<BYTE *>(desc.lpSurface);
 	
 	if(format == Image::Format_L8) {
-		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
-			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+		for(DWORD y = 0; y < desc.dwHeight; y++, bytes += desc.lPitch) {
+			DWORD * src = reinterpret_cast<DWORD *>(bytes);
 			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
 				*data++ = (unsigned char)(((*src)&dwLMask) >> dwLShiftR);
 			}
 		}
 	} else if(format == Image::Format_A8) {
-		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
-			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+		for(DWORD y = 0; y < desc.dwHeight; y++, bytes += desc.lPitch) {
+			DWORD * src = reinterpret_cast<DWORD *>(bytes);
 			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
 				*data++ = (unsigned char)(((*src)&dwAMask) >> dwAShiftR);
 			}
 		}
 	} else if(format == Image::Format_L8A8) {
-		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
-			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+		for(DWORD y = 0; y < desc.dwHeight; y++, bytes += desc.lPitch) {
+			DWORD * src = reinterpret_cast<DWORD *>(bytes);
 			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
 				*data++ = (unsigned char)(((*src)&dwLMask) >> dwLShiftR);
 				*data++ = (unsigned char)(((*src)&dwAMask) >> dwAShiftR);
 			}
 		}
 	} else if(format == Image::Format_R8G8B8) {
-		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
-			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+		for(DWORD y = 0; y < desc.dwHeight; y++, bytes += desc.lPitch) {
+			DWORD * src = reinterpret_cast<DWORD *>(bytes);
 			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
 				*data++ = (unsigned char)(((*src)&dwRMask) >> dwRShiftR);
 				*data++ = (unsigned char)(((*src)&dwGMask) >> dwGShiftR);
@@ -591,8 +591,8 @@ bool downloadSurface(LPDIRECTDRAWSURFACE7 surface, Image & image) {
 			}
 		}
 	} else if(format == Image::Format_R8G8B8A8) {
-		for(DWORD y = 0; y < desc.dwHeight; y++, offset -= desc.lPitch) {
-			DWORD * src = (DWORD *)((BYTE*)desc.lpSurface + offset);
+		for(DWORD y = 0; y < desc.dwHeight; y++, bytes += desc.lPitch) {
+			DWORD * src = reinterpret_cast<DWORD *>(bytes);
 			for(DWORD x = 0; x < desc.dwWidth; x++, src++) {
 				*data++ = (unsigned char)(((*src)&dwRMask) >> dwRShiftR);
 				*data++ = (unsigned char)(((*src)&dwGMask) >> dwGShiftR);

@@ -305,12 +305,8 @@ bool D3D7Window::showFrame() {
 	
 	if(IsFullScreen()) {
 		
-		if(isVSync()) {
-			ret = frontBuffer->Flip(NULL, DDFLIP_WAIT); 
-		} else {
-			RECT rect = { 0, 0, GetSize().x, GetSize().y };
-			ret = frontBuffer->Blt(&rect, backBuffer, NULL, DDBLT_WAIT, NULL);
-		}
+		RECT rect = { 0, 0, GetSize().x, GetSize().y };
+		ret = frontBuffer->Blt(&rect, backBuffer, NULL, DDBLT_WAIT, NULL);
 		
 	} else {
 		
