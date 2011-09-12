@@ -556,6 +556,13 @@ bool DInput8Backend::update() {
 		}
 	}
 	
+	// When running fullscreen, make sure to recenter mouse in the middle of the screen
+	if(mainApp->GetWindow()->IsFullScreen()) {
+		int x = (int)mainApp->GetWindow()->GetSize().x / 2;
+		int y = (int)mainApp->GetWindow()->GetSize().y / 2;
+		SetCursorPos(x, y);
+	}
+	
 	return success;
 }
 
