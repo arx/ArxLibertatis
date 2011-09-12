@@ -3,6 +3,11 @@
 
 #include <list>
 
+// TODO(broken-wine) wine's d3dx9math.h requires min and max but doesn't include them!
+#include <algorithm>
+using std::max;
+using std::min;
+
 #include <d3d9types.h>
 #include <d3dx9.h>
 #include <d3dx9tex.h>
