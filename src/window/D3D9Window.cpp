@@ -261,9 +261,7 @@ bool D3D9Window::initialize(DisplayMode mode) {
 
 	// Multisampling - Part 2
 	// Set the multisampling render state
-	if(d3dpp.MultiSampleType != D3DMULTISAMPLE_NONE) {
-		GD3D9Device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, true);
-	}
+	renderer->SetAntialiasing(d3dpp.MultiSampleType != D3DMULTISAMPLE_NONE);
 	
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(GetSize().x, GetSize().y));

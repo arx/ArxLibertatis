@@ -426,10 +426,9 @@ void D3D9Renderer::SetFogParams(FogMode fogMode, float fogStart, float fogEnd, f
 }
 
 void D3D9Renderer::SetAntialiasing(bool enable) {
-	
-	/*
-	TODO-DX9 - FSAA
-	*/
+	// This won't have much effect if the device was initially created 
+	// with present parameter MultiSampleType == D3DMULTISAMPLE_NONE
+	GD3D9Device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, enable);
 }
 
 float D3D9Renderer::GetMaxAnisotropy() const {
