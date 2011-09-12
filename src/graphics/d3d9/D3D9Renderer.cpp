@@ -327,7 +327,10 @@ void D3D9Renderer::SetCulling(CullingMode mode) {
 }
 
 void D3D9Renderer::SetDepthBias(int depthBias) {
-	GD3D9Device->SetRenderState(D3DRS_DEPTHBIAS, depthBias);
+	float bias = -(float)depthBias;
+	bias /= 65536.0f;
+	u32 val = reinterpret<u32, f32>(bias);
+	GD3D9Device->SetRenderState(D3DRS_DEPTHBIAS, val);
 }
 
 void D3D9Renderer::SetFillMode(FillMode mode) {
