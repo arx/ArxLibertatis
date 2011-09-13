@@ -35,6 +35,9 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	
 	# Complement list of translation units with the name of ub
 	set(${SOURCE_VARIABLE_NAME} ${${SOURCE_VARIABLE_NAME}} ${unit_build_file} PARENT_SCOPE)
+	
+	# Put ub file at the root of the project
+	source_group( "" FILES ${unit_build_file} )
 endfunction(enable_unity_build)
 
 

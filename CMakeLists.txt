@@ -11,14 +11,23 @@ include(CheckCXXSourceCompiles)
 include(BuildSystem)
 include(CompileCheck)
 
-function(create_source_groups)
-	# Source groups
-	set(SOURCE_GROUPS ai animation audio core game graphics gui input io physics platform scene script)
-	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
-		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
-		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
-	endforeach(SOURCE_GROUP)
-endfunction()
+
+# Accepts a variable holding the source files
+# and creates source groups (for VS, Xcode etc)
+# that replicate the folder hierarchy on disk
+macro( create_source_groups source_files_variable )
+	foreach( source_file ${${source_files_variable}} )
+		string( REGEX REPLACE ${CMAKE_CURRENT_SOURCE_DIR} "" relative_directory "${source_file}")
+		string( REGEX REPLACE "[\\\\/][^\\\\/]*$" "" relative_directory "${relative_directory}")
+		string( REGEX REPLACE "^[\\\\/]" "" relative_directory "${relative_directory}")
+
+		if( WIN32 )
+			string( REGEX REPLACE "/" "\\\\" relative_directory "${relative_directory}" )
+		endif( WIN32 )
+
+		source_group( "${relative_directory}" FILES ${source_file} )
+	endforeach()
+endmacro()
 
 ##############################################################################
 
@@ -603,7 +612,8 @@ add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
-create_source_groups()
+list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
+create_source_groups(ALL_FILES_FOR_GROUPS)
 
 configure_file(${SRC_DIR}/Configure.h.cmake Configure.h)
 
