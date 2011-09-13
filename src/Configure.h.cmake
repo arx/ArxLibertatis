@@ -19,10 +19,8 @@
 #cmakedefine HAVE_OPENGL
 #cmakedefine HAVE_SDL
 
-#cmakedefine HAVE_D3D7
 #cmakedefine HAVE_D3D9
 
-#cmakedefine HAVE_DINPUT7
 #cmakedefine HAVE_DINPUT8
 
 // Compiler features

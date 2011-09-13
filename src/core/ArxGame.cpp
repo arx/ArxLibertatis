@@ -82,9 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Scene.h"
 
-#ifdef HAVE_D3D7
-#include "window/D3D7Window.h"
-#endif
 #ifdef HAVE_D3D9
 #include "window/D3D9Window.h"
 #endif
@@ -282,16 +279,6 @@ bool ArxGame::InitWindow() {
 	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D9")) {
 		matched = true;
 		RenderWindow * window = new D3D9Window;
-		if(!initWindow(window)) {
-			delete window;
-		}
-	}
-#endif
-	
-#ifdef HAVE_D3D7
-	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D7")) {
-		matched = true;
-		RenderWindow * window = new D3D7Window;
 		if(!initWindow(window)) {
 			delete window;
 		}
