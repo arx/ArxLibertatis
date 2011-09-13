@@ -17,9 +17,11 @@
 #cmakedefine HAVE_DSOUND
 
 #cmakedefine HAVE_OPENGL
-#cmakedefine HAVE_D3D7
 #cmakedefine HAVE_SDL
-#cmakedefine HAVE_DINPUT7
+
+#cmakedefine HAVE_D3D9
+
+#cmakedefine HAVE_DINPUT8
 
 // Compiler features
 #cmakedefine HAVE_DYNAMIC_STACK_ALLOCATION

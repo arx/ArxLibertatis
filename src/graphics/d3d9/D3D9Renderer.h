@@ -1,18 +1,18 @@
 
-#ifndef ARX_GRAPHICS_D3D7_D3D7RENDERER_H
-#define ARX_GRAPHICS_D3D7_D3D7RENDERER_H
+#ifndef ARX_GRAPHICS_D3D9_D3D9RENDERER_H
+#define ARX_GRAPHICS_D3D9_D3D9RENDERER_H
 
-#include <d3d.h>
+#include <d3d9.h>
 
 #include "graphics/Renderer.h"
-#include "window/D3D7Window.h"
+#include "window/D3D9Window.h"
 
-class D3D7Renderer : public Renderer {
+class D3D9Renderer : public Renderer {
 	
 public:
 	
-	D3D7Renderer(D3D7Window * window);
-	~D3D7Renderer();
+	D3D9Renderer(D3D9Window * window);
+	~D3D9Renderer();
 	
 	void Initialize();
 	
@@ -78,8 +78,8 @@ public:
 	bool isFogInEyeCoordinates();
 	
 private:
-	D3D7Window * window;
+	D3D9Window * window;
 	
 };
 
-#endif // ARX_GRAPHICS_D3D7_D3D7RENDERER_H
+#endif // ARX_GRAPHICS_D3D9_D3D9RENDERER_H

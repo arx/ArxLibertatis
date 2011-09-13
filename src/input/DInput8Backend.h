@@ -23,17 +23,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_INPUT_DINPUT7BACKEND_H
-#define ARX_INPUT_DINPUT7BACKEND_H
+#ifndef ARX_INPUT_DINPUT8BACKEND_H
+#define ARX_INPUT_DINPUT8BACKEND_H
 
 #include "input/Input.h"
 #include "input/InputBackend.h"
 
-class DInput7Backend : public InputBackend
+class DInput8Backend : public InputBackend
 {
 public:
-	DInput7Backend();
-	virtual ~DInput7Backend();
+	DInput8Backend();
+	virtual ~DInput8Backend();
 
 	virtual bool init();
 	virtual bool update();
@@ -58,4 +58,4 @@ private:
 	
 };
 
-#endif // ARX_INPUT_DINPUT7BACKEND_H
+#endif // ARX_INPUT_DINPUT8BACKEND_H

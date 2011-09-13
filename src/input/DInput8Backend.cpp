@@ -56,12 +56,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include "input/DInput7Backend.h"
+#include "input/DInput8Backend.h"
 
 #include <cstdlib>
 #include <vector>
 
-#define DIRECTINPUT_VERSION 0x0700
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 #include "core/Application.h"
@@ -89,7 +89,7 @@ struct INPUT_INFO {
 	int nbbuttons;
 	int nbaxes;
 	int nbele; // for mouse
-	LPDIRECTINPUTDEVICE7 inputdevice7;
+	LPDIRECTINPUTDEVICE8 inputdevice8;
 	union {
 		char * bufferstate;
 		DIDEVICEOBJECTDATA * mousestate;
@@ -98,134 +98,134 @@ struct INPUT_INFO {
 
 typedef vector<INPUT_INFO> InputList;
 static InputList DI_InputInfo;
-static IDirectInput7A * DI_DInput7;
+static IDirectInput8A * DI_DInput8;
 
 static INPUT_INFO * DI_KeyBoardBuffer;
 static INPUT_INFO * DI_MouseState;
 
-const int DI7_KEY_ARRAY_SIZE = 256;
+const int DI8_KEY_ARRAY_SIZE = 256;
 
-static int DInput7ToArxKeyTable[DI7_KEY_ARRAY_SIZE];
+static int DInput8ToArxKeyTable[DI8_KEY_ARRAY_SIZE];
 
-static void initDInput7ToArxKeyTable();
+static void initDInput8ToArxKeyTable();
 static void releaseDevice(INPUT_INFO & info);
 static bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode);
 static bool getKeyboardInputDevice(DXIMode mode);
 static bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe);
 static bool setMouseRelative();
 
-void initDInput7ToArxKeyTable()
+void initDInput8ToArxKeyTable()
 {
-	for(int i = 0; i < DI7_KEY_ARRAY_SIZE;++i)
-		DInput7ToArxKeyTable[i] = -1;
+	for(int i = 0; i < DI8_KEY_ARRAY_SIZE;++i)
+		DInput8ToArxKeyTable[i] = -1;
 
-    DInput7ToArxKeyTable[DIK_0]            = Keyboard::Key_0;              
-    DInput7ToArxKeyTable[DIK_1]            = Keyboard::Key_1;
-    DInput7ToArxKeyTable[DIK_2]            = Keyboard::Key_2;
-    DInput7ToArxKeyTable[DIK_3]            = Keyboard::Key_3;
-    DInput7ToArxKeyTable[DIK_4]            = Keyboard::Key_4;
-    DInput7ToArxKeyTable[DIK_5]            = Keyboard::Key_5;
-    DInput7ToArxKeyTable[DIK_6]            = Keyboard::Key_6;
-    DInput7ToArxKeyTable[DIK_7]            = Keyboard::Key_7;
-    DInput7ToArxKeyTable[DIK_8]            = Keyboard::Key_8;
-    DInput7ToArxKeyTable[DIK_9]            = Keyboard::Key_9;
-    DInput7ToArxKeyTable[DIK_A]            = Keyboard::Key_A;
-    DInput7ToArxKeyTable[DIK_ADD]          = Keyboard::Key_NumAdd;
-    DInput7ToArxKeyTable[DIK_APOSTROPHE]   = Keyboard::Key_Apostrophe;
-    DInput7ToArxKeyTable[DIK_APPS]         = Keyboard::Key_Apps;
-    DInput7ToArxKeyTable[DIK_B]            = Keyboard::Key_B;
-    DInput7ToArxKeyTable[DIK_BACK]         = Keyboard::Key_Backspace;
-    DInput7ToArxKeyTable[DIK_BACKSLASH]    = Keyboard::Key_Backslash;
-    DInput7ToArxKeyTable[DIK_C]            = Keyboard::Key_C;
-    DInput7ToArxKeyTable[DIK_CAPITAL]      = Keyboard::Key_CapsLock;
-    DInput7ToArxKeyTable[DIK_COMMA]        = Keyboard::Key_Comma;
-    DInput7ToArxKeyTable[DIK_D]            = Keyboard::Key_D;
-    DInput7ToArxKeyTable[DIK_DECIMAL]      = Keyboard::Key_NumPoint;
-    DInput7ToArxKeyTable[DIK_DELETE]       = Keyboard::Key_Delete;
-    DInput7ToArxKeyTable[DIK_DIVIDE]       = Keyboard::Key_NumDivide;
-    DInput7ToArxKeyTable[DIK_DOWN]         = Keyboard::Key_DownArrow;
-    DInput7ToArxKeyTable[DIK_E]            = Keyboard::Key_E;
-    DInput7ToArxKeyTable[DIK_END]          = Keyboard::Key_End;
-    DInput7ToArxKeyTable[DIK_EQUALS]       = Keyboard::Key_Equals;
-    DInput7ToArxKeyTable[DIK_ESCAPE]       = Keyboard::Key_Escape;
-    DInput7ToArxKeyTable[DIK_F]            = Keyboard::Key_F;
-    DInput7ToArxKeyTable[DIK_F1]           = Keyboard::Key_F1;
-    DInput7ToArxKeyTable[DIK_F2]           = Keyboard::Key_F2;
-    DInput7ToArxKeyTable[DIK_F3]           = Keyboard::Key_F3;
-    DInput7ToArxKeyTable[DIK_F4]           = Keyboard::Key_F4;
-    DInput7ToArxKeyTable[DIK_F5]           = Keyboard::Key_F5;
-    DInput7ToArxKeyTable[DIK_F6]           = Keyboard::Key_F6;
-    DInput7ToArxKeyTable[DIK_F7]           = Keyboard::Key_F7;
-    DInput7ToArxKeyTable[DIK_F8]           = Keyboard::Key_F8;
-    DInput7ToArxKeyTable[DIK_F9]           = Keyboard::Key_F9;
-    DInput7ToArxKeyTable[DIK_F10]          = Keyboard::Key_F10;
-    DInput7ToArxKeyTable[DIK_F11]          = Keyboard::Key_F11;
-    DInput7ToArxKeyTable[DIK_F12]          = Keyboard::Key_F12;
-    DInput7ToArxKeyTable[DIK_F13]          = Keyboard::Key_F13;
-    DInput7ToArxKeyTable[DIK_F14]          = Keyboard::Key_F14;
-    DInput7ToArxKeyTable[DIK_F15]          = Keyboard::Key_F15;
-    DInput7ToArxKeyTable[DIK_G]            = Keyboard::Key_G;
-    DInput7ToArxKeyTable[DIK_GRAVE]        = Keyboard::Key_Grave;
-    DInput7ToArxKeyTable[DIK_H]            = Keyboard::Key_H;
-    DInput7ToArxKeyTable[DIK_HOME]         = Keyboard::Key_Home;
-    DInput7ToArxKeyTable[DIK_I]            = Keyboard::Key_I;
-    DInput7ToArxKeyTable[DIK_INSERT]       = Keyboard::Key_Insert;
-    DInput7ToArxKeyTable[DIK_J]            = Keyboard::Key_J;
-    DInput7ToArxKeyTable[DIK_K]            = Keyboard::Key_K;
-    DInput7ToArxKeyTable[DIK_L]            = Keyboard::Key_L;
-    DInput7ToArxKeyTable[DIK_LBRACKET]     = Keyboard::Key_LeftBracket;
-    DInput7ToArxKeyTable[DIK_LCONTROL]     = Keyboard::Key_LeftCtrl;
-    DInput7ToArxKeyTable[DIK_LEFT]         = Keyboard::Key_LeftArrow;
-    DInput7ToArxKeyTable[DIK_LMENU]        = Keyboard::Key_LeftAlt;
-    DInput7ToArxKeyTable[DIK_LSHIFT]       = Keyboard::Key_LeftShift;
-    DInput7ToArxKeyTable[DIK_LWIN]         = Keyboard::Key_LeftWin;
-    DInput7ToArxKeyTable[DIK_M]            = Keyboard::Key_M;
-    DInput7ToArxKeyTable[DIK_MINUS]        = Keyboard::Key_Minus;
-    DInput7ToArxKeyTable[DIK_MULTIPLY]     = Keyboard::Key_NumMultiply;
-    DInput7ToArxKeyTable[DIK_N]            = Keyboard::Key_N;
-    DInput7ToArxKeyTable[DIK_NEXT]         = Keyboard::Key_PageDown;
-    DInput7ToArxKeyTable[DIK_NUMLOCK]      = Keyboard::Key_NumLock;
-    DInput7ToArxKeyTable[DIK_NUMPAD0]      = Keyboard::Key_NumPad0;
-    DInput7ToArxKeyTable[DIK_NUMPAD1]      = Keyboard::Key_NumPad1;
-    DInput7ToArxKeyTable[DIK_NUMPAD2]      = Keyboard::Key_NumPad2;
-    DInput7ToArxKeyTable[DIK_NUMPAD3]      = Keyboard::Key_NumPad3;
-    DInput7ToArxKeyTable[DIK_NUMPAD4]      = Keyboard::Key_NumPad4;
-    DInput7ToArxKeyTable[DIK_NUMPAD5]      = Keyboard::Key_NumPad5;
-    DInput7ToArxKeyTable[DIK_NUMPAD6]      = Keyboard::Key_NumPad6;
-    DInput7ToArxKeyTable[DIK_NUMPAD7]      = Keyboard::Key_NumPad7;
-    DInput7ToArxKeyTable[DIK_NUMPAD8]      = Keyboard::Key_NumPad8;
-    DInput7ToArxKeyTable[DIK_NUMPAD9]      = Keyboard::Key_NumPad9;
-    DInput7ToArxKeyTable[DIK_NUMPADENTER]  = Keyboard::Key_NumPadEnter;
-    DInput7ToArxKeyTable[DIK_O]            = Keyboard::Key_O;
-    DInput7ToArxKeyTable[DIK_P]            = Keyboard::Key_P;
-    DInput7ToArxKeyTable[DIK_PAUSE]        = Keyboard::Key_Pause;
-    DInput7ToArxKeyTable[DIK_PERIOD]       = Keyboard::Key_Period;
-    DInput7ToArxKeyTable[DIK_PRIOR]        = Keyboard::Key_PageUp;
-    DInput7ToArxKeyTable[DIK_Q]            = Keyboard::Key_Q;
-    DInput7ToArxKeyTable[DIK_R]            = Keyboard::Key_R;
-    DInput7ToArxKeyTable[DIK_RBRACKET]     = Keyboard::Key_RightBracket;
-    DInput7ToArxKeyTable[DIK_RCONTROL]     = Keyboard::Key_RightCtrl;
-    DInput7ToArxKeyTable[DIK_RETURN]       = Keyboard::Key_Enter;
-    DInput7ToArxKeyTable[DIK_RIGHT]        = Keyboard::Key_RightArrow;
-    DInput7ToArxKeyTable[DIK_RMENU]        = Keyboard::Key_RightAlt;
-    DInput7ToArxKeyTable[DIK_RSHIFT]       = Keyboard::Key_RightShift;
-    DInput7ToArxKeyTable[DIK_RWIN]         = Keyboard::Key_RightWin;
-    DInput7ToArxKeyTable[DIK_S]            = Keyboard::Key_S;
-    DInput7ToArxKeyTable[DIK_SCROLL]       = Keyboard::Key_ScrollLock;
-    DInput7ToArxKeyTable[DIK_SEMICOLON]    = Keyboard::Key_Semicolon;
-    DInput7ToArxKeyTable[DIK_SLASH]        = Keyboard::Key_Slash;
-    DInput7ToArxKeyTable[DIK_SPACE]        = Keyboard::Key_Spacebar;
-    DInput7ToArxKeyTable[DIK_SUBTRACT]     = Keyboard::Key_NumSubtract;
-    DInput7ToArxKeyTable[DIK_SYSRQ]        = Keyboard::Key_PrintScreen;
-    DInput7ToArxKeyTable[DIK_T]            = Keyboard::Key_T;
-    DInput7ToArxKeyTable[DIK_TAB]          = Keyboard::Key_Tab;
-    DInput7ToArxKeyTable[DIK_U]            = Keyboard::Key_U;
-    DInput7ToArxKeyTable[DIK_UP]           = Keyboard::Key_UpArrow;
-    DInput7ToArxKeyTable[DIK_V]            = Keyboard::Key_V;
-    DInput7ToArxKeyTable[DIK_W]            = Keyboard::Key_W;
-    DInput7ToArxKeyTable[DIK_X]            = Keyboard::Key_X;
-    DInput7ToArxKeyTable[DIK_Y]            = Keyboard::Key_Y;
-    DInput7ToArxKeyTable[DIK_Z]            = Keyboard::Key_Z;
+    DInput8ToArxKeyTable[DIK_0]            = Keyboard::Key_0;              
+    DInput8ToArxKeyTable[DIK_1]            = Keyboard::Key_1;
+    DInput8ToArxKeyTable[DIK_2]            = Keyboard::Key_2;
+    DInput8ToArxKeyTable[DIK_3]            = Keyboard::Key_3;
+    DInput8ToArxKeyTable[DIK_4]            = Keyboard::Key_4;
+    DInput8ToArxKeyTable[DIK_5]            = Keyboard::Key_5;
+    DInput8ToArxKeyTable[DIK_6]            = Keyboard::Key_6;
+    DInput8ToArxKeyTable[DIK_7]            = Keyboard::Key_7;
+    DInput8ToArxKeyTable[DIK_8]            = Keyboard::Key_8;
+    DInput8ToArxKeyTable[DIK_9]            = Keyboard::Key_9;
+    DInput8ToArxKeyTable[DIK_A]            = Keyboard::Key_A;
+    DInput8ToArxKeyTable[DIK_ADD]          = Keyboard::Key_NumAdd;
+    DInput8ToArxKeyTable[DIK_APOSTROPHE]   = Keyboard::Key_Apostrophe;
+    DInput8ToArxKeyTable[DIK_APPS]         = Keyboard::Key_Apps;
+    DInput8ToArxKeyTable[DIK_B]            = Keyboard::Key_B;
+    DInput8ToArxKeyTable[DIK_BACK]         = Keyboard::Key_Backspace;
+    DInput8ToArxKeyTable[DIK_BACKSLASH]    = Keyboard::Key_Backslash;
+    DInput8ToArxKeyTable[DIK_C]            = Keyboard::Key_C;
+    DInput8ToArxKeyTable[DIK_CAPITAL]      = Keyboard::Key_CapsLock;
+    DInput8ToArxKeyTable[DIK_COMMA]        = Keyboard::Key_Comma;
+    DInput8ToArxKeyTable[DIK_D]            = Keyboard::Key_D;
+    DInput8ToArxKeyTable[DIK_DECIMAL]      = Keyboard::Key_NumPoint;
+    DInput8ToArxKeyTable[DIK_DELETE]       = Keyboard::Key_Delete;
+    DInput8ToArxKeyTable[DIK_DIVIDE]       = Keyboard::Key_NumDivide;
+    DInput8ToArxKeyTable[DIK_DOWN]         = Keyboard::Key_DownArrow;
+    DInput8ToArxKeyTable[DIK_E]            = Keyboard::Key_E;
+    DInput8ToArxKeyTable[DIK_END]          = Keyboard::Key_End;
+    DInput8ToArxKeyTable[DIK_EQUALS]       = Keyboard::Key_Equals;
+    DInput8ToArxKeyTable[DIK_ESCAPE]       = Keyboard::Key_Escape;
+    DInput8ToArxKeyTable[DIK_F]            = Keyboard::Key_F;
+    DInput8ToArxKeyTable[DIK_F1]           = Keyboard::Key_F1;
+    DInput8ToArxKeyTable[DIK_F2]           = Keyboard::Key_F2;
+    DInput8ToArxKeyTable[DIK_F3]           = Keyboard::Key_F3;
+    DInput8ToArxKeyTable[DIK_F4]           = Keyboard::Key_F4;
+    DInput8ToArxKeyTable[DIK_F5]           = Keyboard::Key_F5;
+    DInput8ToArxKeyTable[DIK_F6]           = Keyboard::Key_F6;
+    DInput8ToArxKeyTable[DIK_F7]           = Keyboard::Key_F7;
+    DInput8ToArxKeyTable[DIK_F8]           = Keyboard::Key_F8;
+    DInput8ToArxKeyTable[DIK_F9]           = Keyboard::Key_F9;
+    DInput8ToArxKeyTable[DIK_F10]          = Keyboard::Key_F10;
+    DInput8ToArxKeyTable[DIK_F11]          = Keyboard::Key_F11;
+    DInput8ToArxKeyTable[DIK_F12]          = Keyboard::Key_F12;
+    DInput8ToArxKeyTable[DIK_F13]          = Keyboard::Key_F13;
+    DInput8ToArxKeyTable[DIK_F14]          = Keyboard::Key_F14;
+    DInput8ToArxKeyTable[DIK_F15]          = Keyboard::Key_F15;
+    DInput8ToArxKeyTable[DIK_G]            = Keyboard::Key_G;
+    DInput8ToArxKeyTable[DIK_GRAVE]        = Keyboard::Key_Grave;
+    DInput8ToArxKeyTable[DIK_H]            = Keyboard::Key_H;
+    DInput8ToArxKeyTable[DIK_HOME]         = Keyboard::Key_Home;
+    DInput8ToArxKeyTable[DIK_I]            = Keyboard::Key_I;
+    DInput8ToArxKeyTable[DIK_INSERT]       = Keyboard::Key_Insert;
+    DInput8ToArxKeyTable[DIK_J]            = Keyboard::Key_J;
+    DInput8ToArxKeyTable[DIK_K]            = Keyboard::Key_K;
+    DInput8ToArxKeyTable[DIK_L]            = Keyboard::Key_L;
+    DInput8ToArxKeyTable[DIK_LBRACKET]     = Keyboard::Key_LeftBracket;
+    DInput8ToArxKeyTable[DIK_LCONTROL]     = Keyboard::Key_LeftCtrl;
+    DInput8ToArxKeyTable[DIK_LEFT]         = Keyboard::Key_LeftArrow;
+    DInput8ToArxKeyTable[DIK_LMENU]        = Keyboard::Key_LeftAlt;
+    DInput8ToArxKeyTable[DIK_LSHIFT]       = Keyboard::Key_LeftShift;
+    DInput8ToArxKeyTable[DIK_LWIN]         = Keyboard::Key_LeftWin;
+    DInput8ToArxKeyTable[DIK_M]            = Keyboard::Key_M;
+    DInput8ToArxKeyTable[DIK_MINUS]        = Keyboard::Key_Minus;
+    DInput8ToArxKeyTable[DIK_MULTIPLY]     = Keyboard::Key_NumMultiply;
+    DInput8ToArxKeyTable[DIK_N]            = Keyboard::Key_N;
+    DInput8ToArxKeyTable[DIK_NEXT]         = Keyboard::Key_PageDown;
+    DInput8ToArxKeyTable[DIK_NUMLOCK]      = Keyboard::Key_NumLock;
+    DInput8ToArxKeyTable[DIK_NUMPAD0]      = Keyboard::Key_NumPad0;
+    DInput8ToArxKeyTable[DIK_NUMPAD1]      = Keyboard::Key_NumPad1;
+    DInput8ToArxKeyTable[DIK_NUMPAD2]      = Keyboard::Key_NumPad2;
+    DInput8ToArxKeyTable[DIK_NUMPAD3]      = Keyboard::Key_NumPad3;
+    DInput8ToArxKeyTable[DIK_NUMPAD4]      = Keyboard::Key_NumPad4;
+    DInput8ToArxKeyTable[DIK_NUMPAD5]      = Keyboard::Key_NumPad5;
+    DInput8ToArxKeyTable[DIK_NUMPAD6]      = Keyboard::Key_NumPad6;
+    DInput8ToArxKeyTable[DIK_NUMPAD7]      = Keyboard::Key_NumPad7;
+    DInput8ToArxKeyTable[DIK_NUMPAD8]      = Keyboard::Key_NumPad8;
+    DInput8ToArxKeyTable[DIK_NUMPAD9]      = Keyboard::Key_NumPad9;
+    DInput8ToArxKeyTable[DIK_NUMPADENTER]  = Keyboard::Key_NumPadEnter;
+    DInput8ToArxKeyTable[DIK_O]            = Keyboard::Key_O;
+    DInput8ToArxKeyTable[DIK_P]            = Keyboard::Key_P;
+    DInput8ToArxKeyTable[DIK_PAUSE]        = Keyboard::Key_Pause;
+    DInput8ToArxKeyTable[DIK_PERIOD]       = Keyboard::Key_Period;
+    DInput8ToArxKeyTable[DIK_PRIOR]        = Keyboard::Key_PageUp;
+    DInput8ToArxKeyTable[DIK_Q]            = Keyboard::Key_Q;
+    DInput8ToArxKeyTable[DIK_R]            = Keyboard::Key_R;
+    DInput8ToArxKeyTable[DIK_RBRACKET]     = Keyboard::Key_RightBracket;
+    DInput8ToArxKeyTable[DIK_RCONTROL]     = Keyboard::Key_RightCtrl;
+    DInput8ToArxKeyTable[DIK_RETURN]       = Keyboard::Key_Enter;
+    DInput8ToArxKeyTable[DIK_RIGHT]        = Keyboard::Key_RightArrow;
+    DInput8ToArxKeyTable[DIK_RMENU]        = Keyboard::Key_RightAlt;
+    DInput8ToArxKeyTable[DIK_RSHIFT]       = Keyboard::Key_RightShift;
+    DInput8ToArxKeyTable[DIK_RWIN]         = Keyboard::Key_RightWin;
+    DInput8ToArxKeyTable[DIK_S]            = Keyboard::Key_S;
+    DInput8ToArxKeyTable[DIK_SCROLL]       = Keyboard::Key_ScrollLock;
+    DInput8ToArxKeyTable[DIK_SEMICOLON]    = Keyboard::Key_Semicolon;
+    DInput8ToArxKeyTable[DIK_SLASH]        = Keyboard::Key_Slash;
+    DInput8ToArxKeyTable[DIK_SPACE]        = Keyboard::Key_Spacebar;
+    DInput8ToArxKeyTable[DIK_SUBTRACT]     = Keyboard::Key_NumSubtract;
+    DInput8ToArxKeyTable[DIK_SYSRQ]        = Keyboard::Key_PrintScreen;
+    DInput8ToArxKeyTable[DIK_T]            = Keyboard::Key_T;
+    DInput8ToArxKeyTable[DIK_TAB]          = Keyboard::Key_Tab;
+    DInput8ToArxKeyTable[DIK_U]            = Keyboard::Key_U;
+    DInput8ToArxKeyTable[DIK_UP]           = Keyboard::Key_UpArrow;
+    DInput8ToArxKeyTable[DIK_V]            = Keyboard::Key_V;
+    DInput8ToArxKeyTable[DIK_W]            = Keyboard::Key_W;
+    DInput8ToArxKeyTable[DIK_X]            = Keyboard::Key_X;
+    DInput8ToArxKeyTable[DIK_Y]            = Keyboard::Key_Y;
+    DInput8ToArxKeyTable[DIK_Z]            = Keyboard::Key_Z;
 }
 
 // must be BOOL to be passed to DX
@@ -247,12 +247,12 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 	return DIENUM_CONTINUE;
 }
 
-DInput7Backend::DInput7Backend()
+DInput8Backend::DInput8Backend()
 {
 	iLastMouseX = iLastMouseY = 0;
 }
 
-DInput7Backend::~DInput7Backend()
+DInput8Backend::~DInput8Backend()
 {
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		releaseDevice(*i);
@@ -260,29 +260,29 @@ DInput7Backend::~DInput7Backend()
 
 	DI_InputInfo.clear();
 	
-	if(DI_DInput7) {
-		DI_DInput7->Release();
+	if(DI_DInput8) {
+		DI_DInput8->Release();
 	}
 
-	DI_DInput7 = NULL;
+	DI_DInput8 = NULL;
 }
 
-bool DInput7Backend::init() {
+bool DInput8Backend::init() {
 	
-	initDInput7ToArxKeyTable();
+	initDInput8ToArxKeyTable();
 
 	HINSTANCE h = GetModuleHandle(0);
 	if(!h) {
 		return false;
 	}
 	
-	DI_DInput7 = NULL;
-	if(FAILED(DirectInputCreateEx(h, DIRECTINPUT_VERSION, IID_IDirectInput7, (void**)&DI_DInput7, NULL))) {
+	DI_DInput8 = NULL;
+	if(FAILED(DirectInput8Create(h, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DI_DInput8, NULL))) {
 		return false;
 	}
 	
 	DI_InputInfo.clear();
-	if(FAILED(DI_DInput7->EnumDevices(0, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY))) {
+	if(FAILED(DI_DInput8->EnumDevices(0, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY))) {
 		return false;
 	}
 	
@@ -309,7 +309,7 @@ bool DInput7Backend::init() {
 
 	setMouseCoordinates(iLastMouseX, iLastMouseY);
 	
-	LogInfo << "Using DirectInput 7";
+	LogInfo << "Using DirectInput 8";
 	
 	return true;
 }
@@ -322,21 +322,21 @@ void releaseDevice(INPUT_INFO & info) {
 	
 	info.active = false;
 	
-	if(info.inputdevice7) {
-		info.inputdevice7->Unacquire();
-		info.inputdevice7->Release();
+	if(info.inputdevice8) {
+		info.inputdevice8->Unacquire();
+		info.inputdevice8->Release();
 	}
-	info.inputdevice7=NULL;
+	info.inputdevice8=NULL;
 	
 	switch(GET_DIDEVICE_TYPE(info.type)) {
-		case DIDEVTYPE_MOUSE: {
+		case DI8DEVTYPE_MOUSE: {
 			if(info.mousestate) {
 				delete[] info.mousestate;
 				info.mousestate = NULL;
 			}
 			break;
 		}
-		case DIDEVTYPE_KEYBOARD: {
+		case DI8DEVTYPE_KEYBOARD: {
 			if(info.bufferstate) {
 				delete[] info.bufferstate;
 				info.bufferstate = NULL;
@@ -346,20 +346,20 @@ void releaseDevice(INPUT_INFO & info) {
 	}
 }
 
-void DInput7Backend::acquireDevices() {
+void DInput8Backend::acquireDevices() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
-			i->inputdevice7->Acquire();
+			i->inputdevice8->Acquire();
 		}
 	}
 }
 
-void DInput7Backend::unacquireDevices() {
+void DInput8Backend::unacquireDevices() {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		if(i->active) {
-			i->inputdevice7->Unacquire();
+			i->inputdevice8->Unacquire();
 		}
 	}
 }
@@ -387,28 +387,28 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 	
 	releaseDevice(info);
 	
-	if(FAILED(DI_DInput7->CreateDeviceEx(info.guid, IID_IDirectInputDevice7, (void**)&info.inputdevice7, NULL))) {
+	if(FAILED(DI_DInput8->CreateDevice(info.guid, &info.inputdevice8, NULL))) {
 		return false;
 	}
 	
 	DIDEVCAPS devcaps;
 	memset(&devcaps, 0, sizeof(devcaps));
 	devcaps.dwSize = sizeof(devcaps);
-	if(FAILED(info.inputdevice7->GetCapabilities(&devcaps))) {
+	if(FAILED(info.inputdevice8->GetCapabilities(&devcaps))) {
 		return false;
 	}
 	
 	info.nbbuttons = devcaps.dwButtons;
 	info.nbaxes = devcaps.dwAxes;
 	
-	if(FAILED(info.inputdevice7->SetCooperativeLevel(hwnd, flag))) {
+	if(FAILED(info.inputdevice8->SetCooperativeLevel(hwnd, flag))) {
 		return false;
 	}
 	
 	const DIDATAFORMAT * dformat;
 	switch(GET_DIDEVICE_TYPE(info.type)) {
 		
-		case DIDEVTYPE_MOUSE: {
+		case DI8DEVTYPE_MOUSE: {
 			info.mousestate = new DIDEVICEOBJECTDATA[info.nbbuttons + info.nbaxes + INPUT_STATE_ADD];
 			memset(info.mousestate, 0, (sizeof(DIDEVICEOBJECTDATA) * (info.nbbuttons + info.nbaxes + INPUT_STATE_ADD)));
 			DI_MouseState = &info;
@@ -427,16 +427,16 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 				},
 				128,                    // dwData
 			};
-			if(FAILED(info.inputdevice7->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph))) {
+			if(FAILED(info.inputdevice8->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph))) {
 				return false;
 			}
 			
 			break;
 		}
 		
-		case DIDEVTYPE_KEYBOARD: {
-			info.bufferstate = new char[DI7_KEY_ARRAY_SIZE];
-			memset(info.bufferstate, 0, DI7_KEY_ARRAY_SIZE);
+		case DI8DEVTYPE_KEYBOARD: {
+			info.bufferstate = new char[DI8_KEY_ARRAY_SIZE];
+			memset(info.bufferstate, 0, DI8_KEY_ARRAY_SIZE);
 			DI_KeyBoardBuffer = &info;
 			dformat = &c_dfDIKeyboard;
 			break;
@@ -446,11 +446,11 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 			return false;
 	}
 	
-	if(FAILED(info.inputdevice7->SetDataFormat(dformat))) {
+	if(FAILED(info.inputdevice8->SetDataFormat(dformat))) {
 		return false;
 	}
 	
-	(void)info.inputdevice7->Acquire();
+	(void)info.inputdevice8->Acquire();
 	
 	info.active = true;
 	return true;
@@ -465,7 +465,7 @@ bool getKeyboardInputDevice(DXIMode mode) {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		
-		if(GET_DIDEVICE_TYPE(i->type) != DIDEVTYPE_KEYBOARD || i->active) {
+		if(GET_DIDEVICE_TYPE(i->type) != DI8DEVTYPE_KEYBOARD || i->active) {
 			continue;
 		}
 		
@@ -487,7 +487,7 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 	
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
 		
-		if(GET_DIDEVICE_TYPE(i->type) != DIDEVTYPE_MOUSE || i->active) {
+		if(GET_DIDEVICE_TYPE(i->type) != DI8DEVTYPE_MOUSE || i->active) {
 			continue;
 		}
 		
@@ -504,7 +504,7 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 	return false;
 }
 
-bool DInput7Backend::update() {
+bool DInput8Backend::update() {
 	
 	bool success = true;
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
@@ -515,12 +515,12 @@ bool DInput7Backend::update() {
 		
 		switch(GET_DIDEVICE_TYPE(i->type)) {
 			
-			case DIDEVTYPE_MOUSE: {
+			case DI8DEVTYPE_MOUSE: {
 				DWORD dwNbele = (DWORD)(i->nbbuttons + i->nbaxes + INPUT_STATE_ADD);
-				if(FAILED(i->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0))) {
+				if(FAILED(i->inputdevice8->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0))) {
 					dwNbele = (DWORD)(i->nbbuttons + i->nbaxes + INPUT_STATE_ADD);
-					if(FAILED(i->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0))) {
-						i->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0);
+					if(FAILED(i->inputdevice8->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0))) {
+						i->inputdevice8->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0);
 						success = false;
 					}
 				}
@@ -529,23 +529,23 @@ bool DInput7Backend::update() {
 				break;
 			}
 			
-			case DIDEVTYPE_KEYBOARD: {
-				char keyBuffer[DI7_KEY_ARRAY_SIZE];
-				if(FAILED(i->inputdevice7->GetDeviceState(DI7_KEY_ARRAY_SIZE, keyBuffer))) {
+			case DI8DEVTYPE_KEYBOARD: {
+				char keyBuffer[DI8_KEY_ARRAY_SIZE];
+				if(FAILED(i->inputdevice8->GetDeviceState(DI8_KEY_ARRAY_SIZE, keyBuffer))) {
 					acquireDevices(); 
-					if(FAILED(i->inputdevice7->GetDeviceState(DI7_KEY_ARRAY_SIZE, keyBuffer)))  {
-						memset(i->bufferstate, 0, DI7_KEY_ARRAY_SIZE);
+					if(FAILED(i->inputdevice8->GetDeviceState(DI8_KEY_ARRAY_SIZE, keyBuffer)))  {
+						memset(i->bufferstate, 0, DI8_KEY_ARRAY_SIZE);
 						success = false;
 					}
 				} else {
 					Keyboard::Key currentKey;
-					for( int iKey = 0; iKey < DI7_KEY_ARRAY_SIZE; iKey++ )
+					for( int iKey = 0; iKey < DI8_KEY_ARRAY_SIZE; iKey++ )
 					{
 						// Ignore unused keys
-						if( DInput7ToArxKeyTable[iKey] == -1 )
+						if( DInput8ToArxKeyTable[iKey] == -1 )
 							continue;
 						else 
-							currentKey = (Keyboard::Key)DInput7ToArxKeyTable[iKey];
+							currentKey = (Keyboard::Key)DInput8ToArxKeyTable[iKey];
 
 						i->bufferstate[currentKey - Keyboard::KeyBase] = keyBuffer[iKey];
 					}
@@ -556,15 +556,22 @@ bool DInput7Backend::update() {
 		}
 	}
 	
+	// When running fullscreen, make sure to recenter mouse in the middle of the screen
+	if(mainApp->GetWindow()->IsFullScreen()) {
+		int x = (int)mainApp->GetWindow()->GetSize().x / 2;
+		int y = (int)mainApp->GetWindow()->GetSize().y / 2;
+		SetCursorPos(x, y);
+	}
+	
 	return success;
 }
 
-bool DInput7Backend::isKeyboardKeyPressed(int keyId) const {
+bool DInput8Backend::isKeyboardKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 	return (DI_KeyBoardBuffer->bufferstate[keyId - Keyboard::KeyBase] & 0x80) == 0x80;
 }
 
-bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
+bool DInput8Backend::getKeyAsText(int keyId, char& result) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
 
 	// Numpad state isn't working, translate by hand...
@@ -580,15 +587,15 @@ bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
 	}
 
 	static HKL layout = GetKeyboardLayout(0);
-	static unsigned char State[DI7_KEY_ARRAY_SIZE];
+	static unsigned char State[DI8_KEY_ARRAY_SIZE];
 
 	if (GetKeyboardState(State) == false)
 		return 0;
 
 	int scanCode = -1;
-	for(int i = 0; i < DI7_KEY_ARRAY_SIZE; i++)
+	for(int i = 0; i < DI8_KEY_ARRAY_SIZE; i++)
 	{
-		if(keyId == DInput7ToArxKeyTable[i])
+		if(keyId == DInput8ToArxKeyTable[i])
 		{
 			scanCode = i;
 			break;
@@ -611,7 +618,7 @@ bool DInput7Backend::getKeyAsText(int keyId, char& result) const {
 	return true;
 }
 
-void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
+void DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
 		
 	// DInput relative
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
@@ -643,7 +650,7 @@ void DInput7Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 	}	
 }
 
-void DInput7Backend::setMouseCoordinates(int absX, int absY)
+void DInput8Backend::setMouseCoordinates(int absX, int absY)
 {
 	iLastMouseX = absX;
 	iLastMouseY = absY;
@@ -680,7 +687,7 @@ static bool isMouseButton(int buttonId, DWORD dwOfs) {
 	}
 }
 
-void DInput7Backend::getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const {
+void DInput8Backend::getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	_iNumClick = 0;
@@ -699,7 +706,7 @@ void DInput7Backend::getMouseButtonClickCount(int buttonId, int & _iNumClick, in
 	
 }
 
-bool DInput7Backend::isMouseButtonPressed(int buttonId, int & _iDeltaTime) const {
+bool DInput8Backend::isMouseButtonPressed(int buttonId, int & _iDeltaTime) const {
 	arx_assert(buttonId >= Mouse::ButtonBase && buttonId < Mouse::ButtonMax);
 
 	int iTime1 = 0;
@@ -727,7 +734,7 @@ bool DInput7Backend::isMouseButtonPressed(int buttonId, int & _iDeltaTime) const
 
 bool setMouseRelative() {
 	
-	if(FAILED(DI_MouseState->inputdevice7->Unacquire())) {
+	if(FAILED(DI_MouseState->inputdevice8->Unacquire())) {
 		return false;
 	}
 	
@@ -740,9 +747,9 @@ bool setMouseRelative() {
 		},
 		DIPROPAXISMODE_REL,     // dwData
 	};
-	if(FAILED(DI_MouseState->inputdevice7->SetProperty(DIPROP_AXISMODE, &dipdw.diph))) {
+	if(FAILED(DI_MouseState->inputdevice8->SetProperty(DIPROP_AXISMODE, &dipdw.diph))) {
 		return false;
 	}
 	
-	return !FAILED(DI_MouseState->inputdevice7->Acquire());
+	return !FAILED(DI_MouseState->inputdevice8->Acquire());
 }

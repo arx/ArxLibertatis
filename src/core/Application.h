@@ -109,8 +109,7 @@ struct PROJECT {
 		  improve(0), detectliving(0), improvespeed(0),
 		  telekinesis(0), demo(0),
 		  hide(0), TextureSize(0),
-		  torch(Color3f::black),
-		  vsync(0) {
+		  torch(Color3f::black) {
 	}
 	
 	long compatibility;
@@ -122,8 +121,6 @@ struct PROJECT {
 	HideFlags hide;
 	long TextureSize;
 	Color3f torch;
-	long vsync;
-	
 };
 
 extern PROJECT Project;

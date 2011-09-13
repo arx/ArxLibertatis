@@ -14,7 +14,7 @@
 
 SDLWindow * SDLWindow::mainWindow = NULL;
 
-SDLWindow::SDLWindow() : window(NULL), input(NULL) { }
+SDLWindow::SDLWindow() : input(NULL) { }
 
 SDLWindow::~SDLWindow() {
 	
@@ -27,7 +27,6 @@ SDLWindow::~SDLWindow() {
 		SDL_Quit(), mainWindow = NULL;
 	}
 	
-	window = NULL;
 }
 
 bool SDLWindow::initFramework() {
@@ -121,6 +120,8 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 	}
+
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
 	m_Size = Vec2i::ZERO;
 	depth = 0;
@@ -132,6 +133,8 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	m_IsFullscreen = fullscreen;
 	
 	SDL_WM_SetCaption(title.c_str(), title.c_str());
+	
+	SDL_ShowCursor(SDL_DISABLE);
 	
 	const SDL_version * ver = SDL_Linked_Version();
 	LogInfo << "Using SDL " << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
@@ -171,12 +174,8 @@ bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	flags |= (fullscreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
 	SDL_Surface * win = SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, mode.depth, flags);
-	if(!win) {
-		return false;
-	}
 	
-	window = win;
-	return true;
+	return (win != NULL);
 }
 
 void SDLWindow::updateSize(bool reinit) {
@@ -344,11 +343,6 @@ void SDLWindow::Tick() {
 bool SDLWindow::showFrame() {
 	
 	SDL_GL_SwapBuffers();
-	
-	if(SDL_Flip(window) != 0) {
-		LogError << "Failed to update screen: " << SDL_GetError();
-		return false;
-	}
 	
 	return true;
 }

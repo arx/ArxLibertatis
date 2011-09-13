@@ -11,14 +11,23 @@ include(CheckCXXSourceCompiles)
 include(BuildSystem)
 include(CompileCheck)
 
-function(create_source_groups)
-	# Source groups
-	set(SOURCE_GROUPS ai animation audio core game graphics gui input io physics platform scene script)
-	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
-		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
-		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
-	endforeach(SOURCE_GROUP)
-endfunction()
+
+# Accepts a variable holding the source files
+# and creates source groups (for VS, Xcode etc)
+# that replicate the folder hierarchy on disk
+macro( create_source_groups source_files_variable )
+	foreach( source_file ${${source_files_variable}} )
+		string( REGEX REPLACE ${CMAKE_CURRENT_SOURCE_DIR} "" relative_directory "${source_file}")
+		string( REGEX REPLACE "[\\\\/][^\\\\/]*$" "" relative_directory "${relative_directory}")
+		string( REGEX REPLACE "^[\\\\/]" "" relative_directory "${relative_directory}")
+
+		if( WIN32 )
+			string( REGEX REPLACE "/" "\\\\" relative_directory "${relative_directory}" )
+		endif( WIN32 )
+
+		source_group( "${relative_directory}" FILES ${source_file} )
+	endforeach()
+endmacro()
 
 ##############################################################################
 
@@ -32,9 +41,9 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
 option(ARX_USE_OPENGL "Build the OpenGL renderer backend." ON)
-option(ARX_USE_D3D7 "Build the Direct3D 7 renderer backend." ON)
+option(ARX_USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
 option(ARX_USE_SDL "Build the SDL windowing backend." ON)
-option(ARX_USE_DINPUT7 "Build the DirectInput 7 input backend." ON)
+option(ARX_USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -54,6 +63,10 @@ if(WINE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_WIN32 -U__CYGWIN__ -U__WIN32__ -UWIN32")
 	set(HAVE_WINAPI 1)
 elseif(WIN32)
+	if(NOT MSVC)
+		# We need to define WINVER for MinGW32 when requiring anything newer than Win95 / WinNT
+		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
+	endif()
 	set(HAVE_WINAPI 1)
 else()
 	set(HAVE_WINAPI 0)
@@ -61,9 +74,13 @@ endif()
 
 if(NOT HAVE_WINAPI)
 	# The is no DirectX under linux
-	set(ARX_USE_D3D7 OFF)
+	set(ARX_USE_D3D9 OFF)
 	set(ARX_USE_DSOUND OFF)
-	set(ARX_USE_DINPUT7 OFF)
+	set(ARX_USE_DINPUT8 OFF)
+else()
+	if(ARX_USE_D3D9)
+		find_package(DirectX REQUIRED)
+	endif()
 endif()
 
 find_package(Freetype REQUIRED)
@@ -124,15 +141,6 @@ if(MSVC)
 		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
 	endif()
 	
-	# Add dx7 include & lib paths
-	if("$ENV{DX7SDK_PATH}" STREQUAL "")
-		message(WARNING "DX7SDK_PATH environment variable not found")
-	else("$ENV{DX7SDK_PATH}" STREQUAL "")
-		message(STATUS "Using DirectX 7 SDK found in " $ENV{DX7SDK_PATH})
-		include_directories("$ENV{DX7SDK_PATH}/include")
-		link_directories("$ENV{DX7SDK_PATH}/lib")
-	endif("$ENV{DX7SDK_PATH}" STREQUAL "")
-
 	# Add boost lib path
 	link_directories(${Boost_LIBRARY_DIRS})
 	
@@ -361,10 +369,11 @@ set(GRAPHICS_SOURCES
 	src/graphics/texture/Texture.cpp
 	src/graphics/texture/TextureStage.cpp
 )
-set(GRAPHICS_D3D7_SOURCES
-	src/graphics/d3d7/D3D7Renderer.cpp
-	src/graphics/d3d7/D3D7Texture2D.cpp
-	src/graphics/d3d7/D3D7TextureStage.cpp
+
+set(GRAPHICS_D3D9_SOURCES
+	src/graphics/d3d9/D3D9Renderer.cpp
+	src/graphics/d3d9/D3D9Texture2D.cpp
+	src/graphics/d3d9/D3D9TextureStage.cpp
 )
 set(GRAPHICS_OPENGL_SOURCES
 	src/graphics/opengl/GLTexture2D.cpp
@@ -385,7 +394,7 @@ set(GUI_SOURCES
 )
 
 set(INPUT_SOURCES src/input/Input.cpp)
-set(INPUT_DINPUT7_SOURCES src/input/DInput7Backend.cpp)
+set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
@@ -469,7 +478,7 @@ set(WINDOW_SOURCES
 )
 set(WINDOW_SDL_SOURCES src/window/SDLWindow.cpp)
 set(WINDOW_WIN32_SOURCES src/window/Win32Window.cpp)
-set(WINDOW_D3D7_SOURCES src/window/D3D7Window.cpp)
+set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
@@ -499,11 +508,14 @@ if(ARX_USE_DSOUND)
 	set(HAVE_DSOUND 1)
 endif()
 
-if(ARX_USE_D3D7)
-	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D7_SOURCES})
-	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D7_SOURCES})
-	list(APPEND ARX_LIBRARIES dxguid ddraw)
-	set(HAVE_D3D7 1)
+if(ARX_USE_D3D9)
+	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
+	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
+		
+	list(APPEND ARX_LIBRARIES ${DIRECTX_LIBRARY})
+	include_directories(SYSTEM ${DIRECTX_INCLUDE_DIR})
+	
+	set(HAVE_D3D9 1)
 endif()
 
 if(ARX_USE_OPENGL)
@@ -522,10 +534,14 @@ if(ARX_USE_SDL)
 	set(HAVE_SDL 1)
 endif()
 
-if(ARX_USE_DINPUT7)
-	list(APPEND INPUT_SOURCES ${INPUT_DINPUT7_SOURCES})
-	list(APPEND ARX_LIBRARIES dinput)
-	set(HAVE_DINPUT7 1)
+if(ARX_USE_DINPUT8)
+	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
+	list(APPEND ARX_LIBRARIES dinput8)
+	set(HAVE_DINPUT8 1)
+	if(WINE)
+		# TODO(broken-wine) work around missing symbols in wine's dinput8
+		list(APPEND ARX_LIBRARIES dinput)
+	endif()
 endif()
 
 if(HAVE_POSIX_FILESYSTEM)
@@ -562,7 +578,8 @@ add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
-create_source_groups()
+list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
+create_source_groups(ALL_FILES_FOR_GROUPS)
 
 configure_file(${SRC_DIR}/Configure.h.cmake Configure.h)
 
