@@ -390,7 +390,7 @@ class IfVisibleCommand : public Command {
 		}
 		
 		float ab = MAKEANGLE(io->angle.b);
-		float aa = GetAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
+		float aa = getAngle(io->pos.x, io->pos.z, ioo->pos.x, ioo->pos.z);
 		aa = MAKEANGLE(degrees(aa));
 		
 		if((aa < ab + 90.f) && (aa > ab - 90.f)) {

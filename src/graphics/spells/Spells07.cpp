@@ -501,14 +501,14 @@ float CLightning::Render()
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f p2;
 				GetChestPos(io->targetinfo, &p2); 
-				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f p2;
 				GetChestPos(spells[spellinstance].target, &p2); //
-				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 

@@ -79,9 +79,6 @@ inline float rnd() {
 #define EEsin(val)  (float)sin((float)val)
 #define EEfabs(val) (float)fabs(val)
 
-// Math constants
-#define PI 3.14159265358979323846f
-
 inline bool In3DBBoxTolerance(const Vec3f * pos, const EERIE_3D_BBOX * bbox, const float tolerance) {
 	return ((pos->x >= bbox->min.x - tolerance)
 	        && (pos->x <= bbox->max.x + tolerance)
@@ -334,9 +331,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
 
 // ANGLES Functions
 
-float GetAngle(const float x0, const float y0, const float x1, const float y1);
- 
-float GetNearestSnappedAngle(float angle);
 void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
 
 extern EERIEMATRIX ProjectionMatrix;
@@ -363,14 +357,6 @@ inline void specialEE_P(Vec3f * in, TexturedVertex * out) {
 	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
 	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp; 
-}
-
-inline float radians(float degrees){
-	return degrees * (2 * PI/360);
-}
-
-inline float degrees(float radians){
-	return radians * (360 / (2 * PI));
 }
 
 template <class T1, class T2, class T3>

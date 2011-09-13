@@ -1338,7 +1338,7 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 	}
 
 	float cangle, tangle;
-	tangle = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	tangle = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	cangle = io->angle.b;
 
 	float tt = (cangle - tangle);
@@ -1401,7 +1401,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	float rot = 0.27f * _framedelay;
 	float alpha = MAKEANGLE(io->angle.b);
 	float beta = -io->head_rot; 
-	float pouet = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	float pouet = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
 
@@ -2911,14 +2911,14 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			aup->_curtime -= 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime += 500;
-			io->angle.b = MAKEANGLE(degrees(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.b = MAKEANGLE(degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
 		}
 		else
 		{
 			aup->_curtime += 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime -= 500;
-			io->angle.b = MAKEANGLE(180.f + degrees(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.b = MAKEANGLE(180.f + degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
 		}
 
 		return;
@@ -3893,7 +3893,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
 
 
-		float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
+		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 		aa = MAKEANGLE(degrees(aa));
 
 		if (EEfabs(AngularDifference(aa, ab)) < 110.f)
@@ -4035,7 +4035,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 			dest.z = player.pos.z;
 
 			// Check for Field of vision angle
-			float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
+			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(degrees(aa));
 			float ab = MAKEANGLE(io->angle.b);
 

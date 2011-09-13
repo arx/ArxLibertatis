@@ -4155,7 +4155,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					{
 						Vec3f * p1=&eCurPos;
 						Vec3f * p2=&inter.iobj[_io->targetinfo]->pos;
-						angle = (degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+						angle = (degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 					}
 
 					pCSpellFx->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);

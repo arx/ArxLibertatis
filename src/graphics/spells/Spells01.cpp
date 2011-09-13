@@ -449,8 +449,8 @@ float CMagicMissile::Render()
 	av.y = newpos.y - lastpos.y;
 	av.z = newpos.z - lastpos.z;
 
-	float bubu = GetAngle(av.x, av.z, 0, 0);
-	float bubu1 = GetAngle(av.x, av.y, 0, 0);
+	float bubu = getAngle(av.x, av.z, 0, 0);
+	float bubu1 = getAngle(av.x, av.y, 0, 0);
 
 	stitepos = lastpos;
 
@@ -597,13 +597,13 @@ void CMultiMagicMissile::Create()
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &inter.iobj[io->targetinfo]->pos;
-				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &inter.iobj[spells[spellinstance].target]->pos;
-				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
+				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 

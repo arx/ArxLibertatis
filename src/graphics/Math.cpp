@@ -528,27 +528,6 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 	return false;
 }
 
-// Returned in Radians ! use degrees() to convert it to degrees
-float	GetAngle(const float x0, const float y0, const float x1, const float y1)
-{
-	register float x, y;
-	x = x1 - x0;
-	y = y1 - y0;
-
-	if (x > 0.f)
-	{
-		if (y >= 0.f)	return (PI * 1.5f + ((float)atan(y / x)));
-		else return (PI * 1.5f - ((float)atan(abs(y) / x)));   
-	}
-	else if (x < 0.f)
-	{
-		if (y > 0.f)	return (PI / 2 - ((float)atan(y / abs(x))));
-		else return (PI / 2 + ((float)atan(y / x)));
-	}
-	else if (y < 0) return PI;
-	else return 0.f;
-}
-
 //--------------------------------------------------------------------------------------
 // Quaternions Funcs
 //--------------------------------------------------------------------------------------
@@ -1037,30 +1016,6 @@ void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc,
 	vDest->x = x;
 	vDest->y = y;
 	vDest->z = z;
-}
-
-//-----------------------------------------------------------------------------
-float GetNearestSnappedAngle(float angle)
-{
-	angle = MAKEANGLE(angle);
-
-	if (angle < 22.5f) return 0.f;
-
-	if (angle < 67.5f) return 45.f;
-
-	if (angle < 112.5f) return 90.f;
-
-	if (angle < 157.5f) return 135.f;
-
-	if (angle < 202.5f) return 180.f;
-
-	if (angle < 247.5f) return 225.f;
-
-	if (angle < 292.5f) return 270.f;
-
-	if (angle < 337.5f) return 315.f;
-
-	return 0.f;
 }
 
 #undef X

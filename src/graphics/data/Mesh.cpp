@@ -1213,8 +1213,8 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 {
 	if ((cam->pos.x == x) && (cam->pos.y == y) && (cam->pos.z == z)) return;
 
-	cam->angle.a = (degrees(GetAngle(cam->pos.y, cam->pos.z, y, cam->pos.z + dist(Vec2f(x, z), Vec2f(cam->pos.x, cam->pos.z))))); //alpha entre orgn et dest;
-	cam->angle.b = (180.f + degrees(GetAngle(cam->pos.x, cam->pos.z, x, z))); //beta entre orgn et dest;
+	cam->angle.a = (degrees(getAngle(cam->pos.y, cam->pos.z, y, cam->pos.z + dist(Vec2f(x, z), Vec2f(cam->pos.x, cam->pos.z))))); //alpha entre orgn et dest;
+	cam->angle.b = (180.f + degrees(getAngle(cam->pos.x, cam->pos.z, x, z))); //beta entre orgn et dest;
 	cam->angle.g = 0.f;
 }
 

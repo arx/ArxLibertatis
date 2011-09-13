@@ -152,4 +152,25 @@ inline Anglef interploate(const Anglef & a1, const Anglef & a2, float p) {
 	return Anglef(InterpolateAngle(a1.a, a2.a, p), InterpolateAngle(a1.b, a2.b, p), InterpolateAngle(a1.g, a2.g, p));
 }
 
+//! Get the angle of the 2D vector (0,0)--(x,y), in radians.
+inline float getAngle(float x, float y) {
+	float angle = PI * 1.5f + std::atan2(y, x);
+	return (angle >= 0) ? angle : angle + 2 * PI;
+}
+
+//! Get the angle of the 2D vector (x0,y0)--(x1,y1), in radians.
+inline float getAngle(float x0, float y0, float x1, float y1) {
+	return getAngle(x1 - x0, y1 - y0);
+}
+
+//! Convert from degrees to radians.
+inline float radians(float degrees) {
+	return degrees * (2 * PI/360);
+}
+
+//! Convert from radians to degrees.
+inline float degrees(float radians) {
+	return radians * (360 / (2 * PI));
+}
+
 #endif // ARX_MATH_ANGLE_H
