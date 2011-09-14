@@ -51,7 +51,7 @@ bool DX9Texture2D::Create()
 	arx_assert(size.y != 0);
 
 	HRESULT hr;
-	hr = D3DXCreateTexture(GD3D9Device, size.x, size.y, mHasMipmaps ? D3DX_DEFAULT : 1, 0, ARXToDX9InternalFormat[mFormat], D3DPOOL_MANAGED, &m_pTexture);
+	hr = D3DXCreateTexture(GD3D9Device, size.x, size.y, hasMipmaps() ? D3DX_DEFAULT : 1, 0, ARXToDX9InternalFormat[mFormat], D3DPOOL_MANAGED, &m_pTexture);
 	if( FAILED(hr) )
 		return false;
 
@@ -393,7 +393,7 @@ void DX9Texture2D::Upload()
 		return;
 	}
 
-	if(mHasMipmaps) {
+	if(hasMipmaps()) {
 		hr = D3DXFilterTexture(m_pTexture, 0, 0, D3DX_DEFAULT);	
 		if( FAILED(hr) )
 			LogError << "D3DXFilterTexture() failed: " << hr;
