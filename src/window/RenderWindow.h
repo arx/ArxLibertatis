@@ -28,7 +28,7 @@ public:
 	
 	typedef std::vector<DisplayMode> DisplayModes;
 	
-	inline RenderWindow() : renderer(NULL), vsync(false) { };
+	inline RenderWindow() : renderer(NULL) { };
 	virtual ~RenderWindow() { };
 	
 	class RendererListener {
@@ -57,9 +57,6 @@ public:
 	virtual bool showFrame() = 0;
 	virtual void restoreSurfaces() = 0;
 	
-	inline virtual void setVSync(bool _vsync) { vsync = _vsync; }
-	inline bool isVSync() { return vsync; };
-	
 	virtual void evictManagedTextures() = 0;
 	
 	virtual void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) = 0;
@@ -78,9 +75,6 @@ private:
 	typedef std::vector<RendererListener *> RendererListeners;
 	
 	RendererListeners renderListeners; //! Listeners for renderer events
-	
-	bool vsync;
-	
 };
 
 #endif // ARX_WINDOW_RENDERWINDOW_H

@@ -103,7 +103,6 @@ void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade 
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ShowFISHTANK()
 {
-	Project.vsync = 0;
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 
@@ -123,8 +122,6 @@ void ARX_INTERFACE_ShowFISHTANK()
 		//mainApp->GetWindow()->showFrame();
 	}
 
-	Project.vsync = 1;
-
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
 }
@@ -137,8 +134,6 @@ void ARX_INTERFACE_ShowARKANE()
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-	Project.vsync = 0;
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
@@ -157,8 +152,6 @@ void ARX_INTERFACE_ShowARKANE()
 		//mainApp->GetWindow()->showFrame();
 	}
 
-	Project.vsync = 1;
-
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
@@ -174,8 +167,7 @@ static float fFadeSens = 0.f;
 static float fFadeColor = 0.f;
 
 void LoadLevelScreen(long num) {
-	Project.vsync = 0;
-
+	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
@@ -190,7 +182,6 @@ void LoadLevelScreen(long num) {
 		lastloadednum = -1;
 		lastnum = -1;
 		PROGRESS_BAR_TOTAL = 0;
-		Project.vsync = 1;
 		return;
 	}
 
@@ -201,14 +192,12 @@ void LoadLevelScreen(long num) {
 
 	if (num < 0)
 	{
-		Project.vsync = 1;
 		return;
 	}
 
 
 #ifdef BUILD_EDITOR
 	if(MOULINEX) {
-		Project.vsync = 1;
 		return;
 	}
 #endif
@@ -328,8 +317,6 @@ void LoadLevelScreen(long num) {
 	}
 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
-
-	Project.vsync = 1;
 }
 
 void LoadLevelScreen() {

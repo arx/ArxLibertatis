@@ -1,16 +1,16 @@
 
-#ifndef ARX_GRAPHICS_D3D7_D3D7TEXTURESTAGE_H
-#define ARX_GRAPHICS_D3D7_D3D7TEXTURESTAGE_H
+#ifndef ARX_GRAPHICS_D3D9_D3D9TEXTURESTAGE_H
+#define ARX_GRAPHICS_D3D9_D3D9TEXTURESTAGE_H
 
-#include <d3d.h>
+#include <d3d9.h>
 
 #include "graphics/texture/TextureStage.h"
 
-class D3D7TextureStage : public TextureStage {
+class D3D9TextureStage : public TextureStage {
 	
 public:
 	
-	D3D7TextureStage(unsigned int textureStage);
+	D3D9TextureStage(unsigned int textureStage);
 	
 	void SetTexture(Texture * pTexture);
 	void ResetTexture();
@@ -29,8 +29,8 @@ public:
 	void SetMipMapLODBias(float bias);
 };
 
-extern D3DTEXTUREMAGFILTER ARXToDX7MagFilter[];
-extern D3DTEXTUREMINFILTER ARXToDX7MinFilter[];
-extern D3DTEXTUREMIPFILTER ARXToDX7MipFilter[];
+extern D3DTEXTUREFILTERTYPE ARXToDX9MagFilter[];
+extern D3DTEXTUREFILTERTYPE ARXToDX9MinFilter[];
+extern D3DTEXTUREFILTERTYPE ARXToDX9MipFilter[];
 
-#endif // ARX_GRAPHICS_D3D7_D3D7TEXTURESTAGE_H
+#endif // ARX_GRAPHICS_D3D9_D3D9TEXTURESTAGE_H

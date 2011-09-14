@@ -204,12 +204,8 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 		break;
 
 	case WM_SETCURSOR:
-		// Prevent a cursor in fullscreen mode
-		if (currentWindow->HasFocus() && currentWindow->IsFullScreen())
-		{
-			SetCursor(NULL);
-			return 1;
-		}
+		SetCursor(NULL);
+		bProcessed = true;
 		break;
 	}
 

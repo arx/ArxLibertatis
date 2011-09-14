@@ -674,7 +674,6 @@ int main(int argc, char ** argv) {
 	USE_FAST_SCENES = 1;
 	LogDebug << "Danae Start";
 
-	Project.vsync = true;
 	LogDebug << "Project Init";
 
 	NOCHECKSUM=0;
@@ -739,7 +738,6 @@ int main(int argc, char ** argv) {
 	LogDebug << "Launching DANAE";
 
 	memset(&Project, 0, sizeof(PROJECT));
-	Project.vsync = true;		
 	
 	if (FINAL_RELEASE) {
 		LogDebug << "FINAL_RELEASE";

@@ -295,9 +295,10 @@ static size_t stereoToMono(char * data, size_t size) {
 	
 	T * buf = reinterpret_cast<T *>(data);
 	
-	arx_assert(size % (2 * sizeof(T)) == 0);
+	size_t nbsamples = size / sizeof(T);
+	arx_assert(nbsamples % 2 == 0);
 	
-	for(size_t in = 0, out = 0; in < size - 1; in += 2, out++) {
+	for(size_t in = 0, out = 0; in < nbsamples - 1; in += 2, out++) {
 		buf[out] = T((int(buf[in]) + int(buf[in + 1])) / 2);
 	}
 	

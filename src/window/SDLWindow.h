@@ -38,8 +38,6 @@ private:
 	
 	static int SDLCALL eventFilter(const SDL_Event * event);
 	
-	SDL_Surface * window;
-	
 	SDLInputBackend * input;
 	
 	static SDLWindow * mainWindow;

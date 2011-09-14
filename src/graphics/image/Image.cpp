@@ -854,9 +854,10 @@ void Image::save(const fs::path & filename) const {
 	if(mFormat < 0 || mFormat >= Format_Unknown) {
 		return;
 	}
-		
+	
 	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
 	if(ret) {
+		ilRegisterOrigin(IL_ORIGIN_UPPER_LEFT);
 		ilEnable(IL_FILE_OVERWRITE);
 		ret = ilSaveImage(filename.string().c_str());
 		arx_assert_msg(ret, "ilSaveImage failed: %d", ilGetError());

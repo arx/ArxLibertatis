@@ -66,8 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
-#ifdef HAVE_DINPUT7
-#include "input/DInput7Backend.h"
+#ifdef HAVE_DINPUT8
+#include "input/DInput8Backend.h"
 #endif
 #ifdef HAVE_SDL
 #include "input/SDLInputBackend.h"
@@ -248,16 +248,16 @@ bool Input::init() {
 	}
 #endif
 	
-#ifdef HAVE_DINPUT7
-	if(!backend && (autoBackend || config.input.backend == "DirectInput")) {
+#ifdef HAVE_DINPUT8
+	if(!backend && (autoBackend || config.input.backend == "DirectInput8")) {
 		matched = true;
-		backend = new DInput7Backend;
+		backend = new DInput8Backend;
 		if(!backend->init()) {
 			delete backend, backend = NULL;
 		}
 	}
 #endif
-	
+		
 	if(!matched) {
 		LogError << "unknown backend: " << config.input.backend;
 	}

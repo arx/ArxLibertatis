@@ -14,11 +14,11 @@
 
 // Renderer backend
 #cmakedefine HAVE_OPENGL
-#cmakedefine HAVE_D3D7
+#cmakedefine HAVE_D3D9
 
 // Input backend
 #cmakedefine HAVE_SDL
-#cmakedefine HAVE_DINPUT7
+#cmakedefine HAVE_DINPUT8
 
 // POSIX / Linux features
 #cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
