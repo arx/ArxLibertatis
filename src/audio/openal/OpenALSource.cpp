@@ -751,7 +751,7 @@ aalError OpenALSource::updateBuffers() {
 	if(status == Playing) {
 		if(sourceState == AL_STOPPED) {
 			if(nbuffersProcessed != maxbuffers) {
-				ALError << "buffer underrun detected";
+				ALWarning << "buffer underrun detected";
 			}
 			alSourcePlay(source);
 			AL_CHECK_ERROR("playing source")
