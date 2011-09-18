@@ -108,7 +108,6 @@ static int iCurrZBias;
 //*************************************************************************************
 Application::Application() : m_MainWindow(NULL) {
 	m_bReady = false;
-	m_bAppUseZBuffer = false;
 }
 
 Application::~Application() {
