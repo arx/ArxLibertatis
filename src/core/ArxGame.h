@@ -89,6 +89,8 @@ private:
 	
 	bool initWindow(RenderWindow * window);
 	
+	void setFullscreen(bool fullscreen);
+	
 };
 
 #endif // ARX_CORE_ARXGAME_H

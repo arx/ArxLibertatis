@@ -182,6 +182,8 @@ public:
 	virtual bool FinalCleanup() = 0;
 	virtual void Cleanup3DEnvironment() = 0;
 	
+	virtual void setFullscreen(bool fullscreen) = 0;
+	
 };
 
 extern Application * mainApp;

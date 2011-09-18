@@ -70,6 +70,8 @@ using std::max;
 using std::string;
 using std::vector;
 
+const std::string AUTO_RESOLUTION_STRING = "Automatic";
+
 int newTextureSize;
 static int newWidth;
 static int newHeight;
@@ -923,10 +925,8 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					int iModeX,iModeY,iModeBpp;
-					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
-					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
-					pMenuSliderResol =(CMenuSliderText*)me;
+					pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
+					
 					pMenuSliderResol->setEnabled(config.video.fullscreen);
 					
 					std::vector<unsigned> vBpp;
@@ -940,7 +940,7 @@ bool Menu2_Render() {
 							vBpp.push_back(mode.depth);
 						}
 						
-						if(mode.depth != (unsigned)iModeBpp) {
+						if(mode.depth != unsigned(config.video.bpp)) {
 							continue;
 						}
 						
@@ -963,19 +963,25 @@ bool Menu2_Render() {
 							ss << " (" << aspect.x << ':' << aspect.y << ')';
 						}
 						
-						((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
+						pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
 						
 						if(mode.resolution == config.video.resolution) {
-							((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
+							pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
 						}
 					}
+					
+					pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
+					
+					if(config.video.resolution == Vec2i::ZERO) {
+						pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
+					}
 
-					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - pMenuSliderResol->GetWidth()); 
 
-					me->Move(checked_range_cast<int>(fRatio), 0); 
+					pMenuSliderResol->Move(checked_range_cast<int>(fRatio), 0); 
 
 
-					pc->AddElement(me);
+					pc->AddElement(pMenuSliderResol);
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -4472,7 +4478,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	_pText->setEnabled(enabled);
 	
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
-	vText.insert(vText.end(), _pText);
+	vText.push_back(_pText);
 
 	Vec2i textSize = _pText->GetTextSize();
 
@@ -4586,16 +4592,24 @@ bool CMenuSliderText::OnMouseClick(int)
 	case BUTTON_MENUOPTIONSVIDEO_RESOLUTION:
 		{
 			std::string pcText = (vText.at(iPos))->lpszText;
-			std::stringstream ss( pcText );
-			int iX = config.video.resolution.x;
-			int iY = config.video.resolution.y;
-			char tmp;
-			ss >> iX >> tmp >> iY;
-			{
+			
+			if(pcText == AUTO_RESOLUTION_STRING) {
+				
+				newWidth = newHeight = 0;
+				
+			} else {
+				
+				std::stringstream ss( pcText );
+				int iX = config.video.resolution.x;
+				int iY = config.video.resolution.y;
+				char tmp;
+				ss >> iX >> tmp >> iY;
 				newWidth = iX;
 				newHeight = iY;
-				changeResolution = true;
+				
 			}
+			
+			changeResolution = true;
 		}
 		break;
 	// MENUOPTIONS_VIDEO
@@ -4643,18 +4657,17 @@ void CMenuSliderText::Update(int _iTime)
 
 //-----------------------------------------------------------------------------
 
-void CMenuSliderText::Render()
-{
+void CMenuSliderText::Render() {
+	
 	if(WILL_RELOAD_ALL_TEXTURES) return;
 	if(bNoMenu) return;
-
+	
 	if(enabled) {
 		pLeftButton->Render();
 		pRightButton->Render();
 	}
-
-	if (vText[iPos])
-	{
+	
+	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		vText[iPos]->Render();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);

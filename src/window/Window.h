@@ -61,6 +61,7 @@ public:
 	inline bool IsVisible() const { return m_IsVisible; }
 	
 	inline const Vec2i & GetSize() const { return m_Size; }
+	inline unsigned getDepth() const { return depth; }
 	
 	inline bool IsFullScreen() const { return m_IsFullscreen; }
 	

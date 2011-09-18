@@ -234,6 +234,24 @@ bool ArxGame::Initialize()
 	return true;
 }
 
+void ArxGame::setFullscreen(bool fullscreen) {
+	
+	if(fullscreen) {
+		
+		RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
+		if(mode.resolution == Vec2i::ZERO) {
+			mode = GetWindow()->getDisplayModes().back();
+		}
+		
+		mainApp->GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
+		
+	} else {
+		
+		mainApp->GetWindow()->setWindowSize(config.window.size);
+		
+	}
+}
+
 bool ArxGame::initWindow(RenderWindow * window) {
 	
 	arx_assert(m_MainWindow == NULL);
@@ -248,18 +266,29 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->AddListener(this);
 	m_MainWindow->addListener(this);
 	
-	// Find the next best available fullscreen mode.
 	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
-	RenderWindow::DisplayModes::const_iterator i;
+	
 	RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
-	i = std::lower_bound(modes.begin(), modes.end(), mode);
-	if(i == modes.end()) {
-		mode = *modes.rbegin();
+	
+	if(config.video.resolution == Vec2i::ZERO) {
+		
+		// Use the largest available resolution.
+		mode = modes.back();
+		
 	} else {
-		mode = *i;
-	}
-	if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
-		LogWarning << "fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y << '@' << mode.depth << " instead";
+		
+		// Find the next best available fullscreen mode.
+		RenderWindow::DisplayModes::const_iterator i;
+		i = std::lower_bound(modes.begin(), modes.end(), mode);
+		if(i == modes.end()) {
+			mode = *modes.rbegin();
+		} else {
+			mode = *i;
+		}
+		if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
+			LogWarning << "fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y 	<< '@' << mode.depth << " instead";
+		}
+		
 	}
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
@@ -269,10 +298,10 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		return false;
 	}
 	
-	if(!m_MainWindow->IsFullScreen()) {
+	if(!m_MainWindow->IsFullScreen() && config.video.resolution != Vec2i::ZERO) {
 		config.video.resolution = mode.resolution;
-		config.video.bpp = mode.depth;
 	}
+	config.video.bpp = mode.depth;
 	
 	return true;
 }
@@ -428,8 +457,12 @@ void ArxGame::OnResizeWindow(const Window & window) {
 	wasResized = true;
 	
 	if(window.IsFullScreen()) {
-		LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y;
-		config.video.resolution = window.GetSize();
+		if(config.video.resolution == Vec2i::ZERO) {
+			LogInfo << "auto selected fullscreen resolution " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
+		} else {
+			LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
+			config.video.resolution = window.GetSize();
+		}
 	} else {
 		LogInfo << "changed window size to " << window.GetSize().x << 'x' << window.GetSize().y;
 		config.window.size = window.GetSize();
@@ -934,11 +967,7 @@ static float _AvgFrameDiff = 150.f;
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
-		if(mainApp->GetWindow()->IsFullScreen()) {
-			mainApp->GetWindow()->setWindowSize(config.window.size);
-		} else {
-			mainApp->GetWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
-		}
+		setFullscreen(!GetWindow()->IsFullScreen());
 	}
 	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {

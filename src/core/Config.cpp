@@ -386,7 +386,7 @@ bool Config::save() {
 	// video
 	writer.beginSection(Section::Video);
 	if(video.resolution == Vec2i::ZERO) {
-		writer.writeKey(Key::resolution, "auto");
+		writer.writeKey(Key::resolution, Default::resolution);
 	} else {
 		std::ostringstream oss;
 		oss << video.resolution.x << 'x' << video.resolution.y;
