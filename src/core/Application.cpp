@@ -207,8 +207,8 @@ bool Application::InitConfig() {
 	}
 	
 	fs::path defaultConfigFile = "cfg_default.ini";
-	if(!config.init(configFile.string(), defaultConfigFile.string())) {
-		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile;
+	if(!config.init(configFile, defaultConfigFile)) {
+		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile << ", using defaults.";
 	}
 	
 	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {

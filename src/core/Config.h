@@ -30,6 +30,8 @@
 
 #include "input/InputKey.h"
 
+#include "io/FilePath.h"
+
 #include "math/MathFwd.h"
 #include "math/Vector2.h"
 
@@ -199,11 +201,11 @@ public:
 	 */
 	bool save();
 	
-	bool init(const std::string & file, const std::string & default_file);
+	bool init(const fs::path & file, const fs::path & default_file);
 	
 private:
 	
-	std::string file;
+	fs::path file;
 	
 	InputKeyId GetDIKWithASCII( const std::string& _pcTouch) const;
 	
