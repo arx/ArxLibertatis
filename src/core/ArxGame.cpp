@@ -187,9 +187,9 @@ INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame() : wasResized(false) {
-	
-	m_bAppUseZBuffer = true;
-	
+}
+
+ArxGame::~ArxGame() {
 }
 
 bool ArxGame::Initialize()

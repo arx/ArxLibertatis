@@ -41,7 +41,7 @@ class TextureContainer;
 
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, bool render);
 
-void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *);
+void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, float _fAdd = 0.0f);
 
 void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT);
 void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long i);

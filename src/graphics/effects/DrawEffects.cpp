@@ -189,8 +189,8 @@ void ARXDRAW_DrawInterShadows()
 							EE_RT2(&in,&ltv[3]);
 
 							if(ltv[0].sz > 0.f && ltv[1].sz > 0.f && ltv[2].sz > 0.f) {
-								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
+								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
 							}
 						}
 					}	
@@ -236,8 +236,8 @@ void ARXDRAW_DrawInterShadows()
 							EE_RT2(&in,&ltv[2]);
 							in.sx-=s1;
 							EE_RT2(&in,&ltv[3]);
-							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
+							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
 						}
 					}
 				}
@@ -485,16 +485,12 @@ void ARXDRAW_DrawPolyBoom()
 						}
 
 						GRenderer->SetTexture(0, Boom);
-						ARX_DrawPrimitive(	&ltv[0],
-														&ltv[1],
-														&ltv[2]);
+						ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
 						if(polyboom[i].nbvert&4)
 						{
 							EE_RT2(&ltv[3],&ltv[3]);
-							ARX_DrawPrimitive(	&ltv[1],
-															&ltv[2],
-															&ltv[3]);
+							ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 						}
 					break;
 					case 1:	// Blood
@@ -526,42 +522,29 @@ void ARXDRAW_DrawPolyBoom()
 								EE_RT2(&ltv[3],&ltv[3]);
 							}
 
-								
-							{
-								
-								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+							GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetTexture(0, polyboom[i].tc); 
 
- 									ARX_DrawPrimitive(		&ltv[0],
- 																		&ltv[1],
- 																		&ltv[2]);
+ 							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
- 									if(polyboom[i].nbvert&4)
- 									{
-  										ARX_DrawPrimitive(	&ltv[1],
-  																		&ltv[2],
- 																		&ltv[3]);
-									}
-
-
-								ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
-								
-								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-									ARX_DrawPrimitive(	&ltv[0],
-																	&ltv[1],
-																	&ltv[2]);
-
-									if(polyboom[i].nbvert&4)
-									{
-										ARX_DrawPrimitive(	&ltv[1],
-																		&ltv[2],
-																		&ltv[3]);
-									}
-								
-								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+ 							if(polyboom[i].nbvert&4)
+ 							{
+  								ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 							}
+							
+							ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
+								
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+
+							if(polyboom[i].nbvert&4)
+							{
+								ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+							}
+								
+							GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 						}
 					break;				
 					case 2: // WATER
