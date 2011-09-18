@@ -254,8 +254,30 @@ bool D3D9Window::initialize(DisplayMode mode) {
 		return false;
 	}
 
+	// Set default settings
+	UINT AdapterToUse = D3DADAPTER_DEFAULT;
+	D3DDEVTYPE DeviceType = D3DDEVTYPE_HAL;
+
+	///////////////////////////////////
+	// Support for NVIDIA PerfHUD
+	// Look for 'NVIDIA PerfHUD' adapter
+	// If it is present, override default settings
+	for (UINT Adapter=0; Adapter < d3d->GetAdapterCount(); Adapter++) 
+	{
+		D3DADAPTER_IDENTIFIER9 Identifier;
+		HRESULT  Res;
+		Res = d3d->GetAdapterIdentifier(Adapter, 0, &Identifier);
+		if (strstr(Identifier.Description,"PerfHUD") != 0)
+		{
+			AdapterToUse = Adapter;
+			DeviceType = D3DDEVTYPE_REF;
+			break;
+		}
+	}
+	///////////////////////////////////
+
 	// Create the D3D9 devices
-	if( FAILED( d3d->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device ) ) )
+	if( FAILED( d3d->CreateDevice( AdapterToUse, DeviceType, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device ) ) )
 		return false;
 
 	deviceInfo = &devices[0];
