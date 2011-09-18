@@ -231,7 +231,13 @@ void specialEE_RTP(TexturedVertex * in, TexturedVertex * out)
 	out->sz = (out->sy * et->xsin) + (temp * et->xcos);
 	out->sy = (out->sy * et->xcos) - (temp * et->xsin);
 
-	float fZTemp = 1.f / out->sz;
+	float fZTemp;
+    if (out->sz <= 0.f) {
+		fZTemp = 1.f - out->sz;
+	} else {
+		fZTemp = 1.f / out->sz;
+	}
+
 	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 
 	out->sx = out->sx * ProjectionMatrix._11 * fZTemp + et->xmod;
@@ -805,7 +811,11 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
 	}
 
 	float fZTemp;
-	fZTemp = 1.f / out->sz;
+	if (out->sz <= 0.f) {
+		fZTemp = 1.f - out->sz;
+	} else {
+		fZTemp = 1.f / out->sz;
+	}
 	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	out->sx = in->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
 	out->sy = in->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
@@ -833,7 +843,11 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 	}
 
 	float fZTemp;
-	fZTemp = 1.f / out->sz;
+	if (out->sz <= 0.f) {
+		fZTemp = 1.f - out->sz;
+	} else {
+		fZTemp = 1.f / out->sz;
+	}
 	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	out->sx = in->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
 	out->sy = in->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
@@ -885,10 +899,30 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out)
 void EE_P(Vec3f * in, TexturedVertex * out)
 {
 	float fZTemp;
-	fZTemp = 1.f / in->z;
+	if (in->z <= 0.f) {
+		fZTemp = 1.f - in->z;
+	} else {
+		fZTemp = 1.f / in->z;
+	}
+
 	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	out->sx = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
 	out->sy = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->rhw = fZTemp;
+}
+
+void EE_P2(TexturedVertex * in, TexturedVertex * out)
+{
+	float fZTemp;
+	if (in->sz <= 0.f) {
+		fZTemp = 1.f - in->sz;
+	} else {
+		fZTemp = 1.f / in->sz;
+	}
+
+	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
+	out->sx = in->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
+	out->sy = in->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp;
 }
 
@@ -912,7 +946,12 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out)
 	out->sy = temp;
 
 	float fZTemp;
-	fZTemp = 1.f / out->sz;
+	if (out->sz <= 0.f) {
+		fZTemp = 1.f - out->sz;
+	} else {
+		fZTemp = 1.f / out->sz;
+	}
+
 	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
 	out->sx = out->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
 	out->sy = out->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
@@ -933,22 +972,16 @@ __inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA 
 	out->sz = (out->sy * cam->Xsin) + (tout.sz * cam->Xcos);
 	out->sy = (out->sy * cam->Xcos) - (tout.sz * cam->Xsin);
 
-	if (ACTIVECAM->Zsin == 0)
-	{
+	if (ACTIVECAM->Zsin == 0) {
 		tout.sy = out->sy;
-	}
-	else
-	{
+	} else {
 		tout.sy = (out->sy * cam->Zcos) - (tout.sx * cam->Zsin);
 		tout.sx = (tout.sx * cam->Zcos) + (out->sy * cam->Zsin);
 	}
 
-	if (out->sz <= 0.f)
-	{
+	if (out->sz <= 0.f) {
 		out->rhw = 1.f - out->sz;
-	}
-	else
-	{
+	} else {
 		out->rhw = 1.f / out->sz;
 	}
 
