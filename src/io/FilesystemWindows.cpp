@@ -216,10 +216,9 @@ directory_iterator::directory_iterator(const fs::path & p) {
 	directory_iterator_data* itData = new directory_iterator_data();
 	handle = itData;
 
-	fs::path searchPath(p);
-	searchPath.append("\\*");
+	string searchPath = (p.empty() ? "." : p.string()) + "\\*";
 
-	itData->findHandle = FindFirstFileA(searchPath.string().c_str(), &itData->findData); 
+	itData->findHandle = FindFirstFileA(searchPath.c_str(), &itData->findData); 
 	if (itData->findHandle != INVALID_HANDLE_VALUE)
 	{
 		this->operator++();
