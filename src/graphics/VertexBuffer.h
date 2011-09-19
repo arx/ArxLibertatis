@@ -100,9 +100,9 @@ public:
 		pos = dst_offset + num;
 		src += num, count -= num;
 		
-		//if(!count) {
+		if(!count) {
 			return;
-		//}
+		}
 		
 		switch(primitive) {
 			
