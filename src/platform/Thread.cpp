@@ -7,13 +7,13 @@
 
 #include <sched.h>
 
-Thread::Thread() : thread((pthread_t)0) {
+Thread::Thread() : started(false) {
 	setPriority(Normal);
 }
 
 void Thread::start() {
 	
-	if(thread) {
+	if(started) {
 		return;
 	}
 	
@@ -28,6 +28,7 @@ void Thread::start() {
 	
 	pthread_attr_destroy(&attr);
 	
+	started = true;
 }
 
 void Thread::setPriority(Priority _priority) {
@@ -39,7 +40,7 @@ void Thread::setPriority(Priority _priority) {
 	
 	priority = min + ((_priority - Lowest) * (max - min) / (Highest - Lowest));
 	
-	if(thread) {
+	if(started) {
 		pthread_setschedprio(thread, priority);
 	}
 }
@@ -47,7 +48,7 @@ void Thread::setPriority(Priority _priority) {
 Thread::~Thread() { }
 
 void Thread::waitForCompletion() {
-	if(thread) {
+	if(started) {
 		pthread_join(thread, NULL);
 	}
 }
