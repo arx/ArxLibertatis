@@ -10,7 +10,7 @@ function(check_compiler_flag RESULT FLAG)
 		return()
 	endif()
 	
-	set(compile_test_file ${CMAKE_CURRENT_BINARY_DIR}/compile_flag_test.cpp)
+	set(compile_test_file "${CMAKE_CURRENT_BINARY_DIR}/compile_flag_test.cpp")
 	file(WRITE ${compile_test_file} "__attribute__((const)) int main(){ return 0; }\n")
 	try_compile(CHECK_COMPILER_FLAG ${CMAKE_BINARY_DIR} ${compile_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" COMPILE_DEFINITIONS "${FLAG}" OUTPUT_VARIABLE ERRORLOG)
 	
@@ -42,12 +42,12 @@ endfunction(add_cxxflag)
 
 function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
 	# See if we can link a simple program with the library using the configured c++ compiler.
-	set(link_test_file ${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp)
+	set(link_test_file "${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp")
 	file(WRITE ${link_test_file} "int main(){}\n")
 	if(CMAKE_THREAD_LIBS_INIT)
-		set(LIBRARY_FILE "${CMAKE_THREAD_LIBS_INIT} ${LIBRARY_FILE}")
+		list(APPEND LIBRARY_FILE "${CMAKE_THREAD_LIBS_INIT}")
 	endif()
-	try_compile(CHECK_${LIBRARY_NAME}_LINK ${CMAKE_BINARY_DIR} ${link_test_file} CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" "-DLINK_LIBRARIES=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
+	try_compile(CHECK_${LIBRARY_NAME}_LINK "${CMAKE_BINARY_DIR}" "${link_test_file}" CMAKE_FLAGS "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}" "-DLINK_LIBRARIES=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
 	set(${ERROR_VAR} "${ERRORLOG}" PARENT_SCOPE)
 endfunction(try_link_library)
 
