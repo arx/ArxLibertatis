@@ -40,8 +40,10 @@ void Thread::setPriority(Priority _priority) {
 	
 	priority = min + ((_priority - Lowest) * (max - min) / (Highest - Lowest));
 	
-	if(started) {
-		pthread_setschedprio(thread, priority);
+	if(started && min != max) {
+		sched_param param;
+		param.sched_priority = priority;
+		pthread_setschedparam(thread, policy, &param);
 	}
 }
 
