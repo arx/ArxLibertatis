@@ -1,4 +1,9 @@
 
+// Link statically with GLEW
+#if ARX_COMPILER_MSVC
+	#define GLEW_STATIC
+#endif
+
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
