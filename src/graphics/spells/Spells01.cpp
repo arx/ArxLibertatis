@@ -263,19 +263,19 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
 
-	pathways[0].sx = eSrc.x;
-	pathways[0].sy = eSrc.y;
-	pathways[0].sz = eSrc.z;
-	pathways[5].sx = e.x;
-	pathways[5].sy = e.y;
-	pathways[5].sz = e.z;
+	pathways[0].p.x = eSrc.x;
+	pathways[0].p.y = eSrc.y;
+	pathways[0].p.z = eSrc.z;
+	pathways[5].p.x = e.x;
+	pathways[5].p.y = e.y;
+	pathways[5].p.z = e.z;
 	Split(pathways, 0, 5, 50, 0.5f);
 
 	for (i = 0; i < 6; i++)
 	{
-		if (pathways[i].sy >= eSrc.y + 150)
+		if (pathways[i].p.y >= eSrc.y + 150)
 		{
-			pathways[i].sy = eSrc.y + 150;
+			pathways[i].p.y = eSrc.y + 150;
 		}
 	}
 
@@ -360,9 +360,9 @@ float CMagicMissile::Render()
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
 	}
 
-	lastpos.x = pathways[0].sx;
-	lastpos.y = pathways[0].sy;
-	lastpos.z = pathways[0].sz;
+	lastpos.x = pathways[0].p.x;
+	lastpos.y = pathways[0].p.y;
+	lastpos.z = pathways[0].p.z;
 
 	newpos = lastpos;
 
@@ -387,20 +387,20 @@ float CMagicMissile::Render()
 			float f2 = t3 - 2.f * t2 + t1 ;
 			float f3 = t3 - t2 ;
 
-			float val = pathways[kpsuiv].sx;
-			float p0 = 0.5f * (val - pathways[kpprec].sx) ;
-			float p1 = 0.5f * (pathways[kpsuivsuiv].sx - pathways[kp].sx) ;
-			v.x = f0 * pathways[kp].sx + f1 * val + f2 * p0 + f3 * p1 ;
+			float val = pathways[kpsuiv].p.x;
+			float p0 = 0.5f * (val - pathways[kpprec].p.x) ;
+			float p1 = 0.5f * (pathways[kpsuivsuiv].p.x - pathways[kp].p.x) ;
+			v.x = f0 * pathways[kp].p.x + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].sy ;
-			p0 = 0.5f * (val - pathways[kpprec].sy) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].sy - pathways[kp].sy) ;
-			v.y = f0 * pathways[kp].sy + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].p.y ;
+			p0 = 0.5f * (val - pathways[kpprec].p.y) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.y - pathways[kp].p.y) ;
+			v.y = f0 * pathways[kp].p.y + f1 * val + f2 * p0 + f3 * p1 ;
 
-			val = pathways[kpsuiv].sz ;
-			p0 = 0.5f * (val - pathways[kpprec].sz) ;
-			p1 = 0.5f * (pathways[kpsuivsuiv].sz - pathways[kp].sz) ;
-			v.z = f0 * pathways[kp].sz + f1 * val + f2 * p0 + f3 * p1 ;
+			val = pathways[kpsuiv].p.z ;
+			p0 = 0.5f * (val - pathways[kpprec].p.z) ;
+			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[kp].p.z) ;
+			v.z = f0 * pathways[kp].p.z + f1 * val + f2 * p0 + f3 * p1 ;
 
 			newpos = v;
 
@@ -449,8 +449,8 @@ float CMagicMissile::Render()
 	av.y = newpos.y - lastpos.y;
 	av.z = newpos.z - lastpos.z;
 
-	float bubu = GetAngle(av.x, av.z, 0, 0);
-	float bubu1 = GetAngle(av.x, av.y, 0, 0);
+	float bubu = getAngle(av.x, av.z, 0, 0);
+	float bubu1 = getAngle(av.x, av.y, 0, 0);
 
 	stitepos = lastpos;
 
@@ -597,13 +597,13 @@ void CMultiMagicMissile::Create()
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &inter.iobj[io->targetinfo]->pos;
-				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f * p2 = &inter.iobj[spells[spellinstance].target]->pos;
-				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 
@@ -1038,30 +1038,30 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 		float az = tabdef[i+1].z;
 
 		// version 2 faces
-		v2[0].tu = 0;
-		v2[0].tv = 0;
-		v2[1].tu = 1;
-		v2[1].tv = 0;
-		v2[2].tu = 1;
-		v2[2].tv = 1;
-		v2[3].tu = 0;
-		v2[3].tv = 1;
+		v2[0].uv.x = 0;
+		v2[0].uv.y = 0;
+		v2[1].uv.x = 1;
+		v2[1].uv.y = 0;
+		v2[2].uv.x = 1;
+		v2[2].uv.y = 1;
+		v2[3].uv.x = 0;
+		v2[3].uv.y = 1;
 
-		v[0].sx = astart.x;
-		v[0].sy = astart.y + zz;
-		v[0].sz = astart.z;
+		v[0].p.x = astart.x;
+		v[0].p.y = astart.y + zz;
+		v[0].p.z = astart.z;
 
-		v[1].sx = astart.x;
-		v[1].sy = astart.y - zz;
-		v[1].sz = astart.z;
+		v[1].p.x = astart.x;
+		v[1].p.y = astart.y - zz;
+		v[1].p.z = astart.z;
 
-		v[2].sx = ax;
-		v[2].sy = ay - zz;
-		v[2].sz = az;
+		v[2].p.x = ax;
+		v[2].p.y = ay - zz;
+		v[2].p.z = az;
 
-		v[3].sx = ax;
-		v[3].sy = ay + zz;
-		v[3].sz = az;
+		v[3].p.x = ax;
+		v[3].p.y = ay + zz;
+		v[3].p.z = az;
 
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
@@ -1076,21 +1076,21 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 
 		zz *= (float) sin(radians(fBeta));
 
-		v[0].sx = astart.x + xx;
-		v[0].sy = astart.y;
-		v[0].sz = astart.z + zz;
+		v[0].p.x = astart.x + xx;
+		v[0].p.y = astart.y;
+		v[0].p.z = astart.z + zz;
 
-		v[1].sx = astart.x - xx;
-		v[1].sy = astart.y;
-		v[1].sz = astart.z - zz;
+		v[1].p.x = astart.x - xx;
+		v[1].p.y = astart.y;
+		v[1].p.z = astart.z - zz;
 
-		v[2].sx = ax - xx;
-		v[2].sy = ay;
-		v[2].sz = az - zz;
+		v[2].p.x = ax - xx;
+		v[2].p.y = ay;
+		v[2].p.z = az - zz;
 
-		v[3].sx = ax + xx;
-		v[3].sy = ay;
-		v[3].sz = az + zz;
+		v[3].p.x = ax + xx;
+		v[3].p.y = ay;
+		v[3].p.z = az + zz;
 
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
@@ -1105,20 +1105,23 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 	}
 }
 
-/*--------------------------------------------------------------------------*/
-CPortal::~CPortal()
-{
-	if (this->sphereind) free((void *)this->sphereind);
-
-	if (this->spherevertex) free((void *)this->spherevertex);
-
-	if (this->sphered3d) free((void *)this->sphered3d);
-
+CPortal::~CPortal() {
+	
+	if(sphereind) {
+		free(sphereind);
+	}
+	if(spherevertex) {
+		free(spherevertex);
+	}
+	if(sphered3d) {
+		free(sphered3d);
+	}
+	
 	int nb = 256;
-
-	while (nb--)
-	{
-		if (this->tabeclair[nb].seg) free((void *)this->tabeclair[nb].seg);
+	while(nb--) {
+		if(tabeclair[nb].seg) {
+			free(tabeclair[nb].seg);
+		}
 	}
 }
 
@@ -1249,9 +1252,9 @@ float CPortal::Render()
 
 	while (nb)
 	{
-		d3dvs.sx = pt->x + this->pos.x;	//pt du bas
-		d3dvs.sy = pt->y + this->pos.y;
-		d3dvs.sz = pt->z + this->pos.z;
+		d3dvs.p.x = pt->x + this->pos.x;	//pt du bas
+		d3dvs.p.y = pt->y + this->pos.y;
+		d3dvs.p.z = pt->z + this->pos.z;
 		EE_RTP(&d3dvs, v);
 
 		if (!ARXPausedTimer) v->color = col;

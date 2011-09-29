@@ -25,12 +25,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/openal/OpenALBackend.h"
 
+#include <stddef.h>
+
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include "audio/openal/OpenALSource.h"
 #include "audio/openal/OpenALUtils.h"
-#include "audio/AudioGlobal.h"
 #include "audio/AudioEnvironment.h"
+#include "audio/AudioGlobal.h"
+#include "audio/AudioSource.h"
+#include "io/Logger.h"
+#include "math/Vector3.h"
+#include "platform/Platform.h"
 
 namespace audio {
+
+class Sample;
 
 #undef ALError
 #define ALError LogError
@@ -107,7 +117,12 @@ aalError OpenALBackend::init(bool enableEffects) {
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
 	AL_CHECK_ERROR("initializing")
+	
+#ifdef HAVE_OPENAL_EFX
 	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << (hasEFX ? " with" : " without") << " EFX";
+#else
+	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << " without EFX";
+#endif
 	
 	LogDebug << "AL extensions: " << alGetString(AL_EXTENSIONS);
 	LogDebug << "ALC extensions: " << alcGetString(device, ALC_EXTENSIONS);

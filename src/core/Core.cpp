@@ -60,33 +60,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <cstdio>
-#include <fstream>
+#include <algorithm>
 #include <sstream>
-#include <set>
-#include <iomanip>
+#include <vector>
 
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
 #include "animation/Animation.h"
+#include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 
+#include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
 #include "core/Dialog.h"
-#include "core/Resource.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
 
 #include "game/Missile.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
-#include "game/Map.h"
 #include "game/Player.h"
 #include "game/Levels.h"
 #include "game/Inventory.h"
-#include "game/NPC.h"
+#include "game/Spells.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -95,34 +96,44 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 
-#include "graphics/VertexBuffer.h"
-#include "graphics/GraphicsModes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/FTL.h"
-#include "graphics/data/CinematicTexture.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "gui/Interface.h"
+#include "gui/Text.h"
+
 #include "input/Input.h"
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
 
 #include "io/FilePath.h"
-#include "io/Filesystem.h"
 #include "io/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
+
+#include "math/Angle.h"
+#include "math/Rectangle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
  
 #include "physics/Collisions.h"
 #include "physics/Attractors.h"
 
-#include "platform/String.h"
-#include "platform/Random.h"
-#include "platform/Thread.h"
+#include "platform/CrashHandler.h"
+#include "platform/Flags.h"
+#include "platform/Platform.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
@@ -134,8 +145,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Object.h"
 
+#include "script/Script.h"
 #include "script/ScriptEvent.h"
-#include "script/ScriptDebugger.h"
+
+#include "window/RenderWindow.h"
+
+class TextManager;
 
 using std::min;
 using std::max;
@@ -407,6 +422,8 @@ long USE_PORTALS = 3;
 Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 
+EERIE_CAMERA  * Kam;
+
 //-----------------------------------------------------------------------------
 
 void LoadSysTextures();
@@ -477,7 +494,6 @@ void InitializeDanae()
 {
 	InitTileLights();
 	
-	EERIEMathPrecalc();
 	ARX_MISSILES_ClearAll();
 	ARX_SPELLS_Init();
 
@@ -610,6 +626,7 @@ void InitializeDanae()
 	
 }
 
+
 #if !ARX_COMPILER_MSVC
 extern int main(int argc, char ** argv) {
 	ARX_UNUSED(argc);
@@ -622,8 +639,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(nCmdShow);
 #endif // #if !ARX_COMPILER_MSVC
 	
-	long i;
-
+	initCrashHandler();
+	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
 	ALLOW_CHEATS = 0;
@@ -654,14 +671,13 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	CalcFPS(true);
 	
 	ARX_MAPMARKER_Init();
-
-	for (i=0;i<8;i++)
-		scursor[i]=NULL;
-
+	
+	memset(scursor, 0, sizeof(scursor));
+	
 	ARX_SPELLS_CancelSpellTarget();
-
-	for (i=0;i<MAX_EXPLO;i++) explo[i]=NULL;
-
+	
+	memset(explo, 0, sizeof(explo));
+	
 	USE_FAST_SCENES = 1;
 	LogDebug << "Danae Start";
 
@@ -1508,7 +1524,7 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/cursors/cursor06");
 	TextureContainer::LoadUI("graph/interface/cursors/cursor07");
 	TextureContainer::LoadUI("graph/interface/cursors/cruz");
-	TextureContainer::LoadUI("graph/interface/menus/menu_main_background");
+	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
 
@@ -2039,14 +2055,14 @@ void FirstFrameHandling()
 	}
 #ifdef BUILD_EDIT_LOADSAVE
 	else if(mse) {
-		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*( 1.0f / 2 );
-		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*( 1.0f / 2 );
+		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*.5f+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*.5f;
+		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*.5f+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*.5f;
 		float t1=(float)(long)(mse->point0.x/BKG_SIZX);
 		float t2=(float)(long)(mse->point0.z/BKG_SIZZ);
 		t1=mse->point0.x-t1*BKG_SIZX;
 		t2=mse->point0.z-t2*BKG_SIZZ;
-		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*( 1.0f / 2 );
-		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*( 1.0f / 2 );
+		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*.5f;
+		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*.5f;
 		mse->pos.x=Mscenepos.x=Mscenepos.x+BKG_SIZX-t1;
 		mse->pos.z=Mscenepos.z=Mscenepos.z+BKG_SIZZ-t2;
 		Mscenepos.y=mse->pos.y=-mse->cub.ymin-100.f-mse->point0.y;
@@ -3253,10 +3269,10 @@ void RenderAllNodes()
 			nodes.nodes[i].bboxmax.x=(short)BBOXMAX.x;
 			nodes.nodes[i].bboxmax.y=(short)BBOXMAX.y;
 
-			if ((nodeobj->vertexlist[nodeobj->origin].vert.sz>0.f) && (nodeobj->vertexlist[nodeobj->origin].vert.sz<0.9f))
+			if ((nodeobj->vertexlist[nodeobj->origin].vert.p.z>0.f) && (nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f))
 			{
-				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
-				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
+				xx=nodeobj->vertexlist[nodeobj->origin].vert.p.x-40.f;
+				yy=nodeobj->vertexlist[nodeobj->origin].vert.p.y-40.f;
 				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
@@ -3284,7 +3300,7 @@ void AddQuakeFX(float intensity,float duration,float period,long flags)
 
 		QuakeFx.duration+=(unsigned long)duration;
 		QuakeFx.frequency+=period;
-		QuakeFx.frequency*=( 1.0f / 2 );
+		QuakeFx.frequency*=.5f;
 		QuakeFx.flags|=flags;
 
 		if (flags & 1)
@@ -3330,7 +3346,7 @@ void ManageQuakeFX()
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
 		float truepower=periodicity*QuakeFx.intensity*itmod*( 1.0f / 100 );
-		float halfpower=truepower*( 1.0f / 2 );
+		float halfpower=truepower*.5f;
 		ACTIVECAM->pos.x+=rnd()*truepower-halfpower;
 		ACTIVECAM->pos.y+=rnd()*truepower-halfpower;
 		ACTIVECAM->pos.z+=rnd()*truepower-halfpower;
@@ -3954,8 +3970,8 @@ void ShowInfoText() {
 					mainApp->OutputText( 170, 360, "PF_ALWAYS" );
 				else
 				{
-					sprintf(tex,"PF_%ld", (long)io->_npcdata->pathfind.flags);
-					mainApp->OutputText( 170, 360, tex); 
+					sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
+					mainApp->OutputText(170, 360, tex);
 				}
 			  }
 

@@ -610,16 +610,6 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 #endif // BUILD_EDIT_LOADSAVE
 
 
-//*************************************************************************************
-//*************************************************************************************
-
-
-
-
-
-//*************************************************************************************
-//*************************************************************************************
-
 INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	
 	std::ostringstream nameident;
@@ -631,58 +621,37 @@ INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & 
 	}
 	
 	INTERACTIVE_OBJ * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
+	if(!io) {
+		return NULL;
+	}
 	
-	if (io)
-	{
-		RestoreInitialIOStatusOfIO(io);
-		ARX_INTERACTIVE_HideGore(io);
-
-		io->lastpos = io->initpos = io->pos = pos + trans; // RELATIVE !!!!!!!!!
-		io->move.x = io->move.y = io->move.z = 0.f;
-		io->initangle = io->angle = angle;
-
-#ifdef BUILD_EDITOR
-		if(!NODIRCREATION)
-#endif
-		{
-			io->ident = ident;
-			fs::path tmp = io->full_name(); // Get the directory name to check for
-			string id = io->short_name();
-
-			if(PakDirectory * dir = resources->getDirectory(tmp)) {
-				if(PakFile * file = dir->getFile(id + ".asl")) {
-					loadScript(io->over_script, file);
-					io->over_script.master = (io->script.data != NULL) ? &io->script : NULL;
-				}
-			} else {
-#ifdef BUILD_EDIT_LOADSAVE
-
-				if(fs::create_directories(tmp)) {
-					LogDirCreation(tmp);
-					WriteIOInfo(io, tmp);
-				} else {
-					LogError << "Could not create a unique identifier " << tmp;
-				}
-#else
-				arx_assert(false);
-#endif
-			}
-		}
-
-		if (SendIOScriptEvent(io, SM_LOAD) == ACCEPT)
-		{
-			if(io->obj == NULL) {
-				bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
-				io->obj = loadObject(io->filename, pbox);
-
-				if (io->ioflags & IO_NPC)
-					EERIE_COLLISION_Cylinder_Create(io);
-			}
+	RestoreInitialIOStatusOfIO(io);
+	ARX_INTERACTIVE_HideGore(io);
+	
+	io->lastpos = io->initpos = io->pos = pos + trans;
+	io->move.x = io->move.y = io->move.z = 0.f;
+	io->initangle = io->angle = angle;
+	
+	fs::path tmp = io->full_name(); // Get the directory name to check for
+	string id = io->short_name();
+	if(PakDirectory * dir = resources->getDirectory(tmp)) {
+		if(PakFile * file = dir->getFile(id + ".asl")) {
+			loadScript(io->over_script, file);
+			io->over_script.master = (io->script.data != NULL) ? &io->script : NULL;
 		}
 	}
-
+	
+	if(SendIOScriptEvent(io, SM_LOAD) == ACCEPT && io->obj == NULL) {
+		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
+		io->obj = loadObject(io->filename, pbox);
+		if(io->ioflags & IO_NPC) {
+			EERIE_COLLISION_Cylinder_Create(io);
+		}
+	}
+	
 	return io;
 }
+
 long LastLoadedLightningNb = 0;
 u32 * LastLoadedLightning = NULL;
 Vec3f loddpos;

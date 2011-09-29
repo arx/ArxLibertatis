@@ -57,7 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/NPC.h"
 
+#include <stddef.h>
+#include <cmath>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <limits>
+#include <vector>
 
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
@@ -75,20 +82,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 
-#include "graphics/Draw.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
 
+#include "math/Angle.h"
+#include "math/Vector3.h"
+
 #include "physics/Box.h"
-#include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 
 #include "platform/String.h"
+#include "platform/Flags.h"
+#include "platform/Platform.h"
 
 #include "scene/Object.h"
 #include "scene/Interactive.h"
@@ -1319,10 +1333,12 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 	tv.y = io->pos.y;
 	tv.z = io->pos.z;
 
-	if (Distance2D(tv.x, tv.z, io->target.x, io->target.z) <= 5.f) return;
+	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
+		return;
+	}
 
 	float cangle, tangle;
-	tangle = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	tangle = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	cangle = io->angle.b;
 
 	float tt = (cangle - tangle);
@@ -1385,7 +1401,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	float rot = 0.27f * _framedelay;
 	float alpha = MAKEANGLE(io->angle.b);
 	float beta = -io->head_rot; 
-	float pouet = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	float pouet = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
 
@@ -1583,13 +1599,13 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		
 		
 		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
-		nouvo->vertexlist[k].v.x	=	nouvo->vertexlist[k].vert.sx	=	from->vertexlist3[from->selections[num].selected[k]].v.x - ioo->pos.x;
-		nouvo->vertexlist[k].v.y	=	nouvo->vertexlist[k].vert.sy	=	from->vertexlist3[from->selections[num].selected[k]].v.y - ioo->pos.y;
-		nouvo->vertexlist[k].v.z	=	nouvo->vertexlist[k].vert.sz	=	from->vertexlist3[from->selections[num].selected[k]].v.z - ioo->pos.z;
+		nouvo->vertexlist[k].v.x	=	nouvo->vertexlist[k].vert.p.x	=	from->vertexlist3[from->selections[num].selected[k]].v.x - ioo->pos.x;
+		nouvo->vertexlist[k].v.y	=	nouvo->vertexlist[k].vert.p.y	=	from->vertexlist3[from->selections[num].selected[k]].v.y - ioo->pos.y;
+		nouvo->vertexlist[k].v.z	=	nouvo->vertexlist[k].vert.p.z	=	from->vertexlist3[from->selections[num].selected[k]].v.z - ioo->pos.z;
 
 		nouvo->vertexlist[k].vert.color	=	from->vertexlist[k].vert.color;
-		nouvo->vertexlist[k].vert.tu	=	from->vertexlist[k].vert.tu;
-		nouvo->vertexlist[k].vert.tv	=	from->vertexlist[k].vert.tv;
+		nouvo->vertexlist[k].vert.uv.x	=	from->vertexlist[k].vert.uv.x;
+		nouvo->vertexlist[k].vert.uv.y	=	from->vertexlist[k].vert.uv.y;
 
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
@@ -1611,9 +1627,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 					if (count < nouvo->vertexlist.size())
 					{
 						memcpy(&nouvo->vertexlist[count], &from->vertexlist[from->facelist[k].vid[j]], sizeof(EERIE_VERTEX));
-						nouvo->vertexlist[count].v.x = nouvo->vertexlist[count].vert.sx = from->vertexlist3[from->facelist[k].vid[j]].v.x - ioo->pos.x;
-						nouvo->vertexlist[count].v.y = nouvo->vertexlist[count].vert.sy = from->vertexlist3[from->facelist[k].vid[j]].v.y - ioo->pos.y;
-						nouvo->vertexlist[count].v.z = nouvo->vertexlist[count].vert.sz = from->vertexlist3[from->facelist[k].vid[j]].v.z - ioo->pos.z;
+						nouvo->vertexlist[count].v.x = nouvo->vertexlist[count].vert.p.x = from->vertexlist3[from->facelist[k].vid[j]].v.x - ioo->pos.x;
+						nouvo->vertexlist[count].v.y = nouvo->vertexlist[count].vert.p.y = from->vertexlist3[from->facelist[k].vid[j]].v.y - ioo->pos.y;
+						nouvo->vertexlist[count].v.z = nouvo->vertexlist[count].vert.p.z = from->vertexlist3[from->facelist[k].vid[j]].v.z - ioo->pos.z;
 						memcpy(&nouvo->vertexlist3[count], &nouvo->vertexlist[count], sizeof(EERIE_VERTEX));
 					}
 					else
@@ -1625,13 +1641,13 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		}
 	}
 
-	float min = nouvo->vertexlist[0].vert.sy;
+	float min = nouvo->vertexlist[0].vert.p.y;
 	long nummm = 0;
 
 	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
-		if (nouvo->vertexlist[k].vert.sy > min)
+		if (nouvo->vertexlist[k].vert.p.y > min)
 		{
-			min = nouvo->vertexlist[k].vert.sy;
+			min = nouvo->vertexlist[k].vert.p.y;
 			nummm = k;
 		}
 	}
@@ -1643,9 +1659,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	nouvo->point0.z = nouvo->vertexlist[nouvo->origin].v.z;
 
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
-		nouvo->vertexlist[k].vert.sx = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
-		nouvo->vertexlist[k].vert.sy = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
-		nouvo->vertexlist[k].vert.sz = nouvo->vertexlist[k].v.z -= nouvo->point0.z;
+		nouvo->vertexlist[k].vert.p.x = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
+		nouvo->vertexlist[k].vert.p.y = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
+		nouvo->vertexlist[k].vert.p.z = nouvo->vertexlist[k].v.z -= nouvo->point0.z;
 		nouvo->vertexlist[k].vert.color = 0xFFFFFFFF;
 	}
 
@@ -1769,10 +1785,8 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	vector.x					=	-(float)EEsin(radians(io->angle.b));
 	vector.y					=	EEsin(radians(io->angle.a)) * 2.f; 
 	vector.z					=	(float)EEcos(radians(io->angle.b));
-	Vector_Normalize(&vector);
-	pos.x						=	io->pos.x;
-	pos.y						=	io->pos.y;
-	pos.z						=	io->pos.z;
+	fnormalize(vector);
+	pos = io->pos;
 	io->rubber					=	0.6f;
 
 
@@ -2897,14 +2911,14 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			aup->_curtime -= 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime += 500;
-			io->angle.b = MAKEANGLE(degrees(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.b = MAKEANGLE(degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
 		}
 		else
 		{
 			aup->_curtime += 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime -= 500;
-			io->angle.b = MAKEANGLE(180.f + degrees(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.b = MAKEANGLE(180.f + degrees(getAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
 		}
 
 		return;
@@ -3170,7 +3184,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	{
 
 	// XS : Moved to top of func
-	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
@@ -3503,7 +3517,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	APPLY_PUSH = 0;
 
 	// Compute distance 2D to target.
-	_dist = TRUEDistance2D(io->pos.x, io->pos.z, io->target.x, io->target.z);
+	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
 
 	if (io->_npcdata->pathfind.listnb > 0)
@@ -3879,7 +3893,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
 
 
-		float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
+		float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 		aa = MAKEANGLE(degrees(aa));
 
 		if (EEfabs(AngularDifference(aa, ab)) < 110.f)
@@ -3972,13 +3986,13 @@ extern long GLOBAL_Player_Room;
 void CheckNPCEx(INTERACTIVE_OBJ * io)
 {
 	// Distance Between Player and IO
-	float dist = Distance3D(io->pos.x, io->pos.y, io->pos.z, player.pos.x, player.pos.y - PLAYER_BASE_HEIGHT, player.pos.z);
+	float ds = distSqr(io->pos, player.pos - (Vec3f::Y_AXIS * PLAYER_BASE_HEIGHT));
 
 	// Start as not visible
 	long Visible = 0;
 
 	// Check visibility only if player is visible, not too far and not dead
-	if ((!(inter.iobj[0]->invisibility > 0.f)) && (dist < 2000.f) && (player.life > 0))
+	if ((!(inter.iobj[0]->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
 	{
 		// checks for near contact +/- 15 cm --> force visibility
 		if (io->room_flags & 1)
@@ -3993,7 +4007,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		if ((GLOBAL_Player_Room > -1) && (io->room > -1) && (fdist > 2000.f))
 		{
 		}
-		else if ((dist < GetIORadius(io) + GetIORadius(inter.iobj[0]) + 15.f)
+		else if ((ds < square(GetIORadius(io) + GetIORadius(inter.iobj[0]) + 15.f))
 		         && (EEfabs(player.pos.y - io->pos.y) < 200.f))
 		{
 			Visible = 1;
@@ -4021,7 +4035,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 			dest.z = player.pos.z;
 
 			// Check for Field of vision angle
-			float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
+			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(degrees(aa));
 			float ab = MAKEANGLE(io->angle.b);
 
@@ -4030,7 +4044,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 				// Check for Darkness/Stealth
 				if ((CURRENT_PLAYER_COLOR > GetPlayerStealth())
 				        ||	SHOW_TORCH
-				        ||	(dist < 200))
+				        ||	(ds < square(200.f)))
 				{
 					EERIEPOLY * epp = NULL;
 					Vec3f ppos;

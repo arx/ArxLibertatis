@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // TODO header file
 
+#include <algorithm>
 #include <cstdio>
 
 #include "core/Application.h"
@@ -32,11 +33,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Levels.h"
 
-#include "gui/Interface.h"
 #include "gui/Menu.h"
 
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
-#include "graphics/Math.h"
+#include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
@@ -109,7 +110,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	if (GRenderer->BeginScene())
 	{
-		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc/logo");
+		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
 
 		if (FISHTANK_img != NULL)
 		{
@@ -139,7 +140,7 @@ void ARX_INTERFACE_ShowARKANE()
 	if (GRenderer->BeginScene())
 	{
 		if (ARKANE_img == NULL)
-			ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane");
+			ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
 
 		if (ARKANE_img != NULL)
 		{
@@ -165,14 +166,8 @@ static long lastnum = -1;
 static float fFadeSens = 0.f;
 static float fFadeColor = 0.f;
 
-//-----------------------------------------------------------------------------
-void LoadLevelScreen()
-{
-	LoadLevelScreen(-1);
-}
-
-void LoadLevelScreen(long num)
-{
+void LoadLevelScreen(long num) {
+	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
@@ -280,7 +275,7 @@ void LoadLevelScreen(long num)
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), 0.f, 0.f, ratio, 1.f);
 				}
 				else
 				{
@@ -293,7 +288,7 @@ void LoadLevelScreen(long num)
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), 0.f, 0.f, ratio, 1.f);
 				}
 			}
 
@@ -322,6 +317,10 @@ void LoadLevelScreen(long num)
 	}
 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
+}
+
+void LoadLevelScreen() {
+	LoadLevelScreen(-1);
 }
 
 //-----------------------------------------------------------------------------

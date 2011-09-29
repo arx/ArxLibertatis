@@ -260,7 +260,7 @@ void CompressedFile::read(void * buf) const {
 	
 	archive.seekg(offset);
 	
-	int r = blast(archive, (char *)buf, size());
+	int r = blast(archive, reinterpret_cast<char *>(buf), size());
 	if(r) {
 		LogError << "PakReader::Read: blast error " << r << " outSize=" << size();
 	}
@@ -328,7 +328,7 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 	BlastFileInBuffer in(&file.archive);
 	BlastMemOutBufferOffset out;
 	
-	out.buf = (char *)buf;
+	out.buf = reinterpret_cast<char *>(buf);
 	out.currentOffset = 0;
 	out.startOffset = offset;
 	out.endOffset = min(offset + size, file.size());

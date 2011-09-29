@@ -25,7 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/ArxGame.h"
 
+#include <stddef.h>
 #include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <sstream>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
@@ -35,21 +39,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 #include "core/Config.h"
-#include "core/Dialog.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
-#include "core/Resource.h"
 
+#include "game/Damage.h"
 #include "game/Inventory.h"
 #include "game/Levels.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
 #include "graphics/GraphicsModes.h"
-#include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/VertexBuffer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
@@ -68,11 +76,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/TextManager.h"
 
 #include "input/Input.h"
+#include "input/Keyboard.h"
 
-#include "io/CinematicLoad.h"
+#include "math/Angle.h"
+#include "math/MathFwd.h"
+#include "math/Rectangle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+
+#include "io/FilePath.h"
 #include "io/Logger.h"
 #include "io/PakReader.h"
 #include "io/Screenshot.h"
+
+#include "platform/Flags.h"
+#include "platform/Platform.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Interactive.h"
@@ -81,6 +99,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "scene/Object.h"
 #include "scene/Scene.h"
+
+#include "Configure.h"
 
 #ifdef HAVE_D3D9
 #include "window/D3D9Window.h"
@@ -214,6 +234,24 @@ bool ArxGame::Initialize()
 	return true;
 }
 
+void ArxGame::setFullscreen(bool fullscreen) {
+	
+	if(fullscreen) {
+		
+		RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
+		if(mode.resolution == Vec2i::ZERO) {
+			mode = GetWindow()->getDisplayModes().back();
+		}
+		
+		mainApp->GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
+		
+	} else {
+		
+		mainApp->GetWindow()->setWindowSize(config.window.size);
+		
+	}
+}
+
 bool ArxGame::initWindow(RenderWindow * window) {
 	
 	arx_assert(m_MainWindow == NULL);
@@ -228,18 +266,29 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow->AddListener(this);
 	m_MainWindow->addListener(this);
 	
-	// Find the next best available fullscreen mode.
 	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
-	RenderWindow::DisplayModes::const_iterator i;
+	
 	RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
-	i = std::lower_bound(modes.begin(), modes.end(), mode);
-	if(i == modes.end()) {
-		mode = *modes.rbegin();
+	
+	if(config.video.resolution == Vec2i::ZERO) {
+		
+		// Use the largest available resolution.
+		mode = modes.back();
+		
 	} else {
-		mode = *i;
-	}
-	if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
-		LogWarning << "fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y << '@' << mode.depth << " instead";
+		
+		// Find the next best available fullscreen mode.
+		RenderWindow::DisplayModes::const_iterator i;
+		i = std::lower_bound(modes.begin(), modes.end(), mode);
+		if(i == modes.end()) {
+			mode = *modes.rbegin();
+		} else {
+			mode = *i;
+		}
+		if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
+			LogWarning << "fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y 	<< '@' << mode.depth << " instead";
+		}
+		
 	}
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
@@ -249,10 +298,10 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		return false;
 	}
 	
-	if(!m_MainWindow->IsFullScreen()) {
+	if(!m_MainWindow->IsFullScreen() && config.video.resolution != Vec2i::ZERO) {
 		config.video.resolution = mode.resolution;
-		config.video.bpp = mode.depth;
 	}
+	config.video.bpp = mode.depth;
 	
 	return true;
 }
@@ -408,8 +457,12 @@ void ArxGame::OnResizeWindow(const Window & window) {
 	wasResized = true;
 	
 	if(window.IsFullScreen()) {
-		LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y;
-		config.video.resolution = window.GetSize();
+		if(config.video.resolution == Vec2i::ZERO) {
+			LogInfo << "auto selected fullscreen resolution " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
+		} else {
+			LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
+			config.video.resolution = window.GetSize();
+		}
 	} else {
 		LogInfo << "changed window size to " << window.GetSize().x << 'x' << window.GetSize().y;
 		config.window.size = window.GetSize();
@@ -914,11 +967,7 @@ static float _AvgFrameDiff = 150.f;
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
-		if(mainApp->GetWindow()->IsFullScreen()) {
-			mainApp->GetWindow()->setWindowSize(config.window.size);
-		} else {
-			mainApp->GetWindow()->setFullscreenMode(config.video.resolution, config.video.bpp);
-		}
+		setFullscreen(!GetWindow()->IsFullScreen());
 	}
 	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
@@ -1182,7 +1231,7 @@ static float _AvgFrameDiff = 150.f;
 				vect.x=subj.pos.x-player.pos.x;
 				vect.y=0;
 				vect.z=subj.pos.z-player.pos.z;
-				float len=Vector_Magnitude(&vect);
+				float len = ffsqrt(vect.lengthSqr());
 
 				if (len>46.f)
 				{
@@ -1297,10 +1346,7 @@ static float _AvgFrameDiff = 150.f;
 		vect.x=targetpos.x-sourcepos.x;
 		vect.y=targetpos.y-sourcepos.y;
 		vect.z=targetpos.z-sourcepos.z;
-		float mag=1.f/Vector_Magnitude(&vect);
-		vect.x*=mag;
-		vect.y*=mag;
-		vect.z*=mag;
+		fnormalize(vect);
 		float dist=250.f-conversationcamera.size.g;
 
 		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
@@ -2153,9 +2199,7 @@ void ArxGame::GoFor2DFX()
 
 				if (el->extras & EXTRAS_FLARE)
 				{
-					lv.sx=el->pos.x;
-					lv.sy=el->pos.y;
-					lv.sz=el->pos.z;
+					lv.p = el->pos;
 					specialEE_RTP(&lv,&ltvv);
 					el->temp-=temp_increase;
 
@@ -2164,36 +2208,26 @@ void ArxGame::GoFor2DFX()
 						continue;
 
 					if ((ltvv.rhw > 0.f) &&
-						(ltvv.sx>0.f) &&
-						(ltvv.sy>(CINEMA_DECAL*Yratio)) &&
-						(ltvv.sx<DANAESIZX) &&
-						(ltvv.sy<(DANAESIZY-(CINEMA_DECAL*Yratio)))
+						(ltvv.p.x>0.f) &&
+						(ltvv.p.y>(CINEMA_DECAL*Yratio)) &&
+						(ltvv.p.x<DANAESIZX) &&
+						(ltvv.p.y<(DANAESIZY-(CINEMA_DECAL*Yratio)))
 						)
 					{
-						Vec3f vector;
-						vector.x=lv.sx-ACTIVECAM->pos.x;
-						vector.y=lv.sy-ACTIVECAM->pos.y;
-						vector.z=lv.sz-ACTIVECAM->pos.z;
-						float fNorm = 50.f / vector.length();
-						vector *= fNorm;
+						Vec3f vector = lv.p - ACTIVECAM->pos;
+						lv.p -= vector * (50.f / vector.length());
 						TexturedVertex ltvv2;
-						lv.sx-=vector.x;
-						lv.sy-=vector.y;
-						lv.sz-=vector.z;
-						specialEE_RTP(&lv,&ltvv2);
+						specialEE_RTP(&lv, &ltvv2);
 
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
 						Vec3f hit;
 						EERIEPOLY *tp=NULL;
 						Vec2s ees2dlv;
-						Vec3f ee3dlv;
-						ee3dlv.x = lv.sx;
-						ee3dlv.y = lv.sy;
-						ee3dlv.z = lv.sz;
+						Vec3f ee3dlv = lv.p;
 
-						ees2dlv.x = checked_range_cast<short>(ltvv.sx);
-						ees2dlv.y = checked_range_cast<short>(ltvv.sy);
+						ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
+						ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
 
 
 						if( !bComputeIO )
@@ -2203,7 +2237,7 @@ void ArxGame::GoFor2DFX()
 						}
 
 						if(
-							(ltvv.sz>fZFar)||
+							(ltvv.p.z>fZFar)||
 							EERIELaunchRay3(&ACTIVECAM->pos,&ee3dlv,&hit,tp,1)||
 							GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 							)
@@ -2243,11 +2277,9 @@ void ArxGame::GoFor2DFX()
 				{
 					if (el->temp>0.f)
 					{
-						lv.sx=el->pos.x;
-						lv.sy=el->pos.y;
-						lv.sz=el->pos.z;
-						lv.rhw=1.f;
-						specialEE_RT((TexturedVertex *)&lv,(Vec3f *)&ltvv);
+						lv.p = el->pos;
+						lv.rhw = 1.f;
+						specialEE_RT(&lv, &ltvv.p);
 						float v=el->temp;
 
 						if (FADEDIR)
@@ -2262,7 +2294,7 @@ void ArxGame::GoFor2DFX()
 						else
 							siz=-el->ex_flaresize;
 
-						EERIEDrawSprite(&lv, siz, tflare, Color3f(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b).to<u8>(), ltvv.sz);
+						EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
 
 					}
 				}

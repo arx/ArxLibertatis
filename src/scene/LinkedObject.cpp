@@ -148,9 +148,9 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 				{
 					for (size_t i = 0; i < tounlink->vertexlist.size(); i++)
 					{
-						tounlink->vertexlist[i].vert.sx = tounlink->vertexlist[i].v.x;
-						tounlink->vertexlist[i].vert.sy = tounlink->vertexlist[i].v.y;
-						tounlink->vertexlist[i].vert.sz = tounlink->vertexlist[i].v.z;
+						tounlink->vertexlist[i].vert.p.x = tounlink->vertexlist[i].v.x;
+						tounlink->vertexlist[i].vert.p.y = tounlink->vertexlist[i].v.y;
+						tounlink->vertexlist[i].vert.p.z = tounlink->vertexlist[i].v.z;
 					}
 
 					EERIE_LINKEDOBJ_Remove(obj, k);

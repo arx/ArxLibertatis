@@ -216,9 +216,9 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 			for (long o = 0; o < 5; o++)
 			{
 				float p = (float)o * ( 1.0f / 5 );
-				center.x = (ep->v[n].sx * p + ep->center.x * (1.f - p));
-				center.y = (ep->v[n].sy * p + ep->center.y * (1.f - p));
-				center.z = (ep->v[n].sz * p + ep->center.z * (1.f - p));
+				center.x = (ep->v[n].p.x * p + ep->center.x * (1.f - p));
+				center.y = (ep->v[n].p.y * p + ep->center.y * (1.f - p));
+				center.z = (ep->v[n].p.z * p + ep->center.z * (1.f - p));
 
 				if (PointInCylinder(cyl, &center)) 
 				{
@@ -233,9 +233,9 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 		        || (flags & CFLAG_EXTRA_PRECISION)
 		   )
 		{
-			center.x = (ep->v[n].sx + ep->v[r].sx) * ( 1.0f / 2 );
-			center.y = (ep->v[n].sy + ep->v[r].sy) * ( 1.0f / 2 );
-			center.z = (ep->v[n].sz + ep->v[r].sz) * ( 1.0f / 2 );
+			center.x = (ep->v[n].p.x + ep->v[r].p.x) * ( 1.0f / 2 );
+			center.y = (ep->v[n].p.y + ep->v[r].p.y) * ( 1.0f / 2 );
+			center.z = (ep->v[n].p.z + ep->v[r].p.z) * ( 1.0f / 2 );
 
 			if (PointInCylinder(cyl, &center)) 
 			{
@@ -245,9 +245,9 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 
 			if ((ep->area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (ep->v[n].sx + ep->center.x) * ( 1.0f / 2 );
-				center.y = (ep->v[n].sy + ep->center.y) * ( 1.0f / 2 );
-				center.z = (ep->v[n].sz + ep->center.z) * ( 1.0f / 2 );
+				center.x = (ep->v[n].p.x + ep->center.x) * ( 1.0f / 2 );
+				center.y = (ep->v[n].p.y + ep->center.y) * ( 1.0f / 2 );
+				center.z = (ep->v[n].p.z + ep->center.z) * ( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center)) 
 				{
@@ -258,9 +258,9 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 
 			if ((ep->area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (center.x + ep->v[n].sx) * ( 1.0f / 2 );
-				center.y = (center.y + ep->v[n].sy) * ( 1.0f / 2 );
-				center.z = (center.z + ep->v[n].sz) * ( 1.0f / 2 );
+				center.x = (center.x + ep->v[n].p.x) * ( 1.0f / 2 );
+				center.y = (center.y + ep->v[n].p.y) * ( 1.0f / 2 );
+				center.z = (center.z + ep->v[n].p.z) * ( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center)) 
 				{
@@ -270,9 +270,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 			}
 		}
 
-		if (PointInCylinder(cyl, (Vec3f *)&ep->v[n])) 
-		{
-			anything = std::min(anything, ep->v[n].sy);
+		if(PointInCylinder(cyl, &ep->v[n].p)) {
+			anything = std::min(anything, ep->v[n].p.y);
 			return anything;
 		}
 
@@ -665,12 +664,12 @@ void AnchorData_ClearAll(EERIE_BACKGROUND * eb) {
 			if ((eb->anchors[j].nblinked) &&
 			        (eb->anchors[j].linked))
 			{
-				free((void *)eb->anchors[j].linked);
+				free(eb->anchors[j].linked);
 				eb->anchors[j].linked = NULL;
 			}
 		}
 
-		free((void *)eb->anchors);
+		free(eb->anchors);
 	}
 
 	eb->anchors = NULL;
@@ -779,10 +778,12 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	{
 		_ANCHOR_DATA * ad = &eb->anchors[k];
 
-		if (dist(ad->pos, bestcyl.origin) < 50.f) return false;
+		if(closerThan(ad->pos, bestcyl.origin, 50.f)) {
+			return false;
+		}
 
-		if (TRUEDistance2D(ad->pos.x, ad->pos.z, bestcyl.origin.x, bestcyl.origin.z) < 45.f)
-		{
+		if(closerThan(Vec2f(ad->pos.x, ad->pos.z), Vec2f(bestcyl.origin.x, bestcyl.origin.z), 45.f)) {
+			
 			if (EEfabs(ad->pos.y - bestcyl.origin.y) < 90.f) return false;
 
 			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad->pos.x, ad->pos.y, ad->pos.z);
@@ -1033,7 +1034,7 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 							long _onetwo = 0;
 							bool treat = true;
 							float _dist = dist(p1, p2);
-							float dd = TRUEDistance2D(p1.x, p1.z, p2.x, p2.z);
+							float dd = dist(Vec2f(p1.x, p1.z), Vec2f(p2.x, p2.z));
 
 							if (dd < 5.f) continue;
 
@@ -1067,9 +1068,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 							if (ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION)) //CFLAG_SPECIAL
 							{
-								if (TRUEDistance2D(ip.cyl.origin.x, ip.cyl.origin.z, ip.targetpos.x, ip.targetpos.z) > 25) 
+								if(fartherThan(Vec2f(ip.cyl.origin.x, ip.cyl.origin.z), Vec2f(ip.targetpos.x, ip.targetpos.z), 25.f)) { 
 									t--;
-								else _onetwo = 1;
+								} else {
+									_onetwo = 1;
+								}
 							}
 							else t--;
 
@@ -1087,9 +1090,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 								if (ANCHOR_ARX_COLLISION_Move_Cylinder(&ip, NULL, 20, CFLAG_CHECK_VALID_POS | CFLAG_NO_INTERCOL | CFLAG_EASY_SLIDING | CFLAG_NPC | CFLAG_JUST_TEST | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT)) //CFLAG_SPECIAL
 								{
-									if (TRUEDistance2D(ip.cyl.origin.x, ip.cyl.origin.z, ip.targetpos.x, ip.targetpos.z) > 25) 
+									if(fartherThan(Vec2f(ip.cyl.origin.x, ip.cyl.origin.z), Vec2f(ip.targetpos.x, ip.targetpos.z), 25.f)) {
 										t--;
-									else _onetwo |= 2;
+									} else {
+										_onetwo |= 2;
+									}
 								}
 								else t--;
 							}

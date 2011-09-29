@@ -55,29 +55,40 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <cstdio>
+#include <cctype>
 #include <cstdlib>
-
-#include "core/Core.h"
+#include <cstring>
+#include <algorithm>
+#include <vector>
 
 #include "game/Equipment.h"
 #include "game/NPC.h"
 #include "game/Damage.h"
 #include "game/Player.h"
 #include "game/Inventory.h"
+#include "game/Spells.h"
 
 #include "gui/Interface.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
 
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+
 #include "physics/Collisions.h"
 
 #include "platform/String.h"
+#include "platform/Platform.h"
 
 #include "scene/Object.h"
 #include "scene/LinkedObject.h"
@@ -119,7 +130,7 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
 	
 	char c = temp[0];
 	
-	arx_assert(tolower(c) == c);
+	arx_assert(std::tolower(c) == c);
 	
 	switch(c) {
 		case 'w':
@@ -755,7 +766,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				ppos.x = io_source->pos.x - player.pos.x;
 				ppos.y = io_source->pos.y - player.pos.y - PLAYER_BASE_HEIGHT;
 				ppos.z = io_source->pos.z - player.pos.z;
-				Vector_Normalize(&ppos);
+				fnormalize(ppos);
 
 				//------- player push START
 				Vec3f push = ppos;
@@ -765,12 +776,8 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				PUSH_PLAYER_FORCE += push;
 				//------- player push END
 
-				ppos.x *= 60.f;
-				ppos.y *= 60.f;
-				ppos.z *= 60.f;
-				ppos.x += ACTIVECAM->pos.x;
-				ppos.y += ACTIVECAM->pos.y;
-				ppos.z += ACTIVECAM->pos.z;
+				ppos *= 60.f;
+				ppos += ACTIVECAM->pos;
 				ARX_DAMAGES_SCREEN_SPLATS_Add(&ppos, dmgs);
 				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
 				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
@@ -785,7 +792,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 				if (io_target == inter.iobj[0]) ppos.y -= PLAYER_BASE_HEIGHT;
 
-				Vector_Normalize(&ppos);
+				fnormalize(ppos);
 
 				//------- player NPC START
 				Vec3f push = ppos;
@@ -970,7 +977,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								vect.x = target->obj->vertexlist3[hitpoint].v.x - io_source->pos.x;
 								vect.y = 0;
 								vect.z = target->obj->vertexlist3[hitpoint].v.z - io_source->pos.z;
-								Vector_Normalize(&vect);
+								fnormalize(vect);
 								sp.origin.x = target->obj->vertexlist3[hitpoint].v.x + vect.x * 30.f;
 								sp.origin.y = target->obj->vertexlist3[hitpoint].v.y;
 								sp.origin.z = target->obj->vertexlist3[hitpoint].v.z + vect.z * 30.f;

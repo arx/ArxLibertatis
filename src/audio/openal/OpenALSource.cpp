@@ -25,15 +25,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/openal/OpenALSource.h"
 
-#include <cstdio>
+#include <cmath>
+#include <algorithm>
 
 #include "audio/openal/OpenALUtils.h"
 #include "audio/AudioGlobal.h"
+#include "audio/AudioResource.h"
 #include "audio/Stream.h"
 #include "audio/Sample.h"
 #include "audio/Mixer.h"
-
+#include "io/FilePath.h"
 #include "io/Logger.h"
+#include "math/Vector3.h"
 #include "platform/Platform.h"
 
 namespace audio {
@@ -372,17 +375,6 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	return AAL_OK;
 }
 
-aalError OpenALSource::setVolume(float v) {
-	
-	if(!alIsSource(source) || !(channel.flags & FLAG_VOLUME)) {
-		return AAL_ERROR_INIT;
-	}
-	
-	channel.volume = clamp(v, 0.f, 1.f);
-	
-	return updateVolume();
-}
-
 aalError OpenALSource::updateVolume() {
 	
 	if(!alIsSource(source) || !(channel.flags & FLAG_VOLUME)) {
@@ -516,17 +508,6 @@ aalError OpenALSource::setFalloff(const SourceFalloff & falloff) {
 	AL_CHECK_ERROR("setting source falloff")
 	
 	return AAL_OK;
-}
-
-aalError OpenALSource::setMixer(MixerId mixer) {
-	
-	channel.mixer = mixer;
-	
-	return updateVolume();
-}
-
-size_t OpenALSource::getTime(TimeUnit unit) const {
-	return bytesToUnits(time, sample->getFormat(), unit);
 }
 
 aalError OpenALSource::play(unsigned play_count) {
@@ -770,7 +751,7 @@ aalError OpenALSource::updateBuffers() {
 	if(status == Playing) {
 		if(sourceState == AL_STOPPED) {
 			if(nbuffersProcessed != maxbuffers) {
-				ALError << "buffer underrun detected";
+				ALWarning << "buffer underrun detected";
 			}
 			alSourcePlay(source);
 			AL_CHECK_ERROR("playing source")

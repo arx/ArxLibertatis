@@ -387,7 +387,7 @@ void CFireBall::Update(unsigned long aulTime)
 				Vec3f * p1 = &eCurPos;
 				Vec3f p2 = inter.iobj[io->targetinfo]->pos;
 				p2.y -= 60.f;
-				afAlpha = 360.f - (degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 
@@ -539,7 +539,7 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		e.z = h.z - fBetaRadCos * 20;
 	}
 
-	fd = Distance3D(s.x, s.y, s.z, e.x, e.y, e.z);
+	fd = fdist(s, e);
 
 	float fCalc = ulDuration * (fd / fspelldist);
 	SetDuration(checked_range_cast<unsigned long>(fCalc));
@@ -549,12 +549,12 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	iNumber = checked_range_cast<int>(fDist);
 
 	int end = iNumber / 2;
-	tv1a[0].sx = s.x;
-	tv1a[0].sy = s.y + 100;
-	tv1a[0].sz = s.z;
-	tv1a[end].sx = e.x;
-	tv1a[end].sy = e.y + 100;
-	tv1a[end].sz = e.z;
+	tv1a[0].p.x = s.x;
+	tv1a[0].p.y = s.y + 100;
+	tv1a[0].p.z = s.z;
+	tv1a[end].p.x = e.x;
+	tv1a[end].p.y = e.y + 100;
+	tv1a[end].p.z = e.z;
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
@@ -600,15 +600,15 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 
 		if (tType[i] == 0)
 		{
-			tPos[i].x = tv1a[iNum].sx + frand2() * 80;
-			tPos[i].y = tv1a[iNum].sy;
-			tPos[i].z = tv1a[iNum].sz + frand2() * 80;
+			tPos[i].x = tv1a[iNum].p.x + frand2() * 80;
+			tPos[i].y = tv1a[iNum].p.y;
+			tPos[i].z = tv1a[iNum].p.z + frand2() * 80;
 		}
 		else
 		{
-			tPos[i].x = tv1a[iNum].sx + frand2() * 40;
-			tPos[i].y = tv1a[iNum].sy;
-			tPos[i].z = tv1a[iNum].sz + frand2() * 40;
+			tPos[i].x = tv1a[iNum].p.x + frand2() * 40;
+			tPos[i].y = tv1a[iNum].p.y;
+			tPos[i].z = tv1a[iNum].p.z + frand2() * 40;
 		}
 
 		long ttt = ARX_DAMAGES_GetFree();

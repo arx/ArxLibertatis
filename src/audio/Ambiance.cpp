@@ -25,22 +25,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Ambiance.h"
 
-#include <cmath>
-#include <cstdlib>
-#include <cstring>
+#include <cctype>
+#include <algorithm>
+#include <sstream>
 
-#include <boost/scoped_ptr.hpp>
+#include <boost/smart_ptr/scoped_ptr.hpp>
 
-#include "audio/AudioGlobal.h"
-#include "audio/Sample.h"
 #include "audio/AudioBackend.h"
+#include "audio/AudioGlobal.h"
+#include "audio/AudioResource.h"
 #include "audio/AudioSource.h"
 #include "audio/Mixer.h"
+#include "audio/Sample.h"
 
-#include "io/PakReader.h"
 #include "io/FilePath.h"
+#include "io/Logger.h"
+#include "io/PakReader.h"
 
-#include "platform/String.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
+
 #include "platform/Flags.h"
 #include "platform/Random.h"
 
@@ -300,8 +304,8 @@ void Ambiance::Track::keyPlay() {
 			return;
 		}
 		
-		source->addCallback(this, 0);
-		source->addCallback(this, source->getSample()->getLength());
+		source->addCallback(this, 0, UNIT_BYTES);
+		source->addCallback(this, source->getSample()->getLength(), UNIT_BYTES);
 		
 		s_id = source->getId();
 	}
@@ -464,7 +468,7 @@ static aalError loadString(PakFileHandle * file, string & str) {
 	aalError ret = AAL_OK;
 	char c;
 	while(file->read(&c, 1) ? c : (ret = AAL_ERROR_FILEIO, false)) {
-		oss << (char)tolower(c);
+		oss << (char)std::tolower(c);
 	}
 	
 	str = oss.str();

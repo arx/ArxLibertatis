@@ -25,6 +25,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Map.h"
 
+#ifdef BUILD_EDITOR
+
+int iCreateMap = 0; // used to create mini-map bitmap
+
+#endif
+
+// TODO(core_cleanup)
+#if 0
+
 #include <cstdio>
 
 #include "core/Application.h"
@@ -43,15 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 
 #include "window/Window.h"
-
-#ifdef BUILD_EDITOR
-
-int iCreateMap = 0; // used to create mini-map bitmap
-
-#endif
-
-// TODO(core_cleanup)
-#if 0
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
@@ -125,13 +125,13 @@ C_ARX_Carte::C_ARX_Carte(EERIE_BACKGROUND *bkg,int nbpix,int wrender,int hrender
 
 				while(nb--)
 				{
-					if(ep->v[nb].sx<this->minx) this->minx=ep->v[nb].sx;
+					if(ep->v[nb].p.x<this->minx) this->minx=ep->v[nb].p.x;
 
-					if(ep->v[nb].sz<this->minz) this->minz=ep->v[nb].sz;
+					if(ep->v[nb].p.z<this->minz) this->minz=ep->v[nb].p.z;
 
-					if(ep->v[nb].sx>this->maxx) this->maxx=ep->v[nb].sx;
+					if(ep->v[nb].p.x>this->maxx) this->maxx=ep->v[nb].p.x;
 
-					if(ep->v[nb].sz>this->maxz) this->maxz=ep->v[nb].sz;
+					if(ep->v[nb].p.z>this->maxz) this->maxz=ep->v[nb].p.z;
 				}
 			}
 		}
@@ -208,23 +208,23 @@ bool C_ARX_Carte::Render(void)
 
 					for(int k=0;k<nb;k++)
 					{
-						ep->tv[k].sx=xecran+(ep->v[k].sx-xsub)*this->ecx;
-						ep->tv[k].sy=yecran+(ep->v[k].sz-zsub)*this->ecz;
-						ep->tv[k].rhw=(1.f/ep->v[k].sy);
+						ep->tv[k].p.x=xecran+(ep->v[k].p.x-xsub)*this->ecx;
+						ep->tv[k].p.y=yecran+(ep->v[k].p.z-zsub)*this->ecz;
+						ep->tv[k].rhw=(1.f/ep->v[k].p.y);
 
 						if (ep->tv[k].rhw<0.f) ep->tv[k].rhw=0.f;
 
 						if (ep->tv[k].rhw>1.f) ep->tv[k].rhw=1.f;
 
-						ep->tv[k].sz=1.f-ep->tv[k].rhw;
+						ep->tv[k].p.z=1.f-ep->tv[k].rhw;
 
-						if (ep->tv[k].sz<0.f) ep->tv[k].sz=0.f;
+						if (ep->tv[k].p.z<0.f) ep->tv[k].p.z=0.f;
 
-						if (ep->tv[k].sz>1.f) ep->tv[k].sz=1.f;
+						if (ep->tv[k].p.z>1.f) ep->tv[k].p.z=1.f;
 
 						ep->tv[k].color=0xFFFFFFFF;
-						ep->tv[k].tu=ep->v[k].tu;
-						ep->tv[k].tv=ep->v[k].tv;
+						ep->tv[k].uv.x=ep->v[k].uv.x;
+						ep->tv[k].uv.y=ep->v[k].uv.y;
 					}
 
 					if(ep->tex)
@@ -534,7 +534,7 @@ float oldposx,oldposz;
 	fs::write(f, &bi, sizeof(BITMAPINFO) - 4);
 	fs::write(f, mem, tailleraw);
 	
-	free((void*)mem);
+	free(mem);
 	SAFE_RELEASE(this->surfacetemp);
 
 	this->posx=oldposx;

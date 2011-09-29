@@ -356,12 +356,12 @@ static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long nu
 	ColorBGRA col = color.toBGRA();
 	
 	TexturedVertex v[4];
-	v[0] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 0.f);
-	v[1] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 0.f);
-	v[2] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 1.f, 1.f);
-	v[3] = TexturedVertex(Vec3f(0.f, 0.f, 0.f), 1.f, 1, 1, 0.f, 1.f);
+	v[0] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f(1.f, 1.f));
+	v[3] = TexturedVertex(Vec3f::ZERO, 1.f, 1, 1, Vec2f::Y_AXIS);
 	
-	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
+	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.0000001f;
 
 	if(inventory_font) {
 		
@@ -383,19 +383,19 @@ static void ARX_INTERFACE_DrawNumber(const float x, const float y, const long nu
 			if (tt>=0)
 			{
 				removezero=0;
-				v[0].sx=v[3].sx=x + i*INTERFACE_RATIO(10);
-				v[1].sx = v[2].sx = v[0].sx + INTERFACE_RATIO(10);
-				v[0].sy=v[1].sy=y;
-				v[2].sy=v[3].sy=y + INTERFACE_RATIO(10);
+				v[0].p.x=v[3].p.x=x + i*INTERFACE_RATIO(10);
+				v[1].p.x = v[2].p.x = v[0].p.x + INTERFACE_RATIO(10);
+				v[0].p.y=v[1].p.y=y;
+				v[2].p.y=v[3].p.y=y + INTERFACE_RATIO(10);
 				v[0].color=v[1].color=v[2].color=v[3].color=col;
 
 				ttx = (float)((float)tt * (float)11.f) + 1.5f;
-				v[3].tu=v[0].tu=ttx*divideX;
-				v[1].tu=v[2].tu=(ttx+10.f)*divideX;
+				v[3].uv.x=v[0].uv.x=ttx*divideX;
+				v[1].uv.x=v[2].uv.x=(ttx+10.f)*divideX;
 
 				ttx=0.5f*divideY;
-				v[1].tv = v[0].tv = divideY + ttx;
-				v[2].tv = v[3].tv = divideY * 12;
+				v[1].uv.y = v[0].uv.y = divideY + ttx;
+				v[2].uv.y = v[3].uv.y = divideY * 12;
 				GRenderer->SetTexture(0, inventory_font);
 
 				EERIEDRAWPRIM(Renderer::TriangleFan, v, 4);
@@ -968,14 +968,11 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		player.Interface &=~ INTER_MAP;
 		ARX_MINIMAP_PurgeTC();
 
-		if(ARXmenu.mda)
-		{
-			for (long i=0;i<MAX_FLYOVER;i++)
-			{
+		if(ARXmenu.mda) {
+			for(long i = 0; i < MAX_FLYOVER; i++) {
 				ARXmenu.mda->flyover[i].clear();
 			}
-
-			free((void*)ARXmenu.mda);
+			free(ARXmenu.mda);
 			ARXmenu.mda=NULL;
 		}
 	}
@@ -3692,10 +3689,9 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 		lSLID_VALUE = SLID_VALUE;
 	}
 }
-extern void ARX_PrepareBackgroundNRMLs();
-//-----------------------------------------------------------------------------
-void ArxGame::ManageKeyMouse()
-{
+
+void ArxGame::ManageKeyMouse() {
+	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		INTERACTIVE_OBJ * pIO = NULL;
@@ -7082,8 +7078,7 @@ void ArxGame::DrawAllInterface()
 
 		if (io!=NULL)
 		{
-			float dist=Distance3D(io->pos.x,io->pos.y,io->pos.z,
-				player.pos.x,player.pos.y+80.f,player.pos.z);
+			float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
 
 			if (Project.telekinesis)
 			{
@@ -7676,10 +7671,10 @@ void ArxGame::DrawAllInterface()
 	{
 		TexturedVertex v[4];
 		float px, py;
-		v[0]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 0.f);
-		v[1]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 0.f);
-		v[2]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 1.f, 1.f);
-		v[3]= TexturedVertex( Vec3f( 0, 0, 0.001f ), 1.f, Color::white.toBGR(), 1, 0.f, 1.f);
+		v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
+		v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
+		v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
+		v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
 
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
@@ -7791,19 +7786,19 @@ void ArxGame::DrawAllInterface()
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
 					// Left
-					EERIEDrawBitmap(0 + fMove, (DANAESIZY - fSizeY) * .5f, fSizeX, fSizeY, 0.01f,
+					EERIEDrawBitmap(0 + fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY, 0.01f,
 					               arrow_left_tc, lcolor);
 					
 					// Right
-					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, (DANAESIZY - fSizeY)*.5f, fSizeX, fSizeY,
+					EERIEDrawBitmapUVs(DANAESIZX - fSizeX - fMove, DANAECENTERY - (fSizeY * .5f), fSizeX, fSizeY,
 					                   .01f, arrow_left_tc, lcolor, 1.f, 0.f, 0.f, 0.f, 1.f, 1.f, 0.f, 1.f);
 					
 					// Up
-					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, 0.f + fMove, fSizeY, fSizeX, .01f,
+					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), 0.f + fMove, fSizeY, fSizeX, .01f,
 					                   arrow_left_tc, lcolor, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 0.f);
 					
 					// Down
-					EERIEDrawBitmapUVs((DANAESIZX - fSizeY)*.5f, (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
+					EERIEDrawBitmapUVs(DANAECENTERX - (fSizeY * .5f), (DANAESIZY - fSizeX) - fMove, fSizeY, fSizeX,
 					                    .01f, arrow_left_tc, lcolor, 1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f);
 				}
 
@@ -7967,20 +7962,18 @@ long Manage3DCursor(long flags)
 					
 					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{
-						maxdist = max(	maxdist,
-											TRUEDistance2D(	objcenter.x, objcenter.z,
-			                               io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z) - 4.f);
+						maxdist = max(maxdist, dist(Vec2f(objcenter.x, objcenter.z),
+			                               Vec2f(io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z)) - 4.f);
 					}
 
 					if (io->obj->pbox)
 					{
 						for (int i=1;i<io->obj->pbox->nb_physvert;i++)
 						{
-							maxdist=max(maxdist,
-								TRUEDistance2D(	io->obj->pbox->vert[0].initpos.x,
-												io->obj->pbox->vert[0].initpos.z,
-												io->obj->pbox->vert[i].initpos.x,
-				                               io->obj->pbox->vert[i].initpos.z) + 14.f);
+							maxdist = max(maxdist, dist(Vec2f(io->obj->pbox->vert[0].initpos.x,
+												io->obj->pbox->vert[0].initpos.z),
+												Vec2f(io->obj->pbox->vert[i].initpos.x,
+				                               io->obj->pbox->vert[i].initpos.z)) + 14.f);
 						}
 					}
 
@@ -8598,29 +8591,24 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				iHighLight = 0;
 			}
 
-			if (TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair)
-			{
-				if (!(player.Interface & INTER_COMBATMODE))
-				{
-					CURCURPOS=0;
-
-					surf = pTCCrossHair;
-
-					if (!surf)
-					{
-						surf=ITC.Get("target_off");
-					}
-
-					if (surf)
-					{
+			if(TRUE_PLAYER_MOUSELOOK_ON && config.video.showCrosshair) {
+				if(!(player.Interface & (INTER_COMBATMODE | INTER_NOTE | INTER_MAP))) {
+					
+					CURCURPOS = 0;
+					
+					surf = pTCCrossHair ? pTCCrossHair : ITC.Get("target_off");
+					
+					if(surf) {
+						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-						float POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
-						float POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
-
-						EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
-						                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
+						
+						float POSX = DANAECENTERX - surf->m_dwWidth * .5f;
+						float POSY = DANAECENTERY - surf->m_dwHeight * .5f;
+						
+						EERIEDrawBitmap(POSX, POSY, float(surf->m_dwWidth),
+						                float(surf->m_dwHeight), 0.f, surf, Color::gray(.5f));
+						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 				}

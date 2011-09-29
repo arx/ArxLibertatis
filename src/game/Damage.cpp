@@ -57,7 +57,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Damage.h"
 
+#include <cstring>
 #include <cstdio>
+#include <algorithm>
+#include <limits>
+#include <string>
+#include <vector>
 
 #include "ai/Paths.h"
 
@@ -68,12 +73,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Equipment.h"
 #include "game/Inventory.h"
+#include "game/Spells.h"
 
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
@@ -82,11 +93,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 
 #include "scene/GameSound.h"
-#include "scene/LinkedObject.h"
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
 #include "script/Script.h"
+
+class TextureContainer;
 
 using std::min;
 using std::max;
@@ -124,24 +136,24 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 	if ((j != -1) && (!ARXPausedTimer))
 	{
 		TexturedVertex in, out;
-		in.sx = pos->x;
-		in.sy = pos->y;
-		in.sz = pos->z;
+		in.p.x = pos->x;
+		in.p.y = pos->y;
+		in.p.z = pos->z;
 		EERIETreatPoint(&in, &out);
 
 
-		if (out.sx < 0)
-			out.sx = 0;
-		else if (out.sx > DANAESIZX)
-			out.sx = static_cast<float>(DANAESIZX);
+		if (out.p.x < 0)
+			out.p.x = 0;
+		else if (out.p.x > DANAESIZX)
+			out.p.x = static_cast<float>(DANAESIZX);
 
 
 
 
-		if (out.sy < 0)
-			out.sy = 0;
-		else if (out.sy > DANAESIZY)
-			out.sy = static_cast<float>(DANAESIZY);
+		if (out.p.y < 0)
+			out.p.y = 0;
+		else if (out.p.y > DANAESIZY)
+			out.p.y = static_cast<float>(DANAESIZY);
 
 
 
@@ -152,8 +164,8 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
 		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
 		pd->exist			=	true;
 		pd->zdec			=	0;
-		pd->ov.x			=	out.sx;
-		pd->ov.y			=	out.sy;
+		pd->ov.x			=	out.p.x;
+		pd->ov.y			=	out.p.y;
 		pd->ov.z			=	0.0000001f;
 		pd->move.x			=	0.f;
 		pd->move.y			=	0.f;
@@ -669,26 +681,13 @@ void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 	{
 		power *= ( 1.0f / 20 );
 		INTERACTIVE_OBJ * io = inter.iobj[source];
-		Vec3f vect;
-		vect.x = io_target->pos.x - io->pos.x;
-		vect.y = io_target->pos.y - io->pos.y;
-		vect.z = io_target->pos.z - io->pos.z;
-		Vector_Normalize(&vect);
-		vect.x *= power;
-		vect.y *= power;
-		vect.z *= power;
-
-		if (io_target == inter.iobj[0])
-		{
-			PUSH_PLAYER_FORCE.x = vect.x;
-			PUSH_PLAYER_FORCE.y = vect.y;
-			PUSH_PLAYER_FORCE.z = vect.z;
-		}
-		else
-		{
-			io_target->move.x += vect.x;
-			io_target->move.y += vect.y;
-			io_target->move.z += vect.z;
+		Vec3f vect = io_target->pos - io->pos;
+		fnormalize(vect);
+		vect *= power;
+		if(io_target == inter.iobj[0]) {
+			PUSH_PLAYER_FORCE = vect;
+		} else {
+			io_target->move += vect;
 		}
 	}
 }

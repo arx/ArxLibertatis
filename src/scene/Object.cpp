@@ -542,31 +542,25 @@ void MakeUserFlag(TextureContainer * tc) {
 
 static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	
-	if(eerie->texturecontainer.empty()) return;
-
-	float sxx, syy;
-
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		if (eerie->facelist[i].texid == -1) continue;
-
-		if (eerie->texturecontainer[eerie->facelist[i].texid])
-		{
-			sxx = eerie->texturecontainer[eerie->facelist[i].texid]->m_odx;
-			syy = eerie->texturecontainer[eerie->facelist[i].texid]->m_ody;
+	if(eerie->texturecontainer.empty()) {
+		return;
+	}
+	
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
+		
+		if(eerie->facelist[i].texid == -1) {
+			continue;
 		}
-		else
-		{
-			sxx = ( 1.0f / 256 );
-			syy = ( 1.0f / 256 );
-		}
-
-		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * sxx; 
-		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * sxx; 
-		eerie->facelist[i].u[2] = (float)eerie->facelist[i].ou[2] * sxx; 
-		eerie->facelist[i].v[0] = (float)eerie->facelist[i].ov[0] * syy; 
-		eerie->facelist[i].v[1] = (float)eerie->facelist[i].ov[1] * syy; 
-		eerie->facelist[i].v[2] = (float)eerie->facelist[i].ov[2] * syy; 
+		
+		TextureContainer * tex = eerie->texturecontainer[eerie->facelist[i].texid];
+		Vec2f scale = (tex) ? Vec2f(1.f / tex->m_dwWidth, 1.f / tex->m_dwHeight) : (Vec2f::ONE / 256);
+		
+		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * scale.x; 
+		eerie->facelist[i].u[1] = (float)eerie->facelist[i].ou[1] * scale.x; 
+		eerie->facelist[i].u[2] = (float)eerie->facelist[i].ou[2] * scale.x; 
+		eerie->facelist[i].v[0] = (float)eerie->facelist[i].ov[0] * scale.y; 
+		eerie->facelist[i].v[1] = (float)eerie->facelist[i].ov[1] * scale.y; 
+		eerie->facelist[i].v[2] = (float)eerie->facelist[i].ov[2] * scale.y; 
 	}
 }
 
@@ -810,7 +804,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 			                                           eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
 		
-		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * ( 1.0f / 16 );
+		eerie->grouplist[i].siz = ffsqrt(eerie->grouplist[i].siz) * (1.f/16);
 		
 	}
 
@@ -1275,8 +1269,8 @@ void EERIE_3DOBJ::clear() {
 
 		c_data = 0;
 		
-	cub.xmin = cub.ymin = cub.zmin = EEdef_MAXfloat;
-	cub.xmax = cub.ymax = cub.zmax = EEdef_MINfloat;
+	cub.xmin = cub.ymin = cub.zmin = std::numeric_limits<float>::max();
+	cub.xmax = cub.ymax = cub.zmax = std::numeric_limits<float>::min();
 }
 
 void Clear3DScene(EERIE_3DSCENE * eerie) {
@@ -1286,8 +1280,8 @@ void Clear3DScene(EERIE_3DSCENE * eerie) {
 	}
 	
 	memset(eerie, 0, sizeof(EERIE_3DSCENE));
-	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = EEdef_MAXfloat;
-	eerie->cub.xmax = eerie->cub.ymax = eerie->cub.zmax = EEdef_MINfloat;
+	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = std::numeric_limits<float>::max();
+	eerie->cub.xmax = eerie->cub.ymax = eerie->cub.zmax = std::numeric_limits<float>::min();
 }
 
 // TODO move to destructor?
@@ -1719,18 +1713,11 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 	long j, j2;
 
 	//Compute Faces Areas
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		TexturedVertex * ev[3];
-		ev[0] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
-		ev[1] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
-		ev[2] = (TexturedVertex *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
-		eerie->facelist[i].temp = TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
-		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
-		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
-		                          ev[2]->sx, ev[2]->sy, ev[2]->sz)
-		                          * TRUEDistance3D(ev[0]->sx, ev[0]->sy, ev[0]->sz,
-		                                  ev[1]->sx, ev[1]->sy, ev[1]->sz) * ( 1.0f / 2 );
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
+		const Vec3f & p0 = eerie->vertexlist[eerie->facelist[i].vid[0]].v;
+		const Vec3f & p1 = eerie->vertexlist[eerie->facelist[i].vid[1]].v;
+		const Vec3f & p2 = eerie->vertexlist[eerie->facelist[i].vid[2]].v;
+		eerie->facelist[i].temp = dist((p0 + p1) * .5f, p2) * dist(p0, p1) * .5f;
 	}
 
 	for (size_t i = 0; i < eerie->facelist.size(); i++)
@@ -1746,9 +1733,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 		for (j = 0; j < 3; j++)
 		{
 			float mod = area * area;
-			nrrr.x = nrml.x = eerie->facelist[i].norm.x * mod;
-			nrrr.y = nrml.y = eerie->facelist[i].norm.y * mod;
-			nrrr.z = nrml.z = eerie->facelist[i].norm.z * mod;
+			nrrr = nrml = eerie->facelist[i].norm * mod;
 			count = mod;
 
 			for (size_t i2 = 0; i2 < eerie->facelist.size(); i2++)
@@ -1759,16 +1744,10 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 
 					for (j2 = 0; j2 < 3; j2++)
 					{
-						float seuil2 = 0.1f; 
-						
-						float dist = TRUEDistance3D(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v.x, eerie->vertexlist[eerie->facelist[i2].vid[j2]].v.y, eerie->vertexlist[eerie->facelist[i2].vid[j2]].v.z,
-						                            eerie->vertexlist[eerie->facelist[i].vid[j]].v.x, eerie->vertexlist[eerie->facelist[i].vid[j]].v.y, eerie->vertexlist[eerie->facelist[i].vid[j]].v.z); 
-						if (dist < seuil2)
+						if (closerThan(eerie->vertexlist[eerie->facelist[i2].vid[j2]].v, eerie->vertexlist[eerie->facelist[i].vid[j]].v, .1f))
 						{
 							mod = (area2 * area2);
-							nrml.x += eerie->facelist[i2].norm.x * mod; 
-							nrml.y += eerie->facelist[i2].norm.y * mod; 
-							nrml.z += eerie->facelist[i2].norm.z * mod; 
+							nrml += eerie->facelist[i2].norm * mod;
 							count += mod; 
 						}
 					}
@@ -1776,19 +1755,13 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 			}
 
 			count = 1.f / count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sx = nrml.x * count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sy = nrml.y * count;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sz = nrml.z * count;
+			eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p = nrml * count;
 		}
 	}
 
-	for (size_t i = 0; i < eerie->facelist.size(); i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.x = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sx;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.y = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sy;
-			eerie->vertexlist[eerie->facelist[i].vid[j]].norm.z = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.sz;
+	for(size_t i = 0; i < eerie->facelist.size(); i++) {
+		for(j = 0; j < 3; j++) {
+			eerie->vertexlist[eerie->facelist[i].vid[j]].norm = eerie->vertexlist[eerie->facelist[i].vid[j]].vert.p;
 		}
 	}
 
@@ -1804,11 +1777,8 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 
 		if (count > 0.f)
 		{
-			for (size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size() ; idx++)
-			{
-				center.x += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v.x;
-				center.y += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v.y;
-				center.z += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v.z;
+			for(size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size(); idx++) {
+				center += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v;
 			}
 
 			float divc = 1.f / count;
@@ -1957,23 +1927,23 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 		ret->vertexlist[i].v.x -= offset.x;
 		ret->vertexlist[i].v.y -= offset.y;
 		ret->vertexlist[i].v.z -= offset.z;
-		ret->vertexlist[i].vert.sx -= offset.x;
-		ret->vertexlist[i].vert.sy -= offset.y;
-		ret->vertexlist[i].vert.sz -= offset.z;
+		ret->vertexlist[i].vert.p.x -= offset.x;
+		ret->vertexlist[i].vert.p.y -= offset.y;
+		ret->vertexlist[i].vert.p.z -= offset.z;
 
 		ret->vertexlist3[i].v.x -= offset.x;
 		ret->vertexlist3[i].v.y -= offset.y;
 		ret->vertexlist3[i].v.z -= offset.z;
-		ret->vertexlist3[i].vert.sx -= offset.x;
-		ret->vertexlist3[i].vert.sy -= offset.y;
-		ret->vertexlist3[i].vert.sz -= offset.z;
+		ret->vertexlist3[i].vert.p.x -= offset.x;
+		ret->vertexlist3[i].vert.p.y -= offset.y;
+		ret->vertexlist3[i].vert.p.z -= offset.z;
 
 		ret->vertexlist3[i].v.x -= offset.x;
 		ret->vertexlist3[i].v.y -= offset.y;
 		ret->vertexlist3[i].v.z -= offset.z;
-		ret->vertexlist3[i].vert.sx -= offset.x;
-		ret->vertexlist3[i].vert.sy -= offset.y;
-		ret->vertexlist3[i].vert.sz -= offset.z;
+		ret->vertexlist3[i].vert.p.x -= offset.x;
+		ret->vertexlist3[i].vert.p.y -= offset.y;
+		ret->vertexlist3[i].vert.p.z -= offset.z;
 	}
 
 	ret->point0.x -= offset.x;

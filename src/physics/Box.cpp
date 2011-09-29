@@ -67,15 +67,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-//-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;
 #define FULLTESTS 0
 
 long CUR_COLLISION_MATERIAL = 0;
 
-//*************************************************************************************
 // Used to launch an object into the physical world...
-//*************************************************************************************
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flag, Anglef * angle)
 {
 	if ((!obj) || !(obj->pbox)) return;
@@ -84,26 +81,18 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 
 	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
-		obj->vertexlist[i].vert.sx = obj->vertexlist[i].v.x;
-		obj->vertexlist[i].vert.sy = obj->vertexlist[i].v.y;
-		obj->vertexlist[i].vert.sz = obj->vertexlist[i].v.z;
+		obj->vertexlist[i].vert.p.x = obj->vertexlist[i].v.x;
+		obj->vertexlist[i].vert.p.y = obj->vertexlist[i].v.y;
+		obj->vertexlist[i].vert.p.z = obj->vertexlist[i].v.z;
 	}
 
 	float surface = 0.f;
 
-	for (size_t i = 0; i < obj->facelist.size(); i++)
-	{
-
-		TexturedVertex * ev[3];
-		ev[0] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[0]].v;
-		ev[1] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[1]].v;
-		ev[2] = (TexturedVertex *)&obj->vertexlist[obj->facelist[i].vid[2]].v;
-		surface += TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
-		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
-		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
-		                          ev[2]->sx, ev[2]->sy, ev[2]->sz)
-		           * TRUEDistance3D(ev[0]->sx, ev[0]->sy, ev[0]->sz,
-		                            ev[1]->sx, ev[1]->sy, ev[1]->sz) * ( 1.0f / 2 );
+	for(size_t i = 0; i < obj->facelist.size(); i++) {
+		const Vec3f & p0 = obj->vertexlist[obj->facelist[i].vid[0]].v;
+		const Vec3f & p1 = obj->vertexlist[obj->facelist[i].vid[1]].v;
+		const Vec3f & p2 = obj->vertexlist[obj->facelist[i].vid[2]].v;
+		surface += dist((p0 + p1) * .5f, p2) * dist(p0, p1) * .5f;
 	}
 
 	float ratio = surface * ( 1.0f / 10000 );
@@ -149,8 +138,6 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 	obj->pbox->stopcount = 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
 bool IsValidPos3(Vec3f * pos)
 {
 	long px, pz;
@@ -191,106 +178,7 @@ bool IsValidPos3(Vec3f * pos)
 	return true;
 }
 
-//*************************************************************************************
-// Apply spring force on two physical vertexes
-//*************************************************************************************
-void ApplySpring(EERIE_3DOBJ * obj, long k, long l, float PHYSICS_constant, float PHYSICS_Damp)
-{
-	Vec3f deltaP, deltaV, springforce;
-	PHYSVERT * pv_k = &obj->pbox->vert[k];
-	PHYSVERT * pv_l = &obj->pbox->vert[l];
-	float Dterm, Hterm;
-
-	float restlength = dist(obj->pbox->vert[k].initpos, obj->pbox->vert[l].initpos);
-	//Computes Spring Magnitude
-	deltaP.x = pv_k->pos.x - pv_l->pos.x;		// Vector distance
-	deltaP.y = pv_k->pos.y - pv_l->pos.y;		// Vector distance
-	deltaP.z = pv_k->pos.z - pv_l->pos.z;		// Vector distance
-	float dist = (float)TRUEsqrt(deltaP.x * deltaP.x + deltaP.y * deltaP.y + deltaP.z * deltaP.z); // Magnitude of delta
-	float divdist = 1.f / dist;
-	Hterm = (dist - restlength) * PHYSICS_constant;
-
-	deltaV.x = pv_k->velocity.x - pv_l->velocity.x;
-	deltaV.y = pv_k->velocity.y - pv_l->velocity.y;
-	deltaV.z = pv_k->velocity.z - pv_l->velocity.z;		// Delta Velocity Vector
-	Dterm = dot(deltaV, deltaP) * PHYSICS_Damp * divdist; // Damping Term
-	Dterm = (-(Hterm + Dterm));
-	divdist *= Dterm;
-	springforce.x = deltaP.x * divdist;	// Normalize Distance Vector
-	springforce.y = deltaP.y * divdist;	// & Calc Force
-	springforce.z = deltaP.z * divdist;
-
-	pv_k->force.x += springforce.x;	// + force on particle 1
-	pv_k->force.y += springforce.y;
-	pv_k->force.z += springforce.z;
-
-	pv_l->force.x -= springforce.x;	// - force on particle 2
-	pv_l->force.y -= springforce.y;
-	pv_l->force.z -= springforce.z;
-}
-
-//*************************************************************************************
-// Computes the forces applied to the physical vertices of an object
-//*************************************************************************************
-
-void EERIE_PHYSICS_BOX_ComputeForces(EERIE_3DOBJ * obj)
-{
-	Vec3f PHYSICS_Gravity;
-	PHYSICS_Gravity.x = 0.f;
-	PHYSICS_Gravity.y = -20.f;
-	PHYSICS_Gravity.z = 0.f;
-
-
-	float PHYSICS_Damping = 0.6f;
-	float lastmass = 1.f;
-	float div = 1.f;
-
-	for (long k = 0; k < obj->pbox->nb_physvert; k++)
-	{
-		PHYSVERT * pv = &obj->pbox->vert[k];
-		// Reset Force
-		pv->force.x = pv->inertia.x;
-		pv->force.y = pv->inertia.y;
-		pv->force.z = pv->inertia.z;
-
-		// Apply Gravity
-		if (pv->mass > 0.f)
-		{
-			//need to be precomputed...
-			if (lastmass != pv->mass)
-			{
-				div = 1.f / pv->mass;
-				lastmass = pv->mass;
-			}
-
-			pv->force.x += (PHYSICS_Gravity.x * div);
-			pv->force.y -= (PHYSICS_Gravity.y * div);
-			pv->force.z += (PHYSICS_Gravity.z * div);
-		}
-
-		// Apply Damping
-		pv->force.x += (-PHYSICS_Damping * pv->velocity.x);
-		pv->force.y += (-PHYSICS_Damping * pv->velocity.y);
-		pv->force.z += (-PHYSICS_Damping * pv->velocity.z);
-	}
-
-	for (int k = 0; k < obj->pbox->nb_physvert; k++)
-	{
-		// Now Resolves Spring System
-		for (long l = 0; l < obj->pbox->nb_physvert; l++)
-		{
-			if (l != k) ApplySpring(obj, l, k, 18.f, 0.4f);
-		}
-	}
-}
-
-#define MAKE_COLL_TEST if (Triangles_Intersect(&t1,&t2)) return true;
-
-long PHYS_COLLIDER = -1;
-
-//*************************************************************************************
 // Checks is a triangle of a physical object is colliding a triangle
-//*************************************************************************************
 bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, long * validd)
 {
 	EERIE_TRI t1, t2;
@@ -329,7 +217,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[1].pos;
 		t1.v[1] = vert[2].pos;
 		t1.v[2] = vert[3].pos;
-		PHYS_COLLIDER = 1;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -341,7 +228,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -351,7 +238,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[3].pos;
 		t1.v[1] = vert[4].pos;
 		t1.v[2] = vert[1].pos;
-		PHYS_COLLIDER = 1;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -363,7 +249,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -374,7 +260,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[10].pos;
 		t1.v[1] = vert[9].pos;
 		t1.v[2] = vert[11].pos;
-		PHYS_COLLIDER = 9;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -386,7 +271,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -396,7 +281,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[9].pos;
 		t1.v[1] = vert[12].pos;
 		t1.v[2] = vert[11].pos;
-		PHYS_COLLIDER = 10;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -408,7 +292,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -419,7 +303,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[1].pos;
 		t1.v[1] = vert[4].pos;
 		t1.v[2] = vert[5].pos;
-		PHYS_COLLIDER = 4;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -431,7 +314,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -441,7 +324,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[4].pos;
 		t1.v[1] = vert[8].pos;
 		t1.v[2] = vert[5].pos;
-		PHYS_COLLIDER = 5;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -453,7 +335,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -464,7 +346,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[5].pos;
 		t1.v[1] = vert[8].pos;
 		t1.v[2] = vert[9].pos;
-		PHYS_COLLIDER = 8;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -476,7 +357,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -486,7 +367,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[8].pos;
 		t1.v[1] = vert[12].pos;
 		t1.v[2] = vert[9].pos;
-		PHYS_COLLIDER = 12;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -498,7 +378,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -509,7 +389,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[3].pos;
 		t1.v[1] = vert[2].pos;
 		t1.v[2] = vert[7].pos;
-		PHYS_COLLIDER = 3;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -521,7 +400,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -531,7 +410,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[2].pos;
 		t1.v[1] = vert[6].pos;
 		t1.v[2] = vert[7].pos;
-		PHYS_COLLIDER = 2;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -543,7 +421,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -554,7 +432,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[7].pos;
 		t1.v[1] = vert[6].pos;
 		t1.v[2] = vert[11].pos;
-		PHYS_COLLIDER = 7;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -566,7 +443,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -576,7 +453,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[6].pos;
 		t1.v[1] = vert[10].pos;
 		t1.v[2] = vert[11].pos;
-		PHYS_COLLIDER = 6;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -588,7 +464,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -599,7 +475,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[6].pos;
 		t1.v[1] = vert[2].pos;
 		t1.v[2] = vert[1].pos;
-		PHYS_COLLIDER = 2;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -611,7 +486,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -621,7 +496,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[1].pos;
 		t1.v[1] = vert[5].pos;
 		t1.v[2] = vert[6].pos;
-		PHYS_COLLIDER = 5;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -633,7 +507,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -644,7 +518,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[10].pos;
 		t1.v[1] = vert[6].pos;
 		t1.v[2] = vert[5].pos;
-		PHYS_COLLIDER = 6;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -656,7 +529,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -666,7 +539,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[5].pos;
 		t1.v[1] = vert[9].pos;
 		t1.v[2] = vert[10].pos;
-		PHYS_COLLIDER = 5;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -678,7 +550,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -689,7 +561,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[4].pos;
 		t1.v[1] = vert[3].pos;
 		t1.v[2] = vert[7].pos;
-		PHYS_COLLIDER = 4;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -701,7 +572,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -711,7 +582,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[7].pos;
 		t1.v[1] = vert[8].pos;
 		t1.v[2] = vert[4].pos;
-		PHYS_COLLIDER = 7;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -723,7 +593,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
@@ -734,7 +604,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[8].pos;
 		t1.v[1] = vert[7].pos;
 		t1.v[2] = vert[11].pos;
-		PHYS_COLLIDER = 8;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -746,7 +615,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #if FULLTESTS
@@ -756,7 +625,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 		t1.v[0] = vert[11].pos;
 		t1.v[1] = vert[12].pos;
 		t1.v[2] = vert[8].pos;
-		PHYS_COLLIDER = 11;
 
 		if (Triangles_Intersect(&t1, &t2))
 		{
@@ -768,86 +636,14 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 				ret = true;
 			}
 			else return true;
-		}//MAKE_COLL_TEST
+		}
 	}
 
 #endif
 	return ret;
 }
 
-static void copy(Vec3f & dest, const TexturedVertex & src) {
-	dest.x = src.sx;
-	dest.y = src.sy;
-	dest.z = src.sz;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
-{
-	Vec3f pol[3];
-	copy(pol[0], ep->v[0]);
-	copy(pol[1], ep->v[1]);
-	copy(pol[2], ep->v[2]);
-	float mul = 1.3f;
-	pol[0] = (pol[0] - ep->center) * mul + ep->center;
-
-	if (ep->type & POLY_QUAD)
-	{
-		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
-
-		copy(pol[0], ep->v[2]);
-		copy(pol[1], ep->v[3]);
-		copy(pol[2], ep->v[0]);
-
-		if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
-
-		return false;
-	}
-
-	if (IsObjectVertexCollidingTriangle(obj, pol, k, validd)) return true;
-
-	return false;
-}
-
- 
 EERIEPOLY * LAST_COLLISION_POLY = NULL;
-
-//*************************************************************************************
-//*************************************************************************************
-bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)
-{
-	EERIEPOLY * back_ep = CheckInPolyPrecis(obj->pbox->vert[kk].pos.x,
-	                                        obj->pbox->vert[kk].pos.y,
-	                                        obj->pbox->vert[kk].pos.z);
-
-	if (!back_ep)
-	{
-		Vec3f posi = obj->pbox->vert[kk].pos;
-		posi.y -= 30.f;
-
-		CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-		return false;
-	}
-
-	if (!(flags & 1))
-	{
-		EERIE_SPHERE sphere;
-		Vec3f * pos = &obj->pbox->vert[kk].pos;
-		sphere.origin.x = pos->x;
-		sphere.origin.y = pos->y;
-		sphere.origin.z = pos->z;
-		sphere.radius = 8.f;
-
-		if (ARX_INTERACTIVE_CheckCollision(obj, kk, source))
-		{
-			CUR_COLLISION_MATERIAL = 11;
-			return false;
-		}
-	}
-
-	return true;
-}
 
 // Debug function used to show the physical box of an object
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
@@ -931,9 +727,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		cubmax.z = max(cubmax.z, obj->vertexlist[k].v.z);
 	}
 
-	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * ( 1.0f / 2 );
-	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * ( 1.0f / 2 );
-	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * ( 1.0f / 2 );
+	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * .5f;
+	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * .5f;
+	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * .5f;
 
 	obj->pbox->vert[13].pos.x = obj->pbox->vert[0].pos.x;
 	obj->pbox->vert[13].pos.y = cubmin.y;
@@ -1063,10 +859,10 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	for (int k = 0; k < 4; k++)
 	{
 		if (EEfabs(obj->pbox->vert[5+k].pos.x - obj->pbox->vert[0].pos.x) < 2.f)
-			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * ( 1.0f / 2 );
+			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * .5f;
 
 		if (EEfabs(obj->pbox->vert[5+k].pos.z - obj->pbox->vert[0].pos.z) < 2.f)
-			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * ( 1.0f / 2 );
+			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * .5f;
 	}
 
 	obj->pbox->radius = 0.f;

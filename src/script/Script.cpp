@@ -223,48 +223,36 @@ void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
 			inter.iobj[num]->GameFlags &= ~GFLAG_NEEDINIT;
 	}
 }
-void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags)
-{
 
-
-
+void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags) {
+	
 	//Release Script Local Variables
-	if (io->script.lvar)
-	{
-		for (long n = 0; n < io->script.nblvar; n++)
-		{
-			if (io->script.lvar[n].text)
-			{
-				free((void *)io->script.lvar[n].text);
-				io->script.lvar[n].text = NULL;
+	if(io->script.lvar) {
+		for(long n = 0; n < io->script.nblvar; n++) {
+			if(io->script.lvar[n].text) {
+				free(io->script.lvar[n].text), io->script.lvar[n].text = NULL;
 			}
 		}
-
 		io->script.nblvar = 0;
-		free((void *)io->script.lvar);
-		io->script.lvar = NULL;
+		free(io->script.lvar), io->script.lvar = NULL;
 	}
-
+	
 	//Release Script Over-Script Local Variables
-	if (io->over_script.lvar)
-	{
-		for (long n = 0; n < io->over_script.nblvar; n++)
-		{
-			if (io->over_script.lvar[n].text)
-			{
-				free((void *)io->over_script.lvar[n].text);
-				io->over_script.lvar[n].text = NULL;
+	if(io->over_script.lvar) {
+		for(long n = 0; n < io->over_script.nblvar; n++) {
+			if(io->over_script.lvar[n].text) {
+				free(io->over_script.lvar[n].text), io->over_script.lvar[n].text = NULL;
 			}
 		}
-
 		io->over_script.nblvar = 0;
-		free((void *)io->over_script.lvar);
-		io->over_script.lvar = NULL;
+		free(io->over_script.lvar), io->over_script.lvar = NULL;
 	}
-
-	if (!io->scriptload)
+	
+	if(!io->scriptload) {
 		ARX_SCRIPT_ResetObject(io, flags);
+	}
 }
+
 void ARX_SCRIPT_ResetAll(long flags)
 {
 	for (long i = 0; i < inter.nbmax; i++)
@@ -316,48 +304,41 @@ void ARX_SCRIPT_AllowInterScriptExec()
 	}
 }
 
-void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
-{
-	if (!es) return;
-
-	if (!es->labels) return;
-
-	for (long i = 0; i < es->nb_labels; i++)
-	{
-		if (es->labels[i].string)
-			free((void *)es->labels[i].string);
+void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
+	
+	if(!es || !es->labels) {
+		return;
 	}
-
-	free((void *)es->labels);
-	es->labels = NULL;
+	
+	for(long i = 0; i < es->nb_labels; i++) {
+		if(es->labels[i].string) {
+			free(es->labels[i].string);
+		}
+	}
+	
+	free(es->labels), es->labels = NULL;
 	es->nb_labels = 0;
 }
 
-void ReleaseScript(EERIE_SCRIPT * es)
-{
-	if (es == NULL) return;
-
-	if (es->lvar)
-	{
-		for (long i = 0; i < es->nblvar; i++)
-		{
-			if (es->lvar[i].text != NULL)
-			{
-				free((void *)es->lvar[i].text);
-				es->lvar[i].text = NULL;
+void ReleaseScript(EERIE_SCRIPT * es) {
+	
+	if(!es) {
+		return;
+	}
+	
+	if(es->lvar) {
+		for(long i = 0; i < es->nblvar; i++) {
+			if(es->lvar[i].text) {
+				free(es->lvar[i].text), es->lvar[i].text = NULL;
 			}
 		}
-
-		free((void *)es->lvar);
-		es->lvar = NULL;
+		free(es->lvar), es->lvar = NULL;
 	}
-
-	if (es->data != NULL)
-	{
-		free((void *)es->data);
-		es->data = NULL;
+	
+	if(es->data) {
+		free(es->data), es->data = NULL;
 	}
-
+	
 	ARX_SCRIPT_ReleaseLabels(es);
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
 }
@@ -1065,10 +1046,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 				{
 					const char * obj = name.c_str() + 6;
 
-					if (!strcmp(obj, "player"))
-					{
-						*fcontent = (float)Distance3D(player.pos.x, player.pos.y, player.pos.z,
-													  io->pos.x, io->pos.y, io->pos.z);
+					if(!strcmp(obj, "player")) {
+						*fcontent = fdist(player.pos, io->pos);
 						return TYPE_FLOAT;
 					}
 
@@ -1469,13 +1448,13 @@ void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io)
 		{
 			if (ioo->script.lvar[n].text)
 			{
-				free((void *)ioo->script.lvar[n].text);
+				free(ioo->script.lvar[n].text);
 				ioo->script.lvar[n].text = NULL;
 			}
 		}
 
 		ioo->script.nblvar = 0;
-		free((void *)ioo->script.lvar);
+		free(ioo->script.lvar);
 		ioo->script.lvar = NULL;
 	}
 
@@ -1698,10 +1677,8 @@ SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 		strcpy(tsv->name, name.c_str());
 	}
 
-	if (tsv->text)
-	{
-		free((void *)tsv->text);
-		tsv->text = NULL;
+	if(tsv->text) {
+		free(tsv->text), tsv->text = NULL;
 	}
 
 	tsv->ival = val.length() + 1;
@@ -1758,7 +1735,7 @@ void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 {
 	char texx[256];
 
-	if (es->master != NULL) es = (EERIE_SCRIPT *)es->master;
+	if (es->master != NULL) es = es->master;
 
 	if (es->lvar == NULL) return;
 
@@ -2212,7 +2189,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	INTERACTIVE_OBJ * io = st->io;
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
-	Vector_Normalize(&target);
+	fnormalize(target);
 	Vec3f targ;
 	Vector_RotateY(&targ, &target, rnd() * 60.f - 30.f);
 	target = io->target + targ * 100.f;

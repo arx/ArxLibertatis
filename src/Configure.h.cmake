@@ -7,21 +7,32 @@
 // Threads
 #cmakedefine HAVE_PTHREADS
 
-// Timing
-#cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
-#cmakedefine HAVE_CLOCK_GETTIME
-
 // Audio backend
 #cmakedefine HAVE_OPENAL
 #cmakedefine HAVE_OPENAL_EFX
 #cmakedefine HAVE_DSOUND
 
+// Renderer backend
 #cmakedefine HAVE_OPENGL
-#cmakedefine HAVE_SDL
-
 #cmakedefine HAVE_D3D9
 
+// Input backend
+#cmakedefine HAVE_SDL
 #cmakedefine HAVE_DINPUT8
+
+// POSIX / Linux features
+#cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
+#cmakedefine HAVE_CLOCK_GETTIME
+#cmakedefine HAVE_STRSIGNAL
+#cmakedefine HAVE_FORK
+#cmakedefine HAVE_READLINK
+#cmakedefine HAVE_DUP2
+#cmakedefine HAVE_EXECLP
+#cmakedefine HAVE_WAITPID
+#cmakedefine HAVE_KILL
+#cmakedefine HAVE_SIGNAL
+#cmakedefine HAVE_BACKTRACE
+#cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
 
 // Compiler features
 #cmakedefine HAVE_DYNAMIC_STACK_ALLOCATION

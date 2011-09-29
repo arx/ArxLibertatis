@@ -100,12 +100,16 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 		return;
 	}
 	
-	if(!fullscreen) {
-		LogInfo << "configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
-		config.video.resolution = Vec2i(_iWidth, _iHeight);
-		config.video.bpp = _iBpp;
-	}
+	config.video.resolution = Vec2i(_iWidth, _iHeight);
+	config.video.bpp = _iBpp;
 	
+	if(!fullscreen) {
+		if(config.video.resolution == Vec2i::ZERO) {
+			LogInfo << "configuring automatic fullscreen resolution selection";
+		} else {
+			LogInfo << "configuring fullscreen resolution to " << _iWidth << 'x' << _iHeight << '@' << _iBpp;
+		}
+	}
 	
 	RenderWindow * window = mainApp->GetWindow();
 	
@@ -116,11 +120,7 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 		
 		mainApp->GetWindow()->showFrame();
 		
-		if(fullscreen) {
-			mainApp->GetWindow()->setFullscreenMode(Vec2i(_iWidth, _iHeight), _iBpp);
-		} else {
-			mainApp->GetWindow()->setWindowSize(config.window.size);
-		}
+		mainApp->setFullscreen(fullscreen);
 		
 		GRenderer->BeginScene();
 		
@@ -301,7 +301,7 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 
 	if(pAmbiancePlayList) {
 		ARX_SOUND_AmbianceRestorePlayList(pAmbiancePlayList, ulSizeAmbiancePlayList);
-		free((void *)pAmbiancePlayList);
+		free(pAmbiancePlayList);
 	}
 
 	ARX_SOUND_PopAnimSamples();

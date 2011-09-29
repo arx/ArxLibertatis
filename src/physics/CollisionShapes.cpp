@@ -84,27 +84,23 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 	io->physics.cyl.origin.x = obj->vertexlist[obj->origin].v.x;
 	io->physics.cyl.origin.y = obj->vertexlist[obj->origin].v.y;
 	io->physics.cyl.origin.z = obj->vertexlist[obj->origin].v.z;
-	float dist = 0.f;
+	float d = 0.f;
 	float height = 0.f;
 
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if ((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
-		{
-			dist = max(dist, TRUEDistance3D(io->physics.cyl.origin.x, io->physics.cyl.origin.y, io->physics.cyl.origin.z,
-											  obj->vertexlist[i].v.x, obj->vertexlist[i].v.y, obj->vertexlist[i].v.z));
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		if((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f)) {
+			d = max(d, dist(io->physics.cyl.origin, obj->vertexlist[i].v));
 		}
-
 		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
 	}
 
-	if ((dist == 0.f) || (height == 0.f))
+	if ((d == 0.f) || (height == 0.f))
 	{
 		io->physics.cyl.height = 0.f;
 		return;
 	}
 
-	io->original_radius = dist * 1.2f;
+	io->original_radius = d * 1.2f;
 	io->original_height = -height;
 	io->physics.cyl.origin.x = io->pos.x;
 	io->physics.cyl.origin.y = io->pos.y;
@@ -214,21 +210,14 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 
 		if ((sel > -1) && (IsInSelection(obj, obj->grouplist[group].indexes[i], sel) >= 0)) continue;
 
-		Vec3f target;
-		target.x = obj->vertexlist[obj->grouplist[group].indexes[i]].v.x;
-		target.y = obj->vertexlist[obj->grouplist[group].indexes[i]].v.y;
-		target.z = obj->vertexlist[obj->grouplist[group].indexes[i]].v.z;
-		float distance = Distance3D(center->x, center->y, center->z,
-									target.x, target.y, target.z);
+		Vec3f target = obj->vertexlist[obj->grouplist[group].indexes[i]].v;
+		float distance = fdist(*center, target);
 
 		if (distance < 2.f) continue;
 
 		if (distance < maxf) continue;
 
-		Vec3f targvect;
-		targvect.x = target.x - center->x;
-		targvect.y = target.y - center->y;
-		targvect.z = target.z - center->z;
+		Vec3f targvect = target - *center;
 
 		float divdist = 1.f / distance;
 		targvect.x *= divdist;
@@ -293,12 +282,8 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 		obj->pdata[nvertex].collapse_cost = 1000000;
 	}
 
-	obj->vertexlist[nvertex].v.x = center->x;
-	obj->vertexlist[nvertex].v.y = center->y;
-	obj->vertexlist[nvertex].v.z = center->z;
-	obj->vertexlist[nvertex].norm.x = 50.f;
-	obj->vertexlist[nvertex].norm.y = 50.f;
-	obj->vertexlist[nvertex].norm.z = 50.f;
+	obj->vertexlist[nvertex].v = *center;
+	obj->vertexlist[nvertex].norm = Vec3f(50.f, 50.f, 50.f);
 
 	obj->vertexlist3.push_back(obj->vertexlist[nvertex]);
 	
@@ -318,28 +303,23 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 		long workon;
 		workon = GetFirstChildGroup(obj, k);
 
-		if (workon != -1)
-		{
-			Vec3f center; // Group origin pos
-			center.x = obj->vertexlist[obj->grouplist[k].origin].v.x;
-			center.y = obj->vertexlist[obj->grouplist[k].origin].v.y;
-			center.z = obj->vertexlist[obj->grouplist[k].origin].v.z;
-			Vec3f dest;  // Destination Group origin pos
-			dest.x = obj->vertexlist[obj->grouplist[workon].origin].v.x;
-			dest.y = obj->vertexlist[obj->grouplist[workon].origin].v.y;
-			dest.z = obj->vertexlist[obj->grouplist[workon].origin].v.z;
-			Vec3f dirvect; // Direction Vector from Origin Group to Destination Origin Group
-			dirvect.x = dest.x - center.x;
-			dirvect.y = dest.y - center.y;
-			dirvect.z = dest.z - center.z;
+		if(workon != -1) {
+			
+			// Group origin pos
+			Vec3f center = obj->vertexlist[obj->grouplist[k].origin].v;
+			
+			// Destination Group origin pos
+			Vec3f dest = obj->vertexlist[obj->grouplist[workon].origin].v;
+			
+			// Direction Vector from Origin Group to Destination Origin Group
+			Vec3f dirvect = dest - center;
+			
 			// Distance between those 2 pos
-			float dista = Distance3D(dest.x, dest.y, dest.z, center.x, center.y, center.z);
+			float dista = fdist(dest, center);
 			float tot = dista;
 			float divdist = 1.f / dista;
 			// Vector Normalization
-			dirvect.x *= divdist;
-			dirvect.y *= divdist;
-			dirvect.z *= divdist;
+			dirvect *= divdist;
 	
 			while (dista >= 0.f) // Iterate along the whole distance
 			{
@@ -360,9 +340,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 				float inc = val;
 				dista -= inc;
 			
-				center.x += dirvect.x * inc;
-				center.y += dirvect.y * inc;
-				center.z += dirvect.z * inc;
+				center += dirvect * inc;
 			}
 		}
 		else AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f);

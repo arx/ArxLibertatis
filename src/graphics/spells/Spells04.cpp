@@ -154,18 +154,18 @@ float CBless::Render()
 
 	ColorBGRA color = Color::white.toBGR();
 
-	v[0].sx = x - fBetaRadCos - fBetaRadSin;
-	v[0].sy = y;
-	v[0].sz = z - fBetaRadSin + fBetaRadCos;
-	v[1].sx = x + fBetaRadCos - fBetaRadSin;
-	v[1].sy = y;
-	v[1].sz = z + fBetaRadSin + fBetaRadCos;
-	v[2].sx = x - fBetaRadCos + fBetaRadSin;
-	v[2].sy = y;
-	v[2].sz = z - fBetaRadSin - fBetaRadCos;
-	v[3].sx = x + fBetaRadCos + fBetaRadSin;
-	v[3].sy = y;
-	v[3].sz = z + fBetaRadSin - fBetaRadCos;
+	v[0].p.x = x - fBetaRadCos - fBetaRadSin;
+	v[0].p.y = y;
+	v[0].p.z = z - fBetaRadSin + fBetaRadCos;
+	v[1].p.x = x + fBetaRadCos - fBetaRadSin;
+	v[1].p.y = y;
+	v[1].p.z = z + fBetaRadSin + fBetaRadCos;
+	v[2].p.x = x - fBetaRadCos + fBetaRadSin;
+	v[2].p.y = y;
+	v[2].p.z = z - fBetaRadSin - fBetaRadCos;
+	v[3].p.x = x + fBetaRadCos + fBetaRadSin;
+	v[3].p.y = y;
+	v[3].p.z = z + fBetaRadSin - fBetaRadCos;
 
 	v3[0].color = color;
 	v3[1].color = color;
@@ -174,14 +174,14 @@ float CBless::Render()
 
 	GRenderer->SetTexture(0, tex_sol);
 
-	v3[0].tu = 0;
-	v3[0].tv = 0;
-	v3[1].tu = 1.f;
-	v3[1].tv = 0;
-	v3[2].tu = 0;
-	v3[2].tv = 1.f;
-	v3[3].tu = 1.f;
-	v3[3].tv = 1.f;
+	v3[0].uv.x = 0;
+	v3[0].uv.y = 0;
+	v3[1].uv.x = 1.f;
+	v3[1].uv.y = 0;
+	v3[2].uv.x = 0;
+	v3[2].uv.y = 1.f;
+	v3[3].uv.x = 1.f;
+	v3[3].uv.y = 1.f;
 
 	EE_RT2(&v[0], &v3[0]);
 	EE_RT2(&v[1], &v3[1]);

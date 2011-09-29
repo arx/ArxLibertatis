@@ -34,11 +34,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_SPELLS_H
 #define ARX_GAME_SPELLS_H
 
-#include "graphics/GraphicsTypes.h"
+#include <stddef.h>
+#include <string>
+
+#include "audio/AudioTypes.h"
+#include "math/MathFwd.h"
+#include "math/Angle.h"
+#include "math/Vector3.h"
 #include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
 class CSpellFx;
+class TextureContainer;
 
 // Spells symbol list
 enum Rune {

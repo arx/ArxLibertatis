@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_DIALOG_H
 #define ARX_CORE_DIALOG_H
 
-#include "Configure.h"
-
 enum LevelNumber {
 	LEVEL0     = 0,
 	LEVEL1     = 1,

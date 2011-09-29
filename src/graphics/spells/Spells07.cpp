@@ -501,14 +501,14 @@ float CLightning::Render()
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f p2;
 				GetChestPos(io->targetinfo, &p2); 
-				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f p2;
 				GetChestPos(spells[spellinstance].target, &p2); //
-				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
 
@@ -625,30 +625,30 @@ float CLightning::Render()
 		v2[0].color = v2[3].color = 0xFFFFFFFF;
 		v2[1].color = v2[2].color = 0xFF00005A;
 
-		v2[0].tu = 0.5f;
-		v2[0].tv = 0;
-		v2[1].tu = 0;
-		v2[1].tv = 0;
-		v2[2].tu = 0;
-		v2[2].tv = 1;
-		v2[3].tu = 0.5f;
-		v2[3].tv = 1;
+		v2[0].uv.x = 0.5f;
+		v2[0].uv.y = 0;
+		v2[1].uv.x = 0;
+		v2[1].uv.y = 0;
+		v2[2].uv.x = 0;
+		v2[2].uv.y = 1;
+		v2[3].uv.x = 0.5f;
+		v2[3].uv.y = 1;
 
-		v[0].sx = astart.x;
-		v[0].sy = astart.y;
-		v[0].sz = astart.z;
+		v[0].p.x = astart.x;
+		v[0].p.y = astart.y;
+		v[0].p.z = astart.z;
 
-		v[1].sx = astart.x;
-		v[1].sy = astart.y + zz;
-		v[1].sz = astart.z;
+		v[1].p.x = astart.x;
+		v[1].p.y = astart.y + zz;
+		v[1].p.z = astart.z;
 
-		v[2].sx = ax;
-		v[2].sy = ay + zz;
-		v[2].sz = az;
+		v[2].p.x = ax;
+		v[2].p.y = ay + zz;
+		v[2].p.z = az;
 
-		v[3].sx = ax;
-		v[3].sy = ay;
-		v[3].sz = az;
+		v[3].p.x = ax;
+		v[3].p.y = ay;
+		v[3].p.z = az;
 
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
@@ -661,22 +661,22 @@ float CLightning::Render()
 		                             &v2[2],
 		                             &v2[3]);
 
-		v2[0].tu = 0.5f;
-		v2[0].tv = 0;
-		v2[1].tu = 1.0f;
-		v2[1].tv = 0;
-		v2[2].tu = 1.0f;
-		v2[2].tv = 1.0f;
-		v2[3].tu = 0.5f;
-		v2[3].tv = 1.0f;
+		v2[0].uv.x = 0.5f;
+		v2[0].uv.y = 0;
+		v2[1].uv.x = 1.0f;
+		v2[1].uv.y = 0;
+		v2[2].uv.x = 1.0f;
+		v2[2].uv.y = 1.0f;
+		v2[3].uv.x = 0.5f;
+		v2[3].uv.y = 1.0f;
 
-		v[1].sx = astart.x;
-		v[1].sy = astart.y - zz;
-		v[1].sz = astart.z;
+		v[1].p.x = astart.x;
+		v[1].p.y = astart.y - zz;
+		v[1].p.z = astart.z;
 
-		v[2].sx = ax;
-		v[2].sy = ay - zz;
-		v[2].sz = az;
+		v[2].p.x = ax;
+		v[2].p.y = ay - zz;
+		v[2].p.z = az;
 	
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
@@ -690,18 +690,18 @@ float CLightning::Render()
 	
 		zz *= (float) sin(radians(fbeta));
 
-		v2[1].tu = 1.0f;
-		v2[1].tv = 0;
-		v2[2].tu = 1.0f;
-		v2[2].tv = 1.0f;
+		v2[1].uv.x = 1.0f;
+		v2[1].uv.y = 0;
+		v2[2].uv.x = 1.0f;
+		v2[2].uv.y = 1.0f;
 
-		v[1].sx = astart.x + xx;
-		v[1].sy = astart.y;
-		v[1].sz = astart.z + zz;
+		v[1].p.x = astart.x + xx;
+		v[1].p.y = astart.y;
+		v[1].p.z = astart.z + zz;
 
-		v[2].sx = ax + xx;
-		v[2].sy = ay;
-		v[2].sz = az + zz;
+		v[2].p.x = ax + xx;
+		v[2].p.y = ay;
+		v[2].p.z = az + zz;
 		
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
@@ -712,18 +712,18 @@ float CLightning::Render()
 		                             &v2[2],
 		                             &v2[3]);
 
-		v2[1].tu = 0;
-		v2[1].tv = 0;
-		v2[2].tu = 0;
-		v2[2].tv = 1.0f;
+		v2[1].uv.x = 0;
+		v2[1].uv.y = 0;
+		v2[2].uv.x = 0;
+		v2[2].uv.y = 1.0f;
 
-		v[1].sx = astart.x - xx;
-		v[1].sy = astart.y;
-		v[1].sz = astart.z - zz;
+		v[1].p.x = astart.x - xx;
+		v[1].p.y = astart.y;
+		v[1].p.z = astart.z - zz;
 
-		v[2].sx = ax - xx;
-		v[2].sy = ay;
-		v[2].sz = az - zz;
+		v[2].p.x = ax - xx;
+		v[2].p.y = ay;
+		v[2].p.z = az - zz;
 
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);

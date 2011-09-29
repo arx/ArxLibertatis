@@ -47,7 +47,6 @@ public:
 	aalError init(SourceId _id, const Channel & channel);
 	aalError init(SourceId _id, DSoundSource * instance, const Channel & channel);
 	
-	aalError setVolume(float volume);
 	aalError setPitch(float pitch);
 	aalError setPan(float pan);
 	
@@ -56,9 +55,6 @@ public:
 	aalError setDirection(const Vec3f & direction);
 	aalError setCone(const SourceCone & cone);
 	aalError setFalloff(const SourceFalloff & falloff);
-	aalError setMixer(MixerId mixer);
-	
-	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
 	// Control
 	aalError play(unsigned playCount = 1);

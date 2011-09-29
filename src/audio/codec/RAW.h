@@ -26,8 +26,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_CODEC_RAW_H
 #define ARX_AUDIO_CODEC_RAW_H
 
+#include <stddef.h>
+
 #include "audio/AudioTypes.h"
 #include "audio/codec/Codec.h"
+
+class PakFileHandle;
 
 namespace audio {
 

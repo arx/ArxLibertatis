@@ -54,20 +54,20 @@ void GLTexture2D::Upload() {
 		arx_assert_msg(false, "Unsupported image format");
 	}
 	
-	if(mHasMipmaps) {
+	if(hasMipmaps()) {
 		
 		GLint ret = gluBuild2DMipmaps(GL_TEXTURE_2D, internal, size.x, size.y, format, GL_UNSIGNED_BYTE, mImage.GetData());
 		
 		if(ret) {
 			LogWarning << "Failed to generate mipmaps for " << mFileName << ": " << ret << " = " << gluErrorString(ret);
-			mHasMipmaps = false;
+			flags &= ~HasMipmaps;
 		} else {
 			storedSize = size; // TODO gluBuild2DMipmaps does not always scale up and stretches the texture!
 		}
 		
 	}
 	
-	if(!mHasMipmaps) {
+	if(!hasMipmaps()) {
 		
 		if(GLEW_ARB_texture_non_power_of_two) {
 			storedSize = size;
@@ -149,7 +149,7 @@ void GLTexture2D::apply(GLTextureStage * stage) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glwrap);
 	}
 	
-	TextureStage::FilterMode newMipFilter = mHasMipmaps ? stage->mipFilter : TextureStage::FilterNone;
+	TextureStage::FilterMode newMipFilter = hasMipmaps() ? stage->mipFilter : TextureStage::FilterNone;
 	
 	if(newMipFilter != mipFilter || stage->minFilter != minFilter) {
 		minFilter = stage->minFilter, mipFilter = newMipFilter;

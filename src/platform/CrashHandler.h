@@ -1,0 +1,7 @@
+
+#ifndef ARX_PLATFORM_CRASHHANDLER_H
+#define ARX_PLATFORM_CRASHHANDLER_H
+
+void initCrashHandler();
+
+#endif // ARX_PLATFORM_CRASHHANDLER_H

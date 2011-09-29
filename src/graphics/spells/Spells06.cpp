@@ -135,43 +135,43 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 		rec ++;
 
 		// milieu
-		v[0].sx = p1.sx + (p3.sx - p1.sx) * 0.5f;
-		v[0].sy = p1.sy + (p3.sy - p1.sy) * 0.5f;
-		v[0].sz = p1.sz + (p3.sz - p1.sz) * 0.5f;
+		v[0].p.x = p1.p.x + (p3.p.x - p1.p.x) * 0.5f;
+		v[0].p.y = p1.p.y + (p3.p.y - p1.p.y) * 0.5f;
+		v[0].p.z = p1.p.z + (p3.p.z - p1.p.z) * 0.5f;
 		// gauche
-		v[1].sx = p1.sx + (p4.sx - p1.sx) * 0.5f;
-		v[1].sy = p1.sy + (p4.sy - p1.sy) * 0.5f;
-		v[1].sz = p1.sz + (p4.sz - p1.sz) * 0.5f;
+		v[1].p.x = p1.p.x + (p4.p.x - p1.p.x) * 0.5f;
+		v[1].p.y = p1.p.y + (p4.p.y - p1.p.y) * 0.5f;
+		v[1].p.z = p1.p.z + (p4.p.z - p1.p.z) * 0.5f;
 		// droite
-		v[2].sx = p2.sx + (p3.sx - p2.sx) * 0.5f;
-		v[2].sy = p2.sy + (p3.sy - p2.sy) * 0.5f;
-		v[2].sz = p2.sz + (p3.sz - p2.sz) * 0.5f;
+		v[2].p.x = p2.p.x + (p3.p.x - p2.p.x) * 0.5f;
+		v[2].p.y = p2.p.y + (p3.p.y - p2.p.y) * 0.5f;
+		v[2].p.z = p2.p.z + (p3.p.z - p2.p.z) * 0.5f;
 		// haut
-		v[3].sx = p4.sx + (p3.sx - p4.sx) * 0.5f;
-		v[3].sy = p4.sy + (p3.sy - p4.sy) * 0.5f;
-		v[3].sz = p4.sz + (p3.sz - p4.sz) * 0.5f;
+		v[3].p.x = p4.p.x + (p3.p.x - p4.p.x) * 0.5f;
+		v[3].p.y = p4.p.y + (p3.p.y - p4.p.y) * 0.5f;
+		v[3].p.z = p4.p.z + (p3.p.z - p4.p.z) * 0.5f;
 		// bas
-		v[4].sx = p1.sx + (p2.sx - p1.sx) * 0.5f;
-		v[4].sy = p1.sy + (p2.sy - p1.sy) * 0.5f;
-		v[4].sz = p1.sz + (p2.sz - p1.sz) * 0.5f;
+		v[4].p.x = p1.p.x + (p2.p.x - p1.p.x) * 0.5f;
+		v[4].p.y = p1.p.y + (p2.p.y - p1.p.y) * 0.5f;
+		v[4].p.z = p1.p.z + (p2.p.z - p1.p.z) * 0.5f;
 
 		float patchsize = 0.005f; 
 
-		v[0].sx += (float) sin(radians((v[0].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[0].sy += (float) sin(radians((v[0].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[0].sz += (float) sin(radians((v[0].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[1].sx += (float) sin(radians((v[1].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[1].sy += (float) sin(radians((v[1].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[1].sz += (float) sin(radians((v[1].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[2].sx += (float) sin(radians((v[2].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[2].sy += (float) sin(radians((v[2].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[2].sz += (float) sin(radians((v[2].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[3].sx += (float) sin(radians((v[3].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[3].sy += (float) sin(radians((v[3].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[3].sz += (float) sin(radians((v[3].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[4].sx += (float) sin(radians((v[4].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[4].sy += (float) sin(radians((v[4].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[4].sz += (float) sin(radians((v[4].sz - eSrc.z) * patchsize + fwrap)) * 5;
+		v[0].p.x += (float) sin(radians((v[0].p.x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[0].p.y += (float) sin(radians((v[0].p.y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[0].p.z += (float) sin(radians((v[0].p.z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[1].p.x += (float) sin(radians((v[1].p.x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[1].p.y += (float) sin(radians((v[1].p.y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[1].p.z += (float) sin(radians((v[1].p.z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[2].p.x += (float) sin(radians((v[2].p.x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[2].p.y += (float) sin(radians((v[2].p.y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[2].p.z += (float) sin(radians((v[2].p.z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[3].p.x += (float) sin(radians((v[3].p.x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[3].p.y += (float) sin(radians((v[3].p.y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[3].p.z += (float) sin(radians((v[3].p.z - eSrc.z) * patchsize + fwrap)) * 5;
+		v[4].p.x += (float) sin(radians((v[4].p.x - eSrc.x) * patchsize + fwrap)) * 5;
+		v[4].p.y += (float) sin(radians((v[4].p.y - eSrc.y) * patchsize + fwrap)) * 5;
+		v[4].p.z += (float) sin(radians((v[4].p.z - eSrc.z) * patchsize + fwrap)) * 5;
 
 		RenderQuad(p1, v[4], v[0], v[1], rec, norm);
 		RenderQuad(v[4], p2, v[2], v[0], rec, norm);
@@ -181,14 +181,14 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 	else if (rec == 3)
 	{
 		float zab = (float) sin(radians(ft));
-		v2[0].tu = 0 + zab;
-		v2[0].tv = 0 + zab;
-		v2[1].tu = 1 + zab;
-		v2[1].tv = 0 + zab;
-		v2[2].tu = 1 + zab;
-		v2[2].tv = 1 + zab;
-		v2[3].tu = 0 + zab;
-		v2[3].tv = 1 + zab;
+		v2[0].uv.x = 0 + zab;
+		v2[0].uv.y = 0 + zab;
+		v2[1].uv.x = 1 + zab;
+		v2[1].uv.y = 0 + zab;
+		v2[2].uv.x = 1 + zab;
+		v2[2].uv.y = 1 + zab;
+		v2[3].uv.x = 0 + zab;
+		v2[3].uv.y = 1 + zab;
 
 		v2[1].color = v2[2].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
 		v2[0].color = v2[3].color = Color3f(falpha * .3f + rnd() * .025f, 0.f, falpha * .5f + rnd() * .025f).toBGR();
@@ -206,14 +206,9 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 	}
 }
 
-//-----------------------------------------------------------------------------
-void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2)
-{
-	Vec3f norm;
-	norm.x = (b[b1].sx + b[b2].sx + t[t1].sx + t[t2].sx) * 0.25f - eSrc.x;
-	norm.y = (b[b1].sy + b[b2].sy + t[t1].sy + t[t2].sy) * 0.25f - eSrc.y;
-	norm.z = (b[b1].sz + b[b2].sz + t[t1].sz + t[t2].sz) * 0.25f - eSrc.z;
-	Vector_Normalize(&norm);
+void CCreateField::RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2) {
+	Vec3f norm = (b[b1].p + b[b2].p + t[t1].p + t[t2].p) * 0.25f - eSrc;
+	fnormalize(norm);
 	RenderQuad(b[b1], b[b2], t[t1], t[t2], 1, norm);
 }
 
@@ -289,38 +284,38 @@ float CCreateField::Render()
 	float smul = 100 * size;
 
 	// bottom points
-	b[0].sx = x - smul;
-	b[0].sy = y;
-	b[0].sz = z - smul;
+	b[0].p.x = x - smul;
+	b[0].p.y = y;
+	b[0].p.z = z - smul;
 
-	b[1].sx = x + smul;
-	b[1].sy = y;
-	b[1].sz = z - smul;
+	b[1].p.x = x + smul;
+	b[1].p.y = y;
+	b[1].p.z = z - smul;
 
-	b[2].sx = x + smul;
-	b[2].sy = y;
-	b[2].sz = z + smul;
+	b[2].p.x = x + smul;
+	b[2].p.y = y;
+	b[2].p.z = z + smul;
 
-	b[3].sx = x - smul;
-	b[3].sy = y;
-	b[3].sz = z + smul;
+	b[3].p.x = x - smul;
+	b[3].p.y = y;
+	b[3].p.z = z + smul;
 
 	// top points
-	t[0].sx = x - smul;
-	t[0].sy = y - 250 * ysize;
-	t[0].sz = z - smul;
+	t[0].p.x = x - smul;
+	t[0].p.y = y - 250 * ysize;
+	t[0].p.z = z - smul;
 
-	t[1].sx = x + smul;
-	t[1].sy = y - 250 * ysize;
-	t[1].sz = z - smul;
+	t[1].p.x = x + smul;
+	t[1].p.y = y - 250 * ysize;
+	t[1].p.z = z - smul;
 
-	t[2].sx = x + smul;
-	t[2].sy = y - 250 * ysize;
-	t[2].sz = z + smul;
+	t[2].p.x = x + smul;
+	t[2].p.y = y - 250 * ysize;
+	t[2].p.z = z + smul;
 
-	t[3].sx = x - smul;
-	t[3].sy = y - 250 * ysize;
-	t[3].sz = z + smul;
+	t[3].p.x = x - smul;
+	t[3].p.y = y - 250 * ysize;
+	t[3].p.z = z + smul;
 
 	fwrap -= 5.0f;
 
@@ -666,19 +661,19 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 		tfRaysb[i] = 0.4f * rnd();
 	}
 
-	v1a[0].sx = eSrc.x - fBetaRadSin * 100;
-	v1a[0].sy = eSrc.y;
-	v1a[0].sz = eSrc.z + fBetaRadCos * 100;
-	v1a[end].sx = eSrc.x + fBetaRadSin * 100;
-	v1a[end].sy = eSrc.y;
-	v1a[end].sz = eSrc.z - fBetaRadCos * 100;
+	v1a[0].p.x = eSrc.x - fBetaRadSin * 100;
+	v1a[0].p.y = eSrc.y;
+	v1a[0].p.z = eSrc.z + fBetaRadCos * 100;
+	v1a[end].p.x = eSrc.x + fBetaRadSin * 100;
+	v1a[end].p.y = eSrc.y;
+	v1a[end].p.z = eSrc.z - fBetaRadCos * 100;
 
-	v1b[0].sx = v1a[0].sx;
-	v1b[0].sy = v1a[0].sy;
-	v1b[0].sz = v1a[0].sz;
-	v1b[end].sx = v1a[end].sx;
-	v1b[end].sy = v1a[end].sy;
-	v1b[end].sz = v1a[end].sz;
+	v1b[0].p.x = v1a[0].p.x;
+	v1b[0].p.y = v1a[0].p.y;
+	v1b[0].p.z = v1a[0].p.z;
+	v1b[end].p.x = v1a[end].p.x;
+	v1b[end].p.y = v1a[end].p.y;
+	v1b[end].p.z = v1a[end].p.z;
 
 	sizeF = 200;
 	this->Split(v1a, 0, end, 20);
@@ -694,39 +689,39 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	if (0)
 		for (i = 0; i < 40; i++)
 		{
-			if (v1a[i].sx > v1b[i].sx)
+			if (v1a[i].p.x > v1b[i].p.x)
 			{
-				float fTemp = v1a[i].sx;
-				v1a[i].sx = v1b[i].sx;
-				v1b[i].sx = fTemp;
+				float fTemp = v1a[i].p.x;
+				v1a[i].p.x = v1b[i].p.x;
+				v1b[i].p.x = fTemp;
 			}
 
-			if (v1a[i].sz > v1b[i].sz)
+			if (v1a[i].p.z > v1b[i].p.z)
 			{
-				float fTemp = v1a[i].sz;
-				v1a[i].sz = v1b[i].sz;
-				v1b[i].sz = fTemp;
+				float fTemp = v1a[i].p.z;
+				v1a[i].p.z = v1b[i].p.z;
+				v1b[i].p.z = fTemp;
 			}
 
-			if ((v1b[i].sx - v1a[i].sx) > 20)
+			if ((v1b[i].p.x - v1a[i].p.x) > 20)
 			{
-				v1b[i].sx = v1a[i].sx + rnd() * 20.0f;
+				v1b[i].p.x = v1a[i].p.x + rnd() * 20.0f;
 			}
 
-			if ((v1b[i].sz - v1a[i].sz) > 20)
+			if ((v1b[i].p.z - v1a[i].p.z) > 20)
 			{
-				v1b[i].sz = v1a[i].sz + rnd() * 20.0f;
+				v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
 			}
 		}
 
 	for (i = 0; i <= end; i++)
 	{
-		va[i].sx = eSrc.x;
-		va[i].sy = eSrc.y;
-		va[i].sz = eSrc.z;
-		vb[i].sx = eSrc.x;
-		vb[i].sy = eSrc.y;
-		vb[i].sz = eSrc.z;
+		va[i].p.x = eSrc.x;
+		va[i].p.y = eSrc.y;
+		va[i].p.z = eSrc.z;
+		vb[i].p.x = eSrc.x;
+		vb[i].p.y = eSrc.y;
+		vb[i].p.z = eSrc.z;
 	}
 
 	sizeF = 0;
@@ -861,9 +856,9 @@ void CRiseDead::Split(TexturedVertex * v, int a, int b, float yo)
 
 		if ((i != a) && (i != b))
 		{
-			v[i].sx = (v[a].sx + v[b].sx) * 0.5f + yo * frand2() * fBetaRadCos;
-			v[i].sy = v[0].sy;// + (i+1)*5;
-			v[i].sz = (v[a].sz + v[b].sz) * 0.5f + yo * frand2() * fBetaRadSin;
+			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2() * fBetaRadCos;
+			v[i].p.y = v[0].p.y;// + (i+1)*5;
+			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2() * fBetaRadSin;
 			Split(v, a, i, yo * 0.8f);
 			Split(v, i, b, yo * 0.8f);
 		}
@@ -902,18 +897,18 @@ void CRiseDead::RenderFissure()
 		fTempCos = ff * fBetaRadCos;
 		fTempSin = ff * fBetaRadSin;
 
-		va[i].sx   = v1a[i].sx   + sizeF * fTempCos;
-		va[i].sy   = v1a[i].sy;
-		va[i].sz   = v1a[i].sz   + sizeF * fTempSin;
+		va[i].p.x   = v1a[i].p.x   + sizeF * fTempCos;
+		va[i].p.y   = v1a[i].p.y;
+		va[i].p.z   = v1a[i].p.z   + sizeF * fTempSin;
 
-		vb[i].sx   = v1b[i].sx   - sizeF * fTempCos;
-		vb[i].sy   = v1b[i].sy;
-		vb[i].sz   = v1b[i].sz   - sizeF * fTempSin;
+		vb[i].p.x   = v1b[i].p.x   - sizeF * fTempCos;
+		vb[i].p.y   = v1b[i].p.y;
+		vb[i].p.z   = v1b[i].p.z   - sizeF * fTempSin;
 
-		va[i].sx += rnd() * 0.5f * fTempCos;
-		va[i].sz += rnd() * 0.5f * fTempSin;
-		vb[i].sx -= rnd() * 0.5f * fTempCos;
-		vb[i].sz -= rnd() * 0.5f * fTempSin;
+		va[i].p.x += rnd() * 0.5f * fTempCos;
+		va[i].p.z += rnd() * 0.5f * fTempSin;
+		vb[i].p.x -= rnd() * 0.5f * fTempCos;
+		vb[i].p.z -= rnd() * 0.5f * fTempSin;
 	}
 
 	//-------------------------------------------------------------------------
@@ -963,12 +958,12 @@ void CRiseDead::RenderFissure()
 
 	for (i = 0; i < min(end, (int)fSizeIntro); i++)
 	{
-		vt[2].sx = va[i].sx   - (va[i].sx - eSrc.x) * 0.2f;
-		vt[2].sy = va[i].sy   - (va[i].sy - eSrc.y) * 0.2f;
-		vt[2].sz = va[i].sz   - (va[i].sz - eSrc.z) * 0.2f;
-		vt[3].sx = va[i+1].sx - (va[i+1].sx - eSrc.x) * 0.2f;
-		vt[3].sy = va[i+1].sy - (va[i+1].sy - eSrc.y) * 0.2f;
-		vt[3].sz = va[i+1].sz - (va[i+1].sz - eSrc.z) * 0.2f;
+		vt[2].p.x = va[i].p.x   - (va[i].p.x - eSrc.x) * 0.2f;
+		vt[2].p.y = va[i].p.y   - (va[i].p.y - eSrc.y) * 0.2f;
+		vt[2].p.z = va[i].p.z   - (va[i].p.z - eSrc.z) * 0.2f;
+		vt[3].p.x = va[i+1].p.x - (va[i+1].p.x - eSrc.x) * 0.2f;
+		vt[3].p.y = va[i+1].p.y - (va[i+1].p.y - eSrc.y) * 0.2f;
+		vt[3].p.z = va[i+1].p.z - (va[i+1].p.z - eSrc.z) * 0.2f;
 		
 		EE_RT2(&vt[3], &vr[0]);
 		EE_RT2(&vt[2], &vr[1]);
@@ -981,12 +976,12 @@ void CRiseDead::RenderFissure()
 		                             &vr[2],
 		                             &vr[3]);
 
-		vt[2].sx = vb[i].sx   - (vb[i].sx - eSrc.x) * 0.2f;
-		vt[2].sy = vb[i].sy   - (vb[i].sy - eSrc.y) * 0.2f;
-		vt[2].sz = vb[i].sz   - (vb[i].sz - eSrc.z) * 0.2f;
-		vt[3].sx = vb[i+1].sx - (vb[i+1].sx - eSrc.x) * 0.2f;
-		vt[3].sy = vb[i+1].sy - (vb[i+1].sy - eSrc.y) * 0.2f;
-		vt[3].sz = vb[i+1].sz - (vb[i+1].sz - eSrc.z) * 0.2f;
+		vt[2].p.x = vb[i].p.x   - (vb[i].p.x - eSrc.x) * 0.2f;
+		vt[2].p.y = vb[i].p.y   - (vb[i].p.y - eSrc.y) * 0.2f;
+		vt[2].p.z = vb[i].p.z   - (vb[i].p.z - eSrc.z) * 0.2f;
+		vt[3].p.x = vb[i+1].p.x - (vb[i+1].p.x - eSrc.x) * 0.2f;
+		vt[3].p.y = vb[i+1].p.y - (vb[i+1].p.y - eSrc.y) * 0.2f;
+		vt[3].p.z = vb[i+1].p.z - (vb[i+1].p.z - eSrc.z) * 0.2f;
 		
 		EE_RT2(&vb[i], &vr[3]);
 		EE_RT2(&vb[i+1], &vr[2]);
@@ -1009,22 +1004,22 @@ void CRiseDead::RenderFissure()
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
 	GRenderer->SetTexture(0, tex_light);
 
-	target.sx = eSrc.x ;
-	target.sy = eSrc.y + 1.5f * sizeF; 
-	target.sz = eSrc.z ;
+	target.p.x = eSrc.x ;
+	target.p.y = eSrc.y + 1.5f * sizeF; 
+	target.p.z = eSrc.z ;
 
 	EE_RTP(&vt[1], &vr[0]);
 	vr[0].color = vr[1].color = Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]).toBGR();
 	vr[2].color = vr[3].color = Color3f(fColorRays2[0], fColorRays2[1], fColorRays2[2]).toBGR();
 
-	vr[0].tu = fTexWrap;
-	vr[0].tv = 1;
-	vr[1].tu = 1 + fTexWrap;
-	vr[1].tv = 1;
-	vr[2].tu = fTexWrap;
-	vr[2].tv = 0;
-	vr[3].tu = 1 + fTexWrap;
-	vr[3].tv = 0;
+	vr[0].uv.x = fTexWrap;
+	vr[0].uv.y = 1;
+	vr[1].uv.x = 1 + fTexWrap;
+	vr[1].uv.y = 1;
+	vr[2].uv.x = fTexWrap;
+	vr[2].uv.y = 0;
+	vr[3].uv.x = 1 + fTexWrap;
+	vr[3].uv.y = 0;
 
 	for (i = 0; i < end - 1; i++)
 	{
@@ -1094,18 +1089,18 @@ void CRiseDead::RenderFissure()
 		
 		if (i < fSizeIntro)
 		{
-			vt[0].sx = va[i].sx;
-			vt[0].sy = va[i].sy;
-			vt[0].sz = va[i].sz;
-			vt[1].sx = va[i+1].sx;
-			vt[1].sy = va[i+1].sy;
-			vt[1].sz = va[i+1].sz;
-			vt[2].sx = va[i].sx ;
-			vt[2].sy = va[i].sy + (va[i].sy - target.sy) * 2;
-			vt[2].sz = va[i].sz ;
-			vt[3].sx = va[i+1].sx ;
-			vt[3].sy = va[i+1].sy + (va[i+1].sy - target.sy) * 2;
-			vt[3].sz = va[i+1].sz ;
+			vt[0].p.x = va[i].p.x;
+			vt[0].p.y = va[i].p.y;
+			vt[0].p.z = va[i].p.z;
+			vt[1].p.x = va[i+1].p.x;
+			vt[1].p.y = va[i+1].p.y;
+			vt[1].p.z = va[i+1].p.z;
+			vt[2].p.x = va[i].p.x ;
+			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
+			vt[2].p.z = va[i].p.z ;
+			vt[3].p.x = va[i+1].p.x ;
+			vt[3].p.y = va[i+1].p.y + (va[i+1].p.y - target.p.y) * 2;
+			vt[3].p.z = va[i+1].p.z ;
 
 			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i]).toBGR();
 			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysa[i + 1]).toBGR();
@@ -1126,18 +1121,18 @@ void CRiseDead::RenderFissure()
 		
 		if (i < fSizeIntro)
 		{
-			vt[0].sx = vb[i+1].sx;
-			vt[0].sy = vb[i+1].sy;
-			vt[0].sz = vb[i+1].sz;
-			vt[1].sx = vb[i].sx;
-			vt[1].sy = vb[i].sy;
-			vt[1].sz = vb[i].sz;
-			vt[2].sx = vb[i+1].sx ;
-			vt[2].sy = vb[i+1].sy + (vb[i+1].sy - target.sy) * 2;
-			vt[2].sz = vb[i+1].sz ;
-			vt[3].sx = vb[i].sx ;
-			vt[3].sy = vb[i].sy + (vb[i].sy - target.sy) * 2;
-			vt[3].sz = vb[i].sz ;
+			vt[0].p.x = vb[i+1].p.x;
+			vt[0].p.y = vb[i+1].p.y;
+			vt[0].p.z = vb[i+1].p.z;
+			vt[1].p.x = vb[i].p.x;
+			vt[1].p.y = vb[i].p.y;
+			vt[1].p.z = vb[i].p.z;
+			vt[2].p.x = vb[i+1].p.x ;
+			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
+			vt[2].p.z = vb[i+1].p.z ;
+			vt[3].p.x = vb[i].p.x ;
+			vt[3].p.y = vb[i].p.y + (vb[i].p.y - target.p.y) * 2;
+			vt[3].p.z = vb[i].p.z ;
 
 			vr[0].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i]).toBGR();
 			vr[1].color = (Color3f(fColorRays1[0], fColorRays1[1], fColorRays1[2]) * tfRaysb[i + 1]).toBGR();
@@ -1677,24 +1672,24 @@ float CParalyse::Render()
 
 	//uv
 	vd3d = this->prismd3d;
-	vd3d->tu = .5f + .25f;
-	vd3d->tv = 0.999999f;
+	vd3d->uv.x = .5f + .25f;
+	vd3d->uv.y = 0.999999f;
 	vd3d++;
 	nb = (this->prismnbpt - 1) >> 2;
 
 	while (nb)
 	{
-		vd3d->tu = 0.5f;
-		vd3d->tv = 0.f;
+		vd3d->uv.x = 0.5f;
+		vd3d->uv.y = 0.f;
 		vd3d++;
-		vd3d->tu = (vd3d - 1)->tu;
-		vd3d->tv = 0.99999f;
+		vd3d->uv.x = (vd3d - 1)->uv.x;
+		vd3d->uv.y = 0.99999f;
 		vd3d++;
-		vd3d->tu = 0.9999f;
-		vd3d->tv = 0.f;
+		vd3d->uv.x = 0.9999f;
+		vd3d->uv.y = 0.f;
 		vd3d++;
-		vd3d->tu = (vd3d - 1)->tu;
-		vd3d->tv = 0.99999f;
+		vd3d->uv.x = (vd3d - 1)->uv.x;
+		vd3d->uv.y = 0.99999f;
 		vd3d++;
 
 		nb--;
@@ -1717,9 +1712,9 @@ float CParalyse::Render()
 
 				while (nb)
 				{
-					d3ds.sx = tabprism[nb2].pos.x + vertex->x * this->scale + this->tabprism[nb2].offset.x;
-					d3ds.sy = tabprism[nb2].pos.y + vertex->y * this->scale + this->tabprism[nb2].offset.y;
-					d3ds.sz = tabprism[nb2].pos.z + vertex->z * this->scale + this->tabprism[nb2].offset.z;
+					d3ds.p.x = tabprism[nb2].pos.x + vertex->x * this->scale + this->tabprism[nb2].offset.x;
+					d3ds.p.y = tabprism[nb2].pos.y + vertex->y * this->scale + this->tabprism[nb2].offset.y;
+					d3ds.p.z = tabprism[nb2].pos.z + vertex->z * this->scale + this->tabprism[nb2].offset.z;
 		
 					EE_RTP(&d3ds, vd3d);
 					vd3d->color = Color(50, 50, 64).toBGRA();
@@ -1778,9 +1773,9 @@ float CParalyse::Render()
 					float py = tabprism[nb2].pos.y ;
 					float pz = tabprism[nb2].pos.z ;
 
-					d3ds.sx = px +  vertex->x + this->tabprism[nb2].offset.x;
-					d3ds.sy = py +  vertex->y + this->tabprism[nb2].offset.y;
-					d3ds.sz = pz +  vertex->z + this->tabprism[nb2].offset.z;
+					d3ds.p.x = px +  vertex->x + this->tabprism[nb2].offset.x;
+					d3ds.p.y = py +  vertex->y + this->tabprism[nb2].offset.y;
+					d3ds.p.z = pz +  vertex->z + this->tabprism[nb2].offset.z;
 					EE_RTP(&d3ds, vd3d);
 					vd3d->color = Color(50, 50, 64).toBGRA();
 					vertex++;
@@ -1800,9 +1795,9 @@ float CParalyse::Render()
 
 			while (nb)
 			{
-				d3ds.sx = this->pos.x + vertex->x * this->scale;
-				d3ds.sy = this->pos.y + vertex->y * this->scale;
-				d3ds.sz = this->pos.z + vertex->z * this->scale;
+				d3ds.p.x = this->pos.x + vertex->x * this->scale;
+				d3ds.p.y = this->pos.y + vertex->y * this->scale;
+				d3ds.p.z = this->pos.z + vertex->z * this->scale;
 				EE_RTP(&d3ds, vd3d);
 				vd3d->color = Color::white.toBGR();
 				vertex++;
@@ -1896,9 +1891,9 @@ float CParalyse::Render()
 					float py = tabprism[nb2].pos.y ;
 					float pz = tabprism[nb2].pos.z ;
 
-					d3ds.sx = px +  vertex->x + this->tabprism[nb2].offset.x;
-					d3ds.sy = py +  vertex->y + this->tabprism[nb2].offset.y;
-					d3ds.sz = pz +  vertex->z + this->tabprism[nb2].offset.z;
+					d3ds.p.x = px +  vertex->x + this->tabprism[nb2].offset.x;
+					d3ds.p.y = py +  vertex->y + this->tabprism[nb2].offset.y;
+					d3ds.p.z = pz +  vertex->z + this->tabprism[nb2].offset.z;
 
 					EE_RTP(&d3ds, vd3d);
 					vd3d->color = col;
@@ -1924,9 +1919,9 @@ float CParalyse::Render()
 
 			while (nb)
 			{
-				d3ds.sx = this->pos.x + vertex->x;
-				d3ds.sy = this->pos.y + vertex->y;
-				d3ds.sz = this->pos.z + vertex->z;
+				d3ds.p.x = this->pos.x + vertex->x;
+				d3ds.p.y = this->pos.y + vertex->y;
+				d3ds.p.z = this->pos.z + vertex->z;
 				EE_RTP(&d3ds, vd3d);
 				vd3d->color = col;
 				vertex++;

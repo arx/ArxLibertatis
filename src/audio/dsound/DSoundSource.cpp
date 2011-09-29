@@ -244,17 +244,6 @@ aalError DSoundSource::clean() {
 	return AAL_OK;
 }
 
-aalError DSoundSource::setVolume(float v) {
-	
-	if(!(channel.flags & FLAG_VOLUME)) {
-		return AAL_ERROR_INIT;
-	}
-	
-	channel.volume = clamp(v, 0.f, 1.f);
-	
-	return updateVolume();
-}
-
 aalError DSoundSource::updateVolume() {
 	
 	if(!(channel.flags & FLAG_VOLUME)) {
@@ -395,13 +384,6 @@ aalError DSoundSource::setFalloff(const SourceFalloff & falloff) {
 	return AAL_OK;
 }
 
-aalError DSoundSource::setMixer(MixerId mixer) {
-	
-	channel.mixer = mixer;
-	
-	return updateVolume();
-}
-
 bool DSoundSource::checkPlaying() {
 	
 	DWORD value;
@@ -410,10 +392,6 @@ bool DSoundSource::checkPlaying() {
 	}
 	
 	return value & DSBSTATUS_PLAYING ? true : false;
-}
-
-size_t DSoundSource::getTime(TimeUnit unit) const {
-	return bytesToUnits(time, sample->getFormat(), unit);
 }
 
 aalError DSoundSource::play(unsigned play_count) {

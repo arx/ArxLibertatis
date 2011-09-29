@@ -189,15 +189,13 @@ void ARX_MINIMAP_ValidatePlayerPos()
 {
 	if (BLOCK_PLAYER_CONTROLS) return;
 
-	float dist = Distance2D(AM_LASTPOS_x, AM_LASTPOS_z, player.pos.x, player.pos.z);
 	float req;
 
 	if ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP))
 		req = 20.f;
 	else req = 80.f;
 
-	if (dist > req)
-	{
+	if(fartherThan(Vec2f(AM_LASTPOS_x, AM_LASTPOS_z), Vec2f(player.pos.x, player.pos.z), req)) {
 		AM_LASTPOS_x = player.pos.x;
 		AM_LASTPOS_z = player.pos.z;
 		ARX_MINIMAP_ValidatePos();
@@ -414,13 +412,13 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		{
 			verts[k].color = 0xFFFFFFFF;
 			verts[k].rhw = 1;
-			verts[k].sz = 0.00001f;
+			verts[k].p.z = 0.00001f;
 		}
 
 		float div = ( 1.0f / 25 );
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
-		float dw = 1.f / tc->m_dwDeviceWidth; 
-		float dh = 1.f / tc->m_dwDeviceHeight;
+		float dw = 1.f / tc->m_pTexture->getStoredSize().x; 
+		float dh = 1.f / tc->m_pTexture->getStoredSize().y;
 		
 		float vx2 = 4.f * dw * mod_x;
 		float vy2 = 4.f * dh * mod_z;
@@ -518,7 +516,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 							&& (i >= 0) && (i < MINIMAP_MAX_X)
 							&& (j >= 0) && (j < MINIMAP_MAX_Z))
 					{
-						float d = Distance2D(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio /*-casey * 2 * Yratio*/, px, py);
+						float d = fdist(Vec2f(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio), Vec2f(px, py));
 
 						if (d <= 6.f)
 						{
@@ -552,15 +550,15 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						}
 					}
 
-					verts[3].sx = verts[0].sx = (posx);
-					verts[1].sy = verts[0].sy = (posy);
-					verts[2].sx = verts[1].sx = posx + (casex * Xratio);
-					verts[3].sy = verts[2].sy = posy + (casey * Yratio);
+					verts[3].p.x = verts[0].p.x = (posx);
+					verts[1].p.y = verts[0].p.y = (posy);
+					verts[2].p.x = verts[1].p.x = posx + (casex * Xratio);
+					verts[3].p.y = verts[2].p.y = posy + (casey * Yratio);
 
-					verts[3].tu = verts[0].tu = vx;
-					verts[1].tv = verts[0].tv = vy;
-					verts[2].tu = verts[1].tu = vx + vx2;
-					verts[3].tv = verts[2].tv = vy + vy2;
+					verts[3].uv.x = verts[0].uv.x = vx;
+					verts[1].uv.y = verts[0].uv.y = vy;
+					verts[2].uv.x = verts[1].uv.x = vx + vx2;
+					verts[3].uv.y = verts[2].uv.y = vy + vy2;
 
 					if (flag != 2)
 					{
@@ -573,22 +571,22 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						if (flag == 1)
 						{
 							long vert = 0;
-							_px = verts[vert].sx - boundaries.left;
+							_px = verts[vert].p.x - boundaries.left;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.right - verts[vert].sx;
+							_px = boundaries.right - verts[vert].p.x;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = verts[vert].sy - boundaries.top;
+							_px = verts[vert].p.y - boundaries.top;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.bottom - verts[vert].sy;
+							_px = boundaries.bottom - verts[vert].p.y;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
@@ -604,22 +602,22 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						if (flag == 1)
 						{
 							long vert = 1;
-							_px = verts[vert].sx - boundaries.left;
+							_px = verts[vert].p.x - boundaries.left;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.right - verts[vert].sx;
+							_px = boundaries.right - verts[vert].p.x;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = verts[vert].sy - boundaries.top;
+							_px = verts[vert].p.y - boundaries.top;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.bottom - verts[vert].sy;
+							_px = boundaries.bottom - verts[vert].p.y;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
@@ -635,22 +633,22 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						if (flag == 1)
 						{
 							long vert = 2;
-							_px = verts[vert].sx - boundaries.left;
+							_px = verts[vert].p.x - boundaries.left;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.right - verts[vert].sx;
+							_px = boundaries.right - verts[vert].p.x;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = verts[vert].sy - boundaries.top;
+							_px = verts[vert].p.y - boundaries.top;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.bottom - verts[vert].sy;
+							_px = boundaries.bottom - verts[vert].p.y;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
@@ -667,22 +665,22 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						if (flag == 1)
 						{
 							long vert = 3;
-							_px = verts[vert].sx - boundaries.left;
+							_px = verts[vert].p.x - boundaries.left;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.right - verts[vert].sx;
+							_px = boundaries.right - verts[vert].p.x;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = verts[vert].sy - boundaries.top;
+							_px = verts[vert].p.y - boundaries.top;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 
-							_px = boundaries.bottom - verts[vert].sy;
+							_px = boundaries.bottom - verts[vert].p.y;
 
 							if (_px < 0.f) v = 0.f;
 							else if (_px < MOD20) v *= _px * MOD20DIV;
@@ -696,14 +694,14 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						{
 							if (fl2)
 							{
-								verts[0].sx += DECALX * Xratio;
-								verts[0].sy += DECALY * Yratio;
-								verts[1].sx += DECALX * Xratio;
-								verts[1].sy += DECALY * Yratio;
-								verts[2].sx += DECALX * Xratio;
-								verts[2].sy += DECALY * Yratio;
-								verts[3].sx += DECALX * Xratio;
-								verts[3].sy += DECALY * Yratio;
+								verts[0].p.x += DECALX * Xratio;
+								verts[0].p.y += DECALY * Yratio;
+								verts[1].p.x += DECALX * Xratio;
+								verts[1].p.y += DECALY * Yratio;
+								verts[2].p.x += DECALX * Xratio;
+								verts[2].p.y += DECALY * Yratio;
+								verts[3].p.x += DECALX * Xratio;
+								verts[3].p.y += DECALY * Yratio;
 							}
 
 							EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);
@@ -743,24 +741,24 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 				float ca = EEcos(angle);
 				float sa = EEsin(angle);
 
-				verts[0].sx = (px + rx2 * ca + ry2 * sa) * Xratio;
-				verts[0].sy = (py + ry2 * ca - rx2 * sa) * Yratio;
-				verts[1].sx = (px + rx * ca + ry * sa) * Xratio;
-				verts[1].sy = (py + ry * ca - rx * sa) * Yratio;
-				verts[2].sx = (px + rx3 * ca + ry3 * sa) * Xratio;
-				verts[2].sy = (py + ry3 * ca - rx3 * sa) * Yratio;
+				verts[0].p.x = (px + rx2 * ca + ry2 * sa) * Xratio;
+				verts[0].p.y = (py + ry2 * ca - rx2 * sa) * Yratio;
+				verts[1].p.x = (px + rx * ca + ry * sa) * Xratio;
+				verts[1].p.y = (py + ry * ca - rx * sa) * Yratio;
+				verts[2].p.x = (px + rx3 * ca + ry3 * sa) * Xratio;
+				verts[2].p.y = (py + ry3 * ca - rx3 * sa) * Yratio;
 
 				GRenderer->ResetTexture(0);
 
 				if (fl2)
 				{
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					verts[0].sx += DECALX * Xratio;
-					verts[0].sy += DECALY * Yratio;
-					verts[1].sx += DECALX * Xratio;
-					verts[1].sy += DECALY * Yratio;
-					verts[2].sx += DECALX * Xratio;
-					verts[2].sy += DECALY * Yratio;
+					verts[0].p.x += DECALX * Xratio;
+					verts[0].p.y += DECALY * Yratio;
+					verts[1].p.x += DECALX * Xratio;
+					verts[1].p.y += DECALY * Yratio;
+					verts[2].p.x += DECALX * Xratio;
+					verts[2].p.y += DECALY * Yratio;
 				}
 
 				EERIEDRAWPRIM(Renderer::TriangleFan, verts);
@@ -802,7 +800,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 									}
 
-									float d = Distance2D(player.pos.x, player.pos.z, inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z);
+									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z));
 
 
 									if ((d <= 800) && (fabs(inter.iobj[0]->pos.y - inter.iobj[lnpc]->pos.y) < 250.f))
@@ -853,24 +851,24 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					verts[1].color = 0xFFFF0000;
 					verts[2].color = 0xFFFF0000;
 					verts[3].color = 0xFFFF0000;
-					verts[0].sx = (pos_x - size) * Xratio;
-					verts[0].sy = (pos_y - size) * Yratio;
-					verts[1].sx = (pos_x + size) * Xratio;
-					verts[1].sy = (pos_y - size) * Yratio;
-					verts[2].sx = (pos_x + size) * Xratio;
-					verts[2].sy = (pos_y + size) * Yratio;
-					verts[3].sx = (pos_x - size) * Xratio;
-					verts[3].sy = (pos_y + size) * Yratio;
-					verts[0].tu = 0.f;
-					verts[0].tv = 0.f;
-					verts[1].tu = 1.f;
-					verts[1].tv = 0.f;
-					verts[2].tu = 1.f;
-					verts[2].tv = 1.f;
-					verts[3].tu = 0.f;
-					verts[3].tv = 1.f;
+					verts[0].p.x = (pos_x - size) * Xratio;
+					verts[0].p.y = (pos_y - size) * Yratio;
+					verts[1].p.x = (pos_x + size) * Xratio;
+					verts[1].p.y = (pos_y - size) * Yratio;
+					verts[2].p.x = (pos_x + size) * Xratio;
+					verts[2].p.y = (pos_y + size) * Yratio;
+					verts[3].p.x = (pos_x - size) * Xratio;
+					verts[3].p.y = (pos_y + size) * Yratio;
+					verts[0].uv.x = 0.f;
+					verts[0].uv.y = 0.f;
+					verts[1].uv.x = 1.f;
+					verts[1].uv.y = 0.f;
+					verts[2].uv.x = 1.f;
+					verts[2].uv.y = 1.f;
+					verts[3].uv.x = 0.f;
+					verts[3].uv.y = 1.f;
 
-					if (!fl2 && MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy))
+					if (!fl2 && MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y))
 					{
 
 						if (!Mapmarkers[i].text.empty())
@@ -896,14 +894,14 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 					if (fl2)
 					{
-						verts[0].sx += DECALX * Xratio;
-						verts[0].sy += DECALY * Yratio;
-						verts[1].sx += DECALX * Xratio;
-						verts[1].sy += DECALY * Yratio;
-						verts[2].sx += DECALX * Xratio;
-						verts[2].sy += DECALY * Yratio;
-						verts[3].sx += DECALX * Xratio;
-						verts[3].sy += DECALY * Yratio;
+						verts[0].p.x += DECALX * Xratio;
+						verts[0].p.y += DECALY * Yratio;
+						verts[1].p.x += DECALX * Xratio;
+						verts[1].p.y += DECALY * Yratio;
+						verts[2].p.x += DECALX * Xratio;
+						verts[2].p.y += DECALY * Yratio;
+						verts[3].p.x += DECALX * Xratio;
+						verts[3].p.y += DECALY * Yratio;
 					}
 
 					EERIEDRAWPRIM(Renderer::TriangleFan, verts, 4);

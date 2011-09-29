@@ -28,10 +28,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "audio/AudioGlobal.h"
+#include "audio/AudioResource.h"
 #include "audio/codec/WAV.h"
 
 #include "io/PakReader.h"
-#include "io/Logger.h"
 
 namespace audio {
 

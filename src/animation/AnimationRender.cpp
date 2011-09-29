@@ -25,6 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
+#include <stddef.h>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+
 #include "animation/Animation.h"
 
 #include "core/Application.h"
@@ -35,19 +40,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "gui/MenuWidgets.h"
+#include "math/Angle.h"
+#include "math/Vector3.h"
 
-#include "physics/Clothes.h"
 #include "physics/Collisions.h"
 
-#include "scene/Object.h"
+#include "platform/Platform.h"
+
 #include "scene/Light.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
@@ -56,31 +68,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern		bool 		MIPM;
-extern		float 		vdist;
-extern		unsigned char * grps;
-extern		long 		max_grps;
-extern		long		FORCE_NO_HIDE;
-extern		long		USEINTERNORM;
-extern 		long 		INTER_DRAW;
+extern unsigned char * grps;
+extern long max_grps;
+extern long FORCE_NO_HIDE;
+extern long USEINTERNORM;
+extern long INTER_DRAW;
 
-extern		float		dists[];
+extern float dists[];
 extern long BH_MODE;
 extern int iHighLight;
 
 extern TextureContainer TexSpecialColor;
 
- 
 extern long FLAG_ALLOW_CLOTHES;
- 
+
 long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
-extern EERIEMATRIX ProjectionMatrix;
-extern float fZFogStart;
 
+//#define USE_SOFTWARE_CLIPPING
 #ifdef USE_SOFTWARE_CLIPPING
-float SOFTNEARCLIPPZ=1.f;
+	float SOFTNEARCLIPPZ=1.f;
 #endif
 
 /* Init bounding box */
@@ -476,12 +484,12 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
 			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
 
-			TransformVertexMatrix(&matrix, (Vec3f *)inVert, &outVert->v);
+			TransformVertexMatrix(&matrix, inVert, &outVert->v);
 
 			outVert->v += vector;
-			outVert->vert.sx = outVert->v.x;
-			outVert->vert.sy = outVert->v.y;
-			outVert->vert.sz = outVert->v.z;
+			outVert->vert.p.x = outVert->v.x;
+			outVert->vert.p.y = outVert->v.y;
+			outVert->vert.p.z = outVert->v.z;
 		}
 	}
 
@@ -489,9 +497,9 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 	{
 		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 		{
-			eobj->vertexlist[i].vert.sx = eobj->vertexlist3[i].v.x - pos->x;
-			eobj->vertexlist[i].vert.sy = eobj->vertexlist3[i].v.y - pos->y;
-			eobj->vertexlist[i].vert.sz = eobj->vertexlist3[i].v.z - pos->z;
+			eobj->vertexlist[i].vert.p.x = eobj->vertexlist3[i].v.x - pos->x;
+			eobj->vertexlist[i].vert.p.y = eobj->vertexlist3[i].v.y - pos->y;
+			eobj->vertexlist[i].vert.p.z = eobj->vertexlist3[i].v.z - pos->z;
 		}
 	}
 
@@ -505,10 +513,10 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 		// Updates 2D Bounding Box
 		if (outVert->vert.rhw > 0.f)
 		{
-			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.sx);
-			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.sx);
-			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.sy);
-			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.sy);
+			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.p.x);
+			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.p.x);
+			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.p.y);
+			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.p.y);
 		}
 	}
 
@@ -836,13 +844,10 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 				float			r, g, b;
 				long	ir, ig, ib;
 
-				if (io)
-				{
-					posVert  = (Vec3f *)&io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-				}
-				else
-				{
-					posVert  = (Vec3f *)&eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				if(io) {
+					posVert = &io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				} else {
+					posVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				}
 
 				/* Ambient light */
@@ -970,12 +975,12 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 					if (Cur_llights)
 					{
-						Vec3f * Cur_vTLights = &vTLights[l];
+						Vec3f & Cur_vTLights = vTLights[l];
 						Vec3f tl;
 						tl.x = (Cur_llights->pos.x - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.x);
 						tl.y = (Cur_llights->pos.y - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.y);
 						tl.z = (Cur_llights->pos.z - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.z);
-						float dista = Vector_Magnitude(&tl);
+						float dista = ffsqrt(tl.lengthSqr());
 
 						if (dista < Cur_llights->fallend)
 						{
@@ -984,11 +989,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 							tl.y *= divv;
 							tl.z *= divv;
 
-							VectorMatrixMultiply(Cur_vTLights, &tl, &matrix);
+							VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 
-							float cosangle = (inVert->x * Cur_vTLights->x +
-							            inVert->y * Cur_vTLights->y +
-							            inVert->z * Cur_vTLights->z);
+							float cosangle = dot(*inVert, Cur_vTLights);
 
 							/* If light visible */
 							if (cosangle > 0.0f)
@@ -1113,8 +1116,7 @@ void ARX_ClippZ(TexturedVertex * _pA, TexturedVertex * _pB, EERIE_VERTEX * _pVer
 	fBC = (fBA - fBB) * fDenom + fBB;
 
 	_pOut->color	=	(((int)fRC) << 16) | (((int)fGC) << 8) | ((int)fBC);
-	_pOut->tu		=	(_pA->tu - _pB->tu) * fDenom + _pB->tu;
-	_pOut->tv		=	(_pA->tv - _pB->tv) * fDenom + _pB->tv;
+	_pOut->uv		=	(_pA->uv - _pB->uv) * fDenom + _pB->uv;
 
 	EE_P(&e3dTemp, _pOut);
 }
@@ -1124,9 +1126,9 @@ void ARX_DrawPrimitive_ClippZ(TexturedVertex * _pVertexA, TexturedVertex * _pVer
 void ARX_DrawPrimitive_ClippZ(TexturedVertex * _pVertexA, TexturedVertex * _pVertexB, TexturedVertex * _pOut, float _fAdd)
 {
 	Vec3f e3dTemp;
-	float fDenom = ((SOFTNEARCLIPPZ + _fAdd) - _pVertexB->sz) / (_pVertexA->sz - _pVertexB->sz);
-	e3dTemp.x = (_pVertexA->sx - _pVertexB->sx) * fDenom + _pVertexB->sx;
-	e3dTemp.y = (_pVertexA->sy - _pVertexB->sy) * fDenom + _pVertexB->sy;
+	float fDenom = ((SOFTNEARCLIPPZ + _fAdd) - _pVertexB->p.z) / (_pVertexA->p.z - _pVertexB->p.z);
+	e3dTemp.x = (_pVertexA->p.x - _pVertexB->p.x) * fDenom + _pVertexB->p.x;
+	e3dTemp.y = (_pVertexA->p.y - _pVertexB->p.y) * fDenom + _pVertexB->p.y;
 	e3dTemp.z = SOFTNEARCLIPPZ + _fAdd;
 
 	float fRA, fGA, fBA;
@@ -1145,8 +1147,7 @@ void ARX_DrawPrimitive_ClippZ(TexturedVertex * _pVertexA, TexturedVertex * _pVer
 	fBC = (fBA - fBB) * fDenom + fBB;
 
 	_pOut->color	= (((int) fRC) << 16) | (((int)fGC) << 8) | ((int) fBC);
-	_pOut->tu		= (_pVertexA->tu - _pVertexB->tu) * fDenom + _pVertexB->tu;
-	_pOut->tv		= (_pVertexA->tv - _pVertexB->tv) * fDenom + _pVertexB->tv;
+	_pOut->uv		= (_pVertexA->uv - _pVertexB->uv) * fDenom + _pVertexB->uv;
 
 	EE_P(&e3dTemp, _pOut);
 }
@@ -1397,17 +1398,16 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 
-//-----------------------------------------------------------------------------
-void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3, float _fAddZ)
-{
+void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3, float _fAddZ) {
+	
 #ifdef USE_SOFTWARE_CLIPPING
 	int iClipp = 0;
 
-	if (_pVertex1->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 1;
+	if (_pVertex1->p.z < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 1;
 
-	if (_pVertex2->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 2;
+	if (_pVertex2->p.z < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 2;
 
-	if (_pVertex3->sz < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 4;
+	if (_pVertex3->p.z < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 4;
 
 	TexturedVertex ClippZ1, ClippZ2;
 	TexturedVertex pPointAdd[6];
@@ -1416,31 +1416,17 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 	switch (iClipp)
 	{
 		case 0: {
-			Vec3f e3dTemp;
-			e3dTemp.x = _pVertex1->sx;
-			e3dTemp.y = _pVertex1->sy;
-			e3dTemp.z = _pVertex1->sz;
-			EE_P(&e3dTemp, &pPointAdd[0]);
-			e3dTemp.x = _pVertex2->sx;
-			e3dTemp.y = _pVertex2->sy;
-			e3dTemp.z = _pVertex2->sz;
-			EE_P(&e3dTemp, &pPointAdd[1]);
-			e3dTemp.x = _pVertex3->sx;
-			e3dTemp.y = _pVertex3->sy;
-			e3dTemp.z = _pVertex3->sz;
-			EE_P(&e3dTemp, &pPointAdd[2]);
+			EE_P(&_pVertex1->p, &pPointAdd[0]);
+			EE_P(&_pVertex2->p, &pPointAdd[1]);
+			EE_P(&_pVertex3->p, &pPointAdd[2]);
 			pPointAdd[0].color = _pVertex1->color;
 			pPointAdd[0].specular = _pVertex1->specular;
-			pPointAdd[0].tu = _pVertex1->tu;
-			pPointAdd[0].tv = _pVertex1->tv;
-			pPointAdd[1].color = _pVertex2->color;
+			pPointAdd[0].uv = _pVertex1->uv;
 			pPointAdd[1].specular = _pVertex2->specular;
-			pPointAdd[1].tu = _pVertex2->tu;
-			pPointAdd[1].tv = _pVertex2->tv;
+			pPointAdd[1].uv = _pVertex2->uv;
 			pPointAdd[2].color = _pVertex3->color;
 			pPointAdd[2].specular = _pVertex3->specular;
-			pPointAdd[2].tu = _pVertex3->tu;
-			pPointAdd[2].tv = _pVertex3->tv;
+			pPointAdd[2].uv = _pVertex3->uv;
 			break;
 		}
 		case 1:						//pt1 outside
@@ -1510,34 +1496,20 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 			return;
 	}
 #else
-    ARX_UNUSED(_fAddZ);
+
 	TexturedVertex pPointAdd[3];
-	
-	Vec3f e3dTemp;
-	e3dTemp.x = _pVertex1->sx;
-	e3dTemp.y = _pVertex1->sy;
-	e3dTemp.z = _pVertex1->sz;
-	EE_P(&e3dTemp, &pPointAdd[0]);
-	e3dTemp.x = _pVertex2->sx;
-	e3dTemp.y = _pVertex2->sy;
-	e3dTemp.z = _pVertex2->sz;
-	EE_P(&e3dTemp, &pPointAdd[1]);
-	e3dTemp.x = _pVertex3->sx;
-	e3dTemp.y = _pVertex3->sy;
-	e3dTemp.z = _pVertex3->sz;
-	EE_P(&e3dTemp, &pPointAdd[2]);
+	EE_P(&_pVertex1->p, &pPointAdd[0]);
+	EE_P(&_pVertex2->p, &pPointAdd[1]);
+	EE_P(&_pVertex3->p, &pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
 	pPointAdd[0].specular = _pVertex1->specular;
-	pPointAdd[0].tu = _pVertex1->tu;
-	pPointAdd[0].tv = _pVertex1->tv;
+	pPointAdd[0].uv = _pVertex1->uv;
 	pPointAdd[1].color = _pVertex2->color;
 	pPointAdd[1].specular = _pVertex2->specular;
-	pPointAdd[1].tu = _pVertex2->tu;
-	pPointAdd[1].tv = _pVertex2->tv;
+	pPointAdd[1].uv = _pVertex2->uv;
 	pPointAdd[2].color = _pVertex3->color;
 	pPointAdd[2].specular = _pVertex3->specular;
-	pPointAdd[2].tu = _pVertex3->tu;
-	pPointAdd[2].tv = _pVertex3->tv;
+	pPointAdd[2].uv = _pVertex3->uv;
 #endif
 
 	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
@@ -1625,7 +1597,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 			float mdist = ACTIVECAM->cdepth * ( 1.0f / 2 );
 
-			ddist = mdist - Distance3D(pos->x + ftr.x, pos->y + ftr.y, pos->z + ftr.z, ACTIVECAM->pos.x, ACTIVECAM->pos.y, ACTIVECAM->pos.z);
+			ddist = mdist - fdist(*pos + ftr, ACTIVECAM->pos);
 
 			ddist = (ddist / mdist);  //*0.1f;
 			ddist *= ddist * ddist * ddist * ddist * ddist;
@@ -1641,7 +1613,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			for (size_t i = 0 ; i < eobj->vertexlist.size() ; i++)
 			{
 				if (eobj->vertexlist3[i].vert.rhw > 0.f)
-					MAX_ZEDE = max(eobj->vertexlist3[i].vert.sz, MAX_ZEDE);
+					MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
 			}
 			
 		}
@@ -1683,7 +1655,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 				normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-				if ((DOTPRODUCT(normFace , nrm) > 0.f)) continue;
+				if ((dot(normFace , nrm) > 0.f)) continue;
 			}
 
 			TextureContainer * pTex;
@@ -1722,9 +1694,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			for (long n = 0 ; n < 3 ; n++)
 			{
 				paf[n]		= eface->vid[n];
-				tv[n].sx	= eobj->vertexlist3[paf[n]].vert.sx;
-				tv[n].sy	= eobj->vertexlist3[paf[n]].vert.sy;
-				tv[n].sz	= eobj->vertexlist3[paf[n]].vert.sz;
+				tv[n].p.x	= eobj->vertexlist3[paf[n]].vert.p.x;
+				tv[n].p.y	= eobj->vertexlist3[paf[n]].vert.p.y;
+				tv[n].p.z	= eobj->vertexlist3[paf[n]].vert.p.z;
 
 				// Nuky - this code takes 20% of the whole game performance O_O
 				//        AFAIK it allows to correctly display the blue magic effects
@@ -1742,8 +1714,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				//}
 
 				tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
-				tv[n].tu	= eface->u[n];
-				tv[n].tv	= eface->v[n];
+				tv[n].uv.x	= eface->u[n];
+				tv[n].uv.y	= eface->v[n];
 				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
 			}
 
@@ -1772,7 +1744,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
 			}
-
+						
 #ifdef USE_SOFTWARE_CLIPPING
 			if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
 			                                   &eobj->vertexlist3[paf[1]],
@@ -1967,48 +1939,48 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 							if ((io == inter.iobj[0]) && (ddist > 0.8f) && !EXTERNALVIEW)
 								siz *= 1.5f;
 
-							vect1.x = workon[first].sx - workon[third].sx;
-							vect1.y = workon[first].sy - workon[third].sy;
-							float len1 = 2.f / EEsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+							vect1.x = workon[first].p.x - workon[third].p.x;
+							vect1.y = workon[first].p.y - workon[third].p.y;
+							float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
 							if (vect1.x < 0.f) len1 *= 1.2f;
 
 							vect1.x *= len1;
 							vect1.y *= len1;
-							vect2.x	 = workon[second].sx - workon[third].sx;
-							vect2.y	 = workon[second].sy - workon[third].sy;
+							vect2.x	 = workon[second].p.x - workon[third].p.x;
+							vect2.y	 = workon[second].p.y - workon[third].p.y;
 
-							float len2 = 1.f / EEsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+							float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
 							if (vect2.x < 0.f) len2 *= 1.2f;
 
 							vect2.x		*= len2;
 							vect2.y		*= len2;
-							vert[1].sx	+= (vect1.x + 0.2f - rnd() * 0.1f) * siz;  
-							vert[1].sy	+= (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
+							vert[1].p.x	+= (vect1.x + 0.2f - rnd() * 0.1f) * siz;  
+							vert[1].p.y	+= (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
 							vert[1].color = 0xFF000000;
 
 							float valll;
-							valll = 0.005f + (EEfabs(workon[first].sz) - EEfabs(workon[third].sz))
-							               + (EEfabs(workon[second].sz) - EEfabs(workon[third].sz));   
+							valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
+							               + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));   
 							valll = 0.0001f + valll * ( 1.0f / 10 );
 
 							if (valll < 0.f) valll = 0.f;
 
-							vert[1].sz	+= valll;
-							vert[2].sz	+= valll;
-							vert[0].sz	+= 0.0001f;
-							vert[3].sz	+= 0.0001f;//*( 1.0f / 2 );
+							vert[1].p.z	+= valll;
+							vert[2].p.z	+= valll;
+							vert[0].p.z	+= 0.0001f;
+							vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
 							vert[1].rhw	*= .98f;
 							vert[2].rhw	*= .98f;
 							vert[0].rhw	*= .98f;
 							vert[3].rhw	*= .98f;
 
-							vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
-							vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
+							vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
+							vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
 
-							vert[1].sz = (vert[1].sz + MAX_ZEDE) * ( 1.0f / 2 );
-							vert[2].sz = (vert[2].sz + MAX_ZEDE) * ( 1.0f / 2 );
+							vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+							vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 
 							if (curhalo.flags & HALO_NEGATIVE)
 								vert[2].color = 0x00000000;
@@ -2035,7 +2007,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				{
 					tv2 = PushVertexInTableCull(&TexSpecialColor);
 				}
-				memcpy((void *) tv2, (void *)tv, sizeof(TexturedVertex) * 3);
+				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
 
 				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
 			}
@@ -2049,7 +2021,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 				tv2						=	PushVertexInTableCull_TMetal(pTex);
 				pulNbVertexList_TMetal	=	&pTex->ulNbVertexListCull_TMetal;
-				memcpy((void *)tv2, (void *)tv, sizeof(TexturedVertex) * 3);
+				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
 				
 				long r, g, b;
 				long todo = 0;
@@ -2724,14 +2696,14 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 			for (j = 0; j < nbvert; j++)
 			{
-				Vec3f v(ep->v[j].sx,ep->v[j].sy, ep->v[j].sz);
+				Vec3f v(ep->v[j].p.x,ep->v[j].p.y, ep->v[j].p.z);
 				if (!(GetMaxManhattanDistance(&el->pos, &v) <= el->fallend))
 				{
 					TSU_TEST_NB ++;
 					continue;
 				}
 
-				float d = fdist(el->pos, ep->v[j]);
+				float d = fdist(el->pos, ep->v[j].p);
 
 				if (d <= el->fallend)
 				{
@@ -2741,9 +2713,9 @@ void ApplyDynLight(EERIEPOLY * ep)
 					if (DYNAMIC_NORMALS)
 					{
 						Vec3f v1;
-						v1.x = (el->pos.x - ep->v[j].sx) * divd;
-						v1.y = (el->pos.y - ep->v[j].sy) * divd;
-						v1.z = (el->pos.z - ep->v[j].sz) * divd;
+						v1.x = (el->pos.x - ep->v[j].p.x) * divd;
+						v1.y = (el->pos.y - ep->v[j].p.y) * divd;
+						v1.z = (el->pos.z - ep->v[j].p.z) * divd;
 						nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
 
 						if (nvalue > 1.f) nvalue = 1.f;
@@ -2831,15 +2803,15 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned 
 
 		for (j = 0; j < nbvert; j++)
 		{
-			float d = fdist(el->pos, ep->v[j]);
+			float d = fdist(el->pos, ep->v[j].p);
 
 			if (d < el->fallend)
 			{
 				float nvalue;
 
-				nvalue =	((el->pos.x - ep->v[j].sx) * ep->nrml[j].x
-				             +	(el->pos.y - ep->v[j].sy) * ep->nrml[j].y
-				             +	(el->pos.z - ep->v[j].sz) * ep->nrml[j].z
+				nvalue =	((el->pos.x - ep->v[j].p.x) * ep->nrml[j].x
+				             +	(el->pos.y - ep->v[j].p.y) * ep->nrml[j].y
+				             +	(el->pos.z - ep->v[j].p.z) * ep->nrml[j].z
 				         ) * 0.5f / d; 
 
 				if (nvalue > 0.f)
@@ -2953,15 +2925,15 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		for (j = 0; j < nbvert; j++)
 		{
 		
-			float d = fdist(el->pos, ep->v[j]);
+			float d = fdist(el->pos, ep->v[j].p);
 
 			if (d < el->fallend)
 			{
 				float nvalue;
 				
-				nvalue =	((el->pos.x - ep->v[j].sx) * ep->nrml[j].x
-				             +	(el->pos.y - ep->v[j].sy) * ep->nrml[j].y
-				             +	(el->pos.z - ep->v[j].sz) * ep->nrml[j].z
+				nvalue =	((el->pos.x - ep->v[j].p.x) * ep->nrml[j].x
+				             +	(el->pos.y - ep->v[j].p.y) * ep->nrml[j].y
+				             +	(el->pos.z - ep->v[j].p.z) * ep->nrml[j].z
 				         ) * 0.5f / d; 
 				
 				if (nvalue > 0.f)

@@ -286,30 +286,30 @@ void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSi
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color.toBGRA();
 
 	// version 2 faces
-	v2[0].tu = 0;
-	v2[0].tv = 0;
-	v2[1].tu = 1;
-	v2[1].tv = 0;
-	v2[2].tu = 1;
-	v2[2].tv = 1;
-	v2[3].tu = 0;
-	v2[3].tv = 1;
+	v2[0].uv.x = 0;
+	v2[0].uv.y = 0;
+	v2[1].uv.x = 1;
+	v2[1].uv.y = 0;
+	v2[2].uv.x = 1;
+	v2[2].uv.y = 1;
+	v2[3].uv.x = 0;
+	v2[3].uv.y = 1;
 
-	v[0].sx = s.x;
-	v[0].sy = s.y + zzs;
-	v[0].sz = s.z;
+	v[0].p.x = s.x;
+	v[0].p.y = s.y + zzs;
+	v[0].p.z = s.z;
 
-	v[1].sx = s.x;
-	v[1].sy = s.y - zzs;
-	v[1].sz = s.z;
+	v[1].p.x = s.x;
+	v[1].p.y = s.y - zzs;
+	v[1].p.z = s.z;
 
-	v[2].sx = e.x;
-	v[2].sy = e.y - zze;
-	v[2].sz = e.z;
+	v[2].p.x = e.x;
+	v[2].p.y = e.y - zze;
+	v[2].p.z = e.z;
 
-	v[3].sx = e.x;
-	v[3].sy = e.y + zze;
-	v[3].sz = e.z;
+	v[3].p.x = e.x;
+	v[3].p.y = e.y + zze;
+	v[3].p.z = e.z;
 
 	EE_RT2(&v[0], &v2[0]);
 	EE_RT2(&v[1], &v2[1]);
@@ -325,21 +325,21 @@ void Draw3DLineTex(Vec3f s, Vec3f e, Color color, float fStartSize, float fEndSi
 	zzs *= (float) sin(radians(fBeta));
 	zze *= (float) sin(radians(fBeta));
 
-	v[0].sx = s.x + xxs;
-	v[0].sy = s.y;
-	v[0].sz = s.z + zzs;
+	v[0].p.x = s.x + xxs;
+	v[0].p.y = s.y;
+	v[0].p.z = s.z + zzs;
 
-	v[1].sx = s.x - xxs;
-	v[1].sy = s.y;
-	v[1].sz = s.z - zzs;
+	v[1].p.x = s.x - xxs;
+	v[1].p.y = s.y;
+	v[1].p.z = s.z - zzs;
 
-	v[2].sx = e.x - xxe;
-	v[2].sy = e.y;
-	v[2].sz = e.z - zze;
+	v[2].p.x = e.x - xxe;
+	v[2].p.y = e.y;
+	v[2].p.z = e.z - zze;
 
-	v[3].sx = e.x + xxe;
-	v[3].sy = e.y;
-	v[3].sz = e.z + zze;
+	v[3].p.x = e.x + xxe;
+	v[3].p.y = e.y;
+	v[3].p.z = e.z + zze;
 	
 	EE_RT2(&v[0], &v2[0]);
 	EE_RT2(&v[1], &v2[1]);
@@ -367,30 +367,30 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 	v2[2].color = v2[3].color = color2.toBGRA();
 
 	// version 2 faces
-	v2[0].tu = 0;
-	v2[0].tv = 0;
-	v2[1].tu = 1;
-	v2[1].tv = 0;
-	v2[2].tu = 1;
-	v2[2].tv = 1;
-	v2[3].tu = 0;
-	v2[3].tv = 1;
+	v2[0].uv.x = 0;
+	v2[0].uv.y = 0;
+	v2[1].uv.x = 1;
+	v2[1].uv.y = 0;
+	v2[2].uv.x = 1;
+	v2[2].uv.y = 1;
+	v2[3].uv.x = 0;
+	v2[3].uv.y = 1;
 
-	v[0].sx = s.x;
-	v[0].sy = s.y + zz;
-	v[0].sz = s.z;
+	v[0].p.x = s.x;
+	v[0].p.y = s.y + zz;
+	v[0].p.z = s.z;
 
-	v[1].sx = s.x;
-	v[1].sy = s.y - zz;
-	v[1].sz = s.z;
+	v[1].p.x = s.x;
+	v[1].p.y = s.y - zz;
+	v[1].p.z = s.z;
 
-	v[2].sx = e.x;
-	v[2].sy = e.y - zz;
-	v[2].sz = e.z;
+	v[2].p.x = e.x;
+	v[2].p.y = e.y - zz;
+	v[2].p.z = e.z;
 
-	v[3].sx = e.x;
-	v[3].sy = e.y + zz;
-	v[3].sz = e.z;
+	v[3].p.x = e.x;
+	v[3].p.y = e.y + zz;
+	v[3].p.z = e.z;
 
 	EE_RT2(&v[0], &v2[0]);
 	EE_RT2(&v[1], &v2[1]);
@@ -406,21 +406,21 @@ void Draw3DLineTex2(Vec3f s, Vec3f e, float fSize, Color color, Color color2) {
 
 	zz *= (float) sin(radians(fBeta));
 
-	v[0].sx = s.x + xx;
-	v[0].sy = s.y;
-	v[0].sz = s.z + zz;
+	v[0].p.x = s.x + xx;
+	v[0].p.y = s.y;
+	v[0].p.z = s.z + zz;
 
-	v[1].sx = s.x - xx;
-	v[1].sy = s.y;
-	v[1].sz = s.z - zz;
+	v[1].p.x = s.x - xx;
+	v[1].p.y = s.y;
+	v[1].p.z = s.z - zz;
 
-	v[2].sx = e.x - xx;
-	v[2].sy = e.y;
-	v[2].sz = e.z - zz;
+	v[2].p.x = e.x - xx;
+	v[2].p.y = e.y;
+	v[2].p.z = e.z - zz;
 
-	v[3].sx = e.x + xx;
-	v[3].sy = e.y;
-	v[3].sz = e.z + zz;
+	v[3].p.x = e.x + xx;
+	v[3].p.y = e.y;
+	v[3].p.z = e.z + zz;
 
 	EE_RT2(&v[0], &v2[0]);
 	EE_RT2(&v[1], &v2[1]);
@@ -443,9 +443,9 @@ void Split(TexturedVertex * v, int a, int b, float fX, float fMulX, float fY, fl
 
 		if ((i != a) && (i != b))
 		{
-			v[i].sx = (v[a].sx + v[b].sx) * 0.5f + fX * frand2();
-			v[i].sy = (v[a].sy + v[b].sy) * 0.5f + fY * frand2(); 
-			v[i].sz = (v[a].sz + v[b].sz) * 0.5f + fZ * frand2(); 
+			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + fX * frand2();
+			v[i].p.y = (v[a].p.y + v[b].p.y) * 0.5f + fY * frand2(); 
+			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + fZ * frand2(); 
 			Split(v, a, i, fX, fMulX, fY, fMulY, fZ, fMulZ);
 			Split(v, i, b, fX, fMulX, fY, fMulY, fZ, fMulZ);
 		}
@@ -461,9 +461,9 @@ void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 
 		if ((i != a) && (i != b))
 		{
-			v[i].sx = (v[a].sx + v[b].sx) * 0.5f + yo * frand2(); 
-			v[i].sy = (v[a].sy + v[b].sy) * 0.5f + yo * frand2(); 
-			v[i].sz = (v[a].sz + v[b].sz) * 0.5f + yo * frand2(); 
+			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2(); 
+			v[i].p.y = (v[a].p.y + v[b].p.y) * 0.5f + yo * frand2(); 
+			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2(); 
 			Split(v, a, i, yo * fMul);
 			Split(v, i, b, yo * fMul);
 		}

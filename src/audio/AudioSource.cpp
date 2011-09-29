@@ -1,6 +1,8 @@
 
 #include "audio/AudioSource.h"
 
+#include <algorithm>
+
 #include "audio/AudioGlobal.h"
 #include "audio/Sample.h"
 
@@ -67,6 +69,28 @@ void Source::updateCallbacks() {
 		
 	}
 	
+}
+
+aalError Source::setVolume(float v) {
+	
+	if(!(channel.flags & FLAG_VOLUME)) {
+		return AAL_ERROR_INIT;
+	}
+	
+	channel.volume = clamp(v, 0.f, 1.f);
+	
+	return updateVolume();
+}
+
+aalError Source::setMixer(MixerId mixer) {
+	
+	channel.mixer = mixer;
+	
+	return updateVolume();
+}
+
+size_t Source::getTime(TimeUnit unit) const {
+	return bytesToUnits(time, sample->getFormat(), unit);
 }
 
 } // namespace audio

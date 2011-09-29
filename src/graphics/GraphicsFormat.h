@@ -76,22 +76,22 @@ struct SavedTextureVertex {
 	
 	inline operator TexturedVertex() const {
 		TexturedVertex a;
-		a.sx = pos.x, a.sy = pos.y, a.sz = pos.z;
+		a.p.x = pos.x, a.p.y = pos.y, a.p.z = pos.z;
 		a.rhw = rhw;
 		a.color = color;
 		a.specular = specular;
-		a.tu = tu;
-		a.tv = tv;
+		a.uv.x = tu;
+		a.uv.y = tv;
 		return a;
 	}
 	
 	inline SavedTextureVertex & operator=(const TexturedVertex & b) {
-		pos.x = b.sx, pos.y = b.sy, pos.z = b.sz;
+		pos.x = b.p.x, pos.y = b.p.y, pos.z = b.p.z;
 		rhw = b.rhw;
 		color = b.color;
 		specular = b.specular;
-		tu = b.tu;
-		tv = b.tv;
+		tu = b.uv.x;
+		tv = b.uv.y;
 		return *this;
 	}
 	

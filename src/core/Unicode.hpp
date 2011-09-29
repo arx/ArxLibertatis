@@ -29,6 +29,8 @@
 #ifndef ARX_CORE_UNICODE_HPP
 #define ARX_CORE_UNICODE_HPP
 
+#include <stddef.h>
+
 #include "platform/Platform.h"
 
 ////////////////////////////////////////////////////////////

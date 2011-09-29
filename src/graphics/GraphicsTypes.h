@@ -61,6 +61,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+struct INTERACTIVE_OBJ;
+struct EERIE_3DOBJ;
 class TextureContainer;
 
 struct EERIE_TRI {
@@ -355,16 +357,14 @@ struct EERIE_MOD_INFO {
 	unsigned long	flags; // TODO unused?
 };
 
-struct EERIE_LINKED
-{
-	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
-	long			lidx;
-	long			lidx2;
-	void *	obj;
-	EERIE_MOD_INFO	modinfo;
-	void * io;
+struct EERIE_LINKED {
+	long lgroup; //linked to group n° if lgroup=-1 NOLINK
+	long lidx;
+	long lidx2;
+	EERIE_3DOBJ * obj;
+	EERIE_MOD_INFO modinfo;
+	INTERACTIVE_OBJ * io;
 };
-
 
 struct EERIE_SELECTIONS {
 	std::string name;
@@ -427,12 +427,8 @@ struct EERIE_C_DATA
 	EERIE_BONE *	bones;
 	long			nb_bones;
 };
-//////////////////////////////////////////////////////////////////////////////////
-struct EERIE_3DPAD
-{
-	float x;
-	float y;
-	float z;
+
+struct EERIE_3DPAD : public Vec3f {
 	float w;
 };
 

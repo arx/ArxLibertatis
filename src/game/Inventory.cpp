@@ -57,27 +57,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Inventory.h"
 
+#include <algorithm>
+#include <set>
+#include <vector>
+
 #include "ai/Paths.h"
 
 #include "core/Application.h"
 #include "core/Config.h"
 
 #include "game/Player.h"
-#include "game/Equipment.h"
 
 #include "gui/Interface.h"
-#include "gui/MenuWidgets.h"
 
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 
 #include "input/Input.h"
 
+#include "math/Angle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+
 #include "physics/Box.h"
 
+#include "platform/Platform.h"
+
 #include "scene/Light.h"
-#include "scene/LinkedObject.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 

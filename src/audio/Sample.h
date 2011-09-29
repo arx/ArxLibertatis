@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_SAMPLE_H
 #define ARX_AUDIO_SAMPLE_H
 
-#include <vector>
+#include <stddef.h>
 
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"

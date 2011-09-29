@@ -121,7 +121,7 @@ function(_shared_build_helper LIB LIST EXESET)
 			endforeach(src)
 			set(SHARED_BUILD_${exe}_SOURCES "${uncommon_src}" CACHE INTERNAL "")
 			
-			set(SHARED_BUILD_${exe}_LIBS "${SHARED_BUILD_${exe}_LIBS}" ${lib} CACHE INTERNAL "")
+			set(SHARED_BUILD_${exe}_LIBS ${lib} "${SHARED_BUILD_${exe}_LIBS}" CACHE INTERNAL "")
 			
 		endforeach(exe)
 		

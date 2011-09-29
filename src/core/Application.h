@@ -63,8 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "platform/Flags.h"
 
-#include "Configure.h"
-
 class RenderWindow;
 
 enum HideFlag {
@@ -181,6 +179,8 @@ public:
 	virtual bool Render() { return true; }
 	virtual bool FinalCleanup() = 0;
 	virtual void Cleanup3DEnvironment() = 0;
+	
+	virtual void setFullscreen(bool fullscreen) = 0;
 	
 };
 

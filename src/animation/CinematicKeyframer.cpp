@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/CinematicKeyframer.h"
 
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 
@@ -87,11 +88,10 @@ bool DeleteTrack(void)
 {
 	if (!CKTrack) return false;
 
-	if (CKTrack->key) free((void *)CKTrack->key);
+	if (CKTrack->key) free(CKTrack->key);
 
-	free((void *)CKTrack);
-	CKTrack = NULL;
-
+	free(CKTrack), CKTrack = NULL;
+	
 	return true;
 }
 /*----------------------------------------------------------------------*/

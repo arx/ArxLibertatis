@@ -22,8 +22,8 @@ struct WaveHeader {
 };
 
 struct ADPCMCoefficientPair {
-	short coef1;
-	short coef2;
+	s16 coef1;
+	s16 coef2;
 };
 
 struct ADPCMHeader {

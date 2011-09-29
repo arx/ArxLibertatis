@@ -32,12 +32,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 struct ANIM_USE;
 struct INTERACTIVE_OBJ;
-struct EERIE_VERTEX;
-struct EERIE_FACE;
 struct EERIEMATRIX;
 struct EERIE_QUAT;
 struct TexturedVertex;
-class TextureContainer;
 
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj, ANIM_USE * animuse, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, bool render);
 

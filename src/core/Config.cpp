@@ -25,23 +25,22 @@
 
 #include "core/Config.h"
 
-#include <fstream>
+#include <stddef.h>
+#include <algorithm>
 #include <sstream>
 
 #include "input/Input.h"
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
+#include "io/FilePath.h"
+#include "io/FileStream.h"
 #include "io/IniReader.h"
+#include "io/IniSection.h"
 #include "io/IniWriter.h"
 #include "io/Logger.h"
-#include "platform/String.h"
-#include "platform/Platform.h"
+#include "math/Vector2.h"
 
 using std::string;
-using std::ifstream;
-using std::ostream;
-using std::ofstream;
-using std::istringstream;
-using std::ostringstream;
-using std::map;
 
 // To avoid conflicts with potential other classes/namespaces
 namespace {
@@ -271,7 +270,7 @@ class ConfigWriter : public IniWriter {
 	
 public:
 	
-	ConfigWriter(ostream & _output) : IniWriter(_output) { }
+	ConfigWriter(std::ostream & _output) : IniWriter(_output) { }
 	
 	void writeActionKey(ControlAction index, const ActionKey & value);
 
@@ -373,7 +372,7 @@ bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 bool Config::save() {
 	
 	// Finally save it all to file/stream
-	ofstream out(file.c_str());
+	fs::ofstream out(file);
 	if(!out.is_open()) {
 		return false;
 	}
@@ -387,9 +386,9 @@ bool Config::save() {
 	// video
 	writer.beginSection(Section::Video);
 	if(video.resolution == Vec2i::ZERO) {
-		writer.writeKey(Key::resolution, "auto");
+		writer.writeKey(Key::resolution, Default::resolution);
 	} else {
-		ostringstream oss;
+		std::ostringstream oss;
 		oss << video.resolution.x << 'x' << video.resolution.y;
 		writer.writeKey(Key::resolution, oss.str());
 	}
@@ -409,7 +408,7 @@ bool Config::save() {
 	
 	// window
 	writer.beginSection(Section::Window);
-	ostringstream oss;
+	std::ostringstream oss;
 	oss << window.size.x << 'x' << window.size.y;
 	writer.writeKey(Key::windowSize, oss.str());
 	writer.writeKey(Key::windowFramework, window.framework);
@@ -455,7 +454,7 @@ static Vec2i parseResolution(const string & resolution) {
 	
 	Vec2i res;
 	
-	istringstream iss(resolution);
+	std::istringstream iss(resolution);
 	iss >> res.x;
 	char x = '\0';
 	iss >> x;
@@ -468,14 +467,14 @@ static Vec2i parseResolution(const string & resolution) {
 	}
 }
 
-bool Config::init(const string & file, const string & defaultFile) { // TODO use fs::path
+bool Config::init(const fs::path & file, const fs::path & defaultFile) { // TODO use fs::path
 	
 	this->file = file;
 	
-	std::ifstream ifs;
-	ifs.open(file.c_str());
+	fs::ifstream ifs;
+	ifs.open(file);
 	if(!ifs.is_open()) {
-		ifs.open(defaultFile.c_str());
+		ifs.open(defaultFile);
 	}
 	bool loaded = ifs.is_open();
 	

@@ -70,6 +70,8 @@ using std::max;
 using std::string;
 using std::vector;
 
+const std::string AUTO_RESOLUTION_STRING = "Automatic";
+
 int newTextureSize;
 static int newWidth;
 static int newHeight;
@@ -307,27 +309,27 @@ static void FadeInOut(float _fVal)
 	TexturedVertex d3dvertex[4];
 
 	u32 iColor = Color::gray(_fVal).toBGR();
-	d3dvertex[0].sx=0;
-	d3dvertex[0].sy=0;
-	d3dvertex[0].sz=0.f;
+	d3dvertex[0].p.x=0;
+	d3dvertex[0].p.y=0;
+	d3dvertex[0].p.z=0.f;
 	d3dvertex[0].rhw=0.999999f;
 	d3dvertex[0].color=iColor;
 
-	d3dvertex[1].sx=static_cast<float>(DANAESIZX);
-	d3dvertex[1].sy=0;
-	d3dvertex[1].sz=0.f;
+	d3dvertex[1].p.x=static_cast<float>(DANAESIZX);
+	d3dvertex[1].p.y=0;
+	d3dvertex[1].p.z=0.f;
 	d3dvertex[1].rhw=0.999999f;
 	d3dvertex[1].color=iColor;
 
-	d3dvertex[2].sx=0;
-	d3dvertex[2].sy=static_cast<float>(DANAESIZY);
-	d3dvertex[2].sz=0.f;
+	d3dvertex[2].p.x=0;
+	d3dvertex[2].p.y=static_cast<float>(DANAESIZY);
+	d3dvertex[2].p.z=0.f;
 	d3dvertex[2].rhw=0.999999f;
 	d3dvertex[2].color=iColor;
 
-	d3dvertex[3].sx=static_cast<float>(DANAESIZX);
-	d3dvertex[3].sy=static_cast<float>(DANAESIZY);
-	d3dvertex[3].sz=0.f;
+	d3dvertex[3].p.x=static_cast<float>(DANAESIZX);
+	d3dvertex[3].p.y=static_cast<float>(DANAESIZY);
+	d3dvertex[3].p.z=0.f;
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
 
@@ -474,7 +476,7 @@ bool Menu2_Render() {
 		pMenu = new CMenuState(MAIN);
 		pMenu->eOldMenuWindowState=eM;
 
-		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background");
+		pMenu->pTexBackGround = TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 
 		int iPosMenuPrincipaleX = 370;
 	int iPosMenuPrincipaleY=100;
@@ -766,7 +768,7 @@ bool Menu2_Render() {
 					pWindowMenuConsole->iInterligne = 5;
 
 					pTex = TextureContainer::Load("graph/interface/icons/menu_main_save");
-					me = new CMenuCheckButton(-1, fPosBack-(pTex?(pTex->m_dwDeviceWidth-pTex->m_dwWidth):0), 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me = new CMenuCheckButton(-1, fPosBack, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
@@ -923,10 +925,8 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					me->SetCheckOff();
 					pc->AddElement(me);
-					int iModeX,iModeY,iModeBpp;
-					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
-					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
-					pMenuSliderResol =(CMenuSliderText*)me;
+					pMenuSliderResol = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
+					
 					pMenuSliderResol->setEnabled(config.video.fullscreen);
 					
 					std::vector<unsigned> vBpp;
@@ -940,7 +940,7 @@ bool Menu2_Render() {
 							vBpp.push_back(mode.depth);
 						}
 						
-						if(mode.depth != (unsigned)iModeBpp) {
+						if(mode.depth != unsigned(config.video.bpp)) {
 							continue;
 						}
 						
@@ -963,19 +963,25 @@ bool Menu2_Render() {
 							ss << " (" << aspect.x << ':' << aspect.y << ')';
 						}
 						
-						((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
+						pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, ss.str(), 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + i)));
 						
 						if(mode.resolution == config.video.resolution) {
-							((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
+							pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
 						}
 					}
+					
+					pMenuSliderResol->AddText(new CMenuElementText(-1, hFontMenu, AUTO_RESOLUTION_STRING, 0, 0, lColor, 1.f, MENUSTATE(OPTIONS_VIDEO_RESOLUTION_0 + modes.size())));
+					
+					if(config.video.resolution == Vec2i::ZERO) {
+						pMenuSliderResol->iPos = pMenuSliderResol->vText.size() - 1;
+					}
 
-					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - pMenuSliderResol->GetWidth()); 
 
-					me->Move(checked_range_cast<int>(fRatio), 0); 
+					pMenuSliderResol->Move(checked_range_cast<int>(fRatio), 0); 
 
 
-					pc->AddElement(me);
+					pc->AddElement(pMenuSliderResol);
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -2340,7 +2346,7 @@ void CMenuElementText::RenderMouseOver()
 			std::ostringstream oss;
 			oss << "save/save" << std::setw(4) << std::setfill('0') << save_l[lData].num << "/gsave";
 			
-			TextureContainer * pTextureTemp = TextureContainer::LoadUI(oss.str());
+			TextureContainer * pTextureTemp = TextureContainer::LoadUI(oss.str(), TextureContainer::NoColorKey);
 			if(pTextureTemp != pTextureLoad) {
 				if(pTextureLoad) {
 					delete pTextureLoad;
@@ -2674,22 +2680,22 @@ void CMenuAllZone::DrawZone()
 		if(zone->bActif)
 		{
 			TexturedVertex v1[3],v2[3];
-			v1[0].sx = (float)zone->rZone.left;
-			v1[0].sy = (float)zone->rZone.top;
-			v1[1].sx = (float)zone->rZone.left;
-			v1[1].sy = (float)zone->rZone.bottom;
-			v1[2].sx = (float)zone->rZone.right;
-			v1[2].sy = (float)zone->rZone.bottom;
+			v1[0].p.x = (float)zone->rZone.left;
+			v1[0].p.y = (float)zone->rZone.top;
+			v1[1].p.x = (float)zone->rZone.left;
+			v1[1].p.y = (float)zone->rZone.bottom;
+			v1[2].p.x = (float)zone->rZone.right;
+			v1[2].p.y = (float)zone->rZone.bottom;
 
-			v2[0].sx = (float)zone->rZone.left;
-			v2[0].sy = (float)zone->rZone.top;
-			v2[1].sx = (float)zone->rZone.right;
-			v2[1].sy = (float)zone->rZone.top;
-			v2[2].sx = (float)zone->rZone.right;
-			v2[2].sy = (float)zone->rZone.bottom;
+			v2[0].p.x = (float)zone->rZone.left;
+			v2[0].p.y = (float)zone->rZone.top;
+			v2[1].p.x = (float)zone->rZone.right;
+			v2[1].p.y = (float)zone->rZone.top;
+			v2[2].p.x = (float)zone->rZone.right;
+			v2[2].p.y = (float)zone->rZone.bottom;
 			
 			v1[0].color=v1[1].color=v1[2].color=v2[0].color=v2[1].color=v2[2].color=0xFFFFA000;    
-			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;    
+			v1[0].p.z=v1[1].p.z=v1[2].p.z=v2[0].p.z=v2[1].p.z=v2[2].p.z=0.f;    
 			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
 			
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v1);
@@ -2927,7 +2933,7 @@ void CMenuCheckButton::Render()
 		TexturedVertex v[4];
 		Color color = (bCheck) ? Color::white : Color::fromBGRA(0xFF3F3F3F);
 
-		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
+		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 		
 		float iY = 0;
@@ -2969,7 +2975,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
+	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	float iY = 0;
@@ -3103,7 +3109,7 @@ MENUSTATE CWindowMenu::Render()
 
 	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
+	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -3432,17 +3438,17 @@ void CWindowMenuConsole::UpdateText()
 	GRenderer->ResetTexture(0);
 	float col=.5f+rnd()*.5f;
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::gray(col).toBGR();
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
+	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-	v[0].sx = (float)pZoneClick->rZone.right;
-	v[0].sy = (float)pZoneClick->rZone.top;
-	v[1].sx = v[0].sx+2.f;
-	v[1].sy = v[0].sy;
-	v[2].sx = v[0].sx;
-	v[2].sy = (float)pZoneClick->rZone.bottom;
-	v[3].sx = v[1].sx;
-	v[3].sy = v[2].sy;
+	v[0].p.x = (float)pZoneClick->rZone.right;
+	v[0].p.y = (float)pZoneClick->rZone.top;
+	v[1].p.x = v[0].p.x+2.f;
+	v[1].p.y = v[0].p.y;
+	v[2].p.x = v[0].p.x;
+	v[2].p.y = (float)pZoneClick->rZone.bottom;
+	v[3].p.x = v[1].p.x;
+	v[3].p.y = v[2].p.y;
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 }
 
@@ -4353,26 +4359,26 @@ void CMenuButton::RenderMouseOver()
 	{
 		TexturedVertex v[4];
 		v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
-		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
+		v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 		GRenderer->SetTexture(0, pTexOver);
-		v[0].sx = (float)rZone.left;
-		v[0].sy = (float)rZone.top;
-		v[0].tu = 0.f;
-		v[0].tv = 0.f;
-		v[1].sx = (float)(rZone.right);
-		v[1].sy = v[0].sy;
-		v[1].tu = 0.999999f;
-		v[1].tv = 0.f;
-		v[2].sx = v[0].sx;
-		v[2].sy = (float)(rZone.bottom);
-		v[2].tu = 0.f;
-		v[2].tv = 0.999999f;
-		v[3].sx = v[1].sx;
-		v[3].sy = v[2].sy;
-		v[3].tu = 0.999999f;
-		v[3].tv = 0.999999f;
+		v[0].p.x = (float)rZone.left;
+		v[0].p.y = (float)rZone.top;
+		v[0].uv.x = 0.f;
+		v[0].uv.y = 0.f;
+		v[1].p.x = (float)(rZone.right);
+		v[1].p.y = v[0].p.y;
+		v[1].uv.x = 0.999999f;
+		v[1].uv.y = 0.f;
+		v[2].p.x = v[0].p.x;
+		v[2].p.y = (float)(rZone.bottom);
+		v[2].uv.x = 0.f;
+		v[2].uv.y = 0.999999f;
+		v[3].p.x = v[1].p.x;
+		v[3].p.y = v[2].p.y;
+		v[3].uv.x = 0.999999f;
+		v[3].uv.y = 0.999999f;
 		EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 	}
 
@@ -4472,7 +4478,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	_pText->setEnabled(enabled);
 	
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
-	vText.insert(vText.end(), _pText);
+	vText.push_back(_pText);
 
 	Vec2i textSize = _pText->GetTextSize();
 
@@ -4586,16 +4592,24 @@ bool CMenuSliderText::OnMouseClick(int)
 	case BUTTON_MENUOPTIONSVIDEO_RESOLUTION:
 		{
 			std::string pcText = (vText.at(iPos))->lpszText;
-			std::stringstream ss( pcText );
-			int iX = config.video.resolution.x;
-			int iY = config.video.resolution.y;
-			char tmp;
-			ss >> iX >> tmp >> iY;
-			{
+			
+			if(pcText == AUTO_RESOLUTION_STRING) {
+				
+				newWidth = newHeight = 0;
+				
+			} else {
+				
+				std::stringstream ss( pcText );
+				int iX = config.video.resolution.x;
+				int iY = config.video.resolution.y;
+				char tmp;
+				ss >> iX >> tmp >> iY;
 				newWidth = iX;
 				newHeight = iY;
-				changeResolution = true;
+				
 			}
+			
+			changeResolution = true;
 		}
 		break;
 	// MENUOPTIONS_VIDEO
@@ -4643,18 +4657,17 @@ void CMenuSliderText::Update(int _iTime)
 
 //-----------------------------------------------------------------------------
 
-void CMenuSliderText::Render()
-{
+void CMenuSliderText::Render() {
+	
 	if(WILL_RELOAD_ALL_TEXTURES) return;
 	if(bNoMenu) return;
-
+	
 	if(enabled) {
 		pLeftButton->Render();
 		pRightButton->Render();
 	}
-
-	if (vText[iPos])
-	{
+	
+	if(iPos >= 0 && size_t(iPos) < vText.size() && vText[iPos]) {
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		vText[iPos]->Render();
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -4901,7 +4914,7 @@ void CMenuSlider::Render()
 
 	TexturedVertex v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = Color::white.toBGR();
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
+	v[0].p.z=v[1].p.z=v[2].p.z=v[3].p.z=0.f;    
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	TextureContainer *pTex = pTex1;
@@ -5084,18 +5097,18 @@ static bool ComputePer(const Vec2s & _psPoint1, const Vec2s & _psPoint2, Texture
 	sTemp.x = -sTemp.y;
 	sTemp.y = fTemp;
 	float fMag = sTemp.length();
-	if(fMag < EEdef_EPSILON) {
+	if(fMag < std::numeric_limits<float>::epsilon()) {
 		return false;
 	}
 
 	fMag = _fSize / fMag;
 
-	_psd3dv1->sx=(sTemp.x*fMag);
-	_psd3dv1->sy=(sTemp.y*fMag);
-	_psd3dv2->sx=((float)_psPoint1.x)-_psd3dv1->sx;
-	_psd3dv2->sy=((float)_psPoint1.y)-_psd3dv1->sy;
-	_psd3dv1->sx+=((float)_psPoint1.x);
-	_psd3dv1->sy+=((float)_psPoint1.y);
+	_psd3dv1->p.x=(sTemp.x*fMag);
+	_psd3dv1->p.y=(sTemp.y*fMag);
+	_psd3dv2->p.x=((float)_psPoint1.x)-_psd3dv1->p.x;
+	_psd3dv2->p.y=((float)_psPoint1.y)-_psd3dv1->p.y;
+	_psd3dv1->p.x+=((float)_psPoint1.x);
+	_psd3dv1->p.y+=((float)_psPoint1.y);
 
 	return true;
 }
@@ -5123,14 +5136,14 @@ static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fR
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	TexturedVertex v[4];
-	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.f;
+	v[0].p.z = v[1].p.z = v[2].p.z = v[3].p.z = 0.f;
 	v[0].rhw = v[1].rhw = v[2].rhw = v[3].rhw = 0.999999f;
 	
 	v[0].color = v[2].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 	
 	if(!ComputePer(points[0], points[1], &v[0], &v[2], fTaille)) {
-		v[0].sx = v[2].sx = points[0].x;
-		v[0].sy = v[2].sy = points[1].y;
+		v[0].p.x = v[2].p.x = points[0].x;
+		v[0].p.y = v[2].p.y = points[1].y;
 	}
 	
 	for(int i = 1; i < _iNbPt - 1; i++) {
@@ -5145,11 +5158,11 @@ static void DrawLine2D(const Vec2s * points, int _iNbPt, float _fSize, float _fR
 			v[1].color = v[3].color = Color3f(fColorRed, fColorGreen, fColorBlue).toBGR();
 			EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 			
-			v[0].sx = v[1].sx;
-			v[0].sy = v[1].sy;
+			v[0].p.x = v[1].p.x;
+			v[0].p.y = v[1].p.y;
 			v[0].color = v[1].color;
-			v[2].sx = v[3].sx;
-			v[2].sy = v[3].sy;
+			v[2].p.x = v[3].p.x;
+			v[2].p.y = v[3].p.y;
 			v[2].color = v[3].color;
 		}
 		

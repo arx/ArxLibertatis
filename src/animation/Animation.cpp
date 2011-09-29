@@ -57,9 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Animation.h"
 
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
 #include <cstdio>
-#include <climits>
+#include <cstring>
 #include <sstream>
+#include <vector>
 
 #include "animation/AnimationRender.h"
 
@@ -70,9 +74,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -82,15 +91,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/Logger.h"
 
-#include "physics/Clothes.h"
-#include "physics/Collisions.h"
+#include "math/Angle.h"
+#include "math/Vector3.h"
+
+#include "platform/Platform.h"
+#include "platform/String.h"
 
 #include "scene/Object.h"
-#include "scene/Light.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/Interactive.h"
-#include <platform/String.h>
+
+#include "script/Script.h"
 
 using std::min;
 using std::max;
@@ -194,9 +206,9 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 	{
 		for (short i=0;i<ah->alt_nb;i++)
 		{
-			float rnd=rnd()*tot;
+			float r = rnd()*tot;
 
-			if ((rnd<anim_power[min((int)i,14)]) && (i!=old))
+			if ((r < anim_power[min((int)i,14)]) && (i!=old))
 				return i;
 		}
 	}
@@ -899,16 +911,16 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			
 			tTexturedVertexTab2[iPos]			= pSMY->pVertex[0];
 			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[0]).toBGR();
-			tTexturedVertexTab2[iPos].tu		= pSMY->uv[0];
-			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[1];
+			tTexturedVertexTab2[iPos].uv.x		= pSMY->uv[0];
+			tTexturedVertexTab2[iPos++].uv.y		= pSMY->uv[1];
 			tTexturedVertexTab2[iPos]			= pSMY->pVertex[1];
 			tTexturedVertexTab2[iPos].color = Color::gray(pSMY->color[1]).toBGR();
-			tTexturedVertexTab2[iPos].tu		= pSMY->uv[2];
-			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[3];
+			tTexturedVertexTab2[iPos].uv.x		= pSMY->uv[2];
+			tTexturedVertexTab2[iPos++].uv.y		= pSMY->uv[3];
 			tTexturedVertexTab2[iPos]			= pSMY->pVertex[2];
 			tTexturedVertexTab2[iPos].color	= Color::gray(pSMY->color[2]).toBGR();
-			tTexturedVertexTab2[iPos].tu		= pSMY->uv[4];
-			tTexturedVertexTab2[iPos++].tv		= pSMY->uv[5];
+			tTexturedVertexTab2[iPos].uv.x		= pSMY->uv[4];
+			tTexturedVertexTab2[iPos++].uv.y		= pSMY->uv[5];
 		}
 
 		EERIEDRAWPRIM(Renderer::TriangleList, tTexturedVertexTab2, iPos);
@@ -1106,21 +1118,21 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			if ( (modinfo) && !angle && BIGMAT )
 			{
-				vert_list_static[0].sx	=	(eobj->vertexlist[i].v.x-modinfo->link_position.x) * scale;
-				vert_list_static[0].sy	=	(eobj->vertexlist[i].v.y-modinfo->link_position.y) * scale;
-				vert_list_static[0].sz	=	(eobj->vertexlist[i].v.z-modinfo->link_position.z) * scale;
+				vert_list_static[0].p.x	=	(eobj->vertexlist[i].v.x-modinfo->link_position.x) * scale;
+				vert_list_static[0].p.y	=	(eobj->vertexlist[i].v.y-modinfo->link_position.y) * scale;
+				vert_list_static[0].p.z	=	(eobj->vertexlist[i].v.z-modinfo->link_position.z) * scale;
 			}
 			else if (scale != 1.f)
 			{
-				vert_list_static[0].sx	=	eobj->vertexlist[i].v.x * scale;
-				vert_list_static[0].sy	=	eobj->vertexlist[i].v.y * scale;
-				vert_list_static[0].sz	=	eobj->vertexlist[i].v.z * scale;
+				vert_list_static[0].p.x	=	eobj->vertexlist[i].v.x * scale;
+				vert_list_static[0].p.y	=	eobj->vertexlist[i].v.y * scale;
+				vert_list_static[0].p.z	=	eobj->vertexlist[i].v.z * scale;
 			}
 			else
 			{
-				vert_list_static[0].sx	=	eobj->vertexlist[i].v.x;
-				vert_list_static[0].sy	=	eobj->vertexlist[i].v.y;
-				vert_list_static[0].sz	=	eobj->vertexlist[i].v.z;
+				vert_list_static[0].p.x	=	eobj->vertexlist[i].v.x;
+				vert_list_static[0].p.y	=	eobj->vertexlist[i].v.y;
+				vert_list_static[0].p.z	=	eobj->vertexlist[i].v.z;
 			}
 
 			if ( !angle )
@@ -1128,44 +1140,41 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 				if ( ( io != NULL ) && ( modinfo == NULL ) )
 				{
 					
-					vert_list_static[0].sx	-=	io->obj->pbox->vert[0].initpos.x * scale-io->obj->point0.x;
-					vert_list_static[0].sy	-=	io->obj->pbox->vert[0].initpos.y * scale-io->obj->point0.y;
-					vert_list_static[0].sz	-=	io->obj->pbox->vert[0].initpos.z * scale-io->obj->point0.z;
+					vert_list_static[0].p.x	-=	io->obj->pbox->vert[0].initpos.x * scale-io->obj->point0.x;
+					vert_list_static[0].p.y	-=	io->obj->pbox->vert[0].initpos.y * scale-io->obj->point0.y;
+					vert_list_static[0].p.z	-=	io->obj->pbox->vert[0].initpos.z * scale-io->obj->point0.z;
 				}
 
-				if ( BIGQUAT == NULL )
-					VertexMatrixMultiply( (Vec3f *)&vert_list_static[1], (Vec3f *)&vert_list_static[0], BIGMAT );
-				else 
-					TransformVertexQuat ( BIGQUAT, (Vec3f *)&vert_list_static[0], (Vec3f *)&vert_list_static[1] );
+				if(BIGQUAT == NULL) {
+					VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, BIGMAT);
+				} else {
+					TransformVertexQuat(BIGQUAT, &vert_list_static[0].p, &vert_list_static[1].p);
+				}
 
-				eobj->vertexlist3[i].v.x	=	vert_list_static[1].sx	+=	pos.x;
-				eobj->vertexlist3[i].v.y	=	vert_list_static[1].sy	+=	pos.y;
-				eobj->vertexlist3[i].v.z	=	vert_list_static[1].sz	+=	pos.z;
+				eobj->vertexlist3[i].v.x	=	vert_list_static[1].p.x	+=	pos.x;
+				eobj->vertexlist3[i].v.y	=	vert_list_static[1].p.y	+=	pos.y;
+				eobj->vertexlist3[i].v.z	=	vert_list_static[1].p.z	+=	pos.z;
 	
 				specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld );
 				specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert );
 			}
 			else
 			{
-				_YRotatePoint( (Vec3f *)&vert_list_static[0], (Vec3f *)&vert_list_static[1], Ycos, Ysin );
-				_XRotatePoint( (Vec3f *)&vert_list_static[1], (Vec3f *)&vert_list_static[0], Xcos, Xsin );
+				_YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
+				_XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
 
 				// Misc Optim to avoid 1 infrequent rotation around Z
-				if ( Zsin == 0.f ) 
-				{
-					eobj->vertexlist3[i].v.x	=	vert_list_static[0].sx	+=	pos.x;
-					eobj->vertexlist3[i].v.y	=	vert_list_static[0].sy	+=	pos.y;
-					eobj->vertexlist3[i].v.z	=	vert_list_static[0].sz	+=	pos.z;
+				if(Zsin == 0.f) {
+					
+					eobj->vertexlist3[i].v = vert_list_static[0].p += pos;
 					
 					specialEE_RT(&vert_list_static[0],&eobj->vertexlist[i].vworld);
 					specialEE_P(&eobj->vertexlist[i].vworld,&eobj->vertexlist[i].vert);
 				}
 				else 
 				{			
-					_ZRotatePoint( (Vec3f *) &vert_list_static[0], (Vec3f *)&vert_list_static[1], Zcos, Zsin );
-					eobj->vertexlist3[i].v.x	=	vert_list_static[1].sx	+=	pos.x;
-					eobj->vertexlist3[i].v.y	=	vert_list_static[1].sy	+=	pos.y;
-					eobj->vertexlist3[i].v.z	=	vert_list_static[1].sz	+=	pos.z;
+					_ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
+					eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
 					specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
 					specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -1175,15 +1184,15 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			// Memorizes 2D Bounding Box using vertex min/max x,y pos
 			if (eobj->vertexlist[i].vert.rhw>0.f) 
 			{
-				if ((eobj->vertexlist[i].vert.sx >= -32000) &&
-					(eobj->vertexlist[i].vert.sx <= 32000) &&
-					(eobj->vertexlist[i].vert.sy >= -32000) &&
-					(eobj->vertexlist[i].vert.sy <= 32000))
+				if ((eobj->vertexlist[i].vert.p.x >= -32000) &&
+					(eobj->vertexlist[i].vert.p.x <= 32000) &&
+					(eobj->vertexlist[i].vert.p.y >= -32000) &&
+					(eobj->vertexlist[i].vert.p.y <= 32000))
 				{
-					BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
-					BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
-					BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
-					BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
+					BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.p.x);
+					BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.p.x);
+					BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.p.y);
+					BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.p.y);
 				}
 			}
 
@@ -1388,7 +1397,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
 								sp.origin.z=io->pos.z+rnd()*200.f-100.f;
-								sp.radius=rnd()*100.f+100.f;							
+								sp.radius=rnd()*100.f+100.f;
 							}
 
 							if (io->sfx_flag & SFX_TYPE_INCINERATE)
@@ -1453,7 +1462,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
 			normFace.z=(normV10.x*normV20.y)-(normV10.y*normV20.x);
 
-			if((DOTPRODUCT( normFace , nrm )>0.f) ) continue;
+			if((dot( normFace , nrm )>0.f) ) continue;
 		}
 
 		TexturedVertex		*vert_list;
@@ -1526,18 +1535,18 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		vert_list[1]=eobj->vertexlist[paf[1]].vert;
 		vert_list[2]=eobj->vertexlist[paf[2]].vert;
 
-		vert_list[0].tu=eobj->facelist[i].u[0];
-		vert_list[0].tv=eobj->facelist[i].v[0];
-		vert_list[1].tu=eobj->facelist[i].u[1];
-		vert_list[1].tv=eobj->facelist[i].v[1];
-		vert_list[2].tu=eobj->facelist[i].u[2];
-		vert_list[2].tv=eobj->facelist[i].v[2];	
+		vert_list[0].uv.x=eobj->facelist[i].u[0];
+		vert_list[0].uv.y=eobj->facelist[i].v[0];
+		vert_list[1].uv.x=eobj->facelist[i].u[1];
+		vert_list[1].uv.y=eobj->facelist[i].v[1];
+		vert_list[2].uv.x=eobj->facelist[i].u[2];
+		vert_list[2].uv.y=eobj->facelist[i].v[2];	
 
 		if (FORCE_FRONT_DRAW)
 		{
-			vert_list[0].sz*=IN_FRONT_DIVIDER_ITEMS;
-			vert_list[1].sz*=IN_FRONT_DIVIDER_ITEMS;
-			vert_list[2].sz*=IN_FRONT_DIVIDER_ITEMS;
+			vert_list[0].p.z*=IN_FRONT_DIVIDER_ITEMS;
+			vert_list[1].p.z*=IN_FRONT_DIVIDER_ITEMS;
+			vert_list[2].p.z*=IN_FRONT_DIVIDER_ITEMS;
 		}
 
 		// Treat WATER Polys (modify UVs)
@@ -1545,9 +1554,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			for (k=0;k<3;k++) 
 			{ 
-				vert_list[k].tu=eobj->facelist[i].u[k];
-				vert_list[k].tv=eobj->facelist[i].v[k];
-				ApplyWaterFXToVertex((Vec3f *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
+				vert_list[k].uv.x=eobj->facelist[i].u[k];
+				vert_list[k].uv.y=eobj->facelist[i].v[k];
+				ApplyWaterFXToVertex(&eobj->vertexlist[eobj->facelist[i].vid[k]].v, &vert_list[k], 0.3f);
 			}
 		}
 
@@ -1669,7 +1678,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 			pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
 		}
 
-		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(TexturedVertex)*3);
+		memcpy(vert_list_metal, vert_list, sizeof(TexturedVertex)*3);
 		TexturedVertex * tl=vert_list_metal;
 
 		long r = 0, g = 0, b = 0;
@@ -1706,8 +1715,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 		{
 			if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
 			{
-				if ( io )
-					SpawnMetalShine( (Vec3f *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
+				if(io) {
+					SpawnMetalShine(&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert.p, r, g, b, GetInterNum(io));
+				}
 			}
 		}
 		else
@@ -1735,10 +1745,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 
 		for (long o=0;o<3;o++)
 		{
-			if (BIGMAT!=NULL)
-				VertexMatrixMultiply(&temporary3D, (Vec3f *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
-			else 
-				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
+			if(BIGMAT) {
+				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, BIGMAT);
+			} else {
+				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
+			}
 	
 			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
@@ -1816,33 +1827,33 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTI
 					memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
 
 					float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
-					vect1.x=workon[first].sx-workon[third].sx;
-					vect1.y=workon[first].sy-workon[third].sy;						
-					float len1=1.f/EEsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
+					vect1.x=workon[first].p.x-workon[third].p.x;
+					vect1.y=workon[first].p.y-workon[third].p.y;						
+					float len1=1.f/ffsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
 
 					if (vect1.x<0.f) len1*=1.2f;
 
 					vect1.x*=len1;
 					vect1.y*=len1;
-					vect2.x=workon[second].sx-workon[third].sx;
-					vect2.y=workon[second].sy-workon[third].sy;
-					float len2=1.f/EEsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
+					vect2.x=workon[second].p.x-workon[third].p.x;
+					vect2.y=workon[second].p.y-workon[third].p.y;
+					float len2=1.f/ffsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
 
 					if (vect2.x<0.f) len2*=1.2f;
 
 					vect2.x*=len2;
 					vect2.y*=len2;
-				vert[1].sx += (vect1.x + 0.2f - rnd() * 0.1f) * siz; 
-				vert[1].sy += (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
+				vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz; 
+				vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
 					vert[1].color=0xFF000000;
 
-					vert[0].sz += 0.0001f;
-					vert[3].sz += 0.0001f; 
+					vert[0].p.z += 0.0001f;
+					vert[3].p.z += 0.0001f; 
 
 					vert[1].rhw*=.8f;
 					vert[2].rhw*=.8f;
-				vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
-				vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
+				vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
+				vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
 
 					if (io->halo.flags & HALO_NEGATIVE) 
 						vert[2].color=0x00000000;					

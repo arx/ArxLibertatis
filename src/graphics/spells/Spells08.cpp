@@ -76,27 +76,20 @@ CExplosion::~CExplosion()
 	this->Kill();
 }
 
-//-----------------------------------------------------------------------------
-void CExplosion::Kill(void)
-{
-	if (disqued3d)
-	{
-		free((void *)disqued3d);
-		disqued3d = NULL;
+void CExplosion::Kill(void) {
+	
+	if(disqued3d) {
+		free(disqued3d), disqued3d = NULL;
+	}
+	
+	if(disquevertex) {
+		free(disquevertex), disquevertex = NULL;
 	}
 
-	if (disquevertex)
-	{
-		free((void *)disquevertex);
-		disquevertex = NULL;
+	if(disqueind) {
+		free(disqueind), disqueind = NULL;
 	}
-
-	if (disqueind)
-	{
-		free((void *)disqueind);
-		disqueind = NULL;
-	}
-
+	
 	if (tactif)
 	{
 		int nb = (disquenbvertex >> 1);
@@ -109,8 +102,7 @@ void CExplosion::Kill(void)
 			}
 		}
 
-		free((void *)tactif);
-		tactif = NULL;
+		free(tactif), tactif = NULL;
 	}
 }
 
@@ -159,12 +151,12 @@ void CExplosion::Update(unsigned long _ulTime)
 //-----------------------------------------------------------------------------
 void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureContainer * tp)
 {
-	if (DoSphericDamage((Vec3f *)v, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
+	if (DoSphericDamage(&v->p, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
 	{
 		Vec3f hit;
-		hit.x = v->sx;
-		hit.y = v->sy;
-		hit.z = v->sz;
+		hit.x = v->p.x;
+		hit.y = v->p.y;
+		hit.z = v->p.z;
 		DynLight[tactif[num]].exist = 0;
 		tactif[num] = -1;
 		ARX_BOOMS_Add(&hit);
@@ -181,9 +173,9 @@ void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureConta
 			particle[j].exist = 1;
 			particle[j].zdec = 0;
 
-			particle[j].ov.x		=	v->sx;
-			particle[j].ov.y		=	v->sy;
-			particle[j].ov.z		=	v->sz;
+			particle[j].ov.x		=	v->p.x;
+			particle[j].ov.y		=	v->p.y;
+			particle[j].ov.z		=	v->p.z;
 			particle[j].move.x		=	0.f;
 			particle[j].move.y		=	rnd();
 			particle[j].move.z		=	0.f;
@@ -241,17 +233,17 @@ float CExplosion::Render()
 
 			while (nb)
 			{
-				d3dvs.sx = pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * scale);
-				d3dvs.sy = pos.y;
-				d3dvs.sz = pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * scale);
+				d3dvs.p.x = pos.x + (vertex + 1)->x + ((vertex->x - (vertex + 1)->x) * scale);
+				d3dvs.p.y = pos.y;
+				d3dvs.p.z = pos.z + (vertex + 1)->z + ((vertex->z - (vertex + 1)->z) * scale);
 				EE_RTP(&d3dvs, d3dv);
 				d3dv->color = Color(255, 200, 0).toBGRA();
 				vertex++;
 				d3dv++;
 
-				d3dvs.sx = pos.x + vertex->x;
-				d3dvs.sy = pos.y;
-				d3dvs.sz = pos.z + vertex->z;
+				d3dvs.p.x = pos.x + vertex->x;
+				d3dvs.p.y = pos.y;
+				d3dvs.p.z = pos.z + vertex->z;
 				EE_RTP(&d3dvs, d3dv);
 
 				if (!ARXPausedTimer) d3dv->color = Color((int)(rin * rnd()), 0, 0).toBGRA();
@@ -367,24 +359,24 @@ float CExplosion::Render()
 
 			while (nb--)
 			{
-				d3dvs.sx = pos.x + vertex->x * rin;
-				d3dvs.sy = pos.y;
-				d3dvs.sz = pos.z + vertex->z * rin;
+				d3dvs.p.x = pos.x + vertex->x * rin;
+				d3dvs.p.y = pos.y;
+				d3dvs.p.z = pos.z + vertex->z * rin;
 				vertex++;
-				d3dvs2.sx = pos.x + vertex->x * rin;
-				d3dvs2.sy = pos.y;
-				d3dvs2.sz = pos.z + vertex->z * rin;
+				d3dvs2.p.x = pos.x + vertex->x * rin;
+				d3dvs2.p.y = pos.y;
+				d3dvs2.p.z = pos.z + vertex->z * rin;
 				vertex++;
 
 				if (tactif[nb] >= 0)
 				{
 					Vec3f pos, dir;
-					pos.x = d3dvs2.sx;
-					pos.y = d3dvs2.sy;
-					pos.z = d3dvs2.sz;
-					dir.x = d3dvs.sx;
-					dir.y = d3dvs.sy;
-					dir.z = d3dvs.sz;
+					pos.x = d3dvs2.p.x;
+					pos.y = d3dvs2.p.y;
+					pos.z = d3dvs2.p.z;
+					dir.x = d3dvs.p.x;
+					dir.y = d3dvs.p.y;
+					dir.z = d3dvs.p.z;
 
 					DynLight[tactif[nb]].pos.x = dir.x;
 					DynLight[tactif[nb]].pos.y = dir.y;

@@ -7,10 +7,17 @@
 #include "graphics/image/Image.h"
 #include "io/FilePath.h"
 #include "math/Vector2.h"
+#include "platform/Flags.h"
 
 class Texture {
 	
 public:
+	
+	enum TextureFlag {
+		HasMipmaps  = (1<<0),
+		HasColorKey = (1<<1)
+	};
+	DECLARE_FLAGS(TextureFlag, TextureFlags)
 	
 	virtual ~Texture() { }
 	
@@ -24,16 +31,16 @@ public:
 	
 	Image::Format GetFormat() const { return mFormat; }
 	
-	bool HasMipmaps() const { return mHasMipmaps; }
+	inline bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
 	
 protected:
 	
-	Texture() : mFormat(Image::Format_Unknown), mHasMipmaps(false), size(Vec2i::ZERO), storedSize(Vec2i::ZERO), mDepth(0) { }
+	Texture() : mFormat(Image::Format_Unknown), flags(0), size(Vec2i::ZERO), storedSize(Vec2i::ZERO), mDepth(0) { }
 	
 	virtual bool Create() = 0;
 	
 	Image::Format mFormat;
-	bool mHasMipmaps;
+	TextureFlags flags;
 	
 	Vec2i size;
 	Vec2i storedSize;
@@ -42,14 +49,16 @@ protected:
 	
 };
 
+DECLARE_FLAGS_OPERATORS(Texture::TextureFlags)
+
 class Texture2D : public Texture {
 	
 public:
 	
 	virtual ~Texture2D() { }
 	
-	bool Init(const fs::path & strFileName, bool pCreateMipmaps = false);
-	bool Init(const Image & image, bool createMipmaps = true);
+	bool Init(const fs::path & strFileName, TextureFlags flags = HasColorKey);
+	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
 	bool Init(unsigned int width, unsigned int height, Image::Format format);
 	
 	bool Restore();

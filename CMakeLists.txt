@@ -206,6 +206,17 @@ else(MSVC)
 	
 	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
 	
+	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
+	check_symbol_exists(fork "unistd.h" HAVE_FORK)
+	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
+	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
+	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
+	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
+	check_symbol_exists(kill "signal.h" HAVE_KILL)
+	check_symbol_exists(signal "signal.h" HAVE_SIGNAL)
+	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
+	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
+	
 	# Warning level
 	add_cxxflag("-Wall")
 	add_cxxflag("-Wextra")
@@ -231,9 +242,10 @@ else(MSVC)
 		#Debug
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
 		add_definitions(-D_DEBUG)
+		
 	else()
 		#Release
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3") # TODO fix strict aliasing
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3")
 		add_definitions(-D_NDEBUG)
 	endif()
 	
@@ -257,8 +269,11 @@ else(MSVC)
 	add_cxxflag(-fno-exceptions)
 	add_cxxflag(-fno-rtti)
 	
-	# TODO fix issues first
-	add_cxxflag(-fno-strict-aliasing)
+	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
+		# The standard library shipped with ekopath failes to compile with -fno-rtti
+		# See https://github.com/pathscale/stdcxx/issues/3
+		add_definitions(-D_RWSTD_NO_DYNAMIC_CAST)
+	endif()
 	
 endif(MSVC)
 
@@ -457,6 +472,7 @@ set(PHYSICS_SOURCES
 )
 
 set(PLATFORM_SOURCES
+	src/platform/CrashHandler.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
 	src/platform/Random.cpp

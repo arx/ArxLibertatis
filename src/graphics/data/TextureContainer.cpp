@@ -105,61 +105,56 @@ TextureContainer * GetAnyTexture()
 	return g_ptcTextureList;
 }
 
-void ResetVertexLists(TextureContainer * ptcTexture)
-{
-	if(!ptcTexture)
+void ResetVertexLists(TextureContainer * ptcTexture) {
+	
+	if(!ptcTexture) {
 		return;
-
+	}
+	
 	ptcTexture->ulNbVertexListCull = 0;
 	ptcTexture->ulNbVertexListCull_TNormalTrans = 0;
 	ptcTexture->ulNbVertexListCull_TAdditive = 0;
 	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
 	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
 	ptcTexture->ulNbVertexListCull_TMetal = 0;
-
+	
 	ptcTexture->ulMaxVertexListCull = 0;
 	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
 	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
 	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
 	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
 	ptcTexture->ulMaxVertexListCull_TMetal = 0;
-
+	
 	ptcTexture->vPolyInterZMap.clear();
 	ptcTexture->vPolyZMap.clear();
-
-	if (ptcTexture->pVertexListCull)
-	{
-		free((void *)ptcTexture->pVertexListCull);
+	
+	if(ptcTexture->pVertexListCull) {
+		free(ptcTexture->pVertexListCull);
 		ptcTexture->pVertexListCull = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TNormalTrans)
-	{
-		free((void *)ptcTexture->pVertexListCull_TNormalTrans);
+	
+	if(ptcTexture->pVertexListCull_TNormalTrans) {
+		free(ptcTexture->pVertexListCull_TNormalTrans);
 		ptcTexture->pVertexListCull_TNormalTrans = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TAdditive)
-	{
-		free((void *)ptcTexture->pVertexListCull_TAdditive);
+	
+	if(ptcTexture->pVertexListCull_TAdditive) {
+		free(ptcTexture->pVertexListCull_TAdditive);
 		ptcTexture->pVertexListCull_TAdditive = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TSubstractive)
-	{
-		free((void *)ptcTexture->pVertexListCull_TSubstractive);
+	
+	if(ptcTexture->pVertexListCull_TSubstractive) {
+		free(ptcTexture->pVertexListCull_TSubstractive);
 		ptcTexture->pVertexListCull_TSubstractive = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TMultiplicative)
-	{
-		free((void *)ptcTexture->pVertexListCull_TMultiplicative);
+	
+	if(ptcTexture->pVertexListCull_TMultiplicative) {
+		free(ptcTexture->pVertexListCull_TMultiplicative);
 		ptcTexture->pVertexListCull_TMultiplicative = NULL;
 	}
-
-	if (ptcTexture->pVertexListCull_TMetal)
-	{
-		free((void *)ptcTexture->pVertexListCull_TMetal);
+	
+	if(ptcTexture->pVertexListCull_TMetal) {
+		free(ptcTexture->pVertexListCull_TMetal);
 		ptcTexture->pVertexListCull_TMetal = NULL;
 	}
 	
@@ -274,22 +269,25 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 	m_pTexture = GRenderer->CreateTexture2D();
 	if(m_pTexture)
 	{
-		bool bMipmaps = !(m_dwFlags & NoMipmap);
-		bLoaded = m_pTexture->Init(tempPath, bMipmaps);
+		
+		Texture::TextureFlags flags = 0;
+		
+		if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
+			flags |= Texture::HasColorKey;
+		}
+		
+		if(!(m_dwFlags & NoMipmap)) {
+			flags |= Texture::HasMipmaps;
+		}
+		
+		bLoaded = m_pTexture->Init(tempPath, flags);
 		if(bLoaded)
 		{
-			m_dwWidth   = m_pTexture->getSize().x;
-			m_dwHeight  = m_pTexture->getSize().y;
-
-			m_dwDeviceWidth = m_pTexture->getStoredSize().x;
-			m_dwDeviceHeight = m_pTexture->getStoredSize().y;
-
-			m_odx = (1.f / (float)m_dwWidth);
-			m_hdx = 0.5f * (1.f / (float)m_dwDeviceWidth);
-			m_dx  = (m_dwWidth / (float)m_dwDeviceWidth) + this->m_hdx;
-			m_ody = (1.f / (float)m_dwHeight);
-			m_hdy = 0.5f * (1.f / (float)m_dwDeviceHeight);
-			m_dy  = (m_dwHeight / (float)m_dwDeviceHeight) + this->m_hdy;
+			m_dwWidth = m_pTexture->getSize().x;
+			m_dwHeight = m_pTexture->getSize().y;
+			
+			Vec2i storedSize = m_pTexture->getStoredSize();
+			uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
 		}
 	}
 

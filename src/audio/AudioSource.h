@@ -26,14 +26,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AUDIO_AUDIOSOURCE_H
 #define ARX_AUDIO_AUDIOSOURCE_H
 
+#include <stddef.h>
 #include <vector>
+#include <utility>
 
 #include "audio/AudioTypes.h"
+#include "math/MathFwd.h"
 
 namespace audio {
 
 class Sample;
-class Stream;
 
 /*!
  * An audio source that can play one sample.
@@ -59,7 +61,7 @@ public:
 	 * Set the volume of this source and update the volume calculated from the sources mixers.
 	 * @param volume The new source volume. The volume will be clamped to the range [0,1].
 	 */
-	virtual aalError setVolume(float volume) = 0;
+	aalError setVolume(float volume);
 	
 	/*!
 	 * Set the pitch of this source and update the pitch calculated from the sources mixers.
@@ -78,13 +80,13 @@ public:
 	virtual aalError setDirection(const Vec3f & direction) = 0;
 	virtual aalError setCone(const SourceCone & cone) = 0;
 	virtual aalError setFalloff(const SourceFalloff & falloff) = 0;
-	virtual aalError setMixer(MixerId mixer) = 0;
+	aalError setMixer(MixerId mixer);
 	
 	/*!
 	 * Get the current play position in the sample.
 	 * Updates to the return value may be deferred to calles to the update() methos.
 	 */
-	virtual size_t getTime(TimeUnit unit = UNIT_MS) const = 0;
+	size_t getTime(TimeUnit unit = UNIT_MS) const;
 	
 	/*!
 	 * Play the source. A source that is already playing is not stopped / rewinded, but the playCount increased by the provided amount.

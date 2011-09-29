@@ -58,28 +58,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 
-#include <cstdio>
+#include <stddef.h>
+#include <algorithm>
+#include <set>
 
 #include "core/Config.h"
-#include "core/Resource.h"
 #include "core/GameTime.h"
 
-#include "game/Player.h"
-
-#include "gui/Menu.h"
-#include "gui/Interface.h"
-#include "gui/MenuWidgets.h"
-
-#include "graphics/GraphicsUtility.h"
 #include "graphics/Renderer.h"
-#include "graphics/data/Mesh.h"
-
-#include "input/Input.h"
 
 #include "io/FilePath.h"
 #include "io/Logger.h"
 #include "io/Filesystem.h"
 
+#include "platform/Platform.h"
 #include "platform/Random.h"
 #include "platform/String.h"
 
@@ -93,14 +85,12 @@ long EERIEMouseButton = 0;
 long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
 
-Application* mainApp = 0;
-EERIE_CAMERA  * Kam;
-float    FPS;
+Application * mainApp = 0;
+float FPS;
 LightMode ModeLight = 0;
 ViewModeFlags ViewMode = 0;
 
 static int iCurrZBias;
-
 
 //*************************************************************************************
 // Application()
@@ -216,8 +206,8 @@ bool Application::InitConfig() {
 	}
 	
 	fs::path defaultConfigFile = "cfg_default.ini";
-	if(!config.init(configFile.string(), defaultConfigFile.string())) {
-		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile;
+	if(!config.init(configFile, defaultConfigFile)) {
+		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile << ", using defaults.";
 	}
 	
 	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {

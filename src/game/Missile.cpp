@@ -33,21 +33,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Missile.h"
 
+#include <stddef.h>
+
 #include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Player.h"
 
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "graphics/data/TextureContainer.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "physics/Physics.h"
+#include "math/Vector3.h"
+
+#include "platform/Flags.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
+
+class TextureContainer;
 
 struct ARX_MISSILE
 {
@@ -106,24 +114,20 @@ void ARX_MISSILES_ClearAll() {
 
 //-----------------------------------------------------------------------------
 // Spawns a Projectile using type, starting position/TargetPosition
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f *startpos, const Vec3f *targetpos)
-{
+void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos) {
+	
 	long i(ARX_MISSILES_GetFree());
 
 	if (i == -1) return;
 
 	missiles[i].owner = GetInterNum(io);
 	missiles[i].type = type;
-	missiles[i].lastpos.x = missiles[i].startpos.x = startpos->x;
-	missiles[i].lastpos.y = missiles[i].startpos.y = startpos->y;
-	missiles[i].lastpos.z = missiles[i].startpos.z = startpos->z;
+	missiles[i].lastpos = missiles[i].startpos = *startpos;
 
 	float dist;
 
-	dist = 1.0F / Distance3D(startpos->x, startpos->y, startpos->z, targetpos->x, targetpos->y,targetpos->z);
-	missiles[i].velocity.x = (targetpos->x - startpos->x) * dist;
-	missiles[i].velocity.y = (targetpos->y - startpos->y) * dist;
-	missiles[i].velocity.z = (targetpos->z - startpos->z) * dist;
+	dist = 1.0F / fdist(*startpos, *targetpos);
+	missiles[i].velocity = (*targetpos - *startpos) * dist;
 	missiles[i].lastupdate = missiles[i].timecreation = ARXTimeUL();
 
 	switch (type)
@@ -132,9 +136,7 @@ void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const
 		case MISSILE_FIREBALL:
 		{
 			missiles[i].tolive = 6000;
-			missiles[i].velocity.x *= 0.8f;
-			missiles[i].velocity.y *= 0.8f;
-			missiles[i].velocity.z *= 0.8f;
+			missiles[i].velocity *= 0.8f;
 			missiles[i].longinfo = GetFreeDynLight();
 
 			if (missiles[i].longinfo != -1)
@@ -143,12 +145,8 @@ void ARX_MISSILES_Spawn(INTERACTIVE_OBJ *io, ARX_SPELLS_MISSILE_TYPE type, const
 				DynLight[missiles[i].longinfo].exist = 1;
 				DynLight[missiles[i].longinfo].fallend = 420.f;
 				DynLight[missiles[i].longinfo].fallstart = 250.f;
-				DynLight[missiles[i].longinfo].rgb.r = 1.f;
-				DynLight[missiles[i].longinfo].rgb.g = 0.8f;
-				DynLight[missiles[i].longinfo].rgb.b = 0.6f;
-				DynLight[missiles[i].longinfo].pos.x = startpos->x;
-				DynLight[missiles[i].longinfo].pos.y = startpos->y;
-				DynLight[missiles[i].longinfo].pos.z = startpos->z;
+				DynLight[missiles[i].longinfo].rgb = Color3f(1.f, .8f, .6f);
+				DynLight[missiles[i].longinfo].pos = *startpos;
 			}
 
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND, &missiles[i].startpos, 2.0F);
@@ -212,8 +210,7 @@ void ARX_MISSILES_Update()
 					ep = GetMinPoly(dest.x, dest.y, dest.z);
 					epp = GetMaxPoly(dest.x, dest.y, dest.z);
 
-					if (Distance3D(player.pos.x, player.pos.y, player.pos.z, pos.x, pos.y, pos.z) < 200.0F)
-					{
+					if(closerThan(player.pos, pos, 200.f)) {
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&pos);
 						Add3DBoom(&pos);

@@ -1121,22 +1121,15 @@ long GetFreeNode()
 
 	return -1;
 }
-//*************************************************************************************
-//*************************************************************************************
- 
-//-----------------------------------------------------------------------------
-void ReleaseNode()
-{
-	if (nodes.nodes)
-	{
-		free((void *)nodes.nodes);
+
+void ReleaseNode() {
+	if(nodes.nodes) {
+		free(nodes.nodes), nodes.nodes = NULL;
 		nodes.nbmax = 0;
-		nodes.nodes = NULL;
 	}
 }
-//*************************************************************************************
+
 // Initialises Interactive Objects Main Structure (pointer list)
-//*************************************************************************************
 void InitInter(long nb) {
 	if (nb < 10) nb = 10;
 
@@ -2414,8 +2407,8 @@ INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 
 	if (ep)
 	{
-		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
 	io->filename = object;
@@ -2500,8 +2493,8 @@ static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
 
 	if (ep)
 	{
-		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
@@ -2557,8 +2550,8 @@ static INTERACTIVE_OBJ * AddMarker(const fs::path & file) {
 
 	if (ep)
 	{
-		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
@@ -2871,8 +2864,8 @@ INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 
 	if (ep)
 	{
-		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
 	
@@ -3137,8 +3130,8 @@ INTERACTIVE_OBJ * AddItem(const fs::path & fil, AddInteractiveFlags flags) {
 
 	if (ep)
 	{
-		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
 	io->filename = object;
@@ -3374,13 +3367,10 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 
 	INTERACTIVE_OBJ * io = GetFirstInterAtPos(pos);
 
-	if (io != NULL)
+	if(io != NULL)
 	{
-		if (io->ioflags & IO_NPC)
-		{
-			if (Distance3D(player.pos.x, player.pos.y, player.pos.z, io->pos.x,
-			               io->pos.y, io->pos.z) < dist_Threshold)
-			{
+		if(io->ioflags & IO_NPC) {
+			if(closerThan(player.pos, io->pos, dist_Threshold)) {
 				LASTINTERCLICKNB = INTERNMB;
 				return io;
 			}
@@ -3391,8 +3381,7 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 			return io;
 		}
 		else if (IsEquipedByPlayer(io)
-		         || (Distance3D(player.pos.x, player.pos.y, player.pos.z, io->pos.x,
-		                        io->pos.y, io->pos.z) < dist_Threshold))
+		         || closerThan(player.pos, io->pos, dist_Threshold))
 		{
 			LASTINTERCLICKNB = INTERNMB;
 			return io;
@@ -3455,8 +3444,8 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	        ||	(!io->obj))
 		return false;
 
-	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
-	{
+	if(closerThan(*pos, io->pos, 190.f)) {
+		
 		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 		if (io->obj->nbgroups > 4)
@@ -3465,8 +3454,9 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 			{
 				long idx = io->obj->grouplist[i].origin;
 
-				if (Distance3D(pos->x, pos->y, pos->z, vlist[idx].v.x, vlist[idx].v.y, vlist[idx].v.z) <= 50.f)
+				if(!fartherThan(*pos, vlist[idx].v, 50.f)) {
 					return true;
+				}
 			}
 		}
 		else
@@ -3475,8 +3465,9 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 			for (long i = 0; i < nbv; i++)
 			{
 				if (i != io->obj->origin)
-					if (Distance3D(pos->x, pos->y, pos->z, vlist[i].v.x, vlist[i].v.y, vlist[i].v.z) <= 30.f)
+					if(!fartherThan(*pos, vlist[i].v, 30.f)) {
 						return true;
+					}
 			}
 		}
 	}
@@ -3660,8 +3651,9 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						        ||	(miny >= sphere.origin.y))
 							if (In3DBBoxTolerance(&sphere.origin, &io->bbox3D, sphere.radius))
 							{
-								if (Distance2D(io->pos.x, io->pos.z, sphere.origin.x, sphere.origin.z) < 440.f + sphere.radius)
-								{
+								// TODO why ignore the z components?
+								if(closerThan(Vec2f(io->pos.x, io->pos.z), Vec2f(sphere.origin.x, sphere.origin.z), 440.f + sphere.radius)) {
+									
 									EERIEPOLY ep;
 									ep.type = 0;
 
@@ -3672,9 +3664,9 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 										for (long idx = 0 ; idx < 3 ; idx++)
 										{
-											cx			+=	ep.v[idx].sx	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.x;
-											ep.v[idx].sy	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.y;
-											cz			+=	ep.v[idx].sz	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
+											cx			+=	ep.v[idx].p.x	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.x;
+											ep.v[idx].p.y	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.y;
+											cz			+=	ep.v[idx].p.z	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
 										}
 
 										cx *= ( 1.0f / 3 );
@@ -3682,8 +3674,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 										for (kk = 0; kk < 3; kk++)
 										{
-											ep.v[kk].sx = (ep.v[kk].sx - cx) * 3.5f + cx;
-											ep.v[kk].sz = (ep.v[kk].sz - cz) * 3.5f + cz;
+											ep.v[kk].p.x = (ep.v[kk].p.x - cx) * 3.5f + cx;
+											ep.v[kk].p.z = (ep.v[kk].p.z - cz) * 3.5f + cz;
 										}
 
 										if (PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))

@@ -85,39 +85,6 @@ float __mov;
  * result    : returns 1 if the triangles intersect, otherwise 0
  *
  */
-#define USE_EPSILON_TEST 0
-#define USE_POINT_IN_TRI 0
-
-#define COMPUTE_INTERVALS(VV0,VV1,VV2,D0,D1,D2,D0D1,D0D2,isect0,isect1) \
-	if(D0D1>0.0f)                                         \
-	{                                                     \
-		/* here we know that D0D2<=0.0 */                   \
-		/* that is D0, D1 are on the same side, D2 on the other or on the plane */ \
-		ISECT(VV2,VV0,VV1,D2,D0,D1,isect0,isect1);          \
-	}                                                     \
-	else if(D0D2>0.0f)                                    \
-	{                                                     \
-		/* here we know that d0d1<=0.0 */                   \
-		ISECT(VV1,VV0,VV2,D1,D0,D2,isect0,isect1);          \
-	}                                                     \
-	else if(D1*D2>0.0f || D0!=0.0f)                       \
-	{                                                     \
-		/* here we know that d0d1<=0.0 or that D0!=0.0 */   \
-		ISECT(VV0,VV1,VV2,D0,D1,D2,isect0,isect1);          \
-	}                                                     \
-	else if(D1!=0.0f)                                     \
-	{                                                     \
-		ISECT(VV1,VV0,VV2,D1,D0,D2,isect0,isect1);          \
-	}                                                     \
-	else if(D2!=0.0f)                                     \
-	{                                                     \
-		ISECT(VV2,VV0,VV1,D2,D0,D1,isect0,isect1);          \
-	}                                                     \
-	else                                                  \
-	{                                                     \
-		/* triangles are coplanar */                        \
-		return coplanar_tri_tri(N1,V0,V1,V2,U0,U1,U2);      \
-	}
 
 #define OPTIM_COMPUTE_INTERVALS(VV0,VV1,VV2,D0,D1,D2,D0D1,D0D2,A,B,C,X0,X1) \
 	{ \
@@ -258,14 +225,30 @@ int coplanar_tri_tri(float N[3], float V0[3], float V1[3], float V2[3],
 	EDGE_AGAINST_TRI_EDGES(V1, V2, U0, U1, U2);
 	EDGE_AGAINST_TRI_EDGES(V2, V0, U0, U1, U2);
 
-	// Considered Impossible
-#if USE_EPSILON_TEST
-	// finally, test if tri1 is totally contained in tri2 or vice versa
-	POINT_IN_TRI(V0, U0, U1, U2);
-	POINT_IN_TRI(U0, V0, V1, V2);
-#endif
 	return 0;
 }
+
+#define CROSS(dest,v1,v2) \
+	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
+	dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
+	dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
+
+#define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
+
+#define SUB(dest,v1,v2) \
+	dest[0]=v1[0]-v2[0]; \
+	dest[1]=v1[1]-v2[1]; \
+	dest[2]=v1[2]-v2[2];
+
+/* sort so that a<=b */
+#define SORT(a,b)       \
+	if(a>b)    \
+	{          \
+		float c; \
+		c=a;     \
+		a=b;     \
+		b=c;     \
+	}
 
 //***********************************************************************************************
 // Computes Intersection of 2 triangles
@@ -317,15 +300,6 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	du2 = DOT(N1, U2) + d1;
 
 	/* coplanarity robustness check */
-#if USE_EPSILON_TEST
-
-	if (EEfabs(du0) < EPSILON) du0 = 0.0;
-
-	if (EEfabs(du1) < EPSILON) du1 = 0.0;
-
-	if (EEfabs(du2) < EPSILON) du2 = 0.0;
-
-#endif
 	du0du1 = du0 * du1;
 	du0du2 = du0 * du2;
 
@@ -343,16 +317,6 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	dv0 = DOT(N2, V0) + d2;
 	dv1 = DOT(N2, V1) + d2;
 	dv2 = DOT(N2, V2) + d2;
-
-#if USE_EPSILON_TEST
-
-	if (EEfabs(dv0) < EPSILON) dv0 = 0.0;
-
-	if (EEfabs(dv1) < EPSILON) dv1 = 0.0;
-
-	if (EEfabs(dv2) < EPSILON) dv2 = 0.0;
-
-#endif
 
 	dv0dv1 = dv0 * dv1;
 	dv0dv2 = dv0 * dv2;
@@ -408,9 +372,12 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	return 1;
 }
 
+#undef CROSS
+#undef DOT
+#undef SUB
+
 // Computes Bounding Box for a triangle
-inline void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, const EERIE_TRI * v)
-{
+static inline void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, const EERIE_TRI * v) {
 	bb->min.x = min(v->v[0].x, v->v[1].x);
 	bb->min.x = min(bb->min.x, v->v[2].x);
 
@@ -459,18 +426,6 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 #define X 0
 #define Y 1
 #define Z 2
-
-#define CROSS(dest,v1,v2) \
-	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
-	dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
-	dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
-
-#define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
-
-#define SUB(dest,v1,v2) \
-	dest[0]=v1[0]-v2[0]; \
-	dest[1]=v1[1]-v2[1]; \
-	dest[2]=v1[2]-v2[2];
 
 #define FINDMINMAX(x0,x1,x2,min,max) \
 	min = max = x0;   \
@@ -546,12 +501,13 @@ bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 
 	m1 = cyl1->radius + cyl2->radius;
 
-	if (SquaredDistance2D(cyl1->origin.x, cyl1->origin.z, cyl2->origin.x, cyl2->origin.z)
-	        <= m1 * m1)
+	if(!fartherThan(Vec2f(cyl1->origin.x, cyl1->origin.z), Vec2f(cyl2->origin.x, cyl2->origin.z), m1)) {
 		return true;
+	}
 
 	return false;
 }
+
 // Sort of...
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 {
@@ -565,35 +521,11 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 
 	if (m1 > m2) return false;
 
-	// Using Squared dists
-	if (SquaredDistance2D(cyl1->origin.x,
-	                      cyl1->origin.z,
-	                      s->origin.x,
-	                      s->origin.z)
-	        <= (cyl1->radius + s->radius)*(cyl1->radius + s->radius)) return true;
-
+	if(!fartherThan(Vec2f(cyl1->origin.x, cyl1->origin.z), Vec2f(s->origin.x, s->origin.z), cyl1->radius + s->radius)) {
+		return true;
+	}
+	
 	return false;
-}
-
-// Returned in Radians ! use degrees() to convert it to degrees
-float	GetAngle(const float x0, const float y0, const float x1, const float y1)
-{
-	register float x, y;
-	x = x1 - x0;
-	y = y1 - y0;
-
-	if (x > 0.f)
-	{
-		if (y >= 0.f)	return (PI * 1.5f + (EEatan(y / x)));
-		else return (PI * 1.5f - (EEatan(EEfabs(y) / x)));   
-	}
-	else if (x < 0.f)
-	{
-		if (y > 0.f)	return (PI / 2 - (EEatan(y / EEfabs(x))));
-		else return (PI / 2 + (EEatan(y / x)));
-	}
-	else if (y < 0) return PI;
-	else return 0.f;
 }
 
 //--------------------------------------------------------------------------------------
@@ -935,50 +867,28 @@ void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle)
 	dest->z = src->z;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-//TODO(lubosz): empty method
-void EERIEMathPrecalc()
-{
-	
-}
-
-long F2L_RoundUp(float val)
-{
-	//TODO(lubosz): should this be done by cast?
-	long l = val;
-	val = val - l;
-
-	if (val > 0.f) return l + 1;
-
-	return l;
-}
-
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
-void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v)
-{
-	register float Ax, Ay, Az, Bx, By, Bz, epnlen;
-	Ax = v[1].sx - v[0].sx;
-	Ay = v[1].sy - v[0].sy;
-	Az = v[1].sz - v[0].sz;
+void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v) {
+	
+	register float Ax, Ay, Az, Bx, By, Bz;
+	Ax = v[1].p.x - v[0].p.x;
+	Ay = v[1].p.y - v[0].p.y;
+	Az = v[1].p.z - v[0].p.z;
 
-	Bx = v[2].sx - v[0].sx;
-	By = v[2].sy - v[0].sy;
-	Bz = v[2].sz - v[0].sz;
+	Bx = v[2].p.x - v[0].p.x;
+	By = v[2].p.y - v[0].p.y;
+	Bz = v[2].p.z - v[0].p.z;
 
 	ep->norm.x = Ay * Bz - Az * By;
 	ep->norm.y = Az * Bx - Ax * Bz;
 	ep->norm.z = Ax * By - Ay * Bx;
-
-	epnlen = (float)EEsqrt(ep->norm.x * ep->norm.x + ep->norm.y * ep->norm.y + ep->norm.z * ep->norm.z);
-	epnlen = 1.f / epnlen;
-	ep->norm.x *= epnlen;
-	ep->norm.y *= epnlen;
-	ep->norm.z *= epnlen;
+	
+	fnormalize(ep->norm);
 }
 
 void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef)
 {
-	register float Ax, Ay, Az, Bx, By, Bz, epnlen;
+	register float Ax, Ay, Az, Bx, By, Bz;
 	Ax = v1->x - v0->x;
 	Ay = v1->y - v0->y;
 	Az = v1->z - v0->z;
@@ -990,12 +900,8 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EER
 	ef->norm.x = Ay * Bz - Az * By;
 	ef->norm.y = Az * Bx - Ax * Bz;
 	ef->norm.z = Ax * By - Ay * Bx;
-
-	epnlen = (float)sqrt(ef->norm.x * ef->norm.x + ef->norm.y * ef->norm.y + ef->norm.z * ef->norm.z);
-	epnlen = 1.f / epnlen;
-	ef->norm.x *= epnlen;
-	ef->norm.y *= epnlen;
-	ef->norm.z *= epnlen;
+	
+	ef->norm.normalize();
 }
 void MatrixReset(EERIEMATRIX * mat)
 {
@@ -1025,7 +931,7 @@ void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 	m->_23 = U.z;
 }
 
-void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, const float rollDegrees)
+void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float rollDegrees)
 {
 	// Get our direction vector (the Z vector component of the matrix)
 	// and make sure it's normalized into a unit vector
@@ -1110,30 +1016,6 @@ void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc,
 	vDest->x = x;
 	vDest->y = y;
 	vDest->z = z;
-}
-
-//-----------------------------------------------------------------------------
-float GetNearestSnappedAngle(float angle)
-{
-	angle = MAKEANGLE(angle);
-
-	if (angle < 22.5f) return 0.f;
-
-	if (angle < 67.5f) return 45.f;
-
-	if (angle < 112.5f) return 90.f;
-
-	if (angle < 157.5f) return 135.f;
-
-	if (angle < 202.5f) return 180.f;
-
-	if (angle < 247.5f) return 225.f;
-
-	if (angle < 292.5f) return 270.f;
-
-	if (angle < 337.5f) return 315.f;
-
-	return 0.f;
 }
 
 #undef X

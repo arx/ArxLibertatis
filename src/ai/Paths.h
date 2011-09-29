@@ -56,13 +56,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_PATHS_H
 #define ARX_AI_PATHS_H
 
-#include "graphics/GraphicsTypes.h"
-#include "platform/Flags.h"
+#include <stddef.h>
+#include <string>
 
-#include "Configure.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "io/FilePath.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
+#include "platform/Flags.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_CAMERA;
+struct EERIE_3DOBJ;
 
 class CRuban;
 
@@ -262,8 +268,6 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
 void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags = 0, Anglef * angle = NULL);
-
-bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source);
 
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
 

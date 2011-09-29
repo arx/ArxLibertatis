@@ -20,6 +20,7 @@ private:
 	
 	pthread_t thread;
 	int priority;
+	bool started;
 	
 	static void * entryPoint(void * param);
 	
