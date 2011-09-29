@@ -277,8 +277,11 @@ bool D3D9Window::initialize(DisplayMode mode) {
 	///////////////////////////////////
 
 	// Create the D3D9 devices
-	if( FAILED( d3d->CreateDevice( AdapterToUse, DeviceType, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device ) ) )
+	HRESULT ret = d3d->CreateDevice(AdapterToUse, DeviceType, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device);
+	if( FAILED(ret) ) {
+		LogError << "CreateDevice failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
+	}
 
 	deviceInfo = &devices[0];
 
