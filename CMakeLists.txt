@@ -586,7 +586,7 @@ configure_file(${SRC_DIR}/Configure.h.cmake Configure.h)
 
 # Add executables
 
-add_executable_shared(arx "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
+add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
 
 if(ARX_BUILD_TOOLS)
 	
@@ -609,7 +609,7 @@ if(ARX_BUILD_TOOLS)
 	
 	set(SAVETOOL_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
 	
-	add_executable_shared(savetool "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
+	add_executable_shared(savetool "" "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
 	
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
@@ -624,7 +624,7 @@ if(ARX_BUILD_TOOLS)
 	
 	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
 	
-	add_executable_shared(unpak "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
+	add_executable_shared(unpak "" "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
 	
 endif()
 

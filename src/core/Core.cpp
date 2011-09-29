@@ -610,14 +610,20 @@ void InitializeDanae()
 	
 }
 
-// Let's use main for now on all platforms
-// TODO: On Windows, we might want to use WinMain in the Release target for example
-int main(int argc, char ** argv) {
-	
-	(void)argc, (void)argv;
+#if !ARX_COMPILER_MSVC
+extern int main(int argc, char ** argv) {
+	ARX_UNUSED(argc);
+	ARX_UNUSED(argv);
+#else
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
+	ARX_UNUSED(hInstance);
+	ARX_UNUSED(hPrevInstance);
+	ARX_UNUSED(lpCmdLine);
+	ARX_UNUSED(nCmdShow);
+#endif // #if !ARX_COMPILER_MSVC
 	
 	long i;
-	
+
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
 	ALLOW_CHEATS = 0;
