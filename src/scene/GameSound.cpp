@@ -400,29 +400,33 @@ bool ARX_SOUND_Init()
 
 void ARX_SOUND_LoadData()
 {
-	// Load samples
-	ARX_SOUND_CreateStaticSamples();
-	ARX_SOUND_CreateMaterials();
-	ARX_SOUND_CreateCollisionMaps();
-	ARX_SOUND_CreatePresenceMap();
+	if(bIsActive) {
+		// Load samples
+		ARX_SOUND_CreateStaticSamples();
+		ARX_SOUND_CreateMaterials();
+		ARX_SOUND_CreateCollisionMaps();
+		ARX_SOUND_CreatePresenceMap();
 
-	// Load environments, enable environment system and set default one if required
-	ARX_SOUND_CreateEnvironments();
+		// Load environments, enable environment system and set default one if required
+		ARX_SOUND_CreateEnvironments();
 
-	if(config.audio.eax) {
-		setReverbEnabled(true);
-		ARX_SOUND_EnvironmentSet("alley.aef");
+		if(config.audio.eax) {
+			setReverbEnabled(true);
+			ARX_SOUND_EnvironmentSet("alley.aef");
+		}
 	}
 }
  
 void ARX_SOUND_Release()
 {
-	ARX_SOUND_ReleaseStaticSamples();
-	collisionMaps.clear();
-	presence.clear();
-	ARX_SOUND_KillUpdateThread();
-	aalClean();
-	bIsActive = false;
+	if(bIsActive) {
+		ARX_SOUND_ReleaseStaticSamples();
+		collisionMaps.clear();
+		presence.clear();
+		ARX_SOUND_KillUpdateThread();
+		aalClean();
+		bIsActive = false;
+	}
 }
 
 long ARX_SOUND_IsEnabled()
