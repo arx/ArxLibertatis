@@ -13,7 +13,7 @@ if(WIN32)
 		$ENV{PROGRAMFILES}/GLEW/include
 		DOC "The directory where GL/glew.h resides")
 	find_library(GLEW_LIBRARY
-		NAMES glew GLEW glew32 glew32s
+		NAMES glew GLEW glew32 glew32s glew64 glew64s
 		PATHS
 		$ENV{PROGRAMFILES}/GLEW/lib
 		DOC "The GLEW library")
