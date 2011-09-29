@@ -2067,7 +2067,19 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		return NULL;
 	}
 	
-	INTERACTIVE_OBJ * io = LoadInter_Ex(fs::path::load(safestring(ais->filename)), num, ais->pos, ais->angle, MSP);
+	std::string path = safestring(ais->filename);
+	
+	if((!path.empty() && path[0] == '\\')
+	   || (path.length() >= 3 && isalpha(path[0]) && path[1] == ':' && path[2] == '\\')) {
+		// Old save files stored absolute paths stripped everything before 'graph' when loading.
+		makeLowercase(path);
+		size_t pos = path.find("graph");
+		if(pos != std::string::npos) {
+			path = path.substr(pos);
+		}
+	}
+	
+	INTERACTIVE_OBJ * io = LoadInter_Ex(fs::path::load(path), num, ais->pos, ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
