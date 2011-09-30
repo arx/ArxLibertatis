@@ -31,6 +31,8 @@ static void crashHandler(int signal_) {
 	
 	int pid = getpid(); // Get the PID if the original process to debug.
 	
+	// TODO avoid using functions that allocate memory in the crash handler
+	
 #ifdef HAVE_STRSIGNAL
 	LogError << strsignal(signal_) << ", pid=" << getpid();
 #else
@@ -61,7 +63,7 @@ static void crashHandler(int signal_) {
 			sprintf(pid_buf, "%d", pid);
 			
 			// Try to execute gdb to get a very detailed stack trace.
-			execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "bt full", name_buf, pid_buf, NULL);
+			execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "thread apply all bt full", name_buf, pid_buf, NULL);
 			
 			// GDB failed to start.
 			LogWarning << "Install GDB to get better backtraces.";
@@ -86,7 +88,7 @@ static void crashHandler(int signal_) {
 			
 			fflush(stdout), fflush(stderr);
 			
-			abort();
+			exit(1);
 			
 		} else {
 			
@@ -100,7 +102,7 @@ static void crashHandler(int signal_) {
 			// Kill the original, busy-waiting process.
 			kill(pid, SIGKILL);
 			
-			abort();
+			exit(1);
 		}
 		
 	} else {
@@ -124,6 +126,10 @@ void initCrashHandler() {
 	
 #ifdef SIGFPE
 	signal(SIGFPE, crashHandler);
+#endif
+	
+#ifdef SIGABRT
+	signal(SIGABRT, crashHandler);
 #endif
 	
 }
