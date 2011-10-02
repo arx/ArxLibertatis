@@ -735,10 +735,8 @@ bool ArxGame::Render() {
 		Original_framedelay=ft;
 
 		ft*=1.f-GLOBAL_SLOWDOWN;
-		float minus;
-
-		minus = ft;
-		ARXTotalPausedTime+=minus;
+		
+		ARXStartTime += u64(ft * 1000);
 		FrameTime = ARX_TIME_Get();
 
 		if (LastFrameTime>FrameTime)
@@ -746,11 +744,9 @@ bool ArxGame::Render() {
 			LastFrameTime=FrameTime;
 		}
 
-		ft=FrameTime-LastFrameTime;
-
-		FrameDiff = ft;
+		FrameDiff = FrameTime-LastFrameTime;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay=(float)FrameDiff;
+		_framedelay = FrameDiff;
 	}
 	else
 	{
@@ -761,16 +757,14 @@ bool ArxGame::Render() {
 		}
 		FrameDiff = FrameTime-LastFrameTime;
 
-		float FD;
-		FD=FrameDiff;
+		float FD = FrameDiff;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay=((float)(FrameDiff));
+		_framedelay = FrameDiff;
 		FrameDiff = _framedelay;
 
 		Original_framedelay=_framedelay;
 
-// Original_framedelay = 1000/25;
-		ARXTotalPausedTime+=FD-FrameDiff;
+		ARXStartTime += u64(FD * 1000) - u64(FrameDiff * 1000);
 	}
 
 static float _AvgFrameDiff = 150.f;

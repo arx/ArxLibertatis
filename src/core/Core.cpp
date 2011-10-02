@@ -188,7 +188,6 @@ extern long		DONT_WANT_PLAYER_INZONE;
 extern long		DeadTime;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
-extern float		ARXTotalPausedTime;
 extern long		COLLIDED_CLIMB_POLY;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long PATHFINDER_WAIT;

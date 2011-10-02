@@ -424,7 +424,7 @@ suite:
 	{
 		if (ARXPausedTimer)
 		{
-			ARXTotalPausedTime -= 100;
+			ARXStartTime -= 100 * 1000;
 			MODIFFF = 1;
 		}
 	}

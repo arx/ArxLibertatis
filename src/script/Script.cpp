@@ -272,7 +272,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 {
 	static long ppos = 0;
 
-	if ((!PauseScript) && (!EDITMODE) && (!ARXPausedTime))
+	if ((!PauseScript) && (!EDITMODE) && (!ARXPausedTimer))
 	{
 		EVENT_SENDER = NULL;
 
