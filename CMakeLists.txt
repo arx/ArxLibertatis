@@ -10,6 +10,7 @@ include(CheckCXXSourceCompiles)
 
 include(BuildSystem)
 include(CompileCheck)
+include(VersionString)
 
 
 # Accepts a variable holding the source files
@@ -597,8 +598,10 @@ add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
-configure_file(${SRC_DIR}/Configure.h.cmake Configure.h)
+configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h")
 
+version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
+list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
 # Add executables
 
