@@ -190,7 +190,7 @@ static const KeyDescription keysDescriptions[] = {
 	{ Keyboard::Key_Grave, "`" },
 	{ Keyboard::Key_Apostrophe, "'" },
 	{ Keyboard::Key_Minus, "-" },
-	{ Keyboard::Key_Equals, "=" }
+	{ Keyboard::Key_Equals, "=" },
 };
 
 const std::string PREFIX_KEY = "Key_";
@@ -550,8 +550,7 @@ void Input::update()
 std::map<std::string, InputKeyId> keyNames;
 
 std::string Input::getKeyName(InputKeyId key, bool localizedName) {
-	ARX_UNUSED(localizedName);
-
+	
 	if(key == -1) {
 		return std::string();
 	}
@@ -561,7 +560,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	std::string modifier;
 	if(key & INPUT_COMBINATION_MASK) {
 		// key combination
-		modifier = getKeyName((key >> 16) & 0x0fff);
+		modifier = getKeyName((key >> 16) & 0x0fff, localizedName);
 		key &= INPUT_MASK;
 	}
 	
@@ -637,6 +636,8 @@ InputKeyId Input::getKeyId(const std::string & name) {
 		for(size_t i = 0; i < ARRAY_SIZE(keysDescriptions); i++) {
 			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
 		}
+		keyNames["WheelUp"] = (InputKeyId)Mouse::Wheel_Up;
+		keyNames["WheelDown"] = (InputKeyId)Mouse::Wheel_Down;
 	}
 	
 	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
