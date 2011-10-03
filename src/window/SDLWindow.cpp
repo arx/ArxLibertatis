@@ -112,22 +112,28 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-	
-	if(config.video.antialiasing) {
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-	} else {
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-	}
 
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
 	m_Size = Vec2i::ZERO;
 	depth = 0;
 	
-	if(!setMode(DisplayMode(size, fullscreen ? _depth : 0), fullscreen)) {
-		return false;
+	for(int msaa = config.video.antialiasing ? 4 : 1; msaa >= 0; msaa--) {
+		
+		if(msaa > 1) {
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+		} else if(msaa > 0) {
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+		} else {
+			LogError << "Failed to initialize SDL Window: " << SDL_GetError();
+			return false;
+		}
+		
+		if(setMode(DisplayMode(size, fullscreen ? _depth : 0), fullscreen)) {
+			break;
+		}
 	}
 	
 	m_IsFullscreen = fullscreen;
