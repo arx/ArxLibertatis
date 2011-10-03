@@ -3573,155 +3573,41 @@ long DANAE_Manage_Cinematic()
 	return 0;
 }
 
-void ReMappDanaeButton()
-{
-	bool bNoAction=true;
-	int iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
-
-	if(iButton!=-1)
-	{
-		if(GInput->getMouseButtonDoubleClick(iButton,300))
-		{
-			LastEERIEMouseButton=EERIEMouseButton;
-			EERIEMouseButton|=4;
-			EERIEMouseButton&=~1;
-			bNoAction=false;
-		}
+void ReMappDanaeButton() {
+	
+	// Handle double clicks.
+	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION].key[0];
+	if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
+	    && GInput->getMouseButtonDoubleClick(button.key[0], 300))
+	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
+	    && GInput->getMouseButtonDoubleClick(button.key[1], 300))) {
+		LastEERIEMouseButton = EERIEMouseButton;
+		EERIEMouseButton |= 4;
+		EERIEMouseButton &= ~1;
 	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
-
-		if(iButton!=-1)
-		{
-			if(GInput->getMouseButtonDoubleClick(iButton,300))
-			{
-				LastEERIEMouseButton=EERIEMouseButton;
-				EERIEMouseButton|=4;
-				EERIEMouseButton&=~1;
-			}
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
+		LastEERIEMouseButton = EERIEMouseButton;
+		if(EERIEMouseButton & 4) {
+			EERIEMouseButton &= ~1;
+		} else {
+			EERIEMouseButton |= 1;
 		}
+		
 	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-		{
-			LastEERIEMouseButton=EERIEMouseButton;
-			EERIEMouseButton|=1;
-
-			if (EERIEMouseButton&4) EERIEMouseButton&=~1;
-
-			bNoAction=false;
-		}
+	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
+		LastEERIEMouseButton = EERIEMouseButton;
+		EERIEMouseButton &= ~1;
+		EERIEMouseButton &= ~4;
 	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-			{
-				LastEERIEMouseButton=EERIEMouseButton;
-				EERIEMouseButton|=1;
-
-				if (EERIEMouseButton&4) EERIEMouseButton&=~1;
-			}
-		}
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_MOUSELOOK)) {
+		EERIEMouseButton |= 2;
 	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-		{
-			LastEERIEMouseButton=EERIEMouseButton;
-			EERIEMouseButton&=~1;
-			EERIEMouseButton&=~4;
-			bNoAction=false;
-		}
+	if(GInput->actionNowReleased(CONTROLS_CUST_MOUSELOOK)) {
+		EERIEMouseButton &= ~2;
 	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-			{
-				LastEERIEMouseButton=EERIEMouseButton;
-				EERIEMouseButton&=~1;
-				EERIEMouseButton&=~4;
-			}
-		}
-	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-		{
-			EERIEMouseButton|=2;
-			bNoAction=false;
-		}
-	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-			{
-				EERIEMouseButton|=2;
-			}
-		}
-	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
-		{
-			EERIEMouseButton&=~2;
-			bNoAction=false;
-		}
-	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
-			{
-				EERIEMouseButton&=~2;
-			}
-		}
-	}
+	
 }
 
 void AdjustMousePosition()
