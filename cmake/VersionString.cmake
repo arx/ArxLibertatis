@@ -17,20 +17,25 @@ function(version_file SRC DST VERSION_FILE GIT_DIR)
 	get_filename_component(ABS_VERSION_FILE "${VERSION_FILE}" ABSOLUTE)
 	get_filename_component(ABS_GIT_DIR "${GIT_DIR}" ABSOLUTE)
 	
-	message(STATUS "ABS_SRC=\"${ABS_SRC}\"")
-	message(STATUS "ABS_DST=\"${ABS_DST}\"")
-	message(STATUS "ABS_VERSION_FILE=\"${ABS_VERSION_FILE}\"")
-	message(STATUS "ABS_GIT_DIR=\"${ABS_GIT_DIR}\"")
-	
 	add_custom_command(
-		OUTPUT "${DST}"
-		COMMAND ${CMAKE_COMMAND}
+		OUTPUT
+			"${DST}"
+		COMMAND
+			${CMAKE_COMMAND}
 			"-DINPUT=${ABS_SRC}"
 			"-DOUTPUT=${ABS_DST}"
 			"-DVERSION_FILE=${ABS_VERSION_FILE}"
 			"-DGIT_DIR=${ABS_GIT_DIR}"
 			-P "${CMAKE_MODULE_PATH}/VersionScript.cmake"
-		DEPENDS "${SRC}" "${GIT_DIR}" "${VERSION_FILE}" "${CMAKE_MODULE_PATH}/VersionScript.cmake"
+		MAIN_DEPENDENCY
+			"${SRC}"
+		DEPENDS
+			"${GIT_DIR}/HEAD"
+			"${GIT_DIR}/refs/*/*"
+			"${VERSION_FILE}"
+			"${CMAKE_MODULE_PATH}/VersionScript.cmake"
+		COMMENT ""
+		VERBATIM
 	)
 	
 endfunction(version_file)

@@ -30,18 +30,4 @@ if(EXISTS "${GIT_DIR}")
 	
 endif()
 
-file(READ "${INPUT}" DATA)
-
-string(REPLACE "{version}" "${VERNAME}" DATA "${DATA}")
-
-unset(OLD_DATA)
-
-if(EXISTS "${OUTPU}")
-	file(READ "${OUTPUT}" OLD_DATA)
-endif()
-
-if(NOT OLD_DATA STREQUAL DATA)
-	file(WRITE "${OUTPUT}" "${DATA}")
-endif()
-
 configure_file("${INPUT}" "${OUTPUT}" ESCAPE_QUOTES)
