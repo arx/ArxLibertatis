@@ -72,8 +72,6 @@ class TextureContainer;
 struct EERIE_3DOBJ;
 struct EERIE_MULTI3DSCENE;
 
-const std::string arxVersion = "Arx Libertatis 0.1";
-
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 
 extern Color3f FADECOLOR;

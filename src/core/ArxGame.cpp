@@ -41,6 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
+#include "core/Version.h"
 
 #include "game/Damage.h"
 #include "game/Inventory.h"
@@ -293,7 +294,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
-	if(!m_MainWindow->init(arxVersion, size, config.video.fullscreen, mode.depth)) {
+	if(!m_MainWindow->init(version, size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
 	}

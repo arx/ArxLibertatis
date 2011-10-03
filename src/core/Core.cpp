@@ -80,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
+#include "core/Version.h"
 
 #include "game/Missile.h"
 #include "game/Damage.h"
@@ -644,7 +645,7 @@ int main(int argc, char ** argv) {
 	TRUEFIGHT = 0;
 #endif
 	
-	LogInfo << "Starting " << arxVersion;
+	LogInfo << "Starting " << version;
 	
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
@@ -3828,7 +3829,7 @@ void ShowTestText()
 {
 	char tex[256];
 
-	mainApp->OutputText(0, 16, arxVersion);
+	mainApp->OutputText(0, 16, version);
 
 	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
 	mainApp->OutputText( 0, 32, tex );

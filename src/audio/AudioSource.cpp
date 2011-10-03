@@ -65,6 +65,8 @@ void Source::updateCallbacks() {
 		if(!time && status != Playing) {
 			// Prevent callback for time==0 being called again after playing.
 			break;
+		} else {
+			// TODO race condition in OpenALSource if sample completed between alGetSourcei(AL_BUFFERS_QUEUED) and alGetSourcei(AL_BYTE_OFFSET)? can alGetSourcei(AL_BYTE_OFFSET) ever be at the end?
 		}
 		
 	}
