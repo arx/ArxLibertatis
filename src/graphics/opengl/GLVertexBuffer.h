@@ -116,6 +116,9 @@ static const GLenum arxToGlBufferUsage[] = {
 
 extern const GLenum arxToGlPrimitiveType[];
 
+std::vector<GLushort> glShortIndexBuffer;
+std::vector<GLuint> glIntIndexBuffer;
+
 template <class Vertex>
 class GLVertexBuffer : public VertexBuffer<Vertex> {
 	
@@ -260,8 +263,6 @@ public:
 	
 	void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const {
 		
-		// needs GL_ARB_draw_elements_base_vertex!
-		
 		arx_assert(offset + count <= capacity());
 		arx_assert(indices != NULL);
 		
@@ -271,9 +272,34 @@ public:
 		
 		setVertexArray<Vertex>(NULL, this);
 		
-		glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1, nbindices, GL_UNSIGNED_SHORT, indices, offset);
-		
-		CHECK_GL;
+		if(GLEW_ARB_draw_elements_base_vertex) {
+			
+			glDrawRangeElementsBaseVertex(arxToGlPrimitiveType[primitive], 0, count - 1, nbindices, GL_UNSIGNED_SHORT, indices, offset);
+			
+			CHECK_GL;
+			
+		} else if(offset + count - 1 <= std::numeric_limits<GLushort>::max()) {
+			
+			glShortIndexBuffer.resize(std::max(glShortIndexBuffer.size(), nbindices));
+			for(size_t i = 0; i < nbindices; i++) {
+				glShortIndexBuffer[i] = GLushort(indices[i] + offset);
+			}
+			
+			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_SHORT, glShortIndexBuffer.data());
+			
+			CHECK_GL;
+			
+		} else {
+			
+			glIntIndexBuffer.resize(std::max(glIntIndexBuffer.size(), nbindices));
+			for(size_t i = 0; i < nbindices; i++) {
+				glIntIndexBuffer[i] = GLuint(indices[i] + offset);
+			}
+			
+			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_INT, glIntIndexBuffer.data());
+			
+			CHECK_GL;
+		}
 	}
 	
 	~GLVertexBuffer() {
