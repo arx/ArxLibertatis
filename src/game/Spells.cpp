@@ -656,7 +656,7 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 
 	SYMBOL_DRAW *sd = io->symboldraw;
 
-	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
+	sd->duration = (short)std::max(1l, long(duration));
 	strcpy(sd->sequence, sequence);
 
 	sd->starttime = ARXTimeUL();
@@ -1336,8 +1336,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 					lPosX =  ((lMaxSymbolDrawSizeX-iSizeX)>>1);
 					lPosY =  ((lMaxSymbolDrawSizeY-iSizeY)>>1);
 
-					pos1.x += checked_range_cast<short>(pos1.x + lPosX);
-					pos1.y += checked_range_cast<short>(pos1.y + lPosY);
+					pos1.x = checked_range_cast<short>(pos1.x + lPosX);
+					pos1.y = checked_range_cast<short>(pos1.y + lPosY);
 
 
 
