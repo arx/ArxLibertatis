@@ -158,7 +158,6 @@ void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
 
 void SendGameReadyMsg();
-void AdjustUI();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();

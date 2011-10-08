@@ -387,32 +387,37 @@ bool ArxGame::AddPaks() {
 	
 	fs::path pak_data = "data.pak";
 	if(!resources->addArchive(pak_data)) {
-		LogFatal << "Unable to find main data file " << pak_data;
+		LogError << "Unable to find main data file " << pak_data;
+		return false;
 	}
 	
 	fs::path pak_loc = "loc.pak";
 	if(!resources->addArchive(pak_loc)) {
 		fs::path pak_loc_default = "loc_default.pak";
 		if(!resources->addArchive(pak_loc_default)) {
-			LogFatal << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
+			LogError << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
+			return false;
 		}
 	}
 	
 	fs::path pak_data2 = "data2.pak";
 	if(!resources->addArchive(pak_data2)) {
-		LogFatal << "Unable to find aux data file " << pak_data2;
+		LogError << "Unable to find aux data file " << pak_data2;
+		return false;
 	}
 	
 	fs::path pak_sfx = "sfx.pak";
 	if(!resources->addArchive(pak_sfx)) {
-		LogFatal << "Unable to find sfx data file " << pak_sfx;
+		LogError << "Unable to find sfx data file " << pak_sfx;
+		return false;
 	}
 	
 	fs::path pak_speech = "speech.pak";
 	if(!resources->addArchive(pak_speech)) {
 		fs::path pak_speech_default = "speech_default.pak";
 		if(!resources->addArchive(pak_speech_default)) {
-			LogFatal << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
+			LogError << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
+			return false;
 		}
 	}
 	

@@ -30,20 +30,13 @@ const LogSetting blackList[] = {
 
 };
 
-Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
-  writeInfo(file.c_str(), line, level);
-}
-
 Logger::Logger(const char* file, int line, Logger::LogLevel level) {
 	writeInfo(file, line, level);
 }
 
 Logger::~Logger() {
-  if (print)
+  if (enabled)
 	  log("\n");
-  
-  if (fatal)
-	  exit(0);
 }
 
 void Logger::writeInfo(const char * longFile, int line, Logger::LogLevel level) {
@@ -53,14 +46,13 @@ void Logger::writeInfo(const char * longFile, int line, Logger::LogLevel level) 
     file = std::strrchr(longFile, '\\');
   ++file;
 	
-  fatal = false;
   LogLevel curLevel = getLogLevel(longFile);
-  if(level < curLevel || curLevel == None) {
-	  print = false;
+  if(level < curLevel) {
+	  enabled = false;
 	  return;
   }
   
-  print = true;
+  enabled = true;
   switch(level) {
     case Info:
       log(1,32,"INFO",file, line);
@@ -73,10 +65,6 @@ void Logger::writeInfo(const char * longFile, int line, Logger::LogLevel level) 
       break;
     case Debug:
       log(1,36,"DEBUG",file, line);
-      break;
-    case Fatal:
-      log(4,31,"FATAL",file, line);
-      fatal = true;
       break;
     default:
       log(1,32,"INFO",file, line);
@@ -114,7 +102,7 @@ Logger::LogLevel Logger::getLogLevel(const string & file) {
 }
 
 Logger & Logger::operator<<(const nullstr & s) {
-	if(print) {
+	if(enabled) {
 		if(s.str) {
 			*this << "\"" << s.str << "\"";
 		} else {

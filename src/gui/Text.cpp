@@ -296,24 +296,19 @@ static Font * _CreateFont(const string & fontFace, const string & fontProfileNam
 	return newFont;
 }
 
-static string getFontFile() {
-	string tx = "misc/arx.ttf";
-	
-	if(!fs::exists(tx)) {
-		tx = "misc/arx_default.ttf"; // Full path
-		if(!fs::exists(tx)) {
-			LogFatal << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
-		}
-	}
-	return tx;
-}
-
-void ARX_Text_Init() {
+bool ARX_Text_Init() {
 	
 	ARX_Text_Close();
 	
-	string fontFile = getFontFile();
-
+	string fontFile = "misc/arx.ttf";
+	if(!fs::exists(fontFile)) {
+		fontFile = "misc/arx_default.ttf"; // Full path
+		if(!fs::exists(fontFile)) {
+			LogError << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
+			return false;
+		}
+	}
+	
 	pTextManage = new TextManager();
 	pTextManageFlyingOver = new TextManager();
 
@@ -344,6 +339,8 @@ void ARX_Text_Init() {
 	LogDebug("Created InBookFont, size " << hFontInBook->GetSize());
 	
 	LogInfo << "Loaded font " << fontFile << " with sizes " << hFontMainMenu->GetSize() << ", " << hFontMenu->GetSize() << ", " << hFontControls->GetSize() << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", " << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
+	
+	return true;
 }
 
 //-----------------------------------------------------------------------------

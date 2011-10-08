@@ -453,24 +453,29 @@ void DANAE_KillCinematic()
 	}
 }
 
-void AdjustUI()
-{
+static bool AdjustUI() {
+	
 	// Sets Danae Screen size depending on windowed/full-screen state
 	DANAESIZX = mainApp->GetWindow()->GetSize().x;
 	DANAESIZY = mainApp->GetWindow()->GetSize().y;
-
+	
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
 	DANAECENTERY = DANAESIZY>>1;
-
+	
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
 	Xratio = DANAESIZX * ( 1.0f / 640 );
 	Yratio = DANAESIZY * ( 1.0f / 480 );
-
-	ARX_Text_Init();
-
-	if(pMenu)
+	
+	if(!ARX_Text_Init()) {
+		return false;
+	}
+	
+	if(pMenu) {
 		pMenu->bReInitAll=true;
+	}
+	
+	return true;
 }
 
 void DanaeRestoreFullScreen() {
@@ -767,7 +772,9 @@ int main(int argc, char ** argv) {
 		NOCHECKSUM=1;
 	}
 	
-	AdjustUI();
+	if(!AdjustUI()) {
+		return -1;
+	}
 
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
