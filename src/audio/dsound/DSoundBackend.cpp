@@ -32,9 +32,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioGlobal.h"
 #include "audio/dsound/DSoundSource.h"
 #include "audio/dsound/eax.h"
+#include "io/log/Logger.h"
 #include "window/RenderWindow.h"
-
-#include "io/Logger.h"
 
 namespace audio {
 

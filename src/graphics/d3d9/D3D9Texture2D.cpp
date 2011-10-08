@@ -12,7 +12,7 @@ using std::min;
 #include <d3dx9tex.h>
 
 #include "graphics/Math.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 std::list<DX9Texture2D*> g_Textures2D;
 

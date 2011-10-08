@@ -33,7 +33,7 @@
 
 #include <cstring>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 // Truncate value to a specified number of bits
 #define TRUNCATE_VALUE(value,bits) ((value) & ((1 << (bits)) - 1))

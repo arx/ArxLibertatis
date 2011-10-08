@@ -10,7 +10,7 @@
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
 static const char vertexShaderSource[] = "void main() { \n\

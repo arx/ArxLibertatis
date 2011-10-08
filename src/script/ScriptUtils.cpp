@@ -4,7 +4,6 @@
 #include <set>
 
 #include "graphics/data/Mesh.h"
-#include "io/Logger.h"
 #include "platform/String.h"
 
 using std::string;

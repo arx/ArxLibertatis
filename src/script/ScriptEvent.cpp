@@ -12,7 +12,7 @@
 #include "core/GameTime.h"
 #include "core/Core.h"
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "platform/String.h"
 

@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "platform/Platform.h"
 
 #include "Configure.h"

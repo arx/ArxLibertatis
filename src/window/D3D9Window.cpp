@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Config.h"
 #include "graphics/d3d9/D3D9Renderer.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Rectangle.h"
 
 using std::string;

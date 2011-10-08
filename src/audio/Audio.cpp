@@ -42,7 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#include "audio/openal/OpenALBackend.h"
 #endif
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "platform/Lock.h"
 #include "platform/Time.h"

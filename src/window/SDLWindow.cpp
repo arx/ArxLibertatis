@@ -9,7 +9,7 @@
 #include "core/Config.h"
 #include "graphics/opengl/OpenGLRenderer.h"
 #include "input/SDLInputBackend.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Rectangle.h"
 
 SDLWindow * SDLWindow::mainWindow = NULL;

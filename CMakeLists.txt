@@ -414,6 +414,7 @@ set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
+	src/io/log/Logger.cpp
 	src/io/Blast.cpp
 	src/io/CinematicLoad.cpp
 	src/io/Implode.cpp
@@ -421,7 +422,6 @@ set(IO_SOURCES
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
 	src/io/IO.cpp
-	src/io/Logger.cpp
 	src/io/PakEntry.cpp
 	src/io/PakReader.cpp
 	src/io/SaveBlock.cpp
@@ -612,10 +612,10 @@ if(ARX_BUILD_TOOLS)
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		src/core/Localisation.cpp
+		src/io/log/Logger.cpp
 		src/io/PakEntry.cpp
 		src/io/PakReader.cpp
 		src/io/Blast.cpp
-		src/io/Logger.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
@@ -632,9 +632,9 @@ if(ARX_BUILD_TOOLS)
 	
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
+		src/io/log/Logger.cpp
 		src/io/PakEntry.cpp
 		src/io/PakReader.cpp
-		src/io/Logger.cpp
 		src/io/Blast.cpp
 		src/platform/String.cpp
 		src/platform/Platform.cpp

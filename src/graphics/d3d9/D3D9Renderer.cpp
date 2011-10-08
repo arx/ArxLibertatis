@@ -17,7 +17,7 @@ using std::min;
 #include "graphics/d3d9/D3D9VertexBuffer.h"
 #include "graphics/d3d9/D3D9TextureStage.h"
 #include "graphics/d3d9/D3D9Texture2D.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARXToDX9 mapping tables

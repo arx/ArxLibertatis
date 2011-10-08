@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <algorithm>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 using std::string;
 using std::transform;

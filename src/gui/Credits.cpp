@@ -13,7 +13,7 @@
 #include "graphics/Draw.h"
 #include "graphics/font/Font.h"
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "scene/GameSound.h"
 

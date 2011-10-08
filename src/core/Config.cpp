@@ -37,7 +37,7 @@
 #include "io/IniReader.h"
 #include "io/IniSection.h"
 #include "io/IniWriter.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Vector2.h"
 
 using std::string;

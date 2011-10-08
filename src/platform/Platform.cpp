@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstdarg>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 using std::va_list;
 

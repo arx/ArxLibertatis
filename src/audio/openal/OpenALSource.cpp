@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Sample.h"
 #include "audio/Mixer.h"
 #include "io/FilePath.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Vector3.h"
 #include "platform/Platform.h"
 

@@ -11,7 +11,7 @@
 #include "gui/Text.h"
 #include "graphics/Math.h"
 #include "graphics/font/Font.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 using std::string;
 using std::vector;

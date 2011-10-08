@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifdef HAVE_SDL
 #include "input/SDLInputBackend.h"
 #endif
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
 Input * GInput = NULL;
