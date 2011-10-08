@@ -3,112 +3,143 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <vector>
+#include <algorithm>
 
-#if ARX_COMPILER_MSVC
-#include <windows.h>
-#endif
+#include <boost/unordered/unordered_map.hpp>
 
+#include "io/log/ConsoleLogger.h"
+#include "io/log/LogBackend.h"
+#include "io/log/MsvcLogger.h"
 #include "platform/Platform.h"
 
-#define BASH_COLOR !ARX_COMPILER_MSVC
+#include "Configure.h"
 
-using std::cout;
 using std::string;
 
-Logger::LogLevel Logger::logLevel = Logger::Info;
+namespace logger {
 
 namespace {
 
-struct LogSetting {
-	string codefile;
-	Logger::LogLevel logLevel;
-};
-
-const LogSetting blackList[] = {
-	{ "dummy", Logger::Info },
-};
-
-};
-
-Logger::Logger(const char* file, int line, Logger::LogLevel level) {
-	writeInfo(file, line, level);
-}
-
-Logger::~Logger() {
-  if (enabled)
-	  log("\n");
-}
-
-void Logger::writeInfo(const char * longFile, int line, Logger::LogLevel level) {
-
-  const char* file = std::strrchr(longFile, '/');
-  if(file == 0)
-    file = std::strrchr(longFile, '\\');
-  ++file;
+struct Manager {
 	
-  LogLevel curLevel = getLogLevel(longFile);
-  if(level < curLevel) {
-	  enabled = false;
-	  return;
-  }
-  
-  enabled = true;
-  switch(level) {
-    case Info:
-      log(1,32,"INFO",file, line);
-      break;
-    case Warning:
-      log(1,33,"WARNING",file, line);
-      break;
-    case Error:
-      log(1,31,"ERROR",file, line);
-      break;
-    case Debug:
-      log(1,36,"DEBUG",file, line);
-      break;
-    default:
-      log(1,32,"INFO",file, line);
-  };
-}
+	static const Logger::LogLevel defaultLevel;
+	
+	//! note: using the pointer value of a string constant as a hash map index.
+	typedef boost::unordered_map<const char *, Source> Sources;
+	static Sources sources;
+	
+	typedef std::vector<Backend *> Backends;
+	static Backends backends;
+	
+	typedef boost::unordered_map<string, Logger::LogLevel> Rules;
+	static Rules rules;
+	
+	~Manager();
+	
+};
 
-void Logger::log(int mode, int color, const string & level,
-		const string & file, int line) {
-	std::stringstream ss;
+const Logger::LogLevel Manager::defaultLevel = Logger::Info;
+Manager::Sources Manager::sources;
+Manager::Backends Manager::backends;
+Manager::Rules Manager::rules;
 
-#if BASH_COLOR
-	ss << "[\e[" << mode << ";" << color << "m" << level << "\e[m]  "
-	   << "\e[0;35m" << file << "\e[m:\e[0;33m" << line << "\e[m" << "  ";
-#else
-	ss << "[" << level << "]  " << file << ":" << line << "  ";
-#endif
-
-	log(ss.str());
-}
-
-void Logger::log(const string& str) {
-	std::cout << str;
-#if ARX_COMPILER_MSVC
-	if(IsDebuggerPresent())
-		OutputDebugString(str.c_str());
-#endif
-}
-
-Logger::LogLevel Logger::getLogLevel(const string & file) {
-	for (unsigned i=0; i < ARRAY_SIZE(blackList); i++) {
-		if (file.find(blackList[i].codefile) != string::npos)
-			return blackList[i].logLevel;
+Manager::~Manager() {
+	for(Manager::Backends::const_iterator i = Manager::backends.begin();
+	    i != Manager::backends.end(); ++i) {
+		delete *i;
 	}
-	return logLevel;
+	backends.clear();
 }
 
-Logger & Logger::operator<<(const nullstr & s) {
-	if(enabled) {
-		if(s.str) {
-			*this << "\"" << s.str << "\"";
-		} else {
-			*this << "NULL";
+} // anonymous namespace
+
+} // namespace logger
+
+void Logger::add(logger::Backend * backend) {
+	if(backend != NULL) {
+		logger::Manager::backends.push_back(backend);
+	}
+}
+
+void Logger::remove(logger::Backend * backend) {
+	logger::Manager::backends.erase(std::remove(logger::Manager::backends.begin(),
+	                                            logger::Manager::backends.end(),
+	                                            backend),
+	                                logger::Manager::backends.end());
+}
+
+const logger::Source * Logger::get(const char * file, LogLevel level) {
+	
+	logger::Source & source = logger::Manager::sources[file];
+	
+	if(source.name.empty()) {
+		
+		source.file = file;
+		source.level = logger::Manager::defaultLevel;
+		
+		const char * end = file + strlen(file);
+		bool first = true;
+		for(const char * p = end; p != file; p--) {
+			if(*p == '/' || *p == '\\') {
+				
+				string component(p + 1, end);
+				
+				if(first) {
+					size_t pos = component.find_last_of('.');
+					if(pos != string::npos) {
+						component.resize(pos);
+					}
+					source.name = component;
+					first = false;
+				}
+				
+				logger::Manager::Rules::const_iterator i = logger::Manager::rules.find(component);
+				if(i != logger::Manager::rules.end()) {
+					source.level = i->second;
+					break;
+				}
+				
+				if(component == "src" || component == "tools") {
+					break;
+				}
+			}
+		}
+		
+	}
+	
+	return (source.level <= level) ? &source : NULL;
+}
+
+void Logger::log(const logger::Source & file, int line, LogLevel level, const string & str) {
+	if(level != None) {
+		for(logger::Manager::Backends::const_iterator i = logger::Manager::backends.begin();
+			  i != logger::Manager::backends.end(); ++i) {
+			(*i)->log(file, line, level, str);
 		}
 	}
-	return *this;
 }
 
+void Logger::set(const string & prefix, Logger::LogLevel level) {
+	logger::Manager::rules[prefix] = level;
+	logger::Manager::sources.clear();
+}
+
+void Logger::reset(const string & prefix) {
+	logger::Manager::rules.erase(prefix);
+	logger::Manager::sources.clear();
+}
+
+void Logger::flush() {
+	for(logger::Manager::Backends::const_iterator i = logger::Manager::backends.begin();
+	    i != logger::Manager::backends.end(); ++i) {
+		(*i)->flush();
+	}
+}
+
+void Logger::init() {
+	Logger::add(logger::Console::get());
+#ifdef HAVE_WINAPI
+	Logger::add(logger::MsvcDebugger::get());
+#endif
+}

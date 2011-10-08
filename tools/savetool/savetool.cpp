@@ -4,6 +4,7 @@
 
 #include "io/SaveBlock.h"
 #include "io/Filesystem.h"
+#include "io/log/Logger.h"
 #include "platform/Platform.h"
 
 #include "SaveFix.h"
@@ -98,6 +99,8 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 }
 
 int main(int argc, char ** argv) {
+	
+	Logger::init();
 	
 	if(argc < 3) {
 		print_help();

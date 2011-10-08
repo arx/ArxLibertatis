@@ -188,6 +188,7 @@ else(MSVC)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
+	check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	check_symbol_exists(signal "signal.h" HAVE_SIGNAL)
@@ -414,7 +415,6 @@ set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
-	src/io/log/Logger.cpp
 	src/io/Blast.cpp
 	src/io/CinematicLoad.cpp
 	src/io/Implode.cpp
@@ -427,6 +427,13 @@ set(IO_SOURCES
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
+set(IO_LOGGER_SOURCES
+	src/io/log/ConsoleLogger.cpp
+	src/io/log/FileLogger.cpp
+	src/io/log/Logger.cpp
+)
+set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
+set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
 set(IO_FILESYSTEM_SOURCES
 	src/io/FilePath.cpp
 	src/io/FileStream.cpp
@@ -561,6 +568,14 @@ if(ARX_USE_DINPUT8)
 	endif()
 endif()
 
+if(HAVE_ISATTY)
+	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_POSIX_SOURCES})
+endif()
+if(HAVE_WINAPI)
+	list(APPEND IO_SOURCES ${IO_LOGGER_WINDOWS_SOURCES})
+endif()
+list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
+
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(HAVE_WINAPI)
@@ -611,8 +626,8 @@ if(ARX_BUILD_TOOLS)
 	
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
 		src/core/Localisation.cpp
-		src/io/log/Logger.cpp
 		src/io/PakEntry.cpp
 		src/io/PakReader.cpp
 		src/io/Blast.cpp
@@ -632,10 +647,13 @@ if(ARX_BUILD_TOOLS)
 	
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
-		src/io/log/Logger.cpp
+		${IO_LOGGER_SOURCES}
 		src/io/PakEntry.cpp
 		src/io/PakReader.cpp
 		src/io/Blast.cpp
+		src/io/log/ColorLogger.cpp
+		src/io/log/ConsoleLogger.cpp
+		src/io/log/Logger.cpp
 		src/platform/String.cpp
 		src/platform/Platform.cpp
 		tools/unpak/unpak.cpp

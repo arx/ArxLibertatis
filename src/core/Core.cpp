@@ -122,6 +122,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
+#include "io/log/FileLogger.h"
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
@@ -638,6 +639,10 @@ int main(int argc, char ** argv) {
 	(void)argc, (void)argv;
 	
 	initCrashHandler();
+	
+	Logger::init();
+	
+	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
