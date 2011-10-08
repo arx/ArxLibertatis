@@ -4,13 +4,14 @@
 #include <cstring>
 #include <iostream>
 
+#include "Configure.h"
+
 #if defined(HAVE_ISATTY) || defined(HAVE_READLINK)
 #include <unistd.h>
+#include <errno.h>
 #endif
 
 #include "io/log/ColorLogger.h"
-
-#include "Configure.h"
 
 namespace logger {
 
@@ -46,6 +47,8 @@ static bool is_fd_disabled(int fd) {
 	char path[64];
 	ssize_t len = readlink(names[fd], path, ARRAY_SIZE(path));
 	if(len == 9 && !memcmp(names, "/dev/null", 9)) {
+		return true;
+	} else if(len == -1 && errno == ENOENT) {
 		return true;
 	}
 #endif
