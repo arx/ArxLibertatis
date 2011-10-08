@@ -1,6 +1,6 @@
 
-#ifndef ARX_IO_LOG_CONSOLELOGGER_H
-#define ARX_IO_LOG_CONSOLELOGGER_H
+#ifndef ARX_IO_LOG_MSVCLOGGER_H
+#define ARX_IO_LOG_MSVCLOGGER_H
 
 #include "io/log/LogBackend.h"
 
@@ -26,7 +26,7 @@ public:
 	/*!
 	 * Returns a MsvcDebugger instance if a debugger is attached or NULL otherwise.
 	 */
-	MsvcDebugger * get();
+	static MsvcDebugger * get();
 	
 };
 
@@ -34,4 +34,4 @@ public:
 
 #endif // HAVE_WINAPI
 
-#endif // ARX_IO_LOG_CONSOLELOGGER_H
+#endif // ARX_IO_LOG_MSVCLOGGER_H

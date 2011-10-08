@@ -4,6 +4,10 @@
 #include <cstring>
 #include <iostream>
 
+#if defined(HAVE_ISATTY) || defined(HAVE_READLINK)
+#include <unistd.h>
+#endif
+
 #include "io/log/ColorLogger.h"
 
 #include "Configure.h"
