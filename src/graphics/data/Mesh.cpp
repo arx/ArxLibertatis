@@ -3155,9 +3155,9 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	
 	// TODO bounds checking
 	
-	LogDebug << "Fast Scene Load " << partial_path;
+	LogDebug("Fast Scene Load " << partial_path);
 	if(!USE_FAST_SCENES) {
-		LogDebug << "Not using fast scenes.";
+		LogDebug("Not using fast scenes.");
 		return false;
 	}
 	
@@ -3206,7 +3206,7 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	size_t rawsize = blastMem(dat + pos, size - pos, rawdata, uh->uncompressedsize);
 	free(dat);
 	if(!rawsize) {
-		LogDebug << "FastSceneLoad: blastMem didn't return anything " << size << " " << pos;
+		LogDebug("FastSceneLoad: blastMem didn't return anything " << size << " " << pos);
 		delete[] rawdata;
 		return false;
 	}
@@ -3532,7 +3532,7 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	LoadLevelScreen();
 	delete[] rawdata;
 	
-	LogDebug << "FastSceneLoad: done loading.";
+	LogDebug("FastSceneLoad: done loading.");
 	return true;
 	
 }
@@ -3923,7 +3923,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	fs::path path = "game" / partial_path;
 	
-	LogDebug << "FastSceneSave" << path;
+	LogDebug("FastSceneSave" << path);
 	
 	if(!fs::create_directories(path)) {
 		return false;

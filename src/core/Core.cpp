@@ -436,7 +436,7 @@ void ManageNONCombatModeAnimations();
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
-	LogDebug << "SendGameReadyMsg";
+	LogDebug("SendGameReadyMsg");
 	SendMsgToAllIO(SM_GAME_READY);
 }
 
@@ -672,49 +672,49 @@ int main(int argc, char ** argv) {
 	memset(explo, 0, sizeof(explo));
 	
 	USE_FAST_SCENES = 1;
-	LogDebug << "Danae Start";
+	LogDebug("Danae Start");
 
-	LogDebug << "Project Init";
+	LogDebug("Project Init");
 
 	NOCHECKSUM=0;
 	
 	ARX_INTERFACE_NoteInit();
-	LogDebug << "Note Init";
+	LogDebug("Note Init");
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
-	LogDebug << "Attractors Init";
+	LogDebug("Attractors Init");
 	ARX_SPELLS_Precast_Reset();
-	LogDebug << "Spell Init";
+	LogDebug("Spell Init");
 	
 	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
 
-	LogDebug << "LSV Init";
+	LogDebug("LSV Init");
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
 	memset(TELEPORT_TO_POSITION,0,64);
-	LogDebug << "Mset";
+	LogDebug("Mset");
 	
-	LogDebug << "AnimManager Init";
+	LogDebug("AnimManager Init");
 	ARX_SCRIPT_EventStackInit();
-	LogDebug << "EventStack Init";
+	LogDebug("EventStack Init");
 	ARX_EQUIPMENT_Init();
-	LogDebug << "AEQ Init";
+	LogDebug("AEQ Init");
 	memset(_CURRENTLOAD_,0,256);
 
 	ARX_SCRIPT_Timer_FirstInit(512);
-	LogDebug << "Timer Init";
+	LogDebug("Timer Init");
 	ARX_FOGS_FirstInit();
-	LogDebug << "Fogs Init";
+	LogDebug("Fogs Init");
 
 	EERIE_LIGHT_GlobalInit();
-	LogDebug << "Lights Init";
+	LogDebug("Lights Init");
 	
-	LogDebug << "Svars Init";
+	LogDebug("Svars Init");
 
 	// Script Test
 	lastteleport.x=0.f;
@@ -735,12 +735,12 @@ int main(int argc, char ** argv) {
 	ARX_SPEECH_ClearAll();
 	QuakeFx.intensity=0.f;
 
-	LogDebug << "Launching DANAE";
+	LogDebug("Launching DANAE");
 
 	memset(&Project, 0, sizeof(PROJECT));
 	
 	if (FINAL_RELEASE) {
-		LogDebug << "FINAL_RELEASE";
+		LogDebug("FINAL_RELEASE");
 		LaunchDemo=1;
 		Project.demo=LEVEL10;
 		NOCHECKSUM=1;
@@ -750,7 +750,7 @@ int main(int argc, char ** argv) {
 		Project.demo=LEVELDEMO2;
 	}
 
-	LogDebug << "After Popup";
+	LogDebug("After Popup");
 	atexit(ClearGame);
 
 	if (LaunchDemo)	{
@@ -802,7 +802,7 @@ int main(int argc, char ** argv) {
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;
 	Project.torch.b = 0.66666f;
-	LogDebug << "InitializeDanae";
+	LogDebug("InitializeDanae");
 	InitializeDanae();
 	
 	PakReader::ReleaseFlags rel = resources->getReleaseType();
@@ -2019,7 +2019,7 @@ extern long FLAG_ALLOW_CLOTHES;
 
 void FirstFrameHandling()
 {	
-	LogDebug << "FirstFrameHandling";
+	LogDebug("FirstFrameHandling");
 	Vec3f trans;
 	FirstFrame=-1;
 
@@ -3480,7 +3480,7 @@ bool DANAE_ManageSplashThings() {
 
 void LaunchWaitingCine() {
 	
-	LogDebug << "LaunchWaitingCine " << CINE_PRELOAD;
+	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 
 	if(ACTIVECAM) {
 		ePos = ACTIVECAM->pos;
@@ -3497,10 +3497,10 @@ void LaunchWaitingCine() {
 		if(loadCinematic(ControlCinematique, cinematic)) {
 			
 			if(CINE_PRELOAD) {
-				LogDebug << "only preloaded cinematic";
+				LogDebug("only preloaded cinematic");
 				PLAY_LOADED_CINEMATIC = 0;
 			} else {
-				LogDebug << "starting cinematic";
+				LogDebug("starting cinematic");
 				PLAY_LOADED_CINEMATIC = 1;
 				ARX_TIME_Pause();
 			}
@@ -3527,7 +3527,7 @@ long DANAE_Manage_Cinematic()
 
 	if (PLAY_LOADED_CINEMATIC==1)
 	{
-		LogDebug << "really starting cinematic now";
+		LogDebug("really starting cinematic now");
 		LastFrameTicks=FrameTicks;
 		PLAY_LOADED_CINEMATIC=2;
 	}

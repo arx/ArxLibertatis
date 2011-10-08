@@ -344,7 +344,7 @@ bool ArxGame::InitWindow() {
 
 bool ArxGame::InitInput() {
 	
-	LogDebug << "Input init";
+	LogDebug("Input init");
 	bool init = ARX_INPUT_Init();
 	if(!init) {
 		LogError << "Input init failed";
@@ -355,7 +355,7 @@ bool ArxGame::InitInput() {
 
 bool ArxGame::InitSound() {
 	
-	LogDebug << "Sound init";
+	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
 	if(!init) {
 		LogWarning << "Sound init failed";
@@ -620,7 +620,7 @@ void ArxGame::OutputText(int x, int y, const string & str) {
 
 bool ArxGame::BeforeRun() {
 	
-	LogDebug << "Before Run...";
+	LogDebug("Before Run...");
 	
 	const Vec2i & size = mainApp->GetWindow()->GetSize();
 	ControlCinematique = new Cinematic(size.x, size.y);
@@ -788,7 +788,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if(wasResized) {
 		
-		LogDebug << "was resized";
+		LogDebug("was resized");
 		
 		DanaeRestoreFullScreen();
 		
@@ -808,7 +808,7 @@ static float _AvgFrameDiff = 150.f;
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
 	if (START_NEW_QUEST)
 	{
-		LogDebug << "start quest";
+		LogDebug("start quest");
 		DANAE_StartNewQuest();
 	}
 
@@ -819,7 +819,7 @@ static float _AvgFrameDiff = 150.f;
 	// Project need to reload all textures ???
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
-		LogDebug << "reload all textures";
+		LogDebug("reload all textures");
 		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
 		WILL_RELOAD_ALL_TEXTURES=0;
 	}
@@ -827,8 +827,8 @@ static float _AvgFrameDiff = 150.f;
 	// Are we being teleported ?
 	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
 	{
-		LogDebug << "teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
-		         << TELEPORT_TO_ANGLE;
+		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
+		         << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON=-1;
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE);
 		memset(TELEPORT_TO_LEVEL,0,64);
@@ -837,7 +837,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (NEED_INTRO_LAUNCH)
 	{
-		LogDebug << "need intro launch";
+		LogDebug("need intro launch");
 		SetEditMode(0);
 		BLOCK_PLAYER_CONTROLS=1;
 		ARX_INTERFACE_PlayerInterfaceModify(0,0);
@@ -942,7 +942,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 	else // Manages our first frameS
 	{
-		LogDebug << "first frame";
+		LogDebug("first frame");
 		ARX_TIME_Get();
 
 		FirstFrameHandling();

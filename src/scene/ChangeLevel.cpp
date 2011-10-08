@@ -214,7 +214,7 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 		return inter.iobj[t];
 	}
 	
-	LogDebug << "Call to ConvertToValidIO(" << ident << ")";
+	LogDebug("Call to ConvertToValidIO(" << ident << ")");
 	
 	size_t pos = ident.find_last_of('_');
 	if(pos == string::npos || pos == ident.length() - 1) {
@@ -322,7 +322,7 @@ extern long JUST_RELOADED;
 
 void ARX_CHANGELEVEL_Change(const string & level, const string & target, long angle) {
 	
-	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle;
+	LogDebug("ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle);
 	
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
@@ -379,9 +379,9 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 		return;
 	}
 	
-	LogDebug << "Before ARX_CHANGELEVEL_PushLevel";
+	LogDebug("Before ARX_CHANGELEVEL_PushLevel");
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
-	LogDebug << "After  ARX_CHANGELEVEL_PushLevel";
+	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
 	if(!_pSaveBlock->flush("pld")) {
 		LogError << "could not complete the save.";
@@ -390,9 +390,9 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	
 	ARX_TIME_UnPause();
 
-	LogDebug << "Before ARX_CHANGELEVEL_PopLevel";
+	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
 	ARX_CHANGELEVEL_PopLevel(num, 1);
-	LogDebug << "After  ARX_CHANGELEVEL_PopLevel";
+	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 
 	// Now restore player pos to destination
 	long t = inter.getById(target);
@@ -419,12 +419,12 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;
 	NO_GMOD_RESET = 0;
-	LogDebug << "-----------------------------------";
+	LogDebug("-----------------------------------");
 }
 
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
-	LogDebug << "ARX_CHANGELEVEL_PushLevel " << num << " " << newnum;
+	LogDebug("ARX_CHANGELEVEL_PushLevel " << num << " " << newnum);
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	ARX_SCRIPT_EventStackExecuteAll();
@@ -1911,7 +1911,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		return -1;
 	}
 	ARX_KEYRING_Init();
-	LogDebug << asp->keyring_nb;
+	LogDebug(asp->keyring_nb);
 	for(int i = 0; i < asp->keyring_nb; i++) {
 		ARX_KEYRING_Add(toLowercase(safestring(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
 		pos += SAVED_KEYRING_SLOT_SIZE;
@@ -2009,7 +2009,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 			}
 		}
 		
-		LogDebug << ((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") << ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") << " \"" << safestring(var[i].name).substr(1) << "\" = " << var[i].fval << ' ' << Logger::nullstr(var[i].text);
+		LogDebug(((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") << ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") << " \"" << safestring(var[i].name).substr(1) << "\" = " << var[i].fval << ' ' << Logger::nullstr(var[i].text));
 		
 	}
 	
@@ -2042,7 +2042,7 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 
 static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	
-	LogDebug << "--> loading interactive object " << ident;
+	LogDebug("--> loading interactive object " << ident);
 	
 	size_t size = 0; // TODO size not used
 	char * dat = _pSaveBlock->load(ident, size);
@@ -2722,7 +2722,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	DANAE_ReleaseAllDatasDynamic();
 	
-	LogDebug << "Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free";
+	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
 	
 	if(_Gaids) {
 		ReleaseGaids();
@@ -2733,12 +2733,12 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	
-	LogDebug << "After  ARX_CHANGELEVEL_PopLevel Alloc'n'Free";
+	LogDebug("After  ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
 	
 	// Clears All Scene contents...
-	LogDebug << "Before DANAE ClearAll";
+	LogDebug("Before DANAE ClearAll");
 	DanaeClearAll();
-	LogDebug << "After  DANAE ClearAll";
+	LogDebug("After  DANAE ClearAll");
 	
 	ARX_TIME_Pause();
 	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
@@ -2762,7 +2762,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 		FORBID_SCRIPT_IO_CREATION = 1;
 		NO_PLAYER_POSITION_RESET = 1;
 	}
-	LogDebug << "FirstTime = " << FirstTime;
+	LogDebug("FirstTime = " << FirstTime);
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
@@ -2774,14 +2774,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	if(!FirstTime) {
 		
-		LogDebug << "Before ARX_CHANGELEVEL_Pop_Index";
+		LogDebug("Before ARX_CHANGELEVEL_Pop_Index");
 		if(ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1) {
 			LogError << "Cannot Load Index data";
 			ARX_CHANGELEVEL_PopLevel_Abort();
 			return false;
 		}
 		
-		LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
+		LogDebug("After  ARX_CHANGELEVEL_Pop_Index");
 		if(asi.version != ARX_GAMESAVE_VERSION) {
 			LogError << "Invalid Save Version...";
 			ARX_CHANGELEVEL_PopLevel_Abort();
@@ -2793,14 +2793,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
 	
-	LogDebug << "Before ARX_CHANGELEVEL_Pop_Level";
+	LogDebug("Before ARX_CHANGELEVEL_Pop_Level");
 	if(ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1) {
 		LogError << "Cannot Load Level data";
 		ARX_CHANGELEVEL_PopLevel_Abort();
 		return false;
 	}
 	
-	LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
+	LogDebug("After  ARX_CHANGELEVEL_Pop_Index");
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(instance);
 	
@@ -2812,26 +2812,26 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 			}
 		}
 	} else {
-		LogDebug << "Before ARX_CHANGELEVEL_PopAllIO";
+		LogDebug("Before ARX_CHANGELEVEL_PopAllIO");
 		ARX_CHANGELEVEL_PopAllIO(&asi);
-		LogDebug << "After  ARX_CHANGELEVEL_PopAllIO";
+		LogDebug("After  ARX_CHANGELEVEL_PopAllIO");
 	}
 	
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(instance);
-	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
+	LogDebug("Before ARX_CHANGELEVEL_Pop_Player");
 	
 	if(ARX_CHANGELEVEL_Pop_Player(instance) != 1) {
 		LogError << "Cannot Load Player data";
 		ARX_CHANGELEVEL_PopLevel_Abort();
 		return false;
 	}
-	LogDebug << "After  ARX_CHANGELEVEL_Pop_Player";
+	LogDebug("After  ARX_CHANGELEVEL_Pop_Player");
 	
-	LogDebug << "Before ARX_CHANGELEVEL_PopAllIO_FINISH";
+	LogDebug("Before ARX_CHANGELEVEL_PopAllIO_FINISH");
 	// Restoring all Missing Objects required by other objects...
 	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag);
-	LogDebug << "After  ARX_CHANGELEVEL_PopAllIO_FINISH";
+	LogDebug("After  ARX_CHANGELEVEL_PopAllIO_FINISH");
 	
 	PROGRESS_BAR_COUNT += 15.f;
 	LoadLevelScreen();
@@ -2842,15 +2842,15 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LoadLevelScreen();
 	
 	if(!FirstTime) {
-		LogDebug << "Before ARX_CHANGELEVEL_Pop_Zones_n_Lights";
+		LogDebug("Before ARX_CHANGELEVEL_Pop_Zones_n_Lights");
 		ARX_CHANGELEVEL_Pop_Zones_n_Lights(&asi, instance);
-		LogDebug << "After  ARX_CHANGELEVEL_Pop_Zones_n_Lights";
+		LogDebug("After  ARX_CHANGELEVEL_Pop_Zones_n_Lights");
 	}
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
-	LogDebug << "Before Player Misc Init";
+	LogDebug("Before Player Misc Init");
 	ForcePlayerInventoryObjectLevel(instance);
 	ARX_EQUIPMENT_RecreatePlayerMesh();
 	
@@ -2860,22 +2860,22 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
 	NO_TIME_INIT = 1;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
-	LogDebug << "After  Player Misc Init";
+	LogDebug("After  Player Misc Init");
 	
-	LogDebug << "Before Memory Release";
+	LogDebug("Before Memory Release");
 	if(idx_io) {
 		delete[] idx_io, idx_io = NULL;
 	}
 	FORBID_SCRIPT_IO_CREATION = 0;
 	NO_TIME_INIT = 1;
-	LogDebug << "After  Memory Release";
+	LogDebug("After  Memory Release");
 	
-	LogDebug << "Before SaveBlock Release";
+	LogDebug("Before SaveBlock Release");
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
-	LogDebug << "After  SaveBlock Release";
+	LogDebug("After  SaveBlock Release");
 	
-	LogDebug << "Before Final Inits";
+	LogDebug("Before Final Inits");
 	HERO_SHOW_1ST = -1;
 	
 	if(EXTERNALVIEW) {
@@ -2893,14 +2893,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
-	LogDebug << "After  Final Inits";
+	LogDebug("After  Final Inits");
 	
 	return true;
 }
 
 long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
-	LogDebug << "ARX_CHANGELEVEL_Save " << instance << " " << name;
+	LogDebug("ARX_CHANGELEVEL_Save " << instance << " " << name);
 	
 	ARX_TIME_Pause();
 	
@@ -3010,7 +3010,7 @@ extern long STARTED_A_GAME;
 
 long ARX_CHANGELEVEL_Load(long instance) {
 	
-	LogDebug << "begin ARX_CHANGELEVEL_Load";
+	LogDebug("begin ARX_CHANGELEVEL_Load");
 	
 	iTimeToDrawD7 = -3000;
 	
@@ -3075,7 +3075,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	JUST_RELOADED = 1;
 	
-	LogDebug << "success ARX_CHANGELEVEL_Load";
+	LogDebug("success ARX_CHANGELEVEL_Load");
 	return 1;
 }
 

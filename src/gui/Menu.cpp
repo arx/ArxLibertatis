@@ -169,7 +169,7 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 
 void CreateSaveGameList() {
 	
-	LogDebug << "CreateSaveGameList";
+	LogDebug("CreateSaveGameList");
 	
 	if(save_l.empty()) {
 		save_l.resize(1);
@@ -293,7 +293,7 @@ void CreateSaveGameList() {
 		std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
 	}
 	
-	LogDebug << "found " << (save_l.size()-1) << " savegames";
+	LogDebug("found " << (save_l.size()-1) << " savegames");
 	
 }
 
@@ -408,13 +408,13 @@ void ARX_Menu_Resources_Create() {
 			creditsSize--;
 		}
 		
-		LogDebug << "Loaded credits file: " << creditsFile << " of size " << creditsSize;
+		LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
 		
 		ARXmenu.mda->str_cre_credits.reserve(creditsSize);
 		
 		UTF16ToUTF8(credits, &credits[creditsSize],
 		                         std::back_inserter(ARXmenu.mda->str_cre_credits));
-		LogDebug << "Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size();
+		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size());
 		
 		free(creditsData);
 	}
@@ -554,7 +554,7 @@ void ARX_Menu_Manage() {
 				}
 				else
 				{
-					LogDebug << "snapshot";
+					LogDebug("snapshot");
 					//create a screenshot temporaire pour la sauvegarde
 					SnapShot *pSnapShot = new SnapShot("sct", true);
 					pSnapShot->GetSnapShotDim(160,100);

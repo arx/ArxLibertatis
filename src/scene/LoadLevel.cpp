@@ -161,7 +161,7 @@ bool CanPurge(Vec3f * pos)
 
 void LogDirCreation(const fs::path & dir) {
 	if(fs::is_directory(dir)) {
-		LogDebug << "LogDirCreation: " << dir;
+		LogDebug("LogDirCreation: " << dir);
 	}
 }
 
@@ -679,8 +679,8 @@ long DanaeLoadLevel(const fs::path & file) {
 	
 	fs::path lightingFileName = fs::path(file).set_ext("llf");
 
-	LogDebug << "fic2 " << lightingFileName;
-	LogDebug << "fileDlf " << file;
+	LogDebug("fic2 " << lightingFileName);
+	LogDebug("fileDlf " << file);
 
 	size_t FileSize = 0;
 	char * dat = resources->readAlloc(file, FileSize);
@@ -700,7 +700,7 @@ long DanaeLoadLevel(const fs::path & file) {
 	memcpy(&dlh, dat + pos, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
 	
-	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
+	LogDebug("dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER));
 	
 	if(dlh.version > DLH_CURRENT_VERSION) {
 		LogError << "Unexpected level file version: " << dlh.version << " for " << file;
@@ -729,7 +729,7 @@ long DanaeLoadLevel(const fs::path & file) {
 		return -1;
 	}
 	
-	LogDebug << "Loading Scene";
+	LogDebug("Loading Scene");
 	
 	// Loading Scene
 	if(dlh.nb_scn > 0) {
@@ -741,11 +741,11 @@ long DanaeLoadLevel(const fs::path & file) {
 		FAKE_DIR = 0;
 		
 		if(FastSceneLoad(scene)) {
-			LogDebug << "done loading scene";
+			LogDebug("done loading scene");
 			FASTmse = 1;
 		} else {
 #ifdef BUILD_EDIT_LOADSAVE
-			LogDebug << "fast loading scene failed";
+			LogDebug("fast loading scene failed");
 			ARX_SOUND_PlayCinematic("editor_humiliation.wav");
 			mse = PAK_MultiSceneToEerie(scene);
 			PROGRESS_BAR_COUNT += 20.f;
@@ -922,7 +922,7 @@ long DanaeLoadLevel(const fs::path & file) {
 	}
 	
 	ClearCurLoadInfo();
-	LogDebug << "Loading FOGS";
+	LogDebug("Loading FOGS");
 	ARX_FOGS_Clear();
 	
 	for(long i = 0; i < dlh.nb_fogs; i++) {
@@ -963,7 +963,7 @@ long DanaeLoadLevel(const fs::path & file) {
 	LoadLevelScreen();
 	
 	ClearCurLoadInfo();
-	LogDebug << "Loading Nodes";
+	LogDebug("Loading Nodes");
 	ClearNodes();
 	
 	long nb_nodes = (dlh.version < 1.001f) ? 0 : dlh.nb_nodes;
@@ -988,7 +988,7 @@ long DanaeLoadLevel(const fs::path & file) {
 	RestoreNodeNumbers();
 	
 	ClearCurLoadInfo();
-	LogDebug << "Loading Paths";
+	LogDebug("Loading Paths");
 	ARX_PATH_ReleaseAllPath();
 	
 	if(dlh.nb_paths) {
@@ -1047,7 +1047,7 @@ long DanaeLoadLevel(const fs::path & file) {
 	if(lightingFile) {
 		
 		ClearCurLoadInfo();
-		LogDebug << "Loading LLF Info";
+		LogDebug("Loading LLF Info");
 		
 		// using compression
 		if(dlh.version >= 1.44f) {
@@ -1484,7 +1484,7 @@ void AddIdent(std::string & ident, long num)
 
 static void LogDirDestruction(const fs::path & dir ) {
 	if(fs::is_directory(dir)) {
-		LogDebug << "LogDirDestruction: " << dir;
+		LogDebug("LogDirDestruction: " << dir);
 	}
 }
 

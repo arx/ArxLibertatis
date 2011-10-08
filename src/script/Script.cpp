@@ -1831,7 +1831,7 @@ void ARX_SCRIPT_EventStackInit()
 }
 void ARX_SCRIPT_EventStackClear( bool check_exist )
 {
-	LogDebug << "Event Stack Clear";
+	LogDebug("Event Stack Clear");
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if ( check_exist ) // If we're not blatantly clearing everything

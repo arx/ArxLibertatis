@@ -64,12 +64,12 @@ static void CalculTextPosition(const string & phrase, CreditsTextInformations & 
 
 static void InitCredits() {
 
-	LogDebug << "InitCredits";
+	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
 	ExtractAllCreditsTextInformations();
 	
-	LogDebug << "Credits lines " << CreditsData.aCreditsInformations.size();
+	LogDebug("Credits lines " << CreditsData.aCreditsInformations.size());
 	
 }
 

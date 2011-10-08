@@ -2367,7 +2367,7 @@ INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	LogDebug << "AddFix " << file;
+	LogDebug("AddFix " << file);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
@@ -2467,7 +2467,7 @@ static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
 		return NULL;
 	}
 
-	LogDebug << "AddCamera " << file;
+	LogDebug("AddCamera " << file);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2522,7 +2522,7 @@ static INTERACTIVE_OBJ * AddMarker(const fs::path & file) {
 		return NULL;
 	}
 	
-	LogDebug << "AddMarker " << file;
+	LogDebug("AddMarker " << file);
 	
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2821,7 +2821,7 @@ INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	LogDebug << "AddNPC " << file;
+	LogDebug("AddNPC " << file);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;

@@ -311,11 +311,11 @@ void Ambiance::Track::keyPlay() {
 	}
 	
 	if(!key_i->delay_min && !key_i->delay_max) {
-		LogDebug << "ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName() << " " << key_i->loopc + 1;
+		LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName() << " " << key_i->loopc + 1);
 		source->play(key_i->loopc + 1);
 	} else {
-		LogDebug << "ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName();
-		source->play();
+		LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName();
+		source->play());
 	}
 	
 	key_i->n_start = KEY_CONTINUE;
@@ -323,7 +323,7 @@ void Ambiance::Track::keyPlay() {
 
 void Ambiance::Track::onSampleStart(Source & source) {
 	
-	LogDebug << "ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " started";
+	LogDebug("ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " started");
 	
 	if(flags & Ambiance::Track::PREFETCHED) {
 		flags &= ~Ambiance::Track::PREFETCHED;
@@ -343,7 +343,7 @@ void Ambiance::Track::onSampleStart(Source & source) {
 			keyPrefetch = keys.begin();
 		}
 		if(!keyPrefetch->start && !keyPrefetch->delay_min && !keyPrefetch->delay_max) {
-			LogDebug << "ambiance " << ambiance->getName() << ": prefetching " << source.getSample()->getName() << " " << keyPrefetch->loop + 1;
+			LogDebug("ambiance " << ambiance->getName() << ": prefetching " << source.getSample()->getName() << " " << keyPrefetch->loop + 1);
 			source.play(keyPrefetch->loop + 1);
 			flags |= Ambiance::Track::PREFETCHED;
 		}
@@ -371,7 +371,7 @@ void Ambiance::Track::onSampleStart(Source & source) {
 
 void Ambiance::Track::onSampleEnd(Source & source) {
 	
-	LogDebug << "ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " ended";
+	LogDebug("ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " ended");
 	
 	if(!key_i->loopc--) {
 		
@@ -385,13 +385,13 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 		if(++key_i == keys.end()) {
 			//Track end
 			
-			LogDebug << "ambiance " << ambiance->getName() << ": track ended";
+			LogDebug("ambiance " << ambiance->getName() << ": track ended");
 			
 			if(flags & Track::MASTER) {
 				//Ambiance end
 				ambiance->time = 0;
 				
-				LogDebug << "ambiance " << ambiance->getName() << ": master track ended";
+				LogDebug("ambiance " << ambiance->getName() << ": master track ended");
 				
 				if(ambiance->isLooped()) {
 					for(TrackList::iterator i = ambiance->tracks.begin(); i != ambiance->tracks.end(); ++i) {
@@ -537,7 +537,7 @@ Ambiance::Ambiance(const fs::path & _name) :
 }
 
 Ambiance::~Ambiance() {
-	LogDebug << "deleting ambiance " << name;
+	LogDebug("deleting ambiance " << name);
 }
 
 aalError Ambiance::load() {
@@ -756,7 +756,7 @@ aalError Ambiance::update() {
 	size_t interval = session_time - start - time;
 	time += interval;
 	
-	LogDebug << "ambiance \"" << name << "\": update to time=" << time;
+	LogDebug("ambiance \"" << name << "\": update to time=" << time);
 	
 	// Fading
 	if(fade_interval && fade != None) {

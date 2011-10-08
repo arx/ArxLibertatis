@@ -411,7 +411,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	}
 	
 	
-	LogDebug << "speech \"" << data << '"';
+	LogDebug("speech \"" << data << '"');
 
 	if (flags & ARX_SPEECH_FLAG_NOTEXT)
 	{
@@ -426,7 +426,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 		if (flg > count) flg = count;
 		else if (flg <= 0) flg = 1;
 		
-		LogDebug << " -> " << flg << " / " << count;
+		LogDebug(" -> " << flg << " / " << count);
 
 		io->lastspeechflag = (short)flg;
 	}

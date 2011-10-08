@@ -2021,7 +2021,7 @@ static void ARX_SPELLS_AnalyseSYMBOL() {
 
 			LAST_FAILED_SEQUENCE = SpellMoves;
 
-			LogDebug << "Unknown Symbol - " + SpellMoves;
+			LogDebug("Unknown Symbol - " + SpellMoves);
 		}
 	}
 

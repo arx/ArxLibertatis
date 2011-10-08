@@ -827,7 +827,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 
 long ARX_SOUND_PlayCinematic(const fs::path & name) {
 	
-	LogDebug << "playing cinematic sound";
+	LogDebug("playing cinematic sound");
 	
 	s32 sample_id;
 	Channel channel;

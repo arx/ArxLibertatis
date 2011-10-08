@@ -124,8 +124,8 @@ aalError OpenALBackend::init(bool enableEffects) {
 	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << " without EFX";
 #endif
 	
-	LogDebug << "AL extensions: " << alGetString(AL_EXTENSIONS);
-	LogDebug << "ALC extensions: " << alcGetString(device, ALC_EXTENSIONS);
+	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
+	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));
 	
 	return AAL_OK;
 }

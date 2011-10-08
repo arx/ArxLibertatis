@@ -8,7 +8,12 @@
 
 #include "platform/Platform.h"
 
-#define LogDebug    Logger(__FILE__,__LINE__, Logger::Debug)
+#ifdef _DEBUG
+#define LogDebug(...)    Logger(__FILE__,__LINE__, Logger::Debug) << __VA_ARGS__
+#else
+#define LogDebug(...)    ARX_DISCARD(__VA_ARGS__)
+#endif
+
 #define LogError    Logger(__FILE__,__LINE__, Logger::Error)
 #define LogWarning  Logger(__FILE__,__LINE__, Logger::Warning)
 #define LogInfo     Logger(__FILE__,__LINE__, Logger::Info)

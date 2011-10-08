@@ -99,5 +99,5 @@ void IniSection::addKey(const string & key, const string & value) {
 	
 	transform(keys.back().name.begin(), keys.back().name.end(), keys.back().name.begin(), ::tolower);
 	
-	LogDebug << "found key " << key << "=\"" << value << "\"";
+	LogDebug("found key " << key << "=\"" << value << "\"");
 };

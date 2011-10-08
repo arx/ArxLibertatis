@@ -292,7 +292,7 @@ CinematicBitmap* CreateCinematicBitmap(const fs::path & path, int scale) {
 	if (!bi) 
 		return 0;
 
-	LogDebug << "loading cinematic texture " << path;
+	LogDebug("loading cinematic texture " << path);
 
 	size_t size = 0;
 	

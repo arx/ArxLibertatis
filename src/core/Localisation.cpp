@@ -48,7 +48,7 @@ IniReader localisation;
 
 bool InitLocalisation() {
 	
-	LogDebug << "Starting localization";
+	LogDebug("Starting localization");
 	
 	localisation.clear();
 
@@ -79,7 +79,7 @@ bool InitLocalisation() {
 	}
 	
 	
-	LogDebug << "Loaded localisation file " << tx;
+	LogDebug("Loaded localisation file " << tx);
 	
 	// Scale the loaded size to new stride of uint16_t vs char
 	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
@@ -89,17 +89,17 @@ bool InitLocalisation() {
 		loc_file_size--, Localisation++;
 	}
 
-	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
+	LogDebug("Loaded localisation file: " << tx << " of size " << loc_file_size);
 	size_t nchars = GetUTF16Length( Localisation, &Localisation[loc_file_size] );
-	LogDebug << "UTF-16 size is " << nchars;
+	LogDebug("UTF-16 size is " << nchars);
 	std::string out;
 	out.reserve(loc_file_size);
 	UTF16ToUTF8( Localisation, &Localisation[loc_file_size], std::back_inserter(out) );
-	LogDebug << "Converted to UTF8 string of length " << out.size();
+	LogDebug("Converted to UTF8 string of length " << out.size());
 
 	if ( Localisation && loc_file_size)
 	{
-		LogDebug << "Preparing to parse localisation file";
+		LogDebug("Preparing to parse localisation file");
 		std::istringstream iss( out );
 		if(!localisation.read(iss)) {
 			LogWarning << "errors while parsing localisation file " << tx;

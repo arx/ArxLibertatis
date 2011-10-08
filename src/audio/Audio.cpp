@@ -60,7 +60,7 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	//Clean any initialized data
 	aalClean();
 	
-	LogDebug << "Init";
+	LogDebug("Init");
 	
 	stream_limit_bytes = DEFAULT_STREAMLIMIT;
 	
@@ -71,7 +71,7 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 #ifdef HAVE_OPENAL
 	if(autoBackend || backendName == "OpenAL") {
 		matched = true;
-		LogDebug << "initializing OpenAL backend";
+		LogDebug("initializing OpenAL backend");
 		OpenALBackend * _backend = new OpenALBackend();
 		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
@@ -84,7 +84,7 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 #ifdef HAVE_DSOUND
 	if(!backend && (autoBackend || backendName == "DirectSound")) {
 		matched = true;
-		LogDebug << "initializing DirectSound backend";
+		LogDebug("initializing DirectSound backend");
 		DSoundBackend * _backend = new DSoundBackend();
 		if(!(error = _backend->init(enableEAX))) {
 			backend = _backend;
@@ -117,7 +117,7 @@ aalError aalClean() {
 		return AAL_OK;
 	}
 	
-	LogDebug << "Clean";
+	LogDebug("Clean");
 	
 	_amb.clear();
 	_sample.clear();
@@ -362,7 +362,7 @@ aalError aalSetRoomRolloffFactor(float factor) {
 	
 	AAL_ENTRY
 	
-	LogDebug << "SetRoomRolloffFactor " << factor;
+	LogDebug("SetRoomRolloffFactor " << factor);
 	
 	return backend->setRoomRolloffFactor(factor);
 }
@@ -373,7 +373,7 @@ aalError aalSetUnitFactor(float factor) {
 	
 	AAL_ENTRY
 	
-	LogDebug << "SetUnitFactor " << factor;
+	LogDebug("SetUnitFactor " << factor);
 	
 	return backend->setUnitFactor(factor);
 }
@@ -382,7 +382,7 @@ aalError aalSetRolloffFactor(float factor) {
 	
 	AAL_ENTRY
 	
-	LogDebug << "SetRolloffFactor " << factor;
+	LogDebug("SetRolloffFactor " << factor);
 	
 	return backend->setRolloffFactor(factor);
 }
@@ -409,7 +409,7 @@ aalError aalSetListenerEnvironment(EnvId e_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SetListenerEnvironment " << _env[e_id]->name;
+	LogDebug("SetListenerEnvironment " << _env[e_id]->name);
 	
 	return backend->setListenerEnvironment(*_env[e_id]);
 }
@@ -424,7 +424,7 @@ aalError aalSetMixerVolume(MixerId m_id, float volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SetMixerVolume " << m_id << " volume=" << volume;
+	LogDebug("SetMixerVolume " << m_id << " volume=" << volume);
 	
 	return _mixer[m_id]->setVolume(volume);
 }
@@ -437,7 +437,7 @@ aalError aalSetMixerParent(MixerId m_id, MixerId pm_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SetMixerParent " << m_id << " parent=" << pm_id;
+	LogDebug("SetMixerParent " << m_id << " parent=" << pm_id);
 	
 	return _mixer[m_id]->setParent(_mixer[pm_id]);
 }
@@ -469,7 +469,7 @@ aalError aalMixerStop(MixerId m_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "MixerStop " << m_id;
+	LogDebug("MixerStop " << m_id);
 	
 	return _mixer[m_id]->stop();
 }
@@ -482,7 +482,7 @@ aalError aalMixerPause(MixerId m_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "MixerPause " << m_id;
+	LogDebug("MixerPause " << m_id);
 	
 	return _mixer[m_id]->pause();
 }
@@ -495,7 +495,7 @@ aalError aalMixerResume(MixerId m_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "MixerResume " << m_id;
+	LogDebug("MixerResume " << m_id);
 	
 	return _mixer[m_id]->resume();
 }
@@ -599,7 +599,7 @@ aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned p
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SamplePlay " << _sample[s_id]->getName() << " play_count=" << play_count;
+	LogDebug("SamplePlay " << _sample[s_id]->getName() << " play_count=" << play_count);
 	
 	Source * source = backend->getSource(sample_id);
 	if(source) {
@@ -655,7 +655,7 @@ aalError aalSampleStop(SourceId & sample_id) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SampleStop " << source->getSample()->getName();
+	LogDebug("SampleStop " << source->getSample()->getName());
 	
 	sample_id = Backend::clearSource(sample_id);
 	
@@ -672,7 +672,7 @@ aalError aalMuteAmbianceTrack(AmbianceId a_id, const string & track, bool mute) 
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "MuteAmbianceTrack " << _amb[a_id]->getName() << " " << track << " " << mute;
+	LogDebug("MuteAmbianceTrack " << _amb[a_id]->getName() << " " << track << " " << mute);
 	
 	return _amb[a_id]->muteTrack(track, mute);
 }
@@ -687,7 +687,7 @@ aalError aalSetAmbianceUserData(AmbianceId a_id, void * data) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SetAmbianceUserData " << _amb[a_id]->getName() << " " << data;
+	LogDebug("SetAmbianceUserData " << _amb[a_id]->getName() << " " << data);
 	
 	_amb[a_id]->setUserData(data);
 	
@@ -702,7 +702,7 @@ aalError aalSetAmbianceVolume(AmbianceId a_id, float volume) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "SetAmbianceVolume " << _amb[a_id]->getName() << " " << volume;
+	LogDebug("SetAmbianceVolume " << _amb[a_id]->getName() << " " << volume);
 	
 	return _amb[a_id]->setVolume(volume);
 }
@@ -777,7 +777,7 @@ aalError aalAmbiancePlay(AmbianceId a_id, const Channel & channel, bool loop, si
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "AmbiancePlay " << _amb[a_id]->getName() << " loop=" << loop << " fade=" << fade_interval;
+	LogDebug("AmbiancePlay " << _amb[a_id]->getName() << " loop=" << loop << " fade=" << fade_interval);
 	
 	return _amb[a_id]->play(channel, loop, fade_interval);
 }
@@ -790,7 +790,7 @@ aalError aalAmbianceStop(AmbianceId a_id, size_t fade_interval) {
 		return AAL_ERROR_HANDLE;
 	}
 	
-	LogDebug << "AmbianceStop " << _amb[a_id]->getName() << " " << fade_interval;
+	LogDebug("AmbianceStop " << _amb[a_id]->getName() << " " << fade_interval);
 	
 	_amb[a_id]->stop(fade_interval);
 	

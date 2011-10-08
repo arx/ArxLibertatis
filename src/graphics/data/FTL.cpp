@@ -393,7 +393,7 @@ static bool MCache_Push(const fs::path & file, char * data, size_t size) {
 		return false; // already cached
 	}
 	
-	LogDebug << file << " #" << meshCache.size();
+	LogDebug(file << " #" << meshCache.size());
 	
 	MCACHE_DATA newMesh;
 	newMesh.size = size;
@@ -433,7 +433,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 	
 	size_t compressedSize = 0;
 	char * compressedData = MCache_Pop(filename, compressedSize);
-	LogDebug << "File name check " << filename;
+	LogDebug("File name check " << filename);
 	
 	bool NOrelease = true;
 	if(!compressedData) {
@@ -684,7 +684,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
 	
-	LogDebug << "ARX_FTL_Load: loaded object " << filename;
+	LogDebug("ARX_FTL_Load: loaded object " << filename);
 	
 	return obj;
 }

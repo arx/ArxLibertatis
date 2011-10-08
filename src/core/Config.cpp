@@ -310,7 +310,7 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 		}
 	}
 	
-	LogDebug << "[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"";
+	LogDebug("[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"");
 	
 	return action_key;
 }
