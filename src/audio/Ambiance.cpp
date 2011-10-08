@@ -140,7 +140,7 @@ struct TrackKey {
 	
 	size_t start; // Start time (after last key)
 	size_t n_start; // Next time to play sample (when delayed)
-	size_t loop, loopc; // Loop count
+	size_t loop; // Play count
 	unsigned delay_min, delay_max; // Min and max delay before each sample loop
 	unsigned delay; // Current delay
 	KeySetting volume; // Volume settings
@@ -148,7 +148,7 @@ struct TrackKey {
 	KeySetting pan; // Pan settings
 	KeySetting x, y, z; // Positon settings
 	
-	TrackKey() : start(0), n_start(0), loop(0), loopc(0),
+	TrackKey() : start(0), n_start(0), loop(0),
 	             delay_min(0), delay_max(0), delay(0) {
 	}
 	
@@ -169,7 +169,7 @@ struct TrackKey {
 		   !z.load(file)) {
 			return false;
 		}
-		start = _start, loop = _loop, delay_min = _delay_min, delay_max = _delay_max;
+		start = _start, loop = _loop + 1, delay_min = _delay_min, delay_max = _delay_max;
 		
 		return true;
 	}
@@ -242,7 +242,12 @@ private:
 	KeyList keys; // Key list
 	KeyList::iterator key_i;
 	
-	Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0) { }
+
+	size_t loopc; // How often the sample still needs to loop.
+	size_t queued; // How many loop counts are already queued.
+	
+	Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0),
+	                              loopc(0), queued(0) { }
 	
 	void keyPlay();
 	
@@ -310,12 +315,18 @@ void Ambiance::Track::keyPlay() {
 		s_id = source->getId();
 	}
 	
-	if(!key_i->delay_min && !key_i->delay_max) {
-		LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName() << " " << key_i->loopc + 1);
-		source->play(key_i->loopc + 1);
-	} else {
-		LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName();
-		source->play());
+	if(queued < loopc) {
+		if(!key_i->delay_min && !key_i->delay_max) {
+			size_t toqueue = loopc - queued;
+			queued += toqueue;
+			LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName() << " " << toqueue << " -> " << queued << " / " << loopc);
+			source->play(toqueue);
+			arx_assert(loopc >= queued);
+		} else {
+			LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName();
+			source->play());
+			queued++;
+		}
 	}
 	
 	key_i->n_start = KEY_CONTINUE;
@@ -331,20 +342,22 @@ void Ambiance::Track::onSampleStart(Source & source) {
 			key_i = keys.begin();
 		}
 		key_i->n_start = KEY_CONTINUE;
-		key_i->loopc = key_i->loop;
+		arx_assert(loopc >= queued);
 	}
 	
 	arx_assert(key_i != keys.end());
 	
 	// Prefetch
-	if(!key_i->loopc && ambiance->isLooped()) {
-		Ambiance::Track::KeyList::const_iterator keyPrefetch = key_i + 1;
+	if(loopc == 1 && ambiance->isLooped()) {
+		Ambiance::Track::KeyList::iterator keyPrefetch = key_i + 1;
 		if(keyPrefetch == keys.end()) {
 			keyPrefetch = keys.begin();
 		}
 		if(!keyPrefetch->start && !keyPrefetch->delay_min && !keyPrefetch->delay_max) {
-			LogDebug("ambiance " << ambiance->getName() << ": prefetching " << source.getSample()->getName() << " " << keyPrefetch->loop + 1);
-			source.play(keyPrefetch->loop + 1);
+			LogDebug("ambiance " << ambiance->getName() << ": prefetching " << source.getSample()->getName() << " " << keyPrefetch->loop);
+			queued += keyPrefetch->loop;
+			loopc += keyPrefetch->loop;
+			source.play(keyPrefetch->loop);
 			flags |= Ambiance::Track::PREFETCHED;
 		}
 	}
@@ -373,19 +386,26 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 	
 	LogDebug("ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " ended");
 	
-	if(!key_i->loopc--) {
+	arx_assert(queued > 0);
+	
+	queued--;
+	
+	if(!--loopc) {
+		
+		arx_assert(queued == 0);
 		
 		//Key end
 		key_i->delay = key_i->delay_max;
 		key_i->updateSynch();
 		key_i->n_start = key_i->start + key_i->delay;
-		key_i->loopc = key_i->loop;
 		key_i->pitch.tupdate -= ambiance->time;
 		
 		if(++key_i == keys.end()) {
 			//Track end
 			
 			LogDebug("ambiance " << ambiance->getName() << ": track ended");
+			
+			arx_assert(source.isIdle());
 			
 			if(flags & Track::MASTER) {
 				//Ambiance end
@@ -401,9 +421,12 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 					}
 					ambiance->start = session_time;
 				} else {
-					ambiance->status = Idle;
+					ambiance->stop();
 				}
 			}
+			
+		} else {
+			loopc += key_i->loop;
 		}
 		
 	} else if(key_i->delay_min || key_i->delay_max) {
@@ -656,7 +679,6 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 			key->delay = key->delay_max;
 			key->updateSynch();
 			key->n_start = key->start + key->delay;
-			key->loopc = key->loop;
 			
 			key->volume.reset();
 			key->pitch.reset();
@@ -666,7 +688,11 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 			key->z.reset();
 		}
 		
+		arx_assert(backend->getSource(track->s_id) == NULL || backend->getSource(track->s_id)->isIdle());
+		
 		track->key_i = track->keys.begin();
+		track->loopc = track->key_i->loop;
+		track->queued = 0;
 	}
 	
 	status = Playing;
@@ -682,7 +708,7 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 
 aalError Ambiance::stop(size_t _fade_interval) {
 	
-	if(!isIdle()) {
+	if(isIdle()) {
 		return AAL_OK;
 	}
 	
