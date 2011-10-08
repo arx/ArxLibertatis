@@ -46,7 +46,7 @@ static bool is_fd_disabled(int fd) {
 	static const char * names[] = { NULL, "/proc/self/fd/1", "/proc/self/fd/2" };
 	char path[64];
 	ssize_t len = readlink(names[fd], path, ARRAY_SIZE(path));
-	if(len == 9 && !memcmp(names, "/dev/null", 9)) {
+	if(len == 9 && !memcmp(path, "/dev/null", 9)) {
 		return true;
 	} else if(len == -1 && errno == ENOENT) {
 		return true;
