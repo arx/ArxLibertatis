@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
+#include "boost/algorithm/string/predicate.hpp"
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -643,6 +645,10 @@ int main(int argc, char ** argv) {
 	Logger::init();
 	
 	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
+	
+	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
+		Logger::configure(argv[1] + 8);
+	}
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	

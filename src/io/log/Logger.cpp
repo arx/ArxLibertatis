@@ -103,6 +103,8 @@ const logger::Source * Logger::get(const char * file, LogLevel level) {
 				if(component == "src" || component == "tools") {
 					break;
 				}
+				
+				end = p;
 			}
 		}
 		
@@ -137,9 +139,58 @@ void Logger::flush() {
 	}
 }
 
+void Logger::configure(const string config) {
+	
+	size_t start = 0;
+	
+	while(start < config.length()) {
+		
+		size_t pos = config.find(',', start);
+		if(pos == string::npos) {
+			pos = config.length();
+		}
+		if(pos == start) {
+			start++;
+			continue;
+		}
+		
+		string entry = config.substr(start, pos - start);
+		start = pos + 1;
+		
+		size_t eq = entry.find('=');
+		string level;
+		if(eq != string::npos) {
+			level = entry.substr(eq + 1), entry.resize(eq);
+		}
+		
+		if(level.empty() || level == "debug" || level == "d" || level == "D") {
+			set(entry, Debug);
+		} else if(level == "info" || level == "i" || level == "I") {
+			set(entry, Info);
+		} else if(level == "warning" || level == "warn", level == "w" || level == "W") {
+			set(entry, Warning);
+		} else if(level == "error" || level == "w" || level == "E") {
+			set(entry, Error);
+		} else if(level == "none" || level == "n" || level == "N") {
+			set(entry, None);
+		} else if(level == "reset" || level == "r" || level == "R" || level == "-") {
+			reset(entry);
+		}
+		
+	}
+	
+}
+
 void Logger::init() {
+	
 	Logger::add(logger::Console::get());
+	
 #ifdef HAVE_WINAPI
 	Logger::add(logger::MsvcDebugger::get());
 #endif
+	
+	const char * arxdebug = getenv("ARXDEBUG");
+	if(arxdebug) {
+		configure(arxdebug);
+	}
 }

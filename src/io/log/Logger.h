@@ -128,6 +128,20 @@ public:
 	static void reset(const std::string & component);
 	
 	/*!
+	 * Configure log levels for multiple components.
+	 * Config is a comma-seperated list of compontent log level assignments,
+	 * Each assignment is of the form "component=level" or "component".
+	 * Valid levels are:
+	 *  - "debug" / "d" / "D" (default if level is omitted)
+	 *  - "info" / "i" / "I"
+	 *  - "warning" / "warn" / "w" / "W"
+	 *  - "error" / "e" / "E"
+	 *  - "none" / "n" / "N"
+	 *  - "reset" / "r" / "R" / "-"
+	 */
+	static void configure(const std::string config);
+	
+	/*!
 	 * @return true if the given log level is currently enabled for the current level.
 	 *         Log levels inherit their enabled state: e.g. if Info is enabled,
 	 *         Warning and Error are also enabled.
