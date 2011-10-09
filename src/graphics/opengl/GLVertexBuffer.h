@@ -285,7 +285,7 @@ public:
 				glShortIndexBuffer[i] = GLushort(indices[i] + offset);
 			}
 			
-			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_SHORT, glShortIndexBuffer.data());
+			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_SHORT, &glShortIndexBuffer[0]);
 			
 			CHECK_GL;
 			
@@ -296,7 +296,7 @@ public:
 				glIntIndexBuffer[i] = GLuint(indices[i] + offset);
 			}
 			
-			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_INT, glIntIndexBuffer.data());
+			glDrawRangeElements(arxToGlPrimitiveType[primitive], offset, offset + count - 1, nbindices, GL_UNSIGNED_INT, &glIntIndexBuffer[0]);
 			
 			CHECK_GL;
 		}
