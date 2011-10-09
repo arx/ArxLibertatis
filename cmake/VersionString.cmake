@@ -31,7 +31,7 @@ function(version_file SRC DST VERSION_FILE GIT_DIR)
 			"${SRC}"
 		DEPENDS
 			"${GIT_DIR}/HEAD"
-			"${GIT_DIR}/refs/*/*"
+			"${GIT_DIR}/logs/HEAD"
 			"${VERSION_FILE}"
 			"${CMAKE_MODULE_PATH}/VersionScript.cmake"
 		COMMENT ""
