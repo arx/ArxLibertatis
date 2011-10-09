@@ -211,6 +211,8 @@ bool Application::InitConfig() {
 		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile << ", using defaults.";
 	}
 	
+	Logger::configure(config.misc.debug);
+	
 	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {
 		if(!(migrated = migrateFilenames())) {
 			return false;
