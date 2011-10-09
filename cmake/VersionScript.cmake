@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+# CMake script that reads a VERSION file and the current git history and the calls configure_file().
+# This is used by version_file() in VersionString.cmake
+
 if((NOT DEFINED INPUT) OR (NOT DEFINED OUTPUT) OR (NOT DEFINED VERSION_FILE) OR (NOT DEFINED GIT_DIR))
 	message(SEND_ERROR "Invalid arguments.")
 endif()
@@ -25,7 +28,9 @@ if(EXISTS "${GIT_DIR}")
 	
 	if(GIT_COMMIT)
 		string(TOLOWER "${GIT_COMMIT}" GIT_COMMIT)
-		string(SUBSTRING "${GIT_COMMIT}" 0 10 SHORT_GIT_COMMIT)
+		foreach(i RANGE 39)
+			string(SUBSTRING "${GIT_COMMIT}" 0 ${i} GIT_COMMIT_PREFIX_${i})
+		endforeach()
 	endif()
 	
 endif()
