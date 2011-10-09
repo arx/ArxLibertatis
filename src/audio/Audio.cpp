@@ -94,6 +94,10 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	}
 #endif
 	
+#if !defined(HAVE_OPENAL) && !defined(HAVE_DSOUND)
+	ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
+#endif
+	
 	if(!matched) {
 		LogError << "unknown backend: " << backendName;
 		return AAL_ERROR_SYSTEM;
