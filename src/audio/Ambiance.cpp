@@ -48,9 +48,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 #include "platform/Random.h"
 
+#include "Configure.h"
+
 using std::string;
 
-namespace {
+#ifdef UNITY_BUILD
+// GCC complains if a type from an anonymous namespace
+// is used in a file that isn't the main source file
+#define ANONYMOUS_NAMESPACE extern "C++"
+#else
+#define ANONYMOUS_NAMESPACE namespace
+#endif
+
+ANONYMOUS_NAMESPACE {
 
 static const u32 AMBIANCE_FILE_SIGNATURE = 0x424d4147; //'GAMB'
 static const u32 AMBIANCE_FILE_VERSION_1001 = 0x01000001;

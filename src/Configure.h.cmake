@@ -38,8 +38,11 @@
 // Compiler features
 #cmakedefine HAVE_DYNAMIC_STACK_ALLOCATION
 
+// Arx components
 #cmakedefine BUILD_EDITOR
-
 #cmakedefine BUILD_EDIT_LOADSAVE
+
+// Build system
+#cmakedefine UNITY_BUILD
 
 #endif // ARX_CONFIGURE_H
