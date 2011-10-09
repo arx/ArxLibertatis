@@ -40,7 +40,7 @@
 namespace logger {
 
 class Backend;
-class Source;
+struct Source;
 
 } // namespace logger
 
