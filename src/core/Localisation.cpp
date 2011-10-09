@@ -90,7 +90,8 @@ bool InitLocalisation() {
 	}
 
 	LogDebug("Loaded localisation file: " << tx << " of size " << loc_file_size);
-	size_t nchars = GetUTF16Length( Localisation, &Localisation[loc_file_size] );
+	size_t nchars = GetUTF16Length(Localisation, &Localisation[loc_file_size]);
+	ARX_UNUSED(nchars);
 	LogDebug("UTF-16 size is " << nchars);
 	std::string out;
 	out.reserve(loc_file_size);

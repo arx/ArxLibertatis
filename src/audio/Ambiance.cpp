@@ -384,6 +384,8 @@ void Ambiance::Track::onSampleStart(Source & source) {
 
 void Ambiance::Track::onSampleEnd(Source & source) {
 	
+	ARX_UNUSED(source);
+	
 	LogDebug("ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " ended");
 	
 	arx_assert(queued > 0);

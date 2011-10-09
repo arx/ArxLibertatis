@@ -214,6 +214,7 @@ public:
 
 using namespace script; // TODO(script-parser) remove once everythng has been moved to the script namespace
 
+#ifdef _DEBUG
 static const char * toString(ScriptResult ret) {
 	switch(ret) {
 		case ACCEPT: return "accept";
@@ -222,6 +223,7 @@ static const char * toString(ScriptResult ret) {
 		default: arx_assert(false); return NULL;
 	}
 }
+#endif
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
