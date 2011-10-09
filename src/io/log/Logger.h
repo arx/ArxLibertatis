@@ -10,8 +10,8 @@
 #ifdef _DEBUG
 //! Log a Debug message. Arguments are only evaluated if their results will be used.
 #define LogDebug(...)    \
-	if(const ::logger::Source * logger_source = ::Logger::get(__FILE__, ::Logger::Debug)) \
-		::Logger(logger_source, __LINE__, ::Logger::Debug) << __VA_ARGS__
+	if(::Logger::isEnabled(__FILE__, ::Logger::Debug)) \
+		::Logger(__FILE__, __LINE__, ::Logger::Debug, true) << __VA_ARGS__
 #else
 #define LogDebug(...)    ARX_DISCARD(__VA_ARGS__)
 #endif
@@ -60,39 +60,34 @@ public:
 	};
 	
 private:
-	static void log(const logger::Source & file, int line, LogLevel level, const std::string & str);
 	
-	const logger::Source * const file;
+	static void log(const char * file, int line, LogLevel level, const std::string & str);
+	
+	const char * const file;
 	const int line;
 	const LogLevel level;
+	const bool enabled;
 	
 	std::ostringstream buffer; //! Buffer for the log message excluding level, file and line.
 	
 public:
 	
-	/*!
-	 * If the given log level is es enabled for the given file, return an
-	 * internal handle for the file. Otherwise return null.
-	 * If not null, the return value is independent of the log level.
-	 */
-	static const logger::Source * get(const char * file, LogLevel level);
-	
+	inline Logger(const char * _file, int _line, LogLevel _level, bool _enabled)
+	       : file(_file), line(_line), level(_level), enabled(_enabled) { }
 	inline Logger(const char * _file, int _line, LogLevel _level)
-	       : file(get(_file, _level)), line(_line), level(_level) { }
-	inline Logger(const logger::Source * _file, int _line, LogLevel _level)
-	       : file(_file), line(_line), level(_level) { }
+	       : file(_file), line(_line), level(_level), enabled(isEnabled(_file, _level)) { }
 	
 	template<class T>
 	inline Logger & operator<<(const T & i) {
-		if(file) {
+		if(enabled) {
 			buffer << i;
 		}
 		return *this;
 	}
 	
 	inline ~Logger() {
-		if(file) {
-			log(*file, line, level, buffer.str());
+		if(enabled) {
+			log(file, line, level, buffer.str());
 		}
 	}
 	
@@ -146,14 +141,12 @@ public:
 	 *         Log levels inherit their enabled state: e.g. if Info is enabled,
 	 *         Warning and Error are also enabled.
 	 */
-	inline static bool isEnabled(const char * file, LogLevel level) {
-		return (get(file, level) != NULL);
-	}
+	static bool isEnabled(const char * file, LogLevel level);
 	
 	/*!
 	 * Flush buffered output in all logging backends.
 	 */
-		static void flush();
+	static void flush();
 	
 	/*!
 	* Helper class to pass a C string that might be NULL to the logger.

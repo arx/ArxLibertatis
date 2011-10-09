@@ -638,6 +638,7 @@ if(ARX_BUILD_TOOLS)
 		src/io/IniSection.cpp
 		src/platform/String.cpp
 		src/platform/Platform.cpp
+		src/platform/Lock.cpp
 		tools/savetool/savetool.cpp
 		tools/savetool/SaveFix.cpp
 		tools/savetool/SaveView.cpp
@@ -658,6 +659,7 @@ if(ARX_BUILD_TOOLS)
 		src/io/log/Logger.cpp
 		src/platform/String.cpp
 		src/platform/Platform.cpp
+		src/platform/Lock.cpp
 		tools/unpak/unpak.cpp
 	)
 	

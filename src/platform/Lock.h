@@ -47,6 +47,10 @@ public:
 		lock->lock();
 	}
 	
+	inline Autolock(Lock & _lock) : lock(&_lock) {
+		lock->lock();
+	}
+	
 	inline ~Autolock() {
 		lock->unlock();
 	}
