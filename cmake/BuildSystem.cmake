@@ -27,10 +27,14 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	list(LENGTH files numfiles)
 	set(currentIdx 1)
 	foreach(source_file IN LISTS files)
+		
+		get_filename_component(source_file "${source_file}" ABSOLUTE)
+		
 		string(REGEX REPLACE ".*\\/" "" short_file "${source_file}")
 		file(APPEND ${unit_build_file} "#pragma message (\"[${currentIdx}/${numfiles}] Compiling ${short_file}...\")\n")
-		file(APPEND ${unit_build_file} "#include \"${CMAKE_SOURCE_DIR}/${source_file}\"\n\n")
+		file(APPEND ${unit_build_file} "#include \"${source_file}\"\n\n")
 		math(EXPR currentIdx "${currentIdx} + 1")
+		
 	endforeach(source_file)
 	
 	# Complement list of translation units with the name of ub
