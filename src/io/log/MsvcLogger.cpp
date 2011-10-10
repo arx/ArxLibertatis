@@ -22,7 +22,7 @@ void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level, co
 		case Logger::None: ARX_DEAD_CODE();
 	}
 	
-	oss << ' ' << file.name << ':' << line << "  " << str;
+	oss << ' ' << file.name << ':' << line << "  " << str << "\n";
 	
 	OutputDebugString(oss.str().c_str());
 }
