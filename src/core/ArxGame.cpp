@@ -1967,6 +1967,7 @@ static float _AvgFrameDiff = 150.f;
 	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
 	{
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		DrawAllInterface();
 		DrawAllInterfaceFinish();
 
@@ -1975,11 +1976,10 @@ static float _AvgFrameDiff = 150.f;
 			&& flarenum
 			)
 		{
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			FRAMETICKS = ARXTimeUL();
 		}
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
