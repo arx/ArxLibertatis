@@ -3,8 +3,6 @@
 
 #include "io/log/ColorLogger.h"
 
-#include "Configure.h"
-
 namespace logger {
 
 File::~File() {
