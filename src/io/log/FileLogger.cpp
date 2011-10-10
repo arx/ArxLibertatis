@@ -12,16 +12,7 @@ File::~File() {
 }
 
 void File::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
-	
-	switch(level) {
-		case Logger::Debug:   ofs << "[D]"; break;
-		case Logger::Info:    ofs << "[I]"; break;
-		case Logger::Warning: ofs << "[W]"; break;
-		case Logger::Error:   ofs << "[E]"; break;
-		case Logger::None: ARX_DEAD_CODE();
-	}
-	
-	ofs << ' ' << file.name << ':' << line << "  " << str << std::endl;
+	format(ofs, file, line, level, str);
 }
 
 void File::flush() {

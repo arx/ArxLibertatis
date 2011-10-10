@@ -20,17 +20,8 @@ Console::~Console() {
 }
 
 void Console::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
-	
-	std::ostream * os;
-	switch(level) {
-		case Logger::Debug:   std::cout << "[D]", os = &std::cout; break;
-		case Logger::Info:    std::cout << "[I]", os = &std::cout; break;
-		case Logger::Warning: std::cerr << "[W]", os = &std::cerr; break;
-		case Logger::Error:   std::cerr << "[E]", os = &std::cerr; break;
-		case Logger::None: ARX_DEAD_CODE();
-	}
-	
-	(*os) << ' ' << file.name << ':' << line << "  " << str << std::endl;
+	std::ostream & os = (level == Logger::Warning || level == Logger::Error) ? std::cerr : std::cout;
+	format(os, file, line, level, str);
 }
 
 void Console::flush() {

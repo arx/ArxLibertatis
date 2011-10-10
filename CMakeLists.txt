@@ -432,6 +432,7 @@ set(IO_SOURCES
 set(IO_LOGGER_SOURCES
 	src/io/log/ConsoleLogger.cpp
 	src/io/log/FileLogger.cpp
+	src/io/log/LogBackend.cpp
 	src/io/log/Logger.cpp
 )
 set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)

@@ -12,18 +12,8 @@ MsvcDebugger::~MsvcDebugger() {
 }
 
 void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
-	
 	std::ostringstream oss;
-	switch(level) {
-		case Logger::Debug:   oss << "[D]"; break;
-		case Logger::Info:    oss << "[I]"; break;
-		case Logger::Warning: oss << "[W]"; break;
-		case Logger::Error:   oss << "[E]"; break;
-		case Logger::None: ARX_DEAD_CODE();
-	}
-	
-	oss << ' ' << file.name << ':' << line << "  " << str << "\n";
-	
+	format(oss, file, line, level, str);
 	OutputDebugString(oss.str().c_str());
 }
 
