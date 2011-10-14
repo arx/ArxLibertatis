@@ -18,17 +18,26 @@ if(EXISTS "${GIT_DIR}")
 	unset(GIT_COMMIT)
 	
 	if("${GIT_HEAD}" MATCHES "^ref\\:")
-		string(SUBSTRING "${GIT_HEAD}" 4 -1 GIT_REF)
+		
+		# Remove the first for characters from GIT_HEAD to get GIT_REF.
+		# We can't use a length of -1 for string(SUBSTRING) as cmake < 2.8.5 doesn't support it.
+		string(LENGTH "${GIT_HEAD}" GIT_HEAD_LENGTH)
+		math(EXPR GIT_REF_LENGTH "${GIT_HEAD_LENGTH} - 4")
+		string(SUBSTRING "${GIT_HEAD}" 4 ${GIT_REF_LENGTH} GIT_REF)
+		
 		string(STRIP "${GIT_REF}" GIT_REF)
+		
 		file(READ "${GIT_DIR}/${GIT_REF}" GIT_HEAD)
 		string(STRIP "${GIT_HEAD}" GIT_HEAD)
 	endif()
 	
 	string(REGEX MATCH "[0-9A-Za-z]+" GIT_COMMIT "${GIT_HEAD}")
 	
+	# Create variables for all prefixes of the git comit ID.
 	if(GIT_COMMIT)
 		string(TOLOWER "${GIT_COMMIT}" GIT_COMMIT)
-		foreach(i RANGE 39)
+		string(LENGTH "${GIT_COMMIT}" GIT_COMMIT_LENGTH)
+		foreach(i RANGE "${GIT_COMMIT_LENGTH}")
 			string(SUBSTRING "${GIT_COMMIT}" 0 ${i} GIT_COMMIT_PREFIX_${i})
 		endforeach()
 	endif()
