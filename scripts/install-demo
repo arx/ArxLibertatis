@@ -5,7 +5,7 @@ function die() {
 	exit 1
 }
 
-zipfile="$(readlink -f "$1")"
+[ "$1" == "--help" ] || [ "$1" == "-h" ] || zipfile="$(readlink -f "$1")"
 [ "$zipfile" != "" ] || die "Usage: install-demo path/to/arx_demo_english.zip [output_dir]"
 
 if [ "$2" == "" ]
