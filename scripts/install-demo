@@ -1,0 +1,75 @@
+#!/bin/sh
+
+function die() {
+	echo "$1"
+	exit 1
+}
+
+zipfile="$(readlink -f "$1")"
+[ "$zipfile" != "" ] || die "Usage: install-demo path/to/arx_demo_english.zip [output_dir]"
+
+if [ "$2" == "" ]
+	then destdir="$(pwd)"
+	else destdir="$(readlink -f "$2")"
+fi
+
+echo "Installing Arx Fatalis demo data from \"$zipfile\" to \"$destdir\"."
+echo
+
+cabextract=`which cabextract 2> /dev/null`
+[ -f "$cabextract" ] || die "Please install cabextract (http://www.cabextract.org.uk/)"
+
+unzip=`which unzip 2> /dev/null`
+[ -f "$unzip" ] || die "Please install unzip (http://www.info-zip.org/)"
+
+[ -f "$zipfile" ] || die "Input file \"$zipfile\" not found."
+
+md5sum=`which md5sum 2> /dev/null`
+if [ -f "$md5sum" ]
+	then 
+		checksum="$(md5sum "$zipfile" | sed 's/ .*//')"
+		expected='3c59a5799e1237b1b181c96e8c09155a'
+		if [ "$checksum" == "$expected" ] 
+			then echo "Checksum matched."
+			else echo "Got checksum $checksum, expected $expected."
+		fi
+	else echo "Missing md5sum, cannot verify that you have the correct archive."
+fi
+
+mkdir -p "$destdir" || exit 1
+
+tempdir="$destdir/arx-install-demo-temp"
+
+rm -rf "$tempdir" 2> /dev/null
+mkdir "$tempdir" || exit 1
+cd "$tempdir" || exit 1
+
+"$unzip" "$zipfile"
+
+"$cabextract" Setup1.cab
+"$cabextract" Setup2.cab
+"$cabextract" Setup3.cab
+
+function doinstall() {
+	mv -fv "$tempdir/$1" "$destdir/$2"
+	chmod "--reference=$destdir" "$destdir/$2" &> /dev/null
+	chmod -x "$destdir/$2" &> /dev/null
+}
+
+mkdir -pv "$destdir/misc"
+doinstall "bin/Arx.ttf" "misc/arx.ttf"
+doinstall "bin/Logo.bmp" "misc/logo.bmp"
+doinstall "bin/data2.pak" "data2.pak"
+doinstall "bin/LOC.pak" "loc.pak"
+doinstall "data.pak" "data.pak"
+doinstall "SFX.pak" "sfx.pak"
+doinstall "SPEECH.pak" "speech.pak"
+
+rm -rf "$tempdir"
+
+echo
+echo "Done:"
+
+if [ -f "$md5sum" ] ; then
+	cd "$destdir" && find * -type f | sort | xargs "$md5sum"
+fi

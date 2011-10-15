@@ -63,6 +63,8 @@ Once you have a ming32 cross compiler installed you can use it for arx by passin
 
 ## Run
 
+You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
+
 Run from the directory containing the .pak files:
 
 `$ ./arx`
