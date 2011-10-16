@@ -22,7 +22,6 @@
 #include <windows.h>
 #include <map>
 
-#include "core/Resource.h"
 #include "graphics/Renderer.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
