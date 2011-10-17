@@ -28,6 +28,8 @@
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
 #include "io/FilePath.h"
+#include "io/log/Logger.h"
+#include <iomanip>
 
 using std::string;
 
@@ -44,9 +46,6 @@ Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face )
 	m_Textures = new PackedTexture(TEXTURE_SIZE, Image::Format_A8);
 	m_Textures->BeginPacking();
 	
-	// TODO-font: To support true unicode text, this class will need
-	// to be adapted to insert bitmap glyphs in the texture pages,
-	// on the fly from the text that is passed to it.
 	for(unsigned int chr = 32; chr < 256; ++chr) {
 		InsertGlyph(chr);
 	}
@@ -65,7 +64,25 @@ Font::~Font() {
 bool Font::InsertGlyph(unsigned int character) {
 	
 	FT_Error error;
-	FT_UInt glyphIndex = FT_Get_Char_Index( m_FTFace, character );
+	FT_UInt glyphIndex = FT_Get_Char_Index(m_FTFace, character);
+	if(!glyphIndex) {
+		// Glyp does not exist - inser something so we don't look it up for every render pass.
+		if(character < 256) {
+			// ignore non-displayable ANSI characters (and some more)
+			Glyph & glyph = m_Glyphs[character];
+			glyph.size = Vec2i::ZERO;
+			glyph.advance = Vec2f::ZERO;
+			glyph.lsb_delta = glyph.rsb_delta = 0;
+			glyph.draw_offset = Vec2i::ZERO;
+			glyph.uv_start = Vec2f::ZERO;
+			glyph.uv_end = Vec2f::ZERO;
+			glyph.texture = 0;
+		} else {
+			m_Glyphs[character] = m_Glyphs['?'];
+			LogWarning << "No glyph for character U+" << std::hex << character;
+		}
+		return false;
+	}
 	
 	error = FT_Load_Glyph(m_FTFace, glyphIndex, FT_LOAD_FORCE_AUTOHINT);
 	if(error) {
@@ -87,8 +104,8 @@ bool Font::InsertGlyph(unsigned int character) {
 	glyph.rsb_delta = m_FTFace->glyph->rsb_delta;
 	glyph.draw_offset.x = m_FTFace->glyph->bitmap_left;
 	glyph.draw_offset.y = m_FTFace->glyph->bitmap_top - m_FTFace->glyph->bitmap.rows;
-	glyph.uv_start = Vec2f(0,0);
-	glyph.uv_end = Vec2f(0,0);
+	glyph.uv_start = Vec2f::ZERO;
+	glyph.uv_end = Vec2f::ZERO;
 	glyph.texture = 0;
 	
 	// Some glyphs like spaces have a size of 0...
