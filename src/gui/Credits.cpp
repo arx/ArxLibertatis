@@ -85,13 +85,13 @@ struct CreditsTextInformations {
 
 struct CreditsInformations {
 	
-	CreditsInformations() {
-	iFontAverageHeight = -1;
-	iFirstLine = 0 ;
-	}
+	CreditsInformations() : iFirstLine(0), iFontAverageHeight(-1), sizex(0), sizey(0) { }
 	
 	int iFirstLine;
 	int iFontAverageHeight;
+	
+	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
+	
 	vector<CreditsTextInformations> aCreditsInformations;
 };
 
@@ -101,11 +101,18 @@ static CreditsInformations CreditsData;
 static void InitCredits();
 static void CalculAverageWidth();
 static void ExtractAllCreditsTextInformations();
-static void ExtractPhraseColor(string & phrase, CreditsTextInformations & infomations);
-static void CalculTextPosition(const string & phrase, CreditsTextInformations & infomations, float & drawpos);
 
 static void InitCredits() {
-
+	
+	if(CreditsData.iFontAverageHeight != -1
+		&& CreditsData.sizex == DANAESIZX && CreditsData.sizey == DANAESIZY) {
+		return;
+	}
+	
+	CreditsData.sizex = DANAESIZX, CreditsData.sizey = DANAESIZY;
+	
+	CreditsData.aCreditsInformations.clear();
+	
 	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
@@ -115,28 +122,51 @@ static void InitCredits() {
 	
 }
 
-static void CalculTextPosition(const string & phrase, CreditsTextInformations & infomations, float & drawpos) {
-	
-	//Center the text on the screen
-	infomations.sPos = hFontCredits->GetTextSize(phrase);
-	if(infomations.sPos.x < DANAESIZX) 
-		infomations.sPos.x = static_cast<int>((DANAESIZX - infomations.sPos.x) * ( 1.0f / 2 ));
-	
-	//Calcul height position (must be calculate after GetTextSize because sPos is writted)
-	infomations.sPos.y = static_cast<int>(drawpos) ;
-	drawpos += CreditsData.iFontAverageHeight;
-}
-
-static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomations )
-{
+static Color ExtractPhraseColor(string & phrase) {
 	//Get the good color
 	if(!phrase.empty() && phrase[0] == '~') {
 		phrase[0] = ' ';
-		infomations.fColors = Color(255,255,255);
+		return Color(255,255,255);
 	} else {
 		//print in gold color
-		infomations.fColors = Color(232,204,143);
+		return Color(232,204,143);
 	}
+}
+
+static void addCreditsLine(string & phrase, float & drawpos) {
+	
+	//Create a data containers
+	CreditsTextInformations infomations;
+	
+	infomations.fColors = ExtractPhraseColor(phrase);
+	
+	//int linesize = hFontCredits->GetTextSize(phrase).x;
+	
+	static const int MARGIN_WIDTH = 20;
+	Rect linerect(DANAESIZX - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->GetLineHeight());
+	
+	while(!phrase.empty()) {
+		
+		// Split long lines
+		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
+		arx_assert(n >= 0 && size_t(n) < phrase.length());
+		
+		infomations.sText = phrase.substr(0, (n + 1) == phrase.length() ? n + 1 : n);
+		phrase = phrase.substr(n + 1);
+		
+		// Center the text on the screen
+		int linesize = hFontCredits->GetTextSize(infomations.sText).x;
+		infomations.sPos.x = (DANAESIZX - linesize) / 2;
+		
+		LogDebug("credit line: '" << infomations.sText << "' (" << linesize << "," << infomations.sText.length() << ")");
+		
+		// Calculate height position
+		infomations.sPos.y = static_cast<int>(drawpos);
+		drawpos += CreditsData.iFontAverageHeight;
+		
+		CreditsData.aCreditsInformations.push_back(infomations);
+	}
+	
 }
 
 //Use to calculate an Average height for text fonts
@@ -145,6 +175,29 @@ static void CalculAverageWidth() {
 	// Calculate the average value
 	Vec2i size = hFontCredits->GetTextSize("aA(");
 	CreditsData.iFontAverageHeight = size.y;
+}
+
+static bool iswhitespace(char c) {
+	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
+}
+
+static void strip(string & str) {
+	
+	size_t startpos = 0;
+	while(startpos < str.length() && iswhitespace(str[startpos])) {
+		startpos++;
+	}
+	
+	size_t endpos = str.length();
+	while(endpos > startpos && iswhitespace(str[endpos - 1])) {
+		endpos--;
+	}
+	
+	if(startpos != 0) {
+		str = str.substr(startpos, endpos - startpos);
+	} else {
+		str.resize(endpos);
+	}
 }
 
 
@@ -159,33 +212,22 @@ static void ExtractAllCreditsTextInformations() {
 	float drawpos = static_cast<float>(DANAESIZY);
 
 	while(std::getline(iss, phrase)) {
-	
-		//Case of separator line
-		if(phrase.length() == 0) {
-			drawpos += CreditsData.iFontAverageHeight >> 3;
-			continue ;
+		
+		strip(phrase);
+		
+		if(phrase.empty()) {
+			// Separator line
+			drawpos += CreditsData.iFontAverageHeight;
+		} else {
+			addCreditsLine(phrase, drawpos);
 		}
-		
-		//Create a data containers
-		CreditsTextInformations infomations ;
-		
-		ExtractPhraseColor(phrase, infomations);
-		CalculTextPosition(phrase, infomations, drawpos);
-		
-		//Assign the text modified by ExtractPhase Color
-		infomations.sText = phrase;
-		
-		//Bufferize it
-		CreditsData.aCreditsInformations.push_back(infomations);
 	}
 }
 
 void Credits::render() {
-
+	
 	//We initialize the datas
-	if(CreditsData.iFontAverageHeight == -1) {
-		InitCredits();
-	}
+	InitCredits();
 	
 	int iSize = CreditsData.aCreditsInformations.size() ;
 	
