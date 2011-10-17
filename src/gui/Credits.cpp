@@ -151,7 +151,7 @@ static void addCreditsLine(string & phrase, float & drawpos) {
 		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
 		arx_assert(n >= 0 && size_t(n) < phrase.length());
 		
-		infomations.sText = phrase.substr(0, (n + 1) == phrase.length() ? n + 1 : n);
+		infomations.sText = phrase.substr(0, size_t(n + 1) == phrase.length() ? n + 1 : n);
 		phrase = phrase.substr(n + 1);
 		
 		// Center the text on the screen
