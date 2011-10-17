@@ -31,6 +31,8 @@
 #define GET_SC_WPARAM(x) (int(x) & 0x0000fff0)
 #endif
 
+#define IDI_MAIN 106
+
 WNDCLASS Win32Window::m_WindowClass;
 bool Win32Window::m_WindowClassInitialized = false;
 std::map<HWND,Win32Window*>  Win32Window::m_WindowsMap;
