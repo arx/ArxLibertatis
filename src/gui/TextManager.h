@@ -59,12 +59,12 @@ public:
 	TextManager();
 	~TextManager();
 	
-	bool AddText(Font *, const std::string &, const Rect &, Color _lCol = Color::white,
-	             long _lTimeOut = 0, long _lTimeScroll = 0,
-	             float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
+	bool AddText(Font * font, const std::string & str, const Rect & bbox,
+	             Color color = Color::white, long displayTime = 0, long scrollTime = 0,
+	             float scrollSpeed = 0.f, int nLineClipp = 0);
 	
-	bool AddText(Font* , const std::string &, long x, long y, Color fgcolor);
-	void Update(float);
+	bool AddText(Font * font, const std::string & str, long x, long y, Color color);
+	void Update(float time);
 	void Render();
 	void Clear();
 	bool Empty() const;

@@ -112,8 +112,6 @@ class CSpeed: public CSpellFx
 		void AddRuban(int * f, int id, int dec);
 		void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 	public:
-		CSpeed() {};
-		~CSpeed() {};
 
 		unsigned long GetDuration(void)
 		{

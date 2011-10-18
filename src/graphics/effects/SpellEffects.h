@@ -76,20 +76,20 @@ class CSpellFx
 
 	public:
 		CSpellFx();
-		virtual ~CSpellFx() {};
+		virtual ~CSpellFx() { }
 
 		// accesseurs
 	public:
 		virtual void SetDuration(const unsigned long ulaDuration);
 		virtual unsigned long getCurrentTime();
 		virtual unsigned long GetDuration();
-		void SetAngle(float);
+		void SetAngle(float angle);
 
 		// surcharge
 	public:
 		long			spellinstance;
-		virtual void	Update(unsigned long) {};
-		void			Update(float);
+		virtual void	Update(unsigned long) { }
+		void			Update(float time);
 		virtual float	Render()
 		{
 			return 1;

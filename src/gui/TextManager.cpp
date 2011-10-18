@@ -110,7 +110,7 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & 
 	return true;
 }
 
-bool TextManager::AddText( Font* font, const std::string& str, long x, long y, Color fgcolor) {
+bool TextManager::AddText(Font * font, const std::string & str, long x, long y, Color fgcolor) {
 	Rect r;
 	r.left = x;
 	r.top = y;

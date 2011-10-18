@@ -480,7 +480,7 @@ DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
 
 struct INTERACTIVE_OBJ {
 	
-	INTERACTIVE_OBJ(long num);
+	explicit INTERACTIVE_OBJ(long num);
 	~INTERACTIVE_OBJ();
 	
 	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()

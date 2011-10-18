@@ -28,7 +28,7 @@ class D3D9TextureStage : public TextureStage {
 	
 public:
 	
-	D3D9TextureStage(unsigned int textureStage);
+	explicit D3D9TextureStage(unsigned int textureStage);
 	
 	void SetTexture(Texture * pTexture);
 	void ResetTexture();

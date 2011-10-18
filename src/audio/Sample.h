@@ -56,7 +56,7 @@ class Sample : public ResourceHandle {
 	
 public:
 	
-	Sample(const fs::path & name);
+	explicit Sample(const fs::path & name);
 	~Sample();
 	
 	// File I/O

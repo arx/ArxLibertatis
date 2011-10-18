@@ -4127,7 +4127,7 @@ void ArxGame::ManageKeyMouse() {
 				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
 			}
 
-			float fd = (((float)GInput->getMouseSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+			float fd = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 			if (fd > 200) {
 				fd=200;
 			}			

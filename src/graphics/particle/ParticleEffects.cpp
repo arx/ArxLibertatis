@@ -1736,7 +1736,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	}
 }
 
-void ARX_PARTICLES_SpawnWaterSplash(Vec3f *_ePos)
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
 {
 	for (long kk=0;kk<rnd()*15+20;kk++)
 	{

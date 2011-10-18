@@ -53,6 +53,8 @@ public:
 		
 	public:
 		
+		virtual ~Listener() { }
+		
 		virtual void OnCreateWindow(const Window & pWindow);
 		virtual void OnDestroyWindow(const Window & pWindow);
 		virtual bool OnCloseWindow(const Window & pWindow);

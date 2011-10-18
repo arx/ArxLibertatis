@@ -66,7 +66,7 @@ public:
 	ResourceHandle() {
 		__count = 0;
 	}
-	virtual ~ResourceHandle() {};
+	virtual ~ResourceHandle() { }
 	
 	inline void reference() {
 		++__count;
@@ -134,14 +134,14 @@ inline s32 ResourceList<T>::add(T * element) {
 		}
 	}
 	
-	void * ptr = std::realloc(list, (_size + ALIGNMENT) * sizeof(T *));
+	void * ptr = std::realloc(list, (_size + ALIGNMENT) * sizeof(*list));
 	if(!ptr) {
 		return INVALID_ID;
 	}
 	
 	list = (T **)ptr, _size += ALIGNMENT;
 	
-	std::memset(&list[i], 0, ALIGNMENT * sizeof(T *));
+	std::memset(&list[i], 0, ALIGNMENT * sizeof(*list));
 	list[i] = element;
 	
 	return i;
@@ -169,7 +169,7 @@ inline void ResourceList<T>::remove(s32 index) {
 		}
 	}
 	
-	list = (T **)std::realloc(list, (_size -= ALIGNMENT) * sizeof(T *));
+	list = (T **)std::realloc(list, (_size -= ALIGNMENT) * sizeof(*list));
 	delete toDelete;
 }
 

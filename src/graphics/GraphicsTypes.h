@@ -327,7 +327,7 @@ struct EERIE_GROUPLIST {
 	std::vector<long> indexes;
 	float siz;
 	
-	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { };
+	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { }
 };
 
 struct EERIE_ACTIONLIST {
@@ -336,7 +336,7 @@ struct EERIE_ACTIONLIST {
 	long act; //action
 	long sfx; //sfx
 	
-	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { };
+	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { }
 };
 
 struct CUB3D

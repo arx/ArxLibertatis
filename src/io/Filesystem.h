@@ -113,7 +113,7 @@ char * read_file(const path & p, size_t & size);
 
 class directory_iterator {
 	
-	directory_iterator operator++(int); //!< prevent postfix ++
+	directory_iterator operator++(int dummy); //!< prevent postfix ++
 	
 	//! prevent assignment
 	directory_iterator & operator=(const directory_iterator &);
@@ -124,7 +124,7 @@ class directory_iterator {
 	
 public:
 	
-	directory_iterator(const fs::path & p);
+	explicit directory_iterator(const fs::path & p);
 	
 	~directory_iterator();
 	

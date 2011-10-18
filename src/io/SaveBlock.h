@@ -68,8 +68,8 @@ private:
 			size_t size;
 			size_t offset;
 			
-			Chunk() : size(0), offset(0) { };
-			Chunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { };
+			Chunk() : size(0), offset(0) { }
+			Chunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { }
 			
 		};
 		
@@ -112,7 +112,7 @@ private:
 	
 public:
 	
-	SaveBlock(const fs::path & savefile);
+	explicit SaveBlock(const fs::path & savefile);
 	
 	/*!
 	 * Destructor: this will not finalize the save block.

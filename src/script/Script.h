@@ -133,7 +133,7 @@ struct SCR_TIMER {
 	EERIE_SCRIPT * es;
 	
 	inline SCR_TIMER() : name(), exist(0), flags(0), times(0),
-	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
+	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { }
 	
 	inline void reset() {
 		name.clear();

@@ -101,7 +101,7 @@ void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 void RemoveFromAllInventories(const INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();
 void ARX_INVENTORY_IdentifyAll();
-void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ *);
+void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * io);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
 void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io);

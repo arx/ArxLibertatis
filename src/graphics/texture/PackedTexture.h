@@ -65,8 +65,8 @@ protected:
 			bool mInUse;
 		};
 		
-		TextureTree(unsigned int pSize);
-		Node* InsertImage(const Image & pImg);
+		explicit TextureTree(unsigned int pSize);
+		Node * InsertImage(const Image & pImg);
 		
 	private:
 		

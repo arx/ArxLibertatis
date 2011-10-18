@@ -39,7 +39,7 @@ private:
 	
 protected:
 	
-	inline PakFile(size_t size) :  _size(size), _alternative(NULL) { };
+	explicit inline PakFile(size_t size) :  _size(size), _alternative(NULL) { }
 	
 	virtual ~PakFile();
 	

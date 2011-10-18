@@ -84,7 +84,7 @@ public:
 	float fEndColor[4];
 	float fEndColorRandom[4];
 	
-	ParticleParams() : bTexInfo(false) { };
+	ParticleParams() : bTexInfo(false) { }
 	
 };
 

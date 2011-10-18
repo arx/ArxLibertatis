@@ -176,8 +176,7 @@ void ARX_QuickSave() {
 	
 	CreateSaveGameList();
 	
-	int iOldGamma;
-	ARXMenu_Options_Video_GetGamma(iOldGamma);
+	int iOldGamma = config.video.gamma;
 	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
@@ -1088,9 +1087,7 @@ bool Menu2_Render() {
 
 
 					pc->AddElement(me);
-					iQuality = 0;
-					ARXMenu_Options_Video_GetDetailsQuality(iQuality);
-					((CMenuSliderText *)me)->iPos = iQuality;
+					((CMenuSliderText *)me)->iPos = config.video.levelOfDetail;
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1102,9 +1099,7 @@ bool Menu2_Render() {
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, iPosX2, 0);
-					int iFog = 5;
-					ARXMenu_Options_Video_GetFogDistance(iFog);
-					((CMenuSlider *)me)->setValue(iFog);
+					((CMenuSlider *)me)->setValue(config.video.fogDistance);
 					pc->AddElement(me);
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -1115,9 +1110,7 @@ bool Menu2_Render() {
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_GAMMA, iPosX2, 0);
-					int iGamma = 0;
-					ARXMenu_Options_Video_GetGamma(iGamma);
-					((CMenuSlider*)me)->setValue(iGamma);
+					((CMenuSlider*)me)->setValue(config.video.gamma);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1127,9 +1120,7 @@ bool Menu2_Render() {
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_LUMINOSITY, iPosX2, 0);
-					int iLum = 0;
-					ARXMenu_Options_Video_GetLuminosity(iLum);
-					((CMenuSlider*)me)->setValue(iLum);
+					((CMenuSlider*)me)->setValue(config.video.luminosity);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1139,9 +1130,7 @@ bool Menu2_Render() {
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_CONTRAST, iPosX2, 0);
-					int iContrast = 0;
-					ARXMenu_Options_Video_GetContrast(iContrast);
-					((CMenuSlider*)me)->setValue(iContrast);
+					((CMenuSlider*)me)->setValue(config.video.contrast);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1280,17 +1269,8 @@ bool Menu2_Render() {
 					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-					bBOOL = false;
-					ARXMenu_Options_Control_GetAutoReadyWeapon(bBOOL);
 
-					if (bBOOL)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
+					((CMenuCheckButton*)me)->iState = config.input.autoReadyWeapon ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
@@ -1299,17 +1279,8 @@ bool Menu2_Render() {
 					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-					bBOOL = false;
-					ARXMenu_Options_Control_GetMouseLookToggleMode(bBOOL);
 
-					if (bBOOL)
-					{
-						((CMenuCheckButton*)me)->iState=1;
-					}
-					else
-					{
-						((CMenuCheckButton*)me)->iState=0;
-					}
+					((CMenuCheckButton*)me)->iState = config.input.mouseLookToggle ? 1 : 0;
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
@@ -1319,9 +1290,7 @@ bool Menu2_Render() {
 					me->SetCheckOff();
 					pc->AddElement(me);
 					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, iPosX2, 0);
-					int iSensitivity = 0;
-					ARXMenu_Options_Control_GetMouseSensitivity(iSensitivity);
-					((CMenuSlider*)me)->setValue(iSensitivity);
+					((CMenuSlider*)me)->setValue(config.input.mouseSensitivity);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -1332,17 +1301,8 @@ bool Menu2_Render() {
 						pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
 						pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
 						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
-						bBOOL = false;
-						ARXMenu_Options_Control_GetAutoDescription(bBOOL);
 
-						if (bBOOL)
-						{
-							((CMenuCheckButton*)me)->iState=1;
-						}
-						else
-						{
-							((CMenuCheckButton*)me)->iState=0;
-						}
+						((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
 
 						pWindowMenuConsole->AddMenuCenterY(me);
 					}
@@ -2870,26 +2830,22 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			ARXMenu_Options_Control_SetInvertMouse((iState)?true:false);
 		}
 		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON:
-		{
-			ARXMenu_Options_Control_SetAutoReadyWeapon((iState)?true:false);
-		}
+	case BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON: {
+		config.input.autoReadyWeapon = (iState) ? true : false;
 		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK:
-		{
-			ARXMenu_Options_Control_SetMouseLookToggleMode((iState)?true:false);
-		}
+	}
+	case BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK: {
+		config.input.mouseLookToggle = (iState) ? true : false;
 		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION:
-		{
-			ARXMenu_Options_Control_SetAutoDescription((iState)?true:false);
-		}
+	}
+	case BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION: {
+		config.input.autoDescription = (iState) ? true : false;
 		break;
-	case BUTTON_MENUOPTIONS_CONTROLS_LINK:
-		{
-			config.input.linkMouseLookToUse=(iState)?true:false;
-		}
+	}
+	case BUTTON_MENUOPTIONS_CONTROLS_LINK: {
+		config.input.linkMouseLookToUse = (iState) ? true : false;
 		break;
+	}
 	case BUTTON_MENUOPTIONSVIDEO_BACK:
 	{
 		if(    (pMenuSliderResol)&&

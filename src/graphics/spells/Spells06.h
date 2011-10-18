@@ -155,10 +155,6 @@ class CCreateField: public CSpellFx
 		void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
 
 	public:
-		void SetPos(Vec3f);
-		void SetSize(float);
-
-	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);

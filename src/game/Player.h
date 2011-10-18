@@ -325,7 +325,7 @@ void ARX_Player_Rune_Remove(RuneFlag rune);
 void ARX_PLAYER_AddGold(long value);
 void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold);
 void ARX_PLAYER_AddBag();
-bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ *);
+bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ * item);
 
 void ARX_KEYRING_Init();
 void ARX_KEYRING_Add(const std::string & key);

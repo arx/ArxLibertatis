@@ -774,7 +774,8 @@ long DanaeLoadLevel(const fs::path & file) {
 		trans = mse->pos;
 	}
 #endif // BUILD_EDIT_LOADSAVE
-	else {
+	else
+	{
 		lastteleport.x = 0.f;
 		lastteleport.y = PLAYER_BASE_HEIGHT;
 		lastteleport.z = 0.f;

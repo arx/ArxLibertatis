@@ -785,10 +785,7 @@ int main(int argc, char ** argv) {
 	ARXMenu_Options_Audio_ApplyGameVolumes();
 
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
-	ARXMenu_Options_Control_SetAutoReadyWeapon(config.input.autoReadyWeapon);
-	ARXMenu_Options_Control_SetMouseLookToggleMode(config.input.mouseLookToggle);
 	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
-	ARXMenu_Options_Control_SetAutoDescription(config.input.autoDescription);
 	
 	if(config.video.textureSize==2)Project.TextureSize=0;
 	if(config.video.textureSize==1)Project.TextureSize=2;

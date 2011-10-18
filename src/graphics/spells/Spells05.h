@@ -218,7 +218,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		CPoisonProjectile ** pTab;
 
 	public:
-		CMultiPoisonProjectile(long nb);
+		explicit CMultiPoisonProjectile(long nb);
 		~CMultiPoisonProjectile();
 
 		// surcharge

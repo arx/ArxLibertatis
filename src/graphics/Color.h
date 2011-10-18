@@ -29,11 +29,11 @@ class Color4;
 
 template<class T>
 struct ColorLimits {
-	inline static T max() { return std::numeric_limits<T>::max(); };
+	inline static T max() { return std::numeric_limits<T>::max(); }
 };
 template<>
 struct ColorLimits<float> {
-	inline static float max() { return 1.f; };
+	inline static float max() { return 1.f; }
 };
 
 typedef u32 ColorBGR;
@@ -56,14 +56,14 @@ public:
 	T g;
 	T r;
 	
-	const static Color3 black;
-	const static Color3 white;
-	const static Color3 red;
-	const static Color3 blue;
-	const static Color3 green;
-	const static Color3 yellow;
-	const static Color3 cyan;
-	const static Color3 magenta;
+	static const Color3 black;
+	static const Color3 white;
+	static const Color3 red;
+	static const Color3 blue;
+	static const Color3 green;
+	static const Color3 yellow;
+	static const Color3 cyan;
+	static const Color3 magenta;
 	
 	inline Color3() { }
 	inline Color3(T _r, T _g, T _b) : b(_b), g(_g), r(_r) { }
@@ -156,7 +156,7 @@ public:
 	T a;
 	
 	//! A fully transparent, black color.
-	const static Color4 none;
+	static const Color4 none;
 	
 	inline Color4() : C3() { }
 	inline Color4(T _r, T _g, T _b, T _a = Limits::max()) : C3(_r, _g, _b), a(_a) { }

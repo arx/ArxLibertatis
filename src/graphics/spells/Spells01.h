@@ -89,7 +89,7 @@ private:
 	
 public:
 	
-	CMultiMagicMissile(long nb);
+	explicit CMultiMagicMissile(long nb);
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
@@ -137,11 +137,11 @@ public:
 	};
 	
 	void Create(Vec3f * posc, float perim, int speed);
-	void Update(unsigned long);
+	void Update(unsigned long time);
 	float Render();
 	void Kill();
 	void AddLight(int iLight);
-	void Action(int);
+	void Action(int mode);
 	
 	void ChangeRGBMask(float r, float g, float b, int mask) {
 		this->r = r;

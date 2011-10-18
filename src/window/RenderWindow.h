@@ -53,8 +53,10 @@ public:
 		
 	public:
 		
-		virtual void onRendererInit(RenderWindow &) { };
-		virtual void onRendererShutdown(RenderWindow &) { };
+		virtual ~RendererListener() { }
+		
+		virtual void onRendererInit(RenderWindow &) { }
+		virtual void onRendererShutdown(RenderWindow &) { }
 		
 	};
 	

@@ -78,12 +78,12 @@ void Insertllight(EERIE_LIGHT * el, float dist);
 void PopAllTriangleList();
 void PopAllTriangleListTransparency();
 
-TexturedVertex * PushVertexInTableCull(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer *);
+TexturedVertex * PushVertexInTableCull(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer * tex);
 
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();

@@ -79,16 +79,16 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Mouse
-	const Vec2s& getMousePosAbs() const;
-	const Vec2s& getMousePosRel() const;
+	const Vec2s & getMousePosAbs() const;
+	const Vec2s & getMousePosRel() const;
 	void setMousePosAbs(const Vec2s& mousePos);
 
-	void setMouseSensibility(int);
-	int  getMouseSensibility() const;
+	void setMouseSensitivity(int sensitivity);
+	int getMouseSensitivity() const;
 
 	bool hasMouseMoved() const;
 	bool getMouseButton(int buttonId) const;
-	int  getMouseButtonClicked() const;
+	int getMouseButtonClicked() const;
 	bool getMouseButtonRepeat(int buttonId) const;
 	bool getMouseButtonNowPressed(int buttonId) const;
 	bool getMouseButtonNowUnPressed(int buttonId) const;
@@ -98,7 +98,7 @@ public:
 	
 	///////////////////////////////////////////////////////////////////////////
 	// Keyboard
-	int  getKeyPressed() const;
+	int getKeyPressed() const;
 	bool isAnyKeyPressed() const;
 	bool isKeyPressed(int keyId) const;
 	bool isKeyPressedNowPressed(int keyId) const;

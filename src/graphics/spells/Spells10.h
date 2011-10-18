@@ -61,8 +61,8 @@ class CMassLightning: public CSpellFx
 		CLightning ** pTab;
 
 	public:
-		CMassLightning(long nb);
-		~CMassLightning() {};
+		explicit CMassLightning(long nb);
+		~CMassLightning() { }
 
 	public:
 		void	Create(Vec3f, float);

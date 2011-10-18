@@ -84,7 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
-using namespace std;
+using std::vector;
 
 //-----------------------------------------------------------------------------
 #define MAX_OUT 4 

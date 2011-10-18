@@ -168,7 +168,7 @@ class IncompatibleFlag {
 	
 public:
 	
-	IncompatibleFlag(u32 flag) : value(flag) { }
+	explicit IncompatibleFlag(u32 flag) : value(flag) { }
 	
 };
 

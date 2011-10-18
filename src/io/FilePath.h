@@ -45,10 +45,10 @@ public:
 	static const char dir_sep = '/';
 	static const char ext_sep = '.';
 	
-	inline path() { };
-	inline path(const path & other) : pathstr(other.pathstr) { };
-	inline path(const std::string & str) : pathstr(str) { check(); };
-	inline path(const char * str) : pathstr(str) { check(); };
+	inline path() { }
+	inline path(const path & other) : pathstr(other.pathstr) { }
+	inline path(const std::string & str) : pathstr(str) { check(); }
+	inline path(const char * str) : pathstr(str) { check(); }
 	
 	inline path & operator=(const path & other) {
 		return (pathstr = other.pathstr, *this);

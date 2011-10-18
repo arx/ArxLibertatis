@@ -87,7 +87,7 @@ class CLightning: public CSpellFx
 
 	private:
 		struct LIGHTNING;
-		void BuildS(LIGHTNING *);
+		void BuildS(LIGHTNING * lightingInfo);
 		void ReCreate();
 
 	public:

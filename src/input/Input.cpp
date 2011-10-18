@@ -213,7 +213,7 @@ void ARX_INPUT_Release() {
 
 Input::Input() : backend(NULL) {
 	
-	setMouseSensibility(2);
+	setMouseSensitivity(2);
 	
 	reset();
 }
@@ -639,14 +639,14 @@ InputKeyId Input::getKeyId(const std::string & name) {
 
 //-----------------------------------------------------------------------------
 
-void Input::setMouseSensibility(int _iSensibility)
+void Input::setMouseSensitivity(int _iSensibility)
 {
 	iSensibility = _iSensibility;
 }
 
 //-----------------------------------------------------------------------------
 
-int Input::getMouseSensibility() const {
+int Input::getMouseSensitivity() const {
 	return iSensibility;
 }
 

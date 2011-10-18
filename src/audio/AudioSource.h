@@ -40,6 +40,12 @@ public:
 	
 	class Callback {
 		
+	public:
+		
+		virtual ~Callback() { }
+		
+	private:
+		
 		virtual void onSamplePosition(Source & source, size_t position) = 0;
 		
 		friend class Source;
@@ -112,7 +118,7 @@ public:
 	
 protected:
 	
-	Source(Sample * sample);
+	explicit Source(Sample * sample);
 	virtual ~Source();
 	
 	SourceId id;

@@ -57,10 +57,10 @@ public:
 	enum FilterMode {
 		FilterNone,    //!< Only valid for mip filtering.
 		FilterNearest, //!< Point filtering. The texel with coordinates nearest to the desired pixel value is used. 
-		FilterLinear   //!< Bilinear interpolation filtering. A weighted average of a 2×2 area of texels surrounding the desired pixel is used.
+		FilterLinear   //!< Bilinear interpolation filtering. A weighted average of a 2Ã—2 area of texels surrounding the desired pixel is used.
 	};
 	
-	TextureStage(unsigned int stage);
+	explicit TextureStage(unsigned int stage);
 	virtual ~TextureStage() { }
 	
 	virtual void SetTexture(Texture * pTexture) = 0;

@@ -109,23 +109,23 @@ public:
 		Key_NumPad8,
 		Key_NumPad9,
 		Key_NumPadEnter,
-		Key_NumSubtract,        // (-) on numeric keypad 
-		Key_NumAdd,             // (+) on numeric keypad 
-		Key_NumMultiply,        // (*) on numeric keypad 
-		Key_NumDivide,          // (/) on numeric keypad 
-		Key_NumPoint,           // PERIOD (decimal point) on numeric keypad 
+		Key_NumSubtract,        // (-) on numeric keypad
+		Key_NumAdd,             // (+) on numeric keypad
+		Key_NumMultiply,        // (*) on numeric keypad
+		Key_NumDivide,          // (/) on numeric keypad
+		Key_NumPoint,           // PERIOD (decimal point) on numeric keypad
 		
-		Key_LeftBracket,        // Left square bracket [ 
-		Key_LeftCtrl,           // Left CTRL         
-		Key_LeftAlt,            // Left ALT 
-		Key_LeftShift,          // Left SHIFT 
-		Key_LeftWin,            // Left Microsoft® Windows® logo key 
+		Key_LeftBracket,        // Left square bracket [
+		Key_LeftCtrl,           // Left CTRL
+		Key_LeftAlt,            // Left ALT
+		Key_LeftShift,          // Left SHIFT
+		Key_LeftWin,            // Left Windows logo key
 		
-		Key_RightBracket,       // Right square bracket ] 
-		Key_RightCtrl,          // Right CTRL 
-		Key_RightAlt,           // Right ALT 
-		Key_RightShift,         // Right SHIFT 
-		Key_RightWin,           // Right Windows logo key 
+		Key_RightBracket,       // Right square bracket ]
+		Key_RightCtrl,          // Right CTRL
+		Key_RightAlt,           // Right ALT
+		Key_RightShift,         // Right SHIFT
+		Key_RightWin,           // Right Windows logo key
 		
 		Key_PrintScreen,
 		Key_ScrollLock,
@@ -136,18 +136,18 @@ public:
 		Key_Enter,              // ENTER on main keyboard 
 		Key_Tab,
 		
-		Key_Apps,               // Application key 
+		Key_Apps,               // Application key
 		Key_CapsLock,
 		
-		Key_Slash,              // (/) On main keyboard 
-		Key_Backslash,          // (\) 
+		Key_Slash,              // (/) On main keyboard
+		Key_Backslash,          // (\)
 		Key_Comma,              // (,)
 		Key_Semicolon,          // (;)
-		Key_Period,             // (.) On main keyboard 
-		Key_Grave,              // (`) Grave accent 
+		Key_Period,             // (.) On main keyboard
+		Key_Grave,              // (`) Grave accent
 		Key_Apostrophe,         // (')
-		Key_Minus,              // (-) On main keyboard 
-		Key_Equals,             // (=) On main keyboard 
+		Key_Minus,              // (-) On main keyboard
+		Key_Equals,             // (=) On main keyboard
 		
 		KeyMax,
 		KeyCount = KeyMax - KeyBase

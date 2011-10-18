@@ -35,7 +35,7 @@ class GLTexture2D : public Texture2D, public GLTextureListHook {
 	
 public:
 	
-	GLTexture2D(OpenGLRenderer * renderer);
+	explicit GLTexture2D(OpenGLRenderer * renderer);
 	~GLTexture2D();
 	
 	bool Create();

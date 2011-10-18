@@ -29,7 +29,7 @@ class D3D9Renderer : public Renderer {
 	
 public:
 	
-	D3D9Renderer(D3D9Window * window);
+	explicit D3D9Renderer(D3D9Window * window);
 	~D3D9Renderer();
 	
 	void Initialize();

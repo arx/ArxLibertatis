@@ -192,7 +192,6 @@ class CMassParalyse: public CSpellFx
 
 	public:
  
-		~CMassParalyse() {};
 		void	Update(unsigned long);
 		float	Render();
 };

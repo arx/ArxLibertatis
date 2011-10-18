@@ -128,8 +128,8 @@ public:
 	ParticleSystem();
 	~ParticleSystem();
 	
-	void SpawnParticle(Particle *);
-	void SetParticleParams(Particle *);
+	void SpawnParticle(Particle * particle);
+	void SetParticleParams(Particle * particle);
 	
 	void SetParams(const ParticleParams & app);
 	

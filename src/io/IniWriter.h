@@ -38,7 +38,7 @@ public:
 	 * Initialize this ini writer.
 	 * @param _output Reference to an ostream that mus remain valid while the writer is used.
 	 */
-	IniWriter(std::ostream & _output) : output(_output) { }
+	explicit IniWriter(std::ostream & _output) : output(_output) { }
 	
 	/*!
 	 * Flush the output stream.

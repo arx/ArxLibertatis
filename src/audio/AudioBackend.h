@@ -36,7 +36,7 @@ class Backend {
 	
 public:
 	
-	virtual ~Backend() {};
+	virtual ~Backend() { }
 	
 	/*!
 	 * Calculate updated positional data if that has not been done already.

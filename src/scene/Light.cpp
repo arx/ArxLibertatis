@@ -230,7 +230,7 @@ void EERIE_LIGHT_GlobalInit() {
 	static long init = 0;
 	
 	if(!init) {
-		memset(GLight, 0, sizeof(EERIE_LIGHT *) * MAX_LIGHTS);
+		memset(GLight, 0, sizeof(*GLight) * MAX_LIGHTS);
 		init = 1;
 		return;
 	}
@@ -543,7 +543,7 @@ void TreatBackgroundDynlights()
 
 			if (GLight[i]->status == 0)
 			{
-				// vient de s'�teindre
+				// vient de s'éteindre
 				if (GLight[i]->tl > 0)
 				{
 					DynLight[GLight[i]->tl].exist = 0;

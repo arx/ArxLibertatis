@@ -61,7 +61,7 @@ public:
 	
 	void Clear();
 	
-	void AddSystem(ParticleSystem *);
+	void AddSystem(ParticleSystem * ps);
 	
 	void Update(long alTime);
 	void Render();

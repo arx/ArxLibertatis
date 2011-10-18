@@ -154,8 +154,7 @@ struct FLARETC
 
 const unsigned long MAX_PARTICLES(2200);
 
-enum ARX_PARTICLES_TYPE_FLAG
-{
+enum ARX_PARTICLES_TYPE_FLAG {
 	FIRE_TO_SMOKE       = 0x00000001,
 	ROTATING            = 0x00000002,
 	FADE_IN_AND_OUT     = 0x00000004,
@@ -164,7 +163,7 @@ enum ARX_PARTICLES_TYPE_FLAG
 	GRAVITY             = 0x00000020,
 	SUBSTRACT           = 0x00000040,
 	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_ETINCELLE  = 0x00000100, //g�re l'acceleration et la gravit�
+	PARTICLE_ETINCELLE  = 0x00000100, // gère l'acceleration et la gravité
 	FOLLOW_SOURCE       = 0x00000200,
 	FOLLOW_SOURCE2      = 0x00000400,
 	DELAY_FOLLOW_SOURCE = 0x00000800,
@@ -240,7 +239,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
-void ARX_PARTICLES_SpawnWaterSplash(Vec3f *);
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * pos);
 
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_ClearAll();

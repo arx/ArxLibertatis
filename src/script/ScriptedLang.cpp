@@ -533,6 +533,8 @@ class IfCommand : public Command {
 		
 		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { }
 		
+		virtual ~Operator() { }
+		
 		virtual bool number(const Context & context, float left, float right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
 			ScriptWarning << "operator " << name << " is not aplicable to numbers";

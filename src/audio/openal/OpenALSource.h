@@ -37,7 +37,7 @@ class OpenALSource : public Source {
 	
 public:
 	
-	OpenALSource(Sample * sample);
+	explicit OpenALSource(Sample * sample);
 	~OpenALSource();
 	
 	aalError init(SourceId id, OpenALSource * instance, const Channel & channel);

@@ -179,6 +179,6 @@ public:
 extern Application * mainApp;
 
 void CalcFPS(bool reset = false);
-void SetZBias(int);
+void SetZBias(int newZBias);
 
 #endif // ARX_CORE_APPLICATION_H

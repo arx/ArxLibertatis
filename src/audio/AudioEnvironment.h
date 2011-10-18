@@ -53,7 +53,7 @@ class Environment {
 	
 public:
 	
-	Environment(const fs::path & name);
+	explicit Environment(const fs::path & name);
 	
 	// File input/output
 	aalError load();

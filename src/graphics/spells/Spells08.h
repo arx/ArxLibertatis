@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class CSpellFx;
 
-// Done By : Sébastien Scieux
+// Done By : SÃ©bastien Scieux
 class CExplosion: public CSpellFx
 {
 	private:
