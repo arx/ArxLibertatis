@@ -41,8 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_SCIPT_SCIPTDEBUGGER_H
-#define ARX_SCIPT_SCIPTDEBUGGER_H
+#ifndef ARX_SCRIPT_SCRIPTDEBUGGER_H
+#define ARX_SCRIPT_SCRIPTDEBUGGER_H
 
 #include "Configure.h"
 
@@ -53,5 +53,4 @@ void DANAE_DEBUGGER_Update();
 
 #endif
 
-#endif // ARX_SCIPT_SCIPTDEBUGGER_H
-
+#endif // ARX_SCRIPT_SCRIPTDEBUGGER_H

@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GRAPHIC_TEXTURE_TEXTURE_H
-#define ARX_GRAPHIC_TEXTURE_TEXTURE_H
+#ifndef ARX_GRAPHICS_TEXTURE_TEXTURE_H
+#define ARX_GRAPHICS_TEXTURE_TEXTURE_H
 
 #include <vector>
 
@@ -93,4 +93,4 @@ protected:
 	
 };
 
-#endif // ARX_GRAPHIC_TEXTURE_TEXTURE_H
+#endif // ARX_GRAPHICS_TEXTURE_TEXTURE_H

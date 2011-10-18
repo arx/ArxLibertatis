@@ -85,4 +85,4 @@ private:
 
 } // namespace audio
 
-#endif//ARX_AUDIO_CODEC_WAV_H
+#endif // ARX_AUDIO_CODEC_WAV_H

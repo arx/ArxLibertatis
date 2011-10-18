@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GRAHPHICS_GRAPHICSFORMAT_H
-#define ARX_GRAHPHICS_GRAPHICSFORMAT_H
+#ifndef ARX_GRAPHICS_GRAPHICSFORMAT_H
+#define ARX_GRAPHICS_GRAPHICSFORMAT_H
 
 #include "graphics/GraphicsTypes.h"
 
@@ -119,4 +119,4 @@ struct SavedTextureVertex {
 #pragma pack(pop)
 
 
-#endif // ARX_GRAHPHICS_GRAPHICSFORMAT_H
+#endif // ARX_GRAPHICS_GRAPHICSFORMAT_H

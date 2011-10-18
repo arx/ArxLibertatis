@@ -17,6 +17,9 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
+#define ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
+
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
@@ -25,3 +28,5 @@
 #include <io/log/Logger.h>
 
 #define CHECK_GL if(GLenum error = glGetError()) LogError << "GL error in " << __func__ << ": " << error << " = " << gluErrorString(error)
+
+#endif // ARX_GRAPHICS_OPENGL_OPENGLUTIL_H

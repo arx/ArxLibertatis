@@ -696,7 +696,7 @@ endif()
 
 if(PYTHONINTERP_FOUND)
 	# TODO consider enabling more checks
-	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references,-runtime/string,-runtime/printf,-readability/fn_size,-runtime/threadsafe_fn)
+	set(STYLE_FILTER -readability/casting,-build/include,-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references,-runtime/string,-runtime/printf,-readability/fn_size,-runtime/threadsafe_fn)
 	add_custom_target(style
 		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
 	)
