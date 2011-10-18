@@ -1,6 +1,8 @@
 #!/usr/bin/python2.4
 #
-# Note: this file has been adjusted to fit the Arx Libertatis include guard style
+# Note: this file has been adjusted to fit the Arx Libertatis:
+#  - adjusted include guard style
+#  - hacked so that build/include doesn't complain about #include "Configure.h" lines
 #
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
@@ -1099,7 +1101,7 @@ def CheckForHeaderGuard(filename, lines, error):
     ParseNolintSuppressions(filename, lines[endif_linenum], endif_linenum,
                             error)
     error(filename, endif_linenum, 'build/header_guard', error_level,
-          '#endif line should be "#endif  // %s"' % cppvar)
+          '#endif line should be "#endif // %s"' % cppvar)
 
 
 def CheckForUnicodeReplacementCharacters(filename, lines, error):
@@ -2285,7 +2287,7 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
   line = clean_lines.lines[linenum]
 
   # "include" should use the new style "foo/bar.h" instead of just "bar.h"
-  if _RE_PATTERN_INCLUDE_NEW_STYLE.search(line):
+  if _RE_PATTERN_INCLUDE_NEW_STYLE.search(line) and line != "#include \"Configure.h\"":
     error(filename, linenum, 'build/include', 4,
           'Include the directory when naming .h files')
 

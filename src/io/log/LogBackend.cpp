@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LogBackend.h"
+#include "io/log/LogBackend.h"
 
 void logger::Backend::format(std::ostream & os, const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
 	

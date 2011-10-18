@@ -25,8 +25,8 @@
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 
-#include "SaveFix.h"
-#include "SaveView.h"
+#include "savetool/SaveFix.h"
+#include "savetool/SaveView.h"
 
 using std::vector;
 using std::string;

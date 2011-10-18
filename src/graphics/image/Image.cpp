@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Image.h"
+#include "graphics/image/Image.h"
 
 #include <cstring>
 #include <map>

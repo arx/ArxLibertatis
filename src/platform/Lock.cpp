@@ -25,9 +25,6 @@
 
 #include <errno.h>
 
-#include "io/log/Logger.h"
-#include "platform/Platform.h"
-
 Lock::Lock() : locked(false) {
 	const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
 	mutex = mutex_init;

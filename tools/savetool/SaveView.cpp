@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "SaveView.h"
+#include "savetool/SaveView.h"
 
 #include <iostream>
 #include <iomanip>

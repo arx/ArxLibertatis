@@ -506,7 +506,7 @@ set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
-include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -695,8 +695,21 @@ if(DOXYGEN_EXECUTABLE)
 endif()
 
 if(PYTHONINTERP_FOUND)
+	
+	unset(STYLE_FILTER)
+	
+	# Complains about any c-style cast -> too annoying.
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/casting)
+	
+	# Insists on including evrything in the .cpp file even if it is included in the header.
+	# This behaviour conflicts with orther tools.
+	set(STYLE_FILTER ${STYLE_FILTER},-build/include_what_you_use)
+	
+	# Too many false positives and not very helpful error messages.
+	set(STYLE_FILTER ${STYLE_FILTER},-build/include_order)
+	
 	# TODO consider enabling more checks
-	set(STYLE_FILTER -readability/casting,-build/include,-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references,-runtime/string,-runtime/printf,-readability/fn_size,-runtime/threadsafe_fn)
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references,-runtime/string,-runtime/printf,-readability/fn_size,-runtime/threadsafe_fn)
 	add_custom_target(style
 		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
 	)

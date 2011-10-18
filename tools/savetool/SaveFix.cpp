@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "SaveFix.h"
+#include "savetool/SaveFix.h"
 
 #include <cstdio>
 #include <iomanip>
