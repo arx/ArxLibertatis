@@ -690,7 +690,7 @@ add_custom_target(remake
 if(DOXYGEN_EXECUTABLE)
 	add_custom_target(doc
 		#build the documentation
-		COMMAND cd ${CMAKE_SOURCE_DIR} && ${DOXYGEN_EXECUTABLE} doc/Doxyfile
+		COMMAND cd ${CMAKE_SOURCE_DIR}/src && ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/Doxyfile
 	)
 endif()
 
