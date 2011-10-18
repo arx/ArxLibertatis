@@ -77,7 +77,7 @@ class UncompressedFile : public PakFile {
 	
 public:
 	
-	UncompressedFile(std::istream * _archive, size_t _offset, size_t size) : PakFile(size), archive(*_archive), offset(_offset) { };
+	explicit UncompressedFile(std::istream * _archive, size_t _offset, size_t size) : PakFile(size), archive(*_archive), offset(_offset) { }
 	
 	void read(void * buf) const;
 	
@@ -94,7 +94,7 @@ class UncompressedFileHandle : public PakFileHandle {
 	
 public:
 	
-	UncompressedFileHandle(const UncompressedFile * _file) : file(*_file), offset(0) { };
+	explicit UncompressedFileHandle(const UncompressedFile * _file) : file(*_file), offset(0) { }
 	
 	size_t read(void * buf, size_t size);
 	
@@ -102,7 +102,7 @@ public:
 	
 	size_t tell();
 	
-	~UncompressedFileHandle() { };
+	~UncompressedFileHandle() { }
 	
 };
 
@@ -171,7 +171,7 @@ class CompressedFile : public PakFile {
 	
 public:
 	
-	CompressedFile(std::ifstream * _archive, size_t _offset, size_t size, size_t _storedSize) : PakFile(size), archive(*_archive), offset(_offset), storedSize(_storedSize) { };
+	explicit CompressedFile(std::ifstream * _archive, size_t _offset, size_t size, size_t _storedSize) : PakFile(size), archive(*_archive), offset(_offset), storedSize(_storedSize) { }
 	
 	void read(void * buf) const;
 	
@@ -188,7 +188,7 @@ class CompressedFileHandle : public PakFileHandle {
 	
 public:
 	
-	CompressedFileHandle(const CompressedFile * _file) : file(*_file), offset(0) { };
+	explicit CompressedFileHandle(const CompressedFile * _file) : file(*_file), offset(0) { }
 	
 	size_t read(void * buf, size_t size);
 	
@@ -196,7 +196,7 @@ public:
 	
 	size_t tell();
 	
-	~CompressedFileHandle() { };
+	~CompressedFileHandle() { }
 	
 };
 
@@ -206,7 +206,7 @@ struct BlastFileInBuffer {
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
-	BlastFileInBuffer(std::ifstream * f) : file(*f) {};
+	explicit BlastFileInBuffer(std::ifstream * f) : file(*f) { }
 	
 };
 
@@ -352,7 +352,7 @@ class PlainFile : public PakFile {
 	
 public:
 	
-	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { };
+	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { }
 	
 	void read(void * buf) const;
 	
@@ -366,7 +366,8 @@ class PlainFileHandle : public PakFileHandle {
 	
 public:
 	
-	PlainFileHandle(const fs::path & path) : ifs(path, fs::fstream::in | fs::fstream::binary) {
+	explicit  PlainFileHandle(const fs::path & path)
+		: ifs(path, fs::fstream::in | fs::fstream::binary) {
 		arx_assert(ifs.is_open());
 	};
 	
@@ -376,7 +377,7 @@ public:
 	
 	size_t tell();
 	
-	~PlainFileHandle() { };
+	~PlainFileHandle() { }
 	
 };
 

@@ -35,9 +35,9 @@ public:
 		Vec2i resolution;
 		unsigned depth;
 		
-		inline DisplayMode() { };
-		inline DisplayMode(const DisplayMode & o) : resolution(o.resolution), depth(o.depth) { };
-		inline DisplayMode(Vec2i res, unsigned bits) : resolution(res), depth(bits) { };
+		inline DisplayMode() { }
+		inline DisplayMode(const DisplayMode & o) : resolution(o.resolution), depth(o.depth) { }
+		inline DisplayMode(Vec2i res, unsigned bits) : resolution(res), depth(bits) { }
 		bool operator<(const DisplayMode & other) const;
 		inline bool operator==(const DisplayMode & other) const {
 			return resolution == other.resolution && depth == other.depth;
@@ -46,8 +46,8 @@ public:
 	
 	typedef std::vector<DisplayMode> DisplayModes;
 	
-	inline RenderWindow() : renderer(NULL) { };
-	virtual ~RenderWindow() { };
+	inline RenderWindow() : renderer(NULL) { }
+	virtual ~RenderWindow() { }
 	
 	class RendererListener {
 		
