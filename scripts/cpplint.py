@@ -1,5 +1,7 @@
 #!/usr/bin/python2.4
 #
+# Note: this file has been adjusted to fit the Arx Libertatis include guard style
+#
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -716,11 +718,13 @@ class FileInfo:
       # from the current path.
       root_dir = os.path.dirname(fullname)
       while (root_dir != os.path.dirname(root_dir) and
+             os.path.basename(root_dir) != "src" and
              not os.path.exists(os.path.join(root_dir, ".git")) and
              not os.path.exists(os.path.join(root_dir, ".hg"))):
         root_dir = os.path.dirname(root_dir)
 
-      if (os.path.exists(os.path.join(root_dir, ".git")) or
+      if (os.path.basename(root_dir) == "src" or
+          os.path.exists(os.path.join(root_dir, ".git")) or
           os.path.exists(os.path.join(root_dir, ".hg"))):
         prefix = os.path.commonprefix([root_dir, project_dir])
         return fullname[len(prefix) + 1:]
@@ -1032,7 +1036,7 @@ def GetHeaderGuardCPPVariable(filename):
   filename = re.sub(r'_flymake\.h$', '.h', filename)
 
   fileinfo = FileInfo(filename)
-  return re.sub(r'[-./\s]', '_', fileinfo.RepositoryName()).upper() + '_'
+  return "ARX_" + re.sub(r'[-./\s]', '_', fileinfo.RepositoryName()).upper()
 
 
 def CheckForHeaderGuard(filename, lines, error):
@@ -1087,9 +1091,9 @@ def CheckForHeaderGuard(filename, lines, error):
     error(filename, ifndef_linenum, 'build/header_guard', error_level,
           '#ifndef header guard has wrong style, please use: %s' % cppvar)
 
-  if endif != ('#endif  // %s' % cppvar):
+  if endif != ('#endif // %s' % cppvar):
     error_level = 0
-    if endif != ('#endif  // %s' % (cppvar + '_')):
+    if endif != ('#endif // %s' % (cppvar + '_')):
       error_level = 5
 
     ParseNolintSuppressions(filename, lines[endif_linenum], endif_linenum,
