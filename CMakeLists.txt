@@ -697,9 +697,10 @@ if(DOXYGEN_EXECUTABLE)
 endif()
 
 if(PYTHONINTERP_FOUND)
-	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int)
+	# TODO consider enabling more checks
+	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references)
 	add_custom_target(style
-		COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ARX_SOURCES} ${ALL_INCLUDES}
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
 	)
 endif()
 
