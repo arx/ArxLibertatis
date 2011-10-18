@@ -1497,8 +1497,8 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 		}
 
 		return;
-	}
-	else {
+		
+	} else {
 		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
 			if(param2 == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;

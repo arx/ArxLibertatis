@@ -156,6 +156,14 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 	return (a.stime > b.stime);
 }
 
+namespace {
+enum SaveGameChage {
+	SaveGameRemoved,
+	SaveGameUnchanged,
+	SaveGameChanged
+};
+} // anonnymous namespace
+
 void CreateSaveGameList() {
 	
 	LogDebug("CreateSaveGameList");
@@ -166,12 +174,7 @@ void CreateSaveGameList() {
 	}
 	
 	size_t oldCount = save_l.size() - 1;
-#ifdef HAVE_DYNAMIC_STACK_ALLOCATION
-	char found[oldCount];
-#else
-	boost::scoped_array<char> found(new char[oldCount]);
-#endif
-	std::fill_n(&found[0], oldCount, 0);
+	std::vector<SaveGameChage> found(oldCount, SaveGameRemoved);
 	
 	bool newSaves = false;
 	
@@ -204,7 +207,7 @@ void CreateSaveGameList() {
 			}
 		}
 		if(index != (size_t)-1 && save_l[index].stime == stime) {
-			found[index - 1] = 1;
+			found[index - 1] = SaveGameUnchanged;
 			continue;
 		}
 		
@@ -225,7 +228,7 @@ void CreateSaveGameList() {
 			save_l.resize(save_l.size() + 1);
 			save = &save_l.back();
 		} else {
-			found[index - 1] = 2;
+			found[index - 1] = SaveGameChanged;
 			save = &save_l[index];
 		}
 		
@@ -253,10 +256,10 @@ void CreateSaveGameList() {
 	
 	size_t o = 1;
 	for(size_t i = 1; i < save_l.size(); i++) {
-		if(i > oldCount || found[i - 1]) {
+		if(i > oldCount || found[i - 1] != SaveGameRemoved) {
 			
 			// print new savegames
-			if(i > oldCount || found[i - 1] == 2) {
+			if(i > oldCount || found[i - 1] == SaveGameChanged) {
 				
 				std::ostringstream oss;
 				if(save_l[i].quicksave) {

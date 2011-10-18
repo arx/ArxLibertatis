@@ -155,11 +155,11 @@ public:
 		INTERACTIVE_OBJ * io = context.getIO();
 		if(stop) {
 			ARX_SOUND_Stop(io->sound);
-			io->sound = ARX_SOUND_INVALID_RESOURCE;
+			io->sound = audio::INVALID_ID;
 			
 		} else {
 			
-			if(unique && io->sound != ARX_SOUND_INVALID_RESOURCE) {
+			if(unique && io->sound != audio::INVALID_ID) {
 				ARX_SOUND_Stop(io->sound);
 			}
 			

@@ -273,19 +273,19 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 aalError CodecADPCM::getNextBlock() {
 	
 	// Load and check block header
-	if(!stream->read(predictor, sizeof(char) << shift)) {
+	if(!stream->read(predictor, sizeof(*predictor) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(delta, sizeof(s16) << shift)) {
+	if(!stream->read(delta, sizeof(*delta) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(samp1, sizeof(s16) << shift)) {
+	if(!stream->read(samp1, sizeof(*samp1) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(samp2, sizeof(s16) << shift)) {
+	if(!stream->read(samp2, sizeof(*samp2) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	

@@ -201,7 +201,7 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 	Split(v1a, 0, end, 80);
 	Split(v1b, 0, end, -80);
 
-	// check de la conformit� du split
+	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	for (i = 0; i < 40; i++)
@@ -395,7 +395,7 @@ void CSummonCreature::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
-	// smooth sur les cot�s ou pas ..
+	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
@@ -494,7 +494,7 @@ void CSummonCreature::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la d�chirure spatio temporelle
+// rendu de la déchirure spatio temporelle
 float CSummonCreature::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;

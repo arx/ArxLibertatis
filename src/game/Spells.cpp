@@ -657,9 +657,7 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	else if(name == "vitae")       iPosX = 0, iPosY = 2, sequence = "66666888";
 	else if(name == "yok")         iPosX = 0, iPosY = 0, sequence = "222226666888";
 	else if(name == "akbaa")       iPosX = 0, iPosY = 0, sequence = "22666772222";
-	else {
-		return;
-	}
+	else return;
 
 	io->symboldraw = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
@@ -2916,8 +2914,7 @@ void ARX_SPELLS_Precast_Check()
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				ANIM_USE * ause1 = &inter.iobj[0]->animlayer[1];
 				AcquireLastAnim(inter.iobj[0]);
 				FinishAnim(inter.iobj[0], ause1->cur_anim);
@@ -7123,7 +7120,7 @@ void ARX_SPELLS_Update()
 			//---------------------------------------------------------------------------------------
 			//***************************************************************************************	
 			// LEVEL 2 -----------------------------------------------------------------------------
-			case SPELL_HEAL: // gu�rit les ennemis coll�s
+			case SPELL_HEAL: // guérit les ennemis collés
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 

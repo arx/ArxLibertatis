@@ -1883,8 +1883,8 @@ void ComputeRoomDistance()
 	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
 
 	void ** ptr = NULL;
-	ptr = (void **)malloc(sizeof(void *) * nb_anchors);
-	memset(ptr, 0, sizeof(void *)*nb_anchors);
+	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
+	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
 
 
 	for (long i = 0; i < NbRoomDistance; i++)
@@ -2416,12 +2416,11 @@ void EERIEPOLY_Compute_PolyIn()
 							for (long k = 0; k < nbvert; k++)
 							{
 
-								if (PointInBBox(&ep2->v[k].p, &bb))
-								{
+								if(PointInBBox(&ep2->v[k].p, &bb)) {
 									EERIEPOLY_Add_PolyIn(eg, ep2);
 									break;
-								}
-								else {
+									
+								} else {
 									
 									Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
 									if(PointInBBox(&pt, &bb)) {

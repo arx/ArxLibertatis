@@ -59,14 +59,14 @@ class ChunkFile {
 	
 public:
 	
-	ChunkFile(PakFileHandle * file);
+	explicit ChunkFile(PakFileHandle * file);
 	
 	bool read(void *, size_t);
 	bool skip(size_t);
 	bool find(const char *);
 	//! @return true if next four bytes = chunk id;
 	bool check(const char *);
-	inline size_t size() { return offset; };
+	inline size_t size() { return offset; }
 	bool restart();
 	
 private:

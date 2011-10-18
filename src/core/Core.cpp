@@ -746,8 +746,7 @@ int main(int argc, char ** argv) {
 		LaunchDemo=1;
 		Project.demo=LEVEL10;
 		NOCHECKSUM=1;
-	}
-	else {
+	} else {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
 	}
@@ -2100,7 +2099,8 @@ void FirstFrameHandling()
 		LoadLevelScreen();
 	}
 #endif // BUILD_EDIT_LOADSAVE
-	else {
+	else
+	{
 		PROGRESS_BAR_COUNT+=4.f;
 		LoadLevelScreen();
 	}

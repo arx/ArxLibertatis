@@ -496,7 +496,7 @@ float CRuneOfGuarding::Render()
 //-----------------------------------------------------------------------------
 void LaunchPoisonExplosion(Vec3f * aePos)
 {
-	// syst�me de partoches pour l'explosion
+	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 80; 
@@ -700,7 +700,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 		ulCurrentTime += _ulTime;
 	}
 
-	// on passe de 5 � 100 partoches en 1.5secs
+	// on passe de 5 à 100 partoches en 1.5secs
 	if (ulCurrentTime < 750)
 	{
 		pPS.iParticleNbMax = 2;
@@ -1472,7 +1472,7 @@ void CLevitate::Update(unsigned long _ulTime)
 	switch (this->key)
 	{
 		case 0:
-			//mont� du cone
+			//monté du cone
 			a = (float) ulCurrentTime / 1000.f;
 
 			if (a > 1.f)
@@ -1706,7 +1706,7 @@ float CLevitate::Render()
 			break;
 	}
 
-	//trac� du cone back
+	//tracé du cone back
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
@@ -1736,7 +1736,7 @@ float CLevitate::Render()
 		j++;
 	}
 
-	//trac� du cone front
+	//tracé du cone front
 	GRenderer->SetCulling(Renderer::CullCCW);
 	
 	i = cone[1].conenbfaces - 2;
@@ -1761,7 +1761,7 @@ float CLevitate::Render()
 		j++;
 	}
 
-	//trac� des pierres
+	//tracé des pierres
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	this->DrawStone();
 

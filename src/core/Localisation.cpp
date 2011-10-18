@@ -76,7 +76,7 @@ bool InitLocalisation() {
 	LogDebug("Loaded localisation file " << tx);
 	
 	// Scale the loaded size to new stride of uint16_t vs char
-	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
+	loc_file_size /= sizeof(*Localisation);
 	
 	if(loc_file_size >= 1 && *Localisation == 0xfeff) {
 		// Ignore the byte order mark.

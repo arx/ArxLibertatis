@@ -671,7 +671,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	this->Split(v1a, 0, end, 80);
 	this->Split(v1b, 0, end, -80);
 
-	// check de la conformit� du split
+	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	if (0)
@@ -986,7 +986,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
-	// smooth sur les cot�s ou pas ..
+	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
@@ -1152,7 +1152,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la d�chirure spatio temporelle
+// rendu de la déchirure spatio temporelle
 float CRiseDead::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
@@ -1461,7 +1461,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	}
 
 
-	// syst�me de partoches pour la poussi�re
+	// système de partoches pour la poussière
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 200;
@@ -1525,7 +1525,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		// TODO memory leak (pPS)?
 	}
 
-	// syst�me de partoches pour la poussi�re au sol
+	// système de partoches pour la poussière au sol
 	pPS = new ParticleSystem();
 	
 	cp.iNbMax = 20;

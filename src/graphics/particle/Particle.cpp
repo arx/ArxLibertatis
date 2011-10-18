@@ -49,10 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
 
-
-using namespace std;
-
-//-----------------------------------------------------------------------------
 Particle::Particle()
 {
 	p3Pos.x = frand2() * 5;

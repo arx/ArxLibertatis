@@ -173,7 +173,7 @@ class SetMainEventCommand : public Command {
 	
 public:
 	
-	SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
+	explicit SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
@@ -531,7 +531,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { };
+		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { }
 		
 		virtual bool number(const Context & context, float left, float right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
@@ -571,7 +571,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsElementOperator() : Operator("iselement", TYPE_TEXT) { };
+		IsElementOperator() : Operator("iselement", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & seek, const string & text) {
 			ARX_UNUSED(context);
@@ -597,7 +597,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsClassOperator() : Operator("isclass", TYPE_TEXT) { };
+		IsClassOperator() : Operator("isclass", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			ARX_UNUSED(context);
@@ -610,7 +610,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { };
+		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
@@ -625,7 +625,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { };
+		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
@@ -640,7 +640,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsTypeOperator() : Operator("istype", TYPE_TEXT) { };
+		IsTypeOperator() : Operator("istype", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
@@ -661,7 +661,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsInOperator() : Operator("isin", TYPE_TEXT) { };
+		IsInOperator() : Operator("isin", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & needle, const string & haystack) {
 			return ARX_UNUSED(context), (haystack.find(needle) != string::npos);
@@ -673,7 +673,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		EqualOperator() : Operator("==", TYPE_FLOAT) { };
+		EqualOperator() : Operator("==", TYPE_FLOAT) { }
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			return ARX_UNUSED(context), (left == right);
@@ -689,7 +689,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { };
+		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			return ARX_UNUSED(context), (left != right);
@@ -705,7 +705,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { };
+		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left <= right);
@@ -717,7 +717,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		LessOperator() : Operator("<", TYPE_FLOAT) { };
+		LessOperator() : Operator("<", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left < right);
@@ -729,7 +729,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { };
+		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left >= right);
@@ -741,7 +741,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		GreaterOperator() : Operator(">", TYPE_FLOAT) { };
+		GreaterOperator() : Operator(">", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left > right);

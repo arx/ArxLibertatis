@@ -261,8 +261,6 @@ if(NOT CHAR_SIZE EQUAL 1 AND NOT CHAR_SIZE STREQUAL "")
 	message(SEND_ERROR "Unexpected char size: ${CHAR_SIZE}")
 endif()
 
-check_cxx_source_compiles("#include <stdlib.h>\n int main() { size_t s = rand(); char test[s]; }" HAVE_DYNAMIC_STACK_ALLOCATION)
-
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
 	set(HAVE_PTHREADS 1)
@@ -698,7 +696,7 @@ endif()
 
 if(PYTHONINTERP_FOUND)
 	# TODO consider enabling more checks
-	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references)
+	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references,-runtime/string,-runtime/printf,-readability/fn_size,-runtime/threadsafe_fn)
 	add_custom_target(style
 		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
 	)

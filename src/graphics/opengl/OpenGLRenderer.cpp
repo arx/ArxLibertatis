@@ -31,18 +31,18 @@
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
-static const char vertexShaderSource[] = "void main() { \n\
-	// Convert pre-transformed D3D vertices to OpenGL vertices. \n\
-	float w = 1.f / gl_Vertex.w; \n\
-	vec4 vertex = vec4(gl_Vertex.xyz * w, w); \n\
-	// We only need the projection matrix as modelview will always be idenity. \n\
-	gl_Position = gl_ProjectionMatrix * vertex; \n\
-	gl_FrontColor = gl_BackColor = gl_Color; \n\
-	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
-	gl_FogFragCoord = vertex.z; \n\
-}";
+static const char vertexShaderSource[] = "void main() {\n"
+	"	// Convert pre-transformed D3D vertices to OpenGL vertices.\n"
+	"	float w = 1.f / gl_Vertex.w;\n"
+	"	vec4 vertex = vec4(gl_Vertex.xyz * w, w);\n"
+	"	// We only need the projection matrix as modelview will always be idenity.\n"
+	"	gl_Position = gl_ProjectionMatrix * vertex;\n"
+	"	gl_FrontColor = gl_BackColor = gl_Color;\n"
+	"	gl_TexCoord[0] = gl_MultiTexCoord0;\n"
+	"	gl_FogFragCoord = vertex.z;\n"
+	"}\n";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { }
 
 OpenGLRenderer::~OpenGLRenderer() {
 	

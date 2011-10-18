@@ -20,7 +20,7 @@
 #ifndef ARX_SCENE_CINEMATICSOUND_H
 #define ARX_SCENE_CINEMATICSOUND_H
 
-#include "scene/GameSound.h"
+#include "audio/AudioTypes.h"
 #include "io/FilePath.h"
 
 class Cinematic;
@@ -33,7 +33,7 @@ struct CinematicSound {
 	
 	short active;
 	fs::path file;
-	ArxSound handle;
+	audio::SourceId handle;
 	
 };
 

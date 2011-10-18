@@ -2015,8 +2015,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			}
 			
 			
-			if((part->special & FIRE_TO_SMOKE2)&&(framediff2>(long)(part->tolive-(part->tolive>>2))))
-			{
+			if((part->special & FIRE_TO_SMOKE2)
+			   && framediff2 > long(part->tolive - (part->tolive >> 2))) {
+				
 				part->special&=~FIRE_TO_SMOKE2;
 				int j=ARX_PARTICLES_GetFree();
 
@@ -2422,7 +2423,7 @@ void TreatBackgroundActions()
 		if(dist > square(fZFar)) // Out of Treat Range
 		{
 			ARX_SOUND_Stop(gl->sample);
-			gl->sample = ARX_SOUND_INVALID_RESOURCE;
+			gl->sample = audio::INVALID_ID;
 			continue;
 		}
 
@@ -2451,7 +2452,7 @@ void TreatBackgroundActions()
 			|| (gl->extras & EXTRAS_SPAWNSMOKE))
 			&& (gl->status))
 		{
-			if (gl->sample == ARX_SOUND_INVALID_RESOURCE)
+			if (gl->sample == audio::INVALID_ID)
 			{
 				gl->sample = SND_FIREPLACE;
 					ARX_SOUND_PlaySFX(gl->sample, &gl->pos, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
@@ -2563,10 +2564,10 @@ void TreatBackgroundActions()
 		}
 		else
 		{
-			if ((!gl->status) && (gl->sample != ARX_SOUND_INVALID_RESOURCE))
+			if ((!gl->status) && (gl->sample != audio::INVALID_ID))
 			{
 				ARX_SOUND_Stop(gl->sample);
-				gl->sample = ARX_SOUND_INVALID_RESOURCE;
+				gl->sample = audio::INVALID_ID;
 			}
 		}
 	}	

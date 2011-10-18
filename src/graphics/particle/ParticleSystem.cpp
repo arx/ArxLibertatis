@@ -541,7 +541,7 @@ void ParticleSystem::Update(long _lTime)
 		}
 	}
 
-	// cr�ation de particules en fct de la fr�quence
+	// création de particules en fct de la fréquence
 	if (iParticleNbAlive < iParticleNbMax)
 	{
 		long t = iParticleNbMax - iParticleNbAlive;

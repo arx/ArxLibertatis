@@ -80,7 +80,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/Script.h"
 
-using namespace std;
+using std::vector;
+using std::string;
 
 //------------------------------------------------------------------------------------
 extern E_ARX_STATE_MOUSE eMouseState;
@@ -128,10 +129,10 @@ void ARX_INVENTORY_Declare_InventoryIn(INTERACTIVE_OBJ * io)
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			if (io->ignit_sound != audio::INVALID_ID)
 			{
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+				io->ignit_sound = audio::INVALID_ID;
 			}
 
 			io->ignition = 0;
@@ -572,7 +573,7 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 	sx = io->sizex;
 	sy = io->sizey;
 
-	// on essaie de le remettre � son ancienne place --------------------------
+	// on essaie de le remettre à son ancienne place --------------------------
 	if (sInventory == 1 &&
 	        (sInventoryX >= 0) &&
 	        ((size_t)sInventoryX <= INVENTORY_X - sx) &&
@@ -791,7 +792,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 	sx = io->sizex;
 	sy = io->sizey;
 
-	// on essaie de le remettre � son ancienne place
+	// on essaie de le remettre à son ancienne place
 	if (sInventory == 2 &&
 	        (sInventoryX >= 0) &&
 	        (sInventoryX <= id->sizex - sx) &&

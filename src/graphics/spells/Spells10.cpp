@@ -93,8 +93,8 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 		pTab[i]->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
 		pTab[i]->spellinstance = this->spellinstance;
-		pTab[i]->SetColor1(1.f, 0.75f, 0.75f); // milieu
-		pTab[i]->SetColor2(0.3f, 0.f, 0.f); // extr�mit�s
+		pTab[i]->SetColor1(1.f, 0.75f, 0.75f); // middle
+		pTab[i]->SetColor2(0.3f, 0.f, 0.f); // extremities
 	}
 
 	SetDuration(lMax + 1000);

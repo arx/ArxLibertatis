@@ -266,7 +266,7 @@ class ConfigWriter : public IniWriter {
 	
 public:
 	
-	ConfigWriter(std::ostream & _output) : IniWriter(_output) { }
+	explicit ConfigWriter(std::ostream & _output) : IniWriter(_output) { }
 	
 	void writeActionKey(ControlAction index, const ActionKey & value);
 

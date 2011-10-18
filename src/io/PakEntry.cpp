@@ -123,7 +123,7 @@ PakFile * PakDirectory::getFile(const fs::path & path) {
 	
 	if(path.empty()) {
 		return NULL;
-	} if(path.is_up()) {
+	} else if(path.is_up()) {
 		LogWarning << "bad path: " << path;
 	}
 	

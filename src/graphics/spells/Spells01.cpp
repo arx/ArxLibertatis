@@ -76,7 +76,7 @@ extern long cur_mr;
 //-----------------------------------------------------------------------------
 void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = -1)
 {
-	// syst�me de partoches pour l'explosion
+	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 100 + t * 50;
@@ -1294,7 +1294,7 @@ float CPortal::Render()
 	//affichage eclair
 	this->DrawAllEclair();
 
-	//affichage des particules � l'interieur
+	//affichage des particules à l'interieur
 	if (rnd() > .25f)
 	{
 		int j = ARX_PARTICLES_GetFree();

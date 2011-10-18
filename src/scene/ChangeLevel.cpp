@@ -2710,7 +2710,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	}
 	
 	_Gaids = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *[MAX_IO_SAVELOAD];
-	memset(_Gaids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *) * MAX_IO_SAVELOAD);
+	memset(_Gaids, 0, sizeof(*_Gaids) * MAX_IO_SAVELOAD);
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	

@@ -893,8 +893,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 						pio = NULL;
 					}
 				}
-			}
-			else {
+			} else {
 				if(inter.iobj[source]->ioflags & IO_NPC) {
 					pio = inter.iobj[source]->_npcdata->weapon;
 					if(pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) {
@@ -1558,10 +1557,10 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 
 						io->ignit_light = -1;
 
-						if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+						if (io->ignit_sound != audio::INVALID_ID)
 						{
 							ARX_SOUND_Stop(io->ignit_sound);
-							io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+							io->ignit_sound = audio::INVALID_ID;
 						}
 					}
 					else if (!(flag & 2))

@@ -4094,7 +4094,7 @@ void CMenuPanel::Move(int _iX, int _iY)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute � droite en ligne
+// patch on ajoute à droite en ligne
 void CMenuPanel::AddElement(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);
@@ -4115,7 +4115,7 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute � droite en ligne
+// patch on ajoute à droite en ligne
 void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);

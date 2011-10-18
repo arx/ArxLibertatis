@@ -893,7 +893,7 @@ long DanaeLoadLevel(const fs::path & file) {
 				el->ex_size = dlight->ex_size;
 				el->ex_speed = dlight->ex_speed;
 				el->tl = -1;
-				el->sample = ARX_SOUND_INVALID_RESOURCE;
+				el->sample = audio::INVALID_ID;
 				
 				if((el->extras & EXTRAS_SPAWNFIRE)) {
 					el->extras |= EXTRAS_FLARE;
@@ -1116,7 +1116,7 @@ long DanaeLoadLevel(const fs::path & file) {
 			}
 			
 			el->tl = -1;
-			el->sample = ARX_SOUND_INVALID_RESOURCE;
+			el->sample = audio::INVALID_ID;
 		}
 	}
 	

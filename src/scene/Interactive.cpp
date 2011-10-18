@@ -1131,7 +1131,7 @@ void InitInter(long nb) {
 
 	inter.init = 1;
 	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
-	memset(inter.iobj, 0, sizeof(INTERACTIVE_OBJ *)*inter.nbmax);
+	memset(inter.iobj, 0, sizeof(*inter.iobj) * inter.nbmax);
 }
 
 //*************************************************************************************
@@ -1448,7 +1448,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->dmg_sum = 0;
 		io->ignition = 0.f;
 		io->ignit_light = -1;
-		io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+		io->ignit_sound = audio::INVALID_ID;
 
 		if ((io->obj) && (io->obj->pbox)) io->obj->pbox->active = 0;
 
@@ -2094,8 +2094,8 @@ INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
 		DynLight[ignit_light].exist = 0, ignit_light = -1;
 	}
 	
-	if(ignit_sound != ARX_SOUND_INVALID_RESOURCE) {
-		ARX_SOUND_Stop(ignit_sound), ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+	if(ignit_sound != audio::INVALID_ID) {
+		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
 	}
 	
 	if(this == FlyingOverIO) {

@@ -268,7 +268,7 @@ long EERIE_LIGHT_Create() {
 			}
 			
 			memset(GLight[i], 0, sizeof(EERIE_LIGHT));
-			GLight[i]->sample = ARX_SOUND_INVALID_RESOURCE;
+			GLight[i]->sample = audio::INVALID_ID;
 			GLight[i]->tl = -1;
 			return i;
 		}
@@ -299,7 +299,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 		GLight[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
 		memcpy(GLight[num], el, sizeof(EERIE_LIGHT));
 		GLight[num]->tl = -1;
-		GLight[num]->sample = ARX_SOUND_INVALID_RESOURCE;
+		GLight[num]->sample = audio::INVALID_ID;
 	}
 }
 

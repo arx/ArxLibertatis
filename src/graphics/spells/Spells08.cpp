@@ -117,7 +117,7 @@ void CExplosion::Update(unsigned long _ulTime)
 			scale = a;
 			break;
 		case 1:
-			//avanc� du disque
+			//avancé du disque
 			scale = (float)ulCurrentTime / (float)ulDuration;
 
 			if (!ARXPausedTimer) ulCurrentTime += _ulTime;
@@ -391,7 +391,7 @@ float CExplosion::Render()
 			break;
 	}
 
-	//trac� du disque
+	//tracé du disque
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->ResetTexture(0);
 	GRenderer->drawIndexed(Renderer::TriangleStrip, disqued3d, disquenbvertex, disqueind, disquenbvertex + 2);

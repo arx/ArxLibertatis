@@ -42,7 +42,8 @@ string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io, ScriptMessage msg) : script(_script), pos(_pos), io(_io), message(msg) { };
+Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io, ScriptMessage msg)
+	: script(_script), pos(_pos), io(_io), message(msg) { }
 
 string Context::getStringVar(const string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), io);
@@ -672,7 +673,7 @@ size_t initSuppressions() {
 		
 	public:
 		
-		FakeCommand(const string & name) : Command(name) { }
+		explicit FakeCommand(const string & name) : Command(name) { }
 		
 		Result execute(Context & context) {
 			ARX_UNUSED(context);

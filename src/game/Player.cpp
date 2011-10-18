@@ -344,10 +344,10 @@ void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io)
 
 				io->ignit_light = -1;
 
-				if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+				if (io->ignit_sound != audio::INVALID_ID)
 				{
 					ARX_SOUND_Stop(io->ignit_sound);
-					io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+					io->ignit_sound = audio::INVALID_ID;
 				}
 
 				io->ignition = 0;
@@ -385,10 +385,10 @@ void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io)
 					io->ignit_light = -1;
 				}
 
-				if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+				if (io->ignit_sound != audio::INVALID_ID)
 				{
 					ARX_SOUND_Stop(io->ignit_sound);
-					io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+					io->ignit_sound = audio::INVALID_ID;
 				}
 
 				io->ignition = 0;

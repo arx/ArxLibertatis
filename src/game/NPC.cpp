@@ -200,8 +200,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 									}
 
-								}
-								else {
+								} else {
 									if(mindist <= 120.f) {
 										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
 									}
@@ -1096,10 +1095,10 @@ static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			if (io->ignit_sound != audio::INVALID_ID)
 			{
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+				io->ignit_sound = audio::INVALID_ID;
 			}
 
 			io->ignition = 0;
@@ -3409,9 +3408,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	
 
-	if (io->forcedmove == Vec3f::ZERO)
+	if(io->forcedmove == Vec3f::ZERO) {
 		ForcedMove = Vec3f::ZERO;
-	else {
+	} else {
 		float dd = min(1.f, (float)FrameDiff * ( 1.0f / 6 ) / io->forcedmove.length());
 		ForcedMove = io->forcedmove * dd;
 	}
@@ -4179,10 +4178,10 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 		io->ignit_light = -1;
 
-		if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+		if (io->ignit_sound != audio::INVALID_ID)
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+			io->ignit_sound = audio::INVALID_ID;
 		}
 
 		return;
@@ -4271,10 +4270,10 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			if (io->ignit_sound != audio::INVALID_ID)
 			{
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+				io->ignit_sound = audio::INVALID_ID;
 			}
 
 			ARX_SPEECH_ReleaseIOSpeech(io);
@@ -4443,7 +4442,7 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 			DynLight[id].extras |= EXTRAS_FLARE;
 		}
 
-		if (io->ignit_sound == ARX_SOUND_INVALID_RESOURCE)
+		if (io->ignit_sound == audio::INVALID_ID)
 		{
 			io->ignit_sound = SND_FIREPLACE;
 			ARX_SOUND_PlaySFX(io->ignit_sound, &position, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
@@ -4459,10 +4458,10 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 
 		io->ignit_light = -1;
 
-		if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+		if (io->ignit_sound != audio::INVALID_ID)
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+			io->ignit_sound = audio::INVALID_ID;
 		}
 	}
 }

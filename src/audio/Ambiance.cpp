@@ -86,8 +86,6 @@ static const u32 AMBIANCE_FILE_VERSION_1002 = 0x01000002;
 static const u32 AMBIANCE_FILE_VERSION_1003 = 0x01000003;
 static const u32 AMBIANCE_FILE_VERSION = AMBIANCE_FILE_VERSION_1003;
 
-using namespace audio;
-
 struct KeySetting {
 	
 	// Key settings flags
@@ -274,8 +272,8 @@ private:
 	size_t loopc; // How often the sample still needs to loop.
 	size_t queued; // How many loop counts are already queued.
 	
-	Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0),
-	                              loopc(0), queued(0) { }
+	explicit Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0),
+	                                       loopc(0), queued(0) { }
 	
 	void keyPlay();
 	

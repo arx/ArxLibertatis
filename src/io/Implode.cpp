@@ -359,8 +359,8 @@ ImplodeResult implode(pkstream * pStr) {
 					// Store the first 2 bits
 					pStr->nBitBuffer += (nCopyOffs & 0x03) << pStr->nBits;
 					pStr->nBits += 2;
-				}
-				else {
+					
+				} else {
 					
 					// Store most significant 6 bits of offset using bit sequence
 					pStr->nBitBuffer += OffsCode[nCopyOffs >> pStr->nDictSizeByte] << pStr->nBits;

@@ -112,7 +112,7 @@ CLightning::CLightning() :
 }
 
 //------------------------------------------------------------------------------
-// Params une m�chante struct
+// Params une méchante struct
 //------------------------------------------------------------------------------
 
 void CLightning::BuildS(LIGHTNING * pLInfo)

@@ -247,7 +247,7 @@ void UpDateKeyLight(int frame)
 		num2++;
 	}
 
-	//on cr�pie le range avec ces deux valeurs
+	//on crépie le range avec ces deux valeurs
 	kbase->light.prev = klightprev;
 	kbase->light.next = klightnext;
 

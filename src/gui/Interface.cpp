@@ -2205,8 +2205,8 @@ bool ArxGame::ManageEditorControls()
 			} else if (DRAGINTER->ioflags & IO_GOLD) {
 				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
-			} else if(DRAGINTER!=NULL)
-			{
+				
+			} else if(DRAGINTER) {
 #ifdef BUILD_EDITOR
 				if (!EDITMODE) // test for NPC & FIX
 				{
@@ -4201,21 +4201,6 @@ void ArxGame::ManageKeyMouse() {
 	}
 
 	{
-#ifdef BUILD_EDITOR
-		if (EDITMODE)
-		{
-			if (EERIEMouseButton & 1)
-			{
-				INTERACTIVE_OBJ * t = FlyingOverIO;
-
-				if (t!=NULL)
-				{
-					SelectIO(t);
-					EERIEMouseButton&=~1;
-				}
-			}
-		} else
-#endif
 
 		if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
 			{
@@ -5694,7 +5679,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 		else
 		{
-			memset(&bOnglet, true, (max_onglet+1)*sizeof(bool));
+			memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
 		}
 		
 		if ((Book_Mode==1) || (Book_Mode==2))
@@ -5720,8 +5705,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
+				} else {
+					DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 			}
 
 			if (bOnglet[2])

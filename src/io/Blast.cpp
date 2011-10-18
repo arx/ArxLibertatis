@@ -380,8 +380,8 @@ static BlastResult blastDecompress(state * s) {
 					s->first = 0;
 				}
 			} while(len != 0);
-		}
-		else {
+			
+		} else {
 			/* get literal and write it */
 			symbol = lit ? decode(s, &litcode) : bits(s, 8);
 			s->out[s->next++] = symbol;
