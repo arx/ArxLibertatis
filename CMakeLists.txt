@@ -258,11 +258,6 @@ else(MSVC)
 	
 endif(MSVC)
 
-check_type_size(char CHAR_SIZE)
-if(NOT CHAR_SIZE EQUAL 1 AND NOT CHAR_SIZE STREQUAL "")
-	message(SEND_ERROR "Unexpected char size: ${CHAR_SIZE}")
-endif()
-
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
 	set(HAVE_PTHREADS 1)

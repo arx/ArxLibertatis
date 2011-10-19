@@ -20,6 +20,9 @@
 #include "graphics/font/Font.h"
 
 #include <sstream>
+#include <iomanip>
+#include <iostream>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -29,7 +32,6 @@
 #include "graphics/texture/TextureStage.h"
 #include "io/FilePath.h"
 #include "io/log/Logger.h"
-#include <iomanip>
 
 using std::string;
 

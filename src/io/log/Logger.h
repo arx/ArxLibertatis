@@ -23,6 +23,8 @@
 #include <sstream>
 #include <string>
 
+#include "platform/Platform.h"
+
 #ifdef _DEBUG
 //! Log a Debug message. Arguments are only evaluated if their results will be used.
 #define LogDebug(...)    \
