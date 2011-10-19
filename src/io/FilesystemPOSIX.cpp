@@ -26,11 +26,14 @@
 #include <dirent.h>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 
 #include "io/FilePath.h"
 #include "io/FileStream.h"
 
 using std::string;
+using std::malloc;
+using std::free;
 
 namespace fs {
 
@@ -146,31 +149,69 @@ bool rename(const path & old_p, const path & new_p) {
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }
 
+static void readdir(void * _handle, void * & _buf) {
+	
+	DIR * handle = reinterpret_cast<DIR *>(_handle);
+	
+	dirent * buf = reinterpret_cast<dirent *>(_buf);
+	
+	do {
+		
+		dirent * entry;
+		if(readdir_r(handle, buf, &entry) || !entry) {
+			free(_buf), _buf = NULL;
+			return;
+		}
+		
+	} while(!strcmp(buf->d_name, ".") || !strcmp(buf->d_name, ".."));
+	
+}
+
 directory_iterator::directory_iterator(const fs::path & p) : buf(NULL) {
 	
 	handle = opendir(p.empty() ? "./" : p.string().c_str());
 	
 	if(handle) {
-		dirent * d;
-		do {
-			buf = d = readdir(reinterpret_cast<DIR *>(handle));
-		} while(d && (!strcmp(d->d_name, ".") || !strcmp(d->d_name, "..")));
+		
+		// Allocate a large enough buffer for readdir_r.
+		long name_max;
+#if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) && defined(_PC_NAME_MAX)
+		name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
+		if(name_max == -1) {
+#  if defined(NAME_MAX)
+			name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#  else
+			arx_assert_msg(false, "cannot determine maximum dirname size");
+#  endif
+		}
+#elif defined(NAME_MAX)
+		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#else
+#  error "buffer size for readdir_r cannot be determined"
+#endif
+		size_t size = (size_t)offsetof(dirent, d_name) + name_max + 1;
+		if(size < sizeof(dirent)) {
+			size = sizeof(dirent);
+		}
+		buf = malloc(size);
+		
+		readdir(handle, buf);
 	}
 };
 
 directory_iterator::~directory_iterator() {
 	if(handle) {
-		closedir(reinterpret_cast<DIR*>(handle));
+		closedir(reinterpret_cast<DIR *>(handle));
+		if(buf) {
+			free(buf);
+		}
 	}
 }
 
 directory_iterator & directory_iterator::operator++() {
 	arx_assert(buf != NULL);
 	
-	dirent * d;
-	do {
-		buf = d = readdir(reinterpret_cast<DIR *>(handle));
-	} while(d && (!strcmp(d->d_name, ".") || !strcmp(d->d_name, "..")));
+	readdir(handle, buf);
 	
 	return *this;
 }
