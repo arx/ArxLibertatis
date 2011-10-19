@@ -91,11 +91,11 @@ using std::string;
 extern long CHANGE_LEVEL_ICON;
 extern float FrameDiff;
 static bool IsPointInField(Vec3f * pos);
-ARX_PATH **	ARXpaths = NULL;
+ARX_PATH ** ARXpaths = NULL;
 ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
 PathMods ARX_PATHS_HIERARCHYMOVE = 0;
-long		nbARXpaths = 0;
+long nbARXpaths = 0;
 long USE_CINEMATICS_CAMERA = 0;
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap)
@@ -208,7 +208,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 	static long count = 1;
 
-	long f	=	static_cast<long>(FrameDiff);
+	long f = static_cast<long>(FrameDiff);
 
 	if (f < 10) f = 10;
 
@@ -234,8 +234,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 				if ((op == NULL) && (p == NULL)) goto next; // Not in a zone
 
-				if (op == p)	// Stayed inside Zone OP
-				{
+				if(op == p) { // Stayed inside Zone OP
 					if (io->show != io->inzone_show)
 					{
 						io->inzone_show = io->show;
@@ -244,7 +243,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 				else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 				{
-					SendIOScriptEvent(io, SM_LEAVEZONE, op->name); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, op->name);
 
 					if (!op->controled.empty())
 					{
@@ -261,13 +260,11 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					io->inzone_show = io->show;
 				entering:
-					;
-
 
 					if(JUST_RELOADED && (p->name == "ingot_maker" || p->name == "mauld_user")) {
-						ARX_DEAD_CODE(); 
+						ARX_DEAD_CODE();
 					} else {
-						SendIOScriptEvent(io, SM_ENTERZONE, p->name); 
+						SendIOScriptEvent(io, SM_ENTERZONE, p->name);
 
 						if (!p->controled.empty())
 						{
@@ -276,14 +273,14 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							if (t >= 0)
 							{
 								string params = io->long_name() + ' ' + p->name;
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, params); 
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
 						}
 					}
 				}
-				else 
+				else
 				{
-					SendIOScriptEvent(io, SM_LEAVEZONE, op->name); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, op->name);
 
 					if (!op->controled.empty())
 					{
@@ -292,12 +289,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						if (t >= 0)
 						{
 							string str = io->long_name() + ' ' + op->name;
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str); 
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
 
 					io->inzone_show = io->show;
-					SendIOScriptEvent(io, SM_ENTERZONE, p->name); 
+					SendIOScriptEvent(io, SM_ENTERZONE, p->name);
 
 					if (!p->controled.empty())
 					{
@@ -315,13 +312,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			}
 
 		next:
-			;
 			count++;
 
 			if (count >= inter.nbmax) count = 1;
 		}
 
-	//player check*************************************************
+	// player check*************************************************
 	if (inter.iobj[0])
 	{
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
@@ -329,13 +325,13 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 		if ((op == NULL) && (p == NULL)) goto suite; // Not in a zone
 
-		if (op == p)	// Stayed inside Zone OP
+		if (op == p) // Stayed inside Zone OP
 		{
 		
 		}
 		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 		{
-			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, op->name); 
+			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, op->name);
 			CHANGE_LEVEL_ICON = -1;
 
 			if (!op->controled.empty())
@@ -350,7 +346,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op == NULL) && (p != NULL)) // Entering Zone P
 		{
-			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, p->name); 
+			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, p->name);
 
 			if (p->flags & PATH_AMBIANCE && !p->ambiance.empty())
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
@@ -381,7 +377,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 			}
 		}
-		else 
+		else
 		{
 
 			if (!op->controled.empty())
@@ -410,11 +406,11 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 	
 suite:
-	;
 	JUST_RELOADED = 0;
 }
 
-ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos) : name(_name), initpos(_pos), pos(_pos) {
+ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
+	: name(_name), initpos(_pos), pos(_pos) {
 	
 	flags = 0;
 	nb_pathways = 0;
@@ -430,8 +426,6 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos) : name(_name),
 	
 }
 
-//*************************************************************************************
-//*************************************************************************************
 void ARX_PATH_ClearAllUsePath()
 {
 	for (long i = 0; i < inter.nbmax; i++)
@@ -469,8 +463,7 @@ ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
 	
 	return NULL;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_PATH_ReleaseAllPath()
 {
 	ARX_PATH_ClearAllUsePath();
@@ -511,21 +504,21 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 	
 	ARX_PATH * ap = aup->path;
 	
-	//compute Delta Time
+	// compute Delta Time
 	float tim = aup->_curtime - aup->_starttime;
 	
 	if(tim < 0) {
 		return -1;
 	}
 	
-	//set pos to startpos
+	// set pos to startpos
 	*pos = Vec3f::ZERO;
 	
 	if(tim == 0) {
 		return 0;
 	}
 	
-	//we start at reference waypoint 0  (time & rpos = 0 for this waypoint).
+	// we start at reference waypoint 0  (time & rpos = 0 for this waypoint).
 	long targetwaypoint = 1;
 	aup->aupflags &= ~ARX_USEPATH_FLAG_FINISHED;
 
@@ -682,8 +675,9 @@ long ARX_THROWN_OBJECT_GetFree()
 
 extern EERIE_3DOBJ * arrowobj;
 
-long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect, EERIE_QUAT * quat, float velocity, float damages, float poison)
-{
+long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f * upvect,
+                             EERIE_QUAT * quat, float velocity, float damages, float poison) {
+	
 	long num = ARX_THROWN_OBJECT_GetFree();
 
 	if (num >= 0)
@@ -712,8 +706,8 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 		}
 
 		if ((source == 0)
-		        &&	(player.equiped[EQUIP_SLOT_WEAPON] != 0)
-		        &&	(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
+		        && (player.equiped[EQUIP_SLOT_WEAPON] != 0)
+		        && (ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
 		{
 			INTERACTIVE_OBJ * tio = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
 
@@ -728,18 +722,18 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 {
-	float				distance_limit	=	1000.f;
-	INTERACTIVE_OBJ *	io_target		=	inter.iobj[target];
-	INTERACTIVE_OBJ *	io_source		=	inter.iobj[source];
+	float distance_limit = 1000.f;
+	INTERACTIVE_OBJ * io_target = inter.iobj[target];
+	INTERACTIVE_OBJ * io_source = inter.iobj[source];
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
 	float distance = fdist(Thrown[thrownum].position, Thrown[thrownum].initial_position);
-	float distance_modifier =	1.f;
+	float distance_modifier = 1.f;
 
 	if (distance < distance_limit * 2.f)
 	{
-		distance_modifier	=	distance / distance_limit;
+		distance_modifier = distance / distance_limit;
 
 		if (distance_modifier < 0.5f)
 			distance_modifier = 0.5f;
@@ -748,20 +742,20 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	float attack, dmgs, backstab, critical, ac;
 
-	backstab	=	1.f;
-	critical	=	false;
+	backstab = 1.f;
+	critical = false;
 
 	if (source == 0)
 	{
-		attack	=	Thrown[thrownum].damages;
+		attack = Thrown[thrownum].damages;
 
-		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * ( 1.0f / 5 )))
-		{
+		if(rnd() * 100 <= float(player.Full_Attribute_Dexterity - 9) * 2.f
+		                   + float(player.Full_Skill_Projectile * 0.2f)) {
 			if (SendIOScriptEvent(io_source, SM_CRITICAL, "bow") != REFUSE)
 				critical = true;
 		}
 
-		dmgs	=	attack;
+		dmgs = attack;
 
 		if (io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB)
 		{
@@ -782,17 +776,17 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	}
 
-	float	absorb;
+	float absorb;
 
 	if (target == 0)
 	{
-		ac		=	player.Full_armor_class;
-		absorb	=	player.Full_Skill_Defense * .5f;
+		ac = player.Full_armor_class;
+		absorb = player.Full_Skill_Defense * .5f;
 	}
 	else
 	{
-		ac		=	ARX_INTERACTIVE_GetArmorClass(io_target);
-		absorb	=	io_target->_npcdata->absorb;
+		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
+		absorb = io_target->_npcdata->absorb;
 	}
 
 	char wmat[64];
@@ -816,26 +810,25 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	}
 
 	float power;
-	power	=	dmgs * ( 1.0f / 20 );
+	power = dmgs * ( 1.0f / 20 );
 
 	if (power > 1.f) power = 1.f;
 
-	power	=	power * 0.15f + 0.85f;
+	power = power * 0.15f + 0.85f;
 
 	ARX_SOUND_PlayCollision(*amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
 
-	dmgs	*=	backstab;
-	dmgs	-=	dmgs * (absorb * ( 1.0f / 100 ));
+	dmgs *= backstab;
+	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
 
-	float chance	= 100.f - (ac - attack);
-	float dice		= rnd() * 100.f;
+	float chance = 100.f - (ac - attack);
+	float dice = rnd() * 100.f;
 
-	if (dice <= chance)  
-	{
+	if(dice <= chance) {
 		if (dmgs > 0.f)
 		{
 			if (critical)
-				dmgs *= 1.5f; 
+				dmgs *= 1.5f;
 
 			dmgs *= distance_modifier;
 			return dmgs;
@@ -902,7 +895,8 @@ void CheckExp(long i) {
 		
 		ARX_BOOMS_Add(&Thrown[i].position);
 		LaunchFireballBoom(&Thrown[i].position, 10);
-		DoSphericDamage(&Thrown[i].position, 4.f * 2, 50.f, DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
+		DoSphericDamage(&Thrown[i].position, 4.f * 2, 50.f,
+		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
 		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, inter.iobj[0]);
 		long id = GetFreeDynLight();
@@ -914,7 +908,7 @@ void CheckExp(long i) {
 			DynLight[id].fallend   = 440.f;
 			DynLight[id].rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
 			DynLight[id].pos = Thrown[i].position;
-			DynLight[id].ex_flaresize = 40.f; 
+			DynLight[id].ex_flaresize = 40.f;
 			DynLight[id].duration = 1500;
 		}
 	}
@@ -981,7 +975,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					DynLight[id].fallend   = 240.f;
 					DynLight[id].rgb = Color3f(1.f - rnd() * .2f, .8f - rnd() * .2f, .6f - rnd() * .2f);
 					DynLight[id].pos = Thrown[i].position;
-					DynLight[id].ex_flaresize = 40.f; 
+					DynLight[id].ex_flaresize = 40.f;
 					DynLight[id].extras |= EXTRAS_FLARE;
 					DynLight[id].duration = static_cast<long>(FrameDiff * 0.5f);
 				}
@@ -994,8 +988,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 					if (Thrown[i].obj)
 					{
-						Vec3f	pos;
-						long		notok	=	10;
+						Vec3f pos;
+						long notok = 10;
 						size_t num = 0;
 
 						while (notok-- > 0)
@@ -1098,11 +1092,11 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					Vec3f * v0 = &Thrown[i].obj->vertexlist3[Thrown[i].obj->actionlist[j].idx].v;
 					Vec3f dest = original_pos + Thrown[i].vector * 95.f;
 					Vec3f orgn = original_pos - Thrown[i].vector * 25.f;
-					EERIEPOLY * ep = CheckArrowPolyCollision(&orgn, &dest); 
+					EERIEPOLY * ep = CheckArrowPolyCollision(&orgn, &dest);
 
 					if (ep)
 					{
-						ARX_PARTICLES_Spawn_Spark(v0, 14, 0); 
+						ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
 						CheckExp(i);
 
 						if (ValidIONum(Thrown[i].source))
@@ -1110,14 +1104,15 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
-						char weapon_material[64]	= "dagger";
+						char weapon_material[64] = "dagger";
 						string bkg_material = "earth";
 
 						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
 							bkg_material = GetMaterialString(ep->tex->m_texName);
 
 						if (ValidIONum(Thrown[i].source))
-							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
+							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
+							                        inter.iobj[Thrown[i].source]);
 
 						Thrown[i].position = original_pos;
 						j = 200;
@@ -1133,11 +1128,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
-						char weapon_material[64]	= "dagger";
-						char bkg_material[64]		= "earth";
+						char weapon_material[64] = "dagger";
+						char bkg_material[64] = "earth";
 
 						if (ValidIONum(Thrown[i].source))
-							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
+							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
+							                        inter.iobj[Thrown[i].source]);
 
 						Thrown[i].position = original_pos;
 						j = 200;
@@ -1148,14 +1144,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						{
 							EERIE_SPHERE sphere;
 							sphere.origin = *v0 + Thrown[i].vector * precision * 4.5f;
-							sphere.radius = rad + 3.f; 
-	
+							sphere.radius = rad + 3.f;
+							
 							if (CheckEverythingInSphere(&sphere, Thrown[i].source, -1))
 							{
 								for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
 								{
- 
- 
 
 									if ((ValidIONum(EVERYTHING_IN_SPHERE[jj])
 									        && (EVERYTHING_IN_SPHERE[jj] != Thrown[i].source)))
@@ -1165,21 +1159,22 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 										if (target->ioflags & IO_NPC)
 										{
-											Vec3f	pos;
+											Vec3f pos;
 											Color color = Color::none;
-											long		hitpoint	=	-1;
-											float		curdist		=	999999.f;
+											long hitpoint = -1;
+											float curdist = 999999.f;
 
 											for (size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++)
 											{
 												if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
-
-												float d = dist(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
+												
+												short vid = target->obj->facelist[ii].vid[0];
+												float d = dist(sphere.origin, target->obj->vertexlist3[vid].v);
 
 												if (d < curdist)
 												{
-													hitpoint	=	target->obj->facelist[ii].vid[0];
-													curdist		=	d;
+													hitpoint = target->obj->facelist[ii].vid[0];
+													curdist = d;
 												}
 											}
 
@@ -1191,9 +1186,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 											if (Thrown[i].source == 0)
 											{
-												float damages;
+												float damages = ARX_THROWN_ComputeDamages(i, Thrown[i].source,
+												                                          EVERYTHING_IN_SPHERE[jj]);
 
-												if ((damages = ARX_THROWN_ComputeDamages(i, Thrown[i].source, EVERYTHING_IN_SPHERE[jj])) > 0.f)
+												if (damages > 0.f)
 												{
 													arx_assert(hitpoint >= 0);
 
@@ -1215,7 +1211,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 												}
 												else
 												{
-													ARX_PARTICLES_Spawn_Spark(v0, 14, 0);  //dmgs);
+													ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
 													ARX_NPC_SpawnAudibleSound(v0, inter.iobj[Thrown[i].source]);
 												}
 											}
@@ -1237,11 +1233,11 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 										}
 
 										// Need to deal damages !
-										Thrown[i].flags		&=	~ATO_MOVING;
-										Thrown[i].velocity	=	0.f;
-										need_kill			=	1;
-										precision			=	500.f;
-										j					=	200;
+										Thrown[i].flags &= ~ATO_MOVING;
+										Thrown[i].velocity = 0.f;
+										need_kill = 1;
+										precision = 500.f;
+										j = 200;
 									}
 								}
 							}
@@ -1279,8 +1275,9 @@ void CRuban::Create(int _iNumThrow, int _iDuration)
 
 }
 
-void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
-{
+void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
+                         float r2, float g2, float b2) {
+	
 	if (nbrubandef > 255) return;
 
 	trubandef[nbrubandef].first = -1;
@@ -1308,11 +1305,9 @@ int CRuban::GetFreeRuban()
 	return -1;
 }
 
-void CRuban::AddRuban(int * f, int dec)
-{
-	int	num;
-
-	num = GetFreeRuban();
+void CRuban::AddRuban(int * f, int dec) {
+	
+	int num = GetFreeRuban();
 
 	if (num >= 0)
 	{
@@ -1359,7 +1354,7 @@ void CRuban::AddRuban(int * f, int dec)
 
 void CRuban::Update() {
 	
-	int	nb, num;
+	int nb, num;
 
 	if (ARXPausedTimer) return;
 
@@ -1373,20 +1368,21 @@ void CRuban::Update() {
 	}
 }
 
-void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
-{
+void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b,
+                       float r2, float g2, float b2) {
+	
 	int numsuiv;
 
-	float	dsize = size / (float)(dec + 1);
-	int		r1 = ((int)(r * 255.f)) << 16;
-	int		g1 = ((int)(g * 255.f)) << 16;
-	int		b1 = ((int)(b * 255.f)) << 16;
-	int		rr2 = ((int)(r2 * 255.f)) << 16;
-	int		gg2 = ((int)(g2 * 255.f)) << 16;
-	int		bb2 = ((int)(b2 * 255.f)) << 16;
-	int		dr = (rr2 - r1) / dec;
-	int		dg = (gg2 - g1) / dec;
-	int		db = (bb2 - b1) / dec;
+	float dsize = size / (float)(dec + 1);
+	int r1 = ((int)(r * 255.f)) << 16;
+	int g1 = ((int)(g * 255.f)) << 16;
+	int b1 = ((int)(b * 255.f)) << 16;
+	int rr2 = ((int)(r2 * 255.f)) << 16;
+	int gg2 = ((int)(g2 * 255.f)) << 16;
+	int bb2 = ((int)(b2 * 255.f)) << 16;
+	int dr = (rr2 - r1) / dec;
+	int dg = (gg2 - g1) / dec;
+	int db = (bb2 - b1) / dec;
 
 	for (;;)
 	{
@@ -1394,7 +1390,9 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 
 		if ((num >= 0) && (numsuiv >= 0))
 		{
-			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size, Color(r1 >> 16, g1 >> 16, b1 >> 16, 0), Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
+			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size,
+			               Color(r1 >> 16, g1 >> 16, b1 >> 16, 0),
+			               Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;
@@ -1422,7 +1420,7 @@ float CRuban::Render()
 		                trubandef[i].size,
 		                trubandef[i].dec,
 		                trubandef[i].r, trubandef[i].g, trubandef[i].b,
-		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
+		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2);
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1435,18 +1433,19 @@ extern bool IsValidPos3(Vec3f * pos);
 
 extern EERIEPOLY * LAST_COLLISION_POLY;
 extern long CUR_COLLISION_MATERIAL;
- 
+
 extern float VELOCITY_THRESHOLD;
 
-void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant, float PHYSICS_Damp)
-{
+void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
+                     float PHYSICS_Damp) {
+	
 	Vec3f deltaP, deltaV, springforce;
 	PHYSVERT * pv_k = &phys[k];
 	PHYSVERT * pv_l = &phys[l];
 	float Dterm, Hterm;
 
 	float restlength = dist(pv_k->initpos, pv_l->initpos);
-	//Computes Spring Magnitude
+	// Computes Spring Magnitude
 	deltaP = pv_k->pos - pv_l->pos;
 	float dist = deltaP.length(); // Magnitude of delta
 	float divdist = 1.f / dist;
@@ -1481,7 +1480,7 @@ void ComputeForces(PHYSVERT * phys, long nb) {
 		// Apply Gravity
 		if(pv->mass > 0.f) {
 			
-			//need to be precomputed...
+			// need to be precomputed...
 			if(lastmass != pv->mass) {
 				div = 1.f / pv->mass;
 				lastmass = pv->mass;
@@ -1506,9 +1505,8 @@ void ComputeForces(PHYSVERT * phys, long nb) {
 
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
 
-// Function:	RK4Integrate
-// 	Calculate new Positions and Velocities given a deltatime
-// 	DeltaTime that has passed since last iteration
+//! Calculate new Positions and Velocities given a deltatime
+//! @param DeltaTime that has passed since last iteration
 void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime) {
 	
 	PHYSVERT * source, * target, * accum1, * accum2, * accum3, * accum4;
@@ -1557,9 +1555,12 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime) {
 		accum4 = &m_TempSys[4][kk];
 		
 		// determine the new velocity for the particle using rk4 formula
-		target->velocity = source->velocity + ((accum1->force + ((accum2->force + accum3->force) * 2.0f) + accum4->force) * sixthDeltaT);
+		Vec3f dv = accum1->force + ((accum2->force + accum3->force) * 2.f) + accum4->force;
+		target->velocity = source->velocity + (dv * sixthDeltaT);
 		// determine the new position for the particle using rk4 formula
-		target->pos = source->pos + ((accum1->velocity + ((accum2->velocity + accum3->velocity) * 2.0f) + accum4->velocity) * sixthDeltaT * 1.2f);
+		Vec3f dp = accum1->velocity + ((accum2->velocity + accum3->velocity) * 2.f)
+		           + accum4->velocity;
+		target->pos = source->pos + (dp * sixthDeltaT * 1.2f);
 	}
 	
 }
@@ -1665,7 +1666,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
 
-	float rad = obj->pbox->radius; 
+	float rad = obj->pbox->radius;
 
 	for (pz = iz; pz <= az; pz++)
 		for (px = ix; px <= ax; px++)
@@ -1678,9 +1679,9 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 				ep = &eg->polydata[k];
 
 				if ( (ep->area > 190.f)
-				    &&	(!(ep->type & (POLY_WATER)))
-				    &&	(!(ep->type & (POLY_TRANS)))
-				    &&	(!(ep->type & (POLY_NOCOL)))
+				    && (!(ep->type & (POLY_WATER)))
+				    && (!(ep->type & (POLY_TRANS)))
+				    && (!(ep->type & (POLY_NOCOL)))
 				)
 				{
 					if (fartherThan(ep->center, obj->pbox->vert[0].pos, rad + 75.f))
@@ -1787,10 +1788,9 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		if (pv->velocity.z > VELOCITY_THRESHOLD) pv->velocity.z = VELOCITY_THRESHOLD;
 		else if (pv->velocity.z < -VELOCITY_THRESHOLD) pv->velocity.z = -VELOCITY_THRESHOLD;
 	}
-
- 
+	
 	CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-
+	
 	RK4Integrate(obj, framediff);
 
 	EERIE_SPHERE sphere;
@@ -1811,13 +1811,15 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 	}
 
 	if ((!_IsFULLObjectVertexInValidPosition(obj))
-	    ||	ARX_INTERACTIVE_CheckFULLCollision(obj, source)
+	    || ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	    || colidd
 	    || (IsObjectInField(obj))
 	)
 	{
 		colidd = 1;
-		float power = (EEfabs(obj->pbox->vert[0].velocity.x) + EEfabs(obj->pbox->vert[0].velocity.y) + EEfabs(obj->pbox->vert[0].velocity.z)) * ( 1.0f / 100 );
+		float power = (EEfabs(obj->pbox->vert[0].velocity.x)
+		               + EEfabs(obj->pbox->vert[0].velocity.y)
+		               + EEfabs(obj->pbox->vert[0].velocity.z)) * .01f;
 
 
 		if (ValidIONum(source) && (inter.iobj[source]->ioflags & IO_BODY_CHUNK))
@@ -1871,12 +1873,12 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 			obj->pbox->stopcount = 0;
 	}
 
-	return true;//ret;
+	return true;
 }
 
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source) {
 	
-	VELOCITY_THRESHOLD = 400.f; 
+	VELOCITY_THRESHOLD = 400.f;
 	long ret = 0;
 
 	if ((!obj) || (!obj->pbox)) return ret;
@@ -1893,8 +1895,8 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 		pv->temp = pv->pos;
 	}
 
-	float timing = obj->pbox->storedtiming + framediff * rubber * 0.0055f; 
-	float t_threshold = 0.18f; 
+	float timing = obj->pbox->storedtiming + framediff * rubber * 0.0055f;
+	float t_threshold = 0.18f;
 
 	if (timing < t_threshold)
 	{
@@ -1904,22 +1906,21 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	else
 	{
 
-		while (timing >= t_threshold) 
-		{
+		while(timing >= t_threshold) {
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
 			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), source))
 				ret = 1;
 
-			timing -= t_threshold; 
+			timing -= t_threshold;
 		}
 
 		obj->pbox->storedtiming = timing;
 	}
 
 
-	if (obj->pbox->stopcount < 16) return ret; 
+	if (obj->pbox->stopcount < 16) return ret;
 
 	obj->pbox->active = 2;
 	obj->pbox->stopcount = 0;
@@ -1927,7 +1928,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	if (ValidIONum(source))
 	{
 		inter.iobj[source]->soundcount = 0;
-		inter.iobj[source]->soundtime = ARXTimeUL() + 2000; 
+		inter.iobj[source]->soundtime = ARXTimeUL() + 2000;
 	}
 
 	return ret;
@@ -1997,7 +1998,6 @@ void ARX_PrepareBackgroundNRMLs()
 
 							for (long kr = 0; kr < eg2->nbpoly; kr++)
 							{
-								//	continue;
 								ep2 = &eg2->polydata[kr];
 
 								if (ep2->type & POLY_QUAD) nbvert2 = 4;
@@ -2008,8 +2008,8 @@ void ARX_PrepareBackgroundNRMLs()
 									for (k2 = 0; k2 < nbvert2; k2++)
 									{
 										if ((EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
+										        && (EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
+										        && (EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
 										{
 											if(k2 == 3) {
 												
@@ -2075,7 +2075,8 @@ void ARX_PrepareBackgroundNRMLs()
 
 }
 
-void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flags, Anglef * angle) {
+void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos,
+                                    Vec3f * vect, long flags, Anglef * angle) {
 	io->GameFlags |= GFLAG_NO_PHYS_IO_COL;
 	EERIE_PHYSICS_BOX_Launch(obj, pos, vect, flags, angle);
 }

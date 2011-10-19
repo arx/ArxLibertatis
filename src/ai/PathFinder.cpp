@@ -74,7 +74,8 @@ class PathFinder::Node {
 	
 public:
 	
-	Node(long _id, const Node * _parent, float _distance, float _remaining) : id(_id), parent(_parent), cost(_distance + _remaining), distance(_distance) { }
+	Node(long _id, const Node * _parent, float _distance, float _remaining)
+		: id(_id), parent(_parent), cost(_distance + _remaining), distance(_distance) { }
 	
 	inline NodeId getId() const {
 		return id;
@@ -188,9 +189,8 @@ public:
 
 PathFinder::PathFinder(size_t map_size, const _ANCHOR_DATA * map_data,
                        size_t slight_count, const EERIE_LIGHT * const * slight_list)
- : radius(RADIUS_DEFAULT), height(HEIGHT_DEFAULT), heuristic(HEURISTIC_DEFAULT),
-   map_s(map_size), map_d(map_data), slight_c(slight_count), slight_l(slight_list) {
-}
+	: radius(RADIUS_DEFAULT), height(HEIGHT_DEFAULT), heuristic(HEURISTIC_DEFAULT),
+	  map_s(map_size), map_d(map_data), slight_c(slight_count), slight_l(slight_list) { }
 
 void PathFinder::setHeuristic(float _heuristic) {
 	if(_heuristic >= HEURISTIC_MAX) {
@@ -214,7 +214,7 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 		return true;
 	}
 	
-	//Create start node and put it on open list
+	// Create start node and put it on open list
 	Node * node = new Node(from, NULL, 0.0f, 0.0f);
 	if(!node) {
 		return false;
@@ -241,7 +241,8 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 			
 			NodeId cid = map_d[nid].linked[i];
 			
-			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > height || map_d[cid].radius < radius) {
+			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > height
+			   || map_d[cid].radius < radius) {
 				continue;
 			}
 			
@@ -269,7 +270,8 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 	return false;
 }
 
-bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result & rlist, bool stealth) const {
+bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result & rlist,
+                      bool stealth) const {
 	
 	static const float FLEE_DISTANCE_COST = 130.0F;
 	
@@ -278,7 +280,7 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 		return true;
 	}
 	
-	//Create start node and put it on open list
+	// Create start node and put it on open list
 	Node * node = new Node(from, NULL, 0.0f, 0.0f);
 	if(!node) {
 		return false;
@@ -305,7 +307,8 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 			
 			long cid = map_d[nid].linked[i];
 			
-			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > height || map_d[cid].radius < radius) {
+			if((map_d[cid].flags & ANCHOR_FLAG_BLOCKED) || map_d[cid].height > height
+			   || map_d[cid].radius < radius) {
 				continue;
 			}
 			
@@ -404,7 +407,8 @@ PathFinder::NodeId PathFinder::getNearestNode(const Vec3f & pos) const {
 	return best;
 }
 
-bool PathFinder::lookFor(NodeId from, const Vec3f & pos, float radius, Result & rlist, bool stealth) const {
+bool PathFinder::lookFor(NodeId from, const Vec3f & pos, float radius, Result & rlist,
+                         bool stealth) const {
 	
 	if(radius <= MIN_RADIUS) {
 		rlist.push_back(from);
@@ -478,7 +482,7 @@ float PathFinder::getIlluminationCost(const Vec3f & pos) const {
 			
 			float l_cost = STEALTH_LIGHT_COST;
 			
-			l_cost *= light.intensity * (light.rgb.r + light.rgb.g + light.rgb.b) * ( 1.0f / 3 );
+			l_cost *= light.intensity * (light.rgb.r + light.rgb.g + light.rgb.b) * (1.0f / 3);
 			
 			if(dist > light.fallstart) {
 				l_cost *= ((dist - light.fallstart) / (light.fallend - light.fallstart));
