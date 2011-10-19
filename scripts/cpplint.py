@@ -3,6 +3,13 @@
 # Note: this file has been adjusted to fit the Arx Libertatis:
 #  - adjusted include guard style
 #  - hacked so that build/include doesn't complain about #include "Configure.h" lines
+#  - Allow lines that are only whitespace.
+#  - Remove 80-char line limit, keep 100 char limit.
+#  - No space after if et al.
+#  - Warn if a tab follows a non-tab character.
+#  - Don't require two spaces between code and comments
+#  - Warn if spaces are used for identation.
+#  - Allow //! comments
 #
 # Copyright (c) 2009 Google Inc. All rights reserved.
 #
@@ -193,6 +200,7 @@ _ERROR_CATEGORIES = [
   'runtime/string',
   'runtime/threadsafe_fn',
   'runtime/virtual',
+  'whitespace/align_tab'
   'whitespace/blank_line',
   'whitespace/braces',
   'whitespace/comma',
@@ -200,6 +208,7 @@ _ERROR_CATEGORIES = [
   'whitespace/end_of_line',
   'whitespace/ending_newline',
   'whitespace/indent',
+  'whitespace/ident_space',
   'whitespace/labels',
   'whitespace/line_length',
   'whitespace/newline',
@@ -1729,13 +1738,13 @@ def CheckSpacing(filename, clean_lines, linenum, error):
     if (line.count('"', 0, commentpos) -
         line.count('\\"', 0, commentpos)) % 2 == 0:   # not in quotes
       # Allow one space for new scopes, two spaces otherwise:
-      if (not Match(r'^\s*{ //', line) and
-          ((commentpos >= 1 and
-            line[commentpos-1] not in string.whitespace) or
-           (commentpos >= 2 and
-            line[commentpos-2] not in string.whitespace))):
-        error(filename, linenum, 'whitespace/comments', 2,
-              'At least two spaces is best between code and comments')
+      #if (not Match(r'^\s*{ //', line) and
+      #    ((commentpos >= 1 and
+      #      line[commentpos-1] not in string.whitespace) or
+      #     (commentpos >= 2 and
+      #      line[commentpos-2] not in string.whitespace))):
+      #  error(filename, linenum, 'whitespace/comments', 2,
+      #        'At least two spaces is best between code and comments')
       # There should always be a space between the // and the comment
       commentend = commentpos + 2
       if commentend < len(line) and not line[commentend] == ' ':
@@ -1748,6 +1757,7 @@ def CheckSpacing(filename, clean_lines, linenum, error):
         # //////// Header comment
         match = (Search(r'[=/-]{4,}\s*$', line[commentend:]) or
                  Search(r'^/$', line[commentend:]) or
+                 Search(r'^! ', line[commentend:]) or
                  Search(r'^/+ ', line[commentend:]))
         if not match:
           error(filename, linenum, 'whitespace/comments', 4,
@@ -1800,10 +1810,10 @@ def CheckSpacing(filename, clean_lines, linenum, error):
           'Extra space for operator %s' % match.group(1))
 
   # A pet peeve of mine: no spaces after an if, while, switch, or for
-  match = Search(r' (if\(|for\(|while\(|switch\()', line)
+  match = Search(r' (if\s\(|for\s\(|while\s\(|switch\s\()', line)
   if match:
     error(filename, linenum, 'whitespace/parens', 5,
-          'Missing space before ( in %s' % match.group(1))
+          'Extra space before ( in %s' % match.group(1))
 
   # For if/for/while/switch, the left and right parens should be
   # consistent about how many spaces are inside the parens, and
@@ -2077,6 +2087,36 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
     error(filename, linenum, 'whitespace/tab', 1,
           'Tab found; better to use spaces')
 
+  if linenum > 0:
+    last_line  = raw_lines[linenum - 1]
+    lasttabs = 0
+    while lasttabs < len(last_line) and last_line[lasttabs] == '\t':
+      lasttabs += 1
+    for char in line:
+      if not char.isspace():
+        break
+      if lasttabs == 0 and char != '\t':
+        break
+      if lasttabs == -1:
+        if char == '\t' and last_line != '':
+          error(filename, linenum, 'whitespace/align_tab', 4,
+                'Too much indentation or tab used as alignment.')
+        break
+      if lasttabs > 0 and char != '\t':
+        error(filename, linenum, 'whitespace/ident_space', 4,
+                'Space used for identation, use tabs instead.')
+        break
+      lasttabs -= 1
+
+  foundntab = 0
+  for char in line:
+    if char != '\t':
+      foundntab = 1
+    if foundntab and char == '\t':
+      error(filename, linenum, 'whitespace/align_tab', 4,
+                'Tab used for alignment, use spaces instead.')
+      break
+
   # One or three blank spaces at the beginning of the line is weird; it's
   # hard to reconcile that with 2-space indents.
   # NOTE: here are the conditions rob pike used for his tests.  Mine aren't
@@ -2089,27 +2129,10 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
   # if(match($0, " <<")) complain = 0;
   # if(match(prev, " +for \\(")) complain = 0;
   # if(prevodd && match(prevprev, " +for \\(")) complain = 0;
-  initial_spaces = 0
   cleansed_line = clean_lines.elided[linenum]
-  while initial_spaces < len(line) and line[initial_spaces] == ' ':
-    initial_spaces += 1
-  if line and line[-1].isspace():
+  if line and line[-1].isspace() and not line.isspace():
     error(filename, linenum, 'whitespace/end_of_line', 4,
           'Line ends in whitespace.  Consider deleting these extra spaces.')
-  # There are certain situations we allow one space, notably for labels
-  elif ((initial_spaces == 1 or initial_spaces == 3) and
-        not Match(r'\s*\w+\s*\w*\s*:\s*$', cleansed_line)):
-    error(filename, linenum, 'whitespace/indent', 3,
-          'Weird number of spaces at line-start.  '
-          'Are you using a 2-space indent?')
-  # Labels should always be indented at least one space.
-  elif not initial_spaces and line[:2] != '//' and Search(r'[^:]:\s*$',
-                                                          line):
-    error(filename, linenum, 'whitespace/labels', 4,
-          'Labels should always be indented at least one space.  '
-          'If this is a member-initializer list in a constructor or '
-          'the base class list in a class definition, the colon should '
-          'be on the following line.')
 
 
   # Check if the line is a header guard.
@@ -2131,9 +2154,6 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
     if line_width > 100:
       error(filename, linenum, 'whitespace/line_length', 4,
             'Lines should very rarely be longer than 100 characters')
-    elif line_width > 80:
-      error(filename, linenum, 'whitespace/line_length', 2,
-            'Lines should be <= 80 characters long')
 
   if (cleansed_line.count(';') > 1 and
       # for loops are allowed two ;'s (and may run over two lines).

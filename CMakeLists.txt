@@ -708,9 +708,64 @@ if(PYTHONINTERP_FOUND)
 	# Too many false positives and not very helpful error messages.
 	set(STYLE_FILTER ${STYLE_FILTER},-build/include_order)
 	
-	# TODO consider enabling more checks
-	set(STYLE_FILTER ${STYLE_FILTER},-readability/streams,-whitespace,-runtime/int,-readability/todo,-runtime/references,-runtime/string,-runtime/printf,-readability/fn_size,-runtime/threadsafe_fn)
+	# No thanks.
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/streams)
+	
+	# Ugh!
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/tab)
+	
+	# Yes it is!
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/blank_line)
+	
+	# Suggessts excessive indentation.
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/labels)
+	
+	# Why?
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/todo)
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/todo)
+	
+	# "For a static/global string constant, use a C style string"
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/string)
+	
+	# TODO consider enabling these and fixing the warnings
+	
+	# Very noisy and perhaps a matter of taste.
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/braces)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
+	
+	# Complains about using short, long, etc.
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/int)
+	
+	# Complains about non-const references as parameters
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/references)
+	
+	# TODO enable these!
+	
+	set(RELAXED_STYLE_FILTER ${STYLE_FILTER})
+	
+	# Very noisy but should be fixed.
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/operators)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/comma)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/comments)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/end_of_line)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/align_tab)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/line_length)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/semicolon)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/ident_space)
+	
+	# Unsafe functions.
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-runtime/printf)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-runtime/threadsafe_fn)
+	
+	# Very much known...
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-readability/fn_size)
+	
 	add_custom_target(style
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
+	)
+	
+	add_custom_target(strict-style
 		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
 	)
 endif()
