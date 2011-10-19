@@ -49,7 +49,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_GRAPHICSUTILITY_H
 #define ARX_GRAPHICS_GRAPHICSUTILITY_H
 
-#include "graphics/GraphicsTypes.h"
+#include <stddef.h>
+
+#include "graphics/BaseGraphicsTypes.h"
+#include "math/MathFwd.h"
 
 //-----------------------------------------------------------------------------
 // Miscellaneous helper functions

@@ -20,7 +20,6 @@
 #include "io/PakEntry.h"
 
 #include <cstdlib>
-#include <cstring>
 #include <algorithm>
 
 #include "io/log/Logger.h"

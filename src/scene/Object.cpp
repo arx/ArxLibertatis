@@ -47,12 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include <cstdio>
-#include <climits>
 
-#include "animation/AnimationRender.h"
-
-#include "core/Application.h"
-#include "core/Dialog.h"
 #include "core/Core.h"
 
 #include "graphics/GraphicsTypes.h"
@@ -63,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/log/Logger.h"
 
 #include "physics/Clothes.h"

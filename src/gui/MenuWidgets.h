@@ -47,12 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <string>
 
-#include "gui/Text.h"
+#include "graphics/Color.h"
 #include "input/InputKey.h"
 #include "math/Vector2.h"
 #include "math/Rectangle.h"
 
 class TextureContainer;
+class Font;
 
 // Enum for all the buttons in the menu
 enum MenuButton {

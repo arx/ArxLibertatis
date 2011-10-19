@@ -20,8 +20,6 @@
 #ifndef ARX_GRAPHICS_TEXTURE_TEXTURE_H
 #define ARX_GRAPHICS_TEXTURE_TEXTURE_H
 
-#include <vector>
-
 #include "graphics/image/Image.h"
 #include "io/FilePath.h"
 #include "math/Vector2.h"

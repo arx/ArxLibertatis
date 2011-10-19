@@ -48,12 +48,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <map>
 
-
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
 #include "game/Spells.h"
+#include "math/MathFwd.h"
 
 #include "Configure.h"
+
+class TextureContainer;
+struct EERIE_CAMERA;
+struct INTERACTIVE_OBJ;
 
 extern float BOOKDECX;
 extern float BOOKDECY;

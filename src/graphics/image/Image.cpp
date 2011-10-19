@@ -20,7 +20,6 @@
 #include "graphics/image/Image.h"
 
 #include <cstring>
-#include <map>
 #include <il.h>
 
 #include "graphics/Math.h"

@@ -44,12 +44,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 #define ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
 
-#include "graphics/texture/Texture.h" // For Texture2D
+#include <vector>
+
 #include "math/MathFwd.h"
 #include "math/Vector2.h"
 
-class TextureContainer;
-class Cinematic;
+class Texture2D;
+namespace fs { class path; }
 
 // TODO better name
 struct C_INDEXED {

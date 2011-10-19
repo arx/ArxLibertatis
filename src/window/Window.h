@@ -23,7 +23,6 @@
 #include <list>
 #include <string>
 
-#include "platform/Flags.h"
 #include "math/Vector2.h"
 
 class Window {

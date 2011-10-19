@@ -51,10 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "ai/Paths.h"
-#include "ai/PathFinderManager.h"
 
 #include "core/GameTime.h"
-#include "core/Dialog.h"
 #include "core/Core.h"
 
 #include "game/Damage.h"
@@ -66,10 +64,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 
 #include "gui/MiniMap.h"
-#include "gui/Speech.h"
+#include "gui/Interface.h"
 
 #include "graphics/Math.h"
-#include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
@@ -77,13 +74,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
 
-#include "physics/CollisionShapes.h"
-
 #include "platform/String.h"
 
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
-#include "scene/Object.h"
 #include "scene/LoadLevel.h"
 #include "scene/SaveFormat.h"
 #include "scene/Light.h"

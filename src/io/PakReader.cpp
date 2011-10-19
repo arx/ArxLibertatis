@@ -28,7 +28,6 @@
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/FileStream.h"
-#include "platform/String.h"
 
 using std::min;
 using std::strlen;

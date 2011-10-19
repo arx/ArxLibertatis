@@ -19,9 +19,9 @@
 
 #include "io/IniSection.h"
 
+#include <ctype.h>
 #include <sstream>
 #include <algorithm>
-#include <iostream>
 
 #include "io/log/Logger.h"
 

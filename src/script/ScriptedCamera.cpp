@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "script/ScriptedControl.h"
+#include "script/ScriptedCamera.h"
 
 #include "ai/Paths.h"
 #include "core/Core.h"
@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
-#include "platform/String.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 

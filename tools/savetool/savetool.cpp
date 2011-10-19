@@ -17,13 +17,11 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cstdlib>
 #include <iostream>
 
 #include "io/SaveBlock.h"
 #include "io/Filesystem.h"
 #include "io/log/Logger.h"
-#include "platform/Platform.h"
 
 #include "savetool/SaveFix.h"
 #include "savetool/SaveView.h"

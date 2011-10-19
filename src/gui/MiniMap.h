@@ -47,7 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_MINIMAP_H
 #define ARX_GUI_MINIMAP_H
 
-#include "gui/Interface.h"
+#include <string>
+#include <vector>
+
+class TextureContainer;
 
 #define MINIMAP_MAX_X 50
 #define MINIMAP_MAX_Z 50
@@ -92,8 +95,8 @@ struct MAPMARKER_DATA {
 
 extern std::vector<MAPMARKER_DATA> Mapmarkers;
 
-void ARX_MAPMARKER_Remove( const std::string& temp);
-void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp);
+void ARX_MAPMARKER_Remove(const std::string & temp);
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string & temp);
 void ARX_MAPMARKER_Init();
 
 #endif // ARX_GUI_MINIMAP_H

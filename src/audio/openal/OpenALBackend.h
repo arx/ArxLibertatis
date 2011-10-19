@@ -35,9 +35,7 @@
 
 namespace audio {
 
-class Environment;
 class OpenALSource;
-class Source;
 
 class OpenALBackend : public Backend {
 	

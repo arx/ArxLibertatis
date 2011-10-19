@@ -44,8 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DATA_MESHMANIPULATION_H
 #define ARX_GRAPHICS_DATA_MESHMANIPULATION_H
 
-#include <string>
-
 #include "platform/Flags.h"
 #include "io/FilePath.h"
 

@@ -44,7 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicLoad.h"
 
 #include <stddef.h>
-#include <climits>
 #include <cstring>
 #include <cstdlib>
 

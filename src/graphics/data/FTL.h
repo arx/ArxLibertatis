@@ -45,8 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DATA_FTL_H
 #define ARX_GRAPHICS_DATA_FTL_H
 
-#include <string>
-
 #include "Configure.h"
 
 struct EERIE_3DOBJ;

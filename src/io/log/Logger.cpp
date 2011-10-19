@@ -30,7 +30,6 @@
 #include "io/log/ConsoleLogger.h"
 #include "io/log/LogBackend.h"
 #include "io/log/MsvcLogger.h"
-#include "platform/Platform.h"
 #include "platform/Lock.h"
 
 #include "Configure.h"

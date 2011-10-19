@@ -23,8 +23,6 @@
 #include "audio/AudioTypes.h"
 #include "io/FilePath.h"
 
-class Cinematic;
-
 #define MAX_SOUND 256
 
 struct CinematicSound {

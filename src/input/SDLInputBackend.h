@@ -20,8 +20,10 @@
 #ifndef ARX_INPUT_SDLINPUTBACKEND_H
 #define ARX_INPUT_SDLINPUTBACKEND_H
 
-#include "input/Input.h"
 #include "input/InputBackend.h"
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
+#include "math/Vector2.h"
 
 union SDL_Event;
 

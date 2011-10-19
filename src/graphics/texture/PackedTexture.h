@@ -22,7 +22,6 @@
 
 #include <vector>
 
-#include "graphics/Math.h"
 #include "graphics/image/Image.h"
 #include "math/Rectangle.h"
 

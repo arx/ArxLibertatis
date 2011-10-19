@@ -19,8 +19,6 @@
 
 #include "platform/Thread.h"
 
-#include "platform/Platform.h"
-
 #if defined(HAVE_PTHREADS)
 
 #include <sched.h>
@@ -83,6 +81,8 @@ void Thread::exit() {
 }
 
 #elif defined(HAVE_WINAPI)
+
+#include "platform/Platform.h"
 
 Thread::Thread() {
 	thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);

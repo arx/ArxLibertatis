@@ -44,12 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/SpellEffects.h"
 
-#include <climits>
-
 #include "animation/AnimationRender.h"
-#include "core/Core.h"
 #include "game/Player.h"
-#include "graphics/Draw.h"
 #include "graphics/Math.h"
 
 

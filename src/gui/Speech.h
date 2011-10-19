@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_SPEECH_H
 #define ARX_GUI_SPEECH_H
 
+#include <string>
+
 #include "audio/AudioTypes.h"
 #include "math/Angle.h"
 

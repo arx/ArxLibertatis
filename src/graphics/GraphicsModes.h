@@ -44,7 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_GRAPHICSMODES_H
 #define ARX_GRAPHICS_GRAPHICSMODES_H
 
-#include "graphics/GraphicsTypes.h"
+#include "graphics/Color.h"
 #include "platform/Flags.h"
 
 enum GMODFlag {

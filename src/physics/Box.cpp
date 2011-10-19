@@ -46,12 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Box.h"
 
-#include "ai/Paths.h"
-#include "core/Core.h"
-#include "game/NPC.h"
 #include "graphics/Math.h"
-#include "physics/Collisions.h"
-#include "scene/Interactive.h"
 
 using std::min;
 using std::max;

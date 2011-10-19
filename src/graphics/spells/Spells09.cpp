@@ -46,7 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
-#include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Spells.h"
@@ -63,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 #include "scene/Object.h"
-#include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 
 CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(Color3f::white), fColorRays2(Color3f::black) {

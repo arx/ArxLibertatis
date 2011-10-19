@@ -43,22 +43,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/CinematicTexture.h"
 
-#include <iomanip>
-#include <climits>
-#include <sstream>
+#include <stddef.h>
+#include <string>
 #include <cstdlib>
-
-#include "animation/Cinematic.h"
 
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
-#include "graphics/data/TextureContainer.h"
+#include "graphics/texture/Texture.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/log/Logger.h"
-
-#include "platform/String.h"
 
 const int	MaxW = 256;
 const int	MaxH = 256;

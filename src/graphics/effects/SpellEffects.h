@@ -47,10 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H
 #define ARX_GRAPHICS_EFFECTS_SPELLEFFECTS_H
 
-const int BEZIERPrecision = 32;
+#include "graphics/Color.h"
+#include "graphics/Math.h"
+#include "math/MathFwd.h"
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/Draw.h"
+struct TexturedVertex;
+
+const int BEZIERPrecision = 32;
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out);
 

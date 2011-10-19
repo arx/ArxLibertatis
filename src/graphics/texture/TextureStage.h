@@ -20,7 +20,7 @@
 #ifndef ARX_GRAPHICS_TEXTURE_TEXTURESTAGE_H
 #define ARX_GRAPHICS_TEXTURE_TEXTURESTAGE_H
 
-#include "graphics/texture/Texture.h"
+class Texture;
 
 class TextureStage {
 	

@@ -47,15 +47,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCRIPT_SCRIPT_H
 #define ARX_SCRIPT_SCRIPT_H
 
+#include <stddef.h>
 #include <string>
 
 #include "platform/Flags.h"
 
-#include "Configure.h"
-
 class PakFile;
 struct INTERACTIVE_OBJ;
-struct ANIM_HANDLE;
 
 const size_t MAX_SHORTCUT = 80;
 const size_t MAX_SCRIPTTIMERS = 5;

@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
-#include "ai/Paths.h"
-
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -59,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 
 #include "gui/Interface.h"
-#include "gui/MenuWidgets.h"
-#include "gui/MenuPublic.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
@@ -70,11 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 
 #include "physics/Collisions.h"
-#include "physics/Box.h"
 
 #include "scene/GameSound.h"
-#include "scene/Scene.h"
-#include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 

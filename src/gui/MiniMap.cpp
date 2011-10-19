@@ -55,20 +55,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 
 #include "gui/Text.h"
+#include "gui/Interface.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
+#include "graphics/texture/Texture.h"
 
 #include "io/PakReader.h"
 #include "io/log/Logger.h"
-#include "io/FilePath.h"
 
-#include "physics/Box.h"
-
-#include "scene/Light.h"
-#include "scene/Object.h"
 #include "scene/Interactive.h"
 
 using std::min;

@@ -51,18 +51,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/Player.h"
 
-#include "graphics/Math.h"
-#include "graphics/effects/SpellEffects.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/ParticleSystem.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
-
-extern ParticleManager * pParticleManager;
 
 CHeal::CHeal()
 {

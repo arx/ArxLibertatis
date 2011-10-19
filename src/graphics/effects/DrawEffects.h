@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
 #define ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
 
-#include "graphics/GraphicsTypes.h"
+class TextureContainer;
 
 extern TextureContainer * lightsource_tc;
 

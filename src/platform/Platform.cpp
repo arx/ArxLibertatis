@@ -20,12 +20,9 @@
 #include "platform/Platform.h"
 
 #include <stdio.h>
-#include <cstdio>
-#include <cstdarg>
+#include <stdarg.h>
 
 #include "io/log/Logger.h"
-
-using std::va_list;
 
 void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg, ...) {
 	

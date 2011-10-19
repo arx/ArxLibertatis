@@ -44,18 +44,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
+#include <stddef.h>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
-
-#include "ai/Paths.h"
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <set>
+#include <utility>
+#include <vector>
 
 #include "animation/Animation.h"
-#include "animation/Cinematic.h"
 
+#include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
-#include "core/Dialog.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
 #include "core/Core.h"
@@ -68,25 +73,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 
 #include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/DrawEffects.h"
-#include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
-#include "input/Input.h"
+#include "gui/Text.h"
 
-#include "io/IO.h"
+#include "input/Input.h"
+#include "input/Keyboard.h"
+
 #include "io/FilePath.h"
-#include "io/log/Logger.h"
+
+#include "math/Angle.h"
+#include "math/Rectangle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
@@ -94,14 +108,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 
 #include "scene/LinkedObject.h"
-#include "scene/Object.h"
 #include "scene/GameSound.h"
-#include "scene/ChangeLevel.h"
-#include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
-#include "Configure.h"
+#include "script/Script.h"
+
+#include "window/RenderWindow.h"
 
 using std::min;
 using std::max;
@@ -178,7 +191,6 @@ extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
-extern Cinematic *ControlCinematique;
 extern bool bGToggleCombatModeWithKey;
 extern long PlayerWeaponBlocked;
 extern unsigned char ucFlick;

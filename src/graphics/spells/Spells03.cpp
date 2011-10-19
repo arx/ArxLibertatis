@@ -46,29 +46,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <climits>
 
-#include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Damage.h"
 #include "game/Player.h"
 
-#include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/Particle.h"
-#include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/spells/Spells05.h"
 
-#include "scene/Light.h"
 #include "scene/Object.h"
 #include "scene/Interactive.h"
-#include "scene/LoadLevel.h"
-
-extern ParticleManager * pParticleManager;
 
 //-----------------------------------------------------------------------------
 CFireBall::CFireBall() : CSpellFx()

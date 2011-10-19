@@ -23,8 +23,6 @@
 #include <sstream>
 #include <string>
 
-#include "platform/Platform.h"
-
 #ifdef _DEBUG
 //! Log a Debug message. Arguments are only evaluated if their results will be used.
 #define LogDebug(...)    \
@@ -55,12 +53,7 @@
 //! Test if the Error log level is enabled for the current file.
 #define LogErrorEnabled   ::Logger::isEnabled(__FILE__, ::Logger::Error)
 
-namespace logger {
-
-class Backend;
-struct Source;
-
-} // namespace logger
+namespace logger { class Backend; }
 
 /*!
  * Logger class that allows longging via the stream operator.

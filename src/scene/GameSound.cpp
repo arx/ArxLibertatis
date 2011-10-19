@@ -53,21 +53,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Audio.h"
 
-#include "core/Application.h"
 #include "core/Config.h"
 
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Inventory.h"
 
-#include "gui/MenuWidgets.h"
-
 #include "graphics/Math.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/IniReader.h"
 #include "io/log/Logger.h"
 
@@ -76,8 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Thread.h"
 
 #include "scene/Interactive.h"
-
-#include "script/Script.h"
 
 using std::map;
 using std::string;

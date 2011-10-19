@@ -62,8 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
-#include "gui/MenuWidgets.h"
-
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/VertexBuffer.h"
@@ -81,11 +79,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "physics/Anchors.h"
-#include "physics/Physics.h"
 
 #include "scene/Scene.h"
 #include "scene/Light.h"
-#include "scene/Object.h"
 #include "scene/Interactive.h"
 
 #include "platform/String.h"

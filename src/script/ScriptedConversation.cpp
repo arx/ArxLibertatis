@@ -41,23 +41,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "script/ScriptedControl.h"
+#include "script/ScriptedConversation.h"
 
 #include <sstream>
 
-#include "ai/Paths.h"
-#include "core/Core.h"
-#include "core/GameTime.h"
 #include "core/Localisation.h"
 #include "graphics/Math.h"
-#include "graphics/GraphicsModes.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
-#include "physics/Attractors.h"
-#include "physics/Collisions.h"
-#include "io/PakReader.h"
 #include "io/FilePath.h"
-#include "platform/String.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"

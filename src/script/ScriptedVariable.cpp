@@ -43,16 +43,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedVariable.h"
 
-#include "ai/Paths.h"
-#include "core/GameTime.h"
-#include "game/Inventory.h"
-#include "graphics/Math.h"
-#include "platform/String.h"
-#include "scene/Interactive.h"
+#include <cstring>
+
+#include "graphics/data/Mesh.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
 
 using std::string;
+using std::memcpy;
 
 namespace script {
 

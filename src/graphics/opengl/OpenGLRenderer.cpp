@@ -19,11 +19,7 @@
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
-#include <cstdio>
-
 #include "core/Application.h"
-#include "graphics/Math.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"

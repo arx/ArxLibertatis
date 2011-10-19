@@ -20,8 +20,9 @@
 #ifndef ARX_IO_FILESYSTEM_H
 #define ARX_IO_FILESYSTEM_H
 
-#include <cstddef>
+#include <stddef.h>
 #include <ctime>
+#include <string>
 
 #include "platform/Platform.h"
 

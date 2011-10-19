@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_DATA_FTLFORMAT_H
 #define ARX_GRAPHICS_DATA_FTLFORMAT_H
 
+#include <cstring>
+
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
 #include "platform/String.h"

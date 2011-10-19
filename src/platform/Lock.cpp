@@ -23,8 +23,6 @@
 
 #if defined(HAVE_PTHREADS)
 
-#include <errno.h>
-
 Lock::Lock() : locked(false) {
 	const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
 	mutex = mutex_init;

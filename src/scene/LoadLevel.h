@@ -47,16 +47,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_LOADLEVEL_H
 #define ARX_SCENE_LOADLEVEL_H
 
-#include <string>
-
 #include "math/MathFwd.h"
 
 struct INTERACTIVE_OBJ;
-struct EERIE_3DOBJ;
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 extern Vec3f loddpos;
 

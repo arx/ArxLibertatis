@@ -48,11 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 #include <sstream>
-#include <cstdio>
 #include <iterator>
 #include <iomanip>
-
-#include <boost/smart_ptr/scoped_array.hpp>
 
 #include "Configure.h"
 
@@ -63,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Unicode.hpp"
 #include "core/Core.h"
 
-#include "game/Equipment.h"
 #include "game/Player.h"
 
 #include "gui/MenuWidgets.h"
@@ -76,10 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/particle/Particle.h"
-#include "graphics/particle/ParticleManager.h"
-#include "graphics/particle/ParticleParams.h"
-#include "graphics/font/Font.h"
 
 #include "input/Input.h"
 
@@ -90,7 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "scene/LoadLevel.h"
-#include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"

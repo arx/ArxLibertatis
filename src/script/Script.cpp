@@ -48,7 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
-#include <iomanip>
 #include <sstream>
 #include <cstdio>
 #include <algorithm>
@@ -56,8 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include "core/GameTime.h"
-#include "core/Localisation.h"
-#include "core/Dialog.h"
 #include "core/Core.h"
 #include "core/Config.h"
 
@@ -72,7 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
 
-#include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/log/Logger.h"
 

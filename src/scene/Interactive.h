@@ -47,9 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_INTERACTIVE_H
 #define ARX_SCENE_INTERACTIVE_H
 
+#include <stddef.h>
 #include <string>
 
-#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/data/MeshManipulation.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
@@ -60,9 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 struct INTERACTIVE_OBJECTS {
 	

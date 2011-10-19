@@ -44,8 +44,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_MENUPUBLIC_H
 #define ARX_GUI_MENUPUBLIC_H
 
-#include "platform/Platform.h"
-
 // Video options
 
 void ARXMenu_Options_Video_SetFogDistance(int fogDistance);

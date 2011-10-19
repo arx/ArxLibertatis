@@ -21,11 +21,8 @@
 #define ARX_GRAPHICS_IMAGE_IMAGE_H
 
 #include "graphics/Color.h"
-#include "platform/Platform.h"
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 class Image {
 	

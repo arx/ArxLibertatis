@@ -19,8 +19,6 @@
 
 #include "graphics/texture/Texture.h"
 
-#include "graphics/Renderer.h"
-
 bool Texture2D::Init(const fs::path & strFileName, TextureFlags newFlags) {
 	
 	mFileName = strFileName;

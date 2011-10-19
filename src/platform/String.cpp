@@ -18,7 +18,6 @@
  */
 
 #include "platform/String.h"
-#include "platform/Platform.h"
 
 #include <cstring>
 #include <algorithm>

@@ -19,8 +19,6 @@
 
 #include "io/IniWriter.h"
 
-#include <iostream>
-
 using std::string;
 using std::endl;
 using std::boolalpha;

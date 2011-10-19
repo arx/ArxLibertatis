@@ -43,14 +43,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptEvent.h"
 
-#include <cstdio>
-
 #include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "io/log/Logger.h"
-
-#include "platform/String.h"
 
 #include "script/ScriptUtils.h"
 #include "script/ScriptedAnimation.h"

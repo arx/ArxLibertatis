@@ -43,13 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/particle/ParticleManager.h"
 
-#include "core/Core.h"
-
-#include "graphics/Draw.h"
-#include "graphics/data/Mesh.h"
-
-#include "graphics/effects/SpellEffects.h"
-#include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/ParticleSystem.h"
 
 using std::list;

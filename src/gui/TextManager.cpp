@@ -43,7 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/TextManager.h"
 
-#include "core/Core.h"
 #include "gui/Text.h"
 #include "graphics/Math.h"
 #include "graphics/font/Font.h"

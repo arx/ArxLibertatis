@@ -52,10 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 
 #include <cstdlib>
+#include <cstring>
 
 #include <boost/static_assert.hpp>
-
-#include "core/Application.h"
 
 #include "graphics/data/FTLFormat.h"
 #include "graphics/data/TextureContainer.h"

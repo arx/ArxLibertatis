@@ -43,32 +43,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MenuPublic.h"
 
-#include <cstdio>
+#include <stddef.h>
 #include <iomanip>
-
-#include "animation/Cinematic.h"
+#include <cstdlib>
+#include <sstream>
+#include <string>
 
 #include "core/Application.h"
 #include "core/Config.h"
-#include "core/Core.h"
-#include "core/Localisation.h"
 #include "core/GameTime.h"
 
 #include "game/Player.h"
 
-#include "gui/Menu.h"
 #include "gui/Interface.h"
+#include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Math.h"
-#include "graphics/Draw.h"
-#include "graphics/data/CinematicTexture.h"
+#include "graphics/Renderer.h"
 
 #include "input/Input.h"
 
 #include "io/Filesystem.h"
 #include "io/FilePath.h"
 #include "io/log/Logger.h"
+
+#include "math/MathFwd.h"
+#include "math/Vector2.h"
 
 #include "scene/GameSound.h"
 
@@ -81,7 +82,6 @@ extern long STARTED_A_GAME;
 extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long REFUSE_GAME_RETURN;
-extern Cinematic * ControlCinematique;
 
 bool bForceReInitAllTexture = false;
 extern long CAN_REPLAY_INTRO;

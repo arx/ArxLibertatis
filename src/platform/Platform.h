@@ -20,7 +20,7 @@
 #ifndef ARX_PLATFORM_PLATFORM_H
 #define ARX_PLATFORM_PLATFORM_H
 
-#include <string>
+#include <stddef.h>
 
 /* ---------------------------------------------------------
                           Platforms

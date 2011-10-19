@@ -46,16 +46,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/MeshManipulation.h"
 
+#include <stddef.h>
 #include <cstring>
+#include <cstdlib>
+#include <algorithm>
+#include <string>
+#include <vector>
 
-#include "graphics/Math.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 
-#include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/log/Logger.h"
 
-#include "platform/String.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
+
+#include "platform/Platform.h"
 
 #include "scene/Object.h"
 

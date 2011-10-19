@@ -19,8 +19,6 @@
 
 #include "io/log/FileLogger.h"
 
-#include "io/log/ColorLogger.h"
-
 namespace logger {
 
 File::~File() {

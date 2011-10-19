@@ -32,6 +32,7 @@
 #include "core/Localisation.h"
 #include "core/Config.h"
 #include "game/Player.h"
+#include "gui/Interface.h"
 #include "io/SaveBlock.h"
 #include "io/PakReader.h"
 #include "platform/String.h"

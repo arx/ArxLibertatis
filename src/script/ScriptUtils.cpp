@@ -22,7 +22,6 @@
 #include <set>
 
 #include "graphics/data/Mesh.h"
-#include "platform/String.h"
 
 using std::string;
 

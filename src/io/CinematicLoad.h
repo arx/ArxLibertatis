@@ -20,9 +20,7 @@
 #ifndef ARX_IO_CINEMATICLOAD_H
 #define ARX_IO_CINEMATICLOAD_H
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 class Cinematic;
 

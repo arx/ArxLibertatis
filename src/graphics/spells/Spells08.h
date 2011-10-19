@@ -47,8 +47,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/SpellEffects.h"
 
-class CSpellFx;
-
 // Done By : Sébastien Scieux
 class CExplosion: public CSpellFx
 {

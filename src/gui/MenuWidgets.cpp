@@ -43,10 +43,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MenuWidgets.h"
 
+#include <cctype>
+#include <cmath>
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <iomanip>
-
+#include <iosfwd>
+#include <limits>
 #include <algorithm>
 #include <sstream>
 
@@ -66,18 +71,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/data/Mesh.h"
 #include "graphics/font/Font.h"
 #include "graphics/texture/TextureStage.h"
 
 #include "input/Input.h"
 
-#include "io/log/Logger.h"
-
-#include "platform/String.h"
-
-#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
 

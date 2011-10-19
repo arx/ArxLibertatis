@@ -46,11 +46,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/Progressive.h"
 
+#include <stddef.h>
 #include <cstring>
+#include <cstdlib>
+#include <vector>
 
-#include "graphics/Math.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/data/MeshManipulation.h"
+#include "graphics/GraphicsTypes.h"
 
 using std::memset;
 

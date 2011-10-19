@@ -21,6 +21,8 @@
 
 #include <iostream>
 
+#include "platform/Platform.h"
+
 namespace logger {
 
 ColorConsole::~ColorConsole() {

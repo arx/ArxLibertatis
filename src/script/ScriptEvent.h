@@ -29,8 +29,6 @@ struct SCRIPT_EVENT {
 	std::string name;
 };
 
-class ScriptEvent;
-
 namespace script {
 
 //! strip [] brackets

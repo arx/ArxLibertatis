@@ -21,6 +21,7 @@
 #include "graphics/GraphicsUtility.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/data/TextureContainer.h"
+#include "graphics/texture/Texture.h"
 
 Renderer * GRenderer;
 

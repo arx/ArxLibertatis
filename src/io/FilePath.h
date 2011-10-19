@@ -21,7 +21,7 @@
 #define ARX_IO_FILEPATH_H
 
 #include <string>
-#include <iostream>
+#include <ostream>
 
 namespace fs {
 

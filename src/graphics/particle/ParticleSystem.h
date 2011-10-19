@@ -46,12 +46,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 
-#include "graphics/GraphicsTypes.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
 #include "platform/Flags.h"
  
 class Particle;
 class ParticleParams;
+class TextureContainer;
 
 enum ParticleSpawnFlag {
 	PARTICLE_CIRCULAR = (1<<0),

@@ -53,8 +53,6 @@ namespace fs {
 class path;
 }
 
-struct INTERACTIVE_OBJ;
-
 extern const fs::path CurGamePath;
 
 extern long FORBID_SAVE;

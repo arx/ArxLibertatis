@@ -19,7 +19,6 @@
 
 #include "platform/CrashHandler.h"
 
-#include <cstring>
 #include <cstdio>
 #include <cstdlib>
 

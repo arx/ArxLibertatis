@@ -43,16 +43,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsModes.h"
 
-#include <vector>
-#include <string>
+#include <cstring>
 #include <algorithm>
 
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
-#include "gui/MenuWidgets.h"
-#include "graphics/Math.h"
+#include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Renderer.h"
+#include "graphics/data/Mesh.h"
 
 using std::min;
 

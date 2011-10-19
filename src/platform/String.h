@@ -21,7 +21,6 @@
 #define ARX_PLATFORM_STRING_H
 
 #include <string>
-#include <cstring>
 
 void makeLowercase(std::string & str);
 std::string toLowercase(const std::string & str);

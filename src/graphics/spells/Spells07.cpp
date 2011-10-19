@@ -46,14 +46,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
-#include "core/Core.h"
 #include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Damage.h"
 #include "game/Player.h"
 
-#include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
@@ -65,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Object.h"
 #include "scene/Interactive.h"
-#include "scene/LoadLevel.h"
 #include "scene/Light.h"
 
 extern float _framedelay;

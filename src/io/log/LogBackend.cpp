@@ -19,6 +19,8 @@
 
 #include "io/log/LogBackend.h"
 
+#include "platform/Platform.h"
+
 void logger::Backend::format(std::ostream & os, const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
 	
 	switch(level) {

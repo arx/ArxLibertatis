@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
-#include "platform/String.h"
 
 using std::max;
 using std::vector;

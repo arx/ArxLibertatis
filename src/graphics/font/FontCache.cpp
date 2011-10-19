@@ -20,7 +20,6 @@
 #include "graphics/font/FontCache.h"
 
 #include "io/log/Logger.h"
-#include "graphics/texture/PackedTexture.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

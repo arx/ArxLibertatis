@@ -30,6 +30,7 @@
 #endif
 
 #include "io/log/ColorLogger.h"
+#include "platform/Platform.h"
 
 namespace logger {
 

@@ -46,12 +46,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Physics.h"
 
-#include "game/Player.h"
-#include "graphics/Math.h"
-#include "physics/Box.h"
-#include "physics/Collisions.h"
-#include "scene/Interactive.h"
-#include "script/Script.h"
+#include <stddef.h>
+
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
+#include "math/Vector3.h"
 
 EERIEPOLY * BCCheckInPoly(float x, float y, float z)
 {

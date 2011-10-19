@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/GameTime.h"
-#include "core/Dialog.h"
 #include "core/Core.h"
 
 #include "game/Equipment.h"
@@ -71,15 +70,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 
 #include "gui/Speech.h"
-#include "gui/MenuWidgets.h"
 #include "gui/Interface.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/data/MeshManipulation.h"
-#include "graphics/data/FTL.h"
-#include "graphics/data/Progressive.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
