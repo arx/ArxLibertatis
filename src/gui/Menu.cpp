@@ -131,9 +131,7 @@ bool MENU_NoActiveWindow();
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
-long ARXmenu_lastmode = -1;
 long REFUSE_GAME_RETURN = 0;
-unsigned long ARXmenu_starttick = 0;
 
 long SP_HEAD = 0;
 
@@ -472,11 +470,9 @@ void ARX_MENU_Clicked_QUIT()
 	if (!NO_TIME_INIT)
 		ARX_TIME_UnPause();
 }
-long CAN_REPLAY_INTRO = 1;
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_NEWQUEST()
-{
-	CAN_REPLAY_INTRO = 0;
+
+void ARX_MENU_Clicked_NEWQUEST() {
+	
 	ARX_TIME_UnPause();
 
 	if (FINAL_RELEASE)
@@ -618,35 +614,13 @@ void ARX_Menu_Manage() {
 }
 extern long PLAYER_INTERFACE_HIDE_COUNT;
 extern long SPLASH_THINGS_STAGE;
-long NEED_INTRO_LAUNCH = 0;
 //-----------------------------------------------------------------------------
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-bool ARX_Menu_Render()
-{
-	// Auto-Launch Demo after 60 sec idle on Main Menu
-	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
-	{
-		if ((ARXmenu_lastmode != AMCM_MAIN) || GInput->isAnyKeyPressed() || GInput->hasMouseMoved())
-		{
-			ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
-		}
-
-		unsigned long tim = ARX_TIME_GetUL() - ARXmenu_starttick; //treat warning C4244 conversion from 'float' to 'unsigned long'
-
-		if ((tim > 180000) && (REFUSE_GAME_RETURN))
-		{
-			NEED_INTRO_LAUNCH = 1;
-		}
-	}
-	else
-		ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
-
-	ARXmenu_lastmode = ARXmenu.currentmode;
-
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
+bool ARX_Menu_Render() {
+	
+	if(ARXmenu.currentmode == AMCM_OFF) {
 		return false;
 	}
 

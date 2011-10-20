@@ -139,7 +139,6 @@ extern long NOBUILDMAP;
 extern long NOCHECKSUM;
 extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
-extern long NEED_INTRO_LAUNCH;
 extern long SPLASH_THINGS_STAGE;
 extern long REFUSE_GAME_RETURN;
 extern long PLAYER_MOUSELOOK_ON;
@@ -857,31 +856,7 @@ static float _AvgFrameDiff = 150.f;
 		memset(TELEPORT_TO_LEVEL,0,64);
 		memset(TELEPORT_TO_POSITION,0,64);
 	}
-
-	if (NEED_INTRO_LAUNCH)
-	{
-		LogDebug("need intro launch");
-		SetEditMode(0);
-		BLOCK_PLAYER_CONTROLS=1;
-		ARX_INTERFACE_PlayerInterfaceModify(0,0);
-		ARX_Menu_Resources_Release();
-		ARXmenu.currentmode=AMCM_OFF;
-		ARX_TIME_UnPause();
-		SPLASH_THINGS_STAGE=14;
-		NEED_INTRO_LAUNCH=0;
-		REFUSE_GAME_RETURN=1;
-		const char RESOURCE_LEVEL_10[] = "graph/levels/level10/level10.dlf";
-		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-		PROGRESS_BAR_TOTAL = 108;
-		LoadLevelScreen(10);
-		DanaeLoadLevel(RESOURCE_LEVEL_10);
-		FORBID_SAVE=0;
-		FirstFrame=1;
-		SPLASH_THINGS_STAGE=0;
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-		return false;
-	}
-		
+	
 	//Setting long from long
 	subj.centerx = DANAECENTERX;
 	subj.centery = DANAECENTERY;

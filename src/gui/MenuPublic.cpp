@@ -84,7 +84,6 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 extern long REFUSE_GAME_RETURN;
 
 bool bForceReInitAllTexture = false;
-extern long CAN_REPLAY_INTRO;
 extern bool bFade;
 extern bool	bFadeInOut;
 extern int iFadeAction;
@@ -327,11 +326,10 @@ void ARXMenu_NewQuest()
 //-----------------------------------------------------------------------------
 //LOAD QUEST
 //-----------------------------------------------------------------------------
-void ARXMenu_LoadQuest(long num)
-{
-	CAN_REPLAY_INTRO = 0;
+void ARXMenu_LoadQuest(long num) {
+	
 	GRenderer->EndScene();
-
+	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	LoadSaveGame(num); 
 	GRenderer->BeginScene();
