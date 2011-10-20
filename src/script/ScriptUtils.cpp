@@ -658,6 +658,8 @@ size_t initSuppressions() {
 	suppress("torch_rotating_0005", 88, "?"); // 'playanim' only takes one parameter
 	suppress("torch_rotating_0005", 89, "rotatingtorchdown"); // 'playanim' only takes one parameter
 	
+	suppress("training_dummy", 174, "play"); // missing sound file "wooddoorhit", closest match is "door_wood_hit"
+	
 	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
 	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
 	suppress("troll_base", 19054, "goto"); // missing label "main_alert"
