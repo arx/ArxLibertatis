@@ -660,8 +660,7 @@ public:
 		
 		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
 		if(!t) {
-			ScriptWarning << "unknown target: " << target;
-			return Failed;
+			return Success;
 		}
 		
 		bool self = (t == context.getIO());

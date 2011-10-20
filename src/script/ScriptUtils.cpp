@@ -464,7 +464,6 @@ size_t initSuppressions() {
 	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
 	
 	suppress("goblin_base_0034", 771, "detach"); // object mug_full_0003 already destroyed
-	suppress("goblin_base_0034", 831, "destroy"); // object mug_full_0003 already destroyed
 	
 	suppress("goblin_base_0041", 3063, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
 	
@@ -500,8 +499,6 @@ size_t initSuppressions() {
 	suppress("human_base_0051", 6083, "set"); // bad variable name: "waiting"
 	
 	suppress("human_base_0046", 679, "goto"); // missing label 'next_step02', should be 'next_step01'?
-	
-	suppress("human_base_0076", 642, "destroy"); // target 'seat_stool1_0007' might already be destroyed TODO consider removing this warning
 	
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
