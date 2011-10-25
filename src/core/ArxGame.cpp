@@ -242,7 +242,7 @@ bool ArxGame::Initialize()
 		return false;
 	}
 
-	init = InitLocalisation();
+	init = initLocalisation();
 	if(!init) {
 		return false;
 	}

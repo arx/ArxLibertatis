@@ -25,7 +25,7 @@
 /*!
  * Initializes the localisation hashmap based on the current chosen locale
  */
-bool InitLocalisation();
+bool initLocalisation();
 
 /*!
  * Returns the localized string for the given key name

@@ -1835,7 +1835,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 		return 3;
 	}
 	
-	InitLocalisation();
+	initLocalisation();
 	
 	if(!save.open()) {
 		cerr << "failed to open savefile" << endl;

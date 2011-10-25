@@ -675,9 +675,9 @@ int main(int argc, char ** argv) {
 	
 	USE_FAST_SCENES = 1;
 	LogDebug("Danae Start");
-
+	
 	LogDebug("Project Init");
-
+	
 	NOCHECKSUM=0;
 	
 	ARX_INTERFACE_NoteInit();
@@ -692,10 +692,10 @@ int main(int argc, char ** argv) {
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
-
+	
 	LogDebug("LSV Init");
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
-
+	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
 	memset(TELEPORT_TO_POSITION,0,64);
@@ -707,38 +707,38 @@ int main(int argc, char ** argv) {
 	ARX_EQUIPMENT_Init();
 	LogDebug("AEQ Init");
 	memset(_CURRENTLOAD_,0,256);
-
+	
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug("Timer Init");
 	ARX_FOGS_FirstInit();
 	LogDebug("Fogs Init");
-
+	
 	EERIE_LIGHT_GlobalInit();
 	LogDebug("Lights Init");
 	
 	LogDebug("Svars Init");
-
+	
 	// Script Test
 	lastteleport.x=0.f;
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
-
+	
 	inter.init=0;
 	InitInter(10);
-
+	
 	memset(&player,0,sizeof(ARXCHARACTER));
 	ARX_PLAYER_InitPlayer();
-
+	
 	CleanInventory();
-
+	
 	ARX_SPEECH_FirstInit();
 	ARX_CONVERSATION_FirstInit();
 	ARX_SPEECH_Init();
 	ARX_SPEECH_ClearAll();
 	QuakeFx.intensity=0.f;
-
+	
 	LogDebug("Launching DANAE");
-
+	
 	memset(&Project, 0, sizeof(PROJECT));
 	
 	if (FINAL_RELEASE) {
@@ -750,12 +750,12 @@ int main(int argc, char ** argv) {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
 	}
-
+	
 	LogDebug("After Popup");
 	atexit(ClearGame);
-
-	if (LaunchDemo)	{
-
+	
+	if(LaunchDemo) {
+		
 #ifdef BUILD_EDITOR
 		if(FINAL_RELEASE) {
 			GAME_EDITOR=0;
@@ -763,7 +763,7 @@ int main(int argc, char ** argv) {
 			GAME_EDITOR=1;
 		}
 #endif
-
+		
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
 	}
@@ -771,7 +771,7 @@ int main(int argc, char ** argv) {
 	if(!AdjustUI()) {
 		return -1;
 	}
-
+	
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
 	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
@@ -783,21 +783,15 @@ int main(int argc, char ** argv) {
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 	ARXMenu_Options_Audio_ApplyGameVolumes();
-
+	
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
 	
 	if(config.video.textureSize==2)Project.TextureSize=0;
 	if(config.video.textureSize==1)Project.TextureSize=2;
 	if(config.video.textureSize==0)Project.TextureSize=64;
-
+	
 	ARX_MINIMAP_FirstInit();
-		
-	//read from cfg file
-	if ( config.language.length() == 0 ) {
-		config.language = "english";
-		LogWarning << "Falling back to default localisationpath";
-	}
 	
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;

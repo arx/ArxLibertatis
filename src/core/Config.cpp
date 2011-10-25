@@ -50,8 +50,8 @@ namespace Default {
 #define DEFAULT_WIDTH 640
 #define DEFAULT_HEIGHT 480
 
-const std::string
-	language = "english",
+const string
+	language = string(),
 	resolution = "auto",
 	audioBackend = "auto",
 	windowFramework = "auto",
