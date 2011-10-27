@@ -639,7 +639,13 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(nCmdShow);
 #endif // #if !ARX_COMPILER_MSVC
 	
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	initCrashHandler();
+#else
+	//CrashHandler crashHandler;
+	//crashHandler.init();
+#endif
+	
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
