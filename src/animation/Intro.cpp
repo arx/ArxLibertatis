@@ -119,7 +119,6 @@ void ARX_INTERFACE_ShowFISHTANK()
 		}
 
 		GRenderer->EndScene();
-		//mainApp->GetWindow()->showFrame();
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
@@ -149,7 +148,6 @@ void ARX_INTERFACE_ShowARKANE()
 		}
 
 		GRenderer->EndScene();
-		//mainApp->GetWindow()->showFrame();
 	}
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
