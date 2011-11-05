@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/Localisation.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -2583,7 +2584,7 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 			ARX_SPELLS_FizzleNoMana(num);
 
 			if(_bSound) {
-				ARX_SPEECH_Add("player_cantcast");
+				ARX_SPEECH_Add(getLocalised("player_cantcast"));
 				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
@@ -2849,7 +2850,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 	ARX_SPELLS_FizzleNoMana(num);
 
 	if(_bSound) {
-		ARX_SPEECH_Add("player_cantcast");
+		ARX_SPEECH_Add(getLocalised("player_cantcast"));
 		ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 
