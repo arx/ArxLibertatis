@@ -179,12 +179,17 @@ void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update();
 void ARX_SPEECH_Init();
 void ARX_SPEECH_Check();
+
+/*!
+ * Add a raw text message to the "system" log (top of the screen).
+ * This message will be displayed as-is.
+ */
 long ARX_SPEECH_Add(const std::string & text, long duration = -1);
 void ARX_SPEECH_ClearAll();
 
-/*! data can be either a direct text or a localised string
- * a localised string will be used to look for the duration of the sample
- * & will play the sample.
+/*!
+ * Add an entry to the conversation view.
+ * @param data is a sample name / localised string id
  */
 long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string & data, long mood, SpeechFlags flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io);
