@@ -1008,7 +1008,6 @@ void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,Textu
 	}
 }
 
-extern EERIEMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 
 void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo) {

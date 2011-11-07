@@ -226,10 +226,6 @@ extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
 
 //-----------------------------------------------------------------------------
-
-extern EERIEMATRIX ProjectionMatrix;
-
-//-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
 PROJECT Project;
 
