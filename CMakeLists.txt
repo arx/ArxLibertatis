@@ -650,7 +650,7 @@ if(ARX_BUILD_TOOLS)
 	
 	set(SAVETOOL_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
 	
-	add_executable_shared(savetool "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
+	add_executable_shared(arxsavetool "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
 	
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
@@ -669,12 +669,9 @@ if(ARX_BUILD_TOOLS)
 	
 	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
 	
-	add_executable_shared(unpak "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
+	add_executable_shared(arxunpak "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
 	
 endif()
-
-# Files for make install
-install(FILES ${ARX_INSTALL_FILES} DESTINATION bin)
 
 # Build and link executables
 
