@@ -37,7 +37,6 @@ option(ARX_BUILD_TOOLS "Build tools" ON)
 option(ARX_BUILD_EDITOR "Build editor" OFF)
 option(ARX_BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
-option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
@@ -218,14 +217,14 @@ else(MSVC)
 	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
-	if(ARX_DEBUG)
+	if(CMAKE_BUILD_TYPE STREQUAL Debug)
 		#Debug
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+		message("On Debug Build")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3")
 		add_definitions(-D_DEBUG)
-		
 	else()
 		#Release
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3")
+		message("On Release Build")
 		add_definitions(-D_NDEBUG)
 	endif()
 	

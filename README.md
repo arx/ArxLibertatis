@@ -29,7 +29,7 @@ Build options:
 
 * `ARX_BUILD_TOOLS` (default=ON): Build tools
 * `ARX_USE_UNITYBUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
-* `ARX_DEBUG` (default=ON): Normal debug options
+* `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug Binaries
 * `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `ARX_USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `ARX_USE_OPENGL` (default=ON): Build the OpenGL renderer backend
