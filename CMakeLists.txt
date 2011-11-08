@@ -674,6 +674,8 @@ if(ARX_BUILD_TOOLS)
 	
 endif()
 
+# Files for make install
+install(FILES ${ARX_INSTALL_FILES} DESTINATION bin)
 
 # Build and link executables
 
