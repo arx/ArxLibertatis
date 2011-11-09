@@ -633,8 +633,6 @@ void InitializeDanae()
 
 #if !ARX_COMPILER_MSVC
 extern int main(int argc, char ** argv) {
-	ARX_UNUSED(argc);
-	ARX_UNUSED(argv);
 #else
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
 	ARX_UNUSED(hInstance);
@@ -642,6 +640,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(lpCmdLine);
 	ARX_UNUSED(nCmdShow);
 #endif // #if !ARX_COMPILER_MSVC
+	
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	initCrashHandler();
@@ -655,9 +654,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
 	
+#if !ARX_COMPILER_MSVC
 	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
 		Logger::configure(argv[1] + 8);
 	}
+#endif
+	
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
