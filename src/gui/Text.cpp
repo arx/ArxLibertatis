@@ -71,7 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/font/FontCache.h"
 
 #include "io/Filesystem.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "io/FilePath.h"
 
 using std::string;
@@ -296,54 +296,51 @@ static Font * _CreateFont(const string & fontFace, const string & fontProfileNam
 	return newFont;
 }
 
-static string getFontFile() {
-	string tx = "misc/arx.ttf";
-	
-	if(!fs::exists(tx)) {
-		tx = "misc/arx_default.ttf"; // Full path
-		if(!fs::exists(tx)) {
-			LogFatal << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
-		}
-	}
-	return tx;
-}
-
-void ARX_Text_Init() {
+bool ARX_Text_Init() {
 	
 	ARX_Text_Close();
 	
-	string fontFile = getFontFile();
-
+	string fontFile = "misc/arx.ttf";
+	if(!fs::exists(fontFile)) {
+		fontFile = "misc/arx_default.ttf"; // Full path
+		if(!fs::exists(fontFile)) {
+			LogError << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
+			return false;
+		}
+	}
+	
 	pTextManage = new TextManager();
 	pTextManageFlyingOver = new TextManager();
 
 	FontCache::Initialize();
 
 	hFontMainMenu = _CreateFont(fontFile, "system_font_mainmenu_size", 58);
-	LogDebug << "Created hFontMainMenu, size " << hFontMainMenu->GetSize();
+	LogDebug("Created hFontMainMenu, size " << hFontMainMenu->GetSize());
 
-	hFontMenu	  = _CreateFont(fontFile, "system_font_menu_size", 32);
-	LogDebug << "Created hFontMenu, size " << hFontMenu->GetSize();
+	hFontMenu = _CreateFont(fontFile, "system_font_menu_size", 32);
+	LogDebug("Created hFontMenu, size " << hFontMenu->GetSize());
 
 	hFontControls = _CreateFont(fontFile, "system_font_menucontrols_size", 22);
-	LogDebug << "Created hFontControls, size " << hFontControls->GetSize();
+	LogDebug("Created hFontControls, size " << hFontControls->GetSize());
 
-	hFontCredits  = _CreateFont(fontFile, "system_font_menucredits_size", 36);
-	LogDebug << "Created hFontCredits, size " << hFontCredits->GetSize();
+	hFontCredits = _CreateFont(fontFile, "system_font_menucredits_size", 36);
+	LogDebug("Created hFontCredits, size " << hFontCredits->GetSize());
 
 	// Keep small font small when increasing resolution
 	float smallFontRatio = Yratio > 1.0f ? Yratio * 0.8f : Yratio;
 
-	hFontInGame     = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
-	LogDebug << "Created hFontInGame, size " << hFontInGame->GetSize();
+	hFontInGame = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
+	LogDebug("Created hFontInGame, size " << hFontInGame->GetSize());
 
 	hFontInGameNote = _CreateFont(fontFile, "system_font_note_size", 18, smallFontRatio);
-	LogDebug << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
+	LogDebug("Created hFontInGameNote, size " << hFontInGameNote->GetSize());
 
-	hFontInBook		= _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
-	LogDebug << "Created InBookFont, size " << hFontInBook->GetSize();
+	hFontInBook = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
+	LogDebug("Created InBookFont, size " << hFontInBook->GetSize());
 	
 	LogInfo << "Loaded font " << fontFile << " with sizes " << hFontMainMenu->GetSize() << ", " << hFontMenu->GetSize() << ", " << hFontControls->GetSize() << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", " << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
+	
+	return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -33,12 +33,16 @@
 #cmakedefine HAVE_SIGNAL
 #cmakedefine HAVE_BACKTRACE
 #cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
+#cmakedefine HAVE_ISATTY
 
 // Compiler features
 #cmakedefine HAVE_DYNAMIC_STACK_ALLOCATION
 
+// Arx components
 #cmakedefine BUILD_EDITOR
-
 #cmakedefine BUILD_EDIT_LOADSAVE
+
+// Build system
+#cmakedefine UNITY_BUILD
 
 #endif // ARX_CONFIGURE_H

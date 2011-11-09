@@ -11,6 +11,7 @@
 include(CompileCheck)
 
 if(WIN32)
+	
 	# include dir
 	find_path(DIRECTX_INCLUDE_DIR NAMES d3d9.h)
 	

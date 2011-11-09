@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "graphics/Math.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 bool RenderWindow::DisplayMode::operator<(const DisplayMode & o) const {
 	

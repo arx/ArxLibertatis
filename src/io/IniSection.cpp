@@ -27,8 +27,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 using std::string;
 using std::transform;
@@ -99,5 +100,5 @@ void IniSection::addKey(const string & key, const string & value) {
 	
 	transform(keys.back().name.begin(), keys.back().name.end(), keys.back().name.begin(), ::tolower);
 	
-	LogDebug << "found key " << key << "=\"" << value << "\"";
+	LogDebug("found key " << key << "=\"" << value << "\"");
 };

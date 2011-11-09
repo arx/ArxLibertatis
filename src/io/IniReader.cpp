@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "platform/Platform.h"
 
 using std::string;
@@ -164,7 +164,7 @@ bool IniReader::read(istream & is) {
 			string sectionName = str.substr(start + 1, end - start - 1);
 			transform(sectionName.begin(), sectionName.end(), sectionName.begin(), ::tolower);
 			
-			LogDebug << "found section: \"" << sectionName << "\"";
+			LogDebug("found section: \"" << sectionName << "\"");
 			section = &sections[sectionName];
 			
 			// Ignoring rest of the line, not verifying that it's only whitespace / comment
@@ -210,7 +210,7 @@ bool IniReader::read(istream & is) {
 			arx_assert(valueEnd != string::npos);
 			if(valueEnd < valueStart) {
 				// The localisation files are broken (missing ending quote), so ignore this error.
-				LogDebug << "invalid quoted value @ line " << line << ": " << str;
+				LogDebug("invalid quoted value @ line " << line << ": " << str);
 				valueEnd = str.length();
 			}
 		} else {

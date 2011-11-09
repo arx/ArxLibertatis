@@ -26,6 +26,8 @@ public:
 	
 	Result execute(Context & context) {
 		
+		ARX_UNUSED(context);
+		
 		DebugScript("");
 		
 		return Success;
@@ -73,6 +75,8 @@ public:
 	AbortCommand(string command, Result _result) : Command(command), result(_result) { }
 	
 	Result execute(Context & context) {
+		
+		ARX_UNUSED(context);
 		
 		DebugScript("");
 		

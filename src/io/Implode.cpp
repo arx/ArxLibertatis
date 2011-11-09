@@ -33,7 +33,7 @@
 
 #include <cstring>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 // Truncate value to a specified number of bits
 #define TRUNCATE_VALUE(value,bits) ((value) & ((1 << (bits)) - 1))
@@ -447,7 +447,7 @@ char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
 	strm.pOutBuffer = (unsigned char *)outBuf;
 	strm.nOutSize = inSize * 2;
 	
-	LogDebug << "very slow implode " << inSize << " " << strm.nOutSize;
+	LogWarning << "very slow implode " << inSize << " " << strm.nOutSize;
 	
 	ImplodeResult res = implode(&strm);
 	if(res) {
@@ -460,7 +460,7 @@ char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
 	memcpy(outBuf, buf, inSize);
 	strm.nOutSize = inSize;
 	
-	LogDebug << " compressed to " << strm.nOutSize << " " << (((float)strm.nOutSize)/inSize);
+	LogDebug(" compressed to " << strm.nOutSize << " " << (((float)strm.nOutSize)/inSize));
 	
 	outSize = strm.nOutSize;
 	return outBuf;

@@ -34,7 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/data/Mesh.h"
 #include "io/FilePath.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "scene/Interactive.h"
 #include "script/ScriptDebuggerDialog.h"
 
@@ -424,7 +424,7 @@ suite:
 	{
 		if (ARXPausedTimer)
 		{
-			ARXTotalPausedTime -= 100;
+			ARXStartTime -= 100 * 1000;
 			MODIFFF = 1;
 		}
 	}

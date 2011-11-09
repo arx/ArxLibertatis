@@ -37,7 +37,7 @@
 #include "io/IniReader.h"
 #include "io/IniSection.h"
 #include "io/IniWriter.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Vector2.h"
 
 using std::string;
@@ -62,7 +62,8 @@ const std::string
 	audioBackend = "auto",
 	windowFramework = "auto",
 	windowSize = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT),
-	inputBackend = "auto";
+	inputBackend = "auto",
+	debugLevels = "";
 
 const int
 	bpp = 16,
@@ -255,7 +256,8 @@ const string
 	gore = "fg",
 	newControl = "newcontrol",
 	migration = "migration",
-	quicksaveSlots = "quicksave_slots";
+	quicksaveSlots = "quicksave_slots",
+	debugLevels = "debug";
 
 } // namespace Key
 
@@ -310,7 +312,7 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 		}
 	}
 	
-	LogDebug << "[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"";
+	LogDebug("[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"");
 	
 	return action_key;
 }
@@ -446,6 +448,7 @@ bool Config::save() {
 	writer.writeKey(Key::gore, misc.gore);
 	writer.writeKey(Key::migration, misc.migration);
 	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
+	writer.writeKey(Key::debugLevels, misc.debug);
 	
 	return writer.flush();
 }
@@ -542,6 +545,7 @@ bool Config::init(const fs::path & file, const fs::path & defaultFile) { // TODO
 	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);
 	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
 	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
+	misc.debug = reader.getKey(Section::Misc, Key::debugLevels, Default::debugLevels);
 	
 	return loaded;
 }

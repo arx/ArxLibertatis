@@ -30,7 +30,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #define MAXBITS 13              /* maximum code length */
 #define MAXWIN 4096             /* maximum window size */

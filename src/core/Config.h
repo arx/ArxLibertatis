@@ -188,6 +188,8 @@ public:
 		
 		int quicksaveSlots;
 		
+		std::string debug; // Logger debug levels.
+		
 	} misc;
 	
 public:

@@ -85,7 +85,7 @@ long UNICODE_ARXDrawTextCenteredScroll(Font * font, float x, float y, float x2, 
 long ARX_UNICODE_ForceFormattingInRect(Font * font, const std::string & text, const Rect & _rRect);
 long ARX_UNICODE_DrawTextInRect(Font * font, float x, float y, float maxx, const std::string & text, Color col, const Rect * pClipRect = NULL);
 
-void ARX_Text_Init();
+bool ARX_Text_Init();
 void ARX_Text_Close();
 
 #endif // ARX_GUI_TEXT_H

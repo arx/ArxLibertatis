@@ -47,9 +47,9 @@ int iCreateMap = 0; // used to create mini-map bitmap
 
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
-#include "io/Logger.h"
 #include "io/FileStream.h"
 #include "io/FilePath.h"
+#include "io/log/Logger.h"
 
 #include "window/Window.h"
 

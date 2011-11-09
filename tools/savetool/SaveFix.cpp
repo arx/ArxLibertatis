@@ -1,10 +1,11 @@
 
 #include "SaveFix.h"
 
-#include <map>
+#include <cstdio>
 #include <iomanip>
-#include <sstream>
 #include <iostream>
+#include <map>
+#include <sstream>
 
 #include "Configure.h"
 #ifdef BUILD_EDITOR

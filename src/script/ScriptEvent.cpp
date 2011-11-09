@@ -12,7 +12,7 @@
 #include "core/GameTime.h"
 #include "core/Core.h"
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "platform/String.h"
 
@@ -214,6 +214,7 @@ public:
 
 using namespace script; // TODO(script-parser) remove once everythng has been moved to the script namespace
 
+#ifdef _DEBUG
 static const char * toString(ScriptResult ret) {
 	switch(ret) {
 		case ACCEPT: return "accept";
@@ -222,6 +223,7 @@ static const char * toString(ScriptResult ret) {
 		default: arx_assert(false); return NULL;
 	}
 }
+#endif
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
 	
@@ -295,7 +297,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				case SM_KEY_PRESSED: {
 					float dwCurrTime = ARX_TIME_Get();
 					if ((dwCurrTime - g_TimeStartCinemascope) < 3000) {
-						LogDebug << "refusing SM_KEY_PRESSED";
+						LogDebug("refusing SM_KEY_PRESSED");
 						return REFUSE;
 					}
 					break;
@@ -303,7 +305,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				default: break;
 			}
 
-			if (msg < (long)MAX_SHORTCUT) {
+			if(msg < (long)MAX_SHORTCUT) {
 				pos = es->shortcut[msg];
 				arx_assert(pos <= (long)es->size);
 			} else {
@@ -311,7 +313,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 				arx_assert(msg != SM_EXECUTELINE && evname.empty());
 				
 				if(msg >= SM_MAXCMD) {
-					LogDebug << "unknown message " << msg;
+					LogDebug("unknown message " << msg);
 					return ACCEPT;
 				}
 				
@@ -322,20 +324,19 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		}
 	}
 
-	if (pos <= -1) {
-		// TODO very noisy LogDebug << "cannot find event handler";
+	if(pos <= -1) {
 		return ACCEPT;
 	}
 	
 	
-	LogDebug << "--> SendScriptEvent event="
+	LogDebug("--> SendScriptEvent event="
 	         << (!evname.empty() ? evname
 	            : ((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1) ? AS_EVENT[msg].name.substr(3)
 	            : "(none)")
 	         << " params=\"" << params << "\""
 	         << " io=" << (io ? io->long_name() : "unknown")
 	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding")
-	         << " pos=" << pos;
+	         << " pos=" << pos);
 
 	MakeSSEPARAMS(params.c_str());
 
@@ -365,7 +366,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		if(word.empty()) {
 			if(msg == SM_EXECUTELINE && context.pos != es->size) {
 				arx_assert(es->data[context.pos] == '\n');
-				LogDebug << "--> line end";
+				LogDebug("--> line end");
 				return ACCEPT;
 			}
 			ScriptEventWarning << "--> reached script end without accept / refuse / return";
@@ -446,13 +447,13 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	}
 	
 	if(msg == SM_EXECUTELINE) {
-		LogDebug << "--> executeline finished: " << toString(ret);
+		LogDebug("--> executeline finished: " << toString(ret));
 	} else if(evname != "") {
-		LogDebug << "--> " << eventname << " event finished: " << toString(ret);
+		LogDebug("--> " << eventname << " event finished: " << toString(ret));
 	} else if(msg != SM_DUMMY) {
-		LogDebug << "--> " << AS_EVENT[msg].name.substr(3) << " event finished: " << toString(ret);
+		LogDebug("--> " << AS_EVENT[msg].name.substr(3) << " event finished: " << toString(ret));
 	} else {
-		LogDebug << "--> dummy event finished: " << toString(ret);
+		LogDebug("--> dummy event finished: " << toString(ret));
 	}
 	
 	return ret;

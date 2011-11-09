@@ -99,7 +99,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "math/Angle.h"
 #include "math/Vector3.h"
@@ -3710,19 +3710,20 @@ extern void ClearDynLights();
 
 void ARX_GAME_Reset(long type) {
 	
-	inter.iobj[0]->speed_modif = 0;
-
+	if(inter.iobj[0]) {
+		inter.iobj[0]->speed_modif = 0;
+	}
+	
 	LAST_JUMP_ENDTIME = 0;
 	FlyingOverIO = NULL;
 	ARX_MAPMARKER_Init();
 	ClearDynLights();
 
-	if (!DONT_ERASE_PLAYER)
-	{
+	if(!DONT_ERASE_PLAYER && inter.iobj[0]) {
 		inter.iobj[0]->halo.flags = 0;
 	}
 
-	inter.iobj[0]->GameFlags &= ~GFLAG_INVISIBILITY;
+	if(inter.iobj[0])inter.iobj[0]->GameFlags &= ~GFLAG_INVISIBILITY;
 	ARX_PLAYER_Invulnerability(0);
 	GLOBAL_Player_Room = -1;
 	PLAYER_PARALYSED = 0;
@@ -3755,7 +3756,9 @@ void ARX_GAME_Reset(long type) {
 	cur_mr = 0;
 
 
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
+	if(inter.iobj[0]) {
+		inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
+	}
 
 	LAST_PRECAST_TIME = 0;
 

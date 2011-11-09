@@ -10,7 +10,7 @@
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
 static const char vertexShaderSource[] = "void main() { \n\
@@ -120,10 +120,10 @@ void OpenGLRenderer::reinit() {
 	useVertexArrays = GLEW_ARB_vertex_array_bgra == GL_TRUE;
 	
 	if(!GLEW_ARB_draw_elements_base_vertex) {
-		// only drawIndexed() needs this
-		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex, not using VBOs!";
+		LogWarning << "Missing OpenGL extension ARB_draw_elements_base_vertex!";
 	}
-	useVBOs = useVertexArrays && GLEW_ARB_draw_elements_base_vertex;
+	
+	useVBOs = useVertexArrays;
 	if(useVBOs && !GLEW_ARB_map_buffer_range) {
 		LogWarning << "Missing OpenGL extension ARB_map_buffer_range, VBO performance will suffer.";
 	}

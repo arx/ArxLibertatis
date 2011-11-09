@@ -10,6 +10,7 @@
 #include "io/PakEntry.h"
 #include "io/FilePath.h"
 #include "io/FileStream.h"
+#include "io/log/Logger.h"
 
 using std::transform;
 using std::ostringstream;
@@ -58,6 +59,8 @@ void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 int main(int argc, char ** argv) {
 	
 	ARX_UNUSED(resources);
+	
+	Logger::init();
 	
 	if(argc < 2) {
 		printf("usage: unpak <pakfile> [<pakfile>...]\n");

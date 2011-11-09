@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
-#include "io/Logger.h"
 #include "io/IniReader.h"
+#include "io/log/Logger.h"
 
 #include "platform/Platform.h"
 #include "platform/String.h"
@@ -831,7 +831,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const Vec3f * position)
 
 long ARX_SOUND_PlayCinematic(const fs::path & name) {
 	
-	LogDebug << "playing cinematic sound";
+	LogDebug("playing cinematic sound");
 	
 	s32 sample_id;
 	Channel channel;

@@ -29,8 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <zlib.h>
 
+#include "io/log/Logger.h"
 #include "io/Filesystem.h"
-#include "io/Logger.h"
 #include "io/Blast.h"
 
 #include "platform/String.h"
@@ -156,8 +156,8 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 
 char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std::string & name) const {
 	
-	LogDebug << "Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
-	         << compressionName() << " -> " << (int)uncompressedSize << "b";
+	LogDebug("Loading " << name << ' ' << storedSize << "b in " << chunks.size() << " chunks, "
+	         << compressionName() << " -> " << (int)uncompressedSize << "b");
 	
 	char * buf = (char*)malloc(storedSize);
 	char * p = buf;
@@ -307,7 +307,7 @@ bool SaveBlock::loadFileTable() {
 
 void SaveBlock::writeFileTable(const std::string & important) {
 	
-	LogDebug << "writeFileTable " << savefile;
+	LogDebug("writeFileTable " << savefile);
 	
 	u32 fatOffset = totalSize;
 	handle.seekp(fatOffset + 4);
@@ -335,7 +335,7 @@ void SaveBlock::writeFileTable(const std::string & important) {
 
 bool SaveBlock::open(bool writable) {
 	
-	LogDebug << "opening savefile " << savefile << " witable=" << writable;
+	LogDebug("opening savefile " << savefile << " witable=" << writable);
 	
 	fs::fstream::openmode mode = fs::fstream::in | fs::fstream::binary | fs::fstream::ate;
 	if(writable) {
@@ -378,7 +378,7 @@ bool SaveBlock::flush(const string & important) {
 
 bool SaveBlock::defragment() {
 	
-	LogDebug << "defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize << " b for " << files.size() << " files in " << chunkCount << " chunks"; 
+	LogDebug("defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize << " b for " << files.size() << " files in " << chunkCount << " chunks");
 	
 	fs::path tempFileName = savefile;
 	int i = 0;
@@ -477,7 +477,7 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		p = data;
 	}
 	
-	LogDebug << "saving " << name << " " << file->uncompressedSize << " " << file->storedSize;
+	LogDebug("saving " << name << " " << file->uncompressedSize << " " << file->storedSize);
 	
 	size_t remaining = file->storedSize;
 	
@@ -541,7 +541,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	
 	arx_assert(filename.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
 	
-	LogDebug << "reading savefile " << savefile;
+	LogDebug("reading savefile " << savefile);
 	
 	size = 0;
 	

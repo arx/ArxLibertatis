@@ -37,6 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
+#include "core/Version.h"
 
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
@@ -54,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "platform/String.h"
 
@@ -509,7 +510,9 @@ bool Menu2_Render() {
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(520), RATIO_Y(80), lColor, 1.0f, NOP );
+		float verPosX = RATIO_X(620) - hFontControls->GetTextSize(version).x;
+		me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
+		
 		me->SetCheckOff();
 		me->lColor=Color(127,127,127);
 		pMenu->AddMenuElement(me);

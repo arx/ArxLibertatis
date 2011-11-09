@@ -29,7 +29,7 @@ Build options:
 
 * `ARX_BUILD_TOOLS` (default=ON): Build tools
 * `ARX_USE_UNITYBUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
-* `ARX_DEBUG` (default=ON): Normal debug options
+* `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug Binaries
 * `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `ARX_USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `ARX_USE_OPENGL` (default=ON): Build the OpenGL renderer backend
@@ -62,6 +62,8 @@ Unless you disable them manually, this will still build the SDL, OpenGL and Open
 Once you have a ming32 cross compiler installed you can use it for arx by passing `-DCMAKE_TOOLCHAIN_FILE=cmake/mingw32-toolchain.cmake` to cmake. You will need all dependencies as windows dlls.
 
 ## Run
+
+You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
 
 Run from the directory containing the .pak files:
 

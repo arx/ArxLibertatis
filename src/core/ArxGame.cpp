@@ -41,6 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
+#include "core/Version.h"
 
 #include "game/Damage.h"
 #include "game/Inventory.h"
@@ -85,9 +86,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 #include "io/FilePath.h"
-#include "io/Logger.h"
 #include "io/PakReader.h"
 #include "io/Screenshot.h"
+#include "io/log/Logger.h"
 
 #include "platform/Flags.h"
 #include "platform/Platform.h"
@@ -295,7 +296,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
-	if(!m_MainWindow->init(arxVersion, size, config.video.fullscreen, mode.depth)) {
+	if(!m_MainWindow->init(version, size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
 	}
@@ -345,7 +346,7 @@ bool ArxGame::InitWindow() {
 
 bool ArxGame::InitInput() {
 	
-	LogDebug << "Input init";
+	LogDebug("Input init");
 	bool init = ARX_INPUT_Init();
 	if(!init) {
 		LogError << "Input init failed";
@@ -356,7 +357,7 @@ bool ArxGame::InitInput() {
 
 bool ArxGame::InitSound() {
 	
-	LogDebug << "Sound init";
+	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
 	if(!init) {
 		LogWarning << "Sound init failed";
@@ -388,32 +389,37 @@ bool ArxGame::AddPaks() {
 	
 	fs::path pak_data = "data.pak";
 	if(!resources->addArchive(pak_data)) {
-		LogFatal << "Unable to find main data file " << pak_data;
+		LogError << "Unable to find main data file " << pak_data;
+		return false;
 	}
 	
 	fs::path pak_loc = "loc.pak";
 	if(!resources->addArchive(pak_loc)) {
 		fs::path pak_loc_default = "loc_default.pak";
 		if(!resources->addArchive(pak_loc_default)) {
-			LogFatal << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
+			LogError << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
+			return false;
 		}
 	}
 	
 	fs::path pak_data2 = "data2.pak";
 	if(!resources->addArchive(pak_data2)) {
-		LogFatal << "Unable to find aux data file " << pak_data2;
+		LogError << "Unable to find aux data file " << pak_data2;
+		return false;
 	}
 	
 	fs::path pak_sfx = "sfx.pak";
 	if(!resources->addArchive(pak_sfx)) {
-		LogFatal << "Unable to find sfx data file " << pak_sfx;
+		LogError << "Unable to find sfx data file " << pak_sfx;
+		return false;
 	}
 	
 	fs::path pak_speech = "speech.pak";
 	if(!resources->addArchive(pak_speech)) {
 		fs::path pak_speech_default = "speech_default.pak";
 		if(!resources->addArchive(pak_speech_default)) {
-			LogFatal << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
+			LogError << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
+			return false;
 		}
 	}
 	
@@ -621,7 +627,7 @@ void ArxGame::OutputText(int x, int y, const string & str) {
 
 bool ArxGame::BeforeRun() {
 	
-	LogDebug << "Before Run...";
+	LogDebug("Before Run...");
 	
 	const Vec2i & size = mainApp->GetWindow()->GetSize();
 	ControlCinematique = new Cinematic(size.x, size.y);
@@ -737,10 +743,8 @@ bool ArxGame::Render() {
 		Original_framedelay=ft;
 
 		ft*=1.f-GLOBAL_SLOWDOWN;
-		float minus;
-
-		minus = ft;
-		ARXTotalPausedTime+=minus;
+		
+		ARXStartTime += u64(ft * 1000);
 		FrameTime = ARX_TIME_Get();
 
 		if (LastFrameTime>FrameTime)
@@ -748,11 +752,9 @@ bool ArxGame::Render() {
 			LastFrameTime=FrameTime;
 		}
 
-		ft=FrameTime-LastFrameTime;
-
-		FrameDiff = ft;
+		FrameDiff = FrameTime-LastFrameTime;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay=(float)FrameDiff;
+		_framedelay = FrameDiff;
 	}
 	else
 	{
@@ -763,16 +765,14 @@ bool ArxGame::Render() {
 		}
 		FrameDiff = FrameTime-LastFrameTime;
 
-		float FD;
-		FD=FrameDiff;
+		float FD = FrameDiff;
 		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay=((float)(FrameDiff));
+		_framedelay = FrameDiff;
 		FrameDiff = _framedelay;
 
 		Original_framedelay=_framedelay;
 
-// Original_framedelay = 1000/25;
-		ARXTotalPausedTime+=FD-FrameDiff;
+		ARXStartTime += u64(FD * 1000) - u64(FrameDiff * 1000);
 	}
 
 static float _AvgFrameDiff = 150.f;
@@ -795,7 +795,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if(wasResized) {
 		
-		LogDebug << "was resized";
+		LogDebug("was resized");
 		
 		DanaeRestoreFullScreen();
 		
@@ -815,7 +815,7 @@ static float _AvgFrameDiff = 150.f;
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
 	if (START_NEW_QUEST)
 	{
-		LogDebug << "start quest";
+		LogDebug("start quest");
 		DANAE_StartNewQuest();
 	}
 
@@ -826,7 +826,7 @@ static float _AvgFrameDiff = 150.f;
 	// Project need to reload all textures ???
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
-		LogDebug << "reload all textures";
+		LogDebug("reload all textures");
 		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
 		WILL_RELOAD_ALL_TEXTURES=0;
 	}
@@ -834,8 +834,8 @@ static float _AvgFrameDiff = 150.f;
 	// Are we being teleported ?
 	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
 	{
-		LogDebug << "teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
-		         << TELEPORT_TO_ANGLE;
+		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
+		         << TELEPORT_TO_ANGLE);
 		CHANGE_LEVEL_ICON=-1;
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE);
 		memset(TELEPORT_TO_LEVEL,0,64);
@@ -844,7 +844,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (NEED_INTRO_LAUNCH)
 	{
-		LogDebug << "need intro launch";
+		LogDebug("need intro launch");
 		SetEditMode(0);
 		BLOCK_PLAYER_CONTROLS=1;
 		ARX_INTERFACE_PlayerInterfaceModify(0,0);
@@ -949,7 +949,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 	else // Manages our first frameS
 	{
-		LogDebug << "first frame";
+		LogDebug("first frame");
 		ARX_TIME_Get();
 
 		FirstFrameHandling();
@@ -1969,6 +1969,7 @@ static float _AvgFrameDiff = 150.f;
 	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
 	{
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		DrawAllInterface();
 		DrawAllInterfaceFinish();
 
@@ -1977,11 +1978,10 @@ static float _AvgFrameDiff = 150.f;
 			&& flarenum
 			)
 		{
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			FRAMETICKS = ARXTimeUL();
 		}
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);

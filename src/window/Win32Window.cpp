@@ -6,7 +6,7 @@
 
 #include "core/Resource.h"
 #include "graphics/Renderer.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Rectangle.h"
 
 // Neither wine nor mingw32 define this.
