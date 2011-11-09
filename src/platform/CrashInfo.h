@@ -11,8 +11,8 @@
 
 #include "platform/Platform.h"
 
-#include <Windows.h>
-#include <DbgHelp.h>
+#include <windows.h>
+#include <dbghelp.h>
 
 struct CrashInfo {
 

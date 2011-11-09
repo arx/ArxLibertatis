@@ -35,10 +35,10 @@ public:
 	
 	// Add a variable to the crash report.
 	template <class T>
-	void addVariable(const std::string& name, const T& value) {
+	void addVariable(const std::string & name, const T & value) {
 		std::stringstream ss;
-		ss << i;
-		addNamedVariable(ss.str());
+		ss << value;
+		addNamedVariable(name, ss.str());
 	}
 
 	bool registerThreadCrashHandlers();

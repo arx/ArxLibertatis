@@ -631,7 +631,7 @@ void InitializeDanae()
 }
 
 
-#if !ARX_COMPILER_MSVC
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 extern int main(int argc, char ** argv) {
 #else
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
@@ -639,7 +639,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(hPrevInstance);
 	ARX_UNUSED(lpCmdLine);
 	ARX_UNUSED(nCmdShow);
-#endif // #if !ARX_COMPILER_MSVC
+#endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
@@ -654,7 +654,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
 	
-#if !ARX_COMPILER_MSVC
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
 		Logger::configure(argv[1] + 8);
 	}

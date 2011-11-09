@@ -134,7 +134,6 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(-DBOOST_NO_EXCEPTIONS)
 	add_definitions(/wd4995)		# 'func': name was marked as #pragma deprecated
 	
 	# TEMP - disable warning caused by the F2L removal
@@ -159,18 +158,18 @@ if(MSVC)
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 		# Disable exceptions
 		string(REGEX REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
-	
+		
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
-   		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
-   	
+			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+		
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with   		
-      	string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
+		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
 	endforeach(flag_var)
-
+	
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
 	
-    # This is needed to use ZLIB as a DLL
+	# This is needed to use ZLIB as a DLL
 	add_definitions(-DZLIB_WINAPI)
 	
 else(MSVC)
@@ -269,7 +268,6 @@ else(MSVC)
 	endif()
 	
 	# Disable exceptions & rtti
-	add_cxxflag(-fno-exceptions)
 	add_cxxflag(-fno-rtti)
 	
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")

@@ -1,4 +1,6 @@
 
+#include "platform/Platform.h"
+
 // Link statically with GLEW
 #if ARX_COMPILER_MSVC
 	#define GLEW_STATIC
