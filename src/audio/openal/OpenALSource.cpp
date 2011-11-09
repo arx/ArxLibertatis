@@ -35,19 +35,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Sample.h"
 #include "audio/Mixer.h"
 #include "io/FilePath.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Vector3.h"
 #include "platform/Platform.h"
 
 namespace audio {
 
-#define ALPREFIX << "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
+#define ALPREFIX "[" << (s16)(((id)&0xffff0000)>>16) << "," << (s16)((id)&0xffff) << "," << (sample ? sample->getName() : "(none)") << "," << nbsources << "," << nbbuffers << "," << loadCount << "] "
 
 #undef ALError
-#define ALError LogError ALPREFIX
-#define ALWarning LogWarning ALPREFIX
-#define LogAL(x) LogDebug ALPREFIX << x
-#define TraceAL(x) LogDebug ALPREFIX << x
+#define ALError LogError << ALPREFIX
+#define ALWarning LogWarning << ALPREFIX
+#define LogAL(x) LogDebug(ALPREFIX << x)
+#define TraceAL(x) LogDebug(ALPREFIX << x)
 
 static size_t nbsources = 0;
 static size_t nbbuffers = 0;

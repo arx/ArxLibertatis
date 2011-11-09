@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "platform/String.h"
 
@@ -96,7 +96,7 @@ void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
  
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & s1, const fs::path & s2) {
 	
-	LogDebug << "Tweak Skin " << s1 << " " << s2;
+	LogDebug("Tweak Skin " << s1 << " " << s2);
 
 	if ( obj == NULL || s1.empty() || s2.empty() )
 	{
@@ -104,7 +104,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & s1, const fs::pat
 		return;
 	}
 	
-	LogDebug << "Tweak Skin " << s1 << " " << s2;
+	LogDebug("Tweak Skin " << s1 << " " << s2);
 
 	fs::path skintochange = "graph/obj3d/textures" / s1;
 	

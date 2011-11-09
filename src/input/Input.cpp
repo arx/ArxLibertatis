@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifdef HAVE_SDL
 #include "input/SDLInputBackend.h"
 #endif
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
 Input * GInput = NULL;
@@ -190,7 +190,7 @@ static const KeyDescription keysDescriptions[] = {
 	{ Keyboard::Key_Grave, "`" },
 	{ Keyboard::Key_Apostrophe, "'" },
 	{ Keyboard::Key_Minus, "-" },
-	{ Keyboard::Key_Equals, "=" }
+	{ Keyboard::Key_Equals, "=" },
 };
 
 const std::string PREFIX_KEY = "Key_";
@@ -550,8 +550,7 @@ void Input::update()
 std::map<std::string, InputKeyId> keyNames;
 
 std::string Input::getKeyName(InputKeyId key, bool localizedName) {
-	ARX_UNUSED(localizedName);
-
+	
 	if(key == -1) {
 		return std::string();
 	}
@@ -561,7 +560,7 @@ std::string Input::getKeyName(InputKeyId key, bool localizedName) {
 	std::string modifier;
 	if(key & INPUT_COMBINATION_MASK) {
 		// key combination
-		modifier = getKeyName((key >> 16) & 0x0fff);
+		modifier = getKeyName((key >> 16) & 0x0fff, localizedName);
 		key &= INPUT_MASK;
 	}
 	
@@ -637,6 +636,8 @@ InputKeyId Input::getKeyId(const std::string & name) {
 		for(size_t i = 0; i < ARRAY_SIZE(keysDescriptions); i++) {
 			keyNames[keysDescriptions[i].name] = keysDescriptions[i].id;
 		}
+		keyNames["WheelUp"] = (InputKeyId)Mouse::Wheel_Up;
+		keyNames["WheelDown"] = (InputKeyId)Mouse::Wheel_Down;
 	}
 	
 	std::map<std::string, InputKeyId>::const_iterator it = keyNames.find(name);
@@ -782,53 +783,41 @@ int Input::getMouseButtonClicked() const {
 
 //-----------------------------------------------------------------------------
 
-bool Input::actionNowPressed(int actionId) const
-{
-	switch (actionId)
-	{
-		case CONTROLS_CUST_MOUSELOOK:
-		case CONTROLS_CUST_ACTION:
-			break;
-		default:
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				if (config.actions[actionId].key[j] != -1)
-				{
-					if (config.actions[actionId].key[j] & Mouse::ButtonBase)
-					{
-						if (getMouseButtonNowPressed(config.actions[actionId].key[j]))
-							return true;
-					}
-					else if (config.actions[actionId].key[j] & Mouse::WheelBase)
-					{
-						if (config.actions[actionId].key[j] == Mouse::Wheel_Down)
-						{
-							if (getMouseWheelDir() < 0) return true;
-						}
-						else
-						{
-							if (getMouseWheelDir() > 0) return true;
-						}
-					}
-					else
-					{
-						bool bCombine = true;
-
-						if (config.actions[actionId].key[j] & INPUT_COMBINATION_MASK)
-						{
-							if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
-								bCombine = false;
-						}
-
-						if (isKeyPressedNowPressed(config.actions[actionId].key[j] & 0xFFFF))
-							return true & bCombine;
-					}
-				}
+bool Input::actionNowPressed(int actionId) const {
+	
+	for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
+		
+		InputKeyId key = config.actions[actionId].key[j];
+		if(key == -1) {
+			continue;
+		}
+		
+		if(key & Mouse::ButtonBase) {
+			if(getMouseButtonNowPressed(key)) {
+				return true;
+			}
+			continue;
+		}
+		
+		if(key & Mouse::WheelBase) {
+			if((key == Mouse::Wheel_Down) ? (getMouseWheelDir() < 0) : (getMouseWheelDir() > 0)) {
+				return true;
+			}
+			continue;
+		}
+		
+		bool bCombine = true;
+		if(config.actions[actionId].key[j] & INPUT_COMBINATION_MASK) {
+			if(!isKeyPressed((config.actions[actionId].key[j] >> 16) & INPUT_KEYBOARD_MASK)) {
+				bCombine = false;
 			}
 		}
+		
+		if(isKeyPressedNowPressed(config.actions[actionId].key[j] & INPUT_KEYBOARD_MASK)) {
+			return true && bCombine;
+		}
 	}
-
+	
 	return false;
 }
 
@@ -1051,43 +1040,37 @@ bool Input::actionPressed(int actionId) const
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-
-bool Input::actionNowReleased(int actionId) const
-{
-	switch (actionId)
-	{
-		case CONTROLS_CUST_MOUSELOOK:
-		case CONTROLS_CUST_ACTION:
-			break;
-		default:
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				if (config.actions[actionId].key[j] != -1)
-				{
-					if (config.actions[actionId].key[j] & Mouse::ButtonBase)
-					{
-						if (getMouseButtonNowUnPressed(config.actions[actionId].key[j]))
-							return true;
-					}
-					else
-					{
-						bool bCombine = true;
-
-						if (config.actions[actionId].key[j] & INPUT_COMBINATION_MASK)
-						{
-							if (!isKeyPressed((config.actions[actionId].key[j] >> 16) & 0xFFFF))
-								bCombine = false;
-						}
-
-						if (isKeyPressedNowUnPressed(config.actions[actionId].key[j] & 0xFFFF))
-							return true & bCombine;
-					}
-				}
+bool Input::actionNowReleased(int actionId) const {
+	
+	for(size_t j = 0; j < ARRAY_SIZE(config.actions[actionId].key); j++) {
+		
+		InputKeyId key = config.actions[actionId].key[j];
+		if(key == -1) {
+			continue;
+		}
+		
+		if(key & Mouse::ButtonBase) {
+			if(getMouseButtonNowUnPressed(key)) {
+				return true;
+			}
+			continue;
+		}
+		
+		if(key & Mouse::WheelBase) {
+			continue;
+		}
+		
+		bool bCombine = true;
+		if(config.actions[actionId].key[j] & INPUT_COMBINATION_MASK) {
+			if(!isKeyPressed((config.actions[actionId].key[j] >> 16) & INPUT_KEYBOARD_MASK)) {
+				bCombine = false;
 			}
 		}
+		
+		if(isKeyPressedNowUnPressed(config.actions[actionId].key[j] & INPUT_KEYBOARD_MASK)) {
+			return true && bCombine;
+		}
 	}
-
+	
 	return false;
 }

@@ -74,7 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "physics/Clothes.h"
 #include "physics/Box.h"
@@ -272,7 +272,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 	
 	(void)size; // TODO use size
 	
-	LogDebug << "Loading animation file " << file;
+	LogDebug("Loading animation file " << file);
 	
 	size_t pos = 0;
 	
@@ -286,10 +286,10 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 	}
 	pos += sizeof(THEA_HEADER);
 	
-	LogDebug << "TEA header size: " << sizeof(THEA_HEADER);
-	LogDebug << "Identity " << th->identity;
-	LogDebug << "Version - " << th->version << "  Frames " << th->nb_frames
-	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames;
+	LogDebug("TEA header size: " << sizeof(THEA_HEADER));
+	LogDebug("Identity " << th->identity);
+	LogDebug("Version - " << th->version << "  Frames " << th->nb_frames
+	         << "  Groups " << th->nb_groups << "  KeyFrames " << th->nb_key_frames);
 	
 	eerie->nb_groups = th->nb_groups;
 	eerie->nb_key_frames = th->nb_key_frames;
@@ -302,16 +302,16 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 	
 	// Go For Keyframes read
 	for(long i = 0; i < th->nb_key_frames; i++) {
-		LogDebug << "Loading keyframe " << i;
+		LogDebug("Loading keyframe " << i);
 		
 		THEA_KEYFRAME_2015 kf2015;
 		const THEA_KEYFRAME_2015 * tkf2015;
 		if(th->version >= 2015) {
-			LogDebug << " New keyframe version THEA_KEYFRAME_2015:" << sizeof(THEA_KEYFRAME_2015);
+			LogDebug(" New keyframe version THEA_KEYFRAME_2015:" << sizeof(THEA_KEYFRAME_2015));
 			tkf2015 = reinterpret_cast<const THEA_KEYFRAME_2015 *>(adr + pos);
 			pos += sizeof(THEA_KEYFRAME_2015);
 		} else {
-			LogDebug << " Old keyframe version THEA_KEYFRAME:" << sizeof(THEA_KEYFRAME);
+			LogDebug(" Old keyframe version THEA_KEYFRAME:" << sizeof(THEA_KEYFRAME));
 			const THEA_KEYFRAME * tkf = reinterpret_cast<const THEA_KEYFRAME *>(adr + pos);
 			pos += sizeof(THEA_KEYFRAME);
 			memset(&kf2015, 0, sizeof(THEA_KEYFRAME_2015));
@@ -339,10 +339,10 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 		eerie->anim_time += time_frame;
 		eerie->frames[i].flag = tkf2015->flag_frame;
 		
-		LogDebug << " pos " << pos << " - NumFr " << eerie->frames[i].num_frame
+		LogDebug(" pos " << pos << " - NumFr " << eerie->frames[i].num_frame
 		         << " MKF " << tkf2015->master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME)
 		         << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015->key_move
-		         << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph;
+		         << " Orient " << tkf2015->key_orient << " Morph " << tkf2015->key_morph);
 		
 		// Is There a Global translation ?
 		if(tkf2015->key_move != 0) {
@@ -350,8 +350,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 			const THEA_KEYMOVE * tkm = reinterpret_cast<const THEA_KEYMOVE *>(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
 			
-			LogDebug << " -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
-			         << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE);
+			LogDebug(" -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
+			         << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE));
 			
 			eerie->frames[i].translate = *tkm;
 		}
@@ -363,8 +363,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 			const ArxQuat * quat = reinterpret_cast<const ArxQuat *>(adr + pos);
 			pos += sizeof(ArxQuat);
 			
-			LogDebug << " -> rotate x " << quat->x << " y " << quat->y << " z " << quat->z
-			         << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat);
+			LogDebug(" -> rotate x " << quat->x << " y " << quat->y << " z " << quat->z
+			         << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat));
 			
 			eerie->frames[i].quat = *quat;
 		}
@@ -390,7 +390,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 		// Now Read Sound Data included in this frame
 		s32 num_sample = *reinterpret_cast<const s32 *>(adr + pos);
 		pos += sizeof(s32);
-		LogDebug << " -> num_sample " << num_sample << " s32:" << sizeof(s32);
+		LogDebug(" -> num_sample " << num_sample << " s32:" << sizeof(s32));
 		
 		eerie->frames[i].sample = -1;
 		if(num_sample != -1) {
@@ -399,8 +399,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 			pos += sizeof(THEA_SAMPLE);
 			pos += ts->sample_size;
 			
-			LogDebug << " -> sample " << ts->sample_name << " size " << ts->sample_size
-			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE);
+			LogDebug(" -> sample " << ts->sample_name << " size " << ts->sample_size
+			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE));
 			
 			eerie->frames[i].sample = ARX_SOUND_Load(fs::path::load(safestring(ts->sample_name)));
 		}
@@ -496,7 +496,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 		eerie->anim_time = 1;
 	}
 	
-	LogDebug << "Finished Conversion TEA -> EERIE - " << (eerie->anim_time / 1000) << " seconds";
+	LogDebug("Finished Conversion TEA -> EERIE - " << (eerie->anim_time / 1000) << " seconds");
 	
 	return eerie;
 }
@@ -576,9 +576,9 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 	const THEO_NB * tn = reinterpret_cast<const THEO_NB *>(adr + pos);
 	pos += sizeof(THEO_NB);
 	
-	LogDebug << "Nb Vertex " << tn->nb_vertex << " Nb Action Points " << tn->nb_action_point
-	         << " Nb Lines " << tn->nb_lines;
-	LogDebug << "Nb Faces " << tn->nb_faces << " Nb Groups " << tn->nb_groups;
+	LogDebug("Nb Vertex " << tn->nb_vertex << " Nb Action Points " << tn->nb_action_point
+	         << " Nb Lines " << tn->nb_lines);
+	LogDebug("Nb Faces " << tn->nb_faces << " Nb Groups " << tn->nb_groups);
 	
 	eerie->vertexlist.resize(tn->nb_vertex);
 	eerie->facelist.resize(tn->nb_faces);
@@ -890,7 +890,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path 
 	
 	(void)size; // TODO use size
 	
-	LogDebug << "Loading Scene " << fic;
+	LogDebug("Loading Scene " << fic);
 	
 	size_t pos = 0;
 	
@@ -900,7 +900,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path 
 	const TSCN_HEADER * psth = reinterpret_cast<const TSCN_HEADER *>(adr + pos);
 	pos += sizeof(TSCN_HEADER);
 	
-	LogDebug << "SCNtoEERIE " << fic << " Version " << psth->version << " Nb Textures " << psth->nb_maps;
+	LogDebug("SCNtoEERIE " << fic << " Version " << psth->version << " Nb Textures " << psth->nb_maps);
 	
 	if(psth->version < 3008 || psth->version > 3024) {
 		LogError << "ScnToEerie: invalid version in " << fic << ": found " << psth->version
@@ -1203,7 +1203,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
 
 EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const fs::path & dirr) {
 	
-	LogDebug << "Loading Multiscene " << dirr;
+	LogDebug("Loading Multiscene " << dirr);
 	
 	EERIE_MULTI3DSCENE * em = NULL;
 	

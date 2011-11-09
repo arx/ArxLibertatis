@@ -10,6 +10,7 @@ include(CheckCXXSourceCompiles)
 
 include(BuildSystem)
 include(CompileCheck)
+include(VersionString)
 
 # Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
 if(MSVC)
@@ -44,7 +45,6 @@ option(ARX_BUILD_TOOLS "Build tools" ON)
 option(ARX_BUILD_EDITOR "Build editor" OFF)
 option(ARX_BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
-option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
 option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
@@ -211,6 +211,9 @@ else(MSVC)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
+	if(NOT WIN32)
+		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
+	endif()
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	check_symbol_exists(signal "signal.h" HAVE_SIGNAL)
@@ -238,14 +241,14 @@ else(MSVC)
 	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
-	if(ARX_DEBUG)
+	if(CMAKE_BUILD_TYPE STREQUAL Debug)
 		#Debug
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+		message("On Debug Build")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3")
 		add_definitions(-D_DEBUG)
-		
 	else()
 		#Release
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g3")
+		message("On Release Build")
 		add_definitions(-D_NDEBUG)
 	endif()
 	
@@ -444,12 +447,19 @@ set(IO_SOURCES
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
 	src/io/IO.cpp
-	src/io/Logger.cpp
 	src/io/PakEntry.cpp
 	src/io/PakReader.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
+set(IO_LOGGER_SOURCES
+	src/io/log/ConsoleLogger.cpp
+	src/io/log/FileLogger.cpp
+	src/io/log/LogBackend.cpp
+	src/io/log/Logger.cpp
+)
+set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
+set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
 set(IO_FILESYSTEM_SOURCES
 	src/io/FilePath.cpp
 	src/io/FileStream.cpp
@@ -584,6 +594,14 @@ if(ARX_USE_DINPUT8)
 	endif()
 endif()
 
+if(HAVE_ISATTY)
+	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_POSIX_SOURCES})
+endif()
+if(HAVE_WINAPI)
+	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_WINDOWS_SOURCES})
+endif()
+list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
+
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(HAVE_WINAPI)
@@ -621,8 +639,14 @@ add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
-configure_file(${SRC_DIR}/Configure.h.cmake Configure.h)
+if(ARX_USE_UNITYBUILD)
+	set(UNITY_BUILD 1)
+endif()
 
+configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h")
+
+version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
+list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
 # Add executables
 
@@ -632,16 +656,17 @@ if(ARX_BUILD_TOOLS)
 	
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
 		src/core/Localisation.cpp
 		src/io/PakEntry.cpp
 		src/io/PakReader.cpp
 		src/io/Blast.cpp
-		src/io/Logger.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
 		src/platform/String.cpp
 		src/platform/Platform.cpp
+		src/platform/Lock.cpp
 		tools/savetool/savetool.cpp
 		tools/savetool/SaveFix.cpp
 		tools/savetool/SaveView.cpp
@@ -649,25 +674,28 @@ if(ARX_BUILD_TOOLS)
 	
 	set(SAVETOOL_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
 	
-	add_executable_shared(savetool "" "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
+	add_executable_shared(arxsavetool "" "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
 	
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
 		src/io/PakEntry.cpp
 		src/io/PakReader.cpp
-		src/io/Logger.cpp
 		src/io/Blast.cpp
+		src/io/log/ColorLogger.cpp
+		src/io/log/ConsoleLogger.cpp
+		src/io/log/Logger.cpp
 		src/platform/String.cpp
 		src/platform/Platform.cpp
+		src/platform/Lock.cpp
 		tools/unpak/unpak.cpp
 	)
 	
 	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
 	
-	add_executable_shared(unpak "" "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
+	add_executable_shared(arxunpak "" "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
 	
 endif()
-
 
 # Build and link executables
 

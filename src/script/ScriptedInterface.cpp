@@ -232,6 +232,8 @@ public:
 	
 	Result execute(Context & context) {
 		
+		ARX_UNUSED(context);
+		
 		DebugScript("");
 		
 		ARX_INTERFACE_EndIntro();
@@ -248,6 +250,8 @@ public:
 	EndGameCommand() : Command("endgame") { }
 	
 	Result execute(Context & context) {
+		
+		ARX_UNUSED(context);
 		
 		DebugScript("");
 		

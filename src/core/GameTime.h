@@ -60,9 +60,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 
-extern float ARXPausedTime;
-extern float ARXTotalPausedTime;
-extern float ARXTime;
+#include "platform/Time.h"
+
+extern u64 ARXPausedTime;
+extern u64 ARXStartTime;
+
+/* pure evil - this sometimes respects pause and sometimes not! TODO remove!!!
+ * additinally, this stored an "absolute" time value in a floating point number
+ * expect to loose precision when playing too long
+ */
+extern float ARXTime; 
 extern bool ARXPausedTimer;
 
 #define lARXTime (static_cast<long>( ARXTime ))
@@ -73,16 +80,12 @@ void ARX_TIME_UnPause();
 void ARX_TIME_Init();
 void ARX_TIME_Force_Time_Restore(float time);
 
-float _ARX_TIME_GetTime();
-
 inline float ARX_TIME_Get(bool _bUsePause = true) {
 	
-	float tim = _ARX_TIME_GetTime();
-	
 	if(ARXPausedTimer && _bUsePause) {
-		ARXTime = ARXPausedTime - ARXTotalPausedTime;
+		ARXTime = float(Time::getElapsedUs(ARXStartTime, ARXPausedTime)) / 1000;
 	} else {
-		ARXTime = tim - ARXTotalPausedTime;
+		ARXTime = float(Time::getElapsedUs(ARXStartTime)) / 1000;
 	}
 	
 	return ARXTime;

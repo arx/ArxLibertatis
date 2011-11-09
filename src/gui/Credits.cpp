@@ -13,7 +13,7 @@
 #include "graphics/Draw.h"
 #include "graphics/font/Font.h"
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "scene/GameSound.h"
 
@@ -64,12 +64,12 @@ static void CalculTextPosition(const string & phrase, CreditsTextInformations & 
 
 static void InitCredits() {
 
-	LogDebug << "InitCredits";
+	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
 	ExtractAllCreditsTextInformations();
 	
-	LogDebug << "Credits lines " << CreditsData.aCreditsInformations.size();
+	LogDebug("Credits lines " << CreditsData.aCreditsInformations.size());
 	
 }
 

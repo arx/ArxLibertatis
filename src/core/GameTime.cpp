@@ -62,57 +62,50 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
 
 /////////////////////// GAMETIME MANAGEMENT /////////////////////////
-float ARXPausedTime = 0;
-float ARXTotalPausedTime = 0;
+u64 ARXPausedTime = 0;
+u64 ARXStartTime = 0;
 float ARXTime = 0;
 bool ARXPausedTimer = 0;
 
 
-
-float _ARX_TIME_GetTime() {
-	return float(Time::getUs()) / 1000;
-}
-
 void ARX_TIME_Init() {
 	
-	float tim = _ARX_TIME_GetTime();
-	ARXTotalPausedTime = tim;
+	ARXStartTime = Time::getUs();
 	ARXTime = 0;
 	ARXPausedTime = 0;
-	ARXPausedTimer = 0;
+	ARXPausedTimer = false;
 	
 	FrameTime = LastFrameTime = ARXTime;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_TIME_Pause()
-{
-	if (!ARXPausedTimer)
-	{
-		float tim = _ARX_TIME_GetTime();
-		ARXPausedTime = tim;
-		ARXPausedTimer = 1;
+void ARX_TIME_Pause() {
+	
+	if(ARXPausedTimer) {
+		return; // already paused
 	}
+	
+	ARXPausedTime = Time::getUs();
+	ARXPausedTimer = true;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_TIME_UnPause()
-{
-	if (ARXPausedTimer)
-	{
-		float tim = _ARX_TIME_GetTime();
-		ARXTotalPausedTime += tim - ARXPausedTime;
-		ARXPausedTime = 0;
-		ARXPausedTimer = 0;
+void ARX_TIME_UnPause() {
+	
+	if(!ARXPausedTimer) {
+		return; // not paused
 	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_TIME_Force_Time_Restore(float time)
-{
-	float tim = _ARX_TIME_GetTime();
-	ARXTotalPausedTime = tim - time;
-	ARXTime = time;
+	
+	ARXStartTime += Time::getElapsedUs(ARXPausedTime);
 	ARXPausedTime = 0;
-	ARXPausedTimer = 0;
+	ARXPausedTimer = false;
+}
+
+void ARX_TIME_Force_Time_Restore(float time) {
+	
+	u64 requestedTime = u64(time * 1000);
+	
+	ARXStartTime = Time::getElapsedUs(requestedTime);
+	ARXTime = float(requestedTime) / 1000;
+	
+	ARXPausedTime = 0;
+	ARXPausedTimer = false;
 }

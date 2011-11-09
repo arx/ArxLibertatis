@@ -34,7 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioEnvironment.h"
 #include "audio/AudioGlobal.h"
 #include "audio/AudioSource.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "math/Vector3.h"
 #include "platform/Platform.h"
 
@@ -124,8 +124,8 @@ aalError OpenALBackend::init(bool enableEffects) {
 	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << " without EFX";
 #endif
 	
-	LogDebug << "AL extensions: " << alGetString(AL_EXTENSIONS);
-	LogDebug << "ALC extensions: " << alcGetString(device, ALC_EXTENSIONS);
+	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
+	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));
 	
 	return AAL_OK;
 }

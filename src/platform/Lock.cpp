@@ -7,7 +7,7 @@
 
 #include <errno.h>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "platform/Platform.h"
 
 Lock::Lock() : locked(false) {

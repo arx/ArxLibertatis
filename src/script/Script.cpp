@@ -85,8 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 
 #include "io/FilePath.h"
-#include "io/Logger.h"
 #include "io/PakReader.h"
+#include "io/log/Logger.h"
 
 #include "platform/String.h"
 
@@ -272,7 +272,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 {
 	static long ppos = 0;
 
-	if ((!PauseScript) && (!EDITMODE) && (!ARXPausedTime))
+	if ((!PauseScript) && (!EDITMODE) && (!ARXPausedTimer))
 	{
 		EVENT_SENDER = NULL;
 
@@ -1831,7 +1831,7 @@ void ARX_SCRIPT_EventStackInit()
 }
 void ARX_SCRIPT_EventStackClear( bool check_exist )
 {
-	LogDebug << "Event Stack Clear";
+	LogDebug("Event Stack Clear");
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if ( check_exist ) // If we're not blatantly clearing everything

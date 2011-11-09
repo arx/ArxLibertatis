@@ -38,7 +38,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/CinematicTexture.h"
 
 #include "io/PakReader.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "io/FilePath.h"
 #include "io/CinematicFormat.h"
 
@@ -145,7 +145,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		LogError << "error reading file version";
 		return false;
 	}
-	LogDebug << "version " << version;
+	LogDebug("version " << version);
 	
 	if(version < CINEMATIC_VERSION_1_75) {
 		LogError << "too old version " << version << " expected at least " << CINEMATIC_VERSION_1_75;
@@ -165,7 +165,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		LogError << "error reading bitmap count";
 		return false;
 	}
-	LogDebug << "nbitmaps " << nbitmaps;
+	LogDebug("nbitmaps " << nbitmaps);
 	
 	c->m_bitmaps.reserve(nbitmaps);
 	
@@ -184,7 +184,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		fs::path path = fixTexturePath(str);
 		
-		LogDebug << "adding bitmap " << i << ": " << path;
+		LogDebug("adding bitmap " << i << ": " << path);
 		
 		CinematicBitmap * newBitmap = CreateCinematicBitmap(path, scale);
 		if(newBitmap) {
@@ -201,7 +201,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	LogDebug << "nsounds " << nsounds;
+	LogDebug("nsounds " << nsounds);
 	for(int i = 0; i < nsounds; i++) {
 		
 		if(version >= CINEMATIC_VERSION_1_76) {
@@ -220,7 +220,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		fs::path path = fixSoundPath(str);
 		
-		LogDebug << "adding sound " << i << ": " << path;
+		LogDebug("adding sound " << i << ": " << path);
 		
 		if(AddSoundToList(path) < 0) {
 			LogError << "AddSoundToList failed for " << path;
@@ -236,12 +236,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
-	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76);
+	LogDebug("nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76));
 	for(int i = 0; i < t.nbkey; i++) {
 		
 		C_KEY k;
 		
-		LogDebug << "loading key " << i << " " << size;
+		LogDebug("loading key " << i << " " << size);
 				
 		if(version <= CINEMATIC_VERSION_1_75) {
 			
@@ -337,7 +337,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	LSoundChoose = C_KEY::English << 8;
 	
-	LogDebug << "loaded cinematic";
+	LogDebug("loaded cinematic");
 	
 	return true;
 }

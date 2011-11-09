@@ -72,8 +72,6 @@ class TextureContainer;
 struct EERIE_3DOBJ;
 struct EERIE_MULTI3DSCENE;
 
-const std::string arxVersion = "Arx Libertatis 0.1";
-
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 
 extern Color3f FADECOLOR;
@@ -160,7 +158,6 @@ void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
 
 void SendGameReadyMsg();
-void AdjustUI();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 void ARX_SetAntiAliasing();

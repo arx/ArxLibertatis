@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
+#include "boost/algorithm/string/predicate.hpp"
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -80,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
+#include "core/Version.h"
 
 #include "game/Missile.h"
 #include "game/Damage.h"
@@ -119,9 +122,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/FilePath.h"
 #include "io/PakReader.h"
-#include "io/Logger.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
+#include "io/log/FileLogger.h"
+#include "io/log/Logger.h"
 
 #include "math/Angle.h"
 #include "math/Rectangle.h"
@@ -188,7 +192,6 @@ extern long		DONT_WANT_PLAYER_INZONE;
 extern long		DeadTime;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
-extern float		ARXTotalPausedTime;
 extern long		COLLIDED_CLIMB_POLY;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long PATHFINDER_WAIT;
@@ -432,7 +435,7 @@ void ManageNONCombatModeAnimations();
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
-	LogDebug << "SendGameReadyMsg";
+	LogDebug("SendGameReadyMsg");
 	SendMsgToAllIO(SM_GAME_READY);
 }
 
@@ -449,24 +452,29 @@ void DANAE_KillCinematic()
 	}
 }
 
-void AdjustUI()
-{
+static bool AdjustUI() {
+	
 	// Sets Danae Screen size depending on windowed/full-screen state
 	DANAESIZX = mainApp->GetWindow()->GetSize().x;
 	DANAESIZY = mainApp->GetWindow()->GetSize().y;
-
+	
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
 	DANAECENTERY = DANAESIZY>>1;
-
+	
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
 	Xratio = DANAESIZX * ( 1.0f / 640 );
 	Yratio = DANAESIZY * ( 1.0f / 480 );
-
-	ARX_Text_Init();
-
-	if(pMenu)
+	
+	if(!ARX_Text_Init()) {
+		return false;
+	}
+	
+	if(pMenu) {
 		pMenu->bReInitAll=true;
+	}
+	
+	return true;
 }
 
 void DanaeRestoreFullScreen() {
@@ -643,6 +651,14 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #endif
 	
 	
+	Logger::init();
+	
+	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
+	
+	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
+		Logger::configure(argv[1] + 8);
+	}
+	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
 	ALLOW_CHEATS = 0;
@@ -654,7 +670,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	TRUEFIGHT = 0;
 #endif
 	
-	LogInfo << "Starting " << arxVersion;
+	LogInfo << "Starting " << version;
 	
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
@@ -681,49 +697,49 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	memset(explo, 0, sizeof(explo));
 	
 	USE_FAST_SCENES = 1;
-	LogDebug << "Danae Start";
+	LogDebug("Danae Start");
 
-	LogDebug << "Project Init";
+	LogDebug("Project Init");
 
 	NOCHECKSUM=0;
 	
 	ARX_INTERFACE_NoteInit();
-	LogDebug << "Note Init";
+	LogDebug("Note Init");
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
-	LogDebug << "Attractors Init";
+	LogDebug("Attractors Init");
 	ARX_SPELLS_Precast_Reset();
-	LogDebug << "Spell Init";
+	LogDebug("Spell Init");
 	
 	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
 
-	LogDebug << "LSV Init";
+	LogDebug("LSV Init");
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
 	memset(TELEPORT_TO_POSITION,0,64);
-	LogDebug << "Mset";
+	LogDebug("Mset");
 	
-	LogDebug << "AnimManager Init";
+	LogDebug("AnimManager Init");
 	ARX_SCRIPT_EventStackInit();
-	LogDebug << "EventStack Init";
+	LogDebug("EventStack Init");
 	ARX_EQUIPMENT_Init();
-	LogDebug << "AEQ Init";
+	LogDebug("AEQ Init");
 	memset(_CURRENTLOAD_,0,256);
 
 	ARX_SCRIPT_Timer_FirstInit(512);
-	LogDebug << "Timer Init";
+	LogDebug("Timer Init");
 	ARX_FOGS_FirstInit();
-	LogDebug << "Fogs Init";
+	LogDebug("Fogs Init");
 
 	EERIE_LIGHT_GlobalInit();
-	LogDebug << "Lights Init";
+	LogDebug("Lights Init");
 	
-	LogDebug << "Svars Init";
+	LogDebug("Svars Init");
 
 	// Script Test
 	lastteleport.x=0.f;
@@ -744,12 +760,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_SPEECH_ClearAll();
 	QuakeFx.intensity=0.f;
 
-	LogDebug << "Launching DANAE";
+	LogDebug("Launching DANAE");
 
 	memset(&Project, 0, sizeof(PROJECT));
 	
 	if (FINAL_RELEASE) {
-		LogDebug << "FINAL_RELEASE";
+		LogDebug("FINAL_RELEASE");
 		LaunchDemo=1;
 		Project.demo=LEVEL10;
 		NOCHECKSUM=1;
@@ -759,7 +775,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		Project.demo=LEVELDEMO2;
 	}
 
-	LogDebug << "After Popup";
+	LogDebug("After Popup");
 	atexit(ClearGame);
 
 	if (LaunchDemo)	{
@@ -776,7 +792,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		NOCHECKSUM=1;
 	}
 	
-	AdjustUI();
+	if(!AdjustUI()) {
+		return -1;
+	}
 
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
@@ -811,7 +829,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;
 	Project.torch.b = 0.66666f;
-	LogDebug << "InitializeDanae";
+	LogDebug("InitializeDanae");
 	InitializeDanae();
 	
 	PakReader::ReleaseFlags rel = resources->getReleaseType();
@@ -2028,7 +2046,7 @@ extern long FLAG_ALLOW_CLOTHES;
 
 void FirstFrameHandling()
 {	
-	LogDebug << "FirstFrameHandling";
+	LogDebug("FirstFrameHandling");
 	Vec3f trans;
 	FirstFrame=-1;
 
@@ -3489,7 +3507,7 @@ bool DANAE_ManageSplashThings() {
 
 void LaunchWaitingCine() {
 	
-	LogDebug << "LaunchWaitingCine " << CINE_PRELOAD;
+	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 
 	if(ACTIVECAM) {
 		ePos = ACTIVECAM->pos;
@@ -3506,10 +3524,10 @@ void LaunchWaitingCine() {
 		if(loadCinematic(ControlCinematique, cinematic)) {
 			
 			if(CINE_PRELOAD) {
-				LogDebug << "only preloaded cinematic";
+				LogDebug("only preloaded cinematic");
 				PLAY_LOADED_CINEMATIC = 0;
 			} else {
-				LogDebug << "starting cinematic";
+				LogDebug("starting cinematic");
 				PLAY_LOADED_CINEMATIC = 1;
 				ARX_TIME_Pause();
 			}
@@ -3536,7 +3554,7 @@ long DANAE_Manage_Cinematic()
 
 	if (PLAY_LOADED_CINEMATIC==1)
 	{
-		LogDebug << "really starting cinematic now";
+		LogDebug("really starting cinematic now");
 		LastFrameTicks=FrameTicks;
 		PLAY_LOADED_CINEMATIC=2;
 	}
@@ -3582,155 +3600,41 @@ long DANAE_Manage_Cinematic()
 	return 0;
 }
 
-void ReMappDanaeButton()
-{
-	bool bNoAction=true;
-	int iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
-
-	if(iButton!=-1)
-	{
-		if(GInput->getMouseButtonDoubleClick(iButton,300))
-		{
-			LastEERIEMouseButton=EERIEMouseButton;
-			EERIEMouseButton|=4;
-			EERIEMouseButton&=~1;
-			bNoAction=false;
-		}
+void ReMappDanaeButton() {
+	
+	// Handle double clicks.
+	const ActionKey & button = config.actions[CONTROLS_CUST_ACTION].key[0];
+	if((button.key[0] != -1 && (button.key[0] & Mouse::ButtonBase)
+	    && GInput->getMouseButtonDoubleClick(button.key[0], 300))
+	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
+	    && GInput->getMouseButtonDoubleClick(button.key[1], 300))) {
+		LastEERIEMouseButton = EERIEMouseButton;
+		EERIEMouseButton |= 4;
+		EERIEMouseButton &= ~1;
 	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
-
-		if(iButton!=-1)
-		{
-			if(GInput->getMouseButtonDoubleClick(iButton,300))
-			{
-				LastEERIEMouseButton=EERIEMouseButton;
-				EERIEMouseButton|=4;
-				EERIEMouseButton&=~1;
-			}
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
+		LastEERIEMouseButton = EERIEMouseButton;
+		if(EERIEMouseButton & 4) {
+			EERIEMouseButton &= ~1;
+		} else {
+			EERIEMouseButton |= 1;
 		}
+		
 	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-		{
-			LastEERIEMouseButton=EERIEMouseButton;
-			EERIEMouseButton|=1;
-
-			if (EERIEMouseButton&4) EERIEMouseButton&=~1;
-
-			bNoAction=false;
-		}
+	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
+		LastEERIEMouseButton = EERIEMouseButton;
+		EERIEMouseButton &= ~1;
+		EERIEMouseButton &= ~4;
 	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-			{
-				LastEERIEMouseButton=EERIEMouseButton;
-				EERIEMouseButton|=1;
-
-				if (EERIEMouseButton&4) EERIEMouseButton&=~1;
-			}
-		}
+	
+	if(GInput->actionNowPressed(CONTROLS_CUST_MOUSELOOK)) {
+		EERIEMouseButton |= 2;
 	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_ACTION].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-		{
-			LastEERIEMouseButton=EERIEMouseButton;
-			EERIEMouseButton&=~1;
-			EERIEMouseButton&=~4;
-			bNoAction=false;
-		}
+	if(GInput->actionNowReleased(CONTROLS_CUST_MOUSELOOK)) {
+		EERIEMouseButton &= ~2;
 	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_ACTION].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-			{
-				LastEERIEMouseButton=EERIEMouseButton;
-				EERIEMouseButton&=~1;
-				EERIEMouseButton&=~4;
-			}
-		}
-	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-		{
-			EERIEMouseButton|=2;
-			bNoAction=false;
-		}
-	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowPressed(iButton)) )
-			{
-				EERIEMouseButton|=2;
-			}
-		}
-	}
-
-	bNoAction=true;
-	iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[0];
-
-	if(iButton!=-1)
-	{
-		if(	((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-			((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
-		{
-			EERIEMouseButton&=~2;
-			bNoAction=false;
-		}
-	}
-
-	if(bNoAction)
-	{
-		iButton=config.actions[CONTROLS_CUST_MOUSELOOK].key[1];
-
-		if(iButton!=-1)
-		{
-			if( ((iButton & Mouse::ButtonBase) && (GInput->getMouseButtonNowUnPressed(iButton)))||
-				((!(iButton & Mouse::ButtonBase)) && GInput->isKeyPressedNowUnPressed(iButton)) )
-			{
-				EERIEMouseButton&=~2;
-			}
-		}
-	}
+	
 }
 
 void AdjustMousePosition()
@@ -3838,7 +3742,7 @@ void ShowTestText()
 {
 	char tex[256];
 
-	mainApp->OutputText(0, 16, arxVersion);
+	mainApp->OutputText(0, 16, version);
 
 	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
 	mainApp->OutputText( 0, 32, tex );

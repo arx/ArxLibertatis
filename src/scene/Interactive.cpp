@@ -97,7 +97,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/FilePath.h"
 #include "io/PakReader.h"
 #include "io/Filesystem.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
@@ -2367,7 +2367,7 @@ INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	LogDebug << "AddFix " << file;
+	LogDebug("AddFix " << file);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
@@ -2467,7 +2467,7 @@ static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
 		return NULL;
 	}
 
-	LogDebug << "AddCamera " << file;
+	LogDebug("AddCamera " << file);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2522,7 +2522,7 @@ static INTERACTIVE_OBJ * AddMarker(const fs::path & file) {
 		return NULL;
 	}
 	
-	LogDebug << "AddMarker " << file;
+	LogDebug("AddMarker " << file);
 	
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;
@@ -2821,7 +2821,7 @@ INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	LogDebug << "AddNPC " << file;
+	LogDebug("AddNPC " << file);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 	EERIEPOLY * ep;

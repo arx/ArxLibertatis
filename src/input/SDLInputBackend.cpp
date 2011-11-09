@@ -3,7 +3,7 @@
 
 #include <boost/static_assert.hpp>
 
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 #include "window/SDLWindow.h"
 
 SDLInputBackend::SDLInputBackend() { }

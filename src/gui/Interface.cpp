@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 #include "io/FilePath.h"
-#include "io/Logger.h"
+#include "io/log/Logger.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
@@ -4562,11 +4562,9 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth),
 			                INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
 			                stealth_gauge_tc, Color::gray(v));
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -4626,7 +4624,6 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::Fog, false);
@@ -4906,8 +4903,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE)))
 	{
 		if (Book_Mode == BOOKMODE_SPELLS)
@@ -4957,7 +4952,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float n;
 			long xpos=0;
 			long ypos=0;
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 			for(size_t i = 0; i < RUNE_COUNT; i++) {
 				
@@ -5150,7 +5144,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				}
 			}
 
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullCCW);
 
 			if (!found2) LastRune=-1;
@@ -5283,6 +5276,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			PrepareCamera(oldcam);
 		}
 	}
+	
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -5499,7 +5494,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 	BOOKDECY = 0;
 
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		if(Book_Mode == BOOKMODE_STATS) {
 			DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
 		} else if(Book_Mode == BOOKMODE_SPELLS) {
@@ -5509,7 +5503,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		} else {
 			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
 		}
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 	else
 	{
@@ -6503,7 +6496,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 	{
 
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 		Rect rec;
 		if (BOOKZOOM) {
@@ -6956,11 +6948,9 @@ void ARX_INTERFACE_DrawCurrentTorch()
 
 	py = DANAESIZY - INTERFACE_RATIO(158+32);
 
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth),
 	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
 	                0.001f, CURRENT_TORCH->inv, Color::white);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ( rnd() > 0.2f )
 	{
@@ -7554,14 +7544,12 @@ void ArxGame::DrawAllInterface()
 			float px = DANAESIZX - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 		float py = 0;
 
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		float vv = 0.9f - EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 2 )+rnd()*( 1.0f / 10 );
 
 		if ( vv < 0.f ) vv = 0;
 		else if ( vv > 1.f ) vv = 1.f;
 
 		ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 			if (MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 		{
@@ -7676,7 +7664,6 @@ void ArxGame::DrawAllInterface()
 		v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 		v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
 
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(81);
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
@@ -7717,7 +7704,6 @@ void ArxGame::DrawAllInterface()
 		//---------------------------------------------------------------------
 		//END RED GAUGE
 
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = 0.f-lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(78);
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
@@ -7808,7 +7794,6 @@ void ArxGame::DrawAllInterface()
 		}
 	}
 
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
