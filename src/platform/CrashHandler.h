@@ -3,6 +3,7 @@
 #define ARX_PLATFORM_CRASHHANDLER_H
 
 #include <string>
+#include "platform/Platform.h"
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
