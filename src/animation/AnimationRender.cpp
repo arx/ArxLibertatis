@@ -1496,7 +1496,9 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 			return;
 	}
 #else
-
+	
+	ARX_UNUSED(_fAddZ);
+	
 	TexturedVertex pPointAdd[3];
 	EE_P(&_pVertex1->p, &pPointAdd[0]);
 	EE_P(&_pVertex2->p, &pPointAdd[1]);
