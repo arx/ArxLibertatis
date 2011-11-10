@@ -21,16 +21,13 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <csignal>
 
 #include "io/Filesystem.h"
 #include "io/FilePath.h"
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 #include "Configure.h"
-
-#ifdef HAVE_SIGNAL
-#include <signal.h>
-#endif
 
 #if defined(HAVE_FORK) && defined(HAVE_READLINK) && defined(HAVE_KILL) \
 	&& defined(HAVE_SIGNAL) && defined(SIGKILL) \
@@ -41,6 +38,7 @@
 #include <execinfo.h>
 #endif
 
+#include <signal.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -155,9 +153,8 @@ void initCrashHandler() {
 // don't have enough POSIX functionality for backtraces
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-#include <new.h>
-#include <float.h>
-#include <signal.h>
+#include <new>
+#include <cfloat>
 
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 #include <boost/lexical_cast.hpp>

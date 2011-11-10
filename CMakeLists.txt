@@ -217,7 +217,6 @@ else(MSVC)
 	endif()
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
-	check_symbol_exists(signal "signal.h" HAVE_SIGNAL)
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
 	

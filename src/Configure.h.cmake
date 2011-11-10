@@ -30,7 +30,6 @@
 #cmakedefine HAVE_EXECLP
 #cmakedefine HAVE_WAITPID
 #cmakedefine HAVE_KILL
-#cmakedefine HAVE_SIGNAL
 #cmakedefine HAVE_BACKTRACE
 #cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
 #cmakedefine HAVE_ISATTY
