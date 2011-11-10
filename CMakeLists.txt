@@ -706,6 +706,15 @@ endif()
 
 if(PYTHONINTERP_FOUND)
 	
+	file(GLOB_RECURSE TOOLS_INCLUDES ${CMAKE_SOURCE_DIR}/tools/*.h)
+	set(ALL_SOURCES
+		${ARX_SOURCES}
+		${ALL_INCLUDES}
+		${SAVETOOL_SOURCES}
+		${UNPAK_SOURCES}
+		${TOOLS_INCLUDES}
+	)
+	
 	unset(STYLE_FILTER)
 	
 	# Complains about any c-style cast -> too annoying.
@@ -772,11 +781,13 @@ if(PYTHONINTERP_FOUND)
 	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-readability/fn_size)
 	
 	add_custom_target(style
-		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ALL_SOURCES}
+		DEPENDS ${ALL_SOURCES} VERBATIM
 	)
 	
 	add_custom_target(strict-style
-		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ALL_SOURCES}
+		DEPENDS ${ALL_SOURCES} VERBATIM
 	)
 endif()
 
