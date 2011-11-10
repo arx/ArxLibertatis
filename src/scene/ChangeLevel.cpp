@@ -258,7 +258,7 @@ bool ARX_Changelevel_CurGame_Clear() {
 		return false;
 	} 
 
-    if(!fs::create_directories(CurGamePath)) {
+	if(!fs::create_directories(CurGamePath)) {
 		LogError << "failed to create current game path " << CurGamePath;
 		return false;
 	}
