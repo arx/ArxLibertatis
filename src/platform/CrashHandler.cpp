@@ -314,21 +314,21 @@ bool CrashHandler::addNamedVariable(const std::string& name, const std::string& 
 }
 
 struct ThreadExceptionHandlers {
-	terminate_handler m_terminateHandler;					// Terminate handler   
-	unexpected_handler m_unexpectedHandler;					// Unexpected handler
-	void (*m_SIGFPEHandler)(int);							// FPE handler
-	void (*m_SIGILLHandler)(int);							// SIGILL handler
-	void (*m_SIGSEGVHandler)(int);							// Illegal storage access handler
+	terminate_handler m_terminateHandler;   // Terminate handler
+	unexpected_handler m_unexpectedHandler; // Unexpected handler
+	void (*m_SIGFPEHandler)(int);           // FPE handler
+	void (*m_SIGILLHandler)(int);           // SIGILL handler
+	void (*m_SIGSEGVHandler)(int);          // Illegal storage access handler
 };
 
 struct PlatformCrashHandlers {
-	LPTOP_LEVEL_EXCEPTION_FILTER  m_SEHHandler;				// SEH exception filter.
-	_purecall_handler m_pureCallHandler;					// Pure virtual call exception filter.
-	_PNH m_newHandler;										// New operator exception filter.
-	_invalid_parameter_handler m_invalidParameterHandler;	// Invalid parameter exception filter.
-	void (*m_SIGABRTHandler)(int);							// SIGABRT handler.  
-	void (*m_SIGINTHandler)(int);							// SIGINT handler.
-	void (*m_SIGTERMHandler)(int);							// SIGTERM handler.
+	LPTOP_LEVEL_EXCEPTION_FILTER  m_SEHHandler;           // SEH exception filter.
+	_purecall_handler m_pureCallHandler;                  // Pure virtual call exception filter.
+	_PNH m_newHandler;                                    // New operator exception filter.
+	_invalid_parameter_handler m_invalidParameterHandler; // Invalid parameter exception filter.
+	void (*m_SIGABRTHandler)(int);                        // SIGABRT handler.
+	void (*m_SIGINTHandler)(int);                         // SIGINT handler.
+	void (*m_SIGTERMHandler)(int);                        // SIGTERM handler.
 
 	// List of exception handlers installed for worker threads of current process.
 	std::map<DWORD, ThreadExceptionHandlers> m_threadExceptionHandlers;
@@ -351,9 +351,9 @@ bool CrashHandler::registerCrashHandlers() {
 	_set_error_mode(_OUT_TO_STDERR);
 
 	// Catch pure virtual function calls.
-	// Because there is one _purecall_handler for the whole process, 
-	// calling this function immediately impacts all threads. The last 
-	// caller on any thread sets the handler. 
+	// Because there is one _purecall_handler for the whole process,
+	// calling this function immediately impacts all threads. The last
+	// caller on any thread sets the handler.
 	// http://msdn.microsoft.com/en-us/library/t296ys27.aspx
 	m_pPreviousCrashHandlers->m_pureCallHandler = _set_purecall_handler(PureCallHandler);
 
@@ -362,7 +362,7 @@ bool CrashHandler::registerCrashHandlers() {
 	m_pPreviousCrashHandlers->m_newHandler = _set_new_handler(NewHandler);
 
 	// Catch invalid parameter exceptions.
-	m_pPreviousCrashHandlers->m_invalidParameterHandler = _set_invalid_parameter_handler(InvalidParameterHandler); 
+	m_pPreviousCrashHandlers->m_invalidParameterHandler = _set_invalid_parameter_handler(InvalidParameterHandler);
 
 	// Catch an abnormal program termination.
 	_set_abort_behavior(_CALL_REPORTFAULT, _CALL_REPORTFAULT);
@@ -372,7 +372,7 @@ bool CrashHandler::registerCrashHandlers() {
 	m_pPreviousCrashHandlers->m_SIGINTHandler = signal(SIGINT, SignalHandler);
 
 	// Catch a termination request.
-	m_pPreviousCrashHandlers->m_SIGTERMHandler = signal(SIGTERM, SignalHandler);  
+	m_pPreviousCrashHandlers->m_SIGTERMHandler = signal(SIGTERM, SignalHandler);
 
 	// We must also register the main thread crash handlers.
 	return registerThreadCrashHandlers();
@@ -385,8 +385,8 @@ void CrashHandler::unregisterCrashHandlers() {
 	_set_purecall_handler(m_pPreviousCrashHandlers->m_pureCallHandler);
 	_set_new_handler(m_pPreviousCrashHandlers->m_newHandler);
 	_set_invalid_parameter_handler(m_pPreviousCrashHandlers->m_invalidParameterHandler);
-	signal(SIGABRT, m_pPreviousCrashHandlers->m_SIGABRTHandler);  
-	signal(SIGINT, m_pPreviousCrashHandlers->m_SIGINTHandler);     
+	signal(SIGABRT, m_pPreviousCrashHandlers->m_SIGABRTHandler);
+	signal(SIGINT, m_pPreviousCrashHandlers->m_SIGINTHandler);
 	signal(SIGTERM, m_pPreviousCrashHandlers->m_SIGTERMHandler);
 
 	if(!m_pPreviousCrashHandlers->m_threadExceptionHandlers.empty())
@@ -415,29 +415,29 @@ bool CrashHandler::registerThreadCrashHandlers() {
 
 	ThreadExceptionHandlers& threadHandlers = m_pPreviousCrashHandlers->m_threadExceptionHandlers[dwThreadId];
 
-	// Catch terminate() calls. 
-	// In a multithreaded environment, terminate functions are maintained 
-	// separately for each thread. Each new thread needs to install its own 
+	// Catch terminate() calls.
+	// In a multithreaded environment, terminate functions are maintained
+	// separately for each thread. Each new thread needs to install its own
 	// terminate function. Thus, each thread is in charge of its own termination handling.
 	// http://msdn.microsoft.com/en-us/library/t6fk7h29.aspx
 	threadHandlers.m_terminateHandler = set_terminate(TerminateHandler);
 
 	// Catch unexpected() calls.
-	// In a multithreaded environment, unexpected functions are maintained 
-	// separately for each thread. Each new thread needs to install its own 
+	// In a multithreaded environment, unexpected functions are maintained
+	// separately for each thread. Each new thread needs to install its own
 	// unexpected function. Thus, each thread is in charge of its own unexpected handling.
 	// http://msdn.microsoft.com/en-us/library/h46t5b69.aspx
 	threadHandlers.m_unexpectedHandler = set_unexpected(UnexpectedHandler);
 
 	// Catch a floating point error
 	typedef void (*sigh)(int);
-	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, (sigh)SIGFPEHandler);     
+	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, (sigh)SIGFPEHandler);
 
 	// Catch an illegal instruction
-	threadHandlers.m_SIGILLHandler = signal(SIGILL, SignalHandler);    
+	threadHandlers.m_SIGILLHandler = signal(SIGILL, SignalHandler);
 
 	// Catch illegal storage access errors
-	threadHandlers.m_SIGSEGVHandler = signal(SIGSEGV, SignalHandler);   
+	threadHandlers.m_SIGSEGVHandler = signal(SIGSEGV, SignalHandler);
 
 	return true;
 }
@@ -512,20 +512,20 @@ void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode)
 	const char* crashSummary;
 
 	switch(crashType) {
-		case SEH_EXCEPTION:			crashSummary = "Unhandled exception"; break;
-		case TERMINATE_CALL:		crashSummary = "terminate() was called"; break;
-		case UNEXPECTED_CALL:		crashSummary = "unexpected() was called"; break;
-		case PURE_CALL:				crashSummary = "Pure virtual function called"; break;
-		case NEW_OPERATOR_ERROR:	crashSummary = "new operator failed"; break;
-		case INVALID_PARAMETER:		crashSummary = "Invalid parameter detected"; break;
-		case SIGNAL_SIGABRT:		crashSummary = "Abnormal termination"; break;
-		case SIGNAL_SIGFPE:			crashSummary = "Floating-point error"; break;
-		case SIGNAL_SIGILL:			crashSummary = "Illegal instruction"; break;
-		case SIGNAL_SIGINT:			crashSummary = "CTRL+C signal"; break;
-		case SIGNAL_SIGSEGV:		crashSummary = "Illegal storage access"; break;
-		case SIGNAL_SIGTERM:		crashSummary = "Termination request"; break;
-		case SIGNAL_UNKNOWN:		crashSummary = "Unknown signal"; break;
-		default:					crashSummary = "Unknown error"; break;
+		case SEH_EXCEPTION:      crashSummary = "Unhandled exception"; break;
+		case TERMINATE_CALL:     crashSummary = "terminate() was called"; break;
+		case UNEXPECTED_CALL:    crashSummary = "unexpected() was called"; break;
+		case PURE_CALL:          crashSummary = "Pure virtual function called"; break;
+		case NEW_OPERATOR_ERROR: crashSummary = "new operator failed"; break;
+		case INVALID_PARAMETER:  crashSummary = "Invalid parameter detected"; break;
+		case SIGNAL_SIGABRT:     crashSummary = "Abnormal termination"; break;
+		case SIGNAL_SIGFPE:      crashSummary = "Floating-point error"; break;
+		case SIGNAL_SIGILL:      crashSummary = "Illegal instruction"; break;
+		case SIGNAL_SIGINT:      crashSummary = "CTRL+C signal"; break;
+		case SIGNAL_SIGSEGV:     crashSummary = "Illegal storage access"; break;
+		case SIGNAL_SIGTERM:     crashSummary = "Termination request"; break;
+		case SIGNAL_UNKNOWN:     crashSummary = "Unknown signal"; break;
+		default:                 crashSummary = "Unknown error"; break;
 	}
 	
 	strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
@@ -533,20 +533,20 @@ void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode)
 		// Append detailed information in case of a FPE exception
 		const char* FPEDetailed;
 		switch(FPECode) {
-			case _FPE_INVALID:			FPEDetailed = ": Invalid result"; break;
-			case _FPE_DENORMAL:			FPEDetailed = ": Denormal operand"; break;
-			case _FPE_ZERODIVIDE:		FPEDetailed = ": Divide by zero"; break;
-			case _FPE_OVERFLOW:			FPEDetailed = ": Overflow"; break;
-			case _FPE_UNDERFLOW:		FPEDetailed = ": Underflow"; break;
-			case _FPE_INEXACT:			FPEDetailed = ": Inexact precision"; break;
-			case _FPE_UNEMULATED:		FPEDetailed = ": Unemulated"; break;
-			case _FPE_SQRTNEG:			FPEDetailed = ": Negative square root"; break;
-			case _FPE_STACKOVERFLOW:	FPEDetailed = ": Stack Overflow"; break;
-			case _FPE_STACKUNDERFLOW:	FPEDetailed = ": Stack Underflow"; break;
-			case _FPE_EXPLICITGEN:		FPEDetailed = ": raise( SIGFPE ) was called"; break;
-			case _FPE_MULTIPLE_TRAPS:	FPEDetailed = ": Multiple traps"; break;
-			case _FPE_MULTIPLE_FAULTS:	FPEDetailed = ": Multiple faults"; break;
-			default:					FPEDetailed = "";
+			case _FPE_INVALID:         FPEDetailed = ": Invalid result"; break;
+			case _FPE_DENORMAL:        FPEDetailed = ": Denormal operand"; break;
+			case _FPE_ZERODIVIDE:      FPEDetailed = ": Divide by zero"; break;
+			case _FPE_OVERFLOW:        FPEDetailed = ": Overflow"; break;
+			case _FPE_UNDERFLOW:       FPEDetailed = ": Underflow"; break;
+			case _FPE_INEXACT:         FPEDetailed = ": Inexact precision"; break;
+			case _FPE_UNEMULATED:      FPEDetailed = ": Unemulated"; break;
+			case _FPE_SQRTNEG:         FPEDetailed = ": Negative square root"; break;
+			case _FPE_STACKOVERFLOW:   FPEDetailed = ": Stack Overflow"; break;
+			case _FPE_STACKUNDERFLOW:  FPEDetailed = ": Stack Underflow"; break;
+			case _FPE_EXPLICITGEN:     FPEDetailed = ": raise( SIGFPE ) was called"; break;
+			case _FPE_MULTIPLE_TRAPS:  FPEDetailed = ": Multiple traps"; break;
+			case _FPE_MULTIPLE_FAULTS: FPEDetailed = ": Multiple faults"; break;
+			default:                   FPEDetailed = "";
 		}
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
@@ -569,14 +569,14 @@ void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode)
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
 
 	strcpy(m_pCrashInfo->crashReportFolder, "Crashes");
-	m_pCrashInfo->miniDumpType = MiniDumpNormal; 
+	m_pCrashInfo->miniDumpType = MiniDumpNormal;
 
 	STARTUPINFO si;
 	memset(&si, 0, sizeof(STARTUPINFO));
 	si.cb = sizeof(STARTUPINFO);
 
 	PROCESS_INFORMATION pi;
-	memset(&pi, 0, sizeof(PROCESS_INFORMATION));    
+	memset(&pi, 0, sizeof(PROCESS_INFORMATION));
 	
 	char arguments[256];
 	strcpy(arguments, "-crashinfo=");
@@ -592,7 +592,7 @@ void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode)
 	TerminateProcess(GetCurrentProcess(), 1);
 }
 
-LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) { 
+LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) {
 	CrashHandler::getInstance().handleCrash(SEH_EXCEPTION, pExceptionPtrs);
 	return EXCEPTION_EXECUTE_HANDLER;
 }
@@ -621,13 +621,13 @@ int NewHandler(size_t) {
 void SignalHandler(int signalCode) {
 	int crashType;
 	switch(signalCode) {
-		case SIGABRT:	crashType = SIGNAL_SIGABRT; break;
-		case SIGILL:	crashType = SIGNAL_SIGILL; break;
-		case SIGINT:	crashType = SIGNAL_SIGINT; break;
-		case SIGSEGV:	crashType = SIGNAL_SIGSEGV; break;
-		case SIGTERM:	crashType = SIGNAL_SIGTERM; break;
-		case SIGFPE:	crashType = SIGNAL_SIGFPE; break;
-		default:		crashType = SIGNAL_UNKNOWN; break;
+		case SIGABRT: crashType = SIGNAL_SIGABRT; break;
+		case SIGILL:  crashType = SIGNAL_SIGILL; break;
+		case SIGINT:  crashType = SIGNAL_SIGINT; break;
+		case SIGSEGV: crashType = SIGNAL_SIGSEGV; break;
+		case SIGTERM: crashType = SIGNAL_SIGTERM; break;
+		case SIGFPE:  crashType = SIGNAL_SIGFPE; break;
+		default:      crashType = SIGNAL_UNKNOWN; break;
 	}
 
 	CrashHandler::getInstance().handleCrash(crashType, _pxcptinfoptrs);
@@ -641,10 +641,9 @@ void SIGFPEHandler(int code, int FPECode) {
 #else
 
 void initCrashHandler() {
-
+	
 	// TODO implement for this platform
-
+	
 }
-
 
 #endif
