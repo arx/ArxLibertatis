@@ -220,14 +220,27 @@ else(MSVC)
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
 	if(CMAKE_BUILD_TYPE STREQUAL Debug)
+		
 		#Debug
-		message("On Debug Build")
-		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3")
+		message("Debug Build")
 		add_definitions(-D_DEBUG)
+		
+		check_compiler_flag(RESULT "-g3")
+		if(NOT RESULT STREQUAL "")
+			string(REGEX REPLACE "-g(|[0-9]|gdb)" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
+		endif()
+		
+		check_compiler_flag(RESULT "-O0")
+		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
+		
 	else()
+		
 		#Release
-		message("On Release Build")
+		message("Release Build")
 		add_definitions(-D_NDEBUG)
+		
 	endif()
 	
 	if(ARX_DEBUG_EXTRA)
