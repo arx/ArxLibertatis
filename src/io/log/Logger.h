@@ -1,3 +1,21 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef ARX_IO_LOG_LOGGER_H
 #define ARX_IO_LOG_LOGGER_H
@@ -37,12 +55,7 @@
 //! Test if the Error log level is enabled for the current file.
 #define LogErrorEnabled   ::Logger::isEnabled(__FILE__, ::Logger::Error)
 
-namespace logger {
-
-class Backend;
-struct Source;
-
-} // namespace logger
+namespace logger { class Backend; }
 
 /*!
  * Logger class that allows longging via the stream operator.
@@ -157,7 +170,7 @@ public:
 		
 		const char * str;
 		
-		inline nullstr(const char * s) : str(s) { };
+		inline nullstr(const char * s) : str(s) { }
 		
 	};
 	

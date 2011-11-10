@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,14 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-///////////////////////////////////////////////////////////////////////////////
-//
-// ARX_Spells.cpp
-// ARX Spells Management & Projectiles
-//
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//
-///////////////////////////////////////////////////////////////////////////////
 
 #include "game/Spells.h"
 
@@ -47,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/Localisation.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -646,9 +658,7 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	else if(name == "vitae")       iPosX = 0, iPosY = 2, sequence = "66666888";
 	else if(name == "yok")         iPosX = 0, iPosY = 0, sequence = "222226666888";
 	else if(name == "akbaa")       iPosX = 0, iPosY = 0, sequence = "22666772222";
-	else {
-		return;
-	}
+	else return;
 
 	io->symboldraw = (SYMBOL_DRAW *)realloc(io->symboldraw, sizeof(SYMBOL_DRAW));
 
@@ -2574,7 +2584,7 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 			ARX_SPELLS_FizzleNoMana(num);
 
 			if(_bSound) {
-				ARX_SPEECH_Add("player_cantcast");
+				ARX_SPEECH_Add(getLocalised("player_cantcast"));
 				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
@@ -2840,7 +2850,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 	ARX_SPELLS_FizzleNoMana(num);
 
 	if(_bSound) {
-		ARX_SPEECH_Add("player_cantcast");
+		ARX_SPEECH_Add(getLocalised("player_cantcast"));
 		ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 
@@ -2905,8 +2915,7 @@ void ARX_SPELLS_Precast_Check()
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				ANIM_USE * ause1 = &inter.iobj[0]->animlayer[1];
 				AcquireLastAnim(inter.iobj[0]);
 				FinishAnim(inter.iobj[0], ause1->cur_anim);
@@ -7112,7 +7121,7 @@ void ARX_SPELLS_Update()
 			//---------------------------------------------------------------------------------------
 			//***************************************************************************************	
 			// LEVEL 2 -----------------------------------------------------------------------------
-			case SPELL_HEAL: // gu�rit les ennemis coll�s
+			case SPELL_HEAL: // guérit les ennemis collés
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 

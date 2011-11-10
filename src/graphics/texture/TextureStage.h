@@ -1,8 +1,26 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef ARX_GRAPHICS_TEXTURE_TEXTURESTAGE_H
 #define ARX_GRAPHICS_TEXTURE_TEXTURESTAGE_H
 
-#include "graphics/texture/Texture.h"
+class Texture;
 
 class TextureStage {
 	
@@ -39,10 +57,10 @@ public:
 	enum FilterMode {
 		FilterNone,    //!< Only valid for mip filtering.
 		FilterNearest, //!< Point filtering. The texel with coordinates nearest to the desired pixel value is used. 
-		FilterLinear   //!< Bilinear interpolation filtering. A weighted average of a 2×2 area of texels surrounding the desired pixel is used.
+		FilterLinear   //!< Bilinear interpolation filtering. A weighted average of a 2Ã—2 area of texels surrounding the desired pixel is used.
 	};
 	
-	TextureStage(unsigned int stage);
+	explicit TextureStage(unsigned int stage);
 	virtual ~TextureStage() { }
 	
 	virtual void SetTexture(Texture * pTexture) = 0;

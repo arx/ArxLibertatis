@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,27 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-#ifndef EERIETYPES_H
-#define EERIETYPES_H
+
+#ifndef ARX_GRAPHICS_GRAPHICSTYPES_H
+#define ARX_GRAPHICS_GRAPHICSTYPES_H
 
 #include <cmath>
 #include <vector>
@@ -327,7 +327,7 @@ struct EERIE_GROUPLIST {
 	std::vector<long> indexes;
 	float siz;
 	
-	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { };
+	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { }
 };
 
 struct EERIE_ACTIONLIST {
@@ -336,7 +336,7 @@ struct EERIE_ACTIONLIST {
 	long act; //action
 	long sfx; //sfx
 	
-	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { };
+	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { }
 };
 
 struct CUB3D
@@ -678,4 +678,4 @@ struct SMY_ARXMAT
 extern long USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;
 
-#endif
+#endif // ARX_GRAPHICS_GRAPHICSTYPES_H

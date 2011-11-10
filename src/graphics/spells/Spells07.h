@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,51 +40,19 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// CSpellFx_Lvl07.h
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-// ARX Spells FX Level 07
-//
-// Updates: (date) (person) (update)
-//////////////////////////////////////////////////////////////////////////////////////
-// Refer to CSpellFx.h for details
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_CSPELLFX_LVL07_H
-#define ARX_CSPELLFX_LVL07_H
+#ifndef ARX_GRAPHICS_SPELLS_SPELLS07_H
+#define ARX_GRAPHICS_SPELLS_SPELLS07_H
 
+#include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
-#include "graphics/GraphicsTypes.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
 
-//-----------------------------------------------------------------------------
-// Done By : Didier P�dreno
-// Status  :
-//-----------------------------------------------------------------------------
+// Done By : Didier Pedreno
 class CLightningNode
 {
 	public:
@@ -76,7 +62,6 @@ class CLightningNode
 		float fx, fy, fz;
 };
 
-//-----------------------------------------------------------------------------
 class CLightning: public CSpellFx
 {
 	private:
@@ -104,7 +89,7 @@ class CLightning: public CSpellFx
 
 	private:
 		struct LIGHTNING;
-		void BuildS(LIGHTNING *);
+		void BuildS(LIGHTNING * lightingInfo);
 		void ReCreate();
 
 	public:
@@ -131,11 +116,7 @@ class CLightning: public CSpellFx
 		void	Kill();
 };
 
-//-----------------------------------------------------------------------------
-// Ex Make Friend
-// Done By : Didier P�dreno
-// Status  :
-//-----------------------------------------------------------------------------
+// Done By : Didier Pedreno
 class CConfuse: public CSpellFx
 {
 	public:
@@ -173,12 +154,7 @@ class CConfuse: public CSpellFx
 		void	Update(unsigned long);
 		float	Render();
 };
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Done By :
-// Status  :
-//-----------------------------------------------------------------------------
 class CFireField: public CSpellFx
 {
 	public:
@@ -186,7 +162,6 @@ class CFireField: public CSpellFx
 		Vec3f	pos;
 		float		demilargeur;
 		float		interp;
-		//	TextureContainer *tp,*tp2;
 		ParticleSystem pPSStream;
 		ParticleSystem pPSStream1;
 
@@ -201,19 +176,13 @@ class CFireField: public CSpellFx
  
 };
 
-//-----------------------------------------------------------------------------
 // Done By : did
-// Status  :
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 class CIceField: public CSpellFx
 {
 	public:
 		int iNumber;
 		Vec3f eSrc;
 		Vec3f eTarget;
-		//	EERIE_3DOBJ * stite;
-		//	EERIE_3DOBJ * smotte;
 		TextureContainer * tex_p1;
 		TextureContainer * tex_p2;
 
@@ -240,5 +209,4 @@ class CIceField: public CSpellFx
 		float	Render();
 };
 
-#endif
-
+#endif // ARX_GRAPHICS_SPELLS_SPELLS07_H

@@ -1,11 +1,25 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "graphics/opengl/OpenGLRenderer.h"
 
-#include <cstdio>
-
 #include "core/Application.h"
-#include "graphics/Math.h"
-#include "graphics/GraphicsUtility.h"
 #include "graphics/opengl/GLNoVertexBuffer.h"
 #include "graphics/opengl/GLTexture2D.h"
 #include "graphics/opengl/GLTextureStage.h"
@@ -13,18 +27,18 @@
 #include "io/log/Logger.h"
 #include "window/RenderWindow.h"
 
-static const char vertexShaderSource[] = "void main() { \n\
-	// Convert pre-transformed D3D vertices to OpenGL vertices. \n\
-	float w = 1.f / gl_Vertex.w; \n\
-	vec4 vertex = vec4(gl_Vertex.xyz * w, w); \n\
-	// We only need the projection matrix as modelview will always be idenity. \n\
-	gl_Position = gl_ProjectionMatrix * vertex; \n\
-	gl_FrontColor = gl_BackColor = gl_Color; \n\
-	gl_TexCoord[0] = gl_MultiTexCoord0; \n\
-	gl_FogFragCoord = vertex.z; \n\
-}";
+static const char vertexShaderSource[] = "void main() {\n"
+	"	// Convert pre-transformed D3D vertices to OpenGL vertices.\n"
+	"	float w = 1.f / gl_Vertex.w;\n"
+	"	vec4 vertex = vec4(gl_Vertex.xyz * w, w);\n"
+	"	// We only need the projection matrix as modelview will always be idenity.\n"
+	"	gl_Position = gl_ProjectionMatrix * vertex;\n"
+	"	gl_FrontColor = gl_BackColor = gl_Color;\n"
+	"	gl_TexCoord[0] = gl_MultiTexCoord0;\n"
+	"	gl_FogFragCoord = vertex.z;\n"
+	"}\n";
 
-OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { };
+OpenGLRenderer::OpenGLRenderer() : useVertexArrays(false), useVBOs(false), maxTextureStage(0), shader(0), maximumAnisotropy(1.f), initialized(false) { }
 
 OpenGLRenderer::~OpenGLRenderer() {
 	

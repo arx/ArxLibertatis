@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,38 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_NPC
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX NPC Management
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "game/NPC.h"
 
@@ -211,8 +200,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 									}
 
-								}
-								else {
+								} else {
 									if(mindist <= 120.f) {
 										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
 									}
@@ -1107,10 +1095,10 @@ static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			if (io->ignit_sound != audio::INVALID_ID)
 			{
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+				io->ignit_sound = audio::INVALID_ID;
 			}
 
 			io->ignition = 0;
@@ -3420,9 +3408,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	
 
-	if (io->forcedmove == Vec3f::ZERO)
+	if(io->forcedmove == Vec3f::ZERO) {
 		ForcedMove = Vec3f::ZERO;
-	else {
+	} else {
 		float dd = min(1.f, (float)FrameDiff * ( 1.0f / 6 ) / io->forcedmove.length());
 		ForcedMove = io->forcedmove * dd;
 	}
@@ -4190,10 +4178,10 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 		io->ignit_light = -1;
 
-		if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+		if (io->ignit_sound != audio::INVALID_ID)
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+			io->ignit_sound = audio::INVALID_ID;
 		}
 
 		return;
@@ -4282,10 +4270,10 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			if (io->ignit_sound != audio::INVALID_ID)
 			{
 				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+				io->ignit_sound = audio::INVALID_ID;
 			}
 
 			ARX_SPEECH_ReleaseIOSpeech(io);
@@ -4454,7 +4442,7 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 			DynLight[id].extras |= EXTRAS_FLARE;
 		}
 
-		if (io->ignit_sound == ARX_SOUND_INVALID_RESOURCE)
+		if (io->ignit_sound == audio::INVALID_ID)
 		{
 			io->ignit_sound = SND_FIREPLACE;
 			ARX_SOUND_PlaySFX(io->ignit_sound, &position, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
@@ -4470,10 +4458,10 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 
 		io->ignit_light = -1;
 
-		if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+		if (io->ignit_sound != audio::INVALID_ID)
 		{
 			ARX_SOUND_Stop(io->ignit_sound);
-			io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+			io->ignit_sound = audio::INVALID_ID;
 		}
 	}
 }

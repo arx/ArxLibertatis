@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,41 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// DANAE.CPP
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		Danae Application Main File
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
-//-----------------------------------------------------------------------------
-// Included files
-//-----------------------------------------------------------------------------
 
 #include "core/Core.h"
 
@@ -67,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include "boost/algorithm/string/predicate.hpp"
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
@@ -700,9 +686,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	USE_FAST_SCENES = 1;
 	LogDebug("Danae Start");
-
+	
 	LogDebug("Project Init");
-
+	
 	NOCHECKSUM=0;
 	
 	ARX_INTERFACE_NoteInit();
@@ -717,10 +703,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
-
+	
 	LogDebug("LSV Init");
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
-
+	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
 	memset(TELEPORT_TO_POSITION,0,64);
@@ -732,38 +718,38 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_EQUIPMENT_Init();
 	LogDebug("AEQ Init");
 	memset(_CURRENTLOAD_,0,256);
-
+	
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug("Timer Init");
 	ARX_FOGS_FirstInit();
 	LogDebug("Fogs Init");
-
+	
 	EERIE_LIGHT_GlobalInit();
 	LogDebug("Lights Init");
 	
 	LogDebug("Svars Init");
-
+	
 	// Script Test
 	lastteleport.x=0.f;
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
-
+	
 	inter.init=0;
 	InitInter(10);
-
+	
 	memset(&player,0,sizeof(ARXCHARACTER));
 	ARX_PLAYER_InitPlayer();
-
+	
 	CleanInventory();
-
+	
 	ARX_SPEECH_FirstInit();
 	ARX_CONVERSATION_FirstInit();
 	ARX_SPEECH_Init();
 	ARX_SPEECH_ClearAll();
 	QuakeFx.intensity=0.f;
-
+	
 	LogDebug("Launching DANAE");
-
+	
 	memset(&Project, 0, sizeof(PROJECT));
 	
 	if (FINAL_RELEASE) {
@@ -771,17 +757,16 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		LaunchDemo=1;
 		Project.demo=LEVEL10;
 		NOCHECKSUM=1;
-	}
-	else {
+	} else {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
 	}
-
+	
 	LogDebug("After Popup");
 	atexit(ClearGame);
-
-	if (LaunchDemo)	{
-
+	
+	if(LaunchDemo) {
+		
 #ifdef BUILD_EDITOR
 		if(FINAL_RELEASE) {
 			GAME_EDITOR=0;
@@ -789,7 +774,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 			GAME_EDITOR=1;
 		}
 #endif
-
+		
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
 	}
@@ -797,7 +782,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	if(!AdjustUI()) {
 		return -1;
 	}
-
+	
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
 	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
@@ -809,24 +794,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARXMenu_Options_Audio_SetSpeechVolume(config.audio.speechVolume);
 	ARXMenu_Options_Audio_SetAmbianceVolume(config.audio.ambianceVolume);
 	ARXMenu_Options_Audio_ApplyGameVolumes();
-
+	
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
-	ARXMenu_Options_Control_SetAutoReadyWeapon(config.input.autoReadyWeapon);
-	ARXMenu_Options_Control_SetMouseLookToggleMode(config.input.mouseLookToggle);
 	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
-	ARXMenu_Options_Control_SetAutoDescription(config.input.autoDescription);
 	
 	if(config.video.textureSize==2)Project.TextureSize=0;
 	if(config.video.textureSize==1)Project.TextureSize=2;
 	if(config.video.textureSize==0)Project.TextureSize=64;
-
+	
 	ARX_MINIMAP_FirstInit();
-		
-	//read from cfg file
-	if ( config.language.length() == 0 ) {
-		config.language = "english";
-		LogWarning << "Falling back to default localisationpath";
-	}
 	
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;
@@ -2125,7 +2101,8 @@ void FirstFrameHandling()
 		LoadLevelScreen();
 	}
 #endif // BUILD_EDIT_LOADSAVE
-	else {
+	else
+	{
 		PROGRESS_BAR_COUNT+=4.f;
 		LoadLevelScreen();
 	}

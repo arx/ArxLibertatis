@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,51 +40,20 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_Script
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Script Management
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-/////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_SCRIPTING_SCRIPT_H
-#define ARX_SCRIPTING_SCRIPT_H
+#ifndef ARX_SCRIPT_SCRIPT_H
+#define ARX_SCRIPT_SCRIPT_H
 
+#include <stddef.h>
 #include <string>
 
 #include "platform/Flags.h"
 
-#include "Configure.h"
-
 class PakFile;
 struct INTERACTIVE_OBJ;
-struct ANIM_HANDLE;
 
 const size_t MAX_SHORTCUT = 80;
 const size_t MAX_SCRIPTTIMERS = 5;
@@ -144,7 +131,7 @@ struct SCR_TIMER {
 	EERIE_SCRIPT * es;
 	
 	inline SCR_TIMER() : name(), exist(0), flags(0), times(0),
-	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
+	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { }
 	
 	inline void reset() {
 		name.clear();
@@ -501,4 +488,4 @@ void MakeGlobalText(std::string & tx);
 
 void loadScript(EERIE_SCRIPT & script, PakFile * file);
 
-#endif // ARX_SCRIPTING_SCRIPT_H
+#endif // ARX_SCRIPT_SCRIPT_H

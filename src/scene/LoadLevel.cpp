@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,38 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// DanaeSaveLoad.CPP
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		DANAE Save & Load Management
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "scene/LoadLevel.h"
 
@@ -61,28 +50,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ctime>
 #include <iomanip>
 #include <sstream>
-#include <vector>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
 #include "core/Application.h"
 #include "core/GameTime.h"
-#include "core/Dialog.h"
-#include "core/Localisation.h"
 #include "core/Core.h"
 
-#include "game/Damage.h"
 #include "game/Levels.h"
-#include "game/Missile.h"
-#include "game/Spells.h"
 #include "game/Player.h"
 
 #include "gui/MiniMap.h"
-#include "gui/Speech.h"
+#include "gui/Interface.h"
 
 #include "graphics/Math.h"
-#include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -100,7 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 
 #include "scene/Object.h"
-#include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/LevelFormat.h"
@@ -785,7 +766,8 @@ long DanaeLoadLevel(const fs::path & file) {
 		trans = mse->pos;
 	}
 #endif // BUILD_EDIT_LOADSAVE
-	else {
+	else
+	{
 		lastteleport.x = 0.f;
 		lastteleport.y = PLAYER_BASE_HEIGHT;
 		lastteleport.z = 0.f;
@@ -904,7 +886,7 @@ long DanaeLoadLevel(const fs::path & file) {
 				el->ex_size = dlight->ex_size;
 				el->ex_speed = dlight->ex_speed;
 				el->tl = -1;
-				el->sample = ARX_SOUND_INVALID_RESOURCE;
+				el->sample = audio::INVALID_ID;
 				
 				if((el->extras & EXTRAS_SPAWNFIRE)) {
 					el->extras |= EXTRAS_FLARE;
@@ -1127,7 +1109,7 @@ long DanaeLoadLevel(const fs::path & file) {
 			}
 			
 			el->tl = -1;
-			el->sample = ARX_SOUND_INVALID_RESOURCE;
+			el->sample = audio::INVALID_ID;
 		}
 	}
 	

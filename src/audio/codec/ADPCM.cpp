@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -255,19 +273,19 @@ aalError CodecADPCM::read(void * buffer, size_t to_read, size_t & read) {
 aalError CodecADPCM::getNextBlock() {
 	
 	// Load and check block header
-	if(!stream->read(predictor, sizeof(char) << shift)) {
+	if(!stream->read(predictor, sizeof(*predictor) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(delta, sizeof(s16) << shift)) {
+	if(!stream->read(delta, sizeof(*delta) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(samp1, sizeof(s16) << shift)) {
+	if(!stream->read(samp1, sizeof(*samp1) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	
-	if(!stream->read(samp2, sizeof(s16) << shift)) {
+	if(!stream->read(samp2, sizeof(*samp2) << shift)) {
 		return AAL_ERROR_FILEIO;
 	}
 	

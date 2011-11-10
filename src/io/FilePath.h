@@ -1,9 +1,27 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef ARX_IO_FILEPATH_H
 #define ARX_IO_FILEPATH_H
 
 #include <string>
-#include <iostream>
+#include <ostream>
 
 namespace fs {
 
@@ -27,10 +45,10 @@ public:
 	static const char dir_sep = '/';
 	static const char ext_sep = '.';
 	
-	inline path() { };
-	inline path(const path & other) : pathstr(other.pathstr) { };
-	inline path(const std::string & str) : pathstr(str) { check(); };
-	inline path(const char * str) : pathstr(str) { check(); };
+	inline path() { }
+	inline path(const path & other) : pathstr(other.pathstr) { }
+	inline path(const std::string & str) : pathstr(str) { check(); }
+	inline path(const char * str) : pathstr(str) { check(); }
 	
 	inline path & operator=(const path & other) {
 		return (pathstr = other.pathstr, *this);

@@ -1,20 +1,52 @@
 /*
- * ScriptEvent.cpp
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
  *
- *  Created on: Jan 31, 2011
- *      Author: bmonkey
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* Based on:
+===========================================================================
+ARX FATALIS GPL Source Code
+Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
+
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+<http://www.gnu.org/licenses/>.
+
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+===========================================================================
+*/
 
 #include "script/ScriptEvent.h"
-
-#include <cstdio>
 
 #include "core/GameTime.h"
 #include "core/Core.h"
 
 #include "io/log/Logger.h"
-
-#include "platform/String.h"
 
 #include "script/ScriptUtils.h"
 #include "script/ScriptedAnimation.h"
@@ -40,82 +72,82 @@ extern float g_TimeStartCinemascope;
 long ScriptEvent::totalCount = 0;
 
 SCRIPT_EVENT AS_EVENT[] = {
-	std::string("on null"),
-	std::string("on init"),
-	std::string("on inventoryin"),
-	std::string("on inventoryout"),
-	std::string("on inventoryuse"),
-	std::string("on sceneuse"),
-	std::string("on equipin"),
-	std::string("on equipout"),
-	std::string("on main"),
-	std::string("on reset"),
-	std::string("on chat"),
-	std::string("on action"),
-	std::string("on dead"),
-	std::string("on reachedtarget"),
-	std::string("on fight"),
-	std::string("on flee"),
-	std::string("on hit"),
-	std::string("on die"),
-	std::string("on losttarget"),
-	std::string("on treatin"),
-	std::string("on treatout"),
-	std::string("on move"),
-	std::string("on detectplayer"),
-	std::string("on undetectplayer"),
-	std::string("on combine"),
-	std::string("on npc_follow"),
-	std::string("on npc_fight"),
-	std::string("on npc_stay"),
-	std::string("on inventory2_open"),
-	std::string("on inventory2_close"),
-	std::string("on custom"),
-	std::string("on enter_zone"),
-	std::string("on leave_zone"),
-	std::string("on initend") ,
-	std::string("on clicked") ,
-	std::string("on insidezone"),
-	std::string("on controlledzone_inside"),
-	std::string("on leavezone"),
-	std::string("on controlledzone_leave"),
-	std::string("on enterzone"),
-	std::string("on controlledzone_enter"),
-	std::string("on load"),
-	std::string("on spellcast"),
-	std::string("on reload"),
-	std::string("on collide_door"),
-	std::string("on ouch"),
-	std::string("on hear"),
-	std::string("on summoned"),
-	std::string("on spellend"),
-	std::string("on spelldecision"),
-	std::string("on strike"),
-	std::string("on collision_error"),
-	std::string("on waypoint"),
-	std::string("on pathend"),
-	std::string("on critical"),
-	std::string("on collide_npc"),
-	std::string("on backstab"),
-	std::string("on aggression"),
-	std::string("on collision_error_detail"),
-	std::string("on game_ready"),
-	std::string("on cine_end"),
-	std::string("on key_pressed"),
-	std::string("on controls_on"),
-	std::string("on controls_off"),
-	std::string("on pathfinder_failure"),
-	std::string("on pathfinder_success"),
-	std::string("on trap_disarmed"),
-	std::string("on book_open"),
-	std::string("on book_close"),
-	std::string("on identify"),
-	std::string("on break"),
-	std::string("on steal"),
-	std::string("on collide_field"),
-	std::string("on cursormode"),
-	std::string("on explorationmode"),
-	std::string("") // TODO is this really needed?
+	SCRIPT_EVENT("on null"),
+	SCRIPT_EVENT("on init"),
+	SCRIPT_EVENT("on inventoryin"),
+	SCRIPT_EVENT("on inventoryout"),
+	SCRIPT_EVENT("on inventoryuse"),
+	SCRIPT_EVENT("on sceneuse"),
+	SCRIPT_EVENT("on equipin"),
+	SCRIPT_EVENT("on equipout"),
+	SCRIPT_EVENT("on main"),
+	SCRIPT_EVENT("on reset"),
+	SCRIPT_EVENT("on chat"),
+	SCRIPT_EVENT("on action"),
+	SCRIPT_EVENT("on dead"),
+	SCRIPT_EVENT("on reachedtarget"),
+	SCRIPT_EVENT("on fight"),
+	SCRIPT_EVENT("on flee"),
+	SCRIPT_EVENT("on hit"),
+	SCRIPT_EVENT("on die"),
+	SCRIPT_EVENT("on losttarget"),
+	SCRIPT_EVENT("on treatin"),
+	SCRIPT_EVENT("on treatout"),
+	SCRIPT_EVENT("on move"),
+	SCRIPT_EVENT("on detectplayer"),
+	SCRIPT_EVENT("on undetectplayer"),
+	SCRIPT_EVENT("on combine"),
+	SCRIPT_EVENT("on npc_follow"),
+	SCRIPT_EVENT("on npc_fight"),
+	SCRIPT_EVENT("on npc_stay"),
+	SCRIPT_EVENT("on inventory2_open"),
+	SCRIPT_EVENT("on inventory2_close"),
+	SCRIPT_EVENT("on custom"),
+	SCRIPT_EVENT("on enter_zone"),
+	SCRIPT_EVENT("on leave_zone"),
+	SCRIPT_EVENT("on initend") ,
+	SCRIPT_EVENT("on clicked") ,
+	SCRIPT_EVENT("on insidezone"),
+	SCRIPT_EVENT("on controlledzone_inside"),
+	SCRIPT_EVENT("on leavezone"),
+	SCRIPT_EVENT("on controlledzone_leave"),
+	SCRIPT_EVENT("on enterzone"),
+	SCRIPT_EVENT("on controlledzone_enter"),
+	SCRIPT_EVENT("on load"),
+	SCRIPT_EVENT("on spellcast"),
+	SCRIPT_EVENT("on reload"),
+	SCRIPT_EVENT("on collide_door"),
+	SCRIPT_EVENT("on ouch"),
+	SCRIPT_EVENT("on hear"),
+	SCRIPT_EVENT("on summoned"),
+	SCRIPT_EVENT("on spellend"),
+	SCRIPT_EVENT("on spelldecision"),
+	SCRIPT_EVENT("on strike"),
+	SCRIPT_EVENT("on collision_error"),
+	SCRIPT_EVENT("on waypoint"),
+	SCRIPT_EVENT("on pathend"),
+	SCRIPT_EVENT("on critical"),
+	SCRIPT_EVENT("on collide_npc"),
+	SCRIPT_EVENT("on backstab"),
+	SCRIPT_EVENT("on aggression"),
+	SCRIPT_EVENT("on collision_error_detail"),
+	SCRIPT_EVENT("on game_ready"),
+	SCRIPT_EVENT("on cine_end"),
+	SCRIPT_EVENT("on key_pressed"),
+	SCRIPT_EVENT("on controls_on"),
+	SCRIPT_EVENT("on controls_off"),
+	SCRIPT_EVENT("on pathfinder_failure"),
+	SCRIPT_EVENT("on pathfinder_success"),
+	SCRIPT_EVENT("on trap_disarmed"),
+	SCRIPT_EVENT("on book_open"),
+	SCRIPT_EVENT("on book_close"),
+	SCRIPT_EVENT("on identify"),
+	SCRIPT_EVENT("on break"),
+	SCRIPT_EVENT("on steal"),
+	SCRIPT_EVENT("on collide_field"),
+	SCRIPT_EVENT("on cursormode"),
+	SCRIPT_EVENT("on explorationmode"),
+	SCRIPT_EVENT("") // TODO is this really needed?
 };
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
@@ -211,8 +243,6 @@ public:
 } // namespace script
 
 #define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << (((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
-
-using namespace script; // TODO(script-parser) remove once everythng has been moved to the script namespace
 
 #ifdef _DEBUG
 static const char * toString(ScriptResult ret) {
@@ -348,7 +378,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		}
 	}
 	
-	Context context(es, pos, io, msg);
+	script::Context context(es, pos, io, msg);
 	
 	if(msg != SM_EXECUTELINE) {
 		string word = context.getCommand();
@@ -380,27 +410,30 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		
 		if(it != commands.end()) {
 			
-			Command & command = *(it->second);
+			script::Command & command = *(it->second);
 			
-			Command::Result res;
-			if(command.getIOFlags() && (!io || (command.getIOFlags() != Command::ANY_IO && !(command.getIOFlags() & io->ioflags)))) {
-				ScriptEventWarning << "command " << command.getName() << " needs an IO of type " << command.getIOFlags();
+			script::Command::Result res;
+			if(command.getIOFlags()
+			   && (!io || (command.getIOFlags() != script::Command::ANY_IO
+			               && !(command.getIOFlags() & io->ioflags)))) {
+				ScriptEventWarning << "command " << command.getName() << " needs an IO of type "
+				                   << command.getIOFlags();
 				context.skipCommand();
-				res = Command::Failed;
+				res = script::Command::Failed;
 			} else {
 				res = it->second->execute(context);
 			}
 			
-			if(res == Command::AbortAccept) {
+			if(res == script::Command::AbortAccept) {
 				ret = ACCEPT;
 				break;
-			} else if(res == Command::AbortRefuse) {
+			} else if(res == script::Command::AbortRefuse) {
 				ret = REFUSE;
 				break;
-			} else if(res == Command::AbortError) {
+			} else if(res == script::Command::AbortError) {
 				ret =  BIGERROR;
 				break;
-			} else if(res == Command::Jumped) {
+			} else if(res == script::Command::Jumped) {
 				if(msg == SM_EXECUTELINE) {
 					msg = SM_DUMMY;
 				}
@@ -410,7 +443,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		} else if(!word.compare(0, 2, ">>", 2)) {
 			context.skipCommand(); // labels
 		} else if(!word.compare(0, 5, "timer", 5)) {
-			timerCommand(word.substr(5), context);
+			script::timerCommand(word.substr(5), context);
 		} else if(word == "{") {
 			if(brackets != (size_t)-1) {
 				brackets++;
@@ -459,7 +492,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 	return ret;
 }
 
-void ScriptEvent::registerCommand(Command * command) {
+void ScriptEvent::registerCommand(script::Command * command) {
 	
 	typedef std::pair<Commands::iterator, bool> Res;
 	
@@ -474,34 +507,34 @@ void ScriptEvent::registerCommand(Command * command) {
 
 void ScriptEvent::init() {
 	
-	size_t count = initSuppressions();
+	size_t count = script::initSuppressions();
 	
-	setupScriptedAnimation();
-	setupScriptedCamera();
-	setupScriptedControl();
-	setupScriptedConversation();
-	setupScriptedInterface();
-	setupScriptedInventory();
-	setupScriptedIOControl();
-	setupScriptedIOProperties();
-	setupScriptedItem();
-	setupScriptedLang();
-	setupScriptedNPC();
-	setupScriptedPlayer();
-	setupScriptedVariable();
+	script::setupScriptedAnimation();
+	script::setupScriptedCamera();
+	script::setupScriptedControl();
+	script::setupScriptedConversation();
+	script::setupScriptedInterface();
+	script::setupScriptedInventory();
+	script::setupScriptedIOControl();
+	script::setupScriptedIOProperties();
+	script::setupScriptedItem();
+	script::setupScriptedLang();
+	script::setupScriptedNPC();
+	script::setupScriptedPlayer();
+	script::setupScriptedVariable();
 	
-	registerCommand(new ObsoleteCommand("attachnpctoplayer"));
-	registerCommand(new ObsoleteCommand("gmode", 1));
-	registerCommand(new ObsoleteCommand("setrighthand", 1));
-	registerCommand(new ObsoleteCommand("setlefthand", 1));
-	registerCommand(new ObsoleteCommand("setshield", 1));
-	registerCommand(new ObsoleteCommand("settwohanded"));
-	registerCommand(new ObsoleteCommand("setonehanded"));
-	registerCommand(new ObsoleteCommand("say"));
-	registerCommand(new ObsoleteCommand("setdetachable", 1));
-	registerCommand(new ObsoleteCommand("setstackable", 1));
-	registerCommand(new ObsoleteCommand("setinternalname", 1));
-	registerCommand(new ObsoleteCommand("detachnpcfromplayer"));
+	registerCommand(new script::ObsoleteCommand("attachnpctoplayer"));
+	registerCommand(new script::ObsoleteCommand("gmode", 1));
+	registerCommand(new script::ObsoleteCommand("setrighthand", 1));
+	registerCommand(new script::ObsoleteCommand("setlefthand", 1));
+	registerCommand(new script::ObsoleteCommand("setshield", 1));
+	registerCommand(new script::ObsoleteCommand("settwohanded"));
+	registerCommand(new script::ObsoleteCommand("setonehanded"));
+	registerCommand(new script::ObsoleteCommand("say"));
+	registerCommand(new script::ObsoleteCommand("setdetachable", 1));
+	registerCommand(new script::ObsoleteCommand("setstackable", 1));
+	registerCommand(new script::ObsoleteCommand("setinternalname", 1));
+	registerCommand(new script::ObsoleteCommand("detachnpcfromplayer"));
 	
 	LogInfo << "scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
 }

@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,51 +40,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// CSpellFx_Lvl08.cpp
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Spell FX Level 08
-//
-// Refer to:
-//		CSpellFx.h
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "graphics/spells/Spells08.h"
 
 #include "core/GameTime.h"
 
 #include "game/Damage.h"
-#include "game/Spells.h"
-#include "game/Spells.h"
 
-#include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "graphics/effects/SpellEffects.h"
+#include "graphics/Renderer.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "graphics/spells/Spells08.h"
 
 #include "scene/Light.h"
 
@@ -129,7 +113,7 @@ void CExplosion::Update(unsigned long _ulTime)
 			scale = a;
 			break;
 		case 1:
-			//avanc� du disque
+			//avancé du disque
 			scale = (float)ulCurrentTime / (float)ulDuration;
 
 			if (!ARXPausedTimer) ulCurrentTime += _ulTime;
@@ -403,7 +387,7 @@ float CExplosion::Render()
 			break;
 	}
 
-	//trac� du disque
+	//tracé du disque
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->ResetTexture(0);
 	GRenderer->drawIndexed(Renderer::TriangleStrip, disqued3d, disquenbvertex, disqueind, disquenbvertex + 2);

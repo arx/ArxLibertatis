@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,32 +40,29 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-///////////////////////////////////////////////////////////////////////////////
-//
-// ARX_Interface.cpp
-// ARX Interface Management
-//
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//
-///////////////////////////////////////////////////////////////////////////////
 
 #include "gui/Interface.h"
 
+#include <stddef.h>
+#include <cmath>
 #include <iomanip>
 #include <sstream>
 #include <cstdio>
-
-#include "ai/Paths.h"
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+#include <set>
+#include <utility>
+#include <vector>
+#include <iostream>
 
 #include "animation/Animation.h"
-#include "animation/Cinematic.h"
 
+#include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
-#include "core/Dialog.h"
-#include "core/Resource.h"
 #include "core/GameTime.h"
-#include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/Core.h"
 
@@ -59,25 +74,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 
 #include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
 #include "gui/TextManager.h"
 
+#include "graphics/BaseGraphicsTypes.h"
+#include "graphics/Color.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
+#include "graphics/Vertex.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/DrawEffects.h"
-#include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
-#include "input/Input.h"
+#include "gui/Text.h"
 
-#include "io/IO.h"
+#include "input/Input.h"
+#include "input/Keyboard.h"
+
 #include "io/FilePath.h"
-#include "io/log/Logger.h"
+
+#include "math/Angle.h"
+#include "math/Rectangle.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
@@ -85,14 +109,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 
 #include "scene/LinkedObject.h"
-#include "scene/Object.h"
 #include "scene/GameSound.h"
-#include "scene/ChangeLevel.h"
-#include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
-#include "Configure.h"
+#include "script/Script.h"
+
+#include "window/RenderWindow.h"
 
 using std::min;
 using std::max;
@@ -169,7 +192,6 @@ extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
-extern Cinematic *ControlCinematique;
 extern bool bGToggleCombatModeWithKey;
 extern long PlayerWeaponBlocked;
 extern unsigned char ucFlick;
@@ -2195,8 +2217,8 @@ bool ArxGame::ManageEditorControls()
 			} else if (DRAGINTER->ioflags & IO_GOLD) {
 				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
-			} else if(DRAGINTER!=NULL)
-			{
+				
+			} else if(DRAGINTER) {
 #ifdef BUILD_EDITOR
 				if (!EDITMODE) // test for NPC & FIX
 				{
@@ -4117,7 +4139,7 @@ void ArxGame::ManageKeyMouse() {
 				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
 			}
 
-			float fd = (((float)GInput->getMouseSensibility()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+			float fd = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 			if (fd > 200) {
 				fd=200;
 			}			
@@ -4191,21 +4213,6 @@ void ArxGame::ManageKeyMouse() {
 	}
 
 	{
-#ifdef BUILD_EDITOR
-		if (EDITMODE)
-		{
-			if (EERIEMouseButton & 1)
-			{
-				INTERACTIVE_OBJ * t = FlyingOverIO;
-
-				if (t!=NULL)
-				{
-					SelectIO(t);
-					EERIEMouseButton&=~1;
-				}
-			}
-		} else
-#endif
 
 		if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
 			{
@@ -5684,7 +5691,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 		else
 		{
-			memset(&bOnglet, true, (max_onglet+1)*sizeof(bool));
+			memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
 		}
 		
 		if ((Book_Mode==1) || (Book_Mode==2))
@@ -5710,8 +5717,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
+				} else {
+					DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 				}
-				else DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 			}
 
 			if (bOnglet[2])

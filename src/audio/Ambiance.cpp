@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -67,8 +85,6 @@ static const u32 AMBIANCE_FILE_VERSION_1001 = 0x01000001;
 static const u32 AMBIANCE_FILE_VERSION_1002 = 0x01000002;
 static const u32 AMBIANCE_FILE_VERSION_1003 = 0x01000003;
 static const u32 AMBIANCE_FILE_VERSION = AMBIANCE_FILE_VERSION_1003;
-
-using namespace audio;
 
 struct KeySetting {
 	
@@ -256,8 +272,8 @@ private:
 	size_t loopc; // How often the sample still needs to loop.
 	size_t queued; // How many loop counts are already queued.
 	
-	Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0),
-	                              loopc(0), queued(0) { }
+	explicit Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0),
+	                                       loopc(0), queued(0) { }
 	
 	void keyPlay();
 	

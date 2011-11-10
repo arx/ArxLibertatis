@@ -1,27 +1,21 @@
 /*
-===========================================================================
-ARX FATALIS GPL Source Code
-Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
-
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
-
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
-<http://www.gnu.org/licenses/>.
-
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
-Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
-
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
-ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
-===========================================================================
-*/
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "core/Localisation.h"
 
@@ -29,6 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdlib>
 #include <iterator>
+
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "core/Unicode.hpp"
 #include "core/Config.h"
@@ -46,64 +42,130 @@ namespace {
 IniReader localisation;
 }
 
-bool InitLocalisation() {
+static PakFile * autodetectLanguage() {
+	
+	PakDirectory * dir = resources->getDirectory("localisation");
+	if(!dir) {
+		LogError << "Missing 'localisation' directory. Is 'loc.pak' present?";
+		return NULL;
+	}
+	
+	std::ostringstream languages;
+	PakFile * localisation = NULL;
+	
+	PakDirectory::files_iterator file = dir->files_begin();
+	for(; file != dir->files_end(); ++file) {
+		
+		const std::string & name = file->first;
+		
+		const std::string prefix = "utext_";
+		const std::string suffix = ".ini";
+		if(!boost::starts_with(name, prefix) || !boost::ends_with(name, suffix)) {
+			// Not a localisation file.
+			continue;
+		}
+		
+		if(name.length() <= prefix.length() + suffix.length()) {
+			// Missing language name.
+			continue;
+		}
+		
+		// Extract the language name.
+		size_t length = name.length() - prefix.length() - suffix.length();
+		std::string language = name.substr(prefix.length(), length);
+		
+		if(!localisation) {
+			
+			localisation = file->second;
+			config.language = language;
+			
+		} else {
+			
+			if(!languages.tellp()) {
+				languages << config.language;
+			}
+			languages << ", " << language;
+			
+			// Prefer english if there are multiple localisations.
+			if(language == "english") {
+				localisation = file->second;
+				config.language = language;
+			}
+		}
+	}
+	
+	if(!localisation) {
+		LogError << "Could not find any localisation file. (localisation/utext_*.ini)";
+		return NULL;
+	}
+	
+	if(languages.tellp()) {
+		LogWarning << "Multiple localisations avalable: " << languages.rdbuf();
+	}
+	
+	LogInfo << "Autodetected language: " << config.language;
+	
+	return localisation;
+}
+
+bool initLocalisation() {
 	
 	LogDebug("Starting localization");
 	
 	localisation.clear();
-
-	// Generate the filename for the localization strings
-	std::string tx = "localisation/utext_" + config.language + ".ini";
 	
-	size_t loc_file_size = 0; // Used to report how large the loaded file is
-
-	// Attempt loading the selected locale file
-	u16 * Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
-
-	// if no file was loaded
-	if ( !Localisation )
-	{
-		// Default to english locale
-		config.language = "english";
-		tx = "localisation/utext_" + config.language + ".ini";
-
-		// Load the default english locale file
-		Localisation = (u16*)resources->readAlloc(tx, loc_file_size);
+	PakFile * file;
+	
+	if(config.language.empty()) {
+		file = autodetectLanguage();
+	} else {
+		
+		// Attempt to load localisation for the configured language.
+		std::string filename = "localisation/utext_" + config.language + ".ini";
+		file = resources->getFile(filename);
+		
+		if(!file) {
+			LogWarning << "Localisation file " << filename << " not found, autodetecting language.";
+			/*
+			 * TODO we might want to keep the old config.language setting as there could be
+			 * localized audio for that language even if there is no localized text.
+			 */
+			file = autodetectLanguage();
+		}
 	}
 	
-	u16 * toFree = Localisation;
-
-	if ( !Localisation ) {
-		LogError << "Could not load localisation file " << tx;
+	if(!file) {
 		return false;
 	}
 	
+	arx_assert(!config.language.empty());
 	
-	LogDebug("Loaded localisation file " << tx);
+	u16 * localisation = reinterpret_cast<u16 *>(file->readAlloc());
+	u16 * toFree = localisation;
 	
 	// Scale the loaded size to new stride of uint16_t vs char
-	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
+	size_t loc_file_size = file->size() / sizeof(*localisation);
 	
-	if(loc_file_size >= 1 && *Localisation == 0xfeff) {
-		// Ignore the byte order mark.
-		loc_file_size--, Localisation++;
+	// Ignore any byte order mark.
+	if(loc_file_size >= 1 && *localisation == 0xfeff) {
+		loc_file_size--, localisation++;
 	}
 
-	LogDebug("Loaded localisation file: " << tx << " of size " << loc_file_size);
-	size_t nchars = GetUTF16Length(Localisation, &Localisation[loc_file_size]);
+	LogDebug("Loaded localisation file of size " << loc_file_size);
+	size_t nchars = GetUTF16Length(localisation, &localisation[loc_file_size]);
 	ARX_UNUSED(nchars);
 	LogDebug("UTF-16 size is " << nchars);
 	std::string out;
 	out.reserve(loc_file_size);
-	UTF16ToUTF8( Localisation, &Localisation[loc_file_size], std::back_inserter(out) );
+	UTF16ToUTF8(localisation, &localisation[loc_file_size], std::back_inserter(out));
 	LogDebug("Converted to UTF8 string of length " << out.size());
 
-	if ( Localisation && loc_file_size)
-	{
+	if(localisation && loc_file_size) {
 		LogDebug("Preparing to parse localisation file");
 		std::istringstream iss( out );
-		if(!localisation.read(iss)) {
-			LogWarning << "errors while parsing localisation file " << tx;
+		if(!::localisation.read(iss)) {
+			LogWarning << "Error parsing localisation file localisation/utext_"
+			           << config.language << ".ini";
 		}
 		
 	}

@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,87 +40,58 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef _ARX_MENU_EXPORT
-#define _ARX_MENU_EXPORT
 
-#include "platform/Platform.h"
+#ifndef ARX_GUI_MENUPUBLIC_H
+#define ARX_GUI_MENUPUBLIC_H
 
-//-----------------------------------------------------------------------------
-//OPTIONS LANGUAGE
-void ARXMenu_Options_Language_Get(int & _iLanguage);
-void ARXMenu_Options_Language_Set(int _iLanguage);
+// Video options
 
-//-----------------------------------------------------------------------------
-//OPTIONS VIDEO
-void ARXMenu_Options_Video_GetResolution(int &, int &, int &);
-void ARXMenu_Options_Video_GetBitPlane(int & i_Bpp);
- 
+void ARXMenu_Options_Video_SetFogDistance(int fogDistance);
+void ARXMenu_Options_Video_GetTextureQuality(int & quality);
+void ARXMenu_Options_Video_SetTextureQuality(int quality);
+void ARXMenu_Options_Video_SetGamma(int gamma);
+void ARXMenu_Options_Video_SetLuminosity(int luminosity);
+void ARXMenu_Options_Video_SetContrast(int contrast);
 
-void ARXMenu_Options_Video_GetFogDistance(int &);
-void ARXMenu_Options_Video_SetFogDistance(int);
-void ARXMenu_Options_Video_GetTextureQuality(int &);
-void ARXMenu_Options_Video_SetTextureQuality(int);
-void ARXMenu_Options_Video_GetMeshReduction(int &);
-void ARXMenu_Options_Video_SetMeshReduction(int);
-void ARXMenu_Options_Video_GetGamma(int &);
-void ARXMenu_Options_Video_SetGamma(int);
-void ARXMenu_Options_Video_GetLuminosity(int &);
-void ARXMenu_Options_Video_SetLuminosity(int);
-void ARXMenu_Options_Video_GetContrast(int &);
-void ARXMenu_Options_Video_SetContrast(int);
+void ARXMenu_Options_Video_SetDetailsQuality(int lod);
+void ARXMenu_Options_Video_SetLODQuality(int meshReduction);
 
-void ARXMenu_Options_Video_GetDetailsQuality(int &);
-void ARXMenu_Options_Video_SetDetailsQuality(int);
-void ARXMenu_Options_Video_GetLODQuality(int &);
-void ARXMenu_Options_Video_SetLODQuality(int);
-bool ARXMenu_Options_Video_SetSoftRender();
+// Audio options
 
-//-----------------------------------------------------------------------------
-//OPTIONS AUDIO
-void ARXMenu_Options_Audio_SetMasterVolume(int);
-void ARXMenu_Options_Audio_SetSfxVolume(int);
-void ARXMenu_Options_Audio_SetSpeechVolume(int);
-void ARXMenu_Options_Audio_SetAmbianceVolume(int);
-bool ARXMenu_Options_Audio_SetEAX(bool);
+void ARXMenu_Options_Audio_SetMasterVolume(int volume);
+void ARXMenu_Options_Audio_SetSfxVolume(int volume);
+void ARXMenu_Options_Audio_SetSpeechVolume(int volume);
+void ARXMenu_Options_Audio_SetAmbianceVolume(int volume);
+bool ARXMenu_Options_Audio_SetEAX(bool enabled);
 void ARXMenu_Options_Audio_ApplyGameVolumes();
 
-//-----------------------------------------------------------------------------
-//OPTIONS CONTROL
-void ARXMenu_Options_Control_GetInvertMouse(bool &);
-void ARXMenu_Options_Control_SetInvertMouse(bool);
-void ARXMenu_Options_Control_GetAutoReadyWeapon(bool &);
-void ARXMenu_Options_Control_SetAutoReadyWeapon(bool);
-void ARXMenu_Options_Control_GetMouseLookToggleMode(bool &);
-void ARXMenu_Options_Control_SetMouseLookToggleMode(bool);
-void ARXMenu_Options_Control_GetMouseSensitivity(int &);
-void ARXMenu_Options_Control_SetMouseSensitivity(int);
-void ARXMenu_Options_Control_GetAutoDescription(bool &);
-void ARXMenu_Options_Control_SetAutoDescription(bool);
+// Input options
 
-//-----------------------------------------------------------------------------
-//RESUME GAME
-void ARXMenu_GetResumeGame(bool &);
+void ARXMenu_Options_Control_GetInvertMouse(bool & invert);
+void ARXMenu_Options_Control_SetInvertMouse(bool invert);
+void ARXMenu_Options_Control_SetMouseSensitivity(int sensitivity);
+
+// Resume game
+
+void ARXMenu_GetResumeGame(bool & allowResume);
 void ARXMenu_ResumeGame();
 
-//-----------------------------------------------------------------------------
-//NEW QUEST
+// New quest
+
 void ARXMenu_NewQuest();
 
-//-----------------------------------------------------------------------------
-//LOAD QUEST
+// Save/Load quest
+
 void ARXMenu_LoadQuest(long num);
 void ARXMenu_DeleteQuest(long num);
-
-//-----------------------------------------------------------------------------
-//SAVE QUEST
 void ARXMenu_SaveQuest(long num);
 
-//-----------------------------------------------------------------------------
-//CREDITS
+// Credits
+
 void ARXMenu_Credits();
 
-//-----------------------------------------------------------------------------
-//QUIT
+// Quit
+
 void ARXMenu_Quit();
 
-#endif
+#endif // ARX_GUI_MENUPUBLIC_H

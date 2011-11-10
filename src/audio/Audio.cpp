@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -55,10 +73,10 @@ namespace {
 static Lock * mutex = NULL;
 }
 
-aalError aalInit(const string & backendName, bool enableEAX) {
+aalError init(const string & backendName, bool enableEAX) {
 	
 	//Clean any initialized data
-	aalClean();
+	clean();
 	
 	LogDebug("Init");
 	
@@ -115,7 +133,7 @@ aalError aalInit(const string & backendName, bool enableEAX) {
 	return AAL_OK;
 }
 
-aalError aalClean() {
+aalError clean() {
 	
 	if(!backend) {
 		return AAL_OK;
@@ -151,7 +169,7 @@ aalError aalClean() {
 	} \
 	Autolock lock(mutex);
 
-aalError aalSetStreamLimit(size_t limit) {
+aalError setStreamLimit(size_t limit) {
 	
 	AAL_ENTRY
 	
@@ -160,7 +178,7 @@ aalError aalSetStreamLimit(size_t limit) {
 	return AAL_OK;
 }
 
-aalError aalSetSamplePath(const fs::path & path) {
+aalError setSamplePath(const fs::path & path) {
 	
 	AAL_ENTRY
 	
@@ -169,7 +187,7 @@ aalError aalSetSamplePath(const fs::path & path) {
 	return AAL_OK;
 }
 
-aalError aalSetAmbiancePath(const fs::path & path) {
+aalError setAmbiancePath(const fs::path & path) {
 	
 	AAL_ENTRY
 	
@@ -178,7 +196,7 @@ aalError aalSetAmbiancePath(const fs::path & path) {
 	return AAL_OK;
 }
 
-aalError aalSetEnvironmentPath(const fs::path & path) {
+aalError setEnvironmentPath(const fs::path & path) {
 	
 	AAL_ENTRY
 	
@@ -194,7 +212,7 @@ aalError setReverbEnabled(bool enable) {
 	return backend->setReverbEnabled(enable);
 }
 
-aalError aalUpdate() {
+aalError update() {
 	
 	AAL_ENTRY
 	
@@ -234,7 +252,7 @@ aalError aalUpdate() {
 
 // Resource creation
 
-MixerId aalCreateMixer() {
+MixerId createMixer() {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -248,7 +266,7 @@ MixerId aalCreateMixer() {
 	return id;
 }
 
-SampleId aalCreateSample(const fs::path & name) {
+SampleId createSample(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -264,7 +282,7 @@ SampleId aalCreateSample(const fs::path & name) {
 	return Backend::clearSource(s_id);
 }
 
-AmbianceId aalCreateAmbiance(const fs::path & name) {
+AmbianceId createAmbiance(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -278,7 +296,7 @@ AmbianceId aalCreateAmbiance(const fs::path & name) {
 	return a_id;
 }
 
-EnvId aalCreateEnvironment(const fs::path & name) {
+EnvId createEnvironment(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -294,7 +312,7 @@ EnvId aalCreateEnvironment(const fs::path & name) {
 
 // Resource destruction
 
-aalError aalDeleteSample(SampleId sample_id) {
+aalError deleteSample(SampleId sample_id) {
 	
 	AAL_ENTRY
 	
@@ -308,7 +326,7 @@ aalError aalDeleteSample(SampleId sample_id) {
 	return AAL_OK;
 }
 
-aalError aalDeleteAmbiance(AmbianceId a_id) {
+aalError deleteAmbiance(AmbianceId a_id) {
 	
 	AAL_ENTRY
 	
@@ -317,7 +335,7 @@ aalError aalDeleteAmbiance(AmbianceId a_id) {
 	return AAL_OK;
 }
 
-AmbianceId aalGetAmbiance(const fs::path & name) {
+AmbianceId getAmbiance(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -330,7 +348,7 @@ AmbianceId aalGetAmbiance(const fs::path & name) {
 	return INVALID_ID;
 }
 
-EnvId aalGetEnvironment(const fs::path & name) {
+EnvId getEnvironment(const fs::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -345,7 +363,7 @@ EnvId aalGetEnvironment(const fs::path & name) {
 
 // Retrieve next resource by ID
 
-AmbianceId aalGetNextAmbiance(AmbianceId ambiance_id) {
+AmbianceId getNextAmbiance(AmbianceId ambiance_id) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -362,7 +380,7 @@ AmbianceId aalGetNextAmbiance(AmbianceId ambiance_id) {
 
 // Environment setup
 
-aalError aalSetRoomRolloffFactor(float factor) {
+aalError setRoomRolloffFactor(float factor) {
 	
 	AAL_ENTRY
 	
@@ -373,7 +391,7 @@ aalError aalSetRoomRolloffFactor(float factor) {
 
 // Listener settings
 
-aalError aalSetUnitFactor(float factor) {
+aalError setUnitFactor(float factor) {
 	
 	AAL_ENTRY
 	
@@ -382,7 +400,7 @@ aalError aalSetUnitFactor(float factor) {
 	return backend->setUnitFactor(factor);
 }
 
-aalError aalSetRolloffFactor(float factor) {
+aalError setRolloffFactor(float factor) {
 	
 	AAL_ENTRY
 	
@@ -391,21 +409,21 @@ aalError aalSetRolloffFactor(float factor) {
 	return backend->setRolloffFactor(factor);
 }
 
-aalError aalSetListenerPosition(const Vec3f & position) {
+aalError setListenerPosition(const Vec3f & position) {
 	
 	AAL_ENTRY
 	
 	return backend->setListenerPosition(position);
 }
 
-aalError aalSetListenerDirection(const Vec3f & front, const Vec3f & up) {
+aalError setListenerDirection(const Vec3f & front, const Vec3f & up) {
 	
 	AAL_ENTRY
 	
 	return backend->setListenerOrientation(front, up);
 }
 
-aalError aalSetListenerEnvironment(EnvId e_id) {
+aalError setListenerEnvironment(EnvId e_id) {
 	
 	AAL_ENTRY
 	
@@ -420,7 +438,7 @@ aalError aalSetListenerEnvironment(EnvId e_id) {
 
 // Mixer setup
 
-aalError aalSetMixerVolume(MixerId m_id, float volume) {
+aalError setMixerVolume(MixerId m_id, float volume) {
 	
 	AAL_ENTRY
 	
@@ -433,7 +451,7 @@ aalError aalSetMixerVolume(MixerId m_id, float volume) {
 	return _mixer[m_id]->setVolume(volume);
 }
 
-aalError aalSetMixerParent(MixerId m_id, MixerId pm_id) {
+aalError setMixerParent(MixerId m_id, MixerId pm_id) {
 	
 	AAL_ENTRY
 	
@@ -448,7 +466,7 @@ aalError aalSetMixerParent(MixerId m_id, MixerId pm_id) {
 
 // Mixer status
 
-aalError aalGetMixerVolume(MixerId m_id, float * volume) {
+aalError getMixerVolume(MixerId m_id, float * volume) {
 	
 	*volume = DEFAULT_VOLUME;
 	
@@ -465,7 +483,7 @@ aalError aalGetMixerVolume(MixerId m_id, float * volume) {
 
 // Mixer control 
 
-aalError aalMixerStop(MixerId m_id) {
+aalError mixerStop(MixerId m_id) {
 	
 	AAL_ENTRY
 	
@@ -478,7 +496,7 @@ aalError aalMixerStop(MixerId m_id) {
 	return _mixer[m_id]->stop();
 }
 
-aalError aalMixerPause(MixerId m_id) {
+aalError mixerPause(MixerId m_id) {
 	
 	AAL_ENTRY;
 	
@@ -491,7 +509,7 @@ aalError aalMixerPause(MixerId m_id) {
 	return _mixer[m_id]->pause();
 }
 
-aalError aalMixerResume(MixerId m_id) {
+aalError mixerResume(MixerId m_id) {
 	
 	AAL_ENTRY
 	
@@ -506,7 +524,7 @@ aalError aalMixerResume(MixerId m_id) {
 
 // Sample setup
 
-aalError aalSetSampleVolume(SourceId sample_id, float volume) {
+aalError setSampleVolume(SourceId sample_id, float volume) {
 	
 	AAL_ENTRY
 	
@@ -518,7 +536,7 @@ aalError aalSetSampleVolume(SourceId sample_id, float volume) {
 	return source->setVolume(volume);
 }
 
-aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
+aalError setSamplePitch(SourceId sample_id, float pitch) {
 	
 	AAL_ENTRY
 	
@@ -530,7 +548,7 @@ aalError aalSetSamplePitch(SourceId sample_id, float pitch) {
 	return source->setPitch(pitch);
 }
 
-aalError aalSetSamplePosition(SourceId sample_id, const Vec3f & position) {
+aalError setSamplePosition(SourceId sample_id, const Vec3f & position) {
 	
 	AAL_ENTRY
 	
@@ -544,7 +562,7 @@ aalError aalSetSamplePosition(SourceId sample_id, const Vec3f & position) {
 
 // Sample status
 
-aalError aalGetSampleName(SampleId sample_id, fs::path & name) {
+aalError getSampleName(SampleId sample_id, fs::path & name) {
 	
 	name.clear();
 	
@@ -560,7 +578,7 @@ aalError aalGetSampleName(SampleId sample_id, fs::path & name) {
 	return AAL_OK;
 }
 
-aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) {
+aalError getSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) {
 	
 	length = 0;
 	
@@ -577,7 +595,7 @@ aalError aalGetSampleLength(SampleId sample_id, size_t & length, TimeUnit unit) 
 	return AAL_OK;
 }
 
-bool aalIsSamplePlaying(SourceId sample_id) {
+bool isSamplePlaying(SourceId sample_id) {
 	
 	AAL_ENTRY_V(false)
 	
@@ -593,7 +611,7 @@ bool aalIsSamplePlaying(SourceId sample_id) {
 
 // Sample control
 
-aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned play_count) {
+aalError samplePlay(SampleId & sample_id, const Channel & channel, unsigned play_count) {
 	
 	AAL_ENTRY
 	
@@ -650,7 +668,7 @@ aalError aalSamplePlay(SampleId & sample_id, const Channel & channel, unsigned p
 	return AAL_OK;
 }
 
-aalError aalSampleStop(SourceId & sample_id) {
+aalError sampleStop(SourceId & sample_id) {
 	
 	AAL_ENTRY
 	
@@ -668,7 +686,7 @@ aalError aalSampleStop(SourceId & sample_id) {
 
 // Track setup
 
-aalError aalMuteAmbianceTrack(AmbianceId a_id, const string & track, bool mute) {
+aalError muteAmbianceTrack(AmbianceId a_id, const string & track, bool mute) {
 	
 	AAL_ENTRY
 	
@@ -683,7 +701,7 @@ aalError aalMuteAmbianceTrack(AmbianceId a_id, const string & track, bool mute) 
 
 // Ambiance setup
 
-aalError aalSetAmbianceUserData(AmbianceId a_id, void * data) {
+aalError setAmbianceUserData(AmbianceId a_id, void * data) {
 	
 	AAL_ENTRY
 	
@@ -698,7 +716,7 @@ aalError aalSetAmbianceUserData(AmbianceId a_id, void * data) {
 	return AAL_OK;
 }
 
-aalError aalSetAmbianceVolume(AmbianceId a_id, float volume) {
+aalError setAmbianceVolume(AmbianceId a_id, float volume) {
 	
 	AAL_ENTRY
 	
@@ -713,7 +731,7 @@ aalError aalSetAmbianceVolume(AmbianceId a_id, float volume) {
 
 // Ambiance status
 
-aalError aalGetAmbianceName(AmbianceId a_id, fs::path & name) {
+aalError getAmbianceName(AmbianceId a_id, fs::path & name) {
 	
 	name.clear();
 	
@@ -728,7 +746,7 @@ aalError aalGetAmbianceName(AmbianceId a_id, fs::path & name) {
 	return AAL_OK;
 }
 
-aalError aalGetAmbianceUserData(AmbianceId a_id, void ** data) {
+aalError getAmbianceUserData(AmbianceId a_id, void ** data) {
 	
 	AAL_ENTRY
 	
@@ -741,7 +759,7 @@ aalError aalGetAmbianceUserData(AmbianceId a_id, void ** data) {
 	return AAL_OK;
 }
 
-aalError aalGetAmbianceVolume(AmbianceId a_id, float & _volume) {
+aalError getAmbianceVolume(AmbianceId a_id, float & _volume) {
 	
 	_volume = DEFAULT_VOLUME;
 	
@@ -760,7 +778,7 @@ aalError aalGetAmbianceVolume(AmbianceId a_id, float & _volume) {
 	return AAL_OK;
 }
 
-bool aalIsAmbianceLooped(AmbianceId a_id) {
+bool isAmbianceLooped(AmbianceId a_id) {
 	
 	AAL_ENTRY_V(false)
 	
@@ -773,7 +791,7 @@ bool aalIsAmbianceLooped(AmbianceId a_id) {
 
 // Ambiance control
 
-aalError aalAmbiancePlay(AmbianceId a_id, const Channel & channel, bool loop, size_t fade_interval) {
+aalError ambiancePlay(AmbianceId a_id, const Channel & channel, bool loop, size_t fade_interval) {
 	
 	AAL_ENTRY
 	
@@ -786,7 +804,7 @@ aalError aalAmbiancePlay(AmbianceId a_id, const Channel & channel, bool loop, si
 	return _amb[a_id]->play(channel, loop, fade_interval);
 }
 
-aalError aalAmbianceStop(AmbianceId a_id, size_t fade_interval) {
+aalError ambianceStop(AmbianceId a_id, size_t fade_interval) {
 	
 	AAL_ENTRY
 	

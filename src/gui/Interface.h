@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,27 +40,22 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-///////////////////////////////////////////////////////////////////////////////
-//
-// ARX_Interface.h
-// ARX Interface Management
-//
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//
-///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_INTERFACE_H
-#define ARX_INTERFACE_H
+#ifndef ARX_GUI_INTERFACE_H
+#define ARX_GUI_INTERFACE_H
 
 #include <string>
 #include <map>
 
-
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
 #include "game/Spells.h"
+#include "math/MathFwd.h"
 
 #include "Configure.h"
+
+class TextureContainer;
+struct EERIE_CAMERA;
+struct INTERACTIVE_OBJ;
 
 extern float BOOKDECX;
 extern float BOOKDECY;
@@ -274,4 +287,5 @@ void KillInterfaceTextureContainers();
 #define ARX_MOUSE_OVER_IO			8
 
 extern long ARX_MOUSE_OVER;
-#endif
+
+#endif // ARX_GUI_INTERFACE_H

@@ -210,6 +210,8 @@ else(MSVC)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
+	check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
+	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	endif()
@@ -277,13 +279,6 @@ else(MSVC)
 	endif()
 	
 endif(MSVC)
-
-check_type_size(char CHAR_SIZE)
-if(NOT CHAR_SIZE EQUAL 1 AND NOT CHAR_SIZE STREQUAL "")
-	message(SEND_ERROR "Unexpected char size: ${CHAR_SIZE}")
-endif()
-
-check_cxx_source_compiles("#include <stdlib.h>\n int main() { size_t s = rand(); char test[s]; }" HAVE_DYNAMIC_STACK_ALLOCATION)
 
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
@@ -530,7 +525,7 @@ set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
-include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -714,14 +709,83 @@ add_custom_target(remake
 if(DOXYGEN_EXECUTABLE)
 	add_custom_target(doc
 		#build the documentation
-		COMMAND cd ${CMAKE_SOURCE_DIR} && ${DOXYGEN_EXECUTABLE} doc/Doxyfile
+		COMMAND cd ${CMAKE_SOURCE_DIR}/src && ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/Doxyfile
 	)
 endif()
 
 if(PYTHONINTERP_FOUND)
-	set(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int)
+	
+	unset(STYLE_FILTER)
+	
+	# Complains about any c-style cast -> too annoying.
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/casting)
+	
+	# Insists on including evrything in the .cpp file even if it is included in the header.
+	# This behaviour conflicts with orther tools.
+	set(STYLE_FILTER ${STYLE_FILTER},-build/include_what_you_use)
+	
+	# Too many false positives and not very helpful error messages.
+	set(STYLE_FILTER ${STYLE_FILTER},-build/include_order)
+	
+	# No thanks.
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/streams)
+	
+	# Ugh!
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/tab)
+	
+	# Yes it is!
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/blank_line)
+	
+	# Suggessts excessive indentation.
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/labels)
+	
+	# Why?
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/todo)
+	set(STYLE_FILTER ${STYLE_FILTER},-readability/todo)
+	
+	# "For a static/global string constant, use a C style string"
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/string)
+	
+	# TODO consider enabling these and fixing the warnings
+	
+	# Very noisy and perhaps a matter of taste.
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/braces)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
+	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
+	
+	# Complains about using short, long, etc.
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/int)
+	
+	# Complains about non-const references as parameters
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/references)
+	
+	# TODO enable these!
+	
+	set(RELAXED_STYLE_FILTER ${STYLE_FILTER})
+	
+	# Very noisy but should be fixed.
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/operators)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/comma)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/comments)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/end_of_line)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/align_tab)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/line_length)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/semicolon)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/ident_space)
+	
+	# Unsafe functions.
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-runtime/printf)
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-runtime/threadsafe_fn)
+	
+	# Very much known...
+	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-readability/fn_size)
+	
 	add_custom_target(style
-		COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ARX_SOURCES} ${ALL_INCLUDES}
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
+	)
+	
+	add_custom_target(strict-style
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
 	)
 endif()
 

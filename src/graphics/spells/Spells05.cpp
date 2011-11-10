@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,37 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// CSpellFx_Lvl05.cpp
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Spell FX Level 05
-//
-// Refer to:
-//		CSpellFx.h
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "graphics/spells/Spells05.h"
 
@@ -67,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "game/Player.h"
 
-#include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
@@ -76,10 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
-#include "graphics/spells/Spells03.h"
 #include "graphics/texture/TextureStage.h"
 
-#include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
@@ -508,7 +493,7 @@ float CRuneOfGuarding::Render()
 //-----------------------------------------------------------------------------
 void LaunchPoisonExplosion(Vec3f * aePos)
 {
-	// syst�me de partoches pour l'explosion
+	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 80; 
@@ -712,7 +697,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 		ulCurrentTime += _ulTime;
 	}
 
-	// on passe de 5 � 100 partoches en 1.5secs
+	// on passe de 5 à 100 partoches en 1.5secs
 	if (ulCurrentTime < 750)
 	{
 		pPS.iParticleNbMax = 2;
@@ -1484,7 +1469,7 @@ void CLevitate::Update(unsigned long _ulTime)
 	switch (this->key)
 	{
 		case 0:
-			//mont� du cone
+			//monté du cone
 			a = (float) ulCurrentTime / 1000.f;
 
 			if (a > 1.f)
@@ -1718,7 +1703,7 @@ float CLevitate::Render()
 			break;
 	}
 
-	//trac� du cone back
+	//tracé du cone back
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
@@ -1748,7 +1733,7 @@ float CLevitate::Render()
 		j++;
 	}
 
-	//trac� du cone front
+	//tracé du cone front
 	GRenderer->SetCulling(Renderer::CullCCW);
 	
 	i = cone[1].conenbfaces - 2;
@@ -1773,7 +1758,7 @@ float CLevitate::Render()
 		j++;
 	}
 
-	//trac� des pierres
+	//tracé des pierres
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	this->DrawStone();
 

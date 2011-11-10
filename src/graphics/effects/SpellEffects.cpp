@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,204 +40,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_Lightning
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//
-// Updates: (date) (person) (update)
-//-----------------------------------------------------------------------------
-// jeudi 5 juillet 2001
-// mercredi 4 juillet 2001
-//		fix fireball + progressif
-//		tests poison proj
-//		fix tex rise dead
-//		split sol bless
-// mardi 3 juillet 2001
-//		summon 10% poulet 90% demon
-//		confuse devient -> rhaa vista au lieu de m�ga comunicatum
-//		fix des cost des spells
-// lundi 2 juillet 2001
-//		paralyse + poufs + fix time 5 secondes
-// vendredi 29 juin 2001
-// jeudi 28
-//		fix fireball pos not r�init
-//		rise dead + summon fix tex qui wrap -> mirror
-// jeudi 21 juin 2001
-//		virer ombrignon magic sight
-//		create food virer marmite -> cf heal en jaune orange
-//		cure poison zone sur soi -> cf heal en vert
-//		fire protec, cold protec -> virer rubans -> halo
-//		ice field -> virer en haut
-//		bless ya plus la couronne
-//		summon trop haut
-//		rise dead uniqmt zombie et momie
-//		fire protection, cold, armor, lower sont mutuellement exclusifs
-// jeudi 14 juin 2001
-//		int�gration des particules dand danae, poser translate, �dit
-// mercredi 13 juin 2001
-//		spells
-// Mardi 12 juin 2001
-//		poison projectile
-// Lundi 11 juin 2001
-//		cure poison + armor + lower armor
-//		aurevoir le spell activate portal
-// Mercredi Jeudi Vendredi 06 07 08 juin 2001
-//		pleins de trucs sur les spells
-//		fire field + armor + bless (partoches)
-// Mardi 05 juin 2001
-//		Harm
-//		CreateFood
-// Jeudi 10 mai 2001
-//		Ignit & Douse rayon 3 -> 6m
-//		Magic Missile / version bonus / version sans bulles
-//		Heal Particules
-//		Ice Projectile dist + nb de pics en fct player stat + path
-// Mercredi 9 mai 2001
-//		Apres Editeur de particules
-//		Finition des sorts pour l'E3
-//		Ignit & douse ya plus le son si ya pas de lumi�res dans le rayon d'action
-//		Ignit & Douse rayon 2m50
-//		Ignit & Douse 500 ms
-//		Ignit & Douse pas de son si rien � allumer / �teindre
-//		Magic Missile + gros au milieu + fix orientation obj 3d sur le path
-// Lundi 23 avril 2001
-//		Finition, paufinage, binding avec le monde
-// Vendredi 19 avril 2001
-//		Mega Merge dans danae
-// La semaine -> spells spells spells
-// Jeudi 12 avril 2001
-//		Curse ok
-//		Confuse ok
-// Mecredi 11 avril 2001
-//		Magic Missile
-//		Poison Projectile
-// Mardi 10 avril 2001
-//		Les classes
-//		Bless
-//		Incinerate
-// Lundi 9 avril 2001
-//		Truc g�n�rique de mouche sur path Herminte termin� avec alignement sur path
-//		Spell Make Friend (confuse)
-//		Spell Magic Missile
-// Vendredi 6 avril 2001
-//		Truc g�n�rique de mouche sur path Hermite (seb)
-// Jeudi 5 avril 2001
-//		D�but truc g�n�rique de mouche sur path Hermite (seb)
-//		Tests du path avec b�zier -> pas cool paske passe pas par les points, enfin si
-//		mais fo des ptains de tangeantes qui font chier
-//		Negate Magic
-//		Paralyse
-// Mercredi 4 avril 2001
-//		Tests b�ziers
-//		Create Food -> ajout chaudron + particules
-// Mardi 3 avril 2001
-//		Spells Armor, Speed, Dispell Illusion, CreateFood
-// Lundi 2 avril 2001
-//		Spells Curse, Detect Traps, Make Friend, Fire Field
-// Vendredi 30 mars 2001
-//		Rise Dead -> fixer dans tous les angles
-// Jeudi 29 mars 2001
-//		Rune of Guarding -> + particles + 3 meshs -> trop charg� � voir
-// Mardi 27 mars 2001
-//		Cure Poison
-//		Rune of Guarding
-// Lundi 26 mars 2001
-//		D�but Incinerate
-//		R�union sur les spells
-// Vendredi 23 mars 2001
-//		Ice Termin�
-//		Mesh Motte de glace
-// Jeudi 22 mars 2001
-//		Mesh Stalagmite
-// Mercredi 21 mars 2001
-//		Nouveaux Spells � faire: Incinerate & Ice projectile
-// Mardi 20 mars 2001
-//		Lightning -> texture, donc division du nombre de faces par 2
-//		Lightning -> billboard 100% correct now par rapport � beta cr�ation
-//		Summon deuxi�me timer pour la fermeture
-// Lundi 19 mars 2001
-//		summon nettoyage + termin�
-// Vendredi 16 mars 2001
-//		summon debug + nettoyage + am�liorations + bordure
-// Jeudi 15 mars 2001
-//		summon creature d�chirure + lum vol + intro + bevel + fin plat
-//		+ billboard	+ vol light quad plats + bug fix
-// Mercredi 14 mars 2001
-//		summon creature d�chirure
-// Mardi 13 mar 2001
-//		summon creature
-// Lundi 12 mar 2001
-//		cube force field -> moins speed, rotate bitmap � la pougne
-//		+ jelly mauve / vert + intro
-// Mardi 06 mar 2001
-//		recherche sur cube force field
-// Lundi 26 fev 2001
-//		lightning color + frame update
-// Vendredi 25 fev 2001
-//		lightning objectifization et classification
-// Jeudi 24 fev 2001
-//		lightning integration danae + galere avec les angles (repere)
-// Mercredi 23 fev 2001
-//		lightning structure memoire + scintillement
-// Mardi 22 fev 2001
-//		lightning tests sympas + tweakage
-// Lundi 21 fev 2001
-//		lightning 1ers tests + vecteurs math
-//-----------------------------------------------------------------------------
-// Todo: Lightning -> collisions
-//		 Ice -> pouf comme un train � vapeur � la progression
-//		 Ice -> limiter la distance
-//		 Ice -> int�grer dans la sc�ne (avec les lumi�res dessus)
-//		 ForceField -> rune qui tourne
-//		 Summon -> linker avec le earthquake
-//		 Cure Poison -> changer les tex + 1 variante
-//		 Rune Of Guarding -> mesh qui va + boule + lum dyn
-//		 Rise Dead -> fixer dans tous les angles
-//		 Paralyse -> perso en noir et blanc fig�
-//		 -> life drain, mana et harm faire une grazubu de classe
-//		 bless -> halo dor�
-//		 armor -> tex sur les y avec d�grad� genre super power :o) sinon modif sp�cular
-//		 detect trap, disarm trap, dispell illusion, enchant weapon
-//		 magic sight, changer fov + doux, couleur, textruche (en pr�voir ptet +sieures)
-//		 poison proj finir les collisions
-//		 cure poison bouffe mana par pj gu�ri
-//		 paralyse -> plantes grimpantes + perso en noir et blanc
-//		 negate magic
-//		 todo checker fire protec, armor, cold -> annulent lower que si sort sup�rieur en niveau
-//
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "graphics/effects/SpellEffects.h"
 
-#include <climits>
-
 #include "animation/AnimationRender.h"
-#include "core/Core.h"
 #include "game/Player.h"
-#include "graphics/Draw.h"
 #include "graphics/Math.h"
 
 

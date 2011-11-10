@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,48 +40,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// CSpellFx_Lvl06.h
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-// ARX Spells FX Level 06
-//
-// Updates: (date) (person) (update)
-//////////////////////////////////////////////////////////////////////////////////////
-// Refer to CSpellFx.h for details
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_CSPELLFX_LVL06_H
-#define ARX_CSPELLFX_LVL06_H
+#ifndef ARX_GRAPHICS_SPELLS_SPELLS06_H
+#define ARX_GRAPHICS_SPELLS_SPELLS06_H
 
 #include "graphics/effects/SpellEffects.h"
 
-//-----------------------------------------------------------------------------
 // Done By : seb
-// Status  :
-//-----------------------------------------------------------------------------
 class CParalyse : public CSpellFx
 {
 	private:
@@ -140,13 +124,8 @@ class CParalyse : public CSpellFx
 		float	Render();
 		void	Kill();
 };
-/*--------------------------------------------------------------------------*/
 
-
-//-----------------------------------------------------------------------------
-// Done By : Didier P�dreno
-// Status  :
-//-----------------------------------------------------------------------------
+// Done By : Didier Pedreno
 class CCreateField: public CSpellFx
 {
 	public:
@@ -176,20 +155,12 @@ class CCreateField: public CSpellFx
 		void RenderSubDivFace(TexturedVertex * b, TexturedVertex * t, int b1, int b2, int t1, int t2);
 
 	public:
-		void SetPos(Vec3f);
-		void SetSize(float);
-
-	public:
 		void	Create(Vec3f, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render();
 };
 
-//-----------------------------------------------------------------------------
-// Done By :
-// Status  :
-//-----------------------------------------------------------------------------
 class CDisarmTrap: public CSpellFx
 {
 	public:
@@ -217,12 +188,7 @@ class CDisarmTrap: public CSpellFx
 		void	Update(unsigned long);
 		float	Render();
 };
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Done By :
-// Status  :
-//-----------------------------------------------------------------------------
 class CSlowDown: public CSpellFx
 {
 	public:
@@ -251,12 +217,8 @@ class CSlowDown: public CSpellFx
 		void	Update(unsigned long);
 		float	Render();
 };
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Done By : Didier P�dreno
-// Status  :
-//-----------------------------------------------------------------------------
+// Done By : Didier Pedreno
 class CRiseDead: public CSpellFx
 {
 	public:
@@ -337,7 +299,5 @@ class CRiseDead: public CSpellFx
 		void	Update(unsigned long);
 		float	Render();
 };
-//-----------------------------------------------------------------------------
 
-
-#endif
+#endif // ARX_GRAPHICS_SPELLS_SPELLS06_H

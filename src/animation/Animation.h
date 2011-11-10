@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,17 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-///////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//  Animation functions
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
-///////////////////////////////////////////////////////////////////////////////
 
 #ifndef  ARX_ANIMATION_ANIMATION_H
 #define  ARX_ANIMATION_ANIMATION_H
@@ -68,12 +78,12 @@ void Insertllight(EERIE_LIGHT * el, float dist);
 void PopAllTriangleList();
 void PopAllTriangleListTransparency();
 
-TexturedVertex * PushVertexInTableCull(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *);
-TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer *);
+TexturedVertex * PushVertexInTableCull(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
+TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer * tex);
 
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();

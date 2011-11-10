@@ -1,3 +1,45 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
+===========================================================================
+ARX FATALIS GPL Source Code
+Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
+
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+<http://www.gnu.org/licenses/>.
+
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+===========================================================================
+*/
 
 #include "gui/Credits.h"
 
@@ -43,13 +85,13 @@ struct CreditsTextInformations {
 
 struct CreditsInformations {
 	
-	CreditsInformations() {
-	iFontAverageHeight = -1;
-	iFirstLine = 0 ;
-	}
+	CreditsInformations() : iFirstLine(0), iFontAverageHeight(-1), sizex(0), sizey(0) { }
 	
 	int iFirstLine;
 	int iFontAverageHeight;
+	
+	int sizex, sizey; // save the screen size so we know when to re-initialize the credits
+	
 	vector<CreditsTextInformations> aCreditsInformations;
 };
 
@@ -59,11 +101,18 @@ static CreditsInformations CreditsData;
 static void InitCredits();
 static void CalculAverageWidth();
 static void ExtractAllCreditsTextInformations();
-static void ExtractPhraseColor(string & phrase, CreditsTextInformations & infomations);
-static void CalculTextPosition(const string & phrase, CreditsTextInformations & infomations, float & drawpos);
 
 static void InitCredits() {
-
+	
+	if(CreditsData.iFontAverageHeight != -1
+		&& CreditsData.sizex == DANAESIZX && CreditsData.sizey == DANAESIZY) {
+		return;
+	}
+	
+	CreditsData.sizex = DANAESIZX, CreditsData.sizey = DANAESIZY;
+	
+	CreditsData.aCreditsInformations.clear();
+	
 	LogDebug("InitCredits");
 	
 	CalculAverageWidth();
@@ -73,28 +122,51 @@ static void InitCredits() {
 	
 }
 
-static void CalculTextPosition(const string & phrase, CreditsTextInformations & infomations, float & drawpos) {
-	
-	//Center the text on the screen
-	infomations.sPos = hFontCredits->GetTextSize(phrase);
-	if(infomations.sPos.x < DANAESIZX) 
-		infomations.sPos.x = static_cast<int>((DANAESIZX - infomations.sPos.x) * ( 1.0f / 2 ));
-	
-	//Calcul height position (must be calculate after GetTextSize because sPos is writted)
-	infomations.sPos.y = static_cast<int>(drawpos) ;
-	drawpos += CreditsData.iFontAverageHeight;
-}
-
-static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomations )
-{
+static Color ExtractPhraseColor(string & phrase) {
 	//Get the good color
 	if(!phrase.empty() && phrase[0] == '~') {
 		phrase[0] = ' ';
-		infomations.fColors = Color(255,255,255);
+		return Color(255,255,255);
 	} else {
 		//print in gold color
-		infomations.fColors = Color(232,204,143);
+		return Color(232,204,143);
 	}
+}
+
+static void addCreditsLine(string & phrase, float & drawpos) {
+	
+	//Create a data containers
+	CreditsTextInformations infomations;
+	
+	infomations.fColors = ExtractPhraseColor(phrase);
+	
+	//int linesize = hFontCredits->GetTextSize(phrase).x;
+	
+	static const int MARGIN_WIDTH = 20;
+	Rect linerect(DANAESIZX - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->GetLineHeight());
+	
+	while(!phrase.empty()) {
+		
+		// Split long lines
+		long n = ARX_UNICODE_ForceFormattingInRect(hFontCredits, phrase, linerect);
+		arx_assert(n >= 0 && size_t(n) < phrase.length());
+		
+		infomations.sText = phrase.substr(0, size_t(n + 1) == phrase.length() ? n + 1 : n);
+		phrase = phrase.substr(n + 1);
+		
+		// Center the text on the screen
+		int linesize = hFontCredits->GetTextSize(infomations.sText).x;
+		infomations.sPos.x = (DANAESIZX - linesize) / 2;
+		
+		LogDebug("credit line: '" << infomations.sText << "' (" << linesize << "," << infomations.sText.length() << ")");
+		
+		// Calculate height position
+		infomations.sPos.y = static_cast<int>(drawpos);
+		drawpos += CreditsData.iFontAverageHeight;
+		
+		CreditsData.aCreditsInformations.push_back(infomations);
+	}
+	
 }
 
 //Use to calculate an Average height for text fonts
@@ -103,6 +175,29 @@ static void CalculAverageWidth() {
 	// Calculate the average value
 	Vec2i size = hFontCredits->GetTextSize("aA(");
 	CreditsData.iFontAverageHeight = size.y;
+}
+
+static bool iswhitespace(char c) {
+	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
+}
+
+static void strip(string & str) {
+	
+	size_t startpos = 0;
+	while(startpos < str.length() && iswhitespace(str[startpos])) {
+		startpos++;
+	}
+	
+	size_t endpos = str.length();
+	while(endpos > startpos && iswhitespace(str[endpos - 1])) {
+		endpos--;
+	}
+	
+	if(startpos != 0) {
+		str = str.substr(startpos, endpos - startpos);
+	} else {
+		str.resize(endpos);
+	}
 }
 
 
@@ -117,33 +212,22 @@ static void ExtractAllCreditsTextInformations() {
 	float drawpos = static_cast<float>(DANAESIZY);
 
 	while(std::getline(iss, phrase)) {
-	
-		//Case of separator line
-		if(phrase.length() == 0) {
-			drawpos += CreditsData.iFontAverageHeight >> 3;
-			continue ;
+		
+		strip(phrase);
+		
+		if(phrase.empty()) {
+			// Separator line
+			drawpos += CreditsData.iFontAverageHeight;
+		} else {
+			addCreditsLine(phrase, drawpos);
 		}
-		
-		//Create a data containers
-		CreditsTextInformations infomations ;
-		
-		ExtractPhraseColor(phrase, infomations);
-		CalculTextPosition(phrase, infomations, drawpos);
-		
-		//Assign the text modified by ExtractPhase Color
-		infomations.sText = phrase;
-		
-		//Bufferize it
-		CreditsData.aCreditsInformations.push_back(infomations);
 	}
 }
 
 void Credits::render() {
-
+	
 	//We initialize the datas
-	if(CreditsData.iFontAverageHeight == -1) {
-		InitCredits();
-	}
+	InitCredits();
 	
 	int iSize = CreditsData.aCreditsInformations.size() ;
 	

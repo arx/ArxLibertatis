@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -121,7 +139,6 @@ extern long NOBUILDMAP;
 extern long NOCHECKSUM;
 extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
-extern long NEED_INTRO_LAUNCH;
 extern long SPLASH_THINGS_STAGE;
 extern long REFUSE_GAME_RETURN;
 extern long PLAYER_MOUSELOOK_ON;
@@ -227,7 +244,7 @@ bool ArxGame::Initialize()
 		return false;
 	}
 
-	init = InitLocalisation();
+	init = initLocalisation();
 	if(!init) {
 		return false;
 	}
@@ -841,31 +858,7 @@ static float _AvgFrameDiff = 150.f;
 		memset(TELEPORT_TO_LEVEL,0,64);
 		memset(TELEPORT_TO_POSITION,0,64);
 	}
-
-	if (NEED_INTRO_LAUNCH)
-	{
-		LogDebug("need intro launch");
-		SetEditMode(0);
-		BLOCK_PLAYER_CONTROLS=1;
-		ARX_INTERFACE_PlayerInterfaceModify(0,0);
-		ARX_Menu_Resources_Release();
-		ARXmenu.currentmode=AMCM_OFF;
-		ARX_TIME_UnPause();
-		SPLASH_THINGS_STAGE=14;
-		NEED_INTRO_LAUNCH=0;
-		REFUSE_GAME_RETURN=1;
-		const char RESOURCE_LEVEL_10[] = "graph/levels/level10/level10.dlf";
-		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-		PROGRESS_BAR_TOTAL = 108;
-		LoadLevelScreen(10);
-		DanaeLoadLevel(RESOURCE_LEVEL_10);
-		FORBID_SAVE=0;
-		FirstFrame=1;
-		SPLASH_THINGS_STAGE=0;
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-		return false;
-	}
-		
+	
 	//Setting long from long
 	subj.centerx = DANAECENTERX;
 	subj.centery = DANAECENTERY;

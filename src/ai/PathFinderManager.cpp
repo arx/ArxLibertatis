@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,38 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-// EERIEPathfinder
-///////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//	Interface betweed EERIE & MINOS
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-///////////////////////////////////////////////////////////////////////////////
 
 #include "ai/PathFinderManager.h"
 
@@ -90,8 +79,7 @@ class PathFinderThread : public StoppableThread {
 static PathFinderThread * pathfinder = NULL;
 static Lock * mutex = NULL;
 
-struct PATHFINDER_QUEUE_ELEMENT
-{
+struct PATHFINDER_QUEUE_ELEMENT {
 	PATHFINDER_REQUEST req;
 	PATHFINDER_QUEUE_ELEMENT * next;
 	long valid;
@@ -101,16 +89,15 @@ PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
 
 // An Io can request Pathfinding only once so we insure that it's always the case.
 // A new pathfinder request from the same IO will overwrite the precedent.
-static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io)
-{
+static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io) {
+	
 	if (!pathfinder_queue_start) return NULL;
 
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
-	while (cur)
-	{
+	while(cur) {
 		if (cur->req.ioid == io) return cur->valid ? cur : NULL;
-
+		
 		cur = cur->next;
 	}
 
@@ -136,8 +123,7 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 	// processed.
 	temp = PATHFINDER_Find_ioid(req->ioid);
 
-	if (temp && temp->valid && temp != pathfinder_queue_start)
-	{
+	if(temp && temp->valid && temp != pathfinder_queue_start) {
 		temp->valid = 0;
 		memcpy(&temp->req, req, sizeof(PATHFINDER_REQUEST));
 		temp->valid = 1;
@@ -156,39 +142,32 @@ bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
 	temp->valid = 1;
 
 	// No queue start ? then this element becomes the queue start
-	if (!cur)
-	{
+	if(!cur) {
 		temp->next = NULL;
 		pathfinder_queue_start = temp;
-	}
-	else if ((req->ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE | BEHAVIOUR_LOOK_FOR)) && cur->next)
-	{
+		
+	} else if((req->ioid->_npcdata->behavior & (BEHAVIOUR_MOVE_TO | BEHAVIOUR_FLEE
+	                                            | BEHAVIOUR_LOOK_FOR)) && cur->next) {
 		// priority: insert as second element of queue
 		temp->next = cur->next;
 		cur->next = temp;
-	}
-	else
-	{
+		
+	} else {
+		
 		// add to end of queue
 		temp->next = NULL;
-
-		if (!pathfinder_queue_start)
-		{
+		
+		if(!pathfinder_queue_start) {
 			pathfinder_queue_start = temp;
 			return true;
+		} else {
+			while(cur->next) {
+				cur = cur->next;
+			}
+			cur->next = temp;
 		}
-		else					
-		{
-			while (cur->next)		
-			{
-			
-				cur = cur->next;		
-			}					
-
-			cur->next = temp;		
-		}							
 	}
-
+	
 	return true;
 }
 
@@ -236,17 +215,17 @@ void EERIE_PATHFINDER_Clear() {
 }
 
 // Retrieves & Removes next Pathfind request from queue
-static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
-{
-	if (!request || !pathfinder_queue_start || !pathfinder_queue_start->valid)
+static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request) {
+	
+	if(!request || !pathfinder_queue_start || !pathfinder_queue_start->valid) {
 		return false;
-
+	}
+	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
 	if ((cur->req.ioid)
-	        &&	(cur->req.ioid->ioflags & IO_NPC)
-	        &&	(cur->req.ioid->_npcdata->behavior == BEHAVIOUR_NONE))
-	{
+	        && (cur->req.ioid->ioflags & IO_NPC)
+	        && (cur->req.ioid->_npcdata->behavior == BEHAVIOUR_NONE)) {
 		pathfinder_queue_start = cur->next;
 		free(cur);
 		return false;
@@ -286,7 +265,8 @@ void PathFinderThread::run() {
 
 				pathfinder.setCylinder(curpr.ioid->physics.cyl.radius, curpr.ioid->physics.cyl.height);
 
-				bool stealth = (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE)) == (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
+				bool stealth = (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE))
+				                == (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
 
 				
 				PathFinder::Result result;
@@ -297,7 +277,8 @@ void PathFinderThread::run() {
 					float distance = fdist(ACTIVEBKG->anchors[curpr.from].pos, ACTIVEBKG->anchors[curpr.to].pos);
 
 					if (distance < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
+						heuristic = PATHFINDER_HEURISTIC_MIN
+						            + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
 					pathfinder.move(curpr.from, curpr.to, result, stealth);
@@ -305,7 +286,9 @@ void PathFinderThread::run() {
 				else if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 				{
 					if (curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
+						heuristic = PATHFINDER_HEURISTIC_MIN
+						            + PATHFINDER_HEURISTIC_RANGE
+						              * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
 					pathfinder.wanderAround(curpr.from, curpr.ioid->_npcdata->behavior_param, result, stealth);
@@ -313,10 +296,13 @@ void PathFinderThread::run() {
 				else if (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE))
 				{
 					if (curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
+						heuristic = PATHFINDER_HEURISTIC_MIN
+						            + PATHFINDER_HEURISTIC_RANGE
+						              * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
-					float safedist = curpr.ioid->_npcdata->behavior_param + fdist(curpr.ioid->target, curpr.ioid->pos);
+					float safedist = curpr.ioid->_npcdata->behavior_param
+					                 + fdist(curpr.ioid->target, curpr.ioid->pos);
 
 					pathfinder.flee(curpr.from, curpr.ioid->target, safedist, result, stealth);
 				}
@@ -325,10 +311,12 @@ void PathFinderThread::run() {
 					float distance = fdist(curpr.ioid->pos, curpr.ioid->target);
 
 					if (distance < PATHFINDER_DISTANCE_MAX)
-						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
+						heuristic = PATHFINDER_HEURISTIC_MIN
+						            + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 
 					pathfinder.setHeuristic(heuristic);
-					pathfinder.lookFor(curpr.from, curpr.ioid->target, curpr.ioid->_npcdata->behavior_param, result, stealth);
+					pathfinder.lookFor(curpr.from, curpr.ioid->target,
+					                   curpr.ioid->_npcdata->behavior_param, result, stealth);
 				}
 				
 				if(!result.empty()) {
@@ -349,8 +337,8 @@ void PathFinderThread::run() {
 		sleep(PATHFINDER_UPDATE_INTERVAL);
 	}
 
-	//fix leaks memory but freeze characters
-	//	pathfinder.Clean();
+	// fix leaks memory but freeze characters
+	// pathfinder.Clean();
 
 	PATHFINDER_WORKING = 0;
 	

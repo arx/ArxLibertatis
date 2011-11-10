@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,41 +40,20 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_Menu
-//////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_MENU2_H
-#define ARX_MENU2_H
+#ifndef ARX_GUI_MENUWIDGETS_H
+#define ARX_GUI_MENUWIDGETS_H
 
 #include <vector>
 #include <string>
 
-#include "gui/Text.h"
+#include "graphics/Color.h"
 #include "input/InputKey.h"
 #include "math/Vector2.h"
 #include "math/Rectangle.h"
 
 class TextureContainer;
+class Font;
 
 // Enum for all the buttons in the menu
 enum MenuButton {
@@ -288,7 +285,7 @@ class CMenuZone
 		void SetCheckOff()
 		{
 			bCheck = false;
-		};
+		}
 		void SetCheckOn()
 		{
 			bCheck = true;
@@ -306,12 +303,12 @@ class CMenuAllZone
 		CMenuAllZone();
 		virtual ~CMenuAllZone();
 
-		void AddZone(CMenuZone *);
-		CMenuZone * CheckZone(const Vec2s& mousePos) const;
+		void AddZone(CMenuZone * menuZone);
+		CMenuZone * CheckZone(const Vec2s & mousePos) const;
  
-		CMenuZone * GetZoneNum(int);
-		CMenuZone * GetZoneWithID(int);
-		void Move(int, int);
+		CMenuZone * GetZoneNum(int zoneNumber);
+		CMenuZone * GetZoneWithID(int zoneId);
+		void Move(int dx, int dy);
 		void DrawZone();
 		int GetNbZone();
 };
@@ -342,30 +339,19 @@ class CMenuElement : public CMenuZone
 		MENUSTATE   eMenuState;		//etat de retour de l'element
 		int         iShortCut;
 	public:
-		CMenuElement(MENUSTATE);
+		explicit CMenuElement(MENUSTATE);
 		virtual ~CMenuElement();
 
 		virtual CMenuElement * OnShortCut();
-		virtual bool OnMouseClick(int) = 0;
-		virtual void Update(int) = 0;
+		virtual bool OnMouseClick(int button) = 0;
+		virtual void Update(int time) = 0;
 		virtual void Render() = 0;
-		virtual void RenderMouseOver() {};
-		virtual void EmptyFunction() {};
-		virtual bool OnMouseDoubleClick(int)
-		{
-			return false;
-		};
-		virtual CMenuZone * GetZoneWithID(int _iID)
-		{
-			if (iID == _iID)
-			{
-				return (CMenuZone *)this;
-			}
-			else
-			{
-				return NULL;
-			}
-		};
+		virtual void RenderMouseOver() { }
+		virtual void EmptyFunction() { }
+		virtual bool OnMouseDoubleClick(int button) { ARX_UNUSED(button); return false; }
+		virtual CMenuZone * GetZoneWithID(int zoneId) {
+			return (iID == zoneId) ? (CMenuZone *)this : NULL;
+		}
 
 		void SetShortCut(int _iShortCut)
 		{
@@ -382,34 +368,29 @@ protected:
 // faire une classe
 // like a container in java
 
-//-----------------------------------------------------------------------------
-class CMenuPanel : public CMenuElement
-{
+class CMenuPanel : public CMenuElement {
+	
 	public:
 		std::vector<CMenuElement *>	vElement;
 	public:
 		CMenuPanel();
 		virtual ~CMenuPanel();
 
-		void Move(int, int);
-		void AddElement(CMenuElement *);
-		void AddElementNoCenterIn(CMenuElement *);
+		void Move(int dx, int dy);
+		void AddElement(CMenuElement * element);
+		void AddElementNoCenterIn(CMenuElement * element);
  
-		void Update(int);
+		void Update(int time);
 		void Render();
-		bool OnMouseClick(int)
-		{
-			return false;
-		};
+		bool OnMouseClick(int button) { ARX_UNUSED(button); return false; }
 		CMenuElement * OnShortCut();
-		void RenderMouseOver() {};
-		CMenuZone * IsMouseOver(const Vec2s& mousePos) const;
-		CMenuZone * GetZoneWithID(int);
+		void RenderMouseOver() { }
+		CMenuZone * IsMouseOver(const Vec2s & mousePos) const;
+		CMenuZone * GetZoneWithID(int zoneId);
 };
 
-//-----------------------------------------------------------------------------
-class CMenuElementText: public CMenuElement
-{
+class CMenuElementText: public CMenuElement {
+	
 	public:
 		std::string lpszText;
 		Font*	pFont;
@@ -422,24 +403,24 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, Font*, const std::string&, float, float, Color, float, MENUSTATE); 
+		CMenuElementText(int id, Font * font, const std::string & text, float px, float py,
+		                 Color color, float size, MENUSTATE state);
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
-		bool OnMouseClick(int);
-		void Update(int);
+		bool OnMouseClick(int button);
+		void Update(int time);
 		void Render();
-		void SetText( const std::string& _pText);
+		void SetText(const std::string & _pText);
 		void RenderMouseOver();
  
 		Vec2i GetTextSize() const;
 
-		bool OnMouseDoubleClick(int);
+		bool OnMouseDoubleClick(int button);
 };
 
-//-----------------------------------------------------------------------------
-class CMenuButton: public CMenuElement
-{
+class CMenuButton: public CMenuElement {
+	
 	public:
 		std::string         vText;
 		int                 iPos;
@@ -450,25 +431,22 @@ class CMenuButton: public CMenuElement
 		float               fSize;
 
 	public:
-		CMenuButton(int, Font*, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1);
+		CMenuButton(int id, Font * font, MENUSTATE state, int px, int py,
+		            const std::string & label, float size = 1.f, TextureContainer * tex = NULL, 
+		            TextureContainer * texOver = NULL, int color = -1);
 		~CMenuButton();
 
 	public:
-		void SetPos(float, float);
-		void AddText( const std::string& );
-		CMenuElement * OnShortCut()
-		{
-			return NULL;
-		};
-		bool OnMouseClick(int);
-		void Update(int);
+		void SetPos(float px, float py);
+		void AddText(const std::string & label);
+		CMenuElement * OnShortCut() { return NULL; }
+		bool OnMouseClick(int button);
+		void Update(int time);
 		void Render();
 		void RenderMouseOver();
 };
 
-//-----------------------------------------------------------------------------
-class CMenuSliderText: public CMenuElement
-{
+class CMenuSliderText: public CMenuElement {
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
@@ -480,27 +458,23 @@ class CMenuSliderText: public CMenuElement
 		virtual ~CMenuSliderText();
 
 	public:
-		void AddText(CMenuElementText *);
+		void AddText(CMenuElementText * text);
 
 	public:
-		void Move(int, int);
-		bool OnMouseClick(int);
-		CMenuElement * OnShortCut()
-		{
-			return NULL;
-		};
-		void Update(int);
+		void Move(int dx, int dy);
+		bool OnMouseClick(int button);
+		CMenuElement * OnShortCut() { return NULL; }
+		void Update(int time);
 		void Render();
 		void RenderMouseOver();
 		void EmptyFunction();
-		void SetWidth(int);
+		void SetWidth(int width);
 		virtual void setEnabled(bool enable);
 };
 
-//-----------------------------------------------------------------------------
-/// Slider with value in the range [0..10]
-class CMenuSlider: public CMenuElement
-{
+//! Slider with value in the range [0..10]
+class CMenuSlider: public CMenuElement {
+	
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
@@ -512,25 +486,21 @@ class CMenuSlider: public CMenuElement
 		int getValue() const { return iPos; }
 
 	public:
-		CMenuSlider(int, int, int);//, CMenuButton*, CMenuButton*, TextureContainer*, TextureContainer*);
+		CMenuSlider(int id, int px, int py);
 		virtual ~CMenuSlider();
 
 	public:
-		void Move(int, int);
-		bool OnMouseClick(int);
-		CMenuElement * OnShortCut()
-		{
-			return NULL;
-		};
-		void Update(int);
+		void Move(int dx, int dy);
+		bool OnMouseClick(int button);
+		CMenuElement * OnShortCut() { return NULL; }
+		void Update(int time);
 		void Render();
 		void RenderMouseOver();
 		void EmptyFunction();
 };
 
-//-----------------------------------------------------------------------------
-class CMenuCheckButton : public CMenuElement
-{
+class CMenuCheckButton : public CMenuElement {
+	
 	void ComputeTexturesPosition();
 
 	public:
@@ -544,21 +514,19 @@ class CMenuCheckButton : public CMenuElement
 		CMenuElementText	* pText;
 
 	public:
-		CMenuCheckButton(int, float, float, int, TextureContainer *, TextureContainer *, CMenuElementText * _pText = NULL); 
+		CMenuCheckButton(int id, float px, float py, int size, TextureContainer * tex1,
+		                 TextureContainer * tex2, CMenuElementText * label = NULL); 
 		virtual ~CMenuCheckButton();
 
- 
-		void Move(int, int);
-		bool OnMouseClick(int);
-		void Update(int);
+		void Move(int dx, int dy);
+		bool OnMouseClick(int button);
+		void Update(int time);
 		void Render();
 		void RenderMouseOver();
 };
 
-//-----------------------------------------------------------------------------
-
-class CMenuState
-{
+class CMenuState {
+	
 	public:
 		bool					bReInitAll;
 		MENUSTATE				eMenuState;
@@ -572,17 +540,16 @@ class CMenuState
 
 		int						iPosMenu;
 	public:
-		CMenuState(MENUSTATE);
+		explicit CMenuState(MENUSTATE state);
 		virtual ~CMenuState();
 
-		void AddMenuElement(CMenuElement *);
-		MENUSTATE Update(int);
+		void AddMenuElement(CMenuElement * element);
+		MENUSTATE Update(int time);
 		void Render();
 };
 
-//-----------------------------------------------------------------------------
-class CWindowMenuConsole
-{
+class CWindowMenuConsole {
+	
 	public:
 		bool					bMouseListen;
 		bool					bFrameOdd;
@@ -612,22 +579,21 @@ class CWindowMenuConsole
 	private:
 		void UpdateText();
 	public:
-		CWindowMenuConsole(int, int, int, int, MENUSTATE);
+		CWindowMenuConsole(int px, int py, int width, int height, MENUSTATE state);
  
-		void AddMenu(CMenuElement *);
-		void AddMenuCenter(CMenuElement *);
-		void AddMenuCenterY(CMenuElement *);
-		void AlignElementCenter(CMenuElement *);
-		MENUSTATE Update(int, int, int);
+		void AddMenu(CMenuElement * menu);
+		void AddMenuCenter(CMenuElement * menu);
+		void AddMenuCenterY(CMenuElement * menu);
+		void AlignElementCenter(CMenuElement * element);
+		MENUSTATE Update(int px, int py, int offsety);
 		int Render();
  
 		CMenuElement * GetTouch(bool keyTouched, int keyId, InputKeyId* pInputKeyId = NULL, bool _bValidateTest = false);
 		void ReInitActionKey();
 };
 
-//-----------------------------------------------------------------------------
-class CWindowMenu
-{
+class CWindowMenu {
+	
 	public:
 		bool				bMouseListen;
 		int					iPosX;
@@ -649,39 +615,36 @@ class CWindowMenu
 		MENUSTATE			eCurrentMenuState;
 		bool				bChangeConsole;
 	public:
-		CWindowMenu(int, int, int, int, int);
+		CWindowMenu(int px, int py, int width, int height, int nButton);
 		virtual ~CWindowMenu();
 
-		void AddConsole(CWindowMenuConsole *);
-		void Update(int);
+		void AddConsole(CWindowMenuConsole * console);
+		void Update(int time);
 		MENUSTATE Render();
 };
 
-
-//-----------------------------------------------------------------------------
 class MenuCursor {
 
 public:
-	enum CURSORSTATE
-	{
+	
+	enum CURSORSTATE {
 		CURSOR_OFF,
 		CURSOR_ON,
 	};
-
-public:
+	
 	MenuCursor();
 	virtual ~MenuCursor();
-
+	
 	void Update();
 	void SetMouseOver();
 	void SetCursorOn();
 	void SetCursorOff();
 	void DrawCursor();
-
+	
 private:
-	void DrawOneCursor(const Vec2s& mousePos);
-
-private:
+	
+	void DrawOneCursor(const Vec2s & mousePos);
+	
 	// Cursor
 	TextureContainer	* pTex[8];
 	long				lFrameDiff;
@@ -691,11 +654,12 @@ private:
 	float				fTailleY;
 	bool				bMouseOver;
 	bool				bDrawCursor;
-
+	
 	// For the ribbon effect
 	int					iNbOldCoord;
 	int					iMaxOldCoord;
-	Vec2s				iOldCoord[256];	
+	Vec2s				iOldCoord[256];
+	
 };
 
 bool Menu2_Render();
@@ -703,7 +667,6 @@ void Menu2_Close();
 
 bool ProcessFadeInOut(bool _bFadeIn, float _fspeed);
 
-//-----------------------------------------------------------------------------
 void ARX_MENU_Clicked_NEWQUEST();
 void ARX_MENU_Clicked_QUIT();
 void ARX_MENU_Clicked_CREDITS();
@@ -716,4 +679,4 @@ extern int newTextureSize;
 extern bool changeResolution;
 extern bool changeTextures;
 
-#endif
+#endif // ARX_GUI_MENUWIDGETS_H

@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,41 +40,10 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// CSpellFx_Lvl01.h
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-// ARX Spells FX Level 01
-//
-// Updates: (date) (person) (update)
-//////////////////////////////////////////////////////////////////////////////////////
-// Refer to CSpellFx.h for details
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ARX_GRAPHICS_DATA_SPELLS_SPELLS01_H
-#define ARX_GRAPHICS_DATA_SPELLS_SPELLS01_H
+#ifndef ARX_GRAPHICS_SPELLS_SPELLS01_H
+#define ARX_GRAPHICS_SPELLS_SPELLS01_H
 
 #include "graphics/effects/SpellEffects.h"
 
@@ -102,7 +89,7 @@ private:
 	
 public:
 	
-	CMultiMagicMissile(long nb);
+	explicit CMultiMagicMissile(long nb);
 	~CMultiMagicMissile();
 	
 	void CheckCollision();
@@ -150,11 +137,11 @@ public:
 	};
 	
 	void Create(Vec3f * posc, float perim, int speed);
-	void Update(unsigned long);
+	void Update(unsigned long time);
 	float Render();
 	void Kill();
 	void AddLight(int iLight);
-	void Action(int);
+	void Action(int mode);
 	
 	void ChangeRGBMask(float r, float g, float b, int mask) {
 		this->r = r;
@@ -234,4 +221,4 @@ public:
 	
 };
 
-#endif // ARX_GRAPHICS_DATA_SPELLS_SPELLS01_H
+#endif // ARX_GRAPHICS_SPELLS_SPELLS01_H

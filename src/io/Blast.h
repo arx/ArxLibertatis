@@ -1,4 +1,24 @@
-/* blast.h -- interface for blast.c
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
+
+  blast.h -- interface for blast.c
   Copyright (C) 2003 Mark Adler
   version 1.1, 16 Feb 2003
 
@@ -80,7 +100,7 @@ struct BlastMemOutBuffer {
 	
 	size_t size;
 	
-	inline BlastMemOutBuffer(char * b, size_t s) : buf(b), size(s) {};
+	inline BlastMemOutBuffer(char * b, size_t s) : buf(b), size(s) { }
 	
 };
 
@@ -90,7 +110,7 @@ struct BlastMemInBuffer {
 	
 	size_t size;
 	
-	inline BlastMemInBuffer(const char * b, size_t s) : buf(b), size(s) {};
+	inline BlastMemInBuffer(const char * b, size_t s) : buf(b), size(s) { }
 	
 };
 
@@ -102,7 +122,7 @@ struct BlastMemOutBufferRealloc {
 	size_t fillSize;
 	
 	inline BlastMemOutBufferRealloc(char * b = NULL, size_t alloc = 0, size_t fill = 0)
-	       : buf(b), allocSize(alloc), fillSize(fill) {};
+	       : buf(b), allocSize(alloc), fillSize(fill) { }
 	
 };
 
@@ -140,4 +160,4 @@ char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize);
  **/
 size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize);
 
-#endif // ARX_HERMES_BLAST_H
+#endif // ARX_IO_BLAST_H

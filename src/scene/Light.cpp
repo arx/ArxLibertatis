@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,31 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-//
-// EERIELight
-//
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-///////////////////////////////////////////////////////////////////////////////
 
 #include "scene/Light.h"
 
@@ -236,7 +230,7 @@ void EERIE_LIGHT_GlobalInit() {
 	static long init = 0;
 	
 	if(!init) {
-		memset(GLight, 0, sizeof(EERIE_LIGHT *) * MAX_LIGHTS);
+		memset(GLight, 0, sizeof(*GLight) * MAX_LIGHTS);
 		init = 1;
 		return;
 	}
@@ -274,7 +268,7 @@ long EERIE_LIGHT_Create() {
 			}
 			
 			memset(GLight[i], 0, sizeof(EERIE_LIGHT));
-			GLight[i]->sample = ARX_SOUND_INVALID_RESOURCE;
+			GLight[i]->sample = audio::INVALID_ID;
 			GLight[i]->tl = -1;
 			return i;
 		}
@@ -305,7 +299,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 		GLight[num] = (EERIE_LIGHT *)malloc(sizeof(EERIE_LIGHT));
 		memcpy(GLight[num], el, sizeof(EERIE_LIGHT));
 		GLight[num]->tl = -1;
-		GLight[num]->sample = ARX_SOUND_INVALID_RESOURCE;
+		GLight[num]->sample = audio::INVALID_ID;
 	}
 }
 
@@ -549,7 +543,7 @@ void TreatBackgroundDynlights()
 
 			if (GLight[i]->status == 0)
 			{
-				// vient de s'�teindre
+				// vient de s'éteindre
 				if (GLight[i]->tl > 0)
 				{
 					DynLight[GLight[i]->tl].exist = 0;

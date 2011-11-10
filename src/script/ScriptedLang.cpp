@@ -1,3 +1,45 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
+===========================================================================
+ARX FATALIS GPL Source Code
+Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
+
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+<http://www.gnu.org/licenses/>.
+
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+===========================================================================
+*/
 
 #include "script/ScriptedLang.h"
 
@@ -5,7 +47,6 @@
 #include "core/GameTime.h"
 #include "game/Inventory.h"
 #include "graphics/Math.h"
-#include "platform/String.h"
 #include "scene/Interactive.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
@@ -131,7 +172,7 @@ class SetMainEventCommand : public Command {
 	
 public:
 	
-	SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
+	explicit SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
 	
 	Result execute(Context & context) {
 		
@@ -489,7 +530,9 @@ class IfCommand : public Command {
 		
 	public:
 		
-		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { };
+		Operator(const string & _name, ValueType _type) : name(_name), type(_type) { }
+		
+		virtual ~Operator() { }
 		
 		virtual bool number(const Context & context, float left, float right) {
 			ARX_UNUSED(left), ARX_UNUSED(right);
@@ -529,7 +572,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsElementOperator() : Operator("iselement", TYPE_TEXT) { };
+		IsElementOperator() : Operator("iselement", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & seek, const string & text) {
 			ARX_UNUSED(context);
@@ -555,7 +598,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsClassOperator() : Operator("isclass", TYPE_TEXT) { };
+		IsClassOperator() : Operator("isclass", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			ARX_UNUSED(context);
@@ -568,7 +611,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { };
+		IsGroupOperator() : Operator("isgroup", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
@@ -583,7 +626,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { };
+		NotIsGroupOperator() : Operator("!isgroup", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
@@ -598,7 +641,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsTypeOperator() : Operator("istype", TYPE_TEXT) { };
+		IsTypeOperator() : Operator("istype", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
@@ -619,7 +662,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		IsInOperator() : Operator("isin", TYPE_TEXT) { };
+		IsInOperator() : Operator("isin", TYPE_TEXT) { }
 		
 		bool text(const Context & context, const string & needle, const string & haystack) {
 			return ARX_UNUSED(context), (haystack.find(needle) != string::npos);
@@ -631,7 +674,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		EqualOperator() : Operator("==", TYPE_FLOAT) { };
+		EqualOperator() : Operator("==", TYPE_FLOAT) { }
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			return ARX_UNUSED(context), (left == right);
@@ -647,7 +690,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { };
+		NotEqualOperator() : Operator("!=", TYPE_FLOAT) { }
 		
 		bool text(const Context & context, const string & left, const string & right) {
 			return ARX_UNUSED(context), (left != right);
@@ -663,7 +706,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { };
+		LessEqualOperator() : Operator("<=", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left <= right);
@@ -675,7 +718,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		LessOperator() : Operator("<", TYPE_FLOAT) { };
+		LessOperator() : Operator("<", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left < right);
@@ -687,7 +730,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { };
+		GreaterEqualOperator() : Operator(">=", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left >= right);
@@ -699,7 +742,7 @@ class IfCommand : public Command {
 		
 	public:
 		
-		GreaterOperator() : Operator(">", TYPE_FLOAT) { };
+		GreaterOperator() : Operator(">", TYPE_FLOAT) { }
 		
 		bool number(const Context & context, float left, float right) {
 			return ARX_UNUSED(context), (left > right);

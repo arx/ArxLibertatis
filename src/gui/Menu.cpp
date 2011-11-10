@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,48 +40,16 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_Menu
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Menu Management
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "gui/Menu.h"
 
 #include <cstdlib>
 #include <sstream>
-#include <cstdio>
 #include <iterator>
 #include <iomanip>
-
-#include <boost/smart_ptr/scoped_array.hpp>
 
 #include "Configure.h"
 
@@ -74,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Unicode.hpp"
 #include "core/Core.h"
 
-#include "game/Equipment.h"
 #include "game/Player.h"
 
 #include "gui/MenuWidgets.h"
@@ -87,10 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
-#include "graphics/particle/Particle.h"
-#include "graphics/particle/ParticleManager.h"
-#include "graphics/particle/ParticleParams.h"
-#include "graphics/font/Font.h"
 
 #include "input/Input.h"
 
@@ -101,7 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "scene/LoadLevel.h"
-#include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
@@ -151,9 +131,7 @@ bool MENU_NoActiveWindow();
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
-long ARXmenu_lastmode = -1;
 long REFUSE_GAME_RETURN = 0;
-unsigned long ARXmenu_starttick = 0;
 
 long SP_HEAD = 0;
 
@@ -167,6 +145,14 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 	return (a.stime > b.stime);
 }
 
+namespace {
+enum SaveGameChage {
+	SaveGameRemoved,
+	SaveGameUnchanged,
+	SaveGameChanged
+};
+} // anonnymous namespace
+
 void CreateSaveGameList() {
 	
 	LogDebug("CreateSaveGameList");
@@ -177,12 +163,7 @@ void CreateSaveGameList() {
 	}
 	
 	size_t oldCount = save_l.size() - 1;
-#ifdef HAVE_DYNAMIC_STACK_ALLOCATION
-	char found[oldCount];
-#else
-	boost::scoped_array<char> found(new char[oldCount]);
-#endif
-	std::fill_n(&found[0], oldCount, 0);
+	std::vector<SaveGameChage> found(oldCount, SaveGameRemoved);
 	
 	bool newSaves = false;
 	
@@ -215,7 +196,7 @@ void CreateSaveGameList() {
 			}
 		}
 		if(index != (size_t)-1 && save_l[index].stime == stime) {
-			found[index - 1] = 1;
+			found[index - 1] = SaveGameUnchanged;
 			continue;
 		}
 		
@@ -236,7 +217,7 @@ void CreateSaveGameList() {
 			save_l.resize(save_l.size() + 1);
 			save = &save_l.back();
 		} else {
-			found[index - 1] = 2;
+			found[index - 1] = SaveGameChanged;
 			save = &save_l[index];
 		}
 		
@@ -264,10 +245,10 @@ void CreateSaveGameList() {
 	
 	size_t o = 1;
 	for(size_t i = 1; i < save_l.size(); i++) {
-		if(i > oldCount || found[i - 1]) {
+		if(i > oldCount || found[i - 1] != SaveGameRemoved) {
 			
 			// print new savegames
-			if(i > oldCount || found[i - 1] == 2) {
+			if(i > oldCount || found[i - 1] == SaveGameChanged) {
 				
 				std::ostringstream oss;
 				if(save_l[i].quicksave) {
@@ -410,10 +391,30 @@ void ARX_Menu_Resources_Create() {
 		
 		LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
 		
-		ARXmenu.mda->str_cre_credits.reserve(creditsSize);
+		// TODO move this to an external file once we ship our own resources
+		ARXmenu.mda->str_cre_credits =
+			"~ARX LIBERTATIS TEAM\n"
+			"Daniel Scharrer (dscharrer)\n"
+			"Erik Lund (Akhilla)\n"
+			"Lubosz Sarnecki (lubosz)\n"
+			"Sebastien Lussier (BobJelly)\n"
+			"\n~OTHER CONTRIBUTORS\n"
+			"Chris Gray (chrismgray)\n"
+			"guidoj\n"
+			"Jonathan Powell (jfpowell)\n"
+			"Philippe Cavalaria (Nuky)\n"
+			"\n~TESTERS\n"
+			"vytautas (aka. ProzacR)\n"
+			"\n\n~Arx Libertatis is free software:\n"
+			"you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\n"
+			"Arx Libertatis is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\n"
+			"You should have received a copy of the GNU General Public License along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.\n\n"
+			"\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
+		
+		ARXmenu.mda->str_cre_credits.reserve(ARXmenu.mda->str_cre_credits.size() + creditsSize);
 		
 		UTF16ToUTF8(credits, &credits[creditsSize],
-		                         std::back_inserter(ARXmenu.mda->str_cre_credits));
+		            std::back_inserter(ARXmenu.mda->str_cre_credits));
 		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size());
 		
 		free(creditsData);
@@ -469,11 +470,9 @@ void ARX_MENU_Clicked_QUIT()
 	if (!NO_TIME_INIT)
 		ARX_TIME_UnPause();
 }
-long CAN_REPLAY_INTRO = 1;
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_NEWQUEST()
-{
-	CAN_REPLAY_INTRO = 0;
+
+void ARX_MENU_Clicked_NEWQUEST() {
+	
 	ARX_TIME_UnPause();
 
 	if (FINAL_RELEASE)
@@ -615,35 +614,13 @@ void ARX_Menu_Manage() {
 }
 extern long PLAYER_INTERFACE_HIDE_COUNT;
 extern long SPLASH_THINGS_STAGE;
-long NEED_INTRO_LAUNCH = 0;
 //-----------------------------------------------------------------------------
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-bool ARX_Menu_Render()
-{
-	// Auto-Launch Demo after 60 sec idle on Main Menu
-	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
-	{
-		if ((ARXmenu_lastmode != AMCM_MAIN) || GInput->isAnyKeyPressed() || GInput->hasMouseMoved())
-		{
-			ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
-		}
-
-		unsigned long tim = ARX_TIME_GetUL() - ARXmenu_starttick; //treat warning C4244 conversion from 'float' to 'unsigned long'
-
-		if ((tim > 180000) && (REFUSE_GAME_RETURN))
-		{
-			NEED_INTRO_LAUNCH = 1;
-		}
-	}
-	else
-		ARXmenu_starttick = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long'
-
-	ARXmenu_lastmode = ARXmenu.currentmode;
-
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
+bool ARX_Menu_Render() {
+	
+	if(ARXmenu.currentmode == AMCM_OFF) {
 		return false;
 	}
 

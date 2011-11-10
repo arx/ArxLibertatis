@@ -1,3 +1,21 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef ARX_GRAPHICS_VERTEXBUFFER_H
 #define ARX_GRAPHICS_VERTEXBUFFER_H
@@ -28,11 +46,11 @@ public:
 	virtual Index * lock(BufferFlags flags = 0, size_t offset = 0, size_t count = (size_t)-1) = 0;
 	virtual void unlock() = 0;
 	
-	virtual ~IndexBuffer() { };
+	virtual ~IndexBuffer() { }
 	
 protected:
 	
-	IndexBuffer(size_t capacity) : _capacity(capacity) { }
+	explicit IndexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
 	
@@ -53,11 +71,11 @@ public:
 	virtual void draw(Renderer::Primitive primitive, size_t count, size_t offset = 0) const = 0;
 	virtual void drawIndexed(Renderer::Primitive primitive, size_t count, size_t offset, unsigned short * indices, size_t nbindices) const = 0;
 	
-	virtual ~VertexBuffer() { };
+	virtual ~VertexBuffer() { }
 	
 protected:
 	
-	VertexBuffer(size_t capacity) : _capacity(capacity) { }
+	explicit VertexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
 	
@@ -72,7 +90,7 @@ public:
 	
 	size_t pos;
 	
-	CircularVertexBuffer(VertexBuffer<Vertex> * _vb) : vb(_vb), pos(0) { }
+	explicit CircularVertexBuffer(VertexBuffer<Vertex> * _vb) : vb(_vb), pos(0) { }
 	
 	void draw(Renderer::Primitive primitive, const Vertex * vertices, size_t count) {
 		
@@ -165,4 +183,4 @@ public:
 	
 };
 
-#endif // ARX_GRAPHICS_VERTEXBUFFER_H;
+#endif // ARX_GRAPHICS_VERTEXBUFFER_H

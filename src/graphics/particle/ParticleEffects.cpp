@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,44 +40,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////                                                                                     
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_Particles
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Particles Management
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "graphics/particle/ParticleEffects.h"
 
 #include <algorithm>
-
-#include "ai/Paths.h"
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -70,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 
 #include "gui/Interface.h"
-#include "gui/MenuWidgets.h"
-#include "gui/MenuPublic.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
@@ -81,11 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 
 #include "physics/Collisions.h"
-#include "physics/Box.h"
 
 #include "scene/GameSound.h"
-#include "scene/Scene.h"
-#include "scene/Object.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
 
@@ -1747,7 +1729,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	}
 }
 
-void ARX_PARTICLES_SpawnWaterSplash(Vec3f *_ePos)
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
 {
 	for (long kk=0;kk<rnd()*15+20;kk++)
 	{
@@ -2026,8 +2008,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			}
 			
 			
-			if((part->special & FIRE_TO_SMOKE2)&&(framediff2>(long)(part->tolive-(part->tolive>>2))))
-			{
+			if((part->special & FIRE_TO_SMOKE2)
+			   && framediff2 > long(part->tolive - (part->tolive >> 2))) {
+				
 				part->special&=~FIRE_TO_SMOKE2;
 				int j=ARX_PARTICLES_GetFree();
 
@@ -2433,7 +2416,7 @@ void TreatBackgroundActions()
 		if(dist > square(fZFar)) // Out of Treat Range
 		{
 			ARX_SOUND_Stop(gl->sample);
-			gl->sample = ARX_SOUND_INVALID_RESOURCE;
+			gl->sample = audio::INVALID_ID;
 			continue;
 		}
 
@@ -2462,7 +2445,7 @@ void TreatBackgroundActions()
 			|| (gl->extras & EXTRAS_SPAWNSMOKE))
 			&& (gl->status))
 		{
-			if (gl->sample == ARX_SOUND_INVALID_RESOURCE)
+			if (gl->sample == audio::INVALID_ID)
 			{
 				gl->sample = SND_FIREPLACE;
 					ARX_SOUND_PlaySFX(gl->sample, &gl->pos, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
@@ -2574,10 +2557,10 @@ void TreatBackgroundActions()
 		}
 		else
 		{
-			if ((!gl->status) && (gl->sample != ARX_SOUND_INVALID_RESOURCE))
+			if ((!gl->status) && (gl->sample != audio::INVALID_ID))
 			{
 				ARX_SOUND_Stop(gl->sample);
-				gl->sample = ARX_SOUND_INVALID_RESOURCE;
+				gl->sample = audio::INVALID_ID;
 			}
 		}
 	}	

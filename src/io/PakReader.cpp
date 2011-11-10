@@ -1,50 +1,21 @@
 /*
-===========================================================================
-ARX FATALIS GPL Source Code
-Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
-
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
-
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
-License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
-<http://www.gnu.org/licenses/>.
-
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
-Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
-
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
-ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
-===========================================================================
-*/
-/*
-		   _.               _.    .    J)
-		HNMMMM) .      L HNMMMM)  #H   H)     ()
-	   (MMMMMM) M)    (M(MMMMMM)  `H)._UL_   JM)
-	   `MF" `4) M)    NN`MF" `4)    JMMMMMM#.4F
-		M       #)    M) M         (MF (0DANN.
-		M       (M   .M  M  .NHH#L (N JMMMN.H#
-		M       (M   (M  M   4##HF QQ(MF`"H#(M.
-		M       `M   (N  M         #U(H(N (MJM)
-	   .M  __L   M)  M) .M  ___    4)U#NF (M0M)
-	   (MMMMMM   M)  M) (MMMMMM)     U#NHLJM(M`
-	   (MMMMN#   4) (M  (MMMMM#  _.  (H`HMM)JN
-	   (M""      (M (M  (M""   (MM)  (ML____M)
-	   (M        (M H)  (M     `"`  ..4MMMMM# D
-	   (M        `M M)  (M         JM)  """`  N#
-	   (M         MLM`  (M        #MF   (L    `F
-	   (M         MMM   (M        H`    (#
-	   (M         (MN   (M              (Q
-	   `M####H    (M)   `M####H         ``
-		MMMMMM    `M`    NMMMMM
-		`Q###F     "     `4###F   sebastien scieux @2001
-
-*/
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "io/PakReader.h"
 
@@ -57,7 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/FileStream.h"
-#include "platform/String.h"
 
 using std::min;
 using std::strlen;
@@ -106,7 +76,7 @@ class UncompressedFile : public PakFile {
 	
 public:
 	
-	UncompressedFile(std::istream * _archive, size_t _offset, size_t size) : PakFile(size), archive(*_archive), offset(_offset) { };
+	explicit UncompressedFile(std::istream * _archive, size_t _offset, size_t size) : PakFile(size), archive(*_archive), offset(_offset) { }
 	
 	void read(void * buf) const;
 	
@@ -123,7 +93,7 @@ class UncompressedFileHandle : public PakFileHandle {
 	
 public:
 	
-	UncompressedFileHandle(const UncompressedFile * _file) : file(*_file), offset(0) { };
+	explicit UncompressedFileHandle(const UncompressedFile * _file) : file(*_file), offset(0) { }
 	
 	size_t read(void * buf, size_t size);
 	
@@ -131,7 +101,7 @@ public:
 	
 	size_t tell();
 	
-	~UncompressedFileHandle() { };
+	~UncompressedFileHandle() { }
 	
 };
 
@@ -200,7 +170,7 @@ class CompressedFile : public PakFile {
 	
 public:
 	
-	CompressedFile(std::ifstream * _archive, size_t _offset, size_t size, size_t _storedSize) : PakFile(size), archive(*_archive), offset(_offset), storedSize(_storedSize) { };
+	explicit CompressedFile(std::ifstream * _archive, size_t _offset, size_t size, size_t _storedSize) : PakFile(size), archive(*_archive), offset(_offset), storedSize(_storedSize) { }
 	
 	void read(void * buf) const;
 	
@@ -217,7 +187,7 @@ class CompressedFileHandle : public PakFileHandle {
 	
 public:
 	
-	CompressedFileHandle(const CompressedFile * _file) : file(*_file), offset(0) { };
+	explicit CompressedFileHandle(const CompressedFile * _file) : file(*_file), offset(0) { }
 	
 	size_t read(void * buf, size_t size);
 	
@@ -225,7 +195,7 @@ public:
 	
 	size_t tell();
 	
-	~CompressedFileHandle() { };
+	~CompressedFileHandle() { }
 	
 };
 
@@ -235,7 +205,7 @@ struct BlastFileInBuffer {
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
-	BlastFileInBuffer(std::ifstream * f) : file(*f) {};
+	explicit BlastFileInBuffer(std::ifstream * f) : file(*f) { }
 	
 };
 
@@ -381,7 +351,7 @@ class PlainFile : public PakFile {
 	
 public:
 	
-	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { };
+	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { }
 	
 	void read(void * buf) const;
 	
@@ -395,7 +365,8 @@ class PlainFileHandle : public PakFileHandle {
 	
 public:
 	
-	PlainFileHandle(const fs::path & path) : ifs(path, fs::fstream::in | fs::fstream::binary) {
+	explicit  PlainFileHandle(const fs::path & path)
+		: ifs(path, fs::fstream::in | fs::fstream::binary) {
 		arx_assert(ifs.is_open());
 	};
 	
@@ -405,7 +376,7 @@ public:
 	
 	size_t tell();
 	
-	~PlainFileHandle() { };
+	~PlainFileHandle() { }
 	
 };
 

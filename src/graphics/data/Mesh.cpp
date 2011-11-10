@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,37 +40,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// EERIEPoly																	    //
-//////////////////////////////////////////////////////////////////////////////////////
-//																		    		//
-// Description:																		//
-//																					//
-// Updates: (date) (person) (update)												//
-//																					//
-// Code: Cyril Meynier																//
-//																					//
-// Copyright (c) 1999 ARKANE Studios SA. All rights reserved						//
-//////////////////////////////////////////////////////////////////////////////////////
+// Code: Cyril Meynier
+//
+// Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
 #include "graphics/data/Mesh.h"
 
@@ -72,8 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
-#include "gui/MenuWidgets.h"
-
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "graphics/VertexBuffer.h"
@@ -91,11 +79,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "physics/Anchors.h"
-#include "physics/Physics.h"
 
 #include "scene/Scene.h"
 #include "scene/Light.h"
-#include "scene/Object.h"
 #include "scene/Interactive.h"
 
 #include "platform/String.h"
@@ -1939,8 +1925,8 @@ void ComputeRoomDistance()
 	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
 
 	void ** ptr = NULL;
-	ptr = (void **)malloc(sizeof(void *) * nb_anchors);
-	memset(ptr, 0, sizeof(void *)*nb_anchors);
+	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
+	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
 
 
 	for (long i = 0; i < NbRoomDistance; i++)
@@ -2472,12 +2458,11 @@ void EERIEPOLY_Compute_PolyIn()
 							for (long k = 0; k < nbvert; k++)
 							{
 
-								if (PointInBBox(&ep2->v[k].p, &bb))
-								{
+								if(PointInBBox(&ep2->v[k].p, &bb)) {
 									EERIEPOLY_Add_PolyIn(eg, ep2);
 									break;
-								}
-								else {
+									
+								} else {
 									
 									Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
 									if(PointInBBox(&pt, &bb)) {

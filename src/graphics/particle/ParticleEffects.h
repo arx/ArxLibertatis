@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,43 +40,24 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// ARX_Particles
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Particles Management
-//
-// Updates: (date) (person) (update)
-//
 // Code: Cyril Meynier
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_PARTICLES_H
-#define ARX_PARTICLES_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#ifndef ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
+#define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
+
+#include <stddef.h>
+#include "graphics/Color.h"
+#include "graphics/Vertex.h"
+#include "math/MathFwd.h"
+#include "math/Vector3.h"
+#include "math/Angle.h"
+class TextureContainer;
+struct EERIEPOLY;
+struct EERIE_CAMERA;
+struct EERIE_SPHERE;
+struct INTERACTIVE_OBJ;
 
 struct FLARES {
 	unsigned char exist;
@@ -164,8 +163,7 @@ struct FLARETC
 
 const unsigned long MAX_PARTICLES(2200);
 
-enum ARX_PARTICLES_TYPE_FLAG
-{
+enum ARX_PARTICLES_TYPE_FLAG {
 	FIRE_TO_SMOKE       = 0x00000001,
 	ROTATING            = 0x00000002,
 	FADE_IN_AND_OUT     = 0x00000004,
@@ -174,7 +172,7 @@ enum ARX_PARTICLES_TYPE_FLAG
 	GRAVITY             = 0x00000020,
 	SUBSTRACT           = 0x00000040,
 	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_ETINCELLE  = 0x00000100, //g�re l'acceleration et la gravit�
+	PARTICLE_ETINCELLE  = 0x00000100, // gère l'acceleration et la gravité
 	FOLLOW_SOURCE       = 0x00000200,
 	FOLLOW_SOURCE2      = 0x00000400,
 	DELAY_FOLLOW_SOURCE = 0x00000800,
@@ -250,7 +248,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
-void ARX_PARTICLES_SpawnWaterSplash(Vec3f *);
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * pos);
 
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_ClearAll();
@@ -264,4 +262,4 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, Col
 void SpawnFireballTail(Vec3f *, Vec3f *, float, long);
 void SpawnMetalShine(Vec3f * pos, long r, long g, long b, long num);
 
-#endif
+#endif // ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H

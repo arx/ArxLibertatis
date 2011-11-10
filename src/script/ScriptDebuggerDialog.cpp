@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,29 +40,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// version 0.1
-// Script Debugger
-// jeudi 28 juin 2001
-//		merge + rajout check variables
-//		fix sort + speed
-// mercredi 27 juin 2001
-//		fixs + merge
-// mardi 26 juin 2001
-//		merge + fix + interface revue
-//		events combo -> edit multiline
-//		timers combo -> edit multiline
-// lundi 25 juin 2001
-//		ok done + waiting to merge + no memory leak
-// vendredi 22 juin
-//		fix + memory check
-//		+ tests memory leak + patch
-// jeudi 21 juin
-//		points d'entr�e
-// mercredi 20 juin
-//		cr�ation DLL
-//		interface
-
-//-----------------------------------------------------------------------------
 
 #include "script/ScriptDebuggerDialog.h"
 

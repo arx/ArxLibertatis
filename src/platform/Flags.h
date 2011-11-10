@@ -1,10 +1,27 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+// Inspired by QFlags from Qt
 
 #ifndef ARX_PLATFORM_FLAGS_H
 #define ARX_PLATFORM_FLAGS_H
 
 #include "platform/Platform.h"
-
-// Based on QFlags from Qt
 
 /*!
  * A typesafe way to define flags as a combination of enum values.
@@ -151,7 +168,7 @@ class IncompatibleFlag {
 	
 public:
 	
-	IncompatibleFlag(u32 flag) : value(flag) { }
+	explicit IncompatibleFlag(u32 flag) : value(flag) { }
 	
 };
 

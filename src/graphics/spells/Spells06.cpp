@@ -1,4 +1,22 @@
 /*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
 ===========================================================================
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
@@ -22,50 +40,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//////////////////////////////////////////////////////////////////////////////////////
-//   @@        @@@        @@@                @@                           @@@@@     //
-//   @@@       @@@@@@     @@@     @@        @@@@                         @@@  @@@   //
-//   @@@       @@@@@@@    @@@    @@@@       @@@@      @@                @@@@        //
-//   @@@       @@  @@@@   @@@  @@@@@       @@@@@@     @@@               @@@         //
-//  @@@@@      @@  @@@@   @@@ @@@@@        @@@@@@@    @@@            @  @@@         //
-//  @@@@@      @@  @@@@  @@@@@@@@         @@@@ @@@    @@@@@         @@ @@@@@@@      //
-//  @@ @@@     @@  @@@@  @@@@@@@          @@@  @@@    @@@@@@        @@ @@@@         //
-// @@@ @@@    @@@ @@@@   @@@@@            @@@@@@@@@   @@@@@@@      @@@ @@@@         //
-// @@@ @@@@   @@@@@@@    @@@@@@           @@@  @@@@   @@@ @@@      @@@ @@@@         //
-// @@@@@@@@   @@@@@      @@@@@@@@@@      @@@    @@@   @@@  @@@    @@@  @@@@@        //
-// @@@  @@@@  @@@@       @@@  @@@@@@@    @@@    @@@   @@@@  @@@  @@@@  @@@@@        //
-//@@@   @@@@  @@@@@      @@@      @@@@@@ @@     @@@   @@@@   @@@@@@@    @@@@@ @@@@@ //
-//@@@   @@@@@ @@@@@     @@@@        @@@  @@      @@   @@@@   @@@@@@@    @@@@@@@@@   //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@      @@@@@      //
-//@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
-//@@@    @@@  @@@ @@@@@                          @@            @@@                  //
-//            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////
-// CSpellFx_Lvl06.cpp
-//////////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-//		ARX Spell FX Level 06
-//
-// Refer to:
-//		CSpellFx.h
-//
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
-//////////////////////////////////////////////////////////////////////////////////////
 
 #include "graphics/spells/Spells06.h"
 
 #include "animation/AnimationRender.h"
 
-#include "core/Core.h"
 #include "core/GameTime.h"
 
-#include "game/Spells.h"
 #include "game/Player.h"
 
 #include "graphics/Math.h"
-#include "graphics/Draw.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
@@ -76,7 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Light.h"
 #include "scene/Object.h"
-#include "scene/LoadLevel.h"
 #include "scene/Interactive.h"
 
 using std::min;
@@ -683,7 +667,7 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	this->Split(v1a, 0, end, 80);
 	this->Split(v1b, 0, end, -80);
 
-	// check de la conformit� du split
+	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	if (0)
@@ -998,7 +982,7 @@ void CRiseDead::RenderFissure()
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
-	// smooth sur les cot�s ou pas ..
+	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapMirror);
@@ -1164,7 +1148,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la d�chirure spatio temporelle
+// rendu de la déchirure spatio temporelle
 float CRiseDead::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
@@ -1473,7 +1457,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	}
 
 
-	// syst�me de partoches pour la poussi�re
+	// système de partoches pour la poussière
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 200;
@@ -1537,7 +1521,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		// TODO memory leak (pPS)?
 	}
 
-	// syst�me de partoches pour la poussi�re au sol
+	// système de partoches pour la poussière au sol
 	pPS = new ParticleSystem();
 	
 	cp.iNbMax = 20;

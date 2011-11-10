@@ -1,10 +1,27 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "script/ScriptUtils.h"
 
 #include <set>
 
 #include "graphics/data/Mesh.h"
-#include "platform/String.h"
 
 using std::string;
 
@@ -24,7 +41,8 @@ string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io, ScriptMessage msg) : script(_script), pos(_pos), io(_io), message(msg) { };
+Context::Context(EERIE_SCRIPT * _script, size_t _pos, INTERACTIVE_OBJ * _io, ScriptMessage msg)
+	: script(_script), pos(_pos), io(_io), message(msg) { }
 
 string Context::getStringVar(const string & var) const {
 	return GetVarValueInterpretedAsText(var, getMaster(), io);
@@ -446,7 +464,6 @@ size_t initSuppressions() {
 	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
 	
 	suppress("goblin_base_0034", 771, "detach"); // object mug_full_0003 already destroyed
-	suppress("goblin_base_0034", 831, "destroy"); // object mug_full_0003 already destroyed
 	
 	suppress("goblin_base_0041", 3063, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
 	
@@ -482,8 +499,6 @@ size_t initSuppressions() {
 	suppress("human_base_0051", 6083, "set"); // bad variable name: "waiting"
 	
 	suppress("human_base_0046", 679, "goto"); // missing label 'next_step02', should be 'next_step01'?
-	
-	suppress("human_base_0076", 642, "destroy"); // target 'seat_stool1_0007' might already be destroyed TODO consider removing this warning
 	
 	suppress("human_base_0079", 239, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/chest_leatherac/chest_leatherac.teo" (should be 'chest_leather_ac'?)
 	suppress("human_base_0079", 303, "inventory add"); // missing object: "graph/obj3d/interactive/items/armor/leggings_leatherac/leggings_leatherac.teo" (should be 'legging_leather_ac'?)
@@ -640,6 +655,8 @@ size_t initSuppressions() {
 	suppress("torch_rotating_0005", 88, "?"); // 'playanim' only takes one parameter
 	suppress("torch_rotating_0005", 89, "rotatingtorchdown"); // 'playanim' only takes one parameter
 	
+	suppress("training_dummy", 174, "play"); // missing sound file "wooddoorhit", closest match is "door_wood_hit"
+	
 	suppress("troll_base", 5107, "loadanim"); // missing animation: "troll_fight_ready_toponly"
 	suppress("troll_base", 5175, "loadanim"); // missing animation: "troll_fight_unready_toponly"
 	suppress("troll_base", 19054, "goto"); // missing label "main_alert"
@@ -654,7 +671,7 @@ size_t initSuppressions() {
 		
 	public:
 		
-		FakeCommand(const string & name) : Command(name) { }
+		explicit FakeCommand(const string & name) : Command(name) { }
 		
 		Result execute(Context & context) {
 			ARX_UNUSED(context);
