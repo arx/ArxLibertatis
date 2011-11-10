@@ -68,6 +68,7 @@ long ARX_CHANGELEVEL_Load(long instance);
 
 long ARX_CHANGELEVEL_Save(long instance, const std::string & name);
 
+bool ARX_Changelevel_CurGame_Clear();
 void ARX_Changelevel_CurGame_Open();
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident);
 void ARX_Changelevel_CurGame_Close();

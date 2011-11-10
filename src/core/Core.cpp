@@ -671,6 +671,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		LogError << "Application failed to initialize properly";
 		return -1;
 	}
+
+	// Check if the game will be able to use the current game directory.
+	if(!ARX_Changelevel_CurGame_Clear()) {
+		LogError << "Error accessing current game directory. Game won't be playable.";
+		return -1;
+	}
 	
 	ScriptEvent::init();
 	
@@ -4074,6 +4080,9 @@ void ClearGame() {
 	delete resources;
 	
 	ReleaseNode();
+
+	// Current game
+	ARX_Changelevel_CurGame_Clear();
 	
 	//Halo
 	ReleaseHalo();
