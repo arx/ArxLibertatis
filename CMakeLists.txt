@@ -169,9 +169,6 @@ if(MSVC)
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
 	
-	# This is needed to use ZLIB as a DLL
-	add_definitions(-DZLIB_WINAPI)
-	
 else(MSVC)
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
@@ -646,6 +643,11 @@ add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLU
 
 if(ARX_BUILD_TOOLS)
 	
+	# Needed by the crash reporter
+	add_definitions(-DQT_NO_DEBUG)
+	find_package(Qt4)
+	find_package(OpenSSL)
+
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
@@ -686,6 +688,76 @@ if(ARX_BUILD_TOOLS)
 	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
 	
 	add_executable_shared(arxunpak "" "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
+	
+	
+	if(QT4_FOUND)
+		set( CrashReporter_SOURCES
+			tools/crashreporter/main.cpp
+			tools/crashreporter/errorreport.h
+			tools/crashreporter/errorreport.cpp
+			tools/crashreporter/utilities_win32.h
+			tools/crashreporter/utilities_win32.cpp
+			tools/crashreporter/csmtp/base64.h
+			tools/crashreporter/csmtp/base64.cpp
+			tools/crashreporter/csmtp/csmtp.h
+			tools/crashreporter/csmtp/csmtp.cpp
+			tools/crashreporter/csmtp/md5.h
+			tools/crashreporter/csmtp/md5.cpp
+			tools/crashreporter/qhexedit/commands.h
+			tools/crashreporter/qhexedit/commands.cpp
+			tools/crashreporter/qhexedit/qhexedit.h
+			tools/crashreporter/qhexedit/qhexedit.cpp
+			tools/crashreporter/qhexedit/qhexedit_p.h
+			tools/crashreporter/qhexedit/qhexedit_p.cpp
+			tools/crashreporter/qhexedit/xbytearray.h
+			tools/crashreporter/qhexedit/xbytearray.cpp
+			tools/crashreporter/ui/errorreportdialog.h
+			tools/crashreporter/ui/errorreportdialog.cpp
+			tools/crashreporter/xmlhighlighter/xmlhighlighter.h
+			tools/crashreporter/xmlhighlighter/xmlhighlighter.cpp
+			tools/crashreporter/minizip/crypt.h
+			tools/crashreporter/minizip/ioapi.cpp
+			tools/crashreporter/minizip/ioapi.h
+			tools/crashreporter/minizip/zip.cpp
+			tools/crashreporter/minizip/zip.h
+		)
+		
+		set( CrashReporter_UIs
+			tools/crashreporter/ui/errorreportdialog.ui
+		)
+		
+		set( CrashReporter_MOC_HEADERS
+			tools/crashreporter/ui/errorreportdialog.h
+			tools/crashreporter/qhexedit/qhexedit.h
+			tools/crashreporter/qhexedit/qhexedit_p.h
+		)
+		
+		set( CrashReporter_RESOURCES
+			tools/crashreporter/resources/crashreporter.qrc
+		)
+		
+		include(${QT_USE_FILE})
+		
+		remove_definitions(-DQT_DEBUG)
+		
+		qt4_wrap_ui(CrashReporter_SOURCES ${CrashReporter_UIs})
+		qt4_wrap_cpp(CrashReporter_SOURCES ${CrashReporter_MOC_HEADERS})
+		qt4_add_resources(CrashReporter_SOURCES ${CrashReporter_RESOURCES})
+		
+		set(SRC_DIR tools/crashreporter/)
+		set(ARX_SRC_DIR src)
+		
+		create_source_groups(CrashReporter_SOURCES)
+
+		include_directories(${SRC_DIR} ${ARX_SRC_DIR} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+		
+		set(CrashReporter_LIBRARIES ${QT_QTCORE_LIBRARY_RELEASE} ${QT_QTGUI_LIBRARY_RELEASE} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+		if(MSVC)
+			list(APPEND CrashReporter_LIBRARIES winmm psapi imm32)
+		endif()
+				
+		add_executable_shared(arxcrashreporter WIN32 "${CrashReporter_SOURCES}" "${CrashReporter_LIBRARIES}" "")
+	endif()
 	
 endif()
 

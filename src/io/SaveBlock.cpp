@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
+#define ZLIB_WINAPI
 #include <zlib.h>
 
 #include "io/log/Logger.h"
