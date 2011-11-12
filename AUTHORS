@@ -1,4 +1,6 @@
 
+Arx Libertatis Copyright 2011 Arx Libertatis Team and Contributors:
+
 ~ARX LIBERTATIS TEAM
 Daniel Scharrer (dscharrer)
 Erik Lund (Akhilla)
@@ -13,3 +15,23 @@ Philippe Cavalaria (Nuky)
 
 ~TESTERS
 vytautas (aka. ProzacR)
+
+
+Arx Libertatis is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Arx Libertatis is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Arx Libertatis is based on the Arx Fatalis GPLv3 source code
+available from http://www.arkane-studios.com/uk/arx_downloads.php
+Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
+See ARX_PUBLIC_LICENSE.txt for license details.
