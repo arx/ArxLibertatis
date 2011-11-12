@@ -35,11 +35,11 @@ Build options:
 * `ARX_USE_OPENGL` (default=ON): Build the OpenGL renderer backend
 * `ARX_USE_SDL` (default=ON): Build the SDL windowing and input backends
 
-Windows-only options:
+Windows-only options (always OFF for non-windows platforms):
 
-* `ARX_USE_DSOUND` (default=OFF): Build the DirectSound audio backend
-* `ARX_USE_D3D7` (default=OFF): Build the Direct3D 7 renderer backend
-* `ARX_USE_DINPUT7` (default=OFF): Build the DirectInput 7 input backend
+* `ARX_USE_DSOUND` (default=ON): Build the DirectSound audio backend
+* `ARX_USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
+* `ARX_USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
