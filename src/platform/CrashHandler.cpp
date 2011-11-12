@@ -153,7 +153,7 @@ void initCrashHandler() {
 // don't have enough POSIX functionality for backtraces
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-#include <new>
+#include <new.h>
 #include <cfloat>
 
 #include <boost/interprocess/detail/os_thread_functions.hpp>
@@ -192,7 +192,7 @@ bool CrashHandler::init() {
 		LogInfo << "Debugger attached, disabling crash handler.";
 	}
 
-	bool crashReporterFound = fs::exists("CrashReporter/CrashReporter.exe");
+	bool crashReporterFound = fs::exists("CrashReporter/arxcrashreporter.exe");
 	if(crashReporterFound) {
 		LogInfo << "CrashReporter found, initializing crash handler.";
 	} else {
@@ -313,12 +313,14 @@ bool CrashHandler::addNamedVariable(const std::string& name, const std::string& 
 	return true;
 }
 
+typedef void (*signal_handler)(int);
+
 struct ThreadExceptionHandlers {
-	terminate_handler m_terminateHandler;   // Terminate handler
-	unexpected_handler m_unexpectedHandler; // Unexpected handler
-	void (*m_SIGFPEHandler)(int);           // FPE handler
-	void (*m_SIGILLHandler)(int);           // SIGILL handler
-	void (*m_SIGSEGVHandler)(int);          // Illegal storage access handler
+	terminate_handler m_terminateHandler;     // Terminate handler
+	unexpected_handler m_unexpectedHandler;   // Unexpected handler
+	signal_handler m_SIGFPEHandler;           // FPE handler
+	signal_handler m_SIGILLHandler;           // SIGILL handler
+	signal_handler m_SIGSEGVHandler;          // Illegal storage access handler
 };
 
 struct PlatformCrashHandlers {
@@ -326,9 +328,9 @@ struct PlatformCrashHandlers {
 	_purecall_handler m_pureCallHandler;                  // Pure virtual call exception filter.
 	_PNH m_newHandler;                                    // New operator exception filter.
 	_invalid_parameter_handler m_invalidParameterHandler; // Invalid parameter exception filter.
-	void (*m_SIGABRTHandler)(int);                        // SIGABRT handler.
-	void (*m_SIGINTHandler)(int);                         // SIGINT handler.
-	void (*m_SIGTERMHandler)(int);                        // SIGTERM handler.
+	signal_handler m_SIGABRTHandler;                      // SIGABRT handler.
+	signal_handler m_SIGINTHandler;                       // SIGINT handler.
+	signal_handler m_SIGTERMHandler;                      // SIGTERM handler.
 
 	// List of exception handlers installed for worker threads of current process.
 	std::map<DWORD, ThreadExceptionHandlers> m_threadExceptionHandlers;
@@ -338,7 +340,7 @@ LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs);
 void PureCallHandler();
 int NewHandler(size_t);
 void InvalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved);
-void SignalHandler(int);
+void SignalHandler(int signalCode);
 
 bool CrashHandler::registerCrashHandlers() {
 	arx_assert(m_pPreviousCrashHandlers == 0);
@@ -399,8 +401,8 @@ void CrashHandler::unregisterCrashHandlers() {
 void TerminateHandler();
 void UnexpectedHandler();
 void SIGFPEHandler(int code, int subcode);
-void SIGILLHandler(int);
-void SIGSEGVHandler(int);
+void SIGILLHandler(int signalCode);
+void SIGSEGVHandler(int signalCode);
 
 bool CrashHandler::registerThreadCrashHandlers() {
 	Autolock autoLock(&m_Lock);
@@ -430,8 +432,7 @@ bool CrashHandler::registerThreadCrashHandlers() {
 	threadHandlers.m_unexpectedHandler = set_unexpected(UnexpectedHandler);
 
 	// Catch a floating point error
-	typedef void (*sigh)(int);
-	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, (sigh)SIGFPEHandler);
+	threadHandlers.m_SIGFPEHandler = signal(SIGFPE, (signal_handler)SIGFPEHandler);
 
 	// Catch an illegal instruction
 	threadHandlers.m_SIGILLHandler = signal(SIGILL, SignalHandler);
@@ -582,7 +583,7 @@ void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode)
 	strcpy(arguments, "-crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
 
-	BOOL bCreateProcess = CreateProcess("CrashReporter/CrashReporter.exe", arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
+	BOOL bCreateProcess = CreateProcess("CrashReporter/arxcrashreporter.exe", arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
 
 	// If CrashReporter was started, wait for its signal before exiting.
 	if(bCreateProcess) {

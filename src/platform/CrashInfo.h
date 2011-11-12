@@ -81,5 +81,4 @@ struct CrashInfo {
 
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-
 #endif // ARX_PLATFORM_CRASHINFO_H
