@@ -6,9 +6,9 @@
               \_/____________________/
 
 
-Port to x64_86 / GCC / OpenGL / Unix
+Port of Arx Fatalis to x64_86 / GCC / OpenGL / Unix
 
-Arx Libertatis is based on the publicly released Arx Fatalis source code.
+Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
 GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
@@ -45,22 +45,6 @@ Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
 To build 32-bit binaries on a 64-bit (multilib) system, pass `-DCMAKE_CXX_FLAGS=-m32` to cmake.
 
-## Cross compiling
-
-To build the windows version on linux (with the optional D3D, DSound and DInput backends) use winelib or mingw32 by specifying the appropriate toolchain file.
-
-Always remove the cmake cache and object files when switching toolchains: `make clean && rm CMakeCache.txt`
-
-### Winelib
-
-For a winelib build pass `-DCMAKE_TOOLCHAIN_FILE=cmake/wine-toolchain.cmake` to cmake.
-Make sure your default `WINEPREFIX` (`~/.wine`)  is up to date or running cmake might fail!
-Unless you disable them manually, this will still build the SDL, OpenGL and OpenAL backends. To use the D3D backends either disable `ARX_USE_SDL`, `ARX_USE_OPENGL` and `ARX_USE_OPENAL` or manually select the backends in `cfg.ini`.
-
-### MinGW32
-
-Once you have a ming32 cross compiler installed you can use it for arx by passing `-DCMAKE_TOOLCHAIN_FILE=cmake/mingw32-toolchain.cmake` to cmake. You will need all dependencies as windows dlls.
-
 ## Run
 
 You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
@@ -75,8 +59,8 @@ You can close it with `Alt + F4` or `killall arx.exe.so`
 
 ## Tools
 
-* unpak - Extracts the .pak files containing the game assets.
-* savetool - Extract, modify, view and fix savegames.
+* arxunpak - Extracts the .pak files containing the game assets.
+* arxsavetool - Extract, modify, view and fix savegames.
 
 ## Build documentation
 
