@@ -55,6 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <windows.h>
+#endif
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
