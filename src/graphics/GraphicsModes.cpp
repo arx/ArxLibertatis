@@ -58,7 +58,6 @@ using std::min;
 GLOBAL_MODS current;
 GLOBAL_MODS desired;
 GLOBAL_MODS stacked;
-extern long USE_D3DFOG;
 
 // change the clipping Z max & min
 #define DEFAULT_ZCLIP		6400.f 
@@ -66,7 +65,6 @@ extern long USE_D3DFOG;
 
 extern float fZFogEnd;
 extern float fZFogStart;
-extern EERIEMATRIX ProjectionMatrix;
 
 Color ulBKGColor = Color::none;
 

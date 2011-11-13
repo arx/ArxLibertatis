@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.5)
 project(ArxFatalis)
 
 # For custom cmake modules.
@@ -12,6 +12,14 @@ include(BuildSystem)
 include(CompileCheck)
 include(VersionString)
 
+# Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
+if(MSVC)
+	if(CMAKE_CL_64)
+		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
+	else()
+		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
+	endif(CMAKE_CL_64)
+endif()
 
 # Accepts a variable holding the source files
 # and creates source groups (for VS, Xcode etc)
@@ -98,6 +106,7 @@ endif()
 find_package(Doxygen)
 find_package(PythonInterp)
 if(ARX_USE_SDL)
+	set(SDL_BUILDING_LIBRARY 1)		# Required to avoid linking with SDLmain...
 	find_package(SDL 1.2 EXACT REQUIRED)
 endif()
 
@@ -115,24 +124,25 @@ mark_as_advanced(IL_LIBRARIES)
 
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-if(MSVC)
-	# Set optimal options for msvc:
 
+if(MSVC)
 	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
+	# TODO - Does not seem to work...
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
 	
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(-DBOOST_NO_EXCEPTIONS)
-	add_definitions(/wd4995)
+	add_definitions(/wd4995)		# 'func': name was marked as #pragma deprecated
 	
 	# TEMP - disable warning caused by the F2L removal
-	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
-
-	# This is needed to use ZLIB as a DLL
-	add_definitions(-DZLIB_WINAPI)
+	add_definitions(/wd4244)    	# Conversion from 'float' to 'long', possible loss of data
+	
+	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
+	if(CMAKE_CL_64)
+		add_definitions(/wd4267)	# Conversion from 'size_t' to 'xxx', possible loss of data
+	endif()
 
 	if(NOT ARX_DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
@@ -141,13 +151,26 @@ if(MSVC)
 		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
 	endif()
 	
-	# Add boost lib path
-	link_directories(${Boost_LIBRARY_DIRS})
-	
 	# Disable exceptions & rtti
-	string(REGEX REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-	add_definitions(/wd4530)
-	add_definitions(/GR-)
+	add_definitions(/wd4530)		# C++ exception handling was used but /EHsc was not selected.
+	add_definitions(/GR-)			# No RTTI
+		
+	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+		# Disable exceptions
+		string(REGEX REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
+		
+		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
+			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+		
+		# Remove definition of _DEBUG as it might conflict with libs we're linking with   		
+		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
+	endforeach(flag_var)
+	
+	# Avoid warning during link
+	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
+	
+	# This is needed to use ZLIB as a DLL
+	add_definitions(-DZLIB_WINAPI)
 	
 else(MSVC)
 	
@@ -194,7 +217,6 @@ else(MSVC)
 	endif()
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
-	check_symbol_exists(signal "signal.h" HAVE_SIGNAL)
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
 	
@@ -260,7 +282,6 @@ else(MSVC)
 	endif()
 	
 	# Disable exceptions & rtti
-	add_cxxflag(-fno-exceptions)
 	add_cxxflag(-fno-rtti)
 	
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
@@ -634,7 +655,7 @@ list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
 # Add executables
 
-add_executable_shared(arx "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
+add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
 
 if(ARX_BUILD_TOOLS)
 	
@@ -658,7 +679,7 @@ if(ARX_BUILD_TOOLS)
 	
 	set(SAVETOOL_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
 	
-	add_executable_shared(arxsavetool "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
+	add_executable_shared(arxsavetool "" "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
 	
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
@@ -677,7 +698,7 @@ if(ARX_BUILD_TOOLS)
 	
 	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
 	
-	add_executable_shared(arxunpak "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
+	add_executable_shared(arxunpak "" "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
 	
 endif()
 

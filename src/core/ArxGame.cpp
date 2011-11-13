@@ -194,6 +194,8 @@ extern CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX; // 
 extern CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 extern CMenuState * pMenu;
 
+extern EERIEMATRIX ProjectionMatrix;
+
 TextureContainer * ChangeLevel = NULL;
 TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red Cross)
 
@@ -225,9 +227,9 @@ INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame() : wasResized(false) {
-	
-	m_bAppUseZBuffer = true;
-	
+}
+
+ArxGame::~ArxGame() {
 }
 
 bool ArxGame::Initialize()

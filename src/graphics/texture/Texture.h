@@ -47,7 +47,7 @@ public:
 	
 	Image::Format GetFormat() const { return mFormat; }
 	
-	inline bool hasMipmaps() const { return (flags & HasMipmaps); }
+	inline bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
 	
 protected:
 	

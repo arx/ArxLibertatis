@@ -49,11 +49,13 @@ unset(SHARED_BUILD_EXECUTABLES CACHE)
 
 # Add an executable to be build by either separate_build(), shared_build() or unity_build()
 #  EXE   Name of the executable to add.
+#  TYPE	 Type of exe (ex: WIN32)
 #  SRC   The executables source files.
 #  LIBS  Libraries to link the executable against.
 #  EXTRA Additional arguments to pass to add_executable() but not shared amongs executables or included in unity builds.
-function(add_executable_shared EXE SRC LIBS EXTRA)
+function(add_executable_shared EXE TYPE SRC LIBS EXTRA)
 	list(REMOVE_DUPLICATES SRC)
+	set(SHARED_BUILD_${EXE}_TYPE "${TYPE}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${EXE}_SOURCES "${SRC}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${EXE}_LIBS "${LIBS}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${EXE}_EXTRA "${EXTRA}" CACHE INTERNAL "")
@@ -135,6 +137,7 @@ endfunction(_shared_build_helper)
 function(_shared_build_cleanup)
 	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
+		unset(SHARED_BUILD_${exe}_TYPE CACHE)
 		unset(SHARED_BUILD_${exe}_SOURCES CACHE)
 		unset(SHARED_BUILD_${exe}_LIBS CACHE)
 		unset(SHARED_BUILD_${exe}_EXTRA CACHE)
@@ -149,7 +152,7 @@ endfunction(_shared_build_cleanup)
 function(separate_build)
 	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
-		add_executable(${exe} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
+		add_executable(${exe} ${SHARED_BUILD_${exe}_TYPE} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
 		target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
 		install(TARGETS ${exe} RUNTIME DESTINATION bin)
 	endforeach(exe)
@@ -186,7 +189,7 @@ function(unity_build)
 	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
 		enable_unity_build(${exe} SHARED_BUILD_${exe}_SOURCES)
-		add_executable(${exe} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
+		add_executable(${exe} ${SHARED_BUILD_${exe}_TYPE} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
 		target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
 		install(TARGETS ${exe} RUNTIME DESTINATION bin)
 	endforeach(exe)

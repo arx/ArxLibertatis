@@ -409,6 +409,10 @@ bool ARX_SOUND_Init() {
 
 void ARX_SOUND_LoadData() {
 	
+	if(!bIsActive) {
+		return;
+	}
+	
 	// Load samples
 	ARX_SOUND_CreateStaticSamples();
 	ARX_SOUND_CreateMaterials();
@@ -425,6 +429,10 @@ void ARX_SOUND_LoadData() {
 }
  
 void ARX_SOUND_Release() {
+	
+	if(!bIsActive) {
+		return;
+	}
 	
 	ARX_SOUND_ReleaseStaticSamples();
 	collisionMaps.clear();

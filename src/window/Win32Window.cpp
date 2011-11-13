@@ -93,8 +93,8 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 
 	LONG wndWidth = rcWnd.right - rcWnd.left;
 	LONG wndHeight = rcWnd.bottom - rcWnd.top;
-	m_Size.x = std::min(wndWidth, maxWidth);
-	m_Size.y = std::min(wndHeight, maxHeight);
+	wndWidth = std::min(wndWidth, maxWidth);
+	wndHeight = std::min(wndHeight, maxHeight);
 	
 	// Create a window using our window class.
 	m_hWnd = CreateWindowEx( windowExtendedStyle,
@@ -103,8 +103,8 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 							windowStyle,
 							CW_USEDEFAULT,
 							CW_USEDEFAULT,
-							m_Size.x,
-							m_Size.y,
+							wndWidth,
+							wndHeight,
 							0,
 							NULL,
 							(HINSTANCE)GetModuleHandle(NULL),
@@ -121,9 +121,10 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 	}
 	
 	ShowWindow(m_hWnd, SW_SHOW);
-	m_IsVisible = true;
 	
+	m_IsVisible = true;
 	m_IsFullscreen = fullscreen;
+	m_Size = size;
 	
 	return true;
 }

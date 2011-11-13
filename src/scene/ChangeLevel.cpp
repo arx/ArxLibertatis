@@ -250,7 +250,22 @@ static fs::path ARX_GAMESAVE_MakePath(long instance) {
 	
 	return oss.str();
 }
- 
+
+bool ARX_Changelevel_CurGame_Clear() {
+	// Empty current game directory
+	if(!fs::remove_all(CurGamePath)) {
+		LogError << "failed to clear current game path " << CurGamePath;
+		return false;
+	} 
+
+	if(!fs::create_directories(CurGamePath)) {
+		LogError << "failed to create current game path " << CurGamePath;
+		return false;
+	}
+
+	return true;
+}
+
 SaveBlock * GLOBAL_pSaveB = NULL;
 void ARX_Changelevel_CurGame_Open() {
 	
@@ -2042,7 +2057,19 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		return NULL;
 	}
 	
-	INTERACTIVE_OBJ * io = LoadInter_Ex(fs::path::load(safestring(ais->filename)), num, ais->pos, ais->angle, MSP);
+	std::string path = safestring(ais->filename);
+	
+	if((!path.empty() && path[0] == '\\')
+	   || (path.length() >= 3 && isalpha(path[0]) && path[1] == ':' && path[2] == '\\')) {
+		// Old save files stored absolute paths stripped everything before 'graph' when loading.
+		makeLowercase(path);
+		size_t pos = path.find("graph");
+		if(pos != std::string::npos) {
+			path = path.substr(pos);
+		}
+	}
+	
+	INTERACTIVE_OBJ * io = LoadInter_Ex(fs::path::load(path), num, ais->pos, ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
@@ -3002,15 +3029,10 @@ long ARX_CHANGELEVEL_Load(long instance) {
 		return -1;
 	}
 	
-	// Copy SavePath to Current Game
-	if(!fs::remove_all(CurGamePath)) {
-		LogWarning << "failed to clear current game path " << CurGamePath;
+	if(!ARX_Changelevel_CurGame_Clear())
 		return -1;
-	} else if(!fs::create_directory(CurGamePath)) {
-		LogWarning << "failed to create current game path " << CurGamePath;
-		return -1;
-	}
 	
+	// Copy SavePath to Current Game
 	fs::path savePath = ARX_GAMESAVE_MakePath(instance);
 	if(!fs::copy_file(savePath / "gsave.sav", CurGamePath / "gsave.sav")) {
 		LogWarning << "failed to create copy savegame to " << (CurGamePath / "gsave.sav");

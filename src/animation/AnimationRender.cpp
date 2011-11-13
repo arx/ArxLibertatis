@@ -104,6 +104,11 @@ long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
 
+//#define USE_SOFTWARE_CLIPPING
+#ifdef USE_SOFTWARE_CLIPPING
+	float SOFTNEARCLIPPZ=1.f;
+#endif
+
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 {
@@ -460,6 +465,7 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
+void EE_P2(TexturedVertex * in, TexturedVertex * out);
 
 /* Transform object vertices  */
 int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
@@ -1101,6 +1107,70 @@ void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	}
 }
 
+#ifdef USE_SOFTWARE_CLIPPING
+//-----------------------------------------------------------------------------
+void ARX_ClippZ(TexturedVertex * _pA, TexturedVertex * _pB, EERIE_VERTEX * _pVertexA, EERIE_VERTEX * _pVertexB, TexturedVertex * _pOut)
+{
+	Vec3f e3dTemp;
+
+	float fDenom	=	(SOFTNEARCLIPPZ - _pVertexB->vworld.z) / (_pVertexA->vworld.z - _pVertexB->vworld.z);
+	e3dTemp.x		=	(_pVertexA->vworld.x - _pVertexB->vworld.x) * fDenom + _pVertexB->vworld.x;
+	e3dTemp.y		=	(_pVertexA->vworld.y - _pVertexB->vworld.y) * fDenom + _pVertexB->vworld.y;
+	e3dTemp.z		=	SOFTNEARCLIPPZ ;
+
+	float fRA, fGA, fBA;
+	float fRB, fGB, fBB;
+
+	fRA = checked_range_cast<float>((_pA->color >> 16) & 255);
+	fGA = checked_range_cast<float>((_pA->color >> 8) & 255);
+	fBA = checked_range_cast<float>(_pA->color & 255);
+	fRB = checked_range_cast<float>((_pB->color >> 16) & 255);
+	fGB = checked_range_cast<float>((_pB->color >> 8) & 255);
+	fBB = checked_range_cast<float>(_pB->color & 255);
+
+	float fRC, fGC, fBC;
+	fRC = (fRA - fRB) * fDenom + fRB;
+	fGC = (fGA - fGB) * fDenom + fGB;
+	fBC = (fBA - fBB) * fDenom + fBB;
+
+	_pOut->color	=	(((int)fRC) << 16) | (((int)fGC) << 8) | ((int)fBC);
+	_pOut->uv		=	(_pA->uv - _pB->uv) * fDenom + _pB->uv;
+
+	EE_P(&e3dTemp, _pOut);
+}
+
+//-----------------------------------------------------------------------------
+void ARX_DrawPrimitive_ClippZ(TexturedVertex * _pVertexA, TexturedVertex * _pVertexB, TexturedVertex * _pOut, float _fAdd = 0.f);
+void ARX_DrawPrimitive_ClippZ(TexturedVertex * _pVertexA, TexturedVertex * _pVertexB, TexturedVertex * _pOut, float _fAdd)
+{
+	Vec3f e3dTemp;
+	float fDenom = ((SOFTNEARCLIPPZ + _fAdd) - _pVertexB->p.z) / (_pVertexA->p.z - _pVertexB->p.z);
+	e3dTemp.x = (_pVertexA->p.x - _pVertexB->p.x) * fDenom + _pVertexB->p.x;
+	e3dTemp.y = (_pVertexA->p.y - _pVertexB->p.y) * fDenom + _pVertexB->p.y;
+	e3dTemp.z = SOFTNEARCLIPPZ + _fAdd;
+
+	float fRA, fGA, fBA;
+	float fRB, fGB, fBB;
+
+	fRA = checked_range_cast<float>((_pVertexA->color >> 16) & 255);
+	fGA = checked_range_cast<float>((_pVertexA->color >> 8) & 255);
+	fBA = checked_range_cast<float>(_pVertexA->color & 255);
+	fRB = checked_range_cast<float>((_pVertexB->color >> 16) & 255);
+	fGB = checked_range_cast<float>((_pVertexB->color >> 8) & 255);
+	fBB = checked_range_cast<float>(_pVertexB->color & 255);
+
+	float fRC, fGC, fBC;
+	fRC = (fRA - fRB) * fDenom + fRB;
+	fGC = (fGA - fGB) * fDenom + fGB;
+	fBC = (fBA - fBB) * fDenom + fBB;
+
+	_pOut->color	= (((int) fRC) << 16) | (((int)fGC) << 8) | ((int) fBC);
+	_pOut->uv		= (_pVertexA->uv - _pVertexB->uv) * fDenom + _pVertexB->uv;
+
+	EE_P(&e3dTemp, _pOut);
+}
+#endif
+
 //-----------------------------------------------------------------------------
 TexturedVertex * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, TextureContainer * _pTex) {
 	
@@ -1127,38 +1197,341 @@ TexturedVertex * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Tex
 	}
 }
 
+#ifdef USE_SOFTWARE_CLIPPING
+
+int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, TexturedVertex ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, Color3f * _pRGB) {
+	
+	int iPointAdd = 3;
+	int iClipp = 0;
+
+	if ((_pVertex1->vworld.z) < SOFTNEARCLIPPZ) iClipp |= 1;
+
+	if ((_pVertex2->vworld.z) < SOFTNEARCLIPPZ) iClipp |= 2;
+
+	if ((_pVertex3->vworld.z) < SOFTNEARCLIPPZ) iClipp |= 4;
+
+	TexturedVertex ClippZ1, ClippZ2;
+	TexturedVertex * pPointAdd = NULL;
+	TexturedVertex * ptV = *_ptV;
+
+	switch (iClipp)
+	{
+		case 1:						//pt1 outside
+			ARX_ClippZ(&ptV[0], &ptV[1], _pVertex1, _pVertex2, &ClippZ1);
+			ARX_ClippZ(&ptV[0], &ptV[2], _pVertex1, _pVertex3, &ClippZ2);
+			pPointAdd = GetNewVertexList(_pFace,
+			                                _fInvibility,
+			                                _pTex);
+			ptV = pPointAdd - 3;
+
+			if (pPointAdd)
+			{
+				pPointAdd[0] = ClippZ1;
+				pPointAdd[1] = ptV[1];
+				pPointAdd[2] = ClippZ2;
+			}
+
+			ptV[0] = ClippZ2;
+			iPointAdd = 6;
+			break;
+		case 2:						//pt2 outside
+			ARX_ClippZ(&ptV[1], &ptV[2], _pVertex2, _pVertex3, &ClippZ1);
+			ARX_ClippZ(&ptV[1], &ptV[0], _pVertex2, _pVertex1, &ClippZ2);
+			pPointAdd = GetNewVertexList(_pFace,
+			                                _fInvibility,
+			                                _pTex);
+			ptV = pPointAdd - 3;
+
+			if (pPointAdd)
+			{
+				pPointAdd[0] = ptV[2];
+				pPointAdd[1] = ClippZ1;
+				pPointAdd[2] = ClippZ2;
+			}
+
+			ptV[1] = ClippZ2;
+			iPointAdd = 6;
+			break;
+		case 4:						//pt3 outside
+			ARX_ClippZ(&ptV[2], &ptV[0], _pVertex3, _pVertex1, &ClippZ1);
+			ARX_ClippZ(&ptV[2], &ptV[1], _pVertex3, _pVertex2, &ClippZ2);
+			pPointAdd = GetNewVertexList(_pFace,
+			                                _fInvibility,
+			                                _pTex);
+			ptV = pPointAdd - 3;
+
+			if (pPointAdd)
+			{
+				pPointAdd[0] = ptV[0];
+				pPointAdd[1] = ClippZ2;
+				pPointAdd[2] = ClippZ1;
+			}
+
+			ptV[2] = ClippZ2;
+			iPointAdd = 6;
+			break;
+		case 3:						//pt1_2 outside
+			ARX_ClippZ(&ptV[0], &ptV[2], _pVertex1, _pVertex3, &ClippZ1);
+			ARX_ClippZ(&ptV[1], &ptV[2], _pVertex2, _pVertex3, &ClippZ2);
+			ptV[0] = ClippZ1;
+			ptV[1] = ClippZ2;
+			break;
+		case 5:						//pt1_3 outside
+			ARX_ClippZ(&ptV[0], &ptV[1], _pVertex1, _pVertex2, &ClippZ1);
+			ARX_ClippZ(&ptV[2], &ptV[1], _pVertex3, _pVertex2, &ClippZ2);
+			ptV[0] = ClippZ1;
+			ptV[2] = ClippZ2;
+			break;
+		case 6:						//pt2_3 outside
+			ARX_ClippZ(&ptV[2], &ptV[0], _pVertex3, _pVertex1, &ClippZ1);
+			ARX_ClippZ(&ptV[1], &ptV[0], _pVertex2, _pVertex1, &ClippZ2);
+			ptV[1] = ClippZ1;
+			ptV[2] = ClippZ2;
+			break;
+		case 7:
+			return 0;
+	}
+
+	if (pPointAdd)
+	{
+		*_ptV = ptV;
+
+		if (_bZMapp)
+		{
+			CalculateInterZMapp(_pObj, _iNumFace, _pInd, _pTex, pPointAdd);
+		}
+
+		if ((_pFace->facetype & POLY_METAL)
+		        || ((_pTex) && (_pTex->userflags & POLY_METAL)))
+		{
+			if (_bNPC)
+			{
+				TexturedVertex * tv2;
+
+				if (_lSpecialColorFlag & 2)
+				{
+					tv2 = PushVertexInTableCull(&TexSpecialColor);
+					memcpy((void *)tv2, (void *)pPointAdd, sizeof(TexturedVertex) * 3);
+					tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(_pRGB->r).toBGR();
+				}
+
+				tv2 = PushVertexInTableCull_TMetal(_pTex);
+				unsigned long * pulNbVertexList_TMetal = &_pTex->ulNbVertexListCull_TMetal;
+
+				memcpy((void *)tv2, (void *)pPointAdd, sizeof(TexturedVertex) * 3);
+
+				long r, g, b;
+				long todo = 0;
+
+				for (long j = 0; j < 3; j++)
+				{
+					r = (tv2[j].color >> 16) & 255;
+					g = (tv2[j].color >> 8) & 255;
+					b = tv2[j].color & 255;
+
+					if (r > 192 || g > 192 || b > 192)
+					{
+						todo++;
+					}
+
+					r -= 192;
+
+					if (r < 0.f) r = 0;
+
+					g -= 192;
+
+					if (g < 0.f) g = 0;
+
+					b -= 192;
+
+					if (b < 0.f) b = 0;
+
+					tv2[j].color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
+				}
+
+				if (!todo)
+				{
+					*pulNbVertexList_TMetal -= 3;
+				}
+			}
+			else
+			{
+				TexturedVertex * vert_list_metal		= PushVertexInTableCull_TMetal(_pTex);
+				unsigned long * pulNbVertexList_TMetal	= &_pTex->ulNbVertexListCull_TMetal;
+
+				memcpy((void *)vert_list_metal, (void *)pPointAdd, sizeof(TexturedVertex) * 3);
+				TexturedVertex * tl = vert_list_metal;
+
+				long r, g, b;
+				long todo = 0;
+
+				r = g = b = 0 ;
+
+				for (long j = 0 ; j < 3 ; j++)
+				{
+					r = (tl->color >> 16) & 255;
+					g = (tl->color >> 8) & 255;
+					b = tl->color & 255;
+
+					if (r > 192 || g > 192 || b > 192)
+					{
+						todo++;
+					}
+
+					r -= 192;
+
+					if (r < 0.f) r = 0;
+
+					g -= 192;
+
+					if (g < 0.f) g = 0;
+
+					b -= 192;
+
+					if (b < 0.f) b = 0;
+
+					tl->color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
+					tl++;
+				}
+
+				if (todo)
+				{
+					if ((todo > 2) && (rnd() > 0.997f))
+					{
+						if (_pioInteractive)
+							SpawnMetalShine((Vec3f *)&_pObj->vertexlist3[_pObj->facelist[_iNumFace].vid[0]].vert, r, g, b, GetInterNum(_pioInteractive));
+					}
+				}
+				else
+				{
+					*pulNbVertexList_TMetal -= 3;
+				}
+			}
+		}
+	}
+
+	return iPointAdd;
+}
+#endif
+
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 
-void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3) {
+void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, TexturedVertex * _pVertex3, float _fAddZ) {
+	
+#ifdef USE_SOFTWARE_CLIPPING
+	int iClipp = 0;
+
+	if (_pVertex1->p.z < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 1;
+
+	if (_pVertex2->p.z < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 2;
+
+	if (_pVertex3->p.z < (SOFTNEARCLIPPZ + _fAddZ)) iClipp |= 4;
+
+	TexturedVertex ClippZ1, ClippZ2;
+	TexturedVertex pPointAdd[6];
+	int			iNbTotVertex = 3;
+
+	switch (iClipp)
+	{
+		case 0: {
+			EE_P(&_pVertex1->p, &pPointAdd[0]);
+			EE_P(&_pVertex2->p, &pPointAdd[1]);
+			EE_P(&_pVertex3->p, &pPointAdd[2]);
+			pPointAdd[0].color = _pVertex1->color;
+			pPointAdd[0].specular = _pVertex1->specular;
+			pPointAdd[0].uv = _pVertex1->uv;
+			pPointAdd[1].specular = _pVertex2->specular;
+			pPointAdd[1].uv = _pVertex2->uv;
+			pPointAdd[2].color = _pVertex3->color;
+			pPointAdd[2].specular = _pVertex3->specular;
+			pPointAdd[2].uv = _pVertex3->uv;
+			break;
+		}
+		case 1:						//pt1 outside
+			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &ClippZ1, _fAddZ);
+			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &ClippZ2, _fAddZ);
+			pPointAdd[0] = ClippZ2;
+			pPointAdd[1] = *_pVertex2;
+			EE_P2(&pPointAdd[1], &pPointAdd[1]);
+			pPointAdd[2] = *_pVertex3;
+			EE_P2(&pPointAdd[2], &pPointAdd[2]);
+			pPointAdd[3] = ClippZ1;
+			pPointAdd[4] = pPointAdd[1];
+			pPointAdd[5] = ClippZ2;
+			iNbTotVertex = 6;
+			break;
+		case 2:						//pt2 outside
+			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex3, &ClippZ1, _fAddZ);
+			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex1, &ClippZ2, _fAddZ);
+			pPointAdd[0] = *_pVertex1;
+			EE_P2(&pPointAdd[0], &pPointAdd[0]);
+			pPointAdd[1] = ClippZ2;
+			pPointAdd[2] = *_pVertex3;
+			EE_P2(&pPointAdd[2], &pPointAdd[2]);
+			pPointAdd[3] = pPointAdd[2];
+			pPointAdd[4] = ClippZ1;
+			pPointAdd[5] = ClippZ2;
+			iNbTotVertex = 6;
+			break;
+		case 4:						//pt3 outside
+			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex1, &ClippZ1, _fAddZ);
+			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex2, &ClippZ2, _fAddZ);
+			pPointAdd[0] = *_pVertex1;
+			EE_P2(&pPointAdd[0], &pPointAdd[0]);
+			pPointAdd[1] = *_pVertex2;
+			EE_P2(&pPointAdd[1], &pPointAdd[1]);
+			pPointAdd[2] = ClippZ2;
+			pPointAdd[3] = pPointAdd[0];
+			pPointAdd[4] = ClippZ2;
+			pPointAdd[5] = ClippZ1;
+			iNbTotVertex = 6;
+			break;
+		case 3:						//pt1_2 outside
+			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex3, &ClippZ1, _fAddZ);
+			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex3, &ClippZ2, _fAddZ);
+			pPointAdd[0] = ClippZ1;
+			pPointAdd[1] = ClippZ2;
+			pPointAdd[2] = *_pVertex3;
+			EE_P2(&pPointAdd[2], &pPointAdd[2]);
+			break;
+		case 5:						//pt1_3 outside
+			ARX_DrawPrimitive_ClippZ(_pVertex1, _pVertex2, &ClippZ1, _fAddZ);
+			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex2, &ClippZ2, _fAddZ);
+			pPointAdd[0] = ClippZ1;
+			pPointAdd[1] = *_pVertex2;
+			EE_P2(&pPointAdd[1], &pPointAdd[1]);
+			pPointAdd[2] = ClippZ2;
+			break;
+		case 6:						//pt2_3 outside
+			ARX_DrawPrimitive_ClippZ(_pVertex3, _pVertex1, &ClippZ1, _fAddZ);
+			ARX_DrawPrimitive_ClippZ(_pVertex2, _pVertex1, &ClippZ2, _fAddZ);
+			pPointAdd[0] = *_pVertex1;
+			EE_P2(&pPointAdd[0], &pPointAdd[0]);
+			pPointAdd[1] = ClippZ1;
+			pPointAdd[2] = ClippZ2;
+			break;
+		case 7:
+			return;
+	}
+#else
+	
+	ARX_UNUSED(_fAddZ);
 	
 	TexturedVertex pPointAdd[3];
-	
-	Vec3f e3dTemp;
-	e3dTemp.x = _pVertex1->p.x;
-	e3dTemp.y = _pVertex1->p.y;
-	e3dTemp.z = _pVertex1->p.z;
-	EE_P(&e3dTemp, &pPointAdd[0]);
-	e3dTemp.x = _pVertex2->p.x;
-	e3dTemp.y = _pVertex2->p.y;
-	e3dTemp.z = _pVertex2->p.z;
-	EE_P(&e3dTemp, &pPointAdd[1]);
-	e3dTemp.x = _pVertex3->p.x;
-	e3dTemp.y = _pVertex3->p.y;
-	e3dTemp.z = _pVertex3->p.z;
-	EE_P(&e3dTemp, &pPointAdd[2]);
+	EE_P(&_pVertex1->p, &pPointAdd[0]);
+	EE_P(&_pVertex2->p, &pPointAdd[1]);
+	EE_P(&_pVertex3->p, &pPointAdd[2]);
 	pPointAdd[0].color = _pVertex1->color;
 	pPointAdd[0].specular = _pVertex1->specular;
-	pPointAdd[0].uv.x = _pVertex1->uv.x;
-	pPointAdd[0].uv.y = _pVertex1->uv.y;
+	pPointAdd[0].uv = _pVertex1->uv;
 	pPointAdd[1].color = _pVertex2->color;
 	pPointAdd[1].specular = _pVertex2->specular;
-	pPointAdd[1].uv.x = _pVertex2->uv.x;
-	pPointAdd[1].uv.y = _pVertex2->uv.y;
+	pPointAdd[1].uv = _pVertex2->uv;
 	pPointAdd[2].color = _pVertex3->color;
 	pPointAdd[2].specular = _pVertex3->specular;
-	pPointAdd[2].uv.x = _pVertex3->uv.x;
-	pPointAdd[2].uv.y = _pVertex3->uv.y;
-	
+	pPointAdd[2].uv = _pVertex3->uv;
+#endif
+
 	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
 }
 
@@ -1391,6 +1764,27 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
 			}
+						
+#ifdef USE_SOFTWARE_CLIPPING
+			if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
+			                                   &eobj->vertexlist3[paf[1]],
+			                                   &eobj->vertexlist3[paf[2]],
+			                                   &tv,
+			                                   eface,
+			                                   invisibility,
+			                                   pTex,
+			                                   (io) && (io->ioflags & IO_ZMAP),
+			                                   eobj,
+			                                   i,
+			                                   paf,
+			                                   NULL,
+			                                   true,
+			                                   special_color_flag,
+			                                   &special_color)))
+			{
+				continue;
+			}
+#endif
 
 			if ((io) && (io->ioflags & IO_ZMAP))
 			{

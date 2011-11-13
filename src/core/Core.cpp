@@ -215,10 +215,6 @@ extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
 
 //-----------------------------------------------------------------------------
-
-extern EERIEMATRIX ProjectionMatrix;
-
-//-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
 PROJECT Project;
 
@@ -620,21 +616,36 @@ void InitializeDanae()
 	
 }
 
-// Let's use main for now on all platforms
-// TODO: On Windows, we might want to use WinMain in the Release target for example
-int main(int argc, char ** argv) {
+
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+extern int main(int argc, char ** argv) {
+#else
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
+	ARX_UNUSED(hInstance);
+	ARX_UNUSED(hPrevInstance);
+	ARX_UNUSED(lpCmdLine);
+	ARX_UNUSED(nCmdShow);
+#endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
-	(void)argc, (void)argv;
 	
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	initCrashHandler();
+#else
+	//CrashHandler crashHandler;
+	//crashHandler.init();
+#endif
+	
 	
 	Logger::init();
 	
 	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
 	
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
 		Logger::configure(argv[1] + 8);
 	}
+#endif
+	
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
@@ -658,6 +669,12 @@ int main(int argc, char ** argv) {
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
 		LogError << "Application failed to initialize properly";
+		return -1;
+	}
+
+	// Check if the game will be able to use the current game directory.
+	if(!ARX_Changelevel_CurGame_Clear()) {
+		LogError << "Error accessing current game directory. Game won't be playable.";
 		return -1;
 	}
 	
@@ -4063,6 +4080,9 @@ void ClearGame() {
 	delete resources;
 	
 	ReleaseNode();
+
+	// Current game
+	ARX_Changelevel_CurGame_Clear();
 	
 	//Halo
 	ReleaseHalo();

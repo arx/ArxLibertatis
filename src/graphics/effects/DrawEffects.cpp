@@ -175,8 +175,8 @@ void ARXDRAW_DrawInterShadows()
 							EE_RT2(&in,&ltv[3]);
 
 							if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
+								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
 							}
 						}
 					}	
@@ -834,4 +834,3 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 	SetZBias( 0 );
 }
-

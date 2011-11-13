@@ -76,6 +76,8 @@ protected:
 public:
 	
 	ArxGame();
+	virtual ~ArxGame();
+	
 	bool Create();
 	virtual void Run();
 	bool InitDeviceObjects();

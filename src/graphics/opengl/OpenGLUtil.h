@@ -20,6 +20,13 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
 #define ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
 
+#include "platform/Platform.h"
+
+// Link statically with GLEW
+#if ARX_COMPILER_MSVC
+	#define GLEW_STATIC
+#endif
+
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>

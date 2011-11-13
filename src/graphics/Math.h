@@ -323,31 +323,8 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
 
 void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
 
-extern EERIEMATRIX ProjectionMatrix;
-
-inline void specialEE_RT(TexturedVertex * in, Vec3f * out) {
-	
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->x = in->p.x - et->posx;
-	out->y = in->p.y - et->posy;
-	out->z = in->p.z - et->posz;
-
-	register float temp = (out->z * et->ycos) - (out->x * et->ysin);
-	out->x = (out->z * et->ysin) + (out->x * et->ycos);
-	out->z = (out->y * et->xsin) + (temp * et->xcos);
-	out->y = (out->y * et->xcos) - (temp * et->xsin);
-}
-
-inline void specialEE_P(Vec3f * in, TexturedVertex * out) {
-	
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	
-	float fZTemp = 1.f / in->z;
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
-	out->rhw = fZTemp; 
-}
+void specialEE_RT(TexturedVertex * in, Vec3f * out);
+void specialEE_P(Vec3f * in, TexturedVertex * out);
 
 template <class T1, class T2, class T3>
 inline T1 clamp(T1 value, T2 min, T3 max) {

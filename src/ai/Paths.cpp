@@ -390,7 +390,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 			}
 
-			if (p->controled[0] != 0)
+			if (!op->controled.empty())
 			{
 				long t = inter.getById(p->controled);
 

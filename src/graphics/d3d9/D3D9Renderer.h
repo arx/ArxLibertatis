@@ -21,6 +21,7 @@
 #define ARX_GRAPHICS_D3D9_D3D9RENDERER_H
 
 #include <d3d9.h>
+#include <dxerr.h>
 
 #include "graphics/Renderer.h"
 #include "window/D3D9Window.h"

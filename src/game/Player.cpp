@@ -3624,11 +3624,8 @@ void ARX_PLAYER_Start_New_Quest() {
 	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
 	
-	//Empty Current Game Directory to restart a new game...
-	if(!fs::remove_all(CurGamePath) || !fs::create_directory(CurGamePath)) {
-		LogWarning << "failed to clear " << CurGamePath;
-	}
-	
+	ARX_Changelevel_CurGame_Clear();
+
 	inter.iobj[0]->halo.flags = 0;
 }
 
