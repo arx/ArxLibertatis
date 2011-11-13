@@ -55,6 +55,7 @@ unset(SHARED_BUILD_EXECUTABLES CACHE)
 #  EXTRA Additional arguments to pass to add_executable() but not shared amongs executables or included in unity builds.
 function(add_executable_shared EXE TYPE SRC LIBS EXTRA)
 	list(REMOVE_DUPLICATES SRC)
+	list(REMOVE_DUPLICATES LIBS)
 	set(SHARED_BUILD_${EXE}_TYPE "${TYPE}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${EXE}_SOURCES "${SRC}" CACHE INTERNAL "")
 	set(SHARED_BUILD_${EXE}_LIBS "${LIBS}" CACHE INTERNAL "")
