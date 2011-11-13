@@ -91,7 +91,7 @@ elseif(WINE)
 	
 	__check_wine_dx_library(DIRECTX_D3D9_LIBRARY d3d9)
 	__check_wine_dx_library(DIRECTX_D3DX9_LIBRARY d3dx9)
-	# __check_wine_dx_library(DIRECTX_DXERR9_LIBRARY dxerr) TODO wine doesn't have this
+	__check_wine_dx_library(DIRECTX_DXERR9_LIBRARY dxerr9)
 	__check_wine_dx_library(DIRECTX_DXGUID_LIBRARY dxguid)
 	__check_wine_dx_library(DIRECTX_DINPUT8_LIBRARY dinput8)
 	__check_wine_dx_library(DIRECTX_XINPUT_LIBRARY xinput)

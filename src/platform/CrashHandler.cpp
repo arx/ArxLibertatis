@@ -151,7 +151,7 @@ void initCrashHandler() {
 }
 
 // don't have enough POSIX functionality for backtraces
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+#elif 0 // TODO ARX_PLATFORM == ARX_PLATFORM_WIN32
 
 #include <new>
 #include <cfloat>

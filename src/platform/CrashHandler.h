@@ -27,7 +27,7 @@
 
 void initCrashHandler();
 
-#else
+#elif 0 // TODO
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/mapped_region.hpp>
