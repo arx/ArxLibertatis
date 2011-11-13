@@ -13,8 +13,8 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
-* SDL 1.2 and OpenGL 1.5 and GLEW **and/or** DirectInput 7 and Direct3D 7
-* OpenAL 1.1 **and/or** DirectSound 7
+* SDL 1.2 and OpenGL 1.5 and GLEW **and/or** DirectInput 8 and Direct3D 9
+* OpenAL 1.1 **and/or** DirectSound 9
 * DevIL
 * zlib
 * Boost
