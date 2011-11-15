@@ -77,7 +77,7 @@ CFireBall::CFireBall() : CSpellFx()
 
 	// TODO using memset on a class is naughty
 
-	memset(fire_1, 0, sizeof(fire_1));
+	memset(&fire_1, 0, sizeof(fire_1));
 	fire_1.iNbMax = 200;
 	fire_1.fLife = 550;
 	fire_1.fLifeRandom = 500;
@@ -107,7 +107,7 @@ CFireBall::CFireBall() : CSpellFx()
 	fire_1.fEndColorRandom[2] = 0;
 	fire_1.fEndColorRandom[3] = 120; 
 
-	memset(fire_2, 0, sizeof(fire_2));
+	memset(&fire_2, 0, sizeof(fire_2));
 	fire_2.iNbMax = 20;
 	fire_2.fLife = 550;
 	fire_2.fLifeRandom = 500;
@@ -135,7 +135,7 @@ CFireBall::CFireBall() : CSpellFx()
 	fire_2.fEndColorRandom[2] = 0;
 	fire_2.fEndColorRandom[3] = 120; 
 
-	memset(smoke, 0, sizeof(smoke));
+	memset(&smoke, 0, sizeof(smoke));
 	smoke.iNbMax = 30;
 	smoke.fLife = 2000;
 	smoke.fLifeRandom = 3000;
