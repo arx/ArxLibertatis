@@ -455,7 +455,7 @@ bool SaveBlock::defragment() {
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
-	if(!fs::rename(tempFileName, savefile)) {
+	if(!fs::rename(tempFileName, savefile, true)) {
 		LogWarning << "failed to move defragmented savegame " << tempFileName << " to " << savefile;
 		return false;
 	}
