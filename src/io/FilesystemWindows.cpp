@@ -219,7 +219,8 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
 	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
 	if(!ret) {
-		LogWarning << "MoveFileA(" << old_p << ", " << new_p << ") failed! " << GetLastErrorString();
+		LogWarning << "MoveFileExA(" << old_p << ", " << new_p << ", " << flags << ") failed! "
+		           << GetLastErrorString();
 	}
 	return ret;
 }
