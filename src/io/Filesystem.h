@@ -90,7 +90,7 @@ bool create_directories(const path & p);
  * Copy a regular file.
  * from_p must exist and be a regular file.
  * to_p.parent() must exist and be a directory.
- * TODO does this overwrite to_p
+ * new_p must not be a directory, even if overwrite is true
  * @return true if the file was copied or false if there was an error.
  */
 bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
@@ -99,10 +99,10 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
  * Move a regular file or directory.
  * old_p must exist.
  * new_p.parent() must exist and be a directory.
- * TODO does this overwrite to_p
+ * new_p must not be a directory, even if overwrite is true
  * @return true if the file was copied or false if there was an error.
  */
-bool rename(const path & old_p, const path & new_p);
+bool rename(const path & old_p, const path & new_p, bool overwrite = false);
 
 /**
  * Read a file into memory.

@@ -215,8 +215,9 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	return ret;
 }
 
-bool rename(const path & old_p, const path & new_p) {
-	bool ret = MoveFileA(old_p.string().c_str(), new_p.string().c_str()) == TRUE;
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
+	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
+	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
 	if(!ret) {
 		LogWarning << "MoveFileA(" << old_p << ", " << new_p << ") failed! " << GetLastErrorString();
 	}

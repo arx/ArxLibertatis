@@ -145,7 +145,10 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	return true;
 }
 
-bool rename(const path & old_p, const path & new_p) {
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
+	if(!overwrite && exists(new_p)) {
+		return false;
+	}
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }
 
