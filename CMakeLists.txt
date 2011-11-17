@@ -1,5 +1,17 @@
-cmake_minimum_required(VERSION 2.8.5)
-project(ArxFatalis)
+project(ArxLibertatis)
+
+if(MSVC)
+	# CMake 2.8.5 or newer is needed for CMAKE_LIBRARY_ARCHITECTURE support.
+	cmake_minimum_required(VERSION 2.8.5)
+	# Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
+	if(CMAKE_CL_64)
+		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
+	else()
+		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
+	endif(CMAKE_CL_64)
+else()
+	cmake_minimum_required(VERSION 2.8)
+endif()
 
 # For custom cmake modules.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -11,15 +23,6 @@ include(CheckCXXSourceCompiles)
 include(BuildSystem)
 include(CompileCheck)
 include(VersionString)
-
-# Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
-if(MSVC)
-	if(CMAKE_CL_64)
-		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
-	else()
-		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
-	endif(CMAKE_CL_64)
-endif()
 
 # Accepts a variable holding the source files
 # and creates source groups (for VS, Xcode etc)
