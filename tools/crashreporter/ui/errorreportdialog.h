@@ -34,6 +34,9 @@ namespace Ui {
 	class ErrorReportDialog;
 }
 
+/**
+ * Base task for tasks
+ */
 class CrashReportTask : public QThread
 {
 	Q_OBJECT
@@ -47,10 +50,30 @@ public:
 	{
 	}
 
+	/**
+	 * Get the description of this task.
+	 * @return The description of this task.
+	 */
 	const QString& getDescription() const { return m_strDescription; }
+
+	/**
+	 * Get the number of steps executed  by this task.
+	 * @return The number of steps executed by this task.
+	 */
 	int getNumSteps() const { return m_numSteps; }
 
+	/**
+	 * Get the status of this task.
+	 * @return True if this task completed successfully, false otherwise.
+	 * @sa getErrorString()
+	 */
 	bool succeeded() const { return isFinished() && m_strErrorDescription.isEmpty(); }
+
+	/**
+	 * Get the error string (available in case of a failure)
+	 * @return A string detailling the error that occured in case of a failure.
+	 * @sa succeeded()
+	 */
 	const QString& getErrorString() const { return m_strErrorDescription; }
 
 signals:
@@ -73,6 +96,7 @@ private:
 	QString m_strErrorDescription;
 };
 
+//!
 class GatherInfoTask : public CrashReportTask
 {
 	Q_OBJECT
@@ -95,7 +119,8 @@ private:
 	void run();
 };
 
-class ScreenshotWidget : public QWidget {
+class ScreenshotWidget : public QWidget 
+{
 	Q_OBJECT
 
 public:
@@ -109,6 +134,53 @@ protected:
 
 private:
 	QPixmap m_pixmap;
+};
+
+class ErrorReportFileListModel : public QAbstractListModel
+{
+	Q_OBJECT
+
+public:
+	ErrorReportFileListModel(ErrorReport& errorReport, QObject* parent = 0) 
+		: QAbstractListModel(parent)
+		, m_errorReport(errorReport)
+	{
+	}
+	
+	int rowCount(const QModelIndex & parent = QModelIndex()) const
+	{
+		return m_errorReport.GetAttachedFiles().count();
+	}
+	
+	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const
+	{
+		if (index.isValid() && role == Qt::DisplayRole)
+		{
+			QString strFilePath = m_errorReport.GetAttachedFiles().at(index.row());
+			
+			int lastSeparator = strFilePath.lastIndexOf(QDir::separator());
+			strFilePath = strFilePath.mid(lastSeparator+1);
+
+			return strFilePath;
+		}
+		else
+			return QVariant();
+	}
+
+	
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const
+	{
+		if (role != Qt::DisplayRole)
+			return QVariant();
+
+		if (orientation == Qt::Horizontal)
+			return QString("Column %1").arg(section);
+		else
+			return QString("Row %1").arg(section);
+	}
+	
+private:
+	ErrorReport& m_errorReport;
 };
 
 class ErrorReportDialog : public QDialog
@@ -142,10 +214,11 @@ public slots:
 	void onTaskStepStarted(const QString& taskStepDescription);
 	void onTaskStepEnded();
 	void onTaskCompleted();
+	void onTabChanged(int index);
 
 private slots:
 	void onSendReport();
-	void onShowFileContent();
+	void onShowFileContent(const QItemSelection& current, const QItemSelection& previous);
 
 private:
 	void startTask(CrashReportTask* pTask, int nextPane);

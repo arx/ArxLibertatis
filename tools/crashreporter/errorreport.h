@@ -55,6 +55,8 @@ public:
 	
 	void ReleaseApplicationLock();
 
+	const QStringList& GetAttachedFiles() const;
+
 private:
 	QString	GetFilePath(const std::string& fileName) const;
 

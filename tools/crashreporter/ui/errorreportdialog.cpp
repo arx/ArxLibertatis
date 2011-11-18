@@ -52,21 +52,20 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	ui->setupUi(this);
 
 	ui->sendReportButtonBox->buttons().at(0)->setText("Send");
-	connect(ui->sendReportButtonBox, SIGNAL(accepted()), SLOT(onSendReport()));
 
 	ui->stackedWidget->setCurrentIndex(0);
 	ui->lblProgressTitle->setText("");
 	ui->progressBar->setMaximum(0);
 	ui->progressBar->setValue(0);
 
-	QListWidgetItem* pItem1 = new QListWidgetItem("screenshot.jpg");
-	QListWidgetItem* pItem2 = new QListWidgetItem("crash.dmp");
-	QListWidgetItem* pItem3 = new QListWidgetItem("crash.xml");
-	ui->listFiles->addItem(pItem1);
-	ui->listFiles->addItem(pItem2);
-	ui->listFiles->addItem(pItem3);
-	connect(ui->listFiles, SIGNAL(itemSelectionChanged()), SLOT(onShowFileContent()));
-	ui->listFiles->selectedItems().insert(0, pItem1);
+	ErrorReportFileListModel* model = new ErrorReportFileListModel(errorReport, ui->listFiles);
+	QItemSelectionModel* selectionModel = new QItemSelectionModel(model);
+
+	ui->listFiles->setModel(model);
+	ui->listFiles->setSelectionModel(selectionModel);
+	ui->listFiles->setSelectionMode(QAbstractItemView::SingleSelection);
+	connect(ui->listFiles->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
+            this, SLOT(onShowFileContent(const QItemSelection &, const QItemSelection &)));
 
 	m_fileViewHex.setAsciiArea(false);
 	m_fileViewHex.setReadOnly(true);
@@ -91,9 +90,27 @@ void ErrorReportDialog::onSendReport()
 	startTask(new SendReportTask(m_errorReport), Pane_ExitSuccess);
 }
 
-void ErrorReportDialog::onShowFileContent()
+void ErrorReportDialog::onTabChanged(int index)
 {
-	QString fileName = ui->listFiles->selectedItems().at(0)->text();
+	if(index == 1) // tabReportContent
+	{
+		QModelIndex idx = ui->listFiles->model()->index(0, 0);
+		if(idx.isValid())
+			ui->listFiles->selectionModel()->select(idx, QItemSelectionModel::Select);
+	}
+}
+
+void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, const QItemSelection & oldSelection)
+{
+	const QModelIndexList selectedIndexes = newSelection.indexes();
+	if(selectedIndexes.empty())
+		return;
+
+	const QModelIndex selectedIndex = selectedIndexes.at(0);
+	if(!selectedIndex.isValid())
+		return;
+	
+	QString fileName = m_errorReport.GetAttachedFiles().at(selectedIndex.row());
 	if(fileName.endsWith(".txt"))
 	{
 		QFile textFile(fileName);

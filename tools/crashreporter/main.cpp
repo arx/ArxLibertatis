@@ -50,9 +50,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	__debugbreak();
-
-	ErrorReport errorReport("Crashes", sharedMemoryName);
+	ErrorReport errorReport("crashes", sharedMemoryName);
 
 	ErrorReportDialog errorReportDlg(errorReport);
 	errorReportDlg.show();

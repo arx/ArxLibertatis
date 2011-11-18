@@ -179,7 +179,7 @@
               </font>
              </property>
              <property name="text">
-              <string></string>
+              <string/>
              </property>
              <property name="scaledContents">
               <bool>false</bool>
@@ -267,7 +267,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="tabOptionnalInfo">
           <attribute name="title">
@@ -297,8 +297,15 @@
            </item>
            <item>
             <widget class="QTextEdit" name="textEditCrashDesc">
-             <property name="cursor" stdset="0">
-              <cursorShape>PointingHandCursor</cursorShape>
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="acceptRichText">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -310,7 +317,7 @@
           </attribute>
           <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
            <item>
-            <widget class="QListWidget" name="listFiles"/>
+            <widget class="QListView" name="listFiles"/>
            </item>
            <item>
             <widget class="QStackedWidget" name="stackedFileViews">
@@ -715,5 +722,41 @@ Thank you!</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>ErrorReportDialog</receiver>
+   <slot>onTabChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>205</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sendReportButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ErrorReportDialog</receiver>
+   <slot>onSendReport()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>205</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>205</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>onTabChanged(int)</slot>
+  <slot>onSendReport()</slot>
+ </slots>
 </ui>
