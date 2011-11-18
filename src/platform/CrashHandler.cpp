@@ -153,8 +153,9 @@ void initCrashHandler() {
 // don't have enough POSIX functionality for backtraces
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-#include <new.h>
-#include <cfloat>
+#include <new.h>     // <new> won't do it... we need some MS specific functions...
+#include <cfloat>    // For _FPE_XXX constants
+#include <intrin.h>  // _ReturnAddress()
 
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 #include <boost/lexical_cast.hpp>
@@ -545,8 +546,12 @@ void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode)
 			case _FPE_STACKOVERFLOW:   FPEDetailed = ": Stack Overflow"; break;
 			case _FPE_STACKUNDERFLOW:  FPEDetailed = ": Stack Underflow"; break;
 			case _FPE_EXPLICITGEN:     FPEDetailed = ": raise( SIGFPE ) was called"; break;
+#ifdef _FPE_MULTIPLE_TRAPS // Not available on all VC++ versions
 			case _FPE_MULTIPLE_TRAPS:  FPEDetailed = ": Multiple traps"; break;
+#endif
+#ifdef _FPE_MULTIPLE_FAULTS // Not available on all VC++ versions
 			case _FPE_MULTIPLE_FAULTS: FPEDetailed = ": Multiple faults"; break;
+#endif
 			default:                   FPEDetailed = "";
 		}
 	}
