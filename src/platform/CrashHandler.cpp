@@ -275,7 +275,7 @@ bool CrashHandler::addAttachedFile(const std::string& filename) {
 	return true;
 }
 
-bool CrashHandler::addNamedVariable(const std::string& name, const std::string& value) {
+bool CrashHandler::setNamedVariable(const std::string& name, const std::string& value) {
 	Autolock autoLock(&m_Lock);
 
 	if(!m_pCrashInfo) {
@@ -467,6 +467,12 @@ void CrashHandler::unregisterThreadCrashHandlers() {
 	m_pPreviousCrashHandlers->m_threadExceptionHandlers.erase(it);
 }
 
+void CrashHandler::registerCrashCallback(CrashHandler::CrashCallback crashCallback) {
+	Autolock autoLock(&m_Lock);
+
+	m_crashCallbacks.push_back(crashCallback);
+}
+
 enum CrashType {
 	SEH_EXCEPTION,
 	TERMINATE_CALL,
@@ -510,6 +516,11 @@ void appendExceptionContext(char* crashDetails, EXCEPTION_POINTERS* pExceptionIn
 
 void CrashHandler::handleCrash(int crashType, void* crashExtraInfo, int FPECode) {
 	Autolock autoLock(&m_Lock);
+
+	// Run the callbacks
+	for(std::vector<CrashCallback>::iterator it = m_crashCallbacks.begin(); it != m_crashCallbacks.end(); ++it) {
+		(*it)();
+	}
 
 	const char* crashSummary;
 
