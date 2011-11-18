@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleSystem.h"
+#include "graphics/particle/ParticleParams.h"
 
 // Done By : Didier Pedreno
 class CFireBall: public CSpellFx
@@ -61,6 +62,10 @@ class CFireBall: public CSpellFx
 		ParticleSystem pPSFire;
 		ParticleSystem pPSFire2;
 		ParticleSystem pPSSmoke;
+private:
+	ParticleParams fire_1;
+	ParticleParams fire_2;
+	ParticleParams smoke;
 
 	public:
 		CFireBall();

@@ -74,6 +74,100 @@ CFireBall::CFireBall() : CSpellFx()
 	ulCurrentTime = ulDuration + 1;
 
 	bExplo = false;
+
+	// TODO using memset on a class is naughty
+
+	memset(&fire_1, 0, sizeof(fire_1));
+	fire_1.iNbMax = 200;
+	fire_1.fLife = 550;
+	fire_1.fLifeRandom = 500;
+	fire_1.p3Pos = Vec3f::ZERO;
+	fire_1.fAngle = radians(3);
+	fire_1.fSpeed = 0;
+	fire_1.fSpeedRandom = 0;
+	fire_1.p3Gravity = Vec3f::ZERO;
+	fire_1.fFlash = 0;
+	fire_1.fRotation = 50;
+	fire_1.fStartColor[0] = 22;
+	fire_1.fStartColor[1] = 30;
+	fire_1.fStartColor[2] = 30;
+	fire_1.fStartColor[3] = 0;
+	fire_1.fStartColorRandom[0] = 22;
+	fire_1.fStartColorRandom[1] = 0;
+	fire_1.fStartColorRandom[2] = 0;
+	fire_1.fStartColorRandom[3] = 2;
+	fire_1.fEndSize = 0;
+	fire_1.fEndSizeRandom = 2;
+	fire_1.fEndColor[0] = 25;
+	fire_1.fEndColor[1] = 25;
+	fire_1.fEndColor[2] = 0;
+	fire_1.fEndColor[3] = 50;
+	fire_1.fEndColorRandom[0] = 50; 
+	fire_1.fEndColorRandom[1] = 0;
+	fire_1.fEndColorRandom[2] = 0;
+	fire_1.fEndColorRandom[3] = 120; 
+
+	memset(&fire_2, 0, sizeof(fire_2));
+	fire_2.iNbMax = 20;
+	fire_2.fLife = 550;
+	fire_2.fLifeRandom = 500;
+	fire_2.p3Pos = Vec3f::ZERO; 
+	fire_2.fAngle = radians(3);
+	fire_2.fSpeed = 0;
+	fire_2.fSpeedRandom = 0;
+	fire_2.p3Gravity = Vec3f::ZERO;
+	fire_2.fFlash = 0;
+	fire_2.fRotation = 50;
+	fire_2.fStartColor[0] = 22;
+	fire_2.fStartColor[1] = 30;
+	fire_2.fStartColor[2] = 30;
+	fire_2.fStartColor[3] = 0;
+	fire_2.fStartColorRandom[0] = 22;
+	fire_2.fStartColorRandom[1] = 0;
+	fire_2.fStartColorRandom[2] = 0;
+	fire_2.fStartColorRandom[3] = 2;
+	fire_2.fEndColor[0] = 25;
+	fire_2.fEndColor[1] = 25;
+	fire_2.fEndColor[2] = 0;
+	fire_2.fEndColor[3] = 0;
+	fire_2.fEndColorRandom[0] = 50; 
+	fire_2.fEndColorRandom[1] = 0;
+	fire_2.fEndColorRandom[2] = 0;
+	fire_2.fEndColorRandom[3] = 120; 
+
+	memset(&smoke, 0, sizeof(smoke));
+	smoke.iNbMax = 30;
+	smoke.fLife = 2000;
+	smoke.fLifeRandom = 3000;
+	smoke.p3Pos.x = 0;
+	smoke.p3Pos.y = 10;
+	smoke.p3Pos.z = 10;
+	smoke.fAngle = radians(9);
+	smoke.fSpeed = 150; 
+	smoke.fSpeedRandom = 150; 
+	smoke.p3Gravity.x = 0;
+	smoke.p3Gravity.y = -10;
+	smoke.p3Gravity.z = 0;
+	smoke.fFlash = 0;
+	smoke.fRotation = 90;
+	smoke.fStartSize = 0;
+	smoke.fStartSizeRandom = 2;
+	smoke.fStartColor[0] = 70;
+	smoke.fStartColor[1] = 70;
+	smoke.fStartColor[2] = 51;
+	smoke.fStartColor[3] = 50;
+	smoke.fStartColorRandom[0] = 0;
+	smoke.fStartColorRandom[1] = 0;
+	smoke.fStartColorRandom[2] = 0;
+	smoke.fStartColorRandom[3] = 0;
+	smoke.fEndColor[0] = 0;
+	smoke.fEndColor[1] = 0;
+	smoke.fEndColor[2] = 0;
+	smoke.fEndColor[3] = 27; 
+	smoke.fEndColorRandom[0] = 0;
+	smoke.fEndColorRandom[1] = 0;
+	smoke.fEndColorRandom[2] = 0;
+	smoke.fEndColorRandom[3] = 20;
 }
 
 //-----------------------------------------------------------------------------
@@ -133,50 +227,12 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	fLevel = _fLevel;
 
-	ParticleParams cp;
-
 	//FIRE
-	cp.iNbMax = 200;
-	cp.fLife = 550;
-	cp.fLifeRandom = 500;
-	cp.p3Pos.x = 0;
-	cp.p3Pos.y = 0;
-	cp.p3Pos.z = 0;
-	cp.p3Direction.x = -eMove.x;
-	cp.p3Direction.y = -eMove.y;
-	cp.p3Direction.z = -eMove.z;
-	cp.fAngle = radians(3);
-	cp.fSpeed = 0;
-	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
-	cp.fFlash = 0;
-	cp.fRotation = 50;
+	fire_1.p3Direction = -eMove;
+	fire_1.fStartSize = 1 * _fLevel; 
+	fire_1.fStartSizeRandom = 2 * _fLevel; 
 
-	cp.fStartSize = 1 * _fLevel; 
-	cp.fStartSizeRandom = 2 * _fLevel; 
-	cp.fStartColor[0] = 22;
-	cp.fStartColor[1] = 30;
-	cp.fStartColor[2] = 30;
-	cp.fStartColor[3] = 0;
-	cp.fStartColorRandom[0] = 22;
-	cp.fStartColorRandom[1] = 0;
-	cp.fStartColorRandom[2] = 0;
-	cp.fStartColorRandom[3] = 2;
-
-	cp.fEndSize = 0;
-	cp.fEndSizeRandom = 2;
-	cp.fEndColor[0] = 25;
-	cp.fEndColor[1] = 25;
-	cp.fEndColor[2] = 0;
-	cp.fEndColor[3] = 50;
-	cp.fEndColorRandom[0] = 50; 
-	cp.fEndColorRandom[1] = 0;
-	cp.fEndColorRandom[2] = 0;
-	cp.fEndColorRandom[3] = 120; 
-
-	pPSFire.SetParams(cp);
+	pPSFire.SetParams(fire_1);
 	pPSFire.fParticleFreq = 100.0f;
 	pPSFire.ulParticleSpawn = 0;
 	pPSFire.SetTexture("graph/particles/fire", 0, 200);
@@ -184,94 +240,24 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 	pPSFire.Update(0);
 
 	//FIRE
-	cp.iNbMax = 20;
-	cp.fLife = 550;
-	cp.fLifeRandom = 500;
-	cp.p3Pos.x = 0;
-	cp.p3Pos.y = 0;
-	cp.p3Pos.z = 0;
-	cp.p3Direction.x = -eMove.x;
-	cp.p3Direction.y = -eMove.y;
-	cp.p3Direction.z = -eMove.z;
-	cp.fAngle = radians(3);
-	cp.fSpeed = 0;
-	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
-	cp.fFlash = 0;
-	cp.fRotation = 50;
+	fire_2.p3Direction = -eMove;
+	fire_2.fStartSize = 1 * _fLevel; 
+	fire_2.fStartSizeRandom = 2 * _fLevel; 
+	fire_2.fEndSize = 3 * _fLevel; 
+	fire_2.fEndSizeRandom = 2 * _fLevel; 
 
-	cp.fStartSize = 1 * _fLevel; 
-	cp.fStartSizeRandom = 2 * _fLevel; 
-	cp.fStartColor[0] = 22;
-	cp.fStartColor[1] = 30;
-	cp.fStartColor[2] = 30;
-	cp.fStartColor[3] = 0;
-	cp.fStartColorRandom[0] = 22;
-	cp.fStartColorRandom[1] = 0;
-	cp.fStartColorRandom[2] = 0;
-	cp.fStartColorRandom[3] = 2;
-
-	cp.fEndSize = 3 * _fLevel; 
-	cp.fEndSizeRandom = 2 * _fLevel; 
-	cp.fEndColor[0] = 25;
-	cp.fEndColor[1] = 25;
-	cp.fEndColor[2] = 0;
-	cp.fEndColor[3] = 0;
-	cp.fEndColorRandom[0] = 50; 
-	cp.fEndColorRandom[1] = 0;
-	cp.fEndColorRandom[2] = 0;
-	cp.fEndColorRandom[3] = 120; 
-
-	pPSFire2.SetParams(cp);
+	pPSFire2.SetParams(fire_2);
 	pPSFire2.fParticleFreq = 20.0f;
 	pPSFire2.ulParticleSpawn = 0;
 	pPSFire2.SetTexture("graph/particles/fire", 0, 200);
 	pPSFire2.Update(0);
 
 	// Smoke
-	cp.iNbMax = 30;
-	cp.fLife = 2000;
-	cp.fLifeRandom = 3000;
-	cp.p3Pos.x = 0;
-	cp.p3Pos.y = 10;
-	cp.p3Pos.z = 10;
-	cp.p3Direction.x = -eMove.x;
-	cp.p3Direction.y = -eMove.y;
-	cp.p3Direction.z = -eMove.z;
-	cp.fAngle = radians(9);
-	cp.fSpeed = 150; 
-	cp.fSpeedRandom = 150; 
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = -10;
-	cp.p3Gravity.z = 0;
-	cp.fFlash = 0;
-	cp.fRotation = 90;
+	smoke.p3Direction = -eMove;
+	smoke.fEndSize = 7 * _fLevel;
+	smoke.fEndSizeRandom = 2 * _fLevel; 
 
-	cp.fStartSize = 0;
-	cp.fStartSizeRandom = 2;
-	cp.fStartColor[0] = 70;
-	cp.fStartColor[1] = 70;
-	cp.fStartColor[2] = 51;
-	cp.fStartColor[3] = 50;
-	cp.fStartColorRandom[0] = 0;
-	cp.fStartColorRandom[1] = 0;
-	cp.fStartColorRandom[2] = 0;
-	cp.fStartColorRandom[3] = 0;
-
-	cp.fEndSize = 7 * _fLevel;
-	cp.fEndSizeRandom = 2 * _fLevel; 
-	cp.fEndColor[0] = 0;
-	cp.fEndColor[1] = 0;
-	cp.fEndColor[2] = 0;
-	cp.fEndColor[3] = 27; 
-	cp.fEndColorRandom[0] = 0;
-	cp.fEndColorRandom[1] = 0;
-	cp.fEndColorRandom[2] = 0;
-	cp.fEndColorRandom[3] = 20;
-
-	pPSSmoke.SetParams(cp);
+	pPSSmoke.SetParams(smoke);
 	pPSSmoke.ulParticleSpawn = 0;
 	pPSSmoke.fParticleFreq = 20.0f;
 
