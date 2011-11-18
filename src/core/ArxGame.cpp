@@ -753,56 +753,28 @@ bool ArxGame::Render() {
 	
 	FrameTime = ARX_TIME_Get();
 
-	if (GLOBAL_SLOWDOWN!=1.f)
-	{
-		float ft;
-		ft=FrameTime-LastFrameTime;
-		Original_framedelay=ft;
+	// it should be impossible for the last frame to occur after the current
+	arx_assert(LastFrameTime <= FrameTime);
 
-		ft*=1.f-GLOBAL_SLOWDOWN;
-		
-		ARXStartTime += u64(ft * 1000);
+	// before modulation by "GLOBAL_SLOWDOWN"
+	Original_framedelay = FrameTime - LastFrameTime;
+
+	// TODO this code shouldn't exist. ARXStartTime should be constant.
+	if (GLOBAL_SLOWDOWN != 1.0f)
+	{
+		ARXStartTime += (u64)(Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f);
+
+		// recalculate frame delta
 		FrameTime = ARX_TIME_Get();
 
-		if (LastFrameTime>FrameTime)
-		{
-			LastFrameTime=FrameTime;
-		}
-
-		FrameDiff = FrameTime-LastFrameTime;
-		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay = FrameDiff;
-	}
-	else
-	{
-		// Nuky - added this security because sometimes when hitting ESC, FrameDiff would get negative
-		if (LastFrameTime>FrameTime)
-		{
-			LastFrameTime=FrameTime;
-		}
-		FrameDiff = FrameTime-LastFrameTime;
-
-		float FD = FrameDiff;
-		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay = FrameDiff;
-		FrameDiff = _framedelay;
-
-		Original_framedelay=_framedelay;
-
-		ARXStartTime += u64(FD * 1000) - u64(FrameDiff * 1000);
+		// it should be impossible for the last frame to occur after the current
+		arx_assert(LastFrameTime <= FrameTime);
 	}
 
-static float _AvgFrameDiff = 150.f;
-	if( FrameDiff > _AvgFrameDiff * 10.f )
-	{
-		FrameDiff = _AvgFrameDiff * 10.f;
-	}
-	else if ( FrameDiff > 15.f )
-	{
-		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
-	}
+	FrameDiff = FrameTime - LastFrameTime;
+	_framedelay = FrameDiff;
 
-	if( GInput->isKeyPressedNowPressed(Keyboard::Key_F12) )
+	if (GInput->isKeyPressedNowPressed(Keyboard::Key_F12))
 	{
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
@@ -810,13 +782,11 @@ static float _AvgFrameDiff = 150.f;
 
 	ACTIVECAM = &subj;
 
-	if(wasResized) {
-		
+	if (wasResized) 
+	{
 		LogDebug("was resized");
-		
-		DanaeRestoreFullScreen();
-		
 		wasResized = false;
+		DanaeRestoreFullScreen();
 	}
 
 	// Update input
@@ -825,7 +795,8 @@ static float _AvgFrameDiff = 150.f;
 	AdjustMousePosition();
 
 	// Manages Splash Screens if needed
-	if(DANAE_ManageSplashThings()) {
+	if (DANAE_ManageSplashThings()) 
+	{
 		goto norenderend;
 	}
 
