@@ -262,9 +262,10 @@ bool ARX_Changelevel_CurGame_Clear() {
 
 	// If there's a left over current game file, clear it
 	if(fs::is_regular_file(CURRENT_GAME_FILE)) {
-		if(!fs::remove(CURRENT_GAME_FILE))
+		if(!fs::remove(CURRENT_GAME_FILE)) {
 			LogError << "failed to remove current game file " << CURRENT_GAME_FILE;
-		return false;
+			return false;
+		}
 	}
 
 	return true;
@@ -2959,20 +2960,17 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		
 	} else {
 		savePath = ARX_GAMESAVE_MakePath(instance);
-		if(!fs::remove_all(savePath)) {
-			LogWarning << "failed to clear save path " << savePath;
-			return false;
-		} else if(!fs::create_directory(savePath)) {
+		if(!fs::create_directories(savePath)) {
 			LogWarning << "failed to create save path " << savePath;
 			return false;
 		}
 	}
 	
-	// Copy the savegame and screenshot to the final destination
-	if(!fs::copy_file(CURRENT_GAME_FILE, savePath / SAVEGAME_NAME)) {
+	// Copy the savegame and screenshot to the final destination, overwriting previous files
+	if(!fs::copy_file(CURRENT_GAME_FILE, savePath / SAVEGAME_NAME, true)) {
 		LogWarning << "failed to copy save to " << (savePath / SAVEGAME_NAME);
 		return false;
-	} else if(!fs::rename("sct_0.bmp", savePath / "gsave.bmp")) {
+	} else if(!fs::rename("sct_0.bmp", savePath / "gsave.bmp", true)) {
 		LogWarning << "failed to copy screenshot to savegame";
 		return false;
 	}
