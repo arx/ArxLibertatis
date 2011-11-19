@@ -53,7 +53,7 @@ namespace fs {
 class path;
 }
 
-extern const fs::path CurGamePath;
+extern const fs::path SAVEGAME_NAME;
 
 extern long FORBID_SAVE;
 

@@ -124,7 +124,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 
-const fs::path CurGamePath = "save/cur0001";
+const fs::path SAVEGAME_NAME = "gsave.sav";
+const fs::path CURRENT_GAME_DIRECTORY = "save/cur0001";
+const fs::path CURRENT_GAME_FILE = CURRENT_GAME_DIRECTORY / SAVEGAME_NAME;
 
 float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
@@ -149,7 +151,7 @@ static fs::path ARX_GAMESAVE_CreateNewInstance() {
 		
 		fs::path path = savedir / oss.str();
 		
-		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / "gsave.sav"))) {
+		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / SAVEGAME_NAME))) {
 			
 			if(!fs::create_directories(path)) {
 				LogWarning << "error creating save path " << path;
@@ -252,14 +254,16 @@ static fs::path ARX_GAMESAVE_MakePath(long instance) {
 }
 
 bool ARX_Changelevel_CurGame_Clear() {
-	// Empty current game directory
-	if(!fs::remove_all(CurGamePath)) {
-		LogError << "failed to clear current game path " << CurGamePath;
-		return false;
-	} 
 
-	if(!fs::create_directories(CurGamePath)) {
-		LogError << "failed to create current game path " << CurGamePath;
+	if(!fs::create_directories(CURRENT_GAME_DIRECTORY)) {
+		LogError << "failed to create current game path " << CURRENT_GAME_DIRECTORY;
+		return false;
+	}
+
+	// If there's a left over current game file, clear it
+	if(fs::is_regular_file(CURRENT_GAME_FILE)) {
+		if(!fs::remove(CURRENT_GAME_FILE))
+			LogError << "failed to remove current game file " << CURRENT_GAME_FILE;
 		return false;
 	}
 
@@ -277,16 +281,14 @@ void ARX_Changelevel_CurGame_Open() {
 		return;
 	}
 	
-	fs::path savefile = CurGamePath / "gsave.sav";
-	
-	if(!fs::exists(savefile)) {
+	if(!fs::exists(CURRENT_GAME_FILE)) {
 		// TODO this is normal when starting a new game
 		return;
 	}
 	
-	GLOBAL_pSaveB = new SaveBlock(savefile);
+	GLOBAL_pSaveB = new SaveBlock(CURRENT_GAME_FILE);
 	if(!GLOBAL_pSaveB->open()) {
-		LogError << "cannot read cur game save file" << savefile;
+		LogError << "cannot read cur game save file" << CURRENT_GAME_FILE;
 	}
 }
 
@@ -362,10 +364,10 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
 	
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	if(!_pSaveBlock->open(true)) {
-		LogError << "error writing to save block " << (CurGamePath / "gsave.sav");
+		LogError << "error writing to save block " << CURRENT_GAME_FILE;
 		return;
 	}
 	
@@ -2751,7 +2753,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
 	
 	// Open Saveblock for read
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	// first time in this level ?
 	long FirstTime;
@@ -2911,10 +2913,10 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		return 0;
 	}
 	
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	if(!_pSaveBlock->open(true)) {
-		LogError << "opening savegame " << CurGamePath / "gsave.sav";
+		LogError << "opening savegame " << CURRENT_GAME_FILE;
 		return false;
 	}
 	
@@ -2967,8 +2969,8 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	}
 	
 	// Copy the savegame and screenshot to the final destination
-	if(!fs::copy_file(CurGamePath / "gsave.sav", savePath / "gsave.sav")) {
-		LogWarning << "failed to copy save to " << (savePath / "gsave.sav");
+	if(!fs::copy_file(CURRENT_GAME_FILE, savePath / SAVEGAME_NAME)) {
+		LogWarning << "failed to copy save to " << (savePath / SAVEGAME_NAME);
 		return false;
 	} else if(!fs::rename("sct_0.bmp", savePath / "gsave.bmp")) {
 		LogWarning << "failed to copy screenshot to savegame";
@@ -2986,9 +2988,9 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	}
 
 	size_t size;
-	char * dat = SaveBlock::load(path / "gsave.sav", "pld", size);
+	char * dat = SaveBlock::load(path / SAVEGAME_NAME, "pld", size);
 	if(!dat) {
-		LogError << "Unable to open pld in " << path / "gsave.sav";
+		LogError << "Unable to open pld in " << path / SAVEGAME_NAME;
 		return false;
 	}
 
@@ -3034,14 +3036,14 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	// Copy SavePath to Current Game
 	fs::path savePath = ARX_GAMESAVE_MakePath(instance);
-	if(!fs::copy_file(savePath / "gsave.sav", CurGamePath / "gsave.sav")) {
-		LogWarning << "failed to create copy savegame to " << (CurGamePath / "gsave.sav");
+	if(!fs::copy_file(savePath / SAVEGAME_NAME, CURRENT_GAME_FILE)) {
+		LogWarning << "failed to create copy savegame to " << CURRENT_GAME_FILE;
 		return -1;
 	}
 	
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
-	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CurGamePath)) {
+	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CURRENT_GAME_DIRECTORY)) {
 		PROGRESS_BAR_COUNT += 2.f;
 		LoadLevelScreen(pld.level);
 		
