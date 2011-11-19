@@ -22,7 +22,6 @@
 #include "Configure.h"
 
 #include <windows.h>
-#include <shlobj.h>
 
 #include "io/FilePath.h"
 #include "io/FileStream.h"
@@ -186,7 +185,7 @@ bool create_directory(const path & p) {
 
 	return ret;
 }
-
+/*
 bool create_directories(const path & p) {
 	if(p.empty()) {
 		return true;
@@ -205,6 +204,22 @@ bool create_directories(const path & p) {
 	}
 
 	return ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS;
+}*/
+
+bool create_directories(const path & p) {
+	
+	if(p.empty()) {
+		return true;
+	}
+	
+	fs::path parent = p.parent();
+	if(!exists(parent)) {
+		if(!create_directories(parent)) {
+			return false;
+		}
+	}
+	
+	return create_directory(p);
 }
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
