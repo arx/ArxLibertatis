@@ -185,26 +185,6 @@ bool create_directory(const path & p) {
 
 	return ret;
 }
-/*
-bool create_directories(const path & p) {
-	if(p.empty()) {
-		return true;
-	}
-
-	// SHCreateDirectoryExA expect an absolute path
-	int ret;
-	char fullPath[MAX_PATH];
-	ret = GetFullPathNameA(p.string().c_str(), MAX_PATH, fullPath, NULL);
-	if(ret == 0)
-		return false;
-		
-	ret = SHCreateDirectoryExA(NULL, fullPath, NULL);
-	if(!(ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS)) {
-		LogWarning << "SHCreateDirectoryExA(NULL, " << fullPath << ", NULL) failed with return code " << ret << "! " << GetLastErrorString();
-	}
-
-	return ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS;
-}*/
 
 bool create_directories(const path & p) {
 	
