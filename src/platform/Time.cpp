@@ -72,7 +72,7 @@ u64 getUs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	u32 valUs = (counter.QuadPart * 1000) / (FREQUENCY_HZ / 1000);
+	u64 valUs = (counter.QuadPart * 1000) / (FREQUENCY_HZ / 1000);
 	return valUs;
 }
 
