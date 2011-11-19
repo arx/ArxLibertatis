@@ -764,6 +764,8 @@ bool ArxGame::Render() {
 	{
 		ARXStartTime += (u64)(Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f);
 
+		arx_assert(ARXStartTime < Time::getUs());
+
 		// recalculate frame delta
 		FrameTime = ARX_TIME_Get();
 

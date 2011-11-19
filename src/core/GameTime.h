@@ -54,10 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern u64 ARXPausedTime;
 extern u64 ARXStartTime;
 
-/* pure evil - this sometimes respects pause and sometimes not! TODO remove!!!
- * additinally, this stored an "absolute" time value in a floating point number
- * expect to loose precision when playing too long
- */
+// TODO this sometimes respects pause and sometimes not! [adejr]: is this TODO still valid?
+
+// TODO an absolute time value stored in a floating point number will lose precision 
+// when large numbers are stored. 
 extern float ARXTime; 
 extern bool ARXPausedTimer;
 
