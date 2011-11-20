@@ -166,7 +166,8 @@ CrashHandler* CrashHandler::m_sInstance = 0;
 
 CrashHandler::CrashHandler()
 	: m_pCrashInfo(0)
-	, m_pPreviousCrashHandlers(0) {
+	, m_pPreviousCrashHandlers(0)
+	, m_isInitialized(false) {
 
 	arx_assert(m_sInstance == 0);
 	m_sInstance = this;
@@ -181,10 +182,10 @@ CrashHandler& CrashHandler::getInstance() {
 	return *m_sInstance;
 }
 
-bool CrashHandler::init() {
+bool CrashHandler::initialize() {
 	Autolock autoLock(&m_Lock);
-
-	if(m_pCrashInfo) {
+	
+	if(m_isInitialized) {
 		LogError << "Crash handler is already initialized.";
 		return false;
 	}
@@ -202,32 +203,43 @@ bool CrashHandler::init() {
 		return false;
 	}
 
-	if(!initSharedMemory()) {
-		LogError << "Failed to initialize shared memory.";
+	if(!createSharedMemory()) {
+		LogError << "Failed to create shared memory.";
 		return false;
 	}
 
 	fillBasicCrashInfo();
 
-	return registerCrashHandlers();
+	m_isInitialized = true;
+
+	if(!registerCrashHandlers()) {
+		LogError << "Failed to register crash handlers.";
+		destroySharedMemory();
+		m_isInitialized = false;
+	}
+
+	return m_isInitialized;
+}
+
+bool CrashHandler::isInitialized() const {
+	return m_isInitialized;
 }
 
 void CrashHandler::shutdown() {
 	Autolock autoLock(&m_Lock);
 	
-	// todo-clean up this mess! :)
+	unregisterCrashHandlers();
+	destroySharedMemory();
+	m_isInitialized = false;
 }
 
-bool CrashHandler::initSharedMemory() {
+bool CrashHandler::createSharedMemory() {
 	// Generate a random name for our shared memory object
 	boost::uuids::uuid uid = boost::uuids::random_generator()();
 	m_SharedMemoryName = boost::lexical_cast<std::string>(uid);
 
 	// Create a shared memory object.
 	m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::create_only, m_SharedMemoryName.c_str(), boost::interprocess::read_write);
-
-	// This is the argument that will be sent to the CrashReporter in case a crash occurs.
-	//m_SharedMemoryName = std::string("\"{") + m_SharedMemoryName + std::string("}\"");
 
 	// Resize to fit the CrashInfo structure
 	m_SharedMemory.truncate(sizeof(CrashInfo));
@@ -241,6 +253,12 @@ bool CrashHandler::initSharedMemory() {
 	return true;
 }
 
+void CrashHandler::destroySharedMemory() {
+	m_MemoryMappedRegion = boost::interprocess::mapped_region();
+	m_SharedMemory = boost::interprocess::shared_memory_object();
+	m_pCrashInfo = 0;
+}
+
 void CrashHandler::fillBasicCrashInfo() {
 	m_pCrashInfo->processId = boost::interprocess::detail::get_current_process_id();
 }
@@ -248,8 +266,8 @@ void CrashHandler::fillBasicCrashInfo() {
 bool CrashHandler::addAttachedFile(const fs::path& file) {
 	Autolock autoLock(&m_Lock);
 
-	if(!m_pCrashInfo) {
-		LogError << "Crash handler is not initialized.";
+	if(!m_isInitialized) {
+		LogInfo << "Crash handler is not initialized.";
 		return false;
 	}
 
@@ -279,8 +297,8 @@ bool CrashHandler::addAttachedFile(const fs::path& file) {
 bool CrashHandler::setNamedVariable(const std::string& name, const std::string& value) {
 	Autolock autoLock(&m_Lock);
 
-	if(!m_pCrashInfo) {
-		LogError << "Crash handler is not initialized.";
+	if(!m_isInitialized) {
+		LogInfo << "Crash handler is not initialized.";
 		return false;
 	}
 
@@ -409,6 +427,11 @@ void SIGSEGVHandler(int signalCode);
 bool CrashHandler::registerThreadCrashHandlers() {
 	Autolock autoLock(&m_Lock);
 
+	if(!m_isInitialized) {
+		LogInfo << "Crash handler is not initialized.";
+		return false;
+	}
+
 	DWORD dwThreadId = GetCurrentThreadId();
 
 	std::map<DWORD, ThreadExceptionHandlers>::iterator it = m_pPreviousCrashHandlers->m_threadExceptionHandlers.find(dwThreadId);
@@ -448,6 +471,11 @@ bool CrashHandler::registerThreadCrashHandlers() {
 void CrashHandler::unregisterThreadCrashHandlers() {
 	Autolock autoLock(&m_Lock);
 
+	if(!m_isInitialized) {
+		LogInfo << "Crash handler is not initialized.";
+		return;
+	}
+
 	DWORD dwThreadId = GetCurrentThreadId();
 
 	std::map<DWORD, ThreadExceptionHandlers>::iterator it = m_pPreviousCrashHandlers->m_threadExceptionHandlers.find(dwThreadId);
@@ -471,11 +499,21 @@ void CrashHandler::unregisterThreadCrashHandlers() {
 void CrashHandler::registerCrashCallback(CrashHandler::CrashCallback crashCallback) {
 	Autolock autoLock(&m_Lock);
 
+	if(!m_isInitialized) {
+		LogInfo << "Crash handler is not initialized.";
+		return;
+	}
+
 	m_crashCallbacks.push_back(crashCallback);
 }
 
 void CrashHandler::unregisterCrashCallback(CrashHandler::CrashCallback crashCallback) {
 	Autolock autoLock(&m_Lock);
+
+	if(!m_isInitialized) {
+		LogInfo << "Crash handler is not initialized.";
+		return;
+	}
 
 	m_crashCallbacks.erase(std::remove(m_crashCallbacks.begin(),
 	                                   m_crashCallbacks.end(),

@@ -85,7 +85,13 @@ public:
 	 * This method should be called by the main thread of the process.
 	 * @return True if initialized correctly, false otherwise.
 	 */
-	bool init();
+	bool initialize();
+
+	/**
+	 * Return the status of the crash handler.
+	 * \return True if the crash handler is initialized, false otherwise.
+	 */
+	bool isInitialized() const;
 
 	/**
 	 * Add a file that will be included in the crash report.
@@ -149,7 +155,9 @@ public:
 	void handleCrash(int crashType, void* crashExtraInfo = 0, int fpeCode = 0);
 
 private:
-	bool initSharedMemory();
+	bool createSharedMemory();
+	void destroySharedMemory();
+
 	void fillBasicCrashInfo();
 
 	bool registerCrashHandlers();
@@ -180,6 +188,8 @@ private:
 	std::vector<CrashCallback> m_crashCallbacks;
 
 	static CrashHandler* m_sInstance;
+
+	bool m_isInitialized;
 };
 
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
