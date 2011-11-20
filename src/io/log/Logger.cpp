@@ -56,7 +56,7 @@ struct LogManager {
 	static Rules rules;
 	
 	static logger::Source * getSource(const char * file);
-	
+	static void deleteAllBackends();
 };
 
 const Logger::LogLevel LogManager::defaultLevel = Logger::Info;
@@ -108,6 +108,14 @@ logger::Source * LogManager::getSource(const char * file) {
 	}
 	
 	return source;
+}
+
+void LogManager::deleteAllBackends() {
+	for(Backends::const_iterator i = backends.begin(); i != backends.end(); ++i) {
+		delete *i;
+	}
+
+	backends.clear();
 }
 
 } // anonymous namespace
@@ -268,6 +276,8 @@ void Logger::configure(const string config) {
 
 void Logger::init() {
 	
+	Autolock lock(LogManager::lock);
+
 	add(logger::Console::get());
 	
 #ifdef HAVE_WINAPI
@@ -278,4 +288,16 @@ void Logger::init() {
 	if(arxdebug) {
 		configure(arxdebug);
 	}
+}
+
+void Logger::shutdown() {
+
+	Autolock lock(LogManager::lock);
+
+	LogManager::deleteAllBackends();
+	
+	LogManager::sources.clear();
+	LogManager::rules.clear();
+
+	LogManager::minimumLevel = LogManager::defaultLevel;
 }

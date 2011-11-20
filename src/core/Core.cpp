@@ -828,6 +828,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	mainApp->Run();
 
 	ClearGame();
+
+	Logger::shutdown();
 	
 	return true;
 }
