@@ -30,6 +30,7 @@
 #include "io/log/ConsoleLogger.h"
 #include "io/log/LogBackend.h"
 #include "io/log/MsvcLogger.h"
+#include "platform/CrashHandler.h"
 #include "platform/Lock.h"
 
 #include "Configure.h"
@@ -288,6 +289,8 @@ void Logger::init() {
 	if(arxdebug) {
 		configure(arxdebug);
 	}
+
+	CrashHandler::getInstance().registerCrashCallback(LogManager::deleteAllBackends);
 }
 
 void Logger::shutdown() {

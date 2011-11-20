@@ -22,6 +22,7 @@
 
 #include "io/FileStream.h"
 #include "io/log/LogBackend.h"
+#include "platform/CrashHandler.h"
 
 namespace logger {
 
@@ -35,7 +36,9 @@ class File : public Backend {
 public:
 	
 	inline File(const fs::path & path, std::ios_base::openmode mode)
-	                  : ofs(path, mode) { }
+	                  : ofs(path, mode) {
+		CrashHandler::getInstance().addAttachedFile(path);
+	}
 	
 	~File();
 	
