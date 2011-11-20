@@ -33,6 +33,7 @@
 #include "io/IniWriter.h"
 #include "io/log/Logger.h"
 #include "math/Vector2.h"
+#include "platform/CrashHandler.h"
 
 using std::string;
 
@@ -464,8 +465,11 @@ static Vec2i parseResolution(const string & resolution) {
 	}
 }
 
-bool Config::init(const fs::path & file, const fs::path & defaultFile) { // TODO use fs::path
+bool Config::init(const fs::path & file, const fs::path & defaultFile) {
 	
+	CrashHandler::getInstance().addAttachedFile(file);
+	CrashHandler::getInstance().addAttachedFile(defaultFile);
+
 	this->file = file;
 	
 	fs::ifstream ifs;
