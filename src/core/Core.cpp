@@ -769,7 +769,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	}
 	
 	LogDebug("After Popup");
-	atexit(ClearGame);
 	
 	if(LaunchDemo) {
 		
@@ -825,10 +824,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		default: ARX_DEAD_CODE();
 	}
 	
-	mainApp->m_bReady = true;
-	
 	// Init all done, start the main loop
 	mainApp->Run();
+
+	ClearGame();
 	
 	return true;
 }

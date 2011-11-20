@@ -516,7 +516,7 @@ void ArxGame::OnPaintWindow(const Window& window)
 void ArxGame::OnDestroyWindow(const Window &) {
 	
 	LogInfo << "Application window is being destroyed";
-	m_RunLoop = false;
+	Quit();
 }
 
 void ArxGame::OnToggleFullscreen(const Window & window) {
@@ -532,8 +532,6 @@ void ArxGame::OnToggleFullscreen(const Window & window) {
 void ArxGame::Run() {
 	
 	BeforeRun();
-	
-	m_RunLoop = true;
 
 	while(m_RunLoop) {
 		
@@ -543,8 +541,9 @@ void ArxGame::Run() {
 		}
 		
 		if(m_MainWindow->HasFocus() && m_bReady) {
-			if(!(m_RunLoop = Render3DEnvironment())) {
+			if(!Render3DEnvironment()) {
 				LogError << "Fatal rendering error, exiting.";
+				Quit();
 			}
 		}
 	}

@@ -145,14 +145,16 @@ public:
 	
 	RenderWindow * GetWindow() { return m_MainWindow; }
 	
-	bool m_bReady;
-	
 	// Class constructor
 	Application();
-	
 	virtual ~Application();
 	
 	void EvictManagedTextures();
+
+	/**
+	 * Ask the game to quit at the end of the current frame.
+	 */
+	void Quit();
 	
 	/* Virtual functions which may be overridden for specific implementations */
 	
@@ -171,7 +173,10 @@ public:
 	virtual void Cleanup3DEnvironment() = 0;
 	
 	virtual void setFullscreen(bool fullscreen) = 0;
-	
+
+protected:
+	bool m_RunLoop;
+	bool m_bReady;
 };
 
 extern Application * mainApp;

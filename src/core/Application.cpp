@@ -87,7 +87,8 @@ static int iCurrZBias;
 // Constructor
 //*************************************************************************************
 Application::Application() : m_MainWindow(NULL) {
-	m_bReady = false;
+	m_bReady = true;
+	m_RunLoop = true;
 }
 
 Application::~Application() {
@@ -125,6 +126,10 @@ bool Application::Initialize() {
 	Random::seed();
 	
 	return true;
+}
+
+void Application::Quit() {
+	m_RunLoop = false;
 }
 
 static bool migrateFilenames(fs::path path, bool is_dir) {

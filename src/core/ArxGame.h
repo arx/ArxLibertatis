@@ -80,6 +80,7 @@ public:
 	
 	bool Create();
 	virtual void Run();
+
 	bool InitDeviceObjects();
 	bool FinalCleanup();
 	virtual void Cleanup3DEnvironment();
@@ -101,7 +102,6 @@ private:
 	virtual void OnDestroyWindow(const Window & window);
 	virtual void OnToggleFullscreen(const Window & window);
 	
-	bool m_RunLoop;
 	bool wasResized;
 	
 	void onRendererInit(RenderWindow &);
