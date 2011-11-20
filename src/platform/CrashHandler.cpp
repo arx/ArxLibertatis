@@ -473,6 +473,15 @@ void CrashHandler::registerCrashCallback(CrashHandler::CrashCallback crashCallba
 	m_crashCallbacks.push_back(crashCallback);
 }
 
+void CrashHandler::unregisterCrashCallback(CrashHandler::CrashCallback crashCallback) {
+	Autolock autoLock(&m_Lock);
+
+	m_crashCallbacks.erase(std::remove(m_crashCallbacks.begin(),
+	                                   m_crashCallbacks.end(),
+	                                   crashCallback),
+	                       m_crashCallbacks.end());
+}
+
 enum CrashType {
 	SEH_EXCEPTION,
 	TERMINATE_CALL,

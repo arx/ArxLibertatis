@@ -136,6 +136,11 @@ public:
 	void registerCrashCallback(CrashCallback crashCallback);
 
 	/**
+	 * Unregister a previously registed crash callback.
+	 */
+	void unregisterCrashCallback(CrashCallback crashCallback);
+
+	/**
 	 * Handle a crash and trigger the execution of the crash reporter.
 	 * This method is public in order to allow you to trigger it by yourself.
 	 * It might be useful for test purpose, or to allow a user to report a
