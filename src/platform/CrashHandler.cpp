@@ -191,6 +191,7 @@ bool CrashHandler::init() {
 
 	if(IsDebuggerPresent()) {
 		LogInfo << "Debugger attached, disabling crash handler.";
+		return false;
 	}
 
 	bool crashReporterFound = fs::exists("CrashReporter/arxcrashreporter.exe");
