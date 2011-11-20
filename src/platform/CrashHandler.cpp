@@ -244,7 +244,7 @@ void CrashHandler::fillBasicCrashInfo() {
 	m_pCrashInfo->processId = boost::interprocess::detail::get_current_process_id();
 }
 
-bool CrashHandler::addAttachedFile(const std::string& filename) {
+bool CrashHandler::addAttachedFile(const fs::path& file) {
 	Autolock autoLock(&m_Lock);
 
 	if(!m_pCrashInfo) {
@@ -257,19 +257,19 @@ bool CrashHandler::addAttachedFile(const std::string& filename) {
 		return false;
 	}
 
-	if(filename.size() >= CrashInfo::MaxFilenameLen) {
+	if(file.string().size() >= CrashInfo::MaxFilenameLen) {
 		LogError << "File name is too long.";
 		return false;
 	}
 
 	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++) {
-		if(strcmp(m_pCrashInfo->attachedFiles[i], filename.c_str()) == 0) {
-			LogWarning << "File \"" << filename << "\" is already attached.";
+		if(strcmp(m_pCrashInfo->attachedFiles[i], file.string().c_str()) == 0) {
+			LogWarning << "File \"" << file << "\" is already attached.";
 			return false;
 		}
 	}
 
-	strcpy(m_pCrashInfo->attachedFiles[m_pCrashInfo->nbFilesAttached], filename.c_str());
+	strcpy(m_pCrashInfo->attachedFiles[m_pCrashInfo->nbFilesAttached], file.string().c_str());
 	m_pCrashInfo->nbFilesAttached++;
 
 	return true;

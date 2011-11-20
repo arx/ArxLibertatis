@@ -91,10 +91,10 @@ public:
 	 * Add a file that will be included in the crash report.
 	 * Upon a crash, if this file is not found, it will simply be ignored.
 	 * You can attach up to CrashInfo::MaxNbFiles files to the report.
-	 * @param filename Path to the file (relative to this executable).
+	 * @param file Path to the file (relative to this executable).
 	 * @return True if the file could be attached, false otherwise.
 	 */
-	bool addAttachedFile(const std::string& filename);
+	bool addAttachedFile(const fs::path& file);
 	
 	/**
 	 * Set a variable value, which will be included in the crash report.
