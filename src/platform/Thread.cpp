@@ -72,7 +72,9 @@ void Thread::waitForCompletion() {
 }
 
 void * Thread::entryPoint(void * param) {
+	CrashHandler::getInstance().registerThreadCrashHandlers();
 	((Thread*)param)->run();
+	CrashHandler::getInstance().unregisterThreadCrashHandlers();
 	return NULL;
 }
 
@@ -118,7 +120,9 @@ Thread::~Thread() {
 }
 
 DWORD WINAPI Thread::entryPoint(LPVOID param) {
+	CrashHandler::getInstance().registerThreadCrashHandlers();
 	((Thread*)param)->run();
+	CrashHandler::getInstance().unregisterThreadCrashHandlers();
 	return 0;
 }
 
