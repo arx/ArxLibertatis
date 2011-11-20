@@ -1882,6 +1882,7 @@ static void ARX_SOUND_LaunchUpdateThread() {
 	arx_assert(!updateThread);
 	
 	updateThread = new SoundUpdateThread();
+	updateThread->setThreadName("Sound Update");
 	updateThread->start();
 }
 

@@ -45,7 +45,8 @@ private:
 #elif defined(HAVE_WINAPI)
 	
 	HANDLE thread;
-	
+	std::string threadName;
+
 	static DWORD WINAPI entryPoint(LPVOID param);
 	
 #endif
@@ -69,6 +70,13 @@ public:
 	 */
 	void start();
 	
+	/*!
+	 * Set the thread name (for easier debugging)
+	 * \note This should be called BEFORE starting the thread.
+	 * \param threadName The thread name.
+	 */
+	void setThreadName(const std::string& threadName);
+
 	void setPriority(Priority priority);
 	
 	/*!

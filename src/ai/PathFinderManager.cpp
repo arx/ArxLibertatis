@@ -376,5 +376,6 @@ void EERIE_PATHFINDER_Create() {
 	CURPATHFINDIO = NULL;
 	
 	pathfinder = new PathFinderThread();
+	pathfinder->setThreadName("Pathfinder");
 	pathfinder->start();
 }

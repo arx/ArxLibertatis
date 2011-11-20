@@ -47,6 +47,10 @@ void Thread::start() {
 	started = true;
 }
 
+void Thread::setThreadName(const std::string& _threadName) {
+	ARX_UNUSED(_threadName);
+}
+
 void Thread::setPriority(Priority _priority) {
 	
 	int policy = sched_getscheduler(0);
@@ -106,6 +110,11 @@ static const int windowsThreadPriorities[] = {
 	THREAD_PRIORITY_HIGHEST
 };
 
+void Thread::setThreadName(const std::string& _threadName)
+{
+	threadName = _threadName;
+}
+
 void Thread::setPriority(Priority priority) {
 	
 	arx_assert(priority >= Lowest && priority <= Highest);
@@ -119,7 +128,47 @@ Thread::~Thread() {
 	CloseHandle(thread);
 }
 
+namespace {
+
+void SetCurrentThreadName(const std::string& threadName)
+{
+	if(!IsDebuggerPresent())
+		return;
+
+	if(!threadName.empty()) 
+    {
+        typedef struct tagTHREADNAME_INFO
+        {
+            DWORD   dwType;         // must be 0x1000
+            LPCSTR  szName;         // pointer to name (in user addr space)
+            DWORD   dwThreadID;     // thread ID (-1=caller thread)
+            DWORD   dwFlags;        // reserved for future use, must be zero
+        } THREADNAME_INFO;
+
+        THREADNAME_INFO info;
+
+        info.dwType         = 0x1000;
+        info.szName         = threadName.c_str();
+        info.dwThreadID     = ::GetCurrentThreadId();
+        info.dwFlags        = 0;
+
+		const DWORD MS_VC_EXCEPTION = 0x406D1388;
+
+        __try
+        {
+            RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info);
+        }
+        __except(EXCEPTION_CONTINUE_EXECUTION)
+        {
+        }
+    }
+}
+
+}
+
 DWORD WINAPI Thread::entryPoint(LPVOID param) {
+	SetCurrentThreadName(((Thread*)param)->threadName);
+
 	CrashHandler::getInstance().registerThreadCrashHandlers();
 	((Thread*)param)->run();
 	CrashHandler::getInstance().unregisterThreadCrashHandlers();
