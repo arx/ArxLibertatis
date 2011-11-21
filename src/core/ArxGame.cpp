@@ -753,11 +753,9 @@ bool ArxGame::Render() {
 	
 	FrameTime = ARX_TIME_Get();
 
-	// it should be impossible for the last frame to occur after the current
-	arx_assert(LastFrameTime <= FrameTime);
-
 	// before modulation by "GLOBAL_SLOWDOWN"
 	Original_framedelay = FrameTime - LastFrameTime;
+	arx_assert(Original_framedelay >= 0.0f);
 
 	// TODO this code shouldn't exist. ARXStartTime should be constant.
 	if (GLOBAL_SLOWDOWN != 1.0f)
@@ -768,13 +766,16 @@ bool ArxGame::Render() {
 
 		// recalculate frame delta
 		FrameTime = ARX_TIME_Get();
-
-		// it should be impossible for the last frame to occur after the current
-		arx_assert(LastFrameTime <= FrameTime);
 	}
 
-	FrameDiff = FrameTime - LastFrameTime;
-	_framedelay = FrameDiff;
+	_framedelay = FrameTime - LastFrameTime;
+	arx_assert(_framedelay >= 0.0f);
+
+	// limit fps between 10fps and 60fps 
+	_framedelay = arx::limit(_framedelay, 1000.0f / 60.0f, 1000.0f / 10.0f);
+
+	// TODO eliminate FrameDiff == _framedelay (replace)
+	FrameDiff = _framedelay;
 
 	if (GInput->isKeyPressedNowPressed(Keyboard::Key_F12))
 	{
