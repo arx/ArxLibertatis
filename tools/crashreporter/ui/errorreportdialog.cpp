@@ -111,7 +111,9 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		return;
 	
 	QString fileName = m_errorReport.GetAttachedFiles().at(selectedIndex.row());
-	if(fileName.endsWith(".txt"))
+	if(fileName.endsWith(".txt") ||
+	   fileName.endsWith(".log") || 
+	   fileName.endsWith(".ini"))
 	{
 		QFile textFile(fileName);
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
