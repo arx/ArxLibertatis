@@ -75,6 +75,10 @@ bool ErrorReport::Initialize()
 	if(!bMiscCrashInfo)
 		return false;
 
+	// Add attached files from the report
+	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
+		m_AttachedFiles.push_back(m_pCrashInfo->attachedFiles[i]);
+
 	m_CurrentReportFolder = m_CrashesFolder;
 	m_CurrentReportFolder += m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss");
 	m_CurrentReportFolder += QDir::separator();
