@@ -42,6 +42,8 @@ void ScreenshotWidget::paintEvent(QPaintEvent *event)
 	p.drawPixmap(rect(), m_pixmap, m_pixmap.rect());
 }
 
+// This is needed to send signals with std strings
+Q_DECLARE_METATYPE(std::string)
 
 ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) :
 	QDialog(parent),
@@ -49,6 +51,9 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	m_pCurrentTask(0),
 	m_errorReport(errorReport)
 {
+	// This is needed to send signals with std strings
+	qRegisterMetaType<std::string>("std::string");
+	
 	ui->setupUi(this);
 
 	ui->sendReportButtonBox->buttons().at(0)->setText("Send");
@@ -157,12 +162,19 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	}
 }
 
-void ErrorReportDialog::onTaskStepStarted(const QString& taskStepDescription)
+void ErrorReportDialog::onTaskStarted(const std::string& taskDescription, int numSteps)
+{
+	ui->lblProgressTitle->setText(taskDescription.c_str());
+	ui->progressBar->setMaximum(numSteps);
+	ui->progressBar->setValue(0);
+}
+
+void ErrorReportDialog::onTaskStepStarted(const std::string& taskStepDescription)
 {
 	QString textDescription = QString("(%1/%2) %3...")
 								.arg(ui->progressBar->value()+1)
 								.arg(ui->progressBar->maximum())
-								.arg(taskStepDescription);
+								.arg(taskStepDescription.c_str());
 
 	ui->lblProgressDescription->setText(textDescription);
 }
@@ -193,11 +205,8 @@ void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
 	delete m_pCurrentTask;
 	m_pCurrentTask = pTask;
 
-	ui->lblProgressTitle->setText(pTask->getDescription());
-	ui->progressBar->setMaximum(pTask->getNumSteps());
-	ui->progressBar->setValue(0);
-
-	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const QString&)), SLOT(onTaskStepStarted(const QString&)));
+	connect(m_pCurrentTask, SIGNAL(taskStarted(const std::string&, int)), SLOT(onTaskStarted(const std::string&, int)));
+	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const std::string&)), SLOT(onTaskStepStarted(const std::string&)));
 	connect(m_pCurrentTask, SIGNAL(taskStepEnded()), SLOT(onTaskStepEnded()));
 	connect(m_pCurrentTask, SIGNAL(finished()), SLOT(onTaskCompleted()));
 
@@ -207,82 +216,21 @@ void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
 	m_pCurrentTask->start();
 }
 
-GatherInfoTask::GatherInfoTask(ErrorReport& errorReport) : CrashReportTask(errorReport, "Generating crash report", 5, 0)
+GatherInfoTask::GatherInfoTask(ErrorReport& errorReport) : CrashReportTask(errorReport, 0)
 {
 }
 
 void GatherInfoTask::run()
 {
-	m_errorReport.Initialize();
-
-	// Take screenshot
-	taskStepStarted("Grabbing screenshot");
-	bool bScreenshot = m_errorReport.GetScreenshot("screenshot.jpg");
-	taskStepEnded();
-
-	// Generate minidump
-	taskStepStarted("Generating minidump");
-	bool bCrashDump = m_errorReport.GetCrashDump("crash.dmp");
-	taskStepEnded();
-
-	// Gather machine info
-	//taskStepStarted("Gathering system information");
-	//bool bMachineInfo = m_errorReport.GetMachineInfo("machineInfo.txt");
-	//taskStepEnded();
-
-	// Generate xml
-	taskStepStarted("Generating report manifest");
-	bool bCrashXml = m_errorReport.WriteReport("crash.xml");
-	taskStepEnded();
-
-	// Generate archive
-	taskStepStarted("Compressing report");
-	bool bCrashArchive = m_errorReport.GenerateArchive();
-	taskStepEnded();
-
-	m_errorReport.ReleaseApplicationLock();
-/*
-	taskStepStarted("Screenshot");
-	sleep(1);
-	taskStepEnded();
-
-	taskStepStarted("CrashDmp");
-	sleep(1);
-	taskStepEnded();
-
-	taskStepStarted("MachineInfo");
-	sleep(1);
-	taskStepEnded();
-
-	taskStepStarted("Xml");
-	sleep(1);
-	taskStepEnded();
-
-	taskStepStarted("Zip");
-	sleep(1);
-	taskStepEnded();
-*/
+	m_errorReport.GenerateReport(this);
 }
 
-SendReportTask::SendReportTask(ErrorReport& errorReport) : CrashReportTask(errorReport, "Sending crash report", 3, 0)
+SendReportTask::SendReportTask(ErrorReport& errorReport) : CrashReportTask(errorReport, 0)
 {
 }
 
 void SendReportTask::run()
 {
 	// Send mail
-	bool bSentMail = m_errorReport.Send();
-	/*
-	taskStepStarted("Connect");
-	sleep(1);
-	taskStepEnded();
-
-	taskStepStarted("Authenticate");
-	sleep(1);
-	taskStepEnded();
-
-	taskStepStarted("Send");
-	sleep(1);
-	taskStepEnded();
-	*/
+	m_errorReport.SendReport(this);
 }

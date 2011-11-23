@@ -37,30 +37,16 @@ namespace Ui {
 /**
  * Base task for tasks
  */
-class CrashReportTask : public QThread
+class CrashReportTask : public QThread, public ErrorReport::IProgressNotifier
 {
 	Q_OBJECT
 
 public:
-	CrashReportTask(ErrorReport& errorReport, const QString& strDescription, int numSteps, QObject* parent = 0)
+	CrashReportTask(ErrorReport& errorReport, QObject* parent = 0)
 		: QThread(parent)
-		, m_strDescription(strDescription)
-		, m_numSteps(numSteps)
 		, m_errorReport(errorReport)
 	{
 	}
-
-	/**
-	 * Get the description of this task.
-	 * @return The description of this task.
-	 */
-	const QString& getDescription() const { return m_strDescription; }
-
-	/**
-	 * Get the number of steps executed  by this task.
-	 * @return The number of steps executed by this task.
-	 */
-	int getNumSteps() const { return m_numSteps; }
 
 	/**
 	 * Get the status of this task.
@@ -77,22 +63,21 @@ public:
 	const QString& getErrorString() const { return m_strErrorDescription; }
 
 signals:
-	void taskStepStarted(const QString& taskStepDescription);
+	void taskStarted(const std::string& taskDescription, int numSteps);
+	void taskStepStarted(const std::string& taskStepDescription);
 	void taskStepEnded();
 
 protected:
-	void setError(const QString& strError)
+	void setError(const std::string& strError)
 	{
-		if(m_strErrorDescription.isEmpty() && !strError.isEmpty())
-			m_strErrorDescription = strError;
+		if(m_strErrorDescription.isEmpty() && !strError.empty())
+			m_strErrorDescription = strError.c_str();
 	}
 
 protected:
 	ErrorReport& m_errorReport;
 
 private:
-	const QString m_strDescription;
-	const int m_numSteps;
 	QString m_strErrorDescription;
 };
 
@@ -211,7 +196,8 @@ public:
 	void SetExitText(const QString& strExit);
 
 public slots:
-	void onTaskStepStarted(const QString& taskStepDescription);
+	void onTaskStarted(const std::string& taskDescription, int numSteps);
+	void onTaskStepStarted(const std::string& taskStepDescription);
 	void onTaskStepEnded();
 	void onTaskCompleted();
 	void onTabChanged(int index);

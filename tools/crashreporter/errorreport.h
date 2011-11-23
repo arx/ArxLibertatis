@@ -28,6 +28,7 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#include <boost/scope_exit.hpp>
 
 // Qt
 #include <QString>
@@ -40,13 +41,28 @@
 class ErrorReport
 {
 public:
-	ErrorReport(const std::string& crashesFolder, const std::string& sharedMemoryName);
+	class IProgressNotifier
+	{
+	public:
+		virtual void taskStarted(const std::string& taskDescription, int numSteps) = 0;
+		virtual void taskStepStarted(const std::string& taskStepDescription) = 0;
+		virtual void taskStepEnded() = 0;
+		virtual void setError(const std::string& strError) = 0;
+	};
 
+public:
+	ErrorReport(const std::string& crashesFolder, const std::string& sharedMemoryName);
+	
+	bool GenerateReport(IProgressNotifier* progressNotifier);
+	bool SendReport(IProgressNotifier* progressNotifier);
+
+	const QStringList& GetAttachedFiles() const;
+
+private:
 	bool Initialize();
 
 	bool WriteReport(const std::string& fileName);
 	bool GenerateArchive();
-	bool Send();
 
 	bool GetScreenshot(const std::string& fileName, int quality = -1, bool bGrayscale = false);
 	bool GetCrashDump(const std::string& fileName);
@@ -55,9 +71,6 @@ public:
 	
 	void ReleaseApplicationLock();
 
-	const QStringList& GetAttachedFiles() const;
-
-private:
 	QString	GetFilePath(const std::string& fileName) const;
 
 private:
