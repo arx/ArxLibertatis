@@ -85,23 +85,17 @@ void ARX_TIME_UnPause() {
 	
 	ARXStartTime += Time::getElapsedUs(ARXPausedTime);
 
-	arx_assert(ARXStartTime < Time::getUs());
-
 	ARXPausedTime = 0;
 	ARXPausedTimer = false;
 }
 
 void ARX_TIME_Force_Time_Restore(float time) {
 	
-	arx_assert(ARXStartTime < Time::getUs());
-
 	u64 requestedTime = u64(time * 1000);
 	
 	ARXStartTime = Time::getElapsedUs(requestedTime);
 	ARXTime = float(requestedTime) / 1000;
 	
-	arx_assert(ARXStartTime < Time::getUs());
-
 	ARXPausedTime = 0;
 	ARXPausedTimer = false;
 }
