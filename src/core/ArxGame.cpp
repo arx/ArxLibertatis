@@ -771,8 +771,9 @@ bool ArxGame::Render() {
 	_framedelay = FrameTime - LastFrameTime;
 	arx_assert(_framedelay >= 0.0f);
 
-	// limit fps between 10fps and 60fps 
-	_framedelay = arx::limit(_framedelay, 1000.0f / 60.0f, 1000.0f / 10.0f);
+	// limit fps above 10fps
+	const float max_framedelay = 1000.0f / 10.0f;
+	_framedelay = _framedelay > max_framedelay ? max_framedelay : _framedelay;
 
 	// TODO eliminate FrameDiff == _framedelay (replace)
 	FrameDiff = _framedelay;
