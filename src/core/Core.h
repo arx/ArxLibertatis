@@ -177,13 +177,4 @@ void ManageNONCombatModeAnimations();
 
 INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos);
 
-namespace arx
-{
-	template <class T>
-	T limit(const T &input, const T &low, const T &high)
-	{
-		return input < low ? low : input > high ? high : input;
-	}
-}
-
 #endif // ARX_CORE_CORE_H
