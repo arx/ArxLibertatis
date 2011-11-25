@@ -67,6 +67,8 @@ static const u32 SAV_COMP_NONE = 0;
 static const u32 SAV_COMP_IMPLODE = 1;
 static const u32 SAV_COMP_DEFLATE = 2;
 
+static const u32 SAV_SIZE_UNKNOWN = 0xffffffff;
+
 static const char BADSAVCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\/."; // TODO(case-sensitive) remove
 
 const char * SaveBlock::File::compressionName() const {
@@ -83,13 +85,13 @@ bool SaveBlock::File::loadOffsets(std::istream & handle, u32 version) {
 	if(version < SAV_VERSION_DEFLATE) {
 		// ignore the size, calculate from chunks
 		handle.seekg(4, std::istream::cur);
-		uncompressedSize = (size_t)-1;
+		uncompressedSize = size_t(-1);
 	} else {
 		u32 uncompressed;
 		if(fs::read(handle, uncompressed).fail()) {
 			return false;
 		}
-		uncompressedSize = uncompressed;
+		uncompressedSize = (uncompressed == SAV_SIZE_UNKNOWN) ? size_t(-1) : uncompressed;
 	}
 	
 	u32 nChunks;
@@ -145,7 +147,7 @@ void SaveBlock::File::writeEntry(std::ostream & handle, const std::string & name
 	
 	handle.write(name.c_str(), name.length() + 1);
 	
-	u32 _uncompressedSize = uncompressedSize;
+	u32 _uncompressedSize = (uncompressedSize == size_t(-1)) ? SAV_SIZE_UNKNOWN : uncompressedSize;
 	fs::write(handle, _uncompressedSize);
 	
 	u32 nChunks = chunks.size();
