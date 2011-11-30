@@ -2227,9 +2227,12 @@ void ARX_SCRIPT_Timer_Check()
 				{
 					if (!(st->io->GameFlags & GFLAG_ISINTREATZONE))
 					{
-						while (st->tim + st->msecs < ARXTime)
+						if (st->tim + st->msecs < ARXTime)
 						{
-							st->tim += st->msecs;
+							const float delta = ARXTime - st->tim;
+							const float i = floorf(delta / (float)st->msecs);
+							st->tim += st->msecs * i;
+							arx_assert(st->tim + st->msecs > ARXTime);
 						}
 
 						continue;

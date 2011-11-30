@@ -84,6 +84,7 @@ void ARX_TIME_UnPause() {
 	}
 	
 	ARXStartTime += Time::getElapsedUs(ARXPausedTime);
+
 	ARXPausedTime = 0;
 	ARXPausedTimer = false;
 }
