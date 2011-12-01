@@ -1288,13 +1288,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				float fCalc = io->sfx_time + FrameDiff;
 				io->sfx_time = checked_range_cast<unsigned long>(fCalc);
 
-				if (io->sfx_time >= ARXTimeUL())
-					io->sfx_time = ARXTimeUL();
+				if (io->sfx_time >= (unsigned long)(arxtime))
+					io->sfx_time = (unsigned long)(arxtime);
 			}
 			else
 			{
 				special_color_flag = 1;
-				float elapsed = ARXTime - io->sfx_time;
+				float elapsed = float(arxtime) - io->sfx_time;
 
 				if ( elapsed > 0.f )
 				{
@@ -1784,7 +1784,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 					memcpy(&vert[2],&workon[second],sizeof(TexturedVertex));
 					memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
 
-					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((FrameTime+i) * .01f) * .1f
+					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time()+i) * .01f) * .1f
 					                                               + .7f)) * .6f;
 					vect1.x=workon[first].p.x-workon[third].p.x;
 					vect1.y=workon[first].p.y-workon[third].p.y;

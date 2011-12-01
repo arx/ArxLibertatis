@@ -217,7 +217,7 @@ public:
 		
 		EERIE_SCRIPT * script = context.getMaster();
 		if(start) {
-			script->timers[t] = ARXTimeUL();
+			script->timers[t] = (unsigned long)(arxtime);
 			if(script->timers[t] == 0) {
 				script->timers[t] = 1;
 			}
@@ -884,7 +884,7 @@ void timerCommand(const string & timer, Context & context) {
 	scr_timer[num].msecs = millisecons;
 	scr_timer[num].name = timername;
 	scr_timer[num].pos = pos;
-	scr_timer[num].tim = ARXTimeUL();
+	scr_timer[num].tim = (unsigned long)(arxtime);
 	scr_timer[num].times = count;
 	
 	scr_timer[num].flags = (idle && io) ? 1 : 0;

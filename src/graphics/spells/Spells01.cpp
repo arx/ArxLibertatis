@@ -749,7 +749,7 @@ float CMultiMagicMissile::Render()
 					EERIE_LIGHT * el	= &DynLight[pMM->lLightId];
 					el->intensity		= 0.7f + 2.3f * fa;
 					el->pos = pMM->eCurPos;
-					el->time_creation	= ARXTimeUL();
+					el->time_creation	= (unsigned long)(arxtime);
 				}
 
 				if (pMM->bMove) nbmissiles++;
@@ -840,7 +840,7 @@ void CIgnit::Action(int aiMode)
 //-----------------------------------------------------------------------------
 void CIgnit::AddLight(int aiLight)
 {
-	if (ARXPausedTimer)  return;
+	if (arxtime.is_paused())  return;
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
@@ -905,7 +905,7 @@ void CIgnit::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (!ARXPausedTimer) this->currduration += _ulTime;
+	if (!arxtime.is_paused()) this->currduration += _ulTime;
 }
 
 void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
@@ -917,7 +917,7 @@ void CDoze::CreateDoze(Vec3f * posc, float perim, int speed) {
 //-----------------------------------------------------------------------------
 void CDoze::AddLightDoze(int aiLight)
 {
-	if (ARXPausedTimer)  return;
+	if (arxtime.is_paused())  return;
 
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
@@ -938,7 +938,7 @@ float CIgnit::Render() {
 
 			if (this->currduration > this->duration) this->key++;
 
-			if (!ARXPausedTimer)
+			if (!arxtime.is_paused())
 			{
 				float unsuri = (1.f - this->interp);
 				nb = this->nblight;
@@ -1114,7 +1114,7 @@ CPortal::~CPortal() {
 //-----------------------------------------------------------------------------
 void CPortal::AddNewEclair(Vec3f * endpos, int nbseg, int duration, int numpt)
 {
-	if (ARXPausedTimer) return;
+	if (arxtime.is_paused()) return;
 
 	int	nb = 256;
 
@@ -1159,7 +1159,7 @@ void CPortal::DrawAllEclair()
 
 			DrawArcElectrique(this->tabeclair[nb].seg, this->tabeclair[nb].nbseg, this->te, rnd() * 360.f, (int)(255.f * a));
 
-			if (!ARXPausedTimer) this->tabeclair[nb].currduration += this->currframe;
+			if (!arxtime.is_paused()) this->tabeclair[nb].currduration += this->currframe;
 
 			if (this->tabeclair[nb].currduration >= this->tabeclair[nb].duration)
 			{
@@ -1188,7 +1188,7 @@ void CPortal::Update(unsigned long _ulTime)
 			this->pos = this->sphereposdep + (this->sphereposend - this->sphereposdep) * a;
 			this->spherealpha = a * .5f;
 
-			if (!ARXPausedTimer) this->currduration += _ulTime;
+			if (!arxtime.is_paused()) this->currduration += _ulTime;
 
 			break;
 		case 1:
@@ -1201,7 +1201,7 @@ void CPortal::Update(unsigned long _ulTime)
 			//getion eclair dans boule
 			this->currframe = _ulTime;
 
-			if (!ARXPausedTimer) this->timeneweclair -= _ulTime;
+			if (!arxtime.is_paused()) this->timeneweclair -= _ulTime;
 
 			if (this->timeneweclair <= 0)
 			{
@@ -1243,7 +1243,7 @@ float CPortal::Render()
 		d3dvs.p.z = pt->z + this->pos.z;
 		EE_RTP(&d3dvs, v);
 
-		if (!ARXPausedTimer) v->color = col;
+		if (!arxtime.is_paused()) v->color = col;
 
 		v++;
 		pt++;
@@ -1277,7 +1277,7 @@ float CPortal::Render()
 
 				if (b > 255) b = 255;
 
-				if (!ARXPausedTimer) this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
+				if (!arxtime.is_paused()) this->sphered3d[this->tabeclair[nb].numpt].color = Color(r, g, b).toBGRA();
 			}
 
 		}
@@ -1297,7 +1297,7 @@ float CPortal::Render()
 	{
 		int j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer))
+		if ((j != -1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			particle[j].exist = 1;
@@ -1318,7 +1318,7 @@ float CPortal::Render()
 			particle[j].scale.x	=	1.f;
 			particle[j].scale.y	=	1.f;
 			particle[j].scale.z	=	1.f;
-			particle[j].timcreation	=	lARXTime;
+			particle[j].timcreation	=	(long)arxtime;
 			particle[j].tc		=	tp;
 			particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam	=	0.0000001f;

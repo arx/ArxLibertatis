@@ -702,7 +702,7 @@ float CIceProjectile::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -722,7 +722,7 @@ float CIceProjectile::Render()
 				particle[j].scale.x = 1.f;
 				particle[j].scale.y = 1.f;
 				particle[j].scale.z = 1.f;
-				particle[j].timcreation	=	lARXTime;
+				particle[j].timcreation	=	(long)arxtime;
 				particle[j].tc = tex_p2;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
@@ -737,7 +737,7 @@ float CIceProjectile::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -757,7 +757,7 @@ float CIceProjectile::Render()
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	lARXTime;
+				particle[j].timcreation	=	(long)arxtime;
 				particle[j].tc 			=	tex_p1;
 				particle[j].special 	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
@@ -903,7 +903,7 @@ void CSpeed::Update(unsigned long _ulTime)
 			break;
 		case 1:
 
-			if (ARXPausedTimer) break;
+			if (arxtime.is_paused()) break;
 
 			if (this->currduration > this->duration)
 			{
@@ -922,7 +922,7 @@ void CSpeed::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (!ARXPausedTimer) this->currduration += _ulTime;
+	if (!arxtime.is_paused()) this->currduration += _ulTime;
 }
 
 //-----------------------------------------------------------------------------

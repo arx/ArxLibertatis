@@ -645,7 +645,7 @@ void ARX_THROWN_OBJECT_KillAll()
 
 long ARX_THROWN_OBJECT_GetFree()
 {
-	unsigned long latest_time = ARXTimeUL();
+	unsigned long latest_time = (unsigned long)(arxtime);
 	long latest_obj = -1;
 
 	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
@@ -700,7 +700,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 
 		if (Thrown[num].obj)
 		{
-			Thrown[num].creation_time = ARXTimeUL();
+			Thrown[num].creation_time = (unsigned long)(arxtime);
 			Thrown[num].flags |= ATO_EXIST | ATO_MOVING;
 			Thrown_Count++;
 		}
@@ -1008,7 +1008,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 							for(long nn = 0; nn < 2; nn++) {
 								long j = ARX_PARTICLES_GetFree();
-								if(j != -1 && !ARXPausedTimer && rnd() < 0.4f) {
+								if(j != -1 && !arxtime.is_paused() && rnd() < 0.4f) {
 									ParticleCount++;
 									PARTICLE_DEF * pd = &particle[j];
 									pd->exist = true;
@@ -1021,7 +1021,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									pd->tc = fire2;
 									pd->fparam = 0.1f - rnd() * 0.2f;
 									pd->scale = Vec3f(-8.f, -8.f, -8.f);
-									pd->timcreation = lARXTime;
+									pd->timcreation = (long)arxtime;
 									pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 									pd->delay = nn * 180;
 								}
@@ -1356,7 +1356,7 @@ void CRuban::Update() {
 	
 	int nb, num;
 
-	if (ARXPausedTimer) return;
+	if (arxtime.is_paused()) return;
 
 	num = 0;
 	nb = nbrubandef;
@@ -1928,7 +1928,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	if (ValidIONum(source))
 	{
 		inter.iobj[source]->soundcount = 0;
-		inter.iobj[source]->soundtime = ARXTimeUL() + 2000;
+		inter.iobj[source]->soundtime = (unsigned long)(arxtime) + 2000;
 	}
 
 	return ret;

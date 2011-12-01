@@ -141,7 +141,7 @@ void SpawnMetalShine(Vec3f * pos,long r,long g,long b,long num)
 
 	long j=ARX_PARTICLES_GetFree();
 
-	if ((j!=-1) && (!ARXPausedTimer))
+	if ((j!=-1) && (!arxtime.is_paused()))
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
@@ -153,7 +153,7 @@ void SpawnMetalShine(Vec3f * pos,long r,long g,long b,long num)
 		pd->move.x		=	0.f;
 		pd->move.y		=	0.f;
 		pd->move.z		=	0.f;
-		pd->timcreation	=	lARXTime;
+		pd->timcreation	=	(long)arxtime;
 		pd->tolive		=	(unsigned long)(500.0F + rnd() * 400.0F);
 		long num		=	(long)(rnd() * 10.f);
 
@@ -180,7 +180,7 @@ void LaunchDummyParticle()
 	long j=ARX_PARTICLES_GetFree();
 
 	if (	(j!=-1)
-		&&	(!ARXPausedTimer)	)
+		&&	(!arxtime.is_paused())	)
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
@@ -193,7 +193,7 @@ void LaunchDummyParticle()
 		pd->move.x		=	0.f;
 		pd->move.y		=	0.f;
 		pd->move.z		=	0.f;
-		pd->timcreation	=	lARXTime;
+		pd->timcreation	=	(long)arxtime;
 		pd->tolive		=	600;
 		pd->tc			=	smokeparticle;
 		pd->siz			=	15.f;
@@ -245,7 +245,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
 	long j = ARX_PARTICLES_GetFree();
 
 	if (	( j != -1 )
-		&&	( !ARXPausedTimer )	)
+		&&	( !arxtime.is_paused() )	)
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd	=	&particle[j];
@@ -257,7 +257,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
 		pd->move.x			=	rnd() * 2 - 4.f;
 		pd->move.y			=	rnd() * - 12.f - 15;
 		pd->move.z			=	rnd() * 2 - 4.f;
-		pd->timcreation		=	lARXTime;
+		pd->timcreation		=	(long)arxtime;
 		pd->tolive			=	800;
 		pd->tc				=	smokeparticle;
 		pd->siz				=	15.f;
@@ -274,7 +274,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	
 	long j = ARX_PARTICLES_GetFree();
 
-	if(j == -1 || ARXPausedTimer) {
+	if(j == -1 || arxtime.is_paused()) {
 		return;
 	}
 	
@@ -287,7 +287,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->ov = pos;
 	pd->siz = 3.1f * power;
 	pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/4);
-	pd->timcreation = lARXTime;
+	pd->timcreation = (long)arxtime;
 	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | SPLAT_GROUND;
 	pd->tolive = 1600;
 	pd->delay = 0;
@@ -303,20 +303,20 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 	long j = ARX_PARTICLES_GetFree();
 	
-	if(j != -1 && !ARXPausedTimer) {
+	if(j != -1 && !arxtime.is_paused()) {
 		
 		float power = (dmgs * (1.f/60)) + .9f;
 		ParticleCount++;
 		PARTICLE_DEF * pd = &particle[j];
 		pd->exist = true;
 		pd->zdec = 0;
-		pd->ov = pos + Vec3f(-sin(ARXTime * (1.f/1000)), sin(ARXTime * (1.f/1000)), cos(ARXTime * (1.f/1000))) * 30.f;
-		pd->siz = 3.5f * power + sin(ARXTime * (1.f/1000));
+		pd->ov = pos + Vec3f(-sin(float(arxtime) * (1.f/1000)), sin(float(arxtime) * (1.f/1000)), cos(float(arxtime) * (1.f/1000))) * 30.f;
+		pd->siz = 3.5f * power + sin(float(arxtime) * (1.f/1000));
 		if(!config.misc.gore) {
 			pd->siz *= (1.f/6);
 		}
 		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/2); 
-		pd->timcreation	=	lARXTime;
+		pd->timcreation	=	(long)arxtime;
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | flags;
 		pd->tolive = 1100;
 		pd->delay=0;
@@ -432,7 +432,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	unsigned long tim;
 	long n;
 	EERIE_BKG_INFO * eg;
-	tim = ARXTimeUL();
+	tim = (unsigned long)(arxtime);
 
 	for (i=0;i<MAX_POLYBOOM;i++)
 	{
@@ -683,7 +683,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 	{
 		long j=ARX_PARTICLES_GetFree();
 
-		if ((j!=-1) && (!ARXPausedTimer))
+		if ((j!=-1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
@@ -694,7 +694,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 			pd->scale.y=(float)spawn_nb;
 			pd->scale.z=(float)spawn_nb;
 			
-				pd->timcreation	=	lARXTime;
+				pd->timcreation	=	(long)arxtime;
 			pd->special		=	GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
 			pd->source		=	&inter.iobj[source]->obj->vertexlist3[nearest].v;
 			pd->sourceionum	=	source;
@@ -733,7 +733,7 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
 	{
 		long j=ARX_PARTICLES_GetFree();
 
-		if ((j!=-1) && (!ARXPausedTimer))
+		if ((j!=-1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
@@ -748,7 +748,7 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
 			pd->move.y		=	6 - 12.f * rnd(); 
 			pd->move.z		=	6 - 12.f * rnd(); 
 				
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 			pd->special		=	PARTICLE_SPARK;
 			float len		=	(float)spawn_nb*( 1.0f / 3 );
 
@@ -803,7 +803,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 			long j=ARX_PARTICLES_GetFree();
 
 			if (	(j!=-1)
-				&&	(!ARXPausedTimer)	)
+				&&	(!arxtime.is_paused())	)
 			{
 				ParticleCount++;
 				PARTICLE_DEF * pd=&particle[j];
@@ -819,7 +819,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 				pd->scale.x		=	10.f;
 				pd->scale.y		=	10.f;
 				pd->scale.z		=	10.f;
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 				pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
 				pd->tolive		=	900+(unsigned long)(rnd()*400.f);
 				pd->move.x		=	0.25f-0.5f*rnd();
@@ -851,7 +851,7 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 		long j=ARX_PARTICLES_GetFree();
 
 		if (	(j!=-1)
-			&&	(!ARXPausedTimer)	)
+			&&	(!arxtime.is_paused())	)
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
@@ -879,7 +879,7 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 				pd->scale.z=10.f+rnd()*5;
 			}
 			
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 			pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
 			pd->tolive		=	1100+(unsigned long)(rnd()*400.f);
 			pd->delay		=	(unsigned long)(amount * 120.0F + rnd() * 100.0F);
@@ -978,7 +978,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 
 	if (shinum>=10) shinum=1;
 
-	long TICKS	=	lARXTime - FRAMETICKS;
+	long TICKS = long(arxtime) - FRAMETICKS;
 
 	if (TICKS<0) 
 		return;
@@ -1156,7 +1156,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 	long dod,n;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
-	tim = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'	
+	tim = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'	
 
 	j=ARX_PARTICLES_GetFree();
 
@@ -1393,7 +1393,7 @@ void UpdateObjFx() {
 	{
 		if (objfx[i].exist)
 		{
-			framediff = ARXTimeUL() - objfx[i].tim_start; 
+			framediff = (unsigned long)(arxtime) - objfx[i].tim_start; 
 
 			if (framediff>objfx[i].duration) 
 			{
@@ -1460,7 +1460,7 @@ void UpdateObjFx() {
 					aa=objfx[i].spe[k].g;
 					bb=objfx[i].speinc[k].g;
 
-					if (ARXPausedTimer)
+					if (arxtime.is_paused())
 					{						
 					}
 					else
@@ -1567,7 +1567,7 @@ void MagFX(float posx,float posy,float posz)
 	long j;
 	j=ARX_PARTICLES_GetFree();
 
-	if ((j!=-1) && (!ARXPausedTimer))
+	if ((j!=-1) && (!arxtime.is_paused()))
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd	=	&particle[j];
@@ -1582,7 +1582,7 @@ void MagFX(float posx,float posy,float posz)
 		pd->scale.x			=	4.4f;
 		pd->scale.y			=	4.4f;
 		pd->scale.z			=	1.f;
-		pd->timcreation		=	lARXTime;
+		pd->timcreation		=	(long)arxtime;
 		pd->tolive			=	1500+(unsigned long)(rnd()*900.f);
 		pd->tc				=	healing;
 		pd->rgb = Color3f::magenta;
@@ -1600,7 +1600,7 @@ void MakeBookFX(float posx,float posy,float posz)
 	{
 		j=ARX_PARTICLES_GetFree();
 
-		if ((j!=-1) && (!ARXPausedTimer))
+		if ((j!=-1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
@@ -1615,7 +1615,7 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->scale.x		=	4.4f;
 			pd->scale.y		=	4.4f;
 			pd->scale.z		=	1.f;
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 			pd->tolive		=	1500+(unsigned long)(rnd()*900.f);
 			pd->tc			=	healing;
 			pd->rgb = Color3f::magenta;
@@ -1628,7 +1628,7 @@ void MakeBookFX(float posx,float posy,float posz)
 	{
 		j=ARX_PARTICLES_GetFree();
 
-		if ((j!=-1) && (!ARXPausedTimer))
+		if ((j!=-1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
@@ -1643,7 +1643,7 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->move.z		=	0.f;
 			pd->scale.y		=	pd->scale.x			=	(float)(i*10);			
 			pd->scale.z		=	0.f;
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 			pd->tolive		=	1200+(unsigned long)(rnd()*400.f);
 			pd->tc			=	ITC.Get("book");
 			pd->rgb = Color3f(1.f - i * .1f, i * .1f, .5f - i * .1f);
@@ -1672,7 +1672,7 @@ int ARX_GenereOneEtincelle(Vec3f *pos,Vec3f *dir)
 	pd->ov			=	pd->oldpos	=	*pos;
 	pd->move		=	*dir;
 	pd->tolive		=	1000+(int)(rnd()*500.f);
-	pd->timcreation	=	lARXTime;
+	pd->timcreation	=	(long)arxtime;
 	pd->rgb = Color3f(ET_R, ET_G, ET_B);
 	pd->tc			=	GTC;
 	pd->mask		=	ET_MASK;
@@ -1718,7 +1718,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 			pd->exist = true;
 			pd->ov = pos;
 			pd->move = Vec3f((rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f);
-			pd->timcreation = lARXTime;
+			pd->timcreation = (long)arxtime;
 			pd->tolive = (unsigned long)(1000 + dmgs*3);
 			pd->tc = blood_splat;
 			pd->siz = .3f + .01f*power;
@@ -1749,7 +1749,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
 			pd->move.x = (frand2()*5)*1.3f;
 			pd->move.y = -(rnd()*5)*2.3f;
 			pd->move.z = (frand2()*5)*1.3f;
-			pd->timcreation = lARXTime;
+			pd->timcreation = (long)arxtime;
 			pd->tolive = (unsigned long)(1000+rnd()*300);
 			
 			float fRandom = rnd() * 2;
@@ -1792,7 +1792,7 @@ void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
 			pd->move.x		=	0;
 			pd->move.y		=	-rnd() * 3.f; 
 			pd->move.z		=	0;
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 			pd->tc			=	explo[0];
 			pd->rgb = Color3f::gray(.7f);
 			pd->siz			=	level+2.f*rnd();
@@ -1852,7 +1852,7 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 				pd->move.z = 0.f; 
 			}
 
-			pd->timcreation	=	lARXTime;
+			pd->timcreation	=	(long)arxtime;
 			pd->tolive		=	(unsigned long)(1600+rnd()*600);
 			pd->tc			=	explo[0];
 			pd->siz			=	level*3.f+2.f*rnd();
@@ -1900,7 +1900,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	float fd;
 	float rott;
 	
-	tim = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'	
+	tim = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'	
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 
@@ -2157,7 +2157,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					GRenderer->ResetTexture(0);
 
 					EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
-					if(!ARXPausedTimer)
+					if(!arxtime.is_paused())
 					{
 						part->oldpos.x=in.p.x;
 						part->oldpos.y=in.p.y;
@@ -2233,7 +2233,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 				
 				Vec3f op=part->oldpos;
 
-				if(!ARXPausedTimer)
+				if(!arxtime.is_paused())
 				{
 					part->oldpos.x=in.p.x;
 					part->oldpos.y=in.p.y;
@@ -2467,7 +2467,7 @@ void TreatBackgroundActions()
 			{
 				j=ARX_PARTICLES_GetFree();
 
-				if ((j!=-1) && (!ARXPausedTimer) && ((rnd()<gl->ex_frequency)))
+				if ((j!=-1) && (!arxtime.is_paused()) && ((rnd()<gl->ex_frequency)))
 				{
 					ParticleCount++;
 					PARTICLE_DEF * pd=&particle[j];
@@ -2500,7 +2500,7 @@ void TreatBackgroundActions()
 					pd->scale.x		=	-8.f;
 					pd->scale.y		=	-8.f;
 					pd->scale.z		=	-8.f;
-					pd->timcreation	=	lARXTime;
+					pd->timcreation	=	(long)arxtime;
 					
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}
@@ -2509,7 +2509,7 @@ void TreatBackgroundActions()
 				{
 					j=ARX_PARTICLES_GetFree();
 
-					if ((j!=-1) && (!ARXPausedTimer) && ((rnd()<gl->ex_frequency)))
+					if ((j!=-1) && (!arxtime.is_paused()) && ((rnd()<gl->ex_frequency)))
 					{
 						ParticleCount++;
 						PARTICLE_DEF * pd=&particle[j];
@@ -2547,7 +2547,7 @@ void TreatBackgroundActions()
 						pd->scale.x		=	-3.f;
 						pd->scale.y		=	-3.f;
 						pd->scale.z		=	-3.f;
-						pd->timcreation	=	lARXTime;
+						pd->timcreation	=	(long)arxtime;
 						
 						pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 					}
@@ -2748,7 +2748,7 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 				{
 					long j=ARX_PARTICLES_GetFree();
 
-					if ((j!=-1) && (!ARXPausedTimer) && (rnd()*100.f<50.f))
+					if ((j!=-1) && (!arxtime.is_paused()) && (rnd()*100.f<50.f))
 					{
 						ParticleCount++;
 						PARTICLE_DEF * pd=&particle[j];
@@ -2772,7 +2772,7 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						pd->scale.x		=	-2.f;
 						pd->scale.y		=	-2.f;
 						pd->scale.z		=	-2.f;
-						pd->timcreation	=	lARXTime;
+						pd->timcreation	=	(long)arxtime;
 						pd->tolive		=	(unsigned long)(float)(1300.f+rnd()*800.f+kk*100.f);
 						
 						pd->tc			=	fire2;
@@ -2887,7 +2887,7 @@ void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 				{
 					long j=ARX_PARTICLES_GetFree();
 
-					if ((j!=-1) && (!ARXPausedTimer) && (rnd()*100.f<50.f))
+					if ((j!=-1) && (!arxtime.is_paused()) && (rnd()*100.f<50.f))
 					{
 					
 						ParticleCount++;
@@ -2906,7 +2906,7 @@ void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						pd->scale.x		=	-2.f;
 						pd->scale.y		=	-2.f;
 						pd->scale.z		=	-2.f;
-						pd->timcreation	=	lARXTime;
+						pd->timcreation	=	(long)arxtime;
 						pd->tolive		=	(unsigned long)(float)(1300.f+rnd()*800.f+kk*100.f);
 						
 						pd->tc			=	fire2;

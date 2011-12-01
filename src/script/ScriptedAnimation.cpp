@@ -279,7 +279,7 @@ public:
 				scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.f);
 				scr_timer[num2].name = timername;
 				scr_timer[num2].pos = pos;
-				scr_timer[num2].tim = ARXTimeUL();
+				scr_timer[num2].tim = (unsigned long)(arxtime);
 				scr_timer[num2].times = 1;
 				scr_timer[num2].longinfo = 0;
 			}
@@ -475,7 +475,7 @@ public:
 			}
 			
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
-			aup->_starttime = aup->_curtime = ARXTime;
+			aup->_starttime = aup->_curtime = arxtime;
 			aup->aupflags = ARX_USEPATH_FORWARD;
 			if(wormspecific) {
 				aup->aupflags |= ARX_USEPATH_WORM_SPECIFIC | ARX_USEPATH_FLAG_ADDSTARTPOS;

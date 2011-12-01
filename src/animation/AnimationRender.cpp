@@ -202,7 +202,7 @@ static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
 		return;
 	}
 	
-	timm = (FrameTime - io->lastanimtime) + 0.0001f;
+	timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
 	
 	if(timm >= 300.f) {
 		timm = 0.f;
@@ -683,15 +683,15 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 				float fTime = io->sfx_time + FrameDiff;
 				io->sfx_time = checked_range_cast<unsigned long>(fTime);
 
-				if (io->sfx_time >= ARXTimeUL())
-					io->sfx_time = ARXTimeUL();
+				if (io->sfx_time >= (unsigned long)(arxtime))
+					io->sfx_time = (unsigned long)(arxtime);
 
 
 			}
 			else
 			{
 				special_color_flag = 1;
-				float elapsed = ARXTime - io->sfx_time;
+				float elapsed = float(arxtime) - io->sfx_time;
 
 				if (elapsed > 0.f)
 				{
@@ -1954,7 +1954,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 							memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
 							memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
-							float siz = ddist * (curhalo.radius * (EEsin((float)(FrameTime + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
+							float siz = ddist * (curhalo.radius * (EEsin((float)(arxtime.get_frame_time() + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
 							if ((io == inter.iobj[0]) && (ddist > 0.8f) && !EXTERNALVIEW)
 								siz *= 1.5f;

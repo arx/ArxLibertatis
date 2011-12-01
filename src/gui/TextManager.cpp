@@ -122,7 +122,7 @@ void TextManager::Update(float _fDiffFrame) {
 	
 	int _iDiffFrame = checked_range_cast<int>(_fDiffFrame);
 	
-	// TODO-slussier: Until we fix the ARX_TIME_Get() mess, it's easy to have a FrameDiff of 0...
+	// TODO-slussier: Until we fix the arxtime.get_updated() mess, it's easy to have a FrameDiff of 0...
 	if(_iDiffFrame == 0)
 		_iDiffFrame = 1;
 	

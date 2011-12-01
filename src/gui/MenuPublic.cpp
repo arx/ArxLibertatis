@@ -306,7 +306,7 @@ void ARXMenu_GetResumeGame(bool & allowResume) {
 void ARXMenu_ResumeGame()
 {
 	ARX_Menu_Resources_Release();
-	ARX_TIME_UnPause();
+	arxtime.resume();
 	EERIEMouseButton = 0;
 }
 

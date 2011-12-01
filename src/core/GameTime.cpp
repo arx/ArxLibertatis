@@ -48,54 +48,59 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/Time.h"
 
-extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
+arx::time arxtime;
 
-/////////////////////// GAMETIME MANAGEMENT /////////////////////////
-u64 ARXPausedTime = 0;
-u64 ARXStartTime = 0;
-float ARXTime = 0;
-bool ARXPausedTimer = 0;
+arx::time::time() {
 
-
-void ARX_TIME_Init() {
-	
-	ARXStartTime = Time::getUs();
-	ARXTime = 0;
-	ARXPausedTime = 0;
-	ARXPausedTimer = false;
-	
-	FrameTime = LastFrameTime = ARXTime;
+	// TODO can't call init from constructor Time::getUs() requires init
+	// potential out-of-order construction resulting in a divide-by-zero
+	start_time      = 0ull;
+	pause_time      = 0ull;
+	paused          = false;
+	delta_time      = 0.0f;
+	frame_time      = 0.0f;
+	last_frame_time = 0.0f;
+	frame_delay     = 0.0f;
 }
 
-void ARX_TIME_Pause() {
+void arx::time::init() {
 	
-	if(ARXPausedTimer) {
-		return; // already paused
+	start_time      = Time::getUs();
+	pause_time      = 0ull;
+	paused          = false;
+	delta_time      = 0.0f;
+	frame_time      = 0.0f;
+	last_frame_time = 0.0f;
+	frame_delay     = 0.0f;
+}
+
+void arx::time::pause() {
+	
+	if (!is_paused())
+	{
+		pause_time = Time::getUs();
+		paused     = true;
 	}
-	
-	ARXPausedTime = Time::getUs();
-	ARXPausedTimer = true;
 }
 
-void ARX_TIME_UnPause() {
+void arx::time::resume() {
 	
-	if(!ARXPausedTimer) {
-		return; // not paused
+	if (is_paused()) 
+	{
+		start_time += Time::getElapsedUs(pause_time);
+
+		pause_time = 0ull;
+		paused     = false;
 	}
-	
-	ARXStartTime += Time::getElapsedUs(ARXPausedTime);
-
-	ARXPausedTime = 0;
-	ARXPausedTimer = false;
 }
 
-void ARX_TIME_Force_Time_Restore(float time) {
+void arx::time::force_time_restore(const float &time) {
 	
-	u64 requestedTime = u64(time * 1000);
+	u64 requested_time = u64(time * 1000.0f);
 	
-	ARXStartTime = Time::getElapsedUs(requestedTime);
-	ARXTime = float(requestedTime) / 1000;
+	start_time = Time::getElapsedUs(requested_time);
+	delta_time = float(requested_time) / 1000.0f;
 	
-	ARXPausedTime = 0;
-	ARXPausedTimer = false;
+	pause_time = 0ull;
+	paused     = false;
 }

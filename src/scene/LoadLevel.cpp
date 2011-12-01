@@ -1305,7 +1305,8 @@ void DanaeClearLevel(long flag)
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	mainApp->EvictManagedTextures();
 	MapMarkerTc = NULL;
-	ARX_TIME_Init();
+
+	arxtime.init();
 
 	bGToggleCombatModeWithKey = false;
 	bGCroucheToggle = false;

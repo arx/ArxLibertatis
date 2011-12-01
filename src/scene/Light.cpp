@@ -669,7 +669,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 
 			if (el->duration)
 			{
-				float tim = ((float)ARXTime - (float)el->time_creation);
+				float tim = ((float)float(arxtime) - (float)el->time_creation);
 				float duration = (float)el->duration;
 
 				if (tim >= duration)

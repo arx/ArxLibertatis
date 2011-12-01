@@ -132,7 +132,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	
 	long j = ARX_PARTICLES_GetFree();
 	
-	if(j != -1 && !ARXPausedTimer) {
+	if(j != -1 && !arxtime.is_paused()) {
 		ParticleCount++;
 		particle[j].exist		=	true;
 		particle[j].zdec		=	0;
@@ -145,7 +145,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 		particle[j].scale.x		=	0.f;
 		particle[j].scale.y		=	0.f;
 		particle[j].scale.z		=	0.f;
-		particle[j].timcreation = checked_range_cast<long>(ARX_TIME_Get());
+		particle[j].timcreation = checked_range_cast<long>(arxtime.get_updated());
 		particle[j].tolive		=	tim;
 		particle[j].tc			=	EERIE_DRAW_sphere_particle;
 		particle[j].siz			=	siz;
@@ -2914,7 +2914,7 @@ long GetFreeDynLight() {
 			DynLight[i].type = 0;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
-			DynLight[i].time_creation = ARXTimeUL();
+			DynLight[i].time_creation = (unsigned long)(arxtime);
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
 			return i;
@@ -3131,7 +3131,7 @@ void AcquireLastAnim(INTERACTIVE_OBJ * io)
 			&&	(!io->animlayer[3].cur_anim)) return;
 
 	// Stores Frametime and number of vertex for later interpolation
-	io->lastanimtime = checked_range_cast<unsigned long>(FrameTime);
+	io->lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
 	io->nb_lastanimvertex = 1;
 }
 

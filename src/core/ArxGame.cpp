@@ -751,24 +751,22 @@ bool ArxGame::BeforeRun() {
 
 bool ArxGame::Render() {
 	
-	FrameTime = ARX_TIME_Get();
+	arxtime.update_frame_time();
 
 	// before modulation by "GLOBAL_SLOWDOWN"
-	Original_framedelay = FrameTime - LastFrameTime;
+	Original_framedelay = arxtime.get_frame_delay();
 	arx_assert(Original_framedelay >= 0.0f);
 
 	// TODO this code shouldn't exist. ARXStartTime should be constant.
 	if (GLOBAL_SLOWDOWN != 1.0f)
 	{
-		ARXStartTime += (u64)(Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f);
-
-		arx_assert(ARXStartTime < Time::getUs());
+		arxtime.increment_start_time((u64)(Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f));
 
 		// recalculate frame delta
-		FrameTime = ARX_TIME_Get();
+		arxtime.update_frame_time();
 	}
 
-	_framedelay = FrameTime - LastFrameTime;
+	_framedelay = arxtime.get_frame_delay();
 	arx_assert(_framedelay >= 0.0f);
 
 	// limit fps above 10fps
@@ -847,7 +845,7 @@ bool ArxGame::Render() {
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
-	PULSATE=EEsin(FrameTime / 800);
+	PULSATE=EEsin(arxtime.get_frame_time() / 800);
 	EERIEDrawnPolys=0;
 
 	// EditMode Specific code
@@ -918,7 +916,7 @@ bool ArxGame::Render() {
 	else // Manages our first frameS
 	{
 		LogDebug("first frame");
-		ARX_TIME_Get();
+		arxtime.update();
 
 		FirstFrameHandling();
 		goto norenderend;
@@ -1378,7 +1376,7 @@ bool ArxGame::Render() {
 		{
 			CinematicSpeech * acs=&aspeech[valid].cine;
 			INTERACTIVE_OBJ * io=aspeech[valid].io;
-			float rtime=(float)(ARX_TIME_Get()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
+			float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
 			if (rtime<0) rtime=0;
 
@@ -1637,7 +1635,7 @@ bool ArxGame::Render() {
 	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
 	{
 		Vec3f pos,pos2;
-			USE_CINEMATICS_PATH._curtime = ARX_TIME_Get();
+			USE_CINEMATICS_PATH._curtime = arxtime.get_updated();
 
 		USE_CINEMATICS_PATH._curtime+=50;
 		long pouet2=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos);
@@ -1846,7 +1844,7 @@ bool ArxGame::Render() {
 			)
 		{
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-				FRAMETICKS = ARXTimeUL();
+				FRAMETICKS = (unsigned long)(arxtime);
 		}
 	}
 #ifdef BUILD_EDITOR
@@ -1947,7 +1945,7 @@ bool ArxGame::Render() {
 			)
 		{
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			FRAMETICKS = ARXTimeUL();
+			FRAMETICKS = (unsigned long)(arxtime);
 		}
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
@@ -2115,7 +2113,7 @@ bool ArxGame::Render() {
 			ARX_PATH_UpdateAllZoneInOutInside();
 	}
 
-	LastFrameTime=FrameTime;
+	arxtime.update_last_frame_time();
 	LastMouseClick=EERIEMouseButton;
 
 	return true;

@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 
 #include "core/Application.h"
+#include "core/GameTime.h"
 
 #include "graphics/VertexBuffer.h"
 #include "graphics/Math.h"
@@ -64,7 +65,6 @@ Vec3f SPRmaxs;
 extern long REFLECTFX;
 extern long WATERFX;
 extern TextureContainer * enviro;
-extern float FrameTime;
 
 void CopyVertices(EERIEPOLY * ep,long to, long from) {
 	ep->v[to] = ep->v[from];
@@ -338,16 +338,16 @@ void Delayed_FlushAll() {
 						// Water
 						if (ep->type & POLY_LAVA)
 						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
 						}
 						else
 						{
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 800 )+EEsin((ep->v[i].p.x)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 800 )+EEcos((ep->v[i].p.z)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 800 )+EEsin((ep->v[i].p.x)*( 1.0f / 600 )+(float)arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 9 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 800 )+EEcos((ep->v[i].p.z)*( 1.0f / 600 )+(float)arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 9 );
 
-							if (ep->type & POLY_FALL) verts[i].uv.y-=(float)(FrameTime)*( 1.0f / 200 );
+							if (ep->type & POLY_FALL) verts[i].uv.y-=(float)(arxtime.get_frame_time())*( 1.0f / 200 );
 						}
 					}
 
@@ -357,12 +357,12 @@ void Delayed_FlushAll() {
 					{
 						for (long i=0;i<to;i++)
 						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.y)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z+ep->v[i].p.x)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.y)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z+ep->v[i].p.x)*( 1.0f / 200 )+(float)arxtime.get_frame_time()*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
 
 							if (ep->type & POLY_FALL) 
 							{
-								verts[i].uv.y-=(float)(FrameTime)*( 1.0f / 200 );
+								verts[i].uv.y-=(float)(arxtime.get_frame_time())*( 1.0f / 200 );
 							}
 						}	
 
@@ -373,14 +373,14 @@ void Delayed_FlushAll() {
 					{
 						for (long i=0;i<to;i++)
 						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 1000 )+EEsin((ep->v[i].p.x)*( 1.0f / 100 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 1000 )+EEcos((ep->v[i].p.z)*( 1.0f / 100 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
 						}	
 						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to);
 						for ( int i=0;i<to;i++)
 						{
-							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 600 )+EEsin((ep->v[i].p.x)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 600 )+EEcos((ep->v[i].p.z)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+							verts[i].uv.x=ep->v[i].p.x*( 1.0f / 600 )+EEsin((ep->v[i].p.x)*( 1.0f / 160 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
+							verts[i].uv.y=ep->v[i].p.z*( 1.0f / 600 )+EEcos((ep->v[i].p.z)*( 1.0f / 160 )+(float)arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
 							verts[i].color=0xFF666666;
 						}	
 

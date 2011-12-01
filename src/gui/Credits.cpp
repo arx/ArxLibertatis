@@ -249,8 +249,8 @@ void Credits::render() {
 		}    
 
 		//Use time passed between frame to create scroll effect
-		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
-		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
+		ARXmenu.mda->creditspos-=0.025f*(float)(arxtime.get_updated( false )-ARXmenu.mda->creditstart);
+		ARXmenu.mda->creditstart=arxtime.get_updated( false );
 		
 		std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
 		for (; it != CreditsData.aCreditsInformations.end(); ++it)
@@ -312,7 +312,7 @@ void Credits::render() {
 }
 
 void Credits::reset() {
-	ARXmenu.mda->creditstart = ARX_TIME_Get();
+	ARXmenu.mda->creditstart = arxtime.get_updated();
 	ARXmenu.mda->creditspos = 0;
 	CreditsData.iFirstLine = 0;
 }

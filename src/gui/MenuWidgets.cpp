@@ -410,7 +410,7 @@ bool Menu2_Render() {
 	pMenuCursor->Update();
 
 	ARXOldTimeMenu = ARXTimeMenu;
-	ARXTimeMenu = ARX_TIME_Get( false );
+	ARXTimeMenu = arxtime.get_updated( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
 	
 	// this means ArxTimeMenu is reset

@@ -139,7 +139,7 @@ void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, cons
 
 	dist = 1.0F / fdist(*startpos, *targetpos);
 	missiles[i].velocity = (*targetpos - *startpos) * dist;
-	missiles[i].lastupdate = missiles[i].timecreation = ARXTimeUL();
+	missiles[i].lastupdate = missiles[i].timecreation = (unsigned long)(arxtime);
 
 	switch (type)
 	{
@@ -174,7 +174,7 @@ void ARX_MISSILES_Update()
 	Vec3f orgn, dest, hit;
 	TextureContainer * tc = TC_fire; 
 	EERIEPOLY *tp = NULL;
-	unsigned long tim = ARXTimeUL();
+	unsigned long tim = (unsigned long)(arxtime);
 
 	for (unsigned long i(0); i < MAX_MISSILES; i++) 
 	{
@@ -279,7 +279,7 @@ void ARX_MISSILES_Update()
 
 				long j = ARX_PARTICLES_GetFree();
 
-				if (j != -1 && !ARXPausedTimer)
+				if (j != -1 && !arxtime.is_paused())
 				{
 					ParticleCount++;
 					particle[j].exist = true;

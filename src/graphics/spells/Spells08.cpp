@@ -108,7 +108,7 @@ void CExplosion::Update(unsigned long _ulTime)
 				key++;
 			}
 
-			if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+			if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 			scale = a;
 			break;
@@ -116,7 +116,7 @@ void CExplosion::Update(unsigned long _ulTime)
 			//avancé du disque
 			scale = (float)ulCurrentTime / (float)ulDuration;
 
-			if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+			if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 			if (ulCurrentTime >= ulDuration)
 			{
@@ -151,7 +151,7 @@ void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureConta
 	{
 		int j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer))
+		if ((j != -1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			particle[j].exist = 1;
@@ -168,7 +168,7 @@ void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureConta
 			particle[j].scale.x		=	1.f;
 			particle[j].scale.y		=	1.f;
 			particle[j].scale.z		=	1.f;
-			particle[j].timcreation	=	lARXTime;
+			particle[j].timcreation	=	(long)arxtime;
 			particle[j].tc			=	tp;
 			particle[j].special		=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION;
 			particle[j].fparam		=	0.0000001f;
@@ -230,7 +230,7 @@ float CExplosion::Render()
 				d3dvs.p.z = pos.z + vertex->z;
 				EE_RTP(&d3dvs, d3dv);
 
-				if (!ARXPausedTimer) d3dv->color = Color((int)(rin * rnd()), 0, 0).toBGRA();
+				if (!arxtime.is_paused()) d3dv->color = Color((int)(rin * rnd()), 0, 0).toBGRA();
 
 				vertex++;
 				d3dv++;
@@ -241,7 +241,7 @@ float CExplosion::Render()
 			{
 				int j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -261,7 +261,7 @@ float CExplosion::Render()
 					particle[j].scale.x		=	1.f;
 					particle[j].scale.y		=	1.f;
 					particle[j].scale.z		=	1.f;
-					particle[j].timcreation	=	lARXTime;
+					particle[j].timcreation	=	(long)arxtime;
 					particle[j].tc			=	tp;
 					particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam		=	0.0000001f;
@@ -270,7 +270,7 @@ float CExplosion::Render()
 
 				j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -290,7 +290,7 @@ float CExplosion::Render()
 					particle[j].scale.x	=	1.f;
 					particle[j].scale.y	=	1.f;
 					particle[j].scale.z	=	1.f;
-					particle[j].timcreation	=	lARXTime;
+					particle[j].timcreation	=	(long)arxtime;
 					particle[j].tc		=	tp;
 					particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam	=	0.0000001f;
@@ -302,7 +302,7 @@ float CExplosion::Render()
 			{
 				int j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -322,7 +322,7 @@ float CExplosion::Render()
 					particle[j].scale.x	=	1.f;
 					particle[j].scale.y	=	1.f;
 					particle[j].scale.z	=	1.f;
-					particle[j].timcreation	=	lARXTime;
+					particle[j].timcreation	=	(long)arxtime;
 					particle[j].tc		=	tp2;
 					particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam	=	0.0000001f;
@@ -373,13 +373,13 @@ float CExplosion::Render()
 
 				EE_RTP(&d3dvs, d3dv);
 
-				if (!ARXPausedTimer) d3dv->color = col;
+				if (!arxtime.is_paused()) d3dv->color = col;
 
 				d3dv++;
 
 				EE_RTP(&d3dvs2, d3dv);
 
-				if (!ARXPausedTimer) d3dv->color = col2;
+				if (!arxtime.is_paused()) d3dv->color = col2;
 
 				d3dv++;
 			}

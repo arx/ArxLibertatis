@@ -173,7 +173,7 @@ void AddPoisonFog(Vec3f * pos, float power)
 		count--;
 		long j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer) && (rnd() * 2000.f < power))
+		if ((j != -1) && (!arxtime.is_paused()) && (rnd() * 2000.f < power))
 		{
 			ParticleCount++;
 			particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
@@ -189,7 +189,7 @@ void AddPoisonFog(Vec3f * pos, float power)
 			particle[j].move.y		=	(speed - speed * rnd()) * ( 1.0f / 15 );
 			particle[j].move.z		=	(speed - rnd()) * fval;
 			particle[j].scale.x		=	particle[j].scale.y		=	8;
-			particle[j].timcreation	=	static_cast<long>(ARX_TIME_Get());
+			particle[j].timcreation	=	static_cast<long>(arxtime.get_updated());
 			particle[j].tolive		=	4500 + (unsigned long)(rnd() * 4500);
 			particle[j].tc			=	TC_smoke;
 			particle[j].siz			=	(80 + rnd() * 80 * 2.f) * ( 1.0f / 3 );
@@ -202,7 +202,7 @@ void AddPoisonFog(Vec3f * pos, float power)
 //*************************************************************************************
 void ARX_FOGS_Render() {
 	
-	if (ARXPausedTimer) return;
+	if (arxtime.is_paused()) return;
 
 	int iDiv = 4 - config.video.levelOfDetail;
 
@@ -252,7 +252,7 @@ void ARX_FOGS_Render() {
 					}
 
 					particle[j].scale.x		=	particle[j].scale.y		=	particle[j].scale.z		=	fogs[i].scale;
-					particle[j].timcreation	=	lARXTime;
+					particle[j].timcreation	=	(long)arxtime;
 					particle[j].tolive		=	fogs[i].tolive + (unsigned long)(rnd() * fogs[i].tolive);
 					particle[j].tc			=	TC_smoke;
 					particle[j].siz			=	(fogs[i].size + rnd() * fogs[i].size * 2.f) * ( 1.0f / 3 );
@@ -260,7 +260,7 @@ void ARX_FOGS_Render() {
 					particle[j].fparam		=	fogs[i].rotatespeed;
 				}
 
-				fogs[i].lastupdate = ARXTimeUL(); 
+				fogs[i].lastupdate = (unsigned long)(arxtime); 
 			}
 		}
 	}

@@ -320,7 +320,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 	
-	ARX_CHANGELEVEL_DesiredTime = ARX_TIME_Get();
+	ARX_CHANGELEVEL_DesiredTime = arxtime.get_updated();
 		
 	FORBID_SAVE = 1;
 	long num = GetLevelNumByName("level" + level);
@@ -361,7 +361,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 
 	ARX_PLAYER_Reset_Fall();
 
-	ARX_TIME_Pause();
+	arxtime.pause();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
 	
@@ -381,7 +381,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	}
 	delete _pSaveBlock, _pSaveBlock = NULL;
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
 	ARX_CHANGELEVEL_PopLevel(num, 1);
@@ -441,7 +441,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(&asi, num)) {
 		LogError << "Error Saving Index...";
-		ARX_TIME_UnPause();
+		arxtime.resume();
 		return false;
 	}
 	
@@ -449,13 +449,13 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	if(ARX_CHANGELEVEL_Push_Player() != 1) {
 		LogError << "Error Saving Player...";
-		ARX_TIME_UnPause();
+		arxtime.resume();
 		return false;
 	}
 	
 	if(ARX_CHANGELEVEL_Push_AllIO() != 1) {
 		LogError << "Error Saving IOs...";
-		ARX_TIME_UnPause();
+		arxtime.resume();
 		return false;
 	}
 	
@@ -496,7 +496,7 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	asi->version				= ARX_GAMESAVE_VERSION;
 	asi->nb_inter				= 0;
 	asi->nb_paths				= nbARXpaths;
-	asi->time					= ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
+	asi->time					= arxtime.get_updated_ul(); //treat warning C4244 conversion from 'float' to 'unsigned long''
 	asi->nb_lights				= 0;
 
 	asi->gmods_stacked = stacked;
@@ -1202,7 +1202,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
-	long timm = ARXTimeUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
+	long timm = (unsigned long)(arxtime); //treat warning C4244 conversion from 'float' to 'unsigned long''
 
 	for (int i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{
@@ -1717,7 +1717,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	desired = asi->gmods_desired;
 	current = asi->gmods_current;
 	NO_GMOD_RESET = 1;
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
+	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	return 1;
@@ -2713,7 +2713,7 @@ static void ARX_CHANGELEVEL_PopLevel_Abort() {
 	
 	delete _pSaveBlock, _pSaveBlock = NULL;
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 	
 	if(idx_io) {
 		delete[] idx_io, idx_io = NULL;
@@ -2745,8 +2745,8 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	DanaeClearAll();
 	LogDebug("After  DANAE ClearAll");
 	
-	ARX_TIME_Pause();
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
+	arxtime.pause();
+	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	// Now we can load our things...
@@ -2862,7 +2862,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
+	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	NO_TIME_INIT = 1;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug("After  Player Misc Init");
@@ -2907,7 +2907,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
 	LogDebug("ARX_CHANGELEVEL_Save " << instance << " " << name);
 	
-	ARX_TIME_Pause();
+	arxtime.pause();
 	
 	if(CURRENTLEVEL == -1) {
 		LogWarning << "Internal Non-Fatal Error";
@@ -2935,7 +2935,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	pld.level = CURRENTLEVEL;
 	strncpy(pld.name, name.c_str(), sizeof(pld.name));
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = ARX_TIME_GetUL();
+	pld.time = arxtime.get_updated_ul();
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
 	_pSaveBlock->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -2948,7 +2948,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	}
 	delete _pSaveBlock, _pSaveBlock = NULL;
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 	
 	// Create the destination directory
 	fs::path savePath;
@@ -3021,7 +3021,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	// Forbid Saving
 	FORBID_SAVE = 1;
-	ARX_TIME_Pause();
+	arxtime.pause();
 	
 	// Checks Instance
 	if(instance <= -1) {
@@ -3054,7 +3054,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, 0);
-		ARX_TIME_Force_Time_Restore(fPldTime);
+		arxtime.force_time_restore(fPldTime);
 		NO_TIME_INIT = 1;
 		FORCE_TIME_RESTORE = fPldTime;
 		DONT_CLEAR_SCENE = 0;

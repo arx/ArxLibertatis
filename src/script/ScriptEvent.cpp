@@ -325,7 +325,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 					if (esss->allowevents & DISABLE_EXPLORATIONMODE) return REFUSE;
 					break;
 				case SM_KEY_PRESSED: {
-					float dwCurrTime = ARX_TIME_Get();
+					float dwCurrTime = arxtime.get_updated();
 					if ((dwCurrTime - g_TimeStartCinemascope) < 3000) {
 						LogDebug("refusing SM_KEY_PRESSED");
 						return REFUSE;
