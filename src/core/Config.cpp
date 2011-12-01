@@ -92,7 +92,7 @@ const bool
 	forceZBias = false,
 	forceToggle = false,
 	gore = true,
-	newControl = false;
+	newControl = true;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
