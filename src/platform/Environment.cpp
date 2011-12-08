@@ -72,7 +72,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 	
 	LONG ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
 	if(ret == ERROR_MORE_DATA) {
-		buffer.reset(length);
+		buffer.reset(new char[length]);
 		LONG ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
 	}
 	
