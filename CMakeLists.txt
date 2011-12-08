@@ -118,7 +118,8 @@ if(MSVC)
 	set(Boost_USE_STATIC_LIBS ON)
 endif(MSVC)
 
-find_package(Boost REQUIRED)
+set(BOOST_COMPONENTS program_options filesystem system)
+find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 
 mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)
@@ -206,6 +207,8 @@ else(MSVC)
 		add_definitions(-D_POSIX_C_SOURCE=199309)
 	endif()
 	
+	check_include_file("wordexp.h" HAVE_WORDEXP_H)
+	
 	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
 	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
@@ -284,9 +287,6 @@ else(MSVC)
 		add_cxxflag("-fwhole-program")
 	endif()
 	
-	# Disable exceptions & rtti
-	add_cxxflag(-fno-rtti)
-	
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
 		# The standard library shipped with ekopath failes to compile with -fno-rtti
 		# See https://github.com/pathscale/stdcxx/issues/3
@@ -294,6 +294,38 @@ else(MSVC)
 	endif()
 	
 endif(MSVC)
+
+# Define default user and data directories.
+if(NOT DEFINED DATA_DIR)
+	set(DATA_DIR "arx")
+endif()
+if(NOT DEFINED USER_DIR)
+	set(USER_DIR "arx")
+endif()
+if(WIN32 AND NOT WINE)
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "%USERPROFILE%/My Documents/Games")
+	endif()
+else()
+	if(NOT DEFINED DATA_DIR_PREFIXES)
+		set(DATA_DIR_PREFIXES "${CMAKE_INSTALL_PREFIX}/share:$XDG_DATA_DIRS")
+	endif()
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "$XDG_DATA_HOME")
+	endif()
+endif()
+if(DATA_DIR STREQUAL "")
+	unset(DATA_DIR)
+endif()
+if(USER_DIR STREQUAL "")
+	unset(USER_DIR)
+endif()
+if(DATA_DIR_PREFIXES STREQUAL "")
+	unset(DATA_DIR_PREFIXES)
+endif()
+if(USER_DIR_PREFIXES STREQUAL "")
+	unset(USER_DIR_PREFIXES)
+endif()
 
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
@@ -362,6 +394,7 @@ set(CORE_SOURCES
 	src/core/Core.cpp
 	src/core/GameTime.cpp
 	src/core/Localisation.cpp
+	src/core/Startup.cpp
 )
 
 set(EDITOR_SOURCES
@@ -491,6 +524,7 @@ set(PHYSICS_SOURCES
 
 set(PLATFORM_SOURCES
 	src/platform/CrashHandler.cpp
+	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
 	src/platform/Random.cpp
@@ -616,7 +650,7 @@ elseif(HAVE_WINAPI)
 	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
 elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
-	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
 	set(HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
@@ -639,8 +673,6 @@ if(ARX_BUILD_EDIT_LOADSAVE)
 	set(BUILD_EDIT_LOADSAVE 1)
 endif()
 
-add_definitions(-DBOOST_NO_EXCEPTIONS)
-add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
@@ -651,7 +683,7 @@ if(ARX_USE_UNITYBUILD)
 	set(UNITY_BUILD 1)
 endif()
 
-configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h")
+configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
 
 version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
 list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")

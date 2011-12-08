@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include <boost/filesystem/path.hpp>
+
 #include "input/InputKey.h"
 
 #include "io/FilePath.h"
@@ -182,9 +184,16 @@ public:
 		
 		int quicksaveSlots;
 		
-		std::string debug; // Logger debug levels.
+		std::string debug; //!< Logger debug levels.
 		
 	} misc;
+	
+	struct {
+		
+		boost::filesystem::path user; //!< Directory for config and save files.
+		boost::filesystem::path data; //!< Directory for data files.
+		
+	} paths;
 	
 public:
 	

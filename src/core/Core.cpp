@@ -55,7 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <boost/algorithm/string/predicate.hpp>
 
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include "Configure.h"
+
+#ifdef HAVE_WINAPI
 #include <windows.h>
 #endif
 
@@ -72,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
+#include "core/Startup.h"
 #include "core/Version.h"
 
 #include "game/Missile.h"
@@ -618,19 +621,18 @@ void InitializeDanae()
 	
 }
 
-
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 extern int main(int argc, char ** argv) {
 #else
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
 	ARX_UNUSED(hInstance);
 	ARX_UNUSED(hPrevInstance);
-	ARX_UNUSED(lpCmdLine);
 	ARX_UNUSED(nCmdShow);
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
+	// Initialize the crash handler befory anything else for obvious reasons.
 	initCrashHandler();
 #else
 	//CrashHandler crashHandler;
@@ -638,15 +640,21 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #endif
 	
 	
+	// Also intialize the logging system early as we might need it.
 	Logger::init();
 	
-	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
-		Logger::configure(argv[1] + 8);
-	}
+	parseCommandLine(argc, argv);
+#else
+	parseCommandLine(lpCmdLine);
 #endif
+	
+	
+	// Now that data directories are initialized, create a log file.
+	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
+	
+	LogInfo << "Starting " << version;
 	
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
@@ -660,7 +668,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	TRUEFIGHT = 0;
 #endif
 	
-	LogInfo << "Starting " << version;
 	
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
