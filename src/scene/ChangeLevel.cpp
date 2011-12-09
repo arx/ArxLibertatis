@@ -2903,7 +2903,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	return true;
 }
 
-long ARX_CHANGELEVEL_Save(long instance, const string & name) {
+bool ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
 	LogDebug("ARX_CHANGELEVEL_Save " << instance << " " << name);
 	
@@ -2911,7 +2911,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
 	if(CURRENTLEVEL == -1) {
 		LogWarning << "Internal Non-Fatal Error";
-		return 0;
+		return false;
 	}
 	
 	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
@@ -2971,7 +2971,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		LogWarning << "failed to copy save to " << (savePath / SAVEGAME_NAME);
 		return false;
 	} else if(!fs::rename("sct_0.bmp", savePath / "gsave.bmp", true)) {
-		LogWarning << "failed to copy screenshot to savegame";
+		LogWarning << "failed to copy save screenshot to " << (savePath / "gsave.bmp");
 		return false;
 	}
 	
