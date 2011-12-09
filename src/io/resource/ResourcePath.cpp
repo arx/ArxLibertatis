@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 #include <algorithm>
 
@@ -26,7 +26,7 @@
 using std::string;
 using std::copy;
 
-namespace fs {
+namespace res {
 
 const char path::dir_or_ext_sep[] = "/.";
 

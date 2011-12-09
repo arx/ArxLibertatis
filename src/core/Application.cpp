@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Renderer.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/Filesystem.h"
 #include "io/log/Logger.h"
 
@@ -127,7 +127,7 @@ bool Application::Initialize() {
 	return true;
 }
 
-static bool migrateFilenames(fs::path path, bool is_dir) {
+static bool migrateFilenames(res::path path, bool is_dir) {
 	
 	string name = path.filename();
 	string lowercase = toLowercase(name);
@@ -136,7 +136,7 @@ static bool migrateFilenames(fs::path path, bool is_dir) {
 	
 	if(lowercase != name) {
 		
-		fs::path dst = path.parent() / lowercase;
+		res::path dst = path.parent() / lowercase;
 		
 		LogInfo << "renaming " << path << " to " << dst.filename() << "";
 		
@@ -188,14 +188,14 @@ static bool migrateFilenames() {
 bool Application::InitConfig() {
 	
 	// Initialize config first, before anything else.
-	fs::path configFile = "cfg.ini";
+	res::path configFile = "cfg.ini";
 	
 	bool migrated = false;
 	if(!fs::exists(configFile) && !(migrated = migrateFilenames())) {
 		return false;
 	}
 	
-	fs::path defaultConfigFile = "cfg_default.ini";
+	res::path defaultConfigFile = "cfg_default.ini";
 	if(!config.init(configFile, defaultConfigFile)) {
 		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile << ", using defaults.";
 	}

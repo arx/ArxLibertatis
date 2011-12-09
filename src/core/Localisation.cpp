@@ -29,8 +29,8 @@
 #include "core/Unicode.hpp"
 #include "core/Config.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/IniReader.h"
 #include "io/log/Logger.h"
 

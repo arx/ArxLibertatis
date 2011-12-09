@@ -125,7 +125,7 @@ int main(int argc, char ** argv) {
 	
 	string command = argv[1];
 	
-	fs::path savefile = fs::path::load(argv[2]); // TODO support absolute paths
+	res::path savefile = res::path::load(argv[2]); // TODO support absolute paths
 	
 	if(fs::is_directory(savefile)) {
 		savefile /= "gsave.sav";

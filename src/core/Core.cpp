@@ -113,8 +113,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
 #include "io/log/FileLogger.h"
@@ -298,7 +298,7 @@ long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 string WILL_LAUNCH_CINE;
 char _CURRENTLOAD_[256];
-fs::path LastLoadedScene;
+res::path LastLoadedScene;
 string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
@@ -499,8 +499,8 @@ void InitializeDanae()
 
 	LastLoadedScene.clear();
 
-	fs::path levelPath;
-	fs::path levelFullPath;
+	res::path levelPath;
+	res::path levelFullPath;
 
 	if(Project.demo != NOLEVEL) {
 		char levelId[256];
@@ -3508,7 +3508,7 @@ void LaunchWaitingCine() {
 	
 	DANAE_KillCinematic();
 	
-	fs::path cinematic = fs::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
+	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
 	
 	if(resources->getFile(cinematic)) {
 		

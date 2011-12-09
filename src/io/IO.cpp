@@ -50,13 +50,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Filesystem.h"
 #include "io/FileStream.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 using std::string;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id) {
+void HERMES_CreateFileCheck(const res::path & name, char * scheck, size_t size, float id) {
 	
 	// TODO this will not produce the exact same hashes as the original, so me may as well uses a better hash function
 	

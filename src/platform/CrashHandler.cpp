@@ -24,7 +24,7 @@
 #include <csignal>
 
 #include "io/Filesystem.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 #include "platform/Platform.h"
 #include "Configure.h"

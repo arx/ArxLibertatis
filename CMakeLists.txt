@@ -488,8 +488,6 @@ set(IO_SOURCES
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
 	src/io/IO.cpp
-	src/io/PakEntry.cpp
-	src/io/PakReader.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
@@ -499,10 +497,14 @@ set(IO_LOGGER_SOURCES
 	src/io/log/LogBackend.cpp
 	src/io/log/Logger.cpp
 )
+set(IO_RESOURCE_SOURCES
+	src/io/resource/PakEntry.cpp
+	src/io/resource/PakReader.cpp
+	src/io/resource/ResourcePath.cpp
+)
 set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
 set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
 set(IO_FILESYSTEM_SOURCES
-	src/io/FilePath.cpp
 	src/io/FileStream.cpp
 	src/io/Filesystem.cpp
 )
@@ -644,6 +646,8 @@ if(HAVE_WINAPI)
 endif()
 list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
 
+list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
+
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(HAVE_WINAPI)
@@ -697,9 +701,8 @@ if(ARX_BUILD_TOOLS)
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
+		${IO_RESOURCE_SOURCES}
 		src/core/Localisation.cpp
-		src/io/PakEntry.cpp
-		src/io/PakReader.cpp
 		src/io/Blast.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
@@ -719,8 +722,7 @@ if(ARX_BUILD_TOOLS)
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
-		src/io/PakEntry.cpp
-		src/io/PakReader.cpp
+		${IO_RESOURCE_SOURCES}
 		src/io/Blast.cpp
 		src/io/log/ColorLogger.cpp
 		src/io/log/ConsoleLogger.cpp

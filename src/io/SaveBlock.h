@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/unordered/unordered_map.hpp>
 
 #include "platform/Platform.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/FileStream.h"
 
 /*!
@@ -99,7 +99,7 @@ private:
 	
 	typedef boost::unordered_map<std::string, File> Files;
 	
-	fs::path savefile;
+	res::path savefile;
 	fs::fstream handle;
 	size_t totalSize;
 	size_t usedSize;
@@ -112,7 +112,7 @@ private:
 	
 public:
 	
-	explicit SaveBlock(const fs::path & savefile);
+	explicit SaveBlock(const res::path & savefile);
 	
 	/*!
 	 * Destructor: this will not finalize the save block.
@@ -161,7 +161,7 @@ public:
 	 * @param size will be set to the loaded size
 	 * @return a new, malloc-allocated buffer or NULL if eiether the saveblock could not be opened or doesn't contain a file with the given name.
 	 */
-	static char * load(const fs::path & savefile, const std::string & name, size_t & size);
+	static char * load(const res::path & savefile, const std::string & name, size_t & size);
 	
 };
 

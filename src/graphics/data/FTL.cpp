@@ -59,9 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTLFormat.h"
 #include "graphics/data/TextureContainer.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/FileStream.h"
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
@@ -79,7 +79,7 @@ extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
+bool ARX_FTL_Save(const res::path & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
 	
@@ -88,7 +88,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	fs::path gamefic = "game" / file;
+	res::path gamefic = "game" / file;
 	gamefic.set_ext("ftl");
 	
 	if(!fs::create_directories(gamefic.parent())) {
@@ -362,14 +362,14 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 
 // MESH cache structure definition & Globals
 struct MCACHE_DATA {
-	fs::path name;
+	res::path name;
 	char * data;
 	size_t size;
 };
 static vector<MCACHE_DATA> meshCache;
 
 // Checks for Mesh file existence in cache
-static long MCache_Get(const fs::path & file) {
+static long MCache_Get(const res::path & file) {
 	
 	for(size_t i = 0; i < meshCache.size(); i++) {
 		if(meshCache[i].name == file) {
@@ -381,7 +381,7 @@ static long MCache_Get(const fs::path & file) {
 }
 
 // Pushes a Mesh In Mesh Cache
-static bool MCache_Push(const fs::path & file, char * data, size_t size) {
+static bool MCache_Push(const res::path & file, char * data, size_t size) {
 	
 	if(MCache_Get(file) != -1) {
 		return false; // already cached
@@ -403,7 +403,7 @@ void MCache_ClearAll(){
 }
 
 // Retreives a Mesh File pointer from cache...
-static char * MCache_Pop(const fs::path & file, size_t & size) {
+static char * MCache_Pop(const res::path & file, size_t & size) {
 	
 	long num = MCache_Get(file);
 	if(num == -1) {
@@ -414,10 +414,10 @@ static char * MCache_Pop(const fs::path & file, size_t & size) {
 	return meshCache[num].data;
 }
 
-EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
+EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	
 	// Creates FTL file name
-	fs::path filename = (fs::path("game") / file).set_ext("ftl");
+	res::path filename = (res::path("game") / file).set_ext("ftl");
 	
 	// Checks for FTL file existence
 	PakFile * pf = resources->getFile(filename);
@@ -500,7 +500,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
-	obj->file = fs::path::load(safestring(af3Ddh->name));
+	obj->file = res::path::load(safestring(af3Ddh->name));
 	
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
@@ -559,7 +559,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file) {
 			const Texture_Container_FTL * tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
 			pos += sizeof(Texture_Container_FTL);
 			
-			fs::path name = fs::path::load(safestring(tex->name)).remove_ext();
+			res::path name = res::path::load(safestring(tex->name)).remove_ext();
 			
 			// Create the texture and put it in the container list
 			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);

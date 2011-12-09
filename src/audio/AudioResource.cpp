@@ -43,11 +43,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioResource.h"
 
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 
 namespace audio {
 
-PakFileHandle * OpenResource(const fs::path & name, const fs::path & resource_path) {
+PakFileHandle * OpenResource(const res::path & name, const res::path & resource_path) {
 	
 	PakFileHandle * file = NULL;
 	

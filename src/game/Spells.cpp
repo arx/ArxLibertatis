@@ -95,7 +95,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
@@ -8574,7 +8574,7 @@ static void ApplySPWep() {
 	{		
 		ARX_SPSound();
 		
-		fs::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
+		res::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
 		
 		INTERACTIVE_OBJ * ioo = AddItem(file,IO_IMMEDIATELOAD);
 
@@ -8664,7 +8664,7 @@ static void ApplySPBow() {
 static void ApplySPArm() {
 	ARX_SPSound();
 	
-	fs::path file;
+	res::path file;
 	switch (sp_arm) {
 		case 0:
 			file = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm.teo";

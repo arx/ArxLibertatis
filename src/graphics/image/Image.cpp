@@ -23,7 +23,7 @@
 #include <il.h>
 
 #include "graphics/Math.h"
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 
 using std::string;
 using std::memcpy;
@@ -186,7 +186,7 @@ bool Image::IsCompressed(Image::Format pFormat) {
 	return pFormat >= Format_DXT1 && pFormat <= Format_DXT5;
 }
 
-bool Image::LoadFromFile(const fs::path & filename) {
+bool Image::LoadFromFile(const res::path & filename) {
 	
 	size_t size = 0;
 	void * pData = resources->readAlloc(filename, size);
@@ -861,7 +861,7 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::save(const fs::path & filename) const {
+void Image::save(const res::path & filename) const {
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);

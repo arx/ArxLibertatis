@@ -69,9 +69,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/FileStream.h"
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
@@ -3180,7 +3180,7 @@ long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
 
-bool FastSceneLoad(const fs::path & partial_path) {
+bool FastSceneLoad(const res::path & partial_path) {
 	
 	// TODO bounds checking
 	
@@ -3190,8 +3190,8 @@ bool FastSceneLoad(const fs::path & partial_path) {
 		return false;
 	}
 	
-	fs::path path = "game" / partial_path;
-	fs::path file = path / "fast.fts";
+	res::path path = "game" / partial_path;
+	res::path file = path / "fast.fts";
 	
 	size_t size;
 	char * dat = resources->readAlloc(file, size);
@@ -3203,7 +3203,7 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
 	pos += sizeof(UNIQUE_HEADER);
 	
-	if(!NOCHECKSUM && fs::path::load(uh->path) != path) {
+	if(!NOCHECKSUM && res::path::load(uh->path) != path) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
@@ -3267,7 +3267,7 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	TextureContainerMap textures;
 	for(long k = 0; k < fsh->nb_textures; k++) {
 		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
-		fs::path file = fs::path::load(safestring(ftc->fic)).remove_ext();
+		res::path file = res::path::load(safestring(ftc->fic)).remove_ext();
 		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc->tc] = tmpTC;
@@ -3948,9 +3948,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
  * Save the currently loaded scene.
  * @param partal_path Where to save the scene to.
  */
-static bool FastSceneSave(const fs::path & partial_path) {
+static bool FastSceneSave(const res::path & partial_path) {
 	
-	fs::path path = "game" / partial_path;
+	res::path path = "game" / partial_path;
 	
 	LogDebug("FastSceneSave" << path);
 	
@@ -4002,7 +4002,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	
 	for(fs::directory_iterator it(partial_path); !it.end(); ++it) {
 		
-		fs::path path = partial_path / it.name();
+		res::path path = partial_path / it.name();
 		
 		if(!path.has_ext("scn") || !it.is_regular_file()) {
 			continue;
@@ -4027,7 +4027,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	}
 	
 	uh->count = count;
-	fs::path file = path / "fast.fts";
+	res::path file = path / "fast.fts";
 	long compressedstart = pos;
 	
 	FAST_SCENE_HEADER * fsh = reinterpret_cast<FAST_SCENE_HEADER *>(dat + pos);
@@ -4248,7 +4248,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 	
-	fs::path ftemp = LastLoadedScene.parent();
+	res::path ftemp = LastLoadedScene.parent();
 	
 	// First Release Any Portal Data
 	EERIE_PORTAL_Release();

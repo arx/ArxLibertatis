@@ -75,8 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "io/PakReader.h"
-#include "io/FilePath.h"
+#include "io/resource/PakReader.h"
+#include "io/resource/ResourcePath.h"
 #include "io/Screenshot.h"
 #include "io/Filesystem.h"
 #include "io/log/Logger.h"
@@ -169,12 +169,12 @@ void CreateSaveGameList() {
 	
 	size_t maxlength = 0;
 	
-	fs::path savedir = "save";
+	res::path savedir = "save";
 	
 	for(fs::directory_iterator it(savedir); !it.end(); ++it) {
 		
 		string dirname = it.name();
-		fs::path path = savedir / dirname;
+		res::path path = savedir / dirname;
 		
 		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
 			continue;
@@ -229,7 +229,7 @@ void CreateSaveGameList() {
 		
 		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
 		
-		fs::path thumbnail = path / "gsave.bmp";
+		res::path thumbnail = path / "gsave.bmp";
 		if(fs::exists(thumbnail)) {
 			resources->removeFile(thumbnail);
 			resources->addFiles(thumbnail, thumbnail);

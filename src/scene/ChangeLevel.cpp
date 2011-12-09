@@ -68,8 +68,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
@@ -124,9 +124,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 
-const fs::path SAVEGAME_NAME = "gsave.sav";
-const fs::path CURRENT_GAME_DIRECTORY = "save/cur0001";
-const fs::path CURRENT_GAME_FILE = CURRENT_GAME_DIRECTORY / SAVEGAME_NAME;
+const res::path SAVEGAME_NAME = "gsave.sav";
+const res::path CURRENT_GAME_DIRECTORY = "save/cur0001";
+const res::path CURRENT_GAME_FILE = CURRENT_GAME_DIRECTORY / SAVEGAME_NAME;
 
 float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
@@ -138,9 +138,9 @@ SaveBlock * _pSaveBlock = NULL;
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
-static fs::path ARX_GAMESAVE_CreateNewInstance() {
+static res::path ARX_GAMESAVE_CreateNewInstance() {
 	
-	fs::path savedir("save");
+	res::path savedir("save");
 	
 	arx_assert(fs::is_directory(savedir));
 	
@@ -149,13 +149,13 @@ static fs::path ARX_GAMESAVE_CreateNewInstance() {
 		std::ostringstream oss;
 		oss << "save" << std::setfill('0') << std::setw(4) << num;
 		
-		fs::path path = savedir / oss.str();
+		res::path path = savedir / oss.str();
 		
 		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / SAVEGAME_NAME))) {
 			
 			if(!fs::create_directories(path)) {
 				LogWarning << "error creating save path " << path;
-				return fs::path();
+				return res::path();
 			}
 			
 			return path;
@@ -245,7 +245,7 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 	return -1;
 }
 
-static fs::path ARX_GAMESAVE_MakePath(long instance) {
+static res::path ARX_GAMESAVE_MakePath(long instance) {
 	
 	std::ostringstream oss;
 	oss << "save/save" << std::setfill('0') << std::setw(4) << instance;
@@ -1874,7 +1874,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 			ReleaseAnimFromIO(&io, i);
 		}
 		if(asp->anims[i][0]) {
-			io.anims[i] = EERIE_ANIMMANAGER_Load(fs::path::load(safestring(asp->anims[i])));
+			io.anims[i] = EERIE_ANIMMANAGER_Load(res::path::load(safestring(asp->anims[i])));
 		}
 	}
 	
@@ -2072,7 +2072,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		}
 	}
 	
-	INTERACTIVE_OBJ * io = LoadInter_Ex(fs::path::load(path), num, ais->pos, ais->angle, MSP);
+	INTERACTIVE_OBJ * io = LoadInter_Ex(res::path::load(path), num, ais->pos, ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
@@ -2151,7 +2151,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		io->halo.dynlight = -1;
 		ARX_HALO_SetToNative(io);
 		
-		io->inventory_skin = fs::path::load(safestring(ais->inventory_skin));
+		io->inventory_skin = res::path::load(safestring(ais->inventory_skin));
 		io->stepmaterial = toLowercase(safestring(ais->stepmaterial));
 		io->armormaterial = toLowercase(safestring(ais->armormaterial));
 		io->weaponmaterial = toLowercase(safestring(ais->weaponmaterial));
@@ -2167,7 +2167,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 				continue;
 			}
 			
-			fs::path path = fs::path::load(safestring(ais->anims[i]));
+			res::path path = res::path::load(safestring(ais->anims[i]));
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
 			if(io->anims[i]) {
@@ -2175,9 +2175,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			}
 			
 			if(io->ioflags & IO_NPC) {
-				path = fs::path("graph/obj3d/anims/npc") / path.filename();
+				path = res::path("graph/obj3d/anims/npc") / path.filename();
 			} else {
-				path = fs::path("graph/obj3d/anims/fix_inter") / path.filename();
+				path = res::path("graph/obj3d/anims/fix_inter") / path.filename();
 			}
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
@@ -2420,9 +2420,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 			pos += sizeof(SavedTweakerInfo);
 			
-			io->tweakerinfo->filename = fs::path::load(safestring(sti->filename));
+			io->tweakerinfo->filename = res::path::load(safestring(sti->filename));
 			io->tweakerinfo->skintochange = toLowercase(safestring(sti->skintochange));
-			io->tweakerinfo->skinchangeto = fs::path::load(safestring(sti->skinchangeto));
+			io->tweakerinfo->skinchangeto = res::path::load(safestring(sti->skinchangeto));
 		}
 		
 		io->groups.clear();
@@ -2438,8 +2438,8 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			pos += sizeof(SavedTweakInfo);
 			
 			io->tweaks[i].type = TweakType::load(sti->type); // TODO save/load flags
-			io->tweaks[i].param1 = fs::path::load(safestring(sti->param1));
-			io->tweaks[i].param2 = fs::path::load(safestring(sti->param2));
+			io->tweaks[i].param1 = res::path::load(safestring(sti->param1));
+			io->tweaks[i].param2 = res::path::load(safestring(sti->param2));
 		}
 		
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);
@@ -2495,7 +2495,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		LoadLevelScreen();
 		
 		std::ostringstream oss;
-		oss << fs::path::load(safestring(idx_io[i].filename)).basename() << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
+		oss << res::path::load(safestring(idx_io[i].filename)).basename() << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
 		if(inter.getById(oss.str()) < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}
@@ -2951,7 +2951,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	arxtime.resume();
 	
 	// Create the destination directory
-	fs::path savePath;
+	res::path savePath;
 	if(instance <= 0) {
 		savePath = ARX_GAMESAVE_CreateNewInstance();
 		if(savePath.empty()) {
@@ -2978,7 +2978,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	return true;
 }
 
-static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path)
+static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const res::path & path)
 {
 	// Checks For Directory
 	if(!fs::is_directory(path)) {
@@ -3033,7 +3033,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 		return -1;
 	
 	// Copy SavePath to Current Game
-	fs::path savePath = ARX_GAMESAVE_MakePath(instance);
+	res::path savePath = ARX_GAMESAVE_MakePath(instance);
 	if(!fs::copy_file(savePath / SAVEGAME_NAME, CURRENT_GAME_FILE)) {
 		LogWarning << "failed to create copy savegame to " << CURRENT_GAME_FILE;
 		return -1;
@@ -3076,7 +3076,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_GetInfo(const fs::path & path, string & name, float & version, long & level, unsigned long & time) {
+long ARX_CHANGELEVEL_GetInfo(const res::path & path, string & name, float & version, long & level, unsigned long & time) {
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 

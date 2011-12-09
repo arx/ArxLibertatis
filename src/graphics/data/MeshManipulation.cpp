@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
 
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "math/MathFwd.h"
@@ -93,7 +93,7 @@ void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
 	}
 }
  
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & s1, const fs::path & s2) {
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::path & s2) {
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
 
@@ -105,9 +105,9 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & s1, const fs::pat
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
 
-	fs::path skintochange = "graph/obj3d/textures" / s1;
+	res::path skintochange = "graph/obj3d/textures" / s1;
 	
-	fs::path skinname = "graph/obj3d/textures" / s2;
+	res::path skinname = "graph/obj3d/textures" / s2;
 	TextureContainer * tex = TextureContainer::Load(skinname);
 
 	if (obj->originaltextures == NULL)
@@ -788,11 +788,11 @@ long ALLOW_MESH_TWEAKING = 1;
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path)
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const res::path & path)
 {
 	if (!ALLOW_MESH_TWEAKING) return;
 
-	fs::path ftl_file = ("game" / path).set_ext("ftl");
+	res::path ftl_file = ("game" / path).set_ext("ftl");
 
 	if ((!resources->getFile(ftl_file)) && (!resources->getFile(path))) return;
 

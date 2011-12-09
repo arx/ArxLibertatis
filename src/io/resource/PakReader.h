@@ -23,8 +23,8 @@
 #include <vector>
 #include <iostream>
 
-#include "io/PakEntry.h"
-#include "io/FilePath.h"
+#include "io/resource/PakEntry.h"
+#include "io/resource/ResourcePath.h"
 #include "platform/Flags.h"
 
 enum Whence {
@@ -61,17 +61,17 @@ public:
 	inline PakReader() : release(0) { }
 	~PakReader();
 	
-	void removeFile(const fs::path & name);
+	void removeFile(const res::path & name);
 	
-	bool addFiles(const fs::path & path, const fs::path & mount = fs::path());
+	bool addFiles(const res::path & path, const res::path & mount = res::path());
 	
-	bool addArchive(const fs::path & pakfile);
+	bool addArchive(const res::path & pakfile);
 	void clear();
 	
-	bool read(const fs::path & name, void * buf);
-	char * readAlloc(const fs::path & name , size_t & size);
+	bool read(const res::path & name, void * buf);
+	char * readAlloc(const res::path & name , size_t & size);
 	
-	PakFileHandle * open(const fs::path & name);
+	PakFileHandle * open(const res::path & name);
 	
 	inline ReleaseFlags getReleaseType() { return release; }
 	
@@ -80,8 +80,8 @@ private:
 	ReleaseFlags release;
 	std::vector<std::istream *> paks;
 	
-	bool addFiles(PakDirectory * dir, const fs::path & path);
-	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name);
+	bool addFiles(PakDirectory * dir, const res::path & path);
+	bool addFile(PakDirectory * dir, const res::path & path, const std::string & name);
 	
 };
 

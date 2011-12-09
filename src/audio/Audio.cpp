@@ -178,7 +178,7 @@ aalError setStreamLimit(size_t limit) {
 	return AAL_OK;
 }
 
-aalError setSamplePath(const fs::path & path) {
+aalError setSamplePath(const res::path & path) {
 	
 	AAL_ENTRY
 	
@@ -187,7 +187,7 @@ aalError setSamplePath(const fs::path & path) {
 	return AAL_OK;
 }
 
-aalError setAmbiancePath(const fs::path & path) {
+aalError setAmbiancePath(const res::path & path) {
 	
 	AAL_ENTRY
 	
@@ -196,7 +196,7 @@ aalError setAmbiancePath(const fs::path & path) {
 	return AAL_OK;
 }
 
-aalError setEnvironmentPath(const fs::path & path) {
+aalError setEnvironmentPath(const res::path & path) {
 	
 	AAL_ENTRY
 	
@@ -266,7 +266,7 @@ MixerId createMixer() {
 	return id;
 }
 
-SampleId createSample(const fs::path & name) {
+SampleId createSample(const res::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -282,7 +282,7 @@ SampleId createSample(const fs::path & name) {
 	return Backend::clearSource(s_id);
 }
 
-AmbianceId createAmbiance(const fs::path & name) {
+AmbianceId createAmbiance(const res::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -296,7 +296,7 @@ AmbianceId createAmbiance(const fs::path & name) {
 	return a_id;
 }
 
-EnvId createEnvironment(const fs::path & name) {
+EnvId createEnvironment(const res::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -335,7 +335,7 @@ aalError deleteAmbiance(AmbianceId a_id) {
 	return AAL_OK;
 }
 
-AmbianceId getAmbiance(const fs::path & name) {
+AmbianceId getAmbiance(const res::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -348,7 +348,7 @@ AmbianceId getAmbiance(const fs::path & name) {
 	return INVALID_ID;
 }
 
-EnvId getEnvironment(const fs::path & name) {
+EnvId getEnvironment(const res::path & name) {
 	
 	AAL_ENTRY_V(INVALID_ID)
 	
@@ -562,7 +562,7 @@ aalError setSamplePosition(SourceId sample_id, const Vec3f & position) {
 
 // Sample status
 
-aalError getSampleName(SampleId sample_id, fs::path & name) {
+aalError getSampleName(SampleId sample_id, res::path & name) {
 	
 	name.clear();
 	
@@ -731,7 +731,7 @@ aalError setAmbianceVolume(AmbianceId a_id, float volume) {
 
 // Ambiance status
 
-aalError getAmbianceName(AmbianceId a_id, fs::path & name) {
+aalError getAmbianceName(AmbianceId a_id, res::path & name) {
 	
 	name.clear();
 	

@@ -22,9 +22,9 @@
 
 #include <fstream>
 
-namespace fs {
+namespace res { class path; }
 
-class path;
+namespace fs {
 
 class ifstream : public std::ifstream {
 	
@@ -35,9 +35,9 @@ public:
 	
 	ifstream() { }
 	
-	ifstream(const path & p, openmode mode = in);
+	ifstream(const res::path & p, openmode mode = in);
 	
-	void open(const path & p, openmode mode = in);
+	void open(const res::path & p, openmode mode = in);
 	
 	virtual ~ifstream() { }
 	
@@ -52,9 +52,9 @@ public:
 	
 	ofstream() { }
 	
-	ofstream(const path & p, openmode mode = out);
+	ofstream(const res::path & p, openmode mode = out);
 	
-	void open(const path & p, openmode mode = out);
+	void open(const res::path & p, openmode mode = out);
 	
 	virtual ~ofstream() { }
 	
@@ -69,9 +69,9 @@ public:
 	
 	fstream() { }
 	
-	fstream(const path & p, openmode mode = out);
+	fstream(const res::path & p, openmode mode = out);
 	
-	void open(const path & p, openmode mode = out);
+	void open(const res::path & p, openmode mode = out);
 	
 	virtual ~fstream() { }
 	

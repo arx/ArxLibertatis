@@ -85,8 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/Filesystem.h"
 #include "io/log/Logger.h"
 
@@ -1610,10 +1610,10 @@ TextureContainer * PLAYER_SKIN_TC = NULL;
 
 void ARX_PLAYER_Restore_Skin() {
 	
-	fs::path tx;
-	fs::path tx2;
-	fs::path tx3;
-	fs::path tx4;
+	res::path tx;
+	res::path tx2;
+	res::path tx3;
+	res::path tx4;
 	
 	switch(player.skin) {
 		case 0:

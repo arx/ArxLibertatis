@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_AUDIO_AUDIOENVIRONMENT_H
 
 #include "audio/AudioTypes.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 namespace audio {
 
@@ -53,12 +53,12 @@ class Environment {
 	
 public:
 	
-	explicit Environment(const fs::path & name);
+	explicit Environment(const res::path & name);
 	
 	// File input/output
 	aalError load();
 	
-	fs::path name;
+	res::path name;
 	
 	float size;
 	float diffusion;

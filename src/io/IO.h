@@ -53,9 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-namespace fs {
-class path;
-}
+namespace res { class path; }
 
 /**
  * Create a hash of the file.
@@ -65,7 +63,7 @@ class path;
  * @param id An ID that contributes to the hash.
  * @return false if the hash was created, true if the file could not be read
  **/
-void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id);
+void HERMES_CreateFileCheck(const res::path & name, char * scheck, size_t size, float id);
 
 #endif // BUILD_EDIT_LOADSAVE
 

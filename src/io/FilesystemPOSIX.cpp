@@ -28,7 +28,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/FileStream.h"
 
 using std::string;
@@ -37,7 +37,7 @@ using std::free;
 
 namespace fs {
 
-bool exists(const path & p) {
+bool exists(const res::path & p) {
 	if(p.empty()) {
 		return true;
 	}
@@ -45,7 +45,7 @@ bool exists(const path & p) {
 	return !stat(p.string().c_str(), &buf);
 }
 
-bool is_directory(const path & p) {
+bool is_directory(const res::path & p) {
 	if(p.empty()) {
 		return true;
 	}
@@ -53,27 +53,27 @@ bool is_directory(const path & p) {
 	return !stat(p.string().c_str(), &buf) && ((buf.st_mode & S_IFMT) == S_IFDIR);
 }
 
-bool is_regular_file(const path & p) {
+bool is_regular_file(const res::path & p) {
 	struct stat buf;
 	return !stat(p.string().c_str(), &buf) && ((buf.st_mode & S_IFMT) == S_IFREG);
 }
 
-std::time_t last_write_time(const path & p) {
+std::time_t last_write_time(const res::path & p) {
 	struct stat buf;
 	return stat(p.string().c_str(), &buf) ? 0 : buf.st_mtime;
 }
 
-u64 file_size(const path & p) {
+u64 file_size(const res::path & p) {
 	struct stat buf;
 	return stat(p.string().c_str(), &buf) ? (u64)-1 : (u64)buf.st_size;
 }
 
-bool remove(const path & p) {
+bool remove(const res::path & p) {
 	int ret = ::remove(p.string().c_str());
 	return !ret || ret == ENOENT || ret == ENOTDIR;
 }
 
-bool remove_all(const path & p) {
+bool remove_all(const res::path & p) {
 	
 	struct stat buf;
 	if(stat(p.string().c_str(), &buf)) {
@@ -89,7 +89,7 @@ bool remove_all(const path & p) {
 	return remove(p);
 }
 
-bool create_directory(const path & p) {
+bool create_directory(const res::path & p) {
 	if(p.empty()) {
 		return true;
 	}
@@ -97,13 +97,13 @@ bool create_directory(const path & p) {
 	return !ret || is_directory(p);
 }
 
-bool create_directories(const path & p) {
+bool create_directories(const res::path & p) {
 	
 	if(p.empty()) {
 		return true;
 	}
 	
-	fs::path parent = p.parent();
+	res::path parent = p.parent();
 	if(!exists(parent)) {
 		if(!create_directories(parent)) {
 			return false;
@@ -113,7 +113,7 @@ bool create_directories(const path & p) {
 	return create_directory(p);
 }
 
-bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
+bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite) {
 	
 	if(!overwrite && exists(to_p)) {
 		return false;
@@ -145,7 +145,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	return true;
 }
 
-bool rename(const path & old_p, const path & new_p, bool overwrite) {
+bool rename(const res::path & old_p, const res::path & new_p, bool overwrite) {
 	if(!overwrite && exists(new_p)) {
 		return false;
 	}
@@ -170,7 +170,7 @@ static void readdir(void * _handle, void * & _buf) {
 	
 }
 
-directory_iterator::directory_iterator(const fs::path & p) : buf(NULL) {
+directory_iterator::directory_iterator(const res::path & p) : buf(NULL) {
 	
 	handle = opendir(p.empty() ? "./" : p.string().c_str());
 	

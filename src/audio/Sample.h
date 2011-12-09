@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioTypes.h"
 #include "audio/AudioResource.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 namespace audio {
 
@@ -56,20 +56,20 @@ class Sample : public ResourceHandle {
 	
 public:
 	
-	explicit Sample(const fs::path & name);
+	explicit Sample(const res::path & name);
 	~Sample();
 	
 	// File I/O
 	aalError load();
 	
-	inline const fs::path & getName() const { return name; }
+	inline const res::path & getName() const { return name; }
 	inline size_t getLength() const { return length; }
 	inline const PCMFormat & getFormat() const { return format; }
 	
 	
 private:
 	
-	fs::path name;
+	res::path name;
 	size_t length;
 	PCMFormat format;
 	

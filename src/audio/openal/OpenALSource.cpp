@@ -28,7 +28,7 @@
 #include "audio/Stream.h"
 #include "audio/Sample.h"
 #include "audio/Mixer.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 #include "math/Vector3.h"
 #include "platform/Platform.h"

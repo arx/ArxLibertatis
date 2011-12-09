@@ -73,7 +73,7 @@ struct ANIM_HANDLE {
 	
 	ANIM_HANDLE();
 	
-	fs::path path; // empty path means an unallocated slot
+	res::path path; // empty path means an unallocated slot
 	
 	EERIE_ANIM ** anims;
 	short alt_nb;
@@ -435,9 +435,9 @@ struct IO_PHYSICS
 };
 
 struct IO_TWEAKER_INFO {
-	fs::path filename;
+	res::path filename;
 	std::string skintochange;
-	fs::path skinchangeto;
+	res::path skinchangeto;
 };
 
 struct TWEAK_INFO;
@@ -509,7 +509,7 @@ struct INTERACTIVE_OBJ {
 	EERIE_3D_BBOX bbox3D;
 	Vec2s bbox1; // 2D bounding box1
 	Vec2s bbox2; // 2D bounding box2
-	fs::path usemesh; // Alternate Mesh/path
+	res::path usemesh; // Alternate Mesh/path
 	EERIE_3DOBJ * tweaky; // tweaked original obj backup
 	audio::SourceId sound;
 	ItemType type_flags; // object type (weapon,goblin...)
@@ -542,7 +542,7 @@ struct INTERACTIVE_OBJ {
 	long stopped;
 	Vec3f initpos; // Initial Position
 	Anglef initangle; // Initial Angle
-	fs::path filename;
+	res::path filename;
 	float scale;
 	
 	ARX_USE_PATH * usepath;
@@ -609,7 +609,7 @@ struct INTERACTIVE_OBJ {
 	
 	std::string shop_category;
 	float shop_multiply;
-	fs::path inventory_skin;
+	res::path inventory_skin;
 	long aflags; // additionnal flags
 	short inzone_show;
 	short summoner;
@@ -636,7 +636,7 @@ struct INTERACTIVE_OBJ {
 	 * with the the result of long_name()
 	 * @return The directory of filename + long_name()
 	 */
-	fs::path full_name() const;
+	res::path full_name() const;
 	
 };
 
@@ -833,7 +833,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos);
 long PhysicalDrawBkgVLine(Vec3f * orgn,Vec3f * dest);
 
 // FAST SAVE LOAD
-bool FastSceneLoad(const fs::path & path);
+bool FastSceneLoad(const res::path & path);
 
 //****************************************************************************
 // DRAWING FUNCTIONS START
@@ -945,8 +945,8 @@ float GetSWorld(float x,float y,float z);
 
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);

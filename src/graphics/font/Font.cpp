@@ -30,7 +30,7 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
 using std::string;

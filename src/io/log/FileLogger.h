@@ -34,7 +34,7 @@ class File : public Backend {
 	
 public:
 	
-	inline File(const fs::path & path, std::ios_base::openmode mode)
+	inline File(const res::path & path, std::ios_base::openmode mode)
 	                  : ofs(path, mode) { }
 	
 	~File();

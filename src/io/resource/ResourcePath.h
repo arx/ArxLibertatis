@@ -23,7 +23,7 @@
 #include <string>
 #include <ostream>
 
-namespace fs {
+namespace res {
 
 class path {
 	

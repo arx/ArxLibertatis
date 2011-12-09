@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Ambiance.h"
 #include "audio/AudioEnvironment.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 namespace audio {
 
@@ -56,9 +56,9 @@ namespace audio {
 Backend * backend = NULL;
 
 // Global settings
-fs::path sample_path;
-fs::path ambiance_path;
-fs::path environment_path;
+res::path sample_path;
+res::path ambiance_path;
+res::path environment_path;
 size_t stream_limit_bytes = DEFAULT_STREAMLIMIT;
 size_t session_time = 0;
 

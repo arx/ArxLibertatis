@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "audio/AudioTypes.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "platform/Platform.h"
 
 namespace audio {
@@ -58,7 +58,7 @@ class Ambiance {
 	
 public:
 	
-	explicit Ambiance(const fs::path & name);
+	explicit Ambiance(const res::path & name);
 	~Ambiance();
 	
 	aalError load();
@@ -67,7 +67,7 @@ public:
 	inline void * getUserData() const { return data; }
 	
 	const Channel & getChannel() const { return channel; }
-	const fs::path & getName() const { return name; }
+	const res::path & getName() const { return name; }
 	
 	aalError setVolume(float volume);
 	
@@ -111,7 +111,7 @@ private:
 	
 	TrackList tracks;
 	
-	fs::path name;
+	res::path name;
 	
 	void * data;
 	

@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "game/NPC.h"
 #include "graphics/data/Mesh.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
 
@@ -308,7 +308,7 @@ public:
 		
 		string anim = context.getWord();
 		
-		fs::path file = fs::path::load(context.getWord());
+		res::path file = res::path::load(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << anim << ' ' << file);
 		
@@ -333,7 +333,7 @@ public:
 			return Success;
 		}
 		
-		fs::path path;
+		res::path path;
 		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {
 			path = ("graph/obj3d/anims/npc" / file).set_ext("tea");
 		} else {

@@ -45,11 +45,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioResource.h"
 #include "audio/AudioGlobal.h"
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 
 namespace audio {
 
-Environment::Environment(const fs::path & _name) :
+Environment::Environment(const res::path & _name) :
 	name(_name),
 	size(DEFAULT_ENVIRONMENT_SIZE),
 	diffusion(DEFAULT_ENVIRONMENT_DIFFUSION),
