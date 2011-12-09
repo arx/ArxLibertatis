@@ -146,7 +146,7 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 }
 
 namespace {
-enum SaveGameChage {
+enum SaveGameChange {
 	SaveGameRemoved,
 	SaveGameUnchanged,
 	SaveGameChanged
@@ -163,7 +163,7 @@ void CreateSaveGameList() {
 	}
 	
 	size_t oldCount = save_l.size() - 1;
-	std::vector<SaveGameChage> found(oldCount, SaveGameRemoved);
+	std::vector<SaveGameChange> found(oldCount, SaveGameRemoved);
 	
 	bool newSaves = false;
 	
