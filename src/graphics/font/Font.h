@@ -76,7 +76,7 @@ public:
 	
 	// For debugging purpose... will write one image file per page
 	// under "name_style_size_pagen.png"
-	void WriteToDisk();
+	bool WriteToDisk();
 	
 private:
 	
