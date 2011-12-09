@@ -177,6 +177,7 @@ void CreateSaveGameList() {
 		fs::path path = savedir / dirname;
 		
 		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
+			LogDebug("ignoring non-save directory " << path);
 			continue;
 		}
 		
@@ -186,6 +187,7 @@ void CreateSaveGameList() {
 		
 		std::time_t stime = fs::last_write_time(path / SAVEGAME_NAME);
 		if(stime == 0) {
+			LogDebug("ignoring directory without gsave.sav:" << path);
 			continue;
 		}
 		
