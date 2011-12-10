@@ -652,7 +652,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	
 	// Now that data directories are initialized, create a log file.
-	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
+	fs::path logFile = config.paths.user / "arx.log";
+	Logger::add(new logger::File(logFile, std::ios_base::out | std::ios_base::trunc));
 	
 	LogInfo << "Starting " << version;
 	
