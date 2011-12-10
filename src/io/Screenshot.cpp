@@ -52,14 +52,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Renderer.h"
 #include "graphics/image/Image.h"
-#include "io/Filesystem.h"
-#include "io/resource/ResourcePath.h"
+#include "io/fs/Filesystem.h"
 
 using std::ostringstream;
 
 static SnapShot * pSnapShot;
 
-SnapShot::SnapShot(const res::path & name, bool replace) {
+SnapShot::SnapShot(const fs::path & name, bool replace) {
 	
 	int num = 0;
 	
@@ -103,7 +102,7 @@ bool SnapShot::GetSnapShotDim(int width, int height) {
 	return true;
 }
 
-void InitSnapShot(const res::path & name) {
+void InitSnapShot(const fs::path & name) {
 	FreeSnapShot();
 	pSnapShot = new SnapShot(name);
 }

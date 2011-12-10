@@ -59,10 +59,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTLFormat.h"
 #include "graphics/data/TextureContainer.h"
 
+#include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
+#include "io/fs/Filesystem.h"
 #include "io/resource/ResourcePath.h"
-#include "io/FileStream.h"
 #include "io/resource/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
 #include "io/IO.h"
@@ -79,7 +80,7 @@ extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-bool ARX_FTL_Save(const res::path & file, const EERIE_3DOBJ * obj) {
+bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {
 	
 	LogWarning << "ARX_FTL_Save " << file;
 	
@@ -88,7 +89,7 @@ bool ARX_FTL_Save(const res::path & file, const EERIE_3DOBJ * obj) {
 	}
 	
 	// Generate File name/path and create it
-	res::path gamefic = "game" / file;
+	fs::path gamefic = "game" / file;
 	gamefic.set_ext("ftl");
 	
 	if(!fs::create_directories(gamefic.parent())) {

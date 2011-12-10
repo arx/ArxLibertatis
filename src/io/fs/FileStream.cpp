@@ -17,29 +17,29 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 
-#include "io/resource/ResourcePath.h"
+#include "io/fs/FilePath.h"
 
 using std::string;
 
 namespace fs {
 
-ifstream::ifstream(const res::path & p, openmode mode) : std::ifstream(p.string().c_str(), mode) { }
+ifstream::ifstream(const path & p, openmode mode) : std::ifstream(p.string().c_str(), mode) { }
 
-void ifstream::open(const res::path & p, openmode mode) {
+void ifstream::open(const path & p, openmode mode) {
 	std::ifstream::open(p.string().c_str(), mode);
 }
 
-ofstream::ofstream(const res::path & p, openmode mode) : std::ofstream(p.string().c_str(), mode) { }
+ofstream::ofstream(const path & p, openmode mode) : std::ofstream(p.string().c_str(), mode) { }
 
-void ofstream::open(const res::path & p, openmode mode) {
+void ofstream::open(const path & p, openmode mode) {
 	std::ofstream::open(p.string().c_str(), mode);
 }
 
-fstream::fstream(const res::path & p, openmode mode) : std::fstream(p.string().c_str(), mode) { }
+fstream::fstream(const path & p, openmode mode) : std::fstream(p.string().c_str(), mode) { }
 
-void fstream::open(const res::path & p, openmode mode) {
+void fstream::open(const path & p, openmode mode) {
 	std::fstream::open(p.string().c_str(), mode);
 }
 

@@ -5,23 +5,22 @@
 #include <string>
 #include <vector>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <boost/program_options.hpp>
 
 #include "core/Config.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 #include "platform/Environment.h"
 
 #include "Configure.h"
 
 namespace po = boost::program_options;
-namespace bfs = boost::filesystem;
 
 using std::string;
 
-static bfs::path findSubdirectory(const std::string & where, const bfs::path & dir,
-                                  bfs::path * to_create = NULL) {
+static fs::path findSubdirectory(const std::string & where, const fs::path & dir,
+                                 fs::path * to_create = NULL) {
 	
 	string prefixes = expandEvironmentVariables(where);
 	
@@ -30,17 +29,17 @@ static bfs::path findSubdirectory(const std::string & where, const bfs::path & d
 	size_t start = 0;
 	while(true) {
 		size_t end = prefixes.find(':', start);
-		bfs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
+		fs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
 		
-		bfs::path subdir = prefix / dir;
-		if(bfs::is_directory(subdir)) {
+		fs::path subdir = prefix / dir;
+		if(fs::is_directory(subdir)) {
 			return subdir;
 		}
 		
 		if(to_create) {
-			if(to_create->empty() || (!create_exists && bfs::is_directory(prefix))) {
+			if(to_create->empty() || (!create_exists && fs::is_directory(prefix))) {
 				*to_create = subdir;
-				create_exists = bfs::is_directory(prefix);
+				create_exists = fs::is_directory(prefix);
 			}
 		}
 		
@@ -51,7 +50,7 @@ static bfs::path findSubdirectory(const std::string & where, const bfs::path & d
 		}
 	}
 	
-	return bfs::path();
+	return fs::path();
 }
 
 static void findDataDirectory() {
@@ -67,7 +66,7 @@ static void findDataDirectory() {
 	
 #ifdef DATA_DIR
 	
-	bfs::path dir = expandEvironmentVariables(DATA_DIR);
+	fs::path dir = expandEvironmentVariables(DATA_DIR);
 	
 #ifdef DATA_DIR_PREFIXES 
 	if(dir.is_relative()) {
@@ -79,7 +78,7 @@ static void findDataDirectory() {
 	}
 #endif // DATA_DIR_PREFIXES
 	
-	if(bfs::is_directory(dir)) {
+	if(fs::is_directory(dir)) {
 		config.paths.data = dir;
 		LogDebug("Got data directory from DATA_DIR: " << config.paths.data);
 		return;
@@ -103,9 +102,9 @@ static void findUserDirectory() {
 	
 #ifdef USER_DIR
 	
-	bfs::path dir = expandEvironmentVariables(USER_DIR);
+	fs::path dir = expandEvironmentVariables(USER_DIR);
 	
-	boost::filesystem::path to_create;
+	fs::path to_create;
 #ifdef USER_DIR_PREFIXES
 	if(dir.is_relative()) {
 		config.paths.user = findSubdirectory(USER_DIR_PREFIXES, dir, &to_create);
@@ -116,7 +115,7 @@ static void findUserDirectory() {
 	}
 #endif // USER_DIR_PREFIXES
 	
-	if(bfs::is_directory(dir)) {
+	if(fs::is_directory(dir)) {
 		config.paths.user = dir;
 		LogDebug("Got user directory from USER_DIR: " << config.paths.user);
 		return;
@@ -137,7 +136,7 @@ static void findUserDirectory() {
 #endif // USER_DIR
 	
 	// Use the current directory for both data and config files.
-	config.paths.user = bfs::current_path();
+	config.paths.user = ".";
 	LogDebug("Using working directory as user directory: " << config.paths.user);
 }
 
@@ -148,14 +147,12 @@ static void createUserDirectory() {
 		exit(1);
 	}
 	
-	if(!bfs::is_directory(config.paths.user)) {
-		try {
-			bfs::create_directories(config.paths.user);
-			LogInfo << "Created new user config directory at " << config.paths.user;
-		} catch(bfs::filesystem_error) {
+	if(!fs::is_directory(config.paths.user)) {
+		if(!fs::create_directories(config.paths.user)) {
 			LogError << "Error creating user config directory at " << config.paths.user;
 			exit(1);
 		}
+		LogInfo << "Created new user config directory at " << config.paths.user;
 	}
 	
 	if(config.paths.data == config.paths.user) {
@@ -226,7 +223,7 @@ void parseCommandLine(const char * command_line) {
 		} else {
 			findDataDirectory();
 		}
-		if(!config.paths.data.empty() && !bfs::is_directory(config.paths.data)) {
+		if(!config.paths.data.empty() && !fs::is_directory(config.paths.data)) {
 			LogWarning << "Data directory " << config.paths.data << " does not exist.";
 			config.paths.data.clear();
 		}

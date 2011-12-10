@@ -23,6 +23,7 @@
 #include <il.h>
 
 #include "graphics/Math.h"
+#include "io/fs/FilePath.h"
 #include "io/resource/PakReader.h"
 
 using std::string;
@@ -861,7 +862,7 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::save(const res::path & filename) const {
+void Image::save(const fs::path & filename) const {
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);

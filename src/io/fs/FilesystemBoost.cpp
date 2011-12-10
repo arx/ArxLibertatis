@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 
 #include "Configure.h"
 
@@ -28,7 +28,7 @@
 #undef try
 #undef catch
 
-#include "io/resource/ResourcePath.h"
+#include "io/fs/FilePath.h"
 
 using std::string;
 
@@ -38,58 +38,58 @@ namespace fs_boost = boost::filesystem;
 
 using boost::system::error_code;
 
-bool exists(const res::path & p) {
+bool exists(const path & p) {
 	error_code ec;
 	return fs_boost::exists(p.string(), ec) && !ec;
 }
 
-bool is_directory(const res::path & p) {
+bool is_directory(const path & p) {
 	error_code ec;
 	return fs_boost::is_directory(p.string(), ec) && !ec;
 }
 
-bool is_regular_file(const res::path & p) {
+bool is_regular_file(const path & p) {
 	error_code ec;
 	return fs_boost::is_regular_file(p.string(), ec) && !ec;
 }
 
-std::time_t last_write_time(const res::path & p) {
+std::time_t last_write_time(const path & p) {
 	error_code ec;
 	std::time_t time = fs_boost::last_write_time(p.string(), ec);
 	return ec ? 0 : time;
 }
 
-u64 file_size(const res::path & p) {
+u64 file_size(const path & p) {
 	error_code ec;
 	uintmax_t size = fs_boost::file_size(p.string(), ec);
 	return ec ? (u64)-1 : (u64)size;
 }
 
-bool remove(const res::path & p) {
+bool remove(const path & p) {
 	error_code ec;
 	fs_boost::remove(p.string(), ec);
 	return !ec;
 }
 
-bool remove_all(const res::path & p) {
+bool remove_all(const path & p) {
 	error_code ec;
 	fs_boost::remove_all(p.string(), ec);
 	return !ec;
 }
 
-bool create_directory(const res::path & p) {
+bool create_directory(const path & p) {
 	error_code ec;
 	fs_boost::create_directory(p.string(), ec);
 	return !ec;
 }
 
-bool create_directories(const res::path & p) {
+bool create_directories(const path & p) {
 	error_code ec;
 	fs_boost::create_directories(p.string(), ec);
 	return !ec;
 }
 
-bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite) {
+bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	error_code ec;
 	fs_boost::copy_option::enum_type o;
 	if(overwrite) {
@@ -101,7 +101,7 @@ bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite)
 	return !ec;
 }
 
-bool rename(const res::path & old_p, const res::path & new_p, bool overwrite) {
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	if(!overwrite && exists(new_p)) {
 		return false;
 	}
@@ -110,7 +110,7 @@ bool rename(const res::path & old_p, const res::path & new_p, bool overwrite) {
 	return !ec;
 }
 
-directory_iterator::directory_iterator(const res::path & p) {
+directory_iterator::directory_iterator(const path & p) {
 	error_code ec;
 	handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
 	if(ec) {

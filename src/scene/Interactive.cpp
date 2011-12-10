@@ -79,9 +79,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/log/Logger.h"
 
 #include "physics/Collisions.h"
@@ -2952,7 +2953,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 	
 	while(io->ident == 0) {
 		
-		res::path temp = io->full_name();
+		fs::path temp = io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;

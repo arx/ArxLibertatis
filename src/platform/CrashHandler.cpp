@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <csignal>
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 #include "platform/Platform.h"

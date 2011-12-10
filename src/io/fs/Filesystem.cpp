@@ -17,13 +17,13 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 
 namespace fs {
 
-char * read_file(const res::path & p, size_t & size) {
+char * read_file(const path & p, size_t & size) {
 	
 	fs::ifstream ifs(p, fs::fstream::in | fs::fstream::binary | fs::fstream::ate);
 	if(!ifs.is_open()) {

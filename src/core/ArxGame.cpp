@@ -103,7 +103,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector2.h"
 #include "math/Vector3.h"
 
-#include "io/resource/ResourcePath.h"
+#include "io/fs/FilePath.h"
 #include "io/resource/PakReader.h"
 #include "io/Screenshot.h"
 #include "io/log/Logger.h"
@@ -404,36 +404,36 @@ bool ArxGame::AddPaks() {
 	
 	resources = new PakReader;
 	
-	res::path pak_data = "data.pak";
+	fs::path pak_data = "data.pak";
 	if(!resources->addArchive(pak_data)) {
 		LogError << "Unable to find main data file " << pak_data;
 		return false;
 	}
 	
-	res::path pak_loc = "loc.pak";
+	fs::path pak_loc = "loc.pak";
 	if(!resources->addArchive(pak_loc)) {
-		res::path pak_loc_default = "loc_default.pak";
+		fs::path pak_loc_default = "loc_default.pak";
 		if(!resources->addArchive(pak_loc_default)) {
 			LogError << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
 			return false;
 		}
 	}
 	
-	res::path pak_data2 = "data2.pak";
+	fs::path pak_data2 = "data2.pak";
 	if(!resources->addArchive(pak_data2)) {
 		LogError << "Unable to find aux data file " << pak_data2;
 		return false;
 	}
 	
-	res::path pak_sfx = "sfx.pak";
+	fs::path pak_sfx = "sfx.pak";
 	if(!resources->addArchive(pak_sfx)) {
 		LogError << "Unable to find sfx data file " << pak_sfx;
 		return false;
 	}
 	
-	res::path pak_speech = "speech.pak";
+	fs::path pak_speech = "speech.pak";
 	if(!resources->addArchive(pak_speech)) {
-		res::path pak_speech_default = "speech_default.pak";
+		fs::path pak_speech_default = "speech_default.pak";
 		if(!resources->addArchive(pak_speech_default)) {
 			LogError << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
 			return false;

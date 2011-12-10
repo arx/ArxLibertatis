@@ -118,7 +118,7 @@ if(MSVC)
 	set(Boost_USE_STATIC_LIBS ON)
 endif(MSVC)
 
-set(BOOST_COMPONENTS program_options filesystem system)
+set(BOOST_COMPONENTS program_options)
 find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 
 mark_as_advanced(IL_INCLUDE_DIR)
@@ -505,12 +505,13 @@ set(IO_RESOURCE_SOURCES
 set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
 set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
 set(IO_FILESYSTEM_SOURCES
-	src/io/FileStream.cpp
-	src/io/Filesystem.cpp
+	src/io/fs/FilePath.cpp
+	src/io/fs/FileStream.cpp
+	src/io/fs/Filesystem.cpp
 )
-set(IO_FILESYSTEM_BOOST_SOURCES src/io/FilesystemBoost.cpp)
-set(IO_FILESYSTEM_POSIX_SOURCES src/io/FilesystemPOSIX.cpp)
-set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/FilesystemWindows.cpp)
+set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
+set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
+set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
 set(MATH_SOURCES src/math/Angle.cpp)
 

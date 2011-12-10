@@ -17,14 +17,14 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_FILESTREAM_H
-#define ARX_IO_FILESTREAM_H
+#ifndef ARX_IO_FS_FILESTREAM_H
+#define ARX_IO_FS_FILESTREAM_H
 
 #include <fstream>
 
-namespace res { class path; }
-
 namespace fs {
+
+class path;
 
 class ifstream : public std::ifstream {
 	
@@ -35,9 +35,9 @@ public:
 	
 	ifstream() { }
 	
-	ifstream(const res::path & p, openmode mode = in);
+	ifstream(const path & p, openmode mode = in);
 	
-	void open(const res::path & p, openmode mode = in);
+	void open(const path & p, openmode mode = in);
 	
 	virtual ~ifstream() { }
 	
@@ -52,9 +52,9 @@ public:
 	
 	ofstream() { }
 	
-	ofstream(const res::path & p, openmode mode = out);
+	ofstream(const path & p, openmode mode = out);
 	
-	void open(const res::path & p, openmode mode = out);
+	void open(const path & p, openmode mode = out);
 	
 	virtual ~ofstream() { }
 	
@@ -69,9 +69,9 @@ public:
 	
 	fstream() { }
 	
-	fstream(const res::path & p, openmode mode = out);
+	fstream(const path & p, openmode mode = out);
 	
-	void open(const res::path & p, openmode mode = out);
+	void open(const path & p, openmode mode = out);
 	
 	virtual ~fstream() { }
 	
@@ -99,4 +99,4 @@ std::istream & read(std::istream & ifs, std::string & buf);
 
 } // namespace fs
 
-#endif // ARX_IO_FILESTREAM_H
+#endif // ARX_IO_FS_FILESTREAM_H

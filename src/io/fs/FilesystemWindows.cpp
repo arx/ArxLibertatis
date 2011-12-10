@@ -17,14 +17,14 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 
 #include "Configure.h"
 
 #include <windows.h>
 
-#include "io/resource/ResourcePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
 #include "io/log/Logger.h"
 
 using std::string;
@@ -54,7 +54,7 @@ std::string GetLastErrorString() {
 }
 
 
-bool exists(const res::path & p) {
+bool exists(const path & p) {
 	if(p.empty()) {
 		return true;
 	}
@@ -63,7 +63,7 @@ bool exists(const res::path & p) {
 	return result != INVALID_FILE_ATTRIBUTES;
 }
 
-bool is_directory(const res::path & p) {
+bool is_directory(const path & p) {
 	if(p.empty()) {
 		return true;
 	}
@@ -75,7 +75,7 @@ bool is_directory(const res::path & p) {
 	return (attributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
 }
 
-bool is_regular_file(const res::path & p) {
+bool is_regular_file(const path & p) {
 	DWORD attributes = GetFileAttributesA(p.string().c_str());
 	if(attributes == INVALID_FILE_ATTRIBUTES)
 		return false;
@@ -83,7 +83,7 @@ bool is_regular_file(const res::path & p) {
 	return (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;	
 }
 
-std::time_t last_write_time(const res::path & p) {
+std::time_t last_write_time(const path & p) {
 	FILETIME creationTime;
 	FILETIME accessTime;
 	FILETIME modificationTime;
@@ -109,7 +109,7 @@ std::time_t last_write_time(const res::path & p) {
 	return writeTime;
 }
 
-u64 file_size(const res::path & p) {
+u64 file_size(const path & p) {
 	HANDLE hFile = CreateFileA(p.string().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hFile == INVALID_HANDLE_VALUE)
 		return (u64)-1;
@@ -127,7 +127,7 @@ u64 file_size(const res::path & p) {
 	return fileSize;
 }
 
-bool remove(const res::path & p) {
+bool remove(const path & p) {
 
 	bool succeeded = true;
 	
@@ -146,7 +146,7 @@ bool remove(const res::path & p) {
 	return succeeded;
 }
 
-bool remove_all(const res::path & p) {
+bool remove_all(const path & p) {
 	if(!exists(p)) {
 		return true;
 	}
@@ -168,7 +168,7 @@ bool remove_all(const res::path & p) {
 	return succeeded;
 }
 
-bool create_directory(const res::path & p) {
+bool create_directory(const path & p) {
 	if(p.empty()) {
 		return true;
 	}
@@ -186,13 +186,13 @@ bool create_directory(const res::path & p) {
 	return ret;
 }
 
-bool create_directories(const res::path & p) {
+bool create_directories(const path & p) {
 	
 	if(p.empty()) {
 		return true;
 	}
 	
-	res::path parent = p.parent();
+	path parent = p.parent();
 	if(!exists(parent)) {
 		if(!create_directories(parent)) {
 			return false;
@@ -202,7 +202,7 @@ bool create_directories(const res::path & p) {
 	return create_directory(p);
 }
 
-bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite) {
+bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	bool ret = CopyFileA(from_p.string().c_str(), to_p.string().c_str(), !overwrite) == TRUE;
 	if(!ret) {
 		LogWarning << "CopyFileA(" << from_p << ", " << to_p << ", " << !overwrite << ") failed! " << GetLastErrorString();
@@ -210,7 +210,7 @@ bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite)
 	return ret;
 }
 
-bool rename(const res::path & old_p, const res::path & new_p, bool overwrite) {
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
 	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
 	if(!ret) {
@@ -225,7 +225,7 @@ struct directory_iterator_data {
 	HANDLE			 findHandle;
 };
 
-directory_iterator::directory_iterator(const res::path & p) {
+directory_iterator::directory_iterator(const path & p) {
 	
 	directory_iterator_data* itData = new directory_iterator_data();
 	handle = itData;

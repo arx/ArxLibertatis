@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_PAKENTRY_H
-#define ARX_IO_PAKENTRY_H
+#ifndef ARX_IO_RESOURCE_PAKENTRY_H
+#define ARX_IO_RESOURCE_PAKENTRY_H
 
 #include <string>
 #include <map>
@@ -93,4 +93,4 @@ public:
 	
 };
 
-#endif // ARX_IO_PAKENTRY_H
+#endif // ARX_IO_RESOURCE_PAKENTRY_H

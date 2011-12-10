@@ -324,7 +324,7 @@ path path::load(const std::string & str) {
 					} else {
 						ostart = 0;
 					}
-				} else if(last - ostart - 1 == 2 && copy[last + 1] == '.' && copy[last + 2] == '.') {
+				} else if(ostart - last - 1 == 2 && copy[last + 1] == '.' && copy[last + 2] == '.') {
 					copy[ostart++] = '/', copy[ostart++] = '.', copy[ostart++] = '.';
 				} else {
 					ostart = last;

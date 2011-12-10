@@ -49,15 +49,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-namespace res { class path; }
+namespace fs { class path; }
 
-extern const res::path SAVEGAME_NAME;
+extern const fs::path SAVEGAME_NAME;
 
 extern long FORBID_SAVE;
 
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
-long ARX_CHANGELEVEL_GetInfo(const res::path & path, std::string & name, float & version, long & level, unsigned long & time);
+long ARX_CHANGELEVEL_GetInfo(const fs::path & path, std::string & name, float & version, long & level, unsigned long & time);
 
 /**
  * Load a GameSave

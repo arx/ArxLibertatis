@@ -26,8 +26,7 @@
 #include "input/Input.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
-#include "io/resource/ResourcePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 #include "io/IniReader.h"
 #include "io/IniSection.h"
 #include "io/IniWriter.h"
@@ -464,7 +463,7 @@ static Vec2i parseResolution(const string & resolution) {
 	}
 }
 
-bool Config::init(const res::path & file, const res::path & defaultFile) { // TODO use res::path
+bool Config::init(const fs::path & file, const fs::path & defaultFile) {
 	
 	this->file = file;
 	

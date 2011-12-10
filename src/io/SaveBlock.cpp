@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <zlib.h>
 
 #include "io/log/Logger.h"
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/Blast.h"
 
 #include "platform/String.h"
@@ -245,7 +245,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 	}
 }
 
-SaveBlock::SaveBlock(const res::path & _savefile) : savefile(_savefile), totalSize(0), usedSize(0), chunkCount(0) { }
+SaveBlock::SaveBlock(const fs::path & _savefile) : savefile(_savefile), totalSize(0), usedSize(0), chunkCount(0) { }
 
 SaveBlock::~SaveBlock() { }
 
@@ -400,7 +400,7 @@ bool SaveBlock::defragment() {
 	
 	LogDebug("defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize << " b for " << files.size() << " files in " << chunkCount << " chunks");
 	
-	res::path tempFileName = savefile;
+	fs::path tempFileName = savefile;
 	int i = 0;
 	
 	do {
@@ -557,7 +557,7 @@ vector<string> SaveBlock::getFiles() const {
 	return result;
 }
 
-char * SaveBlock::load(const res::path & savefile, const std::string & filename, size_t & size) {
+char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
 	
 	arx_assert(filename.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
 	

@@ -56,9 +56,9 @@ namespace res { class path; }
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
-long DanaeSaveLevel(const res::path & file);
-void LogDirCreation(const res::path & dir);
-void WriteIOInfo(INTERACTIVE_OBJ * io, const res::path & dir);
+long DanaeSaveLevel(const fs::path & file);
+void LogDirCreation(const fs::path & dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 #endif
 

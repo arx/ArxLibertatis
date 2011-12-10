@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_PAKREADER_H
-#define ARX_IO_PAKREADER_H
+#ifndef ARX_IO_RESOURCE_PAKREADER_H
+#define ARX_IO_RESOURCE_PAKREADER_H
 
 #include <vector>
 #include <iostream>
@@ -26,6 +26,8 @@
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
 #include "platform/Flags.h"
+
+namespace fs { class path; }
 
 enum Whence {
 	SeekSet,
@@ -63,9 +65,9 @@ public:
 	
 	void removeFile(const res::path & name);
 	
-	bool addFiles(const res::path & path, const res::path & mount = res::path());
+	bool addFiles(const fs::path & path, const res::path & mount = res::path());
 	
-	bool addArchive(const res::path & pakfile);
+	bool addArchive(const fs::path & pakfile);
 	void clear();
 	
 	bool read(const res::path & name, void * buf);
@@ -80,8 +82,8 @@ private:
 	ReleaseFlags release;
 	std::vector<std::istream *> paks;
 	
-	bool addFiles(PakDirectory * dir, const res::path & path);
-	bool addFile(PakDirectory * dir, const res::path & path, const std::string & name);
+	bool addFiles(PakDirectory * dir, const fs::path & path);
+	bool addFile(PakDirectory * dir, const fs::path & path, const std::string & name);
 	
 };
 
@@ -89,4 +91,4 @@ DECLARE_FLAGS_OPERATORS(PakReader::ReleaseFlags)
 
 extern PakReader * resources;
 
-#endif // ARX_IO_PAKREADER_H
+#endif // ARX_IO_RESOURCE_PAKREADER_H

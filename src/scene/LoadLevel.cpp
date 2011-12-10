@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/GameTime.h"
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "game/Levels.h"
@@ -69,10 +70,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 
+#include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
+#include "io/fs/Filesystem.h"
 #include "io/resource/ResourcePath.h"
-#include "io/FileStream.h"
 #include "io/resource/PakReader.h"
-#include "io/Filesystem.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
 #include "io/log/Logger.h"
@@ -140,21 +142,21 @@ bool CanPurge(Vec3f * pos)
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-void LogDirCreation(const res::path & dir) {
+void LogDirCreation(const fs::path & dir) {
 	if(fs::is_directory(dir)) {
 		LogDebug("LogDirCreation: " << dir);
 	}
 }
 
-long DanaeSaveLevel(const res::path & _fic) {
+long DanaeSaveLevel(const fs::path & _fic) {
 	
 	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
-	res::path fic = _fic;
+	fs::path fic = _fic;
 	fic.set_ext("dlf");
 	if(fs::exists(fic)) {
-		res::path backupfile = fic;
+		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
@@ -168,10 +170,10 @@ long DanaeSaveLevel(const res::path & _fic) {
 		}
 	}
 	
-	res::path fic2 = fic;
+	fs::path fic2 = fic;
 	fic2.set_ext("llf");
 	if(fs::exists(fic2)) {
-		res::path backupfile = fic;
+		fs::path backupfile = fic;
 		int i = 0;
 		do {
 			std::stringstream s;
@@ -524,13 +526,13 @@ long DanaeSaveLevel(const res::path & _fic) {
 	return 1;
 }
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, const res::path & dir) {
+void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	
 	if(!fs::is_directory(dir)) {
 		return;
 	}
 	
-	res::path file = (dir / io->short_name()).set_ext("log");
+	fs::path file = (dir / io->short_name()).set_ext("log");
 	
 	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc);
 	if(!ofs.is_open()) {
@@ -548,13 +550,13 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const res::path & dir) {
 
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 	
-	res::path file;
+	fs::path file;
 	EERIE_SCRIPT * script;
 	
 	switch(fl) {
 		
 		case 1: { // class script
-			file = io->filename;
+			file = config.paths.user / io->filename.string();
 			script = &io->script;
 			break;
 		}
@@ -564,7 +566,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 				LogError << ("NO IDENT...");
 				return;
 			}
-			file = io->full_name();
+			file = config.paths.user / io->full_name().string();
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;

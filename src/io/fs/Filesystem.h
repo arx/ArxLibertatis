@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_FILESYSTEM_H
-#define ARX_IO_FILESYSTEM_H
+#ifndef ARX_IO_FS_FILESYSTEM_H
+#define ARX_IO_FS_FILESYSTEM_H
 
 #include <stddef.h>
 #include <ctime>
@@ -26,65 +26,65 @@
 
 #include "platform/Platform.h"
 
-namespace res { class path; }
-
 namespace fs {
+
+class path;
 
 /**
  * Check if a file (directory or regular file) exists.
  * @return true if the file exists, false if it doesn't exist or there was an error
  */
-bool exists(const res::path & p);
+bool exists(const path & p);
 
 /**
  * Check if a path points to a directory.
  * @return true if the p exists and is a directory, false otherwise
  */
-bool is_directory(const res::path & p);
+bool is_directory(const path & p);
 
 /**
  * Check if a path points to a regular file.
  * @return true if the p exists and is a regular file, false otherwise.
  */
-bool is_regular_file(const res::path & p);
+bool is_regular_file(const path & p);
 
 /**
  * Get the last write time of a file.
  * @return the last write time or 0 if there was an error (file doesn't exist, ...).
  */
-std::time_t last_write_time(const res::path & p);
+std::time_t last_write_time(const path & p);
 
 /**
  * Get the size of a file.
  * @return the filesize or (u64)-1 if there was an error (file doesn't exist, ...).
  */
-u64 file_size(const res::path & p);
+u64 file_size(const path & p);
 
 /**
  * Remove a file or empty directory.
  * @return true if the file was removed or didn't exist.
  */
-bool remove(const res::path & p);
+bool remove(const path & p);
 
 /**
  * Recursively remove a file or directory.
  * @return true if the file was removed or didn't exist.
  */
-bool remove_all(const res::path & p);
+bool remove_all(const path & p);
 
 /**
  * Create a directory.
  * p.parent() must exist and be a directory.
  * @return true if the directory was created or false if there was an error.
  */
-bool create_directory(const res::path & p);
+bool create_directory(const path & p);
 
 /**
  * Create a directory.
  * All ancestors of p must either be a directory or not exist.
  * @return true if the directory was created or false if there was an error.
  */
-bool create_directories(const res::path & p);
+bool create_directories(const path & p);
 
 /**
  * Copy a regular file.
@@ -93,7 +93,7 @@ bool create_directories(const res::path & p);
  * new_p must not be a directory, even if overwrite is true
  * @return true if the file was copied or false if there was an error.
  */
-bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite = false);
+bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
 
 /**
  * Move a regular file or directory.
@@ -102,7 +102,7 @@ bool copy_file(const res::path & from_p, const res::path & to_p, bool overwrite 
  * new_p must not be a directory, even if overwrite is true
  * @return true if the file was copied or false if there was an error.
  */
-bool rename(const res::path & old_p, const res::path & new_p, bool overwrite = false);
+bool rename(const path & old_p, const path & new_p, bool overwrite = false);
 
 /**
  * Read a file into memory.
@@ -110,7 +110,7 @@ bool rename(const res::path & old_p, const res::path & new_p, bool overwrite = f
  * @param size Will receive the size of the loaded file.
  * @return a new[]-allocated buffer containing the file data or NULL on error.
  */
-char * read_file(const res::path & p, size_t & size);
+char * read_file(const path & p, size_t & size);
 
 class directory_iterator {
 	
@@ -125,7 +125,7 @@ class directory_iterator {
 	
 public:
 	
-	explicit directory_iterator(const res::path & p);
+	explicit directory_iterator(const path & p);
 	
 	~directory_iterator();
 	
@@ -143,4 +143,4 @@ public:
 
 }
 
-#endif // ARX_IO_FILESYSTEM_H
+#endif // ARX_IO_FS_FILESYSTEM_H

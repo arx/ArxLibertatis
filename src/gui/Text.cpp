@@ -56,9 +56,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/font/FontCache.h"
 
-#include "io/Filesystem.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
-#include "io/resource/ResourcePath.h"
 
 using std::string;
 
@@ -257,7 +257,7 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-static Font * _CreateFont(const string & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor = Yratio) {
+static Font * _CreateFont(const fs::path & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor = Yratio) {
 	
 	std::stringstream ss;
 
@@ -286,7 +286,8 @@ bool ARX_Text_Init() {
 	
 	ARX_Text_Close();
 	
-	string fontFile = "misc/arx.ttf";
+	// TODO load font files though the resource system
+	fs::path fontFile = "misc/arx.ttf";
 	if(!fs::exists(fontFile)) {
 		fontFile = "misc/arx_default.ttf"; // Full path
 		if(!fs::exists(fontFile)) {

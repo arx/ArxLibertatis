@@ -70,9 +70,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/resource/ResourcePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 #include "io/resource/PakReader.h"
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
 #include "io/IO.h"
@@ -3948,9 +3948,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
  * Save the currently loaded scene.
  * @param partal_path Where to save the scene to.
  */
-static bool FastSceneSave(const res::path & partial_path) {
+static bool FastSceneSave(const fs::path & partial_path) {
 	
-	res::path path = "game" / partial_path;
+	fs::path path = "game" / partial_path;
 	
 	LogDebug("FastSceneSave" << path);
 	
@@ -4002,7 +4002,7 @@ static bool FastSceneSave(const res::path & partial_path) {
 	
 	for(fs::directory_iterator it(partial_path); !it.end(); ++it) {
 		
-		res::path path = partial_path / it.name();
+		fs::path path = partial_path / it.name();
 		
 		if(!path.has_ext("scn") || !it.is_regular_file()) {
 			continue;
@@ -4027,7 +4027,7 @@ static bool FastSceneSave(const res::path & partial_path) {
 	}
 	
 	uh->count = count;
-	res::path file = path / "fast.fts";
+	fs::path file = path / "fast.fts";
 	long compressedstart = pos;
 	
 	FAST_SCENE_HEADER * fsh = reinterpret_cast<FAST_SCENE_HEADER *>(dat + pos);
@@ -4276,7 +4276,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 			AnchorData_Create(ACTIVEBKG);
 		}
 		
-		FastSceneSave(ftemp);
+		FastSceneSave(ftemp.string());
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
 	}

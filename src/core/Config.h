@@ -22,11 +22,9 @@
 
 #include <string>
 
-#include <boost/filesystem/path.hpp>
-
 #include "input/InputKey.h"
 
-#include "io/resource/ResourcePath.h"
+#include "io/fs/FilePath.h"
 
 #include "math/MathFwd.h"
 #include "math/Vector2.h"
@@ -190,8 +188,8 @@ public:
 	
 	struct {
 		
-		boost::filesystem::path user; //!< Directory for config and save files.
-		boost::filesystem::path data; //!< Directory for data files.
+		fs::path user; //!< Directory for config and save files.
+		fs::path data; //!< Directory for data files.
 		
 	} paths;
 	
@@ -206,11 +204,11 @@ public:
 	 */
 	bool save();
 	
-	bool init(const res::path & file, const res::path & default_file);
+	bool init(const fs::path & file, const fs::path & default_file);
 	
 private:
 	
-	res::path file;
+	fs::path file;
 	
 	InputKeyId GetDIKWithASCII( const std::string& _pcTouch) const;
 	

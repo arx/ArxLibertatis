@@ -24,6 +24,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "io/fs/FilePath.h"
 
 FT_Library g_FTLibrary = NULL;
 FontCache* FontCache::m_Instance = NULL;
@@ -52,16 +53,16 @@ FontCache::~FontCache()
 	g_FTLibrary = NULL;
 }
 
-Font* FontCache::GetFont( const std::string& fontFile, unsigned int fontSize )
+Font* FontCache::GetFont(const fs::path & fontFile, unsigned int fontSize )
 {
 	Font* pFont = 0;
-	FontMap::iterator it = m_Instance->m_LoadedFonts.find(Font::Info(fontFile, fontSize));
+	FontMap::iterator it = m_Instance->m_LoadedFonts.find(Font::Info(fontFile.string(), fontSize));
 	if(it == m_Instance->m_LoadedFonts.end())
 	{
 		pFont = m_Instance->Create(fontFile, fontSize);
 		
 		if(pFont)
-			m_Instance->m_LoadedFonts[Font::Info(fontFile, fontSize)] = pFont;
+			m_Instance->m_LoadedFonts[Font::Info(fontFile.string(), fontSize)] = pFont;
 	}
 	else
 	{
@@ -74,12 +75,12 @@ Font* FontCache::GetFont( const std::string& fontFile, unsigned int fontSize )
 	return pFont;
 }
 
-Font* FontCache::Create( const std::string& fontFile, const unsigned int fontSize )
+Font* FontCache::Create(const fs::path & fontFile, const unsigned int fontSize )
 {
 	FT_Face		face;
 	FT_Error    error;
 	
-    error = FT_New_Face( g_FTLibrary, fontFile.c_str(), 0, &face );
+    error = FT_New_Face( g_FTLibrary, fontFile.string().c_str(), 0, &face );
     if( error == FT_Err_Unknown_File_Format )
     {
         // ... the font file could be opened and read, but it appears
@@ -102,7 +103,7 @@ Font* FontCache::Create( const std::string& fontFile, const unsigned int fontSiz
 		return NULL;
 	}
 
-	return new Font(fontFile, fontSize, face);
+	return new Font(fontFile.string(), fontSize, face);
 }
 
 void FontCache::ReleaseFont( Font* pFont )

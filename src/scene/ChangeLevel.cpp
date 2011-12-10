@@ -70,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
 
@@ -124,9 +124,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 
-const res::path SAVEGAME_NAME = "gsave.sav";
-const res::path CURRENT_GAME_DIRECTORY = "save/cur0001";
-const res::path CURRENT_GAME_FILE = CURRENT_GAME_DIRECTORY / SAVEGAME_NAME;
+const fs::path SAVEGAME_NAME = "gsave.sav";
+const fs::path CURRENT_GAME_DIRECTORY = "save/cur0001";
+const fs::path CURRENT_GAME_FILE = CURRENT_GAME_DIRECTORY / SAVEGAME_NAME;
 
 float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
@@ -138,9 +138,9 @@ SaveBlock * _pSaveBlock = NULL;
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
-static res::path ARX_GAMESAVE_CreateNewInstance() {
+static fs::path ARX_GAMESAVE_CreateNewInstance() {
 	
-	res::path savedir("save");
+	fs::path savedir("save");
 	
 	arx_assert(fs::is_directory(savedir));
 	
@@ -149,13 +149,13 @@ static res::path ARX_GAMESAVE_CreateNewInstance() {
 		std::ostringstream oss;
 		oss << "save" << std::setfill('0') << std::setw(4) << num;
 		
-		res::path path = savedir / oss.str();
+		fs::path path = savedir / oss.str();
 		
 		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / SAVEGAME_NAME))) {
 			
 			if(!fs::create_directories(path)) {
 				LogWarning << "error creating save path " << path;
-				return res::path();
+				return fs::path();
 			}
 			
 			return path;
@@ -245,7 +245,7 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 	return -1;
 }
 
-static res::path ARX_GAMESAVE_MakePath(long instance) {
+static fs::path ARX_GAMESAVE_MakePath(long instance) {
 	
 	std::ostringstream oss;
 	oss << "save/save" << std::setfill('0') << std::setw(4) << instance;
@@ -2951,7 +2951,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	arxtime.resume();
 	
 	// Create the destination directory
-	res::path savePath;
+	fs::path savePath;
 	if(instance <= 0) {
 		savePath = ARX_GAMESAVE_CreateNewInstance();
 		if(savePath.empty()) {
@@ -2978,7 +2978,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	return true;
 }
 
-static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const res::path & path)
+static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA & pld, const fs::path & path)
 {
 	// Checks For Directory
 	if(!fs::is_directory(path)) {
@@ -3033,7 +3033,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 		return -1;
 	
 	// Copy SavePath to Current Game
-	res::path savePath = ARX_GAMESAVE_MakePath(instance);
+	fs::path savePath = ARX_GAMESAVE_MakePath(instance);
 	if(!fs::copy_file(savePath / SAVEGAME_NAME, CURRENT_GAME_FILE)) {
 		LogWarning << "failed to create copy savegame to " << CURRENT_GAME_FILE;
 		return -1;
@@ -3076,7 +3076,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_GetInfo(const res::path & path, string & name, float & version, long & level, unsigned long & time) {
+long ARX_CHANGELEVEL_GetInfo(const fs::path & path, string & name, float & version, long & level, unsigned long & time) {
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 

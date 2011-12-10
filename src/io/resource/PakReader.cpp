@@ -26,8 +26,9 @@
 #include "io/log/Logger.h"
 #include "io/Blast.h"
 #include "io/resource/PakEntry.h"
-#include "io/Filesystem.h"
-#include "io/FileStream.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
 
 using std::min;
 using std::strlen;
@@ -347,11 +348,11 @@ size_t CompressedFileHandle::tell() {
 /*! Plain file not in a .pak file archive. */
 class PlainFile : public PakFile {
 	
-	res::path path;
+	fs::path path;
 	
 public:
 	
-	PlainFile(const res::path & _path, size_t size) : PakFile(size), path(_path) { }
+	PlainFile(const fs::path & _path, size_t size) : PakFile(size), path(_path) { }
 	
 	void read(void * buf) const;
 	
@@ -365,7 +366,7 @@ class PlainFileHandle : public PakFileHandle {
 	
 public:
 	
-	explicit  PlainFileHandle(const res::path & path)
+	explicit  PlainFileHandle(const fs::path & path)
 		: ifs(path, fs::fstream::in | fs::fstream::binary) {
 		arx_assert(ifs.is_open());
 	};
@@ -418,7 +419,7 @@ PakReader::~PakReader() {
 	clear();
 }
 
-bool PakReader::addArchive(const res::path & pakfile) {
+bool PakReader::addArchive(const fs::path & pakfile) {
 	
 	fs::ifstream * ifs = new fs::ifstream(pakfile, fs::fstream::in | fs::fstream::binary);
 	
@@ -578,7 +579,7 @@ PakFileHandle * PakReader::open(const res::path & name) {
 	return f->open();
 }
 
-bool PakReader::addFiles(const res::path & path, const res::path & mount) {
+bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 	
 	if(fs::is_directory(path)) {
 			
@@ -609,7 +610,7 @@ void PakReader::removeFile(const res::path & file) {
 	}
 }
 
-bool PakReader::addFile(PakDirectory * dir, const res::path & path, const std::string & name) {
+bool PakReader::addFile(PakDirectory * dir, const fs::path & path, const std::string & name) {
 	
 	if(name.empty()) {
 		return false;
@@ -624,15 +625,15 @@ bool PakReader::addFile(PakDirectory * dir, const res::path & path, const std::s
 	return true;
 }
 
-bool PakReader::addFiles(PakDirectory * dir, const res::path & path) {
+bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	bool ret = true;
 	
 	for(fs::directory_iterator it(path); !it.end(); ++it) {
 		
 		std::string name = it.name();
-		res::path entry = path / name;
-			
+		fs::path entry = path / name;
+		
 		if(it.is_directory()) {
 			ret &= addFiles(dir->addDirectory(name), entry);
 		} else if(it.is_regular_file()) {

@@ -23,24 +23,25 @@
 #include <sstream>
 #include <algorithm>
 
-#include "io/Filesystem.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
 #include "io/resource/PakReader.h"
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
-#include "io/FileStream.h"
 #include "io/log/Logger.h"
 
 using std::transform;
 using std::ostringstream;
 using std::string;
 
-void dump(PakDirectory & dir, const res::path & dirname = res::path()) {
+void dump(PakDirectory & dir, const fs::path & dirname = fs::path()) {
 	
 	fs::create_directories(dirname);
 	
 	for(PakDirectory::files_iterator i = dir.files_begin(); i != dir.files_end(); ++i) {
 		
-		res::path filename = dirname / i->first;
+		fs::path filename = dirname / i->first;
 		
 		PakFile * file = i->second;
 		
