@@ -398,44 +398,67 @@ bool ArxGame::InitGameData()
 	return init;
 }
 
+static const char * default_paks[][2] = {
+	{ "data.pak", NULL },
+	{ "loc.pak", "loc_default.pak" },
+	{ "data2.pak", NULL },
+	{ "sfx.pak", NULL },
+	{ "speech.pak", "speech_default.pak" },
+};
+
+static void add_paks(const fs::path & base, bool * found) {
+	
+	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+		if(resources->addArchive(base / default_paks[i][0])) {
+			found[i] = true;
+		} else if(default_paks[i][1] && resources->addArchive(base / default_paks[i][1])) {
+			found[i] = true;
+		}
+	}
+	
+	resources->addFiles(base / "editor", "editor");
+	resources->addFiles(base / "game", "game");
+	resources->addFiles(base / "graph", "graph");
+	resources->addFiles(base / "localisation", "localisation");
+	resources->addFiles(base / "misc", "misc");
+	resources->addFiles(base / "sfx", "sfx");
+	resources->addFiles(base / "speech", "speech");
+}
+
 bool ArxGame::AddPaks() {
 	
 	arx_assert(!resources);
 	
 	resources = new PakReader;
 	
-	fs::path pak_data = "data.pak";
-	if(!resources->addArchive(pak_data)) {
-		LogError << "Unable to find main data file " << pak_data;
-		return false;
+	bool found[ARRAY_SIZE(default_paks)];
+	std::fill_n(found, ARRAY_SIZE(default_paks), false);
+	
+	
+	if(!config.paths.data.empty()) {
+		add_paks(config.paths.data, found);
 	}
 	
-	fs::path pak_loc = "loc.pak";
-	if(!resources->addArchive(pak_loc)) {
-		fs::path pak_loc_default = "loc_default.pak";
-		if(!resources->addArchive(pak_loc_default)) {
-			LogError << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
-			return false;
-		}
-	}
+	add_paks(config.paths.user, found);
 	
-	fs::path pak_data2 = "data2.pak";
-	if(!resources->addArchive(pak_data2)) {
-		LogError << "Unable to find aux data file " << pak_data2;
-		return false;
-	}
-	
-	fs::path pak_sfx = "sfx.pak";
-	if(!resources->addArchive(pak_sfx)) {
-		LogError << "Unable to find sfx data file " << pak_sfx;
-		return false;
-	}
-	
-	fs::path pak_speech = "speech.pak";
-	if(!resources->addArchive(pak_speech)) {
-		fs::path pak_speech_default = "speech_default.pak";
-		if(!resources->addArchive(pak_speech_default)) {
-			LogError << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
+	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+		if(!found[i]) {
+			if(config.paths.data.empty()) {
+				if(default_paks[i][1]) {
+					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
+					         << " in " << config.paths.user;
+				} else {
+					LogError << "Unable to find " << default_paks[i][0] << " in " << config.paths.user;
+				}
+			} else {
+				if(default_paks[i][1]) {
+					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
+					         << " in either " << config.paths.data << " or " << config.paths.user;
+				} else {
+					LogError << "Unable to find " << default_paks[i][0]
+					          << " in either " << config.paths.data << " or " << config.paths.user;
+				}
+			}
 			return false;
 		}
 	}
