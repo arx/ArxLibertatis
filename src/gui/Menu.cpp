@@ -556,7 +556,7 @@ void ARX_Menu_Manage() {
 				{
 					LogDebug("snapshot");
 					//create a screenshot temporaire pour la sauvegarde
-					SnapShot *pSnapShot = new SnapShot("sct", true);
+					SnapShot *pSnapShot = new SnapShot(config.paths.user / "sct", true);
 					pSnapShot->GetSnapShotDim(160,100);
 					delete pSnapShot;
 

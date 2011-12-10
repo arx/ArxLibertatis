@@ -2027,7 +2027,7 @@ void FirstFrameProc() {
 		}
 	}
 
-	InitSnapShot("snapshot");
+	InitSnapShot(config.paths.user / "snapshot");
 }
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;

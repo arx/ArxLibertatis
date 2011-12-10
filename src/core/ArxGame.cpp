@@ -948,7 +948,7 @@ bool ArxGame::Render() {
 
 	if (WILL_QUICKSAVE)
 	{
-		SnapShot * pSnapShot = new SnapShot("sct", true);
+		SnapShot * pSnapShot = new SnapShot(config.paths.user / "sct", true);
 		pSnapShot->GetSnapShotDim(160,100);
 		delete pSnapShot;
 
