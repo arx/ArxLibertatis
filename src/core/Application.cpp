@@ -212,6 +212,8 @@ bool Application::InitConfig() {
 		}
 	}
 	
+	config.set_output_file(configFile);
+	
 	Logger::configure(config.misc.debug);
 	
 	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {
