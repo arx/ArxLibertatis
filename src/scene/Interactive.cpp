@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/GameTime.h"
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "game/Equipment.h"
@@ -2668,7 +2669,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	//Must KILL dir...
 	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
 		
-		res::path dir = inter.iobj[i]->full_name();
+		fs::path dir = config.paths.user / inter.iobj[i]->full_name();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
@@ -2953,7 +2954,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 	
 	while(io->ident == 0) {
 		
-		fs::path temp = io->full_name().string();
+		fs::path temp = config.paths.user / io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;

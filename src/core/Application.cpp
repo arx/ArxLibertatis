@@ -188,16 +188,28 @@ static bool migrateFilenames() {
 bool Application::InitConfig() {
 	
 	// Initialize config first, before anything else.
-	fs::path configFile = "cfg.ini";
+	fs::path configFile = config.paths.user / "cfg.ini";
 	
 	bool migrated = false;
 	if(!fs::exists(configFile) && !(migrated = migrateFilenames())) {
 		return false;
 	}
 	
-	fs::path defaultConfigFile = "cfg_default.ini";
-	if(!config.init(configFile, defaultConfigFile)) {
-		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile << ", using defaults.";
+	if(!config.init(configFile)) {
+		fs::path defaultUserConfigFile = config.paths.user / "cfg_default.ini";
+		if(!config.init(defaultUserConfigFile)) {
+			if(config.paths.data.empty()) {
+				LogWarning << "Could not read config files " << configFile << " and "
+				           << defaultUserConfigFile << ", using defaults.";
+			} else {
+				fs::path defaultConfigFile = config.paths.data / "cfg_default.ini";
+				if(config.paths.data.empty() || !config.init(defaultConfigFile)) {
+					LogWarning << "Could not read config files " << configFile << ", "
+					           << defaultUserConfigFile << " and " << defaultConfigFile
+					           << ", using defaults.";
+				}
+			}
+		}
 	}
 	
 	Logger::configure(config.misc.debug);

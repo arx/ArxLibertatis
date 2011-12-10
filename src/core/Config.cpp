@@ -463,15 +463,10 @@ static Vec2i parseResolution(const string & resolution) {
 	}
 }
 
-bool Config::init(const fs::path & file, const fs::path & defaultFile) {
-	
-	this->file = file;
+bool Config::init(const fs::path & file) {
 	
 	fs::ifstream ifs;
 	ifs.open(file);
-	if(!ifs.is_open()) {
-		ifs.open(defaultFile);
-	}
 	bool loaded = ifs.is_open();
 	
 	ConfigReader reader;

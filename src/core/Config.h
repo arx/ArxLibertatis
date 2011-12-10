@@ -204,7 +204,9 @@ public:
 	 */
 	bool save();
 	
-	bool init(const fs::path & file, const fs::path & default_file);
+	bool init(const fs::path & file);
+	
+	void set_output_file(const fs::path & _file) { file = _file; }
 	
 private:
 	
