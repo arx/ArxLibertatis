@@ -171,10 +171,10 @@ static bool migrateFilenames() {
 	
 	bool migrated = true;
 	
-	for(fs::directory_iterator it(""); !it.end(); ++it) {
+	for(fs::directory_iterator it(config.paths.user); !it.end(); ++it) {
 		string file = it.name();
 		if(fileset.find(toLowercase(file)) != fileset.end()) {
-			migrated &= migrateFilenames(file, it.is_directory());
+			migrated &= migrateFilenames(config.paths.user / file, it.is_directory());
 		}
 	}
 	
