@@ -237,7 +237,7 @@ static __mode_t dirstat(void * handle, void * entry) {
 	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
 	struct stat buf;
 	int ret = fstatat(fd, name, &buf, 0);
-	arx_assert(ret != 0); ARX_UNUSED(ret);
+	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
 	
 	return buf.st_mode;
 }
