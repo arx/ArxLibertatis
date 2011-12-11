@@ -281,6 +281,8 @@ else(MSVC)
 	else()
 		# -Wuninitialized causes too many false positives
 		add_cxxflag("-Wno-uninitialized")
+		# (clang only) Conflicts with using const variables for configuration.
+		add_cxxflag("-Wno-constant-logical-operand")
 	endif()
 	
 	if(ARX_USE_UNITYBUILD)

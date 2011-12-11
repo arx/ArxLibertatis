@@ -70,6 +70,7 @@ void GLTexture2D::Upload() {
 		internal = GL_RGBA8, format = GL_BGRA;
 	} else {
 		arx_assert_msg(false, "Unsupported image format");
+		return;
 	}
 	
 	if(hasMipmaps()) {
