@@ -252,7 +252,7 @@ void Logger::configure(const string config) {
 			set(entry, Debug);
 		} else if(level == "info" || level == "i" || level == "I") {
 			set(entry, Info);
-		} else if(level == "warning" || level == "warn", level == "w" || level == "W") {
+		} else if(level == "warning" || level == "warn" || level == "w" || level == "W") {
 			set(entry, Warning);
 		} else if(level == "error" || level == "w" || level == "E") {
 			set(entry, Error);
