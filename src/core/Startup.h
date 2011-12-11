@@ -27,7 +27,7 @@
  * @return true if the program should exit immediately.
  */
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-void parseCommandLine(int argc, const char * const * argv);
+void parseCommandLine(int argc, char ** argv);
 #else
 void parseCommandLine(const char * command_line);
 #endif
