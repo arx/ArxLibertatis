@@ -19,26 +19,7 @@
 
 std::string expandEvironmentVariables(const std::string & in) {
 	
-#if defined(HAVE_WINAPI)
-	
-	size_t length = std::max(in.length() * 2, 1024);
-	boost::scoped_array<char> buffer(new char[length]);
-	
-	DWORD ret = ExpandEnvironmentStringsA(in.c_str(), buffer.get(), length);
-	
-	if(ret > length) {
-		length = ret;
-		buffer.reset(new char[length]);
-		ret = ExpandEnvironmentStringsA(in.c_str(), buffer.get(), length);
-	}
-	
-	if(ret == 0 || ret > length) {
-		return in;
-	}
-	
-	return std::string(buffer.get());
-	
-#elif defined(HAVE_WORDEXP_H)
+#if defined(HAVE_WORDEXP_H)
 	
 	wordexp_t p;
 	
@@ -55,8 +36,26 @@ std::string expandEvironmentVariables(const std::string & in) {
 	
 	return oss.str();
 	
+#elif defined(HAVE_WINAPI)
+	
+	size_t length = std::max<size_t>(in.length() * 2, 1024);
+	boost::scoped_array<char> buffer(new char[length]);
+	
+	DWORD ret = ExpandEnvironmentStringsA(in.c_str(), buffer.get(), length);
+	
+	if(ret > length) {
+		length = ret;
+		buffer.reset(new char[length]);
+		ret = ExpandEnvironmentStringsA(in.c_str(), buffer.get(), length);
+	}
+	
+	if(ret == 0 || ret > length) {
+		return in;
+	}
+	
+	return std::string(buffer.get());
+	
 #else
-#pragma
 # warning "Environment variable expansion not supported on this system."
 	return in;
 #endif
@@ -65,7 +64,7 @@ std::string expandEvironmentVariables(const std::string & in) {
 #ifdef HAVE_WINAPI
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
 	
-	static const char * key = "Software\ArxLibertatis";
+	static const char * key = "Software\\ArxLibertatis";
 	
 	DWORD length = 1024;
 	boost::scoped_array<char> buffer(new char[length]);
@@ -73,7 +72,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 	LONG ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
 	if(ret == ERROR_MORE_DATA) {
 		buffer.reset(new char[length]);
-		LONG ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
+		ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
 	}
 	
 	if(ret == ERROR_SUCCESS) {
