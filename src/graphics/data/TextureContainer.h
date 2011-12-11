@@ -148,6 +148,9 @@ public:
 	 */
 	Vec2f uv;
 	
+	//! Size of half a pixel in normalized texture coordinates.
+	Vec2f hd;
+	
 	TextureContainer * TextureRefinement;
 	TextureContainer * m_pNext; // Linked list ptr
 	TCFlags systemflags;
