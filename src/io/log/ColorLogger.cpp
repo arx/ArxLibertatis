@@ -37,7 +37,7 @@ void ColorConsole::log(const Source & file, int line, Logger::LogLevel level, co
 		case Logger::Info:    std::cout << "\e[1;32m[I]\e[0;32m", os = &std::cout; break;
 		case Logger::Warning: std::cerr << "\e[1;33m[W]\e[0;33m", os = &std::cerr; break;
 		case Logger::Error:   std::cerr << "\e[1;31m[E]\e[0;31m", os = &std::cerr; break;
-		case Logger::None: ARX_DEAD_CODE();
+		case Logger::None: ARX_DEAD_CODE(); return;
 	}
 	
 	(*os) << ' ' << file.name << "\e[m:\e[0;33m" << line << "\e[m" << "  " << str << std::endl;

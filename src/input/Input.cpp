@@ -919,7 +919,7 @@ bool Input::actionPressed(int actionId) const
 									case CONTROLS_CUST_MAGICMODE:
 									{
 										if ((!j) &&
-											    (isKeyPressed(config.actions[actionId].key[j+1] & 0xFFFF)))
+											    (isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)))
 										{
 											continue;
 										}
@@ -940,7 +940,7 @@ bool Input::actionPressed(int actionId) const
 									case CONTROLS_CUST_STEALTHMODE:
 									{
 										if ((!j) &&
-											    (isKeyPressed(config.actions[actionId].key[j+1] & 0xFFFF)))
+											    (isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)))
 										{
 											continue;
 										}
