@@ -1591,6 +1591,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+	
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
 		if(USE_PORTALS==4)
@@ -1602,6 +1604,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 			LogWarning << "unimplemented";
 		}
 	}
+	
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 	NbRoomDrawList=0;
 
