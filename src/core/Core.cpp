@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include <boost/algorithm/string/predicate.hpp>
-
 #include "Configure.h"
 
 #ifdef HAVE_WINAPI
