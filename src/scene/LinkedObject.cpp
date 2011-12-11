@@ -91,9 +91,6 @@ static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 	obj->linked[obj->nblinked].io = NULL;
 	obj->nblinked++;
 
-	if (obj->nblinked > 1)
-		obj->nblinked = obj->nblinked;
-
 	return (obj->nblinked - 1);
 }
 
