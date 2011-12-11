@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_RESOURCES_PATH_H
-#define ARX_IO_RESOURCES_PATH_H
+#ifndef ARX_IO_RESOURCE_RESOURCEPATH_H
+#define ARX_IO_RESOURCE_RESOURCEPATH_H
 
 #include <string>
 #include <ostream>
@@ -239,4 +239,4 @@ inline std::ostream & operator<<(std::ostream & strm, const path & path) {
 
 } // namespace fs
 
-#endif // ARX_IO_RESOURCES_PATH_H
+#endif // ARX_IO_RESOURCE_RESOURCEPATH_H

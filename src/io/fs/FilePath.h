@@ -54,8 +54,8 @@ public:
 	
 	path() { }
 	path(const path & other) : pathstr(other.pathstr) { }
-	path(const std::string & str) : pathstr(load(str)) { }
-	path(const char * str) : pathstr(load(str)) { }
+	inline path(const std::string & str) : pathstr(load(str)) { }
+	inline path(const char * str) : pathstr(load(str)) { }
 	
 	path & operator=(const path & other) {
 		return (pathstr = other.pathstr, *this);
