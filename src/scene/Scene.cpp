@@ -2364,9 +2364,11 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 			
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
 			{
+				GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex,
 					&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull],
 					pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
+				GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull=0;

@@ -877,11 +877,13 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 }
 
 void PopAllTriangleList() {
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
 		PopOneTriangleList(pTex);
 		pTex = pTex->m_pNext;
 	}
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
 //-----------------------------------------------------------------------------
