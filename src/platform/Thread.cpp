@@ -76,9 +76,9 @@ void Thread::waitForCompletion() {
 }
 
 void * Thread::entryPoint(void * param) {
-	CrashHandler::getInstance().registerThreadCrashHandlers();
+	CrashHandler::registerThreadCrashHandlers();
 	((Thread*)param)->run();
-	CrashHandler::getInstance().unregisterThreadCrashHandlers();
+	CrashHandler::unregisterThreadCrashHandlers();
 	return NULL;
 }
 
@@ -169,9 +169,9 @@ void SetCurrentThreadName(const std::string& threadName)
 DWORD WINAPI Thread::entryPoint(LPVOID param) {
 	SetCurrentThreadName(((Thread*)param)->threadName);
 
-	CrashHandler::getInstance().registerThreadCrashHandlers();
+	CrashHandler::registerThreadCrashHandlers();
 	((Thread*)param)->run();
-	CrashHandler::getInstance().unregisterThreadCrashHandlers();
+	CrashHandler::unregisterThreadCrashHandlers();
 	return 0;
 }
 

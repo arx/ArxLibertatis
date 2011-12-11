@@ -29,14 +29,6 @@ void initCrashHandler();
 
 #else
 
-#define BOOST_DATE_TIME_NO_LIB
-#include <boost/interprocess/mapped_region.hpp>
-#include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/uuid/uuid.hpp>
-
-#include "platform/CrashInfo.h"
-#include "platform/Lock.h"
-
 /**
  * Handle crashes and collect as much info as possible in order to ease bug fixing.
  * 
@@ -63,35 +55,24 @@ public:
 
 public:
 	/**
-	 * Constructor.
-	 */
-	CrashHandler();
-
-	/**
-	 * Destructor.
-	 */
-	~CrashHandler();
-
-	/**
-	 * Get the singleton object.
-	 * @return The singleton CrashHandler object.
-	 */
-	static CrashHandler& getInstance();
-
-	/**
 	 * Initialize the crash handler.
 	 * Will register the necessary platform specific handlers to trap all kind of crash scenarios.
 	 * This method can fail for a variety of reasons... See the log for more information.
 	 * This method should be called by the main thread of the process.
 	 * @return True if initialized correctly, false otherwise.
 	 */
-	bool initialize();
+	static bool initialize();
+
+	/**
+	 * Shutdown the crash handler.
+	 */
+	static void shutdown();
 
 	/**
 	 * Return the status of the crash handler.
 	 * \return True if the crash handler is initialized, false otherwise.
 	 */
-	bool isInitialized() const;
+	static bool isInitialized();
 
 	/**
 	 * Add a file that will be included in the crash report.
@@ -100,7 +81,7 @@ public:
 	 * @param file Path to the file (relative to this executable).
 	 * @return True if the file could be attached, false otherwise.
 	 */
-	bool addAttachedFile(const fs::path& file);
+	static bool addAttachedFile(const fs::path& file);
 	
 	/**
 	 * Set a variable value, which will be included in the crash report.
@@ -111,11 +92,13 @@ public:
 	 * @return True if the variable could be set, false otherwise.
 	 */
 	template <class T>
-	bool setVariable(const std::string & name, const T & value) {
+	static bool setVariable(const std::string & name, const T & value) {
 		std::stringstream ss;
 		ss << value;
 		return setNamedVariable(name, ss.str());
 	}
+
+	static bool setNamedVariable(const std::string& name, const std::string& value);
 
 	/**
 	 * Register platform specific crash handlers for the current thread.
@@ -123,14 +106,14 @@ public:
 	 * It's not necessary to call this method for the main thread.
 	 * @return True if the crash handlers could be registered, or false otherwise.
 	 */
-	bool registerThreadCrashHandlers();
+	static bool registerThreadCrashHandlers();
 
 	/**
 	 * Unregister platform specific crash handlers for the current thread.
 	 * Depending on the platform, this call might not be needed.
 	 * It's not necessary to call this method for the main thread.
 	 */
-	void unregisterThreadCrashHandlers();
+	static void unregisterThreadCrashHandlers();
 
 	/**
 	 * Register a callback in order to react in case a crash occurs.
@@ -139,12 +122,12 @@ public:
 	 * @note In these callbacks, you must make sure to keep processing and 
 	 * memory accesses to a minimum as the process is in an unstable state.
 	 */
-	void registerCrashCallback(CrashCallback crashCallback);
+	static void registerCrashCallback(CrashCallback crashCallback);
 
 	/**
 	 * Unregister a previously registed crash callback.
 	 */
-	void unregisterCrashCallback(CrashCallback crashCallback);
+	static void unregisterCrashCallback(CrashCallback crashCallback);
 
 	/**
 	 * Handle a crash and trigger the execution of the crash reporter.
@@ -152,44 +135,7 @@ public:
 	 * It might be useful for test purpose, or to allow a user to report a
 	 * defect which is not a crash.
 	 */
-	void handleCrash(int crashType, void* crashExtraInfo = 0, int fpeCode = 0);
-
-private:
-	bool createSharedMemory();
-	void destroySharedMemory();
-
-	void fillBasicCrashInfo();
-
-	bool registerCrashHandlers();
-	void unregisterCrashHandlers();
-	
-	bool setNamedVariable(const std::string& name, const std::string& value);
-
-	void shutdown();
-
-private:
-	// Memory shared to the crash reporter.
-	boost::interprocess::shared_memory_object m_SharedMemory;
-	boost::interprocess::mapped_region m_MemoryMappedRegion;
-	
-	// Name of the shared memory.
-	std::string m_SharedMemoryName;
-
-	// Crash information (pointer to shared memory)
-	CrashInfo* m_pCrashInfo;
-
-	// Crash handlers to restore.
-	struct PlatformCrashHandlers* m_pPreviousCrashHandlers;
-
-	// Protect against multiple accesses.
-	Lock m_Lock;
-
-	// Crash callbacks
-	std::vector<CrashCallback> m_crashCallbacks;
-
-	static CrashHandler* m_sInstance;
-
-	bool m_isInitialized;
+	static void handleCrash(int crashType, void* crashExtraInfo = 0, int fpeCode = 0);
 };
 
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32

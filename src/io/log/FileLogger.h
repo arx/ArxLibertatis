@@ -37,7 +37,7 @@ public:
 	
 	inline File(const fs::path & path, std::ios_base::openmode mode)
 	                  : ofs(path, mode) {
-		CrashHandler::getInstance().addAttachedFile(path);
+		CrashHandler::addAttachedFile(path);
 	}
 	
 	~File();

@@ -36,7 +36,8 @@
 #include <QDateTime>
 #include <QStringList>
 
-#include "platform/CrashInfo.h"
+#include "platform/crashhandler/CrashInfo.h"
+#include "io/FilePath.h"
 
 class ErrorReport
 {
@@ -50,34 +51,34 @@ public:
 		virtual void setError(const std::string& strError) = 0;
 	};
 
+	typedef std::vector<fs::path>	FileList;
+
 public:
 	ErrorReport(const std::string& crashesFolder, const std::string& sharedMemoryName);
 	
 	bool GenerateReport(IProgressNotifier* progressNotifier);
 	bool SendReport(IProgressNotifier* progressNotifier);
 
-	const QStringList& GetAttachedFiles() const;
+	const FileList& GetAttachedFiles() const;
 
 private:
 	bool Initialize();
 
-	bool WriteReport(const std::string& fileName);
+	bool WriteReport(const fs::path& fileName);
 	bool GenerateArchive();
 
-	bool GetScreenshot(const std::string& fileName, int quality = -1, bool bGrayscale = false);
-	bool GetCrashDump(const std::string& fileName);
-	bool GetMachineInfo(const std::string& fileName);
+	bool GetScreenshot(const fs::path& fileName, int quality = -1, bool bGrayscale = false);
+	bool GetCrashDump(const fs::path& fileName);
+	bool GetMachineInfo(const fs::path& fileName);
 	bool GetMiscCrashInfo();
 	
 	void ReleaseApplicationLock();
 
-	QString	GetFilePath(const std::string& fileName) const;
-
 private:
-	QString m_CrashesFolder;
-	QString m_CurrentReportFolder;
+	fs::path m_CrashesFolder;
+	fs::path m_CurrentReportFolder;
 
-	QStringList m_AttachedFiles;
+	FileList m_AttachedFiles;
 
 	QDateTime m_CrashDateTime;
 	double m_RunningTimeSec;
@@ -86,7 +87,7 @@ private:
 	bool m_OSIs64Bit;
 
 	QString m_ProcessName;
-	QString m_ProcessPath;
+	fs::path m_ProcessPath;
 	quint64 m_ProcessMemoryUsage;
 	bool m_ProcessIs64Bit;
 

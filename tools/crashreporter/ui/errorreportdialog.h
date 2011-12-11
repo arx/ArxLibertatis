@@ -134,19 +134,15 @@ public:
 	
 	int rowCount(const QModelIndex & parent = QModelIndex()) const
 	{
-		return m_errorReport.GetAttachedFiles().count();
+		return m_errorReport.GetAttachedFiles().size();
 	}
 	
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const
 	{
 		if (index.isValid() && role == Qt::DisplayRole)
 		{
-			QString strFilePath = m_errorReport.GetAttachedFiles().at(index.row());
-			
-			int lastSeparator = strFilePath.lastIndexOf(QDir::separator());
-			strFilePath = strFilePath.mid(lastSeparator+1);
-
-			return strFilePath;
+			fs::path filePath = m_errorReport.GetAttachedFiles()[index.row()];
+			return filePath.filename().c_str();
 		}
 		else
 			return QVariant();

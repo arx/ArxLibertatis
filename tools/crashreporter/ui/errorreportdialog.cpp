@@ -115,12 +115,11 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	if(!selectedIndex.isValid())
 		return;
 	
-	QString fileName = m_errorReport.GetAttachedFiles().at(selectedIndex.row());
-	if(fileName.endsWith(".txt") ||
-	   fileName.endsWith(".log") || 
-	   fileName.endsWith(".ini"))
+	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()];
+	std::string ext = fileName.ext();
+	if(ext == ".txt" || ext == ".log" || ext == ".ini")
 	{
-		QFile textFile(fileName);
+		QFile textFile(fileName.string().c_str());
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
 		QByteArray data;
@@ -131,9 +130,9 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		ui->fileViewText->setText(textFileContent);
 		ui->stackedFileViews->setCurrentIndex(0);
 	}
-	else if(fileName.endsWith(".xml"))
+	else if(ext == ".xml")
 	{
-		QFile textFile(fileName);
+		QFile textFile(fileName.string().c_str());
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
 		QByteArray data;
@@ -144,14 +143,14 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		ui->fileViewXml->setText(textFileContent);
 		ui->stackedFileViews->setCurrentIndex(1);
 	}
-	else if(fileName.endsWith(".jpg"))
+	else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".png" || ext == ".gif")
 	{
-		m_fileViewImage.load(fileName);
+		m_fileViewImage.load(fileName.string().c_str());
 		ui->stackedFileViews->setCurrentIndex(2);
 	}
 	else
 	{
-		QFile binaryFile(fileName);
+		QFile binaryFile(fileName.string().c_str());
 		binaryFile.open(QIODevice::ReadOnly);
 
 		QByteArray data;

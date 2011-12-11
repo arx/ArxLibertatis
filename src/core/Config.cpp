@@ -467,8 +467,8 @@ static Vec2i parseResolution(const string & resolution) {
 
 bool Config::init(const fs::path & file, const fs::path & defaultFile) {
 	
-	CrashHandler::getInstance().addAttachedFile(file);
-	CrashHandler::getInstance().addAttachedFile(defaultFile);
+	CrashHandler::addAttachedFile(file);
+	CrashHandler::addAttachedFile(defaultFile);
 
 	this->file = file;
 	

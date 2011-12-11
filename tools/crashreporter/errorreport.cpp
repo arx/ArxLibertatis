@@ -38,6 +38,9 @@
 #include <QThread>
 #include <QXmlStreamWriter>
 
+#include "io/Filesystem.h"
+#include "platform/Thread.h"
+
 // CrashReporter
 #include "utilities_win32.h"
 
@@ -54,7 +57,6 @@ ErrorReport::ErrorReport(const std::string& crashesFolder, const std::string& sh
 	, m_SharedMemoryName(sharedMemoryName)
 {
 	m_CrashesFolder = crashesFolder.c_str();
-	m_CrashesFolder += QDir::separator();
 }
 
 bool ErrorReport::Initialize()
@@ -79,26 +81,17 @@ bool ErrorReport::Initialize()
 	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
 		m_AttachedFiles.push_back(m_pCrashInfo->attachedFiles[i]);
 
-	m_CurrentReportFolder = m_CrashesFolder;
-	m_CurrentReportFolder += m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss");
-	m_CurrentReportFolder += QDir::separator();
+	m_CurrentReportFolder = m_CrashesFolder / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toAscii());
 
-	QDir dir;
-	bool bMkPath = dir.mkpath(m_CurrentReportFolder);
-	if(!bMkPath)
+	if(!fs::create_directory(m_CurrentReportFolder))
 		return false;
 
 	return true;
 }
 
-QString	ErrorReport::GetFilePath(const std::string& fileName) const
+bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGrayscale)
 {
-	return m_CurrentReportFolder + fileName.c_str();
-}
-
-bool ErrorReport::GetScreenshot(const std::string& fileName, int quality, bool bGrayscale)
-{
-	QString fullPath = GetFilePath(fileName);
+	fs::path fullPath = m_CurrentReportFolder / fileName;
 
 	WId mainWindow = GetMainWindow(m_pCrashInfo->processId);
 	
@@ -129,7 +122,7 @@ bool ErrorReport::GetScreenshot(const std::string& fileName, int quality, bool b
 		pixmap = pixmap.fromImage(image);
 	}
 
-	bool bSaved = pixmap.save(fullPath, 0, quality);
+	bool bSaved = pixmap.save(fullPath.string().c_str(), 0, quality);
 	if(bSaved)
 		m_AttachedFiles.push_back(fullPath);
 
@@ -142,9 +135,9 @@ BOOL CALLBACK MiniDumpCallback(PVOID CallbackParam, PMINIDUMP_CALLBACK_INPUT Cal
 	return TRUE;
 }
 
-bool ErrorReport::GetCrashDump(const std::string& fileName)
+bool ErrorReport::GetCrashDump(const fs::path& fileName)
 {
-	QString fullPath = GetFilePath(fileName);
+	fs::path fullPath = m_CurrentReportFolder / fileName;
 
 	HMODULE hDbgHelp = LoadLibrary("dbghelp.dll");
 	if(hDbgHelp==NULL)
@@ -189,7 +182,7 @@ bool ErrorReport::GetCrashDump(const std::string& fileName)
 		return false;
 
 	// Create the minidump file
-	HANDLE hFile = CreateFile(fullPath.toAscii(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFile(fullPath.string().c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if(hFile == INVALID_HANDLE_VALUE)
 		return false;
 
@@ -204,23 +197,15 @@ bool ErrorReport::GetCrashDump(const std::string& fileName)
 	return bWriteDump;
 }
 
-class QtSleeper : public QThread
+bool ErrorReport::GetMachineInfo(const fs::path& fileName)
 {
-public:
-	static void usleep(unsigned long usecs){QThread::usleep(usecs);}
-	static void msleep(unsigned long msecs){QThread::msleep(msecs);}
-	static void sleep(unsigned long secs){QThread::sleep(secs);}
-};
-
-bool ErrorReport::GetMachineInfo(const std::string& fileName)
-{
-	QString fullPath = GetFilePath(fileName);
+	fs::path fullPath = m_CurrentReportFolder / fileName;
 
 	QString program = "dxdiag.exe";
 	QStringList arguments;
 	arguments << "/whql:off"
 			  << "/64bit"
-			  << "/t" << fullPath.toAscii();
+			  << "/t" << fullPath.string().c_str();
 
 	QStringList env = QProcess::systemEnvironment();
 
@@ -234,13 +219,12 @@ bool ErrorReport::GetMachineInfo(const std::string& fileName)
 		return false;
 
 	// Writing the DXDiag file can take quite some time...
-	QFile dxdiagReport(fullPath);
-	while(!dxdiagReport.exists() && timeWatch.elapsed() < 120000)
+	while(!fs::exists(fullPath) && timeWatch.elapsed() < 120000)
 	{
-		QtSleeper::msleep(1000);
+		Thread::sleep(1000);
 	}
 
-	bool bExists = dxdiagReport.exists();
+	bool bExists = fs::exists(fullPath);
 	if(bExists)
 		m_AttachedFiles.push_back(fullPath);
 
@@ -294,11 +278,11 @@ bool ErrorReport::GetMiscCrashInfo()
 	return true;
 }
 
-bool ErrorReport::WriteReport(const std::string& fileName)
+bool ErrorReport::WriteReport(const fs::path& fileName)
 {
-	QString fullPath = GetFilePath(fileName);
+	fs::path fullPath = m_CurrentReportFolder / fileName;
 
-	QFile file(fullPath);
+	QFile file(fullPath.string().c_str());
 	if(!file.open(QIODevice::WriteOnly))
 		return false;
 
@@ -312,7 +296,7 @@ bool ErrorReport::WriteReport(const std::string& fileName)
 		xml.writeComment("Information related to the crashed process");
 		xml.writeStartElement("Process");
 			xml.writeTextElement("Name", m_ProcessName);
-			xml.writeTextElement("Path", m_ProcessPath);
+			xml.writeTextElement("Path", m_ProcessPath.string().c_str());
 			xml.writeTextElement("MemoryUsage", QString::number(m_ProcessMemoryUsage));
 			xml.writeTextElement("Is64Bit", m_ProcessIs64Bit ? "True" : "False");
 			xml.writeTextElement("RunningTime", QString::number(m_RunningTimeSec));
@@ -327,9 +311,9 @@ bool ErrorReport::WriteReport(const std::string& fileName)
 
 		xml.writeComment("List of files attached to the crash report");
 		xml.writeStartElement("Files");
-		for(QList<QString>::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it)
+		for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it)
 		{
-			xml.writeTextElement("File", *it);
+			xml.writeTextElement("File", it->string().c_str());
 		}
 		xml.writeEndElement();
 
@@ -343,12 +327,12 @@ bool ErrorReport::WriteReport(const std::string& fileName)
 bool ErrorReport::GenerateArchive()
 {
 	std::string fileName = m_SharedMemoryName + ".zip";
-	QString fullPath = GetFilePath(fileName);
+	fs::path fullPath = m_CurrentReportFolder / fileName;
 
 	int bufferSize = 64*1024;
 	void* buf = malloc(bufferSize);
 
-	zipFile zf = zipOpen(fullPath.toAscii(), 0);
+	zipFile zf = zipOpen(fullPath.string().c_str(), 0);
 
 	if(zf == 0) 
 	{
@@ -357,16 +341,18 @@ bool ErrorReport::GenerateArchive()
 	}
 
 	int err = ZIP_OK;
-	foreach (QString fn, m_AttachedFiles) 
+	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
 	{
 		zip_fileinfo zi;
 		memset(&zi, sizeof(zi), 0);
 
 		int opt_compress_level = Z_BEST_COMPRESSION;
+
+		// TODO - set real time
 		//filetime(fn.toAscii(), &zi.dosDate);
 
 		zipOpenNewFileInZip(zf, 
-							fn.toAscii(),
+							it->filename().c_str(),
 							&zi,
 							NULL,
 							0,
@@ -377,7 +363,7 @@ bool ErrorReport::GenerateArchive()
 							opt_compress_level);
 
 		// Open source file
-		FILE * fin = fopen(fn.toAscii(), "r+b");
+		FILE * fin = fopen(it->string().c_str(), "r+b");
 		if(!fin)
 		{
 			err = ZIP_INTERNALERROR;
@@ -494,7 +480,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	pProgressNotifier->taskStarted("Sending crash report", 2);
 
 	std::string fileName = m_SharedMemoryName + ".zip";
-	QString fullPath = GetFilePath(fileName);
+	fs::path fullPath = m_CurrentReportFolder / fileName.c_str();
 
 	CSmtp smptClient;
 	smptClient.SetSenderName("Arx Libertatis Crashes");
@@ -502,7 +488,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	smptClient.AddRecipient("arxlibertatis.crashes@gmail.com");
 	smptClient.SetSubject("Arx Libertatis Crash Report");
 	smptClient.AddMsgLine("Hello");
-	smptClient.AddAttachment(fullPath.toAscii());
+	smptClient.AddAttachment(fullPath.string().c_str());
 	
 	// Connect to server
 	bool connected = false;
@@ -544,7 +530,7 @@ void ErrorReport::ReleaseApplicationLock()
 	m_pCrashInfo->exitLock.post();
 }
 
-const QStringList& ErrorReport::GetAttachedFiles() const
+const ErrorReport::FileList& ErrorReport::GetAttachedFiles() const
 {
 	return m_AttachedFiles;
 }

@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_PLATFORM_CRASHINFO_H
-#define ARX_PLATFORM_CRASHINFO_H
+#ifndef ARX_PLATFORM_CRASHHANDLER_CRASHINFO_H
+#define ARX_PLATFORM_CRASHHANDLER_CRASHINFO_H
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
@@ -81,4 +81,4 @@ struct CrashInfo {
 
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-#endif // ARX_PLATFORM_CRASHINFO_H
+#endif // ARX_PLATFORM_CRASHHANDLER_CRASHINFO_H

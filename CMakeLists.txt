@@ -478,7 +478,10 @@ set(PLATFORM_SOURCES
 	src/platform/String.cpp
 	src/platform/Thread.cpp
 	src/platform/Time.cpp
+	src/platform/crashhandler/CrashHandlerImpl.cpp
 )
+
+set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
 
 set(SCENE_SOURCES
 	src/scene/ChangeLevel.cpp
@@ -606,6 +609,9 @@ else()
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
+#TODO - select the right crash handler for the platform
+list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
+
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
@@ -720,6 +726,9 @@ if(ARX_BUILD_TOOLS)
 			tools/crashreporter/minizip/ioapi.h
 			tools/crashreporter/minizip/zip.cpp
 			tools/crashreporter/minizip/zip.h
+			${PLATFORM_SOURCES}
+			${IO_FILESYSTEM_SOURCES}
+			${IO_LOGGER_SOURCES}
 		)
 		
 		set( CrashReporter_UIs

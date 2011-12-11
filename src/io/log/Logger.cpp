@@ -290,7 +290,7 @@ void Logger::init() {
 		configure(arxdebug);
 	}
 
-	CrashHandler::getInstance().registerCrashCallback(LogManager::deleteAllBackends);
+	CrashHandler::registerCrashCallback(LogManager::deleteAllBackends);
 }
 
 void Logger::shutdown() {

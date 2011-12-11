@@ -631,8 +631,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	initCrashHandler();
 #else
-	//CrashHandler crashHandler;
-	//crashHandler.init();
+	CrashHandler::initialize();
 #endif
 	
 	
@@ -830,6 +829,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ClearGame();
 
 	Logger::shutdown();
+
+	CrashHandler::shutdown();
 	
 	return true;
 }
