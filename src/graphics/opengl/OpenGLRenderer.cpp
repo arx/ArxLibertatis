@@ -682,7 +682,7 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	                          fullsize.GetData(), width, height, GL_UNSIGNED_BYTE, image.GetData());
 	
 	if(ret) {
-		LogWarning << "Failed to scaled down screen capture: " << ret << " = " << gluErrorString(ret);
+		LogWarning << "Failed to scale down screen capture: " << ret << " = " << gluErrorString(ret);
 		return false;
 	}
 	
