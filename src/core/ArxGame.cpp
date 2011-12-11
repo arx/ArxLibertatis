@@ -463,14 +463,6 @@ bool ArxGame::AddPaks() {
 		}
 	}
 	
-	resources->addFiles("editor", "editor");
-	resources->addFiles("game", "game");
-	resources->addFiles("graph", "graph");
-	resources->addFiles("localisation", "localisation");
-	resources->addFiles("misc", "misc");
-	resources->addFiles("sfx", "sfx");
-	resources->addFiles("speech", "speech");
-	
 	return true;
 }
 
