@@ -84,9 +84,7 @@ bool SnapShot::GetSnapShot() {
 		return false;
 	}
 	
-	image.save(file);
-	
-	return true;
+	return image.save(file);
 }
 
 bool SnapShot::GetSnapShotDim(int width, int height) {
@@ -97,9 +95,7 @@ bool SnapShot::GetSnapShotDim(int width, int height) {
 		return false;
 	}
 	
-	image.save(file);
-	
-	return true;
+	return image.save(file);
 }
 
 void InitSnapShot(const fs::path & name) {

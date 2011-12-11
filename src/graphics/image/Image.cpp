@@ -25,6 +25,7 @@
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
 #include "io/resource/PakReader.h"
+#include "io/log/Logger.h"
 
 using std::string;
 using std::memcpy;
@@ -849,9 +850,13 @@ void Flip3dc(unsigned char * data, unsigned int count) {
 	}
 }
 
-ILenum ARXImageToILFormat[] = {
+static ILenum ARXImageToILFormat[] = {
 	IL_LUMINANCE,       // Format_L8
+#ifdef IL_ALPHA
 	IL_ALPHA,           // Format_A8
+#else
+	0,                  // Format_A8 not supported by the IL version
+#endif
 	IL_LUMINANCE_ALPHA, // Format_L8A8
 	IL_RGB,             // Format_R8G8B8
 	IL_BGR,             // Format_B8G8R8
@@ -862,24 +867,31 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::save(const fs::path & filename) const {
+bool Image::save(const fs::path & filename) const {
+	
+	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
+	if(mFormat < 0 || mFormat >= Format_Unknown || ARXImageToILFormat[mFormat] == 0) {
+		return false;
+	}
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);
 	ilBindImage(imageName);
 	
-	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
-	if(mFormat < 0 || mFormat >= Format_Unknown) {
-		return;
-	}
-	
-	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
+	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(),
+	                           ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
 	if(ret) {
 		ilRegisterOrigin(IL_ORIGIN_UPPER_LEFT);
 		ilEnable(IL_FILE_OVERWRITE);
 		ret = ilSaveImage(filename.string().c_str());
-		arx_assert_msg(ret, "ilSaveImage failed: %d", ilGetError());
 	}
 	
 	ilDeleteImages(1, &imageName);
+	
+	if(!ret) {
+		LogWarning << "ilSaveImage failed: " << ilGetError();
+		return false;
+	}
+	
+	return true;
 }

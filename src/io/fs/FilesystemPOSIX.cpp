@@ -228,18 +228,26 @@ string directory_iterator::name() {
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }
 
-#ifndef _DIRENT_HAVE_D_TYPE
-#error d_type entry required in struct dirent
-#endif
+static __mode_t dirstat(void * handle, void * entry) {
+	
+	arx_assert(entry != NULL);
+	int fd = dirfd(reinterpret_cast<DIR *>(handle));
+	arx_assert(fd != -1);
+	
+	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
+	struct stat buf;
+	int ret = fstatat(fd, name, &buf, 0);
+	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
+	
+	return buf.st_mode;
+}
 
 bool directory_iterator::is_directory() {
-	arx_assert(buf != NULL);
-	return reinterpret_cast<dirent *>(buf)->d_type == DT_DIR;
+	return ((dirstat(handle, buf) & S_IFMT) == S_IFDIR);
 }
 
 bool directory_iterator::is_regular_file() {
-	arx_assert(buf != NULL);
-	return reinterpret_cast<dirent *>(buf)->d_type == DT_REG;
+	return ((dirstat(handle, buf) & S_IFMT) == S_IFREG);
 }
 
 } // namespace fs

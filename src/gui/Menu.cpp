@@ -146,7 +146,7 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 }
 
 namespace {
-enum SaveGameChage {
+enum SaveGameChange {
 	SaveGameRemoved,
 	SaveGameUnchanged,
 	SaveGameChanged
@@ -163,7 +163,7 @@ void CreateSaveGameList() {
 	}
 	
 	size_t oldCount = save_l.size() - 1;
-	std::vector<SaveGameChage> found(oldCount, SaveGameRemoved);
+	std::vector<SaveGameChange> found(oldCount, SaveGameRemoved);
 	
 	bool newSaves = false;
 	
@@ -177,6 +177,7 @@ void CreateSaveGameList() {
 		fs::path path = savedir / dirname;
 		
 		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
+			LogDebug("ignoring non-save directory " << path);
 			continue;
 		}
 		
@@ -186,6 +187,7 @@ void CreateSaveGameList() {
 		
 		std::time_t stime = fs::last_write_time(path / SAVEGAME_NAME);
 		if(stime == 0) {
+			LogDebug("ignoring directory without gsave.sav:" << path);
 			continue;
 		}
 		

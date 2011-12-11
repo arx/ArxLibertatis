@@ -24,7 +24,6 @@
 #include <windows.h>
 
 #include "io/fs/FilePath.h"
-#include "io/fs/FileStream.h"
 #include "io/log/Logger.h"
 
 using std::string;
@@ -48,7 +47,7 @@ std::string GetLastErrorString() {
 		std::ostringstream buffer; //! Buffer for the log message excluding level, file and line.
 		buffer << "Unknown error (" << GetLastError() << ").";
 		strError = buffer.str();
-	}	
+	}
 	
 	return strError;
 }

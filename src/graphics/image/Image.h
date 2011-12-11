@@ -91,7 +91,7 @@ public:
 	bool ToGrayscale();
 	bool ToNormalMap();
 	
-	void save(const fs::path & filename) const;
+	bool save(const fs::path & filename) const;
 	
 	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1, unsigned int pDepth = 1);
 	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1, int pMipmapCount = -1);
