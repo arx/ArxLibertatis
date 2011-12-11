@@ -24,7 +24,6 @@
 #include "platform/Platform.h"
 
 #include <iostream>
-#include </home/dscharrer/pro/shady/transform.hpp>
 
 using std::string;
 using std::copy;
