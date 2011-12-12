@@ -18,6 +18,7 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 * DevIL
 * zlib
 * Boost
+* Freetype
 
 ## Compile
 
