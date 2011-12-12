@@ -55,6 +55,9 @@ bool Texture2D::Restore() {
 
 		if((flags & HasColorKey) && !mImage.HasAlpha()) {
 			mImage.ApplyColorKeyToAlpha();
+			if(!mImage.HasAlpha()) {
+				flags &= ~HasColorKey;
+			}
 		}
 	}
 

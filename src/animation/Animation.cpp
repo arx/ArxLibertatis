@@ -877,11 +877,13 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 }
 
 void PopAllTriangleList() {
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	TextureContainer * pTex = GetTextureList();
 	while(pTex) {
 		PopOneTriangleList(pTex);
 		pTex = pTex->m_pNext;
 	}
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
 //-----------------------------------------------------------------------------
@@ -932,6 +934,7 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 
 	PopOneTriangleList(&TexSpecialColor);
 
@@ -950,6 +953,7 @@ void PopAllTriangleListTransparency() {
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 }
 
 float INVISIBILITY_OVERRIDE=0.f;

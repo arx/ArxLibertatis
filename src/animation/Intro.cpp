@@ -271,7 +271,7 @@ void LoadLevelScreen(long num) {
 				char tx[256];
 				GetLevelNameByNum(num, tx);
 				sprintf(temp, "graph/levels/level%s/loading", tx);
-				tc = TextureContainer::LoadUI(temp);
+				tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 			}
 			
 			if(tc) {
