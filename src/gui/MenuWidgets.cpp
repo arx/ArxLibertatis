@@ -1151,11 +1151,19 @@ bool Menu2_Render() {
 					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
-
 					((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
-
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
+
+					szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
+					szMenuText += " ";
+					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+					((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
+					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_video_apply");
@@ -2813,13 +2821,15 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			config.video.showCrosshair=(iState)?true:false;
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING:
-		{
-			config.video.antialiasing=(iState)?true:false;
-
-			ARX_SetAntiAliasing();
-		}
+	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING: {
+		config.video.antialiasing = iState ? true : false;
+		ARX_SetAntiAliasing();
 		break;
+	}
+	case BUTTON_MENUOPTIONSVIDEO_VSYNC: {
+		config.video.vsync = iState ? true : false;
+		break;
+	}
 	case BUTTON_MENUOPTIONSAUDIO_EAX:
 		{
 			ARXMenu_Options_Audio_SetEAX((iState)?true:false);
