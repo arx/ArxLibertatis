@@ -4624,7 +4624,9 @@ bool CMenuSliderText::OnMouseClick(int)
 		{
 			iPos--;
 
-			if (iPos <= 0) iPos = 0;
+			if(iPos < 0) {
+				iPos = vText.size() - 1;
+			}
 		}
 		else if ((iX >= pRightButton->rZone.left) &&
 				(iY >= pRightButton->rZone.top) &&
@@ -4635,8 +4637,9 @@ bool CMenuSliderText::OnMouseClick(int)
 
 			arx_assert(iPos >= 0);
 
-			if ((size_t)iPos >= vText.size() - 1 )
-				iPos = vText.size() - 1 ;
+			if(size_t(iPos) >= vText.size()) {
+				iPos = 0;
+			}
 		}
 	}
 
