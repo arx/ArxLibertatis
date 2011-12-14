@@ -2299,14 +2299,16 @@ void CMenuElementText::RenderMouseOver()
 			}
 			
 			const res::path & image = savegames[lData].thumbnail;
-			TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
-			if(t != pTextureLoad) {
-				if(pTextureLoad) {
-					delete pTextureLoad;
+			if(!image.empty()) {
+				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
+				if(t != pTextureLoad) {
+					if(pTextureLoad) {
+						delete pTextureLoad;
+					}
+					pTextureLoad = t;
 				}
-				pTextureLoad = t;
+				pTextureLoadRender = pTextureLoad;
 			}
-			pTextureLoadRender = pTextureLoad;
 			
 			break;
 		}
