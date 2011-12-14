@@ -924,8 +924,42 @@ bool Menu2_Render() {
 				//------------------ END OPTIONS
 
 				//------------------ START VIDEO
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
+					
+					// Renderer selection
+					{
+						
+						pc = new CMenuPanel();
+						szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
+						szMenuText += "  ";
+						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+						me->SetCheckOff();
+						pc->AddElement(me);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, 0, 0);
+						
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
+						slider->iPos = slider->vText.size() - 1;
+#ifdef HAVE_SDL
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
+						if(config.window.framework == "SDL") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+#ifdef HAVE_D3D9
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
+						if(config.window.framework == "D3D9") {
+							slider->iPos = 1;
+						}
+#endif
+						
+						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						pc->AddElement(slider);
+						pWindowMenuConsole->AddMenuCenterY(pc);
+						
+					}
+					
 					
 					szMenuText = getLocalised("system_menus_options_videos_full_screen");
 					szMenuText += "  ";
@@ -4573,11 +4607,9 @@ bool CMenuSliderText::OnMouseClick(int)
 		}
 	}
 
-	switch (iID)
-	{
-	// MENUOPTIONS_VIDEO
-	case BUTTON_MENUOPTIONSVIDEO_RESOLUTION:
-		{
+	switch(iID) {
+		
+		case BUTTON_MENUOPTIONSVIDEO_RESOLUTION: {
 			std::string pcText = (vText.at(iPos))->lpszText;
 			
 			if(pcText == AUTO_RESOLUTION_STRING) {
@@ -4597,8 +4629,19 @@ bool CMenuSliderText::OnMouseClick(int)
 			}
 			
 			changeResolution = true;
+			break;
 		}
-		break;
+		
+		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
+			switch((vText.at(iPos))->eMenuState) {
+				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
+				case OPTIONS_VIDEO_RENDERER_D3D9:      config.window.framework = "D3D9"; break;
+				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
+				default: break;
+			}
+			break;
+		}
+		
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_BPP:
 		{
