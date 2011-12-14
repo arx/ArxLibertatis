@@ -17,8 +17,10 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 * OpenAL 1.1 **and/or** DirectSound 9
 * DevIL
 * zlib
-* Boost
+* Boost (headers, program_options library)
 * Freetype
+
+Systems without Win32 or POSIX filesystem support will also need the boost filesystem library.
 
 ## Compile
 
