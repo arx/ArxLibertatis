@@ -162,7 +162,9 @@ void SaveGameList::update() {
 	}
 	savelist.resize(o);
 	
-	std::sort(savelist.begin(), savelist.end(), saveTimeCompare);
+	if(new_saves) {
+		std::sort(savelist.begin(), savelist.end(), saveTimeCompare);
+	}
 	
 	LogDebug("found " << savelist.size() << " savegames");
 }
