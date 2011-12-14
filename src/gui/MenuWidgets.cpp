@@ -1415,6 +1415,16 @@ bool Menu2_Render() {
 						pWindowMenuConsole->AddMenuCenterY(me);
 					}
 
+					pc = new CMenuPanel();
+					szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, iPosX2, 0);
+					((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
 					pTex = TextureContainer::Load("graph/interface/menus/back");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
@@ -4990,6 +5000,11 @@ bool CMenuSlider::OnMouseClick(int)
 	case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
 		ARXMenu_Options_Control_SetMouseSensitivity(iPos);
 		break;
+		case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
+			iPos = std::max(iPos, 1);
+			config.misc.quicksaveSlots = iPos;
+			break;
+		}
 	}
 
 	return false;
