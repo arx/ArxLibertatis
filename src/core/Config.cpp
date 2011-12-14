@@ -74,7 +74,7 @@ const int
 	ambianceVolume = 10,
 	mouseSensitivity = 4,
 	migration = Config::OriginalAssets,
-	quicksaveSlots = 2;
+	quicksaveSlots = 3;
 
 const bool
 	first_run = true,
