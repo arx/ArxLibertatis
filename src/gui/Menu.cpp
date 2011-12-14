@@ -375,8 +375,8 @@ void ARX_Menu_Manage() {
 							REQUEST_SPEECH_SKIP=1;				
 						}
 					}
-				}
-				else {
+				} else {
+					
 					GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 
 					arxtime.pause();
