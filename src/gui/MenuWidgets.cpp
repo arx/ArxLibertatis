@@ -949,7 +949,7 @@ bool Menu2_Render() {
 #ifdef HAVE_D3D9
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
 						if(config.window.framework == "D3D9") {
-							slider->iPos = 1;
+							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
 						
@@ -1221,6 +1221,39 @@ bool Menu2_Render() {
 					//------------------ START AUDIO
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
 
+					// Renderer selection
+					{
+						
+						pc = new CMenuPanel();
+						szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
+						szMenuText += "  ";
+						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+						me->SetCheckOff();
+						pc->AddElement(me);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, 0, 0);
+						
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
+						slider->iPos = slider->vText.size() - 1;
+#ifdef HAVE_OPENAL
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
+						if(config.audio.backend == "OpenAL") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+#ifdef HAVE_DSOUND
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Direct Sound", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_DSOUND));
+						if(config.audio.backend == "DirectSound") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+						
+						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						pc->AddElement(slider);
+						pWindowMenuConsole->AddMenuCenterY(pc);
+						
+					}
+					
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_audio_master_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
@@ -4637,6 +4670,16 @@ bool CMenuSliderText::OnMouseClick(int)
 				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
 				case OPTIONS_VIDEO_RENDERER_D3D9:      config.window.framework = "D3D9"; break;
 				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
+				default: break;
+			}
+			break;
+		}
+		
+		case BUTTON_MENUOPTIONSAUDIO_BACKEND: {
+			switch((vText.at(iPos))->eMenuState) {
+				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
+				case OPTIONS_AUDIO_BACKEND_DSOUND:    config.audio.backend = "DirectSound"; break;
+				case OPTIONS_AUDIO_BACKEND_AUTOMATIC: config.audio.backend = "auto"; break;
 				default: break;
 			}
 			break;
