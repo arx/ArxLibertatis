@@ -396,6 +396,7 @@ set(CORE_SOURCES
 	src/core/Core.cpp
 	src/core/GameTime.cpp
 	src/core/Localisation.cpp
+	src/core/SaveGame.cpp
 	src/core/Startup.cpp
 )
 

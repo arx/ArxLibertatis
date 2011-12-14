@@ -4036,8 +4036,7 @@ void ClearGame() {
 
 	//texts and textures
 	ClearSysTextures();
-	FreeSaveGameList();
-
+	
 	if (pParticleManager) {
 		delete pParticleManager;
 		pParticleManager = NULL;

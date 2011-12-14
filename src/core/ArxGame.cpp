@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
+#include "core/SaveGame.h"
 #include "core/Version.h"
 
 #include "game/Damage.h"
@@ -383,8 +384,8 @@ bool ArxGame::InitSound() {
 	return true;
 }
 
-bool ArxGame::InitGameData()
-{
+bool ArxGame::InitGameData() {
+	
 	bool init;
 	
 	init = AddPaks();
@@ -394,6 +395,8 @@ bool ArxGame::InitGameData()
 	}
 
 	ARX_SOUND_LoadData();
+	
+	savegames.update();
 	
 	return init;
 }

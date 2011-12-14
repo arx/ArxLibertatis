@@ -225,7 +225,7 @@ bool Application::InitConfig() {
 		config.misc.migration = Config::CaseSensitiveFilenames;
 	}
 	
-	if(!fs::create_directories("save")) {
+	if(!fs::create_directories(config.paths.user / "save")) {
 		LogWarning << "failed to create save directory";
 	}
 	
