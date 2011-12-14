@@ -163,7 +163,7 @@ void SaveGameList::remove(iterator save) {
 	update();
 }
 
-bool SaveGameList::save(const string & name, iterator overwrite) {
+bool SaveGameList::save(const string & name, iterator overwrite, const Image & thumbnail) {
 	
 	arx_assert(overwrite >= begin() && overwrite <= end());
 	
@@ -185,10 +185,8 @@ bool SaveGameList::save(const string & name, iterator overwrite) {
 		return false;
 	}
 	
-	// TODO keep the thumbnail in-memory and only write it here
-	if(!fs::rename(config.paths.user / "sct_0.bmp", savefile.parent() / SAVEGAME_THUMBNAIL, true)) {
-		LogWarning << "failed to copy save screenshot " << (config.paths.user / "sct_0.bmp")
-		           << " to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
+	if(thumbnail.IsValid() && !thumbnail.save(savefile.parent() / SAVEGAME_THUMBNAIL)) {
+		LogWarning << "failed to save screenshot to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
 	}
 	
 	update();
@@ -196,7 +194,7 @@ bool SaveGameList::save(const string & name, iterator overwrite) {
 	return true;
 }
 
-bool SaveGameList::quicksave() {
+bool SaveGameList::quicksave(const Image & thumbnail) {
 	
 	iterator overwrite = end();
 	std::time_t time = std::numeric_limits<std::time_t>::max();
@@ -218,7 +216,7 @@ bool SaveGameList::quicksave() {
 		overwrite = end();
 	}
 	
-	return save(QUICKSAVE_ID, overwrite);
+	return save(QUICKSAVE_ID, overwrite, thumbnail);
 }
 
 SaveGameList::iterator SaveGameList::quickload() {

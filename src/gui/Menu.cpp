@@ -376,13 +376,8 @@ void ARX_Menu_Manage() {
 						}
 					}
 				}
-				else
-				{
-					LogDebug("snapshot");
-					//create a screenshot temporaire pour la sauvegarde
-					SnapShot *pSnapShot = new SnapShot(config.paths.user / "sct", true);
-					pSnapShot->GetSnapShotDim(160,100);
-					delete pSnapShot;
+				else {
+					GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 
 					arxtime.pause();
 					ARXTimeMenu=ARXOldTimeMenu=arxtime.get_updated();

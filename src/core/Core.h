@@ -127,6 +127,8 @@ extern long DANAECENTERY;
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
 
+class Image;
+extern Image savegame_thumbnail;
 
 extern float Original_framedelay;
 extern long LOADEDD;

@@ -100,6 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
+#include "graphics/image/Image.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/texture/TextureStage.h"
@@ -151,6 +152,8 @@ using std::min;
 using std::max;
 using std::string;
 using std::ostringstream;
+
+Image savegame_thumbnail;
 
 #define MAX_EXPLO 24
 

@@ -178,7 +178,7 @@ void ARX_QuickSave() {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	
-	savegames.quicksave();
+	savegames.quicksave(savegame_thumbnail);
 	
 	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);

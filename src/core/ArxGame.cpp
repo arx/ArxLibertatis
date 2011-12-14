@@ -964,14 +964,9 @@ bool ArxGame::Render() {
 		goto norenderend;
 	}
 
-	if (WILL_QUICKSAVE)
-	{
-		SnapShot * pSnapShot = new SnapShot(config.paths.user / "sct", true);
-		pSnapShot->GetSnapShotDim(160,100);
-		delete pSnapShot;
-
-		if (WILL_QUICKSAVE>=2)
-		{
+	if(WILL_QUICKSAVE) {
+		GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
+		if(WILL_QUICKSAVE >= 2) {
 			ARX_QuickSave();
 			WILL_QUICKSAVE=0;
 		}

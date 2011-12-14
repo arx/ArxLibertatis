@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/Config.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
 #include "core/SaveGame.h"
 
@@ -362,7 +363,7 @@ void ARXMenu_SaveQuest(const std::string & name, size_t num) {
 	int iOldGamma = config.video.gamma;
 	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
 	
-	savegames.save(name, num);
+	savegames.save(name, num, savegame_thumbnail);
 	
 	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
