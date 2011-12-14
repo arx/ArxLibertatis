@@ -20,36 +20,49 @@
 #ifndef ARX_GRAPHICS_FONT_FONTCACHE_H
 #define ARX_GRAPHICS_FONT_FONTCACHE_H
 
+#include <stddef.h>
 #include <string>
 #include <map>
+#include <utility>
 
 #include "graphics/font/Font.h"
-
-namespace fs { class path; }
+#include "io/resource/ResourcePath.h"
 
 class FontCache {
+	
+	typedef std::map<unsigned, Font *> FontMap;
+	
+	struct FontFile {
+		
+		size_t size;
+		char * data;
+		
+		FontFile() : size(0), data(NULL) { }
+		
+		FontMap sizes;
+		
+	};
 	
 public:
 	
 	static void Initialize();
 	static void Shutdown();
 	
-	static Font * GetFont(const fs::path & fontFile, unsigned int fontSize);
+	static Font * GetFont(const res::path & fontFile, unsigned int fontSize);
 	static void ReleaseFont(Font * pFont);
 	
-protected:
+private:
 	
 	// Disable creation from outside.
 	FontCache();
 	~FontCache();
 	
-	Font * Create(const fs::path & fontFile, unsigned int fontSize);
+	Font * Create(const res::path & fontFile, FontFile & file, unsigned int fontSize);
 	
-private:
 	
-	typedef std::map<Font::Info,Font*> FontMap;
+	typedef std::map<res::path, FontFile> FontFiles;
+	FontFiles files;
 	
-	FontMap m_LoadedFonts;
 	static FontCache * m_Instance;
 };
 

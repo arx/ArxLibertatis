@@ -36,7 +36,7 @@
 
 using std::string;
 
-Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face ) 
+Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face) 
 	: m_Info(fontFile, fontSize)
 	, m_RefCount(0)
 	, m_FTFace(face)

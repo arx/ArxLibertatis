@@ -802,8 +802,7 @@ bool ArxGame::Render() {
 
 	ACTIVECAM = &subj;
 
-	if (wasResized) 
-	{
+	if(wasResized) {
 		LogDebug("was resized");
 		wasResized = false;
 		DanaeRestoreFullScreen();
