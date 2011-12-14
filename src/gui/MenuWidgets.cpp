@@ -1221,7 +1221,7 @@ bool Menu2_Render() {
 					//------------------ START AUDIO
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
 
-					// Renderer selection
+					// Audio backend selection
 					{
 						
 						pc = new CMenuPanel();
@@ -1315,6 +1315,39 @@ bool Menu2_Render() {
 
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
+					
+					// Input backend selection
+					{
+						
+						pc = new CMenuPanel();
+						szMenuText = getLocalised("system_menus_options_input_backend", "Backend");
+						szMenuText += "  ";
+						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+						me->SetCheckOff();
+						pc->AddElement(me);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONS_CONTROLS_BACKEND, 0, 0);
+						
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_AUTOMATIC));
+						slider->iPos = slider->vText.size() - 1;
+#ifdef HAVE_SDL
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "SDL", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_SDL));
+						if(config.input.backend == "SDL") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+#ifdef HAVE_DINPUT8
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "DInput 8", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_DINPUT));
+						if(config.input.backend == "DirectInput8") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+						
+						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						pc->AddElement(slider);
+						pWindowMenuConsole->AddMenuCenterY(pc);
+						
+					}
 					
 					szMenuText = getLocalised("system_menus_options_input_customize_controls");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -4683,6 +4716,15 @@ bool CMenuSliderText::OnMouseClick(int)
 				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
 				case OPTIONS_AUDIO_BACKEND_DSOUND:    config.audio.backend = "DirectSound"; break;
 				case OPTIONS_AUDIO_BACKEND_AUTOMATIC: config.audio.backend = "auto"; break;
+				default: break;
+			}
+			break;
+		}
+		case BUTTON_MENUOPTIONS_CONTROLS_BACKEND: {
+			switch((vText.at(iPos))->eMenuState) {
+				case OPTIONS_INPUT_BACKEND_SDL:       config.input.backend = "SDL"; break;
+				case OPTIONS_INPUT_BACKEND_DINPUT:    config.input.backend = "DirectInput8"; break;
+				case OPTIONS_INPUT_BACKEND_AUTOMATIC: config.input.backend = "auto"; break;
 				default: break;
 			}
 			break;
