@@ -84,42 +84,46 @@ aalError init(const string & backendName, bool enableEAX) {
 	
 	bool autoBackend = (backendName == "auto");
 	aalError error;
-	bool matched = false;
 	
-#ifdef HAVE_OPENAL
-	if(autoBackend || backendName == "OpenAL") {
-		matched = true;
-		LogDebug("initializing OpenAL backend");
-		OpenALBackend * _backend = new OpenALBackend();
-		if(!(error = _backend->init(enableEAX))) {
-			backend = _backend;
-		} else {
-			delete _backend;
+	for(int i = 0; i < 2 && !backend; i++) {
+		bool first = (i == 0);
+		
+		bool matched = false;
+		
+		#ifdef HAVE_OPENAL
+		if(!backend && first == (autoBackend || backendName == "OpenAL")) {
+			matched = true;
+			LogDebug("initializing OpenAL backend");
+			OpenALBackend * _backend = new OpenALBackend();
+			if(!(error = _backend->init(enableEAX))) {
+				backend = _backend;
+			} else {
+				delete _backend;
+			}
+		}
+		#endif
+		
+		#ifdef HAVE_DSOUND
+		if(!backend && first == (autoBackend || backendName == "DirectSound")) {
+			matched = true;
+			LogDebug("initializing DirectSound backend");
+			DSoundBackend * _backend = new DSoundBackend();
+			if(!(error = _backend->init(enableEAX))) {
+				backend = _backend;
+			} else {
+				delete _backend;
+			}
+		}
+		#endif
+			
+		if(first && !matched) {
+			LogError << "unknown backend: " << backendName;
 		}
 	}
-#endif
 	
-#ifdef HAVE_DSOUND
-	if(!backend && (autoBackend || backendName == "DirectSound")) {
-		matched = true;
-		LogDebug("initializing DirectSound backend");
-		DSoundBackend * _backend = new DSoundBackend();
-		if(!(error = _backend->init(enableEAX))) {
-			backend = _backend;
-		} else {
-			delete _backend;
-		}
-	}
-#endif
-	
-#if !defined(HAVE_OPENAL) && !defined(HAVE_DSOUND)
-	ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
-#endif
-	
-	if(!matched) {
-		LogError << "unknown backend: " << backendName;
-		return AAL_ERROR_SYSTEM;
-	}
+	#if !defined(HAVE_OPENAL) && !defined(HAVE_DSOUND)
+		ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
+	#endif
 	
 	if(!backend) {
 		LogError << "no working backend available";
