@@ -98,12 +98,12 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Re
 
 	for(it = text.begin(); it != text.end(); ++it)
 	{
-		bool bDrawLine = false;
+		bool bLineBreak = false;
 
 		// Line break ?
 		if((*it == '\n') || (*it == '*'))
 		{
-			bDrawLine = true;
+			bLineBreak = true;
 		}
 		else
 		{
@@ -117,7 +117,7 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Re
 			Vec2i size = pFont->GetTextSize(itLastLineBreak, it+1);
 			if(size.x > maxLineWidth)	// Too long ?
 			{
-				bDrawLine = true;		// Draw a line from the last line break up to the last word break
+				bLineBreak = true;		// Draw a line from the last line break up to the last word break
 				it = itLastWordBreak;
 			}			
 		}
@@ -125,11 +125,19 @@ void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Re
 		// If we have to draw a line 
 		//  OR
 		// This is the last character of the string
-		if(bDrawLine || (it+1 == text.end()))
+		if(bLineBreak || (it+1 == text.end()))
 		{
+			std::string::const_iterator itTextStart = itLastLineBreak;
+			std::string::const_iterator itTextEnd;
+
+			if(bLineBreak)
+				itTextEnd = it;
+			else
+				itTextEnd = it+1;
+
 			// Draw the line
 			if(!computeOnly)
-				pFont->Draw(_rRect.left, penY, itLastLineBreak, it+1, col);
+				pFont->Draw(_rRect.left, penY, itTextStart, itTextEnd, col);
 			
 			itLastLineBreak = it+1;
 

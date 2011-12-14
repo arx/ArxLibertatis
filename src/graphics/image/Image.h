@@ -86,7 +86,7 @@ public:
 	void ChangeGamma(float pGamma);
 
 	// Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
-	void ApplyColorKeyToAlpha(const Color3f& colorKey = Color3f::black);
+	void ApplyColorKeyToAlpha(Color colorKey = Color::black);
 	
 	bool ToGrayscale();
 	bool ToNormalMap();

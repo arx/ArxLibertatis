@@ -38,6 +38,7 @@ GLTextureStage::GLTextureStage(OpenGLRenderer * _renderer, unsigned stage) : Tex
 		ops[Color] = OpModulate;
 		ops[Alpha] = OpSelectArg1;
 		glActiveTexture(GL_TEXTURE0);
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 		glEnable(GL_TEXTURE_2D);
 	} else {
 		ops[Color] = OpDisable;
@@ -125,6 +126,7 @@ void GLTextureStage::setOp(OpType alpha, TextureOp op) {
 	if(wasEnabled != enabled) {
 		if(enabled) {
 			glEnable(GL_TEXTURE_2D);
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 			renderer->maxTextureStage = std::max<size_t>(mStage, renderer->maxTextureStage);
 		} else {
 			glDisable(GL_TEXTURE_2D);
