@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <set>
 
 #include <boost/program_options.hpp>
 
@@ -179,6 +180,101 @@ static void createUserDirectory() {
 	}
 }
 
+static void listDirectories(const string & regKey, const string & suffix = string(),
+                            const string & where = string()) {
+	
+	std::cout << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\" << regKey << '\n';
+	string temp;
+	if(getSystemConfiguration(regKey, temp)) {
+		std::cout << "   = " << fs::path(temp) << '\n';
+	}
+	
+	if(suffix.empty()) {
+		return;
+	}
+	fs::path dir = expandEvironmentVariables(suffix);
+	
+	if(!where.empty() && dir.is_relative()) {
+		
+		string prefixes = expandEvironmentVariables(where);
+		
+		std::cout << " - \"" << suffix << '"';
+		if(dir.string() != suffix) {
+			std::cout << " = " << fs::path(dir);
+		}
+		std::cout << " in one of \"" << where << '"';
+		if(prefixes != where) {
+			std::cout << "\n    = \"" << prefixes << '"';
+		}
+		std::cout << ":\n";
+		
+		std::set<fs::path> prefixset;
+		
+		size_t start = 0;
+		while(true) {
+			size_t end = prefixes.find(':', start);
+			fs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
+			if(prefixset.find(prefix) == prefixset.end()) {
+				prefixset.insert(prefix);
+				std::cout << "  * " << (prefix / dir) << '\n';
+			}
+			if(end == string::npos) {
+				break;
+			} else {
+				start = end + 1;
+			}
+		}
+	}
+	
+	std::cout << " - \"" << suffix << '"';
+	if(dir.string() != suffix) {
+		std::cout << " = " << fs::path(dir);
+	}
+	std::cout << '\n';
+	
+}
+
+static void listDirectories() {
+	
+	std::cout << "\nData directories (data files):\n";
+	std::cout << " - --data-dir (-d) command-line parameter\n";
+#ifdef DATA_DIR
+# ifdef DATA_DIR_PREFIXES 
+	listDirectories("DataDir", DATA_DIR, DATA_DIR_PREFIXES);
+# else
+	listDirectories("DataDir", DATA_DIR);
+# endif // DATA_DIR_PREFIXES
+#else // DATA_DIR
+	listDirectories("DataDir");
+#endif // DATA_DIR
+	std::cout << "selected: ";
+	if(config.paths.data.empty()) {
+		std::cout << "(none)\n";
+	} else {
+		std::cout << config.paths.data << '\n';
+	}
+	
+	std::cout << "\nUser directories (config, save files, data files):\n";
+	std::cout << " - --user-dir (-u) command-line parameter\n";
+#ifdef USER_DIR
+# ifdef USER_DIR_PREFIXES 
+	listDirectories("UserDir", USER_DIR, USER_DIR_PREFIXES);
+# else
+	listDirectories("UserDir", USER_DIR);
+# endif // USER_DIR_PREFIXES
+#else // USER_DIR
+	listDirectories("UserDir");
+#endif // USER_DIR
+	std::cout << " - Current working directory\n";
+	std::cout << "selected: ";
+	if(config.paths.user.empty()) {
+		std::cout << "(none)\n";
+	} else {
+		std::cout << config.paths.user << '\n';
+	}
+	std::cout << '\n';
+}
+
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 void parseCommandLine(int argc, char ** argv) {
 #else
@@ -206,6 +302,7 @@ void parseCommandLine(const char * command_line) {
 #endif
 		)
 		("debug,g", po::value<string>(), "Log level settings.")
+		("list-dirs,l", "List the searched user and data directories.")
 	;
 	
 	po::variables_map options;
@@ -253,6 +350,11 @@ void parseCommandLine(const char * command_line) {
 			LogDebug("Got user directory from command-line: " << config.paths.user);
 		} else {
 			findUserDirectory();
+		}
+		
+		if(options.count("list-dirs")) {
+			listDirectories();
+			exit(0);
 		}
 		createUserDirectory();
 		
