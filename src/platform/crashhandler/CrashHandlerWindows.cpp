@@ -216,9 +216,17 @@ void appendExceptionContext(char* crashDetails, EXCEPTION_POINTERS* pExceptionIn
 	PCONTEXT pCtx = pExceptionInfo->ContextRecord;
 	strcat(crashDetails, "Registers:\n");
 		
-	// TODO - Fix registers for win64...
+#if defined(_WIN64)
+	sprintf(buf, "  RAX:%016X  RBX:%016X  RCX:%016X  RDX:%016X  RSI:%016X  RDI:%016X\n", pCtx->Rax, pCtx->Rbx, pCtx->Rcx, pCtx->Rdx, pCtx->Rsi, pCtx->Rdi);
+	strcat(crashDetails, buf);
 
-	sprintf(buf, "  EAX:%08X  EBX:%08X  ECX:%08X  EDX:%08X  ESI:%08X  EDI:%08X\n", pCtx->Eax, pCtx->Ebx, pCtx->Ecx, pCtx->Edx, pCtx->Esi, pCtx->Edi);
+	sprintf(buf, "  CS:RIP:%04X:%08X\n", pCtx->SegCs, pCtx->Rip);
+	strcat(crashDetails, buf);
+
+	sprintf(buf, "  SS:RSP:%04X:%016X  RBP:%016X\n", pCtx->SegSs, pCtx->Rsp, pCtx->Rbp);
+	strcat(crashDetails, buf);
+#else
+    sprintf(buf, "  EAX:%08X  EBX:%08X  ECX:%08X  EDX:%08X  ESI:%08X  EDI:%08X\n", pCtx->Eax, pCtx->Ebx, pCtx->Ecx, pCtx->Edx, pCtx->Esi, pCtx->Edi);
 	strcat(crashDetails, buf);
 
 	sprintf(buf, "  CS:EIP:%04X:%08X\n", pCtx->SegCs, pCtx->Eip);
@@ -226,6 +234,7 @@ void appendExceptionContext(char* crashDetails, EXCEPTION_POINTERS* pExceptionIn
 
 	sprintf(buf, "  SS:ESP:%04X:%08X  EBP:%08X\n", pCtx->SegSs, pCtx->Esp, pCtx->Ebp);
 	strcat(crashDetails, buf);
+#endif
 
 	sprintf(buf, "  DS:%04X  ES:%04X  FS:%04X  GS:%04X\n", pCtx->SegDs, pCtx->SegEs, pCtx->SegFs, pCtx->SegGs);
 	strcat(crashDetails, buf);
