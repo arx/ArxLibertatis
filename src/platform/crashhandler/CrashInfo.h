@@ -23,18 +23,11 @@
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-
-#else
-
 #include "platform/Platform.h"
 
-#include <windows.h>
-#include <dbghelp.h>
+struct CrashInfoBase {
 
-struct CrashInfo {
-
-	CrashInfo() : exitLock(0) {
+	CrashInfoBase() : exitLock(0) {
 	}
 	
 	enum Constants {
@@ -62,10 +55,6 @@ struct CrashInfo {
 	boost::interprocess::detail::OS_process_id_t processId;
 	boost::interprocess::detail::OS_thread_id_t threadId;
 
-	// Windows specific - necessary for the crash dump generation.
-	PEXCEPTION_POINTERS pExceptionPointers;
-	MINIDUMP_TYPE miniDumpType;
-
 	// Detailed crash info (messages, registers, whatever).
 	char detailedCrashInfo[MaxDetailCrashInfoLen];
 	
@@ -79,6 +68,22 @@ struct CrashInfo {
 	boost::interprocess::interprocess_semaphore	exitLock;
 };
 
-#endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
+
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+
+struct CrashInfo : public CrashInfoBase {
+}
+
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+
+#include <windows.h>
+#include <dbghelp.h>
+
+struct CrashInfo : public CrashInfoBase {
+	PEXCEPTION_POINTERS pExceptionPointers;
+	MINIDUMP_TYPE miniDumpType;
+};
+
+#endif
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHINFO_H
