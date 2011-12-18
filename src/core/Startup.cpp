@@ -48,7 +48,7 @@ static fs::path findSubdirectory(const std::string & where, const fs::path & dir
 	
 	size_t start = 0;
 	while(true) {
-		size_t end = prefixes.find(':', start);
+		size_t end = prefixes.find(env_list_seperator, start);
 		fs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
 		
 		fs::path subdir = prefix / dir;
@@ -212,7 +212,7 @@ static void listDirectories(const string & regKey, const string & suffix = strin
 		
 		size_t start = 0;
 		while(true) {
-			size_t end = prefixes.find(':', start);
+			size_t end = prefixes.find(env_list_seperator, start);
 			fs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
 			if(prefixset.find(prefix) == prefixset.end()) {
 				prefixset.insert(prefix);

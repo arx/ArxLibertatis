@@ -30,8 +30,10 @@ bool getSystemConfiguration(const std::string & name, std::string & result);
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 void defineXdgDirectories();
+const char env_list_seperator = ':';
 #else
 #define defineXdgDirectories()
+const char env_list_seperator = ';';
 #endif
 
 #endif // ARX_PLATFORM_ENVIRONMENT_H
