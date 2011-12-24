@@ -285,22 +285,8 @@ void parseCommandLine(const char * command_line) {
 	options_desc.add_options()
 		("help,h", "Show supported options.")
 		("no-data-dir,n", "Don't automatically detect a data directory.")
-		("data-dir,d", po::value<string>(), "Where to find the data files."
-#ifdef DATA_DIR
-		  "\n Default: \"" DATA_DIR "\""
-#ifdef DATA_DIR_PREFIXES
-			" in \"" DATA_DIR_PREFIXES "\""
-#endif
-#endif
-		)
-		("user-dir,u", po::value<string>(), "Where to store config and save files."
-#ifdef USER_DIR
-		  "\n Default: \"" USER_DIR "\""
-#ifdef USER_DIR_PREFIXES
-			" in \"" USER_DIR_PREFIXES "\""
-#endif
-#endif
-		)
+		("data-dir,d", po::value<string>(), "Where to find the data files.")
+		("user-dir,u", po::value<string>(), "Where to store config and save files.")
 		("debug,g", po::value<string>(), "Log level settings.")
 		("list-dirs,l", "List the searched user and data directories.")
 	;
