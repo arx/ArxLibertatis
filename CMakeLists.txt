@@ -206,6 +206,10 @@ else(MSVC)
 		add_definitions(-D_POSIX_C_SOURCE=199309)
 	endif()
 	
+	if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI))
+		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
+	endif()
+	
 	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
 	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
@@ -309,8 +313,8 @@ endif()
 if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
 	message(SEND_ERROR "Need either nanosleep or WIN32.")
 endif()
-if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI))
-	message(SEND_ERROR "Need either clock_gettime or WIN32.")
+if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI OR HAVE_MACH_CLOCK))
+	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
 endif()
 
 # Preprocessor definitions

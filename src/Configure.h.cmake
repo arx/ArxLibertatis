@@ -34,6 +34,9 @@
 #cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
 #cmakedefine HAVE_ISATTY
 
+// Mac OS X features
+#cmakedefine HAVE_MACH_CLOCK
+
 // Arx components
 #cmakedefine BUILD_EDITOR
 #cmakedefine BUILD_EDIT_LOADSAVE
