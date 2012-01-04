@@ -648,6 +648,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	}
 #endif
 	
+	Time::init();
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	

@@ -306,8 +306,11 @@ endif()
 if(NOT ARX_USE_OPENAL AND NOT ARX_USE_DSOUND)
 	message(WARNING "No audio backend enabled.")
 endif()
-if((NOT HAVE_NANOSLEEP_FUNC OR NOT HAVE_CLOCK_GETTIME) AND NOT HAVE_WINAPI)
-	message(SEND_ERROR "Need either nanosleep and clock_gettime or WIN32.")
+if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
+	message(SEND_ERROR "Need either nanosleep or WIN32.")
+endif()
+if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI))
+	message(SEND_ERROR "Need either clock_gettime or WIN32.")
 endif()
 
 # Preprocessor definitions
