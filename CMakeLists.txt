@@ -148,6 +148,9 @@ if(MSVC)
 		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
 
+	# Disable warning related to long decorated name
+	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
+
 	if(NOT ARX_DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 		add_definitions(-D_SECURE_SCL=0)
