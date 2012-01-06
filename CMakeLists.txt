@@ -209,22 +209,37 @@ else(MSVC)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
-	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
+	check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
+	check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
+	check_include_file("dirent.h" HAVE_DIRENT_H)
 	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
+	
 	check_symbol_exists(fork "unistd.h" HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
 	check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
-	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+	check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	endif()
+	
+	check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
+	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
+	
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
+	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
+	
+	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H)
+		if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+			set(HAVE_POSIX_FILESYSTEM 1)
+		endif()
+	endif()
 	
 	# Warning level
 	add_cxxflag("-Wall")
