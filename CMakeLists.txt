@@ -133,16 +133,16 @@ if(MSVC)
 	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
 	# TODO - Does not seem to work...
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
-	
+
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 	add_definitions(/wd4995)        # 'func': name was marked as #pragma deprecated
-	
+
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)        # Conversion from 'float' to 'long', possible loss of data
-	
+
 	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 	if(CMAKE_CL_64)
 		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
@@ -157,28 +157,30 @@ if(MSVC)
 		add_definitions(-D_SECURE_SCL_THROWS=0)
 		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
 	endif()
-	
+
 	# Disable exceptions & rtti
-	add_definitions(/wd4530)		# C++ exception handling was used but /EHsc was not selected.
-	add_definitions(/GR-)			# No RTTI
-		
+	add_definitions(/GR-)           # No RTTI
+
+	# Enable multiprocess build
+	add_definitions(/MP)
+
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 		# Disable Run time checks
 		string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
-		
+
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
 		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
-		
-		# Remove definition of _DEBUG as it might conflict with libs we're linking with   		
+
+		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
 	endforeach(flag_var)
-	
+
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
-	
+
 	# This is needed to use ZLIB as a DLL
 	add_definitions(-DZLIB_WINAPI)
-	
+
 else(MSVC)
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
