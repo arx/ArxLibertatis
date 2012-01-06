@@ -6,10 +6,18 @@
               \_/____________________/
 
 
-Port of Arx Fatalis to x64_86 / GCC / OpenGL / Unix
+Cross-platform port of Arx Fatalis
 
 Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
 GPLv3 - read ARX_PUBLIC_LICENSE.txt
+
+## Contact
+
+IRC: \#arxfatalis on irc.freenode.net
+
+Wiki: [http://arx.parpg.net/](http://arx.parpg.net/)
+
+Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)
 
 ## Dependencies
 
@@ -30,7 +38,7 @@ Build options:
 
 * `BUILD_TOOLS` (default=ON): Build tools
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
-* `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug Binaries
+* `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
@@ -44,7 +52,7 @@ Windows-only options (always OFF for non-windows platforms):
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
-To build 32-bit binaries on a 64-bit (multilib) system, pass `-DCMAKE_CXX_FLAGS=-m32` to cmake.
+The wiki has detailed instructions on compiling [under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux) and [under windows](http://arx.parpg.net/Downloading_and_Compiling_under_Windows)
 
 ## Run
 
@@ -60,23 +68,16 @@ You can close it with `Alt + F4` or `killall arx.exe.so`
 
 ## Tools
 
-* arxunpak - Extracts the .pak files containing the game assets.
-* arxsavetool - Extract, modify, view and fix savegames.
+* `arxunpak <pakfile> [<pakfile>...]` - Extracts the .pak files containing the game assets.
+
+* `arxsavetool <command> <savefile> [<options>...]` - commands are:
+  * `extract <savefile>` - Extract the contents of the given savefile to the current directly.
+  * `add <savefile> [<files>...]` - Add files to a savefile, create it if needed.
+  * `fix <savefile>` - Fix savegame issues created by previous builds of Arx Libertatis
+  * `view <savefile> <ident>` - Print savegame information.
 
 ## Build documentation
 
-Run this from the root directory:
+To build developer documentation (doxygen), run this from the root directory:
 
 `$ make doc`
-
-## Chat
-
-\#arxfatalis on irc.freenode.net
-
-## Wiki
-
-[http://arx.parpg.net/](http://arx.parpg.net/)
-
-## Reddit
-
-[http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)
