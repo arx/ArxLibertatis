@@ -265,7 +265,6 @@ else(MSVC)
 	if(CMAKE_BUILD_TYPE STREQUAL Debug)
 		
 		#Debug
-		message("Debug Build")
 		add_definitions(-D_DEBUG)
 		
 		check_compiler_flag(RESULT "-g3")
@@ -277,12 +276,6 @@ else(MSVC)
 		check_compiler_flag(RESULT "-O0")
 		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
-		
-	else()
-		
-		#Release
-		message("Release Build")
-		add_definitions(-D_NDEBUG)
 		
 	endif()
 	
@@ -589,7 +582,7 @@ if(ARX_USE_DSOUND)
 	set(HAVE_DSOUND 1)
 endif()
 
-if(ARX_USE_D3D9)
+if(HAVE_WINAPI AND ARX_USE_D3D9)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
 	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
 		
@@ -607,7 +600,7 @@ if(ARX_USE_OPENGL)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
-if(ARX_USE_SDL)
+if(ARX_USE_OPENGL AND ARX_USE_SDL)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
@@ -615,7 +608,7 @@ if(ARX_USE_SDL)
 	set(HAVE_SDL 1)
 endif()
 
-if(ARX_USE_DINPUT8)
+if(HAVE_WINAPI AND ARX_USE_DINPUT8)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	set(HAVE_DINPUT8 1)
@@ -841,3 +834,92 @@ endif()
 if(ARX_BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
+
+function(print_configuration TITLE)
+	
+	set(str "")
+	
+	set(print_first 0)
+	
+	set(mode 0)
+	
+	foreach(arg IN LISTS ARGN)
+		
+		if(arg STREQUAL "FIRST")
+			set(print_first 1)
+		else()
+			
+			if(mode EQUAL 0)
+				
+				if(${arg})
+					set(mode 1)
+				else()
+					set(mode 2)
+				endif()
+				
+			else()
+				
+				if(mode EQUAL 1 AND NOT arg STREQUAL "")
+					
+					if(str STREQUAL "")
+						set(str "${arg}")
+					else()
+						set(str "${str}, ${arg}")
+					endif()
+					
+					if(print_first)
+						break()
+					endif()
+					
+				endif()
+				
+				set(mode 0)
+				
+			endif()
+			
+		endif()
+		
+	endforeach()
+	
+	if(str STREQUAL "")
+		set(str "(none)")
+	endif()
+	
+	message(" - ${TITLE}: ${str}")
+	
+endfunction()
+
+message("")
+message("Configuration:")
+if(ARX_USE_UNITYBUILD)
+	set(BUILD_TYPE_SUFFIX " (unity build)")
+else()
+	set(BUILD_TYPE_SUFFIX "")
+endif()
+if(CMAKE_BUILD_TYPE STREQUAL "")
+	message(" - Build type: Release${BUILD_TYPE_SUFFIX}")
+else()
+	message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
+endif()
+print_configuration("Filesystem backend" FIRST
+	HAVE_POSIX_FILESYSTEM "POSIX"
+	HAVE_WINAPI           "Win32"
+	1                     "Boost"
+)
+print_configuration("Renderer"
+	HAVE_OPENGL "OpenGL"
+	HAVE_D3D9   "Direct3D 9"
+)
+print_configuration("Audio backend"
+	HAVE_OPENAL "OpenAL"
+	HAVE_DSOUND "Direct Sound"
+)
+print_configuration("Input backend"
+	HAVE_SDL     "SDL"
+	HAVE_DINPUT8 "DirectInput 8"
+)
+print_configuration("Windowing"
+	HAVE_SDL     "SDL"
+	HAVE_D3D9    "Win32"
+)
+message("")
