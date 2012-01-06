@@ -217,13 +217,13 @@ static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
 	}
 }
 
-
 /* Evaluate main entity translation */
-static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale, bool render, Vec3f & ftr, Vec3f & ftr2)
-{
+static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale,
+                                       Vec3f & ftr) {
+	
 	// Resets Frame Translate
 	ftr = Vec3f::ZERO;
-	ftr2 = Vec3f::ZERO;
+	Vec3f ftr2 = Vec3f::ZERO;
 
 
 	// Fill frame translate values with multi-layer translate informations...
@@ -272,7 +272,7 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 			// Linear interpolation of object translation (MOVE)
 			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 
-			if(io && render) {
+			if(io) {
 				
 				ftr *= scale;
 
@@ -288,7 +288,7 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 		}
 	}
 	
-	if(io && (io->animlayer[0].cur_anim) && render) {
+	if(io && io->animlayer[0].cur_anim) {
 		
 		// Use calculated value to notify the Movement engine of the translation to do
 		if(io->ioflags & IO_NPC) {
@@ -2183,7 +2183,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	float 				invisibility;
 	float 				scale;
 	float				timm;
-	Vec3f			ftr, ftr2;
+	Vec3f			ftr;
 	EERIE_C_DATA	*	obj;
 
 	
@@ -2210,7 +2210,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 	memset(grps, 0, eobj->nbgroups);
 
-	Cedric_AnimCalcTranslation(io, animuse, scale, render, ftr, ftr2);
+	Cedric_AnimCalcTranslation(io, animuse, scale, ftr);
 
 	if(Cedric_IO_Visible(io)) {
 
