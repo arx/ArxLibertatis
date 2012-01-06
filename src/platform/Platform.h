@@ -30,6 +30,7 @@
 #define	ARX_PLATFORM_WIN32   1
 #define	ARX_PLATFORM_PS3_PPU 2
 #define	ARX_PLATFORM_LINUX   3
+#define ARX_PLATFORM_MACOSX  4
 
 #if defined(__PPU__)
 	#define ARX_PLATFORM ARX_PLATFORM_PS3_PPU
@@ -37,6 +38,8 @@
 	#define ARX_PLATFORM ARX_PLATFORM_LINUX
 #elif defined(_WIN32)
 	#define ARX_PLATFORM ARX_PLATFORM_WIN32
+#elif defined(__MACH__)
+	#define ARX_PLATFORM ARX_PLATFORM_MACOSX
 #endif
 
 #ifndef ARX_PLATFORM
