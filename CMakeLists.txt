@@ -138,14 +138,14 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(/wd4995)		# 'func': name was marked as #pragma deprecated
+	add_definitions(/wd4995)        # 'func': name was marked as #pragma deprecated
 	
 	# TEMP - disable warning caused by the F2L removal
-	add_definitions(/wd4244)    	# Conversion from 'float' to 'long', possible loss of data
+	add_definitions(/wd4244)        # Conversion from 'float' to 'long', possible loss of data
 	
 	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 	if(CMAKE_CL_64)
-		add_definitions(/wd4267)	# Conversion from 'size_t' to 'xxx', possible loss of data
+		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
 
 	if(NOT ARX_DEBUG_EXTRA)
@@ -164,7 +164,7 @@ if(MSVC)
 		string(REGEX REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
 		
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
-			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
 		
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with   		
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
@@ -583,7 +583,28 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
+# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found release and debug
+# libs get mixed up. On windows we will empty out the Boost_LIBRARIES list and count on the 
+# auto-linking feature boost provides. http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
+if (MSVC)
+	# Reset libraries list so VC will perform auto-linking.
+	set (Boost_LIBRARIES "")
+
+	# Not needed anymore as BOOST_ROOT finds these properly. 
+	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
+	if ("${Boost_INCLUDE_DIRS}" STREQUAL "")
+		set (Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
+	endif ()
+	if ("${Boost_LIBRARY_DIRS}" STREQUAL "")
+		set (Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
+	endif ()
+
+	# Add boost lib directory to the list of libraries paths
+	link_directories(${Boost_LIBRARY_DIRS})
+endif ()
+
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+
 if(TIME_LIBRARIES)
 	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
 endif()
