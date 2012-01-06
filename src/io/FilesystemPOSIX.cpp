@@ -228,7 +228,7 @@ string directory_iterator::name() {
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }
 
-static __mode_t dirstat(void * handle, void * entry) {
+static mode_t dirstat(void * handle, void * entry) {
 	
 	arx_assert(entry != NULL);
 	int fd = dirfd(reinterpret_cast<DIR *>(handle));
