@@ -24,6 +24,7 @@
 
 #include "graphics/Math.h"
 #include "io/PakReader.h"
+#include "io/log/Logger.h"
 
 using std::string;
 using std::memcpy;
@@ -432,89 +433,92 @@ void Image::ChangeGamma(float pGamma) {
 	}
 }
 
-void Image::ApplyColorKeyToAlpha(const Color3f& colorKey)
-{
-	arx_assert_msg(!IsCompressed(), "[Image::ApplyColorKeyToAlpha] Not supported yet for compressed textures!");
-	arx_assert_msg(!IsVolume(), "[Image::ApplyColorKeyToAlpha] Not supported yet for 3d textures!");
+inline static bool sample(const u8 * src, int w, int h, int x, int y, u8 * dst, Color key) {
+	if(x >= 0 && x < w && y >= 0 && y < h) {
+		const u8 * s = src + (y * w + x) * 3;
+		if(s[0] != key.r || s[1] != key.g || s[2] != key.b) {
+			dst[0] = s[0], dst[1] = s[1], dst[2] = s[2];
+			return true;
+		}
+	}
+	return false;
+}
 
-	u8 c1 = Format_R8G8B8 ? colorKey.r : colorKey.b;
-	u8 c2 = Format_R8G8B8 ? colorKey.g : colorKey.g;
-	u8 c3 = Format_R8G8B8 ? colorKey.b : colorKey.r;
-
-	// For RGB or BGR textures, first check if an alpha channel is really needed, then create it if it's the case
-	if(mFormat == Format_R8G8B8 || mFormat == Format_B8G8R8)
-	{
-		bool needsAlphaChannel = false;
-		
-		// Check if we've got pixels matching the color key
-		unsigned char* pImg = mData;
-		for(unsigned int y = 0; y < mHeight; y++)
-		{
-			for(unsigned int x = 0; x < mWidth; x++)
-			{
-				if(pImg[0] == c1 && pImg[1] == c2 && pImg[2] == c3)
-				{
-					needsAlphaChannel = true;
-					break;
+void Image::ApplyColorKeyToAlpha(Color key) {
+	
+	arx_assert_msg(!IsCompressed(), "ApplyColorKeyToAlpha Not supported for compressed textures!");
+	arx_assert_msg(!IsVolume(), "ApplyColorKeyToAlpha Not supported for 3d textures!");
+	
+	if(mFormat != Format_R8G8B8 && mFormat != Format_B8G8R8) {
+		arx_assert_msg(false, "ApplyColorKeyToAlpha not supported for format %d", mFormat);
+		return;
+	}
+	
+	if(mFormat == Format_B8G8R8) {
+		std::swap(key.r, key.b);
+	}
+	
+	// For RGB or BGR textures, first check if an alpha channel is really needed,
+	// then create it if it's the case
+	
+	// Check if we've got pixels matching the color key
+	const u8 * img = mData;
+	bool needsAlphaChannel = false;
+	for(size_t i = 0; i < (mHeight * mHeight); i++, img += 3) {
+		if(img[0] == key.r && img[1] == key.g && img[2] == key.b) {
+			needsAlphaChannel = true;
+			break;
+		}
+	}
+	if(!needsAlphaChannel) {
+		return;
+	}
+	
+	// If we need to add an alpha channel
+	
+	// Create a temp buffer
+	size_t dataSize = GetSizeWithMipmaps(Format_R8G8B8A8, mWidth, mHeight, mDepth, mNumMipmaps);
+	u8 * dataTemp = new unsigned char[dataSize];
+	
+	// Fill temp image and apply color key to alpha channel
+	u8 * dst = dataTemp;
+	img = mData;
+	for(size_t y = 0; y < mHeight; y++) {
+		for(size_t x = 0; x < mWidth; x++) {
+			
+			dst[3] = (img[0] == key.r && img[1] == key.g && img[2] == key.b) ? 0 : 0xff;
+			
+			if(dst[3]) {
+				
+				dst[0] = img[0];
+				dst[1] = img[1];
+				dst[2] = img[2];
+				
+			} else {
+				// For transparent pixels, use the color of an opaque bordering pixel,
+				// so that linear filtering won't produce black borders.
+				if(   !sample(mData, mWidth, mHeight, int(x)    , int(y) - 1, dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x) + 1, int(y)    , dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x)    , int(y) + 1, dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x) - 1, int(y)    , dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x) - 1, int(y) - 1, dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x) + 1, int(y) - 1, dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x) + 1, int(y) + 1, dst, key)
+				   && !sample(mData, mWidth, mHeight, int(x) - 1, int(y) + 1, dst, key)) {
+					dst[0] = dst[1] = dst[2] = 0;
 				}
-
-				pImg += 3;
 			}
-
-			if(needsAlphaChannel)
-				break;
-		}
-
-		// If we need to add an alpha channel
-		if(needsAlphaChannel)
-		{
-			// Create a temp buffer
-			unsigned int dataSize = Image::GetSizeWithMipmaps(Format_R8G8B8A8, mWidth, mHeight, mDepth, mNumMipmaps);
-			unsigned char* dataTemp = new unsigned char[dataSize];
-		
-			// Fill temp image and apply color key to alpha channel
-			unsigned char* pImgDst = dataTemp;
-			pImg = mData;
-			for(unsigned int y = 0; y < mHeight; y++)
-			{
-				for(unsigned int x = 0; x < mWidth; x++)
-				{
-					pImgDst[0] = pImg[0];
-					pImgDst[1] = pImg[1];
-					pImgDst[2] = pImg[2];
-					pImgDst[3] = pImg[0] == c1 && pImg[1] == c2 && pImg[2] == c3 ? 0 : 0xFF;
-					
-					pImg += 3;
-					pImgDst += 4;
-				}
-			}
-
-			// Swap data with temp data and ajust internal state
-			delete[] mData;
-			mData = dataTemp;
-			mDataSize = dataSize;
-			mFormat = mFormat == Format_R8G8B8 ? Format_R8G8B8A8 : Format_B8G8R8A8;
+			
+			img += 3;
+			dst += 4;
 		}
 	}
-	// For RGBA or BGRA textures, simply remplace the alpha of pixels matching the color key with 0
-	else if(mFormat == Format_R8G8B8A8 || mFormat == Format_B8G8R8A8)
-	{
-		unsigned char* pImg = mData;
-		for(unsigned int y = 0; y < mHeight; y++)
-		{
-			for(unsigned int x = 0; x < mWidth; x++)
-			{
-				if(pImg[0] == c1 && pImg[1] == c2 && pImg[2] == c3)
-					pImg[3] = 0;
-
-				pImg += 3;
-			}
-		}
-	}
-	else
-	{
-		ARX_DEAD_CODE();
-	}
+	
+	// Swap data with temp data and ajust internal state
+	delete[] mData;
+	mData = dataTemp;
+	mDataSize = dataSize;
+	mFormat = (mFormat == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;
 }
 
 bool Image::ToGrayscale() {
@@ -848,9 +852,13 @@ void Flip3dc(unsigned char * data, unsigned int count) {
 	}
 }
 
-ILenum ARXImageToILFormat[] = {
+static ILenum ARXImageToILFormat[] = {
 	IL_LUMINANCE,       // Format_L8
+#ifdef IL_ALPHA
 	IL_ALPHA,           // Format_A8
+#else
+	0,                  // Format_A8 not supported by the IL version
+#endif
 	IL_LUMINANCE_ALPHA, // Format_L8A8
 	IL_RGB,             // Format_R8G8B8
 	IL_BGR,             // Format_B8G8R8
@@ -861,24 +869,31 @@ ILenum ARXImageToILFormat[] = {
 	IL_DXT5,            // Format_DXT5
 };
 
-void Image::save(const fs::path & filename) const {
+bool Image::save(const fs::path & filename) const {
+	
+	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
+	if(mFormat < 0 || mFormat >= Format_Unknown || ARXImageToILFormat[mFormat] == 0) {
+		return false;
+	}
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);
 	ilBindImage(imageName);
 	
-	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
-	if(mFormat < 0 || mFormat >= Format_Unknown) {
-		return;
-	}
-	
-	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(), ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
+	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(),
+	                           ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
 	if(ret) {
 		ilRegisterOrigin(IL_ORIGIN_UPPER_LEFT);
 		ilEnable(IL_FILE_OVERWRITE);
 		ret = ilSaveImage(filename.string().c_str());
-		arx_assert_msg(ret, "ilSaveImage failed: %d", ilGetError());
 	}
 	
 	ilDeleteImages(1, &imageName);
+	
+	if(!ret) {
+		LogWarning << "ilSaveImage failed: " << ilGetError();
+		return false;
+	}
+	
+	return true;
 }

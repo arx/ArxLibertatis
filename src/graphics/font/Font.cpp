@@ -139,7 +139,9 @@ bool Font::InsertGlyph(unsigned int character) {
 	return true;
 }
 
-void Font::WriteToDisk() {
+bool Font::WriteToDisk() {
+	
+	bool ok = true;
 	
 	for(unsigned int i = 0; i < m_Textures->GetTextureCount(); ++i) {
 		Texture2D & tex = m_Textures->GetTexture(i);
@@ -156,8 +158,10 @@ void Font::WriteToDisk() {
 		ss << i;
 		ss << ".png";
 		
-		tex.GetImage().save(ss.str());
+		ok = ok && tex.GetImage().save(ss.str());
 	}
+	
+	return ok;
 }
 
 inline static bool read_utf8(string::const_iterator & it, string::const_iterator end, u32 & chr) {

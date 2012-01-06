@@ -17,11 +17,11 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_SAVETOOL_SAVEVIEW_H
-#define ARX_SAVETOOL_SAVEVIEW_H
+#ifndef ARX_TOOLS_SAVETOOL_SAVEVIEW_H
+#define ARX_TOOLS_SAVETOOL_SAVEVIEW_H
 
 class SaveBlock;
 
 int main_view(SaveBlock & savefile, int argc, char ** argv);
 
-#endif // ARX_SAVETOOL_SAVEVIEW_H
+#endif // ARX_TOOLS_SAVETOOL_SAVEVIEW_H

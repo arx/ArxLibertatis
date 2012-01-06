@@ -256,7 +256,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 {
 	static long ppos = 0;
 
-	if ((!PauseScript) && (!EDITMODE) && (!ARXPausedTimer))
+	if ((!PauseScript) && (!EDITMODE) && (!arxtime.is_paused()))
 	{
 		EVENT_SENDER = NULL;
 
@@ -427,7 +427,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 					if (io->script.timers[0] == 0) *lcontent = 0;
 					else
 					{
-						unsigned long t = ARXTimeUL() - es->timers[0];
+						unsigned long t = (unsigned long)(arxtime) - es->timers[0];
 						*lcontent = (long)t;
 					}
 				}
@@ -443,7 +443,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 					if (io->script.timers[1] == 0) *lcontent = 0;
 					else
 					{
-						unsigned long t = ARXTimeUL() - es->timers[1];
+						unsigned long t = (unsigned long)(arxtime) - es->timers[1];
 						*lcontent = (long)t;
 					}
 				}
@@ -459,7 +459,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 					if (io->script.timers[2] == 0) *lcontent = 0;
 					else
 					{
-						unsigned long t = ARXTimeUL() - es->timers[2];
+						unsigned long t = (unsigned long)(arxtime) - es->timers[2];
 						*lcontent = (long)t;
 					}
 				}
@@ -475,7 +475,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 					if (io->script.timers[3] == 0) *lcontent = 0;
 					else
 					{
-						unsigned long t = ARXTimeUL() - es->timers[3];
+						unsigned long t = (unsigned long)(arxtime) - es->timers[3];
 						*lcontent = (long)t;
 					}
 				}
@@ -496,25 +496,25 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^gamedays"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 864000000);
+				*lcontent = static_cast<long>(float(arxtime) / 864000000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^gamehours"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 3600000);
+				*lcontent = static_cast<long>(float(arxtime) / 3600000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^gameminutes"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 60000);
+				*lcontent = static_cast<long>(float(arxtime) / 60000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^gameseconds"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 1000);
+				*lcontent = static_cast<long>(float(arxtime) / 1000);
 				return TYPE_LONG;
 			}
 
@@ -535,32 +535,32 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^arxdays"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 7200000);
+				*lcontent = static_cast<long>(float(arxtime) / 7200000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxhours"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 600000);
+				*lcontent = static_cast<long>(float(arxtime) / 600000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxminutes"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 10000);
+				*lcontent = static_cast<long>(float(arxtime) / 10000);
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxseconds"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 1000);
+				*lcontent = static_cast<long>(float(arxtime) / 1000);
 				*lcontent *= 6;
 				return TYPE_LONG;
 			}
 
 			if (!name.compare("^arxtime_hours"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 600000);
+				*lcontent = static_cast<long>(float(arxtime) / 600000);
 
 				while (*lcontent > 12) *lcontent -= 12;
 
@@ -569,7 +569,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^arxtime_minutes"))
 			{
-				*lcontent = static_cast<long>(ARXTime / 10000);
+				*lcontent = static_cast<long>(float(arxtime) / 10000);
 
 				while (*lcontent > 60) *lcontent -= 60;
 
@@ -578,7 +578,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^arxtime_seconds"))
 			{
-				*lcontent = static_cast<long>(ARXTime * 6 / 1000);
+				*lcontent = static_cast<long>(float(arxtime) * 6 / 1000);
 
 				while (*lcontent > 60) *lcontent -= 60;
 
@@ -2227,16 +2227,19 @@ void ARX_SCRIPT_Timer_Check()
 				{
 					if (!(st->io->GameFlags & GFLAG_ISINTREATZONE))
 					{
-						while (st->tim + st->msecs < ARXTime)
+						if (st->tim + st->msecs < float(arxtime))
 						{
-							st->tim += st->msecs;
+							const float delta = float(arxtime) - st->tim;
+							const float i = floorf(delta / (float)st->msecs);
+							st->tim += st->msecs * i;
+							arx_assert(st->tim < float(arxtime) && st->tim + st->msecs > float(arxtime));
 						}
 
 						continue;
 					}
 				}
 
-				if (st->tim + st->msecs <= ARXTime)
+				if (st->tim + st->msecs <= float(arxtime))
 				{
 					EERIE_SCRIPT * es = st->es;
 					INTERACTIVE_OBJ * io = st->io;

@@ -761,7 +761,7 @@ consequences on light :
 	{
 		CKTrack->currframe = (float)CKTrack->startframe;
 		c->key = NULL;
-		c->flTime = ARX_TIME_Get();
+		c->flTime = arxtime.get_updated();
 	}
 
 	return true;

@@ -181,7 +181,7 @@ void CCurePoison::Create()
 		DynLight[id].pos.x = eSrc.x;
 		DynLight[id].pos.y = eSrc.y - 50.f;
 		DynLight[id].pos.z = eSrc.z;
-		DynLight[id].time_creation = ARXTimeUL();
+		DynLight[id].time_creation = (unsigned long)(arxtime);
 		DynLight[id].duration = 200;
 		DynLight[id].extras = 0;
 	}
@@ -259,7 +259,7 @@ void CCurePoison::Update(unsigned long aulTime)
 		DynLight[id].pos.y = eSrc.y - 50.f;
 		DynLight[id].pos.z = eSrc.z;
 		DynLight[id].duration = 200;
-		DynLight[id].time_creation = ARXTimeUL();
+		DynLight[id].time_creation = (unsigned long)(arxtime);
 		DynLight[id].extras = 0;
 	}
 
@@ -372,7 +372,7 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
 		DynLight[id].pos.x = eSrc.x;
 		DynLight[id].pos.y = eSrc.y - 50;
 		DynLight[id].pos.z = eSrc.z;
-		DynLight[id].time_creation = ARXTimeUL();
+		DynLight[id].time_creation = (unsigned long)(arxtime);
 		DynLight[id].duration = 200;
 	}
 }
@@ -394,7 +394,7 @@ void CRuneOfGuarding::Update(unsigned long _ulTime)
 		DynLight[id].rgb.r = 1.0f;
 		DynLight[id].rgb.g = 0.2f;
 		DynLight[id].rgb.b = 0.2f;
-		DynLight[id].time_creation = ARXTimeUL();
+		DynLight[id].time_creation = (unsigned long)(arxtime);
 		DynLight[id].duration = 200;
 	}
 }
@@ -424,7 +424,7 @@ float CRuneOfGuarding::Render()
 	stitepos.y = y;
 	stitepos.z = z;
 
-	float gtc = (float)ARX_TIME_Get();
+	float gtc = arxtime.get_updated();
 	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
 	stiteangle.b = MAKEANGLE(gtc * ( 1.0f / 1000 )); 
 	stitecolor.r = 0.4f - v;
@@ -464,7 +464,7 @@ float CRuneOfGuarding::Render()
 	{
 		int j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer))
+		if ((j != -1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			particle[j].exist		=	1;
@@ -479,7 +479,7 @@ float CRuneOfGuarding::Render()
 			particle[j].scale.x		=	-0.1f;
 			particle[j].scale.y		=	-0.1f;
 			particle[j].scale.z		=	-0.1f;
-			particle[j].timcreation = lARXTime;
+			particle[j].timcreation = (long)arxtime;
 			particle[j].tolive		=	2600 + (unsigned long)(rnd() * 600.f);
 			particle[j].tc			=	tex_p2;
 			particle[j].siz			=	0.3f;
@@ -873,7 +873,7 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 		if (pTab[i]->lLightId != -1)
 		{
 			DynLight[pTab[i]->lLightId].duration	  = 2000;
-			DynLight[pTab[i]->lLightId].time_creation = ARXTimeUL();
+			DynLight[pTab[i]->lLightId].time_creation = (unsigned long)(arxtime);
 			pTab[i]->lLightId						  = -1;
 		}
 
@@ -957,7 +957,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 			DynLight[id].fallstart		= 150.f;
 			DynLight[id].rgb = Color3f::green;
 			DynLight[id].pos = pPP->eSrc;
-			DynLight[id].time_creation	= ARXTimeUL();
+			DynLight[id].time_creation	= (unsigned long)(arxtime);
 			DynLight[id].duration		= 200;
 		}
 
@@ -997,7 +997,7 @@ float CMultiPoisonProjectile::Render()
 			DynLight[id].fallstart	= 150.f;
 			DynLight[id].rgb = Color3f::green;
 			DynLight[id].pos = pPoisonProjectile->eCurPos;
-			DynLight[id].time_creation = ARXTimeUL();
+			DynLight[id].time_creation = (unsigned long)(arxtime);
 			DynLight[id].duration	= 200;
 		}
 
@@ -1005,7 +1005,7 @@ float CMultiPoisonProjectile::Render()
 		AddPoisonFog(&pPoisonProjectile->eCurPos, spells[spellinstance].caster_level + 7);
 
 		if ((t != -1)
-		        &&	(spells[pTab[i]->spellinstance].timcreation + 1600 < ARXTimeUL()))
+		        &&	(spells[pTab[i]->spellinstance].timcreation + 1600 < (unsigned long)(arxtime)))
 		{
 			damages[t].pos = pPoisonProjectile->eCurPos;
 			damages[t].radius = 120.f;
@@ -1150,7 +1150,7 @@ float CRepelUndead::Render()
 	rgbObjColor.g = 0.6f;
 	rgbObjColor.b = 0.8f;
 
-	float vv = 1.f + (EEsin(ARX_TIME_Get() * ( 1.0f / 1000 ))); 
+	float vv = 1.f + (EEsin(arxtime.get_updated() * ( 1.0f / 1000 ))); 
 	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
 	eObjScale.z = vv;
@@ -1166,7 +1166,7 @@ float CRepelUndead::Render()
 	{
 		int j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer))
+		if ((j != -1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			particle[j].exist		=	1;
@@ -1181,7 +1181,7 @@ float CRepelUndead::Render()
 			particle[j].scale.x		=	-0.1f;
 			particle[j].scale.y		=	-0.1f;
 			particle[j].scale.z		=	-0.1f;
-			particle[j].timcreation =	lARXTime;
+			particle[j].timcreation =	(long)arxtime;
 			particle[j].tolive		=	2600 + (unsigned long)(rnd() * 600.f);
 			particle[j].tc			=	tex_p2;
 			particle[j].siz			=	0.3f;
@@ -1206,7 +1206,7 @@ float CRepelUndead::Render()
 		DynLight[id].pos.y = eSrc.y - 50.f;
 		DynLight[id].pos.z = eSrc.z;
 		DynLight[id].duration = 200;
-		DynLight[id].time_creation = ARXTimeUL();
+		DynLight[id].time_creation = (unsigned long)(arxtime);
 	}
 
 	return 1;
@@ -1347,7 +1347,7 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 /*--------------------------------------------------------------------------*/
 void CLevitate::AddStone(Vec3f * pos)
 {
-	if (ARXPausedTimer) return;
+	if (arxtime.is_paused()) return;
 
 	if (this->nbstone > 255) return;
 
@@ -1406,7 +1406,7 @@ void CLevitate::DrawStone()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -1421,7 +1421,7 @@ void CLevitate::DrawStone()
 				particle[j].scale.x = 1.f;
 				particle[j].scale.y = 1.f;
 				particle[j].scale.z = 1.f;
-				particle[j].timcreation = -(long)(ARXTime + 1000);
+				particle[j].timcreation = -(long(arxtime) + 1000l);
 				particle[j].tc = NULL;
 				particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
@@ -1430,7 +1430,7 @@ void CLevitate::DrawStone()
 
 
 			//update mvt
-			if (!ARXPausedTimer)
+			if (!arxtime.is_paused())
 			{
 				a = (((float)this->currframetime) * 100.f) / (float)this->tstone[nb].time;
 				this->tstone[nb].pos.y += this->tstone[nb].yvel * a;
@@ -1454,7 +1454,7 @@ void CLevitate::Update(unsigned long _ulTime)
 	float	a;
 
 	//animation cone
-	if (!ARXPausedTimer) this->currdurationang += _ulTime;
+	if (!arxtime.is_paused()) this->currdurationang += _ulTime;
 
 	this->ang = (float)this->currdurationang / 1000.f;
 
@@ -1464,7 +1464,7 @@ void CLevitate::Update(unsigned long _ulTime)
 		this->ang = 1.f;
 	}
 
-	if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 	switch (this->key)
 	{
@@ -1493,7 +1493,7 @@ void CLevitate::Update(unsigned long _ulTime)
 			break;
 	}
 
-	if (!ARXPausedTimer)
+	if (!arxtime.is_paused())
 	{
 		this->currframetime = _ulTime;
 		this->timestone -= _ulTime;
@@ -1551,7 +1551,7 @@ float CLevitate::Render()
 
 					col = checked_range_cast<int>(fRandom);
 
-					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
+					if (!arxtime.is_paused()) d3dv->color = Color::grayb(col).toBGR(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 0.f;
@@ -1570,7 +1570,7 @@ float CLevitate::Render()
 					col = checked_range_cast<int>(fRandom);
 
 
-					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
+					if (!arxtime.is_paused()) d3dv->color = Color::black.toBGR(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 0.9999999f;
@@ -1591,7 +1591,7 @@ float CLevitate::Render()
 			{
 				int j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -1611,7 +1611,7 @@ float CLevitate::Render()
 					particle[j].scale.x = 1.f;
 					particle[j].scale.y = 1.f;
 					particle[j].scale.z = 1.f;
-					particle[j].timcreation = -(long)(ARXTime + 3000); //spells[i].lastupdate;
+					particle[j].timcreation = -(long(arxtime) + 3000l); //spells[i].lastupdate;
 					particle[j].tc = NULL;
 					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam = 0.0000001f;
@@ -1637,7 +1637,7 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
-					if (!ARXPausedTimer) d3dv->color = Color::grayb(col).toBGR(col);
+					if (!arxtime.is_paused()) d3dv->color = Color::grayb(col).toBGR(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 0.f;
@@ -1651,7 +1651,7 @@ float CLevitate::Render()
 					EE_RT2(&d3dvs, d3dv);
 					col = (int)(rnd() * 80.f);
 
-					if (!ARXPausedTimer) d3dv->color = Color::black.toBGR(col);
+					if (!arxtime.is_paused()) d3dv->color = Color::black.toBGR(col);
 
 					d3dv->uv.x = u;
 					d3dv->uv.y = 1; 
@@ -1672,7 +1672,7 @@ float CLevitate::Render()
 			{
 				int j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -1692,7 +1692,7 @@ float CLevitate::Render()
 					particle[j].scale.x = 1.f;
 					particle[j].scale.y = 1.f;
 					particle[j].scale.z = 1.f;
-					particle[j].timcreation = -(long)(ARXTime + 3000);
+					particle[j].timcreation = -(long(arxtime) + 3000l);
 					particle[j].tc = NULL;
 					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam = 0.0000001f;

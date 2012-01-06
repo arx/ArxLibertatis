@@ -70,37 +70,26 @@ void GLTexture2D::Upload() {
 		internal = GL_RGBA8, format = GL_BGRA;
 	} else {
 		arx_assert_msg(false, "Unsupported image format");
+		return;
 	}
 	
 	if(hasMipmaps()) {
-		
-		GLint ret = gluBuild2DMipmaps(GL_TEXTURE_2D, internal, size.x, size.y, format, GL_UNSIGNED_BYTE, mImage.GetData());
-		
-		if(ret) {
-			LogWarning << "Failed to generate mipmaps for " << mFileName << ": " << ret << " = " << gluErrorString(ret);
-			flags &= ~HasMipmaps;
-		} else {
-			storedSize = size; // TODO gluBuild2DMipmaps does not always scale up and stretches the texture!
-		}
-		
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 	}
 	
-	if(!hasMipmaps()) {
-		
-		if(GLEW_ARB_texture_non_power_of_two) {
-			storedSize = size;
-		} else {
-			storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
-		}
-		
-		// TODO handle GL_MAX_TEXTURE_SIZE
-		
-		if(storedSize != size) {
-			glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format, GL_UNSIGNED_BYTE, NULL);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, format, GL_UNSIGNED_BYTE, mImage.GetData());
-		} else {
-			glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, mImage.GetData());
-		}
+	if(GLEW_ARB_texture_non_power_of_two) {
+		storedSize = size;
+	} else {
+		storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
+	}
+	
+	// TODO handle GL_MAX_TEXTURE_SIZE
+	
+	if(storedSize != size) {
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, storedSize.x, storedSize.y, 0, format, GL_UNSIGNED_BYTE, NULL);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, format, GL_UNSIGNED_BYTE, mImage.GetData());
+	} else {
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, mImage.GetData());
 	}
 	
 	if(renderer->GetMaxAnisotropy() != 1.f) {

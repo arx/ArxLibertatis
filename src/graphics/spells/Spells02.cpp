@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <climits>
 
 #include "core/Core.h"
+#include "core/GameTime.h"
 
 #include "game/Spells.h"
 #include "game/Player.h"
@@ -297,7 +298,7 @@ void CArmor::Create(long _ulDuration) {
 //-----------------------------------------------------------------------------
 void CArmor::Update(unsigned long _ulTime)
 {
-	if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -345,7 +346,7 @@ void CLowerArmor::Create(long _ulDuration) {
 //-----------------------------------------------------------------------------
 void CLowerArmor::Update(unsigned long _ulTime)
 {
-	if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 }
 
 //-----------------------------------------------------------------------------

@@ -75,7 +75,7 @@ const int
 	ambianceVolume = 10,
 	mouseSensitivity = 4,
 	migration = Config::OriginalAssets,
-	quicksaveSlots = 2;
+	quicksaveSlots = 3;
 
 const bool
 	first_run = true,
@@ -93,7 +93,7 @@ const bool
 	forceZBias = false,
 	forceToggle = false,
 	gore = true,
-	newControl = false;
+	newControl = true;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP

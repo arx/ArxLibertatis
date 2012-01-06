@@ -410,7 +410,7 @@ bool Menu2_Render() {
 	pMenuCursor->Update();
 
 	ARXOldTimeMenu = ARXTimeMenu;
-	ARXTimeMenu = ARX_TIME_Get( false );
+	ARXTimeMenu = arxtime.get_updated( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
 	
 	// this means ArxTimeMenu is reset
@@ -924,8 +924,42 @@ bool Menu2_Render() {
 				//------------------ END OPTIONS
 
 				//------------------ START VIDEO
-					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (35),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
+					
+					// Renderer selection
+					{
+						
+						pc = new CMenuPanel();
+						szMenuText = getLocalised("system_menus_options_video_renderer", "Renderer");
+						szMenuText += "  ";
+						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+						me->SetCheckOff();
+						pc->AddElement(me);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RENDERER, 0, 0);
+						
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
+						slider->iPos = slider->vText.size() - 1;
+#ifdef HAVE_SDL
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
+						if(config.window.framework == "SDL") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+#ifdef HAVE_D3D9
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
+						if(config.window.framework == "D3D9") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+						
+						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						pc->AddElement(slider);
+						pWindowMenuConsole->AddMenuCenterY(pc);
+						
+					}
+					
 					
 					szMenuText = getLocalised("system_menus_options_videos_full_screen");
 					szMenuText += "  ";
@@ -1151,11 +1185,19 @@ bool Menu2_Render() {
 					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
-
 					((CMenuCheckButton*)me)->iState= config.video.antialiasing ? 1 : 0;
-
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
+
+					szMenuText = getLocalised("system_menus_options_video_vsync", "VSync");
+					szMenuText += " ";
+					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_VSYNC, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+					((CMenuCheckButton*)me)->iState= config.video.vsync ? 1 : 0;
+					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_video_apply");
@@ -1179,6 +1221,39 @@ bool Menu2_Render() {
 					//------------------ START AUDIO
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
 
+					// Audio backend selection
+					{
+						
+						pc = new CMenuPanel();
+						szMenuText = getLocalised("system_menus_options_audio_backend", "Backend");
+						szMenuText += "  ";
+						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+						me->SetCheckOff();
+						pc->AddElement(me);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONSAUDIO_BACKEND, 0, 0);
+						
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
+						slider->iPos = slider->vText.size() - 1;
+#ifdef HAVE_OPENAL
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
+						if(config.audio.backend == "OpenAL") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+#ifdef HAVE_DSOUND
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Direct Sound", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_DSOUND));
+						if(config.audio.backend == "DirectSound") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+						
+						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						pc->AddElement(slider);
+						pWindowMenuConsole->AddMenuCenterY(pc);
+						
+					}
+					
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_audio_master_volume");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
@@ -1240,6 +1315,39 @@ bool Menu2_Render() {
 
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
+					
+					// Input backend selection
+					{
+						
+						pc = new CMenuPanel();
+						szMenuText = getLocalised("system_menus_options_input_backend", "Backend");
+						szMenuText += "  ";
+						me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+						me->SetCheckOff();
+						pc->AddElement(me);
+						CMenuSliderText * slider = new CMenuSliderText(BUTTON_MENUOPTIONS_CONTROLS_BACKEND, 0, 0);
+						
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_AUTOMATIC));
+						slider->iPos = slider->vText.size() - 1;
+#ifdef HAVE_SDL
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "SDL", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_SDL));
+						if(config.input.backend == "SDL") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+#ifdef HAVE_DINPUT8
+						slider->AddText(new CMenuElementText(-1, hFontMenu, "DInput 8", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_DINPUT));
+						if(config.input.backend == "DirectInput8") {
+							slider->iPos = slider->vText.size() - 1;
+						}
+#endif
+						
+						float fRatio    = (RATIO_X(iWindowConsoleWidth-9) - slider->GetWidth()); 
+						slider->Move(checked_range_cast<int>(fRatio), 0); 
+						pc->AddElement(slider);
+						pWindowMenuConsole->AddMenuCenterY(pc);
+						
+					}
 					
 					szMenuText = getLocalised("system_menus_options_input_customize_controls");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
@@ -1306,6 +1414,16 @@ bool Menu2_Render() {
 
 						pWindowMenuConsole->AddMenuCenterY(me);
 					}
+
+					pc = new CMenuPanel();
+					szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS, iPosX2, 0);
+					((CMenuSlider*)me)->setValue(config.misc.quicksaveSlots);
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					pTex = TextureContainer::Load("graph/interface/menus/back");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
@@ -2813,13 +2931,15 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			config.video.showCrosshair=(iState)?true:false;
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING:
-		{
-			config.video.antialiasing=(iState)?true:false;
-
-			ARX_SetAntiAliasing();
-		}
+	case BUTTON_MENUOPTIONSVIDEO_ANTIALIASING: {
+		config.video.antialiasing = iState ? true : false;
+		ARX_SetAntiAliasing();
 		break;
+	}
+	case BUTTON_MENUOPTIONSVIDEO_VSYNC: {
+		config.video.vsync = iState ? true : false;
+		break;
+	}
 	case BUTTON_MENUOPTIONSAUDIO_EAX:
 		{
 			ARXMenu_Options_Audio_SetEAX((iState)?true:false);
@@ -4547,7 +4667,9 @@ bool CMenuSliderText::OnMouseClick(int)
 		{
 			iPos--;
 
-			if (iPos <= 0) iPos = 0;
+			if(iPos < 0) {
+				iPos = vText.size() - 1;
+			}
 		}
 		else if ((iX >= pRightButton->rZone.left) &&
 				(iY >= pRightButton->rZone.top) &&
@@ -4558,16 +4680,15 @@ bool CMenuSliderText::OnMouseClick(int)
 
 			arx_assert(iPos >= 0);
 
-			if ((size_t)iPos >= vText.size() - 1 )
-				iPos = vText.size() - 1 ;
+			if(size_t(iPos) >= vText.size()) {
+				iPos = 0;
+			}
 		}
 	}
 
-	switch (iID)
-	{
-	// MENUOPTIONS_VIDEO
-	case BUTTON_MENUOPTIONSVIDEO_RESOLUTION:
-		{
+	switch(iID) {
+		
+		case BUTTON_MENUOPTIONSVIDEO_RESOLUTION: {
 			std::string pcText = (vText.at(iPos))->lpszText;
 			
 			if(pcText == AUTO_RESOLUTION_STRING) {
@@ -4587,8 +4708,38 @@ bool CMenuSliderText::OnMouseClick(int)
 			}
 			
 			changeResolution = true;
+			break;
 		}
-		break;
+		
+		case BUTTON_MENUOPTIONSVIDEO_RENDERER: {
+			switch((vText.at(iPos))->eMenuState) {
+				case OPTIONS_VIDEO_RENDERER_OPENGL:    config.window.framework = "SDL"; break;
+				case OPTIONS_VIDEO_RENDERER_D3D9:      config.window.framework = "D3D9"; break;
+				case OPTIONS_VIDEO_RENDERER_AUTOMATIC: config.window.framework = "auto"; break;
+				default: break;
+			}
+			break;
+		}
+		
+		case BUTTON_MENUOPTIONSAUDIO_BACKEND: {
+			switch((vText.at(iPos))->eMenuState) {
+				case OPTIONS_AUDIO_BACKEND_OPENAL:    config.audio.backend = "OpenAL"; break;
+				case OPTIONS_AUDIO_BACKEND_DSOUND:    config.audio.backend = "DirectSound"; break;
+				case OPTIONS_AUDIO_BACKEND_AUTOMATIC: config.audio.backend = "auto"; break;
+				default: break;
+			}
+			break;
+		}
+		case BUTTON_MENUOPTIONS_CONTROLS_BACKEND: {
+			switch((vText.at(iPos))->eMenuState) {
+				case OPTIONS_INPUT_BACKEND_SDL:       config.input.backend = "SDL"; break;
+				case OPTIONS_INPUT_BACKEND_DINPUT:    config.input.backend = "DirectInput8"; break;
+				case OPTIONS_INPUT_BACKEND_AUTOMATIC: config.input.backend = "auto"; break;
+				default: break;
+			}
+			break;
+		}
+		
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_BPP:
 		{
@@ -4849,6 +5000,11 @@ bool CMenuSlider::OnMouseClick(int)
 	case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
 		ARXMenu_Options_Control_SetMouseSensitivity(iPos);
 		break;
+		case BUTTON_MENUOPTIONS_CONTROLS_QUICKSAVESLOTS: {
+			iPos = std::max(iPos, 1);
+			config.misc.quicksaveSlots = iPos;
+			break;
+		}
 	}
 
 	return false;

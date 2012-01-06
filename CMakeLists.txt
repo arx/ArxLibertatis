@@ -1,5 +1,17 @@
-cmake_minimum_required(VERSION 2.8.5)
-project(ArxFatalis)
+project(ArxLibertatis)
+
+if(MSVC)
+	# CMake 2.8.5 or newer is needed for CMAKE_LIBRARY_ARCHITECTURE support.
+	cmake_minimum_required(VERSION 2.8.5)
+	# Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
+	if(CMAKE_CL_64)
+		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
+	else()
+		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
+	endif(CMAKE_CL_64)
+else()
+	cmake_minimum_required(VERSION 2.8)
+endif()
 
 # For custom cmake modules.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -11,15 +23,6 @@ include(CheckCXXSourceCompiles)
 include(BuildSystem)
 include(CompileCheck)
 include(VersionString)
-
-# Change CMAKE_LIBRARY_ARCHITECTURE to ensure the right libs are used
-if(MSVC)
-	if(CMAKE_CL_64)
-		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
-	else()
-		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
-	endif(CMAKE_CL_64)
-endif()
 
 # Accepts a variable holding the source files
 # and creates source groups (for VS, Xcode etc)
@@ -189,33 +192,51 @@ else(MSVC)
 		check_link_library(SDL SDL_LIBRARY)
 	endif()
 	
+	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
+	
 	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=199309")
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
-	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 	unset(CMAKE_REQUIRED_DEFINITIONS)
 	unset(CMAKE_REQUIRED_LIBRARIES)
-	if(HAVE_NANOSLEEP_FUNC OR HAVE_CLOCK_GETTIME)
+	if(HAVE_CLOCK_GETTIME)
 		set(TIME_LIBRARIES "-lrt")
 		add_definitions(-D_POSIX_C_SOURCE=199309)
+	elseif(NOT HAVE_WINAPI)
+		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
-	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
+	check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
+	check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
+	check_include_file("dirent.h" HAVE_DIRENT_H)
 	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
+	
 	check_symbol_exists(fork "unistd.h" HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
 	check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
-	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+	check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	endif()
+	
+	check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
+	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
+	
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
+	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
+	
+	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H)
+		if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+			set(HAVE_POSIX_FILESYSTEM 1)
+		endif()
+	endif()
 	
 	# Warning level
 	add_cxxflag("-Wall")
@@ -239,14 +260,20 @@ else(MSVC)
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
 	if(CMAKE_BUILD_TYPE STREQUAL Debug)
+		
 		#Debug
-		message("On Debug Build")
-		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g3")
 		add_definitions(-D_DEBUG)
-	else()
-		#Release
-		message("On Release Build")
-		add_definitions(-D_NDEBUG)
+		
+		check_compiler_flag(RESULT "-g3")
+		if(NOT RESULT STREQUAL "")
+			string(REGEX REPLACE "-g(|[0-9]|gdb)" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
+		endif()
+		
+		check_compiler_flag(RESULT "-O0")
+		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
+		
 	endif()
 	
 	if(ARX_DEBUG_EXTRA)
@@ -259,6 +286,8 @@ else(MSVC)
 	else()
 		# -Wuninitialized causes too many false positives
 		add_cxxflag("-Wno-uninitialized")
+		# (clang only) Conflicts with using const variables for configuration.
+		add_cxxflag("-Wno-constant-logical-operand")
 	endif()
 	
 	if(ARX_USE_UNITYBUILD)
@@ -285,8 +314,11 @@ endif()
 if(NOT ARX_USE_OPENAL AND NOT ARX_USE_DSOUND)
 	message(WARNING "No audio backend enabled.")
 endif()
-if((NOT HAVE_NANOSLEEP_FUNC OR NOT HAVE_CLOCK_GETTIME) AND NOT HAVE_WINAPI)
-	message(SEND_ERROR "Need either nanosleep and clock_gettime or WIN32.")
+if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
+	message(SEND_ERROR "Need either nanosleep or WIN32.")
+endif()
+if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI OR HAVE_MACH_CLOCK))
+	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
 endif()
 
 # Preprocessor definitions
@@ -550,11 +582,11 @@ if(ARX_USE_DSOUND)
 	set(HAVE_DSOUND 1)
 endif()
 
-if(ARX_USE_D3D9)
+if(HAVE_WINAPI AND ARX_USE_D3D9)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
 	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
 		
-	list(APPEND ARX_LIBRARIES ${DIRECTX_LIBRARY})
+	list(APPEND ARX_LIBRARIES ${DIRECTX_D3D9_LIBRARY} ${DIRECTX_D3DX9_LIBRARY} ${DIRECTX_D3DCOMPILER_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	include_directories(SYSTEM ${DIRECTX_INCLUDE_DIR})
 	
 	set(HAVE_D3D9 1)
@@ -568,7 +600,7 @@ if(ARX_USE_OPENGL)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
-if(ARX_USE_SDL)
+if(ARX_USE_OPENGL AND ARX_USE_SDL)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
@@ -576,9 +608,9 @@ if(ARX_USE_SDL)
 	set(HAVE_SDL 1)
 endif()
 
-if(ARX_USE_DINPUT8)
+if(HAVE_WINAPI AND ARX_USE_DINPUT8)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
-	list(APPEND ARX_LIBRARIES dinput8)
+	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	set(HAVE_DINPUT8 1)
 	if(WINE)
 		# TODO(broken-wine) work around missing symbols in wine's dinput8
@@ -795,6 +827,15 @@ endif()
 
 if(PYTHONINTERP_FOUND)
 	
+	file(GLOB_RECURSE TOOLS_INCLUDES ${CMAKE_SOURCE_DIR}/tools/*.h)
+	set(ALL_SOURCES
+		${ARX_SOURCES}
+		${ALL_INCLUDES}
+		${SAVETOOL_SOURCES}
+		${UNPAK_SOURCES}
+		${TOOLS_INCLUDES}
+	)
+	
 	unset(STYLE_FILTER)
 	
 	# Complains about any c-style cast -> too annoying.
@@ -861,14 +902,105 @@ if(PYTHONINTERP_FOUND)
 	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-readability/fn_size)
 	
 	add_custom_target(style
-		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ALL_SOURCES}
+		DEPENDS ${ALL_SOURCES} VERBATIM
 	)
 	
 	add_custom_target(strict-style
-		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ARX_SOURCES} ${ALL_INCLUDES} ${SAVETOOL_SOURCES} ${UNPAK_SOURCES}
+		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ALL_SOURCES}
+		DEPENDS ${ALL_SOURCES} VERBATIM
 	)
 endif()
 
 if(ARX_BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
+
+function(print_configuration TITLE)
+	
+	set(str "")
+	
+	set(print_first 0)
+	
+	set(mode 0)
+	
+	foreach(arg IN LISTS ARGN)
+		
+		if(arg STREQUAL "FIRST")
+			set(print_first 1)
+		else()
+			
+			if(mode EQUAL 0)
+				
+				if(${arg})
+					set(mode 1)
+				else()
+					set(mode 2)
+				endif()
+				
+			else()
+				
+				if(mode EQUAL 1 AND NOT arg STREQUAL "")
+					
+					if(str STREQUAL "")
+						set(str "${arg}")
+					else()
+						set(str "${str}, ${arg}")
+					endif()
+					
+					if(print_first)
+						break()
+					endif()
+					
+				endif()
+				
+				set(mode 0)
+				
+			endif()
+			
+		endif()
+		
+	endforeach()
+	
+	if(str STREQUAL "")
+		set(str "(none)")
+	endif()
+	
+	message(" - ${TITLE}: ${str}")
+	
+endfunction()
+
+message("")
+message("Configuration:")
+if(ARX_USE_UNITYBUILD)
+	set(BUILD_TYPE_SUFFIX " (unity build)")
+else()
+	set(BUILD_TYPE_SUFFIX "")
+endif()
+if(CMAKE_BUILD_TYPE STREQUAL "")
+	message(" - Build type: Release${BUILD_TYPE_SUFFIX}")
+else()
+	message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
+endif()
+print_configuration("Filesystem backend" FIRST
+	HAVE_POSIX_FILESYSTEM "POSIX"
+	HAVE_WINAPI           "Win32"
+	1                     "Boost"
+)
+print_configuration("Renderer"
+	HAVE_OPENGL "OpenGL"
+	HAVE_D3D9   "Direct3D 9"
+)
+print_configuration("Audio backend"
+	HAVE_OPENAL "OpenAL"
+	HAVE_DSOUND "Direct Sound"
+)
+print_configuration("Input backend"
+	HAVE_SDL     "SDL"
+	HAVE_DINPUT8 "DirectInput 8"
+)
+print_configuration("Windowing"
+	HAVE_SDL     "SDL"
+	HAVE_D3D9    "Win32"
+)
+message("")

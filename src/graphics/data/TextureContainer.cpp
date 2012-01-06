@@ -270,6 +270,7 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 			
 			Vec2i storedSize = m_pTexture->getStoredSize();
 			uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
+			hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
 		}
 	}
 

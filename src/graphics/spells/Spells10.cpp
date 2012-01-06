@@ -312,7 +312,7 @@ float CControlTarget::Render()
 
 				int j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -329,7 +329,7 @@ float CControlTarget::Render()
 					particle[j].scale.x 	= 1;
 					particle[j].scale.y 	= 1;
 					particle[j].scale.z 	= 1;
-					particle[j].timcreation = lARXTime;
+					particle[j].timcreation = (long)arxtime;
 					particle[j].tc			= tex_mm;
 					particle[j].special 	= FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam		= 0.0000001f;
@@ -352,7 +352,7 @@ float CControlTarget::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist	= 1;
@@ -369,7 +369,7 @@ float CControlTarget::Render()
 				particle[j].scale.x = 1;
 				particle[j].scale.y = 1;
 				particle[j].scale.z = 1;
-				particle[j].timcreation = lARXTime;
+				particle[j].timcreation = (long)arxtime;
 				particle[j].tc		= tex_mm;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam	= 0.0000001f;

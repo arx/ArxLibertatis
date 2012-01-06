@@ -188,7 +188,7 @@ void EERIE_OBJECT_SetBHMode()
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!!_Super-Deformed_!!!");
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 			}
 }
 struct Scan {
@@ -669,7 +669,7 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	sd->duration = (short)std::max(1l, long(duration));
 	strcpy(sd->sequence, sequence);
 
-	sd->starttime = ARXTimeUL();
+	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
 	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
@@ -763,7 +763,7 @@ static void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, Rune symb, float 
 	SYMBOL_DRAW *sd = io->symboldraw;
 	sd->duration = duration < 1.0F ? 1 : (short)(long)duration;
 	strcpy(sd->sequence, sequence);
-	sd->starttime = ARXTimeUL();
+	sd->starttime = (unsigned long)(arxtime);
 	sd->lasttim = 0;
 	
 	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
@@ -1144,7 +1144,7 @@ void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int 
 
 //-----------------------------------------------------------------------------
 void ARX_SPELLS_UpdateSymbolDraw() {
-	unsigned long curtime = ARXTimeUL();
+	unsigned long curtime = (unsigned long)(arxtime);
 
 	//1
 	for (long i=0;i<inter.nbmax;i++)
@@ -1241,7 +1241,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 				{
 					if (io->dynlight!=-1)
 					{
-						DynLight[io->dynlight].time_creation = ARXTimeUL();
+						DynLight[io->dynlight].time_creation = (unsigned long)(arxtime);
 						DynLight[io->dynlight].duration = 600; 
 						io->dynlight=-1;
 					}			
@@ -2859,7 +2859,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 
 void ARX_SPELLS_Precast_Launch(long num) {
 	
-	if (ARXTime>=LAST_PRECAST_TIME+1000)
+	if (float(arxtime) >= LAST_PRECAST_TIME+1000)
 	{
 		Spell iNumSpells=Precast[num].typ;
 		float cost=ARX_SPELLS_GetManaCost(iNumSpells,-1);
@@ -2868,11 +2868,11 @@ void ARX_SPELLS_Precast_Launch(long num) {
 			&&	(!PrecastCheckCanPayMana(num,cost)	)  )
 			return;
 
-		LAST_PRECAST_TIME = ARXTimeUL();
+		LAST_PRECAST_TIME = (unsigned long)(arxtime);
 
 		if ((Precast[num].typ != SPELL_NONE) && (Precast[num].launch_time==0))
 		{
-			Precast[num].launch_time = ARXTimeUL();
+			Precast[num].launch_time = (unsigned long)(arxtime);
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD);
 		}
 	}
@@ -2881,7 +2881,7 @@ void ARX_SPELLS_Precast_Check()
 {
 	for (size_t i = 0; i < MAX_PRECAST; i++)
 	{
-		if ((Precast[i].typ != SPELL_NONE) && (Precast[i].launch_time>0) &&(ARXTime>=Precast[i].launch_time))
+		if ((Precast[i].typ != SPELL_NONE) && (Precast[i].launch_time>0) &&(float(arxtime) >= Precast[i].launch_time))
 		{
 			ANIM_USE *ause1 = &inter.iobj[0]->animlayer[1];
 			
@@ -3282,7 +3282,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		case SPELL_SLOW_DOWN:
 		case SPELL_CONFUSE:
 		{
-				LOOKING_FOR_SPELL_TARGET_TIME	= ARXTimeUL();	
+				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);	
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
 			t_spell.source					= source;
@@ -3294,7 +3294,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}			
 		case SPELL_ENCHANT_WEAPON:		
 		{
-				LOOKING_FOR_SPELL_TARGET_TIME	= ARXTimeUL();
+				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 2;
 			t_spell.typ						= typ;
 			t_spell.source					= source;
@@ -3337,7 +3337,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 
 			ARX_SOUND_PlaySpeech("player_follower_attack");
-				LOOKING_FOR_SPELL_TARGET_TIME	= ARXTimeUL();
+				LOOKING_FOR_SPELL_TARGET_TIME	= (unsigned long)(arxtime);
 			LOOKING_FOR_SPELL_TARGET		= 1;
 			t_spell.typ						= typ;
 			t_spell.source					= source;
@@ -3433,7 +3433,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	spells[i].flags=flags;
 	spells[i].pSpellFx=NULL;
 	spells[i].type = typ;
-	spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 
 	switch (typ)
 	{
@@ -3797,7 +3797,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 60000;
 			spells[i].fManaCostPerSecond=0.4f;
 			spells[i].bDuration = true;
@@ -4105,7 +4105,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return No_MagicAllowed();
 
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 20000;
 			
 			CFireBall * pCSpellFx = new CFireBall();
@@ -4479,7 +4479,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 2000000;
 
 			if (spells[i].caster==0)
@@ -4545,7 +4545,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].target=0;
 
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
@@ -4775,7 +4775,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 3500;
 					
 			CCurePoison * pCSpellFx = new CCurePoison();
@@ -4970,7 +4970,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 						DynLight[id].pos.y = target.y - 100;
 						DynLight[id].pos.z = target.z;
 						DynLight[id].duration=200;
-						DynLight[id].time_creation = ARXTimeUL();
+						DynLight[id].time_creation = (unsigned long)(arxtime);
 					}
 
 					spells[i].pSpellFx = pCSpellFx;
@@ -5051,13 +5051,13 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			if (flags & SPELLCAST_FLAG_RESTORE)
 			{				
-				if ((float)ARXTime-4000>0)
-					spells[i].lastupdate = spells[i].timcreation = ARXTimeUL() - 4000;
+				if (float(arxtime)-4000>0)
+					spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime) - 4000;
 				else
 					spells[i].lastupdate = spells[i].timcreation=0;
 			}
 			else
-				spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+				spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 
 			spells[i].tolive = 800000;
 			spells[i].bDuration = true;
@@ -5166,7 +5166,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 1;
 
 			CDisarmTrap * pCSpellFx = new CDisarmTrap();
@@ -5295,7 +5295,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 			spells[i].exist=true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive=1000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 3.2f;
@@ -5310,7 +5310,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			{
 				j=ARX_PARTICLES_GetFree();
 
-				if ((j!=-1) && (!ARXPausedTimer))
+				if ((j!=-1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					PARTICLE_DEF * pd=&particle[j];
@@ -5337,7 +5337,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 
 			TRUE_PLAYER_MOUSELOOK_ON |= 1;	
-			SLID_START=(float)ARXTime;
+			SLID_START=float(arxtime);
 			bOldLookToggle=config.input.mouseLookToggle;
 			config.input.mouseLookToggle=true;
 
@@ -5468,7 +5468,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
 			spells[i].exist			= true;
-			spells[i].lastupdate	= spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate	= spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive		= 100000;
 			spells[i].bDuration		= true;
 			spells[i].fManaCostPerSecond = 2.8f;
@@ -5594,7 +5594,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.5f;
 
@@ -5741,7 +5741,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 					
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 2000;
 			
 			spells[i].longinfo=ARX_DAMAGES_GetFree();
@@ -5903,7 +5903,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
 			spells[i].longinfo=0;
@@ -5999,7 +5999,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
 
@@ -6056,7 +6056,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
 
@@ -6104,12 +6104,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 20000;
 			
 			tio->sfx_flag|=SFX_TYPE_YLSIDE_DEATH;
 			tio->sfx_flag|=SFX_TYPE_INCINERATE;
-			tio->sfx_time = ARXTimeUL();
+			tio->sfx_time = (unsigned long)(arxtime);
 			ARX_SPELLS_AddSpellOn(spells[i].target,i);
 			SPELLCAST_Notify(i);
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
@@ -6179,7 +6179,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 					
 			spells[i].exist=true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive=5000;			
 			spells[i].siz=0;
 			spells[i].longinfo=GetFreeDynLight();
@@ -6278,7 +6278,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 1000;
 			
 			CControlTarget * pCSpellFx = new CControlTarget();
@@ -6310,7 +6310,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				return No_MagicAllowed();
 
 			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
-			//ARX_TIME_Pause();
 			spells[i].siz=spells[i].caster_level*0.08f;
 			GLOBAL_SLOWDOWN -= spells[i].siz;
 			
@@ -6321,7 +6320,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 30.f*spells[i].siz;
-			spells[i].longinfo=(long)ARX_TIME_Get();
+			spells[i].longinfo=(long)arxtime.get_updated();
 			SPELLCAST_Notify(i);
 		}	
 		break;
@@ -6335,7 +6334,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 20000;
 			long nb_targets=0;
 
@@ -6353,7 +6352,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 				tio->sfx_flag|=SFX_TYPE_YLSIDE_DEATH;
 				tio->sfx_flag|=SFX_TYPE_INCINERATE;
-				tio->sfx_time = ARXTimeUL();
+				tio->sfx_time = (unsigned long)(arxtime);
 				nb_targets++;
 				ARX_SPELLS_AddSpellOn(ii,i);
 			}			
@@ -6405,7 +6404,7 @@ void ARX_SPELLS_Kill(long i) {
 	if (spells[i].pSpellFx && spells[i].pSpellFx->lLightId != -1)
 	{
 		DynLight[spells[i].pSpellFx->lLightId].duration = 500; 
-		DynLight[spells[i].pSpellFx->lLightId].time_creation = ARXTimeUL();
+		DynLight[spells[i].pSpellFx->lLightId].time_creation = (unsigned long)(arxtime);
 	}
 
 	switch(spells[i].type)
@@ -6416,7 +6415,7 @@ void ARX_SPELLS_Kill(long i) {
 			if (spells[i].longinfo!=-1) 
 			{
 				DynLight[spells[i].longinfo].duration = 500; 
-				DynLight[spells[i].longinfo].time_creation = ARXTimeUL();
+				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
 
 			spells[i].longinfo=-1;
@@ -6432,7 +6431,7 @@ void ARX_SPELLS_Kill(long i) {
 			if (spells[i].longinfo!=-1) 
 			{
 				DynLight[spells[i].longinfo].duration = 200; 
-				DynLight[spells[i].longinfo].time_creation = ARXTimeUL();
+				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
 
 			spells[i].longinfo=-1;
@@ -6450,7 +6449,7 @@ void ARX_SPELLS_Kill(long i) {
 			if (spells[i].longinfo!=-1) 
 			{
 				DynLight[spells[i].longinfo].duration = 200; 
-				DynLight[spells[i].longinfo].time_creation = ARXTimeUL();
+				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
 
 			spells[i].longinfo=-1;
@@ -6467,7 +6466,7 @@ void ARX_SPELLS_Kill(long i) {
 			if (spells[i].longinfo!=-1) 
 			{
 				DynLight[spells[i].longinfo].duration = 200; 
-				DynLight[spells[i].longinfo].time_creation = ARXTimeUL();
+				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
 
 			spells[i].longinfo=-1;
@@ -6487,7 +6486,7 @@ void ARX_SPELLS_Kill(long i) {
 
 			if (spells[i].longinfo2!=-1) 
 			{
-				DynLight[spells[i].longinfo2].time_creation = ARXTimeUL();
+				DynLight[spells[i].longinfo2].time_creation = (unsigned long)(arxtime);
 				DynLight[spells[i].longinfo2].duration = 600; 
 			}
 
@@ -6503,7 +6502,7 @@ void ARX_SPELLS_Kill(long i) {
 			{
 				long j = ARX_PARTICLES_GetFree();
 
-				if ((j!=-1) && (!ARXPausedTimer))
+				if ((j!=-1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					PARTICLE_DEF * pd=&particle[j];
@@ -6709,7 +6708,7 @@ void ARX_SPELLS_Update()
 
 	ucFlick++;
 
-	tim = ARXTimeUL();
+	tim = (unsigned long)(arxtime);
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 
@@ -7205,7 +7204,7 @@ void ARX_SPELLS_Update()
 					else scaley=EEfabs(inter.iobj[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
  
-					float mov=EEsin((float)FrameTime*( 1.0f / 800 ))*scaley;
+					float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 					if (spells[i].caster==0)
 					{
@@ -7222,7 +7221,7 @@ void ARX_SPELLS_Update()
 						refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
 					}
 
-					float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + radians(scaley));
+					float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 					if (spells[i].longinfo2!=-1)
 					{
@@ -7246,19 +7245,19 @@ void ARX_SPELLS_Update()
 							cabalcolor.b = 0.f;
 					cabalscale.z=cabalscale.y=cabalscale.x=Es;				
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-					mov=EEsin((float)(FrameTime-30.f)*( 1.0f / 800 ))*scaley;
+					mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;						
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 3.f;
 							cabalcolor.r = 0.5f;
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-					mov=EEsin((float)(FrameTime-60.f)*( 1.0f / 800 ))*scaley;
+					mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 0.1f;
 							cabalcolor.r = 0.25f;
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-					mov=EEsin((float)(FrameTime-120.f)*( 1.0f / 800 ))*scaley;
+					mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 0.1f;
@@ -7565,7 +7564,7 @@ void ARX_SPELLS_Update()
 						DynLight[id].rgb.g = 0.2f;
 						DynLight[id].rgb.b = 0.2f;
 						DynLight[id].duration=800;
-								DynLight[id].time_creation = ARXTimeUL();
+								DynLight[id].time_creation = (unsigned long)(arxtime);
 					}
 
 					unsigned long tim=pCSpellFX->getCurrentTime();
@@ -7636,7 +7635,7 @@ void ARX_SPELLS_Update()
 							}
 							
 						}
-						else if ((!ARXPausedTimer) && (tim<4000))
+						else if ((!arxtime.is_paused()) && (tim<4000))
 						{
 						  if (rnd()>0.95f) 
 							{
@@ -7758,7 +7757,7 @@ void ARX_SPELLS_Update()
 						{
 							long j=ARX_PARTICLES_GetFree();
 
-							if ((j!=-1) && (!ARXPausedTimer) )
+							if ((j!=-1) && (!arxtime.is_paused()) )
 							{
 								ParticleCount++;
 								PARTICLE_DEF * pd=&particle[j];
@@ -7785,7 +7784,7 @@ void ARX_SPELLS_Update()
 								pd->scale.x		=	-8.f;
 								pd->scale.y		=	-8.f;
 								pd->scale.z		=	-8.f;
-										pd->timcreation	=	lARXTime;
+										pd->timcreation	=	(long)arxtime;
 								pd->rgb = Color3f::white;
 								long j2			=	ARX_PARTICLES_GetFree();
 
@@ -7921,10 +7920,10 @@ void ARX_SPELLS_Update()
 			{
  
 
-				if (!ARXPausedTimer)
+				if (!arxtime.is_paused())
 				{
 
-					if ((float)ARXTime-(float)spells[i].timcreation<=4000)
+					if (float(arxtime)-(float)spells[i].timcreation<=4000)
 					{
 						if (rnd()>0.7f) 
 						{
@@ -8096,7 +8095,7 @@ void ARX_SPELLS_Update()
 			{
  
 
-					if (!ARXPausedTimer)
+					if (!arxtime.is_paused())
 						if (rnd()>0.7f) 
 						{
 							Vec3f pos;
@@ -8294,8 +8293,8 @@ void ARX_SPELLS_Update()
 						if (spells[i].caster==0) scaley=90.f;
 						else scaley=EEfabs(inter.iobj[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
-						float mov1=EEsin((float)LastFrameTime*( 1.0f / 800 ))*scaley;
-						float mov=EEsin((float)FrameTime*( 1.0f / 800 ))*scaley;
+						float mov1=EEsin((float)arxtime.get_last_frame_time()*( 1.0f / 800 ))*scaley;
+						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 						if ((mov1<scaley-10.f) && (mov>scaley-10.f)) ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.4F);
 
@@ -8316,7 +8315,7 @@ void ARX_SPELLS_Update()
 							refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
 						}
 
-						float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + radians(scaley));
+						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 						if (spells[i].longinfo2!=-1)
 						{
@@ -8340,17 +8339,17 @@ void ARX_SPELLS_Update()
 						
 						cabalscale.z=cabalscale.y=cabalscale.x=Es;				
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime-30.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;						
 							cabalcolor.r = cabalcolor.g = 0.2f;
 							cabalcolor.b = 0.5f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime-60.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.r = cabalcolor.g = 0.1f;
 							cabalcolor.b = 0.25f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime-120.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.r = cabalcolor.g = 0.f;
 							cabalcolor.b = 0.15f;
@@ -8361,17 +8360,17 @@ void ARX_SPELLS_Update()
 							cabalcolor.r = cabalcolor.g = 0.f;
 							cabalcolor.b = 0.15f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime+30.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.r = cabalcolor.g = 0.1f;
 							cabalcolor.b = 0.25f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime+60.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.r = cabalcolor.g = 0.2f;
 							cabalcolor.b = 0.5f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime+120.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.r = cabalcolor.g = 0.4f;
 							cabalcolor.b = 0.8f;
@@ -8397,7 +8396,7 @@ void ARX_SPELLS_Update()
 						else scaley=EEfabs(inter.iobj[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
  
-						float mov=EEsin((float)FrameTime*( 1.0f / 800 ))*scaley;
+						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
 
 						if (spells[i].caster==0)
 						{
@@ -8414,7 +8413,7 @@ void ARX_SPELLS_Update()
 							refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
 						}
 
-						float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + radians(scaley));
+						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
 
 						if (spells[i].longinfo2!=-1)
 						{
@@ -8437,17 +8436,17 @@ void ARX_SPELLS_Update()
 							cabalcolor.b = 0.f;
 						cabalscale.z=cabalscale.y=cabalscale.x=Es;				
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime-30.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;						
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.5f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime-60.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.25f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime-120.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.15f;
@@ -8458,17 +8457,17 @@ void ARX_SPELLS_Update()
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.15f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime+30.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.25f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime+60.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.5f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-						mov=EEsin((float)(FrameTime+120.f)*( 1.0f / 800 ))*scaley;
+						mov=EEsin((float)(arxtime.get_frame_time()+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.8f;
@@ -8595,7 +8594,7 @@ static void ApplySPWep() {
 			MakeSpCol();
 			strcpy(sp_max_ch,"!!!_Grosbillite_!!!");
 			sp_max_nb=strlen(sp_max_ch);
-			sp_max_start=ARX_TIME_Get();
+			sp_max_start=arxtime.get_updated();
 		}
 	}
 }
@@ -8635,7 +8634,7 @@ static void ApplyCurSOS() {
 	ARX_MINIMAP_Reveal();
 	strcpy(sp_max_ch,"!!!_Temple of Elemental Lavis_!!!");
 	sp_max_nb=strlen(sp_max_ch);	
-	sp_max_start=ARX_TIME_Get();
+	sp_max_start=arxtime.get_updated();
 }
 
 static void ApplySPBow() {
@@ -8658,7 +8657,7 @@ static void ApplySPBow() {
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!!_Bow to Samy & Anne_!!!");
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 	}
 }
 
@@ -8716,7 +8715,7 @@ static void ApplySPArm() {
 		}
 
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 	}
 
 	sp_arm++;
@@ -8734,14 +8733,14 @@ static void ApplyCurPNux() {
 	// TODO-RENDERING: Create a post-processing effect for that cheat... see original source...
 	
 	cur_pnux=0;
-	sp_max_start=ARX_TIME_Get();
+	sp_max_start=arxtime.get_updated();
 }
 
 static void ApplyPasswall() {
 	MakeSpCol();
 	strcpy(sp_max_ch,"!!! PassWall !!!");
 	sp_max_nb=strlen(sp_max_ch);
-	sp_max_start=ARX_TIME_Get();
+	sp_max_start=arxtime.get_updated();
 
 	if (USE_PLAYERCOLLISIONS)
 		USE_PLAYERCOLLISIONS=0;
@@ -8754,7 +8753,7 @@ static void ApplySPRf() {
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!! RaFMode !!!");
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 	}
 }
 
@@ -8763,7 +8762,7 @@ static void ApplyCurMr() {
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!! Marianna !!!");
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 	}
 }
 
@@ -8776,7 +8775,7 @@ static void ApplySPuw() {
 		MakeSpCol();
 		strcpy(sp_max_ch,"~-__-~~-__.U.W.__-~~-__-~");
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 	}
 }
 
@@ -8790,7 +8789,7 @@ static void ApplySPMax() {
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!!_FaNt0mAc1e_!!!");
 		sp_max_nb=strlen(sp_max_ch);
-		sp_max_start=ARX_TIME_Get();
+		sp_max_start=arxtime.get_updated();
 
 			player.skin=4;
 

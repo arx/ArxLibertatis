@@ -809,10 +809,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 						if (!(flags & CFLAG_JUST_TEST) && ioo)
 						{							
-							if (ARXTime > io->collide_door_time + 500)
+							if (float(arxtime) > io->collide_door_time + 500)
 							{
 								EVENT_SENDER=ioo;									
-								io->collide_door_time = ARXTimeUL(); 	
+								io->collide_door_time = (unsigned long)(arxtime); 	
 
 								if (CollidedFromBack(io,ioo))
 									SendIOScriptEvent(io,SM_COLLIDE_NPC,"back");
@@ -820,7 +820,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 									SendIOScriptEvent(io,SM_COLLIDE_NPC);
 
 								EVENT_SENDER=io;
-								io->collide_door_time = ARXTimeUL(); 
+								io->collide_door_time = (unsigned long)(arxtime); 
 
 								if (CollidedFromBack(ioo,io))
 									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"back");
@@ -904,13 +904,13 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										if (io->GameFlags&GFLAG_DOOR)
 										{
 											
-											if (ARXTime>io->collide_door_time+500)
+											if (float(arxtime) > io->collide_door_time+500)
 											{
 												EVENT_SENDER=ioo;									
-												io->collide_door_time = ARXTimeUL(); 	
+												io->collide_door_time = (unsigned long)(arxtime); 	
 												SendIOScriptEvent(io,SM_COLLIDE_DOOR);
 												EVENT_SENDER=io;
-												io->collide_door_time = ARXTimeUL(); 	
+												io->collide_door_time = (unsigned long)(arxtime); 	
 												SendIOScriptEvent(ioo,SM_COLLIDE_DOOR);
 											}
 										}
@@ -918,7 +918,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										if (io->ioflags & IO_FIELD)
 										{
 											EVENT_SENDER=NULL;									
-											io->collide_door_time = ARXTimeUL(); 	
+											io->collide_door_time = (unsigned long)(arxtime); 	
 											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD);
 										}
 
@@ -971,13 +971,13 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										{
 											if (io->GameFlags&GFLAG_DOOR)
 											{
-												if (ARXTime>io->collide_door_time+500)
+												if (float(arxtime) > io->collide_door_time+500)
 												{
 													EVENT_SENDER=ioo;									
-													io->collide_door_time = ARXTimeUL(); 	
+													io->collide_door_time = (unsigned long)(arxtime); 	
 													SendIOScriptEvent(io,SM_COLLIDE_DOOR);
 													EVENT_SENDER=io;
-													io->collide_door_time = ARXTimeUL(); 	
+													io->collide_door_time = (unsigned long)(arxtime); 	
 													SendIOScriptEvent(ioo,SM_COLLIDE_DOOR);
 												}
 											}
@@ -985,7 +985,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										if (io->ioflags & IO_FIELD)
 										{
 											EVENT_SENDER=NULL;									
-												io->collide_door_time = ARXTimeUL(); 	
+												io->collide_door_time = (unsigned long)(arxtime); 	
 											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD);
 										}
 					

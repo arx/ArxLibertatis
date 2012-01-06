@@ -224,30 +224,35 @@ bool Input::init() {
 	arx_assert(backend == NULL);
 	
 	bool autoBackend = (config.input.backend == "auto");
-	bool matched = false;
 	
-#ifdef HAVE_SDL
-	if(autoBackend || config.input.backend == "SDL") {
-		matched = true;
-		backend = new SDLInputBackend;
-		if(!backend->init()) {
-			delete backend, backend = NULL;
-		}
-	}
-#endif
-	
-#ifdef HAVE_DINPUT8
-	if(!backend && (autoBackend || config.input.backend == "DirectInput8")) {
-		matched = true;
-		backend = new DInput8Backend;
-		if(!backend->init()) {
-			delete backend, backend = NULL;
-		}
-	}
-#endif
+	for(int i = 0; i < 2 && !backend; i++) {
+		bool first = (i == 0);
 		
-	if(!matched) {
-		LogError << "unknown backend: " << config.input.backend;
+		bool matched = false;
+		
+		#ifdef HAVE_SDL
+		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
+			matched = true;
+			backend = new SDLInputBackend;
+			if(!backend->init()) {
+				delete backend, backend = NULL;
+			}
+		}
+		#endif
+		
+		#ifdef HAVE_DINPUT8
+		if(!backend && first == (autoBackend || config.input.backend == "DirectInput8")) {
+			matched = true;
+			backend = new DInput8Backend;
+			if(!backend->init()) {
+				delete backend, backend = NULL;
+			}
+		}
+		#endif
+		
+		if(first && !matched) {
+			LogError << "unknown backend: " << config.input.backend;
+		}
 	}
 	
 	return (backend != NULL);
@@ -426,7 +431,7 @@ void Input::update()
 		}
 	}
 
-	const int iArxTime = checked_range_cast<int>(ARX_TIME_Get(false));
+	const int iArxTime = checked_range_cast<int>(arxtime.get_updated(false));
 
 	for(int buttonId = Mouse::ButtonBase; buttonId < Mouse::ButtonMax; buttonId++)
 	{
@@ -473,7 +478,7 @@ void Input::update()
 		else
 		{
 			if( (iMouseTimeSet[i]>0)&&
-					((ARX_TIME_Get( false )-iMouseTime[i])>300))
+					((arxtime.get_updated( false )-iMouseTime[i])>300))
 			{
 				iMouseTime[i]=0;
 				iMouseTimeSet[i]=0;
@@ -919,7 +924,7 @@ bool Input::actionPressed(int actionId) const
 									case CONTROLS_CUST_MAGICMODE:
 									{
 										if ((!j) &&
-											    (isKeyPressed(config.actions[actionId].key[j+1] & 0xFFFF)))
+											    (isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)))
 										{
 											continue;
 										}
@@ -940,7 +945,7 @@ bool Input::actionPressed(int actionId) const
 									case CONTROLS_CUST_STEALTHMODE:
 									{
 										if ((!j) &&
-											    (isKeyPressed(config.actions[actionId].key[j+1] & 0xFFFF)))
+											    (isKeyPressed(config.actions[actionId].key[1] & 0xFFFF)))
 										{
 											continue;
 										}

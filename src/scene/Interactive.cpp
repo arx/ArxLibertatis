@@ -1899,7 +1899,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].msecs = rnd() * 3000 + 3000;
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
-			scr_timer[num].tim = ARXTimeUL();
+			scr_timer[num].tim = (unsigned long)(arxtime);
 			scr_timer[num].times = 1;
 			inter.iobj[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
@@ -3463,7 +3463,7 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 void SetYlsideDeath(INTERACTIVE_OBJ * io)
 {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
-	io->sfx_time = ARXTimeUL(); 	
+	io->sfx_time = (unsigned long)(arxtime); 	
 }
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
@@ -3528,13 +3528,13 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 							if(sp.contains(obj->pbox->vert[kk].pos)) {
 								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 								{
-									if (ARXTime > io->collide_door_time + 500)
+									if (float(arxtime) > io->collide_door_time + 500)
 									{
 										EVENT_SENDER = io_source;
-										io->collide_door_time = ARXTimeUL(); 	
+										io->collide_door_time = (unsigned long)(arxtime); 	
 										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 										EVENT_SENDER = io;
-										io->collide_door_time = ARXTimeUL(); 	
+										io->collide_door_time = (unsigned long)(arxtime); 	
 										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 									}
 								}
@@ -3689,13 +3689,13 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									if(sp.contains(obj->pbox->vert[kk].pos)) {
 										if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 										{
-											if (ARXTime > io->collide_door_time + 500)
+											if (float(arxtime) > io->collide_door_time + 500)
 											{
 												EVENT_SENDER = io_source;
-												io->collide_door_time = ARXTimeUL(); 
+												io->collide_door_time = (unsigned long)(arxtime); 
 												SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 												EVENT_SENDER = io;
-												io->collide_door_time = ARXTimeUL(); 	
+												io->collide_door_time = (unsigned long)(arxtime); 	
 												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 											}
 										}
@@ -3712,13 +3712,13 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 							{
 								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
 								{
-									if (ARXTime > io->collide_door_time + 500)
+									if (float(arxtime) > io->collide_door_time + 500)
 									{
 										EVENT_SENDER = io_source;
-										io->collide_door_time = ARXTimeUL(); 	
+										io->collide_door_time = (unsigned long)(arxtime); 	
 										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 										EVENT_SENDER = io;
-										io->collide_door_time = ARXTimeUL(); 	
+										io->collide_door_time = (unsigned long)(arxtime); 	
 										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 									}
 								}
@@ -3736,7 +3736,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 void UpdateCameras()
 {
-	ARX_TIME_Get();
+	arxtime.get_updated();
 
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -3748,7 +3748,7 @@ void UpdateCameras()
 			if(io->usepath) {
 
 				ARX_USE_PATH * aup = io->usepath;
-				float diff = ARXTime - aup->_curtime;
+				float diff = float(arxtime) - aup->_curtime;
 
 				if (aup->aupflags & ARX_USEPATH_FORWARD)
 				{

@@ -228,7 +228,7 @@ public:
 			DANAE_KillCinematic();
 		} else if(name == "play") {
 			PLAY_LOADED_CINEMATIC = 1;
-			ARX_TIME_Pause();
+			arxtime.pause();
 		} else {
 			
 			if(resources->getFile(fs::path("graph/interface/illustrations") / (name + ".cin"))) {

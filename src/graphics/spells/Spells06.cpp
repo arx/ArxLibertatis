@@ -732,7 +732,7 @@ unsigned long CRiseDead::GetDuration()
 /*--------------------------------------------------------------------------*/
 void CRiseDead::AddStone(Vec3f * pos)
 {
-	if (ARXPausedTimer) return;
+	if (arxtime.is_paused()) return;
 
 	if (this->nbstone > 255) return;
 
@@ -789,7 +789,7 @@ void CRiseDead::DrawStone()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -804,7 +804,7 @@ void CRiseDead::DrawStone()
 				particle[j].scale.x = 1.f;
 				particle[j].scale.y = 1.f;
 				particle[j].scale.z = 1.f;
-				particle[j].timcreation = -(long)(ARXTime + 1000); 
+				particle[j].timcreation = -(long(arxtime) + 1000l); 
 				particle[j].tc = NULL;
 				particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
@@ -813,7 +813,7 @@ void CRiseDead::DrawStone()
 
 
 			//update mvt
-			if (!ARXPausedTimer)
+			if (!arxtime.is_paused())
 			{
 				a = (((float)this->currframetime) * 100.f) / (float)this->tstone[nb].time;
 				this->tstone[nb].pos.y += this->tstone[nb].yvel * a;
@@ -1144,7 +1144,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 	currframetime = _ulTime;
 
-	if (!ARXPausedTimer) this->timestone -= _ulTime;
+	if (!arxtime.is_paused()) this->timestone -= _ulTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -1716,7 +1716,7 @@ float CParalyse::Render()
 				int j;
 				j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -1733,7 +1733,7 @@ float CParalyse::Render()
 					particle[j].scale.x		=	1.f;
 					particle[j].scale.y		=	1.f;
 					particle[j].scale.z		=	1.f;
-					particle[j].timcreation	=	lARXTime;
+					particle[j].timcreation	=	(long)arxtime;
 					particle[j].tc			=	tex_p;
 					particle[j].special 	=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam		=	0.0000001f;
@@ -1793,7 +1793,7 @@ float CParalyse::Render()
 			int j;
 			j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -1810,7 +1810,7 @@ float CParalyse::Render()
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	lARXTime;
+				particle[j].timcreation	=	(long)arxtime;
 				particle[j].tc			=	tex_p;
 				particle[j].special 	=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
@@ -1824,7 +1824,7 @@ float CParalyse::Render()
 			{
 				j = ARX_PARTICLES_GetFree();
 
-				if ((j != -1) && (!ARXPausedTimer))
+				if ((j != -1) && (!arxtime.is_paused()))
 				{
 					ParticleCount++;
 					particle[j].exist = 1;
@@ -1841,7 +1841,7 @@ float CParalyse::Render()
 					particle[j].scale.x = 1.f;
 					particle[j].scale.y = 1.f;
 					particle[j].scale.z = 1.f;
-					particle[j].timcreation	=	lARXTime;
+					particle[j].timcreation	=	(long)arxtime;
 					particle[j].tc = tex_p;
 					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					particle[j].fparam = 0.0000001f;
@@ -1934,7 +1934,7 @@ float CParalyse::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -1956,7 +1956,7 @@ float CParalyse::Render()
 				particle[j].scale.x = 1.f;
 				particle[j].scale.y = 1.f;
 				particle[j].scale.z = 1.f;
-				particle[j].timcreation	=	lARXTime;
+				particle[j].timcreation	=	(long)arxtime;
 				particle[j].tc = tex_p2;
 				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam = 0.0000001f;
@@ -1971,7 +1971,7 @@ float CParalyse::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -1991,7 +1991,7 @@ float CParalyse::Render()
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	lARXTime;
+				particle[j].timcreation	=	(long)arxtime;
 				particle[j].tc			=	tex_p1;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;

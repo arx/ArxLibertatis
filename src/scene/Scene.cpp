@@ -1299,24 +1299,24 @@ static void RenderWater() {
 		pVertex->p.y = -ep->v[0].p.y;
 		pVertex->p.z = ep->v[0].p.z;
 		pVertex->color = 0xFF505050;
-		float fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/200) + FrameTime*(1.f/1000)) * (1.f/32);
-		float fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/200) + FrameTime*(1.f/1000)) * (1.f/32);
+		float fTu = ep->v[0].p.x*(1.f/1000) + sin(ep->v[0].p.x*(1.f/200) + arxtime.get_frame_time()*(1.f/1000)) * (1.f/32);
+		float fTv = ep->v[0].p.z*(1.f/1000) + cos(ep->v[0].p.z*(1.f/200) + arxtime.get_frame_time()*(1.f/1000)) * (1.f/32);
 		if(ep->type & POLY_FALL) {
-			fTv += FrameTime * (1.f/4000);
+			fTv += arxtime.get_frame_time() * (1.f/4000);
 		}
 		pVertex->uv[0].x = fTu;
 		pVertex->uv[0].y = fTv;
-		fTu = (ep->v[0].p.x + 30.f)*(1.f/1000) + sin((ep->v[0].p.x + 30)*(1.f/200) + FrameTime*(1.f/1000))*(1.f/28);
-		fTv = (ep->v[0].p.z + 30.f)*(1.f/1000) - cos((ep->v[0].p.z + 30)*(1.f/200) + FrameTime*(1.f/1000))*(1.f/28);
+		fTu = (ep->v[0].p.x + 30.f)*(1.f/1000) + sin((ep->v[0].p.x + 30)*(1.f/200) + arxtime.get_frame_time()*(1.f/1000))*(1.f/28);
+		fTv = (ep->v[0].p.z + 30.f)*(1.f/1000) - cos((ep->v[0].p.z + 30)*(1.f/200) + arxtime.get_frame_time()*(1.f/1000))*(1.f/28);
 		if (ep->type & POLY_FALL) {
-			fTv += FrameTime * (1.f/4000);
+			fTv += arxtime.get_frame_time() * (1.f/4000);
 		}
 		pVertex->uv[1].x=fTu;
 		pVertex->uv[1].y=fTv;
-		fTu=(ep->v[0].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[0].p.x+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-		fTv=(ep->v[0].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[0].p.z+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTu=(ep->v[0].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[0].p.x+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTv=(ep->v[0].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[0].p.z+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
 		
-		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[2].x=fTu;
 		pVertex->uv[2].y=fTv;
@@ -1326,24 +1326,24 @@ static void RenderWater() {
 		pVertex->p.y=-ep->v[1].p.y;
 		pVertex->p.z=ep->v[1].p.z;
 		pVertex->color=0xFF505050;
-		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 32 );
+		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 32 );
 		
-		if(ep->type&POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if(ep->type&POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[0].x=fTu;
 		pVertex->uv[0].y=fTv;
-		fTu=(ep->v[1].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[1].p.x+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-		fTv=(ep->v[1].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[1].p.z+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+		fTu=(ep->v[1].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[1].p.x+30)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 28 );
+		fTv=(ep->v[1].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[1].p.z+30)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 28 );
 		
-		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[1].x=fTu;
 		pVertex->uv[1].y=fTv;
-		fTu=(ep->v[1].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[1].p.x+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-		fTv=(ep->v[1].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[1].p.z+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTu=(ep->v[1].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[1].p.x+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTv=(ep->v[1].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[1].p.z+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
 		
-		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[2].x=fTu;
 		pVertex->uv[2].y=fTv;
@@ -1352,24 +1352,24 @@ static void RenderWater() {
 		pVertex->p.y=-ep->v[2].p.y;
 		pVertex->p.z=ep->v[2].p.z;
 		pVertex->color=0xFF505050;
-		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 32 );
+		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 32 );
 		
-		if(ep->type&POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if(ep->type&POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[0].x=fTu;
 		pVertex->uv[0].y=fTv;
-		fTu=(ep->v[2].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[2].p.x+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-		fTv=(ep->v[2].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[2].p.z+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+		fTu=(ep->v[2].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[2].p.x+30)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 28 );
+		fTv=(ep->v[2].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[2].p.z+30)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 28 );
 		
-		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[1].x=fTu;
 		pVertex->uv[1].y=fTv;
-		fTu=(ep->v[2].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[2].p.x+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-		fTv=(ep->v[2].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[2].p.z+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTu=(ep->v[2].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[2].p.x+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
+		fTv=(ep->v[2].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[2].p.z+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
 		
-		if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+		if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 		
 		pVertex->uv[2].x=fTu;
 		pVertex->uv[2].y=fTv;
@@ -1386,24 +1386,24 @@ static void RenderWater() {
 			pVertex->p.y=-ep->v[3].p.y;
 			pVertex->p.z=ep->v[3].p.z;
 			pVertex->color=0xFF505050;
-			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
-			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 32 );
+			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 32 );
 			
-			if(ep->type&POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+			if(ep->type&POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 			
 			pVertex->uv[0].x=fTu;
 			pVertex->uv[0].y=fTv;
-			fTu=(ep->v[3].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[3].p.x+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
-			fTv=(ep->v[3].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[3].p.z+30)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+			fTu=(ep->v[3].p.x+30.f)*( 1.0f / 1000 )+EEsin((ep->v[3].p.x+30)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 28 );
+			fTv=(ep->v[3].p.z+30.f)*( 1.0f / 1000 )-EEcos((ep->v[3].p.z+30)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 28 );
 			
-			if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+			if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 			
 			pVertex->uv[1].x=fTu;
 			pVertex->uv[1].y=fTv;
-			fTu=(ep->v[3].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[3].p.x+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
-			fTv=(ep->v[3].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[3].p.z+60)*( 1.0f / 200 )+FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+			fTu=(ep->v[3].p.x+60.f)*( 1.0f / 1000 )-EEsin((ep->v[3].p.x+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
+			fTv=(ep->v[3].p.z+60.f)*( 1.0f / 1000 )-EEcos((ep->v[3].p.z+60)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 1000 ))*( 1.0f / 40 );
 			
-			if (ep->type & POLY_FALL) fTv+=FrameTime*( 1.0f / 4000 );
+			if (ep->type & POLY_FALL) fTv+=arxtime.get_frame_time()*( 1.0f / 4000 );
 			
 			pVertex->uv[2].x=fTu;
 			pVertex->uv[2].y=fTv;
@@ -1489,16 +1489,16 @@ void RenderLava() {
 		pVertex->p.y=-ep->v[0].p.y;
 		pVertex->p.z=ep->v[0].p.z;
 		pVertex->color=0xFF666666;
-		float fTu=ep->v[0].p.x*( 1.0f / 1000 )+EEsin((ep->v[0].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-		float fTv=ep->v[0].p.z*( 1.0f / 1000 )+EEcos((ep->v[0].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		float fTu=ep->v[0].p.x*( 1.0f / 1000 )+EEsin((ep->v[0].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
+		float fTv=ep->v[0].p.z*( 1.0f / 1000 )+EEcos((ep->v[0].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
 		pVertex->uv[0].x=fTu;
 		pVertex->uv[0].y=fTv;
-		fTu=ep->v[0].p.x*( 1.0f / 1000 )+EEsin((ep->v[0].p.x)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-		fTv=ep->v[0].p.z*( 1.0f / 1000 )+EEcos((ep->v[0].p.z)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTu=ep->v[0].p.x*( 1.0f / 1000 )+EEsin((ep->v[0].p.x)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTv=ep->v[0].p.z*( 1.0f / 1000 )+EEcos((ep->v[0].p.z)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
 		pVertex->uv[1].x=fTu;
 		pVertex->uv[1].y=fTv;
-		fTu=ep->v[0].p.x*( 1.0f / 600 )+EEsin((ep->v[0].p.x)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-		fTv=ep->v[0].p.z*( 1.0f / 600 )+EEcos((ep->v[0].p.z)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTu=ep->v[0].p.x*( 1.0f / 600 )+EEsin((ep->v[0].p.x)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTv=ep->v[0].p.z*( 1.0f / 600 )+EEcos((ep->v[0].p.z)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
 		
 		pVertex->uv[2].x=fTu;
 		pVertex->uv[2].y=fTv;
@@ -1507,16 +1507,16 @@ void RenderLava() {
 		pVertex->p.y=-ep->v[1].p.y;
 		pVertex->p.z=ep->v[1].p.z;
 		pVertex->color=0xFF666666;
-		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
+		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
 		pVertex->uv[0].x=fTu;
 		pVertex->uv[0].y=fTv;
-		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTu=ep->v[1].p.x*( 1.0f / 1000 )+EEsin((ep->v[1].p.x)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTv=ep->v[1].p.z*( 1.0f / 1000 )+EEcos((ep->v[1].p.z)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
 		pVertex->uv[1].x=fTu;
 		pVertex->uv[1].y=fTv;
-		fTu=ep->v[1].p.x*( 1.0f / 600 )+EEsin((ep->v[1].p.x)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-		fTv=ep->v[1].p.z*( 1.0f / 600 )+EEcos((ep->v[1].p.z)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTu=ep->v[1].p.x*( 1.0f / 600 )+EEsin((ep->v[1].p.x)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTv=ep->v[1].p.z*( 1.0f / 600 )+EEcos((ep->v[1].p.z)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
 		
 		pVertex->uv[2].x=fTu;
 		pVertex->uv[2].y=fTv;
@@ -1525,16 +1525,16 @@ void RenderLava() {
 		pVertex->p.y=-ep->v[2].p.y;
 		pVertex->p.z=ep->v[2].p.z;
 		pVertex->color=0xFF666666;
-		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
+		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
 		pVertex->uv[0].x=fTu;
 		pVertex->uv[0].y=fTv;
-		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTu=ep->v[2].p.x*( 1.0f / 1000 )+EEsin((ep->v[2].p.x)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
+		fTv=ep->v[2].p.z*( 1.0f / 1000 )+EEcos((ep->v[2].p.z)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
 		pVertex->uv[1].x=fTu;
 		pVertex->uv[1].y=fTv;
-		fTu=ep->v[2].p.x*( 1.0f / 600 )+EEsin((ep->v[2].p.x)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-		fTv=ep->v[2].p.z*( 1.0f / 600 )+EEcos((ep->v[2].p.z)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTu=ep->v[2].p.x*( 1.0f / 600 )+EEsin((ep->v[2].p.x)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
+		fTv=ep->v[2].p.z*( 1.0f / 600 )+EEcos((ep->v[2].p.z)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
 		
 		pVertex->uv[2].x=fTu;
 		pVertex->uv[2].y=fTv;
@@ -1551,16 +1551,16 @@ void RenderLava() {
 			pVertex->p.y=-ep->v[3].p.y;
 			pVertex->p.z=ep->v[3].p.z;
 			pVertex->color=0xFF666666;
-			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
-			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 200 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
+			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 200 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 20 );
 			pVertex->uv[0].x=fTu;
 			pVertex->uv[0].y=fTv;
-			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
-			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 100 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+			fTu=ep->v[3].p.x*( 1.0f / 1000 )+EEsin((ep->v[3].p.x)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
+			fTv=ep->v[3].p.z*( 1.0f / 1000 )+EEcos((ep->v[3].p.z)*( 1.0f / 100 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 10 );
 			pVertex->uv[1].x=fTu;
 			pVertex->uv[1].y=fTv;
-			fTu=ep->v[3].p.x*( 1.0f / 600 )+EEsin((ep->v[3].p.x)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
-			fTv=ep->v[3].p.z*( 1.0f / 600 )+EEcos((ep->v[3].p.z)*( 1.0f / 160 )+FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+			fTu=ep->v[3].p.x*( 1.0f / 600 )+EEsin((ep->v[3].p.x)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
+			fTv=ep->v[3].p.z*( 1.0f / 600 )+EEcos((ep->v[3].p.z)*( 1.0f / 160 )+arxtime.get_frame_time()*( 1.0f / 2000 ))*( 1.0f / 11 );
 			
 			pVertex->uv[2].x=fTu;
 			pVertex->uv[2].y=fTv;
@@ -1591,6 +1591,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
+	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+	
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
 		if(USE_PORTALS==4)
@@ -1602,6 +1604,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 			LogWarning << "unimplemented";
 		}
 	}
+	
+	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 
 	NbRoomDrawList=0;
 
@@ -2364,9 +2368,11 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 			
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
 			{
+				GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 				portals->room[room_num].pVertexBuffer->drawIndexed(Renderer::TriangleList, pTexCurr->tMatRoom[room_num].uslNbVertex, pTexCurr->tMatRoom[room_num].uslStartVertex,
 					&portals->room[room_num].pussIndice[pTexCurr->tMatRoom[room_num].uslStartCull],
 					pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
+				GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 				
 				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
 				pTexCurr->tMatRoom[room_num].uslNbIndiceCull=0;
@@ -2960,7 +2966,7 @@ void ARX_SCENE_Render(long flag) {
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
-	unsigned long tim = ARXTimeUL();
+	unsigned long tim = (unsigned long)(arxtime);
 	
 	WATEREFFECT+=0.0005f*_framedelay;
 

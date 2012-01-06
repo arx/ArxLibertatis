@@ -27,7 +27,7 @@
 
 void initCrashHandler();
 
-#else
+#elif 0 // TODO
 
 /**
  * Handle crashes and collect as much info as possible in order to ease bug fixing.

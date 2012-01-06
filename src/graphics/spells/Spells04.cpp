@@ -185,7 +185,7 @@ float CBless::Render()
 	{
 		int j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer))
+		if ((j != -1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			particle[j].exist = 1;
@@ -202,7 +202,7 @@ float CBless::Render()
 			particle[j].scale.x		=	1.f;
 			particle[j].scale.y		=	1.f;
 			particle[j].scale.z		=	1.f;
-			particle[j].timcreation	=	lARXTime;
+			particle[j].timcreation	=	(long)arxtime;
 			particle[j].tc			=	tex_p1;
 			particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam		=	0.0000001f;
@@ -526,7 +526,7 @@ float CCurse::Render() {
 		
 		int j = ARX_PARTICLES_GetFree();
 		
-		if((j != -1) && (!ARXPausedTimer)) {
+		if((j != -1) && (!arxtime.is_paused())) {
 			ParticleCount++;
 			PARTICLE_DEF * pd = &particle[j];
 			pd->exist = 1;
@@ -536,7 +536,7 @@ float CCurse::Render() {
 			pd->siz = 0.015f;
 			pd->tolive = 1000 + (unsigned long)(float)(rnd() * 600.f);
 			pd->scale = Vec3f(1.f, 1.f, 1.f);
-			pd->timcreation = lARXTime;
+			pd->timcreation = (long)arxtime;
 			pd->tc = tex_p1;
 			pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 			pd->fparam = 0.0000001f;
@@ -597,7 +597,7 @@ void CFireProtection::Create(long _ulDuration)
 //-----------------------------------------------------------------------------
 void CFireProtection::Update(unsigned long _ulTime)
 {
-	if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
 	INTERACTIVE_OBJ * io;
@@ -668,7 +668,7 @@ void CColdProtection::Create(long _ulDuration, int _iNpc)
 //-----------------------------------------------------------------------------
 void CColdProtection::Update(unsigned long _ulTime)
 {
-	if (!ARXPausedTimer) ulCurrentTime += _ulTime;
+	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
 	INTERACTIVE_OBJ * io;

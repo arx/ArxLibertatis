@@ -132,7 +132,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	
 	long j = ARX_PARTICLES_GetFree();
 	
-	if(j != -1 && !ARXPausedTimer) {
+	if(j != -1 && !arxtime.is_paused()) {
 		ParticleCount++;
 		particle[j].exist		=	true;
 		particle[j].zdec		=	0;
@@ -145,7 +145,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 		particle[j].scale.x		=	0.f;
 		particle[j].scale.y		=	0.f;
 		particle[j].scale.z		=	0.f;
-		particle[j].timcreation = checked_range_cast<long>(ARX_TIME_Get());
+		particle[j].timcreation = checked_range_cast<long>(arxtime.get_updated());
 		particle[j].tolive		=	tim;
 		particle[j].tc			=	EERIE_DRAW_sphere_particle;
 		particle[j].siz			=	siz;
@@ -881,32 +881,30 @@ void specialEE_RT(TexturedVertex * in, Vec3f * out) {
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
+// TODO get rid of sw transform
+static inline float clamp_and_invert(float z) {
+	
+	const float near_clamp = .000001f; // just a random small number
+	
+	return 1.f / std::max(z, near_clamp);
+}
+
 void specialEE_P(Vec3f * in, TexturedVertex * out) {
 	
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	
-	float fZTemp;
-	if (in->z <= 0.f) {
-		fZTemp = 1.1f;
-	} else {
-		fZTemp = 1.f / in->z;
-	}
-
+	float fZTemp = clamp_and_invert(in->z);
+	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
 	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
 	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp; 
 }
 
-void EE_P(Vec3f * in, TexturedVertex * out)
-{
-	float fZTemp;
-	if (in->z <= 0.f) {
-		fZTemp = 1.1f;
-	} else {
-		fZTemp = 1.f / in->z;
-	}
-
+void EE_P(Vec3f * in, TexturedVertex * out) {
+	
+	float fZTemp = clamp_and_invert(in->z);
+	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
 	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
@@ -2916,7 +2914,7 @@ long GetFreeDynLight() {
 			DynLight[i].type = 0;
 			DynLight[i].intensity = 1.3f;
 			DynLight[i].treat = 1;
-			DynLight[i].time_creation = ARXTimeUL();
+			DynLight[i].time_creation = (unsigned long)(arxtime);
 			DynLight[i].duration = 0;
 			DynLight[i].extras = 0;
 			return i;
@@ -3133,7 +3131,7 @@ void AcquireLastAnim(INTERACTIVE_OBJ * io)
 			&&	(!io->animlayer[3].cur_anim)) return;
 
 	// Stores Frametime and number of vertex for later interpolation
-	io->lastanimtime = checked_range_cast<unsigned long>(FrameTime);
+	io->lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
 	io->nb_lastanimvertex = 1;
 }
 
@@ -4575,24 +4573,24 @@ void ComputePortalVertexBuffer()
 						pVertex->p.y = -(pPoly->v[0].p.y);
 						pVertex->p.z = pPoly->v[0].p.z;
 						pVertex->color = pPoly->v[0].color;
-						pVertex->uv.x = pPoly->v[0].uv.x;
-						pVertex->uv.y = pPoly->v[0].uv.y;
+						pVertex->uv.x = pPoly->v[0].uv.x + pTextureContainer->hd.x;
+						pVertex->uv.y = pPoly->v[0].uv.y + pTextureContainer->hd.y;
 						pVertex++;
 
 						pVertex->p.x = pPoly->v[1].p.x;
 						pVertex->p.y = -(pPoly->v[1].p.y);
 						pVertex->p.z = pPoly->v[1].p.z;
 						pVertex->color = pPoly->v[1].color;
-						pVertex->uv.x = pPoly->v[1].uv.x;
-						pVertex->uv.y = pPoly->v[1].uv.y;
+						pVertex->uv.x = pPoly->v[1].uv.x + pTextureContainer->hd.x;
+						pVertex->uv.y = pPoly->v[1].uv.y + pTextureContainer->hd.y;
 						pVertex++;
 
 						pVertex->p.x = pPoly->v[2].p.x;
 						pVertex->p.y = -(pPoly->v[2].p.y);
 						pVertex->p.z = pPoly->v[2].p.z;
 						pVertex->color = pPoly->v[2].color;
-						pVertex->uv.x = pPoly->v[2].uv.x;
-						pVertex->uv.y = pPoly->v[2].uv.y;
+						pVertex->uv.x = pPoly->v[2].uv.x + pTextureContainer->hd.x;
+						pVertex->uv.y = pPoly->v[2].uv.y + pTextureContainer->hd.y;
 						pVertex++;
 
 						pPoly->uslInd[0] = iIndiceInVertex++;
@@ -4605,8 +4603,8 @@ void ComputePortalVertexBuffer()
 							pVertex->p.y = -(pPoly->v[3].p.y);
 							pVertex->p.z = pPoly->v[3].p.z;
 							pVertex->color = pPoly->v[3].color;
-							pVertex->uv.x = pPoly->v[3].uv.x;
-							pVertex->uv.y = pPoly->v[3].uv.y;
+							pVertex->uv.x = pPoly->v[3].uv.x + pTextureContainer->hd.x;
+							pVertex->uv.y = pPoly->v[3].uv.y + pTextureContainer->hd.y;
 							pVertex++;
 
 							pPoly->uslInd[3] = iIndiceInVertex++;

@@ -101,7 +101,10 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	return !ec;
 }
 
-bool rename(const path & old_p, const path & new_p) {
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
+	if(!overwrite && exists(new_p)) {
+		return false;
+	}
 	error_code ec;
 	fs_boost::rename(old_p.string(), new_p.string(), ec);
 	return !ec;

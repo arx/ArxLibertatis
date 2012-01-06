@@ -22,10 +22,8 @@
 #include "Configure.h"
 
 #include <windows.h>
-#include <shlobj.h>
 
 #include "io/FilePath.h"
-#include "io/FileStream.h"
 #include "io/log/Logger.h"
 
 using std::string;
@@ -49,7 +47,7 @@ std::string GetLastErrorString() {
 		std::ostringstream buffer; //! Buffer for the log message excluding level, file and line.
 		buffer << "Unknown error (" << GetLastError() << ").";
 		strError = buffer.str();
-	}	
+	}
 	
 	return strError;
 }
@@ -188,23 +186,19 @@ bool create_directory(const path & p) {
 }
 
 bool create_directories(const path & p) {
+	
 	if(p.empty()) {
 		return true;
 	}
-
-	// SHCreateDirectoryExA expect an absolute path
-	int ret;
-	char fullPath[MAX_PATH];
-	ret = GetFullPathNameA(p.string().c_str(), MAX_PATH, fullPath, NULL);
-	if(ret == 0)
-		return false;
-		
-	ret = SHCreateDirectoryExA(NULL, fullPath, NULL);
-	if(!(ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS)) {
-		LogWarning << "SHCreateDirectoryExA(NULL, " << fullPath << ", NULL) failed with return code " << ret << "! " << GetLastErrorString();
+	
+	fs::path parent = p.parent();
+	if(!exists(parent)) {
+		if(!create_directories(parent)) {
+			return false;
+		}
 	}
-
-	return ret == ERROR_SUCCESS || ret == ERROR_ALREADY_EXISTS;
+	
+	return create_directory(p);
 }
 
 bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
@@ -215,10 +209,12 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	return ret;
 }
 
-bool rename(const path & old_p, const path & new_p) {
-	bool ret = MoveFileA(old_p.string().c_str(), new_p.string().c_str()) == TRUE;
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
+	DWORD flags = overwrite ? MOVEFILE_REPLACE_EXISTING : 0;
+	bool ret = MoveFileExA(old_p.string().c_str(), new_p.string().c_str(), flags) == TRUE;
 	if(!ret) {
-		LogWarning << "MoveFileA(" << old_p << ", " << new_p << ") failed! " << GetLastErrorString();
+		LogWarning << "MoveFileExA(" << old_p << ", " << new_p << ", " << flags << ") failed! "
+		           << GetLastErrorString();
 	}
 	return ret;
 }

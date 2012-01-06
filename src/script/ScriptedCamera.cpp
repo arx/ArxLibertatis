@@ -212,7 +212,7 @@ public:
 		string inout = context.getWord();
 		
 		FADEDURATION = context.getFloat();
-		FADESTART = ARX_TIME_GetUL();
+		FADESTART = arxtime.get_updated_ul();
 		
 		if(inout == "out") {
 			

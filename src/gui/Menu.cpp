@@ -146,7 +146,7 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 }
 
 namespace {
-enum SaveGameChage {
+enum SaveGameChange {
 	SaveGameRemoved,
 	SaveGameUnchanged,
 	SaveGameChanged
@@ -163,7 +163,7 @@ void CreateSaveGameList() {
 	}
 	
 	size_t oldCount = save_l.size() - 1;
-	std::vector<SaveGameChage> found(oldCount, SaveGameRemoved);
+	std::vector<SaveGameChange> found(oldCount, SaveGameRemoved);
 	
 	bool newSaves = false;
 	
@@ -177,6 +177,7 @@ void CreateSaveGameList() {
 		fs::path path = savedir / dirname;
 		
 		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
+			LogDebug("ignoring non-save directory " << path);
 			continue;
 		}
 		
@@ -184,8 +185,9 @@ void CreateSaveGameList() {
 		long num;
 		iss >> num;
 		
-		std::time_t stime = fs::last_write_time(path / "gsave.sav");
+		std::time_t stime = fs::last_write_time(path / SAVEGAME_NAME);
 		if(stime == 0) {
+			LogDebug("ignoring directory without gsave.sav:" << path);
 			continue;
 		}
 		
@@ -468,12 +470,12 @@ void ARX_MENU_Clicked_QUIT()
 	ARXmenu.currentmode = AMCM_OFF;
 
 	if (!NO_TIME_INIT)
-		ARX_TIME_UnPause();
+		arxtime.resume();
 }
 
 void ARX_MENU_Clicked_NEWQUEST() {
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 
 	if (FINAL_RELEASE)
 	{
@@ -519,7 +521,7 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 
 void ARX_MENU_Launch() {
 	
-	ARX_TIME_Pause();
+	arxtime.pause();
 
 	//Synchronize menu mixers with game mixers and switch between them
 	ARX_SOUND_MixerSwitch(ARX_SOUND_MixerGame, ARX_SOUND_MixerMenu);
@@ -559,8 +561,8 @@ void ARX_Menu_Manage() {
 					pSnapShot->GetSnapShotDim(160,100);
 					delete pSnapShot;
 
-					ARX_TIME_Pause();
-					ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
+					arxtime.pause();
+					ARXTimeMenu=ARXOldTimeMenu=arxtime.get_updated();
 					ARX_MENU_Launch();
 					bFadeInOut=false;	//fade out
 					bFade=true;			//active le fade
@@ -588,7 +590,7 @@ void ARX_Menu_Manage() {
 			{
 				if ((MENU_NoActiveWindow())  && (!REFUSE_GAME_RETURN))
 				{
-					ARX_TIME_UnPause();
+					arxtime.resume();
 					ARX_MENU_Clicked_QUIT();
 				}
 			}
@@ -728,7 +730,7 @@ bool ARX_Menu_Render() {
 
 			player.useanim.flags |= EA_LOOP;
 
-			ARXOldTimeMenu = ARXTimeMenu = ARX_TIME_Get();
+			ARXOldTimeMenu = ARXTimeMenu = arxtime.get_updated();
 			ARXDiffTimeMenu = 0;
 		}
 
@@ -964,7 +966,7 @@ bool ARX_Menu_Render() {
 			switch (iFadeAction)
 			{
 				case AMCM_OFF:
-					ARX_TIME_UnPause();
+					arxtime.resume();
 					ARX_MENU_NEW_QUEST_Clicked_QUIT();
 					iFadeAction = -1;
 					bFade = false;

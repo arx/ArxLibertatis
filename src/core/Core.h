@@ -126,8 +126,8 @@ extern long DANAECENTERX;
 extern long DANAECENTERY;
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
-extern bool ARXPausedTimer;
-extern float FrameTime, LastFrameTime;
+
+
 extern float Original_framedelay;
 extern long LOADEDD;
 extern std::string WILL_LAUNCH_CINE;

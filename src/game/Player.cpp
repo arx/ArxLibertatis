@@ -1543,9 +1543,9 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 
 			// Check for player hungry sample playing
 			if (((player.hunger > 10.f) && (player.hunger - inc_hunger <= 10.f))
-			        || ((player.hunger < 10.f) && (ARXTime > LastHungerSample + 180000)))
+			        || ((player.hunger < 10.f) && (float(arxtime) > LastHungerSample + 180000)))
 			{
-				LastHungerSample = ARXTimeUL();
+				LastHungerSample = (unsigned long)(arxtime);
 
 				if (!BLOCK_PLAYER_CONTROLS)
 				{
@@ -1749,7 +1749,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 float Falling_Height = 0;
 void ARX_PLAYER_StartFall()
 {
-	FALLING_TIME = ARXTimeUL();
+	FALLING_TIME = (unsigned long)(arxtime);
 	Falling_Height = 50.f;
 	float yy;
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &yy);
@@ -1803,7 +1803,7 @@ extern long EXTERNALVIEW;
 void ARX_PLAYER_Manage_Visual()
 {
 
-	unsigned long tim = ARXTimeUL();
+	unsigned long tim = (unsigned long)(arxtime);
 
 	if (player.Current_Movement & PLAYER_ROTATE)
 	{
@@ -2295,7 +2295,7 @@ void ARX_PLAYER_Manage_Visual()
 						target.z = eobj->vertexlist3[id].v.z;
 						long j = ARX_PARTICLES_GetFree();
 
-						if ((j != -1) && (!ARXPausedTimer))
+						if ((j != -1) && (!arxtime.is_paused()))
 						{
 							ParticleCount++;
 							particle[j].exist = true;
@@ -2312,7 +2312,7 @@ void ARX_PLAYER_Manage_Visual()
 							particle[j].scale.x	=	0.2f;
 							particle[j].scale.y	=	0.2f;
 							particle[j].scale.z	=	0.2f;
-							particle[j].timcreation	=	lARXTime;
+							particle[j].timcreation	=	(long)arxtime;
 							particle[j].tc		=	TC_smoke;
 							particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;// | SUBSTRACT;
 							particle[j].sourceionum	=	0;
@@ -2347,7 +2347,7 @@ void ARX_PLAYER_Manage_Visual()
 					Full_Jump_Height = 0;
 					player.jumpphase = 2;
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
-					player.jumpstarttime = ARXTimeUL();
+					player.jumpstarttime = (unsigned long)(arxtime);
 					player.jumplastposition = -1.f;
 					break;
 				case 2: // Moving Up
@@ -2361,7 +2361,7 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					break;
 				case 4: // Post-synch
-					LAST_JUMP_ENDTIME = ARXTimeUL();
+					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
 
 					if (((ause0->cur_anim == alist[ANIM_JUMP_END])
 					        && (ause0->flags & EA_ANIMEND))
@@ -2374,7 +2374,7 @@ void ARX_PLAYER_Manage_Visual()
 
 					break;
 				case 5: // Post-synch
-					LAST_JUMP_ENDTIME = ARXTimeUL();
+					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
 
 					if ((ause0->cur_anim == alist[ANIM_JUMP_END_PART2])
 					        && (ause0->flags & EA_ANIMEND))
@@ -2818,7 +2818,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 		if (REQUEST_JUMP)
 		{
-			float t = (float)ARXTime - (float)REQUEST_JUMP;
+			float t = (float)float(arxtime) - (float)REQUEST_JUMP;
 
 			if ((t >= 0.f) && (t <= 350.f))
 			{
@@ -3016,18 +3016,18 @@ void PlayerMovementIterate(float DeltaTime)
 
 		float jump_mul = 1.f;
 
-		if (LAST_JUMP_ENDTIME + 600 > ARXTime)
+		if (LAST_JUMP_ENDTIME + 600 > float(arxtime))
 		{
 			JUMP_DIVIDE = 1;
 
-			if (LAST_JUMP_ENDTIME + 300 > ARXTime)
+			if (LAST_JUMP_ENDTIME + 300 > float(arxtime))
 			{
 				jump_mul = 0.5f;
 			}
 			else
 			{
 				jump_mul = 0.5f;
-				jump_mul += (float)(LAST_JUMP_ENDTIME + 300 - ARXTime) * ( 1.0f / 300 );
+				jump_mul += (float)(LAST_JUMP_ENDTIME + 300 - float(arxtime)) * ( 1.0f / 300 );
 
 				if (jump_mul > 1.f) jump_mul = 1.f;
 			}
@@ -3269,12 +3269,12 @@ void PlayerMovementIterate(float DeltaTime)
 				if (player.jumplastposition == -1.f)
 				{
 					player.jumplastposition = 0;
-					player.jumpstarttime = ARXTimeUL();
+					player.jumpstarttime = (unsigned long)(arxtime);
 				}
 
 				float jump_up_time	=	200.f;
 				float jump_up_height =	130.f;
-				long timee			=	lARXTime;
+				long timee			=	(long)arxtime;
 				float offset_time	=	(float)timee - (float)player.jumpstarttime;
 				float divider		=	1.f / jump_up_time;
 				float position		=	(float)offset_time * divider;
@@ -3918,7 +3918,7 @@ void ARX_GAME_Reset(long type) {
 	TOTAL_BODY_CHUNKS_COUNT = 0;
 
 	// ARX Timer
-	ARX_TIME_Init();
+	arxtime.init();
 
 	ClearTileLights();
 }
@@ -3938,7 +3938,7 @@ char	sp_max_ch[64];
 long sp_max_nb;
 void Manage_sp_max()
 {
-	float v = ARXTime - sp_max_start;
+	float v = float(arxtime) - sp_max_start;
 
 	if ((sp_max_start != 0) && (v < 20000))
 	{
@@ -3951,7 +3951,7 @@ void Manage_sp_max()
 		{
 			float dx = px + sizX * (float)i;
 			float dy = py + sp_max_y[i];
-			sp_max_y[i] = EEsin(dx + (float)ARXTime * ( 1.0f / 100 )) * 30.f * modi;
+			sp_max_y[i] = EEsin(dx + (float)float(arxtime) * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex( 1, sp_max_ch[i] );
 
 			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, Color::none );

@@ -493,7 +493,7 @@ bool ParticleSystem::IsAlive()
 //-----------------------------------------------------------------------------
 void ParticleSystem::Update(long _lTime)
 {
-	if (ARXPausedTimer) return;
+	if (arxtime.is_paused()) return;
 
 	ulTime += _lTime;
 	int nbtotal = 0;

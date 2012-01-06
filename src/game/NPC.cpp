@@ -928,7 +928,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 		if (PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
 			return;
 
-		unsigned long at = ARXTimeUL();
+		unsigned long at = (unsigned long)(arxtime);
 
 		if (at > PHYSICS_CURIO->soundtime)
 		{
@@ -1138,7 +1138,7 @@ void ARX_PHYSICS_Apply()
 		if ((io->ioflags & IO_ITEM)
 		        &&	(io->show != SHOW_FLAG_DESTROYED)
 		        &&	((io->GameFlags & GFLAG_GOREEXPLODE)
-		             &&	(ARXTime - io->lastanimtime > 300))
+		             &&	(float(arxtime) - io->lastanimtime > 300))
 		        &&	((io->obj)
 		             &&	!io->obj->vertexlist.empty())
 		   )
@@ -1192,7 +1192,7 @@ void ARX_PHYSICS_Apply()
 					if (io->damagedata >= 0)
 					{
 						damages[io->damagedata].active = 1;
-						ARX_DAMAGES_UpdateDamage(io->damagedata, (float)ARXTime);
+						ARX_DAMAGES_UpdateDamage(io->damagedata, float(arxtime));
 						damages[io->damagedata].exist = 0;
 						io->damagedata = -1;
 					}
@@ -1240,7 +1240,7 @@ void ARX_PHYSICS_Apply()
 
 				GetTargetPos(io);
 
-				if ((!ARXPausedTimer) && (!(ause0->flags & EA_FORCEPLAY)))
+				if ((!arxtime.is_paused()) && (!(ause0->flags & EA_FORCEPLAY)))
 				{
 					if (io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 						StareAtTarget(io);
@@ -1784,7 +1784,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 
 	io->GameFlags |= GFLAG_GOREEXPLODE;
-	io->lastanimtime = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
+	io->lastanimtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 	io->soundtime = 0;
 	io->soundcount = 0;
 	EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector, 3, &io->angle);
@@ -2551,13 +2551,13 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				AcquireLastAnim(io);
 				FinishAnim(io, ause1->cur_anim);
 				ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3]);
-				io->_npcdata->aiming_start	=	lARXTime;
+				io->_npcdata->aiming_start	=	(long)arxtime;
 				ause1->flags |= EA_LOOP;
 			}
 			else if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
 			         &&	(ause1->cur_anim))
 			{
-				if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
+				if (((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
 				        &&	(tdist < square(STRIKE_DISTANCE)))
 				{
 					AcquireLastAnim(io);
@@ -2707,13 +2707,13 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
 					ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3+ANIMBase]);
-					io->_npcdata->aiming_start	=	lARXTime;
+					io->_npcdata->aiming_start	=	(long)arxtime;
 					ause1->flags |= EA_LOOP;
 				}
 				else if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3+ANIMBase])
 				         &&	(ause1->cur_anim))
 				{
-					if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
+					if (((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((float(arxtime) > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
 					        &&	(tdist < square(STRIKE_DISTANCE)))
 					{
 						AcquireLastAnim(io);
@@ -2962,7 +2962,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				if (io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
 				{
 					io->_npcdata->reachedtarget = 1;
-					io->_npcdata->reachedtime = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
+					io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
 					if (io->targetinfo != GetInterNum(io))
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
@@ -3311,7 +3311,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				{
 					ause0->flags &= ~EA_LOOP;
 
-					if (io->_npcdata->reachedtime + 500 < ARXTime)
+					if (io->_npcdata->reachedtime + 500 < float(arxtime))
 					{
 						AcquireLastAnim(io);
 						FinishAnim(io, ause0->cur_anim);
@@ -3375,7 +3375,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	   )	CHANGE = 1;
 
 	// Tries to face/stare at target
-	if ((!ARXPausedTimer) && (CHANGE)
+	if ((!arxtime.is_paused()) && (CHANGE)
 	    && (!(ause0->flags & EA_FORCEPLAY)))
 	{
 		if (io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
@@ -3702,7 +3702,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 						{
 							long num = GetInterNum(io);
 							io->_npcdata->reachedtarget = 1;
-							io->_npcdata->reachedtime = ARXTimeUL();
+							io->_npcdata->reachedtime = (unsigned long)(arxtime);
 
 							if (io->targetinfo != num)
 							{
@@ -3732,7 +3732,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					EVENT_SENDER = NULL;
 
 				io->_npcdata->reachedtarget = 1;
-				io->_npcdata->reachedtime = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
+				io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
 				if (io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
@@ -4230,7 +4230,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 					{
 						long j = ARX_PARTICLES_GetFree();
 
-						if ((j != -1) && (!ARXPausedTimer) && (rnd() < 0.4f))
+						if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
 						{
 							ParticleCount++;
 							PARTICLE_DEF * pd	=	&particle[j];
@@ -4248,7 +4248,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->scale.x			=	-8.f;
 							pd->scale.y			=	-8.f;
 							pd->scale.z			=	-8.f;
-							pd->timcreation		=	lARXTime;
+							pd->timcreation		=	(long)arxtime;
 							pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 							//pd->delay=nn*180;
 						}
@@ -4298,7 +4298,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 		{
 			long j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer) && (rnd() < 0.4f))
+			if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
 			{
 				ParticleCount++;
 				PARTICLE_DEF * pd	=	&particle[j];
@@ -4316,7 +4316,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				pd->scale.x		=	-8.f;
 				pd->scale.y		=	-8.f;
 				pd->scale.z		=	-8.f;
-				pd->timcreation	=	lARXTime;
+				pd->timcreation	=	(long)arxtime;
 				pd->rgb = Color3f(.71f, .43f, .29f);
 				pd->delay = nn * 2;
 			}
@@ -4362,7 +4362,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 					{
 						long j = ARX_PARTICLES_GetFree();
 
-						if ((j != -1) && (!ARXPausedTimer) && (rnd() < 0.4f))
+						if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
 						{
 							ParticleCount++;
 							PARTICLE_DEF * pd	=	&particle[j];
@@ -4380,7 +4380,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->scale.x			=	-8.f;
 							pd->scale.y			=	-8.f;
 							pd->scale.z			=	-8.f;
-							pd->timcreation		=	lARXTime;
+							pd->timcreation		=	(long)arxtime;
 							pd->rgb = Color3f(.71f, .43f, .29f);
 							pd->delay			=	nn * 180;
 						}

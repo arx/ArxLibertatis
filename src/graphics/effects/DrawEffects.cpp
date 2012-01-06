@@ -409,7 +409,7 @@ void ARXDRAW_DrawPolyBoom()
 
 	SetZBias(8);
 	GRenderer->SetFogColor(Color::none);
-	unsigned long tim = ARXTimeUL();
+	unsigned long tim = (unsigned long)(arxtime);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )
@@ -759,23 +759,23 @@ void ARXDRAW_DrawAllTransPolysPos() {
 						verts[j].p.z		= ep->tv[j].p.z;
 						verts[j].rhw	= ep->tv[j].rhw;
 						verts[j].color	= 0xFFFFFFFF;
-						verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
-						verts[j].uv.y		= ep->v[j].p.z * ( 1.0f / 1000 ) + EEcos( (ep->v[j].p.z) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
+						verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float) arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
+						verts[j].uv.y		= ep->v[j].p.z * ( 1.0f / 1000 ) + EEcos( (ep->v[j].p.z) * ( 1.0f / 200 ) + (float) arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
 					}	
 
 					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 					for ( i = 0 ; i < to ; i++ )
 					{
-						verts[i].uv.x = ep->v[i].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].p.x ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
-						verts[i].uv.y = ep->v[i].p.z * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].p.z ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
+						verts[i].uv.x = ep->v[i].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].p.x ) * ( 1.0f / 100 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
+						verts[i].uv.y = ep->v[i].p.z * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].p.z ) * ( 1.0f / 100 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 					}	
 					EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 					
 					for ( i = 0 ; i < to ; i++ )
 					{
-							verts[i].uv.x		= ep->v[i].p.x * ( 1.0f / 600 ) + EEsin ( ( ep->v[i].p.x ) * ( 1.0f / 160 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
-							verts[i].uv.y		= ep->v[i].p.z * ( 1.0f / 600 ) + EEcos ( ( ep->v[i].p.z ) * ( 1.0f / 160 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
+							verts[i].uv.x		= ep->v[i].p.x * ( 1.0f / 600 ) + EEsin ( ( ep->v[i].p.x ) * ( 1.0f / 160 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
+							verts[i].uv.y		= ep->v[i].p.z * ( 1.0f / 600 ) + EEcos ( ( ep->v[i].p.z ) * ( 1.0f / 160 ) + (float)arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
 							verts[i].color	= 0xFF666666;
 					}	
 
@@ -803,30 +803,30 @@ void ARXDRAW_DrawAllTransPolysPos() {
 					verts[j].p.z		= ep->tv[j].p.z;
 					verts[j].rhw	= ep->tv[j].rhw;
 					verts[j].color	= 0xFF505050;
-					verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
-					verts[j].uv.y		= ep->v[j].p.z * ( 1.0f / 1000 ) + EEcos( ( ep->v[j].p.z ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
+					verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
+					verts[j].uv.y		= ep->v[j].p.z * ( 1.0f / 1000 ) + EEcos( ( ep->v[j].p.z ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
 
-					if ( ep->type & POLY_FALL ) verts[j].uv.y += (float)FrameTime * ( 1.0f / 4000 );
+					if ( ep->type & POLY_FALL ) verts[j].uv.y += (float)arxtime.get_frame_time() * ( 1.0f / 4000 );
 				}
 
 				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 				for ( i = 0 ; i < to ; i++ )
 				{
-					verts[i].uv.x = ( ep->v[i].p.x + 30.f ) * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].p.x + 30 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
-					verts[i].uv.y = ( ep->v[i].p.z + 30.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].p.z + 30 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
+					verts[i].uv.x = ( ep->v[i].p.x + 30.f ) * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].p.x + 30 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
+					verts[i].uv.y = ( ep->v[i].p.z + 30.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].p.z + 30 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
 
-					if ( ep->type & POLY_FALL ) verts[i].uv.y += (float)FrameTime * ( 1.0f / 4000 );
+					if ( ep->type & POLY_FALL ) verts[i].uv.y += (float)arxtime.get_frame_time() * ( 1.0f / 4000 );
 				}
 
 				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 
 				for ( i = 0 ; i < to ; i++ )
 				{
-					verts[i].uv.x = ( ep->v[i].p.x + 60.f ) * ( 1.0f / 1000 ) - EEsin( ( ep->v[i].p.x + 60 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
-					verts[i].uv.y = ( ep->v[i].p.z + 60.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].p.z + 60 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
+					verts[i].uv.x = ( ep->v[i].p.x + 60.f ) * ( 1.0f / 1000 ) - EEsin( ( ep->v[i].p.x + 60 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
+					verts[i].uv.y = ( ep->v[i].p.z + 60.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].p.z + 60 ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
 
-					if ( ep->type & POLY_FALL ) verts[i].uv.y += (float)FrameTime * ( 1.0f / 4000 );
+					if ( ep->type & POLY_FALL ) verts[i].uv.y += (float)arxtime.get_frame_time() * ( 1.0f / 4000 );
 				}	
 				EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
 		}

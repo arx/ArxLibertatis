@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -145,7 +146,10 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 	return true;
 }
 
-bool rename(const path & old_p, const path & new_p) {
+bool rename(const path & old_p, const path & new_p, bool overwrite) {
+	if(!overwrite && exists(new_p)) {
+		return false;
+	}
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }
 
@@ -175,17 +179,17 @@ directory_iterator::directory_iterator(const fs::path & p) : buf(NULL) {
 		
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
-#if defined(HAVE_FPATHCONF) && defined(HAVE_DIRFD) && defined(_PC_NAME_MAX)
-		name_max = fpathconf(dirfd(dirp), _PC_NAME_MAX);
+#if defined(HAVE_FPATHCONF) && defined(HAVE_PC_NAME_MAX)
+		name_max = fpathconf(dirfd(reinterpret_cast<DIR *>(handle)), _PC_NAME_MAX);
 		if(name_max == -1) {
-#  if defined(NAME_MAX)
-			name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#  if defined(HAVE_NAME_MAX)
+			name_max = std::max(NAME_MAX, 255);
 #  else
 			arx_assert_msg(false, "cannot determine maximum dirname size");
 #  endif
 		}
-#elif defined(NAME_MAX)
-		name_max = (NAME_MAX > 255) ? NAME_MAX : 255;
+#elif defined(HAVE_NAME_MAX)
+		name_max = std::max(NAME_MAX, 255);
 #else
 #  error "buffer size for readdir_r cannot be determined"
 #endif
@@ -225,18 +229,26 @@ string directory_iterator::name() {
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }
 
-#ifndef _DIRENT_HAVE_D_TYPE
-#error d_type entry required in struct dirent
-#endif
+static mode_t dirstat(void * handle, void * entry) {
+	
+	arx_assert(entry != NULL);
+	int fd = dirfd(reinterpret_cast<DIR *>(handle));
+	arx_assert(fd != -1);
+	
+	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
+	struct stat buf;
+	int ret = fstatat(fd, name, &buf, 0);
+	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
+	
+	return buf.st_mode;
+}
 
 bool directory_iterator::is_directory() {
-	arx_assert(buf != NULL);
-	return reinterpret_cast<dirent *>(buf)->d_type == DT_DIR;
+	return ((dirstat(handle, buf) & S_IFMT) == S_IFDIR);
 }
 
 bool directory_iterator::is_regular_file() {
-	arx_assert(buf != NULL);
-	return reinterpret_cast<dirent *>(buf)->d_type == DT_REG;
+	return ((dirstat(handle, buf) & S_IFMT) == S_IFREG);
 }
 
 } // namespace fs

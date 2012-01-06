@@ -124,7 +124,9 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 
-const fs::path CurGamePath = "save/cur0001";
+const fs::path SAVEGAME_NAME = "gsave.sav";
+const fs::path CURRENT_GAME_DIRECTORY = "save/cur0001";
+const fs::path CURRENT_GAME_FILE = CURRENT_GAME_DIRECTORY / SAVEGAME_NAME;
 
 float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
@@ -149,7 +151,7 @@ static fs::path ARX_GAMESAVE_CreateNewInstance() {
 		
 		fs::path path = savedir / oss.str();
 		
-		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / "gsave.sav"))) {
+		if(!fs::exists(path) || (fs::is_directory(path) && !fs::exists(path / SAVEGAME_NAME))) {
 			
 			if(!fs::create_directories(path)) {
 				LogWarning << "error creating save path " << path;
@@ -252,15 +254,18 @@ static fs::path ARX_GAMESAVE_MakePath(long instance) {
 }
 
 bool ARX_Changelevel_CurGame_Clear() {
-	// Empty current game directory
-	if(!fs::remove_all(CurGamePath)) {
-		LogError << "failed to clear current game path " << CurGamePath;
-		return false;
-	} 
 
-	if(!fs::create_directories(CurGamePath)) {
-		LogError << "failed to create current game path " << CurGamePath;
+	if(!fs::create_directories(CURRENT_GAME_DIRECTORY)) {
+		LogError << "failed to create current game path " << CURRENT_GAME_DIRECTORY;
 		return false;
+	}
+
+	// If there's a left over current game file, clear it
+	if(fs::is_regular_file(CURRENT_GAME_FILE)) {
+		if(!fs::remove(CURRENT_GAME_FILE)) {
+			LogError << "failed to remove current game file " << CURRENT_GAME_FILE;
+			return false;
+		}
 	}
 
 	return true;
@@ -277,16 +282,14 @@ void ARX_Changelevel_CurGame_Open() {
 		return;
 	}
 	
-	fs::path savefile = CurGamePath / "gsave.sav";
-	
-	if(!fs::exists(savefile)) {
+	if(!fs::exists(CURRENT_GAME_FILE)) {
 		// TODO this is normal when starting a new game
 		return;
 	}
 	
-	GLOBAL_pSaveB = new SaveBlock(savefile);
+	GLOBAL_pSaveB = new SaveBlock(CURRENT_GAME_FILE);
 	if(!GLOBAL_pSaveB->open()) {
-		LogError << "cannot read cur game save file" << savefile;
+		LogError << "cannot read cur game save file" << CURRENT_GAME_FILE;
 	}
 }
 
@@ -317,7 +320,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 	
-	ARX_CHANGELEVEL_DesiredTime = ARX_TIME_Get();
+	ARX_CHANGELEVEL_DesiredTime = arxtime.get_updated();
 		
 	FORBID_SAVE = 1;
 	long num = GetLevelNumByName("level" + level);
@@ -358,14 +361,14 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 
 	ARX_PLAYER_Reset_Fall();
 
-	ARX_TIME_Pause();
+	arxtime.pause();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
 	
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	if(!_pSaveBlock->open(true)) {
-		LogError << "error writing to save block " << (CurGamePath / "gsave.sav");
+		LogError << "error writing to save block " << CURRENT_GAME_FILE;
 		return;
 	}
 	
@@ -378,7 +381,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	}
 	delete _pSaveBlock, _pSaveBlock = NULL;
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
 	ARX_CHANGELEVEL_PopLevel(num, 1);
@@ -438,7 +441,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(&asi, num)) {
 		LogError << "Error Saving Index...";
-		ARX_TIME_UnPause();
+		arxtime.resume();
 		return false;
 	}
 	
@@ -446,13 +449,13 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	if(ARX_CHANGELEVEL_Push_Player() != 1) {
 		LogError << "Error Saving Player...";
-		ARX_TIME_UnPause();
+		arxtime.resume();
 		return false;
 	}
 	
 	if(ARX_CHANGELEVEL_Push_AllIO() != 1) {
 		LogError << "Error Saving IOs...";
-		ARX_TIME_UnPause();
+		arxtime.resume();
 		return false;
 	}
 	
@@ -493,7 +496,7 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	asi->version				= ARX_GAMESAVE_VERSION;
 	asi->nb_inter				= 0;
 	asi->nb_paths				= nbARXpaths;
-	asi->time					= ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
+	asi->time					= arxtime.get_updated_ul(); //treat warning C4244 conversion from 'float' to 'unsigned long''
 	asi->nb_lights				= 0;
 
 	asi->gmods_stacked = stacked;
@@ -1199,7 +1202,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 	memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
-	long timm = ARXTimeUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
+	long timm = (unsigned long)(arxtime); //treat warning C4244 conversion from 'float' to 'unsigned long''
 
 	for (int i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{
@@ -1714,7 +1717,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	desired = asi->gmods_desired;
 	current = asi->gmods_current;
 	NO_GMOD_RESET = 1;
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
+	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	return 1;
@@ -2710,7 +2713,7 @@ static void ARX_CHANGELEVEL_PopLevel_Abort() {
 	
 	delete _pSaveBlock, _pSaveBlock = NULL;
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 	
 	if(idx_io) {
 		delete[] idx_io, idx_io = NULL;
@@ -2742,8 +2745,8 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	DanaeClearAll();
 	LogDebug("After  DANAE ClearAll");
 	
-	ARX_TIME_Pause();
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
+	arxtime.pause();
+	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	
 	// Now we can load our things...
@@ -2751,7 +2754,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
 	
 	// Open Saveblock for read
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	// first time in this level ?
 	long FirstTime;
@@ -2859,7 +2862,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	
-	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
+	arxtime.force_time_restore(ARX_CHANGELEVEL_DesiredTime);
 	NO_TIME_INIT = 1;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	LogDebug("After  Player Misc Init");
@@ -2900,21 +2903,21 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	return true;
 }
 
-long ARX_CHANGELEVEL_Save(long instance, const string & name) {
+bool ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	
 	LogDebug("ARX_CHANGELEVEL_Save " << instance << " " << name);
 	
-	ARX_TIME_Pause();
+	arxtime.pause();
 	
 	if(CURRENTLEVEL == -1) {
 		LogWarning << "Internal Non-Fatal Error";
-		return 0;
+		return false;
 	}
 	
-	_pSaveBlock = new SaveBlock(CurGamePath / "gsave.sav");
+	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	if(!_pSaveBlock->open(true)) {
-		LogError << "opening savegame " << CurGamePath / "gsave.sav";
+		LogError << "opening savegame " << CURRENT_GAME_FILE;
 		return false;
 	}
 	
@@ -2932,7 +2935,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	pld.level = CURRENTLEVEL;
 	strncpy(pld.name, name.c_str(), sizeof(pld.name));
 	pld.version = ARX_GAMESAVE_VERSION;
-	pld.time = ARX_TIME_GetUL();
+	pld.time = arxtime.get_updated_ul();
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
 	_pSaveBlock->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -2945,7 +2948,7 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 	}
 	delete _pSaveBlock, _pSaveBlock = NULL;
 	
-	ARX_TIME_UnPause();
+	arxtime.resume();
 	
 	// Create the destination directory
 	fs::path savePath;
@@ -2957,21 +2960,18 @@ long ARX_CHANGELEVEL_Save(long instance, const string & name) {
 		
 	} else {
 		savePath = ARX_GAMESAVE_MakePath(instance);
-		if(!fs::remove_all(savePath)) {
-			LogWarning << "failed to clear save path " << savePath;
-			return false;
-		} else if(!fs::create_directory(savePath)) {
+		if(!fs::create_directories(savePath)) {
 			LogWarning << "failed to create save path " << savePath;
 			return false;
 		}
 	}
 	
-	// Copy the savegame and screenshot to the final destination
-	if(!fs::copy_file(CurGamePath / "gsave.sav", savePath / "gsave.sav")) {
-		LogWarning << "failed to copy save to " << (savePath / "gsave.sav");
+	// Copy the savegame and screenshot to the final destination, overwriting previous files
+	if(!fs::copy_file(CURRENT_GAME_FILE, savePath / SAVEGAME_NAME, true)) {
+		LogWarning << "failed to copy save to " << (savePath / SAVEGAME_NAME);
 		return false;
-	} else if(!fs::rename("sct_0.bmp", savePath / "gsave.bmp")) {
-		LogWarning << "failed to copy screenshot to savegame";
+	} else if(!fs::rename("sct_0.bmp", savePath / "gsave.bmp", true)) {
+		LogWarning << "failed to copy save screenshot to " << (savePath / "gsave.bmp");
 		return false;
 	}
 	
@@ -2986,9 +2986,9 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	}
 
 	size_t size;
-	char * dat = SaveBlock::load(path / "gsave.sav", "pld", size);
+	char * dat = SaveBlock::load(path / SAVEGAME_NAME, "pld", size);
 	if(!dat) {
-		LogError << "Unable to open pld in " << path / "gsave.sav";
+		LogError << "Unable to open pld in " << path / SAVEGAME_NAME;
 		return false;
 	}
 
@@ -3021,7 +3021,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	// Forbid Saving
 	FORBID_SAVE = 1;
-	ARX_TIME_Pause();
+	arxtime.pause();
 	
 	// Checks Instance
 	if(instance <= -1) {
@@ -3034,14 +3034,14 @@ long ARX_CHANGELEVEL_Load(long instance) {
 	
 	// Copy SavePath to Current Game
 	fs::path savePath = ARX_GAMESAVE_MakePath(instance);
-	if(!fs::copy_file(savePath / "gsave.sav", CurGamePath / "gsave.sav")) {
-		LogWarning << "failed to create copy savegame to " << (CurGamePath / "gsave.sav");
+	if(!fs::copy_file(savePath / SAVEGAME_NAME, CURRENT_GAME_FILE)) {
+		LogWarning << "failed to create copy savegame to " << CURRENT_GAME_FILE;
 		return -1;
 	}
 	
 	// Retrieves Player LevelData
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
-	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CurGamePath)) {
+	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CURRENT_GAME_DIRECTORY)) {
 		PROGRESS_BAR_COUNT += 2.f;
 		LoadLevelScreen(pld.level);
 		
@@ -3054,7 +3054,7 @@ long ARX_CHANGELEVEL_Load(long instance) {
 		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, 0);
-		ARX_TIME_Force_Time_Restore(fPldTime);
+		arxtime.force_time_restore(fPldTime);
 		NO_TIME_INIT = 1;
 		FORCE_TIME_RESTORE = fPldTime;
 		DONT_CLEAR_SCENE = 0;

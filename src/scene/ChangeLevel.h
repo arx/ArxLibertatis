@@ -53,7 +53,7 @@ namespace fs {
 class path;
 }
 
-extern const fs::path CurGamePath;
+extern const fs::path SAVEGAME_NAME;
 
 extern long FORBID_SAVE;
 
@@ -66,7 +66,7 @@ long ARX_CHANGELEVEL_GetInfo(const fs::path & path, std::string & name, float & 
  **/
 long ARX_CHANGELEVEL_Load(long instance);
 
-long ARX_CHANGELEVEL_Save(long instance, const std::string & name);
+bool ARX_CHANGELEVEL_Save(long instance, const std::string & name);
 
 bool ARX_Changelevel_CurGame_Clear();
 void ARX_Changelevel_CurGame_Open();

@@ -330,35 +330,44 @@ bool ArxGame::InitWindow() {
 	
 	arx_assert(m_MainWindow == NULL);
 	
-	bool matched = false;
-	
 	bool autoFramework = (config.window.framework == "auto");
 	
-#ifdef HAVE_SDL
-	if(autoFramework || config.window.framework == "SDL") {
-		matched = true;
-		RenderWindow * window = new SDLWindow;
-		if(!initWindow(window)) {
-			delete window;
+	for(int i = 0; i < 2 && !m_MainWindow; i++) {
+		bool first = (i == 0);
+		
+		bool matched = false;
+		
+		#ifdef HAVE_SDL
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+			matched = true;
+			RenderWindow * window = new SDLWindow;
+			if(!initWindow(window)) {
+				delete window;
+			}
+		}
+		#endif
+		
+		#ifdef HAVE_D3D9
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
+			matched = true;
+			RenderWindow * window = new D3D9Window;
+			if(!initWindow(window)) {
+				delete window;
+			}
+		}
+		#endif
+		
+		if(first && !matched) {
+			LogError << "unknown windowing framework: " << config.window.framework;
 		}
 	}
-#endif
 	
-#ifdef HAVE_D3D9
-	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D9")) {
-		matched = true;
-		RenderWindow * window = new D3D9Window;
-		if(!initWindow(window)) {
-			delete window;
-		}
-	}
-#endif
-	
-	if(!matched) {
-		LogError << "unknown windowing framework: " << config.window.framework;
+	if(!m_MainWindow) {
+		LogError << "no working windowing framework available";
+		return false;
 	}
 	
-	return (m_MainWindow != NULL);
+	return true;
 }
 
 bool ArxGame::InitInput() {
@@ -750,58 +759,32 @@ bool ArxGame::BeforeRun() {
 
 bool ArxGame::Render() {
 	
-	FrameTime = ARX_TIME_Get();
+	arxtime.update_frame_time();
 
-	if (GLOBAL_SLOWDOWN!=1.f)
+	// before modulation by "GLOBAL_SLOWDOWN"
+	Original_framedelay = arxtime.get_frame_delay();
+	arx_assert(Original_framedelay >= 0.0f);
+
+	// TODO this code shouldn't exist. ARXStartTime should be constant.
+	if (GLOBAL_SLOWDOWN != 1.0f)
 	{
-		float ft;
-		ft=FrameTime-LastFrameTime;
-		Original_framedelay=ft;
+		arxtime.increment_start_time((u64)(Original_framedelay * (1.0f - GLOBAL_SLOWDOWN) * 1000.0f));
 
-		ft*=1.f-GLOBAL_SLOWDOWN;
-		
-		ARXStartTime += u64(ft * 1000);
-		FrameTime = ARX_TIME_Get();
-
-		if (LastFrameTime>FrameTime)
-		{
-			LastFrameTime=FrameTime;
-		}
-
-		FrameDiff = FrameTime-LastFrameTime;
-		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay = FrameDiff;
-	}
-	else
-	{
-		// Nuky - added this security because sometimes when hitting ESC, FrameDiff would get negative
-		if (LastFrameTime>FrameTime)
-		{
-			LastFrameTime=FrameTime;
-		}
-		FrameDiff = FrameTime-LastFrameTime;
-
-		float FD = FrameDiff;
-		// Under 10 FPS the whole game slows down to avoid unexpected results...
-		_framedelay = FrameDiff;
-		FrameDiff = _framedelay;
-
-		Original_framedelay=_framedelay;
-
-		ARXStartTime += u64(FD * 1000) - u64(FrameDiff * 1000);
+		// recalculate frame delta
+		arxtime.update_frame_time();
 	}
 
-static float _AvgFrameDiff = 150.f;
-	if( FrameDiff > _AvgFrameDiff * 10.f )
-	{
-		FrameDiff = _AvgFrameDiff * 10.f;
-	}
-	else if ( FrameDiff > 15.f )
-	{
-		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
-	}
+	_framedelay = arxtime.get_frame_delay();
+	arx_assert(_framedelay >= 0.0f);
 
-	if( GInput->isKeyPressedNowPressed(Keyboard::Key_F12) )
+	// limit fps above 10fps
+	const float max_framedelay = 1000.0f / 10.0f;
+	_framedelay = _framedelay > max_framedelay ? max_framedelay : _framedelay;
+
+	// TODO eliminate FrameDiff == _framedelay (replace)
+	FrameDiff = _framedelay;
+
+	if (GInput->isKeyPressedNowPressed(Keyboard::Key_F12))
 	{
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
@@ -809,13 +792,11 @@ static float _AvgFrameDiff = 150.f;
 
 	ACTIVECAM = &subj;
 
-	if(wasResized) {
-		
+	if (wasResized) 
+	{
 		LogDebug("was resized");
-		
-		DanaeRestoreFullScreen();
-		
 		wasResized = false;
+		DanaeRestoreFullScreen();
 	}
 
 	// Update input
@@ -824,7 +805,8 @@ static float _AvgFrameDiff = 150.f;
 	AdjustMousePosition();
 
 	// Manages Splash Screens if needed
-	if(DANAE_ManageSplashThings()) {
+	if (DANAE_ManageSplashThings()) 
+	{
 		goto norenderend;
 	}
 
@@ -871,7 +853,7 @@ static float _AvgFrameDiff = 150.f;
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
-	PULSATE=EEsin(FrameTime / 800);
+	PULSATE=EEsin(arxtime.get_frame_time() / 800);
 	EERIEDrawnPolys=0;
 
 	// EditMode Specific code
@@ -942,7 +924,7 @@ static float _AvgFrameDiff = 150.f;
 	else // Manages our first frameS
 	{
 		LogDebug("first frame");
-		ARX_TIME_Get();
+		arxtime.update();
 
 		FirstFrameHandling();
 		goto norenderend;
@@ -1402,7 +1384,7 @@ static float _AvgFrameDiff = 150.f;
 		{
 			CinematicSpeech * acs=&aspeech[valid].cine;
 			INTERACTIVE_OBJ * io=aspeech[valid].io;
-			float rtime=(float)(ARX_TIME_Get()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
+			float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
 			if (rtime<0) rtime=0;
 
@@ -1661,7 +1643,7 @@ static float _AvgFrameDiff = 150.f;
 	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
 	{
 		Vec3f pos,pos2;
-			USE_CINEMATICS_PATH._curtime = ARX_TIME_Get();
+			USE_CINEMATICS_PATH._curtime = arxtime.get_updated();
 
 		USE_CINEMATICS_PATH._curtime+=50;
 		long pouet2=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos);
@@ -1870,7 +1852,7 @@ static float _AvgFrameDiff = 150.f;
 			)
 		{
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-				FRAMETICKS = ARXTimeUL();
+				FRAMETICKS = (unsigned long)(arxtime);
 		}
 	}
 #ifdef BUILD_EDITOR
@@ -1971,7 +1953,7 @@ static float _AvgFrameDiff = 150.f;
 			)
 		{
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			FRAMETICKS = ARXTimeUL();
+			FRAMETICKS = (unsigned long)(arxtime);
 		}
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
@@ -2139,7 +2121,7 @@ static float _AvgFrameDiff = 150.f;
 			ARX_PATH_UpdateAllZoneInOutInside();
 	}
 
-	LastFrameTime=FrameTime;
+	arxtime.update_last_frame_time();
 	LastMouseClick=EERIEMouseButton;
 
 	return true;

@@ -70,7 +70,9 @@ function(check_link_library LIBRARY_NAME LIBRARY_VARIABLE)
 	
 	set("${found_var}" "${lib_current}" CACHE INTERNAL "...")
 	
-	message(STATUS "Checking ${LIBRARY_NAME}: ${lib_current}")
+	if(NOT lib_current STREQUAL "")
+		message(STATUS "Checking ${LIBRARY_NAME}: ${lib_current}")
+	endif()
 	
 	# Check if we can link to the full path found by find_package.
 	try_link_library(${LIBRARY_NAME} "${lib_current}" ERRORLOG1)
@@ -82,13 +84,18 @@ function(check_link_library LIBRARY_NAME LIBRARY_VARIABLE)
 	
 	# Check if the linker is smarter than cmake and try to link with only the library name.
 	string(REGEX REPLACE "(^|;)[^;]*/lib([^;/]*)\\.so" "\\1-l\\2" LIBRARY_FILE "${lib_current}")
-	try_link_library(${LIBRARY_NAME} "${LIBRARY_FILE}" ERRORLOG2)
 	
-	if(CHECK_${LIBRARY_NAME}_LINK)
-		message(STATUS " -> using ${LIBRARY_FILE} instead")
-		set("${LIBRARY_VARIABLE}" "${LIBRARY_FILE}" PARENT_SCOPE)
-		set("${working_var}" "${LIBRARY_FILE}" CACHE INTERNAL "...")
-		return()
+	if(NOT LIBRARY_FILE STREQUAL lib_current)
+		
+		try_link_library(${LIBRARY_NAME} "${LIBRARY_FILE}" ERRORLOG2)
+		
+		if(CHECK_${LIBRARY_NAME}_LINK)
+			message(STATUS " -> using ${LIBRARY_FILE} instead")
+			set("${LIBRARY_VARIABLE}" "${LIBRARY_FILE}" PARENT_SCOPE)
+			set("${working_var}" "${LIBRARY_FILE}" CACHE INTERNAL "...")
+			return()
+		endif()
+		
 	endif()
 	
 	# Force cmake to search again, as the cached library doesn't work.

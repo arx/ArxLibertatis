@@ -851,7 +851,7 @@ float CConfuse::Render()
 	stitepos.y = eCurPos.y;
 	stitepos.z = eCurPos.z;
 
-	stiteangle.b = -degrees(ARX_TIME_Get() * ( 1.0f / 500 ));
+	stiteangle.b = -degrees(arxtime.get_updated() * ( 1.0f / 500 ));
 	stiteangle.a = 0;
 	stiteangle.g = 0;
 	stitecolor.r = 1;
@@ -868,7 +868,7 @@ float CConfuse::Render()
 	{
 		j = ARX_PARTICLES_GetFree();
 
-		if ((j != -1) && (!ARXPausedTimer))
+		if ((j != -1) && (!arxtime.is_paused()))
 		{
 			ParticleCount++;
 			particle[j].exist = 1;
@@ -887,7 +887,7 @@ float CConfuse::Render()
 			particle[j].scale.x		=	1;
 			particle[j].scale.y		=	1;
 			particle[j].scale.z		=	1;
-			particle[j].timcreation	=	lARXTime;
+			particle[j].timcreation	=	(long)arxtime;
 			particle[j].tc			=	tex_p1;
 			particle[j].special		=	PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			particle[j].fparam		=	0.0000001f;
@@ -1338,7 +1338,7 @@ float CIceField::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -1355,7 +1355,7 @@ float CIceField::Render()
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	lARXTime;
+				particle[j].timcreation	=	(long)arxtime;
 				particle[j].tc			=	tex_p2;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
@@ -1370,7 +1370,7 @@ float CIceField::Render()
 
 			int j = ARX_PARTICLES_GetFree();
 
-			if ((j != -1) && (!ARXPausedTimer))
+			if ((j != -1) && (!arxtime.is_paused()))
 			{
 				ParticleCount++;
 				particle[j].exist = 1;
@@ -1387,7 +1387,7 @@ float CIceField::Render()
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;
-				particle[j].timcreation = lARXTime;
+				particle[j].timcreation = (long)arxtime;
 				particle[j].tc			=	tex_p1;
 				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				particle[j].fparam		=	0.0000001f;
