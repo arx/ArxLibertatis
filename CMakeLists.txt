@@ -160,9 +160,6 @@ if(MSVC)
 	add_definitions(/GR-)			# No RTTI
 		
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-		# Disable exceptions
-		string(REGEX REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
-		
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
 		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
 		
