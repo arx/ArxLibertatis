@@ -28,19 +28,19 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 Build options:
 
-* `ARX_BUILD_TOOLS` (default=ON): Build tools
-* `ARX_USE_UNITYBUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
+* `BUILD_TOOLS` (default=ON): Build tools
+* `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug Binaries
-* `ARX_DEBUG_EXTRA` (default=OFF): Expensive debug options
-* `ARX_USE_OPENAL` (default=ON): Build the OpenAL audio backend
-* `ARX_USE_OPENGL` (default=ON): Build the OpenGL renderer backend
-* `ARX_USE_SDL` (default=ON): Build the SDL windowing and input backends
+* `DEBUG_EXTRA` (default=OFF): Expensive debug options
+* `USE_OPENAL` (default=ON): Build the OpenAL audio backend
+* `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
+* `USE_SDL` (default=ON): Build the SDL windowing and input backends
 
 Windows-only options (always OFF for non-windows platforms):
 
-* `ARX_USE_DSOUND` (default=ON): Build the DirectSound audio backend
-* `ARX_USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
-* `ARX_USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
+* `USE_DSOUND` (default=ON): Build the DirectSound audio backend
+* `USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
+* `USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
