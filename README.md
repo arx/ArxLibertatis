@@ -60,28 +60,31 @@ The wiki has detailed instructions on compiling [under linux](http://arx.parpg.n
 
 You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
 
-Arx will consider the following folders (in order) when looking for data files. `DATA_DIR` and `DATA_DIR_PREFIXES` are build-time options that can be passed to cmake.
-1. The **`--data-dir`** / **`-d`** comand-line option
-1. (windows only) the **`HKEY_CURRENT_USER\Software\ArxLibertatis\DataDir`** registry key.
-2. (windows only) the `HKEY_LOCAL_MACHINE\Software\ArxLibertatis\DataDir` registry key.
-3. If `DATA_DIR` is a relative path
+Where arx will look for data files and write config and save files depends on the operating system and environment - the full algorithm is described at http://arx.parpg.net/Data_directories
 
+To print all directories considered by arx run:
 
+`$ ./arx --list-dirs`
 
-
-
-* `DATA_DIR` (default="arx"): Where to look for data files.
-* `USER_DIR` (default="arx"): Where to store config files and save games.
-* `DATA_DIR_PREFIXES`
-* `USER_DIR_PREFIXES`
-
-## Run
-
-Run from the directory containing the .pak files:
+If you don't have a system-wide installation of the Arx Fatalis data files, you can just run arx from the directory containing the .pak files:
 
 `$ ./arx`
 
-The game will try to automatically rename all used files to lowercase on the first run. If you want to run with read-only permissions, you will need to do this manually.
+Arx Libertatis will then put the config and save files in the same directory. If you have a system-wide installation, but still want to run from the current directory, use the `--no-data-dir --user-dir=.` command-line options.
+
+Where arx will look for a system-wide installation depends on the OS:
+
+Under **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depening on your distro. Config and save files are normally located in `~/.local/share/arx`
+
+For **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\arx` on XP and `%USERPROFILE%\Saved games\arx` on Vista and up.
+
+## Run
+
+Run from the directory containing the .pak files (or from anywhere in case of a system-wide installation):
+
+`$ ./arx`
+
+The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase.
 
 You can close it with `Alt + F4` or `killall arx.exe.so`
 
