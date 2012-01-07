@@ -72,7 +72,7 @@ struct CrashInfoBase {
 #if ARX_PLATFORM == ARX_PLATFORM_LINUX
 
 struct CrashInfo : public CrashInfoBase {
-}
+};
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 

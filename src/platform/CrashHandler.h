@@ -21,13 +21,11 @@
 #define ARX_PLATFORM_CRASHHANDLER_H
 
 #include <string>
+#include <sstream>
+
 #include "platform/Platform.h"
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-
-void initCrashHandler();
-
-#elif 0 // TODO
+namespace fs { class path; }
 
 /**
  * Handle crashes and collect as much info as possible in order to ease bug fixing.
@@ -136,8 +134,7 @@ public:
 	 * defect which is not a crash.
 	 */
 	static void handleCrash(int crashType, void* crashExtraInfo = 0, int fpeCode = 0);
+	
 };
-
-#endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 #endif // ARX_PLATFORM_CRASHHANDLER_H

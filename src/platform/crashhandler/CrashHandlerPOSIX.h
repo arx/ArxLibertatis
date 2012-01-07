@@ -22,32 +22,35 @@
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
-class CrashHandlerLinux : public CrashHandlerImpl {
+class CrashHandlerPOSIX : public CrashHandlerImpl {
+	
 public:
-	CrashHandlerLinux();
-	virtual ~CrashHandlerLinux();
-
+	
+	CrashHandlerPOSIX();
+	virtual ~CrashHandlerPOSIX();
+	
 	bool initialize();
-
+	
 	bool registerThreadCrashHandlers();
 	void unregisterThreadCrashHandlers();
-
+	
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
-
+	
 	void handleCrash(int crashType, int fpeCode = 0);
-
-	static CrashHandlerWindows& getInstance();
-
+	
+	static CrashHandlerPOSIX & getInstance();
+	
 private:
+	
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
-private:
 	// Crash handlers to restore.
-	struct PlatformCrashHandlers* m_pPreviousCrashHandlers;
-
-	static CrashHandlerLinux* m_sInstance;
+	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
+	
+	static CrashHandlerPOSIX * m_sInstance;
+	
 };
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERLINUX_H

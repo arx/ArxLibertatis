@@ -27,10 +27,13 @@
 #include "platform/Platform.h"
 #include "Configure.h"
 
+/*
 #if defined(HAVE_FORK) && defined(HAVE_READLINK) && defined(HAVE_KILL) \
 	&& defined(HAVE_SIGNAL) && defined(SIGKILL) \
 	&& (defined(HAVE_EXECLP) || (defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS_FD))) \
 	&& (defined(SIGSEGV) || defined(SIGILL) || defined(SIGFPE))
+
+
 
 #if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS_FD)
 #include <execinfo.h>
@@ -126,49 +129,38 @@ static void crashHandler(int signal_) {
 	
 }
 
-void initCrashHandler() {
-	
-	// Catch 'bad' signals so we can print some debug output.
-	
-#ifdef SIGSEGV
-	signal(SIGSEGV, crashHandler);
-#endif
-	
-#ifdef SIGILL
-	signal(SIGILL, crashHandler);
-#endif
-	
-#ifdef SIGFPE
-	signal(SIGFPE, crashHandler);
-#endif
-	
-#ifdef SIGABRT
-	signal(SIGABRT, crashHandler);
-#endif
-	
-}
-
 // don't have enough POSIX functionality for backtraces
 #elif 0 // TODO ARX_PLATFORM == ARX_PLATFORM_WIN32
+*/
 
-
-
-
-
+#if defined(HAVE_CRASHHANDLER_POSIX)
+#include "platform/crashhandler/CrashHandlerPOSIX.h"
+#elif defined(HAVE_CRASHHANDLER_WINDOWS)
 #include "platform/crashhandler/CrashHandlerWindows.h"
+#endif
 
-static CrashHandlerImpl* gCrashHandlerImpl = 0;
+static CrashHandlerImpl * gCrashHandlerImpl = 0;
 static int gInitCount = 0;
 
 bool CrashHandler::initialize() {
-	if(IsDebuggerPresent()) {
-		LogInfo << "Debugger attached, disabling crash handler.";
-		return false;
-	}
-
+	
 	if(!gCrashHandlerImpl){
+		
+#if defined(HAVE_CRASHHANDLER_POSIX)
+		
+		gCrashHandlerImpl = new CrashHandlerPOSIX();
+		
+#elif defined(HAVE_CRASHHANDLER_WINDOWS)
+		
+		if(IsDebuggerPresent()) {
+			LogInfo << "Debugger attached, disabling crash handler.";
+			return false;
+		}
+		
 		gCrashHandlerImpl = new CrashHandlerWindows();
-
+		
+#endif
+		
 		bool initialized = gCrashHandlerImpl->initialize();
 		if(!initialized) {
 			delete gCrashHandlerImpl;
@@ -176,14 +168,13 @@ bool CrashHandler::initialize() {
 			return false;
 		}
 	}
-
+	
 	gInitCount++;
 	return true;
 }
 
 void CrashHandler::shutdown() {
 	gInitCount--;
-
 	if(gInitCount == 0) {
 		delete gCrashHandlerImpl;
 		gCrashHandlerImpl = 0;
@@ -235,13 +226,3 @@ void CrashHandler::unregisterCrashCallback(CrashCallback crashCallback) {
 
 	gCrashHandlerImpl->unregisterCrashCallback(crashCallback);
 }
-
-#else
-
-void initCrashHandler() {
-	
-	// TODO implement for this platform
-	
-}
-
-#endif

@@ -512,7 +512,7 @@ set(PLATFORM_SOURCES
 	src/platform/Time.cpp
 	src/platform/crashhandler/CrashHandlerImpl.cpp
 )
-
+set(PLATFORM_CRASHHANDLER_POSIX_SOURCES src/platform/crashhandler/CrashHandlerPOSIX.cpp)
 set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
 
 set(SCENE_SOURCES
@@ -641,8 +641,13 @@ else()
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
-#TODO - select the right crash handler for the platform
-list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
+if(HAVE_SIGNAL AND HAVE_EXECLP)
+	list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
+	set(HAVE_CRASHHANDLER_POSIX 1)
+elseif(HAVE_WINAPI)
+	list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
+	set(HAVE_CRASHHANDLER_WINDOWS 1)
+endif()
 
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)

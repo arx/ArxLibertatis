@@ -17,11 +17,11 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CrashHandlerLinux.h"
+#include "CrashHandlerPOSIX.h"
 
 #include <float.h>
 #include <signal.h>
-#include <string.h>
+#include <cstring>
 #include <unistd.h>
 #include <sys/wait.h>
 
@@ -36,27 +36,28 @@ struct PlatformCrashHandlers {
 
 void SignalHandler(int signalCode);
 
-CrashHandlerLinux* CrashHandlerLinux::m_sInstance = 0;
+CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
-CrashHandlerLinux::CrashHandlerLinux() {
+CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
 }
 
-CrashHandlerLinux::~CrashHandlerLinux() {
+CrashHandlerPOSIX::~CrashHandlerPOSIX() {
 	m_sInstance = 0;
 }
 
-CrashHandlerLinux& CrashHandlerLinux::getInstance() {
+CrashHandlerPOSIX& CrashHandlerPOSIX::getInstance() {
 	arx_assert(m_sInstance != 0);
 	return *m_sInstance;
 }
 
-bool CrashHandlerLinux::registerCrashHandlers() {
+bool CrashHandlerPOSIX::registerCrashHandlers() {
+	
 	arx_assert(m_pPreviousCrashHandlers == 0);
 	m_pPreviousCrashHandlers = new PlatformCrashHandlers;
-
+	
 	// Catch 'bad' signals so we can print some debug output.
-
+	
 #ifdef SIGSEGV
 	m_pPreviousCrashHandlers->m_SIGSEGVHandler = signal(SIGSEGV, SignalHandler);
 #endif
@@ -72,15 +73,16 @@ bool CrashHandlerLinux::registerCrashHandlers() {
 #ifdef SIGABRT
 	m_pPreviousCrashHandlers->m_SIGABRTHandler = signal(SIGABRT, SignalHandler);
 #endif
-
+	
 	// We must also register the main thread crash handlers.
 	return registerThreadCrashHandlers();
 }
 
-void CrashHandlerLinux::unregisterCrashHandlers() {
+void CrashHandlerPOSIX::unregisterCrashHandlers() {
+	
 	unregisterThreadCrashHandlers();
-
-	#ifdef SIGSEGV
+	
+#ifdef SIGSEGV
 	signal(SIGSEGV, m_pPreviousCrashHandlers->m_SIGSEGVHandler);
 #endif
 	
@@ -95,18 +97,19 @@ void CrashHandlerLinux::unregisterCrashHandlers() {
 #ifdef SIGABRT
 	signal(SIGABRT, m_pPreviousCrashHandlers->m_SIGABRTHandler);
 #endif
-
+	
 	delete m_pPreviousCrashHandlers;
 	m_pPreviousCrashHandlers = 0;
 }
 
 
-bool CrashHandlerLinux::registerThreadCrashHandlers() {
+bool CrashHandlerPOSIX::registerThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 	return true;
 }
 
-void CrashHandlerLinux::unregisterThreadCrashHandlers() {
+void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
+	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
 enum CrashType {
@@ -117,16 +120,17 @@ enum CrashType {
 	SIGNAL_UNKNOWN
 };
 
-void CrashHandlerLinux::handleCrash(int crashType, int FPECode) {
+void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
+	
 	Autolock autoLock(&m_Lock);
-
+	
 	// Run the callbacks
 	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin(); it != m_crashCallbacks.end(); ++it) {
 		(*it)();
 	}
-
+	
 	const char* crashSummary;
-
+	
 	switch(crashType) {
 		case SIGNAL_SIGABRT:     crashSummary = "Abnormal termination"; break;
 		case SIGNAL_SIGFPE:      crashSummary = "Floating-point error"; break;
@@ -158,23 +162,23 @@ void CrashHandlerLinux::handleCrash(int crashType, int FPECode) {
 		}
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
-
+	
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
-
+	
 	strcpy(m_pCrashInfo->crashReportFolder, "Crashes");
 	
 	char arguments[256];
 	strcpy(arguments, "-crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
 	bool bCreateProcess = start_the_process_here("CrashReporter/arxcrashreporterforlinux.exe", arguments);
-
+	
 	// If CrashReporter was started, wait for its signal before exiting.
 	if(bCreateProcess) {
 		m_pCrashInfo->exitLock.wait();
 	}
 	
-	now_lets_brutally_terminate_this_doomed_process();
+	exit(1);
 }
 
 
@@ -187,10 +191,9 @@ void SignalHandler(int signalCode) {
 		case SIGFPE:  crashType = SIGNAL_SIGFPE; break;
 		default:      crashType = SIGNAL_UNKNOWN; break;
 	}
-
-	CrashHandlerLinux::getInstance().handleCrash(crashType);
+	CrashHandlerPOSIX::getInstance().handleCrash(crashType);
 }
 
 void SIGFPEHandler(int code, int FPECode) {
-	CrashHandlerLinux::getInstance().handleCrash(SIGNAL_SIGFPE, FPECode);
+	CrashHandlerPOSIX::getInstance().handleCrash(SIGNAL_SIGFPE, FPECode);
 }

@@ -22,6 +22,8 @@
 
 #include "Configure.h"
 
+#include <string>
+
 #if defined(HAVE_PTHREADS)
 #include <pthread.h>
 #elif defined(HAVE_WINAPI)
@@ -75,7 +77,7 @@ public:
 	 * \note This should be called BEFORE starting the thread.
 	 * \param threadName The thread name.
 	 */
-	void setThreadName(const std::string& threadName);
+	void setThreadName(const std::string & threadName);
 
 	void setPriority(Priority priority);
 	

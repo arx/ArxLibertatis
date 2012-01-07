@@ -629,13 +629,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(nCmdShow);
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
-	
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	initCrashHandler();
-#else
 	CrashHandler::initialize();
-#endif
-	
 	
 	Logger::init();
 	
