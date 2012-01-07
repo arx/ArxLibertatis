@@ -62,7 +62,7 @@ You will need to get either the full game or demo data of Arx Fatalis. See http:
 
 Where arx will look for data files and write config and save files depends on the operating system and environment - the full algorithm is described at http://arx.parpg.net/Data_directories
 
-To print all directories considered by arx run:
+To print all directories considered by arx, run
 
 `$ ./arx --list-dirs`
 
@@ -74,7 +74,7 @@ Arx Libertatis will then put the config and save files in the same directory. If
 
 Where arx will look for a system-wide installation depends on the OS:
 
-Under **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depening on your distro. Config and save files are normally located in `~/.local/share/arx`
+Under **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depending on your distro. Config and save files are normally located in `~/.local/share/arx`
 
 For **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\arx` on XP and `%USERPROFILE%\Saved games\arx` on Vista and up.
 
