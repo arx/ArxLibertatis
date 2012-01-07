@@ -67,7 +67,7 @@ static u64 frequency_hz;
 void init() {
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
-	frequency_hz = frequency.QuadPart
+	frequency_hz = frequency.QuadPart;
 }
 
 u32 getMs() {
