@@ -23,6 +23,8 @@
 
 #include "platform/Platform.h"
 
+#ifdef HAVE_ISATTY
+
 namespace logger {
 
 ColorConsole::~ColorConsole() {
@@ -48,3 +50,5 @@ void ColorConsole::flush() {
 }
 
 } // namespace logger
+
+#endif // #ifdef HAVE_ISATTY

@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_FILESYSTEM_H
-#define ARX_IO_FILESYSTEM_H
+#ifndef ARX_IO_FS_FILESYSTEM_H
+#define ARX_IO_FS_FILESYSTEM_H
 
 #include <stddef.h>
 #include <ctime>
@@ -125,7 +125,7 @@ class directory_iterator {
 	
 public:
 	
-	explicit directory_iterator(const fs::path & p);
+	explicit directory_iterator(const path & p);
 	
 	~directory_iterator();
 	
@@ -143,4 +143,4 @@ public:
 
 }
 
-#endif // ARX_IO_FILESYSTEM_H
+#endif // ARX_IO_FS_FILESYSTEM_H

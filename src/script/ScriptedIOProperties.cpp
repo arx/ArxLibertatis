@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
@@ -509,8 +509,8 @@ public:
 		
 		if(type == "skin") {
 			
-			fs::path oldskin = fs::path::load(context.getWord());
-			fs::path newskin = fs::path::load(context.getWord());
+			res::path oldskin = res::path::load(context.getWord());
+			res::path newskin = res::path::load(context.getWord());
 			
 			DebugScript(" skin " << oldskin << ' '<< newskin);
 			
@@ -519,19 +519,19 @@ public:
 			
 		} else if(type == "icon") {
 			
-			fs::path icon = fs::path::load(context.getWord());
+			res::path icon = res::path::load(context.getWord());
 			
 			DebugScript(" icon " << icon);
 			
-			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, icon, fs::path());
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, icon, res::path());
 			ARX_INTERACTIVE_TWEAK_Icon(io, icon);
 			
 		} else if(type == "remove") {
 			
 			DebugScript(" remove");
 			
-			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_REMOVE, fs::path(), fs::path());
-			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, fs::path());
+			ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_REMOVE, res::path(), res::path());
+			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, res::path());
 			
 		} else {
 			
@@ -555,7 +555,7 @@ public:
 				return Failed;
 			}
 			
-			fs::path mesh = fs::path::load(context.getWord()).append(".teo");
+			res::path mesh = res::path::load(context.getWord()).append(".teo");
 			
 			DebugScript(' ' << type << ' ' << mesh);
 			
@@ -565,7 +565,7 @@ public:
 				mesh = io->usemesh.parent() / "tweaks" / mesh;
 			}
 			
-			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, mesh, fs::path());
+			ARX_INTERACTIVE_MEMO_TWEAK(io, tw, mesh, res::path());
 			EERIE_MESH_TWEAK_Do(io, tw, mesh);
 		}
 		
@@ -582,11 +582,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		fs::path mesh = fs::path::load(context.getWord());
+		res::path mesh = res::path::load(context.getWord());
 		
 		DebugScript(' ' << mesh);
 		
-		ARX_INTERACTIVE_MEMO_TWEAK(context.getIO(), TWEAK_TYPE_MESH, mesh, fs::path());
+		ARX_INTERACTIVE_MEMO_TWEAK(context.getIO(), TWEAK_TYPE_MESH, mesh, res::path());
 		ARX_INTERACTIVE_USEMESH(context.getIO(), mesh);
 		
 		return Success;

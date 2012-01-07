@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "math/MathFwd.h"
 
-namespace fs { class path; }
+namespace res { class path; }
 
 namespace audio {
 
@@ -69,23 +69,23 @@ aalError init(const std::string & backend, bool enableEAX);
  */
 aalError clean();
 aalError setStreamLimit(size_t size);
-aalError setSamplePath(const fs::path & path);
-aalError setAmbiancePath(const fs::path & path);
-aalError setEnvironmentPath(const fs::path & path);
+aalError setSamplePath(const res::path & path);
+aalError setAmbiancePath(const res::path & path);
+aalError setEnvironmentPath(const res::path & path);
 aalError setReverbEnabled(bool enable);
 aalError update();
 
 // Resource
 
 MixerId createMixer();
-SampleId createSample(const fs::path & name);
-AmbianceId createAmbiance(const fs::path & name);
-EnvId createEnvironment(const fs::path & name);
+SampleId createSample(const res::path & name);
+AmbianceId createAmbiance(const res::path & name);
+EnvId createEnvironment(const res::path & name);
 aalError deleteSample(SampleId sample_id);
 aalError deleteAmbiance(AmbianceId ambiance_id);
 
-AmbianceId getAmbiance(const fs::path & ambiance_name);
-EnvId getEnvironment(const fs::path & environment_name);
+AmbianceId getAmbiance(const res::path & ambiance_name);
+EnvId getEnvironment(const res::path & environment_name);
 
 //! Retrieving by ID (If resource_id == INVALID_ID, return first found)
 AmbianceId getNextAmbiance(AmbianceId ambiance_id = INVALID_ID);
@@ -119,7 +119,7 @@ aalError setSampleVolume(SourceId sample_id, float volume);
 aalError setSamplePitch(SourceId sample_id, float pitch);
 aalError setSamplePosition(SourceId sample_id, const Vec3f & position);
 
-aalError getSampleName(SampleId sample_id, fs::path & name);
+aalError getSampleName(SampleId sample_id, res::path & name);
 aalError getSampleLength(SampleId sample_id, size_t & length, TimeUnit unit = UNIT_MS);
 aalError getSamplePan(SourceId sample_id, float * pan);
 aalError getSampleCone(SourceId sample_id, SourceCone * cone);
@@ -136,7 +136,7 @@ aalError muteAmbianceTrack(AmbianceId ambiance_id, const std::string & track, bo
 aalError setAmbianceUserData(AmbianceId ambiance_id, void * data);
 aalError setAmbianceVolume(AmbianceId ambiance_id, float volume);
 
-aalError getAmbianceName(AmbianceId ambiance_id, fs::path & name);
+aalError getAmbianceName(AmbianceId ambiance_id, res::path & name);
 aalError getAmbianceUserData(AmbianceId ambiance_id, void ** data);
 aalError getAmbianceVolume(AmbianceId ambiance_id, float & volume);
 bool isAmbianceLooped(AmbianceId ambiance_id);

@@ -44,6 +44,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GUI_MENUPUBLIC_H
 #define ARX_GUI_MENUPUBLIC_H
 
+#include <stddef.h>
+#include <string>
+
 // Video options
 
 void ARXMenu_Options_Video_SetFogDistance(int fogDistance);
@@ -82,9 +85,8 @@ void ARXMenu_NewQuest();
 
 // Save/Load quest
 
-void ARXMenu_LoadQuest(long num);
-void ARXMenu_DeleteQuest(long num);
-void ARXMenu_SaveQuest(long num);
+void ARXMenu_LoadQuest(size_t num);
+void ARXMenu_SaveQuest(const std::string & name, size_t num = size_t(-1));
 
 // Credits
 

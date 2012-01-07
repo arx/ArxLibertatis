@@ -62,8 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/IniReader.h"
 #include "io/log/Logger.h"
 
@@ -123,16 +123,16 @@ static const float ARX_SOUND_DEFAULT_FALLSTART(200.0F);
 static const float ARX_SOUND_DEFAULT_FALLEND(2200.0F);
 static const float ARX_SOUND_REFUSE_DISTANCE(2500.0F);
 
-static const fs::path ARX_SOUND_PATH_INI = "localisation";
+static const res::path ARX_SOUND_PATH_INI = "localisation";
 static const char ARX_SOUND_PATH_SAMPLE[] = "sfx";
 static const char ARX_SOUND_PATH_AMBIANCE[] = "sfx/ambiance";
 static const char ARX_SOUND_PATH_ENVIRONMENT[] = "sfx/environment";
-static const fs::path ARX_SOUND_PRESENCE_NAME = "presence";
+static const res::path ARX_SOUND_PRESENCE_NAME = "presence";
 static const string ARX_SOUND_FILE_EXTENSION_WAV = ".wav";
 static const string ARX_SOUND_FILE_EXTENSION_INI = ".ini";
 
 static const unsigned long ARX_SOUND_COLLISION_MAP_COUNT = 3;
-static const fs::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
+static const res::path ARX_SOUND_COLLISION_MAP_NAMES[] = {
 	"snd_armor",
 	"snd_step",
 	"snd_weapon"
@@ -181,7 +181,7 @@ namespace Section {
 static const string presence = "presence";
 }
 
-typedef map<fs::path, float> PresenceFactors;
+typedef map<res::path, float> PresenceFactors;
 static PresenceFactors presence;
 
 }
@@ -337,7 +337,7 @@ SampleId SND_SPELL_TELEPORTED(INVALID_ID);
 SampleId SND_SPELL_VISION_START(INVALID_ID);
 SampleId SND_SPELL_VISION_LOOP(INVALID_ID);
 
-static void ARX_SOUND_EnvironmentSet(const fs::path & name);
+static void ARX_SOUND_EnvironmentSet(const res::path & name);
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
@@ -345,7 +345,7 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
 static void ARX_SOUND_CreatePresenceMap();
-static float GetSamplePresenceFactor(const fs::path & name);
+static float GetSamplePresenceFactor(const res::path & name);
 static void ARX_SOUND_LaunchUpdateThread();
 static void ARX_SOUND_KillUpdateThread();
 
@@ -484,7 +484,7 @@ void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Ve
 	}
 }
 
-void ARX_SOUND_EnvironmentSet(const fs::path & name) {
+void ARX_SOUND_EnvironmentSet(const res::path & name) {
 	
 	if(bIsActive) {
 		EnvId e_id = audio::getEnvironment(name);
@@ -514,7 +514,7 @@ long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch
 		}
 	}
 	
-	fs::path sample_name;
+	res::path sample_name;
 	audio::getSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -600,14 +600,14 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
 	}
 }
 
-long ARX_SOUND_PlaySpeech(const fs::path & name, const INTERACTIVE_OBJ * io)
+long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
 {
 	if (!bIsActive) return INVALID_ID;
 
 	audio::Channel channel;
 	SampleId sample_id;
 
-	fs::path file_name = fs::path("speech") / config.language / name;
+	res::path file_name = res::path("speech") / config.language / name;
 	file_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 
 	sample_id = audio::createSample(file_name);
@@ -672,7 +672,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 
-	fs::path sample_name;
+	res::path sample_name;
 	audio::getSampleName(sample_id, sample_name);
 	presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -738,7 +738,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	channel.mixer = ARX_SOUND_MixerGameSample;
 	channel.flags = FLAG_VOLUME | FLAG_PITCH | FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
 	
-	fs::path sample_name;
+	res::path sample_name;
 	audio::getSampleName(sample_id, sample_name);
 	float presence = GetSamplePresenceFactor(sample_name);
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -768,7 +768,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayScript(const fs::path & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
+long ARX_SOUND_PlayScript(const res::path & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
 {
 	if (!bIsActive) {
 		return INVALID_ID;
@@ -824,7 +824,7 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 
 	if(position) {
 		channel.flags |= FLAG_POSITION | FLAG_REVERBERATION | FLAG_FALLOFF;
-		fs::path sample_name;
+		res::path sample_name;
 		audio::getSampleName(sample_id, sample_name);
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
@@ -842,7 +842,7 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const fs::path & name) {
+long ARX_SOUND_PlayCinematic(const res::path & name) {
 	
 	LogDebug("playing cinematic sound");
 	
@@ -949,13 +949,13 @@ void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const INTERACTIVE_OBJ
 	audio::setSamplePosition(sample_id, position);
 }
 
-SampleId ARX_SOUND_Load(const fs::path & name) {
+SampleId ARX_SOUND_Load(const res::path & name) {
 	
 	if(!bIsActive) {
 		return INVALID_ID;
 	}
 	
-	fs::path sample_name = name;
+	res::path sample_name = name;
 	
 	return audio::createSample(sample_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV));
 }
@@ -972,11 +972,11 @@ void ARX_SOUND_Stop(SourceId & sample_id) {
 	}
 }
 
-bool ARX_SOUND_PlayScriptAmbiance(const fs::path & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayScriptAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
 	if (!bIsActive) return INVALID_ID;
 
-	fs::path temp = fs::path(name).set_ext("amb");
+	res::path temp = res::path(name).set_ext("amb");
 
 	AmbianceId ambiance_id = audio::getAmbiance(temp);
 
@@ -1013,7 +1013,7 @@ bool ARX_SOUND_PlayScriptAmbiance(const fs::path & name, SoundLoopMode loop, flo
 	return true;
 }
 
-bool ARX_SOUND_PlayZoneAmbiance(const fs::path & name, SoundLoopMode loop, float volume) {
+bool ARX_SOUND_PlayZoneAmbiance(const res::path & name, SoundLoopMode loop, float volume) {
 	
 	if (!bIsActive) return true;
 
@@ -1023,7 +1023,7 @@ bool ARX_SOUND_PlayZoneAmbiance(const fs::path & name, SoundLoopMode loop, float
 		return true;
 	}
 
-	fs::path temp = fs::path(name).set_ext("amb");
+	res::path temp = res::path(name).set_ext("amb");
 
 	AmbianceId ambiance_id = audio::getAmbiance(temp);
 
@@ -1057,7 +1057,7 @@ AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const string & ambiance_name, const 
 		return INVALID_ID;
 	}
 	
-	AmbianceId ambiance_id = audio::getAmbiance(fs::path(ambiance_name).set_ext("amb"));
+	AmbianceId ambiance_id = audio::getAmbiance(res::path(ambiance_name).set_ext("amb"));
 	if(ambiance_id == INVALID_ID) {
 		return INVALID_ID;
 	}
@@ -1083,7 +1083,7 @@ void ARX_SOUND_KillAmbiances() {
 	ambiance_zone = INVALID_ID;
 }
 
-AmbianceId ARX_SOUND_PlayMenuAmbiance(const fs::path & ambiance_name) {
+AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	
 	if(!bIsActive) {
 		return INVALID_ID;
@@ -1157,7 +1157,7 @@ void ARX_SOUND_PushAnimSamples()
 
 					if (anim->frames[k].sample != -1)
 					{
-						fs::path dest;
+						res::path dest;
 						audio::getSampleName(anim->frames[k].sample, dest);
 						if(!dest.empty()) {
 							elems = (char **)realloc(elems, sizeof(char *) * (nbelems + 1));
@@ -1238,7 +1238,7 @@ char * ARX_SOUND_AmbianceSavePlayList(size_t & size) {
 			
 			memset(playing->name, 0, sizeof(playing->name));
 			
-			fs::path name;
+			res::path name;
 			audio::getAmbianceName(ambiance_id, name);
 			arx_assert(name.string().length() + 1 < ARRAY_SIZE(playing->name));
 			strcpy(playing->name, name.string().c_str());
@@ -1265,7 +1265,7 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 		
 		const PlayingAmbiance * playing = &play_list[i];
 		
-		fs::path name = fs::path::load(safestring(playing->name));
+		res::path name = res::path::load(safestring(playing->name));
 		
 		// TODO save/load enum
 		switch (playing->type) {
@@ -1666,7 +1666,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 	
 	for(size_t i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++) {
 		
-		fs::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
+		res::path file = ARX_SOUND_PATH_INI / ARX_SOUND_COLLISION_MAP_NAMES[i];
 		file.set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 		
 		size_t fileSize;
@@ -1816,7 +1816,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	presence.clear();
 	
-	fs::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
+	res::path file = (ARX_SOUND_PATH_INI / ARX_SOUND_PRESENCE_NAME).set_ext(ARX_SOUND_FILE_EXTENSION_INI);
 	
 	size_t fileSize;
 	char * data = resources->readAlloc(file, fileSize);
@@ -1841,14 +1841,14 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	for(IniSection::iterator i = section->begin(); i != section->end(); ++i) {
 		float factor = i->getValue(100.f) / 100.f;
-		presence[fs::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
+		presence[res::path::load(i->getName()).set_ext(ARX_SOUND_FILE_EXTENSION_WAV)] = factor;
 	}
 	
 }
 
 static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
 
-static float GetSamplePresenceFactor(const fs::path & name) {
+static float GetSamplePresenceFactor(const res::path & name) {
 	
 	arx_assert(name.string().find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
 	

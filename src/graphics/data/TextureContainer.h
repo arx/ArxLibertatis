@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <map>
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "math/Vector2.h"
 #include "platform/Flags.h"
 
@@ -99,7 +99,7 @@ public:
 	 *	@param  
 	 *	@todo Make this constructor private.
 	 */ 
-	TextureContainer(const fs::path & strName, TCFlags flags);
+	TextureContainer(const res::path & strName, TCFlags flags);
 	
 	/** Destructor
 	 */
@@ -109,13 +109,13 @@ public:
 	 *
 	 *
 	 */
-	static TextureContainer * Load(const fs::path & strName, TCFlags flags = 0);
+	static TextureContainer * Load(const res::path & strName, TCFlags flags = 0);
 	
 	/**	Load an image into a TextureContainer
 	 *
 	 *
 	 */
-	static TextureContainer * LoadUI(const fs::path & strName, TCFlags flags = 0);
+	static TextureContainer * LoadUI(const res::path & strName, TCFlags flags = 0);
 	
 	/** Find a TextureContainer by its name.
 	 *	Searches the internal list of textures for a texture specified by
@@ -123,7 +123,7 @@ public:
 	 *	@param strTextureName Name of the texture to find.
 	 *  @return A pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
 	 **/
-	static TextureContainer * Find(const fs::path & strTextureName);
+	static TextureContainer * Find(const res::path & strTextureName);
 	
 	static void DeleteAll(TCFlags flag = TCFlags::all());
 	
@@ -133,9 +133,9 @@ public:
 	bool CreateHalo() { return false; }
 	TextureContainer * TextureHalo;
 	
-	bool LoadFile(const fs::path & strPathname);
+	bool LoadFile(const res::path & strPathname);
 	
-	const fs::path m_texName; // Name of texture
+	const res::path m_texName; // Name of texture
 	u32 m_dwWidth;
 	u32 m_dwHeight;
 	TCFlags m_dwFlags;
@@ -194,7 +194,7 @@ private:
 	
 	void LookForRefinementMap(TCFlags flags);
 	
-	typedef std::map<fs::path, fs::path> RefinementMap;
+	typedef std::map<res::path, res::path> RefinementMap;
 	static RefinementMap s_GlobalRefine;
 	static RefinementMap s_Refine;
 	

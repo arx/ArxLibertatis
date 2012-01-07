@@ -20,7 +20,7 @@
 #ifndef ARX_IO_LOG_FILELOGGER_H
 #define ARX_IO_LOG_FILELOGGER_H
 
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 #include "io/log/LogBackend.h"
 
 namespace logger {

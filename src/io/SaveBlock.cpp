@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <zlib.h>
 
 #include "io/log/Logger.h"
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/Blast.h"
 
 #include "platform/String.h"

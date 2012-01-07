@@ -57,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Renderer.h"
 
-#include "io/FilePath.h"
-#include "io/Filesystem.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 
 #include "platform/Platform.h"
@@ -171,10 +171,10 @@ static bool migrateFilenames() {
 	
 	bool migrated = true;
 	
-	for(fs::directory_iterator it(""); !it.end(); ++it) {
+	for(fs::directory_iterator it(config.paths.user); !it.end(); ++it) {
 		string file = it.name();
 		if(fileset.find(toLowercase(file)) != fileset.end()) {
-			migrated &= migrateFilenames(file, it.is_directory());
+			migrated &= migrateFilenames(config.paths.user / file, it.is_directory());
 		}
 	}
 	
@@ -188,17 +188,31 @@ static bool migrateFilenames() {
 bool Application::InitConfig() {
 	
 	// Initialize config first, before anything else.
-	fs::path configFile = "cfg.ini";
+	fs::path configFile = config.paths.user / "cfg.ini";
 	
 	bool migrated = false;
 	if(!fs::exists(configFile) && !(migrated = migrateFilenames())) {
 		return false;
 	}
 	
-	fs::path defaultConfigFile = "cfg_default.ini";
-	if(!config.init(configFile, defaultConfigFile)) {
-		LogWarning << "Could not read config files " << configFile << " and " << defaultConfigFile << ", using defaults.";
+	if(!config.init(configFile)) {
+		fs::path defaultUserConfigFile = config.paths.user / "cfg_default.ini";
+		if(!config.init(defaultUserConfigFile)) {
+			if(config.paths.data.empty()) {
+				LogWarning << "Could not read config files " << configFile << " and "
+				           << defaultUserConfigFile << ", using defaults.";
+			} else {
+				fs::path defaultConfigFile = config.paths.data / "cfg_default.ini";
+				if(config.paths.data.empty() || !config.init(defaultConfigFile)) {
+					LogWarning << "Could not read config files " << configFile << ", "
+					           << defaultUserConfigFile << " and " << defaultConfigFile
+					           << ", using defaults.";
+				}
+			}
+		}
 	}
+	
+	config.set_output_file(configFile);
 	
 	Logger::configure(config.misc.debug);
 	
@@ -211,7 +225,7 @@ bool Application::InitConfig() {
 		config.misc.migration = Config::CaseSensitiveFilenames;
 	}
 	
-	if(!fs::create_directories("save")) {
+	if(!fs::create_directories(config.paths.user / "save")) {
 		LogWarning << "failed to create save directory";
 	}
 	

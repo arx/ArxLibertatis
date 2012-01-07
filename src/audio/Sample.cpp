@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace audio {
 
-Sample::Sample(const fs::path & _name) : ResourceHandle(), name(_name), length(0) {
+Sample::Sample(const res::path & _name) : ResourceHandle(), name(_name), length(0) {
 }
 
 Sample::~Sample() {

@@ -51,7 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/Config.h"
+#include "core/Core.h"
 #include "core/GameTime.h"
+#include "core/SaveGame.h"
 
 #include "game/Player.h"
 
@@ -64,14 +66,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "io/Filesystem.h"
-#include "io/FilePath.h"
+#include "io/fs/Filesystem.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
 #include "math/MathFwd.h"
 #include "math/Vector2.h"
 
+#include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
+#include "scene/LoadLevel.h"
 
 #include "window/RenderWindow.h"
 
@@ -326,41 +330,43 @@ void ARXMenu_NewQuest()
 //-----------------------------------------------------------------------------
 //LOAD QUEST
 //-----------------------------------------------------------------------------
-void ARXMenu_LoadQuest(long num) {
+extern float PROGRESS_BAR_TOTAL;
+extern float OLD_PROGRESS_BAR_COUNT;
+extern float PROGRESS_BAR_COUNT;
+extern long NEED_SPECIAL_RENDEREND;
+void ARXMenu_LoadQuest(size_t num) {
 	
 	GRenderer->EndScene();
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	LoadSaveGame(num); 
-	GRenderer->BeginScene();
-}
-
-void ARXMenu_DeleteQuest(long num) {
 	
-	if(num != 0) {
-		
-		std::ostringstream oss;
-		oss << "save/save" << std::setfill('0') << std::setw(4) << save_l[num].num;
-		
-		fs::remove_all(oss.str());
-		
-		CreateSaveGameList();
-		
-	}
+	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	LoadLevelScreen();
+	PROGRESS_BAR_TOTAL = 238;
+	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
+	PROGRESS_BAR_COUNT += 1.f;
+	LoadLevelScreen(savegames[num].level);
+	DanaeClearLevel();
+	ARX_CHANGELEVEL_Load(savegames[num].savefile);
+	REFUSE_GAME_RETURN = 0;
+	NEED_SPECIAL_RENDEREND = 1;
+	ARX_MENU_Clicked_QUIT();
+	
+	GRenderer->BeginScene();
 }
 
 //SAVE QUEST
 //-----------------------------------------------------------------------------
-void ARXMenu_SaveQuest(long num) {
+void ARXMenu_SaveQuest(const std::string & name, size_t num) {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	int iOldGamma = config.video.gamma;
 	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
-	UpdateSaveGame(num);
+	
+	savegames.save(name, num, savegame_thumbnail);
+	
 	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
-	
-	CreateSaveGameList();
 }
 
 //CREDITS

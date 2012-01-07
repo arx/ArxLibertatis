@@ -17,9 +17,9 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 
-#include "io/FilePath.h"
+#include "io/fs/FilePath.h"
 
 using std::string;
 

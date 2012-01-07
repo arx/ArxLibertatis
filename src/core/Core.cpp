@@ -53,9 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include <boost/algorithm/string/predicate.hpp>
+#include "Configure.h"
 
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#ifdef HAVE_WINAPI
 #include <windows.h>
 #endif
 
@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
+#include "core/Startup.h"
 #include "core/Version.h"
 
 #include "game/Missile.h"
@@ -99,6 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/Fog.h"
+#include "graphics/image/Image.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/texture/TextureStage.h"
@@ -110,8 +112,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
 #include "io/log/FileLogger.h"
@@ -150,6 +152,8 @@ using std::min;
 using std::max;
 using std::string;
 using std::ostringstream;
+
+Image savegame_thumbnail;
 
 #define MAX_EXPLO 24
 
@@ -295,7 +299,7 @@ long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 string WILL_LAUNCH_CINE;
 char _CURRENTLOAD_[256];
-fs::path LastLoadedScene;
+res::path LastLoadedScene;
 string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
@@ -496,8 +500,8 @@ void InitializeDanae()
 
 	LastLoadedScene.clear();
 
-	fs::path levelPath;
-	fs::path levelFullPath;
+	res::path levelPath;
+	res::path levelFullPath;
 
 	if(Project.demo != NOLEVEL) {
 		char levelId[256];
@@ -618,19 +622,18 @@ void InitializeDanae()
 	
 }
 
-
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 extern int main(int argc, char ** argv) {
 #else
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
 	ARX_UNUSED(hInstance);
 	ARX_UNUSED(hPrevInstance);
-	ARX_UNUSED(lpCmdLine);
 	ARX_UNUSED(nCmdShow);
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
+	// Initialize the crash handler befory anything else for obvious reasons.
 	initCrashHandler();
 #else
 	//CrashHandler crashHandler;
@@ -638,17 +641,24 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #endif
 	
 	
+	// Also intialize the logging system early as we might need it.
 	Logger::init();
 	
-	Logger::add(new logger::File("arx.log", std::ios_base::out | std::ios_base::trunc));
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	if(argc > 1 && boost::starts_with(argv[1], "--debug=")) {
-		Logger::configure(argv[1] + 8);
-	}
+	parseCommandLine(argc, argv);
+#else
+	parseCommandLine(lpCmdLine);
 #endif
 	
 	Time::init();
+	
+	// Now that data directories are initialized, create a log file.
+	fs::path logFile = config.paths.user / "arx.log";
+	Logger::add(new logger::File(logFile, std::ios_base::out | std::ios_base::trunc));
+	
+	LogInfo << "Starting " << version;
+	
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
@@ -661,7 +671,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	TRUEFIGHT = 0;
 #endif
 	
-	LogInfo << "Starting " << version;
 	
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
@@ -2021,7 +2030,7 @@ void FirstFrameProc() {
 		}
 	}
 
-	InitSnapShot("snapshot");
+	InitSnapShot(config.paths.user / "snapshot");
 }
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;
@@ -3502,7 +3511,7 @@ void LaunchWaitingCine() {
 	
 	DANAE_KillCinematic();
 	
-	fs::path cinematic = fs::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
+	res::path cinematic = res::path("graph/interface/illustrations") / WILL_LAUNCH_CINE;
 	
 	if(resources->getFile(cinematic)) {
 		
@@ -4031,8 +4040,7 @@ void ClearGame() {
 
 	//texts and textures
 	ClearSysTextures();
-	FreeSaveGameList();
-
+	
 	if (pParticleManager) {
 		delete pParticleManager;
 		pParticleManager = NULL;

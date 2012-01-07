@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "math/MathFwd.h"
 #include "math/Vector3.h"
 #include "platform/Flags.h"
@@ -102,7 +102,7 @@ struct ARX_PATH {
 	//! name of IO to be notified of other IOs interacting with the path
 	std::string controled; // TODO why store the name and not a pointer?
 	
-	fs::path ambiance;
+	res::path ambiance;
 	
 	Color3f rgb;
 	float farclip;

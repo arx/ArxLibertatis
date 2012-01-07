@@ -56,24 +56,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/font/FontCache.h"
 
-#include "io/Filesystem.h"
+#include "io/resource/PakReader.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
-#include "io/FilePath.h"
 
 using std::string;
 
-//-----------------------------------------------------------------------------
-TextManager * pTextManage;
-TextManager * pTextManageFlyingOver;
+TextManager * pTextManage = NULL;
+TextManager * pTextManageFlyingOver = NULL;
 
-//-----------------------------------------------------------------------------
-Font* hFontInBook	= NULL;
-Font* hFontMainMenu = NULL;
-Font* hFontMenu		= NULL;
-Font* hFontControls = NULL;
-Font* hFontCredits	= NULL;
-Font* hFontInGame	= NULL;
-Font* hFontInGameNote = NULL;
+Font * hFontInBook = NULL;
+Font * hFontMainMenu = NULL;
+Font * hFontMenu = NULL;
+Font * hFontControls = NULL;
+Font * hFontCredits = NULL;
+Font * hFontInGame = NULL;
+Font * hFontInGameNote = NULL;
 
 //-----------------------------------------------------------------------------
 void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, Color col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
@@ -265,7 +263,7 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-static Font * _CreateFont(const string & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor = Yratio) {
+static Font * _CreateFont(const res::path & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor) {
 	
 	std::stringstream ss;
 
@@ -282,7 +280,7 @@ static Font * _CreateFont(const string & fontFace, const string & fontProfileNam
 
 	fontSize *= scaleFactor;
 
-	Font* newFont = FontCache::GetFont(fontFace, fontSize);
+	Font * newFont = FontCache::GetFont(fontFace, fontSize);
 	if(!newFont) {
 		LogError << "error loading font: " << fontFace << " of size " << fontSize;
 	}
@@ -290,68 +288,90 @@ static Font * _CreateFont(const string & fontFace, const string & fontProfileNam
 	return newFont;
 }
 
+static float created_font_scale = 0.f;
+
 bool ARX_Text_Init() {
 	
-	ARX_Text_Close();
-	
-	string fontFile = "misc/arx.ttf";
-	if(!fs::exists(fontFile)) {
-		fontFile = "misc/arx_default.ttf"; // Full path
-		if(!fs::exists(fontFile)) {
+	res::path file = "misc/arx.ttf";
+	if(!resources->getFile(file)) {
+		file = "misc/arx_default.ttf";
+		if(!resources->getFile(file)) {
 			LogError << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
 			return false;
 		}
 	}
 	
-	pTextManage = new TextManager();
-	pTextManageFlyingOver = new TextManager();
-
-	FontCache::Initialize();
-
-	hFontMainMenu = _CreateFont(fontFile, "system_font_mainmenu_size", 58);
-	LogDebug("Created hFontMainMenu, size " << hFontMainMenu->GetSize());
-
-	hFontMenu = _CreateFont(fontFile, "system_font_menu_size", 32);
-	LogDebug("Created hFontMenu, size " << hFontMenu->GetSize());
-
-	hFontControls = _CreateFont(fontFile, "system_font_menucontrols_size", 22);
-	LogDebug("Created hFontControls, size " << hFontControls->GetSize());
-
-	hFontCredits = _CreateFont(fontFile, "system_font_menucredits_size", 36);
-	LogDebug("Created hFontCredits, size " << hFontCredits->GetSize());
-
-	// Keep small font small when increasing resolution
-	float smallFontRatio = Yratio > 1.0f ? Yratio * 0.8f : Yratio;
-
-	hFontInGame = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
-	LogDebug("Created hFontInGame, size " << hFontInGame->GetSize());
-
-	hFontInGameNote = _CreateFont(fontFile, "system_font_note_size", 18, smallFontRatio);
-	LogDebug("Created hFontInGameNote, size " << hFontInGameNote->GetSize());
-
-	hFontInBook = _CreateFont(fontFile, "system_font_book_size", 18, smallFontRatio);
-	LogDebug("Created InBookFont, size " << hFontInBook->GetSize());
+	float scale = std::max(std::min(Yratio, Xratio), .001f);
+	if(scale == created_font_scale) {
+		return true;
+	}
+	created_font_scale = scale;
 	
-	LogInfo << "Loaded font " << fontFile << " with sizes " << hFontMainMenu->GetSize() << ", " << hFontMenu->GetSize() << ", " << hFontControls->GetSize() << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", " << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
+	// Keep small font small when increasing resolution
+	// TODO font size jumps around scale = 1
+	float small_scale = scale > 1.0f ? scale * 0.8f : scale;
+	
+	if(pTextManage) {
+		delete pTextManage;
+	}
+	pTextManage = new TextManager();
+	if(pTextManageFlyingOver) {
+		
+	}
+	pTextManageFlyingOver = new TextManager();
+	
+	FontCache::Initialize();
+	
+	Font * nFontMainMenu = _CreateFont(file, "system_font_mainmenu_size", 58, scale);
+	Font * nFontMenu = _CreateFont(file, "system_font_menu_size", 32, scale);
+	Font * nFontControls = _CreateFont(file, "system_font_menucontrols_size", 22, scale);
+	Font * nFontCredits = _CreateFont(file, "system_font_menucredits_size", 36, scale);
+	Font * nFontInGame = _CreateFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontInGameNote = _CreateFont(file, "system_font_note_size", 18, small_scale);
+	Font * nFontInBook = _CreateFont(file, "system_font_book_size", 18, small_scale);
+	
+	// Only release old fonts after creating new ones to allow same fonts to be cached.
+	FontCache::ReleaseFont(hFontMainMenu);
+	FontCache::ReleaseFont(hFontMenu);
+	FontCache::ReleaseFont(hFontControls);
+	FontCache::ReleaseFont(hFontCredits);
+	FontCache::ReleaseFont(hFontInGame);
+	FontCache::ReleaseFont(hFontInGameNote);
+	FontCache::ReleaseFont(hFontInBook);
+	
+	hFontMainMenu = nFontMainMenu;
+	hFontMenu = nFontMenu;
+	hFontControls = nFontControls;
+	hFontCredits = nFontCredits;
+	hFontInGame = nFontInGame;
+	hFontInGameNote = nFontInGameNote;
+	hFontInBook = nFontInBook;
+	
+	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->GetSize() << ", "
+	        << hFontMenu->GetSize() << ", " << hFontControls->GetSize()
+	        << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", "
+	        << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
 	
 	return true;
 }
 
 //-----------------------------------------------------------------------------
 void ARX_Text_Close() {
-
+	
+	created_font_scale = 0.f;
+	
 	delete pTextManage;
 	pTextManage = NULL;
-
+	
 	delete pTextManageFlyingOver;
 	pTextManageFlyingOver = NULL;
-
+	
 	FontCache::ReleaseFont(hFontInBook);
 	hFontInBook = NULL;
 	
 	FontCache::ReleaseFont(hFontMainMenu);
 	hFontMainMenu = NULL;
-
+	
 	FontCache::ReleaseFont(hFontMenu);
 	hFontMenu = NULL;
 	
@@ -366,6 +386,6 @@ void ARX_Text_Close() {
 	
 	FontCache::ReleaseFont(hFontInGameNote);
 	hFontInGameNote = NULL;
-
+	
 	FontCache::Shutdown();
 }

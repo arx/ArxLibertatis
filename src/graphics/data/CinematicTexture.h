@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector2.h"
 
 class Texture2D;
-namespace fs { class path; }
+namespace res { class path; }
 
 // TODO better name
 struct C_INDEXED {
@@ -105,6 +105,6 @@ public:
 	int dreaming;
 };
 
-CinematicBitmap * CreateCinematicBitmap(const fs::path & path, int scale);
+CinematicBitmap * CreateCinematicBitmap(const res::path & path, int scale);
 
 #endif // ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H

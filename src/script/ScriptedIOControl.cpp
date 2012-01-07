@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "physics/Collisions.h"
 #include "scene/Interactive.h"
 #include "script/ScriptUtils.h"
@@ -73,13 +73,13 @@ public:
 	
 	Result execute(Context & context) {
 		
-		fs::path object = fs::path::load(context.getWord());
+		res::path object = res::path::load(context.getWord());
 		
 		DebugScript(' ' << object);
 		
 		INTERACTIVE_OBJ * io = context.getIO();
 		
-		fs::path file;
+		res::path file;
 		if(io->ioflags & IO_NPC) {
 			file = ("graph/obj3d/interactive/npc" / object).append(".teo");
 		} else if(io->ioflags & IO_FIX) {
@@ -211,7 +211,7 @@ public:
 		
 		if(type == "npc" || type == "item") {
 			
-			fs::path file = fs::path::load(context.getWord()); // object to spawn.
+			res::path file = res::path::load(context.getWord()); // object to spawn.
 			
 			string target = context.getWord(); // object ident for position
 			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
@@ -228,7 +228,7 @@ public:
 			
 			if(type == "npc") {
 				
-				fs::path path = "graph/obj3d/interactive/npc" / file;
+				res::path path = "graph/obj3d/interactive/npc" / file;
 				
 				INTERACTIVE_OBJ * ioo = AddNPC(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
@@ -254,7 +254,7 @@ public:
 				
 			} else {
 				
-				fs::path path = "graph/obj3d/interactive/items" / file;
+				res::path path = "graph/obj3d/interactive/items" / file;
 				
 				INTERACTIVE_OBJ * ioo = AddItem(path, IO_IMMEDIATELOAD);
 				if(!ioo) {

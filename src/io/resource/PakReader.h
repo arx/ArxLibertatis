@@ -17,15 +17,17 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_PAKREADER_H
-#define ARX_IO_PAKREADER_H
+#ifndef ARX_IO_RESOURCE_PAKREADER_H
+#define ARX_IO_RESOURCE_PAKREADER_H
 
 #include <vector>
 #include <iostream>
 
-#include "io/PakEntry.h"
-#include "io/FilePath.h"
+#include "io/resource/PakEntry.h"
+#include "io/resource/ResourcePath.h"
 #include "platform/Flags.h"
+
+namespace fs { class path; }
 
 enum Whence {
 	SeekSet,
@@ -61,17 +63,17 @@ public:
 	inline PakReader() : release(0) { }
 	~PakReader();
 	
-	void removeFile(const fs::path & name);
+	void removeFile(const res::path & name);
 	
-	bool addFiles(const fs::path & path, const fs::path & mount = fs::path());
+	bool addFiles(const fs::path & path, const res::path & mount = res::path());
 	
 	bool addArchive(const fs::path & pakfile);
 	void clear();
 	
-	bool read(const fs::path & name, void * buf);
-	char * readAlloc(const fs::path & name , size_t & size);
+	bool read(const res::path & name, void * buf);
+	char * readAlloc(const res::path & name , size_t & size);
 	
-	PakFileHandle * open(const fs::path & name);
+	PakFileHandle * open(const res::path & name);
 	
 	inline ReleaseFlags getReleaseType() { return release; }
 	
@@ -89,4 +91,4 @@ DECLARE_FLAGS_OPERATORS(PakReader::ReleaseFlags)
 
 extern PakReader * resources;
 
-#endif // ARX_IO_PAKREADER_H
+#endif // ARX_IO_RESOURCE_PAKREADER_H

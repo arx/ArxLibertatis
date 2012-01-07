@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 
 #include <cstring>
 #include <algorithm>
@@ -25,9 +25,10 @@
 
 #include "io/log/Logger.h"
 #include "io/Blast.h"
-#include "io/PakEntry.h"
-#include "io/Filesystem.h"
-#include "io/FileStream.h"
+#include "io/resource/PakEntry.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
 
 using std::min;
 using std::strlen;
@@ -477,7 +478,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 			goto error;
 		}
 		
-		PakDirectory * dir = addDirectory(fs::path::load(dirname));
+		PakDirectory * dir = addDirectory(res::path::load(dirname));
 		
 		u32 nfiles;
 		if(!safeGet(nfiles, pos, fat_size)) {
@@ -544,7 +545,7 @@ void PakReader::clear() {
 	}
 }
 
-bool PakReader::read(const fs::path & name, void * buf) {
+bool PakReader::read(const res::path & name, void * buf) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -556,7 +557,7 @@ bool PakReader::read(const fs::path & name, void * buf) {
 	return true;
 }
 
-char * PakReader::readAlloc(const fs::path & name, size_t & sizeRead) {
+char * PakReader::readAlloc(const res::path & name, size_t & sizeRead) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -568,7 +569,7 @@ char * PakReader::readAlloc(const fs::path & name, size_t & sizeRead) {
 	return f->readAlloc();
 }
 
-PakFileHandle * PakReader::open(const fs::path & name) {
+PakFileHandle * PakReader::open(const res::path & name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -578,7 +579,7 @@ PakFileHandle * PakReader::open(const fs::path & name) {
 	return f->open();
 }
 
-bool PakReader::addFiles(const fs::path & path, const fs::path & mount) {
+bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 	
 	if(fs::is_directory(path)) {
 			
@@ -601,7 +602,7 @@ bool PakReader::addFiles(const fs::path & path, const fs::path & mount) {
 	return false;
 }
 
-void PakReader::removeFile(const fs::path & file) {
+void PakReader::removeFile(const res::path & file) {
 	
 	PakDirectory * dir = getDirectory(file.parent());
 	if(dir) {
@@ -632,7 +633,7 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		
 		std::string name = it.name();
 		fs::path entry = path / name;
-			
+		
 		if(it.is_directory()) {
 			ret &= addFiles(dir->addDirectory(name), entry);
 		} else if(it.is_regular_file()) {

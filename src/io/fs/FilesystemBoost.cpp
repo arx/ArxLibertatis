@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 
 #include "Configure.h"
 
@@ -28,7 +28,7 @@
 #undef try
 #undef catch
 
-#include "io/FilePath.h"
+#include "io/fs/FilePath.h"
 
 using std::string;
 
@@ -110,7 +110,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	return !ec;
 }
 
-directory_iterator::directory_iterator(const fs::path & p) {
+directory_iterator::directory_iterator(const path & p) {
 	error_code ec;
 	handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);
 	if(ec) {

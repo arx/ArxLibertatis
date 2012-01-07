@@ -17,29 +17,19 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#ifndef ARX_CORE_STARTUP_H
+#define ARX_CORE_STARTUP_H
 
-#include "io/FileStream.h"
+#include "platform/Platform.h"
 
-namespace fs {
+/*!
+ * Parse the command line.
+ * @return true if the program should exit immediately.
+ */
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+void parseCommandLine(int argc, char ** argv);
+#else
+void parseCommandLine(const char * command_line);
+#endif
 
-char * read_file(const path & p, size_t & size) {
-	
-	fs::ifstream ifs(p, fs::fstream::in | fs::fstream::binary | fs::fstream::ate);
-	if(!ifs.is_open()) {
-		return NULL;
-	}
-	
-	size = ifs.tellg();
-	
-	char * buf = new char[size];
-	
-	if(ifs.seekg(0).read(buf, size).fail()) {
-		delete[] buf;
-		return NULL;
-	}
-	
-	return buf;
-}
-
-} // namespace fs
+#endif // ARX_CORE_STARTUP_H

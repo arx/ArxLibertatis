@@ -26,6 +26,8 @@
 #include "graphics/Color.h"
 #include "math/Vector2.h"
 
+#include "io/resource/ResourcePath.h"
+
 class Font {
 	
 	friend class FontCache;
@@ -34,12 +36,18 @@ public:
 	
 	struct Info {
 		
-		Info(const std::string & fontFile, unsigned int fontSize ) : m_Name(fontFile), m_Size(fontSize) {}
+		Info(const res::path & fontFile, unsigned int fontSize )
+			: m_Name(fontFile), m_Size(fontSize) { }
 		
-		bool operator==(const Info & pOther) const { return m_Name == pOther.m_Name && m_Size == pOther.m_Size; }
-		bool operator<(const Info & pOther) const  { return m_Name == pOther.m_Name ? m_Size < pOther.m_Size : m_Name < pOther.m_Name; }
+		bool operator==(const Info & pOther) const {
+			return m_Name == pOther.m_Name && m_Size == pOther.m_Size;
+		}
 		
-		std::string m_Name;
+		bool operator<(const Info & pOther) const  {
+			return m_Name == pOther.m_Name ? m_Size < pOther.m_Size : m_Name < pOther.m_Name;
+		}
+		
+		res::path m_Name;
 		unsigned int m_Size;
 		
 	};
@@ -63,7 +71,7 @@ public:
 public:
 	
 	const Info & GetInfo() const { return m_Info; }
-	const std::string & GetName() const { return m_Info.m_Name; }
+	const res::path & GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
 	
 	void Draw(int pX, int pY, const std::string & str, Color color);
@@ -81,7 +89,7 @@ public:
 private:
 	
 	// Construction/destruction handled by FontCache only
-	Font(const std::string & fontFile, unsigned int fontSize, struct FT_FaceRec_ * face);
+	Font(const res::path & fontFile, unsigned int fontSize, struct FT_FaceRec_ * face);
 	~Font();
 	
 	// Disable copy of Font objects

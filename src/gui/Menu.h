@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GUI_MENU_H
 
 #include <string>
-#include <vector>
-#include <ctime>
 
 class TextureContainer;
 
@@ -90,23 +88,6 @@ struct ARX_MENU_DATA {
 
 extern ARX_MENU_DATA ARXmenu;
 
-struct SaveGame {
-	
-	bool quicksave;
-	
-	long num;
-	std::string name;
-	long level;
-	float version;
-	std::time_t stime;
-	
-	std::string time;
-	
-	SaveGame() : num(0), level(0), version(0) { }
-};
-
-extern std::vector<SaveGame> save_l;
-
 void ARX_Menu_Manage();
 bool ARX_Menu_Render();
 void ARX_MENU_Launch();
@@ -114,10 +95,5 @@ void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
 void ARX_MENU_Clicked_CREDITS();
-
-void LoadSaveGame(const long & i);
-void UpdateSaveGame(const long & i);
-void CreateSaveGameList();
-void FreeSaveGameList();
 
 #endif // ARX_GUI_MENU_H

@@ -17,13 +17,13 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/PakEntry.h"
+#include "io/resource/PakEntry.h"
 
 #include <cstdlib>
 #include <algorithm>
 
 #include "io/log/Logger.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "platform/Platform.h"
 
 using std::string;
@@ -55,7 +55,7 @@ PakDirectory::~PakDirectory() {
 	}
 }
 
-PakDirectory * PakDirectory::addDirectory(const fs::path & path) {
+PakDirectory * PakDirectory::addDirectory(const res::path & path) {
 	
 	if(path.empty()) {
 		return this;
@@ -65,7 +65,7 @@ PakDirectory * PakDirectory::addDirectory(const fs::path & path) {
 	size_t pos = 0;
 	while(true) {
 		
-		size_t end = path.string().find(fs::path::dir_sep, pos);
+		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		if(end == string::npos) {
 			return &dir->dirs[path.string().substr(pos)];
@@ -79,7 +79,7 @@ PakDirectory * PakDirectory::addDirectory(const fs::path & path) {
 
 static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\"; // TODO(case-sensitive) remove
 
-PakDirectory * PakDirectory::getDirectory(const fs::path & path) {
+PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 	
 	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
 	
@@ -93,7 +93,7 @@ PakDirectory * PakDirectory::getDirectory(const fs::path & path) {
 	size_t pos = 0;
 	while(true) {
 		
-		size_t end = path.string().find(fs::path::dir_sep, pos);
+		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		string name;
 		if(end == string::npos) {
@@ -116,7 +116,7 @@ PakDirectory * PakDirectory::getDirectory(const fs::path & path) {
 	
 }
 
-PakFile * PakDirectory::getFile(const fs::path & path) {
+PakFile * PakDirectory::getFile(const res::path & path) {
 	
 	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
 	
@@ -130,7 +130,7 @@ PakFile * PakDirectory::getFile(const fs::path & path) {
 	size_t pos = 0;
 	while(true) {
 		
-		size_t end = path.string().find(fs::path::dir_sep, pos);
+		size_t end = path.string().find(res::path::dir_sep, pos);
 		
 		if(end == string::npos) {
 			files_iterator file = dir->files.find(path.string().substr(pos));

@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"
@@ -140,7 +140,7 @@ public:
 			no_pos = test_flag(flg, 'o');
 		}
 		
-		fs::path sample = fs::path::load(context.getStringVar(context.getWord())).set_ext("wav");
+		res::path sample = res::path::load(context.getStringVar(context.getWord())).set_ext("wav");
 		
 		DebugScript(' ' << options << ' ' << sample);
 		
@@ -187,7 +187,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		fs::path sample = fs::path::load(context.getWord());
+		res::path sample = res::path::load(context.getWord());
 		
 		DebugScript(' ' << sample);
 		

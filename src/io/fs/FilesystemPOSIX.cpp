@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 
 #include "Configure.h"
 
@@ -29,8 +29,8 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "io/FilePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
 
 using std::string;
 using std::malloc;
@@ -104,7 +104,7 @@ bool create_directories(const path & p) {
 		return true;
 	}
 	
-	fs::path parent = p.parent();
+	path parent = p.parent();
 	if(!exists(parent)) {
 		if(!create_directories(parent)) {
 			return false;
@@ -171,7 +171,7 @@ static void readdir(void * _handle, void * & _buf) {
 	
 }
 
-directory_iterator::directory_iterator(const fs::path & p) : buf(NULL) {
+directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 	
 	handle = opendir(p.empty() ? "./" : p.string().c_str());
 	

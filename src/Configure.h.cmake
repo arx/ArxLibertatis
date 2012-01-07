@@ -33,6 +33,7 @@
 #cmakedefine HAVE_BACKTRACE
 #cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
 #cmakedefine HAVE_ISATTY
+#cmakedefine HAVE_WORDEXP_H
 #cmakedefine HAVE_FPATHCONF
 #cmakedefine HAVE_PC_NAME_MAX
 #cmakedefine HAVE_NAME_MAX
@@ -46,5 +47,27 @@
 
 // Build system
 #cmakedefine UNITY_BUILD
+
+// Default paths
+#cmakedefine DATA_DIR
+#ifdef DATA_DIR
+#undef DATA_DIR
+#define DATA_DIR "${DATA_DIR}"
+#endif
+#cmakedefine USER_DIR
+#ifdef USER_DIR
+#undef USER_DIR
+#define USER_DIR "${USER_DIR}"
+#endif
+#cmakedefine DATA_DIR_PREFIXES
+#ifdef DATA_DIR_PREFIXES
+#undef DATA_DIR_PREFIXES
+#define DATA_DIR_PREFIXES "${DATA_DIR_PREFIXES}"
+#endif
+#cmakedefine USER_DIR_PREFIXES
+#ifdef USER_DIR_PREFIXES
+#undef USER_DIR_PREFIXES
+#define USER_DIR_PREFIXES "${USER_DIR_PREFIXES}"
+#endif
 
 #endif // ARX_CONFIGURE_H

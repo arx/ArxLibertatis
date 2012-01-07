@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_FILESTREAM_H
-#define ARX_IO_FILESTREAM_H
+#ifndef ARX_IO_FS_FILESTREAM_H
+#define ARX_IO_FS_FILESTREAM_H
 
 #include <fstream>
 
@@ -99,4 +99,4 @@ std::istream & read(std::istream & ifs, std::string & buf);
 
 } // namespace fs
 
-#endif // ARX_IO_FILESTREAM_H
+#endif // ARX_IO_FS_FILESTREAM_H

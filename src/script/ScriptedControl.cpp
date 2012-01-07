@@ -48,8 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsModes.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
-#include "io/PakReader.h"
-#include "io/FilePath.h"
+#include "io/resource/PakReader.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"
@@ -122,7 +122,7 @@ public:
 			
 			if(flg & flag('v')) {
 				float volume = context.getFloat();
-				fs::path ambiance = fs::path::load(context.getWord());
+				res::path ambiance = res::path::load(context.getWord());
 				DebugScript(' ' << options << ' ' << volume << ' ' << ambiance);
 				bool ret = ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_LOOPED, volume * 0.01f);
 				if(!ret) {
@@ -133,7 +133,7 @@ public:
 			}
 			
 			if(flg & flag('n')) {
-				fs::path ambiance = fs::path::load(context.getWord());
+				res::path ambiance = res::path::load(context.getWord());
 				DebugScript(' ' << options << ' ' << ambiance);
 				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_ONCE);
 				return Success;
@@ -142,7 +142,7 @@ public:
 			return Failed;
 		}
 		
-		fs::path ambiance = fs::path::load(context.getWord());
+		res::path ambiance = res::path::load(context.getWord());
 		DebugScript(' ' << ambiance);
 		if(ambiance == "kill") {
 			ARX_SOUND_KillAmbiances();
@@ -231,7 +231,7 @@ public:
 			arxtime.pause();
 		} else {
 			
-			if(resources->getFile(fs::path("graph/interface/illustrations") / (name + ".cin"))) {
+			if(resources->getFile(res::path("graph/interface/illustrations") / (name + ".cin"))) {
 				WILL_LAUNCH_CINE = name + ".cin";
 				CINE_PRELOAD = preload;
 			} else {
@@ -324,7 +324,7 @@ public:
 			
 		} else if(command == "ambiance") {
 			
-			fs::path ambiance = fs::path::load(context.getWord());
+			res::path ambiance = res::path::load(context.getWord());
 			
 			DebugScript(" ambiance " << ambiance);
 			

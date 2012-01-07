@@ -44,7 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/CinematicSound.h"
 
 #include "graphics/Math.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/GameSound.h"
 
 using std::string;
@@ -90,7 +90,7 @@ void DeleteAllSound(void) {
 	}
 }
 
-static int findSound(const fs::path & file) {
+static int findSound(const res::path & file) {
 	
 	for(size_t i = 0; i < MAX_SOUND; i++) {
 		
@@ -109,7 +109,7 @@ static int findSound(const fs::path & file) {
 	return -1;
 }
 
-int AddSoundToList(const fs::path & path) {
+int AddSoundToList(const res::path & path) {
 	
 	int num = findSound(path);
 	if(num >= 0) {

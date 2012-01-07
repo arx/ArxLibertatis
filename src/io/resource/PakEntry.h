@@ -17,15 +17,13 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_PAKENTRY_H
-#define ARX_IO_PAKENTRY_H
+#ifndef ARX_IO_RESOURCE_PAKENTRY_H
+#define ARX_IO_RESOURCE_PAKENTRY_H
 
 #include <string>
 #include <map>
 
-namespace fs {
-class path;
-}
+namespace res { class path; }
 
 class PakFileHandle;
 
@@ -66,7 +64,7 @@ private:
 	std::map<std::string, PakFile *> files;
 	std::map<std::string, PakDirectory> dirs;
 	
-	PakDirectory * addDirectory(const fs::path & path);
+	PakDirectory * addDirectory(const res::path & path);
 	
 	void addFile(const std::string & name, PakFile * file);
 	void removeFile(const std::string & name);
@@ -83,9 +81,9 @@ public:
 	typedef std::map<std::string, PakDirectory>::iterator dirs_iterator;
 	typedef std::map<std::string, PakFile *>::const_iterator files_iterator;
 	
-	PakDirectory * getDirectory(const fs::path & path);
+	PakDirectory * getDirectory(const res::path & path);
 	
-	PakFile * getFile(const fs::path & path);
+	PakFile * getFile(const res::path & path);
 	
 	inline dirs_iterator dirs_begin() { return dirs.begin(); }
 	inline dirs_iterator dirs_end() { return dirs.end(); }
@@ -95,4 +93,4 @@ public:
 	
 };
 
-#endif // ARX_IO_PAKENTRY_H
+#endif // ARX_IO_RESOURCE_PAKENTRY_H

@@ -80,7 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 #include "math/Angle.h"
 #include "math/Vector3.h"

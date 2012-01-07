@@ -20,7 +20,7 @@
 #include <iostream>
 
 #include "io/SaveBlock.h"
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 
 #include "savetool/SaveFix.h"
@@ -125,7 +125,7 @@ int main(int argc, char ** argv) {
 	
 	string command = argv[1];
 	
-	fs::path savefile = fs::path::load(argv[2]); // TODO support absolute paths
+	fs::path savefile = argv[2];
 	
 	if(fs::is_directory(savefile)) {
 		savefile /= "gsave.sav";

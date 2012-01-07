@@ -17,13 +17,13 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 
 #include "Configure.h"
 
 #include <windows.h>
 
-#include "io/FilePath.h"
+#include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
 
 using std::string;
@@ -191,7 +191,7 @@ bool create_directories(const path & p) {
 		return true;
 	}
 	
-	fs::path parent = p.parent();
+	path parent = p.parent();
 	if(!exists(parent)) {
 		if(!create_directories(parent)) {
 			return false;
@@ -224,7 +224,7 @@ struct directory_iterator_data {
 	HANDLE			 findHandle;
 };
 
-directory_iterator::directory_iterator(const fs::path & p) {
+directory_iterator::directory_iterator(const path & p) {
 	
 	directory_iterator_data* itData = new directory_iterator_data();
 	handle = itData;

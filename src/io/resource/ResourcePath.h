@@ -17,13 +17,13 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_FILEPATH_H
-#define ARX_IO_FILEPATH_H
+#ifndef ARX_IO_RESOURCE_RESOURCEPATH_H
+#define ARX_IO_RESOURCE_RESOURCEPATH_H
 
 #include <string>
 #include <ostream>
 
-namespace fs {
+namespace res {
 
 class path {
 	
@@ -239,4 +239,4 @@ inline std::ostream & operator<<(std::ostream & strm, const path & path) {
 
 } // namespace fs
 
-#endif // ARX_IO_FILEPATH_H
+#endif // ARX_IO_RESOURCE_RESOURCEPATH_H

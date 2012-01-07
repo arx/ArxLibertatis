@@ -118,7 +118,8 @@ if(MSVC)
 	set(Boost_USE_STATIC_LIBS ON)
 endif(MSVC)
 
-find_package(Boost REQUIRED)
+set(BOOST_COMPONENTS program_options)
+find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 
 mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)
@@ -132,20 +133,23 @@ if(MSVC)
 	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
 	# TODO - Does not seem to work...
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
-	
+
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(/wd4995)		# 'func': name was marked as #pragma deprecated
-	
+	add_definitions(/wd4995)        # 'func': name was marked as #pragma deprecated
+
 	# TEMP - disable warning caused by the F2L removal
-	add_definitions(/wd4244)    	# Conversion from 'float' to 'long', possible loss of data
-	
+	add_definitions(/wd4244)        # Conversion from 'float' to 'long', possible loss of data
+
 	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 	if(CMAKE_CL_64)
-		add_definitions(/wd4267)	# Conversion from 'size_t' to 'xxx', possible loss of data
+		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
+
+	# Disable warning related to long decorated name
+	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
 
 	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
@@ -153,28 +157,30 @@ if(MSVC)
 		add_definitions(-D_SECURE_SCL_THROWS=0)
 		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
 	endif()
-	
+
 	# Disable exceptions & rtti
-	add_definitions(/wd4530)		# C++ exception handling was used but /EHsc was not selected.
-	add_definitions(/GR-)			# No RTTI
-		
+	add_definitions(/GR-)           # No RTTI
+
+	# Enable multiprocess build
+	add_definitions(/MP)
+
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-		# Disable exceptions
-		string(REGEX REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
-		
+		# Disable Run time checks
+		string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
+
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
-			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
-		
-		# Remove definition of _DEBUG as it might conflict with libs we're linking with   		
+		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+
+		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
 	endforeach(flag_var)
-	
+
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
-	
+
 	# This is needed to use ZLIB as a DLL
 	add_definitions(-DZLIB_WINAPI)
-	
+
 else(MSVC)
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
@@ -208,6 +214,8 @@ else(MSVC)
 	elseif(NOT HAVE_WINAPI)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
+	
+	check_include_file("wordexp.h" HAVE_WORDEXP_H)
 	
 	check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
 	check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
@@ -297,9 +305,6 @@ else(MSVC)
 		add_cxxflag("-fwhole-program")
 	endif()
 	
-	# Disable exceptions & rtti
-	add_cxxflag(-fno-rtti)
-	
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
 		# The standard library shipped with ekopath failes to compile with -fno-rtti
 		# See https://github.com/pathscale/stdcxx/issues/3
@@ -307,6 +312,38 @@ else(MSVC)
 	endif()
 	
 endif(MSVC)
+
+# Define default user and data directories.
+if(NOT DEFINED DATA_DIR)
+	set(DATA_DIR "arx")
+endif()
+if(NOT DEFINED USER_DIR)
+	set(USER_DIR "arx")
+endif()
+if(WIN32 AND NOT WINE)
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%")
+	endif()
+else()
+	if(NOT DEFINED DATA_DIR_PREFIXES)
+		set(DATA_DIR_PREFIXES "${CMAKE_INSTALL_PREFIX}/share:$XDG_DATA_DIRS")
+	endif()
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "$XDG_DATA_HOME")
+	endif()
+endif()
+if(DATA_DIR STREQUAL "")
+	unset(DATA_DIR)
+endif()
+if(USER_DIR STREQUAL "")
+	unset(USER_DIR)
+endif()
+if(DATA_DIR_PREFIXES STREQUAL "")
+	unset(DATA_DIR_PREFIXES)
+endif()
+if(USER_DIR_PREFIXES STREQUAL "")
+	unset(USER_DIR_PREFIXES)
+endif()
 
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
@@ -367,6 +404,8 @@ set(CORE_SOURCES
 	src/core/Core.cpp
 	src/core/GameTime.cpp
 	src/core/Localisation.cpp
+	src/core/SaveGame.cpp
+	src/core/Startup.cpp
 )
 
 set(EDITOR_SOURCES
@@ -460,8 +499,6 @@ set(IO_SOURCES
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
 	src/io/IO.cpp
-	src/io/PakEntry.cpp
-	src/io/PakReader.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
@@ -471,16 +508,21 @@ set(IO_LOGGER_SOURCES
 	src/io/log/LogBackend.cpp
 	src/io/log/Logger.cpp
 )
+set(IO_RESOURCE_SOURCES
+	src/io/resource/PakEntry.cpp
+	src/io/resource/PakReader.cpp
+	src/io/resource/ResourcePath.cpp
+)
 set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
 set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
 set(IO_FILESYSTEM_SOURCES
-	src/io/FilePath.cpp
-	src/io/FileStream.cpp
-	src/io/Filesystem.cpp
+	src/io/fs/FilePath.cpp
+	src/io/fs/FileStream.cpp
+	src/io/fs/Filesystem.cpp
 )
-set(IO_FILESYSTEM_BOOST_SOURCES src/io/FilesystemBoost.cpp)
-set(IO_FILESYSTEM_POSIX_SOURCES src/io/FilesystemPOSIX.cpp)
-set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/FilesystemWindows.cpp)
+set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
+set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
+set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
 set(MATH_SOURCES src/math/Angle.cpp)
 
@@ -496,6 +538,7 @@ set(PHYSICS_SOURCES
 
 set(PLATFORM_SOURCES
 	src/platform/CrashHandler.cpp
+	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
 	src/platform/Random.cpp
@@ -548,7 +591,28 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
+# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found release and debug
+# libs get mixed up. On windows we will empty out the Boost_LIBRARIES list and count on the 
+# auto-linking feature boost provides. http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
+if (MSVC)
+	# Reset libraries list so VC will perform auto-linking.
+	set (Boost_LIBRARIES "")
+
+	# Not needed anymore as BOOST_ROOT finds these properly. 
+	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
+	if ("${Boost_INCLUDE_DIRS}" STREQUAL "")
+		set (Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
+	endif ()
+	if ("${Boost_LIBRARY_DIRS}" STREQUAL "")
+		set (Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
+	endif ()
+
+	# Add boost lib directory to the list of libraries paths
+	link_directories(${Boost_LIBRARY_DIRS})
+endif ()
+
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+
 if(TIME_LIBRARIES)
 	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
 endif()
@@ -616,16 +680,19 @@ if(HAVE_WINAPI)
 endif()
 list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
 
+list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
+
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(HAVE_WINAPI)
 	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
 elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
-	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
 	set(HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
+	list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 else()
 	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
 endif()
@@ -646,15 +713,13 @@ if(BUILD_EDITOR)
 	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
 endif()
 
-add_definitions(-DBOOST_NO_EXCEPTIONS)
-add_definitions(-DBOOST_NO_TYPEID)
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
-configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h")
+configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
 
 version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
 list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
@@ -668,9 +733,8 @@ if(BUILD_TOOLS)
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
+		${IO_RESOURCE_SOURCES}
 		src/core/Localisation.cpp
-		src/io/PakEntry.cpp
-		src/io/PakReader.cpp
 		src/io/Blast.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
@@ -690,8 +754,7 @@ if(BUILD_TOOLS)
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
-		src/io/PakEntry.cpp
-		src/io/PakReader.cpp
+		${IO_RESOURCE_SOURCES}
 		src/io/Blast.cpp
 		src/io/log/ColorLogger.cpp
 		src/io/log/ConsoleLogger.cpp
