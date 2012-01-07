@@ -637,6 +637,11 @@ endif()
 
 set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
 
+# Set the icon for the Windows executable by adding this resource file to the sources
+if(MSVC)
+	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
+endif()
+
 if(BUILD_EDITOR)
 	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
 endif()
