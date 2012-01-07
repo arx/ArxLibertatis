@@ -29,6 +29,7 @@
 
 #ifdef HAVE_WINAPI
 #include <windows.h>
+#include <shlobj.h>
 #endif
 
 #ifdef HAVE_WORDEXP_H
@@ -123,7 +124,7 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-void defineXdgDirectories() {
+void defineSystemDirectories() {
 	
 	const char * _home = getenv("HOME");
 	std::string home = _home ? _home : "~";
@@ -133,6 +134,60 @@ void defineXdgDirectories() {
 	setenv("XDG_DATA_DIRS", "/usr/local/share/:/usr/share/", 0);
 	setenv("XDG_CONFIG_DIRS", "/etc/xdg", 0);
 	setenv("XDG_CACHE_HOME", (home + "/.cache").c_str(), 0);
+}
+
+#else
+
+std::string ws2s(const std::wstring& s)
+{    
+    size_t slength = (int)s.length() + 1;
+    size_t len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0); 
+    std::string r(len, '\0');
+    WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0); 
+    return r;
+}
+
+// Obtain the right savegame paths for the platform
+// XP is "%USERPROFILE%\My Documents\My Games"
+// Vista and up : "%USERPROFILE%\Saved games"
+void defineSystemDirectories() {
+	std::string strPath;
+	DWORD winver = GetVersion();
+
+	// Vista and up
+	if ((DWORD)(LOBYTE(LOWORD(winver))) >= 6) {
+		// Don't hardlink with SHGetKnownFolderPath to allow the game to start on XP too!
+		typedef HRESULT (WINAPI *PSHGetKnownFolderPath)(const GUID &rfid, DWORD dwFlags, HANDLE hToken, PWSTR* ppszPath); 
+
+		CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+		
+		PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)GetProcAddress(GetModuleHandleA("shell32.dll"), "SHGetKnownFolderPath");
+		const GUID FOLDERID_SavedGames = {0x4C5C32FF, 0xBB9D, 0x43b0, {0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4}};
+
+		LPWSTR wszPath = NULL;
+		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE | KF_FLAG_NO_ALIAS, NULL, &wszPath);
+
+		if (SUCCEEDED(hr)) {
+            strPath = ws2s(wszPath); 
+		}
+
+		CoTaskMemFree(wszPath);
+		CoUninitialize();
+	} else if ((DWORD)(LOBYTE(LOWORD(winver))) == 5) { // XP
+		CHAR szPath[MAX_PATH];
+		HRESULT hr = SHGetFolderPathA(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, szPath);
+
+		if (SUCCEEDED(hr)) {
+			strPath = szPath; 
+			strPath += "\\My Games";			
+		}
+	} else {
+		arx_assert_msg(false, "Unsupported windows version (below WinXP)");
+	}
+
+	if(!strPath.empty()) {
+		SetEnvironmentVariable("FOLDERID_SavedGames", strPath.c_str());
+	}
 }
 
 #endif
