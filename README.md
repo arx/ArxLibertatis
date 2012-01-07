@@ -56,9 +56,26 @@ Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
 The wiki has detailed instructions on compiling [under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux) and [under windows](http://arx.parpg.net/Downloading_and_Compiling_under_Windows)
 
-## Run
+## Data files / config / savegame location
 
 You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
+
+Arx will consider the following folders (in order) when looking for data files. `DATA_DIR` and `DATA_DIR_PREFIXES` are build-time options that can be passed to cmake.
+1. The **`--data-dir`** / **`-d`** comand-line option
+1. (windows only) the **`HKEY_CURRENT_USER\Software\ArxLibertatis\DataDir`** registry key.
+2. (windows only) the `HKEY_LOCAL_MACHINE\Software\ArxLibertatis\DataDir` registry key.
+3. If `DATA_DIR` is a relative path
+
+
+
+
+
+* `DATA_DIR` (default="arx"): Where to look for data files.
+* `USER_DIR` (default="arx"): Where to store config files and save games.
+* `DATA_DIR_PREFIXES`
+* `USER_DIR_PREFIXES`
+
+## Run
 
 Run from the directory containing the .pak files:
 
