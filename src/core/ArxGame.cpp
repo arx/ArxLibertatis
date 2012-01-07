@@ -331,35 +331,44 @@ bool ArxGame::InitWindow() {
 	
 	arx_assert(m_MainWindow == NULL);
 	
-	bool matched = false;
-	
 	bool autoFramework = (config.window.framework == "auto");
 	
-#ifdef HAVE_SDL
-	if(autoFramework || config.window.framework == "SDL") {
-		matched = true;
-		RenderWindow * window = new SDLWindow;
-		if(!initWindow(window)) {
-			delete window;
+	for(int i = 0; i < 2 && !m_MainWindow; i++) {
+		bool first = (i == 0);
+		
+		bool matched = false;
+		
+		#ifdef HAVE_SDL
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+			matched = true;
+			RenderWindow * window = new SDLWindow;
+			if(!initWindow(window)) {
+				delete window;
+			}
+		}
+		#endif
+		
+		#ifdef HAVE_D3D9
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
+			matched = true;
+			RenderWindow * window = new D3D9Window;
+			if(!initWindow(window)) {
+				delete window;
+			}
+		}
+		#endif
+		
+		if(first && !matched) {
+			LogError << "unknown windowing framework: " << config.window.framework;
 		}
 	}
-#endif
 	
-#ifdef HAVE_D3D9
-	if(!m_MainWindow && (autoFramework || config.window.framework == "D3D9")) {
-		matched = true;
-		RenderWindow * window = new D3D9Window;
-		if(!initWindow(window)) {
-			delete window;
-		}
-	}
-#endif
-	
-	if(!matched) {
-		LogError << "unknown windowing framework: " << config.window.framework;
+	if(!m_MainWindow) {
+		LogError << "no working windowing framework available";
+		return false;
 	}
 	
-	return (m_MainWindow != NULL);
+	return true;
 }
 
 bool ArxGame::InitInput() {

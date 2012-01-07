@@ -224,30 +224,35 @@ bool Input::init() {
 	arx_assert(backend == NULL);
 	
 	bool autoBackend = (config.input.backend == "auto");
-	bool matched = false;
 	
-#ifdef HAVE_SDL
-	if(autoBackend || config.input.backend == "SDL") {
-		matched = true;
-		backend = new SDLInputBackend;
-		if(!backend->init()) {
-			delete backend, backend = NULL;
-		}
-	}
-#endif
-	
-#ifdef HAVE_DINPUT8
-	if(!backend && (autoBackend || config.input.backend == "DirectInput8")) {
-		matched = true;
-		backend = new DInput8Backend;
-		if(!backend->init()) {
-			delete backend, backend = NULL;
-		}
-	}
-#endif
+	for(int i = 0; i < 2 && !backend; i++) {
+		bool first = (i == 0);
 		
-	if(!matched) {
-		LogError << "unknown backend: " << config.input.backend;
+		bool matched = false;
+		
+		#ifdef HAVE_SDL
+		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
+			matched = true;
+			backend = new SDLInputBackend;
+			if(!backend->init()) {
+				delete backend, backend = NULL;
+			}
+		}
+		#endif
+		
+		#ifdef HAVE_DINPUT8
+		if(!backend && first == (autoBackend || config.input.backend == "DirectInput8")) {
+			matched = true;
+			backend = new DInput8Backend;
+			if(!backend->init()) {
+				delete backend, backend = NULL;
+			}
+		}
+		#endif
+		
+		if(first && !matched) {
+			LogError << "unknown backend: " << config.input.backend;
+		}
 	}
 	
 	return (backend != NULL);

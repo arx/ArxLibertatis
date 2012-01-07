@@ -21,27 +21,40 @@
 
 #include "Configure.h"
 
+#include "io/log/Logger.h"
+
 namespace Time {
 
 #if defined(HAVE_CLOCK_GETTIME)
 
 #include <time.h>
 
+static clock_t clock_id = CLOCK_REALTIME;
+
+void init() {
+	
+#ifdef CLOCK_MONOTONIC
+	struct timespec ts;
+	if(!clock_gettime(CLOCK_MONOTONIC, &ts)) {
+		LogDebug("using CLOCK_MONOTONIC");
+		clock_id = CLOCK_MONOTONIC;
+		return;
+	}
+#endif
+	
+	LogWarning << "falling back to CLOCK_REALTIME, time will jump if adjusted by other processes";
+}
+
 u32 getMs() {
 	struct timespec ts;
-	clock_gettime(CLOCK_MONOTONIC, &ts);
+	clock_gettime(clock_id, &ts);
 	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
 }
 
 u64 getUs() {
-	
 	struct timespec ts;
-	clock_gettime(CLOCK_MONOTONIC, &ts);
-	
-	u64 timeUs = ts.tv_sec * 1000000ull; // Convert seconds to microseconds (in 64 bit to avoid overflow)
-	timeUs += ts.tv_nsec / 1000; // Convert nanoseconds to microseconds...
-	
-	return timeUs;
+	clock_gettime(clock_id, &ts);
+	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
 }
 
 #elif defined(HAVE_WINAPI)
@@ -49,22 +62,19 @@ u64 getUs() {
 #include <windows.h>
 
 // Avoid costly calls to QueryPerformanceFrequency... cache its result
-class FrequencyInit {
-public:
-	FrequencyInit() {
-		QueryPerformanceFrequency(&Frequency);
-	}
-	LARGE_INTEGER Frequency;
-} ;
+static u64 frequency_hz;
 
-FrequencyInit gFrequencyInit;
-const u64 FREQUENCY_HZ  = gFrequencyInit.Frequency.QuadPart;
+void init() {
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+	frequency_hz = frequency.QuadPart;
+}
 
 u32 getMs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	u32 valMs = (counter.QuadPart * 10) / (FREQUENCY_HZ / 100);
+	u32 valMs = (counter.QuadPart * 10) / (frequency_hz / 100);
 	return valMs;
 }
 
@@ -72,12 +82,38 @@ u64 getUs() {
 	LARGE_INTEGER counter;
 	QueryPerformanceCounter(&counter);
 	// Ugly trick to avoid losing precision...
-	u64 valUs = (counter.QuadPart * 1000) / (FREQUENCY_HZ / 1000);
+	u64 valUs = (counter.QuadPart * 1000) / (frequency_hz / 1000);
 	return valUs;
 }
 
+#elif defined(HAVE_MACH_CLOCK)
+
+#include <mach/clock.h>
+#include <mach/clock_types.h>
+#include <mach/mach_host.h>
+
+static clock_serv_t clock_ref;
+
+void init() {
+	if(host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &clock_ref) != KERN_SUCCESS) {
+		LogWarning << "error getting system clock";
+	}
+}
+
+u32 getMs() {
+	mach_timespec_t ts;
+	clock_get_time(clock_ref, &ts);
+	return ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
+}
+
+u64 getUs() {
+	mach_timespec_t ts;
+	clock_get_time(clock_ref, &ts);
+	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
+}
+
 #else
-#error "Time not supported: need either HAVE_CLOCK_GETTIME or HAVE_WINAPI"
+#error "Time not supported: need either HAVE_CLOCK_GETTIME or HAVE_WINAPI or HAVE_MACH_CLOCK"
 #endif
 
-}
+} // namespace Time

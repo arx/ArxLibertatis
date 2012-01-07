@@ -122,7 +122,7 @@ public:
 		float contrast;
 		bool showCrosshair;
 		bool antialiasing;
-		bool vsync;	
+		bool vsync;
 	} video;
 	
 	// section 'window'

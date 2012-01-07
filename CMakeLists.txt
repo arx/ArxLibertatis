@@ -43,18 +43,18 @@ endmacro()
 
 ##############################################################################
 
-option(ARX_BUILD_TESTS "Build tests" OFF)
-option(ARX_BUILD_TOOLS "Build tools" ON)
-option(ARX_BUILD_EDITOR "Build editor" OFF)
-option(ARX_BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
-option(ARX_USE_UNITYBUILD "Unity build" OFF)
-option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
-option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
-option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
-option(ARX_USE_OPENGL "Build the OpenGL renderer backend." ON)
-option(ARX_USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
-option(ARX_USE_SDL "Build the SDL windowing backend." ON)
-option(ARX_USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
+option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_TOOLS "Build tools" ON)
+option(BUILD_EDITOR "Build editor" OFF)
+option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
+option(UNITY_BUILD "Unity build" OFF)
+option(DEBUG_EXTRA "Expensive debug options" OFF)
+option(USE_OPENAL "Build the OpenAL audio backend." ON)
+option(USE_DSOUND "Build the DirectSound audio backend." ON)
+option(USE_OPENGL "Build the OpenGL renderer backend." ON)
+option(USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
+option(USE_SDL "Build the SDL windowing backend." ON)
+option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -85,11 +85,11 @@ endif()
 
 if(NOT HAVE_WINAPI)
 	# The is no DirectX under linux
-	set(ARX_USE_D3D9 OFF)
-	set(ARX_USE_DSOUND OFF)
-	set(ARX_USE_DINPUT8 OFF)
+	set(USE_D3D9 OFF)
+	set(USE_DSOUND OFF)
+	set(USE_DINPUT8 OFF)
 else()
-	if(ARX_USE_D3D9)
+	if(USE_D3D9 OR USE_DINPUT8)
 		find_package(DirectX REQUIRED)
 	endif()
 endif()
@@ -98,19 +98,19 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
-if(ARX_USE_OPENGL)
-	find_package(OpenGL REQUIRED)
-	find_package(GLEW REQUIRED)
+if(USE_OPENGL)
+	find_package(OpenGL)
+	find_package(GLEW)
 endif()
-if(ARX_USE_OPENAL)
-	find_package(OpenAL 1.1 REQUIRED)
+if(USE_OPENAL)
+	find_package(OpenAL 1.1)
 	find_package(OpenALEFX)
 endif()
 find_package(Doxygen)
 find_package(PythonInterp)
-if(ARX_USE_SDL)
+if(USE_SDL)
 	set(SDL_BUILDING_LIBRARY 1)		# Required to avoid linking with SDLmain...
-	find_package(SDL 1.2 EXACT REQUIRED)
+	find_package(SDL 1.2 EXACT)
 endif()
 
 if(MSVC)
@@ -151,7 +151,7 @@ if(MSVC)
 	# Disable warning related to long decorated name
 	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
 
-	if(NOT ARX_DEBUG_EXTRA)
+	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 		add_definitions(-D_SECURE_SCL=0)
 		add_definitions(-D_SECURE_SCL_THROWS=0)
@@ -190,46 +190,64 @@ else(MSVC)
 	check_link_library(DevIL IL_LIBRARIES IL)
 	check_link_library(ZLIB ZLIB_LIBRARIES)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
-	if(ARX_USE_OPENAL)
+	if(USE_OPENAL AND OPENAL_FOUND)
 		check_link_library(OpenAL OPENAL_LIBRARY)
 	endif()
-	if(ARX_USE_OPENGL)
+	if(USE_OPENGL AND OPENGL_FOUND)
 		check_link_library(OpenGL OPENGL_LIBRARIES)
 		check_link_library(GLEW GLEW_LIBRARIES)
 	endif()
-	if(ARX_USE_SDL)
+	if(USE_SDL AND SDL_FOUND)
 		check_link_library(SDL SDL_LIBRARY)
 	endif()
 	
+	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
+	
 	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=199309")
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
-	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 	unset(CMAKE_REQUIRED_DEFINITIONS)
 	unset(CMAKE_REQUIRED_LIBRARIES)
-	if(HAVE_NANOSLEEP_FUNC OR HAVE_CLOCK_GETTIME)
+	if(HAVE_CLOCK_GETTIME)
 		set(TIME_LIBRARIES "-lrt")
 		add_definitions(-D_POSIX_C_SOURCE=199309)
+	elseif(NOT HAVE_WINAPI)
+		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
 	check_include_file("wordexp.h" HAVE_WORDEXP_H)
 	
-	check_include_files("sys/stat.h;sys/errno.h;dirent.h" HAVE_POSIX_FILESYSTEM)
+	check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
+	check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
+	check_include_file("dirent.h" HAVE_DIRENT_H)
 	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
+	
 	check_symbol_exists(fork "unistd.h" HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
 	check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
-	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+	check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	endif()
+	
+	check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
+	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
+	
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
+	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
+	
+	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H)
+		if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+			set(HAVE_POSIX_FILESYSTEM 1)
+		endif()
+	endif()
 	
 	# Warning level
 	add_cxxflag("-Wall")
@@ -255,7 +273,6 @@ else(MSVC)
 	if(CMAKE_BUILD_TYPE STREQUAL Debug)
 		
 		#Debug
-		message("Debug Build")
 		add_definitions(-D_DEBUG)
 		
 		check_compiler_flag(RESULT "-g3")
@@ -268,15 +285,9 @@ else(MSVC)
 		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
 		
-	else()
-		
-		#Release
-		message("Release Build")
-		add_definitions(-D_NDEBUG)
-		
 	endif()
 	
-	if(ARX_DEBUG_EXTRA)
+	if(DEBUG_EXTRA)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
 		# add_cxxflag("-Wsuggest-attribute=const")
 		# add_cxxflag("-Wsuggest-attribute=pure")
@@ -290,7 +301,7 @@ else(MSVC)
 		add_cxxflag("-Wno-constant-logical-operand")
 	endif()
 	
-	if(ARX_USE_UNITYBUILD)
+	if(UNITY_BUILD)
 		add_cxxflag("-fwhole-program")
 	endif()
 	
@@ -337,14 +348,6 @@ endif()
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
 	set(HAVE_PTHREADS 1)
-elseif(NOT CMAKE_USE_WIN32_THREADS_INIT)
-	message(SEND_ERROR "No supported thread libraries found.")
-endif()
-if(NOT ARX_USE_OPENAL AND NOT ARX_USE_DSOUND)
-	message(WARNING "No audio backend enabled.")
-endif()
-if((NOT HAVE_NANOSLEEP_FUNC OR NOT HAVE_CLOCK_GETTIME) AND NOT HAVE_WINAPI)
-	message(SEND_ERROR "Need either nanosleep and clock_gettime or WIN32.")
 endif()
 
 # Preprocessor definitions
@@ -617,7 +620,7 @@ if(HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
 
-if(ARX_USE_OPENAL)
+if(USE_OPENAL AND OPENAL_FOUND)
 	list(APPEND AUDIO_SOURCES ${AUDIO_OPENAL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENAL_LIBRARY})
 	include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
@@ -627,12 +630,13 @@ if(ARX_USE_OPENAL)
 		set(HAVE_OPENAL_EFX 1)
 	endif()
 endif()
-if(ARX_USE_DSOUND)
+if(USE_DSOUND)
+	# TODO does this need DIRECTX_FOUND? if so, the find_package(DirectX) should also be run if USE_DSOUND is set but USE_D3D9 isn't
 	list(APPEND AUDIO_SOURCES ${AUDIO_DSOUND_SOURCES})
 	set(HAVE_DSOUND 1)
 endif()
 
-if(ARX_USE_D3D9)
+if(USE_D3D9 AND DIRECTX_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
 	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
 		
@@ -642,7 +646,7 @@ if(ARX_USE_D3D9)
 	set(HAVE_D3D9 1)
 endif()
 
-if(ARX_USE_OPENGL)
+if(USE_OPENGL AND OPENGL_FOUND AND OPENGL_GLU_FOUND AND GLEW_FOUND) # TODO remove GLU dependency
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
@@ -650,7 +654,7 @@ if(ARX_USE_OPENGL)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
-if(ARX_USE_SDL)
+if(USE_SDL AND HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
@@ -658,7 +662,7 @@ if(ARX_USE_SDL)
 	set(HAVE_SDL 1)
 endif()
 
-if(ARX_USE_DINPUT8)
+if(USE_DINPUT8 AND DIRECTX_FOUND)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	set(HAVE_DINPUT8 1)
@@ -700,12 +704,8 @@ endif()
 
 set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
 
-if(ARX_BUILD_EDITOR)
+if(BUILD_EDITOR)
 	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
-	set(BUILD_EDITOR 1)
-endif()
-if(ARX_BUILD_EDIT_LOADSAVE)
-	set(BUILD_EDIT_LOADSAVE 1)
 endif()
 
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
@@ -713,10 +713,6 @@ add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 #create source groups
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
-
-if(ARX_USE_UNITYBUILD)
-	set(UNITY_BUILD 1)
-endif()
 
 configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
 
@@ -727,7 +723,7 @@ list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
 add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
 
-if(ARX_BUILD_TOOLS)
+if(BUILD_TOOLS)
 	
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
@@ -772,7 +768,7 @@ endif()
 
 # Build and link executables
 
-if(ARX_USE_UNITYBUILD)
+if(UNITY_BUILD)
 	unity_build()
 else()
 	shared_build()
@@ -880,6 +876,119 @@ if(PYTHONINTERP_FOUND)
 	)
 endif()
 
-if(ARX_BUILD_TESTS)
+if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
+endif()
+
+function(print_configuration TITLE)
+	
+	set(str "")
+	
+	set(print_first 0)
+	
+	set(mode 0)
+	
+	foreach(arg IN LISTS ARGN)
+		
+		if(arg STREQUAL "FIRST")
+			set(print_first 1)
+		else()
+			
+			if(mode EQUAL 0)
+				
+				if(${arg})
+					set(mode 1)
+				else()
+					set(mode 2)
+				endif()
+				
+			else()
+				
+				if(mode EQUAL 1 AND NOT arg STREQUAL "")
+					
+					if(str STREQUAL "")
+						set(str "${arg}")
+					else()
+						set(str "${str}, ${arg}")
+					endif()
+					
+					if(print_first)
+						break()
+					endif()
+					
+				endif()
+				
+				set(mode 0)
+				
+			endif()
+			
+		endif()
+		
+	endforeach()
+	
+	if(str STREQUAL "")
+		set(str "(none)")
+	endif()
+	
+	message(" - ${TITLE}: ${str}")
+	
+endfunction()
+
+message("")
+message("Configuration:")
+if(NOT MSVC)
+	if(UNITY_BUILD)
+		set(BUILD_TYPE_SUFFIX " (unity build)")
+	else()
+		set(BUILD_TYPE_SUFFIX "")
+	endif()
+	if(CMAKE_BUILD_TYPE STREQUAL "")
+		message(" - Build type: Release${BUILD_TYPE_SUFFIX}")
+	else()
+		message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
+	endif()
+endif(NOT MSVC)
+print_configuration("Filesystem backend" FIRST
+	HAVE_POSIX_FILESYSTEM "POSIX"
+	HAVE_WINAPI           "Win32"
+	1                     "Boost"
+)
+print_configuration("Renderer"
+	HAVE_OPENGL "OpenGL"
+	HAVE_D3D9   "Direct3D 9"
+)
+print_configuration("Audio backend"
+	HAVE_OPENAL "OpenAL"
+	HAVE_DSOUND "Direct Sound"
+)
+print_configuration("Input backend"
+	HAVE_SDL     "SDL"
+	HAVE_DINPUT8 "DirectInput 8"
+)
+print_configuration("Windowing"
+	HAVE_SDL     "SDL"
+	HAVE_D3D9    "Win32"
+)
+message("")
+
+if(NOT (CMAKE_USE_PTHREADS_INIT OR CMAKE_USE_WIN32_THREADS_INIT))
+	message(SEND_ERROR "No supported thread libraries found.")
+endif()
+if(NOT (HAVE_OPENGL OR HAVE_D3D9))
+	message(SEND_ERROR "No renderer available - need either OpenGL and GLEW or Direct3D 9")
+endif()
+if(NOT (HAVE_OPENAL OR HAVE_DSOUND))
+	message(WARNING "No audio backend enabled - need either OpenAL or Direct Sound")
+endif()
+if(NOT (HAVE_SDL OR HAVE_DINPUT8))
+	message(SEND_ERROR "No input backend available - need either SDL or DirectInput 8")
+endif()
+if(NOT (HAVE_SDL OR HAVE_WINAPI))
+	message(SEND_ERROR "No windowing backend available - need either SDL or Windows")
+endif()
+if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
+	message(SEND_ERROR "Need either nanosleep or WIN32.")
+endif()
+if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI OR HAVE_MACH_CLOCK))
+	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
 endif()

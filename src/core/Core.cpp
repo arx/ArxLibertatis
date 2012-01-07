@@ -651,6 +651,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	parseCommandLine(lpCmdLine);
 #endif
 	
+	Time::init();
 	
 	// Now that data directories are initialized, create a log file.
 	fs::path logFile = config.paths.user / "arx.log";

@@ -24,6 +24,8 @@
 
 namespace Time {
 
+void init();
+
 /**
  * Get the number of milliseconds elapsed since some unspecified starting point.
  * @return The number of milliseconds elapsed.

@@ -254,8 +254,7 @@ bool D3D9Window::initialize(DisplayMode mode) {
 	for (UINT Adapter=0; Adapter < d3d->GetAdapterCount(); Adapter++) 
 	{
 		D3DADAPTER_IDENTIFIER9 Identifier;
-		HRESULT  Res;
-		Res = d3d->GetAdapterIdentifier(Adapter, 0, &Identifier);
+		d3d->GetAdapterIdentifier(Adapter, 0, &Identifier);
 		if (strstr(Identifier.Description,"PerfHUD") != 0)
 		{
 			AdapterToUse = Adapter;

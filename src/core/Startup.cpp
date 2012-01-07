@@ -314,7 +314,7 @@ void parseCommandLine(const char * command_line) {
 			Logger::configure(debug->second.as<string>());
 		}
 		
-		defineXdgDirectories();
+		defineSystemDirectories();
 		
 		po::variables_map::const_iterator data_dir = options.find("data-dir");
 		if(data_dir != options.end()) {

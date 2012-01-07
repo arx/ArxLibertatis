@@ -34,6 +34,12 @@
 #cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
 #cmakedefine HAVE_ISATTY
 #cmakedefine HAVE_WORDEXP_H
+#cmakedefine HAVE_FPATHCONF
+#cmakedefine HAVE_PC_NAME_MAX
+#cmakedefine HAVE_NAME_MAX
+
+// Mac OS X features
+#cmakedefine HAVE_MACH_CLOCK
 
 // Arx components
 #cmakedefine BUILD_EDITOR
