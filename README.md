@@ -45,6 +45,7 @@ Build options:
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
 * `USE_SDL` (default=ON): Build the SDL windowing and input backends
+* `USE_NATIVE_FS` (default=ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
 Windows-only options (always OFF for non-windows platforms):
 

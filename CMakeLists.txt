@@ -55,6 +55,7 @@ option(USE_OPENGL "Build the OpenGL renderer backend." ON)
 option(USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
 option(USE_SDL "Build the SDL windowing backend." ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
+option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -217,26 +218,15 @@ else(MSVC)
 	
 	check_include_file("wordexp.h" HAVE_WORDEXP_H)
 	
-	check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
-	check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
-	check_include_file("dirent.h" HAVE_DIRENT_H)
-	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
 	
 	check_symbol_exists(fork "unistd.h" HAVE_FORK)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
-	check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
-	check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	endif()
-	
-	check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
-	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
-	
-	check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)
 	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	
@@ -245,10 +235,27 @@ else(MSVC)
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
 	
-	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
-		if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
-			set(HAVE_POSIX_FILESYSTEM 1)
+	if(USE_NATIVE_FS)
+		
+		check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
+		check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
+		check_include_file("dirent.h" HAVE_DIRENT_H)
+		
+		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
+		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
+		
+		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+		
+		check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)
+		
+		check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
+		
+		if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
+			if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+				set(HAVE_POSIX_FILESYSTEM 1)
+			endif()
 		endif()
+		
 	endif()
 	
 	# Warning level
@@ -686,9 +693,10 @@ list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
 
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
-elseif(HAVE_WINAPI)
+elseif(USE_NATIVE_FS AND HAVE_WINAPI)
 	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
+	set(HAVE_WIN32_FILESYSTEM 1)
 elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
 	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
 	set(HAVE_BOOST_FILESYSTEM_V3 1)
@@ -957,7 +965,7 @@ if(NOT MSVC)
 endif(NOT MSVC)
 print_configuration("Filesystem backend" FIRST
 	HAVE_POSIX_FILESYSTEM "POSIX"
-	HAVE_WINAPI           "Win32"
+	HAVE_WIN32_FILESYSTEM "Win32"
 	1                     "Boost"
 )
 print_configuration("Renderer"
