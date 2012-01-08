@@ -236,6 +236,8 @@ else(MSVC)
 	check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
 	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
 	
+	check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)
+	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
@@ -243,7 +245,7 @@ else(MSVC)
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
 	
-	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H)
+	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
 		if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
 			set(HAVE_POSIX_FILESYSTEM 1)
 		endif()
@@ -694,7 +696,7 @@ elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
 	list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 else()
-	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
+	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API or enough POSIX functionality; Found boost version ${Boost_VERSION}")
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
