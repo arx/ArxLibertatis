@@ -32,9 +32,8 @@ Systems without Win32 or POSIX filesystem support will also need the boost files
 
 ## Compile
 
-`$ mkdir build && cd build && cmake ..`
-
-`$ make`
+    $ mkdir build && cd build && cmake ..
+    $ make
 
 Build options:
 
@@ -65,11 +64,11 @@ Where arx will look for data files and write config and save files depends on th
 
 To print all directories considered by arx, run
 
-`$ ./arx --list-dirs`
+    $ ./arx --list-dirs
 
 If you don't have a system-wide installation of the Arx Fatalis data files, you can just run arx from the directory containing the .pak files:
 
-`$ ./arx`
+    $ ./arx
 
 Arx Libertatis will then put the config and save files in the same directory. If you have a system-wide installation, but still want to run from the current directory, use the `--no-data-dir --user-dir=.` command-line options.
 
@@ -83,7 +82,7 @@ For **Windows**, the locations for data and user (config and savegame) files can
 
 Run from the directory containing the .pak files (or from anywhere in case of a system-wide installation):
 
-`$ ./arx`
+    $ ./arx
 
 The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase.
 
@@ -103,4 +102,4 @@ You can close it with `Alt + F4` or `killall arx.exe.so`
 
 To build developer documentation (doxygen), run this from the root directory:
 
-`$ make doc`
+    $ make doc
