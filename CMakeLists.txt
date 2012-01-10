@@ -230,6 +230,8 @@ else(MSVC)
 	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
 	
+	check_symbol_exists(sched_getscheduler "sched.h" HAVE_SCHED_GETSCHEDULER)
+	
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)

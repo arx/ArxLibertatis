@@ -49,7 +49,11 @@ void Thread::start() {
 
 void Thread::setPriority(Priority _priority) {
 	
+#ifdef HAVE_SCHED_GETSCHEDULER
 	int policy = sched_getscheduler(0);
+#else
+	int policy = SCHED_RR;
+#endif
 	
 	int min = sched_get_priority_min(policy);
 	int max = sched_get_priority_max(policy);

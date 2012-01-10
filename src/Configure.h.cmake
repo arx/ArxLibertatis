@@ -37,6 +37,7 @@
 #cmakedefine HAVE_FPATHCONF
 #cmakedefine HAVE_PC_NAME_MAX
 #cmakedefine HAVE_NAME_MAX
+#cmakedefine HAVE_SCHED_GETSCHEDULER
 
 // Mac OS X features
 #cmakedefine HAVE_MACH_CLOCK
