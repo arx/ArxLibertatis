@@ -125,14 +125,14 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 
-fs::path CURRENT_GAME_FILE;
+static fs::path CURRENT_GAME_FILE;
 
 float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 long FORBID_SAVE = 0;
 long _FIRSTTIME = 0;
-SaveBlock * _pSaveBlock = NULL;
+static SaveBlock * _pSaveBlock = NULL;
 
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
