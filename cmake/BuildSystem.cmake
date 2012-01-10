@@ -81,9 +81,10 @@ function(intersect DEST SRC1 SRC2)
 endfunction(intersect)
 
 
-function(_shared_build_helper LIB LIST EXESET)
+function(_shared_build_helper LIB LIST EXESET FIRST)
 	
 	set(list ${LIST})
+	set(first ${FIRST})
 	
 	# Find common sources and extract static libraries.
 	foreach(exe IN LISTS LIST)
@@ -92,7 +93,9 @@ function(_shared_build_helper LIB LIST EXESET)
 		
 		set(exeset ${EXESET} ${exe})
 		
-		_shared_build_helper(${LIB}_${exe} "${list}" "${exeset}")
+		_shared_build_helper(${LIB}_${exe} "${list}" "${exeset}" ${first})
+		
+		set(first 0)
 		
 	endforeach(exe)
 	
@@ -110,9 +113,12 @@ function(_shared_build_helper LIB LIST EXESET)
 	# We found common sources!
 	if(NOT "${common_src}" STREQUAL "")
 		
-		set(lib _${LIB}_common)
-		
-		# message(STATUS "Adding library ${lib} for \"${common_src}\"")
+		list(LENGTH LIST all_execs)
+		if(FIRST AND all_execs EQUAL 0)
+			set(lib common)
+		else()
+			set(lib _${LIB}_common)
+		endif()
 		
 		# Add a new library for the common sources
 		add_library(${lib} STATIC ${common_src})
@@ -168,6 +174,8 @@ function(shared_build)
 	
 	set(list1 ${SHARED_BUILD_EXECUTABLES})
 	
+	set(first 1)
+	
 	# Find common sources and extract static libraries.
 	foreach(exe1 IN LISTS SHARED_BUILD_EXECUTABLES)
 		list(REMOVE_ITEM list1 ${exe1})
@@ -176,7 +184,8 @@ function(shared_build)
 		foreach(exe2 IN LISTS list1)
 			list(REMOVE_ITEM list2 ${exe2})
 			set(exeset ${exe1} ${exe2})
-			_shared_build_helper(${exe1}_${exe2} "${list2}" "${exeset}")
+			_shared_build_helper(${exe1}_${exe2} "${list2}" "${exeset}" ${first})
+			set(first 0)
 		endforeach(exe2)
 	endforeach(exe1)
 	
