@@ -83,17 +83,33 @@ std::string expandEvironmentVariables(const std::string & in) {
 #ifdef HAVE_WINAPI
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
 	
-	static const char * key = "Software\\ArxLibertatis";
-	
-	DWORD length = 1024;
-	boost::scoped_array<char> buffer(new char[length]);
-	
-	LONG ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
-	if(ret == ERROR_MORE_DATA) {
-		buffer.reset(new char[length]);
-		ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
+	boost::scoped_array<char> buffer(NULL);
+
+	DWORD type = 0;
+	DWORD length = 0;
+	HKEY handle = 0;
+
+	long ret = 0;
+
+	ret = RegOpenKeyEx(hkey, "Software\\ArxLibertatis\\", 0, KEY_QUERY_VALUE, &handle);
+
+	if (ret == ERROR_SUCCESS)
+	{
+		// find size of value
+		ret = RegQueryValueEx(handle, name.c_str(), NULL, NULL, NULL, &length);
+
+		if (ret == ERROR_SUCCESS && length > 0)
+		{
+			// allocate buffer and read in value
+			buffer.reset(new char[length + 1]);
+			ret = RegQueryValueEx(handle, name.c_str(), NULL, &type, LPBYTE(buffer.get()), &length);
+			// ensure null termination
+			buffer.get()[length] = 0;
+		}
+
+		RegCloseKey(handle);
 	}
-	
+
 	if(ret == ERROR_SUCCESS) {
 		result = buffer.get();
 		return true;
