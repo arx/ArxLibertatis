@@ -163,6 +163,10 @@ std::string ws2s(const std::wstring& s)
     return r;
 }
 
+// Those two values are from ShlObj.h, but requires _WIN32_WINNT >= _WIN32_WINNT_VISTA
+const int kfFlagCreate  = 0x00008000;	// KF_FLAG_CREATE
+const int kfFlagNoAlias = 0x00001000;	// KF_FLAG_NO_ALIAS
+
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
 // Vista and up : "%USERPROFILE%\Saved games"
@@ -179,9 +183,9 @@ void defineSystemDirectories() {
 		
 		PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)GetProcAddress(GetModuleHandleA("shell32.dll"), "SHGetKnownFolderPath");
 		const GUID FOLDERID_SavedGames = {0x4C5C32FF, 0xBB9D, 0x43b0, {0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4}};
-
+		
 		LPWSTR wszPath = NULL;
-		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE | KF_FLAG_NO_ALIAS, NULL, &wszPath);
+		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias, NULL, &wszPath);
 
 		if (SUCCEEDED(hr)) {
             strPath = ws2s(wszPath); 

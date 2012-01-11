@@ -164,6 +164,9 @@ if(MSVC)
 
 	# Enable multiprocess build
 	add_definitions(/MP)
+	
+	# Ensure we aren't using functionalities not found under Window XP SP1
+	add_definitions(-D_WIN32_WINNT=0x0502)
 
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 		# Disable Run time checks
