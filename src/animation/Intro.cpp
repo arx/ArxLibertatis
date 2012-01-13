@@ -180,9 +180,6 @@ static TextureContainer * tc = NULL;
 static TextureContainer * pbar = NULL;
 static long nopbar = -1;
 static long lastnum = -1;
- 
-static float fFadeSens = 0.f;
-static float fFadeColor = 0.f;
 
 void LoadLevelScreen(long num) {
 	
@@ -227,122 +224,83 @@ void LoadLevelScreen(long num) {
 		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
-		if (OLD_PROGRESS_BAR_COUNT <= 0.f && fFadeColor <= 0.f)
-		{
-			fFadeSens = .01f;
-			fFadeColor = 0.f;
-		}
+		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0); 
 
-		float ratio = 0;
+		if (ratio > 1.f) ratio = 1.f;
+		else if (ratio < 0.f) ratio = 0.f;
 
-		while (OLD_PROGRESS_BAR_COUNT < PROGRESS_BAR_COUNT ||
-				 (fFadeSens < 0.f && fFadeColor > 0.f))
-		{
-			if (fFadeSens < 0.f &&				//sentinel
-				 fFadeColor == 0.f) break;
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-			if (PROGRESS_BAR_TOTAL > 0.f)
-				ratio = OLD_PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL;
-			else
-				ratio = 0;
-
-			if (ratio > 1.f) ratio = 1.f;
-			else if (ratio < 0.f) ratio = 0.f;
-
-			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
-			if (GRenderer->BeginScene()) {
+		if (GRenderer->BeginScene()) {
 				
-				GRenderer->SetRenderState(Renderer::DepthTest, true);
-				GRenderer->SetCulling(Renderer::CullNone);
-				GRenderer->SetRenderState(Renderer::DepthWrite, true);
-				GRenderer->SetRenderState(Renderer::Fog, false);
-				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+			GRenderer->SetCulling(Renderer::CullNone);
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
+			GRenderer->SetRenderState(Renderer::Fog, false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				
-				if (num == 10) {
-					pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
-				} else {
-					pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
-				}
+			if (num == 10) {
+				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
+			} else {
+				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
+			}
 				
-				nopbar = 1;
-				
-				if(num != lastloadednum) {
-					
-					if (tc) {
-						delete tc;
-						tc = NULL;
-					}
-					
-					lastloadednum = num;
-					char temp[256];
-					char tx[256];
-					GetLevelNameByNum(num, tx);
-					sprintf(temp, "graph/levels/level%s/loading", tx);
-					tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
-				}
+			nopbar = 1;
+			
+			if(num != lastloadednum) {
 				
 				if (tc) {
-					GRenderer->SetRenderState(Renderer::ColorKey, false);
-					DrawCenteredImage(tc, true, fFadeColor);
-					GRenderer->SetRenderState(Renderer::ColorKey, true);
+					delete tc;
+					tc = NULL;
 				}
+				
+				lastloadednum = num;
+				char temp[256];
+				char tx[256];
+				GetLevelNameByNum(num, tx);
+				sprintf(temp, "graph/levels/level%s/loading", tx);
+				tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
+			}
+				
+			if (tc) {
+				GRenderer->SetRenderState(Renderer::ColorKey, false);
+				DrawCenteredImage(tc, true);
+				GRenderer->SetRenderState(Renderer::ColorKey, true);
+			}
 
-				if (pbar)
+			if (pbar)
+			{
+				if (num == 10)
 				{
-					if (num == 10)
-					{
-						float px, py, px2, py2;
-						int ipx = (640 - 200)	/ 2;
-						int ipy = 461;
-						px = ipx * Xratio;
-						py = ipy * Yratio;
-						px2 = (ratio * pbar->m_dwWidth) * Xratio;
-						py2 = pbar->m_dwHeight * Yratio;
-						EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), 0.f, 0.f, ratio, 1.f);
-					}
-					else
-					{
-						float px, py, px2, py2;
-
-						int ipx = ((640 - 320) / 2) + 60;
-						int ipy = ((480 - 390) / 2) + 230;
-
-						px = ipx * Xratio;
-						py = ipy * Yratio;
-						px2 = (ratio * pbar->m_dwWidth) * Xratio;
-						py2 = pbar->m_dwHeight * Yratio;
-						EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), 0.f, 0.f, ratio, 1.f);
-					}
+					float px, py, px2, py2;
+					int ipx = (640 - 200)	/ 2;
+					int ipy = 461;
+					px = ipx * Xratio;
+					py = ipy * Yratio;
+					px2 = (ratio * pbar->m_dwWidth) * Xratio;
+					py2 = pbar->m_dwHeight * Yratio;
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 				}
+				else
+				{
+					float px, py, px2, py2;
 
-				GRenderer->EndScene();
-				mainApp->GetWindow()->showFrame();
-			}
+					int ipx = ((640 - 320) / 2) + 60;
+					int ipy = ((480 - 390) / 2) + 230;
 
-			if (fFadeSens > 0.f)
-			{
-				if (fFadeColor >= 1.f) {
-					OLD_PROGRESS_BAR_COUNT++;
+					px = ipx * Xratio;
+					py = ipy * Yratio;
+					px2 = (ratio * pbar->m_dwWidth) * Xratio;
+					py2 = pbar->m_dwHeight * Yratio;
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 				}
 			}
 
-			if (PROGRESS_BAR_TOTAL && 
-				 PROGRESS_BAR_COUNT >= PROGRESS_BAR_TOTAL && 
-				 OLD_PROGRESS_BAR_COUNT >= PROGRESS_BAR_TOTAL)
-			{
-				if (fFadeColor >= 1.f && fFadeSens > 0.f) {
-					fFadeSens = -fFadeSens;
-				}
-			}
-
-			fFadeColor += fFadeSens;
-			fFadeColor = min(1.f, fFadeColor);
-			fFadeColor = max(0.f, fFadeColor);
+			GRenderer->EndScene();
+			mainApp->GetWindow()->showFrame();
 		}
 
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
-	
 		last_progress_bar_update = Time::getMs();
 	}
 }
