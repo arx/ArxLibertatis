@@ -1678,7 +1678,7 @@ bool Menu2_Render() {
 			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
 		}
 
-		pWindowMenu->Update(checked_range_cast<int>(ARXDiffTimeMenu));
+		pWindowMenu->Update(ARXDiffTimeMenu);
 
 		if (pWindowMenu)
 		{
@@ -3148,7 +3148,7 @@ void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement)
 
 //-----------------------------------------------------------------------------
 
-void CWindowMenu::Update(int _iDTime)
+void CWindowMenu::Update(float _fDTime)
 {
 
 
@@ -3156,7 +3156,7 @@ void CWindowMenu::Update(int _iDTime)
 
 	iPosX = checked_range_cast<int>(fCalc);
 
-	fAngle += _iDTime * 0.08f;
+	fAngle += _fDTime * 0.08f;
 
 	if (fAngle>90.f) fAngle=90.f;
 }
