@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/font/Font.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -3910,9 +3911,55 @@ extern long LAST_LLIGHT_COUNT;
 extern float PLAYER_CLIMB_THRESHOLD, player_climb;
 extern float TOTAL_CHRONO;
 
+// very dirty way to make printing text a little neater
+// TODO: add this functionality to OutputText
+static inline void show_fps_output_text(const int &line, const char *text, const Color color = Color(255, 255, 0))
+{
+	// get the font we'll be using
+	// TODO: don't assume OutputText uses this 
+	Font *font = hFontInGame;
+
+	// offset text into the screen a bit
+	static const Vector2<int> offset(20, 20);
+	// ensure lines are at least 20px high with at least 2px vertical spacing
+	static const Vector2<int> size(0, font->GetLineHeight());
+	static const Vector2<int> spacing(2, std::max(2, 20 - size.y));
+
+	// print the text directly using our selected font
+	// was: mainApp->OutputText(x, y, text);
+	font->Draw(offset.x + spacing.x, offset.y + line * (size.y + spacing.y), text, color);
+}
+
 void ShowFPS() {
 	
+#if 1 // new display
+
+	// TODO: make sure when adding text that it can fit here
+	// - this is extremely naughty, should use a std::string
+	char tex[32];
+
+	sprintf(tex, "%.02f fps", (float)FPS);
+	show_fps_output_text(0, tex);
+
+	// TODO: why is this extra stuff displayed here? 
+	// need to clean up the other info printing functions
+#if defined(PRINT_THIS_EXTRA_STUFF_IN_SHOW_FPS)
+	sprintf(tex, "%i, [%i/%i]{%i}", (int)EERIEDrawnPolys, (int)INTER_DRAW, (int)INTER_COMPUTE, (int)INTREATZONECOUNT);
+	show_fps_output_text(1, tex);
+
+	TOTAL_CHRONO=0;
+
+	if (LAST_LLIGHT_COUNT > MAX_LLIGHTS)
+	{
+		sprintf(tex, "lights %i > max (%i)", (int)LAST_LLIGHT_COUNT, (int)MAX_LLIGHTS);
+		show_fps_output_text(2, tex);
+	}
+#endif
+
+#else // old display
+
 	char tex[256];
+
 	float fpss2=1000.f/_framedelay;	
 	LASTfpscount++;
 	
@@ -3936,14 +3983,15 @@ void ShowFPS() {
 	//mainApp->OutputText( 70, DANAESIZY-100+32, tex );
 
 	TOTAL_CHRONO=0;
+
 //	TODO(lubosz): Don't get this by extern global
 //	sprintf(tex,"%4.0f MCache %ld[%ld] FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
 //		,inter.iobj[0]->pos.y, meshCache.size(),MCache_GetSize(),Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
 
 	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
 		strcat(tex," EXCEEDING LIMIT !!!");
-
 	mainApp->OutputText(70,20,tex);
+#endif
 }
 
 void ARX_SetAntiAliasing() {
