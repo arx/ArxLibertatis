@@ -964,10 +964,6 @@ bool ArxGame::Render() {
 		setFullscreen(!GetWindow()->IsFullScreen());
 	}
 	
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
-		showFPS = !showFPS;
-	}
-	
 	if(ARX_Menu_Render()) {
 		goto norenderend;
 	}
@@ -2098,16 +2094,21 @@ bool ArxGame::Render() {
 		ARX_DrawAfterQuickLoad();
 	}
 
-	if(showFPS) {
-		CalcFPS();
-		ShowFPS();
-	}
-
 	GRenderer->EndScene();
 
 	//--------------NORENDEREND---------------------------------------------------
-	norenderend:
-		;
+norenderend:
+
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
+		showFPS = !showFPS;
+	}
+
+	if(showFPS) {
+		GRenderer->BeginScene();
+		CalcFPS();
+		ShowFPS();
+		GRenderer->EndScene();
+	}
 	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
 	{
