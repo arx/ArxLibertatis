@@ -355,8 +355,10 @@ void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int hei
 		case Format_B8G8R8: ilformat = IL_RGB; ilbbp = 3; break;
 		case Format_R8G8B8A8: ilformat = IL_BGRA; ilbbp = 4; break;
 		case Format_B8G8R8A8: ilformat = IL_BGRA; ilbbp = 4; break;
-		// unsupported format
+		// unsupported format (should never happen!)
 		default: 
+			arx_assert(false);
+			ilDeleteImages(1, &imageName);
 			return; 
 	}
 
@@ -369,8 +371,10 @@ void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int hei
 		case Format_B8G8R8: ilformat = IL_BGR; ilbbp = 3; break;
 		case Format_R8G8B8A8: ilformat = IL_RGBA; ilbbp = 4; break;
 		case Format_B8G8R8A8: ilformat = IL_BGRA; ilbbp = 4; break;
-		// unsupported format
+		// unsupported format (should never happen!)
 		default: 
+			arx_assert(false);
+			ilDeleteImages(1, &imageName);
 			return; 
 	}
 
