@@ -676,16 +676,10 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	
 	getSnapshot(fullsize);
 	
- 	image.Create(width, height, Image::Format_R8G8B8);
-	
-	GLint ret = gluScaleImage(GL_RGB, fullsize.GetWidth(), fullsize.GetHeight(), GL_UNSIGNED_BYTE,
-	                          fullsize.GetData(), width, height, GL_UNSIGNED_BYTE, image.GetData());
-	
-	if(ret) {
-		LogWarning << "Failed to scale down screen capture: " << ret << " = " << gluErrorString(ret);
-		return false;
-	}
-	
+	image.ResizeFrom(fullsize, width, height, Image::Format_R8G8B8);
+
+	image.FlipY();
+
 	return true;
 }
 

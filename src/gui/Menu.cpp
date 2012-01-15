@@ -225,6 +225,7 @@ void ARX_Menu_Resources_Create() {
 			"Erik Lund (Akhilla)\n"
 			"Lubosz Sarnecki (lubosz)\n"
 			"Sebastien Lussier (BobJelly)\n"
+			"Elliot Rigets (adejr)\n"
 			"\n~OTHER CONTRIBUTORS\n"
 			"Chris Gray (chrismgray)\n"
 			"guidoj\n"

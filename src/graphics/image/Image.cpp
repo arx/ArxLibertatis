@@ -20,7 +20,8 @@
 #include "graphics/image/Image.h"
 
 #include <cstring>
-#include <il.h>
+#include <IL/il.h>
+#include <IL/ilu.h>
 
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
@@ -40,6 +41,7 @@ public:
 	DevilLib() {
 		
 		ilInit();
+		iluInit();
 		
 		// Set the origin to be used when loading all images, 
 		// so that any image with a different origin will be
@@ -331,6 +333,50 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	if(!mData) {
 		mData = new unsigned char[mDataSize];
 	}
+}
+
+// this function was implemented to eliminate the need for gluScaleImage()
+// creates an image of the desired size and rescales the source into it
+// currently performs default nearest-neighbour interpolation of the image
+// supports only RGB, BGR, RGBA or BGRA formats
+void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int height, Format format)
+{
+	Create(width, height, format);
+
+	ILuint imageName;
+	ilGenImages(1, &imageName);
+	ilBindImage(imageName);
+
+	ILint ilbbp;
+	ILenum ilformat;
+
+	switch (source.GetFormat()) {
+		case Format_R8G8B8: ilformat = IL_RGB; ilbbp = 3; break;
+		case Format_B8G8R8: ilformat = IL_RGB; ilbbp = 3; break;
+		case Format_R8G8B8A8: ilformat = IL_BGRA; ilbbp = 4; break;
+		case Format_B8G8R8A8: ilformat = IL_BGRA; ilbbp = 4; break;
+		// unsupported format
+		default: 
+			return; 
+	}
+
+	ilTexImage(source.GetWidth(), source.GetHeight(), source.GetDepth(), ilbbp, ilformat, IL_UNSIGNED_BYTE, const_cast<unsigned char *>(source.GetData()));
+
+	iluScale(width, height, 1);
+
+	switch (GetFormat()) {
+		case Format_R8G8B8: ilformat = IL_RGB; ilbbp = 3; break;
+		case Format_B8G8R8: ilformat = IL_BGR; ilbbp = 3; break;
+		case Format_R8G8B8A8: ilformat = IL_RGBA; ilbbp = 4; break;
+		case Format_B8G8R8A8: ilformat = IL_BGRA; ilbbp = 4; break;
+		// unsupported format
+		default: 
+			return; 
+	}
+
+	ilCopyPixels(0, 0, 0, width, height, GetDepth(), ilformat, IL_UNSIGNED_BYTE, GetData());
+
+	ilDeleteImages(1, &imageName);
 }
 
 void Image::Clear() {
@@ -802,7 +848,7 @@ void ComplexAlphaHelper(unsigned char * Data) {
 	tmp[0] = (Data[0] | (Data[1] << 8)) & 0xfff;
 	tmp[1] = ((Data[1] >> 4) | (Data[2] << 4)) & 0xfff;
 	
-	Data[0] = tmp[1];
+	Data[0] = tmp[1] & 0xff;
 	Data[1] = (tmp[1] >> 8) | (tmp[0] << 4);
 	Data[2] = tmp[0] >> 4;
 }
