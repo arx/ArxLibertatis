@@ -362,8 +362,10 @@ bool SaveBlock::open(bool writable) {
 		mode |= fs::fstream::out;
 	}
 	
+	handle.clear();
 	handle.open(savefile, mode);
 	if(!handle.is_open()) {
+		handle.clear();
 		if(writable) {
 			handle.open(savefile, mode | fs::fstream::trunc);
 		}
