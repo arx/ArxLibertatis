@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/GameTime.h"
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "game/Equipment.h"
@@ -79,9 +80,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
-#include "io/Filesystem.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "physics/Collisions.h"
@@ -139,8 +141,8 @@ long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
 static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
-static INTERACTIVE_OBJ * AddCamera(const fs::path & file);
-static INTERACTIVE_OBJ * AddMarker(const fs::path & file);
+static INTERACTIVE_OBJ * AddCamera(const res::path & file);
+static INTERACTIVE_OBJ * AddMarker(const res::path & file);
 
 
 /* Return the short name for this Object where only the name
@@ -164,7 +166,7 @@ std::string INTERACTIVE_OBJ::long_name() const {
  * directory portion of the filename member is combined
  * with the the result of long_name()
  */
-fs::path INTERACTIVE_OBJ::full_name() const {
+res::path INTERACTIVE_OBJ::full_name() const {
 	return filename.parent() / long_name();
 }
 
@@ -1165,7 +1167,7 @@ void RestoreInitialIOStatus()
 	}
 }
 
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp) {
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp) {
 	
 	if(!io || temp.empty()) {
 		return false;
@@ -1197,7 +1199,7 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp) {
 	return true;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2) {
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res::path & param1, const res::path & param2) {
 	
 	io->tweaks.resize(io->tweaks.size() + 1);
 	
@@ -1210,7 +1212,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
 	
 	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
 		switch(i->type) {
-			case TWEAK_REMOVE: EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, fs::path()); break;
+			case TWEAK_REMOVE: EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, res::path()); break;
 			case TWEAK_TYPE_SKIN: EERIE_MESH_TWEAK_Skin(io->obj, i->param1, i->param2); break;
 			case TWEAK_TYPE_ICON: ARX_INTERACTIVE_TWEAK_Icon(io, i->param1); break;
 			case TWEAK_TYPE_MESH: ARX_INTERACTIVE_USEMESH(io, i->param1); break;
@@ -1553,12 +1555,12 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const fs::path & s1)
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const res::path & s1)
 {
 	if ((!io) || (s1.empty()))
 		return;
 
-	fs::path icontochange = io->filename.parent() / s1;
+	res::path icontochange = io->filename.parent() / s1;
 
 	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
 	if (tc == NULL)
@@ -2214,7 +2216,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 }
 
 
-INTERACTIVE_OBJ * AddInteractive(const fs::path & file, long id, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags) {
 	
 	INTERACTIVE_OBJ * io = NULL;
 	const string & ficc = file.string();
@@ -2295,7 +2297,7 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp) {
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp) {
 	
 	arx_assert(io && (io->ioflags & IO_NPC));
 	
@@ -2306,7 +2308,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp) {
 		ReleaseInter(ioo);
 	}
 	
-	fs::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
+	res::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
 	
 	io->_npcdata->weapon = AddItem(file, IO_IMMEDIATELOAD);
 
@@ -2324,7 +2326,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp) {
 	}
 }
 
-static void GetIOScript(INTERACTIVE_OBJ * io, const fs::path & script) {
+static void GetIOScript(INTERACTIVE_OBJ * io, const res::path & script) {
 	loadScript(io->script, resources->getFile(script));
 }
 
@@ -2342,11 +2344,11 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string&
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags) {
 	
-	fs::path object = fs::path(file).set_ext("teo");
+	res::path object = res::path(file).set_ext("teo");
 	
-	fs::path scriptfile = fs::path(file).set_ext("asl");
+	res::path scriptfile = res::path(file).set_ext("asl");
 
 	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
@@ -2442,11 +2444,11 @@ INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
+static INTERACTIVE_OBJ * AddCamera(const res::path & file) {
 	
-	fs::path object = fs::path(file).set_ext("teo");
+	res::path object = res::path(file).set_ext("teo");
 	
-	fs::path scriptfile = fs::path(file).set_ext("asl");
+	res::path scriptfile = res::path(file).set_ext("asl");
 
 	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
@@ -2497,11 +2499,11 @@ static INTERACTIVE_OBJ * AddCamera(const fs::path & file) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddMarker(const fs::path & file) {
+static INTERACTIVE_OBJ * AddMarker(const res::path & file) {
 	
-	fs::path object = fs::path(file).set_ext("teo");
+	res::path object = res::path(file).set_ext("teo");
 	
-	fs::path scriptfile = fs::path(file).set_ext("asl");
+	res::path scriptfile = res::path(file).set_ext("asl");
 	
 	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
@@ -2667,7 +2669,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	//Must KILL dir...
 	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
 		
-		fs::path dir = inter.iobj[i]->full_name();
+		fs::path dir = config.paths.user / inter.iobj[i]->full_name();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
@@ -2796,11 +2798,11 @@ IO_NPCDATA::~IO_NPCDATA() {
 	}
 }
 
-INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 	
-	fs::path object = fs::path(file).set_ext("teo");
+	res::path object = res::path(file).set_ext("teo");
 	
-	fs::path scriptfile = fs::path(file).set_ext("asl");
+	res::path scriptfile = res::path(file).set_ext("asl");
 	
 	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
@@ -2896,7 +2898,7 @@ void ReloadScript(INTERACTIVE_OBJ * io) {
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	loadScript(io->script, resources->getFile(fs::path(io->filename).set_ext("asl")));
+	loadScript(io->script, resources->getFile(res::path(io->filename).set_ext("asl")));
 	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
 
 	long num = GetInterNum(io);
@@ -2952,7 +2954,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 	
 	while(io->ident == 0) {
 		
-		fs::path temp = io->full_name();
+		fs::path temp = config.paths.user / io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;
@@ -3035,11 +3037,11 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-INTERACTIVE_OBJ * AddItem(const fs::path & fil, AddInteractiveFlags flags) {
+INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	
 	long type = IO_ITEM;
 
-	fs::path file = fil;
+	res::path file = fil;
 	
 	if(!specialstrcmp(file.filename(), "gold_coin")) {
 		file.up() /= "gold_coin.asl";
@@ -3050,17 +3052,17 @@ INTERACTIVE_OBJ * AddItem(const fs::path & fil, AddInteractiveFlags flags) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
 	
-	fs::path script = fs::path(file).set_ext("asl");
+	res::path script = res::path(file).set_ext("asl");
 	
-	fs::path object = fs::path(file).set_ext("teo");
+	res::path object = res::path(file).set_ext("teo");
 	
-	fs::path icon = fs::path(file).remove_ext().append_basename("[icon]");
+	res::path icon = res::path(file).remove_ext().append_basename("[icon]");
 
 	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
 		return NULL;
 	}
 
-	if(!resources->getFile(fs::path(icon).set_ext("bmp"))) {
+	if(!resources->getFile(res::path(icon).set_ext("bmp"))) {
 		return NULL;
 	}
 
@@ -4436,7 +4438,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 }
 
 //-------------------------------------------------------------------------
-string GetMaterialString(const fs::path & texture) {
+string GetMaterialString(const res::path & texture) {
 	
 	const string & origin = texture.string();
 	

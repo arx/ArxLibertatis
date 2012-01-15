@@ -19,11 +19,13 @@
 
 #include "errorreport.h"
 
+#ifdef HAVE_WINAPI
 // Win32
 #include <winsock2.h>
 #include <windows.h>
 #include <DbgHelp.h>
 #include <Psapi.h>
+#endif
 
 // Qt
 #include <QApplication>
@@ -38,7 +40,7 @@
 #include <QThread>
 #include <QXmlStreamWriter>
 
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "platform/Thread.h"
 
 // CrashReporter
@@ -53,8 +55,8 @@
 ErrorReport::ErrorReport(const std::string& crashesFolder, const std::string& sharedMemoryName)
 	: m_RunningTimeSec()
 	, m_ProcessIs64Bit()
-	, m_pCrashInfo()
 	, m_SharedMemoryName(sharedMemoryName)
+	, m_pCrashInfo()
 {
 	m_CrashesFolder = crashesFolder.c_str();
 }
@@ -91,6 +93,7 @@ bool ErrorReport::Initialize()
 
 bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGrayscale)
 {
+#ifdef HAVE_WINAPI
 	fs::path fullPath = m_CurrentReportFolder / fileName;
 
 	WId mainWindow = GetMainWindow(m_pCrashInfo->processId);
@@ -127,16 +130,24 @@ bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGra
 		m_AttachedFiles.push_back(fullPath);
 
 	return bSaved;
+#else
+	// TODO
+	ARX_UNUSED(fileName), ARX_UNUSED(quality), ARX_UNUSED(bGrayscale);
+	return false;
+#endif
 }
 
+#ifdef HAVE_WINAPI
 // This callbask function is called by MinidumpWriteDump
 BOOL CALLBACK MiniDumpCallback(PVOID CallbackParam, PMINIDUMP_CALLBACK_INPUT CallbackInput, PMINIDUMP_CALLBACK_OUTPUT CallbackOutput)
 {
 	return TRUE;
 }
+#endif
 
 bool ErrorReport::GetCrashDump(const fs::path& fileName)
 {
+#ifdef HAVE_WINAPI
 	fs::path fullPath = m_CurrentReportFolder / fileName;
 
 	HMODULE hDbgHelp = LoadLibrary("dbghelp.dll");
@@ -195,6 +206,11 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 		m_AttachedFiles.push_back(fullPath);
 
 	return bWriteDump;
+#else
+	ARX_UNUSED(fileName);
+	// TODO
+	return false;
+#endif
 }
 
 bool ErrorReport::GetMachineInfo(const fs::path& fileName)
@@ -236,6 +252,10 @@ bool ErrorReport::GetMiscCrashInfo()
 	// Get crash time
 	m_CrashDateTime = QDateTime::currentDateTime();
 
+#ifdef HAVE_WINAPI
+	
+	// TODO
+	
 	// Open parent process handle
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, m_pCrashInfo->processId);
 	if(hProcess != NULL)
@@ -274,6 +294,8 @@ bool ErrorReport::GetMiscCrashInfo()
 
 	// Determine if Windows is 64-bit.
 	m_OSIs64Bit = Is64BitWindows();
+	
+#endif
 
 	return true;
 }
@@ -482,6 +504,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	std::string fileName = m_SharedMemoryName + ".zip";
 	fs::path fullPath = m_CurrentReportFolder / fileName.c_str();
 
+#ifdef HAVE_WINAPI
 	CSmtp smptClient;
 	smptClient.SetSenderName("Arx Libertatis Crashes");
 	smptClient.SetSenderMail("arxlibertatis.crashes@gmail.com");
@@ -489,11 +512,13 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	smptClient.SetSubject("Arx Libertatis Crash Report");
 	smptClient.AddMsgLine("Hello");
 	smptClient.AddAttachment(fullPath.string().c_str());
+#endif
 	
 	// Connect to server
 	bool connected = false;
 	pProgressNotifier->taskStepStarted("Connecting to server");
 	{
+#ifdef HAVE_WINAPI
 		try
 		{
 			connected = smptClient.ConnectRemoteServer("smtp.gmail.com", 465, USE_SSL, true, "arxlibertatis.crashes@gmail.com", "yu8pnioo");
@@ -502,6 +527,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		{
 			pProgressNotifier->setError(err.GetErrorText());
 		}
+#endif
 	}
 	pProgressNotifier->taskStepEnded();
 	if(!connected)
@@ -511,6 +537,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	bool sent = true;
 	pProgressNotifier->taskStepStarted("Sending report");
 	{
+#ifdef HAVE_WINAPI
 		try
 		{
 			smptClient.Send();
@@ -519,6 +546,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		{
 			pProgressNotifier->setError(err.GetErrorText());
 		}
+#endif
 	}
 	pProgressNotifier->taskStepEnded();
 

@@ -21,7 +21,7 @@
 #define ARX_GRAPHICS_TEXTURE_TEXTURE_H
 
 #include "graphics/image/Image.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "math/Vector2.h"
 #include "platform/Flags.h"
 
@@ -73,21 +73,21 @@ public:
 	
 	virtual ~Texture2D() { }
 	
-	bool Init(const fs::path & strFileName, TextureFlags flags = HasColorKey);
+	bool Init(const res::path & strFileName, TextureFlags flags = HasColorKey);
 	bool Init(const Image & image, TextureFlags flags = HasMipmaps);
 	bool Init(unsigned int width, unsigned int height, Image::Format format);
 	
 	bool Restore();
 	
 	inline Image & GetImage() { return mImage; }
-	inline const fs::path & getFileName() { return mFileName; }
+	inline const res::path & getFileName() { return mFileName; }
 	
 protected:
 	
 	Texture2D() { } 
 	
 	Image mImage;
-	fs::path mFileName;
+	res::path mFileName;
 	
 };
 

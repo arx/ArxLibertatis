@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/GameTime.h"
 #include "core/Localisation.h"
+#include "core/SaveGame.h"
 #include "core/Version.h"
 
 #include "game/Damage.h"
@@ -103,8 +104,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector2.h"
 #include "math/Vector3.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/fs/FilePath.h"
+#include "io/resource/PakReader.h"
 #include "io/Screenshot.h"
 #include "io/log/Logger.h"
 
@@ -392,8 +393,8 @@ bool ArxGame::InitSound() {
 	return true;
 }
 
-bool ArxGame::InitGameData()
-{
+bool ArxGame::InitGameData() {
+	
 	bool init;
 	
 	init = AddPaks();
@@ -404,7 +405,36 @@ bool ArxGame::InitGameData()
 
 	ARX_SOUND_LoadData();
 	
+	savegames.update();
+	
 	return init;
+}
+
+static const char * default_paks[][2] = {
+	{ "data.pak", NULL },
+	{ "loc.pak", "loc_default.pak" },
+	{ "data2.pak", NULL },
+	{ "sfx.pak", NULL },
+	{ "speech.pak", "speech_default.pak" },
+};
+
+static void add_paks(const fs::path & base, bool * found) {
+	
+	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+		if(resources->addArchive(base / default_paks[i][0])) {
+			found[i] = true;
+		} else if(default_paks[i][1] && resources->addArchive(base / default_paks[i][1])) {
+			found[i] = true;
+		}
+	}
+	
+	resources->addFiles(base / "editor", "editor");
+	resources->addFiles(base / "game", "game");
+	resources->addFiles(base / "graph", "graph");
+	resources->addFiles(base / "localisation", "localisation");
+	resources->addFiles(base / "misc", "misc");
+	resources->addFiles(base / "sfx", "sfx");
+	resources->addFiles(base / "speech", "speech");
 }
 
 bool ArxGame::AddPaks() {
@@ -413,49 +443,37 @@ bool ArxGame::AddPaks() {
 	
 	resources = new PakReader;
 	
-	fs::path pak_data = "data.pak";
-	if(!resources->addArchive(pak_data)) {
-		LogError << "Unable to find main data file " << pak_data;
-		return false;
+	bool found[ARRAY_SIZE(default_paks)];
+	std::fill_n(found, ARRAY_SIZE(default_paks), false);
+	
+	
+	if(!config.paths.data.empty()) {
+		add_paks(config.paths.data, found);
 	}
 	
-	fs::path pak_loc = "loc.pak";
-	if(!resources->addArchive(pak_loc)) {
-		fs::path pak_loc_default = "loc_default.pak";
-		if(!resources->addArchive(pak_loc_default)) {
-			LogError << "Unable to find localisation file " << pak_loc << " or " << pak_loc_default;
+	add_paks(config.paths.user, found);
+	
+	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+		if(!found[i]) {
+			if(config.paths.data.empty()) {
+				if(default_paks[i][1]) {
+					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
+					         << " in " << config.paths.user;
+				} else {
+					LogError << "Unable to find " << default_paks[i][0] << " in " << config.paths.user;
+				}
+			} else {
+				if(default_paks[i][1]) {
+					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
+					         << " in either " << config.paths.data << " or " << config.paths.user;
+				} else {
+					LogError << "Unable to find " << default_paks[i][0]
+					          << " in either " << config.paths.data << " or " << config.paths.user;
+				}
+			}
 			return false;
 		}
 	}
-	
-	fs::path pak_data2 = "data2.pak";
-	if(!resources->addArchive(pak_data2)) {
-		LogError << "Unable to find aux data file " << pak_data2;
-		return false;
-	}
-	
-	fs::path pak_sfx = "sfx.pak";
-	if(!resources->addArchive(pak_sfx)) {
-		LogError << "Unable to find sfx data file " << pak_sfx;
-		return false;
-	}
-	
-	fs::path pak_speech = "speech.pak";
-	if(!resources->addArchive(pak_speech)) {
-		fs::path pak_speech_default = "speech_default.pak";
-		if(!resources->addArchive(pak_speech_default)) {
-			LogError << "Unable to find speech data file " << pak_speech << " or " << pak_speech_default;
-			return false;
-		}
-	}
-	
-	resources->addFiles("editor", "editor");
-	resources->addFiles("game", "game");
-	resources->addFiles("graph", "graph");
-	resources->addFiles("localisation", "localisation");
-	resources->addFiles("misc", "misc");
-	resources->addFiles("sfx", "sfx");
-	resources->addFiles("speech", "speech");
 	
 	return true;
 }
@@ -792,8 +810,7 @@ bool ArxGame::Render() {
 
 	ACTIVECAM = &subj;
 
-	if (wasResized) 
-	{
+	if(wasResized) {
 		LogDebug("was resized");
 		wasResized = false;
 		DanaeRestoreFullScreen();
@@ -954,14 +971,9 @@ bool ArxGame::Render() {
 		goto norenderend;
 	}
 
-	if (WILL_QUICKSAVE)
-	{
-		SnapShot * pSnapShot = new SnapShot("sct", true);
-		pSnapShot->GetSnapShotDim(160,100);
-		delete pSnapShot;
-
-		if (WILL_QUICKSAVE>=2)
-		{
+	if(WILL_QUICKSAVE) {
+		GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
+		if(WILL_QUICKSAVE >= 2) {
 			ARX_QuickSave();
 			WILL_QUICKSAVE=0;
 		}

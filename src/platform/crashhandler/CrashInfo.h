@@ -22,6 +22,7 @@
 
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#include <boost/interprocess/detail/os_thread_functions.hpp>
 
 #include "platform/Platform.h"
 

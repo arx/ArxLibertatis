@@ -70,7 +70,7 @@ extern TexturedVertex	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 #ifdef BUILD_EDIT_LOADSAVE
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const fs::path & dir);
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dir);
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 #endif
 
@@ -87,14 +87,14 @@ long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx);
  * 
  * @param pbox true if the object should have a physics box.
  */
-EERIE_3DOBJ * loadObject(const fs::path & file, bool pbox = true);
+EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
 
 /*!
  * @param texpath texture path relative to file
  */
-EERIE_3DOBJ * _LoadTheObj(const fs::path & file, const fs::path & texpath = fs::path());
+EERIE_3DOBJ * _LoadTheObj(const res::path & file, const res::path & texpath = res::path());
 
-EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & fic);
+EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & fic);
 
 void ReleaseAnim(EERIE_ANIM * ea);
 

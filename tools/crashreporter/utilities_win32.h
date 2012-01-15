@@ -20,9 +20,15 @@
 #ifndef ARX_CRASHREPORTER_UTILITIES_WIN32_H
 #define ARX_CRASHREPORTER_UTILITIES_WIN32_H
 
+#include "Configure.h"
+
+#ifdef HAVE_WINAPI
+
 HWND GetMainWindow(unsigned int processId);
 bool GetWindowsVersionName(char* str, int bufferSize);
 bool Is64BitWindows();
 ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );
 
-#endif ARX_CRASHREPORTER_UTILITIES_WIN32_H
+#endif
+
+#endif // ARX_CRASHREPORTER_UTILITIES_WIN32_H

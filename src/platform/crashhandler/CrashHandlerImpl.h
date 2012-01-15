@@ -34,12 +34,12 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include "io/Filesystem.h"
-#include "io/FilePath.h"
 #include "io/log/Logger.h"
 #include "platform/CrashHandler.h"
 #include "platform/crashhandler/CrashInfo.h"
 #include "platform/Lock.h"
+
+namespace fs { class path; }
 
 class CrashHandlerImpl {
 public:

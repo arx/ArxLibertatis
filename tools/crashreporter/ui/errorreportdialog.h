@@ -132,7 +132,7 @@ public:
 	{
 	}
 	
-	int rowCount(const QModelIndex & parent = QModelIndex()) const
+	int rowCount(const QModelIndex & /*parent*/ = QModelIndex()) const
 	{
 		return m_errorReport.GetAttachedFiles().size();
 	}

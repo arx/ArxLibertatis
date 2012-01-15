@@ -24,16 +24,26 @@
 #include "ui/errorreportdialog.h"
 #include "errorreport.h"
 
+#include "io/log/Logger.h"
+#include "io/log/FileLogger.h"
 
 #if defined(_WIN32) || defined(_WIN64)
-INT WINAPI WinMain(HINSTANCE, HINSTANCE, PSTR, INT)
-#else
-int main(int argc, char **argv)
-#endif
-{
+
+INT WINAPI WinMain(HINSTANCE, HINSTANCE, PSTR, INT) {
+	
 	Q_INIT_RESOURCE(crashreporter);
 	
 	QApplication app(__argc, __argv);
+	
+#else
+
+int main(int argc, char **argv) {
+	
+	Q_INIT_RESOURCE(crashreporter);
+	
+	QApplication app(argc, argv);
+	
+#endif
 
 	Logger::init();
 	Logger::add(new logger::File("arxcrashreporter.log", std::ios_base::out | std::ios_base::trunc));

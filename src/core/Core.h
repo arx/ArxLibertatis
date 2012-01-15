@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Color.h"
 #include "graphics/data/Mesh.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "math/MathFwd.h"
 
 #include "Configure.h"
@@ -87,7 +87,7 @@ extern long ADDED_IO_NOT_SAVED;
 extern EERIE_CAMERA * Kam;
 extern EERIE_BACKGROUND DefaultBkg;
 extern INTERACTIVE_OBJ * COMBINE;
-extern fs::path LastLoadedScene;
+extern res::path LastLoadedScene;
 extern char TELEPORT_TO_LEVEL[64];
 extern char TELEPORT_TO_POSITION[64];
 extern float PULSATE;
@@ -127,6 +127,8 @@ extern long DANAECENTERY;
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
 
+class Image;
+extern Image savegame_thumbnail;
 
 extern float Original_framedelay;
 extern long LOADEDD;

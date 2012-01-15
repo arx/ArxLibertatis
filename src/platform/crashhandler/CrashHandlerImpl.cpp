@@ -19,6 +19,9 @@
 
 #include "CrashHandlerImpl.h"
 
+#include "io/fs/Filesystem.h"
+#include "io/fs/FilePath.h"
+
 CrashHandlerImpl::CrashHandlerImpl()
 	: m_pCrashInfo(0) {
 }
@@ -59,8 +62,9 @@ bool CrashHandlerImpl::initialize() {
 void CrashHandlerImpl::shutdown() {
 	Autolock autoLock(&m_Lock);
 	
-	unregisterCrashHandlers();
-	destroySharedMemory();
+	// TODO(crash-handler) not allowed!
+	//unregisterCrashHandlers();
+	//destroySharedMemory();
 }
 
 bool CrashHandlerImpl::createSharedMemory() {

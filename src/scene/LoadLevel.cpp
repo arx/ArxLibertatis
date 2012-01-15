@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Application.h"
 #include "core/GameTime.h"
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "game/Levels.h"
@@ -69,10 +70,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
-#include "io/FileStream.h"
-#include "io/PakReader.h"
-#include "io/Filesystem.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
+#include "io/fs/Filesystem.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
 #include "io/log/Logger.h"
@@ -554,7 +556,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 	switch(fl) {
 		
 		case 1: { // class script
-			file = io->filename;
+			file = config.paths.user / io->filename.string();
 			script = &io->script;
 			break;
 		}
@@ -564,7 +566,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 				LogError << ("NO IDENT...");
 				return;
 			}
-			file = io->full_name();
+			file = config.paths.user / io->full_name().string();
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;
@@ -591,7 +593,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 #endif // BUILD_EDIT_LOADSAVE
 
 
-INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
+INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	
 	std::ostringstream nameident;
 	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
@@ -613,7 +615,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & 
 	io->move.x = io->move.y = io->move.z = 0.f;
 	io->initangle = io->angle = angle;
 	
-	fs::path tmp = io->full_name(); // Get the directory name to check for
+	res::path tmp = io->full_name(); // Get the directory name to check for
 	string id = io->short_name();
 	if(PakDirectory * dir = resources->getDirectory(tmp)) {
 		if(PakFile * file = dir->getFile(id + ".asl")) {
@@ -651,14 +653,14 @@ extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 
-long DanaeLoadLevel(const fs::path & file) {
+long DanaeLoadLevel(const res::path & file) {
 	
 	LogInfo << "Loading Level " << file;
 	
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(file.string());
 	
-	fs::path lightingFileName = fs::path(file).set_ext("llf");
+	res::path lightingFileName = res::path(file).set_ext("llf");
 
 	LogDebug("fic2 " << lightingFileName);
 	LogDebug("fileDlf " << file);
@@ -718,7 +720,7 @@ long DanaeLoadLevel(const fs::path & file) {
 		const DANAE_LS_SCENE * dls = reinterpret_cast<const DANAE_LS_SCENE *>(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 		
-		fs::path scene = (FAKE_DIR) ? file.parent() : fs::path::load(safestring(dls->name));
+		res::path scene = (FAKE_DIR) ? file.parent() : res::path::load(safestring(dls->name));
 		FAKE_DIR = 0;
 		
 		if(FastSceneLoad(scene)) {
@@ -805,7 +807,7 @@ long DanaeLoadLevel(const fs::path & file) {
 				pathstr = pathstr.substr(pos);
 			}
 			
-			LoadInter_Ex(fs::path::load(pathstr), dli->ident, dli->pos, dli->angle, trans);
+			LoadInter_Ex(res::path::load(pathstr), dli->ident, dli->pos, dli->angle, trans);
 		}
 	}
 	
@@ -990,7 +992,7 @@ long DanaeLoadLevel(const fs::path & file) {
 		ap->pos = Vec3f(dlp->pos) + trans;
 		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
-		ap->ambiance = fs::path::load(safestring(dlp->ambiance));
+		ap->ambiance = res::path::load(safestring(dlp->ambiance));
 		
 		ap->amb_max_vol = dlp->amb_max_vol;
 		if(ap->amb_max_vol <= 1.f) {
@@ -1465,7 +1467,7 @@ void AddIdent(std::string & ident, long num)
 
 #ifdef BUILD_EDITOR
 
-static void LogDirDestruction(const fs::path & dir ) {
+static void LogDirDestruction(const res::path & dir ) {
 	if(fs::is_directory(dir)) {
 		LogDebug("LogDirDestruction: " << dir);
 	}
@@ -1490,7 +1492,7 @@ void CheckIO_NOT_SAVED() {
 			continue;
 		}
 		
-		fs::path temp = inter.iobj[i]->full_name();
+		res::path temp = inter.iobj[i]->full_name();
 		
 		if(fs::is_directory(temp)) {
 			LogDirDestruction(temp);
@@ -1504,7 +1506,7 @@ void CheckIO_NOT_SAVED() {
 	
 }
 
-static void ARX_SAVELOAD_DLFCheckAdd(const fs::path & path, long num) {
+static void ARX_SAVELOAD_DLFCheckAdd(const res::path & path, long num) {
 
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
@@ -1515,7 +1517,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(const fs::path & path, long num) {
 	long i;
 	size_t FileSize = 0;
 	
-	fs::path fic = fs::path(path).set_ext("dlf");
+	res::path fic = res::path(path).set_ext("dlf");
 	
 	dat = (unsigned char *)resources->readAlloc(fic, FileSize);
 	if(!dat) {
@@ -1567,7 +1569,7 @@ static void ARX_SAVELOAD_DLFCheckAdd(const fs::path & path, long num) {
 		dli = (DANAE_LS_INTER *)(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
 		std::stringstream ss;
-		ss << fs::path::load(dli->name).basename() << '_' << std::setfill('0') << std::setw(4) << dli->ident;
+		ss << res::path::load(dli->name).basename() << '_' << std::setfill('0') << std::setw(4) << dli->ident;
 		string id = ss.str();
 		AddIdent(id, num);
 	}

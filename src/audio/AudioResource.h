@@ -53,11 +53,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class PakFileHandle;
 
-namespace fs { class path; }
+namespace res { class path; }
 
 namespace audio {
 
-PakFileHandle * OpenResource(const fs::path & name, const fs::path & resource_path);
+PakFileHandle * OpenResource(const res::path & name, const res::path & resource_path);
 
 class ResourceHandle {
 	

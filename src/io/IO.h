@@ -53,9 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
 
 /**
  * Create a hash of the file.

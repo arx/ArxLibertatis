@@ -26,8 +26,7 @@
 #include "input/Input.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
-#include "io/FilePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FileStream.h"
 #include "io/IniReader.h"
 #include "io/IniSection.h"
 #include "io/IniWriter.h"
@@ -465,18 +464,12 @@ static Vec2i parseResolution(const string & resolution) {
 	}
 }
 
-bool Config::init(const fs::path & file, const fs::path & defaultFile) {
+bool Config::init(const fs::path & file) {
 	
 	CrashHandler::addAttachedFile(file);
-	CrashHandler::addAttachedFile(defaultFile);
-
-	this->file = file;
 	
 	fs::ifstream ifs;
 	ifs.open(file);
-	if(!ifs.is_open()) {
-		ifs.open(defaultFile);
-	}
 	bool loaded = ifs.is_open();
 	
 	ConfigReader reader;

@@ -62,11 +62,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Player.h"
 
+#include "gui/Credits.h"
+#include "gui/Interface.h"
+#include "gui/MenuPublic.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"
-#include "gui/Interface.h"
-#include "gui/Credits.h"
-#include "gui/MenuPublic.h"
 #include "gui/TextManager.h"
 
 #include "graphics/Draw.h"
@@ -75,11 +75,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "io/PakReader.h"
-#include "io/FilePath.h"
+#include "io/resource/PakReader.h"
+#include "io/resource/ResourcePath.h"
 #include "io/Screenshot.h"
-#include "io/Filesystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
+
+#include "platform/String.h"
 
 #include "scene/LoadLevel.h"
 #include "scene/ChangeLevel.h"
@@ -111,9 +113,6 @@ extern float fFadeInOut;
 extern char SKIN_MOD;
 extern char QUICK_MOD;
 
-extern float PROGRESS_BAR_TOTAL;
-extern float OLD_PROGRESS_BAR_COUNT;
-extern float PROGRESS_BAR_COUNT;
 
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
@@ -138,184 +137,10 @@ long SP_HEAD = 0;
 //-----------------------------------------------------------------------------
 #define ARX_MENU_SIZE_Y 24
 
- 
-std::vector<SaveGame> save_l;
 
-static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
-	return (a.stime > b.stime);
-}
 
-namespace {
-enum SaveGameChange {
-	SaveGameRemoved,
-	SaveGameUnchanged,
-	SaveGameChanged
-};
-} // anonnymous namespace
-
-void CreateSaveGameList() {
-	
-	LogDebug("CreateSaveGameList");
-	
-	if(save_l.empty()) {
-		save_l.resize(1);
-		save_l[0].name = "New";
-	}
-	
-	size_t oldCount = save_l.size() - 1;
-	std::vector<SaveGameChange> found(oldCount, SaveGameRemoved);
-	
-	bool newSaves = false;
-	
-	size_t maxlength = 0;
-	
-	fs::path savedir = "save";
-	
-	for(fs::directory_iterator it(savedir); !it.end(); ++it) {
-		
-		string dirname = it.name();
-		fs::path path = savedir / dirname;
-		
-		if(dirname.compare(0, 4, "save") || !it.is_directory()) {
-			LogDebug("ignoring non-save directory " << path);
-			continue;
-		}
-		
-		istringstream iss(dirname.substr(4));
-		long num;
-		iss >> num;
-		
-		std::time_t stime = fs::last_write_time(path / SAVEGAME_NAME);
-		if(stime == 0) {
-			LogDebug("ignoring directory without gsave.sav:" << path);
-			continue;
-		}
-		
-		size_t index = (size_t)-1;
-		for(size_t i = 1; i <= oldCount; i++) {
-			if(save_l[i].num == num) {
-				index = i;
-			}
-		}
-		if(index != (size_t)-1 && save_l[index].stime == stime) {
-			found[index - 1] = SaveGameUnchanged;
-			continue;
-		}
-		
-		string name;
-		float version;
-		long level;
-		unsigned long ignored;
-		if(ARX_CHANGELEVEL_GetInfo(path, name, version, level, ignored) == -1) {
-			LogWarning << "unable to get save file info for " << path;
-			continue;
-		}
-		
-		newSaves = true;
-		
-		SaveGame * save;
-		if(index == (size_t)-1) {
-			// Make another save game slot at the end
-			save_l.resize(save_l.size() + 1);
-			save = &save_l.back();
-		} else {
-			found[index - 1] = SaveGameChanged;
-			save = &save_l[index];
-		}
-		
-		save->name = name;
-		save->version = version;
-		save->level = level;
-		save->stime = stime;
-		save->num = num;
-		
-		save->quicksave = (name == "ARX_QUICK_ARX" || name == "ARX_QUICK_ARX1");
-		
-		fs::path thumbnail = path / "gsave.bmp";
-		if(fs::exists(thumbnail)) {
-			resources->removeFile(thumbnail);
-			resources->addFiles(thumbnail, thumbnail);
-		}
-		
-		maxlength = std::max(save->quicksave ? 9 : name.length(), maxlength);
-		
-		const struct tm & t = *localtime(&stime);
-		std::ostringstream oss;
-		oss << std::setfill('0') << (t.tm_year + 1900) << "-" << std::setw(2) << (t.tm_mon + 1) << "-" << std::setw(2) << t.tm_mday << "   " << std::setfill(' ') << std::setw(2) << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min << ":" << std::setw(2) << t.tm_sec;
-		save->time = oss.str();
-	}
-	
-	size_t o = 1;
-	for(size_t i = 1; i < save_l.size(); i++) {
-		if(i > oldCount || found[i - 1] != SaveGameRemoved) {
-			
-			// print new savegames
-			if(i > oldCount || found[i - 1] == SaveGameChanged) {
-				
-				std::ostringstream oss;
-				if(save_l[i].quicksave) {
-					oss << "(quicksave)" << std::setw(maxlength - 8) << ' ';
-				} else {
-					oss << "\"" << save_l[i].name << "\"" << std::setw(maxlength - save_l[i].name.length() + 1) << ' ';
-				}
-				
-				oss << "  " << save_l[i].time << "   v" << save_l[i].version;
-				LogInfo << "found save " << oss.str();
-				
-			}
-			
-			if(o != i) {
-				save_l[o] = save_l[i];
-			}
-			o++;
-		}
-	}
-	save_l.resize(o);
-	
-	if(newSaves && save_l.size() > 2) {
-		std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
-	}
-	
-	LogDebug("found " << (save_l.size()-1) << " savegames");
-	
-}
-
-//-----------------------------------------------------------------------------
-void FreeSaveGameList() {
-	save_l.clear();
-}
-
-//-----------------------------------------------------------------------------
-void UpdateSaveGame(const long & i)
-{
-	//i == 0 -> new save game
-	//i >  0 -> erase old savegame save_l[i].name
-	if (i <= 0)
-		ARX_CHANGELEVEL_Save(i, save_l[0].name);
-	else
-		ARX_CHANGELEVEL_Save(save_l[i].num, save_l[i].name);
-}
-
-//-----------------------------------------------------------------------------
-void ARX_MENU_CLICKSOUND()
-{
+void ARX_MENU_CLICKSOUND() {
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-}
-
-//-----------------------------------------------------------------------------
-void LoadSaveGame(const long & i)
-{
-	ARX_MENU_CLICKSOUND();
-	LoadLevelScreen();	
-	PROGRESS_BAR_TOTAL = 238;
-	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(save_l[i].level);
-	DanaeClearLevel();
-	ARX_CHANGELEVEL_Load(save_l[i].num);
-	REFUSE_GAME_RETURN = 0;
-	NEED_SPECIAL_RENDEREND = 1;
-	ARX_MENU_Clicked_QUIT();
 }
 
 //-----------------------------------------------------------------------------
@@ -421,8 +246,6 @@ void ARX_Menu_Resources_Create() {
 		
 		free(creditsData);
 	}
-	
-	CreateSaveGameList();
 }
 
 //-----------------------------------------------------------------------------
@@ -552,14 +375,9 @@ void ARX_Menu_Manage() {
 							REQUEST_SPEECH_SKIP=1;				
 						}
 					}
-				}
-				else
-				{
-					LogDebug("snapshot");
-					//create a screenshot temporaire pour la sauvegarde
-					SnapShot *pSnapShot = new SnapShot("sct", true);
-					pSnapShot->GetSnapShotDim(160,100);
-					delete pSnapShot;
+				} else {
+					
+					GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 
 					arxtime.pause();
 					ARXTimeMenu=ARXOldTimeMenu=arxtime.get_updated();

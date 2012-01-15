@@ -51,8 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/unordered/unordered_map.hpp>
 
 #include "platform/Platform.h"
-#include "io/FilePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/FileStream.h"
 
 /*!
  * Interface to read and write save block files. (used for savegames)

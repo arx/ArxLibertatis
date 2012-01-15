@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Inventory.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptUtils.h"
@@ -157,7 +157,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			context.getIO()->inventory_skin = fs::path::load(context.getWord());
+			context.getIO()->inventory_skin = res::path::load(context.getWord());
 			
 			DebugScript(' ' << context.getIO()->inventory_skin);
 			
@@ -205,7 +205,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			fs::path file = fs::path::load(context.getWord());
+			res::path file = res::path::load(context.getWord());
 			
 			if(FORBID_SCRIPT_IO_CREATION) {
 				if(multi) {
@@ -302,7 +302,7 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			fs::path file = fs::path::load(context.getWord());
+			res::path file = res::path::load(context.getWord());
 			
 			INTERACTIVE_OBJ * io = context.getIO();
 			
@@ -553,7 +553,7 @@ public:
 			}
 		}
 		
-		fs::path weapon = fs::path::load(context.getWord());
+		res::path weapon = res::path::load(context.getWord());
 		
 		DebugScript(' ' << options << ' ' << weapon);
 		

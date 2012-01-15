@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "graphics/GraphicsTypes.h"
@@ -56,8 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FTL.h"
 #include "graphics/data/TextureContainer.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/fs/FilePath.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "physics/Clothes.h"
@@ -252,7 +254,7 @@ static T * copyStruct(const T * src, size_t n = 1) {
 	return result;
 }
 
-EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
+EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) {
 	
 	(void)size; // TODO use size
 	
@@ -386,7 +388,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const fs::path & file) {
 			LogDebug(" -> sample " << ts->sample_name << " size " << ts->sample_size
 			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE));
 			
-			eerie->frames[i].sample = ARX_SOUND_Load(fs::path::load(safestring(ts->sample_name)));
+			eerie->frames[i].sample = ARX_SOUND_Load(res::path::load(safestring(ts->sample_name)));
 		}
 		
 		pos += 4; // num_sfx
@@ -870,7 +872,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 	EERIE_Object_Precompute_Fast_Access(eerie);
 }
 
-static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path & fic) {
+static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path & fic) {
 	
 	(void)size; // TODO use size
 	
@@ -895,7 +897,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path 
 	
 	seerie->nbtex = psth->nb_maps;
 	
-	const fs::path temp = "graph/obj3d/textures";
+	const res::path temp = "graph/obj3d/textures";
 	
 	if(psth->type_write == 0) {
 		
@@ -906,7 +908,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path 
 			const THEO_TEXTURE * tt = reinterpret_cast<const THEO_TEXTURE *>(adr + pos);
 			pos += sizeof(THEO_TEXTURE);
 			
-			fs::path mapsname = temp / fs::path::load(safestring(tt->texture_name)).remove_ext();
+			res::path mapsname = temp / res::path::load(safestring(tt->texture_name)).remove_ext();
 			seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 		}
 		
@@ -918,15 +920,15 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const fs::path 
 			
 			for(long i = 0; i < psth->nb_maps; i++) {
 				
-				fs::path name;
+				res::path name;
 				if(psth->version >= 3019) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = fs::path::load(safestring(tsmi3019->texture_name)).remove_ext();
+					name = res::path::load(safestring(tsmi3019->texture_name)).remove_ext();
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = fs::path::load(safestring(tsmi->texture_name)).remove_ext();
+					name = res::path::load(safestring(tsmi->texture_name)).remove_ext();
 				}
 				
 				if(!name.empty()) {
@@ -1118,7 +1120,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
 	free(ms);
 }
 
-static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
+static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const res::path & dirr) {
 	
 	EERIE_MULTI3DSCENE * es = allocStructZero<EERIE_MULTI3DSCENE>();
 	
@@ -1128,7 +1130,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
 	if(dir) {
 		bool loaded = false;
 		for(PakDirectory::files_iterator i = dir->files_begin(); i != dir->files_end(); i++) {
-			if(!fs::path(i->first).has_ext("scn")) {
+			if(!res::path(i->first).has_ext("scn")) {
 				continue;
 			}
 			
@@ -1185,7 +1187,7 @@ static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const fs::path & dirr) {
 	return es;
 }
 
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const fs::path & dirr) {
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dirr) {
 	
 	LogDebug("Loading Multiscene " << dirr);
 	
@@ -1619,7 +1621,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 #ifdef BUILD_EDIT_LOADSAVE
 
 // Converts a Theo Object to an EERIE object
-static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & texpath, const fs::path & fic) {
+static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & texpath, const res::path & fic) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
@@ -1627,7 +1629,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 		return NULL;
 	}
 	
-	fs::path txpath = texpath.empty() ? "graph/obj3d/textures" : texpath;
+	res::path txpath = texpath.empty() ? "graph/obj3d/textures" : texpath;
 	
 	if(size < 10) {
 		return NULL;
@@ -1667,15 +1669,15 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 			eerie->texturecontainer.resize(pth->nb_maps);
 			for(long i = 0; i < pth->nb_maps; i++) {
 				
-				fs::path name;
+				res::path name;
 				if(pth->version >= 3008) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = fs::path::load(safestring(tsmi3019->texture_name)).remove_ext();
+					name = res::path::load(safestring(tsmi3019->texture_name)).remove_ext();
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = fs::path::load(safestring(tsmi->texture_name)).remove_ext();
+					name = res::path::load(safestring(tsmi->texture_name)).remove_ext();
 				}
 				
 				if(!name.empty()) {
@@ -1804,7 +1806,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const fs::path & t
 	return eerie;
 }
 
-static EERIE_3DOBJ * GetExistingEerie(const fs::path & file) {
+static EERIE_3DOBJ * GetExistingEerie(const res::path & file) {
 	
 	for(long i = 1; i < inter.nbmax; i++) {
 		if(inter.iobj[i] != NULL && !inter.iobj[i]->tweaky && inter.iobj[i]->obj) {
@@ -1820,7 +1822,7 @@ static EERIE_3DOBJ * GetExistingEerie(const fs::path & file) {
 
 #endif
 
-static EERIE_3DOBJ * TheoToEerie_Fast(const fs::path & texpath, const fs::path & file, bool pbox) {
+static EERIE_3DOBJ * TheoToEerie_Fast(const res::path & texpath, const res::path & file, bool pbox) {
 	
 	EERIE_3DOBJ * ret = ARX_FTL_Load(file);
 	if(ret) {
@@ -1870,18 +1872,18 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const fs::path & texpath, const fs::path &
 		EERIE_PHYSICS_BOX_Create(ret);
 	}
 	
-	ARX_FTL_Save(file, ret);
+	ARX_FTL_Save(config.paths.user / file.string(), ret);
 	
 #endif // BUILD_EDIT_LOADSAVE
 	
 	return ret;
 }
 
-EERIE_3DOBJ * loadObject(const fs::path & file, bool pbox) {
+EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
 	return TheoToEerie_Fast("graph/obj3d/textures", file, pbox);
 }
 
-EERIE_3DOBJ * _LoadTheObj(const fs::path & file, const fs::path & texpath) {
+EERIE_3DOBJ * _LoadTheObj(const res::path & file, const res::path & texpath) {
 	return TheoToEerie_Fast(file.parent() / texpath, file, true);
 }
 

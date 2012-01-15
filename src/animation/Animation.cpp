@@ -76,8 +76,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
@@ -258,7 +258,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 	}
 }
 
-static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const fs::path & path) {
+static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const res::path & path) {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		if(animations[i].path == path) {
@@ -269,7 +269,7 @@ static ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const fs::path & path) {
 	return NULL;
 }
 
-static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const fs::path & path) {
+static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const res::path & path) {
 	
 	if(!ah || ah->path.empty()) {
 		return false;
@@ -294,7 +294,7 @@ static bool EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, const fs::path & path
 	return true;
 }
 
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path) {
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const res::path & path) {
 	
 	ANIM_HANDLE * anim = EERIE_ANIMMANAGER_Load_NoWarning(path);
 	if(!anim) {
@@ -304,7 +304,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const fs::path & path) {
 	return anim;
 }
 
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path) {
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 	
 	ANIM_HANDLE * handl = EERIE_ANIMMANAGER_GetHandle(path);
 	if(handl) {
@@ -338,9 +338,9 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const fs::path & path) {
 		animations[i].locks = 1;
 		
 		int pathcount = 2;
-		fs::path altpath;
+		res::path altpath;
 		do {
-			altpath = fs::path(path).append_basename(itoa(pathcount++));
+			altpath = res::path(path).append_basename(itoa(pathcount++));
 		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], altpath));
 		
 		return &animations[i];
@@ -1990,7 +1990,7 @@ void EERIE_ANIMMANAGER_ReloadAll()
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
 		if(!animations[i].path.empty()) {
-			fs::path path = animations[i].path;
+			res::path path = animations[i].path;
 			EERIE_ANIMMANAGER_Clear(i);
 			EERIE_ANIMMANAGER_Load(path);
 		}

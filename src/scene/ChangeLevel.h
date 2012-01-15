@@ -49,24 +49,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-namespace fs {
-class path;
-}
-
-extern const fs::path SAVEGAME_NAME;
+namespace fs { class path; }
 
 extern long FORBID_SAVE;
 
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
-long ARX_CHANGELEVEL_GetInfo(const fs::path & path, std::string & name, float & version, long & level, unsigned long & time);
+long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level, unsigned long & time);
 
 /**
  * Load a GameSave
  **/
-long ARX_CHANGELEVEL_Load(long instance);
+long ARX_CHANGELEVEL_Load(const fs::path & savefile);
 
-bool ARX_CHANGELEVEL_Save(long instance, const std::string & name);
+bool ARX_CHANGELEVEL_Save(const std::string & name, const fs::path & savefile);
 
 bool ARX_Changelevel_CurGame_Clear();
 void ARX_Changelevel_CurGame_Open();

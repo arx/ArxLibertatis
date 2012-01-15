@@ -17,6 +17,10 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "utilities_win32.h"
+
+#ifdef HAVE_WINAPI
+
 #include <windows.h>
 #include <string>
 #include <sstream>
@@ -300,3 +304,5 @@ ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st )
 	integer.HighPart = ft.dwHighDateTime ;
 	return integer.QuadPart ;
 }
+
+#endif // HAVE_WINAPI

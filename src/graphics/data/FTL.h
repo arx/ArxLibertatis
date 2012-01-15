@@ -49,9 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIE_3DOBJ;
 
-namespace fs {
-class path;
-}
+namespace fs { class path; }
+namespace res { class path; }
 
 #ifdef BUILD_EDIT_LOADSAVE
 
@@ -66,7 +65,7 @@ bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj);
 /*!
  * Load a FTL file
  */
-EERIE_3DOBJ * ARX_FTL_Load(const fs::path & file);
+EERIE_3DOBJ * ARX_FTL_Load(const res::path & file);
 
 void MCache_ClearAll();
 

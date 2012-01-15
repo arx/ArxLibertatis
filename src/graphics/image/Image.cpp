@@ -23,7 +23,8 @@
 #include <il.h>
 
 #include "graphics/Math.h"
-#include "io/PakReader.h"
+#include "io/fs/FilePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 using std::string;
@@ -187,7 +188,7 @@ bool Image::IsCompressed(Image::Format pFormat) {
 	return pFormat >= Format_DXT1 && pFormat <= Format_DXT5;
 }
 
-bool Image::LoadFromFile(const fs::path & filename) {
+bool Image::LoadFromFile(const res::path & filename) {
 	
 	size_t size = 0;
 	void * pData = resources->readAlloc(filename, size);

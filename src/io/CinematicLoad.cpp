@@ -54,9 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/CinematicTexture.h"
 
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/CinematicFormat.h"
 
 #include "platform/Platform.h"
@@ -72,20 +72,20 @@ using std::free;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-static fs::path fixTexturePath(const string & path) {
+static res::path fixTexturePath(const string & path) {
 	
 	string copy = toLowercase(path);
 	
 	size_t abs_dir = copy.find("arx\\");
 	
 	if(abs_dir != std::string::npos) {
-		return fs::path::load(copy.substr(abs_dir + 4));
+		return res::path::load(copy.substr(abs_dir + 4));
 	} else {
-		return fs::path::load(copy);
+		return res::path::load(copy);
 	}
 }
 
-static fs::path fixSoundPath(const string & str) {
+static res::path fixSoundPath(const string & str) {
 	
 	string path = toLowercase(str);
 	
@@ -110,7 +110,7 @@ static fs::path fixSoundPath(const string & str) {
 			path.erase(0, sfxspeech_pos + 4);
 		}
 		
-		return fs::path::load(path);
+		return res::path::load(path);
 	}
 	
 	// Speech
@@ -118,12 +118,12 @@ static fs::path fixSoundPath(const string & str) {
 	size_t namepos = path.find_last_of('\\');
 	namepos = (namepos == string::npos) ? 0 : namepos + 1;
 	
-	return fs::path("speech") / config.language / path.substr(namepos);
+	return res::path("speech") / config.language / path.substr(namepos);
 }
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
 
-bool loadCinematic(Cinematic * c, const fs::path & file) {
+bool loadCinematic(Cinematic * c, const res::path & file) {
 	
 	LogInfo << "loading cinematic " << file;
 	
@@ -199,7 +199,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading bitmap path";
 			return false;
 		}
-		fs::path path = fixTexturePath(str);
+		res::path path = fixTexturePath(str);
 		
 		LogDebug("adding bitmap " << i << ": " << path);
 		
@@ -235,7 +235,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
-		fs::path path = fixSoundPath(str);
+		res::path path = fixSoundPath(str);
 		
 		LogDebug("adding sound " << i << ": " << path);
 		

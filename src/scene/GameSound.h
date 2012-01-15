@@ -52,9 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct INTERACTIVE_OBJ;
 
-namespace  fs {
-class path;
-}
+namespace res { class path; }
 
 enum SoundLoopMode {
 	ARX_SOUND_PLAY_LOOPED = 0,
@@ -224,19 +222,19 @@ long ARX_SOUND_IsEnabled();
 
 void ARX_SOUND_SetListener(const Vec3f * position, const Vec3f * front, const Vec3f * up);
 
-audio::SampleId ARX_SOUND_Load(const fs::path & name);
+audio::SampleId ARX_SOUND_Load(const res::path & name);
 void ARX_SOUND_Free(const audio::SampleId & sample);
 
 long ARX_SOUND_PlaySFX(audio::SourceId & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayInterface(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-long ARX_SOUND_PlaySpeech(const fs::path & name, const INTERACTIVE_OBJ * io = NULL);
+long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io = NULL);
 long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source);
 long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, Vec3f* position, INTERACTIVE_OBJ* source);
 
-long ARX_SOUND_PlayScript(const fs::path & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlayScript(const res::path & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayAnim(audio::SourceId & sample_id, const Vec3f * position = NULL);
-long ARX_SOUND_PlayCinematic(const fs::path & name);
+long ARX_SOUND_PlayCinematic(const res::path & name);
 long ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_IsPlaying(audio::SourceId & sample_id);
 float ARX_SOUND_GetDuration(audio::SampleId & sample_id);
@@ -248,10 +246,10 @@ void ARX_SOUND_RefreshSpeechPosition(audio::SourceId & sample_id, const INTERACT
 
 void ARX_SOUND_Stop(audio::SourceId & sample_id);
 
-bool ARX_SOUND_PlayScriptAmbiance(const fs::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
-bool ARX_SOUND_PlayZoneAmbiance(const fs::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
-audio::AmbianceId ARX_SOUND_PlayMenuAmbiance(const fs::path & ambiance_name);
-audio::AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const fs::path & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on TODO this is wrong?
+bool ARX_SOUND_PlayScriptAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+bool ARX_SOUND_PlayZoneAmbiance(const res::path & ambiance_name, SoundLoopMode loop = ARX_SOUND_PLAY_LOOPED, float volume = 1.0F);
+audio::AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name);
+audio::AmbianceId ARX_SOUND_SetAmbianceTrackStatus(const res::path & ambiance_name, const std::string & track_name, unsigned long status); //0 = off; 1 = on TODO this is wrong?
 void ARX_SOUND_KillAmbiances();
 char * ARX_SOUND_AmbianceSavePlayList(size_t & size);
 void ARX_SOUND_AmbianceRestorePlayList(const char * play_list, size_t size);

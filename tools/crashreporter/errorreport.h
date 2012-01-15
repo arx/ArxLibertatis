@@ -20,8 +20,14 @@
 #ifndef ARX_CRASHREPORTER_ERRORREPORT_H
 #define ARX_CRASHREPORTER_ERRORREPORT_H
 
+#include <vector>
+
+#include "Configure.h"
+
+#ifdef HAVE_WINAPI
 // Win32
 #include <winsock2.h>
+#endif // HAVE_WINAPI
 
 // BOOST
 #define BOOST_DATE_TIME_NO_LIB
@@ -37,7 +43,7 @@
 #include <QStringList>
 
 #include "platform/crashhandler/CrashInfo.h"
-#include "io/FilePath.h"
+#include "io/fs/FilePath.h"
 
 class ErrorReport
 {

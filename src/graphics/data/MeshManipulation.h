@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_DATA_MESHMANIPULATION_H
 
 #include "platform/Flags.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
@@ -66,15 +66,15 @@ DECLARE_FLAGS_OPERATORS(TweakType);
 struct TWEAK_INFO {
 	
 	TweakType type;
-	fs::path param1;
-	fs::path param2;
+	res::path param1;
+	res::path param2;
 	
 };
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const fs::path & path);
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const res::path & path);
 long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const fs::path & skintochange, const fs::path & skinname);
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & skintochange, const res::path & skinname);
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);
 void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj);
 

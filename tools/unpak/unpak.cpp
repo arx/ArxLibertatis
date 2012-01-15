@@ -23,11 +23,12 @@
 #include <sstream>
 #include <algorithm>
 
-#include "io/Filesystem.h"
-#include "io/PakReader.h"
-#include "io/PakEntry.h"
-#include "io/FilePath.h"
-#include "io/FileStream.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
+#include "io/resource/PakReader.h"
+#include "io/resource/PakEntry.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
 using std::transform;

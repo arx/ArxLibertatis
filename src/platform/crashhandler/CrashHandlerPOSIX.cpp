@@ -27,6 +27,18 @@
 
 typedef void (*signal_handler)(int);
 
+enum CrashType {
+	SIGNAL_SIGABRT,
+	SIGNAL_SIGFPE,
+	SIGNAL_SIGILL,
+	SIGNAL_SIGSEGV,
+	SIGNAL_UNKNOWN
+};
+
+static void SIGFPEHandler(int /*code*/, int FPECode) {
+	CrashHandlerPOSIX::getInstance().handleCrash(SIGNAL_SIGFPE, FPECode);
+}
+
 struct PlatformCrashHandlers {
 	signal_handler m_SIGSEGVHandler;    // Illegal storage access handler.
 	signal_handler m_SIGILLHandler;     // SIGINT handler.
@@ -66,8 +78,9 @@ bool CrashHandlerPOSIX::registerCrashHandlers() {
 	m_pPreviousCrashHandlers->m_SIGILLHandler = signal(SIGILL, SignalHandler);
 #endif
 	
+	// TODO is the cast OK?
 #ifdef SIGFPE
-	m_pPreviousCrashHandlers->m_SIGFPEHandler = signal(SIGFPE, SIGFPEHandler);
+	m_pPreviousCrashHandlers->m_SIGFPEHandler = signal(SIGFPE, signal_handler(SIGFPEHandler));
 #endif
 	
 #ifdef SIGABRT
@@ -81,6 +94,8 @@ bool CrashHandlerPOSIX::registerCrashHandlers() {
 void CrashHandlerPOSIX::unregisterCrashHandlers() {
 	
 	unregisterThreadCrashHandlers();
+	
+	// TODO use sigaction instead of signal
 	
 #ifdef SIGSEGV
 	signal(SIGSEGV, m_pPreviousCrashHandlers->m_SIGSEGVHandler);
@@ -112,15 +127,7 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
-enum CrashType {
-	SIGNAL_SIGABRT,
-	SIGNAL_SIGFPE,
-	SIGNAL_SIGILL,
-	SIGNAL_SIGSEGV,
-	SIGNAL_UNKNOWN
-};
-
-void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
+void CrashHandlerPOSIX::handleCrash(int crashType, int /*FPECode*/) {
 	
 	Autolock autoLock(&m_Lock);
 	
@@ -143,6 +150,7 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
 	if(crashType == SIGNAL_SIGFPE) {
 		// Append detailed information in case of a FPE exception
+		/* TODO
 		const char* FPEDetailed;
 		switch(FPECode) {
 			case FPE_INVALID:         FPEDetailed = ": Invalid result"; break;
@@ -158,8 +166,10 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 			case FPE_EXPLICITGEN:     FPEDetailed = ": raise( SIGFPE ) was called"; break;
 			case FPE_MULTIPLE_TRAPS:  FPEDetailed = ": Multiple traps"; break;
 			case FPE_MULTIPLE_FAULTS: FPEDetailed = ": Multiple faults"; break;
+			
 			default:                  FPEDetailed = "";
 		}
+		*/
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
 	
@@ -171,11 +181,18 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	char arguments[256];
 	strcpy(arguments, "-crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
-	bool bCreateProcess = start_the_process_here("CrashReporter/arxcrashreporterforlinux.exe", arguments);
 	
-	// If CrashReporter was started, wait for its signal before exiting.
-	if(bCreateProcess) {
+	if(fork()) {
+		
+		execlp("CrashReporter/arxcrashreporterforlinux.exe", arguments, NULL);
+		
+		m_pCrashInfo->exitLock.post();
+		
+	} else {
+		
+		// If CrashReporter was started, wait for its signal before exiting.
 		m_pCrashInfo->exitLock.wait();
+		
 	}
 	
 	exit(1);
@@ -192,8 +209,4 @@ void SignalHandler(int signalCode) {
 		default:      crashType = SIGNAL_UNKNOWN; break;
 	}
 	CrashHandlerPOSIX::getInstance().handleCrash(crashType);
-}
-
-void SIGFPEHandler(int code, int FPECode) {
-	CrashHandlerPOSIX::getInstance().handleCrash(SIGNAL_SIGFPE, FPECode);
 }

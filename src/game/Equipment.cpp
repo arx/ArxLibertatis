@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 #include "math/Vector2.h"
 #include "math/Vector3.h"
@@ -216,7 +216,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selecti
 	const IO_TWEAKER_INFO & tweak = *inter.iobj[player.equiped[equip]]->tweakerinfo;
 	
 	if(!tweak.filename.empty()) {
-		fs::path mesh = "graph/obj3d/interactive/npc/human_base/tweaks" / tweak.filename;
+		res::path mesh = "graph/obj3d/interactive/npc/human_base/tweaks" / tweak.filename;
 		EERIE_MESH_TWEAK_Do(io, tw, mesh);
 	}
 	
@@ -224,7 +224,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selecti
 		return;
 	}
 	
-	fs::path file = "graph/obj3d/textures" / tweak.skinchangeto;
+	res::path file = "graph/obj3d/textures" / tweak.skinchangeto;
 	TextureContainer * temp = TextureContainer::Load(file, TextureContainer::Level);
 	
 	long mapidx = ObjectAddMap(io->obj, temp);

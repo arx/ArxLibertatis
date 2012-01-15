@@ -173,7 +173,6 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent to a window after its size has changed.
 	case WM_SIZE:
 	{
-		Vec2i newSize(LOWORD(lParam), HIWORD(lParam));
 
 		switch( wParam )
 		{

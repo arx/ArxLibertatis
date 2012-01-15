@@ -30,8 +30,8 @@
 #undef BUILD_EDITOR
 #endif
 
-#include "io/PakReader.h"
 #include "io/SaveBlock.h"
+#include "io/resource/PakReader.h"
 #include "platform/String.h"
 #include "scene/SaveFormat.h"
 
@@ -165,7 +165,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	string fname = name.substr(0, pos);
 	
-	fs::path dir = fs::path::load(safestring(ais.filename)).parent();
+	res::path dir = res::path::load(safestring(ais.filename)).parent();
 	
 	long i = 1;
 	string ident;
@@ -234,7 +234,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	
 	if(ais.ioflags & IO_ITEM) {
 		
-		fs::path file = fs::path::load(safestring(ais.filename));
+		res::path file = res::path::load(safestring(ais.filename));
 		
 		s32 flags = ais.ioflags;
 		
@@ -385,7 +385,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	for(long i = 0; i < asi.nb_inter; i++) {
 		long res;
-		string ident = makeIdent(fs::path::load(safestring(idx_io[i].filename)).basename(), idx_io[i].ident);
+		string ident = makeIdent(res::path::load(safestring(idx_io[i].filename)).basename(), idx_io[i].ident);
 		Remap::const_iterator it = remap.find(ident);
 		stringstream where;
 		where << "level" << num << "[" << i << "]";

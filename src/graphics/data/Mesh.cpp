@@ -69,10 +69,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/FastSceneFormat.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/FilePath.h"
-#include "io/FileStream.h"
-#include "io/PakReader.h"
-#include "io/Filesystem.h"
+#include "io/resource/ResourcePath.h"
+#include "io/fs/FileStream.h"
+#include "io/resource/PakReader.h"
+#include "io/fs/Filesystem.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
 #include "io/IO.h"
@@ -3180,7 +3180,7 @@ long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 
 
-bool FastSceneLoad(const fs::path & partial_path) {
+bool FastSceneLoad(const res::path & partial_path) {
 	
 	// TODO bounds checking
 	
@@ -3190,8 +3190,8 @@ bool FastSceneLoad(const fs::path & partial_path) {
 		return false;
 	}
 	
-	fs::path path = "game" / partial_path;
-	fs::path file = path / "fast.fts";
+	res::path path = "game" / partial_path;
+	res::path file = path / "fast.fts";
 	
 	size_t size;
 	char * dat = resources->readAlloc(file, size);
@@ -3203,7 +3203,7 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
 	pos += sizeof(UNIQUE_HEADER);
 	
-	if(!NOCHECKSUM && fs::path::load(uh->path) != path) {
+	if(!NOCHECKSUM && res::path::load(uh->path) != path) {
 		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
 		free(dat);
 		return false;
@@ -3267,7 +3267,7 @@ bool FastSceneLoad(const fs::path & partial_path) {
 	TextureContainerMap textures;
 	for(long k = 0; k < fsh->nb_textures; k++) {
 		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
-		fs::path file = fs::path::load(safestring(ftc->fic)).remove_ext();
+		res::path file = res::path::load(safestring(ftc->fic)).remove_ext();
 		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
 			textures[ftc->tc] = tmpTC;
@@ -4248,7 +4248,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 	
-	fs::path ftemp = LastLoadedScene.parent();
+	res::path ftemp = LastLoadedScene.parent();
 	
 	// First Release Any Portal Data
 	EERIE_PORTAL_Release();
@@ -4276,7 +4276,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 			AnchorData_Create(ACTIVEBKG);
 		}
 		
-		FastSceneSave(ftemp);
+		FastSceneSave(ftemp.string());
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
 	}

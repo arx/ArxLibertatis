@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "math/MathFwd.h"
@@ -534,7 +534,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	if(aalError error = loadString(file, sampleName)) {
 		return error;
 	}
-	Sample * sample = new Sample(fs::path::load(sampleName));
+	Sample * sample = new Sample(res::path::load(sampleName));
 	if(sample->load() || (s_id = _sample.add(sample)) == INVALID_ID) {
 		LogError << "ambiance \"" << ambiance->name << "\": missing sample \"" << sampleName << '"';
 		delete sample;
@@ -582,7 +582,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	return AAL_OK;
 }
 
-Ambiance::Ambiance(const fs::path & _name) :
+Ambiance::Ambiance(const res::path & _name) :
 	status(Idle), loop(false), fade(None), start(0), time(0), name(_name), data(NULL) {
 	channel.flags = 0;
 }

@@ -6,12 +6,15 @@
 #ifndef __CSMTP_H__
 #define __CSMTP_H__
 
+#include "Configure.h"
 
 #include <vector>
 #include <string.h>
 #include <assert.h>
 
-#ifdef LINUX
+#ifdef HAVE_WINAPI // TODO
+
+#ifndef HAVE_WINAPI
 	#include <sys/types.h>
 	#include <sys/socket.h>
 	#include <sys/ioctl.h>
@@ -39,7 +42,7 @@
 #endif
 
 //Add "openssl-0.9.8l\inc32" to Additional Include Directories
-#include "openssl\ssl.h"
+#include "openssl/ssl.h"
 
 #include "md5.h"
 
@@ -268,5 +271,6 @@ private:
 	void StartTls();
 };
 
+#endif // HAVE_WINAPI
 
 #endif // __CSMTP_H__

@@ -96,7 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Input.h"
 #include "input/Keyboard.h"
 
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 
 #include "math/Angle.h"
 #include "math/Rectangle.h"
@@ -4371,7 +4371,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 	
 	if(TSecondaryInventory->io && !TSecondaryInventory->io->inventory_skin.empty()) {
 		
-		fs::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
+		res::path file = "graph/interface/inventory" / TSecondaryInventory->io->inventory_skin;
 		
 		TextureContainer * tc = TextureContainer::LoadUI(file);
 

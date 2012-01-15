@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class PakFileHandle;
 
-namespace fs { class path; }
+namespace res { class path; }
 
 namespace audio {
 
@@ -73,7 +73,7 @@ public:
 };
 
 // Utilities
-Stream * createStream(const fs::path & name);
+Stream * createStream(const res::path & name);
 void deleteStream(Stream *& stream);
 
 } // namespace audio

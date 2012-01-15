@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "gui/Interface.h"
-#include "io/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "script/ScriptEvent.h"
@@ -260,13 +260,13 @@ public:
 		if(command == "skin") {
 			
 			io->tweakerinfo->skintochange = context.getWord();
-			io->tweakerinfo->skinchangeto = fs::path::load(context.getWord());
+			io->tweakerinfo->skinchangeto = res::path::load(context.getWord());
 			
 			DebugScript(" skin " << io->tweakerinfo->skintochange << ' ' << io->tweakerinfo->skinchangeto);
 			
 		} else {
 			
-			io->tweakerinfo->filename = fs::path::load(context.getWord());
+			io->tweakerinfo->filename = res::path::load(context.getWord());
 			
 			DebugScript(" mesh " << io->tweakerinfo->filename);
 		}

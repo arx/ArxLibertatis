@@ -34,7 +34,7 @@
 #include "game/Player.h"
 #include "gui/Interface.h"
 #include "io/SaveBlock.h"
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 #include "platform/String.h"
 #include "scene/SaveFormat.h"
 #include "scene/Interactive.h"
@@ -488,7 +488,7 @@ void print_animations(const char (&anims)[SAVED_MAX_ANIMS][256]) {
 	bool hasAnims = false;
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
 		
-		fs::path anim = fs::path::load(safestring(anims[i]));
+		res::path anim = res::path::load(safestring(anims[i]));
 		if(anim.empty()) {
 			continue;
 		}
@@ -1018,7 +1018,7 @@ int view_level(SaveBlock & save, const char * dat, size_t size) {
 			pos += sizeof(ARX_CHANGELEVEL_IO_INDEX);
 			
 			std::ostringstream oss;
-			oss << fs::path::load(safestring(io.filename)).basename() << '_' << std::setfill('0') << std::setw(4) << io.ident;
+			oss << res::path::load(safestring(io.filename)).basename() << '_' << std::setfill('0') << std::setw(4) << io.ident;
 			
 			cout << "  - "; print_ident(save, oss.str()); cout << endl;
 		}
@@ -1053,7 +1053,7 @@ int view_level(SaveBlock & save, const char * dat, size_t size) {
 		pos += sizeof(PlayingAmbiance);
 		
 		cout << endl << "Ambiance #" << i << ':' << endl;
-		cout << "  Name: " << fs::path::load(a.name) << endl;
+		cout << "  Name: " << res::path::load(a.name) << endl;
 		if(a.volume != 1) cout << "  Volume: " << a.volume << endl;
 		if(a.loop) {
 			cout << "  Loop mode: ";
@@ -1091,7 +1091,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	cout << "Type: "; print_type(ais.savesystem_type); cout << endl;
 	
-	cout << "Filename: " << fs::path::load(safestring(ais.filename)) << endl;
+	cout << "Filename: " << res::path::load(safestring(ais.filename)) << endl;
 	cout << "Instance: " << ais.ident << endl;
 	
 	cout << "Flags:";
@@ -1332,7 +1332,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(ais.ignition) cout << "Ignition: " << ais.ignition << endl;
 	
-	fs::path invskin = fs::path::load(safestring(ais.inventory_skin));
+	res::path invskin = res::path::load(safestring(ais.inventory_skin));
 	if(!invskin.empty()) cout << "Inventory skin: " << invskin << endl;
 	
 	print_animations(ais.anims);
@@ -1759,9 +1759,9 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 		const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 		pos += sizeof(SavedTweakerInfo);
 		
-		cout << "  Filename: " << fs::path::load(safestring(sti->filename)) << endl;
+		cout << "  Filename: " << res::path::load(safestring(sti->filename)) << endl;
 		cout << "  Old skin: \"" << toLowercase(safestring(sti->skintochange)) << '"' << endl;
-		cout << "  New skin: " << fs::path::load(safestring(sti->skinchangeto)) << endl;
+		cout << "  New skin: " << res::path::load(safestring(sti->skinchangeto)) << endl;
 	}
 	
 	if(ais.nb_iogroups) {
@@ -1791,12 +1791,12 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 		if(sti->type & TWEAK_TYPE_MESH) cout << " mesh";
 		cout << endl;
 		
-		fs::path param1 = fs::path::load(safestring(sti->param1));
+		res::path param1 = res::path::load(safestring(sti->param1));
 		if(!param1.empty()) {
 			cout << "  Parameter 1: " << param1 << endl;
 		}
 		
-		fs::path param2 = fs::path::load(safestring(sti->param2));
+		res::path param2 = res::path::load(safestring(sti->param2));
 		if(!param2.empty()) {
 			cout << "  Parameter 2: " << param2 << endl;
 		}

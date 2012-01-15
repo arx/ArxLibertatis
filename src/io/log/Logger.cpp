@@ -277,8 +277,6 @@ void Logger::configure(const string config) {
 
 void Logger::init() {
 	
-	Autolock lock(LogManager::lock);
-
 	add(logger::Console::get());
 	
 #ifdef HAVE_WINAPI
@@ -289,8 +287,9 @@ void Logger::init() {
 	if(arxdebug) {
 		configure(arxdebug);
 	}
-
-	CrashHandler::registerCrashCallback(LogManager::deleteAllBackends);
+	
+	// TODO(crash-handler)
+	//CrashHandler::registerCrashCallback(LogManager::deleteAllBackends);
 }
 
 void Logger::shutdown() {

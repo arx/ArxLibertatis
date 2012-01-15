@@ -51,8 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 const int	MaxW = 256;
@@ -291,7 +291,7 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 	}
 }
 
-CinematicBitmap* CreateCinematicBitmap(const fs::path & path, int scale) {
+CinematicBitmap* CreateCinematicBitmap(const res::path & path, int scale) {
 
 	int nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
@@ -309,7 +309,7 @@ CinematicBitmap* CreateCinematicBitmap(const fs::path & path, int scale) {
 
 	size_t size = 0;
 	
-	fs::path filename = path;
+	res::path filename = path;
 	filename.set_ext("bmp");
 	char * data = resources->readAlloc(filename, size);
 	if(!data) {

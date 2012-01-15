@@ -24,7 +24,7 @@
 
 #include "input/InputKey.h"
 
-#include "io/FilePath.h"
+#include "io/fs/FilePath.h"
 
 #include "math/MathFwd.h"
 #include "math/Vector2.h"
@@ -182,9 +182,16 @@ public:
 		
 		int quicksaveSlots;
 		
-		std::string debug; // Logger debug levels.
+		std::string debug; //!< Logger debug levels.
 		
 	} misc;
+	
+	struct {
+		
+		fs::path user; //!< Directory for config and save files.
+		fs::path data; //!< Directory for data files.
+		
+	} paths;
 	
 public:
 	
@@ -197,7 +204,9 @@ public:
 	 */
 	bool save();
 	
-	bool init(const fs::path & file, const fs::path & default_file);
+	bool init(const fs::path & file);
+	
+	void set_output_file(const fs::path & _file) { file = _file; }
 	
 private:
 	

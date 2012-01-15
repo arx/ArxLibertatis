@@ -43,18 +43,19 @@ endmacro()
 
 ##############################################################################
 
-option(ARX_BUILD_TESTS "Build tests" OFF)
-option(ARX_BUILD_TOOLS "Build tools" ON)
-option(ARX_BUILD_EDITOR "Build editor" OFF)
-option(ARX_BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
-option(ARX_USE_UNITYBUILD "Unity build" OFF)
-option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
-option(ARX_USE_OPENAL "Build the OpenAL audio backend." ON)
-option(ARX_USE_DSOUND "Build the DirectSound audio backend." ON)
-option(ARX_USE_OPENGL "Build the OpenGL renderer backend." ON)
-option(ARX_USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
-option(ARX_USE_SDL "Build the SDL windowing backend." ON)
-option(ARX_USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
+option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_TOOLS "Build tools" ON)
+option(BUILD_EDITOR "Build editor" OFF)
+option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
+option(UNITY_BUILD "Unity build" OFF)
+option(DEBUG_EXTRA "Expensive debug options" OFF)
+option(USE_OPENAL "Build the OpenAL audio backend." ON)
+option(USE_DSOUND "Build the DirectSound audio backend." ON)
+option(USE_OPENGL "Build the OpenGL renderer backend." ON)
+option(USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
+option(USE_SDL "Build the SDL windowing backend." ON)
+option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
+option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -85,11 +86,11 @@ endif()
 
 if(NOT HAVE_WINAPI)
 	# The is no DirectX under linux
-	set(ARX_USE_D3D9 OFF)
-	set(ARX_USE_DSOUND OFF)
-	set(ARX_USE_DINPUT8 OFF)
+	set(USE_D3D9 OFF)
+	set(USE_DSOUND OFF)
+	set(USE_DINPUT8 OFF)
 else()
-	if(ARX_USE_D3D9)
+	if(USE_D3D9 OR USE_DINPUT8)
 		find_package(DirectX REQUIRED)
 	endif()
 endif()
@@ -98,19 +99,19 @@ find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
-if(ARX_USE_OPENGL)
-	find_package(OpenGL REQUIRED)
-	find_package(GLEW REQUIRED)
+if(USE_OPENGL)
+	find_package(OpenGL)
+	find_package(GLEW)
 endif()
-if(ARX_USE_OPENAL)
-	find_package(OpenAL 1.1 REQUIRED)
+if(USE_OPENAL)
+	find_package(OpenAL 1.1)
 	find_package(OpenALEFX)
 endif()
 find_package(Doxygen)
 find_package(PythonInterp)
-if(ARX_USE_SDL)
+if(USE_SDL)
 	set(SDL_BUILDING_LIBRARY 1)		# Required to avoid linking with SDLmain...
-	find_package(SDL 1.2 EXACT REQUIRED)
+	find_package(SDL 1.2 EXACT)
 endif()
 
 if(MSVC)
@@ -118,7 +119,8 @@ if(MSVC)
 	set(Boost_USE_STATIC_LIBS ON)
 endif(MSVC)
 
-find_package(Boost REQUIRED)
+set(BOOST_COMPONENTS program_options)
+find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 
 mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)
@@ -132,46 +134,54 @@ if(MSVC)
 	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
 	# TODO - Does not seem to work...
 	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
-	
+
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(/wd4995)		# 'func': name was marked as #pragma deprecated
-	
+	add_definitions(/wd4995)        # 'func': name was marked as #pragma deprecated
+
 	# TEMP - disable warning caused by the F2L removal
-	add_definitions(/wd4244)    	# Conversion from 'float' to 'long', possible loss of data
-	
+	add_definitions(/wd4244)        # Conversion from 'float' to 'long', possible loss of data
+
 	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 	if(CMAKE_CL_64)
-		add_definitions(/wd4267)	# Conversion from 'size_t' to 'xxx', possible loss of data
+		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
 
-	if(NOT ARX_DEBUG_EXTRA)
+	# Disable warning related to long decorated name
+	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
+
+	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 		add_definitions(-D_SECURE_SCL=0)
 		add_definitions(-D_SECURE_SCL_THROWS=0)
 		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
 	endif()
-	
+
 	# Disable exceptions & rtti
-	add_definitions(/wd4530)		# C++ exception handling was used but /EHsc was not selected.
-	add_definitions(/GR-)			# No RTTI
-		
+	add_definitions(/GR-)           # No RTTI
+
+	# Enable multiprocess build
+	add_definitions(/MP)
+
 	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-		# Disable exceptions
-		string(REGEX REPLACE "/EHsc" "" ${flag_var} "${${flag_var}}")
-		
+		# Disable Run time checks
+		string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
+
 		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
-			string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
-		
-		# Remove definition of _DEBUG as it might conflict with libs we're linking with   		
+		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
+
+		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
 	endforeach(flag_var)
-	
+
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
-	
+
+	# This is needed to use ZLIB as a DLL
+	add_definitions(-DZLIB_WINAPI)
+
 else(MSVC)
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
@@ -181,14 +191,14 @@ else(MSVC)
 	check_link_library(DevIL IL_LIBRARIES IL)
 	check_link_library(ZLIB ZLIB_LIBRARIES)
 	check_link_library(Freetype FREETYPE_LIBRARIES)
-	if(ARX_USE_OPENAL)
+	if(USE_OPENAL AND OPENAL_FOUND)
 		check_link_library(OpenAL OPENAL_LIBRARY)
 	endif()
-	if(ARX_USE_OPENGL)
+	if(USE_OPENGL AND OPENGL_FOUND)
 		check_link_library(OpenGL OPENGL_LIBRARIES)
 		check_link_library(GLEW GLEW_LIBRARIES)
 	endif()
-	if(ARX_USE_SDL)
+	if(USE_SDL AND SDL_FOUND)
 		check_link_library(SDL SDL_LIBRARY)
 	endif()
 	
@@ -206,9 +216,7 @@ else(MSVC)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
-	check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
-	check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
-	check_include_file("dirent.h" HAVE_DIRENT_H)
+	check_include_file("wordexp.h" HAVE_WORDEXP_H)
 	
 	check_symbol_exists(strsignal "string.h" HAVE_STRSIGNAL)
 	
@@ -216,26 +224,40 @@ else(MSVC)
 	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
 	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
 	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
-	check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
-	check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 	if(NOT WIN32)
 		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
 	endif()
 	
-	check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
-	check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
-	
 	check_symbol_exists(waitpid "sys/wait.h" HAVE_WAITPID)
+	
+	check_symbol_exists(sched_getscheduler "sched.h" HAVE_SCHED_GETSCHEDULER)
 	
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
 	
-	if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H)
-		if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
-			set(HAVE_POSIX_FILESYSTEM 1)
+	if(USE_NATIVE_FS)
+		
+		check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
+		check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
+		check_include_file("dirent.h" HAVE_DIRENT_H)
+		
+		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
+		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
+		
+		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+		
+		check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)
+		
+		check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
+		
+		if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
+			if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+				set(HAVE_POSIX_FILESYSTEM 1)
+			endif()
 		endif()
+		
 	endif()
 	
 	# Warning level
@@ -276,7 +298,7 @@ else(MSVC)
 		
 	endif()
 	
-	if(ARX_DEBUG_EXTRA)
+	if(DEBUG_EXTRA)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
 		# add_cxxflag("-Wsuggest-attribute=const")
 		# add_cxxflag("-Wsuggest-attribute=pure")
@@ -290,12 +312,9 @@ else(MSVC)
 		add_cxxflag("-Wno-constant-logical-operand")
 	endif()
 	
-	if(ARX_USE_UNITYBUILD)
+	if(UNITY_BUILD)
 		add_cxxflag("-fwhole-program")
 	endif()
-	
-	# Disable exceptions & rtti
-	add_cxxflag(-fno-rtti)
 	
 	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
 		# The standard library shipped with ekopath failes to compile with -fno-rtti
@@ -305,20 +324,41 @@ else(MSVC)
 	
 endif(MSVC)
 
+# Define default user and data directories.
+if(NOT DEFINED DATA_DIR)
+	set(DATA_DIR "arx")
+endif()
+if(NOT DEFINED USER_DIR)
+	set(USER_DIR "arx")
+endif()
+if(WIN32 AND NOT WINE)
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%")
+	endif()
+else()
+	if(NOT DEFINED DATA_DIR_PREFIXES)
+		set(DATA_DIR_PREFIXES "${CMAKE_INSTALL_PREFIX}/share:$XDG_DATA_DIRS")
+	endif()
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "$XDG_DATA_HOME")
+	endif()
+endif()
+if(DATA_DIR STREQUAL "")
+	unset(DATA_DIR)
+endif()
+if(USER_DIR STREQUAL "")
+	unset(USER_DIR)
+endif()
+if(DATA_DIR_PREFIXES STREQUAL "")
+	unset(DATA_DIR_PREFIXES)
+endif()
+if(USER_DIR_PREFIXES STREQUAL "")
+	unset(USER_DIR_PREFIXES)
+endif()
+
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT)
 	set(HAVE_PTHREADS 1)
-elseif(NOT CMAKE_USE_WIN32_THREADS_INIT)
-	message(SEND_ERROR "No supported thread libraries found.")
-endif()
-if(NOT ARX_USE_OPENAL AND NOT ARX_USE_DSOUND)
-	message(WARNING "No audio backend enabled.")
-endif()
-if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
-	message(SEND_ERROR "Need either nanosleep or WIN32.")
-endif()
-if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI OR HAVE_MACH_CLOCK))
-	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
 endif()
 
 # Preprocessor definitions
@@ -375,6 +415,8 @@ set(CORE_SOURCES
 	src/core/Core.cpp
 	src/core/GameTime.cpp
 	src/core/Localisation.cpp
+	src/core/SaveGame.cpp
+	src/core/Startup.cpp
 )
 
 set(EDITOR_SOURCES
@@ -468,8 +510,6 @@ set(IO_SOURCES
 	src/io/IniSection.cpp
 	src/io/IniWriter.cpp
 	src/io/IO.cpp
-	src/io/PakEntry.cpp
-	src/io/PakReader.cpp
 	src/io/SaveBlock.cpp
 	src/io/Screenshot.cpp
 )
@@ -479,16 +519,21 @@ set(IO_LOGGER_SOURCES
 	src/io/log/LogBackend.cpp
 	src/io/log/Logger.cpp
 )
+set(IO_RESOURCE_SOURCES
+	src/io/resource/PakEntry.cpp
+	src/io/resource/PakReader.cpp
+	src/io/resource/ResourcePath.cpp
+)
 set(IO_LOGGER_POSIX_SOURCES src/io/log/ColorLogger.cpp)
 set(IO_LOGGER_WINDOWS_SOURCES src/io/log/MsvcLogger.cpp)
 set(IO_FILESYSTEM_SOURCES
-	src/io/FilePath.cpp
-	src/io/FileStream.cpp
-	src/io/Filesystem.cpp
+	src/io/fs/FilePath.cpp
+	src/io/fs/FileStream.cpp
+	src/io/fs/Filesystem.cpp
 )
-set(IO_FILESYSTEM_BOOST_SOURCES src/io/FilesystemBoost.cpp)
-set(IO_FILESYSTEM_POSIX_SOURCES src/io/FilesystemPOSIX.cpp)
-set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/FilesystemWindows.cpp)
+set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
+set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
+set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
 set(MATH_SOURCES src/math/Angle.cpp)
 
@@ -504,6 +549,7 @@ set(PHYSICS_SOURCES
 
 set(PLATFORM_SOURCES
 	src/platform/CrashHandler.cpp
+	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
 	src/platform/Random.cpp
@@ -559,7 +605,28 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
+# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found release and debug
+# libs get mixed up. On windows we will empty out the Boost_LIBRARIES list and count on the 
+# auto-linking feature boost provides. http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
+if (MSVC)
+	# Reset libraries list so VC will perform auto-linking.
+	set (Boost_LIBRARIES "")
+
+	# Not needed anymore as BOOST_ROOT finds these properly. 
+	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
+	if ("${Boost_INCLUDE_DIRS}" STREQUAL "")
+		set (Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
+	endif ()
+	if ("${Boost_LIBRARY_DIRS}" STREQUAL "")
+		set (Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
+	endif ()
+
+	# Add boost lib directory to the list of libraries paths
+	link_directories(${Boost_LIBRARY_DIRS})
+endif ()
+
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+
 if(TIME_LIBRARIES)
 	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
 endif()
@@ -567,7 +634,7 @@ if(HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
 
-if(ARX_USE_OPENAL)
+if(USE_OPENAL AND OPENAL_FOUND)
 	list(APPEND AUDIO_SOURCES ${AUDIO_OPENAL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENAL_LIBRARY})
 	include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
@@ -577,12 +644,13 @@ if(ARX_USE_OPENAL)
 		set(HAVE_OPENAL_EFX 1)
 	endif()
 endif()
-if(ARX_USE_DSOUND)
+if(USE_DSOUND)
+	# TODO does this need DIRECTX_FOUND? if so, the find_package(DirectX) should also be run if USE_DSOUND is set but USE_D3D9 isn't
 	list(APPEND AUDIO_SOURCES ${AUDIO_DSOUND_SOURCES})
 	set(HAVE_DSOUND 1)
 endif()
 
-if(HAVE_WINAPI AND ARX_USE_D3D9)
+if(USE_D3D9 AND DIRECTX_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
 	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
 		
@@ -592,7 +660,7 @@ if(HAVE_WINAPI AND ARX_USE_D3D9)
 	set(HAVE_D3D9 1)
 endif()
 
-if(ARX_USE_OPENGL)
+if(USE_OPENGL AND OPENGL_FOUND AND OPENGL_GLU_FOUND AND GLEW_FOUND) # TODO remove GLU dependency
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
@@ -600,7 +668,7 @@ if(ARX_USE_OPENGL)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
-if(ARX_USE_OPENGL AND ARX_USE_SDL)
+if(USE_SDL AND HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
@@ -608,7 +676,7 @@ if(ARX_USE_OPENGL AND ARX_USE_SDL)
 	set(HAVE_SDL 1)
 endif()
 
-if(HAVE_WINAPI AND ARX_USE_DINPUT8)
+if(USE_DINPUT8 AND DIRECTX_FOUND)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	set(HAVE_DINPUT8 1)
@@ -626,22 +694,26 @@ if(HAVE_WINAPI)
 endif()
 list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
 
+list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
+
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
-elseif(HAVE_WINAPI)
+elseif(USE_NATIVE_FS AND HAVE_WINAPI)
 	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
+	set(HAVE_WIN32_FILESYSTEM 1)
 elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
-	find_package(Boost 1.44 REQUIRED COMPONENTS filesystem system)
+	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
 	set(HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
+	list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 else()
-	message(FATAL_ERROR "You need either Boost >= 1.44 or windows api or sys/stat.h, sys/errno.h and dirent.h; Found boost version ${Boost_VERSION}")
+	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API or enough POSIX functionality; Found boost version ${Boost_VERSION}")
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
-if(HAVE_SIGNAL AND HAVE_EXECLP)
+if(HAVE_EXECLP)
 	list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
 	set(HAVE_CRASHHANDLER_POSIX 1)
 elseif(HAVE_WINAPI)
@@ -655,27 +727,22 @@ endif()
 
 set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
 
-if(ARX_BUILD_EDITOR)
-	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
-	set(BUILD_EDITOR 1)
-endif()
-if(ARX_BUILD_EDIT_LOADSAVE)
-	set(BUILD_EDIT_LOADSAVE 1)
+# Set the icon for the Windows executable by adding this resource file to the sources
+if(MSVC)
+	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
 endif()
 
-add_definitions(-DBOOST_NO_EXCEPTIONS)
-add_definitions(-DBOOST_NO_TYPEID)
+if(BUILD_EDITOR)
+	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
+endif()
+
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
 #create source groups
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
-if(ARX_USE_UNITYBUILD)
-	set(UNITY_BUILD 1)
-endif()
-
-configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h")
+configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
 
 version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
 list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
@@ -684,7 +751,7 @@ list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
 add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
 
-if(ARX_BUILD_TOOLS)
+if(BUILD_TOOLS)
 	
 	# Needed by the crash reporter
 	add_definitions(-DQT_NO_DEBUG)
@@ -694,9 +761,8 @@ if(ARX_BUILD_TOOLS)
 	set(SAVETOOL_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
+		${IO_RESOURCE_SOURCES}
 		src/core/Localisation.cpp
-		src/io/PakEntry.cpp
-		src/io/PakReader.cpp
 		src/io/Blast.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
@@ -716,8 +782,7 @@ if(ARX_BUILD_TOOLS)
 	set(UNPAK_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
-		src/io/PakEntry.cpp
-		src/io/PakReader.cpp
+		${IO_RESOURCE_SOURCES}
 		src/io/Blast.cpp
 		src/io/log/ColorLogger.cpp
 		src/io/log/ConsoleLogger.cpp
@@ -809,7 +874,7 @@ endif()
 
 # Build and link executables
 
-if(ARX_USE_UNITYBUILD)
+if(UNITY_BUILD)
 	unity_build()
 else()
 	shared_build()
@@ -917,7 +982,7 @@ if(PYTHONINTERP_FOUND)
 	)
 endif()
 
-if(ARX_BUILD_TESTS)
+if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
 
@@ -977,19 +1042,21 @@ endfunction()
 
 message("")
 message("Configuration:")
-if(ARX_USE_UNITYBUILD)
-	set(BUILD_TYPE_SUFFIX " (unity build)")
-else()
-	set(BUILD_TYPE_SUFFIX "")
-endif()
-if(CMAKE_BUILD_TYPE STREQUAL "")
-	message(" - Build type: Release${BUILD_TYPE_SUFFIX}")
-else()
-	message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
-endif()
+if(NOT MSVC)
+	if(UNITY_BUILD)
+		set(BUILD_TYPE_SUFFIX " (unity build)")
+	else()
+		set(BUILD_TYPE_SUFFIX "")
+	endif()
+	if(CMAKE_BUILD_TYPE STREQUAL "")
+		message(" - Build type: Release${BUILD_TYPE_SUFFIX}")
+	else()
+		message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
+	endif()
+endif(NOT MSVC)
 print_configuration("Filesystem backend" FIRST
 	HAVE_POSIX_FILESYSTEM "POSIX"
-	HAVE_WINAPI           "Win32"
+	HAVE_WIN32_FILESYSTEM "Win32"
 	1                     "Boost"
 )
 print_configuration("Renderer"
@@ -1008,4 +1075,30 @@ print_configuration("Windowing"
 	HAVE_SDL     "SDL"
 	HAVE_D3D9    "Win32"
 )
+print_configuration("Crash handler"
+	HAVE_CRASHHANDLER_POSIX   "POSIX"
+	HAVE_CRASHHANDLER_WINDOWS "Win32"
+)
 message("")
+
+if(NOT (CMAKE_USE_PTHREADS_INIT OR CMAKE_USE_WIN32_THREADS_INIT))
+	message(SEND_ERROR "No supported thread libraries found.")
+endif()
+if(NOT (HAVE_OPENGL OR HAVE_D3D9))
+	message(SEND_ERROR "No renderer available - need either OpenGL and GLEW or Direct3D 9")
+endif()
+if(NOT (HAVE_OPENAL OR HAVE_DSOUND))
+	message(WARNING "No audio backend enabled - need either OpenAL or Direct Sound")
+endif()
+if(NOT (HAVE_SDL OR HAVE_DINPUT8))
+	message(SEND_ERROR "No input backend available - need either SDL or DirectInput 8")
+endif()
+if(NOT (HAVE_SDL OR HAVE_WINAPI))
+	message(SEND_ERROR "No windowing backend available - need either SDL or Windows")
+endif()
+if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
+	message(SEND_ERROR "Need either nanosleep or WIN32.")
+endif()
+if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI OR HAVE_MACH_CLOCK))
+	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
+endif()

@@ -23,6 +23,7 @@
 #include "graphics/Color.h"
 
 namespace fs { class path; }
+namespace res { class path; }
 
 class Image {
 	
@@ -50,7 +51,7 @@ public:
 	
 	const Image& operator=(const Image & pOther);
 	
-	bool LoadFromFile(const fs::path & filename);
+	bool LoadFromFile(const res::path & filename);
 	bool LoadFromMemory(void * pData, unsigned int size);
 	
 	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);

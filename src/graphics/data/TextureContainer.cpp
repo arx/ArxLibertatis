@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
-#include "io/FilePath.h"
-#include "io/PakReader.h"
+#include "io/resource/ResourcePath.h"
+#include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "platform/Platform.h"
@@ -150,7 +150,7 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 // Name: TextureContainer()
 // Desc: Constructor for a texture object
 //-----------------------------------------------------------------------------
-TextureContainer::TextureContainer(const fs::path & strName, TCFlags flags) : m_texName(strName) {
+TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m_texName(strName) {
 	
 	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"), "bad texture name: \"%s\"", strName.string().c_str()); // TODO(case-sensitive) remove
 	
@@ -229,11 +229,11 @@ TextureContainer::~TextureContainer()
 	ResetVertexLists(this);
 }
 
-bool TextureContainer::LoadFile(const fs::path & strPathname) {
+bool TextureContainer::LoadFile(const res::path & strPathname) {
 	
 	bool bLoaded = false;
 	
-	fs::path tempPath = strPathname;
+	res::path tempPath = strPathname;
 	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpg"));
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpeg"));
@@ -279,7 +279,7 @@ bool TextureContainer::LoadFile(const fs::path & strPathname) {
 
 extern void MakeUserFlag(TextureContainer * tc);
 
-TextureContainer * TextureContainer::Load(const fs::path & name, TCFlags flags) {
+TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags) {
 	
 	// Check first to see if the texture is already loaded
 	TextureContainer * newTexture = Find(name);
@@ -315,11 +315,11 @@ TextureContainer * TextureContainer::Load(const fs::path & name, TCFlags flags) 
 	return newTexture;
 }
 
-TextureContainer * TextureContainer::LoadUI(const fs::path & strName, TCFlags flags) {
+TextureContainer * TextureContainer::LoadUI(const res::path & strName, TCFlags flags) {
 	return Load(strName, flags | UI);
 }
 
-TextureContainer * TextureContainer::Find(const fs::path & strTextureName) {
+TextureContainer * TextureContainer::Find(const res::path & strTextureName) {
 	
 	TextureContainer * ptcTexture = g_ptcTextureList;
 	
@@ -374,7 +374,7 @@ static void ConvertData(string & dat) {
 	dat = dat.substr(substrStart, substrLen);
 }
 
-static void LoadRefinementMap(const fs::path & fileName, map<fs::path, fs::path> & refinementMap) {
+static void LoadRefinementMap(const res::path & fileName, map<res::path, res::path> & refinementMap) {
 	
 	size_t fileSize = 0;
 	char * from = resources->readAlloc(fileName, fileSize);
@@ -413,9 +413,9 @@ static void LoadRefinementMap(const fs::path & fileName, map<fs::path, fs::path>
 			makeLowercase(data);
 			
 			if(data != "none") {
-				refinementMap[fs::path::load(name)] = fs::path::load(data);
+				refinementMap[res::path::load(name)] = res::path::load(data);
 			} else {
-				refinementMap[fs::path::load(name)].clear();
+				refinementMap[res::path::load(name)].clear();
 			}
 		}
 		

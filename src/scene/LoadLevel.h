@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct INTERACTIVE_OBJ;
 
-namespace fs { class path; }
+namespace res { class path; }
 
 extern Vec3f loddpos;
 
@@ -62,13 +62,13 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 #endif
 
-long DanaeLoadLevel(const fs::path & file);
+long DanaeLoadLevel(const res::path & file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
 
-INTERACTIVE_OBJ * LoadInter_Ex(const fs::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
+INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 
 extern Vec3f MSP;
 

@@ -121,7 +121,7 @@ void MD5::update(FILE *file){
   unsigned char buffer[1024];
   int len;
 
-  while (len=fread(buffer, 1, 1024, file))
+  while ((len=fread(buffer, 1, 1024, file)))
     update(buffer, len);
 
   fclose (file);
@@ -270,7 +270,7 @@ char *MD5::hex_digest(){
   if (!finalized){
     cerr << "MD5::hex_digest:  Can't get digest if you haven't "<<
       "finalized the digest!" <<endl;
-    return "";
+    return (s[0] = '\0', s); // ""; // TODO who wrote this?
   }
 
   for (i=0; i<16; i++)

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/codec/Codec.h"
 #include "audio/codec/RAW.h"
 #include "audio/codec/WAVFormat.h"
-#include "io/PakReader.h"
+#include "io/resource/PakReader.h"
 #include "platform/Platform.h"
 
 namespace {

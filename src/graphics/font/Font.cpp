@@ -30,12 +30,13 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
-#include "io/FilePath.h"
+#include "io/fs/FilePath.h"
+#include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
 
 using std::string;
 
-Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face ) 
+Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face) 
 	: m_Info(fontFile, fontSize)
 	, m_RefCount(0)
 	, m_FTFace(face)

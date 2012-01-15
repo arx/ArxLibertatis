@@ -40,16 +40,20 @@
 //       - Thanks to Jakub Piwowarczyk!
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "CSmtp.h"
+#include "csmtp.h"
+
+#ifdef HAVE_WINAPI // TODO
+
 #include "base64.h"
 #include "openssl/err.h"
 
 #include <cassert>
 
+#ifdef HAVE_WINAPI
 //Add "openssl-0.9.8l\out32" to Additional Library Directories
 #pragma comment(lib, "ssleay32.lib")
 #pragma comment(lib, "libeay32.lib")
-
+#endif
 
 Command_Entry command_list[] = 
 {
@@ -74,7 +78,7 @@ Command_Entry command_list[] =
 Command_Entry* FindCommandEntry(SMTP_COMMAND command)
 {
 	Command_Entry* pEntry = NULL;
-	for(int i = 0; i < sizeof(command_list)/sizeof(command_list[0]); ++i)
+	for(size_t i = 0; i < sizeof(command_list)/sizeof(command_list[0]); ++i)
 	{
 		if(command_list[i].command == command)
 		{
@@ -167,7 +171,7 @@ CSmtp::CSmtp()
 	m_iSMTPSrvPort = 0;
 	m_bAuthenticate = true;
 
-#ifndef LINUX
+#ifdef HAVE_WINAPI
 	// Initialize WinSock
 	WSADATA wsaData;
 	WORD wVer = MAKEWORD(2,2);    
@@ -231,7 +235,7 @@ CSmtp::~CSmtp()
 
 	CleanupOpenSSL();
 
-#ifndef LINUX
+#ifdef HAVE_WINAPI
 	WSACleanup();
 #endif
 }
@@ -696,7 +700,7 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 				memcpy(&sockAddr.sin_addr,host->h_addr_list[0],host->h_length);
 			else
 			{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 				close(hSocket);
 #else
 				closesocket(hSocket);
@@ -706,13 +710,13 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 		}
 
 		// start non-blocking mode for socket:
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 		if(ioctl(hSocket,FIONBIO, (unsigned long*)&ul) == SOCKET_ERROR)
 #else
 		if(ioctlsocket(hSocket,FIONBIO, (unsigned long*)&ul) == SOCKET_ERROR)
 #endif
 		{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 			close(hSocket);
 #else
 			closesocket(hSocket);
@@ -722,13 +726,13 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 
 		if(connect(hSocket,(LPSOCKADDR)&sockAddr,sizeof(sockAddr)) == SOCKET_ERROR)
 		{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 			if(errno != EINPROGRESS)
 #else
 			if(WSAGetLastError() != WSAEWOULDBLOCK)
 #endif
 			{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 				close(hSocket);
 #else
 				closesocket(hSocket);
@@ -749,7 +753,7 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 
 			if((res = select(hSocket+1,NULL,&fdwrite,&fdexcept,&timeout)) == SOCKET_ERROR)
 			{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 				close(hSocket);
 #else
 				closesocket(hSocket);
@@ -759,7 +763,7 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 
 			if(!res)
 			{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 				close(hSocket);
 #else
 				closesocket(hSocket);
@@ -770,7 +774,7 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 				break;
 			if(res && FD_ISSET(hSocket,&fdexcept))
 			{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 				close(hSocket);
 #else
 				closesocket(hSocket);
@@ -1136,7 +1140,7 @@ void CSmtp::DisconnectRemoteServer()
 	if(m_bConnected) SayQuit();
 	if(hSocket)
 	{
-#ifdef LINUX
+#ifndef HAVE_WINAPI
 		close(hSocket);
 #else
 		closesocket(hSocket);
@@ -2310,3 +2314,5 @@ void CSmtp::CleanupOpenSSL()
 		CRYPTO_cleanup_all_ex_data();
 	}
 }
+
+#endif // HAVE_WINAPI

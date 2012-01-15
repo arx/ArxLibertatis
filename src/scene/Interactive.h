@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 
-namespace fs { class path; }
+namespace res { class path; }
 
 struct INTERACTIVE_OBJECTS {
 	
@@ -127,7 +127,7 @@ extern long NbIOSelected;
 #endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const fs::path & s1);
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const res::path & s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag = 0);
@@ -140,9 +140,9 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const fs::path & param1, const fs::path & param2);
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res::path & param1, const res::path & param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const fs::path & temp);
+bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags = 0);
 
 bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
@@ -207,10 +207,10 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef =
  * Creates an IO Ident for added object if necessary
  * @param flags can be IO_IMMEDIATELOAD (1) to FORCE loading
  */
-INTERACTIVE_OBJ * AddInteractive(const fs::path & file, long id, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddFix(const fs::path & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddNPC(const fs::path & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddItem(const fs::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags = 0);
+INTERACTIVE_OBJ * AddItem(const res::path & file, AddInteractiveFlags flags = 0);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
@@ -222,10 +222,10 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos);
 void RenderInter(float from, float to);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
  
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const fs::path & temp);
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
-std::string GetMaterialString(const fs::path & origin );
+std::string GetMaterialString(const res::path & origin );
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);
