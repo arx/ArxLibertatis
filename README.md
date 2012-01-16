@@ -21,7 +21,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
-* SDL 1.2 and OpenGL 1.5 and GLU and GLEW **and/or** DirectInput 8 and Direct3D 9
+* SDL 1.2 and OpenGL 1.5 and GLEW **and/or** DirectInput 8 and Direct3D 9
 * OpenAL 1.1 **and/or** DirectSound 9
 * DevIL
 * zlib

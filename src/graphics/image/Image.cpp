@@ -335,7 +335,6 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	}
 }
 
-// this function was implemented to eliminate the need for gluScaleImage()
 // creates an image of the desired size and rescales the source into it
 // currently performs default nearest-neighbour interpolation of the image
 // supports only RGB, BGR, RGBA or BGRA formats

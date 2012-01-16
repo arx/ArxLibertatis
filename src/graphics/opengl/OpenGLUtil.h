@@ -28,12 +28,12 @@
 #endif
 
 #include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <GL/glu.h>
 
 #include <io/log/Logger.h>
 
-#define CHECK_GL if(GLenum error = glGetError()) LogError << "GL error in " << __func__ << ": " << error << " = " << gluErrorString(error)
+const char * getGLErrorString(GLenum error);
+
+#define CHECK_GL if(GLenum error = glGetError()) \
+	LogError << "GL error in " << __func__ << ": " << error << " = " << getGLErrorString(error)
 
 #endif // ARX_GRAPHICS_OPENGL_OPENGLUTIL_H
