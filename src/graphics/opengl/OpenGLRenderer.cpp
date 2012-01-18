@@ -678,7 +678,7 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	fullsize.Create(size.x, size.y, Image::Format_R8G8B8);
 	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, fullsize.GetData()); 
 
-	image.ResizeFrom(fullsize, width, height, Image::Format_R8G8B8);
+	image.ResizeFrom(fullsize, width, height);
 
 	return true;
 }

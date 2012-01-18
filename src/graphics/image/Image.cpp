@@ -20,8 +20,7 @@
 #include "graphics/image/Image.h"
 
 #include <cstring>
-#include <IL/il.h>
-#include <IL/ilu.h>
+#include <il.h>
 
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
@@ -41,7 +40,6 @@ public:
 	DevilLib() {
 		
 		ilInit();
-		iluInit();
 		
 		// Set the origin to be used when loading all images, 
 		// so that any image with a different origin will be
@@ -336,50 +334,60 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 }
 
 // creates an image of the desired size and rescales the source into it
-// currently performs default nearest-neighbour interpolation of the image
-// supports only RGB, BGR, RGBA or BGRA formats
-void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int height, Format format)
+// performs only nearest-neighbour interpolation of the image
+// supports only RGB format
+void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int height)
 {
-	Create(width, height, format);
+	Create(width, height, Format_R8G8B8);
 
-	ILuint imageName;
-	ilGenImages(1, &imageName);
-	ilBindImage(imageName);
+	// span, size of one line in pixels (doesn't allow for byte padding)
+	const unsigned int src_span = source.GetWidth();
+	const unsigned int dest_span = width;
 
-	ILint ilbbp;
-	ILenum ilformat;
+	// number of bytes per pixel
+	// since we assume RGB format, this is 3 for both source and destination
+	const unsigned int src_pixel = 3;
+	const unsigned int dest_pixel = 3;
 
-	switch (source.GetFormat()) {
-		case Format_R8G8B8: ilformat = IL_RGB; ilbbp = 3; break;
-		case Format_B8G8R8: ilformat = IL_RGB; ilbbp = 3; break;
-		case Format_R8G8B8A8: ilformat = IL_BGRA; ilbbp = 4; break;
-		case Format_B8G8R8A8: ilformat = IL_BGRA; ilbbp = 4; break;
-		// unsupported format (should never happen!)
-		default: 
-			arx_assert(false);
-			ilDeleteImages(1, &imageName);
-			return; 
+	// find fractional source y_delta
+	float y_source = 0.0f;
+	const float y_delta = source.GetHeight() / (float)height;
+
+	for (unsigned int y = 0; y < height; y++)
+	{
+		// find pointer to the beginning of this destination line, flip vertical
+		unsigned char *dest_p = GetData() + (height - 1 - y) * dest_span * dest_pixel;
+
+		// truncate y_source coordinate and premultiply by line width / span
+		const unsigned int src_y = (unsigned int)(y_source) * source.GetWidth();
+
+		// find fractional source x_delta
+		float x_source = 0.0f;
+		const float x_delta = source.GetWidth() / (float)width;
+
+		for (unsigned int x = 0; x < width; x++)
+		{
+			// truncate x_source coordinate
+			const unsigned int src_x = (unsigned int)(x_source);
+
+			// find offset in bytes for the current source coordinate
+			const unsigned int src_offset = (src_x + src_y) * src_pixel;
+
+			// copy pixel from source to dest, assuming 24-bit format (RGB or BGR, etc)
+			dest_p[0] = source.GetData()[src_offset + 0];
+			dest_p[1] = source.GetData()[src_offset + 1];
+			dest_p[2] = source.GetData()[src_offset + 2];
+
+			// move destination pointer ahead by one pixel
+			dest_p += dest_pixel;
+
+			// increment fractional source coordinate by one destination pixel, horizontal
+			x_source += x_delta;
+		}
+
+		// increment fractional source coordinate by one destination pixel, vertical
+		y_source += y_delta;
 	}
-
-	ilTexImage(source.GetWidth(), source.GetHeight(), source.GetDepth(), ilbbp, ilformat, IL_UNSIGNED_BYTE, const_cast<unsigned char *>(source.GetData()));
-
-	iluScale(width, height, 1);
-
-	switch (GetFormat()) {
-		case Format_R8G8B8: ilformat = IL_RGB; ilbbp = 3; break;
-		case Format_B8G8R8: ilformat = IL_BGR; ilbbp = 3; break;
-		case Format_R8G8B8A8: ilformat = IL_RGBA; ilbbp = 4; break;
-		case Format_B8G8R8A8: ilformat = IL_BGRA; ilbbp = 4; break;
-		// unsupported format (should never happen!)
-		default: 
-			arx_assert(false);
-			ilDeleteImages(1, &imageName);
-			return; 
-	}
-
-	ilCopyPixels(0, 0, 0, width, height, GetDepth(), ilformat, IL_UNSIGNED_BYTE, GetData());
-
-	ilDeleteImages(1, &imageName);
 }
 
 void Image::Clear() {
