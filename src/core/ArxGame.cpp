@@ -228,6 +228,7 @@ INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame() : wasResized(false) {
+	selected_font = 0;
 }
 
 ArxGame::~ArxGame() {
@@ -664,9 +665,72 @@ void ArxGame::Cleanup3DEnvironment() {
 // Draws text on the window.
 //*************************************************************************************
 void ArxGame::OutputText(int x, int y, const string & str) {
-	if(m_bReady) {
+	if (m_bReady) {
 		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
+}
+
+//*************************************************************************************
+// OutputText()
+// Draws text on the window using selected font and color
+// at position defined by column,row.
+//*************************************************************************************
+void ArxGame::OutputTextGrid(float column, float row, const std::string &text, const Color &color)
+{
+	if (!selected_font)
+	{
+		OutputTextSelectFont("in game");
+	}
+
+	// find display size
+	const Vec2i &window = GetWindow()->GetSize();
+
+	const int tsize = selected_font->GetLineHeight();
+
+	// TODO: could use quadrants for width or something similar
+	// TODO: could center text in column/row
+	const Vector2<int> size(window.x / 4, selected_font->GetLineHeight());
+	const Vector2<int> spacing(2, 2);
+	const Vector2<float> p(column + (column < 0), row + (row < 0));
+
+	// offset text into the screen a bit
+	const Vector2<int> offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
+
+	// print the text directly using our selected font
+	selected_font->Draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
+}
+
+//*************************************************************************************
+// OutputTextSelectFont()
+// Selects a font to be used by OutputTextGrid()
+//*************************************************************************************
+void ArxGame::OutputTextSelectFont(const std::string &name)
+{
+	// TODO: yes sure a std::map may work
+	static const struct font_map_t
+	{
+		const char *name;
+		Font *font_pointer;
+	} font_map[] =
+	{
+		{"in game",      hFontInGame},
+		{"in book",      hFontInBook},
+		{"in game note", hFontInGameNote},
+		{"main menu",    hFontMainMenu},
+		{"menu",         hFontMenu},
+		{"controls",     hFontControls},
+		{"credits",      hFontCredits},
+		{0,              0},
+	};
+
+	const font_map_t *select = font_map;
+	while (select->name) {
+		if (name == select->name)
+			break;
+		select++;
+	}
+
+	selected_font = (select->font_pointer ? select->font_pointer : font_map->font_pointer);
 }
 
 bool ArxGame::BeforeRun() {
