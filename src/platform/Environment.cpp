@@ -154,7 +154,7 @@ void defineSystemDirectories() {
 
 #else
 
-std::string ws2s(const std::wstring& s)
+std::string ws2s(const std::basic_string<WCHAR> & s)
 {    
     size_t slength = (int)s.length() + 1;
     size_t len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0); 
