@@ -128,7 +128,6 @@ mark_as_advanced(ILU_LIBRARIES)
 mark_as_advanced(IL_LIBRARIES)
 
 set(SRC_DIR src)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 if(MSVC)
 	# Disable deprecation warnings
