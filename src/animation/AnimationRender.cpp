@@ -2780,7 +2780,6 @@ void ApplyDynLight(EERIEPOLY * ep)
 	}
 }
  
-float TOTAL_CHRONO = 0.f;
 //*************************************************************************************
 void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {

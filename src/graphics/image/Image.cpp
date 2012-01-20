@@ -359,7 +359,7 @@ void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int hei
 		unsigned char *dest_p = GetData() + (height - 1 - y) * dest_span * dest_pixel;
 
 		// truncate y_source coordinate and premultiply by line width / span
-		const unsigned int src_y = (unsigned int)(y_source) * source.GetWidth();
+		const unsigned int src_y = (unsigned int)(y_source) * src_span;
 
 		// find fractional source x_delta
 		float x_source = 0.0f;

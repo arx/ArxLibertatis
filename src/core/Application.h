@@ -163,7 +163,7 @@ public:
 	 * @param str The string of text to be written
 	*/
 	virtual void OutputText(int, int, const std::string &) {}
-	virtual void OutputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) {}
+	virtual void OutputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
 	virtual void OutputTextSelectFont(const std::string &) {}
 	
 	virtual void Run() = 0;
