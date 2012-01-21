@@ -264,11 +264,11 @@ void ArxGame::setFullscreen(bool fullscreen) {
 			mode = GetWindow()->getDisplayModes().back();
 		}
 		
-		mainApp->GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
+		GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
 		
 	} else {
 		
-		mainApp->GetWindow()->setWindowSize(config.window.size);
+		GetWindow()->setWindowSize(config.window.size);
 		
 	}
 }
@@ -700,7 +700,7 @@ bool ArxGame::BeforeRun() {
 	
 	LogDebug("Before Run...");
 	
-	const Vec2i & size = mainApp->GetWindow()->GetSize();
+	const Vec2i & size = GetWindow()->GetSize();
 	ControlCinematique = new Cinematic(size.x, size.y);
 	
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
@@ -2090,14 +2090,14 @@ bool ArxGame::Render() {
 					sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
 					break;
 			}
-			mainApp->OutputText( 320, 240, tex );
+			OutputText( 320, 240, tex );
 		}
 		
 		if((!FOR_EXTERNAL_PEOPLE)) {
 			if(bOLD_CLIPP) {
-				mainApp->OutputText(0, 240, "New Clipp" );
+				OutputText(0, 240, "New Clipp" );
 			} else {
-				mainApp->OutputText(0,274,"New Clipp");
+				OutputText(0,274,"New Clipp");
 			}
 		}
 	}
