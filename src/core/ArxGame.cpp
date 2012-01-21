@@ -1162,7 +1162,7 @@ bool ArxGame::Render() {
 
 				arx_assert(inter.iobj[0]->obj != NULL);
 				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false);
+				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false, false);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -1191,7 +1191,7 @@ bool ArxGame::Render() {
 
 			arx_assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false);
+			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false, false);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
