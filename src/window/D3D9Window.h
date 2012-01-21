@@ -44,8 +44,6 @@ public:
 	bool showFrame();
 	void restoreSurfaces();
 	
-	void evictManagedTextures();
-	
 	inline LPDIRECT3D9 getD3D() { return d3d; }
 	inline const DeviceInfo & getInfo() { return *deviceInfo; }
 	

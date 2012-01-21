@@ -2366,8 +2366,6 @@ bool ArxGame::InitDeviceObjects()
 
 	ARX_SetAntiAliasing();
 
-	EvictManagedTextures();
-
 	return true;
 }
 

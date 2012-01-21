@@ -375,10 +375,6 @@ void SDLWindow::restoreSurfaces() {
 	// nothing to do?
 }
 
-void SDLWindow::evictManagedTextures() {
-	// nothing to do?
-}
-
 void SDLWindow::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
 	SDL_SetGammaRamp(red, green, blue);
 }

@@ -77,8 +77,6 @@ public:
 	virtual bool showFrame() = 0;
 	virtual void restoreSurfaces() = 0;
 	
-	virtual void evictManagedTextures() = 0;
-	
 	virtual void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) = 0;
 	void setGamma(float brightness, float contrast, float gamma);
 	

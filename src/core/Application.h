@@ -152,8 +152,6 @@ public:
 	
 	virtual ~Application();
 	
-	void EvictManagedTextures();
-	
 	/* Virtual functions which may be overridden for specific implementations */
 	
 	/**

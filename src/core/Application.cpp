@@ -232,11 +232,6 @@ bool Application::InitConfig() {
 	return true;
 }
 
-void Application::EvictManagedTextures() {
-	GetWindow()->evictManagedTextures();
-}
-
-
 //*************************************************************************************
 // Pause()
 // Called in to toggle the pause state of the app. This function

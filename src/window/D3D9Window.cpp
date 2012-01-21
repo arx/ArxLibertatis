@@ -360,7 +360,3 @@ void D3D9Window::setGammaRamp(const u16 * red, const u16 * green, const u16 * bl
 
 	GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &ramp);
 }
-
-void D3D9Window::evictManagedTextures() {
-	// Nothing to do here
-}
