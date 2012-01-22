@@ -93,8 +93,7 @@ public:
 	 * @param str The string of text to be written
 	*/
 	virtual void OutputText(int x, int y, const std::string & str);
-	virtual void OutputTextGrid(float x, float y, const std::string &text, const Color &color = Color(1,1,1,1));
-	virtual void OutputTextSelectFont(const std::string &name);
+	virtual void OutputTextGrid(float x, float y, const std::string &text, const Color &color);
 	
 private:
 	
@@ -114,9 +113,6 @@ private:
 	bool initWindow(RenderWindow * window);
 	
 	void setFullscreen(bool fullscreen);
-
-	// TODO: use smart reference counting pointer 
-	Font *selected_font;
 };
 
 #endif // ARX_CORE_ARXGAME_H

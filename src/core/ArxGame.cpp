@@ -228,7 +228,6 @@ INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame() : wasResized(false) {
-	selected_font = 0;
 }
 
 ArxGame::~ArxGame() {
@@ -677,10 +676,7 @@ void ArxGame::OutputText(int x, int y, const string & str) {
 //*************************************************************************************
 void ArxGame::OutputTextGrid(float column, float row, const std::string &text, const Color &color)
 {
-	if (!selected_font)
-	{
-		OutputTextSelectFont("in game");
-	}
+	Font *selected_font = hFontInGame;
 
 	// find display size
 	const Vec2i &window = GetWindow()->GetSize();
@@ -698,39 +694,6 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 
 	// print the text directly using our selected font
 	selected_font->Draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
-}
-
-//*************************************************************************************
-// OutputTextSelectFont()
-// Selects a font to be used by OutputTextGrid()
-//*************************************************************************************
-void ArxGame::OutputTextSelectFont(const std::string &name)
-{
-	// TODO: yes sure a std::map may work
-	static const struct font_map_t
-	{
-		const char *name;
-		Font *font_pointer;
-	} font_map[] =
-	{
-		{"in game",      hFontInGame},
-		{"in book",      hFontInBook},
-		{"in game note", hFontInGameNote},
-		{"main menu",    hFontMainMenu},
-		{"menu",         hFontMenu},
-		{"controls",     hFontControls},
-		{"credits",      hFontCredits},
-		{0,              0},
-	};
-
-	const font_map_t *select = font_map;
-	while (select->name) {
-		if (name == select->name)
-			break;
-		select++;
-	}
-
-	selected_font = (select->font_pointer ? select->font_pointer : font_map->font_pointer);
 }
 
 bool ArxGame::BeforeRun() {

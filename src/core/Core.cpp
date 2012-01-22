@@ -3908,8 +3908,6 @@ void ShowFPS() {
 	char tex[32];
 	sprintf(tex, "%.02f fps", (float)FPS);
 
-	mainApp->OutputTextSelectFont("in game");
-
 	// top left
 	mainApp->OutputTextGrid(0.0f, 0.0f, tex);
 
