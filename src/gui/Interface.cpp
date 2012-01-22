@@ -250,11 +250,12 @@ float				PROGRESS_BAR_TOTAL=0;
 float				PROGRESS_BAR_COUNT=0;
 float				OLD_PROGRESS_BAR_COUNT=0;
 
-long				TRUE_PLAYER_MOUSELOOK_ON=0;
-long				LAST_PLAYER_MOUSELOOK_ON=0;
-long				MEMO_PLAYER_MOUSELOOK_ON=0;
+bool				PLAYER_MOUSELOOK_ON = false;
+bool				TRUE_PLAYER_MOUSELOOK_ON = false;
+bool				LAST_PLAYER_MOUSELOOK_ON = false;
+bool				MEMO_PLAYER_MOUSELOOK_ON = false;
+
 long				COMBINEGOLD=0;
-long				PLAYER_MOUSELOOK_ON=0;
 ARX_INTERFACE_BOOK_MODE	Book_Mode=BOOKMODE_STATS;
 long				Book_MapPage=1;
 long				Book_SpellPage=1;
@@ -313,10 +314,10 @@ short SHORT_INTERFACE_RATIO(const float _a) {
 }
 
 
-bool bInverseInventory=false;
-long lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
-bool bForceEscapeFreeLook=false;
-bool bRenderInCursorMode=true;
+bool bInverseInventory = false;
+bool lOldTruePlayerMouseLook = TRUE_PLAYER_MOUSELOOK_ON;
+bool bForceEscapeFreeLook = false;
+bool bRenderInCursorMode = true;
 
 long lChangeWeapon=0;
 INTERACTIVE_OBJ *pIOChangeWeapon=NULL;
@@ -616,7 +617,7 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 
 		if (WILLRETURNTOFREELOOK)
 		{
-			TRUE_PLAYER_MOUSELOOK_ON |= 1;
+			TRUE_PLAYER_MOUSELOOK_ON = true;
 			SLID_START=float(arxtime);
 			WILLRETURNTOFREELOOK = 0;
 		}
@@ -639,7 +640,7 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 
 	if (!bInventoryClosing && config.input.autoReadyWeapon == false)
 	{
-		TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+		TRUE_PLAYER_MOUSELOOK_ON = false;
 	}
 }
 
@@ -764,7 +765,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const string & tex) {
 	}
 
 	if (TRUE_PLAYER_MOUSELOOK_ON && Note.type == NOTE_TYPE_BOOK)
-		TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+		TRUE_PLAYER_MOUSELOOK_ON = false;
 
 	if (player.Interface & INTER_INVENTORYALL)
 	{
@@ -1065,7 +1066,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	ulBookHaloTime = 0;
 	pTextManage->Clear();
 
-	TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+	TRUE_PLAYER_MOUSELOOK_ON = false;
 }
 
 //-------------------------------------------------------------------------------------
@@ -1712,7 +1713,7 @@ bool ArxGame::ManageEditorControls()
 							{
 								ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 								EERIEMouseButton &= ~2;
-								TRUE_PLAYER_MOUSELOOK_ON&=~1;
+								TRUE_PLAYER_MOUSELOOK_ON = false;
 							}
 						}
 					}
@@ -1885,7 +1886,7 @@ bool ArxGame::ManageEditorControls()
 						}
 
 						EERIEMouseButton &= ~2;
-						TRUE_PLAYER_MOUSELOOK_ON&=~1;
+						TRUE_PLAYER_MOUSELOOK_ON = false;
 					}
 
 					if (DRAGINTER == NULL)
@@ -2572,7 +2573,7 @@ void ARX_INTERFACE_Combat_Mode(long i)
 
 			if (config.input.mouseLookToggle)
 			{
-				TRUE_PLAYER_MOUSELOOK_ON |= 1;
+				TRUE_PLAYER_MOUSELOOK_ON = true;
 				SLID_START=float(arxtime);
 			}
 		}
@@ -3317,7 +3318,7 @@ void ArxGame::ManagePlayerControls()
 			  {
 				  MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
 				  SPECIAL_DRAW_WEAPON=1;
-				  TRUE_PLAYER_MOUSELOOK_ON|=1;
+				  TRUE_PLAYER_MOUSELOOK_ON = true;
 				  SLID_START=float(arxtime);
 					lFadeMapTime = (long)arxtime;
 				  ARX_INTERFACE_Combat_Mode(2);
@@ -3332,7 +3333,7 @@ void ArxGame::ManagePlayerControls()
 	if( (config.misc.newControl)&&
 	        (bForceEscapeFreeLook))
 	{
-		TRUE_PLAYER_MOUSELOOK_ON&=~1;
+		TRUE_PLAYER_MOUSELOOK_ON = false;
 
 		if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 		{
@@ -3347,9 +3348,9 @@ void ArxGame::ManagePlayerControls()
 		{
 			if (GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 			{
-				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+				if (!TRUE_PLAYER_MOUSELOOK_ON)
 				{
-					TRUE_PLAYER_MOUSELOOK_ON |= 1;
+					TRUE_PLAYER_MOUSELOOK_ON = true;
 					SLID_START=float(arxtime);
 				}
 			}
@@ -3357,7 +3358,7 @@ void ArxGame::ManagePlayerControls()
 			{
 				if(config.misc.newControl)
 				{
-					TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+					TRUE_PLAYER_MOUSELOOK_ON = false;
 				}
 			}
 		}
@@ -3365,14 +3366,14 @@ void ArxGame::ManagePlayerControls()
 		{
 			if (GInput->actionNowPressed(CONTROLS_CUST_FREELOOK))
 			{
-				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+				if (!TRUE_PLAYER_MOUSELOOK_ON)
 				{
-					TRUE_PLAYER_MOUSELOOK_ON |= 1;
+					TRUE_PLAYER_MOUSELOOK_ON = true;
 					SLID_START=float(arxtime);
 				}
 				else
 				{
-					TRUE_PLAYER_MOUSELOOK_ON&=~1;
+					TRUE_PLAYER_MOUSELOOK_ON = false;
 
 					if (player.Interface & INTER_COMBATMODE)
 						ARX_INTERFACE_Combat_Mode(0);			
@@ -3465,7 +3466,7 @@ void ArxGame::ManagePlayerControls()
 		{
 			bInverseInventory=false;
 
-			if(	TRUE_PLAYER_MOUSELOOK_ON & 1	)
+			if (TRUE_PLAYER_MOUSELOOK_ON)
 			{
 				if (!CSEND)
 				{
@@ -3539,7 +3540,7 @@ void ArxGame::ManagePlayerControls()
 
 					if(config.input.mouseLookToggle)
 					{
-						TRUE_PLAYER_MOUSELOOK_ON |= 1;
+						TRUE_PLAYER_MOUSELOOK_ON = true;
 						SLID_START=float(arxtime);
 					}
 				}
@@ -3580,7 +3581,7 @@ void ArxGame::ManagePlayerControls()
 
 					if(config.input.mouseLookToggle)
 					{
-						TRUE_PLAYER_MOUSELOOK_ON |= 1;
+						TRUE_PLAYER_MOUSELOOK_ON = true;
 						SLID_START=float(arxtime);
 					}
 				}
@@ -3830,7 +3831,7 @@ void ArxGame::ManageKeyMouse() {
 
 								if (!((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle)))
 								{
-									TRUE_PLAYER_MOUSELOOK_ON&=~1;
+									TRUE_PLAYER_MOUSELOOK_ON = false;
 								}
 							}
 						}
@@ -3863,13 +3864,13 @@ void ArxGame::ManageKeyMouse() {
 					{
 						if (!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER)
 						{
-							if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+							if (!TRUE_PLAYER_MOUSELOOK_ON)
 							{
 								if (!InInventoryPos(&DANAEMouse))
 								{
 									if (!((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP))
 									{
-										TRUE_PLAYER_MOUSELOOK_ON|=1;
+										TRUE_PLAYER_MOUSELOOK_ON = true;
 										EERIEMouseButton &= ~2;
 										SLID_START=float(arxtime);
 										lFadeMapTime = (long)arxtime;
@@ -3880,7 +3881,7 @@ void ArxGame::ManageKeyMouse() {
 							{
 								if (!((config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle) && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)))
 								{
-									TRUE_PLAYER_MOUSELOOK_ON&=~1;
+									TRUE_PLAYER_MOUSELOOK_ON = false;
 									if (player.Interface & INTER_COMBATMODE && !(player.Interface & INTER_NOTE))
 										ARX_INTERFACE_Combat_Mode(0);
 								}
@@ -3895,7 +3896,7 @@ void ArxGame::ManageKeyMouse() {
 				{
 					if(	(EERIEMouseButton & 2) &&
 						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))) &&
-						(!(TRUE_PLAYER_MOUSELOOK_ON & 1) || SPECIAL_DRAW_WEAPON)&&
+						(!TRUE_PLAYER_MOUSELOOK_ON || SPECIAL_DRAW_WEAPON)&&
 					        (config.input.linkMouseLookToUse))
 					{
 						if (SPECIAL_DRAW_WEAPON)
@@ -3904,12 +3905,12 @@ void ArxGame::ManageKeyMouse() {
 						{
 							if (SPECIAL_DRAW_WEAPON)
 							{
-								TRUE_PLAYER_MOUSELOOK_ON&=~1;
+								TRUE_PLAYER_MOUSELOOK_ON = false;
 								SPECIAL_DRAW_WEAPON=0;
 							}
 							else
 							{
-								TRUE_PLAYER_MOUSELOOK_ON|=1;
+								TRUE_PLAYER_MOUSELOOK_ON = true;
 								SLID_START=float(arxtime);
 								lFadeMapTime = (long)arxtime;
 							}
@@ -3920,7 +3921,7 @@ void ArxGame::ManageKeyMouse() {
 						if (!SPECIAL_DRAW_WEAPON)
 						{
 							if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
-								TRUE_PLAYER_MOUSELOOK_ON&=~1;
+								TRUE_PLAYER_MOUSELOOK_ON = false;
 
 							if ((player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_FREELOOK))
 								ARX_INTERFACE_Combat_Mode(0);
@@ -3933,7 +3934,7 @@ void ArxGame::ManageKeyMouse() {
 				if (TRUE_PLAYER_MOUSELOOK_ON && (!(EERIEMouseButton & 2)) && !SPECIAL_DRAW_WEAPON)
 				{
 					if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
-						TRUE_PLAYER_MOUSELOOK_ON&=~1;
+						TRUE_PLAYER_MOUSELOOK_ON = false;
 				}
 			}
 		}
@@ -3941,12 +3942,12 @@ void ArxGame::ManageKeyMouse() {
 		PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
 
 		if ((player.doingmagic==2)&& (config.input.mouseLookToggle))
-			PLAYER_MOUSELOOK_ON=0;
+			PLAYER_MOUSELOOK_ON = false;
 	}
 
 	if(ARXmenu.currentmode!=AMCM_OFF)
 	{
-		PLAYER_MOUSELOOK_ON=0;
+		PLAYER_MOUSELOOK_ON = false;
 	}
 
 	// Checks For MouseGrabbing/Restoration after Grab

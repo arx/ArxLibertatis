@@ -90,7 +90,7 @@ extern float InventoryDir;
 extern long PLAYER_INTERFACE_HIDE_COUNT;
 extern long	DRAGGING;
 
-extern long TRUE_PLAYER_MOUSELOOK_ON;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
 
 void ARX_INTERFACE_Combat_Mode(long i);
 void ARX_INVENTORY_ReOrder();
@@ -2092,7 +2092,7 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 		}
 
 		if(!config.input.autoReadyWeapon) {
-			TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
 		if (SecondaryInventory && SecondaryInventory->io

@@ -197,7 +197,7 @@ extern unsigned long ROTATE_START;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern long		REFUSE_GAME_RETURN;
-extern long		PLAYER_MOUSELOOK_ON;
+extern bool		PLAYER_MOUSELOOK_ON;
 extern long		FRAME_COUNT;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
@@ -2189,7 +2189,7 @@ void FirstFrameHandling()
 		
 	if (ITC.Get("presentation")) 
 	{
-        delete ITC.Get("presentation");
+      delete ITC.Get("presentation");
 		ITC.Set("presentation", NULL);
 	}
 
@@ -2209,8 +2209,8 @@ void FirstFrameHandling()
 		inter.iobj[0]->_npcdata->vvpos=-99999;
 
 	SendGameReadyMsg();
-	PLAYER_MOUSELOOK_ON=0;
-	player.Interface&=~INTER_NOTE;
+	PLAYER_MOUSELOOK_ON = false;
+	player.Interface &= ~INTER_NOTE;
 
 	if (NO_TIME_INIT)
 	{
@@ -3401,8 +3401,6 @@ bool DANAE_ManageSplashThings() {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	
 	if(SPLASH_THINGS_STAGE > 10) {
-		
-		GInput->update();
 		
 		if(GInput->isAnyKeyPressed()) {
 			REFUSE_GAME_RETURN = 1;
