@@ -85,7 +85,7 @@ const bool
 	eax = false,
 	invertMouse = false,
 	autoReadyWeapon = false,
-	mouseLookToggle = false,
+	mouseLookToggle = true,
 	autoDescription = true,
 	linkMouseLookToUse = false,
 	forceZBias = false,
