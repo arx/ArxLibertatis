@@ -299,7 +299,7 @@ int SDLCALL SDLWindow::eventFilter(const SDL_Event * event) {
 	return 1;
 }
 
-void SDLWindow::Tick() {
+void SDLWindow::tick() {
 	
 	SDL_Event event;
 	while(SDL_PollEvent(&event)) {
@@ -369,10 +369,6 @@ bool SDLWindow::showFrame() {
 	SDL_GL_SwapBuffers();
 	
 	return true;
-}
-
-void SDLWindow::restoreSurfaces() {
-	// nothing to do?
 }
 
 void SDLWindow::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {

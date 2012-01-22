@@ -524,20 +524,6 @@ void ArxGame::OnResizeWindow(const Window & window) {
 void ArxGame::OnPaintWindow(const Window& window)
 {
 	ARX_UNUSED(window);
-
-	// Handle paint messages when the app is not ready
-	/* TODO
-	if (m_pFramework && !m_bReady)
-	{
-		if (m_pDeviceInfo->bWindowed)
-		{
-			m_pFramework->ShowFrame();
-		}
-		else
-		{
-			m_pFramework->FlipToGDISurface(true);
-		}
-	} */
 }
 
 void ArxGame::OnDestroyWindow(const Window &) {
@@ -564,7 +550,7 @@ void ArxGame::Run() {
 
 	while(m_RunLoop) {
 		
-		m_MainWindow->Tick();
+		m_MainWindow->tick();
 		if(!m_RunLoop) {
 			break;
 		}
@@ -598,34 +584,7 @@ long MouseDragX, MouseDragY;
 // Draws the scene.
 //*************************************************************************************
 bool ArxGame::Render3DEnvironment() {
-	
-	/* TODO
-	HRESULT hr;
-
-	// Check the cooperative level before rendering
-	if(FAILED(hr = m_pFramework->GetDirectDraw()->TestCooperativeLevel())) {
 		
-		printf("TestCooperativeLevel failed\n");
-		switch(hr) {
-			
-			case DDERR_EXCLUSIVEMODEALREADYSET:
-			case DDERR_NOEXCLUSIVEMODE:
-				// Do nothing because some other app has exclusive mode
-				return true;
-			
-			case DDERR_WRONGMODE:
-				
-				// The display mode changed on us. Resize accordingly
-				if(m_pDeviceInfo->bWindowed) {
-					return Change3DEnvironment();
-				}
-				break;
-			
-		}
-		
-		return SUCCEEDED(hr);
-	} */
-	
 	// Get the relative time, in seconds
 	if(!FrameMove()) {
 		LogError << "FrameMove failed";

@@ -40,9 +40,9 @@ public:
 	bool initFramework();
 
 	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
-	
+	virtual void tick();
+
 	bool showFrame();
-	void restoreSurfaces();
 	
 	inline LPDIRECT3D9 getD3D() { return d3d; }
 	inline const DeviceInfo & getInfo() { return *deviceInfo; }
@@ -59,12 +59,19 @@ private:
 	bool initialize(DisplayMode mode);
 	void destroyObjects();
 
+	bool updatePresentParams(DisplayMode mode);
+    void changeDisplay(Vec2i resolution, unsigned _depth);
+
 private:
 	std::vector<DeviceInfo> devices;
 	DeviceInfo * deviceInfo;
 
+	class D3D9Renderer* d3d9Renderer;
+
 	LPDIRECT3D9 d3d;					// The Direct3D object
 	D3DGAMMARAMP initialGammaRamp;		// Gamma ramp to restore
+	D3DGAMMARAMP currentGammaRamp;		// Current gamma ramp
+    D3DPRESENT_PARAMETERS d3dpp;        // Present params
 };
 
 #endif // ARX_WINDOW_D3D9WINDOW_H

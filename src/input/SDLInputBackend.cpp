@@ -231,7 +231,7 @@ bool SDLInputBackend::update() {
 	
 	
 	if(SDLWindow::mainWindow) {
-		SDLWindow::mainWindow->Tick();
+		SDLWindow::mainWindow->tick();
 	}
 	
 	currentWheel = wheel;

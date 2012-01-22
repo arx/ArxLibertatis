@@ -52,6 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3d9/D3D9Renderer.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
+#include "platform/Thread.h"
 
 using std::string;
 using std::vector;
@@ -62,6 +63,18 @@ D3D9Window::D3D9Window() : deviceInfo(NULL), d3d(NULL) { }
 
 D3D9Window::~D3D9Window() {
 	destroyObjects();
+
+	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
+	if(GD3D9Device) {
+
+		// Restore initial gamma ramp - Needed for wine
+		GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &initialGammaRamp);
+
+		if(0 < GD3D9Device->Release()) {
+			LogWarning << "D3DDevice object is still referenced";
+		}
+		GD3D9Device = NULL;
+	}
 
 	if(d3d) {
 		d3d->Release(), d3d = NULL;
@@ -137,19 +150,19 @@ bool D3D9Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 	arx_assert(deviceInfo == NULL);
 	arx_assert(!devices.empty() && !displayModes.empty());
 	
-	if(!Win32Window::init(title, size, fullscreen, depth)) {
+	if(!Win32Window::init(title, size, fullscreen, depth))
 		return false;
-	}
+
+    DisplayMode displayMode(size, depth);
+
+    if(!updatePresentParams(displayMode))
+        return false;
 	
 	bool succeeded = false;
-	if(initialize(DisplayMode(size, depth))) {
+	if(initialize(displayMode)) {
 		LogInfo << "Using Win32 windowing";
 		succeeded = true;
 	} else {
-		destroyObjects();
-	}
-	
-	if(!succeeded) {
 		deviceInfo = NULL;
 		LogError << "Could not initialize any D3D device!";
 	}
@@ -157,43 +170,32 @@ bool D3D9Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 	return succeeded;
 }
 
+void D3D9Window::tick() {
+    HRESULT hr = GD3D9Device->TestCooperativeLevel();
+    if(hr == D3DERR_DEVICELOST){
+        LogWarning << "D3DERR_DEVICELOST!";
+        Thread::sleep(1000);
+	} else if(hr == D3DERR_DEVICENOTRESET) {
+        LogWarning << "D3DERR_DEVICENOTRESET! - Start";
+        destroyObjects();
+        d3d9Renderer->reset(d3dpp);
+        restoreObjects();
+        LogWarning << "D3DERR_DEVICENOTRESET! - End";
+    }
+
+    Win32Window::tick();
+}
+
 bool D3D9Window::showFrame() {
 	GD3D9Device->Present(NULL, NULL, NULL, NULL);
 	return true;
 }
 
-void D3D9Window::restoreSurfaces() {
-}
-
-void D3D9Window::destroyObjects() {
-	
-	if(renderer) {
-		onRendererShutdown();
-		delete renderer, renderer = NULL;
-	}
-	
-	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
-	if(GD3D9Device) {
-
-		// Restore initial gamma ramp - Needed for wine
-		GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &initialGammaRamp);
-
-		if(0 < GD3D9Device->Release()) {
-			LogWarning << "D3DDevice object is still referenced";
-		}
-		GD3D9Device = NULL;
-	}
-}
-
-// Internal functions for the framework class
-bool D3D9Window::initialize(DisplayMode mode) {
-	
-	arx_assert(GetHandle() != NULL);
-	arx_assert(renderer == NULL);
-	
-	D3DPRESENT_PARAMETERS d3dpp; 
-	ZeroMemory( &d3dpp, sizeof(d3dpp) );
+bool D3D9Window::updatePresentParams(DisplayMode mode) {
+    ZeroMemory( &d3dpp, sizeof(d3dpp) );
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    d3dpp.BackBufferCount = 1;
+    d3dpp.hDeviceWindow = (HWND)GetHandle();
 	
 	// VSync
 	d3dpp.PresentationInterval = config.video.vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
@@ -243,6 +245,15 @@ bool D3D9Window::initialize(DisplayMode mode) {
 		return false;
 	}
 
+    return true;
+}
+
+// Internal functions for the framework class
+bool D3D9Window::initialize(DisplayMode mode) {
+	
+	arx_assert(GetHandle() != NULL);
+	arx_assert(renderer == NULL);
+	
 	// Set default settings
 	UINT AdapterToUse = D3DADAPTER_DEFAULT;
 	D3DDEVTYPE DeviceType = D3DDEVTYPE_HAL;
@@ -272,8 +283,9 @@ bool D3D9Window::initialize(DisplayMode mode) {
 	}
 
 	deviceInfo = &devices[0];
-
-	renderer = new D3D9Renderer(this);
+	    
+	d3d9Renderer = new D3D9Renderer(this);
+    renderer = d3d9Renderer;
 	renderer->Initialize();
 
 	// Multisampling - Part 2
@@ -285,10 +297,19 @@ bool D3D9Window::initialize(DisplayMode mode) {
 
 	// Store initial gamma settings to restore them later - Needed for wine
 	GD3D9Device->GetGammaRamp(0, &initialGammaRamp);
+	GD3D9Device->GetGammaRamp(0, &currentGammaRamp);
 		
-	onRendererInit();
-	
+    onRendererInit();
+
 	return true;
+}
+
+void D3D9Window::changeDisplay(Vec2i resolution, unsigned _depth) {
+   
+    updatePresentParams(DisplayMode(resolution, _depth));
+    destroyObjects();
+    d3d9Renderer->reset(d3dpp);
+	restoreObjects();
 }
 
 void D3D9Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
@@ -296,12 +317,10 @@ void D3D9Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	if(m_IsFullscreen && m_Size == resolution && depth == _depth) {
 		return;
 	}
-	
-	destroyObjects();
-	
+		
 	Win32Window::setFullscreenMode(resolution, _depth);
 	
-	restoreObjects();
+    changeDisplay(resolution, _depth);
 }
 
 void D3D9Window::setWindowSize(Vec2i size) {
@@ -310,53 +329,49 @@ void D3D9Window::setWindowSize(Vec2i size) {
 		return;
 	}
 	
-	destroyObjects();
-
 	Win32Window::setWindowSize(size);
 
-	restoreObjects();
+    changeDisplay(size, 0);
 }
 
 void D3D9Window::restoreObjects() {
 	
-	if(!deviceInfo) {
-		// not initialized yet!
-		return;
-	}
+    arx_assert(renderer != NULL);
+    arx_assert(deviceInfo != NULL);
 	
-	if(!renderer) {
+    // Reload all textures
+    onRendererInit();
 		
-		if(m_IsFullscreen) {
-			initialize(DisplayMode(m_Size, depth));
-		} else {
-			initialize(DisplayMode(m_Size, 0));
-		}
-		
-	}
-	
+    // Restore gamma settings
+    GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &currentGammaRamp);
+
+	// Set the multisampling render state
+	renderer->SetAntialiasing(d3dpp.MultiSampleType != D3DMULTISAMPLE_NONE);
+
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(m_Size.x, m_Size.y));
 }
 
+void D3D9Window::destroyObjects() {
+
+    arx_assert(renderer != NULL);
+	
+	onRendererShutdown();
+}
+
 void D3D9Window::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
 
-	D3DGAMMARAMP ramp;
-	
-	if(!red || !green || !blue) {
-		GD3D9Device->GetGammaRamp(0, &ramp);
-	}
-	
 	if(red) {
-		std::copy(red, red + 256, ramp.red);
+		std::copy(red, red + 256, currentGammaRamp.red);
 	}
 	
 	if(green) {
-		std::copy(green, green + 256, ramp.green);
+		std::copy(green, green + 256, currentGammaRamp.green);
 	}
 	
 	if(blue) {
-		std::copy(blue, blue + 256, ramp.blue);
+		std::copy(blue, blue + 256, currentGammaRamp.blue);
 	}
 
-	GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &ramp);
+	GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &currentGammaRamp);
 }

@@ -234,24 +234,10 @@ void D3D9Renderer::Initialize() {
 	// Texture stages...
 
 	m_TextureStages.resize(deviceCaps.MaxTextureBlendStages, 0);
-
-	DWORD maxAnisotropy = 1;
-	if( deviceCaps.RasterCaps & D3DPRASTERCAPS_ANISOTROPY )
-        maxAnisotropy = deviceCaps.MaxAnisotropy;
-
 	for(size_t i = 0; i < m_TextureStages.size(); ++i)
-	{
-		m_TextureStages[i] = new D3D9TextureStage(i);
-		GD3D9Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, maxAnisotropy);
+        m_TextureStages[i] = new D3D9TextureStage(i);
 
-        // Set default state
-		m_TextureStages[i]->SetWrapMode(TextureStage::WrapRepeat);
-		m_TextureStages[i]->SetMinFilter(TextureStage::FilterLinear);
-		m_TextureStages[i]->SetMagFilter(TextureStage::FilterLinear);
-		m_TextureStages[i]->SetMipFilter(TextureStage::FilterLinear);
-	}
-
-	SetRenderState(ColorKey, true);
+	resetStates();
 
 	// Clear screen
 	Clear(ColorBuffer | DepthBuffer);
@@ -289,7 +275,11 @@ void D3D9Renderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
 	GD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&matProj);
 }
 
-D3D9Renderer::~D3D9Renderer() { }
+D3D9Renderer::~D3D9Renderer()
+{
+	for(size_t i = 0; i < m_TextureStages.size(); ++i)
+        delete m_TextureStages[i];
+}
 
 void D3D9Renderer::ReleaseAllTextures() {
 	std::list<DX9Texture2D*>::iterator it;
@@ -628,4 +618,34 @@ bool D3D9Renderer::isFogInEyeCoordinates() {
 	D3DCAPS9 deviceCaps;
 	GD3D9Device->GetDeviceCaps(&deviceCaps);
 	return (deviceCaps.RasterCaps & D3DPRASTERCAPS_WFOG) == D3DPRASTERCAPS_WFOG;
+}
+
+void D3D9Renderer::resetStates() {
+    
+    D3DCAPS9 deviceCaps;
+	GD3D9Device->GetDeviceCaps(&deviceCaps);
+
+    DWORD maxAnisotropy = 1;
+	if( deviceCaps.RasterCaps & D3DPRASTERCAPS_ANISOTROPY )
+        maxAnisotropy = deviceCaps.MaxAnisotropy;
+
+	for(size_t i = 0; i < m_TextureStages.size(); ++i)
+	{
+        GD3D9Device->SetTextureStageState(i, D3DTSS_TEXCOORDINDEX, i);
+		GD3D9Device->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, maxAnisotropy);
+
+        // Set default state
+		m_TextureStages[i]->SetWrapMode(TextureStage::WrapRepeat);
+		m_TextureStages[i]->SetMinFilter(TextureStage::FilterLinear);
+		m_TextureStages[i]->SetMagFilter(TextureStage::FilterLinear);
+		m_TextureStages[i]->SetMipFilter(TextureStage::FilterLinear);
+	}
+
+	SetRenderState(ColorKey, true);
+}
+
+void D3D9Renderer::reset(D3DPRESENT_PARAMETERS& d3dpp) {
+    
+    GD3D9Device->Reset(&d3dpp);
+    resetStates();
 }

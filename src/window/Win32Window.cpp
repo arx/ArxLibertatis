@@ -244,7 +244,7 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	}
 }
 
-void Win32Window::Tick() {
+void Win32Window::tick() {
 	MSG msg;
 
 	if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
@@ -269,13 +269,8 @@ void Win32Window::updateSize() {
 	Vec2i newSize = Vec2i(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
 	
 	if(newSize != m_Size) {
-		
-		destroyObjects();
-		OnResize(newSize.x, newSize.y);
-		restoreObjects();
-
-		// Finally, set the viewport for the newly created device
-		renderer->SetViewport(Rect(newSize.x, newSize.y));
+        OnResize(newSize.x, newSize.y);
+		changeDisplay(newSize, 0);
 	}
 }
 

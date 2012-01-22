@@ -65,7 +65,6 @@ const D3DTEXTUREADDRESS ARXToDX9WrapMode[] = {
 };
 
 D3D9TextureStage::D3D9TextureStage(unsigned int textureStage) : TextureStage(textureStage) {
-	GD3D9Device->SetTextureStageState(textureStage, D3DTSS_TEXCOORDINDEX, textureStage);
 }
 
 void D3D9TextureStage::SetColorOp(TextureOp textureOp)
