@@ -203,7 +203,6 @@ TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 long NEED_SPECIAL_RENDEREND=0;
-long WILL_RELOAD_ALL_TEXTURES=0; // Set To 1 if Textures are to be reloaded from disk and restored.
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
 long EXTERNALVIEW=0;
@@ -827,14 +826,6 @@ bool ArxGame::Render() {
 	// Update Various Player Infos for this frame.
 	if (FirstFrame==0)
 		ARX_PLAYER_Frame_Update();
-	
-	// Project need to reload all textures ???
-	if (WILL_RELOAD_ALL_TEXTURES)
-	{
-		LogDebug("reload all textures");
-		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
-		WILL_RELOAD_ALL_TEXTURES=0;
-	}
 
 	// Are we being teleported ?
 	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
@@ -2292,9 +2283,6 @@ bool ArxGame::InitDeviceObjects()
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
-	// Restore All Textures RenderState
-	GRenderer->RestoreAllTextures();
-
 	ARX_PLAYER_Restore_Skin();
 	
 	// Disable Lighting RenderState
@@ -2360,8 +2348,6 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 void ArxGame::onRendererShutdown(RenderWindow &) {
 	
 	m_bReady = false;
-	
-	GRenderer->ReleaseAllTextures();
 	
 	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;

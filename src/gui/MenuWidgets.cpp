@@ -118,9 +118,6 @@ extern long DANAESIZY;
 
 extern long LastEERIEMouseButton;
 
-extern bool bForceReInitAllTexture;
-extern long WILL_RELOAD_ALL_TEXTURES;
-
 extern long FINAL_RELEASE;
 
 extern long REFUSE_GAME_RETURN;
@@ -1711,17 +1708,6 @@ bool Menu2_Render() {
 	GRenderer->SetCulling(Renderer::CullNone);
 	pMenuCursor->DrawCursor();
 
-	if(pMenu->bReInitAll)
-	{
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
-		if(bForceReInitAllTexture)
-		{
-			GRenderer->RestoreAllTextures();
-			bForceReInitAllTexture=false;
-		}
-	}
-
 	if (pTextureLoadRender)
 	{
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
@@ -2188,8 +2174,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 
 				if(config.video.textureSize==0)Project.TextureSize=64;
 
-				WILL_RELOAD_ALL_TEXTURES=1;
-
 				pMenuSliderTexture->iOldPos=-1;
 			}
 
@@ -2365,8 +2349,6 @@ CMenuElement* CMenuElementText::OnShortCut()
 
 void CMenuElementText::Render()
 {
-	if (WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	Vec3f ePos;
@@ -2388,8 +2370,6 @@ void CMenuElementText::Render()
 
 void CMenuElementText::RenderMouseOver()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pMenuCursor->SetMouseOver();
@@ -2516,8 +2496,6 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 void CMenuState::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	if (pTexBackGround)
@@ -2990,8 +2968,6 @@ void CMenuCheckButton::Update(int /*_iDTime*/)
 
 void CMenuCheckButton::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -3030,8 +3006,6 @@ void CMenuCheckButton::Render()
 
 void CMenuCheckButton::RenderMouseOver()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pMenuCursor->SetMouseOver();
@@ -3165,8 +3139,6 @@ void CWindowMenu::Update(float _fDTime)
 
 MENUSTATE CWindowMenu::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return NOP;
-
 	if(bNoMenu) return NOP;
 
 	if(bChangeConsole)
@@ -3922,8 +3894,6 @@ static bool UpdateGameKey(bool bEdit, CMenuElement *pmeElement, InputKeyId input
 
 int CWindowMenuConsole::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return 0;
-
 	if(bNoMenu) return 0;
 
 	int iSlider=0;
@@ -4216,8 +4186,6 @@ void CMenuPanel::Update(int _iTime)
 
 void CMenuPanel::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
@@ -4386,8 +4354,6 @@ void CMenuButton::Update(int _iDTime) {
 
 void CMenuButton::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	//affichage de la texture
@@ -4419,8 +4385,6 @@ void CMenuButton::Render()
 
 void CMenuButton::RenderMouseOver()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pMenuCursor->SetMouseOver();
@@ -4761,7 +4725,6 @@ void CMenuSliderText::Update(int _iTime)
 
 void CMenuSliderText::Render() {
 	
-	if(WILL_RELOAD_ALL_TEXTURES) return;
 	if(bNoMenu) return;
 	
 	if(enabled) {
@@ -4789,8 +4752,6 @@ void CMenuSliderText::setEnabled(bool enable) {
 
 void CMenuSliderText::RenderMouseOver()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pMenuCursor->SetMouseOver();
@@ -5003,8 +4964,6 @@ void CMenuSlider::Update(int _iTime) {
 
 void CMenuSlider::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pLeftButton->Render();
@@ -5057,8 +5016,6 @@ void CMenuSlider::Render()
 
 void CMenuSlider::RenderMouseOver()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pMenuCursor->SetMouseOver();

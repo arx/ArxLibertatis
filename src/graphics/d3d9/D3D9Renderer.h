@@ -45,10 +45,6 @@ public:
 	void SetProjectionMatrix(const EERIEMATRIX & matProj);
 	void GetProjectionMatrix(EERIEMATRIX & matProj) const;
 	
-	// Texture management
-	void ReleaseAllTextures();
-	void RestoreAllTextures();
-	
 	// Factory
 	Texture2D * CreateTexture2D();
 	

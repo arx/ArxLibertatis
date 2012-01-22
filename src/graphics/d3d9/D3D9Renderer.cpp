@@ -281,20 +281,6 @@ D3D9Renderer::~D3D9Renderer()
         delete m_TextureStages[i];
 }
 
-void D3D9Renderer::ReleaseAllTextures() {
-	std::list<DX9Texture2D*>::iterator it;
-	for(it = g_Textures2D.begin(); it != g_Textures2D.end(); ++it) {
-		(*it)->Destroy();
-	}
-}
-
-void D3D9Renderer::RestoreAllTextures() {
-	std::list<DX9Texture2D*>::iterator it;
-	for(it = g_Textures2D.begin(); it != g_Textures2D.end(); ++it) {
-		(*it)->Restore();
-	}
-}
-
 Texture2D* D3D9Renderer::CreateTexture2D() {
 	return new DX9Texture2D();
 }

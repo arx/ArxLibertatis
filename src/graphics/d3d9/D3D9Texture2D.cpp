@@ -32,8 +32,6 @@ using std::min;
 #include "graphics/Math.h"
 #include "io/log/Logger.h"
 
-std::list<DX9Texture2D*> g_Textures2D;
-
 extern LPDIRECT3DDEVICE9 GD3D9Device;
 
 D3DFORMAT ARXToDX9InternalFormat[] = {
@@ -53,12 +51,10 @@ D3DFORMAT ARXToDX9InternalFormat[] = {
 DX9Texture2D::DX9Texture2D()
 	: m_pTexture(0)
 {
-	g_Textures2D.push_back(this);
 }
 
 DX9Texture2D::~DX9Texture2D()
 {
-	g_Textures2D.remove(this);
 	Destroy();
 }
 
