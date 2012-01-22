@@ -336,13 +336,13 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 // creates an image of the desired size and rescales the source into it
 // performs only nearest-neighbour interpolation of the image
 // supports only RGB format
-void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int height)
+void Image::ResizeFrom(const Image &source, unsigned int desired_width, unsigned int desired_height, bool flip_vertical)
 {
-	Create(width, height, Format_R8G8B8);
+	Create(desired_width, desired_height, Format_R8G8B8);
 
 	// span, size of one line in pixels (doesn't allow for byte padding)
 	const unsigned int src_span = source.GetWidth();
-	const unsigned int dest_span = width;
+	const unsigned int dest_span = GetWidth();
 
 	// number of bytes per pixel
 	// since we assume RGB format, this is 3 for both source and destination
@@ -351,21 +351,21 @@ void Image::ResizeFrom(const Image &source, unsigned int width, unsigned int hei
 
 	// find fractional source y_delta
 	float y_source = 0.0f;
-	const float y_delta = source.GetHeight() / (float)height;
+	const float y_delta = source.GetHeight() / (float)GetHeight();
 
-	for (unsigned int y = 0; y < height; y++)
+	for (unsigned int y = 0; y < GetHeight(); y++)
 	{
-		// find pointer to the beginning of this destination line, flip vertical
-		unsigned char *dest_p = GetData() + (height - 1 - y) * dest_span * dest_pixel;
+		// find pointer to the beginning of this destination line
+		unsigned char *dest_p = GetData() + (flip_vertical ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
 
 		// truncate y_source coordinate and premultiply by line width / span
 		const unsigned int src_y = (unsigned int)(y_source) * src_span;
 
 		// find fractional source x_delta
 		float x_source = 0.0f;
-		const float x_delta = source.GetWidth() / (float)width;
+		const float x_delta = source.GetWidth() / (float)GetWidth();
 
-		for (unsigned int x = 0; x < width; x++)
+		for (unsigned int x = 0; x < GetWidth(); x++)
 		{
 			// truncate x_source coordinate
 			const unsigned int src_x = (unsigned int)(x_source);
