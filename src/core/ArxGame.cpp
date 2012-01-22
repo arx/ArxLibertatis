@@ -683,9 +683,11 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 
 	const int tsize = selected_font->GetLineHeight();
 
+
 	// TODO: could use quadrants for width or something similar
 	// TODO: could center text in column/row
 	const Vector2<int> size(window.x / 4, selected_font->GetLineHeight());
+
 	const Vector2<int> spacing(2, 2);
 	const Vector2<float> p(column + (column < 0), row + (row < 0));
 
@@ -694,6 +696,7 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 
 	// print the text directly using our selected font
 	selected_font->Draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
+
 }
 
 bool ArxGame::BeforeRun() {
