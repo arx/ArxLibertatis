@@ -49,12 +49,6 @@
 
 #include <cassert>
 
-#ifdef HAVE_WINAPI
-//Add "openssl-0.9.8l\out32" to Additional Library Directories
-#pragma comment(lib, "ssleay32.lib")
-#pragma comment(lib, "libeay32.lib")
-#endif
-
 Command_Entry command_list[] = 
 {
 	{command_INIT,          0,     5*60,  220, ECSmtp::SERVER_NOT_RESPONDING},
