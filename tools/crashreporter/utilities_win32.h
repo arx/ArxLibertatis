@@ -24,6 +24,8 @@
 
 #ifdef HAVE_WINAPI
 
+#include <windows.h>
+
 HWND GetMainWindow(unsigned int processId);
 bool GetWindowsVersionName(char* str, int bufferSize);
 bool Is64BitWindows();
