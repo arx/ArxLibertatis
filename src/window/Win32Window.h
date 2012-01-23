@@ -37,11 +37,11 @@ public:
 	virtual void * GetHandle();
 	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	virtual void setWindowSize(Vec2i size);
-	virtual void Tick();
+	virtual void tick();
 	
 	void updateSize();
-	virtual void destroyObjects() = 0;
-	virtual void restoreObjects() = 0;
+	
+	virtual void changeDisplay(Vec2i resolution, unsigned _depth) = 0;
 
 	virtual void hide();
 	

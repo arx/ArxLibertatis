@@ -1305,7 +1305,6 @@ void DanaeClearLevel(long flag)
 
 	ReleaseAllSpellResources();
 	TextureContainer::DeleteAll(TextureContainer::Level);
-	mainApp->EvictManagedTextures();
 	MapMarkerTc = NULL;
 
 	arxtime.init();

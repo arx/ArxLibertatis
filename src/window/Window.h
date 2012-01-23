@@ -44,7 +44,7 @@ public:
 	virtual void setWindowSize(Vec2i size) = 0;
 	
 	virtual void * GetHandle() = 0;
-	virtual void Tick() = 0;
+	virtual void tick() = 0;
 	
 	virtual void hide() = 0;
 	

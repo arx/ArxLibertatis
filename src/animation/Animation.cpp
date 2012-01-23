@@ -602,7 +602,8 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
                        Vec3f * pos,
                        unsigned long time,
                        INTERACTIVE_OBJ * io,
-                       bool render) {
+                       bool render,
+                       bool update_movement) {
 	
 	if(io && io != inter.iobj[0]) {
 		
@@ -644,7 +645,7 @@ suite:
 
 	DESTROYED_DURING_RENDERING=NULL;
 
-	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render);
+	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render, update_movement);
 }
 
 extern float GLOBAL_LIGHT_FACTOR;

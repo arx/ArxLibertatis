@@ -74,6 +74,9 @@ public:
 	const res::path & GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
 	
+	void Draw(const Vector2<int> &p, const std::string &str, const Color &color) {
+		Draw(p.x, p.y, str, color);
+	}
 	void Draw(int pX, int pY, const std::string & str, Color color);
 	void Draw(int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color);
 	

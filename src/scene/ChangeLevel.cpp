@@ -108,7 +108,7 @@ extern long DONT_LOAD_INTERS;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
 extern long CHANGE_LEVEL_ICON;
-extern long TRUE_PLAYER_MOUSELOOK_ON;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern int iTimeToDrawD7;
 extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500
@@ -2858,7 +2858,10 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	}
 	
 	ARX_INTERACTIVE_HideGore(inter.iobj[0], 1);
-	TRUE_PLAYER_MOUSELOOK_ON = 0;
+
+	// default to mouselook true, inventory/book closed
+	TRUE_PLAYER_MOUSELOOK_ON = true;
+	// disable combat mode
 	player.Interface &= ~INTER_COMBATMODE;
 	
 	PROGRESS_BAR_COUNT += 1.f;

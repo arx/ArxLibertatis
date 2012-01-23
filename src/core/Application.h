@@ -149,7 +149,6 @@ public:
 	Application();
 	virtual ~Application();
 	
-	void EvictManagedTextures();
 
 	/**
 	 * Ask the game to quit at the end of the current frame.
@@ -160,11 +159,12 @@ public:
 	
 	/**
 	 * Writes text to the window
-	 * @param x The x coordinate for the text
-	 * @param y The y coordinate for the text
+	 * @param x The x coordinate for the text in pixels
+	 * @param y The y coordinate for the text in pixels
 	 * @param str The string of text to be written
 	*/
-	virtual void OutputText( int, int, const std::string& ) {}
+	virtual void OutputText(int, int, const std::string &) {}
+	virtual void OutputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
 	
 	virtual void Run() = 0;
 	virtual void Pause(bool bPause);

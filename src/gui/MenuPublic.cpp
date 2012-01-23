@@ -83,11 +83,9 @@ extern bool bQuickGenFirstClick;
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern long STARTED_A_GAME;
-extern long WILL_RELOAD_ALL_TEXTURES;
 
 extern long REFUSE_GAME_RETURN;
 
-bool bForceReInitAllTexture = false;
 extern bool bFade;
 extern bool	bFadeInOut;
 extern int iFadeAction;

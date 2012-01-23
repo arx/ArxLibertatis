@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Draw.h"
+#include "graphics/font/Font.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -196,7 +197,7 @@ extern unsigned long ROTATE_START;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern long		REFUSE_GAME_RETURN;
-extern long		PLAYER_MOUSELOOK_ON;
+extern bool		PLAYER_MOUSELOOK_ON;
 extern long		FRAME_COUNT;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
@@ -2184,7 +2185,7 @@ void FirstFrameHandling()
 		
 	if (ITC.Get("presentation")) 
 	{
-        delete ITC.Get("presentation");
+      delete ITC.Get("presentation");
 		ITC.Set("presentation", NULL);
 	}
 
@@ -2204,8 +2205,8 @@ void FirstFrameHandling()
 		inter.iobj[0]->_npcdata->vvpos=-99999;
 
 	SendGameReadyMsg();
-	PLAYER_MOUSELOOK_ON=0;
-	player.Interface&=~INTER_NOTE;
+	PLAYER_MOUSELOOK_ON = false;
+	player.Interface &= ~INTER_NOTE;
 
 	if (NO_TIME_INIT)
 	{
@@ -3397,8 +3398,6 @@ bool DANAE_ManageSplashThings() {
 	
 	if(SPLASH_THINGS_STAGE > 10) {
 		
-		GInput->update();
-		
 		if(GInput->isAnyKeyPressed()) {
 			REFUSE_GAME_RETURN = 1;
 			FORBID_SAVE = 0;
@@ -3899,47 +3898,17 @@ void ShowInfoText() {
 	ARX_SCRIPT_Init_Event_Stats();
 }
 
-//-----------------------------------------------------------------------------
-
-extern long POLYIN;
-extern long LAST_LLIGHT_COUNT;
-extern float PLAYER_CLIMB_THRESHOLD, player_climb;
-extern float TOTAL_CHRONO;
-
 void ShowFPS() {
-	
-	char tex[256];
-	float fpss2=1000.f/_framedelay;	
-	LASTfpscount++;
-	
-	float fps2v=max(fpss2,LASTfps2);
-	float fps2vmin=min(fpss2,LASTfps2);
-	
-	if (LASTfpscount>49) 
-	{
-		LASTfps2=0;
-		LASTfpscount=0;
-		fps2=fps2v;
-		fps2min=fps2vmin;
-	}
-	else
-	{
-		LASTfps2=fpss2;
-	}
+	// TODO: make sure when adding text that it can fit here
+	// - this is extremely naughty, should use a std::string
+	char tex[32];
+	sprintf(tex, "%.02f fps", (float)FPS);
 
-	sprintf(tex,"%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld INTREAT:%ld"
-	        , EERIEDrawnPolys, FPS, fps2min, fps2, _framedelay, INTER_DRAW, INTER_COMPUTE, INTREATZONECOUNT);
-	//mainApp->OutputText( 70, DANAESIZY-100+32, tex );
+	// top left
+	mainApp->OutputTextGrid(0.0f, 0.0f, tex);
 
-	TOTAL_CHRONO=0;
-//	TODO(lubosz): Don't get this by extern global
-//	sprintf(tex,"%4.0f MCache %ld[%ld] FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
-//		,inter.iobj[0]->pos.y, meshCache.size(),MCache_GetSize(),Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
-
-	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
-		strcat(tex," EXCEEDING LIMIT !!!");
-
-	mainApp->OutputText(70,20,tex);
+	// bottom right
+	//mainApp->OutputTextGrid(-0.5f, -1, tex);
 }
 
 void ARX_SetAntiAliasing() {

@@ -142,8 +142,8 @@ extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
 extern long SPLASH_THINGS_STAGE;
 extern long REFUSE_GAME_RETURN;
-extern long PLAYER_MOUSELOOK_ON;
-extern long TRUE_PLAYER_MOUSELOOK_ON;
+extern bool PLAYER_MOUSELOOK_ON;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long FRAME_COUNT;
 extern long PLAYER_PARALYSED;
 extern long STOP_KEYBOARD_INPUT;
@@ -203,7 +203,6 @@ TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 long NEED_SPECIAL_RENDEREND=0;
-long WILL_RELOAD_ALL_TEXTURES=0; // Set To 1 if Textures are to be reloaded from disk and restored.
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
 long EXTERNALVIEW=0;
@@ -264,11 +263,11 @@ void ArxGame::setFullscreen(bool fullscreen) {
 			mode = GetWindow()->getDisplayModes().back();
 		}
 		
-		mainApp->GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
+		GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
 		
 	} else {
 		
-		mainApp->GetWindow()->setWindowSize(config.window.size);
+		GetWindow()->setWindowSize(config.window.size);
 		
 	}
 }
@@ -524,20 +523,6 @@ void ArxGame::OnResizeWindow(const Window & window) {
 void ArxGame::OnPaintWindow(const Window& window)
 {
 	ARX_UNUSED(window);
-
-	// Handle paint messages when the app is not ready
-	/* TODO
-	if (m_pFramework && !m_bReady)
-	{
-		if (m_pDeviceInfo->bWindowed)
-		{
-			m_pFramework->ShowFrame();
-		}
-		else
-		{
-			m_pFramework->FlipToGDISurface(true);
-		}
-	} */
 }
 
 void ArxGame::OnDestroyWindow(const Window &) {
@@ -562,7 +547,7 @@ void ArxGame::Run() {
 
 	while(m_RunLoop) {
 		
-		m_MainWindow->Tick();
+		m_MainWindow->tick();
 		if(!m_RunLoop) {
 			break;
 		}
@@ -597,34 +582,7 @@ long MouseDragX, MouseDragY;
 // Draws the scene.
 //*************************************************************************************
 bool ArxGame::Render3DEnvironment() {
-	
-	/* TODO
-	HRESULT hr;
-
-	// Check the cooperative level before rendering
-	if(FAILED(hr = m_pFramework->GetDirectDraw()->TestCooperativeLevel())) {
 		
-		printf("TestCooperativeLevel failed\n");
-		switch(hr) {
-			
-			case DDERR_EXCLUSIVEMODEALREADYSET:
-			case DDERR_NOEXCLUSIVEMODE:
-				// Do nothing because some other app has exclusive mode
-				return true;
-			
-			case DDERR_WRONGMODE:
-				
-				// The display mode changed on us. Resize accordingly
-				if(m_pDeviceInfo->bWindowed) {
-					return Change3DEnvironment();
-				}
-				break;
-			
-		}
-		
-		return SUCCEEDED(hr);
-	} */
-	
 	// Get the relative time, in seconds
 	if(!FrameMove()) {
 		LogError << "FrameMove failed";
@@ -663,16 +621,46 @@ void ArxGame::Cleanup3DEnvironment() {
 // Draws text on the window.
 //*************************************************************************************
 void ArxGame::OutputText(int x, int y, const string & str) {
-	if(m_bReady) {
+	if (m_bReady) {
 		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
+}
+
+//*************************************************************************************
+// OutputText()
+// Draws text on the window using selected font and color
+// at position defined by column,row.
+//*************************************************************************************
+void ArxGame::OutputTextGrid(float column, float row, const std::string &text, const Color &color)
+{
+	Font *selected_font = hFontInGame;
+
+	// find display size
+	const Vec2i &window = GetWindow()->GetSize();
+
+	const int tsize = selected_font->GetLineHeight();
+
+
+	// TODO: could use quadrants for width or something similar
+	// TODO: could center text in column/row
+	const Vector2<int> size(window.x / 4, selected_font->GetLineHeight());
+
+	const Vector2<int> spacing(2, 2);
+	const Vector2<float> p(column + (column < 0), row + (row < 0));
+
+	// offset text into the screen a bit
+	const Vector2<int> offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
+
+	// print the text directly using our selected font
+	selected_font->Draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
+
 }
 
 bool ArxGame::BeforeRun() {
 	
 	LogDebug("Before Run...");
 	
-	const Vec2i & size = mainApp->GetWindow()->GetSize();
+	const Vec2i & size = GetWindow()->GetSize();
 	ControlCinematique = new Cinematic(size.x, size.y);
 	
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
@@ -837,14 +825,6 @@ bool ArxGame::Render() {
 	// Update Various Player Infos for this frame.
 	if (FirstFrame==0)
 		ARX_PLAYER_Frame_Update();
-	
-	// Project need to reload all textures ???
-	if (WILL_RELOAD_ALL_TEXTURES)
-	{
-		LogDebug("reload all textures");
-		//ReloadAllTextures(); TODO is this needed for changing resolutions in-game?
-		WILL_RELOAD_ALL_TEXTURES=0;
-	}
 
 	// Are we being teleported ?
 	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
@@ -961,10 +941,6 @@ bool ArxGame::Render() {
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
 		setFullscreen(!GetWindow()->IsFullScreen());
-	}
-	
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
-		showFPS = !showFPS;
 	}
 	
 	if(ARX_Menu_Render()) {
@@ -1101,7 +1077,7 @@ bool ArxGame::Render() {
 
 				arx_assert(inter.iobj[0]->obj != NULL);
 				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false);
+				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false, false);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -1130,7 +1106,7 @@ bool ArxGame::Render() {
 
 			arx_assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false);
+			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false, false);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
@@ -2066,14 +2042,14 @@ bool ArxGame::Render() {
 					sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
 					break;
 			}
-			mainApp->OutputText( 320, 240, tex );
+			OutputText( 320, 240, tex );
 		}
 		
 		if((!FOR_EXTERNAL_PEOPLE)) {
 			if(bOLD_CLIPP) {
-				mainApp->OutputText(0, 240, "New Clipp" );
+				OutputText(0, 240, "New Clipp" );
 			} else {
-				mainApp->OutputText(0,274,"New Clipp");
+				OutputText(0,274,"New Clipp");
 			}
 		}
 	}
@@ -2097,16 +2073,21 @@ bool ArxGame::Render() {
 		ARX_DrawAfterQuickLoad();
 	}
 
-	if(showFPS) {
-		CalcFPS();
-		ShowFPS();
-	}
-
 	GRenderer->EndScene();
 
 	//--------------NORENDEREND---------------------------------------------------
-	norenderend:
-		;
+norenderend:
+
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F11)) {
+		showFPS = !showFPS;
+	}
+
+	if(showFPS) {
+		GRenderer->BeginScene();
+		CalcFPS();
+		ShowFPS();
+		GRenderer->EndScene();
+	}
 	
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F10))
 	{
@@ -2301,9 +2282,6 @@ bool ArxGame::InitDeviceObjects()
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
-	// Restore All Textures RenderState
-	GRenderer->RestoreAllTextures();
-
 	ARX_PLAYER_Restore_Skin();
 	
 	// Disable Lighting RenderState
@@ -2337,8 +2315,6 @@ bool ArxGame::InitDeviceObjects()
 
 	ARX_SetAntiAliasing();
 
-	EvictManagedTextures();
-
 	return true;
 }
 
@@ -2371,8 +2347,6 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 void ArxGame::onRendererShutdown(RenderWindow &) {
 	
 	m_bReady = false;
-	
-	GRenderer->ReleaseAllTextures();
 	
 	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;

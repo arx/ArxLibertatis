@@ -219,7 +219,7 @@ static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
 
 /* Evaluate main entity translation */
 static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale,
-                                       Vec3f & ftr) {
+                                       Vec3f & ftr, bool update_movement) {
 	
 	// Resets Frame Translate
 	ftr = Vec3f::ZERO;
@@ -272,7 +272,7 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 			// Linear interpolation of object translation (MOVE)
 			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 
-			if(io) {
+			if(io && update_movement) {
 				
 				ftr *= scale;
 
@@ -288,7 +288,7 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 		}
 	}
 	
-	if(io && io->animlayer[0].cur_anim) {
+	if(io && io->animlayer[0].cur_anim && update_movement) {
 		
 		// Use calculated value to notify the Movement engine of the translation to do
 		if(io->ioflags & IO_NPC) {
@@ -2178,7 +2178,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
                               Anglef * angle,
                               Vec3f * pos,
                               INTERACTIVE_OBJ * io,
-                              bool render) {
+                              bool render,
+                              bool update_movement) {
 	
 	float 				invisibility;
 	float 				scale;
@@ -2210,7 +2211,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 	memset(grps, 0, eobj->nbgroups);
 
-	Cedric_AnimCalcTranslation(io, animuse, scale, ftr);
+	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);
 
 	if(Cedric_IO_Visible(io)) {
 
@@ -2780,7 +2781,6 @@ void ApplyDynLight(EERIEPOLY * ep)
 	}
 }
  
-float TOTAL_CHRONO = 0.f;
 //*************************************************************************************
 void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_VERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {

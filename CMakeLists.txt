@@ -128,13 +128,8 @@ mark_as_advanced(ILU_LIBRARIES)
 mark_as_advanced(IL_LIBRARIES)
 
 set(SRC_DIR src)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 if(MSVC)
-	# Remove targets we don't really use (RelWithDebInfo, MinSizeRel)
-	# TODO - Does not seem to work...
-	set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Using only Debug and Release" FORCE)
-
 	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
@@ -164,8 +159,11 @@ if(MSVC)
 
 	# Enable multiprocess build
 	add_definitions(/MP)
+	
+	# Ensure we aren't using functionalities not found under Window XP SP1
+	add_definitions(-D_WIN32_WINNT=0x0502)
 
-	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
 		# Disable Run time checks
 		string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
 
@@ -178,6 +176,14 @@ if(MSVC)
 
 	# Avoid warning during link
 	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
+
+	# Enable compiler optimization in release
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
+	
+	# Enable linker optimization in release
+	#  /OPT:REF   Eliminate unreferenced code
+	#  /OPT:ICF   COMDAT folding (merge functions generating the same code)
+	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF /LTCG")
 
 	# This is needed to use ZLIB as a DLL
 	add_definitions(-DZLIB_WINAPI)
@@ -195,7 +201,7 @@ else(MSVC)
 		check_link_library(OpenAL OPENAL_LIBRARY)
 	endif()
 	if(USE_OPENGL AND OPENGL_FOUND)
-		check_link_library(OpenGL OPENGL_LIBRARIES)
+		check_link_library(OpenGL OPENGL_gl_LIBRARY)
 		check_link_library(GLEW GLEW_LIBRARIES)
 	endif()
 	if(USE_SDL AND SDL_FOUND)
@@ -324,18 +330,25 @@ else(MSVC)
 	
 endif(MSVC)
 
-# Define default user and data directories.
-if(NOT DEFINED DATA_DIR)
-	set(DATA_DIR "arx")
-endif()
-if(NOT DEFINED USER_DIR)
-	set(USER_DIR "arx")
-endif()
 if(WIN32 AND NOT WINE)
+	# Define default user and data directories.
+	if(NOT DEFINED DATA_DIR)
+		set(DATA_DIR "Arx Libertatis")
+	endif()
+	if(NOT DEFINED USER_DIR)
+		set(USER_DIR "Arx Libertatis")
+	endif()
 	if(NOT DEFINED USER_DIR_PREFIXES)
 		set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%")
 	endif()
 else()
+	# Define default user and data directories.
+	if(NOT DEFINED DATA_DIR)
+		set(DATA_DIR "arx")
+	endif()
+	if(NOT DEFINED USER_DIR)
+		set(USER_DIR "arx")
+	endif()
 	if(NOT DEFINED DATA_DIR_PREFIXES)
 		set(DATA_DIR_PREFIXES "${CMAKE_INSTALL_PREFIX}/share:$XDG_DATA_DIRS")
 	endif()
@@ -660,9 +673,9 @@ if(USE_D3D9 AND DIRECTX_FOUND)
 	set(HAVE_D3D9 1)
 endif()
 
-if(USE_OPENGL AND OPENGL_FOUND AND OPENGL_GLU_FOUND AND GLEW_FOUND) # TODO remove GLU dependency
+if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+	list(APPEND ARX_LIBRARIES ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARIES})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
 	set(HAVE_OPENGL 1)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)

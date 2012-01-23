@@ -83,17 +83,33 @@ std::string expandEvironmentVariables(const std::string & in) {
 #ifdef HAVE_WINAPI
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
 	
-	static const char * key = "Software\\ArxLibertatis";
-	
-	DWORD length = 1024;
-	boost::scoped_array<char> buffer(new char[length]);
-	
-	LONG ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
-	if(ret == ERROR_MORE_DATA) {
-		buffer.reset(new char[length]);
-		ret = RegGetValueA(hkey, key, name.c_str(), RRF_RT_REG_SZ, NULL, buffer.get(), &length);
+	boost::scoped_array<char> buffer(NULL);
+
+	DWORD type = 0;
+	DWORD length = 0;
+	HKEY handle = 0;
+
+	long ret = 0;
+
+	ret = RegOpenKeyEx(hkey, "Software\\ArxLibertatis\\", 0, KEY_QUERY_VALUE, &handle);
+
+	if (ret == ERROR_SUCCESS)
+	{
+		// find size of value
+		ret = RegQueryValueEx(handle, name.c_str(), NULL, NULL, NULL, &length);
+
+		if (ret == ERROR_SUCCESS && length > 0)
+		{
+			// allocate buffer and read in value
+			buffer.reset(new char[length + 1]);
+			ret = RegQueryValueEx(handle, name.c_str(), NULL, &type, LPBYTE(buffer.get()), &length);
+			// ensure null termination
+			buffer.get()[length] = 0;
+		}
+
+		RegCloseKey(handle);
 	}
-	
+
 	if(ret == ERROR_SUCCESS) {
 		result = buffer.get();
 		return true;
@@ -138,7 +154,7 @@ void defineSystemDirectories() {
 
 #else
 
-std::string ws2s(const std::wstring& s)
+std::string ws2s(const std::basic_string<WCHAR> & s)
 {    
     size_t slength = (int)s.length() + 1;
     size_t len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0); 
@@ -146,6 +162,10 @@ std::string ws2s(const std::wstring& s)
     WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0); 
     return r;
 }
+
+// Those two values are from ShlObj.h, but requires _WIN32_WINNT >= _WIN32_WINNT_VISTA
+const int kfFlagCreate  = 0x00008000;	// KF_FLAG_CREATE
+const int kfFlagNoAlias = 0x00001000;	// KF_FLAG_NO_ALIAS
 
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
@@ -163,9 +183,9 @@ void defineSystemDirectories() {
 		
 		PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)GetProcAddress(GetModuleHandleA("shell32.dll"), "SHGetKnownFolderPath");
 		const GUID FOLDERID_SavedGames = {0x4C5C32FF, 0xBB9D, 0x43b0, {0xB5, 0xB4, 0x2D, 0x72, 0xE5, 0x4E, 0xAA, 0xA4}};
-
+		
 		LPWSTR wszPath = NULL;
-		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE | KF_FLAG_NO_ALIAS, NULL, &wszPath);
+		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias, NULL, &wszPath);
 
 		if (SUCCEEDED(hr)) {
             strPath = ws2s(wszPath); 

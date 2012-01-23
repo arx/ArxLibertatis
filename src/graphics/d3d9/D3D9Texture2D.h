@@ -58,7 +58,4 @@ private:
 	LPDIRECT3DTEXTURE9 m_pTexture;
 };
 
-// TODO-DX9: This should really be an intrusive list!
-extern std::list<DX9Texture2D*> g_Textures2D;
-
 #endif // ARX_GRAPHICS_D3D9_D3D9TEXTURE2D_H

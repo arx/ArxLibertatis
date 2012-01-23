@@ -112,6 +112,16 @@ public:
 	}
 	
 	/*!
+	 * Multiply a vector to this vector.
+	 * @brief Multiplication operator.
+	 * @param other a vector, to be Multiplied to this vector.
+	 * @return A new vector, the result of the Multiplication of the two vector.
+	 */
+	Vector2 operator*(const Vector2 & other) const {
+		return Vector2(x * other.x, y * other.y);
+	}
+
+	/*!
 	 * Divide this vector by a scale factor.
 	 * @brief Division operator for a scalar.
 	 * @param scale value to divide this vector by.

@@ -633,7 +633,7 @@ class CWindowMenu {
 		virtual ~CWindowMenu();
 
 		void AddConsole(CWindowMenuConsole * console);
-		void Update(int time);
+		void Update(float time);
 		MENUSTATE Render();
 };
 

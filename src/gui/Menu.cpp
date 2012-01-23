@@ -119,7 +119,7 @@ extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
 extern long	REQUEST_SPEECH_SKIP;
-extern long TRUE_PLAYER_MOUSELOOK_ON;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
 
 extern TextureContainer * pTextureLoad;
 
@@ -225,6 +225,7 @@ void ARX_Menu_Resources_Create() {
 			"Erik Lund (Akhilla)\n"
 			"Lubosz Sarnecki (lubosz)\n"
 			"Sebastien Lussier (BobJelly)\n"
+			"Elliot Rigets (adejr)\n"
 			"\n~OTHER CONTRIBUTORS\n"
 			"Chris Gray (chrismgray)\n"
 			"guidoj\n"
@@ -384,7 +385,7 @@ void ARX_Menu_Manage() {
 					ARX_MENU_Launch();
 					bFadeInOut=false;	//fade out
 					bFade=true;			//active le fade
-					TRUE_PLAYER_MOUSELOOK_ON = 0;
+					TRUE_PLAYER_MOUSELOOK_ON = false;
 
 					ARX_PLAYER_PutPlayerInNormalStance(1);
 				}

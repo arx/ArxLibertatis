@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/TextureStage.h"
 
+#include "platform/Time.h"
+
 #include "scene/GameSound.h"
 
 #include "window/RenderWindow.h"
@@ -178,14 +180,9 @@ static TextureContainer * tc = NULL;
 static TextureContainer * pbar = NULL;
 static long nopbar = -1;
 static long lastnum = -1;
- 
-static float fFadeSens = 0.f;
-static float fFadeColor = 0.f;
 
 void LoadLevelScreen(long num) {
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
 	if (num < -1) // resets status
 	{
@@ -211,57 +208,48 @@ void LoadLevelScreen(long num) {
 		return;
 	}
 
-
 #ifdef BUILD_EDITOR
 	if(MOULINEX) {
 		return;
 	}
 #endif
 
-	if ((OLD_PROGRESS_BAR_COUNT <= 0.f) &&
-	        (fFadeColor <= 0.f))
+	static u32 last_progress_bar_update = Time::getMs();
+
+	// only update if time since last update to progress bar > 16ms
+	// and progress bar's value has actually changed
+	if (Time::getElapsedMs(last_progress_bar_update) > 16 &&
+		 OLD_PROGRESS_BAR_COUNT != PROGRESS_BAR_COUNT)
 	{
-		fFadeSens = .01f;
-		fFadeColor = 0.f;
-	}
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 
-	float ratio = 0;
-
-	while ((OLD_PROGRESS_BAR_COUNT < PROGRESS_BAR_COUNT) ||
-	        ((fFadeSens < 0.f) && (fFadeColor > 0.f)))
-	{
-		if ((fFadeSens < 0.f) &&				//sentinel
-		        (fFadeColor == 0.f)) break;
-
-		if (PROGRESS_BAR_TOTAL > 0.f)
-			ratio = OLD_PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL;
-		else
-			ratio = 0;
+		float ratio = (PROGRESS_BAR_TOTAL > 0.f ? PROGRESS_BAR_COUNT / PROGRESS_BAR_TOTAL : 0); 
 
 		if (ratio > 1.f) ratio = 1.f;
 		else if (ratio < 0.f) ratio = 0.f;
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-		if(GRenderer->BeginScene()) {
-			
+		if (GRenderer->BeginScene()) {
+				
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::Fog, false);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			
-			if(num == 10) {
+				
+			if (num == 10) {
 				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
 			} else {
 				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
 			}
-			
+				
 			nopbar = 1;
 			
 			if(num != lastloadednum) {
 				
-				if(tc) {
+				if (tc) {
 					delete tc;
 					tc = NULL;
 				}
@@ -273,10 +261,10 @@ void LoadLevelScreen(long num) {
 				sprintf(temp, "graph/levels/level%s/loading", tx);
 				tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 			}
-			
-			if(tc) {
+				
+			if (tc) {
 				GRenderer->SetRenderState(Renderer::ColorKey, false);
-				DrawCenteredImage(tc, true, fFadeColor);
+				DrawCenteredImage(tc, true);
 				GRenderer->SetRenderState(Renderer::ColorKey, true);
 			}
 
@@ -291,7 +279,7 @@ void LoadLevelScreen(long num) {
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), 0.f, 0.f, ratio, 1.f);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 				}
 				else
 				{
@@ -304,7 +292,7 @@ void LoadLevelScreen(long num) {
 					py = ipy * Yratio;
 					px2 = (ratio * pbar->m_dwWidth) * Xratio;
 					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(fFadeColor), 0.f, 0.f, ratio, 1.f);
+					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 				}
 			}
 
@@ -312,27 +300,9 @@ void LoadLevelScreen(long num) {
 			mainApp->GetWindow()->showFrame();
 		}
 
-		if (fFadeSens > 0.f)
-		{
-			if (fFadeColor >= 1.f)
-				OLD_PROGRESS_BAR_COUNT++;
-		}
-
-		if ((PROGRESS_BAR_TOTAL) &&
-		        (PROGRESS_BAR_COUNT >= PROGRESS_BAR_TOTAL) &&
-		        (OLD_PROGRESS_BAR_COUNT >= PROGRESS_BAR_TOTAL))
-		{
-			if ((fFadeColor >= 1.f) &&
-			        (fFadeSens > 0.f))
-				fFadeSens = -fFadeSens;
-		}
-
-		fFadeColor += fFadeSens;
-		fFadeColor = min(1.f, fFadeColor);
-		fFadeColor = max(0.f, fFadeColor);
+		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
+		last_progress_bar_update = Time::getMs();
 	}
-
-	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
 }
 
 void LoadLevelScreen() {

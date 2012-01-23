@@ -333,6 +333,63 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	}
 }
 
+// creates an image of the desired size and rescales the source into it
+// performs only nearest-neighbour interpolation of the image
+// supports only RGB format
+void Image::ResizeFrom(const Image &source, unsigned int desired_width, unsigned int desired_height, bool flip_vertical)
+{
+	Create(desired_width, desired_height, Format_R8G8B8);
+
+	// span, size of one line in pixels (doesn't allow for byte padding)
+	const unsigned int src_span = source.GetWidth();
+	const unsigned int dest_span = GetWidth();
+
+	// number of bytes per pixel
+	// since we assume RGB format, this is 3 for both source and destination
+	const unsigned int src_pixel = 3;
+	const unsigned int dest_pixel = 3;
+
+	// find fractional source y_delta
+	float y_source = 0.0f;
+	const float y_delta = source.GetHeight() / (float)GetHeight();
+
+	for (unsigned int y = 0; y < GetHeight(); y++)
+	{
+		// find pointer to the beginning of this destination line
+		unsigned char *dest_p = GetData() + (flip_vertical ? GetHeight() - 1 - y : y) * dest_span * dest_pixel;
+
+		// truncate y_source coordinate and premultiply by line width / span
+		const unsigned int src_y = (unsigned int)(y_source) * src_span;
+
+		// find fractional source x_delta
+		float x_source = 0.0f;
+		const float x_delta = source.GetWidth() / (float)GetWidth();
+
+		for (unsigned int x = 0; x < GetWidth(); x++)
+		{
+			// truncate x_source coordinate
+			const unsigned int src_x = (unsigned int)(x_source);
+
+			// find offset in bytes for the current source coordinate
+			const unsigned int src_offset = (src_x + src_y) * src_pixel;
+
+			// copy pixel from source to dest, assuming 24-bit format (RGB or BGR, etc)
+			dest_p[0] = source.GetData()[src_offset + 0];
+			dest_p[1] = source.GetData()[src_offset + 1];
+			dest_p[2] = source.GetData()[src_offset + 2];
+
+			// move destination pointer ahead by one pixel
+			dest_p += dest_pixel;
+
+			// increment fractional source coordinate by one destination pixel, horizontal
+			x_source += x_delta;
+		}
+
+		// increment fractional source coordinate by one destination pixel, vertical
+		y_source += y_delta;
+	}
+}
+
 void Image::Clear() {
 	memset(mData, 0, mDataSize);
 }
@@ -802,7 +859,7 @@ void ComplexAlphaHelper(unsigned char * Data) {
 	tmp[0] = (Data[0] | (Data[1] << 8)) & 0xfff;
 	tmp[1] = ((Data[1] >> 4) | (Data[2] << 4)) & 0xfff;
 	
-	Data[0] = tmp[1];
+	Data[0] = tmp[1] & 0xff;
 	Data[1] = (tmp[1] >> 8) | (tmp[0] << 4);
 	Data[2] = tmp[0] >> 4;
 }

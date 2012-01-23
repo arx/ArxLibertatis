@@ -122,7 +122,7 @@ static const float IMPROVED_FOCAL = 320.0f;
 
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;
-extern long TRUE_PLAYER_MOUSELOOK_ON;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
 long passwall=0;
 long WILLRETURNTOFREELOOK = 0;
 long GLOBAL_MAGIC_MODE=1;
@@ -2389,10 +2389,10 @@ void ARX_SPELLS_ManageMagic()
 			inter.iobj[0]->animlayer[1].flags&=~EA_LOOP;
 		}
 
-		if ((TRUE_PLAYER_MOUSELOOK_ON))
+		if (TRUE_PLAYER_MOUSELOOK_ON)
 		{
 			WILLRETURNTOFREELOOK = 1;
-			TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
 		if (player.doingmagic!=2)
@@ -2422,7 +2422,6 @@ void ARX_SPELLS_ManageMagic()
 				Vec2s pos,pos2;
 				pos.x = DANAEMouse.x; 
 				pos.y = DANAEMouse.y;
-				extern long TRUE_PLAYER_MOUSELOOK_ON;
 				
 				if (TRUE_PLAYER_MOUSELOOK_ON)
 				{
@@ -2534,14 +2533,14 @@ void ARX_SPELLS_ManageMagic()
 			WILLRETURNTOCOMBATMODE=0;
 
 			if(config.misc.newControl) {
-				TRUE_PLAYER_MOUSELOOK_ON|=1;
+				TRUE_PLAYER_MOUSELOOK_ON = true;
 				bRenderInCursorMode=false;
 			}
 		}
 
 		if (WILLRETURNTOFREELOOK)
 		{
-			TRUE_PLAYER_MOUSELOOK_ON |= 1;
+			TRUE_PLAYER_MOUSELOOK_ON = true;
 			WILLRETURNTOFREELOOK = 0;
 		}
 
@@ -5336,7 +5335,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				}
 			}
 
-			TRUE_PLAYER_MOUSELOOK_ON |= 1;	
+			TRUE_PLAYER_MOUSELOOK_ON = true;	
 			SLID_START=float(arxtime);
 			bOldLookToggle=config.input.mouseLookToggle;
 			config.input.mouseLookToggle=true;

@@ -310,21 +310,8 @@ void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
 	matProj = projection;
 }
 
-void OpenGLRenderer::ReleaseAllTextures() {
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->Destroy();
-	}
-}
-
-void OpenGLRenderer::RestoreAllTextures() {
-	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
-		it->Restore();
-	}
-}
-
 Texture2D * OpenGLRenderer::CreateTexture2D() {
 	GLTexture2D * texture = new GLTexture2D(this);
-	textures.push_back(*texture);
 	return texture;
 }
 
@@ -671,21 +658,15 @@ bool OpenGLRenderer::getSnapshot(Image & image) {
 bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 	
 	// TODO handle scaling on the GPU so we don't need to download the whole image
-	
+
+	// duplication to ensure use of Image::Format_R8G8B8
 	Image fullsize;
-	
-	getSnapshot(fullsize);
-	
- 	image.Create(width, height, Image::Format_R8G8B8);
-	
-	GLint ret = gluScaleImage(GL_RGB, fullsize.GetWidth(), fullsize.GetHeight(), GL_UNSIGNED_BYTE,
-	                          fullsize.GetData(), width, height, GL_UNSIGNED_BYTE, image.GetData());
-	
-	if(ret) {
-		LogWarning << "Failed to scale down screen capture: " << ret << " = " << gluErrorString(ret);
-		return false;
-	}
-	
+	Vec2i size = mainApp->GetWindow()->GetSize();
+	fullsize.Create(size.x, size.y, Image::Format_R8G8B8);
+	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, fullsize.GetData()); 
+
+	image.ResizeFrom(fullsize, width, height, true);
+
 	return true;
 }
 
@@ -697,4 +678,17 @@ void OpenGLRenderer::applyTextureStages() {
 
 bool OpenGLRenderer::isFogInEyeCoordinates() {
 	return true;
+}
+
+const char * getGLErrorString(GLenum error) {
+	switch(error) {
+		case GL_NO_ERROR: return "GL_NO_ERROR";
+		case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+		case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+		case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+		case GL_STACK_OVERFLOW: return "GL_STACK_OVERFLOW";
+		case GL_STACK_UNDERFLOW: return "GL_STACK_UNDERFLOW";
+		case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+		default: return "(unknown error)";
+	}
 }

@@ -45,10 +45,6 @@ public:
 	void SetProjectionMatrix(const EERIEMATRIX & matProj);
 	void GetProjectionMatrix(EERIEMATRIX & matProj) const;
 	
-	// Texture management
-	void ReleaseAllTextures();
-	void RestoreAllTextures();
-	
 	// Factory
 	Texture2D * CreateTexture2D();
 	
@@ -95,7 +91,12 @@ public:
 	bool getSnapshot(Image & image, size_t width, size_t height);
 	
 	bool isFogInEyeCoordinates();
-	
+
+	void reset(D3DPRESENT_PARAMETERS& d3dpp);
+
+private:
+	void resetStates();
+
 private:
 	D3D9Window * window;
 	

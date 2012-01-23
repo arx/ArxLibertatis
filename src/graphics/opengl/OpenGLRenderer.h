@@ -20,8 +20,6 @@
 #ifndef ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 #define ARX_GRAPHICS_OPENGL_OPENGLRENDERER_H
 
-#include <boost/intrusive/list.hpp>
-
 #include "graphics/Renderer.h"
 #include "graphics/opengl/GLTexture2D.h"
 #include "math/Rectangle.h"
@@ -49,10 +47,6 @@ public:
 	void GetViewMatrix(EERIEMATRIX & matView) const;
 	void SetProjectionMatrix(const EERIEMATRIX & matProj);
 	void GetProjectionMatrix(EERIEMATRIX & matProj) const;
-	
-	// Texture management
-	void ReleaseAllTextures();
-	void RestoreAllTextures();
 	
 	// Factory
 	Texture2D * CreateTexture2D();
@@ -137,9 +131,6 @@ private:
 	GLuint shader;
 	
 	float maximumAnisotropy;
-	
-	typedef boost::intrusive::list<GLTexture2D, boost::intrusive::constant_time_size<false> > TextureList;
-	TextureList textures;
 	
 	bool initialized;
 	

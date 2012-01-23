@@ -144,7 +144,7 @@ extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
 extern long STARTED_A_GAME;
 extern long SHOW_TORCH;
-extern long TRUE_PLAYER_MOUSELOOK_ON;
+extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern unsigned long ulBookHaloTime;
 extern unsigned long ulGoldHaloTime;
 extern long cur_rf;
@@ -3853,7 +3853,10 @@ void ARX_GAME_Reset(long type) {
 
 		ARX_PLAYER_InitPlayer();
 		ARX_INTERACTIVE_RemoveGoreOnIO(inter.iobj[0]);
-		TRUE_PLAYER_MOUSELOOK_ON = 0;
+		
+		// default to mouselook on, inventory closed
+		TRUE_PLAYER_MOUSELOOK_ON = true;
+
 		// Player Inventory
 		CleanInventory();
 	}
