@@ -185,7 +185,7 @@ if(MSVC)
 	#  /OPT:ICF   COMDAT folding (merge functions generating the same code)
 	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF /LTCG")
 
-	# This is needed to use ZLIB as a DLL
+	# This is needed to use ZLIB
 	add_definitions(-DZLIB_WINAPI)
 
 else(MSVC)
@@ -874,10 +874,12 @@ if(BUILD_TOOLS)
 		create_source_groups(CrashReporter_SOURCES)
 
 		include_directories(${SRC_DIR} ${ARX_SRC_DIR} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-		
-		set(CrashReporter_LIBRARIES ${QT_QTCORE_LIBRARY_RELEASE} ${QT_QTGUI_LIBRARY_RELEASE} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+		set(CrashReporter_LIBRARIES ${QT_QTCORE_LIBRARY_RELEASE} ${QT_QTGUI_LIBRARY_RELEASE} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES})
 		if(MSVC)
 			list(APPEND CrashReporter_LIBRARIES winmm psapi imm32)
+			list(APPEND CrashReporter_LIBRARIES ${SSL_EAY_RELEASE} ${LIB_EAY_RELEASE})
+		else()
+			list(APPEND CrashReporter_LIBRARIES ${OPENSSL_LIBRARIES})
 		endif()
 				
 		add_executable_shared(arxcrashreporter WIN32 "${CrashReporter_SOURCES}" "${CrashReporter_LIBRARIES}" "")
