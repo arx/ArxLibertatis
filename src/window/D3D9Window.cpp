@@ -159,7 +159,7 @@ bool D3D9Window::init(const std::string & title, Vec2i size, bool fullscreen, un
         return false;
 	
 	bool succeeded = false;
-	if(initialize(displayMode)) {
+	if(initialize()) {
 		LogInfo << "Using Win32 windowing";
 		succeeded = true;
 	} else {
@@ -249,7 +249,7 @@ bool D3D9Window::updatePresentParams(DisplayMode mode) {
 }
 
 // Internal functions for the framework class
-bool D3D9Window::initialize(DisplayMode mode) {
+bool D3D9Window::initialize() {
 	
 	arx_assert(GetHandle() != NULL);
 	arx_assert(renderer == NULL);

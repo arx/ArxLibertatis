@@ -56,7 +56,7 @@ public:
 private:
 	
 	// Internal functions for the framework class
-	bool initialize(DisplayMode mode);
+	bool initialize();
 	void destroyObjects();
 
 	bool updatePresentParams(DisplayMode mode);
