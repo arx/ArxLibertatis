@@ -116,66 +116,6 @@ static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 	else if (io->ioflags & IO_NPC) io->ignition += dmg * ( 1.0f / 4 );
 }
  
-extern TextureContainer * bloodsplat[6];
-void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
-{
-	return;
-	long j = ARX_PARTICLES_GetFree();
-
-	if ((j != -1) && (!arxtime.is_paused()))
-	{
-		TexturedVertex in, out;
-		in.p.x = pos->x;
-		in.p.y = pos->y;
-		in.p.z = pos->z;
-		EERIETreatPoint(&in, &out);
-
-
-		if (out.p.x < 0)
-			out.p.x = 0;
-		else if (out.p.x > DANAESIZX)
-			out.p.x = static_cast<float>(DANAESIZX);
-
-
-
-
-		if (out.p.y < 0)
-			out.p.y = 0;
-		else if (out.p.y > DANAESIZY)
-			out.p.y = static_cast<float>(DANAESIZY);
-
-
-
-		float power;
-		power = (dmgs * ( 1.0f / 60 )) + 0.9f;
-		ParticleCount++;
-		PARTICLE_DEF * pd = &particle[j];
-		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
-		pd->exist			=	true;
-		pd->zdec			=	0;
-		pd->ov.x			=	out.p.x;
-		pd->ov.y			=	out.p.y;
-		pd->ov.z			=	0.0000001f;
-		pd->move.x			=	0.f;
-		pd->move.y			=	0.f;
-		pd->move.z			=	0.f;
-		pd->scale.x			=	1.8f;
-		pd->scale.y			=	1.8f;
-		pd->scale.z			=	1.f;
-		pd->timcreation		=	(long)arxtime;
-		pd->tolive			=	1800 + (unsigned long)(rnd() * 400.f);
-		long num = rnd() * 6.f;
-
-		if (num < 0) num = 0;
-		else if (num > 5) num = 5;
-
-		pd->tc = bloodsplat[num];
-		pd->rgb = inter.iobj[0]->_npcdata->blood_color.to<float>();
-		pd->siz = 3.5f * power * 40 * Xratio;
-		pd->type = PARTICLE_2D;
-	}
-}
-
 void ARX_DAMAGE_Reset_Blood_Info()
 {
 	Blood_Pos = 0.f;

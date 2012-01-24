@@ -767,7 +767,6 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 				ppos *= 60.f;
 				ppos += ACTIVECAM->pos;
-				ARX_DAMAGES_SCREEN_SPLATS_Add(&ppos, dmgs);
 				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
 				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			}
@@ -977,9 +976,6 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 									SpawnGroundSplat(&sp, &rgb, 30, 1);
 								}
 							}
-
-							if (target == inter.iobj[0])
-								ARX_DAMAGES_SCREEN_SPLATS_Add(&pos, dmgs);
 
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 
