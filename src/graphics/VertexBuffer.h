@@ -49,10 +49,16 @@ public:
 	virtual ~IndexBuffer() { }
 	
 protected:
-	
+
 	explicit IndexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
+
+private:
+
+	// Disable copy
+	IndexBuffer& operator=(const IndexBuffer&) {}
+	IndexBuffer(const IndexBuffer&) {}
 	
 };
 
@@ -78,7 +84,12 @@ protected:
 	explicit VertexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
+
+private:
 	
+	// Disable copy
+	VertexBuffer& operator=(const VertexBuffer&) {}
+	VertexBuffer(const VertexBuffer&) {}
 };
 
 template <class Vertex>
@@ -178,7 +189,12 @@ public:
 	~CircularVertexBuffer() {
 		delete vb;
 	}
-	
+
+private:
+
+	// Disable copy
+	CircularVertexBuffer& operator=(const CircularVertexBuffer&) {}
+	CircularVertexBuffer(const CircularVertexBuffer&) {}
 };
 
 #endif // ARX_GRAPHICS_VERTEXBUFFER_H

@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "math/Vector2.h"
 #include "platform/Flags.h"
+#include "graphics/GraphicsTypes.h"
 
 struct SMY_ARXMAT;
 struct SMY_ZMAPPINFO;
@@ -191,7 +192,10 @@ public:
 	// END TODO
 	
 private:
-	
+	// Disable copy
+	TextureContainer& operator=(const TextureContainer&) {}
+	TextureContainer(const TextureContainer&) {}
+
 	void LookForRefinementMap(TCFlags flags);
 	
 	typedef std::map<res::path, res::path> RefinementMap;

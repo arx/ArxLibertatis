@@ -154,7 +154,11 @@ public:
 	
 	inline const std::string & getName() const { return name; }
 	inline long getIOFlags() const { return ioflags; }
-	
+
+private:
+	// Disable copy
+	Command& operator=(const Command&) {}
+	Command(const Command&) : ioflags() {}
 };
 
 bool isSuppressed(const Context & context, const std::string & command);
