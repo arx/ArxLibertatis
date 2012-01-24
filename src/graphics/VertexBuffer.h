@@ -158,7 +158,6 @@ public:
 				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
-				break;
 			} while(count); break;
 			
 			case Renderer::LineStrip: do {
@@ -167,7 +166,6 @@ public:
 				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
-				break;
 			} while(count); break;
 			
 			default:
