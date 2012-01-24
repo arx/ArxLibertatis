@@ -1292,7 +1292,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 					divvy = 2;
 					break;
 				default:
-					arx_error("Invalid divv value");
+					arx_error_msg("Invalid divv value");
 					divvx = 0;
 					divvy = 0;
 				}
