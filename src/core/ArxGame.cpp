@@ -2283,6 +2283,9 @@ bool ArxGame::InitDeviceObjects()
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
+	// Restore All Textures RenderState
+	GRenderer->RestoreAllTextures();
+
 	ARX_PLAYER_Restore_Skin();
 	
 	// Disable Lighting RenderState
@@ -2349,6 +2352,8 @@ void ArxGame::onRendererShutdown(RenderWindow &) {
 	
 	m_bReady = false;
 	
+	GRenderer->ReleaseAllTextures();
+
 	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;
 		pDynamicVertexBuffer_TLVERTEX = NULL;
