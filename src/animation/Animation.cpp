@@ -1427,8 +1427,12 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		TexturedVertex * vert_list;
 		TextureContainer * pTex;
 
-		if(	(eobj->facelist[i].texid<0)|| 
-			(!(pTex=eobj->texturecontainer[eobj->facelist[i].texid])) ) continue;
+		if(eobj->facelist[i].texid<0)
+			continue;
+
+		pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+		if(!pTex)
+			continue;
 
 		if ((io) && (io->ioflags & IO_ANGULAR))
 			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,BIGQUAT,i);

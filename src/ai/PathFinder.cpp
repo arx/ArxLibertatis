@@ -263,8 +263,9 @@ bool PathFinder::move(NodeId from, NodeId to, Result & rlist, bool stealth) cons
 			
 			open.add(cid, node, distance, remaining);
 		}
-		
-	} while((node = open.extractBestNode()));
+	
+		node = open.extractBestNode();
+	} while(node);
 	
 	// No path found!
 	return false;
@@ -329,7 +330,8 @@ bool PathFinder::flee(NodeId from, const Vec3f & danger, float safeDist, Result 
 			open.add(cid, node, distance, remaining);
 		}
 		
-	} while((node = open.extractBestNode()));
+		node = open.extractBestNode();
+	} while(node);
 	
 	// No path found!
 	return false;

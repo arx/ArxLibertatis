@@ -1118,6 +1118,16 @@ void ReleaseInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
+char* findParam(char* pcToken, const char* param)
+{
+	char* pStartString = 0;
+
+	if(strstr(pcToken,"^$param1"))
+		pStartString = strstr(pcToken, param);
+
+	return pStartString;
+}
+
 void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 {
 	if(!COMBINE)
@@ -1166,14 +1176,13 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 					while(pcToken)
 					{
 						pcToken=strtok(NULL,"\r\n");
-//						strupr(pcToken);
 	
 						bool bCanCombine=false;
 						char* pStartString;
 						char* pEndString;
 
-						if(	strstr(pcToken,"^$param1")&&
-							(pStartString=strstr(pcToken,"isclass")) )
+						pStartString = findParam(pcToken, "isclass");
+						if(pStartString)
 						{
 							pStartString=strstr(pStartString,"\"");
 
@@ -1196,8 +1205,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						}
 						else
 						{
-							if(	strstr(pcToken,"^$param1")&&
-								(pStartString=strstr(pcToken,"==")) )
+							pStartString = findParam(pcToken, "==");
+							if(pStartString)
 							{
 								pStartString=strstr(pStartString,"\"");
 
@@ -1221,8 +1230,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 							}
 							else
 							{
-								if(	strstr(pcToken,"^$param1")&&
-									(pStartString=strstr(pcToken,"isgroup")) )
+								pStartString = findParam(pcToken, "isgroup");
+								if(pStartString)
 								{
 									pStartString=strstr(pStartString," ");
 
@@ -1302,14 +1311,13 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 				while(pcToken)
 				{
 					pcToken=strtok(NULL,"\r\n");
-//					strupr(pcToken);
 	
 					bool bCanCombine=false;
 					char* pStartString;
 					char* pEndString;
 
-					if(	strstr(pcToken,"^$param1")&&
-						(pStartString=strstr(pcToken,"isclass")) )
+					pStartString = findParam(pcToken, "isclass");
+					if(pStartString)
 					{
 						pStartString=strstr(pStartString,"\"");
 
@@ -1332,8 +1340,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 					}
 					else
 					{
-						if(	strstr(pcToken,"^$param1")&&
-							(pStartString=strstr(pcToken,"==")) )
+						pStartString = findParam(pcToken, "==");
+						if(pStartString)
 						{
 							pStartString=strstr(pStartString,"\"");
 
@@ -1356,8 +1364,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						}
 						else
 						{
-							if(	strstr(pcToken,"^$param1")&&
-								(pStartString=strstr(pcToken,"isgroup")) )
+							pStartString = findParam(pcToken, "isgroup");
+							if(pStartString)
 							{
 								pStartString=strstr(pStartString," ");
 

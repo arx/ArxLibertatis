@@ -1680,8 +1680,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 			TextureContainer * pTex;
 
-			if ((eobj->facelist[i].texid < 0) ||
-			        (!(pTex = eobj->texturecontainer[eobj->facelist[i].texid]))) continue;
+			if(eobj->facelist[i].texid < 0)
+				continue;
+
+			pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+			if(!pTex)
+				continue;
 
 			float			fTransp = 0;
 

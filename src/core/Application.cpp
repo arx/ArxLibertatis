@@ -191,8 +191,11 @@ bool Application::InitConfig() {
 	fs::path configFile = config.paths.user / "cfg.ini";
 	
 	bool migrated = false;
-	if(!fs::exists(configFile) && !(migrated = migrateFilenames())) {
-		return false;
+	if(!fs::exists(configFile)) {
+		migrated = migrateFilenames();
+		if(!migrated) {
+			return false;
+		}
 	}
 	
 	if(!config.init(configFile)) {
@@ -217,7 +220,8 @@ bool Application::InitConfig() {
 	Logger::configure(config.misc.debug);
 	
 	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {
-		if(!(migrated = migrateFilenames())) {
+		migrated = migrateFilenames();
+		if(!migrated) {
 			return false;
 		}
 	}

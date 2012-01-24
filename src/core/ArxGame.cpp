@@ -555,7 +555,8 @@ void ArxGame::Run() {
 		}
 		
 		if(m_MainWindow->HasFocus() && m_bReady) {
-			if(!(m_RunLoop = Render3DEnvironment())) {
+			m_RunLoop = Render3DEnvironment();
+			if(!m_RunLoop) {
 				LogError << "Fatal rendering error, exiting.";
 			}
 		}

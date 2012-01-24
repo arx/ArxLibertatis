@@ -3229,8 +3229,8 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 		if ((!(io->GameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
 
 		// Is Object in TreatZone ??
-		if (
-		    ((bPlayerEquiped = IsEquipedByPlayer(io))  && (player.Interface & INTER_MAP))
+		bPlayerEquiped = IsEquipedByPlayer(io);
+		if ((bPlayerEquiped  && (player.Interface & INTER_MAP))
 		    || (io->GameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
