@@ -221,7 +221,7 @@ INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
 char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
-size_t QuestBook_Cache_nbQuests = -42;
+size_t QuestBook_Cache_nbQuests = 0;
 std::string Page_Buffer;
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
@@ -652,7 +652,7 @@ void ARX_INTERFACE_NoteInit()
 	Note.textsize = 0;
 
 	QuestBook.curpage=0;
-	QuestBook_Cache_nbQuests = -42;
+	QuestBook_Cache_nbQuests = 0;
 }
 
 //-----------------------------------------------------------------------------
