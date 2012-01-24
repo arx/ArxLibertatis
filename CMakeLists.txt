@@ -141,11 +141,11 @@ if(MSVC)
 
 	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 	if(CMAKE_CL_64)
-		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
+		add_definitions(/wd4267)      # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
 
-	# Disable warning related to long decorated name
 	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
+	add_definitions(/wd4201)        # warning C4201: nonstandard extension used : nameless struct/union
 
 	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
