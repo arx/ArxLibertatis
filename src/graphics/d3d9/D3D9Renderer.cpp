@@ -140,6 +140,10 @@ UINT GetNumberOfPrimitives(Renderer::Primitive primitive, UINT nindices) {
 	case Renderer::LineStrip:
 		numPrimitives = nindices - 1;
 		break;
+
+	default:
+		arx_error_msg("Invalid primitive type provided to GetNumberOfPrimitives()");
+		numPrimitives = 0;
 	}
 
 	return numPrimitives;

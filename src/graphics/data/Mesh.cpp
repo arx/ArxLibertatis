@@ -637,7 +637,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	Vec3f pos(x, y, z);
 	
 	EERIEPOLY * found = NULL;
-	float foundy;
+	float foundy = 0.0f;
 	for (long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
@@ -672,7 +672,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	Vec3f pos(x, y, z);
 	
 	EERIEPOLY * found = NULL;
-	float foundy;
+	float foundy = 0.0f;
 	for(long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];

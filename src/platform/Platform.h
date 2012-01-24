@@ -174,6 +174,9 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 #define arx_assert_msg(_Expression, _Message, ...) arx_assert_impl(_Expression, (__FILE__), __LINE__, _Message, ##__VA_ARGS__)
 #define arx_assert(_Expression) arx_assert_msg(_Expression, NULL)
 
+#define arx_error_msg(_Message, ...) arx_assert_msg(false, _Message, ##__VA_ARGS__)
+#define arx_error() arx_assert(false)
+
 /* ---------------------------------------------------------
                             Define
 ------------------------------------------------------------*/

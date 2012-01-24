@@ -171,7 +171,7 @@ size_t initSuppressions();
 #define ScriptError Logger(__FILE__,__LINE__, isSuppressed(context, getName()) ? Logger::Debug : Logger::Error) << ScriptPrefix ": "
 
 #define HandleFlags(expected) string options = context.getFlags(); \
-	for(u64 run = !options.empty(), flg; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
+	for(u64 run = !options.empty(), flg = 0; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
 
 } // namespace script
 

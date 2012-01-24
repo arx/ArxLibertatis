@@ -83,7 +83,7 @@ aalError init(const string & backendName, bool enableEAX) {
 	stream_limit_bytes = DEFAULT_STREAMLIMIT;
 	
 	bool autoBackend = (backendName == "auto");
-	aalError error;
+	aalError error = AAL_ERROR_INIT;
 	
 	for(int i = 0; i < 2 && !backend; i++) {
 		bool first = (i == 0);
