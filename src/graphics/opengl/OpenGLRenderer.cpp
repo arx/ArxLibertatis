@@ -530,7 +530,7 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 }
 
 static const GLenum arxToGlCullMode[] = {
-	-1, // CullNone,
+	(GLenum)-1, // CullNone,
 	GL_BACK, // CullCW,
 	GL_FRONT, // CullCCW,
 };
