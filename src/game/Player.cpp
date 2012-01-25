@@ -1404,58 +1404,30 @@ void ARX_PLAYER_QuickGeneration() {
 //*************************************************************************************
 long GetXPforLevel(long level)
 {
-	switch (level)
-	{
-		case 0:
-			return 0;
-			break;
-		case 1:
-			return 2000;
-			break;
-		case 2:
-			return 4000;
-			break;
-		case 3:
-			return 6000;
-			break;
-		case 4:
-			return 10000;
-			break;
-		case 5:
-			return 16000;
-			break;
-		case 6:
-			return 26000;
-			break;
-		case 7:
-			return 42000;
-			break;
-		case 8:
-			return 68000;
-			break;
-		case 9:
-			return 110000;
-			break;
-		case 10:
-			return 178000;
-			break;
-		case 11:
-			return 300000;
-			break;
-		case 12:
-			return 450000;
-			break;
-		case 13:
-			return 600000;
-			break;
-		case 14:
-			return 750000;
-			break;
-		default:
-			return level * 60000;
-	}
+	const long XP_FOR_LEVEL[] = { 
+		0, 
+		2000,
+		4000,
+		6000,
+		10000,
+		16000,
+		26000,
+		42000,
+		68000,
+		110000,
+		178000,
+		300000,
+		450000,
+		600000,
+		750000 
+	};
 
-	return std::numeric_limits<long>::max();
+	long xpNeeded;
+	if(level < ARRAY_SIZE(XP_FOR_LEVEL))
+		xpNeeded = XP_FOR_LEVEL[level];
+	else
+		xpNeeded = level * 60000;
+	return xpNeeded;	
 }
 
 //*************************************************************************************
