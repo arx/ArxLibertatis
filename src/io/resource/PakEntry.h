@@ -23,11 +23,13 @@
 #include <string>
 #include <map>
 
+#include <boost/noncopyable.hpp>
+
 namespace res { class path; }
 
 class PakFileHandle;
 
-class PakFile {
+class PakFile : private boost::noncopyable {
 	
 private:
 	
