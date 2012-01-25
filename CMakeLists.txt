@@ -144,9 +144,10 @@ if(MSVC)
 		add_definitions(/wd4267)      # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
 
-	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
+	add_definitions(/wd4127)        # warning C4127: conditional expression is constant
 	add_definitions(/wd4201)        # warning C4201: nonstandard extension used : nameless struct/union
-
+	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
+	
 	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 		add_definitions(-D_SECURE_SCL=0)
