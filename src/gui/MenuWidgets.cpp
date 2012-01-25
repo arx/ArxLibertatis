@@ -2715,10 +2715,7 @@ int CMenuAllZone::GetNbZone()
 
 void CMenuAllZone::DrawZone()
 {
-#ifdef NODEBUGZONE
-	return;
-#endif
-
+#ifndef NODEBUGZONE
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -2755,6 +2752,7 @@ void CMenuAllZone::DrawZone()
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+#endif // #ifndef NODEBUGZONE
 }
 
 //-----------------------------------------------------------------------------
