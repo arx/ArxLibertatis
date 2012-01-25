@@ -119,36 +119,6 @@ inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 	ResetBBox3D(io);
 }
 
-//-----------------------------------------------------------------------------
-
-float GetMaxManhattanDistance(const Vec3f * _e1, const Vec3f * _e2)
-{
-	return 0;
-
-	if (!TSU_TEST) return 0;
-
-	register float fMaxX(0);
-	register float fMaxY(0);
-	register float fMaxZ(0);
-
-	fMaxX = _e1->x - _e2->x;
-	
-	fMaxX = (fMaxX < 0) ? -fMaxX : fMaxX;
-
-	fMaxY = _e1->y - _e2->y;
-	
-	fMaxY = (fMaxY < 0) ? -fMaxY : fMaxY;
-
-	fMaxZ = _e1->z - _e2->z;
-	
-	fMaxZ = (fMaxZ < 0) ? -fMaxZ : fMaxZ;
-
-	fMaxX = (fMaxX < fMaxY) ? fMaxY : fMaxX;
-	fMaxX = (fMaxX < fMaxZ) ? fMaxZ : fMaxX;
-
-	return fMaxX;
-}
-
 extern float INVISIBILITY_OVERRIDE;
 extern long EXTERNALVIEW;
 static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ * io)
@@ -836,7 +806,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 	for (i = 0; i < TOTIOPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&IO_PDL[i]->pos, &tv) <= IO_PDL[i]->fallend + 500.f))
+		if (IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
@@ -844,7 +814,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 	for (i = 0; i < TOTPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&PDL[i]->pos, &tv) <= PDL[i]->fallend + 500.f))
+		if (PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
@@ -888,7 +858,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 					if (Cur_llights)
 					{
 						// tsu
-						if (!(GetMaxManhattanDistance(&Cur_llights->pos, posVert) <= Cur_llights->fallend))
+						if (Cur_llights->fallend < 0)
 						{
 							TSU_TEST_NB_LIGHT ++;
 							continue;
@@ -2367,7 +2337,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * p
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&IO_PDL[i]->pos, &tv) <= IO_PDL[i]->fallend + 500.f))
+		if (IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, tv)); 
@@ -2375,7 +2345,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * p
 
 	for (int i = 0; i < TOTPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&PDL[i]->pos, &tv) <= PDL[i]->fallend + 500.f))
+		if (PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(PDL[i], fdist(PDL[i]->pos, tv)); 
@@ -2699,7 +2669,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 	{
 		EERIE_LIGHT * el = PDL[i];
 
-		if (!(GetMaxManhattanDistance(&el->pos, &ep->center) <= el->fallend + 35.f))
+		if (el->fallend + 35.f < 0)
 		{
 			TSU_TEST_NB_LIGHT ++;
 			continue;
@@ -2722,7 +2692,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 			for (j = 0; j < nbvert; j++)
 			{
 				Vec3f v(ep->v[j].p.x,ep->v[j].p.y, ep->v[j].p.z);
-				if (!(GetMaxManhattanDistance(&el->pos, &v) <= el->fallend))
+				if (el->fallend < 0)
 				{
 					TSU_TEST_NB ++;
 					continue;
