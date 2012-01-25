@@ -1737,48 +1737,6 @@ void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 		}
 	}
 }
-/////////////////////////////////////////////////////////////////////////////////////
-// Sorts Background tile polys from roof to top
-/////////////////////////////////////////////////////////////////////////////////////
-void BKG_VerticalReOrder(EERIE_BACKGROUND * eb)
-{
-	return;
-	EERIE_BKG_INFO * eg;
-	EERIEPOLY * ep;
-	EERIEPOLY * ep2;
-	EERIEPOLY tep;
-
-	for (short j = 0; j < eb->Zsize; j++)
-		for (short i = 0; i < eb->Xsize; i++)
-		{
-			eg = &eb->Backg[i+j*eb->Xsize];
-
-			if (eg->nbpoly > 1)
-			{
-				bool Reordered = false;
-
-				while (!Reordered)
-				{
-					Reordered = true;
-
-					for (short k = 0; k < eg->nbpoly - 1; k++)
-					{
-						ep = &eg->polydata[k];
-						ep2 = &eg->polydata[k+1];
-
-						if (ep->center.y < ep2->center.y)
-						{
-							ARX_PORTALS_SWAP_EPs(i, j, k, k + 1);
-							memcpy(&tep, ep2, sizeof(EERIEPOLY));
-							memcpy(ep2, ep, sizeof(EERIEPOLY));
-							memcpy(ep, &tep, sizeof(EERIEPOLY));
-							Reordered = false;
-						}
-					}
-				}
-			}
-		}
-}
 
 //*************************************************************************************
 //*************************************************************************************
@@ -4267,7 +4225,6 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 		}
 		
 		EERIE_LIGHT_MoveAll(&ms->pos);
-		BKG_VerticalReOrder(ACTIVEBKG);
 		PrepareBackgroundNRMLs();
 		EERIEPOLY_Compute_PolyIn();
 		EERIE_PORTAL_Blend_Portals_And_Rooms();
