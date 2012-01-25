@@ -413,6 +413,12 @@ BlastResult blast(blast_in infun, void *inhow, blast_out outfun, void *outhow) {
 	s.next = 0;
 	s.first = 1;
 	
+#if ARX_COMPILER_MSVC
+	// Disable warning C4611: interaction between '_setjmp' and C++ object destruction is non-portable
+	#pragma warning(push)
+	#pragma warning(disable:4611)
+#endif
+
 	BlastResult err;
 	// return if bits() or decode() tries to read past available input
 	if(setjmp(s.env) != 0) {
@@ -421,6 +427,10 @@ BlastResult blast(blast_in infun, void *inhow, blast_out outfun, void *outhow) {
 	} else {
 		err = blastDecompress(&s);
 	}
+
+#if ARX_COMPILER_MSVC
+	#pragma warning(pop)
+#endif
 	
 	// write any leftover output and update the error code if needed
 	if(err != 1 && s.next && s.outfun(s.outhow, s.out, s.next) && err == 0) {
