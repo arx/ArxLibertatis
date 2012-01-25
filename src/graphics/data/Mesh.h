@@ -952,7 +952,7 @@ void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
 
 long GetVertexPos(INTERACTIVE_OBJ * io,long id,Vec3f * pos);
-void PrepareBackgroundNRMLs();
+void ARX_PrepareBackgroundNRMLs();
 void DrawInWorld();
 long CountBkgVertex();
 void CreateInWorld();
