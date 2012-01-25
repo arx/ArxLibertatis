@@ -187,10 +187,6 @@ public:
 	unsigned long ulMaxVertexListCull_TMultiplicative;
 	unsigned long ulNbVertexListCull_TMultiplicative;
 	TexturedVertex * pVertexListCull_TMultiplicative;
-	
-	unsigned long ulMaxVertexListCull_TMetal;
-	unsigned long ulNbVertexListCull_TMetal;
-	TexturedVertex * pVertexListCull_TMetal;
 	// END TODO
 	
 private:

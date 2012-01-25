@@ -133,48 +133,6 @@ long ARX_BOOMS_GetFree()
 }
 
 //-----------------------------------------------------------------------------
-void SpawnMetalShine(Vec3f * pos,long r,long g,long b,long num)
-{
-	return;
-
-	if (num<0) return;
-
-	long j=ARX_PARTICLES_GetFree();
-
-	if ((j!=-1) && (!arxtime.is_paused()))
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist		=	true;
-		pd->zdec		=	0;
-		pd->ov.x		=	pos->x;
-		pd->ov.y		=	pos->y;
-		pd->ov.z		=	pos->z;
-		pd->move.x		=	0.f;
-		pd->move.y		=	0.f;
-		pd->move.z		=	0.f;
-		pd->timcreation	=	(long)arxtime;
-		pd->tolive		=	(unsigned long)(500.0F + rnd() * 400.0F);
-		long num		=	(long)(rnd() * 10.f);
-
-		if (num<1) num = 1;
-
-		if (num>9) num = 9;
-
-		pd->tc			=	flaretc.shine[num];
-		pd->siz			=	4.f+rnd()*2.f;
-		pd->scale.x		=	-15.f;
-		pd->scale.y		=	-15.f;
-		pd->scale.z		=	-15.f;
-		pd->rgb = Color3f(r * (1.f/64), g * (1.f/64), b * (1.f/64));
-		pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT | FOLLOW_SOURCE;
-		pd->fparam		=	0.001f;
-		pd->source		=	pos;
-		pd->sourceionum	=	num;
-	}
-}
-
-//-----------------------------------------------------------------------------
 void LaunchDummyParticle()
 {
 	long j=ARX_PARTICLES_GetFree();

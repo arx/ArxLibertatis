@@ -260,6 +260,5 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS);
 
 void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction = NULL, Color3f * rgb = NULL);
 void SpawnFireballTail(Vec3f *, Vec3f *, float, long);
-void SpawnMetalShine(Vec3f * pos, long r, long g, long b, long num);
 
 #endif // ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H

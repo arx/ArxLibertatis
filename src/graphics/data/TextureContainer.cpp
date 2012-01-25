@@ -97,14 +97,12 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 	ptcTexture->ulNbVertexListCull_TAdditive = 0;
 	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
 	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
-	ptcTexture->ulNbVertexListCull_TMetal = 0;
 	
 	ptcTexture->ulMaxVertexListCull = 0;
 	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
 	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
 	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
 	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
-	ptcTexture->ulMaxVertexListCull_TMetal = 0;
 	
 	ptcTexture->vPolyInterZMap.clear();
 	ptcTexture->vPolyZMap.clear();
@@ -133,12 +131,7 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 		free(ptcTexture->pVertexListCull_TMultiplicative);
 		ptcTexture->pVertexListCull_TMultiplicative = NULL;
 	}
-	
-	if(ptcTexture->pVertexListCull_TMetal) {
-		free(ptcTexture->pVertexListCull_TMetal);
-		ptcTexture->pVertexListCull_TMetal = NULL;
-	}
-	
+		
 	if(ptcTexture->tMatRoom) {
 		free(ptcTexture->tMatRoom);
 		ptcTexture->tMatRoom = NULL;
@@ -195,10 +188,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	ulNbVertexListCull_TMultiplicative = 0;
 	pVertexListCull_TMultiplicative = NULL; 
 
-	ulMaxVertexListCull_TMetal = 0;
-	ulNbVertexListCull_TMetal = 0;
-	pVertexListCull_TMetal = NULL;
-	
 	tMatRoom = NULL;
 
 	vPolyInterZMap.clear();
