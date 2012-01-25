@@ -3542,7 +3542,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 								}
 
 								return true;
-								col = true;
 							}
 						}
 					}
