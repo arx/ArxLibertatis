@@ -25,7 +25,14 @@
 #include <iostream>
 #include <set>
 
+#if ARX_COMPILER_MSVC
+	#pragma warning(push)
+	#pragma warning(disable:4512)
+#endif
 #include <boost/program_options.hpp>
+#if ARX_COMPILER_MSVC
+	#pragma warning(pop)
+#endif
 
 #include "core/Config.h"
 #include "io/fs/FilePath.h"
