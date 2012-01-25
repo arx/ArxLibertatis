@@ -51,6 +51,9 @@
 /* input and output state */
 struct state {
 	
+	/* input limit error return state for bits() and decode() */
+	jmp_buf env;
+
 	/* input state */
 	blast_in infun;             /* input function provided by user */
 	void * inhow;               /* opaque information passed to infun() */
@@ -58,9 +61,6 @@ struct state {
 	unsigned left;              /* available input at in */
 	int bitbuf;                 /* bit buffer */
 	int bitcnt;                 /* number of bits in bit buffer */
-	
-	/* input limit error return state for bits() and decode() */
-	jmp_buf env;
 	
 	/* output state */
 	blast_out outfun;           /* output function provided by user */
