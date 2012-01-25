@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <map>
 
+#include <boost/noncopyable.hpp>
+
 #include "io/resource/ResourcePath.h"
 #include "math/Vector2.h"
 #include "platform/Flags.h"
@@ -80,7 +82,7 @@ struct DELAYED_PRIM {
 /** Linked list structure to hold info per texture.
  * @todo This class is currently an hybrid between a texture class and a render batch... We should create a RenderBatch class for all vertex stuff.
  */
-class TextureContainer {
+class TextureContainer : private boost::noncopyable {
 	
 public:
 	
@@ -192,10 +194,6 @@ public:
 	// END TODO
 	
 private:
-	// Disable copy
-	TextureContainer& operator=(const TextureContainer&) {}
-	TextureContainer(const TextureContainer&) {}
-
 	void LookForRefinementMap(TCFlags flags);
 	
 	typedef std::map<res::path, res::path> RefinementMap;

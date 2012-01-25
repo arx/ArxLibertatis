@@ -22,6 +22,8 @@
 
 #include <algorithm>
 
+#include <boost/noncopyable.hpp>
+
 #include "graphics/Renderer.h"
 #include "platform/Platform.h"
 #include "platform/Flags.h"
@@ -35,7 +37,7 @@ DECLARE_FLAGS(BufferFlag, BufferFlags);
 DECLARE_FLAGS_OPERATORS(BufferFlags);
 
 template <class Index>
-class IndexBuffer {
+class IndexBuffer : private boost::noncopyable {
 	
 public:
 	
@@ -53,17 +55,10 @@ protected:
 	explicit IndexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
-
-private:
-
-	// Disable copy
-	IndexBuffer& operator=(const IndexBuffer&) {}
-	IndexBuffer(const IndexBuffer&) {}
-	
 };
 
 template <class Vertex>
-class VertexBuffer {
+class VertexBuffer : private boost::noncopyable {
 	
 public:
 	
@@ -84,16 +79,10 @@ protected:
 	explicit VertexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
-
-private:
-	
-	// Disable copy
-	VertexBuffer& operator=(const VertexBuffer&) {}
-	VertexBuffer(const VertexBuffer&) {}
 };
 
 template <class Vertex>
-class CircularVertexBuffer {
+class CircularVertexBuffer : private boost::noncopyable {
 	
 public:
 	
@@ -189,12 +178,6 @@ public:
 	~CircularVertexBuffer() {
 		delete vb;
 	}
-
-private:
-
-	// Disable copy
-	CircularVertexBuffer& operator=(const CircularVertexBuffer&) {}
-	CircularVertexBuffer(const CircularVertexBuffer&) {}
 };
 
 #endif // ARX_GRAPHICS_VERTEXBUFFER_H

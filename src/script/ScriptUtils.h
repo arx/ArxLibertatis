@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/noncopyable.hpp>
+
 #include "platform/Platform.h"
 #include "script/ScriptEvent.h"
 #include "io/log/Logger.h"
@@ -128,7 +130,7 @@ public:
 	friend class ::ScriptEvent;
 };
 
-class Command {
+class Command : private boost::noncopyable {
 	
 	const std::string name;
 	const long ioflags;
@@ -154,11 +156,6 @@ public:
 	
 	inline const std::string & getName() const { return name; }
 	inline long getIOFlags() const { return ioflags; }
-
-private:
-	// Disable copy
-	Command& operator=(const Command&) {}
-	Command(const Command&) : ioflags() {}
 };
 
 bool isSuppressed(const Context & context, const std::string & command);
