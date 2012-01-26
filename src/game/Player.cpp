@@ -1423,7 +1423,7 @@ long GetXPforLevel(long level)
 	};
 
 	long xpNeeded;
-	if(level < ARRAY_SIZE(XP_FOR_LEVEL))
+	if(level < (long)ARRAY_SIZE(XP_FOR_LEVEL))
 		xpNeeded = XP_FOR_LEVEL[level];
 	else
 		xpNeeded = level * 60000;
