@@ -57,6 +57,7 @@ CrashHandlerWindows* CrashHandlerWindows::m_sInstance = 0;
 
 CrashHandlerWindows::CrashHandlerWindows() {
 	m_sInstance = this;
+	m_CrashHandlerApp = "arxcrashreporter.exe";
 }
 
 CrashHandlerWindows::~CrashHandlerWindows() {
@@ -313,8 +314,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
-
-	strcpy(m_pCrashInfo->crashReportFolder, "Crashes");
 	m_pCrashInfo->miniDumpType = MiniDumpNormal;
 
 	STARTUPINFO si;
@@ -328,7 +327,7 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	strcpy(arguments, "-crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
 
-	BOOL bCreateProcess = CreateProcess("CrashReporter/arxcrashreporter.exe", arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
+	BOOL bCreateProcess = CreateProcess(m_CrashHandlerApp.c_str(), arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
 
 	// If CrashReporter was started, wait for its signal before exiting.
 	if(bCreateProcess) {

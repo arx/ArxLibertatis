@@ -52,13 +52,12 @@
 // CSmtp
 #include "csmtp/csmtp.h"
 
-ErrorReport::ErrorReport(const std::string& crashesFolder, const std::string& sharedMemoryName)
+ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	: m_RunningTimeSec()
 	, m_ProcessIs64Bit()
 	, m_SharedMemoryName(sharedMemoryName)
 	, m_pCrashInfo()
 {
-	m_CrashesFolder = crashesFolder.c_str();
 }
 
 bool ErrorReport::Initialize()
@@ -83,9 +82,9 @@ bool ErrorReport::Initialize()
 	for(int i = 0; i < m_pCrashInfo->nbFilesAttached; i++)
 		m_AttachedFiles.push_back(m_pCrashInfo->attachedFiles[i]);
 
-	m_CurrentReportFolder = m_CrashesFolder / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toAscii());
+	m_ReportFolder = fs::path(m_pCrashInfo->crashReportFolder) / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toAscii());
 
-	if(!fs::create_directory(m_CurrentReportFolder))
+	if(!fs::create_directories(m_ReportFolder))
 		return false;
 
 	return true;
@@ -94,7 +93,7 @@ bool ErrorReport::Initialize()
 bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGrayscale)
 {
 #ifdef HAVE_WINAPI
-	fs::path fullPath = m_CurrentReportFolder / fileName;
+	fs::path fullPath = m_ReportFolder / fileName;
 
 	WId mainWindow = GetMainWindow(m_pCrashInfo->processId);
 	
@@ -148,7 +147,7 @@ BOOL CALLBACK MiniDumpCallback(PVOID CallbackParam, PMINIDUMP_CALLBACK_INPUT Cal
 bool ErrorReport::GetCrashDump(const fs::path& fileName)
 {
 #ifdef HAVE_WINAPI
-	fs::path fullPath = m_CurrentReportFolder / fileName;
+	fs::path fullPath = m_ReportFolder / fileName;
 
 	HMODULE hDbgHelp = LoadLibrary("dbghelp.dll");
 	if(hDbgHelp==NULL)
@@ -215,7 +214,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 
 bool ErrorReport::GetMachineInfo(const fs::path& fileName)
 {
-	fs::path fullPath = m_CurrentReportFolder / fileName;
+	fs::path fullPath = m_ReportFolder / fileName;
 
 	QString program = "dxdiag.exe";
 	QStringList arguments;
@@ -302,7 +301,7 @@ bool ErrorReport::GetMiscCrashInfo()
 
 bool ErrorReport::WriteReport(const fs::path& fileName)
 {
-	fs::path fullPath = m_CurrentReportFolder / fileName;
+	fs::path fullPath = m_ReportFolder / fileName;
 
 	QFile file(fullPath.string().c_str());
 	if(!file.open(QIODevice::WriteOnly))
@@ -349,7 +348,7 @@ bool ErrorReport::WriteReport(const fs::path& fileName)
 bool ErrorReport::GenerateArchive()
 {
 	std::string fileName = m_SharedMemoryName + ".zip";
-	fs::path fullPath = m_CurrentReportFolder / fileName;
+	fs::path fullPath = m_ReportFolder / fileName;
 
 	int bufferSize = 64*1024;
 	void* buf = malloc(bufferSize);
@@ -502,7 +501,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	pProgressNotifier->taskStarted("Sending crash report", 2);
 
 	std::string fileName = m_SharedMemoryName + ".zip";
-	fs::path fullPath = m_CurrentReportFolder / fileName.c_str();
+	fs::path fullPath = m_ReportFolder / fileName.c_str();
 
 #ifdef HAVE_WINAPI
 	CSmtp smptClient;
@@ -510,7 +509,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	smptClient.SetSenderMail("arxlibertatis.crashes@gmail.com");
 	smptClient.AddRecipient("arxlibertatis.crashes@gmail.com");
 	smptClient.SetSubject("Arx Libertatis Crash Report");
-	smptClient.AddMsgLine("Hello");
+	smptClient.AddMsgLine(m_pCrashInfo->detailedCrashInfo);
 	smptClient.AddAttachment(fullPath.string().c_str());
 #endif
 	

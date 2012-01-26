@@ -99,6 +99,13 @@ public:
 	static bool setNamedVariable(const std::string& name, const std::string& value);
 
 	/**
+	 * Specify the location where crash reports will be written.
+	 * @param location Location where the crash report will be stored.
+	 * @return True if the report location could be set, false otherwise.
+	 */
+	static bool setReportLocation(const fs::path& location);
+
+	/**
 	 * Register platform specific crash handlers for the current thread.
 	 * Depending on the platform, this call might not be needed.
 	 * It's not necessary to call this method for the main thread.

@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	ErrorReport errorReport("crashes", sharedMemoryName);
+	ErrorReport errorReport(sharedMemoryName);
 
 	ErrorReportDialog errorReportDlg(errorReport);
 	errorReportDlg.show();

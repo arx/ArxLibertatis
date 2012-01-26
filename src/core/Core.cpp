@@ -631,8 +631,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(hPrevInstance);
 	ARX_UNUSED(nCmdShow);
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	
-	
+		
 	CrashHandler::initialize();
 	
 	// Also intialize the logging system early as we might need it.
@@ -644,6 +643,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #else
 	parseCommandLine(lpCmdLine);
 #endif
+
+	CrashHandler::setReportLocation(config.paths.user / "crashes");
 	
 	Time::init();
 	
@@ -668,6 +669,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
+
+	*((int*)0) = 0;
 	
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();

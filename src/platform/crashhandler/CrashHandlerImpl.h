@@ -50,6 +50,7 @@ public:
 
 	bool addAttachedFile(const fs::path& file);
 	bool setNamedVariable(const std::string& name, const std::string& value);
+	bool setReportLocation(const fs::path& location);
 
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
@@ -67,6 +68,8 @@ private:
 	void shutdown();
 
 protected:
+	std::string m_CrashHandlerApp;
+
 	// Memory shared to the crash reporter.
 	boost::interprocess::shared_memory_object m_SharedMemory;
 	boost::interprocess::mapped_region m_MemoryMappedRegion;

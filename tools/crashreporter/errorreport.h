@@ -60,7 +60,7 @@ public:
 	typedef std::vector<fs::path>	FileList;
 
 public:
-	ErrorReport(const std::string& crashesFolder, const std::string& sharedMemoryName);
+	ErrorReport(const std::string& sharedMemoryName);
 	
 	bool GenerateReport(IProgressNotifier* progressNotifier);
 	bool SendReport(IProgressNotifier* progressNotifier);
@@ -81,8 +81,7 @@ private:
 	void ReleaseApplicationLock();
 
 private:
-	fs::path m_CrashesFolder;
-	fs::path m_CurrentReportFolder;
+	fs::path m_ReportFolder;
 
 	FileList m_AttachedFiles;
 

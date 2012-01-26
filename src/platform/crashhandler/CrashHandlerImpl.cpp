@@ -35,7 +35,7 @@ bool CrashHandlerImpl::initialize() {
 
 	bool initialized = true;
 	
-	bool crashReporterFound = fs::exists("CrashReporter/arxcrashreporter.exe");
+	bool crashReporterFound = fs::exists(m_CrashHandlerApp);
 	if(crashReporterFound) {
 		LogInfo << "CrashReporter found, initializing crash handler.";
 	} else {
@@ -95,6 +95,8 @@ void CrashHandlerImpl::destroySharedMemory() {
 
 void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->processId = boost::interprocess::detail::get_current_process_id();
+
+	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
 }
 
 bool CrashHandlerImpl::addAttachedFile(const fs::path& file) {
@@ -153,6 +155,19 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 	strcpy(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].name, name.c_str());
 	strcpy(m_pCrashInfo->variables[m_pCrashInfo->nbVariables].value, value.c_str());
 	m_pCrashInfo->nbVariables++;
+
+	return true;
+}
+
+bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
+	Autolock autoLock(&m_Lock);
+
+	if(location.string().size() >= CrashInfo::MaxFilenameLen) {
+		LogError << "Report location path is too long.";
+		return false;
+	}
+
+	strcpy(m_pCrashInfo->crashReportFolder, location.string().c_str());
 
 	return true;
 }

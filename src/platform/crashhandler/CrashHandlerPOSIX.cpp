@@ -52,6 +52,7 @@ CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
 CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
+	m_CrashHandlerApp = "arxcrashreporter";
 }
 
 CrashHandlerPOSIX::~CrashHandlerPOSIX() {
