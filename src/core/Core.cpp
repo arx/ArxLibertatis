@@ -670,8 +670,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	NOBUILDMAP=1;
 	NOCHECKSUM=1;
 
-	*((int*)0) = 0;
-	
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();
 	
