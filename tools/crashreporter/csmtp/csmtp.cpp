@@ -42,8 +42,6 @@
 
 #include "csmtp.h"
 
-#ifdef HAVE_WINAPI // TODO
-
 #include "base64.h"
 #include "openssl/err.h"
 
@@ -97,7 +95,7 @@ bool IsKeywordSupported(const char* response, const char* keyword)
 	int pos = 0;
 	for(; pos < res_len - key_len + 1; ++pos)
 	{
-		if(_strnicmp(keyword, response+pos, key_len) == 0)
+		if(strncasecmp(keyword, response+pos, key_len) == 0)
 		{
 			if(pos > 0 &&
 				(response[pos - 1] == '-' ||
@@ -971,7 +969,7 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 
 				//Get server address and set uri
 				//Skip this step during test
-				int len;
+				socklen_t len;
 				struct sockaddr_storage addr;
 				len = sizeof addr;
 				if(!getpeername(hSocket, (struct sockaddr*)&addr, &len))
@@ -1472,7 +1470,6 @@ void CSmtp::SendData(Command_Entry* pEntry)
 		}
 	}
 
-	OutputDebugStringA(SendBuf);
 	FD_CLR(hSocket,&fdwrite);
 }
 
@@ -2114,7 +2111,6 @@ void CSmtp::ReceiveResponse(Command_Entry* pEntry)
 	}
 	//strcpy_s(RecvBuf, BUFFER_SIZE, line.c_str());
 	strcpy(RecvBuf, line.c_str());
-	OutputDebugStringA(RecvBuf);
 	if(reply_code != pEntry->valid_reply_code)
 	{
 		throw ECSmtp(pEntry->error);
@@ -2204,7 +2200,6 @@ void CSmtp::SendData_SSL(SSL* ssl, Command_Entry* pEntry)
 		}
 	}
 
-	OutputDebugStringA(SendBuf);
 	FD_ZERO(&fdwrite);
 	FD_ZERO(&fdread);
 }
@@ -2308,5 +2303,3 @@ void CSmtp::CleanupOpenSSL()
 		CRYPTO_cleanup_all_ex_data();
 	}
 }
-
-#endif // HAVE_WINAPI

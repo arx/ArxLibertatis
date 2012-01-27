@@ -208,7 +208,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 #else
 	ARX_UNUSED(fileName);
 	// TODO
-	return false;
+	return true;
 #endif
 }
 
@@ -503,7 +503,6 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	std::string fileName = m_SharedMemoryName + ".zip";
 	fs::path fullPath = m_ReportFolder / fileName.c_str();
 
-#ifdef HAVE_WINAPI
 	CSmtp smptClient;
 	smptClient.SetSenderName("Arx Libertatis Crashes");
 	smptClient.SetSenderMail("arxlibertatis.crashes@gmail.com");
@@ -511,13 +510,11 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	smptClient.SetSubject("Arx Libertatis Crash Report");
 	smptClient.AddMsgLine(m_pCrashInfo->detailedCrashInfo);
 	smptClient.AddAttachment(fullPath.string().c_str());
-#endif
 	
 	// Connect to server
 	bool connected = false;
 	pProgressNotifier->taskStepStarted("Connecting to server");
 	{
-#ifdef HAVE_WINAPI
 		try
 		{
 			connected = smptClient.ConnectRemoteServer("smtp.gmail.com", 465, USE_SSL, true, "arxlibertatis.crashes@gmail.com", "yu8pnioo");
@@ -526,7 +523,6 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		{
 			pProgressNotifier->setError(err.GetErrorText());
 		}
-#endif
 	}
 	pProgressNotifier->taskStepEnded();
 	if(!connected)
@@ -536,7 +532,6 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	bool sent = true;
 	pProgressNotifier->taskStepStarted("Sending report");
 	{
-#ifdef HAVE_WINAPI
 		try
 		{
 			smptClient.Send();
@@ -545,7 +540,6 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		{
 			pProgressNotifier->setError(err.GetErrorText());
 		}
-#endif
 	}
 	pProgressNotifier->taskStepEnded();
 

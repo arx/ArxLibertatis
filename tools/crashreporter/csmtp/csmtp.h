@@ -12,8 +12,6 @@
 #include <string.h>
 #include <assert.h>
 
-#ifdef HAVE_WINAPI // TODO
-
 #ifndef HAVE_WINAPI
 	#include <sys/types.h>
 	#include <sys/socket.h>
@@ -270,7 +268,5 @@ private:
 	void SendData_SSL(SSL* ssl, Command_Entry* pEntry);
 	void StartTls();
 };
-
-#endif // HAVE_WINAPI
 
 #endif // __CSMTP_H__

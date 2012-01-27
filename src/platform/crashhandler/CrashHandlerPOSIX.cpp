@@ -52,7 +52,7 @@ CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
 CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
-	m_CrashHandlerApp = "arxcrashreporter";
+	m_CrashHandlerApp = "./arxcrashreporter";
 }
 
 CrashHandlerPOSIX::~CrashHandlerPOSIX() {
@@ -177,15 +177,13 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int /*FPECode*/) {
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
 	
-	strcpy(m_pCrashInfo->crashReportFolder, "Crashes");
-	
 	char arguments[256];
 	strcpy(arguments, "-crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
 	
 	if(fork()) {
 		
-		execlp("CrashReporter/arxcrashreporterforlinux.exe", arguments, NULL);
+		execlp(m_CrashHandlerApp.c_str(), arguments, NULL);
 		
 		m_pCrashInfo->exitLock.post();
 		
