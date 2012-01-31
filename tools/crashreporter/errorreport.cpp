@@ -25,6 +25,8 @@
 #include <windows.h>
 #include <DbgHelp.h>
 #include <Psapi.h>
+#else
+#include <sys/wait.h>
 #endif
 
 // Qt
@@ -92,19 +94,22 @@ bool ErrorReport::Initialize()
 
 bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGrayscale)
 {
-#ifdef HAVE_WINAPI
 	fs::path fullPath = m_ReportFolder / fileName;
 
+#ifdef HAVE_WINAPI
 	WId mainWindow = GetMainWindow(m_pCrashInfo->processId);
 	
 	if(mainWindow == 0)
 		return false;
-
+	
 	RECT r;
 	GetWindowRect(mainWindow, &r);
 
 	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), r.left, r.top, r.right - r.left, r.bottom - r.top);
-
+#else
+	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+#endif
+	
 	if(bGrayscale)
 	{
 		QImage image = pixmap.toImage();
@@ -129,11 +134,6 @@ bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGra
 		m_AttachedFiles.push_back(fullPath);
 
 	return bSaved;
-#else
-	// TODO
-	ARX_UNUSED(fileName), ARX_UNUSED(quality), ARX_UNUSED(bGrayscale);
-	return false;
-#endif
 }
 
 #ifdef HAVE_WINAPI
@@ -207,8 +207,44 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 	return bWriteDump;
 #else
 	ARX_UNUSED(fileName);
-	// TODO
-	return true;
+	// TODO: Write core dump to 
+	// fs::path fullPath = m_ReportFolder / fileName;
+	
+#ifdef HAVE_EXECLP
+	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
+	
+	// Fork so we retain control after launching GDB.
+	int childPID = fork();
+	if(childPID) {
+		// Wait for GDB to exit.
+		waitpid(childPID, NULL, 0);
+	}
+	else {
+		#ifdef HAVE_DUP2
+		// Redirect output to a file
+		int fd = open(tracePath.string().c_str(), O_WRONLY|O_CREAT, 0666);
+		dup2(fd, 1);
+		close(fd);
+		#endif
+		
+		// Prepare pid argument for GDB.
+		char pid_buf[30];
+		memset(&pid_buf, 0, sizeof(pid_buf));
+		sprintf(pid_buf, "%d", m_pCrashInfo->processId);
+		
+		// Try to execute gdb to get a very detailed stack trace.
+		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
+		
+		// GDB failed to start.
+		exit(1);
+	}
+	#endif // HAVE_EXECLP
+	
+	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
+	if(bWroteDump)
+		m_AttachedFiles.push_back(tracePath);
+
+	return bWroteDump;
 #endif
 }
 
@@ -253,8 +289,6 @@ bool ErrorReport::GetMiscCrashInfo()
 
 #ifdef HAVE_WINAPI
 	
-	// TODO
-	
 	// Open parent process handle
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, m_pCrashInfo->processId);
 	if(hProcess != NULL)
@@ -293,6 +327,9 @@ bool ErrorReport::GetMiscCrashInfo()
 
 	// Determine if Windows is 64-bit.
 	m_OSIs64Bit = Is64BitWindows();
+#else
+	
+	// TODO
 	
 #endif
 

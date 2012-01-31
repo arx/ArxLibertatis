@@ -61,13 +61,15 @@ public:
 private:
 	virtual bool registerCrashHandlers() = 0;
 	virtual void unregisterCrashHandlers() = 0;
-
+	
 	bool createSharedMemory();
 	void destroySharedMemory();
-	void fillBasicCrashInfo();
+	
 	void shutdown();
-
+	
 protected:
+	virtual void fillBasicCrashInfo();
+
 	std::string m_CrashHandlerApp;
 
 	// Memory shared to the crash reporter.

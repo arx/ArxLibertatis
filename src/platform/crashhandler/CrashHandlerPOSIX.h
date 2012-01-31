@@ -42,7 +42,7 @@ public:
 	static CrashHandlerPOSIX & getInstance();
 	
 private:
-	
+	void fillBasicCrashInfo();
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
@@ -51,6 +51,7 @@ private:
 	
 	static CrashHandlerPOSIX * m_sInstance;
 	
+	bool useGdb;
 };
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERLINUX_H

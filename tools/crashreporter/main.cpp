@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
 	
 	Q_INIT_RESOURCE(crashreporter);
 	
+	QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 	QApplication app(argc, argv);
 	
 #endif
@@ -62,7 +63,7 @@ int main(int argc, char **argv) {
 	if(sharedMemoryName.empty()) {
 		return -1;
 	}
-
+	
 	ErrorReport errorReport(sharedMemoryName);
 
 	ErrorReportDialog errorReportDlg(errorReport);

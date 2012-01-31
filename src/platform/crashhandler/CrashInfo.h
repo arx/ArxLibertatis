@@ -73,6 +73,7 @@ struct CrashInfoBase {
 #if ARX_PLATFORM == ARX_PLATFORM_LINUX
 
 struct CrashInfo : public CrashInfoBase {
+	char execFullName[512];
 };
 
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32

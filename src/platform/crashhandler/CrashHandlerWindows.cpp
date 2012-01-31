@@ -69,6 +69,12 @@ CrashHandlerWindows& CrashHandlerWindows::getInstance() {
 	return *m_sInstance;
 }
 
+void CrashHandlerPOSIX::fillBasicCrashInfo() {
+	CrashHandlerImpl::fillBasicCrashInfo();
+	
+	m_pCrashInfo->miniDumpType = MiniDumpNormal;
+}
+
 bool CrashHandlerWindows::registerCrashHandlers() {
 	arx_assert(m_pPreviousCrashHandlers == 0);
 	m_pPreviousCrashHandlers = new PlatformCrashHandlers;
@@ -295,6 +301,8 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 #endif
 			default:                   FPEDetailed = "";
 		}
+		
+		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
 
@@ -314,7 +322,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
-	m_pCrashInfo->miniDumpType = MiniDumpNormal;
 
 	STARTUPINFO si;
 	memset(&si, 0, sizeof(STARTUPINFO));

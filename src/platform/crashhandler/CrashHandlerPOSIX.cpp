@@ -19,24 +19,25 @@
 
 #include "CrashHandlerPOSIX.h"
 
-#include <float.h>
+#include "Configure.h"
+
+#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS_FD)
+#include <execinfo.h>
+#endif
+
 #include <signal.h>
-#include <cstring>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
 typedef void (*signal_handler)(int);
 
-enum CrashType {
-	SIGNAL_SIGABRT,
-	SIGNAL_SIGFPE,
-	SIGNAL_SIGILL,
-	SIGNAL_SIGSEGV,
-	SIGNAL_UNKNOWN
-};
+static void SignalHandler(int signalCode) {
+	CrashHandlerPOSIX::getInstance().handleCrash(signalCode);
+}
 
-static void SIGFPEHandler(int /*code*/, int FPECode) {
-	CrashHandlerPOSIX::getInstance().handleCrash(SIGNAL_SIGFPE, FPECode);
+static void SIGFPEHandler(int signalCode, int FPECode) {
+	CrashHandlerPOSIX::getInstance().handleCrash(signalCode, FPECode);
 }
 
 struct PlatformCrashHandlers {
@@ -46,13 +47,28 @@ struct PlatformCrashHandlers {
 	signal_handler m_SIGABRTHandler;    // SIGABRT handler.
 };
 
-void SignalHandler(int signalCode);
-
 CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
 CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
 	m_CrashHandlerApp = "./arxcrashreporter";
+	
+#ifdef HAVE_EXECLP
+	useGdb = true;
+	
+	// Test for GDB availability
+	int childPID = fork();
+	if(childPID) {
+		// Wait for GDB to exit.
+		waitpid(childPID, NULL, 0);		
+	} else {
+		// If execlp returns, it means gdb was not found in path.
+		execlp("gdb", "gdb", "-v", NULL);
+		useGdb = false;
+	}
+#else
+	useGdb = false;
+#endif
 }
 
 CrashHandlerPOSIX::~CrashHandlerPOSIX() {
@@ -62,6 +78,12 @@ CrashHandlerPOSIX::~CrashHandlerPOSIX() {
 CrashHandlerPOSIX& CrashHandlerPOSIX::getInstance() {
 	arx_assert(m_sInstance != 0);
 	return *m_sInstance;
+}
+
+void CrashHandlerPOSIX::fillBasicCrashInfo() {
+	CrashHandlerImpl::fillBasicCrashInfo();
+	
+	m_pCrashInfo->execFullName[readlink("/proc/self/exe", m_pCrashInfo->execFullName, 511)] = 0;
 }
 
 bool CrashHandlerPOSIX::registerCrashHandlers() {
@@ -128,7 +150,7 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
-void CrashHandlerPOSIX::handleCrash(int crashType, int /*FPECode*/) {
+void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	
 	Autolock autoLock(&m_Lock);
 	
@@ -138,41 +160,80 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int /*FPECode*/) {
 	}
 	
 	const char* crashSummary;
-	
 	switch(crashType) {
-		case SIGNAL_SIGABRT:     crashSummary = "Abnormal termination"; break;
-		case SIGNAL_SIGFPE:      crashSummary = "Floating-point error"; break;
-		case SIGNAL_SIGILL:      crashSummary = "Illegal instruction"; break;
-		case SIGNAL_SIGSEGV:     crashSummary = "Illegal storage access"; break;
-		case SIGNAL_UNKNOWN:     crashSummary = "Unknown signal"; break;
-		default:                 crashSummary = "Unknown error"; break;
+		case SIGABRT:     crashSummary = "Abnormal termination"; break;
+		case SIGFPE:      crashSummary = "Floating-point error"; break;
+		case SIGILL:      crashSummary = "Illegal instruction"; break;
+		case SIGSEGV:     crashSummary = "Illegal storage access"; break;
+		default:          crashSummary = 0; break;
 	}
 	
-	strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
-	if(crashType == SIGNAL_SIGFPE) {
+	if(crashSummary != 0)
+		strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
+	else
+	{
+		sprintf(m_pCrashInfo->detailedCrashInfo, "Received signal #%d", crashType);
+	}
+	
+	if(crashType == SIGFPE) {
 		// Append detailed information in case of a FPE exception
-		/* TODO
 		const char* FPEDetailed;
 		switch(FPECode) {
-			case FPE_INVALID:         FPEDetailed = ": Invalid result"; break;
-			case FPE_DENORMAL:        FPEDetailed = ": Denormal operand"; break;
-			case FPE_ZERODIVIDE:      FPEDetailed = ": Divide by zero"; break;
-			case FPE_OVERFLOW:        FPEDetailed = ": Overflow"; break;
-			case FPE_UNDERFLOW:       FPEDetailed = ": Underflow"; break;
-			case FPE_INEXACT:         FPEDetailed = ": Inexact precision"; break;
-			case FPE_UNEMULATED:      FPEDetailed = ": Unemulated"; break;
-			case FPE_SQRTNEG:         FPEDetailed = ": Negative square root"; break;
-			case FPE_STACKOVERFLOW:   FPEDetailed = ": Stack Overflow"; break;
-			case FPE_STACKUNDERFLOW:  FPEDetailed = ": Stack Underflow"; break;
-			case FPE_EXPLICITGEN:     FPEDetailed = ": raise( SIGFPE ) was called"; break;
-			case FPE_MULTIPLE_TRAPS:  FPEDetailed = ": Multiple traps"; break;
-			case FPE_MULTIPLE_FAULTS: FPEDetailed = ": Multiple faults"; break;
+			#ifdef FPE_INTDIV
+			case FPE_INTDIV: FPEDetailed = ": Integer divide by zero"; break;
+			#endif
 			
+			#ifdef FPE_INTOVF
+			case FPE_INTOVF: FPEDetailed = ": Integer overflow"; break;
+			#endif
+			
+			#ifdef FPE_FLTDIV
+			case FPE_FLTDIV: FPEDetailed = ": Floating point divide by zero"; break;
+			#endif
+			
+			#ifdef FPE_FLTOVF
+			case FPE_FLTOVF: FPEDetailed = ": Floating point overflow"; break;
+			#endif
+			
+			#ifdef FPE_FLTUND
+			case FPE_FLTUND: FPEDetailed = ": Floating point underflow"; break;
+			#endif
+			
+			#ifdef FPE_FLTRES
+			case FPE_FLTRES: FPEDetailed = ": Floating point inexact result"; break;
+			#endif
+			
+			#ifdef FPE_FLTINV
+			case FPE_FLTINV: FPEDetailed = ": Floating point invalid operation"; break;
+			#endif
+			
+			#ifdef FPE_FLTSUB
+			case FPE_FLTSUB: FPEDetailed = ": Subscript out of range"; break;
+			#endif
+		
 			default:                  FPEDetailed = "";
 		}
-		*/
+		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
+
+	// Fallback to generate a basic stack trace.
+	#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS_FD)
+	if(!useGdb)
+	{
+		void * buffer[100];
+		
+		size_t size = backtrace(buffer, ARRAY_SIZE(buffer));
+		
+		// Print the stacktrace, skipping the innermost stack frame.
+		if(size > 1) {
+			backtrace_symbols_fd(buffer + 1, size - 1, 2);
+		}
+		
+	}
+	#endif
+
+	fflush(stdout), fflush(stderr);
 	
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
@@ -182,30 +243,20 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int /*FPECode*/) {
 	strcat(arguments, m_SharedMemoryName.c_str());
 	
 	if(fork()) {
-		
-		execlp(m_CrashHandlerApp.c_str(), arguments, NULL);
-		
-		m_pCrashInfo->exitLock.post();
-		
+		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
+		while(true);
 	} else {
-		
-		// If CrashReporter was started, wait for its signal before exiting.
-		m_pCrashInfo->exitLock.wait();
-		
-	}
-	
-	exit(1);
-}
-
-
-void SignalHandler(int signalCode) {
-	int crashType;
-	switch(signalCode) {
-		case SIGABRT: crashType = SIGNAL_SIGABRT; break;
-		case SIGILL:  crashType = SIGNAL_SIGILL; break;
-		case SIGSEGV: crashType = SIGNAL_SIGSEGV; break;
-		case SIGFPE:  crashType = SIGNAL_SIGFPE; break;
-		default:      crashType = SIGNAL_UNKNOWN; break;
-	}
-	CrashHandlerPOSIX::getInstance().handleCrash(crashType);
+		if(fork()) {
+			// Wait for the CrashReporter signal before exiting.
+			m_pCrashInfo->exitLock.wait();
+			
+			// Kill the original, busy-waiting process.
+			kill(m_pCrashInfo->processId, SIGKILL);
+			
+			exit(1);
+		} else {
+			execlp(m_CrashHandlerApp.c_str(), arguments, NULL);
+			m_pCrashInfo->exitLock.post(); // Post signal in case of failure
+		}
+	}	
 }

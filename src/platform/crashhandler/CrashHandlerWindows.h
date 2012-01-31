@@ -40,6 +40,7 @@ public:
 	static CrashHandlerWindows& getInstance();
 
 private:
+	void fillBasicCrashInfo();
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
