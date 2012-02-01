@@ -12,6 +12,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "platform/String.h"
+
 #ifndef HAVE_WINAPI
 	#include <sys/types.h>
 	#include <sys/socket.h>
@@ -35,6 +37,7 @@
 	typedef struct sockaddr* LPSOCKADDR;
 #else
 	#include <winsock2.h>
+	#include <ws2tcpip.h>
 	#include <time.h>
 	#pragma comment(lib, "ws2_32.lib")
 #endif

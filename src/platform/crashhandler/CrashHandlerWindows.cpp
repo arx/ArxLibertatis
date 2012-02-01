@@ -69,7 +69,7 @@ CrashHandlerWindows& CrashHandlerWindows::getInstance() {
 	return *m_sInstance;
 }
 
-void CrashHandlerPOSIX::fillBasicCrashInfo() {
+void CrashHandlerWindows::fillBasicCrashInfo() {
 	CrashHandlerImpl::fillBasicCrashInfo();
 	
 	m_pCrashInfo->miniDumpType = MiniDumpNormal;

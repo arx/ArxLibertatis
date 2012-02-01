@@ -74,4 +74,12 @@ long specialstrcmp(const std::string & text, const std::string & seek);
 
 void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
+
+#ifdef HAVE_WINAPI
+/**
+ * Workaround for non POSIX functions names under Windows...
+ */
+#define strncasecmp _strnicmp
+#endif
+
 #endif // ARX_PLATFORM_STRING_H
