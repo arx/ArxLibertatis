@@ -1257,7 +1257,7 @@ bool ArxGame::Render() {
 
 		if (ARX_CONVERSATION_MODE==-1)
 		{
-			ARX_CONVERSATION_MODE=(long)(float)(rnd()*3.f+1.f);
+			ARX_CONVERSATION_MODE=0;
 			conversationcamera.size.a=rnd()*50.f;
 			conversationcamera.size.b=0.f;
 			conversationcamera.size.g=rnd()*50.f;
