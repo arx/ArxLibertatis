@@ -74,9 +74,9 @@ Arx Libertatis will then put the config and save files in the same directory. If
 
 Where arx will look for a system-wide installation depends on the OS:
 
-Under **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depending on your distro. Config and save files are normally located in `~/.local/share/arx`
+Under **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\Arx Libertatis` on XP and `%USERPROFILE%\Saved Games\Arx Libertatis` on Vista and up.
 
-For **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\arx` on XP and `%USERPROFILE%\Saved games\arx` on Vista and up.
+For other systems like **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depending on your distro. Config and save files are normally located in `~/.local/share/arx`
 
 ## Run
 
