@@ -362,7 +362,7 @@ bool PathFinder::wanderAround(NodeId from, float rad, Result & rlist, bool steal
 		for(unsigned int j = 0; j < nb && map_d[next].nblinked; j++) {
 			for(int notfinished = 0; notfinished < 4; notfinished++) {
 				
-				size_t r = (size_t)(rnd() * (float)map_d[next].nblinked);
+				size_t r = Random::get<size_t>(0, map_d[next].nblinked);
 				arx_assert(r < (size_t)map_d[next].nblinked);
 				
 				arx_assert(map_d[next].linked[r] >= 0);
