@@ -46,6 +46,18 @@ public:
 	static inline RealType getf(RealType realMin = RealType(0.0), RealType realMax = RealType(1.0));
 	static inline float getf(float realMin = 0.0f, float realMax = 1.0f);
 
+	/// Return a random iterator pointing in the range [begin, end).
+	template <class Iterator>
+	static inline Iterator getIterator(Iterator begin, Iterator end);
+
+	/// Return a random iterator in the given container.
+	template <class Container>
+	static inline typename Container::iterator getIterator(Container& container);
+
+	/// Return a random const_iterator in the given container.
+	template <class Container>
+	static inline typename Container::const_iterator getIterator(const Container& container);
+
 	/// Seed the random number generator using the current time.
 	static void seed();
 
@@ -83,6 +95,28 @@ RealType Random::getf(RealType realMin, RealType realMax) {
 
 float Random::getf(float realMin, float realMax) {
 	return Random::getf<float>(realMin, realMax);
+}
+
+template <class Iterator>
+Iterator Random::getIterator(Iterator begin, Iterator end) {
+	typedef std::iterator_traits<Iterator>::difference_type diff_t;
+
+	diff_t dist = std::distance(begin, end);
+	diff_t toAdvance = Random::get<diff_t>(0, dist);
+
+	std::advance(begin, toAdvance);
+	
+	return begin;
+}
+
+template <class Container>
+typename Container::iterator Random::getIterator(Container& container) {
+	return getIterator(container.begin(), container.end());
+}
+
+template <class Container>
+typename Container::const_iterator Random::getIterator(const Container& container) {
+	return getIterator(container.begin(), container.end());
 }
 
 #endif // ARX_PLATFORM_RANDOM_H

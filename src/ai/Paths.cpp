@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 
 #include "platform/Platform.h"
+#include "platform/Random.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"
@@ -990,21 +991,21 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					{
 						Vec3f pos;
 						long notok = 10;
-						size_t num = 0;
+						std::vector<EERIE_FACE>::iterator it;
 
 						while (notok-- > 0)
 						{
-							num = (rnd() *(float)Thrown[i].obj->facelist.size());
-							arx_assert(num < Thrown[i].obj->facelist.size());
+							it = Random::getIterator(Thrown[i].obj->facelist);
+							arx_assert(it != Thrown[i].obj->facelist.end());
 
-							if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
+							if (it->facetype & POLY_HIDE) continue;
 
 							notok = -1;
 						}
 
 						if (notok < 0)
 						{
-							pos = Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v;
+							pos = Thrown[i].obj->vertexlist3[it->vid[0]].v;
 
 							for(long nn = 0; nn < 2; nn++) {
 								long j = ARX_PARTICLES_GetFree();
