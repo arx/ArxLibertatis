@@ -21,8 +21,12 @@
 
 #include <ctime>
 
-size_t Random::current;
+boost::random::mt19937 Random::rng;
 
 void Random::seed() {
-	current = (size_t)std::time(NULL);
+	rng.seed((size_t)std::time(NULL));
+}
+
+void Random::seed(unsigned int seedVal) {
+	rng.seed(seedVal);
 }

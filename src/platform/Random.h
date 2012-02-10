@@ -20,32 +20,56 @@
 #ifndef ARX_PLATFORM_RANDOM_H
 #define ARX_PLATFORM_RANDOM_H
 
-#include <stddef.h>
+#include <limits>
+
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 
 /*!
- * A simple but very fast random number generator.
+ * Random number generator.
  */
 class Random {
-	
-	static const size_t MODULO = 2147483647;
-	static const size_t FACTOR = 16807;
-	static const size_t SHIFT = 91;
-	static const size_t SEED = 43;
-	
-	static size_t current;
-	
 public:
-	
-	inline static size_t get() {
-		return current = (current * FACTOR + SHIFT) % MODULO;
-	}
-	
-	inline static float getf() {
-		return get() * (1.f / MODULO);
-	}
-	
+
+	/// Generates a random integer value in the range [intMin, intMax).
+	template <class IntType>
+	static inline IntType get(IntType intMin = 0, IntType intMax = std::numeric_limits<IntType>::max());
+	static inline int get(int intMin = 0, int intMax = std::numeric_limits<int>::max());
+
+	/// Generates a random floating point value in the range [realMin, realMax).
+	template <class RealType>
+	static inline RealType getf(RealType realMin = RealType(0.0), RealType realMax = RealType(1.0));
+	static inline float getf(float realMin = 0.0f, float realMax = 1.0f);
+
+	/// Seed the random number generator using the current time.
 	static void seed();
-	
+
+	/// Seed the random number generator with the given value.
+	static void seed(unsigned int seedVal);
+
+private:
+	static boost::random::mt19937 rng;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+template <class IntType>
+IntType Random::get(IntType intMin, IntType intMax) {
+	return boost::random::uniform_int_distribution<IntType>(intMin, intMax)(rng);
+}
+
+int Random::get(int intMin, int intMax) {
+	return Random::get<int>(intMin, intMax);
+}
+
+template <class RealType>
+RealType Random::getf(RealType realMin, RealType realMax) {
+	return boost::random::uniform_real_distribution<RealType>(realMin, realMax)(rng);
+}
+
+float Random::getf(float realMin, float realMax) {
+	return Random::getf<float>(realMin, realMax);
+}
 
 #endif // ARX_PLATFORM_RANDOM_H
