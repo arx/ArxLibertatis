@@ -271,7 +271,7 @@
          </property>
          <widget class="QWidget" name="tabOptionnalInfo">
           <attribute name="title">
-           <string>Optionnal Info</string>
+           <string>Optional Info</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
