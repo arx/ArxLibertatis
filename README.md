@@ -52,6 +52,7 @@ Build options:
 * `BUILD_TOOLS` (default=ON): Build tools
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
+* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install the Arx Libertatis binaries.
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
