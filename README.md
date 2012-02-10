@@ -32,12 +32,15 @@ Systems without Win32 or POSIX filesystem support will also need the boost files
 
 ## Compile and install
 
-For Linux run
+For Linux run:
+
     $ mkdir build && cd build && cmake ..
     $ make
 
-To install the binaries system-wide, run as root
+To install the binaries system-wide, run as root:
+
     # make install
+
 Alternatively you can run the game by specfying the full path to the `arx` binary ind the `build` directory.
 
 The wiki has more detailed instructions on [compiling under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux).
