@@ -30,10 +30,19 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 Systems without Win32 or POSIX filesystem support will also need the boost filesystem library.
 
-## Compile
+## Compile and install
 
+For Linux run
     $ mkdir build && cd build && cmake ..
     $ make
+
+To install the binaries system-wide, run as root
+    # make install
+Alternatively you can run the game by specfying the full path to the `arx` binary ind the `build` directory.
+
+The wiki has more detailed instructions on [compiling under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux).
+
+Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://arx.parpg.net/Downloading_and_Compiling_under_Windows) are available on the wiki.
 
 Build options:
 
@@ -54,9 +63,9 @@ Windows-only options (always OFF for non-windows platforms):
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
-The wiki has detailed instructions on compiling [under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux) and [under windows](http://arx.parpg.net/Downloading_and_Compiling_under_Windows)
+Backends that aren not available are disabled by default. The `cmake` run should display a summary of the enabled backends at the end.
 
-## Data files / config / savegame location
+## Data file, config and savegame locations
 
 You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
 
@@ -64,11 +73,11 @@ Where arx will look for data files and write config and save files depends on th
 
 To print all directories considered by arx, run
 
-    $ ./arx --list-dirs
+    $ arx --list-dirs
 
 If you don't have a system-wide installation of the Arx Fatalis data files, you can just run arx from the directory containing the .pak files:
 
-    $ ./arx
+    $ arx
 
 Arx Libertatis will then put the config and save files in the same directory. If you have a system-wide installation, but still want to run from the current directory, use the `--no-data-dir --user-dir=.` command-line options.
 
@@ -82,7 +91,7 @@ For other systems like **Linux**, the data files can be in `/usr/local/share/arx
 
 Run from the directory containing the .pak files (or from anywhere in case of a system-wide installation):
 
-    $ ./arx
+    $ arx
 
 The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase.
 
@@ -100,6 +109,6 @@ You can close it with `Alt + F4` or `killall arx.exe.so`
 
 ## Build documentation
 
-To build developer documentation (doxygen), run this from the root directory:
+To build developer documentation (doxygen), run this from the build directory:
 
     $ make doc
