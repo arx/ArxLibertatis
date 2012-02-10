@@ -99,7 +99,7 @@ float Random::getf(float realMin, float realMax) {
 
 template <class Iterator>
 Iterator Random::getIterator(Iterator begin, Iterator end) {
-	typedef std::iterator_traits<Iterator>::difference_type diff_t;
+	typedef typename std::iterator_traits<Iterator>::difference_type diff_t;
 
 	diff_t dist = std::distance(begin, end);
 	diff_t toAdvance = Random::get<diff_t>(0, dist);
