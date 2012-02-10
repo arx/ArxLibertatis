@@ -31,11 +31,15 @@
  */
 class Random {
 public:
+	/// Generates a random integer value in the range [0, std::numeric_limits<IntType>::max()]
+	template <class IntType>
+	static inline IntType get();
+	static inline int get();
 
 	/// Generates a random integer value in the range [intMin, intMax).
 	template <class IntType>
-	static inline IntType get(IntType intMin = 0, IntType intMax = std::numeric_limits<IntType>::max());
-	static inline int get(int intMin = 0, int intMax = std::numeric_limits<int>::max());
+	static inline IntType get(IntType intMin, IntType intMax);
+	static inline int get(int intMin, int intMax);
 
 	/// Generates a random floating point value in the range [realMin, realMax).
 	template <class RealType>
@@ -55,8 +59,17 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 template <class IntType>
+IntType Random::get() {
+	return boost::random::uniform_int_distribution<IntType>(0, std::numeric_limits<IntType>::max())(rng);
+}
+
+int Random::get() {
+	return Random::get<int>();
+}
+
+template <class IntType>
 IntType Random::get(IntType intMin, IntType intMax) {
-	return boost::random::uniform_int_distribution<IntType>(intMin, intMax)(rng);
+	return boost::random::uniform_int_distribution<IntType>(intMin, intMax-1)(rng);
 }
 
 int Random::get(int intMin, int intMax) {
