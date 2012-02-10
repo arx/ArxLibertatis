@@ -38,7 +38,7 @@ static int gInitCount = 0;
 
 bool CrashHandler::initialize() {
 	
-	if(!gCrashHandlerImpl){
+	if(!gCrashHandlerImpl) {
 		
 #if defined(HAVE_CRASHHANDLER_POSIX)
 		

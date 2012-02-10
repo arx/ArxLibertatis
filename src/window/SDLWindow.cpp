@@ -52,7 +52,7 @@ bool SDLWindow::initFramework() {
 	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
 	arx_assert(displayModes.empty());
 	
-	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();
 		return false;
 	}
