@@ -41,7 +41,7 @@ To install the binaries system-wide, run as root:
 
     # make install
 
-Alternatively you can run the game by specfying the full path to the `arx` binary ind the `build` directory.
+Alternatively you can run the game by specifying the full path to the `arx` binary in the `build` directory.
 
 The wiki has more detailed instructions on [compiling under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux).
 
@@ -66,7 +66,7 @@ Windows-only options (always OFF for non-windows platforms):
 
 Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
 
-Backends that aren not available are disabled by default. The `cmake` run should display a summary of the enabled backends at the end.
+Backends that are not available are disabled by default. The `cmake` run should display a summary of the enabled backends at the end.
 
 ## Data file, config and savegame locations
 
