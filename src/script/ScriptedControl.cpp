@@ -138,8 +138,6 @@ public:
 				ARX_SOUND_PlayScriptAmbiance(ambiance, ARX_SOUND_PLAY_ONCE);
 				return Success;
 			}
-			
-			return Failed;
 		}
 		
 		res::path ambiance = res::path::load(context.getWord());
