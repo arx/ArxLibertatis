@@ -506,7 +506,6 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	memcpy(dat, asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 
-	ARX_CHANGELEVEL_IO_INDEX aii;
 
 	for (int i = 1; i < inter.nbmax; i++)
 	{
@@ -516,14 +515,15 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
 		   )
 		{
+			ARX_CHANGELEVEL_IO_INDEX aii;
+			memset(&aii, 0, sizeof(aii));
 			strncpy(aii.filename, inter.iobj[i]->filename.string().c_str(), sizeof(aii.filename));
 			aii.ident = inter.iobj[i]->ident;
 			aii.level = inter.iobj[i]->level;
 			aii.truelevel = inter.iobj[i]->truelevel;
 			aii.num = i; // !!!
-			aii.unused = 0;
-			memcpy(dat + pos, &aii, sizeof(ARX_CHANGELEVEL_IO_INDEX));
-			pos += sizeof(ARX_CHANGELEVEL_IO_INDEX);
+			memcpy(dat + pos, &aii, sizeof(aii));
+			pos += sizeof(aii);
 		}
 	}
 

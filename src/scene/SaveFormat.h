@@ -163,8 +163,7 @@ struct ARX_CHANGELEVEL_IO_INDEX {
 	s32 num; // unused TODO use this to restore spell targets?
 	s16 level;
 	s16 truelevel;
-	s32 unused;
-	s32 padding[256];
+	s32 padding[257];
 };
 
 struct ARX_CHANGELEVEL_PATH {
