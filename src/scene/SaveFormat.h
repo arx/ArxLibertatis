@@ -153,16 +153,15 @@ struct ARX_CHANGELEVEL_INDEX {
 
 struct ARX_CHANGELEVEL_LIGHT {
 	s16 status;
-	s16 padd;
-	f32 lpadd;
+	s16 padding[3];
 };
 
 struct ARX_CHANGELEVEL_IO_INDEX {
 	char filename[256];
 	s32 ident;
 	s32 num; // unused TODO use this to restore spell targets?
-	s16 level;
-	s16 truelevel;
+	s16 level; // unused
+	s16 truelevel; // unused
 	s32 padding[257];
 };
 
