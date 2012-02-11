@@ -544,7 +544,7 @@ void ARX_SPEECH_Update() {
 
 						Rect::Num y = checked_range_cast<Rect::Num>(fZoneClippY);
 						Rect::Num h = checked_range_cast<Rect::Num>(fAdd);
-						Rect clippingRect(0, y, DANAESIZX, h);
+						Rect clippingRect(0, y+1, DANAESIZX, h);
 						float iTaille = (float)ARX_TEXT_DrawRect(
 						                    hFontInBook,
 						                    10.f,
