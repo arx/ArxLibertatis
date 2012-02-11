@@ -164,7 +164,7 @@ void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureConta
 			particle[j].move.y		=	rnd();
 			particle[j].move.z		=	0.f;
 			particle[j].siz			=	10.f + 20.f * rnd();
-			particle[j].tolive		=	500 + (unsigned long)(float)(rnd() * 500.f);
+			particle[j].tolive		=	Random::get(500, 1000);
 			particle[j].scale.x		=	1.f;
 			particle[j].scale.y		=	1.f;
 			particle[j].scale.z		=	1.f;
@@ -230,7 +230,7 @@ float CExplosion::Render()
 				d3dvs.p.z = pos.z + vertex->z;
 				EE_RTP(&d3dvs, d3dv);
 
-				if (!arxtime.is_paused()) d3dv->color = Color((int)(rin * rnd()), 0, 0).toBGRA();
+				if (!arxtime.is_paused()) d3dv->color = Color(Random::get(0, (u8)rin), 0, 0).toBGRA();
 
 				vertex++;
 				d3dv++;
@@ -257,7 +257,7 @@ float CExplosion::Render()
 					particle[j].move.y		=	rnd();
 					particle[j].move.z		=	0.f;
 					particle[j].siz			=	10.f + 10.f * rnd();
-					particle[j].tolive		=	500 + (unsigned long)(float)(rnd() * 500.f);
+					particle[j].tolive		=	Random::get(500, 1000);
 					particle[j].scale.x		=	1.f;
 					particle[j].scale.y		=	1.f;
 					particle[j].scale.z		=	1.f;
@@ -286,7 +286,7 @@ float CExplosion::Render()
 					particle[j].move.y	=	rnd();
 					particle[j].move.z	=	0.f;
 					particle[j].siz		=	10.f + 10.f * rnd();
-					particle[j].tolive	=	500 + (unsigned long)(float)(rnd() * 500.f);
+					particle[j].tolive	=	Random::get(500, 1000);
 					particle[j].scale.x	=	1.f;
 					particle[j].scale.y	=	1.f;
 					particle[j].scale.z	=	1.f;
@@ -318,7 +318,7 @@ float CExplosion::Render()
 					particle[j].move.y	=	-(5.f + 10.f * rnd());
 					particle[j].move.z	=	0.f;
 					particle[j].siz		=	10.f + 20.f * rnd();
-					particle[j].tolive	=	1000 + (unsigned long)(float)(rnd() * 1000.f);
+					particle[j].tolive	=	Random::get(1000, 2000);
 					particle[j].scale.x	=	1.f;
 					particle[j].scale.y	=	1.f;
 					particle[j].scale.z	=	1.f;

@@ -5323,7 +5323,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					pd->move.y=2.f-4.f*rnd();
 					pd->move.z=2.f-4.f*rnd();
 					pd->siz=28.f;
-					pd->tolive=2000+(unsigned long)(float)(rnd()*4000.f);
+					pd->tolive=Random::get(2000, 6000);
 					pd->scale.x=12.f;
 					pd->scale.y=12.f;
 					pd->scale.z=12.f;
@@ -6515,7 +6515,7 @@ void ARX_SPELLS_Kill(long i) {
 					pd->move.y=2.f-4.f*rnd();
 					pd->move.z=2.f-4.f*rnd();
 					pd->siz=28.f;
-					pd->tolive=2000+(unsigned long)(float)(rnd()*4000.f);
+					pd->tolive=Random::get(2000, 6000);
 					pd->scale = Vec3f(12.f, 12.f, 12.f);
 					pd->timcreation=spells[i].lastupdate;
 					pd->tc=tc4;
@@ -7775,7 +7775,7 @@ void ARX_SPELLS_Update()
 								pd->move.z=(2.f-4.f*rnd());
 								
 								pd->siz			=	7.f;
-								pd->tolive		=	500+(unsigned long)(rnd()*1000.f);
+								pd->tolive		=	Random::get(500, 1500);
 								pd->special		=	0;
 								pd->tc			=	fire2;						
 										pd->special		|=	ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
@@ -7792,7 +7792,7 @@ void ARX_SPELLS_Update()
 									ParticleCount++;
 									PARTICLE_DEF * pd2=&particle[j2];
 									memcpy(pd2,pd,sizeof(PARTICLE_DEF));
-									pd2->delay=(long)(float)(rnd()*150.f+60.f);
+									pd2->delay=Random::get(60, 210);
 								}
 							}
 						}
@@ -7885,7 +7885,7 @@ void ARX_SPELLS_Update()
 					
 					float choice = rnd();
 					if(choice > .8f) {
-						long lvl = rnd() * 9.f + 4.f;
+						long lvl = Random::get(9, 13);
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;

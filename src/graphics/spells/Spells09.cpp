@@ -947,7 +947,7 @@ float CNegateMagic::Render()
 				particle[j].move.y		=	- 3.0f * rnd();
 				particle[j].move.z		=	0;
 				particle[j].siz			=	 0.3f;
-				particle[j].tolive		=	2000 + (unsigned long)(float)(rnd() * 2000.f);
+				particle[j].tolive		=	Random::get(2000, 4000);
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;

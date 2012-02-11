@@ -106,6 +106,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Collisions.h"
 
+#include "platform/Random.h"
 #include "platform/String.h"
 
 #include "scene/LinkedObject.h"
@@ -6990,7 +6991,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 			pd->scale.y 		=	1.8f;
 			pd->scale.z 		=	1.f;
 			pd->timcreation		=	(long)arxtime;
-			pd->tolive			=	500+(unsigned long)(rnd()*400.f);
+			pd->tolive			=	Random::get(500, 900);
 			pd->tc				=	fire2;
 			pd->rgb = Color3f(1.f, .6f, .5f);
 			pd->siz				=	INTERFACE_RATIO(14.f);

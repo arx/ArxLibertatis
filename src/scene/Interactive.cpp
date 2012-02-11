@@ -91,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Clothes.h"
 
+#include "platform/Random.h"
 #include "platform/String.h"
 #include "platform/Thread.h"
 
@@ -1898,7 +1899,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			scr_timer[num].msecs = rnd() * 3000 + 3000;
+			scr_timer[num].msecs = Random::get(3000, 6000);
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = (unsigned long)(arxtime);

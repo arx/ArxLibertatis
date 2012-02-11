@@ -81,6 +81,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
+#include "platform/Random.h"
+
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 #include "scene/Interactive.h"
@@ -1003,7 +1005,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 	{
 		long num = -1;
 
-		if (io != NULL) num = ((long)(float)(rnd() * (io->obj->vertexlist.size() / 4 - 1))) * 4 + 1;
+		if (io != NULL) num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 
 		unsigned long tim = (unsigned long)(arxtime);
 
@@ -1054,7 +1056,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 				particle[j].timcreation		= (long)arxtime;
 				particle[j].special		   |= ROTATING | MODULATE_ROTATION;
 				particle[j].special		   |= FIRE_TO_SMOKE;
-				particle[j].tolive			= 500 + (unsigned long)(rnd() * 400.f);
+				particle[j].tolive			= Random::get(500, 900);
 
 				if(di->type & DAMAGE_TYPE_MAGICAL) {
 					particle[j].move.x	= 1.f - 2.f * rnd();

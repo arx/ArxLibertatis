@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/String.h"
 #include "platform/Flags.h"
 #include "platform/Platform.h"
+#include "platform/Random.h"
 
 #include "scene/Object.h"
 #include "scene/Interactive.h"
@@ -1151,12 +1152,10 @@ void ARX_PHYSICS_Apply()
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
-				size_t idx = rnd() * io->obj->vertexlist.size();
-
-				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
-
-				ARX_PARTICLES_Spawn_Splat(io->obj->vertexlist3[idx].v, 20.f, Color::red);
-				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20.f, GetInterNum(io));
+				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
+				
+				ARX_PARTICLES_Spawn_Splat(it->v, 20.f, Color::red);
+				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, GetInterNum(io));
 			}
 
 			ARX_INTERACTIVE_DestroyIO(io);
@@ -4241,7 +4240,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->move.y			=	(2.f - 22.f * rnd());
 							pd->move.z			=	(2.f - 4.f * rnd());
 							pd->siz				=	7.f;
-							pd->tolive			=	500 + (unsigned long)(rnd() * 1000.f);
+							pd->tolive			=	Random::get(500, 1500);
 							pd->special			=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 							pd->tc				=	fire2;//tc;
 							pd->fparam			=	0.1f - rnd() * 0.2f;
@@ -4309,7 +4308,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				pd->move.y		=	(2.f - 22.f * rnd());
 				pd->move.z		=	(2.f - 4.f * rnd());
 				pd->siz			=	7.f;
-				pd->tolive		=	500 + (unsigned long)(rnd() * 1000.f);
+				pd->tolive		=	Random::get(500, 1500);
 				pd->special		=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 				pd->tc			=	fire2;
 				pd->fparam		=	0.1f - rnd() * 0.2f;
@@ -4373,7 +4372,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 							pd->move.y			=	(2.f - 22.f * rnd());
 							pd->move.z			=	(2.f - 4.f * rnd());
 							pd->siz				=	7.f;
-							pd->tolive			=	500 + (unsigned long)(rnd() * 1000.f);
+							pd->tolive			=	Random::get(500, 1500);
 							pd->special			=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 							pd->tc				=	fire2;//tc;
 							pd->fparam			=	0.1f - rnd() * 0.2f;

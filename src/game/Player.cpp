@@ -97,6 +97,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Attractors.h"
 
 #include "platform/Platform.h"
+#include "platform/Random.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
@@ -1055,24 +1056,24 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	if (SPECIAL_PNUX)
 	{
-		player.Mod_Attribute_Strength += (long)(float)(rnd() * 5.f);
-		player.Mod_Attribute_Mind += (long)(float)(rnd() * 5.f);
-		player.Mod_Attribute_Constitution += (long)(float)(rnd() * 5.f);
-		player.Mod_Attribute_Dexterity += (long)(float)(rnd() * 5.f);
-		player.Mod_Skill_Stealth += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Mecanism += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Intuition += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Etheral_Link += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Object_Knowledge += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Casting += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Projectile += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Close_Combat += (long)(float)(rnd() * 20.f);
-		player.Mod_Skill_Defense += (long)(float)(rnd() * 30.f);
-		player.Mod_resist_magic += (long)(float)(rnd() * 20.f);
-		player.Mod_resist_poison += (long)(float)(rnd() * 20.f);
-		player.Mod_Critical_Hit += (long)(float)(rnd() * 20.f);
-		player.Mod_damages += (long)(float)(rnd() * 20.f);
-		player.Mod_armor_class += (long)(float)(rnd() * 20.f);
+		player.Mod_Attribute_Strength += Random::get(0, 5);
+		player.Mod_Attribute_Mind += Random::get(0, 5);
+		player.Mod_Attribute_Constitution += Random::get(0, 5);
+		player.Mod_Attribute_Dexterity += Random::get(0, 5);
+		player.Mod_Skill_Stealth += Random::get(0, 20);
+		player.Mod_Skill_Mecanism += Random::get(0, 20);
+		player.Mod_Skill_Intuition += Random::get(0, 20);
+		player.Mod_Skill_Etheral_Link += Random::get(0, 20);
+		player.Mod_Skill_Object_Knowledge += Random::get(0, 20);
+		player.Mod_Skill_Casting += Random::get(0, 20);
+		player.Mod_Skill_Projectile += Random::get(0, 20);
+		player.Mod_Skill_Close_Combat += Random::get(0, 20);
+		player.Mod_Skill_Defense += Random::get(0, 30);
+		player.Mod_resist_magic += Random::get(0, 20);
+		player.Mod_resist_poison += Random::get(0, 20);
+		player.Mod_Critical_Hit += Random::get(0, 20);
+		player.Mod_damages += Random::get(0, 20);
+		player.Mod_armor_class += Random::get(0, 20);
 	}
 
 	if (cur_rf == 3)
@@ -2280,7 +2281,7 @@ void ARX_PLAYER_Manage_Visual()
 							particle[j].move.y	=	-2.2f * rnd();
 							particle[j].move.z	=	0.1f - 0.2f * rnd();
 							particle[j].siz		=	5.f;
-							particle[j].tolive	=	1500 + (unsigned long)(float)(rnd() * 2000.f);
+							particle[j].tolive	=	Random::get(1500, 3500);
 							particle[j].scale.x	=	0.2f;
 							particle[j].scale.y	=	0.2f;
 							particle[j].scale.z	=	0.2f;

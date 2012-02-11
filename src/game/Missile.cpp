@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 #include "platform/Flags.h"
+#include "platform/Random.h"
 
 #include "scene/Light.h"
 #include "scene/Interactive.h"
@@ -291,7 +292,7 @@ void ARX_MISSILES_Update()
 					particle[j].move.y = missiles[i].velocity.y + 4.0F - 12.0F * rnd();
 					particle[j].move.z = missiles[i].velocity.z + 3.0F - 6.0F * rnd();
 					particle[j].timcreation = tim;
-					particle[j].tolive = 500 + (unsigned long)(rnd() * 500.f);
+					particle[j].tolive = Random::get(500, 1000);
 					particle[j].tc = tc;
 					particle[j].siz = 12.0F * (float)(missiles[i].tolive - framediff3) * ( 1.0f / 4000 );
 					particle[j].scale.x = 15.0F + rnd() * 5.0F;

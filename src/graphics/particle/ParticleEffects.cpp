@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
+#include "platform/Random.h"
+
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
@@ -251,7 +253,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	pd->delay = 0;
 	pd->move = Vec3f(rnd() * 60.f - 30.f, rnd() * -10.f - 15.f, rnd() * 60.f - 30.f);
 	pd->rgb = col.to<float>();
-	long num = clamp((long)(rnd() * 6.f), 0l, 5l);
+	long num = Random::get(0, 5);
 	pd->tc = bloodsplat[num];
 	pd->fparam = rnd() * (1.f/10) - .05f;
 	
@@ -492,11 +494,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 					pb->exist=1;
 					pb->ep=ep;
-					long num = static_cast<long>(rnd() * 6.f);
 
-					if (num<0) num=0;
-					else if (num>5) num=5;
-
+					long num = Random::get(0, 5);
 					pb->tc=bloodsplat[num];
 
 					float fRandom = rnd() * 2;
@@ -657,7 +656,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 			pd->source		=	&inter.iobj[source]->obj->vertexlist3[nearest].v;
 			pd->sourceionum	=	source;
 			pd->tolive		=	1200+spawn_nb*5;
-			totdelay		+=	(long)(45.f + rnd() * (150.f - spawn_nb));
+			totdelay		+=	45 + Random::get(0, 150 - spawn_nb);
 			pd->delay		=	totdelay;
 			pd->rgb = Color3f(.9f, 0.f, 0.f);
 			pd->tc			=	bloodsplatter;
@@ -755,7 +754,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 
 	while (amount--)
 	{
-		long num = rnd()*((io->obj->vertexlist.size()>>2)-1);
+		long num = Random::get(0, (io->obj->vertexlist.size()>>2)-1);
 		num=(num<<2)+1;
 
 			long j=ARX_PARTICLES_GetFree();
@@ -779,7 +778,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 				pd->scale.z		=	10.f;
 			pd->timcreation	=	(long)arxtime;
 				pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
-				pd->tolive		=	900+(unsigned long)(rnd()*400.f);
+				pd->tolive		=	Random::get(900, 1300);
 				pd->move.x		=	0.25f-0.5f*rnd();
 				pd->move.y		=	-1.f*rnd()+0.3f;
 				pd->move.z		=	0.25f-0.5f*rnd();
@@ -839,8 +838,8 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 			
 			pd->timcreation	=	(long)arxtime;
 			pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
-			pd->tolive		=	1100+(unsigned long)(rnd()*400.f);
-			pd->delay		=	(unsigned long)(amount * 120.0F + rnd() * 100.0F);
+			pd->tolive		=	Random::get(1100, 1500);
+			pd->delay		=	amount * 120 + Random::get(0, 100);
 			pd->move.x		=	0.25f-0.5f*rnd();
 			pd->move.y		=	-1.f*rnd()+0.3f;
 			pd->move.z		=	0.25f-0.5f*rnd();
@@ -1130,7 +1129,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 		pd->move.y=4.f-12.f*rnd();
 		pd->move.z=3.f-6.f*rnd();
 		pd->timcreation=tim;
-		pd->tolive=(unsigned long)(600+rnd()*100);
+		pd->tolive=Random::get(600, 700);
 		pd->tc=tc1;
 		pd->siz=100.f+10.f*rnd();
 
@@ -1156,7 +1155,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type)
 			pd->move.y=4.f-12.f*rnd();
 			pd->move.z=3.f-6.f*rnd();
 			pd->timcreation=tim;
-			pd->tolive=(unsigned long)(600+rnd()*100);
+			pd->tolive=Random::get(600, 700);
 			pd->tc=tc1;
 			pd->siz=40.f+30.f*rnd();
 
@@ -1541,7 +1540,7 @@ void MagFX(float posx,float posy,float posz)
 		pd->scale.y			=	4.4f;
 		pd->scale.z			=	1.f;
 		pd->timcreation		=	(long)arxtime;
-		pd->tolive			=	1500+(unsigned long)(rnd()*900.f);
+		pd->tolive			=	Random::get(1500, 2400);
 		pd->tc				=	healing;
 		pd->rgb = Color3f::magenta;
 		pd->siz				=	56.f;
@@ -1574,7 +1573,7 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->scale.y		=	4.4f;
 			pd->scale.z		=	1.f;
 			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	1500+(unsigned long)(rnd()*900.f);
+			pd->tolive		=	Random::get(1500, 2400);
 			pd->tc			=	healing;
 			pd->rgb = Color3f::magenta;
 			pd->siz			=	56.f;
@@ -1602,7 +1601,7 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->scale.y		=	pd->scale.x			=	(float)(i*10);			
 			pd->scale.z		=	0.f;
 			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	1200+(unsigned long)(rnd()*400.f);
+			pd->tolive		=	Random::get(1200, 1600);
 			pd->tc			=	ITC.Get("book");
 			pd->rgb = Color3f(1.f - i * .1f, i * .1f, .5f - i * .1f);
 			pd->siz			=	32.f+i*4;
@@ -1629,7 +1628,7 @@ int ARX_GenereOneEtincelle(Vec3f *pos,Vec3f *dir)
 	pd->special		=	GRAVITY;
 	pd->ov			=	pd->oldpos	=	*pos;
 	pd->move		=	*dir;
-	pd->tolive		=	1000+(int)(rnd()*500.f);
+	pd->tolive		=	Random::get(1000, 1500);
 	pd->timcreation	=	(long)arxtime;
 	pd->rgb = Color3f(ET_R, ET_G, ET_B);
 	pd->tc			=	GTC;
@@ -1689,7 +1688,9 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
 {
-	for (long kk=0;kk<rnd()*15+20;kk++)
+	long nbParticles = Random::get(15, 35);
+
+	for (long kk=0; kk < nbParticles; kk++)
 	{
 		long j=ARX_PARTICLES_GetFree();
 
@@ -1708,12 +1709,9 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
 			pd->move.y = -(rnd()*5)*2.3f;
 			pd->move.z = (frand2()*5)*1.3f;
 			pd->timcreation = (long)arxtime;
-			pd->tolive = (unsigned long)(1000+rnd()*300);
+			pd->tolive = Random::get(1000, 1300);
 			
-			float fRandom = rnd() * 2;
-			
-			int t = checked_range_cast<int>(fRandom);
-			
+			int t = Random::get(0, 2);
 			pd->tc=water_drop[t];
 			pd->siz = 0.4f;
 			float s = rnd();
@@ -1757,7 +1755,7 @@ void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
 
 			if (flags & 1)
 			{
-				pd->tolive	=	(unsigned long)(400+rnd()*100);
+				pd->tolive	=	Random::get(400, 500);
 				pd->siz		*=	0.7f;
 				pd->scale.z=pd->scale.y=pd->scale.x=level*0.7f;				
 			}
@@ -1766,7 +1764,7 @@ void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
 				pd->scale.x=level;
 				pd->scale.y=level;
 				pd->scale.z=level;
-				pd->tolive=(unsigned long)(800+rnd()*100);
+				pd->tolive=Random::get(800, 900);
 			}
 
 			pd->cval1=0;
@@ -1774,7 +1772,7 @@ void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
 
 			if (nn==1)
 			{
-				pd->delay=(unsigned long)(float)(150+rnd()*100.f);
+				pd->delay=Random::get(150, 250);
 				pd->ov.x=poss->x+vecto->x*pd->delay;
 				pd->ov.y=poss->y+vecto->y*pd->delay;
 				pd->ov.z=poss->z+vecto->z*pd->delay;
@@ -1811,7 +1809,7 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 			}
 
 			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	(unsigned long)(1600+rnd()*600);
+			pd->tolive		=	Random::get(1600, 2200);
 			pd->tc			=	explo[0];
 			pd->siz			=	level*3.f+2.f*rnd();
 			pd->scale.x		=	level*3.f;
@@ -2442,7 +2440,7 @@ void TreatBackgroundActions()
 					pd->move.y=(2.f-22.f*rnd())*gl->ex_speed;
 					pd->move.z=(2.f-4.f*rnd())*gl->ex_speed;
 					pd->siz=7.f*gl->ex_size;
-					pd->tolive=500+(unsigned long)(rnd()*1000.f*gl->ex_speed);
+					pd->tolive=500 + Random::get(0, 1000 * gl->ex_speed);
 
 					if ((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE))
 						pd->special=FIRE_TO_SMOKE;
@@ -2496,7 +2494,7 @@ void TreatBackgroundActions()
 						}
 
 						pd->siz=4.f*gl->ex_size*0.3f;
-						pd->tolive=1200+(unsigned long)(rnd()*500.f*gl->ex_speed);
+						pd->tolive=1200+Random::get(0, 500*gl->ex_speed);
 						pd->special=0;//FIRE_TO_SMOKE;
 						pd->tc = fire2; 
 						
@@ -2731,7 +2729,7 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						pd->scale.y		=	-2.f;
 						pd->scale.z		=	-2.f;
 						pd->timcreation	=	(long)arxtime;
-						pd->tolive		=	(unsigned long)(float)(1300.f+rnd()*800.f+kk*100.f);
+						pd->tolive		=	1300 + kk*100 + Random::get(0, 800);
 						
 						pd->tc			=	fire2;
 
@@ -2865,7 +2863,7 @@ void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						pd->scale.y		=	-2.f;
 						pd->scale.z		=	-2.f;
 						pd->timcreation	=	(long)arxtime;
-						pd->tolive		=	(unsigned long)(float)(1300.f+rnd()*800.f+kk*100.f);
+						pd->tolive		=	1300 + kk*100 + Random::get(0, 800);
 						
 						pd->tc			=	fire2;
 

@@ -799,7 +799,7 @@ void CSpeed::Create(int numinteractive, int duration)
 	{
 		float col = 0.05f + (rnd() * 0.05f);
 		float size = 4.f + (4.f * rnd());
-		int taille = 8 + (int)(8.f * rnd());
+		int taille = Random::get(8, 16);
 		this->AddRubanDef(grouplist->origin, size, taille, col, col, col, 0.f, 0.f, 0.f);
 		grouplist += 2;
 	}

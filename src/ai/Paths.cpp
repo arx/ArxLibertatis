@@ -1017,7 +1017,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									pd->ov = pos;
 									pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
 									pd->siz = 7.f;
-									pd->tolive = 500 + (unsigned long)(rnd() * 1000.f);
+									pd->tolive = Random::get(500, 1500);
 									pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 									pd->tc = fire2;
 									pd->fparam = 0.1f - rnd() * 0.2f;
@@ -1271,7 +1271,7 @@ void CRuban::Create(int _iNumThrow, int _iDuration)
 
 	float col = 0.1f + (rnd() * 0.1f);
 	float size = 2.f + (2.f * rnd());
-	int taille = 8 + (int)(8.f * rnd());
+	int taille = Random::get(8, 16);
 	AddRubanDef(0, size, taille, col, col, col, 0.f, 0.f, 0.f);
 
 }

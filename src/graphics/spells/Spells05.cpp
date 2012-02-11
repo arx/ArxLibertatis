@@ -480,7 +480,7 @@ float CRuneOfGuarding::Render()
 			particle[j].scale.y		=	-0.1f;
 			particle[j].scale.z		=	-0.1f;
 			particle[j].timcreation = (long)arxtime;
-			particle[j].tolive		=	2600 + (unsigned long)(rnd() * 600.f);
+			particle[j].tolive		=	Random::get(2600, 3200);
 			particle[j].tc			=	tex_p2;
 			particle[j].siz			=	0.3f;
 			particle[j].rgb = Color3f(.4f, .4f, .6f);
@@ -940,7 +940,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
-		long lTime = ulDuration + (long) rnd() * 5000;
+		long lTime = ulDuration + Random::get(0, 5000);
 		pTab[i]->SetDuration(lTime);
 		lMax = max(lMax, lTime);
 
@@ -1182,7 +1182,7 @@ float CRepelUndead::Render()
 			particle[j].scale.y		=	-0.1f;
 			particle[j].scale.z		=	-0.1f;
 			particle[j].timcreation =	(long)arxtime;
-			particle[j].tolive		=	2600 + (unsigned long)(rnd() * 600.f);
+			particle[j].tolive		=	Random::get(2600, 3200);
 			particle[j].tc			=	tex_p2;
 			particle[j].siz			=	0.3f;
 			particle[j].rgb = Color3f(.4f, .4f, .6f);
@@ -1373,7 +1373,7 @@ void CLevitate::AddStone(Vec3f * pos)
 			this->tstone[nb].scale.x = a;
 			this->tstone[nb].scale.y = a;
 			this->tstone[nb].scale.z = a;
-			this->tstone[nb].time = 2000 + (int)(500.f * rnd());
+			this->tstone[nb].time = Random::get(2000, 2500);
 			this->tstone[nb].currtime = 0;
 			break;
 		}
@@ -1501,7 +1501,7 @@ void CLevitate::Update(unsigned long _ulTime)
 
 	if (this->timestone <= 0)
 	{
-		this->timestone = 50 + (int)(rnd() * 100.f);
+		this->timestone = Random::get(50, 150);
 		Vec3f	pos;
 
 		float r = this->rbase * frand2();
@@ -1635,7 +1635,7 @@ float CLevitate::Render()
 					d3dvs.p.z = this->pos.z + vertex->z;
 	
 					EE_RT2(&d3dvs, d3dv);
-					col = (int)(rnd() * 80.f);
+					col = Random::get(0, 80);
 
 					if (!arxtime.is_paused()) d3dv->color = Color::grayb(col).toBGR(col);
 
@@ -1649,7 +1649,7 @@ float CLevitate::Render()
 					d3dvs.p.z = this->pos.z + vertex->z;
 
 					EE_RT2(&d3dvs, d3dv);
-					col = (int)(rnd() * 80.f);
+					col = Random::get(0, 80);
 
 					if (!arxtime.is_paused()) d3dv->color = Color::black.toBGR(col);
 

@@ -758,7 +758,7 @@ void CRiseDead::AddStone(Vec3f * pos)
 			this->tstone[nb].scale.x = a;
 			this->tstone[nb].scale.y = a;
 			this->tstone[nb].scale.z = a;
-			this->tstone[nb].time = 2000 + (int)(500.f * rnd());
+			this->tstone[nb].time = Random::get(2000, 2500);
 			this->tstone[nb].currtime = 0;
 			break;
 		}
@@ -1204,7 +1204,7 @@ float CRiseDead::Render()
 	//cailloux
 	if (this->timestone <= 0)
 	{
-		this->timestone = 50 + (int)(rnd() * 100.f);
+		this->timestone = Random::get(50, 150);
 		Vec3f	pos;
 		float r = 80.f * frand2();
 		pos.x = this->eSrc.x + r;

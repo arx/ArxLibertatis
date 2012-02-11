@@ -31,15 +31,10 @@
  */
 class Random {
 public:
-	/// Generates a random integer value in the range [0, std::numeric_limits<IntType>::max()]
+	/// Generates a random integer value in the range [intMin, intMax].
 	template <class IntType>
-	static inline IntType get();
-	static inline int get();
-
-	/// Generates a random integer value in the range [intMin, intMax).
-	template <class IntType>
-	static inline IntType get(IntType intMin, IntType intMax);
-	static inline int get(int intMin, int intMax);
+	static inline IntType get(IntType min = 0, IntType max = std::numeric_limits<IntType>::max());
+	static inline int get(int min = 0, int max = std::numeric_limits<int>::max());
 
 	/// Generates a random floating point value in the range [realMin, realMax).
 	template <class RealType>
@@ -71,30 +66,21 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 template <class IntType>
-IntType Random::get() {
-	return boost::random::uniform_int_distribution<IntType>(0, std::numeric_limits<IntType>::max())(rng);
+IntType Random::get(IntType min, IntType max) {
+	return boost::random::uniform_int_distribution<IntType>(min, max)(rng);
 }
 
-int Random::get() {
-	return Random::get<int>();
-}
-
-template <class IntType>
-IntType Random::get(IntType intMin, IntType intMax) {
-	return boost::random::uniform_int_distribution<IntType>(intMin, intMax-1)(rng);
-}
-
-int Random::get(int intMin, int intMax) {
-	return Random::get<int>(intMin, intMax);
+int Random::get(int min, int max) {
+	return Random::get<int>(min, max);
 }
 
 template <class RealType>
-RealType Random::getf(RealType realMin, RealType realMax) {
-	return boost::random::uniform_real_distribution<RealType>(realMin, realMax)(rng);
+RealType Random::getf(RealType min, RealType max) {
+	return boost::random::uniform_real_distribution<RealType>(min, max)(rng);
 }
 
-float Random::getf(float realMin, float realMax) {
-	return Random::getf<float>(realMin, realMax);
+float Random::getf(float min, float max) {
+	return Random::getf<float>(min, max);
 }
 
 template <class Iterator>
@@ -102,7 +88,7 @@ Iterator Random::getIterator(Iterator begin, Iterator end) {
 	typedef typename std::iterator_traits<Iterator>::difference_type diff_t;
 
 	diff_t dist = std::distance(begin, end);
-	diff_t toAdvance = Random::get<diff_t>(0, dist);
+	diff_t toAdvance = Random::get<diff_t>(0, dist-1);
 
 	std::advance(begin, toAdvance);
 	

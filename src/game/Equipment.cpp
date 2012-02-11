@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 #include "platform/Platform.h"
+#include "platform/Random.h"
 
 #include "scene/Object.h"
 #include "scene/LinkedObject.h"
@@ -997,10 +998,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					else if ((target->ioflags & IO_NPC)
 					         &&	((dmgs <= 0.f) || (target->spark_n_blood == SP_SPARKING)))
 					{
-						long  nb;
+						long nb;
 
-						if (target->spark_n_blood == SP_SPARKING) nb = (long)(float)(rnd() * 3.f);
-						else nb = 30;
+						if (target->spark_n_blood == SP_SPARKING) 
+							nb = Random::get(0, 3);
+						else
+							nb = 30;
 
 						if (target->ioflags & IO_ITEM)
 							nb = 1;
@@ -1017,8 +1020,10 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					{
 						long  nb;
 
-						if (target->spark_n_blood == SP_SPARKING) nb = (long)(float)(rnd() * 3.f);
-						else nb = 30;
+						if (target->spark_n_blood == SP_SPARKING)
+							nb = Random::get(0, 3);
+						else
+							nb = 30;
 
 						if (target->ioflags & IO_ITEM)
 							nb = 1;

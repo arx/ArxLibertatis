@@ -198,7 +198,7 @@ float CBless::Render()
 			particle[j].move.y		=	rnd() * 0.5f;
 			particle[j].move.z		=	3.f * frand2();
 			particle[j].siz			=	0.005f;
-			particle[j].tolive		=	1000 + (unsigned long)(float)(rnd() * 1000.f);
+			particle[j].tolive		=	Random::get(1000, 2000);
 			particle[j].scale.x		=	1.f;
 			particle[j].scale.y		=	1.f;
 			particle[j].scale.z		=	1.f;
@@ -534,7 +534,7 @@ float CCurse::Render() {
 			pd->ov = eTarget;
 			pd->move = Vec3f(2.f * frand2(), rnd() * -10.f - 10.f, 2.f * frand2());
 			pd->siz = 0.015f;
-			pd->tolive = 1000 + (unsigned long)(float)(rnd() * 600.f);
+			pd->tolive = Random::get(1000, 1600);
 			pd->scale = Vec3f(1.f, 1.f, 1.f);
 			pd->timcreation = (long)arxtime;
 			pd->tc = tex_p1;

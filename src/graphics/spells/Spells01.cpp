@@ -1205,13 +1205,13 @@ void CPortal::Update(unsigned long _ulTime)
 
 			if (this->timeneweclair <= 0)
 			{
-				this->timeneweclair = (int)(100.f + rnd() * 200.f);
+				this->timeneweclair = Random::get(100, 300);
 
 				Vec3f endpos;
-				int	numpt = (int)(rnd() * (float)(this->spherenbpt - 1));
+				int	numpt = Random::get(0, this->spherenbpt - 1);
 				endpos = this->spherevertex[numpt] + this->pos;
 
-				this->AddNewEclair(&endpos, 32, (int)(1000.f + 1000.f * rnd()), numpt);
+				this->AddNewEclair(&endpos, 32, Random::get(1000, 2000), numpt);
 			}
 
 			break;
@@ -1314,7 +1314,7 @@ float CPortal::Render()
 			particle[j].move.y	=	rr * EEcos(radians(a));
 			particle[j].move.z	=	rr * EEsin(radians(a)) * EEsin(radians(b));
 			particle[j].siz		=	10.f;
-			particle[j].tolive	=	1000 + (unsigned long)(float)(rnd() * 1000.f);
+			particle[j].tolive	=	Random::get(1000, 2000);
 			particle[j].scale.x	=	1.f;
 			particle[j].scale.y	=	1.f;
 			particle[j].scale.z	=	1.f;
