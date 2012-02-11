@@ -51,9 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "math/MathFwd.h"
 #include "math/Angle.h"
+#include "math/Random.h"
 #include "math/Vector3.h"
 #include "platform/Flags.h"
-#include "platform/Random.h"
 
 struct INTERACTIVE_OBJ;
 class CSpellFx;

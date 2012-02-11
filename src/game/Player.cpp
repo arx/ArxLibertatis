@@ -91,13 +91,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
+#include "math/Random.h"
 #include "math/Vector3.h"
 
 #include "physics/Collisions.h"
 #include "physics/Attractors.h"
 
 #include "platform/Platform.h"
-#include "platform/Random.h"
 
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"

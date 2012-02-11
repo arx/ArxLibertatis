@@ -65,9 +65,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "input/Input.h"
 
-#include "physics/Collisions.h"
+#include "math/Random.h"
 
-#include "platform/Random.h"
+#include "physics/Collisions.h"
 
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"

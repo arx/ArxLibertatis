@@ -86,12 +86,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
+#include "math/Random.h"
+
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Box.h"
 #include "physics/Clothes.h"
 
-#include "platform/Random.h"
 #include "platform/String.h"
 #include "platform/Thread.h"
 

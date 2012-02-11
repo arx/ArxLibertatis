@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/resource/ResourcePath.h"
 
+#include "math/Random.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
 
@@ -78,7 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 #include "platform/Platform.h"
-#include "platform/Random.h"
 
 #include "scene/Object.h"
 #include "scene/LinkedObject.h"

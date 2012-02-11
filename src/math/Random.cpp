@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "platform/Random.h"
+#include "math/Random.h"
 
 #include <ctime>
 

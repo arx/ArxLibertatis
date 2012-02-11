@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "platform/Random.h"
+#include "math/Random.h"
 
 EERIE_3DOBJ * fogobj = NULL;
 

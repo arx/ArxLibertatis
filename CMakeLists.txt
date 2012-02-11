@@ -552,7 +552,10 @@ set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
 set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
 set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
-set(MATH_SOURCES src/math/Angle.cpp)
+set(MATH_SOURCES 
+	src/math/Angle.cpp
+	src/math/Random.cpp
+)
 
 set(PHYSICS_SOURCES
 	src/physics/Anchors.cpp
@@ -569,7 +572,6 @@ set(PLATFORM_SOURCES
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
-	src/platform/Random.cpp
 	src/platform/String.cpp
 	src/platform/Thread.cpp
 	src/platform/Time.cpp
