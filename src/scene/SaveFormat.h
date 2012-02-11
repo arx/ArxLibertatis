@@ -109,22 +109,16 @@ struct ARX_SCRIPT_SAVE {
 
 struct SavedGlobalMods {
 	
-	static const size_t AMBIANCE_SIZE = 128;
-	
 	s32 flags;
 	SavedColor depthcolor;
 	f32 zclip;
-	char ambiance[AMBIANCE_SIZE];
-	f32 ambiance_vol;
-	f32 ambiance_maxvol;
+	char padding[136];
 	
 	inline SavedGlobalMods & operator=(const GLOBAL_MODS & b) {
 		flags = b.flags;
 		depthcolor = b.depthcolor;
 		zclip = b.zclip;
-		ambiance[0] = '\0';
-		ambiance_vol = 0.f;
-		ambiance_maxvol = 0.f;
+		memset(padding, 0, sizeof(padding));
 		return *this;
 	}
 	
