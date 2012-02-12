@@ -26,11 +26,13 @@
                           Platforms
 ------------------------------------------------------------*/
 
-#define	ARX_PLATFORM_UNKNOWN 0
-#define	ARX_PLATFORM_WIN32   1
-#define	ARX_PLATFORM_PS3_PPU 2
-#define	ARX_PLATFORM_LINUX   3
+#define ARX_PLATFORM_UNKNOWN 0
+#define ARX_PLATFORM_WIN32   1
+#define ARX_PLATFORM_PS3_PPU 2
+#define ARX_PLATFORM_LINUX   3
 #define ARX_PLATFORM_MACOSX  4
+#define ARX_PLATFORM_BSD     100 // Generic BSD system
+#define ARX_PLATFORM_UNIX    101 // Generic UNIX system
 
 #if defined(__PPU__)
 	#define ARX_PLATFORM ARX_PLATFORM_PS3_PPU
@@ -40,6 +42,11 @@
 	#define ARX_PLATFORM ARX_PLATFORM_WIN32
 #elif defined(__MACH__)
 	#define ARX_PLATFORM ARX_PLATFORM_MACOSX
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) \
+      || defined(__bsdi__) || defined(__DragonFly__)
+	#define ARX_PLATFORM ARX_PLATFORM_BSD
+#elif defined(__unix__) || defined(__unix) || defined(unix)
+	#define ARX_PLATFORM ARX_PLATFORM_UNIX
 #endif
 
 #ifndef ARX_PLATFORM
