@@ -637,7 +637,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	Vec3f pos(x, y, z);
 	
 	EERIEPOLY * found = NULL;
-	float foundy;
+	float foundy = 0.0f;
 	for (long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
@@ -672,7 +672,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	Vec3f pos(x, y, z);
 	
 	EERIEPOLY * found = NULL;
-	float foundy;
+	float foundy = 0.0f;
 	for(long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
@@ -1737,48 +1737,6 @@ void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 		}
 	}
 }
-/////////////////////////////////////////////////////////////////////////////////////
-// Sorts Background tile polys from roof to top
-/////////////////////////////////////////////////////////////////////////////////////
-void BKG_VerticalReOrder(EERIE_BACKGROUND * eb)
-{
-	return;
-	EERIE_BKG_INFO * eg;
-	EERIEPOLY * ep;
-	EERIEPOLY * ep2;
-	EERIEPOLY tep;
-
-	for (short j = 0; j < eb->Zsize; j++)
-		for (short i = 0; i < eb->Xsize; i++)
-		{
-			eg = &eb->Backg[i+j*eb->Xsize];
-
-			if (eg->nbpoly > 1)
-			{
-				bool Reordered = false;
-
-				while (!Reordered)
-				{
-					Reordered = true;
-
-					for (short k = 0; k < eg->nbpoly - 1; k++)
-					{
-						ep = &eg->polydata[k];
-						ep2 = &eg->polydata[k+1];
-
-						if (ep->center.y < ep2->center.y)
-						{
-							ARX_PORTALS_SWAP_EPs(i, j, k, k + 1);
-							memcpy(&tep, ep2, sizeof(EERIEPOLY));
-							memcpy(ep2, ep, sizeof(EERIEPOLY));
-							memcpy(ep, &tep, sizeof(EERIEPOLY));
-							Reordered = false;
-						}
-					}
-				}
-			}
-		}
-}
 
 //*************************************************************************************
 //*************************************************************************************
@@ -2168,187 +2126,6 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 //*************************************************************************************
 bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
 	return closerThan(*norm, *norm2, 1.41421f);
-}
-extern void ARX_PrepareBackgroundNRMLs();
-
-//*************************************************************************************
-//*************************************************************************************
-
-void PrepareBackgroundNRMLs()
-{
-	ARX_PrepareBackgroundNRMLs();
-	return;
-	long i, j, k, mai, maj, mii, mij;
-	long i2, j2, k2;
-	EERIE_BKG_INFO * eg;
-	EERIE_BKG_INFO * eg2;
-	EERIEPOLY * ep;
-	EERIEPOLY * ep2;
-	Vec3f nrml;
-	Vec3f cur_nrml;
-	float count;
-	long nbvert;
-	long nbvert2;
-
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
-
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
-
-				for (k = 0; k < nbvert; k++)
-				{
-					float ttt = 1.f;
-
-					if (k == 3)
-					{
-						nrml = ep->norm2;
-						count = 1.f;
-					}
-					else if ((k > 0) && (nbvert > 3))
-					{
-						nrml = (ep->norm + ep->norm2) * .5f;
-						count = 1.f; 
-					}
-					else
-					{
-						nrml = ep->norm;
-						count = 1.f;
-					}
-
-					cur_nrml = nrml * ttt;
-					
-					mai = i + 2;
-					maj = j + 2;
-					mii = i - 2;
-					mij = j - 2;
-
-					if (mij < 0) mij = 0;
-
-					if (mii < 0) mii = 0;
-
-					if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
-
-					if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
-
-					for (j2 = mij; j2 < maj; j2++)
-						for (i2 = mii; i2 < mai; i2++)
-						{
-							eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
-
-							for (long kr = 0; kr < eg2->nbpoly; kr++)
-							{
-								ep2 = &eg2->polydata[kr];
-
-								if (ep2->type & POLY_QUAD) nbvert2 = 4;
-								else nbvert2 = 3;
-
-								if (ep != ep2)
-
-									for (k2 = 0; k2 < nbvert2; k2++)
-									{
-										if ((EEfabs(ep2->v[k2].p.x - ep->v[k].p.x) < 2.f)
-												&&	(EEfabs(ep2->v[k2].p.y - ep->v[k].p.y) < 2.f)
-												&&	(EEfabs(ep2->v[k2].p.z - ep->v[k].p.z) < 2.f))
-										{
-											if (k2 == 3)
-											{
-												if (LittleAngularDiff(&cur_nrml, &ep2->norm2))
-												{
-													nrml += ep2->norm2;
-													count += 1.f;
-													nrml += cur_nrml;
-													count += 1.f;
-												}
-												else
-												{
-													ep->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR_IDX3;
-												}
-											}
-											else if ((k2 > 0) && (nbvert2 > 3))
-											{
-												Vec3f tnrml = (ep2->norm + ep2->norm2) * .5f;
-
-												if (LittleAngularDiff(&cur_nrml, &tnrml))
-												{
-													nrml += tnrml; 
-													count += 1; 
-												}
-												else
-												{
-													ep->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR;
-
-													if (k2 == 1)
-														ep2->type |= POLY_ANGULAR_IDX1;
-													else
-														ep2->type |= POLY_ANGULAR_IDX2;
-												}
-											}
-											else
-											{
-												if (LittleAngularDiff(&cur_nrml, &ep2->norm))
-												{
-													nrml += ep2->norm;
-													count += 1.f;
-												}
-												else
-												{
-													ep->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR_IDX0;
-												}
-											}
-										}
-									}
-							}
-						}
-
-					count = 1.f / count;
-					ep->tv[k].p.x = nrml.x * count;
-					ep->tv[k].p.y = nrml.y * count;
-					ep->tv[k].p.z = nrml.z * count;
-				}
-			}
-		}
-
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
-
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
-
-				for (k = 0; k < nbvert; k++)
-				{
-					ep->nrml[k].x = ep->tv[k].p.x;
-					ep->nrml[k].y = ep->tv[k].p.y;
-					ep->nrml[k].z = ep->tv[k].p.z;
-				}
-
-				float d = 0.f;
-
-				for(long ii = 0; ii < nbvert; ii++) {
-					d = max(d, dist(ep->center, ep->v[ii].p));
-				}
-
-				ep->v[0].rhw = d;
-			}
-		}
-
 }
 
 //*************************************************************************************
@@ -4267,8 +4044,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 		}
 		
 		EERIE_LIGHT_MoveAll(&ms->pos);
-		BKG_VerticalReOrder(ACTIVEBKG);
-		PrepareBackgroundNRMLs();
+		ARX_PrepareBackgroundNRMLs();
 		EERIEPOLY_Compute_PolyIn();
 		EERIE_PORTAL_Blend_Portals_And_Rooms();
 		

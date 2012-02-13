@@ -22,6 +22,8 @@
 
 #include <algorithm>
 
+#include <boost/noncopyable.hpp>
+
 #include "graphics/Renderer.h"
 #include "platform/Platform.h"
 #include "platform/Flags.h"
@@ -35,7 +37,7 @@ DECLARE_FLAGS(BufferFlag, BufferFlags);
 DECLARE_FLAGS_OPERATORS(BufferFlags);
 
 template <class Index>
-class IndexBuffer {
+class IndexBuffer : private boost::noncopyable {
 	
 public:
 	
@@ -49,15 +51,14 @@ public:
 	virtual ~IndexBuffer() { }
 	
 protected:
-	
+
 	explicit IndexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
-	
 };
 
 template <class Vertex>
-class VertexBuffer {
+class VertexBuffer : private boost::noncopyable {
 	
 public:
 	
@@ -78,11 +79,10 @@ protected:
 	explicit VertexBuffer(size_t capacity) : _capacity(capacity) { }
 	
 	const size_t _capacity;
-	
 };
 
 template <class Vertex>
-class CircularVertexBuffer {
+class CircularVertexBuffer : private boost::noncopyable {
 	
 public:
 	
@@ -158,7 +158,6 @@ public:
 				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
-				break;
 			} while(count); break;
 			
 			case Renderer::LineStrip: do {
@@ -167,7 +166,6 @@ public:
 				vb->setData(src, num, 0, DiscardBuffer);
 				vb->draw(primitive, num);
 				src += num, count -= num, pos = num;
-				break;
 			} while(count); break;
 			
 			default:
@@ -180,7 +178,6 @@ public:
 	~CircularVertexBuffer() {
 		delete vb;
 	}
-	
 };
 
 #endif // ARX_GRAPHICS_VERTEXBUFFER_H

@@ -61,10 +61,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "math/MathFwd.h"
+#include "math/Random.h"
 #include "math/Vector3.h"
 
 #include "platform/Flags.h"
-#include "platform/Random.h"
 
 #include "Configure.h"
 
@@ -122,7 +122,7 @@ struct KeySetting {
 	void reset() {
 		tupdate = 0;
 		if(min != max && flags & FLAG_RANDOM) {
-			cur = min + Random::getf() * (max - min);
+			cur = Random::getf(min, max);
 		} else {
 			cur = min;
 		}
@@ -142,7 +142,7 @@ struct KeySetting {
 			tupdate += interval;
 			if(flags & FLAG_RANDOM) {
 				from = to;
-				to = min + Random::getf() * (max - min);
+				to = Random::getf(min, max);
 			} else {
 				if(from == min) {
 					from = max, to = min;
@@ -203,7 +203,7 @@ struct TrackKey {
 	void updateSynch() {
 		if(delay_min != delay_max) {
 			delay = delay_max - delay;
-			delay += delay_min + Random::get() % (delay_max - delay_min);
+			delay += Random::get(delay_min, delay_max);
 		} else {
 			delay = delay_min;
 		}

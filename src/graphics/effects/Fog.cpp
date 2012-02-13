@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "graphics/particle/ParticleEffects.h"
 
+#include "math/Random.h"
+
 EERIE_3DOBJ * fogobj = NULL;
 
 FOG_DEF fogs[MAX_FOG];
@@ -190,7 +192,7 @@ void AddPoisonFog(Vec3f * pos, float power)
 			particle[j].move.z		=	(speed - rnd()) * fval;
 			particle[j].scale.x		=	particle[j].scale.y		=	8;
 			particle[j].timcreation	=	static_cast<long>(arxtime.get_updated());
-			particle[j].tolive		=	4500 + (unsigned long)(rnd() * 4500);
+			particle[j].tolive		=	Random::get(4500, 9000);
 			particle[j].tc			=	TC_smoke;
 			particle[j].siz			=	(80 + rnd() * 80 * 2.f) * ( 1.0f / 3 );
 			particle[j].rgb = Color3f(rnd() * (1.f/3), 1.f, rnd() * (1.f/10));
@@ -253,7 +255,7 @@ void ARX_FOGS_Render() {
 
 					particle[j].scale.x		=	particle[j].scale.y		=	particle[j].scale.z		=	fogs[i].scale;
 					particle[j].timcreation	=	(long)arxtime;
-					particle[j].tolive		=	fogs[i].tolive + (unsigned long)(rnd() * fogs[i].tolive);
+					particle[j].tolive		=	fogs[i].tolive + Random::get(0, fogs[i].tolive);
 					particle[j].tc			=	TC_smoke;
 					particle[j].siz			=	(fogs[i].size + rnd() * fogs[i].size * 2.f) * ( 1.0f / 3 );
 					particle[j].rgb = fogs[i].rgb;

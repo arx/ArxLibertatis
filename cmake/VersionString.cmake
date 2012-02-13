@@ -17,19 +17,19 @@ function(version_file SRC DST VERSION_FILE GIT_DIR)
 	get_filename_component(ABS_VERSION_FILE "${VERSION_FILE}" ABSOLUTE)
 	get_filename_component(ABS_GIT_DIR "${GIT_DIR}" ABSOLUTE)
 	
-	set(dependencies "${VERSION_FILE}" "${CMAKE_MODULE_PATH}/VersionScript.cmake")
+	set(dependencies "${ABS_VERSION_FILE}" "${CMAKE_MODULE_PATH}/VersionScript.cmake")
 	
-	if(EXISTS "${GIT_DIR}/HEAD")
-		list(APPEND dependencies "${GIT_DIR}/HEAD")
+	if(EXISTS "${ABS_GIT_DIR}/HEAD")
+		list(APPEND dependencies "${ABS_GIT_DIR}/HEAD")
 	endif()
 	
-	if(EXISTS "${GIT_DIR}/logs/HEAD")
-		list(APPEND dependencies "${GIT_DIR}/logs/HEAD")
+	if(EXISTS "${ABS_GIT_DIR}/logs/HEAD")
+		list(APPEND dependencies "${ABS_GIT_DIR}/logs/HEAD")
 	endif()
 	
 	add_custom_command(
 		OUTPUT
-			"${DST}"
+			"${ABS_DST}"
 		COMMAND
 			${CMAKE_COMMAND}
 			"-DINPUT=${ABS_SRC}"
@@ -38,7 +38,7 @@ function(version_file SRC DST VERSION_FILE GIT_DIR)
 			"-DGIT_DIR=${ABS_GIT_DIR}"
 			-P "${CMAKE_MODULE_PATH}/VersionScript.cmake"
 		MAIN_DEPENDENCY
-			"${SRC}"
+			"${ABS_SRC}"
 		DEPENDS
 			${dependencies}
 		COMMENT ""

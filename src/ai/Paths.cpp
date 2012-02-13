@@ -73,6 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/resource/ResourcePath.h"
 
+#include "math/Random.h"
+
 #include "platform/Platform.h"
 
 #include "physics/Box.h"
@@ -990,21 +992,21 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					{
 						Vec3f pos;
 						long notok = 10;
-						size_t num = 0;
+						std::vector<EERIE_FACE>::iterator it;
 
 						while (notok-- > 0)
 						{
-							num = (rnd() *(float)Thrown[i].obj->facelist.size());
-							arx_assert(num < Thrown[i].obj->facelist.size());
+							it = Random::getIterator(Thrown[i].obj->facelist);
+							arx_assert(it != Thrown[i].obj->facelist.end());
 
-							if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
+							if (it->facetype & POLY_HIDE) continue;
 
 							notok = -1;
 						}
 
 						if (notok < 0)
 						{
-							pos = Thrown[i].obj->vertexlist3[Thrown[i].obj->facelist[num].vid[0]].v;
+							pos = Thrown[i].obj->vertexlist3[it->vid[0]].v;
 
 							for(long nn = 0; nn < 2; nn++) {
 								long j = ARX_PARTICLES_GetFree();
@@ -1016,7 +1018,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									pd->ov = pos;
 									pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
 									pd->siz = 7.f;
-									pd->tolive = 500 + (unsigned long)(rnd() * 1000.f);
+									pd->tolive = Random::get(500, 1500);
 									pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
 									pd->tc = fire2;
 									pd->fparam = 0.1f - rnd() * 0.2f;
@@ -1270,7 +1272,7 @@ void CRuban::Create(int _iNumThrow, int _iDuration)
 
 	float col = 0.1f + (rnd() * 0.1f);
 	float size = 2.f + (2.f * rnd());
-	int taille = 8 + (int)(8.f * rnd());
+	int taille = Random::get(8, 16);
 	AddRubanDef(0, size, taille, col, col, col, 0.f, 0.f, 0.f);
 
 }

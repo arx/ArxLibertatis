@@ -23,12 +23,14 @@
 #include <string>
 #include <map>
 
+#include <boost/noncopyable.hpp>
+
 #include "graphics/Color.h"
 #include "math/Vector2.h"
 
 #include "io/resource/ResourcePath.h"
 
-class Font {
+class Font : private boost::noncopyable {
 	
 	friend class FontCache;
 	
@@ -94,10 +96,6 @@ private:
 	// Construction/destruction handled by FontCache only
 	Font(const res::path & fontFile, unsigned int fontSize, struct FT_FaceRec_ * face);
 	~Font();
-	
-	// Disable copy of Font objects
-	Font(const Font & pOther);
-	const Font & operator=(const Font & pOther);
 	
 	bool InsertGlyph(unsigned int character);
 	

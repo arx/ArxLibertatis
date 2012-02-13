@@ -79,6 +79,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/resource/ResourcePath.h"
 
+#include "math/Random.h"
+
 #include "physics/Collisions.h"
 
 #include "scene/GameSound.h"
@@ -116,66 +118,6 @@ static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 	else if (io->ioflags & IO_NPC) io->ignition += dmg * ( 1.0f / 4 );
 }
  
-extern TextureContainer * bloodsplat[6];
-void ARX_DAMAGES_SCREEN_SPLATS_Add(Vec3f * pos, float dmgs)
-{
-	return;
-	long j = ARX_PARTICLES_GetFree();
-
-	if ((j != -1) && (!arxtime.is_paused()))
-	{
-		TexturedVertex in, out;
-		in.p.x = pos->x;
-		in.p.y = pos->y;
-		in.p.z = pos->z;
-		EERIETreatPoint(&in, &out);
-
-
-		if (out.p.x < 0)
-			out.p.x = 0;
-		else if (out.p.x > DANAESIZX)
-			out.p.x = static_cast<float>(DANAESIZX);
-
-
-
-
-		if (out.p.y < 0)
-			out.p.y = 0;
-		else if (out.p.y > DANAESIZY)
-			out.p.y = static_cast<float>(DANAESIZY);
-
-
-
-		float power;
-		power = (dmgs * ( 1.0f / 60 )) + 0.9f;
-		ParticleCount++;
-		PARTICLE_DEF * pd = &particle[j];
-		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
-		pd->exist			=	true;
-		pd->zdec			=	0;
-		pd->ov.x			=	out.p.x;
-		pd->ov.y			=	out.p.y;
-		pd->ov.z			=	0.0000001f;
-		pd->move.x			=	0.f;
-		pd->move.y			=	0.f;
-		pd->move.z			=	0.f;
-		pd->scale.x			=	1.8f;
-		pd->scale.y			=	1.8f;
-		pd->scale.z			=	1.f;
-		pd->timcreation		=	(long)arxtime;
-		pd->tolive			=	1800 + (unsigned long)(rnd() * 400.f);
-		long num = rnd() * 6.f;
-
-		if (num < 0) num = 0;
-		else if (num > 5) num = 5;
-
-		pd->tc = bloodsplat[num];
-		pd->rgb = inter.iobj[0]->_npcdata->blood_color.to<float>();
-		pd->siz = 3.5f * power * 40 * Xratio;
-		pd->type = PARTICLE_2D;
-	}
-}
-
 void ARX_DAMAGE_Reset_Blood_Info()
 {
 	Blood_Pos = 0.f;
@@ -1063,7 +1005,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 	{
 		long num = -1;
 
-		if (io != NULL) num = ((long)(float)(rnd() * (io->obj->vertexlist.size() / 4 - 1))) * 4 + 1;
+		if (io != NULL) num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
 
 		unsigned long tim = (unsigned long)(arxtime);
 
@@ -1114,7 +1056,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE
 				particle[j].timcreation		= (long)arxtime;
 				particle[j].special		   |= ROTATING | MODULATE_ROTATION;
 				particle[j].special		   |= FIRE_TO_SMOKE;
-				particle[j].tolive			= 500 + (unsigned long)(rnd() * 400.f);
+				particle[j].tolive			= Random::get(500, 900);
 
 				if(di->type & DAMAGE_TYPE_MAGICAL) {
 					particle[j].move.x	= 1.f - 2.f * rnd();

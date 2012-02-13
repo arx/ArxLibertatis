@@ -83,7 +83,6 @@ TexturedVertex * PushVertexInTableCull_TNormalTrans(TextureContainer * tex);
 TexturedVertex * PushVertexInTableCull_TAdditive(TextureContainer * tex);
 TexturedVertex * PushVertexInTableCull_TSubstractive(TextureContainer * tex);
 TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
-TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer * tex);
 
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();

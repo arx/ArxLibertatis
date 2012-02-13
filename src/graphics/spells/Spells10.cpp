@@ -85,7 +85,7 @@ void CMassLightning::Create(Vec3f aePos, float afBeta = 0) {
 		eTarget.y = aePos.y;
 		eTarget.z = aePos.z + EEcos(radians(i * ft)) * 500.0f;
 		pTab[i]->Create(aePos, eTarget, 0);
-		long lTime = (long)(ulDuration + rnd() * 5000.0f);
+		long lTime = ulDuration + Random::get(0, 5000);
 		pTab[i]->SetDuration(lTime);
 		lMax = std::max(lMax, lTime);
 		pTab[i]->spellinstance = this->spellinstance;
@@ -325,7 +325,7 @@ float CControlTarget::Render()
 					particle[j].move.y		= 0;
 					particle[j].move.z		= 0;
 					particle[j].siz			= 5 * c;
-					particle[j].tolive		= 10 + (unsigned long)(float)(rnd() * 100.f);
+					particle[j].tolive		= Random::get(10, 110);
 					particle[j].scale.x 	= 1;
 					particle[j].scale.y 	= 1;
 					particle[j].scale.z 	= 1;
@@ -365,7 +365,7 @@ float CControlTarget::Render()
 				particle[j].move.y	= 0;
 				particle[j].move.z	= 0;
 				particle[j].siz		= 5;
-				particle[j].tolive	= 10 + (unsigned long)(float)(rnd() * 100.f);
+				particle[j].tolive	= Random::get(10, 110);
 				particle[j].scale.x = 1;
 				particle[j].scale.y = 1;
 				particle[j].scale.z = 1;

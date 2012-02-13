@@ -778,20 +778,6 @@ TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 	return &pTex->pVertexListCull_TMultiplicative[pTex->ulNbVertexListCull_TMultiplicative-3];
 }
 
-//-----------------------------------------------------------------------------
-TexturedVertex * PushVertexInTableCull_TMetal(TextureContainer *pTex)
-{
-	if((pTex->ulNbVertexListCull_TMetal+3)>pTex->ulMaxVertexListCull_TMetal)
-	{
-		pTex->ulMaxVertexListCull_TMetal+=20*3;
-		pTex->pVertexListCull_TMetal = (TexturedVertex *)realloc(pTex->pVertexListCull_TMetal,
-		                                pTex->ulMaxVertexListCull_TMetal*sizeof(TexturedVertex));
-	}
-
-	pTex->ulNbVertexListCull_TMetal+=3;
-	return &pTex->pVertexListCull_TMetal[pTex->ulNbVertexListCull_TMetal-3];
-}
-
 static void PopOneTriangleList(TextureContainer *_pTex) {
 	
 	if(!_pTex->ulNbVertexListCull) {
@@ -823,8 +809,7 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 	if(!_pTex->ulNbVertexListCull_TNormalTrans
 	   && !_pTex->ulNbVertexListCull_TAdditive
 	   && !_pTex->ulNbVertexListCull_TSubstractive
-	   && !_pTex->ulNbVertexListCull_TMultiplicative
-	   && !_pTex->ulNbVertexListCull_TMetal) {
+	   && !_pTex->ulNbVertexListCull_TMultiplicative) {
 		return;
 	}
 
@@ -864,15 +849,6 @@ static void PopOneTriangleListTransparency(TextureContainer *_pTex) {
 			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMultiplicative,
 			              _pTex->ulNbVertexListCull_TMultiplicative);
 			_pTex->ulNbVertexListCull_TMultiplicative = 0;
-		}
-	}
-	
-	if(_pTex->ulNbVertexListCull_TMetal) {
-		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
-		if(_pTex->ulNbVertexListCull_TMetal) {
-			EERIEDRAWPRIM(Renderer::TriangleList, _pTex->pVertexListCull_TMetal,
-			              _pTex->ulNbVertexListCull_TMetal);
-			_pTex->ulNbVertexListCull_TMetal=0;
 		}
 	}
 }
@@ -1427,8 +1403,12 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		TexturedVertex * vert_list;
 		TextureContainer * pTex;
 
-		if(	(eobj->facelist[i].texid<0)|| 
-			(!(pTex=eobj->texturecontainer[eobj->facelist[i].texid])) ) continue;
+		if(eobj->facelist[i].texid<0)
+			continue;
+
+		pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+		if(!pTex)
+			continue;
 
 		if ((io) && (io->ioflags & IO_ANGULAR))
 			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,BIGQUAT,i);
@@ -1627,68 +1607,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	if((io)&&(io->ioflags&IO_ZMAP)) {
 		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
 	}
-
-	// Add some fake specular to Metallic polys
-	if ((eobj->facelist[i].facetype & POLY_METAL)
-		|| ((pTex) && (pTex->userflags & POLY_METAL)) )				
-	{
-		TexturedVertex *vert_list_metal;
-
-		unsigned long *pulNbVertexList_TMetal;
-		{
-			vert_list_metal=PushVertexInTableCull_TMetal(pTex);
-			pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
-		}
-
-		memcpy(vert_list_metal, vert_list, sizeof(TexturedVertex)*3);
-		TexturedVertex * tl=vert_list_metal;
-
-		long r = 0, g = 0, b = 0;
-		long todo = 0;
-
-		for ( long j = 0 ; j < 3 ; j++ )
-		{ 
-			r = ( tl->color >> 16 ) & 255;
-			g = ( tl->color >> 8 ) & 255;
-			b = tl->color & 255;
-			
-			if ( r > 192 || g > 192 || b > 192 )
-			{
-				todo++;
-			}
-
-			r -= 192;
-
-			if ( r < 0.f ) r = 0;
-
-			g -= 192;
-
-			if ( g < 0.f ) g = 0;
-
-			b -= 192;
-
-			if ( b < 0.f ) b = 0;
-
-			tl->color = 0xFF000000 | ( r << 18 ) | ( g << 10 ) | ( b << 2 );
-			tl++;
-		}
-
-		if ( todo )
-		{
-			if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
-			{
-				if(io) {
-					SpawnMetalShine(&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert.p, r, g, b,
-					                GetInterNum(io));
-				}
-			}
-		}
-		else
-		{
-			*pulNbVertexList_TMetal -= 3;
-		}
-	}
-
 
 	////////////////////////////////////////////////////////////////////////
 	// HALO HANDLING START

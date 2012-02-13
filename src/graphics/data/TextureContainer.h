@@ -60,9 +60,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <map>
 
+#include <boost/noncopyable.hpp>
+
 #include "io/resource/ResourcePath.h"
 #include "math/Vector2.h"
 #include "platform/Flags.h"
+#include "graphics/GraphicsTypes.h"
 
 struct SMY_ARXMAT;
 struct SMY_ZMAPPINFO;
@@ -79,7 +82,7 @@ struct DELAYED_PRIM {
 /** Linked list structure to hold info per texture.
  * @todo This class is currently an hybrid between a texture class and a render batch... We should create a RenderBatch class for all vertex stuff.
  */
-class TextureContainer {
+class TextureContainer : private boost::noncopyable {
 	
 public:
 	
@@ -130,9 +133,19 @@ public:
 	/**	Create a texture to display a glowing halo around a transparent texture
 	 *	@todo Rewrite this feature using shaders instead of hacking a texture effect
 	 */
-	bool CreateHalo() { return false; }
+	bool CreateHalo();
+
+	static const int HALO_RADIUS = 5;
+	TextureContainer *getHalo() {
+		return (TextureHalo ? TextureHalo : (CreateHalo() ? TextureHalo : NULL));
+	}
+
+private:
+
 	TextureContainer * TextureHalo;
 	
+public:
+
 	bool LoadFile(const res::path & strPathname);
 	
 	const res::path m_texName; // Name of texture
@@ -184,14 +197,9 @@ public:
 	unsigned long ulMaxVertexListCull_TMultiplicative;
 	unsigned long ulNbVertexListCull_TMultiplicative;
 	TexturedVertex * pVertexListCull_TMultiplicative;
-	
-	unsigned long ulMaxVertexListCull_TMetal;
-	unsigned long ulNbVertexListCull_TMetal;
-	TexturedVertex * pVertexListCull_TMetal;
 	// END TODO
 	
 private:
-	
 	void LookForRefinementMap(TCFlags flags);
 	
 	typedef std::map<res::path, res::path> RefinementMap;

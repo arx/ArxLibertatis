@@ -436,7 +436,7 @@ bool Image::Copy(const Image & srcImage, unsigned int destX, unsigned int destY)
 	return Copy(srcImage, destX, destY, 0, 0, srcImage.GetWidth(), srcImage.GetHeight());
 }
 
-void Image::ChangeGamma(float pGamma) {
+void Image::QuakeGamma(float pGamma) {
 	
 	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
 	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
@@ -446,12 +446,22 @@ void Image::ChangeGamma(float pGamma) {
 	// Kudos to them!  What it does is increase/decrease the intensity
 	// of the lightmap so that it isn't so dark.  Quake uses hardware to
 	// do this, but we will do it in code.
+	
+	// actually this is only adjusting the "value" of the image in RGB.
+	//
+	// each pixel is also normalized based upon it's peak component value,
+	// rather than clipping. this will prevent modification of chroma.
+	// pixels with any saturated component will not be modified.
+	//
+	// if the image has alpha == 1.0, those pixels will get no effect
+	// using a pGamma < 1.0 will have no effect
+
 	unsigned int numComponents = SIZE_TABLE[mFormat];
 	unsigned int size = mWidth * mHeight;
 	unsigned char * data = mData;
 	
 	const unsigned int MAX_COMPONENTS = 4;
-	const float MAX_COMPONENT_VALUE = 255.0f;
+	const float COMPONENT_RANGE = 255.0f;
 	
 	float components[MAX_COMPONENTS];
 	
@@ -463,30 +473,103 @@ void Image::ChangeGamma(float pGamma) {
 	// Go through every pixel in the image
 	for(unsigned int i = 0; i < size; i++, data += numComponents) {
 		
-		float scale = 1.0f;
-		float temp = 0.0f;
+		float max_component = 0.0f;
 		
 		for(unsigned int j = 0; j < numComponents; j++) {
 			
-			// Extract the current component value
-			components[j] = (float)data[j];
-			
-			// Multiply the factor by the component value, while keeping it to a 255 ratio
-			components[j] *= pGamma;
-			
-			// Check if the the value went past the highest value
-			if(components[j] > MAX_COMPONENT_VALUE && (temp = (MAX_COMPONENT_VALUE/components[j])) < scale) {
-				scale = temp;
+			// scale the component's value
+			components[j] = float(data[j]) * pGamma;
+
+			// find the max component
+			max_component = std::max(max_component, components[j]);
+		}
+
+		if (max_component > COMPONENT_RANGE) {
+
+			float reciprocal = COMPONENT_RANGE / max_component;
+
+			for (unsigned int j = 0; j < numComponents; j++) {
+				
+				// normalize the components by max component value
+				components[j] *= reciprocal;
+				data[j] = (unsigned char)components[j];
+			}
+		} else {
+		
+			for (unsigned int j = 0; j < numComponents; j++) {
+				data[j] = (unsigned char)components[j];
 			}
 		}
+	}
+}
+
+void Image::AdjustGamma(const float &v) {
+	
+	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
+	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
+	arx_assert_msg(v <= 1.0f, "BUG WARNING: If gamma values greater than 1.0 needed, should fix the way the calculations are optimized!");
+
+	unsigned int numComponents = SIZE_TABLE[mFormat];
+	unsigned int size = mWidth * mHeight;
+	unsigned char * data = mData;
+	
+	const float COMPONENT_RANGE = 255.0f;
+	
+	// Nothing to do in this case!
+	if (v == 1.0f) {
+		return;
+	}
+
+	// TODO: this table is stored statically meaning this isn't thread-safe :(
+	// only safe option would be thread local storage?
+	static const float fraction = 1.0f / COMPONENT_RANGE;
+	static float gamma_value = -1.0f;
+	static unsigned char gamma_table[256];
+	if (gamma_value != v) {
+		memset(gamma_table, 0, sizeof(gamma_table));
+		gamma_value = v;
+	}
+	
+	// Go through every pixel in the image
+	for(unsigned int i = 0; i < size; i++, data += numComponents) {
 		
 		for(unsigned int j = 0; j < numComponents; j++) {
 			
-			// Get the scale for this pixel and multiply it by the component value
-			components[j] *= scale;
+			if (data[j])
+			{
+				const unsigned char i = data[j];
+
+				// check if we've put a non-zero value here
+				// will start to fail with low index and gamma values > 1.0
+				// gamma_table[0] should always == 0, so ignore it
+				if (!gamma_table[i]) {
+					gamma_table[i] = (unsigned char)(COMPONENT_RANGE * powf(i * fraction, v));
+				}
+
+				data[j] = gamma_table[i];
+			}
+		}
+	}
+}
+
+void Image::ApplyThreshold(unsigned char threshold, int component_mask) {
+	
+	arx_assert_msg(!IsCompressed(), "[Image::ChangeGamma] Gamma change of compressed images not supported yet!");
+	arx_assert_msg(!IsVolume(), "[Image::ChangeGamma] Gamma change of volume images not supported yet!");
+
+	unsigned int numComponents = SIZE_TABLE[mFormat];
+	unsigned int size = mWidth * mHeight;
+	unsigned char * data = mData;
+	
+	// Go through every pixel in the image
+	for(unsigned int i = 0; i < size; i++, data += numComponents) {
+		
+		for(unsigned int j = 0; j < numComponents; j++) {
 			
-			// Assign the new gamma'nized value to the image
-			data[j] = (unsigned char)components[j];
+			if ((component_mask >> j) & 1)
+			{
+				data[j] = (data[j] > threshold ? 255 : 0);
+			}
 		}
 	}
 }
@@ -579,29 +662,34 @@ void Image::ApplyColorKeyToAlpha(Color key) {
 	mFormat = (mFormat == Format_R8G8B8) ? Format_R8G8B8A8 : Format_B8G8R8A8;
 }
 
-bool Image::ToGrayscale() {
+bool Image::ToGrayscale(Image::Format newFormat) {
 	
-	int numChannels = GetNumChannels();
-	
-	if(IsCompressed() || numChannels < 3) {
+	int srcNumChannels = GetNumChannels();
+	int dstNumChannels = GetNumChannels(newFormat);
+
+	if(IsCompressed() || srcNumChannels < 3) {
 		return false;
 	}
+		
+	unsigned int newSize = GetSizeWithMipmaps(newFormat, mWidth, mHeight, mDepth, mNumMipmaps);
+	unsigned char* newData = new unsigned char[newSize];
 	
-	unsigned int size, len;
-	unsigned char * src = mData;
+	unsigned char* src = mData;
+	unsigned char* dst = newData;
 	
-	size = len = GetSizeWithMipmaps(Format_L8, mWidth, mHeight, mDepth, mNumMipmaps);
-	unsigned char * dest = new unsigned char[size];
-	
-	do {
-		*dest++ = (77 * src[0] + 151 * src[1] + 28 * src[2] + 128) >> 8;
-		src += numChannels;
-	} while (--len);
-	
+	for(unsigned int i = 0; i < newSize; i += dstNumChannels) {
+		unsigned char grayVal = (77 * src[0] + 151 * src[1] + 28 * src[2] + 128) >> 8;
+		for(int i = 0; i < dstNumChannels; i++)
+			dst[i] = grayVal;
+		src += srcNumChannels;
+		dst += dstNumChannels;
+	}
+		
 	delete[] mData;
-	mData = dest;
+	mData = newData;
+	mDataSize = newSize;
 	
-	mFormat = Format_L8;
+	mFormat = newFormat;
 	
 	return true;
 }
@@ -688,6 +776,138 @@ bool Image::ToNormalMap() {
 	mData = newPixels;
 	
 	return true;
+}
+
+void Image::Blur(int radius)
+{
+	arx_assert_msg(!IsCompressed(), "Blur not yet supported for compressed textures!");
+	arx_assert_msg(!IsVolume(), "Blur not yet supported for 3d textures!");
+	arx_assert_msg(mNumMipmaps == 1, "Blur not yet supported for textures with mipmaps!");
+
+	// Create kernel and precompute multiplication table
+	int kernelSize = 1 + radius * 2;
+	int* kernel = new int[kernelSize];
+	int* mult = new int[kernelSize << 8];
+
+	memset(kernel, 0, kernelSize*sizeof(*kernel));
+	memset(mult, 0, (kernelSize << 8)*sizeof(*mult));
+
+	kernel[kernelSize - 1] = 0;
+	for(int i = 1; i< radius; i++) {
+		int szi = radius - i;
+		kernel[radius + i] = kernel[szi] = szi * szi;
+		for (int j = 0; j < 256; j++) {
+			mult[((radius+i) << 8) + j] = mult[(szi << 8) + j] = kernel[szi] * j;
+		}
+	}
+
+	kernel[radius]=radius*radius;
+	for (int j = 0; j < 256; j++) {
+		mult[(radius << 8) + j] = kernel[radius] * j;
+	}
+
+	// Split color channels into separated array to simplify handling of multiple image format...
+	// Could easilly be refactored
+	int numChannels = GetNumChannels();
+	unsigned char* channel[4] = {};
+	unsigned char* blurredChannel[4] = {};
+	for(int c = 0; c < numChannels; c++) {
+		channel[c] = new unsigned char[mWidth*mHeight];
+		blurredChannel[c] = new unsigned char[mWidth*mHeight];
+		for (unsigned int i=0; i < mWidth*mHeight; i++) {
+			channel[c][i] = mData[i*numChannels + c];
+		}
+	}
+	
+	// Blur horizontally using our separable kernel
+	int yi = 0;
+	for (int yl = 0; yl < (int)mHeight; yl++) {
+		for (int xl = 0; xl < (int)mWidth; xl++) {
+			int channelVals[4] = {0,0,0,0};
+			int sum=0;
+			int ri=xl-radius;
+			for (int i = 0; i < kernelSize; i++) {
+				int read = ri + i;
+				if (read >= 0 && read < (int)mWidth) {
+					read += yi;
+					for(int c = 0; c < numChannels; c++)
+						channelVals[c] += mult[(i << 8) + channel[c][read]];
+					sum += kernel[i];
+				}
+			}
+			ri = yi + xl;
+
+			for(int c = 0; c < numChannels; c++)
+				blurredChannel[c][ri] = channelVals[c] / sum;
+		}
+		yi += mWidth;
+	}
+
+	// Blur vertically using our separable kernel
+	yi = 0;
+	for (int yl = 0; yl < (int)mHeight; yl++) {
+		int ym = yl - radius;
+		int riw = ym * mWidth;
+		for (int xl = 0; xl < (int)mWidth; xl++) {
+			int channelVals[4] = {0,0,0,0};
+			int sum=0;
+			int ri = ym;
+			int read= xl + riw;
+			for (int i = 0; i < kernelSize; i++) {
+				if (ri >= 0 && ri < (int)mHeight){
+					for(int c = 0; c < numChannels; c++)
+						channelVals[c] += mult[(i << 8) + blurredChannel[c][read]];
+					sum += kernel[i];
+				}
+				ri++;
+				read += mWidth;
+			}
+
+			for(int c = 0; c < numChannels; c++)
+				mData[(xl + yi)*numChannels + c] = channelVals[c] / sum;
+		}
+		yi += mWidth;
+	}
+
+	// Clean up mess
+	for(int c = 0; c < numChannels; c++) {
+		delete[] channel[c];
+		delete[] blurredChannel[c];
+	}
+	delete[] kernel;
+	delete[] mult;
+}
+
+void Image::SetAlpha(const Image& img, bool bInvertAlpha)
+{
+	arx_assert_msg(!IsCompressed(), "SetAlpha() not yet supported for compressed textures!");
+	arx_assert_msg(!IsVolume(), "SetAlpha() not yet supported for 3d textures!");
+	arx_assert(mWidth == img.mWidth);
+	arx_assert(mHeight == img.mHeight);
+	arx_assert(mNumMipmaps == img.mNumMipmaps);
+	arx_assert(img.HasAlpha());
+	arx_assert(HasAlpha());
+	
+	unsigned int srcChannelCount = img.GetNumChannels();
+	unsigned int dstChannelCount = GetNumChannels();
+
+	unsigned char* src = img.mData;
+	unsigned char* dst = mData;
+
+	// Offset the data pointers before the start of the loop
+	// All our current image formats have their alpha in the last channel
+	src += srcChannelCount - 1;
+	dst += dstChannelCount - 1;
+
+	unsigned int pixelCount = mWidth * mHeight * mNumMipmaps;
+
+	if(!bInvertAlpha) {
+		for(unsigned int i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount)
+			*dst = *src;			// Copy alpha
+	} else {
+		for(unsigned int i = 0; i < pixelCount; i++, src += srcChannelCount, dst += dstChannelCount)
+			*dst = 255 - *src;		// Copy inverted alpha
+	}		
 }
 
 void Image::FlipY() {

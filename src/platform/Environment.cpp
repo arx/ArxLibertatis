@@ -169,7 +169,7 @@ const int kfFlagNoAlias = 0x00001000;	// KF_FLAG_NO_ALIAS
 
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
-// Vista and up : "%USERPROFILE%\Saved games"
+// Vista and up : "%USERPROFILE%\Saved Games"
 void defineSystemDirectories() {
 	std::string strPath;
 	DWORD winver = GetVersion();

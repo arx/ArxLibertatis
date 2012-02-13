@@ -141,12 +141,13 @@ if(MSVC)
 
 	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
 	if(CMAKE_CL_64)
-		add_definitions(/wd4267)    # Conversion from 'size_t' to 'xxx', possible loss of data
+		add_definitions(/wd4267)      # Conversion from 'size_t' to 'xxx', possible loss of data
 	endif()
 
-	# Disable warning related to long decorated name
+	add_definitions(/wd4127)        # warning C4127: conditional expression is constant
+	add_definitions(/wd4201)        # warning C4201: nonstandard extension used : nameless struct/union
 	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
-
+	
 	if(NOT DEBUG_EXTRA)
 		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
 		add_definitions(-D_SECURE_SCL=0)
@@ -172,6 +173,9 @@ if(MSVC)
 
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
+		
+		# Force to always compile with warning level 4
+		string(REGEX REPLACE "/W[0-4]" "/W4" ${flag_var} "${${flag_var}}")
 	endforeach(flag_var)
 
 	# Avoid warning during link
@@ -548,7 +552,10 @@ set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
 set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
 set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
-set(MATH_SOURCES src/math/Angle.cpp)
+set(MATH_SOURCES 
+	src/math/Angle.cpp
+	src/math/Random.cpp
+)
 
 set(PHYSICS_SOURCES
 	src/physics/Anchors.cpp
@@ -565,7 +572,6 @@ set(PLATFORM_SOURCES
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
-	src/platform/Random.cpp
 	src/platform/String.cpp
 	src/platform/Thread.cpp
 	src/platform/Time.cpp

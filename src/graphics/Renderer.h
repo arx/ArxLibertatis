@@ -138,6 +138,10 @@ public:
 	virtual void SetProjectionMatrix(const EERIEMATRIX & matProj) = 0;
 	virtual void GetProjectionMatrix(EERIEMATRIX & matProj) const = 0;
 	
+	// Texture management
+	virtual void ReleaseAllTextures() {}
+	virtual void RestoreAllTextures() {}
+
 	// Factory
 	virtual Texture2D * CreateTexture2D() = 0;
 	

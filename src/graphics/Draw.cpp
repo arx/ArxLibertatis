@@ -201,6 +201,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 }
 
 extern long COMPUTE_PORTALS;
+
 #define TYPE_ROOM	2
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
@@ -223,7 +224,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	for (long zz=dz;zz<=fz;zz++)
 	for (long xx=dx;xx<=fx;xx++)
 	{
-		long val1;
+		long val1 = 0;
 
 		if (COMPUTE_PORTALS)
 		{

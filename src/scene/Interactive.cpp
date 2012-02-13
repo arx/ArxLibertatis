@@ -86,6 +86,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
+#include "math/Random.h"
+
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Box.h"
@@ -1898,7 +1900,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			scr_timer[num].msecs = rnd() * 3000 + 3000;
+			scr_timer[num].msecs = Random::get(3000, 6000);
 			scr_timer[num].name = "_r_a_t_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = (unsigned long)(arxtime);
@@ -3229,8 +3231,8 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 		if ((!(io->GameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
 
 		// Is Object in TreatZone ??
-		if (
-		    ((bPlayerEquiped = IsEquipedByPlayer(io))  && (player.Interface & INTER_MAP))
+		bPlayerEquiped = IsEquipedByPlayer(io);
+		if ((bPlayerEquiped  && (player.Interface & INTER_MAP))
 		    || (io->GameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
@@ -3542,7 +3544,6 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 								}
 
 								return true;
-								col = true;
 							}
 						}
 					}

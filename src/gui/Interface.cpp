@@ -90,6 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/texture/TextureStage.h"
+#include "graphics/texture/Texture.h"
 
 #include "gui/Text.h"
 
@@ -99,6 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 
 #include "math/Angle.h"
+#include "math/Random.h"
 #include "math/Rectangle.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
@@ -221,7 +223,7 @@ INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
 char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
-size_t QuestBook_Cache_nbQuests = -42;
+size_t QuestBook_Cache_nbQuests = 0;
 std::string Page_Buffer;
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
@@ -525,22 +527,34 @@ static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 							   long _lHaloType,
-							   TextureContainer * tc,
-							   TextureContainer * tc2,
+							   TextureContainer * haloTexture,
 							   float POSX, float POSY, float fRatioX = 1, float fRatioY = 1)
 {
-	ARX_UNUSED(_fR);
-	ARX_UNUSED(_fG);
-	ARX_UNUSED(_fB);
-	ARX_UNUSED(_lHaloType);
-	ARX_UNUSED(tc);
-	ARX_UNUSED(tc2);
-	ARX_UNUSED(POSX);
-	ARX_UNUSED(POSY);
-	ARX_UNUSED(fRatioX);
-	ARX_UNUSED(fRatioY);
+	float power = 0.9f;
+	power -= EEsin(arxtime.get_frame_time()*0.01f) * 0.3f;
 
-	// TODO: Draw halo effect somehow...
+	_fR = clamp(_fR * power, 0, 1);
+	_fG = clamp(_fG * power, 0, 1);
+	_fB = clamp(_fB * power, 0, 1);
+	Color col=Color4f(_fR,_fG,_fB).to<u8>();
+
+	if (_lHaloType & HALO_NEGATIVE)
+	{
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	}
+	else
+	{
+		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
+	}
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+
+	float fSizeX = haloTexture->m_dwWidth * fRatioX;
+	float fSizeY = haloTexture->m_dwHeight * fRatioY;
+	
+	EERIEDrawBitmap(POSX - TextureContainer::HALO_RADIUS, POSY - TextureContainer::HALO_RADIUS, fSizeX, fSizeY, 0.00001f, haloTexture, col);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
@@ -577,7 +591,7 @@ void ARX_INTERFACE_HALO_Flush() {
 		ARX_INTERFACE_HALO_Render(
 		aiHalo[i].io->halo.color.r, aiHalo[i].io->halo.color.g, aiHalo[i].io->halo.color.b,
 		aiHalo[i].io->halo.flags,
-		aiHalo[i].tc,aiHalo[i].tc2,aiHalo[i].POSX,aiHalo[i].POSY, aiHalo[i].fRatioX, aiHalo[i].fRatioY);
+		aiHalo[i].tc2,aiHalo[i].POSX,aiHalo[i].POSY, aiHalo[i].fRatioX, aiHalo[i].fRatioY);
 
 	INTERFACE_HALO_NB=0;
 }
@@ -591,9 +605,9 @@ bool NeedHalo(INTERACTIVE_OBJ * io)
 
 	if (io->halo.flags & HALO_ACTIVE)
 	{
-		if ((io->inv) && (io->inv->TextureHalo==NULL))
+		if (io->inv)
 		{
-			io->inv->CreateHalo();
+			io->inv->getHalo();
 		}
 
 		return true;
@@ -652,7 +666,7 @@ void ARX_INTERFACE_NoteInit()
 	Note.textsize = 0;
 
 	QuestBook.curpage=0;
-	QuestBook_Cache_nbQuests = -42;
+	QuestBook_Cache_nbQuests = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1118,6 +1132,16 @@ void ReleaseInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
+char* findParam(char* pcToken, const char* param)
+{
+	char* pStartString = 0;
+
+	if(strstr(pcToken,"^$param1"))
+		pStartString = strstr(pcToken, param);
+
+	return pStartString;
+}
+
 void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 {
 	if(!COMBINE)
@@ -1166,14 +1190,13 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 					while(pcToken)
 					{
 						pcToken=strtok(NULL,"\r\n");
-//						strupr(pcToken);
 	
 						bool bCanCombine=false;
 						char* pStartString;
 						char* pEndString;
 
-						if(	strstr(pcToken,"^$param1")&&
-							(pStartString=strstr(pcToken,"isclass")) )
+						pStartString = findParam(pcToken, "isclass");
+						if(pStartString)
 						{
 							pStartString=strstr(pStartString,"\"");
 
@@ -1196,8 +1219,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						}
 						else
 						{
-							if(	strstr(pcToken,"^$param1")&&
-								(pStartString=strstr(pcToken,"==")) )
+							pStartString = findParam(pcToken, "==");
+							if(pStartString)
 							{
 								pStartString=strstr(pStartString,"\"");
 
@@ -1221,8 +1244,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 							}
 							else
 							{
-								if(	strstr(pcToken,"^$param1")&&
-									(pStartString=strstr(pcToken,"isgroup")) )
+								pStartString = findParam(pcToken, "isgroup");
+								if(pStartString)
 								{
 									pStartString=strstr(pStartString," ");
 
@@ -1302,14 +1325,13 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 				while(pcToken)
 				{
 					pcToken=strtok(NULL,"\r\n");
-//					strupr(pcToken);
 	
 					bool bCanCombine=false;
 					char* pStartString;
 					char* pEndString;
 
-					if(	strstr(pcToken,"^$param1")&&
-						(pStartString=strstr(pcToken,"isclass")) )
+					pStartString = findParam(pcToken, "isclass");
+					if(pStartString)
 					{
 						pStartString=strstr(pStartString,"\"");
 
@@ -1332,8 +1354,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 					}
 					else
 					{
-						if(	strstr(pcToken,"^$param1")&&
-							(pStartString=strstr(pcToken,"==")) )
+						pStartString = findParam(pcToken, "==");
+						if(pStartString)
 						{
 							pStartString=strstr(pStartString,"\"");
 
@@ -1356,8 +1378,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 						}
 						else
 						{
-							if(	strstr(pcToken,"^$param1")&&
-								(pStartString=strstr(pcToken,"isgroup")) )
+							pStartString = findParam(pcToken, "isgroup");
+							if(pStartString)
 							{
 								pStartString=strstr(pStartString," ");
 
@@ -4403,7 +4425,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 				TextureContainer * tc=io->inv;
 				TextureContainer * tc2=NULL;
 
-				if (NeedHalo(io)) tc2 = io->inv->TextureHalo;
+				if (NeedHalo(io)) tc2 = io->inv->getHalo();
 
 				if (_bSteal)
 				{
@@ -4501,7 +4523,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 				TextureContainer * tc2=NULL;
 
 				if (NeedHalo(io))
-					tc2 = io->inv->TextureHalo;
+					tc2 = io->inv->getHalo();
 
 				if(tc != NULL) {
 					
@@ -4533,7 +4555,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 						ARX_INTERFACE_HALO_Render(
 							io->halo.color.r, io->halo.color.g, io->halo.color.b,
 							io->halo.flags,
-							tc, tc2,
+							tc2,
 							px,
 							py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 					}
@@ -6779,7 +6801,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				tc=todraw->inv;
 
-				if (NeedHalo(todraw)) tc2 = todraw->inv->TextureHalo;
+				if (NeedHalo(todraw)) tc2 = todraw->inv->getHalo();
 
 				if (tc)
 				{
@@ -6821,7 +6843,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				tc=todraw->inv;
 
-				if (NeedHalo(todraw)) tc2=todraw->inv->TextureHalo;
+				if (NeedHalo(todraw)) tc2=todraw->inv->getHalo();
 
 				if (tc)
 				{
@@ -6982,7 +7004,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 			pd->scale.y 		=	1.8f;
 			pd->scale.z 		=	1.f;
 			pd->timcreation		=	(long)arxtime;
-			pd->tolive			=	500+(unsigned long)(rnd()*400.f);
+			pd->tolive			=	Random::get(500, 900);
 			pd->tc				=	fire2;
 			pd->rgb = Color3f(1.f, .6f, .5f);
 			pd->siz				=	INTERFACE_RATIO(14.f);
@@ -7491,8 +7513,6 @@ void ArxGame::DrawAllInterface()
 
 			if (bGoldHalo)
 			{
-
-
 				float fCalc = ulGoldHaloTime + Original_framedelay;
 				ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
 
@@ -7503,14 +7523,11 @@ void ArxGame::DrawAllInterface()
 				}
 
 				TextureContainer *tc = ITC.Get("gold");
-				TextureContainer *tc2 = NULL;
+				TextureContainer *halo = tc->getHalo();
 
-				if (ITC.Get("gold")->CreateHalo())
-					tc2=ITC.Get("gold")->TextureHalo;
-
-				if (tc2 != NULL)
+				if (halo)
 				{
-					ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, tc, tc2, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 				}
 			}
 
@@ -7530,14 +7547,11 @@ void ArxGame::DrawAllInterface()
 				float POSX = DANAESIZX-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
 				float POSY = DANAESIZY-INTERFACE_RATIO(148);
 				TextureContainer *tc = ITC.Get("book");
-					TextureContainer * tc2 = NULL; 
+				TextureContainer *halo = tc->getHalo();
 
-				if (ITC.Get("book")->CreateHalo())
-					tc2=ITC.Get("book")->TextureHalo;
-
-				if (tc2 != NULL)
+				if (halo)
 				{
-					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, tc, tc2, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 				}
 			}
 		}
@@ -7635,13 +7649,12 @@ void ArxGame::DrawAllInterface()
 				if (bHalo)
 				{
 					TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
-					TextureContainer *tc2;
+					TextureContainer *halo = tc->getHalo();
 
-					tc->CreateHalo();
-
-					tc2 = tc->TextureHalo;
-
-					ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, tc, tc2, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					if (halo)
+					{
+						ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+					}
 				}
 
 				if (!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i])))
@@ -8489,7 +8502,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						TextureContainer * tc2=NULL;
 						tc=DRAGINTER->inv;
 
-						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->TextureHalo;//>_itemdata->halo_tc;
+						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
 
 						Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 

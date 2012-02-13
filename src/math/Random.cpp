@@ -17,35 +17,16 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_PLATFORM_RANDOM_H
-#define ARX_PLATFORM_RANDOM_H
+#include "math/Random.h"
 
-#include <stddef.h>
+#include <ctime>
 
-/*!
- * A simple but very fast random number generator.
- */
-class Random {
-	
-	static const size_t MODULO = 2147483647;
-	static const size_t FACTOR = 16807;
-	static const size_t SHIFT = 91;
-	static const size_t SEED = 43;
-	
-	static size_t current;
-	
-public:
-	
-	inline static size_t get() {
-		return current = (current * FACTOR + SHIFT) % MODULO;
-	}
-	
-	inline static float getf() {
-		return get() * (1.f / MODULO);
-	}
-	
-	static void seed();
-	
-};
+boost::random::mt19937 Random::rng;
 
-#endif // ARX_PLATFORM_RANDOM_H
+void Random::seed() {
+	rng.seed((size_t)std::time(NULL));
+}
+
+void Random::seed(unsigned int seedVal) {
+	rng.seed(seedVal);
+}

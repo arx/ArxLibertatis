@@ -553,9 +553,9 @@ void ArxGame::Run() {
 		}
 		
 		if(m_MainWindow->HasFocus() && m_bReady) {
-			if(!Render3DEnvironment()) {
+			m_RunLoop = Render3DEnvironment();
+			if(!m_RunLoop) {
 				LogError << "Fatal rendering error, exiting.";
-				Quit();
 			}
 		}
 	}
@@ -714,7 +714,7 @@ bool ArxGame::BeforeRun() {
 	
 	for(size_t i = 0; i < RUNE_COUNT-1; i++) { // TODO why -1?
 		if(necklace.pTexTab[i]) {
-			necklace.pTexTab[i]->CreateHalo();
+			necklace.pTexTab[i]->getHalo();
 		}
 	}
 	
@@ -1255,7 +1255,7 @@ bool ArxGame::Render() {
 
 		if (ARX_CONVERSATION_MODE==-1)
 		{
-			ARX_CONVERSATION_MODE=(long)(float)(rnd()*3.f+1.f);
+			ARX_CONVERSATION_MODE=0;
 			conversationcamera.size.a=rnd()*50.f;
 			conversationcamera.size.b=0.f;
 			conversationcamera.size.g=rnd()*50.f;
@@ -2282,6 +2282,9 @@ bool ArxGame::InitDeviceObjects()
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
+	// Restore All Textures RenderState
+	GRenderer->RestoreAllTextures();
+
 	ARX_PLAYER_Restore_Skin();
 	
 	// Disable Lighting RenderState
@@ -2348,6 +2351,8 @@ void ArxGame::onRendererShutdown(RenderWindow &) {
 	
 	m_bReady = false;
 	
+	GRenderer->ReleaseAllTextures();
+
 	if(pDynamicVertexBuffer_TLVERTEX) {
 		delete pDynamicVertexBuffer_TLVERTEX;
 		pDynamicVertexBuffer_TLVERTEX = NULL;

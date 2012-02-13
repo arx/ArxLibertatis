@@ -109,22 +109,16 @@ struct ARX_SCRIPT_SAVE {
 
 struct SavedGlobalMods {
 	
-	static const size_t AMBIANCE_SIZE = 128;
-	
 	s32 flags;
 	SavedColor depthcolor;
 	f32 zclip;
-	char ambiance[AMBIANCE_SIZE];
-	f32 ambiance_vol;
-	f32 ambiance_maxvol;
+	char padding[136];
 	
 	inline SavedGlobalMods & operator=(const GLOBAL_MODS & b) {
 		flags = b.flags;
 		depthcolor = b.depthcolor;
 		zclip = b.zclip;
-		ambiance[0] = '\0';
-		ambiance_vol = 0.f;
-		ambiance_maxvol = 0.f;
+		memset(padding, 0, sizeof(padding));
 		return *this;
 	}
 	
@@ -153,18 +147,16 @@ struct ARX_CHANGELEVEL_INDEX {
 
 struct ARX_CHANGELEVEL_LIGHT {
 	s16 status;
-	s16 padd;
-	f32 lpadd;
+	s16 padding[3];
 };
 
 struct ARX_CHANGELEVEL_IO_INDEX {
 	char filename[256];
 	s32 ident;
 	s32 num; // unused TODO use this to restore spell targets?
-	s16 level;
-	s16 truelevel;
-	s32 unused;
-	s32 padding[256];
+	s16 level; // unused
+	s16 truelevel; // unused
+	s32 padding[257];
 };
 
 struct ARX_CHANGELEVEL_PATH {

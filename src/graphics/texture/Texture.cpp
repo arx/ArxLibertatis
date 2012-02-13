@@ -65,6 +65,7 @@ bool Texture2D::Restore() {
 		mFormat = mImage.GetFormat();
 		size = Vec2i(mImage.GetWidth(), mImage.GetHeight());
 
+		Destroy();
 		bool bCreated = Create();
 		if(!bCreated) {
 			return false;

@@ -52,13 +52,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <utility>
 
-#include "graphics/GraphicsTypes.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
+#include "io/fs/FilePath.h"
+#include "io/fs/Filesystem.h"
 
 #include "platform/Platform.h"
 #include "platform/String.h"
@@ -98,14 +99,12 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 	ptcTexture->ulNbVertexListCull_TAdditive = 0;
 	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
 	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
-	ptcTexture->ulNbVertexListCull_TMetal = 0;
 	
 	ptcTexture->ulMaxVertexListCull = 0;
 	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
 	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
 	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
 	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
-	ptcTexture->ulMaxVertexListCull_TMetal = 0;
 	
 	ptcTexture->vPolyInterZMap.clear();
 	ptcTexture->vPolyZMap.clear();
@@ -134,12 +133,7 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 		free(ptcTexture->pVertexListCull_TMultiplicative);
 		ptcTexture->pVertexListCull_TMultiplicative = NULL;
 	}
-	
-	if(ptcTexture->pVertexListCull_TMetal) {
-		free(ptcTexture->pVertexListCull_TMetal);
-		ptcTexture->pVertexListCull_TMetal = NULL;
-	}
-	
+		
 	if(ptcTexture->tMatRoom) {
 		free(ptcTexture->tMatRoom);
 		ptcTexture->tMatRoom = NULL;
@@ -196,10 +190,6 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	ulNbVertexListCull_TMultiplicative = 0;
 	pVertexListCull_TMultiplicative = NULL; 
 
-	ulMaxVertexListCull_TMetal = 0;
-	ulNbVertexListCull_TMetal = 0;
-	pVertexListCull_TMetal = NULL;
-	
 	tMatRoom = NULL;
 
 	vPolyInterZMap.clear();
@@ -317,6 +307,63 @@ TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags)
 
 TextureContainer * TextureContainer::LoadUI(const res::path & strName, TCFlags flags) {
 	return Load(strName, flags | UI);
+}
+
+bool TextureContainer::CreateHalo()
+{
+	// Allocate and add the texture to the linked list of textures;
+	res::path haloName = m_texName.string();
+	haloName.append("_halo");
+	TextureHalo = new TextureContainer(haloName, NoMipmap | NoRefinement | NoColorKey);
+	if(!TextureHalo) {
+		return false;
+	}
+
+	TextureHalo->m_pTexture = GRenderer->CreateTexture2D();
+	if(TextureHalo->m_pTexture)
+	{
+		Image srcImage;
+		srcImage.LoadFromFile(m_pTexture->getFileName());
+		
+		bool bLoaded = TextureHalo->m_pTexture->Init(m_dwWidth + HALO_RADIUS*2, m_dwHeight + HALO_RADIUS*2, srcImage.GetFormat());
+		if(bLoaded)
+		{
+			TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
+			TextureHalo->m_dwHeight = TextureHalo->m_pTexture->getSize().y;
+			
+			Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
+			TextureHalo->uv = Vec2f(float(TextureHalo->m_dwWidth) / storedSize.x, float(TextureHalo->m_dwHeight) / storedSize.y);
+			TextureHalo->hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
+
+			Image &im = TextureHalo->m_pTexture->GetImage();
+
+			// Center the image, offset by radius to contain the edges of the blur
+			im.Clear();
+			im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
+
+			// Keep a copy of the image at this stage, in order to apply proper alpha masking later
+			Image copy = im;			
+			
+			// Convert image to grayscale, and turn it to black & white
+			im.ToGrayscale(Image::Format_L8A8);
+			im.ApplyThreshold(0, ~0);
+
+			// Blur the image
+			im.Blur(HALO_RADIUS);
+
+			// Increase the gamma of the blur outline
+			im.QuakeGamma(10.0f);
+		
+			// Set alpha to inverse of original image alpha
+			copy.ApplyColorKeyToAlpha();
+			im.SetAlpha(copy, true);
+						
+			// adejr: assertion here seems to fail often, i don't understand why?
+			TextureHalo->m_pTexture->Restore();
+		}
+	}
+
+	return true;
 }
 
 TextureContainer * TextureContainer::Find(const res::path & strTextureName) {

@@ -23,6 +23,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/noncopyable.hpp>
+
 #include "platform/Platform.h"
 #include "script/ScriptEvent.h"
 #include "io/log/Logger.h"
@@ -128,7 +130,7 @@ public:
 	friend class ::ScriptEvent;
 };
 
-class Command {
+class Command : private boost::noncopyable {
 	
 	const std::string name;
 	const long ioflags;
@@ -154,7 +156,6 @@ public:
 	
 	inline const std::string & getName() const { return name; }
 	inline long getIOFlags() const { return ioflags; }
-	
 };
 
 bool isSuppressed(const Context & context, const std::string & command);
@@ -171,7 +172,7 @@ size_t initSuppressions();
 #define ScriptError Logger(__FILE__,__LINE__, isSuppressed(context, getName()) ? Logger::Debug : Logger::Error) << ScriptPrefix ": "
 
 #define HandleFlags(expected) string options = context.getFlags(); \
-	for(u64 run = !options.empty(), flg; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
+	for(u64 run = !options.empty(), flg = 0; run && ((flg = flags(options), (flg && !(flg & ~flags(expected)))) || (ScriptWarning << "unexpected flags: " << options, true)); run = 0)
 
 } // namespace script
 

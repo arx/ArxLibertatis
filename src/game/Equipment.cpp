@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/resource/ResourcePath.h"
 
+#include "math/Random.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
 
@@ -767,7 +768,6 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 				ppos *= 60.f;
 				ppos += ACTIVECAM->pos;
-				ARX_DAMAGES_SCREEN_SPLATS_Add(&ppos, dmgs);
 				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
 				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			}
@@ -978,9 +978,6 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								}
 							}
 
-							if (target == inter.iobj[0])
-								ARX_DAMAGES_SCREEN_SPLATS_Add(&pos, dmgs);
-
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 
 							if (!ValidIONum(weapon)) io_weapon = NULL;
@@ -1001,10 +998,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					else if ((target->ioflags & IO_NPC)
 					         &&	((dmgs <= 0.f) || (target->spark_n_blood == SP_SPARKING)))
 					{
-						long  nb;
+						long nb;
 
-						if (target->spark_n_blood == SP_SPARKING) nb = (long)(float)(rnd() * 3.f);
-						else nb = 30;
+						if (target->spark_n_blood == SP_SPARKING) 
+							nb = Random::get(0, 3);
+						else
+							nb = 30;
 
 						if (target->ioflags & IO_ITEM)
 							nb = 1;
@@ -1021,8 +1020,10 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					{
 						long  nb;
 
-						if (target->spark_n_blood == SP_SPARKING) nb = (long)(float)(rnd() * 3.f);
-						else nb = 30;
+						if (target->spark_n_blood == SP_SPARKING)
+							nb = Random::get(0, 3);
+						else
+							nb = 30;
 
 						if (target->ioflags & IO_ITEM)
 							nb = 1;

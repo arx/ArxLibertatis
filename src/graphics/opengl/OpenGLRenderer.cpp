@@ -310,8 +310,21 @@ void OpenGLRenderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
 	matProj = projection;
 }
 
+void OpenGLRenderer::ReleaseAllTextures() {
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		it->Destroy();
+	}
+}
+
+void OpenGLRenderer::RestoreAllTextures() {
+	for(TextureList::iterator it = textures.begin(); it != textures.end(); ++it) {
+		it->Restore();
+	}
+}
+
 Texture2D * OpenGLRenderer::CreateTexture2D() {
 	GLTexture2D * texture = new GLTexture2D(this);
+	textures.push_back(*texture);
 	return texture;
 }
 
@@ -517,7 +530,7 @@ void OpenGLRenderer::SetAntialiasing(bool enable) {
 }
 
 static const GLenum arxToGlCullMode[] = {
-	-1, // CullNone,
+	(GLenum)-1, // CullNone,
 	GL_BACK, // CullCW,
 	GL_FRONT, // CullCCW,
 };

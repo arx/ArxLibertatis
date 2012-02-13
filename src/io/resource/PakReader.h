@@ -23,6 +23,8 @@
 #include <vector>
 #include <iostream>
 
+#include <boost/noncopyable.hpp>
+
 #include "io/resource/PakEntry.h"
 #include "io/resource/ResourcePath.h"
 #include "platform/Flags.h"
@@ -35,7 +37,7 @@ enum Whence {
 	SeekEnd
 };
 
-class PakFileHandle {
+class PakFileHandle : private boost::noncopyable  {
 	
 public:
 	

@@ -200,7 +200,7 @@ public:
 	
 };
 
-struct BlastFileInBuffer {
+struct BlastFileInBuffer : private boost::noncopyable {
 	
 	std::ifstream & file;
 	

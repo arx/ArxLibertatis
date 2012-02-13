@@ -883,7 +883,7 @@ float CConfuse::Render()
 			particle[j].move.y		=	rnd() * 3 + 1;
 			particle[j].move.z		=	0;
 			particle[j].siz			=	0.25f;
-			particle[j].tolive		=	2300 + (unsigned long)(float)(rnd() * 1000.f);
+			particle[j].tolive		=	Random::get(2300, 3300);
 			particle[j].scale.x		=	1;
 			particle[j].scale.y		=	1;
 			particle[j].scale.z		=	1;
@@ -1351,7 +1351,7 @@ float CIceField::Render()
 				particle[j].move.y		=	2.f - 4.f * rnd();
 				particle[j].move.z		=	2.f - 4.f * rnd();
 				particle[j].siz			=	20.f;
-				particle[j].tolive		=	2000 + (unsigned long)(float)(rnd() * 4000.f);
+				particle[j].tolive		=	Random::get(2000, 6000);
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;
@@ -1383,7 +1383,7 @@ float CIceField::Render()
 				particle[j].move.y		=	2.f - 4.f * rnd();
 				particle[j].move.z		=	0;
 				particle[j].siz			=	0.5f;
-				particle[j].tolive		=	2000 + (unsigned long)(float)(rnd() * 4000.f);
+				particle[j].tolive		=	Random::get(2000, 6000);
 				particle[j].scale.x		=	1.f;
 				particle[j].scale.y		=	1.f;
 				particle[j].scale.z		=	1.f;

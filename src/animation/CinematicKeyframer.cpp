@@ -322,7 +322,8 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return false;
 
-	if (!(k = SearchKey(key->frame, &num)))
+	k = SearchKey(key->frame, &num);
+	if (!k)
 	{
 		if (!CKTrack->nbkey)
 		{
@@ -411,8 +412,9 @@ bool AddKeyLoad(C_KEY * key)
 	int			num;
 
 	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return false;
-
-	if (!(k = SearchKey(key->frame, &num)))
+	
+	k = SearchKey(key->frame, &num);
+	if (!k)
 	{
 		if (!CKTrack->nbkey)
 		{

@@ -1255,43 +1255,46 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 
 				switch (divv)
 				{
-					case 0:
-						divvx = 0;
-						divvy = 0;
-						break;
-					case 1:
-						divvx = 1;
-						divvy = 0;
-						break;
-					case 2:
-						divvx = 2;
-						divvy = 0;
-						break;
-					case 3:
-						divvx = 0;
-						divvy = 1;
-						break;
-					case 4:
-						divvx = 1;
-						divvy = 1;
-						break;
-					case 5:
-						divvx = 2;
-						divvy = 1;
-						break;
-					case 6:
-						divvx = 0;
-						divvy = 2;
-						break;
-					case 7:
-						divvx = 1;
-						divvy = 2;
-						break;
-					case 8:
-						divvx = 2;
-						divvy = 2;
-						break;
-
+				case 0:
+					divvx = 0;
+					divvy = 0;
+					break;
+				case 1:
+					divvx = 1;
+					divvy = 0;
+					break;
+				case 2:
+					divvx = 2;
+					divvy = 0;
+					break;
+				case 3:
+					divvx = 0;
+					divvy = 1;
+					break;
+				case 4:
+					divvx = 1;
+					divvy = 1;
+					break;
+				case 5:
+					divvx = 2;
+					divvy = 1;
+					break;
+				case 6:
+					divvx = 0;
+					divvy = 2;
+					break;
+				case 7:
+					divvx = 1;
+					divvy = 2;
+					break;
+				case 8:
+					divvx = 2;
+					divvy = 2;
+					break;
+				default:
+					arx_error_msg("Invalid divv value");
+					divvx = 0;
+					divvy = 0;
 				}
 
 				per = count / total * 100.f;

@@ -119,36 +119,6 @@ inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 	ResetBBox3D(io);
 }
 
-//-----------------------------------------------------------------------------
-
-float GetMaxManhattanDistance(const Vec3f * _e1, const Vec3f * _e2)
-{
-	return 0;
-
-	if (!TSU_TEST) return 0;
-
-	register float fMaxX(0);
-	register float fMaxY(0);
-	register float fMaxZ(0);
-
-	fMaxX = _e1->x - _e2->x;
-	
-	fMaxX = (fMaxX < 0) ? -fMaxX : fMaxX;
-
-	fMaxY = _e1->y - _e2->y;
-	
-	fMaxY = (fMaxY < 0) ? -fMaxY : fMaxY;
-
-	fMaxZ = _e1->z - _e2->z;
-	
-	fMaxZ = (fMaxZ < 0) ? -fMaxZ : fMaxZ;
-
-	fMaxX = (fMaxX < fMaxY) ? fMaxY : fMaxX;
-	fMaxX = (fMaxX < fMaxZ) ? fMaxZ : fMaxX;
-
-	return fMaxX;
-}
-
 extern float INVISIBILITY_OVERRIDE;
 extern long EXTERNALVIEW;
 static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ * io)
@@ -836,7 +806,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 	for (i = 0; i < TOTIOPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&IO_PDL[i]->pos, &tv) <= IO_PDL[i]->fallend + 500.f))
+		if (IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
@@ -844,7 +814,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 	for (i = 0; i < TOTPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&PDL[i]->pos, &tv) <= PDL[i]->fallend + 500.f))
+		if (PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
@@ -888,7 +858,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 					if (Cur_llights)
 					{
 						// tsu
-						if (!(GetMaxManhattanDistance(&Cur_llights->pos, posVert) <= Cur_llights->fallend))
+						if (Cur_llights->fallend < 0)
 						{
 							TSU_TEST_NB_LIGHT ++;
 							continue;
@@ -1300,114 +1270,6 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 		{
 			CalculateInterZMapp(_pObj, _iNumFace, _pInd, _pTex, pPointAdd);
 		}
-
-		if ((_pFace->facetype & POLY_METAL)
-		        || ((_pTex) && (_pTex->userflags & POLY_METAL)))
-		{
-			if (_bNPC)
-			{
-				TexturedVertex * tv2;
-
-				if (_lSpecialColorFlag & 2)
-				{
-					tv2 = PushVertexInTableCull(&TexSpecialColor);
-					memcpy((void *)tv2, (void *)pPointAdd, sizeof(TexturedVertex) * 3);
-					tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(_pRGB->r).toBGR();
-				}
-
-				tv2 = PushVertexInTableCull_TMetal(_pTex);
-				unsigned long * pulNbVertexList_TMetal = &_pTex->ulNbVertexListCull_TMetal;
-
-				memcpy((void *)tv2, (void *)pPointAdd, sizeof(TexturedVertex) * 3);
-
-				long r, g, b;
-				long todo = 0;
-
-				for (long j = 0; j < 3; j++)
-				{
-					r = (tv2[j].color >> 16) & 255;
-					g = (tv2[j].color >> 8) & 255;
-					b = tv2[j].color & 255;
-
-					if (r > 192 || g > 192 || b > 192)
-					{
-						todo++;
-					}
-
-					r -= 192;
-
-					if (r < 0.f) r = 0;
-
-					g -= 192;
-
-					if (g < 0.f) g = 0;
-
-					b -= 192;
-
-					if (b < 0.f) b = 0;
-
-					tv2[j].color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
-				}
-
-				if (!todo)
-				{
-					*pulNbVertexList_TMetal -= 3;
-				}
-			}
-			else
-			{
-				TexturedVertex * vert_list_metal		= PushVertexInTableCull_TMetal(_pTex);
-				unsigned long * pulNbVertexList_TMetal	= &_pTex->ulNbVertexListCull_TMetal;
-
-				memcpy((void *)vert_list_metal, (void *)pPointAdd, sizeof(TexturedVertex) * 3);
-				TexturedVertex * tl = vert_list_metal;
-
-				long r, g, b;
-				long todo = 0;
-
-				r = g = b = 0 ;
-
-				for (long j = 0 ; j < 3 ; j++)
-				{
-					r = (tl->color >> 16) & 255;
-					g = (tl->color >> 8) & 255;
-					b = tl->color & 255;
-
-					if (r > 192 || g > 192 || b > 192)
-					{
-						todo++;
-					}
-
-					r -= 192;
-
-					if (r < 0.f) r = 0;
-
-					g -= 192;
-
-					if (g < 0.f) g = 0;
-
-					b -= 192;
-
-					if (b < 0.f) b = 0;
-
-					tl->color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
-					tl++;
-				}
-
-				if (todo)
-				{
-					if ((todo > 2) && (rnd() > 0.997f))
-					{
-						if (_pioInteractive)
-							SpawnMetalShine((Vec3f *)&_pObj->vertexlist3[_pObj->facelist[_iNumFace].vid[0]].vert, r, g, b, GetInterNum(_pioInteractive));
-					}
-				}
-				else
-				{
-					*pulNbVertexList_TMetal -= 3;
-				}
-			}
-		}
 	}
 
 	return iPointAdd;
@@ -1680,8 +1542,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 			TextureContainer * pTex;
 
-			if ((eobj->facelist[i].texid < 0) ||
-			        (!(pTex = eobj->texturecontainer[eobj->facelist[i].texid]))) continue;
+			if(eobj->facelist[i].texid < 0)
+				continue;
+
+			pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+			if(!pTex)
+				continue;
 
 			float			fTransp = 0;
 
@@ -2031,52 +1897,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
 			}
-
-			// Add a little bit of Fake Metal Specular if needed :p
-			if ((eface->facetype & POLY_METAL)
-			        || ((pTex) && (pTex->userflags & POLY_METAL)))
-			{
-				TexturedVertex	* tv2;
-				unsigned long	* pulNbVertexList_TMetal;
-
-				tv2						=	PushVertexInTableCull_TMetal(pTex);
-				pulNbVertexList_TMetal	=	&pTex->ulNbVertexListCull_TMetal;
-				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
-				
-				long r, g, b;
-				long todo = 0;
-
-				for (long j = 0 ; j < 3 ; j++)
-				{
-					r = (tv2[j].color >> 16) & 255;
-					g = (tv2[j].color >> 8) & 255;
-					b = tv2[j].color & 255;
-
-					if (r > 192 || g > 192 || b > 192)
-					{
-						todo++;
-					}
-
-					r -= 192;
-
-					if (r < 0.f) r = 0;
-
-					g -= 192;
-
-					if (g < 0.f) g = 0;
-
-					b -= 192;
-
-					if (b < 0.f) b = 0;
-
-					tv2[j].color = 0xFF000000 | (r << 18) | (g << 10) | (b << 2);
-				}
-
-				if (!todo)
-				{
-					*pulNbVertexList_TMetal -= 3;
-				}
-			}
 		}
 	}
 }
@@ -2363,7 +2183,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * p
 
 	for (long i = 0; i < TOTIOPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&IO_PDL[i]->pos, &tv) <= IO_PDL[i]->fallend + 500.f))
+		if (IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(IO_PDL[i], fdist(IO_PDL[i]->pos, tv)); 
@@ -2371,7 +2191,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * p
 
 	for (int i = 0; i < TOTPDL; i++)
 	{
-		if (!(GetMaxManhattanDistance(&PDL[i]->pos, &tv) <= PDL[i]->fallend + 500.f))
+		if (PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(PDL[i], fdist(PDL[i]->pos, tv)); 
@@ -2695,7 +2515,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 	{
 		EERIE_LIGHT * el = PDL[i];
 
-		if (!(GetMaxManhattanDistance(&el->pos, &ep->center) <= el->fallend + 35.f))
+		if (el->fallend + 35.f < 0)
 		{
 			TSU_TEST_NB_LIGHT ++;
 			continue;
@@ -2718,7 +2538,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 			for (j = 0; j < nbvert; j++)
 			{
 				Vec3f v(ep->v[j].p.x,ep->v[j].p.y, ep->v[j].p.z);
-				if (!(GetMaxManhattanDistance(&el->pos, &v) <= el->fallend))
+				if (el->fallend < 0)
 				{
 					TSU_TEST_NB ++;
 					continue;
