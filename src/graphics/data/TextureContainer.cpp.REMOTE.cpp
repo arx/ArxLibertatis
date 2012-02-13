@@ -315,17 +315,14 @@ bool TextureContainer::CreateHalo()
 	res::path haloName = m_texName.string();
 	haloName.append("_halo");
 	TextureHalo = new TextureContainer(haloName, NoMipmap | NoRefinement | NoColorKey);
-	if(!TextureHalo) {
-		return false;
-	}
 
 	TextureHalo->m_pTexture = GRenderer->CreateTexture2D();
-	if(TextureHalo->m_pTexture)
+	if (TextureHalo->m_pTexture)
 	{
-		Image srcImage;
-		srcImage.LoadFromFile(m_pTexture->getFileName());
+		Texture::TextureFlags flags = 0;
 		
-		bool bLoaded = TextureHalo->m_pTexture->Init(m_dwWidth + HALO_RADIUS*2, m_dwHeight + HALO_RADIUS*2, srcImage.GetFormat());
+		const int radius = 5;
+		bool bLoaded = TextureHalo->m_pTexture->Init(m_dwWidth + radius*2, m_dwHeight + radius*2, m_pTexture->GetFormat());
 		if(bLoaded)
 		{
 			TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
@@ -337,27 +334,28 @@ bool TextureContainer::CreateHalo()
 
 			Image &im = TextureHalo->m_pTexture->GetImage();
 
-			// Center the image, offset by radius to contain the edges of the blur
-			im.Clear();
-			im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
+			// center the image, offset by radius to contain the edges of the blur
+			{
+				Image source;
+				source.LoadFromFile(m_pTexture->getFileName());
+				source.save(fs::path("test_source.tga"));
+				im.Create(m_dwWidth + radius*2, m_dwHeight + radius*2, source.GetFormat());
+				im.Clear();
+				im.Copy(source, radius, radius);
+				im.save(fs::path("test_centered.tga"));
+			}
 
-			// Keep a copy of the image at this stage, in order to apply proper alpha masking later
-			Image copy = im;			
+			im.ApplyColorKeyToAlpha();
+			//im.ToGrayscale();
+			//im.save(fs::path("test_grayscale.bmp"));
+
+			im.ApplyThreshold(32, 1 | 2 | 4);
+			im.save(fs::path("test_gamma.tga"));
+
+			im.Blur(radius);
+			im.AdjustGamma(1.0f / 3.0f);
+			im.save(fs::path("test_blur.tga"));
 			
-			// Convert image to grayscale, and turn it to black & white
-			im.ToGrayscale(Image::Format_L8A8);
-			im.ApplyThreshold(0, ~0);
-
-			// Blur the image
-			im.Blur(HALO_RADIUS);
-
-			// Increase the gamma of the blur outline
-			im.QuakeGamma(10.0f);
-		
-			// Set alpha to inverse of original image alpha
-			copy.ApplyColorKeyToAlpha();
-			im.SetAlpha(copy, true);
-						
 			// adejr: assertion here seems to fail often, i don't understand why?
 			TextureHalo->m_pTexture->Restore();
 		}

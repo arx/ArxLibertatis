@@ -322,6 +322,8 @@ bool TextureContainer::CreateHalo()
 	TextureHalo->m_pTexture = GRenderer->CreateTexture2D();
 	if(TextureHalo->m_pTexture)
 	{
+		Texture::TextureFlags flags = 0;
+
 		Image srcImage;
 		srcImage.LoadFromFile(m_pTexture->getFileName());
 		
@@ -346,13 +348,13 @@ bool TextureContainer::CreateHalo()
 			
 			// Convert image to grayscale, and turn it to black & white
 			im.ToGrayscale(Image::Format_L8A8);
-			im.ApplyThreshold(0, ~0);
+			im.ChangeGamma(255.0f);
 
 			// Blur the image
 			im.Blur(HALO_RADIUS);
 
 			// Increase the gamma of the blur outline
-			im.QuakeGamma(10.0f);
+			im.ChangeGamma(10.0f);
 		
 			// Set alpha to inverse of original image alpha
 			copy.ApplyColorKeyToAlpha();

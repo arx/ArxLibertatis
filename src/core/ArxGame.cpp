@@ -716,7 +716,7 @@ bool ArxGame::BeforeRun() {
 	
 	for(size_t i = 0; i < RUNE_COUNT-1; i++) { // TODO why -1?
 		if(necklace.pTexTab[i]) {
-			necklace.pTexTab[i]->CreateHalo();
+			necklace.pTexTab[i]->getHalo();
 		}
 	}
 	

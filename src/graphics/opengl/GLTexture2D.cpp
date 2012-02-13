@@ -39,6 +39,12 @@ bool GLTexture2D::Create() {
 	mipFilter = TextureStage::FilterLinear;
 	minFilter = TextureStage::FilterNearest;
 	magFilter = TextureStage::FilterLinear;
+
+	if(GLEW_ARB_texture_non_power_of_two) {
+		storedSize = size;
+	} else {
+		storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
+	}
 	
 	CHECK_GL;
 	
@@ -75,12 +81,6 @@ void GLTexture2D::Upload() {
 	
 	if(hasMipmaps()) {
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-	}
-	
-	if(GLEW_ARB_texture_non_power_of_two) {
-		storedSize = size;
-	} else {
-		storedSize = Vec2i(GetNextPowerOf2(size.x), GetNextPowerOf2(size.y));
 	}
 	
 	// TODO handle GL_MAX_TEXTURE_SIZE

@@ -44,7 +44,7 @@ public:
 		Format_Num,
 		Format_MAX = 0xFF
 	};
-	
+
 	Image();
 	Image(const Image & pOther);
 	virtual ~Image();
@@ -56,18 +56,23 @@ public:
 	
 	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);
 	
-	void Clear();
+	// reset to fresh constructor state
 	void Reset();
+
+	// zero image data with memset
+	void Clear();
 	
-	bool IsValid() const { return mData != NULL; }
+	// info accessors
 	unsigned int GetWidth() const { return mWidth;      }
 	unsigned int GetHeight() const { return mHeight;     }
 	unsigned int GetDepth() const { return mDepth;      }
 	unsigned int GetNumMipmaps() const { return mNumMipmaps; }
 	Format GetFormat() const { return mFormat;     }
 	unsigned int GetDataSize() const { return mDataSize;   }
-	
 	unsigned int  GetNumChannels() const { return Image::GetNumChannels( mFormat ); }  
+
+	// bool accessors
+	bool IsValid() const { return mData != NULL; }
 	bool IsCompressed() const { return Image::IsCompressed( mFormat ); }
 	bool IsVolume() const { return mDepth > 1;  }
 	bool HasAlpha() const { return mFormat == Format_A8 || mFormat == Format_L8A8 || mFormat == Format_R8G8B8A8 || mFormat == Format_B8G8R8A8 || mFormat == Format_DXT3 || mFormat == Format_DXT5; }
@@ -76,24 +81,42 @@ public:
 	inline const unsigned char * GetData() const { return mData; }
 	inline unsigned char * GetData() { return mData; }
 	
+	// conversions
+
 	void FlipY();
-	
-	//! Copy an image into this image's buffer.
-	//! Works only with uncompressed formats
+	bool ToGrayscale(Format newFormat = Format_L8);
+	bool ToNormalMap();
+
+	void ResizeFrom(const Image &source, unsigned int width, unsigned int height, bool flip_vertical = false);
+
+	/// Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
+	void ApplyColorKeyToAlpha(Color colorKey = Color::black);
+
+	///! Copy an image into this image's buffer.
+	///! Works only with uncompressed formats
 	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY);
 	bool Copy(const Image & srcImage, unsigned int dstX, unsigned int dstY, unsigned int srcX, unsigned int srcY, unsigned int width, unsigned int height);
-	
-	void ChangeGamma(float pGamma);
 
-	// Set the alpha of pixels matching the color key to 0. Will add an alpha channel if needed.
-	void ApplyColorKeyToAlpha(Color colorKey = Color::black);
-	
-	bool ToGrayscale();
-	bool ToNormalMap();
-	
 	bool save(const fs::path & filename) const;
+
+	// processing functions
+	// destructively adjust image content
 	
-	void ResizeFrom(const Image &source, unsigned int width, unsigned int height, bool flip_vertical = false);
+	/// blur using gaussian kernel
+	void Blur(int radius);
+	
+	/// scales value and normalizes by max component value
+	void QuakeGamma(float pGamma);
+	//! Copy the alpha of img to this image.
+	void SetAlpha(const Image& img, bool bInvertAlpha);
+	
+	void AdjustGamma(const float &v);
+	void AdjustBrightness(const float &v);
+	void AdjustContrast(const float &v);
+
+	void ApplyThreshold(unsigned char threshold, int component_mask);
+
+	// statics
 	static unsigned int	GetSize(Format pFormat, unsigned int pWidth = 1, unsigned int pHeight = 1, unsigned int pDepth = 1);
 	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1, int pMipmapCount = -1);
 	static unsigned int	GetNumChannels(Format pFormat);

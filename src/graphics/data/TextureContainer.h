@@ -133,9 +133,19 @@ public:
 	/**	Create a texture to display a glowing halo around a transparent texture
 	 *	@todo Rewrite this feature using shaders instead of hacking a texture effect
 	 */
-	bool CreateHalo() { return false; }
+	bool CreateHalo();
+
+	static const int HALO_RADIUS = 5;
+	TextureContainer *getHalo() {
+		return (TextureHalo ? TextureHalo : (CreateHalo() ? TextureHalo : NULL));
+	}
+
+private:
+
 	TextureContainer * TextureHalo;
 	
+public:
+
 	bool LoadFile(const res::path & strPathname);
 	
 	const res::path m_texName; // Name of texture
