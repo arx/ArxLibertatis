@@ -186,9 +186,8 @@ void D3D9Window::tick() {
     Win32Window::tick();
 }
 
-bool D3D9Window::showFrame() {
+void D3D9Window::showFrame() {
 	GD3D9Device->Present(NULL, NULL, NULL, NULL);
-	return true;
 }
 
 bool D3D9Window::updatePresentParams(DisplayMode mode) {

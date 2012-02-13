@@ -40,7 +40,7 @@ public:
 	void setWindowSize(Vec2i size);
 	void tick();
 	
-	bool showFrame();
+	void showFrame();
 	
 	void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue);
 	

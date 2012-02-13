@@ -474,10 +474,7 @@ bool ARX_Menu_Render() {
 		EERIEMouseButton = 0;
 	}
 
-	if (!GRenderer->BeginScene())
-	{
-		return true;
-	}
+	GRenderer->BeginScene();
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	

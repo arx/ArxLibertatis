@@ -397,5 +397,6 @@ void SignalHandler(int signalCode) {
 }
 
 void SIGFPEHandler(int code, int FPECode) {
+	ARX_UNUSED(code);
 	CrashHandlerWindows::getInstance().handleCrash(SIGNAL_SIGFPE, _pxcptinfoptrs, FPECode);
 }

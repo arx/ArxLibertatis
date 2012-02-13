@@ -553,10 +553,7 @@ void ArxGame::Run() {
 		}
 		
 		if(m_MainWindow->HasFocus() && m_bReady) {
-			m_RunLoop = Render3DEnvironment();
-			if(!m_RunLoop) {
-				LogError << "Fatal rendering error, exiting.";
-			}
+			Render3DEnvironment();
 		}
 	}
 }
@@ -565,14 +562,12 @@ void ArxGame::Run() {
 // FrameMove()
 // Called once per frame.
 //*************************************************************************************
-bool ArxGame::FrameMove() {
+void ArxGame::FrameMove() {
 	
 	if(!WILL_LAUNCH_CINE.empty()) {
 		// A cinematic is waiting to be played...
 		LaunchWaitingCine();
 	}
-	
-	return true;
 }
 
 long MouseDragX, MouseDragY;
@@ -581,27 +576,14 @@ long MouseDragX, MouseDragY;
 // Render3DEnvironment()
 // Draws the scene.
 //*************************************************************************************
-bool ArxGame::Render3DEnvironment() {
+void ArxGame::Render3DEnvironment() {
 		
-	// Get the relative time, in seconds
-	if(!FrameMove()) {
-		LogError << "FrameMove failed";
-		return false;
-	}
+	FrameMove();
 	
-	// Render the scene as normal
-	if(!Render()) {
-		LogError << "Scene rendering failed.";
-		return false;
-	}
+	Render();
 	
 	// Show the frame on the primary surface.
-	if(!GetWindow()->showFrame()) {
-		LogError << "Failed to display the final image.";
-		return false;
-	}
-	
-	return true;
+	GetWindow()->showFrame();
 }
 
 //*************************************************************************************
@@ -763,7 +745,7 @@ bool ArxGame::BeforeRun() {
 	return true;
 }
 
-bool ArxGame::Render() {
+void ArxGame::Render() {
 	
 	arxtime.update_frame_time();
 
@@ -1031,10 +1013,7 @@ bool ArxGame::Render() {
 		}
 		//-------------------------------------------------------------------------------
 
-	if(!GRenderer->BeginScene())
-	{
-		return false;
-	}
+	GRenderer->BeginScene();
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -2116,8 +2095,6 @@ norenderend:
 
 	arxtime.update_last_frame_time();
 	LastMouseClick=EERIEMouseButton;
-
-	return true;
 }
 
 void ArxGame::GoFor2DFX()

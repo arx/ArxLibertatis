@@ -210,15 +210,12 @@ void OpenGLRenderer::shutdown() {
 	initialized = false;
 }
 
-bool OpenGLRenderer::BeginScene() {
-	return true; // nothing to do?
+void OpenGLRenderer::BeginScene() {
 }
 
-bool OpenGLRenderer::EndScene() {
+void OpenGLRenderer::EndScene() {
 	
 	glFlush();
-	
-	return true;
 }
 
 static EERIEMATRIX projection;

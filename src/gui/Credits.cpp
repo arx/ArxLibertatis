@@ -235,8 +235,7 @@ void Credits::render() {
 	if(CreditsData.iFontAverageHeight != -1) {
 		
 		//Set the device
-		if(!GRenderer->BeginScene())
-			return;
+		GRenderer->BeginScene();
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::Fog, false);

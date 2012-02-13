@@ -255,12 +255,12 @@ void D3D9Renderer::Initialize() {
 						   << " build " << LOWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart);
 }
 
-bool D3D9Renderer::BeginScene() {
-	return GD3D9Device->BeginScene() == D3D_OK;
+void D3D9Renderer::BeginScene() {
+	GD3D9Device->BeginScene();
 }
 
-bool D3D9Renderer::EndScene() {
-	return GD3D9Device->EndScene() == D3D_OK;
+void D3D9Renderer::EndScene() {
+	GD3D9Device->EndScene();
 }
 
 void D3D9Renderer::SetViewMatrix(const EERIEMATRIX & matView) {

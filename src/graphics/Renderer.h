@@ -128,8 +128,8 @@ public:
 	virtual void Initialize() = 0;
 	
 	// Scene begin/end...
-	virtual bool BeginScene() = 0;
-	virtual bool EndScene() = 0;
+	virtual void BeginScene() = 0;
+	virtual void EndScene() = 0;
 	
 	// Matrices
 	virtual void SetViewMatrix(const EERIEMATRIX & matView) = 0;

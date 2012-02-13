@@ -401,9 +401,7 @@ bool Menu2_Render() {
 		return false;
 	}
 	
-	if(!GRenderer->BeginScene()) {
-		return true;
-	}
+	GRenderer->BeginScene();
 	
 	if(pTextManage) {
 		pTextManage->Clear();

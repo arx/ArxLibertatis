@@ -42,7 +42,7 @@ public:
 	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
 	virtual void tick();
 
-	bool showFrame();
+	void showFrame();
 	
 	inline LPDIRECT3D9 getD3D() { return d3d; }
 	inline const DeviceInfo & getInfo() { return *deviceInfo; }

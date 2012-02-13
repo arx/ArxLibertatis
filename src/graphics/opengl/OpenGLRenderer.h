@@ -41,8 +41,8 @@ public:
 	void reinit();
 	
 	// Scene begin/end...
-	bool BeginScene();
-	bool EndScene();
+	void BeginScene();
+	void EndScene();
 	
 	// Matrices
 	void SetViewMatrix(const EERIEMATRIX & matView);

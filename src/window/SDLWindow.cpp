@@ -364,11 +364,9 @@ void SDLWindow::tick() {
 	
 }
 
-bool SDLWindow::showFrame() {
+void SDLWindow::showFrame() {
 	
 	SDL_GL_SwapBuffers();
-	
-	return true;
 }
 
 void SDLWindow::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {

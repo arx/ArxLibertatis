@@ -63,8 +63,8 @@ protected:
 	bool InitGameData();
 	bool AddPaks();
 	
-	bool Render();
-	bool FrameMove();
+	void Render();
+	void FrameMove();
 	void ManageKeyMouse();
 	bool ManageEditorControls();
 	void ManagePlayerControls();
@@ -73,7 +73,7 @@ protected:
 	void GoFor2DFX();
 	bool BeforeRun();
 	
-	bool Render3DEnvironment();
+	void Render3DEnvironment();
 	
 public:
 	

@@ -81,12 +81,6 @@ TextureContainer	* ARKANE_img = NULL;
 void LoadScreen()
 {
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
-	if (GRenderer->BeginScene())
-	{
-		GRenderer->EndScene();
-		//mainApp->GetWindow()->showFrame();
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -128,18 +122,19 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if (GRenderer->BeginScene())
+	GRenderer->BeginScene();
+
+	if (FISHTANK_img == NULL)
+		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
+
+	if (FISHTANK_img != NULL)
 	{
-		if (FISHTANK_img == NULL) FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
-
-		if (FISHTANK_img != NULL)
-		{
-			GRenderer->SetRenderState(Renderer::Fog, false);
-			DrawCenteredImage(FISHTANK_img, false);
-		}
-
-		GRenderer->EndScene();
+		GRenderer->SetRenderState(Renderer::Fog, false);
+		DrawCenteredImage(FISHTANK_img, false);
 	}
+
+	GRenderer->EndScene();
+	
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
@@ -156,20 +151,19 @@ void ARX_INTERFACE_ShowARKANE()
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-	if (GRenderer->BeginScene())
+	GRenderer->BeginScene();
+
+	if (ARKANE_img == NULL)
+		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
+
+	if (ARKANE_img != NULL)
 	{
-		if (ARKANE_img == NULL)
-			ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
-
-		if (ARKANE_img != NULL)
-		{
-			GRenderer->SetRenderState(Renderer::Fog, false);
-			DrawCenteredImage( ARKANE_img, false);
-		}
-
-		GRenderer->EndScene();
+		GRenderer->SetRenderState(Renderer::Fog, false);
+		DrawCenteredImage( ARKANE_img, false);
 	}
 
+	GRenderer->EndScene();
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
@@ -231,74 +225,73 @@ void LoadLevelScreen(long num) {
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
-		if (GRenderer->BeginScene()) {
+		GRenderer->BeginScene();
 				
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
-			GRenderer->SetCulling(Renderer::CullNone);
-			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GRenderer->SetRenderState(Renderer::Fog, false);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetRenderState(Renderer::Fog, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				
-			if (num == 10) {
-				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
-			} else {
-				pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
-			}
+		if (num == 10) {
+			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
+		} else {
+			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
+		}
 				
-			nopbar = 1;
+		nopbar = 1;
 			
-			if(num != lastloadednum) {
-				
-				if (tc) {
-					delete tc;
-					tc = NULL;
-				}
-				
-				lastloadednum = num;
-				char temp[256];
-				char tx[256];
-				GetLevelNameByNum(num, tx);
-				sprintf(temp, "graph/levels/level%s/loading", tx);
-				tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
-			}
+		if(num != lastloadednum) {
 				
 			if (tc) {
-				GRenderer->SetRenderState(Renderer::ColorKey, false);
-				DrawCenteredImage(tc, true);
-				GRenderer->SetRenderState(Renderer::ColorKey, true);
+				delete tc;
+				tc = NULL;
 			}
-
-			if (pbar)
-			{
-				if (num == 10)
-				{
-					float px, py, px2, py2;
-					int ipx = (640 - 200)	/ 2;
-					int ipy = 461;
-					px = ipx * Xratio;
-					py = ipy * Yratio;
-					px2 = (ratio * pbar->m_dwWidth) * Xratio;
-					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-				}
-				else
-				{
-					float px, py, px2, py2;
-
-					int ipx = ((640 - 320) / 2) + 60;
-					int ipy = ((480 - 390) / 2) + 230;
-
-					px = ipx * Xratio;
-					py = ipy * Yratio;
-					px2 = (ratio * pbar->m_dwWidth) * Xratio;
-					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-				}
-			}
-
-			GRenderer->EndScene();
-			mainApp->GetWindow()->showFrame();
+				
+			lastloadednum = num;
+			char temp[256];
+			char tx[256];
+			GetLevelNameByNum(num, tx);
+			sprintf(temp, "graph/levels/level%s/loading", tx);
+			tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 		}
+				
+		if (tc) {
+			GRenderer->SetRenderState(Renderer::ColorKey, false);
+			DrawCenteredImage(tc, true);
+			GRenderer->SetRenderState(Renderer::ColorKey, true);
+		}
+
+		if (pbar)
+		{
+			if (num == 10)
+			{
+				float px, py, px2, py2;
+				int ipx = (640 - 200)	/ 2;
+				int ipy = 461;
+				px = ipx * Xratio;
+				py = ipy * Yratio;
+				px2 = (ratio * pbar->m_dwWidth) * Xratio;
+				py2 = pbar->m_dwHeight * Yratio;
+				EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
+			}
+			else
+			{
+				float px, py, px2, py2;
+
+				int ipx = ((640 - 320) / 2) + 60;
+				int ipy = ((480 - 390) / 2) + 230;
+
+				px = ipx * Xratio;
+				py = ipy * Yratio;
+				px2 = (ratio * pbar->m_dwWidth) * Xratio;
+				py2 = pbar->m_dwHeight * Yratio;
+				EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
+			}
+		}
+
+		GRenderer->EndScene();
+		mainApp->GetWindow()->showFrame();		
 
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
 		last_progress_bar_update = Time::getMs();
