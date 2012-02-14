@@ -159,7 +159,7 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 	return true;
 }
 
-bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
+bool CrashHandlerImpl::setReportLocation(const fs::path& location, bool clearContent) {
 	Autolock autoLock(&m_Lock);
 
 	if(location.string().size() >= CrashInfo::MaxFilenameLen) {
@@ -168,6 +168,12 @@ bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
 	}
 
 	strcpy(m_pCrashInfo->crashReportFolder, location.string().c_str());
+
+	if(clearContent) {
+		for(fs::directory_iterator it(location); !it.end(); ++it) {
+			fs::remove_all(location / it.name());
+		}
+	}
 
 	return true;
 }

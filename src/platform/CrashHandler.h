@@ -101,9 +101,10 @@ public:
 	/**
 	 * Specify the location where crash reports will be written.
 	 * @param location Location where the crash report will be stored.
+	 * @param clearContent Set to true to clear the content of the location directory.
 	 * @return True if the report location could be set, false otherwise.
 	 */
-	static bool setReportLocation(const fs::path& location);
+	static bool setReportLocation(const fs::path& location, bool clearContent);
 
 	/**
 	 * Register platform specific crash handlers for the current thread.

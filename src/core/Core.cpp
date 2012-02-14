@@ -644,7 +644,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	parseCommandLine(lpCmdLine);
 #endif
 
-	CrashHandler::setReportLocation(config.paths.user / "crashes");
+	CrashHandler::setReportLocation(config.paths.user / "crashes", true);
 	
 	Time::init();
 	
