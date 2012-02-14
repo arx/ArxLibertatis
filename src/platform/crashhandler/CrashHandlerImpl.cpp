@@ -27,7 +27,6 @@ CrashHandlerImpl::CrashHandlerImpl()
 }
 
 CrashHandlerImpl::~CrashHandlerImpl() {
-	shutdown();
 }
 
 bool CrashHandlerImpl::initialize() {
@@ -62,9 +61,8 @@ bool CrashHandlerImpl::initialize() {
 void CrashHandlerImpl::shutdown() {
 	Autolock autoLock(&m_Lock);
 	
-	// TODO(crash-handler) not allowed!
-	//unregisterCrashHandlers();
-	//destroySharedMemory();
+	unregisterCrashHandlers();
+	destroySharedMemory();
 }
 
 bool CrashHandlerImpl::createSharedMemory() {

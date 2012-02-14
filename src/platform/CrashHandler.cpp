@@ -70,6 +70,7 @@ bool CrashHandler::initialize() {
 void CrashHandler::shutdown() {
 	gInitCount--;
 	if(gInitCount == 0) {
+		gCrashHandlerImpl->shutdown();
 		delete gCrashHandlerImpl;
 		gCrashHandlerImpl = 0;
 	}
