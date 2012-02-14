@@ -330,7 +330,13 @@ void SDLWindow::tick() {
 					OnDestroy();
 					break;
 				}
-
+				
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+				if(event.key.keysym.sym == SDLK_TAB && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+					SDL_WM_IconifyWindow();
+				}
+#endif
+				
 			case SDL_KEYUP:
 			case SDL_MOUSEMOTION:
 			case SDL_MOUSEBUTTONDOWN:
