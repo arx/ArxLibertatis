@@ -644,8 +644,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	parseCommandLine(lpCmdLine);
 #endif
 
-	CrashHandler::setReportLocation(config.paths.user / "crashes", true);
-	
+	CrashHandler::setReportLocation(config.paths.user / "crashes");
+	CrashHandler::deleteOldReports(5);
+
 	Time::init();
 	
 	// Now that data directories are initialized, create a log file.

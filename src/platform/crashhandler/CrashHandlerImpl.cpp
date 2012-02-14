@@ -157,7 +157,7 @@ bool CrashHandlerImpl::setNamedVariable(const std::string& name, const std::stri
 	return true;
 }
 
-bool CrashHandlerImpl::setReportLocation(const fs::path& location, bool clearContent) {
+bool CrashHandlerImpl::setReportLocation(const fs::path& location) {
 	Autolock autoLock(&m_Lock);
 
 	if(location.string().size() >= CrashInfo::MaxFilenameLen) {
@@ -167,12 +167,49 @@ bool CrashHandlerImpl::setReportLocation(const fs::path& location, bool clearCon
 
 	strcpy(m_pCrashInfo->crashReportFolder, location.string().c_str());
 
-	if(clearContent) {
-		for(fs::directory_iterator it(location); !it.end(); ++it) {
-			fs::remove_all(location / it.name());
+	return true;
+}
+
+bool CrashHandlerImpl::deleteOldReports(size_t nbReportsToKeep)
+{
+	Autolock autoLock(&m_Lock);
+
+    if(strlen(m_pCrashInfo->crashReportFolder) == 0) {
+		LogError << "Report location has not been specified";
+		return false;
+	}
+	
+	// Exit if there is no crash report folder yet...
+	fs::path location(m_pCrashInfo->crashReportFolder);
+	if(!fs::is_directory(location))
+		return true;
+
+	typedef std::map<std::string, fs::path> CrashReportMap;
+	CrashReportMap oldCrashes;
+
+	for(fs::directory_iterator it(location); !it.end(); ++it) {
+		fs::path folderPath = location / it.name();
+		if(fs::is_directory(folderPath)) {
+			// Ensure this directory really contains a crash report...
+			fs::path crashManifestPath = folderPath / "crash.xml";
+			if(fs::is_regular_file(crashManifestPath)) {
+				oldCrashes[it.name()] = folderPath;
+			}
 		}
 	}
 
+	// Nothing to delete
+	if(nbReportsToKeep >= oldCrashes.size())
+		return true;
+
+	int nbReportsToDelete = oldCrashes.size() - nbReportsToKeep; 
+
+	// std::map will return the oldest reports first as folders are named "yyyy.MM.dd hh.mm.ss"
+	CrashReportMap::const_iterator it = oldCrashes.begin();
+	for(int i = 0; i < nbReportsToDelete; ++i, ++it) {
+		fs::remove_all(it->second);
+	}
+	
 	return true;
 }
 

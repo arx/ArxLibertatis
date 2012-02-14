@@ -94,11 +94,18 @@ bool CrashHandler::setNamedVariable(const std::string& name, const std::string& 
 	return gCrashHandlerImpl->setNamedVariable(name, value);
 }
 
-bool CrashHandler::setReportLocation(const fs::path& location, bool clearContent) {
+bool CrashHandler::setReportLocation(const fs::path& location) {
 	if(!isInitialized())
 		return false;
 
-	return gCrashHandlerImpl->setReportLocation(location, clearContent);
+	return gCrashHandlerImpl->setReportLocation(location);
+}
+
+bool CrashHandler::deleteOldReports(size_t nbReportsToKeep) {
+	if(!isInitialized())
+		return false;
+
+	return gCrashHandlerImpl->deleteOldReports(nbReportsToKeep);
 }
 
 bool CrashHandler::registerThreadCrashHandlers() {

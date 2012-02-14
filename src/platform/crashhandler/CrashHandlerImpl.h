@@ -51,7 +51,9 @@ public:
 
 	bool addAttachedFile(const fs::path& file);
 	bool setNamedVariable(const std::string& name, const std::string& value);
-	bool setReportLocation(const fs::path& location, bool clearContent);
+
+	bool setReportLocation(const fs::path& location);
+	bool deleteOldReports(size_t nbReportsToKeep);
 
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
