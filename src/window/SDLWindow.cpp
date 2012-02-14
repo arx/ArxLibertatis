@@ -324,6 +324,13 @@ void SDLWindow::tick() {
 			}
 			
 			case SDL_KEYDOWN:
+				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message should be sent
+				// when ALT-F4 is pressed on Windows, but it doesn't look like it's working as expected...
+				if(event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+					OnDestroy();
+					break;
+				}
+
 			case SDL_KEYUP:
 			case SDL_MOUSEMOTION:
 			case SDL_MOUSEBUTTONDOWN:
