@@ -2052,6 +2052,14 @@ struct SpellDefinition {
 			next[i] = NULL;
 		}
 	}
+
+	~SpellDefinition() {
+		for(size_t i = 0; i < RUNE_COUNT; i++) {
+			if(next[i]) {
+				delete next[i];
+			}
+		}
+	}
 };
 
 static SpellDefinition definedSpells;

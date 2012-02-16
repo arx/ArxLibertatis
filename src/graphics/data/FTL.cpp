@@ -400,7 +400,11 @@ static bool MCache_Push(const res::path & file, char * data, size_t size) {
 }
 
 void MCache_ClearAll(){
-	meshCache.erase(meshCache.begin(),meshCache.end());
+	for(vector<MCACHE_DATA>::iterator it = meshCache.begin(); it != meshCache.end(); ++it) {
+		free(it->data);
+	}
+
+	meshCache.clear();
 }
 
 // Retreives a Mesh File pointer from cache...

@@ -199,6 +199,7 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 TextureContainer::~TextureContainer()
 {
 	delete m_pTexture;
+	delete TextureHalo;
 
 	if (delayed)
 	{
