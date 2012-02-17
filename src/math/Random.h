@@ -22,15 +22,63 @@
 
 #include <limits>
 
+#include <boost/version.hpp>
+
+#if BOOST_VERSION >= 104700 // 1.47
+
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
+
+namespace detail {
+
+// not boost 1.47 still has the old sybols put presumably they will be deprecated at some point
+
+typedef boost::random::mt19937 mt19937;
+
+template <typename IntType>
+struct uniform_int_distribution {
+	typedef boost::random::uniform_int_distribution<IntType> type;
+};
+
+template <typename RealType>
+struct uniform_real_distribution {
+	typedef boost::random::uniform_real_distribution<RealType> type;
+};
+
+} // namespace detail
+
+#else
+
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/uniform_real.hpp>
+
+namespace detail {
+
+typedef boost::mt19937 mt19937;
+
+template <typename IntType>
+struct uniform_int_distribution {
+	typedef boost::uniform_int<IntType> type;
+};
+
+template <typename RealType>
+struct uniform_real_distribution {
+	typedef boost::uniform_real<RealType> type;
+};
+
+} // namespace detail
+
+#endif
 
 /*!
  * Random number generator.
  */
 class Random {
+	
 public:
+	
 	/// Generates a random integer value in the range [intMin, intMax].
 	template <class IntType>
 	static inline IntType get(IntType min = 0, IntType max = std::numeric_limits<IntType>::max());
@@ -60,14 +108,17 @@ public:
 	static void seed(unsigned int seedVal);
 
 private:
-	static boost::random::mt19937 rng;
+	
+	typedef detail::mt19937 Generator;
+	
+	static Generator rng;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
 template <class IntType>
 IntType Random::get(IntType min, IntType max) {
-	return boost::random::uniform_int_distribution<IntType>(min, max)(rng);
+	return typename detail::uniform_int_distribution<IntType>::type(min, max)(rng);
 }
 
 int Random::get(int min, int max) {
@@ -76,7 +127,7 @@ int Random::get(int min, int max) {
 
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
-	return boost::random::uniform_real_distribution<RealType>(min, max)(rng);
+	return typename detail::uniform_real_distribution<RealType>::type(min, max)(rng);
 }
 
 float Random::getf(float min, float max) {
