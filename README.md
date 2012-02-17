@@ -50,6 +50,7 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 Build options:
 
 * `BUILD_TOOLS` (default=ON): Build tools
+* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis.
