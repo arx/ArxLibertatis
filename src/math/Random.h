@@ -23,10 +23,10 @@
 #include <limits>
 
 #include <boost/version.hpp>
+#include <boost/random/mersenne_twister.hpp>
 
 #if BOOST_VERSION >= 104700 // 1.47
 
-#include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
 
@@ -50,7 +50,6 @@ struct uniform_real_distribution {
 
 #else
 
-#include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/uniform_real.hpp>
 
