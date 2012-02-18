@@ -157,7 +157,7 @@ unsigned char* CharToUnsignedChar(const char *strIn)
 
 CSmtp::CSmtp()
 {
-	hSocket = NULL;
+	hSocket = 0;
 	m_bConnected = false;
 	m_iXPriority = XPRIORITY_NORMAL;
 	m_iSMTPSrvPort = 0;
@@ -1137,7 +1137,7 @@ void CSmtp::DisconnectRemoteServer()
 		closesocket(hSocket);
 #endif
 	}
-	hSocket = NULL;
+	hSocket = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
