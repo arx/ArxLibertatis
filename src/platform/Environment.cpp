@@ -211,3 +211,8 @@ void defineSystemDirectories() {
 }
 
 #endif
+
+std::string getExecutablePath() {
+	// TODO(crash-handler)
+	return std::string();
+}

@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CrashHandlerPOSIX.h"
+#include "platform/crashhandler/CrashHandlerPOSIX.h"
 
 #include "Configure.h"
 
@@ -114,27 +114,31 @@ bool CrashHandlerPOSIX::registerCrashHandlers() {
 	return registerThreadCrashHandlers();
 }
 
+static void removeCrashHandlers(PlatformCrashHandlers * previous) {
+	
+#ifdef SIGSEGV
+	signal(SIGSEGV, previous->m_SIGSEGVHandler);
+#endif
+	
+#ifdef SIGILL
+	signal(SIGILL, previous->m_SIGILLHandler);
+#endif
+	
+#ifdef SIGFPE
+	signal(SIGFPE, previous->m_SIGFPEHandler);
+#endif
+	
+#ifdef SIGABRT
+	signal(SIGABRT, previous->m_SIGABRTHandler);
+#endif
+	
+}
+
 void CrashHandlerPOSIX::unregisterCrashHandlers() {
 	
 	unregisterThreadCrashHandlers();
 	
-	// TODO use sigaction instead of signal
-	
-#ifdef SIGSEGV
-	signal(SIGSEGV, m_pPreviousCrashHandlers->m_SIGSEGVHandler);
-#endif
-	
-#ifdef SIGILL
-	signal(SIGILL, m_pPreviousCrashHandlers->m_SIGILLHandler);
-#endif
-	
-#ifdef SIGFPE
-	signal(SIGFPE, m_pPreviousCrashHandlers->m_SIGFPEHandler);
-#endif
-	
-#ifdef SIGABRT
-	signal(SIGABRT, m_pPreviousCrashHandlers->m_SIGABRTHandler);
-#endif
+	removeCrashHandlers(m_pPreviousCrashHandlers);
 	
 	delete m_pPreviousCrashHandlers;
 	m_pPreviousCrashHandlers = 0;
@@ -150,7 +154,12 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
+PlatformCrashHandlers nullHandlers = { 0, 0, 0, 0 };
+
 void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
+	
+	// Remove crash handlers so we don't end in an infinite crash loop
+	removeCrashHandlers(&nullHandlers);
 	
 	Autolock autoLock(&m_Lock);
 	
@@ -246,17 +255,31 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
 		while(true);
 	} else {
-		if(fork()) {
+		
+		int killer = fork();
+		if(!killer) {
+			
 			// Wait for the CrashReporter signal before exiting.
 			m_pCrashInfo->exitLock.wait();
 			
 			// Kill the original, busy-waiting process.
-			kill(m_pCrashInfo->processId, SIGKILL);
+			kill(m_pCrashInfo->processId, crashType);
 			
 			exit(1);
+			
 		} else {
-			execlp(m_CrashHandlerApp.c_str(), arguments, NULL);
+			
+			// Try a the crash reporter in the same directory as arx or in the current directory.
+			execl(m_CrashHandlerApp.c_str(), arguments, NULL);
+			
+			// Try a crash reporter in the system path.
+			execlp("arxcrashreporter", arguments, NULL);
+			
+			// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
+			
 			m_pCrashInfo->exitLock.post(); // Post signal in case of failure
+			
+			exit(1);
 		}
-	}	
+	}
 }

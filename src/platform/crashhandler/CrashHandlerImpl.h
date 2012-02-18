@@ -35,11 +35,10 @@
 #include <boost/uuid/uuid_io.hpp>
 
 #include "io/log/Logger.h"
+#include "io/fs/FilePath.h"
 #include "platform/CrashHandler.h"
 #include "platform/crashhandler/CrashInfo.h"
 #include "platform/Lock.h"
-
-namespace fs { class path; }
 
 class CrashHandlerImpl {
 public:
