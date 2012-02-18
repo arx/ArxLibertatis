@@ -243,8 +243,6 @@ std::string getExecutablePath() {
 	std::vector<char> buffer;
 	buffer.resize(1024);
 	
-	std::cout << "start" << std::endl;
-	
 	if(try_readlink(buffer, "/proc/self/exe")) {
 		return std::string(buffer.data(), buffer.size());
 	}
@@ -256,8 +254,6 @@ std::string getExecutablePath() {
 	if(try_readlink(buffer, "/proc/self/path/a.out")) {
 		return std::string(buffer.data(), buffer.size());
 	}
-	
-	std::cout << "end" << std::endl;
 	
 #endif
 	
