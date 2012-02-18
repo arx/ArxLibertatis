@@ -30,6 +30,9 @@ bool getSystemConfiguration(const std::string & name, std::string & result);
 
 void defineSystemDirectories();
 
+//! Get the path to the current running executable if possible or an empty string otherwise.
+std::string getExecutablePath();
+
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 const char env_list_seperator = ':';
 #else

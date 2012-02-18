@@ -17,10 +17,12 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CrashHandlerImpl.h"
+#include "platform/crashhandler/CrashHandlerImpl.h"
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
+
+#include "platform/Environment.h"
 
 CrashHandlerImpl::CrashHandlerImpl()
 	: m_pCrashInfo(0) {
@@ -31,26 +33,24 @@ CrashHandlerImpl::~CrashHandlerImpl() {
 
 bool CrashHandlerImpl::initialize() {
 	Autolock autoLock(&m_Lock);
-
+	
 	bool initialized = true;
 	
-	bool crashReporterFound = fs::exists(m_CrashHandlerApp);
-	if(crashReporterFound) {
-		LogInfo << "CrashReporter found, initializing crash handler.";
-	} else {
-		LogError << "CrashReporter not found, disabling crash handler.";
-		return false;
+	fs::path local_path = fs::path(getExecutablePath());
+	if(!local_path.empty()) {
+		local_path = local_path.parent() / fs::path(m_CrashHandlerApp);
+		if(fs::exists(local_path)) {
+			m_CrashHandlerApp = local_path.string();
+		}
 	}
-
+	
 	if(!createSharedMemory()) {
-		LogError << "Failed to create shared memory.";
 		return false;
 	}
-
+	
 	fillBasicCrashInfo();
-
+	
 	if(!registerCrashHandlers()) {
-		LogError << "Failed to register crash handlers.";
 		destroySharedMemory();
 		initialized = false;
 	}

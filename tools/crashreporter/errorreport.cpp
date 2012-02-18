@@ -43,6 +43,7 @@
 #include <QXmlStreamWriter>
 
 #include "io/fs/Filesystem.h"
+#include "io/fs/FileStream.h"
 #include "platform/Thread.h"
 
 // CrashReporter
@@ -144,23 +145,24 @@ BOOL CALLBACK MiniDumpCallback(PVOID CallbackParam, PMINIDUMP_CALLBACK_INPUT Cal
 }
 #endif
 
-bool ErrorReport::GetCrashDump(const fs::path& fileName)
-{
+bool ErrorReport::GetCrashDump(const fs::path& fileName) {
+	
 #ifdef HAVE_WINAPI
+	
 	fs::path fullPath = m_ReportFolder / fileName;
-
+	
 	HMODULE hDbgHelp = LoadLibrary("dbghelp.dll");
 	if(hDbgHelp==NULL)
 		return false;
 	
 	typedef LPAPI_VERSION (WINAPI* LPIMAGEHLPAPIVERSIONEX)(LPAPI_VERSION AppVersion);
 	typedef BOOL (WINAPI *LPMINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD ProcessId, HANDLE hFile, MINIDUMP_TYPE DumpType, CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, CONST PMINIDUMP_USER_STREAM_INFORMATION UserEncoderParam, CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
-
+	
 	// Check if we have a valid dbghelp API version
 	LPIMAGEHLPAPIVERSIONEX lpImagehlpApiVersionEx = (LPIMAGEHLPAPIVERSIONEX)GetProcAddress(hDbgHelp, "ImagehlpApiVersionEx");
 	if(lpImagehlpApiVersionEx == NULL)
 		return false;
-
+	
 	API_VERSION CompiledApiVer;
 	CompiledApiVer.MajorVersion = 6;
 	CompiledApiVer.MinorVersion = 1;
@@ -205,12 +207,14 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 		m_AttachedFiles.push_back(fullPath);
 
 	return bWriteDump;
+	
 #else
 	ARX_UNUSED(fileName);
 	// TODO: Write core dump to 
 	// fs::path fullPath = m_ReportFolder / fileName;
 	
 #ifdef HAVE_EXECLP
+	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
 	// Fork so we retain control after launching GDB.
@@ -218,8 +222,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 	if(childPID) {
 		// Wait for GDB to exit.
 		waitpid(childPID, NULL, 0);
-	}
-	else {
+	} else {
 		#ifdef HAVE_DUP2
 		// Redirect output to a file
 		int fd = open(tracePath.string().c_str(), O_WRONLY|O_CREAT, 0666);
@@ -241,10 +244,21 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName)
 	#endif // HAVE_EXECLP
 	
 	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
-	if(bWroteDump)
+	if(bWroteDump) {
 		m_AttachedFiles.push_back(tracePath);
-
-	return bWroteDump;
+		return true;
+	}
+	
+	tracePath = m_ReportFolder / "trace.txt";
+	fs::ofstream ofs(tracePath, ios_base::trunc);
+	ofs << safestring(m_pCrashInfo->backtrace);
+	ofs.flush();
+	ofs.close();
+	
+	m_AttachedFiles.push_back(tracePath);
+	
+	
+	return true;
 #endif
 }
 
@@ -496,12 +510,12 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	pProgressNotifier->taskStepEnded();
 
 	// Generate minidump
-	pProgressNotifier->taskStepStarted("Generating minidump");
+	pProgressNotifier->taskStepStarted("Generating crash dump");
 	bool bCrashDump = GetCrashDump("crash.dmp");
 	pProgressNotifier->taskStepEnded();
 	if(!bCrashDump)
 	{
-		pProgressNotifier->setError("Could not generate the minidump.");
+		pProgressNotifier->setError("Could not generate the crash dump.");
 		return false;
 	}
 

@@ -157,7 +157,7 @@ unsigned char* CharToUnsignedChar(const char *strIn)
 
 CSmtp::CSmtp()
 {
-	hSocket = NULL;
+	hSocket = 0;
 	m_bConnected = false;
 	m_iXPriority = XPRIORITY_NORMAL;
 	m_iSMTPSrvPort = 0;
@@ -479,7 +479,7 @@ void CSmtp::Send()
 	// ***** CONNECTING TO SMTP SERVER *****
 
 	// connecting to remote host if not already connected:
-	if(hSocket==NULL)
+	if(hSocket == 0)
 	{
 		if(!ConnectRemoteServer(m_sSMTPSrvName.c_str(), m_iSMTPSrvPort, m_type, m_bAuthenticate))
 			throw ECSmtp(ECSmtp::WSA_INVALID_SOCKET);
@@ -658,7 +658,6 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 	fd_set fdwrite,fdexcept;
 	timeval timeout;
 	int res = 0;
-	bool conected=false;
 
 	try
 	{
@@ -959,7 +958,7 @@ bool CSmtp::ConnectRemoteServer(const char *szServer, const unsigned short nPort
 
 				//Create a cnonce
 				char cnonce[17], nc[9];
-				sprintf(cnonce, "%x", time(NULL));
+				sprintf(cnonce, "%x", unsigned(0));
 
 				//Set nonce count
 				sprintf(nc, "%08d", 1);
@@ -1138,7 +1137,7 @@ void CSmtp::DisconnectRemoteServer()
 		closesocket(hSocket);
 #endif
 	}
-	hSocket = NULL;
+	hSocket = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

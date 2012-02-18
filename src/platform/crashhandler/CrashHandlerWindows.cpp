@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CrashHandlerWindows.h"
+#include "platform/crashhandler/CrashHandlerWindows.h"
 
 #include <new.h>     // <new> won't do it... we need some MS specific functions...
 #include <cfloat>    // For _FPE_XXX constants
@@ -350,6 +350,8 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 		} while(!exit);
 
 		CloseHandle(crashHandlerProcess);
+	} else {
+		// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
 	}
 	
 	TerminateProcess(GetCurrentProcess(), 1);

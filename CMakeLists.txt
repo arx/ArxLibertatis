@@ -45,6 +45,7 @@ endmacro()
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_TOOLS "Build tools" ON)
+option(BUILD_CRASHREPORTER "Build the crash reporter" ON)
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(UNITY_BUILD "Unity build" OFF)
@@ -66,6 +67,9 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_CO
 	force_recheck_library(OpenGL)
 	force_recheck_library(GLEW)
 	force_recheck_library(Boost)
+	force_recheck_library(OpenSSL OPENSSL)
+	force_recheck_library(QtCore QT_QTCORE)
+	force_recheck_library(QtGui QT_QTGUI)
 	unset(Boost_INCLUDE_DIR CACHE)
 	set(LAST_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE INTERNAL "The last C++ compiler flags.")
 	set(LAST_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE INTERNAL "The last C++ compiler.")
@@ -121,6 +125,21 @@ endif(MSVC)
 
 set(BOOST_COMPONENTS program_options)
 find_package(Boost REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+
+set(HAVE_CRASHREPORTER 0)
+if(BUILD_CRASHREPORTER)
+	# Needed by the crash reporter
+	find_package(OpenSSL)
+	if(OPENSSL_FOUND)
+		add_definitions(-DQT_NO_DEBUG)
+		find_package(Qt4 COMPONENTS QtCore QtGui)
+		if(QT_FOUND)
+			set(HAVE_CRASHREPORTER 1)
+			include(${QT_USE_FILE})
+		endif()
+		remove_definitions(-DQT_DEBUG)
+	endif()
+endif()
 
 mark_as_advanced(IL_INCLUDE_DIR)
 mark_as_advanced(ILUT_LIBRARIES)
@@ -212,6 +231,12 @@ else(MSVC)
 		check_link_library(SDL SDL_LIBRARY)
 	endif()
 	
+	if(HAVE_CRASHREPORTER)
+		check_link_library(OpenSSL OPENSSL_LIBRARIES OPENSSL)
+		check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
+		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
+	endif()
+	
 	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	
 	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=199309")
@@ -245,7 +270,7 @@ else(MSVC)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
-	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
+	check_symbol_exists(backtrace_symbols "execinfo.h" HAVE_BACKTRACE_SYMBOLS)
 	
 	if(USE_NATIVE_FS)
 		
@@ -770,14 +795,88 @@ list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
 add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
 
+if(HAVE_CRASHREPORTER)
+	
+	set(arxcrashreporter_SOURCES
+		tools/crashreporter/main.cpp
+		tools/crashreporter/errorreport.h
+		tools/crashreporter/errorreport.cpp
+		tools/crashreporter/utilities_win32.h
+		tools/crashreporter/utilities_win32.cpp
+		tools/crashreporter/csmtp/base64.h
+		tools/crashreporter/csmtp/base64.cpp
+		tools/crashreporter/csmtp/csmtp.h
+		tools/crashreporter/csmtp/csmtp.cpp
+		tools/crashreporter/csmtp/md5.h
+		tools/crashreporter/csmtp/md5.cpp
+		tools/crashreporter/qhexedit/commands.h
+		tools/crashreporter/qhexedit/commands.cpp
+		tools/crashreporter/qhexedit/qhexedit.h
+		tools/crashreporter/qhexedit/qhexedit.cpp
+		tools/crashreporter/qhexedit/qhexedit_p.h
+		tools/crashreporter/qhexedit/qhexedit_p.cpp
+		tools/crashreporter/qhexedit/xbytearray.h
+		tools/crashreporter/qhexedit/xbytearray.cpp
+		tools/crashreporter/ui/errorreportdialog.h
+		tools/crashreporter/ui/errorreportdialog.cpp
+		tools/crashreporter/xmlhighlighter/xmlhighlighter.h
+		tools/crashreporter/xmlhighlighter/xmlhighlighter.cpp
+		tools/crashreporter/minizip/crypt.h
+		tools/crashreporter/minizip/ioapi.cpp
+		tools/crashreporter/minizip/ioapi.h
+		tools/crashreporter/minizip/zip.cpp
+		tools/crashreporter/minizip/zip.h
+		${PLATFORM_SOURCES}
+		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
+	)
+	
+	set(arxcrashreporter_UIs
+		tools/crashreporter/ui/errorreportdialog.ui
+	)
+	
+	set(arxcrashreporter_MOC_HEADERS
+		tools/crashreporter/ui/errorreportdialog.h
+		tools/crashreporter/qhexedit/qhexedit.h
+		tools/crashreporter/qhexedit/qhexedit_p.h
+	)
+	
+	set(arxcrashreporter_RESOURCES
+		tools/crashreporter/resources/crashreporter.qrc
+	)
+	
+	qt4_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
+	qt4_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
+	qt4_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
+	
+	set(SRC_DIR tools/crashreporter/)
+	
+	create_source_groups(arxcrashreporter_SOURCES)
+	
+	include_directories(${SRC_DIR})
+	include_directories(SYSTEM ${OPENSSL_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+	
+	set(arxcrashreporter_LIBRARIES
+		${QT_QTCORE_LIBRARY_RELEASE}
+		${QT_QTGUI_LIBRARY_RELEASE}
+		${Boost_LIBRARIES}
+		${ZLIB_LIBRARIES}
+	)
+	if(MSVC)
+		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
+		list(APPEND arxcrashreporter_LIBRARIES ${SSL_EAY_RELEASE} ${LIB_EAY_RELEASE})
+	else()
+		list(APPEND arxcrashreporter_LIBRARIES ${OPENSSL_LIBRARIES})
+	endif()
+	
+	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
+	                      "${arxcrashreporter_LIBRARIES}" "")
+	
+endif()
+
 if(BUILD_TOOLS)
 	
-	# Needed by the crash reporter
-	add_definitions(-DQT_NO_DEBUG)
-	find_package(Qt4)
-	find_package(OpenSSL)
-
-	set(SAVETOOL_SOURCES
+	set(arxsavetool_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
@@ -794,11 +893,12 @@ if(BUILD_TOOLS)
 		tools/savetool/SaveView.cpp
 	)
 	
-	set(SAVETOOL_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
+	set(arxsavetool_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
 	
-	add_executable_shared(arxsavetool "" "${SAVETOOL_SOURCES}" "${SAVETOOL_LIBRARIES}" "")
+	add_executable_shared(arxsavetool "" "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}" "")
 	
-	set(UNPAK_SOURCES
+	
+	set(arxunpak_SOURCES
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
@@ -812,84 +912,9 @@ if(BUILD_TOOLS)
 		tools/unpak/unpak.cpp
 	)
 	
-	set(UNPAK_LIBRARIES ${Boost_LIBRARIES})
+	set(arxunpak_LIBRARIES ${Boost_LIBRARIES})
 	
-	add_executable_shared(arxunpak "" "${UNPAK_SOURCES}" "${UNPAK_LIBRARIES}" "")
-	
-	
-	if(QT4_FOUND)
-		set( CrashReporter_SOURCES
-			tools/crashreporter/main.cpp
-			tools/crashreporter/errorreport.h
-			tools/crashreporter/errorreport.cpp
-			tools/crashreporter/utilities_win32.h
-			tools/crashreporter/utilities_win32.cpp
-			tools/crashreporter/csmtp/base64.h
-			tools/crashreporter/csmtp/base64.cpp
-			tools/crashreporter/csmtp/csmtp.h
-			tools/crashreporter/csmtp/csmtp.cpp
-			tools/crashreporter/csmtp/md5.h
-			tools/crashreporter/csmtp/md5.cpp
-			tools/crashreporter/qhexedit/commands.h
-			tools/crashreporter/qhexedit/commands.cpp
-			tools/crashreporter/qhexedit/qhexedit.h
-			tools/crashreporter/qhexedit/qhexedit.cpp
-			tools/crashreporter/qhexedit/qhexedit_p.h
-			tools/crashreporter/qhexedit/qhexedit_p.cpp
-			tools/crashreporter/qhexedit/xbytearray.h
-			tools/crashreporter/qhexedit/xbytearray.cpp
-			tools/crashreporter/ui/errorreportdialog.h
-			tools/crashreporter/ui/errorreportdialog.cpp
-			tools/crashreporter/xmlhighlighter/xmlhighlighter.h
-			tools/crashreporter/xmlhighlighter/xmlhighlighter.cpp
-			tools/crashreporter/minizip/crypt.h
-			tools/crashreporter/minizip/ioapi.cpp
-			tools/crashreporter/minizip/ioapi.h
-			tools/crashreporter/minizip/zip.cpp
-			tools/crashreporter/minizip/zip.h
-			${PLATFORM_SOURCES}
-			${IO_FILESYSTEM_SOURCES}
-			${IO_LOGGER_SOURCES}
-		)
-		
-		set( CrashReporter_UIs
-			tools/crashreporter/ui/errorreportdialog.ui
-		)
-		
-		set( CrashReporter_MOC_HEADERS
-			tools/crashreporter/ui/errorreportdialog.h
-			tools/crashreporter/qhexedit/qhexedit.h
-			tools/crashreporter/qhexedit/qhexedit_p.h
-		)
-		
-		set( CrashReporter_RESOURCES
-			tools/crashreporter/resources/crashreporter.qrc
-		)
-		
-		include(${QT_USE_FILE})
-		
-		remove_definitions(-DQT_DEBUG)
-		
-		qt4_wrap_ui(CrashReporter_SOURCES ${CrashReporter_UIs})
-		qt4_wrap_cpp(CrashReporter_SOURCES ${CrashReporter_MOC_HEADERS})
-		qt4_add_resources(CrashReporter_SOURCES ${CrashReporter_RESOURCES})
-		
-		set(SRC_DIR tools/crashreporter/)
-		set(ARX_SRC_DIR src)
-		
-		create_source_groups(CrashReporter_SOURCES)
-
-		include_directories(${SRC_DIR} ${ARX_SRC_DIR} ${Boost_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-		set(CrashReporter_LIBRARIES ${QT_QTCORE_LIBRARY_RELEASE} ${QT_QTGUI_LIBRARY_RELEASE} ${Boost_LIBRARIES} ${ZLIB_LIBRARIES})
-		if(MSVC)
-			list(APPEND CrashReporter_LIBRARIES winmm psapi imm32)
-			list(APPEND CrashReporter_LIBRARIES ${SSL_EAY_RELEASE} ${LIB_EAY_RELEASE})
-		else()
-			list(APPEND CrashReporter_LIBRARIES ${OPENSSL_LIBRARIES})
-		endif()
-				
-		add_executable_shared(arxcrashreporter WIN32 "${CrashReporter_SOURCES}" "${CrashReporter_LIBRARIES}" "")
-	endif()
+	add_executable_shared(arxunpak "" "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}" "")
 	
 endif()
 
@@ -1099,6 +1124,14 @@ print_configuration("Windowing"
 print_configuration("Crash handler"
 	HAVE_CRASHHANDLER_POSIX   "POSIX"
 	HAVE_CRASHHANDLER_WINDOWS "Win32"
+)
+print_configuration("Crash reporter" FIRST
+	HAVE_CRASHREPORTER "enabled"
+	1                  "disabled"
+)
+print_configuration("Tools" FIRST
+	BUILD_TOOLS "enabled"
+	1           "disabled"
 )
 message("")
 

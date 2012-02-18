@@ -50,8 +50,6 @@ private:
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
 	
 	static CrashHandlerPOSIX * m_sInstance;
-	
-	bool useGdb;
 };
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERLINUX_H

@@ -102,7 +102,7 @@ function(check_link_library LIBRARY_NAME LIBRARY_VARIABLE)
 	unset(FIND_PACKAGE_MESSAGE_DETAILS_${ARGV2} CACHE)
 	unset(FIND_PACKAGE_MESSAGE_DETAILS_${LIBRARY_NAME} CACHE)
 	
-	message(FATAL_ERROR "\n${ERRORLOG1}\n\n${ERRORLOG2}\n\n!! No suitable (32- vs. 64-bit) version of ${LIBRARY_NAME} found; tried ${lib_current} and ${LIBRARY_FILE}\nusing compiler ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n")
+	message(FATAL_ERROR "\n${ERRORLOG1}\n\n${ERRORLOG2}\n\n!! No suitable version of ${LIBRARY_NAME} found.\n   Maybe you don't have the right (32 vs.64 bit) architecture installed?\n\n   Tried ${lib_current} and ${LIBRARY_FILE}\n   Using compiler ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS}\n\n\n")
 	
 endfunction(check_link_library)
 
