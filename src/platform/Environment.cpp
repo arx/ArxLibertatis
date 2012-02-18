@@ -22,6 +22,7 @@
 #include <sstream>
 #include <algorithm>
 #include <stdlib.h>
+#include <vector>
 
 #include <boost/scoped_array.hpp>
 
@@ -34,6 +35,11 @@
 
 #ifdef HAVE_WORDEXP_H
 #include <wordexp.h>
+#endif
+
+#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+#include <unistd.h>
+#include <sys/stat.h>
 #endif
 
 std::string expandEvironmentVariables(const std::string & in) {
@@ -212,7 +218,56 @@ void defineSystemDirectories() {
 
 #endif
 
+#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+static bool try_readlink(std::vector<char> & buffer, const char * path) {
+	
+	int ret = readlink(path, buffer.data(), buffer.size());
+	while(ret >= 0 && std::size_t(ret) == buffer.size()) {
+		buffer.resize(buffer.size() * 2);
+		ret = readlink(path, buffer.data(), buffer.size());
+	}
+	
+	if(ret < 0) {
+		return false;
+	}
+	
+	buffer.resize(ret);
+	return true;
+}
+#endif
+
 std::string getExecutablePath() {
-	// TODO(crash-handler)
+	
+#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+	
+	std::vector<char> buffer;
+	buffer.resize(1024);
+	
+	std::cout << "start" << std::endl;
+	
+	if(try_readlink(buffer, "/proc/self/exe")) {
+		return std::string(buffer.data(), buffer.size());
+	}
+	
+	if(try_readlink(buffer, "/proc/curproc/file")) {
+		return std::string(buffer.data(), buffer.size());
+	}
+	
+	if(try_readlink(buffer, "/proc/self/path/a.out")) {
+		return std::string(buffer.data(), buffer.size());
+	}
+	
+	std::cout << "end" << std::endl;
+	
+#endif
+	
+#ifdef HAVE_WINAPI
+	
+	// TODO(crash-handler) add window implementation:
+	// GetProcessImageFileName and/or QueryFullProcessImageName?
+	
+#endif
+	
+	// Give up - we couldn't determine the exe path.
 	return std::string();
 }
