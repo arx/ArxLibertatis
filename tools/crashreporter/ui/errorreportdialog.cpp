@@ -20,6 +20,7 @@
 #include "errorreportdialog.h"
 #include "ui_errorreportdialog.h"
 
+#include "platform/Platform.h"
 
 ScreenshotWidget::ScreenshotWidget(QWidget *parent) : QWidget(parent)
 {
@@ -35,8 +36,9 @@ void ScreenshotWidget::setPixmap(const QPixmap& pixmap)
 	m_pixmap = pixmap;
 }
 
-void ScreenshotWidget::paintEvent(QPaintEvent *event)
+void ScreenshotWidget::paintEvent(QPaintEvent * event)
 {
+	ARX_UNUSED(event);
 	QPainter p(this);
 	p.setRenderHint(QPainter::SmoothPixmapTransform);
 	p.drawPixmap(rect(), m_pixmap, m_pixmap.rect());
@@ -107,6 +109,7 @@ void ErrorReportDialog::onTabChanged(int index)
 
 void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, const QItemSelection & oldSelection)
 {
+	ARX_UNUSED(oldSelection);
 	const QModelIndexList selectedIndexes = newSelection.indexes();
 	if(selectedIndexes.empty())
 		return;
