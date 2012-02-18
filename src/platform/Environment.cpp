@@ -261,9 +261,6 @@ std::string getExecutablePath() {
 	
 #ifdef HAVE_WINAPI
 	
-	// TODO(crash-handler) add window implementation:
-	// GetProcessImageFileName and/or QueryFullProcessImageName?
-
 	std::vector<char> buffer;
 	buffer.resize(1024);
 	if(GetModuleFileNameA(NULL, buffer.data(), buffer.size()) > 0) {
