@@ -21,7 +21,7 @@
 
 #include "Configure.h"
 
-#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS_FD)
+#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS)
 #include <execinfo.h>
 #endif
 
@@ -29,6 +29,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+
+#include "platform/Environment.h"
 
 typedef void (*signal_handler)(int);
 
@@ -52,23 +54,6 @@ CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
 	m_CrashHandlerApp = "./arxcrashreporter";
-	
-#ifdef HAVE_EXECLP
-	useGdb = true;
-	
-	// Test for GDB availability
-	int childPID = fork();
-	if(childPID) {
-		// Wait for GDB to exit.
-		waitpid(childPID, NULL, 0);		
-	} else {
-		// If execlp returns, it means gdb was not found in path.
-		execlp("gdb", "gdb", "-v", NULL);
-		useGdb = false;
-	}
-#else
-	useGdb = false;
-#endif
 }
 
 CrashHandlerPOSIX::~CrashHandlerPOSIX() {
@@ -82,8 +67,12 @@ CrashHandlerPOSIX& CrashHandlerPOSIX::getInstance() {
 
 void CrashHandlerPOSIX::fillBasicCrashInfo() {
 	CrashHandlerImpl::fillBasicCrashInfo();
-	
-	m_pCrashInfo->execFullName[readlink("/proc/self/exe", m_pCrashInfo->execFullName, 511)] = 0;
+	std::string exe = getExecutablePath();
+	if(exe.length() < ARRAY_SIZE(m_pCrashInfo->execFullName)) {
+		strcpy(m_pCrashInfo->execFullName, exe.c_str());
+	} else {
+		m_pCrashInfo->execFullName[0] = '\0';
+	}
 }
 
 bool CrashHandlerPOSIX::registerCrashHandlers() {
@@ -164,7 +153,8 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	Autolock autoLock(&m_Lock);
 	
 	// Run the callbacks
-	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin(); it != m_crashCallbacks.end(); ++it) {
+	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
+	    it != m_crashCallbacks.end(); ++it) {
 		(*it)();
 	}
 	
@@ -227,18 +217,26 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
 
 	// Fallback to generate a basic stack trace.
-	#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS_FD)
-	if(!useGdb)
+	#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS)
 	{
 		void * buffer[100];
-		
 		size_t size = backtrace(buffer, ARRAY_SIZE(buffer));
 		
 		// Print the stacktrace, skipping the innermost stack frame.
+		size_t pos = 0;
 		if(size > 1) {
-			backtrace_symbols_fd(buffer + 1, size - 1, 2);
+			char ** bt = backtrace_symbols(buffer + 1, std::max(size, ARRAY_SIZE(buffer)) - 1);
+			for(std::size_t i = 0; i < ARRAY_SIZE(buffer) - 1; i++) {
+				size_t len = strlen(bt[i]);
+				if(pos + len + 2 > ARRAY_SIZE(m_pCrashInfo->backtrace)) {
+					break;
+				}
+				memcpy(m_pCrashInfo->backtrace + pos, bt[i], len);
+				pos += len;
+				m_pCrashInfo->backtrace[pos++] = '\n';
+			}
 		}
-		
+		m_pCrashInfo->backtrace[pos] = '\0';
 	}
 	#endif
 
@@ -247,9 +245,6 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
 	
-	char arguments[256];
-	strcpy(arguments, "-crashinfo=");
-	strcat(arguments, m_SharedMemoryName.c_str());
 	
 	if(fork()) {
 		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
@@ -268,6 +263,10 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 			exit(1);
 			
 		} else {
+			
+			char arguments[256];
+			strcpy(arguments, "-crashinfo=");
+			strcat(arguments, m_SharedMemoryName.c_str());
 			
 			// Try a the crash reporter in the same directory as arx or in the current directory.
 			execl(m_CrashHandlerApp.c_str(), arguments, NULL);

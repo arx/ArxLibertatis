@@ -37,7 +37,6 @@ bool CrashHandlerImpl::initialize() {
 	bool initialized = true;
 	
 	fs::path local_path = fs::path(getExecutablePath());
-	std::cout << "hello world" << local_path << std::endl;
 	if(!local_path.empty()) {
 		local_path = local_path.parent() / fs::path(m_CrashHandlerApp);
 		if(fs::exists(local_path)) {

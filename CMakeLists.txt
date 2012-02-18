@@ -270,7 +270,7 @@ else(MSVC)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
-	check_symbol_exists(backtrace_symbols_fd "execinfo.h" HAVE_BACKTRACE_SYMBOLS_FD)
+	check_symbol_exists(backtrace_symbols "execinfo.h" HAVE_BACKTRACE_SYMBOLS)
 	
 	if(USE_NATIVE_FS)
 		

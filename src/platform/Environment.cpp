@@ -255,6 +255,8 @@ std::string getExecutablePath() {
 		return std::string(buffer.data(), buffer.size());
 	}
 	
+	// we can also try argv[0]!
+	
 #endif
 	
 #ifdef HAVE_WINAPI

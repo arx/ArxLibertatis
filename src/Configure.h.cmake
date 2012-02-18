@@ -35,7 +35,7 @@
 #cmakedefine HAVE_WAITPID
 #cmakedefine HAVE_KILL
 #cmakedefine HAVE_BACKTRACE
-#cmakedefine HAVE_BACKTRACE_SYMBOLS_FD
+#cmakedefine HAVE_BACKTRACE_SYMBOLS
 #cmakedefine HAVE_ISATTY
 #cmakedefine HAVE_WORDEXP_H
 #cmakedefine HAVE_FPATHCONF

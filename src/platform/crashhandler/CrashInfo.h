@@ -27,9 +27,8 @@
 #include "platform/Platform.h"
 
 struct CrashInfoBase {
-
-	CrashInfoBase() : exitLock(0) {
-	}
+	
+	CrashInfoBase() : exitLock(0) { }
 	
 	enum Constants {
 		MaxNbFiles = 32,
@@ -40,50 +39,57 @@ struct CrashInfoBase {
 		MaxDetailCrashInfoLen = 4096,
 		MaxCallstackDepth = 256
 	};
-
+	
 	// Files to attach to the report.
 	int	 nbFilesAttached;
 	char attachedFiles[MaxNbFiles][MaxFilenameLen];
-
+	
 	// Variables to add to the report.
 	int nbVariables;
 	struct Variable {
 		char name[MaxVariableNameLen];
 		char value[MaxVariableValueLen];
 	} variables[MaxNbVariables];
-
+	
 	// ID of the crashed process & thread
 	boost::interprocess::detail::OS_process_id_t processId;
 	boost::interprocess::detail::OS_thread_id_t threadId;
-
+	
 	// Detailed crash info (messages, registers, whatever).
 	char detailedCrashInfo[MaxDetailCrashInfoLen];
 	
-	// Callstack of the crash.
-	u64 callstack[MaxCallstackDepth];
-
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
-
+	
 	// Once released, this lock will allow the crashed application to terminate.
 	boost::interprocess::interprocess_semaphore	exitLock;
+	
 };
 
 
-#if ARX_PLATFORM == ARX_PLATFORM_LINUX
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 struct CrashInfo : public CrashInfoBase {
+	
 	char execFullName[512];
+	
+	char backtrace[4096];
+	
 };
 
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+#else
 
 #include <windows.h>
 #include <dbghelp.h>
 
 struct CrashInfo : public CrashInfoBase {
+	
 	PEXCEPTION_POINTERS pExceptionPointers;
 	MINIDUMP_TYPE miniDumpType;
+	
+	// Callstack of the crash.
+	u64 callstack[MaxCallstackDepth];
+	
 };
 
 #endif
