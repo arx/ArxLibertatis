@@ -263,6 +263,12 @@ std::string getExecutablePath() {
 	
 	// TODO(crash-handler) add window implementation:
 	// GetProcessImageFileName and/or QueryFullProcessImageName?
+
+	std::vector<char> buffer;
+	buffer.resize(1024);
+	if(GetModuleFileNameA(NULL, buffer.data(), buffer.size()) > 0) {
+		return std::string(buffer.data(), buffer.size());
+	}
 	
 #endif
 	
