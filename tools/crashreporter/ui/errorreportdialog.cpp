@@ -41,7 +41,9 @@ void ScreenshotWidget::paintEvent(QPaintEvent * event)
 	ARX_UNUSED(event);
 	QPainter p(this);
 	p.setRenderHint(QPainter::SmoothPixmapTransform);
-	p.drawPixmap(rect(), m_pixmap, m_pixmap.rect());
+
+	QPixmap scaledPixmap = m_pixmap.scaled(size(), Qt::KeepAspectRatio);
+	p.drawPixmap(0, 0, scaledPixmap);
 }
 
 // This is needed to send signals with std strings
