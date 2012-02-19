@@ -4696,11 +4696,6 @@ bool CMenuSliderText::OnMouseClick(int)
 
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_LOD:
-		{
-			ARXMenu_Options_Video_SetLODQuality(iPos);
-		}
-		break;
 	case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS:
 		{
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);

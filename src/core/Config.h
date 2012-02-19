@@ -114,7 +114,6 @@ public:
 		bool fullscreen;
 		bool bumpmap;
 		int textureSize;
-		int meshReduction;
 		int levelOfDetail;
 		float fogDistance;
 		float gamma;

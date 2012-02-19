@@ -201,10 +201,6 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 	}
 }
 
-void ARXMenu_Options_Video_SetLODQuality(int _iQuality) {
-	config.video.meshReduction = clamp(_iQuality, 0, 2);
-}
-
 //OPTIONS AUDIO
 
 void ARXMenu_Options_Audio_SetMasterVolume(int _iVolume) {

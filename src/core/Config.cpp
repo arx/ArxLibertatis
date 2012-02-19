@@ -61,7 +61,6 @@ const string
 const int
 	bpp = 16,
 	textureSize = 2,
-	meshReduction = 0,
 	levelOfDetail = 2,
 	fogDistance = 5,
 	gamma = 5,
@@ -163,7 +162,6 @@ const string
 	fullscreen = "full_screen",
 	bumpmap = "bump",
 	textureSize = "texture",
-	meshReduction = "mesh_reduction",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
 	gamma = "gamma",
@@ -391,7 +389,6 @@ bool Config::save() {
 	writer.writeKey(Key::fullscreen, video.fullscreen);
 	writer.writeKey(Key::bumpmap, video.bumpmap);
 	writer.writeKey(Key::textureSize, video.textureSize);
-	writer.writeKey(Key::meshReduction, video.meshReduction);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
 	writer.writeKey(Key::gamma, video.gamma);
@@ -489,7 +486,6 @@ bool Config::init(const fs::path & file) {
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
 	video.bumpmap = reader.getKey(Section::Video, Key::bumpmap, Default::bumpmap);
 	video.textureSize = reader.getKey(Section::Video, Key::textureSize, Default::textureSize);
-	video.meshReduction = reader.getKey(Section::Video, Key::meshReduction, Default::meshReduction);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
 	video.gamma = reader.getKey(Section::Video, Key::gamma, Default::gamma);

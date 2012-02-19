@@ -57,7 +57,6 @@ void ARXMenu_Options_Video_SetLuminosity(int luminosity);
 void ARXMenu_Options_Video_SetContrast(int contrast);
 
 void ARXMenu_Options_Video_SetDetailsQuality(int lod);
-void ARXMenu_Options_Video_SetLODQuality(int meshReduction);
 
 // Audio options
 

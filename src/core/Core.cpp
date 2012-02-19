@@ -805,7 +805,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
 	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
-	ARXMenu_Options_Video_SetLODQuality(config.video.meshReduction);
 	ARXMenu_Options_Video_SetDetailsQuality(config.video.levelOfDetail);
 	ARXMenu_Options_Video_SetGamma(config.video.gamma);
 	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
