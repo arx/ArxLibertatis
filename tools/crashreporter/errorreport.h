@@ -57,7 +57,19 @@ public:
 		virtual void setError(const std::string& strError) = 0;
 	};
 
-	typedef std::vector<fs::path>	FileList;
+	struct File
+	{
+		fs::path	path;
+		bool		attachToReport;
+
+		File(const fs::path _path, bool _attach)
+		{
+			path = _path;
+			attachToReport = _attach;
+		}
+	};
+
+	typedef std::vector<File> FileList;
 
 public:
 	ErrorReport(const std::string& sharedMemoryName);
@@ -65,7 +77,7 @@ public:
 	bool GenerateReport(IProgressNotifier* progressNotifier);
 	bool SendReport(IProgressNotifier* progressNotifier);
 
-	const FileList& GetAttachedFiles() const;
+	FileList& GetAttachedFiles();
 
 private:
 	bool Initialize();
@@ -77,6 +89,8 @@ private:
 	bool GetCrashDump(const fs::path& fileName);
 	bool GetMachineInfo(const fs::path& fileName);
 	bool GetMiscCrashInfo();
+
+	void AddFile(const fs::path& fileName);
 	
 	void ReleaseApplicationLock();
 

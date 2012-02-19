@@ -120,7 +120,7 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	if(!selectedIndex.isValid())
 		return;
 	
-	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()];
+	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()].path;
 	std::string ext = fileName.ext();
 	if(ext == ".txt" || ext == ".log" || ext == ".ini")
 	{

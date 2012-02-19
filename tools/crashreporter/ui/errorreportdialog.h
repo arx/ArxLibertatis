@@ -139,13 +139,31 @@ public:
 	
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const
 	{
-		if (index.isValid() && role == Qt::DisplayRole)
+		if (index.row() < 0 || index.row() >= rowCount() || !index.isValid())
+			return QVariant();
+
+		if (role == Qt::DisplayRole)
 		{
-			fs::path filePath = m_errorReport.GetAttachedFiles()[index.row()];
+			fs::path filePath = m_errorReport.GetAttachedFiles()[index.row()].path;
 			return filePath.filename().c_str();
 		}
-		else
-			return QVariant();
+		else if(role == Qt::CheckStateRole)
+		{
+			return m_errorReport.GetAttachedFiles()[index.row()].attachToReport ? Qt::Checked : Qt::Unchecked;
+		}
+
+		return QVariant();
+	}
+
+	bool setData(const QModelIndex &index, const QVariant &value, int role)
+	{
+		if (index.row() < 0 || index.row() >= rowCount() || !index.isValid())
+			return false;
+	 
+		if(role == Qt::CheckStateRole)
+			m_errorReport.GetAttachedFiles()[index.row()].attachToReport = static_cast<Qt::CheckState>(value.toUInt()) == Qt::Checked;
+
+		return true;
 	}
 
 	
@@ -158,6 +176,14 @@ public:
 			return QString("Column %1").arg(section);
 		else
 			return QString("Row %1").arg(section);
+	}
+
+	Qt::ItemFlags flags(const QModelIndex  &index) const
+	{
+		if (index.row() < 0 || index.row() >= rowCount() || !index.isValid())
+			return Qt::NoItemFlags;
+
+		return Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}
 	
 private:
