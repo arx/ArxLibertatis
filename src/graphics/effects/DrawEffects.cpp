@@ -350,55 +350,33 @@ void ARXDRAW_DrawEyeBall()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
 }
+
 //*************************************************************************************
+// This used to add a bias when the "forceZbias" config option was activated, but it
+// was off by default and we removed it.
 //*************************************************************************************
-void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,float _fFactor,TexturedVertex *_pOut)
+void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut)
 {
-	if(config.misc.forceZBias)
+	_pOut[0].p.x=_pPoly->v[0].p.x;
+	_pOut[0].p.y=_pPoly->v[0].p.y;
+	_pOut[0].p.z=_pPoly->v[0].p.z;
+
+	_pOut[1].p.x=_pPoly->v[1].p.x;
+	_pOut[1].p.y=_pPoly->v[1].p.y;
+	_pOut[1].p.z=_pPoly->v[1].p.z;
+
+	_pOut[2].p.x=_pPoly->v[2].p.x;
+	_pOut[2].p.y=_pPoly->v[2].p.y;
+	_pOut[2].p.z=_pPoly->v[2].p.z;
+
+	if(_pPoly->type&POLY_QUAD)
 	{
-		float t0=_pPoly->norm.x*_fFactor;
-		float t1=_pPoly->norm.y*_fFactor;
-		float t2=_pPoly->norm.z*_fFactor;
-		_pOut[0].p.x=_pPoly->v[0].p.x+t0;
-		_pOut[0].p.y=_pPoly->v[0].p.y+t1;
-		_pOut[0].p.z=_pPoly->v[0].p.z+t2;
-		_pOut[1].p.x=_pPoly->v[1].p.x+t0;
-		_pOut[1].p.y=_pPoly->v[1].p.y+t1;
-		_pOut[1].p.z=_pPoly->v[1].p.z+t2;
-		_pOut[2].p.x=_pPoly->v[2].p.x+t0;
-		_pOut[2].p.y=_pPoly->v[2].p.y+t1;
-		_pOut[2].p.z=_pPoly->v[2].p.z+t2;
-
-		if(_pPoly->type&POLY_QUAD)
-		{
-			_pOut[3].p.x=_pPoly->v[3].p.x+_pPoly->norm2.x*_fFactor;
-			_pOut[3].p.y=_pPoly->v[3].p.y+_pPoly->norm2.y*_fFactor;
-			_pOut[3].p.z=_pPoly->v[3].p.z+_pPoly->norm2.z*_fFactor;
-		}
-	}
-	else
-	{
-		_pOut[0].p.x=_pPoly->v[0].p.x;
-		_pOut[0].p.y=_pPoly->v[0].p.y;
-		_pOut[0].p.z=_pPoly->v[0].p.z;
-
-		_pOut[1].p.x=_pPoly->v[1].p.x;
-		_pOut[1].p.y=_pPoly->v[1].p.y;
-		_pOut[1].p.z=_pPoly->v[1].p.z;
-
-		_pOut[2].p.x=_pPoly->v[2].p.x;
-		_pOut[2].p.y=_pPoly->v[2].p.y;
-		_pOut[2].p.z=_pPoly->v[2].p.z;
-
-		if(_pPoly->type&POLY_QUAD)
-		{
-			_pOut[3].p.x=_pPoly->v[3].p.x;
-			_pOut[3].p.y=_pPoly->v[3].p.y;
-			_pOut[3].p.z=_pPoly->v[3].p.z;
-		}
-
+		_pOut[3].p.x=_pPoly->v[3].p.x;
+		_pOut[3].p.y=_pPoly->v[3].p.y;
+		_pOut[3].p.z=_pPoly->v[3].p.z;
 	}
 }
+
 extern float FrameDiff;
 void ARXDRAW_DrawPolyBoom()
 {
@@ -452,7 +430,7 @@ void ARXDRAW_DrawPolyBoom()
 					case 0:	
 					tt	=	(float)t / (float)polyboom[i].tolive * 0.8f;
 
-					IncrementPolyWithNormalOutput(polyboom[i].ep,2.f,ltv);
+					IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
 					EE_RT2(&ltv[0],&ltv[0]);
 					EE_RT2(&ltv[1],&ltv[1]);
 					EE_RT2(&ltv[2],&ltv[2]);
@@ -502,7 +480,7 @@ void ARXDRAW_DrawPolyBoom()
 						}	
 
 
-							IncrementPolyWithNormalOutput(polyboom[i].ep,2.f,ltv);
+							IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
 							EE_RT2(&ltv[0],&ltv[0]);
 							EE_RT2(&ltv[1],&ltv[1]);
 							EE_RT2(&ltv[2],&ltv[2]);
@@ -592,7 +570,7 @@ void ARXDRAW_DrawPolyBoom()
 							&&	(ltv[3].uv.y>1.f) )
 							break;
 
-							IncrementPolyWithNormalOutput(polyboom[i].ep,2.f,ltv);
+							IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
 							EE_RT2(&ltv[0],&ltv[0]);
 							EE_RT2(&ltv[1],&ltv[1]);
 							EE_RT2(&ltv[2],&ltv[2]);

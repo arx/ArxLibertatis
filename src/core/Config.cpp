@@ -82,7 +82,6 @@ const bool
 	mouseLookToggle = true,
 	autoDescription = true,
 	linkMouseLookToUse = false,
-	forceZBias = false,
 	forceToggle = false,
 	gore = true,
 	newControl = true;
@@ -232,7 +231,6 @@ const string actions[NUM_ACTION_KEY] = {
 
 // Misc options
 const string
-	forceZBias = "forcezbias",
 	forceToggle = "forcetoggle",
 	gore = "fg",
 	newControl = "newcontrol",
@@ -417,7 +415,6 @@ bool Config::save() {
 	
 	// misc
 	writer.beginSection(Section::Misc);
-	writer.writeKey(Key::forceZBias, misc.forceZBias);
 	writer.writeKey(Key::newControl, misc.newControl);
 	writer.writeKey(Key::forceToggle, misc.forceToggle);
 	writer.writeKey(Key::gore, misc.gore);
@@ -503,7 +500,6 @@ bool Config::init(const fs::path & file) {
 	}
 	
 	// Get miscellaneous settings
-	misc.forceZBias = reader.getKey(Section::Misc, Key::forceZBias, Default::forceZBias);
 	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
 	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
 	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);

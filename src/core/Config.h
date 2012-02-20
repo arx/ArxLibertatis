@@ -167,7 +167,6 @@ public:
 	// section 'misc'
 	struct {
 		
-		bool forceZBias; // should be in video? TODO can we remove this?
 		bool forceToggle; // should be in input?
 		bool gore;
 		bool newControl; // what is this?
