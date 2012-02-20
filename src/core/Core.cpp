@@ -804,7 +804,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	ARX_SetAntiAliasing();
 	ARXMenu_Options_Video_SetFogDistance(config.video.fogDistance);
-	ARXMenu_Options_Video_SetTextureQuality(config.video.textureSize);
 	ARXMenu_Options_Video_SetDetailsQuality(config.video.levelOfDetail);
 	ARXMenu_Options_Video_SetGamma(config.video.gamma);
 	ARXMenu_Options_Audio_SetMasterVolume(config.audio.volume);
@@ -815,10 +814,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	ARXMenu_Options_Control_SetInvertMouse(config.input.invertMouse);
 	ARXMenu_Options_Control_SetMouseSensitivity(config.input.mouseSensitivity);
-	
-	if(config.video.textureSize==2)Project.TextureSize=0;
-	if(config.video.textureSize==1)Project.TextureSize=2;
-	if(config.video.textureSize==0)Project.TextureSize=64;
 	
 	ARX_MINIMAP_FirstInit();
 	

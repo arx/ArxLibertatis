@@ -135,19 +135,6 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
 	config.video.fogDistance = clamp(_iFog, 0, 10);
 }
 
-void ARXMenu_Options_Video_GetTextureQuality(int & _iQuality) {
-	
-	if (Project.TextureSize == 0) _iQuality = 2;
-	
-	if (Project.TextureSize == 2) _iQuality = 1;
-	
-	if (Project.TextureSize == 64) _iQuality = 0;
-}
-
-void ARXMenu_Options_Video_SetTextureQuality(int _iQuality) {
-	newTextureSize = clamp(_iQuality, 0, 2);
-}
-
 void ARXMenu_Options_Video_SetGamma(int _iGamma) {
 	config.video.gamma = _iGamma;
 	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
