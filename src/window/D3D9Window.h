@@ -51,8 +51,6 @@ public:
 	void setWindowSize(Vec2i size);
 	void restoreObjects();
 
-	void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue);
-	
 private:
 	
 	// Internal functions for the framework class
@@ -69,8 +67,6 @@ private:
 	class D3D9Renderer* d3d9Renderer;
 
 	LPDIRECT3D9 d3d;					// The Direct3D object
-	D3DGAMMARAMP initialGammaRamp;		// Gamma ramp to restore
-	D3DGAMMARAMP currentGammaRamp;		// Current gamma ramp
     D3DPRESENT_PARAMETERS d3dpp;        // Present params
 };
 

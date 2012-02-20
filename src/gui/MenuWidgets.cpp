@@ -167,14 +167,10 @@ void ARX_QuickSave() {
 		return;
 	}
 	
-	int iOldGamma = config.video.gamma;
-	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
-	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	
 	savegames.quicksave(savegame_thumbnail);
 	
-	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
 
@@ -1080,36 +1076,6 @@ bool Menu2_Render() {
 					((CMenuSlider *)me)->setValue(config.video.fogDistance);
 					pc->AddElement(me);
 
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_gamma");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_GAMMA, iPosX2, 0);
-					((CMenuSlider*)me)->setValue(config.video.gamma);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_luminosity", "luminosity");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_LUMINOSITY, iPosX2, 0);
-					((CMenuSlider*)me)->setValue(config.video.luminosity);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_contrast", "contrast");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_CONTRAST, iPosX2, 0);
-					((CMenuSlider*)me)->setValue(config.video.contrast);
-					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
@@ -4830,15 +4796,6 @@ bool CMenuSlider::OnMouseClick(int)
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_FOG:
 		ARXMenu_Options_Video_SetFogDistance(iPos);
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_GAMMA:
-		ARXMenu_Options_Video_SetGamma(iPos);
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_LUMINOSITY:
-		ARXMenu_Options_Video_SetLuminosity(iPos);
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_CONTRAST:
-		ARXMenu_Options_Video_SetContrast(iPos);
 		break;
 	// MENUOPTIONS_AUDIO
 	case BUTTON_MENUOPTIONSAUDIO_MASTER:

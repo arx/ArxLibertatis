@@ -67,9 +67,6 @@ D3D9Window::~D3D9Window() {
 	// Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
 	if(GD3D9Device) {
 
-		// Restore initial gamma ramp - Needed for wine
-		GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &initialGammaRamp);
-
 		if(0 < GD3D9Device->Release()) {
 			LogWarning << "D3DDevice object is still referenced";
 		}
@@ -295,10 +292,6 @@ bool D3D9Window::initialize() {
 	// Finally, set the viewport for the newly created device
 	renderer->SetViewport(Rect(GetSize().x, GetSize().y));
 
-	// Store initial gamma settings to restore them later - Needed for wine
-	GD3D9Device->GetGammaRamp(0, &initialGammaRamp);
-	GD3D9Device->GetGammaRamp(0, &currentGammaRamp);
-		
     onRendererInit();
 
 	return true;
@@ -342,9 +335,6 @@ void D3D9Window::restoreObjects() {
     // Reload all textures
     onRendererInit();
 		
-    // Restore gamma settings
-    GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &currentGammaRamp);
-
 	// Set the multisampling render state
 	renderer->SetAntialiasing(d3dpp.MultiSampleType != D3DMULTISAMPLE_NONE);
 
@@ -357,21 +347,4 @@ void D3D9Window::destroyObjects() {
     arx_assert(renderer != NULL);
 	
 	onRendererShutdown();
-}
-
-void D3D9Window::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
-
-	if(red) {
-		std::copy(red, red + 256, currentGammaRamp.red);
-	}
-	
-	if(green) {
-		std::copy(green, green + 256, currentGammaRamp.green);
-	}
-	
-	if(blue) {
-		std::copy(blue, blue + 256, currentGammaRamp.blue);
-	}
-
-	GD3D9Device->SetGammaRamp(0, D3DSGR_NO_CALIBRATION, &currentGammaRamp);
 }

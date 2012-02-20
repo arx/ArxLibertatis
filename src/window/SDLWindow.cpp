@@ -384,10 +384,6 @@ bool SDLWindow::showFrame() {
 	return true;
 }
 
-void SDLWindow::setGammaRamp(const u16 * red, const u16 * green, const u16 * blue) {
-	SDL_SetGammaRamp(red, green, blue);
-}
-
 void SDLWindow::hide() {
 	SDL_WM_IconifyWindow();
 	OnShow(false);
