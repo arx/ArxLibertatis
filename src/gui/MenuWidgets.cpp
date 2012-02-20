@@ -1312,18 +1312,15 @@ bool Menu2_Render() {
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					if (config.misc.newControl)
-					{
-						szMenuText = getLocalised("system_menus_autodescription", "auto_description");
-						szMenuText += " ";
-						pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-						pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+					szMenuText = getLocalised("system_menus_autodescription", "auto_description");
+					szMenuText += " ";
+					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 
-						((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
+					((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
 
-						pWindowMenuConsole->AddMenuCenterY(me);
-					}
+					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
@@ -1439,24 +1436,6 @@ bool Menu2_Render() {
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
-
-					if (!config.misc.newControl)
-					{
-						szMenuText = getLocalised( "system_menus_options_input_customize_controls_link_use_to_mouselook", "?" );
-						\
-				pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-				pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-				pElementText= new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);
-				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
-				me->Move(0,fControlPosY);
-						pWindowMenuConsole->AddMenu(me);
-						fControlPosY += static_cast<long>(me->GetHeight() + RATIO_Y(3.f));
-
-						if(config.input.linkMouseLookToUse)
-						{
-							((CMenuCheckButton*)me)->iState=1;
-						}
-					}
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);

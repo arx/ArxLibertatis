@@ -169,7 +169,6 @@ public:
 		
 		bool forceToggle; // should be in input?
 		bool gore;
-		bool newControl; // what is this?
 		
 		MigrationStatus migration;
 		

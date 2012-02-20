@@ -2540,10 +2540,8 @@ void ARX_SPELLS_ManageMagic()
 			player.doingmagic=0;
 			WILLRETURNTOCOMBATMODE=0;
 
-			if(config.misc.newControl) {
-				TRUE_PLAYER_MOUSELOOK_ON = true;
-				bRenderInCursorMode=false;
-			}
+			TRUE_PLAYER_MOUSELOOK_ON = true;
+			bRenderInCursorMode=false;
 		}
 
 		if (WILLRETURNTOFREELOOK)
