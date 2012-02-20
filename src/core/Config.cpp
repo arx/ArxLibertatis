@@ -61,7 +61,7 @@ const string
 const int
 	bpp = 16,
 	levelOfDetail = 2,
-	fogDistance = 5,
+	fogDistance = 10,
 	gamma = 5,
 	luminosity = 4,
 	contrast = 5,
