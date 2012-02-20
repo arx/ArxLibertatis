@@ -82,8 +82,7 @@ const bool
 	mouseLookToggle = true,
 	autoDescription = true,
 	linkMouseLookToUse = false,
-	forceToggle = false,
-	gore = true;
+	forceToggle = false;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
@@ -231,7 +230,6 @@ const string actions[NUM_ACTION_KEY] = {
 // Misc options
 const string
 	forceToggle = "forcetoggle",
-	gore = "fg",
 	migration = "migration",
 	quicksaveSlots = "quicksave_slots",
 	debugLevels = "debug";
@@ -414,7 +412,6 @@ bool Config::save() {
 	// misc
 	writer.beginSection(Section::Misc);
 	writer.writeKey(Key::forceToggle, misc.forceToggle);
-	writer.writeKey(Key::gore, misc.gore);
 	writer.writeKey(Key::migration, misc.migration);
 	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
 	writer.writeKey(Key::debugLevels, misc.debug);
@@ -498,7 +495,6 @@ bool Config::init(const fs::path & file) {
 	
 	// Get miscellaneous settings
 	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
-	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
 	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
 	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
 	misc.debug = reader.getKey(Section::Misc, Key::debugLevels, Default::debugLevels);

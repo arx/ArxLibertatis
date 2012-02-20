@@ -1889,9 +1889,6 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return 0 ;
 
-	if (!config.misc.gore)
-		return 0;
-
 	if (io->_npcdata->cuts == 0)
 		return 0;	// No cuts
 
@@ -1954,9 +1951,6 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	if (!target) return;
 
 	if (!(target->ioflags & IO_NPC)) return;
-
-	if	(!config.misc.gore)
-		return; 
 
 	if	(target->GameFlags & GFLAG_NOGORE)
 		return;

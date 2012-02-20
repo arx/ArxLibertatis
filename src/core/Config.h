@@ -168,7 +168,6 @@ public:
 	struct {
 		
 		bool forceToggle; // should be in input?
-		bool gore;
 		
 		MigrationStatus migration;
 		
