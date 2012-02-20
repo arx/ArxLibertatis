@@ -76,7 +76,6 @@ const int
 const bool
 	first_run = true,
 	fullscreen = true,
-	bumpmap = false,
 	showCrosshair = true,
 	antialiasing = false,
 	vsync = true,
@@ -159,7 +158,6 @@ const string
 	resolution = "resolution",
 	bpp = "bpp",
 	fullscreen = "full_screen",
-	bumpmap = "bump",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
 	gamma = "gamma",
@@ -385,7 +383,6 @@ bool Config::save() {
 	}
 	writer.writeKey(Key::bpp, video.bpp);
 	writer.writeKey(Key::fullscreen, video.fullscreen);
-	writer.writeKey(Key::bumpmap, video.bumpmap);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
 	writer.writeKey(Key::gamma, video.gamma);
@@ -481,7 +478,6 @@ bool Config::init(const fs::path & file) {
 	}
 	video.bpp = reader.getKey(Section::Video, Key::bpp, Default::bpp);
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
-	video.bumpmap = reader.getKey(Section::Video, Key::bumpmap, Default::bumpmap);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
 	video.gamma = reader.getKey(Section::Video, Key::gamma, Default::gamma);

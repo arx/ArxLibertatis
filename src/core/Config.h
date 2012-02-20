@@ -112,7 +112,6 @@ public:
 		int bpp;
 		
 		bool fullscreen;
-		bool bumpmap;
 		int levelOfDetail;
 		float fogDistance;
 		float gamma;
