@@ -32,7 +32,7 @@
 
 #include "platform/Environment.h"
 
-typedef void (*signal_handler)(int);
+typedef void (*signal_handler)(int signal);
 
 static void SignalHandler(int signalCode) {
 	CrashHandlerPOSIX::getInstance().handleCrash(signalCode);
