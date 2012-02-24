@@ -23,6 +23,7 @@
 	#include <netdb.h>
 	#include <errno.h>
 	#include <stdio.h>
+  #include <unistd.h>
 	#include <iostream>
 
 	#define SOCKET_ERROR -1
