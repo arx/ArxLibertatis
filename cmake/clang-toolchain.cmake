@@ -1,5 +1,5 @@
 
-# Look for wine compilers
+# Look for clang compilers
 find_program(Clang clang)
 mark_as_advanced(Clang)
 find_program(ClangXX clang++)
