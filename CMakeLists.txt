@@ -291,7 +291,11 @@ else(MSVC)
 	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
-	if(CMAKE_BUILD_TYPE STREQUAL Debug)
+	if(CMAKE_BUILD_TYPE STREQUAL "")
+		set(CMAKE_BUILD_TYPE "Release")
+	endif()
+	
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		
 		#Debug
 		add_definitions(-D_DEBUG)
