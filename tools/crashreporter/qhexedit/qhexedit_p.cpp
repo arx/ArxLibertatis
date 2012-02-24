@@ -1,7 +1,9 @@
+
+#include "crashreporter/qhexedit/qhexedit_p.h"
+
 #include <QtGui>
 
-#include "qhexedit_p.h"
-#include "commands.h"
+#include "crashreporter/qhexedit/commands.h"
 
 const int HEXCHARS_IN_LINE = 47;
 const int GAP_ADR_HEX = 10;

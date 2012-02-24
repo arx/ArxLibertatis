@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "errorreport.h"
+#include "crashreporter/errorreport.h"
 
 #ifdef HAVE_WINAPI
 // Win32
@@ -47,13 +47,13 @@
 #include "platform/Thread.h"
 
 // CrashReporter
-#include "utilities_win32.h"
+#include "crashreporter/utilities_win32.h"
 
 // Zip
-#include "minizip/zip.h"
+#include "crashreporter/minizip/zip.h"
 
 // CSmtp
-#include "csmtp/csmtp.h"
+#include "crashreporter/csmtp/csmtp.h"
 
 ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	: m_RunningTimeSec()

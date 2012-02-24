@@ -21,8 +21,8 @@
 
 #include <string>
 
-#include "ui/errorreportdialog.h"
-#include "errorreport.h"
+#include "crashreporter/ui/errorreportdialog.h"
+#include "crashreporter/errorreport.h"
 
 #include "io/log/Logger.h"
 #include "io/log/FileLogger.h"

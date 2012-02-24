@@ -37,8 +37,8 @@
 
 */
 
-#ifndef _zip12_H
-#define _zip12_H
+#ifndef ARX_TOOLS_CRASHREPORTER_MINIZIP_ZIP_H
+#define ARX_TOOLS_CRASHREPORTER_MINIZIP_ZIP_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -359,4 +359,4 @@ extern int ZEXPORT zipRemoveExtraInfoBlock OF((char* pData, int* dataLen, short 
 }
 #endif
 
-#endif /* _zip64_H */
+#endif // ARX_TOOLS_CRASHREPORTER_MINIZIP_ZIP_H

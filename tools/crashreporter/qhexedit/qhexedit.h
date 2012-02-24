@@ -1,8 +1,10 @@
-#ifndef QHEXEDIT_H
-#define QHEXEDIT_H
+
+#ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_H
+#define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_H
 
 #include <QtGui>
-#include "qhexedit_p.h"
+
+#include "crashreporter/qhexedit/qhexedit_p.h"
 
 /** \mainpage
 QHexEdit is a binary editor widget for Qt.
@@ -201,4 +203,4 @@ private:
     /*! \endcond docNever */
 };
 
-#endif
+#endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_H

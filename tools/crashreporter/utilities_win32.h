@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_CRASHREPORTER_UTILITIES_WIN32_H
-#define ARX_CRASHREPORTER_UTILITIES_WIN32_H
+#ifndef ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H
+#define ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H
 
 #include "Configure.h"
 
@@ -33,4 +33,4 @@ ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );
 
 #endif
 
-#endif // ARX_CRASHREPORTER_UTILITIES_WIN32_H
+#endif // ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H

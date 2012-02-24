@@ -17,14 +17,14 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "utilities_win32.h"
+#include "crashreporter/utilities_win32.h"
 
 #ifdef HAVE_WINAPI
 
 #include <windows.h>
 #include <string>
 #include <sstream>
-#include <Psapi.h>
+#include <psapi.h>
 
 typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
 typedef BOOL (WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);

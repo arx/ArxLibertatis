@@ -1,18 +1,19 @@
-#ifndef QHEXEDIT_P_H
-#define QHEXEDIT_P_H
+
+#ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_P_H
+#define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_P_H
 
 /** \cond docNever */
 
-
 #include <QtGui>
-#include "xbytearray.h"
+
+#include "crashreporter/qhexedit/xbytearray.h"
 
 class QHexEditPrivate : public QWidget
 {
 Q_OBJECT
 
 public:
-    QHexEditPrivate(QScrollArea *parent);
+    explicit QHexEditPrivate(QScrollArea *parent);
 
     void setAddressAreaColor(QColor const &color);
     QColor addressAreaColor();
@@ -116,4 +117,4 @@ private:
 
 /** \endcond docNever */
 
-#endif
+#endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_P_H

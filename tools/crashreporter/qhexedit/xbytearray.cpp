@@ -1,4 +1,5 @@
-#include "xbytearray.h"
+
+#include "crashreporter/qhexedit/xbytearray.h"
 
 XByteArray::XByteArray()
 {

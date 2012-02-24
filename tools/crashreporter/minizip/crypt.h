@@ -26,8 +26,9 @@
    http://www.winzip.com/aes_info.htm ) and PKWare PKZip 5.x Strong
    Encryption is not supported.
 */
-#ifndef _MINIZIP_CRYPT_H_
-#define _MINIZIP_CRYPT_H_
+
+#ifndef ARX_TOOLS_CRASHREPORTER_MINIZIP_CRYPT_H
+#define ARX_TOOLS_CRASHREPORTER_MINIZIP_CRYPT_H
 
 #define INCLUDECRYPTINGCODE_IFCRYPTALLOWED
 
@@ -38,9 +39,10 @@
  */
 static int decrypt_byte(unsigned long * pkeys)
 {
-    unsigned temp;  /* POTENTIAL BUG:  temp*(temp^1) may overflow in an
-                     * unpredictable manner on 16-bit systems; not a problem
-                     * with any known compiler so far, though */
+    /* POTENTIAL BUG:  temp*(temp^1) may overflow in an
+     * unpredictable manner on 16-bit systems; not a problem
+     * with any known compiler so far, though */
+    unsigned temp;
 
     temp = ((unsigned)(*(pkeys+2)) & 0xffff) | 2;
     return (int)(((temp * (temp ^ 1)) >> 8) & 0xff);
@@ -134,4 +136,4 @@ static int crypthead(const char* passwd,      /* password string */
 
 #endif
 
-#endif // _MINIZIP_CRYPT_H_
+#endif // ARX_TOOLS_CRASHREPORTER_MINIZIP_CRYPT_H
