@@ -23,8 +23,8 @@
 // Win32
 #include <winsock2.h>
 #include <windows.h>
-#include <DbgHelp.h>
-#include <Psapi.h>
+#include <dbghelp.h>
+#include <psapi.h>
 #else
 #include <sys/wait.h>
 #endif

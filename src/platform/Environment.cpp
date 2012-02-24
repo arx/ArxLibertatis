@@ -257,9 +257,7 @@ std::string getExecutablePath() {
 	
 	// we can also try argv[0]!
 	
-#endif
-	
-#ifdef HAVE_WINAPI
+#elif defined(HAVE_WINAPI)
 	
 	std::vector<char> buffer;
 	buffer.resize(1024);
@@ -272,3 +270,4 @@ std::string getExecutablePath() {
 	// Give up - we couldn't determine the exe path.
 	return std::string();
 }
+

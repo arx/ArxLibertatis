@@ -40,6 +40,11 @@
 	#include <winsock2.h>
 	#include <ws2tcpip.h>
 	#include <time.h>
+#endif
+
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	#pragma comment(lib, "ws2_32.lib")
 #endif
 
