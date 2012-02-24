@@ -420,7 +420,7 @@ bool ErrorReport::GenerateArchive()
 			continue;
 
 		zip_fileinfo zi;
-		memset(&zi, sizeof(zi), 0);
+		memset(&zi, 0, sizeof(zi));
 
 		int opt_compress_level = Z_BEST_COMPRESSION;
 
