@@ -221,10 +221,10 @@ void defineSystemDirectories() {
 #if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
-	int ret = readlink(path, buffer.data(), buffer.size());
+	int ret = readlink(path, &buffer.front(), buffer.size());
 	while(ret >= 0 && std::size_t(ret) == buffer.size()) {
 		buffer.resize(buffer.size() * 2);
-		ret = readlink(path, buffer.data(), buffer.size());
+		ret = readlink(path, &buffer.front(), buffer.size());
 	}
 	
 	if(ret < 0) {
@@ -244,15 +244,15 @@ std::string getExecutablePath() {
 	buffer.resize(1024);
 	
 	if(try_readlink(buffer, "/proc/self/exe")) {
-		return std::string(buffer.data(), buffer.size());
+		return std::string(buffer.begin(), buffer.end());
 	}
 	
 	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return std::string(buffer.data(), buffer.size());
+		return std::string(buffer.begin(), buffer.end());
 	}
 	
 	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return std::string(buffer.data(), buffer.size());
+		return std::string(buffer.begin(), buffer.end());
 	}
 	
 	// we can also try argv[0]!
