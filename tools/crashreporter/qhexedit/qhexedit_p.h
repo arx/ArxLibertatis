@@ -117,4 +117,3 @@ private:
 /** \endcond docNever */
 
 #endif
-
