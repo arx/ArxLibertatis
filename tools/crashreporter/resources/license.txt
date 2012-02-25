@@ -1,0 +1,4 @@
+failure.png
+success.png
+	Copyright "The Crystal Project" - Released under LGPL
+	See http://www.everaldo.com/crystal/ for more details
