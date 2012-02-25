@@ -262,7 +262,7 @@ std::string getExecutablePath() {
 #ifdef HAVE_WINAPI
 	
 	std::vector<char> buffer;
-	buffer.resize(1024);
+	buffer.resize(MAX_PATH);
 	if(GetModuleFileNameA(NULL, buffer.data(), buffer.size()) > 0) {
 		return std::string(buffer.data(), buffer.size());
 	}
