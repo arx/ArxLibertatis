@@ -1,7 +1,7 @@
+
+#include "crashreporter/qhexedit/qhexedit.h"
+
 #include <QtGui>
-
-#include "qhexedit.h"
-
 
 QHexEdit::QHexEdit(QWidget *parent) : QScrollArea(parent)
 {

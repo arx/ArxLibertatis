@@ -18,8 +18,8 @@
 
 */
 
-#ifndef _ZLIBIOAPI64_H
-#define _ZLIBIOAPI64_H
+#ifndef ARX_TOOLS_CRASHREPORTER_MINIZIP_IOAPI_H
+#define ARX_TOOLS_CRASHREPORTER_MINIZIP_IOAPI_H
 
 #if (!defined(_WIN32)) && (!defined(WIN32))
 
@@ -42,7 +42,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "zlib.h"
+#include <zlib.h>
 
 #if defined(USE_FILE32API)
 #define fopen64 fopen
@@ -72,16 +72,12 @@
 #endif
 */
 
-#ifdef HAVE_MINIZIP64_CONF_H
-#include "mz64conf.h"
-#endif
-
 /* a type choosen by DEFINE */
 #ifdef HAVE_64BIT_INT_CUSTOM
 typedef  64BIT_INT_CUSTOM_TYPE ZPOS64_T;
 #else
 #ifdef HAS_STDINT_H
-#include "stdint.h"
+#include <stdint.h>
 typedef uint64_t ZPOS64_T;
 #else
 
@@ -197,4 +193,4 @@ void    fill_zlib_filefunc64_32_def_from_filefunc32(zlib_filefunc64_32_def* p_fi
 }
 #endif
 
-#endif
+#endif // ARX_TOOLS_CRASHREPORTER_MINIZIP_IOAPI_H

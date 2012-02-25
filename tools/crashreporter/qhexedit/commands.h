@@ -1,11 +1,12 @@
-#ifndef COMMANDS_H
-#define COMMANDS_H
+
+#ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_COMMANDS_H
+#define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_COMMANDS_H
 
 /** \cond docNever */
 
 #include <QUndoCommand>
 
-#include "xbytearray.h"
+#include "crashreporter/qhexedit/xbytearray.h"
 
 /*! CharCommand is a class to prived undo/redo functionality in QHexEdit.
 A QUndoCommand represents a single editing action on a document. CharCommand
@@ -67,4 +68,4 @@ private:
 
 /** \endcond docNever */
 
-#endif // COMMANDS_H
+#endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_COMMANDS_H

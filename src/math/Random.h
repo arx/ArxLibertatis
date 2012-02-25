@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_PLATFORM_RANDOM_H
-#define ARX_PLATFORM_RANDOM_H
+#ifndef ARX_MATH_RANDOM_H
+#define ARX_MATH_RANDOM_H
 
 #include <limits>
 
@@ -105,4 +105,4 @@ typename Container::const_iterator Random::getIterator(const Container& containe
 	return getIterator(container.begin(), container.end());
 }
 
-#endif // ARX_PLATFORM_RANDOM_H
+#endif // ARX_MATH_RANDOM_H

@@ -853,8 +853,7 @@ if(HAVE_CRASHREPORTER)
 	
 	create_source_groups(arxcrashreporter_SOURCES)
 	
-	include_directories(${SRC_DIR})
-	include_directories(SYSTEM ${OPENSSL_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+	include_directories(SYSTEM ${OPENSSL_INCLUDE_DIR})
 	
 	set(arxcrashreporter_LIBRARIES
 		${QT_QTCORE_LIBRARY_RELEASE}
@@ -982,6 +981,9 @@ if(PYTHONINTERP_FOUND)
 	
 	# "For a static/global string constant, use a C style string"
 	set(STYLE_FILTER ${STYLE_FILTER},-runtime/string)
+	
+	# Having classes with virtual methods but without a virtual destructor is not always wrong!
+	set(STYLE_FILTER ${STYLE_FILTER},-runtime/virtual)
 	
 	# TODO consider enabling these and fixing the warnings
 	

@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERLINUX_H
-#define ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERLINUX_H
+#ifndef ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERPOSIX_H
+#define ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERPOSIX_H
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
@@ -52,4 +52,4 @@ private:
 	static CrashHandlerPOSIX * m_sInstance;
 };
 
-#endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERLINUX_H
+#endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERPOSIX_H

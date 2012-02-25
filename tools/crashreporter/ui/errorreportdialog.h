@@ -17,18 +17,17 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_CRASHREPORTER_ERRORREPORTDIALOG_H
-#define ARX_CRASHREPORTER_ERRORREPORTDIALOG_H
+#ifndef ARX_TOOLS_CRASHREPORTER_UI_ERRORREPORTDIALOG_H
+#define ARX_TOOLS_CRASHREPORTER_UI_ERRORREPORTDIALOG_H
 
 #include <QDialog>
 #include <QAbstractButton>
 #include <QThread>
 #include <QSemaphore>
 
-#include "errorreport.h"
-#include "qhexedit/qhexedit.h"
-#include "xmlhighlighter/xmlhighlighter.h"
-
+#include "crashreporter/errorreport.h"
+#include "crashreporter/qhexedit/qhexedit.h"
+#include "crashreporter/xmlhighlighter/xmlhighlighter.h"
 
 namespace Ui {
 	class ErrorReportDialog;
@@ -87,8 +86,9 @@ class GatherInfoTask : public CrashReportTask
 	Q_OBJECT
 
 public:
-	GatherInfoTask(ErrorReport& errorReport);
-
+	
+	explicit GatherInfoTask(ErrorReport & errorReport);
+	
 private:
 	void run();
 };
@@ -98,8 +98,9 @@ class SendReportTask : public CrashReportTask
 	Q_OBJECT
 
 public:
-	SendReportTask(ErrorReport& errorReport);
-
+	
+	explicit SendReportTask(ErrorReport & errorReport);
+	
 private:
 	void run();
 };
@@ -109,8 +110,9 @@ class ScreenshotWidget : public QWidget
 	Q_OBJECT
 
 public:
-	ScreenshotWidget(QWidget *parent = 0);
-
+	
+	explicit ScreenshotWidget(QWidget * parent = 0);
+	
 	bool load(const QString& fileName);
 	void setPixmap(const QPixmap& pixmap);
 
@@ -242,4 +244,4 @@ private:
 	ErrorReport& m_errorReport;
 };
 
-#endif // ARX_CRASHREPORTER_ERRORREPORTDIALOG_H
+#endif // ARX_TOOLS_CRASHREPORTER_UI_ERRORREPORTDIALOG_H

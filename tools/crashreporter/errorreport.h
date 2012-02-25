@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_CRASHREPORTER_ERRORREPORT_H
-#define ARX_CRASHREPORTER_ERRORREPORT_H
+#ifndef ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H
+#define ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H
 
 #include <vector>
 
@@ -72,7 +72,8 @@ public:
 	typedef std::vector<File> FileList;
 
 public:
-	ErrorReport(const std::string& sharedMemoryName);
+	
+	explicit ErrorReport(const std::string & sharedMemoryName);
 	
 	bool GenerateReport(IProgressNotifier* progressNotifier);
 	bool SendReport(IProgressNotifier* progressNotifier);
@@ -117,4 +118,4 @@ private:
 	CrashInfo* m_pCrashInfo;
 };
 
-#endif // ARX_CRASHREPORTER_ERRORREPORT_H
+#endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H

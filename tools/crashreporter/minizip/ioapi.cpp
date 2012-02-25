@@ -14,7 +14,7 @@
     #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "ioapi.h"
+#include "crashreporter/minizip/ioapi.h"
 
 #include "platform/Platform.h"
 

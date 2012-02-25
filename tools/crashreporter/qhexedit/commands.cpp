@@ -1,4 +1,5 @@
-#include "commands.h"
+
+#include "crashreporter/qhexedit/commands.h"
 
 CharCommand::CharCommand(XByteArray * xData, Cmd cmd, int charPos, char newChar, QUndoCommand *parent)
     : QUndoCommand(parent)

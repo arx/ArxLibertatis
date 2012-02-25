@@ -1,5 +1,6 @@
-#ifndef XBYTEARRAY_H
-#define XBYTEARRAY_H
+
+#ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_XBYTEARRAY_H
+#define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_XBYTEARRAY_H
 
 /** \cond docNever */
 
@@ -63,4 +64,5 @@ private:
 };
 
 /** \endcond docNever */
-#endif // XBYTEARRAY_H
+
+#endif // ARX_TOOLS_CRASHREPORTER_QHEXEDIT_XBYTEARRAY_H
