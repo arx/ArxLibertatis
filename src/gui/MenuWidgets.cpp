@@ -93,13 +93,11 @@ using std::vector;
 
 const std::string AUTO_RESOLUTION_STRING = "Automatic";
 
-int newTextureSize;
 static int newWidth;
 static int newHeight;
 static int newBpp;
 static bool newFullscreen;
 bool changeResolution = false;
-bool changeTextures = false;
 
 #define NODEBUGZONE
 
@@ -145,7 +143,6 @@ CMenuElementText *pLoadConfirm=NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;
 CMenuSliderText *pMenuSliderResol=NULL;
 CMenuSliderText *pMenuSliderBpp=NULL;
-CMenuSliderText *pMenuSliderTexture=NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
@@ -170,14 +167,10 @@ void ARX_QuickSave() {
 		return;
 	}
 	
-	int iOldGamma = config.video.gamma;
-	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
-	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
 	
 	savegames.quicksave(savegame_thumbnail);
 	
-	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 }
 
@@ -262,8 +255,7 @@ void Check_Apply()
 {
 	if(pMenuElementApply)
 	{
-		if((config.video.textureSize != newTextureSize) ||
-		   (config.video.resolution.x != newWidth) ||
+		if((config.video.resolution.x != newWidth) ||
 		   (config.video.resolution.y != newHeight) ||
 		   (config.video.fullscreen != newFullscreen) ||
 		   (config.video.bpp!=newBpp)) {
@@ -1011,32 +1003,7 @@ bool Menu2_Render() {
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					CMenuPanel *pc1 = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_texture");
-					szMenuText += " ";
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc1->AddElement(me);
-					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_TEXTURES, 0, 0);
-					pMenuSliderTexture = (CMenuSliderText*)me;
-					szMenuText = getLocalised("system_menus_options_video_texture_low");
-					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-					szMenuText = getLocalised("system_menus_options_video_texture_med");
-					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-					szMenuText = getLocalised("system_menus_options_video_texture_high");
-					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
-
-
-					fRatio    = (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
-					me->Move(checked_range_cast<int>(fRatio), 0); 
-
-
 					int iSize = me->GetWidth();
-					pc1->AddElement(me);
-					int iQuality = 0;
-					ARXMenu_Options_Video_GetTextureQuality(iQuality);
-					((CMenuSliderText *)me)->iPos = iQuality;
-
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_video_bpp");
 					szMenuText += " ";
@@ -1072,7 +1039,6 @@ bool Menu2_Render() {
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					pWindowMenuConsole->AddMenuCenterY(pc1);
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_detail");
 					szMenuText += " ";
@@ -1108,36 +1074,6 @@ bool Menu2_Render() {
 					((CMenuSlider *)me)->setValue(config.video.fogDistance);
 					pc->AddElement(me);
 
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_gamma");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_GAMMA, iPosX2, 0);
-					((CMenuSlider*)me)->setValue(config.video.gamma);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_luminosity", "luminosity");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_LUMINOSITY, iPosX2, 0);
-					((CMenuSlider*)me)->setValue(config.video.luminosity);
-					pc->AddElement(me);
-					pWindowMenuConsole->AddMenuCenterY(pc);
-
-					pc = new CMenuPanel();
-					szMenuText = getLocalised("system_menus_options_video_contrast", "contrast");
-					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
-					me->SetCheckOff();
-					pc->AddElement(me);
-					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_CONTRAST, iPosX2, 0);
-					((CMenuSlider*)me)->setValue(config.video.contrast);
-					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
 					szMenuText = getLocalised("system_menus_options_video_crosshair", "Show Crosshair");
@@ -1374,18 +1310,15 @@ bool Menu2_Render() {
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
-					if (config.misc.newControl)
-					{
-						szMenuText = getLocalised("system_menus_autodescription", "auto_description");
-						szMenuText += " ";
-						pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-						pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+					szMenuText = getLocalised("system_menus_autodescription", "auto_description");
+					szMenuText += " ";
+					pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
+					pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
 
-						((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
+					((CMenuCheckButton*)me)->iState = config.input.autoDescription ? 1 : 0;
 
-						pWindowMenuConsole->AddMenuCenterY(me);
-					}
+					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
 					szMenuText = getLocalised("system_menus_options_misc_quicksave_slots", "Quicksave slots");
@@ -1501,24 +1434,6 @@ bool Menu2_Render() {
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
-
-					if (!config.misc.newControl)
-					{
-						szMenuText = getLocalised( "system_menus_options_input_customize_controls_link_use_to_mouselook", "?" );
-						\
-				pTex1 = TextureContainer::Load("graph/interface/menus/menu_checkbox_off");
-				pTex2 = TextureContainer::Load("graph/interface/menus/menu_checkbox_on");
-				pElementText= new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);
-				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
-				me->Move(0,fControlPosY);
-						pWindowMenuConsole->AddMenu(me);
-						fControlPosY += static_cast<long>(me->GetHeight() + RATIO_Y(3.f));
-
-						if(config.input.linkMouseLookToUse)
-						{
-							((CMenuCheckButton*)me)->iState=1;
-						}
-					}
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
@@ -1821,11 +1736,6 @@ CMenuElement::~CMenuElement()
 	{
 		pMenuSliderBpp = NULL;
 	}
-
-	if( this == pMenuSliderTexture )
-	{
-		pMenuSliderTexture = NULL;
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2021,10 +1931,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			newHeight = config.video.resolution.y;
 			newFullscreen = config.video.fullscreen;
 			newBpp = config.video.bpp;
-			newTextureSize = config.video.textureSize;
 
 			changeResolution = false;
-			changeTextures = false;
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
@@ -2161,25 +2069,9 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
-			//----------CHANGE_TEXTURE
-			if(newTextureSize!=config.video.textureSize)
-			{
-				config.video.textureSize=newTextureSize;
-
-				if(config.video.textureSize==2)Project.TextureSize=0;
-
-				if(config.video.textureSize==1)Project.TextureSize=2;
-
-				if(config.video.textureSize==0)Project.TextureSize=64;
-
-				pMenuSliderTexture->iOldPos=-1;
-			}
-
-			//----------END_CHANGE_TEXTURE
-
 			//----------RESOLUTION
-			if(    (newWidth!=config.video.resolution.x)||
-				(newHeight!=config.video.resolution.y)||
+			if( (newWidth!=config.video.resolution.x) ||
+				(newHeight!=config.video.resolution.y) ||
 				(newFullscreen != config.video.fullscreen) ||
 				(newBpp!=config.video.bpp) )
 			{
@@ -2192,7 +2084,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 
 			//----------END_RESOLUTION
 			changeResolution = false;
-			changeTextures = false;
 			pMenu->bReInitAll=true;
 		}
 		break;
@@ -2932,15 +2823,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 			pMenuSliderBpp->iOldPos=-1;
 			newBpp=config.video.bpp;
 		}
-		
-		if(    (pMenuSliderTexture)&&
-			(pMenuSliderTexture->iOldPos>=0) )
-		{
-			pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
-			pMenuSliderTexture->iOldPos=-1;
-			newTextureSize=config.video.textureSize;
-		}
-		
+				
 		if(fullscreenCheckbox && fullscreenCheckbox->iOldState >= 0) {
 			fullscreenCheckbox->iState = fullscreenCheckbox->iOldState;
 			fullscreenCheckbox->iOldState = -1;
@@ -4685,20 +4568,6 @@ bool CMenuSliderText::OnMouseClick(int)
 			changeResolution = true;
 		}
 		break;
-	case BUTTON_MENUOPTIONSVIDEO_TEXTURES:
-		{
-			{
-				newTextureSize = iPos;
-				changeTextures = true;
-			}
-
-		}
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_LOD:
-		{
-			ARXMenu_Options_Video_SetLODQuality(iPos);
-		}
-		break;
 	case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS:
 		{
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);
@@ -4904,15 +4773,6 @@ bool CMenuSlider::OnMouseClick(int)
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_FOG:
 		ARXMenu_Options_Video_SetFogDistance(iPos);
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_GAMMA:
-		ARXMenu_Options_Video_SetGamma(iPos);
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_LUMINOSITY:
-		ARXMenu_Options_Video_SetLuminosity(iPos);
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_CONTRAST:
-		ARXMenu_Options_Video_SetContrast(iPos);
 		break;
 	// MENUOPTIONS_AUDIO
 	case BUTTON_MENUOPTIONSAUDIO_MASTER:

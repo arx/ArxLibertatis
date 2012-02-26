@@ -112,14 +112,8 @@ public:
 		int bpp;
 		
 		bool fullscreen;
-		bool bumpmap;
-		int textureSize;
-		int meshReduction;
 		int levelOfDetail;
 		float fogDistance;
-		float gamma;
-		float luminosity;
-		float contrast;
 		bool showCrosshair;
 		bool antialiasing;
 		bool vsync;
@@ -173,10 +167,7 @@ public:
 	// section 'misc'
 	struct {
 		
-		bool forceZBias; // should be in video? TODO can we remove this?
 		bool forceToggle; // should be in input?
-		bool gore;
-		bool newControl; // what is this?
 		
 		MigrationStatus migration;
 		

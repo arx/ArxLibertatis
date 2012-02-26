@@ -61,13 +61,8 @@ const string
 
 const int
 	bpp = 16,
-	textureSize = 2,
-	meshReduction = 0,
 	levelOfDetail = 2,
-	fogDistance = 5,
-	gamma = 5,
-	luminosity = 4,
-	contrast = 5,
+	fogDistance = 10,
 	volume = 10,
 	sfxVolume = 10,
 	speechVolume = 10,
@@ -79,7 +74,6 @@ const int
 const bool
 	first_run = true,
 	fullscreen = true,
-	bumpmap = false,
 	showCrosshair = true,
 	antialiasing = false,
 	vsync = true,
@@ -89,10 +83,7 @@ const bool
 	mouseLookToggle = true,
 	autoDescription = true,
 	linkMouseLookToUse = false,
-	forceZBias = false,
-	forceToggle = false,
-	gore = true,
-	newControl = true;
+	forceToggle = false;
 
 ActionKey actions[NUM_ACTION_KEY] = {
 	ActionKey(Keyboard::Key_Spacebar), // JUMP
@@ -162,14 +153,8 @@ const string
 	resolution = "resolution",
 	bpp = "bpp",
 	fullscreen = "full_screen",
-	bumpmap = "bump",
-	textureSize = "texture",
-	meshReduction = "mesh_reduction",
 	levelOfDetail = "others_details",
 	fogDistance = "fog",
-	gamma = "gamma",
-	luminosity = "luminosity",
-	contrast = "contrast",
 	showCrosshair = "show_crosshair",
 	antialiasing = "antialiasing",
 	vsync = "vsync";
@@ -245,10 +230,7 @@ const string actions[NUM_ACTION_KEY] = {
 
 // Misc options
 const string
-	forceZBias = "forcezbias",
 	forceToggle = "forcetoggle",
-	gore = "fg",
-	newControl = "newcontrol",
 	migration = "migration",
 	quicksaveSlots = "quicksave_slots",
 	debugLevels = "debug";
@@ -321,7 +303,7 @@ void Config::setDefaultActionKeys() {
 		actions[i] = Default::actions[i];
 	}
 	
-	config.input.linkMouseLookToUse = !config.misc.newControl;
+	config.input.linkMouseLookToUse = false;
 }
 
 bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
@@ -390,14 +372,8 @@ bool Config::save() {
 	}
 	writer.writeKey(Key::bpp, video.bpp);
 	writer.writeKey(Key::fullscreen, video.fullscreen);
-	writer.writeKey(Key::bumpmap, video.bumpmap);
-	writer.writeKey(Key::textureSize, video.textureSize);
-	writer.writeKey(Key::meshReduction, video.meshReduction);
 	writer.writeKey(Key::levelOfDetail, video.levelOfDetail);
 	writer.writeKey(Key::fogDistance, video.fogDistance);
-	writer.writeKey(Key::gamma, video.gamma);
-	writer.writeKey(Key::luminosity, video.luminosity);
-	writer.writeKey(Key::contrast, video.contrast);
 	writer.writeKey(Key::showCrosshair, video.showCrosshair);
 	writer.writeKey(Key::antialiasing, video.antialiasing);
 	writer.writeKey(Key::vsync, video.vsync);
@@ -436,10 +412,7 @@ bool Config::save() {
 	
 	// misc
 	writer.beginSection(Section::Misc);
-	writer.writeKey(Key::forceZBias, misc.forceZBias);
-	writer.writeKey(Key::newControl, misc.newControl);
 	writer.writeKey(Key::forceToggle, misc.forceToggle);
-	writer.writeKey(Key::gore, misc.gore);
 	writer.writeKey(Key::migration, misc.migration);
 	writer.writeKey(Key::quicksaveSlots, misc.quicksaveSlots);
 	writer.writeKey(Key::debugLevels, misc.debug);
@@ -490,14 +463,8 @@ bool Config::init(const fs::path & file) {
 	}
 	video.bpp = reader.getKey(Section::Video, Key::bpp, Default::bpp);
 	video.fullscreen = reader.getKey(Section::Video, Key::fullscreen, Default::fullscreen);
-	video.bumpmap = reader.getKey(Section::Video, Key::bumpmap, Default::bumpmap);
-	video.textureSize = reader.getKey(Section::Video, Key::textureSize, Default::textureSize);
-	video.meshReduction = reader.getKey(Section::Video, Key::meshReduction, Default::meshReduction);
 	video.levelOfDetail = reader.getKey(Section::Video, Key::levelOfDetail, Default::levelOfDetail);
 	video.fogDistance = reader.getKey(Section::Video, Key::fogDistance, Default::fogDistance);
-	video.gamma = reader.getKey(Section::Video, Key::gamma, Default::gamma);
-	video.luminosity = reader.getKey(Section::Video, Key::luminosity, Default::luminosity);
-	video.contrast = reader.getKey(Section::Video, Key::contrast, Default::contrast);
 	video.showCrosshair = reader.getKey(Section::Video, Key::showCrosshair, Default::showCrosshair);
 	video.antialiasing = reader.getKey(Section::Video, Key::antialiasing, Default::antialiasing);
 	video.vsync = reader.getKey(Section::Video, Key::vsync, Default::vsync);
@@ -530,10 +497,7 @@ bool Config::init(const fs::path & file) {
 	}
 	
 	// Get miscellaneous settings
-	misc.forceZBias = reader.getKey(Section::Misc, Key::forceZBias, Default::forceZBias);
 	misc.forceToggle = reader.getKey(Section::Misc, Key::forceToggle, Default::forceToggle);
-	misc.gore = reader.getKey(Section::Misc, Key::gore, Default::gore);
-	misc.newControl = reader.getKey(Section::Misc, Key::newControl, Default::newControl);
 	misc.migration = (MigrationStatus)reader.getKey(Section::Misc, Key::migration, Default::migration);
 	misc.quicksaveSlots = std::max(reader.getKey(Section::Misc, Key::quicksaveSlots, Default::quicksaveSlots), 1);
 	misc.debug = reader.getKey(Section::Misc, Key::debugLevels, Default::debugLevels);

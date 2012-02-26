@@ -96,7 +96,7 @@ struct PROJECT {
 		  compatibility(0),
 		  improve(0), detectliving(0), improvespeed(0),
 		  telekinesis(0), demo(0),
-		  hide(0), TextureSize(0),
+		  hide(0),
 		  torch(Color3f::black) {
 	}
 	
@@ -107,7 +107,6 @@ struct PROJECT {
 	long telekinesis;
 	long demo;
 	HideFlags hide;
-	long TextureSize;
 	Color3f torch;
 };
 

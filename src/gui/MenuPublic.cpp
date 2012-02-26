@@ -135,34 +135,6 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
 	config.video.fogDistance = clamp(_iFog, 0, 10);
 }
 
-void ARXMenu_Options_Video_GetTextureQuality(int & _iQuality) {
-	
-	if (Project.TextureSize == 0) _iQuality = 2;
-	
-	if (Project.TextureSize == 2) _iQuality = 1;
-	
-	if (Project.TextureSize == 64) _iQuality = 0;
-}
-
-void ARXMenu_Options_Video_SetTextureQuality(int _iQuality) {
-	newTextureSize = clamp(_iQuality, 0, 2);
-}
-
-void ARXMenu_Options_Video_SetGamma(int _iGamma) {
-	config.video.gamma = _iGamma;
-	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
-}
-
-void ARXMenu_Options_Video_SetLuminosity(int _iLuminosity) {
-	config.video.luminosity = _iLuminosity;
-	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
-}
-
-void ARXMenu_Options_Video_SetContrast(int _iContrast) {
-	config.video.contrast = _iContrast;
-	mainApp->GetWindow()->setGamma(config.video.luminosity, config.video.contrast, config.video.gamma);
-}
-
 extern long MAX_FRAME_COUNT;
 extern long USEINTERNORM;
 extern long DYNAMIC_NORMALS;
@@ -199,10 +171,6 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 			DYNAMIC_NORMALS = 1; 
 			break;
 	}
-}
-
-void ARXMenu_Options_Video_SetLODQuality(int _iQuality) {
-	config.video.meshReduction = clamp(_iQuality, 0, 2);
 }
 
 //OPTIONS AUDIO
@@ -251,9 +219,6 @@ void ARXMenu_Options_Audio_ApplyGameVolumes() {
 
 bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	
-	int iOldGamma = config.video.gamma;
-	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
-	
 	config.audio.eax = _bEnable;
 	
 	ARX_SOUND_PushAnimSamples();
@@ -277,8 +242,6 @@ bool ARXMenu_Options_Audio_SetEAX(bool _bEnable) {
 	}
 
 	ARX_SOUND_PopAnimSamples();
-
-	ARXMenu_Options_Video_SetGamma(iOldGamma);
 
 	return config.audio.eax;
 }
@@ -358,12 +321,9 @@ void ARXMenu_LoadQuest(size_t num) {
 void ARXMenu_SaveQuest(const std::string & name, size_t num) {
 	
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	int iOldGamma = config.video.gamma;
-	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
 	
 	savegames.save(name, num, savegame_thumbnail);
 	
-	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 }
 

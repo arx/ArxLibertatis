@@ -490,7 +490,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!name.compare("^gore"))
 			{
-				*lcontent = config.misc.gore ? 1 : 0;
+				*lcontent = 1;
 				return TYPE_LONG;
 			}
 

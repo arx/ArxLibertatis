@@ -272,9 +272,6 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->zdec = 0;
 		pd->ov = pos + Vec3f(-sin(float(arxtime) * (1.f/1000)), sin(float(arxtime) * (1.f/1000)), cos(float(arxtime) * (1.f/1000))) * 30.f;
 		pd->siz = 3.5f * power + sin(float(arxtime) * (1.f/1000));
-		if(!config.misc.gore) {
-			pd->siz *= (1.f/6);
-		}
 		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/2); 
 		pd->timcreation	=	(long)arxtime;
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | flags;
@@ -305,10 +302,6 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	if (size>40.f) size=40.f;	
 
 	size*=0.75f;
-
-	if ((!config.misc.gore) && (!(flags & 2)))
-		size*=( 1.0f / 5 );
-
 
 	switch (config.video.levelOfDetail)
 	{

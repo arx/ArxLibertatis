@@ -245,16 +245,16 @@ else(MSVC)
 		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
 	endif()
 	
+	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
+	add_definitions(-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
+	
 	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	
-	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=199309")
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
-	unset(CMAKE_REQUIRED_DEFINITIONS)
 	unset(CMAKE_REQUIRED_LIBRARIES)
 	if(HAVE_CLOCK_GETTIME)
 		set(TIME_LIBRARIES "-lrt")
-		add_definitions(-D_POSIX_C_SOURCE=199309)
 	elseif(NOT HAVE_WINAPI)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
@@ -324,7 +324,11 @@ else(MSVC)
 	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
 	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
 	
-	if(CMAKE_BUILD_TYPE STREQUAL Debug)
+	if(CMAKE_BUILD_TYPE STREQUAL "")
+		set(CMAKE_BUILD_TYPE "Release")
+	endif()
+	
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		
 		#Debug
 		add_definitions(-D_DEBUG)

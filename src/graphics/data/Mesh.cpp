@@ -4102,25 +4102,6 @@ struct COPY3D
 
 vector<COPY3D> vCopy3d;
 
-void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor) {
-	if(config.misc.forceZBias) {
-		_pPoly->v[0].p.x += _pPoly->norm.x * _fFactor;
-		_pPoly->v[0].p.y += _pPoly->norm.y * _fFactor;
-		_pPoly->v[0].p.z += _pPoly->norm.z * _fFactor;
-		_pPoly->v[1].p.x += _pPoly->norm.x * _fFactor;
-		_pPoly->v[1].p.y += _pPoly->norm.y * _fFactor;
-		_pPoly->v[1].p.z += _pPoly->norm.z * _fFactor;
-		_pPoly->v[2].p.x += _pPoly->norm.x * _fFactor;
-		_pPoly->v[2].p.y += _pPoly->norm.y * _fFactor;
-		_pPoly->v[2].p.z += _pPoly->norm.z * _fFactor;
-		if(_pPoly->type & POLY_QUAD) {
-			_pPoly->v[3].p.x += _pPoly->norm2.x * _fFactor;
-			_pPoly->v[3].p.y += _pPoly->norm2.y * _fFactor;
-			_pPoly->v[3].p.z += _pPoly->norm2.z * _fFactor;
-		}
-	}
-}
-
 //-----------------------------------------------------------------------------
 void ComputePortalVertexBuffer()
 {
@@ -4240,8 +4221,6 @@ void ComputePortalVertexBuffer()
 									//SUBTRACTIVE
 									pTextureVertex->iNbIndiceNoCull_TSubstractive += iNbIndice;
 									fTransp = 1.f - fTransp;
-
-									IncrementPolyWithNormal(pPoly, 2.f);
 								}
 							}
 						}
@@ -4284,8 +4263,6 @@ void ComputePortalVertexBuffer()
 									//SUBTRACTIVE
 									pTextureVertex->iNbIndiceCull_TSubstractive += iNbIndice;
 									fTransp = 1.f - fTransp;
-
-									IncrementPolyWithNormal(pPoly, 2.f);
 								}
 							}
 						}

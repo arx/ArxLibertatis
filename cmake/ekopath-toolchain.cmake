@@ -1,5 +1,5 @@
 
-# Look for wine compilers
+# Look for ekopath compilers
 find_program(Ekopath pathcc)
 mark_as_advanced(Ekopath)
 find_program(EkopathXX pathCC)

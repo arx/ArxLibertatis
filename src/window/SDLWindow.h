@@ -42,8 +42,6 @@ public:
 	
 	void showFrame();
 	
-	void setGammaRamp(const u16 * red, const u16 * green, const u16 * blue);
-	
 	void hide();
 	
 private:
