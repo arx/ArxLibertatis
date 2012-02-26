@@ -83,13 +83,10 @@ struct CrashInfo : public CrashInfoBase {
 #include <dbghelp.h>
 
 struct CrashInfo : public CrashInfoBase {
-	
-	PEXCEPTION_POINTERS pExceptionPointers;
-	MINIDUMP_TYPE miniDumpType;
-	
-	// Callstack of the crash.
-	u64 callstack[MaxCallstackDepth];
-	
+	EXCEPTION_RECORD exceptionRecord;
+	CONTEXT			 contextRecord;
+	MINIDUMP_TYPE	 miniDumpType;
+	HANDLE			 threadHandle;
 };
 
 #endif

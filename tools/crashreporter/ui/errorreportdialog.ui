@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Fatal Error</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../data/icons/arx-libertatis.ico</normaloff>../../../data/icons/arx-libertatis.ico</iconset>
+  </property>
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
@@ -311,13 +315,44 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tabReportContent">
+         <widget class="QWidget" name="tabErrorDescription">
           <attribute name="title">
-           <string>Report Content</string>
+           <string>Error Description</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
+            <widget class="QTextEdit" name="textEditErrorDescription">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="font">
+              <font>
+               <family>Courier New</family>
+              </font>
+             </property>
+             <property name="lineWrapMode">
+              <enum>QTextEdit::NoWrap</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tabAttachedFiles">
+          <attribute name="title">
+           <string>Attached Files</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0">
            <item>
             <widget class="QLabel" name="lblUncheckToExclude">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string>Uncheck files to prevent them from being included in the crash report.</string>
              </property>

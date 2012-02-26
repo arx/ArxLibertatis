@@ -80,6 +80,8 @@ public:
 
 	FileList& GetAttachedFiles();
 
+	const std::string& GetErrorDescription() const;
+
 private:
 	bool Initialize();
 
@@ -116,6 +118,8 @@ private:
 	
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
 	CrashInfo* m_pCrashInfo;
+
+	std::string m_ReportDetailedDescription;
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H

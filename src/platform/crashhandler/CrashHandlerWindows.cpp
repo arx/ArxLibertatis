@@ -216,40 +216,6 @@ enum CrashType {
 	SIGNAL_UNKNOWN
 };
 
-void appendExceptionContext(char* crashDetails, EXCEPTION_POINTERS* pExceptionInfo) {
-
-	char buf[256];
-
-	PCONTEXT pCtx = pExceptionInfo->ContextRecord;
-	strcat(crashDetails, "Registers:\n");
-		
-#if defined(_WIN64)
-	sprintf(buf, "  RAX:%016X  RBX:%016X  RCX:%016X  RDX:%016X  RSI:%016X  RDI:%016X\n", pCtx->Rax, pCtx->Rbx, pCtx->Rcx, pCtx->Rdx, pCtx->Rsi, pCtx->Rdi);
-	strcat(crashDetails, buf);
-
-	sprintf(buf, "  CS:RIP:%04X:%08X\n", pCtx->SegCs, pCtx->Rip);
-	strcat(crashDetails, buf);
-
-	sprintf(buf, "  SS:RSP:%04X:%016X  RBP:%016X\n", pCtx->SegSs, pCtx->Rsp, pCtx->Rbp);
-	strcat(crashDetails, buf);
-#else
-    sprintf(buf, "  EAX:%08X  EBX:%08X  ECX:%08X  EDX:%08X  ESI:%08X  EDI:%08X\n", pCtx->Eax, pCtx->Ebx, pCtx->Ecx, pCtx->Edx, pCtx->Esi, pCtx->Edi);
-	strcat(crashDetails, buf);
-
-	sprintf(buf, "  CS:EIP:%04X:%08X\n", pCtx->SegCs, pCtx->Eip);
-	strcat(crashDetails, buf);
-
-	sprintf(buf, "  SS:ESP:%04X:%08X  EBP:%08X\n", pCtx->SegSs, pCtx->Esp, pCtx->Ebp);
-	strcat(crashDetails, buf);
-#endif
-
-	sprintf(buf, "  DS:%04X  ES:%04X  FS:%04X  GS:%04X\n", pCtx->SegDs, pCtx->SegEs, pCtx->SegFs, pCtx->SegGs);
-	strcat(crashDetails, buf);
-
-	sprintf(buf, "  Flags:%08X\n\n", pCtx->EFlags);
-	strcat(crashDetails, buf);
-}
-
 void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int FPECode) {
 	Autolock autoLock(&m_Lock);
 
@@ -304,24 +270,24 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 		
 		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
 	}
-	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
+	strcat(m_pCrashInfo->detailedCrashInfo, "\n");
 
-	EXCEPTION_POINTERS ExceptionPointers;
-	memset(&ExceptionPointers, 0, sizeof(ExceptionPointers));
+	memset(&m_pCrashInfo->exceptionRecord, 0, sizeof(m_pCrashInfo->exceptionRecord));
+	memset(&m_pCrashInfo->contextRecord, 0, sizeof(m_pCrashInfo->contextRecord));
 
 	if(crashExtraInfo != 0) {
 		EXCEPTION_POINTERS* pExceptionPointers = (EXCEPTION_POINTERS*)crashExtraInfo;
-		appendExceptionContext(m_pCrashInfo->detailedCrashInfo, pExceptionPointers);
-		m_pCrashInfo->pExceptionPointers = pExceptionPointers;
+		memcpy(&m_pCrashInfo->exceptionRecord, pExceptionPointers->ExceptionRecord, sizeof(m_pCrashInfo->exceptionRecord));
+		memcpy(&m_pCrashInfo->contextRecord, pExceptionPointers->ContextRecord, sizeof(m_pCrashInfo->contextRecord));
 	} else {
-		RtlCaptureContext(ExceptionPointers.ContextRecord);
-		ExceptionPointers.ExceptionRecord->ExceptionCode = 0;
-		ExceptionPointers.ExceptionRecord->ExceptionAddress = _ReturnAddress();
-		m_pCrashInfo->pExceptionPointers = &ExceptionPointers;
+		RtlCaptureContext(&m_pCrashInfo->contextRecord);
+		m_pCrashInfo->exceptionRecord.ExceptionCode = 0;
+		m_pCrashInfo->exceptionRecord.ExceptionAddress = _ReturnAddress();
 	}
 
 	// Get current thread id
 	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
+	m_pCrashInfo->threadHandle = GetCurrentThread();
 
 	STARTUPINFO si;
 	memset(&si, 0, sizeof(STARTUPINFO));

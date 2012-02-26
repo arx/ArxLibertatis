@@ -102,7 +102,11 @@ void ErrorReportDialog::onSendReport()
 
 void ErrorReportDialog::onTabChanged(int index)
 {
-	if(index == 1) // tabReportContent
+	if(index == 1) // tabErrorDescription
+	{
+		ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription().c_str());
+	}
+	else if(index == 2) // tabAttachedFiles
 	{
 		QModelIndex idx = ui->listFiles->model()->index(0, 0);
 		if(idx.isValid())
