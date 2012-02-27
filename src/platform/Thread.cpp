@@ -135,45 +135,47 @@ Thread::~Thread() {
 
 namespace {
 
-void SetCurrentThreadName(const std::string& threadName)
-{
-	if(!IsDebuggerPresent())
+void SetCurrentThreadName(const std::string & threadName) {
+#if ARX_COMPILER_MSVC
+	
+	if(threadName.empty() || !IsDebuggerPresent()) {
 		return;
-
-	if(!threadName.empty()) 
-    {
-        typedef struct tagTHREADNAME_INFO
-        {
-            DWORD   dwType;         // must be 0x1000
-            LPCSTR  szName;         // pointer to name (in user addr space)
-            DWORD   dwThreadID;     // thread ID (-1=caller thread)
-            DWORD   dwFlags;        // reserved for future use, must be zero
-        } THREADNAME_INFO;
-
-        THREADNAME_INFO info;
-
-        info.dwType         = 0x1000;
-        info.szName         = threadName.c_str();
-        info.dwThreadID     = ::GetCurrentThreadId();
-        info.dwFlags        = 0;
-
-		const DWORD MS_VC_EXCEPTION = 0x406D1388;
-
-        __try
-        {
-            RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info);
-        }
-        __except(EXCEPTION_CONTINUE_EXECUTION)
-        {
-        }
-    }
+	}
+	
+	typedef struct tagTHREADNAME_INFO {
+		DWORD   dwType;         // must be 0x1000
+		LPCSTR  szName;         // pointer to name (in user addr space)
+		DWORD   dwThreadID;     // thread ID (-1=caller thread)
+		DWORD   dwFlags;        // reserved for future use, must be zero
+	} THREADNAME_INFO;
+	
+	THREADNAME_INFO info;
+	info.dwType         = 0x1000;
+	info.szName         = threadName.c_str();
+	info.dwThreadID     = ::GetCurrentThreadId();
+	info.dwFlags        = 0;
+	
+	const DWORD MS_VC_EXCEPTION = 0x406D1388;
+	
+	__try
+	{
+			RaiseException(MS_VC_EXCEPTION, 0, sizeof(info)/sizeof(DWORD), (ULONG_PTR *)&info);
+	}
+	__except(EXCEPTION_CONTINUE_EXECUTION)
+	{
+	}
+	
+#else
+	ARX_UNUSED(threadName)
+#endif
 }
 
-}
+} // anonymous namespace
 
 DWORD WINAPI Thread::entryPoint(LPVOID param) {
+	
 	SetCurrentThreadName(((Thread*)param)->threadName);
-
+	
 	CrashHandler::registerThreadCrashHandlers();
 	((Thread*)param)->run();
 	CrashHandler::unregisterThreadCrashHandlers();
