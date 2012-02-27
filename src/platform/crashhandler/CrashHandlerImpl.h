@@ -26,9 +26,16 @@
 
 // BOOST
 #define BOOST_DATE_TIME_NO_LIB
+#include <boost/version.hpp>
+#if BOOST_VERSION < 104500
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-fpermissive"
+#endif
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/interprocess/detail/os_thread_functions.hpp>
+#if BOOST_VERSION < 104500
+#pragma GCC diagnostic pop
+#endif
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>

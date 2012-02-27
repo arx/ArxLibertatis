@@ -31,9 +31,17 @@
 
 // BOOST
 #define BOOST_DATE_TIME_NO_LIB
+#include <boost/version.hpp>
+#if BOOST_VERSION < 104500
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-fpermissive"
+#endif
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
 #include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#if BOOST_VERSION < 104500
+#pragma GCC diagnostic pop
+#endif
 #include <boost/scope_exit.hpp>
 
 // Qt
