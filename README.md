@@ -8,10 +8,12 @@
 
 Cross-platform port of Arx Fatalis
 
-Arx Libertatis is based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
+Arx Libertatisis based on the publicly released [Arx Fatalis source code](http://www.arkane-studios.com/uk/arx_downloads.php).
 GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Contact
+
+Website: [http://arx-libertatis.org](http://arx-libertatis.org)
 
 Bug Tracker: [https://bugs.arx-libertatis.org/](https://bugs.arx-libertatis.org/)
 
@@ -23,14 +25,26 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
-* SDL 1.2 and OpenGL 1.5 and GLEW **and/or** DirectInput 8 and Direct3D 9
-* OpenAL 1.1 **and/or** DirectSound 9
 * DevIL
 * zlib
 * Boost (headers, program_options library)
 * Freetype
+* OpenAL 1.1 **and/or** DirectSound 9
 
-Systems without Win32 or POSIX filesystem support will also need the boost filesystem library.
+There are rendering backends for both OpenGL and Direct3D. You need either:
+* SDL 1.2
+* OpenGL 1.5
+* GLEW
+**and/or**
+* DirectInput 8
+* Direct3D 9
+Both OpenGL and Direct3D backends can be built at the same time.
+
+Systems without Win32 or POSIX filesystem support will also need Boost 1.44 or newer including the filesystem library.
+
+Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
+* Qt 4
+* OpenSSL
 
 ## Compile and install
 
@@ -92,7 +106,7 @@ Where arx will look for a system-wide installation depends on the OS:
 
 Under **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\Arx Libertatis` on XP and `%USERPROFILE%\Saved Games\Arx Libertatis` on Vista and up.
 
-For other systems like **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depending on your distro. Config and save files are normally located in `~/.local/share/arx`
+For other systems like **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depending on your linux distribution. Config and save files are normally located in `~/.local/share/arx`
 
 ## Run
 
