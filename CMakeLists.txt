@@ -349,6 +349,7 @@ else(MSVC)
 		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
 		add_cxxflag("-fbounds-checking")
 		add_cxxflag("-fcatch-undefined-behavior")
+		add_cxxflag("-Wstrict-aliasing=1")
 	else()
 		# -Wuninitialized causes too many false positives
 		add_cxxflag("-Wno-uninitialized")
