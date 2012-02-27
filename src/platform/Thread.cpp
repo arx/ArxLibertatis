@@ -25,6 +25,7 @@
 #if defined(HAVE_PTHREADS)
 
 #include <sched.h>
+#include <unistd.h>
 
 Thread::Thread() : started(false) {
 	setPriority(Normal);
@@ -91,6 +92,14 @@ void * Thread::entryPoint(void * param) {
 
 void Thread::exit() {
 	pthread_exit(NULL);
+}
+
+thread_id_type Thread::getCurrentThreadId() {
+	return pthread_self();
+}
+
+process_id_type getProcessId() {
+	return getpid();
 }
 
 #elif defined(HAVE_WINAPI)
@@ -190,6 +199,14 @@ void Thread::waitForCompletion() {
 	DWORD ret = WaitForSingleObject(thread, INFINITE);
 	arx_assert(ret == WAIT_OBJECT_0);
 	ARX_UNUSED(ret);
+}
+
+thread_id_type Thread::getCurrentThreadId() {
+	return GetCurrentThreadId();
+}
+
+process_id_type getProcessId() {
+	return GetCurrentProcessId();
 }
 
 #endif

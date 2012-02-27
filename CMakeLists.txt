@@ -277,6 +277,9 @@ else(MSVC)
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
 	check_symbol_exists(backtrace_symbols "execinfo.h" HAVE_BACKTRACE_SYMBOLS)
 	
+	check_include_file("sys/types.h" HAVE_SYS_TYPES_H)
+	check_symbol_exists(getpid "unistd.h" HAVE_GETPID)
+	
 	if(USE_NATIVE_FS)
 		
 		check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
@@ -410,7 +413,7 @@ if(USER_DIR_PREFIXES STREQUAL "")
 endif()
 
 # Check that all required functionality is available.
-if(CMAKE_USE_PTHREADS_INIT)
+if(CMAKE_USE_PTHREADS_INIT AND HAVE_SYS_TYPES_H AND HAVE_GETPID)
 	set(HAVE_PTHREADS 1)
 endif()
 
@@ -1154,7 +1157,7 @@ print_configuration("Tools" FIRST
 )
 message("")
 
-if(NOT (CMAKE_USE_PTHREADS_INIT OR CMAKE_USE_WIN32_THREADS_INIT))
+if(NOT (HAVE_PTHREADS OR HAVE_WINAPI))
 	message(SEND_ERROR "No supported thread libraries found.")
 endif()
 if(NOT (HAVE_OPENGL OR HAVE_D3D9))

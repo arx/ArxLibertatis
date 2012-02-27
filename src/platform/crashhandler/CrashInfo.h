@@ -33,6 +33,7 @@
 #endif
 
 #include "platform/Platform.h"
+#include "platform/Thread.h"
 
 struct CrashInfoBase {
 	
@@ -60,8 +61,8 @@ struct CrashInfoBase {
 	} variables[MaxNbVariables];
 	
 	// ID of the crashed process & thread
-	boost::interprocess::detail::OS_process_id_t processId;
-	boost::interprocess::detail::OS_thread_id_t threadId;
+	process_id_type processId;
+	thread_id_type threadId;
 	
 	// Detailed crash info (messages, registers, whatever).
 	char detailedCrashInfo[MaxDetailCrashInfoLen];

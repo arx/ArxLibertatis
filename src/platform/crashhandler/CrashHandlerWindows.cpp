@@ -286,7 +286,7 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	}
 
 	// Get current thread id
-	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
+	m_pCrashInfo->threadId = Thread::getCurrentThreadId();
 	m_pCrashInfo->threadHandle = GetCurrentThread();
 
 	STARTUPINFO si;

@@ -26,8 +26,13 @@
 
 #if defined(HAVE_PTHREADS)
 #include <pthread.h>
+#include <sys/types.h>
+typedef pthread_t thread_id_type;
+typedef pid_t process_id_type;
 #elif defined(HAVE_WINAPI)
 #include <windows.h>
+typedef DWORD thread_id_type;
+typedef DWORD process_id_type;
 #else
 #error "Threads not supported: need either HAVE_PTHREADS or HAVE_WINAPI"
 #endif
@@ -96,6 +101,8 @@ public:
 	 */
 	void waitForCompletion();
 	
+	static thread_id_type getCurrentThreadId();
+	
 protected:
 	
 	/*!
@@ -125,5 +132,7 @@ public:
 	}
 	
 };
+
+process_id_type getProcessId();
 
 #endif // ARX_PLATFORM_THREAD_H

@@ -92,7 +92,7 @@ void CrashHandlerImpl::destroySharedMemory() {
 }
 
 void CrashHandlerImpl::fillBasicCrashInfo() {
-	m_pCrashInfo->processId = boost::interprocess::detail::get_current_process_id();
+	m_pCrashInfo->processId = getProcessId();
 
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
 }

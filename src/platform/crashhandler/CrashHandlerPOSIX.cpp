@@ -242,7 +242,7 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	fflush(stdout), fflush(stderr);
 	
 	// Get current thread id
-	m_pCrashInfo->threadId = boost::interprocess::detail::get_current_thread_id();
+	m_pCrashInfo->threadId = Thread::getCurrentThreadId();
 	
 	
 	if(fork()) {
