@@ -777,7 +777,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 		eerie->grouplist[i].origin = ptg3011->origin;
 		eerie->grouplist[i].indexes.resize(ptg3011->nb_index);
 		
-		std::copy((long*)(adr + pos), (long*)(adr + pos) + ptg3011->nb_index, eerie->grouplist[i].indexes.begin());
+		std::copy((const long*)(adr + pos), (const long*)(adr + pos) + ptg3011->nb_index, eerie->grouplist[i].indexes.begin());
 		pos += ptg3011->nb_index * sizeof(long);
 		
 		eerie->grouplist[i].name = toLowercase(safestring(adr + pos, 256));
@@ -808,7 +808,7 @@ static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, lo
 		eerie->selections[i].selected.resize(pts->nb_index);
 		
 		if(pts->nb_index > 0) {
-			std::copy((long*)(adr + pos), (long*)(adr + pos) + pts->nb_index, eerie->selections[i].selected.begin());
+			std::copy((const long*)(adr + pos), (const long*)(adr + pos) + pts->nb_index, eerie->selections[i].selected.begin());
 			pos += sizeof(long) * pts->nb_index;
 		}
 	}

@@ -108,7 +108,7 @@ float __mov;
 /* this edge to edge test is based on Franlin Antonio's gem:
    "Faster Line Segment Intersection", in Graphics Gems III,
    pp. 199-202 */
-#define EDGE_EDGE_TEST(V0,U0,U1)                      \
+#define EDGE_EDGE_TEST(V0,U0,U1)                        \
 	Bx=U0[i0]-U1[i0];                                   \
 	By=U0[i1]-U1[i1];                                   \
 	Cx=V0[i0]-U0[i0];                                   \
@@ -117,19 +117,19 @@ float __mov;
 	d=By*Cx-Bx*Cy;                                      \
 	if((f>0 && d>=0 && d<=f) || (f<0 && d<=0 && d>=f))  \
 	{                                                   \
-		e=Ax*Cy-Ay*Cx;                                    \
-		if(f>0)                                           \
-		{                                                 \
-			if(e>=0 && e<=f) return 1;                      \
-		}                                                 \
-		else                                              \
-		{                                                 \
-			if(e<=0 && e>=f) return 1;                      \
-		}                                                 \
+		e=Ax*Cy-Ay*Cx;                                  \
+		if(f>0)                                         \
+		{                                               \
+			if(e>=0 && e<=f) return 1;                  \
+		}                                               \
+		else                                            \
+		{                                               \
+			if(e<=0 && e>=f) return 1;                  \
+		}                                               \
 	}
 
-#define EDGE_AGAINST_TRI_EDGES(V0,V1,U0,U1,U2) \
-	{                                              \
+#define EDGE_AGAINST_TRI_EDGES(V0,V1,U0,U1,U2)       \
+	{                                                \
 		float Ax,Ay,Bx,By,Cx,Cy,e,d,f;               \
 		Ax=V1[i0]-V0[i0];                            \
 		Ay=V1[i1]-V0[i1];                            \
@@ -141,8 +141,8 @@ float __mov;
 		EDGE_EDGE_TEST(V0,U2,U0);                    \
 	}
 
-#define POINT_IN_TRI(V0,U0,U1,U2)           \
-	{                                           \
+#define POINT_IN_TRI(V0,U0,U1,U2)                 \
+	{                                             \
 		float a,b,c,d0,d1,d2;                     \
 		/* is T1 completly inside T2? */          \
 		/* check if V0 is inside tri(U0,U1,U2) */ \
@@ -162,12 +162,12 @@ float __mov;
 		d2=a*V0[i0]+b*V0[i1]+c;                   \
 		if(d0*d1>0.0)                             \
 		{                                         \
-			if(d0*d2>0.0) return 1;                 \
+			if(d0*d2>0.0) return 1;               \
 		}                                         \
 	}
 
-int coplanar_tri_tri(float N[3], float V0[3], float V1[3], float V2[3],
-                     float U0[3], float U1[3], float U2[3])
+int coplanar_tri_tri(const float N[3], const float V0[3], const float V1[3], const float V2[3],
+                     const float U0[3], const float U1[3], const float U2[3])
 {
 	float A[3];
 	short i0, i1;
@@ -257,19 +257,19 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 
 	float xx, yy, xxyy, tmp;
 
-	float * V0;
-	float * V1;
-	float * V2;
-	float * U0;
-	float * U1;
-	float * U2;
-	V0 = (float *)&VV->v[0];
-	V1 = (float *)&VV->v[1];
-	V2 = (float *)&VV->v[2];
+	const float * V0;
+	const float * V1;
+	const float * V2;
+	const float * U0;
+	const float * U1;
+	const float * U2;
+	V0 = (const float *)&VV->v[0];
+	V1 = (const float *)&VV->v[1];
+	V2 = (const float *)&VV->v[2];
 
-	U0 = (float *)&UU->v[0];
-	U1 = (float *)&UU->v[1];
-	U2 = (float *)&UU->v[2];
+	U0 = (const float *)&UU->v[0];
+	U1 = (const float *)&UU->v[1];
+	U2 = (const float *)&UU->v[2];
 
 	/* compute plane equation of triangle(V0,V1,V2) */
 	SUB(E1, V1, V0);
@@ -975,9 +975,9 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 //-----------------------------------------------------------------------------
 void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b)
 {
-	float * pA = (float *)a;
-	float * pB = (float *)b;
-	float  pM[16];
+	const float * pA = (const float *)a;
+	const float * pB = (const float *)b;
+	float pM[16];
 
 	memset(pM, 0, sizeof(EERIEMATRIX));
 
