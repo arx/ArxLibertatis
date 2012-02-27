@@ -28,7 +28,6 @@
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/wait.h>
 
 #include "platform/Environment.h"
 
@@ -269,10 +268,14 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 			strcat(arguments, m_SharedMemoryName.c_str());
 			
 			// Try a the crash reporter in the same directory as arx or in the current directory.
+#ifdef HAVE_EXECL
 			execl(m_CrashHandlerApp.c_str(), arguments, NULL);
+#endif
 			
 			// Try a crash reporter in the system path.
+#ifdef HAVE_EXECLP
 			execlp("arxcrashreporter", arguments, NULL);
+#endif
 			
 			// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
 			

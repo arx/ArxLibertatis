@@ -51,7 +51,7 @@ extern "C" {
 #endif
 
 #ifndef _ZLIBIOAPI_H
-#include "tools/crashreporter/minizip/ioapi.h"
+#include "crashreporter/minizip/ioapi.h"
 #endif
 
 #ifdef HAVE_BZIP2

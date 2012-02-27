@@ -184,12 +184,13 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 
 	return bWriteDump;
 	
-#else
+#else // !HAVE_WINAPI
+	
 	ARX_UNUSED(fileName);
 	// TODO: Write core dump to 
 	// fs::path fullPath = m_ReportFolder / fileName;
 	
-#ifdef HAVE_EXECLP
+#if defined(HAVE_FORK) && defined(HAVE_EXECLP) && defined(HAVE_DUP2)
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
@@ -199,12 +200,11 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 		// Wait for GDB to exit.
 		waitpid(childPID, NULL, 0);
 	} else {
-		#ifdef HAVE_DUP2
+		
 		// Redirect output to a file
 		int fd = open(tracePath.string().c_str(), O_WRONLY|O_CREAT, 0666);
 		dup2(fd, 1);
 		close(fd);
-		#endif
 		
 		// Prepare pid argument for GDB.
 		char pid_buf[30];
@@ -217,7 +217,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 		// GDB failed to start.
 		exit(1);
 	}
-	#endif // HAVE_EXECLP
+#endif // defined(HAVE_EXECLP) && defined(HAVE_DUP2)
 	
 	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
 	if(bWroteDump) {
@@ -233,9 +233,9 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 	
 	AddFile(tracePath);
 	
-	
 	return true;
-#endif
+	
+#endif // !HAVE_WINAPI
 }
 
 bool ErrorReport::GetMachineInfo(const fs::path& fileName)

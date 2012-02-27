@@ -27,13 +27,12 @@
 // POSIX / Linux features
 #cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
 #cmakedefine HAVE_CLOCK_GETTIME
-#cmakedefine HAVE_STRSIGNAL
 #cmakedefine HAVE_FORK
 #cmakedefine HAVE_READLINK
 #cmakedefine HAVE_DUP2
+#cmakedefine HAVE_EXECL
 #cmakedefine HAVE_EXECLP
 #cmakedefine HAVE_WAITPID
-#cmakedefine HAVE_KILL
 #cmakedefine HAVE_BACKTRACE
 #cmakedefine HAVE_BACKTRACE_SYMBOLS
 #cmakedefine HAVE_ISATTY
