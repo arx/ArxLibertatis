@@ -31,6 +31,10 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * Freetype
 * OpenAL 1.1 **and/or** DirectSound 9
 
+Systems without Win32 or POSIX filesystem support will also need Boost 1.44 or newer including the `filesystem` and `system` libraries.
+
+### Renderer
+
 There are rendering backends for both OpenGL and Direct3D. You need either:
 
 * SDL 1.2
@@ -44,7 +48,7 @@ There are rendering backends for both OpenGL and Direct3D. You need either:
 
 Both OpenGL and Direct3D backends can be built at the same time.
 
-Systems without Win32 or POSIX filesystem support will also need Boost 1.44 or newer including the `filesystem` and `system` libraries.
+### Crash Reporter
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
