@@ -34,7 +34,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 There are rendering backends for both OpenGL and Direct3D. You need either:
 
 * SDL 1.2
-* OpenGL 1.5
+* OpenGL 1.5 (OpenGL 2.1 or newer is recommended)
 * GLEW
 
 **and/or**
@@ -48,7 +48,7 @@ Systems without Win32 or POSIX filesystem support will also need Boost 1.44 or n
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
-* Qt 4
+* Qt 4 (`QtCore` and `QtGui` libraries)
 * OpenSSL
 
 ## Compile and install
