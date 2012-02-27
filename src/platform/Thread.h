@@ -52,11 +52,12 @@ private:
 #elif defined(HAVE_WINAPI)
 	
 	HANDLE thread;
-	std::string threadName;
 
 	static DWORD WINAPI entryPoint(LPVOID param);
 	
 #endif
+	
+	std::string threadName;
 	
 public:
 	

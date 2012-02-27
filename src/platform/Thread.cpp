@@ -22,10 +22,20 @@
 #include "platform/CrashHandler.h"
 #include "platform/Platform.h"
 
+void Thread::setThreadName(const std::string & _threadName) {
+	threadName = _threadName;
+}
+
 #if defined(HAVE_PTHREADS)
 
 #include <sched.h>
 #include <unistd.h>
+
+#if !defined(HAVE_PTHREAD_SETNAME_NP) && !defined(HAVE_PTHREAD_SET_NAME_NP) \
+    && defined(HAVE_PRCTL) && defined(HAVE_PR_SET_NAME)
+#include <sys/prctl.h>
+#include <linux/prctl.h>
+#endif
 
 Thread::Thread() : started(false) {
 	setPriority(Normal);
@@ -49,10 +59,6 @@ void Thread::start() {
 	pthread_attr_destroy(&attr);
 	
 	started = true;
-}
-
-void Thread::setThreadName(const std::string& _threadName) {
-	ARX_UNUSED(_threadName);
 }
 
 void Thread::setPriority(Priority _priority) {
@@ -84,8 +90,25 @@ void Thread::waitForCompletion() {
 }
 
 void * Thread::entryPoint(void * param) {
+	
+	Thread & thread = *((Thread *)param);
+	
+	// Set the thread name.
+#if defined(HAVE_PTHREAD_SETNAME_NP) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+	// Linux
+	pthread_setname_np(thread.thread, thread.threadName.c_str());
+#elif defined(HAVE_PTHREAD_SETNAME_NP) && ARX_PLATFORM == ARX_PLATFORM_MACOSX
+	// Mac OS X
+	pthread_setname_np(thread.threadName.c_str());
+#elif defined(HAVE_PTHREAD_SET_NAME_NP)
+	// FreeBSD & OpenBSD
+	pthread_set_name_np(thread.thread, thread.threadName.c_str());
+#elif defined(HAVE_PRCTL) && defined(HAVE_PR_SET_NAME)
+	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.threadName.c_str()), 0, 0, 0);
+#endif
+	
 	CrashHandler::registerThreadCrashHandlers();
-	((Thread*)param)->run();
+	thread.run();
 	CrashHandler::unregisterThreadCrashHandlers();
 	return NULL;
 }
@@ -123,11 +146,6 @@ static const int windowsThreadPriorities[] = {
 	THREAD_PRIORITY_ABOVE_NORMAL,
 	THREAD_PRIORITY_HIGHEST
 };
-
-void Thread::setThreadName(const std::string& _threadName)
-{
-	threadName = _threadName;
-}
 
 void Thread::setPriority(Priority priority) {
 	

@@ -212,7 +212,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 		sprintf(pid_buf, "%d", m_pCrashInfo->processId);
 		
 		// Try to execute gdb to get a very detailed stack trace.
-		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
+		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
 		
 		// GDB failed to start.
 		exit(1);

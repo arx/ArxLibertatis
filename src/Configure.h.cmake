@@ -6,6 +6,10 @@
 
 // Threads
 #cmakedefine HAVE_PTHREADS
+#cmakedefine HAVE_PRCTL
+#cmakedefine HAVE_PR_SET_NAME
+#cmakedefine HAVE_PTHREAD_SETNAME_NP
+#cmakedefine HAVE_PTHREAD_SET_NAME_NP
 
 // Audio backend
 #cmakedefine HAVE_OPENAL

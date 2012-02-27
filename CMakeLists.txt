@@ -250,6 +250,12 @@ else(MSVC)
 	
 	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	
+	check_symbol_exists(pthread_setname_np "pthread.h" HAVE_PTHREAD_SETNAME_NP)
+	check_symbol_exists(pthread_set_name_np "pthread.h" HAVE_PTHREAD_SET_NAME_NP)
+	check_symbol_exists(prctl "sys/prctl.h" HAVE_PRCTL)
+	check_symbol_exists(PR_SET_NAME "linux/prctl.h" HAVE_PR_SET_NAME)
+	
+	
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 	unset(CMAKE_REQUIRED_LIBRARIES)
