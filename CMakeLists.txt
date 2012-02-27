@@ -961,8 +961,9 @@ if(PYTHONINTERP_FOUND)
 	set(ALL_SOURCES
 		${ARX_SOURCES}
 		${ALL_INCLUDES}
-		${SAVETOOL_SOURCES}
-		${UNPAK_SOURCES}
+		${arxsavetool_SOURCES}
+		${arxunpak_SOURCES}
+		${arxcrashreporter_SOURCES}
 		${TOOLS_INCLUDES}
 	)
 	
