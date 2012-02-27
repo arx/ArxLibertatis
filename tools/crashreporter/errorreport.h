@@ -104,29 +104,30 @@ private:
 	void AddFile(const fs::path& fileName);
 	
 	void ReleaseApplicationLock();
-
+	
 private:
+	
 	fs::path m_ReportFolder;
-
+	
 	FileList m_AttachedFiles;
-
+	
 	QDateTime m_CrashDateTime;
 	double m_RunningTimeSec;
 	
 	QString m_OSName;
-	bool m_OSIs64Bit;
-
+	QString m_Architecture;
+	
 	QString m_ProcessName;
 	fs::path m_ProcessPath;
 	quint64 m_ProcessMemoryUsage;
-	bool m_ProcessIs64Bit;
+	QString m_ProcessArchitecture;
 
 	std::string m_SharedMemoryName;
 	boost::interprocess::shared_memory_object m_SharedMemory;
 	
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
-	CrashInfo* m_pCrashInfo;
-
+	CrashInfo * m_pCrashInfo;
+	
 	std::string m_ReportDetailedDescription;
 };
 

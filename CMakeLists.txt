@@ -255,6 +255,8 @@ else(MSVC)
 	check_symbol_exists(prctl "sys/prctl.h" HAVE_PRCTL)
 	check_symbol_exists(PR_SET_NAME "linux/prctl.h" HAVE_PR_SET_NAME)
 	
+	check_symbol_exists(uname "sys/utsname.h" HAVE_UNAME)
+	check_symbol_exists(getrusage "sys/resource.h" HAVE_GETRUSAGE)
 	
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)

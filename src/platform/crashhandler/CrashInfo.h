@@ -20,6 +20,8 @@
 #ifndef ARX_PLATFORM_CRASHHANDLER_CRASHINFO_H
 #define ARX_PLATFORM_CRASHHANDLER_CRASHINFO_H
 
+#include "Configure.h"
+
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/version.hpp>
 #if BOOST_VERSION < 104500
@@ -34,6 +36,10 @@
 
 #include "platform/Platform.h"
 #include "platform/Thread.h"
+
+#ifdef HAVE_GETRUSAGE
+#include "sys/resource.h"
+#endif
 
 struct CrashInfoBase {
 	
@@ -79,11 +85,12 @@ struct CrashInfoBase {
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 struct CrashInfo : public CrashInfoBase {
-	
 	char execFullName[512];
-	
 	char backtrace[4096];
-	
+	bool have_rusage;
+#ifdef HAVE_GETRUSAGE
+	struct ::rusage rusage;
+#endif
 };
 
 #else
@@ -93,9 +100,9 @@ struct CrashInfo : public CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	EXCEPTION_RECORD exceptionRecord;
-	CONTEXT			 contextRecord;
-	MINIDUMP_TYPE	 miniDumpType;
-	HANDLE			 threadHandle;
+	CONTEXT          contextRecord;
+	MINIDUMP_TYPE    miniDumpType;
+	HANDLE           threadHandle;
 };
 
 #endif

@@ -89,7 +89,7 @@ bool CrashHandlerPOSIX::registerCrashHandlers() {
 	m_pPreviousCrashHandlers->m_SIGILLHandler = signal(SIGILL, SignalHandler);
 #endif
 	
-	// TODO is the cast OK?
+	// TODO(crash-handler) is the cast OK?
 #ifdef SIGFPE
 	m_pPreviousCrashHandlers->m_SIGFPEHandler = signal(SIGFPE, signal_handler(SIGFPEHandler));
 #endif
@@ -149,8 +149,6 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	// Remove crash handlers so we don't end in an infinite crash loop
 	removeCrashHandlers(&nullHandlers);
 	
-	Autolock autoLock(&m_Lock);
-	
 	// Run the callbacks
 	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
 	    it != m_crashCallbacks.end(); ++it) {
@@ -166,10 +164,9 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 		default:          crashSummary = 0; break;
 	}
 	
-	if(crashSummary != 0)
+	if(crashSummary != 0) {
 		strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
-	else
-	{
+	} else {
 		sprintf(m_pCrashInfo->detailedCrashInfo, "Received signal #%d", crashType);
 	}
 	
@@ -214,7 +211,7 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
-
+	
 	// Fallback to generate a basic stack trace.
 	#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS)
 	{
@@ -238,12 +235,17 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 		m_pCrashInfo->backtrace[pos] = '\0';
 	}
 	#endif
-
+	
 	fflush(stdout), fflush(stderr);
 	
 	// Get current thread id
 	m_pCrashInfo->threadId = Thread::getCurrentThreadId();
 	
+#ifdef HAVE_GETRUSAGE
+	m_pCrashInfo->have_rusage = (getrusage(RUSAGE_SELF, &m_pCrashInfo->rusage) == 0);
+#else
+	m_pCrashInfo->have_rusage = false;
+#endif
 	
 	if(fork()) {
 		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
@@ -269,12 +271,12 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 			
 			// Try a the crash reporter in the same directory as arx or in the current directory.
 #ifdef HAVE_EXECL
-			execl(m_CrashHandlerApp.c_str(), arguments, NULL);
+			execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
 #endif
 			
 			// Try a crash reporter in the system path.
 #ifdef HAVE_EXECLP
-			execlp("arxcrashreporter", arguments, NULL);
+			execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
 #endif
 			
 			// TODO(crash-handler) start fallback in-process crash handler and dump everything to file

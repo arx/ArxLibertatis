@@ -45,10 +45,11 @@ int main(int argc, char **argv) {
 	QApplication app(argc, argv);
 	
 #endif
-
+	
 	Logger::init();
-	Logger::add(new logger::File("arxcrashreporter.log", std::ios_base::out | std::ios_base::trunc));
-
+	
+	LogWarning << "Arx Crash Reporter starting!";
+	
 	std::string sharedMemoryName;
 	const QStringList args = app.arguments();
 	QStringList::const_iterator itArgs;
@@ -65,7 +66,7 @@ int main(int argc, char **argv) {
 	}
 	
 	ErrorReport errorReport(sharedMemoryName);
-
+	
 	ErrorReportDialog errorReportDlg(errorReport);
 	errorReportDlg.show();
 	
