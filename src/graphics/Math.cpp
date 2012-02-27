@@ -263,13 +263,13 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	const float * U0;
 	const float * U1;
 	const float * U2;
-	V0 = (const float *)&VV->v[0];
-	V1 = (const float *)&VV->v[1];
-	V2 = (const float *)&VV->v[2];
+	V0 = VV->v[0].elem;
+	V1 = VV->v[1].elem;
+	V2 = VV->v[2].elem;
 
-	U0 = (const float *)&UU->v[0];
-	U1 = (const float *)&UU->v[1];
-	U2 = (const float *)&UU->v[2];
+	U0 = UU->v[0].elem;
+	U1 = UU->v[1].elem;
+	U2 = UU->v[2].elem;
 
 	/* compute plane equation of triangle(V0,V1,V2) */
 	SUB(E1, V1, V0);
@@ -975,8 +975,8 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 //-----------------------------------------------------------------------------
 void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b)
 {
-	const float * pA = (const float *)a;
-	const float * pB = (const float *)b;
+	const float * pA = &a->_11;
+	const float * pB = &b->_11;
 	float pM[16];
 
 	memset(pM, 0, sizeof(EERIEMATRIX));
