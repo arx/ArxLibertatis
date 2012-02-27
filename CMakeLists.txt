@@ -351,17 +351,13 @@ else(MSVC)
 		# add_cxxflag("-Wsuggest-attribute=pure")
 		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
 		add_cxxflag("-fbounds-checking")
-		if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-			add_cxxflag("-fcatch-undefined-behavior")
-		endif()
+		add_cxxflag("-fcatch-undefined-behavior")
 	else()
 		# -Wuninitialized causes too many false positives
 		add_cxxflag("-Wno-uninitialized")
 
 		# (clang only) Conflicts with using const variables for configuration.
-		if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-			add_cxxflag("-Wno-constant-logical-operand")
-		endif()
+		add_cxxflag("-Wno-constant-logical-operand")
 	endif()
 	
 	if(UNITY_BUILD)
