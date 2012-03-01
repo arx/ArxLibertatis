@@ -23,23 +23,9 @@ include(CheckCXXSourceCompiles)
 include(BuildSystem)
 include(CompileCheck)
 include(VersionString)
-
-# Accepts a variable holding the source files
-# and creates source groups (for VS, Xcode etc)
-# that replicate the folder hierarchy on disk
-macro( create_source_groups source_files_variable )
-	foreach( source_file ${${source_files_variable}} )
-		string( REGEX REPLACE ${CMAKE_CURRENT_SOURCE_DIR} "" relative_directory "${source_file}")
-		string( REGEX REPLACE "[\\\\/][^\\\\/]*$" "" relative_directory "${relative_directory}")
-		string( REGEX REPLACE "^[\\\\/]" "" relative_directory "${relative_directory}")
-
-		if( WIN32 )
-			string( REGEX REPLACE "/" "\\\\" relative_directory "${relative_directory}" )
-		endif( WIN32 )
-
-		source_group( "${relative_directory}" FILES ${source_file} )
-	endforeach()
-endmacro()
+include(StyleCheck)
+include(PrintConfiguration)
+include(CreateSourceGroups)
 
 ##############################################################################
 
@@ -812,6 +798,7 @@ configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
 version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
 list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
 
+
 # Add executables
 
 add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
@@ -940,6 +927,7 @@ if(BUILD_TOOLS)
 	
 endif()
 
+
 # Build and link executables
 
 if(UNITY_BUILD)
@@ -963,154 +951,26 @@ if(DOXYGEN_EXECUTABLE)
 	)
 endif()
 
-if(PYTHONINTERP_FOUND)
-	
-	file(GLOB_RECURSE TOOLS_INCLUDES ${CMAKE_SOURCE_DIR}/tools/*.h)
-	set(ALL_SOURCES
-		${ARX_SOURCES}
-		${ALL_INCLUDES}
-		${arxsavetool_SOURCES}
-		${arxunpak_SOURCES}
-		${arxcrashreporter_SOURCES}
-		${TOOLS_INCLUDES}
-	)
-	
-	unset(STYLE_FILTER)
-	
-	# Complains about any c-style cast -> too annoying.
-	set(STYLE_FILTER ${STYLE_FILTER},-readability/casting)
-	
-	# Insists on including evrything in the .cpp file even if it is included in the header.
-	# This behaviour conflicts with orther tools.
-	set(STYLE_FILTER ${STYLE_FILTER},-build/include_what_you_use)
-	
-	# Too many false positives and not very helpful error messages.
-	set(STYLE_FILTER ${STYLE_FILTER},-build/include_order)
-	
-	# No thanks.
-	set(STYLE_FILTER ${STYLE_FILTER},-readability/streams)
-	
-	# Ugh!
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/tab)
-	
-	# Yes it is!
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/blank_line)
-	
-	# Suggessts excessive indentation.
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/labels)
-	
-	# Why?
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/todo)
-	set(STYLE_FILTER ${STYLE_FILTER},-readability/todo)
-	
-	# "For a static/global string constant, use a C style string"
-	set(STYLE_FILTER ${STYLE_FILTER},-runtime/string)
-	
-	# Having classes with virtual methods but without a virtual destructor is not always wrong!
-	set(STYLE_FILTER ${STYLE_FILTER},-runtime/virtual)
-	
-	# TODO consider enabling these and fixing the warnings
-	
-	# Very noisy and perhaps a matter of taste.
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/braces)
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/parens)
-	set(STYLE_FILTER ${STYLE_FILTER},-whitespace/newline)
-	
-	# Complains about using short, long, etc.
-	set(STYLE_FILTER ${STYLE_FILTER},-runtime/int)
-	
-	# Complains about non-const references as parameters
-	set(STYLE_FILTER ${STYLE_FILTER},-runtime/references)
-	
-	# TODO enable these!
-	
-	set(RELAXED_STYLE_FILTER ${STYLE_FILTER})
-	
-	# Very noisy but should be fixed.
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/operators)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/comma)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/comments)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/end_of_line)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/align_tab)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/line_length)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/semicolon)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-whitespace/ident_space)
-	
-	# Unsafe functions.
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-runtime/printf)
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-runtime/threadsafe_fn)
-	
-	# Very much known...
-	set(RELAXED_STYLE_FILTER ${RELAXED_STYLE_FILTER},-readability/fn_size)
-	
-	add_custom_target(style
-		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${RELAXED_STYLE_FILTER}" ${ALL_SOURCES}
-		DEPENDS ${ALL_SOURCES} VERBATIM
-	)
-	
-	add_custom_target(strict-style
-		COMMAND cmake -E chdir "${CMAKE_SOURCE_DIR}" "${PYTHON_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/cpplint.py" "--filter=${STYLE_FILTER}" ${ALL_SOURCES}
-		DEPENDS ${ALL_SOURCES} VERBATIM
-	)
-endif()
+file(GLOB_RECURSE TOOLS_INCLUDES ${CMAKE_SOURCE_DIR}/tools/*.h)
+set(ALL_SOURCES
+	${ARX_SOURCES}
+	${arxsavetool_SOURCES}
+	${arxunpak_SOURCES}
+	${arxcrashreporter_SOURCES}
+)
+set(INCLUDE_FILES
+	${ALL_INCLUDES}
+	${TOOLS_INCLUDES}
+)
+
+add_style_check_target(style "${ALL_SOURCES}" "${INCLUDE_FILES}")
 
 if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
 
-function(print_configuration TITLE)
-	
-	set(str "")
-	
-	set(print_first 0)
-	
-	set(mode 0)
-	
-	foreach(arg IN LISTS ARGN)
-		
-		if(arg STREQUAL "FIRST")
-			set(print_first 1)
-		else()
-			
-			if(mode EQUAL 0)
-				
-				if(${arg})
-					set(mode 1)
-				else()
-					set(mode 2)
-				endif()
-				
-			else()
-				
-				if(mode EQUAL 1 AND NOT arg STREQUAL "")
-					
-					if(str STREQUAL "")
-						set(str "${arg}")
-					else()
-						set(str "${str}, ${arg}")
-					endif()
-					
-					if(print_first)
-						break()
-					endif()
-					
-				endif()
-				
-				set(mode 0)
-				
-			endif()
-			
-		endif()
-		
-	endforeach()
-	
-	if(str STREQUAL "")
-		set(str "(none)")
-	endif()
-	
-	message(" - ${TITLE}: ${str}")
-	
-endfunction()
+
+# Print a configuration summary
 
 message("")
 message("Configuration:")
@@ -1160,6 +1020,9 @@ print_configuration("Tools" FIRST
 	1           "disabled"
 )
 message("")
+
+
+# Detect configuration errors
 
 if(NOT (HAVE_PTHREADS OR HAVE_WINAPI))
 	message(SEND_ERROR "No supported thread libraries found.")
