@@ -31,7 +31,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 * **Freetype**
 * **OpenAL 1.1** or newer *and/or* **DirectSound 9**
 
-Systems without Win32 or POSIX filesystem support will also need *Boost 1.44* or newer including the `filesystem` and `system` libraries.
+Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** or newer including the `filesystem` and `system` libraries.
 
 ### Renderer
 
@@ -91,7 +91,7 @@ Windows-only options (always OFF for non-windows platforms):
 * `USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
 * `USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
 
-Enable by passing `-D<option>=1` to cmake, disable using `-D<option>=0`
+Set options by passing `-D<option>=<value>` to cmake.
 
 Backends that are not available are disabled by default. The `cmake` run should display a summary of the enabled backends at the end.
 
