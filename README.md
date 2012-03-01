@@ -25,26 +25,26 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
-* DevIL
-* zlib
-* Boost (headers, `program_options` library)
-* Freetype
-* OpenAL 1.1 **and/or** DirectSound 9
+* **DevIL**
+* **zlib**
+* **Boost 1.39** or newer (headers, `program_options` library)
+* **Freetype**
+* **OpenAL 1.1** or newer *and/or* **DirectSound 9**
 
-Systems without Win32 or POSIX filesystem support will also need Boost 1.44 or newer including the `filesystem` and `system` libraries.
+Systems without Win32 or POSIX filesystem support will also need *Boost 1.44* or newer including the `filesystem` and `system` libraries.
 
 ### Renderer
 
 There are rendering backends for both OpenGL and Direct3D. You need either:
 
-* SDL 1.2
-* OpenGL 1.5 (OpenGL 2.1 or newer is recommended)
-* GLEW
+* **SDL 1.2**
+* **OpenGL 1.5** or newer (OpenGL 2.1 or newer is recommended)
+* **GLEW**
 
-**and/or**
+*and/or*
 
-* DirectInput 8
-* Direct3D 9
+* **DirectInput 8** (included in the DirectX 9 SDK)
+* **Direct3D 9**
 
 Both OpenGL and Direct3D backends can be built at the same time.
 
@@ -52,8 +52,8 @@ Both OpenGL and Direct3D backends can be built at the same time.
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
-* Qt 4 (`QtCore` and `QtGui` libraries)
-* OpenSSL
+* **Qt 4** (`QtCore` and `QtGui` libraries)
+* **OpenSSL**
 
 ## Compile and install
 
