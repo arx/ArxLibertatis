@@ -857,6 +857,8 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/resources/crashreporter.qrc
 	)
 	
+	set(arxcrashreporter_MANUAL_SOURCES "${arxcrashreporter_SOURCES}")
+	
 	qt4_wrap_ui(arxcrashreporter_SOURCES ${arxcrashreporter_UIs})
 	qt4_wrap_cpp(arxcrashreporter_SOURCES ${arxcrashreporter_MOC_HEADERS})
 	qt4_add_resources(arxcrashreporter_SOURCES ${arxcrashreporter_RESOURCES})
@@ -957,18 +959,18 @@ if(DOXYGEN_EXECUTABLE)
 endif()
 
 file(GLOB_RECURSE TOOLS_INCLUDES ${CMAKE_SOURCE_DIR}/tools/*.h)
-set(ALL_SOURCES
+set(STYLE_CHECKED_SOURCES
 	${ARX_SOURCES}
 	${arxsavetool_SOURCES}
 	${arxunpak_SOURCES}
-	${arxcrashreporter_SOURCES}
+	${arxcrashreporter_MANUAL_SOURCES}
 )
-set(INCLUDE_FILES
+set(STYLE_CHECKED_INCLUDES
 	${ALL_INCLUDES}
 	${TOOLS_INCLUDES}
 )
 
-add_style_check_target(style "${ALL_SOURCES}" "${INCLUDE_FILES}")
+add_style_check_target(style "${STYLE_CHECKED_SOURCES}" "${STYLE_CHECKED_INCLUDES}")
 
 if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
