@@ -55,6 +55,8 @@ struct CrashInfoBase {
 		MaxCallstackDepth = 256
 	};
 	
+	u32 architecture;
+	
 	// Files to attach to the report.
 	int	 nbFilesAttached;
 	char attachedFiles[MaxNbFiles][MaxFilenameLen];

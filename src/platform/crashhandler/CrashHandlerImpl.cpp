@@ -22,6 +22,7 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
 
+#include "platform/Architecture.h"
 #include "platform/Environment.h"
 
 CrashHandlerImpl::CrashHandlerImpl()
@@ -92,6 +93,7 @@ void CrashHandlerImpl::destroySharedMemory() {
 }
 
 void CrashHandlerImpl::fillBasicCrashInfo() {
+	m_pCrashInfo->architecture = ARX_ARCH;
 	m_pCrashInfo->processId = getProcessId();
 
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");

@@ -58,8 +58,9 @@
 
 // CrashReporter
 #include "crashreporter/utilities_win32.h"
-
 #include "crashreporter/tbg/tbg.h"
+
+#include "platform/Architecture.h"
 
 ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	: m_RunningTimeSec()
@@ -495,7 +496,9 @@ bool ErrorReport::GetMiscCrashInfo()
 
 	// Get crash time
 	m_CrashDateTime = QDateTime::currentDateTime();
-
+	
+	m_ProcessArchitecture = ARX_ARCH_NAME;
+	
 #ifdef HAVE_WINAPI
 	
 	// Open parent process handle
@@ -655,7 +658,12 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	pProgressNotifier->taskStepStarted("Connecting to crashed application");
 	Initialize();
 	pProgressNotifier->taskStepEnded();
-
+	
+	if(m_pCrashInfo->architecture != ARX_ARCH) {
+		// TODO architecture mismatch - display an error
+		exit(0);
+	}
+	
 	// Take screenshot - non critical
 	pProgressNotifier->taskStepStarted("Grabbing screenshot");
 	GetScreenshot("screenshot.jpg");
