@@ -610,6 +610,7 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 	xml.setDevice(&file);
 	xml.setAutoFormatting(true);
 	xml.writeStartDocument();
+	xml.writeStartElement("CrashReport");
 		
 		xml.writeComment("Information related to the crashed process");
 		xml.writeStartElement("Process");
@@ -636,6 +637,7 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 		}
 		xml.writeEndElement();
 		
+	xml.writeEndElement();
 	xml.writeEndDocument();
 	
 	file.close();
