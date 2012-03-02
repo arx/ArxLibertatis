@@ -94,7 +94,6 @@ private:
 	bool Initialize();
 
 	bool WriteReport(const fs::path& fileName);
-	bool GenerateArchive();
 
 	bool GetScreenshot(const fs::path& fileName, int quality = -1, bool bGrayscale = false);
 	bool GetCrashDump(const fs::path& fileName);

@@ -825,11 +825,6 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/ui/errorreportdialog.cpp
 		tools/crashreporter/xmlhighlighter/xmlhighlighter.h
 		tools/crashreporter/xmlhighlighter/xmlhighlighter.cpp
-		tools/crashreporter/minizip/crypt.h
-		tools/crashreporter/minizip/ioapi.cpp
-		tools/crashreporter/minizip/ioapi.h
-		tools/crashreporter/minizip/zip.cpp
-		tools/crashreporter/minizip/zip.h
 		tools/crashreporter/tbg/tbg.h
 		tools/crashreporter/tbg/tbg.cpp
 		${PLATFORM_SOURCES}
@@ -868,7 +863,6 @@ if(HAVE_CRASHREPORTER)
 		${QT_QTGUI_LIBRARY_RELEASE}
 		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${Boost_LIBRARIES}
-		${ZLIB_LIBRARIES}
 	)
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
