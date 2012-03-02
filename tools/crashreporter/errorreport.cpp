@@ -233,7 +233,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 	}
 	
 	tracePath = m_ReportFolder / "trace.txt";
-	fs::ofstream ofs(tracePath, ios_base::trunc);
+	fs::ofstream ofs(tracePath, std::ios_base::trunc);
 	ofs << safestring(m_pCrashInfo->backtrace);
 	ofs.flush();
 	ofs.close();
