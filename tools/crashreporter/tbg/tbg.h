@@ -31,7 +31,8 @@ namespace TBG
 class Server : public QObject
 {
 public:
-	Server(const QString& adress);
+	
+	explicit Server(const QString & adress);
 
 	bool login(const QString& username, const QString& password);
 	bool createCrashReport(const QString& title, const QString& description, int& issue_id);
