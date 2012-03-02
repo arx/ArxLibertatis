@@ -52,8 +52,7 @@ Both OpenGL and Direct3D backends can be built at the same time.
 
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
-* **Qt 4** (`QtCore` and `QtGui` libraries)
-* **OpenSSL**
+* **Qt 4** (`QtCore`, `QtGui` and `QtNetwork` libraries)
 
 ## Compile and install
 
