@@ -813,12 +813,6 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/errorreport.cpp
 		tools/crashreporter/utilities_win32.h
 		tools/crashreporter/utilities_win32.cpp
-		tools/crashreporter/csmtp/base64.h
-		tools/crashreporter/csmtp/base64.cpp
-		tools/crashreporter/csmtp/csmtp.h
-		tools/crashreporter/csmtp/csmtp.cpp
-		tools/crashreporter/csmtp/md5.h
-		tools/crashreporter/csmtp/md5.cpp
 		tools/crashreporter/qhexedit/commands.h
 		tools/crashreporter/qhexedit/commands.cpp
 		tools/crashreporter/qhexedit/qhexedit.h
