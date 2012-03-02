@@ -193,7 +193,7 @@ void SetCurrentThreadName(const std::string & threadName) {
 	}
 	
 #else
-	ARX_UNUSED(threadName)
+	ARX_UNUSED(threadName);
 #endif
 }
 
