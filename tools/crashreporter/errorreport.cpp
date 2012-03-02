@@ -61,8 +61,7 @@
 // Zip
 #include "crashreporter/minizip/zip.h"
 
-// CSmtp
-#include "crashreporter/csmtp/csmtp.h"
+#include "crashreporter/tbg/tbg.h"
 
 ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	: m_RunningTimeSec()
@@ -789,62 +788,55 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 
 bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 {
-	pProgressNotifier->taskStarted("Sending crash report", 3);
-
-	// Generate archive
-	pProgressNotifier->taskStepStarted("Compressing report");
-	bool bCrashArchive = GenerateArchive();
-	pProgressNotifier->taskStepEnded();
-	if(!bCrashArchive)
+	int nbFilesToSend = 0;
+	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
 	{
-		pProgressNotifier->setError("Could not generate the error archive.");
-		return false;
+		if(it->attachToReport)
+			nbFilesToSend++;
 	}
 
-	std::string fileName = m_SharedMemoryName + ".zip";
-	fs::path fullPath = m_ReportFolder / fileName.c_str();
+	pProgressNotifier->taskStarted("Sending crash report", 2 + nbFilesToSend);
 
-	CSmtp smptClient;
-	smptClient.SetSenderName("Arx Libertatis Crashes");
-	smptClient.SetSenderMail("arxlibertatis.crashes@gmail.com");
-	smptClient.AddRecipient("arxlibertatis.crashes@gmail.com");
-	smptClient.SetSubject("Arx Libertatis Crash Report");
-	smptClient.AddMsgLine(m_ReportDetailedDescription.c_str());
-	smptClient.AddAttachment(fullPath.string().c_str());
+	TBG::Server server("https://bugs.arx-libertatis.org");
+
+	// Login to TBG server
+	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
+	bool bLoggedIn = server.login("TODO_USERNAME", "TODO_PASSWORD");
+	pProgressNotifier->taskStepEnded();
+	if(!bLoggedIn)
+	{
+		pProgressNotifier->setError("Could not connect to the bug tracker");
+		return false;
+	}
 	
-	// Connect to server
-	bool connected = false;
-	pProgressNotifier->taskStepStarted("Connecting to server");
-	{
-		try
-		{
-			connected = smptClient.ConnectRemoteServer("smtp.gmail.com", 465, USE_SSL, true, "arxlibertatis.crashes@gmail.com", "yu8pnioo");
-		}
-		catch(const ECSmtp& err)
-		{
-			pProgressNotifier->setError(err.GetErrorText());
-		}
-	}
+	// Create new issue
+	int issue_id;
+	pProgressNotifier->taskStepStarted("Creating new issue");
+	bool bCreatedIssue = server.createCrashReport("TODO_ADD_REAL_TITLE", m_ReportDetailedDescription.c_str(), issue_id);
 	pProgressNotifier->taskStepEnded();
-	if(!connected)
+	if(!bCreatedIssue)
+	{
+		pProgressNotifier->setError("Could not create a new issue on the bug tracker");
 		return false;
+	}
 
-	// Send report
-	bool sent = true;
-	pProgressNotifier->taskStepStarted("Sending report");
+	// Send files
+	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
 	{
-		try
+		if(!it->attachToReport)
+			continue;
+
+		pProgressNotifier->taskStepStarted(std::string("Sending file \"") + it->path.filename() + "\"");
+		bool bAttached = server.attachFile(issue_id, it->path.string().c_str(), it->path.filename().c_str(), m_SharedMemoryName.c_str());
+		pProgressNotifier->taskStepEnded();
+		if(!bAttached)
 		{
-			smptClient.Send();
-		}
-		catch(const ECSmtp& err)
-		{
-			pProgressNotifier->setError(err.GetErrorText());
+			pProgressNotifier->setError(std::string("Could not send file \"") + it->path.filename() + "\"");
+			return false;
 		}
 	}
-	pProgressNotifier->taskStepEnded();
-
-	return sent;
+	
+	return true;
 }
 
 void ErrorReport::ReleaseApplicationLock()

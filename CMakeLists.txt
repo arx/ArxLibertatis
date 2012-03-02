@@ -56,6 +56,7 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_CO
 	force_recheck_library(OpenSSL OPENSSL)
 	force_recheck_library(QtCore QT_QTCORE)
 	force_recheck_library(QtGui QT_QTGUI)
+	force_recheck_library(QtNetwork QT_QTNETWORK)
 	unset(Boost_INCLUDE_DIR CACHE)
 	set(LAST_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE INTERNAL "The last C++ compiler flags.")
 	set(LAST_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE INTERNAL "The last C++ compiler.")
@@ -118,7 +119,7 @@ if(BUILD_CRASHREPORTER)
 	find_package(OpenSSL)
 	if(OPENSSL_FOUND)
 		add_definitions(-DQT_NO_DEBUG)
-		find_package(Qt4 COMPONENTS QtCore QtGui)
+		find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork)
 		if(QT_FOUND)
 		  if(MSVC)
 		    find_package(DbgHelp)
@@ -229,6 +230,7 @@ else(MSVC)
 		check_link_library(OpenSSL OPENSSL_LIBRARIES OPENSSL)
 		check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
 		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
+		check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 	endif()
 	
 	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
@@ -834,6 +836,8 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/minizip/ioapi.h
 		tools/crashreporter/minizip/zip.cpp
 		tools/crashreporter/minizip/zip.h
+		tools/crashreporter/tbg/tbg.h
+		tools/crashreporter/tbg/tbg.cpp
 		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
@@ -866,6 +870,7 @@ if(HAVE_CRASHREPORTER)
 	set(arxcrashreporter_LIBRARIES
 		${QT_QTCORE_LIBRARY_RELEASE}
 		${QT_QTGUI_LIBRARY_RELEASE}
+		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${Boost_LIBRARIES}
 		${ZLIB_LIBRARIES}
 	)
