@@ -54,6 +54,7 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 #include "platform/Thread.h"
+#include "platform/String.h"
 
 // CrashReporter
 #include "crashreporter/utilities_win32.h"
