@@ -388,6 +388,17 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 			xml.writeTextElement("File", it->path.string().c_str());
 		}
 		xml.writeEndElement();
+
+		xml.writeComment("Variables attached by the crashed process");
+		xml.writeStartElement("Variables");
+		for(int i = 0; i < m_pCrashInfo->nbVariables; ++i)
+		{
+			xml.writeStartElement("Variable");
+			xml.writeAttribute("Name", m_pCrashInfo->variables[i].name);
+			xml.writeAttribute("Value", m_pCrashInfo->variables[i].value);
+			xml.writeEndElement();
+		}
+		xml.writeEndElement();
 		
 	xml.writeEndElement();
 	xml.writeEndDocument();
