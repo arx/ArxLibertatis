@@ -56,6 +56,7 @@ struct CrashInfoBase {
 	};
 	
 	char executablePath[MaxFilenameLen];
+	char executableVersion[MaxVariableNameLen];
 
 	u32 architecture;
 	

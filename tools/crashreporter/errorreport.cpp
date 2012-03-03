@@ -245,7 +245,7 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 bool ErrorReport::GetMiscCrashInfo()
 {
 	// Copy the detailed description to an std::string for easier manipulation
-	m_ReportDetailedDescription = m_pCrashInfo->detailedCrashInfo;
+	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
 
 	// Get crash time
 	m_CrashDateTime = QDateTime::currentDateTime();
@@ -298,23 +298,23 @@ bool ErrorReport::GetMiscCrashInfo()
 		std::string exceptionStr = GetExceptionString(m_pCrashInfo->exceptionRecord.ExceptionCode);
 		if(!exceptionStr.empty())
 		{
-			m_ReportDetailedDescription += "\nException code:\n  ";
-			m_ReportDetailedDescription += exceptionStr + "\n";
+			m_ReportDescription += "\nException code:\n  ";
+			m_ReportDescription += exceptionStr + "\n";
 		}
 	}
 
 	std::string callStack = GetCallStack(hProcess, m_pCrashInfo->threadHandle, &m_pCrashInfo->contextRecord);
 	if(!callStack.empty())
 	{
-		m_ReportDetailedDescription += "\nCallstack:\n";
-		m_ReportDetailedDescription += callStack;
+		m_ReportDescription += "\nCallstack:\n";
+		m_ReportDescription += callStack;
 	}
 
 	std::string registers = GetRegisters(&m_pCrashInfo->contextRecord);
 	if(!registers.empty())
 	{
-		m_ReportDetailedDescription += "\nRegisters:\n";
-		m_ReportDetailedDescription += registers;
+		m_ReportDescription += "\nRegisters:\n";
+		m_ReportDescription += registers;
 	}
 
 	CloseHandle(hProcess);
@@ -368,6 +368,7 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 		xml.writeComment("Information related to the crashed process");
 		xml.writeStartElement("Process");
 			xml.writeTextElement("Path", m_pCrashInfo->executablePath);
+			xml.writeTextElement("Version", m_pCrashInfo->executableVersion);
 			xml.writeTextElement("MemoryUsage", QString::number(m_ProcessMemoryUsage));
 			xml.writeTextElement("Architecture", m_ProcessArchitecture);
 			xml.writeTextElement("RunningTime", QString::number(m_RunningTimeSec));
@@ -483,7 +484,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	// Create new issue
 	int issue_id;
 	pProgressNotifier->taskStepStarted("Creating new issue");
-	bool bCreatedIssue = server.createCrashReport("TODO_ADD_REAL_TITLE", m_ReportDetailedDescription.c_str(), issue_id);
+	bool bCreatedIssue = server.createCrashReport("TODO_ADD_REAL_TITLE", m_ReportDescription.c_str(), issue_id);
 	pProgressNotifier->taskStepEnded();
 	if(!bCreatedIssue)
 	{
@@ -527,5 +528,5 @@ ErrorReport::FileList& ErrorReport::GetAttachedFiles()
 
 const std::string& ErrorReport::GetErrorDescription() const
 {
-	return m_ReportDetailedDescription;
+	return m_ReportDescription;
 }

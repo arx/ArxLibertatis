@@ -125,7 +125,7 @@ private:
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
 	CrashInfo * m_pCrashInfo;
 	
-	std::string m_ReportDetailedDescription;
+	std::string m_ReportDescription;
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H
