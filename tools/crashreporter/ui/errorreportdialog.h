@@ -27,7 +27,6 @@
 
 #include "crashreporter/errorreport.h"
 #include "crashreporter/qhexedit/qhexedit.h"
-#include "crashreporter/xmlhighlighter/xmlhighlighter.h"
 
 namespace Ui {
 	class ErrorReportDialog;
@@ -236,7 +235,6 @@ private:
 	Ui::ErrorReportDialog *ui;
 	QHexEdit m_fileViewHex;
 	ScreenshotWidget m_fileViewImage;
-	XmlHighlighter* m_pXmlHighlighter;
 
 	CrashReportTask* m_pCurrentTask;
 	int m_nextPane;

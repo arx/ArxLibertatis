@@ -81,8 +81,6 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	m_fileViewHex.setReadOnly(true);
 	m_fileViewHex.setAddressArea(false);
 
-	m_pXmlHighlighter = new XmlHighlighter(ui->fileViewXml);
-
 	ui->pageImage->layout()->addWidget(&m_fileViewImage);
 	ui->pageBinary->layout()->addWidget(&m_fileViewHex);
 
@@ -91,7 +89,6 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 
 ErrorReportDialog::~ErrorReportDialog()
 {
-	delete m_pXmlHighlighter;
 	delete ui;
 }
 
@@ -127,7 +124,7 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	
 	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()].path;
 	std::string ext = fileName.ext();
-	if(ext == ".txt" || ext == ".log" || ext == ".ini")
+	if(ext == ".txt" || ext == ".log" || ext == ".ini" || ext == ".xml")
 	{
 		QFile textFile(fileName.string().c_str());
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -140,23 +137,10 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		ui->fileViewText->setText(textFileContent);
 		ui->stackedFileViews->setCurrentIndex(0);
 	}
-	else if(ext == ".xml")
-	{
-		QFile textFile(fileName.string().c_str());
-		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
-		QByteArray data;
-		data = textFile.readAll();
-
-		QString textFileContent(data);
-
-		ui->fileViewXml->setText(textFileContent);
-		ui->stackedFileViews->setCurrentIndex(1);
-	}
 	else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".png" || ext == ".gif")
 	{
 		m_fileViewImage.load(fileName.string().c_str());
-		ui->stackedFileViews->setCurrentIndex(2);
+		ui->stackedFileViews->setCurrentIndex(1);
 	}
 	else
 	{
@@ -167,7 +151,7 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		data = binaryFile.readAll();
 
 		m_fileViewHex.setData(data);
-		ui->stackedFileViews->setCurrentIndex(3);
+		ui->stackedFileViews->setCurrentIndex(2);
 	}
 }
 

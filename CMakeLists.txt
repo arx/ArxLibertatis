@@ -818,8 +818,6 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/qhexedit/xbytearray.cpp
 		tools/crashreporter/ui/errorreportdialog.h
 		tools/crashreporter/ui/errorreportdialog.cpp
-		tools/crashreporter/xmlhighlighter/xmlhighlighter.h
-		tools/crashreporter/xmlhighlighter/xmlhighlighter.cpp
 		tools/crashreporter/tbg/tbg.h
 		tools/crashreporter/tbg/tbg.cpp
 		${PLATFORM_SOURCES}
