@@ -88,7 +88,8 @@ public:
 
 	FileList& GetAttachedFiles();
 
-	const std::string& GetErrorDescription() const;
+	const QString& GetErrorDescription() const;
+	const QString& GetIssueLink() const;
 
 private:
 	bool Initialize();
@@ -115,6 +116,7 @@ private:
 	QString m_OSName;
 	QString m_Architecture;
 	
+	
 	fs::path m_ProcessPath;
 	quint64 m_ProcessMemoryUsage;
 	QString m_ProcessArchitecture;
@@ -125,7 +127,8 @@ private:
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
 	CrashInfo * m_pCrashInfo;
 	
-	std::string m_ReportDescription;
+	QString m_ReportDescription;
+	QString m_IssueLink;
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H

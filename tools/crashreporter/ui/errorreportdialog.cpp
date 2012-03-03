@@ -101,7 +101,7 @@ void ErrorReportDialog::onTabChanged(int index)
 {
 	if(index == 1) // tabErrorDescription
 	{
-		ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription().c_str());
+		ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription());
 	}
 	else if(index == 2) // tabAttachedFiles
 	{
@@ -181,6 +181,8 @@ void ErrorReportDialog::onTaskCompleted()
 {
 	if(m_pCurrentTask->getErrorString().isEmpty())
 	{
+		QString htmlLink = QString("<a href=\"%1\">%1</a>").arg(m_errorReport.GetIssueLink());
+		ui->lblIssueLink->setText(htmlLink);
 		ui->stackedWidget->setCurrentIndex(m_nextPane);
 	}
 	else

@@ -38,6 +38,8 @@ public:
 	bool createCrashReport(const QString& title, const QString& description, int& issue_id);
 	bool attachFile(int issue_id, const QString& filePath, const QString& fileDescription, const QString& comment);
 
+	QUrl getUrl() const;
+
 private:
 	bool waitForReply();
 
@@ -45,6 +47,7 @@ private:
 	QString					m_ServerAddress;
 	QNetworkAccessManager	m_NetAccessManager;
 	QNetworkReply*			m_CurrentReply;
+	QUrl					m_CurrentUrl;
 };
 
 }

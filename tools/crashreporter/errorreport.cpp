@@ -300,7 +300,8 @@ bool ErrorReport::GetMiscCrashInfo()
 		if(!exceptionStr.empty())
 		{
 			m_ReportDescription += "\nException code:\n  ";
-			m_ReportDescription += exceptionStr + "\n";
+			m_ReportDescription += exceptionStr.c_str();
+			m_ReportDescription += "\n";
 		}
 	}
 
@@ -308,14 +309,14 @@ bool ErrorReport::GetMiscCrashInfo()
 	if(!callStack.empty())
 	{
 		m_ReportDescription += "\nCallstack:\n";
-		m_ReportDescription += callStack;
+		m_ReportDescription += callStack.c_str();
 	}
 
 	std::string registers = GetRegisters(&m_pCrashInfo->contextRecord);
 	if(!registers.empty())
 	{
 		m_ReportDescription += "\nRegisters:\n";
-		m_ReportDescription += registers;
+		m_ReportDescription += registers.c_str();
 	}
 
 	CloseHandle(hProcess);
@@ -485,7 +486,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	// Create new issue
 	int issue_id;
 	pProgressNotifier->taskStepStarted("Creating new issue");
-	bool bCreatedIssue = server.createCrashReport("TODO_ADD_REAL_TITLE", m_ReportDescription.c_str(), issue_id);
+	bool bCreatedIssue = server.createCrashReport("TODO_ADD_REAL_TITLE", m_ReportDescription, issue_id);
 	pProgressNotifier->taskStepEnded();
 	if(!bCreatedIssue)
 	{
@@ -508,6 +509,8 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 			return false;
 		}
 	}
+
+	m_IssueLink = server.getUrl().toString();
 	
 	return true;
 }
@@ -527,7 +530,12 @@ ErrorReport::FileList& ErrorReport::GetAttachedFiles()
 	return m_AttachedFiles;
 }
 
-const std::string& ErrorReport::GetErrorDescription() const
+const QString& ErrorReport::GetErrorDescription() const
 {
 	return m_ReportDescription;
+}
+
+const QString& ErrorReport::GetIssueLink() const
+{
+	return m_IssueLink;
 }

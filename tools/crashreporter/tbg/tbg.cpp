@@ -176,7 +176,16 @@ bool Server::waitForReply()
 		}
 	} while(!lastRedirectUrl.isEmpty());
 
+	m_CurrentUrl = m_CurrentReply->url();
+
 	return m_CurrentReply->error() == QNetworkReply::NoError;
 }
 
+QUrl Server::getUrl() const
+{
+	QUrl httpUrl = m_CurrentUrl;
+	httpUrl.setScheme("http");
+	return httpUrl;
 }
+
+} // namespace TBG
