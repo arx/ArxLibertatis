@@ -27,6 +27,8 @@
 // Crash handler
 #cmakedefine HAVE_CRASHHANDLER_POSIX
 #cmakedefine HAVE_CRASHHANDLER_WINDOWS
+#cmakedefine BUGTRACKER_PASSWD
+#define BUGTRACKER_PASSWD "${BUGTRACKER_PASSWD}"
 
 // POSIX / Linux features
 #cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL

@@ -49,16 +49,17 @@
 #include <QThread>
 #include <QXmlStreamWriter>
 
+#include "Configure.h"
+
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
-#include "platform/Thread.h"
-#include "platform/String.h"
 
-// CrashReporter
 #include "crashreporter/utilities_win32.h"
 #include "crashreporter/tbg/tbg.h"
 
 #include "platform/Architecture.h"
+#include "platform/String.h"
+#include "platform/Thread.h"
 
 ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	: m_RunningTimeSec()
@@ -143,7 +144,7 @@ bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGra
 
 #ifdef HAVE_WINAPI
 // This callbask function is called by MinidumpWriteDump
-BOOL CALLBACK MiniDumpCallback(PVOID CallbackParam, PMINIDUMP_CALLBACK_INPUT CallbackInput, PMINIDUMP_CALLBACK_OUTPUT CallbackOutput)
+BOOL CALLBACK MiniDumpCallback(PVOID, PMINIDUMP_CALLBACK_INPUT, PMINIDUMP_CALLBACK_OUTPUT)
 {
 	return TRUE;
 }
@@ -473,7 +474,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 	// Login to TBG server
 	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
-	bool bLoggedIn = server.login("TODO_USERNAME", "TODO_PASSWORD");
+	bool bLoggedIn = server.login("CrashBot", BUGTRACKER_PASSWD);
 	pProgressNotifier->taskStepEnded();
 	if(!bLoggedIn)
 	{
