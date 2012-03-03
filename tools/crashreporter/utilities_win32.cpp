@@ -21,11 +21,15 @@
 
 #ifdef HAVE_WINAPI
 
+// Windows
 #include <windows.h>
 #include <string>
 #include <sstream>
 #include <psapi.h>
 #include <dbghelp.h>
+
+// Boost
+#include <boost/crc.hpp>
 
 #include "io/fs/FilePath.h"
 
@@ -313,7 +317,7 @@ static BOOL CALLBACK LoadModuleCB(PCSTR ModuleName, DWORD64 ModuleBase, ULONG Mo
     return TRUE;
 }
 
-std::string GetCallStack(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext)
+bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, int& callstackCrc)
 {
 	DWORD options = SymGetOptions();
 	options |= SYMOPT_LOAD_LINES;
@@ -366,6 +370,7 @@ std::string GetCallStack(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext)
 
 	EnumerateLoadedModules64(hProcess, LoadModuleCB, hProcess);
 
+	boost::crc_32_type callstackCRC;
 	std::stringstream callstackStr;
 
 	bool bDone = false;
@@ -381,50 +386,63 @@ std::string GetCallStack(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext)
 			continue;
 		}
 
+		callstackCRC.process_bytes(&stackFrame.AddrPC.Offset, sizeof(stackFrame.AddrPC.Offset));
+
 		DWORD64 dwDisplacementSymbol = 0;
 		DWORD dwDisplacementLine = 0;
 
-		bRet = SymGetSymFromAddr64(hProcess, stackFrame.AddrPC.Offset, &dwDisplacementSymbol, pSymbol) == TRUE;
-		if(bRet)
-		{
-			char* pSymbolName = pSymbol->Name;
+		char* pSymbolName = 0;
 
+		bool bHasSymInfo = SymGetSymFromAddr64(hProcess, stackFrame.AddrPC.Offset, &dwDisplacementSymbol, pSymbol) == TRUE;
+		if(bHasSymInfo)
+		{
+			pSymbolName = pSymbol->Name;
 			DWORD dwRet = UnDecorateSymbolName(pSymbol->Name, undFullName, STACKWALK_MAX_NAMELEN, UNDNAME_COMPLETE);
 			if(dwRet != 0)
 				pSymbolName = undFullName;
+		}
 			
-			bool bHasLineInfo = SymGetLineFromAddr64(hProcess, stackFrame.AddrPC.Offset, &dwDisplacementLine, &Line) == TRUE;
-			bool bHasModuleInfo = SymGetModuleInfo64(hProcess, stackFrame.AddrPC.Offset, &Module) == TRUE;
+		bool bHasLineInfo = SymGetLineFromAddr64(hProcess, stackFrame.AddrPC.Offset, &dwDisplacementLine, &Line) == TRUE;
+		bool bHasModuleInfo = SymGetModuleInfo64(hProcess, stackFrame.AddrPC.Offset, &Module) == TRUE;
 
-			callstackStr << "  ";
+		callstackStr << "  ";
 
-			if(bHasModuleInfo)
-				callstackStr << fs::path(Module.ImageName).filename();
-			else
-				callstackStr << "??";
+		if(bHasModuleInfo)
+			callstackStr << fs::path(Module.ImageName).filename();
+		else
+			callstackStr << "??";
 
-			callstackStr << "!";
+		callstackStr << "!";
+		
+		if(bHasSymInfo)
+		{
 			callstackStr << pSymbolName;
 			callstackStr << "() ";
-			
-			if(bHasLineInfo)
-			{
-				callstackStr << " Line ";
-				callstackStr << Line.LineNumber;
-			}
-
-			if(dwDisplacementLine)
-			{
-				callstackStr << " + 0x";
-				callstackStr << std::hex << dwDisplacementLine << std::dec;
-				callstackStr << " bytes";
-			}
-			
-			callstackStr << "\n";
 		}
+		else
+		{
+			callstackStr << "0x" << std::hex << stackFrame.AddrPC.Offset << std::dec << " ";
+		}
+			
+		if(bHasLineInfo)
+		{
+			callstackStr << " ";
+			callstackStr << fs::path(Line.FileName).filename();
+			callstackStr << "(";
+			callstackStr << Line.LineNumber;
+			callstackStr << ") ";
+		}
+			
+		if(iEntry == 0)
+			callstackTop = callstackStr.str();
+
+		callstackStr << "\n";
 	}
 
-	return callstackStr.str();
+	callstack = callstackStr.str();
+	callstackCrc = callstackCRC.checksum();
+
+	return !callstack.empty();
 }
 
 std::string GetRegisters(PCONTEXT pCtx)

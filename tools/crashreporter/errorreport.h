@@ -127,6 +127,7 @@ private:
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
 	CrashInfo * m_pCrashInfo;
 	
+	QString m_ReportTitle;
 	QString m_ReportDescription;
 	QString m_IssueLink;
 };

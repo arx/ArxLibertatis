@@ -191,7 +191,10 @@ if(MSVC)
 	endforeach(flag_var)
 
 	# Avoid warning during link
-	set(CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:LIBCMT)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
+	
+	# Disable randomized base address (for better callstack matching)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DYNAMICBASE:NO")
 
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")

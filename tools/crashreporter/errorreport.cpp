@@ -305,11 +305,20 @@ bool ErrorReport::GetMiscCrashInfo()
 		}
 	}
 
-	std::string callStack = GetCallStack(hProcess, m_pCrashInfo->threadHandle, &m_pCrashInfo->contextRecord);
-	if(!callStack.empty())
+	std::string callStack, callstackTop;
+	int callstackCrc;
+
+	bool bCallstack = GetCallStackInfo(hProcess, m_pCrashInfo->threadHandle, &m_pCrashInfo->contextRecord, callStack, callstackTop, callstackCrc);
+	if(bCallstack)
 	{
 		m_ReportDescription += "\nCallstack:\n";
 		m_ReportDescription += callStack.c_str();
+
+		m_ReportTitle = QString("[%1] %2").arg(QString::number(callstackCrc, 16).toUpper(), callstackTop.c_str());
+	}
+	else
+	{
+		m_ReportTitle = QString("[%1] Fatal error").arg(QString::number(callstackCrc));
 	}
 
 	std::string registers = GetRegisters(&m_pCrashInfo->contextRecord);
@@ -486,7 +495,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	// Create new issue
 	int issue_id;
 	pProgressNotifier->taskStepStarted("Creating new issue");
-	bool bCreatedIssue = server.createCrashReport("TODO_ADD_REAL_TITLE", m_ReportDescription, issue_id);
+	bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, issue_id);
 	pProgressNotifier->taskStepEnded();
 	if(!bCreatedIssue)
 	{
