@@ -179,7 +179,7 @@ void ErrorReportDialog::onTaskStepEnded()
 
 void ErrorReportDialog::onTaskCompleted()
 {
-	if(m_pCurrentTask->succeeded())
+	if(m_pCurrentTask->getErrorString().isEmpty())
 	{
 		ui->stackedWidget->setCurrentIndex(m_nextPane);
 	}
@@ -189,13 +189,13 @@ void ErrorReportDialog::onTaskCompleted()
 		ui->stackedWidget->setCurrentIndex(Pane_ExitError);
 	}
 
-	delete m_pCurrentTask;
+	m_pCurrentTask->deleteLater();
 	m_pCurrentTask = 0;
 }
 
 void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
 {
-	delete m_pCurrentTask;
+	m_pCurrentTask->deleteLater();
 	m_pCurrentTask = pTask;
 
 	connect(m_pCurrentTask, SIGNAL(taskStarted(const std::string&, int)), SLOT(onTaskStarted(const std::string&, int)));

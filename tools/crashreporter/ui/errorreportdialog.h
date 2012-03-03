@@ -47,13 +47,6 @@ public:
 	}
 
 	/**
-	 * Get the status of this task.
-	 * @return True if this task completed successfully, false otherwise.
-	 * @sa getErrorString()
-	 */
-	bool succeeded() const { return isFinished() && m_strErrorDescription.isEmpty(); }
-
-	/**
 	 * Get the error string (available in case of a failure)
 	 * @return A string detailling the error that occured in case of a failure.
 	 * @sa succeeded()
