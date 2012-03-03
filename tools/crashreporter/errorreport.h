@@ -97,7 +97,6 @@ private:
 
 	bool GetScreenshot(const fs::path& fileName, int quality = -1, bool bGrayscale = false);
 	bool GetCrashDump(const fs::path& fileName);
-	bool GetMachineInfo(const fs::path& fileName);
 	bool GetMiscCrashInfo();
 
 	void AddFile(const fs::path& fileName);
@@ -116,7 +115,6 @@ private:
 	QString m_OSName;
 	QString m_Architecture;
 	
-	QString m_ProcessName;
 	fs::path m_ProcessPath;
 	quint64 m_ProcessMemoryUsage;
 	QString m_ProcessArchitecture;

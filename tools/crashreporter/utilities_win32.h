@@ -25,11 +25,16 @@
 #ifdef HAVE_WINAPI
 
 #include <windows.h>
+#include <string>
 
 HWND GetMainWindow(unsigned int processId);
 bool GetWindowsVersionName(char* str, int bufferSize);
 bool Is64BitWindows();
 ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );
+
+std::string GetCallStack(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext);
+std::string GetRegisters(PCONTEXT pCtx);
+std::string GetExceptionString(DWORD dwCode);
 
 #endif
 

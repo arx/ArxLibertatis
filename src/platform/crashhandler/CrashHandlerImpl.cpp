@@ -97,6 +97,9 @@ void CrashHandlerImpl::fillBasicCrashInfo() {
 	m_pCrashInfo->processId = getProcessId();
 
 	strcpy(m_pCrashInfo->crashReportFolder, "crashes");
+
+	strncpy(m_pCrashInfo->executablePath, getExecutablePath().c_str(), sizeof(m_pCrashInfo->executablePath));
+	m_pCrashInfo->executablePath[CrashInfoBase::MaxFilenameLen-1] = 0; // Make sure our string is null terminated
 }
 
 bool CrashHandlerImpl::addAttachedFile(const fs::path& file) {
