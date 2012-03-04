@@ -22,6 +22,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QEventLoop>
+#include <QXmlStreamReader>
+
+#include <boost/range/size.hpp>
 
 namespace TBG
 {
@@ -80,33 +83,12 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	bool bSucceeded = waitForReply();
 	if(bSucceeded)
 	{
-		QUrl issueJSON = m_CurrentReply->url().toString() + "?format=json";
-		QNetworkRequest request(issueJSON);
-
+		QUrl currentUrl = m_CurrentReply->url();
 		m_CurrentReply->deleteLater();
-		m_CurrentReply = m_NetAccessManager.get(request);
-		bSucceeded = waitForReply();
-		if(bSucceeded)
-		{
-			QByteArray data = m_CurrentReply->readAll();
-
-			issue_id = -1;
-
-			QString dataStr(data);
-			const QString idToken = "{\"id\":";
-			if(dataStr.startsWith(idToken))
-			{
-				int posEnd = dataStr.indexOf(",");
-				if(posEnd != -1)
-					issue_id = dataStr.mid(idToken.length(), posEnd - idToken.length()).toInt();
-			}
-
-			if(issue_id == -1)
-				bSucceeded = false;
-		}
+		bSucceeded = getIssueIdFromUrl(currentUrl, issue_id);
 	}
 
-	m_CurrentReply->deleteLater();
+	
 	return bSucceeded;
 }
 
@@ -144,6 +126,91 @@ bool Server::attachFile(int issue_id, const QString& filePath, const QString& fi
 
 	m_CurrentReply = m_NetAccessManager.post(request,dataToSend);
 	bool bSucceeded = waitForReply();
+	m_CurrentReply->deleteLater();
+	return bSucceeded;
+}
+
+bool Server::findIssue(const QString& text, int& issue_id)
+{
+	issue_id = -1; // Not found
+
+	QString addrSearchRSS = "http://bugs.arx-libertatis.org/arx/issues/find/format/rss?issues/project_key/arx&filters[text][operator]==&filters[text][value]=";
+	addrSearchRSS += text;
+	QUrl urlSearchRSS(addrSearchRSS);
+
+	QNetworkRequest request(urlSearchRSS);
+	m_CurrentReply = m_NetAccessManager.get(request);
+	bool bSucceeded = waitForReply();
+	if(bSucceeded)
+	{
+		QXmlStreamReader xml ;
+		xml.setDevice(m_CurrentReply);
+
+		// Using XPath would have probably been simpler, but it would
+		// add a dependency to QtXmlPatterns...
+		// Look for the first "/rss/channel/item/link" entry...
+		const QString XML_PATH[] = { "rss", "channel", "item", "link" };
+		int currentItem = 0;
+		QString issueLink;
+
+		while(!xml.atEnd() && !xml.hasError())
+		{
+			// Read next element
+			QXmlStreamReader::TokenType token = xml.readNext();
+
+			if(currentItem == boost::size(XML_PATH))
+			{
+				issueLink = xml.text().toString();
+				break;
+			}
+
+			// If token is StartElement, we'll see if we can read it.
+			if(token == QXmlStreamReader::StartElement) 
+			{
+				if(xml.name() == XML_PATH[currentItem])
+					currentItem++;
+			}
+		}
+
+		if(!issueLink.isEmpty())
+		{
+			bSucceeded = getIssueIdFromUrl(QUrl(issueLink), issue_id);
+		}
+		else
+		{
+			bSucceeded = false;
+		}
+	}
+
+	return bSucceeded;
+}
+
+bool Server::getIssueIdFromUrl(const QUrl& url, int& issue_id)
+{
+	QUrl issueJSON = url.toString() + "?format=json";
+	QNetworkRequest request(issueJSON);
+
+	m_CurrentReply = m_NetAccessManager.get(request);
+	bool bSucceeded = waitForReply();
+	if(bSucceeded)
+	{
+		QByteArray data = m_CurrentReply->readAll();
+
+		issue_id = -1;
+
+		QString dataStr(data);
+		const QString idToken = "{\"id\":";
+		if(dataStr.startsWith(idToken))
+		{
+			int posEnd = dataStr.indexOf(",");
+			if(posEnd != -1)
+				issue_id = dataStr.mid(idToken.length(), posEnd - idToken.length()).toInt();
+		}
+
+		if(issue_id == -1)
+			bSucceeded = false;
+	}
+
 	m_CurrentReply->deleteLater();
 	return bSucceeded;
 }

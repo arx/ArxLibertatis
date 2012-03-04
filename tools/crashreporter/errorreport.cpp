@@ -491,16 +491,29 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		pProgressNotifier->setError("Could not connect to the bug tracker");
 		return false;
 	}
-	
-	// Create new issue
+
+	// Look for existing issue
 	int issue_id;
-	pProgressNotifier->taskStepStarted("Creating new issue");
-	bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, issue_id);
+	pProgressNotifier->taskStepStarted("Searching for existing issue");
+	bool bSearchSuccessful = server.findIssue(m_ReportTitle, issue_id);
 	pProgressNotifier->taskStepEnded();
-	if(!bCreatedIssue)
+	if(!bSearchSuccessful)
 	{
-		pProgressNotifier->setError("Could not create a new issue on the bug tracker");
+		pProgressNotifier->setError("Failure occured when searching issue on the bug tracker");
 		return false;
+	}
+
+	// Create new issue if no match was found
+	if(issue_id == -1)
+	{
+		pProgressNotifier->taskStepStarted("Creating new issue");
+		bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, issue_id);
+		pProgressNotifier->taskStepEnded();
+		if(!bCreatedIssue)
+		{
+			pProgressNotifier->setError("Could not create a new issue on the bug tracker");
+			return false;
+		}
 	}
 
 	// Send files
