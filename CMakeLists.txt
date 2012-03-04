@@ -111,8 +111,12 @@ endif()
 find_package(Doxygen)
 find_package(PythonInterp)
 if(USE_SDL)
-	set(SDL_BUILDING_LIBRARY 1)		# Required to avoid linking with SDLmain...
-	find_package(SDL 1.2 EXACT)
+    if(!APPLE)
+        # Required to avoid linking with SDLmain except for OS X where it is necessary
+        # due to the need to have NSApplication correctly setup by SDLmain.
+        set(SDL_BUILDING_LIBRARY 1)
+    endif()
+    find_package(SDL 1.2 EXACT)
 endif()
 
 if(MSVC)
