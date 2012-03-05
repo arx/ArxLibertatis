@@ -2174,6 +2174,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, error):
 
 
 _RE_PATTERN_INCLUDE_NEW_STYLE = re.compile(r'#include +"[^/]+\.h"')
+_RE_PATTERN_INCLUDE_QT = re.compile(r'#include +"(ui_|moc_)[^/]+\.h"')
 _RE_PATTERN_INCLUDE = re.compile(r'^\s*#\s*include\s*([<"])([^>"]*)[>"].*$')
 # Matches the first component of a filename delimited by -s and _s. That is:
 #  _RE_FIRST_COMPONENT.match('foo').group(0) == 'foo'
@@ -2307,7 +2308,7 @@ def CheckIncludeLine(filename, clean_lines, linenum, include_state, error):
   line = clean_lines.lines[linenum]
 
   # "include" should use the new style "foo/bar.h" instead of just "bar.h"
-  if _RE_PATTERN_INCLUDE_NEW_STYLE.search(line) and line != "#include \"Configure.h\"":
+  if _RE_PATTERN_INCLUDE_NEW_STYLE.search(line) and line != "#include \"Configure.h\"" and not  _RE_PATTERN_INCLUDE_QT.search(line):
     error(filename, linenum, 'build/include', 4,
           'Include the directory when naming .h files')
 
