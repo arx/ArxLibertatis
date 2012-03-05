@@ -195,6 +195,9 @@ if(MSVC)
 	
 	# Disable randomized base address (for better callstack matching)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DYNAMICBASE:NO")
+	
+	# Always generate a PDB file
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
