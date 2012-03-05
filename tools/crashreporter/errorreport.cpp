@@ -484,7 +484,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 	// Login to TBG server
 	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
-	bool bLoggedIn = server.login("CrashBot", BUGTRACKER_PASSWD);
+	bool bLoggedIn = server.login("CrashBot", "WbAtVjS9");
 	pProgressNotifier->taskStepEnded();
 	if(!bLoggedIn)
 	{
