@@ -797,8 +797,9 @@ create_source_groups(ALL_FILES_FOR_GROUPS)
 
 configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
 
-version_file("${SRC_DIR}/core/Version.cpp.cmake" "${CMAKE_BINARY_DIR}/Version.cpp" "VERSION" ".git")
-list(APPEND ARX_SOURCES "${CMAKE_BINARY_DIR}/Version.cpp")
+set(VERSION_FILE "${CMAKE_BINARY_DIR}/Version.cpp")
+version_file("${SRC_DIR}/core/Version.cpp.cmake" "${VERSION_FILE}" "VERSION" ".git")
+list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 
 # Add executables
@@ -828,6 +829,7 @@ if(HAVE_CRASHREPORTER)
 		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
+		"${VERSION_FILE}"
 	)
 	
 	set(arxcrashreporter_UIs
