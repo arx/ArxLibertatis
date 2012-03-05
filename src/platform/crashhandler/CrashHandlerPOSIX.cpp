@@ -248,8 +248,9 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 #endif
 	
 	if(fork()) {
-		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
-		while(true);
+		while(true) {
+			// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
+		}
 	} else {
 		
 		int killer = fork();
