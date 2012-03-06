@@ -28,15 +28,12 @@
 
 #define ARX_PLATFORM_UNKNOWN 0
 #define ARX_PLATFORM_WIN32   1
-#define ARX_PLATFORM_PS3_PPU 2
-#define ARX_PLATFORM_LINUX   3
-#define ARX_PLATFORM_MACOSX  4
+#define ARX_PLATFORM_LINUX   2
+#define ARX_PLATFORM_MACOSX  3
 #define ARX_PLATFORM_BSD     100 // Generic BSD system
 #define ARX_PLATFORM_UNIX    101 // Generic UNIX system
 
-#if defined(__PPU__)
-	#define ARX_PLATFORM ARX_PLATFORM_PS3_PPU
-#elif defined(__linux)
+#if defined(__linux)
 	#define ARX_PLATFORM ARX_PLATFORM_LINUX
 #elif defined(_WIN32)
 	#define ARX_PLATFORM ARX_PLATFORM_WIN32
