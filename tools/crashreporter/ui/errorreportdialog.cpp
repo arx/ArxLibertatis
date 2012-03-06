@@ -170,10 +170,17 @@ void ErrorReportDialog::onTaskStepStarted(const std::string& taskStepDescription
 								.arg(taskStepDescription.c_str());
 
 	ui->lblProgressDescription->setText(textDescription);
+
+	taskTimer.start();
 }
 
 void ErrorReportDialog::onTaskStepEnded()
 {
+	qint64 sleepTimeMs = 500 - taskTimer.elapsed();
+
+	if(sleepTimeMs > 0)
+		m_pCurrentTask->msleep(sleepTimeMs);
+
 	ui->progressBar->setValue(ui->progressBar->value() + 1);
 }
 

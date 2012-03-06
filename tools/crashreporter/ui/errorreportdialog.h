@@ -53,6 +53,8 @@ public:
 	 */
 	const QString& getErrorString() const { return m_strErrorDescription; }
 
+	static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
+
 signals:
 	void taskStarted(const std::string& taskDescription, int numSteps);
 	void taskStepStarted(const std::string& taskStepDescription);
@@ -231,6 +233,8 @@ private:
 
 	CrashReportTask* m_pCurrentTask;
 	int m_nextPane;
+
+	QElapsedTimer taskTimer;
 
 	ErrorReport& m_errorReport;
 };
