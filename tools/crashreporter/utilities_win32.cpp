@@ -266,7 +266,7 @@ static BOOL CALLBACK LoadModuleCB(PCSTR ModuleName, DWORD64 ModuleBase, ULONG Mo
     return TRUE;
 }
 
-bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, int& callstackCrc)
+bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, u32& callstackCrc)
 {
 	DWORD options = SymGetOptions();
 	options |= SYMOPT_LOAD_LINES;

@@ -92,6 +92,29 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	return bSucceeded;
 }
 
+bool Server::setOperatingSystem(int issue_id, int os_id)
+{
+	return setFieldValue("operatingsystem", issue_id, os_id);
+}
+
+bool Server::setArchitecture(int issue_id, int arch_id)
+{
+	return setFieldValue("architecture", issue_id, arch_id);
+}
+
+bool Server::setFieldValue(const QString& fieldName, int issue_id, int value_id)
+{
+	QString strUrl = QString("/arx/issues/%1/set/%2/%2_value/%3").arg(QString::number(issue_id),
+																	  fieldName,
+																	  QString::number(value_id));
+
+	QUrl newIssueUrl = m_ServerAddress + strUrl;
+	QNetworkRequest request(newIssueUrl);
+	m_CurrentReply = m_NetAccessManager.get(request);
+	bool bSucceeded = waitForReply();
+	m_CurrentReply->deleteLater();
+	return bSucceeded;
+}
 
 bool Server::attachFile(int issue_id, const QString& filePath, const QString& fileDescription, const QString& comment)
 {
@@ -178,7 +201,7 @@ bool Server::findIssue(const QString& text, int& issue_id)
 		}
 		else
 		{
-			bSucceeded = false;
+			bSucceeded = true; // Issue not found, but search was successful nonetheless, issue_id will be -1
 		}
 	}
 

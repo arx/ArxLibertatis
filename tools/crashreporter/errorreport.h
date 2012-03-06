@@ -113,9 +113,8 @@ private:
 	double m_RunningTimeSec;
 	
 	QString m_OSName;
-	QString m_Architecture;
-	
-	
+	QString m_OSArchitecture;
+		
 	fs::path m_ProcessPath;
 	quint64 m_ProcessMemoryUsage;
 	QString m_ProcessArchitecture;

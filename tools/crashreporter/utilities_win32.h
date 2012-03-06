@@ -21,6 +21,7 @@
 #define ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H
 
 #include "Configure.h"
+#include "platform/Platform.h"
 
 #ifdef HAVE_WINAPI
 
@@ -31,7 +32,7 @@ bool GetWindowsVersionName(char* str, int bufferSize);
 bool Is64BitWindows();
 ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );
 
-bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, int& callstackCrc);
+bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, u32& callstackCrc);
 std::string GetRegisters(PCONTEXT pCtx);
 std::string GetExceptionString(DWORD dwCode);
 

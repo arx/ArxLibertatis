@@ -30,12 +30,29 @@ namespace TBG
 
 class Server : public QObject
 {
-public:
-	
+public:	
+	enum OperatingSystem
+	{
+		OS_Linux = 100,			// Linux
+		OS_MacOSX = 200,		// Mac
+		OS_FreeBSD = 300,		// FreeBSD
+		OS_Windows = 400,		// Windows
+		OS_Other = 0xFFFFFFFF
+	};
+
+	enum Architecture
+	{
+		Arch_Amd64 = 1,
+		Arch_x86 = 2,
+		Arch_Other = 0xFFFFFFFF
+	};
+
 	explicit Server(const QString & adress);
 
 	bool login(const QString& username, const QString& password);
 	bool createCrashReport(const QString& title, const QString& description, int& issue_id);
+	bool setOperatingSystem(int issue_id, int os_id);
+	bool setArchitecture(int issue_id, int arch_id);
 	bool attachFile(int issue_id, const QString& filePath, const QString& fileDescription, const QString& comment);
 	bool findIssue(const QString& text, int& issue_id);
 
@@ -43,6 +60,7 @@ public:
 
 private:
 	bool waitForReply();
+	bool setFieldValue(const QString& fieldName, int issue_id, int value_id);
 	bool getIssueIdFromUrl(const QUrl& url, int& issue_id);
 
 private:
