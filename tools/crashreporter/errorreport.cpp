@@ -98,50 +98,6 @@ bool ErrorReport::Initialize()
 	return true;
 }
 
-bool ErrorReport::GetScreenshot(const fs::path& fileName, int quality, bool bGrayscale)
-{
-	fs::path fullPath = m_ReportFolder / fileName;
-
-#ifdef HAVE_WINAPI
-	WId mainWindow = GetMainWindow(m_pCrashInfo->processId);
-	
-	if(mainWindow == 0)
-		return false;
-	
-	RECT r;
-	GetWindowRect(mainWindow, &r);
-
-	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId(), r.left, r.top, r.right - r.left, r.bottom - r.top);
-#else
-	QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-#endif
-	
-	if(bGrayscale)
-	{
-		QImage image = pixmap.toImage();
-		QRgb col;
-		int gray;
-		int width = pixmap.width();
-		int height = pixmap.height();
-		for (int i = 0; i < width; ++i)
-		{
-			for (int j = 0; j < height; ++j)
-			{
-				col = image.pixel(i, j);
-				gray = qGray(col);
-				image.setPixel(i, j, qRgb(gray, gray, gray));
-			}
-		}
-		pixmap = pixmap.fromImage(image);
-	}
-
-	bool bSaved = pixmap.save(fullPath.string().c_str(), 0, quality);
-	if(bSaved)
-		AddFile(fullPath);
-
-	return bSaved;
-}
-
 #ifdef HAVE_WINAPI
 // This callbask function is called by MinidumpWriteDump
 BOOL CALLBACK MiniDumpCallback(PVOID, PMINIDUMP_CALLBACK_INPUT, PMINIDUMP_CALLBACK_OUTPUT)
@@ -429,7 +385,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 		report->ReleaseApplicationLock();
 	} BOOST_SCOPE_EXIT_END
 
-	pProgressNotifier->taskStarted("Generating crash report", 4);
+	pProgressNotifier->taskStarted("Generating crash report", 3);
 	
 	// Initialize shared memory
 	pProgressNotifier->taskStepStarted("Connecting to crashed application");
@@ -441,11 +397,6 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 		exit(0);
 	}
 	
-	// Take screenshot - non critical
-	pProgressNotifier->taskStepStarted("Grabbing screenshot");
-	GetScreenshot("screenshot.jpg");
-	pProgressNotifier->taskStepEnded();
-
 	// Generate minidump
 	pProgressNotifier->taskStepStarted("Generating crash dump");
 	bool bCrashDump = GetCrashDump("crash.dmp");

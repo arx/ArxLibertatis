@@ -27,7 +27,6 @@
 #include <windows.h>
 #include <string>
 
-HWND GetMainWindow(unsigned int processId);
 bool GetWindowsVersionName(char* str, int bufferSize);
 bool Is64BitWindows();
 ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );

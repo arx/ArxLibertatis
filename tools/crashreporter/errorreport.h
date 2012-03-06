@@ -96,7 +96,6 @@ private:
 
 	bool WriteReport(const fs::path& fileName);
 
-	bool GetScreenshot(const fs::path& fileName, int quality = -1, bool bGrayscale = false);
 	bool GetCrashDump(const fs::path& fileName);
 	bool GetMiscCrashInfo();
 

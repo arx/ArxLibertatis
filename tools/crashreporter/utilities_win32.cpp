@@ -38,57 +38,6 @@ typedef BOOL (WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
 #define PRODUCT_PROFESSIONAL	0x00000030
 #define VER_SUITE_WH_SERVER	0x00008000
 
-struct FindWindowData
-{
-	DWORD   dwProcessId;
-	HWND	hWndMain;
-};
-
-BOOL CALLBACK EnumWndProc(HWND hWnd, LPARAM lParam)
-{
-	FindWindowData* pFWD = (FindWindowData*)lParam;
-
-	// Get process ID
-	if(IsWindowVisible(hWnd)) // Get only wisible windows
-	{
-		// Determine the process ID of the current window
-		DWORD dwProcessId = 0;
-		GetWindowThreadProcessId(hWnd, &dwProcessId);
-
-		// Compare window process ID to our process ID
-		if(dwProcessId == pFWD->dwProcessId)
-		{	 
-			DWORD dwStyle = GetWindowLong(hWnd, GWL_STYLE);
-			if((dwStyle&WS_CHILD)==0) // Get only non-child windows
-			{
-				DWORD dwExStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
-
-				if((dwExStyle & WS_EX_APPWINDOW) &&
-				   ((dwStyle & (WS_CAPTION|WS_SYSMENU)) ||		// Windowed
-					(dwStyle & (WS_POPUP|WS_VISIBLE))			// Fullscreen
-				   )
-				  )		
-				{
-					pFWD->hWndMain = hWnd;
-					return FALSE;
-				}
-			}
-		}
-	}
-
-	return TRUE;
-}
-
-HWND GetMainWindow(unsigned int processId)
-{
-	FindWindowData fwd;
-	fwd.dwProcessId = processId;
-	fwd.hWndMain = 0;
-	EnumWindows(EnumWndProc, (LPARAM)&fwd);
-
-	return fwd.hWndMain;
-}
-
 bool GetWindowsVersionName(char* str, int bufferSize)
 {
 	OSVERSIONINFOEX osvi;
