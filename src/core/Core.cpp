@@ -191,7 +191,6 @@ extern long		INTER_DRAW;
 extern long		INTER_COMPUTE;
 extern long		FAKE_DIR;
 extern long		DONT_WANT_PLAYER_INZONE;
-extern long		DeadTime;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
