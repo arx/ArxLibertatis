@@ -31,24 +31,25 @@ namespace TBG
 
 Server::Server(const QString& serverAddress)
 	: m_ServerAddress(serverAddress)
+	, m_ServerPrefix(serverAddress + "/arxcrashreporter/v1")
 {
 }
 
 bool Server::login(const QString& username, const QString& password)
 {
 	QUrl params;
-
+	
 	params.addQueryItem("tbg3_password", password);
 	params.addQueryItem("tbg3_referer", m_ServerAddress);
 	params.addQueryItem("tbg3_username", username);
-			
-	QUrl loginUrl = m_ServerAddress + "/do/login";
+	
+	QUrl loginUrl = m_ServerPrefix + "/do/login";
 	QNetworkRequest request(loginUrl);
 	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-
+	
 	QByteArray data = params.encodedQuery();
 	m_CurrentReply = m_NetAccessManager.post(request, data);
-
+	
 	bool bSucceeded = waitForReply();
 	m_CurrentReply->deleteLater();
 	
@@ -58,7 +59,7 @@ bool Server::login(const QString& username, const QString& password)
 bool Server::createCrashReport(const QString& title, const QString& description, int& issue_id)
 {
 	QUrl params;
-
+	
 	params.addQueryItem("project_id", "2");
 	params.addQueryItem("issuetype_id", "7");
 	params.addQueryItem("title", title);
@@ -72,13 +73,13 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	params.addQueryItem("priority_id", "0");
 	params.addQueryItem("resolution_id", "0");
 	params.addQueryItem("severity_id", "0");
-			
-	QUrl newIssueUrl = m_ServerAddress + "/arx/issues/new";
+	
+	QUrl newIssueUrl = m_ServerPrefix + "/arx/issues/new";
 	QNetworkRequest request(newIssueUrl);
 	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-
+	
 	QByteArray data = params.encodedQuery();
-
+	
 	m_CurrentReply = m_NetAccessManager.post(request, data);
 	bool bSucceeded = waitForReply();
 	if(bSucceeded)
@@ -87,7 +88,6 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 		m_CurrentReply->deleteLater();
 		bSucceeded = getIssueIdFromUrl(currentUrl, issue_id);
 	}
-
 	
 	return bSucceeded;
 }
@@ -108,7 +108,7 @@ bool Server::setFieldValue(const QString& fieldName, int issue_id, int value_id)
 																	  fieldName,
 																	  QString::number(value_id));
 
-	QUrl newIssueUrl = m_ServerAddress + strUrl;
+	QUrl newIssueUrl = m_ServerPrefix + strUrl;
 	QNetworkRequest request(newIssueUrl);
 	m_CurrentReply = m_NetAccessManager.get(request);
 	bool bSucceeded = waitForReply();
@@ -141,7 +141,7 @@ bool Server::attachFile(int issue_id, const QString& filePath, const QString& fi
 	dataToSend.append(comment.toUtf8());
 	dataToSend.append(boundaryLast);
 
-	QString urlString = QString("https://bugs.arx-libertatis.org/upload/to/issue/") + QString::number(issue_id);
+	QString urlString = m_ServerPrefix + "/upload/to/issue/" + QString::number(issue_id);
 	QUrl url(urlString);
 	QNetworkRequest request(url);
 	request.setRawHeader("Content-Type","multipart/form-data; boundary=\""+boundaryRegular+"\"");
@@ -157,7 +157,7 @@ bool Server::findIssue(const QString& text, int& issue_id)
 {
 	issue_id = -1; // Not found
 
-	QString addrSearchRSS = "http://bugs.arx-libertatis.org/arx/issues/find/format/rss?issues/project_key/arx&filters[text][operator]==&filters[text][value]=";
+	QString addrSearchRSS = m_ServerPrefix +  "/arx/issues/find/format/rss?issues/project_key/arx&filters[text][operator]==&filters[text][value]=";
 	addrSearchRSS += text;
 	QUrl urlSearchRSS(addrSearchRSS);
 

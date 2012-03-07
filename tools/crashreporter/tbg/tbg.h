@@ -64,10 +64,11 @@ private:
 	bool getIssueIdFromUrl(const QUrl& url, int& issue_id);
 
 private:
-	QString					m_ServerAddress;
-	QNetworkAccessManager	m_NetAccessManager;
-	QNetworkReply*			m_CurrentReply;
-	QUrl					m_CurrentUrl;
+	QString               m_ServerAddress;
+	QString               m_ServerPrefix;
+	QNetworkAccessManager m_NetAccessManager;
+	QNetworkReply *       m_CurrentReply;
+	QUrl                  m_CurrentUrl;
 };
 
 }
