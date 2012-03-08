@@ -42,7 +42,7 @@ public:
 
 	enum Architecture
 	{
-		Arch_Amd64 = 1,
+		Arch_Amd64 = 3,
 		Arch_x86 = 2,
 		Arch_Other = 0xFFFFFFFF
 	};
