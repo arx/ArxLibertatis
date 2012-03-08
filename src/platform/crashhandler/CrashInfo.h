@@ -104,10 +104,10 @@ struct CrashInfo : public CrashInfoBase {
 #include <dbghelp.h>
 
 struct CrashInfo : public CrashInfoBase {
-	EXCEPTION_RECORD exceptionRecord;
-	CONTEXT          contextRecord;
-	MINIDUMP_TYPE    miniDumpType;
-	HANDLE           threadHandle;
+	CONTEXT contextRecord;
+	CHAR	miniDumpTmpFile[MAX_PATH];
+	HANDLE  threadHandle;
+	DWORD	exceptionCode;
 };
 
 #endif

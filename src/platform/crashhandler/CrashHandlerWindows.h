@@ -40,15 +40,17 @@ public:
 	static CrashHandlerWindows& getInstance();
 
 private:
-	void fillBasicCrashInfo();
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
+
+	void writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers);
+	void getCrashSummary(int crashType, int FPECode);
+	void waitForReporter();
 	
 private:
 	// Crash handlers to restore.
-	struct PlatformCrashHandlers* m_pPreviousCrashHandlers;
-
-	static CrashHandlerWindows* m_sInstance;
+	struct PlatformCrashHandlers*	m_pPreviousCrashHandlers;
+	static CrashHandlerWindows*		m_sInstance;
 };
 
 #endif // ARX_PLATFORM_CRASHHANDLER_CRASHHANDLERWINDOWS_H

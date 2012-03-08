@@ -69,12 +69,6 @@ CrashHandlerWindows& CrashHandlerWindows::getInstance() {
 	return *m_sInstance;
 }
 
-void CrashHandlerWindows::fillBasicCrashInfo() {
-	CrashHandlerImpl::fillBasicCrashInfo();
-	
-	m_pCrashInfo->miniDumpType = MiniDumpNormal;
-}
-
 bool CrashHandlerWindows::registerCrashHandlers() {
 	arx_assert(m_pPreviousCrashHandlers == 0);
 	m_pPreviousCrashHandlers = new PlatformCrashHandlers;
@@ -216,14 +210,114 @@ enum CrashType {
 	SIGNAL_UNKNOWN
 };
 
-void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int FPECode) {
-	Autolock autoLock(&m_Lock);
+// This callbask function is called by MiniDumpWriteDump
+BOOL CALLBACK miniDumpCallback(PVOID, PMINIDUMP_CALLBACK_INPUT pInput, PMINIDUMP_CALLBACK_OUTPUT pOutput) {
+	BOOL bRet = FALSE; 
+	
+	// Check parameters 
+	if( pInput == 0 || pOutput == 0 ) 
+		return FALSE; 
 
-	// Run the callbacks
-	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin(); it != m_crashCallbacks.end(); ++it) {
-		(*it)();
+	// Process the callbacks 
+	switch( pInput->CallbackType ) 
+	{		
+	case IncludeModuleCallback: // Include module infos into the dump 
+	case IncludeThreadCallback: // Include thread infos into the dump 
+	case ThreadCallback:        // Include all thread information into the minidump
+	case ThreadExCallback:		// Include this information 
+		bRet = TRUE; 
+		break; 
+
+	case ModuleCallback: 
+	{
+		// Does the module have ModuleReferencedByMemory flag set ? 
+		if( !(pOutput->ModuleWriteFlags & ModuleReferencedByMemory) ) 
+		{
+			// No, it does not - exclude it
+			pOutput->ModuleWriteFlags &= (~ModuleWriteModule); 
+		}
+
+		bRet = TRUE; 
+	}
+	break; 
+				
+	case MemoryCallback: 
+	case CancelCallback: 
+		// We do not include any information here -> return FALSE 
+		bRet = FALSE;
+		break; 
 	}
 
+	return bRet;
+}
+
+void CrashHandlerWindows::writeCrashDump(PEXCEPTION_POINTERS pExceptionPointers) {
+
+	// Build the temporary path to store the minidump
+    CHAR* tempPathBuffer = m_pCrashInfo->miniDumpTmpFile;
+    GetTempPath(MAX_PATH, m_pCrashInfo->miniDumpTmpFile);
+    DWORD tick = GetTickCount();
+    char tickChar[24];
+    _ultoa(tick, tickChar, 10);
+    strcat(&tempPathBuffer[0], tickChar);
+    strcat(&tempPathBuffer[0], ".dmp");
+
+	// Create the minidump file
+	HANDLE hFile = CreateFile(tempPathBuffer, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if(hFile == INVALID_HANDLE_VALUE)
+		return;
+
+	MINIDUMP_TYPE miniDumpType = (MINIDUMP_TYPE)(MiniDumpWithIndirectlyReferencedMemory | MiniDumpScanMemory);
+
+	MINIDUMP_EXCEPTION_INFORMATION exceptionInfo;
+	exceptionInfo.ThreadId = GetCurrentThreadId();
+	exceptionInfo.ExceptionPointers = pExceptionPointers;
+	exceptionInfo.ClientPointers = TRUE;
+  
+	MINIDUMP_CALLBACK_INFORMATION callbackInfo;
+	callbackInfo.CallbackRoutine = miniDumpCallback;
+	callbackInfo.CallbackParam = 0;
+
+	// Write the minidump
+	MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, miniDumpType, &exceptionInfo, NULL, NULL);
+	CloseHandle(hFile);
+}
+
+void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int FPECode) {
+
+	Autolock autoLock(&m_Lock);
+
+	EXCEPTION_POINTERS* pExceptionPointers = (EXCEPTION_POINTERS*)crashExtraInfo;
+
+	// Run the callbacks
+	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin(); it != m_crashCallbacks.end(); ++it)
+		(*it)();
+	
+	// Get summary 
+	getCrashSummary(crashType, FPECode);
+
+	// Write crash dump
+	writeCrashDump(pExceptionPointers);
+
+	// Copy CONTEXT to crash info structure
+	memset(&m_pCrashInfo->contextRecord, 0, sizeof(m_pCrashInfo->contextRecord));
+	if(pExceptionPointers != 0) {
+		m_pCrashInfo->exceptionCode = pExceptionPointers->ExceptionRecord->ExceptionCode;
+		memcpy(&m_pCrashInfo->contextRecord, pExceptionPointers->ContextRecord, sizeof(m_pCrashInfo->contextRecord));
+	} else {
+		RtlCaptureContext(&m_pCrashInfo->contextRecord);
+	}
+	
+	// Get current thread id
+	m_pCrashInfo->threadId = GetCurrentThreadId();
+	m_pCrashInfo->threadHandle = GetCurrentThread();
+
+	waitForReporter();
+	
+	TerminateProcess(GetCurrentProcess(), 1);
+}
+
+void CrashHandlerWindows::getCrashSummary(int crashType, int FPECode) {
 	const char* crashSummary;
 
 	switch(crashType) {
@@ -271,24 +365,9 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n");
+}
 
-	memset(&m_pCrashInfo->exceptionRecord, 0, sizeof(m_pCrashInfo->exceptionRecord));
-	memset(&m_pCrashInfo->contextRecord, 0, sizeof(m_pCrashInfo->contextRecord));
-
-	if(crashExtraInfo != 0) {
-		EXCEPTION_POINTERS* pExceptionPointers = (EXCEPTION_POINTERS*)crashExtraInfo;
-		memcpy(&m_pCrashInfo->exceptionRecord, pExceptionPointers->ExceptionRecord, sizeof(m_pCrashInfo->exceptionRecord));
-		memcpy(&m_pCrashInfo->contextRecord, pExceptionPointers->ContextRecord, sizeof(m_pCrashInfo->contextRecord));
-	} else {
-		RtlCaptureContext(&m_pCrashInfo->contextRecord);
-		m_pCrashInfo->exceptionRecord.ExceptionCode = 0;
-		m_pCrashInfo->exceptionRecord.ExceptionAddress = _ReturnAddress();
-	}
-
-	// Get current thread id
-	m_pCrashInfo->threadId = Thread::getCurrentThreadId();
-	m_pCrashInfo->threadHandle = GetCurrentThread();
-
+void CrashHandlerWindows::waitForReporter() {
 	STARTUPINFO si;
 	memset(&si, 0, sizeof(STARTUPINFO));
 	si.cb = sizeof(STARTUPINFO);
@@ -319,8 +398,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	} else {
 		// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
 	}
-	
-	TerminateProcess(GetCurrentProcess(), 1);
 }
 
 LONG WINAPI SEHHandler(PEXCEPTION_POINTERS pExceptionPtrs) {

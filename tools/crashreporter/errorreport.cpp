@@ -100,52 +100,22 @@ bool ErrorReport::Initialize()
 	return true;
 }
 
-#ifdef HAVE_WINAPI
-// This callbask function is called by MinidumpWriteDump
-BOOL CALLBACK MiniDumpCallback(PVOID, PMINIDUMP_CALLBACK_INPUT, PMINIDUMP_CALLBACK_OUTPUT)
-{
-	return TRUE;
-}
-#endif
-
 bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 	
 #ifdef HAVE_WINAPI
-	
-	fs::path fullPath = m_ReportFolder / fileName;
-	
-	MINIDUMP_EXCEPTION_INFORMATION exceptionInfo;
-	MINIDUMP_CALLBACK_INFORMATION callbackInfo;
+	bool bHaveDump = false;
 
-	EXCEPTION_POINTERS exceptionPointers;
-	exceptionPointers.ExceptionRecord = &m_pCrashInfo->exceptionRecord;
-	exceptionPointers.ContextRecord = &m_pCrashInfo->contextRecord;
+	if(fs::exists(m_pCrashInfo->miniDumpTmpFile))
+	{
+		fs::path fullPath = m_ReportFolder / fileName;
+		if(fs::rename(m_pCrashInfo->miniDumpTmpFile, fullPath))
+		{
+			AddFile(fullPath);
+			bHaveDump = true;
+		}
+	}
 
-	// Write minidump to the file
-	exceptionInfo.ThreadId = m_pCrashInfo->threadId;
-	exceptionInfo.ExceptionPointers = &exceptionPointers;
-	exceptionInfo.ClientPointers = FALSE;
-  
-	callbackInfo.CallbackRoutine = MiniDumpCallback;
-	callbackInfo.CallbackParam = 0;
-
-	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pCrashInfo->processId);
-	if(hProcess == INVALID_HANDLE_VALUE)
-		return false;
-
-	// Create the minidump file
-	HANDLE hFile = CreateFile(fullPath.string().c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	if(hFile == INVALID_HANDLE_VALUE)
-		return false;
-
-	BOOL bWriteDump = MiniDumpWriteDump(hProcess, m_pCrashInfo->processId, hFile, m_pCrashInfo->miniDumpType, &exceptionInfo, NULL, &callbackInfo);
-
-	CloseHandle(hFile);
-
-	if(bWriteDump)
-		AddFile(fullPath);
-
-	return bWriteDump;
+	return bHaveDump;
 	
 #else // !HAVE_WINAPI
 	
@@ -252,9 +222,9 @@ bool ErrorReport::GetMiscCrashInfo()
 	// Determine if Windows is 64-bit.
 	m_OSArchitecture = Is64BitWindows() ? ARX_ARCH_NAME_X86_64 : ARX_ARCH_NAME_X86;
 	
-	if(m_pCrashInfo->exceptionRecord.ExceptionCode != 0)
+	if(m_pCrashInfo->exceptionCode != 0)
 	{
-		std::string exceptionStr = GetExceptionString(m_pCrashInfo->exceptionRecord.ExceptionCode);
+		std::string exceptionStr = GetExceptionString(m_pCrashInfo->exceptionCode);
 		if(!exceptionStr.empty())
 		{
 			m_ReportDescription += "\nException code:\n  ";
