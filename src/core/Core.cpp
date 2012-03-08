@@ -3389,6 +3389,8 @@ void DANAE_StartNewQuest()
 
 bool DANAE_ManageSplashThings() {
 	
+	const int SPLASH_DURATION = 3600;
+
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	
 	if(SPLASH_THINGS_STAGE > 10) {
@@ -3414,14 +3416,22 @@ bool DANAE_ManageSplashThings() {
 		{
 			
 			if (SPLASH_START==0) //firsttime
+			{
+				if(!ARX_INTERFACE_InitFISHTANK())
+				{
+					SPLASH_THINGS_STAGE++;
+					return true;
+				}
+
 				SPLASH_START = arxtime.get_updated_ul();
+			}
 
 			ARX_INTERFACE_ShowFISHTANK();
 
 			unsigned long tim = arxtime.get_updated_ul();
 			float pos=(float)tim-(float)SPLASH_START;
 
-			if (pos>3600)
+			if (pos>SPLASH_DURATION)
 			{
 				SPLASH_START=0;
 				SPLASH_THINGS_STAGE++;
@@ -3436,6 +3446,12 @@ bool DANAE_ManageSplashThings() {
 		{
 			if (SPLASH_START==0) //firsttime
 			{
+				if(!ARX_INTERFACE_InitARKANE())
+				{
+					SPLASH_THINGS_STAGE++;
+					return true;
+				}
+
 				SPLASH_START = arxtime.get_updated_ul();
 				ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
 			}
@@ -3444,7 +3460,7 @@ bool DANAE_ManageSplashThings() {
 			unsigned long tim = arxtime.get_updated_ul();
 			float pos=(float)tim-(float)SPLASH_START;
 
-			if (pos>3600)
+			if (pos>SPLASH_DURATION)
 			{
 				SPLASH_START=0;
 				SPLASH_THINGS_STAGE++;

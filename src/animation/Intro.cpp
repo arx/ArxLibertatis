@@ -84,6 +84,24 @@ void LoadScreen()
 }
 
 //-----------------------------------------------------------------------------
+bool ARX_INTERFACE_InitFISHTANK()
+{
+	if (FISHTANK_img == NULL)
+		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
+
+	return FISHTANK_img != NULL;
+}
+
+//-----------------------------------------------------------------------------
+bool ARX_INTERFACE_InitARKANE()
+{
+	if (ARKANE_img == NULL)
+		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
+
+	return ARKANE_img != NULL;
+}
+
+//-----------------------------------------------------------------------------
 void ARX_INTERFACE_KillFISHTANK()
 {
 	delete FISHTANK_img;
@@ -115,58 +133,37 @@ void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade 
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_ShowFISHTANK()
+void ARX_INTERFACE_ShowLogo(TextureContainer* logo)
 {
+	if (logo == NULL)
+		return;
+
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
 
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	GRenderer->BeginScene();
-
-	if (FISHTANK_img == NULL)
-		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
-
-	if (FISHTANK_img != NULL)
-	{
-		GRenderer->SetRenderState(Renderer::Fog, false);
-		DrawCenteredImage(FISHTANK_img, false);
-	}
-
+		
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	DrawCenteredImage(logo, false);
+	
 	GRenderer->EndScene();
 	
-
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
 }
 
 //-----------------------------------------------------------------------------
+void ARX_INTERFACE_ShowFISHTANK()
+{
+	ARX_INTERFACE_ShowLogo(FISHTANK_img);
+}
+
+//-----------------------------------------------------------------------------
 void ARX_INTERFACE_ShowARKANE()
 {
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
-	GRenderer->SetRenderState(Renderer::ColorKey, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
-	GRenderer->BeginScene();
-
-	if (ARKANE_img == NULL)
-		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
-
-	if (ARKANE_img != NULL)
-	{
-		GRenderer->SetRenderState(Renderer::Fog, false);
-		DrawCenteredImage( ARKANE_img, false);
-	}
-
-	GRenderer->EndScene();
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-	GRenderer->SetRenderState(Renderer::ColorKey, true);
+	ARX_INTERFACE_ShowLogo(ARKANE_img);
 }
 
 static long lastloadednum = -1;
