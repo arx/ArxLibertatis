@@ -91,6 +91,9 @@ public:
 	const QString& GetErrorDescription() const;
 	const QString& GetIssueLink() const;
 
+	void SetLoginInfo(const QString& username, const QString& password);
+	void SetReproSteps(const QString& reproSteps);
+
 private:
 	bool Initialize();
 
@@ -125,9 +128,14 @@ private:
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
 	CrashInfo * m_pCrashInfo;
 	
+	QString m_ReportUniqueID;
 	QString m_ReportTitle;
 	QString m_ReportDescription;
+	QString m_ReproSteps;
 	QString m_IssueLink;
+
+	QString m_Username;
+	QString m_Password;
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H

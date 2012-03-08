@@ -61,8 +61,6 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	
 	ui->setupUi(this);
 
-	ui->sendReportButtonBox->buttons().at(0)->setText("Send");
-
 	ui->stackedWidget->setCurrentIndex(0);
 	ui->lblProgressTitle->setText("");
 	ui->progressBar->setMaximum(0);
@@ -84,7 +82,7 @@ ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) 
 	ui->pageImage->layout()->addWidget(&m_fileViewImage);
 	ui->pageBinary->layout()->addWidget(&m_fileViewHex);
 
-	startTask(new GatherInfoTask(m_errorReport), Pane_FillInfo);
+	startTask(new GatherInfoTask(m_errorReport), Pane_Welcome);
 }
 
 ErrorReportDialog::~ErrorReportDialog()
@@ -92,22 +90,93 @@ ErrorReportDialog::~ErrorReportDialog()
 	delete ui;
 }
 
-void ErrorReportDialog::onSendReport()
+void ErrorReportDialog::onBack()
 {
+	ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() - 1);
+}
+
+void ErrorReportDialog::onNext()
+{
+	ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex() + 1);
+}
+
+void ErrorReportDialog::onSend()
+{
+	if(!ui->lineEditUsername->text().isEmpty())
+		m_errorReport.SetLoginInfo(ui->lineEditUsername->text(), ui->lineEditPassword->text());
+
+	m_errorReport.SetReproSteps(ui->textEditReproSteps->toPlainText());
 	startTask(new SendReportTask(m_errorReport), Pane_ExitSuccess);
 }
 
-void ErrorReportDialog::onTabChanged(int index)
+void ErrorReportDialog::onPaneChanged(int index)
 {
-	if(index == 1) // tabErrorDescription
+	switch(index)
 	{
-		ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription());
+	case Pane_Progress:
+	{
+		ui->btnBack->setEnabled(false);
+		ui->btnNext->setEnabled(false);
+		ui->btnSend->setEnabled(false);
+		break;
 	}
-	else if(index == 2) // tabAttachedFiles
+
+	case Pane_Welcome:
 	{
+		ui->btnBack->setEnabled(false);
+		ui->btnNext->setEnabled(true);
+		ui->btnSend->setEnabled(false);
+		break;
+	}
+
+	case Pane_CrashDetails:
+	{
+		ui->btnBack->setEnabled(true);
+		ui->btnNext->setEnabled(true);
+		ui->btnSend->setEnabled(false);
+		ui->textEditErrorDescription->setText(m_errorReport.GetErrorDescription());
+		break;
+	}
+
+	case Pane_AttachedFiles:
+	{
+		ui->btnBack->setEnabled(true);
+		ui->btnNext->setEnabled(true);
+		ui->btnSend->setEnabled(false);
 		QModelIndex idx = ui->listFiles->model()->index(0, 0);
 		if(idx.isValid())
 			ui->listFiles->selectionModel()->select(idx, QItemSelectionModel::Select);
+		break;
+	}
+
+	case Pane_ReproSteps:
+	{
+		ui->btnBack->setEnabled(true);
+		ui->btnNext->setEnabled(true);
+		ui->btnSend->setEnabled(false);
+		break;
+	}
+
+	case Pane_Send:
+	{
+		ui->btnBack->setEnabled(true);
+		ui->btnNext->setEnabled(false);
+		ui->btnSend->setEnabled(true);
+		break;
+	}
+
+	case Pane_ExitSuccess:
+	case Pane_ExitError:
+	{
+		ui->btnBack->setEnabled(false);
+		ui->btnNext->setEnabled(false);
+		ui->btnSend->setEnabled(false);
+		ui->btnClose->setEnabled(true);
+		break;
+	}
+	
+	default:
+		arx_error();
 	}
 }
 
@@ -204,7 +273,9 @@ void ErrorReportDialog::onTaskCompleted()
 
 void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
 {
-	m_pCurrentTask->deleteLater();
+	if(m_pCurrentTask)
+		m_pCurrentTask->deleteLater();
+
 	m_pCurrentTask = pTask;
 
 	connect(m_pCurrentTask, SIGNAL(taskStarted(const std::string&, int)), SLOT(onTaskStarted(const std::string&, int)));

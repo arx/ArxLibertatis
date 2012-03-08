@@ -50,7 +50,8 @@ public:
 	explicit Server(const QString & adress);
 
 	bool login(const QString& username, const QString& password);
-	bool createCrashReport(const QString& title, const QString& description, int& issue_id);
+	bool createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int& issue_id);
+	bool addComment(int issue_id, const QString& comment);
 	bool setOperatingSystem(int issue_id, int os_id);
 	bool setArchitecture(int issue_id, int arch_id);
 	bool attachFile(int issue_id, const QString& filePath, const QString& fileDescription, const QString& comment);

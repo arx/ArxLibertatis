@@ -65,6 +65,8 @@ ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	: m_RunningTimeSec()
 	, m_SharedMemoryName(sharedMemoryName)
 	, m_pCrashInfo()
+	, m_Username("CrashBot")
+	, m_Password("WbAtVjS9")
 {
 }
 
@@ -265,17 +267,13 @@ bool ErrorReport::GetMiscCrashInfo()
 	u32 callstackCrc;
 
 	bool bCallstack = GetCallStackInfo(hProcess, m_pCrashInfo->threadHandle, &m_pCrashInfo->contextRecord, callStack, callstackTop, callstackCrc);
-	if(bCallstack)
-	{
-		m_ReportDescription += "\nCallstack:\n";
-		m_ReportDescription += callStack.c_str();
-
-		m_ReportTitle = QString("[%1] %2").arg(QString::number(callstackCrc, 16).toUpper(), callstackTop.c_str());
-	}
-	else
-	{
-		m_ReportTitle = QString("[%1] Fatal error").arg(QString::number(callstackCrc, 16).toUpper());
-	}
+	if(!bCallstack)
+		return false;
+	
+	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
+	m_ReportDescription += "\nCallstack:\n";
+	m_ReportDescription += callStack.c_str();
+	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());
 
 	std::string registers = GetRegisters(&m_pCrashInfo->contextRecord);
 	if(!registers.empty())
@@ -435,7 +433,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 	// Login to TBG server
 	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
-	bool bLoggedIn = server.login("CrashBot", "WbAtVjS9");
+	bool bLoggedIn = server.login(m_Username, m_Password);
 	pProgressNotifier->taskStepEnded();
 	if(!bLoggedIn)
 	{
@@ -446,7 +444,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	// Look for existing issue
 	int issue_id;
 	pProgressNotifier->taskStepStarted("Searching for existing issue");
-	bool bSearchSuccessful = server.findIssue(m_ReportTitle, issue_id);
+	bool bSearchSuccessful = server.findIssue(m_ReportUniqueID, issue_id);
 	pProgressNotifier->taskStepEnded();
 	if(!bSearchSuccessful)
 	{
@@ -458,7 +456,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	if(issue_id == -1)
 	{
 		pProgressNotifier->taskStepStarted("Creating new issue");
-		bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, issue_id);
+		bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, m_ReproSteps, issue_id);
 		if(!bCreatedIssue)
 		{
 			pProgressNotifier->taskStepEnded();
@@ -494,8 +492,17 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	}
 	else
 	{
-		pProgressNotifier->taskStepStarted("Duplicate issue found!");
-		pProgressNotifier->taskStepEnded();
+		if(!m_ReproSteps.isEmpty())
+		{
+			pProgressNotifier->taskStepStarted("Duplicate issue found, adding information");
+			bool bCommentAdded = server.addComment(issue_id, m_ReproSteps);
+			pProgressNotifier->taskStepEnded();
+			if(!bCommentAdded)
+			{
+				pProgressNotifier->setError("Failure occured when trying to add information to an existing issue");
+				return false;
+			}
+		}
 	}
 
 	// Send files
@@ -542,4 +549,15 @@ const QString& ErrorReport::GetErrorDescription() const
 const QString& ErrorReport::GetIssueLink() const
 {
 	return m_IssueLink;
+}
+
+void ErrorReport::SetLoginInfo(const QString& username, const QString& password)
+{
+	m_Username = username;
+	m_Password = password;
+}
+
+void ErrorReport::SetReproSteps(const QString& reproSteps)
+{
+	m_ReproSteps = reproSteps;
 }

@@ -194,7 +194,11 @@ public:
 	enum DialogPane
 	{
 		Pane_Progress,
-		Pane_FillInfo,
+		Pane_Welcome,
+		Pane_CrashDetails,
+		Pane_AttachedFiles,
+		Pane_ReproSteps,
+		Pane_Send,
 		Pane_ExitSuccess,
 		Pane_ExitError
 	};
@@ -213,15 +217,16 @@ public:
 	// Exit pane
 	void SetExitText(const QString& strExit);
 
-public slots:
+private slots:
 	void onTaskStarted(const std::string& taskDescription, int numSteps);
 	void onTaskStepStarted(const std::string& taskStepDescription);
 	void onTaskStepEnded();
 	void onTaskCompleted();
-	void onTabChanged(int index);
+	void onPaneChanged(int index);
 
-private slots:
-	void onSendReport();
+	void onBack();
+	void onNext();
+	void onSend();
 	void onShowFileContent(const QItemSelection& current, const QItemSelection& previous);
 
 private:

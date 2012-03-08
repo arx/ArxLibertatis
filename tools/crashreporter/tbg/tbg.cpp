@@ -56,7 +56,7 @@ bool Server::login(const QString& username, const QString& password)
 	return bSucceeded;
 }
 
-bool Server::createCrashReport(const QString& title, const QString& description, int& issue_id)
+bool Server::createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int& issue_id)
 {
 	QUrl params;
 	
@@ -64,7 +64,7 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	params.addQueryItem("issuetype_id", "7");
 	params.addQueryItem("title", title);
 	params.addQueryItem("description", description);
-	params.addQueryItem("reproduction_steps", "");
+	params.addQueryItem("reproduction_steps", reproSteps);
 	params.addQueryItem("build_id", "1");
 	params.addQueryItem("component_id", "");
 	params.addQueryItem("category_id", "0");
@@ -88,6 +88,29 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 		m_CurrentReply->deleteLater();
 		bSucceeded = getIssueIdFromUrl(currentUrl, issue_id);
 	}
+	
+	return bSucceeded;
+}
+
+bool Server::addComment(int issue_id, const QString& comment)
+{
+	QUrl params;
+
+	params.addQueryItem("comment_visibility", "1");
+	params.addQueryItem("comment_body", comment);
+	params.addQueryItem("comment_save_changes", "1");
+	
+	QString strUrl = QString("/comment/add/for/module/core/item/type/1/id/%1").arg(QString::number(issue_id));
+
+	QUrl newIssueUrl = m_ServerPrefix + strUrl;
+	QNetworkRequest request(newIssueUrl);
+	request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+
+	QByteArray data = params.encodedQuery();
+
+	m_CurrentReply = m_NetAccessManager.post(request, data);
+	bool bSucceeded = waitForReply();
+	m_CurrentReply->deleteLater();
 	
 	return bSucceeded;
 }
