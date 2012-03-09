@@ -1364,8 +1364,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 			{
 				if ((io != NULL) && (io->ioflags & IO_CAMERA))
 				{
-					EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
-					*fcontent = cam->focal;
+					*fcontent = io->_camdata->cam.focal;
 					return TYPE_FLOAT;
 				}
 			}
