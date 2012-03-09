@@ -31,6 +31,8 @@
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
 #elif defined(HAVE_CRASHHANDLER_WINDOWS)
 #include "platform/crashhandler/CrashHandlerWindows.h"
+#else
+#include "platform/crashhandler/CrashHandlerImpl.h"
 #endif
 
 static CrashHandlerImpl * gCrashHandlerImpl = 0;
@@ -45,20 +47,24 @@ bool CrashHandler::initialize() {
 		gCrashHandlerImpl = new CrashHandlerPOSIX();
 		
 #elif defined(HAVE_CRASHHANDLER_WINDOWS)
-		
+
 		if(IsDebuggerPresent()) {
 			LogInfo << "Debugger attached, disabling crash handler.";
 			return false;
 		}
-		
+
 		gCrashHandlerImpl = new CrashHandlerWindows();
 		
 #endif
 		
-		bool initialized = gCrashHandlerImpl->initialize();
-		if(!initialized) {
-			delete gCrashHandlerImpl;
-			gCrashHandlerImpl = 0;
+		if(gCrashHandlerImpl) {
+			bool initialized = gCrashHandlerImpl->initialize();
+			if(!initialized) {
+				delete gCrashHandlerImpl;
+				gCrashHandlerImpl = 0;
+				return false;
+			}
+		} else {
 			return false;
 		}
 	}
