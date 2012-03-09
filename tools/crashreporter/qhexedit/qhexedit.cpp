@@ -1,3 +1,26 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
+	qhexedit2 by Winfried Simon
+	http://code.google.com/p/qhexedit2/
+	version 0.6.1
+ */
 
 #include "crashreporter/qhexedit/qhexedit.h"
 
@@ -9,10 +32,10 @@ QHexEdit::QHexEdit(QWidget *parent) : QScrollArea(parent)
     setWidget(qHexEdit_p);
     setWidgetResizable(true);
 
-    connect(qHexEdit_p, SIGNAL(currentAddressChanged(int)), this, SIGNAL(currentAddressChanged(int)));
-    connect(qHexEdit_p, SIGNAL(currentSizeChanged(int)), this, SIGNAL(currentSizeChanged(int)));
+    connect(qHexEdit_p, SIGNAL(currentAddressChanged(int address)), this, SIGNAL(currentAddressChanged(int address)));
+    connect(qHexEdit_p, SIGNAL(currentSizeChanged(int size)), this, SIGNAL(currentSizeChanged(int size)));
     connect(qHexEdit_p, SIGNAL(dataChanged()), this, SIGNAL(dataChanged()));
-    connect(qHexEdit_p, SIGNAL(overwriteModeChanged(bool)), this, SIGNAL(overwriteModeChanged(bool)));
+    connect(qHexEdit_p, SIGNAL(overwriteModeChanged(bool state)), this, SIGNAL(overwriteModeChanged(bool state)));
     setFocusPolicy(Qt::NoFocus);
 }
 

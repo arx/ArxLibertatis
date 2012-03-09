@@ -278,8 +278,8 @@ void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
 
 	m_pCurrentTask = pTask;
 
-	connect(m_pCurrentTask, SIGNAL(taskStarted(const std::string&, int)), SLOT(onTaskStarted(const std::string&, int)));
-	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const std::string&)), SLOT(onTaskStepStarted(const std::string&)));
+	connect(m_pCurrentTask, SIGNAL(taskStarted(const std::string& taskDescription, int numSteps)), SLOT(onTaskStarted(const std::string& taskDescription, int numSteps)));
+	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const std::string& taskStepDescription)), SLOT(onTaskStepStarted(const std::string& taskStepDescription)));
 	connect(m_pCurrentTask, SIGNAL(taskStepEnded()), SLOT(onTaskStepEnded()));
 	connect(m_pCurrentTask, SIGNAL(finished()), SLOT(onTaskCompleted()));
 

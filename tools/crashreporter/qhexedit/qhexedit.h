@@ -1,3 +1,26 @@
+/*
+ * Copyright 2011 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
+	qhexedit2 by Winfried Simon
+	http://code.google.com/p/qhexedit2/
+	version 0.6.1
+ */
 
 #ifndef ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_H
 #define ARX_TOOLS_CRASHREPORTER_QHEXEDIT_QHEXEDIT_H
@@ -98,7 +121,7 @@ public:
     /*! Creates an instance of QHexEdit.
     \param parent Parent widget of QHexEdit.
     */
-    QHexEdit(QWidget *parent = 0);
+    explicit QHexEdit(QWidget *parent = 0);
 
     /*! Inserts a byte array.
     \param i Index position, where to insert
@@ -142,12 +165,12 @@ public:
     QColor highlightingColor();
     void setSelectionColor(QColor const &color);
     QColor selectionColor();
-    void setOverwriteMode(bool);
+    void setOverwriteMode(bool readOnly);
     bool overwriteMode();
-    void setReadOnly(bool);
+    void setReadOnly(bool readOnly);
     bool isReadOnly();
     const QFont &font() const;
-    void setFont(const QFont &);
+    void setFont(const QFont & font);
     /*! \endcond docNever */
 
 public slots:
