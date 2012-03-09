@@ -202,6 +202,9 @@ if(MSVC)
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
 	
+	# Always build with debug information 
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
+	
 	# Enable linker optimization in release
 	#  /OPT:REF   Eliminate unreferenced code
 	#  /OPT:ICF   COMDAT folding (merge functions generating the same code)
