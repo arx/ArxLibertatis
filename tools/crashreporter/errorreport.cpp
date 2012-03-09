@@ -51,6 +51,8 @@
 
 #include "Configure.h"
 
+#include "core/Version.h"
+
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
@@ -426,7 +428,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	if(issue_id == -1)
 	{
 		pProgressNotifier->taskStepStarted("Creating new issue");
-		bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, m_ReproSteps, issue_id);
+		bool bCreatedIssue = server.createCrashReport(m_ReportTitle, m_ReportDescription, m_ReproSteps, tbg_version_id, issue_id);
 		if(!bCreatedIssue)
 		{
 			pProgressNotifier->taskStepEnded();

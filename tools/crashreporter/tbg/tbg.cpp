@@ -56,7 +56,7 @@ bool Server::login(const QString& username, const QString& password)
 	return bSucceeded;
 }
 
-bool Server::createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int& issue_id)
+bool Server::createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int version_id, int& issue_id)
 {
 	QUrl params;
 	
@@ -65,7 +65,7 @@ bool Server::createCrashReport(const QString& title, const QString& description,
 	params.addQueryItem("title", title);
 	params.addQueryItem("description", description);
 	params.addQueryItem("reproduction_steps", reproSteps);
-	params.addQueryItem("build_id", "1");
+	params.addQueryItem("build_id", QString::number(version_id));
 	params.addQueryItem("component_id", "");
 	params.addQueryItem("category_id", "0");
 	params.addQueryItem("reproducability_id", "0");
