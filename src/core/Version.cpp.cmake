@@ -23,6 +23,8 @@
  * This file is automatically processed by cmake if the version or commit id changes.
  * Available variables:
  * - BASE_VERSION: The contents of the VERSION file.
+ * - BASE_VERSION_COUNT: Number of lines in the VERSION file.
+ * - BASE_VERSION_i: The i-th line of the VERSION file.
  * - GIT_COMMIT: The current git commit. This variable is not defined if there is no .git directory.
  * - GIT_COMMIT_PREFIX_i: The first i characters of the git commit (i=0..39).
  * For the exact syntax see the documentation of the configure_file() cmake command.
@@ -30,8 +32,16 @@
 
 #cmakedefine GIT_COMMIT
 
-#ifdef GIT_COMMIT
-const std::string version = "${BASE_VERSION} + ${GIT_COMMIT_PREFIX_5}";
-#else
-const std::string version = "${BASE_VERSION}";
+#if ${BASE_VERSION_COUNT} != 3
+#error "Configure error - the VERSION file should specify exactly three non-empty lines!"
 #endif
+
+#ifdef GIT_COMMIT
+#define GIT_SUFFIX " + ${GIT_COMMIT_PREFIX_5}"
+#else
+#define GIT_SUFFIX ""
+#endif
+
+const std::string version = "${BASE_VERSION_0}" GIT_SUFFIX;
+
+const int tbg_version_id = ${BASE_VERSION_2};

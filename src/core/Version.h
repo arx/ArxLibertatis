@@ -24,4 +24,6 @@
 
 extern const std::string version;
 
+extern const int tbg_version_id;
+
 #endif // ARX_CORE_VERSION_H
