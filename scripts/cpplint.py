@@ -2667,9 +2667,11 @@ def CheckCStyleCast(filename, linenum, line, raw_line, cast_type, pattern,
   # arguments with some unnamed.
   function_match = Match(r'\s*(\)|=|(const)?\s*(;|\{|throw\(\)))', remainder)
   if function_match:
-    if (not function_match.group(3) or
+    if ((not function_match.group(3) or
         function_match.group(3) == ';' or
-        raw_line.find('/*') < 0):
+        raw_line.find('/*') < 0)
+        and raw_line.find('SIGNAL') < 0
+        and raw_line.find('SLOT') < 0):
       error(filename, linenum, 'readability/function', 3,
             'All parameters should be named in a function')
     return
