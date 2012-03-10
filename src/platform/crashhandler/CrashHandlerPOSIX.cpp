@@ -25,7 +25,10 @@
 #include <execinfo.h>
 #endif
 
+#if defined(HAVE_PRCTL)
 #include <sys/prctl.h>
+#endif
+
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
@@ -248,12 +251,14 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	m_pCrashInfo->have_rusage = false;
 #endif
 
+#if defined(HAVE_PRCTL)
 	// Allow all processes in the same pid namespace to PTRACE this process
 	#ifndef PR_SET_PTRACER
 		#define PR_SET_PTRACER 0x59616d61
 	#endif
 	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
-	
+#endif
+
 	if(fork()) {
 		while(true) {
 			// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
