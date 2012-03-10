@@ -25,6 +25,7 @@
 #include <execinfo.h>
 #endif
 
+#include <sys/prctl.h>
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
@@ -246,6 +247,12 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 #else
 	m_pCrashInfo->have_rusage = false;
 #endif
+
+	// Allow all processes in the same pid namespace to PTRACE this process
+	#ifndef PR_SET_PTRACER
+		#define PR_SET_PTRACER 0x59616d61
+	#endif
+	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
 	
 	if(fork()) {
 		while(true) {
