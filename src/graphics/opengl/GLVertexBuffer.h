@@ -163,7 +163,7 @@ public:
 		
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		
-		if(GLEW_ARB_map_buffer_range) {
+		if(GLEW_ARB_map_buffer_range && count != 0) {
 			
 			GLbitfield glflags = GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT;
 			
@@ -197,7 +197,9 @@ public:
 				glBufferData(GL_ARRAY_BUFFER, capacity() * sizeof(Vertex), NULL, arxToGlBufferUsage[usage]);
 			}
 			
-			glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
+			if(count != 0) {
+				glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(Vertex), count * sizeof(Vertex), vertices);
+			}
 			
 		}
 		
