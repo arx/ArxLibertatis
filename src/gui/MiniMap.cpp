@@ -321,6 +321,9 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 	if (minimap[SHOWLEVEL].tc)
 	{
+		
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		
 		float sstartx, sstarty;
 		float startx, starty, casex, casey, ratiooo;
 		float mod_x = (float)MAX_BKGX / (float)MINIMAP_MAX_X;
@@ -440,7 +443,6 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
 			if (fl2)
@@ -700,7 +702,6 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		if (flag != 2)
 		{
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			if(SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)) {
