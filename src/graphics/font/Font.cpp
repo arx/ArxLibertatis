@@ -294,10 +294,9 @@ void Font::Draw(int x, int y, std::string::const_iterator itStart, std::string::
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 	
 	GRenderer->End2DProjection();
-	GRenderer->SetRenderState( Renderer::AlphaBlending, false );
-	GRenderer->SetRenderState( Renderer::DepthTest, true );
-	GRenderer->SetRenderState( Renderer::DepthWrite, true );
-	GRenderer->SetCulling( Renderer::CullCCW );
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetCulling(Renderer::CullCCW);
 }
 
 Vec2i Font::GetTextSize(const std::string & str) {
