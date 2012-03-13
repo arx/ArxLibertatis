@@ -485,9 +485,9 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	}
 
 	// Look for existing issue
-	int issue_id;
+	int issue_id = -1;
 	pProgressNotifier->taskStepStarted("Searching for existing issue");
-	bool bSearchSuccessful = server.findIssue(m_ReportUniqueID, issue_id);
+	bool bSearchSuccessful = m_ReportUniqueID.isEmpty() || server.findIssue(m_ReportUniqueID, issue_id);
 	pProgressNotifier->taskStepEnded();
 	if(!bSearchSuccessful)
 	{
