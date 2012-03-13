@@ -36,6 +36,13 @@
 #include <sys/time.h>
 #endif
 
+#if defined(HAVE_PRCTL)
+#include <sys/prctl.h>
+#ifndef PR_SET_PTRACER
+#define PR_SET_PTRACER 0x59616d61
+#endif
+#endif
+
 // Qt
 #include <QApplication>
 #include <QMessageBox>
@@ -48,6 +55,9 @@
 #include <QFileInfoList>
 #include <QThread>
 #include <QXmlStreamWriter>
+
+// Boost
+#include <boost/crc.hpp>
 
 #include "Configure.h"
 
@@ -70,6 +80,10 @@ ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
 {
+#if defined(HAVE_PRCTL)
+	// Allow debuggers to be attached to this process, for development purpose...
+	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
+#endif
 }
 
 bool ErrorReport::Initialize()
@@ -155,18 +169,75 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 #endif // defined(HAVE_EXECLP) && defined(HAVE_DUP2)
 	
 	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
-	if(bWroteDump) {
-		AddFile(tracePath);
-		return true;
-	}
-	
-	tracePath = m_ReportFolder / "trace.txt";
-	fs::ofstream ofs(tracePath, std::ios_base::trunc);
-	ofs << safestring(m_pCrashInfo->backtrace);
-	ofs.flush();
-	ofs.close();
+	if(!bWroteDump)
+		return false;
 	
 	AddFile(tracePath);
+		
+#ifdef HAVE_BACKTRACE
+	boost::crc_32_type callstackCRC32;
+	
+	for(size_t i = 0; i < ARRAY_SIZE(m_pCrashInfo->backtrace); i++) {
+		if(m_pCrashInfo->backtrace[i] == 0)
+			break;
+		callstackCRC32.process_bytes(&m_pCrashInfo->backtrace[i], sizeof(m_pCrashInfo->backtrace[i]));
+	}
+	
+	QFile traceFile(tracePath.string().c_str());
+	traceFile.open(QIODevice::ReadOnly);
+	if(!traceFile.isOpen())
+		return false;
+	
+	QString traceStr = traceFile.readAll();
+	traceFile.close();
+	QString callstackTop = "Unknown";
+	
+	// The useful stack frames are found below "<signal handler called>"
+	int posStart = traceStr.indexOf("<signal handler called>");
+	int posEnd = -1;
+	if(posStart != -1) {
+		posStart = traceStr.indexOf("#", posStart);
+		if(posStart != -1)
+			posEnd = traceStr.indexOf("\n", posStart);
+	}
+	
+	// Capture the entry where the crash occured and format it
+	if(posStart != -1 && posEnd != -1)	{
+		callstackTop = traceStr.mid(posStart, posEnd - posStart);
+
+		// Remove "#N 0x???????? in "
+		posEnd = callstackTop.indexOf(" in ");
+		if(posEnd != -1) {
+			posEnd += 4;
+			callstackTop.remove(0, posEnd);
+		}
+		
+		// Remove params
+		posStart = callstackTop.indexOf("(");
+		posEnd = callstackTop.indexOf(")", posStart);
+		if(posStart != -1 && posEnd != -1) {
+			posStart++;
+			callstackTop.remove(posStart, posEnd - posStart);
+		}
+		
+		// Trim filenames
+		posStart = callstackTop.lastIndexOf(") at");
+		posEnd = callstackTop.lastIndexOf("/");
+		if(posStart != -1 && posEnd != -1) {
+			posStart += 2;
+			posEnd++;
+			callstackTop.remove(posStart, posEnd - posStart);
+		}
+	}
+	
+	u32 callstackCrc = callstackCRC32.checksum();
+	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
+	
+	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
+	m_ReportDescription += "\nGDB stack trace:\n  ";
+	m_ReportDescription += traceStr.replace("\n", "\n  "); // Indent to create a "code" block
+	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
+#endif
 	
 	return true;
 	
@@ -175,9 +246,6 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 
 bool ErrorReport::GetMiscCrashInfo()
 {
-	// Copy the detailed description to an std::string for easier manipulation
-	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
-
 	// Get crash time
 	m_CrashDateTime = QDateTime::currentDateTime();
 	
@@ -243,6 +311,8 @@ bool ErrorReport::GetMiscCrashInfo()
 		return false;
 	
 	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
+	
+	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
 	m_ReportDescription += "\nCallstack:\n";
 	m_ReportDescription += callStack.c_str();
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());
@@ -278,7 +348,6 @@ bool ErrorReport::GetMiscCrashInfo()
 	}
 #endif
 	
-	// TODO
 	
 #endif
 

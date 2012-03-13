@@ -21,12 +21,15 @@
 
 #include "Configure.h"
 
-#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS)
+#if defined(HAVE_BACKTRACE)
 #include <execinfo.h>
 #endif
 
 #if defined(HAVE_PRCTL)
 #include <sys/prctl.h>
+#ifndef PR_SET_PTRACER
+#define PR_SET_PTRACER 0x59616d61
+#endif
 #endif
 
 #include <signal.h>
@@ -60,10 +63,7 @@ CrashHandlerPOSIX::CrashHandlerPOSIX() {
 
 #if defined(HAVE_PRCTL)
 	// Allow all processes in the same pid namespace to PTRACE this process
-	#ifndef PR_SET_PTRACER
-		#define PR_SET_PTRACER 0x59616d61
-	#endif
-	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
+	prctl(PR_SET_PTRACER, getpid(), 0, 0, 0);
 #endif
 }
 
@@ -224,28 +224,9 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	}
 	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
 	
-	// Fallback to generate a basic stack trace.
-	#if defined(HAVE_BACKTRACE) && defined(HAVE_BACKTRACE_SYMBOLS)
-	{
-		void * buffer[100];
-		size_t size = backtrace(buffer, ARRAY_SIZE(buffer));
-		
-		// Print the stacktrace, skipping the innermost stack frame.
-		size_t pos = 0;
-		if(size > 1) {
-			char ** bt = backtrace_symbols(buffer + 1, std::max(size, ARRAY_SIZE(buffer)) - 1);
-			for(std::size_t i = 0; i < ARRAY_SIZE(buffer) - 1; i++) {
-				size_t len = strlen(bt[i]);
-				if(pos + len + 2 > ARRAY_SIZE(m_pCrashInfo->backtrace)) {
-					break;
-				}
-				memcpy(m_pCrashInfo->backtrace + pos, bt[i], len);
-				pos += len;
-				m_pCrashInfo->backtrace[pos++] = '\n';
-			}
-		}
-		m_pCrashInfo->backtrace[pos] = '\0';
-	}
+	// Store the backtrace in the shared crash info
+	#ifdef HAVE_BACKTRACE
+		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	
 	fflush(stdout), fflush(stderr);

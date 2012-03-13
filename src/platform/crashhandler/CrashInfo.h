@@ -91,7 +91,7 @@ struct CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	char execFullName[512];
-	char backtrace[4096];
+	void* backtrace[100];
 	bool have_rusage;
 #ifdef HAVE_GETRUSAGE
 	struct ::rusage rusage;
