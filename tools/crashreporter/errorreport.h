@@ -132,6 +132,7 @@ private:
 	QString m_ReportUniqueID;
 	QString m_ReportTitle;
 	QString m_ReportDescription;
+	QString m_ReportDescriptionText;
 	QString m_ReproSteps;
 	QString m_IssueLink;
 

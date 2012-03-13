@@ -246,8 +246,17 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 	}
 	
 	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
-	m_ReportDescription += "\nGDB stack trace:\n  ";
-	m_ReportDescription += traceStr.replace("\n", "\n  "); // Indent to create a "code" block
+	m_ReportDescription += "\nGDB stack trace:\n";
+	
+	m_ReportDescriptionText = m_ReportDescription;
+	
+	m_ReportDescription += "<source lang=\"gdb\">\n";
+	m_ReportDescription += traceStr;
+	m_ReportDescription += "</source>\n";
+	
+	m_ReportDescriptionText += "\n";
+	m_ReportDescriptionText += traceStr;
+	
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
 	
 	return true;
@@ -535,6 +544,8 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	CloseHandle(hProcess);
 	
+	m_ReportDescriptionText = m_ReportDescription;
+	
 #else // !HAVE_WINAPI
 	
 	getResourceUsage(m_pCrashInfo->processId, m_ProcessMemoryUsage, m_RunningTimeSec);
@@ -795,7 +806,7 @@ ErrorReport::FileList& ErrorReport::GetAttachedFiles()
 
 const QString& ErrorReport::GetErrorDescription() const
 {
-	return m_ReportDescription;
+	return m_ReportDescriptionText;
 }
 
 const QString& ErrorReport::GetIssueLink() const
