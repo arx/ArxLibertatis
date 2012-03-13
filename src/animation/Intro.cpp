@@ -102,22 +102,13 @@ void ARX_INTERFACE_KillARKANE()
 	delete ARKANE_img;
 	ARKANE_img = NULL;
 }
-//-----------------------------------------------------------------------------
-void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f) {
-	
-	if(_bRatio) {
-		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
-		                 DANAECENTERY - (tc->m_dwHeight * 0.5f)*Yratio,
-		                 static_cast<float>((int)(tc->m_dwWidth * Xratio)),
-		                 static_cast<float>((int)(tc->m_dwHeight * Yratio)),
-		                 0.001f, tc, Color::gray(_fFade));
-	} else {
-		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
-		                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
-		                 static_cast<float>((int)(tc->m_dwWidth)),
-		                 static_cast<float>((int)(tc->m_dwHeight)),
-		                 0.001f, tc, Color::gray(_fFade));
-	}
+
+static void DrawCenteredImage(TextureContainer * tc) {
+	EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
+	                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
+	                 static_cast<float>((int)(tc->m_dwWidth)),
+	                 static_cast<float>((int)(tc->m_dwHeight)),
+	                 0.001f, tc, Color::white);
 }
 
 //-----------------------------------------------------------------------------
@@ -135,7 +126,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 		if (FISHTANK_img != NULL)
 		{
 			GRenderer->SetRenderState(Renderer::Fog, false);
-			DrawCenteredImage(FISHTANK_img, false);
+			DrawCenteredImage(FISHTANK_img);
 		}
 
 		GRenderer->EndScene();
@@ -164,7 +155,7 @@ void ARX_INTERFACE_ShowARKANE()
 		if (ARKANE_img != NULL)
 		{
 			GRenderer->SetRenderState(Renderer::Fog, false);
-			DrawCenteredImage( ARKANE_img, false);
+			DrawCenteredImage(ARKANE_img);
 		}
 
 		GRenderer->EndScene();
@@ -249,7 +240,7 @@ void LoadLevelScreen(long num) {
 			
 			if(num != lastloadednum) {
 				
-				if (tc) {
+				if(tc) {
 					delete tc;
 					tc = NULL;
 				}
@@ -261,45 +252,32 @@ void LoadLevelScreen(long num) {
 				sprintf(temp, "graph/levels/level%s/loading", tx);
 				tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 			}
-				
-			if (tc) {
+			
+			float scale = minSizeRatio();
+			
+			if(tc) {
 				GRenderer->SetRenderState(Renderer::ColorKey, false);
-				DrawCenteredImage(tc, true);
+				
+				Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
+				size *= scale;
+				EERIEDrawBitmap2(DANAECENTERX - size.x * 0.5f, DANAECENTERY - size.y * 0.5f,
+				                 size.x, size.y, 0.001f, tc, Color::white);
+				
 				GRenderer->SetRenderState(Renderer::ColorKey, true);
 			}
-
-			if (pbar)
-			{
-				if (num == 10)
-				{
-					float px, py, px2, py2;
-					int ipx = (640 - 200)	/ 2;
-					int ipy = 461;
-					px = ipx * Xratio;
-					py = ipy * Yratio;
-					px2 = (ratio * pbar->m_dwWidth) * Xratio;
-					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-				}
-				else
-				{
-					float px, py, px2, py2;
-
-					int ipx = ((640 - 320) / 2) + 60;
-					int ipy = ((480 - 390) / 2) + 230;
-
-					px = ipx * Xratio;
-					py = ipy * Yratio;
-					px2 = (ratio * pbar->m_dwWidth) * Xratio;
-					py2 = pbar->m_dwHeight * Yratio;
-					EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-				}
+			
+			if(pbar) {
+				float px = DANAECENTERX - 100 * scale;
+				float py = DANAECENTERY + ((num == 10) ? 221 : 35) * scale;
+				float px2 = ratio * 200 * scale;
+				float py2 = 8 * scale;
+				EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 			}
-
+			
 			GRenderer->EndScene();
 			mainApp->GetWindow()->showFrame();
 		}
-
+		
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
 		last_progress_bar_update = Time::getMs();
 	}
