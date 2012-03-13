@@ -445,8 +445,6 @@ bool ErrorReport::getCrashDescription() {
 		return false;
 	}
 	
-	AddFile(tracePath);
-	
 #ifdef HAVE_BACKTRACE
 	
 	boost::crc_32_type callstackCRC32;
