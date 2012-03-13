@@ -4945,13 +4945,15 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								if (spellicons[i].symbols[j] != RUNE_NONE)
 									++count;
 
-							for (int j = 0; j < 6; ++j)
-								if (spellicons[i].symbols[j] != RUNE_NONE)
-								{
+							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+							for(int j = 0; j < 6; ++j) {
+								if(spellicons[i].symbols[j] != RUNE_NONE) {
 									pos.x = (240-(count*32)*0.5f+j*32);
 									pos.y = (306);
 									DrawBookInterfaceItem(necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
+							}
+							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 						}
 
 						if (spellicons[i].tc)
@@ -4977,8 +4979,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							} else {
 								color = Color::fromBGRA(0xFFa8d0df);
 							}
-
+							
+							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
 							DrawBookInterfaceItem(spellicons[i].tc, fPosX, fPosY, color);
+							GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 
 							GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						}
@@ -5114,9 +5118,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		BOOKDECY = x - 64 + 19;
 	}
 	
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
-	
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
 		bool bOnglet[11];
@@ -5125,7 +5126,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		//---------------------------------------------------------------------
 		// Checks Clicks in bookmarks
-
+		
 		// Character Sheet
 		if (Book_Mode != BOOKMODE_STATS)
 		{
@@ -5251,7 +5252,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 			}
 		}
-
+		
 		if (Book_Mode == BOOKMODE_MINIMAP) max_onglet=8;
 		else max_onglet=10;
 
@@ -5528,6 +5529,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		bookclick.x=-1;
 	}
+	
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 
 	if (Book_Mode == BOOKMODE_STATS)
 	{
