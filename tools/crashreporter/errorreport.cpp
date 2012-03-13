@@ -173,8 +173,9 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 		return false;
 	
 	AddFile(tracePath);
-		
+	
 #ifdef HAVE_BACKTRACE
+	
 	boost::crc_32_type callstackCRC32;
 	
 	for(size_t i = 0; i < ARRAY_SIZE(m_pCrashInfo->backtrace); i++) {
@@ -182,6 +183,11 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 			break;
 		callstackCRC32.process_bytes(&m_pCrashInfo->backtrace[i], sizeof(m_pCrashInfo->backtrace[i]));
 	}
+	
+	u32 callstackCrc = callstackCRC32.checksum();
+	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
+	
+#endif // HAVE_BACKTRACE
 	
 	QFile traceFile(tracePath.string().c_str());
 	traceFile.open(QIODevice::ReadOnly);
@@ -230,14 +236,10 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 		}
 	}
 	
-	u32 callstackCrc = callstackCRC32.checksum();
-	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
-	
 	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
 	m_ReportDescription += "\nGDB stack trace:\n  ";
 	m_ReportDescription += traceStr.replace("\n", "\n  "); // Indent to create a "code" block
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
-#endif
 	
 	return true;
 	
