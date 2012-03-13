@@ -907,8 +907,8 @@ if(BUILD_TOOLS)
 		src/platform/String.cpp
 		src/platform/Platform.cpp
 		src/platform/Lock.cpp
-		tools/savetool/savetool.cpp
 		tools/savetool/SaveFix.cpp
+		tools/savetool/SaveTool.cpp
 		tools/savetool/SaveView.cpp
 	)
 	
@@ -928,7 +928,7 @@ if(BUILD_TOOLS)
 		src/platform/String.cpp
 		src/platform/Platform.cpp
 		src/platform/Lock.cpp
-		tools/unpak/unpak.cpp
+		tools/unpak/UnPak.cpp
 	)
 	
 	set(arxunpak_LIBRARIES ${Boost_LIBRARIES})
