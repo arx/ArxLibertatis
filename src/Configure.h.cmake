@@ -39,7 +39,6 @@
 #cmakedefine HAVE_EXECLP
 #cmakedefine HAVE_WAITPID
 #cmakedefine HAVE_BACKTRACE
-#cmakedefine HAVE_BACKTRACE_SYMBOLS
 #cmakedefine HAVE_ISATTY
 #cmakedefine HAVE_WORDEXP_H
 #cmakedefine HAVE_FPATHCONF
@@ -51,6 +50,7 @@
 #cmakedefine HAVE_GETRUSAGE
 #cmakedefine HAVE_POPEN
 #cmakedefine HAVE_PCLOSE
+#cmakedefine HAVE_SYSCONF
 
 // Mac OS X features
 #cmakedefine HAVE_MACH_CLOCK

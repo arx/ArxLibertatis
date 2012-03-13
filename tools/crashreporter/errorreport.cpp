@@ -43,6 +43,10 @@
 #endif
 #endif
 
+#ifdef HAVE_SYSCONF
+#include <unistd.h>
+#endif
+
 // yes, we need stdio.h, POSIX doesn't know about cstdio
 #include <stdio.h>
 
@@ -78,7 +82,8 @@
 #include "platform/Thread.h"
 
 ErrorReport::ErrorReport(const std::string& sharedMemoryName)
-	: m_RunningTimeSec()
+	: m_RunningTimeSec(0)
+	, m_ProcessMemoryUsage(0)
 	, m_SharedMemoryName(sharedMemoryName)
 	, m_pCrashInfo()
 	, m_Username("CrashBot")
@@ -268,8 +273,188 @@ static QString getOutputOf(const char * command) {
 }
 #endif
 
-bool ErrorReport::GetMiscCrashInfo()
-{
+#ifndef HAVE_WINAPI
+
+void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
+	
+	rss = startTicks = 0;
+	
+	QFile file(filename);
+	
+	if(!file.open(QIODevice::ReadOnly)) {
+		return;
+	}
+	QByteArray stat = file.readAll();
+	file.close();
+	
+	QList<QByteArray> stat_fields = stat.split(' ');
+	
+	const int rss_index = 23;
+	if(rss_index < stat_fields.size()) {
+		rss = stat_fields[rss_index].toULongLong();
+	}
+	
+	const int starttime_index = 21;
+	if(starttime_index < stat_fields.size()) {
+		startTicks = stat_fields[starttime_index].toULongLong();
+	}
+	
+}
+
+void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
+	
+	memoryUsage = 0;
+	runningTimeSec = 0.0;
+	
+#ifdef HAVE_GETRUSAGE
+	{
+		struct rusage usage;
+		if(getrusage(pid, &usage) == 0) {
+			memoryUsage = usage.ru_maxrss * 1024;
+		}
+	}
+#endif
+	
+#if defined(HAVE_SYSCONF) && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
+	
+	u64 rss, startTicks, endTicks, dummy;
+	
+	getProcessSatus(QString("/proc/%1/stat").arg(pid), rss, startTicks);
+	getProcessSatus("/proc/self/stat", dummy, endTicks);
+	
+	// Get the rss memory usage from /proc/pid/stat
+#ifdef _SC_PAGESIZE
+	if(rss != 0) {
+		long pagesize = sysconf(_SC_PAGESIZE);
+		if(pagesize > 0) {
+			memoryUsage = rss * pagesize;
+		}
+	}
+#endif
+	
+#ifdef _SC_CLK_TCK
+	if(startTicks != 0 && endTicks != 0) {
+		u64 ticksPerSecond = sysconf(_SC_CLK_TCK);
+		if(ticksPerSecond > 0) {
+			runningTimeSec = double(endTicks - startTicks) / double(ticksPerSecond);
+		}
+	}
+#endif
+	
+#endif
+	
+}
+
+QString getLinuxDistribution() {
+	
+#if defined(HAVE_POPEN) && defined(HAVE_PCLOSE)
+	{
+		QString distro(getOutputOf("lsb_release -d").trimmed());
+		QString prefix("Description:");
+		if(distro.startsWith(prefix)) {
+			distro = distro.mid(prefix.length()).trimmed();
+		}
+		if(!distro.isEmpty()) {
+			return distro;
+		}
+	}
+#endif
+	
+	// Fallback for older / non-LSB-compliant distros.
+	// Release file list taken from http://linuxmafia.com/faq/Admin/release-files.html
+	
+	const char * release_files[] = {
+		"/etc/annvix-release",
+		"/etc/arch-release",
+		"/etc/arklinux-release",
+		"/etc/aurox-release",
+		"/etc/blackcat-release",
+		"/etc/cobalt-release",
+		"/etc/conectiva-release",
+		"/etc/fedora-release",
+		"/etc/gentoo-release",
+		"/etc/immunix-release",
+		"/etc/lfs-release",
+		"/etc/linuxppc-release",
+		"/etc/mandriva-release",
+		"/etc/mandrake-release",
+		"/etc/mandakelinux-release",
+		"/etc/mklinux-release",
+		"/etc/nld-release",
+		"/etc/pld-release",
+		"/etc/slackware-release",
+		"/etc/e-smith-release",
+		"/etc/release",
+		"/etc/sun-release",
+		"/etc/SuSE-release",
+		"/etc/novell-release",
+		"/etc/sles-release",
+		"/etc/tinysofa-release",
+		"/etc/turbolinux-release",
+		"/etc/ultrapenguin-release",
+		"/etc/UnitedLinux-release",
+		"/etc/va-release",
+		"/etc/yellowdog-release",
+		"/etc/debian_release",
+		"/etc/redhat-release",
+	};
+	
+	const char * version_files[][2] = {
+		{ "/etc/debian_version", "Debian " },
+		{ "/etc/knoppix_version", "Knoppix " },
+		{ "/etc/redhat_version", "RedHat " },
+		{ "/etc/slackware-version", "Slackware " },
+	};
+	
+	const char * lsb_release = "/etc/lsb-release";
+	
+	for(size_t i = 0; i < ARRAY_SIZE(release_files); i++) {
+		QFile file(release_files[i]);
+		if(file.exists()) {
+			file.open(QIODevice::ReadOnly);
+			QString distro(QString(file.readAll()).trimmed());
+			file.close();
+			if(!distro.isEmpty()) {
+				return distro;
+			}
+		}
+	}
+	
+	for(size_t i = 0; i < ARRAY_SIZE(version_files); i++) {
+		QFile file(version_files[i][0]);
+		if(file.exists()) {
+			file.open(QIODevice::ReadOnly);
+			QString distro(version_files[i][1] + QString(file.readAll()).trimmed());
+			file.close();
+			if(!distro.isEmpty()) {
+				return distro;
+			}
+		}
+	}
+	
+	QFile file(lsb_release);
+	if(file.exists()) {
+		file.open(QIODevice::ReadOnly);
+		QString distro(QString(file.readAll()).trimmed());
+		file.close();
+		QString prefix("DISTRIB_ID=\"");
+		QString suffix("\"");
+		if(distro.startsWith(prefix) && distro.endsWith(suffix)) {
+			distro = distro.mid(
+				prefix.length(),
+				distro.length() - prefix.length() - suffix.length()
+			).trimmed();
+		}
+		return distro;
+	}
+	
+	return QString();
+}
+
+#endif // !defined(HAVE_WINAPI)
+
+bool ErrorReport::GetMiscCrashInfo() {
+	
 	// Get crash time
 	m_CrashDateTime = QDateTime::currentDateTime();
 	
@@ -347,22 +532,12 @@ bool ErrorReport::GetMiscCrashInfo()
 		m_ReportDescription += "\nRegisters:\n";
 		m_ReportDescription += registers.c_str();
 	}
-
+	
 	CloseHandle(hProcess);
 	
 #else // !HAVE_WINAPI
 	
-	m_ProcessMemoryUsage = 0;
-	m_RunningTimeSec = 0.0;
-#ifdef HAVE_GETRUSAGE
-	if(m_pCrashInfo->have_rusage) {
-		m_ProcessMemoryUsage = m_pCrashInfo->rusage.ru_maxrss * 1024;
-		m_RunningTimeSec += m_pCrashInfo->rusage.ru_utime.tv_sec;
-		m_RunningTimeSec += m_pCrashInfo->rusage.ru_utime.tv_usec * (1.0 / 1000000);
-		m_RunningTimeSec += m_pCrashInfo->rusage.ru_stime.tv_sec;
-		m_RunningTimeSec += m_pCrashInfo->rusage.ru_stime.tv_usec * (1.0 / 1000000);
-	}
-#endif
+	getResourceUsage(m_pCrashInfo->processId, m_ProcessMemoryUsage, m_RunningTimeSec);
 	
 #ifdef HAVE_UNAME
 	struct utsname buf;
@@ -372,110 +547,7 @@ bool ErrorReport::GetMiscCrashInfo()
 	}
 #endif
 	
-#if defined(HAVE_POPEN) && defined(HAVE_PCLOSE)
-	{
-		m_OSDistribution = getOutputOf("lsb_release -d").trimmed();
-		QString prefix("Description:");
-		if(m_OSDistribution.startsWith(prefix)) {
-			m_OSDistribution = m_OSDistribution.mid(prefix.length()).trimmed();
-		}
-	}
-#endif
-	
-	if(m_OSDistribution.isEmpty()) {
-		
-		// Fallback for older / non-LSB-compliant distros.
-		// Release file list taken from http://linuxmafia.com/faq/Admin/release-files.html
-		
-		const char * release_files[] = {
-			"/etc/annvix-release",
-			"/etc/arch-release",
-			"/etc/arklinux-release",
-			"/etc/aurox-release",
-			"/etc/blackcat-release",
-			"/etc/cobalt-release",
-			"/etc/conectiva-release",
-			"/etc/fedora-release",
-			"/etc/gentoo-release",
-			"/etc/immunix-release",
-			"/etc/lfs-release",
-			"/etc/linuxppc-release",
-			"/etc/mandriva-release",
-			"/etc/mandrake-release",
-			"/etc/mandakelinux-release",
-			"/etc/mklinux-release",
-			"/etc/nld-release",
-			"/etc/pld-release",
-			"/etc/slackware-release",
-			"/etc/e-smith-release",
-			"/etc/release",
-			"/etc/sun-release",
-			"/etc/SuSE-release",
-			"/etc/novell-release",
-			"/etc/sles-release",
-			"/etc/tinysofa-release",
-			"/etc/turbolinux-release",
-			"/etc/ultrapenguin-release",
-			"/etc/UnitedLinux-release",
-			"/etc/va-release",
-			"/etc/yellowdog-release",
-			"/etc/debian_release",
-			"/etc/redhat-release",
-		};
-		
-		const char * version_files[][2] = {
-			{ "/etc/debian_version", "Debian " },
-			{ "/etc/knoppix_version", "Knoppix " },
-			{ "/etc/redhat_version", "RedHat " },
-			{ "/etc/slackware-version", "Slackware " },
-		};
-		
-		const char * lsb_release = "/etc/lsb-release";
-		
-		for(size_t i = 0; i < ARRAY_SIZE(release_files); i++) {
-			QFile file(release_files[i]);
-			if(file.exists()) {
-				file.open(QIODevice::ReadOnly);
-				m_OSDistribution = QString(file.readAll()).trimmed();
-				file.close();
-				if(!m_OSDistribution.isEmpty()) {
-					break;
-				}
-			}
-		}
-		
-		if(m_OSDistribution.isEmpty()) {
-			for(size_t i = 0; i < ARRAY_SIZE(version_files); i++) {
-				QFile file(version_files[i][0]);
-				if(file.exists()) {
-					file.open(QIODevice::ReadOnly);
-					m_OSDistribution = version_files[i][1] + QString(file.readAll()).trimmed();
-					file.close();
-					if(!m_OSDistribution.isEmpty()) {
-						break;
-					}
-				}
-			}
-		}
-		
-		if(m_OSDistribution.isEmpty()) {
-			QFile file(lsb_release);
-			if(file.exists()) {
-				file.open(QIODevice::ReadOnly);
-				m_OSDistribution = QString(file.readAll()).trimmed();
-				file.close();
-				QString prefix("DISTRIB_ID=\"");
-				QString suffix("\"");
-				if(m_OSDistribution.startsWith(prefix) && m_OSDistribution.endsWith(suffix)) {
-					m_OSDistribution = m_OSDistribution.mid(
-						prefix.length(),
-						m_OSDistribution.length() - prefix.length() - suffix.length()
-					).trimmed();
-				}
-			}
-		}
-		
-	}
+	m_OSDistribution = getLinuxDistribution();
 	
 #endif // !HAVE_WINAPI
 
@@ -503,16 +575,24 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 		xml.writeStartElement("Process");
 			xml.writeTextElement("Path", m_pCrashInfo->executablePath);
 			xml.writeTextElement("Version", m_pCrashInfo->executableVersion);
-			xml.writeTextElement("MemoryUsage", QString::number(m_ProcessMemoryUsage));
+			if(m_ProcessMemoryUsage != 0) {
+				xml.writeTextElement("MemoryUsage", QString::number(m_ProcessMemoryUsage));
+			}
 			xml.writeTextElement("Architecture", m_ProcessArchitecture);
-			xml.writeTextElement("RunningTime", QString::number(m_RunningTimeSec));
+			if(m_RunningTimeSec > 0) {
+				xml.writeTextElement("RunningTime", QString::number(m_RunningTimeSec));
+			}
 			xml.writeTextElement("CrashDateTime", m_CrashDateTime.toString("dd.MM.yyyy hh:mm:ss"));
 		xml.writeEndElement();
 
 		xml.writeComment("Information related to the OS");
 		xml.writeStartElement("OS");
-			xml.writeTextElement("Name", m_OSName);
-			xml.writeTextElement("Architecture", m_OSArchitecture);
+			if(!m_OSName.isEmpty()) {
+				xml.writeTextElement("Name", m_OSName);
+			}
+			if(!m_OSArchitecture.isEmpty()) {
+				xml.writeTextElement("Architecture", m_OSArchitecture);
+			}
 			if(!m_OSDistribution.isEmpty()) {
 				xml.writeTextElement("Distribution", m_OSDistribution);
 			}

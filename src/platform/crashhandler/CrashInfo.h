@@ -37,10 +37,6 @@
 #include "platform/Platform.h"
 #include "platform/Thread.h"
 
-#ifdef HAVE_GETRUSAGE
-#include "sys/resource.h"
-#endif
-
 struct CrashInfoBase {
 	
 	CrashInfoBase() : exitLock(0) { }
@@ -91,11 +87,7 @@ struct CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	char execFullName[512];
-	void* backtrace[100];
-	bool have_rusage;
-#ifdef HAVE_GETRUSAGE
-	struct ::rusage rusage;
-#endif
+	void * backtrace[100];
 };
 
 #else

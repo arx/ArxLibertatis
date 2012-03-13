@@ -280,10 +280,11 @@ else(MSVC)
 	check_symbol_exists(kill "signal.h" HAVE_KILL)
 	
 	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
-	check_symbol_exists(backtrace_symbols "execinfo.h" HAVE_BACKTRACE_SYMBOLS)
 	
 	check_include_file("sys/types.h" HAVE_SYS_TYPES_H)
 	check_symbol_exists(getpid "unistd.h" HAVE_GETPID)
+	
+	check_symbol_exists(sysconf "unistd.h" HAVE_SYSCONF)
 	
 	if(USE_NATIVE_FS)
 		

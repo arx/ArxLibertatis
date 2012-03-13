@@ -233,12 +233,6 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	
 	// Get current thread id
 	m_pCrashInfo->threadId = Thread::getCurrentThreadId();
-	
-#ifdef HAVE_GETRUSAGE
-	m_pCrashInfo->have_rusage = (getrusage(RUSAGE_SELF, &m_pCrashInfo->rusage) == 0);
-#else
-	m_pCrashInfo->have_rusage = false;
-#endif
 
 	if(fork()) {
 		while(true) {
