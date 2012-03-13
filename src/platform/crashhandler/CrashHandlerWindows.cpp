@@ -309,7 +309,6 @@ void CrashHandlerWindows::handleCrash(int crashType, void* crashExtraInfo, int F
 	}
 	
 	// Get current thread id
-	m_pCrashInfo->threadId = GetCurrentThreadId();
 	m_pCrashInfo->threadHandle = GetCurrentThread();
 
 	waitForReporter();

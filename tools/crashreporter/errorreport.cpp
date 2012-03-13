@@ -47,8 +47,14 @@
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_CRASHHANDLER_POSIX
+#include <signal.h>
+#endif
+
 // yes, we need stdio.h, POSIX doesn't know about cstdio
+#ifdef HAVE_POPEN
 #include <stdio.h>
+#endif
 
 // Qt
 #include <QApplication>
@@ -125,7 +131,7 @@ bool ErrorReport::Initialize()
 	return true;
 }
 
-bool ErrorReport::GetCrashDump(const fs::path& fileName) {
+bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
 #ifdef HAVE_WINAPI
 	bool bHaveDump = false;
@@ -145,121 +151,11 @@ bool ErrorReport::GetCrashDump(const fs::path& fileName) {
 #else // !HAVE_WINAPI
 	
 	ARX_UNUSED(fileName);
+	
 	// TODO: Write core dump to 
 	// fs::path fullPath = m_ReportFolder / fileName;
 	
-#if defined(HAVE_FORK) && defined(HAVE_EXECLP) && defined(HAVE_DUP2)
-	
-	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
-	
-	// Fork so we retain control after launching GDB.
-	int childPID = fork();
-	if(childPID) {
-		// Wait for GDB to exit.
-		waitpid(childPID, NULL, 0);
-	} else {
-		
-		// Redirect output to a file
-		int fd = open(tracePath.string().c_str(), O_WRONLY|O_CREAT, 0666);
-		dup2(fd, 1);
-		close(fd);
-		
-		// Prepare pid argument for GDB.
-		char pid_buf[30];
-		memset(&pid_buf, 0, sizeof(pid_buf));
-		sprintf(pid_buf, "%d", m_pCrashInfo->processId);
-		
-		// Try to execute gdb to get a very detailed stack trace.
-		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
-		
-		// GDB failed to start.
-		exit(1);
-	}
-#endif // defined(HAVE_EXECLP) && defined(HAVE_DUP2)
-	
-	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
-	if(!bWroteDump)
-		return false;
-	
-	AddFile(tracePath);
-	
-#ifdef HAVE_BACKTRACE
-	
-	boost::crc_32_type callstackCRC32;
-	
-	for(size_t i = 0; i < ARRAY_SIZE(m_pCrashInfo->backtrace); i++) {
-		if(m_pCrashInfo->backtrace[i] == 0)
-			break;
-		callstackCRC32.process_bytes(&m_pCrashInfo->backtrace[i], sizeof(m_pCrashInfo->backtrace[i]));
-	}
-	
-	u32 callstackCrc = callstackCRC32.checksum();
-	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
-	
-#endif // HAVE_BACKTRACE
-	
-	QFile traceFile(tracePath.string().c_str());
-	traceFile.open(QIODevice::ReadOnly);
-	if(!traceFile.isOpen())
-		return false;
-	
-	QString traceStr = traceFile.readAll();
-	traceFile.close();
-	QString callstackTop = "Unknown";
-	
-	// The useful stack frames are found below "<signal handler called>"
-	int posStart = traceStr.indexOf("<signal handler called>");
-	int posEnd = -1;
-	if(posStart != -1) {
-		posStart = traceStr.indexOf("#", posStart);
-		if(posStart != -1)
-			posEnd = traceStr.indexOf("\n", posStart);
-	}
-	
-	// Capture the entry where the crash occured and format it
-	if(posStart != -1 && posEnd != -1)	{
-		callstackTop = traceStr.mid(posStart, posEnd - posStart);
-
-		// Remove "#N 0x???????? in "
-		posEnd = callstackTop.indexOf(" in ");
-		if(posEnd != -1) {
-			posEnd += 4;
-			callstackTop.remove(0, posEnd);
-		}
-		
-		// Remove params
-		posStart = callstackTop.indexOf("(");
-		posEnd = callstackTop.indexOf(")", posStart);
-		if(posStart != -1 && posEnd != -1) {
-			posStart++;
-			callstackTop.remove(posStart, posEnd - posStart);
-		}
-		
-		// Trim filenames
-		posStart = callstackTop.lastIndexOf(") at");
-		posEnd = callstackTop.lastIndexOf("/");
-		if(posStart != -1 && posEnd != -1) {
-			posStart += 2;
-			posEnd++;
-			callstackTop.remove(posStart, posEnd - posStart);
-		}
-	}
-	
-	m_ReportDescription = m_pCrashInfo->detailedCrashInfo;
-	m_ReportDescription += "\nGDB stack trace:\n";
-	
-	m_ReportDescriptionText = m_ReportDescription;
-	
-	m_ReportDescription += "<source lang=\"gdb\">\n";
-	m_ReportDescription += traceStr;
-	m_ReportDescription += "</source>\n";
-	
-	m_ReportDescriptionText += "\n";
-	m_ReportDescriptionText += traceStr;
-	
-	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
-	
-	return true;
+	return getCrashDescription();
 	
 #endif // !HAVE_WINAPI
 }
@@ -461,6 +357,175 @@ QString getLinuxDistribution() {
 }
 
 #endif // !defined(HAVE_WINAPI)
+
+bool ErrorReport::getCrashDescription() {
+	
+#ifdef HAVE_WINAPI
+	
+	return true;
+	
+#else // !defined(HAVE_WINAPI)
+	
+	switch(m_pCrashInfo->signal) {
+		case SIGABRT:  m_ReportDescription = "Abnormal termination"; break;
+		case SIGFPE:   m_ReportDescription = "Floating-point error"; break;
+		case SIGILL:   m_ReportDescription = "Illegal instruction"; break;
+		case SIGSEGV:  m_ReportDescription = "Illegal storage access"; break;
+		default: {
+			m_ReportDescription = QString("Received signal %1").arg(m_pCrashInfo->signal);
+			break;
+		}
+	}
+	
+	if(m_pCrashInfo->signal == SIGFPE) {
+		// Append detailed information in case of a FPE exception
+		switch(m_pCrashInfo->fpeCode) {
+			#ifdef FPE_INTDIV
+			case FPE_INTDIV: m_ReportDescription += ": Integer divide by zero"; break;
+			#endif
+			#ifdef FPE_INTOVF
+			case FPE_INTOVF: m_ReportDescription += ": Integer overflow"; break;
+			#endif
+			#ifdef FPE_FLTDIV
+			case FPE_FLTDIV: m_ReportDescription += ": Floating point divide by zero"; break;
+			#endif
+			#ifdef FPE_FLTOVF
+			case FPE_FLTOVF: m_ReportDescription += ": Floating point overflow"; break;
+			#endif
+			#ifdef FPE_FLTUND
+			case FPE_FLTUND: m_ReportDescription += ": Floating point underflow"; break;
+			#endif
+			#ifdef FPE_FLTRES
+			case FPE_FLTRES: m_ReportDescription += ": Floating point inexact result"; break;
+			#endif
+			#ifdef FPE_FLTINV
+			case FPE_FLTINV: m_ReportDescription += ": Floating point invalid operation"; break;
+			#endif
+			#ifdef FPE_FLTSUB
+			case FPE_FLTSUB: m_ReportDescription += ": Subscript out of range"; break;
+			#endif
+			default: break;
+		}
+	}
+	m_ReportDescription += "\n\n";
+	
+	m_ReportDescriptionText = m_ReportDescription;
+	
+#if defined(HAVE_FORK) && defined(HAVE_EXECLP) && defined(HAVE_DUP2)
+	
+	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
+	
+	// Fork so we retain control after launching GDB.
+	int childPID = fork();
+	if(childPID) {
+		// Wait for GDB to exit.
+		waitpid(childPID, NULL, 0);
+	} else {
+		
+		// Redirect output to a file
+		int fd = open(tracePath.string().c_str(), O_WRONLY|O_CREAT, 0666);
+		dup2(fd, 1);
+		close(fd);
+		
+		// Prepare pid argument for GDB.
+		char pid_buf[30];
+		memset(&pid_buf, 0, sizeof(pid_buf));
+		sprintf(pid_buf, "%d", m_pCrashInfo->processId);
+		
+		// Try to execute gdb to get a very detailed stack trace.
+		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
+		
+		// GDB failed to start.
+		exit(1);
+	}
+#endif // defined(HAVE_EXECLP) && defined(HAVE_DUP2)
+	
+	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
+	if(!bWroteDump) {
+		return false;
+	}
+	
+	AddFile(tracePath);
+	
+#ifdef HAVE_BACKTRACE
+	
+	boost::crc_32_type callstackCRC32;
+	
+	for(size_t i = 0; i < ARRAY_SIZE(m_pCrashInfo->backtrace); i++) {
+		if(m_pCrashInfo->backtrace[i] == 0) {
+			break;
+		}
+		callstackCRC32.process_bytes(&m_pCrashInfo->backtrace[i], sizeof(m_pCrashInfo->backtrace[i]));
+	}
+	
+	u32 callstackCrc = callstackCRC32.checksum();
+	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
+	
+#endif // HAVE_BACKTRACE
+	
+	QFile traceFile(tracePath.string().c_str());
+	traceFile.open(QIODevice::ReadOnly);
+	if(!traceFile.isOpen()) {
+		return false;
+	}
+	
+	QString traceStr = traceFile.readAll();
+	traceFile.close();
+	QString callstackTop = "Unknown";
+	
+	// The useful stack frames are found below "<signal handler called>"
+	int posStart = traceStr.indexOf("<signal handler called>");
+	int posEnd = -1;
+	if(posStart != -1) {
+		posStart = traceStr.indexOf("#", posStart);
+		if(posStart != -1)
+			posEnd = traceStr.indexOf("\n", posStart);
+	}
+	
+	// Capture the entry where the crash occured and format it
+	if(posStart != -1 && posEnd != -1)	{
+		callstackTop = traceStr.mid(posStart, posEnd - posStart);
+
+		// Remove "#N 0x???????? in "
+		posEnd = callstackTop.indexOf(" in ");
+		if(posEnd != -1) {
+			posEnd += 4;
+			callstackTop.remove(0, posEnd);
+		}
+		
+		// Remove params
+		posStart = callstackTop.indexOf("(");
+		posEnd = callstackTop.indexOf(")", posStart);
+		if(posStart != -1 && posEnd != -1) {
+			posStart++;
+			callstackTop.remove(posStart, posEnd - posStart);
+		}
+		
+		// Trim filenames
+		posStart = callstackTop.lastIndexOf(") at");
+		posEnd = callstackTop.lastIndexOf("/");
+		if(posStart != -1 && posEnd != -1) {
+			posStart += 2;
+			posEnd++;
+			callstackTop.remove(posStart, posEnd - posStart);
+		}
+	}
+	
+	m_ReportDescription += "\nGDB stack trace:\n";
+	m_ReportDescription += "<source lang=\"gdb\">\n";
+	m_ReportDescription += traceStr;
+	m_ReportDescription += "</source>\n";
+	
+	m_ReportDescriptionText += "\nGDB stack trace:\n";
+	m_ReportDescriptionText += "\n";
+	m_ReportDescriptionText += traceStr;
+	
+	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
+	
+#endif // !defined(HAVE_WINAPI)
+	
+	return true;
+}
 
 bool ErrorReport::GetMiscCrashInfo() {
 	

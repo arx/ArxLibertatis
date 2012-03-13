@@ -156,7 +156,7 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 
 PlatformCrashHandlers nullHandlers = { 0, 0, 0, 0 };
 
-void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
+void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
 	
 	// Remove crash handlers so we don't end in an infinite crash loop
 	removeCrashHandlers(&nullHandlers);
@@ -167,62 +167,8 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 		(*it)();
 	}
 	
-	const char* crashSummary;
-	switch(crashType) {
-		case SIGABRT:     crashSummary = "Abnormal termination"; break;
-		case SIGFPE:      crashSummary = "Floating-point error"; break;
-		case SIGILL:      crashSummary = "Illegal instruction"; break;
-		case SIGSEGV:     crashSummary = "Illegal storage access"; break;
-		default:          crashSummary = 0; break;
-	}
-	
-	if(crashSummary != 0) {
-		strcpy(m_pCrashInfo->detailedCrashInfo, crashSummary);
-	} else {
-		sprintf(m_pCrashInfo->detailedCrashInfo, "Received signal #%d", crashType);
-	}
-	
-	if(crashType == SIGFPE) {
-		// Append detailed information in case of a FPE exception
-		const char* FPEDetailed;
-		switch(FPECode) {
-			#ifdef FPE_INTDIV
-			case FPE_INTDIV: FPEDetailed = ": Integer divide by zero"; break;
-			#endif
-			
-			#ifdef FPE_INTOVF
-			case FPE_INTOVF: FPEDetailed = ": Integer overflow"; break;
-			#endif
-			
-			#ifdef FPE_FLTDIV
-			case FPE_FLTDIV: FPEDetailed = ": Floating point divide by zero"; break;
-			#endif
-			
-			#ifdef FPE_FLTOVF
-			case FPE_FLTOVF: FPEDetailed = ": Floating point overflow"; break;
-			#endif
-			
-			#ifdef FPE_FLTUND
-			case FPE_FLTUND: FPEDetailed = ": Floating point underflow"; break;
-			#endif
-			
-			#ifdef FPE_FLTRES
-			case FPE_FLTRES: FPEDetailed = ": Floating point inexact result"; break;
-			#endif
-			
-			#ifdef FPE_FLTINV
-			case FPE_FLTINV: FPEDetailed = ": Floating point invalid operation"; break;
-			#endif
-			
-			#ifdef FPE_FLTSUB
-			case FPE_FLTSUB: FPEDetailed = ": Subscript out of range"; break;
-			#endif
-		
-			default:                  FPEDetailed = "";
-		}
-		strcat(m_pCrashInfo->detailedCrashInfo, FPEDetailed);
-	}
-	strcat(m_pCrashInfo->detailedCrashInfo, "\n\n");
+	m_pCrashInfo->signal = crashType;
+	m_pCrashInfo->fpeCode = fpeCode;
 	
 	// Store the backtrace in the shared crash info
 	#ifdef HAVE_BACKTRACE
@@ -231,9 +177,6 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int FPECode) {
 	
 	fflush(stdout), fflush(stderr);
 	
-	// Get current thread id
-	m_pCrashInfo->threadId = Thread::getCurrentThreadId();
-
 	if(fork()) {
 		while(true) {
 			// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.

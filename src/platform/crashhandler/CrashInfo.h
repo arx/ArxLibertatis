@@ -69,10 +69,6 @@ struct CrashInfoBase {
 	
 	// ID of the crashed process & thread
 	process_id_type processId;
-	thread_id_type threadId;
-	
-	// Detailed crash info (messages, registers, whatever).
-	char detailedCrashInfo[MaxDetailCrashInfoLen];
 	
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
@@ -86,8 +82,13 @@ struct CrashInfoBase {
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
 struct CrashInfo : public CrashInfoBase {
+	
+	int signal;
+	int fpeCode;
+	
 	char execFullName[512];
 	void * backtrace[100];
+	
 };
 
 #else
@@ -96,10 +97,15 @@ struct CrashInfo : public CrashInfoBase {
 #include <dbghelp.h>
 
 struct CrashInfo : public CrashInfoBase {
+	
+	// Detailed crash info (messages, registers, whatever).
+	char detailedCrashInfo[MaxDetailCrashInfoLen];
+	
 	CONTEXT contextRecord;
 	CHAR	miniDumpTmpFile[MAX_PATH];
 	HANDLE  threadHandle;
 	DWORD	exceptionCode;
+	
 };
 
 #endif

@@ -95,11 +95,13 @@ public:
 	void SetReproSteps(const QString& reproSteps);
 
 private:
+	
 	bool Initialize();
 
 	bool WriteReport(const fs::path& fileName);
 
 	bool GetCrashDump(const fs::path& fileName);
+	bool getCrashDescription();
 	bool GetMiscCrashInfo();
 
 	void AddFile(const fs::path& fileName);
