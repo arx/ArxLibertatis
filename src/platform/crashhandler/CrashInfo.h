@@ -39,8 +39,6 @@
 
 struct CrashInfoBase {
 	
-	CrashInfoBase() : exitLock(0) { }
-	
 	enum Constants {
 		MaxNbFiles = 32,
 		MaxFilenameLen = 256,
@@ -73,9 +71,6 @@ struct CrashInfoBase {
 	// Where the crash reports should be written.
 	char crashReportFolder[MaxFilenameLen];
 	
-	// Once released, this lock will allow the crashed application to terminate.
-	boost::interprocess::interprocess_semaphore	exitLock;
-	
 };
 
 
@@ -83,11 +78,15 @@ struct CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	
+	CrashInfo() : crashBrokerLock(0) { }
+	
 	int signal;
 	int fpeCode;
 	
 	char execFullName[512];
 	void * backtrace[100];
+	
+	boost::interprocess::interprocess_semaphore	crashBrokerLock;
 	
 };
 
@@ -98,6 +97,8 @@ struct CrashInfo : public CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	
+	CrashInfo() : exitLock(0) { }
+	
 	// Detailed crash info (messages, registers, whatever).
 	char detailedCrashInfo[MaxDetailCrashInfoLen];
 	
@@ -105,6 +106,9 @@ struct CrashInfo : public CrashInfoBase {
 	CHAR	miniDumpTmpFile[MAX_PATH];
 	HANDLE  threadHandle;
 	DWORD	exceptionCode;
+	
+	// Once released, this lock will allow the crashed application to terminate.
+	boost::interprocess::interprocess_semaphore	exitLock;
 	
 };
 

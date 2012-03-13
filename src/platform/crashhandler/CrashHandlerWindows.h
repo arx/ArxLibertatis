@@ -27,8 +27,6 @@ public:
 	CrashHandlerWindows();
 	virtual ~CrashHandlerWindows();
 
-	bool initialize();
-
 	bool registerThreadCrashHandlers();
 	void unregisterThreadCrashHandlers();
 

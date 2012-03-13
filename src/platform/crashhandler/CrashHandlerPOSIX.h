@@ -30,6 +30,7 @@ public:
 	virtual ~CrashHandlerPOSIX();
 	
 	bool initialize();
+	void shutdown();
 	
 	bool registerThreadCrashHandlers();
 	void unregisterThreadCrashHandlers();
@@ -42,12 +43,15 @@ public:
 	static CrashHandlerPOSIX & getInstance();
 	
 private:
+	
 	void fillBasicCrashInfo();
 	bool registerCrashHandlers();
 	void unregisterCrashHandlers();
 	
 	// Crash handlers to restore.
 	struct PlatformCrashHandlers * m_pPreviousCrashHandlers;
+	
+	void crashBroker();
 	
 	static CrashHandlerPOSIX * m_sInstance;
 };

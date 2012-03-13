@@ -60,11 +60,38 @@ CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
 	m_CrashHandlerApp = "./arxcrashreporter";
+}
 
+bool CrashHandlerPOSIX::initialize() {
+	
+	if(!CrashHandlerImpl::initialize()) {
+		return false;
+	}
+	
+	m_pCrashInfo->signal = 0;
+	
 #if defined(HAVE_PRCTL)
 	// Allow all processes in the same pid namespace to PTRACE this process
-	prctl(PR_SET_PTRACER, getpid(), 0, 0, 0);
+	prctl(PR_SET_PTRACER, getpid());
 #endif
+	
+	// pre-fork the crash handler
+	if(!fork()) {
+		
+#if defined(HAVE_PRCTL) && defined(PR_SET_NAME)
+		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
+#endif
+		
+		crashBroker();
+	}
+	
+	return true;
+}
+
+void CrashHandlerPOSIX::shutdown() {
+	if(m_pCrashInfo) {
+		m_pCrashInfo->crashBrokerLock.post();
+	}
 }
 
 CrashHandlerPOSIX::~CrashHandlerPOSIX() {
@@ -156,16 +183,54 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 
 PlatformCrashHandlers nullHandlers = { 0, 0, 0, 0 };
 
+void CrashHandlerPOSIX::crashBroker() {
+	
+#if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
+	prctl(PR_SET_PDEATHSIG, SIGTERM);
+#endif
+	
+	m_pCrashInfo->crashBrokerLock.wait();
+	
+	if(m_pCrashInfo->signal == 0) {
+		exit(0);
+	}
+	
+#if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
+		prctl(PR_SET_PDEATHSIG, 0);
+#endif
+	
+	char arguments[256];
+	strcpy(arguments, "-crashinfo=");
+	strcat(arguments, m_SharedMemoryName.c_str());
+	
+	// Try a the crash reporter in the same directory as arx or in the current directory.
+#ifdef HAVE_EXECL
+	execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
+#endif
+	
+	// Try a crash reporter in the system path.
+#ifdef HAVE_EXECLP
+	execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
+#endif
+	
+	// Something went wrong - the crash reporter failed to start!
+	
+	// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
+	
+	// Kill the original, busy-waiting process.
+	kill(m_pCrashInfo->processId, m_pCrashInfo->signal);
+}
+
 void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
 	
 	// Remove crash handlers so we don't end in an infinite crash loop
 	removeCrashHandlers(&nullHandlers);
 	
-	// Run the callbacks
-	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
-	    it != m_crashCallbacks.end(); ++it) {
-		(*it)();
-	}
+	// TODO Run the callbacks (unused?)
+	// for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
+	//    it != m_crashCallbacks.end(); ++it) {
+	//    (*it)();
+	// }
 	
 	m_pCrashInfo->signal = crashType;
 	m_pCrashInfo->fpeCode = fpeCode;
@@ -175,46 +240,9 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
 		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	
-	fflush(stdout), fflush(stderr);
+	m_pCrashInfo->crashBrokerLock.post();
 	
-	if(fork()) {
-		while(true) {
-			// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
-		}
-	} else {
-		
-		int killer = fork();
-		if(!killer) {
-			
-			// Wait for the CrashReporter signal before exiting.
-			m_pCrashInfo->exitLock.wait();
-			
-			// Kill the original, busy-waiting process.
-			kill(m_pCrashInfo->processId, crashType);
-			
-			exit(1);
-			
-		} else {
-			
-			char arguments[256];
-			strcpy(arguments, "-crashinfo=");
-			strcat(arguments, m_SharedMemoryName.c_str());
-			
-			// Try a the crash reporter in the same directory as arx or in the current directory.
-#ifdef HAVE_EXECL
-			execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
-#endif
-			
-			// Try a crash reporter in the system path.
-#ifdef HAVE_EXECLP
-			execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
-#endif
-			
-			// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
-			
-			m_pCrashInfo->exitLock.post(); // Post signal in case of failure
-			
-			exit(1);
-		}
+	while(true) {
+		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
 	}
 }

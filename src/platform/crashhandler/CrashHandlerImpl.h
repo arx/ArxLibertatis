@@ -52,8 +52,8 @@ public:
 	CrashHandlerImpl();
 	virtual ~CrashHandlerImpl();
 
-	bool initialize();
-	void shutdown();
+	virtual bool initialize();
+	virtual void shutdown();
 
 	bool addAttachedFile(const fs::path& file);
 	bool setNamedVariable(const std::string& name, const std::string& value);
