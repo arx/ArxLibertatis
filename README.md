@@ -53,6 +53,9 @@ Both OpenGL and Direct3D backends can be built at the same time.
 Arx Libertatis comes with an optional gui crash reporter which has additional dependencies:
 
 * **Qt 4** (`QtCore`, `QtGui` and `QtNetwork` libraries)
+* **GDB** (Linux-only, optional, run-time only)
+
+While the crash reporter can be run without GDB, it's main usefulness comes from generating and submitting detailed back-traces in the event of a crash. On non-window systems we use GDB, the GNU Debugger, to accomplish that. If you want to help out the arx project, please install GDB before running arx. GDB is however purely a run-time dependency and is not needed when building the crash reporter.
 
 ## Compile and install
 
