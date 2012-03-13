@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H
-#define ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H
+#ifndef ARX_TOOLS_CRASHREPORTER_WIN32UTILITIES_H
+#define ARX_TOOLS_CRASHREPORTER_WIN32UTILITIES_H
 
 #include "Configure.h"
 #include "platform/Platform.h"
@@ -38,4 +38,4 @@ std::string GetExceptionString(DWORD dwCode);
 
 #endif
 
-#endif // ARX_TOOLS_CRASHREPORTER_UTILITIES_WIN32_H
+#endif // ARX_TOOLS_CRASHREPORTER_WIN32UTILITIES_H
