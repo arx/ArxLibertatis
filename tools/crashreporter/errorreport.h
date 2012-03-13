@@ -117,6 +117,7 @@ private:
 	
 	QString m_OSName;
 	QString m_OSArchitecture;
+	QString m_OSDistribution;
 		
 	fs::path m_ProcessPath;
 	quint64 m_ProcessMemoryUsage;

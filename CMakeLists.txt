@@ -252,6 +252,9 @@ else(MSVC)
 	check_symbol_exists(uname "sys/utsname.h" HAVE_UNAME)
 	check_symbol_exists(getrusage "sys/resource.h" HAVE_GETRUSAGE)
 	
+	check_symbol_exists(popen "stdio.h" HAVE_POPEN)
+	check_symbol_exists(pclose "stdio.h" HAVE_PCLOSE)
+	
 	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
 	unset(CMAKE_REQUIRED_LIBRARIES)

@@ -49,6 +49,8 @@
 #cmakedefine HAVE_SYS_STAT_H
 #cmakedefine HAVE_UNAME
 #cmakedefine HAVE_GETRUSAGE
+#cmakedefine HAVE_POPEN
+#cmakedefine HAVE_PCLOSE
 
 // Mac OS X features
 #cmakedefine HAVE_MACH_CLOCK
