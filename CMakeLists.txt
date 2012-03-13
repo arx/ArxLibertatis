@@ -824,41 +824,46 @@ add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLU
 if(HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_SOURCES
-		tools/crashreporter/main.cpp
-		tools/crashreporter/errorreport.h
-		tools/crashreporter/errorreport.cpp
-		tools/crashreporter/utilities_win32.h
-		tools/crashreporter/utilities_win32.cpp
-		tools/crashreporter/qhexedit/commands.h
-		tools/crashreporter/qhexedit/commands.cpp
-		tools/crashreporter/qhexedit/qhexedit.h
-		tools/crashreporter/qhexedit/qhexedit.cpp
-		tools/crashreporter/qhexedit/qhexedit_p.h
-		tools/crashreporter/qhexedit/qhexedit_p.cpp
-		tools/crashreporter/qhexedit/xbytearray.h
-		tools/crashreporter/qhexedit/xbytearray.cpp
-		tools/crashreporter/ui/errorreportdialog.h
-		tools/crashreporter/ui/errorreportdialog.cpp
-		tools/crashreporter/tbg/tbg.h
-		tools/crashreporter/tbg/tbg.cpp
+		tools/crashreporter/CrashReporter.cpp
+		tools/crashreporter/ErrorReport.h
+		tools/crashreporter/ErrorReport.cpp
+		tools/crashreporter/qhexedit/Commands.h
+		tools/crashreporter/qhexedit/Commands.cpp
+		tools/crashreporter/qhexedit/QHexEdit.h
+		tools/crashreporter/qhexedit/QHexEdit.cpp
+		tools/crashreporter/qhexedit/QHexEditPrivate.h
+		tools/crashreporter/qhexedit/QHexEditPrivate.cpp
+		tools/crashreporter/qhexedit/XByteArray.h
+		tools/crashreporter/qhexedit/XByteArray.cpp
+		tools/crashreporter/tbg/TBG.h
+		tools/crashreporter/tbg/TBG.cpp
+		tools/crashreporter/ui/ErrorReportDialog.h
+		tools/crashreporter/ui/ErrorReportDialog.cpp
 		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		"${VERSION_FILE}"
 	)
 	
+	if(HAVE_WINAPI)
+		list(APPEND arxcrashreporter_SOURCES
+			tools/crashreporter/Win32Utilities.h
+			tools/crashreporter/Win32Utilities.cpp
+		)
+	endif()
+	
 	set(arxcrashreporter_UIs
-		tools/crashreporter/ui/errorreportdialog.ui
+		tools/crashreporter/ui/ErrorReportDialog.ui
 	)
 	
 	set(arxcrashreporter_MOC_HEADERS
-		tools/crashreporter/ui/errorreportdialog.h
-		tools/crashreporter/qhexedit/qhexedit.h
-		tools/crashreporter/qhexedit/qhexedit_p.h
+		tools/crashreporter/ui/ErrorReportDialog.h
+		tools/crashreporter/qhexedit/QHexEdit.h
+		tools/crashreporter/qhexedit/QHexEditPrivate.h
 	)
 	
 	set(arxcrashreporter_RESOURCES
-		tools/crashreporter/resources/crashreporter.qrc
+		tools/crashreporter/resources/CrashReporter.qrc
 	)
 	
 	set(arxcrashreporter_MANUAL_SOURCES "${arxcrashreporter_SOURCES}")

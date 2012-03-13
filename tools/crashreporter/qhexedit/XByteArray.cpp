@@ -22,7 +22,7 @@
 	version 0.6.1
  */
 
-#include "crashreporter/qhexedit/xbytearray.h"
+#include "crashreporter/qhexedit/XByteArray.h"
 
 XByteArray::XByteArray()
 {

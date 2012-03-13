@@ -27,7 +27,7 @@
 
 #include <QtGui>
 
-#include "crashreporter/qhexedit/qhexedit_p.h"
+#include "crashreporter/qhexedit/QHexEditPrivate.h"
 
 /** \mainpage
 QHexEdit is a binary editor widget for Qt.

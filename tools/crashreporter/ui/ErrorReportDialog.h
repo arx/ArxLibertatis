@@ -25,8 +25,8 @@
 #include <QThread>
 #include <QSemaphore>
 
-#include "crashreporter/errorreport.h"
-#include "crashreporter/qhexedit/qhexedit.h"
+#include "crashreporter/ErrorReport.h"
+#include "crashreporter/qhexedit/QHexEdit.h"
 
 namespace Ui {
 	class ErrorReportDialog;

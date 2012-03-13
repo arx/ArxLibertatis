@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "crashreporter/utilities_win32.h"
+#include "crashreporter/Win32Utilities.h"
 
 #ifdef HAVE_WINAPI
 

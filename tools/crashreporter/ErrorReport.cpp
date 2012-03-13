@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "crashreporter/errorreport.h"
+#include "crashreporter/ErrorReport.h"
 
 #ifdef HAVE_WINAPI
 // Win32
@@ -80,8 +80,8 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
-#include "crashreporter/utilities_win32.h"
-#include "crashreporter/tbg/tbg.h"
+#include "crashreporter/Win32Utilities.h"
+#include "crashreporter/tbg/TBG.h"
 
 #include "platform/Architecture.h"
 #include "platform/String.h"

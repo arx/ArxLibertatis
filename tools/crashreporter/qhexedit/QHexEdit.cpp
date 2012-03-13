@@ -22,7 +22,7 @@
 	version 0.6.1
  */
 
-#include "crashreporter/qhexedit/qhexedit.h"
+#include "crashreporter/qhexedit/QHexEdit.h"
 
 #include <QtGui>
 

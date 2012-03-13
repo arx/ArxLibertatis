@@ -17,9 +17,9 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "crashreporter/ui/errorreportdialog.h"
+#include "crashreporter/ui/ErrorReportDialog.h"
 
-#include "ui_errorreportdialog.h"
+#include "ui_ErrorReportDialog.h"
 
 #include "platform/Platform.h"
 

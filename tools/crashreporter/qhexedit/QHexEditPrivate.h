@@ -29,7 +29,7 @@
 
 #include <QtGui>
 
-#include "crashreporter/qhexedit/xbytearray.h"
+#include "crashreporter/qhexedit/XByteArray.h"
 
 class QHexEditPrivate : public QWidget
 {

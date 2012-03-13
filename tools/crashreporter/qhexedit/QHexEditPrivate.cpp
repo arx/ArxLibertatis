@@ -22,11 +22,11 @@
 	version 0.6.1
  */
 
-#include "crashreporter/qhexedit/qhexedit_p.h"
+#include "crashreporter/qhexedit/QHexEditPrivate.h"
 
 #include <QtGui>
 
-#include "crashreporter/qhexedit/commands.h"
+#include "crashreporter/qhexedit/Commands.h"
 
 const int HEXCHARS_IN_LINE = 47;
 const int GAP_ADR_HEX = 10;

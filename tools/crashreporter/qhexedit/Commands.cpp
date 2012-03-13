@@ -22,7 +22,7 @@
 	version 0.6.1
  */
 
-#include "crashreporter/qhexedit/commands.h"
+#include "crashreporter/qhexedit/Commands.h"
 
 CharCommand::CharCommand(XByteArray * xData, Cmd cmd, int charPos, char newChar, QUndoCommand *parent)
     : QUndoCommand(parent)

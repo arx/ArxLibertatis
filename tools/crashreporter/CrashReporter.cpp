@@ -21,8 +21,8 @@
 
 #include <string>
 
-#include "crashreporter/ui/errorreportdialog.h"
-#include "crashreporter/errorreport.h"
+#include "crashreporter/ui/ErrorReportDialog.h"
+#include "crashreporter/ErrorReport.h"
 
 #include "io/log/Logger.h"
 #include "io/log/FileLogger.h"
@@ -31,7 +31,7 @@
 
 INT WINAPI WinMain(HINSTANCE, HINSTANCE, PSTR, INT) {
 	
-	Q_INIT_RESOURCE(crashreporter);
+	Q_INIT_RESOURCE(CrashReporter);
 	
 	QApplication app(__argc, __argv);
 	
@@ -39,7 +39,7 @@ INT WINAPI WinMain(HINSTANCE, HINSTANCE, PSTR, INT) {
 
 int main(int argc, char **argv) {
 	
-	Q_INIT_RESOURCE(crashreporter);
+	Q_INIT_RESOURCE(CrashReporter);
 	
 	QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 	QApplication app(argc, argv);

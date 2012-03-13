@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "crashreporter/tbg/tbg.h"
+#include "crashreporter/tbg/TBG.h"
 
 #include <QFile>
 #include <QFileInfo>

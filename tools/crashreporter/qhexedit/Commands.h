@@ -29,7 +29,7 @@
 
 #include <QUndoCommand>
 
-#include "crashreporter/qhexedit/xbytearray.h"
+#include "crashreporter/qhexedit/XByteArray.h"
 
 /*! CharCommand is a class to prived undo/redo functionality in QHexEdit.
 A QUndoCommand represents a single editing action on a document. CharCommand
