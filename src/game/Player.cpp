@@ -448,6 +448,7 @@ static void ARX_PLAYER_ManageTorch() {
 //*************************************************************************************
 void ARX_PLAYER_Quest_Init() {
 	PlayerQuest.clear();
+	gui::updateQuestBook();
 }
 
 //*************************************************************************************
@@ -538,16 +539,12 @@ void ARX_Player_Rune_Remove(RuneFlag _ulRune)
 //*************************************************************************************
 void ARX_PLAYER_Quest_Add(const std::string & quest, bool _bLoad) {
 	
-	std::string output = getLocalised(quest);
-	if(output.empty()) {
-		return;
-	}
-	
 	PlayerQuest.push_back(STRUCT_QUEST());
 	PlayerQuest.back().ident = quest;
-	PlayerQuest.back().localised = output;
 	bBookHalo = !_bLoad;
 	ulBookHaloTime = 0;
+	
+	gui::updateQuestBook();
 }
 
 //*************************************************************************************

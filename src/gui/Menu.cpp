@@ -539,9 +539,6 @@ bool ARX_Menu_Render() {
 
 			ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points");
 
-			ITC.Set("ptexcornerleft", "graph/interface/book/left_corner_original");
-			ITC.Set("ptexcornerright", "graph/interface/book/right_corner_original");
-
 			ITC.Level = getLocalised("system_charsheet_player_lvl");
 			ITC.Xp = getLocalised("system_charsheet_player_xp");
 

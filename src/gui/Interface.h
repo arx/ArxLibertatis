@@ -53,6 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
+#include "gui/Note.h"
+
 class TextureContainer;
 struct EERIE_CAMERA;
 struct INTERACTIVE_OBJ;
@@ -82,7 +84,7 @@ private:
 
 	TextureDictionary  m_Textures;
 	
-} ;
+};
 
 struct SPELL_ICON {
 	TextureContainer * tc;
@@ -94,28 +96,6 @@ struct SPELL_ICON {
 	bool bSecret;
 	bool bDuration;
 	bool bAudibleAtStart;
-} ;
-
-
-const unsigned long MAX_PAGES(256);
-
-enum ARX_INTERFACE_NOTE_TYPE
-{
-	NOTE_TYPE_UNDEFINED,
-	NOTE_TYPE_NOTE,
-	NOTE_TYPE_BIGNOTE,
-	NOTE_TYPE_NOTICE,
-	NOTE_TYPE_BOOK
-};
-
-struct STRUCT_NOTE
-{
-	ARX_INTERFACE_NOTE_TYPE type;
-	std::string             text;
-	long                    textsize;
-	long                    pages[MAX_PAGES];
-	long                    curpage;
-	long                    totpages;
 };
 
 enum E_ARX_STATE_MOUSE
@@ -262,10 +242,9 @@ void ARX_INTERFACE_ManageOpenedBook();
 void ARX_INTERFACE_ManageOpenedBook_Finish();
 void ARX_INTERFACE_NoteManage();
 void ARX_INTERFACE_BookOpenClose(unsigned long t);
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex);
+void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string& tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
-void ARX_INTERFACE_NoteInit();
 void ARX_INTERFACE_ShowFISHTANK();
 void ARX_INTERFACE_ShowARKANE();
 void ARX_INTERFACE_KillFISHTANK();
@@ -280,6 +259,10 @@ void ResetPlayerInterface();
 void Set_DragInter(INTERACTIVE_OBJ * io);
 void CreateInterfaceTextureContainers();
 void KillInterfaceTextureContainers();
+
+namespace gui {
+void updateQuestBook();
+} // namespace gui
 
 #define ARX_MOUSE_OVER_BOOK			1
 #define ARX_MOUSE_OVER_INVENTORY	2

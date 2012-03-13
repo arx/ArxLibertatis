@@ -73,11 +73,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Levels.h"
 #include "game/Inventory.h"
 
-#include "gui/Menu.h"
-#include "gui/Speech.h"
-#include "gui/MiniMap.h"
-#include "gui/TextManager.h"
-
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
 #include "graphics/GraphicsTypes.h"
@@ -92,6 +87,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 #include "graphics/texture/Texture.h"
 
+#include "gui/Menu.h"
+#include "gui/Speech.h"
+#include "gui/MiniMap.h"
+#include "gui/TextManager.h"
 #include "gui/Text.h"
 
 #include "input/Input.h"
@@ -206,9 +205,6 @@ void OptmizeInventory(unsigned int);
 extern long SHOW_INGAME_MINIMAP;
 
 //-----------------------------------------------------------------------------
-TextureContainer *	NoteTexture=NULL;
-TextureContainer *	NoteTextureLeft=NULL;
-TextureContainer *	NoteTextureRight=NULL;
 TextureContainer *	BasicInventorySkin=NULL;
 TextureContainer *	ThrowObject=NULL;
 ARX_INTERFACE_HALO_STRUCT * aiHalo=NULL;
@@ -220,11 +216,10 @@ INVENTORY_DATA *	TSecondaryInventory;
 INTERACTIVE_OBJ * FlyingOverIO=NULL;
 INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
-STRUCT_NOTE			Note;
-STRUCT_NOTE			QuestBook;
-char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
-size_t QuestBook_Cache_nbQuests = 0;
-std::string Page_Buffer;
+
+static gui::Note openNote;
+static gui::Note questBook;
+
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
 bool				bHitFlash = false;
@@ -235,12 +230,6 @@ float				fHitFlash = 0;
 unsigned long		ulHitFlash = 0;
 unsigned long		ulBookHaloTime = 0;
 unsigned long		ulGoldHaloTime = 0;
-float				NotePosX=0;
-float				NotePosY=0;
-float				NoteTextMinx;
-float				NoteTextMiny;
-float				NoteTextMaxx;
-float				NoteTextMaxy;
 float				InventoryX=-60.f;
 float				InventoryDir=0; // 0 stable, 1 to right, -1 to left
 
@@ -328,6 +317,73 @@ static long lTimeToDrawMecanismCursor=0;
 static long lNbToDrawMecanismCursor=0;
 static long lOldInterface;
 
+
+
+namespace gui {
+
+namespace {
+
+//! return true if the note was clicked
+bool manageNoteActions(Note & note) {
+	
+	if(note.prevPageButton().contains(Vec2f(DANAEMouse))) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
+		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9f + 0.2f * rnd());
+			arx_assert(note.page() >= 2);
+			note.setPage(note.page() - 2);
+		}
+		
+	} else if(note.nextPageButton().contains(Vec2f(DANAEMouse))) {
+		SpecialCursor = CURSOR_INTERACTION_ON;
+		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+			ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9f + 0.2f * rnd());
+			note.setPage(note.page() + 2);
+		}
+		
+	} else if(note.area().contains(Vec2f(DANAEMouse))) {
+		if(((EERIEMouseButton & 1) && !(LastMouseClick & 1) && TRUE_PLAYER_MOUSELOOK_ON)
+		   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))) {
+			return true;
+			EERIEMouseButton &= ~2;
+		}
+	}
+	
+	return false;
+}
+
+
+/// Update QuestBook_Cache_Text if it needs to. Otherwise does nothing.
+void manageQuestBook() {
+	
+	// Cache the questbook data
+	if(questBook.text().empty() && !PlayerQuest.empty()) {
+		std::string text;
+		for(size_t i = 0; i < PlayerQuest.size(); ++i) {
+			std::string quest = getLocalised(PlayerQuest[i].ident);
+			if(!quest.empty()) {
+				text += quest;
+				text += "\n\n";
+			}
+		}
+		questBook.setData(Note::QuestBook, text);
+		questBook.setPage(questBook.pageCount() - 1);
+	}
+	
+	manageNoteActions(questBook);
+	
+	questBook.render();
+	
+}
+
+} // anonymous namespace
+
+void updateQuestBook() {
+	// Clear the quest book cache - it will be re-created when needed
+	questBook.clear();
+}
+
+} // namespace gui
 
 //-----------------------------------------------------------------------------
 float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
@@ -520,7 +576,15 @@ void INTERFACE_TC::Reset()
 
 static void DrawBookInterfaceItem(TextureContainer * tc, float x, float y, Color color = Color::white, float z = 0.000001f) {
 	if(tc) {
-		EERIEDrawBitmap2((x+BOOKDECX)*Xratio, (y+BOOKDECY)*Yratio, (float)(tc->m_dwWidth)*Xratio, (float)(tc->m_dwHeight)*Yratio, z, tc, color);
+		EERIEDrawBitmap2(
+			(x + BOOKDECX) * Xratio,
+			(y + BOOKDECY) * Yratio,
+			tc->m_dwWidth * Xratio,
+			tc->m_dwHeight * Yratio,
+			z,
+			tc,
+			color
+		);
 	}
 }
 
@@ -658,336 +722,83 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteInit()
-{
-	Note.type = NOTE_TYPE_UNDEFINED;
-	Note.text.clear();
-	Note.textsize = 0;
-
-	QuestBook.curpage=0;
-	QuestBook_Cache_nbQuests = 0;
+void ARX_INTERFACE_NoteClear() {
+	player.Interface &= ~INTER_NOTE;
+	openNote.clear();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteClear()
-{
-	Note.type = NOTE_TYPE_UNDEFINED;
-
-	Note.text.clear();
-	Note.textsize=0;
-	player.Interface&=~INTER_NOTE;
-
-	if (NoteTexture)
-	{
-		delete NoteTexture;
-		NoteTexture=NULL;
-	}
-
-	if (NoteTextureLeft)
-	{
-		delete NoteTextureLeft;
-		NoteTextureLeft=NULL;
-	}
-
-	if (NoteTextureRight)
-	{
-		delete NoteTextureRight;
-		NoteTextureRight=NULL;
-	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const string & tex) {
+void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const string & text) {
 	
 	if(player.Interface & INTER_NOTE) {
 		ARX_INTERFACE_NoteClose();
 	}
 	
 	ARX_INTERFACE_BookOpenClose(2);
-	ARX_INTERFACE_NoteClear();
 	
-	Note.type = type;
-	Note.text = getLocalised(tex);
+	openNote.setData(type, getLocalised(text));
+	openNote.setPage(0);
+	
 	player.Interface |= INTER_NOTE;
 	
-	if(NoteTexture) {
-		delete NoteTexture;
-		NoteTexture = NULL;
-	}
-	
-	if(NoteTextureLeft) {
-		delete NoteTextureLeft;
-		NoteTextureLeft = NULL;
-	}
-	
-	if(NoteTextureRight) {
-		delete NoteTextureRight;
-		NoteTextureRight = NULL;
-	}
-	
-	Note.curpage = 0;
-	Note.pages[0] = 0;
-	long length = Note.text.length();
-	long curpage = 1;
-
-	NoteTexture = TextureContainer::LoadUI("graph/interface/book/ingame_books");
-
-	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
-	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
-	
-	int tNoteTextMinx = 40; 
-	int tNoteTextMaxx = checked_range_cast<int>(fWidth);
-	int tNoteTextMiny = 40; 
-	int tNoteTextMaxy = checked_range_cast<int>(fHeight);
-	
-	float fMinx = (tNoteTextMaxx-tNoteTextMinx)*Xratio;
-	float fMiny = (tNoteTextMaxy-tNoteTextMiny)*Yratio;
-	Rect rRect(0, 0, checked_range_cast<Rect::Num>(fMinx), checked_range_cast<Rect::Num>(fMiny));
-
-	int lLenghtCurr=0;
-
-		while(length>0)
-		{
-			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
-																Note.text.substr(lLenghtCurr),
-																rRect);
-			length-=lLengthDraw;
-			lLenghtCurr+=lLengthDraw;
-			Note.pages[curpage++]=lLenghtCurr;
-		}
-
-		Note.pages[curpage++]=-1;
-		Note.totpages=curpage;
-		NoteTexture=NULL;
-
-	if (Note.totpages > 3)
-		Note.type = Note.type == NOTE_TYPE_NOTE ? NOTE_TYPE_BIGNOTE : NOTE_TYPE_BOOK;
-
-	switch (Note.type)
-	{
-		case NOTE_TYPE_NOTICE:
+	switch(openNote.type()) {
+		case gui::Note::Notice:
 			ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
 			break;
-		case NOTE_TYPE_BOOK:
+		case gui::Note::Book:
 			ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
 			break;
-		case NOTE_TYPE_NOTE:
+		case gui::Note::SmallNote:
+		case gui::Note::BigNote:
 			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, 0.9F + 0.2F * rnd());
 			break;
-		default: break; // Nuky - Note: no sound for BIGNOTE ?
+		default: break;
 	}
-
-	if (TRUE_PLAYER_MOUSELOOK_ON && Note.type == NOTE_TYPE_BOOK)
+	
+	if(TRUE_PLAYER_MOUSELOOK_ON && type == gui::Note::Book) {
 		TRUE_PLAYER_MOUSELOOK_ON = false;
-
-	if (player.Interface & INTER_INVENTORYALL)
-	{
+	}
+	
+	if(player.Interface & INTER_INVENTORYALL) {
 		bInventoryClosing = true;
 		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteClose()
-{
-	if (player.Interface & INTER_NOTE)
-	{
-		switch (Note.type)
-		{
-			case NOTE_TYPE_NOTICE:
-				ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
-				break;
-			case NOTE_TYPE_BOOK:
-				ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
-				break;
-			case NOTE_TYPE_NOTE:
-				ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, 0.9F + 0.2F * rnd());
-				break;
-			default: break; // Nuky - Note: no sound for BIGNOTE ?
-		}
-
-		ARX_INTERFACE_NoteClear();
+void ARX_INTERFACE_NoteClose() {
+	
+	if(!(player.Interface & INTER_NOTE)) {
+		return;
 	}
-
-	player.Interface &= ~INTER_NOTE;
+	
+	switch(openNote.type()) {
+		case gui::Note::Notice: {
+			ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
+			break;
+		}
+		case gui::Note::Book:
+			ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
+			break;
+		case gui::Note::SmallNote:
+		case gui::Note::BigNote:
+			ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, 0.9F + 0.2F * rnd());
+			break;
+		default: break;
+	}
+	
+	ARX_INTERFACE_NoteClear();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteManage()
-{
-	if (player.Interface & INTER_NOTE)
-	{
-		long clicknotmanaged=1;
-
-		if (NoteTexture==NULL)
-		{
-			switch (Note.type)
-			{
-			case NOTE_TYPE_NOTE:
-				NoteTexture=TextureContainer::LoadUI("graph/interface/book/bignote");
-
-				if (NoteTexture)
-				{
-					NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
-					NotePosY=47.f;
-					NoteTextMinx=30.f;
-					NoteTextMaxx=NoteTexture->m_dwWidth-40.f;
-					NoteTextMiny=30.f;
-					NoteTextMaxy=NoteTexture->m_dwHeight-40.f;
-				}
-
-				break;
-			case NOTE_TYPE_NOTICE:
-				NoteTexture=TextureContainer::LoadUI("graph/interface/book/notice");
-
-				if (NoteTexture)
-				{
-					NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
-					NotePosY=47.f;
-					NoteTextMinx=50.f;
-					NoteTextMaxx=NoteTexture->m_dwWidth-50.f;
-					NoteTextMiny=50.f;
-					NoteTextMaxy=NoteTexture->m_dwHeight-50.f;
-				}
-
-				break;
-			case NOTE_TYPE_BIGNOTE:
-			case NOTE_TYPE_BOOK:
-
-				if (Note.type == NOTE_TYPE_BIGNOTE)
-				{
-					NoteTexture=TextureContainer::LoadUI("graph/interface/book/very_bignote");
-					NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
-					NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
-				}
-				else
-				{
-					NoteTexture=TextureContainer::LoadUI("graph/interface/book/ingame_books");
-					NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
-					NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
-				}
-
-				if (NoteTexture)
-				{
-					NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
-					NotePosY=47.f;
-					NoteTextMinx = 40.f;
-					NoteTextMaxx = NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f;
-					NoteTextMiny = 40.f;
-					NoteTextMaxy = NoteTexture->m_dwHeight-40.f;
-				}
-
-				break;
-				
-			case NOTE_TYPE_UNDEFINED: break; // Cannot handle notes of undefined type.
-			}
-		}
-
-		if (NoteTexture)
-		{
-			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-			DrawBookInterfaceItem(NoteTexture, NotePosX, NotePosY);
-
-			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
-			{
-				float x0, y0;
-
-				if(Note.curpage + 4 < Note.totpages)
-				{
-					x0 = -14 + NotePosX + NoteTexture->m_dwWidth - NoteTextureRight->m_dwWidth - 1;
-					y0 = -6  + NotePosY + NoteTexture->m_dwHeight - NoteTextureRight->m_dwHeight;
-
-					if ( Note.type == NOTE_TYPE_BOOK )
-					{
-
-						float fWidth = static_cast<float>(x0 + NoteTextureRight->m_dwWidth);
-						float fHeight = static_cast<float>(y0 + NoteTextureRight->m_dwHeight);
-
-						DrawBookInterfaceItem(NoteTextureRight, x0, y0);
-
-						if (MouseInBookRect(x0, y0, fWidth, fHeight))
-						{
-							SpecialCursor=CURSOR_INTERACTION_ON;
-
-							if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-							{
-								clicknotmanaged=0;
-								ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-								Note.curpage+=2;
-							}
-						}
-					}
-				}
-
-				if (Note.curpage > 1)
-				{
-					x0 =  8 + NotePosX ;
-					y0 = -6 + NotePosY + NoteTexture->m_dwHeight - NoteTextureLeft->m_dwHeight;
-
-					if (Note.type == NOTE_TYPE_BOOK)
-					{
-
-						float fWidth  = static_cast<float>(x0 + NoteTextureLeft->m_dwWidth);
-						float fHeight = static_cast<float>(y0 + NoteTextureLeft->m_dwHeight);
-
-						DrawBookInterfaceItem(NoteTextureLeft, x0, y0);
-
-						if ( MouseInBookRect( x0, y0, fWidth, fHeight) )
-
-						{
-							SpecialCursor = CURSOR_INTERACTION_ON;
-
-							if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-							{
-								clicknotmanaged=0;
-								ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-								Note.curpage-=2;
-							}
-						}
-					}
-				}
-
-				if (Note.pages[Note.curpage]>=0)
-				{
-					if(Note.pages[Note.curpage+1]>0)
-					{
-						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
-						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
-
-						if(Note.pages[Note.curpage+2]>0)
-						{
-							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, Color::none);
-						}
-					}
-					else
-					{
-						if(Note.pages[Note.curpage]>=0)
-						{
-							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
-						}
-					}
-				}
-
-				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-			}
-			else
-			{
-				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text, Color::none);
-			}
-		}
-
-		if (NoteTexture && MouseInBookRect(NotePosX, NotePosY, NotePosX+NoteTexture->m_dwWidth, NotePosY+NoteTexture->m_dwHeight))
-		{
-			if ((((EERIEMouseButton & 1) && !(LastMouseClick & 1) && TRUE_PLAYER_MOUSELOOK_ON )||((EERIEMouseButton & 2) && !(LastMouseClick & 2))) && clicknotmanaged)
-			{
-				ARX_INTERFACE_NoteClose();
-				EERIEMouseButton &= ~2;
-			}
-		}
+void ARX_INTERFACE_NoteManage() {
+	
+	if(!(player.Interface & INTER_NOTE)) {
+		return;
 	}
+	
+	if(gui::manageNoteActions(openNote)) {
+		ARX_INTERFACE_NoteClose();
+	}
+	
+	openNote.render();
 }
 
 //-----------------------------------------------------------------------------
@@ -1962,82 +1773,15 @@ bool ArxGame::ManageEditorControls()
 			}
 		}
 	}
-
+	
 	// gros book/note
-	if (player.Interface & INTER_NOTE)
-	{
-		switch (Note.type)
-		{
-		case NOTE_TYPE_NOTE:
-			NoteTexture=TextureContainer::LoadUI("graph/interface/book/bignote");
-
-			if (NoteTexture)
-			{
-				NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
-				NotePosY=47.f;
-				NoteTextMinx=30.f;
-				NoteTextMaxx=NoteTexture->m_dwWidth-40.f;
-				NoteTextMiny=30.f;
-				NoteTextMaxy=NoteTexture->m_dwHeight-40.f;
-			}
-
-			break;
-		case NOTE_TYPE_NOTICE:
-			NoteTexture=TextureContainer::LoadUI("graph/interface/book/notice");
-
-			if (NoteTexture)
-			{
-				NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
-				NotePosY=47.f;
-				NoteTextMinx=50.f;
-				NoteTextMaxx=NoteTexture->m_dwWidth-50.f;
-				NoteTextMiny=50.f;
-				NoteTextMaxy=NoteTexture->m_dwHeight-50.f;
-			}
-
-			break;
-		case NOTE_TYPE_BIGNOTE:
-		case NOTE_TYPE_BOOK:
-
-			if (Note.type ==NOTE_TYPE_BIGNOTE)
-			{
-				NoteTexture=TextureContainer::LoadUI("graph/interface/book/very_bignote");
-				NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
-				NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
-			}
-			else
-			{
-				NoteTexture=TextureContainer::LoadUI("graph/interface/book/ingame_books");
-				NoteTextureLeft=TextureContainer::LoadUI("graph/interface/book/left_corner");
-				NoteTextureRight=TextureContainer::LoadUI("graph/interface/book/right_corner");
-			}
-
-			if (NoteTexture)
-			{
-				NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
-				NotePosY=47.f;
-				NoteTextMinx = 40.f;
-				NoteTextMaxx = NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f;
-				NoteTextMiny = 40.f;
-				NoteTextMaxy = NoteTexture->m_dwHeight-30.f;
-			}
-
-			break;
-			
-		case NOTE_TYPE_UNDEFINED: break; // Cannot handle notes of undefined type.
-		}
-
-		px = NotePosX * Xratio;
-		py = NotePosY * Yratio;
-
-		if (NoteTexture)
-		if (MouseInRect(px, py, px+NoteTexture->m_dwWidth * Xratio, py+NoteTexture->m_dwHeight * Yratio))
-		{
+	if(player.Interface & INTER_NOTE) {
+		if(openNote.area().contains(Vec2f(DANAEMouse))) {
 			eMouseState = MOUSE_IN_NOTE;
 			return false;
 		}
 	}
-
+	
 	if (!PLAYER_INTERFACE_HIDE_COUNT && (TSecondaryInventory!=NULL))
 	{
 		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
@@ -5204,7 +4948,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							for (int j = 0; j < 6; ++j)
 								if (spellicons[i].symbols[j] != RUNE_NONE)
 								{
-									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
+									pos.x = (240-(count*32)*0.5f+j*32);
 									pos.y = (306);
 									DrawBookInterfaceItem(necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 								}
@@ -5266,150 +5010,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 }
 
 //-----------------------------------------------------------------------------
-// Nuky - split questbook code into separate functions and added cache of
-//        QuestBook_Cache_Text variable. QuestBook_Update will only generate it
-//        when the number of quests has changed (is it enough?)
-
-namespace
-{
-
-/// Update QuestBook_Cache_Text if it needs to. Otherwise does nothing.
-void QuestBook_Update()
-{
-	if(QuestBook_Cache_nbQuests == PlayerQuest.size())
-		return;
-
-	delete[] QuestBook_Cache_Text;
-
-	NotePosX = 97;
-	NotePosY = 64;
-	NoteTextMinx = 40.f;
-	NoteTextMaxx = ITC.Get("questbook")->m_dwWidth * 0.5f - 10.f;
-	NoteTextMiny = 40.f;
-	NoteTextMaxy = ITC.Get("questbook")->m_dwHeight - 65.f;
-
-	// calculation of number of pages
-	long lCurPage = 1;
-
-	float fMinX = (NoteTextMaxx - NoteTextMinx) * Xratio;
-	float fMinY = (NoteTextMaxy - NoteTextMiny) * Yratio;
-
-	Rect rRect(0, 0, checked_range_cast<Rect::Num>(fMinX), checked_range_cast<Rect::Num>(fMinY));
-
-	int lLenghtCurr = 0;
-	long lLenght = 0;
-
-	QuestBook.pages[0] = 0;
-
-	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
-		lLenght += PlayerQuest[i].localised.length();
-	}
-
-	QuestBook_Cache_Text = new char[lLenght+PlayerQuest.size()*2+1];
-	memset(QuestBook_Cache_Text, 0, (lLenght+PlayerQuest.size()*2+1));
-
-	for(size_t i = 0; i < PlayerQuest.size(); ++i) {
-		if(PlayerQuest[i].localised.size()) {
-			strcat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
-			strcat(QuestBook_Cache_Text, "\n\n");
-			lLenght += 2;
-		}
-	}
-	
-	while (lLenght > 0)
-	{
-		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, QuestBook_Cache_Text + lLenghtCurr, rRect);
-
-		lLenght -= lLengthDraw;
-		lLenghtCurr += lLengthDraw;
-
-		if (lCurPage + 1 < (long)MAX_PAGES)
-			QuestBook.pages[lCurPage++] = lLenghtCurr;
-	}
-
-	if (lCurPage + 1 < (long)MAX_PAGES)
-		QuestBook.pages[lCurPage++] = -1;
-	else
-		QuestBook.pages[MAX_PAGES-1] = -1;
-
-	QuestBook.totpages = lCurPage;
-
-	QuestBook_Cache_nbQuests = PlayerQuest.size();
-}
-
-void QuestBook_Render()
-{
-	// Clamp curpage in valid interval
-	QuestBook.curpage = std::min(std::max(static_cast<long>(0), QuestBook.curpage), QuestBook.totpages-1);
-
-	// Previous page corner
-	if (QuestBook.curpage > 1)
-	{
-		float x0 =   8 + NotePosX;
-		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("ptexcornerleft")->m_dwHeight;
-
-		DrawBookInterfaceItem(ITC.Get("ptexcornerleft"), x0, y0);
-
-		if (MouseInBookRect(x0, y0, x0 + ITC.Get("ptexcornerleft")->m_dwWidth, y0 + ITC.Get("ptexcornerleft")->m_dwHeight))
-		{
-			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-			{
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				QuestBook.curpage -= 2;
-			}
-		}
-	}
-
-	// Next page corner
-	if (QuestBook.curpage + 4 < QuestBook.totpages)
-	{
-		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("ptexcornerright")->m_dwWidth;
-		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("ptexcornerright")->m_dwHeight;
-
-		DrawBookInterfaceItem(ITC.Get("ptexcornerright"), x0, y0);
-
-		if (MouseInBookRect(x0, y0, x0 + ITC.Get("ptexcornerright")->m_dwWidth, y0 + ITC.Get("ptexcornerright")->m_dwHeight))
-		{
-			SpecialCursor=CURSOR_INTERACTION_ON;
-
-			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-			{
-				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				QuestBook.curpage += 2;
-			}
-		}
-	}
-
-	// Content
-	if (QuestBook.pages[QuestBook.curpage] >= 0)
-	{
-		if (QuestBook.pages[QuestBook.curpage+1] > 0)
-		{
-			Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage] );
-			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, Color::none);
-
-			if (QuestBook.pages[QuestBook.curpage+2]>0)
-			{
-				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, Color::none);
-			}
-		}
-		else
-		{
-			if (QuestBook.pages[QuestBook.curpage]>=0)
-			{
-				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, Color::none);
-			}
-		}
-	}
-}
-
-} // \namespace
-
-//-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook()
 {
 	GRenderer->SetRenderState(Renderer::Fog, false);
@@ -5461,9 +5061,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		ITC.Set("ptexcursorredist", "graph/interface/cursors/add_points");
 		
-		ITC.Set("ptexcornerleft", "graph/interface/book/left_corner_original");
-		ITC.Set("ptexcornerright", "graph/interface/book/right_corner_original");
-		
 		ITC.Level = getLocalised("system_charsheet_player_lvl");
 		ITC.Xp = getLocalised("system_charsheet_player_xp");
 		
@@ -5477,16 +5074,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	BOOKDECX = 0;
 	BOOKDECY = 0;
-
+	
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
+	
 	if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-		if(Book_Mode == BOOKMODE_STATS) {
-			DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
-		} else if(Book_Mode == BOOKMODE_SPELLS) {
-			DrawBookInterfaceItem(ITC.Get("ptexspellbook"), 97, 64, Color::white, 0.9999f);
-		} else if (Book_Mode == 2) {
-			DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
-		} else {
-			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
+		switch(Book_Mode) {
+			case BOOKMODE_STATS: {
+				DrawBookInterfaceItem(ITC.Get("playerbook"), 97, 64, Color::white, 0.9999f); 
+				break;
+			}
+			case BOOKMODE_SPELLS: {
+				DrawBookInterfaceItem(ITC.Get("ptexspellbook"), 97, 64, Color::white, 0.9999f);
+				break;
+			}
+			case BOOKMODE_MINIMAP: {
+				DrawBookInterfaceItem( ITC.Get("questbook"), 97, 64, Color::white, 0.9999f);
+				break;
+			}
+			case BOOKMODE_QUESTS: {
+				gui::manageQuestBook();
+				break;
+			}
 		}
 	}
 	else
@@ -5504,7 +5113,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		BOOKDECX = x - 97;
 		BOOKDECY = x - 64 + 19;
 	}
-
+	
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+	
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
 		bool bOnglet[11];
@@ -5672,7 +5284,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			memset(bOnglet, true, (max_onglet + 1) * sizeof(*bOnglet));
 		}
 		
-		if ((Book_Mode==1) || (Book_Mode==2))
+		if ((Book_Mode==BOOKMODE_SPELLS) || (Book_Mode==BOOKMODE_MINIMAP))
 		{
 			if (bOnglet[1])
 			{
@@ -6457,13 +6069,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
 			ARX_MINIMAP_Show( SHOWLEVEL, 1);
-	}
-	else if (Book_Mode == BOOKMODE_QUESTS)
-	{
-		if(!PlayerQuest.empty()) {
-			QuestBook_Update();
-			QuestBook_Render();
-		}
+		
 	}
 
 	if ((Book_Mode == BOOKMODE_STATS) && (inter.iobj[0]->obj != NULL))
@@ -6608,6 +6214,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		IN_BOOK_DRAW=0;
 
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterNone);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			PopAllTriangleList();
@@ -6615,6 +6222,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			PopAllTriangleListTransparency();
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GRenderer->GetTextureStage(0)->SetMipFilter(TextureStage::FilterLinear);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 		}
 
 		PDL[0]=SavePDL[0];
@@ -6858,7 +6466,7 @@ void ArxGame::DrawAllInterfaceFinish()
 {
 	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 	float rrr;
-	rrr=1.f-PULSATE*( 1.0f / 2 );
+	rrr=1.f-PULSATE*0.5f;
 
 	if (rrr>1.f) rrr=1.f;
 	else if (rrr<0.f) rrr=0.f;
@@ -6910,7 +6518,7 @@ void ArxGame::DrawAllInterfaceFinish()
 void ARX_INTERFACE_DrawCurrentTorch()
 {
 	if ((player.Interface & INTER_NOTE) && (TSecondaryInventory != NULL)
-		&& ((Note.type == NOTE_TYPE_BIGNOTE) || (Note.type == NOTE_TYPE_BOOK))
+		&& ((openNote.type() == gui::Note::BigNote) || (openNote.type() == gui::Note::Book))
 		)
 		return;
 
@@ -6958,10 +6566,10 @@ void ARX_INTERFACE_DrawCurrentTorch()
 
 extern float GLOBAL_SLOWDOWN;
 extern long SPLASH_THINGS_STAGE;
-//-----------------------------------------------------------------------------
-void ArxGame::DrawAllInterface()
-{
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+
+void ArxGame::DrawAllInterface() {
+	
+	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
@@ -7510,7 +7118,7 @@ void ArxGame::DrawAllInterface()
 			float px = DANAESIZX - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 			float py = 0;
 
-			float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*( 1.0f / 2 )+rnd()*( 1.0f / 10 );
+			float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 
 			if ( vv < 0.f ) vv = 0;
 			else if ( vv > 1.f ) vv = 1.f;
@@ -7859,9 +7467,9 @@ long Manage3DCursor(long flags)
 
 
 					EERIE_CYLINDER cyl;
-					cyl.origin.x=pos.x-(maxoff.x-minoff.x)*( 1.0f / 2 );
+					cyl.origin.x=pos.x-(maxoff.x-minoff.x)*0.5f;
 					cyl.origin.y=pos.y;
-					cyl.origin.z=pos.z-(maxoff.z-minoff.z)*( 1.0f / 2 );
+					cyl.origin.z=pos.z-(maxoff.z-minoff.z)*0.5f;
 					cyl.height=-50.f;
 					cyl.radius=40.f;
 
@@ -7900,9 +7508,9 @@ long Manage3DCursor(long flags)
 
 					if ( height > -30.f ) height = -30.f;
 					
-		objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * ( 1.0f / 2 );  
+		objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * 0.5f;  
 		objcenter.y	=	0;	
-		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * ( 1.0f / 2 );  
+		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * 0.5f;  
 					
 					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{

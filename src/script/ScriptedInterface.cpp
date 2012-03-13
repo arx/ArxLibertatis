@@ -135,14 +135,17 @@ public:
 	
 	Result execute(Context & context) {
 		
-		ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
+		gui::Note::Type type;
 		string tpname = context.getWord();
 		if(tpname == "note") {
-			type = NOTE_TYPE_NOTE;
+			type = gui::Note::SmallNote;
 		} else if(tpname == "notice") {
-			type = NOTE_TYPE_NOTICE;
+			type = gui::Note::Notice;
 		} else if(tpname == "book") {
-			type = NOTE_TYPE_BOOK;
+			type = gui::Note::Book;
+		} else {
+			ScriptWarning << "unexpected note type: " << tpname;
+			type = gui::Note::SmallNote;
 		}
 		
 		string text = loadUnlocalized(context.getWord());

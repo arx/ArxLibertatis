@@ -48,6 +48,7 @@ public:
 	Image::Format GetFormat() const { return mFormat; }
 	
 	inline bool hasMipmaps() const { return (flags & HasMipmaps) == HasMipmaps; }
+	inline bool hasColorKey() const { return (flags & HasColorKey) == HasColorKey; }
 	
 protected:
 	

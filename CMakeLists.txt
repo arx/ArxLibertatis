@@ -519,6 +519,7 @@ set(GUI_SOURCES
 	src/gui/MenuPublic.cpp
 	src/gui/MenuWidgets.cpp
 	src/gui/MiniMap.cpp
+	src/gui/Note.cpp
 	src/gui/Speech.cpp
 	src/gui/Text.cpp
 	src/gui/TextManager.cpp

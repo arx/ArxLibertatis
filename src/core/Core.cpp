@@ -716,8 +716,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	NOCHECKSUM=0;
 	
-	ARX_INTERFACE_NoteInit();
-	LogDebug("Note Init");
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
 	LogDebug("Attractors Init");
