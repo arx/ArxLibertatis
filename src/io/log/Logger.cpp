@@ -115,7 +115,6 @@ void LogManager::deleteAllBackends() {
 	for(Backends::const_iterator i = backends.begin(); i != backends.end(); ++i) {
 		delete *i;
 	}
-
 	backends.clear();
 }
 
@@ -288,18 +287,19 @@ void Logger::init() {
 		configure(arxdebug);
 	}
 	
-	// TODO(crash-handler)
-	//CrashHandler::registerCrashCallback(LogManager::deleteAllBackends);
 }
 
 void Logger::shutdown() {
 
 	Autolock lock(LogManager::lock);
-
-	LogManager::deleteAllBackends();
 	
 	LogManager::sources.clear();
 	LogManager::rules.clear();
 
 	LogManager::minimumLevel = LogManager::defaultLevel;
+}
+
+
+void Logger::quickShutdown() {
+	LogManager::deleteAllBackends();
 }

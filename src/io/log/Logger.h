@@ -183,6 +183,8 @@ public:
 	 * Shutdown the logging and free all registered backends.
 	 */
 	static void shutdown();
+	
+	static void quickShutdown();
 };
 
 inline Logger & operator<<(Logger & logger, const Logger::nullstr & s) {

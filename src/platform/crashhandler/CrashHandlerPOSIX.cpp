@@ -226,11 +226,11 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
 	// Remove crash handlers so we don't end in an infinite crash loop
 	removeCrashHandlers(&nullHandlers);
 	
-	// TODO Run the callbacks (unused?)
-	// for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
-	//    it != m_crashCallbacks.end(); ++it) {
-	//    (*it)();
-	// }
+	// Run the callbacks
+	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
+	    it != m_crashCallbacks.end(); ++it) {
+		(*it)();
+	}
 	
 	m_pCrashInfo->signal = crashType;
 	m_pCrashInfo->fpeCode = fpeCode;

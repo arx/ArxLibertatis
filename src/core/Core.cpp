@@ -653,6 +653,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	fs::path logFile = config.paths.user / "arx.log";
 	Logger::add(new logger::File(logFile, std::ios_base::out | std::ios_base::trunc));
 	
+	CrashHandler::registerCrashCallback(Logger::quickShutdown);
+	
 	LogInfo << "Starting " << version;
 	
 	
