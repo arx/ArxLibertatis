@@ -196,29 +196,34 @@ void CrashHandlerPOSIX::crashBroker() {
 	}
 	
 #if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
-		prctl(PR_SET_PDEATHSIG, 0);
+	prctl(PR_SET_PDEATHSIG, 0);
 #endif
 	
-	char arguments[256];
-	strcpy(arguments, "-crashinfo=");
-	strcat(arguments, m_SharedMemoryName.c_str());
+	if(!fork()) {
+		
+		char arguments[256];
+		strcpy(arguments, "-crashinfo=");
+		strcat(arguments, m_SharedMemoryName.c_str());
+		
+		// Try a the crash reporter in the same directory as arx or in the current directory.
+	#ifdef HAVE_EXECL
+		execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
+	#endif
+		
+		// Try a crash reporter in the system path.
+	#ifdef HAVE_EXECLP
+		execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
+	#endif
+		
+		// Something went wrong - the crash reporter failed to start!
+		
+		// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
+		
+		// Kill the original, busy-waiting process.
+		kill(m_pCrashInfo->processId, m_pCrashInfo->signal);
+	}
 	
-	// Try a the crash reporter in the same directory as arx or in the current directory.
-#ifdef HAVE_EXECL
-	execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
-#endif
-	
-	// Try a crash reporter in the system path.
-#ifdef HAVE_EXECLP
-	execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
-#endif
-	
-	// Something went wrong - the crash reporter failed to start!
-	
-	// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
-	
-	// Kill the original, busy-waiting process.
-	kill(m_pCrashInfo->processId, m_pCrashInfo->signal);
+	exit(0);
 }
 
 void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
