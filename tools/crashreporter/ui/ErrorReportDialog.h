@@ -57,21 +57,21 @@ public:
 	static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
 
 signals:
-	void taskStarted(const std::string& taskDescription, int numSteps);
-	void taskStepStarted(const std::string& taskStepDescription);
+	void taskStarted(const QString& taskDescription, int numSteps);
+	void taskStepStarted(const QString& taskStepDescription);
 	void taskStepEnded();
 
 protected:
-	void setError(const std::string& strError)
+	void setError(const QString& strError)
 	{
-		if(m_strErrorDescription.isEmpty() && !strError.empty())
-			m_strErrorDescription = strError.c_str();
+		if(m_strErrorDescription.isEmpty() && !strError.isEmpty())
+			m_strErrorDescription = strError;
 	}
 
-	void setDetailedError(const std::string& strDetailedError)
+	void setDetailedError(const QString& strDetailedError)
 	{
-		if(m_strDetailedErrorDescription.isEmpty() && !strDetailedError.empty())
-			m_strDetailedErrorDescription = strDetailedError.c_str();
+		if(m_strDetailedErrorDescription.isEmpty() && !strDetailedError.isEmpty())
+			m_strDetailedErrorDescription = strDetailedError;
 	}
 
 protected:
@@ -226,8 +226,8 @@ public:
 	void SetExitText(const QString& strExit);
 
 private slots:
-	void onTaskStarted(const std::string& taskDescription, int numSteps);
-	void onTaskStepStarted(const std::string& taskStepDescription);
+	void onTaskStarted(const QString& taskDescription, int numSteps);
+	void onTaskStepStarted(const QString& taskStepDescription);
 	void onTaskStepEnded();
 	void onTaskCompleted();
 	void onPaneChanged(int index);

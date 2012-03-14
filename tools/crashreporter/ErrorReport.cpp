@@ -87,7 +87,7 @@
 #include "platform/String.h"
 #include "platform/Thread.h"
 
-ErrorReport::ErrorReport(const std::string& sharedMemoryName)
+ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	: m_RunningTimeSec(0)
 	, m_ProcessMemoryUsage(0)
 	, m_SharedMemoryName(sharedMemoryName)
@@ -104,7 +104,7 @@ ErrorReport::ErrorReport(const std::string& sharedMemoryName)
 bool ErrorReport::Initialize()
 {	
 	// Create a shared memory object.
-	m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::open_only, m_SharedMemoryName.c_str(), boost::interprocess::read_write);
+	m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::open_only, m_SharedMemoryName.toStdString().c_str(), boost::interprocess::read_write);
 
 	// Map the whole shared memory in this process
 	m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
@@ -591,11 +591,11 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	if(m_pCrashInfo->exceptionCode != 0)
 	{
-		std::string exceptionStr = GetExceptionString(m_pCrashInfo->exceptionCode);
-		if(!exceptionStr.empty())
+		QString exceptionStr = GetExceptionString(m_pCrashInfo->exceptionCode).c_str();
+		if(!exceptionStr.isEmpty())
 		{
 			m_ReportDescription += "\nException code:\n  ";
-			m_ReportDescription += exceptionStr.c_str();
+			m_ReportDescription += exceptionStr;
 			m_ReportDescription += "\n";
 		}
 	}
@@ -617,11 +617,11 @@ bool ErrorReport::GetMiscCrashInfo() {
 	m_ReportDescription += callStack.c_str();
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.c_str());
 
-	std::string registers = GetRegisters(&m_pCrashInfo->contextRecord);
-	if(!registers.empty())
+	QString registers(GetRegisters(&m_pCrashInfo->contextRecord).c_str());
+	if(!registers.isEmpty())
 	{
 		m_ReportDescription += "\nRegisters:\n";
-		m_ReportDescription += registers.c_str();
+		m_ReportDescription += registers;
 	}
 	
 	CloseHandle(hProcess);
@@ -738,13 +738,13 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	if(!bInit)
 	{
 		pProgressNotifier->setError("Could not generate the crash dump.");
-		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
+		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
 	
 	if(m_pCrashInfo->architecture != ARX_ARCH) {
 		pProgressNotifier->setError("Architecture mismatch between the crashed process and the crash reporter.");
-		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
+		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
 	
@@ -755,7 +755,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	if(!bCrashDump)
 	{
 		pProgressNotifier->setError("Could not generate the crash dump.");
-		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
+		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
 
@@ -766,7 +766,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	if(!bCrashXml)
 	{
 		pProgressNotifier->setError("Could not generate the manifest.");
-		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
+		pProgressNotifier->setDetailedError(m_DetailedError);
 		return false;
 	}
 
@@ -793,7 +793,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	if(!bLoggedIn)
 	{
 		pProgressNotifier->setError("Could not connect to the bug tracker");
-		pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
+		pProgressNotifier->setDetailedError(server.getErrorString());
 		return false;
 	}
 
@@ -805,7 +805,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	if(!bSearchSuccessful)
 	{
 		pProgressNotifier->setError("Failure occured when searching issue on the bug tracker");
-		pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
+		pProgressNotifier->setDetailedError(server.getErrorString());
 		return false;
 	}
 
@@ -818,7 +818,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		{
 			pProgressNotifier->taskStepEnded();
 			pProgressNotifier->setError("Could not create a new issue on the bug tracker");
-			pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
+			pProgressNotifier->setDetailedError(server.getErrorString());
 			return false;
 		}
 
@@ -858,7 +858,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 			if(!bCommentAdded)
 			{
 				pProgressNotifier->setError("Failure occured when trying to add information to an existing issue");
-				pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
+				pProgressNotifier->setDetailedError(server.getErrorString());
 				return false;
 			}
 		}
@@ -870,13 +870,13 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		if(!it->attachToReport)
 			continue;
 
-		pProgressNotifier->taskStepStarted(std::string("Sending file \"") + it->path.filename() + "\"");
-		bool bAttached = server.attachFile(issue_id, it->path.string().c_str(), it->path.filename().c_str(), m_SharedMemoryName.c_str());
+		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(it->path.filename().c_str()));
+		bool bAttached = server.attachFile(issue_id, it->path.string().c_str(), it->path.filename().c_str(), m_SharedMemoryName);
 		pProgressNotifier->taskStepEnded();
 		if(!bAttached)
 		{
-			pProgressNotifier->setError(std::string("Could not send file \"") + it->path.filename() + "\"");
-			pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
+			pProgressNotifier->setError(QString("Could not send file \"%1\"").arg(it->path.filename().c_str()));
+			pProgressNotifier->setDetailedError(server.getErrorString());
 			return false;
 		}
 	}

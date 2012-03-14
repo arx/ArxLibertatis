@@ -47,18 +47,12 @@ void ScreenshotWidget::paintEvent(QPaintEvent * event)
 	p.drawPixmap(0, 0, scaledPixmap);
 }
 
-// This is needed to send signals with std strings
-Q_DECLARE_METATYPE(std::string)
-
 ErrorReportDialog::ErrorReportDialog(ErrorReport& errorReport, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::ErrorReportDialog),
 	m_pCurrentTask(0),
 	m_errorReport(errorReport)
 {
-	// This is needed to send signals with std strings
-	qRegisterMetaType<std::string>("std::string");
-	
 	ui->setupUi(this);
 
 	ui->stackedWidget->setCurrentIndex(0);
@@ -192,7 +186,7 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 		return;
 	
 	fs::path fileName = m_errorReport.GetAttachedFiles()[selectedIndex.row()].path;
-	std::string ext = fileName.ext();
+	QString ext = fileName.ext().c_str();
 	if(ext == ".txt" || ext == ".log" || ext == ".ini" || ext == ".xml")
 	{
 		QFile textFile(fileName.string().c_str());
@@ -224,19 +218,19 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	}
 }
 
-void ErrorReportDialog::onTaskStarted(const std::string& taskDescription, int numSteps)
+void ErrorReportDialog::onTaskStarted(const QString& taskDescription, int numSteps)
 {
-	ui->lblProgressTitle->setText(taskDescription.c_str());
+	ui->lblProgressTitle->setText(taskDescription);
 	ui->progressBar->setMaximum(numSteps);
 	ui->progressBar->setValue(0);
 }
 
-void ErrorReportDialog::onTaskStepStarted(const std::string& taskStepDescription)
+void ErrorReportDialog::onTaskStepStarted(const QString& taskStepDescription)
 {
 	QString textDescription = QString("(%1/%2) %3...")
 								.arg(ui->progressBar->value()+1)
 								.arg(ui->progressBar->maximum())
-								.arg(taskStepDescription.c_str());
+								.arg(taskStepDescription);
 
 	ui->lblProgressDescription->setText(textDescription);
 
@@ -279,8 +273,8 @@ void ErrorReportDialog::startTask(CrashReportTask* pTask, int nextPane)
 
 	m_pCurrentTask = pTask;
 
-	connect(m_pCurrentTask, SIGNAL(taskStarted(const std::string&, int)), SLOT(onTaskStarted(const std::string&, int)));
-	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const std::string&)), SLOT(onTaskStepStarted(const std::string&)));
+	connect(m_pCurrentTask, SIGNAL(taskStarted(const QString&, int)), SLOT(onTaskStarted(const QString&, int)));
+	connect(m_pCurrentTask, SIGNAL(taskStepStarted(const QString&)), SLOT(onTaskStepStarted(const QString&)));
 	connect(m_pCurrentTask, SIGNAL(taskStepEnded()), SLOT(onTaskStepEnded()));
 	connect(m_pCurrentTask, SIGNAL(finished()), SLOT(onTaskCompleted()));
 

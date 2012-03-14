@@ -59,11 +59,11 @@ public:
 	class IProgressNotifier
 	{
 	public:
-		virtual void taskStarted(const std::string& taskDescription, int numSteps) = 0;
-		virtual void taskStepStarted(const std::string& taskStepDescription) = 0;
+		virtual void taskStarted(const QString& taskDescription, int numSteps) = 0;
+		virtual void taskStepStarted(const QString& taskStepDescription) = 0;
 		virtual void taskStepEnded() = 0;
-		virtual void setError(const std::string& strError) = 0;
-		virtual void setDetailedError(const std::string& strDetailedError) = 0;
+		virtual void setError(const QString& strError) = 0;
+		virtual void setDetailedError(const QString& strDetailedError) = 0;
 	};
 
 	struct File
@@ -82,7 +82,7 @@ public:
 
 public:
 	
-	explicit ErrorReport(const std::string & sharedMemoryName);
+	explicit ErrorReport(const QString & sharedMemoryName);
 	
 	bool GenerateReport(IProgressNotifier* progressNotifier);
 	bool SendReport(IProgressNotifier* progressNotifier);
@@ -126,7 +126,7 @@ private:
 	quint64 m_ProcessMemoryUsage;
 	QString m_ProcessArchitecture;
 
-	std::string m_SharedMemoryName;
+	QString m_SharedMemoryName;
 	boost::interprocess::shared_memory_object m_SharedMemory;
 	
 	boost::interprocess::mapped_region m_MemoryMappedRegion;

@@ -50,18 +50,18 @@ int main(int argc, char **argv) {
 	
 	LogWarning << "Arx Crash Reporter starting!";
 	
-	std::string sharedMemoryName;
+	QString sharedMemoryName;
 	const QStringList args = app.arguments();
 	QStringList::const_iterator itArgs;
 	for (itArgs = args.constBegin(); itArgs != args.constEnd(); ++itArgs) {
 		if((*itArgs).startsWith("-crashinfo=")) {
 			QString crashInfo = (*itArgs);
 			crashInfo.remove("-crashinfo=");
-			sharedMemoryName = crashInfo.toAscii().data();
+			sharedMemoryName = crashInfo;
 		}
 	}
 	
-	if(sharedMemoryName.empty()) {
+	if(sharedMemoryName.isEmpty()) {
 		return -1;
 	}
 	
