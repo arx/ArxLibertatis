@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_GUI_NOTE_HPP
-#define ARX_GUI_NOTE_HPP
+#ifndef ARX_GUI_NOTE_H
+#define ARX_GUI_NOTE_H
 
 #include <stddef.h>
 #include <string>
@@ -88,4 +88,4 @@ private:
 
 } // namespace gui
 
-#endif  // ARX_GUI_NOTE_HPP
+#endif  // ARX_GUI_NOTE_H
