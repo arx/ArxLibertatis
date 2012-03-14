@@ -59,6 +59,8 @@ public:
 
 	QUrl getUrl() const;
 
+	const QString& getErrorString() const;
+
 private:
 	bool waitForReply();
 	bool setFieldValue(const QString& fieldName, int issue_id, int value_id);
@@ -70,6 +72,7 @@ private:
 	QNetworkAccessManager m_NetAccessManager;
 	QNetworkReply *       m_CurrentReply;
 	QUrl                  m_CurrentUrl;
+	QString				  m_LastErrorString;
 };
 
 }

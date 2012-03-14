@@ -291,7 +291,13 @@ bool Server::waitForReply()
 
 	m_CurrentUrl = m_CurrentReply->url();
 
-	return m_CurrentReply->error() == QNetworkReply::NoError;
+	bool succeeded = m_CurrentReply->error() == QNetworkReply::NoError;
+	if(!succeeded)
+		m_LastErrorString = m_CurrentReply->errorString();
+	else
+		m_LastErrorString.clear();
+
+	return succeeded;
 }
 
 QUrl Server::getUrl() const
@@ -299,6 +305,11 @@ QUrl Server::getUrl() const
 	QUrl httpUrl = m_CurrentUrl;
 	httpUrl.setScheme("http");
 	return httpUrl;
+}
+
+const QString& Server::getErrorString() const
+{
+	return m_LastErrorString;
 }
 
 } // namespace TBG

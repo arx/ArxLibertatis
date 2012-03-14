@@ -63,6 +63,7 @@ public:
 		virtual void taskStepStarted(const std::string& taskStepDescription) = 0;
 		virtual void taskStepEnded() = 0;
 		virtual void setError(const std::string& strError) = 0;
+		virtual void setDetailedError(const std::string& strDetailedError) = 0;
 	};
 
 	struct File
@@ -140,6 +141,8 @@ private:
 
 	QString m_Username;
 	QString m_Password;
+
+	QString m_DetailedError;
 };
 
 #endif // ARX_TOOLS_CRASHREPORTER_ERRORREPORT_H

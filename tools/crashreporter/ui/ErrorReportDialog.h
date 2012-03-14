@@ -52,6 +52,7 @@ public:
 	 * @sa succeeded()
 	 */
 	const QString& getErrorString() const { return m_strErrorDescription; }
+	const QString& getDetailedErrorString() const { return m_strDetailedErrorDescription; }
 
 	static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
 
@@ -67,11 +68,18 @@ protected:
 			m_strErrorDescription = strError.c_str();
 	}
 
+	void setDetailedError(const std::string& strDetailedError)
+	{
+		if(m_strDetailedErrorDescription.isEmpty() && !strDetailedError.empty())
+			m_strDetailedErrorDescription = strDetailedError.c_str();
+	}
+
 protected:
 	ErrorReport& m_errorReport;
 
 private:
 	QString m_strErrorDescription;
+	QString m_strDetailedErrorDescription;
 };
 
 //!

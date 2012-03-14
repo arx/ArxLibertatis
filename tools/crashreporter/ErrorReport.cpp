@@ -113,7 +113,10 @@ bool ErrorReport::Initialize()
 	m_pCrashInfo = (CrashInfo*)m_MemoryMappedRegion.get_address();
 
 	if(m_MemoryMappedRegion.get_size() != sizeof(CrashInfo))
+	{
+		m_DetailedError = "The size of the memory mapped region does not match the size of the CrashInfo structure.";
 		return false;
+	}
 
 	bool bMiscCrashInfo = GetMiscCrashInfo();
 	if(!bMiscCrashInfo)
@@ -126,7 +129,10 @@ bool ErrorReport::Initialize()
 	m_ReportFolder = fs::path(m_pCrashInfo->crashReportFolder) / fs::path(m_CrashDateTime.toString("yyyy.MM.dd hh.mm.ss").toAscii());
 
 	if(!fs::create_directories(m_ReportFolder))
+	{
+		m_DetailedError = QString("Unable to create directory (%1) to store the crash report files.").arg(m_ReportFolder.string().c_str());
 		return false;
+	}
 
 	return true;
 }
@@ -442,6 +448,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
 	if(!bWroteDump) {
+		m_DetailedError = "GDB is probably not installed on your machine. Please install it in order to obtain valuable crash reports in the future.";
 		return false;
 	}
 	
@@ -464,6 +471,7 @@ bool ErrorReport::getCrashDescription() {
 	QFile traceFile(tracePath.string().c_str());
 	traceFile.open(QIODevice::ReadOnly);
 	if(!traceFile.isOpen()) {
+		m_DetailedError = "Unable to read GDB output from the disk.";
 		return false;
 	}
 	
@@ -563,11 +571,19 @@ bool ErrorReport::GetMiscCrashInfo() {
 			m_RunningTimeSec = (double)(uCurTime-uStartTime)*10E-08;
 		}
 	}
+	else
+	{
+		m_DetailedError = QString("Unable to obtain an handle to the crashed process (Error %1).").arg(QString::number(GetLastError()));
+		return false;
+	}
 
 	// Get operating system friendly name from registry.
 	char OSNameBuf[256];
 	if(!GetWindowsVersionName(OSNameBuf, 256))
+	{
+		m_DetailedError = QString("A failure occured when obtaining Windows version name (Error %1).").arg(QString::number(GetLastError()));
 		return false;
+	}
 	m_OSName = OSNameBuf;
 
 	// Determine if Windows is 64-bit.
@@ -588,8 +604,11 @@ bool ErrorReport::GetMiscCrashInfo() {
 	u32 callstackCrc;
 
 	bool bCallstack = GetCallStackInfo(hProcess, m_pCrashInfo->threadHandle, &m_pCrashInfo->contextRecord, callStack, callstackTop, callstackCrc);
-	if(!bCallstack)
+	if(!bCallstack) 
+	{
+		m_DetailedError = "A failure occured when obtaining information regarding the callstack.";
 		return false;
+	}
 	
 	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
 	
@@ -634,6 +653,7 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 	
 	QFile file(fullPath.string().c_str());
 	if(!file.open(QIODevice::WriteOnly)) {
+		m_DetailedError = "Unable to open report manifest for writing.";
 		return false;
 	}
 	
@@ -713,12 +733,19 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	
 	// Initialize shared memory
 	pProgressNotifier->taskStepStarted("Connecting to crashed application");
-	Initialize();
+	bool bInit = Initialize();
 	pProgressNotifier->taskStepEnded();
+	if(!bInit)
+	{
+		pProgressNotifier->setError("Could not generate the crash dump.");
+		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
+		return false;
+	}
 	
 	if(m_pCrashInfo->architecture != ARX_ARCH) {
-		// TODO architecture mismatch - display an error
-		exit(0);
+		pProgressNotifier->setError("Architecture mismatch between the crashed process and the crash reporter.");
+		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
+		return false;
 	}
 	
 	// Generate minidump
@@ -728,6 +755,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	if(!bCrashDump)
 	{
 		pProgressNotifier->setError("Could not generate the crash dump.");
+		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
 		return false;
 	}
 
@@ -738,6 +766,7 @@ bool ErrorReport::GenerateReport(ErrorReport::IProgressNotifier* pProgressNotifi
 	if(!bCrashXml)
 	{
 		pProgressNotifier->setError("Could not generate the manifest.");
+		pProgressNotifier->setDetailedError(m_DetailedError.toStdString());
 		return false;
 	}
 
@@ -764,6 +793,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	if(!bLoggedIn)
 	{
 		pProgressNotifier->setError("Could not connect to the bug tracker");
+		pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
 		return false;
 	}
 
@@ -775,6 +805,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	if(!bSearchSuccessful)
 	{
 		pProgressNotifier->setError("Failure occured when searching issue on the bug tracker");
+		pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
 		return false;
 	}
 
@@ -787,6 +818,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		{
 			pProgressNotifier->taskStepEnded();
 			pProgressNotifier->setError("Could not create a new issue on the bug tracker");
+			pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
 			return false;
 		}
 
@@ -826,6 +858,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 			if(!bCommentAdded)
 			{
 				pProgressNotifier->setError("Failure occured when trying to add information to an existing issue");
+				pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
 				return false;
 			}
 		}
@@ -843,6 +876,7 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 		if(!bAttached)
 		{
 			pProgressNotifier->setError(std::string("Could not send file \"") + it->path.filename() + "\"");
+			pProgressNotifier->setDetailedError(server.getErrorString().toStdString());
 			return false;
 		}
 	}

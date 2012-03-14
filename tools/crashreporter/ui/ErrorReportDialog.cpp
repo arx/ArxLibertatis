@@ -264,6 +264,7 @@ void ErrorReportDialog::onTaskCompleted()
 	else
 	{
 		ui->lblExitFail->setText(m_pCurrentTask->getErrorString());
+		ui->lblExitFailDetails->setText(m_pCurrentTask->getDetailedErrorString());
 		ui->stackedWidget->setCurrentIndex(Pane_ExitError);
 	}
 
