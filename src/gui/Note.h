@@ -88,4 +88,4 @@ private:
 
 } // namespace gui
 
-#endif  // ARX_GUI_NOTE_H
+#endif // ARX_GUI_NOTE_H
