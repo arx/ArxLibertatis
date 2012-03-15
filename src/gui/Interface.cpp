@@ -323,7 +323,8 @@ namespace gui {
 
 namespace {
 
-//! return true if the note was clicked
+//! Manage forward and backward buttons on notes and the quest book.
+//! \return true if the note was clicked
 bool manageNoteActions(Note & note) {
 	
 	if(note.prevPageButton().contains(Vec2f(DANAEMouse))) {
@@ -344,8 +345,8 @@ bool manageNoteActions(Note & note) {
 	} else if(note.area().contains(Vec2f(DANAEMouse))) {
 		if(((EERIEMouseButton & 1) && !(LastMouseClick & 1) && TRUE_PLAYER_MOUSELOOK_ON)
 		   || ((EERIEMouseButton & 2) && !(LastMouseClick & 2))) {
-			return true;
 			EERIEMouseButton &= ~2;
+			return true;
 		}
 	}
 	
@@ -353,7 +354,7 @@ bool manageNoteActions(Note & note) {
 }
 
 
-/// Update QuestBook_Cache_Text if it needs to. Otherwise does nothing.
+//! Update and render the quest book.
 void manageQuestBook() {
 	
 	// Cache the questbook data
@@ -373,7 +374,6 @@ void manageQuestBook() {
 	manageNoteActions(questBook);
 	
 	questBook.render();
-	
 }
 
 } // anonymous namespace
