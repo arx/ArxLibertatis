@@ -3669,6 +3669,8 @@ extern void ClearDynLights();
 
 void ARX_GAME_Reset(long type) {
 	
+	DeadTime = 0;
+	
 	if(inter.iobj[0]) {
 		inter.iobj[0]->speed_modif = 0;
 	}

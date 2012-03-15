@@ -147,6 +147,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/RenderWindow.h"
 
+// Under OS X we want SDLmain to replace the entry point with its own.
+// TODO: I don't think this is wanted and we'll need to add the NSApplication setup
+// on the Arx Libertatis side instead of SDLmain's.
+#if defined(__APPLE__) && defined(__MACH__)
+    #include <SDL.h>
+#endif
+
 class TextManager;
 
 using std::min;
@@ -184,7 +191,6 @@ extern long		INTER_DRAW;
 extern long		INTER_COMPUTE;
 extern long		FAKE_DIR;
 extern long		DONT_WANT_PLAYER_INZONE;
-extern long		DeadTime;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;

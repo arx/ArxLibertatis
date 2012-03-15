@@ -88,6 +88,7 @@ endif()
 find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
+set(CMAKE_THREAD_PREFER_PTHREAD 1)
 find_package(Threads REQUIRED)
 if(USE_OPENGL)
 	find_package(OpenGL)
@@ -100,8 +101,12 @@ endif()
 find_package(Doxygen)
 find_package(PythonInterp)
 if(USE_SDL)
-	set(SDL_BUILDING_LIBRARY 1)		# Required to avoid linking with SDLmain...
-	find_package(SDL 1.2 EXACT)
+    if(NOT APPLE)
+        # Required to avoid linking with SDLmain except for OS X where it is necessary
+        # due to the need to have NSApplication correctly setup by SDLmain.
+        set(SDL_BUILDING_LIBRARY 1)
+    endif()
+    find_package(SDL 1.2 EXACT)
 endif()
 
 if(MSVC)
