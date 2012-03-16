@@ -204,6 +204,8 @@ bool Application::InitConfig() {
 		}
 	}
 	
+	config.setOutputFile(configFile);
+	
 	if(!config.init(configFile)) {
 		fs::path defaultUserConfigFile = config.paths.user / "cfg_default.ini";
 		if(!config.init(defaultUserConfigFile)) {
@@ -219,9 +221,10 @@ bool Application::InitConfig() {
 				}
 			}
 		}
+		
+		// Save a default config file so users have a chance to edit it even if we crash.
+		config.save();
 	}
-	
-	config.set_output_file(configFile);
 	
 	Logger::configure(config.misc.debug);
 	

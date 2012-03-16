@@ -347,6 +347,11 @@ bool Config::setActionKey(ControlAction actionId, int index, InputKeyId key) {
 	return true;
 }
 
+void Config::setOutputFile(const fs::path & _file) {
+	file = _file;
+	CrashHandler::addAttachedFile(file);
+}
+
 bool Config::save() {
 	
 	// Finally save it all to file/stream
@@ -438,8 +443,6 @@ static Vec2i parseResolution(const string & resolution) {
 }
 
 bool Config::init(const fs::path & file) {
-	
-	CrashHandler::addAttachedFile(file);
 	
 	fs::ifstream ifs;
 	ifs.open(file);
