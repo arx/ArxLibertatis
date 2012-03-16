@@ -67,7 +67,7 @@ const int
 	sfxVolume = 10,
 	speechVolume = 10,
 	ambianceVolume = 10,
-	mouseSensitivity = 4,
+	mouseSensitivity = 6,
 	migration = Config::OriginalAssets,
 	quicksaveSlots = 3;
 
@@ -75,7 +75,7 @@ const bool
 	first_run = true,
 	fullscreen = true,
 	showCrosshair = true,
-	antialiasing = false,
+	antialiasing = true,
 	vsync = true,
 	eax = false,
 	invertMouse = false,
