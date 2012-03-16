@@ -373,46 +373,119 @@ bool ErrorReport::getCrashDescription() {
 #else // !defined(HAVE_WINAPI)
 	
 	switch(m_pCrashInfo->signal) {
-		case SIGABRT:  m_ReportDescription = "Abnormal termination"; break;
-		case SIGFPE:   m_ReportDescription = "Floating-point error"; break;
-		case SIGILL:   m_ReportDescription = "Illegal instruction"; break;
-		case SIGSEGV:  m_ReportDescription = "Illegal storage access"; break;
+		
+		case SIGILL: {
+			m_ReportDescription = "Illegal instruction";
+			switch(m_pCrashInfo->code) {
+				#ifdef ILL_ILLOPC
+				case ILL_ILLOPC: m_ReportDescription += ": illegal opcode"; break;
+				#endif
+				#ifdef ILL_ILLOPN
+				case ILL_ILLOPN: m_ReportDescription += ": illegal operand"; break;
+				#endif
+				#ifdef ILL_ADR
+				case ILL_ADR: m_ReportDescription += ": illegal addressing mode"; break;
+				#endif
+				#ifdef ILL_ILLTRP
+				case ILL_ILLTRP: m_ReportDescription += ": illegal trap"; break;
+				#endif
+				#ifdef ILL_PRVOPC
+				case ILL_PRVOPC: m_ReportDescription += ": privileged opcode"; break;
+				#endif
+				#ifdef ILL_PRVREG
+				case ILL_PRVREG: m_ReportDescription += ": privileged register"; break;
+				#endif
+				#ifdef ILL_COPROC
+				case ILL_COPROC: m_ReportDescription += ": coprocessor error"; break;
+				#endif
+				#ifdef ILL_BADSTK
+				case ILL_BADSTK: m_ReportDescription += ": internal stack error"; break;
+				#endif
+				default: break;
+			}
+			break;
+		}
+		
+		case SIGABRT: {
+			m_ReportDescription = "Abnormal termination";
+			break;
+		}
+		
+		case SIGBUS: {
+			m_ReportDescription = "Bus error";
+			switch(m_pCrashInfo->code) {
+				#ifdef BUS_ADRALN
+				case BUS_ADRALN: m_ReportDescription += ": invalid address alignment"; break;
+				#endif
+				#ifdef BUS_ADRERR
+				case BUS_ADRERR: m_ReportDescription += ": non-existent physical address"; break;
+				#endif
+				#ifdef BUS_OBJERR
+				case BUS_OBJERR: m_ReportDescription += ": object specific hardware error"; break;
+				#endif
+				default: break;
+			}
+			break;
+		}
+		
+		case SIGFPE: {
+			m_ReportDescription = "Floating-point error";
+			switch(m_pCrashInfo->code) {
+				#ifdef FPE_INTDIV
+				case ILL_ILLOPC: m_ReportDescription += ": integer division by zero"; break;
+				#endif
+				#ifdef FPE_INTOVF
+				case FPE_INTOVF: m_ReportDescription += ": integer overflow"; break;
+				#endif
+				#ifdef FPE_FLTDIV
+				case FPE_FLTDIV: m_ReportDescription += ": floating point division by zero"; break;
+				#endif
+				#ifdef FPE_FLTOVF
+				case FPE_FLTOVF: m_ReportDescription += ": floating point overflow"; break;
+				#endif
+				#ifdef FPE_FLTUND
+				case FPE_FLTUND: m_ReportDescription += ": floating point underflow"; break;
+				#endif
+				#ifdef FPE_FLTRES
+				case FPE_FLTRES: m_ReportDescription += ": floating point inexact result"; break;
+				#endif
+				#ifdef FPE_FLTINV
+				case FPE_FLTINV: m_ReportDescription += ": invalid floating point operation"; break;
+				#endif
+				#ifdef FPE_FLTSUB
+				case FPE_FLTSUB: m_ReportDescription += ": subscript out of range"; break;
+				#endif
+				default: break;
+			}
+			break;
+		}
+		
+		case SIGSEGV: {
+			m_ReportDescription = "Illegal storage access";
+			switch(m_pCrashInfo->code) {
+				#ifdef SEGV_MAPERR
+				case SEGV_MAPERR: {
+					m_ReportDescription += ": address not mapped to object";
+					break;
+				}
+				#endif
+				#ifdef SEGV_ACCERR
+				case SEGV_ACCERR: {
+					m_ReportDescription += ": invalid permissions for mapped object";
+					break;
+				}
+				#endif
+				default: break;
+			}
+			break;
+		}
+		
 		default: {
 			m_ReportDescription = QString("Received signal %1").arg(m_pCrashInfo->signal);
 			break;
 		}
 	}
 	
-	if(m_pCrashInfo->signal == SIGFPE) {
-		// Append detailed information in case of a FPE exception
-		switch(m_pCrashInfo->fpeCode) {
-			#ifdef FPE_INTDIV
-			case FPE_INTDIV: m_ReportDescription += ": Integer divide by zero"; break;
-			#endif
-			#ifdef FPE_INTOVF
-			case FPE_INTOVF: m_ReportDescription += ": Integer overflow"; break;
-			#endif
-			#ifdef FPE_FLTDIV
-			case FPE_FLTDIV: m_ReportDescription += ": Floating point divide by zero"; break;
-			#endif
-			#ifdef FPE_FLTOVF
-			case FPE_FLTOVF: m_ReportDescription += ": Floating point overflow"; break;
-			#endif
-			#ifdef FPE_FLTUND
-			case FPE_FLTUND: m_ReportDescription += ": Floating point underflow"; break;
-			#endif
-			#ifdef FPE_FLTRES
-			case FPE_FLTRES: m_ReportDescription += ": Floating point inexact result"; break;
-			#endif
-			#ifdef FPE_FLTINV
-			case FPE_FLTINV: m_ReportDescription += ": Floating point invalid operation"; break;
-			#endif
-			#ifdef FPE_FLTSUB
-			case FPE_FLTSUB: m_ReportDescription += ": Subscript out of range"; break;
-			#endif
-			default: break;
-		}
-	}
 	m_ReportDescription += "\n\n";
 	
 	m_ReportDescriptionText = m_ReportDescription;
@@ -891,7 +964,7 @@ void ErrorReport::ReleaseApplicationLock() {
 	m_pCrashInfo->exitLock.post();
 #else
 	// Kill the original, busy-waiting process.
-	kill(m_pCrashInfo->processId, m_pCrashInfo->signal);
+	kill(m_pCrashInfo->processId, SIGKILL);
 #endif
 }
 

@@ -81,7 +81,7 @@ struct CrashInfo : public CrashInfoBase {
 	CrashInfo() : crashBrokerLock(0) { }
 	
 	int signal;
-	int fpeCode;
+	int code;
 	
 	char execFullName[512];
 	void * backtrace[100];

@@ -291,6 +291,8 @@ else(MSVC)
 	
 	check_symbol_exists(sysconf "unistd.h" HAVE_SYSCONF)
 	
+	check_symbol_exists(sigaction "signal.h" HAVE_SIGACTION)
+	
 	if(USE_NATIVE_FS)
 		
 		check_include_file("sys/stat.h" HAVE_SYS_STAT_H)

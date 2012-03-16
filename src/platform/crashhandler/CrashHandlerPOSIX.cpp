@@ -38,21 +38,54 @@
 
 #include "platform/Environment.h"
 
+
+#ifdef HAVE_SIGACTION
+
+static void signalHandler(int signal, siginfo_t * info, void * context) {
+	ARX_UNUSED(context);
+	CrashHandlerPOSIX::getInstance().handleCrash(signal, info->si_code);
+}
+
+typedef struct sigaction signal_handler;
+
+static void registerSignalHandler(int s, signal_handler & old_handler) {
+	struct sigaction handler;
+	handler.sa_flags = SA_RESETHAND | SA_SIGINFO;
+	handler.sa_sigaction = signalHandler;
+	sigemptyset(&handler.sa_mask);
+	sigaction(s, &handler, &old_handler);
+}
+
+static void unregisterSignalHandler(int s, signal_handler & old_handler) {
+	sigaction(s, &old_handler, NULL);
+}
+
+#else
+
+static void signalHandler(int signal) {
+	CrashHandlerPOSIX::getInstance().handleCrash(signal, -1);
+}
+
 typedef void (*signal_handler)(int signal);
 
-static void SignalHandler(int signalCode) {
-	CrashHandlerPOSIX::getInstance().handleCrash(signalCode);
+static void registerSignalHandler(int s, signal_handler & old_handler) {
+	old_handler = signal(s, signalHandler);
 }
 
-static void SIGFPEHandler(int signalCode, int FPECode) {
-	CrashHandlerPOSIX::getInstance().handleCrash(signalCode, FPECode);
+static void unregisterSignalHandler(int s, signal_handler & old_handler) {
+	signal(s, old_handler);
 }
+
+#endif
 
 struct PlatformCrashHandlers {
-	signal_handler m_SIGSEGVHandler;    // Illegal storage access handler.
-	signal_handler m_SIGILLHandler;     // SIGINT handler.
-	signal_handler m_SIGFPEHandler;     // FPE handler.
-	signal_handler m_SIGABRTHandler;    // SIGABRT handler.
+	
+	signal_handler illHandler;
+	signal_handler abrtHandler;
+	signal_handler busHandler;
+	signal_handler fpeHandler;
+	signal_handler segvHandler;
+	
 };
 
 CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
@@ -120,21 +153,24 @@ bool CrashHandlerPOSIX::registerCrashHandlers() {
 	
 	// Catch 'bad' signals so we can print some debug output.
 	
-#ifdef SIGSEGV
-	m_pPreviousCrashHandlers->m_SIGSEGVHandler = signal(SIGSEGV, SignalHandler);
-#endif
-	
 #ifdef SIGILL
-	m_pPreviousCrashHandlers->m_SIGILLHandler = signal(SIGILL, SignalHandler);
-#endif
-	
-	// TODO(crash-handler) is the cast OK?
-#ifdef SIGFPE
-	m_pPreviousCrashHandlers->m_SIGFPEHandler = signal(SIGFPE, signal_handler(SIGFPEHandler));
+	registerSignalHandler(SIGILL, m_pPreviousCrashHandlers->illHandler);
 #endif
 	
 #ifdef SIGABRT
-	m_pPreviousCrashHandlers->m_SIGABRTHandler = signal(SIGABRT, SignalHandler);
+	registerSignalHandler(SIGABRT, m_pPreviousCrashHandlers->abrtHandler);
+#endif
+	
+#ifdef SIGBUS
+	registerSignalHandler(SIGBUS, m_pPreviousCrashHandlers->busHandler);
+#endif
+	
+#ifdef SIGFPE
+	registerSignalHandler(SIGFPE, m_pPreviousCrashHandlers->fpeHandler);
+#endif
+	
+#ifdef SIGSEGV
+	registerSignalHandler(SIGSEGV, m_pPreviousCrashHandlers->segvHandler);
 #endif
 	
 	// We must also register the main thread crash handlers.
@@ -143,20 +179,24 @@ bool CrashHandlerPOSIX::registerCrashHandlers() {
 
 static void removeCrashHandlers(PlatformCrashHandlers * previous) {
 	
-#ifdef SIGSEGV
-	signal(SIGSEGV, previous->m_SIGSEGVHandler);
-#endif
-	
 #ifdef SIGILL
-	signal(SIGILL, previous->m_SIGILLHandler);
-#endif
-	
-#ifdef SIGFPE
-	signal(SIGFPE, previous->m_SIGFPEHandler);
+	unregisterSignalHandler(SIGILL, previous->illHandler);
 #endif
 	
 #ifdef SIGABRT
-	signal(SIGABRT, previous->m_SIGABRTHandler);
+	unregisterSignalHandler(SIGABRT, previous->abrtHandler);
+#endif
+	
+#ifdef SIGBUS
+	unregisterSignalHandler(SIGBUS, previous->busHandler);
+#endif
+	
+#ifdef SIGFPE
+	unregisterSignalHandler(SIGFPE, previous->fpeHandler);
+#endif
+	
+#ifdef SIGSEGV
+	unregisterSignalHandler(SIGSEGV, previous->segvHandler);
 #endif
 	
 }
@@ -181,8 +221,6 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
-PlatformCrashHandlers nullHandlers = { 0, 0, 0, 0 };
-
 void CrashHandlerPOSIX::crashBroker() {
 	
 #if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
@@ -206,30 +244,30 @@ void CrashHandlerPOSIX::crashBroker() {
 		strcat(arguments, m_SharedMemoryName.c_str());
 		
 		// Try a the crash reporter in the same directory as arx or in the current directory.
-	#ifdef HAVE_EXECL
+#ifdef HAVE_EXECL
 		execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
-	#endif
+#endif
 		
 		// Try a crash reporter in the system path.
-	#ifdef HAVE_EXECLP
+#ifdef HAVE_EXECLP
 		execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
-	#endif
+#endif
 		
 		// Something went wrong - the crash reporter failed to start!
 		
 		// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
 		
 		// Kill the original, busy-waiting process.
-		kill(m_pCrashInfo->processId, m_pCrashInfo->signal);
+		kill(m_pCrashInfo->processId, SIGKILL);
 	}
 	
 	exit(0);
 }
 
-void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
+void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	
 	// Remove crash handlers so we don't end in an infinite crash loop
-	removeCrashHandlers(&nullHandlers);
+	removeCrashHandlers(m_pPreviousCrashHandlers);
 	
 	// Run the callbacks
 	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
@@ -237,8 +275,8 @@ void CrashHandlerPOSIX::handleCrash(int crashType, int fpeCode) {
 		(*it)();
 	}
 	
-	m_pCrashInfo->signal = crashType;
-	m_pCrashInfo->fpeCode = fpeCode;
+	m_pCrashInfo->signal = signal;
+	m_pCrashInfo->code = code;
 	
 	// Store the backtrace in the shared crash info
 	#ifdef HAVE_BACKTRACE

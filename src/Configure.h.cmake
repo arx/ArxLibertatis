@@ -51,6 +51,7 @@
 #cmakedefine HAVE_POPEN
 #cmakedefine HAVE_PCLOSE
 #cmakedefine HAVE_SYSCONF
+#cmakedefine HAVE_SIGACTION
 
 // Mac OS X features
 #cmakedefine HAVE_MACH_CLOCK

@@ -38,7 +38,7 @@ public:
 	void registerCrashCallback(CrashHandler::CrashCallback crashCallback);
 	void unregisterCrashCallback(CrashHandler::CrashCallback crashCallback);
 	
-	void handleCrash(int crashType, int fpeCode = 0);
+	void handleCrash(int signal, int code);
 	
 	static CrashHandlerPOSIX & getInstance();
 	
