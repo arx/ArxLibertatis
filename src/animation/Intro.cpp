@@ -114,39 +114,30 @@ void ARX_INTERFACE_KillARKANE()
 	delete ARKANE_img;
 	ARKANE_img = NULL;
 }
-//-----------------------------------------------------------------------------
-void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f) {
-	
-	if(_bRatio) {
-		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
-		                 DANAECENTERY - (tc->m_dwHeight * 0.5f)*Yratio,
-		                 static_cast<float>((int)(tc->m_dwWidth * Xratio)),
-		                 static_cast<float>((int)(tc->m_dwHeight * Yratio)),
-		                 0.001f, tc, Color::gray(_fFade));
-	} else {
-		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
-		                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
-		                 static_cast<float>((int)(tc->m_dwWidth)),
-		                 static_cast<float>((int)(tc->m_dwHeight)),
-		                 0.001f, tc, Color::gray(_fFade));
-	}
+
+static void DrawCenteredImage(TextureContainer * tc) {
+	EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
+	                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
+	                 static_cast<float>((int)(tc->m_dwWidth)),
+	                 static_cast<float>((int)(tc->m_dwHeight)),
+	                 0.001f, tc, Color::white);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_ShowLogo(TextureContainer* logo)
-{
-	if (logo == NULL)
+void ARX_INTERFACE_ShowLogo(TextureContainer * logo) {
+	
+	if(logo == NULL) {
 		return;
-
+	}
+	
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp); 
 	GRenderer->SetRenderState(Renderer::ColorKey, false);
-
+	
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
+	
 	GRenderer->BeginScene();
-		
+	
 	GRenderer->SetRenderState(Renderer::Fog, false);
-	DrawCenteredImage(logo, false);
+	DrawCenteredImage(logo);
 	
 	GRenderer->EndScene();
 	
@@ -154,15 +145,11 @@ void ARX_INTERFACE_ShowLogo(TextureContainer* logo)
 	GRenderer->SetRenderState(Renderer::ColorKey, true);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_ShowFISHTANK()
-{
+void ARX_INTERFACE_ShowFISHTANK() {
 	ARX_INTERFACE_ShowLogo(FISHTANK_img);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_ShowARKANE()
-{
+void ARX_INTERFACE_ShowARKANE() {
 	ARX_INTERFACE_ShowLogo(ARKANE_img);
 }
 
@@ -221,30 +208,30 @@ void LoadLevelScreen(long num) {
 		else if (ratio < 0.f) ratio = 0.f;
 
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
-
+		
 		GRenderer->BeginScene();
-				
+		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				
+		
 		if (num == 10) {
 			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full");
 		} else {
 			pbar = TextureContainer::LoadUI("graph/interface/menus/load_full_level");
 		}
-				
+		
 		nopbar = 1;
-			
+		
 		if(num != lastloadednum) {
-				
-			if (tc) {
+			
+			if(tc) {
 				delete tc;
 				tc = NULL;
 			}
-				
+			
 			lastloadednum = num;
 			char temp[256];
 			char tx[256];
@@ -252,44 +239,31 @@ void LoadLevelScreen(long num) {
 			sprintf(temp, "graph/levels/level%s/loading", tx);
 			tc = TextureContainer::LoadUI(temp, TextureContainer::NoColorKey);
 		}
-				
-		if (tc) {
+		
+		float scale = minSizeRatio();
+		
+		if(tc) {
 			GRenderer->SetRenderState(Renderer::ColorKey, false);
-			DrawCenteredImage(tc, true);
+			
+			Vec2f size = (num == 10) ? Vec2f(640, 480) : Vec2f(320, 390);
+			size *= scale;
+			EERIEDrawBitmap2(DANAECENTERX - size.x * 0.5f, DANAECENTERY - size.y * 0.5f,
+												size.x, size.y, 0.001f, tc, Color::white);
+			
 			GRenderer->SetRenderState(Renderer::ColorKey, true);
 		}
-
-		if (pbar)
-		{
-			if (num == 10)
-			{
-				float px, py, px2, py2;
-				int ipx = (640 - 200)	/ 2;
-				int ipy = 461;
-				px = ipx * Xratio;
-				py = ipy * Yratio;
-				px2 = (ratio * pbar->m_dwWidth) * Xratio;
-				py2 = pbar->m_dwHeight * Yratio;
-				EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-			}
-			else
-			{
-				float px, py, px2, py2;
-
-				int ipx = ((640 - 320) / 2) + 60;
-				int ipy = ((480 - 390) / 2) + 230;
-
-				px = ipx * Xratio;
-				py = ipy * Yratio;
-				px2 = (ratio * pbar->m_dwWidth) * Xratio;
-				py2 = pbar->m_dwHeight * Yratio;
-				EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
-			}
+		
+		if(pbar) {
+			float px = DANAECENTERX - 100 * scale;
+			float py = DANAECENTERY + ((num == 10) ? 221 : 35) * scale;
+			float px2 = ratio * 200 * scale;
+			float py2 = 8 * scale;
+			EERIEDrawBitmap_uv(px, py, px2, py2, 0.f, pbar, Color::gray(1.0f), 0.f, 0.f, ratio, 1.f);
 		}
-
+		
 		GRenderer->EndScene();
-		mainApp->GetWindow()->showFrame();		
-
+		mainApp->GetWindow()->showFrame();
+		
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
 		last_progress_bar_update = Time::getMs();
 	}

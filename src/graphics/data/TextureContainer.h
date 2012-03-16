@@ -149,8 +149,11 @@ public:
 	bool LoadFile(const res::path & strPathname);
 	
 	const res::path m_texName; // Name of texture
+	
 	u32 m_dwWidth;
 	u32 m_dwHeight;
+	Vec2i size() { return Vec2i(m_dwWidth, m_dwHeight); }
+	
 	TCFlags m_dwFlags;
 	u32 userflags;
 	
@@ -198,6 +201,8 @@ public:
 	unsigned long ulNbVertexListCull_TMultiplicative;
 	TexturedVertex * pVertexListCull_TMultiplicative;
 	// END TODO
+	
+	bool hasColorKey();
 	
 private:
 	void LookForRefinementMap(TCFlags flags);

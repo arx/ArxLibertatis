@@ -278,7 +278,6 @@ struct KEYRING_SLOT {
 
 struct STRUCT_QUEST {
 	std::string ident;
-	std::string localised;
 };
 
 extern ARXCHARACTER player;

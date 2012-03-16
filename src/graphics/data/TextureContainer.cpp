@@ -268,6 +268,10 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 	return bLoaded;
 }
 
+bool TextureContainer::hasColorKey() {
+	return m_pTexture != NULL && m_pTexture->hasColorKey();
+}
+
 extern void MakeUserFlag(TextureContainer * tc);
 
 TextureContainer * TextureContainer::Load(const res::path & name, TCFlags flags) {

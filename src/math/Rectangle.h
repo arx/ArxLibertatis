@@ -165,6 +165,6 @@ public:
 	
 };
 
-template<class T> const _Rectangle<T> _Rectangle<T>::ZERO(T(0), T(0), T(0));
+template<class T> const _Rectangle<T> _Rectangle<T>::ZERO(T(0), T(0), T(0), T(0));
 
 #endif // ARX_MATH_RECTANGLE_H

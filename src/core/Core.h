@@ -93,8 +93,12 @@ extern char TELEPORT_TO_POSITION[64];
 extern float PULSATE;
 extern float _framedelay;
 extern float BASE_FOCAL;
+
 extern float Xratio;
 extern float Yratio;
+inline Vec2f sizeRatio() { return Vec2f(Xratio, Yratio); }
+inline float minSizeRatio() { return std::min(Xratio, Yratio); }
+
 extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float FrameDiff;

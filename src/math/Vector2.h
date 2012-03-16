@@ -52,6 +52,12 @@ public:
 	Vector2(const Vector2 & other) : x(other.x), y(other.y) { }
 	
 	/*!
+	 * Conversion constructor.
+	 */
+	template <typename U>
+	explicit Vector2(const Vector2<U> & other) : x(other.x), y(other.y) { }
+	
+	/*!
 	 * Set this vector to the content of another vector.
 	 * @brief Assignement operator.
 	 * @param other A vector to be copied.
@@ -119,6 +125,14 @@ public:
 	 */
 	Vector2 operator*(const Vector2 & other) const {
 		return Vector2(x * other.x, y * other.y);
+	}
+	
+	/*!
+	 * Multiply a vector to this vector.
+	 */
+	Vector2 & operator*=(const Vector2 & other) {
+		x *= other.x, y *= other.y;
+		return *this;
 	}
 
 	/*!

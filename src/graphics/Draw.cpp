@@ -929,7 +929,16 @@ void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureCont
 	v[3] = TexturedVertex(Vec3f(x + sx, y + sy, z), rhw, col, 0xFF000000, Vec2f(uv.x, uv.y));
 	
 	GRenderer->SetTexture(0, tex);
+	
+	if(tex && tex->hasColorKey()) {
+		GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
+	}
+	
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
+	
+	if(tex && tex->hasColorKey()) {
+		GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
+	}
 }
 
 void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex,
