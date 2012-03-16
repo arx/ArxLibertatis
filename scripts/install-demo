@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function die() {
-	echo "$1"
+	echo "$@" >&2
 	exit 1
 }
 
@@ -17,14 +17,30 @@ echo "Installing Arx Fatalis demo data from \"$zipfile\" to \"$destdir\"."
 echo
 
 cabextract=`which cabextract 2> /dev/null`
-[ -f "$cabextract" ] || die "Please install cabextract (http://www.cabextract.org.uk/)"
-
 unzip=`which unzip 2> /dev/null`
-[ -f "$unzip" ] || die "Please install unzip (http://www.info-zip.org/)"
+bsdtar=`which bsdtar 2> /dev/null`
+md5sum=`which md5sum 2> /dev/null`
+
+[ -f "$cabextract" ] \
+	|| die "Please install cabextract (http://www.cabextract.org.uk/)"
+
+[ -f "$unzip" ] || [ -f "$bsdtar" ] \
+	|| die "Please install unzip (http://www.info-zip.org/)" \
+	       "or bsdtar from libarchive (http://libarchive.github.com/)"
 
 [ -f "$zipfile" ] || die "Input file \"$zipfile\" not found."
 
-md5sum=`which md5sum 2> /dev/null`
+function extract_cab() {
+	"$cabextract" "$1"
+}
+
+function extract_zip() {
+	if [ -f "$unzip" ]
+		then "$unzip" "$1"
+		else "$bsdtar" xvf "$1"
+	fi
+}
+
 if [ -f "$md5sum" ]
 	then 
 		checksum="$(md5sum "$zipfile" | sed 's/ .*//')"
@@ -44,11 +60,11 @@ rm -rf "$tempdir" 2> /dev/null
 mkdir "$tempdir" || exit 1
 cd "$tempdir" || exit 1
 
-"$unzip" "$zipfile"
+extract_zip "$zipfile"
 
-"$cabextract" Setup1.cab
-"$cabextract" Setup2.cab
-"$cabextract" Setup3.cab
+extract_cab Setup1.cab
+extract_cab Setup2.cab
+extract_cab Setup3.cab
 
 function doinstall() {
 	mv -fv "$tempdir/$1" "$destdir/$2"
@@ -70,6 +86,32 @@ rm -rf "$tempdir"
 echo
 echo "Done:"
 
-if [ -f "$md5sum" ] ; then
-	cd "$destdir" && find * -type f | sort | xargs "$md5sum"
+checksums_demo="\
+958b78f8f370b06d769843137138c461  data2.pak
+5d7ba6e6c79ebf7fbb232eaced9e8ad9  data.pak
+2ae16d3925c597dca70f960f175def3a  loc.pak
+9a95ff96795c034524ba1c2e94ea12c7  misc/arx.ttf
+aa3dfbd4bc9c863d10a0c5345ae5a4c9  misc/logo.bmp
+ea1b3e6d6f4906905d4a34f07e9a59ac  sfx.pak
+62ca7b1751c0615ee131a94f0856b389  speech.pak"
+
+if [ -f "$md5sum" ]
+	then
+		checksums=`cd "$destdir" \
+			&& "$md5sum" data2.pak data.pak loc.pak misc/arx.ttf misc/logo.bmp sfx.pak speech.pak`
+		if [ "$checksums" == "$checksums_demo" ]
+			then echo "Checksum match."
+			else
+				echo >&2
+				echo "Checksum mismatch, expected" >&2
+				echo >&2
+				echo "$checksums_demo" >&2
+				echo >&2
+				echo " got" >&2
+				echo >&2
+				echo "$checksums" >&2
+				exit 1
+		fi
+	else
+		echo "Could not verify checksum, md5 not available."
 fi
