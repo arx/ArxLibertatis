@@ -236,11 +236,12 @@ void D3D9Renderer::Initialize() {
 
 	///////////////////////////////////////////////////////////////////////////
 	// Texture stages...
-
-	m_TextureStages.resize(deviceCaps.MaxTextureBlendStages, 0);
-	for(size_t i = 0; i < m_TextureStages.size(); ++i)
-        m_TextureStages[i] = new D3D9TextureStage(i);
-
+	
+	m_TextureStages.resize(deviceCaps.MaxTextureBlendStages, NULL);
+	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
+		m_TextureStages[i] = new D3D9TextureStage(i);
+	}
+	
 	resetStates();
 
 	// Clear screen

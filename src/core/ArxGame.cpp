@@ -226,8 +226,7 @@ INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
 INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
-ArxGame::ArxGame() : wasResized(false) {
-}
+ArxGame::ArxGame() : wasResized(false) { }
 
 ArxGame::~ArxGame() {
 }
@@ -279,6 +278,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	m_MainWindow = window;
 	
 	if(!m_MainWindow->initFramework()) {
+		m_MainWindow = NULL;
 		return false;
 	}
 	
@@ -314,6 +314,12 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
 	if(!m_MainWindow->init(version, size, config.video.fullscreen, mode.depth)) {
+		m_MainWindow = NULL;
+		return false;
+	}
+	
+	if(GRenderer == NULL) {
+		// We could not initialize all resources in onRendererInit().
 		m_MainWindow = NULL;
 		return false;
 	}
@@ -544,7 +550,7 @@ void ArxGame::OnToggleFullscreen(const Window & window) {
 void ArxGame::Run() {
 	
 	BeforeRun();
-
+	
 	while(m_RunLoop) {
 		
 		m_MainWindow->tick();
@@ -2254,8 +2260,8 @@ void ArxGame::GoFor2DFX()
 }
 
 
-bool ArxGame::InitDeviceObjects()
-{
+bool ArxGame::InitDeviceObjects() {
+	
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	
@@ -2288,8 +2294,7 @@ bool ArxGame::InitDeviceObjects()
 	VertexBuffer<TexturedVertex> * vb = GRenderer->createVertexBufferTL(4000, Renderer::Stream);
 	pDynamicVertexBuffer_TLVERTEX = new CircularVertexBuffer<TexturedVertex>(vb);
 
-	if(pMenu)
-	{
+	if(pMenu) {
 		pMenu->bReInitAll=true;
 	}
 
@@ -2313,16 +2318,29 @@ bool ArxGame::FinalCleanup() {
 
 void ArxGame::onRendererInit(RenderWindow & window) {
 	
+	arx_assert(GRenderer == NULL);
+	
 	GRenderer = window.getRenderer();
+	
+	if(GRenderer->GetTextureStageCount() < 3) {
+		LogError << "Arx Libertatis needs at least 3 texture units,"
+		         << " but only " << GRenderer->GetTextureStageCount() << " are available";
+		GRenderer = NULL;
+		return;
+	}
 	
 	InitDeviceObjects();
 	
 	// The app is ready to go
 	m_bReady = true;
-	
 }
 
 void ArxGame::onRendererShutdown(RenderWindow &) {
+	
+	if(GRenderer == NULL) {
+		// onRendererInit() failed
+		return;
+	}
 	
 	m_bReady = false;
 	
@@ -2341,5 +2359,4 @@ void ArxGame::onRendererShutdown(RenderWindow &) {
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	
 	GRenderer = NULL;
-	
 }

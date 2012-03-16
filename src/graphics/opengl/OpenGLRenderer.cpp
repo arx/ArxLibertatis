@@ -149,12 +149,10 @@ void OpenGLRenderer::reinit() {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	
+	// number of conventional fixed-function texture units
 	GLint texunits = 0;
-	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits); // number of conventional fixed-function units
-	if(texunits < 3) {
-		LogWarning << "Number of available texture units is too low: " << texunits;
-	}
-	m_TextureStages.resize(texunits);
+	glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texunits);
+	m_TextureStages.resize(texunits, NULL);
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		m_TextureStages[i] = new GLTextureStage(this, i);
 	}
