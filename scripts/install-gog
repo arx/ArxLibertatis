@@ -1,0 +1,127 @@
+#!/bin/sh
+
+function die() {
+	echo "$@" >&2
+	exit 1
+}
+
+[ "$1" == "--help" ] || [ "$1" == "-h" ] || setupfile="$(readlink -f "$1")"
+[ "$setupfile" != "" ] || die "Usage: install-demo path/to/setup_arx_fatalis.exe [output_dir]"
+
+if [ "$2" == "" ]
+	then destdir="$(pwd)"
+	else destdir="$(readlink -f "$2")"
+fi
+
+cd "$(dirname "$0")"
+here="$(pwd)"
+
+echo "Installing Arx Fatalis GOG.com data from \"$setupfile\" to \"$destdir\"."
+echo
+
+innoextract=`which innoextract 2> /dev/null`
+md5sum=`which md5sum 2> /dev/null`
+
+[ -f "$innoextract" ] \
+	|| die "Please install innoextract (http://innoextract.constexpr.org/)"
+
+if [ -f "$md5sum" ]
+	then 
+		checksum="$(md5sum "$setupfile" | sed 's/ .*//')"
+		expected='0dd8ec13c10146db1a741258b624040a'
+		if [ "$checksum" == "$expected" ] 
+			then echo "Checksum matched."
+			else echo "Got checksum $checksum, expected $expected."
+		fi
+	else echo "Missing md5sum, cannot verify that you have the correct archive."
+fi
+
+mkdir -p "$destdir" || exit 1
+
+tempdir="$destdir/arx-install-gog-temp"
+
+rm -rf "$tempdir" 2> /dev/null
+mkdir "$tempdir" || exit 1
+cd "$tempdir" || exit 1
+
+"$innoextract" --lowercase "$setupfile"
+
+files=(
+	data2.pak
+	data.pak
+	graph/interface/misc/arkane.bmp
+	graph/interface/misc/quit1.bmp
+	graph/obj3d/textures/fixinter_barrel.jpg
+	graph/obj3d/textures/fixinter_bell.bmp
+	graph/obj3d/textures/fixinter_metal_door.jpg
+	graph/obj3d/textures/fixinter_public_notice.bmp
+	graph/obj3d/textures/item_bread.bmp
+	graph/obj3d/textures/item_club.jpg
+	graph/obj3d/textures/item_long_sword.jpg
+	graph/obj3d/textures/item_mauld_sabre.jpg
+	graph/obj3d/textures/item_mauldsword.jpg
+	graph/obj3d/textures/item_mirror.jpg
+	graph/obj3d/textures/item_ring_casting.bmp
+	graph/obj3d/textures/item_rope.bmp
+	graph/obj3d/textures/item_spell_sheet.jpg
+	graph/obj3d/textures/item_torch2.jpg
+	graph/obj3d/textures/item_torch.jpg
+	graph/obj3d/textures/item_zohark.bmp
+	graph/obj3d/textures/l7_dwarf_[wood]_board08.jpg
+	graph/obj3d/textures/l7_dwarf_[wood]_board80.jpg
+	graph/obj3d/textures/npc_dog.bmp
+	graph/obj3d/textures/npc_pig.bmp
+	graph/obj3d/textures/npc_pig_dirty.bmp
+	graph/obj3d/textures/npc_rat_base.bmp
+	graph/obj3d/textures/npc_rat_base_cm.bmp
+	graph/obj3d/textures/npc_worm_body_part1.jpg
+	graph/obj3d/textures/npc_worm_body_part2.bmp
+	graph/obj3d/textures/[wood]_light_door.jpg
+	loc.pak
+	misc/arx_default.ttf
+	misc/arx_russian.ttf
+	misc/arx_taiwanese.ttf
+	misc/arx.ttf
+	misc/logo.avi
+	misc/logo.bmp
+	sfx.pak
+	speech.pak
+)
+
+mkdir -pv "$destdir/graph/interface/misc"
+mkdir -pv "$destdir/graph/obj3d/textures"
+mkdir -pv "$destdir/misc"
+
+for f in "${files[@]}" ; do
+	mv -fv "$tempdir/app/$f" "$destdir/$f"
+	chmod "--reference=$destdir" "$destdir/$2" &> /dev/null
+	chmod -x "$destdir/$2" &> /dev/null
+done
+
+rm -rf "$tempdir"
+
+echo
+echo "Done:"
+
+checksums_en="$(cat "$here/data-en.md5")"
+
+if [ -f "$md5sum" ]
+	then
+		checksums=`cd "$destdir" \
+			&& "$md5sum" "${files[@]}"`
+		if [ "$checksums" == "$checksums_en" ]
+			then echo "Checksum match."
+			else
+				echo >&2
+				echo "Checksum mismatch, expected" >&2
+				echo >&2
+				echo "$checksums_en" >&2
+				echo >&2
+				echo " got" >&2
+				echo >&2
+				echo "$checksums" >&2
+				exit 1
+		fi
+	else
+		echo "Could not verify checksum, md5 not available."
+fi
