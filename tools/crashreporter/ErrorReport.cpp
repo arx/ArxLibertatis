@@ -730,8 +730,6 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 		return false;
 	}
 	
-	AddFile(fullPath);
-	
 	QXmlStreamWriter xml;
 	xml.setDevice(&file);
 	xml.setAutoFormatting(true);
@@ -789,6 +787,8 @@ bool ErrorReport::WriteReport(const fs::path & fileName) {
 	xml.writeEndDocument();
 	
 	file.close();
+
+	AddFile(fullPath);
 	
 	return true;
 }
