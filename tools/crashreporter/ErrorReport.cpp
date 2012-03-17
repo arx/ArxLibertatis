@@ -940,7 +940,12 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 	// Send files
 	for(FileList::const_iterator it = m_AttachedFiles.begin(); it != m_AttachedFiles.end(); ++it) 
 	{
+		// Ignore files that were removed by the user.
 		if(!it->attachToReport)
+			continue;
+
+		// One more check to verify that the file still exists.
+		if(!fs::exists(it->path))
 			continue;
 
 		pProgressNotifier->taskStepStarted(QString("Sending file \"%1\"").arg(it->path.filename().c_str()));
@@ -970,7 +975,9 @@ void ErrorReport::ReleaseApplicationLock() {
 
 void ErrorReport::AddFile(const fs::path& fileName)
 {
-	m_AttachedFiles.push_back(File(fileName, true));
+	// Do not include files that can't be found, and empty files...
+	if(fs::exists(fileName) && fs::file_size(fileName) != 0)
+		m_AttachedFiles.push_back(File(fileName, true));
 }
 
 ErrorReport::FileList& ErrorReport::GetAttachedFiles()
