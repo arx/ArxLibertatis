@@ -36,6 +36,7 @@ using std::min;
 #include "graphics/d3d9/D3D9TextureStage.h"
 #include "graphics/d3d9/D3D9Texture2D.h"
 #include "io/log/Logger.h"
+#include "platform/CrashHandler.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARXToDX9 mapping tables
@@ -249,11 +250,19 @@ void D3D9Renderer::Initialize() {
 	
 	LogInfo << "Using Direct3D 9";
 	LogInfo << "Device: " << window->getInfo().adapterIdentifier.Description;
+	CrashHandler::setVariable("D3D9 Device Name", window->getInfo().adapterIdentifier.Description);
+
 	LogInfo << "Driver: " << window->getInfo().adapterIdentifier.Driver;
-	LogInfo << "Version: " << HIWORD(window->getInfo().adapterIdentifier.DriverVersion.HighPart) 
-						   << "." << LOWORD(window->getInfo().adapterIdentifier.DriverVersion.HighPart) 
-						   << "." << HIWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart) 
-						   << " build " << LOWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart);
+	CrashHandler::setVariable("D3D9 Device Driver", window->getInfo().adapterIdentifier.Driver);
+
+	std::stringstream ss;
+	ss << HIWORD(window->getInfo().adapterIdentifier.DriverVersion.HighPart) 
+	   << "." << LOWORD(window->getInfo().adapterIdentifier.DriverVersion.HighPart) 
+	   << "." << HIWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart) 
+	   << " build " << LOWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart);
+
+	LogInfo << "Version: " << ss.str();
+	CrashHandler::setVariable("D3D9 Device Driver Version", ss.str());
 }
 
 void D3D9Renderer::BeginScene() {

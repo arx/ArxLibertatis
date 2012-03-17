@@ -31,6 +31,7 @@
 #include "io/log/Logger.h"
 #include "math/Vector3.h"
 #include "platform/Platform.h"
+#include "platform/CrashHandler.h"
 
 namespace audio {
 
@@ -73,10 +74,10 @@ aalError OpenALBackend::init(bool enableEffects) {
 	if(device) {
 		return AAL_ERROR_INIT;
 	}
-	
+
 	// clear error
 	alGetError();
-	
+
 	// Create OpenAL interface
 	device = alcOpenDevice(NULL);
 	if(!device) {
@@ -84,7 +85,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 		LogError << "error opening device: " << error << " = " << getAlcErrorString(error);
 		return AAL_ERROR_SYSTEM;
 	}
-	
+
 	context = alcCreateContext(device, NULL);
 	if(!context) {
 		ALenum error = alcGetError(device);
@@ -108,6 +109,8 @@ aalError OpenALBackend::init(bool enableEffects) {
 	ARX_UNUSED(enableEffects);
 #endif
 	
+	CrashHandler::setVariable("OpenAL version", alGetString(AL_VERSION));
+
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
 	AL_CHECK_ERROR("initializing")

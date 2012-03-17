@@ -25,6 +25,7 @@
 #include "io/fs/FilePath.h"
 #include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
+#include "platform/CrashHandler.h"
 
 FT_Library g_FTLibrary = NULL;
 FontCache* FontCache::m_Instance = NULL;
@@ -44,6 +45,10 @@ void FontCache::Shutdown() {
 
 FontCache::FontCache() {
 	FT_Init_FreeType(&g_FTLibrary);
+
+	FT_Int ftMajor, ftMinor, ftPatch;
+	FT_Library_Version(g_FTLibrary, &ftMajor, &ftMinor, &ftPatch);
+	CrashHandler::setVariable("FreeType version", ftMajor * 10000 + ftMinor * 100 + ftPatch);
 }
 
 FontCache::~FontCache() {

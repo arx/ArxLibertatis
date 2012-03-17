@@ -38,6 +38,7 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
+#include "platform/CrashHandler.h"
 #include "platform/Environment.h"
 
 #include "Configure.h"
@@ -284,10 +285,16 @@ static void listDirectories() {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 void parseCommandLine(int argc, char ** argv) {
+
+	std::string command_line;
+	for(int i = 1; i < argc; i++) {
+		command_line += argv[i] + " ";
+	}
 #else
 void parseCommandLine(const char * command_line) {
 #endif
-	
+	CrashHandler::setVariable("Command line", command_line);
+
 	po::options_description options_desc("Arx Libertatis Options");
 	options_desc.add_options()
 		("help,h", "Show supported options.")
@@ -308,7 +315,9 @@ void parseCommandLine(const char * command_line) {
 		std::vector<string> args = po::split_winmain(command_line);
 		po::store(po::command_line_parser(args).options(options_desc).run(), options);
 #endif
+
 		
+
 		po::notify(options);
 		
 		if(options.count("help")) {

@@ -53,6 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
+#include <boost/version.hpp>
+
 #include "Configure.h"
 
 #ifdef HAVE_WINAPI
@@ -645,14 +647,17 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	parseCommandLine(argc, argv);
+	parseCommandLine(argc, argv);	
 #else
-	parseCommandLine(lpCmdLine);
+	parseCommandLine(lpCmdLine);	
 #endif
 
 	CrashHandler::setReportLocation(config.paths.user / "crashes");
 	CrashHandler::deleteOldReports(5);
-
+	CrashHandler::setVariable("Compiler name", ARX_COMPILER_NAME);
+	CrashHandler::setVariable("Compiler version", ARX_COMPILER_VERSION);
+	CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
+	
 	Time::init();
 	
 	// Now that data directories are initialized, create a log file.
@@ -825,9 +830,20 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	PakReader::ReleaseFlags rel = resources->getReleaseType();
 	switch(rel) {
 		case 0: LogWarning << "Neither demo nor full game data files loaded."; break;
-		case PakReader::Demo: LogInfo << "Initialized Arx Fatalis (demo)"; break;
-		case PakReader::FullGame: LogInfo << "Initialized Arx Fatalis (full game)"; break;
-		case (int(PakReader::Demo) | int(PakReader::FullGame)): LogWarning << "Mixed demo and full game data files!"; break;
+		case PakReader::Demo: 
+			LogInfo << "Initialized Arx Fatalis (demo)";
+			CrashHandler::setVariable("Data files", "demo");
+			break;
+
+		case PakReader::FullGame: 
+			LogInfo << "Initialized Arx Fatalis (full game)"; 
+			CrashHandler::setVariable("Data files", "full");
+			break;
+
+		case (int(PakReader::Demo) | int(PakReader::FullGame)): 
+			LogWarning << "Mixed demo and full game data files!"; 
+			CrashHandler::setVariable("Data files", "mixed");
+			break;
 		default: ARX_DEAD_CODE();
 	}
 	

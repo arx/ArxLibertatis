@@ -29,6 +29,7 @@
 #include "input/SDLInputBackend.h"
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
+#include "platform/CrashHandler.h"
 
 SDLWindow * SDLWindow::mainWindow = NULL;
 
@@ -51,6 +52,8 @@ bool SDLWindow::initFramework() {
 	
 	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
 	arx_assert(displayModes.empty());
+
+	CrashHandler::setVariable("SDL version", SDL_COMPILEDVERSION);
 	
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();

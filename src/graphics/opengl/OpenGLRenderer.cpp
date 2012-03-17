@@ -25,6 +25,7 @@
 #include "graphics/opengl/GLTextureStage.h"
 #include "graphics/opengl/GLVertexBuffer.h"
 #include "io/log/Logger.h"
+#include "platform/CrashHandler.h"
 #include "window/RenderWindow.h"
 
 static const char vertexShaderSource[] = "void main() {\n"
@@ -116,11 +117,17 @@ void OpenGLRenderer::Initialize() {
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
 	}
+	CrashHandler::setVariable("GLEW version", glewGetString(GLEW_VERSION));
 	
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
+	CrashHandler::setVariable("OGL version", glGetString(GL_VERSION));
+
 	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
+	CrashHandler::setVariable("OGL vendor", glGetString(GL_VENDOR));
+
 	LogInfo << "Device: " << glGetString(GL_RENDERER);
-	
+	CrashHandler::setVariable("OGL device", glGetString(GL_RENDERER));
+		
 	reinit();
 }
 

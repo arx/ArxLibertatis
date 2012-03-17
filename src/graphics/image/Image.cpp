@@ -26,34 +26,13 @@
 #include "io/fs/FilePath.h"
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
+#include "platform/CrashHandler.h"
 
 using std::string;
 using std::memcpy;
 using std::memset;
 
 namespace {
-
-class DevilLib {
-	
-public:
-	
-	DevilLib() {
-		
-		ilInit();
-		
-		// Set the origin to be used when loading all images, 
-		// so that any image with a different origin will be
-		// flipped to have the set origin
-		ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-		ilEnable(IL_ORIGIN_SET);
-		
-	}
-	
-	~DevilLib() {
-		ilShutDown();
-	}
-	
-} gDevilLib;
 
 const unsigned int SIZE_TABLE[Image::Format_Num] = {
 	1,  // Format_L8,

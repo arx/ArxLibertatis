@@ -123,6 +123,7 @@ public:
 		Stream
 	};
 	
+	Renderer();
 	virtual ~Renderer();
 	
 	virtual void Initialize() = 0;

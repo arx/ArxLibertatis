@@ -18,10 +18,14 @@
  */
 
 #include "graphics/Renderer.h"
+
+#include <il.h>
+
 #include "graphics/GraphicsUtility.h"
 #include "graphics/texture/TextureStage.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/texture/Texture.h"
+#include "platform/CrashHandler.h"
 
 Renderer * GRenderer;
 
@@ -46,10 +50,27 @@ void Renderer::SetTexture(unsigned int textureStage, TextureContainer * pTexture
 	}
 }
 
+Renderer::Renderer() {
+	// Initialize DevIL
+	ilInit();
+
+	CrashHandler::setVariable("DevIL version (header)", IL_VERSION);
+	CrashHandler::setVariable("DevIL version (lib)", ilGetInteger(IL_VERSION_NUM));
+		
+	// Set the origin to be used when loading all images, 
+	// so that any image with a different origin will be
+	// flipped to have the set origin
+	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+	ilEnable(IL_ORIGIN_SET);
+}
+
 Renderer::~Renderer() {
 	for(size_t i = 0; i < m_TextureStages.size(); ++i) {
 		delete m_TextureStages[i];
 	}
+
+	// Shutdown DevIL
+	ilShutDown();
 }
 
 void Renderer::SetViewMatrix(const Vec3f & position, const Vec3f & dir, const Vec3f & up) {
