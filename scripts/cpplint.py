@@ -203,6 +203,7 @@ _ERROR_CATEGORIES = [
   'whitespace/align_tab'
   'whitespace/blank_line',
   'whitespace/braces',
+  'whitespace/carriage-return',
   'whitespace/comma',
   'whitespace/comments',
   'whitespace/end_of_line',
@@ -3049,10 +3050,10 @@ def ProcessFile(filename, vlevel):
     sys.stderr.write('Ignoring %s; not a .cc or .h file\n' % filename)
   else:
     ProcessFileData(filename, file_extension, lines, Error)
-    if carriage_return_found and os.linesep != '\r\n':
+    if carriage_return_found:
       # Use 0 for linenum since outputing only one error for potentially
       # several lines.
-      Error(filename, 0, 'whitespace/newline', 1,
+      Error(filename, 0, 'whitespace/carriage-return', 1,
             'One or more unexpected \\r (^M) found;'
             'better to use only a \\n')
 
