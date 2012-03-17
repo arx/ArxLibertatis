@@ -74,10 +74,10 @@ aalError OpenALBackend::init(bool enableEffects) {
 	if(device) {
 		return AAL_ERROR_INIT;
 	}
-
+	
 	// clear error
 	alGetError();
-
+	
 	// Create OpenAL interface
 	device = alcOpenDevice(NULL);
 	if(!device) {
@@ -85,7 +85,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 		LogError << "error opening device: " << error << " = " << getAlcErrorString(error);
 		return AAL_ERROR_SYSTEM;
 	}
-
+	
 	context = alcCreateContext(device, NULL);
 	if(!context) {
 		ALenum error = alcGetError(device);
@@ -109,17 +109,27 @@ aalError OpenALBackend::init(bool enableEffects) {
 	ARX_UNUSED(enableEffects);
 #endif
 	
-	CrashHandler::setVariable("OpenAL version", alGetString(AL_VERSION));
-
 	alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
 	
 	AL_CHECK_ERROR("initializing")
 	
+	const ALchar * renderer = alGetString(AL_RENDERER);
+	const ALchar * version = alGetString(AL_VERSION);
+	const char * efx_ver;
 #ifdef HAVE_OPENAL_EFX
-	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << (hasEFX ? " with" : " without") << " EFX";
+	if(hasEFX) {
+		efx_ver = " with EFX";
+	}
+	else
 #else
-	LogInfo << "Using " << alGetString(AL_RENDERER) << " " << alGetString(AL_VERSION) << " without EFX";
+	{
+		efx_ver = " without EFX"
+	}
 #endif
+	LogInfo << "Using " << renderer << ' ' << version << efx_ver;
+	
+	CrashHandler::setVariable("OpenAL renderer", renderer);
+	CrashHandler::setVariable("OpenAL version", version);
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
 	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));

@@ -19,6 +19,8 @@
 
 #include "graphics/font/FontCache.h"
 
+#include <sstream>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -44,11 +46,16 @@ void FontCache::Shutdown() {
 }
 
 FontCache::FontCache() {
+	
 	FT_Init_FreeType(&g_FTLibrary);
 
 	FT_Int ftMajor, ftMinor, ftPatch;
 	FT_Library_Version(g_FTLibrary, &ftMajor, &ftMinor, &ftPatch);
-	CrashHandler::setVariable("FreeType version", ftMajor * 10000 + ftMinor * 100 + ftPatch);
+	
+	std::ostringstream version;
+	version << ftMajor << '.' << ftMinor << '.' << ftPatch;
+	
+	CrashHandler::setVariable("FreeType version", version.str());
 }
 
 FontCache::~FontCache() {

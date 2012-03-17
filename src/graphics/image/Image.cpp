@@ -50,6 +50,25 @@ const unsigned int SIZE_TABLE[Image::Format_Num] = {
 
 } // anonymous namespace
 
+void Image::init() {
+	
+	// Initialize DevIL
+	ilInit();
+	
+	CrashHandler::setVariable("DevIL version (header)", IL_VERSION);
+	CrashHandler::setVariable("DevIL version", ilGetString(IL_VERSION_NUM));
+	
+	// Set the origin to be used when loading all images, 
+	// so that any image with a different origin will be
+	// flipped to have the set origin
+	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
+	ilEnable(IL_ORIGIN_SET);
+}
+
+void Image::shutdown() {
+	// Shutdown DevIL
+	ilShutDown();
+}
 
 Image::Image() : mData(0) {
 	Reset();

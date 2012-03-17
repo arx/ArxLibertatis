@@ -282,7 +282,6 @@ QString getLinuxDistribution() {
 		}
 		if(!distro.isEmpty()) {
 			
-			
 			QString codename(getOutputOf("lsb_release -c").trimmed());
 			QString prefix("Codename:");
 			if(codename.startsWith(prefix)) {

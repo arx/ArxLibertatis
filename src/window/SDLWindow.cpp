@@ -19,6 +19,8 @@
 
 #include "window/SDLWindow.h"
 
+#include <sstream>
+
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	#undef WIN32_LEAN_AND_MEAN // SDL defines this... Bad SDL!
 	#include <SDL_syswm.h>
@@ -52,13 +54,21 @@ bool SDLWindow::initFramework() {
 	
 	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
 	arx_assert(displayModes.empty());
-
-	CrashHandler::setVariable("SDL version", SDL_COMPILEDVERSION);
+	
+	const char * header_version = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
+	                              "." ARX_STR(SDL_PATCHLEVEL);
+	CrashHandler::setVariable("SDL version (headers)", header_version);
 	
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();
 		return false;
 	}
+	
+	const SDL_version * ver = SDL_Linked_Version();
+	std::ostringstream runtime_version;
+	runtime_version << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
+	CrashHandler::setVariable("SDL version", runtime_version.str());
+	LogInfo << "Using SDL " << runtime_version.str();
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	
@@ -162,9 +172,6 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	SDL_WM_SetCaption(title.c_str(), title.c_str());
 	
 	SDL_ShowCursor(SDL_DISABLE);
-	
-	const SDL_version * ver = SDL_Linked_Version();
-	LogInfo << "Using SDL " << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
 	
 	OnCreate();
 	

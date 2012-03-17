@@ -96,7 +96,7 @@ public:
 		return setNamedVariable(name, ss.str());
 	}
 
-	static bool setNamedVariable(const std::string& name, const std::string& value);
+	static bool setNamedVariable(const std::string& name, const std::string & value);
 
 	/**
 	 * Specify the location where crash reports will be written.

@@ -117,17 +117,18 @@ void OpenGLRenderer::Initialize() {
 	if(glewInit() != GLEW_OK) {
 		LogError << "GLEW init failed";
 	}
+	
 	CrashHandler::setVariable("GLEW version", glewGetString(GLEW_VERSION));
 	
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
-	CrashHandler::setVariable("OGL version", glGetString(GL_VERSION));
-
+	CrashHandler::setVariable("OpenGL version", glGetString(GL_VERSION));
+	
 	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
-	CrashHandler::setVariable("OGL vendor", glGetString(GL_VENDOR));
-
+	CrashHandler::setVariable("OpenGL vendor", glGetString(GL_VENDOR));
+	
 	LogInfo << "Device: " << glGetString(GL_RENDERER);
-	CrashHandler::setVariable("OGL device", glGetString(GL_RENDERER));
-		
+	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
+	
 	reinit();
 }
 

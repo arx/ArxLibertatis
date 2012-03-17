@@ -26,6 +26,9 @@
                           Platforms
 ------------------------------------------------------------*/
 
+#define ARX_STR_HELPER(x) # x
+#define ARX_STR(x) ARX_STR_HELPER(x)
+
 #define ARX_PLATFORM_UNKNOWN 0
 #define ARX_PLATFORM_WIN32   1
 #define ARX_PLATFORM_LINUX   2
@@ -64,24 +67,31 @@
 #if defined(__clang__)
 	#define ARX_COMPILER                ARX_COMPILER_CLANG
 	#define ARX_COMPILER_NAME           "Clang"
-	#define ARX_COMPILER_VERSION        (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
+	#define ARX_COMPILER_VERSION        (__clang_major__ * 10000 + __clang_minor__ * 100 \
+	                                     + __clang_patchlevel__)
+	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " __clang_version__
 #elif defined(__MINGW32__)
 	#define ARX_COMPILER                ARX_COMPILER_MINGW
-	#define ARX_COMPILER_NAME           "MINGW32"
+	#define ARX_COMPILER_NAME           "MinGW32"
 	#define ARX_COMPILER_VERSION        (__MINGW32_MAJOR_VERSION * 10000 + __MINGW32_MINOR_VERSION * 100)
+	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " \
+	                                    ARX_STR(__MINGW32_MAJOR_VERSION) \
+	                                    "." ARX_STR(__MINGW32_MINOR_VERSION)
 #elif defined(__GNUC__)
 	#define ARX_COMPILER                ARX_COMPILER_GCC
 	#define ARX_COMPILER_NAME           "GCC"
 	#define ARX_COMPILER_VERSION        (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
+	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " __VERSION__
 #elif defined(_MSC_VER)
 	#if _MSC_VER < 1600
-		#define ARX_COMPILER            ARX_COMPILER_VC9
-		#define ARX_COMPILER_NAME       "VC9"
+		#define ARX_COMPILER              ARX_COMPILER_VC9
+		#define ARX_COMPILER_NAME         "VC9"
 	#elif _MSC_VER < 1700
-		#define ARX_COMPILER            ARX_COMPILER_VC10
-		#define ARX_COMPILER_NAME       "VC10"
+		#define ARX_COMPILER              ARX_COMPILER_VC10
+		#define ARX_COMPILER_NAME         "VC10"
 	#endif
 	#define ARX_COMPILER_VERSION        _MSC_VER
+	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " ARX_STR(ARX_COMPILER_VERSION)
 #endif
 
 #ifndef ARX_COMPILER
@@ -89,6 +99,7 @@
 	#define ARX_COMPILER                ARX_COMPILER_UNKNOWN
 	#define ARX_COMPILER_NAME           "Unknown"
 	#define ARX_COMPILER_VERSION        0
+	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME
 #endif
 
 #define ARX_COMPILER_MSVC ((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))

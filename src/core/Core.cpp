@@ -647,15 +647,14 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	parseCommandLine(argc, argv);	
+	parseCommandLine(argc, argv);
 #else
-	parseCommandLine(lpCmdLine);	
+	parseCommandLine(lpCmdLine);
 #endif
 
 	CrashHandler::setReportLocation(config.paths.user / "crashes");
 	CrashHandler::deleteOldReports(5);
-	CrashHandler::setVariable("Compiler name", ARX_COMPILER_NAME);
-	CrashHandler::setVariable("Compiler version", ARX_COMPILER_VERSION);
+	CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
 	CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
 	
 	Time::init();
@@ -667,6 +666,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	CrashHandler::registerCrashCallback(Logger::quickShutdown);
 	
 	LogInfo << "Starting " << version;
+	
+	Image::init();
 	
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
@@ -829,31 +830,39 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	PakReader::ReleaseFlags rel = resources->getReleaseType();
 	switch(rel) {
+		
 		case 0: LogWarning << "Neither demo nor full game data files loaded."; break;
-		case PakReader::Demo: 
+		
+		case PakReader::Demo: {
 			LogInfo << "Initialized Arx Fatalis (demo)";
 			CrashHandler::setVariable("Data files", "demo");
 			break;
-
-		case PakReader::FullGame: 
-			LogInfo << "Initialized Arx Fatalis (full game)"; 
+		}
+		
+		case PakReader::FullGame: {
+			LogInfo << "Initialized Arx Fatalis (full game)";
 			CrashHandler::setVariable("Data files", "full");
 			break;
-
-		case (int(PakReader::Demo) | int(PakReader::FullGame)): 
-			LogWarning << "Mixed demo and full game data files!"; 
+		}
+		
+		case (int(PakReader::Demo) | int(PakReader::FullGame)): {
+			LogWarning << "Mixed demo and full game data files!";
 			CrashHandler::setVariable("Data files", "mixed");
 			break;
+		}
+		
 		default: ARX_DEAD_CODE();
 	}
 	
 	// Init all done, start the main loop
 	mainApp->Run();
-
+	
 	ClearGame();
-
+	
+	Image::shutdown();
+	
 	Logger::shutdown();
-
+	
 	CrashHandler::shutdown();
 	
 	return true;
