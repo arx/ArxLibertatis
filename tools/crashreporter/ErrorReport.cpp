@@ -231,7 +231,6 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	u64 rss, startTicks, endTicks, dummy;
 	
 	getProcessSatus(QString("/proc/%1/stat").arg(pid), rss, startTicks);
-	getProcessSatus("/proc/self/stat", dummy, endTicks);
 	
 	// Get the rss memory usage from /proc/pid/stat
 #ifdef _SC_PAGESIZE
@@ -244,12 +243,28 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 #endif
 	
 #ifdef _SC_CLK_TCK
+
+	if(startTicks == 0) {
+		return;
+	}
+	
+	pid_t child = fork();
+	if(!child) {
+		while(1) {
+			// wait
+		}
+	}
+	
+	getProcessSatus(QString("/proc/%1/stat").arg(child), dummy, endTicks);
+	kill(child, SIGTERM);
+	
 	if(startTicks != 0 && endTicks != 0) {
 		u64 ticksPerSecond = sysconf(_SC_CLK_TCK);
 		if(ticksPerSecond > 0) {
 			runningTimeSec = double(endTicks - startTicks) / double(ticksPerSecond);
 		}
 	}
+	
 #endif
 	
 #endif
