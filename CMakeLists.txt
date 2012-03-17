@@ -191,8 +191,8 @@ if(MSVC)
 		# Remove definition of _DEBUG as it might conflict with libs we're linking with
 		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
 		
-		# Force to always compile with warning level 4
-		string(REGEX REPLACE "/W[0-4]" "/W4" ${flag_var} "${${flag_var}}")
+		# Force to always compile with warning level 3
+		string(REGEX REPLACE "/W[0-4]" "/W3" ${flag_var} "${${flag_var}}")
 	endforeach(flag_var)
 
 	# Avoid warning during link
