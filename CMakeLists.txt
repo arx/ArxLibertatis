@@ -356,6 +356,13 @@ else(MSVC)
 		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
 		
+	else(CMAKE_BUILD_TYPE STREQUAL "Release")
+		
+		if((NOT CMAKE_CXX_FLAGS MATCHES "-g(|[0-9]|gdb)")
+			 AND (NOT CMAKE_CXX_FLAGS_RELEASE MATCHES "-g(|[0-9]|gdb)"))
+			add_cxxflag("-g2")
+		endif()
+		
 	endif()
 	
 	if(DEBUG_EXTRA)
