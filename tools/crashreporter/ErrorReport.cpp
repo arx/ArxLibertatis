@@ -281,6 +281,20 @@ QString getLinuxDistribution() {
 			distro = distro.mid(prefix.length()).trimmed();
 		}
 		if(!distro.isEmpty()) {
+			
+			
+			QString codename(getOutputOf("lsb_release -c").trimmed());
+			QString prefix("Codename:");
+			if(codename.startsWith(prefix)) {
+				codename = codename.mid(prefix.length()).trimmed();
+			}
+			
+			if(!codename.isEmpty() && codename != "n/a") {
+				distro += " (";
+				distro += codename;
+				distro += ")";
+			}
+			
 			return distro;
 		}
 	}
