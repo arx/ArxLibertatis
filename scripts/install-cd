@@ -1,0 +1,256 @@
+#!/bin/sh
+
+die() {
+	echo "$@" >&2
+	exit 1
+}
+
+# Handle arguments
+
+if [ "$1" != "--help" ] && [ "$1" != "-h" ] ; then
+	cd="$(readlink -f "$1")"
+	patch="$(readlink -f "$2")"
+fi
+
+[ "$patch" = "" ] && die "\
+Usage: install-cd path/to/mount/point/ path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
+or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]"
+
+if [ "$3" = "" ]
+	then destdir="$(pwd)"
+	else destdir="$(readlink -f "$3")"
+fi
+
+cd "$(dirname "$0")"
+here="$(pwd)"
+
+echo "Installing Arx Fatalis CD data from \"$cd\" to \"$destdir\".
+"
+
+# Check for required commands
+
+cabextract=`which cabextract 2> /dev/null`
+innoextract=`which innoextract 2> /dev/null`
+md5sum=`which md5sum 2> /dev/null`
+
+[ -f "$cabextract" ] \
+	|| die "Please install cabextract (http://www.cabextract.org.uk/)"
+
+[ -f "$innoextract" ] \
+	|| die "Please install innoextract (http://innoextract.constexpr.org/)"
+
+[ -f "$md5sum" ] \
+	|| die "Please install md5sum (http://www.gnu.org/software/coreutils/)"
+
+if [ -f "$cd" ] ; then
+	
+	fuseiso=`which fuseiso 2> /dev/null`
+	fusermount=`which fusermount 2> /dev/null`
+	mount=`which mount 2> /dev/null`
+	umount=`which umount 2> /dev/null`
+	isoinfo=`which isoinfo 2> /dev/null`
+	
+	if [ ! -f "$fuseiso" ] || [ ! -f "$fusermount" ] ; then
+		if [ ! -f "$mount" ] || [ ! -f "$umount" ] || [ "$(id -u)" != "0" ] ; then
+			if [ ! -f "$isoinfo" ] ; then
+				die "Please install one of the following:
+ - fuse and fuseiso (http://fuseiso.sourceforge.net/)
+ - mount (and run this script as root)
+ - isoinfo from cdrkit (http://cdrkit.org/) or cdrtools (http://cdrecord.berlios.de/)
+or manually mount/extract the iso and specify the directory."
+			fi
+		fi
+	fi
+fi
+
+# Verify input file
+
+checksum="$(md5sum "$patch" | sed 's/ .*//')"
+expected='364c405b26d3c480d516724010c7ecac'
+if [ "$checksum" = "$expected" ] 
+	then echo "Checksum matched."
+	else echo "Got checksum $checksum, expected $expected."
+fi
+
+# Prepare output and temp dirs
+
+mkdir -p "$destdir" || exit 1
+
+tempdir="$destdir/arx-install-cd-temp"
+srcdir="$tempdir/src"
+patchdir="$tempdir/patch"
+
+if [ -f "$cd" ] ; then
+	iso="$cd"
+	cd="$tempdir/cd"
+fi
+
+unmount_iso() {
+	"$fusermount" -u "$cd" > /dev/null 2>&1
+	"$umount" "$cd" > /dev/null 2>&1
+}
+
+unmount_iso
+rm -rf "$tempdir" 2> /dev/null
+mkdir "$tempdir" || exit 1
+mkdir "$srcdir" || exit 1
+mkdir "$patchdir" || exit 1
+cd "$tempdir" || exit 1
+
+# Mount / extract CD image
+
+[ -e "$cd" ] || [ -f "$iso" ] || die "CD image / mount point $cd does not exist!"
+
+if [ -f "$iso" ] ; then
+	
+	mkdir "$cd"
+	
+	mounted=0
+	
+	if [ -f "$fuseiso" ] && [ -f "$fusermount" ] ; then
+		"$fuseiso" "$iso" "$cd" && mounted=1
+	fi
+	
+	if [ $mounted = 0 ] && [ -f "$mount" ] && [ -f "$umount" ] && [ "$(id -u)" = "0" ] ; then
+		"$mount" -o loop,ro "$iso" "$cd" && mounted=2
+	fi
+	
+	if [ $mounted = 0 ] && [ -f "$isoinfo" ] ; then
+		
+		extract_iso() {
+			"$isoinfo" -i "$iso" -x "$1" > "$cd/$2"
+			[ -s "$cd/$2" ] || rm -f "$cd/$2"
+		}
+		
+		extract_iso "/HANDBUCH/ARX_HAND.PDF;1" "arx_handbuch.pdf"
+		
+		   extract_iso "/SETUP1.CAB;1" "setup1.cab" \
+		&& extract_iso "/SETUP2.CAB;1" "setup2.cab" \
+		&& extract_iso "/SETUP3.CAB;1" "setup3.cab" \
+		&& mounted=3
+	fi
+	
+	[ $mounted != 0 ] || die "Error mounting ISO image - mount manually and specify the dir."
+	
+	trap unmount_iso INT QUIT TERM EXIT
+	
+fi
+
+# Extract files
+
+cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} ';'
+
+lang=""
+lang_checksum=`find . -iname "data.pak" -exec "$md5sum" {} ';' | sed "s/ .*//g"`
+
+[ "$lang_checksum" = "a88d239dc7919ab113ff45483cb4ad46" ] || lang="english"
+[ "$lang_checksum" = "a91a0b39a046233debbb10b4850e13eb" ] || lang="german"
+# TODO add support for other languages
+
+if [ "$lang" = "" ] ;
+	then
+		cd "$patchdir" && "$innoextract" --lowercase "$patch"
+	else
+		echo "Detected language: $lang"
+		cd "$patchdir" && "$innoextract" --lowercase --language="$lang" "$patch"
+fi
+
+# Install required files
+
+set -- \
+	"arx_handbuch.pdf" \
+	"data2.pak" \
+	"data.pak" \
+	"graph/interface/misc/arkane.bmp" \
+	"graph/interface/misc/quit1.bmp" \
+	"graph/obj3d/textures/fixinter_barrel.jpg" \
+	"graph/obj3d/textures/fixinter_bell.bmp" \
+	"graph/obj3d/textures/fixinter_metal_door.jpg" \
+	"graph/obj3d/textures/fixinter_public_notice.bmp" \
+	"graph/obj3d/textures/item_bread.bmp" \
+	"graph/obj3d/textures/item_club.jpg" \
+	"graph/obj3d/textures/item_long_sword.jpg" \
+	"graph/obj3d/textures/item_mauld_sabre.jpg" \
+	"graph/obj3d/textures/item_mauldsword.jpg" \
+	"graph/obj3d/textures/item_mirror.jpg" \
+	"graph/obj3d/textures/item_ring_casting.bmp" \
+	"graph/obj3d/textures/item_rope.bmp" \
+	"graph/obj3d/textures/item_spell_sheet.jpg" \
+	"graph/obj3d/textures/item_torch2.jpg" \
+	"graph/obj3d/textures/item_torch.jpg" \
+	"graph/obj3d/textures/item_zohark.bmp" \
+	"graph/obj3d/textures/l7_dwarf_[wood]_board08.jpg" \
+	"graph/obj3d/textures/l7_dwarf_[wood]_board80.jpg" \
+	"graph/obj3d/textures/npc_dog.bmp" \
+	"graph/obj3d/textures/npc_pig.bmp" \
+	"graph/obj3d/textures/npc_pig_dirty.bmp" \
+	"graph/obj3d/textures/npc_rat_base.bmp" \
+	"graph/obj3d/textures/npc_rat_base_cm.bmp" \
+	"graph/obj3d/textures/npc_worm_body_part1.jpg" \
+	"graph/obj3d/textures/npc_worm_body_part2.bmp" \
+	"graph/obj3d/textures/[wood]_light_door.jpg" \
+	"loc.pak" \
+	"manual.pdf" \
+	"map.pdf" \
+	"misc/arx_default.ttf" \
+	"misc/arx_russian.ttf" \
+	"misc/arx_taiwanese.ttf" \
+	"misc/arx.ttf" \
+	"misc/logo.avi" \
+	"misc/logo.bmp" \
+	"sfx.pak" \
+	"speech.pak"
+
+cd "$tempdir"
+
+for f in "$@" ; do
+	
+	dst="$destdir/$f"
+	
+	dir="$(dirname "$f")"
+	file="$(basename "$f" | sed 's/[^[:alnum:]_-]/\\&/g')"
+	
+	mkdir -pv "$destdir/$dir"
+	rm "$dst" > /dev/null 2>&1
+	
+	[ -f "$dst" ] || find "patch" -iname "$file" -exec mv -fv {} "$dst" ';'
+	[ -f "$dst" ] || find "src" -iname "$file" -exec mv -fv {} "$dst" ';'
+	[ -f "$dst" ] || find "$cd" -iname "$file" -exec cp -fv {} "$dst" ';'
+	
+	[ -f "$dst" ] && chmod "--reference=$destdir" "$dst" > /dev/null 2>&1
+	[ -f "$dst" ] && chmod -x "$dst" > /dev/null 2>&1
+	
+done
+
+# Cleanup temporary files
+
+unmount_iso
+rm -rf "$tempdir"
+
+echo "
+Done:"
+
+# Verify installed files
+
+cd "$destdir"
+checksums=`"$md5sum" "$@" 2> /dev/null`
+
+checksums_en="$(cat "$here/data-en.md5")" || die "Could not read data-en.md5"
+checksums_de="$(cat "$here/data-de.md5")" || die "Could not read data-de.md5"
+
+[ "$checksums" = "$checksums_en" ] || [ "$checksums" = "$checksums_de" ] || die "
+Checksum mismatch, expected
+
+$checksums_en
+
+ or
+
+$checksums_de
+
+ got
+
+$checksums
+
+If you installed a laguage other than english or german and the game runs fine, please add the above checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums so that they can be included in future versions of this script."
+
+echo "Checksum match."
