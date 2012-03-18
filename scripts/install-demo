@@ -1,14 +1,16 @@
 #!/bin/sh
 
-function die() {
+die() {
 	echo "$@" >&2
 	exit 1
 }
 
-[ "$1" == "--help" ] || [ "$1" == "-h" ] || zipfile="$(readlink -f "$1")"
+# Handle arguments
+
+[ "$1" = "--help" ] || [ "$1" = "-h" ] || zipfile="$(readlink -f "$1")"
 [ "$zipfile" != "" ] || die "Usage: install-demo path/to/arx_demo_english.zip [output_dir]"
 
-if [ "$2" == "" ]
+if [ "$2" = "" ]
 	then destdir="$(pwd)"
 	else destdir="$(readlink -f "$2")"
 fi
@@ -16,8 +18,10 @@ fi
 cd "$(dirname "$0")"
 here="$(pwd)"
 
-echo "Installing Arx Fatalis demo data from \"$zipfile\" to \"$destdir\"."
-echo
+echo "Installing Arx Fatalis demo data from \"$zipfile\" to \"$destdir\".
+"
+
+# Check for required commands
 
 cabextract=`which cabextract 2> /dev/null`
 unzip=`which unzip 2> /dev/null`
@@ -33,27 +37,31 @@ md5sum=`which md5sum 2> /dev/null`
 
 [ -f "$zipfile" ] || die "Input file \"$zipfile\" not found."
 
-function extract_cab() {
+extract_cab() {
 	"$cabextract" "$1"
 }
 
-function extract_zip() {
+extract_zip() {
 	if [ -f "$unzip" ]
 		then "$unzip" "$1"
 		else "$bsdtar" xvf "$1"
 	fi
 }
 
+# Verify input file
+
 if [ -f "$md5sum" ]
-	then 
+	then
 		checksum="$(md5sum "$zipfile" | sed 's/ .*//')"
 		expected='3c59a5799e1237b1b181c96e8c09155a'
-		if [ "$checksum" == "$expected" ] 
+		if [ "$checksum" = "$expected" ] 
 			then echo "Checksum matched."
 			else echo "Got checksum $checksum, expected $expected."
 		fi
 	else echo "Missing md5sum, cannot verify that you have the correct archive."
 fi
+
+# Prepare output and temp dirs
 
 mkdir -p "$destdir" || exit 1
 
@@ -63,16 +71,20 @@ rm -rf "$tempdir" 2> /dev/null
 mkdir "$tempdir" || exit 1
 cd "$tempdir" || exit 1
 
+# Extract files
+
 extract_zip "$zipfile"
 
 extract_cab Setup1.cab
 extract_cab Setup2.cab
 extract_cab Setup3.cab
 
-function doinstall() {
-	mv -fv "$tempdir/$1" "$destdir/$2"
-	chmod "--reference=$destdir" "$destdir/$2" &> /dev/null
-	chmod -x "$destdir/$2" &> /dev/null
+# Install required files
+
+doinstall() {
+	mv -fv "$1" "$destdir/$2"
+	chmod "--reference=$destdir" "$destdir/$2" > /dev/null 2>&1
+	chmod -x "$destdir/$2" > /dev/null 2>&1
 }
 
 mkdir -pv "$destdir/misc"
@@ -84,30 +96,29 @@ doinstall "data.pak" "data.pak"
 doinstall "SFX.pak" "sfx.pak"
 doinstall "SPEECH.pak" "speech.pak"
 
+# Cleanup temporary files
+
 rm -rf "$tempdir"
 
-echo
-echo "Done:"
+echo "
+Done:"
 
-checksums_demo="$(cat "$here/data-demo.md5")"
+# Verify installed files
 
-if [ -f "$md5sum" ]
-	then
-		checksums=`cd "$destdir" \
-			&& "$md5sum" data2.pak data.pak loc.pak misc/arx.ttf misc/logo.bmp sfx.pak speech.pak`
-		if [ "$checksums" == "$checksums_demo" ]
-			then echo "Checksum match."
-			else
-				echo >&2
-				echo "Checksum mismatch, expected" >&2
-				echo >&2
-				echo "$checksums_demo" >&2
-				echo >&2
-				echo " got" >&2
-				echo >&2
-				echo "$checksums" >&2
-				exit 1
-		fi
-	else
-		echo "Could not verify checksum, md5 not available."
-fi
+[ -f "$md5sum" ] || ( echo "Could not verify checksum, md5sum not available." ; exit )
+
+cd "$destdir"
+checksums=`"$md5sum" data2.pak data.pak loc.pak misc/arx.ttf misc/logo.bmp sfx.pak speech.pak`
+
+checksums_demo="$(cat "$here/data-demo.md5")" || die "Could not read data-demo.md5"
+
+[ "$checksums" = "$checksums_demo" ] || die "
+Checksum mismatch, expected
+
+$checksums_demo
+
+ got
+
+$checksums"
+
+echo "Checksum match." 
