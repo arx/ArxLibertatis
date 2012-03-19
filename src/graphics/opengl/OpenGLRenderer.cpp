@@ -433,7 +433,7 @@ void OpenGLRenderer::SetViewport(const Rect & _viewport) {
 	
 	// TODO maybe it's better to always have the viewport cover the whole window and use glScissor instead?
 	
-	int height = mainApp->GetWindow()->GetSize().y;
+	int height = mainApp->getWindow()->getSize().y;
 	
 	glViewport(viewport.left, height - viewport.bottom, viewport.width(), viewport.height());
 	
@@ -480,7 +480,7 @@ void OpenGLRenderer::Clear(BufferFlags bufferFlags, Color clearColor, float clea
 		
 		glEnable(GL_SCISSOR_TEST);
 		
-		int height = mainApp->GetWindow()->GetSize().y;
+		int height = mainApp->getWindow()->getSize().y;
 		
 		for(size_t i = 0; i < nrects; i++) {
 			glScissor(rect[i].left, height - rect[i].bottom, rect[i].width(), rect[i].height());
@@ -658,7 +658,7 @@ void OpenGLRenderer::drawIndexed(Primitive primitive, const TexturedVertex * ver
 
 bool OpenGLRenderer::getSnapshot(Image & image) {
 	
-	Vec2i size = mainApp->GetWindow()->GetSize();
+	Vec2i size = mainApp->getWindow()->getSize();
 	
 	image.Create(size.x, size.y, Image::Format_R8G8B8);
 	
@@ -677,7 +677,7 @@ bool OpenGLRenderer::getSnapshot(Image & image, size_t width, size_t height) {
 
 	// duplication to ensure use of Image::Format_R8G8B8
 	Image fullsize;
-	Vec2i size = mainApp->GetWindow()->GetSize();
+	Vec2i size = mainApp->getWindow()->getSize();
 	fullsize.Create(size.x, size.y, Image::Format_R8G8B8);
 	glReadPixels(0, 0, size.x, size.y, GL_RGB, GL_UNSIGNED_BYTE, fullsize.GetData()); 
 

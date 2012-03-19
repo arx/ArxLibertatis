@@ -34,11 +34,11 @@ bool RenderWindow::DisplayMode::operator<(const DisplayMode & o) const {
 	}
 }
 
-void RenderWindow::addListener(RendererListener * listener) {
+void RenderWindow::addRenderWindowListener(RendererListener * listener) {
 	renderListeners.push_back(listener);
 }
 
-void RenderWindow::removeListener(RendererListener * listener) {
+void RenderWindow::removeRenderWindowListener(RendererListener * listener) {
 	renderListeners.erase(std::remove(renderListeners.begin(), renderListeners.end(), listener), renderListeners.end());
 }
 

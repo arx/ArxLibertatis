@@ -191,13 +191,13 @@ bool D3D9Window::updatePresentParams(DisplayMode mode) {
     ZeroMemory( &d3dpp, sizeof(d3dpp) );
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
     d3dpp.BackBufferCount = 1;
-    d3dpp.hDeviceWindow = (HWND)GetHandle();
+    d3dpp.hDeviceWindow = (HWND)getHandle();
 	
 	// VSync
 	d3dpp.PresentationInterval = config.video.vsync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
 	
 	// Backbuffer format
-	if(IsFullScreen()) {
+	if(isFullScreen()) {
 		d3dpp.Windowed = FALSE;
 		d3dpp.BackBufferWidth = m_Size.x;
 		d3dpp.BackBufferHeight = m_Size.y;
@@ -272,7 +272,7 @@ bool D3D9Window::initialize() {
 	///////////////////////////////////
 
 	// Create the D3D9 devices
-	HRESULT ret = d3d->CreateDevice(AdapterToUse, DeviceType, (HWND)GetHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device);
+	HRESULT ret = d3d->CreateDevice(AdapterToUse, DeviceType, (HWND)getHandle(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &GD3D9Device);
 	if( FAILED(ret) ) {
 		LogError << "CreateDevice failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
@@ -289,7 +289,7 @@ bool D3D9Window::initialize() {
 	renderer->SetAntialiasing(d3dpp.MultiSampleType != D3DMULTISAMPLE_NONE);
 	
 	// Finally, set the viewport for the newly created device
-	renderer->SetViewport(Rect(GetSize().x, GetSize().y));
+	renderer->SetViewport(Rect(getSize().x, getSize().y));
 
     onRendererInit();
 
@@ -317,7 +317,7 @@ void D3D9Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 void D3D9Window::setWindowSize(Vec2i size) {
 	
-	if(!m_IsFullscreen && size == GetSize()) {
+	if(!m_IsFullscreen && size == getSize()) {
 		return;
 	}
 	

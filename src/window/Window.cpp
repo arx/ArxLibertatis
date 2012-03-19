@@ -21,18 +21,18 @@
 
 #include <algorithm>
 
-void Window::Listener::OnCreateWindow( const Window& /*pWindow*/ ) {}
-bool Window::Listener::OnCloseWindow( const Window& /*pWindow*/ ) { return true; }
-void Window::Listener::OnDestroyWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnMoveWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnResizeWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnMinimizeWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnMaximizeWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnRestoreWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnToggleFullscreen( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnWindowGotFocus( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnWindowLostFocus( const Window& /*pWindow*/ ) {}
-void Window::Listener::OnPaintWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onCreateWindow( const Window& /*pWindow*/ ) {}
+bool Window::Listener::onCloseWindow( const Window& /*pWindow*/ ) { return true; }
+void Window::Listener::onDestroyWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onMoveWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onResizeWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onMinimizeWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onMaximizeWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onRestoreWindow( const Window& /*pWindow*/ ) {}
+void Window::Listener::onToggleFullscreen( const Window& /*pWindow*/ ) {}
+void Window::Listener::onWindowGotFocus( const Window& /*pWindow*/ ) {}
+void Window::Listener::onWindowLostFocus( const Window& /*pWindow*/ ) {}
+void Window::Listener::onPaintWindow( const Window& /*pWindow*/ ) {}
 
 Window::Window()
 	: m_Position(0, 0)
@@ -47,97 +47,97 @@ Window::Window()
 Window::~Window() {
 }
 
-void Window::AddListener( Window::Listener* pListener ) {
+void Window::addWindowListener( Window::Listener* pListener ) {
 	m_Listeners.push_back(pListener);
 }
 
-void Window::RemoveListener( Window::Listener* pListener ) {
+void Window::removeWindowListener( Window::Listener* pListener ) {
 	std::list<Listener*>::iterator it = std::find( m_Listeners.begin(), m_Listeners.end(), pListener );
 
 	if( it != m_Listeners.end() )
 		m_Listeners.erase(it);
 }
 
-bool Window::OnClose() {
+bool Window::onClose() {
 	bool bShouldClose = true;
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end() && bShouldClose; ++it )
-		bShouldClose = (*it)->OnCloseWindow( *this );
+		bShouldClose = (*it)->onCloseWindow( *this );
 
 	return bShouldClose;
 }
 	
-void Window::OnCreate() {
+void Window::onCreate() {
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnCreateWindow( *this );
+		(*it)->onCreateWindow( *this );
 }
 
-void Window::OnDestroy() {
+void Window::onDestroy() {
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnDestroyWindow( *this );
+		(*it)->onDestroyWindow( *this );
 }
 
-void Window::OnMove( s32 pPosX, s32 pPosY ) {
+void Window::onMove( s32 pPosX, s32 pPosY ) {
 	m_Position.x = pPosX;
 	m_Position.y = pPosY;
 
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnMoveWindow( *this );
+		(*it)->onMoveWindow( *this );
 }
 
-void Window::OnResize( s32 pWidth, s32 pHeight ) {
+void Window::onResize( s32 pWidth, s32 pHeight ) {
 	m_Size.x = pWidth;
 	m_Size.y = pHeight;
 
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnResizeWindow( *this );
+		(*it)->onResizeWindow( *this );
 }
 
-void Window::OnMinimize() {
+void Window::onMinimize() {
 	m_IsMinimized = true;
 	m_IsMaximized = false;
 	
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnMinimizeWindow( *this );
+		(*it)->onMinimizeWindow( *this );
 }
 	
-void Window::OnMaximize() {
+void Window::onMaximize() {
 	m_IsMinimized = false;
 	m_IsMaximized = true;
 	
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnMaximizeWindow( *this );
+		(*it)->onMaximizeWindow( *this );
 }
 
-void Window::OnRestore() {
+void Window::onRestore() {
 	m_IsMinimized = false;
 	m_IsMaximized = false;
 	
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnRestoreWindow( *this );
+		(*it)->onRestoreWindow( *this );
 }
 
-void Window::OnShow( bool bVisible ) {
+void Window::onShow( bool bVisible ) {
 	m_IsVisible = bVisible;
 }
 	
-void Window::OnToggleFullscreen() {
+void Window::onToggleFullscreen() {
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnToggleFullscreen( *this );
+		(*it)->onToggleFullscreen( *this );
 }
 	
-void Window::OnFocus(bool bHasFocus) {
+void Window::onFocus(bool bHasFocus) {
 	m_HasFocus = bHasFocus;
 	
 	if(bHasFocus) {
 		for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-			(*it)->OnWindowGotFocus( *this );
+			(*it)->onWindowGotFocus( *this );
 	} else {
 		for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-			(*it)->OnWindowLostFocus( *this );
+			(*it)->onWindowLostFocus( *this );
 	}
 }
 
-void Window::OnPaint() {
+void Window::onPaint() {
 	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->OnPaintWindow( *this );
+		(*it)->onPaintWindow( *this );
 }

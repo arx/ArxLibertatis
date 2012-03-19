@@ -579,7 +579,7 @@ void DANAE_Manage_CreateMap()
 
 	if (iCreateMap==1)
 	{			
-		const Vec2i & size = mainApp->GetWindow()->GetSize();
+		const Vec2i & size = mainApp->getWindow()->getSize();
 		ARXCarte=new C_ARX_Carte(ACTIVEBKG, 4, size.x, size.y);
 	}
 

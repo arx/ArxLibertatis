@@ -45,7 +45,7 @@ Win32Window::Win32Window()
 Win32Window::~Win32Window() {
 }
 
-bool Win32Window::InitWindowClass() {
+bool Win32Window::initWindowClass() {
 	if( m_WindowClassInitialized )
 		return true;
 
@@ -53,7 +53,7 @@ bool Win32Window::InitWindowClass() {
 	
 	// Fill all the info for our window class.
 	m_WindowClass.style   = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	m_WindowClass.lpfnWndProc = Win32Window::WindowProc;
+	m_WindowClass.lpfnWndProc = Win32Window::windowProc;
 	m_WindowClass.hInstance  = (HINSTANCE)GetModuleHandle(NULL);
 	m_WindowClass.hCursor  = LoadCursor(NULL, IDC_ARROW);
 	m_WindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -70,7 +70,7 @@ bool Win32Window::InitWindowClass() {
 bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth) {
 	ARX_UNUSED(depth);
 	
-	if(!InitWindowClass()) {
+	if(!initWindowClass()) {
 		return false;
 	}
 
@@ -129,7 +129,7 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 	return true;
 }
 
-LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam ) {
+LRESULT CALLBACK Win32Window::windowProc( HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam ) {
 	static Win32Window* currentWindow = NULL;
 	
 	if( !currentWindow || currentWindow->m_hWnd != hWnd )
@@ -154,19 +154,19 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 
 	// Sent when an application requests that a window be created.
 	case WM_CREATE:
-		currentWindow->OnCreate();
+		currentWindow->onCreate();
 		bProcessed = true;
 		break;
 
 	// Paint the window's client area.
 	case WM_PAINT:
-		currentWindow->OnPaint();
+		currentWindow->onPaint();
 		bProcessed = true;
 		break;
 
 	// Sent after a window has been moved.
 	case WM_MOVE:
-		currentWindow->OnMove( (short)LOWORD(lParam), (short)HIWORD(lParam) );
+		currentWindow->onMove( (short)LOWORD(lParam), (short)HIWORD(lParam) );
 		bProcessed = true;
 		break;
 
@@ -177,13 +177,13 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 		switch( wParam )
 		{
 		case SIZE_MINIMIZED:
-			currentWindow->OnMinimize();
+			currentWindow->onMinimize();
 			break;
 		case SIZE_MAXIMIZED:
-			currentWindow->OnMaximize();
+			currentWindow->onMaximize();
 			break;
 		case SIZE_RESTORED:
-			currentWindow->OnRestore();
+			currentWindow->onRestore();
 			break;
 		}
 
@@ -192,13 +192,13 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 
 	// Sent to both the window being activated and the window being deactivated.
 	case WM_ACTIVATE:
-		currentWindow->OnFocus( LOWORD(wParam) != WA_INACTIVE );
+		currentWindow->onFocus( LOWORD(wParam) != WA_INACTIVE );
 		bProcessed = true;
 		break;
 
 	// Sent when the window is about to be hidden or shown.
 	case WM_SHOWWINDOW:
-		currentWindow->OnShow( wParam == TRUE );
+		currentWindow->onShow( wParam == TRUE );
 		bProcessed = true;
 		break;
 
@@ -206,13 +206,13 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Informs a window that its nonclient area is being destroyed.
 	// Window is about to be destroyed, clean up window-specific data objects.
 	case WM_DESTROY:
-		currentWindow->OnDestroy();
+		currentWindow->onDestroy();
 		bProcessed = true;
 		break;
 
 	// Sent as a signal that a window or an application should terminate.
 	case WM_CLOSE:
-		if( !currentWindow->OnClose() )
+		if( !currentWindow->onClose() )
 			bProcessed = true;
 		break;
 
@@ -252,11 +252,11 @@ void Win32Window::tick() {
 		DispatchMessage( &msg ); // Send message to the WindowProc.
 	}
 
-	if(HasFocus() && !IsFullScreen())
+	if(hasFocus() && !isFullScreen())
 		updateSize();
 }
 
-void* Win32Window::GetHandle() {
+void* Win32Window::getHandle() {
 	return m_hWnd;
 }
 
@@ -268,7 +268,7 @@ void Win32Window::updateSize() {
 	Vec2i newSize = Vec2i(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
 	
 	if(newSize != m_Size) {
-        OnResize(newSize.x, newSize.y);
+        onResize(newSize.x, newSize.y);
 		changeDisplay(newSize, 0);
 	}
 }
@@ -282,10 +282,10 @@ void Win32Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 	if(!m_IsFullscreen) {
 		m_IsFullscreen = true;
-		OnToggleFullscreen();
+		onToggleFullscreen();
 	}
 
-	OnResize(resolution.x, resolution.y);
+	onResize(resolution.x, resolution.y);
 }
 
 void Win32Window::setWindowSize(Vec2i size) {
@@ -308,13 +308,13 @@ void Win32Window::setWindowSize(Vec2i size) {
 
 	if(m_IsFullscreen) {
 		m_IsFullscreen = false;
-		OnToggleFullscreen();
+		onToggleFullscreen();
 	}
 
-	OnResize(size.x, size.y);
+	onResize(size.x, size.y);
 }
 
 void Win32Window::hide() {
 	ShowWindow(m_hWnd, SW_MINIMIZE | SW_HIDE);
-	OnShow(false);
+	onShow(false);
 }

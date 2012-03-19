@@ -34,7 +34,7 @@ public:
 
 	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
 	
-	virtual void * GetHandle();
+	virtual void * getHandle();
 	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	virtual void setWindowSize(Vec2i size);
 	virtual void tick();
@@ -47,8 +47,8 @@ public:
 	
 private:
 	
-	static bool InitWindowClass();
-	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
+	static bool initWindowClass();
+	static LRESULT CALLBACK windowProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 	
 	HWND m_hWnd;
 	WNDPROC m_HijackedWindowProc;

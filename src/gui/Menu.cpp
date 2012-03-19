@@ -338,7 +338,7 @@ void ARX_MENU_Clicked_QUIT_GAME() {
 	}
 #endif
 	
-	mainApp->Quit();
+	mainApp->quit();
 }
 
 void ARX_MENU_Launch() {

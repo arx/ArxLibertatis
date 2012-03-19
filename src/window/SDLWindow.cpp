@@ -173,15 +173,15 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	OnCreate();
+	onCreate();
 	
 	renderer = new OpenGLRenderer;
 	renderer->Initialize();
 	
 	updateSize(false);
 	
-	OnShow(true);
-	OnFocus(true);
+	onShow(true);
+	onFocus(true);
 	
 	onRendererInit();
 	
@@ -237,11 +237,11 @@ void SDLWindow::updateSize(bool reinit) {
 #endif
 	
 	if(m_Size != oldMode.resolution) {
-		OnResize(m_Size.x, m_Size.y);
+		onResize(m_Size.x, m_Size.y);
 	}
 }
 
-void * SDLWindow::GetHandle() {
+void * SDLWindow::getHandle() {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -276,7 +276,7 @@ void SDLWindow::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	if(!m_IsFullscreen) {
 		m_IsFullscreen = true;
 		updateSize(true);
-		OnToggleFullscreen();
+		onToggleFullscreen();
 	} else {
 		updateSize(true);
 	}
@@ -285,7 +285,7 @@ void SDLWindow::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 void SDLWindow::setWindowSize(Vec2i size) {
 	
-	if(!m_IsFullscreen && size == GetSize()) {
+	if(!m_IsFullscreen && size == getSize()) {
 		return;
 	}
 	
@@ -296,14 +296,14 @@ void SDLWindow::setWindowSize(Vec2i size) {
 	if(m_IsFullscreen) {
 		m_IsFullscreen = false;
 		updateSize(true);
-		OnToggleFullscreen();
+		onToggleFullscreen();
 	}
 }
 
 int SDLCALL SDLWindow::eventFilter(const SDL_Event * event) {
 	
 	if(mainWindow && event->type == SDL_QUIT) {
-		return (mainWindow->OnClose()) ? 1 : 0;
+		return (mainWindow->onClose()) ? 1 : 0;
 	}
 	
 	return 1;
@@ -322,9 +322,9 @@ void SDLWindow::tick() {
 				}
 				if(event.active.state & SDL_APPACTIVE) {
 					if(event.active.gain) {
-						OnRestore();
+						onRestore();
 					} else {
-						OnMinimize();
+						onMinimize();
 					}
 				}
 				if(event.active.state & SDL_APPMOUSEFOCUS) {
@@ -337,7 +337,7 @@ void SDLWindow::tick() {
 				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message should be sent
 				// when ALT-F4 is pressed on Windows, but it doesn't look like it's working as expected...
 				if(event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
-					OnDestroy();
+					onDestroy();
 					break;
 				}
 				
@@ -363,7 +363,7 @@ void SDLWindow::tick() {
 			}
 			
 			case SDL_QUIT: {
-				OnDestroy();
+				onDestroy();
 				break;
 			}
 			
@@ -377,7 +377,7 @@ void SDLWindow::tick() {
 			}
 			
 			case SDL_VIDEOEXPOSE: {
-				OnPaint();
+				onPaint();
 				break;
 			}
 			
@@ -394,5 +394,5 @@ void SDLWindow::showFrame() {
 
 void SDLWindow::hide() {
 	SDL_WM_IconifyWindow();
-	OnShow(false);
+	onShow(false);
 }

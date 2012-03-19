@@ -125,24 +125,24 @@ protected:
 	RenderWindow * m_MainWindow;
 	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
-	virtual bool DeleteDeviceObjects() { return true; }
-	virtual void Update() { }
-	virtual bool BeforeRun() { return true; }
+	virtual bool deleteDeviceObjects() { return true; }
+	virtual void update() { }
+	virtual bool beforeRun() { return true; }
 	
 public:
 	
-	virtual bool Initialize();
+	virtual bool initialize();
 	
 private:
 	
-	virtual bool InitConfig();
-	virtual bool InitWindow() = 0;
-	virtual bool InitInput() = 0;
-	virtual bool InitSound() = 0;
+	virtual bool initConfig();
+	virtual bool initWindow() = 0;
+	virtual bool initInput() = 0;
+	virtual bool initSound() = 0;
 	
 public:
 	
-	RenderWindow * GetWindow() { return m_MainWindow; }
+	RenderWindow * getWindow() { return m_MainWindow; }
 	
 	// Class constructor
 	Application();
@@ -152,7 +152,7 @@ public:
 	/**
 	 * Ask the game to quit at the end of the current frame.
 	 */
-	void Quit();
+	void quit();
 	
 	/* Virtual functions which may be overridden for specific implementations */
 	
@@ -162,14 +162,14 @@ public:
 	 * @param y The y coordinate for the text in pixels
 	 * @param str The string of text to be written
 	*/
-	virtual void OutputText(int, int, const std::string &) {}
-	virtual void OutputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
+	virtual void outputText(int, int, const std::string &) {}
+	virtual void outputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
 	
-	virtual void Run() = 0;
-	virtual void Pause(bool bPause);
-	virtual void Render() { }
-	virtual bool FinalCleanup() = 0;
-	virtual void Cleanup3DEnvironment() = 0;
+	virtual void run() = 0;
+	virtual void pause(bool bPause);
+	virtual void render() { }
+	virtual bool finalCleanup() = 0;
+	virtual void cleanup3DEnvironment() = 0;
 	
 	virtual void setFullscreen(bool fullscreen) = 0;
 

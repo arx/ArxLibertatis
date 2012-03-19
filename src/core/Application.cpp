@@ -100,26 +100,26 @@ Application::~Application() {
 	
 }
 
-bool Application::Initialize() {
+bool Application::initialize() {
 	
 	bool init;
 	
-	init = InitConfig();
+	init = initConfig();
 	if(!init) {
 		return false;
 	}
 	
-	init = InitWindow();
+	init = initWindow();
 	if(!init) {
 		return false;
 	}
 	
-	init = InitInput();
+	init = initInput();
 	if(!init) {
 		return false;
 	}
 	
-	init = InitSound();
+	init = initSound();
 	if(!init) {
 		return false;
 	}
@@ -129,7 +129,7 @@ bool Application::Initialize() {
 	return true;
 }
 
-void Application::Quit() {
+void Application::quit() {
 	m_RunLoop = false;
 }
 
@@ -191,7 +191,7 @@ static bool migrateFilenames() {
 	return migrated;
 }
 
-bool Application::InitConfig() {
+bool Application::initConfig() {
 	
 	// Initialize config first, before anything else.
 	fs::path configFile = config.paths.user / "cfg.ini";
@@ -251,7 +251,7 @@ bool Application::InitConfig() {
 // brings the GDI surface to the front of the display, so drawing
 // output like message boxes and menus may be displayed.
 //*************************************************************************************
-void Application::Pause(bool bPause)
+void Application::pause(bool bPause)
 {
 	static u32 dwAppPausedCount = 0L;
 

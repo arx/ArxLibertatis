@@ -1280,7 +1280,7 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-bool ArxGame::ManageEditorControls()
+bool ArxGame::manageEditorControls()
 {
 	Vec3f trans;
 
@@ -2344,7 +2344,7 @@ long MOVE_PRECEDENCE=0;
 extern long DISABLE_JUMP;
 extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
-void ArxGame::ManagePlayerControls()
+void ArxGame::managePlayerControls()
 {
 	if (((EERIEMouseButton & 4) && (!EDITMODE) && !(player.Interface & INTER_COMBATMODE))
 		&& (!player.doingmagic)
@@ -3444,7 +3444,7 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 	}
 }
 
-void ArxGame::ManageKeyMouse() {
+void ArxGame::manageKeyMouse() {
 	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
@@ -3697,7 +3697,7 @@ void ArxGame::ManageKeyMouse() {
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 
-		if(mainApp->GetWindow()->IsFullScreen())
+		if(mainApp->getWindow()->isFullScreen())
 		{
 			GInput->setMousePosAbs(DANAEMouse);
 		}
@@ -6466,7 +6466,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 }
 
 //-----------------------------------------------------------------------------
-void ArxGame::DrawAllInterfaceFinish()
+void ArxGame::drawAllInterfaceFinish()
 {
 	currpos = static_cast<long>(INTERFACE_RATIO(50.f));
 	float rrr;
@@ -6571,7 +6571,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 extern float GLOBAL_SLOWDOWN;
 extern long SPLASH_THINGS_STAGE;
 
-void ArxGame::DrawAllInterface() {
+void ArxGame::drawAllInterface() {
 	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);

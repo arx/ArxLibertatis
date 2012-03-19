@@ -71,8 +71,8 @@ public:
 	//! Get a sorted list of supported fullscreen display modes.
 	inline const DisplayModes & getDisplayModes() { return displayModes; }
 	
-	void addListener(RendererListener * listener);
-	void removeListener(RendererListener * listener);
+	void addRenderWindowListener(RendererListener * listener);
+	void removeRenderWindowListener(RendererListener * listener);
 	
 	virtual void showFrame() = 0;
 	

@@ -271,7 +271,7 @@ void Input::reset()
 {
 	iMouseR = Vec2s::ZERO;
 
-	Vec2s wndSize((short)mainApp->GetWindow()->GetSize().x, (short)mainApp->GetWindow()->GetSize().y); 
+	Vec2s wndSize((short)mainApp->getWindow()->getSize().x, (short)mainApp->getWindow()->getSize().y); 
 	Vec2s absPos = wndSize / 2;
 	setMousePosAbs(absPos);
 	
@@ -507,7 +507,7 @@ void Input::update()
 	int absX, absY;
 	backend->getMouseCoordinates(absX, absY, iWheelDir);
 
-	Vec2i wndSize = mainApp->GetWindow()->GetSize();
+	Vec2i wndSize = mainApp->getWindow()->getSize();
 
 	// Do not update mouse position when it is outside of the window
 	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y)
@@ -515,7 +515,7 @@ void Input::update()
 		iMouseARaw = Vec2s((short)absX, (short)absY);
 
 		// In fullscreen, use the sensitivity config value to adjust mouse mouvements
-		if(mainApp->GetWindow()->IsFullScreen()) {
+		if(mainApp->getWindow()->isFullScreen()) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;

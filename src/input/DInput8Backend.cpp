@@ -292,8 +292,8 @@ bool DInput8Backend::init() {
 		return false;
 	}
 
-    iLastMouseX = mainApp->GetWindow()->GetSize().x / 2;
-	iLastMouseY = mainApp->GetWindow()->GetSize().y / 2;
+    iLastMouseX = mainApp->getWindow()->getSize().x / 2;
+	iLastMouseY = mainApp->getWindow()->getSize().y / 2;
 
 	setMouseCoordinates(iLastMouseX, iLastMouseY);
 	
@@ -457,7 +457,7 @@ bool getKeyboardInputDevice(DXIMode mode) {
 			continue;
 		}
 		
-		if(chooseInputDevice((HWND)mainApp->GetWindow()->GetHandle(), *i, mode)) {
+		if(chooseInputDevice((HWND)mainApp->getWindow()->getHandle(), *i, mode)) {
 			return true;
 		}
 		
@@ -479,7 +479,7 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 			continue;
 		}
 		
-		if(chooseInputDevice((HWND)mainApp->GetWindow()->GetHandle(), *i, mode)) {
+		if(chooseInputDevice((HWND)mainApp->getWindow()->getHandle(), *i, mode)) {
 			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
 				return true;
 			} else {
@@ -545,9 +545,9 @@ bool DInput8Backend::update() {
 	}
 	
 	// When running fullscreen, make sure to recenter mouse in the middle of the screen
-	if(mainApp->GetWindow()->IsFullScreen()) {
-		int x = (int)mainApp->GetWindow()->GetSize().x / 2;
-		int y = (int)mainApp->GetWindow()->GetSize().y / 2;
+	if(mainApp->getWindow()->isFullScreen()) {
+		int x = (int)mainApp->getWindow()->getSize().x / 2;
+		int y = (int)mainApp->getWindow()->getSize().y / 2;
 		SetCursorPos(x, y);
 	}
 	
@@ -622,17 +622,17 @@ void DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 		}
 	}
 
-	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->GetWindow()->GetSize().x);
-	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->GetWindow()->GetSize().y);
+	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->getWindow()->getSize().x);
+	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->getWindow()->getSize().y);
 	
-	if(mainApp->GetWindow()->IsFullScreen()) {
+	if(mainApp->getWindow()->isFullScreen()) {
 		absX = iLastMouseX;
 		absY = iLastMouseY;
 	} else {
 		// Win absolute
 		POINT pt;
 		GetCursorPos(&pt);
-		ScreenToClient((HWND)mainApp->GetWindow()->GetHandle(), &pt);
+		ScreenToClient((HWND)mainApp->getWindow()->getHandle(), &pt);
 		absX = pt.x;
 		absY = pt.y;
 	}	
@@ -643,11 +643,11 @@ void DInput8Backend::setMouseCoordinates(int absX, int absY)
 	iLastMouseX = absX;
 	iLastMouseY = absY;
 	
-	if(!mainApp->GetWindow()->IsFullScreen()) {
+	if(!mainApp->getWindow()->isFullScreen()) {
 		POINT pt;
 		pt.x = absX;
 		pt.y = absY;
-		ClientToScreen((HWND)mainApp->GetWindow()->GetHandle(), &pt);
+		ClientToScreen((HWND)mainApp->getWindow()->getHandle(), &pt);
 		SetCursorPos(pt.x, pt.y);
 	}
 }

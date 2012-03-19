@@ -228,14 +228,14 @@ ArxGame::ArxGame() : wasResized(false) { }
 ArxGame::~ArxGame() {
 }
 
-bool ArxGame::Initialize()
+bool ArxGame::initialize()
 {
-	bool init = Application::Initialize();
+	bool init = Application::initialize();
 	if(!init) {
 		return false;
 	}
 
-	init = InitGameData();
+	init = initGameData();
 	if(!init) {
 		return false;
 	}
@@ -245,7 +245,7 @@ bool ArxGame::Initialize()
 		return false;
 	}
 
-	Create();
+	create();
 
 	return true;
 }
@@ -256,14 +256,14 @@ void ArxGame::setFullscreen(bool fullscreen) {
 		
 		RenderWindow::DisplayMode mode(config.video.resolution, config.video.bpp);
 		if(mode.resolution == Vec2i::ZERO) {
-			mode = GetWindow()->getDisplayModes().back();
+			mode = getWindow()->getDisplayModes().back();
 		}
 		
-		GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
+		getWindow()->setFullscreenMode(mode.resolution, mode.depth);
 		
 	} else {
 		
-		GetWindow()->setWindowSize(config.window.size);
+		getWindow()->setWindowSize(config.window.size);
 		
 	}
 }
@@ -280,8 +280,8 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	}
 	
 	// Register ourself as a listener for this window messages
-	m_MainWindow->AddListener(this);
-	m_MainWindow->addListener(this);
+	m_MainWindow->addWindowListener(this);
+	m_MainWindow->addRenderWindowListener(this);
 	
 	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
 	
@@ -321,7 +321,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		return false;
 	}
 	
-	if(!m_MainWindow->IsFullScreen() && config.video.resolution != Vec2i::ZERO) {
+	if(!m_MainWindow->isFullScreen() && config.video.resolution != Vec2i::ZERO) {
 		config.video.resolution = mode.resolution;
 	}
 	config.video.bpp = mode.depth;
@@ -329,7 +329,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	return true;
 }
 
-bool ArxGame::InitWindow() {
+bool ArxGame::initWindow() {
 	
 	arx_assert(m_MainWindow == NULL);
 	
@@ -373,7 +373,7 @@ bool ArxGame::InitWindow() {
 	return true;
 }
 
-bool ArxGame::InitInput() {
+bool ArxGame::initInput() {
 	
 	LogDebug("Input init");
 	bool init = ARX_INPUT_Init();
@@ -384,7 +384,7 @@ bool ArxGame::InitInput() {
 	return init;
 }
 
-bool ArxGame::InitSound() {
+bool ArxGame::initSound() {
 	
 	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
@@ -395,11 +395,11 @@ bool ArxGame::InitSound() {
 	return true;
 }
 
-bool ArxGame::InitGameData() {
+bool ArxGame::initGameData() {
 	
 	bool init;
 	
-	init = AddPaks();
+	init = addPaks();
 	if(!init) {
 		LogError << "Error loading pak files";
 		return false;
@@ -439,7 +439,7 @@ static void add_paks(const fs::path & base, bool * found) {
 	resources->addFiles(base / "speech", "speech");
 }
 
-bool ArxGame::AddPaks() {
+bool ArxGame::addPaks() {
 	
 	arx_assert(!resources);
 	
@@ -480,15 +480,12 @@ bool ArxGame::AddPaks() {
 	return true;
 }
 
-//*************************************************************************************
-// Create()
-//*************************************************************************************
-bool ArxGame::Create() {
+bool ArxGame::create() {
 	
 	return true;
 }
 
-void ArxGame::OnWindowGotFocus(const Window &) {
+void ArxGame::onWindowGotFocus(const Window &) {
 	
 	if(GInput) {
 		GInput->reset();
@@ -497,56 +494,56 @@ void ArxGame::OnWindowGotFocus(const Window &) {
 	}
 }
 
-void ArxGame::OnWindowLostFocus(const Window &) {
+void ArxGame::onWindowLostFocus(const Window &) {
 	
 	if(GInput) {
 		GInput->unacquireDevices();
 	}
 }
 
-void ArxGame::OnResizeWindow(const Window & window) {
+void ArxGame::onResizeWindow(const Window & window) {
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
 	wasResized = true;
 	
-	if(window.IsFullScreen()) {
+	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i::ZERO) {
-			LogInfo << "auto selected fullscreen resolution " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
+			LogInfo << "auto selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
 		} else {
-			LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
-			config.video.resolution = window.GetSize();
+			LogInfo << "changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
+			config.video.resolution = window.getSize();
 		}
 	} else {
-		LogInfo << "changed window size to " << window.GetSize().x << 'x' << window.GetSize().y;
-		config.window.size = window.GetSize();
+		LogInfo << "changed window size to " << window.getSize().x << 'x' << window.getSize().y;
+		config.window.size = window.getSize();
 	}
 }
 
-void ArxGame::OnPaintWindow(const Window& window)
+void ArxGame::onPaintWindow(const Window& window)
 {
 	ARX_UNUSED(window);
 }
 
-void ArxGame::OnDestroyWindow(const Window &) {
+void ArxGame::onDestroyWindow(const Window &) {
 	
 	LogInfo << "Application window is being destroyed";
-	Quit();
+	quit();
 }
 
-void ArxGame::OnToggleFullscreen(const Window & window) {
-	config.video.fullscreen = window.IsFullScreen();
+void ArxGame::onToggleFullscreen(const Window & window) {
+	config.video.fullscreen = window.isFullScreen();
 	GInput->reset();
 	wasResized = true;
 }
 
 //*************************************************************************************
-// Run()
+// run()
 // Message-processing loop. Idle time is used to render the scene.
 //*************************************************************************************
-void ArxGame::Run() {
+void ArxGame::run() {
 	
-	BeforeRun();
+	beforeRun();
 	
 	while(m_RunLoop) {
 		
@@ -555,8 +552,8 @@ void ArxGame::Run() {
 			break;
 		}
 		
-		if(m_MainWindow->HasFocus() && m_bReady) {
-			Render3DEnvironment();
+		if(m_MainWindow->hasFocus() && m_bReady) {
+			doFrame();
 			
 			// Show the frame on the primary surface.
 			m_MainWindow->showFrame();
@@ -567,11 +564,21 @@ void ArxGame::Run() {
 long MouseDragX, MouseDragY;
  
 //*************************************************************************************
-// Render3DEnvironment()
+// doFrame()
 // Draws the scene.
 //*************************************************************************************
-void ArxGame::Render3DEnvironment() {
+void ArxGame::doFrame() {
 		
+	updateTime();
+
+	updateInput();
+
+	if(wasResized) {
+		LogDebug("was resized");
+		wasResized = false;
+		DanaeRestoreFullScreen();
+	}
+
 	// Manages Splash Screens if needed
 	if(DANAE_ManageSplashThings())
 		return;
@@ -617,8 +624,8 @@ void ArxGame::Render3DEnvironment() {
 	if(FirstFrame) {
 		FirstFrameHandling();
 	} else {
-		Update();
-		Render();
+		update();
+		render();
 	}
 }
 
@@ -626,10 +633,10 @@ void ArxGame::Render3DEnvironment() {
 // Cleanup3DEnvironment()
 // Cleanup scene objects
 //*************************************************************************************
-void ArxGame::Cleanup3DEnvironment() {
+void ArxGame::cleanup3DEnvironment() {
 	
-	if(GetWindow()) {
-		FinalCleanup();
+	if(getWindow()) {
+		finalCleanup();
 	}
 	
 }
@@ -638,7 +645,7 @@ void ArxGame::Cleanup3DEnvironment() {
 // OutputText()
 // Draws text on the window.
 //*************************************************************************************
-void ArxGame::OutputText(int x, int y, const string & str) {
+void ArxGame::outputText(int x, int y, const string & str) {
 	if (m_bReady) {
 		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
 	}
@@ -649,12 +656,12 @@ void ArxGame::OutputText(int x, int y, const string & str) {
 // Draws text on the window using selected font and color
 // at position defined by column,row.
 //*************************************************************************************
-void ArxGame::OutputTextGrid(float column, float row, const std::string &text, const Color &color)
+void ArxGame::outputTextGrid(float column, float row, const std::string &text, const Color &color)
 {
 	Font *selected_font = hFontInGame;
 
 	// find display size
-	const Vec2i &window = GetWindow()->GetSize();
+	const Vec2i &window = getWindow()->getSize();
 
 	const int tsize = selected_font->GetLineHeight();
 
@@ -674,11 +681,11 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 
 }
 
-bool ArxGame::BeforeRun() {
+bool ArxGame::beforeRun() {
 	
 	LogDebug("Before Run...");
 	
-	const Vec2i & size = GetWindow()->GetSize();
+	const Vec2i & size = getWindow()->getSize();
 	ControlCinematique = new Cinematic(size.x, size.y);
 	
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
@@ -831,14 +838,12 @@ void ArxGame::updateFirstPersonCamera() {
 		subj.d_angle.a=player.angle.a+30.f;
 		subj.d_angle.b=player.angle.b;
 		subj.d_angle.g=player.angle.g;
-		EXTERNALVIEW=1;
 	}
 	else
 	{
 		subj.angle.a=player.angle.a;
 		subj.angle.b=player.angle.b;
 		subj.angle.g=player.angle.g;
-		EXTERNALVIEW=0;
 
 		if (inter.iobj[0])
 		{
@@ -1362,7 +1367,7 @@ void ArxGame::updateInput() {
 	AdjustMousePosition();
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
-		setFullscreen(!GetWindow()->IsFullScreen());
+		setFullscreen(!getWindow()->isFullScreen());
 	}
 
 	if (GInput->isKeyPressedNowPressed(Keyboard::Key_F12))
@@ -1411,12 +1416,12 @@ void ArxGame::renderLevel() {
 
 	if (!PLAYER_PARALYSED)
 	{
-		if (ManageEditorControls()) goto finish;
+		if (manageEditorControls()) goto finish;
 	}
 
 	if ((!BLOCK_PLAYER_CONTROLS) && (!PLAYER_PARALYSED))
 	{
-		ManagePlayerControls();
+		managePlayerControls();
 	}
 
 	ARX_PLAYER_Manage_Movement();
@@ -1823,8 +1828,8 @@ finish:
 	{
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		DrawAllInterface();
-		DrawAllInterfaceFinish();
+		drawAllInterface();
+		drawAllInterfaceFinish();
 
 		if ( (player.Interface & INTER_MAP )
 			&& (!(player.Interface & INTER_COMBATMODE))
@@ -1846,7 +1851,7 @@ finish:
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
-	this->GoFor2DFX();
+	goFor2DFX();
 	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->Clear(Renderer::DepthBuffer);
 
@@ -1929,45 +1934,33 @@ finish:
 				sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
 				break;
 			}
-			OutputText( 320, 240, tex );
+			outputText( 320, 240, tex );
 		}
 
 		if((!FOR_EXTERNAL_PEOPLE)) {
 			if(bOLD_CLIPP) {
-				OutputText(0, 240, "New Clipp" );
+				outputText(0, 240, "New Clipp" );
 			} else {
-				OutputText(0,274,"New Clipp");
+				outputText(0,274,"New Clipp");
 			}
 		}
 	}
+
+	GRenderer->EndScene();
 }
 
-//*************************************************************************************
-// Update()
-// Called once per frame.
-//*************************************************************************************
-void ArxGame::Update() {
-	
-	updateTime();
+void ArxGame::update() {
 	
 	if(!WILL_LAUNCH_CINE.empty()) {
 		// A cinematic is waiting to be played...
 		LaunchWaitingCine();
 	}
-
-	updateInput();
 }
 
-void ArxGame::Render() {
+void ArxGame::render() {
 	
 	ACTIVECAM = &subj;
 
-	if(wasResized) {
-		LogDebug("was resized");
-		wasResized = false;
-		DanaeRestoreFullScreen();
-	}
-	
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();
 		
@@ -2043,7 +2036,7 @@ void ArxGame::Render() {
 
 		{
 			if (!STOP_KEYBOARD_INPUT)
-				ManageKeyMouse();
+				manageKeyMouse();
 			else
 			{
 				STOP_KEYBOARD_INPUT++;
@@ -2100,7 +2093,7 @@ void ArxGame::Render() {
 	LastMouseClick=EERIEMouseButton;
 }
 
-void ArxGame::GoFor2DFX()
+void ArxGame::goFor2DFX()
 {
 	TexturedVertex lv,ltvv;
 
@@ -2257,7 +2250,7 @@ void ArxGame::GoFor2DFX()
 }
 
 
-bool ArxGame::InitDeviceObjects() {
+bool ArxGame::initDeviceObjects() {
 	
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -2300,11 +2293,7 @@ bool ArxGame::InitDeviceObjects() {
 	return true;
 }
 
-//*************************************************************************************
-// FinalCleanup()
-// Called before the app exits
-//*************************************************************************************
-bool ArxGame::FinalCleanup() {
+bool ArxGame::finalCleanup() {
 	
 	EERIE_PATHFINDER_Release();
 	ARX_INPUT_Release();
@@ -2326,7 +2315,7 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 		return;
 	}
 	
-	InitDeviceObjects();
+	initDeviceObjects();
 	
 	// The app is ready to go
 	m_bReady = true;

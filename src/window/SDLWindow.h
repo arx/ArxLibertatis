@@ -35,7 +35,7 @@ public:
 	
 	bool initFramework();
 	bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
-	void * GetHandle();
+	void * getHandle();
 	void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	void setWindowSize(Vec2i size);
 	void tick();

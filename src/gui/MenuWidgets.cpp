@@ -968,7 +968,7 @@ bool Menu2_Render() {
 					
 					std::vector<unsigned> vBpp;
 					
-					const RenderWindow::DisplayModes & modes = mainApp->GetWindow()->getDisplayModes();
+					const RenderWindow::DisplayModes & modes = mainApp->getWindow()->getDisplayModes();
 					for(size_t i = 0; i != modes.size(); ++i) {
 						
 						const RenderWindow::DisplayMode & mode = modes[i];

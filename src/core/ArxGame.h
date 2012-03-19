@@ -56,37 +56,36 @@ class ArxGame : public Application, public Window::Listener, public RenderWindow
 	
 protected:
 	
-	virtual bool Initialize();
-	virtual bool InitWindow();
-	virtual bool InitInput();
-	virtual bool InitSound();
-	bool InitGameData();
-	bool AddPaks();
+	virtual bool initialize();
+	virtual bool initWindow();
+	virtual bool initInput();
+	virtual bool initSound();
+	bool initGameData();
+	bool addPaks();
 	
-	void Render();
-	void Update();
+	void doFrame();
+	void update();
+	void render();	
 
-	void ManageKeyMouse();
-	bool ManageEditorControls();
-	void ManagePlayerControls();
-	void DrawAllInterface();
-	void DrawAllInterfaceFinish();
-	void GoFor2DFX();
-	bool BeforeRun();
-	
-	void Render3DEnvironment();
-	
+	void manageKeyMouse();
+	bool manageEditorControls();
+	void managePlayerControls();
+	void drawAllInterface();
+	void drawAllInterfaceFinish();
+	void goFor2DFX();
+	bool beforeRun();
+		
 public:
 	
 	ArxGame();
 	virtual ~ArxGame();
 	
-	bool Create();
-	virtual void Run();
+	bool create();
+	virtual void run();
 
-	bool InitDeviceObjects();
-	bool FinalCleanup();
-	virtual void Cleanup3DEnvironment();
+	bool initDeviceObjects();
+	bool finalCleanup();
+	virtual void cleanup3DEnvironment();
 	
 	/**
 	 * Writes text to the window
@@ -94,8 +93,8 @@ public:
 	 * @param y The y coordinate for the text
 	 * @param str The string of text to be written
 	*/
-	virtual void OutputText(int x, int y, const std::string & str);
-	virtual void OutputTextGrid(float x, float y, const std::string &text, const Color &color);
+	virtual void outputText(int x, int y, const std::string & str);
+	virtual void outputTextGrid(float x, float y, const std::string &text, const Color &color);
 	
 private:
 	void updateTime();
@@ -116,12 +115,12 @@ private:
 	void renderCinematic();
 	void renderLevel();
 
-	virtual void OnWindowGotFocus(const Window & window);
-	virtual void OnWindowLostFocus(const Window & window);
-	virtual void OnResizeWindow(const Window & window);
-	virtual void OnPaintWindow(const Window & window);
-	virtual void OnDestroyWindow(const Window & window);
-	virtual void OnToggleFullscreen(const Window & window);
+	virtual void onWindowGotFocus(const Window & window);
+	virtual void onWindowLostFocus(const Window & window);
+	virtual void onResizeWindow(const Window & window);
+	virtual void onPaintWindow(const Window & window);
+	virtual void onDestroyWindow(const Window & window);
+	virtual void onToggleFullscreen(const Window & window);
 	
 	bool wasResized;
 	

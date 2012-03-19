@@ -455,8 +455,8 @@ void DANAE_KillCinematic()
 static bool AdjustUI() {
 	
 	// Sets Danae Screen size depending on windowed/full-screen state
-	DANAESIZX = mainApp->GetWindow()->GetSize().x;
-	DANAESIZY = mainApp->GetWindow()->GetSize().y;
+	DANAESIZX = mainApp->getWindow()->getSize().x;
+	DANAESIZY = mainApp->getWindow()->getSize().y;
 	
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;
@@ -688,7 +688,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	arxtime.init();
 	
 	mainApp = new ArxGame();
-	if(!mainApp->Initialize()) {
+	if(!mainApp->initialize()) {
 		LogError << "Application failed to initialize properly";
 		return -1;
 	}
@@ -853,7 +853,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	}
 	
 	// Init all done, start the main loop
-	mainApp->Run();
+	mainApp->run();
 	
 	ClearGame();
 	
@@ -3686,16 +3686,16 @@ void ShowTestText()
 {
 	char tex[256];
 
-	mainApp->OutputText(0, 16, version);
+	mainApp->outputText(0, 16, version);
 
 	sprintf(tex,"Level : %s", LastLoadedScene.string().c_str());
-	mainApp->OutputText( 0, 32, tex );
+	mainApp->outputText( 0, 32, tex );
 
 	sprintf(tex,"Position : %5.0f %5.0f %5.0f",player.pos.x,player.pos.y,player.pos.z);
-	mainApp->OutputText( 0, 48, tex );
+	mainApp->outputText( 0, 48, tex );
 
 	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
-	mainApp->OutputText( 0, 64, tex );
+	mainApp->outputText( 0, 64, tex );
 }
 extern float CURRENT_PLAYER_COLOR;
 extern int TSU_TEST_COLLISIONS;
@@ -3728,7 +3728,7 @@ void ShowInfoText() {
 	}
 
 	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, _framedelay, INTER_DRAW, INTER_COMPUTE, 0, vdist);
-	mainApp->OutputText( 70, 32, tex );
+	mainApp->outputText( 70, 32, tex );
 
 	float poss=-666.66f;
 	EERIEPOLY * ep=CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z);
@@ -3738,15 +3738,15 @@ void ShowInfoText() {
 		poss=tempo;
 
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
-	mainApp->OutputText( 70, 48, tex );
+	mainApp->outputText( 70, 48, tex );
 	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
 		,GAT,ParticleCount,player.doingmagic);
-	mainApp->OutputText( 70, 64, tex );
+	mainApp->outputText( 70, 64, tex );
 
-	if (player.onfirmground==0) mainApp->OutputText( 200, 280, "OFFGRND" );
+	if (player.onfirmground==0) mainApp->outputText( 200, 280, "OFFGRND" );
 
 	sprintf(tex,"Jump %f cinema %f %d %d - Pathfind %ld(%s)",player.jumplastposition,CINEMA_DECAL,DANAEMouse.x,DANAEMouse.y,EERIE_PATHFINDER_Get_Queued_Number(), PATHFINDER_WORKING ? "Working" : "Idled");
-	mainApp->OutputText( 70, 80, tex );
+	mainApp->outputText( 70, 80, tex );
 	INTERACTIVE_OBJ * io=ARX_SCRIPT_Get_IO_Max_Events();
 
 	if (io==NULL)
@@ -3756,13 +3756,13 @@ void ShowInfoText() {
 		sprintf(tex,"Events %ld (IOmax %s %d) Timers %ld",ScriptEvent::totalCount, io->long_name().c_str(), io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
-	mainApp->OutputText( 70, 94, tex );
+	mainApp->outputText( 70, 94, tex );
 
 	io=ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
 	if(io) {
 		sprintf(tex,"Max SENDER %s %d)", io->long_name().c_str(), io->stat_sent);
-		mainApp->OutputText(70, 114, tex);
+		mainApp->outputText(70, 114, tex);
 	}
 
 	float slope=0.f;
@@ -3774,10 +3774,10 @@ void ShowInfoText() {
 	}
 
 	sprintf(tex,"Velocity %3.0f %3.0f %3.0f Slope %3.3f",player.physics.velocity.x,player.physics.velocity.y,player.physics.velocity.z,slope);
-	mainApp->OutputText( 70, 128, tex );
+	mainApp->outputText( 70, 128, tex );
 
 	sprintf(tex, "TSU_TEST %ld - nblights %ld - nb %ld", TSU_TEST, TSU_TEST_NB_LIGHT, TSU_TEST_NB);
-	mainApp->OutputText( 100, 208, tex );
+	mainApp->outputText( 100, 208, tex );
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
@@ -3794,10 +3794,10 @@ void ShowInfoText() {
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
 					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				mainApp->OutputText(170, 420, tex);
+				mainApp->outputText(170, 420, tex);
 			sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f Hunger %4.1f",player.life,player.maxlife,
 					player.mana,player.maxmana,player.poison,player.hunger);
-				mainApp->OutputText( 170, 320, tex );
+				mainApp->outputText( 170, 320, tex );
 
 		  }
 		  else
@@ -3809,32 +3809,32 @@ void ShowInfoText() {
 					io->pos.y,io->pos.z,io->move.x,
 					io->move.y,io->move.z,io->_npcdata->moveproblem,io->_npcdata->pathfind.listpos,io->_npcdata->pathfind.listnb,
 					io->_npcdata->pathfind.truetarget, (long)io->_npcdata->behavior);
-				mainApp->OutputText(170, 420, tex);
+				mainApp->outputText(170, 420, tex);
 				sprintf(tex,"Life %4.0f/%4.0f Mana %4.0f/%4.0f Poisoned %3.1f",io->_npcdata->life,io->_npcdata->maxlife,
 					io->_npcdata->mana,io->_npcdata->maxmana,io->_npcdata->poisonned);
-				mainApp->OutputText( 170, 320, tex );
+				mainApp->outputText( 170, 320, tex );
 				sprintf(tex,"AC %3.0f Absorb %3.0f",ARX_INTERACTIVE_GetArmorClass(io),io->_npcdata->absorb);
-				mainApp->OutputText( 170, 335, tex );
+				mainApp->outputText( 170, 335, tex );
 
 				if (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS)
-					mainApp->OutputText( 170, 360, "PF_ALWAYS" );
+					mainApp->outputText( 170, 360, "PF_ALWAYS" );
 				else
 				{
 					sprintf(tex, "PF_%ld", (long)io->_npcdata->pathfind.flags);
-					mainApp->OutputText(170, 360, tex);
+					mainApp->outputText(170, 360, tex);
 				}
 			  }
 
 			  if (io->ioflags & IO_FIX)
 			  {
 				sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
-				mainApp->OutputText( 170, 320, tex );
+				mainApp->outputText( 170, 320, tex );
 			  }
 
 			  if (io->ioflags & IO_ITEM)
 			  {
 				sprintf(tex,"Durability %4.0f/%4.0f Poisonous %3d count %d",io->durability,io->max_durability,io->poisonous,io->poisonous_count);
-				mainApp->OutputText( 170, 320, tex );
+				mainApp->outputText( 170, 320, tex );
 			  }
 		  }
 	  }
@@ -3843,10 +3843,10 @@ void ShowInfoText() {
 
 	long zap=IsAnyPolyThere(player.pos.x,player.pos.z);
 	sprintf(tex,"POLY %ld",zap);		
-	mainApp->OutputText( 270, 220, tex );
+	mainApp->outputText( 270, 220, tex );
 
 	sprintf(tex,"COLOR %3.0f Stealth %3.0f",CURRENT_PLAYER_COLOR,GetPlayerStealth());
-	mainApp->OutputText( 270, 200, tex );
+	mainApp->outputText( 270, 200, tex );
 
 	ARX_SCRIPT_Init_Event_Stats();
 }
@@ -3858,10 +3858,10 @@ void ShowFPS() {
 	sprintf(tex, "%.02f fps", (float)FPS);
 
 	// top left
-	mainApp->OutputTextGrid(0.0f, 0.0f, tex);
+	mainApp->outputTextGrid(0.0f, 0.0f, tex);
 
 	// bottom right
-	//mainApp->OutputTextGrid(-0.5f, -1, tex);
+	//mainApp->outputTextGrid(-0.5f, -1, tex);
 }
 
 void ARX_SetAntiAliasing() {
@@ -3934,7 +3934,7 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 	arxtime.resume();
 	
-	mainApp->GetWindow()->hide();
+	mainApp->getWindow()->hide();
 	
 	ARX_MINIMAP_PurgeTC();
 	
@@ -4017,7 +4017,7 @@ void ClearGame() {
 	FreeSnapShot();
 	ARX_INPUT_Release();
 	
-	mainApp->Cleanup3DEnvironment();
+	mainApp->cleanup3DEnvironment();
 	
 	delete mainApp, mainApp = NULL;
 	

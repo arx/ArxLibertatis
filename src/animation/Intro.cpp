@@ -262,7 +262,7 @@ void LoadLevelScreen(long num) {
 		}
 		
 		GRenderer->EndScene();
-		mainApp->GetWindow()->showFrame();
+		mainApp->getWindow()->showFrame();
 		
 		OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
 		last_progress_bar_update = Time::getMs();
