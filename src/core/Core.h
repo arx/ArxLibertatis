@@ -102,7 +102,7 @@ inline float minSizeRatio() { return std::min(Xratio, Yratio); }
 extern long	FADEDURATION;
 extern long	FADEDIR;
 extern float FrameDiff;
-extern long FirstFrame;
+extern bool FirstFrame;
 #ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;

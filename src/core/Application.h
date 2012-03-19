@@ -126,7 +126,7 @@ protected:
 	
 	/* Virtual functions to be overriden for the 3D scene in the Application */
 	virtual bool DeleteDeviceObjects() { return true; }
-	virtual void FrameMove() { }
+	virtual void Update() { }
 	virtual bool BeforeRun() { return true; }
 	
 public:

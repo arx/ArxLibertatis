@@ -84,6 +84,8 @@ extern long DANAESIZX;
 extern long DANAESIZY;
 extern long STARTED_A_GAME;
 
+extern long LOADQUEST_SLOT;
+
 extern long REFUSE_GAME_RETURN;
 
 extern bool bFade;
@@ -294,26 +296,13 @@ void ARXMenu_NewQuest()
 extern float PROGRESS_BAR_TOTAL;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_COUNT;
-extern long NEED_SPECIAL_RENDEREND;
 void ARXMenu_LoadQuest(size_t num) {
 	
-	GRenderer->EndScene();
-	
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
-	
+	LOADQUEST_SLOT = num;
+
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
-	LoadLevelScreen();
-	PROGRESS_BAR_TOTAL = 238;
-	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(savegames[num].level);
-	DanaeClearLevel();
-	ARX_CHANGELEVEL_Load(savegames[num].savefile);
 	REFUSE_GAME_RETURN = 0;
-	NEED_SPECIAL_RENDEREND = 1;
 	ARX_MENU_Clicked_QUIT();
-	
-	GRenderer->BeginScene();
 }
 
 //SAVE QUEST

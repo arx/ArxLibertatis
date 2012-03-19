@@ -307,7 +307,6 @@ char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 string WILL_LAUNCH_CINE;
-char _CURRENTLOAD_[256];
 res::path LastLoadedScene;
 string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
@@ -398,7 +397,7 @@ long ARX_MOUSE_OVER=0;
 // DEBUG FLAGS/Vars
 //-----------------------------------------------------------------------------
 long LaunchDemo=0;
-long FirstFrame=1;
+bool FirstFrame=true;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
 unsigned long PlayerWeaponBlockTime=0;
@@ -743,7 +742,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	LogDebug("EventStack Init");
 	ARX_EQUIPMENT_Init();
 	LogDebug("AEQ Init");
-	memset(_CURRENTLOAD_,0,256);
 	
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug("Timer Init");
@@ -2066,7 +2064,7 @@ void FirstFrameHandling()
 {	
 	LogDebug("FirstFrameHandling");
 	Vec3f trans;
-	FirstFrame=-1;
+	FirstFrame=true;
 
 	ARX_PARTICLES_FirstInit();
 	ARX_SPELLS_Init_Rects();
@@ -2185,7 +2183,7 @@ void FirstFrameHandling()
 	PROGRESS_BAR_COUNT+=1.f;
 	LoadLevelScreen();
 
-	FirstFrame=0;
+	FirstFrame=false;
 	FRAME_COUNT=0;
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
@@ -3409,7 +3407,7 @@ void DANAE_StartNewQuest()
 	LoadLevelScreen();
 	DanaeLoadLevel(loadfrom);
 	FORBID_SAVE=0;
-	FirstFrame=1;
+	FirstFrame=true;
 	START_NEW_QUEST=0;
 	STARTED_A_GAME=1;
 	BLOCK_PLAYER_CONTROLS = 0;
@@ -3429,7 +3427,7 @@ bool DANAE_ManageSplashThings() {
 		if(GInput->isAnyKeyPressed()) {
 			REFUSE_GAME_RETURN = 1;
 			FORBID_SAVE = 0;
-			FirstFrame=  1;
+			FirstFrame=true;
 			SPLASH_THINGS_STAGE = 0;
 			ARXmenu.currentmode = AMCM_MAIN;
 			ARX_MENU_Launch();
@@ -3515,7 +3513,7 @@ bool DANAE_ManageSplashThings() {
 
 			DanaeLoadLevel(loadfrom);
 			FORBID_SAVE=0;
-			FirstFrame=1;
+			FirstFrame=true;
 			SPLASH_THINGS_STAGE=0;
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
@@ -3526,7 +3524,7 @@ bool DANAE_ManageSplashThings() {
 		if (SPLASH_THINGS_STAGE > 13)
 		{
 			FORBID_SAVE=0;
-			FirstFrame=1;
+			FirstFrame=true;
 			SPLASH_THINGS_STAGE=0;
 
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);

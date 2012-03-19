@@ -105,7 +105,6 @@ extern long BOOKZOOM;
 extern long FRAME_COUNT;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
-extern long NEED_SPECIAL_RENDEREND;
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;
@@ -319,7 +318,6 @@ void ARX_MENU_NEW_QUEST_Clicked_QUIT()
 {
 	START_NEW_QUEST = 1;
 	REFUSE_GAME_RETURN = 0;
-	NEED_SPECIAL_RENDEREND = 1;
 	ARX_MENU_Clicked_QUIT();
 }
 

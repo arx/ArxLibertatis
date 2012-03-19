@@ -64,7 +64,8 @@ protected:
 	bool AddPaks();
 	
 	void Render();
-	void FrameMove();
+	void Update();
+
 	void ManageKeyMouse();
 	bool ManageEditorControls();
 	void ManagePlayerControls();
@@ -97,7 +98,17 @@ public:
 	virtual void OutputTextGrid(float x, float y, const std::string &text, const Color &color);
 	
 private:
-	
+	void updateTime();
+	void updateInput();
+
+	// Camera stuff
+	void updateFirstPersonCamera();
+	void updateConversationCamera();
+	void speechControlledCinematic();
+	void handlePlayerDeath();
+	void handleCameraController();
+	void updateActiveCamera();
+
 	virtual void OnWindowGotFocus(const Window & window);
 	virtual void OnWindowLostFocus(const Window & window);
 	virtual void OnResizeWindow(const Window & window);

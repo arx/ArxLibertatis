@@ -682,6 +682,7 @@ void ARX_MENU_Clicked_CREDITS();
 
 bool ARX_QuickLoad();
 void ARX_QuickSave();
+bool ARX_SlotLoad(int slotIndex);
 void ARX_DrawAfterQuickLoad();
 
 extern bool changeResolution;

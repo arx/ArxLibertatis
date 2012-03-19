@@ -3647,7 +3647,6 @@ void ARX_PLAYER_Rune_Add_All()
 extern unsigned long LAST_PRECAST_TIME;
 extern long sp_wep;
 extern long TOTAL_BODY_CHUNKS_COUNT;
-extern long WILL_QUICKLOAD, WILL_QUICKSAVE;
 extern long GLOBAL_Player_Room;
 extern long cur_mx, cur_pom;
 extern long sp_arm, cur_arm;
@@ -3697,8 +3696,6 @@ void ARX_GAME_Reset(long type) {
 
 	ioSteal = NULL;
 
-	WILL_QUICKLOAD = 0;
-	WILL_QUICKSAVE = 0;
 	GLOBAL_SLOWDOWN = 1.f;
 
 	PrecalcIOLighting(NULL, 0, 1);

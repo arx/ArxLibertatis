@@ -197,6 +197,7 @@ void ARX_DrawAfterQuickLoad() {
 
 	if(!pTex) return;
 
+	GRenderer->BeginScene();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
@@ -204,32 +205,50 @@ void ARX_DrawAfterQuickLoad() {
 	                 INTERFACE_RATIO_DWORD(pTex->m_dwHeight), 0.f, pTex, Color::gray(fColor));
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->EndScene();
 }
 
-bool ARX_QuickLoad() {
-	
-	SaveGameList::iterator save = savegames.quickload();
-	if(save == savegames.end()) {
-		// No saves found!
-		return false;
-	}
-	
-	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+bool ARX_LoadGame(const SaveGame & save) {
 	
 	LoadLevelScreen();
 	PROGRESS_BAR_TOTAL = 238;
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(save->level);
+	LoadLevelScreen(save.level);
 	
 	DanaeClearLevel();
 	
-	ARX_CHANGELEVEL_Load(save->savefile);
+	long ret = ARX_CHANGELEVEL_Load(save.savefile);
 	
 	REFUSE_GAME_RETURN = 0;
+
+	return ret != -1;
+}
+
+bool ARX_QuickLoad() {
+	bool loaded;
+
+	SaveGameList::iterator save = savegames.quickload();
+	if(save == savegames.end()) {
+		// No saves found!
+		return false;
+	}
+
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerGame);
+	loaded = ARX_LoadGame(*save);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerGame);
 	
-	return true;
+	return loaded;
+}
+
+bool ARX_SlotLoad(int slotIndex) {
+	if(slotIndex >= (int)savegames.size()) {
+		// Invalid slot!
+		return false;
+	}
+
+	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
+	return ARX_LoadGame(savegames[slotIndex]);
 }
 
 //-----------------------------------------------------------------------------

@@ -643,12 +643,6 @@ Vec3f MSP;
 //*************************************************************************************
 //*************************************************************************************
 
-extern char  _CURRENTLOAD_[256];
-void ClearCurLoadInfo()
-{
-	memset(_CURRENTLOAD_, 0, 256);
-}
-
 extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
@@ -657,7 +651,6 @@ long DanaeLoadLevel(const res::path & file) {
 	
 	LogInfo << "Loading Level " << file;
 	
-	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(file.string());
 	
 	res::path lightingFileName = res::path(file).set_ext("llf");
@@ -781,8 +774,6 @@ long DanaeLoadLevel(const res::path & file) {
 	
 	MSP = trans;
 	
-	ClearCurLoadInfo();
-	
 	float increment = 0;
 	if(dlh.nb_inter > 0) {
 		increment = (60.f / (float)dlh.nb_inter);
@@ -905,7 +896,6 @@ long DanaeLoadLevel(const res::path & file) {
 		pos += sizeof(DANAE_LS_LIGHT) * nb_lights;
 	}
 	
-	ClearCurLoadInfo();
 	LogDebug("Loading FOGS");
 	ARX_FOGS_Clear();
 	
@@ -946,7 +936,6 @@ long DanaeLoadLevel(const res::path & file) {
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
 	
-	ClearCurLoadInfo();
 	LogDebug("Loading Nodes");
 	ClearNodes();
 	
@@ -971,7 +960,6 @@ long DanaeLoadLevel(const res::path & file) {
 	
 	RestoreNodeNumbers();
 	
-	ClearCurLoadInfo();
 	LogDebug("Loading Paths");
 	ARX_PATH_ReleaseAllPath();
 	
@@ -1030,7 +1018,6 @@ long DanaeLoadLevel(const res::path & file) {
 	
 	if(lightingFile) {
 		
-		ClearCurLoadInfo();
 		LogDebug("Loading LLF Info");
 		
 		// using compression
