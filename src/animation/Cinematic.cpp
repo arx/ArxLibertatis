@@ -682,9 +682,10 @@ void Cinematic::Render(float FDIFF) {
 			default:
 				break;
 		}
+		
+		GRenderer->EndScene();
 
 		CalcFPS();
 		InRender = false;
-	}
-	
+	}	
 }

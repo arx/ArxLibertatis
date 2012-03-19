@@ -3578,7 +3578,7 @@ void LaunchWaitingCine() {
 //*************************************************************************************
 // Manages Currently playing 2D cinematic
 //*************************************************************************************
-long DANAE_Manage_Cinematic()
+void DANAE_Manage_Cinematic()
 {
 	
 	float FrameTicks=arxtime.get_updated( false );
@@ -3628,7 +3628,6 @@ long DANAE_Manage_Cinematic()
 	}
 
 	LastFrameTicks=FrameTicks;
-	return 0;
 }
 
 void ReMappDanaeButton() {

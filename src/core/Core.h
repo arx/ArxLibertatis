@@ -160,7 +160,7 @@ void ReMappDanaeButton();
 void AdjustMousePosition();
 void DANAE_StartNewQuest();
 bool DANAE_ManageSplashThings();
-long DANAE_Manage_Cinematic();
+void DANAE_Manage_Cinematic();
 void DanaeRestoreFullScreen();
 void FirstFrameHandling();
 

@@ -109,6 +109,13 @@ private:
 	void handleCameraController();
 	void updateActiveCamera();
 
+	bool isInMenu() const;
+	bool isInCinematic() const;
+
+	void renderMenu();
+	void renderCinematic();
+	void renderLevel();
+
 	virtual void OnWindowGotFocus(const Window & window);
 	virtual void OnWindowLostFocus(const Window & window);
 	virtual void OnResizeWindow(const Window & window);

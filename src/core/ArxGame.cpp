@@ -1384,6 +1384,564 @@ void ArxGame::updateInput() {
 	}
 }
 
+bool ArxGame::isInMenu() const {
+	return ARXmenu.currentmode != AMCM_OFF;
+}
+
+void ArxGame::renderMenu() {
+	
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	
+	ARX_Menu_Render();
+
+	GRenderer->SetRenderState(Renderer::Fog, true);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat); // << NEEDED?
+}
+
+bool ArxGame::isInCinematic() const {
+	return PLAY_LOADED_CINEMATIC && ControlCinematique && ControlCinematique->projectload;
+}
+
+void ArxGame::renderCinematic() {
+
+	DANAE_Manage_Cinematic();
+}
+
+void ArxGame::renderLevel() {
+
+	if (!PLAYER_PARALYSED)
+	{
+		if (ManageEditorControls()) goto finish;
+	}
+
+	if ((!BLOCK_PLAYER_CONTROLS) && (!PLAYER_PARALYSED))
+	{
+		ManagePlayerControls();
+	}
+
+	ARX_PLAYER_Manage_Movement();
+
+	ARX_PLAYER_Manage_Visual();
+
+	if (FRAME_COUNT<=0)
+		ARX_MINIMAP_ValidatePlayerPos();
+
+	// SUBJECTIVE VIEW UPDATE START  *********************************************************
+
+	// Clear screen & Z buffers
+	if(desired.flags & GMOD_DCOLOR) {
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
+	}
+	else
+	{
+		subj.bkgcolor=ulBKGColor;
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
+	}
+
+	//-------------------------------------------------------------------------------
+	//               DRAW CINEMASCOPE 16/9
+	if(CINEMA_DECAL != 0.f) {
+		Rect rectz[2];
+		rectz[0].left = rectz[1].left = 0;
+		rectz[0].right = rectz[1].right = DANAESIZX;
+		rectz[0].top = 0;
+		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * Yratio);
+		rectz[0].bottom = lMulResult;
+		rectz[1].top = DANAESIZY - lMulResult;
+		rectz[1].bottom = DANAESIZY;
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
+	}
+	//-------------------------------------------------------------------------------
+
+	GRenderer->BeginScene();
+
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
+	{
+		ManageNONCombatModeAnimations();
+		long old=USEINTERNORM;
+		USEINTERNORM=0;
+		float speedfactor;
+		speedfactor=inter.iobj[0]->basespeed+inter.iobj[0]->speed_modif;
+
+		if (cur_mr==3) speedfactor+=0.5f;
+
+		if (cur_rf==3) speedfactor+=1.5f;
+
+		if (speedfactor < 0) speedfactor = 0;
+
+		long tFrameDiff = Original_framedelay;
+
+		if ((player.Interface & INTER_COMBATMODE) && (STRIKE_TIME))// need some precision for weapon...
+		{
+			float restore=ACTIVECAM->use_focal;
+
+			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
+			{
+				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
+			}
+
+			float cur=0;
+
+			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
+			{
+				long step=min(50L,tFrameDiff);
+
+				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
+
+
+				float iCalc = step*speedfactor ;
+
+				arx_assert(inter.iobj[0]->obj != NULL);
+				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+					&inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false, false);
+
+				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
+					ManageCombatModeAnimations();
+
+				if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
+					ManageCombatModeAnimationsEND();
+
+				cur+=step*speedfactor;
+			}
+
+			ACTIVECAM->use_focal=restore;
+		}
+		else
+		{
+			float restore=ACTIVECAM->use_focal;
+
+			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
+			{
+				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
+			}
+
+
+			float val=(float)tFrameDiff*speedfactor;
+
+			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
+
+			arx_assert(inter.iobj[0]->obj != NULL);
+			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+				&inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false, false);
+
+
+			if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
+				ManageCombatModeAnimations();
+
+			if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
+				ManageCombatModeAnimationsEND();
+
+			ACTIVECAM->use_focal=restore;
+		}
+
+		USEINTERNORM=old;
+	}
+
+
+	updateFirstPersonCamera();
+	updateConversationCamera();
+
+	////////////////////////
+	// Checks SCRIPT TIMERS.
+	ARX_SCRIPT_Timer_Check();
+
+	speechControlledCinematic();
+
+	handlePlayerDeath();
+
+
+	/////////////////////////////////////
+	LAST_CONVERSATION=ARX_CONVERSATION;
+
+	handleCameraController();
+
+	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
+	{
+		Vec3f pos,pos2;
+		USE_CINEMATICS_PATH._curtime = arxtime.get_updated();
+
+		USE_CINEMATICS_PATH._curtime+=50;
+		long pouet2=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos);
+		USE_CINEMATICS_PATH._curtime-=50;
+		long pouet=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos2);
+
+		if ((pouet!=-1) && (pouet2!=-1))
+		{
+			if(USE_CINEMATICS_CAMERA == 2) {
+				subj.pos = pos;
+				subj.d_angle = subj.angle;
+				pos2 = (pos2 + pos) * (1.0f/2);
+				SetTargetCamera(&subj, pos2.x, pos2.y, pos2.z);
+			} else {
+				DebugSphere(pos.x, pos.y, pos.z, 2, 50, Color::red);
+			}
+
+			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
+			{
+				USE_CINEMATICS_CAMERA=0;
+				USE_CINEMATICS_PATH.path=NULL;
+			}
+		}
+		else
+		{
+			USE_CINEMATICS_CAMERA=0;
+			USE_CINEMATICS_PATH.path=NULL;
+		}
+	}
+
+	UpdateCameras();
+
+	///////////////////////////////////////////
+	ARX_PLAYER_FrameCheck(Original_framedelay);
+
+	updateActiveCamera();
+
+	ARX_GLOBALMODS_Apply();
+
+	if (EDITMODE) GRenderer->SetRenderState(Renderer::Fog, false);
+
+	// Set Listener Position
+	{
+		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
+		Vec3f front(-EEsin(t), 0.f, EEcos(t));
+		front.normalize();
+		Vec3f up(0.f, 1.f, 0.f);
+		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+	}
+
+	// Reset Transparent Polys Idx
+	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
+
+	// Check For Hiding/unHiding Player Gore
+	if ((EXTERNALVIEW) || (player.life<=0))
+	{
+		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],0);
+	}
+
+	if (!EXTERNALVIEW)
+	{
+		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],1);
+	}
+
+	LASTEXTERNALVIEW=EXTERNALVIEW;
+
+	// NOW DRAW the player (Really...)
+	if ( (inter.iobj[0])
+		&& (inter.iobj[0]->animlayer[0].cur_anim) )
+	{
+		float restore=ACTIVECAM->use_focal;
+
+		if ((!EXTERNALVIEW) && (!BOW_FOCAL))
+		{
+			ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
+		}
+
+		if (!EXTERNALVIEW)
+			FORCE_FRONT_DRAW=1;
+
+		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
+
+		arx_assert(inter.iobj[0]->obj != NULL);
+		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
+			&inter.iobj[0]->pos, 0, inter.iobj[0]);
+
+		ACTIVECAM->use_focal=restore;
+		FORCE_FRONT_DRAW=0;
+	}
+
+	// SUBJECTIVE VIEW UPDATE START  *********************************************************
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
+
+	PrepareIOTreatZone();
+	ARX_PHYSICS_Apply();
+
+	if (FRAME_COUNT<=0)
+		PrecalcIOLighting(&ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f);
+
+	ACTIVECAM->fadecolor.r=current.depthcolor.r;
+	ACTIVECAM->fadecolor.g=current.depthcolor.g;
+	ACTIVECAM->fadecolor.b=current.depthcolor.b;
+
+	if (uw_mode)
+	{
+		float val=10.f;
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
+		ARX_SCENE_Render(1);
+		val=-0.3f;
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
+	} else {
+		ARX_SCENE_Render(1);
+	}
+
+	// Begin Particles ***************************************************************************
+	if (!(Project.hide & HIDE_PARTICLES))
+	{
+		if (pParticleManager)
+		{
+			pParticleManager->Update(static_cast<long>(FrameDiff));
+			pParticleManager->Render();
+		}
+
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		ARX_FOGS_Render();
+
+		ARX_PARTICLES_Render(&subj);
+		UpdateObjFx();
+
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+	}
+
+	// End Particles ***************************************************************************
+
+	if (!EDITMODE) // Playing Game
+	{
+		// Checks Magic Flares Drawing
+		if (!PLAYER_PARALYSED)
+		{
+			if (EERIEMouseButton & 1)
+			{
+				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT))
+					ARX_SPELLS_AddPoint(DANAEMouse);
+				else
+				{
+					CurrPoint=0;
+					ARX_FLARES_Block=0;
+					CurrSlot=1;
+				}
+			}
+			else if (ARX_FLARES_Block==0)
+				ARX_FLARES_Block=1;
+		}
+
+		ARX_SPELLS_Precast_Check();
+		ARX_SPELLS_ManageMagic();
+		ARX_SPELLS_UpdateSymbolDraw();
+
+		ManageTorch();
+
+		// Renders Magical Flares
+		if ( !((player.Interface & INTER_MAP )
+			&& (!(player.Interface & INTER_COMBATMODE)))
+			&& flarenum
+			)
+		{
+			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
+			FRAMETICKS = (unsigned long)(arxtime);
+		}
+	}
+#ifdef BUILD_EDITOR
+	else  // EDITMODE == true
+	{
+		if (!(Project.hide & HIDE_NODES))
+			RenderAllNodes();
+
+		std::stringstream ss("EDIT MODE - Selected ");
+		ss <<  NbIOSelected;
+		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
+
+		if (EDITION==EDITION_FOGS)
+			ARX_FOGS_RenderAll();
+	}
+#endif
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+	// Checks some specific spell FX
+	CheckMr();
+
+	if (Project.improve)
+		DrawImproveVisionInterface();
+	else
+	{
+		if ((subj.focal<BASE_FOCAL))
+		{
+			static const float INC_FOCAL = 75.0f;
+			subj.focal+=INC_FOCAL;
+
+			if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
+		}
+		else if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
+	}
+
+	if (eyeball.exist!=0)
+	{
+		DrawMagicSightInterface();
+	}
+
+	if (PLAYER_PARALYSED)
+	{
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+	}
+
+	if (FADEDIR)
+	{
+		ManageFade();
+	}
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
+
+	// Red screen fade for damages.
+	ARX_DAMAGE_Show_Hit_Blood();
+
+	// Manage Notes/Books opened on screen
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	ARX_INTERFACE_NoteManage();
+
+finish:
+
+	// Update spells
+	ARX_SPELLS_Update();
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::Fog, true);
+
+	// Manage Death visual & Launch menu...
+	if (DeadTime>2000)
+		ARX_PLAYER_Manage_Death();
+
+	// INTERFACE
+	// Remove the Alphablend State if needed : NO Z Clear
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
+
+	// Draw game interface if needed
+	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
+	{
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		DrawAllInterface();
+		DrawAllInterfaceFinish();
+
+		if ( (player.Interface & INTER_MAP )
+			&& (!(player.Interface & INTER_COMBATMODE))
+			&& flarenum
+			)
+		{
+			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
+			FRAMETICKS = (unsigned long)(arxtime);
+		}
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
+	}
+
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	PopAllTriangleList();
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	PopAllTriangleListTransparency();
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+	GRenderer->SetRenderState(Renderer::Fog, true);
+	this->GoFor2DFX();
+	GRenderer->SetRenderState(Renderer::Fog, false);
+	GRenderer->Clear(Renderer::DepthBuffer);
+
+	// Speech Management
+	if (!EDITMODE)
+	{
+		ARX_SPEECH_Check();
+		ARX_SPEECH_Update();
+	}
+
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+
+	if(pTextManage && !pTextManage->Empty())
+	{
+		pTextManage->Update(FrameDiff);
+		pTextManage->Render();
+	}
+
+	if(SHOW_INGAME_MINIMAP
+		&& (PLAY_LOADED_CINEMATIC == 0) 
+		&& (!CINEMASCOPE) 
+		&& (!BLOCK_PLAYER_CONTROLS) 
+		&& !(player.Interface & INTER_MAP))
+	{
+		long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+
+		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
+			ARX_MINIMAP_Show(SHOWLEVEL,1,1);
+	}
+
+	//-------------------------------------------------------------------------
+
+	// CURSOR Rendering
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+	if (DRAGINTER)
+	{
+		ARX_INTERFACE_RenderCursor();
+
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		PopAllTriangleList();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		PopAllTriangleListTransparency();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+
+		ARX_INTERFACE_HALO_Flush();
+	}
+	else
+	{
+		ARX_INTERFACE_HALO_Flush();
+		ARX_INTERFACE_RenderCursor();
+	}
+
+	GRenderer->SetRenderState(Renderer::Fog, true);
+
+	if (sp_max_start)
+		Manage_sp_max();
+
+	if(NEED_TEST_TEXT) {
+
+		ShowTestText();
+
+		if(ViewMode & VIEWMODE_INFOTEXT) {
+			ShowInfoText();
+		}
+
+		if(USE_PORTALS && !FOR_EXTERNAL_PEOPLE) {
+			char tex[250];
+			switch(USE_PORTALS) {
+			case 1:
+				sprintf(tex, "2DPortals_ROOM: %ld", LAST_ROOM);
+				break;
+			case 2:
+				sprintf(tex, "3DPortals_ROOM: %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+				break;
+			case 3:
+				sprintf(tex, "3DPortals_ROOM(Transform): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+				break;
+			case 4:
+				sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+				break;
+			}
+			OutputText( 320, 240, tex );
+		}
+
+		if((!FOR_EXTERNAL_PEOPLE)) {
+			if(bOLD_CLIPP) {
+				OutputText(0, 240, "New Clipp" );
+			} else {
+				OutputText(0,274,"New Clipp");
+			}
+		}
+	}
+}
+
 //*************************************************************************************
 // Update()
 // Called once per frame.
@@ -1505,578 +2063,14 @@ void ArxGame::Render() {
 	// Updates Externalview
 	EXTERNALVIEW=0;
 
-	/*
-	renderMenu()
-	renderCinematic();
-	renderLevel();
-	*/
-
-	// renderMenu()
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	if(ARX_Menu_Render()) {
-		goto norenderend;
-	}
-	GRenderer->SetRenderState(Renderer::Fog, true);
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat); // << NEEDED?
-
-	// renderCinematic();
-	// Are we displaying a 2D cinematic ? Yes = manage it
-	if ( PLAY_LOADED_CINEMATIC
-		&& ControlCinematique
-			&& ControlCinematique->projectload)
-	{
-		if (DANAE_Manage_Cinematic()==1)
-			goto norenderend;
-
-		goto renderend;
-	}
-
-	// renderLevel();
-	if (ARXmenu.currentmode == AMCM_OFF)
-	{
-		if (!PLAYER_PARALYSED)
-		{
-			if (ManageEditorControls()) goto finish;
-		}
-
-		if ((!BLOCK_PLAYER_CONTROLS) && (!PLAYER_PARALYSED))
-		{
-			ManagePlayerControls();
-		}
-	}
-
-	ARX_PLAYER_Manage_Movement();
-
-	ARX_PLAYER_Manage_Visual();
-
-	if (FRAME_COUNT<=0)
-		ARX_MINIMAP_ValidatePlayerPos();
-
-	// SUBJECTIVE VIEW UPDATE START  *********************************************************
-
-	// Clear screen & Z buffers
-	if(desired.flags & GMOD_DCOLOR) {
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
-	}
-	else
-	{
-		subj.bkgcolor=ulBKGColor;
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
-	}
-
-	//-------------------------------------------------------------------------------
-	//               DRAW CINEMASCOPE 16/9
-	if(CINEMA_DECAL != 0.f) {
-		Rect rectz[2];
-		rectz[0].left = rectz[1].left = 0;
-		rectz[0].right = rectz[1].right = DANAESIZX;
-		rectz[0].top = 0;
-		long lMulResult = checked_range_cast<long>(CINEMA_DECAL * Yratio);
-		rectz[0].bottom = lMulResult;
-		rectz[1].top = DANAESIZY - lMulResult;
-		rectz[1].bottom = DANAESIZY;
-		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, Color::none, 0.0f, 2, rectz);
-	}
-	//-------------------------------------------------------------------------------
-
-	GRenderer->BeginScene();
-	
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
-	{
-		ManageNONCombatModeAnimations();
-		long old=USEINTERNORM;
-		USEINTERNORM=0;
-		float speedfactor;
-		speedfactor=inter.iobj[0]->basespeed+inter.iobj[0]->speed_modif;
-
-		if (cur_mr==3) speedfactor+=0.5f;
-
-		if (cur_rf==3) speedfactor+=1.5f;
-
-		if (speedfactor < 0) speedfactor = 0;
-
-		long tFrameDiff = Original_framedelay;
-	
-		if ((player.Interface & INTER_COMBATMODE) && (STRIKE_TIME))// need some precision for weapon...
-		{
-			float restore=ACTIVECAM->use_focal;
-
-			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-			{
-				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
-			}
-
-			float cur=0;
-
-			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
-			{
-				long step=min(50L,tFrameDiff);
-
-				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
-
-
-				float iCalc = step*speedfactor ;
-
-				arx_assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false, false);
-
-					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
-				ManageCombatModeAnimations();
-
-				if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
-					ManageCombatModeAnimationsEND();
-
-				cur+=step*speedfactor;
-			}
-
-			ACTIVECAM->use_focal=restore;
-		}
-		else
-		{
-			float restore=ACTIVECAM->use_focal;
-
-			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-			{
-				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
-			}
-
-
-			float val=(float)tFrameDiff*speedfactor;
-
-			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
-
-			arx_assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false, false);
-
-
-				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
-				ManageCombatModeAnimations();
-
-			if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
-					ManageCombatModeAnimationsEND();
-
-			ACTIVECAM->use_focal=restore;
-		}
-
-		USEINTERNORM=old;
-	}
-
-		
-	updateFirstPersonCamera();
-	updateConversationCamera();
-	
-	////////////////////////
-	// Checks SCRIPT TIMERS.
-	ARX_SCRIPT_Timer_Check();
-
-	speechControlledCinematic();
-	
-	handlePlayerDeath();
-	
-
-	/////////////////////////////////////
-	LAST_CONVERSATION=ARX_CONVERSATION;
-
-	handleCameraController();
-
-	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
-	{
-		Vec3f pos,pos2;
-			USE_CINEMATICS_PATH._curtime = arxtime.get_updated();
-
-		USE_CINEMATICS_PATH._curtime+=50;
-		long pouet2=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos);
-		USE_CINEMATICS_PATH._curtime-=50;
-		long pouet=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos2);
-
-		if ((pouet!=-1) && (pouet2!=-1))
-		{
-			if(USE_CINEMATICS_CAMERA == 2) {
-				subj.pos = pos;
-				subj.d_angle = subj.angle;
-				pos2 = (pos2 + pos) * (1.0f/2);
-				SetTargetCamera(&subj, pos2.x, pos2.y, pos2.z);
-			} else {
-				DebugSphere(pos.x, pos.y, pos.z, 2, 50, Color::red);
-			}
-
-			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
-			{
-				USE_CINEMATICS_CAMERA=0;
-				USE_CINEMATICS_PATH.path=NULL;
-			}
-		}
-		else
-		{
-			USE_CINEMATICS_CAMERA=0;
-			USE_CINEMATICS_PATH.path=NULL;
-		}
-	}
-
-	UpdateCameras();
-
-		///////////////////////////////////////////
-	ARX_PLAYER_FrameCheck(Original_framedelay);
-
-	updateActiveCamera();
-
-	ARX_GLOBALMODS_Apply();
-
-	if (EDITMODE) GRenderer->SetRenderState(Renderer::Fog, false);
-
-	// Set Listener Position
-	{
-		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
-		Vec3f front(-EEsin(t), 0.f, EEcos(t));
-		front.normalize();
-		Vec3f up(0.f, 1.f, 0.f);
-		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
-	}
-
-	// Reset Transparent Polys Idx
-	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
-
-	// Check For Hiding/unHiding Player Gore
-	if ((EXTERNALVIEW) || (player.life<=0))
-	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],0);
-	}
-
-	if (!EXTERNALVIEW)
-	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],1);
-	}
-
-	LASTEXTERNALVIEW=EXTERNALVIEW;
-
-	// NOW DRAW the player (Really...)
-	if ( (inter.iobj[0])
-		&& (inter.iobj[0]->animlayer[0].cur_anim) )
-	{
-		float restore=ACTIVECAM->use_focal;
-
-		if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-		{
-			ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
-		}
-
-		if (!EXTERNALVIEW)
-			FORCE_FRONT_DRAW=1;
-
-		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
-
-		arx_assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-		                  &inter.iobj[0]->pos, 0, inter.iobj[0]);
-		
-		ACTIVECAM->use_focal=restore;
-		FORCE_FRONT_DRAW=0;
-	}
-
-	// SUBJECTIVE VIEW UPDATE START  *********************************************************
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetRenderState(Renderer::DepthTest, true);
-
-	PrepareIOTreatZone();
-	ARX_PHYSICS_Apply();
-
-	if (FRAME_COUNT<=0)
-			PrecalcIOLighting(&ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f);
-
-	ACTIVECAM->fadecolor.r=current.depthcolor.r;
-	ACTIVECAM->fadecolor.g=current.depthcolor.g;
-	ACTIVECAM->fadecolor.b=current.depthcolor.b;
-
-	if (uw_mode)
-	{
-		float val=10.f;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-		ARX_SCENE_Render(1);
-		val=-0.3f;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
+	if(isInMenu()) {
+		renderMenu();
+	} else if(isInCinematic()) {
+		renderCinematic();
 	} else {
-		ARX_SCENE_Render(1);
+		renderLevel();
 	}
 	
-	// Begin Particles ***************************************************************************
-	if (!(Project.hide & HIDE_PARTICLES))
-	{
-		if (pParticleManager)
-		{
-			pParticleManager->Update(static_cast<long>(FrameDiff));
-			pParticleManager->Render();
-		}
-
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_FOGS_Render();
-
-		ARX_PARTICLES_Render(&subj);
-		UpdateObjFx();
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	}
-
-	// End Particles ***************************************************************************
-
-	if (!EDITMODE) // Playing Game
-	{
-		// Checks Magic Flares Drawing
-		if (!PLAYER_PARALYSED)
-		{
-			if (EERIEMouseButton & 1)
-			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT))
-					ARX_SPELLS_AddPoint(DANAEMouse);
-				else
-				{
-					CurrPoint=0;
-					ARX_FLARES_Block=0;
-					CurrSlot=1;
-				}
-			}
-			else if (ARX_FLARES_Block==0)
-				ARX_FLARES_Block=1;
-		}
-
-		ARX_SPELLS_Precast_Check();
-		ARX_SPELLS_ManageMagic();
-		ARX_SPELLS_UpdateSymbolDraw();
-
-		ManageTorch();
-
-		// Renders Magical Flares
-		if ( !((player.Interface & INTER_MAP )
-			&& (!(player.Interface & INTER_COMBATMODE)))
-			&& flarenum
-			)
-		{
-			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-				FRAMETICKS = (unsigned long)(arxtime);
-		}
-	}
-#ifdef BUILD_EDITOR
-	else  // EDITMODE == true
-	{
-		if (!(Project.hide & HIDE_NODES))
-			RenderAllNodes();
-
-		std::stringstream ss("EDIT MODE - Selected ");
-		ss <<  NbIOSelected;
-		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), Color::yellow);
-	
-		if (EDITION==EDITION_FOGS)
-			ARX_FOGS_RenderAll();
-	}
-#endif
-	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	// Checks some specific spell FX
-	CheckMr();
-
-	if (Project.improve)
-		DrawImproveVisionInterface();
-	else
-	{
-		if ((subj.focal<BASE_FOCAL))
-		{
-			static const float INC_FOCAL = 75.0f;
-			subj.focal+=INC_FOCAL;
-
-			if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
-		}
-		else if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
-	}
-
-	if (eyeball.exist!=0)
-	{
-		DrawMagicSightInterface();
-	}
-
-		if (PLAYER_PARALYSED)
-	{
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
-		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	}
-
-	if (FADEDIR)
-	{
-		ManageFade();
-	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	
-	// Red screen fade for damages.
-	ARX_DAMAGE_Show_Hit_Blood();
-
-	// Manage Notes/Books opened on screen
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	ARX_INTERFACE_NoteManage();
-
-	finish:; //----------------------------------------------------------------
-	// Update spells
-	ARX_SPELLS_Update();
-	GRenderer->SetCulling(Renderer::CullNone);
-	GRenderer->SetRenderState(Renderer::Fog, true);
-
-	// Manage Death visual & Launch menu...
-	if (DeadTime>2000)
-		ARX_PLAYER_Manage_Death();
-
-	//-------------------------------------------------------------------------
-
-	// INTERFACE
-		// Remove the Alphablend State if needed : NO Z Clear
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::Fog, false);
-
-	// Draw game interface if needed
-	if (ARXmenu.currentmode == AMCM_OFF)
-	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
-	{
-		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-		GRenderer->SetRenderState(Renderer::DepthTest, false);
-		DrawAllInterface();
-		DrawAllInterfaceFinish();
-
-		if ( (player.Interface & INTER_MAP )
-			&& (!(player.Interface & INTER_COMBATMODE))
-			&& flarenum
-			)
-		{
-			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			FRAMETICKS = (unsigned long)(arxtime);
-		}
-		GRenderer->SetRenderState(Renderer::DepthTest, true);
-	}
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	PopAllTriangleList();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	PopAllTriangleListTransparency();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	GRenderer->SetRenderState(Renderer::Fog, true);
-		this->GoFor2DFX();
-	GRenderer->SetRenderState(Renderer::Fog, false);
-	GRenderer->Clear(Renderer::DepthBuffer);
-
-	// Speech Management
-	if (!EDITMODE)
-	{
-		ARX_SPEECH_Check();
-		ARX_SPEECH_Update();
-	}
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
-	if(pTextManage && !pTextManage->Empty())
-	{
-		pTextManage->Update(FrameDiff);
-		pTextManage->Render();
-	}
-
-	if (SHOW_INGAME_MINIMAP && ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
-		&& (!(player.Interface & INTER_MAP ) ))
-	{
-			long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
-
-		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(SHOWLEVEL,1,1);
-	}
-
-		//-------------------------------------------------------------------------
-
-	// CURSOR Rendering
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	if (DRAGINTER)
-	{
-		ARX_INTERFACE_RenderCursor();
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		PopAllTriangleList();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		PopAllTriangleListTransparency();
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-		ARX_INTERFACE_HALO_Flush();
-	}
-	else
-	{
-		ARX_INTERFACE_HALO_Flush();
-		ARX_INTERFACE_RenderCursor();
-	}
-
-	GRenderer->SetRenderState(Renderer::Fog, true);
-
-	//----------------RENDEREND------------------------------------------------
-	renderend:
-		;
-
-	if (sp_max_start)
-		Manage_sp_max();
-
-	// Some Visual Debug/Info Text
-	//CalcFPS();
-
-	if(NEED_TEST_TEXT) {
-		
-		ShowTestText();
-		
-		if(ViewMode & VIEWMODE_INFOTEXT) {
-			ShowInfoText();
-		}
-		
-		if(USE_PORTALS && !FOR_EXTERNAL_PEOPLE) {
-			char tex[250];
-			switch(USE_PORTALS) {
-				case 1:
-					sprintf(tex, "2DPortals_ROOM: %ld", LAST_ROOM);
-					break;
-				case 2:
-					sprintf(tex, "3DPortals_ROOM: %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-					break;
-				case 3:
-					sprintf(tex, "3DPortals_ROOM(Transform): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-					break;
-				case 4:
-					sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-					break;
-			}
-			OutputText( 320, 240, tex );
-		}
-		
-		if((!FOR_EXTERNAL_PEOPLE)) {
-			if(bOLD_CLIPP) {
-				OutputText(0, 240, "New Clipp" );
-			} else {
-				OutputText(0,274,"New Clipp");
-			}
-		}
-	}
-
-	GRenderer->EndScene();
-
-	//--------------NORENDEREND---------------------------------------------------
-norenderend:
 	if(showFPS) {
 		GRenderer->BeginScene();
 		CalcFPS();
