@@ -25,6 +25,7 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
+* **CMake 2.8** (compile-time only)
 * **DevIL**
 * **zlib**
 * **Boost 1.39** or newer (headers, `program_options` library)
