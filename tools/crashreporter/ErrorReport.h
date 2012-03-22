@@ -105,6 +105,7 @@ private:
 	bool getCrashDescription();
 	bool GetMiscCrashInfo();
 
+	void AddSSLCertificate();
 	void AddFile(const fs::path& fileName);
 	
 	void ReleaseApplicationLock();

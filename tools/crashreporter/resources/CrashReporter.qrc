@@ -3,5 +3,6 @@
         <file>failure.png</file>
         <file>success.png</file>
         <file>logo.png</file>
+        <file>startcom.cer</file>
     </qresource>
 </RCC>
