@@ -141,6 +141,14 @@ You can close it with `Alt + F4` or `killall arx.exe.so`
   * `fix <savefile>` - Fix savegame issues created by previous builds of Arx Libertatis
   * `view <savefile> <ident>` - Print savegame information.
 
+## Scripts
+
+The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively:
+
+* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
+* `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
+* `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
+
 ## Build documentation
 
 To build developer documentation (doxygen), run this from the build directory:
