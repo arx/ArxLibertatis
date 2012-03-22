@@ -74,6 +74,11 @@
 #undef USER_DIR
 #define USER_DIR "${USER_DIR}"
 #endif
+#cmakedefine CONFIG_DIR
+#ifdef CONFIG_DIR
+#undef CONFIG_DIR
+#define CONFIG_DIR "${CONFIG_DIR}"
+#endif
 #cmakedefine DATA_DIR_PREFIXES
 #ifdef DATA_DIR_PREFIXES
 #undef DATA_DIR_PREFIXES
@@ -83,6 +88,11 @@
 #ifdef USER_DIR_PREFIXES
 #undef USER_DIR_PREFIXES
 #define USER_DIR_PREFIXES "${USER_DIR_PREFIXES}"
+#endif
+#cmakedefine CONFIG_DIR_PREFIXES
+#ifdef CONFIG_DIR_PREFIXES
+#undef CONFIG_DIR_PREFIXES
+#define CONFIG_DIR_PREFIXES "${CONFIG_DIR_PREFIXES}"
 #endif
 
 #endif // ARX_CONFIGURE_H

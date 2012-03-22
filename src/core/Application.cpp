@@ -162,7 +162,7 @@ static bool migrateFilenames(fs::path path, bool is_dir) {
 	return migrated;
 }
 
-static bool migrateFilenames() {
+static bool migrateFilenames(const fs::path & configFile) {
 	
 	LogInfo << "changing filenames to lowercase...";
 	
@@ -185,7 +185,7 @@ static bool migrateFilenames() {
 	}
 	
 	if(!migrated) {
-		LogError << "Could not rename all files to lowercase, please do so manually and set migration=1 under [misc] in cfg.ini!";
+		LogError << "Could not rename all files to lowercase, please do so manually and set migration=1 under [misc] in " << configFile;
 	}
 	
 	return migrated;
@@ -194,17 +194,27 @@ static bool migrateFilenames() {
 bool Application::InitConfig() {
 	
 	// Initialize config first, before anything else.
-	fs::path configFile = config.paths.user / "cfg.ini";
+	fs::path configFile = config.paths.config / "cfg.ini";
+	
+	config.setOutputFile(configFile);
 	
 	bool migrated = false;
 	if(!fs::exists(configFile)) {
-		migrated = migrateFilenames();
+		
+		migrated = migrateFilenames(configFile);
 		if(!migrated) {
 			return false;
 		}
+		
+		fs::path oldConfigFile = config.paths.user / "cfg.ini";
+		if(fs::exists(oldConfigFile)) {
+			if(!fs::rename(oldConfigFile, configFile)) {
+				LogWarning << "could not move " << oldConfigFile << " to " << configFile;
+			} else {
+				LogInfo << "moved " << oldConfigFile << " to " << configFile;
+			}
+		}
 	}
-	
-	config.setOutputFile(configFile);
 	
 	if(!config.init(configFile)) {
 		fs::path defaultUserConfigFile = config.paths.user / "cfg_default.ini";
@@ -229,7 +239,7 @@ bool Application::InitConfig() {
 	Logger::configure(config.misc.debug);
 	
 	if(!migrated && config.misc.migration < Config::CaseSensitiveFilenames) {
-		migrated = migrateFilenames();
+		migrated = migrateFilenames(configFile);
 		if(!migrated) {
 			return false;
 		}

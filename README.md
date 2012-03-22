@@ -113,13 +113,13 @@ If you don't have a system-wide installation of the Arx Fatalis data files, you 
 
     $ arx
 
-Arx Libertatis will then put the config and save files in the same directory. If you have a system-wide installation, but still want to run from the current directory, use the `--no-data-dir --user-dir=.` command-line options.
+Arx Libertatis will then put the config and save files in the same directory. If you have a system-wide installation, but still want to run from the current directory, use the `--no-data-dir --user-dir=. --config-dir=.` command-line options.
 
 Where arx will look for a system-wide installation depends on the OS:
 
 Under **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\Arx Libertatis` on XP and `%USERPROFILE%\Saved Games\Arx Libertatis` on Vista and up.
 
-For other systems like **Linux**, the data files can be in `/usr/local/share/arx` and `/usr/share/arx` as well as other locations like `/usr/share/games/arx` depending on your linux distribution. Config and save files are normally located in `~/.local/share/arx`
+For other systems like **Linux**, the data files can be in `/usr/local/share/games/arx` and `/usr/share/games/arx` as well as other locations like `/usr/share/games/arx` depending on your linux distribution. Config files are normally located in `~/.config/arx` while save files are stored in `~/.local/share/arx`.
 
 ## Run
 
@@ -149,7 +149,7 @@ The `scripts` directory contains three shell scripts that allow to extract/insta
 * `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
 * `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
 
-`install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and install-gog needs just [innoextract](http://innoextract.constexpr.org/).
+`install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and `install-gog` needs just [innoextract](http://innoextract.constexpr.org/).
 
 ## Build documentation
 

@@ -179,7 +179,8 @@ public:
 	
 	struct {
 		
-		fs::path user; //!< Directory for config and save files.
+		fs::path config; //!< Directory for config files.
+		fs::path user; //!< Directory for saves and user-specific data files.
 		fs::path data; //!< Directory for data files.
 		
 	} paths;
