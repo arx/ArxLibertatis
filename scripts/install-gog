@@ -104,7 +104,7 @@ set -- \
 for f in "$@" ; do
 	
 	dir="$(dirname "$f")"
-	mkdir -pv "$dir"
+	mkdir -pv "$destdir/$dir"
 	
 	mv -fv "app/$f" "$destdir/$f"
 	
