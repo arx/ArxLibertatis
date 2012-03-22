@@ -463,6 +463,8 @@ size_t initSuppressions() {
 	
 	suppress("goblin_base", 30010, "goto"); // missing label "main_alert"
 	
+	suppress("goblin_base_0009", 1455, "setevent"); // unsupported event: combine
+	
 	suppress("goblin_base_0034", 771, "detach"); // object mug_full_0003 already destroyed
 	
 	suppress("goblin_base_0041", 3063, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
