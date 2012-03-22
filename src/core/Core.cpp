@@ -660,8 +660,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Time::init();
 	
 	// Now that data directories are initialized, create a log file.
-	fs::path logFile = config.paths.user / "arx.log";
-	Logger::add(new logger::File(logFile, std::ios_base::out | std::ios_base::trunc));
+	Logger::add(new logger::File(config.paths.user / "arx.log"));
 	
 	CrashHandler::registerCrashCallback(Logger::quickShutdown);
 	
@@ -828,8 +827,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	LogDebug("InitializeDanae");
 	InitializeDanae();
 	
-	PakReader::ReleaseFlags rel = resources->getReleaseType();
-	switch(rel) {
+	switch(resources->getReleaseType()) {
 		
 		case 0: LogWarning << "Neither demo nor full game data files loaded."; break;
 		
