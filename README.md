@@ -149,6 +149,8 @@ The `scripts` directory contains three shell scripts that allow to extract/insta
 * `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
 * `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
 
+`install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and install-gog needs just [innoextract](http://innoextract.constexpr.org/).
+
 ## Build documentation
 
 To build developer documentation (doxygen), run this from the build directory:
