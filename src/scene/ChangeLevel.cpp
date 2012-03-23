@@ -113,7 +113,7 @@ extern int iTimeToDrawD7;
 extern Vec3f LastValidPlayerPos;
 #define MAX_IO_SAVELOAD 1500
 
-static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num);
+static bool ARX_CHANGELEVEL_Push_Index(long num);
 static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
 static void ARX_CHANGELEVEL_Push_Globals();
@@ -385,7 +385,6 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	LogDebug("ARX_CHANGELEVEL_PushLevel " << num << " " << newnum);
 	
-	ARX_CHANGELEVEL_INDEX asi;
 	ARX_SCRIPT_EventStackExecuteAll();
 	
 	// Close secondary inventory before leaving
@@ -405,7 +404,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	ForcePlayerInventoryObjectLevel(newnum);
 	
 	// Now we can save our things
-	if(!ARX_CHANGELEVEL_Push_Index(&asi, num)) {
+	if(!ARX_CHANGELEVEL_Push_Index(num)) {
 		LogError << "Error Saving Index...";
 		arxtime.resume();
 		return false;
@@ -455,66 +454,57 @@ extern GLOBAL_MODS stacked;
 extern GLOBAL_MODS current;
 extern GLOBAL_MODS desired;
 
-static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
+static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	long pos = 0;
-
-	asi->version				= ARX_GAMESAVE_VERSION;
-	asi->nb_inter				= 0;
-	asi->nb_paths				= nbARXpaths;
-	asi->time					= arxtime.get_updated_ul(); //treat warning C4244 conversion from 'float' to 'unsigned long''
-	asi->nb_lights				= 0;
-
-	asi->gmods_stacked = stacked;
-	asi->gmods_desired = desired;
-	asi->gmods_current = current;
-
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-				&&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
-				&&	(!IsInPlayerInventory(inter.iobj[i]))
-				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
-		   )
-		{
-			asi->nb_inter++;
+	
+	ARX_CHANGELEVEL_INDEX asi;
+	memset(&asi, 0, sizeof(asi));
+	asi.version       = ARX_GAMESAVE_VERSION;
+	asi.nb_inter      = 0;
+	asi.nb_paths      = nbARXpaths;
+	asi.time          = arxtime.get_updated_ul();
+	asi.nb_lights     = 0;
+	asi.gmods_stacked = stacked;
+	asi.gmods_desired = desired;
+	asi.gmods_current = current;
+	
+	for(long i = 1; i < inter.nbmax; i++) {
+		if(inter.iobj[i] != NULL
+		   && !(inter.iobj[i]->ioflags & IO_NOSAVE)
+		   && !IsInPlayerInventory(inter.iobj[i])
+		   && !IsPlayerEquipedWith(inter.iobj[i])) {
+			asi.nb_inter++;
 		}
 	}
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		EERIE_LIGHT * el = GLight[i];
 		if(el && !(el->type & TYP_SPECIAL1)) {
-			asi->nb_lights++;
+			asi.nb_lights++;
 		}
 	}
 	
-	char savefile[256];
-	sprintf(savefile, "lvl%03ld", num);
-
 	long allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
-					 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
-					 + sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths
-					 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi->nb_lights;
-
+	                 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter
+	                 + sizeof(ARX_CHANGELEVEL_PATH) * asi.nb_paths
+	                 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi.nb_lights;
+	
 	size_t asize = 0;
 	char * playlist = ARX_SOUND_AmbianceSavePlayList(asize);
 	allocsize += asize;
-
+	
 	char * dat = new char[allocsize];
-
-	asi->ambiances_data_size = asize;
-	memcpy(dat, asi, sizeof(ARX_CHANGELEVEL_INDEX));
+	
+	asi.ambiances_data_size = asize;
+	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
-
-
-	for (int i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-				&&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
-				&&	(!IsInPlayerInventory(inter.iobj[i]))
-				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
-		   )
-		{
+	
+	for(int i = 1; i < inter.nbmax; i++) {
+		if(inter.iobj[i] != NULL
+		   && !(inter.iobj[i]->ioflags & IO_NOSAVE)
+		   && !IsInPlayerInventory(inter.iobj[i])
+		   && !IsPlayerEquipedWith(inter.iobj[i])) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
 			strncpy(aii.filename, inter.iobj[i]->filename.string().c_str(), sizeof(aii.filename));
@@ -526,37 +516,33 @@ static bool ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 			pos += sizeof(aii);
 		}
 	}
-
-	for (int i = 0; i < nbARXpaths; i++)
-	{
+	
+	for(int i = 0; i < nbARXpaths; i++) {
 		ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<ARX_CHANGELEVEL_PATH *>(dat + pos);
 		memset(acp, 0, sizeof(ARX_CHANGELEVEL_PATH));
 		strncpy(acp->name, ARXpaths[i]->name.c_str(), sizeof(acp->name));
 		strncpy(acp->controled, ARXpaths[i]->controled.c_str(), sizeof(acp->controled));
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 	}
-
-	if (asi->ambiances_data_size > 0)
-	{
-		memcpy((char *)(dat + pos), playlist, asi->ambiances_data_size);
-		pos += asi->ambiances_data_size;
+	
+	if(asi.ambiances_data_size > 0) {
+		memcpy((char *)(dat + pos), playlist, asi.ambiances_data_size);
+		pos += asi.ambiances_data_size;
 		free(playlist);
 	}
-
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		
 		EERIE_LIGHT * el = GLight[i];
-
-		if ((el != NULL) && (!(el->type & TYP_SPECIAL1)))
-		{
+		if(el != NULL && !(el->type & TYP_SPECIAL1)) {
 			ARX_CHANGELEVEL_LIGHT * acl = (ARX_CHANGELEVEL_LIGHT *)(dat + pos);
 			memset(acl, 0, sizeof(ARX_CHANGELEVEL_LIGHT));
-
 			acl->status = el->status;
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		}
 	}
 	
+	char savefile[256];
+	sprintf(savefile, "lvl%03ld", num);
 	bool ret = _pSaveBlock->save(savefile, dat, pos);
 	
 	delete[] dat;
@@ -573,9 +559,6 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 	acsg.nb_globals = NB_GLOBALS;
 	acsg.version = ARX_GAMESAVE_VERSION;
 	
-	char savefile[256];
-	sprintf(savefile, "globals");
-
 	long allocsize = sizeof(ARX_VARIABLE_SAVE) * acsg.nb_globals
 	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000 + 48000;
 	
@@ -649,7 +632,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 		}
 	}
 	
-	_pSaveBlock->save(savefile, dat, pos);
+	_pSaveBlock->save("globals", dat, pos);
 	
 	delete[] dat;
 }
