@@ -1009,6 +1009,7 @@ void CCreateFood::Create()
 
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
+	memset(&cp, 0, sizeof(cp));
 	cp.iNbMax = 350;
 	cp.fLife = 800;
 	cp.fLifeRandom = 2000;

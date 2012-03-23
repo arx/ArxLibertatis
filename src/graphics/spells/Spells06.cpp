@@ -1460,6 +1460,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	// système de partoches pour la poussière
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
+	memset(&cp, 0, sizeof(cp));
 	cp.iNbMax = 200;
 	cp.fLife = 500; //2000
 	cp.fLifeRandom = 900;
