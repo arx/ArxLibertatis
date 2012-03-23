@@ -149,7 +149,7 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 	m_Size = Vec2i::ZERO;
 	depth = 0;
 	
-	for(int msaa = config.video.antialiasing ? 4 : 1; msaa >= 0; msaa--) {
+	for(int msaa = config.video.antialiasing ? 8 : 1; msaa >= 0; msaa--) {
 		
 		if(msaa > 1) {
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
