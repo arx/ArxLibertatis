@@ -142,7 +142,7 @@ void Logger::remove(logger::Backend * backend) {
 bool Logger::isEnabled(const char * file, LogLevel level) {
 	
 	if(level < LogManager::minimumLevel) {
-		return NULL;
+		return false;
 	}
 	
 	Autolock lock(LogManager::lock);
