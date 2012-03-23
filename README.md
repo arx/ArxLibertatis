@@ -129,7 +129,7 @@ Run from the directory containing the .pak files (or from anywhere in case of a 
 
 The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase.
 
-You can close it with `Alt + F4` or `killall arx.exe.so`
+You can close it with `Alt + F4` or `killall arx`
 
 ## Tools
 
