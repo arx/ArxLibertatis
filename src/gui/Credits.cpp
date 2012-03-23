@@ -245,11 +245,12 @@ void Credits::render() {
 		//Draw Background
 		if(ARXmenu.mda->pTexCredits) {
 			EERIEDrawBitmap2(0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, Color::white);
-		}    
-
-		//Use time passed between frame to create scroll effect
-		ARXmenu.mda->creditspos-=0.025f*(float)(arxtime.get_updated( false )-ARXmenu.mda->creditstart);
-		ARXmenu.mda->creditstart=arxtime.get_updated( false );
+		}
+		
+		// Use time passed between frame to create scroll effect
+		float dtime = (float)(arxtime.get_updated(false) - ARXmenu.mda->creditstart);
+		ARXmenu.mda->creditspos -= 0.015f * Yratio * dtime;
+		ARXmenu.mda->creditstart=arxtime.get_updated(false);
 		
 		std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
 		for (; it != CreditsData.aCreditsInformations.end(); ++it)
