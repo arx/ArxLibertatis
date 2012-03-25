@@ -261,7 +261,6 @@ else(MSVC)
 	check_symbol_exists(pclose "stdio.h" HAVE_PCLOSE)
 	
 	find_library(LIBRT_LIBRARY rt)
-	message(${LIBRT_LIBRARY})
 	
 	if(LIBRT_LIBRARY)
 		set(CMAKE_REQUIRED_LIBRARIES "${LIBRT_LIBRARY}")
