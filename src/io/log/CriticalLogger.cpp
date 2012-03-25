@@ -20,11 +20,14 @@
 #include "io/log/CriticalLogger.h"
 
 #include <windows.h>
+
+#include "platform/Dialog.h"
+
 namespace logger {
 
 CriticalErrorDialog::~CriticalErrorDialog() {
 	if(!errorString.empty()) {
-		MessageBoxA(NULL, errorString.c_str(), "Arx Libertatis - Critical Error", MB_ICONERROR | MB_OK);
+		dialog::showError(errorString, "Critical Error");
 	}
 }
 

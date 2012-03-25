@@ -635,6 +635,7 @@ set(PHYSICS_SOURCES
 
 set(PLATFORM_SOURCES
 	src/platform/CrashHandler.cpp
+	src/platform/Dialog.cpp
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
@@ -643,6 +644,11 @@ set(PLATFORM_SOURCES
 	src/platform/Time.cpp
 	src/platform/crashhandler/CrashHandlerImpl.cpp
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	list(APPEND PLATFORM_SOURCES src/platform/Dialog.mm)
+endif()
+
 set(PLATFORM_CRASHHANDLER_POSIX_SOURCES src/platform/crashhandler/CrashHandlerPOSIX.cpp)
 set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
 
