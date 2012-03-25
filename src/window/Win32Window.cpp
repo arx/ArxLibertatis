@@ -34,8 +34,9 @@
 #define IDI_MAIN 106
 
 WNDCLASS Win32Window::m_WindowClass;
-bool Win32Window::m_WindowClassInitialized = false;
+int Win32Window::m_WindowClassRegistered = 0;
 std::map<HWND,Win32Window*>  Win32Window::m_WindowsMap;
+const char* ARX_WINDOW_CLASS = "ARX_WINDOW_CLASS";
 
 Win32Window::Win32Window()
 	: m_hWnd(NULL)
@@ -43,10 +44,14 @@ Win32Window::Win32Window()
 }
 
 Win32Window::~Win32Window() {
+	UnregisterWindowClass();
 }
 
-bool Win32Window::InitWindowClass() {
-	if( m_WindowClassInitialized )
+bool Win32Window::RegisterWindowClass() {
+
+	m_WindowClassRegistered++;
+
+	if(m_WindowClassRegistered != 1)
 		return true;
 
 	memset( &m_WindowClass, 0, sizeof(m_WindowClass) );
@@ -58,19 +63,30 @@ bool Win32Window::InitWindowClass() {
 	m_WindowClass.hCursor  = LoadCursor(NULL, IDC_ARROW);
 	m_WindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	m_WindowClass.lpszMenuName = MAKEINTRESOURCE(NULL);
-	m_WindowClass.lpszClassName = "ARX_WINDOW_CLASS";
+	m_WindowClass.lpszClassName = ARX_WINDOW_CLASS;
 	m_WindowClass.hIcon   = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MAIN));
 
 	// Register our window class.
-	m_WindowClassInitialized = RegisterClass(&m_WindowClass) != 0;
+	bool ret = RegisterClassA(&m_WindowClass) != 0;
 
-	return m_WindowClassInitialized;
+	return ret;
+}
+
+void Win32Window::UnregisterWindowClass() {
+	m_WindowClassRegistered--;
+
+	if(m_WindowClassRegistered != 0)
+		return;
+
+	UnregisterClassA(ARX_WINDOW_CLASS, GetModuleHandle(0));
+
+	m_WindowsMap.clear();
 }
 
 bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth) {
 	ARX_UNUSED(depth);
 	
-	if(!InitWindowClass()) {
+	if(!RegisterWindowClass()) {
 		return false;
 	}
 
