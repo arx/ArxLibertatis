@@ -844,10 +844,6 @@ bool runGame(const char * lpCmdLine) {
 	// Init all done, start the main loop
 	mainApp->Run();
 	
-	ClearGame();
-	
-	Image::shutdown();
-
 	return true;
 }
 
@@ -870,6 +866,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #else
 	runGame(lpCmdLine);
 #endif
+		
+	ClearGame();
+	
+	Image::shutdown();
 	
 	Logger::shutdown();
 	
@@ -4031,6 +4031,7 @@ void ClearGame() {
 	ARX_INPUT_Release();
 	
 	mainApp->Cleanup3DEnvironment();
+	mainApp->Shutdown();
 	
 	delete mainApp, mainApp = NULL;
 	

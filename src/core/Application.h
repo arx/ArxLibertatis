@@ -132,6 +132,7 @@ protected:
 public:
 	
 	virtual bool Initialize();
+	virtual void Shutdown();
 	
 private:
 	

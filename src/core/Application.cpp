@@ -93,11 +93,7 @@ Application::Application() : m_MainWindow(NULL) {
 }
 
 Application::~Application() {
-	
-	if(m_MainWindow) {
-		delete m_MainWindow;
-	}
-	
+		
 }
 
 bool Application::Initialize() {
@@ -127,6 +123,13 @@ bool Application::Initialize() {
 	Random::seed();
 	
 	return true;
+}
+
+void Application::Shutdown() {
+	if(m_MainWindow) {
+		delete m_MainWindow;
+		m_MainWindow = 0;
+	}
 }
 
 void Application::Quit() {
@@ -185,7 +188,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	}
 	
 	if(!migrated) {
-		LogError << "Could not rename all files to lowercase, please do so manually and set migration=1 under [misc] in " << configFile;
+		LogCritical << "Could not rename all files to lowercase, please do so manually and set migration=1 under [misc] in " << configFile;
 	}
 	
 	return migrated;
