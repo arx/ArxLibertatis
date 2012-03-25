@@ -45,7 +45,7 @@ bool showDialog(DialogType type, const std::string& message, const std::string& 
 	case DialogOkCancel: flags = MB_ICONQUESTION | MB_OKCANCEL; break;
 	}
 
-	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(), flags);
+	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(), flags | MB_SETFOREGROUND | MB_TOPMOST);
 
 	switch (ret)
     {
