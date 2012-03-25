@@ -19,10 +19,13 @@
  
 #include "platform/Dialog.h"
 
+#include "platform/Platform.h"
+
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 #include <windows.h>
 #else
 #include <cstdlib>
+#include <strings.h>
 #endif
 
 #include <boost/format.hpp>
@@ -61,7 +64,7 @@ bool showDialog(DialogType type, const std::string& message, const std::string& 
     return false;
 }
 
-#elif ARX_PLATFORM_MACOSX
+#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
 	// SEE Dialog.mm for the implementation of showDialog
 #else
 
@@ -125,7 +128,7 @@ bool showDialog(DialogType type, const std::string& message, const std::string& 
 
 	// This may not be the best way
 	const char *session = getenv("DESKTOP_SESSION");
-	bool usingKDE = !stricmp(session, "kde");
+	bool usingKDE = !strcasecmp(session, "kde");
 	
 	if( usingKDE ) {
 		commands.push_back(&KdialogCommand);
