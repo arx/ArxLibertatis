@@ -224,6 +224,7 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	case WM_DESTROY:
 		currentWindow->OnDestroy();
 		bProcessed = true;
+		currentWindow->m_hWnd = NULL;
 		break;
 
 	// Sent as a signal that a window or an application should terminate.
@@ -262,11 +263,18 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 void Win32Window::tick() {
 	MSG msg;
 
+	// Check if window was destroyed...
+	arx_assert(m_hWnd != NULL);
+
 	if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
 	{
 		TranslateMessage( &msg );
 		DispatchMessage( &msg ); // Send message to the WindowProc.
 	}
+
+	// Check if window was destroyed...
+	if(m_hWnd == NULL)
+		return;
 
 	if(HasFocus() && !IsFullScreen())
 		updateSize();
