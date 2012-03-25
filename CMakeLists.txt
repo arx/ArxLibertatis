@@ -260,12 +260,17 @@ else(MSVC)
 	check_symbol_exists(popen "stdio.h" HAVE_POPEN)
 	check_symbol_exists(pclose "stdio.h" HAVE_PCLOSE)
 	
-	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
+	find_library(LIBRT_LIBRARY rt)
+	message(${LIBRT_LIBRARY})
+	
+	if(LIBRT_LIBRARY)
+		set(CMAKE_REQUIRED_LIBRARIES "${LIBRT_LIBRARY}")
+	endif()
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
-	unset(CMAKE_REQUIRED_LIBRARIES)
-	if(HAVE_CLOCK_GETTIME)
-		set(TIME_LIBRARIES "-lrt")
-	elseif(NOT HAVE_WINAPI)
+	if(LIBRT_LIBRARY)
+		unset(CMAKE_REQUIRED_LIBRARIES)
+	endif()
+	if(NOT HAVE_CLOCK_GETTIME AND NOT HAVE_WINAPI)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
@@ -711,9 +716,6 @@ endif ()
 
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 
-if(TIME_LIBRARIES)
-	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
-endif()
 if(HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
@@ -813,6 +815,11 @@ if(HAVE_CRASHREPORTER)
 	endif()
 endif()
 
+if(LIBRT_LIBRARY AND (HAVE_CLOCK_GETTIME OR HAVE_CRASHHANDLER_POSIX))
+	# Needed for clock_gettime and boost::interprocess on some system.
+	list(APPEND ARX_LIBRARIES ${LIBRT_LIBRARY})
+endif()
+
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
@@ -906,6 +913,10 @@ if(HAVE_CRASHREPORTER)
 		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${Boost_LIBRARIES}
 	)
+	if(LIBRT_LIBRARY)
+		# Needed for boost::interprocess on some systems.
+		list(APPEND arxcrashreporter_LIBRARIES ${LIBRT_LIBRARY})
+	endif()
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
 		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
