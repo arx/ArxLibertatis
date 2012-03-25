@@ -911,6 +911,7 @@ if(HAVE_CRASHREPORTER)
 		${QT_QTGUI_LIBRARY_RELEASE}
 		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${Boost_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
 	)
 	if(LIBRT_LIBRARY)
 		# Needed for boost::interprocess on some systems.
