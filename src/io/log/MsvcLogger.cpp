@@ -35,10 +35,6 @@ void MsvcDebugger::log(const Source & file, int line, Logger::LogLevel level, co
 	OutputDebugString(oss.str().c_str());
 }
 
-void MsvcDebugger::flush() {
-	// nothing to do
-}
-
 MsvcDebugger * MsvcDebugger::get() {
 	return IsDebuggerPresent() ? new MsvcDebugger : NULL;
 }

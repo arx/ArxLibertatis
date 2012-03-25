@@ -213,25 +213,25 @@ static void findConfigDirectory() {
 	LogDebug("Using user directory as config directory: " << config.paths.config);
 }
 
-static void createUserAndConfigDirectory() {
+static bool createUserAndConfigDirectory() {
 	
 	if(config.paths.user.empty() || config.paths.config.empty()) {
-		LogError << "No user / config directory available.";
-		exit(1);
+		LogCritical << "No user / config directory available.";
+		return false;
 	}
 	
 	if(!fs::is_directory(config.paths.user)) {
 		if(!fs::create_directories(config.paths.user)) {
-			LogError << "Error creating user directory at " << config.paths.user;
-			exit(1);
+			LogCritical << "Error creating user directory at " << config.paths.user;
+			return false;
 		}
 		LogInfo << "Created new user directory at " << config.paths.user;
 	}
 	
 	if(!fs::is_directory(config.paths.config)) {
 		if(!fs::create_directories(config.paths.config)) {
-			LogError << "Error creating config directory at " << config.paths.config;
-			exit(1);
+			LogCritical << "Error creating config directory at " << config.paths.config;
+			return false;
 		}
 		LogInfo << "Created new config directory at " << config.paths.config;
 	}
@@ -239,6 +239,8 @@ static void createUserAndConfigDirectory() {
 	if(config.paths.data == config.paths.user) {
 		config.paths.data.clear();
 	}
+
+	return true;
 }
 
 static void listDirectories(const string & regKey, const string & suffix = string(),
@@ -356,7 +358,7 @@ static void listDirectories() {
 }
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-void parseCommandLine(int argc, char ** argv) {
+bool parseCommandLine(int argc, char ** argv) {
 	
 	std::string command_line;
 	for(int i = 1; i < argc; i++) {
@@ -365,7 +367,7 @@ void parseCommandLine(int argc, char ** argv) {
 	}
 	
 #else
-void parseCommandLine(const char * command_line) {
+bool parseCommandLine(const char * command_line) {
 #endif
 	
 	CrashHandler::setVariable("Command line", command_line);
@@ -396,7 +398,7 @@ void parseCommandLine(const char * command_line) {
 		
 		if(options.count("help")) {
 			std::cout << options_desc << std::endl;
-			exit(0);
+			return false;
 		}
 		
 		po::variables_map::const_iterator debug = options.find("debug");
@@ -438,13 +440,15 @@ void parseCommandLine(const char * command_line) {
 		
 		if(options.count("list-dirs")) {
 			listDirectories();
-			exit(0);
+			return false;
 		}
 		createUserAndConfigDirectory();
 		
 	} catch(po::error & e) {
 		std::cerr << "Error parsing command-line: " << e.what() << "\n\n";
 		std::cout << options_desc << std::endl;
-		exit(1);
+		return false;
 	}
+
+	return true;
 }

@@ -28,6 +28,7 @@
 #include <boost/unordered/unordered_map.hpp>
 
 #include "io/log/ConsoleLogger.h"
+#include "io/log/CriticalLogger.h"
 #include "io/log/LogBackend.h"
 #include "io/log/MsvcLogger.h"
 #include "platform/CrashHandler.h"
@@ -279,7 +280,8 @@ void Logger::configure(const string config) {
 void Logger::init() {
 	
 	add(logger::Console::get());
-	
+	add(logger::CriticalErrorDialog::get());
+
 #ifdef HAVE_WINAPI
 	add(logger::MsvcDebugger::get());
 #endif
@@ -299,6 +301,8 @@ void Logger::shutdown() {
 	LogManager::rules.clear();
 
 	LogManager::minimumLevel = LogManager::defaultLevel;
+
+	LogManager::deleteAllBackends();
 }
 
 
