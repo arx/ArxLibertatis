@@ -35,13 +35,16 @@
 #endif
 
 //! Log an Info message. Arguments are always evaluated.
-#define LogInfo    ::Logger(__FILE__, __LINE__, ::Logger::Info)
+#define LogInfo     ::Logger(__FILE__, __LINE__, ::Logger::Info)
 
 //! Log a Warning message. Arguments are always evaluated.
-#define LogWarning ::Logger(__FILE__, __LINE__, ::Logger::Warning)
+#define LogWarning  ::Logger(__FILE__, __LINE__, ::Logger::Warning)
 
 //! Log an Error message. Arguments are always evaluated.
-#define LogError   ::Logger(__FILE__, __LINE__, ::Logger::Error)
+#define LogError    ::Logger(__FILE__, __LINE__, ::Logger::Error)
+
+//! Log a Critical message - will cause the application to exit with a dialog. Arguments are always evaluated.
+#define LogCritical ::Logger(__FILE__, __LINE__, ::Logger::Critical)
 
 //! Test if the Debug log level is enabled for the current file.
 #define LogDebugEnabled   ::Logger::isEnabled(__FILE__, ::Logger::Debug)
@@ -69,6 +72,7 @@ public:
 		Info,
 		Warning,
 		Error,
+		Critical,
 		None //!< A special pseudo log level used to completely disable logging for a source file.
 	};
 	
