@@ -936,6 +936,7 @@ if(BUILD_TOOLS)
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
 		src/platform/String.cpp
+		src/platform/Dialog.cpp
 		src/platform/Platform.cpp
 		src/platform/Lock.cpp
 		tools/savetool/SaveFix.cpp
@@ -957,6 +958,7 @@ if(BUILD_TOOLS)
 		src/io/log/ConsoleLogger.cpp
 		src/io/log/Logger.cpp
 		src/platform/String.cpp
+		src/platform/Dialog.cpp
 		src/platform/Platform.cpp
 		src/platform/Lock.cpp
 		tools/unpak/UnPak.cpp
