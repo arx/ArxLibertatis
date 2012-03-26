@@ -391,6 +391,9 @@ else(MSVC)
 		add_definitions(-D_RWSTD_NO_DYNAMIC_CAST)
 	endif()
 	
+	# Because we are lazy
+	add_cxxflag("-Wl,--as-needed")
+	
 endif(MSVC)
 
 if(WIN32 AND NOT WINE)
