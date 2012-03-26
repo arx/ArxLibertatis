@@ -1015,6 +1015,22 @@ if(BUILD_TESTS)
 endif()
 
 
+# Install icon and desktop entry
+if(NOT WIN32 AND NOT APPLE)
+	
+	set(ICON_DIR "share/pixmaps" CACHE
+	    STRING "Install location for icons (relative to prefix).")
+	set(APPLICATION_DIR "share/applications" CACHE
+	    STRING "Install location for .desktop files (relative to prefix).")
+	mark_as_advanced(ICON_DIR)
+	mark_as_advanced(APPLICATION_DIR)
+	
+	install(FILES data/icons/arx-libertatis.png DESTINATION ${ICON_DIR} OPTIONAL)
+	install(FILES data/icons/arx-libertatis.desktop DESTINATION ${APPLICATION_DIR} OPTIONAL)
+	
+endif()
+
+
 # Print a configuration summary
 
 message("")
