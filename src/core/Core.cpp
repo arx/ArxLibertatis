@@ -675,7 +675,7 @@ bool runGame(const char * lpCmdLine) {
 
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();
-	
+
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
 		LogCritical << "Application failed to initialize properly";
@@ -843,6 +843,10 @@ bool runGame(const char * lpCmdLine) {
 
 	// Init all done, start the main loop
 	mainApp->Run();
+
+	ClearGame();
+	
+	Image::shutdown();
 	
 	return true;
 }
@@ -866,11 +870,13 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #else
 	runGame(lpCmdLine);
 #endif
-		
-	ClearGame();
 	
-	Image::shutdown();
-	
+	if(mainApp) {
+		mainApp->Shutdown();
+		delete mainApp;
+		mainApp = NULL;
+	}
+
 	Logger::shutdown();
 	
 	CrashHandler::shutdown();
@@ -4031,9 +4037,7 @@ void ClearGame() {
 	ARX_INPUT_Release();
 	
 	mainApp->Cleanup3DEnvironment();
-	mainApp->Shutdown();
 	
-	delete mainApp, mainApp = NULL;
 	
 	LogInfo << "Clean shutdown";
 }
