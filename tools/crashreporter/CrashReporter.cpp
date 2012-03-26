@@ -41,7 +41,6 @@ int main(int argc, char **argv) {
 	
 	Q_INIT_RESOURCE(CrashReporter);
 	
-	QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 	QApplication app(argc, argv);
 	
 #endif
