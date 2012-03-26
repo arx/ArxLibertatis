@@ -43,7 +43,10 @@ Win32Window::Win32Window()
 	, m_HijackedWindowProc(0) {
 }
 
-Win32Window::~Win32Window() {
+Win32Window::~Win32Window() {	
+	if(m_hWnd)
+		DestroyWindow(m_hWnd);
+
 	UnregisterWindowClass();
 }
 
@@ -171,19 +174,16 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent when an application requests that a window be created.
 	case WM_CREATE:
 		currentWindow->OnCreate();
-		bProcessed = true;
 		break;
 
 	// Paint the window's client area.
 	case WM_PAINT:
 		currentWindow->OnPaint();
-		bProcessed = true;
 		break;
 
 	// Sent after a window has been moved.
 	case WM_MOVE:
 		currentWindow->OnMove( (short)LOWORD(lParam), (short)HIWORD(lParam) );
-		bProcessed = true;
 		break;
 
 	// Sent to a window after its size has changed.
@@ -209,13 +209,11 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent to both the window being activated and the window being deactivated.
 	case WM_ACTIVATE:
 		currentWindow->OnFocus( LOWORD(wParam) != WA_INACTIVE );
-		bProcessed = true;
 		break;
 
 	// Sent when the window is about to be hidden or shown.
 	case WM_SHOWWINDOW:
 		currentWindow->OnShow( wParam == TRUE );
-		bProcessed = true;
 		break;
 
 	// Sent just before a window is destroyed.
@@ -223,7 +221,6 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Window is about to be destroyed, clean up window-specific data objects.
 	case WM_DESTROY:
 		currentWindow->OnDestroy();
-		bProcessed = true;
 		currentWindow->m_hWnd = NULL;
 		break;
 
