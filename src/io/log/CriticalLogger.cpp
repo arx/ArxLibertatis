@@ -19,9 +19,8 @@
 
 #include "io/log/CriticalLogger.h"
 
-#include <windows.h>
-
 #include "platform/Dialog.h"
+#include "platform/Platform.h"
 
 namespace logger {
 
@@ -32,6 +31,9 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 }
 
 void CriticalErrorDialog::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
+	ARX_UNUSED(file);
+	ARX_UNUSED(line);
+	
 	if(level == Logger::Critical && errorString.empty())
 		errorString = str;
 }
