@@ -42,6 +42,7 @@
 #cmakedefine HAVE_ISATTY
 #cmakedefine HAVE_WORDEXP_H
 #cmakedefine HAVE_FPATHCONF
+#cmakedefine HAVE_PATHCONF
 #cmakedefine HAVE_PC_NAME_MAX
 #cmakedefine HAVE_NAME_MAX
 #cmakedefine HAVE_SCHED_GETSCHEDULER
@@ -52,6 +53,8 @@
 #cmakedefine HAVE_PCLOSE
 #cmakedefine HAVE_SYSCONF
 #cmakedefine HAVE_SIGACTION
+#cmakedefine HAVE_DIRFD
+#cmakedefine HAVE_FSTATAT
 
 // Mac OS X features
 #cmakedefine HAVE_MACH_CLOCK

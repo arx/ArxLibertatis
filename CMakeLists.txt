@@ -303,7 +303,10 @@ else(MSVC)
 		check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
 		check_include_file("dirent.h" HAVE_DIRENT_H)
 		
+		check_symbol_exists(readdir_r "dirent.h" HAVE_READDIR_R)
+		
 		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
+		check_symbol_exists(pathconf "unistd.h" HAVE_PATHCONF)
 		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 		
 		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
@@ -312,8 +315,9 @@ else(MSVC)
 		
 		check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
 		
-		if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
-			if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+		if(HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_READDIR_R)
+			if((((HAVE_DIRFD AND HAVE_FPATHCONF) OR HAVE_PATHCONF) AND HAVE_PC_NAME_MAX)
+			   OR (HAVE_NAME_MAX))
 				set(HAVE_POSIX_FILESYSTEM 1)
 			endif()
 		endif()
