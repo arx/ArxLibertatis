@@ -51,17 +51,17 @@ bool showDialog(DialogType type, const std::string& message, const std::string& 
 	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(), flags | MB_SETFOREGROUND | MB_TOPMOST);
 
 	switch (ret)
-    {
-    case IDCANCEL:
+	{
+	case IDCANCEL:
 	case IDNO:
-        return false;
+		return false;
 	
 	case IDYES:
 	case IDOK:
-        return true;
-    }
+		return true;
+	}
 
-    return false;
+	return false;
 }
 
 #elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
@@ -145,7 +145,7 @@ bool showDialog(DialogType type, const std::string& message, const std::string& 
 		if(exitCode >= 0)
 			return exitCode == 0;
 	}
-  
+
 	LogWarning << "Failed to show a dialog: [" << dialogTitle << "] " << message;
 	return true;
 }
@@ -162,7 +162,7 @@ void showWarning(const std::string& message, const std::string& dialogTitle) {
 void showError(const std::string& message, const std::string& dialogTitle) {
 	showDialog(DialogError, message, dialogTitle);
 }
-				
+
 bool askYesNo(const std::string& question, const std::string& dialogTitle) {
 	return showDialog(DialogYesNo, question, dialogTitle);
 }
