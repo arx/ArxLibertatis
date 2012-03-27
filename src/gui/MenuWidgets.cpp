@@ -3421,9 +3421,9 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool keyTouched, int keyId, InputKey
 
 		std::string pText;
 		if(iMouseButton & (Mouse::ButtonBase | Mouse::WheelBase))
-			pText = GInput->getKeyName(iMouseButton, true); 
+			pText = InputKey::getName(iMouseButton, true); 
 		else
-			pText = GInput->getKeyName(keyId, true);
+			pText = InputKey::getName(keyId, true);
 
 		if ( !pText.empty() )
 		{

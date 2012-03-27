@@ -55,9 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Input {
 	
 public:
-	static const std::string KEY_NONE;
- 
-public:
 	Input();
 	virtual ~Input();
 
@@ -67,9 +64,6 @@ public:
 	void unacquireDevices();
 
 	void update();
-
-	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
-	static InputKeyId	getKeyId(const std::string& keyName);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Action

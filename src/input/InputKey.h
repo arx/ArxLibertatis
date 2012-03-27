@@ -24,6 +24,7 @@
 
 typedef int InputKeyId;
 
+
 #define INPUT_KEYBOARD_MASK    0x0000ffff
 #define INPUT_MOUSE_MASK       0x2000000f
 #define INPUT_MOUSEWHEEL_MASK  0x1000000f
@@ -33,6 +34,15 @@ typedef int InputKeyId;
 struct KeyDescription {
 	InputKeyId id;
 	std::string name;
+};
+
+class InputKey
+{
+public:
+	static const std::string KEY_NONE;
+
+	static std::string getName(InputKeyId key, bool localizedName = false);
+	static InputKeyId getId(const std::string & name);
 };
 
 #endif // ARX_INPUT_INPUTKEY_H

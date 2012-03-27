@@ -256,10 +256,10 @@ public:
 
 void ConfigWriter::writeActionKey(ControlAction index, const ActionKey & actionKey) {
 	
-	string v1 = Input::getKeyName(actionKey.key[0]);
+	string v1 = InputKey::getName(actionKey.key[0]);
 	writeKey(Key::actions[index] + "_k0", v1);
 	
-	string v2 = Input::getKeyName(actionKey.key[1]);
+	string v2 = InputKey::getName(actionKey.key[1]);
 	writeKey(Key::actions[index] + "_k1", v2);
 }
 
@@ -270,9 +270,9 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	
 	const IniKey * k0 = getKey(section, key + "_k0");
 	if(k0) {
-		InputKeyId id = Input::getKeyId(k0->getValue());
-		if(id == -1 && !k0->getValue().empty() && k0->getValue() != Input::KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[0]) << "\"";
+		InputKeyId id = InputKey::getId(k0->getValue());
+		if(id == -1 && !k0->getValue().empty() && k0->getValue() != InputKey::KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << InputKey::getName(action_key.key[0]) << "\"";
 		} else {
 			action_key.key[0] = id;
 		}
@@ -280,15 +280,15 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	
 	const IniKey * k1 = getKey(section, key + "_k1");
 	if(k1) {
-		InputKeyId id = Input::getKeyId(k1->getValue());
-		if(id == -1 && !k1->getValue().empty() && k1->getValue() != Input::KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[1]) << "\"";
+		InputKeyId id = InputKey::getId(k1->getValue());
+		if(id == -1 && !k1->getValue().empty() && k1->getValue() != InputKey::KEY_NONE) {
+			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << InputKey::getName(action_key.key[1]) << "\"";
 		} else {
 			action_key.key[1] = id;
 		}
 	}
 	
-	LogDebug("[" << section << "] " << key << " = \"" << Input::getKeyName(action_key.key[0]) << "\", \"" << Input::getKeyName(action_key.key[1]) << "\"");
+	LogDebug("[" << section << "] " << key << " = \"" << InputKey::getName(action_key.key[0]) << "\", \"" << InputKey::getName(action_key.key[1]) << "\"");
 	
 	return action_key;
 }
