@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_LOG_FILELOGGER_H
-#define ARX_IO_LOG_FILELOGGER_H
+#ifndef ARX_IO_LOG_CRITICALLOGGER_H
+#define ARX_IO_LOG_CRITICALLOGGER_H
 
 #include "io/fs/FileStream.h"
 #include "io/log/LogBackend.h"
@@ -46,4 +46,4 @@ public:
 
 } // namespace logger
 
-#endif // ARX_IO_LOG_FILELOGGER_H
+#endif // ARX_IO_LOG_CRITICALLOGGER_H
