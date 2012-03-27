@@ -132,14 +132,13 @@ protected:
 public:
 	
 	virtual bool Initialize();
+	virtual void Shutdown();
 	
 private:
 	
 	virtual bool InitConfig();
 	virtual bool InitWindow() = 0;
-	virtual bool InitInput() = 0;
-	virtual bool InitSound() = 0;
-	
+		
 public:
 	
 	RenderWindow * GetWindow() { return m_MainWindow; }
@@ -168,8 +167,6 @@ public:
 	virtual void Run() = 0;
 	virtual void Pause(bool bPause);
 	virtual void Render() { }
-	virtual bool FinalCleanup() = 0;
-	virtual void Cleanup3DEnvironment() = 0;
 	
 	virtual void setFullscreen(bool fullscreen) = 0;
 

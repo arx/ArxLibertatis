@@ -57,9 +57,12 @@ class ArxGame : public Application, public Window::Listener, public RenderWindow
 protected:
 	
 	virtual bool Initialize();
+	virtual void Shutdown();
+
 	virtual bool InitWindow();
 	virtual bool InitInput();
 	virtual bool InitSound();
+
 	bool InitGameData();
 	bool AddPaks();
 	
@@ -84,8 +87,6 @@ public:
 	virtual void Run();
 
 	bool InitDeviceObjects();
-	bool FinalCleanup();
-	virtual void Cleanup3DEnvironment();
 	
 	/**
 	 * Writes text to the window

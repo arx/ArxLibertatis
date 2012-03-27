@@ -113,20 +113,13 @@ bool Application::Initialize() {
 	if(!init) {
 		return false;
 	}
-	
-	init = InitInput();
-	if(!init) {
-		return false;
-	}
-	
-	init = InitSound();
-	if(!init) {
-		return false;
-	}
-	
+		
 	Random::seed();
 	
 	return true;
+}
+
+void Application::Shutdown() {
 }
 
 void Application::Quit() {

@@ -580,7 +580,10 @@ set(GUI_SOURCES
 	src/gui/TextManager.cpp
 )
 
-set(INPUT_SOURCES src/input/Input.cpp)
+set(INPUT_SOURCES 
+	src/input/Input.cpp
+	src/input/InputKey.cpp
+)
 set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
@@ -923,6 +926,7 @@ if(BUILD_TOOLS)
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
+		${PLATFORM_SOURCES}
 		src/core/Localisation.cpp
 		src/io/Blast.cpp
 		src/io/SaveBlock.cpp
@@ -945,6 +949,7 @@ if(BUILD_TOOLS)
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
+		${PLATFORM_SOURCES}
 		src/io/Blast.cpp
 		src/io/log/ColorLogger.cpp
 		src/io/log/ConsoleLogger.cpp
@@ -959,6 +964,72 @@ if(BUILD_TOOLS)
 	
 	add_executable_shared(arxunpak "" "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}" "")
 	
+	
+	find_package(Ogre)
+	
+	if(OGRE_FOUND AND OGRE_RenderSystem_GL_FOUND)
+		set(arxedit_SOURCES
+			tools/arxedit/ArxEdit.cpp
+			tools/arxedit/ArxLevel.cpp
+			tools/arxedit/ArxMainWindow.cpp
+			tools/arxedit/RenderWidget.cpp
+			tools/arxedit/ViewportGrid.cpp
+			src/io/Blast.cpp
+			src/io/IniReader.cpp
+			src/io/IniWriter.cpp
+			src/io/IniSection.cpp
+			src/input/InputKey.cpp
+			src/core/Config.cpp
+			src/core/Startup.cpp
+			${IO_RESOURCE_SOURCES}
+			${PLATFORM_SOURCES}
+			${IO_FILESYSTEM_SOURCES}
+			${IO_LOGGER_SOURCES}
+			"${VERSION_FILE}"
+		)
+		
+		set(arxedit_UIs
+			tools/arxedit/ui/ArxMainWindow.ui
+		)
+		
+		set(arxedit_MOC_HEADERS
+			tools/arxedit/ArxMainWindow.h
+			tools/arxedit/RenderWidget.h
+		)
+		
+		set(arxedit_RESOURCES
+			tools/arxedit/resources/ArxEdit.qrc
+		)
+		
+		set(arxedit_MANUAL_SOURCES "${arxedit_SOURCES}")
+		
+		qt4_wrap_ui(arxedit_SOURCES ${arxedit_UIs})
+		qt4_wrap_cpp(arxedit_SOURCES ${arxedit_MOC_HEADERS})
+		qt4_add_resources(arxedit_SOURCES ${arxedit_RESOURCES})
+		
+		set(SRC_DIR tools/arxedit/)
+		
+		create_source_groups(arxedit_SOURCES)
+		
+		set(arxedit_LIBRARIES
+			${QT_QTCORE_LIBRARY_RELEASE}
+			${QT_QTGUI_LIBRARY_RELEASE}
+			${Boost_LIBRARIES}
+			${OGRE_LIBRARY_REL}
+			${OGRE_RenderSystem_GL_LIBRARY_REL}
+		)
+		
+		if(MSVC)
+#			list(APPEND arxedit_LIBRARIES winmm psapi imm32)
+			list(APPEND arxedit_LIBRARIES ${DBGHELP_LIBRARIES})
+			include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
+		endif()
+		
+		include_directories(SYSTEM ${OGRE_INCLUDE_DIRS})
+			
+		add_executable_shared(arxedit WIN32 "${arxedit_SOURCES}"
+		                      "${arxedit_LIBRARIES}" "")
+	endif()
 endif()
 
 

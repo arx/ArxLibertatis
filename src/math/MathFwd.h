@@ -47,6 +47,6 @@ typedef Vector3<float> Vec3f;
 typedef Vector3<double> Vec3d;
 
 // Math constants
-#define PI 3.14159265358979323846f
+const float PI = 3.14159265358979323846f;
 
 #endif // ARX_MATH_MATHFWD_H

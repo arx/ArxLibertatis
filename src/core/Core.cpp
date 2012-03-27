@@ -4018,7 +4018,7 @@ void ClearGame() {
 	FreeSnapShot();
 	ARX_INPUT_Release();
 	
-	mainApp->Cleanup3DEnvironment();
+	mainApp->Shutdown();
 	
 	delete mainApp, mainApp = NULL;
 	

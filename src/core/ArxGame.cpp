@@ -238,6 +238,16 @@ bool ArxGame::Initialize()
 		return false;
 	}
 
+	init = InitInput();
+	if(!init) {
+		return false;
+	}
+	
+	init = InitSound();
+	if(!init) {
+		return false;
+	}
+
 	init = InitGameData();
 	if(!init) {
 		return false;
@@ -251,6 +261,12 @@ bool ArxGame::Initialize()
 	Create();
 
 	return true;
+}
+
+void ArxGame::Shutdown() {
+	EERIE_PATHFINDER_Release();
+	ARX_INPUT_Release();
+	ARX_SOUND_Release();
 }
 
 void ArxGame::setFullscreen(bool fullscreen) {
@@ -590,18 +606,6 @@ void ArxGame::Render3DEnvironment() {
 	
 	// Show the frame on the primary surface.
 	GetWindow()->showFrame();
-}
-
-//*************************************************************************************
-// Cleanup3DEnvironment()
-// Cleanup scene objects
-//*************************************************************************************
-void ArxGame::Cleanup3DEnvironment() {
-	
-	if(GetWindow()) {
-		FinalCleanup();
-	}
-	
 }
 
 //*************************************************************************************
@@ -2300,19 +2304,6 @@ bool ArxGame::InitDeviceObjects() {
 
 	ARX_SetAntiAliasing();
 
-	return true;
-}
-
-//*************************************************************************************
-// FinalCleanup()
-// Called before the app exits
-//*************************************************************************************
-bool ArxGame::FinalCleanup() {
-	
-	EERIE_PATHFINDER_Release();
-	ARX_INPUT_Release();
-	ARX_SOUND_Release();
-	
 	return true;
 }
 
