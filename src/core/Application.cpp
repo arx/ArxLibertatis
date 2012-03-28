@@ -102,21 +102,25 @@ bool Application::Initialize() {
 	
 	init = InitConfig();
 	if(!init) {
+		LogCritical << "Failed to initialize the config subsystem.";
 		return false;
 	}
 	
 	init = InitWindow();
 	if(!init) {
+		LogCritical << "Failed to initialize the windowing subsystem.";
 		return false;
 	}
 	
 	init = InitInput();
 	if(!init) {
+		LogCritical << "Failed to initialize the input subsystem.";
 		return false;
 	}
 	
 	init = InitSound();
 	if(!init) {
+		LogCritical << "Failed to initialize the sound subsystem.";
 		return false;
 	}
 	

@@ -231,25 +231,27 @@ ArxGame::ArxGame() : wasResized(false) { }
 ArxGame::~ArxGame() {
 }
 
-bool ArxGame::Initialize()
-{
+bool ArxGame::Initialize() {
+	
 	bool init = Application::Initialize();
 	if(!init) {
 		return false;
 	}
-
+	
 	init = InitGameData();
 	if(!init) {
+		LogCritical << "Failed to initialize the game data.";
 		return false;
 	}
-
+	
 	init = initLocalisation();
 	if(!init) {
+		LogCritical << "Failed to initialize the localisation subsystem.";
 		return false;
 	}
-
+	
 	Create();
-
+	
 	return true;
 }
 
@@ -400,11 +402,9 @@ bool ArxGame::InitSound() {
 
 bool ArxGame::InitGameData() {
 	
-	bool init;
-	
-	init = AddPaks();
+	bool init = AddPaks();
 	if(!init) {
-		LogError << "Error loading pak files";
+		LogCritical << "Error loading pak files";
 		return false;
 	}
 
@@ -462,18 +462,20 @@ bool ArxGame::AddPaks() {
 		if(!found[i]) {
 			if(config.paths.data.empty()) {
 				if(default_paks[i][1]) {
-					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
-					         << " in " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " or "
+					            << default_paks[i][1] << " in " << config.paths.user;
 				} else {
-					LogError << "Unable to find " << default_paks[i][0] << " in " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " in "
+					            << config.paths.user;
 				}
 			} else {
 				if(default_paks[i][1]) {
-					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
-					         << " in either " << config.paths.data << " or " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " or "
+					            << default_paks[i][1] << " in either " << config.paths.data
+					            << " or " << config.paths.user;
 				} else {
-					LogError << "Unable to find " << default_paks[i][0]
-					          << " in either " << config.paths.data << " or " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0]
+					            << " in either " << config.paths.data << " or " << config.paths.user;
 				}
 			}
 			return false;
