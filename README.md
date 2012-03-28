@@ -82,7 +82,6 @@ Build options:
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
-* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis.
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
@@ -94,6 +93,15 @@ Windows-only options (always OFF for non-windows platforms):
 * `USE_DSOUND` (default=ON): Build the DirectSound audio backend
 * `USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
 * `USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
+
+Install options:
+
+* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis.
+
+Linux-only install options (absolute or relative to `CMAKE_INSTALL_PREFIX`):
+
+* `ICON_DIR` (default: `share/pixmaps`): Where to install icons.
+* `APPLICATION_DIR` (default: `share/applications`): Where to install .desktop files.
 
 Set options by passing `-D<option>=<value>` to cmake.
 

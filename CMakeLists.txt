@@ -44,6 +44,11 @@ option(USE_SDL "Build the SDL windowing backend." ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
 
+set(ICON_DIR "share/pixmaps" CACHE
+    STRING "Install location for icons (relative to prefix).")
+set(APPLICATION_DIR "share/applications" CACHE
+    STRING "Install location for .desktop files (relative to prefix).")
+
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
 	force_recheck_library(ZLIB)
@@ -1036,10 +1041,6 @@ if(NOT WIN32 AND NOT APPLE)
 		)
 	endif()
 	
-	set(ICON_DIR "share/pixmaps" CACHE
-	    STRING "Install location for icons (relative to prefix).")
-	set(APPLICATION_DIR "share/applications" CACHE
-	    STRING "Install location for .desktop files (relative to prefix).")
 	mark_as_advanced(ICON_DIR)
 	mark_as_advanced(APPLICATION_DIR)
 	
