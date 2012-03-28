@@ -120,6 +120,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
 #include "io/log/FileLogger.h"
+#include "io/log/CriticalLogger.h"
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
@@ -864,6 +865,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	// Also intialize the logging system early as we might need it.
 	Logger::init();
+	Logger::add(new logger::CriticalErrorDialog);
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	runGame(argc, argv);

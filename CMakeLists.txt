@@ -597,10 +597,12 @@ set(IO_SOURCES
 )
 set(IO_LOGGER_SOURCES
 	src/io/log/ConsoleLogger.cpp
-	src/io/log/FileLogger.cpp
-	src/io/log/CriticalLogger.cpp
 	src/io/log/LogBackend.cpp
 	src/io/log/Logger.cpp
+)
+set(IO_LOGGER_EXTRA_SOURCES
+	src/io/log/FileLogger.cpp
+	src/io/log/CriticalLogger.cpp
 )
 set(IO_RESOURCE_SOURCES
 	src/io/resource/PakEntry.cpp
@@ -783,7 +785,7 @@ endif()
 if(HAVE_WINAPI)
 	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_WINDOWS_SOURCES})
 endif()
-list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
+list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES} ${IO_LOGGER_EXTRA_SOURCES})
 
 list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
 
@@ -936,7 +938,6 @@ if(BUILD_TOOLS)
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
 		src/platform/String.cpp
-		src/platform/Dialog.cpp
 		src/platform/Platform.cpp
 		src/platform/Lock.cpp
 		tools/savetool/SaveFix.cpp
@@ -958,7 +959,6 @@ if(BUILD_TOOLS)
 		src/io/log/ConsoleLogger.cpp
 		src/io/log/Logger.cpp
 		src/platform/String.cpp
-		src/platform/Dialog.cpp
 		src/platform/Platform.cpp
 		src/platform/Lock.cpp
 		tools/unpak/UnPak.cpp

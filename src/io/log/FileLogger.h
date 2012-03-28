@@ -41,6 +41,8 @@ public:
 		CrashHandler::addAttachedFile(path);
 	}
 	
+	void quickShutdown();
+	
 	~File();
 	
 	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);

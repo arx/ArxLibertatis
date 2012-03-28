@@ -38,8 +38,4 @@ void CriticalErrorDialog::log(const Source & file, int line, Logger::LogLevel le
 		errorString = str;
 }
 
-CriticalErrorDialog * CriticalErrorDialog::get() {
-	return true ? new CriticalErrorDialog : NULL;
-}
-
 } // namespace logger

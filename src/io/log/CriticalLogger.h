@@ -27,21 +27,17 @@
 namespace logger {
 
 /*!
- * Simple logger that prints plain text to standard output.
+ * Logger that displays an error dialog on shutdown for the first critical error.
  */
 class CriticalErrorDialog : public Backend {
 	
 	std::string errorString;
-		
+	
 public:
+	
 	~CriticalErrorDialog();
 	
 	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
-	
-	/*!
-	 * Returns a CriticalErrorDialog instance if a debugger is attached or NULL otherwise.
-	 */
-	static CriticalErrorDialog * get();
 };
 
 } // namespace logger

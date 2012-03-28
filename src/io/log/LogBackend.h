@@ -46,6 +46,8 @@ public:
 	
 	virtual void flush() { }
 	
+	virtual void quickShutdown() { }
+	
 	/*!
 	 * Format a log entry for a text-based logging backend.
 	 */
