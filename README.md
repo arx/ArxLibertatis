@@ -96,12 +96,14 @@ Windows-only options (always OFF for non-windows platforms):
 
 Install options:
 
-* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis.
+* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis
 
 Linux-only install options (absolute or relative to `CMAKE_INSTALL_PREFIX`):
 
-* `ICON_DIR` (default: `share/pixmaps`): Where to install icons.
-* `APPLICATION_DIR` (default: `share/applications`): Where to install .desktop files.
+* `CMAKE_INSTALL_DATAROOTDIR` (default: `share`): Where to install data files
+* `ICONDIR` (default: `DATAROOTDIR/pixmaps`): Where to install icons
+* `APPDIR` (default: `DATAROOTDIR/applications`): Where to install .desktop files
+* `CMAKE_INSTALL_MANDIR` (default: `DATAROOTDIR/man`): Where to install man pages
 
 Set options by passing `-D<option>=<value>` to cmake.
 

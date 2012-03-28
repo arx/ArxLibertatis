@@ -44,10 +44,15 @@ option(USE_SDL "Build the SDL windowing backend." ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
 
-set(ICON_DIR "share/pixmaps" CACHE
-    STRING "Install location for icons (relative to prefix).")
-set(APPLICATION_DIR "share/applications" CACHE
-    STRING "Install location for .desktop files (relative to prefix).")
+if(NOT WIN32)
+	include(GNUInstallDirs)
+	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
+	    STRING "Install location for icons (relative to prefix).")
+	mark_as_advanced(ICONDIR)
+	set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
+	    STRING "Install location for .desktop files (relative to prefix).")
+	mark_as_advanced(APPDIR)
+endif()
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -1002,9 +1007,15 @@ add_custom_target(remake
 )
 
 if(DOXYGEN_EXECUTABLE)
+	set(DOXYGEN_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
+	configure_file("scripts/Doxyfile" "Doxyfile" ESCAPE_QUOTES)
 	add_custom_target(doc
 		#build the documentation
-		COMMAND cd ${CMAKE_SOURCE_DIR}/src && ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/Doxyfile
+		COMMAND "${CMAKE_COMMAND}" -E make_directory "${DOXYGEN_OUTPUT_DIR}"
+		COMMAND "${CMAKE_COMMAND}" -E chdir ${CMAKE_SOURCE_DIR}
+			${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+		COMMENT "Building doxygen documentation."
+		VERBATIM
 	)
 endif()
 
@@ -1041,12 +1052,18 @@ if(NOT WIN32 AND NOT APPLE)
 		)
 	endif()
 	
-	mark_as_advanced(ICON_DIR)
-	mark_as_advanced(APPLICATION_DIR)
+	install(FILES data/icons/arx-libertatis.png DESTINATION "${ICONDIR}" OPTIONAL)
+	install(FILES data/icons/arx-libertatis.desktop DESTINATION "${APPDIR}" OPTIONAL)
 	
-	install(FILES data/icons/arx-libertatis.png DESTINATION ${ICON_DIR} OPTIONAL)
-	install(FILES data/icons/arx-libertatis.desktop DESTINATION ${APPLICATION_DIR} OPTIONAL)
-	
+endif()
+
+# Install man pages
+if(NOT WIN32)
+	install(FILES data/man/arx.6 DESTINATION "${CMAKE_INSTALL_MANDIR}/man6" OPTIONAL)
+	if(BUILD_TOOLS)
+		install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+		install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+	endif()
 endif()
 
 

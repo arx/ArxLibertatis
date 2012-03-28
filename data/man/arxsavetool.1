@@ -1,0 +1,46 @@
+.\" Manpage for arxsavetool.
+.\" Go to https://bugs.arx-libertatis.org/ to correct errors or typos.
+.TH arxsavetool 1 "2012-03-28" "1.0"
+.SH NAME
+arxsavetool \- Tool to inspect and modify Arx Libertatis save files
+.SH SYNOPSIS
+.B arxsavetool <action> <savefile> [<options>...]
+.SH DESCRIPTION
+.B arxsavetool
+is a tool to inspect and modify save files of the first-person role-playing game Arx Libertatis.
+.B arxsavetool
+allows to extract individual files from save file containers and re-pack them.
+.B arxsavetool
+also allows listing the information contained in save files and fixing some errors caused
+by broken versions of the game.
+.SH ACTIONS
+.TP
+.B extract
+Extract all files in the save file container to the current directory. This action takes no further options.
+.TP
+.B add
+Add additional files to a save file container. All additional parameters after the save file container are interpreted as files to add.
+.TP
+.B fix
+Fix errors in the save file caused by broken versions of Arx Libertatis. You don't need this if you never ran development versions of 
+.B arx
+\. This action takes no further options.
+
+Requires 
+.B data.pak
+,
+.B data2.pak
+and the
+.B graph
+directory to be in the current directory.
+.TP
+.B view
+List information contained in the save file. Without any additional arguments it just lists all level files contained. You can specify an individual save file after the save file container to display it's contents.
+
+Requires
+.B loc.pak
+to be in the current directory.
+.SH SEE ALSO
+arx(6), arxunpak(1)
+.SH BUGS
+No known bugs.
