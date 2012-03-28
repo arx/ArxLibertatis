@@ -31,6 +31,9 @@
 
 * Ported text rendering from Windows GDI to Freetype
 * Removed dependency on the proprietary PKWARE implode library
+** This required changing the savegame format - saves produced by
+   Arx Libertatis cannot be read by the original Arx Fatalis, but
+   Arx Libertatis can still read the original save files.
 * Abstracted windowing framework, with SDL and Win32 implementations
 * Abstracted audio backend, with OpenAL and DirectSound 9 implementations
 * Abstracted input backend, with SDL and DirectInput 8 implementations
