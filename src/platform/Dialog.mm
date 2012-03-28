@@ -25,54 +25,55 @@
 namespace dialog {
 
 bool showDialog(DialogType type, const std::string& message, const std::string& dialogTitle) {
-
-    bool result = true;
-    NSAlert *alert = [NSAlert new];
-
-    [alert setMessageText: [NSString stringWithUTF8String: dialogTitle.c_str()]];
-    [alert setInformativeText: [NSString stringWithUTF8String: message.c_str()]];
-
-    switch(type) {
-    default:
-	case DialogInfo:
-		[alert setAlertStyle: NSInformationalAlertStyle];
-		[alert runModal];
-        break;
-
-	case DialogWarning:
-		[alert setAlertStyle: NSWarningAlertStyle];
-		[alert runModal];
-        break;
-
-	case DialogError:
-		[alert setAlertStyle: NSCriticalAlertStyle];
-        [alert runModal];
-        break;
-
-    case DialogYesNo:
-        [alert addButtonWithTitle: @"Yes"];
-        [alert addButtonWithTitle: @"No"];
-        switch([alert runModal]) {
-        default:
-        case NSAlertFirstButtonReturn: result = true; break;
-        case NSAlertSecondButtonReturn: result = false; break;
-        }
-        break;
-
-    case DialogOkCancel:
-        [alert addButtonWithTitle: @"OK"];
-        [alert addButtonWithTitle: @"Cancel"];
-        switch([alert runModal]) {
-        default:
-        case NSAlertFirstButtonReturn: result = true; break;
-        case NSAlertSecondButtonReturn: result = false; break;
-        }
-        break;
-    }
-
-    [alert release];
-
-    return result;
+	
+	bool result = true;
+	NSAlert *alert = [NSAlert new];
+	
+	[alert setMessageText: [NSString stringWithUTF8String: dialogTitle.c_str()]];
+	[alert setInformativeText: [NSString stringWithUTF8String: message.c_str()]];
+	
+	switch(type) {
+		
+		default:
+		case DialogInfo:
+			[alert setAlertStyle: NSInformationalAlertStyle];
+			[alert runModal];
+			break;
+		
+		case DialogWarning:
+			[alert setAlertStyle: NSWarningAlertStyle];
+			[alert runModal];
+			break;
+		
+		case DialogError:
+			[alert setAlertStyle: NSCriticalAlertStyle];
+			[alert runModal];
+			break;
+		
+		case DialogYesNo:
+			[alert addButtonWithTitle: @"Yes"];
+			[alert addButtonWithTitle: @"No"];
+			switch([alert runModal]) {
+				default:
+				case NSAlertFirstButtonReturn: result = true; break;
+				case NSAlertSecondButtonReturn: result = false; break;
+			}
+			break;
+		
+		case DialogOkCancel:
+			[alert addButtonWithTitle: @"OK"];
+			[alert addButtonWithTitle: @"Cancel"];
+			switch([alert runModal]) {
+			default:
+				case NSAlertFirstButtonReturn: result = true; break;
+				case NSAlertSecondButtonReturn: result = false; break;
+			}
+			break;
+	}
+	
+	[alert release];
+	
+	return result;
 }
 
 }
