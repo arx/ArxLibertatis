@@ -127,7 +127,7 @@ Run from the directory containing the .pak files (or from anywhere in case of a 
 
     $ arx
 
-The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase.
+The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase - you can use the install-copy script.
 
 You can close it with `Alt + F4` or `killall arx`
 
@@ -145,8 +145,9 @@ You can close it with `Alt + F4` or `killall arx`
 
 The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively:
 
-* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
 * `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
+* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`
+* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
 * `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
 
 `install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and `install-gog` needs just [innoextract](http://innoextract.constexpr.org/).

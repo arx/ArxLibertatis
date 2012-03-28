@@ -155,7 +155,7 @@ case "$speech_checksum" in
 	'4e8f962d8204bcfd79ce6f3226d6d6de') data_lang='english' ; checksum_lang='en' ;;
 	'4c3fdb1f702700255924afde49081b6e') data_lang='german' ; checksum_lang='de' ;;
 	# TODO add support for spanish, french, italian and russian
-	*) data_lang=""
+	*) data_lang="" ;;
 esac
 
 if [ "$data_lang" = "" ] ;
