@@ -244,7 +244,8 @@ void CrashHandlerPOSIX::crashBroker() {
 	// Try a the crash reporter in the same directory as arx or in the current directory.
 #ifdef HAVE_EXECL
 	if(!m_CrashHandlerPath.empty()) {
-		execl(m_CrashHandlerPath.string().c_str(), m_CrashHandlerApp.c_str(), arguments, NULL);
+		execl(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
+		      arguments, NULL);
 	}
 #endif
 	
