@@ -27,6 +27,8 @@
 #include "platform/Architecture.h"
 #include "platform/Environment.h"
 
+#include "Configure.h"
+
 CrashHandlerImpl::CrashHandlerImpl()
 	: m_pCrashInfo(0) {
 }
@@ -41,11 +43,25 @@ bool CrashHandlerImpl::initialize() {
 	
 	fs::path local_path = fs::path(getExecutablePath());
 	if(!local_path.empty()) {
-		local_path = local_path.parent() / fs::path(m_CrashHandlerApp);
+		local_path = local_path.parent() / m_CrashHandlerApp;
 		if(fs::exists(local_path)) {
-			m_CrashHandlerApp = local_path.string();
+			m_CrashHandlerPath = local_path;
 		}
 	}
+	if(m_CrashHandlerPath.empty()) {
+		local_path = m_CrashHandlerApp;
+		if(fs::exists(local_path)) {
+			m_CrashHandlerPath = local_path;
+		}
+	}
+#ifdef CMAKE_INSTALL_FULL_LIBEXECDIR
+	if(m_CrashHandlerPath.empty()) {
+		local_path = fs::path(CMAKE_INSTALL_FULL_LIBEXECDIR) / m_CrashHandlerApp;
+		if(fs::exists(local_path)) {
+			m_CrashHandlerPath = local_path;
+		}
+	}
+#endif
 	
 	if(!createSharedMemory()) {
 		return false;

@@ -940,8 +940,14 @@ if(HAVE_CRASHREPORTER)
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
 	
+	if(WIN32 OR APPLE)
+		set(arxcrashreporter_INSTALL DESTINATION bin)
+	else()
+		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
+	endif()
+	
 	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
-	                      "${arxcrashreporter_LIBRARIES}" "")
+	                      "${arxcrashreporter_LIBRARIES}" "" "${arxcrashreporter_INSTALL}")
 	
 endif()
 

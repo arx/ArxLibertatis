@@ -378,7 +378,15 @@ void CrashHandlerWindows::waitForReporter() {
 	strcpy(arguments, "-crashinfo=");
 	strcat(arguments, m_SharedMemoryName.c_str());
 
-	BOOL bCreateProcess = CreateProcess(m_CrashHandlerApp.c_str(), arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
+	BOOL bCreateProcess;
+	
+	if(!m_CrashHandlerPath.empty()) {
+		bCreateProcess = CreateProcess(m_CrashHandlerPath.string().c_str(), arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
+	}
+	
+	if(!bCreateProcess) {
+		bCreateProcess = CreateProcess(m_CrashHandlerApp.c_str(), arguments, 0, 0, 0, 0, 0, 0, &si, &pi);
+	}
 
 	// If CrashReporter was started, wait for its signal before exiting.
 	// Also test if the crash reporter has exited so that we don't wait forever in exceptionnal situations.
