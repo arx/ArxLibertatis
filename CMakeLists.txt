@@ -44,8 +44,31 @@ option(USE_SDL "Build the SDL windowing backend." ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
 
+
 if(NOT WIN32)
-	include(GNUInstallDirs)
+	if(CMAKE_VERSION VERSION_LESS 2.8.5)
+		set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
+		    STRING "read-only architecture-independent data root (share) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_DATAROOTDIR)
+		set(CMAKE_INSTALL_BINDIR "bin" CACHE
+		    STRING "user executables (bin) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_BINDIR)
+		set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
+		    STRING "program executables (libexec) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_LIBEXECDIR)
+		set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
+		    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_MANDIR)
+		foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
+			if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
+				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
+			else()
+				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
+			endif()
+		endforeach()
+	else()
+		include(GNUInstallDirs)
+	endif()
 	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
 	    STRING "Install location for icons (relative to prefix).")
 	mark_as_advanced(ICONDIR)
@@ -53,6 +76,7 @@ if(NOT WIN32)
 	    STRING "Install location for .desktop files (relative to prefix).")
 	mark_as_advanced(APPDIR)
 endif()
+
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
