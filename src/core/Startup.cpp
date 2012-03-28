@@ -246,6 +246,7 @@ static bool createUserAndConfigDirectory() {
 static void listDirectories(const string & regKey, const string & suffix = string(),
                             const string & where = string()) {
 	
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(!regKey.empty()) {
 		std::cout << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\" << regKey << '\n';
 		string temp;
@@ -253,6 +254,9 @@ static void listDirectories(const string & regKey, const string & suffix = strin
 			std::cout << "   = " << fs::path(temp) << '\n';
 		}
 	}
+#else
+	ARX_UNUSED(regKey);
+#endif
 	
 	if(suffix.empty()) {
 		return;
