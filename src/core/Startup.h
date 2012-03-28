@@ -32,4 +32,6 @@ bool parseCommandLine(int argc, char ** argv);
 bool parseCommandLine(const char * command_line);
 #endif
 
+bool createUserAndConfigDirectory();
+
 #endif // ARX_CORE_STARTUP_H

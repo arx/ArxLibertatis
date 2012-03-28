@@ -24,6 +24,7 @@
 #include <vector>
 #include <iostream>
 #include <set>
+#include <sstream>
 
 #if ARX_COMPILER_MSVC
 	#pragma warning(push)
@@ -40,6 +41,7 @@
 #include "io/log/Logger.h"
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
+#include "platform/String.h"
 
 #include "Configure.h"
 
@@ -213,7 +215,166 @@ static void findConfigDirectory() {
 	LogDebug("Using user directory as config directory: " << config.paths.config);
 }
 
-static bool createUserAndConfigDirectory() {
+static void listDirectoriesFor(std::ostream & os, const string & regKey,
+                               const string & suffix = string(),
+                               const string & where = string()) {
+	
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	if(!regKey.empty()) {
+		os << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\" << regKey << '\n';
+		string temp;
+		if(getSystemConfiguration(regKey, temp)) {
+			os << "   = " << fs::path(temp) << '\n';
+		}
+	}
+#else
+	ARX_UNUSED(regKey);
+#endif
+	
+	if(suffix.empty()) {
+		return;
+	}
+	fs::path dir = expandEvironmentVariables(suffix);
+	
+	if(!where.empty() && dir.is_relative()) {
+		
+		string prefixes = expandEvironmentVariables(where);
+		
+		os << " - \"" << suffix << '"';
+		if(dir.string() != suffix) {
+			os << " = " << fs::path(dir);
+		}
+		os << " in one of \"" << where << '"';
+		if(prefixes != where) {
+			os << "\n    = \"" << prefixes << '"';
+		}
+		os << ":\n";
+		
+		std::set<fs::path> prefixset;
+		
+		size_t start = 0;
+		while(true) {
+			size_t end = prefixes.find(env_list_seperator, start);
+			fs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
+			if(prefixset.find(prefix) == prefixset.end()) {
+				prefixset.insert(prefix);
+				os << "  * " << (prefix / dir) << '\n';
+			}
+			if(end == string::npos) {
+				break;
+			} else {
+				start = end + 1;
+			}
+		}
+	}
+	
+	os << " - \"" << suffix << '"';
+	if(dir.string() != suffix) {
+		os << " = " << fs::path(dir);
+	}
+	os << '\n';
+	
+}
+
+static void listDirectories(std::ostream & os, bool data, bool user, bool cfg) {
+	
+	if(data) {
+		os << "\nData directories (data files):\n";
+		os << " - --data-dir (-d) command-line parameter\n";
+#ifdef DATA_DIR
+# ifdef DATA_DIR_PREFIXES 
+		listDirectoriesFor(os, "DataDir", DATA_DIR, DATA_DIR_PREFIXES);
+# else
+		listDirectoriesFor(os, "DataDir", DATA_DIR);
+# endif // DATA_DIR_PREFIXES
+#else // DATA_DIR
+		listDirectoriesFor(os, "DataDir");
+#endif // DATA_DIR
+		os << "selected: ";
+		if(config.paths.data.empty()) {
+			os << "(none)\n";
+		} else {
+			os << config.paths.data << '\n';
+		}
+	}
+	
+	if(user) {
+		os << "\nUser directories (save files, data files):\n";
+		os << " - --user-dir (-u) command-line parameter\n";
+#ifdef USER_DIR
+# ifdef USER_DIR_PREFIXES 
+		listDirectoriesFor(os, "UserDir", USER_DIR, USER_DIR_PREFIXES);
+# else
+		listDirectoriesFor(os, "UserDir", USER_DIR);
+# endif // USER_DIR_PREFIXES
+#else // USER_DIR
+		listDirectoriesFor(os, "UserDir");
+#endif // USER_DIR
+		os << " - Current working directory\n";
+		os << "selected: ";
+		if(config.paths.user.empty()) {
+			os << "(none)\n";
+		} else {
+			os << config.paths.user << '\n';
+		}
+	}
+	
+	if(cfg) {
+		os << "\nConfig directories:\n";
+		os << " - --config-dir (-c) command-line parameter\n";
+#ifdef CONFIG_DIR
+# ifdef CONFIG_DIR_PREFIXES 
+		listDirectoriesFor(os, std::string(), CONFIG_DIR, CONFIG_DIR_PREFIXES);
+# else
+		listDirectoriesFor(os, std::string(), CONFIG_DIR);
+# endif // USER_DIR_PREFIXES
+#endif // CONFIG_DIR
+		os << " - The selected user directory\n";
+		os << "selected: ";
+		if(config.paths.config.empty()) {
+			os << "(none)\n";
+		} else {
+			os << config.paths.config << '\n';
+		}
+	}
+	os << '\n';
+}
+
+static bool findMainDataFile() {
+	
+	fs::path data_file = "data.pak";
+	
+	if(fs::is_regular_file(config.paths.data / data_file)) {
+		return true;
+	}
+	
+	if(fs::is_regular_file(config.paths.user / data_file)) {
+		return true;
+	}
+	
+	// In case we have not run migration yet, also check for different casings.
+	if(!config.paths.user.empty() && fs::is_directory(config.paths.user)) {
+		for(fs::directory_iterator it(config.paths.user); !it.end(); ++it) {
+			if(toLowercase(it.name()) == data_file.string()) {
+				return true;
+			}
+		}
+	}
+	
+	std::ostringstream oss;
+	oss << "Could not find " << data_file << " in either the data or user directory:\n";
+	listDirectories(oss, true, true, false);
+	
+	LogCritical << oss.str();
+	
+	return false;
+}
+
+bool createUserAndConfigDirectory() {
+	
+	if(!findMainDataFile()) {
+		return false;
+	}
 	
 	if(config.paths.user.empty() || config.paths.config.empty()) {
 		LogCritical << "No user / config directory available.";
@@ -241,124 +402,6 @@ static bool createUserAndConfigDirectory() {
 	}
 
 	return true;
-}
-
-static void listDirectories(const string & regKey, const string & suffix = string(),
-                            const string & where = string()) {
-	
-#if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	if(!regKey.empty()) {
-		std::cout << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\" << regKey << '\n';
-		string temp;
-		if(getSystemConfiguration(regKey, temp)) {
-			std::cout << "   = " << fs::path(temp) << '\n';
-		}
-	}
-#else
-	ARX_UNUSED(regKey);
-#endif
-	
-	if(suffix.empty()) {
-		return;
-	}
-	fs::path dir = expandEvironmentVariables(suffix);
-	
-	if(!where.empty() && dir.is_relative()) {
-		
-		string prefixes = expandEvironmentVariables(where);
-		
-		std::cout << " - \"" << suffix << '"';
-		if(dir.string() != suffix) {
-			std::cout << " = " << fs::path(dir);
-		}
-		std::cout << " in one of \"" << where << '"';
-		if(prefixes != where) {
-			std::cout << "\n    = \"" << prefixes << '"';
-		}
-		std::cout << ":\n";
-		
-		std::set<fs::path> prefixset;
-		
-		size_t start = 0;
-		while(true) {
-			size_t end = prefixes.find(env_list_seperator, start);
-			fs::path prefix = prefixes.substr(start, (end == string::npos) ? end : (end - start));
-			if(prefixset.find(prefix) == prefixset.end()) {
-				prefixset.insert(prefix);
-				std::cout << "  * " << (prefix / dir) << '\n';
-			}
-			if(end == string::npos) {
-				break;
-			} else {
-				start = end + 1;
-			}
-		}
-	}
-	
-	std::cout << " - \"" << suffix << '"';
-	if(dir.string() != suffix) {
-		std::cout << " = " << fs::path(dir);
-	}
-	std::cout << '\n';
-	
-}
-
-static void listDirectories() {
-	
-	std::cout << "\nData directories (data files):\n";
-	std::cout << " - --data-dir (-d) command-line parameter\n";
-#ifdef DATA_DIR
-# ifdef DATA_DIR_PREFIXES 
-	listDirectories("DataDir", DATA_DIR, DATA_DIR_PREFIXES);
-# else
-	listDirectories("DataDir", DATA_DIR);
-# endif // DATA_DIR_PREFIXES
-#else // DATA_DIR
-	listDirectories("DataDir");
-#endif // DATA_DIR
-	std::cout << "selected: ";
-	if(config.paths.data.empty()) {
-		std::cout << "(none)\n";
-	} else {
-		std::cout << config.paths.data << '\n';
-	}
-	
-	std::cout << "\nUser directories (save files, data files):\n";
-	std::cout << " - --user-dir (-u) command-line parameter\n";
-#ifdef USER_DIR
-# ifdef USER_DIR_PREFIXES 
-	listDirectories("UserDir", USER_DIR, USER_DIR_PREFIXES);
-# else
-	listDirectories("UserDir", USER_DIR);
-# endif // USER_DIR_PREFIXES
-#else // USER_DIR
-	listDirectories("UserDir");
-#endif // USER_DIR
-	std::cout << " - Current working directory\n";
-	std::cout << "selected: ";
-	if(config.paths.user.empty()) {
-		std::cout << "(none)\n";
-	} else {
-		std::cout << config.paths.user << '\n';
-	}
-	
-	std::cout << "\nConfig directories:\n";
-	std::cout << " - --config-dir (-c) command-line parameter\n";
-#ifdef CONFIG_DIR
-# ifdef CONFIG_DIR_PREFIXES 
-	listDirectories(std::string(), CONFIG_DIR, CONFIG_DIR_PREFIXES);
-# else
-	listDirectories(std::string(), CONFIG_DIR);
-# endif // USER_DIR_PREFIXES
-#endif // CONFIG_DIR
-	std::cout << " - The selected user directory\n";
-	std::cout << "selected: ";
-	if(config.paths.config.empty()) {
-		std::cout << "(none)\n";
-	} else {
-		std::cout << config.paths.config << '\n';
-	}
-	std::cout << '\n';
 }
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
@@ -443,10 +486,9 @@ bool parseCommandLine(const char * command_line) {
 		}
 		
 		if(options.count("list-dirs")) {
-			listDirectories();
+			listDirectories(std::cout, true, true, true);
 			return false;
 		}
-		createUserAndConfigDirectory();
 		
 	} catch(po::error & e) {
 		std::cerr << "Error parsing command-line: " << e.what() << "\n\n";

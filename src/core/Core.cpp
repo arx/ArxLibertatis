@@ -631,31 +631,24 @@ void InitializeDanae()
 	}
 }
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-bool runGame(int argc, char ** argv) {
-
-	if(!parseCommandLine(argc, argv))
+bool runGame() {
+	
+	LogInfo << "Starting " << version;
+	
+	if(!createUserAndConfigDirectory()) {
 		return false;
-#else
-bool runGame(const char * lpCmdLine) {
-
-	if(!parseCommandLine(lpCmdLine))
-		return false;
-#endif
-
+	}
+	
 	CrashHandler::setReportLocation(config.paths.user / "crashes");
 	CrashHandler::deleteOldReports(5);
 	CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
 	CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
+	CrashHandler::registerCrashCallback(Logger::quickShutdown);
 	
 	Time::init();
 	
 	// Now that data directories are initialized, create a log file.
 	Logger::add(new logger::File(config.paths.user / "arx.log"));
-
-	CrashHandler::registerCrashCallback(Logger::quickShutdown);
-	
-	LogInfo << "Starting " << version;
 	
 	Image::init();
 	
@@ -868,10 +861,14 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Logger::add(new logger::CriticalErrorDialog);
 	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	runGame(argc, argv);
+	if(!parseCommandLine(argc, argv))
+		return false;
 #else
-	runGame(lpCmdLine);
+	if(!parseCommandLine(lpCmdLine))
+		return false;
 #endif
+	
+	runGame();
 	
 	if(mainApp) {
 		mainApp->Shutdown();
