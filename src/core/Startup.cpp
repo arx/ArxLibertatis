@@ -119,7 +119,7 @@ static void findDataDirectory() {
 	LogDebug("No data directory found.");
 }
 
-static void findUserDirectory() {
+static bool findUserDirectory() {
 	
 	config.paths.user.clear();
 	
@@ -127,7 +127,7 @@ static void findUserDirectory() {
 	if(getSystemConfiguration("UserDir", temp)) {
 		config.paths.user = temp;
 		LogDebug("Got user directory from registry: " << config.paths.user);
-		return;
+		return true;
 	}
 	
 #ifdef USER_DIR
@@ -140,7 +140,7 @@ static void findUserDirectory() {
 		config.paths.user = findSubdirectory(USER_DIR_PREFIXES, dir, &to_create);
 		if(!config.paths.user.empty()) {
 			LogDebug("Got user directory from USER_DIR_PREFIXES: " << config.paths.user);
-			return;
+			return true;
 		}
 	}
 #endif // USER_DIR_PREFIXES
@@ -148,7 +148,7 @@ static void findUserDirectory() {
 	if(fs::is_directory(dir)) {
 		config.paths.user = dir;
 		LogDebug("Got user directory from USER_DIR: " << config.paths.user);
-		return;
+		return true;
 	}
 	
 	// Create a new user directory.
@@ -160,7 +160,7 @@ static void findUserDirectory() {
 			config.paths.user = dir;
 			LogDebug("Selected new user directory from USER_DIR: " << config.paths.user);
 		}
-		return;
+		return true;
 	}
 	
 #endif // USER_DIR
@@ -168,9 +168,10 @@ static void findUserDirectory() {
 	// Use the current directory for both data and config files.
 	config.paths.user = ".";
 	LogDebug("Using working directory as user directory: " << config.paths.user);
+	return false;
 }
 
-static void findConfigDirectory() {
+static void findConfigDirectory(bool create) {
 	
 	config.paths.config.clear();
 	
@@ -196,7 +197,7 @@ static void findConfigDirectory() {
 	}
 	
 	// Create a new config directory.
-	if(!config.paths.data.empty()) {
+	if(!config.paths.data.empty() || create) {
 		if(!to_create.empty()) {
 			config.paths.config = to_create;
 			LogDebug("Selected new config directory from CONFIG_DIR_PREFIXES: "
@@ -208,6 +209,8 @@ static void findConfigDirectory() {
 		return;
 	}
 	
+#else
+	ARX_UNUSED(create);
 #endif // CONFIG_DIR
 	
 	// Use the user directory as the config directory.
@@ -469,12 +472,13 @@ bool parseCommandLine(const char * command_line) {
 			config.paths.data.clear();
 		}
 		
+		bool hasProperUserDir = true;
 		po::variables_map::const_iterator user_dir = options.find("user-dir");
 		if(user_dir != options.end()) {
 			config.paths.user = user_dir->second.as<string>();
 			LogDebug("Got user directory from command-line: " << config.paths.user);
 		} else {
-			findUserDirectory();
+			hasProperUserDir = findUserDirectory();
 		}
 		
 		po::variables_map::const_iterator config_dir = options.find("config-dir");
@@ -482,7 +486,7 @@ bool parseCommandLine(const char * command_line) {
 			config.paths.config = config_dir->second.as<string>();
 			LogDebug("Got config directory from command-line: " << config.paths.config);
 		} else {
-			findConfigDirectory();
+			findConfigDirectory(hasProperUserDir);
 		}
 		
 		if(options.count("list-dirs")) {
