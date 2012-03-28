@@ -1025,6 +1025,17 @@ endif()
 # Install icon and desktop entry
 if(NOT WIN32 AND NOT APPLE)
 	
+	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
+	
+	if(DESKTOP_FILE_VALIDATE)
+		get_filename_component(ABS_DESKTOP_FILE data/icons/arx-libertatis.desktop ABSOLUTE)
+		add_custom_target(
+			validate_desktop_file ALL
+			"${DESKTOP_FILE_VALIDATE}" "${ABS_DESKTOP_FILE}" VERBATIM
+			DEPENDS "${ABS_DESKTOP_FILE}"
+		)
+	endif()
+	
 	set(ICON_DIR "share/pixmaps" CACHE
 	    STRING "Install location for icons (relative to prefix).")
 	set(APPLICATION_DIR "share/applications" CACHE
