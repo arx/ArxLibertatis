@@ -22,11 +22,13 @@
 #include "platform/Dialog.h"
 #include "platform/Platform.h"
 
+#include "core/Version.h"
+
 namespace logger {
 
 CriticalErrorDialog::~CriticalErrorDialog() {
 	if(!errorString.empty()) {
-		dialog::showError(errorString, "Critical Error");
+		dialog::showError(errorString, "Critical Error - " + version);
 	}
 }
 
