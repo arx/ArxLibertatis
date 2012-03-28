@@ -25,7 +25,8 @@
 #include <windows.h>
 #else
 #include <cstdlib>
-#include <strings.h>
+#include <sstream>
+#include <cstring>
 #endif
 
 #include <boost/format.hpp>
@@ -66,6 +67,17 @@ bool showDialog(DialogType type, const std::string& message, const std::string &
 	// SEE Dialog.mm for the implementation of showDialog
 #else
 
+std::string escape(const std::string & input) {
+	std::ostringstream oss;
+	for(std::string::const_iterator i = input.begin(); i != input.end(); ++i) {
+		if(*i == '\\' || *i == '"' || *i == '$') {
+			oss << '\\';
+		}
+		oss << *i;
+	}
+	return oss.str();
+}
+
 int zenityCommand(DialogType type, const std::string & message, const std::string & dialogTitle) {
 	
 	const char* options = "";
@@ -79,8 +91,8 @@ int zenityCommand(DialogType type, const std::string & message, const std::strin
 	
 	boost::format command("zenity %1% --text=\"%2%\" --title=\"%3%\"");
 	command = command % options;
-	command = command % message;
-	command = command % dialogTitle;
+	command = command % escape(message);
+	command = command % escape(dialogTitle);
 	
 	return system(command.str().c_str());
 }
@@ -99,8 +111,8 @@ int kdialogCommand(DialogType type, const std::string & message,
 	
 	boost::format command("kdialog %1% \"%2%\" --title \"%3%\"");
 	command = command % options;
-	command = command % message;
-	command = command % dialogTitle;
+	command = command % escape(message);
+	command = command % escape(dialogTitle);
 	
 	return system(command.str().c_str());
 }
@@ -119,7 +131,7 @@ int xmessageCommand(DialogType type, const std::string & message,
 	
 	boost::format command("xmessage -center %1% \"%2%\"");
 	command = command % options;
-	command = command % message;
+	command = command % escape(message);
 	
 	return system(command.str().c_str());
 }
