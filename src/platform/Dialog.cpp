@@ -150,8 +150,8 @@ bool showDialog(DialogType type, const std::string & message,
 	for(std::vector<dialogCommand_t>::const_iterator it = commands.begin();
 			it != commands.end(); ++it) {
 		int exitCode = (*it)(type, message, dialogTitle);
-		if(exitCode >= 0) {
-			return exitCode == 0;
+		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0 && WEXITSTATUS(exitCode) < 127) {
+			return WEXITSTATUS(exitCode) == 0;
 		}
 	}
 	
