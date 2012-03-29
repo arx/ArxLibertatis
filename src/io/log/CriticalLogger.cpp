@@ -22,13 +22,17 @@
 #include "platform/Dialog.h"
 #include "platform/Platform.h"
 
+#include "core/Config.h"
 #include "core/Version.h"
 
 namespace logger {
 
 CriticalErrorDialog::~CriticalErrorDialog() {
 	if(!errorString.empty()) {
-		dialog::showError(errorString, "Critical Error - " + version);
+		std::string fullText = errorString;
+		if(!config.paths.config.string().empty())
+			fullText += "\n\nYou might want to take a look at arx.log under \"" + config.paths.config.string() + "\" for more details.";
+		dialog::showError(fullText, "Critical Error - " + version);
 	}
 }
 
