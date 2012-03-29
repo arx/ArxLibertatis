@@ -65,6 +65,8 @@ bool showDialog(DialogType type, const std::string& message, const std::string &
 
 #elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
 	// SEE Dialog.mm for the implementation of showDialog
+    bool showDialog(DialogType type, const std::string & message, 
+                    const std::string & dialogTitle);
 #else
 
 std::string escape(const std::string & input) {
