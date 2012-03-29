@@ -247,7 +247,11 @@ private:
 	CrashReportTask* m_pCurrentTask;
 	int m_nextPane;
 
+#if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
+	QTime taskTimer;
+#else
 	QElapsedTimer taskTimer;
+#endif
 
 	ErrorReport& m_errorReport;
 };

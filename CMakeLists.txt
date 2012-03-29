@@ -44,6 +44,40 @@ option(USE_SDL "Build the SDL windowing backend." ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
 
+
+if(NOT WIN32)
+	if(CMAKE_VERSION VERSION_LESS 2.8.5)
+		set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
+		    STRING "read-only architecture-independent data root (share) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_DATAROOTDIR)
+		set(CMAKE_INSTALL_BINDIR "bin" CACHE
+		    STRING "user executables (bin) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_BINDIR)
+		set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
+		    STRING "program executables (libexec) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_LIBEXECDIR)
+		set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
+		    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_MANDIR)
+		foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
+			if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
+				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
+			else()
+				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
+			endif()
+		endforeach()
+	else()
+		include(GNUInstallDirs)
+	endif()
+	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
+	    STRING "Install location for icons (relative to prefix).")
+	mark_as_advanced(ICONDIR)
+	set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
+	    STRING "Install location for .desktop files (relative to prefix).")
+	mark_as_advanced(APPDIR)
+endif()
+
+
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
 	force_recheck_library(ZLIB)
@@ -260,12 +294,16 @@ else(MSVC)
 	check_symbol_exists(popen "stdio.h" HAVE_POPEN)
 	check_symbol_exists(pclose "stdio.h" HAVE_PCLOSE)
 	
-	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
+	find_library(LIBRT_LIBRARY rt)
+	
+	if(LIBRT_LIBRARY)
+		set(CMAKE_REQUIRED_LIBRARIES "${LIBRT_LIBRARY}")
+	endif()
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
-	unset(CMAKE_REQUIRED_LIBRARIES)
-	if(HAVE_CLOCK_GETTIME)
-		set(TIME_LIBRARIES "-lrt")
-	elseif(NOT HAVE_WINAPI)
+	if(LIBRT_LIBRARY)
+		unset(CMAKE_REQUIRED_LIBRARIES)
+	endif()
+	if(NOT HAVE_CLOCK_GETTIME AND NOT HAVE_WINAPI)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
@@ -299,7 +337,10 @@ else(MSVC)
 		check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
 		check_include_file("dirent.h" HAVE_DIRENT_H)
 		
+		check_symbol_exists(readdir_r "dirent.h" HAVE_READDIR_R)
+		
 		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
+		check_symbol_exists(pathconf "unistd.h" HAVE_PATHCONF)
 		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 		
 		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
@@ -308,8 +349,9 @@ else(MSVC)
 		
 		check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
 		
-		if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
-			if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+		if(HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_READDIR_R)
+			if((((HAVE_DIRFD AND HAVE_FPATHCONF) OR HAVE_PATHCONF) AND HAVE_PC_NAME_MAX)
+			   OR (HAVE_NAME_MAX))
 				set(HAVE_POSIX_FILESYSTEM 1)
 			endif()
 		endif()
@@ -386,6 +428,14 @@ else(MSVC)
 		# See https://github.com/pathscale/stdcxx/issues/3
 		add_definitions(-D_RWSTD_NO_DYNAMIC_CAST)
 	endif()
+	
+	# Because we are lazy
+	add_cxxflag("-Wl,--as-needed")
+
+	# Xcode does not support -isystem yet
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		add_cxxflag("-Wno-undef")
+	endif() 	
 	
 endif(MSVC)
 
@@ -720,9 +770,6 @@ endif ()
 
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 
-if(TIME_LIBRARIES)
-	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
-endif()
 if(HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
@@ -822,6 +869,11 @@ if(HAVE_CRASHREPORTER)
 	endif()
 endif()
 
+if(LIBRT_LIBRARY AND (HAVE_CLOCK_GETTIME OR HAVE_CRASHHANDLER_POSIX))
+	# Needed for clock_gettime and boost::interprocess on some system.
+	list(APPEND ARX_LIBRARIES ${LIBRT_LIBRARY})
+endif()
+
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
@@ -914,15 +966,26 @@ if(HAVE_CRASHREPORTER)
 		${QT_QTGUI_LIBRARY_RELEASE}
 		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${Boost_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
 	)
+	if(LIBRT_LIBRARY)
+		# Needed for boost::interprocess on some systems.
+		list(APPEND arxcrashreporter_LIBRARIES ${LIBRT_LIBRARY})
+	endif()
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
 		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
 	
+	if(WIN32 OR APPLE)
+		set(arxcrashreporter_INSTALL DESTINATION bin)
+	else()
+		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
+	endif()
+	
 	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
-	                      "${arxcrashreporter_LIBRARIES}" "")
+	                      "${arxcrashreporter_LIBRARIES}" "" "${arxcrashreporter_INSTALL}")
 	
 endif()
 
@@ -988,9 +1051,15 @@ add_custom_target(remake
 )
 
 if(DOXYGEN_EXECUTABLE)
+	set(DOXYGEN_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
+	configure_file("scripts/Doxyfile" "Doxyfile" ESCAPE_QUOTES)
 	add_custom_target(doc
 		#build the documentation
-		COMMAND cd ${CMAKE_SOURCE_DIR}/src && ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/Doxyfile
+		COMMAND "${CMAKE_COMMAND}" -E make_directory "${DOXYGEN_OUTPUT_DIR}"
+		COMMAND "${CMAKE_COMMAND}" -E chdir ${CMAKE_SOURCE_DIR}
+			${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+		COMMENT "Building doxygen documentation."
+		VERBATIM
 	)
 endif()
 
@@ -1010,6 +1079,35 @@ add_style_check_target(style "${STYLE_CHECKED_SOURCES}" "${STYLE_CHECKED_INCLUDE
 
 if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
+endif()
+
+
+# Install icon and desktop entry
+if(NOT WIN32 AND NOT APPLE)
+	
+	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
+	
+	if(DESKTOP_FILE_VALIDATE)
+		get_filename_component(ABS_DESKTOP_FILE data/icons/arx-libertatis.desktop ABSOLUTE)
+		add_custom_target(
+			validate_desktop_file ALL
+			"${DESKTOP_FILE_VALIDATE}" "${ABS_DESKTOP_FILE}" VERBATIM
+			DEPENDS "${ABS_DESKTOP_FILE}"
+		)
+	endif()
+	
+	install(FILES data/icons/arx-libertatis.png DESTINATION "${ICONDIR}" OPTIONAL)
+	install(FILES data/icons/arx-libertatis.desktop DESTINATION "${APPDIR}" OPTIONAL)
+	
+endif()
+
+# Install man pages
+if(NOT WIN32)
+	install(FILES data/man/arx.6 DESTINATION "${CMAKE_INSTALL_MANDIR}/man6" OPTIONAL)
+	if(BUILD_TOOLS)
+		install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+		install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+	endif()
 endif()
 
 

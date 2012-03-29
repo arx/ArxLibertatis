@@ -76,9 +76,10 @@ private:
 	
 protected:
 	virtual void fillBasicCrashInfo();
-
+	
 	std::string m_CrashHandlerApp;
-
+	fs::path m_CrashHandlerPath;
+	
 	// Memory shared to the crash reporter.
 	boost::interprocess::shared_memory_object m_SharedMemory;
 	boost::interprocess::mapped_region m_MemoryMappedRegion;
