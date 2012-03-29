@@ -218,7 +218,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	memoryUsage = 0;
 	runningTimeSec = 0.0;
 	
-#ifdef HAVE_GETRUSAGE
+#if defined(HAVE_GETRUSAGE) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 	{
 		struct rusage usage;
 		if(getrusage(pid, &usage) == 0) {
@@ -461,7 +461,7 @@ bool ErrorReport::getCrashDescription() {
 			m_ReportDescription = "Floating-point error";
 			switch(m_pCrashInfo->code) {
 				#ifdef FPE_INTDIV
-				case ILL_ILLOPC: m_ReportDescription += ": integer division by zero"; break;
+				case FPE_INTDIV: m_ReportDescription += ": integer division by zero"; break;
 				#endif
 				#ifdef FPE_INTOVF
 				case FPE_INTOVF: m_ReportDescription += ": integer overflow"; break;
