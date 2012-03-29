@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
+#include <dxerr.h>
 
 #include "core/Application.h"
 #include "graphics/Math.h"
@@ -261,16 +262,21 @@ bool DInput8Backend::init() {
 
 	HINSTANCE h = GetModuleHandle(0);
 	if(!h) {
+		LogError << "Failed to obtain module handle";
 		return false;
 	}
 	
 	DI_DInput8 = NULL;
-	if(FAILED(DirectInput8Create(h, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DI_DInput8, NULL))) {
+	HRESULT ret = DirectInput8Create(h, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&DI_DInput8, NULL);
+	if(FAILED(ret)) {
+		LogError << "DirectInput8Create() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
 	DI_InputInfo.clear();
-	if(FAILED(DI_DInput8->EnumDevices(0, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY))) {
+	ret = DI_DInput8->EnumDevices(0, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY);
+	if(FAILED(ret)) {
+		LogError << "IDirectInput8::EnumDevices() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
@@ -278,17 +284,17 @@ bool DInput8Backend::init() {
 	DI_MouseState = NULL;
 
 	if(!getKeyboardInputDevice(DXI_MODE_NONEXCLUSIF_OURMSG)) {
-		LogWarning << "could not grab the keyboeard";
+		LogError << "could not grab the keyboeard";
 		return false;
 	}
 	
 	if(!getMouseInputDevice(DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
-		LogWarning << "could not grab the mouse";
+		LogError << "could not grab the mouse";
 		return false;
 	}
 	
 	if(!setMouseRelative()) {
-		LogWarning << "could not set mouse relative mode";
+		LogError << "could not set mouse relative mode";
 		return false;
 	}
 
@@ -375,21 +381,27 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 	
 	releaseDevice(info);
 	
-	if(FAILED(DI_DInput8->CreateDevice(info.guid, &info.inputdevice8, NULL))) {
+	HRESULT ret = DI_DInput8->CreateDevice(info.guid, &info.inputdevice8, NULL);
+	if(FAILED(ret)) {
+		LogError << "IDirectInput8::CreateDevice() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
 	DIDEVCAPS devcaps;
 	memset(&devcaps, 0, sizeof(devcaps));
 	devcaps.dwSize = sizeof(devcaps);
-	if(FAILED(info.inputdevice8->GetCapabilities(&devcaps))) {
+	ret = info.inputdevice8->GetCapabilities(&devcaps);
+	if(FAILED(ret)) {
+		LogError << "IDirectInputDevice8::GetCapabilities() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
 	info.nbbuttons = devcaps.dwButtons;
 	info.nbaxes = devcaps.dwAxes;
 	
-	if(FAILED(info.inputdevice8->SetCooperativeLevel(hwnd, flag))) {
+	ret = info.inputdevice8->SetCooperativeLevel(hwnd, flag);
+	if(FAILED(ret)) {
+		LogError << "IDirectInputDevice8::SetCooperativeLevel() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
@@ -415,7 +427,9 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 				},
 				128,                    // dwData
 			};
-			if(FAILED(info.inputdevice8->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph))) {
+			ret = info.inputdevice8->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph);
+			if(FAILED(ret)) {
+				LogError << "IDirectInputDevice8::SetProperty() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 				return false;
 			}
 			
@@ -434,7 +448,9 @@ bool chooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
 			return false;
 	}
 	
-	if(FAILED(info.inputdevice8->SetDataFormat(dformat))) {
+	ret = info.inputdevice8->SetDataFormat(dformat);
+	if(FAILED(ret)) {
+		LogError << "IDirectInputDevice8::SetDataFormat() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
@@ -721,8 +737,9 @@ bool DInput8Backend::isMouseButtonPressed(int buttonId, int & _iDeltaTime) const
 }
 
 bool setMouseRelative() {
-	
-	if(FAILED(DI_MouseState->inputdevice8->Unacquire())) {
+	HRESULT ret = DI_MouseState->inputdevice8->Unacquire();
+	if(FAILED(ret)) {
+		LogError << "IDirectInputDevice8::Unacquire() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
@@ -735,9 +752,18 @@ bool setMouseRelative() {
 		},
 		DIPROPAXISMODE_REL,     // dwData
 	};
-	if(FAILED(DI_MouseState->inputdevice8->SetProperty(DIPROP_AXISMODE, &dipdw.diph))) {
+
+	ret = DI_MouseState->inputdevice8->SetProperty(DIPROP_AXISMODE, &dipdw.diph);
+	if(FAILED(ret)) {
+		LogError << "IDirectInputDevice8::SetProperty() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
 		return false;
 	}
 	
-	return !FAILED(DI_MouseState->inputdevice8->Acquire());
+	ret = DI_MouseState->inputdevice8->Acquire();
+	if(FAILED(ret)) {
+		LogError << "IDirectInputDevice8::Acquire() failed: " << DXGetErrorStringA(ret) << " - " << DXGetErrorDescriptionA(ret);
+		return false;
+	}
+
+	return true;
 }

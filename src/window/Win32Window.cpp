@@ -90,6 +90,7 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 	ARX_UNUSED(depth);
 	
 	if(!RegisterWindowClass()) {
+		LogError << "Failed to register the Win32 window class";
 		return false;
 	}
 
@@ -100,6 +101,7 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 
 	SetRect(&rcWnd, 0, 0, size.x, size.y);
 	if(AdjustWindowRectEx(&rcWnd, windowStyle, GetMenu(m_hWnd) != NULL, windowExtendedStyle) != TRUE) {
+		LogError << "AdjustWindowRectEx() failed";
 		return false;
 	}
 	

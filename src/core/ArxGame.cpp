@@ -371,7 +371,7 @@ bool ArxGame::InitWindow() {
 	}
 	
 	if(!m_MainWindow) {
-		LogError << "no working windowing framework available";
+		LogCritical << "Graphics initialization failed.";
 		return false;
 	}
 	
@@ -383,7 +383,7 @@ bool ArxGame::InitInput() {
 	LogDebug("Input init");
 	bool init = ARX_INPUT_Init();
 	if(!init) {
-		LogError << "Input init failed";
+		LogCritical << "Input initialization failed.";
 	}
 	
 	return init;
@@ -394,7 +394,7 @@ bool ArxGame::InitSound() {
 	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
 	if(!init) {
-		LogWarning << "Sound init failed";
+		LogWarning << "Sound initialization failed.";
 	}
 	
 	return true;

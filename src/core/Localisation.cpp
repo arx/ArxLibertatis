@@ -46,7 +46,7 @@ static PakFile * autodetectLanguage() {
 	
 	PakDirectory * dir = resources->getDirectory("localisation");
 	if(!dir) {
-		LogError << "Missing 'localisation' directory. Is 'loc.pak' present?";
+		LogCritical << "Missing 'localisation' directory. Is 'loc.pak' present?";
 		return NULL;
 	}
 	
@@ -95,7 +95,7 @@ static PakFile * autodetectLanguage() {
 	}
 	
 	if(!localisation) {
-		LogError << "Could not find any localisation file. (localisation/utext_*.ini)";
+		LogCritical << "Could not find any localisation file. (localisation/utext_*.ini)";
 		return NULL;
 	}
 	

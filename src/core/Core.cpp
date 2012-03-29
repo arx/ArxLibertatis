@@ -631,12 +631,12 @@ void InitializeDanae()
 	}
 }
 
-bool runGame() {
+void runGame() {
 	
 	LogInfo << "Starting " << version;
 	
 	if(!createUserAndConfigDirectory()) {
-		return false;
+		return;
 	}
 	
 	CrashHandler::setReportLocation(config.paths.user / "crashes");
@@ -672,14 +672,15 @@ bool runGame() {
 
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
-		LogCritical << "Application failed to initialize properly";
-		return false;
+		// Fallback to a generic critical error in case none was set yet...
+		LogCritical << "Application failed to initialize properly.";
+		return;
 	}
 
 	// Check if the game will be able to use the current game directory.
 	if(!ARX_Changelevel_CurGame_Clear()) {
-		LogCritical << "Error accessing current game directory. Game won't be playable.";
-		return false;
+		LogCritical << "Error accessing current game directory.";
+		return;
 	}
 	
 	ScriptEvent::init();
@@ -787,7 +788,7 @@ bool runGame() {
 	}
 	
 	if(!AdjustUI()) {
-		return false;
+		return;
 	}
 	
 	ARX_SetAntiAliasing();
@@ -841,8 +842,6 @@ bool runGame() {
 	ClearGame();
 	
 	Image::shutdown();
-	
-	return true;
 }
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32

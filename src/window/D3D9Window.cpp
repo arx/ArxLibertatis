@@ -84,8 +84,10 @@ bool D3D9Window::initFramework() {
 	
 	devices.clear();
 
-	if( NULL == ( d3d = Direct3DCreate9( D3D_SDK_VERSION ) ) )
+	if( NULL == ( d3d = Direct3DCreate9( D3D_SDK_VERSION ) ) ) {
+		LogError << "Direct3DCreate9() failed";
 		return false;
+	}
 
 	UINT adapterCount = d3d->GetAdapterCount();
 	devices.resize(adapterCount);
@@ -237,7 +239,7 @@ bool D3D9Window::updatePresentParams(DisplayMode mode) {
 		d3dpp.EnableAutoDepthStencil = TRUE;
 		d3dpp.AutoDepthStencilFormat = *pFormatList;
 	} else {
-		LogError << "Could not find any matching zbuffer format!";
+		LogError << "Could not find a working backbuffer format";
 		return false;
 	}
 
