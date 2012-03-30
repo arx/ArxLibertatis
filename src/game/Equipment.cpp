@@ -1461,7 +1461,7 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 	return (toadd * trueval * ( 1.0f / 100 ));
 }
 
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, const std::string& param2, float val, short flags)
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, bool special, const std::string & param2, float val, short flags)
 {
 	if (io == NULL) return;
 
@@ -1480,7 +1480,7 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const std::string& param1, con
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value = 0;
 	}
 
-	if(param1 == "-s") {
+	if(special) {
 		for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
 		{
 			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
