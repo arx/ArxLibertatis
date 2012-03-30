@@ -643,6 +643,8 @@ size_t initSuppressions() {
 	
 	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
 	
+	suppress("sword_mx", 458, "halo"); // unknown flag -a (ignored)
+	
 	suppress("sylib", 832, "timer"); // unknown flag -t (ignored)
 	
 	suppress("timed_lever_0033", 1027, "-smf"); // command wrongly interpreted as event (script parser limitation)
