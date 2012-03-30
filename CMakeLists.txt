@@ -280,6 +280,10 @@ else(MSVC)
 	
 	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
 	add_definitions(-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_EXE_LINKER_FLAGS} -D_DARWIN_C_SOURCE")
+		add_definitions(-D_DARWIN_C_SOURCE)
+	endif()
 	
 	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	
@@ -342,7 +346,8 @@ else(MSVC)
 		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
 		check_symbol_exists(pathconf "unistd.h" HAVE_PATHCONF)
 		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
-		
+		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" HAVE_PC_CASE_SENSITIVE)
+        
 		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
 		
 		check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)

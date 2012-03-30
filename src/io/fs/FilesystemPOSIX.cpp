@@ -31,6 +31,7 @@
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
+#include "platform/String.h"
 
 using std::string;
 using std::malloc;
@@ -147,8 +148,19 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 }
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
+
 	if(!overwrite && exists(new_p)) {
+#if defined(HAVE_PATHCONF) && defined(HAVE_PC_CASE_SENSITIVE)
+		if(toLowercase(old_p.string()) == toLowercase(new_p.string())) {
+			if(pathconf(old_p.string().c_str(), _PC_CASE_SENSITIVE)) {
+				return false; // filesystem is case-sensitive and destination file already exists
+			}
+		} else {
+			return false;
+		}
+#else
 		return false;
+#endif		
 	}
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }

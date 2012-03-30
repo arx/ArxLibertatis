@@ -44,6 +44,7 @@
 #cmakedefine HAVE_FPATHCONF
 #cmakedefine HAVE_PATHCONF
 #cmakedefine HAVE_PC_NAME_MAX
+#cmakedefine HAVE_PC_CASE_SENSITIVE
 #cmakedefine HAVE_NAME_MAX
 #cmakedefine HAVE_SCHED_GETSCHEDULER
 #cmakedefine HAVE_SYS_STAT_H
