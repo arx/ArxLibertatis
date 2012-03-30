@@ -347,7 +347,7 @@ else(MSVC)
 		check_symbol_exists(pathconf "unistd.h" HAVE_PATHCONF)
 		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
 		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" HAVE_PC_CASE_SENSITIVE)
-        
+		
 		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
 		
 		check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)
