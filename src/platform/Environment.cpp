@@ -44,7 +44,7 @@
 
 #include "platform/String.h"
 
-std::string expandEvironmentVariables(const std::string & in) {
+std::string expandEnvironmentVariables(const std::string & in) {
 	
 #if defined(HAVE_WORDEXP_H)
 	

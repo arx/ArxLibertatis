@@ -52,7 +52,7 @@ using std::string;
 static fs::path findSubdirectory(const std::string & where, const fs::path & dir,
                                  fs::path * to_create = NULL) {
 	
-	string prefixes = expandEvironmentVariables(where);
+	string prefixes = expandEnvironmentVariables(where);
 	
 	bool create_exists = false;
 	
@@ -96,7 +96,7 @@ static void findDataDirectory() {
 	
 #ifdef DATA_DIR
 	
-	fs::path dir = expandEvironmentVariables(DATA_DIR);
+	fs::path dir = expandEnvironmentVariables(DATA_DIR);
 	
 #ifdef DATA_DIR_PREFIXES 
 	if(dir.is_relative()) {
@@ -132,7 +132,7 @@ static bool findUserDirectory() {
 	
 #ifdef USER_DIR
 	
-	fs::path dir = expandEvironmentVariables(USER_DIR);
+	fs::path dir = expandEnvironmentVariables(USER_DIR);
 	
 	fs::path to_create;
 #ifdef USER_DIR_PREFIXES
@@ -177,7 +177,7 @@ static void findConfigDirectory(bool create) {
 	
 #ifdef CONFIG_DIR
 	
-	fs::path dir = expandEvironmentVariables(CONFIG_DIR);
+	fs::path dir = expandEnvironmentVariables(CONFIG_DIR);
 	
 	fs::path to_create;
 #ifdef CONFIG_DIR_PREFIXES
@@ -237,11 +237,11 @@ static void listDirectoriesFor(std::ostream & os, const string & regKey,
 	if(suffix.empty()) {
 		return;
 	}
-	fs::path dir = expandEvironmentVariables(suffix);
+	fs::path dir = expandEnvironmentVariables(suffix);
 	
 	if(!where.empty() && dir.is_relative()) {
 		
-		string prefixes = expandEvironmentVariables(where);
+		string prefixes = expandEnvironmentVariables(where);
 		
 		os << " - \"" << suffix << '"';
 		if(dir.string() != suffix) {
