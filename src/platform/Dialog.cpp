@@ -1,4 +1,4 @@
-		/*
+/*
  * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
