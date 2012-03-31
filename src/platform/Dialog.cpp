@@ -1,4 +1,4 @@
-/*
+		/*
  * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
@@ -32,7 +32,7 @@
 #include <boost/format.hpp>
 
 #include "io/log/Logger.h"
-#include "platform/Platform.h"
+#include "platform/String.h"
 
 namespace dialog {
 	
@@ -70,14 +70,7 @@ bool showDialog(DialogType type, const std::string& message, const std::string &
 #else
 
 std::string escape(const std::string & input) {
-	std::ostringstream oss;
-	for(std::string::const_iterator i = input.begin(); i != input.end(); ++i) {
-		if(*i == '\\' || *i == '"' || *i == '$') {
-			oss << '\\';
-		}
-		oss << *i;
-	}
-	return oss.str();
+	return escapeString(input, "\\\"$");
 }
 
 int zenityCommand(DialogType type, const std::string & message, const std::string & dialogTitle) {
