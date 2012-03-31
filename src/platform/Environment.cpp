@@ -42,6 +42,8 @@
 #include <sys/stat.h>
 #endif
 
+#include "platform/String.h"
+
 std::string expandEvironmentVariables(const std::string & in) {
 	
 #if defined(HAVE_WORDEXP_H)
@@ -54,7 +56,11 @@ std::string expandEvironmentVariables(const std::string & in) {
 	
 	std::ostringstream oss;
 	for(size_t i = 0; i < p.we_wordc; i++) {
+		
 		oss << p.we_wordv[i];
+		
+		if(i != (p.we_wordc-1))
+			oss << " ";
 	}
 	
 	wordfree(&p);
