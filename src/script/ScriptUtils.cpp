@@ -671,6 +671,8 @@ size_t initSuppressions() {
 	
 	suppress("wall_breakable", 523, "}"); // missing accept/refuse before end of event block
 	
+	suppress("wrat_base", 17152, "play"); // sound number is sometimes too high
+	
 	suppress("y_mx", 3106, "loadanim"); // bad animation id: 'bae_ready', should be 'bare_ready'
 	
 	class FakeCommand : public Command {
