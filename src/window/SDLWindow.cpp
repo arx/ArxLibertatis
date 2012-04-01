@@ -230,7 +230,7 @@ void SDLWindow::updateSize(bool reinit) {
 	// Finally, set the viewport for the newly created device
 	arx_assert(renderer != NULL);
 	
-#if ARX_PLATFORM != ARX_PLATFORM_LINUX
+#if ARX_PLATFORM == ARX_PLATFORM_LINUX
 	// Never needed under linux
 	reinit = false;
 #elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
