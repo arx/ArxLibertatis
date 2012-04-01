@@ -196,12 +196,14 @@ bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 		mode.depth = desktopMode.depth;
 	}
 	
-	bool needsReinit = false;
+	bool needsReinit;
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	needsReinit = m_IsFullscreen || fullscreen;
-#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
-	needsReinit = true;
+#elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM != ARX_PLATFORM_BSD
+	needsReinit = false;
+#else
+	needsReinit = true; // By default, always reinit to avoid issues on untested platforms
 #endif
 	
 	if(needsReinit) {
@@ -230,12 +232,12 @@ void SDLWindow::updateSize(bool reinit) {
 	// Finally, set the viewport for the newly created device
 	arx_assert(renderer != NULL);
 	
-#if ARX_PLATFORM == ARX_PLATFORM_LINUX
-	// Never needed under linux
-	reinit = false;
-#elif ARX_PLATFORM == ARX_PLATFORM_MACOSX
-	// Always needed under mac ?
-	reinit = true;
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+	// use reinit as-is
+#elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
+	reinit = false; // Never needed under linux & bsd
+#else
+	reinit = true; // By default, always reinit to avoid issues on untested platforms
 #endif
 	
 	if(reinit && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
