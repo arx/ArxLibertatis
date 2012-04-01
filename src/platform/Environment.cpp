@@ -42,6 +42,12 @@
 #include <sys/stat.h>
 #endif
 
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#include <mach-o/dyld.h>
+#include <stdlib.h>
+#include <sys/param.h>
+#endif
+
 std::string expandEnvironmentVariables(const std::string & in) {
 	
 #if defined(HAVE_WORDEXP_H)
@@ -222,7 +228,7 @@ void defineSystemDirectories() {
 
 #endif
 
-#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
 	int ret = readlink(path, &buffer.front(), buffer.size());
@@ -242,7 +248,21 @@ static bool try_readlink(std::vector<char> & buffer, const char * path) {
 
 std::string getExecutablePath() {
 	
-#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+	uint32_t bufsize = 0;
+	
+	// Obtain required size
+	_NSGetExecutablePath(NULL, &bufsize);
+	
+	char exepath[bufsize];
+	if(_NSGetExecutablePath(exepath, &bufsize) == 0) {
+		char exerealpath[MAXPATHLEN];
+		if(realpath(exepath, exerealpath)) {
+			return exerealpath;
+		}
+	}
+	
+#elif defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
 	
 	std::vector<char> buffer;
 	buffer.resize(1024);
