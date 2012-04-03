@@ -75,6 +75,9 @@ if(NOT WIN32)
 	set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
 	    STRING "Install location for .desktop files (relative to prefix).")
 	mark_as_advanced(APPDIR)
+	set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
+	    STRING "Install location for game executables (relative to prefix).")
+	mark_as_advanced(GAMESBINDIR)
 endif()
 
 
@@ -930,7 +933,14 @@ list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 # Add executables
 
-add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
+if(WIN32 OR APPLE)
+	set(arx_INSTALL DESTINATION "${CMAKE_INSTALL_BINDIR}")
+else()
+	set(arx_INSTALL DESTINATION "${GAMESBINDIR}")
+endif()
+
+add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
+                      "${ALL_INCLUDES}" "${arx_INSTALL}")
 
 if(HAVE_CRASHREPORTER)
 	
@@ -1005,7 +1015,7 @@ if(HAVE_CRASHREPORTER)
 	endif()
 	
 	if(WIN32 OR APPLE)
-		set(arxcrashreporter_INSTALL DESTINATION bin)
+		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_BINDIR}")
 	else()
 		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
 	endif()

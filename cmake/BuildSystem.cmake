@@ -53,7 +53,7 @@ unset(SHARED_BUILD_EXECUTABLES CACHE)
 #  SRC   The executables source files.
 #  LIBS  Libraries to link the executable against.
 #  EXTRA Additional arguments to pass to add_executable() but not shared amongs executables or included in unity builds.
-#  INSTALL Additional arguments to install. Default: "DESTINATION bin"
+#  INSTALL Additional arguments to install. Default: "DESTINATION ${CMAKE_INSTALL_BINDIR}"
 function(add_executable_shared EXE TYPE SRC LIBS)
 	list(REMOVE_DUPLICATES SRC)
 	list(REMOVE_DUPLICATES LIBS)

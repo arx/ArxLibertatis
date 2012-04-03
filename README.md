@@ -105,6 +105,7 @@ Linux-only install options (absolute or relative to `CMAKE_INSTALL_PREFIX`):
 * `APPDIR` (default: `DATAROOTDIR/applications`): Where to install .desktop files
 * `CMAKE_INSTALL_MANDIR` (default: `DATAROOTDIR/man`): Where to install man pages
 * `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
+* `GAMESBINDIR` (default: BINDIR): Where to install game executables
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 
 Set options by passing `-D<option>=<value>` to cmake.
