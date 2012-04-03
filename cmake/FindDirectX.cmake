@@ -24,8 +24,8 @@ if(WIN32)
 	find_library(DIRECTX_DXGI_LIBRARY NAMES dxgi)
 	find_library(DIRECTX_D3DCOMPILER_LIBRARY NAMES d3dcompiler)
 	
-	set(DIRECTX_LIBRARY 
-		${DIRECTX_D3D9_LIBRARY} 
+	set(DIRECTX_LIBRARY
+		${DIRECTX_D3D9_LIBRARY}
 		${DIRECTX_D3DX9_LIBRARY}
 		${DIRECTX_DXERR9_LIBRARY}
 		${DIRECTX_DXGUID_LIBRARY}
@@ -46,7 +46,7 @@ if(WIN32)
 		if (DIRECTX_D3D10_INCLUDE_DIR AND DIRECTX_D3D10_LIBRARY AND DIRECTX_D3DX10_LIBRARY)
 			set(DIRECTX_D3D10_FOUND TRUE)
 			set(DIRECTX_D3D10_INCLUDE_DIRS ${DIRECTX_D3D10_INCLUDE_DIR})
-	  		set(DIRECTX_D3D10_LIBRARIES ${DIRECTX_D3D10_LIBRARY} ${DIRECTX_D3DX10_LIBRARY}) 
+	  		set(DIRECTX_D3D10_LIBRARIES ${DIRECTX_D3D10_LIBRARY} ${DIRECTX_D3DX10_LIBRARY})
 		endif ()
 	endif ()
 	
@@ -67,7 +67,7 @@ if(WIN32)
 		endif ()
 	endif ()
 	
-	# handle the QUIETLY and REQUIRED arguments and set DIRECTX_FOUND to TRUE if 
+	# handle the QUIETLY and REQUIRED arguments and set DIRECTX_FOUND to TRUE if
 	# all listed variables are TRUE
 	include(FindPackageHandleStandardArgs)
 	find_package_handle_standard_args(DirectX DEFAULT_MSG DIRECTX_LIBRARY DIRECTX_INCLUDE_DIR)
@@ -99,8 +99,8 @@ elseif(WINE)
 	__check_wine_dx_library(DIRECTX_DXGI_LIBRARY dxgi)
 	__check_wine_dx_library(DIRECTX_D3DCOMPILER_LIBRARY d3dcompiler)
 	
-	set(DIRECTX_LIBRARY 
-		${DIRECTX_D3D9_LIBRARY} 
+	set(DIRECTX_LIBRARY
+		${DIRECTX_D3D9_LIBRARY}
 		${DIRECTX_D3DX9_LIBRARY}
 		${DIRECTX_DXERR9_LIBRARY}
 		${DIRECTX_DXGUID_LIBRARY}
@@ -109,7 +109,7 @@ elseif(WINE)
 		${DIRECTX_D3DCOMPILER_LIBRARY}
 	)
 	
-	# handle the QUIETLY and REQUIRED arguments and set DIRECTX_FOUND to TRUE if 
+	# handle the QUIETLY and REQUIRED arguments and set DIRECTX_FOUND to TRUE if
 	# all listed variables are TRUE
 	include(FindPackageHandleStandardArgs)
 	find_package_handle_standard_args(DirectX DEFAULT_MSG DIRECTX_LIBRARY)

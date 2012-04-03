@@ -245,7 +245,7 @@ if(MSVC)
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
 	
-	# Always build with debug information 
+	# Always build with debug information
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
 	
 	# Enable linker optimization in release
@@ -382,7 +382,7 @@ else(MSVC)
 	add_cxxflag("-Woverflow")
 	add_cxxflag("-Wbool-conversions")
 	
-	# TODO enable: 
+	# TODO enable:
 	# add_cxxflag("-Wconversion") # very noisy
 	# add_cxxflag("-Wsign-conversion") # very noisy
 	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
@@ -444,7 +444,7 @@ else(MSVC)
 	# Xcode does not support -isystem yet
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 		add_cxxflag("-Wno-undef")
-	endif() 	
+	endif()
 	
 endif(MSVC)
 
@@ -699,7 +699,7 @@ set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
 set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
 set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
-set(MATH_SOURCES 
+set(MATH_SOURCES
 	src/math/Angle.cpp
 	src/math/Random.cpp
 )
@@ -777,14 +777,15 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
-# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found release and debug
-# libs get mixed up. On windows we will empty out the Boost_LIBRARIES list and count on the 
-# auto-linking feature boost provides. http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
+# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
+# release and debug libs get mixed up. On windows we will empty out the
+# Boost_LIBRARIES list and count on the auto-linking feature boost provides.
+# http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
 if (MSVC)
 	# Reset libraries list so VC will perform auto-linking.
 	set (Boost_LIBRARIES "")
-
-	# Not needed anymore as BOOST_ROOT finds these properly. 
+	
+	# Not needed anymore as BOOST_ROOT finds these properly.
 	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
 	if ("${Boost_INCLUDE_DIRS}" STREQUAL "")
 		set (Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
@@ -792,7 +793,7 @@ if (MSVC)
 	if ("${Boost_LIBRARY_DIRS}" STREQUAL "")
 		set (Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
 	endif ()
-
+	
 	# Add boost lib directory to the list of libraries paths
 	link_directories(${Boost_LIBRARY_DIRS})
 endif ()
