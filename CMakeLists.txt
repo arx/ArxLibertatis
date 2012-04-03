@@ -407,7 +407,7 @@ else(MSVC)
 		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
 		
-	else(CMAKE_BUILD_TYPE STREQUAL "Release")
+	elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 		
 		if((NOT CMAKE_CXX_FLAGS MATCHES "-g(|[0-9]|gdb)")
 			 AND (NOT CMAKE_CXX_FLAGS_RELEASE MATCHES "-g(|[0-9]|gdb)"))
@@ -459,7 +459,7 @@ if(WIN32 AND NOT WINE)
 	if(NOT DEFINED USER_DIR_PREFIXES)
 		set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%")
 	endif()
-else(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	# Define default user and data directories.
 	if(NOT DEFINED DATA_DIR)
 		set(DATA_DIR "ArxLibertatis")
