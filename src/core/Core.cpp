@@ -633,8 +633,6 @@ void InitializeDanae()
 
 void runGame() {
 	
-	LogInfo << "Starting " << version;
-	
 	if(!createUserAndConfigDirectory()) {
 		return;
 	}
@@ -649,6 +647,8 @@ void runGame() {
 	
 	// Now that data directories are initialized, create a log file.
 	Logger::add(new logger::File(config.paths.user / "arx.log"));
+	
+	LogInfo << "Starting " << version;
 	
 	Image::init();
 	
