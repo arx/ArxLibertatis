@@ -29,7 +29,6 @@
 #if ARX_PLATFORM == ARX_PLATFORM_BSD || ARX_PLATFORM == ARX_PLATFORM_MACOSX
 // Some versions of boost/interprocess/shared_memory_object.hpp are
 // missing includes needed for BSD-kernel-specific code:
-#include <sys/types.h>
 #include <sys/time.h>
 #endif
 
