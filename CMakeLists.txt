@@ -436,7 +436,7 @@ else(MSVC)
 	endif()
 	
 	# Because we are lazy
-	add_cxxflag("-Wl,--as-needed")
+	add_ldflag("-Wl,--as-needed")
 
 	# Xcode does not support -isystem yet
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")

@@ -40,6 +40,16 @@ function(add_cxxflag FLAG)
 	
 endfunction(add_cxxflag)
 
+function(add_ldflag FLAG)
+	
+	check_compiler_flag(RESULT "${FLAG}")
+	
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
+	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
+	
+endfunction(add_ldflag)
+
 function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
 	# See if we can link a simple program with the library using the configured c++ compiler.
 	set(link_test_file "${CMAKE_CURRENT_BINARY_DIR}/link_test.cpp")
