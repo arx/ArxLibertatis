@@ -19,8 +19,6 @@
 
 #include "platform/CrashHandler.h"
 
-
-
 #include "io/fs/Filesystem.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
@@ -29,16 +27,20 @@
 
 #if defined(HAVE_CRASHHANDLER_POSIX)
 #include "platform/crashhandler/CrashHandlerPOSIX.h"
+#define HAVE_CRASHHANDLER
 #elif defined(HAVE_CRASHHANDLER_WINDOWS)
 #include "platform/crashhandler/CrashHandlerWindows.h"
-#else
-#include "platform/crashhandler/CrashHandlerImpl.h"
+#define HAVE_CRASHHANDLER
 #endif
 
+#ifdef HAVE_CRASHHANDLER
 static CrashHandlerImpl * gCrashHandlerImpl = 0;
-static int gInitCount = 0;
+static int gCrashHandlerInitCount = 0;
+#endif
 
 bool CrashHandler::initialize() {
+	
+#ifdef HAVE_CRASHHANDLER
 	
 	if(!gCrashHandlerImpl) {
 		
@@ -69,75 +71,119 @@ bool CrashHandler::initialize() {
 		}
 	}
 	
-	gInitCount++;
+	gCrashHandlerInitCount++;
 	return true;
+	
+#else
+	return false;
+#endif
 }
 
 void CrashHandler::shutdown() {
-	gInitCount--;
-	if(gInitCount == 0) {
+#ifdef HAVE_CRASHHANDLER
+	gCrashHandlerInitCount--;
+	if(gCrashHandlerInitCount == 0) {
 		gCrashHandlerImpl->shutdown();
 		delete gCrashHandlerImpl;
 		gCrashHandlerImpl = 0;
 	}
+#endif
 }
 
 bool CrashHandler::isInitialized() {
+#ifdef HAVE_CRASHHANDLER
 	return gCrashHandlerImpl != 0;
+#else
+	return false;
+#endif
 }
 
-bool CrashHandler::addAttachedFile(const fs::path& file) {
-	if(!isInitialized())
+bool CrashHandler::addAttachedFile(const fs::path & file) {
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return false;
-
+	}
 	return gCrashHandlerImpl->addAttachedFile(file);
+#else
+	ARX_UNUSED(file);
+	return false;
+#endif
 }
 
-bool CrashHandler::setNamedVariable(const std::string& name, const std::string& value) {
-	if(!isInitialized())
+bool CrashHandler::setNamedVariable(const std::string & name, const std::string & value) {
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return false;
-
+	}
 	return gCrashHandlerImpl->setNamedVariable(name, value);
+#else
+	ARX_UNUSED(name), ARX_UNUSED(value);
+	return false;
+#endif
 }
 
-bool CrashHandler::setReportLocation(const fs::path& location) {
-	if(!isInitialized())
+bool CrashHandler::setReportLocation(const fs::path & location) {
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return false;
-
+	}
 	return gCrashHandlerImpl->setReportLocation(location);
+#else
+	ARX_UNUSED(location);
+	return false;
+#endif
 }
 
 bool CrashHandler::deleteOldReports(size_t nbReportsToKeep) {
-	if(!isInitialized())
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return false;
-
+	}
 	return gCrashHandlerImpl->deleteOldReports(nbReportsToKeep);
+#else
+	ARX_UNUSED(nbReportsToKeep);
+	return false;
+#endif
 }
 
 bool CrashHandler::registerThreadCrashHandlers() {
-	if(!isInitialized())
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return false;
-
+	}
 	return gCrashHandlerImpl->registerThreadCrashHandlers();
+#else
+	return false;
+#endif
 }
 
 void CrashHandler::unregisterThreadCrashHandlers() {
-	if(!isInitialized())
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return;
-
+	}
 	gCrashHandlerImpl->unregisterThreadCrashHandlers();
+#endif
 }
 
 void CrashHandler::registerCrashCallback(CrashCallback crashCallback) {
-	if(!isInitialized())
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return;
-
+	}
 	gCrashHandlerImpl->registerCrashCallback(crashCallback);
+#else
+	ARX_UNUSED(crashCallback);
+#endif
 }
 
 void CrashHandler::unregisterCrashCallback(CrashCallback crashCallback) {
-	if(!isInitialized())
+#ifdef HAVE_CRASHHANDLER
+	if(!isInitialized()) {
 		return;
-
+	}
 	gCrashHandlerImpl->unregisterCrashCallback(crashCallback);
+#else
+	ARX_UNUSED(crashCallback);
+#endif
 }
