@@ -935,7 +935,7 @@ list(APPEND ARX_SOURCES "${VERSION_FILE}")
 # Add executables
 
 if(WIN32 OR APPLE)
-	set(arx_INSTALL DESTINATION "${CMAKE_INSTALL_BINDIR}")
+	set(arx_INSTALL DESTINATION "bin")
 else()
 	set(arx_INSTALL DESTINATION "${GAMESBINDIR}")
 endif()
@@ -1016,7 +1016,7 @@ if(HAVE_CRASHREPORTER)
 	endif()
 	
 	if(WIN32 OR APPLE)
-		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_BINDIR}")
+		set(arxcrashreporter_INSTALL DESTINATION "bin")
 	else()
 		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
 	endif()
