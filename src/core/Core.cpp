@@ -852,7 +852,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(hPrevInstance);
 	ARX_UNUSED(nCmdShow);
 #endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-		
+	
+	// Initialize Random now so that the crash handler can use it.
+	Random::seed();
+	
 	CrashHandler::initialize();
 	
 	// Also intialize the logging system early as we might need it.
