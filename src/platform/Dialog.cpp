@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <cstring>
+#include <sys/wait.h>
 #endif
 
 #include <boost/format.hpp>
