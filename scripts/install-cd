@@ -110,7 +110,7 @@ cd "$tempdir" || exit 1
 
 # Mount / extract CD image
 
-if [ ! -d "$iso" ] ; then
+if [ ! -d "$cd" ] ; then
 	
 	mkdir "$cd"
 	
