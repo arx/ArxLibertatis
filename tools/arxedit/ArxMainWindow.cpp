@@ -17,12 +17,12 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ArxMainWindow.h"
+#include "arxedit/ArxMainWindow.h"
 
 #include <QFileDialog>
 
-#include "CameraManipulator.h"
-#include "ViewportGrid.h"
+#include "arxedit/CameraManipulator.h"
+#include "arxedit/ViewportGrid.h"
 
 #include "core/Config.h"
 
@@ -80,7 +80,7 @@ void ArxMainWindow::initOgre() {
             );
         error += QString::fromStdString(e.getFullDescription().c_str());
 
-        qCritical(error.toAscii());
+        qCritical("%s", error.toAscii().constData());
         showErrorMessageBox(error);
 
         //Not much else we can do here...

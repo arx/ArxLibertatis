@@ -19,30 +19,25 @@
 
 #include <QtGui/QApplication>
 
-
-
-
-
 #include <stdio.h>
-#include <tchar.h>
 #include <fstream>
 
+#include "platform/Platform.h"
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <tchar.h>
+#endif
 
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Startup.h"
 
-
 #include "io/fs/FilePath.h"
-#include "io/fs/FileSystem.h"
+#include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 #include "io/log/FileLogger.h"
 #include "io/resource/PakReader.h"
 
-
-
-#include "ArxMainWindow.h"
-
+#include "arxedit/ArxMainWindow.h"
 
 static const char * default_paks[][2] = {
 	{ "data.pak", NULL },
@@ -116,22 +111,22 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ARX_UNUSED(nCmdShow);
 	Q_INIT_RESOURCE(ArxEdit);
 	QApplication app(__argc, __argv);
-
+	
 #else
 int main(int argc, char **argv) {
 	Q_INIT_RESOURCE(ArxEdit);
 	QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 	QApplication app(argc, argv);
 #endif
-
+	
 	Logger::init();
-
+	
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 	parseCommandLine(argc, argv);
 #else
 	parseCommandLine(lpCmdLine);
 #endif
-
+	
 	// Initialize config first, before anything else.
 	fs::path configFile = config.paths.config / "cfg.ini";
 	
@@ -140,16 +135,16 @@ int main(int argc, char **argv) {
 	
 	// Also initialize the logging system early as we might need it.
 	Logger::configure(config.misc.debug);
-
+	
 	// Now that data directories are initialized, create a log file.
 	Logger::add(new logger::File(config.paths.user / "arxedit.log"));
-
+	
 	addPaks();
-
+	
 	ArxMainWindow w;
 	w.initScene();
-    w.show();
-   
-    return app.exec();
+	w.show();
+	
+	return app.exec();
 }
 

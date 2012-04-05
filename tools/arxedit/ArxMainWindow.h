@@ -26,9 +26,9 @@
 #include <QtCore/QTimer>
 
 #include "ui_ArxMainWindow.h"
-#include "RenderWidget.h"
 
-#include "ArxLevel.h"
+#include "arxedit/RenderWidget.h"
+#include "arxedit/ArxLevel.h"
 
 class ArxMainWindow : public QMainWindow
 {

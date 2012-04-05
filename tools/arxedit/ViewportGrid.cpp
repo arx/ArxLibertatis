@@ -26,13 +26,16 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 // Includes
-#include "ViewportGrid.h"
-#include <Ogre/OgreManualObject.h>
-#include <Ogre/OgreViewport.h>
-#include <Ogre/OgreRenderTarget.h>
-#include <Ogre/OgreSceneManager.h>
-#include <Ogre/OgreStringConverter.h>
-#include <Ogre/OgreMaterialManager.h>
+
+#include "arxedit/ViewportGrid.h"
+
+#include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreViewport.h>
+#include <OGRE/OgreRenderTarget.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreStringConverter.h>
+#include <OGRE/OgreMaterialManager.h>
+
 using namespace Ogre;
 
 // Constants
@@ -264,23 +267,21 @@ void ViewportGrid::update()
 	m_forceUpdate = false;
 }
 
-void ViewportGrid::updateOrtho()
-{
+void ViewportGrid::updateOrtho() {
+	
 	// Screen dimensions
 	int width = m_pViewport->getActualWidth();
-	int height = m_pViewport->getActualHeight();
-
+	
 	// Camera information
 	Camera *pCamera = m_pViewport->getCamera();
 	const Vector3 &camPos = pCamera->getPosition();
-	Vector3 camDir = pCamera->getDirection();
 	Vector3 camUp = pCamera->getUp();
 	Vector3 camRight = pCamera->getRight();
-
+	
 	// Translation in grid space
 	Real dx = camPos.dotProduct(camRight);
 	Real dy = camPos.dotProduct(camUp);
-
+	
 	// Frustum dimensions
 	// Note: Tan calculates the opposite side of a _right_ triangle given its angle, so we make sure it is one, and double the result
 	Real worldWidth = 2 * Math::Tan(pCamera->getFOVy() / 2) * pCamera->getAspectRatio() * pCamera->getNearClipDistance();
@@ -289,14 +290,13 @@ void ViewportGrid::updateOrtho()
 	Real worldRight = dx + worldWidth / 2;
 	Real worldBottom = dy - worldHeight / 2;
 	Real worldTop = dy + worldHeight / 2;
-
+	
 	// Conversion values (note: same as working with the height values)
 	Real worldToScreen = width / worldWidth;
-	Real screenToWorld = worldWidth / width;
-
+	
 	//! @todo Treshold should be dependent on window width/height (min? max?) so there are no more then m_division full alpha-lines
 	static const int treshold = 10; // Treshhold in pixels
-
+	
 	// Calculate the spacing multiplier
 	Real mult = 0;
 	int exp = 0;

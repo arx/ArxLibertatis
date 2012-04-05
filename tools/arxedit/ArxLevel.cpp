@@ -17,7 +17,7 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ArxLevel.h"
+#include "arxedit/ArxLevel.h"
 
 // STD
 #include <vector>
@@ -31,6 +31,7 @@
 // Ogre
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreEntity.h>
+#include <OGRE/OgreMaterialManager.h>
 
 #include "core/Config.h"
 
@@ -173,7 +174,7 @@ bool Level::load(const fs::path& levelFile) {
 	static int iNbRooms = 0;
 	for(std::vector<Arx::RoomData>::iterator itRoom = rooms.begin(); itRoom != rooms.end(); ++itRoom, iNbRooms++) {
 		int iNbMaterials = 0;
-		for(std::map<Arx::s32, std::vector<Arx::u32>>::iterator itMaterial = itRoom->materialPolygons.begin(); itMaterial != itRoom->materialPolygons.end(); ++itMaterial, ++iNbMaterials) {
+		for(std::map< Arx::s32, std::vector<Arx::u32> >::iterator itMaterial = itRoom->materialPolygons.begin(); itMaterial != itRoom->materialPolygons.end(); ++itMaterial, ++iNbMaterials) {
 
 			Ogre::ResourceManager::ResourceCreateOrRetrieveResult ret = Ogre::MaterialManager::getSingleton().createOrRetrieve(fastTextureInfosLookup[itMaterial->first]->fic, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 			Ogre::MaterialPtr mat = ret.first;

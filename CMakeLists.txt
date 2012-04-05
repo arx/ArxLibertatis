@@ -965,7 +965,7 @@ if(BUILD_TOOLS)
 	add_executable_shared(arxunpak "" "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}" "")
 	
 	
-	find_package(Ogre)
+	find_package(OGRE)
 	
 	if(OGRE_FOUND AND OGRE_RenderSystem_GL_FOUND)
 		set(arxedit_SOURCES

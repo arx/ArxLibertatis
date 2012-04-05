@@ -21,73 +21,78 @@
 #define ARX_TOOLS_ARXEDIT_RENDERWIDGET_H
 
 // Ogre
-#include <Ogre/OgreCommon.h>
-#include <Ogre/OgreRoot.h>
-#include <Ogre/OgreRenderWindow.h>
+#include <OGRE/OgreCommon.h>
+#include <OGRE/OgreRoot.h>
+#include <OGRE/OgreRenderWindow.h>
 
 // Qt
 #include <QWidget>
 #include <QFrame>
 
-class RenderWidget : public QWidget {
-	Q_OBJECT
+#include "platform/Platform.h"
 
+class RenderWidget : public QWidget {
+	
+	Q_OBJECT
+	
 public:
+	
 	RenderWidget(QWidget* parent=0, Qt::WindowFlags f=0);
 	~RenderWidget();
-
+	
 	Ogre::RenderWindow* getOgreRenderWindow() const;
-
+	
 	void initialise(const Ogre::NameValuePairList *miscParams = 0);
-
+	
 protected:
 	QPaintEngine *paintEngine() const;
 	void paintEvent(QPaintEvent* evt);
 	void resizeEvent(QResizeEvent* evt);
-
+	
 public:
 	Ogre::RenderWindow* m_pOgreRenderWindow;
-
+	
 private:
 	bool mIsInitialised;
 };
 
-class EventHandler
-{
-public:	
-	virtual void onKeyPress(QKeyEvent* event) {}
-	virtual void onKeyRelease(QKeyEvent* event) {}
-
-	virtual void onMousePress(QMouseEvent* event) {}
-	virtual void onMouseRelease(QMouseEvent* event) {}
-	virtual void onMouseDoubleClick(QMouseEvent* event) {}
-	virtual void onMouseMove(QMouseEvent* event) {}
-
-	virtual void onWheel(QWheelEvent* event) {}
+class EventHandler {
+	
+public:
+	
+	virtual void onKeyPress(QKeyEvent * event) { ARX_UNUSED(event); }
+	virtual void onKeyRelease(QKeyEvent * event) { ARX_UNUSED(event); }
+	
+	virtual void onMousePress(QMouseEvent * event) { ARX_UNUSED(event); }
+	virtual void onMouseRelease(QMouseEvent * event) { ARX_UNUSED(event); }
+	virtual void onMouseDoubleClick(QMouseEvent * event) { ARX_UNUSED(event); }
+	virtual void onMouseMove(QMouseEvent * event) { ARX_UNUSED(event); }
+	
+	virtual void onWheel(QWheelEvent * event) { ARX_UNUSED(event); }
 };
 
-class EventHandlingRenderWidget : public RenderWidget
-{
+class EventHandlingRenderWidget : public RenderWidget {
+	
 	Q_OBJECT
-
+	
 public:
 	EventHandlingRenderWidget(QWidget* parent=0, Qt::WindowFlags f=0);
 	~EventHandlingRenderWidget();
 
 	void setEventHandler(EventHandler* eventHandler);
 
-	void keyPressEvent(QKeyEvent* event);
-	void keyReleaseEvent(QKeyEvent* event);
+	void keyPressEvent(QKeyEvent * event);
+	void keyReleaseEvent(QKeyEvent * event);
 
-	void mousePressEvent(QMouseEvent* event);
-	void mouseReleaseEvent(QMouseEvent* event);
-	void mouseDoubleClickEvent(QMouseEvent* event);
-	void mouseMoveEvent(QMouseEvent* event);
-
-	void wheelEvent(QWheelEvent* event);
-
+	void mousePressEvent(QMouseEvent * event);
+	void mouseReleaseEvent(QMouseEvent * event);
+	void mouseDoubleClickEvent(QMouseEvent * event);
+	void mouseMoveEvent(QMouseEvent * event);
+	
+	void wheelEvent(QWheelEvent * event);
+	
 private:
-	EventHandler* mEventHandler;
+	EventHandler * mEventHandler;
 };
 
 #endif // ARX_TOOLS_ARXEDIT_RENDERWIDGET_H

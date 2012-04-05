@@ -20,10 +20,11 @@
 #ifndef ARX_TOOLS_ARXEDIT_CAMERAMANIPULATOR_H
 #define ARX_TOOLS_ARXEDIT_CAMERAMANIPULATOR_H
 
-#include <QKeyEvent>
-
-#include <Ogre/Ogre.h>
 #include <limits>
+
+#include <OGRE/Ogre.h>
+
+#include <QKeyEvent>
 
 #include "RenderWidget.h"
 
@@ -124,26 +125,27 @@ public:
 		}
 	}
 
-	void onMousePress(QMouseEvent* event) {
+	void onMousePress(QMouseEvent * event) {
 		mLastPos = event->globalPos();
-		QApplication::setOverrideCursor(QCursor( Qt::BlankCursor ));
+		QApplication::setOverrideCursor(QCursor(Qt::BlankCursor));
 	}
 
-	void onMouseRelease(QMouseEvent* event) {
+	void onMouseRelease(QMouseEvent * event) {
+		ARX_UNUSED(event);
 		QApplication::restoreOverrideCursor();
 	}
 	
-	void onMouseMove(QMouseEvent* event) {		
+	void onMouseMove(QMouseEvent* event) {
 		QPoint newPos = event->globalPos();
 		QPoint relMove(newPos - mLastPos);
 		mCamera->yaw(Ogre::Degree(-relMove.x() * 0.10f));
 		mCamera->pitch(Ogre::Degree(-relMove.y() * 0.10f));
 		QCursor::setPos(mLastPos);
 	}
-
+	
 protected:
 	Ogre::Camera* mCamera;
-
+	
 	Ogre::Real mTopSpeed;
 	Ogre::Vector3 mVelocity;
 	bool mGoingForward;
@@ -153,7 +155,7 @@ protected:
 	bool mGoingUp;
 	bool mGoingDown;
 	bool mFastMove;
-
+	
 	QPoint mLastPos;
 };
 

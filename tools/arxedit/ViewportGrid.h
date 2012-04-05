@@ -29,10 +29,10 @@ THE SOFTWARE.
 #define OGRE_VIEWPORTGRID_H
 
 // Includes
-#include <Ogre/OgreRenderTargetlistener.h>
-#include <Ogre/OgreColourValue.h>
-#include <Ogre/OgreMath.h>
-#include <Ogre/OgreVector3.h>
+#include <OGRE/OgreRenderTargetListener.h>
+#include <OGRE/OgreColourValue.h>
+#include <OGRE/OgreMath.h>
+#include <OGRE/OgreVector3.h>
 
 namespace Ogre
 {
