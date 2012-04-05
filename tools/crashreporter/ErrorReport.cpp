@@ -86,7 +86,6 @@
 
 #include "platform/Architecture.h"
 #include "platform/String.h"
-#include "platform/Thread.h"
 
 ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	: m_RunningTimeSec(0)
