@@ -47,7 +47,6 @@
 #cmakedefine HAVE_PC_CASE_SENSITIVE
 #cmakedefine HAVE_NAME_MAX
 #cmakedefine HAVE_SCHED_GETSCHEDULER
-#cmakedefine HAVE_SYS_STAT_H
 #cmakedefine HAVE_UNAME
 #cmakedefine HAVE_GETRUSAGE
 #cmakedefine HAVE_POPEN
