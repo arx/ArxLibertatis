@@ -231,35 +231,39 @@ ArxGame::ArxGame() : wasResized(false) { }
 ArxGame::~ArxGame() {
 }
 
-bool ArxGame::Initialize()
-{
+bool ArxGame::Initialize() {
+	
 	bool init = Application::Initialize();
 	if(!init) {
 		return false;
 	}
-
+	
 	init = InitInput();
 	if(!init) {
+		LogCritical << "Failed to initialize the input subsystem.";
 		return false;
 	}
 	
 	init = InitSound();
 	if(!init) {
+		LogCritical << "Failed to initialize the sound subsystem.";
 		return false;
 	}
-
+	
 	init = InitGameData();
 	if(!init) {
+		LogCritical << "Failed to initialize the game data.";
 		return false;
 	}
-
+	
 	init = initLocalisation();
 	if(!init) {
+		LogCritical << "Failed to initialize the localisation subsystem.";
 		return false;
 	}
-
+	
 	Create();
-
+	
 	return true;
 }
 
@@ -385,7 +389,7 @@ bool ArxGame::InitWindow() {
 	}
 	
 	if(!m_MainWindow) {
-		LogError << "no working windowing framework available";
+		LogCritical << "Graphics initialization failed.";
 		return false;
 	}
 	
@@ -397,7 +401,7 @@ bool ArxGame::InitInput() {
 	LogDebug("Input init");
 	bool init = ARX_INPUT_Init();
 	if(!init) {
-		LogError << "Input init failed";
+		LogCritical << "Input initialization failed.";
 	}
 	
 	return init;
@@ -408,7 +412,7 @@ bool ArxGame::InitSound() {
 	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
 	if(!init) {
-		LogWarning << "Sound init failed";
+		LogWarning << "Sound initialization failed.";
 	}
 	
 	return true;
@@ -416,11 +420,9 @@ bool ArxGame::InitSound() {
 
 bool ArxGame::InitGameData() {
 	
-	bool init;
-	
-	init = AddPaks();
+	bool init = AddPaks();
 	if(!init) {
-		LogError << "Error loading pak files";
+		LogCritical << "Error loading pak files";
 		return false;
 	}
 
@@ -478,18 +480,20 @@ bool ArxGame::AddPaks() {
 		if(!found[i]) {
 			if(config.paths.data.empty()) {
 				if(default_paks[i][1]) {
-					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
-					         << " in " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " or "
+					            << default_paks[i][1] << " in " << config.paths.user;
 				} else {
-					LogError << "Unable to find " << default_paks[i][0] << " in " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " in "
+					            << config.paths.user;
 				}
 			} else {
 				if(default_paks[i][1]) {
-					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
-					         << " in either " << config.paths.data << " or " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " or "
+					            << default_paks[i][1] << " in either " << config.paths.data
+					            << " or " << config.paths.user;
 				} else {
-					LogError << "Unable to find " << default_paks[i][0]
-					          << " in either " << config.paths.data << " or " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0]
+					            << " in either " << config.paths.data << " or " << config.paths.user;
 				}
 			}
 			return false;

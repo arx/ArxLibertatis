@@ -47,14 +47,16 @@ public:
 	
 private:
 	
-	static bool InitWindowClass();
+	static bool RegisterWindowClass();
+	static void UnregisterWindowClass();
+
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 	
 	HWND m_hWnd;
 	WNDPROC m_HijackedWindowProc;
 	
 	static WNDCLASS m_WindowClass;
-	static bool m_WindowClassInitialized;
+	static int m_WindowClassRegistered;
 	static std::map<HWND,Win32Window*> m_WindowsMap;
 };
 

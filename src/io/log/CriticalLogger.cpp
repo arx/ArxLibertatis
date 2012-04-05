@@ -17,40 +17,31 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_LOG_FILELOGGER_H
-#define ARX_IO_LOG_FILELOGGER_H
+#include "io/log/CriticalLogger.h"
 
-#include "io/fs/FileStream.h"
-#include "io/log/LogBackend.h"
-#include "platform/CrashHandler.h"
+#include "platform/Dialog.h"
+#include "platform/Platform.h"
+
+#include "core/Config.h"
+#include "core/Version.h"
 
 namespace logger {
 
-/*!
- * Simple logger that prints plain text to standard output.
- */
-class File : public Backend {
-	
-	fs::ofstream ofs;
-	
-public:
-	
-	inline File(const fs::path & path,
-	            std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc)
-		: ofs(path, mode) {
-		CrashHandler::addAttachedFile(path);
+CriticalErrorDialog::~CriticalErrorDialog() {
+	if(!errorString.empty()) {
+		std::string fullText = errorString;
+		if(!config.paths.config.string().empty())
+			fullText += "\n\nYou might want to take a look at arx.log under \"" + config.paths.config.string() + "\" for more details.";
+		dialog::showError(fullText, "Critical Error - " + version);
 	}
+}
+
+void CriticalErrorDialog::log(const Source & file, int line, Logger::LogLevel level, const std::string & str) {
+	ARX_UNUSED(file);
+	ARX_UNUSED(line);
 	
-	void quickShutdown();
-	
-	~File();
-	
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
-	
-	void flush();
-	
-};
+	if(level == Logger::Critical && errorString.empty())
+		errorString = str;
+}
 
 } // namespace logger
-
-#endif // ARX_IO_LOG_FILELOGGER_H

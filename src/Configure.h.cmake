@@ -27,7 +27,6 @@
 // Crash handler
 #cmakedefine HAVE_CRASHHANDLER_POSIX
 #cmakedefine HAVE_CRASHHANDLER_WINDOWS
-#cmakedefine BUGTRACKER_PASSWD
 
 // POSIX / Linux features
 #cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
@@ -42,16 +41,19 @@
 #cmakedefine HAVE_ISATTY
 #cmakedefine HAVE_WORDEXP_H
 #cmakedefine HAVE_FPATHCONF
+#cmakedefine HAVE_PATHCONF
 #cmakedefine HAVE_PC_NAME_MAX
+#cmakedefine HAVE_PC_CASE_SENSITIVE
 #cmakedefine HAVE_NAME_MAX
 #cmakedefine HAVE_SCHED_GETSCHEDULER
-#cmakedefine HAVE_SYS_STAT_H
 #cmakedefine HAVE_UNAME
 #cmakedefine HAVE_GETRUSAGE
 #cmakedefine HAVE_POPEN
 #cmakedefine HAVE_PCLOSE
 #cmakedefine HAVE_SYSCONF
 #cmakedefine HAVE_SIGACTION
+#cmakedefine HAVE_DIRFD
+#cmakedefine HAVE_FSTATAT
 
 // Mac OS X features
 #cmakedefine HAVE_MACH_CLOCK
@@ -93,6 +95,12 @@
 #ifdef CONFIG_DIR_PREFIXES
 #undef CONFIG_DIR_PREFIXES
 #define CONFIG_DIR_PREFIXES "${CONFIG_DIR_PREFIXES}"
+#endif
+
+#cmakedefine CMAKE_INSTALL_FULL_LIBEXECDIR
+#ifdef CMAKE_INSTALL_FULL_LIBEXECDIR
+#undef CMAKE_INSTALL_FULL_LIBEXECDIR
+#define CMAKE_INSTALL_FULL_LIBEXECDIR "${CMAKE_INSTALL_FULL_LIBEXECDIR}"
 #endif
 
 #endif // ARX_CONFIGURE_H

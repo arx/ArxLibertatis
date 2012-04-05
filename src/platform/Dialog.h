@@ -17,40 +17,28 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_LOG_FILELOGGER_H
-#define ARX_IO_LOG_FILELOGGER_H
+#ifndef ARX_PLATFORM_DIALOG_H
+#define ARX_PLATFORM_DIALOG_H
 
-#include "io/fs/FileStream.h"
-#include "io/log/LogBackend.h"
-#include "platform/CrashHandler.h"
+#include <string>
 
-namespace logger {
+namespace dialog {
 
-/*!
- * Simple logger that prints plain text to standard output.
- */
-class File : public Backend {
-	
-	fs::ofstream ofs;
-	
-public:
-	
-	inline File(const fs::path & path,
-	            std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc)
-		: ofs(path, mode) {
-		CrashHandler::addAttachedFile(path);
-	}
-	
-	void quickShutdown();
-	
-	~File();
-	
-	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
-	
-	void flush();
-	
+enum DialogType {
+	DialogInfo,
+	DialogWarning,
+	DialogError,
+	DialogYesNo,
+	DialogOkCancel
 };
 
-} // namespace logger
+void showInfo(const std::string& message, const std::string& dialogTitle = "Information");
+void showWarning(const std::string& message, const std::string& dialogTitle = "Warning");
+void showError(const std::string& message, const std::string& dialogTitle = "Error");
+		
+bool askYesNo(const std::string& question, const std::string& dialogTitle = "Yes/No?");
+bool askOkCancel(const std::string& question, const std::string& dialogTitle = "Ok/Cancel?");
 
-#endif // ARX_IO_LOG_FILELOGGER_H
+}
+
+#endif // ARX_PLATFORM_DIALOG_H

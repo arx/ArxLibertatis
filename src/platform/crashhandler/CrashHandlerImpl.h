@@ -24,6 +24,15 @@
 #include <string>
 #include <vector>
 
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_BSD || ARX_PLATFORM == ARX_PLATFORM_MACOSX
+// Some versions of boost/interprocess/shared_memory_object.hpp are
+// missing includes needed for BSD-kernel-specific code:
+#include <sys/types.h>
+#include <sys/time.h>
+#endif
+
 // BOOST
 #define BOOST_DATE_TIME_NO_LIB
 #include <boost/version.hpp>
@@ -37,9 +46,6 @@
 #pragma GCC diagnostic pop
 #endif
 #include <boost/lexical_cast.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 
 #include "io/log/Logger.h"
 #include "io/fs/FilePath.h"
@@ -76,9 +82,10 @@ private:
 	
 protected:
 	virtual void fillBasicCrashInfo();
-
+	
 	std::string m_CrashHandlerApp;
-
+	fs::path m_CrashHandlerPath;
+	
 	// Memory shared to the crash reporter.
 	boost::interprocess::shared_memory_object m_SharedMemory;
 	boost::interprocess::mapped_region m_MemoryMappedRegion;

@@ -74,6 +74,14 @@ long specialstrcmp(const std::string & text, const std::string & seek);
 
 void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
+/**
+ * Escape a string containing the specified characters to escape
+ * @param text The string to escape
+ * @param escapeChars String containing the characters you wish to escape
+ * @return The escaped string
+ */
+std::string escapeString(const std::string & text, const char* escapeChars);
+
 
 #ifdef HAVE_WINAPI
 /**

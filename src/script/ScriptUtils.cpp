@@ -477,7 +477,7 @@ size_t initSuppressions() {
 	
 	suppress("hammer_club", 66, "settwohanded"); // obsolete command
 	
-	suppress("human_base", 5872, "loadanim"); // bad animation id: "bae_ready"
+	suppress("human_base", 5872, "loadanim"); // bad animation id: 'bae_ready', should be 'bare_ready'
 	suppress("human_base", 13711, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 13751, "loadanim"); // missing animation "child_get_hit", should be "child_hit"?
 	suppress("human_base", 39089, "teleport"); // variable dying_marker not set
@@ -643,6 +643,8 @@ size_t initSuppressions() {
 	
 	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
 	
+	suppress("sword_mx", 458, "halo"); // unknown flag -a (ignored)
+	
 	suppress("sylib", 832, "timer"); // unknown flag -t (ignored)
 	
 	suppress("timed_lever_0033", 1027, "-smf"); // command wrongly interpreted as event (script parser limitation)
@@ -668,6 +670,10 @@ size_t initSuppressions() {
 	suppress("undead_base_0046", 110, "playanim"); // animation 'wait' not loaded yet
 	
 	suppress("wall_breakable", 523, "}"); // missing accept/refuse before end of event block
+	
+	suppress("wrat_base", 17152, "play"); // sound number is sometimes too high
+	
+	suppress("y_mx", 3106, "loadanim"); // bad animation id: 'bae_ready', should be 'bare_ready'
 	
 	class FakeCommand : public Command {
 		

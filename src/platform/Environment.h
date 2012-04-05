@@ -24,7 +24,7 @@
 
 #include "platform/Platform.h"
 
-std::string expandEvironmentVariables(const std::string & in);
+std::string expandEnvironmentVariables(const std::string & in);
 
 bool getSystemConfiguration(const std::string & name, std::string & result);
 

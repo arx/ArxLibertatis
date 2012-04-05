@@ -42,7 +42,10 @@ md5sum=`which md5sum 2> /dev/null`
 [ -f "$md5sum" ] \
 	|| die "Please install md5sum (http://www.gnu.org/software/coreutils/)"
 
-if [ -f "$cd" ] ; then
+[ -e "$cd" ] || die "$cd does not exist"
+[ -f "$patch" ] || die "$patch does not exist"
+
+if [ ! -d "$cd" ] ; then
 	
 	fuseiso=`which fuseiso 2> /dev/null`
 	fusermount=`which fusermount 2> /dev/null`
@@ -65,12 +68,20 @@ fi
 
 # Verify input file
 
-checksum="$(md5sum "$patch" | sed 's/ .*//')"
-expected='364c405b26d3c480d516724010c7ecac'
-if [ "$checksum" = "$expected" ] 
-	then echo "Checksum matched."
-	else echo "Got checksum $checksum, expected $expected."
-fi
+patch_checksum="$(md5sum "$patch" | sed 's/ .*//')"
+
+case "$patch_checksum" in
+	'e66abe5edb113d3e71194b61010a05f3') patch_lang='english' ;;
+	'5c877cb679674808587c7acc63e29068') patch_lang='spanish' ;;
+	'eb88e3f1be6118f51c544c7b269033d7') patch_lang='french' ;;
+	'b9941fd97f2b831806b43e20e014973b') patch_lang='german' ;;
+	'a3135aaa71363deec2e72aa8184f48da') patch_lang='italian' ;;
+	'00dfbd2698786a298899f148b02fcaea') patch_lang='russian' ;;
+	'364c405b26d3c480d516724010c7ecac') patch_lang='multilang' ;;
+	*) die "Patch checksum mismatch, got $patch_checksum!" ;;
+esac
+echo "Patch language: $patch_lang
+"
 
 # Prepare output and temp dirs
 
@@ -80,7 +91,7 @@ tempdir="$destdir/arx-install-cd-temp"
 srcdir="$tempdir/src"
 patchdir="$tempdir/patch"
 
-if [ -f "$cd" ] ; then
+if [ ! -d "$cd" ] ; then
 	iso="$cd"
 	cd="$tempdir/cd"
 fi
@@ -99,9 +110,7 @@ cd "$tempdir" || exit 1
 
 # Mount / extract CD image
 
-[ -e "$cd" ] || [ -f "$iso" ] || die "CD image / mount point $cd does not exist!"
-
-if [ -f "$iso" ] ; then
+if [ ! -d "$cd" ] ; then
 	
 	mkdir "$cd"
 	
@@ -140,19 +149,32 @@ fi
 
 cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} ';'
 
-lang=""
-lang_checksum=`find . -iname "data.pak" -exec "$md5sum" {} ';' | sed "s/ .*//g"`
+speech_checksum=`find . -iname "speech.pak" -exec "$md5sum" {} ';' | sed "s/ .*//g"`
 
-[ "$lang_checksum" = "a88d239dc7919ab113ff45483cb4ad46" ] || lang="english"
-[ "$lang_checksum" = "a91a0b39a046233debbb10b4850e13eb" ] || lang="german"
-# TODO add support for other languages
+case "$speech_checksum" in
+	'4e8f962d8204bcfd79ce6f3226d6d6de') data_lang='english' ; checksum_lang='en' ;;
+	'4c3fdb1f702700255924afde49081b6e') data_lang='german' ; checksum_lang='de' ;;
+	# TODO add support for spanish, french, italian and russian
+	*) data_lang="" ;;
+esac
 
-if [ "$lang" = "" ] ;
+if [ "$data_lang" = "" ] ;
 	then
+		echo "
+
+WARNING: The localisation of your data files is not supported.
+speech.pak checksum: $speech_checksum
+"
+		[ "$patch_lang" != "multilang" ] \
+			|| die "Please use the localised version of the 1.21 patch for your language and re-run this script and then add the resulting checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums"
 		cd "$patchdir" && "$innoextract" --lowercase "$patch"
 	else
-		echo "Detected language: $lang"
-		cd "$patchdir" && "$innoextract" --lowercase --language="$lang" "$patch"
+		echo "
+Data language: $data_lang
+"
+		[ "$patch_lang" = "multilang" ] || [ "$patch_lang" = "$data_lang" ] \
+			|| die "Patch language ($patch_lang) does not match data language ($data_lang)!"
+		cd "$patchdir" && "$innoextract" --lowercase --language="$data_lang" "$patch"
 fi
 
 # Install required files
@@ -235,22 +257,34 @@ Done:"
 cd "$destdir"
 checksums=`"$md5sum" "$@" 2> /dev/null`
 
-checksums_en="$(cat "$here/data-en.md5")" || die "Could not read data-en.md5"
-checksums_de="$(cat "$here/data-de.md5")" || die "Could not read data-de.md5"
+if [ "$checksum_lang" = "" ] ; then
+	echo "
 
-[ "$checksums" = "$checksums_en" ] || [ "$checksums" = "$checksums_de" ] || die "
+Got checksums:
+
+$checksums
+
+WARNING: The language of your of your data files is not support by this script.
+
+If you used the MULTILANG version of the 1.21 patch, re-run this script with the language-specific version of the patch.
+
+If you used the language-specific version of the 1.21 patch, please add the above checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums so that they can be included in future versions of this script."
+	exit
+fi
+
+[ -f "$here/data-$checksum_lang.md5" ] || die "Missing data-$checksum_lang.md5"
+
+expected_checksums="$(cat "$here/data-$checksum_lang.md5")"
+
+[ "$checksums" = "$expected_checksums" ] || die "
 Checksum mismatch, expected
 
-$checksums_en
-
- or
-
-$checksums_de
+$expected_checksums
 
  got
 
 $checksums
 
-If you installed a laguage other than english or german and the game runs fine, please add the above checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums so that they can be included in future versions of this script."
+ERROR: Checksum mismatch."
 
 echo "Checksum match."

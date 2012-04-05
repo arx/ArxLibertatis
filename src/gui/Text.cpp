@@ -296,7 +296,7 @@ bool ARX_Text_Init() {
 	if(!resources->getFile(file)) {
 		file = "misc/arx_default.ttf";
 		if(!resources->getFile(file)) {
-			LogError << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
+			LogCritical << "Missing font file: need either misc/arx.ttf or misc/arx_default.ttf.";
 			return false;
 		}
 	}

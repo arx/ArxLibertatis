@@ -39,7 +39,7 @@ endif(WIN32)
 mark_as_advanced(GLEW_INCLUDE_DIR)
 mark_as_advanced(GLEW_LIBRARY)
 
-# handle the QUIETLY and REQUIRED arguments and set GLEW_FOUND to TRUE if 
+# handle the QUIETLY and REQUIRED arguments and set GLEW_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GLEW DEFAULT_MSG GLEW_LIBRARY GLEW_INCLUDE_DIR)

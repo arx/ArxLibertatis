@@ -38,7 +38,7 @@ static void print_help() {
 	cout << " - extract <savefile>" << endl;
 	cout << " - add <savefile> [<files>...]" << endl;
 	cout << " - fix <savefile>" << endl;
-	cout << " - view <savefile> <ident>" << endl;
+	cout << " - view <savefile> [<ident>]" << endl;
 }
 
 static int main_extract(SaveBlock & save, int argc, char ** argv) {

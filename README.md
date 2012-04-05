@@ -25,12 +25,12 @@ Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis
 
 ## Dependencies
 
-* **CMake 2.8** (compile-time only)
-* **DevIL**
+* **CMake 2.8**+ (compile-time only, 2.8.5+ under Windows)
+* **DevIL 1.7**+
 * **zlib**
-* **Boost 1.39** or newer (headers, `program_options` library)
+* **Boost 1.39**+ (headers, `program_options` library)
 * **Freetype**
-* **OpenAL 1.1** or newer *and/or* **DirectSound 9**
+* **OpenAL 1.1**+ *and/or* **DirectSound 9**
 
 Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** or newer including the `filesystem` and `system` libraries.
 
@@ -39,8 +39,8 @@ Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** 
 There are rendering backends for both OpenGL and Direct3D. You need either:
 
 * **SDL 1.2**
-* **OpenGL 1.5** or newer (OpenGL 2.1 or newer is recommended)
-* **GLEW**
+* **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
+* **GLEW 1.5.2**+
 
 *and/or*
 
@@ -82,7 +82,6 @@ Build options:
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
-* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis.
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
@@ -94,6 +93,20 @@ Windows-only options (always OFF for non-windows platforms):
 * `USE_DSOUND` (default=ON): Build the DirectSound audio backend
 * `USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
 * `USE_DINPUT8` (default=ON): Build the DirectInput 8 input backend
+
+Install options:
+
+* `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis
+
+Linux-only install options (absolute or relative to `CMAKE_INSTALL_PREFIX`):
+
+* `CMAKE_INSTALL_DATAROOTDIR` (default: `share`): Where to install data files
+* `ICONDIR` (default: `DATAROOTDIR/pixmaps`): Where to install icons
+* `APPDIR` (default: `DATAROOTDIR/applications`): Where to install .desktop files
+* `CMAKE_INSTALL_MANDIR` (default: `DATAROOTDIR/man`): Where to install man pages
+* `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
+* `GAMESBINDIR` (default: BINDIR): Where to install game executables
+* `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
 
 Set options by passing `-D<option>=<value>` to cmake.
 
@@ -127,7 +140,7 @@ Run from the directory containing the .pak files (or from anywhere in case of a 
 
     $ arx
 
-The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase.
+The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase - you can use the install-copy script.
 
 You can close it with `Alt + F4` or `killall arx`
 
@@ -145,8 +158,9 @@ You can close it with `Alt + F4` or `killall arx`
 
 The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively:
 
-* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
 * `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
+* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`
+* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
 * `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
 
 `install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and `install-gog` needs just [innoextract](http://innoextract.constexpr.org/).

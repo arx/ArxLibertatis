@@ -17,8 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_IO_LOG_FILELOGGER_H
-#define ARX_IO_LOG_FILELOGGER_H
+#ifndef ARX_IO_LOG_CRITICALLOGGER_H
+#define ARX_IO_LOG_CRITICALLOGGER_H
 
 #include "io/fs/FileStream.h"
 #include "io/log/LogBackend.h"
@@ -27,30 +27,19 @@
 namespace logger {
 
 /*!
- * Simple logger that prints plain text to standard output.
+ * Logger that displays an error dialog on shutdown for the first critical error.
  */
-class File : public Backend {
+class CriticalErrorDialog : public Backend {
 	
-	fs::ofstream ofs;
+	std::string errorString;
 	
 public:
 	
-	inline File(const fs::path & path,
-	            std::ios_base::openmode mode = std::ios_base::out | std::ios_base::trunc)
-		: ofs(path, mode) {
-		CrashHandler::addAttachedFile(path);
-	}
-	
-	void quickShutdown();
-	
-	~File();
+	~CriticalErrorDialog();
 	
 	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
-	
-	void flush();
-	
 };
 
 } // namespace logger
 
-#endif // ARX_IO_LOG_FILELOGGER_H
+#endif // ARX_IO_LOG_CRITICALLOGGER_H

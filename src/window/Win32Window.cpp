@@ -34,19 +34,27 @@
 #define IDI_MAIN 106
 
 WNDCLASS Win32Window::m_WindowClass;
-bool Win32Window::m_WindowClassInitialized = false;
+int Win32Window::m_WindowClassRegistered = 0;
 std::map<HWND,Win32Window*>  Win32Window::m_WindowsMap;
+const char* ARX_WINDOW_CLASS = "ARX_WINDOW_CLASS";
 
 Win32Window::Win32Window()
 	: m_hWnd(NULL)
 	, m_HijackedWindowProc(0) {
 }
 
-Win32Window::~Win32Window() {
+Win32Window::~Win32Window() {	
+	if(m_hWnd)
+		DestroyWindow(m_hWnd);
+
+	UnregisterWindowClass();
 }
 
-bool Win32Window::InitWindowClass() {
-	if( m_WindowClassInitialized )
+bool Win32Window::RegisterWindowClass() {
+
+	m_WindowClassRegistered++;
+
+	if(m_WindowClassRegistered != 1)
 		return true;
 
 	memset( &m_WindowClass, 0, sizeof(m_WindowClass) );
@@ -58,19 +66,31 @@ bool Win32Window::InitWindowClass() {
 	m_WindowClass.hCursor  = LoadCursor(NULL, IDC_ARROW);
 	m_WindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 	m_WindowClass.lpszMenuName = MAKEINTRESOURCE(NULL);
-	m_WindowClass.lpszClassName = "ARX_WINDOW_CLASS";
+	m_WindowClass.lpszClassName = ARX_WINDOW_CLASS;
 	m_WindowClass.hIcon   = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MAIN));
 
 	// Register our window class.
-	m_WindowClassInitialized = RegisterClass(&m_WindowClass) != 0;
+	bool ret = RegisterClassA(&m_WindowClass) != 0;
 
-	return m_WindowClassInitialized;
+	return ret;
+}
+
+void Win32Window::UnregisterWindowClass() {
+	m_WindowClassRegistered--;
+
+	if(m_WindowClassRegistered != 0)
+		return;
+
+	UnregisterClassA(ARX_WINDOW_CLASS, GetModuleHandle(0));
+
+	m_WindowsMap.clear();
 }
 
 bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth) {
 	ARX_UNUSED(depth);
 	
-	if(!InitWindowClass()) {
+	if(!RegisterWindowClass()) {
+		LogError << "Failed to register the Win32 window class";
 		return false;
 	}
 
@@ -81,6 +101,7 @@ bool Win32Window::init(const std::string & title, Vec2i size, bool fullscreen, u
 
 	SetRect(&rcWnd, 0, 0, size.x, size.y);
 	if(AdjustWindowRectEx(&rcWnd, windowStyle, GetMenu(m_hWnd) != NULL, windowExtendedStyle) != TRUE) {
+		LogError << "AdjustWindowRectEx() failed";
 		return false;
 	}
 	
@@ -155,19 +176,16 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent when an application requests that a window be created.
 	case WM_CREATE:
 		currentWindow->OnCreate();
-		bProcessed = true;
 		break;
 
 	// Paint the window's client area.
 	case WM_PAINT:
 		currentWindow->OnPaint();
-		bProcessed = true;
 		break;
 
 	// Sent after a window has been moved.
 	case WM_MOVE:
 		currentWindow->OnMove( (short)LOWORD(lParam), (short)HIWORD(lParam) );
-		bProcessed = true;
 		break;
 
 	// Sent to a window after its size has changed.
@@ -193,13 +211,11 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Sent to both the window being activated and the window being deactivated.
 	case WM_ACTIVATE:
 		currentWindow->OnFocus( LOWORD(wParam) != WA_INACTIVE );
-		bProcessed = true;
 		break;
 
 	// Sent when the window is about to be hidden or shown.
 	case WM_SHOWWINDOW:
 		currentWindow->OnShow( wParam == TRUE );
-		bProcessed = true;
 		break;
 
 	// Sent just before a window is destroyed.
@@ -207,7 +223,7 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 	// Window is about to be destroyed, clean up window-specific data objects.
 	case WM_DESTROY:
 		currentWindow->OnDestroy();
-		bProcessed = true;
+		currentWindow->m_hWnd = NULL;
 		break;
 
 	// Sent as a signal that a window or an application should terminate.
@@ -246,11 +262,18 @@ LRESULT CALLBACK Win32Window::WindowProc( HWND hWnd, UINT iMsg, WPARAM wParam, L
 void Win32Window::tick() {
 	MSG msg;
 
+	// Check if window was destroyed...
+	arx_assert(m_hWnd != NULL);
+
 	if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
 	{
 		TranslateMessage( &msg );
 		DispatchMessage( &msg ); // Send message to the WindowProc.
 	}
+
+	// Check if window was destroyed...
+	if(m_hWnd == NULL)
+		return;
 
 	if(HasFocus() && !IsFullScreen())
 		updateSize();

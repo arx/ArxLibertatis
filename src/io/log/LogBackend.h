@@ -44,7 +44,9 @@ public:
 	
 	virtual void log(const Source & file, int line, Logger::LogLevel level, const std::string & str) = 0;
 	
-	virtual void flush() = 0;
+	virtual void flush() { }
+	
+	virtual void quickShutdown() { }
 	
 	/*!
 	 * Format a log entry for a text-based logging backend.

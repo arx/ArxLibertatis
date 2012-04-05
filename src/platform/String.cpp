@@ -23,6 +23,9 @@
 #include <algorithm>
 #include <sstream>
 
+#include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
+
 using std::string;
 using std::transform;
 
@@ -88,4 +91,23 @@ void SAFEstrcpy(char * dest, const char * src, unsigned long max) {
 	} else {
 		strcpy(dest, src);
 	}
+}
+
+struct character_escaper
+{
+    template<typename FinderT>
+    std::string operator()(const FinderT& match) const
+    {
+        std::string s;
+        for (typename FinderT::const_iterator i = match.begin(); i != match.end(); i++) {
+            s += std::string("\\") + *i;
+        }
+        return s;
+    }
+};
+
+std::string escapeString(const std::string & str, const char* escapeChars) {
+	std::string escapedStr(str);
+	boost::find_format_all(escapedStr, boost::token_finder(boost::is_any_of(escapeChars)), character_escaper());
+	return escapedStr;
 }

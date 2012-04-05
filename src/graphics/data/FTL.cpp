@@ -561,13 +561,19 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		// Copy in the texture containers
 		for(long i = 0; i < af3Ddh->nb_maps; i++) {
 			
-			const Texture_Container_FTL * tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
+			const Texture_Container_FTL * tex;
+			tex = reinterpret_cast<const Texture_Container_FTL *>(dat + pos);
 			pos += sizeof(Texture_Container_FTL);
 			
-			res::path name = res::path::load(safestring(tex->name)).remove_ext();
-			
-			// Create the texture and put it in the container list
-			obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
+			if(tex->name[0] == '\0') {
+				// Some object files contain textures with empty names
+				// Don't bother trying to load them as that will just generate an error message
+				obj->texturecontainer[i] = NULL;
+			} else {
+				// Create the texture and put it in the container list
+				res::path name = res::path::load(safestring(tex->name)).remove_ext();
+				obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
+			}
 		}
 	}
 	
