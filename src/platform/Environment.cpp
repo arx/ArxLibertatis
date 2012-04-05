@@ -249,23 +249,24 @@ static bool try_readlink(std::vector<char> & buffer, const char * path) {
 std::string getExecutablePath() {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+	
 	uint32_t bufsize = 0;
 	
 	// Obtain required size
 	_NSGetExecutablePath(NULL, &bufsize);
 	
-	char exepath[bufsize];
-	if(_NSGetExecutablePath(exepath, &bufsize) == 0) {
+	std::vector<char> exepath(bufsize);
+	
+	if(_NSGetExecutablePath(&exepath.front(), &bufsize) == 0) {
 		char exerealpath[MAXPATHLEN];
-		if(realpath(exepath, exerealpath)) {
+		if(realpath(&exepath.front(), exerealpath)) {
 			return exerealpath;
 		}
 	}
 	
 #elif defined(HAVE_READLINK)
 	
-	std::vector<char> buffer;
-	buffer.resize(1024);
+	std::vector<char> buffer(1024);
 	
 	if(try_readlink(buffer, "/proc/self/exe")) {
 		return std::string(buffer.begin(), buffer.end());
