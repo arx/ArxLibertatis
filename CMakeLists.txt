@@ -667,7 +667,6 @@ set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
-	src/io/Blast.cpp
 	src/io/CinematicLoad.cpp
 	src/io/Implode.cpp
 	src/io/IniReader.cpp
@@ -687,6 +686,7 @@ set(IO_LOGGER_EXTRA_SOURCES
 	src/io/log/CriticalLogger.cpp
 )
 set(IO_RESOURCE_SOURCES
+	src/io/Blast.cpp
 	src/io/resource/PakEntry.cpp
 	src/io/resource/PakReader.cpp
 	src/io/resource/ResourcePath.cpp
@@ -717,8 +717,8 @@ set(PHYSICS_SOURCES
 	src/physics/Physics.cpp
 )
 
+# Basic platform abstraction sources
 set(PLATFORM_SOURCES
-	src/platform/CrashHandler.cpp
 	src/platform/Dialog.cpp
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
@@ -727,12 +727,13 @@ set(PLATFORM_SOURCES
 	src/platform/Thread.cpp
 	src/platform/Time.cpp
 )
-
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	list(APPEND PLATFORM_SOURCES src/platform/Dialog.mm)
 endif()
 
-set(PLATFORM_CRASHHANDLER_SOURCES src/platform/crashhandler/CrashHandlerImpl.cpp)
+# Crash handler sources
+set(PLATFORM_CRASHHANDLER_SOURCES src/platform/CrashHandler.cpp)
+set(PLATFORM_CRASHHANDLER_IMPL_SOURCES  src/platform/crashhandler/CrashHandlerImpl.cpp)
 set(PLATFORM_CRASHHANDLER_POSIX_SOURCES src/platform/crashhandler/CrashHandlerPOSIX.cpp)
 set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
 
@@ -888,12 +889,12 @@ list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
 if(HAVE_CRASHREPORTER)
 	if((HAVE_EXECLP OR HAVE_EXECL) AND HAVE_FORK AND HAVE_KILL)
-		list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_SOURCES})
-		list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
 		set(HAVE_CRASHHANDLER_POSIX 1)
 	elseif(MSVC)
-		list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_SOURCES})
-		list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
 		set(HAVE_CRASHHANDLER_WINDOWS 1)
 		list(APPEND ARX_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
@@ -912,7 +913,7 @@ if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
 
-set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
+set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${PLATFORM_CRASHHANDLER_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(MSVC)
@@ -950,6 +951,9 @@ add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
 if(HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_SOURCES
+		${PLATFORM_SOURCES}
+		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
 		tools/crashreporter/CrashReporter.cpp
 		tools/crashreporter/ErrorReport.h
 		tools/crashreporter/ErrorReport.cpp
@@ -965,9 +969,6 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/tbg/TBG.cpp
 		tools/crashreporter/ui/ErrorReportDialog.h
 		tools/crashreporter/ui/ErrorReportDialog.cpp
-		${PLATFORM_SOURCES}
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
 		"${VERSION_FILE}"
 	)
 	
@@ -1033,17 +1034,14 @@ endif()
 if(BUILD_TOOLS)
 	
 	set(arxsavetool_SOURCES
+		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
 		src/core/Localisation.cpp
-		src/io/Blast.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
-		src/platform/String.cpp
-		src/platform/Platform.cpp
-		src/platform/Lock.cpp
 		tools/savetool/SaveFix.cpp
 		tools/savetool/SaveTool.cpp
 		tools/savetool/SaveView.cpp
@@ -1053,18 +1051,11 @@ if(BUILD_TOOLS)
 	
 	add_executable_shared(arxsavetool "" "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}" "")
 	
-	
 	set(arxunpak_SOURCES
+		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
-		src/io/Blast.cpp
-		src/io/log/ColorLogger.cpp
-		src/io/log/ConsoleLogger.cpp
-		src/io/log/Logger.cpp
-		src/platform/String.cpp
-		src/platform/Platform.cpp
-		src/platform/Lock.cpp
 		tools/unpak/UnPak.cpp
 	)
 	
