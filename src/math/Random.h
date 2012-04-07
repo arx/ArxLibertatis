@@ -77,15 +77,14 @@ struct uniform_real_distribution {
 class Random {
 	
 public:
-	
 	/// Generates a random integer value in the range [intMin, intMax].
-	template <class IntType>
-	static inline IntType get(IntType min = 0, IntType max = std::numeric_limits<IntType>::max());
+	template <typename IntType> static inline IntType get();
+	template <typename IntType> static inline IntType get(IntType min, IntType max);
 	static inline int get(int min = 0, int max = std::numeric_limits<int>::max());
 
 	/// Generates a random floating point value in the range [realMin, realMax).
-	template <class RealType>
-	static inline RealType getf(RealType realMin = RealType(0.0), RealType realMax = RealType(1.0));
+	template <class RealType> static inline RealType getf();
+	template <class RealType> static inline RealType getf(RealType realMin, RealType realMax);
 	static inline float getf(float realMin = 0.0f, float realMax = 1.0f);
 
 	/// Return a random iterator pointing in the range [begin, end).
@@ -120,6 +119,11 @@ IntType Random::get(IntType min, IntType max) {
 	return typename detail::uniform_int_distribution<IntType>::type(min, max)(rng);
 }
 
+template <class IntType>
+IntType Random::get() {
+	return Random::get<IntType>(0, std::numeric_limits<IntType>::max());
+}
+
 int Random::get(int min, int max) {
 	return Random::get<int>(min, max);
 }
@@ -127,6 +131,11 @@ int Random::get(int min, int max) {
 template <class RealType>
 RealType Random::getf(RealType min, RealType max) {
 	return typename detail::uniform_real_distribution<RealType>::type(min, max)(rng);
+}
+
+template <class RealType>
+RealType Random::getf() {
+	return Random::getf<RealType>(RealType(0.0), RealType(1.0));
 }
 
 float Random::getf(float min, float max) {
