@@ -264,7 +264,7 @@ Got checksums:
 
 $checksums
 
-WARNING: The language of your of your data files is not support by this script.
+WARNING: The language of your data files is not support by this script.
 
 If you used the MULTILANG version of the 1.21 patch, re-run this script with the language-specific version of the patch.
 
