@@ -147,9 +147,9 @@ fi
 
 # Extract files
 
-cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} ';'
+cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} \;
 
-speech_checksum=`find . -iname "speech.pak" -exec "$md5sum" {} ';' | sed "s/ .*//g"`
+speech_checksum=`find . -iname "speech*.pak" -exec "$md5sum" {} \; | sed "s/ .*//g"`
 
 case "$speech_checksum" in
 	'4e8f962d8204bcfd79ce6f3226d6d6de') data_lang='english' ; checksum_lang='en' ;;
@@ -231,13 +231,17 @@ for f in "$@" ; do
 	
 	dir="$(dirname "$f")"
 	file="$(basename "$f" | sed 's/[^[:alnum:]_-]/\\&/g')"
+	file_default="$(echo "$file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/g')"
 	
 	mkdir -pv "$destdir/$dir"
 	rm "$dst" > /dev/null 2>&1
 	
-	[ -f "$dst" ] || find "patch" -iname "$file" -exec mv -fv {} "$dst" ';'
-	[ -f "$dst" ] || find "src" -iname "$file" -exec mv -fv {} "$dst" ';'
-	[ -f "$dst" ] || find "$cd" -iname "$file" -exec cp -fv {} "$dst" ';'
+	[ -f "$dst" ] || find "patch" -iname "$file" -exec mv -fv {} "$dst" \;
+	[ -f "$dst" ] || find "src" -iname "$file" -exec mv -fv {} "$dst" \;
+	[ -f "$dst" ] || find "$cd" -iname "$file" -exec cp -fv {} "$dst" \;
+	
+	[ -f "$dst" ] || find "src" -iname "$file_default" -exec mv -fv {} "$dst" \;
+	[ -f "$dst" ] || find "$cd" -iname "$file_default" -exec cp -fv {} "$dst" \;
 	
 	[ -f "$dst" ] && chmod "--reference=$destdir" "$dst" > /dev/null 2>&1
 	[ -f "$dst" ] && chmod -x "$dst" > /dev/null 2>&1

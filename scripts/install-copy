@@ -39,7 +39,7 @@ mkdir -p "$destdir" || exit 1
 
 # Detect language
 
-speech_checksum=`find "$source" -iname "speech.pak" -exec "$md5sum" {} ';' | sed "s/ .*//g"`
+speech_checksum=`find "$source" -iname "speech*.pak" -exec "$md5sum" {} \; | sed "s/ .*//g"`
 
 case "$speech_checksum" in
 	'62ca7b1751c0615ee131a94f0856b389') data_lang='english (demo)' ; checksum_lang='demo' ;;
@@ -114,11 +114,13 @@ for f in "$@" ; do
 	
 	dir="$(dirname "$f")"
 	file="$(basename "$f" | sed 's/[^[:alnum:]_-]/\\&/g')"
+	file_default="$(echo "$file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/g')"
 	
 	mkdir -pv "$destdir/$dir"
 	rm "$dst" > /dev/null 2>&1
 	
-	[ -f "$dst" ] || find "$source" -iname "$file" -exec cp -fv {} "$dst" ';'
+	[ -f "$dst" ] || find "$source" -iname "$file" -exec cp -fv {} "$dst" \;
+	[ -f "$dst" ] || find "$source" -iname "$file_default" -exec cp -fv {} "$dst" \;
 	
 	[ -f "$dst" ] && chmod "--reference=$destdir" "$dst" > /dev/null 2>&1
 	[ -f "$dst" ] && chmod -x "$dst" > /dev/null 2>&1
