@@ -25,11 +25,10 @@ here="$(pwd)"
 echo "Installing Arx Fatalis data from \"$source\" to \"$destdir\".
 "
 
-# Check for required commands
+[ -f "$here/install-common" ] || die "Missing install-common script."
+. "$here/install-common"
 
-md5sum=`which md5sum 2> /dev/null`
-[ -f "$md5sum" ] \
-	|| die "Please install md5sum (http://www.gnu.org/software/coreutils/)"
+# Check for required files
 
 [ -d "$source" ] || die "$source does not exist"
 
@@ -39,74 +38,9 @@ mkdir -p "$destdir" || exit 1
 
 # Detect language
 
-speech_checksum=`find "$source" -iname "speech*.pak" -exec "$md5sum" {} \; | sed "s/ .*//g"`
-
-case "$speech_checksum" in
-	'4e8f962d8204bcfd79ce6f3226d6d6de') data_lang='english' ; checksum_lang='en' ;;
-	'4c3fdb1f702700255924afde49081b6e') data_lang='german' ; checksum_lang='de' ;;
-	'81f05dea47c52d43f01c9b44dd8fe962') data_lang='italian' ; checksum_lang='it' ;;
-	# TODO add support for spanish, french and russian
-	'') die "speech.pak not found in $source" ;;
-	*) data_lang="" ;;
-esac
-
-if [ "$data_lang" = "" ] ;
-	then
-		echo "
-The localisation of your data files is not supported.
-speech.pak checksum: $speech_checksum
-"
-	else
-		echo "
-Data language: $data_lang
-"
-fi
+detect_language "$source"
 
 # Install required files
-
-set -- \
-	"arx_handbuch.pdf" \
-	"data2.pak" \
-	"data.pak" \
-	"graph/interface/misc/arkane.bmp" \
-	"graph/interface/misc/quit1.bmp" \
-	"graph/obj3d/textures/fixinter_barrel.jpg" \
-	"graph/obj3d/textures/fixinter_bell.bmp" \
-	"graph/obj3d/textures/fixinter_metal_door.jpg" \
-	"graph/obj3d/textures/fixinter_public_notice.bmp" \
-	"graph/obj3d/textures/item_bread.bmp" \
-	"graph/obj3d/textures/item_club.jpg" \
-	"graph/obj3d/textures/item_long_sword.jpg" \
-	"graph/obj3d/textures/item_mauld_sabre.jpg" \
-	"graph/obj3d/textures/item_mauldsword.jpg" \
-	"graph/obj3d/textures/item_mirror.jpg" \
-	"graph/obj3d/textures/item_ring_casting.bmp" \
-	"graph/obj3d/textures/item_rope.bmp" \
-	"graph/obj3d/textures/item_spell_sheet.jpg" \
-	"graph/obj3d/textures/item_torch2.jpg" \
-	"graph/obj3d/textures/item_torch.jpg" \
-	"graph/obj3d/textures/item_zohark.bmp" \
-	"graph/obj3d/textures/l7_dwarf_[wood]_board08.jpg" \
-	"graph/obj3d/textures/l7_dwarf_[wood]_board80.jpg" \
-	"graph/obj3d/textures/npc_dog.bmp" \
-	"graph/obj3d/textures/npc_pig.bmp" \
-	"graph/obj3d/textures/npc_pig_dirty.bmp" \
-	"graph/obj3d/textures/npc_rat_base.bmp" \
-	"graph/obj3d/textures/npc_rat_base_cm.bmp" \
-	"graph/obj3d/textures/npc_worm_body_part1.jpg" \
-	"graph/obj3d/textures/npc_worm_body_part2.bmp" \
-	"graph/obj3d/textures/[wood]_light_door.jpg" \
-	"loc.pak" \
-	"manual.pdf" \
-	"map.pdf" \
-	"misc/arx_default.ttf" \
-	"misc/arx_russian.ttf" \
-	"misc/arx_taiwanese.ttf" \
-	"misc/arx.ttf" \
-	"misc/logo.avi" \
-	"misc/logo.bmp" \
-	"sfx.pak" \
-	"speech.pak"
 
 for f in "$@" ; do
 	
@@ -127,40 +61,6 @@ for f in "$@" ; do
 	
 done
 
-echo "
-Done:"
-
 # Verify installed files
 
-cd "$destdir"
-checksums=`"$md5sum" "$@" 2> /dev/null`
-
-if [ "$checksum_lang" = "" ] ; then
-	echo "
-
-Got checksums:
-
-$checksums
-
-WARNING: The language of your data files is not support by this script.
-
-Please add make sure you installed the 1.21 patch and add the above checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums so that they can be included in future versions of this script."
-	exit
-fi
-
-[ -f "$here/data-$checksum_lang.md5" ] || die "Missing data-$checksum_lang.md5"
-
-expected_checksums="$(cat "$here/data-$checksum_lang.md5")"
-
-[ "$checksums" = "$expected_checksums" ] || die "
-Checksum mismatch, expected
-
-$expected_checksums
-
- got
-
-$checksums
-
-ERROR: Checksum mismatch - did you install the 1.21 patch?"
-
-echo "Checksum match."
+verify_checksums "$destdir" "$@"
