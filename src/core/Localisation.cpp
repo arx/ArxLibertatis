@@ -120,6 +120,8 @@ bool initLocalisation() {
 		file = autodetectLanguage();
 	} else {
 		
+		LogInfo << "Using language from config file: " << config.language;
+		
 		// Attempt to load localisation for the configured language.
 		std::string filename = "localisation/utext_" + config.language + ".ini";
 		file = resources->getFile(filename);
