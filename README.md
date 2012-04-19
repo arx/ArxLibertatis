@@ -19,7 +19,7 @@ Bug Tracker: [https://bugs.arx-libertatis.org/](https://bugs.arx-libertatis.org/
 
 IRC: \#arxfatalis on irc.freenode.net
 
-Wiki: [http://arx.parpg.net/](http://arx.parpg.net/)
+Wiki: [http://wiki.arx-libertatis.org/](http://wiki.arx-libertatis.org/)
 
 Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)
 
