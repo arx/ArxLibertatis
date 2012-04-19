@@ -75,5 +75,6 @@ rm -rf "$tempdir"
 
 # Verify installed files
 
-detect_language "$destdir"
-verify_checksums "$destdir"
+cd "$destdir"
+detect_language
+verify_checksums

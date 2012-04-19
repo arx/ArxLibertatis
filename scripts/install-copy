@@ -39,7 +39,7 @@ mkdir -p "$destdir" || exit 1
 
 # Detect language
 
-detect_language "$source"
+cd "$source" && detect_language
 
 # Install required files
 
@@ -64,4 +64,4 @@ done
 
 # Verify installed files
 
-verify_checksums "$destdir"
+cd "$destdir" && verify_checksums

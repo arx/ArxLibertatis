@@ -151,7 +151,7 @@ cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} \;
 
 # Detect language
 
-detect_language "$srcdir"
+cd "$srcdir" && detect_language
 
 [ "$patch_lang" = "multilang" ] || [ "$patch_lang" = "$data_lang" ] \
 	|| die "Patch language ($patch_lang) does not match data language ($data_lang)!"
@@ -194,4 +194,4 @@ rm -rf "$tempdir"
 
 # Verify installed files
 
-verify_checksums "$destdir"
+cd "$destdir" && verify_checksums

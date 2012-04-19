@@ -70,9 +70,7 @@ md5sum=`which md5sum 2> /dev/null`
 data_lang='english'
 detect_language() {
 	
-	langdir="$1"
-	
-	speech_checksum=`find "$langdir" -iname "speech*.pak" -exec "$md5sum" -b {} \; | sed "s/ .*//g"`
+	speech_checksum=`find '.' -iname "speech*.pak" -exec "$md5sum" -b {} \; | sed "s/ .*//g"`
 	
 	# check if the checksum is of a known localisation and set data_lang to
 	# the language string to be used with the 1.21 patch installer
@@ -83,7 +81,7 @@ detect_language() {
 		'4edf9f8c799190590b4cd52cfa5f91b1') data_lang='french'  ; loc_checksum='f8fc448fea12469ed94f417c313fe5ea' ;;
 		'81f05dea47c52d43f01c9b44dd8fe962') data_lang='italian' ; loc_checksum='a9e162f2916f5737a95bd8c5bd8a979e' ;;
 		'677163bc319cd1e9aa1b53b5fb3e9402') data_lang='russian' ; loc_checksum='a131bf2398ee70a9c22a2bbffd9d0d99' ;;
-		'') die "speech*.pak not found in $source" ;;
+		'') die "speech*.pak not found in $(pwd)" ;;
 		*) die "unsupported data language - speech*.pak checksum: $speech_checksum" ;;
 	esac
 	
@@ -134,8 +132,6 @@ verify_checksums() {
 	echo "
 Done:"
 	
-	checkdir="$1"
-	cd "$checkdir"
 	checksum_failed=0
 	
 	# Common files
@@ -196,6 +192,7 @@ ERROR: Checksum mismatch."
 }
 
 if [ "$install_verify_sourced" != "1" ] ; then
-	detect_language "$checkdir"
-	verify_checksums "$checkdir"
+	cd "$checkdir"
+	detect_language
+	verify_checksums
 fi
