@@ -25,8 +25,9 @@ here="$(pwd)"
 echo "Installing Arx Fatalis data from \"$source\" to \"$destdir\".
 "
 
-[ -f "$here/install-common" ] || die "Missing install-common script."
-. "$here/install-common"
+[ -f "$here/install-verify" ] || die "Missing install-verify script."
+install_verify_sourced=1
+. "$here/install-verify"
 
 # Check for required files
 
@@ -63,4 +64,4 @@ done
 
 # Verify installed files
 
-verify_checksums "$destdir" "$@"
+verify_checksums "$destdir"

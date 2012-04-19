@@ -27,8 +27,9 @@ here="$(pwd)"
 echo "Installing Arx Fatalis CD data from \"$cd\" to \"$destdir\".
 "
 
-[ -f "$here/install-common" ] || die "Missing install-common script."
-. "$here/install-common"
+[ -f "$here/install-verify" ] || die "Missing install-verify script."
+install_verify_sourced=1
+. "$here/install-verify"
 
 # Check for required commands
 
@@ -67,7 +68,7 @@ fi
 
 # Verify input file
 
-patch_checksum="$("$md5sum" "$patch" | sed 's/ .*//')"
+patch_checksum="$("$md5sum" -b "$patch" | sed 's/ .*//')"
 
 case "$patch_checksum" in
 	'e66abe5edb113d3e71194b61010a05f3') patch_lang='english' ;;
@@ -193,4 +194,4 @@ rm -rf "$tempdir"
 
 # Verify installed files
 
-verify_checksums "$destdir" "$@"
+verify_checksums "$destdir"
