@@ -327,8 +327,10 @@ void Font::Draw(int x, int y, text_iterator itStart, text_iterator itEnd, Color 
 		prevRsbDelta = glyph.rsb_delta;
 		
 		// Draw
-		GRenderer->SetTexture(0, &m_Textures->getTexture(glyph.texture));
-		GRenderer->DrawTexturedRect(((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color);
+		if(glyph.size.x != 0 && glyph.size.y != 0) {
+			GRenderer->SetTexture(0, &m_Textures->getTexture(glyph.texture));
+			GRenderer->DrawTexturedRect(((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color);
+		}
 		
 		// Advance
 		penX += glyph.advance.x;
