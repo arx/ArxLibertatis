@@ -130,8 +130,8 @@ bool Font::insertGlyph(u32 character) {
 		arx_assert(srcBitmap->pitch == srcBitmap->width);
 		
 		// Copy pixels
-		unsigned char* src = srcBitmap->buffer;
-		unsigned char* dst = imgGlyph.GetData();
+		unsigned char * src = srcBitmap->buffer;
+		unsigned char * dst = imgGlyph.GetData();
 		memcpy(dst, src, glyph.size.x * glyph.size.y);
 		
 		Vec2i offset;
@@ -221,7 +221,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	u32 chr;
 	bool changed = false;
 	
-	for(text_iterator it = begin; !read_utf8(it, end, chr); ) {
+	for(text_iterator it = begin; read_utf8(it, end, chr); ) {
 		if(m_Glyphs.find(chr) == m_Glyphs.end()) {
 			if(chr >= 256 && insertGlyph(chr)) {
 				changed = true;
@@ -232,9 +232,8 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	return changed;
 }
 
-Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
+Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end, u32 & chr) {
 	
-	u32 chr;
 	if(!read_utf8(it, end, chr)) {
 		return m_Glyphs.end();
 	}
@@ -301,7 +300,7 @@ void Font::Draw(int x, int y, text_iterator itStart, text_iterator itEnd, Color 
 	for(text_iterator it = itStart; it != itEnd; ) {
 		
 		// Get glyph in glyph map
-		glyph_iterator itGlyph = getNextGlyph(it, itEnd);
+		glyph_iterator itGlyph = getNextGlyph(it, itEnd, chr);
 		if(itGlyph == m_Glyphs.end()) {
 			continue;
 		}
@@ -365,13 +364,12 @@ Vec2i Font::GetTextSize(text_iterator itStart, text_iterator itEnd) {
 	FT_Pos prevRsbDelta = 0;
 	
 	u32 chr;
-	for(text_iterator it = itStart; read_utf8(it, itEnd, chr); ) {
+	for(text_iterator it = itStart; it != itEnd; ) {
 		
-		glyph_iterator itGlyph = m_Glyphs.find(chr);
+		// Get glyph in glyph map
+		glyph_iterator itGlyph = getNextGlyph(it, itEnd, chr);
 		if(itGlyph == m_Glyphs.end()) {
-			if(chr < 256 || !insertGlyph(chr) || (itGlyph = m_Glyphs.find(chr)) == m_Glyphs.end()) {
-				continue;
-			}
+			continue;
 		}
 		
 		const Glyph & glyph = itGlyph->second;

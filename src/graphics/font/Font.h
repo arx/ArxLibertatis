@@ -134,7 +134,7 @@ private:
 	 * Inserts missing glyphs if possible.
 	 * \return a glyph iterator or m_Glyphs.end()
 	 */
-	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end);
+	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end, u32 & chr);
 	
 	class PackedTexture * m_Textures;
 	
