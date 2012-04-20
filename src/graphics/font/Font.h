@@ -72,18 +72,24 @@ public:
 	
 public:
 	
+	typedef std::string::const_iterator text_iterator;
+	
 	const Info & GetInfo() const { return m_Info; }
 	const res::path & GetName() const { return m_Info.m_Name; }
 	unsigned int GetSize() const { return m_Info.m_Size; }
 	
-	void Draw(const Vector2<int> &p, const std::string &str, const Color &color) {
+	void Draw(const Vector2<int> & p, const std::string & str, const Color & color) {
 		Draw(p.x, p.y, str, color);
 	}
-	void Draw(int pX, int pY, const std::string & str, Color color);
-	void Draw(int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, Color color);
+	
+	void Draw(int pX, int pY, const std::string & str, Color color) {
+		Draw(pX, pY, str.begin(), str.end(), color);
+	}
+	
+	void Draw(int pX, int pY, text_iterator itStart, text_iterator itEnd, Color color);
 	
 	Vec2i GetTextSize(const std::string & str);
-	Vec2i GetTextSize(std::string::const_iterator itStart, std::string::const_iterator itEnd);
+	Vec2i GetTextSize(text_iterator itStart, text_iterator itEnd);
 	
 	int GetLineHeight() const;
 	
@@ -97,7 +103,22 @@ private:
 	Font(const res::path & fontFile, unsigned int fontSize, struct FT_FaceRec_ * face);
 	~Font();
 	
-	bool InsertGlyph(unsigned int character);
+	//! Maps the given character to a placeholder glyph
+	void insertPlaceholderGlyph(u32 character);
+	
+	/*!
+	 * Inserts a single glyph
+	 * Always maps the character to a glyph - uses a placeholder if there
+	 * is no glyph for the given character
+	 * \return true if the glyph textures were changed
+	 */
+	bool insertGlyph(u32 character);
+	
+	/*!
+	 * Inserts any missing glyphs for the characters in the UTF-8 string [begin, end)
+	 * \return true if the glyph textures were changed
+	 */
+	bool insertMissingGlyphs(text_iterator begin, text_iterator end);
 	
 private:
 	
@@ -106,6 +127,14 @@ private:
 	
 	struct FT_FaceRec_ * m_FTFace;
 	std::map<unsigned int, Glyph> m_Glyphs;
+	typedef std::map<unsigned int, Glyph>::const_iterator glyph_iterator;
+	
+	/*!
+	 * Parses UTF-8 input and returns the glyph for the first character
+	 * Inserts missing glyphs if possible.
+	 * \return a glyph iterator or m_Glyphs.end()
+	 */
+	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end);
 	
 	class PackedTexture * m_Textures;
 	

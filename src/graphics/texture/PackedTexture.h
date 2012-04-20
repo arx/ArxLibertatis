@@ -21,9 +21,11 @@
 #define ARX_GRAPHICS_TEXTURE_PACKEDTEXTURE_H
 
 #include <vector>
+#include <stddef.h>
 
 #include "graphics/image/Image.h"
 #include "math/Rectangle.h"
+#include "math/Vector2.h"
 
 class Texture2D;
 
@@ -31,20 +33,21 @@ class PackedTexture {
 	
 public:
 	
-	PackedTexture(unsigned int pSize, Image::Format pFormat);
+	PackedTexture(unsigned int textureSize, Image::Format pFormat);
 	~PackedTexture();
 	
-	void ClearAll();
+	//! Reset the packed texture - remove all images
+	void clear();
 	
-	void BeginPacking();
-	void EndPacking();
+	//! Upload changed textures
+	void upload();
 	
-	bool InsertImage(const Image& pImg, int & pOffsetU, int & pOffsetV, unsigned int & pTextureIndex);
+	bool insertImage(const Image & image, unsigned int & textureIndex, Vec2i & offset);
 	
-	Texture2D & GetTexture(unsigned int pTexture);
+	Texture2D & getTexture(unsigned int index);
 	
-	unsigned int GetTextureSize() const;
-	unsigned int GetTextureCount() const;
+	unsigned int getTextureSize() const { return textureSize; }
+	size_t getTextureCount() const { return textures.size(); }
 	
 protected:
 	
@@ -57,30 +60,35 @@ protected:
 			Node();
 			~Node();
 			
-			Node * InsertImage(const Image & pImg);
+			Node * insertImage(const Image & pImg);
 			
-			Node * mChilds[2];
-			Rect mRect;
-			bool mInUse;
+			Node * children[2];
+			Rect rect;
+			bool used;
 		};
 		
-		explicit TextureTree(unsigned int pSize);
-		Node * InsertImage(const Image & pImg);
+		explicit TextureTree(unsigned int textureSize, Image::Format textureFormat);
+		~TextureTree();
+		
+		Node * insertImage(const Image & pImg);
 		
 	private:
 		
-		Node mRoot;
+		Node root;
 		
+	public:
+		
+		Texture2D * texture;
+		bool dirty;
 	};
 	
 private:
 	
-	std::vector<Image *> mImages;
-	std::vector<Texture2D *> mTextures;
-	std::vector<TextureTree *> mTexTrees;
+	std::vector<TextureTree *> textures;
+	typedef std::vector<TextureTree *>::iterator texture_iterator;
 	
-	unsigned int mTexSize;
-	Image::Format mTexFormat;
+	const unsigned int textureSize;
+	Image::Format textureFormat;
 	
 };
 
