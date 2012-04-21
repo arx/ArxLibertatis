@@ -597,7 +597,7 @@ bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 		
 		PakDirectory * dir = addDirectory(mount.parent());
 		
-		return addFile(dir, toLowercase(path.string()), mount.filename());
+		return addFile(dir, path, mount.filename());
 		
 	}
 	
@@ -633,8 +633,10 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	for(fs::directory_iterator it(path); !it.end(); ++it) {
 		
-		std::string name = toLowercase(it.name());
+		std::string name = it.name();
 		fs::path entry = path / name;
+		
+		makeLowercase(name);
 		
 		if(it.is_directory()) {
 			ret &= addFiles(dir->addDirectory(name), entry);
