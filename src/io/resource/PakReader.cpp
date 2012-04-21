@@ -30,6 +30,8 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
+#include "platform/String.h"
+
 using std::min;
 using std::strlen;
 using std::string;
@@ -595,7 +597,7 @@ bool PakReader::addFiles(const fs::path & path, const res::path & mount) {
 		
 		PakDirectory * dir = addDirectory(mount.parent());
 		
-		return addFile(dir, path, mount.filename());
+		return addFile(dir, toLowercase(path.string()), mount.filename());
 		
 	}
 	
@@ -631,7 +633,7 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 	
 	for(fs::directory_iterator it(path); !it.end(); ++it) {
 		
-		std::string name = it.name();
+		std::string name = toLowercase(it.name());
 		fs::path entry = path / name;
 		
 		if(it.is_directory()) {

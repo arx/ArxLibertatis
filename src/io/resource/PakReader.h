@@ -67,6 +67,14 @@ public:
 	
 	void removeFile(const res::path & name);
 	
+	/**
+	 * Add a whole filesystem directory under the specified mount point.
+	 * All folders and files under this directory will be inserted and their name converted to lowercase.
+	 * The mount point name will not be modified (case-sensitive).
+	 * @param path Directory on the filesystem that will be imported in this PakDirectory
+	 * @param mount Mount point in this PakDirectory (case-sensitive)
+	 * @return false if there were problems (some data may have been read)
+	 */
 	bool addFiles(const fs::path & path, const res::path & mount = res::path());
 	
 	bool addArchive(const fs::path & pakfile);
