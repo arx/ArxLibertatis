@@ -64,33 +64,33 @@ public:
 	static const float RADIUS_DEFAULT;
 	static const float HEIGHT_DEFAULT;
 	
-	/**
+	/*!
 	 * Create a PathFinder instance for the provided data.
 	 * The pathfinder instance does not copy the provided data and will not clean it up
 	 * The light data is only used when the stealth parameter is set to true.
-	 **/
+	 */
 	PathFinder(size_t map_size, const _ANCHOR_DATA * map_data,
 	           size_t light_count, const EERIE_LIGHT * const * light_list);
 	
 	typedef unsigned long NodeId;
 	typedef std::vector<NodeId> Result;
 	
-	/**
+	/*!
 	 * Set a heuristic for selecting the best next node.
 	 * For 0.0f only the distance to the target will be considered.
 	 * For 0.5f the distance to target is weigted equaly to the already traversed distance + light costs.
 	 * This is not used for flee().
 	 * The default value is HEURISTIC_DEFAULT.
-	 **/
+	 */
 	void setHeuristic(float heuristic);
 	
-	/**
+	/*!
 	 * Set a cylinder to constrain the search space.
 	 * The default values are RADIUS_DEFAULT and HEIGHT_DEFAULT.
-	 **/
+	 */
 	void setCylinder(float radius, float height);
 	
-	/**
+	/*!
 	 * Find a path between two nodes.
 	 * @param from The index of the start node into the provided map_data.
 	 * @param to The index of the destination node into the provided map_data.
@@ -100,7 +100,7 @@ public:
 	 */
 	bool move(NodeId from, NodeId to, Result & rlist, bool stealth = false) const;
 	
-	/**
+	/*!
 	 * Find a path away from a position.
 	 * @param from The index of the start node into the provided map_data.
 	 * @param danger The position to get away from.
@@ -111,17 +111,17 @@ public:
 	 */
 	bool flee(NodeId from, const Vec3f & danger, float safeDistance, Result & rlist, bool stealth = false) const;
 	
-	/**
+	/*!
 	 * Wander around and then return to the start node.
 	 * @param from The index of the start node into the provided map_data.
 	 * @param aroundRadius How far to wander.
 	 * @param rlist A list to append the path to.
 	 * @param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
-	 **/
+	 */
 	bool wanderAround(NodeId from, float aroundRadius, Result & rlist, bool stealth = false) const;
 	
-	/**
+	/*!
 	 * Walk to and then to random offsets around the given position
 	 * @param from The index of the start node into the provided map_data.
 	 * @param danger The position to walk to.
@@ -129,7 +129,7 @@ public:
 	 * @param rlist A list to append the path to.
 	 * @param stealth True if the path should avoid light sources.
 	 * @return true if a path was found.
-	 **/
+	 */
 	bool lookFor(NodeId from, const Vec3f & pos, float radius, Result & rlist, bool stealth = false) const;
 	
 private:
@@ -138,9 +138,9 @@ private:
 	class OpenNodeList;
 	class ClosedNodeList;
 	
-	/**
+	/*!
 	 * @return the best node (lowest cost) from open list or NULL if the list is empty
-	 **/
+	 */
 	static void buildPath(const Node & node, Result & rlist);
 	float getIlluminationCost(const Vec3f & pos) const;
 	NodeId getNearestNode(const Vec3f & pos) const;

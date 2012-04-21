@@ -30,63 +30,63 @@ namespace fs {
 
 class path;
 
-/**
+/*!
  * Check if a file (directory or regular file) exists.
  * @return true if the file exists, false if it doesn't exist or there was an error
  */
 bool exists(const path & p);
 
-/**
+/*!
  * Check if a path points to a directory.
  * @return true if the p exists and is a directory, false otherwise
  */
 bool is_directory(const path & p);
 
-/**
+/*!
  * Check if a path points to a regular file.
  * @return true if the p exists and is a regular file, false otherwise.
  */
 bool is_regular_file(const path & p);
 
-/**
+/*!
  * Get the last write time of a file.
  * @return the last write time or 0 if there was an error (file doesn't exist, ...).
  */
 std::time_t last_write_time(const path & p);
 
-/**
+/*!
  * Get the size of a file.
  * @return the filesize or (u64)-1 if there was an error (file doesn't exist, ...).
  */
 u64 file_size(const path & p);
 
-/**
+/*!
  * Remove a file or empty directory.
  * @return true if the file was removed or didn't exist.
  */
 bool remove(const path & p);
 
-/**
+/*!
  * Recursively remove a file or directory.
  * @return true if the file was removed or didn't exist.
  */
 bool remove_all(const path & p);
 
-/**
+/*!
  * Create a directory.
  * p.parent() must exist and be a directory.
  * @return true if the directory was created or false if there was an error.
  */
 bool create_directory(const path & p);
 
-/**
+/*!
  * Create a directory.
  * All ancestors of p must either be a directory or not exist.
  * @return true if the directory was created or false if there was an error.
  */
 bool create_directories(const path & p);
 
-/**
+/*!
  * Copy a regular file.
  * from_p must exist and be a regular file.
  * to_p.parent() must exist and be a directory.
@@ -95,7 +95,7 @@ bool create_directories(const path & p);
  */
 bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
 
-/**
+/*!
  * Move a regular file or directory.
  * old_p must exist.
  * new_p.parent() must exist and be a directory.
@@ -104,7 +104,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite = false);
  */
 bool rename(const path & old_p, const path & new_p, bool overwrite = false);
 
-/**
+/*!
  * Read a file into memory.
  * @param p The file to load.
  * @param size Will receive the size of the loaded file.

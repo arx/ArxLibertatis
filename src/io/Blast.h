@@ -69,7 +69,7 @@ enum BlastResult {
 	BLAST_INVALID_OFFSET = -3, // distance is too far back
 };
 
-/** Decompress input to output using the provided infun() and outfun() calls.
+/*! Decompress input to output using the provided infun() and outfun() calls.
  * On success, the return value of blast() is zero.  If there is an error in
  * the source data, i.e. it is not in the proper format, then a negative value
  * is returned.  If there is not enough input available or there is not enough
@@ -89,7 +89,7 @@ enum BlastResult {
  *
  * At the bottom of blast.c is an example program that uses blast() that can be
  * compiled to produce a command-line decompression filter by defining TEST.
- **/
+ */
 BlastResult blast(blast_in infun, void *inhow, blast_out outfun, void *outhow);
 
 // Convenience implementations.
@@ -126,28 +126,28 @@ struct BlastMemOutBufferRealloc {
 	
 };
 
-/**
+/*!
  * Writes data to a BlastMemOutBuffer.
  * Advances the buf pointer and decreases size.
- **/
+ */
 int blastOutMem(void * Param, unsigned char * buf, size_t len);
 
-/**
+/*!
  * Reads data from a BlastMemInBuffer.
  * Advances the buf pointer and decrises size.
  */
 size_t blastInMem(void * Param, const unsigned char ** buf);
 
-/**
+/*!
  * Writes data to a BlastMemOutBufferRealloc.
  * Increases fillSize and resizes the buffer if needed.
  * Uses realloc() for resize:
  *  - If there is an intitial buffer, it must be allocated with malloc()
  *  - The final buffer must be deallocated using free(), not delete
- **/
+ */
 int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len);
 
-/**
+/*!
  * Decompress data and allocate memory as needed.
  * Returned pointer should be deallocated using free(), not delete.
  * 
@@ -155,9 +155,9 @@ int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len);
  */
 char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize);
 
-/**
+/*!
  * Decompress data.
- **/
+ */
 size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize);
 
 #endif // ARX_IO_BLAST_H

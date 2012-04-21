@@ -183,11 +183,6 @@ long getLocalisedKeyCount(const string & sectionname) {
 
 static const string BADNAMECHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]"; // TODO(case-sensitive) remove
 
-/**
- * Returns the localized string for the given key name
- * @param name The string to be looked up
- * @return The localized string based on the currently loaded locale file
- */
 string getLocalised(const string & name, const string & default_value) {
 	
 	arx_assert(name.find_first_of(BADNAMECHAR) == string::npos); ARX_UNUSED(BADNAMECHAR); // TODO(case-sensitive) remove

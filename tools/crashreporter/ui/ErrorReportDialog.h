@@ -32,7 +32,7 @@ namespace Ui {
 	class ErrorReportDialog;
 }
 
-/**
+/*!
  * Base task for tasks
  */
 class CrashReportTask : public QThread, public ErrorReport::IProgressNotifier
@@ -46,7 +46,7 @@ public:
 	{
 	}
 
-	/**
+	/*!
 	 * Get the error string (available in case of a failure)
 	 * @return A string detailling the error that occured in case of a failure.
 	 * @sa succeeded()
@@ -82,7 +82,6 @@ private:
 	QString m_strDetailedErrorDescription;
 };
 
-//!
 class GatherInfoTask : public CrashReportTask
 {
 	Q_OBJECT

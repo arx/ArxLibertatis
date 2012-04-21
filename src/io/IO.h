@@ -55,14 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace fs { class path; }
 
-/**
+/*!
  * Create a hash of the file.
  * @param name Name of the file to hash. Must be on the local filesystem and not in a PAK.
  * @param scheck The destination buffer to which the hash is written.
  * @param size The size of the destination buffer scheck.
  * @param id An ID that contributes to the hash.
  * @return false if the hash was created, true if the file could not be read
- **/
+ */
 void HERMES_CreateFileCheck(const fs::path & name, char * scheck, size_t size, float id);
 
 #endif // BUILD_EDIT_LOADSAVE

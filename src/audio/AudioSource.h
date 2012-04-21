@@ -132,7 +132,7 @@ protected:
 	
 	inline void reset() { time = 0, callback_i = 0; }
 	
-	/**
+	/*!
 	 * Check if this source is too far from the listener and play/pause it accordingly.
 	 * @return true if the source is too far and should not be played
 	 */

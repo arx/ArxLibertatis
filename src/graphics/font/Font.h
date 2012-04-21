@@ -110,13 +110,13 @@ private:
 	 * Inserts a single glyph
 	 * Always maps the character to a glyph - uses a placeholder if there
 	 * is no glyph for the given character
-	 * \return true if the glyph textures were changed
+	 * @return true if the glyph textures were changed
 	 */
 	bool insertGlyph(u32 character);
 	
 	/*!
 	 * Inserts any missing glyphs for the characters in the UTF-8 string [begin, end)
-	 * \return true if the glyph textures were changed
+	 * @return true if the glyph textures were changed
 	 */
 	bool insertMissingGlyphs(text_iterator begin, text_iterator end);
 	
@@ -132,7 +132,7 @@ private:
 	/*!
 	 * Parses UTF-8 input and returns the glyph for the first character
 	 * Inserts missing glyphs if possible.
-	 * \return a glyph iterator or m_Glyphs.end()
+	 * @return a glyph iterator or m_Glyphs.end()
 	 */
 	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end, u32 & chr);
 	

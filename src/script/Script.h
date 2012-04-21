@@ -473,7 +473,7 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
 
-/**
+/*!
  * Finds the first occurence of str in the script that is followed
  * by a separator (a character of value less then or equal 32)
  * 

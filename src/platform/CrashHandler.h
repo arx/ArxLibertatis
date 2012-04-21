@@ -27,7 +27,7 @@
 
 namespace fs { class path; }
 
-/**
+/*!
  * Handle crashes and collect as much info as possible in order to ease bug fixing.
  * 
  * This class relies on a crash reporter, which is second process that gets started
@@ -48,11 +48,13 @@ namespace fs { class path; }
 class CrashHandler {
 
 public:
-	/// Crash callback type that can be used with registerCrashCallback().
+	
+	//! Crash callback type that can be used with registerCrashCallback().
 	typedef void (*CrashCallback)(void);
 
 public:
-	/**
+	
+	/*!
 	 * Initialize the crash handler.
 	 * Will register the necessary platform specific handlers to trap all kind of crash scenarios.
 	 * This method can fail for a variety of reasons... See the log for more information.
@@ -61,18 +63,18 @@ public:
 	 */
 	static bool initialize();
 
-	/**
-	 * Shutdown the crash handler.
+	/*!
+	 * Shut down the crash handler.
 	 */
 	static void shutdown();
 
-	/**
+	/*!
 	 * Return the status of the crash handler.
-	 * \return True if the crash handler is initialized, false otherwise.
+	 * @return True if the crash handler is initialized, false otherwise.
 	 */
 	static bool isInitialized();
 
-	/**
+	/*!
 	 * Add a file that will be included in the crash report.
 	 * Upon a crash, if this file is not found, it will simply be ignored.
 	 * You can attach up to CrashInfo::MaxNbFiles files to the report.
@@ -81,7 +83,7 @@ public:
 	 */
 	static bool addAttachedFile(const fs::path& file);
 	
-	/**
+	/*!
 	 * Set a variable value, which will be included in the crash report.
 	 * You can set up to CrashInfo::MaxNbVariables variables.
 	 * If called multiple times with the same name, only the last value will be kept.
@@ -98,21 +100,21 @@ public:
 
 	static bool setNamedVariable(const std::string& name, const std::string & value);
 
-	/**
+	/*!
 	 * Specify the location where crash reports will be written.
 	 * @param location Location where the crash report will be stored.
 	 * @return True if the report location could be set, false otherwise.
 	 */
 	static bool setReportLocation(const fs::path& location);
 
-	/**
+	/*!
 	 * Remove old reports from the report location specified with setReportLocation().
 	 * @param nbReportsToKeep Number of reports to keep (the most recent ones).
 	 * @return True if operation was successful.
 	 */
 	static bool deleteOldReports(size_t nbReportsToKeep);
 
-	/**
+	/*!
 	 * Register platform specific crash handlers for the current thread.
 	 * Depending on the platform, this call might not be needed.
 	 * It's not necessary to call this method for the main thread.
@@ -120,14 +122,14 @@ public:
 	 */
 	static bool registerThreadCrashHandlers();
 
-	/**
+	/*!
 	 * Unregister platform specific crash handlers for the current thread.
 	 * Depending on the platform, this call might not be needed.
 	 * It's not necessary to call this method for the main thread.
 	 */
 	static void unregisterThreadCrashHandlers();
 
-	/**
+	/*!
 	 * Register a callback in order to react in case a crash occurs.
 	 * The main use is probably to close opened files that needs to be
 	 * attached to the report.
@@ -136,12 +138,12 @@ public:
 	 */
 	static void registerCrashCallback(CrashCallback crashCallback);
 
-	/**
+	/*!
 	 * Unregister a previously registed crash callback.
 	 */
 	static void unregisterCrashCallback(CrashCallback crashCallback);
 
-	/**
+	/*!
 	 * Handle a crash and trigger the execution of the crash reporter.
 	 * This method is public in order to allow you to trigger it by yourself.
 	 * It might be useful for test purpose, or to allow a user to report a

@@ -87,12 +87,12 @@ public:
 	bool FinalCleanup();
 	virtual void Cleanup3DEnvironment();
 	
-	/**
+	/*!
 	 * Writes text to the window
 	 * @param x The x coordinate for the text
 	 * @param y The y coordinate for the text
 	 * @param str The string of text to be written
-	*/
+	 */
 	virtual void OutputText(int x, int y, const std::string & str);
 	virtual void OutputTextGrid(float x, float y, const std::string &text, const Color &color);
 	
