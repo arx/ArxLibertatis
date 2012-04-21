@@ -70,7 +70,10 @@ md5sum=`which md5sum 2> /dev/null`
 data_lang='english'
 detect_language() {
 	
-	speech_checksum=`find '.' -iname "speech*.pak" -exec "$md5sum" -b {} \; | sed "s/ .*//g"`
+	speech_checksum=`find '.' -iname "speech.pak" -exec "$md5sum" -b {} \; | sed "s/ .*//g"`
+	if [ "$speech_checksum" = '' ] ; then
+		speech_checksum=`find '.' -iname "speech_default.pak" -exec "$md5sum" -b {} \; | sed "s/ .*//g"`
+	fi
 	
 	# check if the checksum is of a known localisation and set data_lang to
 	# the language string to be used with the 1.21 patch installer
