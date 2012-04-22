@@ -1831,7 +1831,7 @@ int main_view(SaveBlock & save, int argc, char ** argv) {
 	resources = new PakReader();
 	
 	if(!resources->addArchive("loc.pak")) {
-		cerr << "could not open pak files, run 'savetool view' from the game directory" << endl;
+		cerr << "could not open loc.pak, run 'savetool view' from the game directory" << endl;
 		return 3;
 	}
 	

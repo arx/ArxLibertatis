@@ -50,7 +50,9 @@ bool Server::login(const QString& username, const QString& password)
 	QByteArray data = params.encodedQuery();
 	m_CurrentReply = m_NetAccessManager.post(request, data);
 	
-	bool bSucceeded = waitForReply();
+	// TBG redirects to the account page if there is no previous page
+	// but the bot doesn't have access to its account page, so ignore the redirect
+	bool bSucceeded = waitForReply(false);
 	m_CurrentReply->deleteLater();
 	
 	return bSucceeded;
@@ -261,30 +263,26 @@ bool Server::getIssueIdFromUrl(const QUrl& url, int& issue_id)
 	return bSucceeded;
 }
 
-bool Server::waitForReply()
-{
+bool Server::waitForReply(bool followRedirect) {
+	
 	QUrl lastRedirectUrl;
-	do
-	{
+	do {
 		QEventLoop loop;
 		loop.connect(m_CurrentReply, SIGNAL(finished()), SLOT(quit()));
 		loop.exec();
-
+		
 		// Handle redirections
 		QUrl redirectUrl = m_CurrentReply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
-		if(!redirectUrl.isEmpty() && redirectUrl != lastRedirectUrl)
-		{
+		if(followRedirect && !redirectUrl.isEmpty() && redirectUrl != lastRedirectUrl) {
+			
 			lastRedirectUrl = redirectUrl;
-
 			// Attribute "RedirectionTargetAttribute" might return a relative URL, so we must resolve it
 			QUrl baseUrl = m_ServerAddress;
 			redirectUrl = baseUrl.resolved(redirectUrl);
-
 			m_CurrentReply->deleteLater();
 			m_CurrentReply = m_NetAccessManager.get(QNetworkRequest(redirectUrl));
-		}
-		else
-		{
+			
+		} else {
 			lastRedirectUrl.clear();
 		}
 	} while(!lastRedirectUrl.isEmpty());
@@ -300,8 +298,7 @@ bool Server::waitForReply()
 	return succeeded;
 }
 
-QUrl Server::getUrl() const
-{
+QUrl Server::getUrl() const {
 	QUrl httpUrl = m_CurrentUrl;
 	httpUrl.setScheme("http");
 	return httpUrl;

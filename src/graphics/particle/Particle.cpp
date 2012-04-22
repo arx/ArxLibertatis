@@ -47,23 +47,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 
 Particle::Particle()
-{
-	p3Pos.x = frand2() * 5;
-	p3Pos.y = frand2() * 5;
-	p3Pos.z = frand2() * 5;
-
-	p3Velocity.x = frand2() * 10;
-	p3Velocity.y = frand2() * 10;
-	p3Velocity.z = frand2() * 10;
-
-	float frnd = 2000 + rnd() * 3000;
-	ulTTL = checked_range_cast<long>(frnd);
-	fOneOnTTL = 1.0f / (float) ulTTL;
-	ulTime		=	0;
-
-
-	fSizeStart = 1;
-	fSizeEnd = 1;
+	: p3Pos(frand2() * 5, frand2() * 5, frand2() * 5),
+	  p3Velocity(frand2() * 10, frand2() * 10, frand2() * 10),
+	  ulTime(0), fSize(1.f), fSizeStart(1.f), fSizeEnd(1.f),
+	  iTexTime(0), iTexNum(0) {
+	
+	ulTTL = checked_range_cast<long>(2000 + rnd() * 3000);
+	fOneOnTTL = 1.0f / float(ulTTL);
+	
 	fColorStart[0] = 1;
 	fColorStart[1] = 1;
 	fColorStart[2] = 1;
@@ -72,91 +63,55 @@ Particle::Particle()
 	fColorEnd[1] = 1;
 	fColorEnd[2] = 1;
 	fColorEnd[3] = 0.1f;
-
-	iTexTime = 0;
-	iTexNum = 0;
 }
 
-//-----------------------------------------------------------------------------
-Particle::~Particle()
-{
- 
-}
+Particle::~Particle() { }
 
-//-----------------------------------------------------------------------------
-void Particle::Regen()
-{
-	p3OldPos.x = p3Pos.x = 0;
-	p3OldPos.y = p3Pos.y = 0;
-	p3OldPos.z = p3Pos.z = 0;
-
+void Particle::Regen() {
+	p3Pos = Vec3f::ZERO;
 	ulTime = 0;
 	fSize = 1;
 	iTexTime = 0;
 	iTexNum = 0;
 }
 
-//-----------------------------------------------------------------------------
-void Particle::Validate()
-{
-	if (fSize < 1)
-		fSize = 1;
-
-	if (fSizeStart < 0)
-		fSizeStart = 0;
-
-	if (fSizeEnd < 0)
-		fSizeEnd = 0;
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (fColorStart[i] < 0)
-			fColorStart[i] = 0;
-
-		if (fColorStart[i] > 1)
-			fColorStart[i] = 1;
-
-		if (fColorEnd[i] < 0)
-			fColorEnd[i] = 0;
-
-		if (fColorEnd[i] > 1)
-			fColorEnd[i] = 1;
+void Particle::Validate() {
+	
+	fSize = std::max(fSize, 1.f);
+	fSizeStart = std::max(fSizeStart, 1.f);
+	fSizeEnd = std::max(fSizeEnd, 1.f);
+	
+	for(int i = 0; i < 4; i++) {
+		fColorStart[i] = clamp(fColorStart[i], 0.f, 1.f);
+		fColorEnd[i] = clamp(fColorEnd[i], 0.f, 1.f);
 	}
-
-	if (ulTTL < 100)
-	{
+	
+	if(ulTTL < 100) {
 		ulTTL = 100;
-		fOneOnTTL = 1.0f / (float)ulTTL;
+		fOneOnTTL = 1.0f / float(ulTTL);
 	}
 }
 
-//-----------------------------------------------------------------------------
-void Particle::Update(long _lTime)
-{
+void Particle::Update(long _lTime) {
+	
 	ulTime += _lTime;
 	iTexTime += _lTime;
-	fTimeSec = _lTime * ( 1.0f / 1000 );
-
-	if (ulTime < ulTTL)
-	{
+	float fTimeSec = _lTime * (1.f / 1000);
+	
+	if(ulTime < ulTTL) {
+		
 		float ft = fOneOnTTL * ulTime;
-
-		// backup old pos
-		p3OldPos.x = p3Pos.x;
-		p3OldPos.y = p3Pos.y;
-		p3OldPos.z = p3Pos.z;
-
+		
 		// update new pos
-		p3Pos.x += p3Velocity.x * fTimeSec; 
-		p3Pos.y += p3Velocity.y * fTimeSec; 
-		p3Pos.z += p3Velocity.z * fTimeSec;
-
+		p3Pos += p3Velocity * fTimeSec;
+		
 		fSize = fSizeStart + (fSizeEnd - fSizeStart) * ft;
-		fColor[0] = fColorStart[0] + (fColorEnd[0] - fColorStart[0]) * ft;
-		fColor[1] = fColorStart[1] + (fColorEnd[1] - fColorStart[1]) * ft;
-		fColor[2] = fColorStart[2] + (fColorEnd[2] - fColorStart[2]) * ft;
-		fColor[3] = fColorStart[3] + (fColorEnd[3] - fColorStart[3]) * ft;
-
-		ulColor = Color4f(fColor[0], fColor[1], fColor[2], fColor[3]).to<u8>();
+		
+		Color4f fColor;
+		fColor.r = fColorStart[0] + (fColorEnd[0] - fColorStart[0]) * ft;
+		fColor.g = fColorStart[1] + (fColorEnd[1] - fColorStart[1]) * ft;
+		fColor.b = fColorStart[2] + (fColorEnd[2] - fColorStart[2]) * ft;
+		fColor.a = fColorStart[3] + (fColorEnd[3] - fColorStart[3]) * ft;
+		ulColor = fColor.to<u8>();
 	}
 }

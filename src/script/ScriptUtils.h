@@ -61,11 +61,13 @@ inline u64 flags(const std::string & flags) {
 	return result;
 }
 
-/**
- * Overload to give compilers a chance to calculate flag masks at compile-time for string constants.
+/*!
+ * Overload to give compilers a chance to calculate flag masks at
+ * compile-time for string constants.
  * 
  * This should probably be done using constexpr in c++11.
- * We could force compile-time calculation with a template-based implementation, but that will be much uglier and limited.
+ * We could force compile-time calculation with a template-based
+ * implementation, but that will be much uglier and limited.
  */
 template <size_t N>
 inline u64 flags(const char (&flags)[N]) {

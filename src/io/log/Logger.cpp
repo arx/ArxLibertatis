@@ -142,7 +142,7 @@ void Logger::remove(logger::Backend * backend) {
 bool Logger::isEnabled(const char * file, LogLevel level) {
 	
 	if(level < LogManager::minimumLevel) {
-		return NULL;
+		return false;
 	}
 	
 	Autolock lock(LogManager::lock);
@@ -262,7 +262,9 @@ void Logger::configure(const string config) {
 			set(entry, Info);
 		} else if(level == "warning" || level == "warn" || level == "w" || level == "W") {
 			set(entry, Warning);
-		} else if(level == "error" || level == "w" || level == "E") {
+		} else if(level == "error" || level == "e" || level == "E") {
+			set(entry, Error);
+		} else if(level == "critical" || level == "c" || level == "C") {
 			set(entry, Error);
 		} else if(level == "none" || level == "n" || level == "N") {
 			set(entry, None);
@@ -277,7 +279,7 @@ void Logger::configure(const string config) {
 void Logger::init() {
 	
 	add(logger::Console::get());
-	
+
 #ifdef HAVE_WINAPI
 	add(logger::MsvcDebugger::get());
 #endif
@@ -297,9 +299,14 @@ void Logger::shutdown() {
 	LogManager::rules.clear();
 
 	LogManager::minimumLevel = LogManager::defaultLevel;
+
+	LogManager::deleteAllBackends();
 }
 
 
 void Logger::quickShutdown() {
-	LogManager::deleteAllBackends();
+	for(LogManager::Backends::const_iterator i = LogManager::backends.begin();
+	    i != LogManager::backends.end(); ++i) {
+		(*i)->quickShutdown();
+	}
 }

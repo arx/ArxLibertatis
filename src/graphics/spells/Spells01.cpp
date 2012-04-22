@@ -77,6 +77,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
+	memset(&cp, 0, sizeof(cp));
 	cp.iNbMax = 100 + t * 50;
 	cp.fLife = 1500;
 	cp.fLifeRandom = 0;

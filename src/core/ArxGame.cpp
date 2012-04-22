@@ -234,19 +234,21 @@ bool ArxGame::initialize()
 	if(!init) {
 		return false;
 	}
-
+	
 	init = initGameData();
 	if(!init) {
+		LogCritical << "Failed to initialize the game data.";
 		return false;
 	}
-
+	
 	init = initLocalisation();
 	if(!init) {
+		LogCritical << "Failed to initialize the localisation subsystem.";
 		return false;
 	}
-
+	
 	create();
-
+	
 	return true;
 }
 
@@ -340,20 +342,20 @@ bool ArxGame::initWindow() {
 		
 		bool matched = false;
 		
-		#ifdef HAVE_SDL
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+		#ifdef HAVE_D3D9
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
 			matched = true;
-			RenderWindow * window = new SDLWindow;
+			RenderWindow * window = new D3D9Window;
 			if(!initWindow(window)) {
 				delete window;
 			}
 		}
 		#endif
-		
-		#ifdef HAVE_D3D9
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
+
+		#ifdef HAVE_SDL
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
-			RenderWindow * window = new D3D9Window;
+			RenderWindow * window = new SDLWindow;
 			if(!initWindow(window)) {
 				delete window;
 			}
@@ -366,7 +368,7 @@ bool ArxGame::initWindow() {
 	}
 	
 	if(!m_MainWindow) {
-		LogError << "no working windowing framework available";
+		LogCritical << "Graphics initialization failed.";
 		return false;
 	}
 	
@@ -378,7 +380,7 @@ bool ArxGame::initInput() {
 	LogDebug("Input init");
 	bool init = ARX_INPUT_Init();
 	if(!init) {
-		LogError << "Input init failed";
+		LogCritical << "Input initialization failed.";
 	}
 	
 	return init;
@@ -389,7 +391,7 @@ bool ArxGame::initSound() {
 	LogDebug("Sound init");
 	bool init = ARX_SOUND_Init();
 	if(!init) {
-		LogWarning << "Sound init failed";
+		LogWarning << "Sound initialization failed.";
 	}
 	
 	return true;
@@ -397,11 +399,9 @@ bool ArxGame::initSound() {
 
 bool ArxGame::initGameData() {
 	
-	bool init;
-	
-	init = addPaks();
+	bool init = addPaks();
 	if(!init) {
-		LogError << "Error loading pak files";
+		LogCritical << "Error loading pak files";
 		return false;
 	}
 
@@ -459,18 +459,20 @@ bool ArxGame::addPaks() {
 		if(!found[i]) {
 			if(config.paths.data.empty()) {
 				if(default_paks[i][1]) {
-					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
-					         << " in " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " or "
+					            << default_paks[i][1] << " in " << config.paths.user;
 				} else {
-					LogError << "Unable to find " << default_paks[i][0] << " in " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " in "
+					            << config.paths.user;
 				}
 			} else {
 				if(default_paks[i][1]) {
-					LogError << "Unable to find " << default_paks[i][0] << " or " << default_paks[i][1]
-					         << " in either " << config.paths.data << " or " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0] << " or "
+					            << default_paks[i][1] << " in either " << config.paths.data
+					            << " or " << config.paths.user;
 				} else {
-					LogError << "Unable to find " << default_paks[i][0]
-					          << " in either " << config.paths.data << " or " << config.paths.user;
+					LogCritical << "Unable to find " << default_paks[i][0]
+					            << " in either " << config.paths.data << " or " << config.paths.user;
 				}
 			}
 			return false;

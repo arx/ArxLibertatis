@@ -87,6 +87,10 @@ public:
 	
 	PakFile * getFile(const res::path & path);
 	
+	inline bool hasFile(const res::path & path) {
+		return getFile(path) != NULL;
+	}
+	
 	inline dirs_iterator dirs_begin() { return dirs.begin(); }
 	inline dirs_iterator dirs_end() { return dirs.end(); }
 	

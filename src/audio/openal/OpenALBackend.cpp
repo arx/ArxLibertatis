@@ -121,11 +121,10 @@ aalError OpenALBackend::init(bool enableEffects) {
 		efx_ver = " with EFX";
 	}
 	else
-#else
-	{
-		efx_ver = " without EFX"
-	}
 #endif
+	{
+		efx_ver = " without EFX";
+	}
 	LogInfo << "Using " << renderer << ' ' << version << efx_ver;
 	
 	CrashHandler::setVariable("OpenAL renderer", renderer);

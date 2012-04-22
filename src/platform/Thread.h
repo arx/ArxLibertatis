@@ -80,8 +80,8 @@ public:
 	
 	/*!
 	 * Set the thread name (for easier debugging)
-	 * \note This should be called BEFORE starting the thread.
-	 * \param threadName The thread name.
+	 * @note This should be called BEFORE starting the thread.
+	 * @param threadName The thread name.
 	 */
 	void setThreadName(const std::string & threadName);
 

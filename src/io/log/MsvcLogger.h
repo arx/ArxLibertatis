@@ -39,8 +39,6 @@ public:
 	
 	void log(const Source & file, int line, Logger::LogLevel level, const std::string & str);
 	
-	void flush();
-	
 	/*!
 	 * Returns a MsvcDebugger instance if a debugger is attached or NULL otherwise.
 	 */

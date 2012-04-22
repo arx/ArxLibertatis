@@ -211,9 +211,13 @@ public:
 	
 	Result execute(Context & context) {
 		
-		HandleFlags("r") {
+		bool special = false;
+		HandleFlags("rs") {
 			if(flg & flag('r')) {
 				ARX_EQUIPMENT_Remove_All_Special(context.getIO());
+			}
+			if(flg & flag('s')) {
+				special = true;
 			}
 		}
 		
@@ -225,7 +229,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << param2 << ' ' << fval << ' ' << flag);
 		
-		ARX_EQUIPMENT_SetEquip(context.getIO(), options, param2, fval, flag);
+		ARX_EQUIPMENT_SetEquip(context.getIO(), special, param2, fval, flag);
 		
 		return Success;
 	}

@@ -52,12 +52,10 @@ class Particle {
 public:
 	
 	Vec3f p3Pos;
-	Vec3f p3OldPos;
 	Vec3f p3Velocity;
 	
 	// time
 	float fOneOnTTL;
-	float fTimeSec;
 	long ulTime; //!< Age
 	long ulTTL; //!< Time to Live
 	
@@ -69,7 +67,6 @@ public:
 	// color
 	float fColorStart[4];
 	float fColorEnd[4];
-	float fColor[4];
 	Color ulColor;
 	
 	// rotation

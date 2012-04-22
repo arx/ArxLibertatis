@@ -31,6 +31,7 @@
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
+#include "platform/String.h"
 
 using std::string;
 using std::malloc;
@@ -147,15 +148,76 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 }
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
+
 	if(!overwrite && exists(new_p)) {
+#if defined(HAVE_PATHCONF) && defined(HAVE_PC_CASE_SENSITIVE)
+		if(toLowercase(old_p.string()) == toLowercase(new_p.string())) {
+			if(pathconf(old_p.string().c_str(), _PC_CASE_SENSITIVE)) {
+				return false; // filesystem is case-sensitive and destination file already exists
+			}
+		} else {
+			return false;
+		}
+#else
 		return false;
+#endif		
 	}
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }
 
+#if defined(HAVE_DIRFD) && defined(HAVE_FSTATAT)
+
+#define ITERATOR_HANDLE(handle)
+
+#define DIR_HANDLE_INIT(p, h) h
+#define DIR_HANDLE(h)         reinterpret_cast<DIR *>(h)
+#define DIR_HANDLE_FREE(h)
+
+static mode_t dirstat(void * handle, void * entry) {
+	
+	arx_assert(entry != NULL);
+	int fd = dirfd(DIR_HANDLE(handle));
+	arx_assert(fd != -1);
+	
+	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
+	struct stat buf;
+	int ret = fstatat(fd, name, &buf, 0);
+	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
+	
+	return buf.st_mode;
+}
+
+#else
+
+struct iterator_handle {
+	fs::path path;
+	DIR * handle;
+	iterator_handle(const fs::path & p, DIR * h) : path(p), handle(h) { }
+};
+
+#define ITERATOR_HANDLE(handle) reinterpret_cast<iterator_handle *>(handle)
+
+#define DIR_HANDLE_INIT(p, h)   new iterator_handle(p, h)
+#define DIR_HANDLE(h)           ITERATOR_HANDLE(h)->handle
+#define DIR_HANDLE_FREE(h)      delete ITERATOR_HANDLE(h)
+
+static mode_t dirstat(void * handle, void * entry) {
+	
+	arx_assert(entry != NULL);
+	fs::path file = ITERATOR_HANDLE(handle)->path / reinterpret_cast<dirent *>(entry)->d_name;
+	
+	struct stat buf;
+	int ret = stat(file.string().c_str(), &buf);
+	arx_assert_msg(ret == 0, "stat failed: %d", ret); ARX_UNUSED(ret);
+	
+	return buf.st_mode;
+}
+
+#endif
+
 static void readdir(void * _handle, void * & _buf) {
 	
-	DIR * handle = reinterpret_cast<DIR *>(_handle);
+	DIR * handle = DIR_HANDLE(_handle);
 	
 	dirent * buf = reinterpret_cast<dirent *>(_buf);
 	
@@ -173,14 +235,19 @@ static void readdir(void * _handle, void * & _buf) {
 
 directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 	
-	handle = opendir(p.empty() ? "./" : p.string().c_str());
+	handle = DIR_HANDLE_INIT(p, opendir(p.empty() ? "./" : p.string().c_str()));
 	
-	if(handle) {
+	if(DIR_HANDLE(handle)) {
 		
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
-#if defined(HAVE_FPATHCONF) && defined(HAVE_PC_NAME_MAX)
-		name_max = fpathconf(dirfd(reinterpret_cast<DIR *>(handle)), _PC_NAME_MAX);
+#if ((defined(HAVE_DIRFD) && defined(HAVE_FPATHCONF)) || defined(HAVE_PATHCONF)) \
+		&& defined(HAVE_PC_NAME_MAX)
+#  if defined(HAVE_DIRFD) && defined(HAVE_FPATHCONF)
+		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
+#else
+		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
+#endif
 		if(name_max == -1) {
 #  if defined(HAVE_NAME_MAX)
 			name_max = std::max(NAME_MAX, 255);
@@ -205,10 +272,11 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 
 directory_iterator::~directory_iterator() {
 	if(handle) {
-		closedir(reinterpret_cast<DIR *>(handle));
-		if(buf) {
-			free(buf);
-		}
+		closedir(DIR_HANDLE(handle));
+		DIR_HANDLE_FREE(handle);
+	}
+	if(buf) {
+		free(buf);
 	}
 }
 
@@ -229,20 +297,6 @@ string directory_iterator::name() {
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }
 
-static mode_t dirstat(void * handle, void * entry) {
-	
-	arx_assert(entry != NULL);
-	int fd = dirfd(reinterpret_cast<DIR *>(handle));
-	arx_assert(fd != -1);
-	
-	const char * name = reinterpret_cast<dirent *>(entry)->d_name;
-	struct stat buf;
-	int ret = fstatat(fd, name, &buf, 0);
-	arx_assert_msg(ret == 0, "fstatat failed: %d", ret); ARX_UNUSED(ret);
-	
-	return buf.st_mode;
-}
-
 bool directory_iterator::is_directory() {
 	return ((dirstat(handle, buf) & S_IFMT) == S_IFDIR);
 }
@@ -250,5 +304,10 @@ bool directory_iterator::is_directory() {
 bool directory_iterator::is_regular_file() {
 	return ((dirstat(handle, buf) & S_IFMT) == S_IFREG);
 }
+
+#undef ITERATOR_HANDLE
+#undef DIR_HANDLE_INIT
+#undef DIR_HANDLE
+#undef DIR_HANDLE_FREE
 
 } // namespace fs

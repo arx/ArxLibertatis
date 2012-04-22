@@ -19,13 +19,19 @@
 
 #include "platform/crashhandler/CrashHandlerImpl.h"
 
+#include <sstream>
+
 #include "core/Version.h"
 
 #include "io/fs/Filesystem.h"
 #include "io/fs/FilePath.h"
 
+#include "math/Random.h"
+
 #include "platform/Architecture.h"
 #include "platform/Environment.h"
+
+#include "Configure.h"
 
 CrashHandlerImpl::CrashHandlerImpl()
 	: m_pCrashInfo(0) {
@@ -41,11 +47,25 @@ bool CrashHandlerImpl::initialize() {
 	
 	fs::path local_path = fs::path(getExecutablePath());
 	if(!local_path.empty()) {
-		local_path = local_path.parent() / fs::path(m_CrashHandlerApp);
+		local_path = local_path.parent() / m_CrashHandlerApp;
 		if(fs::exists(local_path)) {
-			m_CrashHandlerApp = local_path.string();
+			m_CrashHandlerPath = local_path;
 		}
 	}
+	if(m_CrashHandlerPath.empty()) {
+		local_path = m_CrashHandlerApp;
+		if(fs::exists(local_path)) {
+			m_CrashHandlerPath = local_path;
+		}
+	}
+#ifdef CMAKE_INSTALL_FULL_LIBEXECDIR
+	if(m_CrashHandlerPath.empty()) {
+		local_path = fs::path(CMAKE_INSTALL_FULL_LIBEXECDIR) / m_CrashHandlerApp;
+		if(fs::exists(local_path)) {
+			m_CrashHandlerPath = local_path;
+		}
+	}
+#endif
 	
 	if(!createSharedMemory()) {
 		return false;
@@ -69,22 +89,24 @@ void CrashHandlerImpl::shutdown() {
 }
 
 bool CrashHandlerImpl::createSharedMemory() {
+	
 	// Generate a random name for our shared memory object
-	boost::uuids::uuid uid = boost::uuids::random_generator()();
-	m_SharedMemoryName = boost::lexical_cast<std::string>(uid);
-
+	std::ostringstream oss;
+	oss << "arxcrash-" << getProcessId() << "-" << Random::get<u32>();
+	m_SharedMemoryName = oss.str();
+	
 	// Create a shared memory object.
 	m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::create_only, m_SharedMemoryName.c_str(), boost::interprocess::read_write);
-
+	
 	// Resize to fit the CrashInfo structure
 	m_SharedMemory.truncate(sizeof(CrashInfo));
-
+	
 	// Map the whole shared memory in this process
 	m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
-
+	
 	// Our CrashInfo will be stored in this shared memory.
 	m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
-
+	
 	return true;
 }
 

@@ -21,8 +21,9 @@
 
 #include <sstream>
 #include <algorithm>
-#include <stdlib.h>
 #include <vector>
+
+#include <stdlib.h> // needed for setenv, realpath
 
 #include <boost/scoped_array.hpp>
 
@@ -37,12 +38,16 @@
 #include <wordexp.h>
 #endif
 
-#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+#if defined(HAVE_READLINK)
 #include <unistd.h>
-#include <sys/stat.h>
 #endif
 
-std::string expandEvironmentVariables(const std::string & in) {
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#include <mach-o/dyld.h>
+#include <sys/param.h>
+#endif
+
+std::string expandEnvironmentVariables(const std::string & in) {
 	
 #if defined(HAVE_WORDEXP_H)
 	
@@ -54,7 +59,11 @@ std::string expandEvironmentVariables(const std::string & in) {
 	
 	std::ostringstream oss;
 	for(size_t i = 0; i < p.we_wordc; i++) {
+		
 		oss << p.we_wordv[i];
+		
+		if(i != (p.we_wordc-1))
+			oss << " ";
 	}
 	
 	wordfree(&p);
@@ -160,18 +169,17 @@ void defineSystemDirectories() {
 
 #else
 
-std::string ws2s(const std::basic_string<WCHAR> & s)
-{    
-    size_t slength = (int)s.length() + 1;
-    size_t len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0); 
-    std::string r(len, '\0');
-    WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0); 
-    return r;
+std::string ws2s(const std::basic_string<WCHAR> & s) {
+	size_t slength = (int)s.length() + 1;
+	size_t len = WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, 0, 0, 0, 0); 
+	std::string r(len, '\0');
+	WideCharToMultiByte(CP_ACP, 0, s.c_str(), slength, &r[0], len, 0, 0); 
+	return r;
 }
 
 // Those two values are from ShlObj.h, but requires _WIN32_WINNT >= _WIN32_WINNT_VISTA
-const int kfFlagCreate  = 0x00008000;	// KF_FLAG_CREATE
-const int kfFlagNoAlias = 0x00001000;	// KF_FLAG_NO_ALIAS
+const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
+const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
 
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
@@ -179,12 +187,13 @@ const int kfFlagNoAlias = 0x00001000;	// KF_FLAG_NO_ALIAS
 void defineSystemDirectories() {
 	std::string strPath;
 	DWORD winver = GetVersion();
-
+	
 	// Vista and up
-	if ((DWORD)(LOBYTE(LOWORD(winver))) >= 6) {
+	if((DWORD)(LOBYTE(LOWORD(winver))) >= 6) {
 		// Don't hardlink with SHGetKnownFolderPath to allow the game to start on XP too!
-		typedef HRESULT (WINAPI *PSHGetKnownFolderPath)(const GUID &rfid, DWORD dwFlags, HANDLE hToken, PWSTR* ppszPath); 
-
+		typedef HRESULT (WINAPI * PSHGetKnownFolderPath)(const GUID &rfid, DWORD dwFlags,
+		                                                 HANDLE hToken, PWSTR* ppszPath); 
+		
 		CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 		
 		PSHGetKnownFolderPath GetKnownFolderPath = (PSHGetKnownFolderPath)GetProcAddress(GetModuleHandleA("shell32.dll"), "SHGetKnownFolderPath");
@@ -192,25 +201,26 @@ void defineSystemDirectories() {
 		
 		LPWSTR wszPath = NULL;
 		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias, NULL, &wszPath);
-
-		if (SUCCEEDED(hr)) {
-            strPath = ws2s(wszPath); 
+		
+		if(SUCCEEDED(hr)) {
+			strPath = ws2s(wszPath);
 		}
-
+		
 		CoTaskMemFree(wszPath);
 		CoUninitialize();
-	} else if ((DWORD)(LOBYTE(LOWORD(winver))) == 5) { // XP
+	} else if((DWORD)(LOBYTE(LOWORD(winver))) == 5) { // XP
 		CHAR szPath[MAX_PATH];
-		HRESULT hr = SHGetFolderPathA(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, szPath);
-
-		if (SUCCEEDED(hr)) {
+		HRESULT hr = SHGetFolderPathA(NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL,
+		                              SHGFP_TYPE_CURRENT, szPath);
+		
+		if(SUCCEEDED(hr)) {
 			strPath = szPath; 
-			strPath += "\\My Games";			
+			strPath += "\\My Games";
 		}
 	} else {
 		arx_assert_msg(false, "Unsupported windows version (below WinXP)");
 	}
-
+	
 	if(!strPath.empty()) {
 		SetEnvironmentVariable("FOLDERID_SavedGames", strPath.c_str());
 	}
@@ -218,7 +228,7 @@ void defineSystemDirectories() {
 
 #endif
 
-#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+#if defined(HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
 	int ret = readlink(path, &buffer.front(), buffer.size());
@@ -238,10 +248,25 @@ static bool try_readlink(std::vector<char> & buffer, const char * path) {
 
 std::string getExecutablePath() {
 	
-#if defined(HAVE_READLINK) && defined(HAVE_SYS_STAT_H)
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 	
-	std::vector<char> buffer;
-	buffer.resize(1024);
+	uint32_t bufsize = 0;
+	
+	// Obtain required size
+	_NSGetExecutablePath(NULL, &bufsize);
+	
+	std::vector<char> exepath(bufsize);
+	
+	if(_NSGetExecutablePath(&exepath.front(), &bufsize) == 0) {
+		char exerealpath[MAXPATHLEN];
+		if(realpath(&exepath.front(), exerealpath)) {
+			return exerealpath;
+		}
+	}
+	
+#elif defined(HAVE_READLINK)
+	
+	std::vector<char> buffer(1024);
 	
 	if(try_readlink(buffer, "/proc/self/exe")) {
 		return std::string(buffer.begin(), buffer.end());

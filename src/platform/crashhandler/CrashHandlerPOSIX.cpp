@@ -92,7 +92,7 @@ CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
 CrashHandlerPOSIX::CrashHandlerPOSIX() {
 	m_sInstance = this;
-	m_CrashHandlerApp = "./arxcrashreporter";
+	m_CrashHandlerApp = "arxcrashreporter";
 }
 
 bool CrashHandlerPOSIX::initialize() {
@@ -243,12 +243,15 @@ void CrashHandlerPOSIX::crashBroker() {
 	
 	// Try a the crash reporter in the same directory as arx or in the current directory.
 #ifdef HAVE_EXECL
-	execl(m_CrashHandlerApp.c_str(), "arxcrashreporter", arguments, NULL);
+	if(!m_CrashHandlerPath.empty()) {
+		execl(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
+		      arguments, NULL);
+	}
 #endif
 	
 	// Try a crash reporter in the system path.
 #ifdef HAVE_EXECLP
-	execlp("arxcrashreporter", "arxcrashreporter", arguments, NULL);
+	execlp(m_CrashHandlerApp.c_str(), m_CrashHandlerApp.c_str(), arguments, NULL);
 #endif
 	
 	// Something went wrong - the crash reporter failed to start!

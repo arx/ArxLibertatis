@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include "core/Localisation.h"
+#include "core/Config.h"
 #include "core/Core.h"
 
 #include "gui/Interface.h"
@@ -290,15 +291,39 @@ static Font * _CreateFont(const res::path & fontFace, const string & fontProfile
 
 static float created_font_scale = 0.f;
 
+static bool getFontFile(res::path & result) {
+	
+	if(!config.language.empty()) {
+		result = "misc/arx_" + config.language + ".ttf";
+		if(resources->hasFile(result)) {
+			return true;
+		}
+	}
+	
+	result = "misc/arx_default.ttf";
+	if(resources->hasFile(result)) {
+		return true;
+	}
+	
+	result = "misc/arx.ttf";
+	if(resources->hasFile(result)) {
+		return true;
+	}
+	
+	if(!config.language.empty()) {
+		LogCritical << "Missing font file: need either misc/arx_" << config.language
+		            << ".ttf, misc/arx_default.ttf or misc/arx.ttf.";
+	} else {
+		LogCritical << "Missing font file: need either misc/arx_default.ttf or misc/arx.ttf.";
+	}
+	return false;
+}
+
 bool ARX_Text_Init() {
 	
-	res::path file = "misc/arx.ttf";
-	if(!resources->getFile(file)) {
-		file = "misc/arx_default.ttf";
-		if(!resources->getFile(file)) {
-			LogError << "missing font file: need either misc/arx.ttf or misc/arx_default.ttf";
-			return false;
-		}
+	res::path file;
+	if(!getFontFile(file)) {
+		return false;
 	}
 	
 	float scale = std::max(std::min(Yratio, Xratio), .001f);

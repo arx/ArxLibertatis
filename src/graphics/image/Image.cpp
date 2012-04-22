@@ -302,7 +302,7 @@ bool Image::LoadFromMemory(void * pData, unsigned int size) {
 	}
 	
 	// Release resources
-	ilDeleteImages( 1, &imageName );
+	ilDeleteImages(1, &imageName);
 	
 	return (mData != NULL);
 }

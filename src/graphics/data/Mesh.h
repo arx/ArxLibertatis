@@ -775,7 +775,6 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
 //	INTERACTIVE_OBJ Struct End
-//****************************************************************************
 
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
 void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
@@ -791,18 +790,18 @@ EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
 
-/**
+/*!
  * Check if the given condition is under water.
  * 
- * @return The lowest water polygon pos is under, or NULL if pos is not under water.
- **/
+ * @return the lowest water polygon pos is under, or NULL if pos is not under water.
+ */
 EERIEPOLY * EEIsUnderWater(const Vec3f * pos);
 
-/**
+/*!
  * Check if the given condition is under water.
  * 
- * @return Any water polygon pos is under, or NULL if pos is not under water.
- **/
+ * @return any water polygon pos is under, or NULL if pos is not under water.
+ */
 EERIEPOLY * EEIsUnderWaterFast(const Vec3f * pos);
 
 bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos,float * ret);

@@ -31,7 +31,11 @@ include(CreateSourceGroups)
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_TOOLS "Build tools" ON)
-option(BUILD_CRASHREPORTER "Build the crash reporter" ON)
+if(APPLE)
+	option(BUILD_CRASHREPORTER "Build the crash reporter" OFF)
+else(APPLE)
+	option(BUILD_CRASHREPORTER "Build the crash reporter" ON)
+endif(APPLE)
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(UNITY_BUILD "Unity build" OFF)
@@ -43,6 +47,43 @@ option(USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
 option(USE_SDL "Build the SDL windowing backend." ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
 option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
+
+
+if(NOT WIN32)
+	if(CMAKE_VERSION VERSION_LESS 2.8.5)
+		set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
+		    STRING "read-only architecture-independent data root (share) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_DATAROOTDIR)
+		set(CMAKE_INSTALL_BINDIR "bin" CACHE
+		    STRING "user executables (bin) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_BINDIR)
+		set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
+		    STRING "program executables (libexec) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_LIBEXECDIR)
+		set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
+		    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
+		mark_as_advanced(CMAKE_INSTALL_MANDIR)
+		foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
+			if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
+				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
+			else()
+				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
+			endif()
+		endforeach()
+	else()
+		include(GNUInstallDirs)
+	endif()
+	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
+	    STRING "Install location for icons (relative to prefix).")
+	mark_as_advanced(ICONDIR)
+	set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
+	    STRING "Install location for .desktop files (relative to prefix).")
+	mark_as_advanced(APPDIR)
+	set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
+	    STRING "Install location for game executables (relative to prefix).")
+	mark_as_advanced(GAMESBINDIR)
+endif()
+
 
 if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(DevIL IL)
@@ -101,12 +142,13 @@ endif()
 find_package(Doxygen)
 find_package(PythonInterp)
 if(USE_SDL)
-    if(NOT APPLE)
-        # Required to avoid linking with SDLmain except for OS X where it is necessary
-        # due to the need to have NSApplication correctly setup by SDLmain.
-        set(SDL_BUILDING_LIBRARY 1)
-    endif()
-    find_package(SDL 1.2 EXACT)
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	else()
+		# Required to avoid linking with SDLmain except for OS X where it is necessary
+		# due to the need to have NSApplication correctly setup by SDLmain.
+		set(SDL_BUILDING_LIBRARY 1)
+	endif()
+	find_package(SDL 1.2 EXACT)
 endif()
 
 if(MSVC)
@@ -207,7 +249,7 @@ if(MSVC)
 	# Enable compiler optimization in release
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
 	
-	# Always build with debug information 
+	# Always build with debug information
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
 	
 	# Enable linker optimization in release
@@ -244,8 +286,15 @@ else(MSVC)
 		check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 	endif()
 	
-	set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
-	add_definitions(-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "GNU"
+	   OR ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD")
+		set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
+		add_definitions(-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600)
+		if(${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD")
+			set(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS} -D_BSD_SOURCE")
+			add_definitions(-D_BSD_SOURCE)
+		endif()
+	endif()
 	
 	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
 	
@@ -260,12 +309,16 @@ else(MSVC)
 	check_symbol_exists(popen "stdio.h" HAVE_POPEN)
 	check_symbol_exists(pclose "stdio.h" HAVE_PCLOSE)
 	
-	set(CMAKE_REQUIRED_LIBRARIES "-lrt")
+	find_library(LIBRT_LIBRARY rt)
+	
+	if(LIBRT_LIBRARY)
+		set(CMAKE_REQUIRED_LIBRARIES "${LIBRT_LIBRARY}")
+	endif()
 	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
-	unset(CMAKE_REQUIRED_LIBRARIES)
-	if(HAVE_CLOCK_GETTIME)
-		set(TIME_LIBRARIES "-lrt")
-	elseif(NOT HAVE_WINAPI)
+	if(LIBRT_LIBRARY)
+		unset(CMAKE_REQUIRED_LIBRARIES)
+	endif()
+	if(NOT HAVE_CLOCK_GETTIME AND NOT HAVE_WINAPI)
 		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
 	endif()
 	
@@ -299,8 +352,12 @@ else(MSVC)
 		check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
 		check_include_file("dirent.h" HAVE_DIRENT_H)
 		
+		check_symbol_exists(readdir_r "dirent.h" HAVE_READDIR_R)
+		
 		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
+		check_symbol_exists(pathconf "unistd.h" HAVE_PATHCONF)
 		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
+		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" HAVE_PC_CASE_SENSITIVE)
 		
 		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
 		
@@ -308,8 +365,9 @@ else(MSVC)
 		
 		check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
 		
-		if(HAVE_DIRFD AND HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_FSTATAT)
-			if((HAVE_FPATHCONF AND HAVE_PC_NAME_MAX) OR (HAVE_NAME_MAX))
+		if(HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_READDIR_R)
+			if((((HAVE_DIRFD AND HAVE_FPATHCONF) OR HAVE_PATHCONF) AND HAVE_PC_NAME_MAX)
+			   OR (HAVE_NAME_MAX))
 				set(HAVE_POSIX_FILESYSTEM 1)
 			endif()
 		endif()
@@ -331,7 +389,7 @@ else(MSVC)
 	add_cxxflag("-Woverflow")
 	add_cxxflag("-Wbool-conversions")
 	
-	# TODO enable: 
+	# TODO enable:
 	# add_cxxflag("-Wconversion") # very noisy
 	# add_cxxflag("-Wsign-conversion") # very noisy
 	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
@@ -356,7 +414,7 @@ else(MSVC)
 		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
 		
-	else(CMAKE_BUILD_TYPE STREQUAL "Release")
+	elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 		
 		if((NOT CMAKE_CXX_FLAGS MATCHES "-g(|[0-9]|gdb)")
 			 AND (NOT CMAKE_CXX_FLAGS_RELEASE MATCHES "-g(|[0-9]|gdb)"))
@@ -387,6 +445,14 @@ else(MSVC)
 		add_definitions(-D_RWSTD_NO_DYNAMIC_CAST)
 	endif()
 	
+	# Because we are lazy
+	add_ldflag("-Wl,--as-needed")
+
+	# Xcode does not support -isystem yet
+	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+		add_cxxflag("-Wno-undef")
+	endif()
+	
 endif(MSVC)
 
 if(WIN32 AND NOT WINE)
@@ -400,19 +466,39 @@ if(WIN32 AND NOT WINE)
 	if(NOT DEFINED USER_DIR_PREFIXES)
 		set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%")
 	endif()
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	# Define default user and data directories.
+	if(NOT DEFINED DATA_DIR)
+		set(DATA_DIR "ArxLibertatis")
+	endif()
+	if(NOT DEFINED USER_DIR)
+		set(USER_DIR "ArxLibertatis")
+	endif()
+	if(NOT DEFINED DATA_DIR_PREFIXES)
+		set(DATA_DIR_PREFIXES "/Applications")
+	endif()
+	if(NOT DEFINED USER_DIR_PREFIXES)
+		set(USER_DIR_PREFIXES "~/Library/Application Support")
+	endif()
 else()
 	# Define default user and data directories.
 	if(NOT DEFINED DATA_DIR)
-		set(DATA_DIR "arx")
+		set(DATA_DIR "games/arx")
 	endif()
 	if(NOT DEFINED USER_DIR)
 		set(USER_DIR "arx")
 	endif()
+	if(NOT DEFINED CONFIG_DIR)
+		set(CONFIG_DIR "arx")
+	endif()
 	if(NOT DEFINED DATA_DIR_PREFIXES)
-		set(DATA_DIR_PREFIXES "${CMAKE_INSTALL_PREFIX}/share:$XDG_DATA_DIRS")
+		set(DATA_DIR_PREFIXES "$XDG_DATA_DIRS")
 	endif()
 	if(NOT DEFINED USER_DIR_PREFIXES)
 		set(USER_DIR_PREFIXES "$XDG_DATA_HOME")
+	endif()
+	if(NOT DEFINED CONFIG_DIR_PREFIXES)
+		set(CONFIG_DIR_PREFIXES "$XDG_CONFIG_HOME")
 	endif()
 endif()
 if(DATA_DIR STREQUAL "")
@@ -420,6 +506,9 @@ if(DATA_DIR STREQUAL "")
 endif()
 if(USER_DIR STREQUAL "")
 	unset(USER_DIR)
+endif()
+if(CONFIG_DIR STREQUAL "")
+	unset(CONFIG_DIR)
 endif()
 if(DATA_DIR_PREFIXES STREQUAL "")
 	unset(DATA_DIR_PREFIXES)
@@ -576,7 +665,6 @@ set(INPUT_DINPUT8_SOURCES src/input/DInput8Backend.cpp)
 set(INPUT_SDL_SOURCES src/input/SDLInputBackend.cpp)
 
 set(IO_SOURCES
-	src/io/Blast.cpp
 	src/io/CinematicLoad.cpp
 	src/io/Implode.cpp
 	src/io/IniReader.cpp
@@ -588,11 +676,15 @@ set(IO_SOURCES
 )
 set(IO_LOGGER_SOURCES
 	src/io/log/ConsoleLogger.cpp
-	src/io/log/FileLogger.cpp
 	src/io/log/LogBackend.cpp
 	src/io/log/Logger.cpp
 )
+set(IO_LOGGER_EXTRA_SOURCES
+	src/io/log/FileLogger.cpp
+	src/io/log/CriticalLogger.cpp
+)
 set(IO_RESOURCE_SOURCES
+	src/io/Blast.cpp
 	src/io/resource/PakEntry.cpp
 	src/io/resource/PakReader.cpp
 	src/io/resource/ResourcePath.cpp
@@ -608,7 +700,7 @@ set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
 set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)
 set(IO_FILESYSTEM_WINDOWS_SOURCES src/io/fs/FilesystemWindows.cpp)
 
-set(MATH_SOURCES 
+set(MATH_SOURCES
 	src/math/Angle.cpp
 	src/math/Random.cpp
 )
@@ -623,16 +715,27 @@ set(PHYSICS_SOURCES
 	src/physics/Physics.cpp
 )
 
+# Basic platform abstraction sources
 set(PLATFORM_SOURCES
-	src/platform/CrashHandler.cpp
+	src/platform/Dialog.cpp
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
 	src/platform/String.cpp
-	src/platform/Thread.cpp
 	src/platform/Time.cpp
-	src/platform/crashhandler/CrashHandlerImpl.cpp
 )
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	list(APPEND PLATFORM_SOURCES src/platform/Dialog.mm)
+endif()
+
+# Extra platform abstraction - depends on the crash handler
+set(PLATFORM_EXTRA_SOURCES
+	src/platform/Thread.cpp
+)
+
+# Crash handler sources
+set(PLATFORM_CRASHHANDLER_SOURCES src/platform/CrashHandler.cpp)
+set(PLATFORM_CRASHHANDLER_IMPL_SOURCES src/platform/crashhandler/CrashHandlerImpl.cpp)
 set(PLATFORM_CRASHHANDLER_POSIX_SOURCES src/platform/crashhandler/CrashHandlerPOSIX.cpp)
 set(PLATFORM_CRASHHANDLER_WINDOWS_SOURCES src/platform/crashhandler/CrashHandlerWindows.cpp)
 
@@ -680,14 +783,15 @@ file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
-# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found release and debug
-# libs get mixed up. On windows we will empty out the Boost_LIBRARIES list and count on the 
-# auto-linking feature boost provides. http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
+# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
+# release and debug libs get mixed up. On windows we will empty out the
+# Boost_LIBRARIES list and count on the auto-linking feature boost provides.
+# http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
 if (MSVC)
 	# Reset libraries list so VC will perform auto-linking.
 	set (Boost_LIBRARIES "")
-
-	# Not needed anymore as BOOST_ROOT finds these properly. 
+	
+	# Not needed anymore as BOOST_ROOT finds these properly.
 	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
 	if ("${Boost_INCLUDE_DIRS}" STREQUAL "")
 		set (Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
@@ -695,16 +799,13 @@ if (MSVC)
 	if ("${Boost_LIBRARY_DIRS}" STREQUAL "")
 		set (Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
 	endif ()
-
+	
 	# Add boost lib directory to the list of libraries paths
 	link_directories(${Boost_LIBRARY_DIRS})
 endif ()
 
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 
-if(TIME_LIBRARIES)
-	list(APPEND ARX_LIBRARIES ${TIME_LIBRARIES})
-endif()
 if(HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
@@ -767,7 +868,7 @@ endif()
 if(HAVE_WINAPI)
 	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_WINDOWS_SOURCES})
 endif()
-list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES})
+list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES} ${IO_LOGGER_EXTRA_SOURCES})
 
 list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
 
@@ -790,12 +891,13 @@ list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
 if(HAVE_CRASHREPORTER)
 	if((HAVE_EXECLP OR HAVE_EXECL) AND HAVE_FORK AND HAVE_KILL)
-		list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
 		set(HAVE_CRASHHANDLER_POSIX 1)
 	elseif(MSVC)
-		list(APPEND PLATFORM_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
+		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
 		set(HAVE_CRASHHANDLER_WINDOWS 1)
-		
 		list(APPEND ARX_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	else()
@@ -804,11 +906,34 @@ if(HAVE_CRASHREPORTER)
 	endif()
 endif()
 
+if(LIBRT_LIBRARY AND (HAVE_CLOCK_GETTIME OR HAVE_CRASHHANDLER_POSIX))
+	# Needed for clock_gettime and boost::interprocess on some system.
+	list(APPEND ARX_LIBRARIES ${LIBRT_LIBRARY})
+endif()
+
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
 endif()
 
-set(ARX_SOURCES ${AI_SOURCES} ${ANIMATION_SOURCES} ${AUDIO_SOURCES} ${CORE_SOURCES} ${GAME_SOURCES} ${GRAPHICS_SOURCES} ${GUI_SOURCES} ${INPUT_SOURCES} ${IO_SOURCES} ${MATH_SOURCES} ${PHYSICS_SOURCES} ${PLATFORM_SOURCES} ${SCENE_SOURCES} ${SCRIPT_SOURCES} ${WINDOW_SOURCES})
+set(ARX_SOURCES
+	${AI_SOURCES}
+	${ANIMATION_SOURCES}
+	${AUDIO_SOURCES}
+	${CORE_SOURCES}
+	${GAME_SOURCES}
+	${GRAPHICS_SOURCES}
+	${GUI_SOURCES}
+	${INPUT_SOURCES}
+	${IO_SOURCES}
+	${MATH_SOURCES}
+	${PHYSICS_SOURCES}
+	${PLATFORM_SOURCES}
+	${PLATFORM_EXTRA_SOURCES}
+	${PLATFORM_CRASHHANDLER_SOURCES}
+	${SCENE_SOURCES}
+	${SCRIPT_SOURCES}
+	${WINDOW_SOURCES}
+)
 
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(MSVC)
@@ -834,11 +959,21 @@ list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 # Add executables
 
-add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}" "${ALL_INCLUDES}")
+if(WIN32 OR APPLE)
+	set(arx_INSTALL DESTINATION "bin")
+else()
+	set(arx_INSTALL DESTINATION "${GAMESBINDIR}")
+endif()
+
+add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
+                      "${ALL_INCLUDES}" "${arx_INSTALL}")
 
 if(HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_SOURCES
+		${PLATFORM_SOURCES}
+		${IO_FILESYSTEM_SOURCES}
+		${IO_LOGGER_SOURCES}
 		tools/crashreporter/CrashReporter.cpp
 		tools/crashreporter/ErrorReport.h
 		tools/crashreporter/ErrorReport.cpp
@@ -854,9 +989,6 @@ if(HAVE_CRASHREPORTER)
 		tools/crashreporter/tbg/TBG.cpp
 		tools/crashreporter/ui/ErrorReportDialog.h
 		tools/crashreporter/ui/ErrorReportDialog.cpp
-		${PLATFORM_SOURCES}
-		${IO_FILESYSTEM_SOURCES}
-		${IO_LOGGER_SOURCES}
 		"${VERSION_FILE}"
 	)
 	
@@ -896,32 +1028,40 @@ if(HAVE_CRASHREPORTER)
 		${QT_QTGUI_LIBRARY_RELEASE}
 		${QT_QTNETWORK_LIBRARY_RELEASE}
 		${Boost_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
 	)
+	if(LIBRT_LIBRARY)
+		# Needed for boost::interprocess on some systems.
+		list(APPEND arxcrashreporter_LIBRARIES ${LIBRT_LIBRARY})
+	endif()
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
 		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
 	
+	if(WIN32 OR APPLE)
+		set(arxcrashreporter_INSTALL DESTINATION "bin")
+	else()
+		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
+	endif()
+	
 	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
-	                      "${arxcrashreporter_LIBRARIES}" "")
+	                      "${arxcrashreporter_LIBRARIES}" "" "${arxcrashreporter_INSTALL}")
 	
 endif()
 
 if(BUILD_TOOLS)
 	
 	set(arxsavetool_SOURCES
+		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
 		src/core/Localisation.cpp
-		src/io/Blast.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp
 		src/io/IniSection.cpp
-		src/platform/String.cpp
-		src/platform/Platform.cpp
-		src/platform/Lock.cpp
 		tools/savetool/SaveFix.cpp
 		tools/savetool/SaveTool.cpp
 		tools/savetool/SaveView.cpp
@@ -931,18 +1071,11 @@ if(BUILD_TOOLS)
 	
 	add_executable_shared(arxsavetool "" "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}" "")
 	
-	
 	set(arxunpak_SOURCES
+		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
-		src/io/Blast.cpp
-		src/io/log/ColorLogger.cpp
-		src/io/log/ConsoleLogger.cpp
-		src/io/log/Logger.cpp
-		src/platform/String.cpp
-		src/platform/Platform.cpp
-		src/platform/Lock.cpp
 		tools/unpak/UnPak.cpp
 	)
 	
@@ -970,9 +1103,15 @@ add_custom_target(remake
 )
 
 if(DOXYGEN_EXECUTABLE)
+	set(DOXYGEN_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
+	configure_file("scripts/Doxyfile" "Doxyfile" ESCAPE_QUOTES)
 	add_custom_target(doc
 		#build the documentation
-		COMMAND cd ${CMAKE_SOURCE_DIR}/src && ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/Doxyfile
+		COMMAND "${CMAKE_COMMAND}" -E make_directory "${DOXYGEN_OUTPUT_DIR}"
+		COMMAND "${CMAKE_COMMAND}" -E chdir ${CMAKE_SOURCE_DIR}
+			${DOXYGEN_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile"
+		COMMENT "Building doxygen documentation."
+		VERBATIM
 	)
 endif()
 
@@ -992,6 +1131,35 @@ add_style_check_target(style "${STYLE_CHECKED_SOURCES}" "${STYLE_CHECKED_INCLUDE
 
 if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
+endif()
+
+
+# Install icon and desktop entry
+if(NOT WIN32 AND NOT APPLE)
+	
+	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
+	
+	if(DESKTOP_FILE_VALIDATE)
+		get_filename_component(ABS_DESKTOP_FILE data/icons/arx-libertatis.desktop ABSOLUTE)
+		add_custom_target(
+			validate_desktop_file ALL
+			"${DESKTOP_FILE_VALIDATE}" "${ABS_DESKTOP_FILE}" VERBATIM
+			DEPENDS "${ABS_DESKTOP_FILE}"
+		)
+	endif()
+	
+	install(FILES data/icons/arx-libertatis.png DESTINATION "${ICONDIR}" OPTIONAL)
+	install(FILES data/icons/arx-libertatis.desktop DESTINATION "${APPDIR}" OPTIONAL)
+	
+endif()
+
+# Install man pages
+if(NOT WIN32)
+	install(FILES data/man/arx.6 DESTINATION "${CMAKE_INSTALL_MANDIR}/man6" OPTIONAL)
+	if(BUILD_TOOLS)
+		install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+		install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+	endif()
 endif()
 
 

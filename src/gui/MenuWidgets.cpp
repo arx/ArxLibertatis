@@ -153,7 +153,6 @@ bool bFadeInOut=false;
 int iFadeAction=-1;
 float fFadeInOut=0.f;
 
-void ARX_MENU_Clicked_CREDITS();
 void ARX_MENU_Clicked_NEWQUEST();
 
 TextureContainer *pTextureLoad=NULL;

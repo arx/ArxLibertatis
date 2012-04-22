@@ -70,7 +70,7 @@ public:
 		return pathstr;
 	}
 	
-	/**
+	/*!
 	 * If pathstr contains a slash, return everything preceding it.
 	 * Otherwise, return path().
 	 */
@@ -83,7 +83,7 @@ public:
 		}
 	}
 	
-	/**
+	/*!
 	 * return *this = parent()
 	 */
 	path & up() {
@@ -95,7 +95,7 @@ public:
 		}
 	}
 	
-	/**
+	/*!
 	 * If pathstr contains a slash, return everything following it.
 	 * Otherwise, return pathstr.
 	 */
@@ -104,13 +104,13 @@ public:
 		return (dirpos == std::string::npos) ? pathstr : pathstr.substr(dirpos + 1);
 	}
 	
-	/**
+	/*!
 	 * If filename() constains a dot, return everything in filename() preceeding the dot.
 	 * Otherwise, return filename().
 	 */
 	std::string basename() const;
 	
-	/**
+	/*!
 	 * If filename() constains a dot, return dot and everything folowing it.
 	 * Otherwise, return std::string().
 	 */
@@ -130,8 +130,8 @@ public:
 		return (pathstr == str);
 	}
 	
-	/**
-	 * ! @return pathstr == str
+	/*!
+	 * @return pathstr == str
 	 * This overload is neccessary so comparing with string constants isn't ambigous
 	 */
 	inline bool operator==(const char * str) const {
@@ -148,15 +148,16 @@ public:
 		return (pathstr != str);
 	}
 	
-	/**
-	 * ! @return pathstr != str
+	/*!
+	 * @return pathstr != str
 	 * This overload is neccessary so comparing with string constants isn't ambigous
 	 */
 	inline bool operator!=(const char * str) const {
 		return pathstr.compare(0, pathstr.length(), str) != 0;
 	}
 	
-	/*! To allow path being used in std::map, etc
+	/*!
+	 * To allow path being used in std::map, etc
 	 * @return pathstr < other.pathstr
 	 */
 	inline bool operator<(const path & other) const {
@@ -169,7 +170,7 @@ public:
 	 */
 	path & set_ext(const std::string & ext);
 	
-	/**
+	/*!
 	 * If pathstr constains a dot after the last slash, return everything preceeding the last dot
 	 * @return *this
 	 */

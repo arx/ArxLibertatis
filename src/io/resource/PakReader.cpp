@@ -30,6 +30,8 @@
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
 
+#include "platform/String.h"
+
 using std::min;
 using std::strlen;
 using std::string;
@@ -633,6 +635,8 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		
 		std::string name = it.name();
 		fs::path entry = path / name;
+		
+		makeLowercase(name);
 		
 		if(it.is_directory()) {
 			ret &= addFiles(dir->addDirectory(name), entry);

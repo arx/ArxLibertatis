@@ -46,7 +46,7 @@ static PakFile * autodetectLanguage() {
 	
 	PakDirectory * dir = resources->getDirectory("localisation");
 	if(!dir) {
-		LogError << "Missing 'localisation' directory. Is 'loc.pak' present?";
+		LogCritical << "Missing 'localisation' directory. Is 'loc.pak' present?";
 		return NULL;
 	}
 	
@@ -95,7 +95,7 @@ static PakFile * autodetectLanguage() {
 	}
 	
 	if(!localisation) {
-		LogError << "Could not find any localisation file. (localisation/utext_*.ini)";
+		LogCritical << "Could not find any localisation file. (localisation/utext_*.ini)";
 		return NULL;
 	}
 	
@@ -119,6 +119,8 @@ bool initLocalisation() {
 	if(config.language.empty()) {
 		file = autodetectLanguage();
 	} else {
+		
+		LogInfo << "Using language from config file: " << config.language;
 		
 		// Attempt to load localisation for the configured language.
 		std::string filename = "localisation/utext_" + config.language + ".ini";
@@ -181,11 +183,6 @@ long getLocalisedKeyCount(const string & sectionname) {
 
 static const string BADNAMECHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]"; // TODO(case-sensitive) remove
 
-/**
- * Returns the localized string for the given key name
- * @param name The string to be looked up
- * @return The localized string based on the currently loaded locale file
- */
 string getLocalised(const string & name, const string & default_value) {
 	
 	arx_assert(name.find_first_of(BADNAMECHAR) == string::npos); ARX_UNUSED(BADNAMECHAR); // TODO(case-sensitive) remove

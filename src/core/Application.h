@@ -132,6 +132,7 @@ protected:
 public:
 	
 	virtual bool initialize();
+	virtual void shutdown();
 	
 private:
 	
@@ -149,19 +150,17 @@ public:
 	virtual ~Application();
 	
 
-	/**
-	 * Ask the game to quit at the end of the current frame.
-	 */
+	//! Ask the game to quit at the end of the current frame.
 	void quit();
 	
 	/* Virtual functions which may be overridden for specific implementations */
 	
-	/**
+	/*!
 	 * Writes text to the window
 	 * @param x The x coordinate for the text in pixels
 	 * @param y The y coordinate for the text in pixels
 	 * @param str The string of text to be written
-	*/
+	 */
 	virtual void outputText(int, int, const std::string &) {}
 	virtual void outputTextGrid(float, float, const std::string &, const Color &color = Color(255,255,255)) { ARX_UNUSED(color); }
 	

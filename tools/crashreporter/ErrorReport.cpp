@@ -66,6 +66,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileInfoList>
+#include <QSslSocket>
 #include <QThread>
 #include <QXmlStreamWriter>
 #include <QByteArray>
@@ -85,7 +86,6 @@
 
 #include "platform/Architecture.h"
 #include "platform/String.h"
-#include "platform/Thread.h"
 
 ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	: m_RunningTimeSec(0)
@@ -217,7 +217,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	memoryUsage = 0;
 	runningTimeSec = 0.0;
 	
-#ifdef HAVE_GETRUSAGE
+#if defined(HAVE_GETRUSAGE) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 	{
 		struct rusage usage;
 		if(getrusage(pid, &usage) == 0) {
@@ -460,7 +460,7 @@ bool ErrorReport::getCrashDescription() {
 			m_ReportDescription = "Floating-point error";
 			switch(m_pCrashInfo->code) {
 				#ifdef FPE_INTDIV
-				case ILL_ILLOPC: m_ReportDescription += ": integer division by zero"; break;
+				case FPE_INTDIV: m_ReportDescription += ": integer division by zero"; break;
 				#endif
 				#ifdef FPE_INTOVF
 				case FPE_INTOVF: m_ReportDescription += ": integer overflow"; break;
@@ -885,8 +885,11 @@ bool ErrorReport::SendReport(ErrorReport::IProgressNotifier* pProgressNotifier)
 
 	pProgressNotifier->taskStarted("Sending crash report", 3 + nbFilesToSend);
 
-	TBG::Server server("https://bugs.arx-libertatis.org");
+	// This must be called before creating our QNetworkAccessManager
+	AddSSLCertificate();
 
+	TBG::Server server("https://bugs.arx-libertatis.org");
+	
 	// Login to TBG server
 	pProgressNotifier->taskStepStarted("Connecting to the bug tracker");
 	bool bLoggedIn = server.login(m_Username, m_Password);
@@ -999,6 +1002,19 @@ void ErrorReport::ReleaseApplicationLock() {
 	// Kill the original, busy-waiting process.
 	kill(m_pCrashInfo->processId, SIGKILL);
 #endif
+}
+
+void ErrorReport::AddSSLCertificate()
+{
+	QFile file(":/startcom.cer", 0);
+	if(file.open(QIODevice::ReadOnly))
+	{
+		QSslCertificate certificate(file.readAll(), QSsl::Der);
+		if(certificate.isValid() && !certificate.isNull())
+		{
+			QSslSocket::addDefaultCaCertificate(certificate);
+		}
+	}
 }
 
 void ErrorReport::AddFile(const fs::path& fileName)

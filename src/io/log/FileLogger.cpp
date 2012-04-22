@@ -33,4 +33,8 @@ void File::flush() {
 	ofs.flush();
 }
 
+void File::quickShutdown() {
+	ofs.close();
+}
+
 } // namespace logger

@@ -69,7 +69,7 @@ public:
 		return pathstr;
 	}
 	
-	/**
+	/*!
 	 * If pathstr contains a slash, return everything preceding it.
 	 * Otherwise, return path().
 	 */
@@ -90,14 +90,14 @@ public:
 		}
 	}
 	
-	/**
+	/*!
 	 * return *this = parent()
 	 */
 	path & up() {
 		return (*this = parent());
 	}
 	
-	/**
+	/*!
 	 * If pathstr contains a slash, return everything following it.
 	 * Otherwise, return pathstr.
 	 */
@@ -106,13 +106,13 @@ public:
 		return (dirpos == std::string::npos) ? pathstr : pathstr.substr(dirpos + 1);
 	}
 	
-	/**
+	/*!
 	 * If filename() constains a dot, return everything in filename() preceeding the dot.
 	 * Otherwise, return filename().
 	 */
 	std::string basename() const;
 	
-	/**
+	/*!
 	 * If filename() constains a dot, return dot and everything folowing it.
 	 * Otherwise, return std::string().
 	 */
@@ -132,7 +132,8 @@ public:
 		return (pathstr != other.pathstr);
 	}
 	
-	/*! To allow path being used in std::map, etc
+	/*!
+	 * To allow path being used in std::map, etc
 	 * @return pathstr < other.pathstr
 	 */
 	bool operator<(const path & other) const {
@@ -145,7 +146,7 @@ public:
 	 */
 	path & set_ext(const std::string & ext);
 	
-	/**
+	/*!
 	 * If pathstr constains a dot after the last slash, return everything preceeding the last dot
 	 * @return *this
 	 */
@@ -163,7 +164,7 @@ public:
 		pathstr.swap(other.pathstr);
 	}
 	
-	//! return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
+	//! @return str.empty() ? !ext().empty() : ext() == str || ext.substr(1) == str();
 	bool has_ext(const std::string & str = std::string()) const;
 	
 	//! ".." or starts with "../"
@@ -172,7 +173,7 @@ public:
 		       || (pathstr.length() >= 3 && pathstr[0] == '.' && pathstr[1] == '.' && pathstr[2] == dir_sep);
 	}
 	
-	//! not empty, not "/", not "." not ".." and doesn't end in "/.."
+	//! @return true if not empty, not "/", not "." not ".." and doesn't end in "/.."
 	bool has_info() const {
 		size_t l = pathstr.length();
 		return (!pathstr.empty() && !(l == 2 && pathstr[0] == '.' && pathstr[1] == '.')

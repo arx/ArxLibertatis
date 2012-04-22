@@ -24,12 +24,14 @@
 
 /*!
  * Parse the command line.
- * @return true if the program should exit immediately.
+ * @return false if the program should exit immediately.
  */
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-void parseCommandLine(int argc, char ** argv);
+bool parseCommandLine(int argc, char ** argv);
 #else
-void parseCommandLine(const char * command_line);
+bool parseCommandLine(const char * command_line);
 #endif
+
+bool createUserAndConfigDirectory();
 
 #endif // ARX_CORE_STARTUP_H

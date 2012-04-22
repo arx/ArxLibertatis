@@ -323,8 +323,10 @@ namespace gui {
 
 namespace {
 
-//! Manage forward and backward buttons on notes and the quest book.
-//! \return true if the note was clicked
+/*!
+ * Manage forward and backward buttons on notes and the quest book.
+ * @return true if the note was clicked
+ */
 bool manageNoteActions(Note & note) {
 	
 	if(note.prevPageButton().contains(Vec2f(DANAEMouse))) {
