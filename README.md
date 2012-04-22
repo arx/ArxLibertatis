@@ -76,7 +76,7 @@ The wiki has more detailed instructions on [compiling under linux](http://wiki.a
 
 Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
 
-Build options:
+### Build options:
 
 * `BUILD_TOOLS` (default=ON): Build tools
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui (default OFF for Mac)
