@@ -72,9 +72,9 @@ To install the binaries system-wide, run as root:
 
 Alternatively you can run the game by specifying the full path to the `arx` binary in the `build` directory.
 
-The wiki has more detailed instructions on [compiling under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux).
+The wiki has more detailed instructions on [compiling under linux](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Linux).
 
-Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://arx.parpg.net/Downloading_and_Compiling_under_Windows) are available on the wiki.
+Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
 
 Build options:
 
@@ -114,9 +114,9 @@ Backends that are not available are disabled by default. The `cmake` run should 
 
 ## Data file, config and savegame locations
 
-You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
+You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data).
 
-Where arx will look for data files and write config and save files depends on the operating system and environment - the full algorithm is described at http://arx.parpg.net/Data_directories
+Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://wiki.arx-libertatis.org/Data_directories).
 
 To print all directories considered by arx, run
 
@@ -158,7 +158,7 @@ You can close it with `Alt + F4` or `killall arx`
 
 ## Scripts
 
-The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively:
+The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
 
 * `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
 * `scripts/install-copy path/to/ArxFatalis/ [output_dir]`
@@ -166,6 +166,10 @@ The `scripts` directory contains three shell scripts that allow to extract/insta
 * `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
 
 `install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and `install-gog` needs just [innoextract](http://innoextract.constexpr.org/).
+
+`ArxFatalis_1.21_MULTILANG.exe` can be downloaded from [the official Arx Fatalis website](http://www.arkane-studios.com/uk/arx_downloads.php).
+
+`setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
 
 ## Build documentation
 

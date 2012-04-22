@@ -14,7 +14,14 @@ fi
 
 [ "$patch" = "" ] && die "\
 Usage: install-cd path/to/mount/point/ path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
-or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]"
+or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
+
+This script can be used to install the Arx Fatalis data from a CD or ISO.
+Files will be verified and renamed as needed by Arx Libertatis.
+
+ArxFatalis_1.21_MULTILANG.exe can be downloaded from the official Arx Fatalis website
+at http://www.arkane-studios.com/uk/arx_downloads.php
+If you know the language of your CD, you can use the language-specific patch instead."
 
 if [ "$3" = "" ]
 	then destdir="$(pwd)"

@@ -8,7 +8,14 @@ die() {
 # Handle arguments
 
 [ "$1" = "--help" ] || [ "$1" = "-h" ] || zipfile="$(readlink -f "$1")"
-[ "$zipfile" != "" ] || die "Usage: install-demo path/to/arx_demo_english.zip [output_dir]"
+
+[ "$zipfile" != "" ] || die "\
+Usage: install-demo path/to/arx_demo_english.zip [output_dir]
+
+This script can be used to install the Arx Fatalis demo data.
+Files will be verified and renamed as needed by Arx Libertatis.
+
+For demo download locations see http://wiki.arx-libertatis.org/Getting_the_game_data#Demo"
 
 if [ "$2" = "" ]
 	then destdir="$(pwd)"

@@ -8,7 +8,14 @@ die() {
 # Handle arguments
 
 [ "$1" = "--help" ] || [ "$1" = "-h" ] || setupfile="$(readlink -f "$1")"
-[ "$setupfile" != "" ] || die "Usage: install-gog path/to/setup_arx_fatalis.exe [output_dir]"
+
+[ "$setupfile" != "" ] || die "\
+Usage: install-gog path/to/setup_arx_fatalis.exe [output_dir]
+
+This script can be used to install the Arx Fatalis data from a GOG.com setup file.
+Files will be verified and renamed as needed by Arx Libertatis.
+
+setup_arx_fatalis.exe can be downloaded from your GOG.com account after buying Arx Fatalis"
 
 if [ "$2" = "" ]
 	then destdir="$(pwd)"
