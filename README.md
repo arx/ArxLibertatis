@@ -160,16 +160,24 @@ You can close it with `Alt + F4` or `killall arx`
 
 The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
 
-* `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
-* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`
-* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
-* `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
+* `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`<br>
+ <small>
+  requires [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/)<br>
+  `ArxFatalis_1.21_MULTILANG.exe` can be downloaded from [the official Arx Fatalis website](http://www.arkane-studios.com/uk/arx_downloads.php).
+ </small>
 
-`install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and `install-gog` needs just [innoextract](http://innoextract.constexpr.org/).
+* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`<br>
+ <small>
+  requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/)
+ </small>
 
-`ArxFatalis_1.21_MULTILANG.exe` can be downloaded from [the official Arx Fatalis website](http://www.arkane-studios.com/uk/arx_downloads.php).
+* `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`<br>
+ <small>
+  requires [innoextract](http://innoextract.constexpr.org/)<br>
+  `setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
+ </small>
 
-`setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
+* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`<br>
 
 ## Build documentation
 
