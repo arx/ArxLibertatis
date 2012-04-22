@@ -1,5 +1,5 @@
 
-== Arx Libertatis 1.0 "Bloody Gobblers!" ==
+= Arx Libertatis 1.0 "Bloody Gobblers!" =
 
 === New Features ===
 
@@ -50,3 +50,11 @@
 * Support for reducing textures to 16-bit
 * Non-newcontrol mode
 * Gamma/brightness/contrast correction
+
+== Patch 1.0.1 ==
+
+* Fixed garbled text rendering in the Russian version (bug #226)
+* Fixed a crash in the critical error dialog on some Linux systems
+  (crash report #229)
+* Loading files from the 'graph' and 'misc' directories is now case-insensitive
+* Switched to D3D and DInput backends by default on Windows
