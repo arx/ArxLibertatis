@@ -76,7 +76,7 @@ std::string escape(const std::string & input) {
 
 int zenityCommand(DialogType type, const std::string & message, const std::string & dialogTitle) {
 	
-	const char* options = "";
+	const char * options = "";
 	switch(type) {
 		case DialogInfo:     options = "--info"; break;
 		case DialogWarning:  options = "--warning"; break;
@@ -118,7 +118,7 @@ int xmessageCommand(DialogType type, const std::string & message,
 	
 	ARX_UNUSED(dialogTitle);
 	
-	const char* options = "";
+	const char * options = "";
 	switch(type) {
 		default:             options = "-buttons OK"; break;
 		case DialogYesNo:    options = "-buttons Yes:0,No:1"; break;
@@ -141,7 +141,7 @@ bool showDialog(DialogType type, const std::string & message,
 	
 	// This may not be the best way
 	const char * session = getenv("DESKTOP_SESSION");
-	bool usingKDE = !strcasecmp(session, "kde");
+	bool usingKDE = (session != NULL) && !strcasecmp(session, "kde");
 	usingKDE = usingKDE || (getenv("KDE_FULL_SESSION") != NULL);
 	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != NULL);
 	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != NULL);

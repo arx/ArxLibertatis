@@ -114,11 +114,11 @@ public:
 		}
 	}
 	
-	/**
+	/*!
 	 * If a node with the same ID exists, update it.
 	 * Otherwise add a new node.
 	 * Assumes that remaining never changes for the same node id.
-	 **/
+	 */
 	inline void add(NodeId id, const Node * parent, float distance, float remaining) {
 		
 		// Check if node is already in open list.

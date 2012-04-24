@@ -203,7 +203,7 @@ void defineSystemDirectories() {
 		HRESULT hr = GetKnownFolderPath(FOLDERID_SavedGames, kfFlagCreate | kfFlagNoAlias, NULL, &wszPath);
 		
 		if(SUCCEEDED(hr)) {
-			strPath = ws2s(wszPath); 
+			strPath = ws2s(wszPath);
 		}
 		
 		CoTaskMemFree(wszPath);
@@ -215,7 +215,7 @@ void defineSystemDirectories() {
 		
 		if(SUCCEEDED(hr)) {
 			strPath = szPath; 
-			strPath += "\\My Games";			
+			strPath += "\\My Games";
 		}
 	} else {
 		arx_assert_msg(false, "Unsupported windows version (below WinXP)");

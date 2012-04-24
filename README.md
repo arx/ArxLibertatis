@@ -19,7 +19,7 @@ Bug Tracker: [https://bugs.arx-libertatis.org/](https://bugs.arx-libertatis.org/
 
 IRC: \#arxfatalis on irc.freenode.net
 
-Wiki: [http://arx.parpg.net/](http://arx.parpg.net/)
+Wiki: [http://wiki.arx-libertatis.org/](http://wiki.arx-libertatis.org/)
 
 Reddit: [http://www.reddit.com/r/ArxFatalis/](http://www.reddit.com/r/ArxFatalis/)
 
@@ -72,14 +72,14 @@ To install the binaries system-wide, run as root:
 
 Alternatively you can run the game by specifying the full path to the `arx` binary in the `build` directory.
 
-The wiki has more detailed instructions on [compiling under linux](http://arx.parpg.net/Downloading_and_Compiling_under_Linux).
+The wiki has more detailed instructions on [compiling under linux](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Linux).
 
-Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://arx.parpg.net/Downloading_and_Compiling_under_Windows) are available on the wiki.
+Getting all the dependencies set up for Windows is more tricky. Pre-build dependencies are available in the [ArxWindows repository](https://github.com/arx/ArxWindows) and [instructions on how to use them](http://wiki.arx-libertatis.org/Downloading_and_Compiling_under_Windows) are available on the wiki.
 
-Build options:
+### Build options:
 
 * `BUILD_TOOLS` (default=ON): Build tools
-* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui
+* `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui (default OFF for Mac)
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
@@ -114,9 +114,9 @@ Backends that are not available are disabled by default. The `cmake` run should 
 
 ## Data file, config and savegame locations
 
-You will need to get either the full game or demo data of Arx Fatalis. See http://arx.parpg.net/Getting_the_game_data
+You will need to [get either the full game or demo data of Arx Fatalis](http://wiki.arx-libertatis.org/Getting_the_game_data).
 
-Where arx will look for data files and write config and save files depends on the operating system and environment - the full algorithm is described at http://arx.parpg.net/Data_directories
+Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://wiki.arx-libertatis.org/Data_directories).
 
 To print all directories considered by arx, run
 
@@ -131,6 +131,8 @@ Arx Libertatis will then put the config and save files in the same directory. If
 Where arx will look for a system-wide installation depends on the OS:
 
 Under **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\Arx Libertatis` on XP and `%USERPROFILE%\Saved Games\Arx Libertatis` on Vista and up.
+
+Under **Mac OS X**, the system-wide data files should be stored in `/Applications/ArxLibertatis/`. Config, save and per-user data files are located in `~/Library/Application Support/ArxLibertatis/`.
 
 For other systems like **Linux**, the data files can be in `/usr/local/share/games/arx` and `/usr/share/games/arx` as well as other locations depending on your linux distribution. Config files are normally located in `~/.config/arx` while save files are stored in `~/.local/share/arx`.
 
@@ -156,14 +158,20 @@ You can close it with `Alt + F4` or `killall arx`
 
 ## Scripts
 
-The `scripts` directory contains three shell scripts that allow to extract/install the game data under linux without wine from the demo, CD or GOG.com installer respectively:
+The `scripts` directory contains shell scripts that allow to extract/install the game data under linux without wine from the CD, demo, GOG.com installer or any fully patched Arx Fatalis install respectively. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
 
-* `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`
-* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`
-* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`
-* `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`
+* `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`<br>
+  requires [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/)<br>
+  `ArxFatalis_1.21_MULTILANG.exe` can be downloaded from [the official Arx Fatalis website](http://www.arkane-studios.com/uk/arx_downloads.php).
 
-`install-demo` requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/) while `install-cd` needs [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/) and `install-gog` needs just [innoextract](http://innoextract.constexpr.org/).
+* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`<br>
+  requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/)
+
+* `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`<br>
+  requires [innoextract](http://innoextract.constexpr.org/)<br>
+  `setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
+
+* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`<br>
 
 ## Build documentation
 

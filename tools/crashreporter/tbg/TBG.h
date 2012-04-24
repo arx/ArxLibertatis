@@ -25,54 +25,56 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-namespace TBG
-{
+namespace TBG {
 
-class Server : public QObject
-{
-public:	
-	enum OperatingSystem
-	{
-		OS_Linux = 100,			// Linux
-		OS_MacOSX = 200,		// Mac
-		OS_FreeBSD = 300,		// FreeBSD
-		OS_Windows = 400,		// Windows
+class Server : public QObject {
+	
+public:
+	
+	enum OperatingSystem {
+		OS_Linux = 100,   // Linux
+		OS_MacOSX = 200,  // Mac
+		OS_FreeBSD = 300, // FreeBSD
+		OS_Windows = 400, // Windows
 		OS_Other = 0xFFFFFFFF
 	};
-
-	enum Architecture
-	{
+	
+	enum Architecture {
 		Arch_Amd64 = 3,
 		Arch_x86 = 2,
 		Arch_Other = 0xFFFFFFFF
 	};
-
+	
 	explicit Server(const QString & adress);
-
-	bool login(const QString& username, const QString& password);
-	bool createCrashReport(const QString& title, const QString& description, const QString& reproSteps, int version_id, int& issue_id);
-	bool addComment(int issue_id, const QString& comment);
+	
+	bool login(const QString & username, const QString & password);
+	bool createCrashReport(const QString & title, const QString & description,
+	                       const QString & reproSteps, int version_id, int & issue_id);
+	bool addComment(int issue_id, const QString & comment);
 	bool setOperatingSystem(int issue_id, int os_id);
 	bool setArchitecture(int issue_id, int arch_id);
-	bool attachFile(int issue_id, const QString& filePath, const QString& fileDescription, const QString& comment);
-	bool findIssue(const QString& text, int& issue_id);
-
+	bool attachFile(int issue_id, const QString & filePath, const QString & fileDescription,
+	                const QString & comment);
+	bool findIssue(const QString & text, int & issue_id);
+	
 	QUrl getUrl() const;
-
-	const QString& getErrorString() const;
-
+	
+	const QString & getErrorString() const;
+	
 private:
-	bool waitForReply();
-	bool setFieldValue(const QString& fieldName, int issue_id, int value_id);
-	bool getIssueIdFromUrl(const QUrl& url, int& issue_id);
-
+	
+	bool waitForReply(bool followRedirect = true);
+	bool setFieldValue(const QString & fieldName, int issue_id, int value_id);
+	bool getIssueIdFromUrl(const QUrl & url, int& issue_id);
+	
 private:
+	
 	QString               m_ServerAddress;
 	QString               m_ServerPrefix;
 	QNetworkAccessManager m_NetAccessManager;
 	QNetworkReply *       m_CurrentReply;
 	QUrl                  m_CurrentUrl;
-	QString				  m_LastErrorString;
+	QString               m_LastErrorString;
 };
 
 }

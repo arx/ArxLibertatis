@@ -14,7 +14,14 @@ fi
 
 [ "$patch" = "" ] && die "\
 Usage: install-cd path/to/mount/point/ path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
-or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]"
+or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
+
+This script can be used to install the Arx Fatalis data from a CD or ISO.
+Files will be verified and renamed as needed by Arx Libertatis.
+
+ArxFatalis_1.21_MULTILANG.exe can be downloaded from the official Arx Fatalis website
+at http://www.arkane-studios.com/uk/arx_downloads.php
+If you know the language of your CD, you can use the language-specific patch instead."
 
 if [ "$3" = "" ]
 	then destdir="$(pwd)"
@@ -27,20 +34,20 @@ here="$(pwd)"
 echo "Installing Arx Fatalis CD data from \"$cd\" to \"$destdir\".
 "
 
+[ -f "$here/install-verify" ] || die "Missing install-verify script."
+install_verify_sourced=1
+. "$here/install-verify"
+
 # Check for required commands
 
 cabextract=`which cabextract 2> /dev/null`
 innoextract=`which innoextract 2> /dev/null`
-md5sum=`which md5sum 2> /dev/null`
 
 [ -f "$cabextract" ] \
 	|| die "Please install cabextract (http://www.cabextract.org.uk/)"
 
 [ -f "$innoextract" ] \
 	|| die "Please install innoextract (http://innoextract.constexpr.org/)"
-
-[ -f "$md5sum" ] \
-	|| die "Please install md5sum (http://www.gnu.org/software/coreutils/)"
 
 [ -e "$cd" ] || die "$cd does not exist"
 [ -f "$patch" ] || die "$patch does not exist"
@@ -68,7 +75,7 @@ fi
 
 # Verify input file
 
-patch_checksum="$(md5sum "$patch" | sed 's/ .*//')"
+patch_checksum="$("$md5sum" -b "$patch" | sed 's/ .*//')"
 
 case "$patch_checksum" in
 	'e66abe5edb113d3e71194b61010a05f3') patch_lang='english' ;;
@@ -145,83 +152,22 @@ if [ ! -d "$cd" ] ; then
 	
 fi
 
-# Extract files
+# Extract source files
 
-cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} ';'
+cd "$srcdir" && find "$cd" -iname "setup*.cab" -exec "$cabextract" {} \;
 
-speech_checksum=`find . -iname "speech.pak" -exec "$md5sum" {} ';' | sed "s/ .*//g"`
+# Detect language
 
-case "$speech_checksum" in
-	'4e8f962d8204bcfd79ce6f3226d6d6de') data_lang='english' ; checksum_lang='en' ;;
-	'4c3fdb1f702700255924afde49081b6e') data_lang='german' ; checksum_lang='de' ;;
-	# TODO add support for spanish, french, italian and russian
-	*) data_lang="" ;;
-esac
+cd "$srcdir" && detect_language
 
-if [ "$data_lang" = "" ] ;
-	then
-		echo "
+[ "$patch_lang" = "multilang" ] || [ "$patch_lang" = "$data_lang" ] \
+	|| die "Patch language ($patch_lang) does not match data language ($data_lang)!"
 
-WARNING: The localisation of your data files is not supported.
-speech.pak checksum: $speech_checksum
-"
-		[ "$patch_lang" != "multilang" ] \
-			|| die "Please use the localised version of the 1.21 patch for your language and re-run this script and then add the resulting checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums"
-		cd "$patchdir" && "$innoextract" --lowercase "$patch"
-	else
-		echo "
-Data language: $data_lang
-"
-		[ "$patch_lang" = "multilang" ] || [ "$patch_lang" = "$data_lang" ] \
-			|| die "Patch language ($patch_lang) does not match data language ($data_lang)!"
-		cd "$patchdir" && "$innoextract" --lowercase --language="$data_lang" "$patch"
-fi
+# Extract patch files
+
+cd "$patchdir" && "$innoextract" --lowercase --language="$data_lang" "$patch"
 
 # Install required files
-
-set -- \
-	"arx_handbuch.pdf" \
-	"data2.pak" \
-	"data.pak" \
-	"graph/interface/misc/arkane.bmp" \
-	"graph/interface/misc/quit1.bmp" \
-	"graph/obj3d/textures/fixinter_barrel.jpg" \
-	"graph/obj3d/textures/fixinter_bell.bmp" \
-	"graph/obj3d/textures/fixinter_metal_door.jpg" \
-	"graph/obj3d/textures/fixinter_public_notice.bmp" \
-	"graph/obj3d/textures/item_bread.bmp" \
-	"graph/obj3d/textures/item_club.jpg" \
-	"graph/obj3d/textures/item_long_sword.jpg" \
-	"graph/obj3d/textures/item_mauld_sabre.jpg" \
-	"graph/obj3d/textures/item_mauldsword.jpg" \
-	"graph/obj3d/textures/item_mirror.jpg" \
-	"graph/obj3d/textures/item_ring_casting.bmp" \
-	"graph/obj3d/textures/item_rope.bmp" \
-	"graph/obj3d/textures/item_spell_sheet.jpg" \
-	"graph/obj3d/textures/item_torch2.jpg" \
-	"graph/obj3d/textures/item_torch.jpg" \
-	"graph/obj3d/textures/item_zohark.bmp" \
-	"graph/obj3d/textures/l7_dwarf_[wood]_board08.jpg" \
-	"graph/obj3d/textures/l7_dwarf_[wood]_board80.jpg" \
-	"graph/obj3d/textures/npc_dog.bmp" \
-	"graph/obj3d/textures/npc_pig.bmp" \
-	"graph/obj3d/textures/npc_pig_dirty.bmp" \
-	"graph/obj3d/textures/npc_rat_base.bmp" \
-	"graph/obj3d/textures/npc_rat_base_cm.bmp" \
-	"graph/obj3d/textures/npc_worm_body_part1.jpg" \
-	"graph/obj3d/textures/npc_worm_body_part2.bmp" \
-	"graph/obj3d/textures/[wood]_light_door.jpg" \
-	"loc.pak" \
-	"manual.pdf" \
-	"map.pdf" \
-	"misc/arx_default.ttf" \
-	"misc/arx_russian.ttf" \
-	"misc/arx_taiwanese.ttf" \
-	"misc/arx.ttf" \
-	"misc/logo.avi" \
-	"misc/logo.bmp" \
-	"sfx.pak" \
-	"speech.pak"
 
 cd "$tempdir"
 
@@ -231,13 +177,17 @@ for f in "$@" ; do
 	
 	dir="$(dirname "$f")"
 	file="$(basename "$f" | sed 's/[^[:alnum:]_-]/\\&/g')"
+	file_default="$(echo "$file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/g')"
 	
 	mkdir -pv "$destdir/$dir"
 	rm "$dst" > /dev/null 2>&1
 	
-	[ -f "$dst" ] || find "patch" -iname "$file" -exec mv -fv {} "$dst" ';'
-	[ -f "$dst" ] || find "src" -iname "$file" -exec mv -fv {} "$dst" ';'
-	[ -f "$dst" ] || find "$cd" -iname "$file" -exec cp -fv {} "$dst" ';'
+	[ -f "$dst" ] || find "patch" -iname "$file" -exec mv -fv {} "$dst" \;
+	[ -f "$dst" ] || find "src" -iname "$file" -exec mv -fv {} "$dst" \;
+	[ -f "$dst" ] || find "$cd" -iname "$file" -exec cp -fv {} "$dst" \;
+	
+	[ -f "$dst" ] || find "src" -iname "$file_default" -exec mv -fv {} "$dst" \;
+	[ -f "$dst" ] || find "$cd" -iname "$file_default" -exec cp -fv {} "$dst" \;
 	
 	[ -f "$dst" ] && chmod "--reference=$destdir" "$dst" > /dev/null 2>&1
 	[ -f "$dst" ] && chmod -x "$dst" > /dev/null 2>&1
@@ -249,42 +199,6 @@ done
 unmount_iso
 rm -rf "$tempdir"
 
-echo "
-Done:"
-
 # Verify installed files
 
-cd "$destdir"
-checksums=`"$md5sum" "$@" 2> /dev/null`
-
-if [ "$checksum_lang" = "" ] ; then
-	echo "
-
-Got checksums:
-
-$checksums
-
-WARNING: The language of your of your data files is not support by this script.
-
-If you used the MULTILANG version of the 1.21 patch, re-run this script with the language-specific version of the patch.
-
-If you used the language-specific version of the 1.21 patch, please add the above checksums to http://wiki.arx-libertatis.org/Required_data_files_and_checksums so that they can be included in future versions of this script."
-	exit
-fi
-
-[ -f "$here/data-$checksum_lang.md5" ] || die "Missing data-$checksum_lang.md5"
-
-expected_checksums="$(cat "$here/data-$checksum_lang.md5")"
-
-[ "$checksums" = "$expected_checksums" ] || die "
-Checksum mismatch, expected
-
-$expected_checksums
-
- got
-
-$checksums
-
-ERROR: Checksum mismatch."
-
-echo "Checksum match."
+cd "$destdir" && verify_checksums

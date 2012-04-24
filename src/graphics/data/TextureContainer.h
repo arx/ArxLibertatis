@@ -79,8 +79,10 @@ struct DELAYED_PRIM {
 	EERIEPOLY * data;
 };
 
-/** Linked list structure to hold info per texture.
- * @todo This class is currently an hybrid between a texture class and a render batch... We should create a RenderBatch class for all vertex stuff.
+/*!
+ * Linked list structure to hold info per texture.
+ * TODO This class is currently an hybrid between a texture class and a render batch...
+ *      We should create a RenderBatch class for all vertex stuff.
  */
 class TextureContainer : private boost::noncopyable {
 	
@@ -97,41 +99,36 @@ public:
 	DECLARE_FLAGS(TCFlag, TCFlags)
 	static const TCFlags UI;
 	
-	/** Constructor.
-	 *	Only TextureContainer::Load() is allowed to create TextureContainer, but pieces of code still depend on this constructor being public.
-	 *	@param  
-	 *	@todo Make this constructor private.
+	/*!
+	 * Constructor.
+	 * Only TextureContainer::Load() is allowed to create TextureContainer,
+	 * but pieces of code still depend on this constructor being public.
+	 * TODO Make this constructor private.
 	 */ 
 	TextureContainer(const res::path & strName, TCFlags flags);
 	
-	/** Destructor
-	 */
 	~TextureContainer();
 	
-	/**	Load an image into a TextureContainer
-	 *
-	 *
-	 */
+	//! Load an image into a TextureContainer
 	static TextureContainer * Load(const res::path & strName, TCFlags flags = 0);
 	
-	/**	Load an image into a TextureContainer
-	 *
-	 *
-	 */
+	//! Load an image into a TextureContainer
 	static TextureContainer * LoadUI(const res::path & strName, TCFlags flags = 0);
 	
-	/** Find a TextureContainer by its name.
-	 *	Searches the internal list of textures for a texture specified by
-	 *	its name. Returns the structure associated with that texture.
-	 *	@param strTextureName Name of the texture to find.
-	 *  @return A pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
-	 **/
+	/*!
+	 * Find a TextureContainer by its name.
+	 * Searches the internal list of textures for a texture specified by
+	 * its name. Returns the structure associated with that texture.
+	 * @param strTextureName Name of the texture to find.
+	 * @return a pointer to a TextureContainer if this texture was already loaded, NULL otherwise.
+	 */
 	static TextureContainer * Find(const res::path & strTextureName);
 	
 	static void DeleteAll(TCFlags flag = TCFlags::all());
 	
-	/**	Create a texture to display a glowing halo around a transparent texture
-	 *	@todo Rewrite this feature using shaders instead of hacking a texture effect
+	/*!
+	 * Create a texture to display a glowing halo around a transparent texture
+	 * TODO Rewrite this feature using shaders instead of hacking a texture effect
 	 */
 	bool CreateHalo();
 
@@ -159,7 +156,8 @@ public:
 	
 	Texture2D * m_pTexture; // Diffuse
 	
-	/*! End of the image in texture coordinates (image size divided by stored size).
+	/*!
+	 * End of the image in texture coordinates (image size divided by stored size).
 	 * This is usually Vec2f::ONE but may differ if only power of two textures are supported.
 	 */
 	Vec2f uv;

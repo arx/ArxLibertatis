@@ -38,7 +38,7 @@ bool Texture2D::Init(unsigned int pWidth, unsigned int pHeight, Image::Format pF
 	
 	mFileName.clear();
 	
-	size = Vec2i(pWidth, pHeight);	
+	size = Vec2i(pWidth, pHeight);
 	mImage.Create(pWidth, pHeight, pFormat);
 	mFormat = pFormat;
 	flags = 0;

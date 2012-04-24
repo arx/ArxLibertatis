@@ -469,6 +469,8 @@ size_t initSuppressions() {
 	
 	suppress("goblin_base_0041", 3063, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
 	
+	suppress("goblin_base_0048", 632, "setevent"); // unsupported event: combine
+	
 	suppress("goblin_base_0046", 2924, "if"); // unknown operator '=>' (should be '>='?), interpreted as constant true
 	
 	suppress("gold_chunk_inwall", 144, "play"); // unknown flag -e (ignored)

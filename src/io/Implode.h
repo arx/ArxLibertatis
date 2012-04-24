@@ -83,7 +83,7 @@ struct pkstream {
 	
 };
 
-/**
+/*!
  * @return 0 on success and nonzero value on failure
  */
 ImplodeResult implode(pkstream * pStr);

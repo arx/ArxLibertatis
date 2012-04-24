@@ -363,20 +363,20 @@ bool ArxGame::InitWindow() {
 		
 		bool matched = false;
 		
-		#ifdef HAVE_SDL
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
+		#ifdef HAVE_D3D9
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
 			matched = true;
-			RenderWindow * window = new SDLWindow;
+			RenderWindow * window = new D3D9Window;
 			if(!initWindow(window)) {
 				delete window;
 			}
 		}
 		#endif
-		
-		#ifdef HAVE_D3D9
-		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
+
+		#ifdef HAVE_SDL
+		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
-			RenderWindow * window = new D3D9Window;
+			RenderWindow * window = new SDLWindow;
 			if(!initWindow(window)) {
 				delete window;
 			}

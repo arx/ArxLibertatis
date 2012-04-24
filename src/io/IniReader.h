@@ -40,7 +40,7 @@ public:
 	
 	typedef Sections::const_iterator iterator;
 	
-	/**
+	/*!
 	 * Parses an input stream for configuration section and respective keys.
 	 * Stores them all in a section map as IniSection objects.
 	 * @param is The input stream with the ini data.
@@ -59,7 +59,7 @@ public:
 	 */
 	const std::string & getKey(const std::string & section, const std::string & key, const std::string & defaultValue) const;
 	
-	/**
+	/*!
 	 * Reads an int from the ini and returns its converted int value,
 	 * return the default value if an empty string is found.
 	 * @param section The section to read from
@@ -68,7 +68,7 @@ public:
 	 */
 	int getKey(const std::string & section, const std::string & key, int defaultValue) const;
 	
-	/**
+	/*!
 	 * Reads a float from the ini and returns its converted int value,
 	 * return the default value if an empty string is found.
 	 * @param section The section to read from
@@ -77,7 +77,7 @@ public:
 	 */
 	float getKey(const std::string & section, const std::string & key, float defaultValue) const;
 	
-	/**
+	/*!
 	 * Reads a bool from the ini and returns its converted bool value,
 	 * return the default value if an empty string is found.
 	 * @param section The section to read from

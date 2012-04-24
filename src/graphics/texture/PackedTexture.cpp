@@ -22,160 +22,138 @@
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
-PackedTexture::PackedTexture(unsigned int pSize, Image::Format pFormat) : mTexSize(pSize), mTexFormat(pFormat) { }
+PackedTexture::PackedTexture(unsigned int pSize, Image::Format pFormat)
+	: textureSize(pSize), textureFormat(pFormat) { }
 
 PackedTexture::~PackedTexture() {
-	ClearAll();
+	clear();
 }
 
-void PackedTexture::ClearAll() {
-	
-	for(unsigned int i = 0; i < mTexTrees.size(); i++) {
-		delete mTexTrees[i];
-	}
-	mTexTrees.clear();
-	
-	for(unsigned int i = 0; i < mImages.size(); i++) {
-		delete mImages[i];
-	}
-	mImages.clear();
-	
-	for(unsigned int i = 0; i < mTextures.size(); i++) {
-		delete mTextures[i];
-	}
-	mTextures.clear();
+void PackedTexture::clear() {
+	textures.clear();
 }
 
-void PackedTexture::BeginPacking() {
-	ClearAll();
+void PackedTexture::upload() {
+	for(texture_iterator i = textures.begin(); i != textures.end(); ++i) {
+		TextureTree * tree = *i;
+		if(tree->dirty) {
+			tree->texture->Restore();
+			tree->dirty = false;
+		}
+	}
 }
 
-void PackedTexture::EndPacking() {
+PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
+                                        Image::Format textureFormat) {
 	
-	// Trees are now useless.
-	for(unsigned int i = 0; i < mTexTrees.size(); i++) {
-		delete mTexTrees[i];
-	}
-	mTexTrees.clear();
+	root.rect = Rect(0, 0, textureSize - 1, textureSize - 1);
 	
-	mTextures.resize(mImages.size());
-	
-	// Create a texture with each images.
-	for(unsigned int i = 0; i < mTextures.size(); i++) {
-		
-		mTextures[i] = GRenderer->CreateTexture2D();
-		mTextures[i]->Init(*mImages[i], 0);
-		
-		// Images are not needed anymore.
-		delete mImages[i];
-	}
-	
-	mImages.clear();
+	texture = GRenderer->CreateTexture2D();
+	texture->Init(textureSize, textureSize, textureFormat);
+	texture->GetImage().Clear();
+	dirty = true;
 }
 
-bool PackedTexture::InsertImage(const Image & pImg, int & pOffsetU, int & pOffsetV, unsigned int & pTextureIndex) {
+PackedTexture::TextureTree::~TextureTree() {
+	delete texture;
+}
+
+PackedTexture::TextureTree::Node * PackedTexture::TextureTree::insertImage(const Image & img) {
+	
+	Node * node = root.insertImage(img);
+	
+	if(node != NULL) {
+		texture->GetImage().Copy(img, node->rect.left, node->rect.top);
+		dirty = true;
+	}
+	
+	return node;
+}
+
+bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex,
+                                Vec2i & offset) {
 	
 	// Validate image size
-	if(pImg.GetWidth() > mTexSize || pImg.GetHeight() > mTexSize) {
+	if(image.GetWidth() > textureSize || image.GetHeight() > textureSize) {
 		return false;
 	}
 	
-	// Copy to one of the existing image
+	// Copy to one of the existing textures
 	TextureTree::Node * node = NULL;
 	unsigned int nodeTree = 0;
 	
-	for(unsigned int i = 0; i < mTexTrees.size(); i++) {
-		node = mTexTrees[i]->InsertImage( pImg );
+	for(size_t i = 0; i < textures.size(); i++) {
+		node = textures[i]->insertImage(image);
 		nodeTree = i;
 	}
 	
-	// No space found, create a new tree
+	// No space found, create a new texture
 	if(!node) {
-		
-		mTexTrees.push_back(new TextureTree(mTexSize));
-		
-		Image* newPage = new Image();
-		newPage->Create(mTexSize, mTexSize, mTexFormat);
-		newPage->Clear();
-		
-		mImages.push_back(newPage);
-		
-		node = mTexTrees[mTexTrees.size() - 1]->InsertImage(pImg);
-		nodeTree = mTexTrees.size() - 1;
+		textures.push_back(new TextureTree(textureSize, textureFormat));
+		node = textures[textures.size() - 1]->insertImage(image);
+		nodeTree = textures.size() - 1;
 	}
 	
-	// A node must have been found.
+	// A node must have been found
 	arx_assert(node);
 	
 	// Copy texture there
 	if(node) {
-		
-		mImages[nodeTree]->Copy( pImg, node->mRect.left, node->mRect.top );
-		
-		// Copy values back into info structure.
-		pOffsetU = node->mRect.left;
-		pOffsetV = node->mRect.top;
-		pTextureIndex = nodeTree;
+		// Copy values back into info structure
+		offset = node->rect.origin;
+		textureIndex = nodeTree;
 	}
 	
 	return node != NULL;
 }
 
-Texture2D& PackedTexture::GetTexture(unsigned int pTexture) {
-	arx_assert(pTexture < mTextures.size());
-	arx_assert(mTextures[pTexture]);
-	return *mTextures[pTexture];
-}
-
-unsigned int PackedTexture::GetTextureCount() const {
-	return mTextures.size();
-}
-
-unsigned int PackedTexture::GetTextureSize() const {
-	return mTexSize;
+Texture2D& PackedTexture::getTexture(unsigned int index) {
+	arx_assert(index < textures.size());
+	arx_assert(textures[index]->texture);
+	return *textures[index]->texture;
 }
 
 PackedTexture::TextureTree::Node::Node() {
-	mChilds[0] = NULL;
-	mChilds[1] = NULL;
-	mInUse = 0;
+	children[0] = NULL;
+	children[1] = NULL;
+	used = 0;
 }
 
 PackedTexture::TextureTree::Node::~Node() {
 	
-	if(mChilds[0]) {
-		delete mChilds[0];
+	if(children[0]) {
+		delete children[0];
 	}
 	
-	if(mChilds[1]) {
-		delete mChilds[1];
+	if(children[1]) {
+		delete children[1];
 	}
 }
 
-PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::InsertImage(const Image & pImg) {
+PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage(const Image & image) {
 	
 	Node * result = NULL;
 	
 	// We're in a full node/leaf, return immediately.
-	if(mInUse) {
+	if(used) {
 		return NULL;
 	}
 	
 	// If we're not a leaf, try inserting in childs
-	if(mChilds[0]) {
+	if(children[0]) {
 		
-		result = mChilds[0]->InsertImage(pImg);
+		result = children[0]->insertImage(image);
 		
 		if(!result) {
-			result = mChilds[1]->InsertImage(pImg);
+			result = children[1]->insertImage(image);
 		}
 		
-		mInUse = mChilds[0]->mInUse && mChilds[1]->mInUse;
+		used = children[0]->used && children[1]->used;
 		return result;
 	}
 	
-	int diffW = (mRect.width()+1) - pImg.GetWidth();
-	int diffH = (mRect.height()+1) - pImg.GetHeight();
+	int diffW = (rect.width() + 1) - image.GetWidth();
+	int diffH = (rect.height() + 1) - image.GetHeight();
 	
 	// If we're too small, return.
 	if(diffW < 0 || diffH < 0) {
@@ -184,33 +162,22 @@ PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::InsertImage
 	
 	// Perfect match !
 	if(diffW == 0 && diffH == 0) {
-		mInUse = true;
+		used = true;
 		return this;
 	}
 	
-	// Otherwise, gotta split this node and create some kids.
-	mChilds[0] = new Node();
-	mChilds[1] = new Node();
+	// Otherwise, gotta split this node and create some kids
+	children[0] = new Node();
+	children[1] = new Node();
 	
 	if(diffW > diffH) {
-		mChilds[0]->mRect = Rect(mRect.left, mRect.top, mRect.left + pImg.GetWidth() - 1, mRect.bottom);
-		mChilds[1]->mRect = Rect(mRect.left + pImg.GetWidth(), mRect.top, mRect.right, mRect.bottom);
+		children[0]->rect = Rect(rect.left, rect.top, rect.left + image.GetWidth() - 1, rect.bottom);
+		children[1]->rect = Rect(rect.left + image.GetWidth(), rect.top, rect.right, rect.bottom);
 	} else {
-		mChilds[0]->mRect = Rect(mRect.left, mRect.top, mRect.right, mRect.top + pImg.GetHeight() - 1);
-		mChilds[1]->mRect = Rect(mRect.left, mRect.top + pImg.GetHeight(), mRect.right, mRect.bottom);
+		children[0]->rect = Rect(rect.left, rect.top, rect.right, rect.top + image.GetHeight() - 1);
+		children[1]->rect = Rect(rect.left, rect.top + image.GetHeight(), rect.right, rect.bottom);
 	}
 	
 	// Insert into first child we created
-	return mChilds[0]->InsertImage(pImg);
-}
-
-PackedTexture::TextureTree::TextureTree(unsigned int pSize) {
-	mRoot.mRect.left = 0;
-	mRoot.mRect.right = pSize-1;
-	mRoot.mRect.top = 0;
-	mRoot.mRect.bottom = pSize-1;
-}
-
-PackedTexture::TextureTree::Node * PackedTexture::TextureTree::InsertImage(const Image & pImg) {
-	return mRoot.InsertImage( pImg );
+	return children[0]->insertImage(image);
 }
