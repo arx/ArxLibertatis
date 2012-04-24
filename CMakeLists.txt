@@ -866,6 +866,8 @@ list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES} ${IO_LOGGER_EXTRA_SOURCES})
 
 list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
 
+set(BASE_LIBRARIES)
+
 if(HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(USE_NATIVE_FS AND HAVE_WINAPI)
@@ -877,7 +879,7 @@ elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
 	set(HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
-	list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
+	list(APPEND BASE_LIBRARIES ${Boost_LIBRARIES})
 else()
 	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API or enough POSIX functionality; Found boost version ${Boost_VERSION}")
 endif()
@@ -902,8 +904,10 @@ endif()
 
 if(LIBRT_LIBRARY AND (HAVE_CLOCK_GETTIME OR HAVE_CRASHHANDLER_POSIX))
 	# Needed for clock_gettime and boost::interprocess on some system.
-	list(APPEND ARX_LIBRARIES ${LIBRT_LIBRARY})
+	list(APPEND BASE_LIBRARIES ${LIBRT_LIBRARY})
 endif()
+
+list(APPEND ARX_LIBRARIES ${BASE_LIBRARIES})
 
 if(NOT MSVC)
 	check_link_library(Boost Boost_LIBRARIES)
@@ -1018,16 +1022,13 @@ if(HAVE_CRASHREPORTER)
 	create_source_groups(arxcrashreporter_SOURCES)
 	
 	set(arxcrashreporter_LIBRARIES
+		${BASE_LIBRARIES}
 		${QT_QTCORE_LIBRARY_RELEASE}
 		${QT_QTGUI_LIBRARY_RELEASE}
 		${QT_QTNETWORK_LIBRARY_RELEASE}
-		${Boost_LIBRARIES}
 		${CMAKE_THREAD_LIBS_INIT}
 	)
-	if(LIBRT_LIBRARY)
-		# Needed for boost::interprocess on some systems.
-		list(APPEND arxcrashreporter_LIBRARIES ${LIBRT_LIBRARY})
-	endif()
+	
 	if(MSVC)
 		list(APPEND arxcrashreporter_LIBRARIES winmm psapi imm32)
 		list(APPEND arxcrashreporter_LIBRARIES ${DBGHELP_LIBRARIES})
@@ -1061,7 +1062,7 @@ if(BUILD_TOOLS)
 		tools/savetool/SaveView.cpp
 	)
 	
-	set(arxsavetool_LIBRARIES ${ZLIB_LIBRARIES} ${Boost_LIBRARIES})
+	set(arxsavetool_LIBRARIES ${BASE_LIBRARIES} ${ZLIB_LIBRARIES})
 	
 	add_executable_shared(arxsavetool "" "${arxsavetool_SOURCES}" "${arxsavetool_LIBRARIES}" "")
 	
@@ -1073,7 +1074,7 @@ if(BUILD_TOOLS)
 		tools/unpak/UnPak.cpp
 	)
 	
-	set(arxunpak_LIBRARIES ${Boost_LIBRARIES})
+	set(arxunpak_LIBRARIES ${BASE_LIBRARIES})
 	
 	add_executable_shared(arxunpak "" "${arxunpak_SOURCES}" "${arxunpak_LIBRARIES}" "")
 	
