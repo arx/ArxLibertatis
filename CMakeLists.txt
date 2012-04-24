@@ -436,7 +436,25 @@ else(MSVC)
 	endif()
 	
 	if(UNITY_BUILD)
-		add_cxxflag("-fwhole-program")
+		
+		set(USE_FWHOLE_PROGRAM 1)
+		
+		if(CMAKE_COMPILER_IS_GNUCXX AND ${Boost_VERSION} LESS 104100)
+			exec_program(${CMAKE_CXX_COMPILER} ARGS --version OUTPUT_VARIABLE compiler_string)
+			string(REGEX REPLACE ".* ([0-9])\\.([0-9])\\.[0-9].*" "\\1.\\2"
+			       compiler_version "${compiler_string}")
+			if("${compiler_version}" VERSION_LESS 4.5 AND NOT "${compiler_version}" STREQUAL "")
+				# Cross-shared-object typeid is broken with some gcc versions
+				# Boost 1.41+ has a workaround for boost::any_cast:
+				# https://svn.boost.org/trac/boost/ticket/754
+				message(STATUS "not using -fwhole-program for GCC ${compiler_version} + Boost ${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}")
+				set(USE_FWHOLE_PROGRAM 0)
+			endif()
+		endif()
+		
+		if(${USE_FWHOLE_PROGRAM})
+			add_cxxflag("-fwhole-program")
+		endif()
 	endif()
 	
 	# Because we are lazy
