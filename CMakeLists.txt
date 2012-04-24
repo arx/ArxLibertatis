@@ -439,12 +439,6 @@ else(MSVC)
 		add_cxxflag("-fwhole-program")
 	endif()
 	
-	if(CMAKE_CXX_COMPILER_ID STREQUAL "PathScale")
-		# The standard library shipped with ekopath failes to compile with -fno-rtti
-		# See https://github.com/pathscale/stdcxx/issues/3
-		add_definitions(-D_RWSTD_NO_DYNAMIC_CAST)
-	endif()
-	
 	# Because we are lazy
 	add_ldflag("-Wl,--as-needed")
 
