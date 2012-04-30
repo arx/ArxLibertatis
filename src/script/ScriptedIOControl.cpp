@@ -112,7 +112,12 @@ public:
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;
 			SendInitScriptEvent(ioo);
-			CheckForInventoryReplaceMe(ioo, io);
+			
+			if(playerInventory.locate(io)) {
+				giveToPlayer(ioo);
+			} else {
+				CheckForInventoryReplaceMe(ioo, io);
+			}
 		} else {
 			
 			for(size_t i = 0; i < MAX_SPELLS; i++) {
@@ -121,11 +126,17 @@ public:
 				}
 			}
 			
+			PlayerInventory::Pos oldPos = playerInventory.remove(io);
+			
 			io->show = SHOW_FLAG_KILLED;
 			ReplaceInAllInventories(io, ioo);
 			SendInitScriptEvent(ioo);
 			ioo->angle = last_angle;
 			TREATZONE_AddIO(ioo, neww);
+			
+			if(oldPos && !playerInventory.locate(ioo)) {
+				giveToPlayer(ioo, oldPos);
+			}
 			
 			for(int i = 0; i < MAX_EQUIPED; i++) {
 				if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {

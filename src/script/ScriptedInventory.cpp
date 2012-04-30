@@ -185,10 +185,8 @@ class InventoryCommand : public Command {
 			}
 			
 			RemoveFromAllInventories(t);
-			t->show = SHOW_FLAG_IN_INVENTORY;
-			if(!CanBePutInInventory(t)) {
-				PutInFrontOfPlayer(t);
-			}
+			
+			giveToPlayer(t);
 			
 			return Success;
 		}
@@ -244,11 +242,7 @@ class InventoryCommand : public Command {
 				DebugScript(' ' << file);
 			}
 			
-			ioo->show = SHOW_FLAG_IN_INVENTORY;
-			
-			if(!CanBePutInInventory(ioo)) {
-				PutInFrontOfPlayer(ioo);
-			}
+			giveToPlayer(ioo);
 			
 			return Success;
 		}

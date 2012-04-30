@@ -305,22 +305,13 @@ void ARX_PLAYER_RectifyPosition()
 //******************************************************************************
 // PLAYER TORCH FUNCTIONS
 //-----------------------------------------------------------------------------
-void ARX_PLAYER_KillTorch()
-{
-	CURRENT_TORCH->show = SHOW_FLAG_IN_SCENE;
+void ARX_PLAYER_KillTorch() {
+	
 	ARX_SOUND_PlaySFX(SND_TORCH_END);
 	ARX_SOUND_Stop(SND_TORCH_LOOP);
-
-	if (CanBePutInInventory(CURRENT_TORCH))
-	{
-		if (CURRENT_TORCH)
-			CURRENT_TORCH->show = SHOW_FLAG_IN_INVENTORY;
-	}
-	else
-	{
-		PutInFrontOfPlayer(CURRENT_TORCH);
-	}
-
+	
+	giveToPlayer(CURRENT_TORCH);
+	
 	CURRENT_TORCH = NULL;
 	SHOW_TORCH = 0;
 	DynLight[0].exist = 0;

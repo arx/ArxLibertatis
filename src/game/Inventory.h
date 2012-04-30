@@ -74,8 +74,122 @@ extern INTERACTIVE_OBJ * DRAGINTER;
 extern INTERACTIVE_OBJ * ioSteal;
 extern long InventoryY;
 
+class PlayerInventory {
+	
+public:
+	
+	struct Pos {
+		
+		size_t bag;
+		size_t x;
+		size_t y;
+		
+		Pos() : bag(size_t(-1)) { }
+		
+		Pos(size_t bag, size_t x, size_t y) : bag(bag), x(x), y(y) { }
+		
+		//! @return true if this is a valid position
+		operator bool() const {
+			return (bag != size_t(-1));
+		}
+		
+	};
+	
+	/*!
+	 * Insert an item into the player inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * @param item the item to insert
+	 *
+	 * @return true if the item was inserted, false otherwise
+	 */
+	static bool insert(INTERACTIVE_OBJ * item);
+	
+	/*!
+	 * Insert an item into the player inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise, the item will be inserted at the specified position.
+	 * If that fails, the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * @param item the item to insert
+	 *
+	 * @return true if the item was inserted, false otherwise
+	 */
+	static bool insert(INTERACTIVE_OBJ * item, const Pos & pos);
+	
+	//! Sort the inventory and stack duplicate items
+	static void optimize();
+	
+	/*!
+	 * Get the position of an item in the inventory.
+	 *
+	 * @return the old position of the item
+	 */
+	static Pos locate(const INTERACTIVE_OBJ * item);
+	
+	/*!
+	 * Remove an item from the inventory.
+	 * The item is not deleted.
+	 *
+	 * @return the old position of the item
+	 */
+	static Pos remove(const INTERACTIVE_OBJ * item);
+	
+	static INTERACTIVE_OBJ * get(const Pos & pos) {
+		return pos ? inventory[pos.bag][pos.x][pos.y].io : NULL;
+	}
+	
+private:
+	
+	static Pos insertImpl(INTERACTIVE_OBJ * item);
+	
+	static Pos insertImpl(INTERACTIVE_OBJ * item, const Pos & pos);
+	
+	static void removeAt(const INTERACTIVE_OBJ * item, const Pos & pos);
+	
+	static bool insertIntoNewSlotAt(INTERACTIVE_OBJ * item, const Pos & pos);
+	
+	static Pos insertIntoNewSlot(INTERACTIVE_OBJ * item);
+	
+	static bool insertIntoStackAt(INTERACTIVE_OBJ * item, const Pos & pos);
+	
+	static Pos insertIntoStack(INTERACTIVE_OBJ * item);
+	
+};
+
+extern PlayerInventory playerInventory;
+
+/*!
+ * Insert an item into the player inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise a the first empty slot will be used.
+ * If no slot was available, the item is dropped in front of the player
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was added to the inventory, false if it was dropped
+ */
+bool giveToPlayer(INTERACTIVE_OBJ * item);
+
+/*!
+ * Insert an item into the player inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified position.
+ * If that fails, a the first empty slot will be used.
+ * If no slot was available, the item is dropped in front of the player
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was added to the inventory, false if it was dropped
+ */
+bool giveToPlayer(INTERACTIVE_OBJ * item, const PlayerInventory::Pos & pos);
+
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
-bool CanBePutInInventory(INTERACTIVE_OBJ * io);
 
 bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos);
 bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos);

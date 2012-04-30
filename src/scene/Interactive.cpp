@@ -2081,6 +2081,10 @@ extern long TOTAL_BODY_CHUNKS_COUNT;
 
 INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
 	
+	if(DRAGINTER == this) {
+		Set_DragInter(NULL);
+	}
+	
 	if(!FAST_RELEASE) {
 		TREATZONE_RemoveIO(this);
 	}
@@ -2131,13 +2135,7 @@ INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
 		delete tweaky, tweaky = NULL;
 	}
 	
-	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
-		for(size_t j = 0; j < INVENTORY_Y; j++) for(size_t i = 0; i < INVENTORY_X; i++) {
-			if(::inventory[iNbBag][i][j].io == this) {
-				::inventory[iNbBag][i][j].io = NULL;
-			}
-		}
-	}
+	playerInventory.remove(this);
 	
 	ReleaseScript(&script);
 	ReleaseScript(&over_script);

@@ -403,20 +403,16 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 			ARX_EQUIPMENT_Release(player.equiped[i]);
 			target->bbox1.x = 9999;
 			target->bbox2.x = -9999;
-
-			if (!flags & 1)
-			{
-				if (DRAGINTER == NULL)
-				{
+			
+			if(!flags & 1) {
+				if(DRAGINTER == NULL) {
 					ARX_SOUND_PlayInterface(SND_INVSTD);
 					Set_DragInter(tounequip);
-				}
-				else if (!CanBePutInInventory(tounequip))
-				{
-					PutInFrontOfPlayer(tounequip);
+				} else {
+					giveToPlayer(tounequip);
 				}
 			}
-
+			
 			EVENT_SENDER = tounequip;
 			SendIOScriptEvent(inter.iobj[0], SM_EQUIPOUT);
 			EVENT_SENDER = inter.iobj[0];

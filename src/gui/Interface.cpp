@@ -200,7 +200,6 @@ extern unsigned char ucFlick;
 extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
-void OptmizeInventory(unsigned int);
 
 extern long SHOW_INGAME_MINIMAP;
 
@@ -1632,16 +1631,7 @@ bool ArxGame::ManageEditorControls()
 					{
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
-						if (player.Interface | INTER_INVENTORYALL)
-						{
-							OptmizeInventory(0);
-							OptmizeInventory(1);
-							OptmizeInventory(2);
-						}
-						else
-						{
-							OptmizeInventory(sActiveInventory);
-						}
+						playerInventory.optimize();
 
 						flDelay=0;
 						EERIEMouseButton&=~4;
@@ -1918,8 +1908,8 @@ bool ArxGame::ManageEditorControls()
 
 							ARX_SOUND_PlayInterface( SND_INVSTD );
 
-							if ( !CanBePutInInventory( FlyingOverIO ) )
-							{
+							if(!playerInventory.insert(FlyingOverIO)) {
+								
 								if ( TSecondaryInventory && bSecondary )
 								{
 									extern short sInventory, sInventoryX, sInventoryY;

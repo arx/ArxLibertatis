@@ -8591,11 +8591,9 @@ static void ApplySPWep() {
 			ioo->scriptload=1;
 			MakeTemporaryIOIdent(ioo);
 			SendInitScriptEvent(ioo);
-			ioo->show = SHOW_FLAG_IN_INVENTORY;
-
-			if (!CanBePutInInventory(ioo))
-				PutInFrontOfPlayer(ioo);
-
+			
+			giveToPlayer(ioo);
+			
 			MakeSpCol();
 			strcpy(sp_max_ch,"!!!_Grosbillite_!!!");
 			sp_max_nb=strlen(sp_max_ch);
@@ -8654,10 +8652,8 @@ static void ApplySPBow() {
 		ioo->scriptload=1;
 		MakeTemporaryIOIdent(ioo);
 		SendInitScriptEvent(ioo);
-		ioo->show=SHOW_FLAG_IN_INVENTORY;
 		
-		if (!CanBePutInInventory(ioo))
-			PutInFrontOfPlayer(ioo);
+		giveToPlayer(ioo);
 		
 		MakeSpCol();
 		strcpy(sp_max_ch,"!!!_Bow to Samy & Anne_!!!");
@@ -8695,11 +8691,9 @@ static void ApplySPArm() {
 		ioo->scriptload=1;
 		MakeTemporaryIOIdent(ioo);
 		SendInitScriptEvent(ioo);
-		ioo->show=SHOW_FLAG_IN_INVENTORY;
-
-		if (!CanBePutInInventory(ioo))
-			PutInFrontOfPlayer(ioo);
-
+		
+		giveToPlayer(ioo);
+		
 		MakeSpCol();
 		strcpy(sp_max_ch,"!! Toi aussi cherches les Cheats !!");
 
