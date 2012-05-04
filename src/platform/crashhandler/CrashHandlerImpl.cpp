@@ -90,22 +90,28 @@ void CrashHandlerImpl::shutdown() {
 
 bool CrashHandlerImpl::createSharedMemory() {
 	
-	// Generate a random name for our shared memory object
-	std::ostringstream oss;
-	oss << "arxcrash-" << getProcessId() << "-" << Random::get<u32>();
-	m_SharedMemoryName = oss.str();
-	
-	// Create a shared memory object.
-	m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::create_only, m_SharedMemoryName.c_str(), boost::interprocess::read_write);
-	
-	// Resize to fit the CrashInfo structure
-	m_SharedMemory.truncate(sizeof(CrashInfo));
-	
-	// Map the whole shared memory in this process
-	m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
-	
-	// Our CrashInfo will be stored in this shared memory.
-	m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
+	try {
+		
+		// Generate a random name for our shared memory object
+		std::ostringstream oss;
+		oss << "arxcrash-" << getProcessId() << "-" << Random::get<u32>();
+		m_SharedMemoryName = oss.str();
+		
+		// Create a shared memory object.
+		m_SharedMemory = boost::interprocess::shared_memory_object(boost::interprocess::create_only, m_SharedMemoryName.c_str(), boost::interprocess::read_write);
+		
+		// Resize to fit the CrashInfo structure
+		m_SharedMemory.truncate(sizeof(CrashInfo));
+		
+		// Map the whole shared memory in this process
+		m_MemoryMappedRegion = boost::interprocess::mapped_region(m_SharedMemory, boost::interprocess::read_write);
+		
+		// Our CrashInfo will be stored in this shared memory.
+		m_pCrashInfo = new (m_MemoryMappedRegion.get_address()) CrashInfo;
+		
+	} catch(boost::interprocess::interprocess_exception) {
+		return false;
+	}
 	
 	return true;
 }
