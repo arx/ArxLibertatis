@@ -250,40 +250,41 @@ void ARX_SCRIPT_ResetAll(long flags)
 }
 
 extern long PauseScript;
-//*************************************************************************************
-//*************************************************************************************
-void ARX_SCRIPT_AllowInterScriptExec()
-{
+
+void ARX_SCRIPT_AllowInterScriptExec() {
+	
 	static long ppos = 0;
-
-	if ((!PauseScript) && (!EDITMODE) && (!arxtime.is_paused()))
-	{
-		EVENT_SENDER = NULL;
-
-		long numm = min(inter.nbmax, 10L);
-
-		for (long n = 0; n < numm; n++)
-		{
-			long i = ppos;
-			ppos++;
-
-			if (ppos >= inter.nbmax)
-			{
-				ppos = 0;
-				return;
-			}
-
-			{
-				if (inter.iobj[i] != NULL)
-					if (inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)
-					{
-						if(!inter.iobj[i]->mainevent.empty()) {
-							SendIOScriptEvent(inter.iobj[i], SM_NULL, "", inter.iobj[i]->mainevent);
-						} else {
-							SendIOScriptEvent(inter.iobj[i], SM_MAIN);
-						}
-					}
-			}
+	
+	if(PauseScript || EDITMODE || arxtime.is_paused()) {
+		return;
+	}
+	
+	EVENT_SENDER = NULL;
+	
+	long heartbeat_count = min(inter.nbmax, 10L);
+	
+	for(long n = 0; n < heartbeat_count; n++) {
+		
+		long i = ppos++;
+		if(i >= inter.nbmax){
+			ppos = 0;
+			return;
+		}
+		
+		if(inter.iobj[i] == NULL || !(inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)) {
+			continue;
+		}
+		
+		if(!inter.iobj[i]->mainevent.empty()) {
+			
+			// Copy the even name to a local variable as it may change during execution
+			// and cause unexpected behavior in SendIOScriptEvent
+			std::string event = inter.iobj[i]->mainevent;
+			
+			SendIOScriptEvent(inter.iobj[i], SM_NULL, std::string(), event);
+			
+		} else {
+			SendIOScriptEvent(inter.iobj[i], SM_MAIN);
 		}
 	}
 }

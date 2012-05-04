@@ -255,7 +255,8 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
-ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
+ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params,
+                               INTERACTIVE_OBJ * io, const std::string & evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
 	string eventname;
