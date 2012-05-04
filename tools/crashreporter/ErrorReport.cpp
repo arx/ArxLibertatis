@@ -176,7 +176,7 @@ static QString getOutputOf(const char * command) {
 	QByteArray result;
 	while(!feof(pipe)) {
 		if(size_t count = fread(buffer, 1, ARRAY_SIZE(buffer), pipe)) {
-			result.append(buffer, count);
+			result.append(QByteArray(buffer, count));
 		}
 	}
 	pclose(pipe);
