@@ -651,10 +651,12 @@ void PlayerInventory::optimize() {
 		for(size_t j = 0 ; j < INVENTORY_Y; j++) {
 			for(size_t i = 0 ; i < INVENTORY_X; i++) {
 				INTERACTIVE_OBJ * io = inventory[bag][i][j].io;
-				if(io) {
+				if(io && inventory[bag][i][j].show) {
 					items.push_back(io);
 					removeAt(io, Pos(bag, i, j));
 				}
+				inventory[bag][i][j].io = NULL;
+				inventory[bag][i][j].show = 0;
 			}
 		}
 	}
