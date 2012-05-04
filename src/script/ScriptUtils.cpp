@@ -512,6 +512,7 @@ size_t initSuppressions() {
 	
 	suppress("human_base_0085", 426, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
 	
+	suppress("human_base_0086", 189, "if"); // unknown operator '==1' (should be '== 1')
 	suppress("human_base_0086", 787, "loadanim"); // missing animation 'human_noraml_sit_out', should be 'human_normal_sit_out'?
 	
 	suppress("human_base_0095", 722, "setcontrolledzone"); // unknown zone 'maria_shop'
