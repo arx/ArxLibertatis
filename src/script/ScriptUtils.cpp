@@ -624,6 +624,8 @@ size_t initSuppressions() {
 	
 	suppress("ruby_inwall", 135, "play"); // unknown flag -e (ignored)
 	
+	suppress("sausagev", 12376, "inventory playeraddfromscene"); // unknown target 'note_0015'
+	
 	suppress("secret_door_council_2b", 609, "}"); // extraneous '}'
 	
 	suppress("shiny_orb", 103, "setinternalname"); // obsolete command
