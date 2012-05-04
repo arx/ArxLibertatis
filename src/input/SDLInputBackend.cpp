@@ -24,6 +24,13 @@
 #include "io/log/Logger.h"
 #include "window/SDLWindow.h"
 
+#ifdef SDL_BUTTON_X1
+#define SDL_BUTTON_X1 6
+#endif
+#ifndef SDL_BUTTON_X2
+#define SDL_BUTTON_X2 7
+#endif
+
 SDLInputBackend::SDLInputBackend() { }
 
 SDLInputBackend::~SDLInputBackend() {
