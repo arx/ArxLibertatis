@@ -409,11 +409,8 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 		count = getLocalisedKeyCount(data);
 
 		do {
-			flg = rnd() * count + 1;
+			flg = Random::get(1, count);
 		} while(io->lastspeechflag == flg && count > 1);
-
-		if (flg > count) flg = count;
-		else if (flg <= 0) flg = 1;
 		
 		LogDebug(" -> " << flg << " / " << count);
 
