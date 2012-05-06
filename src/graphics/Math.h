@@ -61,7 +61,7 @@ using std::max;
 
 // RANDOM Sequences Funcs/Defs
 inline float rnd() {
-	return rand() * (1.0f / (RAND_MAX - 1));
+	return rand() * (1.0f / RAND_MAX);
 }
 
 //Approximative Methods
