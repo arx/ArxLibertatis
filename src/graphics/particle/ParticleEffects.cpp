@@ -181,8 +181,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
 
 		while ( notok-- )
 		{
-			num = rnd() * io->obj->facelist.size();
-			arx_assert(num < io->obj->facelist.size());
+			num = Random::get(0, io->obj->facelist.size() - 1);
 
 			if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
 
