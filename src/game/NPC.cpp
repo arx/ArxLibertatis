@@ -2523,12 +2523,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(io->_npcdata->strike_time > 0))
 			{
 				AcquireLastAnim(io);
-				j = rnd() * 4;
-
-				if (j < 0) j = 0;
-
-				if (j > 3) j = 3;
-
+				j = Random::get(0, 3);
 				FinishAnim(io, ause1->cur_anim);
 				ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT_START+j*3]);
 			}
@@ -2681,12 +2676,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				{
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
-					j = rnd() * 4;
-
-					if (j < 0) j = 0;
-
-					if (j > 3) j = 3;
-
+					j = Random::get(0, 3);
 					ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT_START+j*3+ANIMBase]);
 				}
 			}
@@ -4205,10 +4195,8 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					num = rnd() * io->obj->facelist.size();
-					
-					arx_assert(num < io->obj->facelist.size());
-					
+					num = Random::get(0, io->obj->facelist.size() - 1);
+
 					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 					
 					notok = -1;
@@ -4338,8 +4326,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					num = rnd() * io->obj->facelist.size();
-					arx_assert(num < io->obj->facelist.size());
+					num = Random::get(0, io->obj->facelist.size() - 1);
 
 					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 
