@@ -114,6 +114,8 @@ void UncompressedFile::read(void * buf) const {
 	
 	fs::read(archive, buf, size());
 	
+	archive.clear();
+	
 	arx_assert(!archive.fail());
 }
 
@@ -137,6 +139,8 @@ size_t UncompressedFileHandle::read(void * buf, size_t size) {
 	
 	size_t nread = file.archive.gcount();
 	offset += nread;
+	
+	file.archive.clear();
 	
 	return nread;
 }
@@ -218,7 +222,7 @@ size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
 	*buf = p->readbuf;
 	
-	return fs::read(p->file, p->readbuf, PAK_READ_BUF_SIZE).gcount();
+	return fs::read(p->file, p->readbuf, ARRAY_SIZE(p->readbuf)).gcount();
 }
 
 static int blast(std::ifstream & file, char * buf, size_t size) {
@@ -235,8 +239,10 @@ void CompressedFile::read(void * buf) const {
 	
 	int r = blast(archive, reinterpret_cast<char *>(buf), size());
 	if(r) {
-		LogError << "PakReader::Read: blast error " << r << " outSize=" << size();
+		LogError << "blast error " << r << " outSize=" << size();
 	}
+	
+	archive.clear();
 	
 }
 
@@ -320,6 +326,8 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 	size = out.currentOffset - out.startOffset;
 	
 	offset += size;
+	
+	file.archive.clear();
 	
 	return size;
 }
