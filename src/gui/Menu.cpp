@@ -203,8 +203,20 @@ void ARX_Menu_Resources_Create() {
 	size_t creditsSize;
 	u16 * creditsData = (u16*)resources->readAlloc(creditsFile, creditsSize);
 	
+	string englishCreditsFile;
 	if(!creditsData) {
-		LogWarning << "unable to read credits file " << creditsFile;
+		// Fallback if there is no localised credits file
+		englishCreditsFile = "localisation/ucredits_english.txt";
+		creditsData = (u16*)resources->readAlloc(englishCreditsFile, creditsSize);
+	}
+	
+	if(!creditsData) {
+		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
+			LogWarning << "unable to read credits files " << creditsFile
+			           << " and " << englishCreditsFile;
+		} else {
+			LogWarning << "unable to read credits file " << creditsFile;
+		}
 	} else {
 		
 		u16 * credits = creditsData;
