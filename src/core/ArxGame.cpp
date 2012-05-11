@@ -1894,11 +1894,11 @@ void ArxGame::Render() {
 
 	// Manage Notes/Books opened on screen
 	GRenderer->SetRenderState(Renderer::Fog, false);
-	ARX_INTERFACE_NoteManage();
 
 	finish:; //----------------------------------------------------------------
 	// Update spells
 	ARX_SPELLS_Update();
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
@@ -1919,6 +1919,8 @@ void ArxGame::Render() {
 	{
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		
+		ARX_INTERFACE_NoteManage();
 		DrawAllInterface();
 		DrawAllInterfaceFinish();
 
