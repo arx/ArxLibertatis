@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <algorithm>
 
+#include <boost/lexical_cast.hpp>
+
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
@@ -363,7 +365,8 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, SpeechFlags flags) {
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string & data, long mood,
+                          SpeechFlags flags) {
 	
 	if(data.empty()) {
 		return -1;
@@ -387,46 +390,51 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	aspeech[num].fPixelScroll = 0.f;
 	aspeech[num].mood = mood;
 
-	long flg = 0;
-
-	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
-	{
+	LogDebug("speech \"" << data << '"');
+	
+	res::path sample;
+	
+	if(flags & ARX_SPEECH_FLAG_NOTEXT) {
+		
+		// For non-conversation speech choose a random variant
+		
+		long count = getLocalisedKeyCount(data);  
+		long variant = 1;
+		
+		// TODO For some samples there are no corresponding entries
+		// in the localization file  (utext_*.ini) -> count will be 0
+		// We should probably just count the number of sample files
+		
+		if(count > 1) {
+			do {
+				variant = Random::get(1, count);
+			} while(io->lastspeechflag == variant);
+			io->lastspeechflag = checked_range_cast<short>(variant);
+		}
+		
+		LogDebug(" -> " << variant << " / " << count);
+		
+		if(variant > 1) {
+			sample = data + boost::lexical_cast<std::string>(variant);
+		} else {
+			sample = data;
+		}
+		
+	} else {
+		
 		std::string _output = getLocalised(data);
-
+		
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
 		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
-	}
-	
-	
-	LogDebug("speech \"" << data << '"');
-
-	if (flags & ARX_SPEECH_FLAG_NOTEXT)
-	{
-		long count = 0;
-
-		count = getLocalisedKeyCount(data);
-
-		do {
-			flg = Random::get(1, count);
-		} while(io->lastspeechflag == flg && count > 1);
 		
-		LogDebug(" -> " << flg << " / " << count);
-
-		io->lastspeechflag = (short)flg;
+		sample = data;
 	}
-
-	char speech_sample[256];
-	if (flg > 1)
-		sprintf(speech_sample, "%s%ld", data.c_str(), flg);
-	else
-		strcpy(speech_sample, data.c_str());
-
-	if (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)
-		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample);
-	else
-		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample, io);
+	
+	INTERACTIVE_OBJ * source = (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
+	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, source);
+	
 	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
 		aspeech[num].sample = audio::INVALID_ID;
 	}
