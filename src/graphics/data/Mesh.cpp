@@ -1092,10 +1092,10 @@ float GetColorz(float x, float y, float z) {
 		ApplyDynLight(ep);
 
 		for(long i = 0; i < to; i++) {
-			Color3f col = Color3f::fromBGR(ep->tv[i].color);
-			_ffr += col.r;
-			_ffg += col.g;
-			_ffb += col.b;
+			Color col = Color::fromBGR(ep->tv[i].color);
+			_ffr += float(col.r);
+			_ffg += float(col.g);
+			_ffb += float(col.b);
 		}
 
 		_ffr *= div;
