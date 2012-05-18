@@ -261,7 +261,6 @@ struct ARXCHARACTER {
 	float damages;
 	float poison;
 	float hunger;
-	float grnd_color;
 	PlayerFlags playerflags;
 	long gold;
 	short bag;

@@ -3388,22 +3388,18 @@ void PlayerMovementIterate(float DeltaTime)
 
 lasuite:
 	;
-
+	
 	// Get Player position color
-	player.grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z);
-	player.grnd_color -= 15.f; 
-	if (CURRENT_PLAYER_COLOR < player.grnd_color)
-	{
-		CURRENT_PLAYER_COLOR += FrameDiff * ( 1.0f / 8 );
-		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, player.grnd_color);
+	float grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z) - 15.f;
+	if(CURRENT_PLAYER_COLOR < grnd_color) {
+		CURRENT_PLAYER_COLOR += FrameDiff * (1.0f / 8);
+		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, grnd_color);
 	}
-
-	if (CURRENT_PLAYER_COLOR > player.grnd_color)
-	{
-		CURRENT_PLAYER_COLOR -= FrameDiff * ( 1.0f / 4 );
-		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, player.grnd_color);
+	if(CURRENT_PLAYER_COLOR > grnd_color) {
+		CURRENT_PLAYER_COLOR -= FrameDiff * (1.0f / 4);
+		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
-
+	
 	if (InventoryDir != 0)
 	{
 		if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic >= 2) || (InventoryDir == -1))
