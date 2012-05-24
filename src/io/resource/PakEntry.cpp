@@ -77,11 +77,14 @@ PakDirectory * PakDirectory::addDirectory(const res::path & path) {
 	
 }
 
-static char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\"; // TODO(case-sensitive) remove
+#ifdef _DEBUG
+static const char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\";
+#endif
 
 PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 	
-	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
+	arx_assert_msg(path.string().find_first_of(BADPATHCHAR) == std::string::npos,
+	               "bad pak path: \"%s\"", path.string().c_str());
 	
 	if(path.empty()) {
 		return this;
@@ -118,7 +121,8 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 
 PakFile * PakDirectory::getFile(const res::path & path) {
 	
-	arx_assert_msg(std::find_first_of(path.string().begin(), path.string().end(), BADPATHCHAR, BADPATHCHAR + sizeof(BADPATHCHAR)) == path.string().end(), "bad pak path: \"%s\"", path.string().c_str()); ARX_UNUSED(BADPATHCHAR); // TODO(case-sensitive) remove
+	arx_assert_msg(path.string().find_first_of(BADPATHCHAR) == std::string::npos,
+	               "bad pak path: \"%s\"", path.string().c_str());
 	
 	if(path.empty()) {
 		return NULL;

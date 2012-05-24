@@ -137,12 +137,6 @@ static SaveBlock * _pSaveBlock = NULL;
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
-// TODO(case-sensitive) remove
-void badident(const string & ident) {
-	LogWarning << "bad ident: \"" << ident << "\"";
-}
-const string IDENTCHARS = "abcdefghijklmnopqrstuvwxyz_0123456789"; // TODO(case-sensitive) remove
-
 static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 	
 	CONVERT_CREATED = 0;
@@ -151,9 +145,10 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 		return NULL;
 	}
 	
-	if(ident.find_first_not_of(IDENTCHARS) != string::npos) { // TODO(case-sensitive) remove
-		badident(ident);
-	}
+	arx_assert_msg(
+		ident.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789") == string::npos,
+		"bad interactive object ident: \"%s\"", ident.c_str()
+	);
 	
 	long t = inter.getById(ident);
 	

@@ -148,7 +148,7 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 }
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
-
+	
 	if(!overwrite && exists(new_p)) {
 #if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_CASE_SENSITIVE)
 		if(toLowercase(old_p.string()) == toLowercase(new_p.string())) {
@@ -160,8 +160,9 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 		}
 #else
 		return false;
-#endif		
+#endif
 	}
+	
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }
 

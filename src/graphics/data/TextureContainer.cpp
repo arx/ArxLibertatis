@@ -146,7 +146,8 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 //-----------------------------------------------------------------------------
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m_texName(strName) {
 	
-	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"), "bad texture name: \"%s\"", strName.string().c_str()); // TODO(case-sensitive) remove
+	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"),
+	               "bad texture name: \"%s\"", strName.string().c_str());
 	
 	m_dwWidth = 0;
 	m_dwHeight = 0;

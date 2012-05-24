@@ -1846,11 +1846,10 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 }
 
-static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
-
 static float GetSamplePresenceFactor(const res::path & name) {
 	
-	arx_assert(name.string().find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
+	arx_assert_msg(name.string().find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == string::npos,
+	               "bad sample name: \"%s\"", name.string().c_str());
 	
 	PresenceFactors::const_iterator it = presence.find(name);
 	if(it != presence.end()) {

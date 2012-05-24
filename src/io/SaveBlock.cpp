@@ -69,7 +69,9 @@ static const u32 SAV_COMP_DEFLATE = 2;
 
 static const u32 SAV_SIZE_UNKNOWN = 0xffffffff;
 
-static const char BADSAVCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\/."; // TODO(case-sensitive) remove
+#ifdef _DEBUG
+static const char BADSAVCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\/.";
+#endif
 
 const char * SaveBlock::File::compressionName() const {
 	switch(comp) {
@@ -370,7 +372,8 @@ bool SaveBlock::open(bool writable) {
 			handle.open(savefile, mode | fs::fstream::trunc);
 		}
 		if(!handle.is_open()) {
-			LogError << "could not open " << savefile << " for " << (writable ? "reading/writing" : "reading");
+			LogError << "could not open " << savefile << " for "
+			         << (writable ? "reading/writing" : "reading");
 			return false;
 		}
 	}
@@ -385,7 +388,8 @@ bool SaveBlock::open(bool writable) {
 
 bool SaveBlock::flush(const string & important) {
 	
-	arx_assert(important.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	arx_assert_msg(important.find_first_of(BADSAVCHAR) == string::npos,
+	               "bad save filename: \"%s\"", important.c_str());
 	
 	if((usedSize * 2 < totalSize || chunkCount > (files.size() * 4 / 3))) {
 		defragment();
@@ -400,7 +404,8 @@ bool SaveBlock::flush(const string & important) {
 
 bool SaveBlock::defragment() {
 	
-	LogDebug("defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize << " b for " << files.size() << " files in " << chunkCount << " chunks");
+	LogDebug("defragmenting " << savefile << " save: using " << usedSize << " / " << totalSize
+	         << " b for " << files.size() << " files in " << chunkCount << " chunks");
 	
 	fs::path tempFileName = savefile;
 	int i = 0;
@@ -474,7 +479,8 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		return false;
 	}
 	
-	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	
 	File * file = &files[name];
 	
@@ -536,7 +542,8 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 
 char * SaveBlock::load(const string & name, size_t & size) {
 	
-	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	
 	Files::const_iterator file = files.find(name);
 	
@@ -544,7 +551,8 @@ char * SaveBlock::load(const string & name, size_t & size) {
 }
 
 bool SaveBlock::hasFile(const string & name) const {
-	arx_assert(name.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	arx_assert_msg(name.find_first_of(BADSAVCHAR) == string::npos,
+	               "bad save filename: \"%s\"", name.c_str());
 	return (files.find(name) != files.end());
 }
 
@@ -561,7 +569,8 @@ vector<string> SaveBlock::getFiles() const {
 
 char * SaveBlock::load(const fs::path & savefile, const std::string & filename, size_t & size) {
 	
-	arx_assert(filename.find_first_of(BADSAVCHAR) == string::npos); ARX_UNUSED(BADSAVCHAR);
+	arx_assert_msg(filename.find_first_of(BADSAVCHAR) == string::npos,
+	               "bad save filename: \"%s\"", filename.c_str());
 	
 	LogDebug("reading savefile " << savefile);
 	

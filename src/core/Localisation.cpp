@@ -181,11 +181,9 @@ long getLocalisedKeyCount(const string & sectionname) {
 	return localisation.getKeyCount(sectionname);
 }
 
-static const string BADNAMECHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[]"; // TODO(case-sensitive) remove
-
 string getLocalised(const string & name, const string & default_value) {
 	
-	arx_assert(name.find_first_of(BADNAMECHAR) == string::npos); ARX_UNUSED(BADNAMECHAR); // TODO(case-sensitive) remove
+	arx_assert(name.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ[]") == string::npos);
 	
 	return localisation.getKey(name, string(), default_value);
 }
