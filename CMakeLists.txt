@@ -465,6 +465,12 @@ else(MSVC)
 		add_cxxflag("-Wno-undef")
 	endif()
 	
+	# check support for __attribute__((format(printf, i, j)))
+	check_cxx_source_compiles(
+		"void my_printf(const char *, ...) __attribute__((format(printf, 1, 2))); int main() { return 0; };\n"
+		HAVE_ATTRIBUTE_FORMAT_PRINTF
+	)
+	
 endif(MSVC)
 
 if(WIN32 AND NOT WINE)
@@ -967,6 +973,7 @@ list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
 configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
+configure_file("${SRC_DIR}/platform/PlatformConfig.h.in" "PlatformConfig.h" ESCAPE_QUOTES)
 
 set(VERSION_FILE "${CMAKE_BINARY_DIR}/Version.cpp")
 version_file("${SRC_DIR}/core/Version.cpp.cmake" "${VERSION_FILE}" "VERSION" ".git")

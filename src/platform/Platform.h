@@ -22,6 +22,8 @@
 
 #include <stddef.h>
 
+#include "PlatformConfig.h"
+
 /* ---------------------------------------------------------
                           Platforms
 ------------------------------------------------------------*/
@@ -172,18 +174,33 @@ typedef double f64; // 64 bits double float
 	#define ARX_DEBUG_BREAK() ((void)0)
 #endif
 
-
 /* ---------------------------------------------------------
-                     Maccro for assertion
+                Compiler-specific attributes
 ------------------------------------------------------------*/
-
-void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = NULL, ...);
 
 #if ARX_COMPILER_MSVC  // MS compilers support noop which discards everything inside the parens
 	#define ARX_DISCARD(...) __noop
 #else
 	#define ARX_DISCARD(...) ((void)0)
 #endif
+
+#ifdef HAVE_ATTRIBUTE_FORMAT_PRINTF
+
+#define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
+	__attribute__((format(printf, message_arg, param_vararg)))
+
+#else // HAVE_ATTRIBUTE_FORMAT_PRINTF
+
+#define ARX_FORMAT_PRINTF(message_arg, param_vararg)
+
+#endif // HAVE_ATTRIBUTE_FORMAT_PRINTF
+
+/* ---------------------------------------------------------
+                     Macro for assertion
+------------------------------------------------------------*/
+
+void assertionFailed(const char * expression, const char * file, unsigned line,
+                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 
 #ifdef _DEBUG
 	#define arx_assert_impl(_Expression, file, line, _Message, ...) { \
