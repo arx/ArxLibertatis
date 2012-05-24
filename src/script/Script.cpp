@@ -2213,65 +2213,58 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	return 0;
 }
 
-void ARX_SCRIPT_Timer_Check()
-{
-	if (ActiveTimers)
-	{
-		for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
-		{
-			SCR_TIMER * st = &scr_timer[i];
-
-			if (st->exist)
-			{
-				if (st->flags & 1)
-				{
-					if (!(st->io->GameFlags & GFLAG_ISINTREATZONE))
-					{
-						if (st->tim + st->msecs < float(arxtime))
-						{
-							const float delta = float(arxtime) - st->tim;
-							const float i = floorf(delta / (float)st->msecs);
-							st->tim += st->msecs * i;
-							arx_assert(st->tim < float(arxtime) && st->tim + st->msecs > float(arxtime));
-						}
-
-						continue;
-					}
-				}
-
-				if (st->tim + st->msecs <= float(arxtime))
-				{
-					EERIE_SCRIPT * es = st->es;
-					INTERACTIVE_OBJ * io = st->io;
-					long pos = st->pos;
-
-					if(!es) {
-						if(st->name == "_r_a_t_") {
-							if (Manage_Specific_RAT_Timer(st)) continue;
-						}
-					}
-
-					if (st->times == 1)
-					{
-						ARX_SCRIPT_Timer_ClearByNum(i);
-					}
-					else
-					{
-						if (st->times != 0) st->times--;
-
-						st->tim += st->msecs;
-					}
-
-					if ((es)
-							&&	(ValidIOAddress(io)))
-					{
-
-						ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", pos);
-					}
-
-				}
+void ARX_SCRIPT_Timer_Check() {
+	
+	if(!ActiveTimers) {
+		return;
+	}
+	
+	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
+		
+		SCR_TIMER * st = &scr_timer[i];
+		if(!st->exist) {
+			continue;
+		}
+		
+		unsigned long now = static_cast<unsigned long>(arxtime);
+		unsigned long fire_time = st->tim + st->msecs;
+		if(fire_time > now) {
+			// Timer not ready to fire yet
+			continue;
+		}
+		
+		// Skip heartbeat timer events for far away objects
+		if((st->flags & 1) && !(st->io->GameFlags & GFLAG_ISINTREATZONE)) {
+			long increment = (now - st->tim) / st->msecs;
+			st->tim += st->msecs * increment;
+			arx_assert_msg(st->tim <= now && st->tim + st->msecs > now,
+			               "start=%lu wait=%ld now=%lu", st->tim, st->msecs, now);
+			continue;
+		}
+		
+		EERIE_SCRIPT * es = st->es;
+		INTERACTIVE_OBJ * io = st->io;
+		long pos = st->pos;
+		
+		if(!es && st->name == "_r_a_t_") {
+			if(Manage_Specific_RAT_Timer(st)) {
+				continue;
 			}
 		}
+		
+		if(st->times == 1) {
+			ARX_SCRIPT_Timer_ClearByNum(i);
+		} else {
+			if(st->times != 0) {
+				st->times--;
+			}
+			st->tim += st->msecs;
+		}
+		
+		if(es && ValidIOAddress(io)) {
+			ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", pos);
+		}
+		
 	}
 }
 

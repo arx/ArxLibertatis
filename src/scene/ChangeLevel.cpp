@@ -2192,6 +2192,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 			scr_timer[num].msecs = ats->msecs;
 			scr_timer[num].name = toLowercase(safestring(ats->name));
 			scr_timer[num].pos = ats->pos;
+			// TODO if the script has changed since the last save, this position may be invalid
 			
 			float tt = ARX_CHANGELEVEL_DesiredTime + ats->tim;
 			if(tt < 0) {
