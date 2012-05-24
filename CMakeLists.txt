@@ -1201,7 +1201,7 @@ endif(NOT MSVC)
 print_configuration("Filesystem backend" FIRST
 	ARX_HAVE_POSIX_FILESYSTEM "POSIX"
 	ARX_HAVE_WIN32_FILESYSTEM "Win32"
-	1                     "Boost"
+	1                         "Boost"
 )
 print_configuration("Renderer"
 	ARX_HAVE_OPENGL "OpenGL"
@@ -1225,7 +1225,7 @@ print_configuration("Crash handler"
 )
 print_configuration("Crash reporter" FIRST
 	ARX_HAVE_CRASHREPORTER "enabled"
-	1                  "disabled"
+	1                      "disabled"
 )
 print_configuration("Tools" FIRST
 	BUILD_TOOLS "enabled"
