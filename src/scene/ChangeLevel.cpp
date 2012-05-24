@@ -159,7 +159,7 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 	
 	if(t > 0) {
 		
-		arx_assert_msg(ValidIONum(t), "got invalid IO num %d", t);
+		arx_assert_msg(ValidIONum(t), "got invalid IO num %ld", t);
 		
 		inter.iobj[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
 		return inter.iobj[t];

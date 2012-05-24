@@ -169,7 +169,8 @@ public:
 			} while(count); break;
 			
 			default:
-				arx_assert_msg(false, "too large vertex array (%d) for primitive %d", count + num, primitive);
+				arx_assert_msg(false, "too large vertex array (" PRINT_SIZE_T ") for primitive %d",
+				               count + num, primitive);
 			
 		}
 		

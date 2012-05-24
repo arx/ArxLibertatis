@@ -336,32 +336,41 @@ struct _checked_range_cast {
 	const char * file;
 	size_t line;
 	
-	inline _checked_range_cast(const char * _file, size_t _line) : file(_file), line(_line) { }
+	_checked_range_cast(const char * _file, size_t _line) : file(_file), line(_line) { }
 	
 	template <class T, class V>
-	inline T cast(V value) {
-		arx_assert_impl(value >= min(T(0)) && value <= std::numeric_limits<T>::max(), file, line, format(value), cast(value));
+	T cast(V value) {
+		check(in_range<T>(value), value);
 		return static_cast<T>(value);
 	}
 	
 private:
 	
 	template <class T>
-	static inline T min(T t) { ARX_UNUSED(t); return std::numeric_limits<T>::min(); }
-	static inline float min(float t) { ARX_UNUSED(t); return -std::numeric_limits<float>::max(); }
-	static inline double min(double t) { ARX_UNUSED(t); return -std::numeric_limits<double>::max(); }
+	static T min(T t) { ARX_UNUSED(t); return std::numeric_limits<T>::min(); }
+	static float min(float t) { ARX_UNUSED(t); return -std::numeric_limits<float>::max(); }
+	static double min(double t) { ARX_UNUSED(t); return -std::numeric_limits<double>::max(); }
 	
-	static inline const char * format(unsigned long v) { ARX_UNUSED(v); return "value is %ul"; }
-	static inline const char * format(long v) { ARX_UNUSED(v); return "value is %l"; }
-	static inline const char * format(unsigned int v) { ARX_UNUSED(v); return "value is %ud"; }
-	static inline const char * format(int v) { ARX_UNUSED(v); return "value is %d"; }
-	static inline const char * format(double v) { ARX_UNUSED(v); return "value is %f"; }
+	template <class T, class V>
+	static bool in_range(V value) {
+		return value >= min(T(0)) && value <= std::numeric_limits<T>::max();
+	}
 	
-	static inline unsigned long cast(unsigned long v) { return v; }
-	static inline long cast(long v) { return v; }
-	static inline unsigned int cast(unsigned int v) { return v; }
-	static inline int cast(int v) { return v; }
-	static inline double cast(double v) { return v; }
+	void check(bool in_range, unsigned long v) {
+		arx_assert_impl(in_range, file, line, "value is %lu", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, long v) {
+		arx_assert_impl(in_range, file, line, "value is %ld", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, unsigned int v) {
+		arx_assert_impl(in_range, file, line, "value is %u", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, int v) {
+		arx_assert_impl(in_range, file, line, "value is %d", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, double v) {
+		arx_assert_impl(in_range, file, line, "value is %f", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
 	
 };
 
