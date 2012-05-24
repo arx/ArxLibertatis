@@ -437,6 +437,8 @@ size_t initSuppressions() {
 	
 	suppress("dog_0011", 31, "playanim"); // animation 'action2' not loaded
 	
+	suppress("door_orbiplanax_chest", 371, "if"); // unknown operator '==1' (should be '== 1'), interpreted as constant true
+	
 	suppress("dragon_ice", 9029, "setevent"); // unsupported event 'agression', should be 'aggression'
 	
 	suppress("dragon_ice_0001", 93, "loadanim"); // missing animation: "dragon_talk_head"
