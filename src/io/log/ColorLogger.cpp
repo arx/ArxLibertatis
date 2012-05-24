@@ -23,7 +23,7 @@
 
 #include "platform/Platform.h"
 
-#ifdef HAVE_ISATTY
+#ifdef ARX_HAVE_ISATTY
 
 namespace logger {
 
@@ -52,4 +52,4 @@ void ColorConsole::flush() {
 
 } // namespace logger
 
-#endif // #ifdef HAVE_ISATTY
+#endif // #ifdef ARX_HAVE_ISATTY

@@ -3,6 +3,6 @@
 #define ARX_PLATFORM_PLATFORMCONFIG_H
 
 // Support for __attribute__((format(printf, i, j)))
-#cmakedefine HAVE_ATTRIBUTE_FORMAT_PRINTF
+#cmakedefine ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 
 #endif // ARX_PLATFORM_PLATFORMCONFIG_H

@@ -22,23 +22,23 @@
 
 #include "Configure.h"
 
-#if defined(HAVE_PTHREADS)
+#if defined(ARX_HAVE_PTHREADS)
 #include <pthread.h>
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 #include <windows.h>
 #else
-#error "Locking not supported: need either HAVE_PTHREADS or HAVE_WINAPI"
+#error "Locking not supported: need either ARX_HAVE_PTHREADS or ARX_HAVE_WINAPI"
 #endif
 
 class Lock {
 	
 private:
 	
-#if defined(HAVE_PTHREADS)
+#if defined(ARX_HAVE_PTHREADS)
 	pthread_mutex_t mutex;
 	pthread_cond_t cond;
 	bool locked;
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 	HANDLE mutex;
 #endif
 	

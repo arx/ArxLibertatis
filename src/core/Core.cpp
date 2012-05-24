@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 #include <windows.h>
 #endif
 

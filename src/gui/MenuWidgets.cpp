@@ -903,13 +903,13 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
 						if(config.window.framework == "SDL") {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef HAVE_D3D9
+#ifdef ARX_HAVE_D3D9
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
 						if(config.window.framework == "D3D9") {
 							slider->iPos = slider->vText.size() - 1;
@@ -1141,13 +1141,13 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef HAVE_OPENAL
+#ifdef ARX_HAVE_OPENAL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
 						if(config.audio.backend == "OpenAL") {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef HAVE_DSOUND
+#ifdef ARX_HAVE_DSOUND
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Direct Sound", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_DSOUND));
 						if(config.audio.backend == "DirectSound") {
 							slider->iPos = slider->vText.size() - 1;
@@ -1236,13 +1236,13 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "SDL", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_SDL));
 						if(config.input.backend == "SDL") {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef HAVE_DINPUT8
+#ifdef ARX_HAVE_DINPUT8
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "DInput 8", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_DINPUT));
 						if(config.input.backend == "DirectInput8") {
 							slider->iPos = slider->vText.size() - 1;

@@ -280,7 +280,7 @@ void Logger::init() {
 	
 	add(logger::Console::get());
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 	add(logger::MsvcDebugger::get());
 #endif
 	

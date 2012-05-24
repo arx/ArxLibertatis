@@ -29,16 +29,16 @@
 
 #include "Configure.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 #include <windows.h>
 #include <shlobj.h>
 #endif
 
-#ifdef HAVE_WORDEXP_H
+#ifdef ARX_HAVE_WORDEXP_H
 #include <wordexp.h>
 #endif
 
-#if defined(HAVE_READLINK)
+#ifdef ARX_HAVE_READLINK
 #include <unistd.h>
 #endif
 
@@ -49,7 +49,7 @@
 
 std::string expandEnvironmentVariables(const std::string & in) {
 	
-#if defined(HAVE_WORDEXP_H)
+#if defined(ARX_HAVE_WORDEXP_H)
 	
 	wordexp_t p;
 	
@@ -70,7 +70,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	
 	return oss.str();
 	
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 	
 	size_t length = std::max<size_t>(in.length() * 2, 1024);
 	boost::scoped_array<char> buffer(new char[length]);
@@ -95,7 +95,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 #endif
 }
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
 	
 	boost::scoped_array<char> buffer(NULL);
@@ -136,7 +136,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 
 bool getSystemConfiguration(const std::string & name, std::string & result) {
 	
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 	
 	if(getRegistryValue(HKEY_CURRENT_USER, name, result)) {
 		return true;
@@ -228,7 +228,7 @@ void defineSystemDirectories() {
 
 #endif
 
-#if defined(HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if defined(ARX_HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
 	int ret = readlink(path, &buffer.front(), buffer.size());
@@ -264,7 +264,7 @@ std::string getExecutablePath() {
 		}
 	}
 	
-#elif defined(HAVE_READLINK)
+#elif defined(ARX_HAVE_READLINK)
 	
 	std::vector<char> buffer(1024);
 	
@@ -282,7 +282,7 @@ std::string getExecutablePath() {
 	
 	// we can also try argv[0]!
 	
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 	
 	std::vector<char> buffer;
 	buffer.resize(MAX_PATH);

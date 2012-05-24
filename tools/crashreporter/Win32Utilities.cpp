@@ -19,7 +19,7 @@
 
 #include "crashreporter/Win32Utilities.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 
 // Windows
 #include <windows.h>
@@ -471,4 +471,4 @@ std::string GetExceptionString( DWORD dwCode )
     return szBuffer;
 }
 
-#endif // HAVE_WINAPI
+#endif // ARX_HAVE_WINAPI

@@ -25,7 +25,7 @@
 
 namespace Time {
 
-#if defined(HAVE_CLOCK_GETTIME)
+#if defined(ARX_HAVE_CLOCK_GETTIME)
 
 #include <time.h>
 
@@ -57,7 +57,7 @@ u64 getUs() {
 	return (ts.tv_sec * 1000000ull) + (ts.tv_nsec / 1000);
 }
 
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 
 #include <windows.h>
 
@@ -86,7 +86,7 @@ u64 getUs() {
 	return valUs;
 }
 
-#elif defined(HAVE_MACH_CLOCK)
+#elif defined(ARX_HAVE_MACH_CLOCK)
 
 #include <mach/clock.h>
 #include <mach/clock_types.h>
@@ -113,7 +113,7 @@ u64 getUs() {
 }
 
 #else
-#error "Time not supported: need either HAVE_CLOCK_GETTIME or HAVE_WINAPI or HAVE_MACH_CLOCK"
+#error "Time not supported: need either ARX_HAVE_CLOCK_GETTIME or ARX_HAVE_WINAPI or ARX_HAVE_MACH_CLOCK"
 #endif
 
 } // namespace Time

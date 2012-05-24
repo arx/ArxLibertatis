@@ -19,7 +19,7 @@
 
 #include "crashreporter/ErrorReport.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 // Win32
 #include <windows.h>
 #include <psapi.h>
@@ -27,32 +27,32 @@
 #include <sys/wait.h>
 #endif
 
-#ifdef HAVE_UNAME
+#ifdef ARX_HAVE_UNAME
 #include <sys/utsname.h>
 #endif
 
-#ifdef HAVE_GETRUSAGE
+#ifdef ARX_HAVE_GETRUSAGE
 #include <sys/resource.h>
 #include <sys/time.h>
 #endif
 
-#if defined(HAVE_PRCTL)
+#if defined(ARX_HAVE_PRCTL)
 #include <sys/prctl.h>
 #ifndef PR_SET_PTRACER
 #define PR_SET_PTRACER 0x59616d61
 #endif
 #endif
 
-#ifdef HAVE_SYSCONF
+#ifdef ARX_HAVE_SYSCONF
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_CRASHHANDLER_POSIX
+#ifdef ARX_HAVE_CRASHHANDLER_POSIX
 #include <signal.h>
 #endif
 
 // yes, we need stdio.h, POSIX doesn't know about cstdio
-#ifdef HAVE_POPEN
+#ifdef ARX_HAVE_POPEN
 #include <stdio.h>
 #endif
 
@@ -95,7 +95,7 @@ ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	, m_Username("CrashBot")
 	, m_Password("WbAtVjS9")
 {
-#if defined(HAVE_PRCTL)
+#if defined(ARX_HAVE_PRCTL)
 	// Allow debuggers to be attached to this process, for development purpose...
 	prctl(PR_SET_PTRACER, 1, 0, 0, 0);
 #endif
@@ -139,7 +139,7 @@ bool ErrorReport::Initialize()
 
 bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 	bool bHaveDump = false;
 
 	if(fs::exists(m_pCrashInfo->miniDumpTmpFile))
@@ -154,7 +154,7 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 
 	return bHaveDump;
 	
-#else // !HAVE_WINAPI
+#else // !ARX_HAVE_WINAPI
 	
 	ARX_UNUSED(fileName);
 	
@@ -163,10 +163,10 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
 	return getCrashDescription();
 	
-#endif // !HAVE_WINAPI
+#endif // !ARX_HAVE_WINAPI
 }
 
-#if defined(HAVE_POPEN) && defined(HAVE_PCLOSE)
+#if defined(ARX_HAVE_POPEN) && defined(ARX_HAVE_PCLOSE)
 static QString getOutputOf(const char * command) {
 	FILE * pipe = popen(command, "r");
 	if(!pipe) {
@@ -184,7 +184,7 @@ static QString getOutputOf(const char * command) {
 }
 #endif
 
-#ifndef HAVE_WINAPI
+#ifndef ARX_HAVE_WINAPI
 
 void getProcessSatus(QString filename, u64 & rss, u64 & startTicks) {
 	
@@ -217,7 +217,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	memoryUsage = 0;
 	runningTimeSec = 0.0;
 	
-#if defined(HAVE_GETRUSAGE) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if defined(ARX_HAVE_GETRUSAGE) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 	{
 		struct rusage usage;
 		if(getrusage(pid, &usage) == 0) {
@@ -226,7 +226,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	}
 #endif
 	
-#if defined(HAVE_SYSCONF) && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
+#if defined(ARX_HAVE_SYSCONF) && (defined(_SC_PAGESIZE) || defined(_SC_CLK_TCK))
 	
 	u64 rss, startTicks, endTicks, dummy;
 	
@@ -273,7 +273,7 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 
 QString getLinuxDistribution() {
 	
-#if defined(HAVE_POPEN) && defined(HAVE_PCLOSE)
+#if defined(ARX_HAVE_POPEN) && defined(ARX_HAVE_PCLOSE)
 	{
 		QString distro(getOutputOf("lsb_release -d").trimmed());
 		QString prefix("Description:");
@@ -390,15 +390,15 @@ QString getLinuxDistribution() {
 	return QString();
 }
 
-#endif // !defined(HAVE_WINAPI)
+#endif // !defined(ARX_HAVE_WINAPI)
 
 bool ErrorReport::getCrashDescription() {
 	
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 	
 	return true;
 	
-#else // !defined(HAVE_WINAPI)
+#else // !defined(ARX_HAVE_WINAPI)
 	
 	switch(m_pCrashInfo->signal) {
 		
@@ -518,7 +518,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#if defined(HAVE_FORK) && defined(HAVE_EXECLP) && defined(HAVE_DUP2)
+#if defined(ARX_HAVE_FORK) && defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2)
 	
 	fs::path tracePath = m_ReportFolder / "gdbtrace.txt";
 	
@@ -545,7 +545,7 @@ bool ErrorReport::getCrashDescription() {
 		// GDB failed to start.
 		exit(1);
 	}
-#endif // defined(HAVE_EXECLP) && defined(HAVE_DUP2)
+#endif // defined(ARX_HAVE_EXECLP) && defined(ARX_HAVE_DUP2)
 	
 	bool bWroteDump = fs::exists(tracePath) && fs::file_size(tracePath) > 0;
 	if(!bWroteDump) {
@@ -553,7 +553,7 @@ bool ErrorReport::getCrashDescription() {
 		return false;
 	}
 	
-#ifdef HAVE_BACKTRACE
+#ifdef ARX_HAVE_BACKTRACE
 	
 	boost::crc_32_type callstackCRC32;
 	
@@ -567,7 +567,7 @@ bool ErrorReport::getCrashDescription() {
 	u32 callstackCrc = callstackCRC32.checksum();
 	m_ReportUniqueID = QString("[%1]").arg(QString::number(callstackCrc, 16).toUpper());
 	
-#endif // HAVE_BACKTRACE
+#endif // ARX_HAVE_BACKTRACE
 	
 	QFile traceFile(tracePath.string().c_str());
 	traceFile.open(QIODevice::ReadOnly);
@@ -629,7 +629,7 @@ bool ErrorReport::getCrashDescription() {
 	
 	m_ReportTitle = QString("%1 %2").arg(m_ReportUniqueID, callstackTop.trimmed());
 	
-#endif // !defined(HAVE_WINAPI)
+#endif // !defined(ARX_HAVE_WINAPI)
 	
 	return true;
 }
@@ -641,7 +641,7 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_ProcessArchitecture = ARX_ARCH_NAME;
 	
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 	
 	// Open parent process handle
 	HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pCrashInfo->processId);
@@ -729,11 +729,11 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_ReportDescriptionText = m_ReportDescription;
 	
-#else // !HAVE_WINAPI
+#else // !ARX_HAVE_WINAPI
 	
 	getResourceUsage(m_pCrashInfo->processId, m_ProcessMemoryUsage, m_RunningTimeSec);
 	
-#ifdef HAVE_UNAME
+#ifdef ARX_HAVE_UNAME
 	struct utsname buf;
 	if(uname(&buf) == 0) {
 		m_OSName = QString(buf.sysname) + " " + buf.release;
@@ -743,7 +743,7 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_OSDistribution = getLinuxDistribution();
 	
-#endif // !HAVE_WINAPI
+#endif // !ARX_HAVE_WINAPI
 
 	return true;
 }

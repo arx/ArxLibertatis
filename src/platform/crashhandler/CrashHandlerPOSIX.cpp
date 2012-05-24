@@ -21,11 +21,11 @@
 
 #include "Configure.h"
 
-#if defined(HAVE_BACKTRACE)
+#ifdef ARX_HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
 
-#if defined(HAVE_PRCTL)
+#ifdef ARX_HAVE_PRCTL
 #include <sys/prctl.h>
 #ifndef PR_SET_PTRACER
 #define PR_SET_PTRACER 0x59616d61
@@ -39,7 +39,7 @@
 #include "platform/Environment.h"
 
 
-#ifdef HAVE_SIGACTION
+#ifdef ARX_HAVE_SIGACTION
 
 static void signalHandler(int signal, siginfo_t * info, void * context) {
 	ARX_UNUSED(context);
@@ -103,7 +103,7 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	m_pCrashInfo->signal = 0;
 	
-#if defined(HAVE_PRCTL)
+#ifdef ARX_HAVE_PRCTL
 	// Allow all processes in the same pid namespace to PTRACE this process
 	prctl(PR_SET_PTRACER, getpid());
 #endif
@@ -111,7 +111,7 @@ bool CrashHandlerPOSIX::initialize() {
 	// pre-fork the crash handler
 	if(!fork()) {
 		
-#if defined(HAVE_PRCTL) && defined(PR_SET_NAME)
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
 		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
 #endif
 		
@@ -223,7 +223,7 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 
 void CrashHandlerPOSIX::crashBroker() {
 	
-#if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
 	prctl(PR_SET_PDEATHSIG, SIGTERM);
 #endif
 	
@@ -233,7 +233,7 @@ void CrashHandlerPOSIX::crashBroker() {
 		exit(0);
 	}
 	
-#if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
 	prctl(PR_SET_PDEATHSIG, 0);
 #endif
 	
@@ -242,7 +242,7 @@ void CrashHandlerPOSIX::crashBroker() {
 	strcat(arguments, m_SharedMemoryName.c_str());
 	
 	// Try a the crash reporter in the same directory as arx or in the current directory.
-#ifdef HAVE_EXECL
+#ifdef ARX_HAVE_EXECL
 	if(!m_CrashHandlerPath.empty()) {
 		execl(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
 		      arguments, NULL);
@@ -250,7 +250,7 @@ void CrashHandlerPOSIX::crashBroker() {
 #endif
 	
 	// Try a crash reporter in the system path.
-#ifdef HAVE_EXECLP
+#ifdef ARX_HAVE_EXECLP
 	execlp(m_CrashHandlerApp.c_str(), m_CrashHandlerApp.c_str(), arguments, NULL);
 #endif
 	
@@ -279,7 +279,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	m_pCrashInfo->code = code;
 	
 	// Store the backtrace in the shared crash info
-	#ifdef HAVE_BACKTRACE
+	#ifdef ARX_HAVE_BACKTRACE
 		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	

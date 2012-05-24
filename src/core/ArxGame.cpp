@@ -122,10 +122,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef HAVE_D3D9
+#ifdef ARX_HAVE_D3D9
 #include "window/D3D9Window.h"
 #endif
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 #include "window/SDLWindow.h"
 #endif
 
@@ -345,7 +345,7 @@ bool ArxGame::InitWindow() {
 		
 		bool matched = false;
 		
-		#ifdef HAVE_D3D9
+		#ifdef ARX_HAVE_D3D9
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
 			matched = true;
 			RenderWindow * window = new D3D9Window;
@@ -355,7 +355,7 @@ bool ArxGame::InitWindow() {
 		}
 		#endif
 
-		#ifdef HAVE_SDL
+		#ifdef ARX_HAVE_SDL
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
 			RenderWindow * window = new SDLWindow;

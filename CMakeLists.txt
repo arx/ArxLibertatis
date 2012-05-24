@@ -104,18 +104,18 @@ endif()
 
 if(WINE)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_WIN32 -U__CYGWIN__ -U__WIN32__ -UWIN32")
-	set(HAVE_WINAPI 1)
+	set(ARX_HAVE_WINAPI 1)
 elseif(WIN32)
 	if(NOT MSVC)
 		# We need to define WINVER for MinGW32 when requiring anything newer than Win95 / WinNT
 		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
 	endif()
-	set(HAVE_WINAPI 1)
+	set(ARX_HAVE_WINAPI 1)
 else()
-	set(HAVE_WINAPI 0)
+	set(ARX_HAVE_WINAPI 0)
 endif()
 
-if(NOT HAVE_WINAPI)
+if(NOT ARX_HAVE_WINAPI)
 	# The is no DirectX under linux
 	set(USE_D3D9 OFF)
 	set(USE_DSOUND OFF)
@@ -159,7 +159,7 @@ endif(MSVC)
 set(BOOST_COMPONENTS program_options)
 find_package(Boost 1.39 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 
-set(HAVE_CRASHREPORTER 0)
+set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
 	# Needed by the crash reporter
 	add_definitions(-DQT_NO_DEBUG)
@@ -168,15 +168,15 @@ if(BUILD_CRASHREPORTER)
 		if(MSVC)
 			find_package(DbgHelp)
 			if(DBGHELP_FOUND)
-				set(HAVE_CRASHREPORTER 1)
+				set(ARX_HAVE_CRASHREPORTER 1)
 			endif()
 		else()
-			set(HAVE_CRASHREPORTER 1)
+			set(ARX_HAVE_CRASHREPORTER 1)
 		endif()
 	endif()
 	remove_definitions(-DQT_DEBUG)
 
-	if(HAVE_CRASHREPORTER)
+	if(ARX_HAVE_CRASHREPORTER)
 		include(${QT_USE_FILE})
 	endif()
 endif()
@@ -280,7 +280,7 @@ else(MSVC)
 		check_link_library(SDL SDL_LIBRARY)
 	endif()
 	
-	if(HAVE_CRASHREPORTER)
+	if(ARX_HAVE_CRASHREPORTER)
 		check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
 		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
 		check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
@@ -296,79 +296,79 @@ else(MSVC)
 		endif()
 	endif()
 	
-	check_symbol_exists(nanosleep "time.h" HAVE_NANOSLEEP_FUNC)
+	check_symbol_exists(nanosleep "time.h" ARX_HAVE_NANOSLEEP)
 	
-	check_symbol_exists(pthread_setname_np "pthread.h" HAVE_PTHREAD_SETNAME_NP)
-	check_symbol_exists(pthread_set_name_np "pthread.h" HAVE_PTHREAD_SET_NAME_NP)
-	check_symbol_exists(prctl "sys/prctl.h" HAVE_PRCTL)
-	check_symbol_exists(PR_SET_NAME "linux/prctl.h" HAVE_PR_SET_NAME)
+	check_symbol_exists(pthread_setname_np "pthread.h" ARX_HAVE_PTHREAD_SETNAME_NP)
+	check_symbol_exists(pthread_set_name_np "pthread.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
+	check_symbol_exists(prctl "sys/prctl.h" ARX_HAVE_PRCTL)
+	check_symbol_exists(PR_SET_NAME "linux/prctl.h" ARX_HAVE_PR_SET_NAME)
 	
-	check_symbol_exists(uname "sys/utsname.h" HAVE_UNAME)
-	check_symbol_exists(getrusage "sys/resource.h" HAVE_GETRUSAGE)
+	check_symbol_exists(uname "sys/utsname.h" ARX_HAVE_UNAME)
+	check_symbol_exists(getrusage "sys/resource.h" ARX_HAVE_GETRUSAGE)
 	
-	check_symbol_exists(popen "stdio.h" HAVE_POPEN)
-	check_symbol_exists(pclose "stdio.h" HAVE_PCLOSE)
+	check_symbol_exists(popen "stdio.h" ARX_HAVE_POPEN)
+	check_symbol_exists(pclose "stdio.h" ARX_HAVE_PCLOSE)
 	
 	find_library(LIBRT_LIBRARY rt)
 	
 	if(LIBRT_LIBRARY)
 		set(CMAKE_REQUIRED_LIBRARIES "${LIBRT_LIBRARY}")
 	endif()
-	check_symbol_exists(clock_gettime "time.h" HAVE_CLOCK_GETTIME)
+	check_symbol_exists(clock_gettime "time.h" ARX_HAVE_CLOCK_GETTIME)
 	if(LIBRT_LIBRARY)
 		unset(CMAKE_REQUIRED_LIBRARIES)
 	endif()
-	if(NOT HAVE_CLOCK_GETTIME AND NOT HAVE_WINAPI)
-		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" HAVE_MACH_CLOCK)
+	if(NOT ARX_HAVE_CLOCK_GETTIME AND NOT ARX_HAVE_WINAPI)
+		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" ARX_HAVE_MACH_CLOCK)
 	endif()
 	
-	check_include_file("wordexp.h" HAVE_WORDEXP_H)
+	check_include_file("wordexp.h" ARX_HAVE_WORDEXP_H)
 	
-	check_symbol_exists(fork "unistd.h" HAVE_FORK)
-	check_symbol_exists(readlink "unistd.h" HAVE_READLINK)
-	check_symbol_exists(dup2 "unistd.h" HAVE_DUP2)
-	check_symbol_exists(execl "unistd.h" HAVE_EXECL)
-	check_symbol_exists(execlp "unistd.h" HAVE_EXECLP)
+	check_symbol_exists(fork "unistd.h" ARX_HAVE_FORK)
+	check_symbol_exists(readlink "unistd.h" ARX_HAVE_READLINK)
+	check_symbol_exists(dup2 "unistd.h" ARX_HAVE_DUP2)
+	check_symbol_exists(execl "unistd.h" ARX_HAVE_EXECL)
+	check_symbol_exists(execlp "unistd.h" ARX_HAVE_EXECLP)
 	if(NOT WIN32)
-		check_symbol_exists(isatty "unistd.h" HAVE_ISATTY)
+		check_symbol_exists(isatty "unistd.h" ARX_HAVE_ISATTY)
 	endif()
 	
-	check_symbol_exists(sched_getscheduler "sched.h" HAVE_SCHED_GETSCHEDULER)
+	check_symbol_exists(sched_getscheduler "sched.h" ARX_HAVE_SCHED_GETSCHEDULER)
 	
-	check_symbol_exists(kill "signal.h" HAVE_KILL)
+	check_symbol_exists(kill "signal.h" ARX_HAVE_KILL)
 	
-	check_symbol_exists(backtrace "execinfo.h" HAVE_BACKTRACE)
+	check_symbol_exists(backtrace "execinfo.h" ARX_HAVE_BACKTRACE)
 	
-	check_include_file("sys/types.h" HAVE_SYS_TYPES_H)
-	check_symbol_exists(getpid "unistd.h" HAVE_GETPID)
+	check_include_file("sys/types.h" ARX_HAVE_SYS_TYPES_H)
+	check_symbol_exists(getpid "unistd.h" ARX_HAVE_GETPID)
 	
-	check_symbol_exists(sysconf "unistd.h" HAVE_SYSCONF)
+	check_symbol_exists(sysconf "unistd.h" ARX_HAVE_SYSCONF)
 	
-	check_symbol_exists(sigaction "signal.h" HAVE_SIGACTION)
+	check_symbol_exists(sigaction "signal.h" ARX_HAVE_SIGACTION)
 	
 	if(USE_NATIVE_FS)
 		
-		check_include_file("sys/stat.h" HAVE_SYS_STAT_H)
-		check_include_file("sys/errno.h" HAVE_SYS_ERRNO_H)
-		check_include_file("dirent.h" HAVE_DIRENT_H)
+		check_include_file("sys/stat.h" ARX_HAVE_SYS_STAT_H)
+		check_include_file("sys/errno.h" ARX_HAVE_SYS_ERRNO_H)
+		check_include_file("dirent.h" ARX_HAVE_DIRENT_H)
 		
-		check_symbol_exists(readdir_r "dirent.h" HAVE_READDIR_R)
+		check_symbol_exists(readdir_r "dirent.h" ARX_HAVE_READDIR_R)
 		
-		check_symbol_exists(fpathconf "unistd.h" HAVE_FPATHCONF)
-		check_symbol_exists(pathconf "unistd.h" HAVE_PATHCONF)
-		check_symbol_exists(_PC_NAME_MAX "unistd.h" HAVE_PC_NAME_MAX)
-		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" HAVE_PC_CASE_SENSITIVE)
+		check_symbol_exists(fpathconf "unistd.h" ARX_HAVE_FPATHCONF)
+		check_symbol_exists(pathconf "unistd.h" ARX_HAVE_PATHCONF)
+		check_symbol_exists(_PC_NAME_MAX "unistd.h" ARX_HAVE_PC_NAME_MAX)
+		check_symbol_exists(_PC_CASE_SENSITIVE "unistd.h" ARX_HAVE_PC_CASE_SENSITIVE)
 		
-		check_symbol_exists(dirfd "dirent.h" HAVE_DIRFD)
+		check_symbol_exists(dirfd "dirent.h" ARX_HAVE_DIRFD)
 		
-		check_symbol_exists(fstatat "sys/stat.h" HAVE_FSTATAT)
+		check_symbol_exists(fstatat "sys/stat.h" ARX_HAVE_FSTATAT)
 		
-		check_symbol_exists(NAME_MAX "dirent.h" HAVE_NAME_MAX)
+		check_symbol_exists(NAME_MAX "dirent.h" ARX_HAVE_NAME_MAX)
 		
-		if(HAVE_SYS_STAT_H AND HAVE_SYS_ERRNO_H AND HAVE_DIRENT_H AND HAVE_READDIR_R)
-			if((((HAVE_DIRFD AND HAVE_FPATHCONF) OR HAVE_PATHCONF) AND HAVE_PC_NAME_MAX)
-			   OR (HAVE_NAME_MAX))
-				set(HAVE_POSIX_FILESYSTEM 1)
+		if(ARX_HAVE_SYS_STAT_H AND ARX_HAVE_SYS_ERRNO_H AND ARX_HAVE_DIRENT_H AND ARX_HAVE_READDIR_R)
+			if((((ARX_HAVE_DIRFD AND ARX_HAVE_FPATHCONF) OR ARX_HAVE_PATHCONF) AND ARX_HAVE_PC_NAME_MAX)
+			   OR (ARX_HAVE_NAME_MAX))
+				set(ARX_HAVE_POSIX_FILESYSTEM 1)
 			endif()
 		endif()
 		
@@ -468,7 +468,7 @@ else(MSVC)
 	# check support for __attribute__((format(printf, i, j)))
 	check_cxx_source_compiles(
 		"void my_printf(const char *, ...) __attribute__((format(printf, 1, 2))); int main() { return 0; };\n"
-		HAVE_ATTRIBUTE_FORMAT_PRINTF
+		ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 	)
 	
 endif(MSVC)
@@ -536,15 +536,15 @@ if(USER_DIR_PREFIXES STREQUAL "")
 endif()
 
 # Check that all required functionality is available.
-if(CMAKE_USE_PTHREADS_INIT AND HAVE_SYS_TYPES_H AND HAVE_GETPID)
-	set(HAVE_PTHREADS 1)
+if(CMAKE_USE_PTHREADS_INIT AND ARX_HAVE_SYS_TYPES_H AND ARX_HAVE_GETPID)
+	set(ARX_HAVE_PTHREADS 1)
 endif()
 
 # Preprocessor definitions
-if(HAVE_WINAPI)
+if(ARX_HAVE_WINAPI)
 	add_definitions(-DNOMINMAX)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
-endif(HAVE_WINAPI)
+endif(ARX_HAVE_WINAPI)
 
 # Sources
 set(AI_SOURCES
@@ -824,7 +824,7 @@ endif ()
 
 set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 
-if(HAVE_WINAPI)
+if(ARX_HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 endif()
 
@@ -832,16 +832,16 @@ if(USE_OPENAL AND OPENAL_FOUND)
 	list(APPEND AUDIO_SOURCES ${AUDIO_OPENAL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENAL_LIBRARY})
 	include_directories(SYSTEM ${OPENAL_INCLUDE_DIR})
-	set(HAVE_OPENAL 1)
+	set(ARX_HAVE_OPENAL 1)
 	if(OPENALEFX_FOUND)
 		include_directories(SYSTEM ${OPENAL_EFX_INCLUDE_DIR})
-		set(HAVE_OPENAL_EFX 1)
+		set(ARX_HAVE_OPENAL_EFX 1)
 	endif()
 endif()
 if(USE_DSOUND)
 	# TODO does this need DIRECTX_FOUND? if so, the find_package(DirectX) should also be run if USE_DSOUND is set but USE_D3D9 isn't
 	list(APPEND AUDIO_SOURCES ${AUDIO_DSOUND_SOURCES})
-	set(HAVE_DSOUND 1)
+	set(ARX_HAVE_DSOUND 1)
 endif()
 
 if(USE_D3D9 AND DIRECTX_FOUND)
@@ -851,39 +851,39 @@ if(USE_D3D9 AND DIRECTX_FOUND)
 	list(APPEND ARX_LIBRARIES ${DIRECTX_D3D9_LIBRARY} ${DIRECTX_D3DX9_LIBRARY} ${DIRECTX_D3DCOMPILER_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	include_directories(SYSTEM ${DIRECTX_INCLUDE_DIR})
 	
-	set(HAVE_D3D9 1)
+	set(ARX_HAVE_D3D9 1)
 endif()
 
 if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARIES})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
-	set(HAVE_OPENGL 1)
+	set(ARX_HAVE_OPENGL 1)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
-if(USE_SDL AND HAVE_OPENGL AND SDL_FOUND)
+if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
 	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
-	set(HAVE_SDL 1)
+	set(ARX_HAVE_SDL 1)
 endif()
 
 if(USE_DINPUT8 AND DIRECTX_FOUND)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
-	set(HAVE_DINPUT8 1)
+	set(ARX_HAVE_DINPUT8 1)
 	if(WINE)
 		# TODO(broken-wine) work around missing symbols in wine's dinput8
 		list(APPEND ARX_LIBRARIES dinput)
 	endif()
 endif()
 
-if(HAVE_ISATTY)
+if(ARX_HAVE_ISATTY)
 	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_POSIX_SOURCES})
 endif()
-if(HAVE_WINAPI)
+if(ARX_HAVE_WINAPI)
 	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_WINDOWS_SOURCES})
 endif()
 list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES} ${IO_LOGGER_EXTRA_SOURCES})
@@ -892,15 +892,15 @@ list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
 
 set(BASE_LIBRARIES)
 
-if(HAVE_POSIX_FILESYSTEM)
+if(ARX_HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
-elseif(USE_NATIVE_FS AND HAVE_WINAPI)
-	add_definitions(-DHAVE_WINDOWS_FILESYSTEM)
+elseif(USE_NATIVE_FS AND ARX_HAVE_WINAPI)
+	add_definitions(-DARX_HAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
-	set(HAVE_WIN32_FILESYSTEM 1)
+	set(ARX_HAVE_WIN32_FILESYSTEM 1)
 elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
 	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
-	set(HAVE_BOOST_FILESYSTEM_V3 1)
+	set(ARX_HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
 	list(APPEND BASE_LIBRARIES ${Boost_LIBRARIES})
@@ -909,24 +909,23 @@ else()
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
-if(HAVE_CRASHREPORTER)
-	if((HAVE_EXECLP OR HAVE_EXECL) AND HAVE_FORK AND HAVE_KILL)
+if(ARX_HAVE_CRASHREPORTER)
+	if((ARX_HAVE_EXECLP OR ARX_HAVE_EXECL) AND ARX_HAVE_FORK AND ARX_HAVE_KILL)
 		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
 		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_POSIX_SOURCES})
-		set(HAVE_CRASHHANDLER_POSIX 1)
+		set(ARX_HAVE_CRASHHANDLER_POSIX 1)
 	elseif(MSVC)
 		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
 		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_WINDOWS_SOURCES})
-		set(HAVE_CRASHHANDLER_WINDOWS 1)
+		set(ARX_HAVE_CRASHHANDLER_WINDOWS 1)
 		list(APPEND ARX_LIBRARIES ${DBGHELP_LIBRARIES})
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	else()
 		# Don't bother building arxcrashreporter if it will never be used.
-		#unset(HAVE_CRASHREPORTER)
 	endif()
 endif()
 
-if(LIBRT_LIBRARY AND (HAVE_CLOCK_GETTIME OR HAVE_CRASHHANDLER_POSIX))
+if(LIBRT_LIBRARY AND (ARX_HAVE_CLOCK_GETTIME OR ARX_HAVE_CRASHHANDLER_POSIX))
 	# Needed for clock_gettime and boost::interprocess on some system.
 	list(APPEND BASE_LIBRARIES ${LIBRT_LIBRARY})
 endif()
@@ -991,7 +990,7 @@ endif()
 add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
                       "${ALL_INCLUDES}" "${arx_INSTALL}")
 
-if(HAVE_CRASHREPORTER)
+if(ARX_HAVE_CRASHREPORTER)
 	
 	set(arxcrashreporter_SOURCES
 		${PLATFORM_SOURCES}
@@ -1015,7 +1014,7 @@ if(HAVE_CRASHREPORTER)
 		"${VERSION_FILE}"
 	)
 	
-	if(HAVE_WINAPI)
+	if(ARX_HAVE_WINAPI)
 		list(APPEND arxcrashreporter_SOURCES
 			tools/crashreporter/Win32Utilities.h
 			tools/crashreporter/Win32Utilities.cpp
@@ -1200,32 +1199,32 @@ if(NOT MSVC)
 	endif()
 endif(NOT MSVC)
 print_configuration("Filesystem backend" FIRST
-	HAVE_POSIX_FILESYSTEM "POSIX"
-	HAVE_WIN32_FILESYSTEM "Win32"
+	ARX_HAVE_POSIX_FILESYSTEM "POSIX"
+	ARX_HAVE_WIN32_FILESYSTEM "Win32"
 	1                     "Boost"
 )
 print_configuration("Renderer"
-	HAVE_OPENGL "OpenGL"
-	HAVE_D3D9   "Direct3D 9"
+	ARX_HAVE_OPENGL "OpenGL"
+	ARX_HAVE_D3D9   "Direct3D 9"
 )
 print_configuration("Audio backend"
-	HAVE_OPENAL "OpenAL"
-	HAVE_DSOUND "Direct Sound"
+	ARX_HAVE_OPENAL "OpenAL"
+	ARX_HAVE_DSOUND "Direct Sound"
 )
 print_configuration("Input backend"
-	HAVE_SDL     "SDL"
-	HAVE_DINPUT8 "DirectInput 8"
+	ARX_HAVE_SDL     "SDL"
+	ARX_HAVE_DINPUT8 "DirectInput 8"
 )
 print_configuration("Windowing"
-	HAVE_SDL     "SDL"
-	HAVE_D3D9    "Win32"
+	ARX_HAVE_SDL     "SDL"
+	ARX_HAVE_D3D9    "Win32"
 )
 print_configuration("Crash handler"
-	HAVE_CRASHHANDLER_POSIX   "POSIX"
-	HAVE_CRASHHANDLER_WINDOWS "Win32"
+	ARX_HAVE_CRASHHANDLER_POSIX   "POSIX"
+	ARX_HAVE_CRASHHANDLER_WINDOWS "Win32"
 )
 print_configuration("Crash reporter" FIRST
-	HAVE_CRASHREPORTER "enabled"
+	ARX_HAVE_CRASHREPORTER "enabled"
 	1                  "disabled"
 )
 print_configuration("Tools" FIRST
@@ -1237,24 +1236,24 @@ message("")
 
 # Detect configuration errors
 
-if(NOT (HAVE_PTHREADS OR HAVE_WINAPI))
+if(NOT (ARX_HAVE_PTHREADS OR ARX_HAVE_WINAPI))
 	message(SEND_ERROR "No supported thread libraries found.")
 endif()
-if(NOT (HAVE_OPENGL OR HAVE_D3D9))
+if(NOT (ARX_HAVE_OPENGL OR ARX_HAVE_D3D9))
 	message(SEND_ERROR "No renderer available - need either OpenGL and GLEW or Direct3D 9")
 endif()
-if(NOT (HAVE_OPENAL OR HAVE_DSOUND))
+if(NOT (ARX_HAVE_OPENAL OR ARX_HAVE_DSOUND))
 	message(WARNING "No audio backend enabled - need either OpenAL or Direct Sound")
 endif()
-if(NOT (HAVE_SDL OR HAVE_DINPUT8))
+if(NOT (ARX_HAVE_SDL OR ARX_HAVE_DINPUT8))
 	message(SEND_ERROR "No input backend available - need either SDL or DirectInput 8")
 endif()
-if(NOT (HAVE_SDL OR HAVE_WINAPI))
+if(NOT (ARX_HAVE_SDL OR ARX_HAVE_WINAPI))
 	message(SEND_ERROR "No windowing backend available - need either SDL or Windows")
 endif()
-if(NOT (HAVE_NANOSLEEP_FUNC OR HAVE_WINAPI))
+if(NOT (ARX_HAVE_NANOSLEEP OR ARX_HAVE_WINAPI))
 	message(SEND_ERROR "Need either nanosleep or WIN32.")
 endif()
-if(NOT (HAVE_CLOCK_GETTIME OR HAVE_WINAPI OR HAVE_MACH_CLOCK))
+if(NOT (ARX_HAVE_CLOCK_GETTIME OR ARX_HAVE_WINAPI OR ARX_HAVE_MACH_CLOCK))
 	message(SEND_ERROR "Need either clock_gettime or WIN32 or mach clock_get_time.")
 endif()

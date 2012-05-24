@@ -184,16 +184,16 @@ typedef double f64; // 64 bits double float
 	#define ARX_DISCARD(...) ((void)0)
 #endif
 
-#ifdef HAVE_ATTRIBUTE_FORMAT_PRINTF
+#ifdef ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 
 #define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
 	__attribute__((format(printf, message_arg, param_vararg)))
 
-#else // HAVE_ATTRIBUTE_FORMAT_PRINTF
+#else // ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 
 #define ARX_FORMAT_PRINTF(message_arg, param_vararg)
 
-#endif // HAVE_ATTRIBUTE_FORMAT_PRINTF
+#endif // ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 
 /* ---------------------------------------------------------
                      Macro for assertion

@@ -26,13 +26,13 @@ void Thread::setThreadName(const std::string & _threadName) {
 	threadName = _threadName;
 }
 
-#if defined(HAVE_PTHREADS)
+#if defined(ARX_HAVE_PTHREADS)
 
 #include <sched.h>
 #include <unistd.h>
 
-#if !defined(HAVE_PTHREAD_SETNAME_NP) && !defined(HAVE_PTHREAD_SET_NAME_NP) \
-    && defined(HAVE_PRCTL) && defined(HAVE_PR_SET_NAME)
+#if !defined(ARX_HAVE_PTHREAD_SETNAME_NP) && !defined(ARX_HAVE_PTHREAD_SET_NAME_NP) \
+    && defined(ARX_HAVE_PRCTL) && defined(ARX_HAVE_PR_SET_NAME)
 #include <sys/prctl.h>
 #include <linux/prctl.h>
 #endif
@@ -63,7 +63,7 @@ void Thread::start() {
 
 void Thread::setPriority(Priority _priority) {
 	
-#ifdef HAVE_SCHED_GETSCHEDULER
+#ifdef ARX_HAVE_SCHED_GETSCHEDULER
 	int policy = sched_getscheduler(0);
 #else
 	int policy = SCHED_RR;
@@ -94,16 +94,16 @@ void * Thread::entryPoint(void * param) {
 	Thread & thread = *((Thread *)param);
 	
 	// Set the thread name.
-#if defined(HAVE_PTHREAD_SETNAME_NP) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if defined(ARX_HAVE_PTHREAD_SETNAME_NP) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 	// Linux
 	pthread_setname_np(thread.thread, thread.threadName.c_str());
-#elif defined(HAVE_PTHREAD_SETNAME_NP) && ARX_PLATFORM == ARX_PLATFORM_MACOSX
+#elif defined(ARX_HAVE_PTHREAD_SETNAME_NP) && ARX_PLATFORM == ARX_PLATFORM_MACOSX
 	// Mac OS X
 	pthread_setname_np(thread.threadName.c_str());
-#elif defined(HAVE_PTHREAD_SET_NAME_NP)
+#elif defined(ARX_HAVE_PTHREAD_SET_NAME_NP)
 	// FreeBSD & OpenBSD
 	pthread_set_name_np(thread.thread, thread.threadName.c_str());
-#elif defined(HAVE_PRCTL) && defined(HAVE_PR_SET_NAME)
+#elif defined(ARX_HAVE_PRCTL) && defined(ARX_HAVE_PR_SET_NAME)
 	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.threadName.c_str()), 0, 0, 0);
 #endif
 	
@@ -125,7 +125,7 @@ process_id_type getProcessId() {
 	return getpid();
 }
 
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 
 Thread::Thread() {
 	thread = CreateThread(NULL, 0, entryPoint, this, CREATE_SUSPENDED, NULL);
@@ -229,7 +229,7 @@ process_id_type getProcessId() {
 
 #endif
 
-#if defined(HAVE_NANOSLEEP_FUNC)
+#if defined(ARX_HAVE_NANOSLEEP)
 
 #include <time.h>
 
@@ -242,12 +242,12 @@ void Thread::sleep(unsigned milliseconds) {
 	nanosleep(&t, NULL);
 }
 
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 
 void Thread::sleep(unsigned milliseconds) {
 	Sleep(milliseconds);
 }
 
 #else
-#error "Sleep not supported: need either HAVE_NANOSLEEP_FUNC or HAVE_WINAPI"
+#error "Sleep not supported: need either ARX_HAVE_NANOSLEEP or ARX_HAVE_WINAPI"
 #endif

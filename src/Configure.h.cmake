@@ -2,61 +2,61 @@
 #ifndef ARX_CONFIGURE_H
 #define ARX_CONFIGURE_H
 
-#cmakedefine HAVE_WINAPI
+#cmakedefine ARX_HAVE_WINAPI
 
 // Threads
-#cmakedefine HAVE_PTHREADS
-#cmakedefine HAVE_PRCTL
-#cmakedefine HAVE_PR_SET_NAME
-#cmakedefine HAVE_PTHREAD_SETNAME_NP
-#cmakedefine HAVE_PTHREAD_SET_NAME_NP
+#cmakedefine ARX_HAVE_PTHREADS
+#cmakedefine ARX_HAVE_PRCTL
+#cmakedefine ARX_HAVE_PR_SET_NAME
+#cmakedefine ARX_HAVE_PTHREAD_SETNAME_NP
+#cmakedefine ARX_HAVE_PTHREAD_SET_NAME_NP
 
 // Audio backend
-#cmakedefine HAVE_OPENAL
-#cmakedefine HAVE_OPENAL_EFX
-#cmakedefine HAVE_DSOUND
+#cmakedefine ARX_HAVE_OPENAL
+#cmakedefine ARX_HAVE_OPENAL_EFX
+#cmakedefine ARX_HAVE_DSOUND
 
 // Renderer backend
-#cmakedefine HAVE_OPENGL
-#cmakedefine HAVE_D3D9
+#cmakedefine ARX_HAVE_OPENGL
+#cmakedefine ARX_HAVE_D3D9
 
 // Input backend
-#cmakedefine HAVE_SDL
-#cmakedefine HAVE_DINPUT8
+#cmakedefine ARX_HAVE_SDL
+#cmakedefine ARX_HAVE_DINPUT8
 
 // Crash handler
-#cmakedefine HAVE_CRASHHANDLER_POSIX
-#cmakedefine HAVE_CRASHHANDLER_WINDOWS
+#cmakedefine ARX_HAVE_CRASHHANDLER_POSIX
+#cmakedefine ARX_HAVE_CRASHHANDLER_WINDOWS
 
 // POSIX / Linux features
-#cmakedefine HAVE_NANOSLEEP_FUNC // HAVE_NANOSLEEP conflicts with SDL
-#cmakedefine HAVE_CLOCK_GETTIME
-#cmakedefine HAVE_FORK
-#cmakedefine HAVE_READLINK
-#cmakedefine HAVE_DUP2
-#cmakedefine HAVE_EXECL
-#cmakedefine HAVE_EXECLP
-#cmakedefine HAVE_WAITPID
-#cmakedefine HAVE_BACKTRACE
-#cmakedefine HAVE_ISATTY
-#cmakedefine HAVE_WORDEXP_H
-#cmakedefine HAVE_FPATHCONF
-#cmakedefine HAVE_PATHCONF
-#cmakedefine HAVE_PC_NAME_MAX
-#cmakedefine HAVE_PC_CASE_SENSITIVE
-#cmakedefine HAVE_NAME_MAX
-#cmakedefine HAVE_SCHED_GETSCHEDULER
-#cmakedefine HAVE_UNAME
-#cmakedefine HAVE_GETRUSAGE
-#cmakedefine HAVE_POPEN
-#cmakedefine HAVE_PCLOSE
-#cmakedefine HAVE_SYSCONF
-#cmakedefine HAVE_SIGACTION
-#cmakedefine HAVE_DIRFD
-#cmakedefine HAVE_FSTATAT
+#cmakedefine ARX_HAVE_NANOSLEEP
+#cmakedefine ARX_HAVE_CLOCK_GETTIME
+#cmakedefine ARX_HAVE_FORK
+#cmakedefine ARX_HAVE_READLINK
+#cmakedefine ARX_HAVE_DUP2
+#cmakedefine ARX_HAVE_EXECL
+#cmakedefine ARX_HAVE_EXECLP
+#cmakedefine ARX_HAVE_WAITPID
+#cmakedefine ARX_HAVE_BACKTRACE
+#cmakedefine ARX_HAVE_ISATTY
+#cmakedefine ARX_HAVE_WORDEXP_H
+#cmakedefine ARX_HAVE_FPATHCONF
+#cmakedefine ARX_HAVE_PATHCONF
+#cmakedefine ARX_HAVE_PC_NAME_MAX
+#cmakedefine ARX_HAVE_PC_CASE_SENSITIVE
+#cmakedefine ARX_HAVE_NAME_MAX
+#cmakedefine ARX_HAVE_SCHED_GETSCHEDULER
+#cmakedefine ARX_HAVE_UNAME
+#cmakedefine ARX_HAVE_GETRUSAGE
+#cmakedefine ARX_HAVE_POPEN
+#cmakedefine ARX_HAVE_PCLOSE
+#cmakedefine ARX_HAVE_SYSCONF
+#cmakedefine ARX_HAVE_SIGACTION
+#cmakedefine ARX_HAVE_DIRFD
+#cmakedefine ARX_HAVE_FSTATAT
 
 // Mac OS X features
-#cmakedefine HAVE_MACH_CLOCK
+#cmakedefine ARX_HAVE_MACH_CLOCK
 
 // Arx components
 #cmakedefine BUILD_EDITOR

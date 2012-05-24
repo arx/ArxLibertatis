@@ -21,7 +21,7 @@
 
 #include "platform/Platform.h"
 
-#if defined(HAVE_PTHREADS)
+#if defined(ARX_HAVE_PTHREADS)
 
 Lock::Lock() : locked(false) {
 	const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
@@ -55,7 +55,7 @@ void Lock::unlock() {
 	pthread_mutex_unlock(&mutex);
 }
 
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 
 Lock::Lock() {
 	mutex = CreateMutex(NULL, false, NULL);

@@ -82,12 +82,4 @@ void SAFEstrcpy(char * dest, const char * src, unsigned long max);
  */
 std::string escapeString(const std::string & text, const char* escapeChars);
 
-
-#ifdef HAVE_WINAPI
-/*!
- * Workaround for non POSIX functions names under Windows...
- */
-#define strncasecmp _strnicmp
-#endif
-
 #endif // ARX_PLATFORM_STRING_H
