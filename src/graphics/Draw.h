@@ -52,7 +52,6 @@ struct EERIE_3DOBJ;
 struct EERIE_CYLINDER;
 struct TexturedVertex;
 
-extern long ARX_ALTERNATE_3D;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 
