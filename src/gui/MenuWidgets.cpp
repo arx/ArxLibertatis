@@ -925,6 +925,12 @@ bool Menu2_Render() {
 					
 					
 					szMenuText = getLocalised("system_menus_options_videos_full_screen");
+					if(szMenuText.empty()) {
+						// TODO once we ship our own amendmends to the loc files a cleaner
+						// fix would be to just define system_menus_options_videos_full_screen
+						// for the german version there
+						szMenuText = getLocalised("system_menus_options_video_full_screen");
+					}
 					szMenuText += "  ";
 					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
