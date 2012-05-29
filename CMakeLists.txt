@@ -950,7 +950,8 @@ list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
 configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
-configure_file("${SRC_DIR}/platform/PlatformConfig.h.in" "PlatformConfig.h" ESCAPE_QUOTES)
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/platform")
+configure_file("${SRC_DIR}/platform/PlatformConfig.h.in" "platform/PlatformConfig.h" ESCAPE_QUOTES)
 
 set(VERSION_FILE "${CMAKE_BINARY_DIR}/Version.cpp")
 version_file("${SRC_DIR}/core/Version.cpp.cmake" "${VERSION_FILE}" "VERSION" ".git")

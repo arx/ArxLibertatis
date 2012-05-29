@@ -22,7 +22,7 @@
 
 #include <stddef.h>
 
-#include "PlatformConfig.h"
+#include "platform/PlatformConfig.h"
 
 /* ---------------------------------------------------------
                           Platforms
