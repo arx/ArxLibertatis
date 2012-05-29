@@ -949,12 +949,15 @@ add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
-configure_file("${SRC_DIR}/Configure.h.cmake" "Configure.h" ESCAPE_QUOTES)
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/platform")
-configure_file("${SRC_DIR}/platform/PlatformConfig.h.in" "platform/PlatformConfig.h" ESCAPE_QUOTES)
+configure_file("${SRC_DIR}/Configure.h.in" "Configure.h" ESCAPE_QUOTES)
 
-set(VERSION_FILE "${CMAKE_BINARY_DIR}/Version.cpp")
-version_file("${SRC_DIR}/core/Version.cpp.cmake" "${VERSION_FILE}" "VERSION" ".git")
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/platform")
+set(PLATFORM_CONFIG_H "platform/PlatformConfig.h")
+configure_file("${SRC_DIR}/${PLATFORM_CONFIG_H}.in" "${PLATFORM_CONFIG_H}" ESCAPE_QUOTES)
+
+set(VERSION_FILE "${CMAKE_BINARY_DIR}/core/Version.cpp")
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/core")
+version_file("${SRC_DIR}/core/Version.cpp.in" "${VERSION_FILE}" "VERSION" ".git")
 list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 
