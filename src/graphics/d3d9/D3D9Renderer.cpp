@@ -523,7 +523,7 @@ void D3D9Renderer::drawIndexed(Primitive primitive, const TexturedVertex * verti
 
 	GD3D9Device->SetFVF(D3DFVF_TLVERTEX);
 	HRESULT hr = GD3D9Device->DrawIndexedPrimitiveUP(type, 0, nvertices, numPrimitives, indices, D3DFMT_INDEX16, vertices, sizeof(TexturedVertex));
-	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveUP failed: %08x", hr);
+	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveUP failed: %08lx", hr);
 	ARX_UNUSED(hr);
 	
 }
