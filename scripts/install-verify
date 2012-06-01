@@ -178,7 +178,8 @@ Done:"
 	
 	# data.pak is censored in some versions (presumably has less gore)
 	# At least the original german and italian CDs have the censored version.
-	# The censored version has different level files and a different.
+	# The censored version has different level files and a different
+	# human_female_villager model.
 	# There are also minor differences in the scripts, but those are
 	# overwritten by data2.pak from the 1.21 patch.
 	data_checksum_original='a91a0b39a046233debbb10b4850e13eb'
