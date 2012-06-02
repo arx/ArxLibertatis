@@ -58,3 +58,23 @@
   (crash report #229)
 * Loading files from the 'graph' and 'misc' directories is now case-insensitive
 * Switched to D3D and DInput backends by default on Windows
+
+== Patch 1.0.2 ==
+
+* Fixed problems with the unity build under Linux (crash reports #243, #245)
+* Fixed crashes and disappearing items when sorting the inventory
+* Crafting now always adds items to an existing stack if there is one
+* Inventory sorting now works on all bags at once
+* Fixed a script execution error when changing the heartbeat event while
+  executing the heartbeat event
+* Fixed compile errors with older Qt and SDL versions
+* Fixed crashes due to random numbers, mostly occurring on Windows
+  (crash report #258)
+* Fixed a bug in loading the Spanish localization files (bug #259)
+* Fixed transparent objects being drawn in front of opaque objects when a
+  book/note is open (bug #252)
+* Fixed a regression from the original game that made the player super stealthy
+  (bug #262)
+* Fixed a regression in the script timer code (crash report #251)
+* Fixed label for the 'Full screen' checkbox not being shown in the German
+  version
