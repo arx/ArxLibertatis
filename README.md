@@ -172,6 +172,7 @@ The `scripts` directory contains shell scripts that allow to extract/install the
   `setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
 
 * `scripts/install-copy path/to/ArxFatalis/ [output_dir]`<br>
+  `path/to/ArxFatalis/` should point to a fully pached (1.21) Arx fatalis installation, such as the one from Steam
 
 ## Build documentation
 
