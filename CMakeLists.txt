@@ -159,7 +159,6 @@ find_package(Boost 1.39 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
 	# Needed by the crash reporter
-	add_definitions(-DQT_NO_DEBUG)
 	find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork)
 	if(QT_FOUND)
 		if(MSVC)
@@ -170,11 +169,6 @@ if(BUILD_CRASHREPORTER)
 		else()
 			set(ARX_HAVE_CRASHREPORTER 1)
 		endif()
-	endif()
-	remove_definitions(-DQT_DEBUG)
-
-	if(ARX_HAVE_CRASHREPORTER)
-		include(${QT_USE_FILE})
 	endif()
 endif()
 
@@ -893,6 +887,7 @@ if(ARX_HAVE_CRASHREPORTER)
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	else()
 		# Don't bother building arxcrashreporter if it will never be used.
+		set(ARX_HAVE_CRASHREPORTER 0)
 	endif()
 endif()
 
@@ -966,6 +961,15 @@ add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
                       "${ALL_INCLUDES}" "${arx_INSTALL}")
 
 if(ARX_HAVE_CRASHREPORTER)
+	
+	add_definitions(${QT_DEFINITIONS} -DQT_NO_DEBUG)
+	
+	include_directories(SYSTEM
+		"${QT_INCLUDE_DIR}"
+		"${QT_QTCORE_INCLUDE_DIR}"
+		"${QT_QTGUI_INCLUDE_DIR}"
+		"${QT_QTNETWORK_INCLUDE_DIR}"
+	)
 	
 	set(arxcrashreporter_SOURCES
 		${PLATFORM_SOURCES}
