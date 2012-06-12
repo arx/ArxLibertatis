@@ -55,37 +55,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class Input {
 	
 public:
+	
 	static const std::string KEY_NONE;
- 
-public:
+	
 	Input();
 	virtual ~Input();
-
+	
 	bool init();
 	void reset();
 	void acquireDevices();
 	void unacquireDevices();
-
+	
 	void update();
-
-	static std::string	getKeyName(InputKeyId key, bool localizedName = false);
-	static InputKeyId	getKeyId(const std::string& keyName);
-
-	///////////////////////////////////////////////////////////////////////////
+	
+	static std::string getKeyName(InputKeyId key, bool localizedName = false);
+	static InputKeyId getKeyId(const std::string & keyName);
+	
 	// Action
+	
 	bool actionNowPressed(int actionId) const;
 	bool actionPressed(int actionId) const;
 	bool actionNowReleased(int actionId) const;
-
-	///////////////////////////////////////////////////////////////////////////
+	
 	// Mouse
-	const Vec2s & getMousePosAbs() const;
-	const Vec2s & getMousePosRel() const;
-	void setMousePosAbs(const Vec2s& mousePos);
-
+	
+	const Vec2s & getMousePosAbs() const { return iMouseA; }
+	const Vec2s & getMousePosRel() const { return iMouseR; }
+	bool isMouseInWindow() const { return mouseInWindow; }
+	void setMousePosAbs(const Vec2s & mousePos);
+	
 	void setMouseSensitivity(int sensitivity);
-	int getMouseSensitivity() const;
-
+	int getMouseSensitivity() const { return iSensibility; }
+	
 	bool hasMouseMoved() const;
 	bool getMouseButton(int buttonId) const;
 	int getMouseButtonClicked() const;
@@ -93,44 +94,47 @@ public:
 	bool getMouseButtonNowPressed(int buttonId) const;
 	bool getMouseButtonNowUnPressed(int buttonId) const;
 	bool getMouseButtonDoubleClick(int buttonId, int timeMs) const;
-
-	int  getMouseWheelDir() const;
 	
-	///////////////////////////////////////////////////////////////////////////
+	int getMouseWheelDir() const { return iWheelDir; }
+	
 	// Keyboard
-	int getKeyPressed() const;
-	bool isAnyKeyPressed() const;
+	
+	int getKeyPressed() const { return iKeyId; }
+	bool isAnyKeyPressed() const { return iKeyId >= 0; }
 	bool isKeyPressed(int keyId) const;
 	bool isKeyPressedNowPressed(int keyId) const;
-	bool isKeyPressedNowUnPressed(int keyId) const;	
-	bool getKeyAsText(int keyId, char& result) const;
-
-private:
-	class InputBackend* backend;
-
-	///////////////////////////////////////////////////////////////////////////
-	// Mouse
-	Vec2s	iMouseR;
-	Vec2s	iMouseA;
-	Vec2s	iMouseARaw;		// Unsmooted
-
-	int		iSensibility;
-	int		iWheelDir;
-
-	bool	bMouseButton[Mouse::ButtonCount];
-	bool	bOldMouseButton[Mouse::ButtonCount];
-
-	int		iMouseTime[Mouse::ButtonCount];
-	int		iMouseTimeSet[Mouse::ButtonCount];
-	int		iOldNumClick[Mouse::ButtonCount];
+	bool isKeyPressedNowUnPressed(int keyId) const;
+	bool getKeyAsText(int keyId, char & result) const;
 	
-	///////////////////////////////////////////////////////////////////////////
+private:
+	
+	class InputBackend * backend;
+	
+	// Mouse
+	
+	Vec2s iMouseR;
+	Vec2s iMouseA;
+	bool  mouseInWindow;
+	Vec2s iMouseARaw; // Unsmooted
+	
+	int   iSensibility;
+	int   iWheelDir;
+	
+	bool  bMouseButton[Mouse::ButtonCount];
+	bool  bOldMouseButton[Mouse::ButtonCount];
+	
+	int   iMouseTime[Mouse::ButtonCount];
+	int   iMouseTimeSet[Mouse::ButtonCount];
+	int   iOldNumClick[Mouse::ButtonCount];
+	
 	// Keyboard
-	int		iKeyId;								// Id of the key pressed in the last update
-	int		keysStates[Keyboard::KeyCount];		// 0: up, 1: just pressed/released, 2: pressed
+	
+	int   iKeyId;                         // Id of the key pressed in the last update
+	int   keysStates[Keyboard::KeyCount]; // 0: up, 1: just pressed/released, 2: pressed
+	
 };
 
-extern Input* GInput;
+extern Input * GInput;
 
 bool ARX_INPUT_Init();
 void ARX_INPUT_Release();

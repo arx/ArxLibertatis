@@ -41,7 +41,7 @@ public:
 	void unacquireDevices();
 	
 	// Mouse
-	void getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
+	bool getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
 	void setMouseCoordinates(int absX, int absY);
 	bool isMouseButtonPressed(int buttonId, int & deltaTime) const;
 	void getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const;
@@ -56,6 +56,7 @@ private:
 	
 	int wheel;
 	Vec2i cursor;
+	bool cursorInWindow;
 	bool keyStates[Keyboard::KeyCount];
 	bool buttonStates[Mouse::ButtonCount];
 	size_t clickCount[Mouse::ButtonCount];

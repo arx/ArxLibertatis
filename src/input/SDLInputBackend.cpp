@@ -51,6 +51,8 @@ bool SDLInputBackend::init() {
 		return false;
 	}
 	
+	cursorInWindow = false;
+	
 	SDLWindow::mainWindow->input = this;
 	
 	SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
@@ -260,8 +262,9 @@ void SDLInputBackend::unacquireDevices() {
 	// SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
-void SDLInputBackend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
+bool SDLInputBackend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
 	absX = cursor.x, absY = cursor.y, wheelDir = currentWheel;
+	return cursorInWindow;
 }
 
 void SDLInputBackend::setMouseCoordinates(int absX, int absY) {
@@ -435,6 +438,15 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		
+			case SDL_ACTIVEEVENT: {
+				if(event.active.state & SDL_APPMOUSEFOCUS) {
+					if(!event.active.gain) {
+						cursorInWindow = false;
+					}
+				}
+				break;
+			}
+		
 		case SDL_KEYDOWN:
 		case SDL_KEYUP: {
 			SDLKey key = event.key.keysym.sym;
@@ -448,6 +460,7 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 		
 		case SDL_MOUSEMOTION: {
 			cursor = Vec2i(event.motion.x, event.motion.y);
+			cursorInWindow = true;
 			break;
 		}
 		

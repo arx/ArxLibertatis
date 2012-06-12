@@ -622,7 +622,7 @@ bool DInput8Backend::getKeyAsText(int keyId, char& result) const {
 	return true;
 }
 
-void DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
+bool DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
 		
 	// DInput relative
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
@@ -651,7 +651,9 @@ void DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir)
 		ScreenToClient((HWND)mainApp->GetWindow()->GetHandle(), &pt);
 		absX = pt.x;
 		absY = pt.y;
-	}	
+	}
+	
+	return true;
 }
 
 void DInput8Backend::setMouseCoordinates(int absX, int absY)

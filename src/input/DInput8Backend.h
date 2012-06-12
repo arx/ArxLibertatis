@@ -60,7 +60,7 @@ public:
 	virtual void unacquireDevices();
 
 	// Mouse 
-	virtual void getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
+	virtual bool getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
 	virtual void setMouseCoordinates(int absX, int absY);
 	virtual bool isMouseButtonPressed(int buttonId, int & _iDeltaTime) const;
 	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const;

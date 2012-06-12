@@ -654,6 +654,8 @@ private:
 	
 	void DrawOneCursor(const Vec2s & mousePos);
 	
+	bool exited; //! Has the mouse exited the window
+	
 	// Cursor
 	TextureContainer	* pTex[8];
 	long				lFrameDiff;

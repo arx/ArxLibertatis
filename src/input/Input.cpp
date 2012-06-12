@@ -306,18 +306,6 @@ void Input::unacquireDevices()
 }
 
 //-----------------------------------------------------------------------------
-
-const Vec2s& Input::getMousePosAbs() const {
-	return iMouseA;
-}
-
-//-----------------------------------------------------------------------------
-
-const Vec2s& Input::getMousePosRel() const {
-	return iMouseR;
-}
-
-//-----------------------------------------------------------------------------
 void Input::setMousePosAbs(const Vec2s& mousePos)
 {
 	if(backend)
@@ -506,37 +494,38 @@ void Input::update()
 	
 	// Get the new coordinates
 	int absX, absY;
-	backend->getMouseCoordinates(absX, absY, iWheelDir);
-
+	mouseInWindow = backend->getMouseCoordinates(absX, absY, iWheelDir);
+	
 	Vec2i wndSize = mainApp->GetWindow()->GetSize();
-
-	// Do not update mouse position when it is outside of the window
-	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y)
-	{
+	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
+		
 		iMouseARaw = Vec2s((short)absX, (short)absY);
-
+		
 		// In fullscreen, use the sensitivity config value to adjust mouse mouvements
 		if(mainApp->GetWindow()->IsFullScreen()) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
 			fSens = pow( .7f, fSens ) * 2.f;
-
+			
 			Vec2f fD;
 			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens;
 			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens;
-
+			
 			iMouseR.x = (int)fD.x;
 			iMouseR.y = (int)fD.y;
 			iMouseA += iMouseR;
 		} else {
 			iMouseR = iMouseARaw - iMouseA;
-			iMouseA = iMouseARaw;		
+			iMouseA = iMouseARaw;
 		}
-
+		
 		// Clamp to window rect
 		iMouseA.x = clamp(iMouseA.x, 0, (short)wndSize.x - 1);
 		iMouseA.y = clamp(iMouseA.y, 0, (short)wndSize.y - 1);
+		
+	} else {
+		mouseInWindow = false;
 	}
 }
 
@@ -644,32 +633,11 @@ InputKeyId Input::getKeyId(const std::string & name) {
 
 //-----------------------------------------------------------------------------
 
-void Input::setMouseSensitivity(int _iSensibility)
-{
+void Input::setMouseSensitivity(int _iSensibility) {
 	iSensibility = _iSensibility;
 }
 
 //-----------------------------------------------------------------------------
-
-int Input::getMouseSensitivity() const {
-	return iSensibility;
-}
-
-//-----------------------------------------------------------------------------
-
-int Input::getMouseWheelDir() const {
-	return iWheelDir;
-}
-
-//-----------------------------------------------------------------------------
-int Input::getKeyPressed() const {
-	return iKeyId;
-}
-
-//-----------------------------------------------------------------------------
-bool Input::isAnyKeyPressed() const {
-	return iKeyId >= 0;
-}
 
 bool Input::isKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);

@@ -31,7 +31,8 @@ public:
 	virtual bool update() = 0;	
 
 	// Mouse 
-	virtual void getMouseCoordinates(int & absX, int & absY, int & wheelDir) const = 0;
+	//! return true if the mouse position is currently being updated
+	virtual bool getMouseCoordinates(int & absX, int & absY, int & wheelDir) const = 0;
 	virtual void setMouseCoordinates(int absX, int absY) = 0;
 	virtual bool isMouseButtonPressed(int buttonId, int & _iDeltaTime) const = 0;
 	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const = 0;

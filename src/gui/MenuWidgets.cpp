@@ -4929,7 +4929,9 @@ MenuCursor::MenuCursor()
 	
 	iNbOldCoord=0;
 	iMaxOldCoord=40;
-
+	
+	exited = true;
+	
 	bMouseOver=false;
 
 	if(pTex[0])
@@ -4996,6 +4998,13 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 
 void MenuCursor::Update() {
 	
+	bool inWindow = GInput->isMouseInWindow();
+	if(inWindow && exited) {
+		// Mouse is re-entering the window - reset the cursor trail
+		iNbOldCoord = 0;
+	}
+	exited = !inWindow;
+	
 	Vec2s iDiff;
 	if(pTex[eNumTex]) {
 		iDiff = Vec2s(pTex[eNumTex]->m_dwWidth / 2, pTex[eNumTex]->m_dwHeight / 2);
@@ -5010,7 +5019,7 @@ void MenuCursor::Update() {
 		iNbOldCoord = iMaxOldCoord - 1;
 		memmove(iOldCoord, iOldCoord + 1, sizeof(Vec2s) * iNbOldCoord);
 	}
-
+	
 }
 
 //-----------------------------------------------------------------------------
