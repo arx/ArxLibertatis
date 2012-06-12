@@ -167,14 +167,17 @@ function(_shared_build_cleanup)
 	
 endfunction(_shared_build_cleanup)
 
+function(_shared_build_add_executable exe)
+	add_executable(${exe} ${SHARED_BUILD_${exe}_TYPE} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
+	target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
+	install(TARGETS ${exe} RUNTIME ${SHARED_BUILD_${exe}_INSTALL})
+endfunction(_shared_build_add_executable)
 
 # Build each executable separately.
 function(separate_build)
 	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
-		add_executable(${exe} ${SHARED_BUILD_${exe}_TYPE} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
-		target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
-		install(TARGETS ${exe} RUNTIME ${SHARED_BUILD_${exe}_INSTALL})
+		_shared_build_add_executable(${exe})
 	endforeach(exe)
 	
 	_shared_build_cleanup()
@@ -212,9 +215,7 @@ function(unity_build)
 	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
 		enable_unity_build(${exe} SHARED_BUILD_${exe}_SOURCES)
-		add_executable(${exe} ${SHARED_BUILD_${exe}_TYPE} ${SHARED_BUILD_${exe}_SOURCES} ${SHARED_BUILD_${exe}_EXTRA})
-		target_link_libraries(${exe} ${SHARED_BUILD_${exe}_LIBS})
-		install(TARGETS ${exe} RUNTIME ${SHARED_BUILD_${exe}_INSTALL})
+		_shared_build_add_executable(${exe})
 	endforeach(exe)
 	
 	_shared_build_cleanup()
