@@ -26,7 +26,7 @@
 #include "io/log/Logger.h"
 #include "math/Rectangle.h"
 
-// Neither wine nor mingw32 define this.
+// MinGW doesn't define this
 #ifndef GET_SC_WPARAM
 #define GET_SC_WPARAM(x) (int(x) & 0x0000fff0)
 #endif

@@ -102,10 +102,7 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_CO
 	set(LAST_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE INTERNAL "The last C++ compiler.")
 endif()
 
-if(WINE)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U_WIN32 -U__CYGWIN__ -U__WIN32__ -UWIN32")
-	set(ARX_HAVE_WINAPI 1)
-elseif(WIN32)
+if(WIN32)
 	if(NOT MSVC)
 		# We need to define WINVER for MinGW32 when requiring anything newer than Win95 / WinNT
 		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
@@ -451,7 +448,7 @@ else(MSVC)
 	
 endif(MSVC)
 
-if(WIN32 AND NOT WINE)
+if(WIN32)
 	# Define default user and data directories.
 	if(NOT DEFINED DATA_DIR)
 		set(DATA_DIR "Arx Libertatis")
@@ -852,10 +849,6 @@ if(USE_DINPUT8 AND DIRECTX_FOUND)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	set(ARX_HAVE_DINPUT8 1)
-	if(WINE)
-		# TODO(broken-wine) work around missing symbols in wine's dinput8
-		list(APPEND ARX_LIBRARIES dinput)
-	endif()
 endif()
 
 if(ARX_HAVE_ISATTY)

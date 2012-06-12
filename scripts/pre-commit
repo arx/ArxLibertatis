@@ -9,4 +9,3 @@ untracked=`git status -u | grep '^# Untracked files:$'`
 if [ "$untracked" != "" ] ; then
 	git status ; echo "${esc}[31;1mAdd untracked files first!${esc}[0m" ; exit 1
 fi
-

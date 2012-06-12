@@ -21,7 +21,7 @@
 
 #include <list>
 
-// TODO(broken-wine) wine's d3dx9math.h requires min and max but doesn't include them!
+// MinGW's d3dx9math.h requires min and max but doesn't include them!
 #include <algorithm>
 using std::max;
 using std::min;
