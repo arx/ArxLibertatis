@@ -87,7 +87,7 @@ public:
 	void setMouseSensitivity(int sensitivity);
 	int getMouseSensitivity() const { return iSensibility; }
 	
-	bool hasMouseMoved() const;
+	bool hasMouseMoved() const { return iMouseR != Vec2s::ZERO; }
 	bool getMouseButton(int buttonId) const;
 	int getMouseButtonClicked() const;
 	bool getMouseButtonRepeat(int buttonId) const;

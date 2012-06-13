@@ -713,11 +713,6 @@ bool Input::getMouseButtonDoubleClick(int buttonId, int timeMs) const {
 }
 
 //-----------------------------------------------------------------------------
-bool Input::hasMouseMoved() const {
-	return iMouseR.x != 0 || iMouseR.y != 0;
-}
-
-//-----------------------------------------------------------------------------
 int Input::getMouseButtonClicked() const {
 
 	//MouseButton

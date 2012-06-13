@@ -899,20 +899,15 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 // Keyboard/Mouse Management
 //-------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-void ResetPlayerInterface()
-{
+void ResetPlayerInterface() {
 	player.Interface |= INTER_LIFE_MANA;
 	SLID_VALUE = 0;
 	lSLID_VALUE = 0;
 	SLID_START=float(arxtime);
 }
 
-extern long MouseDragX, MouseDragY;
-
-//-----------------------------------------------------------------------------
-void ReleaseInfosCombine()
-{
+void ReleaseInfosCombine() {
+	
 	INTERACTIVE_OBJ * io = NULL;
 
 	if (player.bag)
@@ -1413,39 +1408,26 @@ bool ArxGame::ManageEditorControls()
 
 	/////////////////////////////////////////////////////
 
-	if  (EERIEMouseButton & 1)
-	{
-		if ( !(LastMouseClick &1) )
-		{
-			STARTDRAG.x=DANAEMouse.x;
-			STARTDRAG.y=DANAEMouse.y;
-			DRAGGING=0;
-
-			if (config.input.autoReadyWeapon == false)
-			{
-				MouseDragX = 0;
-				MouseDragY = 0;
+	if(EERIEMouseButton & 1) {
+		static Vec2s dragThreshold = Vec2s::ZERO;
+		
+		if(!(LastMouseClick & 1)) {
+			
+			STARTDRAG = DANAEMouse;
+			DRAGGING = 0;
+			dragThreshold = Vec2s::ZERO;
+			
+		} else {
+			
+			dragThreshold += GInput->getMousePosRel();
+			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
+			   || (abs(dragThreshold.x) > 2 || abs(dragThreshold.y) > 2)) {
+				DRAGGING = 1;
 			}
 		}
-		else
-		{
-			// mode systemshock
-			if (config.input.autoReadyWeapon == false)
-			{
-				MouseDragX += GInput->getMousePosRel().x;
-				MouseDragY += GInput->getMousePosRel().y;
-			}
-
-			if (((abs(DANAEMouse.x-STARTDRAG.x)>2) && (abs(DANAEMouse.y-STARTDRAG.y)>2))
-			   || ((config.input.autoReadyWeapon == false) && ((abs(MouseDragX) > 2) || (abs(MouseDragY) > 2))))
-			{
-				DRAGGING=1;
-			}
-		}
-	}
-	else
-	{
-		DRAGGING=0;
+		
+	} else {
+		DRAGGING = 0;
 	}
 
 	//-------------------------------------------------------------------------
@@ -3685,7 +3667,7 @@ void ArxGame::ManageKeyMouse() {
 	else if ((!PLAYER_MOUSELOOK_ON) && (LAST_PLAYER_MOUSELOOK_ON))
 	{
 		EERIEMouseGrab=0;
-				
+		
 		DANAEMouse.x=MemoMouse.x;
 		DANAEMouse.y=MemoMouse.y;
 

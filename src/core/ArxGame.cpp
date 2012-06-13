@@ -578,8 +578,6 @@ void ArxGame::FrameMove() {
 	}
 }
 
-long MouseDragX, MouseDragY;
- 
 //*************************************************************************************
 // Render3DEnvironment()
 // Draws the scene.
