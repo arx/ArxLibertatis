@@ -65,9 +65,10 @@ private:
 	size_t unclickCount[Mouse::ButtonCount];
 	
 	int currentWheel;
-	Vec2i currentCursorRel;
 	size_t currentClickCount[Mouse::ButtonCount];
 	size_t currentUnclickCount[Mouse::ButtonCount];
+	
+	Vec2i lastCursorAbs;
 	
 	friend class SDLWindow;
 };
