@@ -126,23 +126,41 @@ public:
 				}
 			}
 			
-			PlayerInventory::Pos oldPos = playerInventory.remove(io);
-			
 			io->show = SHOW_FLAG_KILLED;
-			ReplaceInAllInventories(io, ioo);
+			
+			InventoryPos oldPos = removeFromInventories(io);
+			
 			SendInitScriptEvent(ioo);
 			ioo->angle = last_angle;
 			TREATZONE_AddIO(ioo, neww);
 			
-			if(oldPos && !playerInventory.locate(ioo)) {
-				giveToPlayer(ioo, oldPos);
+			// check that the init script didn't put the item anywhere
+			// if we ignore this we might create duplucate references
+			bool reInsert = true; // should the new item be inserted at the old items position?
+			if(locateInInventories(ioo)) {
+				// the init script already inserted the item into an inventory
+				reInsert = false;
 			}
-			
 			for(int i = 0; i < MAX_EQUIPED; i++) {
 				if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
-					if(inter.iobj[player.equiped[i]] == io) {
-						ARX_EQUIPMENT_UnEquip(inter.iobj[0], io, 1);
-						ARX_EQUIPMENT_Equip(inter.iobj[0], ioo);
+					if(inter.iobj[player.equiped[i]] == ioo) {
+						// the init script was sneaky and equiped the item
+						reInsert = false;
+					}
+				}
+			}
+			
+			if(reInsert) {
+				if(oldPos) {
+					insertIntoInventory(ioo, oldPos);
+				} else {
+					for(int i = 0; i < MAX_EQUIPED; i++) {
+						if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+							if(inter.iobj[player.equiped[i]] == io) {
+								ARX_EQUIPMENT_UnEquip(inter.iobj[0], io, 1);
+								ARX_EQUIPMENT_Equip(inter.iobj[0], ioo);
+							}
+						}
 					}
 				}
 			}

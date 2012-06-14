@@ -370,256 +370,38 @@ void ForcePlayerInventoryObjectLevel(long level) {
 	}
 }
 
-PlayerInventory playerInventory;
-
-bool PlayerInventory::insertIntoNewSlotAt(INTERACTIVE_OBJ * item, const Pos & pos) {
-	
-	if(pos.bag >= size_t(player.bag)) {
-		return false;
-	}
-	
-	if(pos.x + item->sizex > INVENTORY_X || pos.y + item->sizey > INVENTORY_Y) {
-		return false;
-	}
-	
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	
-	// Check if the whole area required by this item is empty
-	for(size_t j = pos.y; j < pos.y + item->sizey; j++) {
-		for(size_t i = pos.x; i < pos.x + item->sizex; i++) {
-			if(inventory[pos.bag][i][j].io != NULL) {
-				return false;
-			}
-		}
-	}
-	
-	LogDebug(" - (" << pos.bag << ',' << pos.x << ',' << pos.y << ") := "
-	         << item->long_name() << " [" << item->_itemdata->count << '/'
-	         << item->_itemdata->playerstacksize << "]: "
-	         << int(item->sizex) << 'x' << int(item->sizey));
-	
-	// Insert the item at the found position
-	for(size_t j = pos.y; j < (pos.y + item->sizey); j++) {
-		for (size_t i = pos.x; i < (pos.x + item->sizex); i++) {
-			inventory[pos.bag][i][j].io = item;
-			inventory[pos.bag][i][j].show = 0;
-		}
-	}
-	inventory[pos.bag][pos.x][pos.y].show = 1;
-	
-	return true;
-}
-
-PlayerInventory::Pos PlayerInventory::insertIntoNewSlot(INTERACTIVE_OBJ * item) {
-	
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	
-	for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-		for(size_t i = 0; i < INVENTORY_X + 1 - item->sizex; i++) {
-			for(size_t j = 0; j < INVENTORY_Y + 1 - item->sizey; j++) {
-				
-				// Ignore already used inventory slots
-				if(inventory[bag][i][j].io != NULL) {
-					continue;
-				}
-				
-				Pos pos(bag, i, j);
-				if(insertIntoNewSlotAt(item, pos)) {
-					return pos;
-				}
-			}
-		}
-	}
-	
-	return Pos();
-}
-
-bool PlayerInventory::insertIntoStackAt(INTERACTIVE_OBJ * item, const Pos & pos) {
-	
-	if(pos.bag >= size_t(player.bag)) {
-		return false;
-	}
-	
-	if(pos.x + item->sizex > INVENTORY_X || pos.y + item->sizey > INVENTORY_Y) {
-		return false;
-	}
-	
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	
-	INTERACTIVE_OBJ * io = inventory[pos.bag][pos.x][pos.y].io;
-	
-	// Ignore empty slots and different or non-stackeable items
-	if(!io || io->_itemdata->playerstacksize <= 1 || !IsSameObject(item, io)) {
-		return false;
-	}
-	
-	// Ignore full stacks
-	if(io->_itemdata->count >= io->_itemdata->playerstacksize) {
-		return false;
-	}
-	
-	// Get the number of items to add to the stack
-	short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
-	short int count = std::min(item->_itemdata->count, remainingSpace);
-	
-	LogDebug(" - (" << pos.bag << ',' << pos.x << ',' << pos.y << ") "
-	         << io->long_name()
-	         << " [" << io->_itemdata->count << '/'
-	         << io->_itemdata->playerstacksize << "] += "
-	         << item->long_name() << " x" << count << '/' << item->_itemdata->count);
-	
-	io->_itemdata->count += count, item->_itemdata->count -= count;
-	
-	if(item->_itemdata->count != 0) {
-		// We inserted some of the items into the stack, but there was not enough
-		// space for all of them.
-		return false;
-	}
-	
-	// Delete or hide the old item
-	if(item->scriptload) {
-		delete item;
-	} else {
-		item->show = SHOW_FLAG_KILLED;
-	}
-	return true;
-}
-
-
-PlayerInventory::Pos PlayerInventory::insertIntoStack(INTERACTIVE_OBJ * item) {
-	
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	
-	// Try to add the items to an existing stack
-	for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-		for(size_t i = 0; i < INVENTORY_X + 1 - item->sizex; i++) {
-			for(size_t j = 0; j < INVENTORY_Y + 1 - item->sizey; j++) {
-				Pos pos(bag, i, j);
-				if(insertIntoStackAt(item, pos)) {
-					return pos;
-				}
-			}
-		}
-	}
-	
-	return Pos();
-}
-
-PlayerInventory::Pos PlayerInventory::insertImpl(INTERACTIVE_OBJ * item) {
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	if(Pos pos = insertIntoStack(item)) {
-		return pos;
-	}
-	return insertIntoNewSlot(item);
-}
-
-PlayerInventory::Pos PlayerInventory::insertImpl(INTERACTIVE_OBJ * item, const Pos & pos) {
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	if(insertIntoStackAt(item, pos)) {
-		return pos;
-	}
-	if(Pos newPos = insertIntoStack(item)) {
-		return newPos;
-	}
-	if(insertIntoNewSlotAt(item, pos)) {
-		return pos;
-	}
-	return insertIntoNewSlot(item);
-}
-
-PlayerInventory::Pos PlayerInventory::locate(const INTERACTIVE_OBJ * item) {
-	for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-		for(size_t i = 0; i < INVENTORY_X; i++) {
-			for(size_t j = 0; j < INVENTORY_Y; j++) {
-				if(inventory[bag][i][j].io == item) {
-					return Pos(bag, i, j);
-				}
-			}
-		}
-	}
-	return Pos();
-}
-
-void PlayerInventory::removeAt(const INTERACTIVE_OBJ * item, const Pos & pos) {
-	
-	arx_assert(item != NULL && (item->ioflags & IO_ITEM));
-	arx_assert(pos.x + item->sizex <= INVENTORY_X);
-	arx_assert(pos.y + item->sizey <= INVENTORY_Y);
-	arx_assert(inventory[pos.bag][pos.x][pos.y].io == item);
-	
-	LogDebug(" - (" << pos.bag << ',' << pos.x << ',' << pos.y << ") remove "
-	         << item->long_name() << " [" << item->_itemdata->count << '/'
-	         << item->_itemdata->playerstacksize << "]: "
-	         << int(item->sizex) << 'x' << int(item->sizey));
-	
-	for(size_t jj = pos.y; jj < (pos.y + item->sizey); jj++) {
-		for(size_t ii = pos.x; ii < (pos.x + item->sizex); ii++) {
-			inventory[pos.bag][ii][jj].io = NULL;
-		}
-	}
-}
-
-PlayerInventory::Pos PlayerInventory::remove(const INTERACTIVE_OBJ * item) {
-	Pos pos = locate(item);
-	if(pos) {
-		removeAt(item, pos);
-	}
-	return pos;
-}
-
-bool PlayerInventory::insert(INTERACTIVE_OBJ * item) {
-	if(!item) {
-		return false;
-	}
-	if(item->ioflags & IO_GOLD) {
-		ARX_PLAYER_AddGold(item);
-		return true;
-	}
-	if(item->ioflags & IO_ITEM) {
-		if(Pos pos = insertImpl(item)) {
-			ARX_INVENTORY_Declare_InventoryIn(get(pos));
-			return true;
-		}
-	}
-	return false;
-}
-
-bool PlayerInventory::insert(INTERACTIVE_OBJ * item, const Pos & pos) {
-	if(!item) {
-		return false;
-	}
-	if(item->ioflags & IO_GOLD) {
-		ARX_PLAYER_AddGold(item);
-		return true;
-	}
-	if(item->ioflags & IO_ITEM) {
-		if(Pos newPos = insertImpl(item, pos)) {
-			ARX_INVENTORY_Declare_InventoryIn(get(newPos));
-			return true;
-		}
-	}
-	return false;
-}
-
-bool giveToPlayer(INTERACTIVE_OBJ * item) {
-	if(playerInventory.insert(item)) {
-		return true;
-	} else {
-		PutInFrontOfPlayer(item);
-		return false;
-	}
-}
-
-bool giveToPlayer(INTERACTIVE_OBJ * item, const PlayerInventory::Pos & pos) {
-	if(playerInventory.insert(item, pos)) {
-		return true;
-	} else {
-		PutInFrontOfPlayer(item);
-		return false;
-	}
-}
-
 namespace {
+
+// Glue code to access both player and IO inventories in a uniform way.
+template <size_t MaxBags, size_t MaxWidth, size_t MaxHeight>
+struct InventoryArray {
+	typedef INVENTORY_SLOT type[MaxBags][MaxWidth][MaxHeight];
+	typedef InventoryPos::index_type index_type;
+	static INVENTORY_SLOT & index(type & data, index_type bag,
+	                       index_type x, index_type y) {
+		return data[bag][x][y];
+	}
+	static const INVENTORY_SLOT & index(const type & data, index_type bag,
+	                             index_type x, index_type y) {
+		return data[bag][x][y];
+	}
+};
+template <size_t MaxWidth, size_t MaxHeight>
+struct InventoryArray<1, MaxWidth, MaxHeight> {
+	typedef INVENTORY_SLOT type[MaxWidth][MaxHeight];
+	typedef InventoryPos::index_type index_type;
+	static INVENTORY_SLOT & index(type & data, index_type bag,
+	                       index_type x, index_type y) {
+		ARX_UNUSED(bag);
+		return data[x][y];
+	}
+	static const INVENTORY_SLOT & index(const type & data, index_type bag,
+	                             index_type x, index_type y) {
+		ARX_UNUSED(bag);
+		return data[x][y];
+	}
+};
+
 //! Compare items by their size and name
 struct ItemSizeComaparator {
 	bool operator()(const INTERACTIVE_OBJ * a, const INTERACTIVE_OBJ * b) const {
@@ -639,51 +421,478 @@ struct ItemSizeComaparator {
 		return (a < b);
 	}
 };
-} // anonymous namespace
 
-void PlayerInventory::optimize() {
+// TODO this class should probably be used directly in player and IO objects
+template <size_t MaxBags, size_t MaxWidth, size_t MaxHeight>
+class Inventory {
 	
-	LogDebug("collecting items");
+	typedef InventoryPos Pos;
 	
-	// Collect all inventory items
-	vector<INTERACTIVE_OBJ *> items;
-	for(size_t bag = 0; bag < size_t(player.bag); bag++) {
-		for(size_t j = 0 ; j < INVENTORY_Y; j++) {
-			for(size_t i = 0 ; i < INVENTORY_X; i++) {
-				INTERACTIVE_OBJ * io = inventory[bag][i][j].io;
-				if(io && inventory[bag][i][j].show) {
-					items.push_back(io);
-					removeAt(io, Pos(bag, i, j));
-				}
-				inventory[bag][i][j].io = NULL;
-				inventory[bag][i][j].show = 0;
+public:
+	
+	typedef InventoryArray<MaxBags, MaxWidth, MaxHeight> Array;
+	typedef typename Array::type array_type;
+	typedef unsigned short size_type;
+	typedef InventoryPos::index_type index_type;
+	
+private:
+	
+	long io;
+	array_type & data;
+	size_type bags;
+	size_type width;
+	size_type height;
+	
+	INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) {
+		return Array::index(data, bag, x, y);
+	}
+	const INVENTORY_SLOT & index(index_type bag, index_type x, index_type y) const {
+		return Array::index(data, bag, x, y);
+	}
+	
+	INVENTORY_SLOT & index(const InventoryPos & pos) {
+		return index(pos.bag, pos.x, pos.y);
+	}
+	const INVENTORY_SLOT & index(const InventoryPos & pos) const {
+		return index(pos.bag, pos.x, pos.y);
+	}
+	
+	Pos insertImpl(INTERACTIVE_OBJ * item) {
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		if(Pos pos = insertIntoStack(item)) {
+			return pos;
+		}
+		return insertIntoNewSlot(item);
+	}
+	
+	Pos insertImpl(INTERACTIVE_OBJ * item, const Pos & pos) {
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		if(insertIntoStackAt(item, pos)) {
+			return pos;
+		}
+		if(Pos newPos = insertIntoStack(item)) {
+			return newPos;
+		}
+		if(insertIntoNewSlotAt(item, pos)) {
+			return pos;
+		}
+		return insertIntoNewSlot(item);
+	}
+	
+	void removeAt(const INTERACTIVE_OBJ * item, const Pos & pos) {
+		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		arx_assert(pos.x + item->sizex <= width);
+		arx_assert(pos.y + item->sizey <= height);
+		arx_assert(index(pos).io == item);
+		
+		LogDebug(" - " << pos << " remove " << item->long_name()
+		         << " [" << item->_itemdata->count << '/'
+		         << item->_itemdata->playerstacksize << "]: "
+		         << int(item->sizex) << 'x' << int(item->sizey));
+		
+		for(index_type j = pos.y; j < (pos.y + size_type(item->sizey)); j++) {
+			for(index_type i = pos.x; i < (pos.x + size_type(item->sizex)); i++) {
+				index(pos.bag, i, j).io = NULL;
+				index(pos.bag, i, j).show = 0;
 			}
 		}
 	}
 	
-	// Sort the items by their size and name
-	std::sort(items.begin(), items.end(), ItemSizeComaparator());
-	
-	LogDebug("sorting");
-#ifdef _DEBUG
-	BOOST_FOREACH(const INTERACTIVE_OBJ * item, items) {
-		LogDebug(" - " << item->long_name() << ": "
+	bool insertIntoNewSlotAt(INTERACTIVE_OBJ * item, const Pos & pos) {
+		
+		if(!pos || pos.bag >= bags) {
+			return false;
+		}
+		
+		if(pos.x + item->sizex > width || pos.y + item->sizey > height) {
+			return false;
+		}
+		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
+		// Check if the whole area required by this item is empty
+		for(index_type j = pos.y; j < pos.y + item->sizey; j++) {
+			for(index_type i = pos.x; i < pos.x + item->sizex; i++) {
+				if(index(pos.bag, i, j).io != NULL) {
+					return false;
+				}
+			}
+		}
+		
+		LogDebug(" - " << pos << " := " << item->long_name()
+		         << " [" << item->_itemdata->count << '/'
+		         << item->_itemdata->playerstacksize << "]: "
 		         << int(item->sizex) << 'x' << int(item->sizey));
+		
+		// Insert the item at the found position
+		for(index_type j = pos.y; j < (pos.y + item->sizey); j++) {
+			for (index_type i = pos.x; i < (pos.x + item->sizex); i++) {
+				index(pos.bag, i, j).io = item;
+				index(pos.bag, i, j).show = 0;
+			}
+		}
+		index(pos).show = 1;
+		
+		return true;
 	}
-#endif
 	
-	LogDebug("putting back items");
+	Pos insertIntoNewSlot(INTERACTIVE_OBJ * item) {
+		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
+		for(index_type bag = 0; bag < bags; bag++) {
+			for(index_type i = 0; i < width + 1 - item->sizex; i++) {
+				for(index_type j = 0; j < height + 1 - item->sizey; j++) {
+					
+					// Ignore already used inventory slots
+					if(index(bag, i, j).io != NULL) {
+						continue;
+					}
+					
+					Pos pos(io, bag, i, j);
+					if(insertIntoNewSlotAt(item, pos)) {
+						return pos;
+					}
+				}
+			}
+		}
+		
+		return Pos();
+	}
 	
-	// Now put the items back into the inventory
-	BOOST_FOREACH(INTERACTIVE_OBJ * item, items) {
-		if(!insertImpl(item)) {
-			// TODO: oops - there was no space for the item
-			// ideally this should not happen, but the current sorting algorithm does not
-			// guarantee that the resulting order is at least as good as the existing one
-			LogDebug("could not insert " << item->long_name() << " after sorting inventory");
-			PutInFrontOfPlayer(item);
+	bool insertIntoStackAt(INTERACTIVE_OBJ * item, const Pos & pos) {
+		
+		if(!pos || pos.bag >= bags) {
+			return false;
+		}
+		
+		if(pos.x + item->sizex > width || pos.y + item->sizey > height) {
+			return false;
+		}
+		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
+		INTERACTIVE_OBJ * io = index(pos).io;
+		
+		// Ignore empty slots and different or non-stackeable items
+		if(!io || io->_itemdata->playerstacksize <= 1 || !IsSameObject(item, io)) {
+			return false;
+		}
+		
+		// Ignore full stacks
+		if(io->_itemdata->count >= io->_itemdata->playerstacksize) {
+			return false;
+		}
+		
+		// Get the number of items to add to the stack
+		short int remainingSpace = io->_itemdata->playerstacksize - io->_itemdata->count;
+		short int count = std::min(item->_itemdata->count, remainingSpace);
+		
+		LogDebug(" - " << pos << " " << io->long_name()
+		         << " [" << io->_itemdata->count << '/'
+		         << io->_itemdata->playerstacksize << "] += "
+		         << item->long_name() << " x" << count << '/' << item->_itemdata->count);
+		
+		io->_itemdata->count += count, item->_itemdata->count -= count;
+		
+		if(item->_itemdata->count != 0) {
+			// We inserted some of the items into the stack, but there was not enough
+			// space for all of them.
+			return false;
+		}
+		
+		// Delete or hide the old item
+		if(item->scriptload) {
+			delete item;
+		} else {
+			item->show = SHOW_FLAG_KILLED;
+		}
+		return true;
+	}
+	
+	Pos insertIntoStack(INTERACTIVE_OBJ * item) {
+		
+		arx_assert(item != NULL && (item->ioflags & IO_ITEM));
+		
+		// Try to add the items to an existing stack
+		for(index_type bag = 0; bag < bags; bag++) {
+			for(index_type i = 0; i < width + 1 - size_type(item->sizex); i++) {
+				for(index_type j = 0; j < height + 1 - size_type(item->sizey); j++) {
+					Pos pos(io, bag, i, j);
+					if(insertIntoStackAt(item, pos)) {
+						return pos;
+					}
+				}
+			}
+		}
+		
+		return Pos();
+	}
+	
+public:
+	
+	Inventory(long io, array_type & data, size_type bags, size_type width, size_type height)
+		: io(io), data(data), bags(bags), width(width), height(height) { }
+		
+	Inventory(const Inventory & o)
+		: io(o.io), data(o.data), bags(o.bags), width(o.width), height(o.height) { }
+	
+	/*!
+	 * Insert an item into the inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * @param item the item to insert
+	 *
+	 * @return true if the item was inserted, false otherwise
+	 */
+	bool insert(INTERACTIVE_OBJ * item) {
+		if(item && (item->ioflags & IO_ITEM)) {
+			if(Pos pos = insertImpl(item)) {
+				ARX_INVENTORY_Declare_InventoryIn(get(pos));
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/*!
+	 * Insert an item into the inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise, the item will be inserted at the specified position.
+	 * If that fails, the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * @param item the item to insert
+	 *
+	 * @return true if the item was inserted, false otherwise
+	 */
+	bool insert(INTERACTIVE_OBJ * item, const Pos & pos) {
+		if(item && (item->ioflags & IO_ITEM)) {
+			if(Pos newPos = insertImpl(item, pos)) {
+				ARX_INVENTORY_Declare_InventoryIn(get(newPos));
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//! Sort the inventory and stack duplicate items
+	void optimize() {
+		
+		LogDebug("collecting items");
+		
+		// Collect all inventory items
+		vector<INTERACTIVE_OBJ *> items;
+		for(size_t bag = 0; bag < bags; bag++) {
+			for(size_t j = 0 ; j < height; j++) {
+				for(size_t i = 0 ; i < width; i++) {
+					INVENTORY_SLOT & slot = index(bag, i, j);
+					if(slot.io && slot.show) {
+						items.push_back(slot.io);
+						removeAt(slot.io, Pos(io, bag, i, j));
+					}
+					slot.io = NULL;
+					slot.show = 0;
+				}
+			}
+		}
+		
+		// Sort the items by their size and name
+		std::sort(items.begin(), items.end(), ItemSizeComaparator());
+		
+		LogDebug("sorting");
+	#ifdef _DEBUG
+		BOOST_FOREACH(const INTERACTIVE_OBJ * item, items) {
+			LogDebug(" - " << item->long_name() << ": "
+							<< int(item->sizex) << 'x' << int(item->sizey));
+		}
+	#endif
+		
+		LogDebug("putting back items");
+		
+		// Now put the items back into the inventory
+		BOOST_FOREACH(INTERACTIVE_OBJ * item, items) {
+			if(!insertImpl(item)) {
+				// TODO: oops - there was no space for the item
+				// ideally this should not happen, but the current sorting algorithm does not
+				// guarantee that the resulting order is at least as good as the existing one
+				LogDebug("could not insert " << item->long_name() << " after sorting inventory");
+				PutInFrontOfPlayer(item);
+			}
 		}
 	}
+	
+	/*!
+	 * Get the position of an item in the inventory.
+	 *
+	 * @return the position of the item
+	 */
+	Pos locate(const INTERACTIVE_OBJ * item) {
+		for(size_t bag = 0; bag < bags; bag++) {
+			for(size_t i = 0; i < width; i++) {
+				for(size_t j = 0; j < height; j++) {
+					if(index(bag, i, j).io == item) {
+						return Pos(io, bag, i, j);
+					}
+				}
+			}
+		}
+		return Pos();
+	}
+	
+	/*!
+	 * Remove an item from the inventory.
+	 * The item is not deleted.
+	 *
+	 * @return the old position of the item
+	 */
+	Pos remove(const INTERACTIVE_OBJ * item) {
+		Pos pos = locate(item);
+		if(pos) {
+			/* TODO There was a bug cauing corrupted inventories where an item
+			 * takes up more slots than specified by its size. Ideally, this should
+			 * be fixed while loading old save games, but until then we just fix it
+			 * here when removing items.
+			removeAt(item, pos);
+			 */
+			for(size_t j = 0; j < height; j++) {
+				for(size_t i = 0; i < width; i++) {
+					if(index(pos.bag, i, j).io == item) {
+						index(pos.bag, i, j).io = NULL;
+						index(pos.bag, i, j).show = 0;
+					}
+				}
+			}
+		}
+		return pos;
+	}
+	
+	INTERACTIVE_OBJ * get(const Pos & pos) {
+		return pos ? index(pos).io : NULL;
+	}
+	
+};
+
+Inventory<3, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
+	return Inventory<3, INVENTORY_X, INVENTORY_Y>(0, inventory, player.bag,
+	                                              INVENTORY_X, INVENTORY_Y);
+}
+
+Inventory<1, 20, 20> getIoInventory(INTERACTIVE_OBJ * io) {
+	arx_assert(io != NULL && io->inventory != NULL);
+	INVENTORY_DATA * inv = io->inventory;
+	return Inventory<1, 20, 20>(GetInterNum(io), inv->slot, 1, inv->sizex, inv->sizey);
+}
+
+} // anonymous namespace
+
+PlayerInventory playerInventory;
+
+PlayerInventory::Pos PlayerInventory::locate(const INTERACTIVE_OBJ * item) {
+	return getPlayerInventory().locate(item);
+}
+
+PlayerInventory::Pos PlayerInventory::remove(const INTERACTIVE_OBJ * item) {
+	return getPlayerInventory().remove(item);
+}
+
+bool PlayerInventory::insert(INTERACTIVE_OBJ * item) {
+	if(item && (item->ioflags & IO_GOLD)) {
+		ARX_PLAYER_AddGold(item);
+		return true;
+	}
+	return getPlayerInventory().insert(item);
+}
+
+bool PlayerInventory::insert(INTERACTIVE_OBJ * item, const Pos & pos) {
+	if(item && (item->ioflags & IO_GOLD)) {
+		ARX_PLAYER_AddGold(item);
+		return true;
+	}
+	return getPlayerInventory().insert(item, pos);
+}
+
+void PlayerInventory::optimize() {
+	getPlayerInventory().optimize();
+}
+
+bool giveToPlayer(INTERACTIVE_OBJ * item) {
+	if(playerInventory.insert(item)) {
+		return true;
+	} else {
+		PutInFrontOfPlayer(item);
+		return false;
+	}
+}
+
+bool giveToPlayer(INTERACTIVE_OBJ * item, const InventoryPos & pos) {
+	if(playerInventory.insert(item, pos)) {
+		return true;
+	} else {
+		PutInFrontOfPlayer(item);
+		return false;
+	}
+}
+
+InventoryPos removeFromInventories(INTERACTIVE_OBJ * item) {
+	
+	// TODO the item should know the inventory it is in and position
+	
+	InventoryPos oldPos = playerInventory.remove(item);
+	if(oldPos) {
+		return oldPos;
+	}
+	
+	for(long i = 1; i < inter.nbmax; i++) {
+		if(inter.iobj[i] && inter.iobj[i]->inventory) {
+			oldPos = getIoInventory(inter.iobj[i]).remove(item);
+			if(oldPos) {
+				return oldPos;
+			}
+		}
+	}
+	
+	return InventoryPos();
+}
+
+InventoryPos locateInInventories(const INTERACTIVE_OBJ * item) {
+	
+	InventoryPos pos = playerInventory.locate(item);
+	if(pos) {
+		return pos;
+	}
+	
+	for(long i = 1; i < inter.nbmax; i++) {
+		if(inter.iobj[i] && inter.iobj[i]->inventory) {
+			pos = getIoInventory(inter.iobj[i]).locate(item);
+			if(pos) {
+				return pos;
+			}
+		}
+	}
+	
+	return InventoryPos();
+}
+
+bool insertIntoInventory(INTERACTIVE_OBJ * item, const InventoryPos & pos) {
+	
+	if(pos.io == 0) {
+		return giveToPlayer(item, pos);
+	}
+	
+	if(ValidIONum(pos.io) && inter.iobj[pos.io]->inventory) {
+		if(getIoInventory(inter.iobj[pos.io]).insert(item, pos)) {
+			return true;
+		}
+	}
+	
+	PutInFrontOfPlayer(item);
+	return false;
 }
 
 //*************************************************************************************
@@ -1827,32 +2036,6 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old) {
 							}
 							PutInFrontOfPlayer(io); 
 							return;
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
-	
-	if(!io || !ioo) {
-		return;
-	}
-	
-	long ion = GetInterNum(io);
-	long ioon = GetInterNum(ioo);
-	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i] && inter.iobj[i] != inter.iobj[ion]) {
-			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = inter.iobj[i]->inventory;
-				
-				for(long j = 0; j < id->sizey; j++) {
-					for(long k = 0; k < id->sizex; k++) {
-						if (id->slot[k][j].io == inter.iobj[ion]) {
-							id->slot[k][j].io = inter.iobj[ioon];
 						}
 					}
 				}

@@ -67,33 +67,46 @@ struct INVENTORY_DATA {
 const size_t INVENTORY_X = 16;
 const size_t INVENTORY_Y = 3;
 
+// TODO this should be completely wrapped in PlayerInventory!
 extern INVENTORY_SLOT inventory[3][INVENTORY_X][INVENTORY_Y];
+
 extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;
 extern INTERACTIVE_OBJ * DRAGINTER;
 extern INTERACTIVE_OBJ * ioSteal;
 extern long InventoryY;
 
+struct InventoryPos {
+	
+	typedef unsigned short index_type;
+	
+	long io;
+	index_type bag;
+	index_type x;
+	index_type y;
+	
+	InventoryPos() : io(-1) { }
+	
+	InventoryPos(long io, index_type bag, index_type x, index_type y)
+		: io(io), bag(bag), x(x), y(y) { }
+	
+	//! @return true if this is a valid position
+	operator bool() const {
+		return (io != -1);
+	}
+	
+};
+
+template <typename Stream>
+Stream & operator<<(Stream & strm, const InventoryPos & pos) {
+	return strm << '(' << pos.io << ", " << pos.bag << ", " << pos.x << ", " << pos.y << ')';
+}
+
 class PlayerInventory {
 	
-public:
+	typedef InventoryPos Pos;
 	
-	struct Pos {
-		
-		size_t bag;
-		size_t x;
-		size_t y;
-		
-		Pos() : bag(size_t(-1)) { }
-		
-		Pos(size_t bag, size_t x, size_t y) : bag(bag), x(x), y(y) { }
-		
-		//! @return true if this is a valid position
-		operator bool() const {
-			return (bag != size_t(-1));
-		}
-		
-	};
+public:
 	
 	/*!
 	 * Insert an item into the player inventory
@@ -128,7 +141,7 @@ public:
 	/*!
 	 * Get the position of an item in the inventory.
 	 *
-	 * @return the old position of the item
+	 * @return the position of the item
 	 */
 	static Pos locate(const INTERACTIVE_OBJ * item);
 	
@@ -143,22 +156,6 @@ public:
 	static INTERACTIVE_OBJ * get(const Pos & pos) {
 		return pos ? inventory[pos.bag][pos.x][pos.y].io : NULL;
 	}
-	
-private:
-	
-	static Pos insertImpl(INTERACTIVE_OBJ * item);
-	
-	static Pos insertImpl(INTERACTIVE_OBJ * item, const Pos & pos);
-	
-	static void removeAt(const INTERACTIVE_OBJ * item, const Pos & pos);
-	
-	static bool insertIntoNewSlotAt(INTERACTIVE_OBJ * item, const Pos & pos);
-	
-	static Pos insertIntoNewSlot(INTERACTIVE_OBJ * item);
-	
-	static bool insertIntoStackAt(INTERACTIVE_OBJ * item, const Pos & pos);
-	
-	static Pos insertIntoStack(INTERACTIVE_OBJ * item);
 	
 };
 
@@ -187,7 +184,49 @@ bool giveToPlayer(INTERACTIVE_OBJ * item);
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */
-bool giveToPlayer(INTERACTIVE_OBJ * item, const PlayerInventory::Pos & pos);
+bool giveToPlayer(INTERACTIVE_OBJ * item, const InventoryPos & pos);
+
+/*!
+ * Insert an item into an inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified position.
+ * If that fails, the first empty slot will be used.
+ *
+ * Does not check if the item is already in the inventory!
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was inserted, false otherwise
+ */
+bool insertIntoInventory(INTERACTIVE_OBJ * item, const InventoryPos & pos);
+
+/*!
+ * Get the position of an item in the inventory.
+ *
+ * @return the position of the item
+ */
+InventoryPos locateInInventories(const INTERACTIVE_OBJ * item);
+
+/*!
+ * Remove an item from all inventories.
+ * The item is not deleted.
+ *
+ * @return the old position of the item
+ */
+InventoryPos removeFromInventories(INTERACTIVE_OBJ * item);
+
+/*!
+ * Insert an item into an NPC's inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified position.
+ * If that fails, a the first empty slot will be used.
+ * If no slot was available, the item is dropped in front of the player
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was added to the inventory, false if it was dropped
+ */
+bool putInInventory(INTERACTIVE_OBJ * item, const InventoryPos & pos);
 
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
 
@@ -211,7 +250,6 @@ void ForcePlayerInventoryObjectLevel(long level);
 bool IsInPlayerInventory(INTERACTIVE_OBJ * io);
 bool IsInSecondaryInventory(INTERACTIVE_OBJ * io);
 bool InInventoryPos(Vec2s * pos);
-void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 void RemoveFromAllInventories(const INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();
 void ARX_INVENTORY_IdentifyAll();
