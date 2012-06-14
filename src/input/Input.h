@@ -115,7 +115,6 @@ private:
 	Vec2s iMouseR;
 	Vec2s iMouseA;
 	bool  mouseInWindow;
-	Vec2s iMouseARaw; // Unsmooted
 	
 	int   iSensibility;
 	int   iWheelDir;

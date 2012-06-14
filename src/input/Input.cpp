@@ -306,13 +306,13 @@ void Input::unacquireDevices()
 }
 
 //-----------------------------------------------------------------------------
-void Input::setMousePosAbs(const Vec2s& mousePos)
-{
-	if(backend)
+void Input::setMousePosAbs(const Vec2s& mousePos) {
+	
+	if(backend) {
 		backend->setAbsoluteMouseCoords(mousePos.x, mousePos.y);
-
+	}
+	
 	iMouseA = mousePos;
-	iMouseARaw = mousePos;
 }
 
 //-----------------------------------------------------------------------------
@@ -489,21 +489,20 @@ void Input::update()
 			}
 		}
 	}
-
-	Vec2s iLastMouseARaw = iMouseARaw;
-
+	
 	// Get the new coordinates
 	int absX, absY;
 	mouseInWindow = backend->getAbsoluteMouseCoords(absX, absY);
-
+	
 	Vec2i wndSize = mainApp->GetWindow()->GetSize();
 	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
+		
 		// Use the absolute mouse position reported by the backend, as is
 		iMouseA = Vec2s((short)absX, (short)absY);
-
+		
 		int relX, relY;
 		backend->getRelativeMouseCoords(relX, relY, iWheelDir);
-
+		
 		// Use the sensitivity config value to adjust relative mouse mouvements
 		float fSensMax = 1.f / 6.f;
 		float fSensMin = 2.f;
@@ -511,6 +510,7 @@ void Input::update()
 		fSens = pow( .7f, fSens ) * 2.f;
 		iMouseR.x = relX * fSens;
 		iMouseR.y = relY * fSens;
+		
 	} else {
 		mouseInWindow = false;
 	}
