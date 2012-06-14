@@ -78,7 +78,7 @@
 * Fixed a regression in the script timer code (crash report #251)
 * Fixed label for the 'Full screen' checkbox not being shown in the German
   version
-* Fixed absolute cursor positions not aligning with absolute input devices
-  (e.g. tablets) in fullscreen mode ({{Issue|269}})
-* Mouse sensitivity settings now only applies to turning the camera, not to
+* Fixed cursor position not aligning with absolute input devices (e.g. tablets)
+  in fullscreen mode (bug #269)
+* Mouse sensitivity setting now only applies to turning the camera, not to
   cursor movement
