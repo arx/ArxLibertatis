@@ -4982,6 +4982,10 @@ void MenuCursor::SetMouseOver()
 
 void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	
+	if(!GInput->isMouseInWindow()) {
+		return;
+	}
+	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
