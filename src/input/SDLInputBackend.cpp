@@ -445,14 +445,14 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 	
 	switch(event.type) {
 		
-			case SDL_ACTIVEEVENT: {
-				if(event.active.state & SDL_APPMOUSEFOCUS) {
-					if(!event.active.gain) {
-						cursorInWindow = false;
-					}
+		case SDL_ACTIVEEVENT: {
+			if(event.active.state & SDL_APPMOUSEFOCUS) {
+				if(!event.active.gain) {
+					cursorInWindow = false;
 				}
-				break;
 			}
+			break;
+		}
 		
 		case SDL_KEYDOWN:
 		case SDL_KEYUP: {
