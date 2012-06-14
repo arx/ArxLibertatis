@@ -236,9 +236,7 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 	return DIENUM_CONTINUE;
 }
 
-DInput8Backend::DInput8Backend()
-{
-	iLastMouseX = iLastMouseY = 0;
+DInput8Backend::DInput8Backend() {
 }
 
 DInput8Backend::~DInput8Backend()
@@ -298,10 +296,7 @@ bool DInput8Backend::init() {
 		return false;
 	}
 
-    iLastMouseX = mainApp->GetWindow()->GetSize().x / 2;
-	iLastMouseY = mainApp->GetWindow()->GetSize().y / 2;
-
-	setMouseCoordinates(iLastMouseX, iLastMouseY);
+	setAbsoluteMouseCoords(mainApp->GetWindow()->GetSize().x / 2, mainApp->GetWindow()->GetSize().y / 2);
 	
 	LogInfo << "Using DirectInput 8";
 	
@@ -560,13 +555,6 @@ bool DInput8Backend::update() {
 		}
 	}
 	
-	// When running fullscreen, make sure to recenter mouse in the middle of the screen
-	if(mainApp->GetWindow()->IsFullScreen()) {
-		int x = (int)mainApp->GetWindow()->GetSize().x / 2;
-		int y = (int)mainApp->GetWindow()->GetSize().y / 2;
-		SetCursorPos(x, y);
-	}
-	
 	return success;
 }
 
@@ -622,51 +610,42 @@ bool DInput8Backend::getKeyAsText(int keyId, char& result) const {
 	return true;
 }
 
-bool DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
-		
-	// DInput relative
+bool DInput8Backend::getAbsoluteMouseCoords(int & absX, int & absY) const {
+	POINT pt;
+	GetCursorPos(&pt);
+	ScreenToClient((HWND)mainApp->GetWindow()->GetHandle(), &pt);
+	absX = pt.x;
+	absY = pt.y;
+
+	RECT rc;
+	GetClientRect((HWND)mainApp->GetWindow()->GetHandle(), &rc);
+	return PtInRect(&rc, pt) == TRUE;
+}
+
+void DInput8Backend::setAbsoluteMouseCoords(int absX, int absY) {
+	POINT pt;
+	pt.x = absX;
+	pt.y = absY;
+	ClientToScreen((HWND)mainApp->GetWindow()->GetHandle(), &pt);
+	SetCursorPos(pt.x, pt.y);
+}
+
+void DInput8Backend::getRelativeMouseCoords(int & relX, int & relY, int & relWheel) const {
+	relX = 0;
+	relY = 0;
+	relWheel = 0;
+
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
 	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
 		if(od->dwOfs == (DWORD)DIMOFS_X) {
-			iLastMouseX += od->dwData;
+			relX = od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Y) {
-			iLastMouseY += od->dwData;
+			relY = od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Z) {
-			wheelDir += od->dwData;
+			relWheel = od->dwData;
 		}
-	}
-
-	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->GetWindow()->GetSize().x);
-	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->GetWindow()->GetSize().y);
-	
-	if(mainApp->GetWindow()->IsFullScreen()) {
-		absX = iLastMouseX;
-		absY = iLastMouseY;
-	} else {
-		// Win absolute
-		POINT pt;
-		GetCursorPos(&pt);
-		ScreenToClient((HWND)mainApp->GetWindow()->GetHandle(), &pt);
-		absX = pt.x;
-		absY = pt.y;
-	}
-	
-	return true;
-}
-
-void DInput8Backend::setMouseCoordinates(int absX, int absY)
-{
-	iLastMouseX = absX;
-	iLastMouseY = absY;
-	
-	if(!mainApp->GetWindow()->IsFullScreen()) {
-		POINT pt;
-		pt.x = absX;
-		pt.y = absY;
-		ClientToScreen((HWND)mainApp->GetWindow()->GetHandle(), &pt);
-		SetCursorPos(pt.x, pt.y);
 	}
 }
 

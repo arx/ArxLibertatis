@@ -60,20 +60,15 @@ public:
 	virtual void unacquireDevices();
 
 	// Mouse 
-	virtual bool getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
-	virtual void setMouseCoordinates(int absX, int absY);
+	virtual bool getAbsoluteMouseCoords(int & absX, int & absY) const;
+	virtual void setAbsoluteMouseCoords(int absX, int absY);
+	virtual void getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const;
 	virtual bool isMouseButtonPressed(int buttonId, int & _iDeltaTime) const;
 	virtual void getMouseButtonClickCount(int buttonId, int & _iNumClick, int & _iNumUnClick) const;
 
 	// Keyboard
 	virtual bool isKeyboardKeyPressed(int dikkey) const;
 	virtual bool getKeyAsText(int keyId, char& result) const;
-
-private:
-	
-	mutable int iLastMouseX;
-	mutable int iLastMouseY;
-	
 };
 
 #endif // ARX_INPUT_DINPUT8BACKEND_H

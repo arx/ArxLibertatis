@@ -41,8 +41,9 @@ public:
 	void unacquireDevices();
 	
 	// Mouse
-	bool getMouseCoordinates(int & absX, int & absY, int & wheelDir) const;
-	void setMouseCoordinates(int absX, int absY);
+	bool getAbsoluteMouseCoords(int & absX, int & absY) const;
+	void setAbsoluteMouseCoords(int absX, int absY);
+	void getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const;
 	bool isMouseButtonPressed(int buttonId, int & deltaTime) const;
 	void getMouseButtonClickCount(int buttonId, int & numClick, int & numUnClick) const;
 	
@@ -55,7 +56,8 @@ private:
 	void onInputEvent(const SDL_Event & event);
 	
 	int wheel;
-	Vec2i cursor;
+	Vec2i cursorAbs;
+	Vec2i cursorRel;
 	bool cursorInWindow;
 	bool keyStates[Keyboard::KeyCount];
 	bool buttonStates[Mouse::ButtonCount];
@@ -63,6 +65,7 @@ private:
 	size_t unclickCount[Mouse::ButtonCount];
 	
 	int currentWheel;
+	Vec2i currentCursorRel;
 	size_t currentClickCount[Mouse::ButtonCount];
 	size_t currentUnclickCount[Mouse::ButtonCount];
 	

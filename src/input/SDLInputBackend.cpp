@@ -225,7 +225,8 @@ bool SDLInputBackend::init() {
 	
 	
 	wheel = 0;
-	cursor = Vec2i::ZERO;
+	cursorAbs = Vec2i::ZERO;
+	cursorRel = Vec2i::ZERO;
 	std::fill_n(keyStates, ARRAY_SIZE(keyStates), false);
 	std::fill_n(buttonStates, ARRAY_SIZE(buttonStates), false);
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
@@ -238,16 +239,18 @@ bool SDLInputBackend::init() {
 
 bool SDLInputBackend::update() {
 	
-	
 	if(SDLWindow::mainWindow) {
 		SDLWindow::mainWindow->tick();
 	}
 	
 	currentWheel = wheel;
+	currentCursorRel = cursorRel;
 	std::copy(clickCount, clickCount + ARRAY_SIZE(clickCount), currentClickCount);
 	std::copy(unclickCount, unclickCount + ARRAY_SIZE(unclickCount), currentUnclickCount);
-	
+
 	wheel = 0;
+	cursorRel = Vec2i::ZERO;
+
 	std::fill_n(clickCount, ARRAY_SIZE(clickCount), 0);
 	std::fill_n(unclickCount, ARRAY_SIZE(unclickCount), 0);
 	
@@ -262,13 +265,17 @@ void SDLInputBackend::unacquireDevices() {
 	// SDL_WM_GrabInput(SDL_GRAB_OFF);
 }
 
-bool SDLInputBackend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
-	absX = cursor.x, absY = cursor.y, wheelDir = currentWheel;
+bool SDLInputBackend::getAbsoluteMouseCoords(int & absX, int & absY) const {
+	absX = cursorAbs.x, absY = cursorAbs.y;
 	return cursorInWindow;
 }
 
-void SDLInputBackend::setMouseCoordinates(int absX, int absY) {
+void SDLInputBackend::setAbsoluteMouseCoords(int absX, int absY) {
 	SDL_WarpMouse(absX, absY);
+}
+
+void SDLInputBackend::getRelativeMouseCoords(int & relX, int & relY, int & wheelDir) const {
+	relX = currentCursorRel.x, relY = currentCursorRel.y, wheelDir = currentWheel;
 }
 
 bool SDLInputBackend::isMouseButtonPressed(int buttonId, int & deltaTime) const  {
@@ -459,7 +466,8 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 		}
 		
 		case SDL_MOUSEMOTION: {
-			cursor = Vec2i(event.motion.x, event.motion.y);
+			cursorAbs = Vec2i(event.motion.x, event.motion.y);
+			cursorRel = Vec2i(event.motion.xrel, event.motion.yrel);
 			cursorInWindow = true;
 			break;
 		}

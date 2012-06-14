@@ -309,7 +309,7 @@ void Input::unacquireDevices()
 void Input::setMousePosAbs(const Vec2s& mousePos)
 {
 	if(backend)
-		backend->setMouseCoordinates(mousePos.x, mousePos.y);
+		backend->setAbsoluteMouseCoords(mousePos.x, mousePos.y);
 
 	iMouseA = mousePos;
 	iMouseARaw = mousePos;
@@ -491,39 +491,26 @@ void Input::update()
 	}
 
 	Vec2s iLastMouseARaw = iMouseARaw;
-	
+
 	// Get the new coordinates
 	int absX, absY;
-	mouseInWindow = backend->getMouseCoordinates(absX, absY, iWheelDir);
-	
+	mouseInWindow = backend->getAbsoluteMouseCoords(absX, absY);
+
 	Vec2i wndSize = mainApp->GetWindow()->GetSize();
 	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
-		
-		iMouseARaw = Vec2s((short)absX, (short)absY);
-		
-		// In fullscreen, use the sensitivity config value to adjust mouse mouvements
-		if(mainApp->GetWindow()->IsFullScreen()) {
-			float fSensMax = 1.f / 6.f;
-			float fSensMin = 2.f;
-			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
-			fSens = pow( .7f, fSens ) * 2.f;
-			
-			Vec2f fD;
-			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens;
-			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens;
-			
-			iMouseR.x = (int)fD.x;
-			iMouseR.y = (int)fD.y;
-			iMouseA += iMouseR;
-		} else {
-			iMouseR = iMouseARaw - iMouseA;
-			iMouseA = iMouseARaw;
-		}
-		
-		// Clamp to window rect
-		iMouseA.x = clamp(iMouseA.x, 0, (short)wndSize.x - 1);
-		iMouseA.y = clamp(iMouseA.y, 0, (short)wndSize.y - 1);
-		
+		// Use the absolute mouse position reported by the backend, as is
+		iMouseA = Vec2s((short)absX, (short)absY);
+
+		int relX, relY;
+		backend->getRelativeMouseCoords(relX, relY, iWheelDir);
+
+		// Use the sensitivity config value to adjust relative mouse mouvements
+		float fSensMax = 1.f / 6.f;
+		float fSensMin = 2.f;
+		float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
+		fSens = pow( .7f, fSens ) * 2.f;
+		iMouseR.x = relX * fSens;
+		iMouseR.y = relY * fSens;
 	} else {
 		mouseInWindow = false;
 	}
