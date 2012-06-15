@@ -50,6 +50,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Video options
 
 void ARXMenu_Options_Video_SetFogDistance(int fogDistance);
+void ARXMenu_Options_Video_GetTextureQuality(int & quality);
+void ARXMenu_Options_Video_SetTextureQuality(int quality);
+void ARXMenu_Options_Video_SetGamma(int gamma);
+void ARXMenu_Options_Video_SetLuminosity(int luminosity);
+void ARXMenu_Options_Video_SetContrast(int contrast);
+
 void ARXMenu_Options_Video_SetDetailsQuality(int lod);
 
 // Audio options
