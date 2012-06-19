@@ -339,7 +339,7 @@ void SDLWindow::tick() {
 						OnMinimize();
 					}
 				}
-				if(event.active.state & SDL_APPMOUSEFOCUS) {
+				if(input != NULL && (event.active.state & SDL_APPMOUSEFOCUS)) {
 					input->onInputEvent(event);
 				}
 				break;
