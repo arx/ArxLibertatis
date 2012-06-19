@@ -371,7 +371,7 @@ std::ostream & print_anim_flags(std::ostream & strm, u32 flags) {
 std::ostream & print_item_type(std::ostream & strm, s32 type) {
 	if(!type) strm << " (none)";
 	if(type & OBJECT_TYPE_WEAPON) strm << " weapon";
-	if(type & OBJECT_TYPE_DAGGER) strm << " sagger";
+	if(type & OBJECT_TYPE_DAGGER) strm << " dagger";
 	if(type & OBJECT_TYPE_1H) strm << " 1h";
 	if(type & OBJECT_TYPE_2H) strm << " 2h";
 	if(type & OBJECT_TYPE_BOW) strm << " bow";
