@@ -918,10 +918,6 @@ void ManageTorch()
 //-----------------------------------------------------------------------------
 void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 {
-	/////////FLARE
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	shinum++;
 
@@ -929,8 +925,13 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 
 	long TICKS = long(arxtime) - FRAMETICKS;
 
-	if (TICKS<0) 
+	if (TICKS<0)
 		return;
+	
+	/////////FLARE
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	float z,s,r,g,b;
 
@@ -2311,6 +2312,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			if (pcc<=0)
 			{
 				GRenderer->SetFogColor(ulBKGColor);
+				GRenderer->SetRenderState(Renderer::DepthTest, true);
 				return;
 			}
 		}	

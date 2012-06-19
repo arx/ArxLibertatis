@@ -1825,7 +1825,7 @@ void ArxGame::Render() {
 			)
 		{
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-				FRAMETICKS = (unsigned long)(arxtime);
+			FRAMETICKS = (unsigned long)(arxtime);
 		}
 	}
 #ifdef BUILD_EDITOR

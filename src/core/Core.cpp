@@ -3274,7 +3274,7 @@ void DrawMagicSightInterface()
 
 	if (Flying_Eye)
 	{
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);										
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 		float col=(0.75f+PULSATE*( 1.0f / 20 ));
 
 		if (col>1.f) col=1.f;
