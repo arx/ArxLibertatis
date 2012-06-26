@@ -504,14 +504,14 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 }
 
 bool DInput8Backend::update() {
-	
+
 	bool success = true;
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
-		
+
 		if(!i->active) {
 			continue;
 		}
-		
+
 		switch(GET_DIDEVICE_TYPE(i->type)) {
 			
 			case DI8DEVTYPE_MOUSE: {
@@ -523,11 +523,11 @@ bool DInput8Backend::update() {
 						success = false;
 					}
 				}
-				
+
 				i->nbele = (int)dwNbele;
 				break;
 			}
-			
+
 			case DI8DEVTYPE_KEYBOARD: {
 				char keyBuffer[DI8_KEY_ARRAY_SIZE];
 				if(FAILED(i->inputdevice8->GetDeviceState(DI8_KEY_ARRAY_SIZE, keyBuffer))) {
@@ -551,10 +551,9 @@ bool DInput8Backend::update() {
 				}
 				break;
 			}
-			
 		}
 	}
-	
+
 	return success;
 }
 
@@ -611,13 +610,13 @@ bool DInput8Backend::getKeyAsText(int keyId, char& result) const {
 }
 
 bool DInput8Backend::getAbsoluteMouseCoords(int & absX, int & absY) const {
-	POINT pt;
-	GetCursorPos(&pt);
-	ScreenToClient((HWND)mainApp->GetWindow()->GetHandle(), &pt);
-	absX = pt.x;
-	absY = pt.y;
+
+	Vec2i cursorPos = mainApp->GetWindow()->getCursorPosition();
 
 	RECT rc;
+	POINT pt;
+	absX = pt.x = cursorPos.x;
+	absY = pt.y = cursorPos.y;
 	GetClientRect((HWND)mainApp->GetWindow()->GetHandle(), &rc);
 	return PtInRect(&rc, pt) == TRUE;
 }

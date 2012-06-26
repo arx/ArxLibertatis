@@ -38,6 +38,7 @@ public:
 	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	virtual void setWindowSize(Vec2i size);
 	virtual void tick();
+	virtual Vec2i getCursorPosition() const;
 	
 	void updateSize();
 	

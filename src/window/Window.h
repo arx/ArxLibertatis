@@ -47,6 +47,9 @@ public:
 	virtual void tick() = 0;
 	
 	virtual void hide() = 0;
+
+	//! Obtain the cursor position relative to this window.
+	virtual Vec2i getCursorPosition() const = 0;
 	
 	class Listener {
 		

@@ -399,6 +399,12 @@ void SDLWindow::tick() {
 	
 }
 
+Vec2i SDLWindow::getCursorPosition() const {
+	int cursorPosX, cursorPosY;
+	SDL_GetMouseState(&cursorPosX, &cursorPosY);
+	return Vec2i(cursorPosX, cursorPosY);
+}
+
 void SDLWindow::showFrame() {
 	
 	SDL_GL_SwapBuffers();

@@ -279,6 +279,13 @@ void Win32Window::tick() {
 		updateSize();
 }
 
+Vec2i Win32Window::getCursorPosition() const {
+	POINT pt;
+	GetCursorPos(&pt);
+	ScreenToClient(m_hWnd, &pt);
+	return Vec2i(pt.x, pt.y);
+}
+
 void* Win32Window::GetHandle() {
 	return m_hWnd;
 }
