@@ -190,11 +190,19 @@ bool IniReader::read(istream & is) {
 			continue;
 		}
 		
+		bool quoted = false;
+		
 		size_t separator = str.find_first_not_of(WHITESPACE, nameEnd);
 		if(separator == string::npos || str[separator] != '=') {
-			ok = false;
-			LogWarning << "missing '=' separator @ line " << line << ": " << str;
-			continue;
+			if(separator != string::npos && separator + 1 < str.length()
+			   && str[separator] == '"' && str[separator + 1] == '=') {
+				LogDebug("found '\"=' instead of '=\"' @ line " << line << ": " << str);
+				quoted = true;
+			} else {
+				ok = false;
+				LogWarning << "missing '=' separator @ line " << line << ": " << str;
+				continue;
+			}
 		}
 		
 		size_t valueStart = str.find_first_not_of(WHITESPACE, separator + 1);
@@ -207,10 +215,9 @@ bool IniReader::read(istream & is) {
 		std::string key = str.substr(start, nameEnd - start);
 		std::string value;
 		
-		size_t valueEnd;
-		if(str[valueStart] == '"') {
+		if(quoted || str[valueStart] == '"') {
 			valueStart++;
-			valueEnd = str.find_last_of('"');
+			size_t valueEnd = str.find_last_of('"');
 			arx_assert(valueEnd != string::npos);
 			
 			if(valueEnd < valueStart) {
@@ -278,7 +285,7 @@ bool IniReader::read(istream & is) {
 			}
 			
 		} else {
-			valueEnd = str.find_last_not_of(WHITESPACE) + 1;
+			size_t valueEnd = str.find_last_not_of(WHITESPACE) + 1;
 			arx_assert(valueEnd != string::npos);
 			arx_assert(valueEnd >= valueStart);
 			value = str.substr(valueStart, valueEnd - valueStart);
