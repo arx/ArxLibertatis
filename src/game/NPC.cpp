@@ -4257,7 +4257,6 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				io->ignit_sound = audio::INVALID_ID;
 			}
 
-			ARX_SPEECH_ReleaseIOSpeech(io);
 			// Need To Kill timers
 			ARX_SCRIPT_Timer_Clear_By_IO(io);
 			io->show = SHOW_FLAG_KILLED;

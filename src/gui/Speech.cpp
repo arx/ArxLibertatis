@@ -329,7 +329,7 @@ void ARX_SPEECH_Release(long i) {
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(aspeech[i].exist && aspeech->io == io) {
+		if(aspeech[i].exist && aspeech[i].io == io) {
 			ARX_SPEECH_Release(i);
 		}
 	}
