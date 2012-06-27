@@ -140,6 +140,8 @@ CMenuState *pMenu;
 CMenuElement *pMenuElementResume=NULL;
 CMenuElement *pMenuElementApply=NULL;
 CMenuElementText *pLoadConfirm=NULL;
+CMenuElementText *pDeleteConfirm=NULL;
+CMenuElementText *pDeleteButton=NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;
 CMenuSliderText *pMenuSliderResol=NULL;
 CMenuSliderText *pMenuSliderBpp=NULL;
@@ -717,26 +719,36 @@ bool Menu2_Render() {
 						confirm->SetCheckOff();
 						confirm->lData = -1;
 						pWindowMenuConsole->AddMenuCenterY(confirm);
-
-						CMenuPanel *pc = new CMenuPanel();
+						
+						// Delete button
+						szMenuText = getLocalised("system_menus_main_editquest_delete");
+						szMenuText += "   ";
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_LOAD);
+						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(42));
+						pDeleteConfirm=(CMenuElementText*)me;
+						me->SetCheckOff();
+						((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+						((CMenuElementText*)me)->lColor = Color::grayb(127);
+						pWindowMenuConsole->AddMenu(me);
+						
+						// Load button
 						szMenuText = getLocalised("system_menus_main_editquest_load");
 						szMenuText += "   ";
 						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-
 						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
-
 						pLoadConfirm=(CMenuElementText*)me;
 						me->SetCheckOff();
-						((CMenuElementText*)me)->lOldColor=((CMenuElementText*)me)->lColor;
-						((CMenuElementText*)me)->lColor=Color(127,127,127);
-
+						((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+						((CMenuElementText*)me)->lColor = Color::grayb(127);
 						pWindowMenuConsole->AddMenu(me);
+						
+						// Back button
+						CMenuPanel *pc = new CMenuPanel();
 						pTex = TextureContainer::Load("graph/interface/menus/back");
 						me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 						me->eMenuState = EDIT_QUEST;
 						me->SetShortCut(Keyboard::Key_Escape);
 						pc->AddElementNoCenterIn(me);
-
 						pWindowMenuConsole->AddMenu(pc);
 					}
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -795,7 +807,7 @@ bool Menu2_Render() {
 						std::ostringstream text;
 						text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 						
-						CMenuElementText * e = new CMenuElementText(-1, hFontControls, text.str(), fPosX1,
+						CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), fPosX1,
 						                                            0.f, lColor, .8f,
 						                                            EDIT_QUEST_SAVE_CONFIRM);
 
@@ -837,14 +849,22 @@ bool Menu2_Render() {
 					me->ePlace=CENTER;
 
 					pPanel = new CMenuPanel();
-
+					
+					// Delete button
+					szMenuText = getLocalised("system_menus_main_editquest_delete");
+					me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_SAVE);
+					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(5));
+					pDeleteButton = (CMenuElementText*)me;
+					((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+					pPanel->AddElementNoCenterIn(me);
+					
+					// Save button
 					szMenuText = getLocalised("system_menus_main_editquest_save");
-
 					me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
 					pPanel->AddElementNoCenterIn(me);
-
+					
+					// Back button
 					pTex = TextureContainer::Load("graph/interface/menus/back");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = EDIT_QUEST_SAVE;
@@ -1728,6 +1748,16 @@ CMenuElement::~CMenuElement()
 		pLoadConfirm = NULL;
 	}
 
+	if( this == pDeleteConfirm )
+	{
+		pDeleteConfirm = NULL;
+	}
+
+	if( this == pDeleteButton )
+	{
+		pDeleteButton = NULL;
+	}
+
 	if( this == pMenuSliderResol )
 	{
 		pMenuSliderResol = NULL;
@@ -1969,7 +1999,9 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			if (pWindowMenu)
 			{
 			pLoadConfirm->SetCheckOn();
-			pLoadConfirm->lColor=pLoadConfirm->lOldColor;
+			pLoadConfirm->lColor = pLoadConfirm->lOldColor;
+			pDeleteConfirm->SetCheckOn();
+			pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
 
 				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
@@ -2006,7 +2038,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
 					
-					lData = pWindowMenu->vWindowConsoleElement[i]->lData;
+					lData = p->lData;
 					if(lData != -1) {
 						eMenuState = MAIN;
 						GRenderer->Clear(Renderer::DepthBuffer);
@@ -2019,15 +2051,19 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					}
 				}
 			}
-
+			
 			pLoadConfirm->SetCheckOff();
-			pLoadConfirm->lColor=Color( 127, 127, 127 );
+			pLoadConfirm->lColor = Color::grayb(127);
+			pDeleteConfirm->SetCheckOff();
+			pDeleteConfirm->lColor = Color::grayb(127);
 			}
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
 		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor=Color(127,127,127);
+		pLoadConfirm->lColor = Color::grayb(127);
+		pDeleteConfirm->SetCheckOff();
+		pDeleteConfirm->lColor = Color::grayb(127);
 		break;
 	// MENUSAVEQUEST
 	case BUTTON_MENUEDITQUEST_SAVE:
@@ -2051,27 +2087,50 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			}
 		}
 		break;
-	case BUTTON_MENUEDITQUEST_DELETE:
-		{
-			if (pWindowMenu)
-				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-			{
-				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
-
-				if(p->eMenuState == EDIT_QUEST_DELETE_CONFIRM) {
-					
-					p->lData = lData;
-					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
-					
-					if(me) {
-						eMenuState = MAIN;
-						savegames.remove(me->lData);
-						break;
+		
+		// Delete save from the load menu
+		case BUTTON_MENUEDITQUEST_DELETE_CONFIRM: {
+			if(pWindowMenu) {
+				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					if(p->eMenuState == EDIT_QUEST_LOAD) {
+						lData = p->lData;
+						if(lData != -1) {
+							eMenuState = EDIT_QUEST_LOAD;
+							pMenu->bReInitAll = true;
+							savegames.remove(lData);
+							break;
+						}
 					}
 				}
 			}
+			pLoadConfirm->SetCheckOff();
+			pLoadConfirm->lColor = Color::grayb(127);
+			pDeleteConfirm->SetCheckOff();
+			pDeleteConfirm->lColor = Color::grayb(127);
+			break;
 		}
-		break;
+		
+		// Delete save from the save menu
+		case BUTTON_MENUEDITQUEST_DELETE: {
+			if(pWindowMenu) {
+				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+						p->lData = lData;
+						CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+						if(me) {
+							eMenuState = EDIT_QUEST_SAVE;
+							pMenu->bReInitAll = true;
+							savegames.remove(me->lData);
+							break;
+						}
+					}
+				}
+			}
+			break;
+		}
+		
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
 			//----------RESOLUTION
@@ -2193,10 +2252,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		break;
 	}
 
-	if ((eMenuState == EDIT_QUEST_LOAD_CONFIRM) ||
-		(eMenuState == EDIT_QUEST_SAVE_CONFIRM) ||
-		(eMenuState == EDIT_QUEST_DELETE_CONFIRM))
-	{
+	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+		
 		for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 		{
 			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
@@ -2212,7 +2269,11 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					
 					if(lData != -1) {
 						me->SetText(savegames[lData].name);
+						pDeleteButton->lColor = pDeleteButton->lOldColor;
+						pDeleteButton->SetCheckOn();
 					} else {
+						pDeleteButton->lColor = Color::grayb(127);
+						pDeleteButton->SetCheckOff();
 						me->SetText(getLocalised("system_menu_editquest_newsavegame"));
 					}
 					
