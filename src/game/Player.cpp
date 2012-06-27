@@ -664,10 +664,11 @@ float ARX_PLAYER_Get_Skill_Object_Knowledge(long type)
 	{
 		if (type == 0)
 			return (float)player.Skill_Object_Knowledge
-			       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * ( 1.0f / 2 ));
+			       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * 0.5f);
 
 		return (float)player.Skill_Object_Knowledge + player.Mod_Skill_Object_Knowledge
-		       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * ( 1.0f / 2 ));
+		       + ((player.Full_Attribute_Mind * 3.f + player.Full_Attribute_Dexterity
+		           + player.Full_Attribute_Strength) * 0.5f);
 	}
 
 	if (type == 0)
@@ -717,7 +718,7 @@ float ARX_PLAYER_Get_Skill_Projectile(long type)
 			       + player.Attribute_Dexterity * 2.f + player.Attribute_Strength;
 
 		return (float)player.Skill_Projectile + player.Mod_Skill_Projectile
-		       + player.Attribute_Dexterity * 2.f + player.Attribute_Strength;
+		       + player.Full_Attribute_Dexterity * 2.f + player.Full_Attribute_Strength;
 	}
 
 	if (type == 0)
