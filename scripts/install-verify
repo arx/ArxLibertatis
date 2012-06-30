@@ -167,8 +167,6 @@ Done:"
 	verify_checksum 'graph/obj3d/textures/npc_worm_body_part1.jpg'     '0b220bffaedc89fa663f08d12630c342'
 	verify_checksum 'graph/obj3d/textures/npc_worm_body_part2.bmp'     '20797cb78f6393a0fb5405969ba9f805'
 	verify_checksum 'graph/obj3d/textures/[wood]_light_door.jpg'       '00d0b018e995e7d013d6e52e92126901'
-	verify_checksum 'manual.pdf'                                       '7a6038e0397e2319aea5d8dc408d5da8'
-	verify_checksum 'map.pdf'                                          '3502c76227df6bbd8637d5355e270cc2'
 	verify_checksum 'misc/arx_default.ttf'                             '9a95ff96795c034524ba1c2e94ea12c7'
 	verify_checksum 'misc/arx_russian.ttf'                             '921561e83786efcd25f92147b60a13db'
 	verify_checksum 'misc/arx_taiwanese.ttf'                           'da59198061cef0761c6b2fca113f76f6'
