@@ -7,10 +7,19 @@ die() {
 
 # Handle arguments
 
+innoextract_opts=''
+if [ "$1" = "--no-progress" ] ; then
+	innoextract_opts='--progress=off'
+	shift
+fi
+
 [ "$1" = "--help" ] || [ "$1" = "-h" ] || setupfile="$(readlink -f "$1")"
 
 [ "$setupfile" != "" ] || die "\
 Usage: install-gog path/to/setup_arx_fatalis.exe [output_dir]
+
+Optional option (must be the first argument):
+ --no-progress  Disable the innoextract progress bar
 
 This script can be used to install the Arx Fatalis data from a GOG.com setup file.
 Files will be verified and renamed as needed by Arx Libertatis.
@@ -60,7 +69,7 @@ cd "$tempdir" || exit 1
 
 # Extract files
 
-"$innoextract" --lowercase "$setupfile"
+"$innoextract" $innoextract_opts --lowercase "$setupfile"
 
 # Install required files
 

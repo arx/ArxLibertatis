@@ -7,6 +7,12 @@ die() {
 
 # Handle arguments
 
+innoextract_opts=''
+if [ "$1" = "--no-progress" ] ; then
+	innoextract_opts='--progress=off'
+	shift
+fi
+
 if [ "$1" != "--help" ] && [ "$1" != "-h" ] ; then
 	cd="$(readlink -f "$1")"
 	patch="$(readlink -f "$2")"
@@ -15,6 +21,9 @@ fi
 [ "$patch" = "" ] && die "\
 Usage: install-cd path/to/mount/point/ path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
 or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
+
+Optional option (must be the first argument):
+ --no-progress  Disable the innoextract progress bar
 
 This script can be used to install the Arx Fatalis data from a CD or ISO.
 Files will be verified and renamed as needed by Arx Libertatis.
@@ -165,7 +174,8 @@ cd "$srcdir" && detect_language
 
 # Extract patch files
 
-cd "$patchdir" && "$innoextract" --lowercase --language="$data_lang" "$patch"
+cd "$patchdir" && "$innoextract" $innoextract_opts --lowercase \
+	--language="$data_lang" "$patch"
 
 # Install required files
 
