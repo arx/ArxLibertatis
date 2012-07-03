@@ -46,7 +46,7 @@ install_verify_sourced=1
 innoextract=`which innoextract 2> /dev/null`
 
 [ -f "$innoextract" ] \
-	|| die "Please install innoextract (http://innoextract.constexpr.org/)"
+	|| die "Please install innoextract (http://constexpr.org/innoextract/)"
 
 # Verify input file
 

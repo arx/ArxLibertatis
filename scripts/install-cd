@@ -56,7 +56,7 @@ innoextract=`which innoextract 2> /dev/null`
 	|| die "Please install cabextract (http://www.cabextract.org.uk/)"
 
 [ -f "$innoextract" ] \
-	|| die "Please install innoextract (http://innoextract.constexpr.org/)"
+	|| die "Please install innoextract (http://constexpr.org/innoextract/)"
 
 [ -e "$cd" ] || die "$cd does not exist"
 [ -f "$patch" ] || die "$patch does not exist"

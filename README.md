@@ -161,14 +161,14 @@ You can close it with `Alt + F4` or `killall arx`
 The `scripts` directory contains shell scripts that allow to extract/install the game data under Linux without Wine from the CD, demo, GOG.com installer or any fully patched Arx Fatalis install respectively. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
 
 * `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`<br>
-  requires [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://innoextract.constexpr.org/)<br>
+  requires [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://constexpr.org/innoextract/)<br>
   `ArxFatalis_1.21_MULTILANG.exe` can be downloaded from [the official Arx Fatalis website](http://www.arkane-studios.com/uk/arx_downloads.php).
 
 * `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`<br>
   requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/)
 
 * `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`<br>
-  requires [innoextract](http://innoextract.constexpr.org/)<br>
+  requires [innoextract](http://constexpr.org/innoextract/)<br>
   `setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
 
 * `scripts/install-copy path/to/ArxFatalis/ [output_dir]`<br>
