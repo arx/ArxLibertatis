@@ -334,7 +334,7 @@ void Win32Window::setWindowSize(Vec2i size) {
 	int dx = rcWnd.right - rcWnd.left - size.x;
 	int dy = rcWnd.bottom - rcWnd.top - size.y;
 
-	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
+	SetWindowPos(m_hWnd, HWND_NOTOPMOST, 0, 0, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
 
 	if(m_IsFullscreen) {
 		m_IsFullscreen = false;
