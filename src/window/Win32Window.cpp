@@ -265,8 +265,11 @@ void Win32Window::tick() {
 	// Check if window was destroyed...
 	arx_assert(m_hWnd != NULL);
 
-	if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
-	{
+	while(PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) != 0) {
+		if(msg.message == WM_QUIT) {
+			DestroyWindow(m_hWnd); // Destroy window and quit
+		}
+
 		TranslateMessage( &msg );
 		DispatchMessage( &msg ); // Send message to the WindowProc.
 	}
