@@ -170,19 +170,57 @@ bool D3D9Window::init(const std::string & title, Vec2i size, bool fullscreen, un
 }
 
 void D3D9Window::tick() {
-    HRESULT hr = GD3D9Device->TestCooperativeLevel();
-    if(hr == D3DERR_DEVICELOST){
-        LogWarning << "D3DERR_DEVICELOST!";
-        Thread::sleep(1000);
-	} else if(hr == D3DERR_DEVICENOTRESET) {
-        LogWarning << "D3DERR_DEVICENOTRESET! - Start";
-        destroyObjects();
-        d3d9Renderer->reset(d3dpp);
-        restoreObjects();
-        LogWarning << "D3DERR_DEVICENOTRESET! - End";
-    }
 
-    Win32Window::tick();
+	Win32Window::tick();
+
+	HRESULT hr = GD3D9Device->TestCooperativeLevel();
+	if(hr == D3DERR_DEVICELOST)
+	{
+		LogWarning << "D3D9 device lost (D3DERR_DEVICELOST)";
+
+		bool retry = false;
+		do
+		{
+			Thread::sleep(10);
+
+			hr = GD3D9Device->TestCooperativeLevel();
+			switch(hr)
+			{
+			case D3D_OK:
+				LogWarning << "D3D9 device restored (D3D_OK)";
+				restoreObjects();
+				retry = false;
+				break;
+
+			case D3DERR_DEVICELOST:
+				// the device cannot be reset yet - retry forever, or until the window is closed somehow.
+				retry = GetHandle() != 0;
+				break;
+
+			case D3DERR_DEVICENOTRESET:
+				// device is ready to be reset
+				// release unmanaged resources first
+				LogWarning << "D3D9 device not reset (D3DERR_DEVICENOTRESET)";
+				destroyObjects();
+				d3d9Renderer->reset(d3dpp);
+				retry = true;
+				break;
+
+			case D3DERR_DRIVERINTERNALERROR:
+			default:
+				// something bad happened, you may wish to display an informative message here
+				LogCritical << "TestCooperativeLevel: " << DXGetErrorStringA(hr) << " - " << DXGetErrorDescriptionA(hr);
+				PostQuitMessage(0);
+				retry = false;
+				break;
+			}
+
+			// Make sure the window gets its messages if we are stuck here...
+			if(retry)
+				Win32Window::tick();
+
+		} while(retry);
+	}
 }
 
 void D3D9Window::showFrame() {
