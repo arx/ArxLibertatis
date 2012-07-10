@@ -156,10 +156,11 @@ bool IniReader::read(istream & is) {
 			
 			size_t end = str.find(']', start + 1);
 			if(end == string::npos) {
-				LogWarning << "invalid header @ line " << line << ": " << str;
-				section = NULL;
-				ok = false;
-				continue;
+				LogDebug("invalid header @ line " << line << ": " << str);
+				end = str.find_first_not_of(ALPHANUM, start + 1);
+				if(end == string::npos) {
+					end = str.length();
+				}
 			}
 			
 			string sectionName = str.substr(start + 1, end - start - 1);
