@@ -762,7 +762,6 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Mod_resist_poison = 0;
 	player.Mod_Critical_Hit = 0;
 	player.Mod_damages = 0;
-	player.Mod_life = 0;
 	player.Mod_mana = 0;
 	player.Mod_maxmana = 0;
 
