@@ -5981,11 +5981,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss4 << F2L_RoundUp(player.Full_maxmana);
 		tex = ss4.str();
 
-		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
+		if(player.Full_maxmana < player.maxmana) {
 			color = Color::red;
-		else if ((player.Mod_maxmana>0.f) || (player.Full_maxmana > player.maxmana))
+		} else if(player.Full_maxmana > player.maxmana) {
 			color = Color::blue;
-		else color = Color::black;
+		} else {
+			color = Color::black;
+		}
 
 		DrawBookTextCenter( hFontInBook, 324, 218, tex, color );
 		
