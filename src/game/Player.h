@@ -200,7 +200,6 @@ struct ARXCHARACTER {
 	long Full_Weapon_Type;
 	float Full_life;
 	float Full_maxlife;
-	float Full_mana;
 	float Full_maxmana;
 	
 	// true (naked) Player Values

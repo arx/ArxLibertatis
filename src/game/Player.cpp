@@ -1014,7 +1014,6 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	if (player.Full_damages < 1) player.Full_damages = 1;
 
 	player.Full_life = player.life;
-	player.Full_mana = player.mana;
 	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2);
 	player.life = std::min(player.life, player.Full_maxlife);
 	player.Full_maxmana = (float)player.Full_Attribute_Mind * (float)(player.level + 1);
