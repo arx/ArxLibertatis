@@ -174,7 +174,6 @@ struct ARXCHARACTER {
 	float Mod_Critical_Hit;
 	float Mod_damages;
 	float Mod_life;
-	float Mod_maxlife;
 	float Mod_mana;
 	float Mod_maxmana;
 	

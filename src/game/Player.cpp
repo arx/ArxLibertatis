@@ -868,7 +868,6 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Mod_Critical_Hit = 0;
 	player.Mod_damages = 0;
 	player.Mod_life = 0;
-	player.Mod_maxlife = 0;
 	player.Mod_mana = 0;
 	player.Mod_maxmana = 0;
 
@@ -1142,7 +1141,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	player.Full_life = player.life;
 	player.Full_mana = player.mana;
-	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2) + player.Mod_maxlife;
+	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2);
 	player.life = std::min(player.life, player.Full_maxlife);
 	player.Full_maxmana = (float)player.Full_Attribute_Mind * (float)(player.level + 1) + player.Mod_maxmana;
 	player.mana = std::min(player.mana, player.Full_maxmana);
