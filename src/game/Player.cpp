@@ -552,6 +552,23 @@ void ARX_PLAYER_Remove_Invisibility() {
 	}
 }
 
+/* TODO use this table instead of the copied functions below!
+static const size_t max_skills = 9;
+static const size_t max_attributes = 4;
+static const float skill_attribute_factors[max_skills][max_attributes] = {
+	// Str   Men   Dex   Con
+	{ 0.0f, 0.0f, 2.0f, 0.0f }, // Stealth
+	{ 0.0f, 1.0f, 1.0f, 0.0f }, // Technical
+	{ 0.0f, 2.0f, 0.0f, 0.0f }, // Intuition
+	{ 0.0f, 2.0f, 0.0f, 0.0f }, // Ethereal link
+	{ 0.5f, 1.5f, 0.5f, 0.0f }, // Object knowledge
+	{ 0.0f, 2.0f, 0.0f, 0.0f }, // Casting
+	{ 2.0f, 0.0f, 1.0f, 0.0f }, // Close combat
+	{ 1.0f, 0.0f, 2.0f, 0.0f }, // Projectile
+	{ 0.0f, 0.0f, 0.0f, 1.0f }, // Defense
+};
+*/
+
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Stealth(long type)
 //-------------------------------------------------------------------------------------
@@ -806,7 +823,6 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 	if (player.armor_class < 1) player.armor_class = 1;
 
-	player.damages = 100;
 	player.resist_magic = (unsigned char)(float)(player.Attribute_Mind * 2.f
 	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * ( 1.0f / 200 )));
 
