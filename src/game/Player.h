@@ -330,15 +330,6 @@ void ARX_PLAYER_KillTorch();
 void ARX_PLAYER_PutPlayerInNormalStance(long val);
 void ARX_PLAYER_Start_New_Quest();
 void ARX_PLAYER_Rune_Add_All();
-float ARX_PLAYER_Get_Skill_Stealth(long type);
-float ARX_PLAYER_Get_Skill_Mecanism(long type);
-float ARX_PLAYER_Get_Skill_Intuition(long type);
-float ARX_PLAYER_Get_Skill_Etheral_Link(long type);
-float ARX_PLAYER_Get_Skill_Object_Knowledge(long type);
-float ARX_PLAYER_Get_Skill_Casting(long type);
-float ARX_PLAYER_Get_Skill_Projectile(long type);
-float ARX_PLAYER_Get_Skill_Close_Combat(long type);
-float ARX_PLAYER_Get_Skill_Defense(long type);
  
 void ARX_PLAYER_Restore_Skin();
 float GetPlayerStealth();

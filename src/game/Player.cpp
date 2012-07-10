@@ -569,12 +569,10 @@ static const float skill_attribute_factors[max_skills][max_attributes] = {
 */
 
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Stealth(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Stealth Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Stealth(long type) {
+static float ARX_PLAYER_Get_Skill_Stealth(long type) {
 	if(type == 0) {
 		return player.Skill_Stealth + player.Attribute_Dexterity * 2.f;
 	} else {
@@ -583,12 +581,10 @@ float ARX_PLAYER_Get_Skill_Stealth(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Mecanism(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Mecanism Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Mecanism(long type) {
+static float ARX_PLAYER_Get_Skill_Mecanism(long type) {
 	if(type == 0) {
 		return player.Skill_Mecanism + player.Attribute_Dexterity + player.Attribute_Mind;
 	} else {
@@ -597,12 +593,10 @@ float ARX_PLAYER_Get_Skill_Mecanism(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Intuition(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Intuition Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Intuition(long type) {
+static float ARX_PLAYER_Get_Skill_Intuition(long type) {
 	if(type == 0) {
 		return player.Skill_Intuition + player.Attribute_Mind * 2.f;
 	} else {
@@ -611,12 +605,10 @@ float ARX_PLAYER_Get_Skill_Intuition(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Etheral_Link(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Etheral Link Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Etheral_Link(long type) {
+static float ARX_PLAYER_Get_Skill_Etheral_Link(long type) {
 	if(type == 0) {
 		return player.Skill_Etheral_Link + player.Attribute_Mind * 2.f;
 	} else {
@@ -625,12 +617,10 @@ float ARX_PLAYER_Get_Skill_Etheral_Link(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Object_Knowledge(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Object Knowledge Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Object_Knowledge(long type) {
+static float ARX_PLAYER_Get_Skill_Object_Knowledge(long type) {
 	if(type == 0) {
 		return player.Skill_Object_Knowledge + player.Attribute_Mind * 1.5f
 		       + player.Attribute_Dexterity * 0.5f + player.Attribute_Strength * 0.5f;
@@ -641,12 +631,10 @@ float ARX_PLAYER_Get_Skill_Object_Knowledge(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Casting(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Casting Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Casting(long type) {
+static float ARX_PLAYER_Get_Skill_Casting(long type) {
 	if(type == 0) {
 		return player.Skill_Casting + player.Attribute_Mind * 2.f;
 	} else {
@@ -655,12 +643,10 @@ float ARX_PLAYER_Get_Skill_Casting(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Projectile(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Projectile Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Projectile(long type) {
+static float ARX_PLAYER_Get_Skill_Projectile(long type) {
 	if(type == 0) {
 		return player.Skill_Projectile
 		       + player.Attribute_Dexterity * 2.f + player.Attribute_Strength;
@@ -670,12 +656,10 @@ float ARX_PLAYER_Get_Skill_Projectile(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Close_Combat(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Close Combat Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Close_Combat(long type) {
+static float ARX_PLAYER_Get_Skill_Close_Combat(long type) {
 	if(type == 0) {
 		return player.Skill_Close_Combat
 		       + player.Attribute_Dexterity + player.Attribute_Strength * 2.f;
@@ -685,12 +669,10 @@ float ARX_PLAYER_Get_Skill_Close_Combat(long type) {
 	}
 }
 //*************************************************************************************
-// float ARX_PLAYER_Get_Skill_Defense(long type)
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns player Defense Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Defense(long type) {
+static float ARX_PLAYER_Get_Skill_Defense(long type) {
 	if(type == 0) {
 		return player.Skill_Defense + player.Attribute_Constitution * 3;
 	} else {
