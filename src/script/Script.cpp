@@ -1109,7 +1109,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^player_life"))
 			{
-				*fcontent = player.Full_life;
+				*fcontent = player.Full_life; // TODO why not player.life like everywhere else?
 				return TYPE_FLOAT;
 			}
 
