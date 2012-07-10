@@ -110,7 +110,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
@@ -575,24 +574,13 @@ static const float skill_attribute_factors[max_skills][max_attributes] = {
 // FUNCTION/RESULT:
 //   Returns player Stealth Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Stealth(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Stealth
-			       + (player.Attribute_Dexterity * 2);
-
-		return (float)player.Skill_Stealth + player.Mod_Skill_Stealth
-		       + (player.Full_Attribute_Dexterity * 2);
+float ARX_PLAYER_Get_Skill_Stealth(long type) {
+	if(type == 0) {
+		return player.Skill_Stealth + player.Attribute_Dexterity * 2.f;
+	} else {
+		return player.Skill_Stealth + player.Mod_Skill_Stealth
+		       + player.Full_Attribute_Dexterity * 2.f;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Stealth
-		       + (player.Attribute_Dexterity + player.Attribute_Mind);
-
-	return (float)player.Skill_Stealth + player.Mod_Skill_Stealth
-	       + (player.Full_Attribute_Dexterity + player.Full_Attribute_Mind);
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Mecanism(long type)
@@ -600,24 +588,13 @@ float ARX_PLAYER_Get_Skill_Stealth(long type)
 // FUNCTION/RESULT:
 //   Returns player Mecanism Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Mecanism(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Mecanism
-			       + (player.Attribute_Dexterity + player.Attribute_Mind);
-
-		return (float)player.Skill_Mecanism + player.Mod_Skill_Mecanism
-		       + (player.Full_Attribute_Dexterity + player.Full_Attribute_Mind);
+float ARX_PLAYER_Get_Skill_Mecanism(long type) {
+	if(type == 0) {
+		return player.Skill_Mecanism + player.Attribute_Dexterity + player.Attribute_Mind;
+	} else {
+		return player.Skill_Mecanism + player.Mod_Skill_Mecanism
+		       + player.Full_Attribute_Dexterity + player.Full_Attribute_Mind;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Mecanism
-		       + (player.Attribute_Dexterity + player.Attribute_Mind);
-
-	return (float)player.Skill_Mecanism + player.Mod_Skill_Mecanism
-	       + (player.Full_Attribute_Dexterity + player.Full_Attribute_Mind);
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Intuition(long type)
@@ -625,24 +602,13 @@ float ARX_PLAYER_Get_Skill_Mecanism(long type)
 // FUNCTION/RESULT:
 //   Returns player Intuition Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Intuition(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Intuition
-			       + (player.Attribute_Mind * 2);
-
-		return (float)player.Skill_Intuition + player.Mod_Skill_Intuition
-		       + (player.Full_Attribute_Mind * 2);
+float ARX_PLAYER_Get_Skill_Intuition(long type) {
+	if(type == 0) {
+		return player.Skill_Intuition + player.Attribute_Mind * 2.f;
+	} else {
+		return player.Skill_Intuition + player.Mod_Skill_Intuition
+		       + player.Full_Attribute_Mind * 2.f;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Intuition
-		       + (player.Attribute_Dexterity + player.Attribute_Mind);
-
-	return (float)player.Skill_Intuition + player.Mod_Skill_Intuition
-	       + (player.Full_Attribute_Dexterity + player.Full_Attribute_Mind);
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Etheral_Link(long type)
@@ -650,24 +616,13 @@ float ARX_PLAYER_Get_Skill_Intuition(long type)
 // FUNCTION/RESULT:
 //   Returns player Etheral Link Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Etheral_Link(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Etheral_Link
-			       + player.Attribute_Mind * 2.f;
-
-		return (float)player.Skill_Etheral_Link + player.Mod_Skill_Etheral_Link
+float ARX_PLAYER_Get_Skill_Etheral_Link(long type) {
+	if(type == 0) {
+		return player.Skill_Etheral_Link + player.Attribute_Mind * 2.f;
+	} else {
+		return player.Skill_Etheral_Link + player.Mod_Skill_Etheral_Link
 		       + player.Full_Attribute_Mind * 2.f;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Etheral_Link
-		       + player.Attribute_Mind * 2.f;
-
-	return (float)player.Skill_Etheral_Link + player.Mod_Skill_Etheral_Link
-	       + player.Full_Attribute_Mind * 2.f;
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Object_Knowledge(long type)
@@ -675,25 +630,15 @@ float ARX_PLAYER_Get_Skill_Etheral_Link(long type)
 // FUNCTION/RESULT:
 //   Returns player Object Knowledge Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Object_Knowledge(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Object_Knowledge
-			       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * 0.5f);
-
-		return (float)player.Skill_Object_Knowledge + player.Mod_Skill_Object_Knowledge
-		       + ((player.Full_Attribute_Mind * 3.f + player.Full_Attribute_Dexterity
-		           + player.Full_Attribute_Strength) * 0.5f);
+float ARX_PLAYER_Get_Skill_Object_Knowledge(long type) {
+	if(type == 0) {
+		return player.Skill_Object_Knowledge + player.Attribute_Mind * 1.5f
+		       + player.Attribute_Dexterity * 0.5f + player.Attribute_Strength * 0.5f;
+	} else {
+		return player.Skill_Object_Knowledge + player.Mod_Skill_Object_Knowledge
+		       + player.Full_Attribute_Mind * 1.5f + player.Full_Attribute_Dexterity * 0.5f
+		       + player.Full_Attribute_Strength * 0.5f;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Object_Knowledge
-		       + player.Attribute_Mind * 2.f;
-
-	return (float)player.Skill_Object_Knowledge + player.Mod_Skill_Object_Knowledge
-	       + player.Full_Attribute_Mind * 2.f;
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Casting(long type)
@@ -701,24 +646,13 @@ float ARX_PLAYER_Get_Skill_Object_Knowledge(long type)
 // FUNCTION/RESULT:
 //   Returns player Casting Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Casting(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Casting
-			       + player.Attribute_Mind * 2.f ;
-
-		return (float)player.Skill_Casting + player.Mod_Skill_Casting
-		       + player.Full_Attribute_Mind * 2.f ;
+float ARX_PLAYER_Get_Skill_Casting(long type) {
+	if(type == 0) {
+		return player.Skill_Casting + player.Attribute_Mind * 2.f;
+	} else {
+		return player.Skill_Casting + player.Mod_Skill_Casting
+		       + player.Full_Attribute_Mind * 2.f;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Casting
-		       + player.Attribute_Mind * 2.f ;
-
-	return (float)player.Skill_Casting + player.Mod_Skill_Casting
-	       + player.Full_Attribute_Mind * 2.f ;
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Projectile(long type)
@@ -726,24 +660,14 @@ float ARX_PLAYER_Get_Skill_Casting(long type)
 // FUNCTION/RESULT:
 //   Returns player Projectile Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Projectile(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return (float)player.Skill_Projectile
-			       + player.Attribute_Dexterity * 2.f + player.Attribute_Strength;
-
-		return (float)player.Skill_Projectile + player.Mod_Skill_Projectile
+float ARX_PLAYER_Get_Skill_Projectile(long type) {
+	if(type == 0) {
+		return player.Skill_Projectile
+		       + player.Attribute_Dexterity * 2.f + player.Attribute_Strength;
+	} else {
+		return player.Skill_Projectile + player.Mod_Skill_Projectile
 		       + player.Full_Attribute_Dexterity * 2.f + player.Full_Attribute_Strength;
 	}
-
-	if (type == 0)
-		return (float)player.Skill_Projectile
-		       + player.Attribute_Dexterity * 2.f;
-
-	return (float)player.Skill_Projectile + player.Mod_Skill_Projectile
-	       + player.Full_Attribute_Dexterity * 2.f;
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Close_Combat(long type)
@@ -751,28 +675,14 @@ float ARX_PLAYER_Get_Skill_Projectile(long type)
 // FUNCTION/RESULT:
 //   Returns player Close Combat Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Close_Combat(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return
-			    (float)player.Skill_Close_Combat
-			    + (player.Attribute_Dexterity + player.Attribute_Strength * 2);
-
-		return
-		    (float)player.Skill_Close_Combat + player.Mod_Skill_Close_Combat
-		    + (player.Full_Attribute_Dexterity + player.Full_Attribute_Strength * 2);
+float ARX_PLAYER_Get_Skill_Close_Combat(long type) {
+	if(type == 0) {
+		return player.Skill_Close_Combat
+		       + player.Attribute_Dexterity + player.Attribute_Strength * 2.f;
+	} else {
+		return player.Skill_Close_Combat + player.Mod_Skill_Close_Combat
+		       + player.Full_Attribute_Dexterity + player.Full_Attribute_Strength * 2.f;
 	}
-
-	if (type == 0)
-		return
-		    (float)player.Skill_Close_Combat
-		    + (player.Attribute_Dexterity + player.Attribute_Strength);
-
-	return
-	    (float)player.Skill_Close_Combat + player.Mod_Skill_Close_Combat
-	    + (player.Full_Attribute_Dexterity + player.Full_Attribute_Strength);
 }
 //*************************************************************************************
 // float ARX_PLAYER_Get_Skill_Defense(long type)
@@ -780,28 +690,13 @@ float ARX_PLAYER_Get_Skill_Close_Combat(long type)
 // FUNCTION/RESULT:
 //   Returns player Defense Skill level (Plain (type==0) or Modified (type==1))
 //*************************************************************************************
-float ARX_PLAYER_Get_Skill_Defense(long type)
-{
-	if (USE_NEW_SKILLS)
-	{
-		if (type == 0)
-			return
-			    (float)player.Skill_Defense
-			    + (player.Attribute_Constitution * 3);
-
-		return
-		    (float)player.Skill_Defense + player.Mod_Skill_Defense
-		    + (player.Full_Attribute_Constitution * 3);
+float ARX_PLAYER_Get_Skill_Defense(long type) {
+	if(type == 0) {
+		return player.Skill_Defense + player.Attribute_Constitution * 3;
+	} else {
+		return player.Skill_Defense + player.Mod_Skill_Defense
+		       + player.Full_Attribute_Constitution * 3;
 	}
-
-	if (type == 0)
-		return
-		    (float)player.Skill_Defense
-		    + (player.Attribute_Dexterity + player.Attribute_Constitution);
-
-	return
-	    (float)player.Skill_Defense + player.Mod_Skill_Defense
-	    + (player.Full_Attribute_Dexterity + player.Full_Attribute_Constitution);
 }
 
 //*************************************************************************************

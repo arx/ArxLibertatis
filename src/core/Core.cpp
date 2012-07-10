@@ -342,7 +342,6 @@ float FrameDiff=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
-long USE_NEW_SKILLS=1;
 
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
