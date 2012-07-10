@@ -646,6 +646,7 @@ size_t initSuppressions() {
 	
 	suppress("snake_woman_base_0016", 138, "setevent"); // unsupported event: "misc_reflection"
 	
+	suppress("spider_base_0024", 660, "play"); // missing sound file 'spider_stress'
 	suppress("spider_base_0024", 858, "play"); // missing sound file 'spider_stress'
 	
 	suppress("sword_2handed_meteor_enchant_0001", 48, "}"); // missing accept/refuse before end of event block
