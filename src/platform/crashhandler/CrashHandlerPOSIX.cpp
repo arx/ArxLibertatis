@@ -36,6 +36,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <iostream>
+
 #include "platform/Environment.h"
 
 
@@ -257,6 +259,12 @@ void CrashHandlerPOSIX::crashBroker() {
 	// Something went wrong - the crash reporter failed to start!
 	
 	// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
+	
+	std::cerr << "Arx Libertatis crashed with signal " << m_pCrashInfo->signal
+	          << ", but " << m_CrashHandlerApp << " could not be found.\n";
+	std::cerr << "arx.log might contain more information.\n";
+	std::cerr << "Please install " << m_CrashHandlerApp
+	          << " to generate a detailed bug report!" << std::endl;
 	
 	// Kill the original, busy-waiting process.
 	kill(m_pCrashInfo->processId, SIGKILL);
