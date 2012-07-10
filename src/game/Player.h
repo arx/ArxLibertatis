@@ -173,7 +173,6 @@ struct ARXCHARACTER {
 	float Mod_resist_poison;
 	float Mod_Critical_Hit;
 	float Mod_damages;
-	float Mod_mana;
 	float Mod_maxmana;
 	
 	// Full Frame values (including items)
