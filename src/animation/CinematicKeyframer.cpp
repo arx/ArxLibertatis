@@ -58,27 +58,11 @@ using std::realloc;
 using std::memcpy;
 using std::memmove;
 
-
-/*----------------------------------------------------------------------*/
-//undo/redo
-#define UNDOPILE	256*2
-#define PILE_ADD	1
-#define PILE_DEL	2
-#define PILE_MOD	3
-
-struct C_UNDOPILE
-{
-	int		action;
-	C_KEY	key;
-};
 /*----------------------------------------------------------------------*/
 extern bool ProjectModif;
 /*----------------------------------------------------------------------*/
 CinematicTrack	* CKTrack;
 
-int UndoPile;
-static int TotUndoPile, FillUndo;
-static C_UNDOPILE UndoKey[UNDOPILE];
 extern int LSoundChoose;
 /*----------------------------------------------------------------------*/
 bool AllocTrack(int sf, int ef, float fps)
@@ -96,8 +80,6 @@ bool AllocTrack(int sf, int ef, float fps)
 	CKTrack->nbkey = 0;
 	CKTrack->key = NULL;
 	CKTrack->pause = true;
-
-	InitUndo();
 
 	return true;
 }
@@ -162,45 +144,6 @@ C_KEY * SearchKey(int f, int * num)
 	}
 
 	return NULL;
-}
-/*----------------------------------------------------------------------*/
-static void AddPileUndo(C_KEY * k, int type)
-{
-	C_UNDOPILE	* up;
-
-	if (!FillUndo) return;
-
-	if (UndoPile >= UNDOPILE)
-	{
-		memmove(UndoKey, UndoKey + 2, sizeof(C_UNDOPILE)*(UNDOPILE - 2));
-		UndoPile -= 2;
-	}
-
-	up = &UndoKey[UndoPile];
-	UndoPile++;
-
-	TotUndoPile = UndoPile;
-	up->action = type;
-	up->key = *k;
-}
-/*----------------------------------------------------------------------*/
-void InitUndo(void)
-{
-	int			nb;
-	C_UNDOPILE	* up;
-
-	UndoPile = TotUndoPile = 0;
-	up = UndoKey;
-	nb = UNDOPILE;
-
-	while (nb)
-	{
-		up->action = 0;
-		up++;
-		nb--;
-	}
-
-	FillUndo = true;
 }
  
 /*----------------------------------------------------------------------*/
@@ -338,11 +281,6 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 		CKTrack->nbkey++;
 
 		k->frame = key->frame;
-		AddPileUndo(k, PILE_ADD);
-	}
-	else
-	{
-		AddPileUndo(k, PILE_MOD);
 	}
 
 	if (key->numbitmap > -2) k->numbitmap = key->numbitmap;
@@ -399,8 +337,6 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 	k->speedtrack = key->speedtrack;
 
 	UpDateAllKeyLight();
-
-	AddPileUndo(k, PILE_ADD);
 
 	ProjectModif = true;
 	return true;

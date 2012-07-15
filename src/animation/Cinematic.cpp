@@ -104,7 +104,6 @@ int				LSoundChoose;
 extern float	FlashAlpha;
 extern char FileNameDirLoad[];
 extern char FileNameDirSave[];
-extern int UndoPile;
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
@@ -242,8 +241,6 @@ void Cinematic::New() {
 	FillKeyTemp(&pos, angz, 100, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
-
-	InitUndo();
 
 	SetCurrFrame(GetStartFrame());
 

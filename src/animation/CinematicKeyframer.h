@@ -107,7 +107,6 @@ C_KEY * GetKey(int f, int * num);
 C_KEY * SearchKey(int f, int * num);
 
 float GetTimeKeyFramer();
-void InitUndo();
 void UpDateAllKeyLight();
 
 #endif // ARX_ANIMATION_CINEMATICKEYFRAMER_H

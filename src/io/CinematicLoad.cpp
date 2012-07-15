@@ -352,8 +352,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	GereTrackNoPlay(c);
 	c->projectload = true;
 	
-	InitUndo();
-	
 	LSoundChoose = C_KEY::English << 8;
 	
 	LogDebug("loaded cinematic");
