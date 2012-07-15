@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 
 CinematicSound TabSound[MAX_SOUND];
-int NbSound;
 
 extern char DirectoryChoose[];
 
@@ -77,7 +76,6 @@ bool DeleteFreeSound(int num) {
 	TabSound[num].file.clear();
 	
 	TabSound[num].active = 0;
-	NbSound--;
 	
 	return true;
 }
@@ -123,7 +121,6 @@ int AddSoundToList(const res::path & path, s16 id) {
 	cs->file = path;
 	cs->active = id | s16(1);
 	
-	NbSound++;
 	return num;
 }
 
