@@ -78,7 +78,6 @@ int				 InsertKey;
 C_KEY		*	KeyCopy;
 int				LargeurRender, HauteurRender;
 bool			InRender;
-bool			ProjectModif;
 
 //vertex
 TexturedVertex		AllTLVertex[40000];
@@ -248,8 +247,6 @@ void Cinematic::New() {
 
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
-
-	ProjectModif = false;
 
 	LSoundChoose = C_KEY::English << 8;
 	

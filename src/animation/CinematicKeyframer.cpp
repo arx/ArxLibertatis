@@ -59,8 +59,6 @@ using std::memcpy;
 using std::memmove;
 
 /*----------------------------------------------------------------------*/
-extern bool ProjectModif;
-/*----------------------------------------------------------------------*/
 CinematicTrack	* CKTrack;
 
 extern int LSoundChoose;
@@ -338,7 +336,6 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	UpDateAllKeyLight();
 
-	ProjectModif = true;
 	return true;
 }
 /*----------------------------------------------------------------------*/
