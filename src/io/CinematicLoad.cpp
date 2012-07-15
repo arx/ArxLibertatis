@@ -47,6 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdlib>
 #include <iomanip>
+#include <utility>
+
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
@@ -85,40 +88,47 @@ static res::path fixTexturePath(const string & path) {
 	}
 }
 
-static res::path fixSoundPath(const string & str) {
+static std::pair<res::path, bool> fixSoundPath(const string & str) {
 	
 	string path = toLowercase(str);
 	
-	size_t sfx_pos = path.find("sfx");
-	
-	// Sfx
-	if(sfx_pos != string::npos) {
-		path.erase(0, sfx_pos);
-		
-		size_t uk_pos = path.find("uk");
-		if(uk_pos != string::npos) {
-			path.replace(uk_pos, 3, "english\\");
-		}
-		
-		size_t fr_pos = path.find("fr");
-		if(fr_pos != string::npos) {
-			path.replace(fr_pos, 3, "francais\\");
-		}
-		
-		size_t sfxspeech_pos = path.find("sfx\\speech\\");
-		if(sfxspeech_pos != string::npos) {
-			path.erase(0, sfxspeech_pos + 4);
-		}
-		
-		return res::path::load(path);
+	// Remove the .wav file extension
+	if(boost::ends_with(path, ".wav")) {
+		path.resize(path.size() - 4);
 	}
 	
-	// Speech
+	// Remove irrelevant absolute path components
+	size_t sfx_pos = path.find("\\sfx\\");
+	if(sfx_pos != string::npos) {
+		path.erase(0, sfx_pos + 1);
+	}
 	
-	size_t namepos = path.find_last_of('\\');
-	namepos = (namepos == string::npos) ? 0 : namepos + 1;
+	// I guess they changed their minds about language names
+	size_t uk_pos = path.find("\\uk\\");
+	if(uk_pos != string::npos) {
+		path.replace(uk_pos, 4, "\\english\\");
+	}
+	size_t fr_pos = path.find("\\fr\\");
+	if(fr_pos != string::npos) {
+		path.replace(fr_pos, 4, "\\francais\\");
+	}
 	
-	return res::path("speech") / config.language / path.substr(namepos);
+	// Change the speech directory
+	if(boost::starts_with(path, "sfx\\speech\\")) {
+		path.erase(0, 4);
+	}
+	
+	// Remove hardcoded language for localised speech
+	bool is_speech = false;
+	if(boost::starts_with(path, "speech\\")) {
+		size_t pos = path.find('\\', 7);
+		if(pos != string::npos) {
+			path.erase(0, pos + 1);
+			is_speech = true;
+		}
+	}
+	
+	return std::make_pair(res::path::load(path), is_speech);
 }
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
@@ -182,7 +192,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		LogError << "error reading bitmap count";
 		return false;
 	}
-	LogDebug("nbitmaps " << nbitmaps);
+	LogDebug(nbitmaps << " images:");
 	
 	c->m_bitmaps.reserve(nbitmaps);
 	
@@ -199,9 +209,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading bitmap path";
 			return false;
 		}
+		LogDebug(" - " << i << ": \"" << str << '"');
 		res::path path = fixTexturePath(str);
+		LogDebug("   => " << path << " (scale x" << scale << ')');
 		
-		LogDebug("adding bitmap " << i << ": " << path);
 		
 		CinematicBitmap * newBitmap = CreateCinematicBitmap(path, scale);
 		if(newBitmap) {
@@ -216,18 +227,15 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	LogDebug("nsounds " << nsounds);
+	LogDebug(nsounds << " sounds:");
 	for(int i = 0; i < nsounds; i++) {
 		
-		bool reuse = true;
-		s8 id = 0;
 		if(version >= CINEMATIC_VERSION_1_76) {
-			u8 noreuse;
-			if(!safeGet(noreuse, data, size) || !safeGet(id, data, size)) {
+			s16 ignored;
+			if(!safeGet(ignored, data, size)) {
 				LogError << "error reading sound id";
 				return false;
 			}
-			reuse = (noreuse == 0); // TODO see if this is actually ever false
 		}
 		
 		const char * str = safeGetString(data, size);
@@ -235,11 +243,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
-		LogDebug("sound " << i << ": \"" << str << '"');
-		res::path path = fixSoundPath(str);
-		LogDebug("adding sound " << i << ": " << path << " (" << int(id) << ')');
+		LogDebug(" - " << i << ": \"" << str << '"');
+		std::pair<res::path, bool> path = fixSoundPath(str);
+		LogDebug("   => " << path.first << (path.second ? " (speech)" : ""));
 		
-		AddSoundToList(path, id, reuse);
+		AddSoundToList(path.first, path.second);
 	}
 	
 	// Load track and keys.
@@ -251,13 +259,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
-	LogDebug("nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76));
+	LogDebug(t.nbkey << " keyframes:");
 	for(int i = 0; i < t.nbkey; i++) {
 		
 		C_KEY k;
 		int idsound;
-		
-		LogDebug("loading key " << i << " " << size);
 		
 		if(version <= CINEMATIC_VERSION_1_75) {
 			
@@ -319,6 +325,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, k.idsound, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
 		AddKeyLoad(&KeyTemp);
+		
+		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);
+		if(k.idsound >= 0) {
+			LogDebug("   + sound: " << k.idsound);
+		}
 		
 		if(i == 0) {
 			c->pos = k.pos;

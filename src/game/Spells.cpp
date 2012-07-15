@@ -8768,7 +8768,7 @@ static void ApplyCurMr() {
 static void ApplySPuw() {
 	uw_mode_pos=0;
 	uw_mode=~uw_mode;
-	ARX_SOUND_PlayCinematic(res::path("speech") / config.language / "menestrel_uw2.wav");
+	ARX_SOUND_PlayCinematic("menestrel_uw2", true);
 	MakeCoolFx(&player.pos);
 	if(uw_mode) {
 		MakeSpCol();

@@ -618,7 +618,7 @@ void InitializeDanae()
 			FASTmse = 1;
 		} else {
 #ifdef BUILD_EDIT_LOADSAVE
-			ARX_SOUND_PlayCinematic("editor_humiliation.wav");
+			ARX_SOUND_PlayCinematic("editor_humiliation", false);
 			mse = PAK_MultiSceneToEerie(levelPath);
 #else
 			LogError << "FastSceneLoad failed";

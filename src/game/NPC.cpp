@@ -2027,9 +2027,8 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 		}
 	}
 
-	if (hid)
-	{
-		ARX_SOUND_PlayCinematic("flesh_critical.wav");
+	if(hid) {
+		ARX_SOUND_PlayCinematic("flesh_critical", false); // TODO why play cinmeatic sound?
 		ARX_NPC_SpawnMember(target, numsel);
 	}
 }

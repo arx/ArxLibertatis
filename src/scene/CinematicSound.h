@@ -24,7 +24,7 @@
 #include "platform/Platform.h"
 
 void DeleteAllSound();
-void AddSoundToList(const res::path & path, s8 id, bool reuse);
+void AddSoundToList(const res::path & path, bool isSpeech);
 bool PlaySoundKeyFramer(int index);
 void StopSoundKeyFramer();
 

@@ -729,7 +729,7 @@ long DanaeLoadLevel(const res::path & file) {
 		} else {
 #ifdef BUILD_EDIT_LOADSAVE
 			LogDebug("fast loading scene failed");
-			ARX_SOUND_PlayCinematic("editor_humiliation.wav");
+			ARX_SOUND_PlayCinematic("editor_humiliation", false);
 			mse = PAK_MultiSceneToEerie(scene);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();

@@ -55,20 +55,21 @@ using std::string;
 
 namespace {
 
+// TODO move this into the Cinematic class
+
 struct CinematicSound {
 	
-	CinematicSound();
+	CinematicSound()
+		: exists(false), isSpeech(false), handle(audio::INVALID_ID) { }
 	
 	bool exists;
-	s8 id;
+	bool isSpeech;
 	res::path file;
 	audio::SourceId handle;
 	
 };
 
 CinematicSound TabSound[256];
-
-CinematicSound::CinematicSound() : exists(false), id(0), file(), handle(audio::INVALID_ID) { }
 
 } // anonymous namespace
 
@@ -103,26 +104,7 @@ void DeleteAllSound(void) {
 	}
 }
 
-static int findSound(const res::path & file, s8 id) {
-	
-	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
-		const CinematicSound & cs = TabSound[i];
-		if(cs.exists && cs.id == id && cs.file == file) {
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
-void AddSoundToList(const res::path & path, s8 id, bool reuse) {
-	
-	if(reuse) {
-		if(findSound(path, id) >= 0) {
-			LogWarning << "reusing sound slot for sound " << path << " ("  << int(id) <<  ')';
-			return;
-		}
-	}
+void AddSoundToList(const res::path & path, bool isSpeech) {
 	
 	CinematicSound * cs = GetFreeSound();
 	if(!cs) {
@@ -131,7 +113,7 @@ void AddSoundToList(const res::path & path, s8 id, bool reuse) {
 	}
 	
 	cs->file = path;
-	cs->id = id;
+	cs->isSpeech = isSpeech;
 	cs->exists = true;
 }
 
@@ -141,7 +123,11 @@ bool PlaySoundKeyFramer(int index) {
 		return false;
 	}
 	
-	TabSound[index].handle = ARX_SOUND_PlayCinematic(TabSound[index].file);
+	CinematicSound & cs = TabSound[index];
+	
+	LogDebug("playing " << (cs.isSpeech ? "speech" : "sound")
+	         << ' ' << index << " = " << cs.file);
+	cs.handle = ARX_SOUND_PlayCinematic(cs.file, cs.isSpeech);
 	
 	return true;
 }
@@ -149,7 +135,7 @@ bool PlaySoundKeyFramer(int index) {
 void StopSoundKeyFramer() {
 	
 	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
-		if(TabSound[i].exists) {
+		if(TabSound[i].exists && TabSound[i].handle != audio::INVALID_ID) {
 			ARX_SOUND_Stop(TabSound[i].handle);
 			TabSound[i].handle = audio::INVALID_ID;
 		}

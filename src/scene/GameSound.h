@@ -234,7 +234,7 @@ long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2,
 
 long ARX_SOUND_PlayScript(const res::path & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayAnim(audio::SourceId & sample_id, const Vec3f * position = NULL);
-long ARX_SOUND_PlayCinematic(const res::path & name);
+long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 long ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_IsPlaying(audio::SourceId & sample_id);
 float ARX_SOUND_GetDuration(audio::SampleId & sample_id);

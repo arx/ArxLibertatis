@@ -1061,11 +1061,10 @@ void ARX_PLAYER_MakeFreshHero()
 char SKIN_MOD = 0;
 char QUICK_MOD = 0;
 
-void ARX_SPSound()
-{
-	ARX_SOUND_PlayCinematic("kra_zoha_equip.wav");
+void ARX_SPSound() {
+	ARX_SOUND_PlayCinematic("kra_zoha_equip", false);
 }
-//*************************************************************************************
+
 void ARX_PLAYER_MakeSpHero()
 {
 	ARX_SPSound();

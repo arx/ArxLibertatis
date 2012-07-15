@@ -600,17 +600,21 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
 	}
 }
 
+static res::path speechFileName(const res::path & name) {
+	return res::path("speech") / config.language / name;
+}
+
 long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
 {
 	if (!bIsActive) return INVALID_ID;
 
 	audio::Channel channel;
 	SampleId sample_id;
-
-	res::path file_name = res::path("speech") / config.language / name;
-	file_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
-
-	sample_id = audio::createSample(file_name);
+	
+	res::path file = speechFileName(name);
+	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
+	
+	sample_id = audio::createSample(file);
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_AUTOFREE | FLAG_FALLOFF;
@@ -842,28 +846,26 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const res::path & name) {
+long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	
-	LogDebug("playing cinematic sound");
+	res::path file = (isSpeech) ? speechFileName(name) : name;
+	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
-	s32 sample_id;
-	audio::Channel channel;
-
-	sample_id = audio::createSample(name);
-
+	s32 sample_id = audio::createSample(file);
 	if(sample_id == INVALID_ID) {
-		LogError << "cannot load sound for cinematic: " << name;
+		LogError << "cannot load sound for cinematic: " << file;
 		return INVALID_ID;
 	}
-
+	
+	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
-	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_FALLOFF | FLAG_REVERBERATION | FLAG_POSITION;
-	channel.volume = 1.0F;
+	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_FALLOFF
+	                | FLAG_REVERBERATION | FLAG_POSITION;
+	channel.volume = 1.0f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
-
-	if (ACTIVECAM)
-	{
+	
+	if (ACTIVECAM) {
 		Vec3f front, up;
 		float t;
 		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
@@ -876,11 +878,11 @@ long ARX_SOUND_PlayCinematic(const res::path & name) {
 		up.z = 0.f;
 		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
 	}
-
+	
 	ARX_SOUND_IOFrontPos(NULL, channel.position); 
-
+	
 	audio::samplePlay(sample_id, channel);
-
+	
 	return sample_id;
 }
 
