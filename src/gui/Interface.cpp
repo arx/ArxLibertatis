@@ -613,11 +613,13 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	float fSizeX = haloTexture->m_dwWidth * fRatioX;
-	float fSizeY = haloTexture->m_dwHeight * fRatioY;
 	
-	EERIEDrawBitmap(POSX - TextureContainer::HALO_RADIUS, POSY - TextureContainer::HALO_RADIUS, fSizeX, fSizeY, 0.00001f, haloTexture, col);
+	float x = POSX - TextureContainer::HALO_RADIUS * fRatioX;
+	float y = POSY - TextureContainer::HALO_RADIUS * fRatioY;
+	float width = haloTexture->m_dwWidth * fRatioX;
+	float height = haloTexture->m_dwHeight * fRatioY;
+	
+	EERIEDrawBitmap(x, y, width, height, 0.00001f, haloTexture, col);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
@@ -6344,9 +6346,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
 					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
 
-					if (tc2!=NULL)
-					{
-						ARX_INTERFACE_HALO_Draw(todraw,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
+					if(tc2) {
+						ARX_INTERFACE_HALO_Draw(
+							todraw, tc, tc2,
+							(todraw->bbox1.x + BOOKDECX) * Xratio,
+							(todraw->bbox1.y + BOOKDECY) * Yratio,
+							Xratio, Yratio
+						);
 					}
 
 					float fWidth  = todraw->bbox1.x + static_cast<float>( tc->m_dwWidth );
@@ -6386,9 +6392,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 					Color color = (todraw->poisonous && todraw->poisonous_count != 0) ? Color::green : Color::white;
 					DrawBookInterfaceItem(tc, todraw->bbox1.x, todraw->bbox1.y, color, 0);
 
-					if (tc2!=NULL)
-					{
-						ARX_INTERFACE_HALO_Draw(todraw,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
+					if(tc2) {
+						ARX_INTERFACE_HALO_Draw(
+							todraw, tc, tc2, 
+							(todraw->bbox1.x + BOOKDECX) * Xratio,
+							(todraw->bbox1.y + BOOKDECX) * Yratio,
+							Xratio, Yratio
+						);
 					}
 
 					float fWidth  = todraw->bbox1.x + static_cast<float>( tc->m_dwWidth );
