@@ -211,8 +211,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	
 	// Load sounds.
-	LSoundChoose = C_KEY::French;
-			
 	s32 nsounds;
 	if(!safeGet(nsounds, data, size)) {
 		LogError << "error reading sound count";
@@ -222,13 +220,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug("nsounds " << nsounds);
 	for(int i = 0; i < nsounds; i++) {
 		
-		s16 language = C_KEY::French;
+		s16 id = C_KEY::French;
 		if(version >= CINEMATIC_VERSION_1_76) {
-			if(!safeGet(language, data, size)) {
+			if(!safeGet(id, data, size)) {
 				LogError << "error reading sound id";
 				return false;
 			}
-			LSoundChoose = language;
 		}
 		
 		const char * str = safeGetString(data, size);
@@ -239,9 +236,9 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		LogDebug("sound " << i << ": \"" << str << '"');
 		res::path path = fixSoundPath(str);
 		LogDebug("adding sound " << i << " (0x" << std::hex << std::setfill('0')
-		         << std::setw(4) << language << std::dec << "): " << path);
+		         << std::setw(4) << id << std::dec << "): " << path);
 		
-		if(AddSoundToList(path, language) < 0) {
+		if(AddSoundToList(path, id) < 0) {
 			LogError << "AddSoundToList failed for " << path;
 		}
 	}

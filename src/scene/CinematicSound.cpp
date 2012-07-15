@@ -89,13 +89,13 @@ void DeleteAllSound(void) {
 	}
 }
 
-static int findSound(const res::path & file, s16 language) {
+static int findSound(const res::path & file, s16 id) {
 	
 	for(size_t i = 0; i < MAX_SOUND; i++) {
 		
 		const CinematicSound & cs = TabSound[i];
 		
-		if(!cs.active || (cs.active & 0xFF00) != language) {
+		if(!cs.active || (cs.active & 0xFF00) != id) {
 			continue;
 		}
 		
@@ -108,9 +108,9 @@ static int findSound(const res::path & file, s16 language) {
 	return -1;
 }
 
-int AddSoundToList(const res::path & path, s16 language) {
+int AddSoundToList(const res::path & path, s16 id) {
 	
-	int num = findSound(path, language);
+	int num = findSound(path, id);
 	if(num >= 0) {
 		return num;
 	}
@@ -122,7 +122,7 @@ int AddSoundToList(const res::path & path, s16 language) {
 	
 	cs->file = path;
 	
-	int iActive = 1 | language;
+	int iActive = 1 | id;
 	
 	cs->active = checked_range_cast<short>(iActive);
 	

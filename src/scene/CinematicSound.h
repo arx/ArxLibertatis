@@ -40,7 +40,7 @@ void DeleteAllSound();
 
 CinematicSound * GetFreeSound(int * num);
 bool DeleteFreeSound(int num);
-int AddSoundToList(const res::path & path, s16 language);
+int AddSoundToList(const res::path & path, s16 id);
 bool PlaySoundKeyFramer(int id);
 void StopSoundKeyFramer(void);
 
