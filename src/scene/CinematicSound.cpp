@@ -121,10 +121,7 @@ int AddSoundToList(const res::path & path, s16 id) {
 	}
 	
 	cs->file = path;
-	
-	int iActive = 1 | id;
-	
-	cs->active = checked_range_cast<short>(iActive);
+	cs->active = id | s16(1);
 	
 	NbSound++;
 	return num;
