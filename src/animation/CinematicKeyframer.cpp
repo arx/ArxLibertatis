@@ -383,52 +383,6 @@ bool AddKeyLoad(C_KEY * key)
 
 	return true;
 }
-/*----------------------------------------------------------------------*/
-static bool DiffKey(C_KEY * key1, C_KEY * key2)
-{
-	return((key1->pos.x != key2->pos.x) || (key1->pos.y != key2->pos.y) || (key1->pos.z != key2->pos.z) ||
-	       (key1->angz != key2->angz) ||
-	       (key1->numbitmap != key2->numbitmap) ||
-	       (key1->fx != key2->fx) ||
-	       (key1->typeinterp != key2->typeinterp) ||
-	       (key1->color != key2->color) || (key1->colord != key2->colord) || (key1->colorf != key2->colorf) ||
-	       (key1->speed != key2->speed) ||
-	       (key1->idsound != key2->idsound) ||
-	       (key1->force != key2->force) ||
-	       (key1->light.pos.x != key2->light.pos.x) || (key1->light.pos.y != key2->light.pos.y) || (key1->light.pos.z != key2->light.pos.z) ||
-	       (key1->light.fallin != key2->light.fallin) || (key1->light.fallout != key2->light.fallout) ||
-	       (key1->light.r != key2->light.r) || (key1->light.g != key2->light.g) || (key1->light.b != key2->light.b) ||
-	       (key1->light.intensity != key2->light.intensity) || (key1->light.intensiternd != key2->light.intensiternd) ||
-	       (key1->posgrille.x != key2->posgrille.x) || (key1->posgrille.y != key2->posgrille.y) || (key1->posgrille.z != key2->posgrille.z) ||
-	       (key1->angzgrille != key2->angzgrille) ||
-	       (key1->speedtrack != key2->speedtrack)
-	      );
-}
-/*----------------------------------------------------------------------*/
-void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
-{
-	C_KEY	* k, *ksuiv;
-	int		num;
-
-	if (!CKTrack || !CKTrack->pause) return;
-
-	k = GetKey((int)CKTrack->currframe, &num);
-
-	if (!k) return;
-
-	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
-
-	if (DiffKey(k, key))
-	{
-		if (DiffKey(ksuiv, key))
-		{
-			key->frame = (int)CKTrack->currframe;
-			AddKey(key, writecolor, writecolord, writecolorf);
-			GereTrackNoPlay(c);
-		}
-	}
-}
-/*----------------------------------------------------------------------*/
 
 C_KEY * GetKey(int f, int * num)
 {

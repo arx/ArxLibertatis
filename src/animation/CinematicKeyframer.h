@@ -86,7 +86,6 @@ bool DeleteTrack();
 bool AllocTrack(int sf, int ef, float fps);
 bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
 bool AddKeyLoad(C_KEY * key);
-void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
 bool GereTrack(Cinematic * c, float fpscurr);
 
 void PlayTrack(Cinematic * c);
