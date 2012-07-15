@@ -74,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIE_CAMERA	Camera;
 bool			LeftButton, RightButton;
-int				 InsertKey;
 C_KEY		*	KeyCopy;
 int				LargeurRender, HauteurRender;
 bool			InRender;
@@ -121,7 +120,6 @@ Cinematic::Cinematic(int _w, int _h)
 	projectload = false; 
 	ti = tichoose = INTERP_BEZIER;
 	speedchoose = 1.f;
-	InsertKey = 0;
 	ShiftKey = false;
 	AltKey = false;
 
@@ -198,7 +196,6 @@ void Cinematic::OneTimeSceneReInit() {
 	key = NULL;
 	
 	projectload = false;
-	InsertKey = 0;
 	KeyCopy = NULL;
 	
 	LeftButton = RightButton = false;
@@ -223,7 +220,6 @@ void Cinematic::New() {
 	numbitmapsuiv = -1;
 	fx = -1;
 	key = NULL;
-	InsertKey = 0;
 	KeyCopy = NULL;
 	LeftButton = RightButton = false;
 
@@ -461,14 +457,6 @@ void Cinematic::Render(float FDIFF) {
 		GRenderer->Clear(Renderer::ColorBuffer);
 		GRenderer->BeginScene();
 		InRender = true;
-
-		if (InsertKey && m_bitmaps.size() > 0)
-		{
-			FillKeyTemp(&pos, angz, GetCurrentFrame(), numbitmap, fx, ti, colorchoose, colorchoosed, colorflashchoose, speedchoose, idsound, force, &light, &posgrille, angzgrille, speedtrack);
-			AddDiffKey(this, &KeyTemp, true, true, true);
-
-			InsertKey = 0;
-		}
 
 		GereTrack(this, FDIFF);
 
