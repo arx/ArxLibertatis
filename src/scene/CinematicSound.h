@@ -22,6 +22,7 @@
 
 #include "audio/AudioTypes.h"
 #include "io/resource/ResourcePath.h"
+#include "platform/Platform.h"
 
 #define MAX_SOUND 256
 
@@ -29,7 +30,7 @@ struct CinematicSound {
 	
 	CinematicSound();
 	
-	short active;
+	s16 active;
 	res::path file;
 	audio::SourceId handle;
 	
@@ -39,7 +40,7 @@ void DeleteAllSound();
 
 CinematicSound * GetFreeSound(int * num);
 bool DeleteFreeSound(int num);
-int AddSoundToList(const res::path & path);
+int AddSoundToList(const res::path & path, s16 language);
 bool PlaySoundKeyFramer(int id);
 void StopSoundKeyFramer(void);
 

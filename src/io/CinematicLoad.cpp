@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <cstring>
 #include <cstdlib>
+#include <iomanip>
 
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
@@ -221,13 +222,13 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug("nsounds " << nsounds);
 	for(int i = 0; i < nsounds; i++) {
 		
+		s16 language = C_KEY::French;
 		if(version >= CINEMATIC_VERSION_1_76) {
-			s16 il;
-			if(!safeGet(il, data, size)) {
+			if(!safeGet(language, data, size)) {
 				LogError << "error reading sound id";
 				return false;
 			}
-			LSoundChoose = il;
+			LSoundChoose = language;
 		}
 		
 		const char * str = safeGetString(data, size);
@@ -235,11 +236,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
+		LogDebug("sound " << i << ": \"" << str << '"');
 		res::path path = fixSoundPath(str);
+		LogDebug("adding sound " << i << " (0x" << std::hex << std::setfill('0')
+		         << std::setw(4) << language << std::dec << "): " << path);
 		
-		LogDebug("adding sound " << i << ": " << path);
-		
-		if(AddSoundToList(path) < 0) {
+		if(AddSoundToList(path, language) < 0) {
 			LogError << "AddSoundToList failed for " << path;
 		}
 	}

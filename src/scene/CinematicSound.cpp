@@ -53,7 +53,6 @@ CinematicSound TabSound[MAX_SOUND];
 int NbSound;
 
 extern char DirectoryChoose[];
-extern int	LSoundChoose;
 
 CinematicSound::CinematicSound() : active(0), file(), handle(audio::INVALID_ID) { }
 
@@ -90,13 +89,13 @@ void DeleteAllSound(void) {
 	}
 }
 
-static int findSound(const res::path & file) {
+static int findSound(const res::path & file, s16 language) {
 	
 	for(size_t i = 0; i < MAX_SOUND; i++) {
 		
 		const CinematicSound & cs = TabSound[i];
 		
-		if(!cs.active || (cs.active & 0xFF00) != LSoundChoose) {
+		if(!cs.active || (cs.active & 0xFF00) != language) {
 			continue;
 		}
 		
@@ -109,9 +108,9 @@ static int findSound(const res::path & file) {
 	return -1;
 }
 
-int AddSoundToList(const res::path & path) {
+int AddSoundToList(const res::path & path, s16 language) {
 	
-	int num = findSound(path);
+	int num = findSound(path, language);
 	if(num >= 0) {
 		return num;
 	}
@@ -123,7 +122,7 @@ int AddSoundToList(const res::path & path) {
 	
 	cs->file = path;
 	
-	int iActive = 1 | LSoundChoose;
+	int iActive = 1 | language;
 	
 	cs->active = checked_range_cast<short>(iActive);
 	
