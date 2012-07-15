@@ -43,23 +43,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/CinematicSound.h"
 
+#include <iomanip>
+
+#include "audio/AudioTypes.h"
 #include "graphics/Math.h"
+#include "io/log/Logger.h"
 #include "io/resource/ResourcePath.h"
 #include "scene/GameSound.h"
 
 using std::string;
 
-CinematicSound TabSound[MAX_SOUND];
+namespace {
 
-extern char DirectoryChoose[];
-
-CinematicSound::CinematicSound() : active(0), file(), handle(audio::INVALID_ID) { }
-
-CinematicSound * GetFreeSound(int * num) {
+struct CinematicSound {
 	
-	for(size_t i = 0; i < MAX_SOUND; i++) {
-		if(!TabSound[i].active) {
-			*num = i;
+	CinematicSound();
+	
+	bool exists;
+	s8 id;
+	res::path file;
+	audio::SourceId handle;
+	
+};
+
+CinematicSound TabSound[256];
+
+CinematicSound::CinematicSound() : exists(false), id(0), file(), handle(audio::INVALID_ID) { }
+
+} // anonymous namespace
+
+static CinematicSound * GetFreeSound() {
+	
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+		if(!TabSound[i].exists) {
 			return &TabSound[i];
 		}
 	}
@@ -67,79 +83,75 @@ CinematicSound * GetFreeSound(int * num) {
 	return NULL;
 }
 
-bool DeleteFreeSound(int num) {
+static bool DeleteFreeSound(int num) {
 	
-	if(!TabSound[num].active) {
+	if(!TabSound[num].exists) {
 		return false;
 	}
 	
 	TabSound[num].file.clear();
 	
-	TabSound[num].active = 0;
+	TabSound[num].exists = false;
 	
 	return true;
 }
 
 void DeleteAllSound(void) {
 	
-	for(size_t i = 0; i < MAX_SOUND; i++) {
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
 		DeleteFreeSound(i);
 	}
 }
 
-static int findSound(const res::path & file, s16 id) {
+static int findSound(const res::path & file, s8 id) {
 	
-	for(size_t i = 0; i < MAX_SOUND; i++) {
-		
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
 		const CinematicSound & cs = TabSound[i];
-		
-		if(!cs.active || (cs.active & 0xFF00) != id) {
-			continue;
-		}
-		
-		if(cs.file == file) {
+		if(cs.exists && cs.id == id && cs.file == file) {
 			return i;
 		}
-		
 	}
 	
 	return -1;
 }
 
-int AddSoundToList(const res::path & path, s16 id) {
+void AddSoundToList(const res::path & path, s8 id, bool reuse) {
 	
-	int num = findSound(path, id);
-	if(num >= 0) {
-		return num;
+	if(reuse) {
+		if(findSound(path, id) >= 0) {
+			LogWarning << "reusing sound slot for sound " << path << " ("  << int(id) <<  ')';
+			return;
+		}
 	}
 	
-	CinematicSound * cs = GetFreeSound(&num);
+	CinematicSound * cs = GetFreeSound();
 	if(!cs) {
-		return -1;
+		LogError << "AddSoundToList failed for " << path;
+		return;
 	}
 	
 	cs->file = path;
-	cs->active = id | s16(1);
-	
-	return num;
+	cs->id = id;
+	cs->exists = true;
 }
 
-bool PlaySoundKeyFramer(int id) {
+bool PlaySoundKeyFramer(int index) {
 	
-	if(!TabSound[id].active) {
+	if(index < 0 || size_t(index) >= ARRAY_SIZE(TabSound) || !TabSound[index].exists) {
 		return false;
 	}
 	
-	TabSound[id].handle = ARX_SOUND_PlayCinematic(TabSound[id].file);
+	TabSound[index].handle = ARX_SOUND_PlayCinematic(TabSound[index].file);
 	
 	return true;
 }
 
 void StopSoundKeyFramer() {
 	
-	for(size_t i = 0; i < MAX_SOUND; i++) {
-		if(TabSound[i].active) {
-			ARX_SOUND_Stop(TabSound[i].handle), TabSound[i].handle = audio::INVALID_ID;
+	for(size_t i = 0; i < ARRAY_SIZE(TabSound); i++) {
+		if(TabSound[i].exists) {
+			ARX_SOUND_Stop(TabSound[i].handle);
+			TabSound[i].handle = audio::INVALID_ID;
 		}
 	}
 }

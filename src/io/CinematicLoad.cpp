@@ -219,12 +219,15 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug("nsounds " << nsounds);
 	for(int i = 0; i < nsounds; i++) {
 		
-		s16 id = 0;
+		bool reuse = true;
+		s8 id = 0;
 		if(version >= CINEMATIC_VERSION_1_76) {
-			if(!safeGet(id, data, size)) {
+			u8 noreuse;
+			if(!safeGet(noreuse, data, size) || !safeGet(id, data, size)) {
 				LogError << "error reading sound id";
 				return false;
 			}
+			reuse = (noreuse == 0); // TODO see if this is actually ever false
 		}
 		
 		const char * str = safeGetString(data, size);
@@ -234,12 +237,9 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		}
 		LogDebug("sound " << i << ": \"" << str << '"');
 		res::path path = fixSoundPath(str);
-		LogDebug("adding sound " << i << " (0x" << std::hex << std::setfill('0')
-		         << std::setw(4) << id << std::dec << "): " << path);
+		LogDebug("adding sound " << i << ": " << path << " (" << int(id) << ')');
 		
-		if(AddSoundToList(path, id) < 0) {
-			LogError << "AddSoundToList failed for " << path;
-		}
+		AddSoundToList(path, id, reuse);
 	}
 	
 	// Load track and keys.
