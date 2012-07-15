@@ -95,7 +95,6 @@ float			OldSpeedFlashBlanc;
 float			OldSpeedSpecialFade;
 int				OldColorFlashBlanc;
 int				OldFxSpecialFade;
-int				LSoundChoose;
 
 /*---------------------------------------------------------------------------------*/
  
@@ -148,7 +147,7 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 	KeyTemp.color = color;
 	KeyTemp.colord = colord;
 	KeyTemp.colorf = colorf;
-	KeyTemp.idsound[LSoundChoose>>8] = idsound;
+	KeyTemp.idsound[C_KEY::English] = idsound;
 	KeyTemp.speed = speed;
 	KeyTemp.posgrille = *posgrille;
 	KeyTemp.angzgrille = azgrille;
@@ -212,8 +211,6 @@ void Cinematic::OneTimeSceneReInit() {
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
 	
-	LSoundChoose = C_KEY::English << 8;
-	
 	m_flIntensityRND = 0.f;
 	
 }
@@ -247,8 +244,6 @@ void Cinematic::New() {
 
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
-
-	LSoundChoose = C_KEY::English << 8;
 	
 }
 

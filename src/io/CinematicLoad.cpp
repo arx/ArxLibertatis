@@ -71,7 +71,6 @@ using std::strcmp;
 using std::free;
 
 extern C_KEY KeyTemp;
-extern int LSoundChoose;
 
 static res::path fixTexturePath(const string & path) {
 	
@@ -220,7 +219,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug("nsounds " << nsounds);
 	for(int i = 0; i < nsounds; i++) {
 		
-		s16 id = C_KEY::French;
+		s16 id = 0;
 		if(version >= CINEMATIC_VERSION_1_76) {
 			if(!safeGet(id, data, size)) {
 				LogError << "error reading sound id";
@@ -348,8 +347,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	GereTrackNoPlay(c);
 	c->projectload = true;
-	
-	LSoundChoose = C_KEY::English << 8;
 	
 	LogDebug("loaded cinematic");
 	
