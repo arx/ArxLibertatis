@@ -147,7 +147,7 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 	KeyTemp.color = color;
 	KeyTemp.colord = colord;
 	KeyTemp.colorf = colorf;
-	KeyTemp.idsound[C_KEY::English] = idsound;
+	KeyTemp.idsound = idsound;
 	KeyTemp.speed = speed;
 	KeyTemp.posgrille = *posgrille;
 	KeyTemp.angzgrille = azgrille;

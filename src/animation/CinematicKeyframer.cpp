@@ -312,7 +312,9 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	if (writecolorf) k->colorf = key->colorf;
 
-	if (key->idsound[C_KEY::English] > -2) k->idsound[C_KEY::English] = key->idsound[C_KEY::English];
+	if(key->idsound > -2) {
+		k->idsound = key->idsound;
+	}
 
 	if (key->force > -2) k->force = key->force;
 
@@ -372,8 +374,7 @@ bool AddKeyLoad(C_KEY * key)
 	k->pos = key->pos;
 	k->angz = key->angz;
 	k->typeinterp = key->typeinterp;
-
-	memcpy(k->idsound, key->idsound, 16 * 4);
+	k->idsound = key->idsound;
 	k->force = key->force;
 	k->light = key->light;
 	k->posgrille = key->posgrille;
@@ -392,7 +393,7 @@ static bool DiffKey(C_KEY * key1, C_KEY * key2)
 	       (key1->typeinterp != key2->typeinterp) ||
 	       (key1->color != key2->color) || (key1->colord != key2->colord) || (key1->colorf != key2->colorf) ||
 	       (key1->speed != key2->speed) ||
-	       (key1->idsound[C_KEY::English] != key2->idsound[C_KEY::English]) ||
+	       (key1->idsound != key2->idsound) ||
 	       (key1->force != key2->force) ||
 	       (key1->light.pos.x != key2->light.pos.x) || (key1->light.pos.y != key2->light.pos.y) || (key1->light.pos.z != key2->light.pos.z) ||
 	       (key1->light.fallin != key2->light.fallin) || (key1->light.fallout != key2->light.fallout) ||
@@ -501,7 +502,7 @@ bool GereTrack(Cinematic * c, float fpscurr)
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
 	c->speed			= k->speed;
-	c->idsound			= k->idsound[C_KEY::English];
+	c->idsound			= k->idsound;
 	c->force			= k->force;
 
 	if ((k->fx & 0xFF000000) == FX_LIGHT)
@@ -734,7 +735,7 @@ bool GereTrackNoPlay(Cinematic * c)
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
 	c->speed			= k->speed;
-	c->idsound			= k->idsound[C_KEY::English];
+	c->idsound			= k->idsound;
 	c->force			= k->force;
 
 	if ((k->fx & 0xFF000000) == FX_LIGHT)

@@ -53,13 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct C_KEY {
 	
-	enum Language {
-		French = 0,
-		German = 1,
-		Spanish = 2,
-		English = 3
-	};
-	
 	int frame;
 	int numbitmap;
 	int fx; // associated fx
@@ -74,7 +67,8 @@ struct C_KEY {
 	Vec3f posgrille;
 	float angzgrille;
 	float speedtrack;
-	int idsound[16]; // 16 languages max.
+	
+	int idsound;
 	
 };
 

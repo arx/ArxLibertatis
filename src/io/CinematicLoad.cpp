@@ -255,9 +255,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	for(int i = 0; i < t.nbkey; i++) {
 		
 		C_KEY k;
+		int idsound;
 		
 		LogDebug("loading key " << i << " " << size);
-				
+		
 		if(version <= CINEMATIC_VERSION_1_75) {
 			
 			C_KEY_1_75 k175;
@@ -277,10 +278,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speed = k175.speed;
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
-			k.idsound[0] = k175.idsound;
-			for(size_t i = 1; i < 16; i++) {
-				k.idsound[i] = -1;
-			}
+			idsound = k175.idsound;
+			k.idsound = -1;
 			k.light = k175.light;
 			k.posgrille = k175.posgrille;
 			k.angzgrille = k175.angzgrille;
@@ -309,7 +308,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.posgrille = k176.posgrille;
 			k.angzgrille = k176.angzgrille;
 			k.speedtrack = k176.speedtrack;
-			copy(k176.idsound, k176.idsound + 16, k.idsound);
+			idsound = k176.idsound[0]; // 0 was the language code for 'French'
+			k.idsound = k176.idsound[3]; // 3 was the language code for 'English'
 			
 		}
 		
@@ -317,8 +317,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.force = 1;
 		}
 		
-		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, -1, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
-		copy(k.idsound, k.idsound + 16, KeyTemp.idsound);
+		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, k.idsound, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
 		AddKeyLoad(&KeyTemp);
 		
 		if(i == 0) {
@@ -331,7 +330,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			c->colord = c->colorchoosed = k.colord;
 			c->colorflash = c->colorflashchoose = k.colorf;
 			c->speed = c->speedchoose = k.speed;
-			c->idsound = k.idsound[C_KEY::French];
+			c->idsound = idsound;
 			c->force = k.force;
 			c->light = c->lightchoose = k.light;
 			c->posgrille = k.posgrille;
