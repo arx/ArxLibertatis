@@ -115,7 +115,7 @@ void DX9Texture2D::Copy_A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD i
 {
 	ARX_UNUSED(dstPixelSize);
 	ARX_UNUSED(srcPixelSize);
-
+	
 	DWORD srcPitchIncrement = srcPitch - imageWidth;
 	DWORD dstPitchIncrement = dstPitch - imageWidth;
 	
@@ -124,12 +124,12 @@ void DX9Texture2D::Copy_A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD i
 			for (DWORD y = 0; y < imageHeight; y++) {
 				// D3DFMT_A8 <- Format_A8
 				memcpy(pDst, pSrc, imageWidth);
-		
+				
 				pSrc += imageWidth;
 				pSrc += srcPitchIncrement;
-
+				
 				pDst += imageWidth;
-				pDst += dstPitchIncrement;				
+				pDst += dstPitchIncrement;
 			}
 		} else {
 			memcpy(pDst, pSrc, imageWidth*imageHeight);
