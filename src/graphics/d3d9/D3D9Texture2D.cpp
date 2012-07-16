@@ -35,17 +35,17 @@ using std::min;
 extern LPDIRECT3DDEVICE9 GD3D9Device;
 
 D3DFORMAT ARXToDX9InternalFormat[] = {
-	D3DFMT_L8,			// Format_L8,
-	D3DFMT_A8,			// Format_A8,
-	D3DFMT_A8L8,		// Format_L8A8,
-	D3DFMT_X8B8G8R8,	// Format_R8G8B8,
-	D3DFMT_X8B8G8R8,	// Format_B8G8R8,
-	D3DFMT_A8B8G8R8,	// Format_R8G8B8A8,
-	D3DFMT_A8B8G8R8,	// Format_B8G8R8A8,
-	D3DFMT_DXT1,		// Format_DXT1,
-	D3DFMT_DXT3,		// Format_DXT3,
-	D3DFMT_DXT5,		// Format_DXT5,
-	D3DFMT_UNKNOWN,		// Format_Unknown,
+	D3DFMT_L8,          // Format_L8,
+	D3DFMT_A8,          // Format_A8,
+	D3DFMT_A8L8,        // Format_L8A8,
+	D3DFMT_R8G8B8,      // Format_R8G8B8,
+	D3DFMT_R8G8B8,      // Format_B8G8R8,
+	D3DFMT_A8B8G8R8,    // Format_R8G8B8A8,
+	D3DFMT_A8R8G8B8,    // Format_B8G8R8A8,
+	D3DFMT_DXT1,        // Format_DXT1,
+	D3DFMT_DXT3,        // Format_DXT3,
+	D3DFMT_DXT5,        // Format_DXT5,
+	D3DFMT_UNKNOWN,     // Format_Unknown,
 };
 
 DX9Texture2D::DX9Texture2D()
@@ -81,85 +81,6 @@ bool DX9Texture2D::Create()
 	storedSize = Vec2i(surfaceDesc.Width, surfaceDesc.Height);
 
 	return true;
-}
-
-void DX9Texture2D::Copy_L8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
-{
-	ARX_UNUSED(dstPixelSize);
-	ARX_UNUSED(srcPixelSize);
-
-	DWORD srcPitchIncrement = srcPitch - imageWidth;
-	DWORD dstPitchIncrement = dstPitch - imageWidth;
-	
-	if(d3dFormat == D3DFMT_L8) {
-		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
-			for (DWORD y = 0; y < imageHeight; y++) {
-				// D3DFMT_L8 <- Format_L8
-				memcpy(pDst, pSrc, imageWidth);
-		
-				pSrc += imageWidth;
-				pDst += imageWidth;
-
-				pSrc += srcPitchIncrement;
-				pDst += dstPitchIncrement;
-			}
-		} else {
-			memcpy(pDst, pSrc, imageWidth*imageHeight);
-		}
-	} else {
-		LogError << "No conversion possible from Image::Format_L8 to D3D format #" << d3dFormat;
-	}
-}
-
-void DX9Texture2D::Copy_A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
-{
-	ARX_UNUSED(dstPixelSize);
-	ARX_UNUSED(srcPixelSize);
-	
-	DWORD srcPitchIncrement = srcPitch - imageWidth;
-	DWORD dstPitchIncrement = dstPitch - imageWidth;
-	
-	if(d3dFormat == D3DFMT_A8) {
-		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
-			for (DWORD y = 0; y < imageHeight; y++) {
-				// D3DFMT_A8 <- Format_A8
-				memcpy(pDst, pSrc, imageWidth);
-				
-				pSrc += imageWidth;
-				pSrc += srcPitchIncrement;
-				
-				pDst += imageWidth;
-				pDst += dstPitchIncrement;
-			}
-		} else {
-			memcpy(pDst, pSrc, imageWidth*imageHeight);
-		}
-	} else {
-		LogError << "No conversion possible from Image::Format_A8 to D3D format #" << d3dFormat;
-	}
-}
-
-void DX9Texture2D::Copy_L8A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
-{
-	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
-	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;	
-
-	if(d3dFormat == D3DFMT_A8L8) {
-		for (DWORD y = 0; y < imageHeight; y++) {
-			for (DWORD x = 0; x < imageWidth; x++) {
-				// D3DFMT_A8L8 <- Format_L8A8
-				pDst[0] = pSrc[1];
-				pDst[1] = pSrc[0];
-
-				pSrc += srcPixelSize;
-				pDst += dstPixelSize;
-			}
-			pSrc += srcPitchIncrement;
-			pDst += dstPitchIncrement;
-		}
-	} else {
-		LogError << "No conversion possible from Image::Format_L8A8 to D3D format #" << d3dFormat;
-	}
 }
 
 void DX9Texture2D::Copy_R8G8B8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
@@ -205,144 +126,21 @@ void DX9Texture2D::Copy_R8G8B8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWO
 	}
 }
 
-void DX9Texture2D::Copy_B8G8R8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
-{
-	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
-	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
-	
-	switch(d3dFormat) {
-	case D3DFMT_X8B8G8R8:
-		for (DWORD y = 0; y < imageHeight; y++) {
-			for (DWORD x = 0; x < imageWidth; x++) {
-				// D3DFMT_X8B8G8R8 <- Format_B8G8R8
-				pDst[0] = pSrc[2];
-				pDst[1] = pSrc[1];
-				pDst[2] = pSrc[0];
-
-				pSrc += srcPixelSize;
-				pDst += dstPixelSize;
-			}
-			pSrc += srcPitchIncrement;
-			pDst += dstPitchIncrement;			
-		}
-		break;
-
-	case D3DFMT_X8R8G8B8:
-		for (DWORD y = 0; y < imageHeight; y++) {
-			for (DWORD x = 0; x < imageWidth; x++) {
-				// D3DFMT_X8R8G8B8 <- Format_B8G8R8
-				pDst[0] = pSrc[0];
-				pDst[1] = pSrc[1];
-				pDst[2] = pSrc[2];
-
-				pSrc += srcPixelSize;
-				pDst += dstPixelSize;
-			}
-			pSrc += srcPitchIncrement;
-			pDst += dstPitchIncrement;			
-		}
-		break;
-
-	default:
-		LogError << "No conversion possible from Image::Format_B8G8R8 to D3D format #" << d3dFormat;
-	}
-}
-
-void DX9Texture2D::Copy_R8G8B8A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
-{
-	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
-	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
-	
-	switch(d3dFormat) {
-	case D3DFMT_A8B8G8R8:
-		// D3DFMT_A8B8G8R8 <- Format_R8G8B8A8
-		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
-			for (DWORD y = 0; y < imageHeight; y++) {
-				memcpy(pDst, pSrc, imageWidth*dstPixelSize);
-		
-				pSrc += imageWidth*srcPixelSize;
-				pSrc += srcPitchIncrement;
-
-				pDst += imageWidth*dstPixelSize;
-				pDst += dstPitchIncrement;				
-			}
-		} else {
-			memcpy(pDst, pSrc, imageWidth*imageHeight*dstPixelSize);
-		}
-		break;
-
-	case D3DFMT_A8R8G8B8:
-		for (DWORD y = 0; y < imageHeight; y++) {
-			for (DWORD x = 0; x < imageWidth; x++) {
-				// D3DFMT_A8R8G8B8 <- Format_R8G8B8A8
-				pDst[0] = pSrc[2];
-				pDst[1] = pSrc[1];
-				pDst[2] = pSrc[0];
-				pDst[3] = pSrc[3];
-
-				pSrc += srcPixelSize;
-				pDst += dstPixelSize;
-			}
-			pSrc += srcPitchIncrement;
-			pDst += dstPitchIncrement;			
-		}
-		break;
-
-	default:
-		LogError << "No conversion possible from Image::Format_R8G8B8A8 to D3D format #" << d3dFormat;
-	}
-}
-
-void DX9Texture2D::Copy_B8G8R8A8(BYTE* __restrict pDst, BYTE* __restrict pSrc, DWORD imageWidth, DWORD imageHeight, D3DFORMAT d3dFormat, DWORD dstPixelSize, DWORD srcPixelSize, DWORD dstPitch, DWORD srcPitch)
-{
-	DWORD srcPitchIncrement = srcPitch - imageWidth * srcPixelSize;
-	DWORD dstPitchIncrement = dstPitch - imageWidth * dstPixelSize;
-	
-	switch(d3dFormat) {
-	case D3DFMT_A8B8G8R8:
-		for (DWORD y = 0; y < imageHeight; y++) {
-			for (DWORD x = 0; x < imageWidth; x++) {
-				// D3DFMT_A8B8G8R8 <- Format_B8G8R8A8
-				pDst[0] = pSrc[2];
-				pDst[1] = pSrc[1];
-				pDst[2] = pSrc[0];
-				pDst[3] = pSrc[3];
-
-				pSrc += srcPixelSize;
-				pDst += dstPixelSize;
-			}
-			pSrc += srcPitchIncrement;
-			pDst += dstPitchIncrement;			
-		}
-		break;
-
-	case D3DFMT_A8R8G8B8:
-		// D3DFMT_A8R8G8B8 <- Format_B8G8R8A8
-		if(srcPitchIncrement != 0 || dstPitchIncrement != 0) {
-			for (DWORD y = 0; y < imageHeight; y++) {
-				memcpy(pDst, pSrc, imageWidth*dstPixelSize);
-		
-				pSrc += imageWidth*srcPixelSize;
-				pSrc += srcPitchIncrement;
-
-				pDst += imageWidth*dstPixelSize;
-				pDst += dstPitchIncrement;				
-			}
-		} else {
-			memcpy(pDst, pSrc, imageWidth*imageHeight*dstPixelSize);
-		}
-		break;
-
-	default:
-		LogError << "No conversion possible from Image::Format_B8G8R8A8 to D3D format #" << d3dFormat;
-	}
-}
-
 void DX9Texture2D::Upload() 
 {
 	arx_assert(m_pTexture != 0);
 
 	HRESULT hr;
+
+	if(mFormat == Image::Format_R8G8B8) {
+		bool converted = mImage.ConvertTo(Image::Format_B8G8R8);
+		if(!converted) {
+			LogError << "Upload failed because of invalid source format.";
+			return;
+		} else {
+			mFormat = mImage.GetFormat();
+		}
+	}
 
 	LPDIRECT3DSURFACE9 pSurface;
 	hr = m_pTexture->GetSurfaceLevel(0, &pSurface);
@@ -351,64 +149,17 @@ void DX9Texture2D::Upload()
 		return;
 	}
 
-	D3DLOCKED_RECT lockedRect;
-	hr = pSurface->LockRect(&lockedRect, 0, 0);
-	if( SUCCEEDED(hr) ) {
-
-		D3DSURFACE_DESC surfaceDesc;
-		pSurface->GetDesc(&surfaceDesc);
-
-		BYTE* pSrc = (BYTE*)mImage.GetData();
-		
-		DWORD imageWidth = mImage.GetWidth();
-		DWORD imageHeight = mImage.GetHeight();
-
-		arx_assert(imageWidth == surfaceDesc.Width);
-		arx_assert(imageHeight == surfaceDesc.Height);
-
-		switch(mFormat)
-		{
-		case Image::Format_L8:
-			Copy_L8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 1, 1, lockedRect.Pitch, imageWidth);
-			break;
-
-		case Image::Format_A8:
-			Copy_A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 1, 1, lockedRect.Pitch, imageWidth);
-			break;
-
-		case Image::Format_L8A8:
-			Copy_L8A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 2, 2, lockedRect.Pitch, imageWidth * 2);
-			break;
-
-		case Image::Format_R8G8B8:
-			Copy_R8G8B8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 3, lockedRect.Pitch, imageWidth * 3);
-			break;
-
-		case Image::Format_B8G8R8:
-			Copy_B8G8R8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 3, lockedRect.Pitch, imageWidth * 3);
-			break;
-
-		case Image::Format_R8G8B8A8:
-			Copy_R8G8B8A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 4, lockedRect.Pitch, imageWidth * 4);
-			break;
-
-		case Image::Format_B8G8R8A8:
-			Copy_B8G8R8A8((BYTE*)lockedRect.pBits, pSrc, imageWidth, imageHeight, surfaceDesc.Format, 4, 4, lockedRect.Pitch, imageWidth * 4);
-			break;
-
-		default:
-			LogError << "CopyData: unsupported source format" << mFormat;
-		}
-			
-		pSurface->UnlockRect();	
-	} else {
-		LogError << "IDirect3DSurface9::LockRect() failed: " << hr;
-		pSurface->Release();
+	BYTE* pSrc = (BYTE*)mImage.GetData();
+	RECT srcRect;
+	SetRect(&srcRect, 0, 0, mImage.GetWidth(), mImage.GetHeight());
+	hr = D3DXLoadSurfaceFromMemory(pSurface, 0, 0, pSrc, ARXToDX9InternalFormat[mFormat], mImage.GetWidth() * Image::GetSize(mFormat), 0, &srcRect, D3DX_FILTER_NONE, 0);
+	if(FAILED(hr)) {
+		LogError << "D3DXLoadSurfaceFromMemory() failed." << hr;
 		return;
 	}
-
+	
 	if(hasMipmaps()) {
-		hr = D3DXFilterTexture(m_pTexture, 0, 0, D3DX_DEFAULT);	
+		hr = D3DXFilterTexture(m_pTexture, 0, 0, D3DX_DEFAULT);
 		if( FAILED(hr) )
 			LogError << "D3DXFilterTexture() failed: " << hr;
 	}

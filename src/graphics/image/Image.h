@@ -55,6 +55,9 @@ public:
 	bool LoadFromMemory(void * pData, unsigned int size);
 	
 	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);
+
+	// Convert 
+	bool ConvertTo(Format format);
 	
 	// reset to fresh constructor state
 	void Reset();

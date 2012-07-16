@@ -331,6 +331,39 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	}
 }
 
+
+bool Image::ConvertTo(Image::Format format) {
+	arx_assert_msg( !IsCompressed(), "[Image::ConvertTo] Conversion of compressed images not supported yet!" );
+	arx_assert_msg( !IsVolume(), "[Image::ConvertTo] Conversion of volume images not supported yet!" );
+	arx_assert_msg( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
+	if(IsCompressed() || IsVolume() || GetSize(mFormat) != GetSize(format))
+		return false;
+
+	if(mFormat == format)
+		return true;
+
+	unsigned int numComponents = GetSize(mFormat);
+	unsigned int size = mWidth * mHeight;
+	unsigned char * data = mData;
+
+	switch(format) {
+	case Format_R8G8B8:
+	case Format_B8G8R8:
+	case Format_R8G8B8A8:
+	case Format_B8G8R8A8:
+		for(unsigned int i = 0; i < size; i++, data += numComponents) {
+			std::swap(data[0], data[2]);
+		}
+		break;
+	default:
+		arx_error_msg("[Image::ConvertTo] Unsupported conversion!" );
+		return false;
+	};
+
+	mFormat = format;
+	return true;
+}
+
 // creates an image of the desired size and rescales the source into it
 // performs only nearest-neighbour interpolation of the image
 // supports only RGB format
