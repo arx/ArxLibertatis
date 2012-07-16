@@ -365,7 +365,7 @@ bool TextureContainer::CreateHalo()
 			im.SetAlpha(copy, true);
 						
 			// adejr: assertion here seems to fail often, i don't understand why?
-			TextureHalo->m_pTexture->Restore();
+			TextureHalo->m_pTexture->Upload();
 		}
 	}
 
