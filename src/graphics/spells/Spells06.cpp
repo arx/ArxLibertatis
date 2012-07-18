@@ -73,6 +73,8 @@ extern ParticleManager * pParticleManager;
 //-----------------------------------------------------------------------------
 CCreateField::CCreateField() {
 	
+	fwrap = 0.f;
+	
 	eSrc.x = 0;
 	eSrc.y = 0;
 	eSrc.z = 0;
@@ -301,16 +303,9 @@ float CCreateField::Render()
 	t[3].p.y = y - 250 * ysize;
 	t[3].p.z = z + smul;
 
-	fwrap -= 5.0f;
-
-	if (fwrap > 360)
-	{
-		fwrap = 0;
-	}
-
-	if (fwrap < 0)
-	{
-		fwrap = 360;
+	fwrap -= 5.0f; // TODO ignores the frame delay
+	while(fwrap < 0) {
+		fwrap += 360;
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
