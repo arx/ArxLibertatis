@@ -315,8 +315,13 @@ TextureContainer * TextureContainer::LoadUI(const res::path & strName, TCFlags f
 	return Load(strName, flags | UI);
 }
 
-bool TextureContainer::CreateHalo()
-{
+bool TextureContainer::CreateHalo() {
+	
+	Image srcImage;
+	if(!srcImage.LoadFromFile(m_pTexture->getFileName())) {
+		return false;
+	}
+	
 	// Allocate and add the texture to the linked list of textures;
 	res::path haloName = m_texName.string();
 	haloName.append("_halo");
@@ -324,51 +329,51 @@ bool TextureContainer::CreateHalo()
 	if(!TextureHalo) {
 		return false;
 	}
-
+	
 	TextureHalo->m_pTexture = GRenderer->CreateTexture2D();
-	if(TextureHalo->m_pTexture)
-	{
-		Image srcImage;
-		srcImage.LoadFromFile(m_pTexture->getFileName());
-		
-		bool bLoaded = TextureHalo->m_pTexture->Init(m_dwWidth + HALO_RADIUS*2, m_dwHeight + HALO_RADIUS*2, srcImage.GetFormat());
-		if(bLoaded)
-		{
-			TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
-			TextureHalo->m_dwHeight = TextureHalo->m_pTexture->getSize().y;
-			
-			Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
-			TextureHalo->uv = Vec2f(float(TextureHalo->m_dwWidth) / storedSize.x, float(TextureHalo->m_dwHeight) / storedSize.y);
-			TextureHalo->hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
-
-			Image &im = TextureHalo->m_pTexture->GetImage();
-
-			// Center the image, offset by radius to contain the edges of the blur
-			im.Clear();
-			im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
-
-			// Keep a copy of the image at this stage, in order to apply proper alpha masking later
-			Image copy = im;			
-			
-			// Convert image to grayscale, and turn it to black & white
-			im.ToGrayscale(Image::Format_L8A8);
-			im.ApplyThreshold(0, ~0);
-
-			// Blur the image
-			im.Blur(HALO_RADIUS);
-
-			// Increase the gamma of the blur outline
-			im.QuakeGamma(10.0f);
-		
-			// Set alpha to inverse of original image alpha
-			copy.ApplyColorKeyToAlpha();
-			im.SetAlpha(copy, true);
-						
-			// adejr: assertion here seems to fail often, i don't understand why?
-			TextureHalo->m_pTexture->Upload();
-		}
+	if(!TextureHalo->m_pTexture) {
+		return true;
 	}
+	
+	Image im;
+	
+	int width = m_dwWidth + HALO_RADIUS * 2;
+	int height = m_dwHeight + HALO_RADIUS * 2;
+	im.Create(width, height, srcImage.GetFormat());
+	
+	// Center the image, offset by radius to contain the edges of the blur
+	im.Clear();
+	im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
+	
+	// Keep a copy of the image at this stage, in order to apply proper alpha masking later
+	Image copy = im;
+	
+	// Convert image to grayscale, and turn it to black & white
+	im.ToGrayscale(Image::Format_L8A8);
+	im.ApplyThreshold(0, ~0);
 
+	// Blur the image
+	im.Blur(HALO_RADIUS);
+
+	// Increase the gamma of the blur outline
+	im.QuakeGamma(10.0f);
+
+	// Set alpha to inverse of original image alpha
+	copy.ApplyColorKeyToAlpha();
+	im.SetAlpha(copy, true);
+	
+	TextureHalo->m_pTexture->Init(im, 0);
+	
+	TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
+	TextureHalo->m_dwHeight = TextureHalo->m_pTexture->getSize().y;
+	
+	Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
+	TextureHalo->uv = Vec2f(
+		float(TextureHalo->m_dwWidth) / storedSize.x,
+		float(TextureHalo->m_dwHeight) / storedSize.y
+	);
+	TextureHalo->hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
+	
 	return true;
 }
 
