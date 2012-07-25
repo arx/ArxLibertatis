@@ -101,7 +101,9 @@ struct KeySetting {
 	unsigned interval; // Interval between updates (On Start = 0)
 	int tupdate; // Last update time
 	
-	KeySetting() : flags(0), min(0), max(0), from(0), to(0), cur(0), interval(0), tupdate(0) { }
+	KeySetting()
+		: flags(0), min(0), max(0), from(0), to(0), cur(0), interval(0), tupdate(0)
+		{ }
 	
 	bool load(PakFileHandle * file) {
 		
@@ -195,7 +197,8 @@ struct TrackKey {
 		   !z.load(file)) {
 			return false;
 		}
-		start = _start, loop = _loop + 1, delay_min = _delay_min, delay_max = _delay_max;
+		start = _start, loop = _loop + 1;
+		delay_min = _delay_min, delay_max = _delay_max;
 		
 		return true;
 	}
@@ -251,7 +254,8 @@ struct Ambiance::Track : public Source::Callback {
 	}
 	
 	bool operator==(const std::string & str) const {
-		return (name == str || _sample[Backend::getSampleId(s_id)]->getName() == str);
+		return (name == str
+		        || _sample[Backend::getSampleId(s_id)]->getName() == str);
 	}
 	
 private:
@@ -272,8 +276,8 @@ private:
 	size_t loopc; // How often the sample still needs to loop.
 	size_t queued; // How many loop counts are already queued.
 	
-	explicit Track(Ambiance * _ambiance) : s_id(INVALID_ID), ambiance(_ambiance), flags(0),
-	                                       loopc(0), queued(0) { }
+	explicit Track(Ambiance * _ambiance)
+		: s_id(INVALID_ID), ambiance(_ambiance), flags(0), loopc(0), queued(0) { }
 	
 	void keyPlay();
 	
@@ -345,12 +349,15 @@ void Ambiance::Track::keyPlay() {
 		if(!key_i->delay_min && !key_i->delay_max) {
 			size_t toqueue = loopc - queued;
 			queued += toqueue;
-			LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName() << " " << toqueue << " -> " << queued << " / " << loopc);
+			LogDebug("ambiance " << ambiance->getName() << ": playing "
+			         << source->getSample()->getName() << " " << toqueue
+			         << " -> " << queued << " / " << loopc);
 			source->play(toqueue);
 			arx_assert(loopc >= queued);
 		} else {
-			LogDebug("ambiance " << ambiance->getName() << ": playing " << source->getSample()->getName();
-			source->play());
+			LogDebug("ambiance " << ambiance->getName() << ": playing "
+			         << source->getSample()->getName());
+			source->play();
 			queued++;
 		}
 	}
@@ -360,7 +367,8 @@ void Ambiance::Track::keyPlay() {
 
 void Ambiance::Track::onSampleStart(Source & source) {
 	
-	LogDebug("ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " started");
+	LogDebug("ambiance " << ambiance->getName() << ": "
+	         << source.getSample()->getName() << " started");
 	
 	if(flags & Ambiance::Track::PREFETCHED) {
 		flags &= ~Ambiance::Track::PREFETCHED;
@@ -379,8 +387,10 @@ void Ambiance::Track::onSampleStart(Source & source) {
 		if(keyPrefetch == keys.end()) {
 			keyPrefetch = keys.begin();
 		}
-		if(!keyPrefetch->start && !keyPrefetch->delay_min && !keyPrefetch->delay_max) {
-			LogDebug("ambiance " << ambiance->getName() << ": prefetching " << source.getSample()->getName() << " " << keyPrefetch->loop);
+		if(!keyPrefetch->start && !keyPrefetch->delay_min
+		   && !keyPrefetch->delay_max) {
+			LogDebug("ambiance " << ambiance->getName() << ": prefetching "
+			         << source.getSample()->getName() << " " << keyPrefetch->loop);
 			queued += keyPrefetch->loop;
 			loopc += keyPrefetch->loop;
 			source.play(keyPrefetch->loop);
@@ -412,7 +422,8 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 	
 	ARX_UNUSED(source);
 	
-	LogDebug("ambiance " << ambiance->getName() << ": " << source.getSample()->getName() << " ended");
+	LogDebug("ambiance " << ambiance->getName() << ": "
+	         << source.getSample()->getName() << " ended");
 	
 	arx_assert(queued > 0);
 	
@@ -442,7 +453,8 @@ void Ambiance::Track::onSampleEnd(Source & source) {
 				LogDebug("ambiance " << ambiance->getName() << ": master track ended");
 				
 				if(ambiance->isLooped()) {
-					for(TrackList::iterator i = ambiance->tracks.begin(); i != ambiance->tracks.end(); ++i) {
+					TrackList::iterator i = ambiance->tracks.begin();
+					for(; i != ambiance->tracks.end(); ++i) {
 						if(!(i->flags & Track::PREFETCHED)) {
 							i->key_i = i->keys.begin();
 						}
@@ -489,7 +501,9 @@ void Ambiance::Track::update(size_t time, size_t diff) {
 	
 	if(key_i->volume.interval) {
 		float value = key_i->volume.update(time);
-		if (ambiance->channel.flags & FLAG_VOLUME) value *= ambiance->channel.volume;
+		if(ambiance->channel.flags & FLAG_VOLUME) {
+			value *= ambiance->channel.volume;
+		}
 		source->setVolume(value);
 	} else {
 		source->setVolume(key_i->volume.cur * ambiance->channel.volume);
@@ -536,7 +550,8 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	}
 	Sample * sample = new Sample(res::path::load(sampleName));
 	if(sample->load() || (s_id = _sample.add(sample)) == INVALID_ID) {
-		LogError << "ambiance \"" << ambiance->name << "\": missing sample \"" << sampleName << '"';
+		LogError << "ambiance \"" << ambiance->name
+		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;
 		return AAL_ERROR_FILEIO;
 	} else {
@@ -558,7 +573,8 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	}
 	
 	flags = Ambiance::Track::TrackFlags::load(iflags); // TODO save/load flags
-	flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED | Ambiance::Track::PREFETCHED);
+	flags &= ~(Ambiance::Track::MUTED | Ambiance::Track::PAUSED
+	           | Ambiance::Track::PREFETCHED);
 	
 	keys.resize(key_c);
 	
@@ -582,8 +598,9 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	return AAL_OK;
 }
 
-Ambiance::Ambiance(const res::path & _name) :
-	status(Idle), loop(false), fade(None), start(0), time(0), name(_name), data(NULL) {
+Ambiance::Ambiance(const res::path & _name)
+	: status(Idle), loop(false), fade(None), start(0),
+	  time(0), name(_name), data(NULL) {
 	channel.flags = 0;
 }
 
@@ -618,7 +635,8 @@ aalError Ambiance::load() {
 	file->read(&nbtracks, 4);
 	tracks.resize(nbtracks, Track(this));
 	
-	for(Ambiance::TrackList::iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	Ambiance::TrackList::iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		if(aalError error = track->load(file.get(), version)) {
 			return error;
 		}
@@ -639,7 +657,8 @@ aalError Ambiance::setVolume(float volume) {
 		return AAL_OK;
 	}
 	
-	for(TrackList::const_iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	TrackList::const_iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			if(track->key_i != track->keys.end()) {
 				source->setVolume(track->key_i->volume.cur * channel.volume);
@@ -679,7 +698,8 @@ aalError Ambiance::muteTrack(const string & name, bool mute) {
 	return AAL_OK;
 }
 
-aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_interval) {
+aalError Ambiance::play(const Channel & _channel, bool _loop,
+                        size_t _fade_interval) {
 	
 	channel = _channel;
 	
@@ -699,10 +719,12 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 		fade = None;
 	}
 	
-	for(TrackList::iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	TrackList::iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		
 		//Init track keys
-		for(Track::KeyList::iterator key = track->keys.begin(); key != track->keys.end(); ++key) {
+		Track::KeyList::iterator key = track->keys.begin();
+		for(; key != track->keys.end(); ++key) {
 			
 			key->delay = key->delay_max;
 			key->updateSynch();
@@ -716,7 +738,8 @@ aalError Ambiance::play(const Channel & _channel, bool _loop, size_t _fade_inter
 			key->z.reset();
 		}
 		
-		arx_assert(backend->getSource(track->s_id) == NULL || backend->getSource(track->s_id)->isIdle());
+		arx_assert(backend->getSource(track->s_id) == NULL
+		           || backend->getSource(track->s_id)->isIdle());
 		
 		track->key_i = track->keys.begin();
 		track->loopc = track->key_i->loop;
@@ -750,7 +773,8 @@ aalError Ambiance::stop(size_t _fade_interval) {
 	status = Idle;
 	time = 0;
 	
-	for(TrackList::iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	TrackList::iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			source->stop();
 		}
@@ -769,7 +793,8 @@ aalError Ambiance::pause() {
 	status = Paused;
 	time = session_time;
 	
-	for(TrackList::iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	TrackList::iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		if(Source * source = backend->getSource(track->s_id)) {
 			source->pause();
 			track->flags |= Track::PAUSED;
@@ -785,7 +810,8 @@ aalError Ambiance::resume() {
 		return AAL_ERROR;
 	}
 	
-	for(TrackList::iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	TrackList::iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		if(track->flags & Track::PAUSED) {
 			if(Source * source = backend->getSource(track->s_id)) {
 				source->resume();
@@ -832,7 +858,8 @@ aalError Ambiance::update() {
 	}
 	
 	// Update tracks
-	for(TrackList::iterator track = tracks.begin(); track != tracks.end(); ++track) {
+	TrackList::iterator track = tracks.begin();
+	for(; track != tracks.end(); ++track) {
 		track->update(time, interval);
 	}
 	

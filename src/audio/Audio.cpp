@@ -75,7 +75,7 @@ static Lock * mutex = NULL;
 
 aalError init(const string & backendName, bool enableEAX) {
 	
-	//Clean any initialized data
+	// Clean any initialized data
 	clean();
 	
 	LogDebug("Init");
@@ -95,7 +95,6 @@ aalError init(const string & backendName, bool enableEAX) {
 			matched = true;
 			LogDebug("initializing OpenAL backend");
 			OpenALBackend * _backend = new OpenALBackend();
-
 			error = _backend->init(enableEAX);
 			if(!error) {
 				backend = _backend;
@@ -110,7 +109,6 @@ aalError init(const string & backendName, bool enableEAX) {
 			matched = true;
 			LogDebug("initializing DirectSound backend");
 			DSoundBackend * _backend = new DSoundBackend();
-
 			error = _backend->init(enableEAX);
 			if(!error) {
 				backend = _backend;
@@ -119,14 +117,14 @@ aalError init(const string & backendName, bool enableEAX) {
 			}
 		}
 		#endif
-			
+		
 		if(first && !matched) {
 			LogError << "unknown backend: " << backendName;
 		}
 	}
 	
 	#if !defined(ARX_HAVE_OPENAL) && !defined(ARX_HAVE_DSOUND)
-		ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
+	ARX_UNUSED(autoBackend), ARX_UNUSED(enableEAX);
 	#endif
 	
 	if(!backend) {
