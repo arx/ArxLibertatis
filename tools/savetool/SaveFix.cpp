@@ -31,6 +31,7 @@
 #endif
 
 #include "io/SaveBlock.h"
+#include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
 #include "platform/String.h"
 #include "scene/SaveFormat.h"
@@ -135,7 +136,7 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 		for(long m = 0; m < aids.sizex; m++) {
 			for(long n = 0; n < aids.sizey; n++) {
 				stringstream where2;
-				where2 << where << ".inventory.slot_io[" << m << "][" << n << "]";
+				where2 << where << ".inventory[" << m << "][" << n << "]";
 				invChanged |= fix_ident(save, aids.slot_io[m][n], idents, where2.str(), remap);
 			}
 		}
@@ -192,7 +193,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	fix_iodata(save, idents, dat, where + ":" + ident, remap);
 	
-	printf("#saving0 %s\n", ident.c_str());
+	LogDebug("#saving copied io " << ident);
 	save.save(ident, dat, size);
 	
 	return i;
@@ -258,7 +259,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	changed |= fix_iodata(save, idents, dat, where + ":" + name, remap);
 	
 	if(changed) {
-		printf("#saving1 %s\n", savefile.c_str());
+		LogDebug("#saving fixed io " << savefile);
 		if(!save.save(savefile, dat, size)) {
 			cerr << "error saving " << savefile;
 		}
@@ -326,7 +327,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
 			for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
 				stringstream where;
-				where << "player.id_inventory[" << iNbBag << "][" << n << "][" << m << "]"; 
+				where << "player.inventory[" << iNbBag << "][" << n << "][" << m << "]"; 
 				changed |= fix_ident(save, asp.id_inventory[iNbBag][n][m], idents, where.str(), remap);
 			}
 		}
@@ -346,7 +347,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	}
 	
 	if(changed) {
-		printf("#saving2 %s\n", loadfile.c_str());
+		LogDebug("saving fixed " << loadfile);
 		save.save(loadfile, dat, size);
 	}
 	
@@ -395,14 +396,14 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 			res = fix_io(save, ident, idents, where.str(), remap);
 		}
 		if(res != 0) {
-			cout << "fixing ident in " << where << ": " << ident << " -> " << res << endl;
+			cout << "fixing ident in " << where.str() << ": " << ident << " -> " << res << endl;
 			idx_io[i].ident = res;
 			changed = true;
 		}
 	}
 	
 	if(changed) {
-		printf("#saving3 %s\n", ss.str().c_str());
+		LogDebug("#saving fixed " << ss.str());
 		save.save(ss.str(), dat, size);
 	}
 	
