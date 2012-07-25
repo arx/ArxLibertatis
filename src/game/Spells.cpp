@@ -534,23 +534,25 @@ bool GetSpellPosition(Vec3f * pos,long i)
 	return false;
 }
 
-void LaunchAntiMagicField(long ident)
-{
+void LaunchAntiMagicField(size_t ident) {
+	
 	for(size_t n = 0 ; n < MAX_SPELLS; n++) {
-		if (	(spells[n].exist) 
-			&&	(spells[ident].caster_level >= spells[n].caster_level)
-			&&	((long)n != ident))
-		{
-			Vec3f pos; 
-			GetSpellPosition(&pos,n);
-
-			if(distSqr(pos, inter.iobj[spells[ident].caster]->pos) < square(600.f)) {
-				if (spells[n].type==SPELL_CREATE_FIELD)
-				{
-					if ((spells[ident].caster==0) && (spells[n].caster==0))				
-						spells[n].tolive=0;
-				}
-				else 	spells[n].tolive=0;
+		
+		if(!spells[n].exist || n == ident) {
+			continue;
+		}
+		
+		if(spells[ident].caster_level < spells[n].caster_level) {
+			continue;
+		}
+		
+		Vec3f pos;
+		GetSpellPosition(&pos,n);
+		if(closerThan(pos, inter.iobj[spells[ident].caster]->pos, 600.f)) {
+			if(spells[n].type != SPELL_CREATE_FIELD) {
+				spells[n].tolive = 0;
+			} else if(spells[ident].caster == 0 && spells[n].caster == 0) {
+				spells[n].tolive = 0;
 			}
 		}
 	}
@@ -3328,7 +3330,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					&&	( ioo->_npcdata->life > 0.f )
 					&&	( ioo->show == SHOW_FLAG_IN_SCENE )
 					&&	( ioo->groups.find("demon") != ioo->groups.end())
-					&&	( distSqr(ioo->pos, cpos) < square(900.f))
+					&&	( closerThan(ioo->pos, cpos, 900.f))
 					)
 				{
 					tcount++;
@@ -3394,7 +3396,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		spells[i].hand_group = inter.iobj[spells[i].caster]->obj->fastaccess.left_attach;
 	}
 
-	if(spells[i].hand_group != -1 ) {
+	if(spells[i].hand_group != -1) {
 		spells[i].hand_pos = inter.iobj[spells[i].caster]->obj->vertexlist3[spells[i].hand_group].v;
 	}
 
@@ -3412,7 +3414,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		spells[i].caster_level = static_cast<float>(level);
 	}
 
-	// Checks target
+	// Checks target TODO if ( target < 0 ) is already handled above!
 	if (target<0) // no target... targeted by sight
 	{
 		if (source==0) // no target... player spell targeted by sight
@@ -3423,6 +3425,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		else
 		{
+			// TODO inter.iobj[target] with target < 0 ??? - uh oh!
 			spells[i].target_pos.x=inter.iobj[target]->pos.x-EEsin(radians(inter.iobj[target]->angle.b))*60.f;
 			spells[i].target_pos.y=inter.iobj[target]->pos.y-120.f;
 			spells[i].target_pos.z=inter.iobj[target]->pos.z+EEcos(radians(inter.iobj[target]->angle.b))*60.f;
@@ -3440,2957 +3443,2639 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	spells[i].type = typ;
 	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 
-	switch (typ)
-	{
+	switch(typ) {
+		
 		case SPELL_NONE: break;
-		//*********************************************************************************************
-		// LEVEL 1 SPELLS -----------------------------------------------------------------------------
-		case SPELL_MAGIC_SIGHT: // Launching MAGIC_SIGHT
-
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		// level 1 spells
+		
+		case SPELL_MAGIC_SIGHT: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			spells[i].exist=true;
-			spells[i].fManaCostPerSecond=0.36f;
+			}
+			
+			spells[i].exist = true;
+			spells[i].fManaCostPerSecond = 0.36f;
 			spells[i].bDuration = true;
-
-			if (duration>-1) spells[i].tolive=duration;
-			else spells[i].tolive=6000000;
-
+			spells[i].tolive = (duration > -1) ? duration : 6000000l;
+			
 			SPELLCAST_Notify(i);
 			ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &spells[i].caster_pos);
-
-			if (spells[i].caster==0)
-			{
+			
+			if(spells[i].caster == 0) {
 				Project.improve = 1;
 				spells[i].snd_loop = SND_SPELL_VISION_LOOP;
-				ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
+				ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.f,
+				                  ARX_SOUND_PLAY_LOOPED);
 			}
-
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_MAGIC_MISSILE: // Launching MAGIC_MISSILE
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			
+			break;
+		}
+		
+		case SPELL_MAGIC_MISSILE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			spells[i].exist = true;
-			spells[i].tolive = 20000;
-				
-			CSpellFx *pCSpellFx = NULL;
+			spells[i].tolive = 20000; // TODO probably never read
+			
 			long number;
-
 			if(sp_max || cur_rf == 3) {
-				number = checked_range_cast<long>(spells[i].caster_level);
+				number = long(spells[i].caster_level);
 			} else {
-						if ( spells[i].caster_level < 3 ) number = 1;
-				else	if ( spells[i].caster_level < 5 ) number = 2;
-				else	if ( spells[i].caster_level < 7 ) number = 3;
-				else	if ( spells[i].caster_level < 9 ) number = 4;
-				else	number=5;
+				number = clamp(long(spells[i].caster_level + 1) / 2, 1l, 5l);
 			}
-
-			pCSpellFx = new CMultiMagicMissile(number);			
-
-			if(pCSpellFx != NULL) {
-				pCSpellFx->spellinstance=i;
-				pCSpellFx->SetDuration((unsigned long) (6000));
-				static_cast<CMultiMagicMissile*>(pCSpellFx)->Create();
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}				
-
+			
+			CMultiMagicMissile * effect = new CMultiMagicMissile(number);
+			effect->spellinstance = i;
+			effect->SetDuration(6000ul);
+			effect->Create();
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_IGNIT:// Launching IGNIT
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_IGNIT: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			spells[i].exist = true;
-			spells[i].tolive = 20000;
-					
-			CSpellFx *pCSpellFx = NULL;
-					
-			pCSpellFx = new CIgnit();
+			spells[i].tolive = 20000; // TODO probably never read
 			
-			CIgnit *pIgnit=(CIgnit *)pCSpellFx;
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-
-				if(spells[i].hand_group!=-1) {
-					target = spells[i].hand_pos;
-				} else {
-					target = spells[i].caster_pos;
-					target.y -= 50.f;
-				}
-
-				long id=GetFreeDynLight();
-
-				if (id!=-1)
-				{
-					DynLight[id].exist		=	1;
-					DynLight[id].intensity	=	1.8f;
-					DynLight[id].fallend	=	450.f;
-					DynLight[id].fallstart	=	380.f;
-					DynLight[id].rgb.r		=	1.f;
-					DynLight[id].rgb.g		=	0.75f;
-					DynLight[id].rgb.b		=	0.5f;
-					DynLight[id].pos.x		=	target.x;
-					DynLight[id].pos.y		=	target.y;
-					DynLight[id].pos.z		=	target.z;
-					DynLight[id].duration	=	300;
-				}
-
+			CIgnit * effect = new CIgnit();
+			effect->spellinstance = i;
+			
+			Vec3f target;
+			if(spells[i].hand_group != -1) {
+				target = spells[i].hand_pos;
+			} else {
+				target = spells[i].caster_pos - Vec3f(0.f, 50.f, 0.f);
+			}
+			
+			long id = GetFreeDynLight();
+			if(id != -1) {
+				DynLight[id].exist     = 1;
+				DynLight[id].intensity = 1.8f;
+				DynLight[id].fallend   = 450.f;
+				DynLight[id].fallstart = 380.f;
+				DynLight[id].rgb       = Color3f(1.f, 0.75f, 0.5f);
+				DynLight[id].pos       = target;
+				DynLight[id].duration  = 300;
+			}
+			
+			float fPerimeter = 400.f + spells[i].caster_level * 30.f;
+			
+			effect->Create(&target, fPerimeter, 500);
+			CheckForIgnition(&target, fPerimeter, 1, 1);
+			
+			for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
 				
-				float fPerimeter = 400.0f + spells[i].caster_level*30.0f;
+				if(!GLight[ii] || !(GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)) {
+					continue;
+				}
 				
-				pIgnit->Create(&target, fPerimeter, 500);
-				CheckForIgnition(&target,fPerimeter,1,1);
-
-				for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
-					if (GLight[ii]==NULL) continue;
-
-					if ( (GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)
-						&& ((spells[i].caster!=0) || 
-							((spells[i].caster==0) && !(GLight[ii]->extras & EXTRAS_NO_IGNIT)))
-						&&
-						((GLight[ii]->extras & EXTRAS_SEMIDYNAMIC) 
-							|| (GLight[ii]->extras & EXTRAS_SPAWNFIRE)
-							|| (GLight[ii]->extras & EXTRAS_SPAWNSMOKE) )
-						&& (!GLight[ii]->status))
-					{
-						if(distSqr(target, GLight[ii]->pos) <= square(pIgnit->GetPerimetre())) {
-							pIgnit->AddLight(ii);
+				if(spells[i].caster == 0 && (GLight[ii]->extras & EXTRAS_NO_IGNIT)) {
+					continue;
+				}
+				
+				if(!(GLight[ii]->extras & EXTRAS_SEMIDYNAMIC)
+				  && !(GLight[ii]->extras & EXTRAS_SPAWNFIRE)
+				  && !(GLight[ii]->extras & EXTRAS_SPAWNSMOKE)) {
+					continue;
+				}
+				
+				if(GLight[ii]->status) {
+					continue;
+				}
+				
+				if(!fartherThan(target, GLight[ii]->pos, effect->GetPerimetre())) {
+					effect->AddLight(ii);
+				}
+			}
+			
+			for(size_t n = 0; n < MAX_SPELLS; n++) {
+				if(!spells[n].exist) {
+					continue;
+				}
+				if(spells[n].type == SPELL_FIREBALL) {
+					CSpellFx * pCSpellFX = spells[n].pSpellFx;
+					if(pCSpellFX) {
+						CFireBall * pCF = (CFireBall *)pCSpellFX;
+						float radius = std::max(spells[i].caster_level * 2.f, 12.f);
+						if(closerThan(target, pCF->eCurPos,
+						              effect->GetPerimetre() + radius)) {
+							spells[n].caster_level += 1; 
 						}
 					}
 				}
-
-				for(size_t n = 0; n < MAX_SPELLS; n++) {
-					if (!spells[n].exist) continue;
-
-					if(spells[n].type == SPELL_FIREBALL) {
-						CSpellFx *pCSpellFX = spells[n].pSpellFx;
-						
+			}
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		case SPELL_DOUSE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = 20000;
+			
+			CDoze * effect = new CDoze();
+			effect->spellinstance = i;
+			
+			Vec3f target;
+			if(spells[i].hand_group >= 0) {
+				target = spells[i].hand_pos;
+			} else {
+				target = spells[i].caster_pos;
+				target.y -= 50.f;
+			}
+			
+			float fPerimeter = 400.f + spells[i].caster_level * 30.f;
+			effect->CreateDoze(&target, fPerimeter, 500);
+			CheckForIgnition(&target, fPerimeter, 0, 1);
+			
+			for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
+				
+				if(!GLight[ii] || !(GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)) {
+					continue;
+				}
+				
+				if(!(GLight[ii]->extras & EXTRAS_SEMIDYNAMIC)
+				  && !(GLight[ii]->extras & EXTRAS_SPAWNFIRE)
+				  && !(GLight[ii]->extras & EXTRAS_SPAWNSMOKE)) {
+					continue;
+				}
+				
+				if(!GLight[ii]->status) {
+					continue;
+				}
+				
+				if(!fartherThan(target, GLight[ii]->pos, effect->GetPerimetre())) {
+					effect->AddLightDoze(ii);	
+				}
+			}
+			
+			if(CURRENT_TORCH
+			   && closerThan(target, player.pos, effect->GetPerimetre())) {
+				ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+			}
+			
+			for(size_t n = 0; n < MAX_SPELLS; n++) {
+				
+				if(!spells[n].exist) {
+					continue;
+				}
+				
+				switch(spells[n].type) {
+					
+					case SPELL_FIREBALL: {
+						CSpellFx * pCSpellFX = spells[n].pSpellFx;
 						if(pCSpellFX) {
-							CFireBall *pCF = (CFireBall*) pCSpellFX;
-							
-							EERIE_SPHERE sphere;
-							sphere.origin.x=pCF->eCurPos.x;
-							sphere.origin.y=pCF->eCurPos.y;
-							sphere.origin.z=pCF->eCurPos.z;
-							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
-
-							if(distSqr(target, sphere.origin) < square(pIgnit->GetPerimetre() + sphere.radius)) {
-								spells[n].caster_level += 1; 
-							}
-						}
-					}
-				}
-			}
-
-			if (pCSpellFx)
-			{
-				spells[i].pSpellFx = pCSpellFx;
-				CIgnit *pIgnit=(CIgnit *)pCSpellFx;
-				spells[i].tolive = pIgnit->GetDuration();
-			}
-
-			SPELLCAST_Notify(i);
-		}
-		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_DOUSE:// Launching DOUSE
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-			
-			spells[i].exist = true;
-			spells[i].tolive = 20000;
-					
-			CSpellFx *pCSpellFx = NULL;					
-			pCSpellFx = new CDoze();
-					
-			CDoze *pDoze=(CDoze *)pCSpellFx;
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-
-				if(spells[i].hand_group>=0) {
-					target = spells[i].hand_pos;
-				} else {
-					target = spells[i].caster_pos;
-					target.y -= 50.f;
-				}
-						
-				float fPerimeter = 400.0f + spells[i].caster_level*30.0f;
-				pDoze->CreateDoze(&target, fPerimeter, 500);						
-				CheckForIgnition(&target,fPerimeter,0,1);		
-
-				for(size_t ii = 0; ii < MAX_LIGHTS; ii++) {
-					if (GLight[ii]==NULL) continue;
-
-					if ( (GLight[ii]->extras & EXTRAS_EXTINGUISHABLE)
-						&&
-						((GLight[ii]->extras & EXTRAS_SEMIDYNAMIC) 
-							|| (GLight[ii]->extras & EXTRAS_SPAWNFIRE)
-							|| (GLight[ii]->extras & EXTRAS_SPAWNSMOKE) )
-							&& (GLight[ii]->status))
-					{
-						if(distSqr(target, GLight[ii]->pos) <= square(pDoze->GetPerimetre())) {
-							pDoze->AddLightDoze(ii);	
-						}
-					}
-				}
-
-				if((CURRENT_TORCH) && distSqr(target, player.pos) < square(pDoze->GetPerimetre())) {
-					ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
-				}
-
-				for(size_t n = 0; n < MAX_SPELLS; n++) {
-					if (!spells[n].exist) continue;
-
-					switch (spells[n].type)
-					{
-						case SPELL_FIREBALL:
-						{							
-							CSpellFx *pCSpellFX;
-							pCSpellFX= spells[n].pSpellFx;
-
-							if (pCSpellFX)
-							{
-								CFireBall *pCF = (CFireBall*) pCSpellFX;
-						
-							EERIE_SPHERE sphere;
-							sphere.origin.x=pCF->eCurPos.x;
-							sphere.origin.y=pCF->eCurPos.y;
-							sphere.origin.z=pCF->eCurPos.z;
-							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
-
-							if(distSqr(target, sphere.origin) < square(pDoze->GetPerimetre() + sphere.radius)) {
-								spells[n].caster_level-=spells[i].caster_level;
-
-								if (spells[n].caster_level<1)
-									spells[n].tolive=0;
-							}
-						}
-
-						break;
-						case SPELL_FIRE_FIELD:
-						{					
-							Vec3f pos;
-
-							if (GetSpellPosition(&pos,n))
-							{
-								if(distSqr(target, pos) < square(pDoze->GetPerimetre() + 200)) {
-									spells[n].caster_level-=spells[i].caster_level;
-									if (spells[n].caster_level<1)
-										spells[n].tolive=0;
+							CFireBall * pCF = (CFireBall *)pCSpellFX;
+							float radius = std::max(spells[i].caster_level * 2.f, 12.f);
+							if(closerThan(target, pCF->eCurPos,
+							              effect->GetPerimetre() + radius)) {
+								spells[n].caster_level -= spells[i].caster_level;
+								if(spells[n].caster_level < 1) {
+									spells[n].tolive = 0;
 								}
 							}
 						}
 						break;
 					}
-						default: break;
-				}
-
+					
+					case SPELL_FIRE_FIELD: {
+						Vec3f pos;
+						if(GetSpellPosition(&pos, n)) {
+							if(closerThan(target, pos, effect->GetPerimetre() + 200)) {
+								spells[n].caster_level -= spells[i].caster_level;
+								if(spells[n].caster_level < 1) {
+									spells[n].tolive=0;
+								}
+							}
+						}
+						break;
+					}
+					
+					default: break;
 				}
 			}
-
-			if (pCSpellFx)
-			{
-				spells[i].pSpellFx = pCSpellFx;
-				CDoze *pDoze=(CDoze *)pCSpellFx;
-				spells[i].tolive = pDoze->GetDuration();
-			}
-
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_ACTIVATE_PORTAL:// Launching ACTIVATE_PORTAL
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_ACTIVATE_PORTAL: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 			spells[i].exist = true;
 			spells[i].tolive = 20;
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;			
-		//*************************************************************************************************
-		// LEVEL 2 SPELLS -----------------------------------------------------------------------------
-		case SPELL_HEAL:// Launching HEAL
-		{		
-		//	return No_MagicAllowed();
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		// level 2 spells
+		
+		case SPELL_HEAL: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
+			}
+			
+			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &spells[i].caster_pos);
-
+			}
+			
 			spells[i].exist = true;
 			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 0.4f*spells[i].caster_level;
-
-			if (duration>-1) spells[i].tolive=duration;
-			else spells[i].tolive=3500;
-
-			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CHeal();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				static_cast<CHeal*>(pCSpellFx)->Create();
-				pCSpellFx->SetDuration(spells[i].tolive);
-				
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
+			spells[i].fManaCostPerSecond = 0.4f * spells[i].caster_level;
+			spells[i].tolive = (duration > -1) ? duration : 3500;
+			
+			CHeal * effect = new CHeal();
+			effect->spellinstance = i;
+			effect->Create();
+			effect->SetDuration(spells[i].tolive);
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_DETECT_TRAP:// Launching DETECT_TRAP
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_DETECT_TRAP: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_DETECT_TRAP,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-
-			if (spells[i].caster==0)
-			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
+			
+			if(spells[i].caster == 0 && !(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
-
+			}
+			
 			spells[i].snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
-
-			if (spells[i].caster==0)
-			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
-				ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-
+			if(spells[i].caster == 0 && !(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
+				ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.f,
+				                  ARX_SOUND_PLAY_LOOPED);
+			}
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 60000;
-			spells[i].fManaCostPerSecond=0.4f;
+			spells[i].fManaCostPerSecond = 0.4f;
 			spells[i].bDuration = true;
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//---------------------------------------------------------------------------------------------
-		case SPELL_ARMOR:// Launching ARMOR
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_ARMOR: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long idx=ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target],SPELL_ARMOR);
-
-			if (idx>=0)
-			{
+			}
+			
+			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
 			
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;						
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
 			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;						
-			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;						
-			}
-
-			if (spells[i].caster==0)
-				spells[i].target=spells[i].caster;
 			
-			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+			}
+			
+			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].target_pos);
-
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-				
-			spells[i].exist = true;
-
-			if (spells[i].caster==0)
-				spells[i].tolive = 20000000;
-			else
-				spells[i].tolive = 20000;
-
-			if (duration>-1) spells[i].tolive=duration;
-			
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 0.2f*spells[i].caster_level;
-				
-			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CArmor();				
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				CArmor *pArmor=(CArmor *)pCSpellFx;
-				pArmor->Create(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pArmor->GetDuration();
 			}
-
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP,
+			                                       &spells[i].caster_pos, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			spells[i].exist = true;
+			spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			}
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
+				
+			CArmor * effect = new CArmor();
+			effect->spellinstance = i;
+			effect->Create(spells[i].tolive);
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//------------------------------------------------------------------------------------------------
-		case SPELL_LOWER_ARMOR:// Launching LOWER_ARMOR
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_LOWER_ARMOR: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long idx=ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target],SPELL_LOWER_ARMOR);
-
-			if (idx>=0)
-			{
+			}
+			
+			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
-
-			if (spells[i].target<0) return false;
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-				
-			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
-				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].caster_pos);
-				
-			spells[i].exist = true;
-
-			if (spells[i].caster==0)
-				spells[i].tolive = 20000000;
-			else
-				spells[i].tolive = 20000;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 0.2f*spells[i].caster_level;
-				
-			CSpellFx *pCSpellFx = NULL;				
-			pCSpellFx = new CLowerArmor();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				CLowerArmor *pLowerArmor=(CLowerArmor *)pCSpellFx;
-				pLowerArmor->Create(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
-			SPELLCAST_Notify(i);
-		}
-		break;
-		//------------------------------------------------------------------------------------------------
-		case SPELL_HARM:// Launching HARM
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
-				ARX_SOUND_PlaySFX(SND_SPELL_HARM, &spells[i].caster_pos);
-
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-
-			spells[i].exist=true;
-			spells[i].tolive=6000000;
 			
+			if(spells[i].target < 0) {
+				return false;
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
+				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].caster_pos);
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			}
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
+			
+			CLowerArmor * effect = new CLowerArmor();
+			effect->spellinstance = i;
+			effect->Create(spells[i].tolive);
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		case SPELL_HARM: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
+				ARX_SOUND_PlaySFX(SND_SPELL_HARM, &spells[i].caster_pos);
+			}
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
+			                                       &spells[i].caster_pos, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = (duration >-1) ? duration : 6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.4f;
 
-			spells[i].longinfo=ARX_DAMAGES_GetFree();
-
-			if (spells[i].longinfo!=-1)
-			{
-				damages[spells[i].longinfo].radius=150.f;
-				damages[spells[i].longinfo].damages=4.f;//2.f;
-				damages[spells[i].longinfo].area=DAMAGE_FULL;
-				damages[spells[i].longinfo].duration=100000000;
-				damages[spells[i].longinfo].source=spells[i].caster;
-				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[spells[i].longinfo].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-				damages[spells[i].longinfo].exist=true;
+			spells[i].longinfo = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo != -1) {
+				damages[spells[i].longinfo].radius = 150.f;
+				damages[spells[i].longinfo].damages = 4.f;
+				damages[spells[i].longinfo].area = DAMAGE_FULL;
+				damages[spells[i].longinfo].duration = 100000000;
+				damages[spells[i].longinfo].source = spells[i].caster;
+				damages[spells[i].longinfo].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				                                    | DAMAGE_FLAG_FOLLOW_SOURCE
+				                                    | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damages[spells[i].longinfo].type = DAMAGE_TYPE_FAKEFIRE
+				                                   | DAMAGE_TYPE_MAGICAL;
+				damages[spells[i].longinfo].exist = true;
 			}
-
-			spells[i].longinfo2=GetFreeDynLight();
-
-			if (spells[i].longinfo2 != -1)
-			{
+			
+			spells[i].longinfo2 = GetFreeDynLight();
+			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
 				DynLight[id].exist = 1;
 				DynLight[id].intensity = 2.3f;
 				DynLight[id].fallend = 700.f;
 				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb.r = 1.0f;
-				DynLight[id].rgb.g = 0.0f;
-				DynLight[id].rgb.b = 0.0f;
+				DynLight[id].rgb = Color3f::red;
 				DynLight[id].pos = spells[i].caster_pos;
 			}
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			SPELLCAST_Notify(i);				
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;			
-		//**********************************************************************************************
-		// LEVEL 3 SPELLS -----------------------------------------------------------------------------
-		case SPELL_SPEED:// Launching SPEED
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		// level 3 spells
+		
+		case SPELL_SPEED: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_SPEED_START, &spells[i].caster_pos);
-
-			if (spells[i].caster==0)
-			{			
+			
+			if(spells[i].caster == 0) {
 				spells[i].target = spells[i].caster;
-				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
+				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP,
+				                                       &spells[i].caster_pos, 1.f,
+				                                       ARX_SOUND_PLAY_LOOPED);
 			}
-				
+			
 			spells[i].exist = true;
-
-			if (spells[i].caster==0)
-				spells[i].tolive = 200000000;
-			else
-				spells[i].tolive = 20000;
-
-			if (duration>-1) spells[i].tolive=duration;
-			
-			
-			CSpellFx *pCSpellFx = NULL;
-			
-			pCSpellFx = new CSpeed();			
-			CSpeed *pSpeed = (CSpeed *)pCSpellFx;
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				pSpeed->Create(spells[i].target, spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pSpeed->GetDuration();
+			spells[i].tolive = (spells[i].caster == 0) ? 200000000 : 20000;
+			if(duration > -1) {
+				spells[i].tolive = duration;
 			}
-
+			
+			CSpeed * effect = new CSpeed();
+			effect->spellinstance = i;
+			effect->Create(spells[i].target, spells[i].tolive);
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
-
-			if ((spells[i].caster>=0) && (spells[i].target<inter.nbmax))
-			{
-				if (inter.iobj[spells[i].target])
-					inter.iobj[spells[i].target]->speed_modif+=spells[i].caster_level*( 1.0f / 10 );
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			if(spells[i].caster >= 0 && spells[i].target < inter.nbmax) {
+				INTERACTIVE_OBJ * t = inter.iobj[spells[i].target];
+				if(t) {
+					t->speed_modif += spells[i].caster_level * 0.1f;
+				}
 			}
+			
+			break;
 		}
-		break;
 		
-		//--------------------------------------------------------------------------------------------------
-		case SPELL_DISPELL_ILLUSION:// Launching DISPELL_ILLUSION (REVEAL)
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		case SPELL_DISPELL_ILLUSION: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 			spells[i].exist = true;
 			spells[i].tolive = 1000;
 			SPELLCAST_Notify(i);
-
+			
 			for(size_t n = 0; n < MAX_SPELLS; n++) {
-				if (!spells[n].exist) continue;
-
-				if (spells[n].target==spells[i].caster) continue;
-
-				if (spells[n].caster_level>spells[i].caster_level) continue;
-
+				
+				if(!spells[n].exist || spells[n].target == spells[i].caster) {
+					continue;
+				}
+				
+				if(spells[n].caster_level > spells[i].caster_level) {
+					continue;
+				}
+				
 				if(spells[n].type == SPELL_INVISIBILITY) {
 					if(ValidIONum(spells[n].target) && ValidIONum(spells[i].caster)) {
-						if(distSqr(inter.iobj[spells[n].target]->pos, inter.iobj[spells[i].caster]->pos) < square(1000.f)) {
-							spells[n].tolive=0;
+						if(closerThan(inter.iobj[spells[n].target]->pos,
+						   inter.iobj[spells[i].caster]->pos, 1000.f)) {
+							spells[n].tolive = 0;
 						}
 					}
 				}
 			}
+			
+			break;
 		}
-		break;
-	
-		//----------------------------------------------------------------------------------------------
 		
-		case SPELL_FIREBALL:// Launching FIREBALL
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		case SPELL_FIREBALL: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 20000;
+			spells[i].tolive = 20000; // TODO probbaly never read
 			
-			CFireBall * pCSpellFx = new CFireBall();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-
-				if (spells[i].caster!=0)
-					spells[i].hand_group=-1;
-
-				if(spells[i].hand_group >= 0) {
-					target = spells[i].hand_pos;
-				} else {
-					target = spells[i].caster_pos;
-
-					if ((ValidIONum(spells[i].caster))
-						&& (inter.iobj[spells[i].caster]->ioflags & IO_NPC))
-					{
-						target.x-=EEsin(radians(inter.iobj[spells[i].caster]->angle.b))*30.f;
-						target.y-=80.f;
-						target.z+=EEcos(radians(inter.iobj[spells[i].caster]->angle.b))*30.f;
+			CFireBall * effect = new CFireBall();
+			effect->spellinstance = i;
+			
+			if(spells[i].caster != 0) {
+				spells[i].hand_group = -1;
+			}
+			
+			Vec3f target;
+			if(spells[i].hand_group >= 0) {
+				target = spells[i].hand_pos;
+			} else {
+				target = spells[i].caster_pos;
+				if(ValidIONum(spells[i].caster)) {
+					INTERACTIVE_OBJ * c = inter.iobj[spells[i].caster];
+					if(c->ioflags & IO_NPC) {
+						target.x -= EEsin(radians(c->angle.b)) * 30.f;
+						target.y -= 80.f;
+						target.z += EEcos(radians(c->angle.b)) * 30.f;
 					}
 				}
+			}
 			
-				pCSpellFx->SetDuration((unsigned long) (6000));
-
-				if (spells[i].caster==0)
-					pCSpellFx->Create(target,MAKEANGLE(player.angle.b),player.angle.a,spells[i].caster_level);
-				else
-				{
-					float angle;
-
-					if ((spells[i].target>=0) && (spells[i].target<inter.nbmax) && inter.iobj[spells[i].target])
-					{
-						angle = 0;
-					}
-					else angle=0;
-
-					Vec3f eCurPos;
-
-					eCurPos.x = inter.iobj[spells[i].caster]->pos.x ;
-					eCurPos.y = inter.iobj[spells[i].caster]->pos.y;
-					eCurPos.z = inter.iobj[spells[i].caster]->pos.z ;
-
-					if ((ValidIONum(spells[i].caster))
-						&& (inter.iobj[spells[i].caster]->ioflags & IO_NPC))
-					{
-						eCurPos.y-=80.f;
-					}
-
-					INTERACTIVE_OBJ * _io=inter.iobj[spells[i].caster];
-
-					if (ValidIONum(_io->targetinfo))
-					{
-						Vec3f * p1=&eCurPos;
-						Vec3f * p2=&inter.iobj[_io->targetinfo]->pos;
-						angle = (degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
-					}
-
-					pCSpellFx->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);
+			effect->SetDuration(6000ul);
+			
+			float anglea = 0, angleb;
+			if(spells[i].caster == 0) {
+				anglea = player.angle.a, angleb = player.angle.b;
+			} else {
+				
+				Vec3f start = inter.iobj[spells[i].caster]->pos;
+				if(ValidIONum(spells[i].caster)
+				   && (inter.iobj[spells[i].caster]->ioflags & IO_NPC)) {
+					start.y -= 80.f;
 				}
+				
+				INTERACTIVE_OBJ * _io = inter.iobj[spells[i].caster];
+				if(ValidIONum(_io->targetinfo)) {
+					const Vec3f & end = inter.iobj[_io->targetinfo]->pos;
+					float d = dist(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
+					anglea = degrees(getAngle(start.y, start.z, end.y, end.z + d));
+				}
+				
+				angleb = inter.iobj[spells[i].caster]->angle.b;
 			}
-
-			if (pCSpellFx)
-			{
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
+			
+			effect->Create(target, MAKEANGLE(angleb), anglea, spells[i].caster_level);
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_LAUNCH, &spells[i].caster_pos);
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
+			                                       &spells[i].caster_pos, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//-------------------------------------------------------------------------------------------------
-		case SPELL_CREATE_FOOD:// Launching CREATE_FOOD
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_CREATE_FOOD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);
 			spells[i].exist = true;
-			spells[i].tolive = 3500;
-
-			if (duration>-1) spells[i].tolive=duration;
-					
-			CCreateFood * pCSpellFx = NULL;
-
-			if ((spells[i].caster==0) || (spells[i].target==0))
-				player.hunger=100;
-		
-			pCSpellFx = new CCreateFood();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				pCSpellFx->Create();
-				pCSpellFx->SetDuration(spells[i].tolive);						
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			spells[i].tolive = (duration > -1) ? duration : 3500;
+			
+			if(spells[i].caster == 0 || spells[i].target == 0) {
+				player.hunger = 100;
 			}
-
+			
+			CCreateFood * effect = new CCreateFood();
+			effect->spellinstance = i;
+			effect->Create();
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_ICE_PROJECTILE:// Launching ICE_PROJECTILE
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_ICE_PROJECTILE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &spells[i].caster_pos);
 			spells[i].exist = true;
 			spells[i].tolive = 4200;
-				
-			CSpellFx *pCSpellFx = NULL;
-				
-			pCSpellFx = new CIceProjectile();
-				
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-
-				if (spells[i].caster==0)
-				{
-					target.x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*150.0f;
-					target.y = player.pos.y+160;
-					target.z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*150.0f;
-					CIceProjectile *pIP = (CIceProjectile*)pCSpellFx;
-					pIP->Create(target, MAKEANGLE(player.angle.b), spells[i].caster_level);
-				}
-				else
-				{
-					target.x = inter.iobj[spells[i].caster]->pos.x - EEsin(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*150.0f;
-					target.y = inter.iobj[spells[i].caster]->pos.y;
-					target.z = inter.iobj[spells[i].caster]->pos.z + EEcos(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*150.0f;
-					CIceProjectile *pIP = (CIceProjectile*)pCSpellFx;
-					pIP->Create(target, MAKEANGLE(inter.iobj[spells[i].caster]->angle.b), spells[i].caster_level);
-				}
-
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			
+			CIceProjectile * effect = new CIceProjectile();
+			effect->spellinstance = i;
+			
+			Vec3f target;
+			float angleb;
+			if(spells[i].caster == 0) {
+				target = player.pos + Vec3f(0.f, 160.f, 0.f);
+				angleb = player.angle.b;
+			} else {
+				target = inter.iobj[spells[i].caster]->pos;
+				angleb = inter.iobj[spells[i].caster]->angle.b;
 			}
-
+			angleb = MAKEANGLE(angleb);
+			target.x -= EEsin(radians(angleb)) * 150.0f;
+			target.z += EEcos(radians(angleb)) * 150.0f;
+			effect->Create(target, angleb, spells[i].caster_level);
+			
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//***********************************************************************************************	
-		// LEVEL 4 SPELLS -----------------------------------------------------------------------------
-		case SPELL_BLESS:// Launching BLESS
-		{
-			if (ARX_SPELLS_ExistAnyInstance(typ)) 
-			{
+		
+		// level 4 spells
+		
+		case SPELL_BLESS: {
+			
+			if(ARX_SPELLS_ExistAnyInstance(typ)) {
 				return false;
 			}
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_BLESS,spells[i].target);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
 			spells[i].exist = true;
-			spells[i].tolive = 2000000;
+			// TODO this tolive value is probably never read
+			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 0.5f*spells[i].caster_level*0.6666f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CBless * pCSpellFx = new CBless();
+			spells[i].fManaCostPerSecond = 0.5f * spells[i].caster_level * 0.6666f;
 			
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-				target.x = inter.iobj[spells[i].caster]->pos.x;
-				target.y = inter.iobj[spells[i].caster]->pos.y;
-				target.z = inter.iobj[spells[i].caster]->pos.z;
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(20000);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
+			CBless * effect = new CBless();
+			effect->spellinstance = i;
+			Vec3f target = inter.iobj[spells[i].caster]->pos;
+			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->SetDuration(20000);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//-----------------------------------------------------------------------------------------------
-		case SPELL_DISPELL_FIELD:// Launching DISPELL_FIELD
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;					
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_DISPELL_FIELD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			SPELLCAST_Notify(i);
 			spells[i].tolive = 10;
-			Vec3f target;
-			target.x = inter.iobj[spells[i].caster]->pos.x;
-			target.y = inter.iobj[spells[i].caster]->pos.y;
-			target.z = inter.iobj[spells[i].caster]->pos.z;
-			long valid=0;
-			long dispelled=0;
+			
+			long valid = 0, dispelled = 0;
 
 			for(size_t n = 0; n < MAX_SPELLS; n++) {
-				if (!spells[n].exist) continue;
-
-				switch (spells[n].type)
-				{					
-					case SPELL_CREATE_FIELD:
-					{							
-						CSpellFx *pCSpellFX = spells[n].pSpellFx;
-
-						if (pCSpellFX)
-						{
-							CCreateField *pCreateField = (CCreateField *) pCSpellFX;
+				
+				if(!spells[n].exist || !spells[n].pSpellFx) {
+					continue;
+				}
+				
+				bool cancel = false;
+				Vec3f pos;
+				
+				switch(spells[n].type) {
 					
-							EERIE_SPHERE sphere;
-							sphere.origin=pCreateField->eSrc;
-							sphere.radius=400.f;
-
-							if ((spells[i].caster!=0) || (spells[n].caster==0))
-							{
-								if(sphere.contains(target)) {
-									valid++;
-
-									if (spells[n].caster_level<=spells[i].caster_level)
-									{
-										spells[n].tolive=0;
-										dispelled++;
-									}
-								}
-							}
+					case SPELL_CREATE_FIELD: {
+						if(spells[i].caster != 0 || spells[n].caster == 0) {
+							pos = static_cast<CCreateField *>(spells[n].pSpellFx)->eSrc;
+							cancel = true;
 						}
-
 						break;
 					}
-					case SPELL_FIRE_FIELD:
-					{							
-						CSpellFx *pCSpellFX = spells[n].pSpellFx;
-
-						if (pCSpellFX)
-						{
-							CFireField *pFireField = (CFireField *) pCSpellFX;
 					
-							EERIE_SPHERE sphere;
-							sphere.origin=pFireField->pos;
-							sphere.radius=400.f;
-
-							if (sphere.contains(target))
-							{
-								valid++;
-
-								if (spells[n].caster_level<=spells[i].caster_level)
-								{
-									spells[n].tolive=0;
-									dispelled++;
-								}
-							}
-						}
-
+					case SPELL_FIRE_FIELD: {
+						pos = static_cast<CFireField *>(spells[n].pSpellFx)->pos;
+						cancel = true;
 						break;
 					}
-					case SPELL_ICE_FIELD:
-					{							
-						CSpellFx *pCSpellFX = spells[n].pSpellFx;
-
-						if (pCSpellFX)
-						{
-							CIceField *pIceField = (CIceField *) pCSpellFX;
 					
-							EERIE_SPHERE sphere;
-							sphere.origin.x=pIceField->eSrc.x;
-							sphere.origin.y=pIceField->eSrc.y;
-							sphere.origin.z=pIceField->eSrc.z;
-							sphere.radius=400.f;
-
-							if(sphere.contains(target)) {
-								valid++;
-
-								if (spells[n].caster_level<=spells[i].caster_level)
-								{
-									spells[n].tolive=0;
-									dispelled++;
-								}
-							}
-						}
-
+					case SPELL_ICE_FIELD: {
+						pos = static_cast<CIceField *>(spells[n].pSpellFx)->eSrc;
+						cancel = true;
 						break;
 					}
+					
 					default: break;
 				}
-			}
-
-			if (valid>dispelled)
-			{
-				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_not_skilled_enough", ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
-
-				if (dispelled>0)
-				{
-					ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_FIELD);
+				
+				INTERACTIVE_OBJ * caster = inter.iobj[spells[i].caster];
+				if(cancel && closerThan(pos, caster->pos, 400.f)) {
+					valid++;
+					if(spells[n].caster_level <= spells[i].caster_level) {
+						spells[n].tolive = 0;
+						dispelled++;
+					}
 				}
 			}
-			else if (valid>0)
-			{
-				ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_FIELD);
+			
+			if(valid > dispelled) {
+				// Some fileds could not be dispelled
+				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_not_skilled_enough",
+				                     ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 			}
-			else
-			{
+			
+			if(dispelled > 0) {
+				ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_FIELD);
+			} else {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[i].caster_pos);
 			}
+			
+			break;
 		}
-		break;
-		//-----------------------------------------------------------------------------------------------
-		case SPELL_FIRE_PROTECTION:// Launching FIRE_PROTECTION
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			long idx=ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target],SPELL_FIRE_PROTECTION);
-
-			if (idx>=0)
-			{
-				spells[idx].tolive = 0;
+		
+		case SPELL_FIRE_PROTECTION: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
 			}
-	
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION);
 			
-			if (duration>-1) spells[i].tolive=duration;
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
-			}
-			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 2000000;
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-				
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 1.f;
-			
-			CFireProtection * pCSpellFx = new CFireProtection();
-				
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;		
-				pCSpellFx->Create(spells[i].tolive);
-
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
-			SPELLCAST_Notify(i);
-		}
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_COLD_PROTECTION:// Launching COLD_PROTECTION
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			long idx=ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target],SPELL_COLD_PROTECTION);
-
-			if (idx>=0)
-			{
+			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_COLD_PROTECTION,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-
-			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START);
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 2000000;
+			spells[i].tolive = 2000000; // TODO should respect user-supplied duration
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CColdProtection * pCSpellFx =  new CColdProtection();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;		
-				pCSpellFx->Create(spells[i].tolive, spells[i].target);
 			
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			CFireProtection * effect = new CFireProtection();
+			effect->spellinstance = i;
+			effect->Create(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		case SPELL_COLD_PROTECTION: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
 			}
-
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
-			SPELLCAST_Notify(i);
-		}
-		break;
-		//----------------------------------------------------------------------------------------------
-		case SPELL_TELEKINESIS:// Launching TELEKINESIS
-		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(SPELL_TELEKINESIS,spells[i].caster)) return false;			
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			spells[i].exist=true;						
-			spells[i].tolive=6000000;
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 0.9f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			if (spells[i].caster==0)
-				Project.telekinesis=1;
-
-			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &spells[i].caster_pos);
-			SPELLCAST_Notify(i);
-		}
-		break;
-		//-----------------------------------------------------------------------------------------------
-		case SPELL_CURSE:// Launching CURSE
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_CURSE,spells[i].target);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			if(idx >= 0) {
+				spells[idx].tolive = 0;
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-					
-			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &spells[i].caster_pos);
-			spells[i].exist = true;
-			spells[i].tolive = 2000000;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CCurse * pCSpellFx = NULL;
-			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 0.5f*spells[i].caster_level;
-					
-			pCSpellFx = new CCurse();
 			
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target = spells[i].target_pos;
-				if ((spells[i].target>=0) && (inter.iobj[spells[i].target])) {
-					if (spells[i].target==0) target.y-=200.f;
-					else target.y+=inter.iobj[spells[i].target]->physics.cyl.height-50.f;
-				}
-				
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LOWER_ARMOR,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
 			}
-
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_FIRE_PROTECTION,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START);
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			spells[i].exist = true;
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+			spells[i].tolive = (duration > -1) ? duration : 2000000;
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 1.f;
+			
+			CColdProtection * effect = new CColdProtection();
+			effect->spellinstance=i;
+			effect->Create(spells[i].tolive, spells[i].target);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_LOOP,
+			                                       &spells[i].caster_pos, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//*********************************************************************
-		// LEVEL 5 SPELLS -----------------------------------------------------------------------------
-		case SPELL_RUNE_OF_GUARDING:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_TELEKINESIS: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RUNE_OF_GUARDING,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 6000000;
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 0.9f;
+			
+			if(spells[i].caster == 0) {
+				Project.telekinesis = 1;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &spells[i].caster_pos);
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		case SPELL_CURSE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &spells[i].caster_pos);
+			
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 2000000;
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 0.5f * spells[i].caster_level;
+			
+			CCurse * effect = new CCurse();
+			effect->spellinstance = i;
+			
+			Vec3f target = spells[i].target_pos;
+			if(spells[i].target == 0) {
+				target.y -= 200.f;
+			} else if(spells[i].target > 0 && inter.iobj[spells[i].target]) {
+				target.y += inter.iobj[spells[i].target]->physics.cyl.height - 50.f;
+			}
+			
+			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		// level 5 spells
+		
+		case SPELL_RUNE_OF_GUARDING: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
 			spells[i].exist = true;
-			spells[i].tolive = 99999999;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CRuneOfGuarding * pCSpellFx  = new CRuneOfGuarding();
-					
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;				
-				target.x = inter.iobj[spells[i].caster]->pos.x;
-				target.y = inter.iobj[spells[i].caster]->pos.y;
-				target.z = inter.iobj[spells[i].caster]->pos.z;
-				pCSpellFx->Create(target, 0);
-				pCSpellFx->SetDuration(spells[i].tolive);
-
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
+			spells[i].tolive = (duration > -1) ? duration : 99999999;
+			
+			CRuneOfGuarding * effect = new CRuneOfGuarding();
+			effect->spellinstance = i;
+			effect->Create(inter.iobj[spells[i].caster]->pos, 0);
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_LEVITATE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_LEVITATE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LEVITATE,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START);
 			spells[i].exist = true;
-			spells[i].tolive = 2000000000;
+			spells[i].tolive = (duration > -1) ? duration : 2000000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CSpellFx * pCSpellFx =  new CLevitate();
-							
-			if (pCSpellFx != NULL)
-			{
-				CLevitate *pLevitate=(CLevitate *)pCSpellFx;
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-
-				if (	(spells[i].caster==0)
-					||	(spells[i].target==0)	)
-				{
-					target.x=player.pos.x;
-					target.y=player.pos.y+150.f;
-					target.z=player.pos.z;
-					spells[i].target = 0; 
-					spells[i].tolive = 200000000;
-					player.levitate=1;
-				}
-				else
-				{
-					target.x=inter.iobj[spells[i].target]->pos.x;
-					target.y = inter.iobj[spells[i].target]->pos.y; 
-					target.z=inter.iobj[spells[i].target]->pos.z;
-				}
-
-				pLevitate->Create(16,50.f,100.f,80.f,&target,spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			
+			CLevitate * effect = new CLevitate();
+			effect->spellinstance = i;
+			
+			Vec3f target;
+			if(spells[i].caster == 0 || spells[i].target == 0) {
+				target = player.pos + Vec3f(0.f, 150.f, 0.f);
+				spells[i].target = 0;
+				spells[i].tolive = 200000000;
+				player.levitate = 1;
+			} else {
+				target = inter.iobj[spells[i].target]->pos;
 			}
-
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
-			SPELLCAST_Notify(i);				
+			
+			effect->Create(16, 50.f, 100.f, 80.f, &target, spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_CURE_POISON:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			float cure=spells[i].caster_level*10;
-
-			if (spells[i].caster==0) 
-				spells[i].target=0; 
-
-			if (spells[i].target==0) 
-			{
-				player.poison-=cure;
-
-				if (player.poison<0.f) player.poison=0;
-
-				ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
+		
+		case SPELL_CURE_POISON: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
 			}
-			else
-			{
-				if (ValidIONum(spells[i].target))
-				{
-					INTERACTIVE_OBJ * io=inter.iobj[spells[i].target];
-
-					if (io->ioflags & IO_NPC)
-					{
-						io->_npcdata->poisonned-=cure;
-
-						if (io->_npcdata->poisonned<0) io->_npcdata->poisonned=0;
-					}
-
-					ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON,&io->pos);
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			float cure = spells[i].caster_level * 10;
+			if(spells[i].target == 0) {
+				player.poison -= std::min(player.poison, cure);
+				ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
+			} else if (ValidIONum(spells[i].target)) {
+				INTERACTIVE_OBJ * io = inter.iobj[spells[i].target];
+				if(io->ioflags & IO_NPC) {
+					io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 				}
+				ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON, &io->pos);
 			}
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 3500;
-					
-			CCurePoison * pCSpellFx = new CCurePoison();
-							
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				pCSpellFx->Create();
-				pCSpellFx->SetDuration(spells[i].tolive);
-
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-				
-			}
-
-			SPELLCAST_Notify(i);				
+			
+			CCurePoison * effect = new CCurePoison();
+			effect->spellinstance = i;
+			effect->Create();
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_REPEL_UNDEAD:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_REPEL_UNDEAD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
 			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD);
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-
-			if (spells[i].target==0)
-				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-
+			if(spells[i].target == 0) {
+				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP,
+				                                       &spells[i].caster_pos, 1.f,
+				                                       ARX_SOUND_PLAY_LOOPED);
+			}
+			
 			spells[i].exist = true;
-			spells[i].tolive = 20000000;
+			spells[i].tolive = (duration > -1) ? duration : 20000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CRepelUndead *pCSpellFx =  new CRepelUndead();
 			
-			if (pCSpellFx != NULL)
-			{
-				Vec3f target;
-				target.x=player.pos.x;
-				target.y=player.pos.y;
-				target.z=player.pos.z;
-				pCSpellFx->spellinstance=i;
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-			}
-
-			SPELLCAST_Notify(i);	
+			CRepelUndead * effect = new CRepelUndead();
+			effect->spellinstance = i;
+			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_POISON_PROJECTILE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
+		
+		case SPELL_POISON_PROJECTILE: {
 			
-			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH, &spells[i].caster_pos);
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
+			                  &spells[i].caster_pos);
+			
 			spells[i].exist = true;
-			spells[i].tolive = 900000000;
+			spells[i].tolive = 900000000; // TODO probably never read
 			
-			CMultiPoisonProjectile * pCSpellFx;
-			pCSpellFx = new CMultiPoisonProjectile(std::max(checked_range_cast<long>(spells[i].caster_level), 1L));
-
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target(0, 0, 0);
-				pCSpellFx->SetDuration((unsigned long) (8000));
-				float ang;
-
-				if (spells[i].caster==0) ang=player.angle.b;
-				else ang=inter.iobj[spells[i].caster]->angle.b;
-
-				pCSpellFx->Create(target, MAKEANGLE(ang));
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();				
+			long level = std::max(long(spells[i].caster_level), 1l);
+			CMultiPoisonProjectile * effect = new CMultiPoisonProjectile(level);
+			effect->spellinstance = i;
+			effect->SetDuration(8000ul);
+			float ang;
+			if(spells[i].caster == 0) {
+				ang = player.angle.b;
+			} else {
+				ang = inter.iobj[spells[i].caster]->angle.b;
 			}
-
-			SPELLCAST_Notify(i);			
+			effect->Create(Vec3f::ZERO, MAKEANGLE(ang));
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//***************************************************************************
-		// LEVEL 6 -----------------------------------------------------------------------------
-		case SPELL_RISE_DEAD:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		// level 6 spells
+		
+		case SPELL_RISE_DEAD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_RISE_DEAD,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
 			
 			float beta;
 			Vec3f target;
-
-			if (spells[i].caster==0)
-			{
-				target.x=player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*300.f;
-				target.y = player.pos.y + 170.f; 
-				target.z=player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*300.f;
-				beta=MAKEANGLE(player.angle.b);
-				
+			bool displace = true;
+			if(spells[i].caster == 0) {
+				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				beta = MAKEANGLE(player.angle.b);
+			} else {
+				target = inter.iobj[spells[i].caster]->pos;
+				beta = MAKEANGLE(inter.iobj[spells[i].caster]->angle.b);
+				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC);
 			}
-			else
-			{
-				if (inter.iobj[spells[i].caster]->ioflags & IO_NPC)
-				{
-					target.x=inter.iobj[spells[i].caster]->pos.x - EEsin(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;
-					target.y = inter.iobj[spells[i].caster]->pos.y; 
-					target.z=inter.iobj[spells[i].caster]->pos.z + EEcos(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;					
-				}
-				else
-				{
-					target.x=inter.iobj[spells[i].caster]->pos.x;
-					target.y=inter.iobj[spells[i].caster]->pos.y;
-					target.z=inter.iobj[spells[i].caster]->pos.z;					
-				}
-
-				beta=MAKEANGLE(inter.iobj[spells[i].caster]->angle.b);
+			if(displace) {
+				target.x -= EEsin(radians(beta)) * 300.f;
+				target.z += EEcos(radians(beta)) * 300.f;
 			}
-
-			if (!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target))
-			{
+			if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 				return false;
 			}
-
-			spells[i].target_pos = target;
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].caster_pos);
+			
+			spells[i].target_pos = target;
 			spells[i].exist = true;
-			spells[i].tolive = 2000000;
+			// TODO this tolive value is probably never read
+			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.2f;
-			spells[i].longinfo=-1;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			CRiseDead * pCSpellFx = new CRiseDead();
-					
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;					
-				{
-					pCSpellFx->Create(target, beta);
-					pCSpellFx->SetDuration(2000, 500, 1800);
-					pCSpellFx->SetColorBorder(0.5, 0.5, 0.5);
-					pCSpellFx->SetColorRays1(0.83f, 0.73f, 0.63f);
-					pCSpellFx->SetColorRays2(0,0,0);
-					pCSpellFx->SetColorRays1(0.5, 0.5, 0.5);
-					pCSpellFx->SetColorRays2(1, 0, 0);
-
-					if (pCSpellFx->lLightId == -1)
-					{
-						pCSpellFx->lLightId = GetFreeDynLight();
-					}
-
-					if (pCSpellFx->lLightId != -1)
-					{
-						long id=pCSpellFx->lLightId;
-						DynLight[id].exist=1;
-						DynLight[id].intensity = 1.3f;
-						DynLight[id].fallend=450.f;
-						DynLight[id].fallstart=380.f;
-						DynLight[id].rgb.r=0.0f;
-						DynLight[id].rgb.g=0.0f;
-						DynLight[id].rgb.b=0.0f;
-						DynLight[id].pos.x = target.x;
-						DynLight[id].pos.y = target.y - 100;
-						DynLight[id].pos.z = target.z;
-						DynLight[id].duration=200;
-						DynLight[id].time_creation = (unsigned long)(arxtime);
-					}
-
-					spells[i].pSpellFx = pCSpellFx;
-					spells[i].tolive = pCSpellFx->GetDuration();
-				}
+			spells[i].longinfo = -1;
+			
+			CRiseDead * effect = new CRiseDead();
+			effect->spellinstance = i;
+			effect->Create(target, beta);
+			effect->SetDuration(2000, 500, 1800);
+			effect->SetColorBorder(0.5, 0.5, 0.5);
+			effect->SetColorRays1(0.5, 0.5, 0.5);
+			effect->SetColorRays2(1, 0, 0);
+			
+			if(effect->lLightId == -1) {
+				effect->lLightId = GetFreeDynLight();
 			}
-
+			if(effect->lLightId != -1) {
+				long id = effect->lLightId;
+				DynLight[id].exist = 1;
+				DynLight[id].intensity = 1.3f;
+				DynLight[id].fallend = 450.f;
+				DynLight[id].fallstart = 380.f;
+				DynLight[id].rgb = Color3f::black;
+				DynLight[id].pos = target - Vec3f(0.f, 100.f, 0.f);
+				DynLight[id].duration = 200;
+				DynLight[id].time_creation = (unsigned long)(arxtime);
+			}
+			
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_PARALYSE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;			
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_PARALYSE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &spells[i].caster_pos);
-			spells[i].exist = true;
-			spells[i].tolive = 5000;
 			
-			if (duration>-1) spells[i].tolive=duration;
-
-			if (ValidIONum(spells[i].target))
-			{
-				if (	(spells[i].target==0)
-					&& (spells[i].caster_level<=player.level)	)
-				{
-					float mul=player.resist_magic;
-
-					if (rnd()*100.f<mul)
-					{
-						mul*=( 1.0f / 200 );
-						mul=1.f-mul;
-
-						if (mul<0.5f) mul=0.5f;
-
-						spells[i].tolive=(long)(float)(spells[i].tolive*mul);
-					}
-				}
-				else
-				{
-				INTERACTIVE_OBJ * ioo=inter.iobj[spells[i].target];
-
-				if (ioo->ioflags & IO_NPC)
-				{
-					float mul=ioo->_npcdata->resist_magic;
-
-					if (rnd()*100.f<mul)
-					{
-						mul*=( 1.0f / 200 );
-						mul=1.f-mul;
-
-						if (mul<0.5f) mul=0.5f;
-
-						spells[i].tolive=(long)(float)(spells[i].tolive*mul);
-					}
-				}
-				}
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 5000;
+			
+			float resist_magic = 0.f;
+			if(spells[i].target == 0 && spells[i].caster_level <= player.level) {
+				resist_magic = player.resist_magic;
+			} else if(inter.iobj[spells[i].target]->ioflags & IO_NPC) {
+				resist_magic = inter.iobj[spells[i].target]->_npcdata->resist_magic;
 			}
-					
+			if(rnd() * 100.f < resist_magic) {
+				float mul = max(0.5f, 1.f - (resist_magic * 0.005f));
+				spells[i].tolive = long(spells[i].tolive * mul);
+			}
+			
 			inter.iobj[spells[i].target]->ioflags |= IO_FREEZESCRIPT;
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			ARX_NPC_Kill_Spell_Launch(inter.iobj[spells[i].target]);
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_CREATE_FIELD:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_CREATE_FIELD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			spells[i].exist = true;
-
-			if (flags & SPELLCAST_FLAG_RESTORE)
-			{				
-				if (float(arxtime)-4000>0)
-					spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime) - 4000;
-				else
-					spells[i].lastupdate = spells[i].timcreation=0;
+			
+			unsigned long start = (unsigned long)(arxtime);
+			if(flags & SPELLCAST_FLAG_RESTORE) {
+				start -= std::min(start, 4000ul);
 			}
-			else
-				spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-
-			spells[i].tolive = 800000;
+			spells[i].lastupdate = spells[i].timcreation = start;
+			
+			spells[i].tolive = (duration > -1) ? duration : 800000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.2f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-
+			
 			Vec3f target;
-
-			if (spells[i].caster==0)
-			{
-				target.x = inter.iobj[0]->pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*250.f;
-				target.y = inter.iobj[0]->pos.y;
-				target.z = inter.iobj[0]->pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*250.f;
-			}
-			else			
-			{
-				if (ValidIONum(spells[i].caster))
-				{
-					INTERACTIVE_OBJ * io=inter.iobj[spells[i].caster];
-
-					if (io->ioflags & IO_NPC)
-					{
-						target.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b)))*250.f;
-						target.y = io->pos.y;
-						target.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b)))*250.f;
-					}
-					else
-					{
-						target.x=io->pos.x;					
-						target.y=io->pos.y;
-						target.z=io->pos.z;
-					}
+			float beta;
+			bool displace = false;
+			if(spells[i].caster == 0) {
+				target = inter.iobj[0]->pos;
+				beta = player.angle.b;
+				displace = true;
+			} else {
+				if(ValidIONum(spells[i].caster)) {
+					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+					target = io->pos;
+					beta = io->angle.b;
+					displace = (io->ioflags & IO_NPC);
+				} else {
+					ARX_DEAD_CODE();
 				}
 			}
-
+			if(displace) {
+				target.x -= EEsin(radians(MAKEANGLE(beta))) * 250.f;
+				target.z += EEcos(radians(MAKEANGLE(beta))) * 250.f;
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
-
-			CCreateField * pCSpellFx  = new CCreateField();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				char tmptext[256];
-				strcpy(tmptext,"graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl");
-				INTERACTIVE_OBJ * io;
-				io=AddFix(tmptext,IO_IMMEDIATELOAD);
-
-				if (io)
-				{
-					ARX_INTERACTIVE_HideGore(io);
-					RestoreInitialIOStatusOfIO(io);
-					spells[i].longinfo=GetInterNum(io);
-					io->scriptload=1;
-					io->ioflags|=IO_NOSAVE;
-					io->ioflags|=IO_FIELD;
-
-					io->initpos.x=io->pos.x=target.x;
-					io->initpos.y=io->pos.y=target.y;
-					io->initpos.z=io->pos.z=target.z;
-					MakeTemporaryIOIdent(io);						
-					SendInitScriptEvent(io);
-
-					pCSpellFx->Create(target, 0);
-
-					pCSpellFx->SetDuration(spells[i].tolive);
-					pCSpellFx->lLightId = GetFreeDynLight();
-
-					if (pCSpellFx->lLightId != -1)
-					{
-						long id=pCSpellFx->lLightId;
-						DynLight[id].exist=1;
-						DynLight[id].intensity = 0.7f + 2.3f;
-						DynLight[id].fallend = 500.f;
-						DynLight[id].fallstart = 400.f;
-						DynLight[id].rgb.r = 0.8f;
-						DynLight[id].rgb.g = 0.0f;
-						DynLight[id].rgb.b = 1.0f;
-						DynLight[id].pos.x = pCSpellFx->eSrc.x;
-						DynLight[id].pos.y = pCSpellFx->eSrc.y-150;
-						DynLight[id].pos.z = pCSpellFx->eSrc.z;
-					}
-
-					spells[i].pSpellFx = pCSpellFx;
-					spells[i].tolive = pCSpellFx->GetDuration();
-
-					if (flags & SPELLCAST_FLAG_RESTORE)
-					{
-						pCSpellFx->Update(4000);
-					}
+			
+			CCreateField * effect  = new CCreateField();
+			effect->spellinstance = i;
+			
+			res::path o = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl";
+			INTERACTIVE_OBJ * io = AddFix(o, IO_IMMEDIATELOAD);
+			if(io) {
+				
+				ARX_INTERACTIVE_HideGore(io);
+				RestoreInitialIOStatusOfIO(io);
+				spells[i].longinfo = GetInterNum(io);
+				io->scriptload = 1;
+				io->ioflags |= IO_NOSAVE | IO_FIELD;
+				io->initpos = io->pos = target;
+				MakeTemporaryIOIdent(io);
+				SendInitScriptEvent(io);
+				
+				effect->Create(target, 0);
+				effect->SetDuration(spells[i].tolive);
+				effect->lLightId = GetFreeDynLight();
+				
+				if(effect->lLightId != -1) {
+					long id = effect->lLightId;
+					DynLight[id].exist = 1;
+					DynLight[id].intensity = 0.7f + 2.3f;
+					DynLight[id].fallend = 500.f;
+					DynLight[id].fallstart = 400.f;
+					DynLight[id].rgb = Color3f(0.8f, 0.0f, 1.0f);
+					DynLight[id].pos = effect->eSrc - Vec3f(0.f, 150.f, 0.f);
 				}
-				else spells[i].tolive=0;
+				
+				spells[i].pSpellFx = effect;
+				spells[i].tolive = effect->GetDuration();
+				
+				if(flags & SPELLCAST_FLAG_RESTORE) {
+					effect->Update(4000);
+				}
+				
+			} else {
+				spells[i].tolive = 0;
 			}
-
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_DISARM_TRAP:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_DISARM_TRAP: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 1;
-
-			CDisarmTrap * pCSpellFx = new CDisarmTrap();
-					
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-				target.x=player.pos.x;
-				target.y=player.pos.y;
-				target.z=player.pos.z;
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			
+			CDisarmTrap * effect = new CDisarmTrap();
+			effect->spellinstance = i;
+			
+			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			SPELLCAST_Notify(i);
+			
+			EERIE_SPHERE sphere;
+			sphere.origin = player.pos;
+			sphere.radius = 400.f;
+			
+			for(size_t n = 0; n < MAX_SPELLS; n++) {
 				
-				SPELLCAST_Notify(i);
-
-				for(size_t n = 0; n < MAX_SPELLS; n++) {
-					if (!spells[n].exist) continue;
-
-					if(spells[n].type == SPELL_RUNE_OF_GUARDING) {
-						CSpellFx *pCSpellFX = spells[n].pSpellFx;
-						
-						if(pCSpellFX) {
-							CRuneOfGuarding * crg=(CRuneOfGuarding *)pCSpellFX;
-							EERIE_SPHERE sphere;
-							sphere.origin=crg->eSrc;
-							sphere.radius=400.f;
-							
-							if(sphere.contains(target)) {
-								spells[n].caster_level-=spells[i].caster_level;
-								if(spells[n].caster_level <= 0) {
-									spells[n].tolive=0;
-								}
-							}
-						}
+				if(!spells[n].exist || spells[n].type != SPELL_RUNE_OF_GUARDING) {
+					continue;
+				}
+				
+				if(!spells[n].pSpellFx) {
+					continue;
+				}
+				
+				CSpellFx * effect = spells[n].pSpellFx;
+				if(sphere.contains(static_cast<CRuneOfGuarding *>(effect)->eSrc)) {
+					spells[n].caster_level -= spells[i].caster_level;
+					if(spells[n].caster_level <= 0) {
+						spells[n].tolive = 0;
 					}
 				}
 			}
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_SLOW_DOWN:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
 			
-			bool bOk = true;
-
-			INTERACTIVE_OBJ *io = inter.iobj[spells[i].target];
-
-			for (int il=0; il<io->nb_spells_on; il++)
-			{
-				if (spells[io->spells_on[il]].type == SPELL_SLOW_DOWN)
-				{
+			break;
+		}
+		
+		case SPELL_SLOW_DOWN: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			long target = spells[i].target;
+			
+			INTERACTIVE_OBJ * io = inter.iobj[target];
+			for(int il = 0; il < io->nb_spells_on; il++) {
+				if(spells[io->spells_on[il]].type == SPELL_SLOW_DOWN) {
 					spells[i].exist = false;
 					return false;
 				}
 			}
-
-			if (bOk)
-			{
-				ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &spells[i].caster_pos);
-				spells[i].exist = true;
-
-				if (spells[i].caster==0)
-					spells[i].tolive = 10000000;
-				else
-					spells[i].tolive = 10000;
-
-				if (duration>-1) spells[i].tolive=duration;
-
-				spells[i].pSpellFx = NULL;
-				spells[i].bDuration = true;
-				spells[i].fManaCostPerSecond = 1.2f;
-				
-				CSlowDown * pCSpellFx = new CSlowDown();
-				
-				if (pCSpellFx != NULL)
-				{
-					pCSpellFx->spellinstance=i;
-					Vec3f target;
-					target = spells[i].target_pos;
-					pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-					pCSpellFx->SetDuration(spells[i].tolive);
-					spells[i].pSpellFx = pCSpellFx;
-					spells[i].tolive = pCSpellFx->GetDuration();
-				}
-
-				SPELLCAST_Notify(i);
-				
-				
-				ARX_SPELLS_AddSpellOn(spells[i].target,i);
-
-				if ((spells[i].target>=0) && (spells[i].target<inter.nbmax))
-				{
-					if (inter.iobj[spells[i].target])
-					{
-							inter.iobj[spells[i].target]->speed_modif -= spells[i].caster_level*( 1.0f / 20 );
-					}
-				}
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &spells[i].caster_pos);
+			
+			spells[i].exist = true;
+			spells[i].tolive = (spells[i].caster == 0) ? 10000000 : 10000;
+			if(duration > -1) {
+				spells[i].tolive=duration;
 			}
-		}	
-		break;
-		//****************************************************************************************
-		// LEVEL 7 SPELLS -----------------------------------------------------------------------------
-		case SPELL_FLYING_EYE:
-		{	
-			if (eyeball.exist!=0) return false;
-
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-
-			if (spells[i].target!=0)
+			spells[i].pSpellFx = NULL;
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 1.2f;
+			
+			CSlowDown * effect = new CSlowDown();
+			effect->spellinstance = i;
+			effect->Create(spells[i].target_pos, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			SPELLCAST_Notify(i);
+			
+			ARX_SPELLS_AddSpellOn(target, i);
+			
+			if(ValidIONum(target)) {
+				inter.iobj[target]->speed_modif -= spells[i].caster_level * 0.05f;
+			}
+			
+			break;
+		}
+		
+		// level 7 spells
+		
+		case SPELL_FLYING_EYE: {
+			
+			if(eyeball.exist) {
 				return false;
-
+			}
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
+			}
+			
+			if(spells[i].target != 0) {
+				return false;
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
-			spells[i].exist=true;
+			
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive=1000000;
+			spells[i].tolive = 1000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 3.2f;
-			eyeball.exist=1;
-			eyeball.pos.x=player.pos.x-(float)EEsin(radians(MAKEANGLE(player.angle.b)))*200.f;
-			eyeball.pos.y=player.pos.y+50.f;
-			eyeball.pos.z=player.pos.z+(float)EEcos(radians(MAKEANGLE(player.angle.b)))*200.f;
+			eyeball.exist = 1;
+			float angleb = MAKEANGLE(player.angle.b);
+			eyeball.pos.x = player.pos.x - EEsin(radians(angleb)) * 200.f;
+			eyeball.pos.y = player.pos.y + 50.f;
+			eyeball.pos.z = player.pos.z + EEcos(radians(angleb)) * 200.f;
 			eyeball.angle = player.angle;
-			long j;
-
-			for (long n=0;n<12;n++)
-			{
-				j=ARX_PARTICLES_GetFree();
-
-				if ((j!=-1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=true;
-					pd->zdec=0;							
- 
-					pd->ov.x=eyeball.pos.x+5.f-rnd()*10.f;
-					pd->ov.y=eyeball.pos.y+5.f-rnd()*10.f;
-					pd->ov.z=eyeball.pos.z+5.f-rnd()*10.f;
-					pd->move.x=2.f-4.f*rnd();
-					pd->move.y=2.f-4.f*rnd();
-					pd->move.z=2.f-4.f*rnd();
-					pd->siz=28.f;
-					pd->tolive=Random::get(2000, 6000);
-					pd->scale.x=12.f;
-					pd->scale.y=12.f;
-					pd->scale.z=12.f;
-					pd->timcreation=spells[i].lastupdate;
-					pd->tc=tc4;
-					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					pd->fparam=0.0000001f;
-					pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+			
+			for(long n = 0; n < 12; n++) {
+				
+				long j = ARX_PARTICLES_GetFree();
+				if(j == -1 || arxtime.is_paused()) {
+					continue;
 				}
+				
+				ParticleCount++;
+				PARTICLE_DEF * pd = &particle[j];
+				pd->exist = true;
+				pd->zdec = 0;
+				Vec3f rand(5.f - rnd() * 10.f, 5.f - rnd() * 10.f, 5.f - rnd() * 10.f);
+				pd->ov = eyeball.pos + rand;
+				Vec3f move(2.f - 4.f * rnd(), 2.f - 4.f * rnd(), 2.f - 4.f * rnd());
+				pd->move = move;
+				pd->siz = 28.f;
+				pd->tolive = Random::get(2000, 6000);
+				pd->scale = Vec3f(12.f, 12.f, 12.f);
+				pd->timcreation = spells[i].lastupdate;
+				pd->tc = tc4;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				              | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-
-			TRUE_PLAYER_MOUSELOOK_ON = true;	
-			SLID_START=float(arxtime);
-			bOldLookToggle=config.input.mouseLookToggle;
-			config.input.mouseLookToggle=true;
-
+			
+			TRUE_PLAYER_MOUSELOOK_ON = true;
+			SLID_START = float(arxtime);
+			bOldLookToggle = config.input.mouseLookToggle;
+			config.input.mouseLookToggle = true;
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_FIRE_FIELD:
-		{
-			if ( !CanPayMana( i, ARX_SPELLS_GetManaCost( typ, i ) ) )
-			{
+			break;
+		}
+		
+		case SPELL_FIRE_FIELD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
 				return false;
 			}
-
-			if ( !GLOBAL_MAGIC_MODE )
-			{
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
 			}
 			
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster( SPELL_FIRE_FIELD, spells[i].caster );
-			
-			if ( iCancel > -1 )
-			{
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-					
-			ARX_SOUND_PlaySFX( SND_SPELL_FIRE_FIELD_START );
-			spells[i].exist					= true;
-			spells[i].tolive				= 100000;
-			spells[i].bDuration				= true;
-			spells[i].fManaCostPerSecond	= 2.8f;
-			spells[i].longinfo2				= -1;
 			
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_START);
 			
-			if ( duration > -1 ) spells[i].tolive = duration;
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 100000;
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 2.8f;
+			spells[i].longinfo2 = -1;
 			
-			CFireField * pCSpellFx = new CFireField();
-
-			if ( pCSpellFx != NULL )
-			{
-				pCSpellFx->spellinstance	= i;
-
-				Vec3f target;
-
-				if ( spells[i].caster == 0 )
-				{					
-					target.x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*250.f;
-					target.y = player.pos.y + 170;
-					target.z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*250.f;
+			CFireField * effect = new CFireField();
+			effect->spellinstance = i;
+			
+			Vec3f target;
+			float beta;
+			float displace = false;
+			if(spells[i].caster == 0) {
+				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				beta = player.angle.b;
+				displace = true;
+			} else {
+				if(ValidIONum(spells[i].caster)) {
+					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+					target = io->pos;
+					beta = io->angle.b;
+					displace = (io->ioflags & IO_NPC);
+				} else {
+					ARX_DEAD_CODE();
 				}
-				else			
-				{
-					if ( ValidIONum( spells[i].caster ) )
-					{
-						INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
-
-						if ( io->ioflags & IO_NPC )
-						{
-							target.x = io->pos.x - EEsin( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
-							target.y = io->pos.y;
-							target.z = io->pos.z + EEcos( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
-						}
-						else
-						{
-							target.x = io->pos.x;					
-							target.y = io->pos.y;
-							target.z = io->pos.z;
-						}
-					}
-
-					else
-					{
-						ARX_DEAD_CODE();
-						target.x = 0;					
-						target.y = 0;
-						target.z = 0;
-					}
-
-
-				}
-
-				spells[i].longinfo = ARX_DAMAGES_GetFree();
-
-				if ( spells[i].longinfo != -1 )
-				{
-					damages[spells[i].longinfo].radius  = 150.f;
-					damages[spells[i].longinfo].damages = 10.f;
-					damages[spells[i].longinfo].area	= DAMAGE_FULL;
-					damages[spells[i].longinfo].duration= 100000000;
-					damages[spells[i].longinfo].source	= spells[i].caster;
-					damages[spells[i].longinfo].flags	= 0;
-					damages[spells[i].longinfo].type	= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
-					damages[spells[i].longinfo].exist	= true;
-					damages[spells[i].longinfo].pos.x	= target.x;
-					damages[spells[i].longinfo].pos.y	= target.y;
-					damages[spells[i].longinfo].pos.z	= target.z;
-				}
-
-				pCSpellFx->Create( 200.f, &target, spells[i].tolive );
-
-				spells[i].pSpellFx	= pCSpellFx;
-				spells[i].tolive	= pCSpellFx->GetDuration();
-				spells[i].snd_loop	= ARX_SOUND_PlaySFX( SND_SPELL_FIRE_FIELD_LOOP, &target, 1.0F, ARX_SOUND_PLAY_LOOPED );
 			}
-
-			SPELLCAST_Notify( i );			
+			if(displace) {
+				target.x -= EEsin(radians(MAKEANGLE(beta))) * 250.f;
+				target.z += EEcos(radians(MAKEANGLE(beta))) * 250.f;
+			}
+			
+			spells[i].longinfo = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo != -1) {
+				damages[spells[i].longinfo].radius = 150.f;
+				damages[spells[i].longinfo].damages = 10.f;
+				damages[spells[i].longinfo].area = DAMAGE_FULL;
+				damages[spells[i].longinfo].duration = 100000000;
+				damages[spells[i].longinfo].source = spells[i].caster;
+				damages[spells[i].longinfo].flags = 0;
+				damages[spells[i].longinfo].type = DAMAGE_TYPE_MAGICAL
+				                                   | DAMAGE_TYPE_FIRE
+				                                   | DAMAGE_TYPE_FIELD;
+				damages[spells[i].longinfo].exist = true;
+				damages[spells[i].longinfo].pos = target;
+			}
+			
+			effect->Create(200.f, &target, spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_LOOP,
+			                                       &target, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_ICE_FIELD:
-		{
-			if ( !CanPayMana( i, ARX_SPELLS_GetManaCost( typ, i ) ) )
-			{
+		
+		case SPELL_ICE_FIELD: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
 				return false;
 			}
-
-			if ( !GLOBAL_MAGIC_MODE )
-			{
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
 			}
 			
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster( SPELL_ICE_FIELD, spells[i].caster );
-
-			if ( iCancel > -1 )
-			{
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
 				
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
-			spells[i].exist			= true;
-			spells[i].lastupdate	= spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive		= 100000;
-			spells[i].bDuration		= true;
-			spells[i].fManaCostPerSecond = 2.8f;
-			spells[i].longinfo2		=-1;
-
-			if ( duration > -1 ) 
-			{
-				spells[i].tolive = duration;
-			}
-
-			CIceField * pCSpellFx = new CIceField();
-					
-			if ( pCSpellFx != NULL )
-			{
-				pCSpellFx->spellinstance = i;
-				Vec3f target;
-
-				if ( spells[i].caster == 0 )						
-				{
-					target.x = player.pos.x - EEsin( radians( MAKEANGLE( player.angle.b ) ) ) * 250.f;
-					target.y = player.pos.y + 170;
-					target.z = player.pos.z + EEcos( radians( MAKEANGLE( player.angle.b ) ) ) * 250.f;
-				}
-				else			
-				{
-					if ( ValidIONum( spells[i].caster ) )
-					{
-						INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
-
-						if ( io->ioflags & IO_NPC )
-						{
-							target.x = io->pos.x - EEsin( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
-							target.y = io->pos.y;
-							target.z = io->pos.z + EEcos( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
-						}
-						else
-						{
-							target.x = io->pos.x;					
-							target.y = io->pos.y;
-							target.z = io->pos.z;
-						}
-					}
-
-					else
-					{
-						ARX_DEAD_CODE();
-						target.x = 0;					
-						target.y = 0;
-						target.z = 0;
-					}
-
-
-				}
-
-				spells[i].longinfo = ARX_DAMAGES_GetFree();
-
-				if ( spells[i].longinfo != -1 )
-				{
-					damages[spells[i].longinfo].radius  = 150.f;
-					damages[spells[i].longinfo].damages = 10.f;
-					damages[spells[i].longinfo].area	= DAMAGE_FULL;
-					damages[spells[i].longinfo].duration= 100000000;
-					damages[spells[i].longinfo].source	= spells[i].caster;
-					damages[spells[i].longinfo].flags	= 0;
-					damages[spells[i].longinfo].type	= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
-					damages[spells[i].longinfo].exist	= true;
-					damages[spells[i].longinfo].pos.x	= target.x;
-					damages[spells[i].longinfo].pos.y	= target.y;
-					damages[spells[i].longinfo].pos.z	= target.z;
-				}
-
-				pCSpellFx->Create( target, MAKEANGLE( player.angle.b ) );
-				pCSpellFx->SetDuration( spells[i].tolive );
-				spells[i].pSpellFx	= pCSpellFx;
-				spells[i].tolive	= pCSpellFx->GetDuration();
-			}
-
-			SPELLCAST_Notify( i );
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_LIGHTNING_STRIKE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
+			
 			spells[i].exist = true;
-				
-			CLightning * pCSpellFx = new CLightning();
-				
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f source, target;
-				source.x = 0;
-				source.y = 0;
-				source.z = 0;
-				target.x = 0;
-				target.y = 0;
-				target.z = -500;
-				pCSpellFx->Create(source, target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration((long)(500*spells[i].caster_level));
-				pCSpellFx->lSrc = 0;
-					
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+			spells[i].tolive = (duration > -1) ? duration : 100000;
+			spells[i].bDuration = true;
+			spells[i].fManaCostPerSecond = 2.8f;
+			spells[i].longinfo2 =-1;
+			
+			CIceField * effect = new CIceField();
+			effect->spellinstance = i;
+			
+			Vec3f target;
+			float beta;
+			float displace = false;
+			if(spells[i].caster == 0) {
+				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				beta = player.angle.b;
+				displace = true;
+			} else {
+				if(ValidIONum(spells[i].caster)) {
+					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+					target = io->pos;
+					beta = io->angle.b;
+					displace = (io->ioflags & IO_NPC);
+				} else {
+					ARX_DEAD_CODE();
+				}
 			}
-
-			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &spells[i].caster_pos);
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
+			if(displace) {
+				target.x -= EEsin(radians(MAKEANGLE(beta))) * 250.f;
+				target.z += EEcos(radians(MAKEANGLE(beta))) * 250.f;
+			}
+			
+			spells[i].longinfo = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo != -1) {
+				damages[spells[i].longinfo].radius = 150.f;
+				damages[spells[i].longinfo].damages = 10.f;
+				damages[spells[i].longinfo].area = DAMAGE_FULL;
+				damages[spells[i].longinfo].duration = 100000000;
+				damages[spells[i].longinfo].source = spells[i].caster;
+				damages[spells[i].longinfo].flags = 0;
+				damages[spells[i].longinfo].type = DAMAGE_TYPE_MAGICAL
+				                                   | DAMAGE_TYPE_COLD
+				                                   | DAMAGE_TYPE_FIELD;
+				damages[spells[i].longinfo].exist = true;
+				damages[spells[i].longinfo].pos = target;
+			}
+			
+			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_CONFUSE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_LIGHTNING_STRIKE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
+			
+			spells[i].exist = true;
+			
+			CLightning * effect = new CLightning();
+			effect->spellinstance = i;
+			Vec3f target(0.f, 0.f, -500.f);
+			effect->Create(Vec3f::ZERO, target, MAKEANGLE(player.angle.b));
+			effect->SetDuration(long(500 * spells[i].caster_level));
+			effect->lSrc = 0;
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &spells[i].caster_pos);
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP,
+			                                       &spells[i].caster_pos, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		case SPELL_CONFUSE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.5f;
-
-			if (duration>-1) spells[i].tolive=duration;	
-
-			CConfuse * pCSpellFx = new CConfuse();
-
-			if (pCSpellFx)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-				target.x=player.pos.x;
-				target.y=player.pos.y;
-				target.z=player.pos.z;
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			} else {
+				// TODO what then?
 			}
-
-		
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
+			
+			CConfuse * effect = new CConfuse();
+			effect->spellinstance = i;
+			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
 			long source = spells[i].caster;
 			char spell[128];
-
-			if (MakeSpellName(spell,spells[i].type))
-			{
-				if (ValidIONum(spells[i].target))				
-				{
-					if (source >= 0) 
-						EVENT_SENDER = inter.iobj[source];
-					else 
-						EVENT_SENDER = NULL;
-
-					char param[256];
-					sprintf(param,"%s %ld",spell,(long)spells[i].caster_level);
-					SendIOScriptEvent(inter.iobj[spells[i].target], SM_SPELLCAST, param);
-				}
-			}	
+			if(MakeSpellName(spell, spells[i].type) && ValidIONum(spells[i].target)) {
+				EVENT_SENDER = (source >= 0) ? inter.iobj[source] : NULL;
+				char param[256];
+				sprintf(param,"%s %ld", spell, long(spells[i].caster_level));
+				SendIOScriptEvent(inter.iobj[spells[i].target], SM_SPELLCAST, param);
+			}
+			
+			break;
+		}
 		
-		}	
-		break;
-		//*********************************************************************************
-		// LEVEL 8 SPELLS -----------------------------------------------------------------------------
-		case SPELL_INVISIBILITY:
-		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		// level 8 spells
+		
+		case SPELL_INVISIBILITY: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			spells[i].exist=true;
-			spells[i].tolive=6000000;
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 3.f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-
-			inter.iobj[spells[i].target]->GameFlags|=GFLAG_INVISIBILITY;
-			inter.iobj[spells[i].target]->invisibility=0.f;
-			ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &spells[i].caster_pos);
-			SPELLCAST_Notify(i);				
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
-		}
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_MANA_DRAIN:
-		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 			
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
 			}
 
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,spells[i].caster);
-
-			if (iCancel > -1)
-			{
-				spells[iCancel].tolive = 0;
+			inter.iobj[spells[i].target]->GameFlags |= GFLAG_INVISIBILITY;
+			inter.iobj[spells[i].target]->invisibility = 0.f;
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &spells[i].caster_pos);
+			
+			SPELLCAST_Notify(i);
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			break;
+		}
+		
+		case SPELL_MANA_DRAIN: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
 			}
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			spells[i].exist=true;
-			spells[i].tolive=6000000;					
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
+				spells[iCancel].tolive = 0;
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 1.2F, ARX_SOUND_PLAY_LOOPED);
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			spells[i].longinfo=ARX_DAMAGES_GetFree();
-
-			if (spells[i].longinfo!=-1)
-			{
-				damages[spells[i].longinfo].radius=150.f;
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
+			                                       &spells[i].caster_pos, 1.2f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			spells[i].longinfo = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo != -1) {
+				damages[spells[i].longinfo].radius = 150.f;
 				damages[spells[i].longinfo].damages = 8.f;
-				damages[spells[i].longinfo].area=DAMAGE_FULL;
-				damages[spells[i].longinfo].duration=100000000;
-				damages[spells[i].longinfo].source=spells[i].caster;
-				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[spells[i].longinfo].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
-				damages[spells[i].longinfo].exist=true;
+				damages[spells[i].longinfo].area = DAMAGE_FULL;
+				damages[spells[i].longinfo].duration = 100000000;
+				damages[spells[i].longinfo].source = spells[i].caster;
+				damages[spells[i].longinfo].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				                                    | DAMAGE_FLAG_FOLLOW_SOURCE
+				                                    | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damages[spells[i].longinfo].type = DAMAGE_TYPE_FAKEFIRE
+				                                   | DAMAGE_TYPE_MAGICAL
+				                                   | DAMAGE_TYPE_DRAIN_MANA;
+				damages[spells[i].longinfo].exist = true;
 			}
-
-			spells[i].longinfo2=GetFreeDynLight();
-
-			if (spells[i].longinfo2 != -1)
-			{
+			
+			spells[i].longinfo2 = GetFreeDynLight();
+			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
 				DynLight[id].exist = 1;
 				DynLight[id].intensity = 2.3f;
 				DynLight[id].fallend = 700.f;
 				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb.r = 0.0f;
-				DynLight[id].rgb.g = 0.0f;
-				DynLight[id].rgb.b = 1.0f;
+				DynLight[id].rgb = Color3f::blue;
 				DynLight[id].pos = spells[i].caster_pos;
 				DynLight[id].duration=900;
 			}
-
-			SPELLCAST_Notify(i);				
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_EXPLOSION:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_EXPLOSION: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
-					
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 2000;
 			
-			spells[i].longinfo=ARX_DAMAGES_GetFree();
-			Vec3f target;
-			target.x=inter.iobj[spells[i].caster]->pos.x;
-			target.y=inter.iobj[spells[i].caster]->pos.y-60.f;
-
-			if (spells[i].caster==0)
-					target.y+=120.f;
-
-			target.z=inter.iobj[spells[i].caster]->pos.z;
-
-			if (spells[i].longinfo!=-1)
-			{
-				damages[spells[i].longinfo].radius=350.f;
-				damages[spells[i].longinfo].damages=10.f;
-				damages[spells[i].longinfo].area = DAMAGE_AREA; 
-				damages[spells[i].longinfo].duration=spells[i].tolive;
-				damages[spells[i].longinfo].source=spells[i].caster;
-				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[spells[i].longinfo].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-				damages[spells[i].longinfo].exist=true;
-				damages[spells[i].longinfo].pos.x=target.x;
-				damages[spells[i].longinfo].pos.y=target.y;
-				damages[spells[i].longinfo].pos.z=target.z;
+			Vec3f target = inter.iobj[spells[i].caster]->pos;
+			if(spells[i].caster == 0) {
+				target.y += 60.f;
+			} else {
+				target.y -= 60.f;
 			}
-
-			spells[i].longinfo2=GetFreeDynLight();
-
-			if (spells[i].longinfo2 != -1)
-			{
+			
+			spells[i].longinfo = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo != -1) {
+				damages[spells[i].longinfo].radius = 350.f;
+				damages[spells[i].longinfo].damages = 10.f;
+				damages[spells[i].longinfo].area = DAMAGE_AREA; 
+				damages[spells[i].longinfo].duration = spells[i].tolive;
+				damages[spells[i].longinfo].source = spells[i].caster;
+				damages[spells[i].longinfo].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				                                    | DAMAGE_FLAG_FOLLOW_SOURCE
+				                                    | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damages[spells[i].longinfo].type = DAMAGE_TYPE_FAKEFIRE
+				                                    | DAMAGE_TYPE_MAGICAL;
+				damages[spells[i].longinfo].exist = true;
+				damages[spells[i].longinfo].pos = target;
+			}
+			
+			spells[i].longinfo2 = GetFreeDynLight();
+			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
 				DynLight[id].exist = 1;
 				DynLight[id].intensity = 2.3f;
 				DynLight[id].fallend = 700.f;
 				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb.r = 0.1f+rnd()*( 1.0f / 3 );
-				DynLight[id].rgb.g = 0.1f+rnd()*( 1.0f / 3 );
-				DynLight[id].rgb.b = 0.8f+rnd()*( 1.0f / 5 );
-				DynLight[id].pos.x = target.x;
-				DynLight[id].pos.y = target.y;
-				DynLight[id].pos.z = target.z;
-				DynLight[id].duration=200;
+				DynLight[id].rgb.r = 0.1f + rnd() * (1.f / 3);
+				DynLight[id].rgb.g = 0.1f + rnd() * (1.f / 3);
+				DynLight[id].rgb.b = 0.8f + rnd() * (1.f / 5);
+				DynLight[id].pos = target;
+				DynLight[id].duration = 200;
 			}
-
-			AddQuakeFX(300,2000,400,1);
-
+			
+			AddQuakeFX(300, 2000, 400, 1);
+			
 			for(long i_angle = 0 ; i_angle < 360 ; i_angle += 12) {
 				for(long j = -100 ; j < 100 ; j += 50) {
-					
-					float rr = radians((float) i_angle);
-					Vec3f pos(target.x - EEsin(rr) * 360.f, target.y, target.z + EEcos(rr) * 360.f);
-					Vec3f dir = Vec3f(pos.x - target.x, 0.f, pos.z - target.z).getNormalized() * 60.f;
-					
-					Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3), 0.8f + rnd() * (1.f/5));
-					
+					float rr = radians(float(i_angle));
+					Vec3f pos(target.x - EEsin(rr) * 360.f, target.y,
+					          target.z + EEcos(rr) * 360.f);
+					Vec3f dir = Vec3f(pos.x - target.x, 0.f,
+					                  pos.z - target.z).getNormalized() * 60.f;
+					Color3f rgb(0.1f + rnd() * (1.f/3), 0.1f + rnd() * (1.f/3),
+					            0.8f + rnd() * (1.f/5));
 					Vec3f posi = target + Vec3f(0.f, j * 2, 0.f);
-					
 					LaunchFireballBoom(&posi, 16, &dir, &rgb);
 				}
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_ENCHANT_WEAPON:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_ENCHANT_WEAPON: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			spells[i].exist = true;
 			spells[i].tolive = 20;
-				
+			
 			SPELLCAST_NotifyOnlyTarget(i);
+			break;
 		}
-		break;			
-		//----------------------------------------------------------------------------
-		case SPELL_LIFE_DRAIN:
-		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+		
+		case SPELL_LIFE_DRAIN: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			}
+			
+			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,
+			                                                   spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
 			}
-
-			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN,spells[i].caster);
-
-			if (iCancel > -1)
-			{
+			
+			iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_MANA_DRAIN,
+			                                              spells[i].caster);
+			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
-			}				
-
-			spells[i].exist=true;
-			spells[i].tolive=6000000;
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 12.f;
-
-			if (duration>-1) spells[i].tolive=duration;
-
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD, &spells[i].caster_pos, 0.8F, ARX_SOUND_PLAY_LOOPED);
-			spells[i].longinfo=ARX_DAMAGES_GetFree();
-
-			if (spells[i].longinfo!=-1)
-			{
-				long id=spells[i].longinfo;
-				damages[id].radius=150.f;
-				damages[id].damages=spells[i].caster_level*( 1.0f / 10 )*.8f;
-				damages[id].area = DAMAGE_AREA; 
-				damages[id].duration=100000000;
-				damages[id].source=spells[i].caster;
-				damages[id].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
-				damages[id].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
-				damages[id].exist=true;
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_SHIELD,
+			                                       &spells[i].caster_pos, 0.8f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
+			spells[i].longinfo = ARX_DAMAGES_GetFree();
+			if(spells[i].longinfo != -1) {
+				long id = spells[i].longinfo;
+				damages[id].radius = 150.f;
+				damages[id].damages = spells[i].caster_level * 0.08f;
+				damages[id].area = DAMAGE_AREA;
+				damages[id].duration = 100000000;
+				damages[id].source = spells[i].caster;
+				damages[id].flags = DAMAGE_FLAG_DONT_HURT_SOURCE
+				                    | DAMAGE_FLAG_FOLLOW_SOURCE
+				                    | DAMAGE_FLAG_ADD_VISUAL_FX;
+				damages[id].type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL
+				                   | DAMAGE_TYPE_DRAIN_LIFE;
+				damages[id].exist = true;
 			}
-
-			spells[i].longinfo2=GetFreeDynLight();
-
-			if (spells[i].longinfo2 != -1)
-			{
+			
+			spells[i].longinfo2 = GetFreeDynLight();
+			if(spells[i].longinfo2 != -1) {
 				long id = spells[i].longinfo2;
 				DynLight[id].exist = 1;
 				DynLight[id].intensity = 2.3f;
 				DynLight[id].fallend = 700.f;
 				DynLight[id].fallstart = 500.f;
-				DynLight[id].rgb.r = 1.0f;
-				DynLight[id].rgb.g = 0.0f;
-				DynLight[id].rgb.b = 0.0f;
+				DynLight[id].rgb = Color3f::red;
 				DynLight[id].pos = spells[i].caster_pos;
-				DynLight[id].duration=900;
+				DynLight[id].duration = 900;
 			}
-
-			SPELLCAST_Notify(i);				
+			
+			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
-		//*****************************************************************************************
-		// LEVEL 9 SPELLS -----------------------------------------------------------------------------
-		case SPELL_SUMMON_CREATURE:
-		{
-			if (spells[i].caster_level>=9)
-			{
-				if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
+		
+		// level 9 spells
+		
+		case SPELL_SUMMON_CREATURE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
 			}
-			else if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
-			spells[i].longinfo=0;
-			spells[i].longinfo2=0;
-
-			if (duration>-1) 
-				spells[i].tolive=duration;	
-			else
-				spells[i].tolive = 2000000;
+			spells[i].longinfo = 0;
+			spells[i].longinfo2 = 0;
+			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			
 			Vec3f target;
-
-			if (spells[i].caster==0)
-			{
-				target.x=player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*300.f;
-				target.y = player.pos.y + 170.f; 
-				target.z=player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*300.f;
+			float beta;
+			bool displace = false;
+			if(spells[i].caster == 0) {
+				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				beta = player.angle.b;
+				displace = true;
+			} else {
+				target = inter.iobj[spells[i].caster]->pos;
+				beta = inter.iobj[spells[i].caster]->angle.b;
+				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC);
 			}
-			else
-			{
-				if (inter.iobj[spells[i].caster]->ioflags & IO_NPC)
-				{
-					target.x=inter.iobj[spells[i].caster]->pos.x - EEsin(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;
-					target.y = inter.iobj[spells[i].caster]->pos.y;
-					target.z=inter.iobj[spells[i].caster]->pos.z + EEcos(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;					
-				}
-				else
-				{
-					target.x=inter.iobj[spells[i].caster]->pos.x;
-					target.y=inter.iobj[spells[i].caster]->pos.y;
-					target.z=inter.iobj[spells[i].caster]->pos.z;					
-				}
+			if(displace) {
+				target.x -= EEsin(radians(MAKEANGLE(beta))) * 300.f;
+				target.z += EEcos(radians(MAKEANGLE(beta))) * 300.f;
 			}
-
-			if (!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target))
-			{
+			
+			if(!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target)) {
 				spells[i].exist = false;
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 				return false;
 			}
-
-			if ((spells[i].caster==0) && (cur_mega==10))
-				spells[i].fdata=1.f;
-			else
-				spells[i].fdata=0.f;
-
+			
+			spells[i].fdata = (spells[i].caster == 0 && cur_mega == 10) ? 1.f : 0.f;
 			spells[i].target_pos = target;
-			CSummonCreature * pCSpellFx = new CSummonCreature();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-					
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-					pCSpellFx->SetDuration(2000, 500, 1500);
-					pCSpellFx->SetColorBorder(Color3f::red);
-					pCSpellFx->SetColorRays1(Color3f::red);
-					pCSpellFx->SetColorRays2(Color3f::yellow * .5f);
-					
-					pCSpellFx->lLightId = GetFreeDynLight();
-
-					if (pCSpellFx->lLightId > -1)
-					{
-						long id = pCSpellFx->lLightId;
-						DynLight[id].exist = 1;
-						DynLight[id].intensity = 0.3f;
-						DynLight[id].fallend = 500.f;
-						DynLight[id].fallstart = 400.f;
-						DynLight[id].rgb = Color3f::red;
-						DynLight[id].pos = pCSpellFx->eSrc;
-					}
-
-				spells[i].pSpellFx = pCSpellFx;
+			
+			CSummonCreature * effect = new CSummonCreature();
+			effect->spellinstance = i;
+			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->SetDuration(2000, 500, 1500);
+			effect->SetColorBorder(Color3f::red);
+			effect->SetColorRays1(Color3f::red);
+			effect->SetColorRays2(Color3f::yellow * .5f);
+			
+			effect->lLightId = GetFreeDynLight();
+			if(effect->lLightId > -1) {
+				long id = effect->lLightId;
+				DynLight[id].exist = 1;
+				DynLight[id].intensity = 0.3f;
+				DynLight[id].fallend = 500.f;
+				DynLight[id].fallstart = 400.f;
+				DynLight[id].rgb = Color3f::red;
+				DynLight[id].pos = effect->eSrc;
 			}
-
+			
+			spells[i].pSpellFx = effect;
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		case SPELL_FAKE_SUMMON:
-		{
-			if (spells[i].caster_level>=9)
-			{
-				if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-			}
-			else if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (	(spells[i].caster<=0)
-				||	(!ValidIONum(spells[i].target))		)
+			break;
+		}
+		
+		case SPELL_FAKE_SUMMON: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
 				return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			}
+			
+			if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
-
-			if (duration>-1) 
-				spells[i].tolive = 4000; 
-			else
-				spells[i].tolive = 4000;
+			spells[i].tolive = 4000;
 			
-			Vec3f target = inter.iobj[spells[i].target]->pos;			
+			Vec3f target = inter.iobj[spells[i].target]->pos;
 			if(spells[i].target != 0) {
 				target.y -= 170.f;
 			}
-			
 			spells[i].target_pos = target;
-			CSummonCreature * pCSpellFx = new CSummonCreature();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-					
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(2000, 500, 1500);
-				pCSpellFx->SetColorBorder(Color3f::red);
-				pCSpellFx->SetColorRays1(Color3f::red);
-				pCSpellFx->SetColorRays2(Color3f::yellow * .5f);
-					
-				pCSpellFx->lLightId = GetFreeDynLight();
-
-				if (pCSpellFx->lLightId > -1)
-				{
-					long id = pCSpellFx->lLightId;
-					DynLight[id].exist = 1;
-					DynLight[id].intensity = 0.3f;
-					DynLight[id].fallend = 500.f;
-					DynLight[id].fallstart = 400.f;
-					DynLight[id].rgb = Color3f::red;
-					DynLight[id].pos = pCSpellFx->eSrc;
-					
-				}
-
-				spells[i].pSpellFx = pCSpellFx;
+			
+			CSummonCreature * effect = new CSummonCreature();
+			effect->spellinstance = i;
+			effect->Create(target, MAKEANGLE(player.angle.b));
+			effect->SetDuration(2000, 500, 1500);
+			effect->SetColorBorder(Color3f::red);
+			effect->SetColorRays1(Color3f::red);
+			effect->SetColorRays2(Color3f::yellow * .5f);
+			
+			effect->lLightId = GetFreeDynLight();
+			
+			if(effect->lLightId > -1) {
+				long id = effect->lLightId;
+				DynLight[id].exist = 1;
+				DynLight[id].intensity = 0.3f;
+				DynLight[id].fallend = 500.f;
+				DynLight[id].fallstart = 400.f;
+				DynLight[id].rgb = Color3f::red;
+				DynLight[id].pos = effect->eSrc;
 			}
-
+			
+			spells[i].pSpellFx = effect;
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_NEGATE_MAGIC:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_NEGATE_MAGIC: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
-
-			if (duration>-1) 
-				spells[i].tolive=duration;	
-			else
-				spells[i].tolive = 1000000;
-
-			CNegateMagic * pCSpellFx = new CNegateMagic();
+			spells[i].tolive = (duration > -1) ? duration : 1000000;
 			
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-				target.x=player.pos.x;
-				target.y=player.pos.y;
-				target.z=player.pos.z;
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
+			CNegateMagic * effect = new CNegateMagic();
+			effect->spellinstance = i;
+			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = 0;
 			}
-
-			if (spells[i].caster==0)
-				spells[i].target=0;
-
-			if (ValidIONum(spells[i].target))
+			
+			if(ValidIONum(spells[i].target)) {
 				LaunchAntiMagicField(i);
-
+			}
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_INCINERATE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			INTERACTIVE_OBJ * tio=inter.iobj[spells[i].target];
-
-			if	((tio->ioflags & IO_NPC) && (tio->_npcdata->life<=0.f))
+			break;
+		}
+		
+		case SPELL_INCINERATE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
 				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			INTERACTIVE_OBJ * tio = inter.iobj[spells[i].target];
+			if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
+				return false;
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE,
+			                                       &spells[i].caster_pos, 1.f,
+			                                       ARX_SOUND_PLAY_LOOPED);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 20000;
 			
-			tio->sfx_flag|=SFX_TYPE_YLSIDE_DEATH;
-			tio->sfx_flag|=SFX_TYPE_INCINERATE;
+			tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 			tio->sfx_time = (unsigned long)(arxtime);
-			ARX_SPELLS_AddSpellOn(spells[i].target,i);
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
 			SPELLCAST_Notify(i);
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_MASS_PARALYSE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_MASS_PARALYSE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
+			
 			spells[i].exist = true;
-
-			if (duration>-1) 
-				spells[i].tolive=duration;
-			else
-				spells[i].tolive = 10000;
-
-			spells[i].longinfo2=0;
-
-			for (long ii=0;ii<inter.nbmax;ii++)
-			{
-				INTERACTIVE_OBJ * tio=inter.iobj[ii];
-
-				if (	(ii==spells[i].caster)
-					||	(!tio)
-					||	(!(tio->ioflags & IO_NPC))
-					||	(tio->show!=SHOW_FLAG_IN_SCENE)
-					||	(tio->ioflags & IO_FREEZESCRIPT)
-					||	(distSqr(tio->pos, inter.iobj[spells[i].caster]->pos) > square(500.f))	
-					)
+			spells[i].tolive = (duration > -1) ? duration : 10000;
+			spells[i].longinfo2 = 0;
+			
+			for(long ii = 0; ii < inter.nbmax; ii++) {
+				
+				INTERACTIVE_OBJ * tio = inter.iobj[ii];
+				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
-
+				}
+				
+				if(tio->show != SHOW_FLAG_IN_SCENE) {
+					continue;
+				}
+				
+				if(tio->ioflags & IO_FREEZESCRIPT) {
+					continue;
+				}
+				
+				if(fartherThan(tio->pos, inter.iobj[spells[i].caster]->pos, 500.f)) {
+					continue;
+				}
+				
 				tio->ioflags |= IO_FREEZESCRIPT;
+				
 				ARX_NPC_Kill_Spell_Launch(tio);
-				ARX_SPELLS_AddSpellOn(ii,i);
+				ARX_SPELLS_AddSpellOn(ii, i);
+				
 				spells[i].longinfo2++;
-				spells[i].misc=realloc(spells[i].misc,sizeof(long)*spells[i].longinfo2);
-				long * ptr=(long *)spells[i].misc;
-				ptr[spells[i].longinfo2-1]=ii;
-			}			
-
-					SPELLCAST_Notify(i);
-		}	
-		break;
-		//********************************************************************************************
-		// LEVEL 10 SPELLS -----------------------------------------------------------------------------
-		case SPELL_MASS_LIGHTNING_STRIKE:
-		{	
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+				spells[i].misc = realloc(spells[i].misc,
+				                         sizeof(long) * spells[i].longinfo2);
+				long * ptr = (long *)spells[i].misc;
+				ptr[spells[i].longinfo2 - 1] = ii;
+			}
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		// level 10 spells
+		
+		case SPELL_MASS_LIGHTNING_STRIKE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
-				if ((spells[ii].exist) && (spells[ii].type==typ))
-				{
-					if (spells[ii].longinfo!=-1) 
-						DynLight[spells[ii].longinfo].exist=0;
-
-					spells[ii].longinfo=-1;
-					spells[ii].tolive=0;
+				if(spells[ii].exist && spells[ii].type == typ) {
+					if(spells[ii].longinfo != -1) {
+						DynLight[spells[ii].longinfo].exist = 0;
+					}
+					spells[ii].longinfo = -1;
+					spells[ii].tolive = 0;
 				}
 			}
-					
-			spells[i].exist=true;
+			
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive=5000;			
-			spells[i].siz=0;
-			spells[i].longinfo=GetFreeDynLight();
-
-			if (spells[i].longinfo!=-1)
-			{
-				long id=spells[i].longinfo;
-				DynLight[id].exist=1;
-				DynLight[id].intensity=1.8f;
-				DynLight[id].fallend=450.f;
-				DynLight[id].fallstart=380.f;
-				DynLight[id].rgb.r=1.f;
-				DynLight[id].rgb.g=0.75f;
-				DynLight[id].rgb.b=0.75f;
+			spells[i].tolive = 5000; // TODO probably never read
+			spells[i].siz = 0;
+			
+			spells[i].longinfo = GetFreeDynLight();
+			if(spells[i].longinfo != -1) {
+				long id = spells[i].longinfo;
+				DynLight[id].exist = 1;
+				DynLight[id].intensity = 1.8f;
+				DynLight[id].fallend = 450.f;
+				DynLight[id].fallstart = 380.f;
+				DynLight[id].rgb = Color3f(1.f, 0.75f, 0.75f);
 				DynLight[id].pos = spells[i].vsource;
 			}
-
-			CMassLightning * pCSpellFx;
-			pCSpellFx = new CMassLightning(std::max(checked_range_cast<long>(spells[i].caster_level), 1L));
-
-		
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-
-				if (spells[i].caster==0)
-				{
-					target.x=player.pos.x  - EEsin(radians(MAKEANGLE(player.angle.b)))*500.f;
-					target.y=player.pos.y  + 150.f;
-					target.z=player.pos.z  + EEcos(radians(MAKEANGLE(player.angle.b)))*500.f;
-				}
-				else
-				{
-					INTERACTIVE_OBJ * io=inter.iobj[spells[i].caster];
-					target.x=io->pos.x  - EEsin(radians(MAKEANGLE(io->angle.b)))*500.f;
-					target.y=io->pos.y  - 20.f;
-					target.z=io->pos.z  + EEcos(radians(MAKEANGLE(io->angle.b)))*500.f;
-				}
-
-				pCSpellFx->SetDuration((long)(500*spells[i].caster_level));
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
 			
-				spells[i].pSpellFx = pCSpellFx;
-				spells[i].tolive = pCSpellFx->GetDuration();
-				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &target, 1.0F, ARX_SOUND_PLAY_LOOPED);
+			long count = std::max(long(spells[i].caster_level), 1l);
+			CMassLightning * effect = new CMassLightning(count);
+			effect->spellinstance=i;
+			
+			Vec3f target;
+			float beta;
+			if(spells[i].caster == 0) {
+				target = player.pos + Vec3f(0.f, 150.f, 0.f);
+				beta = player.angle.b;
+			} else {
+				INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+				target = io->pos + Vec3f(0.f, -20.f, 0.f);
+				beta = io->angle.b;
 			}
-					
+			target.x -= EEsin(radians(MAKEANGLE(beta))) * 500.f;
+			target.z += EEcos(radians(MAKEANGLE(beta))) * 500.f;
+			
+			effect->SetDuration(long(500 * spells[i].caster_level));
+			effect->Create(target, MAKEANGLE(player.angle.b));
+			spells[i].pSpellFx = effect;
+			spells[i].tolive = effect->GetDuration();
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
-			SPELLCAST_Notify(i);
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_LOOP, &target,
+			                                       1.f, ARX_SOUND_PLAY_LOOPED);
+			
 			// Draws White Flash on Screen
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);												
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			float val = 1.f; 
-
-			EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, Color3f(0.5f + val * (1.0f/2), val, val).to<u8>());
+			EERIEDrawBitmap(0.f, 0.f, float(DANAESIZX), float(DANAESIZY), 0.00009f,
+			                NULL, Color::white);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_CONTROL_TARGET:
-		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!ValidIONum(spells[i].target))
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
+		
+		case SPELL_CONTROL_TARGET: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
 				return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!ValidIONum(spells[i].target)) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
-			long tcount=0;
-			INTERACTIVE_OBJ * tmp_io=inter.iobj[spells[i].target];
-
-			for (long ii=1;ii<inter.nbmax;ii++)
-			{
-				INTERACTIVE_OBJ * ioo=inter.iobj[ii];
-
-				if (	(ioo)
-					&&	(ioo->ioflags & IO_NPC)
-					&&	(ioo->_npcdata->life>0.f)
-					&&	(ioo->show==SHOW_FLAG_IN_SCENE)
-					&&	(ioo->groups.find("demon") != ioo->groups.end())
-					&&	(distSqr(ioo->pos, spells[i].caster_pos) < square(900.f))
-					)
-				{
+			}
+			
+			long tcount = 0;
+			for(long ii = 1; ii < inter.nbmax; ii++) {
+				
+				INTERACTIVE_OBJ * ioo = inter.iobj[ii];
+				if(!ioo || !(ioo->ioflags & IO_NPC)) {
+					continue;
+				}
+				
+				if(ioo->_npcdata->life <= 0.f || ioo->show != SHOW_FLAG_IN_SCENE) {
+					continue;
+				}
+				
+				if(ioo->groups.find("demon") == ioo->groups.end()) {
+					continue;
+				}
+				
+				if(closerThan(ioo->pos, spells[i].caster_pos, 900.f)) {
 					tcount++;
 					long n = spells[i].caster_level;
-					std::string str = tmp_io->long_name() + ' ' + itoa(n);
-					SendIOScriptEvent( ioo, SM_NULL, str, "npc_control" );
+					std::string str = inter.iobj[spells[i].target]->long_name() + ' '
+					                  + itoa(n);
+					SendIOScriptEvent(ioo, SM_NULL, str, "npc_control");
 				}
 			}
-
-			if (tcount==0) return false;
+			if(tcount == 0) {
+				return false;
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 1000;
 			
-			CControlTarget * pCSpellFx = new CControlTarget();
-
-			if (pCSpellFx != NULL)
-			{
-				pCSpellFx->spellinstance=i;
-				Vec3f target;
-				target.x=player.pos.x;
-				target.y=player.pos.y;
-				target.z=player.pos.z;
-				pCSpellFx->Create(target, MAKEANGLE(player.angle.b));
-				pCSpellFx->SetDuration(spells[i].tolive);
-				spells[i].pSpellFx = pCSpellFx;
-			}
-
+			CControlTarget * effect = new CControlTarget();
+			effect->spellinstance = i;
+			effect->Create(player.pos, MAKEANGLE(player.angle.b));
+			effect->SetDuration(spells[i].tolive);
+			spells[i].pSpellFx = effect;
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-
-		//----------------------------------------------------------------------------	
-		case SPELL_FREEZE_TIME:
-		{	
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_FREEZE_TIME: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
-
+			}
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
-			spells[i].siz=spells[i].caster_level*0.08f;
+			
+			spells[i].siz = spells[i].caster_level * 0.08f;
 			GLOBAL_SLOWDOWN -= spells[i].siz;
 			
-			spells[i].exist=true;						
-			spells[i].tolive=200000;		
-
-			if (duration>-1) spells[i].tolive=duration;
-
+			spells[i].exist = true;
+			spells[i].tolive = (duration > -1) ? duration : 200000;
 			spells[i].bDuration = true;
-			spells[i].fManaCostPerSecond = 30.f*spells[i].siz;
-			spells[i].longinfo=(long)arxtime.get_updated();
+			spells[i].fManaCostPerSecond = 30.f * spells[i].siz;
+			spells[i].longinfo = (long)arxtime.get_updated();
+			
 			SPELLCAST_Notify(i);
-		}	
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_MASS_INCINERATE:
-		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
+			break;
+		}
+		
+		case SPELL_MASS_INCINERATE: {
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
 				return No_MagicAllowed();
+			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
+			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 20000;
+			
 			long nb_targets=0;
-
-			for (long ii=0;ii<inter.nbmax;ii++)
-			{
-				INTERACTIVE_OBJ * tio=inter.iobj[ii];
-
-				if (	(ii==spells[i].caster)
-					||	(!tio)
-					||	(!(tio->ioflags & IO_NPC))
-					||	((tio->ioflags & IO_NPC) && (tio->_npcdata->life<=0.f))
-					||	(tio->show!=SHOW_FLAG_IN_SCENE)
-					||	(distSqr(tio->pos, inter.iobj[spells[i].caster]->pos) > square(500.f))	)
+			for(long ii = 0; ii < inter.nbmax; ii++) {
+				
+				INTERACTIVE_OBJ * tio = inter.iobj[ii];
+				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
-
-				tio->sfx_flag|=SFX_TYPE_YLSIDE_DEATH;
-				tio->sfx_flag|=SFX_TYPE_INCINERATE;
+				}
+				
+				if(tio->_npcdata->life <= 0.f || tio->show != SHOW_FLAG_IN_SCENE) {
+					continue;
+				}
+				
+				if(fartherThan(tio->pos, inter.iobj[spells[i].caster]->pos, 500.f)) {
+					continue;
+				}
+				
+				tio->sfx_flag |= SFX_TYPE_YLSIDE_DEATH | SFX_TYPE_INCINERATE;
 				tio->sfx_time = (unsigned long)(arxtime);
 				nb_targets++;
-				ARX_SPELLS_AddSpellOn(ii,i);
-			}			
-
-			SPELLCAST_Notify(i);
-
-			if (nb_targets)
-				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
-			else
+				ARX_SPELLS_AddSpellOn(ii, i);
+			}
+			
+			if(nb_targets) {
+				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE,
+				                                       &spells[i].caster_pos, 1.f,
+				                                       ARX_SOUND_PLAY_LOOPED);
+			} else {
 				spells[i].snd_loop = -1;
-		}	
-		break;			
-		//----------------------------------------------------------------------------
-		case SPELL_TELEPORT:
-		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
-
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
-
-			if (!GLOBAL_MAGIC_MODE)
-				return No_MagicAllowed();
-
-			spells[i].exist=true;
-			spells[i].tolive=7000;
-			ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &spells[i].caster_pos);
-
-			if (spells[i].caster==0) LASTTELEPORT = 0.0F;
-
+			}
+			
 			SPELLCAST_Notify(i);
+			break;
 		}
-		break;
+		
+		case SPELL_TELEPORT: {
+			
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			
+			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+				return false;
+			}
+			
+			if(!GLOBAL_MAGIC_MODE) {
+				return No_MagicAllowed();
+			}
+			
+			spells[i].exist = true;
+			spells[i].tolive = 7000;
+			
+			ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &spells[i].caster_pos);
+			
+			if(spells[i].caster == 0) {
+				LASTTELEPORT = 0.f;
+			}
+			
+			SPELLCAST_Notify(i);
+			break;
+		}
 	}
-
+	
 	return true;
 }
 
