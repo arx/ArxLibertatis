@@ -3442,7 +3442,102 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	spells[i].pSpellFx=NULL;
 	spells[i].type = typ;
 	spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-
+	
+	
+	// Check spell-specific preconditions
+	switch(typ) {
+		
+		case SPELL_MAGIC_SIGHT: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_HEAL: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_BLESS: {
+			if(ARX_SPELLS_ExistAnyInstance(typ)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_TELEKINESIS: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_FLYING_EYE: {
+			if(eyeball.exist) {
+				return false;
+			}
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_INVISIBILITY: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_MANA_DRAIN: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_LIFE_DRAIN: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_CONTROL_TARGET: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_FREEZE_TIME: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		case SPELL_TELEPORT: {
+			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
+				return false;
+			}
+			break;
+		}
+		
+		default: break; // no preconditions to check
+	}
+	
+	if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
+		return false;
+	}
+	
+	if(!GLOBAL_MAGIC_MODE) {
+		return No_MagicAllowed();
+	}
+	
 	switch(typ) {
 		
 		case SPELL_NONE: break;
@@ -3450,18 +3545,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// level 1 spells
 		
 		case SPELL_MAGIC_SIGHT: {
-			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			spells[i].fManaCostPerSecond = 0.36f;
@@ -3482,14 +3565,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_MAGIC_MISSILE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			spells[i].tolive = 20000; // TODO probably never read
@@ -3513,14 +3588,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_IGNIT: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			spells[i].tolive = 20000; // TODO probably never read
@@ -3601,14 +3668,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_DOUSE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			spells[i].tolive = 20000;
@@ -3704,14 +3763,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_ACTIVATE_PORTAL: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
 			spells[i].exist = true;
 			spells[i].tolive = 20;
@@ -3723,18 +3774,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// level 2 spells
 		
 		case SPELL_HEAL: {
-			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &spells[i].caster_pos);
@@ -3758,14 +3797,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_DETECT_TRAP: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
@@ -3793,14 +3824,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_ARMOR: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
 			if(idx >= 0) {
@@ -3860,14 +3883,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_LOWER_ARMOR: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
@@ -3921,14 +3936,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_HARM: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_HARM, &spells[i].caster_pos);
@@ -3989,14 +3996,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_SPEED: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
 			
@@ -4038,14 +4037,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_DISPELL_ILLUSION: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 			spells[i].exist = true;
 			spells[i].tolive = 1000;
@@ -4075,14 +4066,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_FIREBALL: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
@@ -4148,14 +4131,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_CREATE_FOOD: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 3500;
@@ -4176,14 +4151,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_ICE_PROJECTILE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &spells[i].caster_pos);
 			spells[i].exist = true;
@@ -4218,18 +4185,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_BLESS: {
 			
-			if(ARX_SPELLS_ExistAnyInstance(typ)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
 			}
@@ -4261,14 +4216,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_DISPELL_FIELD: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			SPELLCAST_Notify(i);
 			spells[i].tolive = 10;
@@ -4336,14 +4283,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_FIRE_PROTECTION: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION);
 			
 			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
@@ -4393,14 +4332,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_COLD_PROTECTION: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
 			if(idx >= 0) {
@@ -4455,18 +4386,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_TELEKINESIS: {
 			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
@@ -4483,14 +4402,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_CURSE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].target);
 			if(iCancel > -1) {
@@ -4529,14 +4440,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_RUNE_OF_GUARDING: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -4558,14 +4461,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_LEVITATE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
@@ -4603,14 +4498,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_CURE_POISON: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
 			}
@@ -4643,14 +4530,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_REPEL_UNDEAD: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_REPEL_UNDEAD, spells[i].caster);
 			if(iCancel > -1) {
@@ -4686,14 +4565,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_POISON_PROJECTILE: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH,
 			                  &spells[i].caster_pos);
 			
@@ -4721,14 +4592,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// level 6 spells
 		
 		case SPELL_RISE_DEAD: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
@@ -4797,14 +4660,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_PARALYSE: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &spells[i].caster_pos);
 			
 			spells[i].exist = true;
@@ -4831,14 +4686,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_CREATE_FIELD: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			
@@ -4923,14 +4770,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_DISARM_TRAP: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
 			
 			spells[i].exist = true;
@@ -4975,14 +4814,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_SLOW_DOWN: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			long target = spells[i].target;
 			
 			INTERACTIVE_OBJ * io = inter.iobj[target];
@@ -5025,22 +4856,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// level 7 spells
 		
 		case SPELL_FLYING_EYE: {
-			
-			if(eyeball.exist) {
-				return false;
-			}
-			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
@@ -5100,14 +4915,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_FIRE_FIELD: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
@@ -5176,14 +4983,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_ICE_FIELD: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(typ, spells[i].caster);
 			if(iCancel > -1) {
 				spells[iCancel].tolive = 0;
@@ -5249,14 +5048,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_LIGHTNING_STRIKE: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			spells[i].exist = true;
 			
 			CLightning * effect = new CLightning();
@@ -5279,14 +5070,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_CONFUSE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE);
 			
@@ -5325,18 +5108,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_INVISIBILITY: {
 			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			spells[i].exist = true;
 			spells[i].tolive = (duration > -1) ? duration : 6000000;
 			spells[i].bDuration = true;
@@ -5359,18 +5130,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_MANA_DRAIN: {
-			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,
 			                                                   spells[i].caster);
@@ -5426,14 +5185,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_EXPLOSION: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 			
@@ -5502,14 +5253,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_ENCHANT_WEAPON: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			spells[i].exist = true;
 			spells[i].tolive = 20;
 			
@@ -5518,18 +5261,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_LIFE_DRAIN: {
-			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_HARM,
 			                                                   spells[i].caster);
@@ -5587,14 +5318,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// level 9 spells
 		
 		case SPELL_SUMMON_CREATURE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
 			
@@ -5659,16 +5382,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_FAKE_SUMMON: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
 			if(spells[i].caster <= 0 || !ValidIONum(spells[i].target)) {
 				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
@@ -5713,14 +5428,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_NEGATE_MAGIC: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC);
 			
 			spells[i].exist = true;
@@ -5750,14 +5457,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_INCINERATE: {
 			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			INTERACTIVE_OBJ * tio = inter.iobj[spells[i].target];
 			if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
 				return false;
@@ -5782,14 +5481,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_MASS_PARALYSE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
 			
@@ -5835,14 +5526,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		// level 10 spells
 		
 		case SPELL_MASS_LIGHTNING_STRIKE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 				if(spells[ii].exist && spells[ii].type == typ) {
@@ -5909,20 +5592,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_CONTROL_TARGET: {
 			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
 			if(!ValidIONum(spells[i].target)) {
 				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
 			}
 			
 			long tcount = 0;
@@ -5971,18 +5642,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_FREEZE_TIME: {
 			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
-			
 			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 			
 			spells[i].siz = spells[i].caster_level * 0.08f;
@@ -5999,14 +5658,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_MASS_INCINERATE: {
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
 			
@@ -6049,18 +5700,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		
 		case SPELL_TELEPORT: {
-			
-			if(ARX_SPELLS_ExistAnyInstanceForThisCaster(typ, spells[i].caster)) {
-				return false;
-			}
-			
-			if(!CanPayMana(i, ARX_SPELLS_GetManaCost(typ, i))) {
-				return false;
-			}
-			
-			if(!GLOBAL_MAGIC_MODE) {
-				return No_MagicAllowed();
-			}
 			
 			spells[i].exist = true;
 			spells[i].tolive = 7000;
