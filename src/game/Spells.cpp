@@ -3538,9 +3538,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		return No_MagicAllowed();
 	}
 	
+	bool notifyAll = true;
+	
 	switch(typ) {
 		
-		case SPELL_NONE: break;
+		case SPELL_NONE: return true;
 		
 		// level 1 spells
 		
@@ -3551,7 +3553,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].bDuration = true;
 			spells[i].tolive = (duration > -1) ? duration : 6000000l;
 			
-			SPELLCAST_Notify(i);
 			ARX_SOUND_PlaySFX(SND_SPELL_VISION_START, &spells[i].caster_pos);
 			
 			if(spells[i].caster == 0) {
@@ -3583,7 +3584,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3663,7 +3663,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3757,7 +3756,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3767,7 +3765,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].exist = true;
 			spells[i].tolive = 20;
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3792,7 +3789,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3819,7 +3815,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].fManaCostPerSecond = 0.4f;
 			spells[i].bDuration = true;
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3877,7 +3872,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3931,7 +3925,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -3988,7 +3981,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				DynLight[id].pos = spells[i].caster_pos;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4021,8 +4013,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
-			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			if(spells[i].caster >= 0 && spells[i].target < inter.nbmax) {
@@ -4040,7 +4030,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
 			spells[i].exist = true;
 			spells[i].tolive = 1000;
-			SPELLCAST_Notify(i);
 			
 			for(size_t n = 0; n < MAX_SPELLS; n++) {
 				
@@ -4125,7 +4114,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND,
 			                                       &spells[i].caster_pos, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
-			SPELLCAST_Notify(i);
+			
 			break;
 		}
 		
@@ -4146,7 +4135,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4177,7 +4165,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4211,13 +4198,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
 		case SPELL_DISPELL_FIELD: {
 			
-			SPELLCAST_Notify(i);
 			spells[i].tolive = 10;
 			
 			long valid = 0, dispelled = 0;
@@ -4327,7 +4312,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4380,7 +4364,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4397,7 +4380,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_START, &spells[i].caster_pos);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4432,7 +4414,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4456,7 +4437,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4492,7 +4472,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4525,7 +4504,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4559,7 +4537,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4585,7 +4562,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4654,7 +4630,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4681,7 +4656,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			ARX_NPC_Kill_Spell_Launch(inter.iobj[spells[i].target]);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4764,7 +4738,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = 0;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4783,8 +4756,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
-			
-			SPELLCAST_Notify(i);
 			
 			EERIE_SPHERE sphere;
 			sphere.origin = player.pos;
@@ -4841,8 +4812,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
-			
-			SPELLCAST_Notify(i);
 			
 			ARX_SPELLS_AddSpellOn(target, i);
 			
@@ -4910,7 +4879,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			bOldLookToggle = config.input.mouseLookToggle;
 			config.input.mouseLookToggle = true;
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -4977,7 +4945,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                                       &target, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5042,7 +5009,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5065,7 +5031,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                                       &spells[i].caster_pos, 1.f,
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5092,14 +5057,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			long source = spells[i].caster;
-			char spell[128];
-			if(MakeSpellName(spell, spells[i].type) && ValidIONum(spells[i].target)) {
-				EVENT_SENDER = (source >= 0) ? inter.iobj[source] : NULL;
-				char param[256];
-				sprintf(param,"%s %ld", spell, long(spells[i].caster_level));
-				SendIOScriptEvent(inter.iobj[spells[i].target], SM_SPELLCAST, param);
-			}
+			notifyAll = false; // TODO inconsistent use of the SM_SPELLCAST event
 			
 			break;
 		}
@@ -5121,8 +5079,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			inter.iobj[spells[i].target]->invisibility = 0.f;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &spells[i].caster_pos);
-			
-			SPELLCAST_Notify(i);
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
@@ -5180,7 +5136,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				DynLight[id].duration=900;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5247,7 +5202,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_WIND);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5256,7 +5210,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].exist = true;
 			spells[i].tolive = 20;
 			
-			SPELLCAST_NotifyOnlyTarget(i);
+			notifyAll = false; // TODO inconsistent use of the SM_SPELLCAST event
+			
 			break;
 		}
 		
@@ -5311,7 +5266,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				DynLight[id].duration = 900;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5376,7 +5330,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].pSpellFx = effect;
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5422,7 +5375,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].pSpellFx = effect;
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5451,7 +5403,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				LaunchAntiMagicField(i);
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5476,7 +5427,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5519,7 +5469,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				ptr[spells[i].longinfo2 - 1] = ii;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5586,7 +5535,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                NULL, Color::white);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5636,7 +5584,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5653,7 +5600,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].fManaCostPerSecond = 30.f * spells[i].siz;
 			spells[i].longinfo = (long)arxtime.get_updated();
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5695,7 +5641,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].snd_loop = -1;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
 		
@@ -5710,9 +5655,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				LASTTELEPORT = 0.f;
 			}
 			
-			SPELLCAST_Notify(i);
 			break;
 		}
+	}
+	
+	if(notifyAll) {
+		SPELLCAST_Notify(i);
+	} else {
+		SPELLCAST_NotifyOnlyTarget(i);
 	}
 	
 	return true;
