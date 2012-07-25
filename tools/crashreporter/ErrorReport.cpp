@@ -288,7 +288,7 @@ QString getLinuxDistribution() {
 				codename = codename.mid(prefix.length()).trimmed();
 			}
 			
-			if(!codename.isEmpty() && codename != "n/a") {
+			if(!codename.isEmpty() && codename != "n/a" && !distro.contains(codename)) {
 				distro += " (";
 				distro += codename;
 				distro += ")";
