@@ -20,6 +20,7 @@
 #include "audio/openal/OpenALBackend.h"
 
 #include <stddef.h>
+#include <cstring>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -125,7 +126,11 @@ aalError OpenALBackend::init(bool enableEffects) {
 	{
 		efx_ver = " without EFX";
 	}
-	LogInfo << "Using " << renderer << ' ' << version << efx_ver;
+	const char * prefix = "";
+	if(std::strncmp(renderer, "OpenAL", 6) != 0) {
+		prefix = "OpenAL ";
+	}
+	LogInfo << "Using " << prefix << renderer << ' ' << version << efx_ver;
 	
 	CrashHandler::setVariable("OpenAL renderer", renderer);
 	CrashHandler::setVariable("OpenAL version", version);
