@@ -201,7 +201,6 @@ extern long LOOKING_FOR_SPELL_TARGET;
 extern long PATHFINDER_WAIT;
 extern unsigned char * grps;
 extern long		LastSelectedIONum;
-extern long		NOCHECKSUM;
 extern unsigned long ROTATE_START;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
@@ -664,7 +663,6 @@ void runGame() {
 	
 	
 	NOBUILDMAP=1;
-	NOCHECKSUM=1;
 
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();
@@ -697,8 +695,6 @@ void runGame() {
 	LogDebug("Danae Start");
 	
 	LogDebug("Project Init");
-	
-	NOCHECKSUM=0;
 	
 	PUSH_PLAYER_FORCE = Vec3f::ZERO;
 	ARX_SPECIAL_ATTRACTORS_Reset();
@@ -763,7 +759,6 @@ void runGame() {
 		LogDebug("FINAL_RELEASE");
 		LaunchDemo=1;
 		Project.demo=LEVEL10;
-		NOCHECKSUM=1;
 	} else {
 		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
@@ -782,7 +777,6 @@ void runGame() {
 #endif
 		
 		NOBUILDMAP=1;
-		NOCHECKSUM=1;
 	}
 	
 	if(!AdjustUI()) {

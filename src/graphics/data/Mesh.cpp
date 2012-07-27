@@ -2953,8 +2953,6 @@ extern void LoadLevelScreen();
 extern void LoadLevelScreen(long lev);
 
 extern float PROGRESS_BAR_COUNT;
-long NOCHECKSUM = 0;
-
 
 bool FastSceneLoad(const res::path & partial_path) {
 	

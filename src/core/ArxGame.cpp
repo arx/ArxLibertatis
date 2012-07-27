@@ -137,7 +137,6 @@ extern long GAME_EDITOR;
 extern long PLAY_LOADED_CINEMATIC;
 extern long CHANGE_LEVEL_PROC_RESULT;
 extern long NOBUILDMAP;
-extern long NOCHECKSUM;
 extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
 extern long SPLASH_THINGS_STAGE;
@@ -2083,7 +2082,6 @@ norenderend:
 
 	if ((LaunchDemo) && (FirstFrame == 0))
 	{
-		NOCHECKSUM=1;
 		LaunchDemo=0;
 		LaunchDummyParticle();
 	}
