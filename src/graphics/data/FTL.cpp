@@ -76,8 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 using std::vector;
 
-extern long NOCHECKSUM;
-
 #ifdef BUILD_EDIT_LOADSAVE
 
 bool ARX_FTL_Save(const fs::path & file, const EERIE_3DOBJ * obj) {

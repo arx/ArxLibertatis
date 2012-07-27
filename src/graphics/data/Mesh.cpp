@@ -2975,12 +2975,6 @@ bool FastSceneLoad(const res::path & partial_path) {
 	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
 	pos += sizeof(UNIQUE_HEADER);
 	
-	if(!NOCHECKSUM && res::path::load(uh->path) != path) {
-		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
-		free(dat);
-		return false;
-	}
-	
 	if(uh->version != FTS_VERSION) {
 		LogError << "FastSceneLoad version mistmatch: got " << uh->version << " expected " << FTS_VERSION;
 		free(dat);
