@@ -761,7 +761,6 @@ extern long EERIEInit;
 extern Vec3f BBOXMIN,BBOXMAX;
 extern EERIE_BACKGROUND * ACTIVEBKG;
 extern EERIE_CAMERA * ACTIVECAM;
-extern long USE_FAST_SCENES;
 
 extern float Xratio;
 extern float Yratio;

@@ -2954,7 +2954,6 @@ extern void LoadLevelScreen(long lev);
 
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
-long USE_FAST_SCENES = 1;
 
 
 bool FastSceneLoad(const res::path & partial_path) {
@@ -2962,10 +2961,6 @@ bool FastSceneLoad(const res::path & partial_path) {
 	// TODO bounds checking
 	
 	LogDebug("Fast Scene Load " << partial_path);
-	if(!USE_FAST_SCENES) {
-		LogDebug("Not using fast scenes.");
-		return false;
-	}
 	
 	res::path path = "game" / partial_path;
 	res::path file = path / "fast.fts";
@@ -4115,11 +4110,8 @@ void ComputePortalVertexBuffer()
 
 		int iMaxRoom = min(portals->nb_rooms, 255L);
 
-		if (portals->nb_rooms > 255)
-		{
-			char tTxt[256];
-			sprintf(tTxt, "rooms > 255");
-			LogError<<tTxt<<" Error Portals";
+		if(portals->nb_rooms > 255) {
+			LogError << "rooms > 255 - Error Portals";
 			return;
 		}
 
@@ -4278,24 +4270,21 @@ void ComputePortalVertexBuffer()
 				iNbVertexForRoom += iNbVertex;
 				iNbIndiceForRoom += iNbIndice;
 			}
-
+			
 			if(!iNbVertexForRoom) {
-				LogError << "portals " << iNb << " - Zero Vertex" << " Error Portals";
-				
+				LogWarning << "no vertices in room " << iNb;
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-				
 				for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
 					free(*it);
 				}
-				
 				continue;
 			}
-
+			
 			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
 			
 			// TODO should be static, but is updated for dynamic lighting
 			pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
-
+			
 			SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
 
 			int iStartVertex = 0;

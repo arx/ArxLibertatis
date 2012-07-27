@@ -2004,13 +2004,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 {
 
 	
-	if (RoomDraw[room_num].count)
-	{
-		if(!portals->room[room_num].pVertexBuffer)
-		{
-			char tTxt[256];
-			sprintf(tTxt,"portals %ld - Zero Polys",room_num);
-			LogError<< tTxt<<" Error Portals";
+	if(RoomDraw[room_num].count) {
+		
+		if(!portals->room[room_num].pVertexBuffer) {
+			// No need to spam this for every frame as there will already be an
+			// earlier warning
+			LogDebug("no vertex data for room " << room_num);
 			return;
 		}
 		

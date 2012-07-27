@@ -694,7 +694,6 @@ void runGame() {
 	
 	memset(explo, 0, sizeof(explo));
 	
-	USE_FAST_SCENES = 1;
 	LogDebug("Danae Start");
 	
 	LogDebug("Project Init");
