@@ -118,9 +118,10 @@ void UncompressedFile::read(void * buf) const {
 	
 	fs::read(archive, buf, size());
 	
-	archive.clear();
-	
 	arx_assert(!archive.fail());
+	arx_assert(size_t(archive.gcount()) == size());
+	
+	archive.clear();
 }
 
 PakFileHandle * UncompressedFile::open() const {
@@ -216,10 +217,12 @@ public:
 struct BlastFileInBuffer : private boost::noncopyable {
 	
 	std::ifstream & file;
+	size_t remaining;
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
-	explicit BlastFileInBuffer(std::ifstream * f) : file(*f) { }
+	explicit BlastFileInBuffer(std::ifstream * f, size_t count)
+		: file(*f), remaining(count) { }
 	
 };
 
@@ -229,28 +232,29 @@ size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
 	*buf = p->readbuf;
 	
-	return fs::read(p->file, p->readbuf, ARRAY_SIZE(p->readbuf)).gcount();
-}
-
-static int blast(std::ifstream & file, char * buf, size_t size) {
+	size_t count = std::min(p->remaining, ARRAY_SIZE(p->readbuf));
+	p->remaining -= count;
 	
-	BlastFileInBuffer in(&file);
-	BlastMemOutBuffer out(buf, size);
-	
-	return blast(blastInFile, &in, blastOutMem, &out);
+	return fs::read(p->file, p->readbuf, count).gcount();
 }
 
 void CompressedFile::read(void * buf) const {
 	
 	archive.seekg(offset);
 	
-	int r = blast(archive, reinterpret_cast<char *>(buf), size());
+	BlastFileInBuffer in(&archive, storedSize);
+	BlastMemOutBuffer out(reinterpret_cast<char *>(buf), size());
+	
+	int r = blast(blastInFile, &in, blastOutMem, &out);
 	if(r) {
 		LogError << "blast error " << r << " outSize=" << size();
 	}
 	
-	archive.clear();
+	arx_assert(!archive.fail());
+	arx_assert(in.remaining == 0);
+	arx_assert(out.size == 0);
 	
+	archive.clear();
 }
 
 PakFileHandle * CompressedFile::open() const {
@@ -311,7 +315,7 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 	
 	file.archive.seekg(file.offset);
 	
-	BlastFileInBuffer in(&file.archive);
+	BlastFileInBuffer in(&file.archive, file.storedSize);
 	BlastMemOutBufferOffset out;
 	
 	out.buf = reinterpret_cast<char *>(buf);
@@ -406,6 +410,7 @@ void PlainFile::read(void * buf) const {
 	fs::read(ifs, buf, size());
 	
 	arx_assert(!ifs.fail());
+	arx_assert(size_t(ifs.gcount()) == size());
 }
 
 PakFileHandle * PlainFile::open() const {
