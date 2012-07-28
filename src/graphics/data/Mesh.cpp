@@ -4122,8 +4122,7 @@ namespace {
 struct SINFO_TEXTURE_VERTEX {
 	
 	int opaque;
-	int iNbIndiceCull_TMultiplicative;
-	int iNbIndiceNoCull_TMultiplicative;
+	int multiplicative;
 	int iNbIndiceCull_TAdditive;
 	int iNbIndiceNoCull_TAdditive;
 	int iNbIndiceCull_TNormalTrans;
@@ -4132,8 +4131,7 @@ struct SINFO_TEXTURE_VERTEX {
 	int iNbIndiceNoCull_TSubstractive;
 	
 	SINFO_TEXTURE_VERTEX()
-		: opaque(0),
-		  iNbIndiceCull_TMultiplicative(0), iNbIndiceNoCull_TMultiplicative(0),
+		: opaque(0), multiplicative(0),
 		  iNbIndiceCull_TAdditive(0), iNbIndiceNoCull_TAdditive(0),
 		  iNbIndiceCull_TNormalTrans(0), iNbIndiceNoCull_TNormalTrans(0),
 		  iNbIndiceCull_TSubstractive(0), iNbIndiceNoCull_TSubstractive(0) { }
@@ -4210,7 +4208,7 @@ void ComputePortalVertexBuffer() {
 				if(poly.type & POLY_DOUBLESIDED) {
 					
 					if(poly.transval >= 2.f) { // multiplicative
-						info.iNbIndiceNoCull_TMultiplicative += nindices;
+						info.multiplicative += nindices;
 						trans = trans * 0.5f + 0.5f;
 					} else if(poly.transval >= 1.f) { // additive
 						info.iNbIndiceNoCull_TAdditive += nindices;
@@ -4226,7 +4224,7 @@ void ComputePortalVertexBuffer() {
 				} else {
 					
 					if(poly.transval >= 2.f) { // multiplicative
-						info.iNbIndiceCull_TMultiplicative += nindices;
+						info.multiplicative += nindices;
 						trans = trans * 0.5f + 0.5f;
 					} else if(poly.transval >= 1.f) { // additive
 						info.iNbIndiceCull_TAdditive += nindices;
@@ -4362,8 +4360,7 @@ void ComputePortalVertexBuffer() {
 			startIndexCull += info.iNbIndiceCull_TNormalTrans;
 			startIndexCull += info.iNbIndiceNoCull_TNormalTrans;
 			m.uslStartCull_TMultiplicative = startIndexCull;
-			startIndexCull += info.iNbIndiceCull_TMultiplicative;
-			startIndexCull += info.iNbIndiceNoCull_TMultiplicative;
+			startIndexCull += info.multiplicative;
 			m.uslStartCull_TAdditive = startIndexCull;
 			startIndexCull += info.iNbIndiceCull_TAdditive;
 			startIndexCull += info.iNbIndiceNoCull_TAdditive;
@@ -4377,11 +4374,9 @@ void ComputePortalVertexBuffer() {
 			m.uslNbIndiceCull_TAdditive = 0;
 			m.uslNbIndiceCull_TSubstractive = 0;
 			
-			if(info.opaque > 65535
+			if(info.opaque > 65535 || info.multiplicative > 65535
 			  || info.iNbIndiceCull_TNormalTrans > 65535
 			  || info.iNbIndiceNoCull_TNormalTrans > 65535
-			  || info.iNbIndiceCull_TMultiplicative > 65535
-			  || info.iNbIndiceNoCull_TMultiplicative > 65535
 			  || info.iNbIndiceCull_TAdditive > 65535
 			  || info.iNbIndiceNoCull_TAdditive > 65535
 			  || info.iNbIndiceCull_TSubstractive > 65535
