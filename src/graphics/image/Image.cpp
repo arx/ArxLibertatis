@@ -19,7 +19,9 @@
 
 #include "graphics/image/Image.h"
 
+#include <sstream>
 #include <cstring>
+
 #include <il.h>
 
 #include "graphics/Math.h"
@@ -195,7 +197,7 @@ bool Image::LoadFromFile(const res::path & filename) {
 		return false;
 	}
 	
-	bool ret = LoadFromMemory(pData, size);
+	bool ret = LoadFromMemory(pData, size, filename.string().c_str());
 	
 	free(pData);
 	
@@ -243,11 +245,46 @@ Image::Format GetImageFormat(ILint pImgTextureFormat, ILint pBPP) {
 	return Image::Format_Unknown;
 }
 
-bool Image::LoadFromMemory(void * pData, unsigned int size) {
+static const char * getDevILErrorString(ILenum error) {
+	// There is a function in ILU for this, but using it would require linking yet
+	// another library.
+	switch(error) {
+		case IL_NO_ERROR: return "no error";
+		case IL_INVALID_ENUM: return "invalid enum value";
+		case IL_OUT_OF_MEMORY: return "out of memory";
+		case IL_FORMAT_NOT_SUPPORTED: return "unsupported format";
+		case IL_INTERNAL_ERROR: return "internal error";
+		case IL_INVALID_VALUE: return "invalid value";
+		case IL_ILLEGAL_OPERATION: return "illegal operation";
+		case IL_ILLEGAL_FILE_VALUE: return "unexpected value in file";
+		case IL_INVALID_FILE_HEADER: return "invalid file header";
+		case IL_INVALID_PARAM: return "invalid parameter";
+		case IL_COULD_NOT_OPEN_FILE: return "could not open file";
+		case IL_INVALID_EXTENSION: return "invalid extension";
+		case IL_FILE_ALREADY_EXISTS: return "file already exists";
+		case IL_OUT_FORMAT_SAME: return "tried to convert to same format";
+		case IL_STACK_OVERFLOW: return "stack overflow";
+		case IL_STACK_UNDERFLOW: return "stack underflow";
+		case IL_INVALID_CONVERSION: return "invalid conversion";
+		case IL_BAD_DIMENSIONS: return "bad dimensions";
+		case IL_FILE_READ_ERROR: return "file read/write error";
+		case IL_LIB_GIF_ERROR: return "gif error";
+		case IL_LIB_JPEG_ERROR: return "jpeg error";
+		case IL_LIB_PNG_ERROR: return "png error";
+		case IL_LIB_TIFF_ERROR: return "tiff error";
+		case IL_LIB_MNG_ERROR: return "mng error";
+		case IL_UNKNOWN_ERROR: return "unknown error";
+		default: return "(unknown)";
+	}
+}
+
+bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	
 	if(!pData) {
 		return false;
 	}
+	
+	ilGetError();
 	
 	ILuint imageName;
 	ilGenImages(1, &imageName);
@@ -255,6 +292,19 @@ bool Image::LoadFromMemory(void * pData, unsigned int size) {
 	
 	ILboolean bLoaded = ilLoadL(IL_TYPE_UNKNOWN, pData, size);
 	if(!bLoaded) {
+		std::ostringstream message;
+		message << "error loading image";
+		if(file) {
+			message << " \"" << file << '"';
+		}
+		ILenum error = ilGetError();
+		if(error) {
+			message << ": " << error
+			         << " = " << getDevILErrorString(error);
+		} else {
+			message << ": unsupported image type";
+		}
+		LogError << message.str();
 		return false;
 	}
 	
@@ -1185,6 +1235,8 @@ bool Image::save(const fs::path & filename) const {
 		return false;
 	}
 	
+	ilGetError();
+	
 	ILuint imageName;
 	ilGenImages(1, &imageName);
 	ilBindImage(imageName);
@@ -1200,7 +1252,9 @@ bool Image::save(const fs::path & filename) const {
 	ilDeleteImages(1, &imageName);
 	
 	if(!ret) {
-		LogWarning << "ilSaveImage failed: " << ilGetError();
+		ILenum error = ilGetError();
+		LogWarning << "error saving image: " << error
+		           << " = " << getDevILErrorString(error);
 		return false;
 	}
 	

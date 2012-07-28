@@ -52,7 +52,8 @@ public:
 	const Image& operator=(const Image & pOther);
 	
 	bool LoadFromFile(const res::path & filename);
-	bool LoadFromMemory(void * pData, unsigned int size);
+	bool LoadFromMemory(void * pData, unsigned int size,
+	                    const char * file = NULL);
 	
 	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);
 
