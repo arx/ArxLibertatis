@@ -654,7 +654,6 @@ struct SMY_ARXMAT
 
 	unsigned long uslStartCull_TNormalTrans;
 	unsigned long uslNbIndiceCull_TNormalTrans;
-	unsigned long uslNbIndiceNoCull_TNormalTrans;
 
 	unsigned long uslStartCull_TMultiplicative;
 	unsigned long uslNbIndiceCull_TMultiplicative;
