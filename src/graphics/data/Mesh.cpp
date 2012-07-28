@@ -4121,7 +4121,6 @@ namespace {
 
 struct SINFO_TEXTURE_VERTEX {
 	
-	int vertexCount;
 	int iNbIndiceCull;
 	int iNbIndiceNoCull;
 	int iNbIndiceCull_TMultiplicative;
@@ -4134,7 +4133,7 @@ struct SINFO_TEXTURE_VERTEX {
 	int iNbIndiceNoCull_TSubstractive;
 	
 	SINFO_TEXTURE_VERTEX()
-		: vertexCount(0), iNbIndiceCull(0), iNbIndiceNoCull(0),
+		: iNbIndiceCull(0), iNbIndiceNoCull(0),
 		  iNbIndiceCull_TMultiplicative(0), iNbIndiceNoCull_TMultiplicative(0),
 		  iNbIndiceCull_TAdditive(0), iNbIndiceNoCull_TAdditive(0),
 		  iNbIndiceCull_TNormalTrans(0), iNbIndiceNoCull_TNormalTrans(0),
@@ -4204,8 +4203,6 @@ void ComputePortalVertexBuffer() {
 			
 			int nvertices = (poly.type & POLY_QUAD) ? 4 : 3;
 			int nindices  = (poly.type & POLY_QUAD) ? 6 : 3;
-			
-			info.vertexCount += nvertices;
 			
 			if(poly.type & POLY_TRANS) {
 				
