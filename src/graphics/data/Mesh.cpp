@@ -4132,16 +4132,13 @@ struct SINFO_TEXTURE_VERTEX {
 	int iNbIndiceNoCull_TNormalTrans;
 	int iNbIndiceCull_TSubstractive;
 	int iNbIndiceNoCull_TSubstractive;
-	int iMin;
-	int iMax;
 	
 	SINFO_TEXTURE_VERTEX()
 		: vertexCount(0), iNbIndiceCull(0), iNbIndiceNoCull(0),
 		  iNbIndiceCull_TMultiplicative(0), iNbIndiceNoCull_TMultiplicative(0),
 		  iNbIndiceCull_TAdditive(0), iNbIndiceNoCull_TAdditive(0),
 		  iNbIndiceCull_TNormalTrans(0), iNbIndiceNoCull_TNormalTrans(0),
-		  iNbIndiceCull_TSubstractive(0), iNbIndiceNoCull_TSubstractive(0),
-		  iMin(0), iMax(0) { }
+		  iNbIndiceCull_TSubstractive(0), iNbIndiceNoCull_TSubstractive(0) { }
 };
 
 } // anonymous namespace
