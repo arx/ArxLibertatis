@@ -4140,8 +4140,6 @@ struct COPY3D
 	float	u, v;
 };
 
-vector<COPY3D> vCopy3d;
-
 //-----------------------------------------------------------------------------
 void ComputePortalVertexBuffer()
 {
