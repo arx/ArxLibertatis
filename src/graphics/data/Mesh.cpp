@@ -4133,13 +4133,6 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 	}
 }
 
-struct COPY3D
-{
-	float	x, y, z;
-	int		color;
-	float	u, v;
-};
-
 //-----------------------------------------------------------------------------
 void ComputePortalVertexBuffer()
 {
