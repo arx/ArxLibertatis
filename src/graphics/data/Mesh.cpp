@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <map>
 
 #include <boost/scoped_array.hpp>
+#include <boost/unordered_map.hpp>
 
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
@@ -3437,24 +3438,6 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 	}
 }
 
-struct SINFO_TEXTURE_VERTEX
-{
-	int					iNbVertex;
-	int					iNbIndiceCull;
-	int					iNbIndiceNoCull;
-	int					iNbIndiceCull_TMultiplicative;
-	int					iNbIndiceNoCull_TMultiplicative;
-	int					iNbIndiceCull_TAdditive;
-	int					iNbIndiceNoCull_TAdditive;
-	int					iNbIndiceCull_TNormalTrans;
-	int					iNbIndiceNoCull_TNormalTrans;
-	int					iNbIndiceCull_TSubstractive;
-	int					iNbIndiceNoCull_TSubstractive;
-	TextureContainer	* pTex;
-	int					iMin;
-	int					iMax;
-};
-
 #ifdef BUILD_EDIT_LOADSAVE
 
 long NEED_ANCHORS = 1;
@@ -4101,359 +4084,338 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 
 #endif // BUILD_EDIT_LOADSAVE
 
-void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
-{
-	if (portals)
-	{
-		if (portals->room)
-		{
-			if (portals->nb_rooms > 0)
-			{
-				for (long nn = 0; nn < portals->nb_rooms + 1; nn++)
-				{
-					portals->room[nn].usNbTextures = 0;
-					
-					if(portals->room[nn].pVertexBuffer) {
-						delete portals->room[nn].pVertexBuffer;
-						portals->room[nn].pVertexBuffer = NULL;
-					}
-					
-					if(portals->room[nn].pussIndice) {
-						free(portals->room[nn].pussIndice);
-						portals->room[nn].pussIndice = NULL;
-					}
-					
-					if(portals->room[nn].ppTextureContainer) {
-						free(portals->room[nn].ppTextureContainer);
-						portals->room[nn].ppTextureContainer = NULL;
-					}
-				}
-			}
+void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
+	
+	if(!portals) {
+		return;
+	}
+	
+	if(!portals->room || portals->nb_rooms <= 0) {
+		return;
+	}
+	
+	LogDebug("Destroying scene VBOs");
+	
+	for(long i = 0; i < portals->nb_rooms + 1; i++) {
+		
+		portals->room[i].usNbTextures = 0;
+		
+		if(portals->room[i].pVertexBuffer) {
+			delete portals->room[i].pVertexBuffer;
+			portals->room[i].pVertexBuffer = NULL;
+		}
+		
+		if(portals->room[i].pussIndice) {
+			free(portals->room[i].pussIndice);
+			portals->room[i].pussIndice = NULL;
+		}
+		
+		if(portals->room[i].ppTextureContainer) {
+			free(portals->room[i].ppTextureContainer);
+			portals->room[i].ppTextureContainer = NULL;
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ComputePortalVertexBuffer()
-{
-	if (!portals) return;
+namespace {
+
+struct SINFO_TEXTURE_VERTEX {
 	
-	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
+	int vertexCount;
+	int iNbIndiceCull;
+	int iNbIndiceNoCull;
+	int iNbIndiceCull_TMultiplicative;
+	int iNbIndiceNoCull_TMultiplicative;
+	int iNbIndiceCull_TAdditive;
+	int iNbIndiceNoCull_TAdditive;
+	int iNbIndiceCull_TNormalTrans;
+	int iNbIndiceNoCull_TNormalTrans;
+	int iNbIndiceCull_TSubstractive;
+	int iNbIndiceNoCull_TSubstractive;
+	int iMin;
+	int iMax;
+	
+	SINFO_TEXTURE_VERTEX()
+		: vertexCount(0), iNbIndiceCull(0), iNbIndiceNoCull(0),
+		  iNbIndiceCull_TMultiplicative(0), iNbIndiceNoCull_TMultiplicative(0),
+		  iNbIndiceCull_TAdditive(0), iNbIndiceNoCull_TAdditive(0),
+		  iNbIndiceCull_TNormalTrans(0), iNbIndiceNoCull_TNormalTrans(0),
+		  iNbIndiceCull_TSubstractive(0), iNbIndiceNoCull_TSubstractive(0),
+		  iMin(0), iMax(0) { }
+};
 
-	vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
+} // anonymous namespace
 
-	int iMaxRoom = min(portals->nb_rooms, 255L);
-
-	if(portals->nb_rooms > 255) {
-		LogError << "rooms > 255 - Error Portals";
+void ComputePortalVertexBuffer() {
+	
+	if(!portals) {
 		return;
 	}
-
-	for (int iNb = 0; iNb <= iMaxRoom; iNb++)
-	{
-		EERIE_ROOM_DATA * pRoom = &portals->room[iNb];
-
-		if (!pRoom->nb_polys)
-		{
-			continue;
-		}
-
-		vTextureVertex.clear();
-
-		//check le nombre de vertexs par room + liste de texturecontainer*
-		int iNbVertexForRoom = 0;
-		int iNbIndiceForRoom = 0;
-
-		for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
-		{
-			int iPx = pRoom->epdata[iNbPoly].px;
-			int iPy = pRoom->epdata[iNbPoly].py;
-			EERIE_BKG_INFO * pBkgInfo = &ACTIVEBKG->Backg[iPx+iPy*ACTIVEBKG->Xsize];
-
-			EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
-
-			if ((pPoly->type & POLY_IGNORE) ||
-					(pPoly->type & POLY_HIDE) ||
-					(!pPoly->tex)) continue;
-
-			if(!pPoly->tex->tMatRoom) {
-				pPoly->tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT) * (iMaxRoom + 1));
-			}
-
-			SINFO_TEXTURE_VERTEX * pTextureVertex = NULL;
-			vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
-			for (it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it)
-			{
-				if (((*it)->pTex) == pPoly->tex)
-				{
-					pTextureVertex = *it;
-					break;
-				}
-			}
-
-			if (!pTextureVertex)
-			{
-				pTextureVertex = (SINFO_TEXTURE_VERTEX *)malloc(sizeof(SINFO_TEXTURE_VERTEX));
-				memset(pTextureVertex, 0, sizeof(SINFO_TEXTURE_VERTEX));
-				pTextureVertex->pTex = pPoly->tex;
-				vTextureVertex.insert(vTextureVertex.end(), pTextureVertex);
-			}
-
-			int iNbVertex;
-			int iNbIndice;
-
-			if (pPoly->type & POLY_QUAD)
-			{
-				iNbVertex = 4;
-				iNbIndice = 6;
-			}
-			else
-			{
-				iNbVertex = 3;
-				iNbIndice = 3;
-			}
-
-			pTextureVertex->iNbVertex += iNbVertex;
-
-			if (pPoly->type & POLY_DOUBLESIDED)
-			{
-				if (pPoly->type & POLY_TRANS)
-				{
-					float fTransp = pPoly->transval;
-
-					if (pPoly->transval >= 2.f) //MULTIPLICATIVE
-					{
-						pTextureVertex->iNbIndiceNoCull_TMultiplicative += iNbIndice;
-						fTransp *= .5f;
-						fTransp += .5f;
-					}
-					else
-					{
-						if (pPoly->transval >= 1.f) //ADDITIVE
-						{
-							pTextureVertex->iNbIndiceNoCull_TAdditive += iNbIndice;
-							fTransp -= 1.f;
-						}
-						else
-						{
-							if (pPoly->transval > 0.f) //NORMAL TRANS
-							{
-								pTextureVertex->iNbIndiceNoCull_TNormalTrans += iNbIndice;
-								fTransp = 1.f - fTransp;
-							}
-							else
-							{
-								//SUBTRACTIVE
-								pTextureVertex->iNbIndiceNoCull_TSubstractive += iNbIndice;
-								fTransp = 1.f - fTransp;
-							}
-						}
-					}
-
-					pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
-				}
-				else
-				{
-					pTextureVertex->iNbIndiceNoCull += iNbIndice;
-				}
-			}
-			else
-			{
-				if (pPoly->type & POLY_TRANS)
-				{
-					float fTransp = pPoly->transval;
-
-					if (pPoly->transval >= 2.f) //MULTIPLICATIVE
-					{
-						pTextureVertex->iNbIndiceCull_TMultiplicative += iNbIndice;
-						fTransp *= .5f;
-						fTransp += .5f;
-					}
-					else
-					{
-						if (pPoly->transval >= 1.f) //ADDITIVE
-						{
-							pTextureVertex->iNbIndiceCull_TAdditive += iNbIndice;
-							fTransp -= 1.f;
-						}
-						else
-						{
-							if (pPoly->transval > 0.f) //NORMAL TRANS
-							{
-								pTextureVertex->iNbIndiceCull_TNormalTrans += iNbIndice;
-								fTransp = 1.f - fTransp;
-							}
-							else
-							{
-								//SUBTRACTIVE
-								pTextureVertex->iNbIndiceCull_TSubstractive += iNbIndice;
-								fTransp = 1.f - fTransp;
-							}
-						}
-					}
-
-					pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
-				}
-				else
-				{
-					pTextureVertex->iNbIndiceCull += iNbIndice;
-				}
-			}
-
-			iNbVertexForRoom += iNbVertex;
-			iNbIndiceForRoom += iNbIndice;
-		}
-		
-		if(!iNbVertexForRoom) {
-			LogWarning << "no vertices in room " << iNb;
-			vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-			for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-				free(*it);
-			}
-			continue;
-		}
-		
-		pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
-		
-		// TODO should be static, but is updated for dynamic lighting
-		pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
-		
-		SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
-
-		int iStartVertex = 0;
-		int iStartCull = 0;
-		std::vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
-		for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-			
-			TextureContainer * pTextureContainer = (*it)->pTex;
-
-			unsigned short iIndiceInVertex = 0;
-
-			for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
-			{
-				int iPx = pRoom->epdata[iNbPoly].px;
-				int iPy = pRoom->epdata[iNbPoly].py;
-				EERIE_BKG_INFO * pBkgInfo = &ACTIVEBKG->Backg[iPx+iPy*ACTIVEBKG->Xsize];
-
-				EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
-
-				if ((pPoly->type & POLY_IGNORE) ||
-						(pPoly->type & POLY_HIDE) ||
-						(!pPoly->tex)) continue;
-
-				if (pPoly->tex == pTextureContainer)
-				{
-					pVertex->p.x = pPoly->v[0].p.x;
-					pVertex->p.y = -(pPoly->v[0].p.y);
-					pVertex->p.z = pPoly->v[0].p.z;
-					pVertex->color = pPoly->v[0].color;
-					pVertex->uv.x = pPoly->v[0].uv.x + pTextureContainer->hd.x;
-					pVertex->uv.y = pPoly->v[0].uv.y + pTextureContainer->hd.y;
-					pVertex++;
-
-					pVertex->p.x = pPoly->v[1].p.x;
-					pVertex->p.y = -(pPoly->v[1].p.y);
-					pVertex->p.z = pPoly->v[1].p.z;
-					pVertex->color = pPoly->v[1].color;
-					pVertex->uv.x = pPoly->v[1].uv.x + pTextureContainer->hd.x;
-					pVertex->uv.y = pPoly->v[1].uv.y + pTextureContainer->hd.y;
-					pVertex++;
-
-					pVertex->p.x = pPoly->v[2].p.x;
-					pVertex->p.y = -(pPoly->v[2].p.y);
-					pVertex->p.z = pPoly->v[2].p.z;
-					pVertex->color = pPoly->v[2].color;
-					pVertex->uv.x = pPoly->v[2].uv.x + pTextureContainer->hd.x;
-					pVertex->uv.y = pPoly->v[2].uv.y + pTextureContainer->hd.y;
-					pVertex++;
-
-					pPoly->uslInd[0] = iIndiceInVertex++;
-					pPoly->uslInd[1] = iIndiceInVertex++;
-					pPoly->uslInd[2] = iIndiceInVertex++;
-
-					if (pPoly->type & POLY_QUAD)
-					{
-						pVertex->p.x = pPoly->v[3].p.x;
-						pVertex->p.y = -(pPoly->v[3].p.y);
-						pVertex->p.z = pPoly->v[3].p.z;
-						pVertex->color = pPoly->v[3].color;
-						pVertex->uv.x = pPoly->v[3].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[3].uv.y + pTextureContainer->hd.y;
-						pVertex++;
-
-						pPoly->uslInd[3] = iIndiceInVertex++;
-					}
-				}
-			}
-
-			//texturecontainer
-			pRoom->usNbTextures++;
-							pRoom->ppTextureContainer = (TextureContainer **)realloc(pRoom->ppTextureContainer, sizeof(TextureContainer *) * pRoom->usNbTextures);
-			pRoom->ppTextureContainer[pRoom->usNbTextures-1] = pTextureContainer;
-
-			pTextureContainer->tMatRoom[iNb].uslStartVertex = iStartVertex;
-			pTextureContainer->tMatRoom[iNb].uslNbVertex = iIndiceInVertex;
-
-			pTextureContainer->tMatRoom[iNb].uslStartCull = iStartCull;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull = 0;
-			pTextureContainer->tMatRoom[iNb].uslStartNoCull = pTextureContainer->tMatRoom[iNb].uslStartCull + (*it)->iNbIndiceCull;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull = 0;
-
-			pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartNoCull + (*it)->iNbIndiceNoCull;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TNormalTrans = 0;
-			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans + (*it)->iNbIndiceCull_TNormalTrans;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TNormalTrans = 0;
-
-			pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans + (*it)->iNbIndiceNoCull_TNormalTrans;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TMultiplicative = 0;
-			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative + (*it)->iNbIndiceCull_TMultiplicative;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TMultiplicative = 0;
-
-			pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative + (*it)->iNbIndiceNoCull_TMultiplicative;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TAdditive = 0;
-			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive + (*it)->iNbIndiceCull_TAdditive;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TAdditive = 0;
-
-			pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive + (*it)->iNbIndiceNoCull_TAdditive;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TSubstractive = 0;
-			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive + (*it)->iNbIndiceCull_TSubstractive;
-			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TSubstractive = 0;
-
-			if (((*it)->iNbIndiceCull > 65535) ||
-					((*it)->iNbIndiceNoCull > 65535) ||
-					((*it)->iNbIndiceCull_TNormalTrans > 65535) ||
-					((*it)->iNbIndiceNoCull_TNormalTrans > 65535) ||
-					((*it)->iNbIndiceCull_TMultiplicative > 65535) ||
-					((*it)->iNbIndiceNoCull_TMultiplicative > 65535) ||
-					((*it)->iNbIndiceCull_TAdditive > 65535) ||
-					((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
-					((*it)->iNbIndiceCull_TSubstractive > 65535) ||
-					((*it)->iNbIndiceNoCull_TSubstractive > 65535)) {
-				LogError << "CreateVertexBuffer - Indices>65535" << " Error TransForm";
-			}
-
-			iStartCull +=	(*it)->iNbIndiceCull +
-							(*it)->iNbIndiceNoCull +
-							(*it)->iNbIndiceCull_TNormalTrans +
-							(*it)->iNbIndiceNoCull_TNormalTrans +
-							(*it)->iNbIndiceCull_TMultiplicative +
-							(*it)->iNbIndiceNoCull_TMultiplicative +
-							(*it)->iNbIndiceCull_TAdditive +
-							(*it)->iNbIndiceNoCull_TAdditive +
-							(*it)->iNbIndiceCull_TSubstractive +
-							(*it)->iNbIndiceNoCull_TSubstractive;
-			
-			iStartVertex += iIndiceInVertex;
-			
-			free(*it);
-		}
-		
-		pRoom->pVertexBuffer->unlock();
+	
+	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
+	
+	LogDebug("Creating scene VBOs");
+	
+	if(portals->nb_rooms > 255) {
+		LogError << "Too many rooms: " << portals->nb_rooms + 1;
+		return;
 	}
-
-	vTextureVertex.clear();
+	
+	typedef boost::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX>
+		TextureMap;
+	TextureMap infos;
+	
+	for(int i = 0; i < portals->nb_rooms + 1; i++) {
+		
+		EERIE_ROOM_DATA * room = &portals->room[i];
+		
+		// Skip empty rooms
+		if(!room->nb_polys) {
+			continue;
+		}
+		
+		infos.clear();
+		
+		// Count vertices / indices for each texture and blend types
+		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
+		for(int j = 0; j < room->nb_polys; j++) {
+			int x = room->epdata[j].px, y = room->epdata[j].py;
+			EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
+			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
+			
+			if(poly.type & POLY_IGNORE) {
+				ignored++;
+				continue;
+			}
+			
+			if(poly.type & POLY_HIDE) {
+				hidden++;
+				continue;
+			}
+			
+			if(!poly.tex) {
+				notex++;
+				continue;
+			}
+			
+			if(!poly.tex->tMatRoom) {
+				poly.tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT)
+				                                           * (portals->nb_rooms + 1));
+			}
+			
+			SINFO_TEXTURE_VERTEX & info = infos[poly.tex];
+			
+			int nvertices = (poly.type & POLY_QUAD) ? 4 : 3;
+			int nindices  = (poly.type & POLY_QUAD) ? 6 : 3;
+			
+			info.vertexCount += nvertices;
+			
+			if(poly.type & POLY_TRANS) {
+				
+				float trans = poly.transval;
+				
+				if(poly.type & POLY_DOUBLESIDED) {
+					
+					if(poly.transval >= 2.f) { // multiplicative
+						info.iNbIndiceNoCull_TMultiplicative += nindices;
+						trans = trans * 0.5f + 0.5f;
+					} else if(poly.transval >= 1.f) { // additive
+						info.iNbIndiceNoCull_TAdditive += nindices;
+						trans -= 1.f;
+					} else if(poly.transval > 0.f) { // normal trans
+						info.iNbIndiceNoCull_TNormalTrans += nindices;
+						trans = 1.f - trans;
+					} else { // subtractive
+						info.iNbIndiceNoCull_TSubstractive += nindices;
+						trans = 1.f - trans;
+					}
+					
+				} else {
+					
+					if(poly.transval >= 2.f) { // multiplicative
+						info.iNbIndiceCull_TMultiplicative += nindices;
+						trans = trans * 0.5f + 0.5f;
+					} else if(poly.transval >= 1.f) { // additive
+						info.iNbIndiceCull_TAdditive += nindices;
+						trans -= 1.f;
+					} else if(poly.transval > 0.f) { // normal trans
+						info.iNbIndiceCull_TNormalTrans += nindices;
+						trans = 1.f - trans;
+					} else { // subtractive
+						info.iNbIndiceCull_TSubstractive += nindices;
+						trans = 1.f - trans;
+					}
+					
+				}
+				
+				poly.v[3].color = poly.v[2].color = poly.v[1].color = poly.v[0].color
+					= Color::gray(trans).toBGR();
+				
+			} else {
+				if(poly.type & POLY_DOUBLESIDED) {
+					info.iNbIndiceNoCull += nindices;
+				} else {
+					info.iNbIndiceCull += nindices;
+				}
+			}
+			
+			vertexCount += nvertices;
+			indexCount += nindices;
+		}
+		
+		
+		if(!vertexCount) {
+			LogWarning << "no visible vertices in room " << i << ": "
+			           << ignored << " ignored, " << hidden << " hidden, "
+			           << notex << " untextured";
+			continue;
+		}
+		
+		
+		// Allocate the index buffer for this room
+		room->pussIndice = (unsigned short *)malloc(sizeof(unsigned short)
+		                                            * indexCount);
+		
+		// Allocate the vertex buffer for this room
+		// TODO should be static, but is updated for dynamic lighting
+		room->pVertexBuffer = GRenderer->createVertexBuffer(vertexCount,
+		                                                    Renderer::Dynamic);
+		
+		
+		// Now fill the buffers
+		
+		SMY_VERTEX * vertex = room->pVertexBuffer->lock(NoOverwrite);
+		
+		int startIndex = 0;
+		int startIndexCull = 0;
+		
+		size_t ntextures = infos.size();
+		
+		LogDebug(" - room " << i << ": " << ntextures << " textures, "
+		         << vertexCount << " vertices, " << indexCount << " indices");
+		
+		// Allocate space to list all textures for this room
+		// TODO use std::vector
+		room->ppTextureContainer = (TextureContainer **)realloc(
+			room->ppTextureContainer, sizeof(TextureContainer *)
+			                          * (room->usNbTextures + ntextures));
+		
+		TextureMap::const_iterator it;
+		for(it = infos.begin(); it != infos.end(); ++it) {
+			
+			TextureContainer * texture = it->first;
+			const SINFO_TEXTURE_VERTEX & info = it->second;
+			
+			unsigned short index = 0;
+			
+			// Upload all vertices for this texture and remember the indices
+			for(int j = 0; j < room->nb_polys; j++) {
+				int x = room->epdata[j].px, y = room->epdata[j].py;
+				EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
+				EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
+				
+				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {
+					continue;
+				}
+				
+				if(poly.tex != texture) {
+					continue;
+				}
+				
+				vertex->p.x = poly.v[0].p.x;
+				vertex->p.y = -(poly.v[0].p.y);
+				vertex->p.z = poly.v[0].p.z;
+				vertex->color = poly.v[0].color;
+				vertex->uv = poly.v[0].uv + texture->hd;
+				vertex++;
+				poly.uslInd[0] = index++;
+				
+				vertex->p.x = poly.v[1].p.x;
+				vertex->p.y = -(poly.v[1].p.y);
+				vertex->p.z = poly.v[1].p.z;
+				vertex->color = poly.v[1].color;
+				vertex->uv = poly.v[1].uv + texture->hd;
+				vertex++;
+				poly.uslInd[1] = index++;
+				
+				vertex->p.x = poly.v[2].p.x;
+				vertex->p.y = -(poly.v[2].p.y);
+				vertex->p.z = poly.v[2].p.z;
+				vertex->color = poly.v[2].color;
+				vertex->uv = poly.v[2].uv + texture->hd;
+				vertex++;
+				poly.uslInd[2] = index++;
+				
+				if(poly.type & POLY_QUAD) {
+					vertex->p.x = poly.v[3].p.x;
+					vertex->p.y = -(poly.v[3].p.y);
+					vertex->p.z = poly.v[3].p.z;
+					vertex->color = poly.v[3].color;
+					vertex->uv = poly.v[3].uv + texture->hd;
+					vertex++;
+					poly.uslInd[3] = index++;
+				}
+			}
+			
+			// Record that the texture is used for this room
+			room->ppTextureContainer[room->usNbTextures++] = texture;
+			
+			// Save the 
+			
+			SMY_ARXMAT & m = texture->tMatRoom[i];
+			
+			m.uslStartVertex = startIndex;
+			m.uslNbVertex = index;
+			
+			m.uslStartCull = startIndexCull;
+			m.uslNbIndiceCull = 0;
+			m.uslStartNoCull = (startIndexCull += info.iNbIndiceCull);
+			m.uslNbIndiceNoCull = 0;
+			m.uslStartCull_TNormalTrans
+				= (startIndexCull += info.iNbIndiceNoCull);
+			m.uslNbIndiceCull_TNormalTrans = 0;
+			m.uslStartNoCull_TNormalTrans
+				= (startIndexCull += info.iNbIndiceCull_TNormalTrans);
+			m.uslNbIndiceNoCull_TNormalTrans = 0;
+			m.uslStartCull_TMultiplicative
+				= (startIndexCull += info.iNbIndiceNoCull_TNormalTrans);
+			m.uslNbIndiceCull_TMultiplicative = 0;
+			m.uslStartNoCull_TMultiplicative
+				= (startIndexCull += info.iNbIndiceCull_TMultiplicative);
+			m.uslNbIndiceNoCull_TMultiplicative = 0;
+			m.uslStartCull_TAdditive
+				= (startIndexCull += info.iNbIndiceNoCull_TMultiplicative);
+			m.uslNbIndiceCull_TAdditive = 0;
+			m.uslStartNoCull_TAdditive
+				= (startIndexCull += info.iNbIndiceCull_TAdditive);
+			m.uslNbIndiceNoCull_TAdditive = 0;
+			m.uslStartCull_TSubstractive
+				= (startIndexCull += info.iNbIndiceNoCull_TAdditive);
+			m.uslNbIndiceCull_TSubstractive = 0;
+			m.uslStartNoCull_TSubstractive
+				= (startIndexCull += info.iNbIndiceCull_TSubstractive);
+			m.uslNbIndiceNoCull_TSubstractive = 0;
+			// TODO not implemented?
+			startIndexCull += info.iNbIndiceNoCull_TSubstractive;
+			
+			if(info.iNbIndiceCull > 65535 || info.iNbIndiceNoCull > 65535
+			  || info.iNbIndiceCull_TNormalTrans > 65535
+			  || info.iNbIndiceNoCull_TNormalTrans > 65535
+			  || info.iNbIndiceCull_TMultiplicative > 65535
+			  || info.iNbIndiceNoCull_TMultiplicative > 65535
+			  || info.iNbIndiceCull_TAdditive > 65535
+			  || info.iNbIndiceNoCull_TAdditive > 65535
+			  || info.iNbIndiceCull_TSubstractive > 65535
+			  || info.iNbIndiceNoCull_TSubstractive > 65535) {
+				LogError << "Too many indices for texture " << texture->m_texName
+				         << " in room " << i;
+			}
+			
+			startIndex += index;
+		}
+		
+		room->pVertexBuffer->unlock();
+	}
 }
 
 long EERIERTPPoly(EERIEPOLY *ep)
