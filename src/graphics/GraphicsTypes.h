@@ -663,7 +663,6 @@ struct SMY_ARXMAT
 
 	unsigned long uslStartCull_TSubstractive;
 	unsigned long uslNbIndiceCull_TSubstractive;
-	unsigned long uslStartNoCull_TSubstractive;
 	unsigned long uslNbIndiceNoCull_TSubstractive;
 };
 
