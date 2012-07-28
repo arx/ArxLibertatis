@@ -4199,38 +4199,18 @@ void ComputePortalVertexBuffer() {
 				
 				float trans = poly.transval;
 				
-				if(poly.type & POLY_DOUBLESIDED) {
-					
-					if(poly.transval >= 2.f) { // multiplicative
-						info.multiplicative += nindices;
-						trans = trans * 0.5f + 0.5f;
-					} else if(poly.transval >= 1.f) { // additive
-						info.additive += nindices;
-						trans -= 1.f;
-					} else if(poly.transval > 0.f) { // normal trans
-						info.blended += nindices;
-						trans = 1.f - trans;
-					} else { // subtractive
-						info.subtractive += nindices;
-						trans = 1.f - trans;
-					}
-					
-				} else {
-					
-					if(poly.transval >= 2.f) { // multiplicative
-						info.multiplicative += nindices;
-						trans = trans * 0.5f + 0.5f;
-					} else if(poly.transval >= 1.f) { // additive
-						info.additive += nindices;
-						trans -= 1.f;
-					} else if(poly.transval > 0.f) { // normal trans
-						info.blended += nindices;
-						trans = 1.f - trans;
-					} else { // subtractive
-						info.subtractive += nindices;
-						trans = 1.f - trans;
-					}
-					
+				if(poly.transval >= 2.f) { // multiplicative
+					info.multiplicative += nindices;
+					trans = trans * 0.5f + 0.5f;
+				} else if(poly.transval >= 1.f) { // additive
+					info.additive += nindices;
+					trans -= 1.f;
+				} else if(poly.transval > 0.f) { // normal trans
+					info.blended += nindices;
+					trans = 1.f - trans;
+				} else { // subtractive
+					info.subtractive += nindices;
+					trans = 1.f - trans;
 				}
 				
 				poly.v[3].color = poly.v[2].color = poly.v[1].color = poly.v[0].color
@@ -4348,16 +4328,12 @@ void ComputePortalVertexBuffer() {
 			m.uslStartVertex = startIndex;
 			m.uslNbVertex = index;
 			
-			m.uslStartCull = startIndexCull;
-			startIndexCull += info.opaque;
-			m.uslStartCull_TNormalTrans = startIndexCull;
-			startIndexCull += info.blended;
-			m.uslStartCull_TMultiplicative = startIndexCull;
-			startIndexCull += info.multiplicative;
-			m.uslStartCull_TAdditive = startIndexCull;
-			startIndexCull += info.additive;
-			m.uslStartCull_TSubstractive = startIndexCull;
-			startIndexCull += info.subtractive;
+			m.uslStartCull                 =  startIndexCull;
+			m.uslStartCull_TNormalTrans    = (startIndexCull += info.opaque);
+			m.uslStartCull_TMultiplicative = (startIndexCull += info.blended);
+			m.uslStartCull_TAdditive       = (startIndexCull += info.multiplicative);
+			m.uslStartCull_TSubstractive   = (startIndexCull += info.additive);
+			                                 (startIndexCull += info.subtractive);
 			
 			m.uslNbIndiceCull = 0;
 			m.uslNbIndiceCull_TNormalTrans = 0;
