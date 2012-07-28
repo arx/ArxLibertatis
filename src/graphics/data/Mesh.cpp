@@ -4124,14 +4124,12 @@ struct SINFO_TEXTURE_VERTEX {
 	int opaque;
 	int multiplicative;
 	int additive;
-	int iNbIndiceCull_TNormalTrans;
-	int iNbIndiceNoCull_TNormalTrans;
+	int blended;
 	int iNbIndiceCull_TSubstractive;
 	int iNbIndiceNoCull_TSubstractive;
 	
 	SINFO_TEXTURE_VERTEX()
-		: opaque(0), multiplicative(0), additive(0),
-		  iNbIndiceCull_TNormalTrans(0), iNbIndiceNoCull_TNormalTrans(0),
+		: opaque(0), multiplicative(0), additive(0), blended(0),
 		  iNbIndiceCull_TSubstractive(0), iNbIndiceNoCull_TSubstractive(0) { }
 };
 
@@ -4212,7 +4210,7 @@ void ComputePortalVertexBuffer() {
 						info.additive += nindices;
 						trans -= 1.f;
 					} else if(poly.transval > 0.f) { // normal trans
-						info.iNbIndiceNoCull_TNormalTrans += nindices;
+						info.blended += nindices;
 						trans = 1.f - trans;
 					} else { // subtractive
 						info.iNbIndiceNoCull_TSubstractive += nindices;
@@ -4228,7 +4226,7 @@ void ComputePortalVertexBuffer() {
 						info.additive += nindices;
 						trans -= 1.f;
 					} else if(poly.transval > 0.f) { // normal trans
-						info.iNbIndiceCull_TNormalTrans += nindices;
+						info.blended += nindices;
 						trans = 1.f - trans;
 					} else { // subtractive
 						info.iNbIndiceCull_TSubstractive += nindices;
@@ -4355,8 +4353,7 @@ void ComputePortalVertexBuffer() {
 			m.uslStartCull = startIndexCull;
 			startIndexCull += info.opaque;
 			m.uslStartCull_TNormalTrans = startIndexCull;
-			startIndexCull += info.iNbIndiceCull_TNormalTrans;
-			startIndexCull += info.iNbIndiceNoCull_TNormalTrans;
+			startIndexCull += info.blended;
 			m.uslStartCull_TMultiplicative = startIndexCull;
 			startIndexCull += info.multiplicative;
 			m.uslStartCull_TAdditive = startIndexCull;
@@ -4372,9 +4369,7 @@ void ComputePortalVertexBuffer() {
 			m.uslNbIndiceCull_TSubstractive = 0;
 			
 			if(info.opaque > 65535 || info.multiplicative > 65535
-			   || info.additive > 65535
-			  || info.iNbIndiceCull_TNormalTrans > 65535
-			  || info.iNbIndiceNoCull_TNormalTrans > 65535
+			   || info.additive > 65535 || info.blended > 65535
 			  || info.iNbIndiceCull_TSubstractive > 65535
 			  || info.iNbIndiceNoCull_TSubstractive > 65535) {
 				LogError << "Too many indices for texture " << texture->m_texName
