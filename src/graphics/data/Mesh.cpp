@@ -4378,7 +4378,6 @@ void ComputePortalVertexBuffer() {
 				= (startIndexCull += info.iNbIndiceNoCull_TNormalTrans);
 			m.uslNbIndiceCull_TMultiplicative = 0;
 			startIndexCull += info.iNbIndiceCull_TMultiplicative;
-			m.uslNbIndiceNoCull_TMultiplicative = 0;
 			m.uslStartCull_TAdditive
 				= (startIndexCull += info.iNbIndiceNoCull_TMultiplicative);
 			m.uslNbIndiceCull_TAdditive = 0;
