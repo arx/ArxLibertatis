@@ -657,7 +657,6 @@ struct SMY_ARXMAT
 
 	unsigned long uslStartCull_TMultiplicative;
 	unsigned long uslNbIndiceCull_TMultiplicative;
-	unsigned long uslStartNoCull_TMultiplicative;
 	unsigned long uslNbIndiceNoCull_TMultiplicative;
 
 	unsigned long uslStartCull_TAdditive;
