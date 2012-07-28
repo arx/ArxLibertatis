@@ -4125,12 +4125,10 @@ struct SINFO_TEXTURE_VERTEX {
 	int multiplicative;
 	int additive;
 	int blended;
-	int iNbIndiceCull_TSubstractive;
-	int iNbIndiceNoCull_TSubstractive;
+	int subtractive;
 	
 	SINFO_TEXTURE_VERTEX()
-		: opaque(0), multiplicative(0), additive(0), blended(0),
-		  iNbIndiceCull_TSubstractive(0), iNbIndiceNoCull_TSubstractive(0) { }
+		: opaque(0), multiplicative(0), additive(0), blended(0), subtractive(0) { }
 };
 
 } // anonymous namespace
@@ -4213,7 +4211,7 @@ void ComputePortalVertexBuffer() {
 						info.blended += nindices;
 						trans = 1.f - trans;
 					} else { // subtractive
-						info.iNbIndiceNoCull_TSubstractive += nindices;
+						info.subtractive += nindices;
 						trans = 1.f - trans;
 					}
 					
@@ -4229,7 +4227,7 @@ void ComputePortalVertexBuffer() {
 						info.blended += nindices;
 						trans = 1.f - trans;
 					} else { // subtractive
-						info.iNbIndiceCull_TSubstractive += nindices;
+						info.subtractive += nindices;
 						trans = 1.f - trans;
 					}
 					
@@ -4359,8 +4357,7 @@ void ComputePortalVertexBuffer() {
 			m.uslStartCull_TAdditive = startIndexCull;
 			startIndexCull += info.additive;
 			m.uslStartCull_TSubstractive = startIndexCull;
-			startIndexCull += info.iNbIndiceCull_TSubstractive;
-			startIndexCull += info.iNbIndiceNoCull_TSubstractive;
+			startIndexCull += info.subtractive;
 			
 			m.uslNbIndiceCull = 0;
 			m.uslNbIndiceCull_TNormalTrans = 0;
@@ -4370,10 +4367,9 @@ void ComputePortalVertexBuffer() {
 			
 			if(info.opaque > 65535 || info.multiplicative > 65535
 			   || info.additive > 65535 || info.blended > 65535
-			  || info.iNbIndiceCull_TSubstractive > 65535
-			  || info.iNbIndiceNoCull_TSubstractive > 65535) {
-				LogError << "Too many indices for texture " << texture->m_texName
-				         << " in room " << i;
+			   || info.subtractive > 65535) {
+				LogWarning << "Too many indices for texture " << texture->m_texName
+				           << " in room " << i;
 			}
 			
 			startIndex += index;
