@@ -4121,8 +4121,7 @@ namespace {
 
 struct SINFO_TEXTURE_VERTEX {
 	
-	int iNbIndiceCull;
-	int iNbIndiceNoCull;
+	int opaque;
 	int iNbIndiceCull_TMultiplicative;
 	int iNbIndiceNoCull_TMultiplicative;
 	int iNbIndiceCull_TAdditive;
@@ -4133,7 +4132,7 @@ struct SINFO_TEXTURE_VERTEX {
 	int iNbIndiceNoCull_TSubstractive;
 	
 	SINFO_TEXTURE_VERTEX()
-		: iNbIndiceCull(0), iNbIndiceNoCull(0),
+		: opaque(0),
 		  iNbIndiceCull_TMultiplicative(0), iNbIndiceNoCull_TMultiplicative(0),
 		  iNbIndiceCull_TAdditive(0), iNbIndiceNoCull_TAdditive(0),
 		  iNbIndiceCull_TNormalTrans(0), iNbIndiceNoCull_TNormalTrans(0),
@@ -4246,11 +4245,7 @@ void ComputePortalVertexBuffer() {
 					= Color::gray(trans).toBGR();
 				
 			} else {
-				if(poly.type & POLY_DOUBLESIDED) {
-					info.iNbIndiceNoCull += nindices;
-				} else {
-					info.iNbIndiceCull += nindices;
-				}
+				info.opaque += nindices;
 			}
 			
 			vertexCount += nvertices;
@@ -4362,27 +4357,27 @@ void ComputePortalVertexBuffer() {
 			m.uslNbVertex = index;
 			
 			m.uslStartCull = startIndexCull;
-			m.uslNbIndiceCull = 0;
-			startIndexCull += info.iNbIndiceCull;
-			m.uslStartCull_TNormalTrans
-				= (startIndexCull += info.iNbIndiceNoCull);
-			m.uslNbIndiceCull_TNormalTrans = 0;
+			startIndexCull += info.opaque;
+			m.uslStartCull_TNormalTrans = startIndexCull;
 			startIndexCull += info.iNbIndiceCull_TNormalTrans;
-			m.uslStartCull_TMultiplicative
-				= (startIndexCull += info.iNbIndiceNoCull_TNormalTrans);
-			m.uslNbIndiceCull_TMultiplicative = 0;
+			startIndexCull += info.iNbIndiceNoCull_TNormalTrans;
+			m.uslStartCull_TMultiplicative = startIndexCull;
 			startIndexCull += info.iNbIndiceCull_TMultiplicative;
-			m.uslStartCull_TAdditive
-				= (startIndexCull += info.iNbIndiceNoCull_TMultiplicative);
-			m.uslNbIndiceCull_TAdditive = 0;
+			startIndexCull += info.iNbIndiceNoCull_TMultiplicative;
+			m.uslStartCull_TAdditive = startIndexCull;
 			startIndexCull += info.iNbIndiceCull_TAdditive;
-			m.uslStartCull_TSubstractive
-				= (startIndexCull += info.iNbIndiceNoCull_TAdditive);
-			m.uslNbIndiceCull_TSubstractive = 0;
+			startIndexCull += info.iNbIndiceNoCull_TAdditive;
+			m.uslStartCull_TSubstractive = startIndexCull;
 			startIndexCull += info.iNbIndiceCull_TSubstractive;
 			startIndexCull += info.iNbIndiceNoCull_TSubstractive;
 			
-			if(info.iNbIndiceCull > 65535 || info.iNbIndiceNoCull > 65535
+			m.uslNbIndiceCull = 0;
+			m.uslNbIndiceCull_TNormalTrans = 0;
+			m.uslNbIndiceCull_TMultiplicative = 0;
+			m.uslNbIndiceCull_TAdditive = 0;
+			m.uslNbIndiceCull_TSubstractive = 0;
+			
+			if(info.opaque > 65535
 			  || info.iNbIndiceCull_TNormalTrans > 65535
 			  || info.iNbIndiceNoCull_TNormalTrans > 65535
 			  || info.iNbIndiceCull_TMultiplicative > 65535
