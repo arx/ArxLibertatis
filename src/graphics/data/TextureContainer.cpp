@@ -223,8 +223,6 @@ TextureContainer::~TextureContainer()
 
 bool TextureContainer::LoadFile(const res::path & strPathname) {
 	
-	bool bLoaded = false;
-	
 	res::path tempPath = strPathname;
 	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
 	foundPath = foundPath || resources->getFile(tempPath.set_ext("jpg"));
@@ -237,36 +235,38 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		return false;
 	}
 	
-	if(m_pTexture)
+	if(m_pTexture) {
 		delete m_pTexture;
-
-	m_pTexture = GRenderer->CreateTexture2D();
-	if(m_pTexture)
-	{
-		
-		Texture::TextureFlags flags = 0;
-		
-		if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
-			flags |= Texture::HasColorKey;
-		}
-		
-		if(!(m_dwFlags & NoMipmap)) {
-			flags |= Texture::HasMipmaps;
-		}
-		
-		bLoaded = m_pTexture->Init(tempPath, flags);
-		if(bLoaded)
-		{
-			m_dwWidth = m_pTexture->getSize().x;
-			m_dwHeight = m_pTexture->getSize().y;
-			
-			Vec2i storedSize = m_pTexture->getStoredSize();
-			uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
-			hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
-		}
 	}
-
-	return bLoaded;
+	
+	m_pTexture = GRenderer->CreateTexture2D();
+	if(!m_pTexture) {
+		return false;
+	}
+	
+	Texture::TextureFlags flags = 0;
+	
+	if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
+		flags |= Texture::HasColorKey;
+	}
+	
+	if(!(m_dwFlags & NoMipmap)) {
+		flags |= Texture::HasMipmaps;
+	}
+	
+	if(!m_pTexture->Init(tempPath, flags)) {
+		LogError << "error creating texture " << tempPath;
+		return false;
+	}
+	
+	m_dwWidth = m_pTexture->getSize().x;
+	m_dwHeight = m_pTexture->getSize().y;
+	
+	Vec2i storedSize = m_pTexture->getStoredSize();
+	uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
+	hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
+	
+	return true;
 }
 
 bool TextureContainer::hasColorKey() {
