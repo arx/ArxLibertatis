@@ -4386,8 +4386,6 @@ void ComputePortalVertexBuffer() {
 				= (startIndexCull += info.iNbIndiceNoCull_TAdditive);
 			m.uslNbIndiceCull_TSubstractive = 0;
 			startIndexCull += info.iNbIndiceCull_TSubstractive;
-			m.uslNbIndiceNoCull_TSubstractive = 0;
-			// TODO not implemented?
 			startIndexCull += info.iNbIndiceNoCull_TSubstractive;
 			
 			if(info.iNbIndiceCull > 65535 || info.iNbIndiceNoCull > 65535
