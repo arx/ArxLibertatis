@@ -200,8 +200,6 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 	return false;
 }
 
-extern long COMPUTE_PORTALS;
-
 #define TYPE_ROOM	2
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
@@ -226,15 +224,12 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	{
 		long val1 = 0;
 
-		if (COMPUTE_PORTALS)
-		{
-			long type, val2;
-			if (!GetNameInfo(eobj->name, type, val1, val2))
-				return false;
+		long type, val2;
+		if (!GetNameInfo(eobj->name, type, val1, val2))
+			return false;
 
-			if (type!=TYPE_ROOM)
-				return false;
-		}
+		if (type!=TYPE_ROOM)
+			return false;
 
 		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
 
@@ -243,10 +238,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 		{
 			EERIEPOLY * ep2=(EERIEPOLY *)&eg->polydata[n];
 
-			if (COMPUTE_PORTALS)
-			{
-				if (ep2->room!=val1) continue;
-			}
+			if (ep2->room!=val1) continue;
 			
 			if (ep==ep2) continue;
 

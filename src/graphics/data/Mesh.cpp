@@ -102,12 +102,8 @@ static void EERIE_PORTAL_Release();
 
 float Xratio = 1.f;
 float Yratio = 1.f;
-long COMPUTE_PORTALS = 1;
 
 
-
-
- 
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
 EERIEMATRIX ProjectionMatrix;
@@ -2356,12 +2352,8 @@ bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 	return false;
 }
 
-extern long COMPUTE_PORTALS;
-
-void EERIE_PORTAL_Blend_Portals_And_Rooms()
-{
-	if (!COMPUTE_PORTALS) return;
-
+void EERIE_PORTAL_Blend_Portals_And_Rooms() {
+	
 	if (!portals) return;
 
 	for (long num = 0; num < portals->nb_total; num++)
@@ -3353,7 +3345,7 @@ static bool loadFastScene(const res::path & file, const char * data,
 			
 		}
 		
-		USE_PORTALS = (COMPUTE_PORTALS == 0) ? 0 : 4;
+		USE_PORTALS = 4;
 	}
 	
 	
@@ -3479,8 +3471,6 @@ static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py
 
 static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, long py, long idx) {
 	
-	if (!COMPUTE_PORTALS) return;
-
 	long type, val1, val2;
 
 	if (!GetNameInfo(name, type, val1, val2)) return;
@@ -3713,50 +3703,37 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 	long type, val1, val2;
 
-	if (COMPUTE_PORTALS)
+	if (GetNameInfo(eobj->name, type, val1, val2))
 	{
-		if (GetNameInfo(eobj->name, type, val1, val2))
+		if (type == TYPE_PORTAL)
 		{
-			if (type == TYPE_PORTAL)
-			{
-				EERIEPOLY ep;
-				EERIEPOLY epp;
+			EERIEPOLY ep;
+			EERIEPOLY epp;
 
-				for (size_t i = 0; i < eobj->facelist.size(); i++)
+			for (size_t i = 0; i < eobj->facelist.size(); i++)
+			{
+				for (long kk = 0; kk < 3; kk++)
 				{
-					for (long kk = 0; kk < 3; kk++)
-					{
-						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
-					}
-
-					if (i == 0)
-					{
-						memcpy(&epp, &ep, sizeof(EERIEPOLY));
-						epp.type = 0;
-					}
-					else if (i == 1)
-					{
-						EERIEPOLY_FillMissingVertex(&epp, &ep);
-					}
-					else break;
+					memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
 				}
 
-				if(!eobj->facelist.empty()) {
-					EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
+				if (i == 0)
+				{
+					memcpy(&epp, &ep, sizeof(EERIEPOLY));
+					epp.type = 0;
 				}
+				else if (i == 1)
+				{
+					EERIEPOLY_FillMissingVertex(&epp, &ep);
+				}
+				else break;
+			}
 
-				return;
+			if(!eobj->facelist.empty()) {
+				EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
 			}
-		}
-	}
-	else
-	{
-		if (GetNameInfo(eobj->name, type, val1, val2))
-		{
-			if (type == TYPE_PORTAL)
-			{
-				return;
-			}
+
+			return;
 		}
 	}
 
@@ -4169,34 +4146,199 @@ vector<COPY3D> vCopy3d;
 void ComputePortalVertexBuffer()
 {
 	if (!portals) return;
+	
+	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 
-	if (COMPUTE_PORTALS)
+	vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
+
+	int iMaxRoom = min(portals->nb_rooms, 255L);
+
+	if(portals->nb_rooms > 255) {
+		LogError << "rooms > 255 - Error Portals";
+		return;
+	}
+
+	for (int iNb = 0; iNb <= iMaxRoom; iNb++)
 	{
-		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
+		EERIE_ROOM_DATA * pRoom = &portals->room[iNb];
 
-		vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
-
-		int iMaxRoom = min(portals->nb_rooms, 255L);
-
-		if(portals->nb_rooms > 255) {
-			LogError << "rooms > 255 - Error Portals";
-			return;
+		if (!pRoom->nb_polys)
+		{
+			continue;
 		}
 
-		for (int iNb = 0; iNb <= iMaxRoom; iNb++)
-		{
-			EERIE_ROOM_DATA * pRoom = &portals->room[iNb];
+		vTextureVertex.clear();
 
-			if (!pRoom->nb_polys)
-			{
-				continue;
+		//check le nombre de vertexs par room + liste de texturecontainer*
+		int iNbVertexForRoom = 0;
+		int iNbIndiceForRoom = 0;
+
+		for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
+		{
+			int iPx = pRoom->epdata[iNbPoly].px;
+			int iPy = pRoom->epdata[iNbPoly].py;
+			EERIE_BKG_INFO * pBkgInfo = &ACTIVEBKG->Backg[iPx+iPy*ACTIVEBKG->Xsize];
+
+			EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
+
+			if ((pPoly->type & POLY_IGNORE) ||
+					(pPoly->type & POLY_HIDE) ||
+					(!pPoly->tex)) continue;
+
+			if(!pPoly->tex->tMatRoom) {
+				pPoly->tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT) * (iMaxRoom + 1));
 			}
 
-			vTextureVertex.clear();
+			SINFO_TEXTURE_VERTEX * pTextureVertex = NULL;
+			vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
-			//check le nombre de vertexs par room + liste de texturecontainer*
-			int iNbVertexForRoom = 0;
-			int iNbIndiceForRoom = 0;
+			for (it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it)
+			{
+				if (((*it)->pTex) == pPoly->tex)
+				{
+					pTextureVertex = *it;
+					break;
+				}
+			}
+
+			if (!pTextureVertex)
+			{
+				pTextureVertex = (SINFO_TEXTURE_VERTEX *)malloc(sizeof(SINFO_TEXTURE_VERTEX));
+				memset(pTextureVertex, 0, sizeof(SINFO_TEXTURE_VERTEX));
+				pTextureVertex->pTex = pPoly->tex;
+				vTextureVertex.insert(vTextureVertex.end(), pTextureVertex);
+			}
+
+			int iNbVertex;
+			int iNbIndice;
+
+			if (pPoly->type & POLY_QUAD)
+			{
+				iNbVertex = 4;
+				iNbIndice = 6;
+			}
+			else
+			{
+				iNbVertex = 3;
+				iNbIndice = 3;
+			}
+
+			pTextureVertex->iNbVertex += iNbVertex;
+
+			if (pPoly->type & POLY_DOUBLESIDED)
+			{
+				if (pPoly->type & POLY_TRANS)
+				{
+					float fTransp = pPoly->transval;
+
+					if (pPoly->transval >= 2.f) //MULTIPLICATIVE
+					{
+						pTextureVertex->iNbIndiceNoCull_TMultiplicative += iNbIndice;
+						fTransp *= .5f;
+						fTransp += .5f;
+					}
+					else
+					{
+						if (pPoly->transval >= 1.f) //ADDITIVE
+						{
+							pTextureVertex->iNbIndiceNoCull_TAdditive += iNbIndice;
+							fTransp -= 1.f;
+						}
+						else
+						{
+							if (pPoly->transval > 0.f) //NORMAL TRANS
+							{
+								pTextureVertex->iNbIndiceNoCull_TNormalTrans += iNbIndice;
+								fTransp = 1.f - fTransp;
+							}
+							else
+							{
+								//SUBTRACTIVE
+								pTextureVertex->iNbIndiceNoCull_TSubstractive += iNbIndice;
+								fTransp = 1.f - fTransp;
+							}
+						}
+					}
+
+					pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
+				}
+				else
+				{
+					pTextureVertex->iNbIndiceNoCull += iNbIndice;
+				}
+			}
+			else
+			{
+				if (pPoly->type & POLY_TRANS)
+				{
+					float fTransp = pPoly->transval;
+
+					if (pPoly->transval >= 2.f) //MULTIPLICATIVE
+					{
+						pTextureVertex->iNbIndiceCull_TMultiplicative += iNbIndice;
+						fTransp *= .5f;
+						fTransp += .5f;
+					}
+					else
+					{
+						if (pPoly->transval >= 1.f) //ADDITIVE
+						{
+							pTextureVertex->iNbIndiceCull_TAdditive += iNbIndice;
+							fTransp -= 1.f;
+						}
+						else
+						{
+							if (pPoly->transval > 0.f) //NORMAL TRANS
+							{
+								pTextureVertex->iNbIndiceCull_TNormalTrans += iNbIndice;
+								fTransp = 1.f - fTransp;
+							}
+							else
+							{
+								//SUBTRACTIVE
+								pTextureVertex->iNbIndiceCull_TSubstractive += iNbIndice;
+								fTransp = 1.f - fTransp;
+							}
+						}
+					}
+
+					pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
+				}
+				else
+				{
+					pTextureVertex->iNbIndiceCull += iNbIndice;
+				}
+			}
+
+			iNbVertexForRoom += iNbVertex;
+			iNbIndiceForRoom += iNbIndice;
+		}
+		
+		if(!iNbVertexForRoom) {
+			LogWarning << "no vertices in room " << iNb;
+			vector<SINFO_TEXTURE_VERTEX *>::iterator it;
+			for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
+				free(*it);
+			}
+			continue;
+		}
+		
+		pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
+		
+		// TODO should be static, but is updated for dynamic lighting
+		pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
+		
+		SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
+
+		int iStartVertex = 0;
+		int iStartCull = 0;
+		std::vector<SINFO_TEXTURE_VERTEX *>::iterator it;
+
+		for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
+			
+			TextureContainer * pTextureContainer = (*it)->pTex;
+
+			unsigned short iIndiceInVertex = 0;
 
 			for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
 			{
@@ -4210,285 +4352,117 @@ void ComputePortalVertexBuffer()
 						(pPoly->type & POLY_HIDE) ||
 						(!pPoly->tex)) continue;
 
-				if(!pPoly->tex->tMatRoom) {
-					pPoly->tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT) * (iMaxRoom + 1));
-				}
-
-				SINFO_TEXTURE_VERTEX * pTextureVertex = NULL;
-				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
-				for (it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it)
+				if (pPoly->tex == pTextureContainer)
 				{
-					if (((*it)->pTex) == pPoly->tex)
+					pVertex->p.x = pPoly->v[0].p.x;
+					pVertex->p.y = -(pPoly->v[0].p.y);
+					pVertex->p.z = pPoly->v[0].p.z;
+					pVertex->color = pPoly->v[0].color;
+					pVertex->uv.x = pPoly->v[0].uv.x + pTextureContainer->hd.x;
+					pVertex->uv.y = pPoly->v[0].uv.y + pTextureContainer->hd.y;
+					pVertex++;
+
+					pVertex->p.x = pPoly->v[1].p.x;
+					pVertex->p.y = -(pPoly->v[1].p.y);
+					pVertex->p.z = pPoly->v[1].p.z;
+					pVertex->color = pPoly->v[1].color;
+					pVertex->uv.x = pPoly->v[1].uv.x + pTextureContainer->hd.x;
+					pVertex->uv.y = pPoly->v[1].uv.y + pTextureContainer->hd.y;
+					pVertex++;
+
+					pVertex->p.x = pPoly->v[2].p.x;
+					pVertex->p.y = -(pPoly->v[2].p.y);
+					pVertex->p.z = pPoly->v[2].p.z;
+					pVertex->color = pPoly->v[2].color;
+					pVertex->uv.x = pPoly->v[2].uv.x + pTextureContainer->hd.x;
+					pVertex->uv.y = pPoly->v[2].uv.y + pTextureContainer->hd.y;
+					pVertex++;
+
+					pPoly->uslInd[0] = iIndiceInVertex++;
+					pPoly->uslInd[1] = iIndiceInVertex++;
+					pPoly->uslInd[2] = iIndiceInVertex++;
+
+					if (pPoly->type & POLY_QUAD)
 					{
-						pTextureVertex = *it;
-						break;
-					}
-				}
-
-				if (!pTextureVertex)
-				{
-					pTextureVertex = (SINFO_TEXTURE_VERTEX *)malloc(sizeof(SINFO_TEXTURE_VERTEX));
-					memset(pTextureVertex, 0, sizeof(SINFO_TEXTURE_VERTEX));
-					pTextureVertex->pTex = pPoly->tex;
-					vTextureVertex.insert(vTextureVertex.end(), pTextureVertex);
-				}
-
-				int iNbVertex;
-				int iNbIndice;
-
-				if (pPoly->type & POLY_QUAD)
-				{
-					iNbVertex = 4;
-					iNbIndice = 6;
-				}
-				else
-				{
-					iNbVertex = 3;
-					iNbIndice = 3;
-				}
-
-				pTextureVertex->iNbVertex += iNbVertex;
-
-				if (pPoly->type & POLY_DOUBLESIDED)
-				{
-					if (pPoly->type & POLY_TRANS)
-					{
-						float fTransp = pPoly->transval;
-
-						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
-						{
-							pTextureVertex->iNbIndiceNoCull_TMultiplicative += iNbIndice;
-							fTransp *= .5f;
-							fTransp += .5f;
-						}
-						else
-						{
-							if (pPoly->transval >= 1.f) //ADDITIVE
-							{
-								pTextureVertex->iNbIndiceNoCull_TAdditive += iNbIndice;
-								fTransp -= 1.f;
-							}
-							else
-							{
-								if (pPoly->transval > 0.f) //NORMAL TRANS
-								{
-									pTextureVertex->iNbIndiceNoCull_TNormalTrans += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-								else
-								{
-									//SUBTRACTIVE
-									pTextureVertex->iNbIndiceNoCull_TSubstractive += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-							}
-						}
-
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
-					}
-					else
-					{
-						pTextureVertex->iNbIndiceNoCull += iNbIndice;
-					}
-				}
-				else
-				{
-					if (pPoly->type & POLY_TRANS)
-					{
-						float fTransp = pPoly->transval;
-
-						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
-						{
-							pTextureVertex->iNbIndiceCull_TMultiplicative += iNbIndice;
-							fTransp *= .5f;
-							fTransp += .5f;
-						}
-						else
-						{
-							if (pPoly->transval >= 1.f) //ADDITIVE
-							{
-								pTextureVertex->iNbIndiceCull_TAdditive += iNbIndice;
-								fTransp -= 1.f;
-							}
-							else
-							{
-								if (pPoly->transval > 0.f) //NORMAL TRANS
-								{
-									pTextureVertex->iNbIndiceCull_TNormalTrans += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-								else
-								{
-									//SUBTRACTIVE
-									pTextureVertex->iNbIndiceCull_TSubstractive += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-							}
-						}
-
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
-					}
-					else
-					{
-						pTextureVertex->iNbIndiceCull += iNbIndice;
-					}
-				}
-
-				iNbVertexForRoom += iNbVertex;
-				iNbIndiceForRoom += iNbIndice;
-			}
-			
-			if(!iNbVertexForRoom) {
-				LogWarning << "no vertices in room " << iNb;
-				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-				for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-					free(*it);
-				}
-				continue;
-			}
-			
-			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
-			
-			// TODO should be static, but is updated for dynamic lighting
-			pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
-			
-			SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
-
-			int iStartVertex = 0;
-			int iStartCull = 0;
-			std::vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
-			for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-				
-				TextureContainer * pTextureContainer = (*it)->pTex;
-
-				unsigned short iIndiceInVertex = 0;
-
-				for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
-				{
-					int iPx = pRoom->epdata[iNbPoly].px;
-					int iPy = pRoom->epdata[iNbPoly].py;
-					EERIE_BKG_INFO * pBkgInfo = &ACTIVEBKG->Backg[iPx+iPy*ACTIVEBKG->Xsize];
-
-					EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
-
-					if ((pPoly->type & POLY_IGNORE) ||
-							(pPoly->type & POLY_HIDE) ||
-							(!pPoly->tex)) continue;
-
-					if (pPoly->tex == pTextureContainer)
-					{
-						pVertex->p.x = pPoly->v[0].p.x;
-						pVertex->p.y = -(pPoly->v[0].p.y);
-						pVertex->p.z = pPoly->v[0].p.z;
-						pVertex->color = pPoly->v[0].color;
-						pVertex->uv.x = pPoly->v[0].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[0].uv.y + pTextureContainer->hd.y;
+						pVertex->p.x = pPoly->v[3].p.x;
+						pVertex->p.y = -(pPoly->v[3].p.y);
+						pVertex->p.z = pPoly->v[3].p.z;
+						pVertex->color = pPoly->v[3].color;
+						pVertex->uv.x = pPoly->v[3].uv.x + pTextureContainer->hd.x;
+						pVertex->uv.y = pPoly->v[3].uv.y + pTextureContainer->hd.y;
 						pVertex++;
 
-						pVertex->p.x = pPoly->v[1].p.x;
-						pVertex->p.y = -(pPoly->v[1].p.y);
-						pVertex->p.z = pPoly->v[1].p.z;
-						pVertex->color = pPoly->v[1].color;
-						pVertex->uv.x = pPoly->v[1].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[1].uv.y + pTextureContainer->hd.y;
-						pVertex++;
-
-						pVertex->p.x = pPoly->v[2].p.x;
-						pVertex->p.y = -(pPoly->v[2].p.y);
-						pVertex->p.z = pPoly->v[2].p.z;
-						pVertex->color = pPoly->v[2].color;
-						pVertex->uv.x = pPoly->v[2].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[2].uv.y + pTextureContainer->hd.y;
-						pVertex++;
-
-						pPoly->uslInd[0] = iIndiceInVertex++;
-						pPoly->uslInd[1] = iIndiceInVertex++;
-						pPoly->uslInd[2] = iIndiceInVertex++;
-
-						if (pPoly->type & POLY_QUAD)
-						{
-							pVertex->p.x = pPoly->v[3].p.x;
-							pVertex->p.y = -(pPoly->v[3].p.y);
-							pVertex->p.z = pPoly->v[3].p.z;
-							pVertex->color = pPoly->v[3].color;
-							pVertex->uv.x = pPoly->v[3].uv.x + pTextureContainer->hd.x;
-							pVertex->uv.y = pPoly->v[3].uv.y + pTextureContainer->hd.y;
-							pVertex++;
-
-							pPoly->uslInd[3] = iIndiceInVertex++;
-						}
+						pPoly->uslInd[3] = iIndiceInVertex++;
 					}
 				}
-
-				//texturecontainer
-				pRoom->usNbTextures++;
-                pRoom->ppTextureContainer = (TextureContainer **)realloc(pRoom->ppTextureContainer, sizeof(TextureContainer *) * pRoom->usNbTextures);
-				pRoom->ppTextureContainer[pRoom->usNbTextures-1] = pTextureContainer;
-
-				pTextureContainer->tMatRoom[iNb].uslStartVertex = iStartVertex;
-				pTextureContainer->tMatRoom[iNb].uslNbVertex = iIndiceInVertex;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull = iStartCull;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull = pTextureContainer->tMatRoom[iNb].uslStartCull + (*it)->iNbIndiceCull;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartNoCull + (*it)->iNbIndiceNoCull;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TNormalTrans = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans + (*it)->iNbIndiceCull_TNormalTrans;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TNormalTrans = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans + (*it)->iNbIndiceNoCull_TNormalTrans;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TMultiplicative = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative + (*it)->iNbIndiceCull_TMultiplicative;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TMultiplicative = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative + (*it)->iNbIndiceNoCull_TMultiplicative;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TAdditive = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive + (*it)->iNbIndiceCull_TAdditive;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TAdditive = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive + (*it)->iNbIndiceNoCull_TAdditive;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TSubstractive = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive + (*it)->iNbIndiceCull_TSubstractive;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TSubstractive = 0;
-
-				if (((*it)->iNbIndiceCull > 65535) ||
-						((*it)->iNbIndiceNoCull > 65535) ||
-						((*it)->iNbIndiceCull_TNormalTrans > 65535) ||
-						((*it)->iNbIndiceNoCull_TNormalTrans > 65535) ||
-						((*it)->iNbIndiceCull_TMultiplicative > 65535) ||
-						((*it)->iNbIndiceNoCull_TMultiplicative > 65535) ||
-						((*it)->iNbIndiceCull_TAdditive > 65535) ||
-						((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
-						((*it)->iNbIndiceCull_TSubstractive > 65535) ||
-						((*it)->iNbIndiceNoCull_TSubstractive > 65535)) {
-					LogError << "CreateVertexBuffer - Indices>65535" << " Error TransForm";
-				}
-
-				iStartCull +=	(*it)->iNbIndiceCull +
-								(*it)->iNbIndiceNoCull +
-								(*it)->iNbIndiceCull_TNormalTrans +
-								(*it)->iNbIndiceNoCull_TNormalTrans +
-								(*it)->iNbIndiceCull_TMultiplicative +
-								(*it)->iNbIndiceNoCull_TMultiplicative +
-								(*it)->iNbIndiceCull_TAdditive +
-								(*it)->iNbIndiceNoCull_TAdditive +
-								(*it)->iNbIndiceCull_TSubstractive +
-								(*it)->iNbIndiceNoCull_TSubstractive;
-				
-				iStartVertex += iIndiceInVertex;
-				
-				free(*it);
 			}
+
+			//texturecontainer
+			pRoom->usNbTextures++;
+							pRoom->ppTextureContainer = (TextureContainer **)realloc(pRoom->ppTextureContainer, sizeof(TextureContainer *) * pRoom->usNbTextures);
+			pRoom->ppTextureContainer[pRoom->usNbTextures-1] = pTextureContainer;
+
+			pTextureContainer->tMatRoom[iNb].uslStartVertex = iStartVertex;
+			pTextureContainer->tMatRoom[iNb].uslNbVertex = iIndiceInVertex;
+
+			pTextureContainer->tMatRoom[iNb].uslStartCull = iStartCull;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull = 0;
+			pTextureContainer->tMatRoom[iNb].uslStartNoCull = pTextureContainer->tMatRoom[iNb].uslStartCull + (*it)->iNbIndiceCull;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull = 0;
+
+			pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartNoCull + (*it)->iNbIndiceNoCull;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TNormalTrans = 0;
+			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans + (*it)->iNbIndiceCull_TNormalTrans;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TNormalTrans = 0;
+
+			pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans + (*it)->iNbIndiceNoCull_TNormalTrans;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TMultiplicative = 0;
+			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative + (*it)->iNbIndiceCull_TMultiplicative;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TMultiplicative = 0;
+
+			pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative + (*it)->iNbIndiceNoCull_TMultiplicative;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TAdditive = 0;
+			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive + (*it)->iNbIndiceCull_TAdditive;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TAdditive = 0;
+
+			pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive + (*it)->iNbIndiceNoCull_TAdditive;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TSubstractive = 0;
+			pTextureContainer->tMatRoom[iNb].uslStartNoCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive + (*it)->iNbIndiceCull_TSubstractive;
+			pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TSubstractive = 0;
+
+			if (((*it)->iNbIndiceCull > 65535) ||
+					((*it)->iNbIndiceNoCull > 65535) ||
+					((*it)->iNbIndiceCull_TNormalTrans > 65535) ||
+					((*it)->iNbIndiceNoCull_TNormalTrans > 65535) ||
+					((*it)->iNbIndiceCull_TMultiplicative > 65535) ||
+					((*it)->iNbIndiceNoCull_TMultiplicative > 65535) ||
+					((*it)->iNbIndiceCull_TAdditive > 65535) ||
+					((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
+					((*it)->iNbIndiceCull_TSubstractive > 65535) ||
+					((*it)->iNbIndiceNoCull_TSubstractive > 65535)) {
+				LogError << "CreateVertexBuffer - Indices>65535" << " Error TransForm";
+			}
+
+			iStartCull +=	(*it)->iNbIndiceCull +
+							(*it)->iNbIndiceNoCull +
+							(*it)->iNbIndiceCull_TNormalTrans +
+							(*it)->iNbIndiceNoCull_TNormalTrans +
+							(*it)->iNbIndiceCull_TMultiplicative +
+							(*it)->iNbIndiceNoCull_TMultiplicative +
+							(*it)->iNbIndiceCull_TAdditive +
+							(*it)->iNbIndiceNoCull_TAdditive +
+							(*it)->iNbIndiceCull_TSubstractive +
+							(*it)->iNbIndiceNoCull_TSubstractive;
 			
-			pRoom->pVertexBuffer->unlock();
+			iStartVertex += iIndiceInVertex;
+			
+			free(*it);
 		}
-
-		vTextureVertex.clear();
+		
+		pRoom->pVertexBuffer->unlock();
 	}
+
+	vTextureVertex.clear();
 }
 
 long EERIERTPPoly(EERIEPOLY *ep)
