@@ -65,6 +65,11 @@ struct UNIQUE_HEADER2 {
 	char path[256];
 };
 
+struct UNIQUE_HEADER3 {
+	UNIQUE_HEADER2 h2;
+	char check[512];
+};
+
 struct FAST_VERTEX {
 	f32	sy;
 	f32	ssx;

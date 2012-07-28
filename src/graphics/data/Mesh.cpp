@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <map>
 
+#include <boost/scoped_array.hpp>
+
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
@@ -2954,99 +2956,162 @@ extern void LoadLevelScreen(long lev);
 
 extern float PROGRESS_BAR_COUNT;
 
+
+struct file_truncated_exception { };
+
+template <typename T>
+const T * fts_read(const char * & data, const char * end, size_t n = 1) {
+	
+	size_t toread = sizeof(T) * n;
+	
+	if(data + toread > end) {
+		LogDebug(sizeof(T) << " * " << n << " > " << (end - data));
+		throw file_truncated_exception();
+	}
+	
+	const T * result = reinterpret_cast<const T *>(data);
+	
+	data += toread;
+	
+	return result;
+}
+
+
+static bool loadFastScene(const res::path & file, const char * data,
+                          const char * end);
+
+template <typename T>
+class scoped_malloc {
+	
+	T * data;
+	
+public:
+	
+	scoped_malloc(T * data) : data(data) { }
+	
+	~scoped_malloc() { free(data); }
+	
+	T * get() { return data; }
+	const T * get() const { return data; }
+	
+};
+
 bool FastSceneLoad(const res::path & partial_path) {
 	
-	// TODO bounds checking
+	res::path file = "game" / partial_path / "fast.fts";
 	
-	LogDebug("Fast Scene Load " << partial_path);
+	const char * data = NULL, * end = NULL;
+	boost::scoped_array<char> bytes;
 	
-	res::path path = "game" / partial_path;
-	res::path file = path / "fast.fts";
-	
-	size_t size;
-	char * dat = resources->readAlloc(file, size);
-	if(!dat) {
-		LogError << "FastSceneLoad: could not find " << file;
-	}
-	
-	size_t pos = 0;
-	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
-	pos += sizeof(UNIQUE_HEADER);
-	
-	if(uh->version != FTS_VERSION) {
-		LogError << "FastSceneLoad version mistmatch: got " << uh->version << " expected " << FTS_VERSION;
-		free(dat);
+	try {
+		
+		// Load the whole file
+		LogDebug("Loading " << file);
+		size_t size;
+		scoped_malloc<char> dat(resources->readAlloc(file, size));
+		data = dat.get(), end = dat.get() + size;
+		// TODO use new[] instead of malloc so we can use (boost::)unique_ptr
+		LogDebug("FTS: read " << size << " bytes");
+		if(!data) {
+			LogError << "FTS: could not read " << file;
+			return false;
+		}
+		
+		
+		// Read the file header
+		size_t pos = 0;
+		const UNIQUE_HEADER * uh = fts_read<UNIQUE_HEADER>(data, end);
+		pos += sizeof(UNIQUE_HEADER);
+		if(uh->version != FTS_VERSION) {
+			LogError << "FTS version mismatch: got " << uh->version << ", expected "
+			         << FTS_VERSION << " in " << file;
+			return false;
+		}
+		PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+		
+		
+		// Skip .scn file list and initialize the scene data
+		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
+		InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
+		PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+		
+		
+		// Decompress the actual scene data
+		size_t input_size = end - data;
+		LogDebug("FTS: decompressing " << input_size << " -> "
+		                               << uh->uncompressedsize);
+		bytes.reset(new char[uh->uncompressedsize]);
+		if(!bytes) {
+			LogError << "FTS: can't allocate buffer for uncompressed data";
+			return false;
+		}
+		size = blastMem(data, input_size, bytes.get(), uh->uncompressedsize);
+		data = bytes.get(), end = bytes.get() + size;
+		if(!size) {
+			LogError << "FTS: error decompressing scene data in " << file;
+			return false;
+		} else if(size != size_t(uh->uncompressedsize)) {
+			LogWarning << "FTS: unexpected decompressed size: " << size << " < "
+			           << uh->uncompressedsize << " in " << file;
+		}
+		PROGRESS_BAR_COUNT += 3.f, LoadLevelScreen();
+		
+		
+	} catch(file_truncated_exception) {
+		LogError << "FTS: truncated file " << file;
 		return false;
 	}
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-	
-	// Skip .scn file list.
-	pos += uh->count * (512 + sizeof(UNIQUE_HEADER2));
-	
-	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-	
-	char * rawdata = new char[uh->uncompressedsize];
-	if(rawdata == NULL) {
-		LogError << "FastSceneLoad: can't allocate buffer for uncompressed data";
-		free(dat);
+	try {
+		return loadFastScene(file, data, end);
+	} catch(file_truncated_exception) {
+		LogError << "FTS: truncated compressed data in " << file;
 		return false;
 	}
+}
+
+
+static bool loadFastScene(const res::path & file, const char * data,
+                          const char * end) {
 	
-	size_t rawsize = blastMem(dat + pos, size - pos, rawdata, uh->uncompressedsize);
-	free(dat);
-	if(!rawsize) {
-		LogDebug("FastSceneLoad: blastMem didn't return anything " << size << " " << pos);
-		delete[] rawdata;
-		return false;
-	}
-	
-	PROGRESS_BAR_COUNT += 3.f;
-	LoadLevelScreen();
-	pos = 0;
-	
-	const FAST_SCENE_HEADER * fsh = reinterpret_cast<const FAST_SCENE_HEADER *>(rawdata + pos);
-	pos += sizeof(FAST_SCENE_HEADER);
-	
+	// Read the scene header
+	const FAST_SCENE_HEADER * fsh = fts_read<FAST_SCENE_HEADER>(data, end);
 	if(fsh->version != FTS_VERSION) {
-		LogError << "FastSceneLoad: version mismatch in FAST_SCENE_HEADER";
-		delete[] rawdata;
+		LogError << "FTS: version mismatch: got " << fsh->version << ", expected "
+		         << FTS_VERSION << " in " << file;
 		return false;
 	}
-	
 	if(fsh->sizex != ACTIVEBKG->Xsize || fsh->sizez != ACTIVEBKG->Zsize) {
-		LogError << "FastSceneLoad: size mismatch in FAST_SCENE_HEADER";
-		delete[] rawdata;
+		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
-	
 	player.pos = fsh->playerpos;
 	Mscenepos = fsh->Mscenepos;
 	
-	// load textures
+	
+	// Load textures
 	typedef std::map<s32, TextureContainer *> TextureContainerMap;
 	TextureContainerMap textures;
+	const FAST_TEXTURE_CONTAINER * ftc;
+	ftc = fts_read<FAST_TEXTURE_CONTAINER>(data, end, fsh->nb_textures);
 	for(long k = 0; k < fsh->nb_textures; k++) {
-		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
-		res::path file = res::path::load(safestring(ftc->fic)).remove_ext();
-		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
+		res::path file = res::path::load(safestring(ftc[k].fic)).remove_ext();
+		TextureContainer * tmpTC;
+		tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
-			textures[ftc->tc] = tmpTC;
+			textures[ftc[k].tc] = tmpTC;
 		}
-		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}
+	PROGRESS_BAR_COUNT += 4.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 4.f;
-	LoadLevelScreen();
 	
+	// Load cells with polygons and anchors
+	LogDebug("FTS: loading " << fsh->sizex << " x " << fsh->sizez
+	         << " cells ...");
 	for(long j = 0; j < fsh->sizez; j++) {
 		for(long i = 0; i < fsh->sizex; i++) {
 			
-			const FAST_SCENE_INFO * fsi = reinterpret_cast<const FAST_SCENE_INFO *>(rawdata + pos);
-			pos += sizeof(FAST_SCENE_INFO);
+			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
 			
 			EERIE_BKG_INFO & bkg = ACTIVEBKG->Backg[i + (j * fsh->sizex)];
 			
@@ -3065,13 +3130,15 @@ bool FastSceneLoad(const res::path & partial_path) {
 			bkg.frustrum_maxy = -99999999.f;
 			bkg.frustrum_miny = 99999999.f;
 			
+			const FAST_EERIEPOLY * eps;
+			eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				
-				const FAST_EERIEPOLY * ep = reinterpret_cast<const FAST_EERIEPOLY *>(rawdata + pos);
-				pos += sizeof(FAST_EERIEPOLY);
-				
+				const FAST_EERIEPOLY * ep = &eps[k];
 				EERIEPOLY * ep2 = &bkg.polydata[k];
+				
 				memset(ep2, 0, sizeof(EERIEPOLY));
+				
 				ep2->room = ep->room;
 				ep2->area = ep->area;
 				ep2->norm = ep->norm;
@@ -3164,32 +3231,28 @@ bool FastSceneLoad(const res::path & partial_path) {
 				bkg.ianchors = NULL;
 			} else {
 				bkg.ianchors = (long *)malloc(sizeof(long) * fsi->nbianchors);
-				memset(bkg.ianchors, 0, sizeof(long)*fsi->nbianchors);
+				const s32 * anchors = fts_read<s32>(data, end, fsi->nbianchors);
+				std::copy(anchors, anchors + fsi->nbianchors, bkg.ianchors);
 			}
 			
-			for(long k = 0; k < fsi->nbianchors; k++) {
-				const s32 * ianch = reinterpret_cast<const s32 *>(rawdata + pos);
-				pos += sizeof(s32);
-				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors[k] = *ianch;
-			}
 		}
 	}
+	PROGRESS_BAR_COUNT += 4.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 4.f;
-	LoadLevelScreen();
+	
+	// Load anchor links
+	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
 	ACTIVEBKG->nbanchors = fsh->nb_anchors;
-	
 	if(fsh->nb_anchors > 0) {
-		ACTIVEBKG->anchors = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * fsh->nb_anchors);
-		memset(ACTIVEBKG->anchors, 0, sizeof(_ANCHOR_DATA)*fsh->nb_anchors);
+		size_t anchorsize = sizeof(_ANCHOR_DATA) * fsh->nb_anchors;
+		ACTIVEBKG->anchors = (_ANCHOR_DATA *)malloc(anchorsize);
+		memset(ACTIVEBKG->anchors, 0, anchorsize);
 	} else {
 		ACTIVEBKG->anchors = NULL;
 	}
-	
 	for(long i = 0; i < fsh->nb_anchors; i++) {
 		
-		const FAST_ANCHOR_DATA * fad = reinterpret_cast<const FAST_ANCHOR_DATA *>(rawdata + pos);
-		pos += sizeof(FAST_ANCHOR_DATA);
+		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
 		_ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
 		anchor.flags = fad->flags;
@@ -3198,40 +3261,43 @@ bool FastSceneLoad(const res::path & partial_path) {
 		anchor.height = fad->height;
 		anchor.radius = fad->radius;
 		
-		if(fad->nb_linked > 0) {
-			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
-		} else {
+		if(fad->nb_linked <= 0) {
 			anchor.linked = NULL;
-		}
-		
-		for(long kk = 0; kk < fad->nb_linked; kk++) {
-			const s32 * lng = reinterpret_cast<const s32 *>(rawdata + pos);
-			pos += sizeof(s32);
-			anchor.linked[kk] = *lng;
+		} else {
+			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
+			const s32 * links = fts_read<s32>(data, end, fad->nb_linked);
+			std::copy(links, links + fad->nb_linked, anchor.linked);
 		}
 	}
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
 	
-	if(fsh->nb_rooms > 0) {
+	// Load rooms and portals
+	if(fsh->nb_rooms <= 0) {
+		USE_PORTALS = 0;
+	} else {
 		
 		EERIE_PORTAL_Release();
 		
 		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
 		portals->nb_rooms = fsh->nb_rooms;
-		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA) * (portals->nb_rooms + 1));
+		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
+		                                          * (portals->nb_rooms + 1));
 		portals->nb_total = fsh->nb_portals;
-		portals->portals = (EERIE_PORTALS *)malloc(sizeof(EERIE_PORTALS) * portals->nb_total);
+		portals->portals = (EERIE_PORTALS *)malloc(sizeof(EERIE_PORTALS)
+		                                           * portals->nb_total);
 		
+		
+		LogDebug("FTS: loading " << portals->nb_total << " portals ...");
+		const EERIE_SAVE_PORTALS * epos;
+		epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->nb_total);
 		for(long i = 0; i < portals->nb_total; i++) {
 			
-			const EERIE_SAVE_PORTALS * epo = reinterpret_cast<const EERIE_SAVE_PORTALS *>(rawdata + pos);
-			pos += sizeof(EERIE_SAVE_PORTALS);
-			
+			const EERIE_SAVE_PORTALS * epo = &epos[i];
 			EERIE_PORTALS & portal = portals->portals[i];
 			
 			memset(&portal, 0, sizeof(EERIE_PORTALS));
+			
 			portal.room_1 = epo->room_1;
 			portal.room_2 = epo->room_2;
 			portal.useportal = epo->useportal;
@@ -3247,15 +3313,17 @@ bool FastSceneLoad(const res::path & partial_path) {
 			portal.poly.norm = epo->poly.norm;
 			portal.poly.norm2 = epo->poly.norm2;
 			
-			copy(epo->poly.nrml, epo->poly.nrml + 4, portal.poly.nrml);
-			copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
-			copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
+			std::copy(epo->poly.nrml, epo->poly.nrml + 4, portal.poly.nrml);
+			std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
+			std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
 		}
 		
+		
+		LogDebug("FTS: loading " << (portals->nb_rooms + 1) << " rooms ...");
 		for(long i = 0; i < portals->nb_rooms + 1; i++) {
 			
-			const EERIE_SAVE_ROOM_DATA * erd = reinterpret_cast<const EERIE_SAVE_ROOM_DATA *>(rawdata + pos);
-			pos += sizeof(EERIE_SAVE_ROOM_DATA);
+			const EERIE_SAVE_ROOM_DATA * erd;
+			erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
 			
 			EERIE_ROOM_DATA & room = portals->room[i];
 			
@@ -3263,20 +3331,22 @@ bool FastSceneLoad(const res::path & partial_path) {
 			room.nb_portals = erd->nb_portals;
 			room.nb_polys = erd->nb_polys;
 			
+			LogDebug(" - room " << i << ": " << room.nb_portals << " portals, "
+			         << room.nb_polys << " polygons");
+			
 			if(room.nb_portals) {
 				room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
-				const s32 * start = reinterpret_cast<const s32 *>(rawdata + pos);
-				pos += sizeof(s32) * portals->room[i].nb_portals;
-				copy(start, reinterpret_cast<const s32 *>(rawdata + pos), room.portals);
+				const s32 * start = fts_read<s32>(data, end, room.nb_portals);
+				std::copy(start, start + room.nb_portals, room.portals);
 			} else {
 				room.portals = NULL;
 			}
 			
 			if(room.nb_polys) {
 				room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
-				const FAST_EP_DATA * ed = reinterpret_cast<const FAST_EP_DATA *>(rawdata + pos);
-				pos += sizeof(FAST_EP_DATA) * portals->room[i].nb_polys;
-				copy(ed, reinterpret_cast<const FAST_EP_DATA *>(rawdata + pos), room.epdata);
+				const FAST_EP_DATA * ed;
+				ed = fts_read<FAST_EP_DATA>(data, end, room.nb_polys);
+				std::copy(ed, ed + room.nb_polys, room.epdata);
 			} else {
 				portals->room[i].epdata = NULL;
 			}
@@ -3284,50 +3354,56 @@ bool FastSceneLoad(const res::path & partial_path) {
 		}
 		
 		USE_PORTALS = (COMPUTE_PORTALS == 0) ? 0 : 4;
-	} else {
-		USE_PORTALS = 0;
 	}
 	
+	
+	// Load distances between rooms
 	if(RoomDistance) {
 		free(RoomDistance);
+		RoomDistance = NULL;
 	}
-	RoomDistance = NULL;
 	NbRoomDistance = 0;
-	
 	if(portals) {
 		NbRoomDistance = portals->nb_rooms + 1;
-		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA)
+		                                        * NbRoomDistance * NbRoomDistance);
+		LogDebug("FTS: loading " << (NbRoomDistance * NbRoomDistance)
+		         << " room distances ...");
 		for(long n = 0; n < NbRoomDistance; n++) {
 			for(long m = 0; m < NbRoomDistance; m++) {
-				const ROOM_DIST_DATA_SAVE * rdds = reinterpret_cast<const ROOM_DIST_DATA_SAVE *>(rawdata + pos);
-				pos += sizeof(ROOM_DIST_DATA_SAVE);
+				const ROOM_DIST_DATA_SAVE * rdds;
+				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
 				Vec3f start = rdds->startpos;
 				Vec3f end = rdds->endpos;
 				SetRoomDistance(m, n, rdds->distance, &start, &end);
 			}
 		}
 	}
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
+	
+	// Prepare the loaded data
+	
+	LogDebug("FTS: preparing scene data ...");
 	
 	EERIEPOLY_Compute_PolyIn();
-	PROGRESS_BAR_COUNT += 3.f;
-	LoadLevelScreen();
+	PROGRESS_BAR_COUNT += 3.f, LoadLevelScreen();
+	
 	EERIE_PATHFINDER_Create();
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
 	ComputePortalVertexBuffer();
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-	delete[] rawdata;
 	
-	LogDebug("FastSceneLoad: done loading.");
+	if(data != end) {
+		LogWarning << "FTS: ignoring " << (end - data) << " bytes at the end of "
+		           << file;
+	}
+	LogDebug("FTS: done loading");
+	
 	return true;
-	
 }
 
 #define checkalloc if(pos >= allocsize - 100000) { free(dat); return false; }
