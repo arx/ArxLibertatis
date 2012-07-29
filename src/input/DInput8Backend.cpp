@@ -637,13 +637,13 @@ void DInput8Backend::getRelativeMouseCoords(int & relX, int & relY, int & relWhe
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
 	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
 		if(od->dwOfs == (DWORD)DIMOFS_X) {
-			relX = od->dwData;
+			relX += od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Y) {
-			relY = od->dwData;
+			relY += od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Z) {
-			relWheel = od->dwData;
+			relWheel += od->dwData;
 		}
 	}
 }
