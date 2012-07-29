@@ -4583,7 +4583,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			} else {
 				target = inter.iobj[spells[i].caster]->pos;
 				beta = MAKEANGLE(inter.iobj[spells[i].caster]->angle.b);
-				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC);
+				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
 				target.x -= EEsin(radians(beta)) * 300.f;
@@ -4685,7 +4685,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
-					displace = (io->ioflags & IO_NPC);
+					displace = (io->ioflags & IO_NPC) == IO_NPC;
 				} else {
 					ARX_DEAD_CODE();
 				}
@@ -5293,7 +5293,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			} else {
 				target = inter.iobj[spells[i].caster]->pos;
 				beta = inter.iobj[spells[i].caster]->angle.b;
-				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC);
+				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
 				target.x -= EEsin(radians(MAKEANGLE(beta))) * 300.f;
