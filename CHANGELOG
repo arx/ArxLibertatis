@@ -1,5 +1,5 @@
 
-= Arx Libertatis 1.0.3  (2012-07-29) =
+= Arx Libertatis 1.0.3  (2012-07-31) =
 
 * Fixed crashes on startup after selecting the OpenGL renderer on Windows
   (crash report #290)
@@ -7,6 +7,7 @@
   (crash report #274)
 * Added support for graphics cards and drivers that don't support alpha-only
   textures to the Direct3D renderer (bug #331)
+* Fixed low mouse sensitivity with the DirectInput backend (bug #334)
 * Fixed some effects shining though walls while casting (bug #278)
 * Fixed missing speech in cinematics for the Russian and Italian versions
   (bug #335)
