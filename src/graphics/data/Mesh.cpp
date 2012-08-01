@@ -1856,8 +1856,9 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 
 	return dst;
 }
-void ComputeRoomDistance()
-{
+
+void ComputeRoomDistance() {
+	
 	if (RoomDistance)
 		free(RoomDistance);
 
@@ -2026,6 +2027,7 @@ void ComputeRoomDistance()
 	}
 
 	free(ad);
+	free(ptr);
 }
 
 // Clears a background of its infos
