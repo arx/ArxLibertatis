@@ -1857,179 +1857,6 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 	return dst;
 }
 
-void ComputeRoomDistance() {
-	
-	if (RoomDistance)
-		free(RoomDistance);
-
-	RoomDistance = NULL;
-	NbRoomDistance = 0;
-
-	if (portals == NULL) return;
-
-	NbRoomDistance = portals->nb_rooms + 1;
-	RoomDistance =
-		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
-
-	for (long n = 0; n < NbRoomDistance; n++)
-		for (long m = 0; m < NbRoomDistance; m++)
-			SetRoomDistance(m, n, -1.f, NULL, NULL);
-
-	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
-	_ANCHOR_DATA * ad = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * nb_anchors);
-
-	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
-
-	void ** ptr = NULL;
-	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
-	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
-
-
-	for (long i = 0; i < NbRoomDistance; i++)
-	{
-		GetRoomCenter(i, &ad[i].pos);
-		ptr[i] = (void *)&portals->room[i];
-	}
-
-	long curpos = NbRoomDistance;
-
-	for (int i = 0; i < portals->nb_total; i++)
-	{
-		// Add 4 portal vertices
-		for (int nn = 0; nn < 4; nn++)
-		{
-			ad[curpos].pos.x = portals->portals[i].poly.v[nn].p.x;
-			ad[curpos].pos.y = portals->portals[i].poly.v[nn].p.y;
-			ad[curpos].pos.z = portals->portals[i].poly.v[nn].p.z;
-			ptr[curpos] = (void *)&portals->portals[i];
-			curpos++;
-		}
-
-		// Add center;
-		ad[curpos].pos = portals->portals[i].poly.center;
-		ptr[curpos] = (void *)&portals->portals[i];
-		curpos++;
-
-		// Add V centers;
-		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
-		{
-			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * .5f;
-			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * .5f;
-			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * .5f;
-			ptr[curpos] = (void *)&portals->portals[i];
-			curpos++;
-		}
-	}
-
-	// Link Room Centers to all its Room portals...
-	for (int i = 0; i <= portals->nb_rooms; i++)
-	{
-		for (long j = 0; j < portals->nb_total; j++)
-		{
-			if ((portals->portals[j].room_1 == i)
-					||	(portals->portals[j].room_2 == i))
-			{
-				for (long tt = 0; tt < nb_anchors; tt++)
-				{
-					if (ptr[tt] == (void *)(&portals->portals[j]))
-					{
-						AddAData(&ad[tt], i);
-						AddAData(&ad[i], tt);
-					}
-				}
-			}
-		}
-	}
-
-	// Link All portals of a room to all other portals of that room
-	for (int i = 0; i <= portals->nb_rooms; i++)
-	{
-		for (long j = 0; j < portals->nb_total; j++)
-		{
-			if (((portals->portals[j].room_1 == i)
-					|| (portals->portals[j].room_2 == i)))
-				for (long jj = 0; jj < portals->nb_total; jj++)
-				{
-					if ((jj != j)
-							&&	((portals->portals[jj].room_1 == i)
-								 ||	(portals->portals[jj].room_2 == i)))
-					{
-						long p1 = -1;
-						long p2 = -1;
-
-						for (long tt = 0; tt < nb_anchors; tt++)
-						{
-							if (ptr[tt] == (void *)(&portals->portals[jj]))
-								p1 = tt;
-
-							if (ptr[tt] == (void *)(&portals->portals[j]))
-								p2 = tt;
-						}
-
-						if ((p1 >= 0) && (p2 >= 0))
-						{
-							AddAData(&ad[p1], p2);
-							AddAData(&ad[p2], p1);
-						}
-					}
-				}
-		}
-	}
-
-	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
-
-	for (int i = 0; i < NbRoomDistance; i++)
-		for (long j = 0; j < NbRoomDistance; j++)
-		{
-			if (i == j)
-			{
-				SetRoomDistance(i, j, -1, NULL, NULL);
-				continue;
-			}
-			
-			PathFinder::Result rl;
-
-			bool found = pathfinder.move(i, j, rl);
-
-			if (found)
-			{
-				float d = 0.f;
-
-				for (size_t id = 1; id < rl.size() - 1; id++)
-				{
-					d += dist(ad[rl[id-1]].pos, ad[rl[id]].pos);
-				}
-
-				if (d < 0.f) d = 0.f;
-
-				float old = GetRoomDistance(i, j, NULL, NULL);
-
-				if (((d < old) || (old < 0.f)) && rl.size() >= 2)
-					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
-			}
-
-		}
-
-	// Don't use this for contiguous rooms !
-	for (int i = 0; i < portals->nb_total; i++)
-	{
-		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
-		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
-	}
-
-	// Release our temporary Pathfinder data
-	for (int ii = 0; ii < nb_anchors; ii++)
-	{
-		if (ad[ii].nblinked)
-		{
-			free(ad[ii].linked);
-		}
-	}
-
-	free(ad);
-	free(ptr);
-}
-
 // Clears a background of its infos
 void ClearBackground(EERIE_BACKGROUND * eb)
 {
@@ -3441,6 +3268,179 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 }
 
 #ifdef BUILD_EDIT_LOADSAVE
+
+void ComputeRoomDistance() {
+	
+	if (RoomDistance)
+		free(RoomDistance);
+
+	RoomDistance = NULL;
+	NbRoomDistance = 0;
+
+	if (portals == NULL) return;
+
+	NbRoomDistance = portals->nb_rooms + 1;
+	RoomDistance =
+		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+
+	for (long n = 0; n < NbRoomDistance; n++)
+		for (long m = 0; m < NbRoomDistance; m++)
+			SetRoomDistance(m, n, -1.f, NULL, NULL);
+
+	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
+	_ANCHOR_DATA * ad = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * nb_anchors);
+
+	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
+
+	void ** ptr = NULL;
+	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
+	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
+
+
+	for (long i = 0; i < NbRoomDistance; i++)
+	{
+		GetRoomCenter(i, &ad[i].pos);
+		ptr[i] = (void *)&portals->room[i];
+	}
+
+	long curpos = NbRoomDistance;
+
+	for (int i = 0; i < portals->nb_total; i++)
+	{
+		// Add 4 portal vertices
+		for (int nn = 0; nn < 4; nn++)
+		{
+			ad[curpos].pos.x = portals->portals[i].poly.v[nn].p.x;
+			ad[curpos].pos.y = portals->portals[i].poly.v[nn].p.y;
+			ad[curpos].pos.z = portals->portals[i].poly.v[nn].p.z;
+			ptr[curpos] = (void *)&portals->portals[i];
+			curpos++;
+		}
+
+		// Add center;
+		ad[curpos].pos = portals->portals[i].poly.center;
+		ptr[curpos] = (void *)&portals->portals[i];
+		curpos++;
+
+		// Add V centers;
+		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
+		{
+			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * .5f;
+			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * .5f;
+			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * .5f;
+			ptr[curpos] = (void *)&portals->portals[i];
+			curpos++;
+		}
+	}
+
+	// Link Room Centers to all its Room portals...
+	for (int i = 0; i <= portals->nb_rooms; i++)
+	{
+		for (long j = 0; j < portals->nb_total; j++)
+		{
+			if ((portals->portals[j].room_1 == i)
+					||	(portals->portals[j].room_2 == i))
+			{
+				for (long tt = 0; tt < nb_anchors; tt++)
+				{
+					if (ptr[tt] == (void *)(&portals->portals[j]))
+					{
+						AddAData(&ad[tt], i);
+						AddAData(&ad[i], tt);
+					}
+				}
+			}
+		}
+	}
+
+	// Link All portals of a room to all other portals of that room
+	for (int i = 0; i <= portals->nb_rooms; i++)
+	{
+		for (long j = 0; j < portals->nb_total; j++)
+		{
+			if (((portals->portals[j].room_1 == i)
+					|| (portals->portals[j].room_2 == i)))
+				for (long jj = 0; jj < portals->nb_total; jj++)
+				{
+					if ((jj != j)
+							&&	((portals->portals[jj].room_1 == i)
+								 ||	(portals->portals[jj].room_2 == i)))
+					{
+						long p1 = -1;
+						long p2 = -1;
+
+						for (long tt = 0; tt < nb_anchors; tt++)
+						{
+							if (ptr[tt] == (void *)(&portals->portals[jj]))
+								p1 = tt;
+
+							if (ptr[tt] == (void *)(&portals->portals[j]))
+								p2 = tt;
+						}
+
+						if ((p1 >= 0) && (p2 >= 0))
+						{
+							AddAData(&ad[p1], p2);
+							AddAData(&ad[p2], p1);
+						}
+					}
+				}
+		}
+	}
+
+	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
+
+	for (int i = 0; i < NbRoomDistance; i++)
+		for (long j = 0; j < NbRoomDistance; j++)
+		{
+			if (i == j)
+			{
+				SetRoomDistance(i, j, -1, NULL, NULL);
+				continue;
+			}
+			
+			PathFinder::Result rl;
+
+			bool found = pathfinder.move(i, j, rl);
+
+			if (found)
+			{
+				float d = 0.f;
+
+				for (size_t id = 1; id < rl.size() - 1; id++)
+				{
+					d += dist(ad[rl[id-1]].pos, ad[rl[id]].pos);
+				}
+
+				if (d < 0.f) d = 0.f;
+
+				float old = GetRoomDistance(i, j, NULL, NULL);
+
+				if (((d < old) || (old < 0.f)) && rl.size() >= 2)
+					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
+			}
+
+		}
+
+	// Don't use this for contiguous rooms !
+	for (int i = 0; i < portals->nb_total; i++)
+	{
+		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
+		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
+	}
+
+	// Release our temporary Pathfinder data
+	for (int ii = 0; ii < nb_anchors; ii++)
+	{
+		if (ad[ii].nblinked)
+		{
+			free(ad[ii].linked);
+		}
+	}
+
+	free(ad);
+	free(ptr);
+}
 
 long NEED_ANCHORS = 1;
 
