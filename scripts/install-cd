@@ -14,8 +14,8 @@ if [ "$1" = "--no-progress" ] ; then
 fi
 
 if [ "$1" != "--help" ] && [ "$1" != "-h" ] ; then
-	cd="$(readlink -f "$1")"
-	patch="$(readlink -f "$2")"
+	cd="$(readlink -m "$1")"
+	patch="$(readlink -m "$2")"
 fi
 
 [ "$patch" = "" ] && die "\
@@ -34,7 +34,7 @@ If you know the language of your CD, you can use the language-specific patch ins
 
 if [ "$3" = "" ]
 	then destdir="$(pwd)"
-	else destdir="$(readlink -f "$3")"
+	else destdir="$(readlink -m "$3")"
 fi
 
 cd "$(dirname "$0")"

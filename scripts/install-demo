@@ -7,7 +7,7 @@ die() {
 
 # Handle arguments
 
-[ "$1" = "--help" ] || [ "$1" = "-h" ] || zipfile="$(readlink -f "$1")"
+[ "$1" = "--help" ] || [ "$1" = "-h" ] || zipfile="$(readlink -m "$1")"
 
 [ "$zipfile" != "" ] || die "\
 Usage: install-demo path/to/arx_demo_english.zip [output_dir]
@@ -19,7 +19,7 @@ For demo download locations see http://wiki.arx-libertatis.org/Getting_the_game_
 
 if [ "$2" = "" ]
 	then destdir="$(pwd)"
-	else destdir="$(readlink -f "$2")"
+	else destdir="$(readlink -m "$2")"
 fi
 
 cd "$(dirname "$0")"

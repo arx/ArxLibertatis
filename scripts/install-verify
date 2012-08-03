@@ -14,7 +14,7 @@ if [ "$install_verify_sourced" != "1" ] ; then
 Usage: install-verify [directory]"
 	if [ "$1" = "" ]
 		then checkdir="$(pwd)"
-		else checkdir="$(readlink -f "$1")"
+		else checkdir="$(readlink -m "$1")"
 	fi
 	[ -d "$checkdir" ] || die "directory $checkdir does not exist"
 fi

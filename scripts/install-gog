@@ -13,7 +13,7 @@ if [ "$1" = "--no-progress" ] ; then
 	shift
 fi
 
-[ "$1" = "--help" ] || [ "$1" = "-h" ] || setupfile="$(readlink -f "$1")"
+[ "$1" = "--help" ] || [ "$1" = "-h" ] || setupfile="$(readlink -m "$1")"
 
 [ "$setupfile" != "" ] || die "\
 Usage: install-gog path/to/setup_arx_fatalis.exe [output_dir]
@@ -28,7 +28,7 @@ setup_arx_fatalis.exe can be downloaded from your GOG.com account after buying A
 
 if [ "$2" = "" ]
 	then destdir="$(pwd)"
-	else destdir="$(readlink -f "$2")"
+	else destdir="$(readlink -m "$2")"
 fi
 
 cd "$(dirname "$0")"
