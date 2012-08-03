@@ -2944,12 +2944,6 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 		return;
 	}
 	
-#ifdef BUILD_EDITOR
-	if(NODIRCREATION) {
-		return;
-	}
-#endif
-	
 	long t = 1;
 	
 	while(io->ident == 0) {

@@ -106,18 +106,7 @@ extern long FirstFrame;
 #ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;
-extern long MOULINEX;
-extern long USE_COLLISIONS;
-extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
-extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
-extern long NODIRCREATION; // No IO Directory Creation ?
-extern const char * GTE_TITLE;
-extern char * GTE_TEXT;
-extern long GTE_SIZE;
-extern long CHANGE_LEVEL_PROC_RESULT;
 extern long DEBUGNPCMOVE;
-extern long GAME_EDITOR;
-extern long TRUEFIGHT;
 #else
 const long EDITMODE = 0;
 #endif

@@ -2638,11 +2638,7 @@ void ArxGame::ManagePlayerControls()
 	}
 
 	// To remove for FINAL_RELEASE---------------------------------------
-#ifdef BUILD_EDITOR
-	if(ALLOW_CHEATS || GAME_EDITOR) {
-#else
 	if(ALLOW_CHEATS) {
-#endif
 		if (GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad5))
 		{
 			moveto.y=player.pos.y=FirstPolyPosY(player.pos.x,player.pos.z)-180.f;

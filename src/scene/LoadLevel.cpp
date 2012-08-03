@@ -219,11 +219,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	// Preparing HEADER
 	dlh.version = DLH_CURRENT_VERSION;
-#ifdef BUILD_EDITOR
-	if(NODIRCREATION) {
-		dlh.version = 1.004f;
-	}
-#endif
 	
 	strcpy(dlh.ident, "DANAE_FILE");
 	

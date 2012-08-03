@@ -43,12 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Map.h"
 
-#ifdef BUILD_EDITOR
-
-int iCreateMap = 0; // used to create mini-map bitmap
-
-#endif
-
 // TODO(core_cleanup)
 #if 0
 
@@ -104,8 +98,6 @@ public:
 	bool BuildMap(CD3DFramework7 * framework, char * name);
 	
 };
-
-static C_ARX_Carte * ARXCarte = NULL;
 
 //#############################################################################################
 // Constructeur
@@ -567,33 +559,17 @@ bool NeedMapCreation() {
 	return (resources->getFile(ThisLevelMap) == NULL);
 }
 
-//***********************************************************************************************
 // EDITOR Feature ONLY !!! Creates a minimap to disk
-//***********************************************************************************************
-void DANAE_Manage_CreateMap()
-{
-	if (FINAL_RELEASE) return;
-
+void DANAE_Manage_CreateMap() {
+	
 	GRenderer->SetCulling(Renderer::CullCCW);
-	iCreateMap++;
-
-	if (iCreateMap==1)
-	{			
-		const Vec2i & size = mainApp->GetWindow()->GetSize();
-		ARXCarte=new C_ARX_Carte(ACTIVEBKG, 4, size.x, size.y);
-	}
-
-	if (iCreateMap==2)
-	{
-		ARXCarte->BuildMap( mainApp->m_pFramework,ThisLevelMap);
-	}
-
-	if (iCreateMap==3)
-	{
-		delete ARXCarte;
-		ARXCarte=NULL;
-		iCreateMap=0;
-	}
+	
+	const Vec2i & size = mainApp->GetWindow()->GetSize();
+	static C_ARX_Carte * ARXCarte = new C_ARX_Carte(ACTIVEBKG, 4, size.x, size.y);
+	
+	ARXCarte->BuildMap( mainApp->m_pFramework,ThisLevelMap);
+	
+	delete ARXCarte, ARXCarte = NULL;
 }
 
 #endif

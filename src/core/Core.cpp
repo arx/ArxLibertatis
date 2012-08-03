@@ -368,26 +368,7 @@ long LOADEDD = 0; // Is a Level Loaded ?
 #ifdef BUILD_EDITOR
 long EDITMODE = 0; // EditMode (1) or GameMode (0) ?
 long EDITION=EDITION_IO; // Sub-EditMode
-long MOULINEX = 0;
-long LASTMOULINEX = -1;
-long KILL_AT_MOULINEX_END = 0;
-long USE_COLLISIONS = 1;
-long WILLLOADLEVEL = 0; // Is a LoadLevel command waiting ?
-long WILLSAVELEVEL = 0; // Is a SaveLevel command waiting ?
-long NODIRCREATION = 0; // No IO Directory Creation ?
-const char * GTE_TITLE;
-char * GTE_TEXT;
-long GTE_SIZE;
-long CHANGE_LEVEL_PROC_RESULT = -1;
 long DEBUGNPCMOVE = 0; // Debug NPC Movements
-static long TSU_LIGHTING = 0; // must be 0 at start !
-static long PROCESS_ALL_THEO = 1;
-static long PROCESS_LEVELS = 1;
-static long PROCESS_NO_POPUP = 0;
-static long PROCESS_ONLY_ONE_LEVEL = -1;
-long GAME_EDITOR = 1;
-static long NEED_EDITOR = 1;
-long TRUEFIGHT = 0;
 #endif
 
 long CHANGE_LEVEL_ICON=-1;
@@ -655,11 +636,6 @@ void runGame() {
 	ALLOW_CHEATS = 0;
 	FAST_SPLASHES = 0;
 	FINAL_RELEASE = 1;
-#ifdef BUILD_EDITOR
-	GAME_EDITOR = 0;
-	NEED_EDITOR = 0;
-	TRUEFIGHT = 0;
-#endif
 	
 	
 	NOBUILDMAP=1;
@@ -767,15 +743,6 @@ void runGame() {
 	LogDebug("After Popup");
 	
 	if(LaunchDemo) {
-		
-#ifdef BUILD_EDITOR
-		if(FINAL_RELEASE) {
-			GAME_EDITOR=0;
-		} else {
-			GAME_EDITOR=1;
-		}
-#endif
-		
 		NOBUILDMAP=1;
 	}
 	
@@ -2199,17 +2166,6 @@ void FirstFrameHandling()
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
-#ifdef BUILD_EDITOR
-	iCreateMap=0;
-	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
-	{
-		//if (NeedMapCreation())	
-		//	iCreateMap=1;
-		//else
-			iCreateMap=0;
-	}
-#endif
-
 	if (!NO_TIME_INIT)
 		arxtime.init();
 

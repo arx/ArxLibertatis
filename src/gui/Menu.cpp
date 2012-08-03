@@ -344,14 +344,6 @@ void ARX_MENU_Clicked_CREDITS()
 }
 
 void ARX_MENU_Clicked_QUIT_GAME() {
-	
-#ifdef BUILD_EDITOR
-	if(GAME_EDITOR) {
-		ARX_MENU_Clicked_QUIT();
-		return;
-	}
-#endif
-	
 	mainApp->Quit();
 }
 

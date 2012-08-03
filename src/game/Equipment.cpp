@@ -647,11 +647,6 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		attack = io_source->_npcdata->tohit;
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
-#ifdef BUILD_EDITOR
-		if(GAME_EDITOR) {
-			damages = io_source->_npcdata->damages * ratioaim;
-		}
-#endif
 
 		long value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
 
@@ -820,10 +815,6 @@ static float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val) {
 //***********************************************************************************************
 bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float ratioaim, long flags, long targ)
 {
-	
-#ifdef BUILD_EDITOR
-	if (TRUEFIGHT) ratioaim = 1.f;
-#endif
 	
 	bool ret = false;
 	long source = GetInterNum(io_source);

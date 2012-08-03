@@ -186,12 +186,6 @@ void LoadLevelScreen(long num) {
 		return;
 	}
 
-#ifdef BUILD_EDITOR
-	if(MOULINEX) {
-		return;
-	}
-#endif
-
 	static u32 last_progress_bar_update = Time::getMs();
 
 	// only update if time since last update to progress bar > 16ms

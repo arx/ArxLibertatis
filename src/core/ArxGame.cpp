@@ -133,9 +133,7 @@ static bool showFPS = false;
 
 using std::string;
 
-extern long GAME_EDITOR;
 extern long PLAY_LOADED_CINEMATIC;
-extern long CHANGE_LEVEL_PROC_RESULT;
 extern long NOBUILDMAP;
 extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
@@ -1558,11 +1556,8 @@ void ArxGame::Render() {
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 			subj.angle.g = 0;
 		EXTERNALVIEW=1;
-
-#ifdef BUILD_EDITOR
-		if(!GAME_EDITOR)
-			BLOCK_PLAYER_CONTROLS=1;
-#endif
+		
+		BLOCK_PLAYER_CONTROLS = 1;
 	}
 	else
 	{
