@@ -38,12 +38,12 @@
 #include "core/Config.h"
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/PathConstants.h"
 #include "io/log/Logger.h"
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
 #include "platform/String.h"
 
-#include "Configure.h"
 
 namespace po = boost::program_options;
 
@@ -94,27 +94,25 @@ static void findDataDirectory() {
 		return;
 	}
 	
-#ifdef DATA_DIR
-	
-	fs::path dir = expandEnvironmentVariables(DATA_DIR);
-	
-#ifdef DATA_DIR_PREFIXES 
-	if(dir.is_relative()) {
-		config.paths.data = findSubdirectory(DATA_DIR_PREFIXES, dir);
-		if(!config.paths.data.empty()) {
-			LogDebug("Got data directory from DATA_DIR_PREFIXES: " << config.paths.data);
+	if(fs::data_dir) {
+		
+		fs::path dir = expandEnvironmentVariables(fs::data_dir);
+		
+		if(fs::data_dir_prefixes && dir.is_relative()) {
+			config.paths.data = findSubdirectory(fs::data_dir_prefixes, dir);
+			if(!config.paths.data.empty()) {
+				LogDebug("Got data directory from DATA_DIR_PREFIXES: " << config.paths.data);
+				return;
+			}
+		}
+		
+		if(fs::is_directory(dir)) {
+			config.paths.data = dir;
+			LogDebug("Got data directory from DATA_DIR: " << config.paths.data);
 			return;
 		}
+		
 	}
-#endif // DATA_DIR_PREFIXES
-	
-	if(fs::is_directory(dir)) {
-		config.paths.data = dir;
-		LogDebug("Got data directory from DATA_DIR: " << config.paths.data);
-		return;
-	}
-	
-#endif // DATA_DIR
 	
 	LogDebug("No data directory found.");
 }
@@ -130,40 +128,38 @@ static bool findUserDirectory() {
 		return true;
 	}
 	
-#ifdef USER_DIR
-	
-	fs::path dir = expandEnvironmentVariables(USER_DIR);
-	
-	fs::path to_create;
-#ifdef USER_DIR_PREFIXES
-	if(dir.is_relative()) {
-		config.paths.user = findSubdirectory(USER_DIR_PREFIXES, dir, &to_create);
-		if(!config.paths.user.empty()) {
-			LogDebug("Got user directory from USER_DIR_PREFIXES: " << config.paths.user);
+	if(fs::user_dir) {
+		
+		fs::path dir = expandEnvironmentVariables(fs::user_dir);
+		
+		fs::path to_create;
+		if(fs::user_dir_prefixes && dir.is_relative()) {
+			config.paths.user = findSubdirectory(fs::user_dir_prefixes, dir, &to_create);
+			if(!config.paths.user.empty()) {
+				LogDebug("Got user directory from USER_DIR_PREFIXES: " << config.paths.user);
+				return true;
+			}
+		}
+		
+		if(fs::is_directory(dir)) {
+			config.paths.user = dir;
+			LogDebug("Got user directory from USER_DIR: " << config.paths.user);
 			return true;
 		}
-	}
-#endif // USER_DIR_PREFIXES
-	
-	if(fs::is_directory(dir)) {
-		config.paths.user = dir;
-		LogDebug("Got user directory from USER_DIR: " << config.paths.user);
-		return true;
-	}
-	
-	// Create a new user directory.
-	if(!config.paths.data.empty()) {
-		if(!to_create.empty()) {
-			config.paths.user = to_create;
-			LogDebug("Selected new user directory from USER_DIR_PREFIXES: " << config.paths.user);
-		} else {
-			config.paths.user = dir;
-			LogDebug("Selected new user directory from USER_DIR: " << config.paths.user);
+		
+		// Create a new user directory.
+		if(!config.paths.data.empty()) {
+			if(!to_create.empty()) {
+				config.paths.user = to_create;
+				LogDebug("Selected new user directory from USER_DIR_PREFIXES: " << config.paths.user);
+			} else {
+				config.paths.user = dir;
+				LogDebug("Selected new user directory from USER_DIR: " << config.paths.user);
+			}
+			return true;
 		}
-		return true;
+		
 	}
-	
-#endif // USER_DIR
 	
 	// Use the current directory for both data and config files.
 	config.paths.user = ".";
@@ -175,43 +171,39 @@ static void findConfigDirectory(bool create) {
 	
 	config.paths.config.clear();
 	
-#ifdef CONFIG_DIR
-	
-	fs::path dir = expandEnvironmentVariables(CONFIG_DIR);
-	
-	fs::path to_create;
-#ifdef CONFIG_DIR_PREFIXES
-	if(dir.is_relative()) {
-		config.paths.config = findSubdirectory(CONFIG_DIR_PREFIXES, dir, &to_create);
-		if(!config.paths.config.empty()) {
-			LogDebug("Got config directory from CONFIG_DIR_PREFIXES: " << config.paths.config);
+	if(fs::config_dir) {
+		
+		fs::path dir = expandEnvironmentVariables(fs::config_dir);
+		
+		fs::path to_create;
+		if(fs::config_dir_prefixes && dir.is_relative()) {
+			config.paths.config = findSubdirectory(fs::config_dir_prefixes, dir, &to_create);
+			if(!config.paths.config.empty()) {
+				LogDebug("Got config directory from CONFIG_DIR_PREFIXES: " << config.paths.config);
+				return;
+			}
+		}
+		
+		if(fs::is_directory(dir)) {
+			config.paths.config = dir;
+			LogDebug("Got config directory from CONFIG_DIR: " << config.paths.config);
 			return;
 		}
-	}
-#endif // USER_DIR_PREFIXES
-	
-	if(fs::is_directory(dir)) {
-		config.paths.config = dir;
-		LogDebug("Got config directory from CONFIG_DIR: " << config.paths.config);
-		return;
-	}
-	
-	// Create a new config directory.
-	if(!config.paths.data.empty() || create) {
-		if(!to_create.empty()) {
-			config.paths.config = to_create;
-			LogDebug("Selected new config directory from CONFIG_DIR_PREFIXES: "
-			         << config.paths.config);
-		} else {
-			config.paths.config = dir;
-			LogDebug("Selected new config directory from CONFIG_DIR: " << config.paths.config);
+		
+		// Create a new config directory.
+		if(!config.paths.data.empty() || create) {
+			if(!to_create.empty()) {
+				config.paths.config = to_create;
+				LogDebug("Selected new config directory from CONFIG_DIR_PREFIXES: "
+								<< config.paths.config);
+			} else {
+				config.paths.config = dir;
+				LogDebug("Selected new config directory from CONFIG_DIR: " << config.paths.config);
+			}
+			return;
 		}
-		return;
+		
 	}
-	
-#else
-	ARX_UNUSED(create);
-#endif // CONFIG_DIR
 	
 	// Use the user directory as the config directory.
 	config.paths.config = config.paths.user;
@@ -219,8 +211,8 @@ static void findConfigDirectory(bool create) {
 }
 
 static void listDirectoriesFor(std::ostream & os, const string & regKey,
-                               const string & suffix = string(),
-                               const string & where = string()) {
+                               const char * suffix = NULL,
+                               const char * where = NULL) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	if(!regKey.empty()) {
@@ -234,21 +226,21 @@ static void listDirectoriesFor(std::ostream & os, const string & regKey,
 	ARX_UNUSED(regKey);
 #endif
 	
-	if(suffix.empty()) {
+	if(!suffix) {
 		return;
 	}
 	fs::path dir = expandEnvironmentVariables(suffix);
 	
-	if(!where.empty() && dir.is_relative()) {
+	if(where && dir.is_relative()) {
 		
 		string prefixes = expandEnvironmentVariables(where);
 		
 		os << " - \"" << suffix << '"';
-		if(dir.string() != suffix) {
+		if(dir.string().compare(suffix) != 0) {
 			os << " = " << fs::path(dir);
 		}
 		os << " in one of \"" << where << '"';
-		if(prefixes != where) {
+		if(prefixes.compare(where) != 0) {
 			os << "\n    = \"" << prefixes << '"';
 		}
 		os << ":\n";
@@ -272,7 +264,7 @@ static void listDirectoriesFor(std::ostream & os, const string & regKey,
 	}
 	
 	os << " - \"" << suffix << '"';
-	if(dir.string() != suffix) {
+	if(dir.string().compare(suffix) != 0) {
 		os << " = " << fs::path(dir);
 	}
 	os << '\n';
@@ -284,15 +276,7 @@ static void listDirectories(std::ostream & os, bool data, bool user, bool cfg) {
 	if(data) {
 		os << "\nData directories (data files):\n";
 		os << " - --data-dir (-d) command-line parameter\n";
-#ifdef DATA_DIR
-# ifdef DATA_DIR_PREFIXES 
-		listDirectoriesFor(os, "DataDir", DATA_DIR, DATA_DIR_PREFIXES);
-# else
-		listDirectoriesFor(os, "DataDir", DATA_DIR);
-# endif // DATA_DIR_PREFIXES
-#else // DATA_DIR
-		listDirectoriesFor(os, "DataDir");
-#endif // DATA_DIR
+		listDirectoriesFor(os, "DataDir", fs::data_dir, fs::data_dir_prefixes);
 		os << "selected: ";
 		if(config.paths.data.empty()) {
 			os << "(none)\n";
@@ -304,15 +288,7 @@ static void listDirectories(std::ostream & os, bool data, bool user, bool cfg) {
 	if(user) {
 		os << "\nUser directories (save files, data files):\n";
 		os << " - --user-dir (-u) command-line parameter\n";
-#ifdef USER_DIR
-# ifdef USER_DIR_PREFIXES 
-		listDirectoriesFor(os, "UserDir", USER_DIR, USER_DIR_PREFIXES);
-# else
-		listDirectoriesFor(os, "UserDir", USER_DIR);
-# endif // USER_DIR_PREFIXES
-#else // USER_DIR
-		listDirectoriesFor(os, "UserDir");
-#endif // USER_DIR
+		listDirectoriesFor(os, "UserDir", fs::user_dir, fs::user_dir_prefixes);
 		os << " - Current working directory\n";
 		os << "selected: ";
 		if(config.paths.user.empty()) {
@@ -325,13 +301,7 @@ static void listDirectories(std::ostream & os, bool data, bool user, bool cfg) {
 	if(cfg) {
 		os << "\nConfig directories:\n";
 		os << " - --config-dir (-c) command-line parameter\n";
-#ifdef CONFIG_DIR
-# ifdef CONFIG_DIR_PREFIXES 
-		listDirectoriesFor(os, std::string(), CONFIG_DIR, CONFIG_DIR_PREFIXES);
-# else
-		listDirectoriesFor(os, std::string(), CONFIG_DIR);
-# endif // USER_DIR_PREFIXES
-#endif // CONFIG_DIR
+		listDirectoriesFor(os, std::string(), fs::config_dir, fs::config_dir_prefixes);
 		os << " - The selected user directory\n";
 		os << "selected: ";
 		if(config.paths.config.empty()) {

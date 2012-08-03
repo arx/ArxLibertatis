@@ -1,0 +1,26 @@
+
+// Data directories
+
+namespace fs {
+
+#define ARX_GET_STR(str) (((str)[0] != '\0') ? (str) : NULL)
+
+typedef const char * const str_t;
+
+static str_t data_dir = ARX_GET_STR("${DATA_DIR}");
+
+static str_t user_dir = ARX_GET_STR("${USER_DIR}");
+
+static str_t config_dir = ARX_GET_STR("${CONFIG_DIR}");
+
+static str_t data_dir_prefixes = ARX_GET_STR("${DATA_DIR_PREFIXES}");
+
+static str_t user_dir_prefixes = ARX_GET_STR("${USER_DIR_PREFIXES}");
+
+static str_t config_dir_prefixes = ARX_GET_STR("${CONFIG_DIR_PREFIXES}");
+
+static str_t libexec_dir = ARX_GET_STR("${CMAKE_INSTALL_FULL_LIBEXECDIR}");
+
+#undef ARX_GET_STR
+
+} // namespace fs

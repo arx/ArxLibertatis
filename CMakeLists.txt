@@ -488,21 +488,6 @@ else()
 		set(CONFIG_DIR_PREFIXES "$XDG_CONFIG_HOME")
 	endif()
 endif()
-if(DATA_DIR STREQUAL "")
-	unset(DATA_DIR)
-endif()
-if(USER_DIR STREQUAL "")
-	unset(USER_DIR)
-endif()
-if(CONFIG_DIR STREQUAL "")
-	unset(CONFIG_DIR)
-endif()
-if(DATA_DIR_PREFIXES STREQUAL "")
-	unset(DATA_DIR_PREFIXES)
-endif()
-if(USER_DIR_PREFIXES STREQUAL "")
-	unset(USER_DIR_PREFIXES)
-endif()
 
 # Check that all required functionality is available.
 if(CMAKE_USE_PTHREADS_INIT AND ARX_HAVE_SYS_TYPES_H AND ARX_HAVE_GETPID)
@@ -938,6 +923,9 @@ list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
 configure_file("${SRC_DIR}/Configure.h.in" "Configure.h" ESCAPE_QUOTES)
+
+configure_file("${SRC_DIR}/io/fs/PathConstants.h.in" "io/fs/PathConstants.h"
+               ESCAPE_QUOTES)
 
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/platform")
 set(PLATFORM_CONFIG_H "platform/PlatformConfig.h")
