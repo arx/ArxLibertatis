@@ -122,13 +122,7 @@ To print all directories considered by arx, run
 
     $ arx --list-dirs
 
-If you don't have a system-wide installation of the Arx Fatalis data files, you can just run arx from the directory containing the .pak files:
-
-    $ arx
-
-Arx Libertatis will then put the config and save files in the same directory. If you have a system-wide installation, but still want to run from the current directory, use the `--no-data-dir --user-dir=. --config-dir=.` command-line options.
-
-Where arx will look for a system-wide installation depends on the OS:
+By default, user, config and data files will be loaded from and saved to standard system locations depending on the OS:
 
 Under **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\Arx Libertatis` on XP and `%USERPROFILE%\Saved Games\Arx Libertatis` on Vista and up.
 
@@ -136,15 +130,43 @@ Under **Mac OS X**, the system-wide data files should be stored in `/Application
 
 For other systems like **Linux**, the data files can be in `/usr/local/share/games/arx` and `/usr/share/games/arx` as well as other locations depending on your Linux distribution. Config files are normally located in `~/.config/arx` while save files are stored in `~/.local/share/arx`.
 
+For all systems arx will also try to load data files from the directory containing the game executable if they have not already been found by other means.
+
+To use the current working directory for load user, config and data files (e.g. for a portable install) run the game as
+
+    $ arx --no-data-dir --user-dir=. --config-dir=.
+
+See the `arx --help` and `man arx` output for more details.
+
+There are also options that can be provided to cmake to change the default data directories:
+
+| Option                | Windows default         |  Linux / other default | Mac default     |
+|---------------------- | ----------------------- | ---------------------- | --------------- |
+| `USER_DIR_PREFIXES`   | `%FOLDERID_SavedGames%` | `$XDG_DATA_HOME`       | `~/Library/Application Support` |
+| `USER_DIR`            | `Arx Libertatis`        | `arx`                  | `ArxLibertatis` |
+| `CONFIG_DIR_PREFIXES` |                         | `$XDG_CONFIG_HOME`     |                 |
+| `CONFIG_DIR`          |                         | `arx`                  |                 |
+| `DATA_DIR_PREFIXES`   |                         | `$XDG_DATA_DIRS:/opt`  | `/Applications` |
+| `DATA_DIR`            |                         | `games/arx:arx`        | `ArxLibertatis` |
+
+These pairs define prefixes and suffixes that are combined to form searched paths for the user, config and data directories respectively.
+
+To avoid possible performance issues, there is `IGNORE_EXE_DIR` to list directories to *not* search for data files even if they contain the game executable. By default, this is only set for Linux: `/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin`
+
+All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time. For Windows `%FOLDERID_SavedGames%` is defined to the Windows saved games directory for the current user. For other systems arx will make sure that [http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html) variables are defined.
+
+After environment variable expansion the variables are interpreted as colon-separated (Windows: semicolon-separated) lists of paths.
+
+The config directory defaults to the user directory if not specified.
+
+
 ## Run
 
-Run from the directory containing the .pak files (or from anywhere in case of a system-wide installation):
+Provided the data files are installed at the correct location, you can simply play the game using the installed shortcut or by running
 
     $ arx
 
-The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations always need to manually rename the files to lowercase - you can use the install-copy script.
-
-You can close it with `Alt + F4` or `killall arx`
+The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - you can use the install-copy script.
 
 ## Tools
 
@@ -174,8 +196,12 @@ The `scripts` directory contains shell scripts that allow to extract/install the
 * `scripts/install-copy path/to/ArxFatalis/ [output_dir]`<br>
   `path/to/ArxFatalis/` should point to a fully pached (1.21) Arx Fatalis installation, such as the one from Steam
 
-## Build documentation
+## Developer information
 
 To build developer documentation (doxygen), run this from the build directory:
 
     $ make doc
+
+To check for coding style problems, run the following: (requires python)
+
+    $ make style
