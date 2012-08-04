@@ -485,6 +485,9 @@ else()
 	if(NOT DEFINED CONFIG_DIR_PREFIXES)
 		set(CONFIG_DIR_PREFIXES "$XDG_CONFIG_HOME")
 	endif()
+	if(NOT DEFINED IGNORE_EXE_DIR)
+		set(IGNORE_EXE_DIR "/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin")
+	endif()
 endif()
 
 # Check that all required functionality is available.
