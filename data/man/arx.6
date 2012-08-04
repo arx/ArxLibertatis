@@ -1,6 +1,6 @@
 .\" Manpage for arx.
 .\" Go to https://bugs.arx-libertatis.org/ to correct errors or typos.
-.TH arx 6 "2012-03-28" "1.0"
+.TH arx 6 "2012-08-04" "1.1"
 .SH NAME
 arx \- Arx Libertatis, a cross-platform port of Arx Fatalis
 .SH SYNOPSIS
@@ -12,28 +12,35 @@ arx \- Arx Libertatis, a cross-platform port of Arx Fatalis
 .RB [ -g debug-spec ]
 .SH DESCRIPTION
 .B arx
-is the main executable of Arx Libertatis, a cross-platform port of the first-person role-playing game Arx Fatalis. You will need the game data from the original Arx Fatalis to run the game. See
-.B http://wiki.arx-libertatis.org/Getting_the_game_data
+is the main executable of Arx Libertatis, a cross-platform port of the first-person role-playing game Arx Fatalis. You will need the data from the original Arx Fatalis to run the game. See
+.B http://arx.vg/Getting_the_game_data
 .SH OPTIONS
 .TP
 .B \-c --config-dir dir
 By default arx will store configuration files in directories specified by the
-.B XDG Base Directory Specification
-if the data files are also located in directories specified by the XDG Base Directory Specification (unless
-.B --no-data-dir
-was used)
-or if the
-.B --data-dir
-or
-.B --user-dir
-options were specified. Otherwise, config files are saved to the current directory along with the data files. This option overrides the directory where config files are loaded from and saved to.
+.B XDG Base Directory Specification.
+This option overrides the directory where config files are loaded from and saved to.
 .TP
 .B \-d --data-dir dir
 Arx Libertatis will look for data files in directories specified by the
 .B XDG Base Directory Specification
-and in the current directory. This option overrides where data files are loaded from. Besides the system-wide data directory, data files are also loaded from the user directory, which is set by the
+and in the directory containing the game executable. Besides the system-wide data directory, data files are also loaded from the user directory, which can be set by the
 .B --user-dir
 option.
+
+This option adds additional directories to search for data files before the detected system-wide directories, but after the user directory. To override the detected data directories combine it with the
+.B --no-data-dir
+option.
+
+The
+.B --data-dir
+option can be repeated to add multiple data directories, in which case they are searched in the order provided.
+
+See
+.B http://arx.vg/Data_directories
+and the
+.B --list-dirs
+output for more details.
 .TP
 .B \-g --debug list
 This option can be used to enable debug output for debug builds of Arx Libertatis. For non-debug build, this option is not very useful but recognized for convenience.
@@ -50,20 +57,23 @@ and
 .B --config-dir
 .TP
 .B \-n --no-data-dir
-Disables looking for default data directories. Default user and config directories are still searched. This option can be used to force loading from the current directory even if there is a system-wide install of the data files:
+Disables looking for default data directories. Default user and config directories and data directories provided using the
+.B --data-dir
+option are still searched. This option can be used for portable setups where user, config and data files are all in the current directory:
 
 .B arx --no-data-dir --user-dir=. --config-dir=.
 .TP
 .B \-u --user-dir dir
 By default arx will store user files (saves, etc.) in directories specified by the
-.B XDG Base Directory Specification
-if the data files are also located in directories specified by the XDG Base Directory Specification (unless
-.B --no-data-dir
-was used)
-or if the
-.B --data-dir
-option was specified. Otherwise, user files are saved to the current directory along with the data files. This option overrides the directory where user files are loaded from and saved to.
+.B XDG Base Directory Specification.
+This option overrides the directory where user files are loaded from and saved to.
 
-Additionally, data files will also be loaded from the user directory if they exist, overwriting resources from the system-wide data directory.
+Configuration files are not stored in the user directory, but in a separate directory that can be set by the
+.B --user-dir
+option.
+
+The user directory will also be used to load data, overwriting resources from the system-wide data directories amd from directories specified by the
+.B --data-dir
+option.
 .SH SEE ALSO
 arxsavetool(1), arxunpak(1)
