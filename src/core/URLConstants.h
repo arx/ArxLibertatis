@@ -28,7 +28,7 @@ typedef const char * const str_t;
 static str_t help_get_data = "http://arx.vg/Getting_the_game_data";
 
 //! Documentation on how and where to install the game data
-static str_t help_install_data = "http://arx.vg/Getting_the_game_data";
+static str_t help_install_data = "http://arx.vg/Data_directories";
 
 } // namespace url
 
