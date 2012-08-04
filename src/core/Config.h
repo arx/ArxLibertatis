@@ -177,14 +177,6 @@ public:
 		
 	} misc;
 	
-	struct {
-		
-		fs::path config; //!< Directory for config files.
-		fs::path user; //!< Directory for saves and user-specific data files.
-		fs::path data; //!< Directory for data files.
-		
-	} paths;
-	
 public:
 	
 	bool setActionKey(ControlAction action, int index, InputKeyId key);

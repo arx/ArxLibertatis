@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
@@ -2669,7 +2670,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	//Must KILL dir...
 	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
 		
-		fs::path dir = config.paths.user / inter.iobj[i]->full_name();
+		fs::path dir = fs::paths.user / inter.iobj[i]->full_name();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
@@ -2948,7 +2949,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 	
 	while(io->ident == 0) {
 		
-		fs::path temp = config.paths.user / io->full_name().string();
+		fs::path temp = fs::paths.user / io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;

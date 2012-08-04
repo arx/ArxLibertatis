@@ -21,6 +21,8 @@
 
 #include "Configure.h"
 
+#include <vector>
+
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <dirent.h>
@@ -164,6 +166,36 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	}
 	
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
+}
+
+path current_path() {
+	
+	size_t intitial_length = 1024;
+#if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_NAME_MAX)
+	size_t path_max = pathconf(".", _PC_PATH_MAX);
+	if(path_max <= 0) {
+		intitial_length = 1024;
+	} else if(path_max > 10240) {
+		intitial_length = 10240;
+	} else {
+    intitial_length = path_max;
+	}
+#endif
+	
+	std::vector<char> buffer(intitial_length);
+	
+	while(true) {
+	
+		char * ptr = getcwd(&buffer.front(), buffer.size());
+		if(ptr != NULL) {
+			return ptr;
+		} else if(errno != ERANGE) {
+			return path();
+		}
+		
+		buffer.reserve(buffer.size() * 2);
+	}
+	
 }
 
 #if defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FSTATAT)

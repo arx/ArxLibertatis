@@ -345,6 +345,7 @@ else(MSVC)
 		
 		check_symbol_exists(readdir_r "dirent.h" ARX_HAVE_READDIR_R)
 		
+		check_symbol_exists(getcwd "unistd.h" ARX_HAVE_GETCWD)
 		check_symbol_exists(fpathconf "unistd.h" ARX_HAVE_FPATHCONF)
 		check_symbol_exists(pathconf "unistd.h" ARX_HAVE_PATHCONF)
 		check_symbol_exists(_PC_NAME_MAX "unistd.h" ARX_HAVE_PC_NAME_MAX)
@@ -356,11 +357,11 @@ else(MSVC)
 		
 		check_symbol_exists(NAME_MAX "dirent.h" ARX_HAVE_NAME_MAX)
 		
-		if(ARX_HAVE_SYS_STAT_H AND ARX_HAVE_SYS_ERRNO_H AND ARX_HAVE_DIRENT_H AND ARX_HAVE_READDIR_R)
-			if((((ARX_HAVE_DIRFD AND ARX_HAVE_FPATHCONF) OR ARX_HAVE_PATHCONF) AND ARX_HAVE_PC_NAME_MAX)
-			   OR (ARX_HAVE_NAME_MAX))
-				set(ARX_HAVE_POSIX_FILESYSTEM 1)
-			endif()
+		if(ARX_HAVE_SYS_STAT_H AND ARX_HAVE_SYS_ERRNO_H AND ARX_HAVE_DIRENT_H
+		   AND ARX_HAVE_READDIR_R AND ARX_HAVE_GETCWD
+			 AND ((((ARX_HAVE_DIRFD AND ARX_HAVE_FPATHCONF) OR ARX_HAVE_PATHCONF)
+			       AND ARX_HAVE_PC_NAME_MAX) OR ARX_HAVE_NAME_MAX))
+			set(ARX_HAVE_POSIX_FILESYSTEM 1)
 		endif()
 		
 	endif()
@@ -444,9 +445,6 @@ endif(MSVC)
 
 if(WIN32)
 	# Define default user and data directories.
-	if(NOT DEFINED DATA_DIR)
-		set(DATA_DIR "Arx Libertatis")
-	endif()
 	if(NOT DEFINED USER_DIR)
 		set(USER_DIR "Arx Libertatis")
 	endif()
@@ -667,6 +665,7 @@ set(IO_FILESYSTEM_SOURCES
 	src/io/fs/FilePath.cpp
 	src/io/fs/FileStream.cpp
 	src/io/fs/Filesystem.cpp
+	src/io/fs/SystemPaths.cpp
 )
 set(IO_FILESYSTEM_BOOST_SOURCES src/io/fs/FilesystemBoost.cpp)
 set(IO_FILESYSTEM_POSIX_SOURCES src/io/fs/FilesystemPOSIX.cpp)

@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -105,6 +107,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 #include "io/fs/FilePath.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/PakReader.h"
 #include "io/Screenshot.h"
 #include "io/log/Logger.h"
@@ -121,6 +124,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 
 #include "Configure.h"
+#include "core/URLConstants.h"
 
 #ifdef ARX_HAVE_D3D9
 #include "window/D3D9Window.h"
@@ -420,63 +424,72 @@ static const char * default_paks[][2] = {
 	{ "speech.pak", "speech_default.pak" },
 };
 
-static void add_paks(const fs::path & base, bool * found) {
-	
-	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
-		if(resources->addArchive(base / default_paks[i][0])) {
-			found[i] = true;
-		} else if(default_paks[i][1] && resources->addArchive(base / default_paks[i][1])) {
-			found[i] = true;
-		}
-	}
-	
-	resources->addFiles(base / "editor", "editor");
-	resources->addFiles(base / "game", "game");
-	resources->addFiles(base / "graph", "graph");
-	resources->addFiles(base / "localisation", "localisation");
-	resources->addFiles(base / "misc", "misc");
-	resources->addFiles(base / "sfx", "sfx");
-	resources->addFiles(base / "speech", "speech");
-}
-
 bool ArxGame::AddPaks() {
 	
 	arx_assert(!resources);
 	
 	resources = new PakReader;
 	
-	bool found[ARRAY_SIZE(default_paks)];
-	std::fill_n(found, ARRAY_SIZE(default_paks), false);
-	
-	
-	if(!config.paths.data.empty()) {
-		add_paks(config.paths.data, found);
+	// Load required pak files
+	std::vector<size_t> missing;
+	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+		if(resources->addArchive(fs::paths.find(default_paks[i][0]))) {
+			continue;
+		}
+		if(default_paks[i][1]
+		   && resources->addArchive(fs::paths.find(default_paks[i][1]))) {
+			continue;
+		}
+		missing.push_back(i);
 	}
 	
-	add_paks(config.paths.user, found);
-	
-	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
-		if(!found[i]) {
-			if(config.paths.data.empty()) {
-				if(default_paks[i][1]) {
-					LogCritical << "Unable to find " << default_paks[i][0] << " or "
-					            << default_paks[i][1] << " in " << config.paths.user;
+	// Construct an informative error message about missing files
+	if(!missing.empty()) {
+		std::ostringstream oss;
+		oss << "Could not load required ";
+		oss << (missing.size() == 1 ? "file" : "files");
+		size_t length = oss.tellp();
+		for(size_t i = 0; i < missing.size(); i++) {
+			if(i != 0) {
+				if(i + 1 == missing.size()) {
+					oss << " and", length += 4;
 				} else {
-					LogCritical << "Unable to find " << default_paks[i][0] << " in "
-					            << config.paths.user;
-				}
-			} else {
-				if(default_paks[i][1]) {
-					LogCritical << "Unable to find " << default_paks[i][0] << " or "
-					            << default_paks[i][1] << " in either " << config.paths.data
-					            << " or " << config.paths.user;
-				} else {
-					LogCritical << "Unable to find " << default_paks[i][0]
-					            << " in either " << config.paths.data << " or " << config.paths.user;
+					oss << ",", length++;
 				}
 			}
-			return false;
+			if(length > 70) {
+				oss << "\n ", length = 1;
+			} else {
+				oss << ' ', length++;
+			}
+			oss << '"' << default_paks[missing[i]][0] << '"';
+			length += 1 + strlen(default_paks[missing[i]][0]) + 1;
+			if(default_paks[missing[i]][1]) {
+				oss << " (\"" << default_paks[missing[i]][1] << "\")";
+				length += 3 + strlen(default_paks[missing[i]][1]) + 2;
+			}
 		}
+		oss << ".\n\nSearched in these locations:\n";
+		std::vector<fs::path> search = fs::paths.getSearchPaths();
+		BOOST_FOREACH(const fs::path & dir, search) {
+			oss << " * " << dir.string() << "/\n";
+		}
+		oss << "\nSee  " << url::help_get_data;
+		oss << "  and  " << url::help_install_data << "\n";
+		oss << "\nThe search path can be adjusted with command-line parameters.\n";
+		LogCritical << oss.str();
+		return false;
+	}
+	
+	// Load optional patch files
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+		resources->addFiles(base / "editor", "editor");
+		resources->addFiles(base / "game", "game");
+		resources->addFiles(base / "graph", "graph");
+		resources->addFiles(base / "localisation", "localisation");
+		resources->addFiles(base / "misc", "misc");
+		resources->addFiles(base / "sfx", "sfx");
+		resources->addFiles(base / "speech", "speech");
 	}
 	
 	return true;

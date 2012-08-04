@@ -51,6 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <algorithm>
 #include <set>
+#include <sstream>
+
+#include <boost/foreach.hpp>
 
 #include "core/Config.h"
 #include "core/GameTime.h"
@@ -59,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/log/Logger.h"
 
 #include "math/Random.h"
@@ -184,10 +188,10 @@ static bool migrateFilenames(const fs::path & configFile) {
 	
 	bool migrated = true;
 	
-	for(fs::directory_iterator it(config.paths.user); !it.end(); ++it) {
+	for(fs::directory_iterator it(fs::paths.user); !it.end(); ++it) {
 		string file = it.name();
 		if(fileset.find(toLowercase(file)) != fileset.end()) {
-			migrated &= migrateFilenames(config.paths.user / file, it.is_directory());
+			migrated &= migrateFilenames(fs::paths.user / file, it.is_directory());
 		}
 	}
 	
@@ -201,7 +205,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 bool Application::InitConfig() {
 	
 	// Initialize config first, before anything else.
-	fs::path configFile = config.paths.config / "cfg.ini";
+	fs::path configFile = fs::paths.config / "cfg.ini";
 	
 	config.setOutputFile(configFile);
 	
@@ -213,10 +217,11 @@ bool Application::InitConfig() {
 			return false;
 		}
 		
-		fs::path oldConfigFile = config.paths.user / "cfg.ini";
+		fs::path oldConfigFile = fs::paths.user / "cfg.ini";
 		if(fs::exists(oldConfigFile)) {
 			if(!fs::rename(oldConfigFile, configFile)) {
-				LogWarning << "could not move " << oldConfigFile << " to " << configFile;
+				LogWarning << "Could not move " << oldConfigFile << " to "
+				           << configFile;
 			} else {
 				LogInfo << "moved " << oldConfigFile << " to " << configFile;
 			}
@@ -224,19 +229,11 @@ bool Application::InitConfig() {
 	}
 	
 	if(!config.init(configFile)) {
-		fs::path defaultUserConfigFile = config.paths.user / "cfg_default.ini";
-		if(!config.init(defaultUserConfigFile)) {
-			if(config.paths.data.empty()) {
-				LogWarning << "Could not read config files " << configFile << " and "
-				           << defaultUserConfigFile << ", using defaults.";
-			} else {
-				fs::path defaultConfigFile = config.paths.data / "cfg_default.ini";
-				if(config.paths.data.empty() || !config.init(defaultConfigFile)) {
-					LogWarning << "Could not read config files " << configFile << ", "
-					           << defaultUserConfigFile << " and " << defaultConfigFile
-					           << ", using defaults.";
-				}
-			}
+		
+		fs::path file = fs::paths.find("cfg_default.ini");
+		if(config.init(file)) {
+			LogWarning << "Could not read config files cfg.ini and cfg_default.ini,"
+			           << " using defaults.";
 		}
 		
 		// Save a default config file so users have a chance to edit it even if we crash.
@@ -255,7 +252,7 @@ bool Application::InitConfig() {
 		config.misc.migration = Config::CaseSensitiveFilenames;
 	}
 	
-	if(!fs::create_directories(config.paths.user / "save")) {
+	if(!fs::create_directories(fs::paths.user / "save")) {
 		LogWarning << "failed to create save directory";
 	}
 	

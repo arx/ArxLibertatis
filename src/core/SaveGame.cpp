@@ -25,6 +25,7 @@
 
 #include "core/Config.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
 #include "scene/ChangeLevel.h"
@@ -63,7 +64,7 @@ void SaveGameList::update() {
 	
 	size_t max_name_length = 0;
 	
-	fs::path savedir = config.paths.user / SAVEGAME_DIR;
+	fs::path savedir = fs::paths.user / SAVEGAME_DIR;
 	
 	for(fs::directory_iterator it(savedir); !it.end(); ++it) {
 		
@@ -195,7 +196,7 @@ bool SaveGameList::save(const string & name, iterator overwrite, const Image & t
 		do {
 			std::ostringstream oss;
 			oss << "save" << std::setfill('0') << std::setw(4) << index++;
-			savefile = config.paths.user / SAVEGAME_DIR / oss.str();
+			savefile = fs::paths.user / SAVEGAME_DIR / oss.str();
 		} while(fs::exists(savefile));
 		fs::create_directories(savefile);
 		savefile /= SAVEGAME_NAME;

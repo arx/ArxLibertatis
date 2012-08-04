@@ -115,6 +115,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 
+#include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/CinematicLoad.h"
@@ -612,11 +613,7 @@ void InitializeDanae()
 
 void runGame() {
 	
-	if(!createUserAndConfigDirectory()) {
-		return;
-	}
-	
-	CrashHandler::setReportLocation(config.paths.user / "crashes");
+	CrashHandler::setReportLocation(fs::paths.user / "crashes");
 	CrashHandler::deleteOldReports(5);
 	CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
 	CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
@@ -625,7 +622,7 @@ void runGame() {
 	Time::init();
 	
 	// Now that data directories are initialized, create a log file.
-	Logger::add(new logger::File(config.paths.user / "arx.log"));
+	Logger::add(new logger::File(fs::paths.user / "arx.log"));
 	
 	LogInfo << "Starting " << version;
 	
@@ -2029,7 +2026,7 @@ void FirstFrameProc() {
 		}
 	}
 
-	InitSnapShot(config.paths.user / "snapshot");
+	InitSnapShot(fs::paths.user / "snapshot");
 }
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;

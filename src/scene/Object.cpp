@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/TextureContainer.h"
 
 #include "io/fs/FilePath.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
@@ -1872,7 +1873,7 @@ static EERIE_3DOBJ * TheoToEerie_Fast(const res::path & texpath, const res::path
 		EERIE_PHYSICS_BOX_Create(ret);
 	}
 	
-	ARX_FTL_Save(config.paths.user / file.string(), ret);
+	ARX_FTL_Save(fs::paths.user / file.string(), ret);
 	
 #endif // BUILD_EDIT_LOADSAVE
 	

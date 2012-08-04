@@ -54,6 +54,7 @@
 #cmakedefine ARX_HAVE_SIGACTION
 #cmakedefine ARX_HAVE_DIRFD
 #cmakedefine ARX_HAVE_FSTATAT
+#cmakedefine ARX_HAVE_GETCWD
 
 // Mac OS X features
 #cmakedefine ARX_HAVE_MACH_CLOCK

@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
 
@@ -217,7 +218,7 @@ long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
 bool ARX_Changelevel_CurGame_Clear() {
 	
 	if(CURRENT_GAME_FILE.empty()) {
-		CURRENT_GAME_FILE = config.paths.user / "current.sav";
+		CURRENT_GAME_FILE = fs::paths.user / "current.sav";
 	}
 	
 	// If there's a left over current game file, clear it

@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/Blast.h"
@@ -551,7 +552,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 	switch(fl) {
 		
 		case 1: { // class script
-			file = config.paths.user / io->filename.string();
+			file = fs::paths.user / io->filename.string();
 			script = &io->script;
 			break;
 		}
@@ -561,7 +562,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 				LogError << ("NO IDENT...");
 				return;
 			}
-			file = config.paths.user / io->full_name().string();
+			file = fs::paths.user / io->full_name().string();
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;

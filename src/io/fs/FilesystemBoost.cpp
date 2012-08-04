@@ -110,6 +110,10 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	return !ec;
 }
 
+path current_path() {
+	return fs_boost::current_path();
+}
+
 directory_iterator::directory_iterator(const path & p) {
 	error_code ec;
 	handle = new fs_boost::directory_iterator(p.empty() ? "./" : p.string(), ec);

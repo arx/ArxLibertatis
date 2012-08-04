@@ -1,4 +1,7 @@
 
+#ifndef ARX_IO_FS_PATHCONSTANTS_H
+#define ARX_IO_FS_PATHCONSTANTS_H
+
 // Data directories
 
 namespace fs {
@@ -24,3 +27,5 @@ static str_t libexec_dir = ARX_GET_STR("${CMAKE_INSTALL_FULL_LIBEXECDIR}");
 #undef ARX_GET_STR
 
 } // namespace fs
+
+#endif // ARX_IO_FS_PATHCONSTANTS_H

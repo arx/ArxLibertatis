@@ -19,9 +19,9 @@
 
 #include "io/log/CriticalLogger.h"
 
-#include "core/Config.h"
 #include "core/Version.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "platform/Dialog.h"
 #include "platform/Platform.h"
 
@@ -32,9 +32,9 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 	if(!errorString.empty()) {
 		std::string fullText = errorString;
 		
-		if(fs::exists(config.paths.user / "arx.log")) {
+		if(fs::exists(fs::paths.user / "arx.log")) {
 			fullText += "\n\nYou might want to take a look at arx.log under \""
-			         + config.paths.user.string() + "\" for more details.";
+			         + fs::paths.user.string() + "\" for more details.";
 		}
 		
 		dialog::showError(fullText, "Critical Error - " + version);

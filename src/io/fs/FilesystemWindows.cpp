@@ -21,6 +21,8 @@
 
 #include "Configure.h"
 
+#include <vector>
+
 #include <windows.h>
 
 #include "io/fs/FilePath.h"
@@ -217,6 +219,15 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 		           << GetLastErrorString();
 	}
 	return ret;
+}
+
+path current_path() {
+	std::vector<char> buffer(GetCurrentDirectoryA(0, NULL));
+	DWORD length = GetCurrentDirectoryA(buffer.size(), &buffer.front());
+	if(length == 0 || length + 1 >= buffer.size()) {
+		buffer[0] = '\0';
+	}
+	return path(&buffer.front());
 }
 
 struct directory_iterator_data {
