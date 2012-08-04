@@ -153,7 +153,7 @@ These pairs define prefixes and suffixes that are combined to form searched path
 
 To avoid possible performance issues, there is `IGNORE_EXE_DIR` to list directories to *not* search for data files even if they contain the game executable. By default, this is only set for Linux: `/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin`
 
-All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time. For Windows `%FOLDERID_SavedGames%` is defined to the Windows saved games directory for the current user. For other systems arx will make sure that [http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html) variables are defined.
+All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time. For Windows `%FOLDERID_SavedGames%` is defined to the Windows saved games directory for the current user. For other systems arx will make sure that [XDG Base Directory Specification](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html) variables are defined.
 
 After environment variable expansion the variables are interpreted as colon-separated (Windows: semicolon-separated) lists of paths.
 
