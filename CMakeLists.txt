@@ -468,7 +468,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 else()
 	# Define default user and data directories.
 	if(NOT DEFINED DATA_DIR)
-		set(DATA_DIR "games/arx")
+		set(DATA_DIR "games/arx:arx")
 	endif()
 	if(NOT DEFINED USER_DIR)
 		set(USER_DIR "arx")
