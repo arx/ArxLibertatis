@@ -198,6 +198,9 @@ const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
 // XP is "%USERPROFILE%\My Documents\My Games"
 // Vista and up : "%USERPROFILE%\Saved Games"
 void defineSystemDirectories(const char * argv0) {
+	
+	ARX_UNUSED(argv0);
+	
 	std::string strPath;
 	DWORD winver = GetVersion();
 	
