@@ -85,8 +85,10 @@ bool parseCommandLine(const char * command_line) {
 	try {
 		
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
+		const char * argv0 = argv[0];
 		po::store(po::parse_command_line(argc, argv, options_desc), options);
 #else
+		const char * argv0 = NULL;
 		std::vector<std::string> args = po::split_winmain(command_line);
 		po::store(po::command_line_parser(args).options(options_desc).run(),
 		          options);
@@ -104,7 +106,7 @@ bool parseCommandLine(const char * command_line) {
 			Logger::configure(debug->second.as<std::string>());
 		}
 		
-		defineSystemDirectories();
+		defineSystemDirectories(argv0);
 		
 		bool findData = (options.count("no-data-dir") == 0);
 		bool listDirs = (options.count("list-dirs") != 0);

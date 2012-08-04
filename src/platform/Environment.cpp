@@ -155,7 +155,9 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
 
-void defineSystemDirectories() {
+static const char * executablePath = NULL;
+
+void defineSystemDirectories(const char * argv0) {
 	
 	const char * _home = getenv("HOME");
 	std::string home = _home ? _home : "~";
@@ -165,6 +167,8 @@ void defineSystemDirectories() {
 	setenv("XDG_DATA_DIRS", "/usr/local/share/:/usr/share/", 0);
 	setenv("XDG_CONFIG_DIRS", "/etc/xdg", 0);
 	setenv("XDG_CACHE_HOME", (home + "/.cache").c_str(), 0);
+	
+	executablePath = argv0;
 }
 
 #else
@@ -184,7 +188,7 @@ const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
 // Vista and up : "%USERPROFILE%\Saved Games"
-void defineSystemDirectories() {
+void defineSystemDirectories(const char * argv0) {
 	std::string strPath;
 	DWORD winver = GetVersion();
 	
@@ -264,23 +268,7 @@ std::string getExecutablePath() {
 		}
 	}
 	
-#elif defined(ARX_HAVE_READLINK)
-	
-	std::vector<char> buffer(1024);
-	
-	if(try_readlink(buffer, "/proc/self/exe")) {
-		return std::string(buffer.begin(), buffer.end());
-	}
-	
-	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return std::string(buffer.begin(), buffer.end());
-	}
-	
-	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return std::string(buffer.begin(), buffer.end());
-	}
-	
-	// we can also try argv[0]!
+	ARX_UNUSED(executablePath);
 	
 #elif defined(ARX_HAVE_WINAPI)
 	
@@ -288,6 +276,30 @@ std::string getExecutablePath() {
 	buffer.resize(MAX_PATH);
 	if(GetModuleFileNameA(NULL, buffer.data(), buffer.size()) > 0) {
 		return std::string(buffer.data(), buffer.size());
+	}
+	
+#else
+	
+	// Try to get the path from OS-specific procfs entries
+	#ifdef ARX_HAVE_READLINK
+	std::vector<char> buffer(1024);
+	if(try_readlink(buffer, "/proc/self/exe")) {
+		return std::string(buffer.begin(), buffer.end());
+	}
+	if(try_readlink(buffer, "/proc/curproc/file")) {
+		return std::string(buffer.begin(), buffer.end());
+	}
+	if(try_readlink(buffer, "/proc/self/path/a.out")) {
+		return std::string(buffer.begin(), buffer.end());
+	}
+	#endif
+	
+	// Fall back to argv[0] if possible
+	if(executablePath != NULL) {
+		std::string path(executablePath);
+		if(path.find('/') != std::string::npos) {
+			return path;
+		}
 	}
 	
 #endif
