@@ -457,13 +457,16 @@ bool ArxGame::AddPaks() {
 					oss << ",", length++;
 				}
 			}
-			if(length > 70) {
-				oss << "\n ", length = 1;
+			size_t add = 1 + strlen(default_paks[missing[i]][0]) + 1;
+			if(default_paks[missing[i]][1]) {
+				add += 3 + strlen(default_paks[missing[i]][1]) + 2;
+			}
+			if(length + add > 70) {
+				oss << "\n ", length = add + 1;
 			} else {
-				oss << ' ', length++;
+				oss << ' ', length += add + 1;
 			}
 			oss << '"' << default_paks[missing[i]][0] << '"';
-			length += 1 + strlen(default_paks[missing[i]][0]) + 1;
 			if(default_paks[missing[i]][1]) {
 				oss << " (\"" << default_paks[missing[i]][1] << "\")";
 				length += 3 + strlen(default_paks[missing[i]][1]) + 2;
