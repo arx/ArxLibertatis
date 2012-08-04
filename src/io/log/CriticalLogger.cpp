@@ -32,9 +32,10 @@ CriticalErrorDialog::~CriticalErrorDialog() {
 	if(!errorString.empty()) {
 		std::string fullText = errorString;
 		
-		if(fs::exists(fs::paths.user / "arx.log")) {
-			fullText += "\n\nYou might want to take a look at arx.log under \""
-			         + fs::paths.user.string() + "\" for more details.";
+		fs::path logfile = fs::paths.user / "arx.log";
+		if(fs::exists(logfile)) {
+			fullText += "\n\nYou might want to take a look at "
+			         + logfile.string() + " for more details.";
 		}
 		
 		dialog::showError(fullText, "Critical Error - " + version);

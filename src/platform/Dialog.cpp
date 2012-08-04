@@ -35,6 +35,7 @@
 #include "io/log/Logger.h"
 #include "platform/String.h"
 
+
 namespace dialog {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -72,8 +73,114 @@ bool showDialog(DialogType type, const std::string & message,
                     const std::string & dialogTitle);
 #else
 
-std::string escape(const std::string & input) {
+static std::string escape(const std::string & input) {
 	return escapeString(input, "\\\"$");
+}
+
+static bool isAllowedInUrl(char c) {
+	return !isspace(c) && c != '"' && c != '\'' && c != ')';
+}
+
+static void closeLink(std::stringstream & oss, size_t start) {
+	size_t end = oss.tellp();
+	std::vector<char> url(end - start);
+	oss.seekg(start).read(&url.front(), end - start);
+	oss << "\">";
+	oss.write(&url.front(), end - start);
+	oss << "</a>";
+}
+
+/*!
+ * Minimal HTML formatter for error messages
+ *
+ * Features:
+ * ' * ' => html link or nicer bullet point
+ * 'http://' / 'https://' => link
+ * "..." => "<b>...</b>"
+ *
+ * @param newline Keep don't convert newlines to &lt;br&gr; tags.
+ * @param ul      Use HTML lists.
+ */
+static std::string formatAsHtml(const std::string & text, bool newline, bool ul = false) {
+	
+	std::stringstream oss;
+	std::istringstream iss(text);
+	
+	bool list = false, first = true;
+	
+	std::string line;
+	while(!std::getline(iss, line).fail()) {
+		
+		size_t i = 0;
+		
+		if(line.length() >= 3 && line.compare(0, 3, " * ", 3) == 0) {
+			i += 3;
+			
+			if(ul && !list) {
+				oss << "<ul>";
+				list = true;
+			} else if(!ul && !first) {
+				oss << (newline ? "\n" : "<br>");
+			}
+			
+			oss << (ul ? "<li>" : " &#8226; ");
+			
+		} else if(list) {
+			oss << "</ul>";
+			list = false;
+		} else if(!first) {
+			oss << (newline ? "\n" : "<br>");
+		}
+		first = false;
+		
+		bool quote = false, link = false;
+		
+		size_t link_start;
+		
+		for(; i < line.length(); i++) {
+			
+			if(link && !isAllowedInUrl(line[i])) {
+				closeLink(oss, link_start);
+				link = false;
+			}
+			
+			if(line[i] == '<') {
+				oss << "&lt;";
+			} else if(line[i] == '>') {
+				oss << "&gt;";
+			} else if(line[i] == '"') {
+				if(!quote) {
+					oss << "\"<b>";
+				} else {
+					oss << "</b>\"";
+				}
+				quote = !quote;
+			} else if(!link && line.compare(i, 7, "http://", 7) == 0) {
+				oss << "<a href=\"";
+				link_start = oss.tellp(), link = true;
+				oss << "http://";
+				i += 6;
+			} else if(!link && line.compare(i, 8, "https://", 8) == 0) {
+				oss << "<a href=";
+				link_start = oss.tellp(), link = true;
+				oss << "https://";
+				i += 7;
+			} else {
+				oss << line[i];
+			}
+			
+		}
+		
+		if(link) {
+			closeLink(oss, link_start);
+		}
+		
+		if(quote) {
+			oss << "</code>";
+		}
+	}
+	
+	return oss.str();
 }
 
 int zenityCommand(DialogType type, const std::string & message,
@@ -92,7 +199,7 @@ int zenityCommand(DialogType type, const std::string & message,
 	
 	boost::format command("zenity %1% --text=\"%2%\" --title=\"%3%\"");
 	command = command % options;
-	command = command % escape(message);
+	command = command % escape(formatAsHtml(message, true));
 	command = command % escape(dialogTitle);
 	
 	return system(command.str().c_str());
@@ -113,7 +220,7 @@ int kdialogCommand(DialogType type, const std::string & message,
 	boost::format command("kdialog %1% \"%2%\" --title \"%3%\""
 	                      " --icon arx-libertatis");
 	command = command % options;
-	command = command % escape(message);
+	command = command % escape(formatAsHtml(message, false));
 	command = command % escape(dialogTitle);
 	
 	return system(command.str().c_str());
