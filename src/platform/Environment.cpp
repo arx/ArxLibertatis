@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <vector>
 
-#include <stdlib.h> // needed for setenv, realpath
+#include <stdlib.h> // needed for setenv, realpath and more
 
 #include <boost/scoped_array.hpp>
 
@@ -46,6 +46,15 @@
 #include <mach-o/dyld.h>
 #include <sys/param.h>
 #endif
+
+#ifdef ARX_HAVE_SYSCTL
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
+#include "platform/String.h"
+#include "platform/Platform.h"
+
 
 std::string expandEnvironmentVariables(const std::string & in) {
 	
@@ -283,14 +292,42 @@ std::string getExecutablePath() {
 	// Try to get the path from OS-specific procfs entries
 	#ifdef ARX_HAVE_READLINK
 	std::vector<char> buffer(1024);
+	// Linux
 	if(try_readlink(buffer, "/proc/self/exe")) {
 		return std::string(buffer.begin(), buffer.end());
 	}
+	// BSD
 	if(try_readlink(buffer, "/proc/curproc/file")) {
 		return std::string(buffer.begin(), buffer.end());
 	}
+	// Solaris
 	if(try_readlink(buffer, "/proc/self/path/a.out")) {
 		return std::string(buffer.begin(), buffer.end());
+	}
+	#endif
+	
+	// FreeBSD
+	#if defined(ARX_HAVE_SYSCTL) && defined(CTL_KERN) && defined(KERN_PROC) \
+	    && defined(KERN_PROC_PATHNAME) && ARX_PLATFORM == ARX_PLATFORM_BSD \
+	    && defined(PATH_MAX)
+	int mib[4];
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_PATHNAME;
+	mib[3] = -1;
+	char pathname[PATH_MAX];
+	size_t size = sizeof(pathname);
+	int error = sysctl(mib, 4, pathname, &size, NULL, 0);
+	if(error != -1 && size > 0 && size < sizeof(pathname)) {
+		return safestring(pathname, size);
+	}
+	#endif
+	
+	// Solaris
+	#ifdef ARX_HAVE_GETEXECNAME
+	const char * execname = getexecname();
+	if(execname != NULL) {
+		return execname;
 	}
 	#endif
 	

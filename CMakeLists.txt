@@ -300,6 +300,8 @@ else(MSVC)
 	check_symbol_exists(popen "stdio.h" ARX_HAVE_POPEN)
 	check_symbol_exists(pclose "stdio.h" ARX_HAVE_PCLOSE)
 	
+	check_symbol_exists(getexecname "stdlib.h" ARX_HAVE_GETEXECNAME)
+	
 	find_library(LIBRT_LIBRARY rt)
 	
 	if(LIBRT_LIBRARY)
@@ -336,6 +338,8 @@ else(MSVC)
 	check_symbol_exists(sysconf "unistd.h" ARX_HAVE_SYSCONF)
 	
 	check_symbol_exists(sigaction "signal.h" ARX_HAVE_SIGACTION)
+	
+	check_symbol_exists(sysctl "sys/sysctl.h" ARX_HAVE_SYSCTL)
 	
 	if(USE_NATIVE_FS)
 		

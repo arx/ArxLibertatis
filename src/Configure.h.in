@@ -55,6 +55,8 @@
 #cmakedefine ARX_HAVE_DIRFD
 #cmakedefine ARX_HAVE_FSTATAT
 #cmakedefine ARX_HAVE_GETCWD
+#cmakedefine ARX_HAVE_GETEXECNAME
+#cmakedefine ARX_HAVE_SYSCTL
 
 // Mac OS X features
 #cmakedefine ARX_HAVE_MACH_CLOCK
