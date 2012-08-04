@@ -125,19 +125,19 @@ To print all directories searched by arx, run
 By default, user, config and data files will be loaded from and saved to standard system locations depending on the OS:
 
 **Windows**:
-* user and config dir:
-** XP: `%USERPROFILE%\My Documents\My Games\Arx Libertatis`
-** Vista and up: `%USERPROFILE%\Saved Games\Arx Libertatis`
-** data dir: location stored in HKCU\Software\ArxLibertatis\DataDir or HKLM\Software\ArxLibertatis\DataDir registry keys
+* user and config dir:<br>
+*XP*: `%USERPROFILE%\My Documents\My Games\Arx Libertatis`<br>
+*Vista* and up: `%USERPROFILE%\Saved Games\Arx Libertatis`
+* data dir: location stored in `HKCU\Software\ArxLibertatis\DataDir` or `HKLM\Software\ArxLibertatis\DataDir` registry keys
 
 **Mac OS X**:
-* user and config dir: '~/Library/Application Support/ArxLibertatis/'
-* data dir: '/Applications/ArxLibertatis/'
+* user and config dir: `~/Library/Application Support/ArxLibertatis/`
+* data dir: `/Applications/ArxLibertatis/`
 
 **Linux** and others:
-* user dir: '~/.local/share/arx/'
-* config dir: '~/.config/arx/'
-* data dir: '/usr/share/games/arx/', '/usr/local/share/games/arx/' and more
+* user dir: `~/.local/share/arx/`
+* config dir: `~/.config/arx/`
+* data dir: `/usr/share/games/arx/`, `/usr/local/share/games/arx/` and more
 
 For all systems arx will also try to load data files from the directory containing the game executable if they have not already been found by other means.
 
@@ -147,7 +147,7 @@ To use the current working directory for load user, config and data files (e.g. 
 
 See the `arx --help` and `man arx` output for more details.
 
-The default directories can be adjusted with [additional build options](OPTIONS.md).
+The default directories can be adjusted with additional build options described in OPTIONS.md.
 
 ## Run
 
