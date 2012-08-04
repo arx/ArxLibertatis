@@ -258,7 +258,7 @@ static void listDirectoriesFor(std::ostream & os, const std::string & regKey,
 	if(!regKey.empty()) {
 		os << " - Registry key {HKCU,HKLM}\\Software\\ArxLibertatis\\"
 		   << regKey << '\n';
-		string temp;
+		std::string temp;
 		if(getSystemConfiguration(regKey, temp)) {
 			os << "   = " << canonical(temp) << '\n';
 		}
