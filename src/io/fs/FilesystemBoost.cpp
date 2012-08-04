@@ -111,7 +111,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 }
 
 path current_path() {
-	return fs_boost::current_path();
+	return fs_boost::current_path().string();
 }
 
 directory_iterator::directory_iterator(const path & p) {
