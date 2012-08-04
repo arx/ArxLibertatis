@@ -80,7 +80,7 @@ static path findUserPath(const char * name, const path & force,
 		path dir = canonical(temp);
 		if(!create) {
 			return dir;
-		} if(create_directories(dir)) {
+		} else if(create_directories(dir)) {
 			LogDebug("got " << name << " dir from registry: \"" << temp
 			         << "\" = " << dir);
 			return dir;
