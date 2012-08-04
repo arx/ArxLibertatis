@@ -139,7 +139,7 @@ By default, user, config and data files will be loaded from and saved to standar
 * config dir: `~/.config/arx/`
 * data dir: `/usr/share/games/arx/`, `/usr/local/share/games/arx/` and more
 
-For all systems arx will also try to load data files from the directory containing the game executable if they have not already been found by other means.
+Arx will also try to load data files from the directory containing the game executable.
 
 To use the current working directory for load user, config and data files (e.g. for a portable install) run the game as
 
