@@ -39,7 +39,8 @@ namespace dialog {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-bool showDialog(DialogType type, const std::string& message, const std::string & dialogTitle) {
+bool showDialog(DialogType type, const std::string & message,
+                const std::string & dialogTitle) {
 	
 	UINT flags;
 	switch(type) {
@@ -50,7 +51,8 @@ bool showDialog(DialogType type, const std::string& message, const std::string &
 		case DialogOkCancel: flags = MB_ICONQUESTION | MB_OKCANCEL; break;
 	}
 	
-	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(), flags | MB_SETFOREGROUND | MB_TOPMOST);
+	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(),
+	                      flags | MB_SETFOREGROUND | MB_TOPMOST);
 	
 	switch(ret) {
 		case IDCANCEL:
@@ -74,15 +76,18 @@ std::string escape(const std::string & input) {
 	return escapeString(input, "\\\"$");
 }
 
-int zenityCommand(DialogType type, const std::string & message, const std::string & dialogTitle) {
+int zenityCommand(DialogType type, const std::string & message,
+                  const std::string & dialogTitle) {
 	
 	const char * options = "";
 	switch(type) {
 		case DialogInfo:     options = "--info"; break;
 		case DialogWarning:  options = "--warning"; break;
 		case DialogError:    options = "--error"; break;
-		case DialogYesNo:    options = "--question --ok-label=\"Yes\" --cancel-label=\"No\""; break;
-		case DialogOkCancel: options = "--question --ok-label=\"OK\" --cancel-label=\"Cancel\""; break;
+		case DialogYesNo:    options = "--question --ok-label=\"Yes\""
+		                               " --cancel-label=\"No\""; break;
+		case DialogOkCancel: options = "--question --ok-label=\"OK\""
+		                               " --cancel-label=\"Cancel\""; break;
 	}
 	
 	boost::format command("zenity %1% --text=\"%2%\" --title=\"%3%\"");
@@ -105,7 +110,8 @@ int kdialogCommand(DialogType type, const std::string & message,
 		case DialogOkCancel: options = "--warningcontinuecancel"; break;
 	}
 	
-	boost::format command("kdialog %1% \"%2%\" --title \"%3%\"");
+	boost::format command("kdialog %1% \"%2%\" --title \"%3%\""
+	                      " --icon arx-libertatis");
 	command = command % options;
 	command = command % escape(message);
 	command = command % escape(dialogTitle);
@@ -158,7 +164,8 @@ bool showDialog(DialogType type, const std::string & message,
 	for(std::vector<dialogCommand_t>::const_iterator it = commands.begin();
 			it != commands.end(); ++it) {
 		int exitCode = (*it)(type, message, dialogTitle);
-		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0 && WEXITSTATUS(exitCode) < 127) {
+		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0
+		   && WEXITSTATUS(exitCode) < 127) {
 			return WEXITSTATUS(exitCode) == 0;
 		}
 	}
