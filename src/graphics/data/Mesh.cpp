@@ -2809,7 +2809,7 @@ class scoped_malloc {
 	
 public:
 	
-	scoped_malloc(T * data) : data(data) { }
+	explicit scoped_malloc(T * data) : data(data) { }
 	
 	~scoped_malloc() { free(data); }
 	
@@ -4260,8 +4260,9 @@ void ComputePortalVertexBuffer() {
 		// Allocate space to list all textures for this room
 		// TODO use std::vector
 		room->ppTextureContainer = (TextureContainer **)realloc(
-			room->ppTextureContainer, sizeof(TextureContainer *)
-			                          * (room->usNbTextures + ntextures));
+			room->ppTextureContainer,
+			sizeof(*room->ppTextureContainer) * (room->usNbTextures + ntextures)
+		);
 		
 		TextureMap::const_iterator it;
 		for(it = infos.begin(); it != infos.end(); ++it) {
