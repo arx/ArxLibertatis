@@ -78,7 +78,7 @@ static path findUserPath(const char * name, const path & force,
 	std::string temp;
 	if(registry && getSystemConfiguration(registry, temp)) {
 		path dir = canonical(temp);
-		if(is_directory(dir)) {
+		if(create_directories(dir)) {
 			LogDebug("got " << name << " dir from registry: \"" << temp
 			         << "\" = " << dir);
 			return dir;
