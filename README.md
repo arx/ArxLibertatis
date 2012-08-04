@@ -118,17 +118,26 @@ You will need to [get either the full game or demo data of Arx Fatalis](http://w
 
 Where arx will look for data files and write config and save files depends on the operating system and environment - the wiki has a page detailing the [full data directory detection algorithm](http://wiki.arx-libertatis.org/Data_directories).
 
-To print all directories considered by arx, run
+To print all directories searched by arx, run
 
     $ arx --list-dirs
 
 By default, user, config and data files will be loaded from and saved to standard system locations depending on the OS:
 
-Under **Windows**, the locations for data and user (config and savegame) files can be set by the `{HKCU,HKLM}\Software\ArxLibertatis\DataDir` and `{HKCU,HKLM}\Software\ArxLibertatis\UserDir` registry keys. If not specified by a registry key, the user files are stored at `%USERPROFILE%\My Documents\My Games\Arx Libertatis` on XP and `%USERPROFILE%\Saved Games\Arx Libertatis` on Vista and up.
+**Windows**:
+* user and config dir:
+** XP: `%USERPROFILE%\My Documents\My Games\Arx Libertatis`
+** Vista and up: `%USERPROFILE%\Saved Games\Arx Libertatis`
+** data dir: location stored in HKCU\Software\ArxLibertatis\DataDir or HKLM\Software\ArxLibertatis\DataDir registry keys
 
-Under **Mac OS X**, the system-wide data files should be stored in `/Applications/ArxLibertatis/`. Config, save and per-user data files are located in `~/Library/Application Support/ArxLibertatis/`.
+**Mac OS X**:
+* user and config dir: '~/Library/Application Support/ArxLibertatis/'
+* data dir: '/Applications/ArxLibertatis/'
 
-For other systems like **Linux**, the data files can be in `/usr/local/share/games/arx` and `/usr/share/games/arx` as well as other locations depending on your Linux distribution. Config files are normally located in `~/.config/arx` while save files are stored in `~/.local/share/arx`.
+**Linux** and others:
+* user dir: '~/.local/share/arx/'
+* config dir: '~/.config/arx/'
+* data dir: '/usr/share/games/arx/', '/usr/local/share/games/arx/' and more
 
 For all systems arx will also try to load data files from the directory containing the game executable if they have not already been found by other means.
 
@@ -138,27 +147,7 @@ To use the current working directory for load user, config and data files (e.g. 
 
 See the `arx --help` and `man arx` output for more details.
 
-There are also options that can be provided to cmake to change the default data directories:
-
-| Option                | Windows default         |  Linux / other default | Mac default     |
-|---------------------- | ----------------------- | ---------------------- | --------------- |
-| `USER_DIR_PREFIXES`   | `%FOLDERID_SavedGames%` | `$XDG_DATA_HOME`       | `~/Library/Application Support` |
-| `USER_DIR`            | `Arx Libertatis`        | `arx`                  | `ArxLibertatis` |
-| `CONFIG_DIR_PREFIXES` |                         | `$XDG_CONFIG_HOME`     |                 |
-| `CONFIG_DIR`          |                         | `arx`                  |                 |
-| `DATA_DIR_PREFIXES`   |                         | `$XDG_DATA_DIRS:/opt`  | `/Applications` |
-| `DATA_DIR`            |                         | `games/arx:arx`        | `ArxLibertatis` |
-
-These pairs define prefixes and suffixes that are combined to form searched paths for the user, config and data directories respectively.
-
-To avoid possible performance issues, there is `IGNORE_EXE_DIR` to list directories to *not* search for data files even if they contain the game executable. By default, this is only set for Linux: `/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin`
-
-All the configuration options above can reference environment variables in operating-system specific shell syntax which will be expanded at run-time. For Windows `%FOLDERID_SavedGames%` is defined to the Windows saved games directory for the current user. For other systems arx will make sure that [XDG Base Directory Specification](http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html) variables are defined.
-
-After environment variable expansion the variables are interpreted as colon-separated (Windows: semicolon-separated) lists of paths.
-
-The config directory defaults to the user directory if not specified.
-
+The default directories can be adjusted with [additional build options](OPTIONS.md).
 
 ## Run
 
