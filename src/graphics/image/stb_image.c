@@ -22,6 +22,7 @@
       - overridable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
 
    Latest revisions:
+      1.34 (2012-08-08) stbi_info now return the file format (Sebastien Lussier)
       1.33 (2011-07-14) minor fixes suggested by Dave Moore
       1.32 (2011-07-13) info support for all filetypes (SpartanJ)
       1.31 (2011-06-19) a few more leak fixes, bug in PNG handling (SpartanJ)
@@ -205,6 +206,19 @@ enum
    STBI_rgb_alpha  = 4
 };
 
+enum
+{
+   STBI_unknown,
+   STBI_jpeg,
+   STBI_png,
+   STBI_gif,
+   STBI_bmp,
+   STBI_psd,
+   STBI_pic,
+   STBI_hdr,
+   STBI_tga
+};
+
 typedef unsigned char stbi_uc;
 
 #ifdef __cplusplus
@@ -271,12 +285,12 @@ extern const char *stbi_failure_reason  (void);
 extern void     stbi_image_free      (void *retval_from_stbi_load);
 
 // get image dimensions & components without fully decoding
-extern int      stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp);
-extern int      stbi_info_from_callbacks(stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp);
+extern int      stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int *fmt);
+extern int      stbi_info_from_callbacks(stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int *fmt);
 
 #ifndef STBI_NO_STDIO
-extern int      stbi_info            (char const *filename,     int *x, int *y, int *comp);
-extern int      stbi_info_from_file  (FILE *f,                  int *x, int *y, int *comp);
+extern int      stbi_info            (char const *filename,     int *x, int *y, int *comp, int *fmt);
+extern int      stbi_info_from_file  (FILE *f,                  int *x, int *y, int *comp, int *fmt);
 
 #endif
 
@@ -4522,71 +4536,70 @@ static int stbi_pic_info(stbi *s, int *x, int *y, int *comp)
    return 1;
 }
 
-static int stbi_info_main(stbi *s, int *x, int *y, int *comp)
+static int stbi_info_main(stbi *s, int *x, int *y, int *comp, int *fmt)
 {
-   if (stbi_jpeg_info(s, x, y, comp))
-       return 1;
-   if (stbi_png_info(s, x, y, comp))
-       return 1;
-   if (stbi_gif_info(s, x, y, comp))
-       return 1;
-   if (stbi_bmp_info(s, x, y, comp))
-       return 1;
-   if (stbi_psd_info(s, x, y, comp))
-       return 1;
-   if (stbi_pic_info(s, x, y, comp))
-       return 1;
+   if (stbi_jpeg_test(s)) { *fmt = STBI_jpeg; return stbi_jpeg_info(s, x, y, comp); }
+   if (stbi_png_test(s))  { *fmt = STBI_png;  return stbi_png_info(s, x, y, comp); }
+   if (stbi_gif_test(s))  { *fmt = STBI_gif;  return stbi_gif_info(s, x, y, comp); }
+   if (stbi_bmp_test(s))  { *fmt = STBI_bmp;  return stbi_bmp_info(s, x, y, comp); }
+   if (stbi_psd_test(s))  { *fmt = STBI_psd;  return stbi_psd_info(s, x, y, comp); }
+   if (stbi_pic_test(s))  { *fmt = STBI_pic;  return stbi_pic_info(s, x, y, comp); }
+
    #ifndef STBI_NO_HDR
-   if (stbi_hdr_info(s, x, y, comp))
-       return 1;
+   if (stbi_hdr_test(s))  { *fmt = STBI_hdr;  return stbi_hdr_info(s, x, y, comp); }
    #endif
+
    // test tga last because it's a crappy test!
-   if (stbi_tga_info(s, x, y, comp))
-       return 1;
+   if (stbi_tga_test(s))  { *fmt = STBI_tga;  return stbi_tga_info(s, x, y, comp); }
+
+   *fmt = STBI_unknown;
+
    return e("unknown image type", "Image not of any known type, or corrupt");
 }
 
 #ifndef STBI_NO_STDIO
-int stbi_info(char const *filename, int *x, int *y, int *comp)
+int stbi_info(char const *filename, int *x, int *y, int *comp, int *fmt)
 {
     FILE *f = fopen(filename, "rb");
     int result;
     if (!f) return e("can't fopen", "Unable to open file");
-    result = stbi_info_from_file(f, x, y, comp);
+    result = stbi_info_from_file(f, x, y, comp, fmt);
     fclose(f);
     return result;
 }
 
-int stbi_info_from_file(FILE *f, int *x, int *y, int *comp)
+int stbi_info_from_file(FILE *f, int *x, int *y, int *comp, int *fmt)
 {
    int r;
    stbi s;
    long pos = ftell(f);
    start_file(&s, f);
-   r = stbi_info_main(&s,x,y,comp);
+   r = stbi_info_main(&s,x,y,comp,fmt);
    fseek(f,pos,SEEK_SET);
    return r;
 }
 #endif // !STBI_NO_STDIO
 
-int stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp)
+int stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int *fmt)
 {
    stbi s;
    start_mem(&s,buffer,len);
-   return stbi_info_main(&s,x,y,comp);
+   return stbi_info_main(&s,x,y,comp,fmt);
 }
 
-int stbi_info_from_callbacks(stbi_io_callbacks const *c, void *user, int *x, int *y, int *comp)
+int stbi_info_from_callbacks(stbi_io_callbacks const *c, void *user, int *x, int *y, int *comp, int *fmt)
 {
    stbi s;
    start_callbacks(&s, (stbi_io_callbacks *) c, user);
-   return stbi_info_main(&s,x,y,comp);
+   return stbi_info_main(&s,x,y,comp,fmt);
 }
 
 #endif // STBI_HEADER_FILE_ONLY
 
 /*
    revision history:
+      1.34 (2012-08-08)
+             stbi_info_* now return the file format of the image
       1.33 (2011-07-14)
              make stbi_is_hdr work in STBI_NO_HDR (as specified), minor compiler-friendly improvements
       1.32 (2011-07-13)
