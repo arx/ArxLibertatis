@@ -22,7 +22,12 @@
 #include <sstream>
 #include <cstring>
 
-#include <il.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "graphics/image/stb_image_write.h"
+
+#define STBI_NO_STDIO
+#define STBI_NO_HDR
+#include "graphics/image/stb_image.c"
 
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
@@ -51,26 +56,6 @@ const unsigned int SIZE_TABLE[Image::Format_Num] = {
 };
 
 } // anonymous namespace
-
-void Image::init() {
-	
-	// Initialize DevIL
-	ilInit();
-	
-	CrashHandler::setVariable("DevIL version (header)", IL_VERSION);
-	CrashHandler::setVariable("DevIL version", ilGetString(IL_VERSION_NUM));
-	
-	// Set the origin to be used when loading all images, 
-	// so that any image with a different origin will be
-	// flipped to have the set origin
-	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-	ilEnable(IL_ORIGIN_SET);
-}
-
-void Image::shutdown() {
-	// Shutdown DevIL
-	ilShutDown();
-}
 
 Image::Image() : mData(0) {
 	Reset();
@@ -204,135 +189,46 @@ bool Image::LoadFromFile(const res::path & filename) {
 	return ret;
 }
 
-Image::Format GetImageFormat(ILint pImgTextureFormat, ILint pBPP) {
-	
-	// Convert DevIL image format to our internal format.
-	// TODO why test pBPP? shouldn't the IL format be enough?
-	switch(pBPP) {
-		
-		case 1:
-			return Image::Format_L8;
-			
-		case 2: {
-			switch(pImgTextureFormat) {
-				case IL_LUMINANCE_ALPHA:
-					return Image::Format_L8A8;
-			}
-			break;
-		}
-		
-		case 3: {
-			switch(pImgTextureFormat) {
-				case IL_RGB:
-					return Image::Format_R8G8B8;
-				case IL_BGR:
-					return Image::Format_B8G8R8;
-			}
-			break;
-		}
-		
-		case 4: {
-			switch(pImgTextureFormat) {
-				case IL_RGBA:
-					return Image::Format_R8G8B8A8;
-				case IL_BGRA:
-					return Image::Format_B8G8R8A8;
-			}
-			break;
-		}
-	}
-	
-	return Image::Format_Unknown;
-}
-
-static const char * getDevILErrorString(ILenum error) {
-	// There is a function in ILU for this, but using it would require linking yet
-	// another library.
-	switch(error) {
-		case IL_NO_ERROR: return "no error";
-		case IL_INVALID_ENUM: return "invalid enum value";
-		case IL_OUT_OF_MEMORY: return "out of memory";
-		case IL_FORMAT_NOT_SUPPORTED: return "unsupported format";
-		case IL_INTERNAL_ERROR: return "internal error";
-		case IL_INVALID_VALUE: return "invalid value";
-		case IL_ILLEGAL_OPERATION: return "illegal operation";
-		case IL_ILLEGAL_FILE_VALUE: return "unexpected value in file";
-		case IL_INVALID_FILE_HEADER: return "invalid file header";
-		case IL_INVALID_PARAM: return "invalid parameter";
-		case IL_COULD_NOT_OPEN_FILE: return "could not open file";
-		case IL_INVALID_EXTENSION: return "invalid extension";
-		case IL_FILE_ALREADY_EXISTS: return "file already exists";
-		case IL_OUT_FORMAT_SAME: return "tried to convert to same format";
-		case IL_STACK_OVERFLOW: return "stack overflow";
-		case IL_STACK_UNDERFLOW: return "stack underflow";
-		case IL_INVALID_CONVERSION: return "invalid conversion";
-		case IL_BAD_DIMENSIONS: return "bad dimensions";
-		case IL_FILE_READ_ERROR: return "file read/write error";
-		case IL_LIB_GIF_ERROR: return "gif error";
-		case IL_LIB_JPEG_ERROR: return "jpeg error";
-		case IL_LIB_PNG_ERROR: return "png error";
-		case IL_LIB_TIFF_ERROR: return "tiff error";
-		case IL_LIB_MNG_ERROR: return "mng error";
-		case IL_UNKNOWN_ERROR: return "unknown error";
-		default: return "(unknown)";
-	}
-}
-
 bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	
 	if(!pData) {
 		return false;
 	}
+
+	int width, height, bpp, fmt, req_bpp = 0;
+
+	// 2bpp TGAs needs to be converted!
+	int ret = stbi_info_from_memory((const stbi_uc*)pData, size, &width, &height, &bpp, &fmt);
+	if(ret && fmt == STBI_tga && bpp == 2)
+		req_bpp = 3;
 	
-	ilGetError();
-	
-	ILuint imageName;
-	ilGenImages(1, &imageName);
-	ilBindImage(imageName);
-	
-	ILboolean bLoaded = ilLoadL(IL_TYPE_UNKNOWN, pData, size);
-	if(!bLoaded) {
+	unsigned char* data = stbi_load_from_memory((const stbi_uc*)pData, size, &width, &height, &bpp, req_bpp);
+	if(!data) {
 		std::ostringstream message;
 		message << "error loading image";
 		if(file) {
 			message << " \"" << file << '"';
 		}
-		ILenum error = ilGetError();
-		if(error) {
-			message << ": " << error
-			         << " = " << getDevILErrorString(error);
-		} else {
-			message << ": unsupported image type";
-		}
 		LogError << message.str();
 		return false;
 	}
-	
-	mWidth  = ilGetInteger(IL_IMAGE_WIDTH);
-	mHeight = ilGetInteger(IL_IMAGE_HEIGHT);
+
+	if(req_bpp != 0)
+		bpp = req_bpp;
+
+	mWidth  = width;
+	mHeight = height;
 	mDepth  = 1;
 	mNumMipmaps = 1;
-	
-	ILint imgFormat = ilGetInteger(IL_IMAGE_FORMAT);
-	
-	// We do not support palettized texture currently, so un-palettize them!
-	if(imgFormat == IL_COLOR_INDEX) {
-		switch(ilGetInteger(IL_PALETTE_TYPE)) {
-			case IL_PAL_RGB24:
-			case IL_PAL_RGB32:  imgFormat = IL_RGB; break;
-			case IL_PAL_BGR24:
-			case IL_PAL_BGR32:  imgFormat = IL_BGR; break;
-			case IL_PAL_RGBA32: imgFormat = IL_RGBA; break;
-			case IL_PAL_BGRA32: imgFormat = IL_BGRA; break;
-			default: arx_assert_msg(0, "Invalid palette type");
-		}
-		ilConvertImage(imgFormat, IL_UNSIGNED_BYTE);
-		imgFormat = ilGetInteger(IL_IMAGE_FORMAT);
+
+	switch(bpp) {
+		case STBI_grey:       mFormat = Image::Format_L8; break;
+		case STBI_grey_alpha: mFormat = Image::Format_L8A8; break;
+		case STBI_rgb:        mFormat = Image::Format_R8G8B8; break;
+		case STBI_rgb_alpha:  mFormat = Image::Format_R8G8B8A8; break;
+		default: arx_assert_msg(0, "Invalid bpp");
 	}
 	
-	ILint bytesPerPixel = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-	
-	mFormat = GetImageFormat(imgFormat, bytesPerPixel);
 	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mDepth, mNumMipmaps);
 	
 	// Delete previous buffer if size don't match
@@ -348,11 +244,11 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	// Copy image data to our buffer
 	if(mData) {
 		mDataSize = dataSize;
-		memcpy(mData, ilGetData(), mDataSize);
+		memcpy(mData, data, mDataSize);
 	}
 	
 	// Release resources
-	ilDeleteImages(1, &imageName);
+	stbi_image_free(data);
 	
 	return (mData != NULL);
 }
@@ -1211,52 +1107,22 @@ void Flip3dc(unsigned char * data, unsigned int count) {
 	}
 }
 
-static ILenum ARXImageToILFormat[] = {
-	IL_LUMINANCE,       // Format_L8
-#ifdef IL_ALPHA
-	IL_ALPHA,           // Format_A8
-#else
-	0,                  // Format_A8 not supported by the IL version
-#endif
-	IL_LUMINANCE_ALPHA, // Format_L8A8
-	IL_RGB,             // Format_R8G8B8
-	IL_BGR,             // Format_B8G8R8
-	IL_RGBA,            // Format_R8G8B8A8
-	IL_BGRA,            // Format_B8G8R8A8
-	IL_DXT1,            // Format_DXT1
-	IL_DXT3,            // Format_DXT3
-	IL_DXT5,            // Format_DXT5
-};
-
 bool Image::save(const fs::path & filename) const {
 	
-	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
-	if(mFormat < 0 || mFormat >= Format_Unknown || ARXImageToILFormat[mFormat] == 0) {
+	if(mFormat < 0 || mFormat >= Format_Unknown) {
 		return false;
 	}
 	
-	ilGetError();
-	
-	ILuint imageName;
-	ilGenImages(1, &imageName);
-	ilBindImage(imageName);
-	
-	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(),
-	                           ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
-	if(ret) {
-		ilRegisterOrigin(IL_ORIGIN_UPPER_LEFT);
-		ilEnable(IL_FILE_OVERWRITE);
-		ret = ilSaveImage(filename.string().c_str());
+	int ret = 0;
+	if(filename.ext() == ".png") {
+		ret = stbi_write_png(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData, 0);
+	} else if(filename.ext() == ".bmp") {
+		ret = stbi_write_bmp(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
+	} else if(filename.ext() == ".tga") {
+		ret = stbi_write_tga(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
+	} else {
+		LogError << "Unsupported file extension.";
 	}
 	
-	ilDeleteImages(1, &imageName);
-	
-	if(!ret) {
-		ILenum error = ilGetError();
-		LogWarning << "error saving image: " << error
-		           << " = " << getDevILErrorString(error);
-		return false;
-	}
-	
-	return true;
+	return ret != 0;
 }

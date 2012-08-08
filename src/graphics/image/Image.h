@@ -126,9 +126,6 @@ public:
 	static unsigned int	GetNumChannels(Format pFormat);
 	static bool IsCompressed(Format pFormat);
 	
-	static void init();
-	static void shutdown();
-	
 private:
 	
 	void FlipY(unsigned char* pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth);

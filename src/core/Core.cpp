@@ -626,8 +626,6 @@ void runGame() {
 	
 	LogInfo << "Starting " << version;
 	
-	Image::init();
-	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
 	ALLOW_CHEATS = 0;
@@ -796,8 +794,6 @@ void runGame() {
 	mainApp->Run();
 
 	ClearGame();
-	
-	Image::shutdown();
 }
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
