@@ -123,7 +123,7 @@ else()
 endif()
 
 find_package(Freetype REQUIRED)
-FIND_PACKAGE(ZLIB REQUIRED)
+find_package(ZLIB REQUIRED)
 set(CMAKE_THREAD_PREFER_PTHREAD 1)
 find_package(Threads REQUIRED)
 if(USE_OPENGL)
