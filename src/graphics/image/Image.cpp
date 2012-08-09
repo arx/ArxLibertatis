@@ -22,12 +22,8 @@
 #include <sstream>
 #include <cstring>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "graphics/image/stb_image.h"
 #include "graphics/image/stb_image_write.h"
-
-#define STBI_NO_STDIO
-#define STBI_NO_HDR
-#include "graphics/image/stb_image.c"
 
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
