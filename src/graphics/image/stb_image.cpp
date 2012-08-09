@@ -3035,12 +3035,21 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
             trans_data[2] = raw_data[0];
             trans_data[3] = 255;
             break;
-         case 16:
-            //   Luminous,Alpha => RGBA
-            trans_data[0] = raw_data[0];
-            trans_data[1] = raw_data[0];
-            trans_data[2] = raw_data[0];
-            trans_data[3] = raw_data[1];
+         case 16: //   B5G5R5A1 => RGBA
+            trans_data[3] = 255 * ((raw_data[1] & 0x80) >> 7);
+         case 15: //   B5G5R5 => RGBA
+            trans_data[0] = (raw_data[1] >> 2) & 0x1F;
+            trans_data[1] = ((raw_data[1] << 3) & 0x1C) | ((raw_data[0] >> 5) & 0x07);
+            trans_data[2] = (raw_data[0] & 0x1F);
+ 
+            // Convert 5-bit channels to 8-bit channels by left shifting by three
+            // and repeating the first three bits to cover the range [0,255] with
+            // even spacing. For example:
+            //   channel input bits:        4 3 2 1 0
+            //   channel output bits: 4 3 2 1 0 4 3 2
+            trans_data[0] = (trans_data[0] << 3) | (trans_data[0] >> 2);
+            trans_data[1] = (trans_data[1] << 3) | (trans_data[1] >> 2);
+            trans_data[2] = (trans_data[2] << 3) | (trans_data[2] >> 2);
             break;
          case 24:
             //   BGR => RGBA
