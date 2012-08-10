@@ -1,4 +1,4 @@
-/* stbi-1.35 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* stbi-1.33-arx2 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
    when you control the images you're loading
                                      no warranty implied; use at your own risk
 
@@ -22,8 +22,8 @@
       - overridable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
 
    Latest revisions:
-      1.35 (2012-08-08) Fix bug in loading of 15 or 16 bit TGA (Sebastien Lussier)
-      1.34 (2012-08-08) stbi_info now return the file format (Sebastien Lussier)
+      1.33-arx2 (2012-08-08) Fix bug in loading of 15 or 16 bit TGA (Sebastien Lussier)
+      1.33-arx1 (2012-08-08) stbi_info now return the file format (Sebastien Lussier)
       1.33 (2011-07-14) minor fixes suggested by Dave Moore
       1.32 (2011-07-13) info support for all filetypes (SpartanJ)
       1.31 (2011-06-19) a few more leak fixes, bug in PNG handling (SpartanJ)
@@ -345,11 +345,11 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
 
 /*
    revision history:
-      1.35 (2012-08-08)
+      1.33-arx2 (2012-08-08)
              Fix bug in TGA loading of 15-bit or 16-bit images (Sebastien Lussier)
              15-bit TGA contains B5G5R5 while 16-bit TGA contains a bit for transparency.
              15-bit TGA weren't handled before, while 16-bit TGA were treated as L8A8.
-      1.34 (2012-08-08)
+      1.33-arx1 (2012-08-08)
              stbi_info_* now return the file format of the image
       1.33 (2011-07-14)
              make stbi_is_hdr work in STBI_NO_HDR (as specified), minor compiler-friendly improvements
