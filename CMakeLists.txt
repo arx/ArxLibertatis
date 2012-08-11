@@ -170,11 +170,6 @@ if(BUILD_CRASHREPORTER)
 	endif()
 endif()
 
-mark_as_advanced(IL_INCLUDE_DIR)
-mark_as_advanced(ILUT_LIBRARIES)
-mark_as_advanced(ILU_LIBRARIES)
-mark_as_advanced(IL_LIBRARIES)
-
 set(SRC_DIR src)
 
 if(MSVC)
@@ -758,7 +753,7 @@ set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
-include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
+include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
 # Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
 # release and debug libs get mixed up. On windows we will empty out the
@@ -781,7 +776,7 @@ if (MSVC)
 	link_directories(${Boost_LIBRARY_DIRS})
 endif ()
 
-set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 
 if(ARX_HAVE_WINAPI)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
