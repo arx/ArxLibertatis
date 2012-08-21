@@ -89,7 +89,9 @@ typedef struct
 } stbi;
 
 
+#ifndef STBI_NO_CALLBACK
 static void refill_buffer(stbi *s);
+#endif // !STBI_NO_CALLBACK
 
 // initialize a memory-decode context
 static void start_mem(stbi *s, uint8 const *buffer, int len)
@@ -171,8 +173,10 @@ static stbi_uc *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp);
 static int      stbi_tga_info(stbi *s, int *x, int *y, int *comp);
 static int      stbi_psd_test(stbi *s);
 static stbi_uc *stbi_psd_load(stbi *s, int *x, int *y, int *comp, int req_comp);
+#ifndef STBI_NO_HDR
 static int      stbi_hdr_test(stbi *s);
 static float   *stbi_hdr_load(stbi *s, int *x, int *y, int *comp, int req_comp);
+#endif // !STBI_NO_HDR
 static int      stbi_pic_test(stbi *s);
 static stbi_uc *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp);
 #ifndef STBI_NO_GIF
