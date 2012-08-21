@@ -358,6 +358,8 @@ int stbi_is_hdr_from_memory(stbi_uc const *buffer, int len)
    #endif
 }
 
+#ifndef STBI_NO_CALLBACK
+
 #ifndef STBI_NO_STDIO
 extern int      stbi_is_hdr          (char const *filename)
 {
@@ -381,9 +383,6 @@ extern int      stbi_is_hdr_from_file(FILE *f)
    #endif
 }
 #endif // !STBI_NO_STDIO
-
-
-#ifndef STBI_NO_CALLBACK
 
 extern int      stbi_is_hdr_from_callbacks(stbi_io_callbacks const *clbk, void *user)
 {
