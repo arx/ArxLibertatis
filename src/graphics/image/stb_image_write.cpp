@@ -264,10 +264,10 @@ unsigned char * stbi_zlib_compress(unsigned char *data, int data_len, int *out_l
       if (bestloc) {
          int d = data+i - bestloc; // distance back
          assert(d <= 32767 && best <= 258);
-         for (j=0; best > lengthc[j+1]-1; ++j);
+         for (j=0; best > lengthc[j+1]-1; ++j) ;
          stbi_zlib_huff(j+257);
          if (lengtheb[j]) stbi_zlib_add(best - lengthc[j], lengtheb[j]);
-         for (j=0; d > distc[j+1]-1; ++j);
+         for (j=0; d > distc[j+1]-1; ++j) ;
          stbi_zlib_add(stbi_zlib_bitrev(j,5),5);
          if (disteb[j]) stbi_zlib_add(d - distc[j], disteb[j]);
          i += best;
