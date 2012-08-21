@@ -1,4 +1,4 @@
-/* stbi-1.33-arx4 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* stbi-1.33-arx5 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
    when you control the images you're loading
                                      no warranty implied; use at your own risk
 
@@ -22,6 +22,7 @@
       - overridable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
 
    Latest revisions:
+      1.33-arx5 (2012-08-21) Add option to disable gif code (Daniel Scharrer)
       1.33-arx4 (2012-08-21) Add const-correct memory-only mode (Daniel Scharrer)
       1.33-arx3 (2012-08-21) Prefix all macros with stbi_ or STBI_ (Daniel Scharrer)
       1.33-arx2 (2012-08-08) Fix bug in loading of 15 or 16 bit TGA (Sebastien Lussier)
@@ -73,6 +74,7 @@
 #define STBI_NO_STDIO
 #define STBI_NO_HDR
 #define STBI_NO_CALLBACK
+#define STBI_NO_GIF
 
 //
 // Limitations:
@@ -217,7 +219,9 @@ enum
    STBI_unknown,
    STBI_jpeg,
    STBI_png,
+#ifndef STBI_NO_GIF
    STBI_gif,
+#endif // !STBI_NO_GIF
    STBI_bmp,
    STBI_psd,
    STBI_pic,
@@ -364,6 +368,8 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
 
 /*
    revision history:
+      1.33-arx5 (2012-08-21)
+             Add option to disable gif code
       1.33-arx4 (2012-08-21)
              Add const-correct memory-only mode
       1.33-arx3 (2012-08-21)

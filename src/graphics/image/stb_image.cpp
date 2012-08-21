@@ -175,9 +175,11 @@ static int      stbi_hdr_test(stbi *s);
 static float   *stbi_hdr_load(stbi *s, int *x, int *y, int *comp, int req_comp);
 static int      stbi_pic_test(stbi *s);
 static stbi_uc *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp);
+#ifndef STBI_NO_GIF
 static int      stbi_gif_test(stbi *s);
 static stbi_uc *stbi_gif_load(stbi *s, int *x, int *y, int *comp, int req_comp);
 static int      stbi_gif_info(stbi *s, int *x, int *y, int *comp);
+#endif // !STBI_NO_GIF
 
 
 // this is not threadsafe
@@ -224,7 +226,9 @@ static unsigned char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req
    if (stbi_jpeg_test(s)) return stbi_jpeg_load(s,x,y,comp,req_comp);
    if (stbi_png_test(s))  return stbi_png_load(s,x,y,comp,req_comp);
    if (stbi_bmp_test(s))  return stbi_bmp_load(s,x,y,comp,req_comp);
+#ifndef STBI_NO_GIF
    if (stbi_gif_test(s))  return stbi_gif_load(s,x,y,comp,req_comp);
+#endif // !STBI_NO_GIF
    if (stbi_psd_test(s))  return stbi_psd_load(s,x,y,comp,req_comp);
    if (stbi_pic_test(s))  return stbi_pic_load(s,x,y,comp,req_comp);
 
@@ -3576,6 +3580,8 @@ static stbi_uc *stbi_pic_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    return pic_load(s,x,y,comp,req_comp);
 }
 
+#ifndef STBI_NO_GIF
+
 // *************************************************************************************************
 // GIF loader -- public domain by Jean-Marc Lienher -- simplified/shrunk by stb
 typedef struct stbi_gif_lzw_struct {
@@ -3917,6 +3923,8 @@ static int stbi_gif_info(stbi *s, int *x, int *y, int *comp)
    return stbi_gif_info_raw(s,x,y,comp);
 }
 
+#endif // ! STBI_NO_GIF
+
 
 // *************************************************************************************************
 // Radiance RGBE HDR loader
@@ -4253,7 +4261,9 @@ static int stbi_info_main(stbi *s, int *x, int *y, int *comp, int *fmt)
 {
    if (stbi_jpeg_test(s)) { *fmt = STBI_jpeg; return stbi_jpeg_info(s, x, y, comp); }
    if (stbi_png_test(s))  { *fmt = STBI_png;  return stbi_png_info(s, x, y, comp); }
+#ifndef STBI_NO_GIF
    if (stbi_gif_test(s))  { *fmt = STBI_gif;  return stbi_gif_info(s, x, y, comp); }
+#endif // !STBI_NO_GIF
    if (stbi_bmp_test(s))  { *fmt = STBI_bmp;  return stbi_bmp_info(s, x, y, comp); }
    if (stbi_psd_test(s))  { *fmt = STBI_psd;  return stbi_psd_info(s, x, y, comp); }
    if (stbi_pic_test(s))  { *fmt = STBI_pic;  return stbi_pic_info(s, x, y, comp); }
