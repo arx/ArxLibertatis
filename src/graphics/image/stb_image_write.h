@@ -46,6 +46,8 @@ USAGE:
 #ifndef INCLUDE_STB_IMAGE_WRITE_H
 #define INCLUDE_STB_IMAGE_WRITE_H
 
+namespace stbi {
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,6 +59,8 @@ extern int stbi_write_tga(char const *filename, int w, int h, int comp, const vo
 #ifdef __cplusplus
 }
 #endif
+
+} // namespace stbi
 
 #endif//INCLUDE_STB_IMAGE_WRITE_H
 

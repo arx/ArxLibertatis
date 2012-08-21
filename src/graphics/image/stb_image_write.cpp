@@ -9,6 +9,8 @@
 #include <string.h>
 #include <assert.h>
 
+namespace stbi {
+
 typedef unsigned int stbiw_uint32;
 typedef int stb_image_write_test[sizeof(stbiw_uint32)==4 ? 1 : -1];
 
@@ -432,3 +434,5 @@ extern "C" int stbi_write_png(char const *filename, int x, int y, int comp, cons
    free(png);
    return 1;
 }
+
+} // namespace stbi

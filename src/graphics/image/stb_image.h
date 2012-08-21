@@ -1,4 +1,4 @@
-/* stbi-1.33-arx2 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* stbi-1.33-arx3 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
    when you control the images you're loading
                                      no warranty implied; use at your own risk
 
@@ -22,6 +22,7 @@
       - overridable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
 
    Latest revisions:
+      1.33-arx3 (2012-08-21) Prefix all macros with stbi_ or STBI_ (Daniel Scharrer)
       1.33-arx2 (2012-08-08) Fix bug in loading of 15 or 16 bit TGA (Sebastien Lussier)
       1.33-arx1 (2012-08-08) stbi_info now return the file format (Sebastien Lussier)
       1.33 (2011-07-14) minor fixes suggested by Dave Moore
@@ -195,6 +196,8 @@
 #include <stdio.h>
 #endif
 
+namespace stbi {
+
 #define STBI_VERSION 1
 
 enum
@@ -341,10 +344,16 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
 }
 #endif
 
+} // namespace stbi
+
 #endif // STBI_INCLUDE_STB_IMAGE_H
 
 /*
    revision history:
+      1.33-arx3 (2012-08-21)
+             Fix using stb_image in a unity build:
+             Prefix all macros with stbi_ or STBI_
+             Wrap all stbi code in the stbi namespace
       1.33-arx2 (2012-08-08)
              Fix bug in TGA loading of 15-bit or 16-bit images (Sebastien Lussier)
              15-bit TGA contains B5G5R5 while 16-bit TGA contains a bit for transparency.

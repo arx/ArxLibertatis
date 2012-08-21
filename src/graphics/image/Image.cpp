@@ -194,11 +194,11 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	int width, height, bpp, fmt, req_bpp = 0;
 
 	// 2bpp TGAs needs to be converted!
-	int ret = stbi_info_from_memory((const stbi_uc*)pData, size, &width, &height, &bpp, &fmt);
-	if(ret && fmt == STBI_tga && bpp == 2)
+	int ret = stbi::stbi_info_from_memory((const stbi::stbi_uc*)pData, size, &width, &height, &bpp, &fmt);
+	if(ret && fmt == stbi::STBI_tga && bpp == 2)
 		req_bpp = 3;
 	
-	unsigned char* data = stbi_load_from_memory((const stbi_uc*)pData, size, &width, &height, &bpp, req_bpp);
+	unsigned char* data = stbi::stbi_load_from_memory((const stbi::stbi_uc*)pData, size, &width, &height, &bpp, req_bpp);
 	if(!data) {
 		std::ostringstream message;
 		message << "error loading image";
@@ -218,10 +218,10 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	mNumMipmaps = 1;
 
 	switch(bpp) {
-		case STBI_grey:       mFormat = Image::Format_L8; break;
-		case STBI_grey_alpha: mFormat = Image::Format_L8A8; break;
-		case STBI_rgb:        mFormat = Image::Format_R8G8B8; break;
-		case STBI_rgb_alpha:  mFormat = Image::Format_R8G8B8A8; break;
+		case stbi::STBI_grey:       mFormat = Image::Format_L8; break;
+		case stbi::STBI_grey_alpha: mFormat = Image::Format_L8A8; break;
+		case stbi::STBI_rgb:        mFormat = Image::Format_R8G8B8; break;
+		case stbi::STBI_rgb_alpha:  mFormat = Image::Format_R8G8B8A8; break;
 		default: arx_assert_msg(0, "Invalid bpp");
 	}
 	
@@ -244,7 +244,7 @@ bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	}
 	
 	// Release resources
-	stbi_image_free(data);
+	stbi::stbi_image_free(data);
 	
 	return (mData != NULL);
 }
@@ -1111,11 +1111,11 @@ bool Image::save(const fs::path & filename) const {
 	
 	int ret = 0;
 	if(filename.ext() == ".png") {
-		ret = stbi_write_png(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData, 0);
+		ret = stbi::stbi_write_png(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData, 0);
 	} else if(filename.ext() == ".bmp") {
-		ret = stbi_write_bmp(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
+		ret = stbi::stbi_write_bmp(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
 	} else if(filename.ext() == ".tga") {
-		ret = stbi_write_tga(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
+		ret = stbi::stbi_write_tga(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
 	} else {
 		LogError << "Unsupported file extension.";
 	}
