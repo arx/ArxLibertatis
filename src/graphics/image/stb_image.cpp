@@ -1760,7 +1760,7 @@ static int zbuild_huffman(zhuffman *z, uint8 *sizelist, int num)
 
 typedef struct
 {
-   uint8 *zbuffer, *zbuffer_end;
+   const uint8 *zbuffer, *zbuffer_end;
    int num_bits;
    uint32 code_buffer;
 
@@ -2036,8 +2036,8 @@ char *stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial
    zbuf a;
    char *p = (char *) malloc(initial_size);
    if (p == NULL) return NULL;
-   a.zbuffer = (uint8 *) buffer;
-   a.zbuffer_end = (uint8 *) buffer + len;
+   a.zbuffer = (const uint8 *) buffer;
+   a.zbuffer_end = (const uint8 *) buffer + len;
    if (do_zlib(&a, p, initial_size, 1, 1)) {
       if (outlen) *outlen = (int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -2057,8 +2057,8 @@ char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, 
    zbuf a;
    char *p = (char *) malloc(initial_size);
    if (p == NULL) return NULL;
-   a.zbuffer = (uint8 *) buffer;
-   a.zbuffer_end = (uint8 *) buffer + len;
+   a.zbuffer = (const uint8 *) buffer;
+   a.zbuffer_end = (const uint8 *) buffer + len;
    if (do_zlib(&a, p, initial_size, 1, parse_header)) {
       if (outlen) *outlen = (int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -2071,8 +2071,8 @@ char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, 
 int stbi_zlib_decode_buffer(char *obuffer, int olen, char const *ibuffer, int ilen)
 {
    zbuf a;
-   a.zbuffer = (uint8 *) ibuffer;
-   a.zbuffer_end = (uint8 *) ibuffer + ilen;
+   a.zbuffer = (const uint8 *) ibuffer;
+   a.zbuffer_end = (const uint8 *) ibuffer + ilen;
    if (do_zlib(&a, obuffer, olen, 0, 1))
       return (int) (a.zout - a.zout_start);
    else
@@ -2084,8 +2084,8 @@ char *stbi_zlib_decode_noheader_malloc(char const *buffer, int len, int *outlen)
    zbuf a;
    char *p = (char *) malloc(16384);
    if (p == NULL) return NULL;
-   a.zbuffer = (uint8 *) buffer;
-   a.zbuffer_end = (uint8 *) buffer+len;
+   a.zbuffer = (const uint8 *) buffer;
+   a.zbuffer_end = (const uint8 *) buffer+len;
    if (do_zlib(&a, p, 16384, 1, 0)) {
       if (outlen) *outlen = (int) (a.zout - a.zout_start);
       return a.zout_start;
@@ -2098,8 +2098,8 @@ char *stbi_zlib_decode_noheader_malloc(char const *buffer, int len, int *outlen)
 int stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffer, int ilen)
 {
    zbuf a;
-   a.zbuffer = (uint8 *) ibuffer;
-   a.zbuffer_end = (uint8 *) ibuffer + ilen;
+   a.zbuffer = (const uint8 *) ibuffer;
+   a.zbuffer_end = (const uint8 *) ibuffer + ilen;
    if (do_zlib(&a, obuffer, olen, 0, 0))
       return (int) (a.zout - a.zout_start);
    else
