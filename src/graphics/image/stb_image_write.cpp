@@ -16,7 +16,7 @@ namespace stbi {
 typedef unsigned int stbiw_uint32;
 typedef int stb_image_write_test[sizeof(stbiw_uint32)==4 ? 1 : -1];
 
-static void writefv(FILE *f, const char *fmt, va_list v)
+static int writefv(FILE *f, const char *fmt, va_list v)
 {
    while (*fmt) {
       switch (*fmt++) {
@@ -24,33 +24,34 @@ static void writefv(FILE *f, const char *fmt, va_list v)
          case '1': { unsigned char x = (unsigned char) va_arg(v, int); fputc(x,f); break; }
          case '2': { int x = va_arg(v,int); unsigned char b[2];
                      b[0] = (unsigned char) x; b[1] = (unsigned char) (x>>8);
-                     fwrite(b,2,1,f); break; }
+                     if(!fwrite(b,2,1,f)) return 0; break; }
          case '4': { stbiw_uint32 x = va_arg(v,int); unsigned char b[4];
                      b[0]=(unsigned char)x; b[1]=(unsigned char)(x>>8);
                      b[2]=(unsigned char)(x>>16); b[3]=(unsigned char)(x>>24);
-                     fwrite(b,4,1,f); break; }
+                     if(!fwrite(b,4,1,f)) return 0; break; }
          default:
             assert(0);
-            return;
+            return 1;
       }
    }
+   return 1;
 }
 
-static void write3(FILE *f, unsigned char a, unsigned char b, unsigned char c)
+static int write3(FILE *f, unsigned char a, unsigned char b, unsigned char c)
 {
    unsigned char arr[3];
    arr[0] = a, arr[1] = b, arr[2] = c;
-   fwrite(arr, 3, 1, f);
+   return fwrite(arr, 3, 1, f);
 }
 
-static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp, const void *data, int write_alpha, int scanline_pad)
+static int write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp, const void *data, int write_alpha, int scanline_pad)
 {
    unsigned char bg[3] = { 255, 0, 255}, px[3];
    stbiw_uint32 zero = 0;
    int i,j,k, j_end;
 
    if (y <= 0)
-      return;
+      return 1;
 
    if (vdir < 0) 
       j_end = -1, j = y-1;
@@ -61,29 +62,30 @@ static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp,
       for (i=0; i < x; ++i) {
          const unsigned char *d = (const unsigned char *) data + (j*x+i)*comp;
          if (write_alpha < 0)
-            fwrite(&d[comp-1], 1, 1, f);
+            if(!fwrite(&d[comp-1], 1, 1, f)) return 0;
          switch (comp) {
             case 1:
-            case 2: write3(f, d[0],d[0],d[0]);
+            case 2: if(!write3(f, d[0],d[0],d[0])) return 0;
                     break;
             case 4:
                if (!write_alpha) {
                   // composite against pink background
                   for (k=0; k < 3; ++k)
                      px[k] = bg[k] + ((d[k] - bg[k]) * d[3])/255;
-                  write3(f, px[1-rgb_dir],px[1],px[1+rgb_dir]);
+                  if(!write3(f, px[1-rgb_dir],px[1],px[1+rgb_dir])) return 0;
                   break;
                }
                /* FALLTHROUGH */
             case 3:
-               write3(f, d[1-rgb_dir],d[1],d[1+rgb_dir]);
+               if(!write3(f, d[1-rgb_dir],d[1],d[1+rgb_dir])) return 0;
                break;
          }
          if (write_alpha > 0)
-            fwrite(&d[comp-1], 1, 1, f);
+            if(!fwrite(&d[comp-1], 1, 1, f)) return 0;
       }
-      fwrite(&zero,scanline_pad,1,f);
+      if(!fwrite(&zero,scanline_pad,1,f)) return 0;
    }
+   return 1;
 }
 
 static int outfile(char const *filename, int rgb_dir, int vdir, int x, int y, int comp, const void *data, int alpha, int pad, const char *fmt, ...)
@@ -94,10 +96,11 @@ static int outfile(char const *filename, int rgb_dir, int vdir, int x, int y, in
    if (f) {
       va_list v;
       va_start(v, fmt);
-      writefv(f, fmt, v);
+      int ret = writefv(f, fmt, v);
       va_end(v);
-      write_pixels(f,rgb_dir,vdir,x,y,comp,data,alpha,pad);
+      ret = ret && write_pixels(f,rgb_dir,vdir,x,y,comp,data,alpha,pad);
       fclose(f);
+      if(!ret) return 0;
    }
    return f != NULL;
 }
@@ -431,7 +434,7 @@ extern "C" int stbi_write_png(char const *filename, int x, int y, int comp, cons
    if (!png) return 0;
    f = fopen(filename, "wb");
    if (!f) { free(png); return 0; }
-   fwrite(png, 1, len, f);
+   if (!fwrite(png, len, 1, f)) return 0;
    fclose(f);
    free(png);
    return 1;

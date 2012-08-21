@@ -1,4 +1,4 @@
-/* stbiw-0.92-arx1 - public domain - http://nothings.org/stb/stb_image_write.h
+/* stbiw-0.92-arx2 - public domain - http://nothings.org/stb/stb_image_write.h
    writes out PNG/BMP/TGA images to C stdio - Sean Barrett 2010
                             no warranty implied; use at your own risk
 
@@ -66,6 +66,8 @@ extern int stbi_write_tga(char const *filename, int w, int h, int comp, const vo
 
 /* Revision history
 
+      0.92-arx1 (2012-08-21)
+             check for file errors
       0.92-arx1 (2012-08-21)
              fix const correctness
       0.92 (2010-08-01)
