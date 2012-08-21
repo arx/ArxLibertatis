@@ -31,6 +31,7 @@
 #endif
 
 #include <boost/format.hpp>
+#include <boost/foreach.hpp>
 
 #include "io/log/Logger.h"
 #include "platform/String.h"
@@ -226,6 +227,24 @@ int kdialogCommand(DialogType type, const std::string & message,
 	return system(command.str().c_str());
 }
 
+int gxmessageCommand(DialogType type, const std::string & message,
+                    const std::string & dialogTitle) {
+	
+	const char * options = "";
+	switch(type) {
+		default:             options = "-buttons OK"; break;
+		case DialogYesNo:    options = "-buttons Yes:0,No:1"; break;
+		case DialogOkCancel: options = "-buttons OK:0,Cancel:1"; break;
+	}
+	
+	boost::format command("gxmessage -center %1% -title \"%2%\" \"%3%\"");
+	command = command % options;
+	command = command % escape(dialogTitle);
+	command = command % escape(message);
+	
+	return system(command.str().c_str());
+}
+
 int xmessageCommand(DialogType type, const std::string & message,
                     const std::string & dialogTitle) {
 	
@@ -250,7 +269,6 @@ bool showDialog(DialogType type, const std::string & message,
 	
 	typedef int (*dialogCommand_t)(DialogType type, const std::string & message,
 	                               const std::string & dialogTitle);
-	std::vector<dialogCommand_t> commands;
 	
 	// This may not be the best way
 	const char * session = getenv("DESKTOP_SESSION");
@@ -259,18 +277,14 @@ bool showDialog(DialogType type, const std::string & message,
 	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != NULL);
 	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != NULL);
 	
-	if(usingKDE) {
-		commands.push_back(&kdialogCommand);
-		commands.push_back(&zenityCommand);
-	} else {
-		commands.push_back(&zenityCommand);
-		commands.push_back(&kdialogCommand);
-	}
-	commands.push_back(&xmessageCommand);
+	dialogCommand_t commands[4];
+	commands[0] = usingKDE ? &kdialogCommand : &zenityCommand;
+	commands[1] = usingKDE ? &zenityCommand : &kdialogCommand;
+	commands[2] = &gxmessageCommand;
+	commands[3] = &xmessageCommand;
 	
-	for(std::vector<dialogCommand_t>::const_iterator it = commands.begin();
-			it != commands.end(); ++it) {
-		int exitCode = (*it)(type, message, dialogTitle);
+	BOOST_FOREACH(dialogCommand_t command, commands) {
+		int exitCode = command(type, message, dialogTitle);
 		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0
 		   && WEXITSTATUS(exitCode) < 127) {
 			return WEXITSTATUS(exitCode) == 0;
