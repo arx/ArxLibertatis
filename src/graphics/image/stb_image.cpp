@@ -58,6 +58,12 @@ typedef unsigned char validate_uint32[sizeof(uint32)==4 ? 1 : -1];
    #define stbi_lrot(x,y)  (((x) << (y)) | ((x) >> (32 - (y))))
 #endif
 
+#ifdef STBI_NO_CALLBACK
+typedef const uint8 * bufptr;
+#else
+typedef uint8 * bufptr;
+#endif
+
 ///////////////////////////////////////////////
 //
 //  stbi struct and start_xxx functions
@@ -69,15 +75,17 @@ typedef struct
    uint32 img_x, img_y;
    int img_n, img_out_n;
    
+#ifndef STBI_NO_CALLBACK
    stbi_io_callbacks io;
    void *io_user_data;
 
    int read_from_callbacks;
    int buflen;
    uint8 buffer_start[128];
+#endif // !STBI_NO_CALLBACK
 
-   uint8 *img_buffer, *img_buffer_end;
-   uint8 *img_buffer_original;
+   bufptr img_buffer, img_buffer_end;
+   bufptr img_buffer_original;
 } stbi;
 
 
@@ -86,11 +94,15 @@ static void refill_buffer(stbi *s);
 // initialize a memory-decode context
 static void start_mem(stbi *s, uint8 const *buffer, int len)
 {
+#ifndef STBI_NO_CALLBACK
    s->io.read = NULL;
    s->read_from_callbacks = 0;
-   s->img_buffer = s->img_buffer_original = (uint8 *) buffer;
-   s->img_buffer_end = (uint8 *) buffer+len;
+#endif // !STBI_NO_CALLBACK
+   s->img_buffer = s->img_buffer_original = (bufptr) buffer;
+   s->img_buffer_end = (bufptr) buffer+len;
 }
+
+#ifndef STBI_NO_CALLBACK
 
 // initialize a callback-based context
 static void start_callbacks(stbi *s, stbi_io_callbacks *c, void *user)
@@ -135,6 +147,8 @@ static void start_file(stbi *s, FILE *f)
 //static void stop_file(stbi *s) { }
 
 #endif // !STBI_NO_STDIO
+
+#endif // !STBI_NO_CALLBACK
 
 static void stbi_rewind(stbi *s)
 {
@@ -253,12 +267,17 @@ unsigned char *stbi_load_from_memory(stbi_uc const *buffer, int len, int *x, int
    return stbi_load_main(&s,x,y,comp,req_comp);
 }
 
+
+#ifndef STBI_NO_CALLBACK
+
 unsigned char *stbi_load_from_callbacks(stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int req_comp)
 {
    stbi s;
    start_callbacks(&s, (stbi_io_callbacks *) clbk, user);
    return stbi_load_main(&s,x,y,comp,req_comp);
 }
+
+#endif // !STBI_NO_CALLBACK
 
 #ifndef STBI_NO_HDR
 
@@ -281,6 +300,9 @@ float *stbi_loadf_from_memory(stbi_uc const *buffer, int len, int *x, int *y, in
    start_mem(&s,buffer,len);
    return stbi_loadf_main(&s,x,y,comp,req_comp);
 }
+
+
+#ifndef STBI_NO_CALLBACK
 
 float *stbi_loadf_from_callbacks(stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int req_comp)
 {
@@ -307,6 +329,8 @@ float *stbi_loadf_from_file(FILE *f, int *x, int *y, int *comp, int req_comp)
    return stbi_loadf_main(&s,x,y,comp,req_comp);
 }
 #endif // !STBI_NO_STDIO
+
+#endif // !STBI_NO_CALLBACK
 
 #endif // !STBI_NO_HDR
 
@@ -351,6 +375,9 @@ extern int      stbi_is_hdr_from_file(FILE *f)
 }
 #endif // !STBI_NO_STDIO
 
+
+#ifndef STBI_NO_CALLBACK
+
 extern int      stbi_is_hdr_from_callbacks(stbi_io_callbacks const *clbk, void *user)
 {
    #ifndef STBI_NO_HDR
@@ -361,6 +388,8 @@ extern int      stbi_is_hdr_from_callbacks(stbi_io_callbacks const *clbk, void *
    return 0;
    #endif
 }
+
+#endif // !STBI_NO_CALLBACK
 
 #ifndef STBI_NO_HDR
 static float h2l_gamma_i=1.0f/2.2f, h2l_scale_i=1.0f;
@@ -386,6 +415,9 @@ enum
    SCAN_header
 };
 
+
+#ifndef STBI_NO_CALLBACK
+
 static void refill_buffer(stbi *s)
 {
    int n = (s->io.read)(s->io_user_data,(char*)s->buffer_start,s->buflen);
@@ -400,25 +432,31 @@ static void refill_buffer(stbi *s)
    }
 }
 
+#endif // !STBI_NO_CALLBACK
+
 stbi_inline static int get8(stbi *s)
 {
    if (s->img_buffer < s->img_buffer_end)
       return *s->img_buffer++;
+#ifndef STBI_NO_CALLBACK
    if (s->read_from_callbacks) {
       refill_buffer(s);
       return *s->img_buffer++;
    }
+#endif // !STBI_NO_CALLBACK
    return 0;
 }
 
 stbi_inline static int at_eof(stbi *s)
 {
+#ifndef STBI_NO_CALLBACK
    if (s->io.read) {
       if (!(s->io.eof)(s->io_user_data)) return 0;
       // if feof() is true, check if buffer = end
       // special case: we've only got the special 0 character at the end
       if (s->read_from_callbacks == 0) return 1;
    }
+#endif // !STBI_NO_CALLBACK
 
    return s->img_buffer >= s->img_buffer_end;   
 }
@@ -430,6 +468,7 @@ stbi_inline static uint8 get8u(stbi *s)
 
 static void skip(stbi *s, int n)
 {
+#ifndef STBI_NO_CALLBACK
    if (s->io.read) {
       int blen = s->img_buffer_end - s->img_buffer;
       if (blen < n) {
@@ -438,11 +477,13 @@ static void skip(stbi *s, int n)
          return;
       }
    }
+#endif // !STBI_NO_CALLBACK
    s->img_buffer += n;
 }
 
 static int getn(stbi *s, stbi_uc *buffer, int n)
 {
+#ifndef STBI_NO_CALLBACK
    if (s->io.read) {
       int blen = s->img_buffer_end - s->img_buffer;
       if (blen < n) {
@@ -456,6 +497,7 @@ static int getn(stbi *s, stbi_uc *buffer, int n)
          return res;
       }
    }
+#endif // !STBI_NO_CALLBACK
 
    if (s->img_buffer+n <= s->img_buffer_end) {
       memcpy(buffer, s->img_buffer, n);
@@ -4258,11 +4300,13 @@ int stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *c
    return stbi_info_main(&s,x,y,comp,fmt);
 }
 
+#ifndef STBI_NO_CALLBACK
 int stbi_info_from_callbacks(stbi_io_callbacks const *c, void *user, int *x, int *y, int *comp, int *fmt)
 {
    stbi s;
    start_callbacks(&s, (stbi_io_callbacks *) c, user);
    return stbi_info_main(&s,x,y,comp,fmt);
 }
+#endif // !STBI_NO_CALLBACK
 
 } // namespace stbi

@@ -1,4 +1,4 @@
-/* stbi-1.33-arx3 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* stbi-1.33-arx4 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
    when you control the images you're loading
                                      no warranty implied; use at your own risk
 
@@ -22,6 +22,7 @@
       - overridable dequantizing-IDCT, YCbCr-to-RGB conversion (define STBI_SIMD)
 
    Latest revisions:
+      1.33-arx4 (2012-08-21) Add const-correct memory-only mode (Daniel Scharrer)
       1.33-arx3 (2012-08-21) Prefix all macros with stbi_ or STBI_ (Daniel Scharrer)
       1.33-arx2 (2012-08-08) Fix bug in loading of 15 or 16 bit TGA (Sebastien Lussier)
       1.33-arx1 (2012-08-08) stbi_info now return the file format (Sebastien Lussier)
@@ -71,6 +72,7 @@
 // Configuration:
 #define STBI_NO_STDIO
 #define STBI_NO_HDR
+#define STBI_NO_CALLBACK
 
 //
 // Limitations:
@@ -246,6 +248,8 @@ extern stbi_uc *stbi_load_from_file  (FILE *f,                  int *x, int *y, 
 // for stbi_load_from_file, file pointer is left pointing immediately after image
 #endif
 
+#ifndef STBI_NO_CALLBACK
+
 typedef struct
 {
    int      (*read)  (void *user,char *data,int size);   // fill 'data' with 'size' bytes.  return number of bytes actually read 
@@ -255,15 +259,21 @@ typedef struct
 
 extern stbi_uc *stbi_load_from_callbacks  (stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int req_comp);
 
+#endif // !STBI_NO_CALLBACK
+
 #ifndef STBI_NO_HDR
    extern float *stbi_loadf_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int req_comp);
+
+#ifndef STBI_NO_CALLBACK
 
    #ifndef STBI_NO_STDIO
    extern float *stbi_loadf            (char const *filename,   int *x, int *y, int *comp, int req_comp);
    extern float *stbi_loadf_from_file  (FILE *f,                int *x, int *y, int *comp, int req_comp);
    #endif
-   
+
    extern float *stbi_loadf_from_callbacks  (stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int req_comp);
+
+#endif // !STBI_NO_CALLBACK
 
    extern void   stbi_hdr_to_ldr_gamma(float gamma);
    extern void   stbi_hdr_to_ldr_scale(float scale);
@@ -273,7 +283,9 @@ extern stbi_uc *stbi_load_from_callbacks  (stbi_io_callbacks const *clbk, void *
 #endif // STBI_NO_HDR
 
 // stbi_is_hdr is always defined
+#ifndef STBI_NO_CALLBACK
 extern int    stbi_is_hdr_from_callbacks(stbi_io_callbacks const *clbk, void *user);
+#endif // !STBI_NO_CALLBACK
 extern int    stbi_is_hdr_from_memory(stbi_uc const *buffer, int len);
 #ifndef STBI_NO_STDIO
 extern int      stbi_is_hdr          (char const *filename);
@@ -290,7 +302,9 @@ extern void     stbi_image_free      (void *retval_from_stbi_load);
 
 // get image dimensions & components without fully decoding
 extern int      stbi_info_from_memory(stbi_uc const *buffer, int len, int *x, int *y, int *comp, int *fmt);
+#ifndef STBI_NO_CALLBACK
 extern int      stbi_info_from_callbacks(stbi_io_callbacks const *clbk, void *user, int *x, int *y, int *comp, int *fmt);
+#endif // !STBI_NO_CALLBACK
 
 #ifndef STBI_NO_STDIO
 extern int      stbi_info            (char const *filename,     int *x, int *y, int *comp, int *fmt);
@@ -350,6 +364,8 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
 
 /*
    revision history:
+      1.33-arx4 (2012-08-21)
+             Add const-correct memory-only mode
       1.33-arx3 (2012-08-21)
              Fix using stb_image in a unity build:
              Prefix all macros with stbi_ or STBI_
