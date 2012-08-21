@@ -1,4 +1,4 @@
-/* stbi-1.33-arx5 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* Copyright: stbi-1.33-arx5 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
    when you control the images you're loading
                                      no warranty implied; use at your own risk
 
@@ -66,8 +66,8 @@
 
 */
 
-#ifndef STBI_INCLUDE_STB_IMAGE_H
-#define STBI_INCLUDE_STB_IMAGE_H
+#ifndef ARX_GRAPHICS_IMAGE_STB_IMAGE_H
+#define ARX_GRAPHICS_IMAGE_STB_IMAGE_H
 
 //
 // Configuration:
@@ -364,7 +364,7 @@ extern void stbi_install_YCbCr_to_RGB(stbi_YCbCr_to_RGB_run func);
 
 } // namespace stbi
 
-#endif // STBI_INCLUDE_STB_IMAGE_H
+#endif // ARX_GRAPHICS_IMAGE_STB_IMAGE_H
 
 /*
    revision history:

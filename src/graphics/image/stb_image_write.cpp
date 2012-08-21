@@ -1,4 +1,4 @@
-/* stbiw-0.92 - public domain - http://nothings.org/stb/stb_image_write.h
+/* Copyright: stbiw-0.92 - public domain - http://nothings.org/stb/stb_image_write.h
    writes out PNG/BMP/TGA images to C stdio - Sean Barrett 2010
                             no warranty implied; use at your own risk
 */
@@ -134,10 +134,12 @@ extern "C" int stbi_write_tga(char const *filename, int x, int y, int comp, cons
 #define stbi__sbcount(a)        ((a) ? stbi__sbn(a) : 0)
 #define stbi__sbfree(a)         ((a) ? free(stbi__sbraw(a)),0 : 0)
 
+#define stbi_size(x) sizeof(x)
+
 static void *stbi__sbgrowf(void **arr, int increment, int itemsize)
 {
    int m = *arr ? 2*stbi__sbm(*arr)+increment : increment+1;
-   void *p = realloc(*arr ? stbi__sbraw(*arr) : 0, itemsize * m + sizeof(int)*2);
+   void *p = realloc(*arr ? stbi__sbraw(*arr) : 0, itemsize * m + stbi_size(int)*2);
    assert(p);
    if (p) {
       if (!*arr) ((int *) p)[1] = 0;
@@ -146,6 +148,8 @@ static void *stbi__sbgrowf(void **arr, int increment, int itemsize)
    }
    return *arr;
 }
+
+#undef stbi_size
 
 static unsigned char *stbi__zlib_flushf(unsigned char *data, unsigned int *bitbuffer, int *bitcount)
 {

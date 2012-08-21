@@ -1,9 +1,11 @@
-/* stbi-1.33 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
+/* Copyright: stbi-1.33 - public domain JPEG/PNG reader - http://nothings.org/stb_image.c
    when you control the images you're loading
                                      no warranty implied; use at your own risk
 */
 
 #include "graphics/image/stb_image.h"
+
+#include "platform/Platform.h"
 
 #ifndef STBI_NO_HDR
 #include <math.h>  // ldexp
@@ -32,15 +34,12 @@ namespace stbi {
 
 
 // implementation:
-typedef unsigned char  uint8;
-typedef unsigned short uint16;
-typedef   signed short  int16;
-typedef unsigned int   uint32;
-typedef   signed int    int32;
-typedef unsigned int   uint;
-
-// should produce compiler error if size is wrong
-typedef unsigned char validate_uint32[sizeof(uint32)==4 ? 1 : -1];
+typedef u8  uint8;
+typedef u16 uint16;
+typedef s16 int16;
+typedef u32 uint32;
+typedef s32 int32;
+typedef unsigned int uint;
 
 #if defined(STBI_NO_STDIO) && !defined(STBI_NO_WRITE)
 #define STBI_NO_WRITE
@@ -511,8 +510,9 @@ static int getn(stbi *s, stbi_uc *buffer, int n)
       memcpy(buffer, s->img_buffer, n);
       s->img_buffer += n;
       return 1;
-   } else
+   } else {
       return 0;
+   }
 }
 
 static int get16(stbi *s)
@@ -604,7 +604,7 @@ static unsigned char *convert_format(unsigned char *data, int img_n, int req_com
 static float   *ldr_to_hdr(stbi_uc *data, int x, int y, int comp)
 {
    int i,k,n;
-   float *output = (float *) malloc(x * y * comp * sizeof(float));
+   float *output = (float *) malloc(x * y * comp * sizeof(*output));
    if (output == NULL) { free(data); return stbi_error_pf("outofmem", "Out of memory"); }
    // compute number of non-alpha components
    if (comp & 1) n = comp; else n = comp-1;
@@ -1609,12 +1609,13 @@ static uint8 *load_jpeg_image(jpeg *z, int *out_x, int *out_y, int *comp, int re
                #else
                YCbCr_to_RGB_row(out, y, coutput[1], coutput[2], z->s->img_x, n);
                #endif
-            } else
+            } else {
                for (i=0; i < z->s->img_x; ++i) {
                   out[0] = out[1] = out[2] = y[i];
                   out[3] = 255; // not used if n==3
                   out += n;
                }
+            }
          } else {
             uint8 *y = coutput[0];
             if (n == 1)
@@ -1844,16 +1845,21 @@ static int expand(zbuf *z, int n)  // need to make room for n bytes
 static int length_base[31] = {
    3,4,5,6,7,8,9,10,11,13,
    15,17,19,23,27,31,35,43,51,59,
-   67,83,99,115,131,163,195,227,258,0,0 };
+   67,83,99,115,131,163,195,227,258,0,0
+};
 
-static int length_extra[31]= 
-{ 0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0 };
+static int length_extra[31] = {
+   0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0
+};
 
-static int dist_base[32] = { 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
-257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577,0,0};
+static int dist_base[32] = {
+   1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,
+   257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577,0,0
+};
 
-static int dist_extra[32] =
-{ 0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13};
+static int dist_extra[32] = {
+   0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13
+};
 
 static int parse_huffman_block(zbuf *a)
 {
@@ -2741,8 +2747,9 @@ static stbi_uc *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
                   // ?!?!?
                   return stbi_error_puc("bad BMP", "bad BMP");
                }
-            } else
+            } else {
                return stbi_error_puc("bad BMP", "bad BMP");
+            }
          }
       } else {
          assert(hsz == 108);
@@ -2777,7 +2784,8 @@ static stbi_uc *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       skip(s, offset - 14 - hsz - psize * (hsz == 12 ? 3 : 4));
       if (bpp == 4) width = (s->img_x + 1) >> 1;
       else if (bpp == 8) width = s->img_x;
-      else { free(out); return stbi_error_puc("bad bpp", "Corrupt BMP"); }
+      else
+      { free(out); return stbi_error_puc("bad bpp", "Corrupt BMP"); }
       pad = (-width)&3;
       for (j=0; j < (int) s->img_y; ++j) {
          for (i=0; i < (int) s->img_x; i += 2) {
@@ -3007,7 +3015,8 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       //   just use whatever the file was
       req_comp = tga_bits_per_pixel / 8;
       *comp = req_comp;
-   } else
+   }
+   else
    {
       //   force a new number of components
       *comp = tga_bits_per_pixel/8;
@@ -3045,11 +3054,13 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
             RLE_count = 1 + (RLE_cmd & 127);
             RLE_repeating = RLE_cmd >> 7;
             read_next_pixel = 1;
-         } else if ( !RLE_repeating )
+         }
+         else if ( !RLE_repeating )
          {
             read_next_pixel = 1;
          }
-      } else
+      }
+      else
       {
          read_next_pixel = 1;
       }
@@ -3071,7 +3082,8 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
             {
                raw_data[j] = tga_palette[pal_idx+j];
             }
-         } else
+         }
+         else
          {
             //   read in the data raw
             for (j = 0; j*8 < tga_bits_per_pixel; ++j)
@@ -3774,8 +3786,9 @@ static uint8 *stbi_process_gif_raster(stbi *s, stbi_gif *g)
                p->prefix = (int16) oldcode;
                p->first = g->codes[oldcode].first;
                p->suffix = (code == avail) ? p->first : g->codes[code].first;
-            } else if (code == avail)
+            } else if (code == avail) {
                return stbi_error_puc("illegal code in raster", "Corrupt GIF");
+            }
 
             stbi_out_gif_code(g, (uint16) code);
 
@@ -3868,8 +3881,9 @@ static uint8 *stbi_gif_load_next(stbi *s, stbi_gif *g, int *comp, int req_comp)
                if (g->transparent >= 0 && (g->eflags & 0x01))
                   g->pal[g->transparent][3] = 0;
                g->color_table = (uint8 *) g->pal;
-            } else
+            } else {
                return stbi_error_puc("missing color table", "Corrupt GIF");
+            }
    
             o = stbi_process_gif_raster(s, g);
             if (o == NULL) return NULL;
@@ -3980,9 +3994,9 @@ static void hdr_convert(float *output, stbi_uc *input, int req_comp)
       float f1;
       // Exponent
       f1 = (float) ldexp(1.0f, input[3] - (int)(128 + 8));
-      if (req_comp <= 2)
+      if (req_comp <= 2) {
          output[0] = (input[0] + input[1] + input[2]) * f1 / 3;
-      else {
+      } else {
          output[0] = input[0] * f1;
          output[1] = input[1] * f1;
          output[2] = input[2] * f1;
@@ -4045,7 +4059,7 @@ static float *hdr_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    if (req_comp == 0) req_comp = 3;
 
    // Read data
-   hdr_data = (float *) malloc(height * width * req_comp * sizeof(float));
+   hdr_data = (float *) malloc(height * width * req_comp * sizeof(*hdr_data));
 
    // Load image data
    // image data is stored as some number of sca
