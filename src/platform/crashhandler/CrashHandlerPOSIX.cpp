@@ -92,7 +92,7 @@ struct PlatformCrashHandlers {
 
 CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
-CrashHandlerPOSIX::CrashHandlerPOSIX() {
+CrashHandlerPOSIX::CrashHandlerPOSIX() : m_pPreviousCrashHandlers(NULL) {
 	m_sInstance = this;
 	m_CrashHandlerApp = "arxcrashreporter";
 }
