@@ -9,6 +9,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "graphics/image/stb_image_write.h"
+
 namespace stbi {
 
 typedef unsigned int stbiw_uint32;
@@ -41,7 +43,7 @@ static void write3(FILE *f, unsigned char a, unsigned char b, unsigned char c)
    fwrite(arr, 3, 1, f);
 }
 
-static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp, void *data, int write_alpha, int scanline_pad)
+static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp, const void *data, int write_alpha, int scanline_pad)
 {
    unsigned char bg[3] = { 255, 0, 255}, px[3];
    stbiw_uint32 zero = 0;
@@ -57,7 +59,7 @@ static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp,
 
    for (; j != j_end; j += vdir) {
       for (i=0; i < x; ++i) {
-         unsigned char *d = (unsigned char *) data + (j*x+i)*comp;
+         const unsigned char *d = (const unsigned char *) data + (j*x+i)*comp;
          if (write_alpha < 0)
             fwrite(&d[comp-1], 1, 1, f);
          switch (comp) {
@@ -84,7 +86,7 @@ static void write_pixels(FILE *f, int rgb_dir, int vdir, int x, int y, int comp,
    }
 }
 
-static int outfile(char const *filename, int rgb_dir, int vdir, int x, int y, int comp, void *data, int alpha, int pad, const char *fmt, ...)
+static int outfile(char const *filename, int rgb_dir, int vdir, int x, int y, int comp, const void *data, int alpha, int pad, const char *fmt, ...)
 {
    FILE *f;
    if (y < 0 || x < 0) return 0;
@@ -103,7 +105,7 @@ static int outfile(char const *filename, int rgb_dir, int vdir, int x, int y, in
 extern "C" int stbi_write_bmp(char const *filename, int x, int y, int comp, const void *data)
 {
    int pad = (-x*3) & 3;
-   return outfile(filename,-1,-1,x,y,comp,(void *) data,0,pad,
+   return outfile(filename,-1,-1,x,y,comp,data,0,pad,
            "11 4 22 4" "4 44 22 444444",
            'B', 'M', 14+40+(x*3+pad)*y, 0,0, 14+40,  // file header
             40, x,y, 1,24, 0,0,0,0,0,0);             // bitmap header
@@ -112,7 +114,7 @@ extern "C" int stbi_write_bmp(char const *filename, int x, int y, int comp, cons
 extern "C" int stbi_write_tga(char const *filename, int x, int y, int comp, const void *data)
 {
    int has_alpha = !(comp & 1);
-   return outfile(filename, -1,-1, x, y, comp, (void *) data, has_alpha, 0,
+   return outfile(filename, -1,-1, x, y, comp, data, has_alpha, 0,
                   "111 221 2222 11", 0,0,2, 0,0,0, 0,0,x,y, 24+8*has_alpha, 8*has_alpha);
 }
 

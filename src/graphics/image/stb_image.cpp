@@ -3,7 +3,7 @@
                                      no warranty implied; use at your own risk
 */
 
-#include "stb_image.h"
+#include "graphics/image/stb_image.h"
 
 #ifndef STBI_NO_HDR
 #include <math.h>  // ldexp
