@@ -62,7 +62,7 @@ struct EERIE_3DOBJ;
 
 namespace res { class path; }
 
-struct INTERACTIVE_OBJECTS {
+struct EntityManager {
 	
 	long init;
 	long nbmax;
@@ -119,7 +119,7 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
 
 extern ARX_NODES nodes;
-extern INTERACTIVE_OBJECTS inter;
+extern EntityManager inter;
 extern Entity * CURRENTINTER;
 
 #ifdef BUILD_EDITOR

@@ -127,7 +127,7 @@ extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
 Entity * CURRENTINTER = NULL;
-INTERACTIVE_OBJECTS inter;
+EntityManager inter;
 float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
@@ -2052,7 +2052,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 }
 
 // Finds IO number by name
-long INTERACTIVE_OBJECTS::getById(const string & name) {
+long EntityManager::getById(const string & name) {
 	
 	if(name.empty() || name == "none") {
 		return -1;
@@ -2073,7 +2073,7 @@ long INTERACTIVE_OBJECTS::getById(const string & name) {
 	return -1;
 }
 
-Entity * INTERACTIVE_OBJECTS::getById(const string & name, Entity * self) {
+Entity * EntityManager::getById(const string & name, Entity * self) {
 	long index = getById(name);
 	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
 }
