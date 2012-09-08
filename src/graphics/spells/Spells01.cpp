@@ -529,13 +529,13 @@ void CMultiMagicMissile::Create()
 	{
 		
 
-		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "primary_attach");
+		spells[spellinstance].hand_group = GetActionPointIdx(entities[spells[spellinstance].caster]->obj, "primary_attach");
 
 		if (spells[spellinstance].hand_group != -1)
 		{
-			spells[spellinstance].hand_pos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
-			spells[spellinstance].hand_pos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
-			spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
+			spells[spellinstance].hand_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
+			spells[spellinstance].hand_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
+			spells[spellinstance].hand_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
 		}
 
 		Vec3f aePos;
@@ -563,7 +563,7 @@ void CMultiMagicMissile::Create()
 		else
 		{
 			afAlpha = 0;
-			afBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
+			afBeta = entities[spells[spellinstance].caster]->angle.b;
 			Vec3f vector;
 			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 			vector.y = EEsin(radians(afAlpha)) * 60;
@@ -575,21 +575,21 @@ void CMultiMagicMissile::Create()
 			}
 			else
 			{
-				aePos = inter.iobj[spells[spellinstance].caster]->pos + vector;
+				aePos = entities[spells[spellinstance].caster]->pos + vector;
 			}
 
-			Entity * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = entities[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
-				Vec3f * p2 = &inter.iobj[io->targetinfo]->pos;
+				Vec3f * p2 = &entities[io->targetinfo]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
-				Vec3f * p2 = &inter.iobj[spells[spellinstance].target]->pos;
+				Vec3f * p2 = &entities[spells[spellinstance].target]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
@@ -679,7 +679,7 @@ void CMultiMagicMissile::CheckCollision()
 					{
  
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
-						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, inter.iobj[spells[spellinstance].caster]);
+						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, entities[spells[spellinstance].caster]);
 
 						pMM->SetTTL(1000);
 						pMM->bExplo = true;

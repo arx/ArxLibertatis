@@ -383,16 +383,16 @@ void GetChestPos(long num, Vec3f * p)
 
 	if (ValidIONum(num))
 	{
-		long idx = GetGroupOriginByName(inter.iobj[num]->obj, "chest");
+		long idx = GetGroupOriginByName(entities[num]->obj, "chest");
 
 		if(idx >= 0) {
-			*p = inter.iobj[num]->obj->vertexlist3[idx].v;
+			*p = entities[num]->obj->vertexlist3[idx].v;
 		}
 		else
 		{
-			p->x = inter.iobj[num]->pos.x;
-			p->y = inter.iobj[num]->pos.y - 120.f;
-			p->z = inter.iobj[num]->pos.z;
+			p->x = entities[num]->pos.x;
+			p->y = entities[num]->pos.y - 120.f;
+			p->z = entities[num]->pos.z;
 		}
 	}
 }
@@ -425,7 +425,7 @@ float CLightning::Render()
 	falpha = 0.f;
 
 	// Create hand position if a hand is defined
-	//	spells[spellinstance].hand_group=inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj,"primary_attach");
+	//	spells[spellinstance].hand_group=entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(entities[spells[spellinstance].caster]->obj,"primary_attach");
 	// Player source
 	if (spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE)
 	{
@@ -441,13 +441,13 @@ float CLightning::Render()
 	{
 		if (spells[spellinstance].caster == 0)
 		{
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
+			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx >= 0)
 			{
-				spells[spellinstance].caster_pos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x;
-				spells[spellinstance].caster_pos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				spells[spellinstance].caster_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z;
+				spells[spellinstance].caster_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x;
+				spells[spellinstance].caster_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
+				spells[spellinstance].caster_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z;
 			}
 			else
 			{
@@ -462,23 +462,23 @@ float CLightning::Render()
 		// IO source
 		else
 		{
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
+			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx >= 0)
 			{
-				spells[spellinstance].caster_pos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x;
-				spells[spellinstance].caster_pos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				spells[spellinstance].caster_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z;
+				spells[spellinstance].caster_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x;
+				spells[spellinstance].caster_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
+				spells[spellinstance].caster_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z;
 			}
 			else
 			{
-				spells[spellinstance].caster_pos.x = inter.iobj[spells[spellinstance].caster]->pos.x;
-				spells[spellinstance].caster_pos.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-				spells[spellinstance].caster_pos.z = inter.iobj[spells[spellinstance].caster]->pos.z;
+				spells[spellinstance].caster_pos.x = entities[spells[spellinstance].caster]->pos.x;
+				spells[spellinstance].caster_pos.y = entities[spells[spellinstance].caster]->pos.y;
+				spells[spellinstance].caster_pos.z = entities[spells[spellinstance].caster]->pos.z;
 			}
 
-			fBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
-			Entity * io = inter.iobj[spells[spellinstance].caster];
+			fBeta = entities[spells[spellinstance].caster]->angle.b;
+			Entity * io = entities[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo)
 			        &&	(io->targetinfo != spells[spellinstance].caster))
@@ -792,9 +792,9 @@ void CConfuse::Create(Vec3f aeSrc, float afBeta)
 	fSize = 1;
 	bDone = true;
 	
-	eTarget.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eTarget.y = inter.iobj[spells[spellinstance].target]->pos.y;
-	eTarget.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eTarget.x = entities[spells[spellinstance].target]->pos.x;
+	eTarget.y = entities[spells[spellinstance].target]->pos.y;
+	eTarget.z = entities[spells[spellinstance].target]->pos.z;
 
 	end = 20 - 1;
 }
@@ -811,9 +811,9 @@ float CConfuse::Render()
 {
 	int i = 0;
 
-	eTarget.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eTarget.y = inter.iobj[spells[spellinstance].target]->pos.y;
-	eTarget.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eTarget.x = entities[spells[spellinstance].target]->pos.x;
+	eTarget.y = entities[spells[spellinstance].target]->pos.y;
+	eTarget.z = entities[spells[spellinstance].target]->pos.z;
 
 	if (ulCurrentTime >= ulDuration)
 	{
@@ -830,21 +830,21 @@ float CConfuse::Render()
 	Vec3f stitescale;
 	Color3f stitecolor;
 
-	eCurPos.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eCurPos.y = inter.iobj[spells[spellinstance].target]->pos.y;
+	eCurPos.x = entities[spells[spellinstance].target]->pos.x;
+	eCurPos.y = entities[spells[spellinstance].target]->pos.y;
 
 	if (spells[spellinstance].target != 0)
-		eCurPos.y += inter.iobj[spells[spellinstance].target]->physics.cyl.height - 30.f;
+		eCurPos.y += entities[spells[spellinstance].target]->physics.cyl.height - 30.f;
 
-	eCurPos.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eCurPos.z = entities[spells[spellinstance].target]->pos.z;
 
-	long idx = inter.iobj[spells[spellinstance].target]->obj->fastaccess.head_group_origin;
+	long idx = entities[spells[spellinstance].target]->obj->fastaccess.head_group_origin;
 
 	if (idx >= 0)
 	{
-		eCurPos.x = inter.iobj[spells[spellinstance].target]->obj->vertexlist3[idx].v.x;
-		eCurPos.y = inter.iobj[spells[spellinstance].target]->obj->vertexlist3[idx].v.y - 50.f;
-		eCurPos.z = inter.iobj[spells[spellinstance].target]->obj->vertexlist3[idx].v.z;
+		eCurPos.x = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.x;
+		eCurPos.y = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.y - 50.f;
+		eCurPos.z = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.z;
 	}
 
 	stitepos.x = eCurPos.x;

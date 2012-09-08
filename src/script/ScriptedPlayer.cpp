@@ -296,9 +296,9 @@ public:
 class SetPlayerControlsCommand : public Command {
 	
 	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
-		for(long i = 0; i < inter.nbmax; i++) {
-			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC)) {
-				Stack_SendIOScriptEvent(inter.iobj[i], msg, dat);
+		for(long i = 0; i < entities.nbmax; i++) {
+			if(entities[i] && (entities[i]->ioflags & IO_NPC)) {
+				Stack_SendIOScriptEvent(entities[i], msg, dat);
 			}
 		}
 	}
@@ -504,7 +504,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -555,11 +555,11 @@ public:
 			duration = 2000 + level * 2000;
 		}
 		
-		if(context.getIO() != inter.iobj[0]) {
+		if(context.getIO() != entities[0]) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		TryToCastSpell(inter.iobj[0], spellid, level, -1, spflags, duration);
+		TryToCastSpell(entities[0], spellid, level, -1, spflags, duration);
 		
 		return Success;
 	}

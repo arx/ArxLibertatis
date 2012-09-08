@@ -72,7 +72,7 @@ struct EntityManager {
 	long getById(const std::string & name);
 	Entity * getById(const std::string & name, Entity * self);
 	
-	Entity * & operator[](size_t index) {
+	Entity * operator[](size_t index) {
 		return iobj[index];
 	}
 	
@@ -123,7 +123,7 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
 
 extern ARX_NODES nodes;
-extern EntityManager inter;
+extern EntityManager entities;
 extern Entity * CURRENTINTER;
 
 #ifdef BUILD_EDITOR

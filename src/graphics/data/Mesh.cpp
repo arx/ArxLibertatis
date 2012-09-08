@@ -314,22 +314,22 @@ long MakeTopObjString(Entity * io,  string & dest) {
 		}
 	}
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i] != NULL)
+		if (entities[i] != NULL)
 		{
-			if (inter.iobj[i] != io)
-				if (inter.iobj[i]->show == SHOW_FLAG_IN_SCENE)
-					if ((inter.iobj[i]->ioflags & IO_NPC) || (inter.iobj[i]->ioflags & IO_ITEM))
+			if (entities[i] != io)
+				if (entities[i]->show == SHOW_FLAG_IN_SCENE)
+					if ((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM))
 					{
-						if (((inter.iobj[i]->pos.x) > boxmin.x)
-								&& ((inter.iobj[i]->pos.x) < boxmax.x)
-								&& ((inter.iobj[i]->pos.z) > boxmin.z)
-								&& ((inter.iobj[i]->pos.z) < boxmax.z))
+						if (((entities[i]->pos.x) > boxmin.x)
+								&& ((entities[i]->pos.x) < boxmax.x)
+								&& ((entities[i]->pos.z) > boxmin.z)
+								&& ((entities[i]->pos.z) < boxmax.z))
 						{
-							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
+							if (EEfabs(entities[i]->pos.y - boxmin.y) < 40.f)
 							{
-								dest += ' ' + inter.iobj[i]->long_name();
+								dest += ' ' + entities[i]->long_name();
 								
 							}
 						}

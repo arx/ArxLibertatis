@@ -227,13 +227,13 @@ public:
 		Spell spellid = GetSpellId(spellname);
 		
 		string target = context.getWord();
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		
 		if(!t || spellid == SPELL_NONE) {
 			return Failed;
 		}
 		
-		if(context.getIO() != inter.iobj[0]) {
+		if(context.getIO() != entities[0]) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
@@ -465,7 +465,7 @@ public:
 			target = context.getWord();
 		}
 		target = context.getStringVar(target);
-		Entity * t = inter.getById(target, io);
+		Entity * t = entities.getById(target, io);
 		
 		DebugScript(' ' << options << ' ' << target);
 		
@@ -509,7 +509,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -534,7 +534,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		ARX_NPC_LaunchPathfind(context.getIO(), t);
 		
 		return Success;

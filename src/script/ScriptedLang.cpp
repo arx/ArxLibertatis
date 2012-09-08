@@ -308,27 +308,27 @@ public:
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
-			for(long l = 0 ; l < inter.nbmax ; l++) {
+			for(long l = 0 ; l < entities.nbmax ; l++) {
 				
-				if(!inter.iobj[l] || inter.iobj[l] == io || (inter.iobj[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!entities[l] || entities[l] == io || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
+				if(group && entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (inter.iobj[l]->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM))) {
+				if(((sendto & SEND_NPC) && (entities[l]->ioflags & IO_NPC))
+				   || ((sendto & SEND_FIX) && (entities[l]->ioflags & IO_FIX))
+				   || ((sendto & SEND_ITEM) && (entities[l]->ioflags & IO_ITEM))) {
 					
 					Vec3f _pos, _pos2;
-					GetItemWorldPosition(inter.iobj[l], &_pos);
+					GetItemWorldPosition(entities[l], &_pos);
 					GetItemWorldPosition(io, &_pos2);
 					
 					if(distSqr(_pos, _pos2) <= square(rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
+						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 					}
 				}
 			}
@@ -342,49 +342,49 @@ public:
 				return Failed;
 			}
 			
-			for(long l = 0; l < inter.nbmax; l++) {
+			for(long l = 0; l < entities.nbmax; l++) {
 				
-				if(!inter.iobj[l] || (inter.iobj[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!entities[l] || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
+				if(group && entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (inter.iobj[l]->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM))) {
+				if(((sendto & SEND_NPC) && (entities[l]->ioflags & IO_NPC))
+				   || ((sendto & SEND_FIX) && (entities[l]->ioflags & IO_FIX))
+				   || ((sendto & SEND_ITEM) && (entities[l]->ioflags & IO_ITEM))) {
 					
 					Vec3f _pos;
-					GetItemWorldPosition(inter.iobj[l], &_pos);
+					GetItemWorldPosition(entities[l], &_pos);
 					
 					if(ARX_PATH_IsPosInZone(ap, _pos.x, _pos.y, _pos.z)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
+						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 					}
 				}
 			}
 			
 		} else if(group) { // sends an event to all members of a group
 			
-			for(long l = 0; l < inter.nbmax; l++) {
+			for(long l = 0; l < entities.nbmax; l++) {
 				
-				if(!inter.iobj[l] || inter.iobj[l] == io) {
+				if(!entities[l] || entities[l] == io) {
 					continue;
 				}
 				
-				if(inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
+				if(entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
 					continue;
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
+				Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 			}
 			
 		} else { // single object event
 			
-			Entity * t = inter.getById(target, io);
+			Entity * t = entities.getById(target, io);
 			if(!t) {
 				EVENT_SENDER = oes;
 				return Failed;
@@ -615,7 +615,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			Entity * t = inter.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getIO());
 			
 			return (t != NULL && t->groups.find(group) != t->groups.end());
 		}
@@ -630,7 +630,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			Entity * t = inter.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getIO());
 			
 			return (t != NULL && t->groups.find(group) == t->groups.end());
 		}
@@ -645,7 +645,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
-			Entity * t = inter.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getIO());
 			
 			ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(type);
 			if(!flag) {

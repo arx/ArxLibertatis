@@ -624,7 +624,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 
 	if (io)
 	{
-		if (((io == inter.iobj[0]) && !EXTERNALVIEW) ||
+		if (((io == entities[0]) && !EXTERNALVIEW) ||
 		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
@@ -935,7 +935,7 @@ void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 
 	if (io)
 	{
-		if (((io == inter.iobj[0]) && !EXTERNALVIEW) ||
+		if (((io == entities[0]) && !EXTERNALVIEW) ||
 		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
 		{
 			ARX_SOUND_IOFrontPos(io, position);

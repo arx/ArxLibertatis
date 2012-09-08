@@ -100,7 +100,7 @@ public:
 		for(long j = 0; j < nb_people; j++) {
 			
 			string target = context.getWord();
-			Entity * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getIO());
 			
 			oss << ' ' << target;
 			
@@ -270,7 +270,7 @@ class SpeakCommand : public Command {
 		}
 		
 		if(ValidIONum(ionum)) {
-			Entity * ioo = inter.iobj[ionum];
+			Entity * ioo = entities[ionum];
 			long id = ioo->obj->fastaccess.view_attach;
 			if(id != -1) {
 				acs.pos2 = ioo->obj->vertexlist3[id].v;
@@ -283,14 +283,14 @@ class SpeakCommand : public Command {
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
 		string target = context.getWord();
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		
 		acs.ionum = GetInterNum(t);
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
 		if(player) {
-			computeACSPos(acs, inter.iobj[0], acs.ionum);
+			computeACSPos(acs, entities[0], acs.ionum);
 		} else {
 			computeACSPos(acs, context.getIO(), acs.ionum);
 		}
@@ -349,7 +349,7 @@ public:
 					acs.endpos = context.getFloat();
 					acs.ionum = GetInterNum(io);
 					if(player) {
-						computeACSPos(acs, inter.iobj[0], acs.ionum);
+						computeACSPos(acs, entities[0], acs.ionum);
 					} else {
 						computeACSPos(acs, io, -1);
 					}
@@ -403,7 +403,7 @@ public:
 		
 		long speechnum;
 		if(player) {
-			speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], data, mood, voixoff);
+			speechnum = ARX_SPEECH_AddSpeech(entities[0], data, mood, voixoff);
 		} else {
 			speechnum = ARX_SPEECH_AddSpeech(io, data, mood, voixoff);
 		}

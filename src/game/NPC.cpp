@@ -160,7 +160,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 		if (!ValidIONum(i)) return;
 
 		{
-			Entity * ioo = inter.iobj[i];
+			Entity * ioo = entities[i];
 
 			if (! ioo) return;
 
@@ -181,10 +181,10 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
-									float dist = fdist(pos, inter.iobj[i]->obj->vertexlist3[k].v);
+									float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
 									if ((dist <= dist_limit)
-											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
+											&&	(EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f))
 									{
 										count++;
 
@@ -422,10 +422,10 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
 //***********************************************************************************************
 void ARX_NPC_Behaviour_ResetAll()
 {
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i])
-			ARX_NPC_Behaviour_Reset(inter.iobj[i]);
+		if (entities[i])
+			ARX_NPC_Behaviour_Reset(entities[i]);
 	}
 }
 //***********************************************************************************************
@@ -718,7 +718,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 	}
 
 	if ((ValidIONum(target))
-	        &&	(inter.iobj[target] == io))
+	        &&	(entities[target] == io))
 	{
 		io->_npcdata->pathfind.pathwait = 0;
 		return false; // cannot pathfind self...
@@ -747,7 +747,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		if (ValidIONum(target))
 		{
 			Entity * io2;
-			io2 = inter.iobj[target];
+			io2 = entities[target];
 			pos2.x = io2->pos.x;
 			pos2.y = io2->pos.y;
 			pos2.z = io2->pos.z;
@@ -1267,7 +1267,7 @@ void ARX_PHYSICS_Apply()
 			{
 #ifdef BUILD_EDITOR
 				if ((ValidIONum(LastSelectedIONum)) &&
-				        (io == inter.iobj[LastSelectedIONum])) ShowIOPath(io);
+				        (io == entities[LastSelectedIONum])) ShowIOPath(io);
 #endif
 				if (io->_npcdata->pathfind.listnb == 0) // Not Found
 				{
@@ -1455,12 +1455,12 @@ float GetTRUETargetDist(Entity * io)
 		t = io->_npcdata->pathfind.truetarget;
 	else t = io->targetinfo;
 
-	if ((t >= 0) && (t < inter.nbmax) && (inter.iobj[t] != NULL))
+	if ((t >= 0) && (t < entities.nbmax) && (entities[t] != NULL))
 	{
 		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
 			return dist(io->pos, io->initpos);
 
-		return dist(io->pos, inter.iobj[t]->pos);
+		return dist(io->pos, entities[t]->pos);
 	}
 
 	return 99999999.f;
@@ -2042,7 +2042,7 @@ extern float STRIKE_AIMTIME;
 //***********************************************************************************************
 bool IsPlayerStriking()
 {
-	Entity * io = inter.iobj[0];
+	Entity * io = entities[0];
 
 	if (!io) return false;
 
@@ -2369,9 +2369,9 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 	float tdist = std::numeric_limits<float>::max();
 
 	if ((io->_npcdata->pathfind.listnb) && (ValidIONum(io->_npcdata->pathfind.truetarget))) {
-		tdist = distSqr(io->pos, inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
+		tdist = distSqr(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
-		tdist = distSqr(io->pos, inter.iobj[io->targetinfo]->pos);
+		tdist = distSqr(io->pos, entities[io->targetinfo]->pos);
 	}
 
 
@@ -2754,7 +2754,7 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 }
 float GetIOHeight(Entity * io)
 {
-	if (io == inter.iobj[0])
+	if (io == entities[0])
 	{
 		return io->physics.cyl.height; 
 	}
@@ -2767,7 +2767,7 @@ float GetIOHeight(Entity * io)
 }
 float GetIORadius(Entity * io)
 {
-	if (io == inter.iobj[0])
+	if (io == entities[0])
 		return PLAYER_BASE_RADIUS;
 
 	float v = max(io->original_radius * io->scale, 25.f);
@@ -2792,15 +2792,15 @@ void ComputeTolerance(Entity * io, long targ, float * dst)
 	float TOLERANCE = 30.f;
 
 	if ((targ >= 0)
-	        &&	(targ < inter.nbmax)
-	        &&	(inter.iobj[targ]))
+	        &&	(targ < entities.nbmax)
+	        &&	(entities[targ]))
 	{
 		float self_dist, targ_dist;
 
 		// Compute min target close-dist
-		if (inter.iobj[targ]->ioflags & IO_NO_COLLISIONS)
+		if (entities[targ]->ioflags & IO_NO_COLLISIONS)
 			targ_dist = 0.f;
-		else targ_dist = max(inter.iobj[targ]->physics.cyl.radius, GetIORadius(inter.iobj[targ])); //inter.iobj[targ]->physics.cyl.radius;
+		else targ_dist = max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ])); //entities[targ]->physics.cyl.radius;
 
 		// Compute min self close-dist
 		if (io->ioflags & IO_NO_COLLISIONS)
@@ -2815,11 +2815,11 @@ void ComputeTolerance(Entity * io, long targ, float * dst)
 			TOLERANCE = 0.f;
 		}
 
-		if (inter.iobj[targ]->ioflags & IO_FIX)
+		if (entities[targ]->ioflags & IO_FIX)
 			TOLERANCE += 100.f;
 
 		// If target is a NPC add another tolerance
-		if (inter.iobj[targ]->_npcdata)
+		if (entities[targ]->_npcdata)
 		{
 			TOLERANCE += 20.f;
 		}
@@ -2840,7 +2840,7 @@ void ComputeTolerance(Entity * io, long targ, float * dst)
 			TOLERANCE += 300.f;
 
 		// if target is a marker set to a minimal tolerance
-		if (inter.iobj[targ]->ioflags & IO_MARKER)
+		if (entities[targ]->ioflags & IO_MARKER)
 			TOLERANCE = 21.f + (float)io->_npcdata->moveproblem * ( 1.0f / 10 );
 	}
 
@@ -3528,7 +3528,7 @@ static void ManageNPCMovement(Entity * io)
 	{
 		if (ValidIONum(io->_npcdata->pathfind.truetarget))
 		{
-			Vec3f * p = &inter.iobj[io->_npcdata->pathfind.truetarget]->pos;
+			Vec3f * p = &entities[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
 			if ((t != -1) && (t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]))
@@ -3551,7 +3551,7 @@ static void ManageNPCMovement(Entity * io)
 			if ((io->_npcdata->reachedtarget))
 			{
 				if (ValidIONum(io->targetinfo))
-					EVENT_SENDER = inter.iobj[io->targetinfo];
+					EVENT_SENDER = entities[io->targetinfo];
 				else
 					EVENT_SENDER = NULL;
 
@@ -3710,7 +3710,7 @@ static void ManageNPCMovement(Entity * io)
 			else if (!io->_npcdata->reachedtarget) 
 			{
 				if (ValidIONum(io->targetinfo))
-					EVENT_SENDER = inter.iobj[io->targetinfo];
+					EVENT_SENDER = entities[io->targetinfo];
 				else
 					EVENT_SENDER = NULL;
 
@@ -3805,9 +3805,9 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((!io)
 		        ||	(IsDeadNPC(io))
@@ -3845,7 +3845,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			orgn.y = ioo->pos.y - 90.f;
 			orgn.z = ioo->pos.z;
 
-			if (ioo == inter.iobj[0])	orgn.y = player.pos.y + 90.f;
+			if (ioo == entities[0])	orgn.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin, &orgn);
@@ -3858,7 +3858,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			dest.y = io->pos.y - 90.f;
 			dest.z = io->pos.z;
 
-			if (io == inter.iobj[0])	dest.y = player.pos.y + 90.f;
+			if (io == entities[0])	dest.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
@@ -3963,7 +3963,7 @@ void CheckNPCEx(Entity * io)
 	long Visible = 0;
 
 	// Check visibility only if player is visible, not too far and not dead
-	if ((!(inter.iobj[0]->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
+	if ((!(entities[0]->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
 	{
 		// checks for near contact +/- 15 cm --> force visibility
 		if (io->room_flags & 1)
@@ -3978,7 +3978,7 @@ void CheckNPCEx(Entity * io)
 		if ((GLOBAL_Player_Room > -1) && (io->room > -1) && (fdist > 2000.f))
 		{
 		}
-		else if ((ds < square(GetIORadius(io) + GetIORadius(inter.iobj[0]) + 15.f))
+		else if ((ds < square(GetIORadius(io) + GetIORadius(entities[0]) + 15.f))
 		         && (EEfabs(player.pos.y - io->pos.y) < 200.f))
 		{
 			Visible = 1;
@@ -4071,9 +4071,9 @@ void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const f
 		step_material = &io->stepmaterial;
 	}
 	
-	if(io == inter.iobj[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
+	if(io == entities[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-			Entity * ioo = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
+			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 			if(!ioo->stepmaterial.empty()) {
 				step_material = &ioo->stepmaterial;
 			}
@@ -4092,7 +4092,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 {
 	float max_distance;
 
-	if (source == inter.iobj[0])
+	if (source == entities[0])
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP;
 	else if (source && source->ioflags & IO_ITEM)
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM;
@@ -4107,26 +4107,26 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 
 
-	for (long i = 0; i < inter.nbmax; i++)
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->ioflags & IO_NPC)
-		        &&	(inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)
-		        &&	(inter.iobj[i] != source)
-		        &&	((inter.iobj[i]->show == SHOW_FLAG_IN_SCENE)
-		             ||	(inter.iobj[i]->show == SHOW_FLAG_HIDDEN))
-		        &&	(inter.iobj[i]->_npcdata->life > 0.f)
+	for (long i = 0; i < entities.nbmax; i++)
+		if ((entities[i])
+		        &&	(entities[i]->ioflags & IO_NPC)
+		        &&	(entities[i]->GameFlags & GFLAG_ISINTREATZONE)
+		        &&	(entities[i] != source)
+		        &&	((entities[i]->show == SHOW_FLAG_IN_SCENE)
+		             ||	(entities[i]->show == SHOW_FLAG_HIDDEN))
+		        &&	(entities[i]->_npcdata->life > 0.f)
 		   )
 		{
-			float distance = fdist(*pos, inter.iobj[i]->pos);
+			float distance = fdist(*pos, entities[i]->pos);
 
 			if (distance < max_distance)
 			{
-				if (inter.iobj[i]->room_flags & 1)
-					UpdateIORoom(inter.iobj[i]);
+				if (entities[i]->room_flags & 1)
+					UpdateIORoom(entities[i]);
 
-				if ((Source_Room > -1) && (inter.iobj[i]->room > -1))
+				if ((Source_Room > -1) && (entities[i]->room > -1))
 				{
-					float fdist = SP_GetRoomDist(pos, &inter.iobj[i]->pos, Source_Room, inter.iobj[i]->room);
+					float fdist = SP_GetRoomDist(pos, &entities[i]->pos, Source_Room, entities[i]->room);
 
 					if (fdist < max_distance * 1.5f)
 					{
@@ -4135,7 +4135,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 
 						sprintf(temp, "%ld", ldistance);
 
-						SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
+						SendIOScriptEvent(entities[i], SM_HEAR, temp);
 					}
 				} else {
 					long ldistance = distance;
@@ -4143,7 +4143,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 
 					sprintf(temp, "%ld", ldistance);
 
-					SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
+					SendIOScriptEvent(entities[i], SM_HEAR, temp);
 				}
 			}
 		}
@@ -4175,7 +4175,7 @@ void ManageIgnition(Entity * io)
 
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 	        &&	(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
-		plw = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
+		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 	if ((io->ioflags & IO_FIERY)
 	        &&	(!(io->type_flags & OBJECT_TYPE_BOW))
@@ -4491,7 +4491,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing)
 			}
 			else if (ValidIONum(io->_npcdata->pathfind.truetarget))
 			{
-				Entity * ioo = inter.iobj[io->_npcdata->pathfind.truetarget];
+				Entity * ioo = entities[io->_npcdata->pathfind.truetarget];
 				io->target.x = ioo->pos.x;
 				io->target.y = ioo->pos.y;
 				io->target.z = ioo->pos.z;
@@ -4564,7 +4564,7 @@ void GetTargetPos(Entity * io, unsigned long smoothing)
 		{
 			Vec3f pos;
 
-			if (GetItemWorldPosition(inter.iobj[io->targetinfo], &pos))
+			if (GetItemWorldPosition(entities[io->targetinfo], &pos))
 			{
 				io->target.x = pos.x;
 				io->target.y = pos.y;
@@ -4572,9 +4572,9 @@ void GetTargetPos(Entity * io, unsigned long smoothing)
 				return;
 			}
 
-			io->target.x = inter.iobj[io->targetinfo]->pos.x;
-			io->target.y = inter.iobj[io->targetinfo]->pos.y;
-			io->target.z = inter.iobj[io->targetinfo]->pos.z;
+			io->target.x = entities[io->targetinfo]->pos.x;
+			io->target.y = entities[io->targetinfo]->pos.y;
+			io->target.z = entities[io->targetinfo]->pos.z;
 			return;
 		}
 	}

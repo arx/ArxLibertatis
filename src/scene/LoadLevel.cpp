@@ -252,11 +252,11 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// preparing INTER DATA, Ignoring Player Data
-	for(long i = 1; i < inter.nbmax; i++) {
-		if((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload)
-			&& (inter.iobj[i]->truelevel == CURRENTLEVEL)) {
+	for(long i = 1; i < entities.nbmax; i++) {
+		if((entities[i] != NULL)  && (!entities[i]->scriptload)
+			&& (entities[i]->truelevel == CURRENTLEVEL)) {
 			
-			Entity * io = inter.iobj[i];
+			Entity * io = entities[i];
 			
 			DANAE_LS_INTER dli;
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
@@ -281,7 +281,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 				dli.flags = IO_FREEZESCRIPT;
 			}
 			
-			inter.iobj[i]->EditorFlags &= ~EFLAG_NOTSAVED;
+			entities[i]->EditorFlags &= ~EFLAG_NOTSAVED;
 			memcpy(dat + pos, &dli, sizeof(DANAE_LS_INTER));
 			pos += sizeof(DANAE_LS_INTER);
 		}
@@ -594,9 +594,9 @@ Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, con
 	std::ostringstream nameident;
 	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
 	
-	long t = inter.getById(nameident.str());
+	long t = entities.getById(nameident.str());
 	if(t >= 0) {
-		return inter.iobj[t];
+		return entities[t];
 	}
 	
 	Entity * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
@@ -1477,17 +1477,17 @@ void CheckIO_NOT_SAVED() {
 		return;
 	}
 	
-	for(long i = 1; i < inter.nbmax; i++) { // ignoring player
+	for(long i = 1; i < entities.nbmax; i++) { // ignoring player
 
-		if(!inter.iobj[i] || !inter.iobj[i]->scriptload) {
+		if(!entities[i] || !entities[i]->scriptload) {
 			continue;
 		}
 		
-		if(!(inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED) || inter.iobj[i]->ident <= 0) {
+		if(!(entities[i]->EditorFlags & EFLAG_NOTSAVED) || entities[i]->ident <= 0) {
 			continue;
 		}
 		
-		res::path temp = inter.iobj[i]->full_name();
+		res::path temp = entities[i]->full_name();
 		
 		if(fs::is_directory(temp)) {
 			LogDirDestruction(temp);
@@ -1496,7 +1496,7 @@ void CheckIO_NOT_SAVED() {
 			}
 		}
 		
-		ReleaseInter(inter.iobj[i]);
+		ReleaseInter(entities[i]);
 	}
 	
 }

@@ -708,7 +708,7 @@ void runGame() {
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
 	
-	inter.init=0;
+	entities.init=0;
 	InitInter(10);
 	
 	memset(&player,0,sizeof(ARXCHARACTER));
@@ -1617,7 +1617,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	QuatFromMatrix(quat,tmat);
 
 	float wd=(float)ARX_EQUIPMENT_Apply(
-		inter.iobj[0],IO_EQUIPITEM_ELEMENT_Damages,1);
+		entities[0],IO_EQUIPITEM_ELEMENT_Damages,1);
 
 	float weapon_damages=wd;
 
@@ -1656,9 +1656,9 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	position.y=player.pos.y+40.f;
 	position.z=player.pos.z;
 
-	if (inter.iobj[0]->obj->fastaccess.left_attach>=0)
+	if (entities[0]->obj->fastaccess.left_attach>=0)
 	{
-		position = inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.left_attach].v;
+		position = entities[0]->obj->vertexlist3[entities[0]->obj->fastaccess.left_attach].v;
 	}
 
 	anglea=radians(player.angle.a);
@@ -1695,7 +1695,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	QuatFromMatrix(quat,tmat);
 
 	float wd=(float)ARX_EQUIPMENT_Apply(
-		inter.iobj[0],IO_EQUIPITEM_ELEMENT_Damages,1);
+		entities[0],IO_EQUIPITEM_ELEMENT_Damages,1);
 
 	float weapon_damages=wd;
 
@@ -1750,12 +1750,12 @@ void SetEditMode(long ed, const bool stop_sound) {
 		player.life = 0.1f;
 	}
 	
-	for (long i=0;i<inter.nbmax;i++)
+	for (long i=0;i<entities.nbmax;i++)
 	{
-		if (inter.iobj[i]!=NULL )
+		if (entities[i]!=NULL )
 		{
-			if (inter.iobj[i]->show == SHOW_FLAG_HIDDEN) inter.iobj[i]->show = SHOW_FLAG_IN_SCENE;
-			else if (inter.iobj[i]->show == SHOW_FLAG_KILLED) inter.iobj[i]->show = SHOW_FLAG_IN_SCENE;
+			if (entities[i]->show == SHOW_FLAG_HIDDEN) entities[i]->show = SHOW_FLAG_IN_SCENE;
+			else if (entities[i]->show == SHOW_FLAG_KILLED) entities[i]->show = SHOW_FLAG_IN_SCENE;
 		}
 	}
 
@@ -2185,8 +2185,8 @@ void FirstFrameHandling()
 	player.desiredangle.a=player.angle.a=0.f;
 	ARX_PLAYER_RectifyPosition();
 
-	if (inter.iobj[0])
-		inter.iobj[0]->_npcdata->vvpos=-99999;
+	if (entities[0])
+		entities[0]->_npcdata->vvpos=-99999;
 
 	SendGameReadyMsg();
 	PLAYER_MOUSELOOK_ON = false;
@@ -2202,23 +2202,23 @@ void FirstFrameHandling()
 		arxtime.resume();
 	}
 
-	long t = inter.getById("seat_stool1_0012");
+	long t = entities.getById("seat_stool1_0012");
 	if(ValidIONum(t)) {
-		inter.iobj[t]->ioflags |= IO_FORCEDRAW;
+		entities[t]->ioflags |= IO_FORCEDRAW;
 	}
 
 	if (WILL_RESTORE_PLAYER_POSITION_FLAG)
 	{
 		player.pos = WILL_RESTORE_PLAYER_POSITION;
-		inter.iobj[0]->pos = WILL_RESTORE_PLAYER_POSITION;
-		inter.iobj[0]->pos.y+=170.f;
-		Entity * io=inter.iobj[0];
+		entities[0]->pos = WILL_RESTORE_PLAYER_POSITION;
+		entities[0]->pos.y+=170.f;
+		Entity * io=entities[0];
 
 		for (size_t i=0;i<io->obj->vertexlist.size();i++)
 		{
-			io->obj->vertexlist3[i].v.x=io->obj->vertexlist[i].v.x+inter.iobj[0]->pos.x;
-			io->obj->vertexlist3[i].v.y=io->obj->vertexlist[i].v.y+inter.iobj[0]->pos.y;
-			io->obj->vertexlist3[i].v.z=io->obj->vertexlist[i].v.z+inter.iobj[0]->pos.z;
+			io->obj->vertexlist3[i].v.x=io->obj->vertexlist[i].v.x+entities[0]->pos.x;
+			io->obj->vertexlist3[i].v.y=io->obj->vertexlist[i].v.y+entities[0]->pos.y;
+			io->obj->vertexlist3[i].v.z=io->obj->vertexlist[i].v.z+entities[0]->pos.z;
 		}
 
 		WILL_RESTORE_PLAYER_POSITION_FLAG=0;
@@ -2226,23 +2226,23 @@ void FirstFrameHandling()
 
 	if (!FLAG_ALLOW_CLOTHES)
 	{
-		for (long i=0;i<inter.nbmax;i++)
+		for (long i=0;i<entities.nbmax;i++)
 		{
-			if (	(inter.iobj[i])
-				&&	(inter.iobj[i]->obj)	)
-				inter.iobj[i]->obj->cdata=NULL;
+			if (	(entities[i])
+				&&	(entities[i]->obj)	)
+				entities[i]->obj->cdata=NULL;
 		}
 	}
 
-	for (long ni=0;ni<inter.nbmax;ni++)
+	for (long ni=0;ni<entities.nbmax;ni++)
 	{
-		if (	(inter.iobj[ni])
-			&&	(inter.iobj[ni]->ioflags & IO_NPC)
-			&&	(inter.iobj[ni]->_npcdata->cuts)	)
-				ARX_NPC_ApplyCuts(inter.iobj[ni]);
+		if (	(entities[ni])
+			&&	(entities[ni]->ioflags & IO_NPC)
+			&&	(entities[ni]->_npcdata->cuts)	)
+				ARX_NPC_ApplyCuts(entities[ni]);
 	}
 
-	ResetVVPos(inter.iobj[0]);
+	ResetVVPos(entities[0]);
 
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
@@ -2267,7 +2267,7 @@ void FirstFrameHandling()
 
 void ManageNONCombatModeAnimations()
 {
-	Entity * io=inter.iobj[0];
+	Entity * io=entities[0];
 
 	if (!io) return;
 
@@ -2392,8 +2392,8 @@ void strikeSpeak(Entity * io) {
 	
 	const string * str;
 	long equiped = player.equiped[EQUIP_SLOT_WEAPON];
-	if(equiped != 0 && !inter.iobj[equiped]->strikespeech.empty()) {
-		str = &inter.iobj[equiped]->strikespeech;
+	if(equiped != 0 && !entities[equiped]->strikespeech.empty()) {
+		str = &entities[equiped]->strikespeech;
 	} else if(!io->strikespeech.empty()) {
 		str = &io->strikespeech;
 	} else {
@@ -2406,7 +2406,7 @@ void strikeSpeak(Entity * io) {
 void ManageCombatModeAnimations()
 {
 	STRIKE_TIME=0;
-	Entity * io=inter.iobj[0];
+	Entity * io=entities[0];
 
 	if (!io) return;
 
@@ -2518,7 +2518,7 @@ void ManageCombatModeAnimations()
 
 											if (ValidIONum(num))
 											{
-												ARX_SOUND_PlayCollision(inter.iobj[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
+												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
 											}
 										}
 
@@ -2562,7 +2562,7 @@ void ManageCombatModeAnimations()
 
 											if (ValidIONum(num))
 											{
-												ARX_SOUND_PlayCollision(inter.iobj[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
+												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
 											}
 										}
 
@@ -2618,7 +2618,7 @@ void ManageCombatModeAnimations()
 						STRIKE_TIME=1;
 
 						if ((PlayerWeaponBlocked==-1)
-						&& (ARX_EQUIPMENT_Strike_Check(io,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)))
+						&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)))
 						{
 							PlayerWeaponBlocked=useanim->ctime;
 							PlayerWeaponBlockTime = (unsigned long)(arxtime);
@@ -2638,7 +2638,7 @@ void ManageCombatModeAnimations()
 
 					if ((PlayerWeaponBlocked!=-1)
 						&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
-						ARX_EQUIPMENT_Strike_Check(io,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
+						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
 
 				}
 			}
@@ -2688,7 +2688,7 @@ void ManageCombatModeAnimations()
 							STRIKE_TIME=1;
 
 							if ((PlayerWeaponBlocked==-1)
-								&& (ARX_EQUIPMENT_Strike_Check(io,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
+								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 							{
 								PlayerWeaponBlocked=useanim->ctime;
 							PlayerWeaponBlockTime = (unsigned long)(arxtime);
@@ -2708,7 +2708,7 @@ void ManageCombatModeAnimations()
 
 						if ((PlayerWeaponBlocked!=-1)
 							&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
-							ARX_EQUIPMENT_Strike_Check(io,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
+							ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
 
 				}
 			}
@@ -2761,7 +2761,7 @@ void ManageCombatModeAnimations()
 							STRIKE_TIME=1;
 
 							if ((PlayerWeaponBlocked==-1)
-								&& (ARX_EQUIPMENT_Strike_Check(io,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
+								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 							{
 								PlayerWeaponBlocked=useanim->ctime;
 							PlayerWeaponBlockTime = (unsigned long)(arxtime);
@@ -2781,7 +2781,7 @@ void ManageCombatModeAnimations()
 
 						if ((PlayerWeaponBlocked!=-1)
 							&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
-							ARX_EQUIPMENT_Strike_Check(io,inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
+							ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
 
 				}
 			}
@@ -2893,7 +2893,7 @@ void ManageCombatModeAnimations()
 }
 void ManageCombatModeAnimationsEND()
 {
-	Entity * io=inter.iobj[0];
+	Entity * io=entities[0];
 	ANIM_USE * useanim=&io->animlayer[1];
 
 	ANIM_USE * useanim3=&io->animlayer[3];
@@ -3745,11 +3745,11 @@ void ShowInfoText() {
 #ifdef BUILD_EDITOR
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{
-		io = inter.iobj[LastSelectedIONum];
+		io = entities[LastSelectedIONum];
 
 	  if (io)
 	  {
-		  if (io==inter.iobj[0])
+		  if (io==entities[0])
 		  {
 			  	sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
 					io->pos.y,io->pos.z,io->move.x,
@@ -3836,14 +3836,14 @@ void ReleaseSystemObjects() {
 		hero=NULL;
 	}
 
-	if (inter.iobj[0]) {
-		inter.iobj[0]->obj = NULL;
-		ReleaseInter(inter.iobj[0]);
-		inter.iobj[0] = NULL;
+	if (entities[0]) {
+		entities[0]->obj = NULL;
+		ReleaseInter(entities[0]);
+		entities.iobj[0] = NULL;
 
-		if (inter.iobj)	{
-			free(inter.iobj);
-			inter.iobj = NULL;
+		if(entities.iobj) {
+			free(entities.iobj);
+			entities.iobj = NULL;
 		}
 	}
 

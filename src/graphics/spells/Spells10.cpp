@@ -164,13 +164,13 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 	eTarget.y = eSrc.y + 100;
 	eTarget.z = eSrc.z + fBetaRadCos * 1000;
 
-	for (i = 1; i < inter.nbmax; i++)
+	for (i = 1; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i] != NULL)
+		if (entities[i] != NULL)
 		{
-			eTarget.x = inter.iobj[i]->pos.x;
-			eTarget.y = inter.iobj[i]->pos.y;
-			eTarget.z = inter.iobj[i]->pos.z;
+			eTarget.x = entities[i]->pos.x;
+			eTarget.y = entities[i]->pos.y;
+			eTarget.z = entities[i]->pos.z;
 		}
 	}
 

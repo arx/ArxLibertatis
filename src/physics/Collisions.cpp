@@ -352,9 +352,9 @@ extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
 void PushIO_ON_Top(Entity * ioo,float ydec)
 {
 	if (ydec!=0.f)
-	for (long i=0;i<inter.nbmax;i++) 
+	for (long i=0;i<entities.nbmax;i++) 
 	{
-		Entity * io=inter.iobj[i];
+		Entity * io=entities[i];
 
 		if (   (io)
 			&& (io!=ioo)
@@ -378,7 +378,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 
 				float posy;
 
-				if (io==inter.iobj[0])
+				if (io==entities[0])
 					posy=player.pos.y-PLAYER_BASE_HEIGHT;					
 				else 
 					posy=io->pos.y;
@@ -417,7 +417,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 						{
 							EERIE_CYLINDER cyl;
 
-							if (io==inter.iobj[0])
+							if (io==entities[0])
 							{
 								if (ydec<=0)
 								{
@@ -430,7 +430,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 									cyl.radius=PLAYER_BASE_RADIUS;
 									float vv;
 
-									if ((vv=CheckAnythingInCylinder(&cyl,inter.iobj[0],0))<0)
+									if ((vv=CheckAnythingInCylinder(&cyl,entities[0],0))<0)
 									{
 										player.pos.y+=ydec+vv;
 									}
@@ -443,7 +443,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 									cyl.height=PLAYER_BASE_HEIGHT;
 									cyl.radius=PLAYER_BASE_RADIUS;
 
-									if (CheckAnythingInCylinder(&cyl,inter.iobj[0],0)>=0)
+									if (CheckAnythingInCylinder(&cyl,entities[0],0)>=0)
 									{
 										player.pos.y+=ydec;
 										moveto.y+=ydec;
@@ -478,9 +478,9 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 
 bool IsAnyNPCInPlatform(Entity * pfrm)
 {
-	for (long i=0;i<inter.nbmax;i++)
+	for (long i=0;i<entities.nbmax;i++)
 	{
-		Entity * io=inter.iobj[i];
+		Entity * io=entities[i];
 
 		if (	(io) 
 			&&	(io!=pfrm)
@@ -715,14 +715,14 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 			&&	(ioo->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
 		{
 			FULL_TEST=1;
-			AMOUNT=inter.nbmax;
+			AMOUNT=entities.nbmax;
 		}
 
 		for (long i=0;i<AMOUNT;i++) 
 		{
 			if (FULL_TEST)
 			{
-				io=inter.iobj[i];			
+				io=entities[i];			
 			}
 			else
 			{				
@@ -888,7 +888,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 								sp.origin.y=vlist[idx].v.y;
 								sp.origin.z=vlist[idx].v.z;
 
-								if (ioo==inter.iobj[0])
+								if (ioo==entities[0])
 								{
 									sp.radius = 22.f; 
 								}
@@ -942,7 +942,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 						{
 							long step;
 							
-							if (ioo==inter.iobj[0])
+							if (ioo==entities[0])
 								sp.radius = 23.f; 
 							else if (ioo && !(ioo->ioflags & IO_NPC))
 								sp.radius = 32.f;
@@ -1049,7 +1049,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 		if (targ>-1) 
 		{
 			i=TREATZONE_CUR;
-			io=inter.iobj[targ];
+			io=entities[targ];
 
 			if (   (!io)
 				|| (InExceptionList(targ))
@@ -1291,7 +1291,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 		if ((io->ioflags & IO_ITEM) && (flags & CAS_NO_ITEM_COL)) continue;
 
 		if ((treatio[i].num!=0) && (source!=0) 
-				&& validsource && (HaveCommonGroup(io,inter.iobj[source])))
+				&& validsource && (HaveCommonGroup(io,entities[source])))
 				continue;
 
 			if (io->GameFlags & GFLAG_PLATFORM)					
@@ -1382,7 +1382,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 	
 	if (!ValidIONum(target)) return false;
 
-	Entity * io=inter.iobj[target];
+	Entity * io=entities[target];
 	float sr30 = sphere->radius + 22.f;
 	float sr40 = sphere->radius + 27.f; 
 	float sr180=sphere->radius+500.f;
@@ -1943,9 +1943,9 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 		sphere.origin.z=z;
 		sphere.radius=65.f;
 
-		for (long num=0;num<inter.nbmax;num++)
+		for (long num=0;num<entities.nbmax;num++)
 		{
-			Entity * io=inter.iobj[num];
+			Entity * io=entities[num];
 
 			if ((io) && (io->GameFlags & GFLAG_VIEW_BLOCKER))
 			{

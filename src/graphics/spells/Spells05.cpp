@@ -112,13 +112,13 @@ void CCurePoison::Create()
 {
 	SetAngle(0);
 
-	eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
+	eSrc.x = entities[spells[spellinstance].target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].target]->pos.y;
 
 	if (spells[spellinstance].target == 0)
 		eSrc.y += 200;
 
-	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eSrc.z = entities[spells[spellinstance].target]->pos.z;
 
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
@@ -200,13 +200,13 @@ void CCurePoison::Update(unsigned long aulTime)
 		return;
 	}
 
-	eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
+	eSrc.x = entities[spells[spellinstance].target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].target]->pos.y;
 
 	if (spells[spellinstance].target == 0)
 		eSrc.y += 200;
 
-	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eSrc.z = entities[spells[spellinstance].target]->pos.z;
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
@@ -891,13 +891,13 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 
 	float afBeta = 0.f;
 
-	spells[spellinstance].hand_group = inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;
+	spells[spellinstance].hand_group = entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;
 
 	if (spells[spellinstance].hand_group != -1)
 	{
-		spells[spellinstance].hand_pos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
-		spells[spellinstance].hand_pos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
-		spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
+		spells[spellinstance].hand_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
+		spells[spellinstance].hand_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
+		spells[spellinstance].hand_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
 	}
 
 	if (spells[spellinstance].caster == 0) // player
@@ -919,7 +919,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	}
 	else
 	{
-		afBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
+		afBeta = entities[spells[spellinstance].caster]->angle.b;
 
 		if (spells[spellinstance].hand_group != -1)
 		{
@@ -929,9 +929,9 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		}
 		else
 		{
-			_eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x - EEsin(radians(afBeta)) * 90;
-			_eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-			_eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z + EEcos(radians(afBeta)) * 90;
+			_eSrc.x = entities[spells[spellinstance].caster]->pos.x - EEsin(radians(afBeta)) * 90;
+			_eSrc.y = entities[spells[spellinstance].caster]->pos.y;
+			_eSrc.z = entities[spells[spellinstance].caster]->pos.z + EEcos(radians(afBeta)) * 90;
 		}
 	}
 
@@ -1110,14 +1110,14 @@ void CRepelUndead::Update(unsigned long _ulTime)
 
 	if (spellinstance < 0) return;
 
-	eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
-	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eSrc.x = entities[spells[spellinstance].target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].target]->pos.y;
+	eSrc.z = entities[spells[spellinstance].target]->pos.z;
 
 	if (spells[spellinstance].target == 0)
 		fBeta = player.angle.b;
 	else
-		fBeta = inter.iobj[spells[spellinstance].target]->angle.b;
+		fBeta = entities[spells[spellinstance].target]->angle.b;
 }
 
 //---------------------------------------------------------------------

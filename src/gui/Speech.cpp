@@ -451,7 +451,7 @@ long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
 
 	if (ARX_CONVERSATION && io)
 		for (long j = 0; j < main_conversation.actors_nb; j++)
-			if (main_conversation.actors[j] >= 0 && io == inter.iobj[main_conversation.actors[j]])
+			if (main_conversation.actors[j] >= 0 && io == entities[main_conversation.actors[j]])
 				main_conversation.current = num;
 
 	return num;
@@ -477,7 +477,7 @@ void ARX_SPEECH_Update() {
 				else
 					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
 
-				if (((io != inter.iobj[0]) || ((io == inter.iobj[0])  && (EXTERNALVIEW)))
+				if (((io != entities[0]) || ((io == entities[0])  && (EXTERNALVIEW)))
 						&&	ValidIOAddress(io))
 				{
 					if (io->anims[aspeech[i].mood] == NULL)	aspeech[i].mood = ANIM_TALK_NEUTRAL;
@@ -524,7 +524,7 @@ void ARX_SPEECH_Update() {
 					for (long j = 0 ; j < main_conversation.actors_nb ; j++)
 					{
 						if (main_conversation.actors[j] >= 0)
-							if (speech->io == inter.iobj[main_conversation.actors[j]])
+							if (speech->io == entities[main_conversation.actors[j]])
 							{
 								ok = 1;
 							}

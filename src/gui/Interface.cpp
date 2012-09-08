@@ -815,7 +815,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	if (player.Interface & INTER_MAP)
 	{
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE);
+		SendIOScriptEvent(entities[0],SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
 		ARX_MINIMAP_PurgeTC();
 
@@ -829,10 +829,10 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	}
 	else
 	{
-		SendIOScriptEvent(inter.iobj[0],SM_NULL,"","book_open");
+		SendIOScriptEvent(entities[0],SM_NULL,"","book_open");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
+		SendIOScriptEvent(entities[0],SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
 		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
@@ -2224,7 +2224,7 @@ bool ArxGame::ManageEditorControls()
 
 						if (DRAGINTER->show==SHOW_FLAG_ON_PLAYER)
 						{
-							ARX_EQUIPMENT_UnEquip(inter.iobj[0],DRAGINTER);
+							ARX_EQUIPMENT_UnEquip(entities[0],DRAGINTER);
 							RemoveFromAllInventories(DRAGINTER);
 							DRAGINTER->bbox2.x=-1;
 									}
@@ -2276,7 +2276,7 @@ void ARX_INTERFACE_Combat_Mode(long i)
 
 	if (EDITMODE) return;
 
-	if  ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]))
+	if  ((player.Interface & INTER_COMBATMODE) && (entities[0]))
 	{
 		player.Interface&=~INTER_COMBATMODE;
 		player.Interface&=~INTER_NO_STRIKE;
@@ -2284,16 +2284,16 @@ void ARX_INTERFACE_Combat_Mode(long i)
 		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		long weapontype=ARX_EQUIPMENT_GetPlayerWeaponType();
 
-		if (inter.iobj[0] && arrowobj && (weapontype == WEAPON_BOW))
+		if (entities[0] && arrowobj && (weapontype == WEAPON_BOW))
 		{
-			EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[0]->obj, arrowobj);
+			EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[0]->obj, arrowobj);
 		}
 
 		player.doingmagic=0;
 	}
 
-	else  if (((inter.iobj[0]->animlayer[1].cur_anim == NULL) || (inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
-		&& (inter.iobj[0]))
+	else  if (((entities[0]->animlayer[1].cur_anim == NULL) || (entities[0]->animlayer[1].cur_anim == entities[0]->anims[ANIM_WAIT]))
+		&& (entities[0]))
 	{
 		ARX_INTERFACE_BookOpenClose(2);
 
@@ -2483,7 +2483,7 @@ void ArxGame::ManagePlayerControls()
 			EERIE_CYLINDER test;
 			memcpy(&test,&phys.cyl,sizeof(EERIE_CYLINDER));
 			bool npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
-			float val=CheckAnythingInCylinder(&phys.cyl,inter.iobj[0],CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
+			float val=CheckAnythingInCylinder(&phys.cyl,entities[0],CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 
 			if ((val > -40.f))
 			{
@@ -3011,8 +3011,8 @@ void ArxGame::ManagePlayerControls()
 			}
 			else
 			{
-				if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
-					(inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
+				if(	(entities[0]->animlayer[1].cur_anim==NULL)||
+					(entities[0]->animlayer[1].cur_anim == entities[0]->anims[ANIM_WAIT]))
 				{
 					lChangeWeapon--;
 
@@ -3175,7 +3175,7 @@ void ArxGame::ManagePlayerControls()
 			if (!CSEND)
 			{
 				CSEND=1;
-				SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE);
+				SendIOScriptEvent(entities[0],SM_EXPLORATIONMODE);
 			}
 		}
 	}
@@ -3184,7 +3184,7 @@ void ArxGame::ManagePlayerControls()
 		if (CSEND)
 		{
 			CSEND=0;
-			SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE);
+			SendIOScriptEvent(entities[0],SM_CURSORMODE);
 		}
 	}
 
@@ -3464,7 +3464,7 @@ void ArxGame::ManageKeyMouse() {
 			{
 				if ((player.equiped[i]!=0)
 					&&	ValidIONum(player.equiped[i])
-					&&	(inter.iobj[player.equiped[i]] == pIO))
+					&&	(entities[player.equiped[i]] == pIO))
 					FlyingOverIO = pIO;
 			}
 		}
@@ -3496,7 +3496,7 @@ void ArxGame::ManageKeyMouse() {
 									bOk = false;
 						}
 
-							Entity * io=inter.iobj[0];
+							Entity * io=entities[0];
 							ANIM_USE * useanim=&io->animlayer[1];
 							long type=ARX_EQUIPMENT_GetPlayerWeaponType();
 
@@ -3881,7 +3881,7 @@ void ArxGame::ManageKeyMouse() {
 						{
 							float ia = ((float)mouseDiffY * ( 1.0f / 5 ) * fd);
 
-							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
+							if ((entities[0]) && EEfabs(ia)>2.f) entities[0]->lastanimtime=0;
 
 							if (INVERTMOUSE) ia=-ia;
 
@@ -4312,7 +4312,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 			if (player.equiped[eq]>0)
 			{
-				Entity * io=inter.iobj[player.equiped[eq]];
+				Entity * io=entities[player.equiped[eq]];
 				float ratio=io->durability/io->max_durability;
 
 				if (ratio<=0.5f)
@@ -4366,7 +4366,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 				if (player.equiped[eq]>0)
 				{
-					Entity * io=inter.iobj[player.equiped[eq]];
+					Entity * io=entities[player.equiped[eq]];
 					float ratio=io->durability/io->max_durability;
 					Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
 					EERIEDrawBitmap2(px, py, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
@@ -4759,83 +4759,83 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 										switch(i)
 										{
 										case RUNE_AAM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "aam", ARX_SOUND_GetDuration(SND_SYMB_AAM));
 											ARX_SOUND_PlayInterface(SND_SYMB_AAM);
 											break;
 										case RUNE_CETRIUS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "cetrius", ARX_SOUND_GetDuration(SND_SYMB_CETRIUS));
 											ARX_SOUND_PlayInterface(SND_SYMB_CETRIUS);
 											break;
 										case RUNE_COMUNICATUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "comunicatum", ARX_SOUND_GetDuration(SND_SYMB_COMUNICATUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_COMUNICATUM);
 											break;
 										case RUNE_COSUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "cosum", ARX_SOUND_GetDuration(SND_SYMB_COSUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_COSUM);
 											break;
 										case RUNE_FOLGORA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "folgora", ARX_SOUND_GetDuration(SND_SYMB_FOLGORA));
 											ARX_SOUND_PlayInterface(SND_SYMB_FOLGORA);
 											break;
 										case RUNE_FRIDD:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "fridd", ARX_SOUND_GetDuration(SND_SYMB_FRIDD));
 											ARX_SOUND_PlayInterface(SND_SYMB_FRIDD);
 											break;
 										case RUNE_KAOM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "kaom", ARX_SOUND_GetDuration(SND_SYMB_KAOM));
 											ARX_SOUND_PlayInterface(SND_SYMB_KAOM);
 											break;
 										case RUNE_MEGA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "mega", ARX_SOUND_GetDuration(SND_SYMB_MEGA));
 											ARX_SOUND_PlayInterface(SND_SYMB_MEGA);
 											break;
 										case RUNE_MORTE:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "morte", ARX_SOUND_GetDuration(SND_SYMB_MORTE));
 											ARX_SOUND_PlayInterface(SND_SYMB_MORTE);
 											break;
 										case RUNE_MOVIS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "movis", ARX_SOUND_GetDuration(SND_SYMB_MOVIS));
 											ARX_SOUND_PlayInterface(SND_SYMB_MOVIS);
 											break;
 										case RUNE_NHI:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "nhi", ARX_SOUND_GetDuration(SND_SYMB_NHI));
 											ARX_SOUND_PlayInterface(SND_SYMB_NHI);
 											break;
 										case RUNE_RHAA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "rhaa", ARX_SOUND_GetDuration(SND_SYMB_RHAA));
 											ARX_SOUND_PlayInterface(SND_SYMB_RHAA);
 											break;
 										case RUNE_SPACIUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "spacium", ARX_SOUND_GetDuration(SND_SYMB_SPACIUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_SPACIUM);
 											break;
 										case RUNE_STREGUM:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "stregum", ARX_SOUND_GetDuration(SND_SYMB_STREGUM));
 											ARX_SOUND_PlayInterface(SND_SYMB_STREGUM);
 											break;
 										case RUNE_TAAR:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "taar", ARX_SOUND_GetDuration(SND_SYMB_TAAR));
 											ARX_SOUND_PlayInterface(SND_SYMB_TAAR);
 											break;
 										case RUNE_TEMPUS:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "tempus", ARX_SOUND_GetDuration(SND_SYMB_TEMPUS));
 											ARX_SOUND_PlayInterface(SND_SYMB_TEMPUS);
 											break;
 										case RUNE_TERA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "tera", ARX_SOUND_GetDuration(SND_SYMB_TERA));
 											ARX_SOUND_PlayInterface(SND_SYMB_TERA);
 											break;
 										case RUNE_VISTA:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "vista", ARX_SOUND_GetDuration(SND_SYMB_VISTA));
 											ARX_SOUND_PlayInterface(SND_SYMB_VISTA);
 											break;
 										case RUNE_VITAE:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "vitae", ARX_SOUND_GetDuration(SND_SYMB_VITAE));
 											ARX_SOUND_PlayInterface(SND_SYMB_VITAE);
 											break;
 										case RUNE_YOK:
-											ARX_SPELLS_RequestSymbolDraw(inter.iobj[0], "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
+											ARX_SPELLS_RequestSymbolDraw(entities[0], "yok", ARX_SOUND_GetDuration(SND_SYMB_YOK));
 											ARX_SOUND_PlayInterface(SND_SYMB_YOK);
 											break;
 										}
@@ -6052,7 +6052,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 	}
 
-	if ((Book_Mode == BOOKMODE_STATS) && (inter.iobj[0]->obj != NULL))
+	if ((Book_Mode == BOOKMODE_STATS) && (entities[0]->obj != NULL))
 	{
 
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -6168,26 +6168,26 @@ void ARX_INTERFACE_ManageOpenedBook()
 		long ti=Project.improve;
 		Project.improve=0;
 
-		if (inter.iobj[0]->invisibility>0.f)
+		if (entities[0]->invisibility>0.f)
 		{
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		}
 
-		INVISIBILITY_OVERRIDE=inter.iobj[0]->invisibility;
+		INVISIBILITY_OVERRIDE=entities[0]->invisibility;
 
 		if (INVISIBILITY_OVERRIDE>0.5f)
 			INVISIBILITY_OVERRIDE=0.5f;
 
 		FORCE_NO_HIDE=1;
 		IN_BOOK_DRAW=1;
-		vector<EERIE_VERTEX> vertexlist = inter.iobj[0]->obj->vertexlist3;
+		vector<EERIE_VERTEX> vertexlist = entities[0]->obj->vertexlist3;
 
 		if(player.useanim.cur_anim != NULL) {
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &player.useanim, &ePlayerAngle, &pos,
+			EERIEDrawAnimQuat(entities[0]->obj, &player.useanim, &ePlayerAngle, &pos,
 			                  checked_range_cast<unsigned long>(Original_framedelay), NULL);
 		} else {
-			DrawEERIEInter(inter.iobj[0]->obj, &ePlayerAngle, &pos, NULL);
+			DrawEERIEInter(entities[0]->obj, &ePlayerAngle, &pos, NULL);
 		}
 
 		INVISIBILITY_OVERRIDE=0;
@@ -6209,7 +6209,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		PDL[1]=SavePDL[1];
 		TOTPDL=iSavePDL;
 
-		inter.iobj[0]->obj->vertexlist3 = vertexlist;
+		entities[0]->obj->vertexlist3 = vertexlist;
 		vertexlist.clear();
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
@@ -6220,7 +6220,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
 
-		Entity * io=inter.iobj[0];
+		Entity * io=entities[0];
 
 		if (io)
 		{
@@ -6229,7 +6229,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_WEAPON]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]	))
 			{
-				if (inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H)
+				if (entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H)
 				{
 					player.useanim.cur_anim = herowait_2h;
 				}
@@ -6240,7 +6240,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_ARMOR]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]	))
 			{
-				Entity * tod=inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+				Entity * tod=entities[player.equiped[EQUIP_SLOT_ARMOR]];
 
 				if (tod)
 				{
@@ -6268,7 +6268,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_LEGGINGS]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]	))
 			{
-				Entity * tod=inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
+				Entity * tod=entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 
 				if (tod)
 				{
@@ -6296,7 +6296,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_HELMET]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_HELMET]	))
 			{
-				Entity * tod=inter.iobj[player.equiped[EQUIP_SLOT_HELMET]];
+				Entity * tod=entities[player.equiped[EQUIP_SLOT_HELMET]];
 
 				if (tod)
 				{
@@ -6328,7 +6328,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_RING_LEFT]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]	))
 			{
-				Entity * todraw=inter.iobj[player.equiped[EQUIP_SLOT_RING_LEFT]];
+				Entity * todraw=entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
 
 				tc=todraw->inv;
 
@@ -6374,7 +6374,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_RING_RIGHT]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]	))
 			{
-				Entity * todraw=inter.iobj[player.equiped[EQUIP_SLOT_RING_RIGHT]];
+				Entity * todraw=entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
 
 				tc=todraw->inv;
 
@@ -6469,13 +6469,13 @@ void ArxGame::DrawAllInterfaceFinish()
 				ManageSpellIcon(i,rrr,0);
 	}
 
-	if (inter.iobj[0])
+	if (entities[0])
 	{
-		for (int i=0;i<inter.iobj[0]->nb_spells_on;i++)
+		for (int i=0;i<entities[0]->nb_spells_on;i++)
 		{
-			if (spells[inter.iobj[0]->spells_on[i]].caster!=0)
+			if (spells[entities[0]->spells_on[i]].caster!=0)
 				if (spellicons[spells[i].type].bDuration)
-					ManageSpellIcon(inter.iobj[0]->spells_on[i],rrr,1);
+					ManageSpellIcon(entities[0]->spells_on[i],rrr,1);
 		}
 	}
 

@@ -550,15 +550,15 @@ void TreatBackgroundDynlights()
 					GLight[i]->tl = -1;
 					Vec3f _pos2;
 
-					for (long l = 0; l < inter.nbmax; l++)
+					for (long l = 0; l < entities.nbmax; l++)
 					{
-						if ((inter.iobj[l] != NULL) &&
-						        (inter.iobj[l]->ioflags & IO_MARKER))
+						if ((entities[l] != NULL) &&
+						        (entities[l]->ioflags & IO_MARKER))
 						{
-							GetItemWorldPosition(inter.iobj[l], &_pos2);
+							GetItemWorldPosition(entities[l], &_pos2);
 
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "douse");
+								SendIOScriptEvent(entities[l], SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -571,15 +571,15 @@ void TreatBackgroundDynlights()
 				{
 					Vec3f _pos2;
 
-					for (long l = 0; l < inter.nbmax; l++)
+					for (long l = 0; l < entities.nbmax; l++)
 					{
-						if ((inter.iobj[l] != NULL) &&
-						        (inter.iobj[l]->ioflags & IO_MARKER))
+						if ((entities[l] != NULL) &&
+						        (entities[l]->ioflags & IO_MARKER))
 						{
-							GetItemWorldPosition(inter.iobj[l], &_pos2);
+							GetItemWorldPosition(entities[l], &_pos2);
 
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "fire");
+								SendIOScriptEvent(entities[l], SM_CUSTOM, "fire");
 							}
 						}
 					}

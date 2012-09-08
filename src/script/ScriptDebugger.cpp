@@ -142,7 +142,7 @@ void DANAE_DEBUGGER_Update()
 	Entity * io;
 
 	if (ValidIONum(LastSelectedIONum))
-		io = inter.iobj[LastSelectedIONum];
+		io = entities[LastSelectedIONum];
 	else io = NULL;
 
 	if (lastio != io)
@@ -190,7 +190,7 @@ void DANAE_DEBUGGER_Update()
 	tio = NULL;
 
 	if (ValidIONum(io->targetinfo))
-		tio = inter.iobj[io->targetinfo];
+		tio = entities[io->targetinfo];
 	else if (io->targetinfo == -2)
 		tio = io;
 

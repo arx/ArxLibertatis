@@ -100,7 +100,7 @@ public:
 		
 		FRAME_COUNT = 0;
 		
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		
 		if(!t || !(t->ioflags & IO_CAMERA)) {
 			return Failed;

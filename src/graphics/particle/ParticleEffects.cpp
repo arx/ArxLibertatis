@@ -605,11 +605,11 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 
 	float nearest_dist = std::numeric_limits<float>::max();
 	long nearest=-1;
-	long count=inter.iobj[source]->obj->nbgroups;
+	long count=entities[source]->obj->nbgroups;
 
 	for (long i=0;i<count;i+=2)
 	{
-		float dist = distSqr(*pos, inter.iobj[source]->obj->vertexlist3[inter.iobj[source]->obj->grouplist[i].origin].v);
+		float dist = distSqr(*pos, entities[source]->obj->vertexlist3[entities[source]->obj->grouplist[i].origin].v);
 
 		if (dist<nearest_dist)
 		{
@@ -645,7 +645,7 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
 			
 				pd->timcreation	=	(long)arxtime;
 			pd->special		=	GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
-			pd->source		=	&inter.iobj[source]->obj->vertexlist3[nearest].v;
+			pd->source		=	&entities[source]->obj->vertexlist3[nearest].v;
 			pd->sourceionum	=	source;
 			pd->tolive		=	1200+spawn_nb*5;
 			totdelay		+=	45 + Random::get(0, 150 - spawn_nb);
@@ -908,10 +908,10 @@ void ManageTorch()
 		}
 	}
 
-	if (inter.iobj && inter.iobj[0] && inter.iobj[0]->obj
-		&& (inter.iobj[0]->obj->fastaccess.head_group_origin>-1))
+	if (entities.iobj && entities[0] && entities[0]->obj
+		&& (entities[0]->obj->fastaccess.head_group_origin>-1))
 	{
-		el->pos.y=inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.head_group_origin].v.y;
+		el->pos.y=entities[0]->obj->vertexlist3[entities[0]->obj->fastaccess.head_group_origin].v.y;
 	}
 }
 #define DIV_MAX_FLARELIFE	0.00025f
@@ -1281,34 +1281,34 @@ void Add3DBoom(Vec3f * position) {
 		player.physics.forces.z+=vect.z*power;
 	}
 
-	for (long i=0;i<inter.nbmax;i++)
+	for (long i=0;i<entities.nbmax;i++)
 	{		
-		if ( inter.iobj[i] != NULL )
+		if ( entities[i] != NULL )
 		{
-			if ( inter.iobj[i]->show!=1 ) continue;
+			if ( entities[i]->show!=1 ) continue;
 
-			if ( !(inter.iobj[i]->ioflags & IO_ITEM) ) continue;
+			if ( !(entities[i]->ioflags & IO_ITEM) ) continue;
 
-			if ( inter.iobj[i]->obj)
-				if ( inter.iobj[i]->obj->pbox)
+			if ( entities[i]->obj)
+				if ( entities[i]->obj->pbox)
 				{
-					for (long k=0;k<inter.iobj[i]->obj->pbox->nb_physvert;k++)
+					for (long k=0;k<entities[i]->obj->pbox->nb_physvert;k++)
 					{
-						float dist = fdist(inter.iobj[i]->obj->pbox->vert[k].pos, *position);
+						float dist = fdist(entities[i]->obj->pbox->vert[k].pos, *position);
 
 						if (dist<300.f)
 						{
-							inter.iobj[i]->obj->pbox->active=1;
-							inter.iobj[i]->obj->pbox->stopcount=0;
+							entities[i]->obj->pbox->active=1;
+							entities[i]->obj->pbox->stopcount=0;
 							float onedist=1.f/dist;
 							Vec3f vect;
-							vect.x=(inter.iobj[i]->obj->pbox->vert[k].pos.x-position->x)*onedist; 
-							vect.y=(inter.iobj[i]->obj->pbox->vert[k].pos.y-position->y)*onedist; 
-							vect.z=(inter.iobj[i]->obj->pbox->vert[k].pos.z-position->z)*onedist;
+							vect.x=(entities[i]->obj->pbox->vert[k].pos.x-position->x)*onedist; 
+							vect.y=(entities[i]->obj->pbox->vert[k].pos.y-position->y)*onedist; 
+							vect.z=(entities[i]->obj->pbox->vert[k].pos.z-position->z)*onedist;
 							float power = (300.f - dist) * 10.f; 
-							inter.iobj[i]->obj->pbox->vert[k].velocity.x+=vect.x*power;
-							inter.iobj[i]->obj->pbox->vert[k].velocity.y+=vect.y*power;
-							inter.iobj[i]->obj->pbox->vert[k].velocity.z+=vect.z*power;
+							entities[i]->obj->pbox->vert[k].velocity.x+=vect.x*power;
+							entities[i]->obj->pbox->vert[k].velocity.y+=vect.y*power;
+							entities[i]->obj->pbox->vert[k].velocity.z+=vect.z*power;
 						}
 					}
 				}
@@ -1873,12 +1873,12 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 				part->timcreation+=part->delay;
 				part->delay=0;
 
-				if ((part->special & DELAY_FOLLOW_SOURCE)  && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
+				if ((part->special & DELAY_FOLLOW_SOURCE)  && (part->sourceionum>=0) && (entities[part->sourceionum]))
 				{
 					part->ov.x = part->source->x; 
 					part->ov.y = part->source->y; 
 					part->ov.z = part->source->z; 
-					Entity * target=inter.iobj[part->sourceionum];
+					Entity * target=entities[part->sourceionum];
 					Vec3f vector;
 					vector.x=part->ov.x-target->pos.x;
 					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
@@ -1994,13 +1994,13 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			
 			val=(part->tolive-framediff)*( 1.0f / 100 );
 			
-			if ((part->special & FOLLOW_SOURCE) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
+			if ((part->special & FOLLOW_SOURCE) && (part->sourceionum>=0) && (entities[part->sourceionum]))
 			{
 				inn.p.x=in.p.x=part->source->x;
 				inn.p.y=in.p.y=part->source->y;
 				inn.p.z=in.p.z=part->source->z;
 			}
-			else if ((part->special & FOLLOW_SOURCE2) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
+			else if ((part->special & FOLLOW_SOURCE2) && (part->sourceionum>=0) && (entities[part->sourceionum]))
 			{
 				inn.p.x=in.p.x=part->source->x+part->move.x*val;
 				inn.p.y=in.p.y=part->source->y+part->move.y*val;

@@ -66,7 +66,7 @@ public:
 	Result execute(Context & context) {
 		
 		string target = context.getWord();
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		
 		float val = clamp(context.getFloat(), 0.f, 100.f);
 		

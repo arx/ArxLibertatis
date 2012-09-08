@@ -143,7 +143,7 @@ public:
 			}
 			for(int i = 0; i < MAX_EQUIPED; i++) {
 				if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
-					if(inter.iobj[player.equiped[i]] == ioo) {
+					if(entities[player.equiped[i]] == ioo) {
 						// the init script was sneaky and equiped the item
 						reInsert = false;
 					}
@@ -156,9 +156,9 @@ public:
 				} else {
 					for(int i = 0; i < MAX_EQUIPED; i++) {
 						if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
-							if(inter.iobj[player.equiped[i]] == io) {
-								ARX_EQUIPMENT_UnEquip(inter.iobj[0], io, 1);
-								ARX_EQUIPMENT_Equip(inter.iobj[0], ioo);
+							if(entities[player.equiped[i]] == io) {
+								ARX_EQUIPMENT_UnEquip(entities[0], io, 1);
+								ARX_EQUIPMENT_Equip(entities[0], ioo);
 							}
 						}
 					}
@@ -202,8 +202,8 @@ public:
 		if(io->ioflags & IO_NO_COLLISIONS) {
 			
 			bool colliding = false;
-			for(long k = 0; k < inter.nbmax; k++) {
-				Entity * ioo = inter.iobj[k];
+			for(long k = 0; k < entities.nbmax; k++) {
+				Entity * ioo = entities[k];
 				if(ioo && IsCollidingIO(io, ioo)) {
 					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = ioo;
@@ -243,7 +243,7 @@ public:
 			res::path file = res::path::load(context.getWord()); // object to spawn.
 			
 			string target = context.getWord(); // object ident for position
-			Entity * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: npc " << file << ' ' << target;
 				return Failed;
@@ -412,13 +412,13 @@ public:
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
-		long t = inter.getById(name);
+		long t = entities.getById(name);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << name;
 			return Failed;
 		}
 		
-		LinkObjToMe(context.getIO(), inter.iobj[t], attach);
+		LinkObjToMe(context.getIO(), entities[t], attach);
 		
 		return Success;
 	}
@@ -437,7 +437,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		
 		if(t == -1) {
 			context.skipStatement();
@@ -478,9 +478,9 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		
-		if(!ValidIONum(t) || !hasVisibility(context.getIO(), inter.iobj[t])) {
+		if(!ValidIONum(t) || !hasVisibility(context.getIO(), entities[t])) {
 			context.skipStatement();
 		}
 		
@@ -503,7 +503,7 @@ public:
 		}
 		
 		string target = context.getWord();
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		
 		bool hide = context.getBool();
 		
@@ -608,7 +608,7 @@ public:
 		
 		if(!initpos) {
 			
-			Entity * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -621,7 +621,7 @@ public:
 			}
 			
 			if(teleport_player) {
-				ARX_INTERACTIVE_Teleport(inter.iobj[0], &pos);
+				ARX_INTERACTIVE_Teleport(entities[0], &pos);
 				return Success;
 			}
 			
@@ -642,7 +642,7 @@ public:
 			if(teleport_player) {
 				Vec3f pos;
 				if(GetItemWorldPosition(io, &pos)) {
-					ARX_INTERACTIVE_Teleport(inter.iobj[0], &pos);
+					ARX_INTERACTIVE_Teleport(entities[0], &pos);
 				}
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
@@ -687,7 +687,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		if(!t) {
 			return Success;
 		}
@@ -748,7 +748,7 @@ public:
 		
 		DebugScript(' ' << type << ' ' << target);
 		
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

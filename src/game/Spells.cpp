@@ -275,7 +275,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -285,7 +285,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -299,7 +299,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -322,7 +322,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -335,7 +335,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -345,7 +345,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -358,7 +358,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -388,7 +388,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -404,7 +404,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -442,7 +442,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -453,7 +453,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -463,7 +463,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -479,7 +479,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -496,7 +496,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 			if (ValidIONum(spells[i].target))
 			{
-				*pos = inter.iobj[spells[i].target]->pos;
+				*pos = entities[spells[i].target]->pos;
 				return true;
 			}
 
@@ -527,7 +527,7 @@ bool GetSpellPosition(Vec3f * pos,long i)
 
 	if (ValidIONum(spells[i].caster))
 	{
-		*pos = inter.iobj[spells[i].caster]->pos;
+		*pos = entities[spells[i].caster]->pos;
 		return true;
 	}
 
@@ -548,7 +548,7 @@ void LaunchAntiMagicField(size_t ident) {
 		
 		Vec3f pos;
 		GetSpellPosition(&pos,n);
-		if(closerThan(pos, inter.iobj[spells[ident].caster]->pos, 600.f)) {
+		if(closerThan(pos, entities[spells[ident].caster]->pos, 600.f)) {
 			if(spells[n].type != SPELL_CREATE_FIELD) {
 				spells[n].tolive = 0;
 			} else if(spells[ident].caster == 0 && spells[n].caster == 0) {
@@ -561,9 +561,9 @@ void LaunchAntiMagicField(size_t ident) {
 //-----------------------------------------------------------------------------
 void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
 {
-	if (caster < 0 ||  spell < 0 || !inter.iobj[caster]) return;
+	if (caster < 0 ||  spell < 0 || !entities[caster]) return;
 
-	Entity *io = inter.iobj[caster];
+	Entity *io = entities[caster];
 	void *ptr;
 
 	ptr = realloc(io->spells_on, sizeof(long) * (io->nb_spells_on + 1));
@@ -595,7 +595,7 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 {
 	if (caster < 0 || spell < 0) return;
 
-	Entity *io = inter.iobj[caster];
+	Entity *io = entities[caster];
 
 	if (!io || !io->nb_spells_on) return;
 
@@ -621,7 +621,7 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 }
 void ARX_SPELLS_RemoveMultiSpellOn(long spell_id)
 {
-	for (long i=0;i<inter.nbmax;i++)
+	for (long i=0;i<entities.nbmax;i++)
 	{
 		ARX_SPELLS_RemoveSpellOn(i,spells[spell_id].type);
 	}
@@ -1037,16 +1037,16 @@ void SPELLCAST_Notify(long num)
 
 	if (MakeSpellName(spell,spells[num].type))
 	{
-		for (long i=0;i<inter.nbmax;i++) 
+		for (long i=0;i<entities.nbmax;i++) 
 		{
-			if (inter.iobj[i]!=NULL) 
+			if (entities[i]!=NULL) 
 			{
-				if (source >= 0) EVENT_SENDER = inter.iobj[source];
+				if (source >= 0) EVENT_SENDER = entities[source];
 				else EVENT_SENDER = NULL;
 
 				char param[256];
 				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-				SendIOScriptEvent(inter.iobj[i], SM_SPELLCAST, param);
+				SendIOScriptEvent(entities[i], SM_SPELLCAST, param);
 			}
 		}	
 	}	
@@ -1066,12 +1066,12 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 
 	if (MakeSpellName(spell,spells[num].type))
 	{
-		if (source >= 0) EVENT_SENDER = inter.iobj[source];
+		if (source >= 0) EVENT_SENDER = entities[source];
 		else EVENT_SENDER = NULL;
 
 		char param[256];
 		sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-		SendIOScriptEvent(inter.iobj[spells[num].target], SM_SPELLCAST, param);
+		SendIOScriptEvent(entities[spells[num].target], SM_SPELLCAST, param);
 	}	
 }
 
@@ -1088,7 +1088,7 @@ void SPELLEND_Notify(long num)
 	if (spells[num].type==SPELL_CONFUSE)
 	{
 		if (ValidIONum(source))
-			EVENT_SENDER = inter.iobj[source];
+			EVENT_SENDER = entities[source];
 		else 
 			EVENT_SENDER = NULL;
 
@@ -1097,7 +1097,7 @@ void SPELLEND_Notify(long num)
 			if (MakeSpellName(spell,spells[num].type))
 			{
 				char param[128];
-				Entity * targ= inter.iobj[spells[num].target];
+				Entity * targ= entities[spells[num].target];
 				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 				SendIOScriptEvent(targ,SM_SPELLEND,param);
 			}
@@ -1108,18 +1108,18 @@ void SPELLEND_Notify(long num)
 
 	// we only notify player spells end.
 	if (MakeSpellName(spell,spells[num].type))
-		for (long i=0;i<inter.nbmax;i++)
-			if (inter.iobj[i])
+		for (long i=0;i<entities.nbmax;i++)
+			if (entities[i])
 			{
 				char param[128];
 
 				if (ValidIONum(source))
-					EVENT_SENDER = inter.iobj[source];
+					EVENT_SENDER = entities[source];
 				else 
 					EVENT_SENDER = NULL;
 
 				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-				SendIOScriptEvent(inter.iobj[i],SM_SPELLEND,param);
+				SendIOScriptEvent(entities[i],SM_SPELLEND,param);
 			}
 }
 
@@ -1149,9 +1149,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	unsigned long curtime = (unsigned long)(arxtime);
 
 	//1
-	for (long i=0;i<inter.nbmax;i++)
+	for (long i=0;i<entities.nbmax;i++)
 	{
-		Entity * io=inter.iobj[i];
+		Entity * io=entities[i];
 
 		if (io) 
 		{
@@ -1234,7 +1234,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 			}
 
 			if(io->symboldraw) {
-				SYMBOL_DRAW * sd = inter.iobj[i]->symboldraw;
+				SYMBOL_DRAW * sd = entities[i]->symboldraw;
 				long tim=curtime-sd->starttime;
  
 
@@ -1281,7 +1281,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				float div_ti=1.f/ti;
 
-				if (io != inter.iobj[0])
+				if (io != entities[0])
 				{
 					old_pos.x=pos1.x;
 					old_pos.y=pos1.y;
@@ -1316,8 +1316,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							float ratio=(float)(newtime)*div_ti;
 							pos1.x+=(short)(float)(ratio*(float)vect.x);
 							pos1.y+=(short)(float)(ratio*(float)vect.y);
-							AddFlare(&pos1,0.1f,1,inter.iobj[i]);
-							FlareLine(&old_pos,&pos1,inter.iobj[i]);
+							AddFlare(&pos1,0.1f,1,entities[i]);
+							FlareLine(&old_pos,&pos1,entities[i]);
 							break;
 						}
 
@@ -1381,10 +1381,10 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
-							if (io == inter.iobj[0])
-								AddFlare2(&pos,0.1f,1,inter.iobj[i]);
+							if (io == entities[0])
+								AddFlare2(&pos,0.1f,1,entities[i]);
 							else
-								AddFlare(&pos,0.1f,1,inter.iobj[i]);
+								AddFlare(&pos,0.1f,1,entities[i]);
 
 
 							break;
@@ -1404,9 +1404,9 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 //-----------------------------------------------------------------------------
 void ARX_SPELLS_ClearAllSymbolDraw()
 {
-	for (long i(0); i < inter.nbmax; i++) 
-		if (inter.iobj[i] && inter.iobj[i]->symboldraw)
-			free(inter.iobj[i]->symboldraw), inter.iobj[i]->symboldraw = NULL;
+	for (long i(0); i < entities.nbmax; i++) 
+		if (entities[i] && entities[i]->symboldraw)
+			free(entities[i]->symboldraw), entities[i]->symboldraw = NULL;
 }
 
 static void ARX_SPELLS_AnalyseSYMBOL() {
@@ -2366,7 +2366,7 @@ void ARX_SPELLS_ManageMagic()
 	if (ARXmenu.currentmode!=AMCM_OFF)
 		return;
 
-	Entity * io=inter.iobj[0];
+	Entity * io=entities[0];
 
 	if (!io) return;
 
@@ -2395,8 +2395,8 @@ void ARX_SPELLS_ManageMagic()
 			bGToggleCombatModeWithKey=false;
 
 			
-			ResetAnim(&inter.iobj[0]->animlayer[1]);
-			inter.iobj[0]->animlayer[1].flags&=~EA_LOOP;
+			ResetAnim(&entities[0]->animlayer[1]);
+			entities[0]->animlayer[1].flags&=~EA_LOOP;
 		}
 
 		if (TRUE_PLAYER_MOUSELOOK_ON)
@@ -2409,10 +2409,10 @@ void ARX_SPELLS_ManageMagic()
 		{
 			player.doingmagic=2;
 
-			if (inter.iobj[0]->anims[ANIM_CAST_START])
+			if (entities[0]->anims[ANIM_CAST_START])
 			{
-				AcquireLastAnim(inter.iobj[0]);
-				ANIM_Set(&inter.iobj[0]->animlayer[1],inter.iobj[0]->anims[ANIM_CAST_START]);
+				AcquireLastAnim(entities[0]);
+				ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_CAST_START]);
 				MAGICMODE = 1;
 			}
 		}
@@ -2481,10 +2481,10 @@ void ARX_SPELLS_ManageMagic()
 		{
 			player.doingmagic=0;//1
 
-			if (inter.iobj[0]->anims[ANIM_CAST_END])
+			if (entities[0]->anims[ANIM_CAST_END])
 			{
-				AcquireLastAnim(inter.iobj[0]);
-				ANIM_Set(&inter.iobj[0]->animlayer[1],inter.iobj[0]->anims[ANIM_CAST_END]);
+				AcquireLastAnim(entities[0]);
+				ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_CAST_END]);
 			}
 			
 			ARX_FLARES_broken=3;
@@ -2523,10 +2523,10 @@ void ARX_SPELLS_ManageMagic()
 		{
 			if (!ARX_SPELLS_AnalyseSPELL())
 			{
-				if (inter.iobj[0]->anims[ANIM_CAST])
+				if (entities[0]->anims[ANIM_CAST])
 				{
-					AcquireLastAnim(inter.iobj[0]);
-					ANIM_Set(&inter.iobj[0]->animlayer[1],inter.iobj[0]->anims[ANIM_CAST]);
+					AcquireLastAnim(entities[0]);
+					ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_CAST]);
 				}
 			}
 		}
@@ -2592,7 +2592,7 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 
 			if(_bSound) {
 				ARX_SPEECH_Add(getLocalised("player_cantcast"));
-				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
+				ARX_SPEECH_AddSpeech(entities[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
 			return 0;
@@ -2601,17 +2601,17 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 		player.mana -= cost;
 		return 1;
 	}
-	else if (spells[num].caster<inter.nbmax)
+	else if (spells[num].caster<entities.nbmax)
 	{
-		if (inter.iobj[spells[num].caster]->ioflags & IO_NPC)
+		if (entities[spells[num].caster]->ioflags & IO_NPC)
 		{
-			if (inter.iobj[spells[num].caster]->_npcdata->mana<cost)
+			if (entities[spells[num].caster]->_npcdata->mana<cost)
 			{
 				ARX_SPELLS_FizzleNoMana(num);
 				return 0;
 			}
 
-			inter.iobj[spells[num].caster]->_npcdata->mana-=cost;
+			entities[spells[num].caster]->_npcdata->mana-=cost;
 			return 1;
 		}		
 	}
@@ -2650,10 +2650,10 @@ long TemporaryGetSpellTarget(const Vec3f *from)
 	float mindist = std::numeric_limits<float>::max();
 	long found(0);
 
-	for (long i(1); i < inter.nbmax; i++)
-		if (inter.iobj[i] && inter.iobj[i]->ioflags & IO_NPC)
+	for (long i(1); i < entities.nbmax; i++)
+		if (entities[i] && entities[i]->ioflags & IO_NPC)
 		{
-			float dist = distSqr(*from, inter.iobj[i]->pos);
+			float dist = distSqr(*from, entities[i]->pos);
 
 			if (dist < mindist)
 			{
@@ -2742,9 +2742,9 @@ void ARX_SPELLS_ClearAll() {
 		}
 	}
 	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i]) {
-			ARX_SPELLS_RemoveAllSpellsOn(inter.iobj[i]);
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i]) {
+			ARX_SPELLS_RemoveAllSpellsOn(entities[i]);
 		}
 	}
 }
@@ -2858,7 +2858,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 
 	if(_bSound) {
 		ARX_SPEECH_Add(getLocalised("player_cantcast"));
-		ARX_SPEECH_AddSpeech(inter.iobj[0], "player_cantcast", ANIM_TALK_NEUTRAL);
+		ARX_SPEECH_AddSpeech(entities[0], "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 
 	return 0;
@@ -2890,18 +2890,18 @@ void ARX_SPELLS_Precast_Check()
 	{
 		if ((Precast[i].typ != SPELL_NONE) && (Precast[i].launch_time>0) &&(float(arxtime) >= Precast[i].launch_time))
 		{
-			ANIM_USE *ause1 = &inter.iobj[0]->animlayer[1];
+			ANIM_USE *ause1 = &entities[0]->animlayer[1];
 			
 			if (player.Interface & INTER_COMBATMODE)
 			{
 				WILLRETURNTOCOMBATMODE=1;
 				ARX_INTERFACE_Combat_Mode(0);
 				bGToggleCombatModeWithKey=false;
-				ResetAnim(&inter.iobj[0]->animlayer[1]);
-				inter.iobj[0]->animlayer[1].flags&=~EA_LOOP;
+				ResetAnim(&entities[0]->animlayer[1]);
+				entities[0]->animlayer[1].flags&=~EA_LOOP;
 			}
 
-			if ((ause1->cur_anim) && (ause1->cur_anim==inter.iobj[0]->anims[ANIM_CAST]))
+			if ((ause1->cur_anim) && (ause1->cur_anim==entities[0]->anims[ANIM_CAST]))
 			{
 				if (ause1->ctime>ause1->cur_anim->anims[ause1->altidx_cur]->anim_time-550)
 				{
@@ -2923,10 +2923,10 @@ void ARX_SPELLS_Precast_Check()
 					}
 				}
 			} else {
-				ANIM_USE * ause1 = &inter.iobj[0]->animlayer[1];
-				AcquireLastAnim(inter.iobj[0]);
-				FinishAnim(inter.iobj[0], ause1->cur_anim);
-				ANIM_Set(ause1, inter.iobj[0]->anims[ANIM_CAST]);	
+				ANIM_USE * ause1 = &entities[0]->animlayer[1];
+				AcquireLastAnim(entities[0]);
+				FinishAnim(entities[0], ause1->cur_anim);
+				ANIM_Set(ause1, entities[0]->anims[ANIM_CAST]);	
 			}
 		}
 	}
@@ -3319,11 +3319,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if ( !ValidIONum( source ) )
 				return false;
 
-			Vec3f cpos = inter.iobj[source]->pos;
+			Vec3f cpos = entities[source]->pos;
 
-			for ( long ii = 1 ; ii < inter.nbmax ; ii++ )
+			for ( long ii = 1 ; ii < entities.nbmax ; ii++ )
 			{
-				Entity * ioo = inter.iobj[ii];
+				Entity * ioo = entities[ii];
 
 				if (	( ioo )
 					&&	( ioo->ioflags & IO_NPC )
@@ -3372,11 +3372,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		return false;
 	}
 
-	if ( source >= 0 && source < inter.nbmax )
+	if ( source >= 0 && source < entities.nbmax )
 	{
 		if ( spellicons[typ].bAudibleAtStart )
 		{
-			ARX_NPC_SpawnAudibleSound(&inter.iobj[source]->pos,inter.iobj[source]);
+			ARX_NPC_SpawnAudibleSound(&entities[source]->pos,entities[source]);
 		}
 	}
 
@@ -3384,20 +3384,20 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	spells[i].target = target;	// No target if <0
 
 	if ( target < 0 )
-		spells[i].target = TemporaryGetSpellTarget( &inter.iobj[spells[i].caster]->pos );
+		spells[i].target = TemporaryGetSpellTarget( &entities[spells[i].caster]->pos );
 
 	// Create hand position if a hand is defined
 	if ( spells[i].caster == 0 ) 
 	{
-		spells[i].hand_group = inter.iobj[spells[i].caster]->obj->fastaccess.primary_attach;
+		spells[i].hand_group = entities[spells[i].caster]->obj->fastaccess.primary_attach;
 	}
 	else 
 	{
-		spells[i].hand_group = inter.iobj[spells[i].caster]->obj->fastaccess.left_attach;
+		spells[i].hand_group = entities[spells[i].caster]->obj->fastaccess.left_attach;
 	}
 
 	if(spells[i].hand_group != -1) {
-		spells[i].hand_pos = inter.iobj[spells[i].caster]->obj->vertexlist3[spells[i].hand_group].v;
+		spells[i].hand_pos = entities[spells[i].caster]->obj->vertexlist3[spells[i].hand_group].v;
 	}
 
 	if(source == 0) {
@@ -3407,7 +3407,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	} else {
 		// IO source
 		spells[i].caster_level = level < 1 ? 1 : level > 10 ? 10 : static_cast<float>(level);
-		spells[i].caster_pos = inter.iobj[source]->pos;
+		spells[i].caster_pos = entities[source]->pos;
 	}
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
@@ -3425,17 +3425,17 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		}
 		else
 		{
-			// TODO inter.iobj[target] with target < 0 ??? - uh oh!
-			spells[i].target_pos.x=inter.iobj[target]->pos.x-EEsin(radians(inter.iobj[target]->angle.b))*60.f;
-			spells[i].target_pos.y=inter.iobj[target]->pos.y-120.f;
-			spells[i].target_pos.z=inter.iobj[target]->pos.z+EEcos(radians(inter.iobj[target]->angle.b))*60.f;
+			// TODO entities[target] with target < 0 ??? - uh oh!
+			spells[i].target_pos.x=entities[target]->pos.x-EEsin(radians(entities[target]->angle.b))*60.f;
+			spells[i].target_pos.y=entities[target]->pos.y-120.f;
+			spells[i].target_pos.z=entities[target]->pos.z+EEcos(radians(entities[target]->angle.b))*60.f;
 		}
 	} else if (target==0) {
 		// player target
 		spells[i].target_pos = player.pos;
 	} else {
 		// IO target
-		spells[i].target_pos = inter.iobj[target]->pos;
+		spells[i].target_pos = entities[target]->pos;
 	}
 	
 	spells[i].flags=flags;
@@ -3820,7 +3820,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_ARMOR: {
 			
-			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
@@ -3877,7 +3877,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_LOWER_ARMOR: {
 			
-			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
@@ -4015,8 +4015,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			if(spells[i].caster >= 0 && spells[i].target < inter.nbmax) {
-				Entity * t = inter.iobj[spells[i].target];
+			if(spells[i].caster >= 0 && spells[i].target < entities.nbmax) {
+				Entity * t = entities[spells[i].target];
 				if(t) {
 					t->speed_modif += spells[i].caster_level * 0.1f;
 				}
@@ -4043,8 +4043,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				
 				if(spells[n].type == SPELL_INVISIBILITY) {
 					if(ValidIONum(spells[n].target) && ValidIONum(spells[i].caster)) {
-						if(closerThan(inter.iobj[spells[n].target]->pos,
-						   inter.iobj[spells[i].caster]->pos, 1000.f)) {
+						if(closerThan(entities[spells[n].target]->pos,
+						   entities[spells[i].caster]->pos, 1000.f)) {
 							spells[n].tolive = 0;
 						}
 					}
@@ -4073,7 +4073,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			} else {
 				target = spells[i].caster_pos;
 				if(ValidIONum(spells[i].caster)) {
-					Entity * c = inter.iobj[spells[i].caster];
+					Entity * c = entities[spells[i].caster];
 					if(c->ioflags & IO_NPC) {
 						target.x -= EEsin(radians(c->angle.b)) * 30.f;
 						target.y -= 80.f;
@@ -4089,20 +4089,20 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				anglea = player.angle.a, angleb = player.angle.b;
 			} else {
 				
-				Vec3f start = inter.iobj[spells[i].caster]->pos;
+				Vec3f start = entities[spells[i].caster]->pos;
 				if(ValidIONum(spells[i].caster)
-				   && (inter.iobj[spells[i].caster]->ioflags & IO_NPC)) {
+				   && (entities[spells[i].caster]->ioflags & IO_NPC)) {
 					start.y -= 80.f;
 				}
 				
-				Entity * _io = inter.iobj[spells[i].caster];
+				Entity * _io = entities[spells[i].caster];
 				if(ValidIONum(_io->targetinfo)) {
-					const Vec3f & end = inter.iobj[_io->targetinfo]->pos;
+					const Vec3f & end = entities[_io->targetinfo]->pos;
 					float d = dist(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
 					anglea = degrees(getAngle(start.y, start.z, end.y, end.z + d));
 				}
 				
-				angleb = inter.iobj[spells[i].caster]->angle.b;
+				angleb = entities[spells[i].caster]->angle.b;
 			}
 			
 			effect->Create(target, MAKEANGLE(angleb), anglea, spells[i].caster_level);
@@ -4153,8 +4153,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target = player.pos + Vec3f(0.f, 160.f, 0.f);
 				angleb = player.angle.b;
 			} else {
-				target = inter.iobj[spells[i].caster]->pos;
-				angleb = inter.iobj[spells[i].caster]->angle.b;
+				target = entities[spells[i].caster]->pos;
+				angleb = entities[spells[i].caster]->angle.b;
 			}
 			angleb = MAKEANGLE(angleb);
 			target.x -= EEsin(radians(angleb)) * 150.0f;
@@ -4190,7 +4190,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CBless * effect = new CBless();
 			effect->spellinstance = i;
-			Vec3f target = inter.iobj[spells[i].caster]->pos;
+			Vec3f target = entities[spells[i].caster]->pos;
 			effect->Create(target, MAKEANGLE(player.angle.b));
 			effect->SetDuration(20000);
 			spells[i].pSpellFx = effect;
@@ -4241,7 +4241,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					default: break;
 				}
 				
-				Entity * caster = inter.iobj[spells[i].caster];
+				Entity * caster = entities[spells[i].caster];
 				if(cancel && closerThan(pos, caster->pos, 400.f)) {
 					valid++;
 					if(spells[n].caster_level <= spells[i].caster_level) {
@@ -4253,7 +4253,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			if(valid > dispelled) {
 				// Some fileds could not be dispelled
-				ARX_SPEECH_AddSpeech(inter.iobj[0], "player_not_skilled_enough",
+				ARX_SPEECH_AddSpeech(entities[0], "player_not_skilled_enough",
 				                     ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 			}
 			
@@ -4270,7 +4270,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION);
 			
-			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
@@ -4317,7 +4317,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_COLD_PROTECTION: {
 			
-			long idx = ARX_SPELLS_GetSpellOn(inter.iobj[spells[i].target], typ);
+			long idx = ARX_SPELLS_GetSpellOn(entities[spells[i].target], typ);
 			if(idx >= 0) {
 				spells[idx].tolive = 0;
 			}
@@ -4403,8 +4403,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			Vec3f target = spells[i].target_pos;
 			if(spells[i].target == 0) {
 				target.y -= 200.f;
-			} else if(spells[i].target > 0 && inter.iobj[spells[i].target]) {
-				target.y += inter.iobj[spells[i].target]->physics.cyl.height - 50.f;
+			} else if(spells[i].target > 0 && entities[spells[i].target]) {
+				target.y += entities[spells[i].target]->physics.cyl.height - 50.f;
 			}
 			
 			effect->Create(target, MAKEANGLE(player.angle.b));
@@ -4432,7 +4432,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			CRuneOfGuarding * effect = new CRuneOfGuarding();
 			effect->spellinstance = i;
-			effect->Create(inter.iobj[spells[i].caster]->pos, 0);
+			effect->Create(entities[spells[i].caster]->pos, 0);
 			effect->SetDuration(spells[i].tolive);
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
@@ -4463,7 +4463,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].tolive = 200000000;
 				player.levitate = 1;
 			} else {
-				target = inter.iobj[spells[i].target]->pos;
+				target = entities[spells[i].target]->pos;
 			}
 			
 			effect->Create(16, 50.f, 100.f, 80.f, &target, spells[i].tolive);
@@ -4486,7 +4486,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				player.poison -= std::min(player.poison, cure);
 				ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
 			} else if (ValidIONum(spells[i].target)) {
-				Entity * io = inter.iobj[spells[i].target];
+				Entity * io = entities[spells[i].target];
 				if(io->ioflags & IO_NPC) {
 					io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 				}
@@ -4556,7 +4556,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			if(spells[i].caster == 0) {
 				ang = player.angle.b;
 			} else {
-				ang = inter.iobj[spells[i].caster]->angle.b;
+				ang = entities[spells[i].caster]->angle.b;
 			}
 			effect->Create(Vec3f::ZERO, MAKEANGLE(ang));
 			spells[i].pSpellFx = effect;
@@ -4581,9 +4581,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target = player.pos + Vec3f(0.f, 170.f, 0.f);
 				beta = MAKEANGLE(player.angle.b);
 			} else {
-				target = inter.iobj[spells[i].caster]->pos;
-				beta = MAKEANGLE(inter.iobj[spells[i].caster]->angle.b);
-				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
+				target = entities[spells[i].caster]->pos;
+				beta = MAKEANGLE(entities[spells[i].caster]->angle.b);
+				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
 				target.x -= EEsin(radians(beta)) * 300.f;
@@ -4643,18 +4643,18 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float resist_magic = 0.f;
 			if(spells[i].target == 0 && spells[i].caster_level <= player.level) {
 				resist_magic = player.resist_magic;
-			} else if(inter.iobj[spells[i].target]->ioflags & IO_NPC) {
-				resist_magic = inter.iobj[spells[i].target]->_npcdata->resist_magic;
+			} else if(entities[spells[i].target]->ioflags & IO_NPC) {
+				resist_magic = entities[spells[i].target]->_npcdata->resist_magic;
 			}
 			if(rnd() * 100.f < resist_magic) {
 				float mul = max(0.5f, 1.f - (resist_magic * 0.005f));
 				spells[i].tolive = long(spells[i].tolive * mul);
 			}
 			
-			inter.iobj[spells[i].target]->ioflags |= IO_FREEZESCRIPT;
+			entities[spells[i].target]->ioflags |= IO_FREEZESCRIPT;
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
-			ARX_NPC_Kill_Spell_Launch(inter.iobj[spells[i].target]);
+			ARX_NPC_Kill_Spell_Launch(entities[spells[i].target]);
 			
 			break;
 		}
@@ -4677,12 +4677,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float beta;
 			bool displace = false;
 			if(spells[i].caster == 0) {
-				target = inter.iobj[0]->pos;
+				target = entities[0]->pos;
 				beta = player.angle.b;
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
-					Entity * io = inter.iobj[spells[i].caster];
+					Entity * io = entities[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
 					displace = (io->ioflags & IO_NPC) == IO_NPC;
@@ -4787,7 +4787,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			long target = spells[i].target;
 			
-			Entity * io = inter.iobj[target];
+			Entity * io = entities[target];
 			for(int il = 0; il < io->nb_spells_on; il++) {
 				if(spells[io->spells_on[il]].type == SPELL_SLOW_DOWN) {
 					spells[i].exist = false;
@@ -4816,7 +4816,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SPELLS_AddSpellOn(target, i);
 			
 			if(ValidIONum(target)) {
-				inter.iobj[target]->speed_modif -= spells[i].caster_level * 0.05f;
+				entities[target]->speed_modif -= spells[i].caster_level * 0.05f;
 			}
 			
 			break;
@@ -4909,7 +4909,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
-					Entity * io = inter.iobj[spells[i].caster];
+					Entity * io = entities[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
 					displace = (io->ioflags & IO_NPC);
@@ -4976,7 +4976,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
-					Entity * io = inter.iobj[spells[i].caster];
+					Entity * io = entities[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
 					displace = (io->ioflags & IO_NPC);
@@ -5075,8 +5075,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].target = 0;
 			}
 
-			inter.iobj[spells[i].target]->GameFlags |= GFLAG_INVISIBILITY;
-			inter.iobj[spells[i].target]->invisibility = 0.f;
+			entities[spells[i].target]->GameFlags |= GFLAG_INVISIBILITY;
+			entities[spells[i].target]->invisibility = 0.f;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &spells[i].caster_pos);
 			
@@ -5147,7 +5147,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
 			spells[i].tolive = 2000;
 			
-			Vec3f target = inter.iobj[spells[i].caster]->pos;
+			Vec3f target = entities[spells[i].caster]->pos;
 			if(spells[i].caster == 0) {
 				target.y += 60.f;
 			} else {
@@ -5291,9 +5291,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				beta = player.angle.b;
 				displace = true;
 			} else {
-				target = inter.iobj[spells[i].caster]->pos;
-				beta = inter.iobj[spells[i].caster]->angle.b;
-				displace = (inter.iobj[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
+				target = entities[spells[i].caster]->pos;
+				beta = entities[spells[i].caster]->angle.b;
+				displace = (entities[spells[i].caster]->ioflags & IO_NPC) == IO_NPC;
 			}
 			if(displace) {
 				target.x -= EEsin(radians(MAKEANGLE(beta))) * 300.f;
@@ -5347,7 +5347,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].fManaCostPerSecond = 1.9f;
 			spells[i].tolive = 4000;
 			
-			Vec3f target = inter.iobj[spells[i].target]->pos;
+			Vec3f target = entities[spells[i].target]->pos;
 			if(spells[i].target != 0) {
 				target.y -= 170.f;
 			}
@@ -5408,7 +5408,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_INCINERATE: {
 			
-			Entity * tio = inter.iobj[spells[i].target];
+			Entity * tio = entities[spells[i].target];
 			if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
 				return false;
 			}
@@ -5438,9 +5438,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = (duration > -1) ? duration : 10000;
 			spells[i].longinfo2 = 0;
 			
-			for(long ii = 0; ii < inter.nbmax; ii++) {
+			for(long ii = 0; ii < entities.nbmax; ii++) {
 				
-				Entity * tio = inter.iobj[ii];
+				Entity * tio = entities[ii];
 				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
 				}
@@ -5453,7 +5453,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					continue;
 				}
 				
-				if(fartherThan(tio->pos, inter.iobj[spells[i].caster]->pos, 500.f)) {
+				if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
 					continue;
 				}
 				
@@ -5512,7 +5512,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
 				beta = player.angle.b;
 			} else {
-				Entity * io = inter.iobj[spells[i].caster];
+				Entity * io = entities[spells[i].caster];
 				target = io->pos + Vec3f(0.f, -20.f, 0.f);
 				beta = io->angle.b;
 			}
@@ -5545,9 +5545,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			long tcount = 0;
-			for(long ii = 1; ii < inter.nbmax; ii++) {
+			for(long ii = 1; ii < entities.nbmax; ii++) {
 				
-				Entity * ioo = inter.iobj[ii];
+				Entity * ioo = entities[ii];
 				if(!ioo || !(ioo->ioflags & IO_NPC)) {
 					continue;
 				}
@@ -5563,7 +5563,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				if(closerThan(ioo->pos, spells[i].caster_pos, 900.f)) {
 					tcount++;
 					long n = spells[i].caster_level;
-					std::string str = inter.iobj[spells[i].target]->long_name() + ' '
+					std::string str = entities[spells[i].target]->long_name() + ' '
 					                  + itoa(n);
 					SendIOScriptEvent(ioo, SM_NULL, str, "npc_control");
 				}
@@ -5612,9 +5612,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = 20000;
 			
 			long nb_targets=0;
-			for(long ii = 0; ii < inter.nbmax; ii++) {
+			for(long ii = 0; ii < entities.nbmax; ii++) {
 				
-				Entity * tio = inter.iobj[ii];
+				Entity * tio = entities[ii];
 				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
 				}
@@ -5623,7 +5623,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					continue;
 				}
 				
-				if(fartherThan(tio->pos, inter.iobj[spells[i].caster]->pos, 500.f)) {
+				if(fartherThan(tio->pos, entities[spells[i].caster]->pos, 500.f)) {
 					continue;
 				}
 				
@@ -5868,12 +5868,12 @@ void ARX_SPELLS_Kill(long i) {
 
 			if (ValidIONum(spells[i].longinfo2) && (spells[i].longinfo2!=0))
 			{
-				if (	(inter.iobj[spells[i].longinfo2]->scriptload)
-					&&	(inter.iobj[spells[i].longinfo2]->ioflags & IO_NOSAVE)	)
+				if (	(entities[spells[i].longinfo2]->scriptload)
+					&&	(entities[spells[i].longinfo2]->ioflags & IO_NOSAVE)	)
 				{
-					AddRandomSmoke(inter.iobj[spells[i].longinfo2],100);
+					AddRandomSmoke(entities[spells[i].longinfo2],100);
 					Vec3f posi;
-					posi = inter.iobj[spells[i].longinfo2]->pos;
+					posi = entities[spells[i].longinfo2]->pos;
 					posi.y-=100.f;
 					MakeCoolFx(&posi);
 					long nn=GetFreeDynLight();
@@ -5893,7 +5893,7 @@ void ARX_SPELLS_Kill(long i) {
 						DynLight[nn].duration=600;
 					}
 
-					ARX_INTERACTIVE_DestroyIO(inter.iobj[spells[i].longinfo2]);
+					ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo2]);
 				}
 			}
 
@@ -6067,7 +6067,7 @@ void ARX_SPELLS_Update()
 				{
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &spells[i].caster_pos);					
-					Entity * io=inter.iobj[spells[i].target];
+					Entity * io=entities[spells[i].target];
 
 					if (spells[i].longinfo)
 					{
@@ -6081,7 +6081,7 @@ void ARX_SPELLS_Update()
 				//----------------------------------------------------------------------------
 				case SPELL_LOWER_ARMOR:
 				{
-					Entity * io=inter.iobj[spells[i].target];
+					Entity * io=entities[spells[i].target];
 
 					if (spells[i].longinfo)
 					{
@@ -6100,10 +6100,10 @@ void ARX_SPELLS_Update()
 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if ((spells[i].target>=0) && (spells[i].target<inter.nbmax))
+					if ((spells[i].target>=0) && (spells[i].target<entities.nbmax))
 					{
-						if (inter.iobj[spells[i].target])
-							inter.iobj[spells[i].target]->speed_modif-=spells[i].caster_level*( 1.0f / 10 );
+						if (entities[spells[i].target])
+							entities[spells[i].target]->speed_modif-=spells[i].caster_level*( 1.0f / 10 );
 					}
 
 					if (spells[i].caster == 0) ARX_SOUND_Stop(spells[i].snd_loop);
@@ -6136,7 +6136,7 @@ void ARX_SPELLS_Update()
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);;
 
 					if (ValidIONum(spells[i].target))
-						ARX_HALO_SetToNative(inter.iobj[spells[i].target]);
+						ARX_HALO_SetToNative(entities[spells[i].target]);
 
 				break;
 				case SPELL_COLD_PROTECTION:
@@ -6145,7 +6145,7 @@ void ARX_SPELLS_Update()
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);;
 
 					if (ValidIONum(spells[i].target))
-						ARX_HALO_SetToNative(inter.iobj[spells[i].target]);
+						ARX_HALO_SetToNative(entities[spells[i].target]);
 
 				break;
 				//----------------------------------------------------------------------------------
@@ -6168,7 +6168,7 @@ void ARX_SPELLS_Update()
 				//----------------------------------------------------------------------------------
 				case SPELL_PARALYSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-					inter.iobj[spells[i].target]->ioflags&=~IO_FREEZESCRIPT;											
+					entities[spells[i].target]->ioflags&=~IO_FREEZESCRIPT;											
 				break;
 				//----------------------------------------------------------------------------------
 				case SPELL_RISE_DEAD:
@@ -6176,11 +6176,11 @@ void ARX_SPELLS_Update()
 
 					if (ValidIONum(spells[i].longinfo) && spells[i].longinfo!=0)
 					{				
-						if (	(inter.iobj[spells[i].longinfo]->scriptload)
-							&&	(inter.iobj[spells[i].longinfo]->ioflags & IO_NOSAVE)	)
+						if (	(entities[spells[i].longinfo]->scriptload)
+							&&	(entities[spells[i].longinfo]->ioflags & IO_NOSAVE)	)
 						{
-							AddRandomSmoke(inter.iobj[spells[i].longinfo],100);
-							Vec3f posi = inter.iobj[spells[i].longinfo]->pos;
+							AddRandomSmoke(entities[spells[i].longinfo],100);
+							Vec3f posi = entities[spells[i].longinfo]->pos;
 							posi.y-=100.f;
 							MakeCoolFx(&posi);
 							long nn=GetFreeDynLight();
@@ -6200,7 +6200,7 @@ void ARX_SPELLS_Update()
 								DynLight[nn].duration=600;
 							}
 
-							ARX_INTERACTIVE_DestroyIO(inter.iobj[spells[i].longinfo]);
+							ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo]);
 						}
 					}					
 
@@ -6218,7 +6218,7 @@ void ARX_SPELLS_Update()
 
 					if (ValidIONum(spells[i].longinfo))
 					{				
-						ReleaseInter(inter.iobj[spells[i].longinfo]);
+						ReleaseInter(entities[spells[i].longinfo]);
 					}					
 
 				break;
@@ -6226,10 +6226,10 @@ void ARX_SPELLS_Update()
 				case SPELL_SLOW_DOWN:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if ((spells[i].target>=0) && (spells[i].target<inter.nbmax))
+					if ((spells[i].target>=0) && (spells[i].target<entities.nbmax))
 					{
-						if (inter.iobj[spells[i].target])
-							inter.iobj[spells[i].target]->speed_modif+=spells[i].caster_level*( 1.0f / 20 );
+						if (entities[spells[i].target])
+							entities[spells[i].target]->speed_modif+=spells[i].caster_level*( 1.0f / 20 );
 					}
 
 				break;				
@@ -6255,7 +6255,7 @@ void ARX_SPELLS_Update()
 				break;
 				//----------------------------------------------------------------------------
 				case SPELL_FLYING_EYE:					
-					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &inter.iobj[spells[i].caster]->pos);
+					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &entities[spells[i].caster]->pos);
 				break;
 				case SPELL_CONFUSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
@@ -6271,8 +6271,8 @@ void ARX_SPELLS_Update()
 					{
 						if (ValidIONum(spells[i].target))
 						{
-							inter.iobj[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
-							ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &inter.iobj[spells[i].target]->pos);					
+							entities[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
+							ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);					
 							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 						}
 					}
@@ -6292,7 +6292,7 @@ void ARX_SPELLS_Update()
 							if (ValidIONum(ptr[in]))
 							{
 								ARX_SPELLS_RemoveSpellOn(ptr[in],i);
-								inter.iobj[ptr[in]]->ioflags&=~IO_FREEZESCRIPT;											
+								entities[ptr[in]]->ioflags&=~IO_FREEZESCRIPT;											
 							}
 						}
 
@@ -6412,19 +6412,19 @@ void ARX_SPELLS_Update()
 				CHeal * ch=(CHeal *)pCSpellFX;
 
 				if (ch)
-				for (long ii=0;ii<inter.nbmax;ii++)
+				for (long ii=0;ii<entities.nbmax;ii++)
 				{
-					if ((inter.iobj[ii]) 						
-						&& (inter.iobj[ii]->show==SHOW_FLAG_IN_SCENE) 
-						&& (inter.iobj[ii]->GameFlags & GFLAG_ISINTREATZONE)
-								        && (inter.iobj[ii]->ioflags & IO_NPC)
-						&& (inter.iobj[ii]->_npcdata->life>0.f)
+					if ((entities[ii]) 						
+						&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
+						&& (entities[ii]->GameFlags & GFLAG_ISINTREATZONE)
+								        && (entities[ii]->ioflags & IO_NPC)
+						&& (entities[ii]->_npcdata->life>0.f)
 						)
 					{
 						float dist;
 
 						if (ii==spells[i].caster) dist=0;
-						else dist=fdist(ch->eSrc, inter.iobj[ii]->pos);
+						else dist=fdist(ch->eSrc, entities[ii]->pos);
 
 						if (dist<300.f)
 						{
@@ -6435,7 +6435,7 @@ void ARX_SPELLS_Update()
 								if (!BLOCK_PLAYER_CONTROLS)
 									player.life=std::min(player.life+gain,player.Full_maxlife);									
 							}
-							else inter.iobj[ii]->_npcdata->life=std::min(inter.iobj[ii]->_npcdata->life+gain,inter.iobj[ii]->_npcdata->maxlife);
+							else entities[ii]->_npcdata->life=std::min(entities[ii]->_npcdata->life+gain,entities[ii]->_npcdata->maxlife);
 						}
 					}
 				}
@@ -6480,7 +6480,7 @@ void ARX_SPELLS_Update()
 					float scaley;
 
 					if (spells[i].caster==0) scaley=90.f;
-					else scaley=EEfabs(inter.iobj[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+					else scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
  
 					float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
@@ -6494,10 +6494,10 @@ void ARX_SPELLS_Update()
 					}
 					else
 					{							
-								cabalpos.x = inter.iobj[spells[i].caster]->pos.x; 
-						cabalpos.y=inter.iobj[spells[i].caster]->pos.y-scaley-mov;
-								cabalpos.z = inter.iobj[spells[i].caster]->pos.z; 
-						refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
+								cabalpos.x = entities[spells[i].caster]->pos.x; 
+						cabalpos.y=entities[spells[i].caster]->pos.y-scaley-mov;
+								cabalpos.z = entities[spells[i].caster]->pos.z; 
+						refpos=entities[spells[i].caster]->pos.y-scaley;							
 					}
 
 					float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
@@ -6620,7 +6620,7 @@ void ARX_SPELLS_Update()
 						DoSphericDamage(&pCF->eCurPos,3.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
 						spells[i].tolive=0;
 						ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
-						ARX_NPC_SpawnAudibleSound(&sphere.origin, inter.iobj[spells[i].caster]);
+						ARX_NPC_SpawnAudibleSound(&sphere.origin, entities[spells[i].caster]);
 								}
 
 					pCSpellFX->Update(FrameDiff);
@@ -6665,13 +6665,13 @@ void ARX_SPELLS_Update()
 					{
 						if (ValidIONum(spells[i].target))
 						{
-							pBless->eSrc = inter.iobj[spells[i].target]->pos;
+							pBless->eSrc = entities[spells[i].target]->pos;
 							Anglef angle = Anglef::ZERO;
 
 							if (spells[i].target==0)
 								angle.b=player.angle.b;	
 							else 
-								angle.b=inter.iobj[spells[i].target]->angle.b;
+								angle.b=entities[spells[i].target]->angle.b;
 
 							pBless->Set_Angle(angle);
 						}
@@ -6690,12 +6690,12 @@ void ARX_SPELLS_Update()
 				CCurse * curse=(CCurse *)spells[i].pSpellFx;
 				Vec3f target(0, 0, 0);
 					
-				if ((spells[i].target>=0) && (inter.iobj[spells[i].target]))
+				if ((spells[i].target>=0) && (entities[spells[i].target]))
 				{
-					target = inter.iobj[spells[i].target]->pos;
+					target = entities[spells[i].target]->pos;
 
 					if (spells[i].target==0) target.y-=200.f;
-					else target.y+=inter.iobj[spells[i].target]->physics.cyl.height-30.f;
+					else target.y+=entities[spells[i].target]->physics.cyl.height-30.f;
 				}
 				
 				curse->Update(checked_range_cast<unsigned long>(FrameDiff));
@@ -6795,9 +6795,9 @@ void ARX_SPELLS_Update()
 				}
 				else
 				{
-					target.x=inter.iobj[spells[i].caster]->pos.x;
-							target.y = inter.iobj[spells[i].caster]->pos.y; 
-					target.z=inter.iobj[spells[i].caster]->pos.z;
+					target.x=entities[spells[i].caster]->pos.x;
+							target.y = entities[spells[i].caster]->pos.y; 
+					target.z=entities[spells[i].caster]->pos.z;
 				}
 
 				pLevitate->ChangePos(&target);
@@ -6888,8 +6888,8 @@ void ARX_SPELLS_Update()
 									MakeTemporaryIOIdent(io);						
 									SendInitScriptEvent(io);
 
-									if ((spells[i].caster>=0) && (spells[i].caster<inter.nbmax))
-										EVENT_SENDER=inter.iobj[spells[i].caster];
+									if ((spells[i].caster>=0) && (spells[i].caster<entities.nbmax))
+										EVENT_SENDER=entities[spells[i].caster];
 									else EVENT_SENDER=NULL;
 
 									SendIOScriptEvent(io,SM_SUMMONED);
@@ -6957,7 +6957,7 @@ void ARX_SPELLS_Update()
 				{				
 					if (ValidIONum(spells[i].longinfo))
 					{
-						Entity * io=inter.iobj[spells[i].longinfo];
+						Entity * io=entities[spells[i].longinfo];
 						CCreateField * ccf=(CCreateField *)pCSpellFX;
 						io->pos.x = ccf->eSrc.x;
 						io->pos.y = ccf->eSrc.y;
@@ -7341,8 +7341,8 @@ void ARX_SPELLS_Update()
 									io->speed_modif=1.f;
 								}
 
-								if ((spells[i].caster>=0) && (spells[i].caster<inter.nbmax))
-									EVENT_SENDER=inter.iobj[spells[i].caster];
+								if ((spells[i].caster>=0) && (spells[i].caster<entities.nbmax))
+									EVENT_SENDER=entities[spells[i].caster];
 								else EVENT_SENDER=NULL;
 
 								SendIOScriptEvent(io,SM_SUMMONED);
@@ -7405,7 +7405,7 @@ void ARX_SPELLS_Update()
 			{
 				if (ValidIONum(spells[i].caster))
 				{
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &inter.iobj[spells[i].caster]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
 				}
 			}
 			break;
@@ -7448,7 +7448,7 @@ void ARX_SPELLS_Update()
 			{
 				if (ValidIONum(spells[i].caster))
 				{
-					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &inter.iobj[spells[i].caster]->pos);
+					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &entities[spells[i].caster]->pos);
 				}
 			}
 			break;
@@ -7553,7 +7553,7 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].target!=0)
 					{
-						if (!(inter.iobj[spells[i].target]->GameFlags & GFLAG_INVISIBILITY))
+						if (!(entities[spells[i].target]->GameFlags & GFLAG_INVISIBILITY))
 						{
 							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 							ARX_SPELLS_Fizzle(i);
@@ -7570,7 +7570,7 @@ void ARX_SPELLS_Update()
 						float scaley;
 
 						if (spells[i].caster==0) scaley=90.f;
-						else scaley=EEfabs(inter.iobj[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+						else scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
 						float mov1=EEsin((float)arxtime.get_last_frame_time()*( 1.0f / 800 ))*scaley;
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
@@ -7588,10 +7588,10 @@ void ARX_SPELLS_Update()
 						}
 						else
 						{							
-								cabalpos.x = inter.iobj[spells[i].caster]->pos.x; 
-							cabalpos.y=inter.iobj[spells[i].caster]->pos.y-scaley-mov;
-								cabalpos.z = inter.iobj[spells[i].caster]->pos.z; 
-							refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
+								cabalpos.x = entities[spells[i].caster]->pos.x; 
+							cabalpos.y=entities[spells[i].caster]->pos.y-scaley-mov;
+								cabalpos.z = entities[spells[i].caster]->pos.z; 
+							refpos=entities[spells[i].caster]->pos.y-scaley;							
 						}
 
 						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));
@@ -7672,7 +7672,7 @@ void ARX_SPELLS_Update()
 						float scaley;
 
 						if (spells[i].caster==0) scaley=90.f;
-						else scaley=EEfabs(inter.iobj[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
+						else scaley=EEfabs(entities[spells[i].caster]->physics.cyl.height*( 1.0f / 2 ))+30.f;
 
  
 						float mov=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ))*scaley;
@@ -7686,10 +7686,10 @@ void ARX_SPELLS_Update()
 						}
 						else
 						{							
-								cabalpos.x = inter.iobj[spells[i].caster]->pos.x; 
-							cabalpos.y=inter.iobj[spells[i].caster]->pos.y-scaley-mov;
-								cabalpos.z = inter.iobj[spells[i].caster]->pos.z; 
-							refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
+								cabalpos.x = entities[spells[i].caster]->pos.x; 
+							cabalpos.y=entities[spells[i].caster]->pos.y-scaley-mov;
+								cabalpos.z = entities[spells[i].caster]->pos.z; 
+							refpos=entities[spells[i].caster]->pos.y-scaley;							
 						}
 
 						float Es=EEsin((float)arxtime.get_frame_time()*( 1.0f / 800 ) + radians(scaley));

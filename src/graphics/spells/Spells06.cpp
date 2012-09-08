@@ -2113,13 +2113,13 @@ float CDisarmTrap::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 
-	for (i = 0; i < inter.nbmax; i++)
+	for (i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i] != NULL)
+		if (entities[i] != NULL)
 		{
-			x = inter.iobj[i]->pos.x;
-			y = inter.iobj[i]->pos.y;
-			z = inter.iobj[i]->pos.z;
+			x = entities[i]->pos.x;
+			y = entities[i]->pos.y;
+			z = entities[i]->pos.z;
 		}
 	}
 

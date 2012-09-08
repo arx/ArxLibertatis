@@ -138,11 +138,11 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	
 	ScriptResult ret = ACCEPT;
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i])
+		if (entities[i])
 		{
-			if (SendIOScriptEvent(inter.iobj[i], msg, params) == REFUSE)
+			if (SendIOScriptEvent(entities[i], msg, params) == REFUSE)
 				ret = REFUSE;
 		}
 	}
@@ -172,23 +172,23 @@ void ARX_SCRIPT_ResetObject(Entity * io, long flags)
 
 	if (ValidIONum(num))
 	{
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
+		if (entities[num] && entities[num]->script.data)
 		{
-			inter.iobj[num]->script.allowevents = 0;
+			entities[num]->script.allowevents = 0;
 
-			if (flags)	ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
+			if (flags)	ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
 
 
-			if (inter.iobj[num])
-				ARX_SCRIPT_SetMainEvent(inter.iobj[num], "main");
+			if (entities[num])
+				ARX_SCRIPT_SetMainEvent(entities[num], "main");
 		}
 
 		// Do the same for Local Script
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
+		if (entities[num] && entities[num]->over_script.data)
 		{
-			inter.iobj[num]->over_script.allowevents = 0;
+			entities[num]->over_script.allowevents = 0;
 
-			if (flags)	ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
+			if (flags)	ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
 
 
 		}
@@ -196,15 +196,15 @@ void ARX_SCRIPT_ResetObject(Entity * io, long flags)
 		// Sends InitEnd Event
 		if (flags)
 		{
-			if (inter.iobj[num] && inter.iobj[num]->script.data)
-				ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
+			if (entities[num] && entities[num]->script.data)
+				ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
 
-			if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-				ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
+			if (entities[num] && entities[num]->over_script.data)
+				ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
 		}
 
-		if (inter.iobj[num])
-			inter.iobj[num]->GameFlags &= ~GFLAG_NEEDINIT;
+		if (entities[num])
+			entities[num]->GameFlags &= ~GFLAG_NEEDINIT;
 	}
 }
 
@@ -239,12 +239,12 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 
 void ARX_SCRIPT_ResetAll(long flags)
 {
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i] != NULL)
+		if (entities[i] != NULL)
 		{
-			if (!inter.iobj[i]->scriptload)
-				ARX_SCRIPT_Reset(inter.iobj[i], flags);
+			if (!entities[i]->scriptload)
+				ARX_SCRIPT_Reset(entities[i], flags);
 		}
 	}
 }
@@ -261,30 +261,30 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	
 	EVENT_SENDER = NULL;
 	
-	long heartbeat_count = min(inter.nbmax, 10L);
+	long heartbeat_count = min(entities.nbmax, 10L);
 	
 	for(long n = 0; n < heartbeat_count; n++) {
 		
 		long i = ppos++;
-		if(i >= inter.nbmax){
+		if(i >= entities.nbmax){
 			ppos = 0;
 			return;
 		}
 		
-		if(inter.iobj[i] == NULL || !(inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)) {
+		if(entities[i] == NULL || !(entities[i]->GameFlags & GFLAG_ISINTREATZONE)) {
 			continue;
 		}
 		
-		if(!inter.iobj[i]->mainevent.empty()) {
+		if(!entities[i]->mainevent.empty()) {
 			
 			// Copy the even name to a local variable as it may change during execution
 			// and cause unexpected behavior in SendIOScriptEvent
-			std::string event = inter.iobj[i]->mainevent;
+			std::string event = entities[i]->mainevent;
 			
-			SendIOScriptEvent(inter.iobj[i], SM_NULL, std::string(), event);
+			SendIOScriptEvent(entities[i], SM_NULL, std::string(), event);
 			
 		} else {
-			SendIOScriptEvent(inter.iobj[i], SM_MAIN);
+			SendIOScriptEvent(entities[i], SM_MAIN);
 		}
 	}
 }
@@ -608,25 +608,25 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 						return TYPE_FLOAT;
 					}
 
-					long t = inter.getById(obj);
+					long t = entities.getById(obj);
 
 					if (ValidIONum(t))
 					{
 						if (((io->show == SHOW_FLAG_IN_SCENE) || (io->show == SHOW_FLAG_IN_INVENTORY))
-								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
+								&& ((entities[t]->show == SHOW_FLAG_IN_SCENE) || (entities[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
 							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
-							GetItemWorldPosition(inter.iobj[t], &pos2);
+							GetItemWorldPosition(entities[t], &pos2);
 
 							if (io->room_flags & 1)
 								UpdateIORoom(io);
 
-							if (inter.iobj[t]->room_flags & 1)
-								UpdateIORoom(inter.iobj[t]);
+							if (entities[t]->room_flags & 1)
+								UpdateIORoom(entities[t]);
 
-							*fcontent = SP_GetRoomDist(&pos, &pos2, io->room, inter.iobj[t]->room);
+							*fcontent = SP_GetRoomDist(&pos, &pos2, io->room, entities[t]->room);
 						}
 						else // Out of this world item
 							*fcontent = 99999999999.f;
@@ -641,11 +641,11 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!specialstrcmp(name, "^repairprice_"))
 			{
-				long t = inter.getById(name.substr(13));
+				long t = entities.getById(name.substr(13));
 
 				if (ValidIONum(t))
 				{
-					*fcontent = ARX_DAMAGES_ComputeRepairPrice(inter.iobj[t], io);
+					*fcontent = ARX_DAMAGES_ComputeRepairPrice(entities[t], io);
 					return TYPE_FLOAT;
 				}
 
@@ -865,7 +865,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 			{
 				if (EVENT_SENDER)
 				{
-					if (EVENT_SENDER == inter.iobj[0])
+					if (EVENT_SENDER == entities[0])
 						txtcontent = "player";
 					else
 						txtcontent = EVENT_SENDER->long_name();
@@ -916,7 +916,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!specialstrcmp(name, "^me"))
 			{
-				if (io == inter.iobj[0])
+				if (io == entities[0])
 					txtcontent = "player";
 				else
 					txtcontent = io->long_name();
@@ -971,8 +971,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 						if (spells[i].exist)
 						{
 							if (spells[i].type == id)
-								if ((spells[i].caster >= 0) && (spells[i].caster < inter.nbmax)
-										&& (io == inter.iobj[spells[i].caster]))
+								if ((spells[i].caster >= 0) && (spells[i].caster < entities.nbmax)
+										&& (io == entities[spells[i].caster]))
 								{
 									*lcontent = 1;
 									return TYPE_LONG;
@@ -1036,17 +1036,17 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 						return TYPE_FLOAT;
 					}
 
-					long t = inter.getById(obj);
+					long t = entities.getById(obj);
 
 					if (ValidIONum(t))
 					{
 						if (((io->show == SHOW_FLAG_IN_SCENE) || (io->show == SHOW_FLAG_IN_INVENTORY))
-								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
+								&& ((entities[t]->show == SHOW_FLAG_IN_SCENE) || (entities[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
 							Vec3f pos, pos2;
 							GetItemWorldPosition(io, &pos);
-							GetItemWorldPosition(inter.iobj[t], &pos2);
+							GetItemWorldPosition(entities[t], &pos2);
 							*fcontent = fdist(pos, pos2);
 
 						}
@@ -1139,11 +1139,11 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!specialstrcmp(name, "^possess_"))
 			{
-				long t = inter.getById(name.substr(9));
+				long t = entities.getById(name.substr(9));
 
 				if (ValidIONum(t))
 				{
-					if (IsInPlayerInventory(inter.iobj[t]))
+					if (IsInPlayerInventory(entities[t]))
 					{
 						*lcontent = 1;
 						return TYPE_LONG;
@@ -1314,7 +1314,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 				}
 
 				if(temp == "invisibility") {
-					if(inter.iobj[0]->invisibility > 0.3f) {
+					if(entities[0]->invisibility > 0.3f) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
@@ -1331,7 +1331,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 			{
 				Entity * ioo = ARX_NPC_GetFirstNPCInSight(io);
 
-				if (ioo == inter.iobj[0])
+				if (ioo == entities[0])
 					txtcontent = "player";
 				else if (ioo)
 					txtcontent = ioo->long_name();
@@ -1352,7 +1352,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 					if (!ValidIONum(io->targetinfo))
 						txtcontent = "none";
 					else
-						txtcontent = inter.iobj[io->targetinfo]->long_name();
+						txtcontent = entities[io->targetinfo]->long_name();
 				}
 
 				return TYPE_TEXT;
@@ -1388,7 +1388,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 	if (!specialstrcmp(name, " "))
 	{
-		if (io == inter.iobj[0])
+		if (io == entities[0])
 			txtcontent = "player";
 		else
 			txtcontent = io->long_name();
@@ -1921,18 +1921,18 @@ ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std:
 	if (ValidIONum(num))
 	{
 		// if this IO only has a Local script, send event to it
-		if (inter.iobj[num] && !inter.iobj[num]->over_script.data)
+		if (entities[num] && !entities[num]->over_script.data)
 		{
-			return ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
+			return ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
 		}
 
 		// If this IO has a Global script send to Local (if exists)
 		// then to local if no overriden by Local
-		if (inter.iobj[num] && (ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname) != REFUSE))
+		if (entities[num] && (ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname) != REFUSE))
 		{
 
-			if (inter.iobj[num])
-				return (ScriptEvent::send(&inter.iobj[num]->over_script, msg, params, inter.iobj[num], eventname));
+			if (entities[num])
+				return (ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname));
 			else
 				return REFUSE;
 		}
@@ -1956,29 +1956,29 @@ ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string
 
 		if ((msg == SM_INIT) || (msg == SM_INITEND))
 		{
-			if (inter.iobj[num])
+			if (entities[num])
 			{
-				SendIOScriptEventReverse(inter.iobj[num], msg, params, eventname);
+				SendIOScriptEventReverse(entities[num], msg, params, eventname);
 				EVENT_SENDER = oes;
 			}
 		}
 
 		// if this IO only has a Local script, send event to it
-		if (inter.iobj[num] && !inter.iobj[num]->over_script.data)
+		if (entities[num] && !entities[num]->over_script.data)
 		{
-			ScriptResult ret = ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
+			ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
 			EVENT_SENDER = oes;
 			return ret;
 		}
 
 		// If this IO has a Global script send to Local (if exists)
 		// then to Global if no overriden by Local
-		if (inter.iobj[num] && ScriptEvent::send(&inter.iobj[num]->over_script, msg, params, inter.iobj[num], eventname) != REFUSE) {
+		if (entities[num] && ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname) != REFUSE) {
 			EVENT_SENDER = oes;
 
-			if (inter.iobj[num])
+			if (entities[num])
 			{
-				ScriptResult ret = ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
+				ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
 				EVENT_SENDER = oes;
 				return ret;
 			}
@@ -2002,24 +2002,24 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 
 	if (ValidIONum(num))
 	{
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
+		if (entities[num] && entities[num]->script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
+			ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
 		}
 
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
+		if (entities[num] && entities[num]->over_script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
+			ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
 		}
 
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
+		if (entities[num] && entities[num]->script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
+			ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
 		}
 
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
+		if (entities[num] && entities[num]->over_script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
+			ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
 		}
 	}
 
@@ -2272,10 +2272,10 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	
 	ScriptEvent::totalCount = 0;
 	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i] != NULL) {
-			inter.iobj[i]->stat_count = 0;
-			inter.iobj[i]->stat_sent = 0;
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i] != NULL) {
+			entities[i]->stat_count = 0;
+			entities[i]->stat_sent = 0;
 		}
 	}
 }
@@ -2285,19 +2285,19 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events()
 	long max = -1;
 	long ionum = -1;
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i] != NULL)
-				&&	(inter.iobj[i]->stat_count > max))
+		if ((entities[i] != NULL)
+				&&	(entities[i]->stat_count > max))
 		{
 			ionum = i;
-			max = inter.iobj[i]->stat_count;
+			max = entities[i]->stat_count;
 		}
 	}
 
 	if (max <= 0) return NULL;
 
-	if (ionum > -1) return inter.iobj[ionum];
+	if (ionum > -1) return entities[ionum];
 
 	return NULL;
 }
@@ -2307,19 +2307,19 @@ Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 	long max = -1;
 	long ionum = -1;
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i] != NULL)
-				&&	(inter.iobj[i]->stat_sent > max))
+		if ((entities[i] != NULL)
+				&&	(entities[i]->stat_sent > max))
 		{
 			ionum = i;
-			max = inter.iobj[i]->stat_sent;
+			max = entities[i]->stat_sent;
 		}
 	}
 
 	if (max <= 0) return NULL;
 
-	if (ionum > -1) return inter.iobj[ionum];
+	if (ionum > -1) return entities[ionum];
 
 	return NULL;
 }

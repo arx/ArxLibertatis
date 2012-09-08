@@ -901,9 +901,9 @@ float CNegateMagic::Render()
 	}
 	else
 	{
-		eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x;
-		eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-		eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z;
+		eSrc.x = entities[spells[spellinstance].caster]->pos.x;
+		eSrc.y = entities[spells[spellinstance].caster]->pos.y;
+		eSrc.z = entities[spells[spellinstance].caster]->pos.z;
 	}
 
 	float x = eSrc.x;
@@ -987,13 +987,13 @@ void CMassParalyse::Update(unsigned long _ulTime)
 
 	if (ulCurrentTime < ulDuration)
 	{
-		int	nb = inter.nbmax, nb2;
+		int	nb = entities.nbmax, nb2;
 
 		while (nb--)
 		{
-			if (inter.iobj[nb])
+			if (entities[nb])
 			{
-				if(!fartherThan(ePos, inter.iobj[nb]->pos, fRayon)) {
+				if(!fartherThan(ePos, entities[nb]->pos, fRayon)) {
 					nb2 = iNbParalyse;
 
 					while (nb2--)
@@ -1005,7 +1005,7 @@ void CMassParalyse::Update(unsigned long _ulTime)
 					{
 						tabparalyse[iNbParalyse].id = nb;
 						tabparalyse[iNbParalyse].paralyse = new CParalyse();
-						(tabparalyse[iNbParalyse].paralyse)->Create(4, 50, 200.f, 150.f, &inter.iobj[nb]->pos, 10000);
+						(tabparalyse[iNbParalyse].paralyse)->Create(4, 50, 200.f, 150.f, &entities[nb]->pos, 10000);
 						iNbParalyse++;
 					}
 				}

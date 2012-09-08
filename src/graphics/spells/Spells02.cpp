@@ -91,9 +91,9 @@ void CHeal::Create()
 	}
 	else
 	{
-		eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x;
-		eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-		eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z;
+		eSrc.x = entities[spells[spellinstance].caster]->pos.x;
+		eSrc.y = entities[spells[spellinstance].caster]->pos.y;
+		eSrc.z = entities[spells[spellinstance].caster]->pos.z;
 	}
 
 	pPS->lLightId = GetFreeDynLight();
@@ -187,9 +187,9 @@ void CHeal::Update(unsigned long aulTime)
 	{
 		if (ValidIONum(spells[spellinstance].target))
 		{
-			eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-			eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
-			eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
+			eSrc.x = entities[spells[spellinstance].target]->pos.x;
+			eSrc.y = entities[spells[spellinstance].target]->pos.y;
+			eSrc.z = entities[spells[spellinstance].target]->pos.z;
 		}
 	}
 
@@ -280,7 +280,7 @@ void CArmor::Create(long _ulDuration) {
 	if (spellinstance != -1)
 	{
 
-		Entity * io = inter.iobj[spells[spellinstance].caster];
+		Entity * io = entities[spells[spellinstance].caster];
 
 		if ((io) && (!io->halo.flags & HALO_ACTIVE))
 		{
@@ -328,7 +328,7 @@ void CLowerArmor::Create(long _ulDuration) {
 
 	if (spellinstance != -1)
 	{
-		Entity * io = inter.iobj[spells[spellinstance].target];
+		Entity * io = entities[spells[spellinstance].target];
 
 		if ((io) && (!io->halo.flags & HALO_ACTIVE))
 		{

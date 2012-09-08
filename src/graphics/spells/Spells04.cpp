@@ -564,7 +564,7 @@ CFireProtection::~CFireProtection()
 
 	if (ValidIONum(iNpc))
 	{
-		io = inter.iobj[iNpc];
+		io = entities[iNpc];
 		io->halo.flags = 0;
 		io->halo.color.r = 0.8f;
 		io->halo.color.g = 0.8f;
@@ -584,7 +584,7 @@ void CFireProtection::Create(long _ulDuration)
 
 	if (ValidIONum(iNpc))
 	{
-		io = inter.iobj[iNpc];
+		io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.4f;
 		io->halo.color.g = 0.4f;
@@ -604,7 +604,7 @@ void CFireProtection::Update(unsigned long _ulTime)
 
 	if (ValidIONum(iNpc))
 	{
-		io = inter.iobj[iNpc];
+		io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.4f;
 		io->halo.color.g = 0.4f;
@@ -635,7 +635,7 @@ CColdProtection::~CColdProtection()
 
 	if (ValidIONum(iNpc))
 	{
-		io = inter.iobj[iNpc];
+		io = entities[iNpc];
 		io->halo.flags = 0;
 		io->halo.color.r = 0.8f;
 		io->halo.color.g = 0.8f;
@@ -655,7 +655,7 @@ void CColdProtection::Create(long _ulDuration, int _iNpc)
 
 	if (ValidIONum(iNpc))
 	{
-		io = inter.iobj[iNpc];
+		io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.2f;
 		io->halo.color.g = 0.2f;
@@ -675,7 +675,7 @@ void CColdProtection::Update(unsigned long _ulTime)
 
 	if (ValidIONum(iNpc))
 	{
-		io = inter.iobj[iNpc];
+		io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
 		io->halo.color.r = 0.2f;
 		io->halo.color.g = 0.2f;

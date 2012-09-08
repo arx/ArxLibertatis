@@ -755,42 +755,42 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		}
 
 		// tsu
-		for (long lnpc = 1; lnpc < inter.nbmax; lnpc++)
+		for (long lnpc = 1; lnpc < entities.nbmax; lnpc++)
 		{
-			if ((inter.iobj[lnpc] != NULL) && (inter.iobj[lnpc]->ioflags & IO_NPC))
+			if ((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC))
 			{
-				if (inter.iobj[lnpc]->_npcdata->life > 0.f)
-					if (!((inter.iobj[lnpc]->GameFlags & GFLAG_MEGAHIDE) ||
-							(inter.iobj[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-							&& (inter.iobj[lnpc]->show == SHOW_FLAG_IN_SCENE))
-						if (!(inter.iobj[lnpc]->show == SHOW_FLAG_HIDDEN))
-							if (inter.iobj[lnpc]->_npcdata->fDetect >= 0)
+				if (entities[lnpc]->_npcdata->life > 0.f)
+					if (!((entities[lnpc]->GameFlags & GFLAG_MEGAHIDE) ||
+							(entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+							&& (entities[lnpc]->show == SHOW_FLAG_IN_SCENE))
+						if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN))
+							if (entities[lnpc]->_npcdata->fDetect >= 0)
 							{
-								if (player.Full_Skill_Etheral_Link >= inter.iobj[lnpc]->_npcdata->fDetect)
+								if (player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect)
 								{
 									float fpx;
 									float fpy;
 								
-									fpx = sstartx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
+									fpx = sstartx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
 									                 + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
 									fpy = sstarty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-									                 - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+									                 - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
 
 									if (flag == 1)
 									{
 
-										fpx = startx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
+										fpx = startx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
 										                + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
 										fpy = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-										                - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+										                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
 
 
 									}
 
-									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z));
+									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
 
 
-									if ((d <= 800) && (fabs(inter.iobj[0]->pos.y - inter.iobj[lnpc]->pos.y) < 250.f))
+									if ((d <= 800) && (fabs(entities[0]->pos.y - entities[lnpc]->pos.y) < 250.f))
 									{
 										float col = 1.f;
 

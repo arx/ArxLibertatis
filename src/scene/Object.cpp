@@ -1809,11 +1809,11 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 
 static EERIE_3DOBJ * GetExistingEerie(const res::path & file) {
 	
-	for(long i = 1; i < inter.nbmax; i++) {
-		if(inter.iobj[i] != NULL && !inter.iobj[i]->tweaky && inter.iobj[i]->obj) {
-			EERIE_3DOBJ * obj = inter.iobj[i]->obj;
-			if(!obj->originaltextures && inter.iobj[i]->obj->file == file) {
-				return inter.iobj[i]->obj;
+	for(long i = 1; i < entities.nbmax; i++) {
+		if(entities[i] != NULL && !entities[i]->tweaky && entities[i]->obj) {
+			EERIE_3DOBJ * obj = entities[i]->obj;
+			if(!obj->originaltextures && entities[i]->obj->file == file) {
+				return entities[i]->obj;
 			}
 		}
 	}

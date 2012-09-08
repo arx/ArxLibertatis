@@ -503,7 +503,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
 {
 	if (EDITMODE) return false;
 
-	if (io==inter.iobj[0]) return false;
+	if (io==entities[0]) return false;
 
 	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
 
@@ -602,7 +602,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 	
 	if (EDITMODE) return false;
 
-	if (io==inter.iobj[0]) return false;
+	if (io==entities[0]) return false;
 
 	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
 

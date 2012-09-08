@@ -151,14 +151,14 @@ static Entity * _ConvertToValidIO(const string & ident) {
 		"bad interactive object ident: \"%s\"", ident.c_str()
 	);
 	
-	long t = inter.getById(ident);
+	long t = entities.getById(ident);
 	
 	if(t > 0) {
 		
 		arx_assert_msg(ValidIONum(t), "got invalid IO num %ld", t);
 		
-		inter.iobj[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
-		return inter.iobj[t];
+		entities[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
+		return entities[t];
 	}
 	
 	LogDebug("Call to ConvertToValidIO(" << ident << ")");
@@ -300,14 +300,14 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	// TO RESTORE !!!!!!!!!!!!
 	if (num == CURRENTLEVEL) // not changing level, just teleported
 	{
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 
 		if (t > 0)
 		{
 			Vec3f pos;
 
-			if (inter.iobj[t])
-				if (GetItemWorldPosition(inter.iobj[t], &pos))
+			if (entities[t])
+				if (GetItemWorldPosition(entities[t], &pos))
 				{
 					moveto.x = player.pos.x = pos.x;
 					moveto.y = player.pos.y = pos.y + PLAYER_BASE_HEIGHT;
@@ -350,14 +350,14 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
 
 	// Now restore player pos to destination
-	long t = inter.getById(target);
+	long t = entities.getById(target);
 
 	if (t > 0)
 	{
 		Vec3f pos;
 
-		if (inter.iobj[t])
-			if (GetItemWorldPosition(inter.iobj[t], &pos))
+		if (entities[t])
+			if (GetItemWorldPosition(entities[t], &pos))
 			{
 				moveto.x = player.pos.x = pos.x;
 				moveto.y = player.pos.y = pos.y + PLAYER_BASE_HEIGHT;
@@ -465,11 +465,11 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.gmods_desired = desired;
 	asi.gmods_current = current;
 	
-	for(long i = 1; i < inter.nbmax; i++) {
-		if(inter.iobj[i] != NULL
-		   && !(inter.iobj[i]->ioflags & IO_NOSAVE)
-		   && !IsInPlayerInventory(inter.iobj[i])
-		   && !IsPlayerEquipedWith(inter.iobj[i])) {
+	for(long i = 1; i < entities.nbmax; i++) {
+		if(entities[i] != NULL
+		   && !(entities[i]->ioflags & IO_NOSAVE)
+		   && !IsInPlayerInventory(entities[i])
+		   && !IsPlayerEquipedWith(entities[i])) {
 			asi.nb_inter++;
 		}
 	}
@@ -496,17 +496,17 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
-	for(int i = 1; i < inter.nbmax; i++) {
-		if(inter.iobj[i] != NULL
-		   && !(inter.iobj[i]->ioflags & IO_NOSAVE)
-		   && !IsInPlayerInventory(inter.iobj[i])
-		   && !IsPlayerEquipedWith(inter.iobj[i])) {
+	for(int i = 1; i < entities.nbmax; i++) {
+		if(entities[i] != NULL
+		   && !(entities[i]->ioflags & IO_NOSAVE)
+		   && !IsInPlayerInventory(entities[i])
+		   && !IsPlayerEquipedWith(entities[i])) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
-			strncpy(aii.filename, inter.iobj[i]->filename.string().c_str(), sizeof(aii.filename));
-			aii.ident = inter.iobj[i]->ident;
-			aii.level = inter.iobj[i]->level;
-			aii.truelevel = inter.iobj[i]->truelevel;
+			strncpy(aii.filename, entities[i]->filename.string().c_str(), sizeof(aii.filename));
+			aii.ident = entities[i]->ident;
+			aii.level = entities[i]->level;
+			aii.truelevel = entities[i]->truelevel;
 			aii.num = i; // !!!
 			memcpy(dat + pos, &aii, sizeof(aii));
 			pos += sizeof(aii);
@@ -723,7 +723,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 
 	asp->falling = player.falling;
 	asp->gold = player.gold;
-	asp->invisibility = inter.iobj[0]->invisibility;
+	asp->invisibility = entities[0]->invisibility;
 
 	asp->jumpphase = player.jumpphase;
 	asp->jumpstarttime = player.jumpstarttime;
@@ -801,9 +801,9 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	{
 		memset(&asp->anims[i], 0, 256);
 
-		if (inter.iobj[0]->anims[i] != NULL)
+		if (entities[0]->anims[i] != NULL)
 		{
-			strncpy(asp->anims[i], inter.iobj[0]->anims[i]->path.string().c_str(), sizeof(asp->anims[i]));
+			strncpy(asp->anims[i], entities[0]->anims[i]->path.string().c_str(), sizeof(asp->anims[i]));
 		}
 	}
 
@@ -811,7 +811,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	{
 		if (ValidIONum(player.equiped[k])
 				&&	(player.equiped[k] > 0))
-			FillIOIdent(asp->equiped[k], inter.iobj[player.equiped[k]]);
+			FillIOIdent(asp->equiped[k], entities[player.equiped[k]]);
 		else
 			strcpy(asp->equiped[k], "");
 	}
@@ -843,11 +843,11 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	
 	delete[] dat;
 	
-	for (int i = 1; i < inter.nbmax; i++)
+	for (int i = 1; i < entities.nbmax; i++)
 	{
-		if ((IsInPlayerInventory(inter.iobj[i]))
-				||	(IsPlayerEquipedWith(inter.iobj[i])))
-			ARX_CHANGELEVEL_Push_IO(inter.iobj[i]);
+		if ((IsInPlayerInventory(entities[i]))
+				||	(IsPlayerEquipedWith(entities[i])))
+			ARX_CHANGELEVEL_Push_IO(entities[i]);
 	}
 
 	return 1;
@@ -855,16 +855,16 @@ static long ARX_CHANGELEVEL_Push_Player() {
 
 static long ARX_CHANGELEVEL_Push_AllIO() {
 	
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
 
-		if ((inter.iobj[i] != NULL)
-				&&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
-				&&	(!IsInPlayerInventory(inter.iobj[i]))
-				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
+		if ((entities[i] != NULL)
+				&&	(!(entities[i]->ioflags & IO_NOSAVE))
+				&&	(!IsInPlayerInventory(entities[i]))
+				&&	(!IsPlayerEquipedWith(entities[i]))
 		   )
 		{
-			ARX_CHANGELEVEL_Push_IO(inter.iobj[i]);
+			ARX_CHANGELEVEL_Push_IO(entities[i]);
 		}
 	}
 
@@ -877,10 +877,10 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 		return NULL;
 	}
 	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i] && inter.iobj[i]->obj) {
-			if(inter.iobj[i]->obj == obj) {
-				return inter.iobj[i];
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i] && entities[i]->obj) {
+			if(entities[i]->obj == obj) {
+				return entities[i];
 			}
 		}
 	}
@@ -898,7 +898,7 @@ void FillTargetInfo(char (&info)[N], long numtarget) {
 	} else if(numtarget == 0) {
 		strcpy(info, "player");
 	} else if(ValidIONum(numtarget)) {
-		FillIOIdent(info, inter.iobj[numtarget]);
+		FillIOIdent(info, entities[numtarget]);
 	} else {
 		strcpy(info, "none");
 	}
@@ -970,7 +970,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 	ais.EditorFlags = io->EditorFlags;
 	ais.GameFlags = io->GameFlags;
 
-	if(io == inter.iobj[0])
+	if(io == entities[0])
 		ais.GameFlags &= ~GFLAG_INVISIBILITY;
 
 	ais.material = io->material;
@@ -1635,9 +1635,9 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		
 		RestoreInitialIOStatus();
 		
-		for(long i = 1; i < inter.nbmax; i++) {
-			if(inter.iobj[i] && !inter.iobj[i]->scriptload) {
-				ARX_SCRIPT_Reset(inter.iobj[i], 1);
+		for(long i = 1; i < entities.nbmax; i++) {
+			if(entities[i] && !entities[i]->scriptload) {
+				ARX_SCRIPT_Reset(entities[i], 1);
 			}
 		}
 		
@@ -1727,7 +1727,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Interface &= ~INTER_MAP;
 	player.falling = asp->falling;
 	player.gold = asp->gold;
-	inter.iobj[0]->invisibility = asp->invisibility;
+	entities[0]->invisibility = asp->invisibility;
 	player.inzone = ARX_PATH_GetAddressByName(toLowercase(safestring(asp->inzone)));
 	player.jumpphase = asp->jumpphase;
 	player.jumpstarttime = asp->jumpstarttime;
@@ -1777,9 +1777,9 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		sp_wep = 0;
 	}
 	
-	if(inter.iobj[0]) {
-		inter.iobj[0]->pos = player.pos;
-		inter.iobj[0]->pos.y += 170.f;
+	if(entities[0]) {
+		entities[0]->pos = player.pos;
+		entities[0]->pos.y += 170.f;
 	}
 	
 	WILL_RESTORE_PLAYER_POSITION = asp->pos;
@@ -1812,7 +1812,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
 	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
 	
-	Entity & io = *inter.iobj[0];
+	Entity & io = *entities[0];
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
 		if(io.anims[i] != NULL) {
@@ -1888,7 +1888,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp->equiped[i]));
 		if(player.equiped[i] > 0 && ValidIONum(player.equiped[i])) {
-			inter.iobj[player.equiped[i]]->level = (short)instance;
+			entities[player.equiped[i]]->level = (short)instance;
 		} else {
 			player.equiped[i] = 0;
 		}
@@ -2442,7 +2442,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		
 		std::ostringstream oss;
 		oss << res::path::load(safestring(idx_io[i].filename)).basename() << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
-		if(inter.getById(oss.str()) < 0) {
+		if(entities.getById(oss.str()) < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}
 	}
@@ -2459,8 +2459,8 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 	while(converted) {
 		converted = 0;
 		
-		for(long it = 1; it < MAX_IO_SAVELOAD && it < inter.nbmax; it++) {
-			Entity * io = inter.iobj[it];
+		for(long it = 1; it < MAX_IO_SAVELOAD && it < entities.nbmax; it++) {
+			Entity * io = entities[it];
 			
 			if(!io || treated[it]) {
 				continue;
@@ -2537,67 +2537,67 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 	
 	if(reloadflag) {
 		
-		for(long i = 0; i < inter.nbmax; i++) {
+		for(long i = 0; i < entities.nbmax; i++) {
 			
-			if(!inter.iobj[i]) {
+			if(!entities[i]) {
 				continue;
 			}
 			
-			if(inter.iobj[i]->script.data != NULL) {
-				ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "change", inter.iobj[i], "");
+			if(entities[i]->script.data != NULL) {
+				ScriptEvent::send(&entities[i]->script, SM_RELOAD, "change", entities[i], "");
 			}
 			
-			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
-				ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "change", inter.iobj[i], "");
+			if(entities[i] && entities[i]->over_script.data) {
+				ScriptEvent::send(&entities[i]->over_script, SM_RELOAD, "change", entities[i], "");
 			}
 			
-			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC) && ValidIONum(inter.iobj[i]->targetinfo)) {
-				if(inter.iobj[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
-					GetIOCyl(inter.iobj[i], &inter.iobj[i]->physics.cyl);
-					GetTargetPos(inter.iobj[i]);
-					ARX_NPC_LaunchPathfind(inter.iobj[i], inter.iobj[i]->targetinfo);
+			if(entities[i] && (entities[i]->ioflags & IO_NPC) && ValidIONum(entities[i]->targetinfo)) {
+				if(entities[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
+					GetIOCyl(entities[i], &entities[i]->physics.cyl);
+					GetTargetPos(entities[i]);
+					ARX_NPC_LaunchPathfind(entities[i], entities[i]->targetinfo);
 				}
 			}
 		}
 		
 	} else if (_FIRSTTIME) {
 		
-		for(long i = 0; i < inter.nbmax; i++) {
+		for(long i = 0; i < entities.nbmax; i++) {
 			
-			if(!inter.iobj[i]) {
+			if(!entities[i]) {
 				continue;
 			}
 			
-			if(inter.iobj[i]->script.data) {
-				ScriptEvent::send(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], "");
+			if(entities[i]->script.data) {
+				ScriptEvent::send(&entities[i]->script, SM_INIT, "", entities[i], "");
 			}
 			
-			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
-				ScriptEvent::send(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], "");
+			if(entities[i] && entities[i]->over_script.data) {
+				ScriptEvent::send(&entities[i]->over_script, SM_INIT, "", entities[i], "");
 			}
 			
-			if(inter.iobj[i] && inter.iobj[i]->script.data) {
-				ScriptEvent::send(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], "");
+			if(entities[i] && entities[i]->script.data) {
+				ScriptEvent::send(&entities[i]->script, SM_INITEND, "", entities[i], "");
 			}
 			
-			if(inter.iobj[i] && inter.iobj[i]->over_script.data) {
-				ScriptEvent::send(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], "");
+			if(entities[i] && entities[i]->over_script.data) {
+				ScriptEvent::send(&entities[i]->over_script, SM_INITEND, "", entities[i], "");
 			}
 		}
 		
 	} else {
 		
-		for(long i = 0; i < inter.nbmax; i++) {
+		for(long i = 0; i < entities.nbmax; i++) {
 			
-			if(!inter.iobj[i]) {
+			if(!entities[i]) {
 				continue;
 			}
 			
-			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC) && ValidIONum(inter.iobj[i]->targetinfo)) {
-				if(inter.iobj[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
-					GetIOCyl(inter.iobj[i], &inter.iobj[i]->physics.cyl);
-					GetTargetPos(inter.iobj[i]);
-					ARX_NPC_LaunchPathfind(inter.iobj[i], inter.iobj[i]->targetinfo);
+			if(entities[i] && (entities[i]->ioflags & IO_NPC) && ValidIONum(entities[i]->targetinfo)) {
+				if(entities[i]->_npcdata->behavior != BEHAVIOUR_NONE) {
+					GetIOCyl(entities[i], &entities[i]->physics.cyl);
+					GetTargetPos(entities[i]);
+					ARX_NPC_LaunchPathfind(entities[i], entities[i]->targetinfo);
 				}
 			}
 		}
@@ -2646,7 +2646,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 
 static void ReleaseGaids() {
 	
-	for(long i = 0; i < inter.nbmax; i++) {
+	for(long i = 0; i < entities.nbmax; i++) {
 		if(_Gaids[i]) {
 			delete _Gaids[i];
 		}
@@ -2830,14 +2830,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	HERO_SHOW_1ST = -1;
 	
 	if(EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities[0], 0);
 	}
 	
 	if(!EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities[0], 1);
 	}
 	
-	ARX_INTERACTIVE_HideGore(inter.iobj[0], 1);
+	ARX_INTERACTIVE_HideGore(entities[0], 1);
 
 	// default to mouselook true, inventory/book closed
 	TRUE_PLAYER_MOUSELOOK_ON = true;
@@ -2997,7 +2997,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	BLOCK_PLAYER_CONTROLS = 0;
 	player.Interface &= ~INTER_COMBATMODE;
 	
-	if (inter.iobj[0]) inter.iobj[0]->animlayer[1].cur_anim = NULL;
+	if (entities[0]) entities[0]->animlayer[1].cur_anim = NULL;
 	
 	JUST_RELOADED = 1;
 	

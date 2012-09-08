@@ -1037,13 +1037,13 @@ void ArxGame::Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
+	if ( (entities[0]) && (entities[0]->animlayer[0].cur_anim) )
 	{
 		ManageNONCombatModeAnimations();
 		long old=USEINTERNORM;
 		USEINTERNORM=0;
 		float speedfactor;
-		speedfactor=inter.iobj[0]->basespeed+inter.iobj[0]->speed_modif;
+		speedfactor=entities[0]->basespeed+entities[0]->speed_modif;
 
 		if (cur_mr==3) speedfactor+=0.5f;
 
@@ -1064,23 +1064,23 @@ void ArxGame::Render() {
 
 			float cur=0;
 
-			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
+			while ((cur<tFrameDiff) && (!(entities[0]->ioflags & IO_FREEZESCRIPT)))
 			{
 				long step=min(50L,tFrameDiff);
 
-				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
+				if (entities[0]->ioflags & IO_FREEZESCRIPT) step=0;
 
 
 				float iCalc = step*speedfactor ;
 
-				arx_assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false, false);
+				arx_assert(entities[0]->obj != NULL);
+				EERIEDrawAnimQuat(entities[0]->obj, &entities[0]->animlayer[0], &entities[0]->angle,
+				                  &entities[0]->pos, checked_range_cast<unsigned long>(iCalc), entities[0], false, false);
 
-					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
+					if ((player.Interface & INTER_COMBATMODE) && (entities[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
 
-				if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
+				if (entities[0]->animlayer[1].cur_anim!=NULL)
 					ManageCombatModeAnimationsEND();
 
 				cur+=step*speedfactor;
@@ -1100,17 +1100,17 @@ void ArxGame::Render() {
 
 			float val=(float)tFrameDiff*speedfactor;
 
-			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
+			if (entities[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
-			arx_assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			                  &inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false, false);
+			arx_assert(entities[0]->obj != NULL);
+			EERIEDrawAnimQuat(entities[0]->obj, &entities[0]->animlayer[0], &entities[0]->angle,
+			                  &entities[0]->pos, checked_range_cast<unsigned long>(val), entities[0], false, false);
 
 
-				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
+				if ((player.Interface & INTER_COMBATMODE) && (entities[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
 
-			if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
+			if (entities[0]->animlayer[1].cur_anim!=NULL)
 					ManageCombatModeAnimationsEND();
 
 			ACTIVECAM->use_focal=restore;
@@ -1120,7 +1120,7 @@ void ArxGame::Render() {
 	}
 
 	Entity * io;
-	io=inter.iobj[0];
+	io=entities[0];
 	ANIM_USE * useanim;
 	useanim=&io->animlayer[1];
 	ANIM_HANDLE ** alist;
@@ -1179,15 +1179,15 @@ void ArxGame::Render() {
 		subj.angle.g=player.angle.g;
 		EXTERNALVIEW=0;
 
-		if (inter.iobj[0])
+		if (entities[0])
 		{
-			long id = inter.iobj[0]->obj->fastaccess.view_attach;
+			long id = entities[0]->obj->fastaccess.view_attach;
 
 			if (id!=-1)
 			{
-				subj.pos.x=inter.iobj[0]->obj->vertexlist3[id].v.x;
-				subj.pos.y=inter.iobj[0]->obj->vertexlist3[id].v.y;
-				subj.pos.z=inter.iobj[0]->obj->vertexlist3[id].v.z;
+				subj.pos.x=entities[0]->obj->vertexlist3[id].v.x;
+				subj.pos.y=entities[0]->obj->vertexlist3[id].v.y;
+				subj.pos.z=entities[0]->obj->vertexlist3[id].v.z;
 
 				Vec3f vect;
 				vect.x=subj.pos.x-player.pos.x;
@@ -1235,7 +1235,7 @@ void ArxGame::Render() {
 			{
 				for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
 					if (aspeech[k].exist)
-						if (aspeech[k].io==inter.iobj[main_conversation.actors[j]])
+						if (aspeech[k].io==entities[main_conversation.actors[j]])
 						{
 							main_conversation.current=k;
 							j=main_conversation.actors_nb+1;
@@ -1342,9 +1342,9 @@ void ArxGame::Render() {
 
 		if (LAST_CONVERSATION)
 		{
-			AcquireLastAnim(inter.iobj[0]);
-			ANIM_Set(&inter.iobj[0]->animlayer[1],inter.iobj[0]->anims[ANIM_WAIT]);
-			inter.iobj[0]->animlayer[1].flags|=EA_LOOP;
+			AcquireLastAnim(entities[0]);
+			ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_WAIT]);
+			entities[0]->animlayer[1].flags|=EA_LOOP;
 		}
 	}
 
@@ -1543,14 +1543,14 @@ void ArxGame::Render() {
 			targetpos.y = player.pos.y;
 			targetpos.z = player.pos.z;
 
-			long id  = inter.iobj[0]->obj->fastaccess.view_attach;
-		long id2 = GetActionPointIdx( inter.iobj[0]->obj, "chest2leggings" );
+			long id  = entities[0]->obj->fastaccess.view_attach;
+		long id2 = GetActionPointIdx( entities[0]->obj, "chest2leggings" );
 
 		if (id!=-1)
 		{
-			targetpos.x = inter.iobj[0]->obj->vertexlist3[id].v.x;
-			targetpos.y = inter.iobj[0]->obj->vertexlist3[id].v.y;
-			targetpos.z = inter.iobj[0]->obj->vertexlist3[id].v.z;
+			targetpos.x = entities[0]->obj->vertexlist3[id].v.x;
+			targetpos.y = entities[0]->obj->vertexlist3[id].v.y;
+			targetpos.z = entities[0]->obj->vertexlist3[id].v.z;
 		}
 
 		conversationcamera.pos.x = targetpos.x;
@@ -1559,9 +1559,9 @@ void ArxGame::Render() {
 
 		if (id2!=-1)
 		{
-				conversationcamera.pos.x=inter.iobj[0]->obj->vertexlist3[id2].v.x;
-				conversationcamera.pos.y=inter.iobj[0]->obj->vertexlist3[id2].v.y-DeadCameraDistance;
-				conversationcamera.pos.z=inter.iobj[0]->obj->vertexlist3[id2].v.z;
+				conversationcamera.pos.x=entities[0]->obj->vertexlist3[id2].v.x;
+				conversationcamera.pos.y=entities[0]->obj->vertexlist3[id2].v.y-DeadCameraDistance;
+				conversationcamera.pos.z=entities[0]->obj->vertexlist3[id2].v.z;
 		}
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
@@ -1717,19 +1717,19 @@ void ArxGame::Render() {
 	// Check For Hiding/unHiding Player Gore
 	if ((EXTERNALVIEW) || (player.life<=0))
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities[0],0);
 	}
 
 	if (!EXTERNALVIEW)
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities[0],1);
 	}
 
 	LASTEXTERNALVIEW=EXTERNALVIEW;
 
 	// NOW DRAW the player (Really...)
-	if ( (inter.iobj[0])
-		&& (inter.iobj[0]->animlayer[0].cur_anim) )
+	if ( (entities[0])
+		&& (entities[0]->animlayer[0].cur_anim) )
 	{
 		float restore=ACTIVECAM->use_focal;
 
@@ -1741,11 +1741,11 @@ void ArxGame::Render() {
 		if (!EXTERNALVIEW)
 			FORCE_FRONT_DRAW=1;
 
-		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
+		if (entities[0]->invisibility>0.9f) entities[0]->invisibility=0.9f;
 
-		arx_assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-		                  &inter.iobj[0]->pos, 0, inter.iobj[0]);
+		arx_assert(entities[0]->obj != NULL);
+		EERIEDrawAnimQuat(entities[0]->obj, &entities[0]->animlayer[0], &entities[0]->angle,
+		                  &entities[0]->pos, 0, entities[0]);
 		
 		ACTIVECAM->use_focal=restore;
 		FORCE_FRONT_DRAW=0;

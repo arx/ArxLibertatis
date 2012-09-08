@@ -143,8 +143,8 @@ static void ARX_INVENTORY_Declare_InventoryIn(Entity * io) {
 	}
 	
 	EVENT_SENDER = io;
-	SendIOScriptEvent(inter.iobj[0], SM_INVENTORYIN);
-	EVENT_SENDER = inter.iobj[0];
+	SendIOScriptEvent(entities[0], SM_INVENTORYIN);
+	EVENT_SENDER = entities[0];
 	SendIOScriptEvent(io, SM_INVENTORYIN);
 	EVENT_SENDER = NULL;
 }
@@ -848,9 +848,9 @@ InventoryPos removeFromInventories(Entity * item) {
 		return oldPos;
 	}
 	
-	for(long i = 1; i < inter.nbmax; i++) {
-		if(inter.iobj[i] && inter.iobj[i]->inventory) {
-			oldPos = getIoInventory(inter.iobj[i]).remove(item);
+	for(long i = 1; i < entities.nbmax; i++) {
+		if(entities[i] && entities[i]->inventory) {
+			oldPos = getIoInventory(entities[i]).remove(item);
 			if(oldPos) {
 				return oldPos;
 			}
@@ -867,9 +867,9 @@ InventoryPos locateInInventories(const Entity * item) {
 		return pos;
 	}
 	
-	for(long i = 1; i < inter.nbmax; i++) {
-		if(inter.iobj[i] && inter.iobj[i]->inventory) {
-			pos = getIoInventory(inter.iobj[i]).locate(item);
+	for(long i = 1; i < entities.nbmax; i++) {
+		if(entities[i] && entities[i]->inventory) {
+			pos = getIoInventory(entities[i]).locate(item);
 			if(pos) {
 				return pos;
 			}
@@ -885,8 +885,8 @@ bool insertIntoInventory(Entity * item, const InventoryPos & pos) {
 		return giveToPlayer(item, pos);
 	}
 	
-	if(ValidIONum(pos.io) && inter.iobj[pos.io]->inventory) {
-		if(getIoInventory(inter.iobj[pos.io]).insert(item, pos)) {
+	if(ValidIONum(pos.io) && entities[pos.io]->inventory) {
+		if(getIoInventory(entities[pos.io]).insert(item, pos)) {
 			return true;
 		}
 	}
@@ -956,16 +956,16 @@ bool CanBePutInInventory(Entity * io)
 						{
 							if (io->scriptload)
 							{
-								for (long ii = 0; ii < inter.nbmax; ii++)
+								for (long ii = 0; ii < entities.nbmax; ii++)
 								{
-									if (inter.iobj[ii] == io)
+									if (entities[ii] == io)
 									{
-										ReleaseInter(inter.iobj[ii]);
+										ReleaseInter(entities[ii]);
 
 										if (DRAGINTER == io)
 											Set_DragInter(NULL);
 
-										io = inter.iobj[ii] = NULL;
+										io = entities.iobj[ii] = NULL;
 									}
 								}
 							}
@@ -1048,16 +1048,16 @@ bool CanBePutInInventory(Entity * io)
 							{
 								if (io->scriptload)
 								{
-									for (long ii = 0; ii < inter.nbmax; ii++)
+									for (long ii = 0; ii < entities.nbmax; ii++)
 									{
-										if (inter.iobj[ii] == io)
+										if (entities[ii] == io)
 										{
-											ReleaseInter(inter.iobj[ii]);
+											ReleaseInter(entities[ii]);
 
 											if (DRAGINTER == io)
 												Set_DragInter(NULL);
 
-											io = inter.iobj[ii] = NULL;
+											io = entities.iobj[ii] = NULL;
 										}
 									}
 								}
@@ -1171,11 +1171,11 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 
 					if (io->scriptload)
 					{
-						for (long ii = 0; ii < inter.nbmax; ii++)
+						for (long ii = 0; ii < entities.nbmax; ii++)
 						{
-							if (inter.iobj[ii] == io)
+							if (entities[ii] == io)
 							{
-								ReleaseInter(inter.iobj[ii]);
+								ReleaseInter(entities[ii]);
 							}
 						}
 					}
@@ -1250,11 +1250,11 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 
 						if (io->scriptload)
 						{
-							for (long ii = 0; ii < inter.nbmax; ii++)
+							for (long ii = 0; ii < entities.nbmax; ii++)
 							{
-								if (inter.iobj[ii] == io)
+								if (entities[ii] == io)
 								{
-									ReleaseInter(inter.iobj[ii]);
+									ReleaseInter(entities[ii]);
 								}
 							}
 						}
@@ -1390,12 +1390,12 @@ bool PutInInventory()
 
 							if (DRAGINTER->scriptload)
 							{
-								for (long ii = 0; ii < inter.nbmax; ii++)
+								for (long ii = 0; ii < entities.nbmax; ii++)
 								{
-									if (inter.iobj[ii] == DRAGINTER)
+									if (entities[ii] == DRAGINTER)
 									{
-										ReleaseInter(inter.iobj[ii]);
-										inter.iobj[ii] = NULL;
+										ReleaseInter(entities[ii]);
+										entities.iobj[ii] = NULL;
 										Set_DragInter(NULL);
 									}
 								}
@@ -1613,12 +1613,12 @@ bool PutInInventory()
 					{
 						if (DRAGINTER->scriptload)
 						{
-							for (long ii = 0; ii < inter.nbmax; ii++)
+							for (long ii = 0; ii < entities.nbmax; ii++)
 							{
-								if (inter.iobj[ii] == DRAGINTER)
+								if (entities[ii] == DRAGINTER)
 								{
-									ReleaseInter(inter.iobj[ii]);
-									inter.iobj[ii] = NULL;
+									ReleaseInter(entities[ii]);
+									entities.iobj[ii] = NULL;
 									Set_DragInter(NULL);
 								}
 							}
@@ -1892,9 +1892,9 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 		}
 
 		// Is it in any other IO inventory ?
-		for (long i = 0; i < inter.nbmax; i++)
+		for (long i = 0; i < entities.nbmax; i++)
 		{
-			Entity * ioo = inter.iobj[i];
+			Entity * ioo = entities[i];
 
 			if (ioo && ioo->inventory)
 			{
@@ -1954,9 +1954,9 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos)
 			}
 		}
 		
-		for(long i = 0; i < inter.nbmax; i++) {
+		for(long i = 0; i < entities.nbmax; i++) {
 			
-			Entity * ioo = inter.iobj[i];
+			Entity * ioo = entities[i];
 			
 			if (ioo && ioo->inventory)
 			{
@@ -1999,10 +1999,10 @@ void RemoveFromAllInventories(const Entity * io) {
 	playerInventory.remove(io);
 	
 	// Seek IO in Other IO's Inventories
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i] != NULL) {
-			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = inter.iobj[i]->inventory;
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i] != NULL) {
+			if(entities[i]->inventory != NULL) {
+				INVENTORY_DATA * id = entities[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -2022,10 +2022,10 @@ void RemoveFromAllInventories(const Entity * io) {
 //*************************************************************************************
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i] != NULL) {
-			if(inter.iobj[i]->inventory != NULL) {
-				INVENTORY_DATA * id = inter.iobj[i]->inventory;
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i] != NULL) {
+			if(entities[i]->inventory != NULL) {
+				INVENTORY_DATA * id = entities[i]->inventory;
 				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
@@ -2171,7 +2171,7 @@ bool TakeFromInventory(Vec2s * pos)
 						ioo->scriptload = 1;
 						long ioon = GetInterNum(ioo);
 						ARX_SOUND_PlayInterface(SND_INVSTD);
-						Set_DragInter(inter.iobj[ioon]);
+						Set_DragInter(entities[ioon]);
 						RemoveFromAllInventories(ioo);
 						sInventory = 1;
 

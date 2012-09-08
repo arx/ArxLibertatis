@@ -89,7 +89,7 @@ public:
 		
 		string target = context.getWord();
 		
-		Entity * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getIO());
 		
 		string power = context.getWord();
 		
@@ -185,12 +185,12 @@ public:
 	Result execute(Context & context) {
 		
 		string sourceio = context.getWord();
-		Entity * t = inter.getById(sourceio, context.getIO());
+		Entity * t = entities.getById(sourceio, context.getIO());
 		
 		string source = context.getWord(); // source action_point
 		
 		string targetio = context.getWord();
-		Entity * t2 = inter.getById(targetio, context.getIO());
+		Entity * t2 = entities.getById(targetio, context.getIO());
 		
 		string target = context.getWord();
 		
@@ -371,13 +371,13 @@ public:
 		
 		DebugScript(' ' << source << ' ' << target);
 		
-		Entity * t = inter.getById(source, context.getIO());
+		Entity * t = entities.getById(source, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown source: " << source;
 			return Failed;
 		}
 		
-		Entity * t2 = inter.getById(target, context.getIO());
+		Entity * t2 = entities.getById(target, context.getIO());
 		if(!t2) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

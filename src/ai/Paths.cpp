@@ -216,15 +216,15 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 	if (f > 50) f = 50;
 
-	if (count >= inter.nbmax) count = 1;
+	if (count >= entities.nbmax) count = 1;
 
-	if (inter.nbmax > 1)
+	if (entities.nbmax > 1)
 		for (long tt = 0; tt < f; tt++)
 		{
 			long i = count;
-			Entity * io = inter.iobj[i];
+			Entity * io = entities[i];
 
-			if ((count < inter.nbmax) && (io)
+			if ((count < entities.nbmax) && (io)
 			        && (io->ioflags & (IO_NPC | IO_ITEM))
 			        && (io->show != SHOW_FLAG_MEGAHIDE)
 			        && (io->show != SHOW_FLAG_DESTROYED)
@@ -249,12 +249,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 					if (!op->controled.empty())
 					{
-						long t = inter.getById(op->controled);
+						long t = entities.getById(op->controled);
 
 						if (t >= 0)
 						{
 							string str = io->long_name() + ' ' + op->name;
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
+							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
 				}
@@ -270,12 +270,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 						if (!p->controled.empty())
 						{
-							long t = inter.getById(p->controled);
+							long t = entities.getById(p->controled);
 
 							if (t >= 0)
 							{
 								string params = io->long_name() + ' ' + p->name;
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, params);
+								SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, params);
 							}
 						}
 					}
@@ -286,12 +286,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 					if (!op->controled.empty())
 					{
-						long t = inter.getById(op->controled);
+						long t = entities.getById(op->controled);
 
 						if (t >= 0)
 						{
 							string str = io->long_name() + ' ' + op->name;
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str);
+							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, str);
 						}
 					}
 
@@ -300,12 +300,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 					if (!p->controled.empty())
 					{
-						long t = inter.getById(p->controled);
+						long t = entities.getById(p->controled);
 
 						if (t >= 0)
 						{
 							string str = io->long_name() + ' ' + p->name;
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, str);
+							SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, str);
 						}
 					}
 				}
@@ -316,11 +316,11 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		next:
 			count++;
 
-			if (count >= inter.nbmax) count = 1;
+			if (count >= entities.nbmax) count = 1;
 		}
 
 	// player check*************************************************
-	if (inter.iobj[0])
+	if (entities[0])
 	{
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
 		ARX_PATH * op = (ARX_PATH *)player.inzone;
@@ -333,22 +333,22 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 		{
-			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, op->name);
+			SendIOScriptEvent(entities[0], SM_LEAVEZONE, op->name);
 			CHANGE_LEVEL_ICON = -1;
 
 			if (!op->controled.empty())
 			{
-				long t = inter.getById(op->controled);
+				long t = entities.getById(op->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + op->name);
 				}
 			}
 		}
 		else if ((op == NULL) && (p != NULL)) // Entering Zone P
 		{
-			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, p->name);
+			SendIOScriptEvent(entities[0], SM_ENTERZONE, p->name);
 
 			if (p->flags & PATH_AMBIANCE && !p->ambiance.empty())
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
@@ -371,11 +371,11 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 			if (!p->controled.empty())
 			{
-				long t = inter.getById(p->controled);
+				long t = entities.getById(p->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
 		}
@@ -384,21 +384,21 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 			if (!op->controled.empty())
 			{
-				long t = inter.getById(op->controled);
+				long t = entities.getById(op->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_LEAVE, "player " + p->name);
 				}
 			}
 
 			if (!op->controled.empty())
 			{
-				long t = inter.getById(p->controled);
+				long t = entities.getById(p->controled);
 
 				if (t >= 0)
 				{
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
+					SendIOScriptEvent(entities[t], SM_CONTROLLEDZONE_ENTER, "player " + p->name);
 				}
 			}
 		}
@@ -430,13 +430,13 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 
 void ARX_PATH_ClearAllUsePath()
 {
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i] != NULL)
-			if (inter.iobj[i]->usepath != NULL)
+		if (entities[i] != NULL)
+			if (entities[i]->usepath != NULL)
 			{
-				free(inter.iobj[i]->usepath);
-				inter.iobj[i]->usepath = NULL;
+				free(entities[i]->usepath);
+				entities[i]->usepath = NULL;
 			}
 	}
 }
@@ -711,7 +711,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 		        && (player.equiped[EQUIP_SLOT_WEAPON] != 0)
 		        && (ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
 		{
-			Entity * tio = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
+			Entity * tio = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 			if (tio->ioflags & IO_FIERY)
 				Thrown[num].flags |= ATO_FIERY;
@@ -725,8 +725,8 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 {
 	float distance_limit = 1000.f;
-	Entity * io_target = inter.iobj[target];
-	Entity * io_source = inter.iobj[source];
+	Entity * io_target = entities[target];
+	Entity * io_source = entities[source];
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
@@ -802,9 +802,9 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 		amat = &io_target->armormaterial;
 	}
 	
-	if(io_target == inter.iobj[0]) {
+	if(io_target == entities[0]) {
 		if(player.equiped[EQUIP_SLOT_ARMOR] > 0) {
-			Entity * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
 				amat = &io->armormaterial;
 			}
@@ -900,7 +900,7 @@ void CheckExp(long i) {
 		DoSphericDamage(&Thrown[i].position, 4.f * 2, 50.f,
 		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
-		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, inter.iobj[0]);
+		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, entities[0]);
 		long id = GetFreeDynLight();
 		
 		if(id != -1 && FrameDiff > 0) {
@@ -1102,7 +1102,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						CheckExp(i);
 
 						if (ValidIONum(Thrown[i].source))
-							ARX_NPC_SpawnAudibleSound(v0, inter.iobj[Thrown[i].source]);
+							ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
@@ -1114,7 +1114,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
-							                        inter.iobj[Thrown[i].source]);
+							                        entities[Thrown[i].source]);
 
 						Thrown[i].position = original_pos;
 						j = 200;
@@ -1126,7 +1126,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						CheckExp(i);
 
 						if (ValidIONum(Thrown[i].source))
-							ARX_NPC_SpawnAudibleSound(v0, inter.iobj[Thrown[i].source]);
+							ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 
 						Thrown[i].flags &= ~ATO_MOVING;
 						Thrown[i].velocity = 0.f;
@@ -1135,7 +1135,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
-							                        inter.iobj[Thrown[i].source]);
+							                        entities[Thrown[i].source]);
 
 						Thrown[i].position = original_pos;
 						j = 200;
@@ -1157,7 +1157,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									        && (EVERYTHING_IN_SPHERE[jj] != Thrown[i].source)))
 									{
 
-										Entity * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
+										Entity * target = entities[EVERYTHING_IN_SPHERE[jj]];
 
 										if (target->ioflags & IO_NPC)
 										{
@@ -1214,7 +1214,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 												else
 												{
 													ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
-													ARX_NPC_SpawnAudibleSound(v0, inter.iobj[Thrown[i].source]);
+													ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 												}
 											}
 										}
@@ -1229,7 +1229,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
 
 											if (ValidIONum(Thrown[i].source))
-												ARX_NPC_SpawnAudibleSound(v0, inter.iobj[Thrown[i].source]);
+												ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 
 											CheckExp(i);
 										}
@@ -1575,7 +1575,7 @@ static bool IsPointInField(Vec3f * pos) {
 			
 			if(ValidIONum(spells[i].longinfo)) {
 				
-				Entity * pfrm = inter.iobj[spells[i].longinfo];
+				Entity * pfrm = entities[spells[i].longinfo];
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
@@ -1599,7 +1599,7 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 			
 			if(ValidIONum(spells[i].longinfo)) {
 				
-				Entity * pfrm = inter.iobj[spells[i].longinfo];
+				Entity * pfrm = entities[spells[i].longinfo];
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
@@ -1824,7 +1824,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		               + EEfabs(obj->pbox->vert[0].velocity.z)) * .01f;
 
 
-		if (ValidIONum(source) && (inter.iobj[source]->ioflags & IO_BODY_CHUNK))
+		if (ValidIONum(source) && (entities[source]->ioflags & IO_BODY_CHUNK))
 		{
 		}
 		else
@@ -1929,8 +1929,8 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 	if (ValidIONum(source))
 	{
-		inter.iobj[source]->soundcount = 0;
-		inter.iobj[source]->soundtime = (unsigned long)(arxtime) + 2000;
+		entities[source]->soundcount = 0;
+		entities[source]->soundtime = (unsigned long)(arxtime) + 2000;
 	}
 
 	return ret;

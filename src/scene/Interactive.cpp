@@ -127,7 +127,7 @@ extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
 Entity * CURRENTINTER = NULL;
-EntityManager inter;
+EntityManager entities;
 float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
@@ -199,9 +199,9 @@ void Set_DragInter(Entity * io)
 long ValidIONum(long num)
 {
 	if ((num <	 0)
-	        ||	(num >= inter.nbmax)
-	        ||	(!inter.iobj)
-	        ||	(!inter.iobj[num]))
+	        ||	(num >= entities.nbmax)
+	        ||	(!entities.iobj)
+	        ||	(!entities[num]))
 	{
 		return 0;
 	}
@@ -212,9 +212,9 @@ long ValidIOAddress(const Entity * io)
 {
 	if (!io) return 0;
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i] == io) return 1;
+		if (entities[i] == io) return 1;
 	}
 
 	return 0;
@@ -252,12 +252,12 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 
 		if(!op->controled.empty())
 		{
-			long t = inter.getById(op->controled);
+			long t = entities.getById(op->controled);
 
 			if (t >= 0)
 			{
 				std::string str = io->long_name() + ' ' + temp;
-				SendIOScriptEvent( inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str ); 
+				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
 		}
 	}
@@ -280,7 +280,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		        &&	(player.equiped[i] == n)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			ARX_EQUIPMENT_UnEquip(inter.iobj[0], inter.iobj[player.equiped[i]], 1);
+			ARX_EQUIPMENT_UnEquip(entities[0], entities[player.equiped[i]], 1);
 			player.equiped[i] = 0;
 		}
 	}
@@ -377,10 +377,10 @@ bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_
 	if (!ValidIONum(n_source) || !ValidIONum(n_target))
 		return false;
 
-	inter.iobj[n_source]->show = SHOW_FLAG_LINKED;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[n_target]->obj, inter.iobj[n_source]->obj);
-	return EERIE_LINKEDOBJ_LinkObjectToObject(inter.iobj[n_target]->obj,
-	        inter.iobj[n_source]->obj, ap_target, ap_source, inter.iobj[n_source]);
+	entities[n_source]->show = SHOW_FLAG_LINKED;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[n_target]->obj, entities[n_source]->obj);
+	return EERIE_LINKEDOBJ_LinkObjectToObject(entities[n_target]->obj,
+	        entities[n_source]->obj, ap_target, ap_source, entities[n_source]);
 }
 void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 {
@@ -388,8 +388,8 @@ void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 	        ||	!ValidIONum(n_target))
 		return;
 
-	inter.iobj[n_source]->show = SHOW_FLAG_IN_SCENE;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[n_target]->obj, inter.iobj[n_source]->obj);
+	entities[n_source]->show = SHOW_FLAG_IN_SCENE;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[n_target]->obj, entities[n_source]->obj);
 }
 
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
@@ -422,7 +422,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 		}
 	}
 
-	ARX_INTERACTIVE_HideGore(inter.iobj[0], 1);
+	ARX_INTERACTIVE_HideGore(entities[0], 1);
 }
 
 
@@ -463,7 +463,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
-	if ((io == inter.iobj[0]) && (!flag & 1))
+	if ((io == entities[0]) && (!flag & 1))
 		return;
 
 	long gorenum = -1;
@@ -520,11 +520,11 @@ bool ForceNPC_Above_Ground(Entity * io)
 //*************************************************************************************
 void UnlinkAllLinkedObjects()
 {
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i])
+		if (entities[i])
 		{
-			EERIE_LINKEDOBJ_ReleaseData(inter.iobj[i]->obj);
+			EERIE_LINKEDOBJ_ReleaseData(entities[i]->obj);
 		}
 	}
 }
@@ -649,7 +649,7 @@ void PrepareIOTreatZone(long flag)
 	TREATZONE_Clear();
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos, 1);
 	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-	TREATZONE_AddIO(inter.iobj[0], 0, 0);
+	TREATZONE_AddIO(entities[0], 0, 0);
 
 	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
 
@@ -658,7 +658,7 @@ void PrepareIOTreatZone(long flag)
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			Entity * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = entities[player.equiped[i]];
 
 			if (toequip)
 			{
@@ -693,9 +693,9 @@ void PrepareIOTreatZone(long flag)
 
 	if (TreatAllIO)
 	{
-		for (long ii = 1; ii < inter.nbmax; ii++)
+		for (long ii = 1; ii < entities.nbmax; ii++)
 		{
-			Entity * io = inter.iobj[ii];
+			Entity * io = entities[ii];
 
 			if (io)
 			{
@@ -709,9 +709,9 @@ void PrepareIOTreatZone(long flag)
 
 	char treat;
 
-	for (int i = 1; i < inter.nbmax; i++)
+	for (int i = 1; i < entities.nbmax; i++)
 	{
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((io)
 		        &&	((io->show == SHOW_FLAG_IN_SCENE)
@@ -799,7 +799,7 @@ void PrepareIOTreatZone(long flag)
 			        && (!(io->GameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
-				//	SendIOScriptEvent(inter.iobj[i],SM_TREATIN);
+				//	SendIOScriptEvent(entities[i],SM_TREATIN);
 
 			}
 			else if ((!(io->GameFlags & GFLAG_ISINTREATZONE))
@@ -821,9 +821,9 @@ void PrepareIOTreatZone(long flag)
 
 	long M_TREAT = TREATZONE_CUR;
 
-	for (int i = 1; i < inter.nbmax; i++)
+	for (int i = 1; i < entities.nbmax; i++)
 	{
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((io != NULL)
 		        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
@@ -1123,16 +1123,16 @@ void ReleaseNode() {
 void InitInter(long nb) {
 	if (nb < 10) nb = 10;
 
-	inter.nbmax = nb;
+	entities.nbmax = nb;
 
-	if(inter.init) {
-		free(inter.iobj);
-		inter.iobj = NULL;
+	if(entities.init) {
+		free(entities.iobj);
+		entities.iobj = NULL;
 	}
 
-	inter.init = 1;
-	inter.iobj = (Entity **)malloc(sizeof(Entity *) * inter.nbmax);
-	memset(inter.iobj, 0, sizeof(*inter.iobj) * inter.nbmax);
+	entities.init = 1;
+	entities.iobj = (Entity **)malloc(sizeof(Entity *) * entities.nbmax);
+	memset(entities.iobj, 0, sizeof(*entities.iobj) * entities.nbmax);
 }
 
 //*************************************************************************************
@@ -1140,13 +1140,13 @@ void InitInter(long nb) {
 //*************************************************************************************
 void CleanScriptLoadedIO() {
 	
-	for(long i = 1; i < inter.nbmax; i++) {
-		Entity * io = inter.iobj[i];
+	for(long i = 1; i < entities.nbmax; i++) {
+		Entity * io = entities[i];
 		if(io) {
 			if(io->scriptload) {
 				RemoveFromAllInventories(io);
 				ReleaseInter(io);
-				inter.iobj[i] = NULL;
+				entities.iobj[i] = NULL;
 			} else {
 				io->show = SHOW_FLAG_IN_SCENE;
 			}
@@ -1159,14 +1159,14 @@ void CleanScriptLoadedIO() {
 //*************************************************************************************
 void RestoreInitialIOStatus()
 {
-	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
+	ARX_INTERACTIVE_HideGore(entities[0]);
 	ARX_NPC_Behaviour_ResetAll();
 
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
+	if (entities[0]) entities[0]->spellcast_data.castingspell = SPELL_NONE;
 
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		RestoreInitialIOStatusOfIO(inter.iobj[i]);
+		RestoreInitialIOStatusOfIO(entities[i]);
 	}
 }
 
@@ -1310,13 +1310,13 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 
 						if (ValidIONum(tmp))
 						{
-							if (inter.iobj[tmp]->scriptload)
+							if (entities[tmp]->scriptload)
 							{
-								RemoveFromAllInventories(inter.iobj[tmp]);
-								ReleaseInter(inter.iobj[tmp]);
-								inter.iobj[tmp] = NULL;
+								RemoveFromAllInventories(entities[tmp]);
+								ReleaseInter(entities[tmp]);
+								entities.iobj[tmp] = NULL;
 							}
-							else inter.iobj[tmp]->show = SHOW_FLAG_KILLED;
+							else entities[tmp]->show = SHOW_FLAG_KILLED;
 						}
 						id->slot[ni][nj].io = NULL;
 					}
@@ -1344,12 +1344,12 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 void ARX_INTERACTIVE_ClearAllDynData()
 {
 	long i = 0;
-	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
+	ARX_INTERACTIVE_HideGore(entities[0]);
 	ARX_NPC_Behaviour_ResetAll();
 
-	for (i = 1; i < inter.nbmax; i++)
+	for (i = 1; i < entities.nbmax; i++)
 	{
-		ARX_INTERACTIVE_ClearIODynData(inter.iobj[i]);
+		ARX_INTERACTIVE_ClearIODynData(entities[i]);
 	}
 }
 
@@ -1368,8 +1368,8 @@ static void RestoreIOInitPos(Entity * io) {
 }
 
 void RestoreAllIOInitPos() {
-	for(long i = 1; i < inter.nbmax; i++) {
-		RestoreIOInitPos(inter.iobj[i]);
+	for(long i = 1; i < entities.nbmax; i++) {
+		RestoreIOInitPos(entities[i]);
 	}
 }
 
@@ -1597,10 +1597,10 @@ long GetNumberInterWithOutScriptLoadForLevel(long level)
 {
 	register long count = 0;
 
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i] != NULL) && (!inter.iobj[i]->scriptload)
-		        && (inter.iobj[i]->truelevel == level)) count++;
+		if ((entities[i] != NULL) && (!entities[i]->scriptload)
+		        && (entities[i]->truelevel == level)) count++;
 	}
 
 	return count;
@@ -1610,17 +1610,17 @@ long GetNumberInterWithOutScriptLoadForLevel(long level)
 //*************************************************************************************
 void FreeAllInter()
 {
-	for (long i = 1; i < inter.nbmax; i++) //ignoring Player.
+	for (long i = 1; i < entities.nbmax; i++) //ignoring Player.
 	{
-		if (inter.iobj[i] != NULL)
+		if (entities[i] != NULL)
 		{
-			ReleaseInter(inter.iobj[i]);
-			inter.iobj[i] = NULL;
+			ReleaseInter(entities[i]);
+			entities.iobj[i] = NULL;
 		}
 	}
 
-	inter.nbmax = 1;
-	inter.iobj = (Entity **)realloc(inter.iobj, sizeof(Entity *) * inter.nbmax);
+	entities.nbmax = 1;
+	entities.iobj = (Entity **)realloc(entities.iobj, sizeof(Entity *) * entities.nbmax);
 }
 
 Entity::Entity(long _num) : num(_num) {
@@ -1763,14 +1763,14 @@ Entity * CreateFreeInter(long num)
 	{
 		tocreate = 0;
 
-		if (inter.iobj[0] != NULL) return NULL;
+		if (entities[0] != NULL) return NULL;
 
 		goto create;
 	}
 
-	for (i = 1; i < inter.nbmax; i++) // ignoring player
+	for (i = 1; i < entities.nbmax; i++) // ignoring player
 		{			
-			if (!inter.iobj[i])
+			if (!entities[i])
 			{
 				tocreate = i;
 				break;
@@ -1779,10 +1779,10 @@ Entity * CreateFreeInter(long num)
 
 	if (tocreate == -1)
 	{
-		inter.nbmax++;
-		inter.iobj = (Entity **)realloc(inter.iobj, sizeof(Entity *) * inter.nbmax);
-		tocreate = inter.nbmax - 1;
-		inter.iobj[tocreate] = NULL;
+		entities.nbmax++;
+		entities.iobj = (Entity **)realloc(entities.iobj, sizeof(Entity *) * entities.nbmax);
+		tocreate = entities.nbmax - 1;
+		entities.iobj[tocreate] = NULL;
 	}
 
 	if (tocreate != -1)
@@ -1791,7 +1791,7 @@ Entity * CreateFreeInter(long num)
 		;
 		i = tocreate;
 		
-		return inter.iobj[i] = new Entity(i);
+		return entities.iobj[i] = new Entity(i);
 		
 	}
 	
@@ -1842,7 +1842,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target)
 {
 	EERIE_CYLINDER phys;
 
-	if (io && (io != inter.iobj[0]))
+	if (io && (io != entities[0]))
 	{
 		phys.height = io->original_height * io->scale;
 		phys.radius = io->original_radius * io->scale;
@@ -1906,13 +1906,13 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = (unsigned long)(arxtime);
 			scr_timer[num].times = 1;
-			inter.iobj[t]->show = SHOW_FLAG_TELEPORTING;
+			entities[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
 			ARX_PARTICLES_Add_Smoke(&io->pos, 3, 20);
 			Vec3f pos;
-			pos.x = inter.iobj[t]->pos.x;
-			pos.y = inter.iobj[t]->pos.y + inter.iobj[t]->physics.cyl.height * ( 1.0f / 2 );
-			pos.z = inter.iobj[t]->pos.z;
+			pos.x = entities[t]->pos.x;
+			pos.y = entities[t]->pos.y + entities[t]->physics.cyl.height * ( 1.0f / 2 );
+			pos.z = entities[t]->pos.z;
 			io->room_flags |= 1;
 			io->room = -1;
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
@@ -1993,7 +1993,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 	io->room_flags |= 1;
 	io->room = -1;
 
-	if (io == inter.iobj[0])
+	if (io == entities[0])
 	{
 		moveto.x = player.pos.x = target->x;
 		moveto.y = player.pos.y = target->y + PLAYER_BASE_HEIGHT;
@@ -2202,7 +2202,7 @@ Entity::~Entity() {
 	
 	long ion = GetInterNum(this);
 	if(ion > -1) {
-		inter.iobj[ion] = NULL;
+		entities.iobj[ion] = NULL;
 	}
 	
 }
@@ -2588,12 +2588,12 @@ void UnSelectIO(Entity * io)
 //*************************************************************************************
 void SelectIO(Entity * io)
 {
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
+		if ((entities[i] != NULL)
+		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			UnSelectIO(inter.iobj[i]);
+			UnSelectIO(entities[i]);
 		}
 	}
 
@@ -2613,14 +2613,14 @@ void SelectIO(Entity * io)
 //*************************************************************************************
 void TranslateSelectedIO(Vec3f * op)
 {
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
+		if ((entities[i])
+		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			inter.iobj[i]->initpos.x = inter.iobj[i]->pos.x = inter.iobj[i]->initpos.x + op->x;
-			inter.iobj[i]->initpos.y = inter.iobj[i]->pos.y = inter.iobj[i]->initpos.y + op->y;
-			inter.iobj[i]->initpos.z = inter.iobj[i]->pos.z = inter.iobj[i]->initpos.z + op->z;
+			entities[i]->initpos.x = entities[i]->pos.x = entities[i]->initpos.x + op->x;
+			entities[i]->initpos.y = entities[i]->pos.y = entities[i]->initpos.y + op->y;
+			entities[i]->initpos.z = entities[i]->pos.z = entities[i]->initpos.z + op->z;
 		}
 	}
 }
@@ -2629,14 +2629,14 @@ void TranslateSelectedIO(Vec3f * op)
 //*************************************************************************************
 void ResetSelectedIORot()
 {
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
+		if ((entities[i])
+		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			inter.iobj[i]->initangle.a = inter.iobj[i]->angle.a = 0.f;
-			inter.iobj[i]->initangle.b = inter.iobj[i]->angle.b = 0.f;
-			inter.iobj[i]->initangle.g = inter.iobj[i]->angle.g = 0.f;
+			entities[i]->initangle.a = entities[i]->angle.a = 0.f;
+			entities[i]->initangle.b = entities[i]->angle.b = 0.f;
+			entities[i]->initangle.g = entities[i]->angle.g = 0.f;
 		}
 	}
 }
@@ -2646,14 +2646,14 @@ void ResetSelectedIORot()
 //*************************************************************************************
 void RotateSelectedIO(Anglef * op)
 {
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
+		if ((entities[i])
+		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			inter.iobj[i]->initangle.a = inter.iobj[i]->angle.a = inter.iobj[i]->initangle.a + op->a;
-			inter.iobj[i]->initangle.b = inter.iobj[i]->angle.b = inter.iobj[i]->initangle.b + op->b;
-			inter.iobj[i]->initangle.g = inter.iobj[i]->angle.g = inter.iobj[i]->initangle.g + op->g;
+			entities[i]->initangle.a = entities[i]->angle.a = entities[i]->initangle.a + op->a;
+			entities[i]->initangle.b = entities[i]->angle.b = entities[i]->initangle.b + op->b;
+			entities[i]->initangle.g = entities[i]->angle.g = entities[i]->initangle.g + op->g;
 		}
 	}
 }
@@ -2663,31 +2663,31 @@ void RotateSelectedIO(Anglef * op)
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	
-	if(i < 1 || i >= inter.nbmax || !inter.iobj[i]) {
+	if(i < 1 || i >= entities.nbmax || !entities[i]) {
 		return;
 	}
 	
 	//Must KILL dir...
-	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
+	if(!(flag & FLAG_DONTKILLDIR) && entities[i]->scriptload == 0 && entities[i]->ident > 0) {
 		
-		fs::path dir = fs::paths.user / inter.iobj[i]->full_name();
+		fs::path dir = fs::paths.user / entities[i]->full_name();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
 		}
 	}
 	
-	ReleaseInter(inter.iobj[i]), inter.iobj[i] = NULL;
+	ReleaseInter(entities[i]), entities[i] = NULL;
 }
 
 void DeleteSelectedIO()
 {
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
+		if ((entities[i] != NULL)
+		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			UnSelectIO(inter.iobj[i]);
+			UnSelectIO(entities[i]);
 			ARX_INTERACTIVE_DeleteByIndex(i, 0);
 		}
 	}
@@ -2698,12 +2698,12 @@ void DeleteSelectedIO()
 //*************************************************************************************
 void GroundSnapSelectedIO()
 {
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
+		if ((entities[i] != NULL)
+		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			Entity * io = inter.iobj[i];
+			Entity * io = entities[i];
 			Vec3f ppos;
 			ppos.x = io->pos.x;
 			ppos.y = io->pos.y;
@@ -2906,17 +2906,17 @@ void ReloadScript(Entity * io) {
 
 	if (ValidIONum(num))
 	{
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->script.data)
+			ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
 
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->over_script.data)
+			ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
 
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->script.data)
+			ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
 
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->over_script.data)
+			ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
 	}
 }
 
@@ -2927,10 +2927,10 @@ void ReloadAllScripts()
 {
 	ARX_SCRIPT_Timer_ClearAll();
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		if (inter.iobj[i])
-			ReloadScript(inter.iobj[i]);
+		if (entities[i])
+			ReloadScript(entities[i]);
 	}
 }
 
@@ -2980,10 +2980,10 @@ static bool ExistTemporaryIdent(Entity * io, long t) {
 	
 	string name = io->short_name();
 	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i]) {
-			if(inter.iobj[i]->ident == t && io != inter.iobj[i]) {
-				if (inter.iobj[i]->short_name() == name) {
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i]) {
+			if(entities[i]->ident == t && io != entities[i]) {
+				if (entities[i]->short_name() == name) {
 					return true;
 				}
 			}
@@ -3199,8 +3199,8 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 	}
 
 	int nStart = 1;
-	int nEnd = inter.nbmax;
-	Entity ** pTableIO = inter.iobj;
+	int nEnd = entities.nbmax;
+	Entity ** pTableIO = entities.iobj;
 
 	if ((flag == 3) && _pTable && _pnNbInTable)
 	{
@@ -3380,9 +3380,9 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 {
 	Vec3f pos;
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < entities.nbmax; i++)
 	{
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((io)
 		        && (!(io->ioflags & IO_NO_COLLISIONS))
@@ -3471,14 +3471,14 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 	if (ValidIONum(source))
 	{
-		io_source = inter.iobj[source];
+		io_source = entities[source];
 		avoid = io_source->no_collide;
 
 	}
 
-	for (i = 1; i < inter.nbmax; i++)
+	for (i = 1; i < entities.nbmax; i++)
 	{
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if (
 		    (io)
@@ -3557,7 +3557,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 	if (ValidIONum(source))
 	{
-		io_source = inter.iobj[source];
+		io_source = entities[source];
 		avoid = io_source->no_collide;
 
 	}
@@ -3570,7 +3570,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 		io = treatio[i].io;
 
-		if ((io == io_source) || (!io->obj) || (io == inter.iobj[0])) 
+		if ((io == io_source) || (!io->obj) || (io == entities[0])) 
 			continue;
 
 		if (treatio[i].num == avoid) continue;
@@ -3734,9 +3734,9 @@ void UpdateCameras()
 {
 	arxtime.get_updated();
 
-	for (long i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < entities.nbmax; i++)
 	{
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if (io)
 		{
@@ -3815,9 +3815,9 @@ void UpdateCameras()
 				if ((io->damager_damages > 0)
 				        &&	(io->show == SHOW_FLAG_IN_SCENE))
 				{
-					for (long ii = 0; ii < inter.nbmax; ii++)
+					for (long ii = 0; ii < entities.nbmax; ii++)
 					{
-						Entity * ioo = inter.iobj[ii];
+						Entity * ioo = entities[ii];
 
 						if ((ioo)
 						        &&	(ii != i)
@@ -3848,13 +3848,13 @@ void UpdateCameras()
 
 			if (io->ioflags & IO_CAMERA)
 			{
-				inter.iobj[i]->_camdata->cam.pos.x = io->pos.x;
-				inter.iobj[i]->_camdata->cam.pos.y = io->pos.y;
-				inter.iobj[i]->_camdata->cam.pos.z = io->pos.z;
+				entities[i]->_camdata->cam.pos.x = io->pos.x;
+				entities[i]->_camdata->cam.pos.y = io->pos.y;
+				entities[i]->_camdata->cam.pos.z = io->pos.z;
 
 				if (io->targetinfo != TARGET_NONE) // Follows target
 				{
-					GetTargetPos(io, (unsigned long)inter.iobj[i]->_camdata->cam.smoothing);
+					GetTargetPos(io, (unsigned long)entities[i]->_camdata->cam.smoothing);
 					io->target.x += io->_camdata->cam.translatetarget.x;
 					io->target.y += io->_camdata->cam.translatetarget.y;
 					io->target.z += io->_camdata->cam.translatetarget.z;
@@ -3922,12 +3922,12 @@ void UpdateCameras()
 }
 void ARX_INTERACTIVE_UnfreezeAll()
 {
-	if (inter.iobj)
+	if (entities.iobj)
 	{
-		for (long i = 0; i < inter.nbmax; i++)
+		for (long i = 0; i < entities.nbmax; i++)
 		{
-			if (inter.iobj[i] != NULL)
-				inter.iobj[i]->ioflags &= ~IO_FREEZESCRIPT;
+			if (entities[i] != NULL)
+				entities[i]->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}
 }
@@ -3969,14 +3969,14 @@ void RenderInter(float from, float to) {
 	float dist;
 	long diff;
 
-	if (inter.iobj[0] && (inter.iobj[0]->ignition > 0.f))
+	if (entities[0] && (entities[0]->ignition > 0.f))
 	{
-		ManageIgnition(inter.iobj[0]);
+		ManageIgnition(entities[0]);
 	}
 
-	for(long i = 1; i < inter.nbmax; i++) { // Player isn't rendered here...
+	for(long i = 1; i < entities.nbmax; i++) { // Player isn't rendered here...
 		
-		Entity * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((io)
 		        &&	(io != DRAGINTER)
@@ -4277,7 +4277,7 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 				ReleaseInter(ioo);
 
 				if (ValidIONum(num))
-					inter.iobj[num] = NULL;
+					entities.iobj[num] = NULL;
 			}
 		}
 	}
@@ -4351,11 +4351,11 @@ long GetInterNum(const Entity * io)
 {
 	if (io == NULL) return -1;
 
-	if ( io->num > -1 && io->num < inter.nbmax && inter.iobj[io->num] == io)
+	if ( io->num > -1 && io->num < entities.nbmax && entities[io->num] == io)
 		return io->num;
 
-	for (long i = 0; i < inter.nbmax; i++)
-		if (inter.iobj[i] == io) return i;
+	for (long i = 0; i < entities.nbmax; i++)
+		if (entities[i] == io) return i;
 
 	return -1;
 }
@@ -4397,7 +4397,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 {
 	if (ValidIONum(t))
 	{
-		Entity * io = inter.iobj[t];
+		Entity * io = entities[t];
 
 		if ((io == DRAGINTER)
 		        ||	(io->show != SHOW_FLAG_IN_SCENE))

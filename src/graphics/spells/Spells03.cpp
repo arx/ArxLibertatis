@@ -316,13 +316,13 @@ void CFireBall::Update(unsigned long aulTime)
 		{
 			SetAngle(player.angle.b);
 			afAlpha = player.angle.a;
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
+			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx)
 			{
-				eCurPos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
-				eCurPos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				eCurPos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
+				eCurPos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
+				eCurPos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
+				eCurPos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
 			}
 			else
 			{
@@ -333,26 +333,26 @@ void CFireBall::Update(unsigned long aulTime)
 		}
 		else
 		{
-			SetAngle(inter.iobj[spells[spellinstance].caster]->angle.b);
+			SetAngle(entities[spells[spellinstance].caster]->angle.b);
 
-			eCurPos.x = inter.iobj[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
-			eCurPos.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-			eCurPos.z = inter.iobj[spells[spellinstance].caster]->pos.z + fBetaRadCos * 60;
+			eCurPos.x = entities[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
+			eCurPos.y = entities[spells[spellinstance].caster]->pos.y;
+			eCurPos.z = entities[spells[spellinstance].caster]->pos.z + fBetaRadCos * 60;
 
 			if ((ValidIONum(spells[spellinstance].caster))
-			        && (inter.iobj[spells[spellinstance].caster]->ioflags & IO_NPC))
+			        && (entities[spells[spellinstance].caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= EEsin(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.x -= EEsin(radians(entities[spells[spellinstance].caster]->angle.b)) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += EEcos(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.z += EEcos(radians(entities[spells[spellinstance].caster]->angle.b)) * 30.f;
 			}
 			
-			Entity * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = entities[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{
 				Vec3f * p1 = &eCurPos;
-				Vec3f p2 = inter.iobj[io->targetinfo]->pos;
+				Vec3f p2 = entities[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
@@ -788,11 +788,11 @@ void CSpeed::Create(int numinteractive, int duration)
 		this->truban[nb].actif = 0;
 	}
 
-	nb = (inter.iobj[this->num]->obj)->nbgroups;
+	nb = (entities[this->num]->obj)->nbgroups;
 
 	if (nb > 256) nb = 256;
 
-	EERIE_GROUPLIST * grouplist = inter.iobj[this->num]->obj->grouplist;
+	EERIE_GROUPLIST * grouplist = entities[this->num]->obj->grouplist;
 	nb >>= 1;
 
 	while (nb--)
@@ -849,9 +849,9 @@ void CSpeed::AddRuban(int * f, int id, int dec)
 	{
 		this->truban[num].actif = 1;
 
-		this->truban[num].pos.x = inter.iobj[this->num]->obj->vertexlist3[id].v.x;
-		this->truban[num].pos.y = inter.iobj[this->num]->obj->vertexlist3[id].v.y;
-		this->truban[num].pos.z = inter.iobj[this->num]->obj->vertexlist3[id].v.z;
+		this->truban[num].pos.x = entities[this->num]->obj->vertexlist3[id].v.x;
+		this->truban[num].pos.y = entities[this->num]->obj->vertexlist3[id].v.y;
+		this->truban[num].pos.z = entities[this->num]->obj->vertexlist3[id].v.z;
 
 		if (*f < 0)
 		{
@@ -1070,9 +1070,9 @@ if (ulCurrentTime >= ulDuration)
 */
 //ARX_END: jycorbel (2010-07-20)
 
-	eSrc.x = inter.iobj[0]->pos.x;
-	eSrc.y = inter.iobj[0]->pos.y;
-	eSrc.z = inter.iobj[0]->pos.z;
+	eSrc.x = entities[0]->pos.x;
+	eSrc.y = entities[0]->pos.y;
+	eSrc.z = entities[0]->pos.z;
 
 
 //ARX_BEGIN: jycorbel (2010-07-20) - Correct bug when this spell is cast, the function update particule after-life

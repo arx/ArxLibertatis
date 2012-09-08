@@ -123,10 +123,10 @@ class InventoryCommand : public Command {
 						
 						if(item->scriptload) {
 							long tmp = GetInterNum(item);
-							arx_assert(ValidIONum(tmp) && inter.iobj[tmp] == item);
+							arx_assert(ValidIONum(tmp) && entities[tmp] == item);
 							RemoveFromAllInventories(item);
 							ReleaseInter(item);
-							inter.iobj[tmp] = NULL;
+							entities.iobj[tmp] = NULL;
 						} else {
 							item->show = SHOW_FLAG_KILLED;
 						}
@@ -178,7 +178,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			Entity * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -261,14 +261,14 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			Entity * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
 			if(ARX_EQUIPMENT_IsPlayerEquip(t)) {
-				ARX_EQUIPMENT_UnEquip(inter.iobj[0], t, 1);
+				ARX_EQUIPMENT_UnEquip(entities[0], t, 1);
 			} else {
 				RemoveFromAllInventories(t);
 			}
@@ -470,7 +470,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -478,16 +478,16 @@ public:
 		
 		if(unequip) {
 			Entity * oes = EVENT_SENDER;
-			EVENT_SENDER = inter.iobj[t];
+			EVENT_SENDER = entities[t];
 			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPOUT);
 			EVENT_SENDER = oes;
-			ARX_EQUIPMENT_UnEquip(inter.iobj[t], context.getIO());
+			ARX_EQUIPMENT_UnEquip(entities[t], context.getIO());
 		} else {
 			Entity * oes = EVENT_SENDER;
-			EVENT_SENDER = inter.iobj[t];
+			EVENT_SENDER = entities[t];
 			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPIN);
 			EVENT_SENDER = oes;
-			ARX_EQUIPMENT_Equip(inter.iobj[t], context.getIO());
+			ARX_EQUIPMENT_Equip(entities[t], context.getIO());
 		}
 		
 		return Success;
