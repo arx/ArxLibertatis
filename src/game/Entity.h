@@ -1,0 +1,333 @@
+/*
+ * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
+ *
+ * This file is part of Arx Libertatis.
+ *
+ * Arx Libertatis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Arx Libertatis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/* Based on:
+===========================================================================
+ARX FATALIS GPL Source Code
+Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
+
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+<http://www.gnu.org/licenses/>.
+
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+===========================================================================
+*/
+
+#ifndef ARX_GAME_ENTITY_H
+#define ARX_GAME_ENTITY_H
+
+#include <set>
+#include <string>
+#include <vector>
+
+#include "audio/AudioTypes.h"
+#include "game/Damage.h" // TODO needed for DamageType
+#include "game/Equipment.h" // TODO needed for ItemType
+#include "game/Spells.h" // TODO needed for Spell, Rune, SpellcastFlags
+#include "graphics/Color.h"
+#include "graphics/BaseGraphicsTypes.h"
+#include "io/resource/ResourcePath.h"
+#include "math/Vector2.h"
+#include "math/Vector3.h"
+#include "math/Angle.h"
+#include "platform/Flags.h"
+#include "script/Script.h" // TODO remove this
+
+class TextureContainer;
+struct ANIM_HANDLE;
+struct ARX_PATH;
+struct ARX_USE_PATH;
+struct EERIE_3DOBJ;
+struct INVENTORY_DATA;
+struct IO_CAMDATA;
+struct IO_FIXDATA;
+struct IO_ITEMDATA;
+struct IO_NPCDATA;
+struct SYMBOL_DRAW;
+struct TWEAK_INFO;
+
+#define MAX_ANIMS 200 // max loadable anims per character
+#define MAX_ANIM_LAYERS 4
+#define BASE_RUBBER 1.5f
+
+struct IO_PHYSICS {
+	EERIE_CYLINDER cyl;
+	Vec3f startpos;
+	Vec3f targetpos;
+	Vec3f velocity;
+	Vec3f forces;
+};
+
+struct ANIM_USE {
+	ANIM_HANDLE * next_anim;
+	ANIM_HANDLE * cur_anim;
+	short altidx_next; // idx to alternate anims...
+	short altidx_cur; // idx to alternate anims...
+	long ctime;
+	unsigned long flags;
+	unsigned long nextflags;
+	long lastframe;
+	float pour;
+	long fr;
+};
+
+enum IOCollisionFlag {
+	COLLIDE_WITH_PLAYER = (1<<0),
+	COLLIDE_WITH_WORLD  = (1<<1)
+};
+DECLARE_FLAGS(IOCollisionFlag, IOCollisionFlags)
+DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
+
+struct IO_HALO {
+	Color3f color;
+	float radius;
+	unsigned long flags;
+	long dynlight;
+	Vec3f offset;
+};
+
+struct IO_TWEAKER_INFO {
+	res::path filename;
+	std::string skintochange;
+	res::path skinchangeto;
+};
+
+struct IO_SPELLCAST_DATA {
+	Spell castingspell; // spell being casted...
+	Rune symb[4]; // symbols to draw before casting...
+	SpellcastFlags spell_flags;
+	short spell_level;
+	long target;
+	long duration;
+};
+
+#define IO_UNDERWATER          (1<<0)
+#define	IO_FREEZESCRIPT        (1<<1)
+#define IO_ITEM                (1<<2)
+#define IO_NPC                 (1<<3)
+#define IO_FIX                 (1<<4)
+#define IO_NOSHADOW            (1<<5)
+#define IO_CAMERA              (1<<6)
+#define IO_MARKER              (1<<7)
+#define IO_ICONIC              (1<<8)
+#define IO_NO_COLLISIONS       (1<<9)
+#define IO_GOLD                (1<<10)
+#define IO_INVULNERABILITY     (1<<11)
+#define IO_NO_PHYSICS_INTERPOL (1<<12)
+#define IO_HIT                 (1<<13)
+#define IO_PHYSICAL_OFF        (1<<14)
+#define IO_MOVABLE             (1<<15)
+#define IO_UNIQUE              (1<<16)
+#define IO_SHOP                (1<<17)
+#define IO_BLACKSMITH          (1<<18)
+#define IO_NOSAVE              (1<<19)
+#define IO_FORCEDRAW           (1<<20)
+#define IO_FIELD               (1<<21)
+#define IO_BUMP                (1<<22)
+#define IO_ANGULAR             (1<<23)
+#define IO_BODY_CHUNK          (1<<24)
+#define IO_ZMAP                (1<<25)
+#define IO_INVERTED            (1<<26)
+#define IO_JUST_COLLIDE        (1<<27)
+#define IO_FIERY               (1<<28)
+#define IO_NO_NPC_COLLIDE      (1<<29)
+#define IO_CAN_COMBINE         (1<<30)
+
+struct Entity {
+	
+	explicit Entity(long num);
+	~Entity();
+	
+	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
+	
+	long ioflags; // IO type
+	Vec3f lastpos; // IO last position
+	Vec3f pos; // IO position
+	Vec3f move;
+	Vec3f lastmove;
+	Vec3f forcedmove;
+	
+	Anglef angle; // IO angle
+	IO_PHYSICS physics;	// Movement Collision Data
+	short room;
+	short room_flags; // 1==need_update
+	float original_height;
+	float original_radius;
+	TextureContainer * inv; // Object Icon
+	EERIE_3DOBJ * obj; // IO Mesh data
+	ANIM_HANDLE * anims[MAX_ANIMS]; // Object Animations
+	ANIM_USE animlayer[MAX_ANIM_LAYERS];
+	Vec3f * lastanimvertex; // Last Animation Positions of Vertex
+	long nb_lastanimvertex;
+	unsigned long lastanimtime;
+	
+	EERIE_3D_BBOX bbox3D;
+	Vec2s bbox1; // 2D bounding box1
+	Vec2s bbox2; // 2D bounding box2
+	res::path usemesh; // Alternate Mesh/path
+	EERIE_3DOBJ * tweaky; // tweaked original obj backup
+	audio::SourceId sound;
+	ItemType type_flags; // object type (weapon,goblin...)
+	long scriptload; // Is This object Loaded by Script ?
+	Vec3f target; // Target position
+	long targetinfo; // Target Type/Ident
+	
+	// TODO remove and use inheritance instead
+	union {
+		IO_ITEMDATA * _itemdata; // ITEM Datas
+		IO_FIXDATA * _fixdata; // FIX Datas
+		IO_NPCDATA * _npcdata; // NPC Datas
+		IO_CAMDATA * _camdata; // Camera Datas
+	};
+	
+	INVENTORY_DATA * inventory; // Inventory Data
+	short show; // Show Status (In Scene, In Inventory...)
+	IOCollisionFlags collision; // collision type
+	std::string mainevent;
+	Color3f infracolor; // Improve Vision Color (Heat)
+	long changeanim;
+	
+	long ident; // Ident num
+	float weight;
+	std::string locname; //localisation
+	unsigned short EditorFlags; // 1 NOTSAVED 2 selected
+	unsigned short GameFlags; // GFLAGS
+	Vec3f velocity; // velocity
+	float fall;
+
+	long stopped;
+	Vec3f initpos; // Initial Position
+	Anglef initangle; // Initial Angle
+	res::path filename;
+	float scale;
+	
+	ARX_USE_PATH * usepath;
+	SYMBOL_DRAW * symboldraw;
+	short dynlight;
+	short lastspeechflag;
+	ARX_PATH * inzone;
+	IO_HALO halo;
+	IO_HALO halo_native;
+	
+	EERIE_SCRIPT script; // Primary Script
+	EERIE_SCRIPT over_script; // Overriding Script
+	short stat_count;
+	short stat_sent;
+	IO_TWEAKER_INFO * tweakerinfo; // optional tweaker infos
+	Material material;
+	
+	std::set<std::string> groups;
+	char sizex; // Inventory Icon sizeX
+	char sizey; // Inventory Icon sizeY
+	unsigned long soundtime;
+	unsigned long soundcount;
+	
+	short level; // TODO remove
+	short truelevel; // TODO remove
+	unsigned long sfx_time;
+	unsigned long collide_door_time;
+	unsigned long ouch_time;
+	float dmg_sum;
+	
+	IO_SPELLCAST_DATA spellcast_data;
+	short flarecount;
+	short no_collide;
+	float invisibility;
+	float frameloss;
+	float basespeed;
+	
+	float speed_modif;
+	long * spells_on;
+	short nb_spells_on;
+	long damagedata;
+	
+	float rubber;
+	float max_durability;
+	float durability;
+	short poisonous;
+	short poisonous_count;
+	
+	float ignition;
+	long ignit_light;
+	audio::SampleId ignit_sound;
+	float head_rot;
+	
+	short damager_damages;
+	DamageType damager_type;
+	std::string stepmaterial;
+	std::string armormaterial;
+	std::string weaponmaterial;
+	std::string strikespeech;
+	
+	short sfx_flag;
+	std::vector<TWEAK_INFO> tweaks;
+	char secretvalue;
+	
+	std::string shop_category;
+	float shop_multiply;
+	res::path inventory_skin;
+	long aflags; // additionnal flags
+	short inzone_show;
+	short summoner;
+	long spark_n_blood;
+	
+	/*!
+	 * Return the short name for this Object where only the name
+	 * of the file is returned
+	 * @return The name of the file at the end of the filename path
+	 */
+	std::string short_name() const;
+	
+	/*!
+	 *  Returns the long name for this Object where the short name
+	 * is combined with the identifying number
+	 * in the form of "%s_%04ld"
+	 * @return The short name combined with a 4 digit ident, padded with 0
+	 */
+	std::string long_name() const;
+	
+	/*!
+	 *  Returns the full name for this Object where the
+	 * directory portion of the filename member is combined
+	 * with the the result of long_name()
+	 * @return The directory of filename + long_name()
+	 */
+	res::path full_name() const;
+	
+};
+
+// TODO move this somewhere else
+struct IO_FIXDATA {
+	char trapvalue;
+	char padd[3];
+};
+
+#endif // ARX_GAME_ENTITY_H

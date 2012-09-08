@@ -21,6 +21,7 @@
 
 #include <set>
 
+#include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 
 using std::string;

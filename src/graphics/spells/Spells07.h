@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS07_H
 #define ARX_GRAPHICS_SPELLS_SPELLS07_H
 
+#include "game/Entity.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/SpellEffects.h"

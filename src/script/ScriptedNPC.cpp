@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedNPC.h"
 
+#include "game/Camera.h"
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"

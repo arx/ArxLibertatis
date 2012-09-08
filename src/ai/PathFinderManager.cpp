@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 
 #include "ai/PathFinder.h"
+#include "game/Entity.h"
+#include "game/NPC.h"
 #include "graphics/Math.h"
 #include "platform/Thread.h"
 #include "platform/Lock.h"

@@ -63,12 +63,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 
-#include "game/Equipment.h"
-#include "game/NPC.h"
+#include "game/Camera.h"
 #include "game/Damage.h"
-#include "game/Player.h"
-#include "game/Levels.h"
+#include "game/Equipment.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/Levels.h"
+#include "game/NPC.h"
+#include "game/Player.h"
 
 #include "gui/Speech.h"
 #include "gui/Interface.h"
@@ -114,14 +116,10 @@ using std::vector;
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
 
-#define BASE_RUBBER 1.5f
-
-extern Entity * FlyingOverIO;
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
-extern long CURRENTLEVEL;
 extern long FOR_EXTERNAL_PEOPLE;
 extern long NEED_TEST_TEXT;
 
@@ -146,32 +144,6 @@ long ForceIODraw = 0;
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
 static Entity * AddCamera(const res::path & file);
 static Entity * AddMarker(const res::path & file);
-
-
-/* Return the short name for this Object where only the name
- * of the file is returned
- */
-std::string Entity::short_name() const {
-	return filename.basename();
-}
-
-/* Returns the long name for this Object where the filename
- * is combined with the identifying number
- * in the form of "%s_4ld"
- */
-std::string Entity::long_name() const {
-	std::stringstream ss;
-	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
-	return ss.str();
-}
-
-/* Returns the full name for this Object where the
- * directory portion of the filename member is combined
- * with the the result of long_name()
- */
-res::path Entity::full_name() const {
-	return filename.parent() / long_name();
-}
 
 float STARTED_ANGLE = 0;
 void Set_DragInter(Entity * io)
@@ -263,7 +235,6 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 	}
 }
 
-extern long FAST_RELEASE;
 void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 {
 	if (!io) return;
@@ -1623,133 +1594,6 @@ void FreeAllInter()
 	entities.iobj = (Entity **)realloc(entities.iobj, sizeof(Entity *) * entities.nbmax);
 }
 
-Entity::Entity(long _num) : num(_num) {
-	
-	ioflags = 0;
-	lastpos = Vec3f::ZERO;
-	pos = Vec3f::ZERO;
-	move = Vec3f::ZERO;
-	lastmove = Vec3f::ZERO;
-	forcedmove = Vec3f::ZERO;
-	
-	angle = Anglef::ZERO;
-	memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
-	room = -1;
-	room_flags = 1;
-	original_height = 0.f;
-	original_radius = 0.f;
-	inv = NULL;
-	obj = NULL;
-	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
-	memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
-	lastanimvertex = NULL;
-	nb_lastanimvertex = 0;
-	lastanimtime = 0;
-	
-	memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
-	
-	bbox1 = Vec2s(-1, -1);
-	bbox2 = Vec2s(-1, -1);
-	tweaky = NULL;
-	sound = audio::INVALID_ID;
-	type_flags = 0;
-	scriptload = 0;
-	target = Vec3f::ZERO;
-	targetinfo = TARGET_NONE;
-	
-	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
-	
-	inventory = NULL;
-	show = SHOW_FLAG_IN_SCENE;
-	collision = 0;
-	infracolor = Color3f::blue;
-	changeanim = -1;
-	
-	ident = 0;
-	weight = 1.f;
-	EditorFlags = 0;
-	GameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
-	velocity = Vec3f::ZERO;
-	fall = 0.f;
-	
-	stopped = 1;
-	initpos = Vec3f::ZERO;
-	initangle = Anglef::ZERO;
-	scale = 1.f;
-	
-	usepath = NULL;
-	symboldraw = NULL;
-	dynlight = -1;
-	lastspeechflag = 2;
-	inzone = NULL;
-	memset(&halo, 0, sizeof(IO_HALO)); // TODO use constructor
-	memset(&halo_native, 0, sizeof(IO_HALO)); // TODO use constructor
-	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
-	halo_native.radius = 45.f;
-	halo_native.flags = 0;
-	halo_native.dynlight = -1;
-	ARX_HALO_SetToNative(this);
-	halo.dynlight = -1;
-	
-	memset(&script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
-	memset(&over_script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
-	stat_count = 0;
-	stat_sent = 0;
-	tweakerinfo = NULL;
-	material = MATERIAL_NONE;
-	
-	sizex = 1;
-	sizey = 1;
-	soundtime = 0;
-	soundcount = 0;
-	
-	if(CURRENTLEVEL == -1) {
-		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
-	}
-	level = truelevel = CURRENTLEVEL;
-	
-	sfx_time = 0;
-	collide_door_time = 0;
-	ouch_time = 0;
-	dmg_sum = 0.f;
-	
-	memset(&spellcast_data, 0, sizeof(IO_SPELLCAST_DATA));
-	flarecount = 0;
-	no_collide = -1;
-	invisibility = 0.f;
-	frameloss = 0.f;
-	basespeed = 1.f;
-	
-	speed_modif = 0.f;
-	spells_on = NULL;
-	nb_spells_on = 0;
-	damagedata = -1;
-	
-	rubber = BASE_RUBBER;
-	max_durability = durability = 100.f;
-	poisonous = 0;
-	poisonous_count = 0;
-	
-	ignition = 0.f;
-	ignit_light = -1;
-	ignit_sound = audio::INVALID_ID;
-	head_rot = 0.f;
-	
-	damager_damages = 0;
-	damager_type = 0;
-	
-	sfx_flag = 0;
-	secretvalue = -1;
-	
-	shop_multiply = 1.f;
-	aflags = 0;
-	inzone_show = 0;
-	summoner = 0;
-	spark_n_blood = 0;
-	
-	ARX_SCRIPT_SetMainEvent(this, "main");
-	
-}
 
 //*************************************************************************************
 // Creates a new free Interactive Object
@@ -2079,133 +1923,6 @@ Entity * EntityManager::getById(const string & name, Entity * self) {
 }
 
 extern long TOTAL_BODY_CHUNKS_COUNT;
-
-Entity::~Entity() {
-	
-	if(DRAGINTER == this) {
-		Set_DragInter(NULL);
-	}
-	
-	if(!FAST_RELEASE) {
-		TREATZONE_RemoveIO(this);
-	}
-	
-	if(ioflags & IO_BODY_CHUNK) {
-		TOTAL_BODY_CHUNKS_COUNT--;
-		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
-	}
-	
-	if(ignit_light > -1) {
-		DynLight[ignit_light].exist = 0, ignit_light = -1;
-	}
-	
-	if(ignit_sound != audio::INVALID_ID) {
-		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
-	}
-	
-	if(this == FlyingOverIO) {
-		FlyingOverIO = NULL;
-	}
-	
-	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
-		MasterCamera.exist = 0;
-	}
-	
-	if((MasterCamera.exist & 2) && MasterCamera.want_io == this) {
-		MasterCamera.exist = 0;
-	}
-	
-	ARX_INTERACTIVE_DestroyDynamicInfo(this);
-	IO_UnlinkAllLinkedObjects(this);
-	
-	// Releases ToBeDrawn Transparent Polys linked to this object !
-	tweaks.clear();
-	ARX_SCRIPT_Timer_Clear_For_IO(this);
-	
-	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
-		delete obj, obj = NULL;
-	}
-	
-	ARX_SPELLS_RemoveAllSpellsOn(this);
-	
-	if(tweakerinfo) {
-		delete tweakerinfo;
-	}
-
-	if(tweaky) {
-		delete tweaky, tweaky = NULL;
-	}
-	
-	playerInventory.remove(this);
-	
-	ReleaseScript(&script);
-	ReleaseScript(&over_script);
-	
-	for(long n = 0; n < MAX_ANIMS; n++) {
-		if(anims[n]) {
-			EERIE_ANIMMANAGER_ReleaseHandle(anims[n]);
-			anims[n] = NULL;
-		}
-	}
-	
-	if(damagedata >= 0) {
-		damages[damagedata].exist = 0;
-	}
-	
-	if(ValidDynLight(dynlight)) {
-		DynLight[dynlight].exist = 0, dynlight = -1;
-	}
-	
-	if(ValidDynLight(halo.dynlight)) {
-		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
-	}
-	
-	if(lastanimvertex) {
-		free(lastanimvertex);
-	}
-	
-	if(usepath) {
-		free(usepath);
-	}
-	
-	if(symboldraw) {
-		free(symboldraw), symboldraw = NULL;
-	}
-	
-	if(ioflags & IO_NPC) {
-		delete _npcdata;
-		
-	} else if(ioflags & IO_ITEM) {
-		if(_itemdata->equipitem) {
-			free(_itemdata->equipitem);
-		}
-		_itemdata->equipitem = NULL;
-		free(_itemdata);
-		
-	} else if(ioflags & IO_FIX) {
-		free(_fixdata);
-		
-	} else if(ioflags & IO_CAMERA && _camdata) {
-		if(ACTIVECAM == &_camdata->cam) {
-			ACTIVECAM = &subj;
-		}
-		free(_camdata);
-	}
-	
-	if(TSecondaryInventory && TSecondaryInventory->io == this) {
-		TSecondaryInventory = NULL;
-	}
-	
-	if(inventory != NULL) {
-		free(inventory);
-	}
-	
-	long ion = GetInterNum(this);
-	if(ion > -1) {
-		entities.iobj[ion] = NULL;
-	}
-	
-}
 
 //*************************************************************************************
 // Releases An Interactive Object from memory

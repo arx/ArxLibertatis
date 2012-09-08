@@ -556,9 +556,12 @@ set(EDITOR_SOURCES
 )
 
 set(GAME_SOURCES
+	src/game/Camera.cpp
 	src/game/Damage.cpp
+	src/game/Entity.cpp
 	src/game/Equipment.cpp
 	src/game/Inventory.cpp
+	src/game/Item.cpp
 	src/game/Levels.cpp
 	src/game/Map.cpp
 	src/game/Missile.cpp

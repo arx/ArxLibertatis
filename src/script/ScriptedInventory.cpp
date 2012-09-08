@@ -46,7 +46,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include "game/Entity.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "io/resource/ResourcePath.h"

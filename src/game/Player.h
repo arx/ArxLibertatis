@@ -50,13 +50,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include "game/Entity.h"
 #include "game/Spells.h"
-#include "graphics/data/Mesh.h"
 #include "math/MathFwd.h"
 #include "platform/Flags.h"
 
 struct EERIE_3DOBJ;
 class TextureContainer;
+
+#define MAX_EQUIPED 12
 
 struct ARX_NECKLACE {
 	EERIE_3DOBJ * lacet;

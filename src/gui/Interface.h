@@ -62,6 +62,8 @@ struct Entity;
 extern float BOOKDECX;
 extern float BOOKDECY;
 
+extern Entity * FlyingOverIO;
+
 //-----------------------------------------------------------------------------
 class INTERFACE_TC
 {

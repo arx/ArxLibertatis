@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/static_assert.hpp>
 
 #include "gui/MiniMap.h"
+#include "game/Item.h"
+#include "game/NPC.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"

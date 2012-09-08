@@ -56,6 +56,7 @@ namespace res { class path; }
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
+namespace fs { class path; }
 long DanaeSaveLevel(const fs::path & file);
 void LogDirCreation(const fs::path & dir);
 void WriteIOInfo(Entity * io, const fs::path & dir);
@@ -67,6 +68,7 @@ void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
+extern long FAST_RELEASE;
 
 Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 

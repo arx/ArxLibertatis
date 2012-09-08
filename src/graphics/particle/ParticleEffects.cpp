@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 
 #include "game/Damage.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 
 #include "gui/Interface.h"
@@ -536,9 +537,6 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags) {
 	ARX_POLYSPLAT_Add(&sp->origin, rgb, size, flags);
 }
-
-
-long TOTAL_BODY_CHUNKS_COUNT=0;
 
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io) {
 	

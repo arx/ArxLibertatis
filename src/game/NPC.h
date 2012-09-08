@@ -49,8 +49,140 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include "graphics/data/Mesh.h"
+#include "game/Entity.h"
 #include "math/MathFwd.h"
+#include "platform/Flags.h"
+
+#define MAX_STACKED_BEHAVIOR 5
+#define MAX_EXTRA_ROTATE 4
+
+enum MoveMode {
+	WALKMODE = 0,
+	RUNMODE = 1,
+	NOMOVEMODE = 2,
+	SNEAKMODE = 3
+};
+
+enum BehaviourFlag {
+	BEHAVIOUR_NONE          = (1<<0), // no pathfind
+	BEHAVIOUR_FRIENDLY      = (1<<1), // no pathfind
+	BEHAVIOUR_MOVE_TO       = (1<<2),
+	BEHAVIOUR_WANDER_AROUND = (1<<3), //behavior_param = distance
+	BEHAVIOUR_FLEE          = (1<<4), //behavior_param = distance
+	BEHAVIOUR_HIDE          = (1<<5), //behavior_param = distance
+	BEHAVIOUR_LOOK_FOR      = (1<<6), //behavior_param = distance
+	BEHAVIOUR_SNEAK         = (1<<7),
+	BEHAVIOUR_FIGHT         = (1<<8),
+	BEHAVIOUR_DISTANT       = (1<<9),
+	BEHAVIOUR_MAGIC         = (1<<10),
+	BEHAVIOUR_GUARD         = (1<<11),
+	BEHAVIOUR_GO_HOME       = (1<<12),
+	BEHAVIOUR_LOOK_AROUND   = (1<<13),
+	BEHAVIOUR_STARE_AT      = (1<<14)
+};
+DECLARE_FLAGS(BehaviourFlag, Behaviour)
+DECLARE_FLAGS_OPERATORS(Behaviour)
+
+struct IO_BEHAVIOR_DATA {
+	long exist;
+	Behaviour behavior;
+	float behavior_param;
+	long tactics; // 0=none ; 1=side ; 2=side+back
+	long target;
+	MoveMode movemode;
+	ANIM_USE animlayer[MAX_ANIM_LAYERS];
+};
+
+enum PathfindFlag {
+	PATHFIND_ALWAYS    = (1<<0),
+	PATHFIND_ONCE      = (1<<1),
+	PATHFIND_NO_UPDATE = (1<<2)
+};
+DECLARE_FLAGS(PathfindFlag, PathfindFlags)
+DECLARE_FLAGS_OPERATORS(PathfindFlags)
+
+struct IO_PATHFIND {
+	PathfindFlags flags;
+	long listnb;
+	unsigned short * list;
+	unsigned short listpos;
+	short pathwait;
+	long truetarget;
+};
+
+struct EERIE_EXTRA_ROTATE {
+	long flags;
+	short group_number[MAX_EXTRA_ROTATE];
+	Anglef group_rotate[MAX_EXTRA_ROTATE];
+};
+
+struct IO_NPCDATA {
+	
+	IO_NPCDATA();
+	~IO_NPCDATA();
+	
+	float maxlife;
+	float life;
+	float maxmana;
+	float mana;
+	unsigned long reachedtime;
+	long reachedtarget;	//Is target in REACHZONE ?
+	Entity * weapon; // Linked Weapon (r-hand)
+	long detect;
+	MoveMode movemode;
+	float armor_class;
+	float absorb;
+	float damages;
+	float tohit;
+	float aimtime;
+	float critical;
+	float reach;
+	float backstab_skill;
+	
+	Behaviour behavior;
+	float behavior_param;
+	long tactics; // 0=none ; 1=side ; 2=side+back
+	long xpvalue;
+	long cut;
+	
+	float moveproblem;
+	ItemType weapontype;
+	long weaponinhand;
+	long fightdecision;
+	
+	float look_around_inc;
+	unsigned long collid_time;
+	long collid_state;
+	float speakpitch;
+	float lastmouth;
+	long ltemp;
+	
+	IO_BEHAVIOR_DATA stacked[MAX_STACKED_BEHAVIOR];
+	float poisonned;
+	unsigned char resist_poison;
+	unsigned char resist_magic;
+	unsigned char resist_fire;
+	
+	short strike_time;
+	short walk_start_time;
+	long aiming_start;
+	long npcflags;
+	IO_PATHFIND pathfind;
+	EERIE_EXTRA_ROTATE * ex_rotate;
+	Color blood_color;
+	
+	short SPLAT_DAMAGES;
+	short SPLAT_TOT_NB;
+	Vec3f last_splat_pos;
+	float vvpos;
+	
+	float climb_count;
+	float stare_factor;
+	float fDetect;
+	short cuts;
+	short unused;
+	
+};
 
 const float ARX_NPC_AUDIBLE_VOLUME_MIN(0.94F);
 const float ARX_NPC_AUDIBLE_VOLUME_MAX(1.0F);

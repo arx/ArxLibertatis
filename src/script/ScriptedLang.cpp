@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 #include "core/GameTime.h"
+#include "game/Entity.h"
 #include "game/Inventory.h"
 #include "graphics/Math.h"
 #include "scene/Interactive.h"

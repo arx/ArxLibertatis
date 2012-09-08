@@ -74,11 +74,6 @@ struct EERIE_2D_BBOX {
 	Vec2f max;
 };
 
-struct EERIE_3D_BBOX {
-	Vec3f min;
-	Vec3f max;
-};
-
 struct EERIE_LIGHT {
 	char exist;
 	char type;
@@ -184,26 +179,6 @@ struct EERIEPOLY {
 	short			room;
 	short			misc;
 	unsigned short	uslInd[4];
-};
-
-enum Material {
-	MATERIAL_NONE,
-	MATERIAL_WEAPON,
-	MATERIAL_FLESH,
-	MATERIAL_METAL,
-	MATERIAL_GLASS,
-	MATERIAL_CLOTH,
-	MATERIAL_WOOD,
-	MATERIAL_EARTH,
-	MATERIAL_WATER,
-	MATERIAL_ICE,
-	MATERIAL_GRAVEL,
-	MATERIAL_STONE,
-	MATERIAL_FOOT_LARGE,
-	MATERIAL_FOOT_BARE,
-	MATERIAL_FOOT_SHOE,
-	MATERIAL_FOOT_METAL,
-	MATERIAL_FOOT_STEALTH
 };
 
 #define IOPOLYVERT 3
