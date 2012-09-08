@@ -126,7 +126,7 @@ void ARX_MISSILES_ClearAll() {
 
 //-----------------------------------------------------------------------------
 // Spawns a Projectile using type, starting position/TargetPosition
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos) {
+void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos) {
 	
 	long i(ARX_MISSILES_GetFree());
 

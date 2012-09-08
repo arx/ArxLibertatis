@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern INTERACTIVE_OBJ * LASTSPAWNED;
+extern Entity * LASTSPAWNED;
 extern long CHANGE_LEVEL_ICON;
 
 namespace script {
@@ -77,7 +77,7 @@ public:
 		
 		DebugScript(' ' << object);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		res::path file;
 		if(io->ioflags & IO_NPC) {
@@ -89,7 +89,7 @@ public:
 		}
 		
 		Anglef last_angle = io->angle;
-		INTERACTIVE_OBJ * ioo = AddInteractive(file, -1);
+		Entity * ioo = AddInteractive(file, -1);
 		if(!ioo) {
 			return Failed;
 		}
@@ -192,7 +192,7 @@ public:
 		
 		DebugScript(' ' << choice);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(!choice) {
 			io->ioflags |= IO_NO_COLLISIONS;
@@ -203,9 +203,9 @@ public:
 			
 			bool colliding = false;
 			for(long k = 0; k < inter.nbmax; k++) {
-				INTERACTIVE_OBJ * ioo = inter.iobj[k];
+				Entity * ioo = inter.iobj[k];
 				if(ioo && IsCollidingIO(io, ioo)) {
-					INTERACTIVE_OBJ * oes = EVENT_SENDER;
+					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = ioo;
 					Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
 					EVENT_SENDER = oes;
@@ -214,7 +214,7 @@ public:
 			}
 			
 			if(colliding) {
-				INTERACTIVE_OBJ * oes = EVENT_SENDER;
+				Entity * oes = EVENT_SENDER;
 				EVENT_SENDER = NULL;
 				Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR);
 				EVENT_SENDER = oes;
@@ -243,7 +243,7 @@ public:
 			res::path file = res::path::load(context.getWord()); // object to spawn.
 			
 			string target = context.getWord(); // object ident for position
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = inter.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: npc " << file << ' ' << target;
 				return Failed;
@@ -259,7 +259,7 @@ public:
 				
 				res::path path = "graph/obj3d/interactive/npc" / file;
 				
-				INTERACTIVE_OBJ * ioo = AddNPC(path, IO_IMMEDIATELOAD);
+				Entity * ioo = AddNPC(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
 					ScriptWarning << "failed to create npc " << path;
 					return Failed;
@@ -285,7 +285,7 @@ public:
 				
 				res::path path = "graph/obj3d/interactive/items" / file;
 				
-				INTERACTIVE_OBJ * ioo = AddItem(path, IO_IMMEDIATELOAD);
+				Entity * ioo = AddItem(path, IO_IMMEDIATELOAD);
 				if(!ioo) {
 					ScriptWarning << "failed to create item " << path;
 					return Failed;
@@ -304,7 +304,7 @@ public:
 			
 		} else if(type == "fireball") {
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getIO();
 			if(!io) {
 				ScriptWarning << "must be npc to spawn fireballs";
 				return  Failed;
@@ -339,7 +339,7 @@ public:
 		
 		DebugScript("");
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;
 		} else {
@@ -364,7 +364,7 @@ public:
 		
 		string type = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(type == "on") {
 			io->ioflags &= ~IO_PHYSICAL_OFF;
@@ -450,7 +450,7 @@ public:
 
 class IfVisibleCommand : public Command {
 	
-	static bool hasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	static bool hasVisibility(Entity * io, Entity * ioo) {
 		
 		if(distSqr(io->pos, ioo->pos) > square(20000)) {
 			return false;
@@ -503,7 +503,7 @@ public:
 		}
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		
 		bool hide = context.getBool();
 		
@@ -600,7 +600,7 @@ public:
 			return Success;
 		}
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(!teleport_player && !io) {
 			ScriptWarning << "must either use -p or use in IO context";
 			return Failed;
@@ -608,7 +608,7 @@ public:
 		
 		if(!initpos) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = inter.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -687,7 +687,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		if(!t) {
 			return Success;
 		}
@@ -748,7 +748,7 @@ public:
 		
 		DebugScript(' ' << type << ' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -769,7 +769,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		io->damager_type = getDamageType(context) | DAMAGE_TYPE_PER_SECOND;
 		

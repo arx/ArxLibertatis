@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "math/Angle.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 struct EERIE_CAMERA;
 struct EERIE_SCRIPT;
 
@@ -141,8 +141,8 @@ struct ARX_SPEECH {
 	int iTimeScroll;
 	float fPixelScroll;
 	std::string text;
-	INTERACTIVE_OBJ * io;
-	INTERACTIVE_OBJ * ioscript;
+	Entity * io;
+	Entity * ioscript;
 	CinematicSpeech cine;
 	EERIE_SCRIPT * es;
 	long scrpos;
@@ -191,10 +191,10 @@ void ARX_SPEECH_ClearAll();
  * Add an entry to the conversation view.
  * @param data is a sample name / localised string id
  */
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string & data, long mood, SpeechFlags flags = 0);
-void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io);
-void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io);
-void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, INTERACTIVE_OBJ * io_source, long mood = 0);
+long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood, SpeechFlags flags = 0);
+void ARX_SPEECH_ReleaseIOSpeech(Entity * io);
+void ARX_SPEECH_ClearIOSpeech(Entity * io);
+void ARX_SPEECH_Launch_No_Unicode_Seek(const std::string & string, Entity * io_source, long mood = 0);
 bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is);
 
 #endif // ARX_GUI_SPEECH_H

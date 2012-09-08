@@ -256,7 +256,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		if((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload)
 			&& (inter.iobj[i]->truelevel == CURRENTLEVEL)) {
 			
-			INTERACTIVE_OBJ * io = inter.iobj[i];
+			Entity * io = inter.iobj[i];
 			
 			DANAE_LS_INTER dli;
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
@@ -522,7 +522,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	return 1;
 }
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
+void WriteIOInfo(Entity * io, const fs::path & dir) {
 	
 	if(!fs::is_directory(dir)) {
 		return;
@@ -544,7 +544,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	
 }
 
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
+void SaveIOScript(Entity * io, long fl) {
 	
 	fs::path file;
 	EERIE_SCRIPT * script;
@@ -589,7 +589,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 #endif // BUILD_EDIT_LOADSAVE
 
 
-INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
+Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
 	
 	std::ostringstream nameident;
 	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
@@ -599,7 +599,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f &
 		return inter.iobj[t];
 	}
 	
-	INTERACTIVE_OBJ * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
+	Entity * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
 	if(!io) {
 		return NULL;
 	}
@@ -1165,7 +1165,7 @@ extern void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
 extern long DONT_CLEAR_SCENE;
 long FAST_RELEASE = 0;
-extern INTERACTIVE_OBJ * FlyingOverIO;
+extern Entity * FlyingOverIO;
 extern void ARX_SOUND_Reinit();
 extern unsigned long LAST_JUMP_ENDTIME;
 

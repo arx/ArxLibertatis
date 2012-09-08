@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <set>
 
 #include "graphics/GraphicsTypes.h"
-// TODO move INTERCATIVE_OBJ somewhere else / move flags here
+// TODO move Entity somewhere else / move flags here
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Spells.h"
@@ -63,7 +63,7 @@ struct ARX_PATH;
 struct SYMBOL_DRAW;
 struct INVENTORY_DATA;
 struct ARX_USE_PATH;
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 void specialEE_RTP(TexturedVertex*,TexturedVertex*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
@@ -339,7 +339,7 @@ struct IO_NPCDATA {
 	float mana;
 	unsigned long reachedtime;
 	long reachedtarget;	//Is target in REACHZONE ?
-	INTERACTIVE_OBJ * weapon; // Linked Weapon (r-hand)
+	Entity * weapon; // Linked Weapon (r-hand)
 	long detect;
 	MoveMode movemode;
 	float armor_class;
@@ -478,10 +478,10 @@ enum IOCollisionFlag {
 DECLARE_FLAGS(IOCollisionFlag, IOCollisionFlags)
 DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
 
-struct INTERACTIVE_OBJ {
+struct Entity {
 	
-	explicit INTERACTIVE_OBJ(long num);
-	~INTERACTIVE_OBJ();
+	explicit Entity(long num);
+	~Entity();
 	
 	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
 	
@@ -682,7 +682,7 @@ struct INTERACTIVE_OBJ {
 #define IO_CAN_COMBINE			(1<<30)
 
 //-----------------------------------------------------------------------------
-//	INTERACTIVE_OBJ Structs Start
+//	Entity Structs Start
 //-----------------------------------------------------------------------------
 #define IO_EQUIPITEM_ELEMENT_STRENGTH			0
 #define IO_EQUIPITEM_ELEMENT_DEXTERITY			1
@@ -773,12 +773,12 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 //-----------------------------------------------------------------------------
 float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
-//	INTERACTIVE_OBJ Struct End
+//	Entity Struct End
 
-void AcquireLastAnim(INTERACTIVE_OBJ * io);
-void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
+void AcquireLastAnim(Entity * io);
+void FinishAnim(Entity * io,ANIM_HANDLE * eanim);
 bool Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit);
-void FaceTarget(INTERACTIVE_OBJ * io);
+void FaceTarget(Entity * io);
 
 void DebugSphere(float x, float y, float z, float siz, long tim, Color color);
 
@@ -819,7 +819,7 @@ void EE_IRTP(TexturedVertex *in,TexturedVertex *out);
 void EE_RTT(TexturedVertex *in,TexturedVertex *out);
 
 void extEE_RTP(TexturedVertex *in,TexturedVertex *out);
-void MakeColorz(INTERACTIVE_OBJ * io);
+void MakeColorz(Entity * io);
 
 void EE_RotateX(TexturedVertex *in,TexturedVertex *out,float c, float s);
 void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s);
@@ -882,36 +882,13 @@ void PrepareActiveCamera();
 
 //****************************************************************************
 // BBOX FUNCTIONS START
-__inline void ResetBBox3D(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
-		io->bbox3D.min.x=99999999.f;
-		io->bbox3D.min.y=99999999.f;
-		io->bbox3D.min.z=99999999.f;
-		io->bbox3D.max.x=-99999999.f;
-		io->bbox3D.max.y=-99999999.f;
-		io->bbox3D.max.z=-99999999.f;
-	}
-}
-
-__inline void AddToBBox3D(INTERACTIVE_OBJ * io,Vec3f * pos)
-{
-	if (io)
-	{
-		io->bbox3D.min.x=std::min(io->bbox3D.min.x,pos->x);
-		io->bbox3D.min.y=std::min(io->bbox3D.min.y,pos->y);
-		io->bbox3D.min.z=std::min(io->bbox3D.min.z,pos->z);
-		io->bbox3D.max.x=std::max(io->bbox3D.max.x,pos->x);
-		io->bbox3D.max.y=std::max(io->bbox3D.max.y,pos->y);
-		io->bbox3D.max.z=std::max(io->bbox3D.max.z,pos->z);
-	}
-}
+void ResetBBox3D(Entity * io);
+void AddToBBox3D(Entity * io,Vec3f * pos);
 // BBOX FUNCTIONS END
 //****************************************************************************
 
 void ApplyLight(EERIEPOLY *ep);
-long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest);
+long MakeTopObjString(Entity * io, std::string& dest);
 void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power);
@@ -925,7 +902,7 @@ long EERIERTPPoly(EERIEPOLY *ep);
 
 void EE_RTP3(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam);
 
-void ReleaseAnimFromIO(INTERACTIVE_OBJ * io,long num);
+void ReleaseAnimFromIO(Entity * io,long num);
 
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
@@ -949,7 +926,7 @@ void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
 
-long GetVertexPos(INTERACTIVE_OBJ * io,long id,Vec3f * pos);
+long GetVertexPos(Entity * io,long id,Vec3f * pos);
 void ARX_PrepareBackgroundNRMLs();
 void DrawInWorld();
 long CountBkgVertex();
@@ -1030,7 +1007,7 @@ struct ROOM_DIST_DATA
 extern ROOM_DIST_DATA * RoomDistance;
 extern long NbRoomDistance;
 
-void UpdateIORoom(INTERACTIVE_OBJ * io);
+void UpdateIORoom(Entity * io);
 float SP_GetRoomDist(Vec3f * pos,Vec3f * c_pos,long io_room,long Cam_Room);
 float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();

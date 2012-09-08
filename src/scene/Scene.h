@@ -49,14 +49,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos, long flag = 0);
 
 void ARX_SCENE_Render(long flag);
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, Vec3f * position);
+bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position);
 void RoomDrawRelease();
-bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io);
+bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io);
 
 bool VisibleSphere(float x, float y, float z, float radius);
 void ClearTileLights();

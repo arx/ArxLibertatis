@@ -280,7 +280,7 @@ void CArmor::Create(long _ulDuration) {
 	if (spellinstance != -1)
 	{
 
-		INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+		Entity * io = inter.iobj[spells[spellinstance].caster];
 
 		if ((io) && (!io->halo.flags & HALO_ACTIVE))
 		{
@@ -328,7 +328,7 @@ void CLowerArmor::Create(long _ulDuration) {
 
 	if (spellinstance != -1)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].target];
+		Entity * io = inter.iobj[spells[spellinstance].target];
 
 		if ((io) && (!io->halo.flags & HALO_ACTIVE))
 		{

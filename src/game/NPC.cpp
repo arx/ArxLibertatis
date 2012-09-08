@@ -108,7 +108,7 @@ using std::min;
 using std::max;
 using std::string;
 
-void CheckNPCEx(INTERACTIVE_OBJ * io);
+void CheckNPCEx(Entity * io);
 
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
@@ -118,10 +118,10 @@ extern long LastSelectedIONum;
 #endif
 
 extern long APPLY_PUSH;
-void StareAtTarget(INTERACTIVE_OBJ * io);
+void StareAtTarget(Entity * io);
 #define RUN_WALK_RADIUS 450
 
-static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
+static void CheckHit(Entity * io, float ratioaim) {
 
 	if (io == NULL) return;
 
@@ -160,7 +160,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 		if (!ValidIONum(i)) return;
 
 		{
-			INTERACTIVE_OBJ * ioo = inter.iobj[i];
+			Entity * ioo = inter.iobj[i];
 
 			if (! ioo) return;
 
@@ -214,7 +214,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 	}
 }
 
-void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
+void ARX_NPC_Kill_Spell_Launch(Entity * io)
 {
 	if (io)
 	{
@@ -235,7 +235,7 @@ void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ReleasePathFindInfo(INTERACTIVE_OBJ * io)
+void ARX_NPC_ReleasePathFindInfo(Entity * io)
 {
 	// Checks for valid IO/NPC
 	if ((!io)
@@ -257,7 +257,7 @@ void ARX_NPC_ReleasePathFindInfo(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_CreateExRotateData(INTERACTIVE_OBJ * io)
+void ARX_NPC_CreateExRotateData(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC))
@@ -291,7 +291,7 @@ void ARX_NPC_CreateExRotateData(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
+void ARX_NPC_Revive(Entity * io, long flags)
 {
 	if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
 	{
@@ -349,7 +349,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long behavior_param)
+void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -404,7 +404,7 @@ void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long beh
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Reset(INTERACTIVE_OBJ * io)
+void ARX_NPC_Behaviour_Reset(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -433,7 +433,7 @@ void ARX_NPC_Behaviour_ResetAll()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Stack(INTERACTIVE_OBJ * io)
+void ARX_NPC_Behaviour_Stack(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -466,7 +466,7 @@ void ARX_NPC_Behaviour_Stack(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_UnStack(INTERACTIVE_OBJ * io)
+void ARX_NPC_Behaviour_UnStack(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -496,15 +496,15 @@ void ARX_NPC_Behaviour_UnStack(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
 //***********************************************************************************************
-// long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
+// long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 // Description:
 //			Checks for any direct shortcut between NPC and future anchors...
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
+long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC))
@@ -636,7 +636,7 @@ static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long
 	return returnvalue;
 }
 
-bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
+bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 {
 	// Check Validity
 	if ((!io) || (!(io->ioflags & IO_NPC)))
@@ -746,7 +746,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	{
 		if (ValidIONum(target))
 		{
-			INTERACTIVE_OBJ * io2;
+			Entity * io2;
 			io2 = inter.iobj[target];
 			pos2.x = io2->pos.x;
 			pos2.y = io2->pos.y;
@@ -877,7 +877,7 @@ failure:
 	return false;
 }
 
-bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) {
+bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
 	
 	arx_assert(io.ioflags & IO_NPC);
 	
@@ -918,7 +918,7 @@ bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) 
 }
 
 extern long CUR_COLLISION_MATERIAL;
-INTERACTIVE_OBJ * PHYSICS_CURIO = NULL;
+Entity * PHYSICS_CURIO = NULL;
 //***********************************************************************************************
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
@@ -957,7 +957,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE)
+void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -1024,7 +1024,7 @@ void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
+void ARX_NPC_ManagePoison(Entity * io)
 {
 	float cp = io->_npcdata->poisonned;
 	cp *= ( 1.0f / 2 ) * _framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
@@ -1054,7 +1054,7 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 
 //***********************************************************************************************
-// void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
+// void CheckUnderWaterIO(Entity * io)
 //-----------------------------------------------------------------------------------------------
 // FUNCTION:
 //   Checks if the bottom of an IO is underwater.
@@ -1065,7 +1065,7 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 // WARNINGS:
 // io must be valid (no check !)
 //***********************************************************************************************
-static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
+static void CheckUnderWaterIO(Entity * io)
 {
 	Vec3f ppos;
 	ppos.x = io->pos.x;
@@ -1108,7 +1108,7 @@ static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-static void ManageNPCMovement(INTERACTIVE_OBJ * io);
+static void ManageNPCMovement(Entity * io);
 
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
@@ -1131,7 +1131,7 @@ void ARX_PHYSICS_Apply()
 		if (treatio[i].ioflags & (IO_FIX | IO_JUST_COLLIDE))
 			continue;
 
-		INTERACTIVE_OBJ * io = treatio[i].io;
+		Entity * io = treatio[i].io;
 
 		if (!io) continue;
 
@@ -1299,7 +1299,7 @@ void ARX_PHYSICS_Apply()
 }
 //*************************************************************************************
 //*************************************************************************************
-void FaceTarget2(INTERACTIVE_OBJ * io)
+void FaceTarget2(Entity * io)
 {
 	Vec3f tv;
 
@@ -1361,7 +1361,7 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 
 //***********************************************************************************************
 //***********************************************************************************************
-void StareAtTarget(INTERACTIVE_OBJ * io)
+void StareAtTarget(Entity * io)
 {
 	if (io->_npcdata->ex_rotate == NULL)
 	{
@@ -1447,7 +1447,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 
 //***********************************************************************************************
 //***********************************************************************************************
-float GetTRUETargetDist(INTERACTIVE_OBJ * io)
+float GetTRUETargetDist(Entity * io)
 {
 	long t;
 
@@ -1467,12 +1467,12 @@ float GetTRUETargetDist(INTERACTIVE_OBJ * io)
 }
 
 extern TextureContainer * sphere_particle;
-extern INTERACTIVE_OBJ * EVENT_SENDER;
+extern Entity * EVENT_SENDER;
 
 //***********************************************************************************************
 // Checks If a NPC is dead
 //***********************************************************************************************
-bool IsDeadNPC(INTERACTIVE_OBJ * io) {
+bool IsDeadNPC(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return false;
@@ -1525,7 +1525,7 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 //***********************************************************************************************
 // Spawns a body part from NPC
 //***********************************************************************************************
-void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
+void ARX_NPC_SpawnMember(Entity * ioo, long num)
 {
 	if (!ioo) return;
 
@@ -1720,7 +1720,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	nouvo->nblinked			=	0;
 	nouvo->originaltextures	=	NULL;
 
-	INTERACTIVE_OBJ * io = CreateFreeInter();
+	Entity * io = CreateFreeInter();
 	if(!io) {
 		delete nouvo;
 		return;
@@ -1818,7 +1818,7 @@ static short GetCutFlag(const string & str) {
 	return 0;
 }
 
-long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
+long GetCutSelection(Entity * io, short flag)
 {
 	if ((!io) || (!(io->ioflags & IO_NPC)) || flag == 0)
 		return -1;
@@ -1854,7 +1854,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	return -1;
 }
 
-void ReComputeCutFlags(INTERACTIVE_OBJ * io)
+void ReComputeCutFlags(Entity * io)
 {
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return;
@@ -1866,7 +1866,7 @@ void ReComputeCutFlags(INTERACTIVE_OBJ * io)
 		io->_npcdata->cuts &= ~FLAG_CUT_RARM;
 	}
 }
-bool IsAlreadyCut(INTERACTIVE_OBJ * io, short fl)
+bool IsAlreadyCut(Entity * io, short fl)
 {
 	if (io->_npcdata->cuts & fl)
 		return true;
@@ -1885,7 +1885,7 @@ bool IsAlreadyCut(INTERACTIVE_OBJ * io, short fl)
 
 	return false;
 }
-long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
+long ARX_NPC_ApplyCuts(Entity * io)
 {
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return 0 ;
@@ -1946,7 +1946,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 //***********************************************************************************************
 // Attempt to cut something on NPC
 //***********************************************************************************************
-void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
+void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 {
 	//return;
 	if (!target) return;
@@ -2042,7 +2042,7 @@ extern float STRIKE_AIMTIME;
 //***********************************************************************************************
 bool IsPlayerStriking()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = inter.iobj[0];
 
 	if (!io) return false;
 
@@ -2102,7 +2102,7 @@ bool IsPlayerStriking()
 }
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_Manage_NON_Fight(INTERACTIVE_OBJ * io)
+void ARX_NPC_Manage_NON_Fight(Entity * io)
 {
 	ANIM_USE * ause1 = &io->animlayer[1];
 
@@ -2118,18 +2118,18 @@ void ARX_NPC_Manage_NON_Fight(INTERACTIVE_OBJ * io)
 }
 //***********************************************************************************************
 //***********************************************************************************************
-void Strike_StartTickCount(INTERACTIVE_OBJ * io)
+void Strike_StartTickCount(Entity * io)
 {
 	io->_npcdata->strike_time = 0;
 }
 //***********************************************************************************************
 //***********************************************************************************************
 // NPC IS in fight mode and close to target...
-void ARX_NPC_Manage_Fight(INTERACTIVE_OBJ * io)
+void ARX_NPC_Manage_Fight(Entity * io)
 {
 	if (!(io->ioflags & IO_NPC)) return;
 
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2271,7 +2271,7 @@ void ARX_NPC_Manage_Fight(INTERACTIVE_OBJ * io)
 }
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_Manage_Anims_End(INTERACTIVE_OBJ * io)
+void ARX_NPC_Manage_Anims_End(Entity * io)
 {
 	ANIM_USE * ause = &io->animlayer[0];
 
@@ -2312,7 +2312,7 @@ void ARX_NPC_Manage_Anims_End(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
+bool TryIOAnimMove(Entity * io, long animnum)
 {
 	if ((!io) || (!io->anims[animnum])) return false;
 
@@ -2337,7 +2337,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 
 	return false;
 }
-void TryAndCheckAnim(INTERACTIVE_OBJ * io, long animnum, long layer)
+void TryAndCheckAnim(Entity * io, long animnum, long layer)
 {
 	if (!io) return;
 
@@ -2361,7 +2361,7 @@ void TryAndCheckAnim(INTERACTIVE_OBJ * io, long animnum, long layer)
 // Main animations management
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
+void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 {
 	io->_npcdata->strike_time += (short)FrameDiff;
 	ANIM_USE * ause = &io->animlayer[0];
@@ -2378,7 +2378,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 
 
 
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 
 	if (ValidIOAddress(ioo))
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2752,7 +2752,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 
 
 }
-float GetIOHeight(INTERACTIVE_OBJ * io)
+float GetIOHeight(Entity * io)
 {
 	if (io == inter.iobj[0])
 	{
@@ -2765,7 +2765,7 @@ float GetIOHeight(INTERACTIVE_OBJ * io)
 
 	return min(v, -45.f);
 }
-float GetIORadius(INTERACTIVE_OBJ * io)
+float GetIORadius(Entity * io)
 {
 	if (io == inter.iobj[0])
 		return PLAYER_BASE_RADIUS;
@@ -2776,7 +2776,7 @@ float GetIORadius(INTERACTIVE_OBJ * io)
 
 	return v;
 }
-void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl) {
+void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl) {
 	cyl->height = GetIOHeight(io);
 	cyl->radius = GetIORadius(io);
 	cyl->origin = io->pos;
@@ -2787,7 +2787,7 @@ void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl) {
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
+void ComputeTolerance(Entity * io, long targ, float * dst)
 {
 	float TOLERANCE = 30.f;
 
@@ -2854,7 +2854,7 @@ extern long FRAME_COUNT;
 //***********************************************************************************************
 //***********************************************************************************************
 
-static void ManageNPCMovement(INTERACTIVE_OBJ * io)
+static void ManageNPCMovement(Entity * io)
 {
 	float dis = std::numeric_limits<float>::max();
 	IO_PHYSICS phys;
@@ -3788,12 +3788,12 @@ float AngularDifference(float a1, float a2)
 }
 extern float CURRENT_PLAYER_COLOR;
 //***********************************************************************************************
-// INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
+// Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 //-----------------------------------------------------------------------------------------------
 // FUNCTION:
 //   returns the "first" NPC in sight for another NPC (ioo)
 //***********************************************************************************************
-INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
+Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 {
 	if (!ioo) return NULL;
 
@@ -3802,12 +3802,12 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 		return NULL;
 	}
 
-	INTERACTIVE_OBJ * found_io = NULL;
+	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if ((!io)
 		        ||	(IsDeadNPC(io))
@@ -3917,12 +3917,12 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 extern float CURRENT_PLAYER_COLOR;
  
 //***********************************************************************************************
-// void CheckNPC(INTERACTIVE_OBJ * io)
+// void CheckNPC(Entity * io)
 //-----------------------------------------------------------------------------------------------
 // FUNCTION
 //   Checks if a NPC is dead to prevent further Layers Animation
 //***********************************************************************************************
-void CheckNPC(INTERACTIVE_OBJ * io)
+void CheckNPC(Entity * io)
 {
 	if ((!io)
 	        ||	(io->show != SHOW_FLAG_IN_SCENE))
@@ -3942,7 +3942,7 @@ void CheckNPC(INTERACTIVE_OBJ * io)
 }
 extern long GLOBAL_Player_Room;
 //***********************************************************************************************
-// void CheckNPCEx(INTERACTIVE_OBJ * io)
+// void CheckNPCEx(Entity * io)
 // ----------------------------------------------------------------------------------------------
 // FUNCTION:
 //   Checks an NPC Visibility Field (Player Detect)
@@ -3954,7 +3954,7 @@ extern long GLOBAL_Player_Room;
 // WARNINGS:
 //   io and io->obj must be valid (no check !)
 //***********************************************************************************************
-void CheckNPCEx(INTERACTIVE_OBJ * io)
+void CheckNPCEx(Entity * io)
 {
 	// Distance Between Player and IO
 	float ds = distSqr(io->pos, player.pos - (Vec3f::Y_AXIS * PLAYER_BASE_HEIGHT));
@@ -4050,7 +4050,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 }
 
 //-------------------------------------------------------------------------
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power) {
+void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const float power) {
 	
 	string _step_material = "foot_bare";
 	const string * step_material = &_step_material;
@@ -4073,7 +4073,7 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume
 	
 	if(io == inter.iobj[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-			INTERACTIVE_OBJ * ioo = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
+			Entity * ioo = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
 			if(!ioo->stepmaterial.empty()) {
 				step_material = &ioo->stepmaterial;
 			}
@@ -4088,7 +4088,7 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume
 // Sends ON HEAR events to NPCs for audible sounds
 // factor > 1.0F harder to hear, < 0.0F easier to hear
 //***********************************************************************************************
-void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const float factor, const float presence)
+void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor, const float presence)
 {
 	float max_distance;
 
@@ -4148,9 +4148,9 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const floa
 			}
 		}
 }
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 //-------------------------------------------------------------------------
-void ManageIgnition(INTERACTIVE_OBJ * io)
+void ManageIgnition(Entity * io)
 {
 	if (!io) return;
 
@@ -4171,7 +4171,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 	}
 
 	// Torch Management
-	INTERACTIVE_OBJ * plw = NULL;
+	Entity * plw = NULL;
 
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 	        &&	(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
@@ -4373,7 +4373,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 	ManageIgnition_2(io);
 }
 //-------------------------------------------------------------------------
-void ManageIgnition_2(INTERACTIVE_OBJ * io)
+void ManageIgnition_2(Entity * io)
 {
 	if (!io) return;
 
@@ -4448,7 +4448,7 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 
 extern EERIE_BACKGROUND * ACTIVEBKG;
 
-void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
+void GetTargetPos(Entity * io, unsigned long smoothing)
 {
 	if (io == NULL) return;
 
@@ -4491,7 +4491,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 			}
 			else if (ValidIONum(io->_npcdata->pathfind.truetarget))
 			{
-				INTERACTIVE_OBJ * ioo = inter.iobj[io->_npcdata->pathfind.truetarget];
+				Entity * ioo = inter.iobj[io->_npcdata->pathfind.truetarget];
 				io->target.x = ioo->pos.x;
 				io->target.y = ioo->pos.y;
 				io->target.z = ioo->pos.z;

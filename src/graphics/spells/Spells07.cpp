@@ -478,7 +478,7 @@ float CLightning::Render()
 			}
 
 			fBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
-			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = inter.iobj[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo)
 			        &&	(io->targetinfo != spells[spellinstance].caster))

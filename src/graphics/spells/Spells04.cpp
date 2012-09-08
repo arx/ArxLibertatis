@@ -559,7 +559,7 @@ CFireProtection::CFireProtection()
 //-----------------------------------------------------------------------------
 CFireProtection::~CFireProtection()
 {
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long iNpc = spells[spellinstance].target;
 
 	if (ValidIONum(iNpc))
@@ -580,7 +580,7 @@ void CFireProtection::Create(long _ulDuration)
 	SetDuration(_ulDuration);
 
 	long iNpc = spells[spellinstance].target;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 
 	if (ValidIONum(iNpc))
 	{
@@ -600,7 +600,7 @@ void CFireProtection::Update(unsigned long _ulTime)
 	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 
 	if (ValidIONum(iNpc))
 	{
@@ -630,7 +630,7 @@ CColdProtection::CColdProtection()
 //-----------------------------------------------------------------------------
 CColdProtection::~CColdProtection()
 {
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long iNpc = spells[spellinstance].target;
 
 	if (ValidIONum(iNpc))
@@ -651,7 +651,7 @@ void CColdProtection::Create(long _ulDuration, int _iNpc)
 	SetDuration(_ulDuration);
 
 	iNpc = _iNpc;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 
 	if (ValidIONum(iNpc))
 	{
@@ -671,7 +671,7 @@ void CColdProtection::Update(unsigned long _ulTime)
 	if (!arxtime.is_paused()) ulCurrentTime += _ulTime;
 
 	long iNpc = spells[spellinstance].target;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 
 	if (ValidIONum(iNpc))
 	{

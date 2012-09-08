@@ -137,7 +137,7 @@ extern float INVISIBILITY_OVERRIDE;
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
 {
-	INTERACTIVE_OBJ  * io;
+	Entity  * io;
 	TextureContainer * tc;
 	TextureContainer * tc2;
 	float POSX;
@@ -164,7 +164,7 @@ extern TextureContainer * arrow_left_tc;
 extern FOG_DEF fogparam;
 extern TexturedVertex LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 extern Notification speech[];
 extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
@@ -212,8 +212,8 @@ Vec2s bookclick;
 Vec2s MemoMouse;
 
 INVENTORY_DATA *	TSecondaryInventory;
-INTERACTIVE_OBJ * FlyingOverIO=NULL;
-INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
+Entity * FlyingOverIO=NULL;
+Entity *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
 
 static gui::Note openNote;
@@ -310,7 +310,7 @@ bool bForceEscapeFreeLook = false;
 bool bRenderInCursorMode = true;
 
 long lChangeWeapon=0;
-INTERACTIVE_OBJ *pIOChangeWeapon=NULL;
+Entity *pIOChangeWeapon=NULL;
 
 static long lTimeToDrawMecanismCursor=0;
 static long lNbToDrawMecanismCursor=0;
@@ -624,7 +624,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
+void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContainer * tc2, float POSX, float POSY, float _fRatioX = 1, float _fRatioY = 1) {
 	INTERFACE_HALO_NB++;
 	
 	if(INTERFACE_HALO_NB > INTERFACE_HALO_MAX_NB) {
@@ -664,7 +664,7 @@ void ARX_INTERFACE_HALO_Flush() {
 }
 
 //-----------------------------------------------------------------------------
-bool NeedHalo(INTERACTIVE_OBJ * io)
+bool NeedHalo(Entity * io)
 {
 	if (	(!io)
 		||	(!(io->ioflags & IO_ITEM))	)
@@ -910,7 +910,7 @@ void ResetPlayerInterface() {
 
 void ReleaseInfosCombine() {
 	
-	INTERACTIVE_OBJ * io = NULL;
+	Entity * io = NULL;
 
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
@@ -951,7 +951,7 @@ char* findParam(char* pcToken, const char* param)
 	return pStartString;
 }
 
-void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
+void GetInfosCombineWithIO(Entity * _pWithIO)
 {
 	if(!COMBINE)
 	{
@@ -1253,7 +1253,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 //-------------------------------------------------------------------------------
 void GetInfosCombine()
 {
-	INTERACTIVE_OBJ * io = NULL;
+	Entity * io = NULL;
 
 	if (player.bag)
 	for (int iNbBag=0; iNbBag<player.bag; iNbBag++)
@@ -1340,11 +1340,11 @@ bool ArxGame::ManageEditorControls()
 	// on ferme
 	if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
 	{
-		INTERACTIVE_OBJ * io = NULL;
+		Entity * io = NULL;
 
 		if (SecondaryInventory!=NULL)
 		{
-			io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+			io = (Entity *)SecondaryInventory->io;
 		}
 		else if (player.Interface & INTER_STEAL)
 		{
@@ -1461,7 +1461,7 @@ bool ArxGame::ManageEditorControls()
 
 						if ((LastMouseClick & 1) && (!(EERIEMouseButton & 1)) )
 						{
-							INTERACTIVE_OBJ * temp = CURRENT_TORCH;
+							Entity * temp = CURRENT_TORCH;
 
 							if(temp && !temp->locname.empty()) {
 								
@@ -1510,7 +1510,7 @@ bool ArxGame::ManageEditorControls()
 
 						if ((DRAGINTER == NULL)  && (!PLAYER_MOUSELOOK_ON) && DRAGGING)
 						{
-							INTERACTIVE_OBJ * io=CURRENT_TORCH;
+							Entity * io=CURRENT_TORCH;
 							CURRENT_TORCH->show=SHOW_FLAG_IN_SCENE;
 							ARX_SOUND_PlaySFX(SND_TORCH_END);
 							ARX_SOUND_Stop(SND_TORCH_LOOP);
@@ -1762,7 +1762,7 @@ bool ArxGame::ManageEditorControls()
 	{
 		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
 		py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-		INTERACTIVE_OBJ * temp=(INTERACTIVE_OBJ *)TSecondaryInventory->io;
+		Entity * temp=(Entity *)TSecondaryInventory->io;
 
 		if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
 		{
@@ -1797,11 +1797,11 @@ bool ArxGame::ManageEditorControls()
 
 			if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
 			{
-				INTERACTIVE_OBJ * io = NULL;
+				Entity * io = NULL;
 
 				if (SecondaryInventory!=NULL)
 				{
-					io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+					io = (Entity *)SecondaryInventory->io;
 				}
 				else if (player.Interface & INTER_STEAL)
 				{
@@ -1838,7 +1838,7 @@ bool ArxGame::ManageEditorControls()
 
 			if ( SecondaryInventory != NULL )
 			{
-				INTERACTIVE_OBJ * temp = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+				Entity * temp = (Entity *)SecondaryInventory->io;
 
 				if (IsInSecondaryInventory(FlyingOverIO))
 					if ( temp->ioflags & IO_SHOP )
@@ -1977,7 +1977,7 @@ bool ArxGame::ManageEditorControls()
 
 						if (res==0) // Throw Object
 						{
-							INTERACTIVE_OBJ * io=DRAGINTER;
+							Entity * io=DRAGINTER;
 							ARX_PLAYER_Remove_Invisibility();
 							io->obj->pbox->active=1;
 							io->obj->pbox->stopcount=0;
@@ -2029,7 +2029,7 @@ bool ArxGame::ManageEditorControls()
 	{
 			ReleaseInfosCombine();
 
-		INTERACTIVE_OBJ * io;
+		Entity * io;
 
 		if ((io=FlyingOverIO)!=NULL)
 		{
@@ -2164,7 +2164,7 @@ bool ArxGame::ManageEditorControls()
 
 		if ((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(&DANAEMouse)))
 		{
-			INTERACTIVE_OBJ * io=(INTERACTIVE_OBJ *)SecondaryInventory->io;
+			Entity * io=(Entity *)SecondaryInventory->io;
 
 			if (io->ioflags & IO_SHOP) accept_combine=0;
 		}
@@ -2199,7 +2199,7 @@ bool ArxGame::ManageEditorControls()
 			{
 				bool bOk = false;
 
-				INTERACTIVE_OBJ *io = InterClick(&STARTDRAG);
+				Entity *io = InterClick(&STARTDRAG);
 
 				if (io && !BLOCK_PLAYER_CONTROLS)
 				{
@@ -2328,7 +2328,7 @@ void ArxGame::ManagePlayerControls()
 		&& (eMouseState != MOUSE_IN_NOTE)
 		)
 	{
-		INTERACTIVE_OBJ * t;
+		Entity * t;
 
 		t=InterClick(&DANAEMouse);
 
@@ -2735,11 +2735,11 @@ void ArxGame::ManagePlayerControls()
 		}
 		else
 		{
-			INTERACTIVE_OBJ * io = ARX_INVENTORY_GetTorchLowestDurability();
+			Entity * io = ARX_INVENTORY_GetTorchLowestDurability();
 
 			if (io)
 			{
-				INTERACTIVE_OBJ * ioo = io;
+				Entity * ioo = io;
 
 				if (io->_itemdata->count>1)
 				{
@@ -3222,11 +3222,11 @@ void ArxGame::ManagePlayerControls()
 
 				if((player.Interface &INTER_INVENTORY))
 				{
-					INTERACTIVE_OBJ * io = NULL;
+					Entity * io = NULL;
 
 					if (SecondaryInventory!=NULL)
 					{
-						io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+						io = (Entity *)SecondaryInventory->io;
 					}
 					else if (player.Interface & INTER_STEAL)
 					{
@@ -3263,11 +3263,11 @@ void ArxGame::ManagePlayerControls()
 
 				if((player.Interface &INTER_INVENTORY))
 				{
-					INTERACTIVE_OBJ * io = NULL;
+					Entity * io = NULL;
 
 					if (SecondaryInventory!=NULL)
 					{
-						io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+						io = (Entity *)SecondaryInventory->io;
 					}
 					else if (player.Interface & INTER_STEAL)
 					{
@@ -3420,7 +3420,7 @@ void ArxGame::ManageKeyMouse() {
 	
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
-		INTERACTIVE_OBJ * pIO = NULL;
+		Entity * pIO = NULL;
 
 		if (!BLOCK_PLAYER_CONTROLS)
 		{
@@ -3489,14 +3489,14 @@ void ArxGame::ManageKeyMouse() {
 
 						if (SecondaryInventory!=NULL)
 						{
-							INTERACTIVE_OBJ * temp=(INTERACTIVE_OBJ *)SecondaryInventory->io;
+							Entity * temp=(Entity *)SecondaryInventory->io;
 
 							if (IsInSecondaryInventory(FlyingOverIO))
 								if (temp->ioflags & IO_SHOP)
 									bOk = false;
 						}
 
-							INTERACTIVE_OBJ * io=inter.iobj[0];
+							Entity * io=inter.iobj[0];
 							ANIM_USE * useanim=&io->animlayer[1];
 							long type=ARX_EQUIPMENT_GetPlayerWeaponType();
 
@@ -3920,7 +3920,7 @@ void ArxGame::ManageKeyMouse() {
 				if (DRAGINTER == NULL) {
 					if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
 					{
-						INTERACTIVE_OBJ * temp;
+						Entity * temp;
 					temp = FlyingOverIO;
 
 						if(temp && !temp->locname.empty()) {
@@ -3986,7 +3986,7 @@ void ArxGame::ManageKeyMouse() {
 						if(config.input.autoDescription)
 					{
 
-								INTERACTIVE_OBJ * temp;
+								Entity * temp;
 						temp = FlyingOverIO;
 
 								if(temp && !temp->locname.empty()) {
@@ -4091,7 +4091,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 	{
 		for (i=0;i<TSecondaryInventory->sizex;i++)
 		{
-			INTERACTIVE_OBJ * io=TSecondaryInventory->slot[i][j].io;
+			Entity * io=TSecondaryInventory->slot[i][j].io;
 
 			if (io!=NULL)
 			{
@@ -4189,7 +4189,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 	for (size_t j=0;j<INVENTORY_Y;j++)
 		for (size_t i=0;i<INVENTORY_X;i++)
 		{
-			INTERACTIVE_OBJ * io = inventory[_sNum][i][j].io;
+			Entity * io = inventory[_sNum][i][j].io;
 
 			if ((io!=NULL) && (inventory[_sNum][i][j].show))
 			{
@@ -4312,7 +4312,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 			if (player.equiped[eq]>0)
 			{
-				INTERACTIVE_OBJ * io=inter.iobj[player.equiped[eq]];
+				Entity * io=inter.iobj[player.equiped[eq]];
 				float ratio=io->durability/io->max_durability;
 
 				if (ratio<=0.5f)
@@ -4366,7 +4366,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 				if (player.equiped[eq]>0)
 				{
-					INTERACTIVE_OBJ * io=inter.iobj[player.equiped[eq]];
+					Entity * io=inter.iobj[player.equiped[eq]];
 					float ratio=io->durability/io->max_durability;
 					Color col = Color3f(1.f-ratio, ratio, 0).to<u8>();
 					EERIEDrawBitmap2(px, py, INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth),
@@ -6220,7 +6220,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
 
-		INTERACTIVE_OBJ * io=inter.iobj[0];
+		Entity * io=inter.iobj[0];
 
 		if (io)
 		{
@@ -6240,7 +6240,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_ARMOR]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]	))
 			{
-				INTERACTIVE_OBJ * tod=inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+				Entity * tod=inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
 
 				if (tod)
 				{
@@ -6268,7 +6268,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_LEGGINGS]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]	))
 			{
-				INTERACTIVE_OBJ * tod=inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
+				Entity * tod=inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
 
 				if (tod)
 				{
@@ -6296,7 +6296,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_HELMET]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_HELMET]	))
 			{
-				INTERACTIVE_OBJ * tod=inter.iobj[player.equiped[EQUIP_SLOT_HELMET]];
+				Entity * tod=inter.iobj[player.equiped[EQUIP_SLOT_HELMET]];
 
 				if (tod)
 				{
@@ -6328,7 +6328,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_RING_LEFT]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]	))
 			{
-				INTERACTIVE_OBJ * todraw=inter.iobj[player.equiped[EQUIP_SLOT_RING_LEFT]];
+				Entity * todraw=inter.iobj[player.equiped[EQUIP_SLOT_RING_LEFT]];
 
 				tc=todraw->inv;
 
@@ -6374,7 +6374,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if (	(player.equiped[EQUIP_SLOT_RING_RIGHT]!=0)
 				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]	))
 			{
-				INTERACTIVE_OBJ * todraw=inter.iobj[player.equiped[EQUIP_SLOT_RING_RIGHT]];
+				Entity * todraw=inter.iobj[player.equiped[EQUIP_SLOT_RING_RIGHT]];
 
 				tc=todraw->inv;
 
@@ -6625,11 +6625,11 @@ void ArxGame::DrawAllInterface() {
 		}
 
 		//---------------------------------------------------------------------
-		INTERACTIVE_OBJ * io = NULL;
+		Entity * io = NULL;
 
 		if (SecondaryInventory!=NULL)
 		{
-			io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+			io = (Entity *)SecondaryInventory->io;
 		}
 		else if (player.Interface & INTER_STEAL)
 		{
@@ -6890,7 +6890,7 @@ void ArxGame::DrawAllInterface() {
 			if ((FlyingOverIO->ioflags & IO_ITEM) && (!DRAGINTER))
 				if (SecondaryInventory!=NULL)
 				{
-					INTERACTIVE_OBJ * temp=(INTERACTIVE_OBJ *)SecondaryInventory->io;
+					Entity * temp=(Entity *)SecondaryInventory->io;
 
 					if (temp->ioflags & IO_SHOP)
 					{
@@ -6988,7 +6988,7 @@ void ArxGame::DrawAllInterface() {
 				{
 					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
 					py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-					INTERACTIVE_OBJ * temp=(INTERACTIVE_OBJ *)TSecondaryInventory->io;
+					Entity * temp=(Entity *)TSecondaryInventory->io;
 
 					if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
 					{
@@ -7355,7 +7355,7 @@ void ArxGame::DrawAllInterface() {
 }
 
 extern long FRAME_COUNT;
-extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
+extern Entity * DESTROYED_DURING_RENDERING;
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
 long CANNOT_PUT_IT_HERE=0;
@@ -7374,7 +7374,7 @@ long Manage3DCursor(long flags)
 	if ((DANAEMouse.y<drop_miny) && (!EDITMODE))
 		return 0;
 
-	INTERACTIVE_OBJ * io=DRAGINTER;
+	Entity * io=DRAGINTER;
 
 	if (!io) return 0;
 
@@ -7639,7 +7639,7 @@ long Manage3DCursor(long flags)
 						{
 				if (EEfabs(lastanything) > min(EEfabs(height), 12.0f))
 							{
-								INTERACTIVE_OBJ * io=DRAGINTER;
+								Entity * io=DRAGINTER;
 								ARX_PLAYER_Remove_Invisibility();
 								io->obj->pbox->active=1;
 								io->obj->pbox->stopcount=0;

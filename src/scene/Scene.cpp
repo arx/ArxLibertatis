@@ -499,7 +499,7 @@ long * RoomDrawList=NULL;
 long NbRoomDrawList=0;
 long TotalRoomDrawList=0;
 
-bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
+bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
 {
 	if (EDITMODE) return false;
 
@@ -586,7 +586,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 	return false;
 }
 //*********************************************************************************************************************
-// bool ARX_SCENE__PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
+// bool ARX_SCENE__PORTAL_ClipIO(Entity * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
 //---------------------------------------------------------------------------------------------------------------------
 // USAGE/FUNCTION
 //   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
@@ -598,7 +598,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, Vec3f * position) {
+bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 	
 	if (EDITMODE) return false;
 

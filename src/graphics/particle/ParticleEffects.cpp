@@ -165,7 +165,7 @@ void LaunchDummyParticle()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 	
 	Vec3f pos;
 	pos.x=poss->x;
@@ -540,7 +540,7 @@ void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags) 
 
 long TOTAL_BODY_CHUNKS_COUNT=0;
 
-void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERACTIVE_OBJ * io) {
+void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io) {
 	
 	bool isNpc = io && (io->ioflags & IO_NPC);
 	
@@ -728,7 +728,7 @@ void MakeCoolFx(Vec3f * pos)
 }
 
 //-----------------------------------------------------------------------------
-void MakePlayerAppearsFX(INTERACTIVE_OBJ * io)
+void MakePlayerAppearsFX(Entity * io)
 {
 	if (io)
 	{
@@ -740,7 +740,7 @@ void MakePlayerAppearsFX(INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
+void AddRandomSmoke(Entity * io,long amount)
 {
 	if (!io) return;
 
@@ -1878,7 +1878,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					part->ov.x = part->source->x; 
 					part->ov.y = part->source->y; 
 					part->ov.z = part->source->z; 
-					INTERACTIVE_OBJ * target=inter.iobj[part->sourceionum];
+					Entity * target=inter.iobj[part->sourceionum];
 					Vec3f vector;
 					vector.x=part->ov.x-target->pos.x;
 					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
@@ -2555,7 +2555,7 @@ void ARX_MAGICAL_FLARES_KillAll()
  
 
 //-----------------------------------------------------------------------------
-void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
+void AddFlare(Vec2s * pos,float sm,short typ,Entity * io)
 {
 	long i;
 	float vx,vy;
@@ -2745,7 +2745,7 @@ void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
+void AddFlare2(Vec2s * pos,float sm,short typ,Entity * io)
 {
 	long i;
 	float zz;
@@ -2880,7 +2880,7 @@ void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void AddLFlare(float x, float y,INTERACTIVE_OBJ * io) 
+void AddLFlare(float x, float y,Entity * io) 
 {
 	Vec2s pos;
 	pos.x=(short)x;
@@ -2889,7 +2889,7 @@ void AddLFlare(float x, float y,INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io) 
+void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io) 
 {
 	float dx,dy,adx,ady,m;
 	long i;

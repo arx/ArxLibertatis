@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 class CSpellFx;
 class TextureContainer;
 
@@ -196,7 +196,7 @@ void ARX_SPELLS_Precast_Reset();
 void ARX_SPELLS_Precast_Launch(long num);
 
 Spell GetSpellId(const std::string & spell);
-void TryToCastSpell(INTERACTIVE_OBJ * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration);
+void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration);
 void ARX_SPELLS_Precast_Check();
 
 struct EYEBALL_DEF {
@@ -268,21 +268,21 @@ void ARX_SPELLS_Kill(long i);
 long ARX_SPELLS_GetInstance(Spell typ);
 void ARX_SPELLS_ManageMagic();
 
-void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const std::string & name, float duration);
+void ARX_SPELLS_RequestSymbolDraw(Entity * io, const std::string & name, float duration);
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_Init_Rects();
 
 bool ARX_SPELLS_ExistAnyInstance(Spell typ);
-void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ * io);
-long ARX_SPELLS_GetSpellOn(const INTERACTIVE_OBJ * io, Spell spellid);
+void ARX_SPELLS_RemoveAllSpellsOn(Entity * io);
+long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid);
 long ARX_SPELLS_GetInstanceForThisCaster(Spell typ, long caster);
 
 void ARX_SPELLS_CancelSpellTarget();
-void ARX_SPELLS_LaunchSpellTarget(INTERACTIVE_OBJ * io);
-float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io, float damages);
-float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io, float damages);
+void ARX_SPELLS_LaunchSpellTarget(Entity * io);
+float ARX_SPELLS_ApplyFireProtection(Entity * io, float damages);
+float ARX_SPELLS_ApplyColdProtection(Entity * io, float damages);
 void ARX_SPELLS_FizzleAllSpellsFromCaster(long num);
 
 #endif // ARX_GAME_SPELLS_H

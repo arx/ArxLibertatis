@@ -169,7 +169,7 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 
 	return c;
 }
-ARX_PATH * ARX_PATH_CheckInZone(INTERACTIVE_OBJ * io)
+ARX_PATH * ARX_PATH_CheckInZone(Entity * io)
 {
 	if (ARXpaths)
 	{
@@ -222,7 +222,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		for (long tt = 0; tt < f; tt++)
 		{
 			long i = count;
-			INTERACTIVE_OBJ * io = inter.iobj[i];
+			Entity * io = inter.iobj[i];
 
 			if ((count < inter.nbmax) && (io)
 			        && (io->ioflags & (IO_NPC | IO_ITEM))
@@ -711,7 +711,7 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 		        && (player.equiped[EQUIP_SLOT_WEAPON] != 0)
 		        && (ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
 		{
-			INTERACTIVE_OBJ * tio = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
+			Entity * tio = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
 
 			if (tio->ioflags & IO_FIERY)
 				Thrown[num].flags |= ATO_FIERY;
@@ -725,8 +725,8 @@ long ARX_THROWN_OBJECT_Throw(long source, Vec3f * position, Vec3f * vect, Vec3f 
 float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 {
 	float distance_limit = 1000.f;
-	INTERACTIVE_OBJ * io_target = inter.iobj[target];
-	INTERACTIVE_OBJ * io_source = inter.iobj[source];
+	Entity * io_target = inter.iobj[target];
+	Entity * io_source = inter.iobj[source];
 
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
@@ -804,7 +804,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	
 	if(io_target == inter.iobj[0]) {
 		if(player.equiped[EQUIP_SLOT_ARMOR] > 0) {
-			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+			Entity * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
 				amat = &io->armormaterial;
 			}
@@ -1157,7 +1157,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									        && (EVERYTHING_IN_SPHERE[jj] != Thrown[i].source)))
 									{
 
-										INTERACTIVE_OBJ * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
+										Entity * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
 
 										if (target->ioflags & IO_NPC)
 										{
@@ -1575,7 +1575,7 @@ static bool IsPointInField(Vec3f * pos) {
 			
 			if(ValidIONum(spells[i].longinfo)) {
 				
-				INTERACTIVE_OBJ * pfrm = inter.iobj[spells[i].longinfo];
+				Entity * pfrm = inter.iobj[spells[i].longinfo];
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
@@ -1599,7 +1599,7 @@ static bool IsObjectInField(EERIE_3DOBJ * obj) {
 			
 			if(ValidIONum(spells[i].longinfo)) {
 				
-				INTERACTIVE_OBJ * pfrm = inter.iobj[spells[i].longinfo];
+				Entity * pfrm = inter.iobj[spells[i].longinfo];
 				EERIE_CYLINDER cyl;
 				cyl.height = -35.f;
 				cyl.radius = 35.f;
@@ -2077,7 +2077,7 @@ void ARX_PrepareBackgroundNRMLs()
 
 }
 
-void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, Vec3f * pos,
+void EERIE_PHYSICS_BOX_Launch_NOCOL(Entity * io, EERIE_3DOBJ * obj, Vec3f * pos,
                                     Vec3f * vect, long flags, Anglef * angle) {
 	io->GameFlags |= GFLAG_NO_PHYS_IO_COL;
 	EERIE_PHYSICS_BOX_Launch(obj, pos, vect, flags, angle);

@@ -57,7 +57,7 @@ class TextureContainer;
 struct EERIEPOLY;
 struct EERIE_CAMERA;
 struct EERIE_SPHERE;
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 struct FLARES {
 	unsigned char exist;
@@ -72,7 +72,7 @@ struct FLARES {
 	float size;
 	long dynlight;
 	long move;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	bool bDrawBitmap;
 };
 
@@ -225,16 +225,16 @@ void TreatBackgroundDynlights();
 void MakeBookFX(float posx, float posy, float posz);
 void UpdateObjFx() ;
 void Add3DBoom(Vec3f * position);
-void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
-void AddFlare(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
-void AddFlare2(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io);
-void AddLFlare(float x, float y, INTERACTIVE_OBJ * io = NULL) ;
-void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io = NULL);
+void AddRandomSmoke(Entity * io, long amount = 1);
+void AddFlare(Vec2s * pos, float sm, short typ, Entity * io = NULL);
+void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io);
+void AddLFlare(float x, float y, Entity * io = NULL) ;
+void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 
 void ARX_GenereSpheriqueEtincelles(Vec3f * pos, float r, TextureContainer * tc, float rr, float g, float b, int mask);
-void MakePlayerAppearsFX(INTERACTIVE_OBJ * io);
+void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(Vec3f * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
 
@@ -243,8 +243,8 @@ void ARX_PARTICLES_ClearAll();
 long ARX_PARTICLES_GetFree();
 void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
 void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
-void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERACTIVE_OBJ * io);
-void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
+void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, Entity * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);

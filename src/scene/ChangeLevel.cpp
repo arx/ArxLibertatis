@@ -88,7 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
 extern Vec3f	WILL_RESTORE_PLAYER_POSITION;
@@ -121,8 +121,8 @@ static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
 static long ARX_CHANGELEVEL_Push_Player();
 static long ARX_CHANGELEVEL_Push_AllIO();
-static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
-static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
+static long ARX_CHANGELEVEL_Push_IO(const Entity * io);
+static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 long NEW_LEVEL = -1;
 
@@ -138,7 +138,7 @@ static SaveBlock * _pSaveBlock = NULL;
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
-static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
+static Entity * _ConvertToValidIO(const string & ident) {
 	
 	CONVERT_CREATED = 0;
 	
@@ -172,7 +172,7 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 		return NULL;
 	}
 	
-	INTERACTIVE_OBJ * io = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
+	Entity * io = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
 	if(io) {
 		io->level = (short)NEW_LEVEL;
 	}
@@ -180,7 +180,7 @@ static INTERACTIVE_OBJ * _ConvertToValidIO(const string & ident) {
 }
 
 template <size_t N>
-static INTERACTIVE_OBJ * ConvertToValidIO(const char (&str)[N]) {
+static Entity * ConvertToValidIO(const char (&str)[N]) {
 	return _ConvertToValidIO(toLowercase(safestring(str)));
 }
 
@@ -200,7 +200,7 @@ static long ReadTargetInfo(const char (&str)[N]) {
 	}
 }
 
-long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim) {
+long GetIOAnimIdx2(const Entity * io, ANIM_HANDLE * anim) {
 	
 	if(!io || !anim) {
 		return -1;
@@ -386,7 +386,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	// Close secondary inventory before leaving
 	if (SecondaryInventory != NULL)
 	{
-		INTERACTIVE_OBJ * io = SecondaryInventory->io;
+		Entity * io = SecondaryInventory->io;
 
 		if (io != NULL)
 		{
@@ -423,7 +423,7 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	return true;
 }
 
-bool IsPlayerEquipedWith(INTERACTIVE_OBJ * io) {
+bool IsPlayerEquipedWith(Entity * io) {
 	
 	if (!io) return false;
 
@@ -634,7 +634,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 }
 
 template <size_t N>
-void FillIOIdent(char (&tofill)[N], const INTERACTIVE_OBJ * io) {
+void FillIOIdent(char (&tofill)[N], const Entity * io) {
 	
 	if(!io || !ValidIOAddress(io) || io->filename.empty()) {
 		BOOST_STATIC_ASSERT(N >= 4);
@@ -871,7 +871,7 @@ static long ARX_CHANGELEVEL_Push_AllIO() {
 	return 1;
 }
 
-static INTERACTIVE_OBJ * GetObjIOSource(const EERIE_3DOBJ * obj) {
+static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 	
 	if(!obj) {
 		return NULL;
@@ -904,7 +904,7 @@ void FillTargetInfo(char (&info)[N], long numtarget) {
 	}
 }
 
-static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
+static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 	
 	// Check Valid IO
 	if(!io) {
@@ -1812,7 +1812,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
 	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
 	
-	INTERACTIVE_OBJ & io = *inter.iobj[0];
+	Entity & io = *inter.iobj[0];
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
 		if(io.anims[i] != NULL) {
@@ -1978,7 +1978,7 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	return loadScriptVariables(script.lvar, script.nblvar, dat, pos, TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
 }
 
-static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
+static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	
 	LogDebug("--> loading interactive object " << ident);
 	
@@ -2017,7 +2017,7 @@ static INTERACTIVE_OBJ * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) 
 		}
 	}
 	
-	INTERACTIVE_OBJ * io = LoadInter_Ex(res::path::load(path), num, ais->pos, ais->angle, MSP);
+	Entity * io = LoadInter_Ex(res::path::load(path), num, ais->pos, ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
@@ -2448,7 +2448,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 	}
 }
 
-extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
 
 static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 	
@@ -2460,7 +2460,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 		converted = 0;
 		
 		for(long it = 1; it < MAX_IO_SAVELOAD && it < inter.nbmax; it++) {
-			INTERACTIVE_OBJ * io = inter.iobj[it];
+			Entity * io = inter.iobj[it];
 			
 			if(!io || treated[it]) {
 				continue;
@@ -2501,7 +2501,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 			
 			if(io->obj && io->obj->nblinked) {
 				for(long n = 0; n < io->obj->nblinked; n++) {
-					INTERACTIVE_OBJ * iooo = ConvertToValidIO(aids->linked_id[n]);
+					Entity * iooo = ConvertToValidIO(aids->linked_id[n]);
 					if(iooo) {
 						io->obj->linked[n].io = iooo;
 						io->obj->linked[n].obj = iooo->obj;

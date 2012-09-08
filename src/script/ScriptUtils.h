@@ -86,13 +86,13 @@ private:
 	
 	EERIE_SCRIPT * script;
 	size_t pos;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	ScriptMessage message;
 	std::vector<size_t> stack;
 	
 public:
 	
-	Context(EERIE_SCRIPT * script, size_t pos = 0, INTERACTIVE_OBJ * io = NULL, ScriptMessage msg = SM_NULL);
+	Context(EERIE_SCRIPT * script, size_t pos = 0, Entity * io = NULL, ScriptMessage msg = SM_NULL);
 	
 	std::string getStringVar(const std::string & var) const;
 	std::string getFlags();
@@ -103,7 +103,7 @@ public:
 	
 	void skipWhitespace(bool skipNewlines = false);
 	
-	inline INTERACTIVE_OBJ * getIO() const { return io; }
+	inline Entity * getIO() const { return io; }
 	
 	bool getBool();
 	

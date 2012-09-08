@@ -66,7 +66,7 @@ public:
 	Result execute(Context & context) {
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		
 		float val = clamp(context.getFloat(), 0.f, 100.f);
 		
@@ -94,7 +94,7 @@ public:
 		
 		DebugScript(' ' << poisonous << ' ' << poisonous_count);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(poisonous_count == 0) {
 			io->poisonous_count = 0;
 		} else {
@@ -119,7 +119,7 @@ public:
 		
 		DebugScript(' ' << stealvalue);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(stealvalue == "off") {
 			io->_itemdata->stealvalue = -1;
 		} else {
@@ -244,7 +244,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(io->ioflags & IO_NPC) {
 			ScriptWarning << "cannot set durability on NPCs";
 			return Failed;
@@ -355,7 +355,7 @@ public:
 		
 		DebugScript("");
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(io->ioflags & IO_ITEM) {
 			player.hunger += min(io->_itemdata->food_value * 4.f, 100.f);

@@ -94,7 +94,7 @@ void ARXDRAW_DrawInterShadows()
 	{
 		if ((treatio[i].show!=1) || (treatio[i].io==NULL)) continue;
 
-		INTERACTIVE_OBJ * io=treatio[i].io;
+		Entity * io=treatio[i].io;
 
 		if (	(!io->obj) 
 			||	(io->ioflags & IO_JUST_COLLIDE)	)
@@ -313,7 +313,7 @@ void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 		}
 	}
 }
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 extern long ARX_CONVERSATION;
 
 void ARXDRAW_DrawEyeBall()

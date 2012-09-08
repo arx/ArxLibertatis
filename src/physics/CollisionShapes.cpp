@@ -55,7 +55,7 @@ using std::max;
 using std::vector;
 using std::memset;
 
-void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
+void EERIE_COLLISION_Cylinder_Create(Entity * io)
 {
 	if (io == NULL) return;
 

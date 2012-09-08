@@ -86,7 +86,7 @@ extern long ADDED_IO_NOT_SAVED;
 #endif
 extern EERIE_CAMERA * Kam;
 extern EERIE_BACKGROUND DefaultBkg;
-extern INTERACTIVE_OBJ * COMBINE;
+extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 extern char TELEPORT_TO_LEVEL[64];
 extern char TELEPORT_TO_POSITION[64];
@@ -170,6 +170,6 @@ void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
 void ManageNONCombatModeAnimations();
 
-INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos);
+Entity * FlyingOverObject(Vec2s * pos);
 
 #endif // ARX_CORE_CORE_H

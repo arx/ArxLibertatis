@@ -89,7 +89,7 @@ public:
 		
 		string target = context.getWord();
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		
 		string power = context.getWord();
 		
@@ -185,12 +185,12 @@ public:
 	Result execute(Context & context) {
 		
 		string sourceio = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(sourceio, context.getIO());
+		Entity * t = inter.getById(sourceio, context.getIO());
 		
 		string source = context.getWord(); // source action_point
 		
 		string targetio = context.getWord();
-		INTERACTIVE_OBJ * t2 = inter.getById(targetio, context.getIO());
+		Entity * t2 = inter.getById(targetio, context.getIO());
 		
 		string target = context.getWord();
 		
@@ -260,7 +260,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << group);
 		
-		INTERACTIVE_OBJ & io = *context.getIO();
+		Entity & io = *context.getIO();
 		if(group == "door") {
 			if(rem) {
 				io.GameFlags &= ~GFLAG_DOOR;
@@ -371,13 +371,13 @@ public:
 		
 		DebugScript(' ' << source << ' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(source, context.getIO());
+		Entity * t = inter.getById(source, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown source: " << source;
 			return Failed;
 		}
 		
-		INTERACTIVE_OBJ * t2 = inter.getById(target, context.getIO());
+		Entity * t2 = inter.getById(target, context.getIO());
 		if(!t2) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

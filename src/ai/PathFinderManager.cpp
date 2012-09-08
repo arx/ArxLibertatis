@@ -89,7 +89,7 @@ PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
 
 // An Io can request Pathfinding only once so we insure that it's always the case.
 // A new pathfinder request from the same IO will overwrite the precedent.
-static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io) {
+static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 	
 	if (!pathfinder_queue_start) return NULL;
 
@@ -103,7 +103,7 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io) {
 
 	return NULL;
 }
-INTERACTIVE_OBJ * CURPATHFINDIO = NULL;
+Entity * CURPATHFINDIO = NULL;
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
 bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {

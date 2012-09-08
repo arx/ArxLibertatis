@@ -121,8 +121,8 @@ extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
 extern Vec3f	PUSH_PLAYER_FORCE;
 extern QUAKE_FX_STRUCT QuakeFx;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CURRENT_TORCH;
+extern Entity * CAMERACONTROLLER;
 extern TextureContainer * iconequip[];
 extern ParticleManager * pParticleManager;
 
@@ -181,7 +181,7 @@ float PLAYER_BASE_RADIUS = 52;
 float PLAYER_BASE_HEIGHT = -170;
 float PLAYER_CROUCH_HEIGHT = -120;
 float PLAYER_LEVITATE_HEIGHT = -195;
-INTERACTIVE_OBJ * CURRENT_TORCH = NULL;
+Entity * CURRENT_TORCH = NULL;
 
 unsigned long FALLING_TIME = 0;
 
@@ -249,12 +249,12 @@ void ARX_KEYRING_Add(const std::string & key) {
 }
 
 //*************************************************************************************
-// void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io)
+// void ARX_KEYRING_Combine(Entity * io)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Sends COMBINE event to "io" for each keyring entry
 //*************************************************************************************
-void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io) {
+void ARX_KEYRING_Combine(Entity * io) {
 	for(size_t i = 0; i < Keyring.size(); i++) {
 		if(SendIOScriptEvent(io, SM_COMBINE, Keyring[i].slot) == REFUSE) {
 			return;
@@ -287,7 +287,7 @@ void ARX_PLAYER_FrontPos(Vec3f * pos)
 //*************************************************************************************
 void ARX_PLAYER_RectifyPosition()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = inter.iobj[0];
 
 	if ((io) && (io->_npcdata->ex_rotate))
 	{
@@ -317,7 +317,7 @@ void ARX_PLAYER_KillTorch() {
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io)
+void ARX_PLAYER_ClickedOnTorch(Entity * io)
 {
 	if (io == NULL)
 	{
@@ -713,7 +713,7 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 	player.AimTime = 1500;
 }
-extern float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval);
+extern float ARX_EQUIPMENT_ApplyPercent(Entity * io, long ident, float trueval);
 extern long cur_mr;
 extern long SPECIAL_PNUX;
 //*************************************************************************************
@@ -749,7 +749,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	player.Full_Weapon_Type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = inter.iobj[0];
 	// Check for Equipment Modificators to Attributes
 	player.Mod_Attribute_Strength = ARX_EQUIPMENT_Apply(
 	                                    io, IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength);
@@ -1548,7 +1548,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 
-	INTERACTIVE_OBJ * io = CreateFreeInter(0);
+	Entity * io = CreateFreeInter(0);
 	io->obj = hero;
 
 	player.skin = 0;
@@ -1677,7 +1677,7 @@ void ARX_PLAYER_Manage_Visual()
 
 	if (inter.iobj[0])
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[0];
+		Entity * io = inter.iobj[0];
 
 		if (!BLOCK_PLAYER_CONTROLS)
 			if (sp_max)
@@ -2346,12 +2346,12 @@ void ARX_PLAYER_InitPlayer() {
 }
 
 //*************************************************************************************
-// void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
+// void ForcePlayerLookAtIO(Entity * io)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Forces player orientation to look at an IO
 //*************************************************************************************
-void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
+void ForcePlayerLookAtIO(Entity * io)
 {
 	// Validity Check
 	if (!io) return;
@@ -2424,7 +2424,7 @@ void ARX_PLAYER_Frame_Update()
 	player.angle.b = player.desiredangle.b;
 
 	// Updates player Extra-Rotate Informations
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	io = inter.iobj[0];
 
 	if ((io) && (io->_npcdata->ex_rotate))
@@ -3438,7 +3438,7 @@ void ARX_PLAYER_AddGold(long _lValue) {
 	ulGoldHaloTime = 0;
 }
 
-void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold) {
+void ARX_PLAYER_AddGold(Entity * gold) {
 	
 	arx_assert(gold->ioflags & IO_GOLD);
 	
@@ -3484,7 +3484,7 @@ void ARX_PLAYER_AddBag()
 }
 
 //-----------------------------------------------------------------------------
-bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ * _io)
+bool ARX_PLAYER_CanStealItem(Entity * _io)
 {
 	if (_io->_itemdata->stealvalue > 0)
 		if ((player.Full_Skill_Stealth >= _io->_itemdata->stealvalue)
@@ -3535,7 +3535,7 @@ void ARX_PLAYER_Invulnerability(long flag)
 	else
 		player.playerflags &= ~PLAYERFLAGS_INVULNERABILITY;
 }
-extern INTERACTIVE_OBJ * FlyingOverIO;
+extern Entity * FlyingOverIO;
 extern long cur_sm;
 extern void ClearDynLights();
 

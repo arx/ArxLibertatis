@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 extern long FRAME_COUNT;
 
 namespace script {
@@ -100,7 +100,7 @@ public:
 		
 		FRAME_COUNT = 0;
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		
 		if(!t || !(t->ioflags & IO_CAMERA)) {
 			return Failed;

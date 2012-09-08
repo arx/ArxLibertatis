@@ -49,10 +49,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 void ARX_SPECIAL_ATTRACTORS_Reset();
 bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & io, Vec3f & force);
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & io, Vec3f & force);
 
 #endif // ARX_PHYSICS_ATTRACTORS_H

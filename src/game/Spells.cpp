@@ -160,7 +160,7 @@ extern long sp_max;
 short uw_mode=0;
 short uw_mode_pos=0;
 extern long MAGICMODE;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 extern float GLOBAL_SLOWDOWN;
 extern void ARX_SPSound();
 extern float sp_max_y[64];
@@ -563,7 +563,7 @@ void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
 {
 	if (caster < 0 ||  spell < 0 || !inter.iobj[caster]) return;
 
-	INTERACTIVE_OBJ *io = inter.iobj[caster];
+	Entity *io = inter.iobj[caster];
 	void *ptr;
 
 	ptr = realloc(io->spells_on, sizeof(long) * (io->nb_spells_on + 1));
@@ -576,7 +576,7 @@ void ARX_SPELLS_AddSpellOn(const long &caster, const long &spell)
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPELLS_GetSpellOn(const INTERACTIVE_OBJ * io, Spell spellid)
+long ARX_SPELLS_GetSpellOn(const Entity * io, Spell spellid)
 {
 	if (!io) return -1;
 
@@ -595,7 +595,7 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 {
 	if (caster < 0 || spell < 0) return;
 
-	INTERACTIVE_OBJ *io = inter.iobj[caster];
+	Entity *io = inter.iobj[caster];
 
 	if (!io || !io->nb_spells_on) return;
 
@@ -627,13 +627,13 @@ void ARX_SPELLS_RemoveMultiSpellOn(long spell_id)
 	}
 }
 //-----------------------------------------------------------------------------
-void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ *io)
+void ARX_SPELLS_RemoveAllSpellsOn(Entity *io)
 {
 	free(io->spells_on), io->spells_on = NULL, io->nb_spells_on = 0;
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, float duration) {
+void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duration) {
 	
 	const char * sequence;
 	int iPosX = 0;
@@ -683,7 +683,7 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const string & name, floa
 	io->GameFlags &= ~GFLAG_INVISIBILITY;
 }
 
-static void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, Rune symb, float duration)
+static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 {
 	const char * sequence;
 	int iPosX = 0;
@@ -1097,7 +1097,7 @@ void SPELLEND_Notify(long num)
 			if (MakeSpellName(spell,spells[num].type))
 			{
 				char param[128];
-				INTERACTIVE_OBJ * targ= inter.iobj[spells[num].target];
+				Entity * targ= inter.iobj[spells[num].target];
 				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 				SendIOScriptEvent(targ,SM_SPELLEND,param);
 			}
@@ -1151,7 +1151,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	//1
 	for (long i=0;i<inter.nbmax;i++)
 	{
-		INTERACTIVE_OBJ * io=inter.iobj[i];
+		Entity * io=inter.iobj[i];
 
 		if (io) 
 		{
@@ -2366,7 +2366,7 @@ void ARX_SPELLS_ManageMagic()
 	if (ARXmenu.currentmode!=AMCM_OFF)
 		return;
 
-	INTERACTIVE_OBJ * io=inter.iobj[0];
+	Entity * io=inter.iobj[0];
 
 	if (!io) return;
 
@@ -2952,7 +2952,7 @@ void ARX_SPELLS_CancelSpellTarget() {
 	LOOKING_FOR_SPELL_TARGET=0;
 }
 
-void ARX_SPELLS_LaunchSpellTarget(INTERACTIVE_OBJ * io) {
+void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	long num=GetInterNum(io);
 	if(num >= 0) {
 		ARX_SPELLS_Launch(t_spell.typ, t_spell.source, t_spell.flags, t_spell.level, num, t_spell.duration);
@@ -3323,7 +3323,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			for ( long ii = 1 ; ii < inter.nbmax ; ii++ )
 			{
-				INTERACTIVE_OBJ * ioo = inter.iobj[ii];
+				Entity * ioo = inter.iobj[ii];
 
 				if (	( ioo )
 					&&	( ioo->ioflags & IO_NPC )
@@ -4016,7 +4016,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			if(spells[i].caster >= 0 && spells[i].target < inter.nbmax) {
-				INTERACTIVE_OBJ * t = inter.iobj[spells[i].target];
+				Entity * t = inter.iobj[spells[i].target];
 				if(t) {
 					t->speed_modif += spells[i].caster_level * 0.1f;
 				}
@@ -4073,7 +4073,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			} else {
 				target = spells[i].caster_pos;
 				if(ValidIONum(spells[i].caster)) {
-					INTERACTIVE_OBJ * c = inter.iobj[spells[i].caster];
+					Entity * c = inter.iobj[spells[i].caster];
 					if(c->ioflags & IO_NPC) {
 						target.x -= EEsin(radians(c->angle.b)) * 30.f;
 						target.y -= 80.f;
@@ -4095,7 +4095,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					start.y -= 80.f;
 				}
 				
-				INTERACTIVE_OBJ * _io = inter.iobj[spells[i].caster];
+				Entity * _io = inter.iobj[spells[i].caster];
 				if(ValidIONum(_io->targetinfo)) {
 					const Vec3f & end = inter.iobj[_io->targetinfo]->pos;
 					float d = dist(Vec2f(end.x, end.z), Vec2f(start.x, start.z));
@@ -4241,7 +4241,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					default: break;
 				}
 				
-				INTERACTIVE_OBJ * caster = inter.iobj[spells[i].caster];
+				Entity * caster = inter.iobj[spells[i].caster];
 				if(cancel && closerThan(pos, caster->pos, 400.f)) {
 					valid++;
 					if(spells[n].caster_level <= spells[i].caster_level) {
@@ -4486,7 +4486,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				player.poison -= std::min(player.poison, cure);
 				ARX_SOUND_PlaySFX(SND_SPELL_CURE_POISON);
 			} else if (ValidIONum(spells[i].target)) {
-				INTERACTIVE_OBJ * io = inter.iobj[spells[i].target];
+				Entity * io = inter.iobj[spells[i].target];
 				if(io->ioflags & IO_NPC) {
 					io->_npcdata->poisonned -= std::min(io->_npcdata->poisonned, cure);
 				}
@@ -4682,7 +4682,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
-					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+					Entity * io = inter.iobj[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
 					displace = (io->ioflags & IO_NPC) == IO_NPC;
@@ -4701,7 +4701,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			effect->spellinstance = i;
 			
 			res::path o = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl";
-			INTERACTIVE_OBJ * io = AddFix(o, IO_IMMEDIATELOAD);
+			Entity * io = AddFix(o, IO_IMMEDIATELOAD);
 			if(io) {
 				
 				ARX_INTERACTIVE_HideGore(io);
@@ -4787,7 +4787,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			long target = spells[i].target;
 			
-			INTERACTIVE_OBJ * io = inter.iobj[target];
+			Entity * io = inter.iobj[target];
 			for(int il = 0; il < io->nb_spells_on; il++) {
 				if(spells[io->spells_on[il]].type == SPELL_SLOW_DOWN) {
 					spells[i].exist = false;
@@ -4909,7 +4909,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
-					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+					Entity * io = inter.iobj[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
 					displace = (io->ioflags & IO_NPC);
@@ -4976,7 +4976,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				displace = true;
 			} else {
 				if(ValidIONum(spells[i].caster)) {
-					INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+					Entity * io = inter.iobj[spells[i].caster];
 					target = io->pos;
 					beta = io->angle.b;
 					displace = (io->ioflags & IO_NPC);
@@ -5408,7 +5408,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		
 		case SPELL_INCINERATE: {
 			
-			INTERACTIVE_OBJ * tio = inter.iobj[spells[i].target];
+			Entity * tio = inter.iobj[spells[i].target];
 			if((tio->ioflags & IO_NPC) && tio->_npcdata->life <= 0.f) {
 				return false;
 			}
@@ -5440,7 +5440,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			for(long ii = 0; ii < inter.nbmax; ii++) {
 				
-				INTERACTIVE_OBJ * tio = inter.iobj[ii];
+				Entity * tio = inter.iobj[ii];
 				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
 				}
@@ -5512,7 +5512,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				target = player.pos + Vec3f(0.f, 150.f, 0.f);
 				beta = player.angle.b;
 			} else {
-				INTERACTIVE_OBJ * io = inter.iobj[spells[i].caster];
+				Entity * io = inter.iobj[spells[i].caster];
 				target = io->pos + Vec3f(0.f, -20.f, 0.f);
 				beta = io->angle.b;
 			}
@@ -5547,7 +5547,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			long tcount = 0;
 			for(long ii = 1; ii < inter.nbmax; ii++) {
 				
-				INTERACTIVE_OBJ * ioo = inter.iobj[ii];
+				Entity * ioo = inter.iobj[ii];
 				if(!ioo || !(ioo->ioflags & IO_NPC)) {
 					continue;
 				}
@@ -5614,7 +5614,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			long nb_targets=0;
 			for(long ii = 0; ii < inter.nbmax; ii++) {
 				
-				INTERACTIVE_OBJ * tio = inter.iobj[ii];
+				Entity * tio = inter.iobj[ii];
 				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
 				}
@@ -5933,7 +5933,7 @@ Vec3f cabalscale;
 Color3f cabalcolor;
 
 
-float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io,float damages)
+float ARX_SPELLS_ApplyFireProtection(Entity * io,float damages)
 {
 	if (io)
 	{
@@ -5959,7 +5959,7 @@ float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io,float damages)
 
 	return damages;
 }
-float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io,float damages)
+float ARX_SPELLS_ApplyColdProtection(Entity * io,float damages)
 {
 	long idx=ARX_SPELLS_GetSpellOn(io,SPELL_COLD_PROTECTION);
 
@@ -6067,7 +6067,7 @@ void ARX_SPELLS_Update()
 				{
 					ARX_SOUND_Stop(spells[i].snd_loop);
 					ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_END, &spells[i].caster_pos);					
-					INTERACTIVE_OBJ * io=inter.iobj[spells[i].target];
+					Entity * io=inter.iobj[spells[i].target];
 
 					if (spells[i].longinfo)
 					{
@@ -6081,7 +6081,7 @@ void ARX_SPELLS_Update()
 				//----------------------------------------------------------------------------
 				case SPELL_LOWER_ARMOR:
 				{
-					INTERACTIVE_OBJ * io=inter.iobj[spells[i].target];
+					Entity * io=inter.iobj[spells[i].target];
 
 					if (spells[i].longinfo)
 					{
@@ -6867,7 +6867,7 @@ void ARX_SPELLS_Update()
 							if (EEfabs(anything)<30)
 							{
 								strcpy(tmptext,"graph/obj3d/interactive/npc/undead_base/undead_base.asl");
-								INTERACTIVE_OBJ * io;
+								Entity * io;
 								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 
 								if (io)
@@ -6957,7 +6957,7 @@ void ARX_SPELLS_Update()
 				{				
 					if (ValidIONum(spells[i].longinfo))
 					{
-						INTERACTIVE_OBJ * io=inter.iobj[spells[i].longinfo];
+						Entity * io=inter.iobj[spells[i].longinfo];
 						CCreateField * ccf=(CCreateField *)pCSpellFX;
 						io->pos.x = ccf->eSrc.x;
 						io->pos.y = ccf->eSrc.y;
@@ -7303,7 +7303,7 @@ void ARX_SPELLS_Update()
 								}
 							}
 
-							INTERACTIVE_OBJ * io;
+							Entity * io;
 							io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 
 							if (!io)
@@ -7794,7 +7794,7 @@ void ARX_SPELLS_Update()
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-void TryToCastSpell(INTERACTIVE_OBJ * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration)
+void TryToCastSpell(Entity * io, Spell spellid, long level, long target, SpellcastFlags flags, long duration)
 {
 	if (!io || io->spellcast_data.castingspell != SPELL_NONE) return;
 
@@ -7855,7 +7855,7 @@ static void ApplySPWep() {
 		
 		res::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
 		
-		INTERACTIVE_OBJ * ioo = AddItem(file,IO_IMMEDIATELOAD);
+		Entity * ioo = AddItem(file,IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -7918,7 +7918,7 @@ static void ApplySPBow() {
 	
 	ARX_SPSound();
 	const char OBJ_BOW[] = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
-	INTERACTIVE_OBJ * ioo = AddItem(OBJ_BOW, IO_IMMEDIATELOAD);
+	Entity * ioo = AddItem(OBJ_BOW, IO_IMMEDIATELOAD);
 	
 	if(ioo!=NULL) {
 		MakeCoolFx(&player.pos);
@@ -7955,7 +7955,7 @@ static void ApplySPArm() {
 		break;
 	}
 
-	INTERACTIVE_OBJ * ioo = AddItem(file, IO_IMMEDIATELOAD);
+	Entity * ioo = AddItem(file, IO_IMMEDIATELOAD);
 
 	if (ioo!=NULL)
 	{			

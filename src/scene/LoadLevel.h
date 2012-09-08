@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 namespace res { class path; }
 
@@ -58,8 +58,8 @@ extern Vec3f loddpos;
 #ifdef BUILD_EDIT_LOADSAVE
 long DanaeSaveLevel(const fs::path & file);
 void LogDirCreation(const fs::path & dir);
-void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
+void WriteIOInfo(Entity * io, const fs::path & dir);
+void SaveIOScript(Entity * io, long fl);
 #endif
 
 long DanaeLoadLevel(const res::path & file);
@@ -68,7 +68,7 @@ void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
 
-INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
+Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
 
 extern Vec3f MSP;
 

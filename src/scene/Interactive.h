@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 struct EERIE_3DOBJ;
 
 namespace res { class path; }
@@ -67,10 +67,10 @@ struct INTERACTIVE_OBJECTS {
 	long init;
 	long nbmax;
 	
-	INTERACTIVE_OBJ ** iobj;
+	Entity ** iobj;
 	
 	long getById(const std::string & name);
-	INTERACTIVE_OBJ * getById(const std::string & name, INTERACTIVE_OBJ * self);
+	Entity * getById(const std::string & name, Entity * self);
 	
 };
 
@@ -120,46 +120,46 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
 extern ARX_NODES nodes;
 extern INTERACTIVE_OBJECTS inter;
-extern INTERACTIVE_OBJ * CURRENTINTER;
+extern Entity * CURRENTINTER;
 
 #ifdef BUILD_EDITOR
 extern long NbIOSelected;
 #endif
 
 void ARX_INTERACTIVE_UnfreezeAll();
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const res::path & s1);
-void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
-void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
+void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1);
+void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io);
+void ARX_INTERACTIVE_HideGore(Entity * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag = 0);
 bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string & ap_source, const std::string & ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
-void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
+void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state);
 
-void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io);
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target);
-void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
+void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io);
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target);
+void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
-void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res::path & param1, const res::path & param2);
-void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp);
-void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags = 0);
+void ARX_INTERACTIVE_DestroyIO(Entity * ioo);
+void ARX_INTERACTIVE_MEMO_TWEAK(Entity * io, TweakType type, const res::path & param1, const res::path & param2);
+void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io);
+bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp);
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags = 0);
 
-bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
+bool IsEquipedByPlayer(const Entity * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
 
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string & attach);
+void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach);
 
-void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
+void MakeTemporaryIOIdent(Entity * io);
 long ValidIONum(long num);
-long ValidIOAddress(const INTERACTIVE_OBJ * io);
-void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
+long ValidIOAddress(const Entity * io);
+void RestoreInitialIOStatusOfIO(Entity * io);
 
-void SetWeapon_Back(INTERACTIVE_OBJ * io);
+void SetWeapon_Back(Entity * io);
 
 void ReloadAllScripts();
-bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io);
+bool ForceNPC_Above_Ground(Entity * io);
 
 void InitNodes(long nb);
 void ClearNode(long i, long spec);
@@ -178,11 +178,11 @@ void RestoreNodeNumbers();
 long GetNumNodeByName(char * name);
 void ReleaseNode();
 void RestoreInitialIOStatus();
-long GetInterNum(const INTERACTIVE_OBJ * io);
+long GetInterNum(const Entity * io);
 
 #ifdef BUILD_EDITOR
-void SelectIO(INTERACTIVE_OBJ * io);
-void UnSelectIO(INTERACTIVE_OBJ * io);
+void SelectIO(Entity * io);
+void UnSelectIO(Entity * io);
 void RotateSelectedIO(Anglef * op);
 void TranslateSelectedIO(Vec3f * op);
 void GroundSnapSelectedIO();
@@ -191,7 +191,7 @@ void ResetSelectedIORot();
 #endif
 
 #ifdef BUILD_EDIT_LOADSAVE
-void MakeIOIdent(INTERACTIVE_OBJ * io);
+void MakeIOIdent(Entity * io);
 #endif
 
 long GetNumberInterWithOutScriptLoadForLevel(long level);
@@ -199,7 +199,7 @@ void FreeAllInter();
 
 void UnlinkAllLinkedObjects();
 long IsCollidingAnyInter(float x, float y, float z, Vec3f * size);
-INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
+Entity * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef = NULL, Entity ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 /*!
  * Adds an Interactive Object to the Scene
@@ -207,34 +207,34 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef =
  * Creates an IO Ident for added object if necessary
  * @param flags can be IO_IMMEDIATELOAD (1) to FORCE loading
  */
-INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags = 0);
-INTERACTIVE_OBJ * AddItem(const res::path & file, AddInteractiveFlags flags = 0);
+Entity * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags = 0);
+Entity * AddFix(const res::path & file, AddInteractiveFlags flags = 0);
+Entity * AddNPC(const res::path & file, AddInteractiveFlags flags = 0);
+Entity * AddItem(const res::path & file, AddInteractiveFlags flags = 0);
 
 void InitInter(long nb);
-INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
-void ReleaseInter(INTERACTIVE_OBJ * io);
+Entity * CreateFreeInter(long num = -1);
+void ReleaseInter(Entity * io);
 void UpdateCameras();
 
-INTERACTIVE_OBJ * InterClick(Vec2s * pos);
+Entity * InterClick(Vec2s * pos);
  
 void RenderInter(float from, float to);
-void SetWeapon_On(INTERACTIVE_OBJ * io);
+void SetWeapon_On(Entity * io);
  
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp);
-void ComputeVVPos(INTERACTIVE_OBJ * io);
-void SetYlsideDeath(INTERACTIVE_OBJ * io);
+void Prepare_SetWeapon(Entity * io, const res::path & temp);
+void ComputeVVPos(Entity * io);
+void SetYlsideDeath(Entity * io);
 std::string GetMaterialString(const res::path & origin );
-INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
+Entity * CloneIOItem(Entity * src);
 
-float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);
-long  ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);
-void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io);
+float ARX_INTERACTIVE_GetArmorClass(Entity * io);
+long  ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop);
+void IO_UnlinkAllLinkedObjects(Entity * io);
 
 struct TREATZONE_IO {
 	long num;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long ioflags;
 	long show;
 };
@@ -244,17 +244,17 @@ extern long TREATZONE_CUR;
 
 void TREATZONE_Clear();
 void TREATZONE_Release();
-void TREATZONE_AddIO(INTERACTIVE_OBJ * io, long num, long flag = 0);
-void TREATZONE_RemoveIO(INTERACTIVE_OBJ * io);
-bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
+void TREATZONE_AddIO(Entity * io, long num, long flag = 0);
+void TREATZONE_RemoveIO(Entity * io);
+bool IsSameObject(Entity * io, Entity * ioo);
 void ARX_INTERACTIVE_ClearAllDynData();
-bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
-void ShowIOPath(INTERACTIVE_OBJ * io);
-void UpdateIOInvisibility(INTERACTIVE_OBJ * io);
-void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num);
+bool HaveCommonGroup(Entity * io, Entity * ioo);
+void ShowIOPath(Entity * io);
+void UpdateIOInvisibility(Entity * io);
+void CheckSetAnimOutOfTreatZone(Entity * io, long num);
 void RestoreAllIOInitPos();
-void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io);
+void ARX_HALO_SetToNative(Entity * io);
 void ARX_INTERACTIVE_ActivatePhysics(long t);
-void ResetVVPos(INTERACTIVE_OBJ * io);
+void ResetVVPos(Entity * io);
 
 #endif // ARX_SCENE_INTERACTIVE_H

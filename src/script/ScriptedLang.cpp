@@ -301,10 +301,10 @@ public:
 			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
 		}
 		
-		INTERACTIVE_OBJ * oes = EVENT_SENDER;
+		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = context.getIO();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
@@ -384,7 +384,7 @@ public:
 			
 		} else { // single object event
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, io);
+			Entity * t = inter.getById(target, io);
 			if(!t) {
 				EVENT_SENDER = oes;
 				return Failed;
@@ -453,7 +453,7 @@ class IfCommand : public Command {
 		char c = (var.empty() ? '\0' : var[0]);
 		
 		EERIE_SCRIPT * es = context.getMaster();
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		switch(c) {
 			
@@ -615,7 +615,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
+			Entity * t = inter.getById(obj, context.getIO());
 			
 			return (t != NULL && t->groups.find(group) != t->groups.end());
 		}
@@ -630,7 +630,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
+			Entity * t = inter.getById(obj, context.getIO());
 			
 			return (t != NULL && t->groups.find(group) == t->groups.end());
 		}
@@ -645,7 +645,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
+			Entity * t = inter.getById(obj, context.getIO());
 			
 			ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(type);
 			if(!flag) {
@@ -848,7 +848,7 @@ void timerCommand(const string & timer, Context & context) {
 	
 	DebugScript(' ' << options << ' ' << command);
 	
-	INTERACTIVE_OBJ * io = context.getIO();
+	Entity * io = context.getIO();
 	
 	if(command == "kill_local") {
 		DebugScript(' ' << options << " kill_local");

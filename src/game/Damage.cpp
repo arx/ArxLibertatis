@@ -102,7 +102,7 @@ extern Vec3f PUSH_PLAYER_FORCE;
 
 float Blood_Pos = 0.f;
 long Blood_Duration = 0;
-static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
+static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 {
 	if ((!io)
 	        ||	(io->ioflags & IO_INVULNERABILITY))
@@ -204,7 +204,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 	if (float(arxtime) > inter.iobj[0]->ouch_time + 500)
 	{
-		INTERACTIVE_OBJ * oes = EVENT_SENDER;
+		Entity * oes = EVENT_SENDER;
 
 		if (ValidIONum(source))
 			EVENT_SENDER = inter.iobj[source];
@@ -225,7 +225,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 	{
 		if (ValidIONum(source))
 		{
-			INTERACTIVE_OBJ * pio = NULL;
+			Entity * pio = NULL;
 
 			if (inter.iobj[source]->ioflags & IO_NPC)
 			{
@@ -275,7 +275,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 				for (long i = 1; i < inter.nbmax; i++)
 				{
-					INTERACTIVE_OBJ * ioo = inter.iobj[i];
+					Entity * ioo = inter.iobj[i];
 
 					if ((ioo) && (ioo->ioflags & IO_NPC))
 					{
@@ -328,7 +328,7 @@ void ARX_DAMAGES_HealPlayer(float dmg)
 		if (player.life > player.Full_maxlife) player.life = player.Full_maxlife;
 	}
 }
-void ARX_DAMAGES_HealInter(INTERACTIVE_OBJ * io, float dmg)
+void ARX_DAMAGES_HealInter(Entity * io, float dmg)
 {
 	if (io == NULL) return;
 
@@ -356,7 +356,7 @@ void ARX_DAMAGES_HealManaPlayer(float dmg)
 		if (player.mana > player.Full_maxmana) player.mana = player.Full_maxmana;
 	}
 }
-void ARX_DAMAGES_HealManaInter(INTERACTIVE_OBJ * io, float dmg)
+void ARX_DAMAGES_HealManaInter(Entity * io, float dmg)
 {
 	if (io == NULL) return;
 
@@ -373,7 +373,7 @@ void ARX_DAMAGES_HealManaInter(INTERACTIVE_OBJ * io, float dmg)
 		if (io->_npcdata->mana > io->_npcdata->maxmana) io->_npcdata->mana = io->_npcdata->maxmana;
 	}
 }
-float ARX_DAMAGES_DrainMana(INTERACTIVE_OBJ * io, float dmg)
+float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 {
 	if (io == NULL) return 0;
 
@@ -407,7 +407,7 @@ float ARX_DAMAGES_DrainMana(INTERACTIVE_OBJ * io, float dmg)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long flags)
+void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source, long flags)
 {
 	if ((!io)
 	        ||	(!io->show)
@@ -477,16 +477,16 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 	}
 }
 
-extern INTERACTIVE_OBJ * FlyingOverIO;
+extern Entity * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
 
-void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer) {
+void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 	
 	if(io_dead->mainevent == "dead") {
 		return;
 	}
 
-	INTERACTIVE_OBJ * old_sender = EVENT_SENDER;
+	Entity * old_sender = EVENT_SENDER;
 	EVENT_SENDER = io_killer;
 
 	if (io_dead == DRAGINTER)
@@ -550,7 +550,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 
 	for (long i = 1; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * ioo = inter.iobj[i];
+		Entity * ioo = inter.iobj[i];
 
 		if (ioo == io_dead)
 			continue;
@@ -587,7 +587,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 		io_dead->_npcdata->life = 0;
 
 		if(io_dead->_npcdata->weapon) {
-			INTERACTIVE_OBJ * ioo = io_dead->_npcdata->weapon;
+			Entity * ioo = io_dead->_npcdata->weapon;
 			if(ValidIOAddress(ioo)) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
@@ -605,13 +605,13 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	EVENT_SENDER = old_sender;
 }
 
-void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
+void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
 {
 	if ((power > 0.f)
 	        &&	(ValidIONum(source)))
 	{
 		power *= ( 1.0f / 20 );
-		INTERACTIVE_OBJ * io = inter.iobj[source];
+		Entity * io = inter.iobj[source];
 		Vec3f vect = io_target->pos - io->pos;
 		fnormalize(vect);
 		vect *= power;
@@ -629,8 +629,8 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 	        ||	(!ValidIONum(source)))
 		return 0;
 
-	INTERACTIVE_OBJ * io_target = inter.iobj[target];
-	INTERACTIVE_OBJ * io_source = inter.iobj[source];
+	Entity * io_target = inter.iobj[target];
+	Entity * io_source = inter.iobj[source];
 	float damagesdone;
 
 	if (flags & DAMAGE_TYPE_PER_SECOND)
@@ -761,8 +761,8 @@ extern unsigned long ulHitFlash;
 //*************************************************************************************
 // flags & 1 == spell damage
 //*************************************************************************************
-float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long flags, Vec3f * pos) //,INTERACTIVE_OBJ * source)
-{
+float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec3f * pos) {
+	
 	if ((!io)
 	        ||	(!io->show)
 	        ||	(io->ioflags & IO_INVULNERABILITY)
@@ -822,7 +822,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 	{
 		if (ValidIONum(source))
 		{
-			INTERACTIVE_OBJ * pio = NULL;
+			Entity * pio = NULL;
 
 			if (source == 0)
 			{
@@ -998,7 +998,7 @@ long InExceptList(long dmg, long num)
 
 //*************************************************************************************
 //*************************************************************************************
-void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, INTERACTIVE_OBJ * io)
+void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io)
 {
 
 	if (di->type & DAMAGE_TYPE_FAKEFIRE)
@@ -1128,7 +1128,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 		// checking for IO damages
 		for (long i = 0; i < inter.nbmax; i++)
 		{
-			INTERACTIVE_OBJ * io = inter.iobj[i];
+			Entity * io = inter.iobj[i];
 
 			if ((io)
 			        &&	(io->GameFlags & GFLAG_ISINTREATZONE)
@@ -1367,7 +1367,7 @@ void ARX_DAMAGES_UpdateAll()
 	for (size_t j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(j, arxtime);
 }
-bool SphereInIO(INTERACTIVE_OBJ * io, Vec3f * pos, float radius)
+bool SphereInIO(Entity * io, Vec3f * pos, float radius)
 {
 	if (io == NULL) return false;
 
@@ -1395,7 +1395,7 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if (io != NULL)
 
@@ -1472,7 +1472,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if ((io)
 		        &&	(io->show == 1)
@@ -1530,7 +1530,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * ioo = inter.iobj[i];
+		Entity * ioo = inter.iobj[i];
 
 		if ((ioo) && (i != numsource) && (ioo->obj))
 		{
@@ -1666,7 +1666,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 
 	return damagesdone;
 }
-void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float percent)
+void ARX_DAMAGES_DurabilityRestore(Entity * io, float percent)
 {
 	if (!io) return;
 
@@ -1719,7 +1719,7 @@ void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float percent)
 	}
 
 }
-void ARX_DAMAGES_DurabilityCheck(INTERACTIVE_OBJ * io, float ratio)
+void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio)
 {
 	if (!io) return;
 
@@ -1728,7 +1728,7 @@ void ARX_DAMAGES_DurabilityCheck(INTERACTIVE_OBJ * io, float ratio)
 		ARX_DAMAGES_DurabilityLoss(io, ratio);
 	}
 }
-void ARX_DAMAGES_DurabilityLoss(INTERACTIVE_OBJ * io, float loss)
+void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss)
 {
 	if (!io) return;
 
@@ -1749,12 +1749,12 @@ void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 	{
 		if (player.equiped[i] != 0)
 		{
-			INTERACTIVE_OBJ * todamage = inter.iobj[player.equiped[i]];
+			Entity * todamage = inter.iobj[player.equiped[i]];
 			ARX_DAMAGES_DurabilityCheck(todamage, ratio);
 		}
 	}
 }
-float ARX_DAMAGES_ComputeRepairPrice(INTERACTIVE_OBJ * torepair, INTERACTIVE_OBJ * blacksmith)
+float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith)
 {
 	if ((!torepair) || (!blacksmith)) return -1.f;
 

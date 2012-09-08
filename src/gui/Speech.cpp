@@ -239,7 +239,7 @@ void ARX_SPEECH_Check()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, INTERACTIVE_OBJ * io_source, long mood)
+void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, Entity * io_source, long mood)
 {
 	mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
@@ -300,7 +300,7 @@ long ARX_SPEECH_GetFree() {
 	return -1;
 }
 
-long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io) {
+long ARX_SPEECH_GetIOSpeech(Entity * io) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(aspeech[i].exist && aspeech[i].io == io) {
@@ -326,7 +326,7 @@ void ARX_SPEECH_Release(long i) {
 	}
 }
 
-void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io) {
+void ARX_SPEECH_ReleaseIOSpeech(Entity * io) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(aspeech[i].exist && aspeech[i].io == io) {
@@ -341,7 +341,7 @@ void ARX_SPEECH_Reset() {
 	}
 }
 
-void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
+void ARX_SPEECH_ClearIOSpeech(Entity * io) {
 	
 	if(!io) {
 		return;
@@ -354,7 +354,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
 		}
 		
 		EERIE_SCRIPT * es = aspeech[i].es;
-		INTERACTIVE_OBJ * io = aspeech[i].ioscript;
+		Entity * io = aspeech[i].ioscript;
 		long scrpos = aspeech[i].scrpos;
 		ARX_SPEECH_Release(i);
 		
@@ -365,7 +365,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string & data, long mood,
+long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
                           SpeechFlags flags) {
 	
 	if(data.empty()) {
@@ -432,7 +432,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string & data, long m
 		sample = data;
 	}
 	
-	INTERACTIVE_OBJ * source = (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
+	Entity * source = (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
 	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, source);
 	
 	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
@@ -467,7 +467,7 @@ void ARX_SPEECH_Update() {
 	{
 		if (aspeech[i].exist)
 		{
-			INTERACTIVE_OBJ * io = aspeech[i].io;
+			Entity * io = aspeech[i].io;
 
 			// updates animations
 			if (io)
@@ -498,7 +498,7 @@ void ARX_SPEECH_Update() {
 			if (tim >= aspeech[i].time_creation + aspeech[i].duration)
 			{
 				EERIE_SCRIPT	*	es		= aspeech[i].es;
-				INTERACTIVE_OBJ	* io		= aspeech[i].ioscript;
+				Entity	* io		= aspeech[i].ioscript;
 				long				scrpos	= aspeech[i].scrpos;
 				ARX_SPEECH_Release(i);
 

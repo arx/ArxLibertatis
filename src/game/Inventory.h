@@ -50,15 +50,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 #include "script/Script.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 struct INVENTORY_SLOT {
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long show;
 };
 
 struct INVENTORY_DATA {
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long sizex;
 	long sizey;
 	INVENTORY_SLOT slot[20][20];
@@ -72,8 +72,8 @@ extern INVENTORY_SLOT inventory[3][INVENTORY_X][INVENTORY_Y];
 
 extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;
-extern INTERACTIVE_OBJ * DRAGINTER;
-extern INTERACTIVE_OBJ * ioSteal;
+extern Entity * DRAGINTER;
+extern Entity * ioSteal;
 extern long InventoryY;
 
 struct InventoryPos {
@@ -119,7 +119,7 @@ public:
 	 *
 	 * @return true if the item was inserted, false otherwise
 	 */
-	static bool insert(INTERACTIVE_OBJ * item);
+	static bool insert(Entity * item);
 	
 	/*!
 	 * Insert an item into the player inventory
@@ -133,7 +133,7 @@ public:
 	 *
 	 * @return true if the item was inserted, false otherwise
 	 */
-	static bool insert(INTERACTIVE_OBJ * item, const Pos & pos);
+	static bool insert(Entity * item, const Pos & pos);
 	
 	//! Sort the inventory and stack duplicate items
 	static void optimize();
@@ -143,7 +143,7 @@ public:
 	 *
 	 * @return the position of the item
 	 */
-	static Pos locate(const INTERACTIVE_OBJ * item);
+	static Pos locate(const Entity * item);
 	
 	/*!
 	 * Remove an item from the inventory.
@@ -151,9 +151,9 @@ public:
 	 *
 	 * @return the old position of the item
 	 */
-	static Pos remove(const INTERACTIVE_OBJ * item);
+	static Pos remove(const Entity * item);
 	
-	static INTERACTIVE_OBJ * get(const Pos & pos) {
+	static Entity * get(const Pos & pos) {
 		return pos ? inventory[pos.bag][pos.x][pos.y].io : NULL;
 	}
 	
@@ -171,7 +171,7 @@ extern PlayerInventory playerInventory;
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */
-bool giveToPlayer(INTERACTIVE_OBJ * item);
+bool giveToPlayer(Entity * item);
 
 /*!
  * Insert an item into the player inventory
@@ -184,7 +184,7 @@ bool giveToPlayer(INTERACTIVE_OBJ * item);
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */
-bool giveToPlayer(INTERACTIVE_OBJ * item, const InventoryPos & pos);
+bool giveToPlayer(Entity * item, const InventoryPos & pos);
 
 /*!
  * Insert an item into an inventory
@@ -198,14 +198,14 @@ bool giveToPlayer(INTERACTIVE_OBJ * item, const InventoryPos & pos);
  *
  * @return true if the item was inserted, false otherwise
  */
-bool insertIntoInventory(INTERACTIVE_OBJ * item, const InventoryPos & pos);
+bool insertIntoInventory(Entity * item, const InventoryPos & pos);
 
 /*!
  * Get the position of an item in the inventory.
  *
  * @return the position of the item
  */
-InventoryPos locateInInventories(const INTERACTIVE_OBJ * item);
+InventoryPos locateInInventories(const Entity * item);
 
 /*!
  * Remove an item from all inventories.
@@ -213,7 +213,7 @@ InventoryPos locateInInventories(const INTERACTIVE_OBJ * item);
  *
  * @return the old position of the item
  */
-InventoryPos removeFromInventories(INTERACTIVE_OBJ * item);
+InventoryPos removeFromInventories(Entity * item);
 
 /*!
  * Insert an item into an NPC's inventory
@@ -226,36 +226,36 @@ InventoryPos removeFromInventories(INTERACTIVE_OBJ * item);
  *
  * @return true if the item was added to the inventory, false if it was dropped
  */
-bool putInInventory(INTERACTIVE_OBJ * item, const InventoryPos & pos);
+bool putInInventory(Entity * item, const InventoryPos & pos);
 
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
+void PutInFrontOfPlayer(Entity * io);
 
-bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos);
-bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos);
+bool GetItemWorldPosition(Entity * io, Vec3f * pos);
+bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos);
 
-INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
-void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);
+Entity * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
+void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
 bool InSecondaryInventoryPos(Vec2s * pos);
 bool InPlayerInventoryPos(Vec2s * pos);
-bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
+bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 bool PutInInventory();
 bool TakeFromInventory(Vec2s * pos);
-INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos);
+Entity * GetFromInventory(Vec2s * pos);
 bool IsFlyingOverInventory(Vec2s * pos);
 void ForcePlayerInventoryObjectLevel(long level);
-bool IsInPlayerInventory(INTERACTIVE_OBJ * io);
-bool IsInSecondaryInventory(INTERACTIVE_OBJ * io);
+bool IsInPlayerInventory(Entity * io);
+bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(Vec2s * pos);
-void RemoveFromAllInventories(const INTERACTIVE_OBJ * io);
-INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();
+void RemoveFromAllInventories(const Entity * io);
+Entity * ARX_INVENTORY_GetTorchLowestDurability();
 void ARX_INVENTORY_IdentifyAll();
-void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * io);
+void ARX_INVENTORY_OpenClose(Entity * io);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
-void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io);
+void IO_Drop_Item(Entity * io_src, Entity * io);
 
 #endif // ARX_GAME_INVENTORY_H

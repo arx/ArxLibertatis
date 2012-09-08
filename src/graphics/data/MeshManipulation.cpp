@@ -788,7 +788,7 @@ long ALLOW_MESH_TWEAKING = 1;
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const res::path & path)
+void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path)
 {
 	if (!ALLOW_MESH_TWEAKING) return;
 

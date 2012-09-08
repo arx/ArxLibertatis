@@ -114,7 +114,7 @@ public:
 			return Success;
 		}
 		
-		INTERACTIVE_OBJ * pio = (SecondaryInventory) ? SecondaryInventory->io : ioSteal;
+		Entity * pio = (SecondaryInventory) ? SecondaryInventory->io : ioSteal;
 		if(pio && pio == ioSteal) {
 			InventoryDir = -1;
 			SendIOScriptEvent(pio, SM_INVENTORY2_CLOSE);

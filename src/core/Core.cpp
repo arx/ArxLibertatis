@@ -175,7 +175,7 @@ extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
 extern long SPECIAL_DRAGINTER_RENDER;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bSkipVideoIntro;
 extern string SCRIPT_SEARCH_TEXT;
@@ -298,7 +298,7 @@ EERIE_CAMERA DynLightCam;
 string WILLADDSPEECH;
 
 Vec2s STARTDRAG;
-INTERACTIVE_OBJ * COMBINE=NULL;
+Entity * COMBINE=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
 string LAST_FAILED_SEQUENCE = "none";
@@ -838,15 +838,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 }
 
 //*************************************************************************************
-// INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos)
+// Entity * FlyingOverObject(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns IO under cursor, be it in inventories or in scene
 //   Returns NULL if no IO under cursor
 //*************************************************************************************
-INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos)
+Entity * FlyingOverObject(Vec2s * pos)
 {
-	INTERACTIVE_OBJ* io = NULL;
+	Entity* io = NULL;
 
 	if ((io = GetFromInventory(pos)) != NULL)
 		return io;
@@ -860,7 +860,7 @@ INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos)
 }
 
 extern unsigned long FALLING_TIME;
-extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
+extern long ARX_NPC_ApplyCuts(Entity * io);
 
 //*************************************************************************************
 
@@ -2212,7 +2212,7 @@ void FirstFrameHandling()
 		player.pos = WILL_RESTORE_PLAYER_POSITION;
 		inter.iobj[0]->pos = WILL_RESTORE_PLAYER_POSITION;
 		inter.iobj[0]->pos.y+=170.f;
-		INTERACTIVE_OBJ * io=inter.iobj[0];
+		Entity * io=inter.iobj[0];
 
 		for (size_t i=0;i<io->obj->vertexlist.size();i++)
 		{
@@ -2267,7 +2267,7 @@ void FirstFrameHandling()
 
 void ManageNONCombatModeAnimations()
 {
-	INTERACTIVE_OBJ * io=inter.iobj[0];
+	Entity * io=inter.iobj[0];
 
 	if (!io) return;
 
@@ -2320,7 +2320,7 @@ long Player_Arrow_Count() {
 		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X; i++) {
-					INTERACTIVE_OBJ * io = inventory[iNbBag][i][j].io;
+					Entity * io = inventory[iNbBag][i][j].io;
 					if(io) {
 						if(io->short_name() == "arrows") {
 							if(io->durability >= 1.f) {
@@ -2336,15 +2336,15 @@ long Player_Arrow_Count() {
 	return count;
 }
 
-INTERACTIVE_OBJ * Player_Arrow_Count_Decrease() {
+Entity * Player_Arrow_Count_Decrease() {
 	
-	INTERACTIVE_OBJ * io = NULL;
+	Entity * io = NULL;
 	
 	if(player.bag) {
 		for(int iNbBag = 0; iNbBag < player.bag; iNbBag++) {
 			for(size_t j = 0; j < INVENTORY_Y; j++) {
 				for(size_t i = 0; i < INVENTORY_X;i++) {
-					INTERACTIVE_OBJ * ioo = inventory[iNbBag][i][j].io;
+					Entity * ioo = inventory[iNbBag][i][j].io;
 					if(ioo) {
 						if(ioo->short_name() == "arrows") {
 							if(ioo->durability >= 1.f) {
@@ -2384,7 +2384,7 @@ bool StrikeAimtime()
 	return false;
 }
 
-void strikeSpeak(INTERACTIVE_OBJ * io) {
+void strikeSpeak(Entity * io) {
 	
 	if(!StrikeAimtime()) {
 		return;
@@ -2406,7 +2406,7 @@ void strikeSpeak(INTERACTIVE_OBJ * io) {
 void ManageCombatModeAnimations()
 {
 	STRIKE_TIME=0;
-	INTERACTIVE_OBJ * io=inter.iobj[0];
+	Entity * io=inter.iobj[0];
 
 	if (!io) return;
 
@@ -2841,7 +2841,7 @@ void ManageCombatModeAnimations()
 				SendIOScriptEvent(io,SM_STRIKE,"bow");
 				StrikeAimtime();
 				STRIKE_AIMTIME=(float)(BOW_FOCAL)/710.f;
-				INTERACTIVE_OBJ * ioo=Player_Arrow_Count_Decrease();
+				Entity * ioo=Player_Arrow_Count_Decrease();
 				float poisonous=0.f;
 
 				if (ioo)
@@ -2893,7 +2893,7 @@ void ManageCombatModeAnimations()
 }
 void ManageCombatModeAnimationsEND()
 {
-	INTERACTIVE_OBJ * io=inter.iobj[0];
+	Entity * io=inter.iobj[0];
 	ANIM_USE * useanim=&io->animlayer[1];
 
 	ANIM_USE * useanim3=&io->animlayer[3];
@@ -3708,7 +3708,7 @@ void ShowInfoText() {
 
 	sprintf(tex,"Jump %f cinema %f %d %d - Pathfind %ld(%s)",player.jumplastposition,CINEMA_DECAL,DANAEMouse.x,DANAEMouse.y,EERIE_PATHFINDER_Get_Queued_Number(), PATHFINDER_WORKING ? "Working" : "Idled");
 	mainApp->OutputText( 70, 80, tex );
-	INTERACTIVE_OBJ * io=ARX_SCRIPT_Get_IO_Max_Events();
+	Entity * io=ARX_SCRIPT_Get_IO_Max_Events();
 
 	if (io==NULL)
 		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",ScriptEvent::totalCount,ARX_SCRIPT_CountTimers());

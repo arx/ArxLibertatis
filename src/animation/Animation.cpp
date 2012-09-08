@@ -140,7 +140,7 @@ long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 TexturedVertex tTexturedVertexTab2[4000];
 
 extern long EXTERNALVIEW;
-void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io, float & invisibility,
+void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility,
                                        float & scale) {
 	
 	if(io) {
@@ -412,13 +412,13 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 //  EERIE_3D * angle      Object Angle
 //  EERIE_3D  * pos       Object Position
 //  unsigned long time    Time increment to current animation in Ms
-//  INTERACTIVE_OBJ * io  Referrence to Interactive Object (NULL if no IO)
+//  Entity * io  Referrence to Interactive Object (NULL if no IO)
 //  long typ              Misc Type 0=World View 1=1st Person View
 //*************************************************************************************
 
 //-----------------------------------------------------------------------------
 void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
-                 INTERACTIVE_OBJ * io) {
+                 Entity * io) {
 	
 	long tcf,tnf;
 	long fr;
@@ -594,14 +594,14 @@ suite:
 		}
 	}
 }
-INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;
+Entity * DESTROYED_DURING_RENDERING=NULL;
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
                        ANIM_USE * eanim,
                        Anglef * angle,
                        Vec3f * pos,
                        unsigned long time,
-                       INTERACTIVE_OBJ * io,
+                       Entity * io,
                        bool render,
                        bool update_movement) {
 	
@@ -655,7 +655,7 @@ extern float GLOBAL_LIGHT_FACTOR;
 // Procedure for drawing Interactive Objects (Not Animated)
 //*************************************************************************************
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * poss,
-                          INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo) {
+                          Entity * io, EERIE_MOD_INFO * modinfo) {
 	
 	BIGQUAT=NULL;
 	BIGMAT=mat;
@@ -985,7 +985,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 extern long FORCE_FRONT_DRAW;
 
 void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
-                    INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo) {
+                    Entity * io, EERIE_MOD_INFO * modinfo) {
 	
 	if(!eobj) {
 		return;
@@ -1890,7 +1890,7 @@ void EERIE_ANIMMANAGER_ReloadAll()
 	{
 		if (inter.iobj[i])
 		{
-			INTERACTIVE_OBJ * io=inter.iobj[i];
+			Entity * io=inter.iobj[i];
 
 			for (long j=0;j<MAX_ANIMS;j++)
 			{

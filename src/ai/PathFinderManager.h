@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_PATHFINDERMANAGER_H
 #define ARX_AI_PATHFINDERMANAGER_H
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 struct PATHFINDER_REQUEST {
 	bool isvalid;
@@ -56,7 +56,7 @@ struct PATHFINDER_REQUEST {
 	long * returnnumber;			// must point to a -1 value at call time
 	// As soon as returnnumber is no more -1
 	// Pathfinding is considered finished
-	INTERACTIVE_OBJ * ioid;
+	Entity * ioid;
 	unsigned short ** returnlist;	//must be NULL
 };
 

@@ -62,36 +62,36 @@ const float ARX_NPC_AUDIBLE_FACTOR_DEFAULT(ARX_NPC_AUDIBLE_FACTOR_MIN);
 const float ARX_NPC_AUDIBLE_FACTOR_RANGE(ARX_NPC_AUDIBLE_FACTOR_MAX - ARX_NPC_AUDIBLE_FACTOR_MIN);
 const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 
-void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flag);
-bool ARX_NPC_SetStat(INTERACTIVE_OBJ & io, const std::string & statname, float value);
-void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos);
-bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target);
-bool IsDeadNPC(INTERACTIVE_OBJ * io);
+void ARX_NPC_Revive(Entity * io, long flag);
+bool ARX_NPC_SetStat(Entity & io, const std::string & statname, float value);
+void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos);
+bool ARX_NPC_LaunchPathfind(Entity * io, long target);
+bool IsDeadNPC(Entity * io);
 
-void FaceTarget2(INTERACTIVE_OBJ * io);
+void FaceTarget2(Entity * io);
 void ARX_TEMPORARY_TrySound(float power);
-void ARX_NPC_Behaviour_Stack(INTERACTIVE_OBJ * io);
-void ARX_NPC_Behaviour_UnStack(INTERACTIVE_OBJ * io);
-void ARX_NPC_Behaviour_Reset(INTERACTIVE_OBJ * io);
+void ARX_NPC_Behaviour_Stack(Entity * io);
+void ARX_NPC_Behaviour_UnStack(Entity * io);
+void ARX_NPC_Behaviour_Reset(Entity * io);
 void ARX_NPC_Behaviour_ResetAll();
-void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long behavior_param);
-void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE);
-void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source,
+void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param);
+void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE);
+void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source,
                                const float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT,
                                const float presence = ARX_NPC_AUDIBLE_PRESENCE_DEFAULT);
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos,
+void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos,
                            const float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT,
                            const float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT);
 
-INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo);
-void CheckNPC(INTERACTIVE_OBJ * io);
-void ManageIgnition(INTERACTIVE_OBJ * io);
-void ManageIgnition_2(INTERACTIVE_OBJ * io);
+Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo);
+void CheckNPC(Entity * io);
+void ManageIgnition(Entity * io);
+void ManageIgnition_2(Entity * io);
 
-void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io);
+void ARX_NPC_Kill_Spell_Launch(Entity * io);
 
 void ARX_PHYSICS_Apply();
 
-void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
+void GetTargetPos(Entity * io, unsigned long smoothing = 0);
 
 #endif // ARX_GAME_NPC_H

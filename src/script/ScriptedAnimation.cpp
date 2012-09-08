@@ -78,7 +78,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		float t1 = context.getFloat();
 		float t2 = context.getFloat();
@@ -103,7 +103,7 @@ public:
 
 class ForceAnimCommand : public Command {
 	
-	static void forceAnim(INTERACTIVE_OBJ & io, ANIM_HANDLE * ea) {
+	static void forceAnim(Entity & io, ANIM_HANDLE * ea) {
 		
 		if(io.animlayer[0].cur_anim
 		   && io.animlayer[0].cur_anim != io.anims[ANIM_DIE]
@@ -136,7 +136,7 @@ public:
 			return Failed;
 		}
 		
-		INTERACTIVE_OBJ & io = *context.getIO();
+		Entity & io = *context.getIO();
 		if(!io.anims[num]) {
 			ScriptWarning << "animation " << anim << " not set";
 			return Failed;
@@ -170,7 +170,7 @@ public:
 
 class PlayAnimCommand : public Command {
 	
-	static void setNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
+	static void setNextAnim(Entity * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
 		
 		if(IsDeadNPC(io)) {
 			return;
@@ -198,7 +198,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * iot = context.getIO();
+		Entity * iot = context.getIO();
 		long nu = 0;
 		bool loop = false;
 		bool nointerpol = false;
@@ -298,7 +298,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * iot = context.getIO();
+		Entity * iot = context.getIO();
 		
 		HandleFlags("p") {
 			if(flg & flag('p')) {
@@ -457,7 +457,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << name);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(name == "none") {
 			if(io->usepath) {
 				free(io->usepath), io->usepath = NULL;

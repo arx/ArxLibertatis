@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 #include "platform/Flags.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 enum WeaponType {
 	WEAPON_BARE = 0,
@@ -92,16 +92,16 @@ enum EquipmentSlot {
 };
 
 void ARX_EQUIPMENT_Init();
-void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io);
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, bool special, const std::string & param2, float val, short flags);
+void ARX_EQUIPMENT_Remove_All_Special(Entity * io);
+void ARX_EQUIPMENT_SetEquip(Entity * io, bool special, const std::string & param2, float val, short flags);
 
 //! Sets/unsets an object type flag
-bool ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ & io, const std::string & temp, bool set);
+bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set);
 
 ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const std::string& temp);
-void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip);
-void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip, long flags = 0);
-void ARX_EQUIPMENT_ReleaseAll(INTERACTIVE_OBJ * io);
+void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip);
+void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * toequip, long flags = 0);
+void ARX_EQUIPMENT_ReleaseAll(Entity * io);
 
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack();
@@ -109,16 +109,16 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
  
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 long ARX_EQUIPMENT_GetPlayerWeaponType();
-float ARX_EQUIPMENT_Apply(INTERACTIVE_OBJ * io, long ident, float trueval);
-bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float percentaim, long flags, long targ = -1);
+float ARX_EQUIPMENT_Apply(Entity * io, long ident, float trueval);
+bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float percentaim, long flags, long targ = -1);
 void ARX_EQUIPMENT_RecreatePlayerMesh();
-float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_target, float ratioaim, Vec3f * pos = NULL);
+float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = NULL);
  
 void ARX_EQUIPMENT_IdentifyAll();
 
 void ARX_EQUIPMENT_UnEquipAllPlayer();
 float GetHitValue(const std::string & name);
 void ARX_EQUIPMENT_UnEquipPlayerWeapon();
-bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
+bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO);
 
 #endif // ARX_GAME_EQUIPMENT_H

@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 
 class TextureContainer;
-struct INTERACTIVE_OBJ;
+struct Entity;
 struct EERIE_3DOBJ;
 struct EERIE_LIGHT;
 struct ANIM_USE;
@@ -87,10 +87,10 @@ TexturedVertex * PushVertexInTableCull_TMultiplicative(TextureContainer * tex);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, TexturedVertex * _pVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, Anglef * angle, Vec3f  * pos, unsigned long time, INTERACTIVE_OBJ * io, bool render = true, bool update_movement = true);
+void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj, ANIM_USE * eanim, Anglef * angle, Vec3f  * pos, unsigned long time, Entity * io, bool render = true, bool update_movement = true);
 
-void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
+void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * pos, Entity * io, EERIE_MOD_INFO * modinfo = NULL);
 
-void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
+void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f * pos, Entity * io, EERIE_MOD_INFO * modinfo = NULL);
 
 #endif // ARX_ANIMATION_ANIMATION_H

@@ -369,7 +369,7 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
 }
 
 extern long MOVING_CYLINDER;
-static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags) {
+static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, long flags) {
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
 	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
@@ -478,7 +478,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ
 }
 
 
-static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags) {
+static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, long flags) {
 	
 	MOVING_CYLINDER = 1;
 	DIRECT_PATH = true;

@@ -578,7 +578,7 @@ void CMultiMagicMissile::Create()
 				aePos = inter.iobj[spells[spellinstance].caster]->pos + vector;
 			}
 
-			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = inter.iobj[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{

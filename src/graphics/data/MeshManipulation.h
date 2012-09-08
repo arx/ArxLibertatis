@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 #include "io/resource/ResourcePath.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 struct EERIE_3DOBJ;
 class TextureContainer;
 
@@ -71,7 +71,7 @@ struct TWEAK_INFO {
 	
 };
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, TweakType tw, const res::path & path);
+void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path);
 long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & skintochange, const res::path & skinname);

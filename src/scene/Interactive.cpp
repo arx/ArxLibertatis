@@ -116,8 +116,8 @@ extern long FRAME_COUNT;
 
 #define BASE_RUBBER 1.5f
 
-extern INTERACTIVE_OBJ * FlyingOverIO;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * FlyingOverIO;
+extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
@@ -126,7 +126,7 @@ extern long FOR_EXTERNAL_PEOPLE;
 extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
-INTERACTIVE_OBJ * CURRENTINTER = NULL;
+Entity * CURRENTINTER = NULL;
 INTERACTIVE_OBJECTS inter;
 float TREATZONE_LIMIT = 1800.f;
  
@@ -143,15 +143,15 @@ long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
-static INTERACTIVE_OBJ * AddCamera(const res::path & file);
-static INTERACTIVE_OBJ * AddMarker(const res::path & file);
+static bool IsCollidingInter(Entity * io, Vec3f * pos);
+static Entity * AddCamera(const res::path & file);
+static Entity * AddMarker(const res::path & file);
 
 
 /* Return the short name for this Object where only the name
  * of the file is returned
  */
-std::string INTERACTIVE_OBJ::short_name() const {
+std::string Entity::short_name() const {
 	return filename.basename();
 }
 
@@ -159,7 +159,7 @@ std::string INTERACTIVE_OBJ::short_name() const {
  * is combined with the identifying number
  * in the form of "%s_4ld"
  */
-std::string INTERACTIVE_OBJ::long_name() const {
+std::string Entity::long_name() const {
 	std::stringstream ss;
 	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
 	return ss.str();
@@ -169,12 +169,12 @@ std::string INTERACTIVE_OBJ::long_name() const {
  * directory portion of the filename member is combined
  * with the the result of long_name()
  */
-res::path INTERACTIVE_OBJ::full_name() const {
+res::path Entity::full_name() const {
 	return filename.parent() / long_name();
 }
 
 float STARTED_ANGLE = 0;
-void Set_DragInter(INTERACTIVE_OBJ * io)
+void Set_DragInter(Entity * io)
 {
 	if (io != DRAGINTER)
 		STARTED_ANGLE = player.angle.b;
@@ -208,7 +208,7 @@ long ValidIONum(long num)
 
 	return 1;
 }
-long ValidIOAddress(const INTERACTIVE_OBJ * io)
+long ValidIOAddress(const Entity * io)
 {
 	if (!io) return 0;
 
@@ -220,7 +220,7 @@ long ValidIOAddress(const INTERACTIVE_OBJ * io)
 	return 0;
 }
 
-static float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
 	
 	if ((!io)
 	        ||	(!(io->ioflags & IO_ITEM)))
@@ -235,11 +235,11 @@ static float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * s
 	return io->_itemdata->price * shop_multiply * durability_ratio;
 
 }
-long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
 
-static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
+static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 	
 	ARX_PATH * op = io->inzone;
 
@@ -264,7 +264,7 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 }
 
 extern long FAST_RELEASE;
-void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 {
 	if (!io) return;
 
@@ -344,7 +344,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 		{
 			if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
 			{
-				INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)eobj->linked[k].io;
+				Entity * ioo = (Entity *)eobj->linked[k].io;
 
 				if ((ioo) && ValidIOAddress(ioo))
 				{
@@ -392,7 +392,7 @@ void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[n_target]->obj, inter.iobj[n_source]->obj);
 }
 
-void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
+void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 {
 	if ((!io)
 	        ||	(HERO_SHOW_1ST == state))
@@ -426,7 +426,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
 }
 
 
-void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 {
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
@@ -458,7 +458,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 // flag & 1 == no unhide non-gore
 // TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
-void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
+void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 {
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
@@ -491,7 +491,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 }
 
 
-bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
+bool ForceNPC_Above_Ground(Entity * io)
 {
 	if (io
 	        &&	(io->ioflags & IO_NPC)
@@ -529,7 +529,7 @@ void UnlinkAllLinkedObjects()
 	}
 }
 
-void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io)
+void IO_UnlinkAllLinkedObjects(Entity * io)
 {
 	if (io && io->obj)
 	{
@@ -537,7 +537,7 @@ void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io)
 		{
 			if (io->obj->linked[k].io)
 			{
-				INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->obj->linked[k].io;
+				Entity * ioo = (Entity *)io->obj->linked[k].io;
 
 				if (ValidIOAddress(ioo))
 					IO_Drop_Item(io, ioo);
@@ -568,7 +568,7 @@ void TREATZONE_Release()
 	TREATZONE_CUR = 0;
 }
 
-void TREATZONE_RemoveIO(INTERACTIVE_OBJ * io)
+void TREATZONE_RemoveIO(Entity * io)
 {
 	if (treatio)
 	{
@@ -585,7 +585,7 @@ void TREATZONE_RemoveIO(INTERACTIVE_OBJ * io)
 }
 
 // flag & 1 IO_JUST_COLLIDE
-void TREATZONE_AddIO(INTERACTIVE_OBJ * io, long num, long flag)
+void TREATZONE_AddIO(Entity * io, long num, long flag)
 {
 	if (TREATZONE_MAX == TREATZONE_CUR)
 	{
@@ -609,7 +609,7 @@ void TREATZONE_AddIO(INTERACTIVE_OBJ * io, long num, long flag)
 	TREATZONE_CUR++;
 }
 
-void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num)
+void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
 	if ((io)
 	        &&	(io->animlayer[num].cur_anim)
@@ -658,7 +658,7 @@ void PrepareIOTreatZone(long flag)
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = inter.iobj[player.equiped[i]];
 
 			if (toequip)
 			{
@@ -695,7 +695,7 @@ void PrepareIOTreatZone(long flag)
 	{
 		for (long ii = 1; ii < inter.nbmax; ii++)
 		{
-			INTERACTIVE_OBJ * io = inter.iobj[ii];
+			Entity * io = inter.iobj[ii];
 
 			if (io)
 			{
@@ -711,7 +711,7 @@ void PrepareIOTreatZone(long flag)
 
 	for (int i = 1; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if ((io)
 		        &&	((io->show == SHOW_FLAG_IN_SCENE)
@@ -786,7 +786,7 @@ void PrepareIOTreatZone(long flag)
 				TREATZONE_AddIO(io, i, 0);
 
 				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
-					INTERACTIVE_OBJ * iooo = io->_npcdata->weapon;
+					Entity * iooo = io->_npcdata->weapon;
 					iooo->room = io->room;
 					iooo->room_flags = io->room_flags;
 				}
@@ -823,7 +823,7 @@ void PrepareIOTreatZone(long flag)
 
 	for (int i = 1; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if ((io != NULL)
 		        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
@@ -841,7 +841,7 @@ void PrepareIOTreatZone(long flag)
 
 			for (long ii = 1; ii < M_TREAT; ii++)
 			{
-				INTERACTIVE_OBJ * ioo = treatio[ii].io;
+				Entity * ioo = treatio[ii].io;
 
 				if (ioo)
 				{
@@ -1131,7 +1131,7 @@ void InitInter(long nb) {
 	}
 
 	inter.init = 1;
-	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
+	inter.iobj = (Entity **)malloc(sizeof(Entity *) * inter.nbmax);
 	memset(inter.iobj, 0, sizeof(*inter.iobj) * inter.nbmax);
 }
 
@@ -1141,7 +1141,7 @@ void InitInter(long nb) {
 void CleanScriptLoadedIO() {
 	
 	for(long i = 1; i < inter.nbmax; i++) {
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 		if(io) {
 			if(io->scriptload) {
 				RemoveFromAllInventories(io);
@@ -1170,7 +1170,7 @@ void RestoreInitialIOStatus()
 	}
 }
 
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp) {
+bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp) {
 	
 	if(!io || temp.empty()) {
 		return false;
@@ -1202,7 +1202,7 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp) {
 	return true;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res::path & param1, const res::path & param2) {
+void ARX_INTERACTIVE_MEMO_TWEAK(Entity * io, TweakType type, const res::path & param1, const res::path & param2) {
 	
 	io->tweaks.resize(io->tweaks.size() + 1);
 	
@@ -1211,7 +1211,7 @@ void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res:
 	io->tweaks.back().param2 = param2;
 }
 
-void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
+void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 	
 	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
 		switch(i->type) {
@@ -1224,7 +1224,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io) {
+void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	
 	if (io)
 	{
@@ -1246,7 +1246,7 @@ void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 {
 	if (io)
 	{
@@ -1353,7 +1353,7 @@ void ARX_INTERACTIVE_ClearAllDynData()
 	}
 }
 
-static void RestoreIOInitPos(INTERACTIVE_OBJ * io) {
+static void RestoreIOInitPos(Entity * io) {
 	if(io) {
 		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
 		io->pos.x = io->lastpos.x = io->initpos.x;
@@ -1373,7 +1373,7 @@ void RestoreAllIOInitPos() {
 	}
 }
 
-void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io) {
+void ARX_HALO_SetToNative(Entity * io) {
 	io->halo.color.r = io->halo_native.color.r;
 	io->halo.color.g = io->halo_native.color.g;
 	io->halo.color.b = io->halo_native.color.b;
@@ -1381,7 +1381,7 @@ void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io) {
 	io->halo.flags = io->halo_native.flags;
 }
 
-void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
+void RestoreInitialIOStatusOfIO(Entity * io)
 {
 	if (io)
 	{
@@ -1558,7 +1558,7 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const res::path & s1)
+void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1)
 {
 	if ((!io) || (s1.empty()))
 		return;
@@ -1620,10 +1620,10 @@ void FreeAllInter()
 	}
 
 	inter.nbmax = 1;
-	inter.iobj = (INTERACTIVE_OBJ **)realloc(inter.iobj, sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
+	inter.iobj = (Entity **)realloc(inter.iobj, sizeof(Entity *) * inter.nbmax);
 }
 
-INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
+Entity::Entity(long _num) : num(_num) {
 	
 	ioflags = 0;
 	lastpos = Vec3f::ZERO;
@@ -1754,7 +1754,7 @@ INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
 //*************************************************************************************
 // Creates a new free Interactive Object
 //*************************************************************************************
-INTERACTIVE_OBJ * CreateFreeInter(long num)
+Entity * CreateFreeInter(long num)
 {
 	long i;
 	long tocreate = -1;
@@ -1780,7 +1780,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 	if (tocreate == -1)
 	{
 		inter.nbmax++;
-		inter.iobj = (INTERACTIVE_OBJ **)realloc(inter.iobj, sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
+		inter.iobj = (Entity **)realloc(inter.iobj, sizeof(Entity *) * inter.nbmax);
 		tocreate = inter.nbmax - 1;
 		inter.iobj[tocreate] = NULL;
 	}
@@ -1791,16 +1791,16 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 		;
 		i = tocreate;
 		
-		return inter.iobj[i] = new INTERACTIVE_OBJ(i);
+		return inter.iobj[i] = new Entity(i);
 		
 	}
 	
 	return NULL;
 }
 // Be careful with this func...
-INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
+Entity * CloneIOItem(Entity * src) {
 	
-	INTERACTIVE_OBJ * dest;
+	Entity * dest;
 	dest = AddItem(src->filename);
 
 	if (!dest) return NULL;
@@ -1838,7 +1838,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
 
 	return dest;
 }
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target)
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target)
 {
 	EERIE_CYLINDER phys;
 
@@ -1886,7 +1886,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target
 
 	return false;
 }
-void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 {
 	if (!io) return;
 
@@ -1922,12 +1922,12 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-void ResetVVPos(INTERACTIVE_OBJ * io)
+void ResetVVPos(Entity * io)
 {
 	if ((io) && (io->ioflags & IO_NPC))
 		io->_npcdata->vvpos = io->pos.y;
 }
-void ComputeVVPos(INTERACTIVE_OBJ * io)
+void ComputeVVPos(Entity * io)
 {
 	if (io->ioflags & IO_NPC)
 	{
@@ -1981,7 +1981,7 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 	}
 }
 long FLAG_ALLOW_CLOTHES = 1;
-void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags)
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 {
 
 	if (!io)
@@ -2073,14 +2073,14 @@ long INTERACTIVE_OBJECTS::getById(const string & name) {
 	return -1;
 }
 
-INTERACTIVE_OBJ * INTERACTIVE_OBJECTS::getById(const string & name, INTERACTIVE_OBJ * self) {
+Entity * INTERACTIVE_OBJECTS::getById(const string & name, Entity * self) {
 	long index = getById(name);
 	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
 }
 
 extern long TOTAL_BODY_CHUNKS_COUNT;
 
-INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
+Entity::~Entity() {
 	
 	if(DRAGINTER == this) {
 		Set_DragInter(NULL);
@@ -2210,16 +2210,16 @@ INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
 //*************************************************************************************
 // Releases An Interactive Object from memory
 //*************************************************************************************
-void ReleaseInter(INTERACTIVE_OBJ * io) {
+void ReleaseInter(Entity * io) {
 	if(io) {
 		delete io;
 	}
 }
 
 
-INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags) {
+Entity * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags) {
 	
-	INTERACTIVE_OBJ * io = NULL;
+	Entity * io = NULL;
 	const string & ficc = file.string();
 	
 	if(IsIn(ficc, "items")) {
@@ -2256,13 +2256,13 @@ INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractive
 // "io".
 //***********************************************************************************
 
-void SetWeapon_On(INTERACTIVE_OBJ * io) {
+void SetWeapon_On(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
 	
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 	
 	if(ioo && ioo->obj) {
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
@@ -2270,13 +2270,13 @@ void SetWeapon_On(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void SetWeapon_Back(INTERACTIVE_OBJ * io) {
+void SetWeapon_Back(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
 	
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 	
 	if(ioo && ioo->obj) {
 		
@@ -2298,12 +2298,12 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp) {
+void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	
 	arx_assert(io && (io->ioflags & IO_NPC));
 	
 	if(io->_npcdata->weapon) {
-		INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+		Entity * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		io->_npcdata->weapon = NULL;
 		ReleaseInter(ioo);
@@ -2313,7 +2313,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp) {
 	
 	io->_npcdata->weapon = AddItem(file, IO_IMMEDIATELOAD);
 
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 	if(ioo) {
 		
 		MakeTemporaryIOIdent(ioo);
@@ -2327,14 +2327,14 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp) {
 	}
 }
 
-static void GetIOScript(INTERACTIVE_OBJ * io, const res::path & script) {
+static void GetIOScript(Entity * io, const res::path & script) {
 	loadScript(io->script, resources->getFile(script));
 }
 
 //***********************************************************************************
 // Links an Interactive Object to another interactive object using an attach point
 //***********************************************************************************
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string& attach)
+void LinkObjToMe(Entity * io, Entity * io2, const std::string& attach)
 {
 	if ((!io)
 	        ||	(!io2))
@@ -2345,7 +2345,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string&
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags) {
+Entity * AddFix(const res::path & file, AddInteractiveFlags flags) {
 	
 	res::path object = res::path(file).set_ext("teo");
 	
@@ -2357,7 +2357,7 @@ INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags) {
 
 	LogDebug("AddFix " << file);
 
-	INTERACTIVE_OBJ * io = CreateFreeInter();
+	Entity * io = CreateFreeInter();
 
 	if (!io)
 		return NULL;
@@ -2445,7 +2445,7 @@ INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddCamera(const res::path & file) {
+static Entity * AddCamera(const res::path & file) {
 	
 	res::path object = res::path(file).set_ext("teo");
 	
@@ -2457,7 +2457,7 @@ static INTERACTIVE_OBJ * AddCamera(const res::path & file) {
 
 	LogDebug("AddCamera " << file);
 
-	INTERACTIVE_OBJ * io = CreateFreeInter();
+	Entity * io = CreateFreeInter();
 	EERIEPOLY * ep;
 
 	if (!io) return NULL;
@@ -2500,7 +2500,7 @@ static INTERACTIVE_OBJ * AddCamera(const res::path & file) {
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddMarker(const res::path & file) {
+static Entity * AddMarker(const res::path & file) {
 	
 	res::path object = res::path(file).set_ext("teo");
 	
@@ -2512,7 +2512,7 @@ static INTERACTIVE_OBJ * AddMarker(const res::path & file) {
 	
 	LogDebug("AddMarker " << file);
 	
-	INTERACTIVE_OBJ * io = CreateFreeInter();
+	Entity * io = CreateFreeInter();
 	EERIEPOLY * ep;
 	
 	if (!io) return NULL;
@@ -2552,7 +2552,7 @@ static INTERACTIVE_OBJ * AddMarker(const res::path & file) {
 
 	return io;
 }
-void ShowIOPath(INTERACTIVE_OBJ * io)
+void ShowIOPath(Entity * io)
 {
 	for (long i = 0; i < ACTIVEBKG->nbanchors; i++)
 	{
@@ -2573,7 +2573,7 @@ void ShowIOPath(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 // Unselect an IO
 //*************************************************************************************
-void UnSelectIO(INTERACTIVE_OBJ * io)
+void UnSelectIO(Entity * io)
 {
 	if ((io)
 	        && (io->EditorFlags & EFLAG_SELECTED))
@@ -2586,7 +2586,7 @@ void UnSelectIO(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 // Select an IO
 //*************************************************************************************
-void SelectIO(INTERACTIVE_OBJ * io)
+void SelectIO(Entity * io)
 {
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -2703,7 +2703,7 @@ void GroundSnapSelectedIO()
 		if ((inter.iobj[i] != NULL)
 		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
 		{
-			INTERACTIVE_OBJ * io = inter.iobj[i];
+			Entity * io = inter.iobj[i];
 			Vec3f ppos;
 			ppos.x = io->pos.x;
 			ppos.y = io->pos.y;
@@ -2799,7 +2799,7 @@ IO_NPCDATA::~IO_NPCDATA() {
 	}
 }
 
-INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags) {
+Entity * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 	
 	res::path object = res::path(file).set_ext("teo");
 	
@@ -2811,7 +2811,7 @@ INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 
 	LogDebug("AddNPC " << file);
 
-	INTERACTIVE_OBJ * io = CreateFreeInter();
+	Entity * io = CreateFreeInter();
 	EERIEPOLY * ep;
 
 	if (io == NULL) return NULL;
@@ -2893,7 +2893,7 @@ INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 //*************************************************************************************
 // Reload Scripts (Class & Local) for an IO
 //*************************************************************************************
-void ReloadScript(INTERACTIVE_OBJ * io) {
+void ReloadScript(Entity * io) {
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
@@ -2939,7 +2939,7 @@ void ReloadAllScripts()
 //*************************************************************************************
 // Creates an unique identifier for an IO
 //*************************************************************************************
-void MakeIOIdent(INTERACTIVE_OBJ * io) {
+void MakeIOIdent(Entity * io) {
 	
 	if(!io) {
 		return;
@@ -2972,7 +2972,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 // Tells if an ident corresponds to a temporary IO
 // And close after seek session
 //*************************************************************************************
-static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
+static bool ExistTemporaryIdent(Entity * io, long t) {
 	
 	if(!io) {
 		return false;
@@ -3006,7 +3006,7 @@ static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
 //*************************************************************************************
 // Creates a Temporary IO Ident
 //*************************************************************************************
-void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
+void MakeTemporaryIOIdent(Entity * io) {
 	
 	long t = 1;
 
@@ -3032,7 +3032,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
+Entity * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	
 	long type = IO_ITEM;
 
@@ -3061,7 +3061,7 @@ INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	INTERACTIVE_OBJ * io = CreateFreeInter();
+	Entity * io = CreateFreeInter();
 
 	EERIEPOLY * ep;
 
@@ -3181,15 +3181,15 @@ INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
 //*************************************************************************************
-INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
+Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
 {
 	float n;
  
 	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = flag ? 9999999999.f : 350;
-	INTERACTIVE_OBJ * foundBB = NULL;
-	INTERACTIVE_OBJ * foundPixel = NULL;
+	Entity * foundBB = NULL;
+	Entity * foundPixel = NULL;
 	INTERNMB = -1;
 	bool bPlayerEquiped = false;
 
@@ -3200,7 +3200,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 
 	int nStart = 1;
 	int nEnd = inter.nbmax;
-	INTERACTIVE_OBJ ** pTableIO = inter.iobj;
+	Entity ** pTableIO = inter.iobj;
 
 	if ((flag == 3) && _pTable && _pnNbInTable)
 	{
@@ -3213,7 +3213,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 	{
 		bool bPass = true;
 
-		INTERACTIVE_OBJ * io = pTableIO[i];
+		Entity * io = pTableIO[i];
 
 		// Is Object Valid ??
 		if (io == NULL) continue;
@@ -3312,7 +3312,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 
 	return foundBB;
 }
-bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
+bool IsEquipedByPlayer(const Entity * io)
 {
 	if (!io)
 		return false;
@@ -3331,7 +3331,7 @@ bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
+Entity * InterClick(Vec2s * pos) {
 	
 	LASTINTERCLICKNB = -1;
 
@@ -3347,7 +3347,7 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 	else
 		dist_Threshold = 360.f;
 
-	INTERACTIVE_OBJ * io = GetFirstInterAtPos(pos);
+	Entity * io = GetFirstInterAtPos(pos);
 
 	if(io != NULL)
 	{
@@ -3382,7 +3382,7 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if ((io)
 		        && (!(io->ioflags & IO_NO_COLLISIONS))
@@ -3420,7 +3420,7 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
+static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 	
 	if ((!io)
 	        ||	(!io->obj))
@@ -3457,7 +3457,7 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	return false;
 }
 
-void SetYlsideDeath(INTERACTIVE_OBJ * io)
+void SetYlsideDeath(Entity * io)
 {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
 	io->sfx_time = (unsigned long)(arxtime); 	
@@ -3467,7 +3467,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 	bool col = false;
 	long i;
 	long avoid = -1;
-	INTERACTIVE_OBJ * io_source = NULL;
+	Entity * io_source = NULL;
 
 	if (ValidIONum(source))
 	{
@@ -3478,7 +3478,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 	for (i = 1; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if (
 		    (io)
@@ -3552,8 +3552,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 	bool col = false;
 	long i;
 	long avoid = -1;
-	INTERACTIVE_OBJ * io_source = NULL;
-	INTERACTIVE_OBJ * io = NULL;
+	Entity * io_source = NULL;
+	Entity * io = NULL;
 
 	if (ValidIONum(source))
 	{
@@ -3736,7 +3736,7 @@ void UpdateCameras()
 
 	for (long i = 1; i < inter.nbmax; i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if (io)
 		{
@@ -3817,7 +3817,7 @@ void UpdateCameras()
 				{
 					for (long ii = 0; ii < inter.nbmax; ii++)
 					{
-						INTERACTIVE_OBJ * ioo = inter.iobj[ii];
+						Entity * ioo = inter.iobj[ii];
 
 						if ((ioo)
 						        &&	(ii != i)
@@ -3931,7 +3931,7 @@ void ARX_INTERACTIVE_UnfreezeAll()
 		}
 	}
 }
-void UpdateIOInvisibility(INTERACTIVE_OBJ * io)
+void UpdateIOInvisibility(Entity * io)
 {
 	if (io && (io->invisibility <= 1.f))
 	{
@@ -3949,7 +3949,7 @@ void UpdateIOInvisibility(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
+extern Entity * DESTROYED_DURING_RENDERING;
 
 //*************************************************************************************
 // Renders Interactive objects.
@@ -3976,7 +3976,7 @@ void RenderInter(float from, float to) {
 
 	for(long i = 1; i < inter.nbmax; i++) { // Player isn't rendered here...
 		
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = inter.iobj[i];
 
 		if ((io)
 		        &&	(io != DRAGINTER)
@@ -4210,7 +4210,7 @@ void RenderInter(float from, float to) {
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 }
 
-void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
+void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 {
 	if (ioo)
 	{
@@ -4258,7 +4258,7 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 
 					if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
 					{
-						INTERACTIVE_OBJ * iooo = (INTERACTIVE_OBJ *)eobj->linked[k].io;
+						Entity * iooo = (Entity *)eobj->linked[k].io;
 
 						if ((iooo) && ValidIOAddress(iooo))
 						{
@@ -4286,7 +4286,7 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 //*************************************************************************************
 //
 //*************************************************************************************
-bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
+bool IsSameObject(Entity * io, Entity * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
@@ -4336,7 +4336,7 @@ static bool intersect(const std::set<std::string> & set1, const std::set<std::st
 	return false;
 }
 
-bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+bool HaveCommonGroup(Entity * io, Entity * ioo) {
 	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
@@ -4347,7 +4347,7 @@ bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
 //***********************************************************************************************
 // Nuky - modified to use cached value first. For now it's safe and will use former method if
 //        the cached value is incorrect, but I think it never happens
-long GetInterNum(const INTERACTIVE_OBJ * io)
+long GetInterNum(const Entity * io)
 {
 	if (io == NULL) return -1;
 
@@ -4361,7 +4361,7 @@ long GetInterNum(const INTERACTIVE_OBJ * io)
 }
 
 
-float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
+float ARX_INTERACTIVE_GetArmorClass(Entity * io)
 {
 	if (!io) return -1;
 
@@ -4397,7 +4397,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 {
 	if (ValidIONum(t))
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[t];
+		Entity * io = inter.iobj[t];
 
 		if ((io == DRAGINTER)
 		        ||	(io->show != SHOW_FLAG_IN_SCENE))

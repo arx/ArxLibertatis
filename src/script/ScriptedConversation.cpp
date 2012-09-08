@@ -100,7 +100,7 @@ public:
 		for(long j = 0; j < nb_people; j++) {
 			
 			string target = context.getWord();
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = inter.getById(target, context.getIO());
 			
 			oss << ' ' << target;
 			
@@ -144,7 +144,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << sample);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(stop) {
 			ARX_SOUND_Stop(io->sound);
 			io->sound = audio::INVALID_ID;
@@ -191,7 +191,7 @@ public:
 		
 		DebugScript(' ' << sample);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == audio::INVALID_ID) {
@@ -258,7 +258,7 @@ public:
 
 class SpeakCommand : public Command {
 	
-	static void computeACSPos(CinematicSpeech & acs, INTERACTIVE_OBJ * io, long ionum) {
+	static void computeACSPos(CinematicSpeech & acs, Entity * io, long ionum) {
 		
 		if(io) {
 			long id = io->obj->fastaccess.view_attach;
@@ -270,7 +270,7 @@ class SpeakCommand : public Command {
 		}
 		
 		if(ValidIONum(ionum)) {
-			INTERACTIVE_OBJ * ioo = inter.iobj[ionum];
+			Entity * ioo = inter.iobj[ionum];
 			long id = ioo->obj->fastaccess.view_attach;
 			if(id != -1) {
 				acs.pos2 = ioo->obj->vertexlist3[id].v;
@@ -283,7 +283,7 @@ class SpeakCommand : public Command {
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		
 		acs.ionum = GetInterNum(t);
 		acs.startpos = context.getFloat();
@@ -305,7 +305,7 @@ public:
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		bool player = false, unbreakable = false;
 		SpeechFlags voixoff = 0;

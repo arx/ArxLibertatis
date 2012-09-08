@@ -109,7 +109,7 @@ static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
 EERIEMATRIX ProjectionMatrix;
 
-void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
+void ReleaseAnimFromIO(Entity * io, long num)
 {
 	for (long count = 0; count < MAX_ANIM_LAYERS; count++)
 	{
@@ -252,7 +252,29 @@ bool RayCollidingPoly(Vec3f * orgn, Vec3f * dest, EERIEPOLY * ep, Vec3f * hit)
 	return false;
 }
 
-long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
+void ResetBBox3D(Entity * io) {
+	if(io) {
+		io->bbox3D.min.x = 99999999.f;
+		io->bbox3D.min.y = 99999999.f;
+		io->bbox3D.min.z = 99999999.f;
+		io->bbox3D.max.x = -99999999.f;
+		io->bbox3D.max.y = -99999999.f;
+		io->bbox3D.max.z = -99999999.f;
+	}
+}
+
+void AddToBBox3D(Entity * io, Vec3f * pos) {
+	if(io) {
+		io->bbox3D.min.x = std::min(io->bbox3D.min.x, pos->x);
+		io->bbox3D.min.y = std::min(io->bbox3D.min.y, pos->y);
+		io->bbox3D.min.z = std::min(io->bbox3D.min.z, pos->z);
+		io->bbox3D.max.x = std::max(io->bbox3D.max.x, pos->x);
+		io->bbox3D.max.y = std::max(io->bbox3D.max.y, pos->y);
+		io->bbox3D.max.z = std::max(io->bbox3D.max.z, pos->z);
+	}
+}
+
+long MakeTopObjString(Entity * io,  string & dest) {
 	
 	Vec3f boxmin;
 	Vec3f boxmax;
@@ -1115,10 +1137,10 @@ float GetColorz(float x, float y, float z) {
 //*************************************************************************************
 //*************************************************************************************
 
-extern float GetIOHeight(INTERACTIVE_OBJ * io);
-extern float GetIORadius(INTERACTIVE_OBJ * io);
+extern float GetIOHeight(Entity * io);
+extern float GetIORadius(Entity * io);
 
-long GetVertexPos(INTERACTIVE_OBJ * io, long id, Vec3f * pos)
+long GetVertexPos(Entity * io, long id, Vec3f * pos)
 {
 	if (!io) return 0;
 
@@ -1751,7 +1773,7 @@ void AddAData(_ANCHOR_DATA * ad, long linked)
 	ad->nblinked++;
 }
 
-void UpdateIORoom(INTERACTIVE_OBJ * io)
+void UpdateIORoom(Entity * io)
 {
 	Vec3f pos = io->pos;
 	pos.y -= 60.f;
@@ -2724,7 +2746,7 @@ Vec3f BBOXMIN, BBOXMAX;
 //*************************************************************************************
 // Memorizes information for animation to animation smoothing interpolation
 //*************************************************************************************
-void AcquireLastAnim(INTERACTIVE_OBJ * io)
+void AcquireLastAnim(Entity * io)
 {
 	if ((!io->animlayer[0].cur_anim)
 			&&	(!io->animlayer[1].cur_anim)
@@ -2740,7 +2762,7 @@ void AcquireLastAnim(INTERACTIVE_OBJ * io)
 // Declares an Animation as finished.
 // Usefull to update object true position with object virtual pos.
 //*************************************************************************************
-void FinishAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * eanim)
+void FinishAnim(Entity * io, ANIM_HANDLE * eanim)
 {
 
 	if (io == NULL) return;

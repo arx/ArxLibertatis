@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 struct EERIE_CAMERA;
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 extern float BOOKDECX;
 extern float BOOKDECY;
@@ -261,7 +261,7 @@ void LoadLevelScreen();
 void LoadLevelScreen(long lev);
 void ReleaseHalo();
 void ResetPlayerInterface();
-void Set_DragInter(INTERACTIVE_OBJ * io);
+void Set_DragInter(Entity * io);
 void CreateInterfaceTextureContainers();
 void KillInterfaceTextureContainers();
 

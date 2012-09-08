@@ -94,7 +94,7 @@ using audio::FLAG_RELATIVE;
 using audio::FLAG_AUTOFREE;
 
 extern long EXTERNALVIEW;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 
 
 enum PlayingAmbianceType {
@@ -580,7 +580,7 @@ long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 }
 
 
-void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
+void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos)
 {
 	if (io)
 	{
@@ -604,7 +604,7 @@ static res::path speechFileName(const res::path & name) {
 	return res::path("speech") / config.language / name;
 }
 
-long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
+long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 {
 	if (!bIsActive) return INVALID_ID;
 
@@ -654,7 +654,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, Entity * source)
 {
 	if (!bIsActive) return 0;
 
@@ -709,7 +709,7 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
+long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, Entity * source) {
 	
 	if(!bIsActive) {
 		return 0;
@@ -772,7 +772,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayScript(const res::path & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
+long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch, SoundLoopMode loop)
 {
 	if (!bIsActive) {
 		return INVALID_ID;
@@ -927,7 +927,7 @@ void ARX_SOUND_RefreshPosition(SourceId & sample_id, const Vec3f * position) {
 	}
 }
 
-void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const INTERACTIVE_OBJ * io) {
+void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	
 	if (!bIsActive || !io || sample_id == INVALID_ID) return;
 

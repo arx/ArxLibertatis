@@ -147,10 +147,10 @@ struct ARXCHARACTER {
 	PlayerMovement Last_Movement;
 	long onfirmground;
 	
-	INTERACTIVE_OBJ * rightIO;
-	INTERACTIVE_OBJ * leftIO;
-	INTERACTIVE_OBJ * equipsecondaryIO;
-	INTERACTIVE_OBJ * equipshieldIO;
+	Entity * rightIO;
+	Entity * leftIO;
+	Entity * equipsecondaryIO;
+	Entity * equipshieldIO;
 	
 	short equiped[MAX_EQUIPED]; 
 	
@@ -294,7 +294,7 @@ void ARX_PLAYER_MakeSpHero();
 void ARX_PLAYER_LoadHeroAnimsAndMesh();
 void ARX_PLAYER_InitPlayer();
 void ARX_PLAYER_BecomesDead();
-void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io);
+void ARX_PLAYER_ClickedOnTorch(Entity * io);
 void ARX_PLAYER_RectifyPosition();
 void ARX_PLAYER_Frame_Update();
 void ARX_PLAYER_Manage_Movement();
@@ -316,13 +316,13 @@ void ARX_PLAYER_Remove_Invisibility();
 void ARX_Player_Rune_Add(RuneFlag rune);
 void ARX_Player_Rune_Remove(RuneFlag rune);
 void ARX_PLAYER_AddGold(long value);
-void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold);
+void ARX_PLAYER_AddGold(Entity * gold);
 void ARX_PLAYER_AddBag();
-bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ * item);
+bool ARX_PLAYER_CanStealItem(Entity * item);
 
 void ARX_KEYRING_Init();
 void ARX_KEYRING_Add(const std::string & key);
-void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io);
+void ARX_KEYRING_Combine(Entity * io);
 
 void ARX_PLAYER_Reset_Fall();
 void ARX_PLAYER_KillTorch();
@@ -339,6 +339,6 @@ long GetXPforLevel(long level);
 bool ARX_PLAYER_IsInFightMode();
 void ARX_PLAYER_Invulnerability(long flag);
 
-void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
+void ForcePlayerLookAtIO(Entity * io);
 
 #endif // ARX_GAME_PLAYER_H

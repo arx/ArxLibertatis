@@ -108,7 +108,7 @@ public:
 		
 		DebugScript(' ' << enable);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(enable ^ inv) {
 			io->GameFlags |= flag;
@@ -136,7 +136,7 @@ public:
 		
 		DebugScript(' ' << enable);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(enable ^ inv) {
 			io->ioflags |= flag;
@@ -267,7 +267,7 @@ public:
 		
 		string interactivity = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(interactivity == "none") {
 			io->GameFlags &= ~GFLAG_INTERACTIVITY;
 			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
@@ -389,7 +389,7 @@ public:
 		
 		DebugScript(' ' << trans);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		io->invisibility = 1.f + trans * 0.01f;
 		if(io->invisibility == 1.f) {
 			io->invisibility = 0;
@@ -446,7 +446,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		HandleFlags("ofnlcs") {
 		
@@ -503,7 +503,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		string type = context.getWord();
 		

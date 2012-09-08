@@ -168,7 +168,7 @@ ScriptEvent::~ScriptEvent() {
 	// TODO Auto-generated destructor stub
 }
 
-static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, ScriptResult & ret) {
+static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult & ret) {
 	
 	io->stat_count++;
 	
@@ -256,7 +256,7 @@ static const char * toString(ScriptResult ret) {
 #endif
 
 ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params,
-                               INTERACTIVE_OBJ * io, const std::string & evname, long info) {
+                               Entity * io, const std::string & evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
 	string eventname;

@@ -60,7 +60,7 @@ using std::malloc;
 using std::memset;
 using std::strcpy;
 
-extern INTERACTIVE_OBJ * LASTSPAWNED;
+extern Entity * LASTSPAWNED;
 
 namespace script {
 
@@ -107,7 +107,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getIO();
 			
 			if(io->inventory) {
 				
@@ -116,7 +116,7 @@ class InventoryCommand : public Command {
 				for(long nj = 0; nj < id->sizey; nj++) {
 					for(long ni = 0; ni < id->sizex; ni++) {
 						
-						INTERACTIVE_OBJ * item = id->slot[ni][nj].io;
+						Entity * item = id->slot[ni][nj].io;
 						if(!item) {
 							continue;
 						}
@@ -178,7 +178,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = inter.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -214,7 +214,7 @@ class InventoryCommand : public Command {
 			
 			file = ("graph/obj3d/interactive/items" / file).append(".teo");
 			
-			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
+			Entity * ioo = (Entity *)AddItem(file, IO_IMMEDIATELOAD);
 			if(!ioo) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
@@ -261,7 +261,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = inter.getById(target, context.getIO());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -298,7 +298,7 @@ class InventoryCommand : public Command {
 			
 			res::path file = res::path::load(context.getWord());
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getIO();
 			
 			if(FORBID_SCRIPT_IO_CREATION || !io->inventory) {
 				if(multi) {
@@ -321,7 +321,7 @@ class InventoryCommand : public Command {
 				DebugScript(' ' << file);
 			}
 			
-			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
+			Entity * ioo = (Entity *)AddItem(file, IO_IMMEDIATELOAD);
 			if(!ioo) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
@@ -366,7 +366,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getIO();
 			if(io->inventory) {
 				if(SecondaryInventory == io->inventory) {
 					SecondaryInventory = NULL;
@@ -477,13 +477,13 @@ public:
 		}
 		
 		if(unequip) {
-			INTERACTIVE_OBJ * oes = EVENT_SENDER;
+			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = inter.iobj[t];
 			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPOUT);
 			EVENT_SENDER = oes;
 			ARX_EQUIPMENT_UnEquip(inter.iobj[t], context.getIO());
 		} else {
-			INTERACTIVE_OBJ * oes = EVENT_SENDER;
+			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = inter.iobj[t];
 			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPIN);
 			EVENT_SENDER = oes;
@@ -507,7 +507,7 @@ public:
 		
 		DebugScript(' ' << draw);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(draw) {
 			if(io->_npcdata->weaponinhand == 0) {
@@ -538,7 +538,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		io->GameFlags &= ~GFLAG_HIDEWEAPON;
 		HandleFlags("h") {

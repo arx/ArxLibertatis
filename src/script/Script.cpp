@@ -88,13 +88,13 @@ using std::string;
 #define MAX_SSEPARAMS 5
 
 extern long lChangeWeapon;
-extern INTERACTIVE_OBJ * pIOChangeWeapon;
+extern Entity * pIOChangeWeapon;
 
 std::string ShowText;
 std::string ShowText2;
 std::string ShowTextWindowtext;
-INTERACTIVE_OBJ * LASTSPAWNED = NULL;
-INTERACTIVE_OBJ * EVENT_SENDER = NULL;
+Entity * LASTSPAWNED = NULL;
+Entity * EVENT_SENDER = NULL;
 SCRIPT_VAR * svar = NULL;
 
 char SSEPARAMS[MAX_SSEPARAMS][64];
@@ -150,7 +150,7 @@ ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	return ret;
 }
 
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const string & newevent) {
+void ARX_SCRIPT_SetMainEvent(Entity * io, const string & newevent) {
 	
 	if(!io) {
 		return;
@@ -165,7 +165,7 @@ void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const string & newevent) {
 
 //*************************************************************************************
 //*************************************************************************************
-void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
+void ARX_SCRIPT_ResetObject(Entity * io, long flags)
 {
 	// Now go for Script INIT/RESET depending on Mode
 	long num = GetInterNum(io);
@@ -208,7 +208,7 @@ void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
 	}
 }
 
-void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags) {
+void ARX_SCRIPT_Reset(Entity * io, long flags) {
 	
 	//Release Script Local Variables
 	if(io->script.lvar) {
@@ -328,7 +328,7 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
 }
 
-ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const string & name, std::string& txtcontent, float * fcontent,long * lcontent) {
+ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name, std::string& txtcontent, float * fcontent,long * lcontent) {
 	
 	switch (name[1])
 	{
@@ -1329,7 +1329,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const stri
 
 			if (!specialstrcmp(name, "^npcinsight"))
 			{
-				INTERACTIVE_OBJ * ioo = ARX_NPC_GetFirstNPCInSight(io);
+				Entity * ioo = ARX_NPC_GetFirstNPCInSight(io);
 
 				if (ioo == inter.iobj[0])
 					txtcontent = "player";
@@ -1420,7 +1420,7 @@ void ARX_SCRIPT_Free_All_Global_Variables()
 
 }
 
-void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io)
+void CloneLocalVars(Entity * ioo, Entity * io)
 {
 	if (!ioo) return;
 
@@ -1511,7 +1511,7 @@ std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const string & name) {
 	return tsv->text;
 }
 
-string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
+string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
 	
 	char var_text[256];
 	float t1;
@@ -1582,7 +1582,7 @@ string GetVarValueInterpretedAsText(const string & temp1, const EERIE_SCRIPT * e
 	return var_text;
 }
 
-float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io) {
+float GetVarValueInterpretedAsFloat(const string & temp1, const EERIE_SCRIPT * esss, Entity * io) {
 	
 	if(temp1[0] == '^') {
 		long lv;
@@ -1799,9 +1799,9 @@ void MakeSSEPARAMS(const char * params)
 
 #define MAX_EVENT_STACK 800
 struct STACKED_EVENT {
-	INTERACTIVE_OBJ * sender;
+	Entity * sender;
 	long              exist;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	ScriptMessage     msg;
 	std::string       params;
 	std::string       eventname;
@@ -1834,7 +1834,7 @@ void ARX_SCRIPT_EventStackClear( bool check_exist )
 
 long STACK_FLOW = 8;
 
-void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io)
+void ARX_SCRIPT_EventStackClearForIo(Entity * io)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
@@ -1893,7 +1893,7 @@ void ARX_SCRIPT_EventStackExecuteAll()
 	STACK_FLOW = 20;
 }
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
+void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
@@ -1911,7 +1911,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std:
 	}
 }
 
-ScriptResult SendIOScriptEventReverse(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
+ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	// checks invalid IO
 	if (!io) return REFUSE;
@@ -1943,7 +1943,7 @@ ScriptResult SendIOScriptEventReverse(INTERACTIVE_OBJ * io, ScriptMessage msg, c
 	return REFUSE;
 }
 
-ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
+ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
 	// checks invalid IO
 	if (!io) return REFUSE;
@@ -1952,7 +1952,7 @@ ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const st
 
 	if (ValidIONum(num))
 	{
-		INTERACTIVE_OBJ * oes = EVENT_SENDER;
+		Entity * oes = EVENT_SENDER;
 
 		if ((msg == SM_INIT) || (msg == SM_INITEND))
 		{
@@ -1992,11 +1992,11 @@ ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const st
 	return REFUSE;
 }
 
-ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io) {
+ScriptResult SendInitScriptEvent(Entity * io) {
 	
 	if (!io) return REFUSE;
 
-	INTERACTIVE_OBJ * oes = EVENT_SENDER;
+	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = NULL;
 	long num = GetInterNum(io);
 
@@ -2086,7 +2086,7 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx) {
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const string & timername, INTERACTIVE_OBJ * io) {
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const string & timername, Entity * io) {
 	for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 		if(scr_timer[i].exist && scr_timer[i].io == io && scr_timer[i].name == timername) {
 			ARX_SCRIPT_Timer_ClearByNum(i);
@@ -2094,7 +2094,7 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const string & timername, INTERACTIVE
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io)
+void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io)
 {
 	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{
@@ -2106,7 +2106,7 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_SCRIPT_Timer_Clear_By_IO(INTERACTIVE_OBJ * io)
+void ARX_SCRIPT_Timer_Clear_By_IO(Entity * io)
 {
 	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{
@@ -2144,7 +2144,7 @@ void ARX_SCRIPT_Timer_ClearAll()
 	ActiveTimers = 0;
 }
 
-void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
+void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io)
 {
 	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
 	{
@@ -2155,7 +2155,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 	}
 }
 
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string & name) {
+long ARX_SCRIPT_GetSystemIOScript(Entity * io, const std::string & name) {
 	
 	if(ActiveTimers) {
 		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
@@ -2170,7 +2170,7 @@ long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string & name
 
 long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 {
-	INTERACTIVE_OBJ * io = st->io;
+	Entity * io = st->io;
 	GetTargetPos(io);
 	Vec3f target = io->target - io->pos;
 	fnormalize(target);
@@ -2243,7 +2243,7 @@ void ARX_SCRIPT_Timer_Check() {
 		}
 		
 		EERIE_SCRIPT * es = st->es;
-		INTERACTIVE_OBJ * io = st->io;
+		Entity * io = st->io;
 		long pos = st->pos;
 		
 		if(!es && st->name == "_r_a_t_") {
@@ -2280,7 +2280,7 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	}
 }
 
-INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
+Entity * ARX_SCRIPT_Get_IO_Max_Events()
 {
 	long max = -1;
 	long ionum = -1;
@@ -2302,7 +2302,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
 	return NULL;
 }
 
-INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
+Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 {
 	long max = -1;
 	long ionum = -1;
@@ -2324,7 +2324,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 	return NULL;
 }
 
-void ManageCasseDArme(INTERACTIVE_OBJ * io)
+void ManageCasseDArme(Entity * io)
 {
 	if((io->type_flags & OBJECT_TYPE_DAGGER) ||
 			(io->type_flags & OBJECT_TYPE_1H) ||
@@ -2332,9 +2332,9 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 			(io->type_flags & OBJECT_TYPE_BOW)) {
 		
 		if(player.bag) {
-			INTERACTIVE_OBJ * pObjMin = NULL;
-			INTERACTIVE_OBJ * pObjMax = NULL;
-			INTERACTIVE_OBJ * pObjFIX = NULL;
+			Entity * pObjMin = NULL;
+			Entity * pObjMax = NULL;
+			Entity * pObjFIX = NULL;
 			bool bStop = false;
 			
 			for (int iNbBag = 0; iNbBag < player.bag; iNbBag++) {

@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 
 extern float InventoryDir;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 
 namespace script {
 
@@ -249,7 +249,7 @@ public:
 		
 		string command = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(!io->tweakerinfo) {
 			io->tweakerinfo = new IO_TWEAKER_INFO;
 			if(!io->tweakerinfo) {
@@ -309,7 +309,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * oes = EVENT_SENDER;
+		Entity * oes = EVENT_SENDER;
 		EVENT_SENDER = context.getIO();
 		
 		bool enable = context.getBool();
@@ -371,7 +371,7 @@ public:
 		
 		string type = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		if(type == "ylside_death") {
 			DebugScript(" ylside_death");
@@ -425,7 +425,7 @@ public:
 				return Failed;
 			}
 			
-			INTERACTIVE_OBJ * ioo = io;
+			Entity * ioo = io;
 			if(io->_itemdata->count > 1) {
 				ioo = CloneIOItem(io);
 				MakeTemporaryIOIdent(ioo);
@@ -504,7 +504,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -625,7 +625,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << enable);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(!player && !io) {
 			ScriptWarning << "must either use -p or execute in IO context";
 			return Failed;

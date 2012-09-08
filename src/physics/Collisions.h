@@ -61,8 +61,8 @@ extern size_t EXCEPTIONS_LIST_Pos;
 extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
 
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags = 0);
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
+float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, Entity * ioo, long flags = 0);
 
 enum CheckAnythingInSphereFlag {
 	 CAS_NO_NPC_COL        = (1<<0),
@@ -84,20 +84,20 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ = -1)
 //except source...
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere);
  
-bool IsCollidingIO(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
+bool IsCollidingIO(Entity * io, Entity * ioo);
 
 /*!
  * @param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
  */
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, CollisionFlags flags);
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit);
 
-void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io, long status);
+void ANCHOR_BLOCK_By_IO(Entity * io, long status);
 void ANCHOR_BLOCK_Clear();
-float CylinderPlatformCollide(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io);
-bool IsAnyNPCInPlatform(INTERACTIVE_OBJ * pfrm);
-void PushIO_ON_Top(INTERACTIVE_OBJ * ioo, float ydec);
+float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io);
+bool IsAnyNPCInPlatform(Entity * pfrm);
+void PushIO_ON_Top(Entity * ioo, float ydec);
 
 #endif // ARX_PHYSICS_COLLISIONS_H

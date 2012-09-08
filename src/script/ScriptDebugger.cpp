@@ -112,7 +112,7 @@ long NEED_DEBUGGER_CLEAR;
 extern long LastSelectedIONum;
 void DANAE_DEBUGGER_Update()
 {
-	static INTERACTIVE_OBJ * lastio = NULL;
+	static Entity * lastio = NULL;
 	static long MODIFFF = 1;
 
 	if (!DD_Exists) return;
@@ -139,7 +139,7 @@ void DANAE_DEBUGGER_Update()
 	ScriptDebuggerInfos s;
 	memset(&s, 0, sizeof(ScriptDebuggerInfos));
 
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 
 	if (ValidIONum(LastSelectedIONum))
 		io = inter.iobj[LastSelectedIONum];
@@ -186,7 +186,7 @@ void DANAE_DEBUGGER_Update()
 	sprintf(buffer, "%5.0f", io->pos.z);
 	s.p3ObjPos[2] = strdup(buffer);
 
-	INTERACTIVE_OBJ * tio;
+	Entity * tio;
 	tio = NULL;
 
 	if (ValidIONum(io->targetinfo))

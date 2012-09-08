@@ -186,7 +186,7 @@ extern EERIE_3DOBJ* eyeballobj;
 extern EERIE_3DOBJ * arrowobj;
 extern TextureContainer * Movable;
 extern TextureContainer * tflare;
-extern INTERACTIVE_OBJ * FlyingOverIO;
+extern Entity * FlyingOverIO;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern Vec3f LastValidPlayerPos;
 extern Color ulBKGColor;
@@ -223,8 +223,8 @@ unsigned char ARX_FLARES_Block=1;
 
 Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
-INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
-INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
+Entity * CAMERACONTROLLER=NULL;
+Entity *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame() : wasResized(false) { }
@@ -1119,7 +1119,7 @@ void ArxGame::Render() {
 		USEINTERNORM=old;
 	}
 
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	io=inter.iobj[0];
 	ANIM_USE * useanim;
 	useanim=&io->animlayer[1];
@@ -1369,7 +1369,7 @@ void ArxGame::Render() {
 		if (valid>=0)
 		{
 			CinematicSpeech * acs=&aspeech[valid].cine;
-			INTERACTIVE_OBJ * io=aspeech[valid].io;
+			Entity * io=aspeech[valid].io;
 			float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
 			if (rtime<0) rtime=0;
@@ -2136,7 +2136,7 @@ void ArxGame::GoFor2DFX()
 	if (!needed) return;
 
 					{
-		INTERACTIVE_OBJ* pTableIO[256];
+		Entity* pTableIO[256];
 		int nNbInTableIO = 0;
 
 		float temp_increase=_framedelay*( 1.0f / 1000 )*4.f;

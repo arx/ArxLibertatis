@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 enum DamageTypeFlag {
 	DAMAGE_TYPE_GENERIC    = 0,
@@ -135,19 +135,19 @@ long ARX_DAMAGES_GetFree();
  
 void ARX_DAMAGES_UpdateAll();
 float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source = -1); 
-void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0);
-float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, Vec3f * pos = NULL); 
+void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source = -1, long flags = 0);
+float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source = -1, long flags = 0, Vec3f * pos = NULL); 
 bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source); 
-void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer);
+void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer);
 void ARX_DAMAGES_UpdateDamage(long j, float tim);
 float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos);
 
-void ARX_DAMAGES_HealInter(INTERACTIVE_OBJ * io, float dmg);
+void ARX_DAMAGES_HealInter(Entity * io, float dmg);
 
-void ARX_DAMAGES_DurabilityCheck(INTERACTIVE_OBJ * io, float ratio);
-void ARX_DAMAGES_DurabilityLoss(INTERACTIVE_OBJ * io, float loss);
-void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float ratio);
+void ARX_DAMAGES_DurabilityCheck(Entity * io, float ratio);
+void ARX_DAMAGES_DurabilityLoss(Entity * io, float loss);
+void ARX_DAMAGES_DurabilityRestore(Entity * io, float ratio);
 void ARX_DAMAGES_DamagePlayerEquipment(float damages);
-float ARX_DAMAGES_ComputeRepairPrice(INTERACTIVE_OBJ * torepair, INTERACTIVE_OBJ * blacksmith);
+float ARX_DAMAGES_ComputeRepairPrice(Entity * torepair, Entity * blacksmith);
 
 #endif // ARX_GAME_DAMAGE_H

@@ -70,7 +70,7 @@ short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
  
 long POLYIN=0;
 long COLLIDED_CLIMB_POLY=0;
-INTERACTIVE_OBJ * PUSHABLE_NPC=NULL;
+Entity * PUSHABLE_NPC=NULL;
 long MOVING_CYLINDER=0;
  
 Vec3f vector2D;
@@ -317,7 +317,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 }
 
 //-----------------------------------------------------------------------------
-bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
+bool IsCollidingIO(Entity * io,Entity * ioo)
 {
 	if (   (ioo!=NULL)
 		&& (io!=ioo)
@@ -348,13 +348,13 @@ bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 }
 
 // TODO include header?
-extern void GetIOCyl(INTERACTIVE_OBJ * io,EERIE_CYLINDER * cyl);
-void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
+extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
+void PushIO_ON_Top(Entity * ioo,float ydec)
 {
 	if (ydec!=0.f)
 	for (long i=0;i<inter.nbmax;i++) 
 	{
-		INTERACTIVE_OBJ * io=inter.iobj[i];
+		Entity * io=inter.iobj[i];
 
 		if (   (io)
 			&& (io!=ioo)
@@ -476,11 +476,11 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 }
 //-----------------------------------------------------------------------------
 
-bool IsAnyNPCInPlatform(INTERACTIVE_OBJ * pfrm)
+bool IsAnyNPCInPlatform(Entity * pfrm)
 {
 	for (long i=0;i<inter.nbmax;i++)
 	{
-		INTERACTIVE_OBJ * io=inter.iobj[i];
+		Entity * io=inter.iobj[i];
 
 		if (	(io) 
 			&&	(io!=pfrm)
@@ -498,7 +498,7 @@ bool IsAnyNPCInPlatform(INTERACTIVE_OBJ * pfrm)
 
 	return false;
 }
-float CylinderPlatformCollide(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io)
+float CylinderPlatformCollide(EERIE_CYLINDER * cyl,Entity * io)
 {
  
 	float miny,maxy;
@@ -526,7 +526,7 @@ int			iYBackup = -1;
 extern int TSU_TEST_COLLISIONS;
 			
 	
-extern void GetIOCyl(INTERACTIVE_OBJ * io,EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 {
@@ -535,7 +535,7 @@ inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
 	out->p.z = (in->p.z*c) - (in->p.x*s);
 }
 
-bool CollidedFromBack(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
+bool CollidedFromBack(Entity * io,Entity * ioo)
 {
 	// io was collided from back ?
 	EERIEPOLY ep;
@@ -577,7 +577,7 @@ bool CollidedFromBack(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 //-----------------------------------------------------------------------------
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long flags)
+float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 {	
 	NPC_IN_CYLINDER=0;
 	long rad = (cyl->radius + 100) * ACTIVEBKG->Xmul;
@@ -706,7 +706,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 	if (!(flags & CFLAG_NO_INTERCOL))
 	{
-		INTERACTIVE_OBJ * io;
+		Entity * io;
 		long FULL_TEST=0;
 		long AMOUNT=TREATZONE_CUR;
 
@@ -1037,7 +1037,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 	bool vreturn = false;
 	MAX_IN_SPHERE_Pos=0;
 	
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long ret_idx=-1;
 	
 	float sr30=sphere->radius+20.f;
@@ -1265,7 +1265,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 	if (flags & CAS_NO_SAME_GROUP) validsource=ValidIONum(source);
 
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	float sr30=sphere->radius+20.f;
 	float sr40=sphere->radius+30.f;
 	float sr180=sphere->radius+500.f;
@@ -1382,7 +1382,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 	
 	if (!ValidIONum(target)) return false;
 
-	INTERACTIVE_OBJ * io=inter.iobj[target];
+	Entity * io=inter.iobj[target];
 	float sr30 = sphere->radius + 22.f;
 	float sr40 = sphere->radius + 27.f; 
 	float sr180=sphere->radius+500.f;
@@ -1474,7 +1474,7 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, CollisionFlags flags)
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags)
 {
 	PUSHABLE_NPC=NULL;
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
@@ -1644,7 +1644,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, Collisi
 //flags & 32 Just Test !!!
 //flags & 64 NPC mode
 //----------------------------------------------------------------------------------------------
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP, CollisionFlags flags)
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER_STEP, CollisionFlags flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);
 //	+5 on 15
@@ -1945,7 +1945,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 
 		for (long num=0;num<inter.nbmax;num++)
 		{
-			INTERACTIVE_OBJ * io=inter.iobj[num];
+			Entity * io=inter.iobj[num];
 
 			if ((io) && (io->GameFlags & GFLAG_VIEW_BLOCKER))
 			{
@@ -2028,7 +2028,7 @@ void ANCHOR_BLOCK_Clear()
 	}
 }
 
-void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
+void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 {
 	EERIE_BACKGROUND * eb=ACTIVEBKG;
 

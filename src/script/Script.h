@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 class PakFile;
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 const size_t MAX_SHORTCUT = 80;
 const size_t MAX_SCRIPTTIMERS = 5;
@@ -127,7 +127,7 @@ struct SCR_TIMER {
 	long pos;
 	long longinfo;
 	unsigned long tim;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	EERIE_SCRIPT * es;
 	
 	inline SCR_TIMER() : name(), exist(0), flags(0), times(0),
@@ -406,7 +406,7 @@ enum ScriptMessage {
 };
 
 extern SCRIPT_VAR * svar;
-extern INTERACTIVE_OBJ * EVENT_SENDER;
+extern Entity * EVENT_SENDER;
 extern SCR_TIMER * scr_timer;
 extern std::string ShowTextWindowtext;
 extern std::string ShowText;
@@ -419,36 +419,36 @@ extern long MAX_TIMER_SCRIPT;
 void ARX_SCRIPT_Timer_Check();
 void ARX_SCRIPT_Timer_FirstInit(long number);
 void ARX_SCRIPT_Timer_ClearAll();
-void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io);
-void ARX_SCRIPT_Timer_Clear_By_IO(INTERACTIVE_OBJ * io);
+void ARX_SCRIPT_Timer_Clear_For_IO(Entity * io);
+void ARX_SCRIPT_Timer_Clear_By_IO(Entity * io);
 long ARX_SCRIPT_Timer_GetFree();
  
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string & newevent);
+void ARX_SCRIPT_SetMainEvent(Entity * io, const std::string & newevent);
 void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
 void ARX_SCRIPT_EventStackClear(bool check_exist = true);
-void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
-void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string & name);
+void ARX_SCRIPT_ResetObject(Entity * io, long flags);
+void ARX_SCRIPT_Reset(Entity * io, long flags);
+long ARX_SCRIPT_GetSystemIOScript(Entity * io, const std::string & name);
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT & es);
 void ARX_SCRIPT_AllowInterScriptExec();
 long ARX_SCRIPT_CountTimers();
 void ARX_SCRIPT_Timer_ClearByNum(long num);
 void ARX_SCRIPT_ResetAll(long flags);
-void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io);
-INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events();
-INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent();
+void ARX_SCRIPT_EventStackClearForIo(Entity * io);
+Entity * ARX_SCRIPT_Get_IO_Max_Events();
+Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent();
 
-void ManageCasseDArme(INTERACTIVE_OBJ * io);
+void ManageCasseDArme(Entity * io);
 void ReleaseScript(EERIE_SCRIPT * es);
 void ARX_SCRIPT_Init_Event_Stats();
-ScriptResult SendInitScriptEvent(INTERACTIVE_OBJ * io);
+ScriptResult SendInitScriptEvent(Entity * io);
 
 //used by scriptevent
 void MakeSSEPARAMS(const char * params);
-float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
-std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+float GetVarValueInterpretedAsFloat(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io);
+std::string GetVarValueInterpretedAsText(const std::string & temp1, const EERIE_SCRIPT * esss, Entity * io);
 
 //! Generates a random name for an unnamed timer
 std::string ARX_SCRIPT_Timer_GetDefaultName();
@@ -463,15 +463,15 @@ long GETVarValueLong(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 float GETVarValueFloat(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 std::string GETVarValueText(SCRIPT_VAR svf[], size_t nb, const std::string & name);
 
-ValueType GetSystemVar(const EERIE_SCRIPT * es, INTERACTIVE_OBJ * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
-void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
-void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, INTERACTIVE_OBJ * io);
+ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const std::string & name, std::string & txtcontent, float * fcontent, long * lcontent);
+void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(Entity * io);
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(const std::string & timername, Entity * io);
 
-ScriptResult SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "" );
+ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "" );
 
 ScriptResult SendMsgToAllIO(ScriptMessage msg, const std::string & params = "");
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
+void Stack_SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string & params = "", const std::string & eventname = "");
 
 /*!
  * Finds the first occurence of str in the script that is followed
@@ -481,7 +481,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, ScriptMessage msg, const std:
  */
 long FindScriptPos(const EERIE_SCRIPT * es, const std::string & str);
 
-void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
+void CloneLocalVars(Entity * ioo, Entity * io);
 void ARX_SCRIPT_Free_All_Global_Variables();
 void MakeLocalText(EERIE_SCRIPT * es, std::string & tx);
 void MakeGlobalText(std::string & tx);

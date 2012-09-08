@@ -347,7 +347,7 @@ void CFireBall::Update(unsigned long aulTime)
 				eCurPos.z += EEcos(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
 			}
 			
-			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = inter.iobj[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{

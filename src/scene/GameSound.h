@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "math/MathFwd.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 
 namespace res { class path; }
 
@@ -228,11 +228,11 @@ void ARX_SOUND_Free(const audio::SampleId & sample);
 long ARX_SOUND_PlaySFX(audio::SourceId & sample_id, const Vec3f * position = NULL, float pitch = 1.0F, const SoundLoopMode = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayInterface(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 
-long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io = NULL);
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source);
-long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, Vec3f* position, INTERACTIVE_OBJ* source);
+long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io = NULL);
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, Entity * source);
+long ARX_SOUND_PlayCollision(const std::string& name1, const std::string& name2, float volume, float power, Vec3f* position, Entity* source);
 
-long ARX_SOUND_PlayScript(const res::path & name, const INTERACTIVE_OBJ * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
+long ARX_SOUND_PlayScript(const res::path & name, const Entity * io = NULL, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
 long ARX_SOUND_PlayAnim(audio::SourceId & sample_id, const Vec3f * position = NULL);
 long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech);
 long ARX_SOUND_PlayMenu(audio::SourceId & sample_id, float pitch = 1.0F, SoundLoopMode loop = ARX_SOUND_PLAY_ONCE);
@@ -242,7 +242,7 @@ float ARX_SOUND_GetDuration(audio::SampleId & sample_id);
 void ARX_SOUND_RefreshVolume(audio::SourceId & sample_id, float volume);
 void ARX_SOUND_RefreshPosition(audio::SourceId & sample_id, const Vec3f * position = NULL);
 void ARX_SOUND_RefreshPitch(audio::SourceId & sample_id, float pitch);
-void ARX_SOUND_RefreshSpeechPosition(audio::SourceId & sample_id, const INTERACTIVE_OBJ * io = NULL);
+void ARX_SOUND_RefreshSpeechPosition(audio::SourceId & sample_id, const Entity * io = NULL);
 
 void ARX_SOUND_Stop(audio::SourceId & sample_id);
 

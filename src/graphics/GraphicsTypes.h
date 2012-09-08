@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-struct INTERACTIVE_OBJ;
+struct Entity;
 struct EERIE_3DOBJ;
 class TextureContainer;
 
@@ -363,7 +363,7 @@ struct EERIE_LINKED {
 	long lidx2;
 	EERIE_3DOBJ * obj;
 	EERIE_MOD_INFO modinfo;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 };
 
 struct EERIE_SELECTIONS {

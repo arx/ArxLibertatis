@@ -64,7 +64,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		
 		Behaviour behavior = 0;
 		HandleFlags("lsdmfa012") {
@@ -227,7 +227,7 @@ public:
 		Spell spellid = GetSpellId(spellname);
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		
 		if(!t || spellid == SPELL_NONE) {
 			return Failed;
@@ -385,7 +385,7 @@ public:
 		
 		DebugScript(' ' << mode);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(mode == "walk") {
 			ARX_NPC_ChangeMoveMode(io, WALKMODE);
 		} else if(mode == "run") {
@@ -431,7 +431,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getIO();
 		if(io->ioflags & IO_NPC) {
 			io->_npcdata->pathfind.flags &= ~(PATHFIND_ALWAYS|PATHFIND_ONCE|PATHFIND_NO_UPDATE);
 		}
@@ -465,7 +465,7 @@ public:
 			target = context.getWord();
 		}
 		target = context.getStringVar(target);
-		INTERACTIVE_OBJ * t = inter.getById(target, io);
+		Entity * t = inter.getById(target, io);
 		
 		DebugScript(' ' << options << ' ' << target);
 		
@@ -509,7 +509,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = inter.getById(target, context.getIO());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
