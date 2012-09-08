@@ -72,6 +72,10 @@ struct EntityManager {
 	long getById(const std::string & name);
 	Entity * getById(const std::string & name, Entity * self);
 	
+	Entity * & operator[](size_t index) {
+		return iobj[index];
+	}
+	
 };
 
 const size_t MAX_LINKS = 12;
