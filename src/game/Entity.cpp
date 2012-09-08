@@ -162,8 +162,6 @@ Entity::Entity(long _num) : num(_num) {
 	
 }
 
-long TOTAL_BODY_CHUNKS_COUNT = 0;
-
 Entity::~Entity() {
 	
 	if(DRAGINTER == this) {
@@ -172,11 +170,6 @@ Entity::~Entity() {
 	
 	if(!FAST_RELEASE) {
 		TREATZONE_RemoveIO(this);
-	}
-	
-	if(ioflags & IO_BODY_CHUNK) {
-		TOTAL_BODY_CHUNKS_COUNT--;
-		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
 	}
 	
 	if(ignit_light > -1) {

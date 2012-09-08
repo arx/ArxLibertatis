@@ -3522,7 +3522,6 @@ void ARX_PLAYER_Rune_Add_All()
 
 extern unsigned long LAST_PRECAST_TIME;
 extern long sp_wep;
-extern long TOTAL_BODY_CHUNKS_COUNT;
 extern long WILL_QUICKLOAD, WILL_QUICKSAVE;
 extern long GLOBAL_Player_Room;
 extern long cur_mx, cur_pom;
@@ -3764,9 +3763,6 @@ void ARX_GAME_Reset(long type) {
 	// ARX Debugger
 	NEED_DEBUGGER_CLEAR = 1;
 #endif
-
-	//Body chunks count
-	TOTAL_BODY_CHUNKS_COUNT = 0;
 
 	// ARX Timer
 	arxtime.init();

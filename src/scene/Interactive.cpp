@@ -1922,8 +1922,6 @@ Entity * EntityManager::getById(const string & name, Entity * self) {
 	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
 }
 
-extern long TOTAL_BODY_CHUNKS_COUNT;
-
 //*************************************************************************************
 // Releases An Interactive Object from memory
 //*************************************************************************************
