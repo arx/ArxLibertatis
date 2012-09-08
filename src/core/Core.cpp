@@ -1617,7 +1617,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	QuatFromMatrix(quat,tmat);
 
 	float wd=(float)ARX_EQUIPMENT_Apply(
-		entities[0],IO_EQUIPITEM_ELEMENT_Damages,1);
+		entities.player(),IO_EQUIPITEM_ELEMENT_Damages,1);
 
 	float weapon_damages=wd;
 
@@ -1656,9 +1656,9 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	position.y=player.pos.y+40.f;
 	position.z=player.pos.z;
 
-	if (entities[0]->obj->fastaccess.left_attach>=0)
+	if (entities.player()->obj->fastaccess.left_attach>=0)
 	{
-		position = entities[0]->obj->vertexlist3[entities[0]->obj->fastaccess.left_attach].v;
+		position = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.left_attach].v;
 	}
 
 	anglea=radians(player.angle.a);
@@ -1695,7 +1695,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	QuatFromMatrix(quat,tmat);
 
 	float wd=(float)ARX_EQUIPMENT_Apply(
-		entities[0],IO_EQUIPITEM_ELEMENT_Damages,1);
+		entities.player(),IO_EQUIPITEM_ELEMENT_Damages,1);
 
 	float weapon_damages=wd;
 
@@ -2185,8 +2185,8 @@ void FirstFrameHandling()
 	player.desiredangle.a=player.angle.a=0.f;
 	ARX_PLAYER_RectifyPosition();
 
-	if (entities[0])
-		entities[0]->_npcdata->vvpos=-99999;
+	if (entities.player())
+		entities.player()->_npcdata->vvpos=-99999;
 
 	SendGameReadyMsg();
 	PLAYER_MOUSELOOK_ON = false;
@@ -2210,15 +2210,15 @@ void FirstFrameHandling()
 	if (WILL_RESTORE_PLAYER_POSITION_FLAG)
 	{
 		player.pos = WILL_RESTORE_PLAYER_POSITION;
-		entities[0]->pos = WILL_RESTORE_PLAYER_POSITION;
-		entities[0]->pos.y+=170.f;
-		Entity * io=entities[0];
+		entities.player()->pos = WILL_RESTORE_PLAYER_POSITION;
+		entities.player()->pos.y+=170.f;
+		Entity * io=entities.player();
 
 		for (size_t i=0;i<io->obj->vertexlist.size();i++)
 		{
-			io->obj->vertexlist3[i].v.x=io->obj->vertexlist[i].v.x+entities[0]->pos.x;
-			io->obj->vertexlist3[i].v.y=io->obj->vertexlist[i].v.y+entities[0]->pos.y;
-			io->obj->vertexlist3[i].v.z=io->obj->vertexlist[i].v.z+entities[0]->pos.z;
+			io->obj->vertexlist3[i].v.x=io->obj->vertexlist[i].v.x+entities.player()->pos.x;
+			io->obj->vertexlist3[i].v.y=io->obj->vertexlist[i].v.y+entities.player()->pos.y;
+			io->obj->vertexlist3[i].v.z=io->obj->vertexlist[i].v.z+entities.player()->pos.z;
 		}
 
 		WILL_RESTORE_PLAYER_POSITION_FLAG=0;
@@ -2242,7 +2242,7 @@ void FirstFrameHandling()
 				ARX_NPC_ApplyCuts(entities[ni]);
 	}
 
-	ResetVVPos(entities[0]);
+	ResetVVPos(entities.player());
 
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
@@ -2267,7 +2267,7 @@ void FirstFrameHandling()
 
 void ManageNONCombatModeAnimations()
 {
-	Entity * io=entities[0];
+	Entity * io=entities.player();
 
 	if (!io) return;
 
@@ -2406,7 +2406,7 @@ void strikeSpeak(Entity * io) {
 void ManageCombatModeAnimations()
 {
 	STRIKE_TIME=0;
-	Entity * io=entities[0];
+	Entity * io=entities.player();
 
 	if (!io) return;
 
@@ -2893,7 +2893,7 @@ void ManageCombatModeAnimations()
 }
 void ManageCombatModeAnimationsEND()
 {
-	Entity * io=entities[0];
+	Entity * io=entities.player();
 	ANIM_USE * useanim=&io->animlayer[1];
 
 	ANIM_USE * useanim3=&io->animlayer[3];
@@ -3749,7 +3749,7 @@ void ShowInfoText() {
 
 	  if (io)
 	  {
-		  if (io==entities[0])
+		  if (io==entities.player())
 		  {
 			  	sprintf(tex,"%4.0f %4.0f %4.0f - %4.0f %4.0f %4.0f -- %3.0f %d/%ld targ %ld beh %ld",io->pos.x,
 					io->pos.y,io->pos.z,io->move.x,
@@ -3836,9 +3836,9 @@ void ReleaseSystemObjects() {
 		hero=NULL;
 	}
 
-	if (entities[0]) {
-		entities[0]->obj = NULL;
-		ReleaseInter(entities[0]);
+	if (entities.player()) {
+		entities.player()->obj = NULL;
+		ReleaseInter(entities.player());
 		entities.iobj[0] = NULL;
 
 		if(entities.iobj) {

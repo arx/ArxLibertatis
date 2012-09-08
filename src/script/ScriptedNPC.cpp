@@ -233,7 +233,7 @@ public:
 			return Failed;
 		}
 		
-		if(context.getIO() != entities[0]) {
+		if(context.getIO() != entities.player()) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		

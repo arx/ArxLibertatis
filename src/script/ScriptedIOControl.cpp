@@ -157,8 +157,8 @@ public:
 					for(int i = 0; i < MAX_EQUIPED; i++) {
 						if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
 							if(entities[player.equiped[i]] == io) {
-								ARX_EQUIPMENT_UnEquip(entities[0], io, 1);
-								ARX_EQUIPMENT_Equip(entities[0], ioo);
+								ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
+								ARX_EQUIPMENT_Equip(entities.player(), ioo);
 							}
 						}
 					}
@@ -621,7 +621,7 @@ public:
 			}
 			
 			if(teleport_player) {
-				ARX_INTERACTIVE_Teleport(entities[0], &pos);
+				ARX_INTERACTIVE_Teleport(entities.player(), &pos);
 				return Success;
 			}
 			
@@ -642,7 +642,7 @@ public:
 			if(teleport_player) {
 				Vec3f pos;
 				if(GetItemWorldPosition(io, &pos)) {
-					ARX_INTERACTIVE_Teleport(entities[0], &pos);
+					ARX_INTERACTIVE_Teleport(entities.player(), &pos);
 				}
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {

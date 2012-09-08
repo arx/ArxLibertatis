@@ -790,7 +790,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
 
 
-									if ((d <= 800) && (fabs(entities[0]->pos.y - entities[lnpc]->pos.y) < 250.f))
+									if ((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f))
 									{
 										float col = 1.f;
 

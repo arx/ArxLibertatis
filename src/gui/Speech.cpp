@@ -477,7 +477,7 @@ void ARX_SPEECH_Update() {
 				else
 					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
 
-				if (((io != entities[0]) || ((io == entities[0])  && (EXTERNALVIEW)))
+				if (((io != entities.player()) || ((io == entities.player())  && (EXTERNALVIEW)))
 						&&	ValidIOAddress(io))
 				{
 					if (io->anims[aspeech[i].mood] == NULL)	aspeech[i].mood = ANIM_TALK_NEUTRAL;

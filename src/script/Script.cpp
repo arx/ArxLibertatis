@@ -865,7 +865,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 			{
 				if (EVENT_SENDER)
 				{
-					if (EVENT_SENDER == entities[0])
+					if (EVENT_SENDER == entities.player())
 						txtcontent = "player";
 					else
 						txtcontent = EVENT_SENDER->long_name();
@@ -916,7 +916,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!specialstrcmp(name, "^me"))
 			{
-				if (io == entities[0])
+				if (io == entities.player())
 					txtcontent = "player";
 				else
 					txtcontent = io->long_name();
@@ -1314,7 +1314,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 				}
 
 				if(temp == "invisibility") {
-					if(entities[0]->invisibility > 0.3f) {
+					if(entities.player()->invisibility > 0.3f) {
 						*lcontent = 1;
 						return TYPE_LONG;
 					}
@@ -1331,7 +1331,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 			{
 				Entity * ioo = ARX_NPC_GetFirstNPCInSight(io);
 
-				if (ioo == entities[0])
+				if (ioo == entities.player())
 					txtcontent = "player";
 				else if (ioo)
 					txtcontent = ioo->long_name();
@@ -1388,7 +1388,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 	if (!specialstrcmp(name, " "))
 	{
-		if (io == entities[0])
+		if (io == entities.player())
 			txtcontent = "player";
 		else
 			txtcontent = io->long_name();

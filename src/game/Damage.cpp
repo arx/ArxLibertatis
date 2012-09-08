@@ -200,9 +200,9 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 	if (dmg > player.life) damagesdone = dmg;
 	else damagesdone = player.life;
 
-	entities[0]->dmg_sum += dmg;
+	entities.player()->dmg_sum += dmg;
 
-	if (float(arxtime) > entities[0]->ouch_time + 500)
+	if (float(arxtime) > entities.player()->ouch_time + 500)
 	{
 		Entity * oes = EVENT_SENDER;
 
@@ -211,14 +211,14 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 		else
 			EVENT_SENDER = NULL;
 
-		entities[0]->ouch_time = (unsigned long)(arxtime);
+		entities.player()->ouch_time = (unsigned long)(arxtime);
 		char tex[32];
-		sprintf(tex, "%5.2f", entities[0]->dmg_sum);
-		SendIOScriptEvent( entities[0], SM_OUCH, tex );
+		sprintf(tex, "%5.2f", entities.player()->dmg_sum);
+		SendIOScriptEvent( entities.player(), SM_OUCH, tex );
 		EVENT_SENDER = oes;
-		float power = entities[0]->dmg_sum / player.maxlife * 220.f;
+		float power = entities.player()->dmg_sum / player.maxlife * 220.f;
 		AddQuakeFX(power * 3.5f, 500 + power * 3, rnd() * 100.f + power + 200, 0);
-		entities[0]->dmg_sum = 0.f;
+		entities.player()->dmg_sum = 0.f;
 	}
 
 	if (dmg > 0.f)
@@ -271,7 +271,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 					ARX_SOUND_PlayInterface(SND_PLAYER_DEATH_BY_FIRE);
 				}
 
-				SendIOScriptEvent(entities[0], SM_DIE);
+				SendIOScriptEvent(entities.player(), SM_DIE);
 
 				for (long i = 1; i < entities.nbmax; i++)
 				{
@@ -281,7 +281,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 					{
 						if ((ioo->targetinfo == 0) || (ioo->targetinfo == TARGET_PLAYER))
 						{
-							EVENT_SENDER = entities[0];
+							EVENT_SENDER = entities.player();
 							std::string killer;
 
 							if (source == 0) killer = "player";
@@ -336,7 +336,7 @@ void ARX_DAMAGES_HealInter(Entity * io, float dmg)
 
 	if (io->_npcdata->life <= 0.f) return;
 
-	if (io == entities[0]) ARX_DAMAGES_HealPlayer(dmg);
+	if (io == entities.player()) ARX_DAMAGES_HealPlayer(dmg);
 
 	if (dmg > 0.f)
 	{
@@ -362,7 +362,7 @@ void ARX_DAMAGES_HealManaInter(Entity * io, float dmg)
 
 	if (!(io->ioflags & IO_NPC)) return;
 
-	if (io == entities[0]) ARX_DAMAGES_HealManaPlayer(dmg);
+	if (io == entities.player()) ARX_DAMAGES_HealManaPlayer(dmg);
 
 	if (io->_npcdata->life <= 0.f) return;
 
@@ -379,7 +379,7 @@ float ARX_DAMAGES_DrainMana(Entity * io, float dmg)
 
 	if (!(io->ioflags & IO_NPC)) return 0;
 
-	if (io == entities[0])
+	if (io == entities.player())
 	{
 		if (player.playerflags & PLAYERFLAGS_NO_MANA_DRAIN)
 			return 0;
@@ -443,7 +443,7 @@ void ARX_DAMAGES_DamageFIX(Entity * io, float dmg, long source, long flags)
 	{
 		char dmm[32];
 
-		if (EVENT_SENDER == entities[0])
+		if (EVENT_SENDER == entities.player())
 		{
 			if (flags & 1)
 			{
@@ -541,7 +541,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 
 	ARX_INTERACTIVE_DestroyDynamicInfo(io_dead);
 
-	if (io_killer == entities[0]) killer = "player";
+	if (io_killer == entities.player()) killer = "player";
 	else
 	{
 		if (io_killer)
@@ -615,7 +615,7 @@ void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
 		Vec3f vect = io_target->pos - io->pos;
 		fnormalize(vect);
 		vect *= power;
-		if(io_target == entities[0]) {
+		if(io_target == entities.player()) {
 			PUSH_PLAYER_FORCE = vect;
 		} else {
 			io_target->move += vect;
@@ -802,7 +802,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 
 		if (EVENT_SENDER && (EVENT_SENDER->summoner == 0))
 		{
-			EVENT_SENDER = entities[0];
+			EVENT_SENDER = entities.player();
 			sprintf(tex, "%5.2f summoned", io->dmg_sum);
 		}
 		else
@@ -869,7 +869,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 
 				char dmm[256];
 
-				if (EVENT_SENDER == entities[0])
+				if (EVENT_SENDER == entities.player())
 				{
 					if (flags & 1)
 					{
@@ -902,7 +902,7 @@ float ARX_DAMAGES_DamageNPC(Entity * io, float dmg, long source, long flags, Vec
 				if ((EVENT_SENDER)
 				        &&	(EVENT_SENDER->summoner == 0))
 				{
-					EVENT_SENDER = entities[0];
+					EVENT_SENDER = entities.player();
 					sprintf(dmm, "%f summoned", dmg);
 				}
 
@@ -1275,13 +1275,13 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 
 									if (damages[j].type & DAMAGE_TYPE_FIRE)
 									{
-										dmg = ARX_SPELLS_ApplyFireProtection(entities[0], dmg);
-										ARX_DAMAGES_IgnitIO(entities[0], dmg);
+										dmg = ARX_SPELLS_ApplyFireProtection(entities.player(), dmg);
+										ARX_DAMAGES_IgnitIO(entities.player(), dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_COLD)
 									{
-										dmg = ARX_SPELLS_ApplyColdProtection(entities[0], dmg);
+										dmg = ARX_SPELLS_ApplyColdProtection(entities.player(), dmg);
 									}
 
 									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source);
@@ -1607,7 +1607,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 						if (typ & DAMAGE_TYPE_FIRE)
 						{
 							dmg = ARX_SPELLS_ApplyFireProtection(ioo, dmg);
-							ARX_DAMAGES_IgnitIO(entities[0], dmg);
+							ARX_DAMAGES_IgnitIO(entities.player(), dmg);
 						}
 
 						if (typ & DAMAGE_TYPE_COLD)

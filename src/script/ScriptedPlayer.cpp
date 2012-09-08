@@ -555,11 +555,11 @@ public:
 			duration = 2000 + level * 2000;
 		}
 		
-		if(context.getIO() != entities[0]) {
+		if(context.getIO() != entities.player()) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		TryToCastSpell(entities[0], spellid, level, -1, spflags, duration);
+		TryToCastSpell(entities.player(), spellid, level, -1, spflags, duration);
 		
 		return Success;
 	}

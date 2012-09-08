@@ -290,7 +290,7 @@ class SpeakCommand : public Command {
 		acs.endpos = context.getFloat();
 		
 		if(player) {
-			computeACSPos(acs, entities[0], acs.ionum);
+			computeACSPos(acs, entities.player(), acs.ionum);
 		} else {
 			computeACSPos(acs, context.getIO(), acs.ionum);
 		}
@@ -349,7 +349,7 @@ public:
 					acs.endpos = context.getFloat();
 					acs.ionum = GetInterNum(io);
 					if(player) {
-						computeACSPos(acs, entities[0], acs.ionum);
+						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {
 						computeACSPos(acs, io, -1);
 					}
@@ -403,7 +403,7 @@ public:
 		
 		long speechnum;
 		if(player) {
-			speechnum = ARX_SPEECH_AddSpeech(entities[0], data, mood, voixoff);
+			speechnum = ARX_SPEECH_AddSpeech(entities.player(), data, mood, voixoff);
 		} else {
 			speechnum = ARX_SPEECH_AddSpeech(io, data, mood, voixoff);
 		}

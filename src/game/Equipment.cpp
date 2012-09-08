@@ -210,7 +210,7 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selecti
 		return;
 	}
 	
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 	
 	arx_assert(entities[player.equiped[equip]]->tweakerinfo != NULL);
 	
@@ -269,7 +269,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 		return;
 	}
 	
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 	if(!io) {
 		return;
 	}
@@ -283,7 +283,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
 	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
 	
-	Entity * target = entities[0];
+	Entity * target = entities.player();
 	Entity * toequip = NULL;
 
 	if (!target) return;
@@ -328,18 +328,18 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 
 	if (EXTERNALVIEW)
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(entities[0], 0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
 	}
 	else 
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(entities[0], 1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 
-	ARX_INTERACTIVE_HideGore(entities[0], 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 	EERIE_Object_Precompute_Fast_Access(hero);
-	EERIE_Object_Precompute_Fast_Access(entities[0]->obj);
+	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
 
-	ARX_INTERACTIVE_RemoveGoreOnIO(entities[0]); 
+	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player()); 
 }
 
 void ARX_EQUIPMENT_UnEquipAllPlayer()
@@ -348,7 +348,7 @@ void ARX_EQUIPMENT_UnEquipAllPlayer()
 	{
 		if ((player.equiped[i]) && (ValidIONum(player.equiped[i])))
 		{
-			ARX_EQUIPMENT_UnEquip(entities[0], entities[player.equiped[i]]);
+			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]]);
 		}
 	}
 
@@ -358,11 +358,11 @@ void ARX_EQUIPMENT_UnEquipAllPlayer()
 
 bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO)
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if (io == NULL) return false;
 
-	if (io != entities[0]) return false;
+	if (io != entities.player()) return false;
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
@@ -391,7 +391,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 
 	if (tounequip == NULL) return;
 
-	if (target != entities[0]) return;
+	if (target != entities.player()) return;
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
@@ -414,8 +414,8 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 			}
 			
 			EVENT_SENDER = tounequip;
-			SendIOScriptEvent(entities[0], SM_EQUIPOUT);
-			EVENT_SENDER = entities[0];
+			SendIOScriptEvent(entities.player(), SM_EQUIPOUT);
+			EVENT_SENDER = entities.player();
 			SendIOScriptEvent(tounequip, SM_EQUIPOUT);
 		}
 	}
@@ -429,7 +429,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 //***********************************************************************************************
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 {
-	Entity * target = entities[0];
+	Entity * target = entities.player();
 	Entity * toequip = NULL;
 
 	if (!target) return;
@@ -461,7 +461,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 //***********************************************************************************************
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 {
-	Entity * target = entities[0];
+	Entity * target = entities.player();
 	Entity * toequip = NULL;
 
 	if (!target) return;
@@ -500,7 +500,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 //***********************************************************************************************
 long ARX_EQUIPMENT_GetPlayerWeaponType()
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if (!io) return WEAPON_BARE;
 
@@ -527,7 +527,7 @@ long ARX_EQUIPMENT_GetPlayerWeaponType()
 //***********************************************************************************************
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if (!io) return;
 
@@ -578,7 +578,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	{
 		if (io_target->ioflags & IO_FIX)
 		{
-			if (io_source == entities[0])
+			if (io_source == entities.player())
 				ARX_DAMAGES_DamageFIX(io_target, player.Full_damages, 0, 0);
 			else if (io_source->ioflags & IO_NPC)
 				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, GetInterNum(io_source), 0);
@@ -600,7 +600,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 	bool critical = false;
 
-	if(io_source == entities[0]) {
+	if(io_source == entities.player()) {
 		
 		if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_WEAPON]];
@@ -671,7 +671,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 	float absorb;
 
-	if (io_target == entities[0])
+	if (io_target == entities.player())
 	{
 		ac = player.Full_armor_class;
 		absorb = player.Full_Skill_Defense * ( 1.0f / 2 );
@@ -695,7 +695,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		amat = &io_target->armormaterial;
 	}
 
-	if(io_target == entities[0]) {
+	if(io_target == entities.player()) {
 		if(player.equiped[EQUIP_SLOT_ARMOR] > 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
@@ -741,7 +741,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 				dmgs *= 1.5f; 
 			}
 
-			if (io_target == entities[0])
+			if (io_target == entities.player())
 			{
 				Vec3f ppos;
 				ppos.x = io_source->pos.x - player.pos.x;
@@ -770,7 +770,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 				ppos.y = io_source->pos.y - io_target->pos.y;
 				ppos.z = io_source->pos.z - io_target->pos.z;
 
-				if (io_target == entities[0]) ppos.y -= PLAYER_BASE_HEIGHT;
+				if (io_target == entities.player()) ppos.y -= PLAYER_BASE_HEIGHT;
 
 				fnormalize(ppos);
 
@@ -930,7 +930,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							}
 						}
 
-						if (io_source == entities[0])
+						if (io_source == entities.player())
 						{
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 0.2f);
 						}
@@ -978,7 +978,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 							ARX_NPC_SpawnAudibleSound(&pos, io_source);
 
-							if (io_source == entities[0])
+							if (io_source == entities.player())
 								HIT_SPARK = 1;
 						}
 					}
@@ -1059,7 +1059,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
 		if (ep)
 		{
-			if (io_source == entities[0])
+			if (io_source == entities.player())
 			{
 				if (!(io_source->aflags & IO_NPC_AFLAG_HIT_BACKGROUND))
 				{
@@ -1101,7 +1101,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 //***********************************************************************************************
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if (!io) return;
 
@@ -1153,7 +1153,7 @@ void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 		if (DRAGINTER)
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 
-		ARX_EQUIPMENT_UnEquip(entities[0], entities[player.equiped[EQUIP_SLOT_WEAPON]]);
+		ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[EQUIP_SLOT_WEAPON]]);
 		DRAGINTER = pioOldDragInter;
 	}
 
@@ -1171,7 +1171,7 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 
 	if (!toequip) return;
 
-	if (target != entities[0]) return;
+	if (target != entities.player()) return;
 
 	long validid = -1;
 
@@ -1394,7 +1394,7 @@ float ARX_EQUIPMENT_Apply(Entity * io, long ident, float trueval)
 {
 	if (io == NULL) return trueval;
 
-	if (io != entities[0]) return trueval;
+	if (io != entities.player()) return trueval;
 
 	float toadd = 0;
 
@@ -1422,7 +1422,7 @@ float ARX_EQUIPMENT_ApplyPercent(Entity * io, long ident, float trueval)
 {
 	if (io == NULL) return trueval;
 
-	if (io != entities[0]) return trueval;
+	if (io != entities.player()) return trueval;
 
 	float toadd = 0;
 
@@ -1501,11 +1501,11 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special, const std::string & param
 //-----------------------------------------------------------------------------
 void ARX_EQUIPMENT_IdentifyAll()
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if (io == NULL) return;
 
-	if (io != entities[0]) return;
+	if (io != entities.player()) return;
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{

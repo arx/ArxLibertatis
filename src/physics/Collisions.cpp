@@ -378,7 +378,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 
 				float posy;
 
-				if (io==entities[0])
+				if (io==entities.player())
 					posy=player.pos.y-PLAYER_BASE_HEIGHT;					
 				else 
 					posy=io->pos.y;
@@ -417,7 +417,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 						{
 							EERIE_CYLINDER cyl;
 
-							if (io==entities[0])
+							if (io==entities.player())
 							{
 								if (ydec<=0)
 								{
@@ -430,7 +430,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 									cyl.radius=PLAYER_BASE_RADIUS;
 									float vv;
 
-									if ((vv=CheckAnythingInCylinder(&cyl,entities[0],0))<0)
+									if ((vv=CheckAnythingInCylinder(&cyl,entities.player(),0))<0)
 									{
 										player.pos.y+=ydec+vv;
 									}
@@ -443,7 +443,7 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 									cyl.height=PLAYER_BASE_HEIGHT;
 									cyl.radius=PLAYER_BASE_RADIUS;
 
-									if (CheckAnythingInCylinder(&cyl,entities[0],0)>=0)
+									if (CheckAnythingInCylinder(&cyl,entities.player(),0)>=0)
 									{
 										player.pos.y+=ydec;
 										moveto.y+=ydec;
@@ -888,7 +888,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 								sp.origin.y=vlist[idx].v.y;
 								sp.origin.z=vlist[idx].v.z;
 
-								if (ioo==entities[0])
+								if (ioo==entities.player())
 								{
 									sp.radius = 22.f; 
 								}
@@ -942,7 +942,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 						{
 							long step;
 							
-							if (ioo==entities[0])
+							if (ioo==entities.player())
 								sp.radius = 23.f; 
 							else if (ioo && !(ioo->ioflags & IO_NPC))
 								sp.radius = 32.f;

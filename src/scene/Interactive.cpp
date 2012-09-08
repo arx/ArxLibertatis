@@ -280,7 +280,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 		        &&	(player.equiped[i] == n)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			ARX_EQUIPMENT_UnEquip(entities[0], entities[player.equiped[i]], 1);
+			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
 			player.equiped[i] = 0;
 		}
 	}
@@ -422,7 +422,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 		}
 	}
 
-	ARX_INTERACTIVE_HideGore(entities[0], 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 }
 
 
@@ -463,7 +463,7 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
-	if ((io == entities[0]) && (!flag & 1))
+	if ((io == entities.player()) && (!flag & 1))
 		return;
 
 	long gorenum = -1;
@@ -649,7 +649,7 @@ void PrepareIOTreatZone(long flag)
 	TREATZONE_Clear();
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos, 1);
 	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-	TREATZONE_AddIO(entities[0], 0, 0);
+	TREATZONE_AddIO(entities.player(), 0, 0);
 
 	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
 
@@ -1159,10 +1159,10 @@ void CleanScriptLoadedIO() {
 //*************************************************************************************
 void RestoreInitialIOStatus()
 {
-	ARX_INTERACTIVE_HideGore(entities[0]);
+	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
 
-	if (entities[0]) entities[0]->spellcast_data.castingspell = SPELL_NONE;
+	if (entities.player()) entities.player()->spellcast_data.castingspell = SPELL_NONE;
 
 	for (long i = 1; i < entities.nbmax; i++)
 	{
@@ -1344,7 +1344,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 void ARX_INTERACTIVE_ClearAllDynData()
 {
 	long i = 0;
-	ARX_INTERACTIVE_HideGore(entities[0]);
+	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
 
 	for (i = 1; i < entities.nbmax; i++)
@@ -1763,7 +1763,7 @@ Entity * CreateFreeInter(long num)
 	{
 		tocreate = 0;
 
-		if (entities[0] != NULL) return NULL;
+		if (entities.player() != NULL) return NULL;
 
 		goto create;
 	}
@@ -1842,7 +1842,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target)
 {
 	EERIE_CYLINDER phys;
 
-	if (io && (io != entities[0]))
+	if (io && (io != entities.player()))
 	{
 		phys.height = io->original_height * io->scale;
 		phys.radius = io->original_radius * io->scale;
@@ -1993,7 +1993,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 	io->room_flags |= 1;
 	io->room = -1;
 
-	if (io == entities[0])
+	if (io == entities.player())
 	{
 		moveto.x = player.pos.x = target->x;
 		moveto.y = player.pos.y = target->y + PLAYER_BASE_HEIGHT;
@@ -3570,7 +3570,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 		io = treatio[i].io;
 
-		if ((io == io_source) || (!io->obj) || (io == entities[0])) 
+		if ((io == io_source) || (!io->obj) || (io == entities.player())) 
 			continue;
 
 		if (treatio[i].num == avoid) continue;
@@ -3969,9 +3969,9 @@ void RenderInter(float from, float to) {
 	float dist;
 	long diff;
 
-	if (entities[0] && (entities[0]->ignition > 0.f))
+	if (entities.player() && (entities.player()->ignition > 0.f))
 	{
-		ManageIgnition(entities[0]);
+		ManageIgnition(entities.player());
 	}
 
 	for(long i = 1; i < entities.nbmax; i++) { // Player isn't rendered here...

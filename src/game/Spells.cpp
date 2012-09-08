@@ -1281,7 +1281,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				float div_ti=1.f/ti;
 
-				if (io != entities[0])
+				if (io != entities.player())
 				{
 					old_pos.x=pos1.x;
 					old_pos.y=pos1.y;
@@ -1381,7 +1381,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
-							if (io == entities[0])
+							if (io == entities.player())
 								AddFlare2(&pos,0.1f,1,entities[i]);
 							else
 								AddFlare(&pos,0.1f,1,entities[i]);
@@ -2366,7 +2366,7 @@ void ARX_SPELLS_ManageMagic()
 	if (ARXmenu.currentmode!=AMCM_OFF)
 		return;
 
-	Entity * io=entities[0];
+	Entity * io=entities.player();
 
 	if (!io) return;
 
@@ -2395,8 +2395,8 @@ void ARX_SPELLS_ManageMagic()
 			bGToggleCombatModeWithKey=false;
 
 			
-			ResetAnim(&entities[0]->animlayer[1]);
-			entities[0]->animlayer[1].flags&=~EA_LOOP;
+			ResetAnim(&entities.player()->animlayer[1]);
+			entities.player()->animlayer[1].flags&=~EA_LOOP;
 		}
 
 		if (TRUE_PLAYER_MOUSELOOK_ON)
@@ -2409,10 +2409,10 @@ void ARX_SPELLS_ManageMagic()
 		{
 			player.doingmagic=2;
 
-			if (entities[0]->anims[ANIM_CAST_START])
+			if (entities.player()->anims[ANIM_CAST_START])
 			{
-				AcquireLastAnim(entities[0]);
-				ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_CAST_START]);
+				AcquireLastAnim(entities.player());
+				ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST_START]);
 				MAGICMODE = 1;
 			}
 		}
@@ -2481,10 +2481,10 @@ void ARX_SPELLS_ManageMagic()
 		{
 			player.doingmagic=0;//1
 
-			if (entities[0]->anims[ANIM_CAST_END])
+			if (entities.player()->anims[ANIM_CAST_END])
 			{
-				AcquireLastAnim(entities[0]);
-				ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_CAST_END]);
+				AcquireLastAnim(entities.player());
+				ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST_END]);
 			}
 			
 			ARX_FLARES_broken=3;
@@ -2523,10 +2523,10 @@ void ARX_SPELLS_ManageMagic()
 		{
 			if (!ARX_SPELLS_AnalyseSPELL())
 			{
-				if (entities[0]->anims[ANIM_CAST])
+				if (entities.player()->anims[ANIM_CAST])
 				{
-					AcquireLastAnim(entities[0]);
-					ANIM_Set(&entities[0]->animlayer[1],entities[0]->anims[ANIM_CAST]);
+					AcquireLastAnim(entities.player());
+					ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST]);
 				}
 			}
 		}
@@ -2592,7 +2592,7 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 
 			if(_bSound) {
 				ARX_SPEECH_Add(getLocalised("player_cantcast"));
-				ARX_SPEECH_AddSpeech(entities[0], "player_cantcast", ANIM_TALK_NEUTRAL);
+				ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 			}
 
 			return 0;
@@ -2858,7 +2858,7 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 
 	if(_bSound) {
 		ARX_SPEECH_Add(getLocalised("player_cantcast"));
-		ARX_SPEECH_AddSpeech(entities[0], "player_cantcast", ANIM_TALK_NEUTRAL);
+		ARX_SPEECH_AddSpeech(entities.player(), "player_cantcast", ANIM_TALK_NEUTRAL);
 	}
 
 	return 0;
@@ -2890,18 +2890,18 @@ void ARX_SPELLS_Precast_Check()
 	{
 		if ((Precast[i].typ != SPELL_NONE) && (Precast[i].launch_time>0) &&(float(arxtime) >= Precast[i].launch_time))
 		{
-			ANIM_USE *ause1 = &entities[0]->animlayer[1];
+			ANIM_USE *ause1 = &entities.player()->animlayer[1];
 			
 			if (player.Interface & INTER_COMBATMODE)
 			{
 				WILLRETURNTOCOMBATMODE=1;
 				ARX_INTERFACE_Combat_Mode(0);
 				bGToggleCombatModeWithKey=false;
-				ResetAnim(&entities[0]->animlayer[1]);
-				entities[0]->animlayer[1].flags&=~EA_LOOP;
+				ResetAnim(&entities.player()->animlayer[1]);
+				entities.player()->animlayer[1].flags&=~EA_LOOP;
 			}
 
-			if ((ause1->cur_anim) && (ause1->cur_anim==entities[0]->anims[ANIM_CAST]))
+			if ((ause1->cur_anim) && (ause1->cur_anim==entities.player()->anims[ANIM_CAST]))
 			{
 				if (ause1->ctime>ause1->cur_anim->anims[ause1->altidx_cur]->anim_time-550)
 				{
@@ -2923,10 +2923,10 @@ void ARX_SPELLS_Precast_Check()
 					}
 				}
 			} else {
-				ANIM_USE * ause1 = &entities[0]->animlayer[1];
-				AcquireLastAnim(entities[0]);
-				FinishAnim(entities[0], ause1->cur_anim);
-				ANIM_Set(ause1, entities[0]->anims[ANIM_CAST]);	
+				ANIM_USE * ause1 = &entities.player()->animlayer[1];
+				AcquireLastAnim(entities.player());
+				FinishAnim(entities.player(), ause1->cur_anim);
+				ANIM_Set(ause1, entities.player()->anims[ANIM_CAST]);	
 			}
 		}
 	}
@@ -4253,7 +4253,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			if(valid > dispelled) {
 				// Some fileds could not be dispelled
-				ARX_SPEECH_AddSpeech(entities[0], "player_not_skilled_enough",
+				ARX_SPEECH_AddSpeech(entities.player(), "player_not_skilled_enough",
 				                     ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 			}
 			
@@ -4677,7 +4677,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float beta;
 			bool displace = false;
 			if(spells[i].caster == 0) {
-				target = entities[0]->pos;
+				target = entities.player()->pos;
 				beta = player.angle.b;
 				displace = true;
 			} else {

@@ -268,7 +268,7 @@ class InventoryCommand : public Command {
 			}
 			
 			if(ARX_EQUIPMENT_IsPlayerEquip(t)) {
-				ARX_EQUIPMENT_UnEquip(entities[0], t, 1);
+				ARX_EQUIPMENT_UnEquip(entities.player(), t, 1);
 			} else {
 				RemoveFromAllInventories(t);
 			}

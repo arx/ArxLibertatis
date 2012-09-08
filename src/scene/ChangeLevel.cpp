@@ -723,7 +723,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 
 	asp->falling = player.falling;
 	asp->gold = player.gold;
-	asp->invisibility = entities[0]->invisibility;
+	asp->invisibility = entities.player()->invisibility;
 
 	asp->jumpphase = player.jumpphase;
 	asp->jumpstarttime = player.jumpstarttime;
@@ -801,9 +801,9 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	{
 		memset(&asp->anims[i], 0, 256);
 
-		if (entities[0]->anims[i] != NULL)
+		if (entities.player()->anims[i] != NULL)
 		{
-			strncpy(asp->anims[i], entities[0]->anims[i]->path.string().c_str(), sizeof(asp->anims[i]));
+			strncpy(asp->anims[i], entities.player()->anims[i]->path.string().c_str(), sizeof(asp->anims[i]));
 		}
 	}
 
@@ -970,7 +970,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 	ais.EditorFlags = io->EditorFlags;
 	ais.GameFlags = io->GameFlags;
 
-	if(io == entities[0])
+	if(io == entities.player())
 		ais.GameFlags &= ~GFLAG_INVISIBILITY;
 
 	ais.material = io->material;
@@ -1727,7 +1727,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	player.Interface &= ~INTER_MAP;
 	player.falling = asp->falling;
 	player.gold = asp->gold;
-	entities[0]->invisibility = asp->invisibility;
+	entities.player()->invisibility = asp->invisibility;
 	player.inzone = ARX_PATH_GetAddressByName(toLowercase(safestring(asp->inzone)));
 	player.jumpphase = asp->jumpphase;
 	player.jumpstarttime = asp->jumpstarttime;
@@ -1777,9 +1777,9 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 		sp_wep = 0;
 	}
 	
-	if(entities[0]) {
-		entities[0]->pos = player.pos;
-		entities[0]->pos.y += 170.f;
+	if(entities.player()) {
+		entities.player()->pos = player.pos;
+		entities.player()->pos.y += 170.f;
 	}
 	
 	WILL_RESTORE_PLAYER_POSITION = asp->pos;
@@ -1812,7 +1812,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
 	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
 	
-	Entity & io = *entities[0];
+	Entity & io = *entities.player();
 	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
 	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
 		if(io.anims[i] != NULL) {
@@ -2830,14 +2830,14 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	HERO_SHOW_1ST = -1;
 	
 	if(EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities[0], 0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
 	}
 	
 	if(!EXTERNALVIEW) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities[0], 1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 	
-	ARX_INTERACTIVE_HideGore(entities[0], 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 
 	// default to mouselook true, inventory/book closed
 	TRUE_PLAYER_MOUSELOOK_ON = true;
@@ -2997,7 +2997,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	BLOCK_PLAYER_CONTROLS = 0;
 	player.Interface &= ~INTER_COMBATMODE;
 	
-	if (entities[0]) entities[0]->animlayer[1].cur_anim = NULL;
+	if (entities.player()) entities.player()->animlayer[1].cur_anim = NULL;
 	
 	JUST_RELOADED = 1;
 	

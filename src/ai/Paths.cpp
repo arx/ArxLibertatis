@@ -320,7 +320,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 
 	// player check*************************************************
-	if (entities[0])
+	if (entities.player())
 	{
 		ARX_PATH * p = ARX_PATH_CheckPlayerInZone();
 		ARX_PATH * op = (ARX_PATH *)player.inzone;
@@ -333,7 +333,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 		{
-			SendIOScriptEvent(entities[0], SM_LEAVEZONE, op->name);
+			SendIOScriptEvent(entities.player(), SM_LEAVEZONE, op->name);
 			CHANGE_LEVEL_ICON = -1;
 
 			if (!op->controled.empty())
@@ -348,7 +348,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op == NULL) && (p != NULL)) // Entering Zone P
 		{
-			SendIOScriptEvent(entities[0], SM_ENTERZONE, p->name);
+			SendIOScriptEvent(entities.player(), SM_ENTERZONE, p->name);
 
 			if (p->flags & PATH_AMBIANCE && !p->ambiance.empty())
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
@@ -802,7 +802,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 		amat = &io_target->armormaterial;
 	}
 	
-	if(io_target == entities[0]) {
+	if(io_target == entities.player()) {
 		if(player.equiped[EQUIP_SLOT_ARMOR] > 0) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
@@ -900,7 +900,7 @@ void CheckExp(long i) {
 		DoSphericDamage(&Thrown[i].position, 4.f * 2, 50.f,
 		                DAMAGE_AREA, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL, 0);
 		ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &Thrown[i].position);
-		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, entities[0]);
+		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, entities.player());
 		long id = GetFreeDynLight();
 		
 		if(id != -1 && FrameDiff > 0) {

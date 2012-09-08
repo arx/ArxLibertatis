@@ -2042,7 +2042,7 @@ extern float STRIKE_AIMTIME;
 //***********************************************************************************************
 bool IsPlayerStriking()
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if (!io) return false;
 
@@ -2754,7 +2754,7 @@ void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 }
 float GetIOHeight(Entity * io)
 {
-	if (io == entities[0])
+	if (io == entities.player())
 	{
 		return io->physics.cyl.height; 
 	}
@@ -2767,7 +2767,7 @@ float GetIOHeight(Entity * io)
 }
 float GetIORadius(Entity * io)
 {
-	if (io == entities[0])
+	if (io == entities.player())
 		return PLAYER_BASE_RADIUS;
 
 	float v = max(io->original_radius * io->scale, 25.f);
@@ -3845,7 +3845,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			orgn.y = ioo->pos.y - 90.f;
 			orgn.z = ioo->pos.z;
 
-			if (ioo == entities[0])	orgn.y = player.pos.y + 90.f;
+			if (ioo == entities.player())	orgn.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin, &orgn);
@@ -3858,7 +3858,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 			dest.y = io->pos.y - 90.f;
 			dest.z = io->pos.z;
 
-			if (io == entities[0])	dest.y = player.pos.y + 90.f;
+			if (io == entities.player())	dest.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
@@ -3963,7 +3963,7 @@ void CheckNPCEx(Entity * io)
 	long Visible = 0;
 
 	// Check visibility only if player is visible, not too far and not dead
-	if ((!(entities[0]->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
+	if ((!(entities.player()->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
 	{
 		// checks for near contact +/- 15 cm --> force visibility
 		if (io->room_flags & 1)
@@ -3978,7 +3978,7 @@ void CheckNPCEx(Entity * io)
 		if ((GLOBAL_Player_Room > -1) && (io->room > -1) && (fdist > 2000.f))
 		{
 		}
-		else if ((ds < square(GetIORadius(io) + GetIORadius(entities[0]) + 15.f))
+		else if ((ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f))
 		         && (EEfabs(player.pos.y - io->pos.y) < 200.f))
 		{
 			Visible = 1;
@@ -4071,7 +4071,7 @@ void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const f
 		step_material = &io->stepmaterial;
 	}
 	
-	if(io == entities[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
+	if(io == entities.player() && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 			if(!ioo->stepmaterial.empty()) {
@@ -4092,7 +4092,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 {
 	float max_distance;
 
-	if (source == entities[0])
+	if (source == entities.player())
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP;
 	else if (source && source->ioflags & IO_ITEM)
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM;

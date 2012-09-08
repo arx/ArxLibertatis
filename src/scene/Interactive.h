@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <boost-1_49/boost/concept_check.hpp>
 
 #include "graphics/data/MeshManipulation.h"
 #include "math/Vector2.h"
@@ -74,6 +75,11 @@ struct EntityManager {
 	
 	Entity * operator[](size_t index) {
 		return iobj[index];
+	}
+	
+	//! Get the player entity
+	Entity * player() {
+		return iobj[0];
 	}
 	
 };

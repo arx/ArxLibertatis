@@ -218,7 +218,7 @@ public:
 			nointerpol = test_flag(flg, 'n');
 			execute = test_flag(flg, 'e');
 			if(flg & flag('p')) {
-				iot = entities[0];
+				iot = entities.player();
 				iot->move = iot->lastmove = Vec3f::ZERO;
 			}
 		}
@@ -256,7 +256,7 @@ public:
 			CheckSetAnimOutOfTreatZone(iot, nu);
 		}
 		
-		if(iot == entities[0]) {
+		if(iot == entities.player()) {
 			iot->animlayer[nu].flags &= ~EA_STATICANIM;
 		}
 		
@@ -302,7 +302,7 @@ public:
 		
 		HandleFlags("p") {
 			if(flg & flag('p')) {
-				iot = entities[0];
+				iot = entities.player();
 			}
 		}
 		
@@ -334,7 +334,7 @@ public:
 		}
 		
 		res::path path;
-		if(iot == entities[0] || (iot->ioflags & IO_NPC)) {
+		if(iot == entities.player() || (iot->ioflags & IO_NPC)) {
 			path = ("graph/obj3d/anims/npc" / file).set_ext("tea");
 		} else {
 			path = ("graph/obj3d/anims/fix_inter" / file).set_ext("tea");

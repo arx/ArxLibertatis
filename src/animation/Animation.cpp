@@ -148,7 +148,7 @@ void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility,
 
 		if (invisibility > 1.f) invisibility -= 1.f;
 
-		if(io != entities[0] && invisibility > 0.f && !EXTERNALVIEW) {
+		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
 			if(num >= 0) {
@@ -571,7 +571,7 @@ suite:
 			   && (eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].flag > 0)
 			   && (eanim->lastframe != fr)) {
 				
-				if (io!=entities[0])
+				if (io!=entities.player())
 				{
 					if ((eanim->lastframe<fr) && (eanim->lastframe!=-1))
 					{
@@ -605,7 +605,7 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
                        bool render,
                        bool update_movement) {
 	
-	if(io && io != entities[0]) {
+	if(io && io != entities.player()) {
 		
 		float speedfactor = io->basespeed+io->speed_modif;
 
@@ -999,7 +999,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
-	if(io && io != entities[0] && !modinfo && !ForceIODraw && !__MUST_DRAW && ACTIVEBKG) {
+	if(io && io != entities.player() && !modinfo && !ForceIODraw && !__MUST_DRAW && ACTIVEBKG) {
 		
 		long xx, yy;
 		xx = (pos.x) * ACTIVEBKG->Xmul;
@@ -1343,7 +1343,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 								while (num>=0)
 								{
 									spells[num].tolive=0;
-									ARX_DAMAGES_DamageNPC(io,20,0,1,&entities[0]->pos);
+									ARX_DAMAGES_DamageNPC(io,20,0,1,&entities.player()->pos);
 									num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 								}
 							}

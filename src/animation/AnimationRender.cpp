@@ -129,7 +129,7 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, Entity * io)
 
 		if (invisibility > 1.f) invisibility -= 1.f;
 
-		if ((io != entities[0]) && (invisibility > 0.f) && (!EXTERNALVIEW))
+		if ((io != entities.player()) && (invisibility > 0.f) && (!EXTERNALVIEW))
 		{
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
@@ -248,7 +248,7 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 
 				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
-				if (io == entities[0]) temp = radians(MAKEANGLE(180.f - player.angle.b));
+				if (io == entities.player()) temp = radians(MAKEANGLE(180.f - player.angle.b));
 
 				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
@@ -514,7 +514,7 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 	        &&	(distSqr(io->pos, player.pos) < square(240.f)))
 		return true;
 
-	if ((io != entities[0])
+	if ((io != entities.player())
 	        &&	(!EXTERNALVIEW)
 	        &&	(!eobj->cdata)
 	        &&	((BBOXMIN.x >= DANAESIZX - 1)
@@ -1432,12 +1432,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 	if ((!io)
 	        &&	(IN_BOOK_DRAW)
-	        &&	(eobj == entities[0]->obj))
-		use_io = entities[0];
+	        &&	(eobj == entities.player()->obj))
+		use_io = entities.player();
 
 	if (use_io)
 	{
-		if (use_io == entities[0])
+		if (use_io == entities.player())
 		{
 			if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
 			        && ValidIONum(player.equiped[EQUIP_SLOT_HELMET]))
@@ -1672,7 +1672,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 				long max_c;
 
-				if (use_io == entities[0])
+				if (use_io == entities.player())
 					max_c = 4;
 				else
 					max_c = 1;
@@ -1683,7 +1683,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					{
 						case 0:
 
-							if (use_io == entities[0])
+							if (use_io == entities.player())
 							{
 								if (hio_player)
 								{
@@ -1822,7 +1822,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 							float siz = ddist * (curhalo.radius * (EEsin((float)(arxtime.get_frame_time() + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
-							if ((io == entities[0]) && (ddist > 0.8f) && !EXTERNALVIEW)
+							if ((io == entities.player()) && (ddist > 0.8f) && !EXTERNALVIEW)
 								siz *= 1.5f;
 
 							vect1.x = workon[first].p.x - workon[third].p.x;
@@ -1960,7 +1960,7 @@ extern long LOOK_AT_TARGET;
 
 extern long ForceIODraw;
 static bool Cedric_IO_Visible(Entity * io) {
-	if (io == entities[0]) return true;
+	if (io == entities.player()) return true;
 
 	if(!ForceIODraw && ACTIVEBKG && io) {
 		
@@ -2101,7 +2101,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 					{
 						old = ioo->invisibility;
 
-						if (io == entities[0])
+						if (io == entities.player())
 						{
 							ioo->invisibility = INVISIBILITY_OVERRIDE;
 						}
@@ -2131,8 +2131,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 					__MUST_DRAW = 1;
 
 					// specific check to avoid drawing player weapon on its back when in subjective view
-					if ((io == entities[0]) &&
-					        (eobj->linked[k].lidx == entities[0]->obj->fastaccess.weapon_attach)
+					if ((io == entities.player()) &&
+					        (eobj->linked[k].lidx == entities.player()->obj->fastaccess.weapon_attach)
 					        && (!EXTERNALVIEW))
 						continue;
 

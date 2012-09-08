@@ -1070,9 +1070,7 @@ if (ulCurrentTime >= ulDuration)
 */
 //ARX_END: jycorbel (2010-07-20)
 
-	eSrc.x = entities[0]->pos.x;
-	eSrc.y = entities[0]->pos.y;
-	eSrc.z = entities[0]->pos.z;
+	eSrc = entities.player()->pos;
 
 
 //ARX_BEGIN: jycorbel (2010-07-20) - Correct bug when this spell is cast, the function update particule after-life

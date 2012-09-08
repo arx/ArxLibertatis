@@ -192,11 +192,11 @@ bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
 
 	if (entities.iobj
-	        &&	(entities[0])
-	        &&	(entities[0]->animlayer[1].cur_anim))
+	        &&	(entities.player())
+	        &&	(entities.player()->animlayer[1].cur_anim))
 	{
-		ANIM_USE * ause1 = &entities[0]->animlayer[1];
-		ANIM_HANDLE ** alist = entities[0]->anims;
+		ANIM_USE * ause1 = &entities.player()->animlayer[1];
+		ANIM_HANDLE ** alist = entities.player()->anims;
 
 		if ((ause1->cur_anim	==	alist[ANIM_BARE_READY])
 		        ||	(ause1->cur_anim	==	alist[ANIM_BARE_UNREADY])
@@ -287,7 +287,7 @@ void ARX_PLAYER_FrontPos(Vec3f * pos)
 //*************************************************************************************
 void ARX_PLAYER_RectifyPosition()
 {
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 
 	if ((io) && (io->_npcdata->ex_rotate))
 	{
@@ -749,7 +749,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	player.Full_Weapon_Type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	Entity * io = entities[0];
+	Entity * io = entities.player();
 	// Check for Equipment Modificators to Attributes
 	player.Mod_Attribute_Strength = ARX_EQUIPMENT_Apply(
 	                                    io, IO_EQUIPITEM_ELEMENT_STRENGTH, player.Attribute_Strength);
@@ -854,10 +854,10 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 
 	// Check for Spell Modificators
-	if (entities[0])
-		for (long i = 0; i < entities[0]->nb_spells_on; i++)
+	if (entities.player())
+		for (long i = 0; i < entities.player()->nb_spells_on; i++)
 		{
-			long n = entities[0]->spells_on[i];
+			long n = entities.player()->spells_on[i];
 
 			if (spells[n].exist)
 			{
@@ -1331,7 +1331,7 @@ void ARX_PLAYER_LEVEL_UP()
 	player.Old_Skill_Projectile			=	player.Skill_Projectile;
 	player.Old_Skill_Close_Combat		=	player.Skill_Close_Combat;
 	player.Old_Skill_Defense			=	player.Skill_Defense;
-	SendIOScriptEvent(entities[0], SM_NULL, "", "level_up");
+	SendIOScriptEvent(entities.player(), SM_NULL, "", "level_up");
 }
 
 //*************************************************************************************
@@ -1382,7 +1382,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 	//	ARX_PLAYER_QuickGeneration();
 	if (Framedelay > 0)
 	{
-		UpdateIOInvisibility(entities[0]);
+		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
 		float inc = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 ) + player.Full_Skill_Defense) * ( 1.0f / 50 );
 
@@ -1401,13 +1401,13 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 					bool bOk = true;
 
 					for(size_t i = 0; i < MAX_ASPEECH; i++) {
-						if(aspeech[i].exist && (aspeech[i].io == entities[0])) {
+						if(aspeech[i].exist && (aspeech[i].io == entities.player())) {
 							bOk = false;
 						}
 					}
 
 					if (bOk)
-						ARX_SPEECH_AddSpeech(entities[0], "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+						ARX_SPEECH_AddSpeech(entities.player(), "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 
@@ -1554,8 +1554,8 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
 
-	ARX_INTERACTIVE_Show_Hide_1st(entities[0], 0);
-	ARX_INTERACTIVE_HideGore(entities[0], 1);
+	ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
+	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 	io->ident = -1;
 
 	//todo free
@@ -1593,7 +1593,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 		}
 	}
 
-	ARX_INTERACTIVE_RemoveGoreOnIO(entities[0]);
+	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 }
 float Falling_Height = 0;
 void ARX_PLAYER_StartFall()
@@ -1621,7 +1621,7 @@ void ARX_PLAYER_BecomesDead()
 	// a mettre au final
 	BLOCK_PLAYER_CONTROLS = 1;
 
-	if (entities[0])
+	if (entities.player())
 	{
 		player.Interface &= ~INTER_COMBATMODE;
 		player.Interface = 0;
@@ -1675,9 +1675,9 @@ void ARX_PLAYER_Manage_Visual()
 	static long special[3];
 	long light = 0;
 
-	if (entities[0])
+	if (entities.player())
 	{
-		Entity * io = entities[0];
+		Entity * io = entities.player();
 
 		if (!BLOCK_PLAYER_CONTROLS)
 			if (sp_max)
@@ -1728,7 +1728,7 @@ void ARX_PLAYER_Manage_Visual()
 			player.physics.cyl.origin.x = player.pos.x;
 			player.physics.cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 			player.physics.cyl.origin.z = player.pos.z;
-			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities[0]);
+			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player());
 
 			if (anything < 0.f)
 			{
@@ -1751,9 +1751,9 @@ void ARX_PLAYER_Manage_Visual()
 		ANIM_USE * ause3 = &io->animlayer[3];
 
 		ause0->next_anim = NULL;
-		entities[0]->animlayer[1].next_anim = NULL;
-		entities[0]->animlayer[2].next_anim = NULL;
-		entities[0]->animlayer[3].next_anim = NULL;
+		entities.player()->animlayer[1].next_anim = NULL;
+		entities.player()->animlayer[2].next_anim = NULL;
+		entities.player()->animlayer[3].next_anim = NULL;
 		ANIM_HANDLE ** alist = io->anims;
 
 		if (ause0->flags & EA_FORCEPLAY)
@@ -2359,10 +2359,10 @@ void ForcePlayerLookAtIO(Entity * io)
 	EERIE_CAMERA tcam;
 	Vec3f target;
 
-	long id = entities[0]->obj->fastaccess.view_attach;
+	long id = entities.player()->obj->fastaccess.view_attach;
 
 	if(id != -1) {
-		tcam.pos = entities[0]->obj->vertexlist3[id].v;
+		tcam.pos = entities.player()->obj->vertexlist3[id].v;
 	} else {
 		tcam.pos = player.pos;
 	}
@@ -2401,13 +2401,13 @@ extern long TRAP_SECRET;
 //*************************************************************************************
 void ARX_PLAYER_Frame_Update()
 {
-	if (ARX_SPELLS_GetSpellOn(entities[0], SPELL_PARALYSE) >= 0)
+	if (ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) >= 0)
 	{
 		PLAYER_PARALYSED = 1;
 	}
 	else
 	{
-		entities[0]->ioflags &= ~IO_FREEZESCRIPT;
+		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
 		PLAYER_PARALYSED = 0;
 	}
 
@@ -2425,7 +2425,7 @@ void ARX_PLAYER_Frame_Update()
 
 	// Updates player Extra-Rotate Informations
 	Entity * io;
-	io = entities[0];
+	io = entities.player();
 
 	if ((io) && (io->_npcdata->ex_rotate))
 	{
@@ -2478,7 +2478,7 @@ void ARX_PLAYER_Frame_Update()
 	TRAP_DETECT = checked_range_cast<long>(player.Full_Skill_Mecanism);
 	TRAP_SECRET = checked_range_cast<long>(player.Full_Skill_Intuition);
 
-	if (ARX_SPELLS_GetSpellOn(entities[0], SPELL_DETECT_TRAP) >= 0)
+	if (ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) >= 0)
 		TRAP_DETECT = 100;
 
 	ModeLight |= MODE_DEPTHCUEING;
@@ -2493,7 +2493,7 @@ void ARX_PLAYER_Frame_Update()
 //*************************************************************************************
 void ARX_PLAYER_MakeStepNoise()
 {
-	if (ARX_SPELLS_GetSpellOn(entities[0], SPELL_LEVITATE) >= 0)
+	if (ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) >= 0)
 		return;
 
 	if (USE_PLAYERCOLLISIONS)
@@ -2517,7 +2517,7 @@ void ARX_PLAYER_MakeStepNoise()
 		pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
 		pos.z = player.pos.z;
 
-		ARX_NPC_NeedStepSound(entities[0], &pos, volume, factor);
+		ARX_NPC_NeedStepSound(entities.player(), &pos, volume, factor);
 	}
 
 	while (currentdistance >= STEP_DISTANCE) currentdistance -= STEP_DISTANCE;
@@ -2546,7 +2546,7 @@ bool Valid_Jump_Pos()
 	tmpp.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 	tmpp.origin.z = player.pos.z;
 	tmpp.radius = player.physics.cyl.radius * 0.85f;
-	float tmp = CheckAnythingInCylinder(&tmpp, entities[0], CFLAG_PLAYER | CFLAG_JUST_TEST);
+	float tmp = CheckAnythingInCylinder(&tmpp, entities.player(), CFLAG_PLAYER | CFLAG_JUST_TEST);
 
 	if (tmp <= 20.f)
 		return true;
@@ -2559,7 +2559,7 @@ bool Valid_Jump_Pos()
 		tmpp.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 		tmpp.origin.z = player.pos.z + EEcos(radians(vv)) * 20.f;
 		tmpp.radius = player.physics.cyl.radius;
-		float anything = CheckAnythingInCylinder(&tmpp, entities[0], CFLAG_JUST_TEST); //-cyl->origin.y;
+		float anything = CheckAnythingInCylinder(&tmpp, entities.player(), CFLAG_JUST_TEST); //-cyl->origin.y;
 
 		if (anything > 10)
 		{
@@ -2594,12 +2594,12 @@ void ARX_PLAYER_Manage_Movement()
 	// Is our player able to move ?
 	if ((CINEMASCOPE)
 	        ||	(BLOCK_PLAYER_CONTROLS)
-	        ||	(entities[0] == NULL))
+	        ||	(entities.player() == NULL))
 		return;
 
 	float speedfactor;
 	// Compute current player speedfactor
-	speedfactor = entities[0]->basespeed + entities[0]->speed_modif;
+	speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
 
 	if (speedfactor < 0) speedfactor = 0;
 
@@ -2646,7 +2646,7 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.cyl.origin.x = player.pos.x;
 			player.physics.cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 			player.physics.cyl.origin.z = player.pos.z;
-			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities[0], CFLAG_JUST_TEST); //-cyl->origin.y;
+			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player(), CFLAG_JUST_TEST); //-cyl->origin.y;
 
 			if (anything < 0.f)
 			{
@@ -2672,8 +2672,8 @@ void PlayerMovementIterate(float DeltaTime)
 			if ((t >= 0.f) && (t <= 350.f))
 			{
 				REQUEST_JUMP = 0;
-				ARX_NPC_SpawnAudibleSound(&player.pos, entities[0]);
-				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities[0]);
+				ARX_NPC_SpawnAudibleSound(&player.pos, entities.player());
+				ARX_SPEECH_Launch_No_Unicode_Seek("player_jump", entities.player());
 				player.onfirmground = 0;
 				player.jumpphase = 1;
 
@@ -2682,11 +2682,11 @@ void PlayerMovementIterate(float DeltaTime)
 	}
 
 
-	if ((entities[0]->_npcdata->climb_count != 0.f) && (FrameDiff > 0))
+	if ((entities.player()->_npcdata->climb_count != 0.f) && (FrameDiff > 0))
 	{
-		entities[0]->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * ( 1.0f / 10 );
+		entities.player()->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * ( 1.0f / 10 );
 
-		if (entities[0]->_npcdata->climb_count < 0) entities[0]->_npcdata->climb_count = 0.f;
+		if (entities.player()->_npcdata->climb_count < 0) entities.player()->_npcdata->climb_count = 0.f;
 	}
 
 	PLAYER_LEVITATE_HEIGHT = -220.f;
@@ -2710,12 +2710,12 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.cyl.origin.x = player.pos.x;
 				player.physics.cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 				player.physics.cyl.origin.z = player.pos.z;
-				float anything = CheckAnythingInCylinder(&player.physics.cyl, entities[0]);
+				float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player());
 
 				if (anything < 0.f)
 				{
 					player.physics.cyl.height = old;
-					long num = ARX_SPELLS_GetSpellOn(entities[0], SPELL_LEVITATE);
+					long num = ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE);
 
 					if (num != -1)
 					{
@@ -2755,7 +2755,7 @@ void PlayerMovementIterate(float DeltaTime)
 		memcpy(&testcyl, &player.physics.cyl, sizeof(EERIE_CYLINDER));
 		testcyl.origin.y += 3.f;
 		ON_PLATFORM = 0;
-		anything = CheckAnythingInCylinder(&testcyl, entities[0], 0);
+		anything = CheckAnythingInCylinder(&testcyl, entities.player(), 0);
 		LAST_ON_PLATFORM = ON_PLATFORM;
 
 		if (player.jumpphase != 2)
@@ -2769,7 +2769,7 @@ void PlayerMovementIterate(float DeltaTime)
 				TRUE_FIRM_GROUND = 1;
 				testcyl.radius -= 30.f;
 				testcyl.origin.y -= 10.f;
-				anything = CheckAnythingInCylinder(&testcyl, entities[0], 0);
+				anything = CheckAnythingInCylinder(&testcyl, entities.player(), 0);
 
 				if (anything < 0.f)
 				{
@@ -2789,7 +2789,7 @@ void PlayerMovementIterate(float DeltaTime)
 		cyl.origin.z = player.pos.z;
 		cyl.radius = player.physics.cyl.radius;
 		cyl.height = player.physics.cyl.height;
-		float anything2 = CheckAnythingInCylinder(&cyl, entities[0], CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
+		float anything2 = CheckAnythingInCylinder(&cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
 
 
 		if ((anything2 > -5)
@@ -2882,12 +2882,12 @@ void PlayerMovementIterate(float DeltaTime)
 			}
 		}
 
-		if (entities[0]->animlayer[0].cur_anim)
+		if (entities.player()->animlayer[0].cur_anim)
 		{
-			GetAnimTotalTranslate(entities[0]->animlayer[0].cur_anim, entities[0]->animlayer[0].altidx_cur, &mv);
+			GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim, entities.player()->animlayer[0].altidx_cur, &mv);
 			TheoricalMove = mv.length();
 
-			time = entities[0]->animlayer[0].cur_anim->anims[entities[0]->animlayer[0].altidx_cur]->anim_time;
+			time = entities.player()->animlayer[0].cur_anim->anims[entities.player()->animlayer[0].altidx_cur]->anim_time;
 
 			if ((levitate) && (!player.climbing))
 			{
@@ -2987,7 +2987,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 		// No Vertical Interpolation
 		if (player.jumpphase)
-			entities[0]->_npcdata->vvpos = -99999.f;
+			entities.player()->_npcdata->vvpos = -99999.f;
 
 		// Apply Gravity force if not LEVITATING or JUMPING
 		if ((!levitate) && (player.jumpphase != 2) && !LAST_ON_PLATFORM)
@@ -3011,7 +3011,7 @@ void PlayerMovementIterate(float DeltaTime)
 					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) * ( 1.0f / 30 ));
 #define LAVA_DAMAGE 10.f
 					float damages = LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ) * mul;
-					damages = ARX_SPELLS_ApplyFireProtection(entities[0], damages);
+					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
 
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
@@ -3019,7 +3019,7 @@ void PlayerMovementIterate(float DeltaTime)
 					pos.x = player.pos.x;
 					pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
 					pos.z = player.pos.z;
-					ARX_PARTICLES_Spawn_Lava_Burn(&pos, entities[0]);
+					ARX_PARTICLES_Spawn_Lava_Burn(&pos, entities.player());
 				}
 			}
 
@@ -3042,7 +3042,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 		// Apply Attraction
 		Vec3f attraction;
-		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*entities[0], attraction);
+		ARX_SPECIAL_ATTRACTORS_ComputeForIO(*entities.player(), attraction);
 		player.physics.forces.x += attraction.x;
 		player.physics.forces.y += attraction.y;
 		player.physics.forces.z += attraction.z;
@@ -3146,14 +3146,14 @@ void PlayerMovementIterate(float DeltaTime)
 
 			if (player.climbing)
 			{
-				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities[0], PLAYER_CYLINDER_STEP, CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
+				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP, CFLAG_EASY_SLIDING | CFLAG_CLIMBING | CFLAG_PLAYER);
 
 				if (!COLLIDED_CLIMB_POLY)
 					player.climbing = 0;
 			}
 			else
 			{
-				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities[0], PLAYER_CYLINDER_STEP, levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
+				test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP, levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
 
 				if ((!test)
 				        &&	((!LAST_FIRM_GROUND) && (!TRUE_FIRM_GROUND)))
@@ -3191,8 +3191,8 @@ void PlayerMovementIterate(float DeltaTime)
 
 					if (player.physics.targetpos.y != player.physics.startpos.y)
 					{
-						test = ARX_COLLISION_Move_Cylinder(&player.physics, entities[0], PLAYER_CYLINDER_STEP, levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
-						entities[0]->_npcdata->vvpos = -99999.f;
+						test = ARX_COLLISION_Move_Cylinder(&player.physics, entities.player(), PLAYER_CYLINDER_STEP, levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
+						entities.player()->_npcdata->vvpos = -99999.f;
 					}
 				}
 			}
@@ -3394,7 +3394,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val)
 		player.physics.cyl.origin.z = player.pos.z;
 		IO_PHYSICS phys;
 		memcpy(&phys, &player.physics, sizeof(IO_PHYSICS));
-		AttemptValidCylinderPos(&phys.cyl, entities[0], CFLAG_RETURN_HEIGHT);
+		AttemptValidCylinderPos(&phys.cyl, entities.player(), CFLAG_RETURN_HEIGHT);
 		player.pos.y = phys.cyl.origin.y - 170.f;
 		player.jumpphase = 0;
 		player.falling = 0;
@@ -3471,7 +3471,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	
 	ARX_Changelevel_CurGame_Clear();
 
-	entities[0]->halo.flags = 0;
+	entities.player()->halo.flags = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -3543,8 +3543,8 @@ void ARX_GAME_Reset(long type) {
 	
 	DeadTime = 0;
 	
-	if(entities[0]) {
-		entities[0]->speed_modif = 0;
+	if(entities.player()) {
+		entities.player()->speed_modif = 0;
 	}
 	
 	LAST_JUMP_ENDTIME = 0;
@@ -3552,11 +3552,11 @@ void ARX_GAME_Reset(long type) {
 	ARX_MAPMARKER_Init();
 	ClearDynLights();
 
-	if(!DONT_ERASE_PLAYER && entities[0]) {
-		entities[0]->halo.flags = 0;
+	if(!DONT_ERASE_PLAYER && entities.player()) {
+		entities.player()->halo.flags = 0;
 	}
 
-	if(entities[0])entities[0]->GameFlags &= ~GFLAG_INVISIBILITY;
+	if(entities.player())entities.player()->GameFlags &= ~GFLAG_INVISIBILITY;
 	ARX_PLAYER_Invulnerability(0);
 	GLOBAL_Player_Room = -1;
 	PLAYER_PARALYSED = 0;
@@ -3589,8 +3589,8 @@ void ARX_GAME_Reset(long type) {
 	cur_mr = 0;
 
 
-	if(entities[0]) {
-		entities[0]->spellcast_data.castingspell = SPELL_NONE;
+	if(entities.player()) {
+		entities.player()->spellcast_data.castingspell = SPELL_NONE;
 	}
 
 	LAST_PRECAST_TIME = 0;
@@ -3696,10 +3696,10 @@ void ARX_GAME_Reset(long type) {
 			ARX_EQUIPMENT_UnEquipAllPlayer();
 		}
 
-		ARX_EQUIPMENT_ReleaseAll(entities[0]);
+		ARX_EQUIPMENT_ReleaseAll(entities.player());
 
 		ARX_PLAYER_InitPlayer();
-		ARX_INTERACTIVE_RemoveGoreOnIO(entities[0]);
+		ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 		
 		// default to mouselook on, inventory closed
 		TRUE_PLAYER_MOUSELOOK_ON = true;
@@ -3723,10 +3723,10 @@ void ARX_GAME_Reset(long type) {
 
 	if (eyeball.exist) eyeball.exist = -100;
 
-	if ((entities.iobj) && (entities.nbmax > 0) && (entities[0]))
+	if ((entities.iobj) && (entities.nbmax > 0) && (entities.player()))
 	{
-		entities[0]->ouch_time = 0;
-		entities[0]->invisibility = 0.f;
+		entities.player()->ouch_time = 0;
+		entities.player()->invisibility = 0.f;
 	}
 
 	FADEDIR = 0;
