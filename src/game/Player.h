@@ -139,7 +139,7 @@ struct ARXCHARACTER {
 	
 	Anglef desiredangle;
 	Vec3f size;
-	void * inzone;
+	ARX_PATH * inzone;
 	
 	long falling;
 	short doingmagic;

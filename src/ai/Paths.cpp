@@ -403,7 +403,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			}
 		}
 
-		player.inzone = (void *)p;
+		player.inzone = p;
 	}
 
 	
