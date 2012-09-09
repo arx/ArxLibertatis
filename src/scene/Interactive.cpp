@@ -1560,7 +1560,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1)
 //*************************************************************************************
 // Count IO number ignoring ScriptLoaded IOs
 //*************************************************************************************
-long GetNumberInterWithOutScriptLoadForLevel(long level) {
+long GetNumberInterWithOutScriptLoad() {
 	long count = 0;
 	for(long i = 1; i < entities.nbmax; i++) {
 		if(entities[i] != NULL && !entities[i]->scriptload) {

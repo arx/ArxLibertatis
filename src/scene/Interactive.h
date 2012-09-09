@@ -204,7 +204,7 @@ void ResetSelectedIORot();
 void MakeIOIdent(Entity * io);
 #endif
 
-long GetNumberInterWithOutScriptLoadForLevel(long level);
+long GetNumberInterWithOutScriptLoad();
 void FreeAllInter();
 
 void UnlinkAllLinkedObjects();

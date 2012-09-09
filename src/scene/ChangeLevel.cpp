@@ -92,7 +92,7 @@ using std::string;
 extern Entity * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
 float FORCE_TIME_RESTORE = 0;
-extern Vec3f	WILL_RESTORE_PLAYER_POSITION;
+extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern long NO_GMOD_RESET;
 
@@ -106,7 +106,6 @@ extern float InventoryDir;
 extern long HERO_SHOW_1ST;
 extern long EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
-extern long DONT_LOAD_INTERS;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
 extern long CHANGE_LEVEL_ICON;
@@ -341,20 +340,14 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	// Now restore player pos to destination
 	long t = entities.getById(target);
 
-	if (t > 0)
-	{
+	if(t > 0 && entities[t]) {
 		Vec3f pos;
-
-		if (entities[t])
-			if (GetItemWorldPosition(entities[t], &pos))
-			{
-				moveto.x = player.pos.x = pos.x;
-				moveto.y = player.pos.y = pos.y + PLAYER_BASE_HEIGHT;
-				moveto.z = player.pos.z = pos.z;
-				NO_PLAYER_POSITION_RESET = 1;
-				WILL_RESTORE_PLAYER_POSITION = moveto;
-				WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
-			}
+		if(GetItemWorldPosition(entities[t], &pos)) {
+			moveto = player.pos = pos + Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+			NO_PLAYER_POSITION_RESET = 1;
+			WILL_RESTORE_PLAYER_POSITION = moveto;
+			WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
+		}
 	}
 
 	CURRENTLEVEL = num;
@@ -1589,15 +1582,12 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	return 1;
 }
 
-extern long NO_GMOD_RESET;
-
 long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long FirstTime) {
 	
 	char levelId[256];
 	GetLevelNameByNum(num, levelId);
 	string levelFile = string("graph/levels/level") + levelId + "/level" + levelId + ".dlf";
 	
-	DONT_LOAD_INTERS = (!FirstTime) ? 1 : 0;
 	LOAD_N_DONT_ERASE = 1;
 	
 	if(!resources->getFile(levelFile)) {
@@ -1610,11 +1600,10 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	
-	DanaeLoadLevel(levelFile);
+	DanaeLoadLevel(levelFile, FirstTime);
 	CleanScriptLoadedIO();
 	
 	FirstFrame = 1;
-	DONT_LOAD_INTERS = 0;
 	
 	if(FirstTime) {
 		

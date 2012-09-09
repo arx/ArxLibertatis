@@ -151,7 +151,7 @@ void LogDirCreation(const fs::path & dir) {
 
 long DanaeSaveLevel(const fs::path & _fic) {
 	
-	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
+	long nb_inter = GetNumberInterWithOutScriptLoad(); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
 	fs::path fic = _fic;
@@ -635,10 +635,9 @@ Vec3f loddpos;
 Vec3f MSP;
 
 extern long FASTmse;
-long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 
-long DanaeLoadLevel(const res::path & file) {
+long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LogInfo << "Loading Level " << file;
 	
@@ -780,7 +779,8 @@ long DanaeLoadLevel(const res::path & file) {
 		
 		const DANAE_LS_INTER * dli = reinterpret_cast<const DANAE_LS_INTER *>(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
-		if(!DONT_LOAD_INTERS) {
+		
+		if(loadEntities) {
 			
 			string pathstr = toLowercase(safestring(dli->name));
 			

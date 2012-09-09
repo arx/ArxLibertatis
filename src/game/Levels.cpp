@@ -50,11 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "platform/String.h"
 
-extern long LOAD_N_DONT_ERASE;
-extern long DONT_LOAD_SCENE;
-extern long FASTmse;
-extern float InventoryDir;
-
 //-----------------------------------------------------------------------------
 //Used to know the true level of a "subdivided" level
 long ARX_LEVELS_GetRealNum(long num)
