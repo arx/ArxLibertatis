@@ -364,22 +364,17 @@ void ParticleSystem::SpawnParticle(Particle * pP)
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle)
-{
-	register float c = EEcos(_fAngle);
-	register float s = EEsin(_fAngle);
+void VectorRotateY(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
+	float c = EEcos(_fAngle);
+	float s = EEsin(_fAngle);
 	_eOut.x = (_eIn.x * c) + (_eIn.z * s);
 	_eOut.y =  _eIn.y;
 	_eOut.z = (_eIn.z * c) - (_eIn.x * s);
 }
 
-//-----------------------------------------------------------------------------
-void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle)
-{
-	register float c = EEcos(_fAngle);
-	register float s = EEsin(_fAngle);
+void VectorRotateZ(Vec3f & _eIn, Vec3f & _eOut, float _fAngle) {
+	float c = EEcos(_fAngle);
+	float s = EEsin(_fAngle);
 	_eOut.x = (_eIn.x * c) + (_eIn.y * s);
 	_eOut.y = (_eIn.y * c) - (_eIn.x * s);
 	_eOut.z =  _eIn.z;

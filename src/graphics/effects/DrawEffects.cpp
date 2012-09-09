@@ -124,7 +124,7 @@ void ARXDRAW_DrawInterShadows()
 			if ( io->show==SHOW_FLAG_IN_SCENE ) 
 			if ( !(io->ioflags & IO_GOLD) ) 
 			{
-				register EERIEPOLY * ep;
+				EERIEPOLY * ep;
 				TexturedVertex in;
 				
 				TexturedVertex ltv[4];
@@ -673,7 +673,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 	long i, to = 0; 
 
-	register EERIEPOLY * ep;
+	EERIEPOLY * ep;
 
 	for ( i = 0 ; i < TRANSPOLYSPOS ; i++ ) 
 	{

@@ -937,24 +937,17 @@ bool IsLinkedNode(long i, long j)
 
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
-long CountNodes()
-{
-	register long count = 0;
 
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if (nodes.nodes[i].exist)
-		{
+long CountNodes() {
+	long count = 0;
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist) {
 			count++;
 		}
 	}
-
 	return count;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void AddLink(long i, long j)
 {
 	if ((!nodes.nodes[i].exist)

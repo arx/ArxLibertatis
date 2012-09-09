@@ -191,7 +191,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 // Rotation Functions
 
 inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
-	register float tempy;
+	float tempy;
 	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
 	out->y = (in->x * cam->Ycos) + (in->z * cam->Ysin);
 	tempy = (in->y * cam->Xcos) - (out->z * cam->Xsin);
@@ -229,10 +229,10 @@ inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * v
 // Transforms a Vertex by a quaternion
 inline void TransformVertexQuat(EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
 	
-	register float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
-	register float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;
-	register float rz = vertexin->z * quat->w - vertexin->x * quat->y + vertexin->y * quat->x;
-	register float rw = vertexin->x * quat->x + vertexin->y * quat->y + vertexin->z * quat->z;
+	float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
+	float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;
+	float rz = vertexin->z * quat->w - vertexin->x * quat->y + vertexin->y * quat->x;
+	float rw = vertexin->x * quat->x + vertexin->y * quat->y + vertexin->z * quat->z;
 	
 	vertexout->x = quat->w * rx + quat->x * rw + quat->y * rz - quat->z * ry;
 	vertexout->y = quat->w * ry + quat->y * rw + quat->z * rx - quat->x * rz;

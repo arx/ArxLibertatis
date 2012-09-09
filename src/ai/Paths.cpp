@@ -149,7 +149,7 @@ long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z)
 
 	if (y > ap->bbmax.y) return 0;
 
-	register int i, j, c = 0;
+	int i, j, c = 0;
 
 	x -= ap->pos.x;
 	z -= ap->pos.z;

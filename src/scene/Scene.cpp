@@ -231,8 +231,8 @@ void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power)
 }
 
 static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power) {
-	register float f;
-	register long lr, lg, lb;
+	float f;
+	long lr, lg, lb;
 	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
 	f = ((dtv->color >> 16) & 255) * power;
 	lr = clipByte(f);
@@ -333,25 +333,24 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 
 
 extern EERIEMATRIX ProjectionMatrix;
-void specialEE_RTP2(TexturedVertex *in,TexturedVertex *out)
-{
-	register EERIE_TRANSFORM * et=(EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->p.x = in->p.x - et->posx;	
+void specialEE_RTP2(TexturedVertex * in, TexturedVertex * out) {
+	
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	out->p.x = in->p.x - et->posx;
 	out->p.y = in->p.y - et->posy;
 	out->p.z = in->p.z - et->posz;
-
-	register float temp =(out->p.z*et->ycos) - (out->p.x*et->ysin);
-	out->p.x = (out->p.z*et->ysin) + (out->p.x*et->ycos);	
-	out->p.z = (out->p.y*et->xsin) + (temp*et->xcos);	
-	out->p.y = (out->p.y*et->xcos) - (temp*et->xsin);
-
-	float fZTemp = 1.f / out->p.z;
-		
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; 
-		out->p.x=out->p.x*ProjectionMatrix._11*fZTemp+et->xmod;
-		out->p.y=out->p.y*ProjectionMatrix._22*fZTemp+et->ymod;
-		out->rhw=fZTemp;
 	
+	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
+	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
+	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
+	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
+	
+	float fZTemp = 1.f / out->p.z;
+	
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp+et->xmod;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp+et->ymod;
+	out->rhw = fZTemp;
 }
 
 long EERIERTPPoly2(EERIEPOLY *ep)
@@ -1051,7 +1050,7 @@ void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d
 
 void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt1,Vec3f * pt2)
 {
-	register float Ax,Ay,Az,Bx,By,Bz,epnlen;
+	float Ax, Ay, Az, Bx, By, Bz, epnlen;
 	Ax=pt1->x-orgn->x;
 	Ay=pt1->y-orgn->y;
 	Az=pt1->z-orgn->z;
@@ -2801,19 +2800,18 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			{
 				portals->portals[portals->room[room_num].portals[lll]].useportal=1;
 				ARX_PORTALS_Frustrum_ComputeRoom(po->room_1,&fd,prec,tim);
-			}			
-		}	
+			}
+		}
 	}
 
 	return portals_count; 
-			}
+}
 
-		
-bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
-{
-	register float dx,dy,dz,adx,ady,adz,ix,iz;
-	register float x0,z0;
-	register float forr,temp;
+bool Clip_Visible(const Vec3f * orgn, Vec3f * dest) {
+	
+	float dx, dy, dz, adx, ady, adz, ix, iz;
+	float x0, z0;
+	float forr, temp;
  
 	dx=(dest->x-orgn->x);
 	adx=EEfabs(dx);

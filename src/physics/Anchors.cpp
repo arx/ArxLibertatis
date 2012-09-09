@@ -571,8 +571,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			}
 			else ANGLESTEPP	=	30.f;
 
-			register float rangle	=	ANGLESTEPP;
-			register float langle	=	360.f - ANGLESTEPP;
+			float rangle = ANGLESTEPP;
+			float langle = 360.f - ANGLESTEPP;
 
 
 			while (rangle <= maxRANGLE)   //tries on the Right and Left sides

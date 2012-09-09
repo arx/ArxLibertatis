@@ -204,14 +204,14 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
-void specialEE_RTP(TexturedVertex * in, TexturedVertex * out)
-{
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
+	
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->p.x = in->p.x - et->posx;
 	out->p.y = in->p.y - et->posy;
 	out->p.z = in->p.z - et->posz;
 
-	register float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
+	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
 	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
 	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
 	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
@@ -848,41 +848,36 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EE_RT(TexturedVertex * in, Vec3f * out)
-{
+void EE_RT(TexturedVertex * in, Vec3f * out) {
+	
 	out->x = in->p.x - ACTIVECAM->pos.x;
 	out->y = in->p.y - ACTIVECAM->pos.y;
 	out->z = in->p.z - ACTIVECAM->pos.z;
-
-	register float temp;
-	temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
+	
+	float temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
 	out->x = (out->x * ACTIVECAM->Ycos) + (out->z * ACTIVECAM->Ysin);
-
+	
 	out->z = (out->y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
 	out->y = (out->y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
-
+	
 	// Might Prove Usefull one day...
 	temp = (out->y * ACTIVECAM->Zcos) - (out->x * ACTIVECAM->Zsin);
 	out->x = (out->x * ACTIVECAM->Zcos) + (out->y * ACTIVECAM->Zsin);
 	out->y = temp;
 }
 
-void EE_RT2(TexturedVertex * in, TexturedVertex * out)
-{
-
+void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
+	
 	out->p.x = in->p.x - ACTIVECAM->pos.x;
 	out->p.y = in->p.y - ACTIVECAM->pos.y;
 	out->p.z = in->p.z - ACTIVECAM->pos.z;
-
-	register float temp;
-	temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+	
+	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-
+	
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
 	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
-
+	
 	// Might Prove Usefull one day...
 	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
 	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
@@ -891,12 +886,12 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out)
 
 void specialEE_RT(TexturedVertex * in, Vec3f * out) {
 	
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->x = in->p.x - et->posx;
 	out->y = in->p.y - et->posy;
 	out->z = in->p.z - et->posz;
-
-	register float temp = (out->z * et->ycos) - (out->x * et->ysin);
+	
+	float temp = (out->z * et->ycos) - (out->x * et->ysin);
 	out->x = (out->z * et->ysin) + (out->x * et->ycos);
 	out->z = (out->y * et->xsin) + (temp * et->xcos);
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
@@ -912,7 +907,7 @@ static inline float clamp_and_invert(float z) {
 
 void specialEE_P(Vec3f * in, TexturedVertex * out) {
 	
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	
 	float fZTemp = clamp_and_invert(in->z);
 	
@@ -943,25 +938,20 @@ void EE_P2(TexturedVertex * in, TexturedVertex * out)
 	out->rhw = fZTemp;
 }
 
-void EE_RTP(TexturedVertex * in, TexturedVertex * out)
-{
-	//register float rhw;
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
-
-	register float temp;
-	temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
+	
+	out->p = in->p - ACTIVECAM->pos;
+	
+	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
 	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
-
+	
 	// Might Prove Usefull one day...
 	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
 	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
 	out->p.y = temp;
-
+	
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
@@ -1164,9 +1154,9 @@ extern EERIE_CAMERA * Kam;
 //*************************************************************************************
 // Checks if point (x,y) is in a 2D poly defines by ep
 //*************************************************************************************
-int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
-{
-	register int i, j, c = 0;
+int PointIn2DPoly(EERIEPOLY * ep, float x, float y) {
+	
+	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1192,9 +1182,9 @@ int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 //*************************************************************************************
 //*************************************************************************************
 
-float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
-{
-	register int i, j, c = 0;
+float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
+	
+	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1210,12 +1200,9 @@ float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
 		return 0.f;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
-{
-	register int i, j, c = 0;
+float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
+	
+	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1229,11 +1216,9 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 	else return 0.f;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z)
-{
-	register int i, j, c = 0, d = 0;
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
+	
+	int i, j, c = 0, d = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -2374,9 +2359,9 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 	}
 }
 
-void PrepareActiveCamera()
-{
-	register float tmp = radians(ACTIVECAM->angle.a);
+void PrepareActiveCamera() {
+	
+	float tmp = radians(ACTIVECAM->angle.a);
 	ACTIVECAM->Xcos = (float)EEcos(tmp);
 	ACTIVECAM->Xsin = (float)EEsin(tmp);
 	tmp = radians(ACTIVECAM->angle.b);
@@ -2387,9 +2372,9 @@ void PrepareActiveCamera()
 	ACTIVECAM->Zsin = (float)EEsin(tmp);
 	ACTIVECAM->posleft = (float)(ACTIVECAM->centerx + ACTIVECAM->clip.left);
 	ACTIVECAM->postop = (float)(ACTIVECAM->centery + ACTIVECAM->clip.top);
-
+	
 	MatrixReset(&ACTIVECAM->matrix);
-
+	
 	float cx = ACTIVECAM->Xcos;
 	float sx = ACTIVECAM->Xsin;
 	float cy = ACTIVECAM->Ycos;
@@ -2397,30 +2382,28 @@ void PrepareActiveCamera()
 	float cz = ACTIVECAM->Zcos;
 	float sz = ACTIVECAM->Zsin;
 	float const1, const2, const3, const4 ;
-
-	const1 = -sz * cx ;
-	const2 = cx * cz ;
-	const3 = sx * sz ;
-	const4 = -sx * cz ;
-
-	ACTIVECAM->matrix._11 = cz * cy ;
-	ACTIVECAM->matrix._21 = const4 * sy + const1 ;
-	ACTIVECAM->matrix._31 = const3 - const2 * sy ;
-	ACTIVECAM->matrix._12 = cy * sz ;
-	ACTIVECAM->matrix._22 = const2 - const3 * sy ;
-	ACTIVECAM->matrix._32 = const1 * sy + const4 ;
-	ACTIVECAM->matrix._13 = sy ;
-	ACTIVECAM->matrix._23 = sx * cy ;
-	ACTIVECAM->matrix._33 = cx * cy ;
-
+	
+	const1 = -sz * cx;
+	const2 = cx * cz;
+	const3 = sx * sz;
+	const4 = -sx * cz;
+	
+	ACTIVECAM->matrix._11 = cz * cy;
+	ACTIVECAM->matrix._21 = const4 * sy + const1;
+	ACTIVECAM->matrix._31 = const3 - const2 * sy;
+	ACTIVECAM->matrix._12 = cy * sz;
+	ACTIVECAM->matrix._22 = const2 - const3 * sy;
+	ACTIVECAM->matrix._32 = const1 * sy + const4;
+	ACTIVECAM->matrix._13 = sy;
+	ACTIVECAM->matrix._23 = sx * cy;
+	ACTIVECAM->matrix._33 = cx * cy;
+	
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
-							static_cast<float>(DANAESIZY),
-							EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
-							1.f,
-							ACTIVECAM->cdepth);
-
-
+	                        static_cast<float>(DANAESIZY),
+	                        EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
+	                        1.f, ACTIVECAM->cdepth);
 }
+
 void F_PrepareCamera(EERIE_CAMERA * cam)
 {
 	float tmp = radians(cam->angle.a);

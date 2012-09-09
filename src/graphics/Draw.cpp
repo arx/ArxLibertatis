@@ -427,9 +427,9 @@ void Delayed_FlushAll() {
 						else GRenderer->SetCulling(Renderer::CullNone);
 						
 						
-						register long tmp;
+						long tmp;
 
-						for (register long j=0;j<to;j++)
+						for (long j=0;j<to;j++)
 						{
 							verts[j].p.x=ep->tv[j].p.x;
 							verts[j].p.y=ep->tv[j].p.y;
@@ -579,8 +579,8 @@ void EERIEDraw3DCylinderBase(const EERIE_CYLINDER & cyl, Color col) {
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z) {
 	
-	register float lx = x0;
-	register float ly = y0 + r;
+	float lx = x0;
+	float ly = y0 + r;
 	GRenderer->ResetTexture(0);
 	
 	for(long i = 0; i < 361; i += 10) {
