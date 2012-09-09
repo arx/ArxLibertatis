@@ -968,7 +968,6 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 	ais.scale = io->scale;
 	ais.weight = io->weight;
 	strncpy(ais.locname, io->locname.c_str(), sizeof(ais.locname));
-	ais.EditorFlags = io->EditorFlags;
 	ais.GameFlags = io->GameFlags;
 
 	if(io == entities.player())
@@ -2045,7 +2044,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->scale = ais->scale;
 		io->weight = ais->weight;
 		io->locname = script::loadUnlocalized(toLowercase(safestring(ais->locname)));
-		io->EditorFlags = ais->EditorFlags;
 		io->GameFlags = ais->GameFlags;
 		io->material = (Material)ais->material; // TODO save/load enum
 		io->level = ais->level;

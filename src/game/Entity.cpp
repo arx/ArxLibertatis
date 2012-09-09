@@ -120,7 +120,6 @@ Entity::Entity(long _num) : num(_num) {
 	
 	ident = 0;
 	weight = 1.f;
-	EditorFlags = 0;
 	GameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
 	velocity = Vec3f::ZERO;
 	fall = 0.f;

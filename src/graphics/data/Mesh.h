@@ -220,8 +220,6 @@ struct EERIE_BACKGROUND
 
 struct ANIM_USE;
 
-#define MORE_COMPATIBILITY
-
 #define MAX_TRANSPOL 512
 #define MAX_INTERTRANSPOL 512
 
@@ -231,10 +229,6 @@ struct ANIM_USE;
 //-----------------------------------------------------------------------------
 //	Entity Structs Start
 //-----------------------------------------------------------------------------
-
-// EditorFlags
-#define EFLAG_NOTSAVED			1
-#define EFLAG_SELECTED			2
 
 // GameFlags 16 Bits !!!
 #define GFLAG_INTERACTIVITY		1

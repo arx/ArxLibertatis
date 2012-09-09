@@ -281,7 +281,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 				dli.flags = IO_FREEZESCRIPT;
 			}
 			
-			entities[i]->EditorFlags &= ~EFLAG_NOTSAVED;
 			memcpy(dat + pos, &dli, sizeof(DANAE_LS_INTER));
 			pos += sizeof(DANAE_LS_INTER);
 		}
@@ -1480,10 +1479,6 @@ void CheckIO_NOT_SAVED() {
 	for(long i = 1; i < entities.nbmax; i++) { // ignoring player
 
 		if(!entities[i] || !entities[i]->scriptload) {
-			continue;
-		}
-		
-		if(!(entities[i]->EditorFlags & EFLAG_NOTSAVED) || entities[i]->ident <= 0) {
 			continue;
 		}
 		

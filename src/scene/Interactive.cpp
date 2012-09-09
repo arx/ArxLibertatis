@@ -2286,94 +2286,6 @@ void ShowIOPath(Entity * io)
 #ifdef BUILD_EDITOR
 
 //*************************************************************************************
-// Unselect an IO
-//*************************************************************************************
-void UnSelectIO(Entity * io)
-{
-	if ((io)
-	        && (io->EditorFlags & EFLAG_SELECTED))
-	{
-		io->EditorFlags &= ~EFLAG_SELECTED;
-		NbIOSelected--;
-		LastSelectedIONum = -1;
-	}
-}
-//*************************************************************************************
-// Select an IO
-//*************************************************************************************
-void SelectIO(Entity * io)
-{
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if ((entities[i] != NULL)
-		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			UnSelectIO(entities[i]);
-		}
-	}
-
-	if ((io)
-	        &&	(!(io->EditorFlags & EFLAG_SELECTED)))
-	{
-		io->EditorFlags |= EFLAG_SELECTED;
-		NbIOSelected++;
-		Vec3f curpos;
-		GetItemWorldPosition(io, &curpos);
-		LastSelectedIONum = GetInterNum(io);
-		ShowIOPath(io);
-	}
-}
-//*************************************************************************************
-// Translate all selected IOs
-//*************************************************************************************
-void TranslateSelectedIO(Vec3f * op)
-{
-	for (long i = 1; i < entities.nbmax; i++)
-	{
-		if ((entities[i])
-		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			entities[i]->initpos.x = entities[i]->pos.x = entities[i]->initpos.x + op->x;
-			entities[i]->initpos.y = entities[i]->pos.y = entities[i]->initpos.y + op->y;
-			entities[i]->initpos.z = entities[i]->pos.z = entities[i]->initpos.z + op->z;
-		}
-	}
-}
-//*************************************************************************************
-// Reset all selected IOs rotations
-//*************************************************************************************
-void ResetSelectedIORot()
-{
-	for (long i = 1; i < entities.nbmax; i++)
-	{
-		if ((entities[i])
-		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			entities[i]->initangle.a = entities[i]->angle.a = 0.f;
-			entities[i]->initangle.b = entities[i]->angle.b = 0.f;
-			entities[i]->initangle.g = entities[i]->angle.g = 0.f;
-		}
-	}
-}
-
-//*************************************************************************************
-// Rotate all selected IOs
-//*************************************************************************************
-void RotateSelectedIO(Anglef * op)
-{
-	for (long i = 1; i < entities.nbmax; i++)
-	{
-		if ((entities[i])
-		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			entities[i]->initangle.a = entities[i]->angle.a = entities[i]->initangle.a + op->a;
-			entities[i]->initangle.b = entities[i]->angle.b = entities[i]->initangle.b + op->b;
-			entities[i]->initangle.g = entities[i]->angle.g = entities[i]->initangle.g + op->g;
-		}
-	}
-}
-
-//*************************************************************************************
 // Delete All Selected IOs
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
@@ -2395,19 +2307,6 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	ReleaseInter(entities[i]), entities[i] = NULL;
 }
 
-void DeleteSelectedIO()
-{
-	for (long i = 1; i < entities.nbmax; i++)
-	{
-		if ((entities[i] != NULL)
-		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			UnSelectIO(entities[i]);
-			ARX_INTERACTIVE_DeleteByIndex(i, 0);
-		}
-	}
-}
-
 //*************************************************************************************
 // Snaps to ground all selected IOs
 //*************************************************************************************
@@ -2416,7 +2315,7 @@ void GroundSnapSelectedIO()
 	for (long i = 1; i < entities.nbmax; i++)
 	{
 		if ((entities[i] != NULL)
-		        &&	(entities[i]->EditorFlags & EFLAG_SELECTED))
+		        &&	false /* is selected */)
 		{
 			Entity * io = entities[i];
 			Vec3f ppos;
@@ -3908,7 +3807,7 @@ void RenderInter(float from, float to) {
 				ManageIgnition(io);
 
 			if((NEED_TEST_TEXT || EDITMODE) && !FOR_EXTERNAL_PEOPLE) {
-				Color color = (EDITMODE && (io->EditorFlags & EFLAG_SELECTED)) ? Color::yellow : Color::blue;
+				Color color = Color::blue;
 				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
 					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);

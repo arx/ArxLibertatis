@@ -1153,15 +1153,6 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	string locname = loadUnlocalized(toLowercase(safestring(ais.locname)));
 	if(!locname.empty()) cout << "Name: " << locname << " = \"" << getLocalised(locname) << '"' << endl;
 	
-	if(ais.EditorFlags) {
-		cout << "Editor flags:";
-		if(!ais.EditorFlags) cout << " (none)";
-		if(ais.EditorFlags & EFLAG_NOTSAVED) cout << " notsaved";
-		if(ais.EditorFlags & EFLAG_SELECTED) cout << " selected";
-		if(ais.EditorFlags & ~(EFLAG_NOTSAVED|EFLAG_SELECTED)) cout << " (unknown)";
-		cout << endl;
-	}
-	
 	if(ais.GameFlags) {
 		cout << "Game flags:";
 		if(ais.GameFlags & GFLAG_INTERACTIVITY) cout << " interactivity";

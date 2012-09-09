@@ -245,7 +245,6 @@ struct Entity {
 	long ident; // Ident num
 	float weight;
 	std::string locname; //localisation
-	unsigned short EditorFlags; // 1 NOTSAVED 2 selected
 	unsigned short GameFlags; // GFLAGS
 	Vec3f velocity; // velocity
 	float fall;
