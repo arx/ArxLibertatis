@@ -133,7 +133,7 @@ float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 long FORBID_SAVE = 0;
-static SaveBlock * _pSaveBlock = NULL;
+static SaveBlock * pSaveBlock = NULL;
 
 static ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 static ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** Gaids = NULL;
@@ -239,7 +239,7 @@ void ARX_Changelevel_CurGame_Open() {
 		ARX_Changelevel_CurGame_Close();
 	}
 	
-	if(_pSaveBlock) {
+	if(pSaveBlock) {
 		return;
 	}
 	
@@ -255,8 +255,8 @@ void ARX_Changelevel_CurGame_Open() {
 }
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
-	if(_pSaveBlock) {
-		return _pSaveBlock->hasFile(ident);
+	if(pSaveBlock) {
+		return pSaveBlock->hasFile(ident);
 	} else if(GLOBAL_pSaveB) {
 		return GLOBAL_pSaveB->hasFile(ident);
 	} else {
@@ -327,9 +327,9 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LoadLevelScreen(num);
 	
 	assert(!CURRENT_GAME_FILE.empty());
-	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
+	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
-	if(!_pSaveBlock->open(true)) {
+	if(!pSaveBlock->open(true)) {
 		LogError << "error writing to save block " << CURRENT_GAME_FILE;
 		return;
 	}
@@ -338,10 +338,10 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
 	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
-	if(!_pSaveBlock->flush("pld")) {
+	if(!pSaveBlock->flush("pld")) {
 		LogError << "could not complete the save.";
 	}
-	delete _pSaveBlock, _pSaveBlock = NULL;
+	delete pSaveBlock, pSaveBlock = NULL;
 	
 	arxtime.resume();
 
@@ -539,7 +539,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	
 	char savefile[256];
 	sprintf(savefile, "lvl%03ld", num);
-	bool ret = _pSaveBlock->save(savefile, dat, pos);
+	bool ret = pSaveBlock->save(savefile, dat, pos);
 	
 	delete[] dat;
 	
@@ -628,7 +628,7 @@ static void ARX_CHANGELEVEL_Push_Globals() {
 		}
 	}
 	
-	_pSaveBlock->save("globals", dat, pos);
+	pSaveBlock->save("globals", dat, pos);
 	
 	delete[] dat;
 }
@@ -839,7 +839,7 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	LastValidPlayerPos.y = asp->LAST_VALID_POS.y;
 	LastValidPlayerPos.z = asp->LAST_VALID_POS.z;
 	
-	_pSaveBlock->save("player", dat, pos);
+	pSaveBlock->save("player", dat, pos);
 	
 	delete[] dat;
 	
@@ -1491,7 +1491,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
 	}
 	
-	_pSaveBlock->save(savefile, dat, pos);
+	pSaveBlock->save(savefile, dat, pos);
 	
 	delete[] dat;
 	
@@ -1508,7 +1508,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	loadfile = ss.str();
 	
 	size_t size; // TODO size is not used
-	char * dat = _pSaveBlock->load(loadfile, size);
+	char * dat = pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
@@ -1550,7 +1550,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	
 	size_t size; // TODO size not used
 	// TODO this has already been loaded and decompressed in ARX_CHANGELEVEL_Pop_Index!
-	char * dat = _pSaveBlock->load(loadfile, size);
+	char * dat = pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
@@ -1672,7 +1672,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	const string & loadfile = "player";
 	
 	size_t size;
-	char * dat = _pSaveBlock->load(loadfile, size);
+	char * dat = pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
@@ -1982,7 +1982,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	LogDebug("--> loading interactive object " << ident);
 	
 	size_t size = 0; // TODO size not used
-	char * dat = _pSaveBlock->load(ident, size);
+	char * dat = pSaveBlock->load(ident, size);
 	if(!dat) {
 		LogError << "Unable to Open " << ident << " for Read...";
 		return NULL;
@@ -2608,7 +2608,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	ARX_SCRIPT_Free_All_Global_Variables();
 	
 	size_t size;
-	char * dat = _pSaveBlock->load("globals", size);
+	char * dat = pSaveBlock->load("globals", size);
 	if(!dat) {
 		LogError << "Unable to Open globals for Read...";
 		return;
@@ -2655,7 +2655,7 @@ static void ReleaseGaids() {
 
 static void ARX_CHANGELEVEL_PopLevel_Abort() {
 	
-	delete _pSaveBlock, _pSaveBlock = NULL;
+	delete pSaveBlock, pSaveBlock = NULL;
 	
 	arxtime.resume();
 	
@@ -2698,11 +2698,11 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	loadfile << "lvl" << std::setfill('0') << std::setw(3) << instance;
 	
 	// Open Saveblock for read
-	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
+	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	// first time in this level ?
 	long FirstTime;
-	if(!_pSaveBlock->open() || !_pSaveBlock->hasFile(loadfile.str())) {
+	if(!pSaveBlock->open() || !pSaveBlock->hasFile(loadfile.str())) {
 		FirstTime = 1;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
@@ -2819,8 +2819,8 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LogDebug("After  Memory Release");
 	
 	LogDebug("Before SaveBlock Release");
-	delete _pSaveBlock;
-	_pSaveBlock = NULL;
+	delete pSaveBlock;
+	pSaveBlock = NULL;
 	LogDebug("After  SaveBlock Release");
 	
 	LogDebug("Before Final Inits");
@@ -2862,9 +2862,9 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 		return false;
 	}
 	
-	_pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
+	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
-	if(!_pSaveBlock->open(true)) {
+	if(!pSaveBlock->open(true)) {
 		LogError << "opening savegame " << CURRENT_GAME_FILE;
 		return false;
 	}
@@ -2886,15 +2886,15 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 	pld.time = arxtime.get_updated_ul();
 	
 	const char * dat = reinterpret_cast<const char *>(&pld);
-	_pSaveBlock->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
+	pSaveBlock->save("pld", dat, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	
 	// Close the savegame file
 	
-	if(!_pSaveBlock->flush("pld")) {
+	if(!pSaveBlock->flush("pld")) {
 		LogError << "could not complete the save";
 		return false;
 	}
-	delete _pSaveBlock, _pSaveBlock = NULL;
+	delete pSaveBlock, pSaveBlock = NULL;
 	
 	arxtime.resume();
 	
