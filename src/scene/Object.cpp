@@ -553,9 +553,9 @@ static void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	}
 }
 
-static void _THEObjLoad(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, long version) {
+static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss, long version) {
 	
-	LogWarning << "_THEObjLoad";
+	LogWarning << "loadObjectData";
 	
 	size_t pos = *poss;
 	
@@ -980,7 +980,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		} else {
 			objVersion = 3011;
 		}
-		_THEObjLoad(seerie->objs[id], adr, &pos, objVersion);
+		loadObjectData(seerie->objs[id], adr, &pos, objVersion);
 		
 		seerie->cub.xmin = min(seerie->cub.xmin, seerie->objs[id]->cub.xmin + seerie->objs[id]->pos.x);
 		seerie->cub.xmax = max(seerie->cub.xmax, seerie->objs[id]->cub.xmax + seerie->objs[id]->pos.x);
@@ -1691,7 +1691,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	}
 	
 	pos = pth->object_seek;
-	_THEObjLoad(eerie, adr, &pos, pth->version);
+	loadObjectData(eerie, adr, &pos, pth->version);
 	eerie->angle.a = eerie->angle.b = eerie->angle.g = 0.f;
 	eerie->pos.x = eerie->pos.y = eerie->pos.z = 0.f;
 
