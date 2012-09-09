@@ -1123,7 +1123,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
 	free(ms);
 }
 
-static EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const res::path & dirr) {
+static EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie_Impl(const res::path & dirr) {
 	
 	EERIE_MULTI3DSCENE * es = allocStructZero<EERIE_MULTI3DSCENE>();
 	
@@ -1196,7 +1196,7 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const res::path & dirr) {
 	
 	EERIE_MULTI3DSCENE * em = NULL;
 	
-	em = _PAK_MultiSceneToEerie(dirr);
+	em = PAK_MultiSceneToEerie_Impl(dirr);
 
 	EERIEPOLY_Compute_PolyIn();
 	return em;
