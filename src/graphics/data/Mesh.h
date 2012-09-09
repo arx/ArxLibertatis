@@ -451,10 +451,7 @@ extern PORTAL_ROOM_DRAW * RoomDraw;
 extern long NbRoomDraw;
 
 // Default Mode for Portals when found
-#define DEFAULT_PORTAL_MODE 3
-
-#define NPC_ITEMS__AMBIENT_VALUE_255	35
-#define NPC_ITEMS__AMBIENT_VALUE		0.1372549f
+#define NPC_ITEMS_AMBIENT_VALUE_255 35
 
 struct ROOM_DIST_DATA
 {

@@ -841,7 +841,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				/* Ambient light */
 				if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 				{
-					r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 				}
 				else
 				{
@@ -946,7 +946,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				/* Ambient light */
 				if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 				{
-					r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 				}
 				else
 				{
@@ -2248,7 +2248,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 
 			if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 			{
-				r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+				r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 			}
 			else
 			{
@@ -2402,7 +2402,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 
 		if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 		{
-			r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+			r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 		}
 		else
 		{
