@@ -375,7 +375,7 @@ struct EERIE_FASTACCESS
 	short	sel_leggings;
 
 	short	carry_attach;
-	short	__padd;
+	short	padding_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -461,7 +461,7 @@ struct EERIE_3DOBJ
 		fastaccess.sel_chest = 0;
 		fastaccess.sel_leggings = 0;
 		fastaccess.carry_attach = 0;
-		fastaccess.__padd = 0;
+		fastaccess.padding_ = 0;
 
 		c_data = NULL;
 	}
