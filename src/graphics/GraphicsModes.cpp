@@ -118,8 +118,8 @@ void ARX_GLOBALMODS_Apply()
 {
 	if (EDITMODE) return;
 
-	float baseinc = _framedelay;
-	float incdiv1000 = _framedelay * ( 1.0f / 1000 );
+	float baseinc = framedelay;
+	float incdiv1000 = framedelay * ( 1.0f / 1000 );
 
 	if (desired.flags & GMOD_ZCLIP)
 	{

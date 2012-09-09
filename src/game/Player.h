@@ -311,7 +311,7 @@ void ARX_PLAYER_MakeFreshHero();
 void ARX_PLAYER_QuickGeneration();
 void ARX_PLAYER_MakeAverageHero();
 void ARX_PLAYER_Modify_XP(long val);
-void ARX_PLAYER_FrameCheck(float _framedelay);
+void ARX_PLAYER_FrameCheck(float Framedelay);
 void ARX_PLAYER_Poison(float val);
 void ARX_PLAYER_Manage_Visual();
 void ARX_PLAYER_Remove_Invisibility();

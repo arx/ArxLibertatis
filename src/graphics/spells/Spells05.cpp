@@ -1012,7 +1012,7 @@ float CMultiPoisonProjectile::Render()
 			damages[t].radius = 120.f;
 			float v = spells[spellinstance].caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
-			damages[t].damages	= v * ( 1.0f / 1000 ) * _framedelay;
+			damages[t].damages	= v * ( 1.0f / 1000 ) * framedelay;
 			damages[t].area		= DAMAGE_FULL;
 			damages[t].duration	= static_cast<long>(FrameDiff);
 			damages[t].source	= spells[spellinstance].caster;

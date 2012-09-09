@@ -1367,16 +1367,13 @@ void ARX_PLAYER_Poison(float val)
 	}
 }
 long PLAYER_PARALYSED = 0;
-//*************************************************************************************
-// void ARX_PLAYER_FrameCheck(float _framedelay)
-//-------------------------------------------------------------------------------------
+
 // FUNCTION/RESULT:
 //   updates some player stats depending on time:
 //		.life/mana recovery
 //		.poison evolution
 //		.hunger check
 //		.invisibility
-//*************************************************************************************
 void ARX_PLAYER_FrameCheck(float Framedelay)
 {
 	//	ARX_PLAYER_QuickGeneration();
@@ -1422,7 +1419,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 			}
 
 			// Natural MANA recovery
-			player.mana += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //_framedelay*( 1.0f / 1000 );
+			player.mana += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
 
 			if (player.mana > player.Full_maxmana) player.mana = player.Full_maxmana;
 		}

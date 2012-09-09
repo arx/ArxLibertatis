@@ -2495,7 +2495,7 @@ void ArxGame::ManagePlayerControls()
 
 				if (!npc)
 				{
-					MagicSightFader+=_framedelay*( 1.0f / 200 );
+					MagicSightFader+=framedelay*( 1.0f / 200 );
 
 					if (MagicSightFader>1.f) MagicSightFader=1.f;
 				}
@@ -4683,7 +4683,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							angle.b=EEsin(arxtime.get_updated() * ( 1.0f / 200 ))*necklace.runes[i]->angle.b*( 1.0f / 40 );
 						}
 
-						necklace.runes[i]->angle.b-=_framedelay*0.2f;
+						necklace.runes[i]->angle.b-=framedelay*0.2f;
 
 						if (necklace.runes[i]->angle.b<0.f) necklace.runes[i]->angle.b=0.f;
 
@@ -4746,7 +4746,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 								DrawEERIEInter(necklace.runes[i],&angle,&pos,NULL);
 
-								necklace.runes[i]->angle.b+=_framedelay*2.f;
+								necklace.runes[i]->angle.b+=framedelay*2.f;
 
 								PopAllTriangleList();
 								

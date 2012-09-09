@@ -780,15 +780,15 @@ void ArxGame::Render() {
 		arxtime.update_frame_time();
 	}
 
-	_framedelay = arxtime.get_frame_delay();
-	arx_assert(_framedelay >= 0.0f);
+	framedelay = arxtime.get_frame_delay();
+	arx_assert(framedelay >= 0.0f);
 
 	// limit fps above 10fps
 	const float max_framedelay = 1000.0f / 10.0f;
-	_framedelay = _framedelay > max_framedelay ? max_framedelay : _framedelay;
+	framedelay = framedelay > max_framedelay ? max_framedelay : framedelay;
 
-	// TODO eliminate FrameDiff == _framedelay (replace)
-	FrameDiff = _framedelay;
+	// TODO eliminate FrameDiff == framedelay (replace)
+	FrameDiff = framedelay;
 
 	if (GInput->isKeyPressedNowPressed(Keyboard::Key_F12))
 	{
@@ -2138,7 +2138,7 @@ void ArxGame::GoFor2DFX()
 		Entity* pTableIO[256];
 		int nNbInTableIO = 0;
 
-		float temp_increase=_framedelay*( 1.0f / 1000 )*4.f;
+		float temp_increase=framedelay*( 1.0f / 1000 )*4.f;
 		{
 			bool bComputeIO = false;
 

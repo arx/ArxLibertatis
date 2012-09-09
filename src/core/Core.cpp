@@ -313,7 +313,7 @@ string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
 float SLID_VALUE=0.f;
-float _framedelay;
+float framedelay;
 
 float LASTfps2=0;
 float fps2=0;
@@ -2787,7 +2787,7 @@ void ManageCombatModeAnimations()
 				if (GLOBAL_SLOWDOWN!=1.f)
 					BOW_FOCAL+=Original_framedelay;
 				else
-					BOW_FOCAL += _framedelay;
+					BOW_FOCAL += framedelay;
 
 				if (BOW_FOCAL>710) BOW_FOCAL=710;
 			}
@@ -3663,7 +3663,7 @@ void ShowInfoText() {
 	unsigned long uGAT = (unsigned long)(arxtime) / 1000;
 	long GAT=(long)uGAT;
 	char tex[256];
-	float fpss2=1000.f/_framedelay;
+	float fpss2=1000.f/framedelay;
 	LASTfpscount++;
 	
 	float fps2v=max(fpss2,LASTfps2);
@@ -3681,7 +3681,7 @@ void ShowInfoText() {
 		LASTfps2=fpss2;
 	}
 
-	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, _framedelay, INTER_DRAW, INTER_COMPUTE, 0, vdist);
+	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW, INTER_COMPUTE, 0, vdist);
 	mainApp->OutputText( 70, 32, tex );
 
 	float poss=-666.66f;

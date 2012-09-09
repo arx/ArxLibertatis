@@ -6428,7 +6428,7 @@ void ARX_SPELLS_Update()
 
 						if (dist<300.f)
 						{
-							float gain=((rnd()*1.6f+0.8f)*spells[i].caster_level)*(300.f-dist)*( 1.0f / 300 )*_framedelay*( 1.0f / 1000 );
+							float gain=((rnd()*1.6f+0.8f)*spells[i].caster_level)*(300.f-dist)*( 1.0f / 300 )*framedelay*( 1.0f / 1000 );
 
 							if (ii==0) 
 							{

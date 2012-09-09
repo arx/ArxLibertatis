@@ -677,7 +677,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 				{
 
 
-					float sub = _framedelay * 0.001f;
+					float sub = framedelay * 0.001f;
 					el->rgb.r -= sub;
 
 					if (el->rgb.r < 0) el->rgb.r = 0.f;

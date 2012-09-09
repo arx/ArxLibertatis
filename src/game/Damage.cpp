@@ -636,7 +636,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 
 	if (flags & DAMAGE_TYPE_PER_SECOND)
 	{
-		dmg = dmg * _framedelay * ( 1.0f / 1000 );
+		dmg = dmg * framedelay * ( 1.0f / 1000 );
 	}
 
 	if (target == 0)

@@ -1030,7 +1030,7 @@ void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 void ARX_NPC_ManagePoison(Entity * io)
 {
 	float cp = io->_npcdata->poisonned;
-	cp *= ( 1.0f / 2 ) * _framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
+	cp *= ( 1.0f / 2 ) * framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
 
 	if (faster < 0.f) faster = 0.f;
@@ -1336,7 +1336,7 @@ void FaceTarget2(Entity * io)
 
 	if (tt == 0) return;
 
-	float rot = 0.33f * _framedelay; 
+	float rot = 0.33f * framedelay; 
 
 	if (EEfabs(tt) < rot) rot = (float)EEfabs(tt);
 
@@ -1389,7 +1389,7 @@ void StareAtTarget(Entity * io)
 
 	if (((io->target.x - tv.x) == 0) && ((io->target.z - tv.z) == 0)) return;
 
-	float rot = 0.27f * _framedelay;
+	float rot = 0.27f * framedelay;
 	float alpha = MAKEANGLE(io->angle.b);
 	float beta = -io->head_rot; 
 	float pouet = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
@@ -3076,7 +3076,7 @@ static void ManageNPCMovement(Entity * io)
 				for (long n = 0; n < 4; n++)
 				{
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					io->_npcdata->ex_rotate->group_rotate[n].b += io->_npcdata->look_around_inc * _framedelay * t;
+					io->_npcdata->ex_rotate->group_rotate[n].b += io->_npcdata->look_around_inc * framedelay * t;
 				}
 
 				if (io->_npcdata->ex_rotate->group_rotate[0].b > 30)
@@ -4307,11 +4307,11 @@ void ManageIgnition(Entity * io)
 	}
 	else
 	{
-		io->ignition -= _framedelay * ( 1.0f / 100 );
+		io->ignition -= framedelay * ( 1.0f / 100 );
 
 		if ((!io) || (!io->obj)) return;
 
-		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->facelist.size() * ( 1.0f / 1000 );
+		float p = io->ignition * framedelay * ( 1.0f / 1000 ) * io->obj->facelist.size() * ( 1.0f / 1000 );
 
 		if (p > 5.f)
 			p = 5.f;

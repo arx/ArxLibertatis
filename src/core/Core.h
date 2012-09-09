@@ -91,7 +91,7 @@ extern res::path LastLoadedScene;
 extern char TELEPORT_TO_LEVEL[64];
 extern char TELEPORT_TO_POSITION[64];
 extern float PULSATE;
-extern float _framedelay;
+extern float framedelay;
 extern float BASE_FOCAL;
 
 extern float Xratio;

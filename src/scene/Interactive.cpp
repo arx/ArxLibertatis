@@ -3480,7 +3480,7 @@ void UpdateCameras()
 
 						vv = (8000 - vv) * ( 1.0f / 4000 );
 
-						float f1 = _framedelay * ( 1.0f / 1000 ) * vv; 
+						float f1 = framedelay * ( 1.0f / 1000 ) * vv; 
 
 						if (f1 > 1.f) f1 = 1.f;
 
@@ -3548,13 +3548,13 @@ void UpdateIOInvisibility(Entity * io)
 	{
 		if ((io->gameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
 		{
-			io->invisibility += _framedelay * ( 1.0f / 1000 );
+			io->invisibility += framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility > 1.f) io->invisibility = 1.f;
 		}
 		else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
 		{
-			io->invisibility -= _framedelay * ( 1.0f / 1000 );
+			io->invisibility -= framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility < 0.f) io->invisibility = 0.f;
 		}

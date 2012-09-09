@@ -2963,7 +2963,7 @@ void ARX_SCENE_Render(long flag) {
 
 	unsigned long tim = (unsigned long)(arxtime);
 	
-	WATEREFFECT+=0.0005f*_framedelay;
+	WATEREFFECT+=0.0005f*framedelay;
 
 	if (flag == 3)
 		return;
