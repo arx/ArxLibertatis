@@ -189,7 +189,6 @@ extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;
 extern float	vdist;
 extern float	FLOATTEST;
-extern float	_MAX_CLIP_DIST;
 extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
