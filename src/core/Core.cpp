@@ -309,7 +309,6 @@ char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
 string WILL_LAUNCH_CINE;
-char _CURRENTLOAD_[256];
 res::path LastLoadedScene;
 string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
@@ -692,7 +691,6 @@ void runGame() {
 	LogDebug("EventStack Init");
 	ARX_EQUIPMENT_Init();
 	LogDebug("AEQ Init");
-	memset(_CURRENTLOAD_,0,256);
 	
 	ARX_SCRIPT_Timer_FirstInit(512);
 	LogDebug("Timer Init");
