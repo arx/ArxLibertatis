@@ -419,7 +419,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			script::Command::Result res;
 			if(command.getIOFlags()
 			   && (!io || (command.getIOFlags() != script::Command::ANY_IO
-			               && !(command.getIOFlags() & io->ioflags)))) {
+			               && !(command.getIOFlags() & long(io->ioflags))))) {
 				ScriptEventWarning << "command " << command.getName() << " needs an IO of type "
 				                   << command.getIOFlags();
 				context.skipCommand();

@@ -714,7 +714,6 @@ static void ARX_PLAYER_ComputePlayerStats() {
 
 	player.AimTime = 1500;
 }
-extern float ARX_EQUIPMENT_ApplyPercent(Entity * io, long ident, float trueval);
 extern long cur_mr;
 extern long SPECIAL_PNUX;
 //*************************************************************************************

@@ -850,8 +850,8 @@ struct SavedEquipItemElement {
 	inline operator IO_EQUIPITEM_ELEMENT() const {
 		IO_EQUIPITEM_ELEMENT a;
 		a.value = value;
-		a.flags = flags;
-		a.special = special;
+		a.flags = EquipmentModifierFlags::load(flags); // TODO save/load flags
+		a.special = EquipmentModifiedSpecialType(special); // TODO save/load enum
 		return a;
 	}
 	

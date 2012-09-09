@@ -1391,8 +1391,9 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 // Sets an equipment property
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-float ARX_EQUIPMENT_Apply(Entity * io, long ident, float trueval)
-{
+float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
+                          float trueval) {
+	
 	if (io == NULL) return trueval;
 
 	if (io != entities.player()) return trueval;
@@ -1410,7 +1411,7 @@ float ARX_EQUIPMENT_Apply(Entity * io, long ident, float trueval)
 			{
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
 
-				if (!(elem->flags & 1)) 
+				if (!(elem->flags & IO_ELEMENT_FLAG_PERCENT)) 
 					toadd += elem->value;
 			}
 		}
@@ -1419,8 +1420,9 @@ float ARX_EQUIPMENT_Apply(Entity * io, long ident, float trueval)
 	return toadd;
 }
 
-float ARX_EQUIPMENT_ApplyPercent(Entity * io, long ident, float trueval)
-{
+float ARX_EQUIPMENT_ApplyPercent(Entity * io, EquipmentModifierType ident,
+                                 float trueval) {
+	
 	if (io == NULL) return trueval;
 
 	if (io != entities.player()) return trueval;
@@ -1438,7 +1440,7 @@ float ARX_EQUIPMENT_ApplyPercent(Entity * io, long ident, float trueval)
 			{
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
 
-				if (elem->flags & 1) // percentile value...
+				if (elem->flags & IO_ELEMENT_FLAG_PERCENT) // percentile value...
 				{
 					toadd += elem->value;
 				}
@@ -1449,8 +1451,10 @@ float ARX_EQUIPMENT_ApplyPercent(Entity * io, long ident, float trueval)
 	return (toadd * trueval * ( 1.0f / 100 ));
 }
 
-void ARX_EQUIPMENT_SetEquip(Entity * io, bool special, const std::string & param2, float val, short flags)
-{
+void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
+                            const std::string & param2, float val,
+                            EquipmentModifierFlags flags) {
+	
 	if (io == NULL) return;
 
 	if (!(io->ioflags & IO_ITEM)) return;
@@ -1491,7 +1495,7 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special, const std::string & param
 		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
 			if(param2 == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;
-				io->_itemdata->equipitem->elements[i].special = 0;
+				io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_NONE;
 				io->_itemdata->equipitem->elements[i].flags = flags;
 				return;
 			}

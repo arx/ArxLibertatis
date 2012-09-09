@@ -50,6 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <string>
 
+#include "game/Item.h"
 #include "math/MathFwd.h"
 #include "platform/Flags.h"
 
@@ -62,23 +63,6 @@ enum WeaponType {
 	WEAPON_2H = 3,
 	WEAPON_BOW = 4
 };
-
-enum ItemTypeFlag {
-	OBJECT_TYPE_WEAPON   = (1<<0),
-	OBJECT_TYPE_DAGGER   = (1<<1),
-	OBJECT_TYPE_1H       = (1<<2),
-	OBJECT_TYPE_2H       = (1<<3),
-	OBJECT_TYPE_BOW      = (1<<4),
-	OBJECT_TYPE_SHIELD   = (1<<5),
-	OBJECT_TYPE_FOOD     = (1<<6),
-	OBJECT_TYPE_GOLD     = (1<<7),
-	OBJECT_TYPE_ARMOR    = (1<<8),
-	OBJECT_TYPE_HELMET   = (1<<9),
-	OBJECT_TYPE_RING     = (1<<10),
-	OBJECT_TYPE_LEGGINGS = (1<<11)
-};
-DECLARE_FLAGS(ItemTypeFlag, ItemType)
-DECLARE_FLAGS_OPERATORS(ItemType)
 
 enum EquipmentSlot {
 	EQUIP_SLOT_RING_LEFT = 0,
@@ -93,7 +77,9 @@ enum EquipmentSlot {
 
 void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(Entity * io);
-void ARX_EQUIPMENT_SetEquip(Entity * io, bool special, const std::string & param2, float val, short flags);
+void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
+                            const std::string & param2, float val,
+                            EquipmentModifierFlags flags);
 
 //! Sets/unsets an object type flag
 bool ARX_EQUIPMENT_SetObjectType(Entity & io, const std::string & temp, bool set);
@@ -109,7 +95,10 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
  
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 long ARX_EQUIPMENT_GetPlayerWeaponType();
-float ARX_EQUIPMENT_Apply(Entity * io, long ident, float trueval);
+float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
+                                       float trueval);
+float ARX_EQUIPMENT_ApplyPercent(Entity * io, EquipmentModifierType ident,
+                                 float trueval);
 bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float percentaim, long flags, long targ = -1);
 void ARX_EQUIPMENT_RecreatePlayerMesh();
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * pos = NULL);

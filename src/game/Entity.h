@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioTypes.h"
 #include "game/Damage.h" // TODO needed for DamageType
-#include "game/Equipment.h" // TODO needed for ItemType
 #include "game/Spells.h" // TODO needed for Spell, Rune, SpellcastFlags
 #include "graphics/Color.h"
 #include "graphics/BaseGraphicsTypes.h"
@@ -105,6 +104,23 @@ enum IOCollisionFlag {
 };
 DECLARE_FLAGS(IOCollisionFlag, IOCollisionFlags)
 DECLARE_FLAGS_OPERATORS(IOCollisionFlags)
+
+enum ItemTypeFlag {
+	OBJECT_TYPE_WEAPON   = (1<<0),
+	OBJECT_TYPE_DAGGER   = (1<<1),
+	OBJECT_TYPE_1H       = (1<<2),
+	OBJECT_TYPE_2H       = (1<<3),
+	OBJECT_TYPE_BOW      = (1<<4),
+	OBJECT_TYPE_SHIELD   = (1<<5),
+	OBJECT_TYPE_FOOD     = (1<<6),
+	OBJECT_TYPE_GOLD     = (1<<7),
+	OBJECT_TYPE_ARMOR    = (1<<8),
+	OBJECT_TYPE_HELMET   = (1<<9),
+	OBJECT_TYPE_RING     = (1<<10),
+	OBJECT_TYPE_LEGGINGS = (1<<11)
+};
+DECLARE_FLAGS(ItemTypeFlag, ItemType)
+DECLARE_FLAGS_OPERATORS(ItemType)
 
 struct IO_HALO {
 	Color3f color;

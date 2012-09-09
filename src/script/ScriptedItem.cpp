@@ -43,6 +43,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedItem.h"
 
+#include "game/Equipment.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
 #include "game/Player.h"
@@ -225,7 +226,10 @@ public:
 		string param2 = context.getWord();
 		string val = context.getWord();
 		
-		short flag = (!val.empty() && val[val.length() - 1] == '%') ? 1 : 0;
+		EquipmentModifierFlags flag = 0;
+		if(!val.empty() && val[val.length() - 1] == '%') {
+			flag |= IO_ELEMENT_FLAG_PERCENT;
+		}
 		float fval = context.getFloatVar(val);
 		
 		DebugScript(' ' << options << ' ' << param2 << ' ' << fval << ' ' << flag);

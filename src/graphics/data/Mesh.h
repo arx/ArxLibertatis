@@ -258,40 +258,6 @@ DECLARE_FLAGS_OPERATORS(CollisionFlags)
 //-----------------------------------------------------------------------------
 //	Entity Structs Start
 //-----------------------------------------------------------------------------
-#define IO_EQUIPITEM_ELEMENT_STRENGTH			0
-#define IO_EQUIPITEM_ELEMENT_DEXTERITY			1
-#define IO_EQUIPITEM_ELEMENT_CONSTITUTION		2
-#define IO_EQUIPITEM_ELEMENT_MIND				3
-#define IO_EQUIPITEM_ELEMENT_Stealth			4
-#define IO_EQUIPITEM_ELEMENT_Mecanism			5
-#define IO_EQUIPITEM_ELEMENT_Intuition			6
-#define IO_EQUIPITEM_ELEMENT_Etheral_Link		7
-#define IO_EQUIPITEM_ELEMENT_Object_Knowledge	8
-#define IO_EQUIPITEM_ELEMENT_Casting			9
-#define IO_EQUIPITEM_ELEMENT_Projectile			10
-#define IO_EQUIPITEM_ELEMENT_Close_Combat		11
-#define IO_EQUIPITEM_ELEMENT_Defense			12
-#define IO_EQUIPITEM_ELEMENT_Armor_Class		13
-#define IO_EQUIPITEM_ELEMENT_Resist_Magic		14
-#define IO_EQUIPITEM_ELEMENT_Resist_Poison		15
-#define IO_EQUIPITEM_ELEMENT_Critical_Hit		16
-#define IO_EQUIPITEM_ELEMENT_Damages			17
-#define IO_EQUIPITEM_ELEMENT_Duration			18
-#define IO_EQUIPITEM_ELEMENT_AimTime			19
-#define IO_EQUIPITEM_ELEMENT_Identify_Value		20
-#define IO_EQUIPITEM_ELEMENT_Life				21
-#define IO_EQUIPITEM_ELEMENT_Mana				22
-#define IO_EQUIPITEM_ELEMENT_MaxLife			23
-#define IO_EQUIPITEM_ELEMENT_MaxMana			24
-#define IO_EQUIPITEM_ELEMENT_SPECIAL_1			25
-#define IO_EQUIPITEM_ELEMENT_SPECIAL_2			26
-#define IO_EQUIPITEM_ELEMENT_SPECIAL_3			27
-#define IO_EQUIPITEM_ELEMENT_SPECIAL_4			28
-#define IO_SPECIAL_ELEM_NONE		0
-#define IO_SPECIAL_ELEM_PARALYZE	1
-#define IO_SPECIAL_ELEM_DRAIN_LIFE	2
-#define IO_ELEMENT_FLAG_NONE		0
-#define IO_ELEMENT_FLAG_PERCENT		1
 
 // EditorFlags
 #define EFLAG_NOTSAVED			1

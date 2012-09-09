@@ -46,13 +46,56 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Entity.h"
 
-struct IO_EQUIPITEM_ELEMENT {
-	float value;
-	short flags;
-	short special; // TODO unused?
+enum EquipmentModifierType {
+	IO_EQUIPITEM_ELEMENT_STRENGTH         = 0,
+	IO_EQUIPITEM_ELEMENT_DEXTERITY        = 1,
+	IO_EQUIPITEM_ELEMENT_CONSTITUTION     = 2,
+	IO_EQUIPITEM_ELEMENT_MIND             = 3,
+	IO_EQUIPITEM_ELEMENT_Stealth          = 4,
+	IO_EQUIPITEM_ELEMENT_Mecanism         = 5,
+	IO_EQUIPITEM_ELEMENT_Intuition        = 6,
+	IO_EQUIPITEM_ELEMENT_Etheral_Link     = 7,
+	IO_EQUIPITEM_ELEMENT_Object_Knowledge = 8,
+	IO_EQUIPITEM_ELEMENT_Casting          = 9,
+	IO_EQUIPITEM_ELEMENT_Projectile       = 10,
+	IO_EQUIPITEM_ELEMENT_Close_Combat     = 11,
+	IO_EQUIPITEM_ELEMENT_Defense          = 12,
+	IO_EQUIPITEM_ELEMENT_Armor_Class      = 13,
+	IO_EQUIPITEM_ELEMENT_Resist_Magic     = 14,
+	IO_EQUIPITEM_ELEMENT_Resist_Poison    = 15,
+	IO_EQUIPITEM_ELEMENT_Critical_Hit     = 16,
+	IO_EQUIPITEM_ELEMENT_Damages          = 17,
+	IO_EQUIPITEM_ELEMENT_Duration         = 18,
+	IO_EQUIPITEM_ELEMENT_AimTime          = 19,
+	IO_EQUIPITEM_ELEMENT_Identify_Value   = 20,
+	IO_EQUIPITEM_ELEMENT_Life             = 21,
+	IO_EQUIPITEM_ELEMENT_Mana             = 22,
+	IO_EQUIPITEM_ELEMENT_MaxLife          = 23,
+	IO_EQUIPITEM_ELEMENT_MaxMana          = 24,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_1        = 25,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_2        = 26,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_3        = 27,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_4        = 28,
+	IO_EQUIPITEM_ELEMENT_Number
 };
 
-#define IO_EQUIPITEM_ELEMENT_Number 29
+enum EquipmentModifierFlag {
+	IO_ELEMENT_FLAG_PERCENT = (1<<0)
+};
+DECLARE_FLAGS(EquipmentModifierFlag, EquipmentModifierFlags)
+DECLARE_FLAGS_OPERATORS(EquipmentModifierFlags)
+
+enum EquipmentModifiedSpecialType {
+	IO_SPECIAL_ELEM_NONE       = 0,
+	IO_SPECIAL_ELEM_PARALYZE   = 1,
+	IO_SPECIAL_ELEM_DRAIN_LIFE = 2,
+};
+
+struct IO_EQUIPITEM_ELEMENT {
+	float value;
+	EquipmentModifierFlags flags;
+	EquipmentModifiedSpecialType special;
+};
 
 struct IO_EQUIPITEM {
 	IO_EQUIPITEM_ELEMENT elements[IO_EQUIPITEM_ELEMENT_Number];
