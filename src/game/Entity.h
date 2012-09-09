@@ -181,6 +181,13 @@ enum EntityFlag {
 DECLARE_FLAGS(EntityFlag, EntityFlags)
 DECLARE_FLAGS_OPERATORS(EntityFlags)
 
+enum EntitySfxFlag {
+	SFX_TYPE_YLSIDE_DEATH = (1<<0),
+	SFX_TYPE_INCINERATE   = (1<<1)
+};
+DECLARE_FLAGS(EntitySfxFlag, EntitySfxFlags)
+DECLARE_FLAGS_OPERATORS(EntitySfxFlags)
+
 struct Entity {
 	
 	explicit Entity(long num);
@@ -307,7 +314,7 @@ struct Entity {
 	std::string weaponmaterial;
 	std::string strikespeech;
 	
-	short sfx_flag;
+	EntitySfxFlags sfx_flag;
 	std::vector<TWEAK_INFO> tweaks;
 	char secretvalue;
 	
