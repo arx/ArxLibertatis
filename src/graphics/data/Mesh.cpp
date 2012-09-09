@@ -969,10 +969,9 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out)
 	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp;
 }
-//*************************************************************************************
-//*************************************************************************************
-__inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam)
-{
+
+static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam) {
+	
 	TexturedVertex tout;
 	out->p.x = in->p.x - cam->pos.x;
 	out->p.y = in->p.y - cam->pos.y;
@@ -1018,8 +1017,8 @@ void EE_RTT(TexturedVertex * in, TexturedVertex * out)
 
 //*************************************************************************************
 //*************************************************************************************
-__inline void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam)
-{
+static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
+	
 	camEE_RTP(&ep->v[0], &ep->tv[0], cam);
 	camEE_RTP(&ep->v[1], &ep->tv[1], cam);
 	camEE_RTP(&ep->v[2], &ep->tv[2], cam);
