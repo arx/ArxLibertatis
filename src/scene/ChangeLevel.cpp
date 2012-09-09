@@ -138,7 +138,7 @@ static SaveBlock * _pSaveBlock = NULL;
 static ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
 static ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** Gaids = NULL;
 
-static Entity * _ConvertToValidIO(const string & ident) {
+static Entity * convertToValidIO(const string & ident) {
 	
 	CONVERT_CREATED = 0;
 	
@@ -181,7 +181,7 @@ static Entity * _ConvertToValidIO(const string & ident) {
 
 template <size_t N>
 static Entity * ConvertToValidIO(const char (&str)[N]) {
-	return _ConvertToValidIO(toLowercase(safestring(str)));
+	return convertToValidIO(toLowercase(safestring(str)));
 }
 
 template <size_t N>
@@ -196,7 +196,7 @@ static long ReadTargetInfo(const char (&str)[N]) {
 	} else if(ident == "player") {
 		return 0;
 	} else {
-		return GetInterNum(_ConvertToValidIO(ident));
+		return GetInterNum(convertToValidIO(ident));
 	}
 }
 
