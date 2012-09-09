@@ -124,7 +124,7 @@ EERIEMATRIX * BIGMAT;
 float dists[32];
 float values[32];
 float vdist;
-long __MUST_DRAW = 0;
+long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
 long DEBUG_PATHFAIL = 1;
 long LOOK_AT_TARGET = 0;
@@ -999,7 +999,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
-	if(io && io != entities.player() && !modinfo && !ForceIODraw && !__MUST_DRAW && ACTIVEBKG) {
+	if(io && io != entities.player() && !modinfo && !ForceIODraw && !MUST_DRAW && ACTIVEBKG) {
 		
 		long xx, yy;
 		xx = (pos.x) * ACTIVEBKG->Xmul;

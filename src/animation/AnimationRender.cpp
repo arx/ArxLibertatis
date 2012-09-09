@@ -1989,7 +1989,7 @@ static bool Cedric_IO_Visible(Entity * io) {
 	return true;
 }
 
-extern long __MUST_DRAW;
+extern long MUST_DRAW;
 extern long EXTERNALVIEW;
 
 /* Apply animation and draw object */
@@ -2128,7 +2128,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 							ManageIgnition(ioo);
 					}
 
-					__MUST_DRAW = 1;
+					MUST_DRAW = 1;
 
 					// specific check to avoid drawing player weapon on its back when in subjective view
 					if ((io == entities.player()) &&
@@ -2155,7 +2155,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 					if (ioo)
 						ioo->invisibility = old;
 
-					__MUST_DRAW = 0;
+					MUST_DRAW = 0;
 
 				}
 			}
