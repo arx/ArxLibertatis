@@ -129,7 +129,6 @@ static fs::path CURRENT_GAME_FILE;
 static float ARX_CHANGELEVEL_DesiredTime = 0;
 static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
-long FORBID_SAVE = 0;
 static SaveBlock * pSaveBlock = NULL;
 
 static ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
@@ -273,7 +272,6 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	
 	ARX_CHANGELEVEL_DesiredTime = arxtime.get_updated();
 		
-	FORBID_SAVE = 1;
 	long num = GetLevelNumByName("level" + level);
 
 	LoadLevelScreen(num);
@@ -2917,8 +2915,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 	
-	// Forbid Saving
-	FORBID_SAVE = 1;
 	arxtime.pause();
 	
 	if(!ARX_Changelevel_CurGame_Clear()) {

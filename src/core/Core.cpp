@@ -3359,7 +3359,6 @@ void DANAE_StartNewQuest()
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
 	DanaeLoadLevel(loadfrom);
-	FORBID_SAVE=0;
 	FirstFrame=1;
 	START_NEW_QUEST=0;
 	STARTED_A_GAME=1;
@@ -3379,7 +3378,6 @@ bool DANAE_ManageSplashThings() {
 		
 		if(GInput->isAnyKeyPressed()) {
 			REFUSE_GAME_RETURN = 1;
-			FORBID_SAVE = 0;
 			FirstFrame=  1;
 			SPLASH_THINGS_STAGE = 0;
 			ARXmenu.currentmode = AMCM_MAIN;
@@ -3465,7 +3463,6 @@ bool DANAE_ManageSplashThings() {
 			LoadLevelScreen(10);	
 
 			DanaeLoadLevel(loadfrom);
-			FORBID_SAVE=0;
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
 
@@ -3476,7 +3473,6 @@ bool DANAE_ManageSplashThings() {
 
 		if (SPLASH_THINGS_STAGE > 13)
 		{
-			FORBID_SAVE=0;
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
 
