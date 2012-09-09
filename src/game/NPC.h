@@ -110,8 +110,14 @@ struct IO_PATHFIND {
 	long truetarget;
 };
 
+enum ExtraRotateFlag {
+	EXTRA_ROTATE_REALISTIC = (1<<0)
+};
+DECLARE_FLAGS(ExtraRotateFlag, ExtraRotateFlags)
+DECLARE_FLAGS_OPERATORS(ExtraRotateFlags)
+
 struct EERIE_EXTRA_ROTATE {
-	long flags;
+	ExtraRotateFlags flags;
 	short group_number[MAX_EXTRA_ROTATE];
 	Anglef group_rotate[MAX_EXTRA_ROTATE];
 };

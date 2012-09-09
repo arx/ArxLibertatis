@@ -230,7 +230,6 @@ struct ANIM_USE;
 //	Entity Structs Start
 //-----------------------------------------------------------------------------
 
-#define EXTRA_ROTATE_REALISTIC 1
 #define NPCFLAG_BACKSTAB	1
 #define HALO_ACTIVE		1
 #define HALO_NEGATIVE	2

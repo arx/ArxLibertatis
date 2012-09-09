@@ -767,7 +767,7 @@ struct SavedExtraRotate {
 	
 	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
-		a.flags = flags;
+		a.flags = ExtraRotateFlags::load(flags); // TODO save/load flags
 		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
 		std::copy(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
