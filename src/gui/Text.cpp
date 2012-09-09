@@ -264,7 +264,9 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-static Font * _CreateFont(const res::path & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor) {
+static Font * createFont(const res::path & fontFace,
+                         const string & fontProfileName, unsigned int fontSize,
+                         float scaleFactor) {
 	
 	std::stringstream ss;
 
@@ -347,13 +349,13 @@ bool ARX_Text_Init() {
 	
 	FontCache::Initialize();
 	
-	Font * nFontMainMenu = _CreateFont(file, "system_font_mainmenu_size", 58, scale);
-	Font * nFontMenu = _CreateFont(file, "system_font_menu_size", 32, scale);
-	Font * nFontControls = _CreateFont(file, "system_font_menucontrols_size", 22, scale);
-	Font * nFontCredits = _CreateFont(file, "system_font_menucredits_size", 36, scale);
-	Font * nFontInGame = _CreateFont(file, "system_font_book_size", 18, small_scale);
-	Font * nFontInGameNote = _CreateFont(file, "system_font_note_size", 18, small_scale);
-	Font * nFontInBook = _CreateFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontMainMenu = createFont(file, "system_font_mainmenu_size", 58, scale);
+	Font * nFontMenu = createFont(file, "system_font_menu_size", 32, scale);
+	Font * nFontControls = createFont(file, "system_font_menucontrols_size", 22, scale);
+	Font * nFontCredits = createFont(file, "system_font_menucredits_size", 36, scale);
+	Font * nFontInGame = createFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, small_scale);
+	Font * nFontInBook = createFont(file, "system_font_book_size", 18, small_scale);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
 	FontCache::ReleaseFont(hFontMainMenu);
