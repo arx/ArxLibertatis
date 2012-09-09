@@ -64,24 +64,24 @@ class ResourceHandle {
 public:
 	
 	ResourceHandle() {
-		__count = 0;
+		reference_count_ = 0;
 	}
 	virtual ~ResourceHandle() { }
 	
 	inline void reference() {
-		++__count;
+		++reference_count_;
 	}
 	inline void dereference() {
-		arx_assert(__count > 0);
-		--__count;
+		arx_assert(reference_count_ > 0);
+		--reference_count_;
 	}
 	inline s32 isReferenced() {
-		return __count;
+		return reference_count_;
 	}
 	
 private:
 	
-	s32 __count;
+	s32 reference_count_;
 	
 };
 
