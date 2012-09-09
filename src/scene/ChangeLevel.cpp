@@ -135,8 +135,8 @@ long DONT_WANT_PLAYER_INZONE = 0;
 long FORBID_SAVE = 0;
 static SaveBlock * _pSaveBlock = NULL;
 
-ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
-ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
+static ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
+static ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** Gaids = NULL;
 
 static Entity * _ConvertToValidIO(const string & ident) {
 	
@@ -2023,9 +2023,9 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	} else {
 		
 		long Gaids_Number = GetInterNum(io);
-		_Gaids[Gaids_Number] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
+		Gaids[Gaids_Number] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
 		
-		memset(_Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
+		memset(Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));
 		
 		io->room_flags = 1;
 		io->room = -1;
@@ -2160,7 +2160,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		}
 		
 		// Target Info
-		memcpy(_Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, SIZE_ID);
+		memcpy(Gaids[Gaids_Number]->targetinfo, ais->id_targetinfo, SIZE_ID);
 		
 		ARX_SCRIPT_Timer_Clear_By_IO(io);
 		
@@ -2212,7 +2212,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				return io;
 		}
 		
-		_Gaids[Gaids_Number]->weapon[0] = '\0';
+		Gaids[Gaids_Number]->weapon[0] = '\0';
 		
 		switch (ais->savesystem_type) {
 			
@@ -2234,7 +2234,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				io->_npcdata->detect = as->detect;
 				io->_npcdata->fightdecision = as->fightdecision;
 				
-				memcpy(_Gaids[Gaids_Number]->weapon, as->id_weapon, SIZE_ID);
+				memcpy(Gaids[Gaids_Number]->weapon, as->id_weapon, SIZE_ID);
 				
 				io->_npcdata->lastmouth = as->lastmouth;
 				io->_npcdata->life = as->life;
@@ -2256,7 +2256,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				std::copy(as->stacked, as->stacked + SAVED_MAX_STACKED_BEHAVIOR, io->_npcdata->stacked);
 				// TODO properly load stacked animations
 				
-				memcpy(_Gaids[Gaids_Number]->stackedtarget, as->stackedtarget, SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
+				memcpy(Gaids[Gaids_Number]->stackedtarget, as->stackedtarget, SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
 				
 				io->_npcdata->critical = as->critical;
 				io->_npcdata->reach = as->reach;
@@ -2339,7 +2339,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		if(ais->system_flags & SYSTEM_FLAG_INVENTORY) {
 			
-			memcpy(_Gaids[Gaids_Number], dat + pos, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
+			memcpy(Gaids[Gaids_Number], dat + pos, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
 			       - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID - SIZE_ID * SAVED_MAX_STACKED_BEHAVIOR);
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 			
@@ -2405,7 +2405,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 					io->obj->linked[n].lidx = ais->linked_data[n].lidx;
 					io->obj->linked[n].lidx2 = ais->linked_data[n].lidx2;
 					io->obj->linked[n].modinfo = ais->linked_data[n].modinfo;
-					memcpy(_Gaids[Gaids_Number]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
+					memcpy(Gaids[Gaids_Number]->linked_id[n], ais->linked_data[n].linked_id, SIZE_ID);
 					io->obj->linked[n].io = NULL;
 					io->obj->linked[n].obj = NULL;
 				}
@@ -2466,7 +2466,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
 			
 			treated[it] = true;
 			
-			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids = _Gaids[it];
+			const ARX_CHANGELEVEL_INVENTORY_DATA_SAVE * aids = Gaids[it];
 			if(!aids) {
 				continue;
 			}
@@ -2645,12 +2645,12 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 static void ReleaseGaids() {
 	
 	for(long i = 0; i < entities.nbmax; i++) {
-		if(_Gaids[i]) {
-			delete _Gaids[i];
+		if(Gaids[i]) {
+			delete Gaids[i];
 		}
 	}
 	
-	delete[] _Gaids, _Gaids = NULL;
+	delete[] Gaids, Gaids = NULL;
 }
 
 static void ARX_CHANGELEVEL_PopLevel_Abort() {
@@ -2673,12 +2673,12 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
 	
-	if(_Gaids) {
+	if(Gaids) {
 		ReleaseGaids();
 	}
 	
-	_Gaids = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *[MAX_IO_SAVELOAD];
-	memset(_Gaids, 0, sizeof(*_Gaids) * MAX_IO_SAVELOAD);
+	Gaids = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *[MAX_IO_SAVELOAD];
+	memset(Gaids, 0, sizeof(*Gaids) * MAX_IO_SAVELOAD);
 	
 	ARX_CHANGELEVEL_INDEX asi;
 	
