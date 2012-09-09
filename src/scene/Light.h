@@ -80,7 +80,7 @@ void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el);
 void EERIE_LIGHT_MoveAll(const Vec3f * trans);
 long EERIE_LIGHT_Create();
 
-void _RecalcLightZone(float x, float z, long siz);
+void RecalcLightZone(float x, float z, long siz);
  
 bool ValidDynLight(long num);
 
