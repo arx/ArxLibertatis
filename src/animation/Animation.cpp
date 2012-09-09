@@ -1110,8 +1110,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			}
 			else
 			{
-				_YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
-				_XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
+				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
+				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
 
 				// Misc Optim to avoid 1 infrequent rotation around Z
 				if(Zsin == 0.f) {
@@ -1123,7 +1123,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				}
 				else
 				{
-					_ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
+					ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
 					eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
 					specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
@@ -1629,7 +1629,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			if(BIGMAT) {
 				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, BIGMAT);
 			} else {
-				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
+				YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
 			}
 	
 			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));

@@ -155,19 +155,19 @@ inline unsigned int GetNextPowerOf2(unsigned int n) {
 
 // Rotations
 
-inline void _ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+inline void ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
 	out->x = (in->x * c) + (in->y * s);
 	out->y = (in->y * c) - (in->x * s);
 	out->z = in->z;
 }
 
-inline void _YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+inline void YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
 	out->x = (in->x * c) + (in->z * s);
 	out->y = in->y;
 	out->z = (in->z * c) - (in->x * s);
 }
 
-inline void _XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
 	out->x = in->x;
 	out->y = (in->y * c) - (in->z * s);
 	out->z = (in->y * s) + (in->z * c);
@@ -190,7 +190,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 // Rotation Functions
 
-inline void _YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
+inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 	register float tempy;
 	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
 	out->y = (in->x * cam->Ycos) + (in->z * cam->Ysin);
@@ -198,11 +198,6 @@ inline void _YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 	out->x = (out->y * cam->Zcos) + (tempy * cam->Zsin);
 	out->y = (tempy * cam->Zcos) - (out->y * cam->Zsin);
 	out->z = (in->y * cam->Xsin) + (out->z * cam->Xcos);
-}
-
-//! Fast normal rotation :p
-inline void _YXZRotateNorm(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
-	out->z = (in->y * cam->Xsin) + (((in->z * cam->Ycos) - (in->x * cam->Ysin)) * cam->Xcos);
 }
 
 // QUATERNION Funcs/Defs

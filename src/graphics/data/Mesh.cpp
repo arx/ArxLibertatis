@@ -2604,9 +2604,9 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 		v.p.y = eobj->vertexlist[i].v.y * scale->y;
 		v.p.z = eobj->vertexlist[i].v.z * scale->z;
 
-		_YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
-		_XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
-		_ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
+		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
+		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
+		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
 		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
 		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
@@ -2686,9 +2686,9 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		v.p.y = eobj->vertexlist[i].v.y * scale->y;
 		v.p.z = eobj->vertexlist[i].v.z * scale->z;
 
-		_YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
-		_XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
-		_ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
+		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
+		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
+		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
 		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
 		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
@@ -3699,9 +3699,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	{
 		//Local Transform
 		p = eobj->vertexlist[i].v - eobj->point0;
-		_YRotatePoint(&p, &rp, Ycos, Ysin);
-		_XRotatePoint(&rp, &p, Xcos, Xsin);
-		_ZRotatePoint(&p, &rp, Zcos, Zsin);
+		YRotatePoint(&p, &rp, Ycos, Ysin);
+		XRotatePoint(&rp, &p, Xcos, Xsin);
+		ZRotatePoint(&p, &rp, Zcos, Zsin);
 		eobj->vertexlist[i].vert.p.x = rp.x + eobj->pos.x + eobj->point0.x;
 		eobj->vertexlist[i].vert.p.y = rp.y + eobj->pos.y + eobj->point0.y;
 		eobj->vertexlist[i].vert.p.z = rp.z + eobj->pos.z + eobj->point0.z;

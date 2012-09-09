@@ -408,8 +408,6 @@ void SetCameraDepth(float depth);
 
 extern void EERIETreatPoint(TexturedVertex *in,TexturedVertex *out);
 extern void EERIETreatPoint2(TexturedVertex *in,TexturedVertex *out);
-void _YRotatePoint(Vec3f *in,Vec3f *out,float c, float s);
-void _XRotatePoint(Vec3f *in,Vec3f *out,float c, float s);
 bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);
 
 void EERIEPOLY_Compute_PolyIn();

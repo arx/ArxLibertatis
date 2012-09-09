@@ -1314,7 +1314,7 @@ void ArxGame::Render() {
 		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
 		else if (dist<90.f) dist=90.f;
 
-		_YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
+		YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
 		
 		sourcepos.x=targetpos.x-vec2.x*dist;
 		sourcepos.y=targetpos.y-vec2.y*dist;

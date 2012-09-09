@@ -579,7 +579,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			{
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
 				float t = radians(MAKEANGLE(rangle));
-				_YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin.x	+=	vecatt.x * curmovedist;
 				test.cyl.origin.y	+=	vecatt.y * curmovedist;
 				test.cyl.origin.z	+=	vecatt.z * curmovedist;
@@ -594,7 +594,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));   
 				t = radians(MAKEANGLE(langle));
-				_YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin.x	+=	vecatt.x * curmovedist;
 				test.cyl.origin.y	+=	vecatt.y * curmovedist;
 				test.cyl.origin.z	+=	vecatt.z * curmovedist;

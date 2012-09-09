@@ -250,7 +250,7 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 
 				if (io == entities.player()) temp = radians(MAKEANGLE(180.f - player.angle.b));
 
-				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
+				YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
 				// stores Translations for a later use
 				io->move = ftr2;

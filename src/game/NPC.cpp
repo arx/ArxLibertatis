@@ -2321,7 +2321,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	Vec3f trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
 	float temp = radians(MAKEANGLE(180.f - io->angle.b));
-	_YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
+	YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
 	IO_PHYSICS phys;
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
