@@ -126,8 +126,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
 static fs::path CURRENT_GAME_FILE;
 
-float ARX_CHANGELEVEL_DesiredTime = 0;
-long CONVERT_CREATED = 0;
+static float ARX_CHANGELEVEL_DesiredTime = 0;
+static long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 long FORBID_SAVE = 0;
 static SaveBlock * pSaveBlock = NULL;
