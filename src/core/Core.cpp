@@ -322,7 +322,6 @@ float fps2min=0;
 long LASTfpscount=0;
 
 long lSLID_VALUE=0;
-long _NB_=0;
 long LOAD_N_DONT_ERASE=0;
 long NO_TIME_INIT=0;
 long DANAESIZX=640;
@@ -1927,18 +1926,15 @@ void FirstTimeThings() {
 	eyeball.exist=0;
 	WILLADDSPEECHTIME=0;
 	WILLADDSPEECH.clear();
-
-	if (!LOADEDD)
-	{
+	
+	if(!LOADEDD) {
 		RemoveAllBackgroundActions();
 	}
-
-	_NB_++;
-
+	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		DynLight[i].exist = 0;
 	}
-
+	
 	arxtime.update_last_frame_time();
 }
 
@@ -2125,7 +2121,6 @@ void FirstFrameHandling()
 		SHOW_TORCH=0;
 	}
 
-	_NB_++;
 	Kam=&subj;
 	mapcam.pos.x = lastteleport.x=subj.pos.x=moveto.x=player.pos.x;
 				lastteleport.y=subj.pos.y=moveto.y=player.pos.y;
