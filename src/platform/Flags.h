@@ -28,7 +28,7 @@
  * 
  * This type should not be used directly, only through DECLARE_FLAGS.
  */
-template <typename _Enum>
+template <typename Enum_>
 class Flags {
 	
 	typedef void ** Zero;
@@ -38,7 +38,7 @@ class Flags {
 	
 public:
 	
-	typedef _Enum Enum;
+	typedef Enum_ Enum;
 	
 	inline Flags(Enum flag) : flags(flag) { }
 	
