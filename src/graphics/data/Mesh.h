@@ -230,10 +230,6 @@ struct ANIM_USE;
 //	Entity Structs Start
 //-----------------------------------------------------------------------------
 
-#define HALO_ACTIVE		1
-#define HALO_NEGATIVE	2
-#define HALO_DYNLIGHT	4
-
 #define TRANSFORMED		2
 #define ALPHABLEND		1
 #define NOCULL			2

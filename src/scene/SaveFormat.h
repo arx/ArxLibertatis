@@ -590,7 +590,7 @@ struct SavedHalo {
 		IO_HALO a;
 		a.color = color;
 		a.radius = radius;
-		a.flags = flags;
+		a.flags = HaloFlags::load(flags); // TODO save/load flags
 		a.dynlight = dynlight;
 		a.offset = offset;
 		return a;

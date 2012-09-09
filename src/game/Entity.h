@@ -122,10 +122,18 @@ enum ItemTypeFlag {
 DECLARE_FLAGS(ItemTypeFlag, ItemType)
 DECLARE_FLAGS_OPERATORS(ItemType)
 
+enum HaloFlag {
+	HALO_ACTIVE   = (1<<0),
+	HALO_NEGATIVE = (1<<1),
+	HALO_DYNLIGHT = (1<<2)
+};
+DECLARE_FLAGS(HaloFlag, HaloFlags)
+DECLARE_FLAGS_OPERATORS(HaloFlags)
+
 struct IO_HALO {
 	Color3f color;
 	float radius;
-	unsigned long flags;
+	HaloFlags flags;
 	long dynlight;
 	Vec3f offset;
 };
