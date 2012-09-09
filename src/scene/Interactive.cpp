@@ -91,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/Random.h"
 
+#include "physics/Anchors.h"
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Box.h"
@@ -2263,20 +2264,20 @@ static Entity * AddMarker(const res::path & file) {
 
 	return io;
 }
-void ShowIOPath(Entity * io)
-{
-	for (long i = 0; i < ACTIVEBKG->nbanchors; i++)
-	{
-		_ANCHOR_DATA * ad = &ACTIVEBKG->anchors[i];
-		ad->flags &= ~1;
-	}
 
-	if ((io) && (io->ioflags & IO_NPC))
-		for (long j = 0; j < io->_npcdata->pathfind.listnb; j++)
-		{
-			_ANCHOR_DATA * ad = &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[j]];
-			ad->flags |= 1;
+void ShowIOPath(Entity * io) {
+	
+	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+		ANCHOR_DATA * ad = &ACTIVEBKG->anchors[i];
+		ad->flags &= ~ANCHOR_FLAG_GREEN_DRAW;
+	}
+	
+	if(io && (io->ioflags & IO_NPC)) {
+		for(long j = 0; j < io->_npcdata->pathfind.listnb; j++) {
+			ANCHOR_DATA * ad = &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[j]];
+			ad->flags |= ANCHOR_FLAG_GREEN_DRAW;
 		}
+	}
 }
 
 #ifdef BUILD_EDITOR

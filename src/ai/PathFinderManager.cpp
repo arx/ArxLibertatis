@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "platform/Thread.h"
 #include "platform/Lock.h"
+#include "physics/Anchors.h"
 #include "scene/Light.h"
 
 using std::memcpy;

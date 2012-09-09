@@ -788,7 +788,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	for (long k = 0; k < eb->nbanchors; k++)
 	{
-		_ANCHOR_DATA * ad = &eb->anchors[k];
+		ANCHOR_DATA * ad = &eb->anchors[k];
 
 		if(closerThan(ad->pos, bestcyl.origin, 50.f)) {
 			return false;
@@ -811,9 +811,9 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
-	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
+	eb->anchors = (ANCHOR_DATA *)realloc(eb->anchors, sizeof(ANCHOR_DATA) * (eb->nbanchors + 1));
 
-	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
+	ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
 	ad->pos.x = bestcyl.origin.x; 
 	ad->pos.y = bestcyl.origin.y;
 	ad->pos.z = bestcyl.origin.z; 
@@ -909,7 +909,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	if (0)
 		for (long k = 0; k < eb->nbanchors; k++)
 		{
-			_ANCHOR_DATA * ad = &eb->anchors[k];
+			ANCHOR_DATA * ad = &eb->anchors[k];
 
 			if ((ad->pos.x == bestcyl.origin.x)
 			        &&	(ad->pos.y == bestcyl.origin.y)
@@ -932,9 +932,9 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
-	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
+	eb->anchors = (ANCHOR_DATA *)realloc(eb->anchors, sizeof(ANCHOR_DATA) * (eb->nbanchors + 1));
 
-	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
+	ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
 	ad->pos.x = bestcyl.origin.x; 
 	ad->pos.y = bestcyl.origin.y; 
 	ad->pos.z = bestcyl.origin.z; 

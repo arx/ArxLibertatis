@@ -140,19 +140,6 @@ struct EERIE_CAMERA {
 	
 };
 
-#define ANCHOR_FLAG_GREEN_DRAW	1
-#define ANCHOR_FLAG_BLOCKED		8
-
-struct _ANCHOR_DATA
-{
-	Vec3f	pos;
-	short		nblinked;
-	short		flags;
-	long	*	linked;
-	float		radius;
-	float		height;
-};
-
 struct EERIE_BKG_INFO
 {
 	char				treat;
@@ -198,6 +185,7 @@ struct FAST_BKG_DATA
 #define BKG_SIZX	100
 #define BKG_SIZZ	100
 
+struct ANCHOR_DATA;
 
 struct EERIE_BACKGROUND
 {
@@ -214,7 +202,7 @@ struct EERIE_BACKGROUND
 	Color3f ambient255;
 	EERIE_SMINMAX *	minmax;
 	long		  nbanchors;
-	_ANCHOR_DATA * anchors;
+	ANCHOR_DATA * anchors;
 	char		name[256];
 };
 

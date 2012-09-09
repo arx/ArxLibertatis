@@ -2022,7 +2022,7 @@ void ANCHOR_BLOCK_Clear()
 	{
 		for (long k=0;k<eb->nbanchors;k++)
 		{
-			_ANCHOR_DATA * ad=&eb->anchors[k];	
+			ANCHOR_DATA * ad=&eb->anchors[k];	
 			ad->flags&=~ANCHOR_FLAG_BLOCKED;
 		}
 	}
@@ -2034,7 +2034,7 @@ void ANCHOR_BLOCK_By_IO(Entity * io,long status)
 
 	for (long k=0;k<eb->nbanchors;k++)
 	{
-		_ANCHOR_DATA * ad=&eb->anchors[k];	
+		ANCHOR_DATA * ad=&eb->anchors[k];	
 
 		if (distSqr(ad->pos, io->pos) > square(600.f)) continue;
 

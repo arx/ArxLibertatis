@@ -1761,7 +1761,7 @@ void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 //*************************************************************************************
 //*************************************************************************************
 
-void AddAData(_ANCHOR_DATA * ad, long linked)
+void AddAData(ANCHOR_DATA * ad, long linked)
 {
 	for (long i=0;i<ad->nblinked;i++)
 		if (ad->linked[i] == linked) return;
@@ -3087,8 +3087,8 @@ static bool loadFastScene(const res::path & file, const char * data,
 	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
 	ACTIVEBKG->nbanchors = fsh->nb_anchors;
 	if(fsh->nb_anchors > 0) {
-		size_t anchorsize = sizeof(_ANCHOR_DATA) * fsh->nb_anchors;
-		ACTIVEBKG->anchors = (_ANCHOR_DATA *)malloc(anchorsize);
+		size_t anchorsize = sizeof(ANCHOR_DATA) * fsh->nb_anchors;
+		ACTIVEBKG->anchors = (ANCHOR_DATA *)malloc(anchorsize);
 		memset(ACTIVEBKG->anchors, 0, anchorsize);
 	} else {
 		ACTIVEBKG->anchors = NULL;
@@ -3097,8 +3097,8 @@ static bool loadFastScene(const res::path & file, const char * data,
 		
 		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
-		_ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
-		anchor.flags = fad->flags;
+		ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
+		anchor.flags = AnchorFlags::load(fad->flags); // TODO save/load flags
 		anchor.pos = fad->pos;
 		anchor.nblinked = fad->nb_linked;
 		anchor.height = fad->height;
@@ -3309,9 +3309,9 @@ void ComputeRoomDistance() {
 			SetRoomDistance(m, n, -1.f, NULL, NULL);
 
 	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
-	_ANCHOR_DATA * ad = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * nb_anchors);
+	ANCHOR_DATA * ad = (ANCHOR_DATA *)malloc(sizeof(ANCHOR_DATA) * nb_anchors);
 
-	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
+	memset(ad, 0, sizeof(ANCHOR_DATA)*nb_anchors);
 
 	void ** ptr = NULL;
 	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);

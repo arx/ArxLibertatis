@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct _ANCHOR_DATA;
+struct ANCHOR_DATA;
 struct EERIE_LIGHT;
 
 
@@ -69,7 +69,7 @@ public:
 	 * The pathfinder instance does not copy the provided data and will not clean it up
 	 * The light data is only used when the stealth parameter is set to true.
 	 */
-	PathFinder(size_t map_size, const _ANCHOR_DATA * map_data,
+	PathFinder(size_t map_size, const ANCHOR_DATA * map_data,
 	           size_t light_count, const EERIE_LIGHT * const * light_list);
 	
 	typedef unsigned long NodeId;
@@ -150,7 +150,7 @@ private:
 	float heuristic;
 	
 	size_t map_s; // Map size
-	const _ANCHOR_DATA * map_d; // Map data
+	const ANCHOR_DATA * map_d; // Map data
 	size_t slight_c; // Light count
 	const EERIE_LIGHT * const * slight_l; // Light data
 	
