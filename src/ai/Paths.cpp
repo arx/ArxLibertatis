@@ -1648,8 +1648,8 @@ static bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long
 	return false;
 }
 
-static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
-{
+static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
+	
 	bool ret = true;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
@@ -1812,7 +1812,7 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		}
 	}
 
-	if ((!_IsFULLObjectVertexInValidPosition(obj))
+	if ((!IsFULLObjectVertexInValidPosition(obj))
 	    || ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	    || colidd
 	    || (IsObjectInField(obj))
