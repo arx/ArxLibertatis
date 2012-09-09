@@ -321,19 +321,15 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 				{
 					long ll = eobj->linked[k].lidx;
 					Vec3f pos, vector;
-					pos.x = io->obj->vertexlist3[ll].v.x;
-					pos.y = io->obj->vertexlist3[ll].v.y;
-					pos.z = io->obj->vertexlist3[ll].v.z;
-					ioo->angle.a = rnd() * 40.f + 340.f;
-					ioo->angle.b = rnd() * 360.f;
-					ioo->angle.g = 0;
+					pos = io->obj->vertexlist3[ll].v;
+					ioo->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
 					vector.x = -(float)EEsin(radians(ioo->angle.b)) * ( 1.0f / 2 );
 					vector.y = EEsin(radians(ioo->angle.a));
 					vector.z = (float)EEcos(radians(ioo->angle.b)) * ( 1.0f / 2 );
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
 					EERIE_PHYSICS_BOX_Launch_NOCOL(ioo, ioo->obj, &pos, &vector, 2, &ioo->angle);
-					ioo->show = 1;
+					ioo->show = SHOW_FLAG_IN_SCENE;
 					ioo->no_collide = sN;
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 				}

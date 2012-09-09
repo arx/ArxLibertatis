@@ -418,20 +418,7 @@ void F_PrepareCamera(EERIE_CAMERA * cam);
 float GetTileMinY(long i,long j);
 float GetTileMaxY(long i,long j);
 
-#define SHOW_FLAG_NOT_DRAWN				0
-#define SHOW_FLAG_IN_SCENE				1
-#define SHOW_FLAG_LINKED				2
-#define SHOW_FLAG_IN_INVENTORY			4	// In Inventory
-#define SHOW_FLAG_HIDDEN				5	// In Inventory
-#define SHOW_FLAG_TELEPORTING			6
-#define SHOW_FLAG_KILLED				7	// Not Used Yet
-#define SHOW_FLAG_MEGAHIDE				8
-#define SHOW_FLAG_ON_PLAYER				9
-#define SHOW_FLAG_DESTROYED				255
-
-#define PORTAL_FLAG_DRAWN	1
-
-#define MAX_FRUSTRUMS	32
+#define MAX_FRUSTRUMS 32
 
 struct EERIE_FRUSTRUM_PLANE
 {

@@ -2051,7 +2051,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		
 		// Script data
 		io->scriptload = ais->scriptload;
-		io->show = ais->show;
+		io->show = EntityVisilibity(ais->show); // TODO save/load enum
 		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
 		io->mainevent = toLowercase(safestring(ais->mainevent));
 		
