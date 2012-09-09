@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Player.h"
 #include "graphics/Math.h"
 #include "io/log/Logger.h"
+#include "physics/Collisions.h"
 
 using std::min;
 using std::max;
@@ -179,10 +180,11 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 
 	return found;
 }
- 
 
 extern Vec3f vector2D;
-float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) {
+
+float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
+                              CollisionFlags flags) {
 	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
 	{
@@ -296,7 +298,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 //-----------------------------------------------------------------------------
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
+static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
+                                            CollisionFlags flags) {
 	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
@@ -370,7 +373,9 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
 }
 
 extern long MOVING_CYLINDER;
-static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, long flags) {
+static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
+	                                         CollisionFlags flags) {
+	
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
 	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
@@ -479,7 +484,9 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, lo
 }
 
 
-static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, long flags) {
+static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
+                                               float MOVE_CYLINDER_STEP,
+                                               CollisionFlags flags) {
 	
 	MOVING_CYLINDER = 1;
 	DIRECT_PATH = true;

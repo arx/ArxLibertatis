@@ -54,6 +54,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 #include "math/MathFwd.h"
 
+// ARX_COLLISIONS flags (cylinder move)
+enum CollisionFlag {
+	CFLAG_LEVITATE          = (1<<0),
+	CFLAG_NO_INTERCOL       = (1<<1),
+	CFLAG_SPECIAL           = (1<<2),
+	CFLAG_EASY_SLIDING      = (1<<3),
+	CFLAG_CLIMBING          = (1<<4),
+	CFLAG_JUST_TEST         = (1<<5),
+	CFLAG_NPC               = (1<<6),
+	CFLAG_PLAYER            = (1<<7),
+	CFLAG_RETURN_HEIGHT     = (1<<8),
+	CFLAG_EXTRA_PRECISION   = (1<<9),
+	CFLAG_CHECK_VALID_POS   = (1<<10),
+	CFLAG_ANCHOR_GENERATION = (1<<11),
+	CFLAG_COLLIDE_NOCOL     = (1<<12),
+	CFLAG_NO_NPC_COLLIDE    = (1<<13),
+	CFLAG_NO_HEIGHT_MOD     = (1<<14)
+};
+DECLARE_FLAGS(CollisionFlag, CollisionFlags)
+DECLARE_FLAGS_OPERATORS(CollisionFlags)
+
 const size_t MAX_IN_SPHERE = 20;
 
 extern size_t MAX_IN_SPHERE_Pos;
