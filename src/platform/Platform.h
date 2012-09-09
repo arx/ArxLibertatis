@@ -203,21 +203,22 @@ void assertionFailed(const char * expression, const char * file, unsigned line,
                      const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 
 #ifdef _DEBUG
-	#define arx_assert_impl(_Expression, file, line, _Message, ...) { \
-			if(!(_Expression)) { \
-				assertionFailed(#_Expression, file, line, _Message, ##__VA_ARGS__); \
+	#define arx_assert_impl(Expression, File, Line, Message, ...) { \
+			if(!(Expression)) { \
+				assertionFailed(#Expression, File, Line, Message, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		}
 #else // _DEBUG
-	#define arx_assert_impl(_Expression, file, line, _Message, ...) \
-		ARX_DISCARD(_Expression, file, line, _Message, ##__VA_ARGS__)
+	#define arx_assert_impl(Expression, File, Line, Message, ...) \
+		ARX_DISCARD(Expression, File, Line, Message, ##__VA_ARGS__)
 #endif // _DEBUG
 
-#define arx_assert_msg(_Expression, _Message, ...) arx_assert_impl(_Expression, (__FILE__), __LINE__, _Message, ##__VA_ARGS__)
-#define arx_assert(_Expression) arx_assert_msg(_Expression, NULL)
+#define arx_assert_msg(Expression, Message, ...) \
+	arx_assert_impl(Expression, (__FILE__), __LINE__, Message, ##__VA_ARGS__)
+#define arx_assert(Expression) arx_assert_msg(Expression, NULL)
 
-#define arx_error_msg(_Message, ...) arx_assert_msg(false, _Message, ##__VA_ARGS__)
+#define arx_error_msg(Message, ...) arx_assert_msg(false, Message, ##__VA_ARGS__)
 #define arx_error() arx_assert(false)
 
 /* ---------------------------------------------------------
