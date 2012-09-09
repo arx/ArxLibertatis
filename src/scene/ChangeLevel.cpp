@@ -125,8 +125,6 @@ static long ARX_CHANGELEVEL_Push_AllIO(long level);
 static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
 static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
-static long NEW_LEVEL = -1;
-
 static fs::path CURRENT_GAME_FILE;
 
 float ARX_CHANGELEVEL_DesiredTime = 0;
@@ -288,8 +286,6 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 		return;
 	}
 
-	NEW_LEVEL = num;
-
 	// TO RESTORE !!!!!!!!!!!!
 	if (num == CURRENTLEVEL) // not changing level, just teleported
 	{
@@ -328,7 +324,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	}
 	
 	LogDebug("Before ARX_CHANGELEVEL_PushLevel");
-	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
+	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, num);
 	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
 	if(!pSaveBlock->flush("pld")) {
@@ -361,7 +357,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 			}
 	}
 
-	CURRENTLEVEL = NEW_LEVEL;
+	CURRENTLEVEL = num;
 	player.desiredangle.b = player.angle.b = (float)angle;
 	DONT_WANT_PLAYER_INZONE = 1;
 	ARX_PLAYER_RectifyPosition();
@@ -2701,8 +2697,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
-	
-	NEW_LEVEL = instance;
 	
 	arx_assert(idx_io == NULL);
 	
