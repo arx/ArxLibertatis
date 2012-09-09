@@ -122,6 +122,12 @@ struct EERIE_EXTRA_ROTATE {
 	Anglef group_rotate[MAX_EXTRA_ROTATE];
 };
 
+enum NPCFlag {
+	NPCFLAG_BACKSTAB = (1<<0)
+};
+DECLARE_FLAGS(NPCFlag, NPCFlags)
+DECLARE_FLAGS_OPERATORS(NPCFlags)
+
 struct IO_NPCDATA {
 	
 	IO_NPCDATA();
@@ -172,7 +178,7 @@ struct IO_NPCDATA {
 	short strike_time;
 	short walk_start_time;
 	long aiming_start;
-	long npcflags;
+	NPCFlags npcflags;
 	IO_PATHFIND pathfind;
 	EERIE_EXTRA_ROTATE * ex_rotate;
 	Color blood_color;

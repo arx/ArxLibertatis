@@ -1529,10 +1529,11 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 			if(as->walk_start_time) cout << "  Walk start time: " << as->walk_start_time << endl;
 			if(as->aiming_start) cout << "  Aiming time: " << as->aiming_start << endl;
 			
-			if(as->npcflags) {
+			NPCFlags npcflags = NPCFlags::load(as->npcflags);
+			if(npcflags) {
 				cout << "  NPC flags:";
-				if(as->npcflags & NPCFLAG_BACKSTAB) cout << " backstab";
-				if(as->npcflags & ~NPCFLAG_BACKSTAB) cout << " (unknown)";
+				if(npcflags & NPCFLAG_BACKSTAB) cout << " backstab";
+				if(npcflags & ~NPCFLAG_BACKSTAB) cout << " (unknown)";
 				cout << endl;
 			}
 			

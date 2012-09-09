@@ -2269,7 +2269,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				io->_npcdata->strike_time = as->strike_time;
 				io->_npcdata->walk_start_time = as->walk_start_time;
 				io->_npcdata->aiming_start = as->aiming_start;
-				io->_npcdata->npcflags = as->npcflags;
+				io->_npcdata->npcflags = NPCFlags::load(as->npcflags); // TODO save/load flags
 				io->_npcdata->fDetect = as->fDetect;
 				io->_npcdata->cuts = as->cuts;
 				
