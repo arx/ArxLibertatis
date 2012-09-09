@@ -156,7 +156,7 @@ UINT GetNumberOfPrimitives(Renderer::Primitive primitive, UINT nindices) {
 #define D3DFVF_LVERTEX		D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1
 #define D3DFVF_TLVERTEX		D3DFVF_XYZRHW | D3DFVF_DIFFUSE  |D3DFVF_SPECULAR | D3DFVF_TEX1
 
-typedef struct _D3DLVERTEX {
+typedef struct D3DLVERTEX {
     union {
        float x;
        float dvX;
@@ -185,13 +185,13 @@ typedef struct _D3DLVERTEX {
         float tv;
         float dvTV;
     };
-    _D3DLVERTEX() { }
-    _D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
+    D3DLVERTEX() { }
+    D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
         { x = v.x; y = v.y; z = v.z; 
           color = col; specular = spec;
           tu = _tu; tv = _tv;
     }
-} D3DLVERTEX, *LPD3DLVERTEX;
+} *LPD3DLVERTEX;
 
 
 
