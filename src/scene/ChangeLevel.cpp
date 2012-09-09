@@ -133,7 +133,6 @@ float ARX_CHANGELEVEL_DesiredTime = 0;
 long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 long FORBID_SAVE = 0;
-long _FIRSTTIME = 0;
 static SaveBlock * _pSaveBlock = NULL;
 
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
@@ -2449,7 +2448,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 
 extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
 
-static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
+static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
 	
 	bool * treated = new bool[MAX_IO_SAVELOAD];
 	memset(treated, 0, sizeof(unsigned char)*MAX_IO_SAVELOAD);
@@ -2559,7 +2558,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag) {
 			}
 		}
 		
-	} else if (_FIRSTTIME) {
+	} else if (firstTime) {
 		
 		for(long i = 0; i < entities.nbmax; i++) {
 			
@@ -2717,7 +2716,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
 	
-	_FIRSTTIME = FirstTime;
 	NEW_LEVEL = instance;
 	
 	arx_assert(idx_io == NULL);
@@ -2780,7 +2778,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopAllIO_FINISH");
 	// Restoring all Missing Objects required by other objects...
-	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag);
+	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag, bool(FirstTime));
 	LogDebug("After  ARX_CHANGELEVEL_PopAllIO_FINISH");
 	
 	PROGRESS_BAR_COUNT += 15.f;
