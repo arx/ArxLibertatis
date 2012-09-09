@@ -124,12 +124,13 @@ public:
 
 class IOFlagCommand : public Command {
 	
-	long flag;
+	EntityFlag flag;
 	bool inv;
 	
 public:
 	
-	IOFlagCommand(string name, long _flag, bool _inv = false) : Command(name, ANY_IO), flag(_flag), inv(_inv) { }
+	IOFlagCommand(string name, EntityFlag _flag, bool _inv = false)
+		: Command(name, ANY_IO), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
 		

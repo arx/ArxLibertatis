@@ -129,37 +129,41 @@ struct IO_SPELLCAST_DATA {
 	long duration;
 };
 
-#define IO_UNDERWATER          (1<<0)
-#define	IO_FREEZESCRIPT        (1<<1)
-#define IO_ITEM                (1<<2)
-#define IO_NPC                 (1<<3)
-#define IO_FIX                 (1<<4)
-#define IO_NOSHADOW            (1<<5)
-#define IO_CAMERA              (1<<6)
-#define IO_MARKER              (1<<7)
-#define IO_ICONIC              (1<<8)
-#define IO_NO_COLLISIONS       (1<<9)
-#define IO_GOLD                (1<<10)
-#define IO_INVULNERABILITY     (1<<11)
-#define IO_NO_PHYSICS_INTERPOL (1<<12)
-#define IO_HIT                 (1<<13)
-#define IO_PHYSICAL_OFF        (1<<14)
-#define IO_MOVABLE             (1<<15)
-#define IO_UNIQUE              (1<<16)
-#define IO_SHOP                (1<<17)
-#define IO_BLACKSMITH          (1<<18)
-#define IO_NOSAVE              (1<<19)
-#define IO_FORCEDRAW           (1<<20)
-#define IO_FIELD               (1<<21)
-#define IO_BUMP                (1<<22)
-#define IO_ANGULAR             (1<<23)
-#define IO_BODY_CHUNK          (1<<24)
-#define IO_ZMAP                (1<<25)
-#define IO_INVERTED            (1<<26)
-#define IO_JUST_COLLIDE        (1<<27)
-#define IO_FIERY               (1<<28)
-#define IO_NO_NPC_COLLIDE      (1<<29)
-#define IO_CAN_COMBINE         (1<<30)
+enum EntityFlag {
+	IO_UNDERWATER          = (1<<0),
+	IO_FREEZESCRIPT        = (1<<1),
+	IO_ITEM                = (1<<2),
+	IO_NPC                 = (1<<3),
+	IO_FIX                 = (1<<4),
+	IO_NOSHADOW            = (1<<5),
+	IO_CAMERA              = (1<<6),
+	IO_MARKER              = (1<<7),
+	IO_ICONIC              = (1<<8),
+	IO_NO_COLLISIONS       = (1<<9),
+	IO_GOLD                = (1<<10),
+	IO_INVULNERABILITY     = (1<<11),
+	IO_NO_PHYSICS_INTERPOL = (1<<12),
+	IO_HIT                 = (1<<13),
+	IO_PHYSICAL_OFF        = (1<<14),
+	IO_MOVABLE             = (1<<15),
+	IO_UNIQUE              = (1<<16),
+	IO_SHOP                = (1<<17),
+	IO_BLACKSMITH          = (1<<18),
+	IO_NOSAVE              = (1<<19),
+	IO_FORCEDRAW           = (1<<20),
+	IO_FIELD               = (1<<21),
+	IO_BUMP                = (1<<22),
+	IO_ANGULAR             = (1<<23),
+	IO_BODY_CHUNK          = (1<<24),
+	IO_ZMAP                = (1<<25),
+	IO_INVERTED            = (1<<26),
+	IO_JUST_COLLIDE        = (1<<27),
+	IO_FIERY               = (1<<28),
+	IO_NO_NPC_COLLIDE      = (1<<29),
+	IO_CAN_COMBINE         = (1<<30)
+};
+DECLARE_FLAGS(EntityFlag, EntityFlags)
+DECLARE_FLAGS_OPERATORS(EntityFlags)
 
 struct Entity {
 	
@@ -168,7 +172,7 @@ struct Entity {
 	
 	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
 	
-	long ioflags; // IO type
+	EntityFlags ioflags; // IO type
 	Vec3f lastpos; // IO last position
 	Vec3f pos; // IO position
 	Vec3f move;

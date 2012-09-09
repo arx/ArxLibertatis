@@ -2749,7 +2749,7 @@ extern long SP_DBG;
 
 Entity * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	
-	long type = IO_ITEM;
+	EntityFlags type = IO_ITEM;
 
 	res::path file = fil;
 	

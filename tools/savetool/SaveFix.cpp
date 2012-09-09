@@ -241,11 +241,11 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 		
 		if(!specialstrcmp(file.basename(), "gold_coin")) {
 			file.up() /= "gold_coin.asl";
-			flags = ais.ioflags | IO_GOLD;
+			flags = EntityFlags::load(ais.ioflags) | IO_GOLD; // TODO save/load flags
 		}
 		
 		if(IsIn(file.string(), "movable")) {
-			flags = ais.ioflags | IO_MOVABLE;
+			flags = EntityFlags::load(ais.ioflags) | IO_MOVABLE; // TODO save/load flags
 		}
 		
 		if(flags != ais.ioflags) {

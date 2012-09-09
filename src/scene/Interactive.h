@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <boost-1_49/boost/concept_check.hpp>
 
+#include "game/Entity.h"
 #include "graphics/data/MeshManipulation.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
@@ -58,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-struct Entity;
 struct EERIE_3DOBJ;
 
 namespace res { class path; }
@@ -245,7 +245,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io);
 struct TREATZONE_IO {
 	long num;
 	Entity * io;
-	long ioflags;
+	EntityFlags ioflags;
 	long show;
 };
 
