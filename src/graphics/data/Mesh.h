@@ -227,16 +227,6 @@ struct ANIM_USE;
 #define CAM_TOPVIEW 1
 
 //-----------------------------------------------------------------------------
-//	Entity Structs Start
-//-----------------------------------------------------------------------------
-
-#define TRANSFORMED		2
-#define ALPHABLEND		1
-#define NOCULL			2
-#define TEXTURE3		1 // poly texture 3
-#define FLAT3			2 // poly flat 3
-
-//-----------------------------------------------------------------------------
 
 extern long EERIEDrawnPolys;
 extern long EERIEInit;
