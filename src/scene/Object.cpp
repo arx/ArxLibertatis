@@ -1886,7 +1886,7 @@ EERIE_3DOBJ * loadObject(const res::path & file, bool pbox) {
 	return TheoToEerie_Fast("graph/obj3d/textures", file, pbox);
 }
 
-EERIE_3DOBJ * _LoadTheObj(const res::path & file, const res::path & texpath) {
+EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath) {
 	return TheoToEerie_Fast(file.parent() / texpath, file, true);
 }
 

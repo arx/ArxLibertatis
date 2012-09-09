@@ -472,7 +472,7 @@ CCurse::CCurse()
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 
 	if (!svoodoo)
-		svoodoo = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
+		svoodoo = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
 
 	svoodoo_count++;
 }

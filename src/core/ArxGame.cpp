@@ -719,13 +719,12 @@ bool ArxGame::BeforeRun() {
 		}
 	}
 	
-	// TODO this is the only place where _LoadTheObj is used
-	EERIE_3DOBJ * _fogobj = _LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
+	EERIE_3DOBJ * _fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
 	ARX_FOGS_Set_Object(_fogobj);
 	
-	eyeballobj = _LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
-	cabal = _LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
-	nodeobj = _LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
+	eyeballobj = LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
+	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
+	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 	
 	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
 	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");

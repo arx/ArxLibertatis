@@ -453,12 +453,12 @@ CIceProjectile::CIceProjectile()
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 
 	if (!stite)
-		stite = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
+		stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
 
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
+		smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
 
 	smotte_count++;
 

@@ -203,7 +203,7 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
 	if (!smissile)
-		smissile = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
+		smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
 

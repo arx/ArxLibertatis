@@ -853,7 +853,7 @@ CNegateMagic::CNegateMagic()
 	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
 
 	if (!ssol)
-		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 		
 	ssol_count++;
 	
