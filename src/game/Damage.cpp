@@ -1132,7 +1132,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 			Entity * io = entities[i];
 
 			if ((io)
-			        &&	(io->GameFlags & GFLAG_ISINTREATZONE)
+			        &&	(io->gameFlags & GFLAG_ISINTREATZONE)
 			        &&	(io->show == SHOW_FLAG_IN_SCENE)
 			        &&	(!InExceptList(j, i))
 			        && ( (damages[j].source != i)
@@ -1400,7 +1400,7 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 
 		if (io != NULL)
 
-			if (entities[i]->GameFlags & GFLAG_ISINTREATZONE)
+			if (entities[i]->gameFlags & GFLAG_ISINTREATZONE)
 				if (io->show == SHOW_FLAG_IN_SCENE)
 					if (source != i)
 					{

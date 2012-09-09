@@ -263,9 +263,9 @@ public:
 		Entity & io = *context.getIO();
 		if(group == "door") {
 			if(rem) {
-				io.GameFlags &= ~GFLAG_DOOR;
+				io.gameFlags &= ~GFLAG_DOOR;
 			} else {
-				io.GameFlags |= GFLAG_DOOR;
+				io.gameFlags |= GFLAG_DOOR;
 			}
 		}
 		

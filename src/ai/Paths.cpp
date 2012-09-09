@@ -2079,6 +2079,6 @@ void ARX_PrepareBackgroundNRMLs()
 
 void EERIE_PHYSICS_BOX_Launch_NOCOL(Entity * io, EERIE_3DOBJ * obj, Vec3f * pos,
                                     Vec3f * vect, long flags, Anglef * angle) {
-	io->GameFlags |= GFLAG_NO_PHYS_IO_COL;
+	io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
 	EERIE_PHYSICS_BOX_Launch(obj, pos, vect, flags, angle);
 }

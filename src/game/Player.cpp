@@ -414,7 +414,7 @@ static void ARX_PLAYER_ManageTorch() {
 			// Need To Kill timers
 			ARX_SCRIPT_Timer_Clear_By_IO(CURRENT_TORCH);
 			CURRENT_TORCH->show = SHOW_FLAG_KILLED;
-			CURRENT_TORCH->GameFlags &= ~GFLAG_ISINTREATZONE;
+			CURRENT_TORCH->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(CURRENT_TORCH);
 			ARX_INTERACTIVE_DestroyDynamicInfo(CURRENT_TORCH);
 			ARX_SOUND_PlaySFX(SND_TORCH_END);
@@ -1744,7 +1744,7 @@ void ARX_PLAYER_Manage_Visual()
 			io->angle.g = 0;
 		}
 
-		io->GameFlags |= GFLAG_ISINTREATZONE;
+		io->gameFlags |= GFLAG_ISINTREATZONE;
 
 		ANIM_USE * ause0 = &io->animlayer[0];
 		ANIM_USE * ause1 = &io->animlayer[1];
@@ -3451,7 +3451,7 @@ void ARX_PLAYER_AddGold(Entity * gold) {
 		ReleaseInter(gold);
 	} else {
 		gold->show = SHOW_FLAG_KILLED;
-		gold->GameFlags &= ~GFLAG_ISINTREATZONE;
+		gold->gameFlags &= ~GFLAG_ISINTREATZONE;
 	}
 	
 }
@@ -3555,7 +3555,7 @@ void ARX_GAME_Reset(long type) {
 		entities.player()->halo.flags = 0;
 	}
 
-	if(entities.player())entities.player()->GameFlags &= ~GFLAG_INVISIBILITY;
+	if(entities.player())entities.player()->gameFlags &= ~GFLAG_INVISIBILITY;
 	ARX_PLAYER_Invulnerability(0);
 	GLOBAL_Player_Room = -1;
 	PLAYER_PARALYSED = 0;

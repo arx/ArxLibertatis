@@ -584,7 +584,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
 	if ((io)
 	        &&	(io->animlayer[num].cur_anim)
-	        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
+	        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
 	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
 	{
 
@@ -670,7 +670,7 @@ void PrepareIOTreatZone(long flag)
 
 			if (io)
 			{
-				io->GameFlags |= GFLAG_ISINTREATZONE;
+				io->gameFlags |= GFLAG_ISINTREATZONE;
 				TREATZONE_AddIO(io, ii, 0);
 			}
 		}
@@ -745,15 +745,15 @@ void PrepareIOTreatZone(long flag)
 					treat = 1;
 			}
 
-			if (io->GameFlags & GFLAG_ISINTREATZONE)
-				io->GameFlags |= GFLAG_WASINTREATZONE;
+			if (io->gameFlags & GFLAG_ISINTREATZONE)
+				io->gameFlags |= GFLAG_WASINTREATZONE;
 			else
-				io->GameFlags &= ~GFLAG_WASINTREATZONE;
+				io->gameFlags &= ~GFLAG_WASINTREATZONE;
 
 			if (treat)
 			{
 				INTREATZONECOUNT++;
-				io->GameFlags |= GFLAG_ISINTREATZONE;
+				io->gameFlags |= GFLAG_ISINTREATZONE;
 				TREATZONE_AddIO(io, i, 0);
 
 				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
@@ -762,29 +762,29 @@ void PrepareIOTreatZone(long flag)
 					iooo->room_flags = io->room_flags;
 				}
 			}
-			else	io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			else	io->gameFlags &= ~GFLAG_ISINTREATZONE;
 
 			EVENT_SENDER = NULL;
 
-			if ((io->GameFlags & GFLAG_ISINTREATZONE)
-			        && (!(io->GameFlags & GFLAG_WASINTREATZONE)))
+			if ((io->gameFlags & GFLAG_ISINTREATZONE)
+			        && (!(io->gameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
 				//	SendIOScriptEvent(entities[i],SM_TREATIN);
 
 			}
-			else if ((!(io->GameFlags & GFLAG_ISINTREATZONE))
-			         &&	(io->GameFlags & GFLAG_WASINTREATZONE))
+			else if ((!(io->gameFlags & GFLAG_ISINTREATZONE))
+			         &&	(io->gameFlags & GFLAG_WASINTREATZONE))
 			{
 				//going away;
-				io->GameFlags |= GFLAG_ISINTREATZONE;
+				io->gameFlags |= GFLAG_ISINTREATZONE;
 
 				if (SendIOScriptEvent(io, SM_TREATOUT) != REFUSE)
 				{
 					if (io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 
-					io->GameFlags &= ~GFLAG_ISINTREATZONE;
+					io->gameFlags &= ~GFLAG_ISINTREATZONE;
 				}
 			}
 		}
@@ -797,7 +797,7 @@ void PrepareIOTreatZone(long flag)
 		Entity * io = entities[i];
 
 		if ((io != NULL)
-		        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
+		        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->show == SHOW_FLAG_IN_SCENE)
 		            ||	(io->show == SHOW_FLAG_TELEPORTING)
 		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
@@ -1303,7 +1303,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		}
 
 		io->inventory = NULL;
-		io->GameFlags |= GFLAG_INTERACTIVITY;
+		io->gameFlags |= GFLAG_INTERACTIVITY;
 
 		if(io->tweaky) {
 			delete io->obj;
@@ -1395,17 +1395,17 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->frameloss = 0.f;
 		io->sfx_flag = 0;
 		io->max_durability = io->durability = 100;
-		io->GameFlags &= ~GFLAG_INVISIBILITY;
-		io->GameFlags &= ~GFLAG_MEGAHIDE;
-		io->GameFlags &= ~GFLAG_NOGORE;
-		io->GameFlags &= ~GFLAG_ISINTREATZONE;
-		io->GameFlags &= ~GFLAG_PLATFORM;
-		io->GameFlags &= ~GFLAG_ELEVATOR;
-		io->GameFlags &= ~GFLAG_HIDEWEAPON;
-		io->GameFlags &= ~GFLAG_NOCOMPUTATION;
-		io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
-		io->GameFlags &= ~GFLAG_DOOR;
-		io->GameFlags &= ~GFLAG_GOREEXPLODE;
+		io->gameFlags &= ~GFLAG_INVISIBILITY;
+		io->gameFlags &= ~GFLAG_MEGAHIDE;
+		io->gameFlags &= ~GFLAG_NOGORE;
+		io->gameFlags &= ~GFLAG_ISINTREATZONE;
+		io->gameFlags &= ~GFLAG_PLATFORM;
+		io->gameFlags &= ~GFLAG_ELEVATOR;
+		io->gameFlags &= ~GFLAG_HIDEWEAPON;
+		io->gameFlags &= ~GFLAG_NOCOMPUTATION;
+		io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+		io->gameFlags &= ~GFLAG_DOOR;
+		io->gameFlags &= ~GFLAG_GOREEXPLODE;
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
@@ -1761,7 +1761,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			io->room = -1;
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 			MakeCoolFx(&io->pos);
-			io->GameFlags |= GFLAG_INVISIBILITY;
+			io->gameFlags |= GFLAG_INVISIBILITY;
 			FRAME_COUNT = 0;
 		}
 	}
@@ -1833,7 +1833,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 
 	FRAME_COUNT = -1;
 	Vec3f translate;
-	io->GameFlags &= ~GFLAG_NOCOMPUTATION;
+	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;
 
@@ -1997,7 +1997,7 @@ void SetWeapon_Back(Entity * io) {
 		
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 
-		if (io->GameFlags & GFLAG_HIDEWEAPON) return;
+		if (io->gameFlags & GFLAG_HIDEWEAPON) return;
 
 		long ni = io->obj->fastaccess.weapon_attach;
 
@@ -2835,12 +2835,12 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 		if (((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
 		        && (EDITMODE != 1)) continue;
 
-		if ((!(io->GameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
+		if ((!(io->gameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
 
 		// Is Object in TreatZone ??
 		bPlayerEquiped = IsEquipedByPlayer(io);
 		if ((bPlayerEquiped  && (player.Interface & INTER_MAP))
-		    || (io->GameFlags & GFLAG_ISINTREATZONE))
+		    || (io->gameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
 			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
@@ -3001,7 +3001,7 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 		if ((io)
 		        && (!(io->ioflags & IO_NO_COLLISIONS))
 		        && (io->collision)
-		        && (io->GameFlags & GFLAG_ISINTREATZONE)
+		        && (io->gameFlags & GFLAG_ISINTREATZONE)
 		        && (io != CURRENTINTER)
 		        && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
 		        && (io->show == SHOW_FLAG_IN_SCENE)
@@ -3137,7 +3137,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 							sp.origin = vlist[ii].v;
 
 							if(sp.contains(obj->pbox->vert[kk].pos)) {
-								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+								if ((io_source) && (io->gameFlags & GFLAG_DOOR))
 								{
 									if (float(arxtime) > io->collide_door_time + 500)
 									{
@@ -3229,7 +3229,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 
-				if (io->GameFlags & GFLAG_PLATFORM)
+				if (io->gameFlags & GFLAG_PLATFORM)
 				{
 					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 					{
@@ -3297,7 +3297,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 									if(sp.contains(obj->pbox->vert[kk].pos)) {
-										if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+										if ((io_source) && (io->gameFlags & GFLAG_DOOR))
 										{
 											if (float(arxtime) > io->collide_door_time + 500)
 											{
@@ -3320,7 +3320,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 							if (sp.contains(obj->pbox->vert[kk].pos))
 							{
-								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+								if ((io_source) && (io->gameFlags & GFLAG_DOOR))
 								{
 									if (float(arxtime) > io->collide_door_time + 500)
 									{
@@ -3549,13 +3549,13 @@ void UpdateIOInvisibility(Entity * io)
 {
 	if (io && (io->invisibility <= 1.f))
 	{
-		if ((io->GameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
+		if ((io->gameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
 		{
 			io->invisibility += _framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility > 1.f) io->invisibility = 1.f;
 		}
-		else if ((!(io->GameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
+		else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
 		{
 			io->invisibility -= _framedelay * ( 1.0f / 1000 );
 
@@ -3594,7 +3594,7 @@ void RenderInter(float from, float to) {
 
 		if ((io)
 		        &&	(io != DRAGINTER)
-		        &&	(io->GameFlags & GFLAG_ISINTREATZONE))
+		        &&	(io->gameFlags & GFLAG_ISINTREATZONE))
 		{
 			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
 			        && (Book_Mode == BOOKMODE_STATS)) continue;
@@ -3857,7 +3857,7 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 			// Need To Kill timers
 			ARX_SCRIPT_Timer_Clear_By_IO(ioo);
 			ioo->show = SHOW_FLAG_DESTROYED;
-			ioo->GameFlags &= ~GFLAG_ISINTREATZONE;
+			ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
 			if (!FAST_RELEASE)
 				RemoveFromAllInventories(ioo);

@@ -264,7 +264,7 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 		if(io->ioflags & IO_NPC) {
 			ftr = Vec3f::ZERO;
 			io->move -= io->lastmove;
-		} else if (io->GameFlags & GFLAG_ELEVATOR) {
+		} else if (io->gameFlags & GFLAG_ELEVATOR) {
 			// Must recover translations for NON-NPC IO
 			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
 		}

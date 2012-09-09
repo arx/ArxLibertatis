@@ -175,7 +175,7 @@ static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult 
 	
 	io->stat_count++;
 	
-	if((io->GameFlags & GFLAG_MEGAHIDE) && msg != SM_RELOAD) {
+	if((io->gameFlags & GFLAG_MEGAHIDE) && msg != SM_RELOAD) {
 		ret = ACCEPT;
 		return true;
 	}

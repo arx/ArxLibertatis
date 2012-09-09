@@ -230,24 +230,6 @@ struct ANIM_USE;
 //	Entity Structs Start
 //-----------------------------------------------------------------------------
 
-// GameFlags 16 Bits !!!
-#define GFLAG_INTERACTIVITY		1
-#define GFLAG_ISINTREATZONE		(1<<1)
-#define GFLAG_WASINTREATZONE	(1<<2)
-#define GFLAG_NEEDINIT			(1<<3)
-#define GFLAG_INTERACTIVITYHIDE	(1<<4)
-#define GFLAG_DOOR				(1<<5)
-#define GFLAG_INVISIBILITY		(1<<6)
-#define GFLAG_NO_PHYS_IO_COL	(1<<7)
-#define GFLAG_VIEW_BLOCKER		(1<<8)
-#define GFLAG_PLATFORM			(1<<9)
-#define GFLAG_ELEVATOR			(1<<10)
-#define GFLAG_MEGAHIDE			(1<<11)
-#define GFLAG_HIDEWEAPON		(1<<12)
-#define GFLAG_NOGORE			(1<<13)
-#define GFLAG_GOREEXPLODE		(1<<14)
-#define GFLAG_NOCOMPUTATION		(1<<15)
-
 #define EXTRA_ROTATE_REALISTIC 1
 #define NPCFLAG_BACKSTAB	1
 #define HALO_ACTIVE		1

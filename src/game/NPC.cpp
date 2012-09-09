@@ -171,7 +171,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 			if (ioo->ioflags & IO_CAMERA) return;
 
 
-			if (ioo->GameFlags & GFLAG_ISINTREATZONE)
+			if (ioo->gameFlags & GFLAG_ISINTREATZONE)
 				if (ioo->show == SHOW_FLAG_IN_SCENE)
 					if (ioo->obj)
 						if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
@@ -1141,7 +1141,7 @@ void ARX_PHYSICS_Apply()
 
 		if ((io->ioflags & IO_ITEM)
 		        &&	(io->show != SHOW_FLAG_DESTROYED)
-		        &&	((io->GameFlags & GFLAG_GOREEXPLODE)
+		        &&	((io->gameFlags & GFLAG_GOREEXPLODE)
 		             &&	(float(arxtime) - io->lastanimtime > 300))
 		        &&	((io->obj)
 		             &&	!io->obj->vertexlist.empty())
@@ -1184,7 +1184,7 @@ void ARX_PHYSICS_Apply()
 
 		if (io->obj->pbox)
 		{
-			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
+			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
@@ -1735,7 +1735,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 	io->ioflags		=	IO_ITEM;
 	io->script.size	=	0;
 	io->script.data	=	NULL;
-	io->GameFlags	|=	GFLAG_NO_PHYS_IO_COL;
+	io->gameFlags	|=	GFLAG_NO_PHYS_IO_COL;
 	
 	io->filename = "noname";
 
@@ -1754,7 +1754,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
 	io->angle = ioo->angle;
 	
-	io->GameFlags = ioo->GameFlags;
+	io->gameFlags = ioo->gameFlags;
 	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
 	ioo->halo.dynlight	=	-1;
 	io->ioflags			|=	IO_MOVABLE;
@@ -1785,7 +1785,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 
 
 
-	io->GameFlags |= GFLAG_GOREEXPLODE;
+	io->gameFlags |= GFLAG_GOREEXPLODE;
 	io->lastanimtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 	io->soundtime = 0;
 	io->soundcount = 0;
@@ -1955,7 +1955,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 
 	if (!(target->ioflags & IO_NPC)) return;
 
-	if	(target->GameFlags & GFLAG_NOGORE)
+	if	(target->gameFlags & GFLAG_NOGORE)
 		return;
 
 	float mindistSqr = std::numeric_limits<float>::max();
@@ -4112,7 +4112,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 	for (long i = 0; i < entities.nbmax; i++)
 		if ((entities[i])
 		        &&	(entities[i]->ioflags & IO_NPC)
-		        &&	(entities[i]->GameFlags & GFLAG_ISINTREATZONE)
+		        &&	(entities[i]->gameFlags & GFLAG_ISINTREATZONE)
 		        &&	(entities[i] != source)
 		        &&	((entities[i]->show == SHOW_FLAG_IN_SCENE)
 		             ||	(entities[i]->show == SHOW_FLAG_HIDDEN))
@@ -4262,7 +4262,7 @@ void ManageIgnition(Entity * io)
 			// Need To Kill timers
 			ARX_SCRIPT_Timer_Clear_By_IO(io);
 			io->show = SHOW_FLAG_KILLED;
-			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(io);
 			ARX_INTERACTIVE_DestroyDynamicInfo(io);
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);

@@ -742,7 +742,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 				GetIOCyl(io,io_cyl);
 				float dealt = 0;
 
-				if (	(io->GameFlags & GFLAG_PLATFORM)
+				if (	(io->gameFlags & GFLAG_PLATFORM)
 					||	((flags & CFLAG_COLLIDE_NOCOL) && (io->ioflags & IO_NPC) &&  (io->ioflags & IO_NO_COLLISIONS))
 					)
 				{
@@ -901,7 +901,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 								{
 									if (!(flags & CFLAG_JUST_TEST) && ioo)
 									{
-										if (io->GameFlags&GFLAG_DOOR)
+										if (io->gameFlags&GFLAG_DOOR)
 										{
 											
 											if (float(arxtime) > io->collide_door_time+500)
@@ -969,7 +969,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 									{
 										if (!(flags & CFLAG_JUST_TEST) && ioo)
 										{
-											if (io->GameFlags&GFLAG_DOOR)
+											if (io->gameFlags&GFLAG_DOOR)
 											{
 												if (float(arxtime) > io->collide_door_time+500)
 												{
@@ -1055,7 +1055,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 				|| (InExceptionList(targ))
 				|| (targ==source)
 				|| (io->show!=SHOW_FLAG_IN_SCENE) 
-				|| !(io->GameFlags & GFLAG_ISINTREATZONE)
+				|| !(io->gameFlags & GFLAG_ISINTREATZONE)
 				|| !(io->obj)
 			)
 			return false;
@@ -1078,7 +1078,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 		if (!io->obj) continue;
 
 
-				if (io->GameFlags & GFLAG_PLATFORM)					
+				if (io->gameFlags & GFLAG_PLATFORM)					
 				{
 					float miny,maxy;
 					miny=io->bbox3D.min.y;
@@ -1294,7 +1294,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 				&& validsource && (HaveCommonGroup(io,entities[source])))
 				continue;
 
-			if (io->GameFlags & GFLAG_PLATFORM)					
+			if (io->gameFlags & GFLAG_PLATFORM)					
 				{
 					float miny,maxy;
 					miny=io->bbox3D.min.y;
@@ -1389,7 +1389,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 
 	if ((ignoreNoCollisionFlag || !(io->ioflags & IO_NO_COLLISIONS))
 			&& (io->show==SHOW_FLAG_IN_SCENE) 
-	    && (io->GameFlags & GFLAG_ISINTREATZONE)
+	    && (io->gameFlags & GFLAG_ISINTREATZONE)
 			&& (io->obj)
 			)
 		{
@@ -1947,7 +1947,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 		{
 			Entity * io=entities[num];
 
-			if ((io) && (io->GameFlags & GFLAG_VIEW_BLOCKER))
+			if ((io) && (io->gameFlags & GFLAG_VIEW_BLOCKER))
 			{
 				if ( CheckIOInSphere(&sphere,num) )
 				{

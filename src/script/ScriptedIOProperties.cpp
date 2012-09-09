@@ -96,12 +96,13 @@ public:
 
 class GameFlagCommand : public Command {
 	
-	unsigned short flag;
+	GameFlag flag;
 	bool inv;
 	
 public:
 	
-	GameFlagCommand(string name, short _flag, bool _inv = false) : Command(name, ANY_IO), flag(_flag), inv(_inv) { }
+	GameFlagCommand(string name, GameFlag _flag, bool _inv = false)
+		: Command(name, ANY_IO), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
 		
@@ -112,9 +113,9 @@ public:
 		Entity * io = context.getIO();
 		
 		if(enable ^ inv) {
-			io->GameFlags |= flag;
+			io->gameFlags |= flag;
 		} else {
-			io->GameFlags &= ~flag;
+			io->gameFlags &= ~flag;
 		}
 		
 		return Success;
@@ -271,14 +272,14 @@ public:
 		
 		Entity * io = context.getIO();
 		if(interactivity == "none") {
-			io->GameFlags &= ~GFLAG_INTERACTIVITY;
-			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+			io->gameFlags &= ~GFLAG_INTERACTIVITY;
+			io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 		} else if(interactivity == "hide") {
-			io->GameFlags &= ~GFLAG_INTERACTIVITY;
-			io->GameFlags |= GFLAG_INTERACTIVITYHIDE;
+			io->gameFlags &= ~GFLAG_INTERACTIVITY;
+			io->gameFlags |= GFLAG_INTERACTIVITYHIDE;
 		} else {
-			io->GameFlags |= GFLAG_INTERACTIVITY;
-			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+			io->gameFlags |= GFLAG_INTERACTIVITY;
+			io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 		}
 		
 		return Success;

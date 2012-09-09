@@ -370,7 +370,7 @@ public:
 			io->_itemdata->count--;
 		} else {
 			io->show = SHOW_FLAG_KILLED;
-			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(io);
 			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
 		}

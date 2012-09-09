@@ -346,7 +346,7 @@ public:
 			io->_itemdata->count--;
 		} else {
 			io->show = SHOW_FLAG_KILLED;
-			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(io);
 			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
 		}
@@ -515,10 +515,10 @@ public:
 			return Failed;
 		}
 		
-		t->GameFlags &= ~GFLAG_MEGAHIDE;
+		t->gameFlags &= ~GFLAG_MEGAHIDE;
 		if(hide) {
 			if(megahide) {
-				t->GameFlags |= GFLAG_MEGAHIDE;
+				t->gameFlags |= GFLAG_MEGAHIDE;
 				t->show = SHOW_FLAG_MEGAHIDE;
 			} else {
 				t->show = SHOW_FLAG_HIDDEN;

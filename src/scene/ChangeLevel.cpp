@@ -968,10 +968,10 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 	ais.scale = io->scale;
 	ais.weight = io->weight;
 	strncpy(ais.locname, io->locname.c_str(), sizeof(ais.locname));
-	ais.GameFlags = io->GameFlags;
+	ais.gameFlags = io->gameFlags;
 
 	if(io == entities.player())
-		ais.GameFlags &= ~GFLAG_INVISIBILITY;
+		ais.gameFlags &= ~GFLAG_INVISIBILITY;
 
 	ais.material = io->material;
 	ais.level = io->level;
@@ -2044,7 +2044,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->scale = ais->scale;
 		io->weight = ais->weight;
 		io->locname = script::loadUnlocalized(toLowercase(safestring(ais->locname)));
-		io->GameFlags = ais->GameFlags;
+		io->gameFlags = GameFlags::load(ais->gameFlags); // TODO save/load flags
 		io->material = (Material)ais->material; // TODO save/load enum
 		io->level = ais->level;
 		io->truelevel = ais->truelevel;

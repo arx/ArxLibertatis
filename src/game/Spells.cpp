@@ -680,7 +680,7 @@ void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duratio
 	sd->cPosStartX = checked_range_cast<char>(iPosX);
 	sd->cPosStartY = checked_range_cast<char>(iPosY);
 	
-	io->GameFlags &= ~GFLAG_INVISIBILITY;
+	io->gameFlags &= ~GFLAG_INVISIBILITY;
 }
 
 static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
@@ -775,7 +775,7 @@ static void ARX_SPELLS_RequestSymbolDraw2(Entity *io, Rune symb, float duration)
 	sd->cPosStartX = checked_range_cast<char>(iPosX);
 	sd->cPosStartY = checked_range_cast<char>(iPosY);
 
-	io->GameFlags &= ~GFLAG_INVISIBILITY;
+	io->gameFlags &= ~GFLAG_INVISIBILITY;
 
 }
 
@@ -1186,11 +1186,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 						io->spellcast_data.symb[3] = RUNE_NONE;
 						ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
-						io->GameFlags &=~GFLAG_INVISIBILITY;
+						io->gameFlags &=~GFLAG_INVISIBILITY;
 					}
 					else if (tst)// cast spell !!!
 					{					
-						io->GameFlags &=~GFLAG_INVISIBILITY;
+						io->gameFlags &=~GFLAG_INVISIBILITY;
 						ARX_SPELLS_Launch(io->spellcast_data.castingspell,i,io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
 
 						if (!(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
@@ -5075,7 +5075,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[i].target = 0;
 			}
 
-			entities[spells[i].target]->GameFlags |= GFLAG_INVISIBILITY;
+			entities[spells[i].target]->gameFlags |= GFLAG_INVISIBILITY;
 			entities[spells[i].target]->invisibility = 0.f;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_START, &spells[i].caster_pos);
@@ -6271,7 +6271,7 @@ void ARX_SPELLS_Update()
 					{
 						if (ValidIONum(spells[i].target))
 						{
-							entities[spells[i].target]->GameFlags&=~GFLAG_INVISIBILITY;											
+							entities[spells[i].target]->gameFlags&=~GFLAG_INVISIBILITY;											
 							ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &entities[spells[i].target]->pos);					
 							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 						}
@@ -6416,7 +6416,7 @@ void ARX_SPELLS_Update()
 				{
 					if ((entities[ii]) 						
 						&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
-						&& (entities[ii]->GameFlags & GFLAG_ISINTREATZONE)
+						&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
 								        && (entities[ii]->ioflags & IO_NPC)
 						&& (entities[ii]->_npcdata->life>0.f)
 						)
@@ -7553,7 +7553,7 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].target!=0)
 					{
-						if (!(entities[spells[i].target]->GameFlags & GFLAG_INVISIBILITY))
+						if (!(entities[spells[i].target]->gameFlags & GFLAG_INVISIBILITY))
 						{
 							ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 							ARX_SPELLS_Fizzle(i);
@@ -7834,7 +7834,7 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 	io->spellcast_data.duration = duration;
 	io->spellcast_data.target = target;
 	
-	io->GameFlags &=~GFLAG_INVISIBILITY;
+	io->gameFlags &=~GFLAG_INVISIBILITY;
 	
 	if (	((io->spellcast_data.spell_flags & SPELLCAST_FLAG_NOANIM)
 		&&	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_NODRAW) )

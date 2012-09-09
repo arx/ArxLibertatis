@@ -3471,7 +3471,7 @@ void ArxGame::ManageKeyMouse() {
 		}
 
 		if ((pIO)
-			&& (pIO->GameFlags & GFLAG_INTERACTIVITY)
+			&& (pIO->gameFlags & GFLAG_INTERACTIVITY)
 			&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 			&& (eMouseState != MOUSE_IN_NOTE)
 			)
@@ -7595,7 +7595,7 @@ long Manage3DCursor(long flags)
 
 							int iOldFrameCount	=	FRAME_COUNT;
 							FRAME_COUNT			=	0;
-							io->GameFlags		&=	~GFLAG_NOCOMPUTATION;
+							io->gameFlags		&=	~GFLAG_NOCOMPUTATION;
 
 							float old			=	io->invisibility;
 
@@ -7782,7 +7782,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 		        || ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 			&& (eMouseState != MOUSE_IN_NOTE)
 			&& (FlyingOverIO->ioflags & IO_ITEM)
-			&& (FlyingOverIO->GameFlags & GFLAG_INTERACTIVITY)
+			&& (FlyingOverIO->gameFlags & GFLAG_INTERACTIVITY)
 			&& (config.input.autoReadyWeapon == false))
 			|| ((MAGICMODE==1) && PLAYER_MOUSELOOK_ON))
 		{

@@ -544,10 +544,10 @@ public:
 		
 		Entity * io = context.getIO();
 		
-		io->GameFlags &= ~GFLAG_HIDEWEAPON;
+		io->gameFlags &= ~GFLAG_HIDEWEAPON;
 		HandleFlags("h") {
 			if(flg & flag('h')) {
-				io->GameFlags |= GFLAG_HIDEWEAPON;
+				io->gameFlags |= GFLAG_HIDEWEAPON;
 			}
 		}
 		

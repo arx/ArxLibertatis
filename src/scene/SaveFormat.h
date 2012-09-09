@@ -628,7 +628,7 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	
 	char locname[64];
 	u16 EditorFlags;
-	u16 GameFlags;
+	u16 gameFlags;
 	s32 material;
 	s16 level;
 	s16 truelevel;

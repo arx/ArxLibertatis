@@ -120,7 +120,7 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 		const Entity & io = *entities[attractors[i].ionum];
 		
 		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
-			 || !(io.GameFlags & GFLAG_ISINTREATZONE)) {
+			 || !(io.gameFlags & GFLAG_ISINTREATZONE)) {
 			continue;
 		}
 		

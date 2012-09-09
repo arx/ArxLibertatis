@@ -761,7 +761,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			if ((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC))
 			{
 				if (entities[lnpc]->_npcdata->life > 0.f)
-					if (!((entities[lnpc]->GameFlags & GFLAG_MEGAHIDE) ||
+					if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) ||
 							(entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
 							&& (entities[lnpc]->show == SHOW_FLAG_IN_SCENE))
 						if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN))

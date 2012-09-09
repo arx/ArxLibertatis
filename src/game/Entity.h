@@ -188,6 +188,28 @@ enum EntitySfxFlag {
 DECLARE_FLAGS(EntitySfxFlag, EntitySfxFlags)
 DECLARE_FLAGS_OPERATORS(EntitySfxFlags)
 
+// TODO 16-bit due to save format
+enum GameFlag {
+	GFLAG_INTERACTIVITY     = (1<<0),
+	GFLAG_ISINTREATZONE     = (1<<1),
+	GFLAG_WASINTREATZONE    = (1<<2),
+	GFLAG_NEEDINIT          = (1<<3),
+	GFLAG_INTERACTIVITYHIDE = (1<<4),
+	GFLAG_DOOR              = (1<<5),
+	GFLAG_INVISIBILITY      = (1<<6),
+	GFLAG_NO_PHYS_IO_COL    = (1<<7),
+	GFLAG_VIEW_BLOCKER      = (1<<8),
+	GFLAG_PLATFORM          = (1<<9),
+	GFLAG_ELEVATOR          = (1<<10),
+	GFLAG_MEGAHIDE          = (1<<11),
+	GFLAG_HIDEWEAPON        = (1<<12),
+	GFLAG_NOGORE            = (1<<13),
+	GFLAG_GOREEXPLODE       = (1<<14),
+	GFLAG_NOCOMPUTATION     = (1<<15),
+};
+DECLARE_FLAGS(GameFlag, GameFlags)
+DECLARE_FLAGS_OPERATORS(GameFlags)
+
 struct Entity {
 	
 	explicit Entity(long num);
@@ -245,7 +267,7 @@ struct Entity {
 	long ident; // Ident num
 	float weight;
 	std::string locname; //localisation
-	unsigned short GameFlags; // GFLAGS
+	GameFlags gameFlags;
 	Vec3f velocity; // velocity
 	float fall;
 

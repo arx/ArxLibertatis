@@ -1153,24 +1153,24 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	string locname = loadUnlocalized(toLowercase(safestring(ais.locname)));
 	if(!locname.empty()) cout << "Name: " << locname << " = \"" << getLocalised(locname) << '"' << endl;
 	
-	if(ais.GameFlags) {
+	if(ais.gameFlags) {
 		cout << "Game flags:";
-		if(ais.GameFlags & GFLAG_INTERACTIVITY) cout << " interactivity";
-		if(ais.GameFlags & GFLAG_ISINTREATZONE) cout << " isintreatzone";
-		if(ais.GameFlags & GFLAG_WASINTREATZONE) cout << " wasintreatzone";
-		if(ais.GameFlags & GFLAG_NEEDINIT) cout << " needinit";
-		if(ais.GameFlags & GFLAG_INTERACTIVITYHIDE) cout << " interactivityhide";
-		if(ais.GameFlags & GFLAG_DOOR) cout << " door";
-		if(ais.GameFlags & GFLAG_INVISIBILITY) cout << " invisibility";
-		if(ais.GameFlags & GFLAG_NO_PHYS_IO_COL) cout << " no_phys_io_col";
-		if(ais.GameFlags & GFLAG_VIEW_BLOCKER) cout << " view_blocker";
-		if(ais.GameFlags & GFLAG_PLATFORM) cout << " platform";
-		if(ais.GameFlags & GFLAG_ELEVATOR) cout << " elevator";
-		if(ais.GameFlags & GFLAG_MEGAHIDE) cout << " megahide";
-		if(ais.GameFlags & GFLAG_HIDEWEAPON) cout << " hideweapon";
-		if(ais.GameFlags & GFLAG_NOGORE) cout << " nogore";
-		if(ais.GameFlags & GFLAG_GOREEXPLODE) cout << " goreexplode";
-		if(ais.GameFlags & GFLAG_NOCOMPUTATION) cout << " nocomputation";
+		if(ais.gameFlags & GFLAG_INTERACTIVITY) cout << " interactivity";
+		if(ais.gameFlags & GFLAG_ISINTREATZONE) cout << " isintreatzone";
+		if(ais.gameFlags & GFLAG_WASINTREATZONE) cout << " wasintreatzone";
+		if(ais.gameFlags & GFLAG_NEEDINIT) cout << " needinit";
+		if(ais.gameFlags & GFLAG_INTERACTIVITYHIDE) cout << " interactivityhide";
+		if(ais.gameFlags & GFLAG_DOOR) cout << " door";
+		if(ais.gameFlags & GFLAG_INVISIBILITY) cout << " invisibility";
+		if(ais.gameFlags & GFLAG_NO_PHYS_IO_COL) cout << " no_phys_io_col";
+		if(ais.gameFlags & GFLAG_VIEW_BLOCKER) cout << " view_blocker";
+		if(ais.gameFlags & GFLAG_PLATFORM) cout << " platform";
+		if(ais.gameFlags & GFLAG_ELEVATOR) cout << " elevator";
+		if(ais.gameFlags & GFLAG_MEGAHIDE) cout << " megahide";
+		if(ais.gameFlags & GFLAG_HIDEWEAPON) cout << " hideweapon";
+		if(ais.gameFlags & GFLAG_NOGORE) cout << " nogore";
+		if(ais.gameFlags & GFLAG_GOREEXPLODE) cout << " goreexplode";
+		if(ais.gameFlags & GFLAG_NOCOMPUTATION) cout << " nocomputation";
 		cout << endl;
 	}
 	

@@ -206,7 +206,7 @@ void ARX_SCRIPT_ResetObject(Entity * io, long flags)
 		}
 
 		if (entities[num])
-			entities[num]->GameFlags &= ~GFLAG_NEEDINIT;
+			entities[num]->gameFlags &= ~GFLAG_NEEDINIT;
 	}
 }
 
@@ -273,7 +273,7 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 			return;
 		}
 		
-		if(entities[i] == NULL || !(entities[i]->GameFlags & GFLAG_ISINTREATZONE)) {
+		if(entities[i] == NULL || !(entities[i]->gameFlags & GFLAG_ISINTREATZONE)) {
 			continue;
 		}
 		
@@ -2197,7 +2197,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 			FaceTarget2(io);
 		}
 
-		io->GameFlags &= ~GFLAG_INVISIBILITY;
+		io->gameFlags &= ~GFLAG_INVISIBILITY;
 		st->times = 1;
 	}
 	else
@@ -2236,7 +2236,7 @@ void ARX_SCRIPT_Timer_Check() {
 		}
 		
 		// Skip heartbeat timer events for far away objects
-		if((st->flags & 1) && !(st->io->GameFlags & GFLAG_ISINTREATZONE)) {
+		if((st->flags & 1) && !(st->io->gameFlags & GFLAG_ISINTREATZONE)) {
 			long increment = (now - st->tim) / st->msecs;
 			st->tim += st->msecs * increment;
 			arx_assert_msg(st->tim <= now && st->tim + st->msecs > now,

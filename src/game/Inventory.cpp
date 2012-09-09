@@ -203,7 +203,7 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 			{
 				if ((inventory[sActiveInventory][tx][ty].io)
-				        &&	(inventory[sActiveInventory][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
+				        &&	(inventory[sActiveInventory][tx][ty].io->gameFlags & GFLAG_INTERACTIVITY))
 				{
 					HERO_OR_SECONDARY = 1;
 					return (inventory[sActiveInventory][tx][ty].io);
@@ -232,7 +232,7 @@ static Entity * GetInventoryObj(Vec2s * pos) {
 			if ((tx >= 0) && ((size_t)tx < INVENTORY_X) && (ty >= 0) && ((size_t)ty < INVENTORY_Y))
 			{
 				if ((inventory[i][tx][ty].io)
-					&&	(inventory[i][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
+					&&	(inventory[i][tx][ty].io->gameFlags & GFLAG_INTERACTIVITY))
 				{
 					HERO_OR_SECONDARY = 1;
 					return (inventory[i][tx][ty].io);
@@ -1828,7 +1828,7 @@ Entity * GetFromInventory(Vec2s * pos)
 
 				Entity * io = SecondaryInventory->slot[tx][ty].io;
 
-				if (!(io->GameFlags & GFLAG_INTERACTIVITY))
+				if (!(io->gameFlags & GFLAG_INTERACTIVITY))
 					return NULL;
 
 				HERO_OR_SECONDARY = 2;
@@ -2262,7 +2262,7 @@ void SendInventoryObjectCommand(const string & _lpszText, ScriptMessage _lComman
 							if(!item->obj->texturecontainer.empty()) {
 								if(item->obj->texturecontainer[lTex]) {
 									if(item->obj->texturecontainer[lTex]->m_texName == _lpszText) {
-										if(item->GameFlags & GFLAG_INTERACTIVITY) {
+										if(item->gameFlags & GFLAG_INTERACTIVITY) {
 											SendIOScriptEvent(item, _lCommand);
 										}
 										return;
