@@ -359,18 +359,6 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 	}
 }
 
-void ForcePlayerInventoryObjectLevel(long level) {
-	for(long iNbBag = 0; iNbBag < 3; iNbBag++) {
-		for(size_t j = 0; j < INVENTORY_Y; j++) {
-			for(size_t i = 0; i < INVENTORY_X; i++) {
-				if(inventory[iNbBag][i][j].io != NULL) {
-					inventory[iNbBag][i][j].io->level = (short)level;
-				}
-			}
-		}
-	}
-}
-
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.

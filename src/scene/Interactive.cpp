@@ -1368,7 +1368,6 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		ARX_HALO_SetToNative(io);
 		io->halo.dynlight = -1;
 
-		io->level = io->truelevel;
 		io->forcedmove = Vec3f::ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
@@ -1561,16 +1560,13 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1)
 //*************************************************************************************
 // Count IO number ignoring ScriptLoaded IOs
 //*************************************************************************************
-long GetNumberInterWithOutScriptLoadForLevel(long level)
-{
-	register long count = 0;
-
-	for (long i = 1; i < entities.nbmax; i++)
-	{
-		if ((entities[i] != NULL) && (!entities[i]->scriptload)
-		        && (entities[i]->truelevel == level)) count++;
+long GetNumberInterWithOutScriptLoadForLevel(long level) {
+	long count = 0;
+	for(long i = 1; i < entities.nbmax; i++) {
+		if(entities[i] != NULL && !entities[i]->scriptload) {
+			count++;
+		}
 	}
-
 	return count;
 }
 //*************************************************************************************

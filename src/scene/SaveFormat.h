@@ -630,8 +630,8 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	u16 EditorFlags;
 	u16 gameFlags;
 	s32 material;
-	s16 level;
-	s16 truelevel;
+	s16 level; // unused
+	s16 truelevel; // unused
 	s32 nbtimers;
 	// Script data
 	s32 scriptload;

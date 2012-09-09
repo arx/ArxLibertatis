@@ -155,11 +155,6 @@ Entity::Entity(long _num) : num(_num) {
 	soundtime = 0;
 	soundcount = 0;
 	
-	if(CURRENTLEVEL == -1) {
-		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
-	}
-	level = truelevel = CURRENTLEVEL;
-	
 	sfx_time = 0;
 	collide_door_time = 0;
 	ouch_time = 0;

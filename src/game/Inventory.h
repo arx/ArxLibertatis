@@ -246,7 +246,6 @@ bool PutInInventory();
 bool TakeFromInventory(Vec2s * pos);
 Entity * GetFromInventory(Vec2s * pos);
 bool IsFlyingOverInventory(Vec2s * pos);
-void ForcePlayerInventoryObjectLevel(long level);
 bool IsInPlayerInventory(Entity * io);
 bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(Vec2s * pos);

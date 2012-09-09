@@ -120,12 +120,12 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum);
 static bool ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
 static void ARX_CHANGELEVEL_Push_Globals();
 static void ARX_CHANGELEVEL_Pop_Globals();
-static long ARX_CHANGELEVEL_Push_Player();
-static long ARX_CHANGELEVEL_Push_AllIO();
-static long ARX_CHANGELEVEL_Push_IO(const Entity * io);
+static long ARX_CHANGELEVEL_Push_Player(long level);
+static long ARX_CHANGELEVEL_Push_AllIO(long level);
+static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level);
 static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num);
 
-long NEW_LEVEL = -1;
+static long NEW_LEVEL = -1;
 
 static fs::path CURRENT_GAME_FILE;
 
@@ -154,10 +154,7 @@ static Entity * convertToValidIO(const string & ident) {
 	long t = entities.getById(ident);
 	
 	if(t > 0) {
-		
 		arx_assert_msg(ValidIONum(t), "got invalid IO num %ld", t);
-		
-		entities[t]->level = (short)NEW_LEVEL; // Not really needed anymore...
 		return entities[t];
 	}
 	
@@ -172,11 +169,7 @@ static Entity * convertToValidIO(const string & ident) {
 		return NULL;
 	}
 	
-	Entity * io = ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
-	if(io) {
-		io->level = (short)NEW_LEVEL;
-	}
-	return io;
+	return ARX_CHANGELEVEL_Pop_IO(ident, atoi(ident.substr(pos).c_str()));
 }
 
 template <size_t N>
@@ -397,8 +390,6 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		}
 	}
 	
-	ForcePlayerInventoryObjectLevel(newnum);
-	
 	// Now we can save our things
 	if(!ARX_CHANGELEVEL_Push_Index(num)) {
 		LogError << "Error Saving Index...";
@@ -408,13 +399,13 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	ARX_CHANGELEVEL_Push_Globals();
 	
-	if(ARX_CHANGELEVEL_Push_Player() != 1) {
+	if(ARX_CHANGELEVEL_Push_Player(newnum) != 1) {
 		LogError << "Error Saving Player...";
 		arxtime.resume();
 		return false;
 	}
 	
-	if(ARX_CHANGELEVEL_Push_AllIO() != 1) {
+	if(ARX_CHANGELEVEL_Push_AllIO(num) != 1) {
 		LogError << "Error Saving IOs...";
 		arxtime.resume();
 		return false;
@@ -505,8 +496,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 			memset(&aii, 0, sizeof(aii));
 			strncpy(aii.filename, entities[i]->filename.string().c_str(), sizeof(aii.filename));
 			aii.ident = entities[i]->ident;
-			aii.level = entities[i]->level;
-			aii.truelevel = entities[i]->truelevel;
+			aii.level = num;
+			aii.truelevel = num;
 			aii.num = i; // !!!
 			memcpy(dat + pos, &aii, sizeof(aii));
 			pos += sizeof(aii);
@@ -656,7 +647,7 @@ extern long cur_pom;
 extern long sp_wep;
 extern long sp_arm;
 
-static long ARX_CHANGELEVEL_Push_Player() {
+static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	ARX_CHANGELEVEL_PLAYER * asp;
 
@@ -847,13 +838,13 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	{
 		if ((IsInPlayerInventory(entities[i]))
 				||	(IsPlayerEquipedWith(entities[i])))
-			ARX_CHANGELEVEL_Push_IO(entities[i]);
+			ARX_CHANGELEVEL_Push_IO(entities[i], level);
 	}
 
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Push_AllIO() {
+static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	
 	for (long i = 1; i < entities.nbmax; i++)
 	{
@@ -864,7 +855,7 @@ static long ARX_CHANGELEVEL_Push_AllIO() {
 				&&	(!IsPlayerEquipedWith(entities[i]))
 		   )
 		{
-			ARX_CHANGELEVEL_Push_IO(entities[i]);
+			ARX_CHANGELEVEL_Push_IO(entities[i], level);
 		}
 	}
 
@@ -904,7 +895,7 @@ void FillTargetInfo(char (&info)[N], long numtarget) {
 	}
 }
 
-static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
+static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	
 	// Check Valid IO
 	if(!io) {
@@ -973,8 +964,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 		ais.gameFlags &= ~GFLAG_INVISIBILITY;
 
 	ais.material = io->material;
-	ais.level = io->level;
-	ais.truelevel = io->truelevel;
+	ais.level = ais.truelevel = level;
 	ais.scriptload = io->scriptload;
 	ais.show = io->show;
 	ais.collision = io->collision;
@@ -1667,7 +1657,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Pop_Player(long instance) {
+static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	const string & loadfile = "player";
 	
@@ -1886,9 +1876,7 @@ static long ARX_CHANGELEVEL_Pop_Player(long instance) {
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
 		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp->equiped[i]));
-		if(player.equiped[i] > 0 && ValidIONum(player.equiped[i])) {
-			entities[player.equiped[i]]->level = (short)instance;
-		} else {
+		if(!ValidIONum(player.equiped[i])) {
 			player.equiped[i] = 0;
 		}
 	}
@@ -2045,8 +2033,6 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->locname = script::loadUnlocalized(toLowercase(safestring(ais->locname)));
 		io->gameFlags = GameFlags::load(ais->gameFlags); // TODO save/load flags
 		io->material = (Material)ais->material; // TODO save/load enum
-		io->level = ais->level;
-		io->truelevel = ais->truelevel;
 		
 		// Script data
 		io->scriptload = ais->scriptload;
@@ -2769,7 +2755,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LoadLevelScreen(instance);
 	LogDebug("Before ARX_CHANGELEVEL_Pop_Player");
 	
-	if(ARX_CHANGELEVEL_Pop_Player(instance) != 1) {
+	if(ARX_CHANGELEVEL_Pop_Player() != 1) {
 		LogError << "Cannot Load Player data";
 		ARX_CHANGELEVEL_PopLevel_Abort();
 		return false;
@@ -2799,7 +2785,6 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LoadLevelScreen();
 	
 	LogDebug("Before Player Misc Init");
-	ForcePlayerInventoryObjectLevel(instance);
 	ARX_EQUIPMENT_RecreatePlayerMesh();
 	
 	PROGRESS_BAR_COUNT += 1.f;

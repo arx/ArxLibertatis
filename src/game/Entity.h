@@ -319,8 +319,6 @@ struct Entity {
 	unsigned long soundtime;
 	unsigned long soundcount;
 	
-	short level; // TODO remove
-	short truelevel; // TODO remove
 	unsigned long sfx_time;
 	unsigned long collide_door_time;
 	unsigned long ouch_time;
