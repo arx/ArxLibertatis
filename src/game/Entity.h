@@ -314,7 +314,7 @@ struct Entity {
 	std::string shop_category;
 	float shop_multiply;
 	res::path inventory_skin;
-	long aflags; // additionnal flags
+	long isHit;
 	short inzone_show;
 	short summoner;
 	long spark_n_blood;

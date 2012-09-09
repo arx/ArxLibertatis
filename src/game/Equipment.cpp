@@ -1024,19 +1024,14 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 							HIT_SPARK = 1;
 					}
 
-					if (HIT_SPARK)
-					{
-						if (!(io_source->aflags & IO_NPC_AFLAG_HIT_BACKGROUND))
-						{
+					if(HIT_SPARK) {
+						if(!io_source->isHit) {
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
-							io_source->aflags |= IO_NPC_AFLAG_HIT_BACKGROUND;
-
-							if (!ValidIONum(weapon))
-							{
+							io_source->isHit = true;
+							
+							if(!ValidIONum(weapon)) {
 								io_weapon = NULL;
-							}
-							else
-							{
+							} else {
 								string _weapon_material = "metal";
 								const string * weapon_material = &_weapon_material;
 
@@ -1062,10 +1057,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		{
 			if (io_source == entities.player())
 			{
-				if (!(io_source->aflags & IO_NPC_AFLAG_HIT_BACKGROUND))
-				{
+				if(!io_source->isHit) {
+					
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
-					io_source->aflags |= IO_NPC_AFLAG_HIT_BACKGROUND;
+					io_source->isHit = true;
 
 					if (!ValidIONum(weapon))
 					{

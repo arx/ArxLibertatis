@@ -1325,7 +1325,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 	
 	if(ais.aflags) {
 		cout << "Additional flags:";
-		if(ais.aflags & IO_NPC_AFLAG_HIT_CLEAR) cout << " hit_clear";
+		if(ais.aflags & 1) cout << " hit";
 		if(ais.aflags & ~1) cout << " (unknown)";
 		cout << endl;
 	}

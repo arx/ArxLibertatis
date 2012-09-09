@@ -2439,7 +2439,7 @@ void ManageCombatModeAnimations()
 				{
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT_START+CurrFightPos*3]);
-					io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+					io->isHit = false;
 				}
 			}
 
@@ -2585,7 +2585,7 @@ void ManageCombatModeAnimations()
 				{
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT_START+CurrFightPos*3]);
-					io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+					io->isHit = false;
 				}
 			}
 
@@ -2655,7 +2655,7 @@ void ManageCombatModeAnimations()
 				{
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
-					io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+					io->isHit = false;
 				}
 			}
 
@@ -2726,7 +2726,7 @@ void ManageCombatModeAnimations()
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT_START+CurrFightPos*3]);
 
-					io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+					io->isHit = false;
 				}
 			}
 
@@ -2809,7 +2809,7 @@ void ManageCombatModeAnimations()
 				{
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_PART_1]);
-					io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+					io->isHit = false;
 				}
 			}
 
@@ -2949,7 +2949,7 @@ void ManageCombatModeAnimationsEND()
 						ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT_START+CurrFightPos*3]);
 
 					AimTime = (unsigned long)(arxtime);
-					io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+					io->isHit = false;
 				}
 
 			break;
@@ -2978,7 +2978,7 @@ void ManageCombatModeAnimationsEND()
 							ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
-						io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+						io->isHit = false;
 					}
 					else if (useanim->cur_anim==alist[ANIM_DAGGER_UNREADY_PART_1])
 					{
@@ -3013,7 +3013,7 @@ void ManageCombatModeAnimationsEND()
 						ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
-						io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+						io->isHit = false;
 					}
 					else if (useanim->cur_anim==alist[ANIM_1H_UNREADY_PART_1])
 					{
@@ -3048,7 +3048,7 @@ void ManageCombatModeAnimationsEND()
 							ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
-						io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+						io->isHit = false;
 					}
 					else if (useanim->cur_anim==alist[ANIM_2H_UNREADY_PART_1])
 					{
@@ -3084,7 +3084,7 @@ void ManageCombatModeAnimationsEND()
 							else
 								ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_PART_1]);
 
-							io->aflags&=~IO_NPC_AFLAG_HIT_CLEAR;
+							io->isHit = false;
 						}
 						else
 						{

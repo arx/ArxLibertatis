@@ -998,7 +998,7 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io) {
 	ais.type_flags = io->type_flags;
 	ais.secretvalue = io->secretvalue;
 	ais.shop_multiply = io->shop_multiply;
-	ais.aflags = io->aflags;
+	ais.aflags = io->isHit ? 1 : 0;
 	ais.original_height = io->original_height;
 	ais.original_radius = io->original_radius;
 	ais.ignition = io->ignition;
@@ -2075,7 +2075,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->type_flags = ItemType::load(ais->type_flags); // TODO save/load flags
 		io->secretvalue = ais->secretvalue;
 		io->shop_multiply = ais->shop_multiply;
-		io->aflags = ais->aflags;
+		io->isHit = (ais->aflags & 1);
 		io->original_height = ais->original_height;
 		io->original_radius = ais->original_radius;
 		io->ignition = ais->ignition;

@@ -195,7 +195,7 @@ Entity::Entity(long _num) : num(_num) {
 	secretvalue = -1;
 	
 	shop_multiply = 1.f;
-	aflags = 0;
+	isHit = false;
 	inzone_show = 0;
 	summoner = 0;
 	spark_n_blood = 0;
