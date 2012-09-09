@@ -585,19 +585,15 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
 
 	return false;
 }
-//*********************************************************************************************************************
-// bool ARX_SCENE__PORTAL_ClipIO(Entity * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
-//---------------------------------------------------------------------------------------------------------------------
+
 // USAGE/FUNCTION
 //   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
 //   bboxmin & bboxmax ARE in fact 2D-screen BBOXes using only (x,y).
 // RETURN:
 //   return true if IO cannot be seen, false if visible
-//---------------------------------------------------------------------------------------------------------------------
 // TODO:
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
-//*********************************************************************************************************************
 bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 	
 	if (EDITMODE) return false;
