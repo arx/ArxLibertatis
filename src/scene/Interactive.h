@@ -234,7 +234,7 @@ extern long TREATZONE_CUR;
 
 void TREATZONE_Clear();
 void TREATZONE_Release();
-void TREATZONE_AddIO(Entity * io, long num, long flag = 0);
+void TREATZONE_AddIO(Entity * io, long flag = 0);
 void TREATZONE_RemoveIO(Entity * io);
 bool IsSameObject(Entity * io, Entity * ioo);
 void ARX_INTERACTIVE_ClearAllDynData();

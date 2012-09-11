@@ -545,7 +545,7 @@ void TREATZONE_RemoveIO(Entity * io)
 }
 
 // flag & 1 IO_JUST_COLLIDE
-void TREATZONE_AddIO(Entity * io, long num, long flag)
+void TREATZONE_AddIO(Entity * io, long flag)
 {
 	if (TREATZONE_MAX == TREATZONE_CUR)
 	{
@@ -565,7 +565,7 @@ void TREATZONE_AddIO(Entity * io, long num, long flag)
 	if (flag & 1) treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
 
 	treatio[TREATZONE_CUR].show = io->show;
-	treatio[TREATZONE_CUR].num = num;
+	treatio[TREATZONE_CUR].num = io->index();
 	TREATZONE_CUR++;
 }
 
@@ -609,7 +609,7 @@ void PrepareIOTreatZone(long flag)
 	TREATZONE_Clear();
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos, 1);
 	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-	TREATZONE_AddIO(entities.player(), 0, 0);
+	TREATZONE_AddIO(entities.player());
 
 	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
 
@@ -628,7 +628,7 @@ void PrepareIOTreatZone(long flag)
 		}
 	}
 
-	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER, DRAGINTER->index(), 0);
+	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER);
 
 	TREATZONE_LIMIT = 3200; 
 
@@ -651,19 +651,14 @@ void PrepareIOTreatZone(long flag)
 
 	INTREATZONECOUNT = 0;
 
-	if (TreatAllIO)
-	{
-		for (long ii = 1; ii < entities.nbmax; ii++)
-		{
+	if(TreatAllIO) {
+		for(long ii = 1; ii < entities.nbmax; ii++) {
 			Entity * io = entities[ii];
-
-			if (io)
-			{
+			if(io) {
 				io->gameFlags |= GFLAG_ISINTREATZONE;
-				TREATZONE_AddIO(io, ii, 0);
+				TREATZONE_AddIO(io);
 			}
 		}
-
 		return; 
 	}
 
@@ -739,12 +734,10 @@ void PrepareIOTreatZone(long flag)
 			else
 				io->gameFlags &= ~GFLAG_WASINTREATZONE;
 
-			if (treat)
-			{
+			if(treat) {
 				INTREATZONECOUNT++;
 				io->gameFlags |= GFLAG_ISINTREATZONE;
-				TREATZONE_AddIO(io, i, 0);
-
+				TREATZONE_AddIO(io);
 				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
 					Entity * iooo = io->_npcdata->weapon;
 					iooo->room = io->room;
@@ -813,8 +806,9 @@ void PrepareIOTreatZone(long flag)
 				}
 			}
 
-			if (toadd)
-				TREATZONE_AddIO(io, i, 1);
+			if(toadd) {
+				TREATZONE_AddIO(io, 1);
+			}
 		}
 	}
 }

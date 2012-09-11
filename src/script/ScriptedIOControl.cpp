@@ -135,7 +135,7 @@ public:
 			
 			SendInitScriptEvent(ioo);
 			ioo->angle = last_angle;
-			TREATZONE_AddIO(ioo, neww);
+			TREATZONE_AddIO(ioo);
 			
 			// check that the init script didn't put the item anywhere
 			// if we ignore this we might create duplucate references
@@ -282,7 +282,7 @@ public:
 					ioo->pos.z += EEcos(radians(t->angle.b)) * dist;
 				}
 				
-				TREATZONE_AddIO(ioo, ioo->index());
+				TREATZONE_AddIO(ioo);
 				
 			} else {
 				
@@ -301,7 +301,7 @@ public:
 				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
-				TREATZONE_AddIO(ioo, ioo->index());
+				TREATZONE_AddIO(ioo);
 				
 			}
 			
