@@ -49,8 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct Entity;
-
+class Entity;
 namespace res { class path; }
 
 extern Vec3f loddpos;

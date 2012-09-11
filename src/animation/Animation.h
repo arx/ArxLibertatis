@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 
 class TextureContainer;
-struct Entity;
+class Entity;
 struct EERIE_3DOBJ;
 struct EERIE_LIGHT;
 struct ANIM_USE;

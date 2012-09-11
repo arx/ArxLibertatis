@@ -47,9 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 #include "io/resource/ResourcePath.h"
 
-struct Entity;
 struct EERIE_3DOBJ;
 class TextureContainer;
+class Entity;
 
 enum TweakFlag {
 	TWEAK_REMOVE    = (1<<0),

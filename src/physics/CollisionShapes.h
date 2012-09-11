@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_PHYSICS_COLLISIONSHAPES_H
 
 struct EERIE_3DOBJ;
-struct Entity;
+class Entity;
 
 void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj);
 void EERIE_COLLISION_SPHERES_Release(EERIE_3DOBJ * obj);

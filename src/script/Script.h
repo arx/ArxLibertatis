@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "platform/Flags.h"
 
 class PakFile;
-struct Entity;
+class Entity;
 
 const size_t MAX_SHORTCUT = 80;
 const size_t MAX_SCRIPTTIMERS = 5;

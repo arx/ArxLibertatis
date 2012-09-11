@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct Entity;
+class Entity;
 
 void ARX_SPECIAL_ATTRACTORS_Reset();
 bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);

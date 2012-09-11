@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct EERIE_3DOBJ;
 struct ANIM_USE;
-struct Entity;
+class Entity;
 struct EERIEMATRIX;
 struct EERIE_QUAT;
 struct TexturedVertex;

@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct Entity;
+class Entity;
 
 long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos, long flag = 0);
 

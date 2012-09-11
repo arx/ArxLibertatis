@@ -55,9 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Note.h"
 
-class TextureContainer;
 struct EERIE_CAMERA;
-struct Entity;
+class TextureContainer;
+class Entity;
 
 extern float BOOKDECX;
 extern float BOOKDECY;

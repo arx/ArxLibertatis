@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "math/MathFwd.h"
 
-struct Entity;
+class Entity;
 
 enum ARX_SPELLS_MISSILE_TYPE {
 	MISSILE_NONE = 0,

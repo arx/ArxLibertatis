@@ -50,11 +50,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <set>
 
 #include "graphics/GraphicsTypes.h"
-// TODO move Entity somewhere else / move flags here
 #include "math/Rectangle.h"
-#include "platform/Flags.h"
 
-struct Entity;
+class Entity;
 
 void specialEE_RTP(TexturedVertex*,TexturedVertex*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);

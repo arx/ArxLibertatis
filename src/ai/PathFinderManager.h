@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_AI_PATHFINDERMANAGER_H
 #define ARX_AI_PATHFINDERMANAGER_H
 
-struct Entity;
+class Entity;
 
 struct PATHFINDER_REQUEST {
 	bool isvalid;

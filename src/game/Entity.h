@@ -231,7 +231,9 @@ enum EntityVisilibity {
 	SHOW_FLAG_DESTROYED    = 255
 };
 
-struct Entity {
+class Entity {
+	
+public:
 	
 	explicit Entity();
 	~Entity();

@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 
-struct Entity;
+class Entity;
 class CSpellFx;
 class TextureContainer;
 

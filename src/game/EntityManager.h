@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-struct Entity;
+class Entity;
 
 class EntityManager {
 	
@@ -78,7 +78,7 @@ private:
 	
 	void remove(size_t index);
 	
-	friend struct Entity;
+	friend class Entity;
 };
 
 extern EntityManager entities;

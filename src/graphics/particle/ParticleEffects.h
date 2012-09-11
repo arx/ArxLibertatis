@@ -48,16 +48,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
+
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
 #include "math/MathFwd.h"
 #include "math/Vector3.h"
 #include "math/Angle.h"
-class TextureContainer;
+
 struct EERIEPOLY;
 struct EERIE_CAMERA;
 struct EERIE_SPHERE;
-struct Entity;
+class TextureContainer;
+class Entity;
 
 struct FLARES {
 	unsigned char exist;

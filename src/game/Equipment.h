@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 #include "platform/Flags.h"
 
-struct Entity;
+class Entity;
 
 enum WeaponType {
 	WEAPON_BARE = 0,

@@ -57,10 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 #include "platform/Flags.h"
 
-struct Entity;
 struct EERIE_CAMERA;
 struct EERIE_3DOBJ;
-
+class Entity;
 class CRuban;
 
 enum PathwayType {

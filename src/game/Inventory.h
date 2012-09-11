@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/MathFwd.h"
 #include "script/Script.h"
 
-struct Entity;
+class Entity;
 
 struct INVENTORY_SLOT {
 	Entity * io;

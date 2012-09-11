@@ -61,9 +61,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-struct Entity;
 struct EERIE_3DOBJ;
 class TextureContainer;
+class Entity;
 
 struct EERIE_TRI {
 	Vec3f v[3];
