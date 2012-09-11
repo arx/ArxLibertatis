@@ -405,7 +405,7 @@ private:
 	//! Remove any remaining references to this entity.
 	void cleanReferences();
 	
-	const size_t index_;
+	const size_t index_; //!< index of this Entity in the EntityManager
 	
 };
 
