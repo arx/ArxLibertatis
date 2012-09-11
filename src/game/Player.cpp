@@ -193,10 +193,9 @@ void Manage_sp_max();
 bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
 
-	if (entities.iobj
-	        &&	(entities.player())
-	        &&	(entities.player()->animlayer[1].cur_anim))
-	{
+	if(entities.nbmax > 0 && entities.player()
+	   && entities.player()->animlayer[1].cur_anim) {
+		
 		ANIM_USE * ause1 = &entities.player()->animlayer[1];
 		ANIM_HANDLE ** alist = entities.player()->anims;
 
@@ -1527,14 +1526,9 @@ void ARX_PLAYER_Restore_Skin() {
 		tmpTC->LoadFile(tx4);
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_LoadHeroAnimsAndMesh()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Load Mesh & anims for hero
-//*************************************************************************************
-void ARX_PLAYER_LoadHeroAnimsAndMesh()
-{
+//Load Mesh & anims for hero
+void ARX_PLAYER_LoadHeroAnimsAndMesh(){
+	
 	const char OBJECT_HUMAN_BASE[] = "graph/obj3d/interactive/npc/human_base/human_base.teo"; 
 	hero = loadObject(OBJECT_HUMAN_BASE, false);
 	PLAYER_SKIN_TC = TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
@@ -1545,8 +1539,11 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	herowait2 = EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
 	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
-
-	Entity * io = CreateFreeInter(0);
+	
+	Entity * io = new Entity();
+	arx_assert_msg(io->index() == 0, "player entity didn't get index 0");
+	arx_assert(entities.player() == io);
+	
 	io->obj = hero;
 
 	player.skin = 0;
@@ -3462,7 +3459,7 @@ void ARX_PLAYER_Start_New_Quest() {
 	EERIE_PATHFINDER_Release();
 	ARX_PLAYER_MakeFreshHero();
 	CURRENT_TORCH = NULL;
-	FreeAllInter();
+	entities.clear();
 	SecondaryInventory = NULL;
 	TSecondaryInventory = NULL;
 	ARX_EQUIPMENT_UnEquipAllPlayer();
@@ -3720,8 +3717,7 @@ void ARX_GAME_Reset(long type) {
 
 	if (eyeball.exist) eyeball.exist = -100;
 
-	if ((entities.iobj) && (entities.nbmax > 0) && (entities.player()))
-	{
+	if(entities.nbmax > 0 && entities.player()) {
 		entities.player()->ouch_time = 0;
 		entities.player()->invisibility = 0.f;
 	}

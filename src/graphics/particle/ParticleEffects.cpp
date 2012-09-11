@@ -907,10 +907,9 @@ void ManageTorch()
 		}
 	}
 
-	if (entities.iobj && entities.player() && entities.player()->obj
-		&& (entities.player()->obj->fastaccess.head_group_origin>-1))
-	{
-		el->pos.y=entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.head_group_origin].v.y;
+	if(entities.nbmax > 0 && entities.player() && entities.player()->obj
+	   && entities.player()->obj->fastaccess.head_group_origin > -1) {
+		el->pos.y = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.head_group_origin].v.y;
 	}
 }
 #define DIV_MAX_FLARELIFE	0.00025f

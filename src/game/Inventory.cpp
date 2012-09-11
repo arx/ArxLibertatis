@@ -942,27 +942,8 @@ bool CanBePutInInventory(Entity * io)
 						}
 						else io->_itemdata->count = 0;
 
-						if (!io->_itemdata->count)
-						{
-							if (io->scriptload)
-							{
-								for (long ii = 0; ii < entities.nbmax; ii++)
-								{
-									if (entities[ii] == io)
-									{
-										ReleaseInter(entities[ii]);
-
-										if (DRAGINTER == io)
-											Set_DragInter(NULL);
-
-										io = entities.iobj[ii] = NULL;
-									}
-								}
-							}
-							else
-							{
-								io->show = SHOW_FLAG_KILLED;
-							}
+						if(!io->_itemdata->count) {
+							io->destroy();
 						}
 
 						ARX_INVENTORY_Declare_InventoryIn(ioo);
@@ -1034,28 +1015,8 @@ bool CanBePutInInventory(Entity * io)
 							}
 							else io->_itemdata->count = 0;
 
-							if (!io->_itemdata->count) 
-							{
-								if (io->scriptload)
-								{
-									for (long ii = 0; ii < entities.nbmax; ii++)
-									{
-										if (entities[ii] == io)
-										{
-											ReleaseInter(entities[ii]);
-
-											if (DRAGINTER == io)
-												Set_DragInter(NULL);
-
-											io = entities.iobj[ii] = NULL;
-										}
-									}
-								}
-								else
-								{
-									io->show = SHOW_FLAG_KILLED;
-								}
-
+							if(!io->_itemdata->count) {
+								io->destroy();
 								ARX_INVENTORY_Declare_InventoryIn(ioo);
 								return true;
 							}
@@ -1377,25 +1338,9 @@ bool PutInInventory()
 						{
 							ioo->_itemdata->count += DRAGINTER->_itemdata->count;
 							ioo->scale = 1.f;
-
-							if (DRAGINTER->scriptload)
-							{
-								for (long ii = 0; ii < entities.nbmax; ii++)
-								{
-									if (entities[ii] == DRAGINTER)
-									{
-										ReleaseInter(entities[ii]);
-										entities.iobj[ii] = NULL;
-										Set_DragInter(NULL);
-									}
-								}
-							}
-							else
-							{
-								DRAGINTER->show = SHOW_FLAG_KILLED;
-								Set_DragInter(NULL);
-							}
-
+							
+							DRAGINTER->destroy();
+							
 							ARX_PLAYER_AddGold(cos);
 							ARX_SOUND_PlayInterface(SND_GOLD);
 							ARX_SOUND_PlayInterface(SND_INVSTD);
@@ -1599,25 +1544,8 @@ bool PutInInventory()
 					ioo->scale = 1.f;
 					ARX_INVENTORY_Declare_InventoryIn(DRAGINTER);
 
-					if (!DRAGINTER->_itemdata->count)
-					{
-						if (DRAGINTER->scriptload)
-						{
-							for (long ii = 0; ii < entities.nbmax; ii++)
-							{
-								if (entities[ii] == DRAGINTER)
-								{
-									ReleaseInter(entities[ii]);
-									entities.iobj[ii] = NULL;
-									Set_DragInter(NULL);
-								}
-							}
-						}
-						else
-						{
-							DRAGINTER->show = SHOW_FLAG_KILLED;
-							Set_DragInter(NULL);
-						}
+					if(!DRAGINTER->_itemdata->count) {
+						DRAGINTER->destroy();
 					}
 
 					ARX_SOUND_PlayInterface(SND_INVSTD);

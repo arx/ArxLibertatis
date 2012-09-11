@@ -67,22 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/LoadLevel.h"
 
-std::string Entity::short_name() const {
-	return filename.basename();
-}
-
-std::string Entity::long_name() const {
-	std::stringstream ss;
-	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
-	return ss.str();
-}
-
-res::path Entity::full_name() const {
-	return filename.parent() / long_name();
-}
-
-
-Entity::Entity(long _num) : num(_num) {
+Entity::Entity() : index_(entities.add(this)) {
 	
 	ioflags = 0;
 	lastpos = Vec3f::ZERO;
@@ -206,9 +191,7 @@ Entity::Entity(long _num) : num(_num) {
 
 Entity::~Entity() {
 	
-	if(DRAGINTER == this) {
-		Set_DragInter(NULL);
-	}
+	cleanReferences();
 	
 	if(!FAST_RELEASE) {
 		TREATZONE_RemoveIO(this);
@@ -255,7 +238,7 @@ Entity::~Entity() {
 		delete tweaky, tweaky = NULL;
 	}
 	
-	playerInventory.remove(this);
+	RemoveFromAllInventories(this);
 	
 	ReleaseScript(&script);
 	ReleaseScript(&over_script);
@@ -319,9 +302,41 @@ Entity::~Entity() {
 		free(inventory);
 	}
 	
-	long ion = GetInterNum(this);
-	if(ion > -1) {
-		entities.iobj[ion] = NULL;
+	if(index_ != size_t(-1)) {
+		entities.remove(index_);
+	}
+}
+
+std::string Entity::short_name() const {
+	return filename.basename();
+}
+
+std::string Entity::long_name() const {
+	std::stringstream ss;
+	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
+	return ss.str();
+}
+
+res::path Entity::full_name() const {
+	return filename.parent() / long_name();
+}
+
+void Entity::cleanReferences() {
+	
+	if(DRAGINTER == this) {
+		Set_DragInter(NULL);
 	}
 	
 }
+
+void Entity::destroy() {
+	
+	if(scriptload) {
+		delete this;
+	} else {
+		show = SHOW_FLAG_KILLED;
+		cleanReferences();
+	}
+	
+}
+

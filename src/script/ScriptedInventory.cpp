@@ -126,15 +126,7 @@ class InventoryCommand : public Command {
 							continue;
 						}
 						
-						if(item->scriptload) {
-							long tmp = GetInterNum(item);
-							arx_assert(ValidIONum(tmp) && entities[tmp] == item);
-							RemoveFromAllInventories(item);
-							ReleaseInter(item);
-							entities.iobj[tmp] = NULL;
-						} else {
-							item->show = SHOW_FLAG_KILLED;
-						}
+						item->destroy();
 						
 						id->slot[ni][nj].io = NULL;
 					}

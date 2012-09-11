@@ -25,12 +25,20 @@
 
 struct Entity;
 
-struct EntityManager {
+class EntityManager {
 	
-	long init;
+public:
+	
+	EntityManager();
+	~EntityManager();
+	
+	//! Reserve at least one entry for the player entity
+	void init();
+	
+	//! Free all entities except for the player
+	void clear();
+	
 	long nbmax;
-	
-	Entity ** iobj;
 	
 	long getById(const std::string & name);
 	Entity * getById(const std::string & name, Entity * self);
@@ -44,6 +52,17 @@ struct EntityManager {
 		return iobj[0];
 	}
 	
+private:
+	
+	size_t minfree;
+	
+	Entity ** iobj;
+	
+	size_t add(Entity * entity);
+	
+	void remove(size_t index);
+	
+	friend struct Entity;
 };
 
 extern EntityManager entities;

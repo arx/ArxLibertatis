@@ -43,9 +43,45 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/EntityManager.h"
 
+#include <cstdlib>
+
 #include "game/Entity.h"
+#include "platform/Platform.h"
 
 EntityManager entities;
+
+EntityManager::EntityManager() : nbmax(0), minfree(0), iobj(NULL) { }
+
+EntityManager::~EntityManager() {
+	
+#ifdef _DEBUG
+	for(size_t i = 0; i < size_t(nbmax); i++) {
+		arx_assert_msg(iobj[i] == NULL, "object " PRINT_SIZE_T " not cleared", i);
+	}
+#endif // _DEBUG
+	
+	std::free(iobj);
+	
+}
+
+void EntityManager::init() {
+	arx_assert(nbmax == 0);
+	iobj = (Entity **)std::malloc(sizeof(Entity *));
+	iobj[0] = NULL;
+	nbmax = 1;
+}
+
+void EntityManager::clear() {
+	
+	// Free all entities, ignoring the player.
+	for(long i = 1; i < nbmax; i++) {
+		delete entities[i];
+		arx_assert(entities[i] == NULL);
+	}
+	
+	nbmax = 1;
+	iobj = (Entity **)std::realloc(iobj, sizeof(Entity *) * nbmax);
+}
 
 long EntityManager::getById(const std::string & name) {
 	
@@ -71,4 +107,37 @@ long EntityManager::getById(const std::string & name) {
 Entity * EntityManager::getById(const std::string & name, Entity * self) {
 	long index = getById(name);
 	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
+}
+
+size_t EntityManager::add(Entity * entity) {
+	
+	for(size_t i = minfree; i != size_t(nbmax); i++) {
+		if(iobj[i] == NULL) {
+			iobj[i] = entity;
+			minfree = i + 1;
+			return i;
+		}
+	}
+	
+	size_t i = size_t(nbmax);
+	
+	nbmax++;
+	iobj = (Entity **)std::realloc(iobj, sizeof(Entity *) * nbmax);
+	
+	iobj[i] = entity;
+	minfree = i + 1;
+	return i;
+}
+
+void EntityManager::remove(size_t index) {
+	
+	arx_assert_msg(index < size_t(nbmax) && iobj[index] != NULL,
+	               "double free or memory corruption detected: index="
+	               PRINT_SIZE_T, index);
+	
+	if(index < minfree) {
+		minfree = index;
+	}
+	
+	iobj[index] = NULL;
 }

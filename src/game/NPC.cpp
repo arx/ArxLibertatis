@@ -1724,11 +1724,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 	nouvo->nblinked			=	0;
 	nouvo->originaltextures	=	NULL;
 
-	Entity * io = CreateFreeInter();
-	if(!io) {
-		delete nouvo;
-		return;
-	}
+	Entity * io = new Entity();
 
 	io->_itemdata	=	(IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
 

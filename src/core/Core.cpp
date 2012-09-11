@@ -706,8 +706,7 @@ void runGame() {
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
 	
-	entities.init=0;
-	InitInter(10);
+	entities.init();
 	
 	memset(&player,0,sizeof(ARXCHARACTER));
 	ARX_PLAYER_InitPlayer();
@@ -3825,16 +3824,9 @@ void ReleaseSystemObjects() {
 		delete hero;
 		hero=NULL;
 	}
-
-	if (entities.player()) {
-		entities.player()->obj = NULL;
-		ReleaseInter(entities.player());
-		entities.iobj[0] = NULL;
-
-		if(entities.iobj) {
-			free(entities.iobj);
-			entities.iobj = NULL;
-		}
+	
+	if(entities.nbmax > 0) {
+		delete entities.player();
 	}
 
 	if(eyeballobj) {

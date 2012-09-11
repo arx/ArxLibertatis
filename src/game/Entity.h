@@ -233,10 +233,8 @@ enum EntityVisilibity {
 
 struct Entity {
 	
-	explicit Entity(long num);
+	explicit Entity();
 	~Entity();
-	
-	long num; // Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
 	
 	EntityFlags ioflags; // IO type
 	Vec3f lastpos; // IO last position
@@ -388,6 +386,24 @@ struct Entity {
 	 * @return The directory of filename + long_name()
 	 */
 	res::path full_name() const;
+	
+	//! @return the index of this Entity in the EntityManager
+	size_t index() const { return index_; }
+	
+	/*!
+	 * Marks the entity as destroyed.
+	 * 
+	 * If the entity was loaded by a script, the object is deleted.
+	 * Otherwise the object is kept so that the id won't be reused.
+	 */
+	void destroy();
+	
+private:
+	
+	//! Remove any remaining references to this entity.
+	void cleanReferences();
+	
+	const size_t index_;
 	
 };
 

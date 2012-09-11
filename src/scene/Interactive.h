@@ -182,7 +182,6 @@ void MakeIOIdent(Entity * io);
 #endif
 
 long GetNumberInterWithOutScriptLoad();
-void FreeAllInter();
 
 void UnlinkAllLinkedObjects();
 long IsCollidingAnyInter(float x, float y, float z, Vec3f * size);
@@ -199,8 +198,6 @@ Entity * AddFix(const res::path & file, AddInteractiveFlags flags = 0);
 Entity * AddNPC(const res::path & file, AddInteractiveFlags flags = 0);
 Entity * AddItem(const res::path & file, AddInteractiveFlags flags = 0);
 
-void InitInter(long nb);
-Entity * CreateFreeInter(long num = -1);
 void ReleaseInter(Entity * io);
 void UpdateCameras();
 

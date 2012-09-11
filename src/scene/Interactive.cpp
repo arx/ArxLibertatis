@@ -163,24 +163,16 @@ void Set_DragInter(Entity * io)
 	}
 }
 
-//***********************************************************************************************
-// ValidIONum
 // Checks if an IO index number is valid
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/16)
-//***********************************************************************************************
-long ValidIONum(long num)
-{
-	if ((num <	 0)
-	        ||	(num >= entities.nbmax)
-	        ||	(!entities.iobj)
-	        ||	(!entities[num]))
-	{
+long ValidIONum(long num) {
+	
+	if(num < 0 || num >= entities.nbmax || !entities[num]) {
 		return 0;
 	}
-
+	
 	return 1;
 }
+
 long ValidIOAddress(const Entity * io)
 {
 	if (!io) return 0;
@@ -1080,22 +1072,6 @@ void ReleaseNode() {
 	}
 }
 
-// Initialises Interactive Objects Main Structure (pointer list)
-void InitInter(long nb) {
-	if (nb < 10) nb = 10;
-
-	entities.nbmax = nb;
-
-	if(entities.init) {
-		free(entities.iobj);
-		entities.iobj = NULL;
-	}
-
-	entities.init = 1;
-	entities.iobj = (Entity **)malloc(sizeof(Entity *) * entities.nbmax);
-	memset(entities.iobj, 0, sizeof(*entities.iobj) * entities.nbmax);
-}
-
 //*************************************************************************************
 //	Removes an IO loaded by a script command
 //*************************************************************************************
@@ -1105,9 +1081,7 @@ void CleanScriptLoadedIO() {
 		Entity * io = entities[i];
 		if(io) {
 			if(io->scriptload) {
-				RemoveFromAllInventories(io);
-				ReleaseInter(io);
-				entities.iobj[i] = NULL;
+				delete io;
 			} else {
 				io->show = SHOW_FLAG_IN_SCENE;
 			}
@@ -1268,16 +1242,8 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 					if (id->slot[ni][nj].io != NULL)
 					{
 						long tmp = GetInterNum(id->slot[ni][nj].io);
-
-						if (ValidIONum(tmp))
-						{
-							if (entities[tmp]->scriptload)
-							{
-								RemoveFromAllInventories(entities[tmp]);
-								ReleaseInter(entities[tmp]);
-								entities.iobj[tmp] = NULL;
-							}
-							else entities[tmp]->show = SHOW_FLAG_KILLED;
+						if(ValidIONum(tmp)) {
+							entities[tmp]->destroy();
 						}
 						id->slot[ni][nj].io = NULL;
 					}
@@ -1562,71 +1528,7 @@ long GetNumberInterWithOutScriptLoad() {
 	}
 	return count;
 }
-//*************************************************************************************
-// Clears All Inter From Memory
-//*************************************************************************************
-void FreeAllInter()
-{
-	for (long i = 1; i < entities.nbmax; i++) //ignoring Player.
-	{
-		if (entities[i] != NULL)
-		{
-			ReleaseInter(entities[i]);
-			entities.iobj[i] = NULL;
-		}
-	}
 
-	entities.nbmax = 1;
-	entities.iobj = (Entity **)realloc(entities.iobj, sizeof(Entity *) * entities.nbmax);
-}
-
-
-//*************************************************************************************
-// Creates a new free Interactive Object
-//*************************************************************************************
-Entity * CreateFreeInter(long num)
-{
-	long i;
-	long tocreate = -1;
-
-	if (num == 0) //used to create player
-	{
-		tocreate = 0;
-
-		if (entities.player() != NULL) return NULL;
-
-		goto create;
-	}
-
-	for (i = 1; i < entities.nbmax; i++) // ignoring player
-		{			
-			if (!entities[i])
-			{
-				tocreate = i;
-				break;
-			}
-		}
-
-	if (tocreate == -1)
-	{
-		entities.nbmax++;
-		entities.iobj = (Entity **)realloc(entities.iobj, sizeof(Entity *) * entities.nbmax);
-		tocreate = entities.nbmax - 1;
-		entities.iobj[tocreate] = NULL;
-	}
-
-	if (tocreate != -1)
-	{
-	create:
-		;
-		i = tocreate;
-		
-		return entities.iobj[i] = new Entity(i);
-		
-	}
-	
-	return NULL;
-}
 // Be careful with this func...
 Entity * CloneIOItem(Entity * src) {
 	
@@ -2031,12 +1933,8 @@ Entity * AddFix(const res::path & file, AddInteractiveFlags flags) {
 
 	LogDebug("AddFix " << file);
 
-	Entity * io = CreateFreeInter();
-
-	if (!io)
-		return NULL;
-
-
+	Entity * io = new Entity();
+	
 	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 	io->ioflags = IO_FIX;
@@ -2130,12 +2028,9 @@ static Entity * AddCamera(const res::path & file) {
 	}
 
 	LogDebug("AddCamera " << file);
-
-	Entity * io = CreateFreeInter();
-	EERIEPOLY * ep;
-
-	if (!io) return NULL;
-
+	
+	Entity * io = new Entity();
+	
 	GetIOScript(io, scriptfile);
 
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
@@ -2144,6 +2039,8 @@ static Entity * AddCamera(const res::path & file) {
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 	float tempo;
+	
+	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z, &tempo);
 
 	if (ep)
@@ -2186,10 +2083,7 @@ static Entity * AddMarker(const res::path & file) {
 	
 	LogDebug("AddMarker " << file);
 	
-	Entity * io = CreateFreeInter();
-	EERIEPOLY * ep;
-	
-	if (!io) return NULL;
+	Entity * io = new Entity();
 	
 	GetIOScript(io, scriptfile);
 	
@@ -2198,6 +2092,8 @@ static Entity * AddMarker(const res::path & file) {
 	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
+	
+	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
 
 	if (ep)
@@ -2384,10 +2280,7 @@ Entity * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 
 	LogDebug("AddNPC " << file);
 
-	Entity * io = CreateFreeInter();
-	EERIEPOLY * ep;
-
-	if (io == NULL) return NULL;
+	Entity * io = new Entity();
 
 	io->forcedmove = Vec3f::ZERO;
 	
@@ -2411,6 +2304,8 @@ Entity * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
 	io->lastpos.y = io->initpos.y = io->pos.y;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
+	
+	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
 
 	if (ep)
@@ -2634,9 +2529,8 @@ Entity * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 		return NULL;
 	}
 
-	Entity * io = CreateFreeInter();
+	Entity * io = new Entity();
 
-	EERIEPOLY * ep;
 
 	if (io == NULL) return NULL;
 
@@ -2671,6 +2565,7 @@ Entity * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
+	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y - 60.f, io->pos.z);
 
 	if (ep)
@@ -2773,20 +2668,24 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 
 	int nStart = 1;
 	int nEnd = entities.nbmax;
-	Entity ** pTableIO = entities.iobj;
 
 	if ((flag == 3) && _pTable && _pnNbInTable)
 	{
 		nStart = 0;
 		nEnd = *_pnNbInTable;
-		pTableIO = _pTable;
 	}
 
 	for (long i = nStart; i < nEnd; i++)
 	{
 		bool bPass = true;
 
-		Entity * io = pTableIO[i];
+		Entity * io;
+		
+		if ((flag == 3) && _pTable && _pnNbInTable) {
+			io = _pTable[i];
+		} else {
+			io = entities[i];
+		}
 
 		// Is Object Valid ??
 		if (io == NULL) continue;
@@ -3493,17 +3392,15 @@ void UpdateCameras()
 		}
 	}
 }
-void ARX_INTERACTIVE_UnfreezeAll()
-{
-	if (entities.iobj)
-	{
-		for (long i = 0; i < entities.nbmax; i++)
-		{
-			if (entities[i] != NULL)
-				entities[i]->ioflags &= ~IO_FREEZESCRIPT;
+
+void ARX_INTERACTIVE_UnfreezeAll() {
+	for(long i = 0; i < entities.nbmax; i++) {
+		if(entities[i]) {
+			entities[i]->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}
 }
+
 void UpdateIOInvisibility(Entity * io)
 {
 	if (io && (io->invisibility <= 1.f))
@@ -3844,13 +3741,8 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 
 			ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
 
-			if (ioo->scriptload)
-			{
-				long num = GetInterNum(ioo);
-				ReleaseInter(ioo);
-
-				if (ValidIONum(num))
-					entities.iobj[num] = NULL;
+			if(ioo->scriptload) {
+				delete ioo;
 			}
 		}
 	}
@@ -3913,26 +3805,10 @@ bool HaveCommonGroup(Entity * io, Entity * ioo) {
 	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
-//***********************************************************************************************
 // Retreives IO Number with its address
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/16)
-//***********************************************************************************************
-// Nuky - modified to use cached value first. For now it's safe and will use former method if
-//        the cached value is incorrect, but I think it never happens
-long GetInterNum(const Entity * io)
-{
-	if (io == NULL) return -1;
-
-	if ( io->num > -1 && io->num < entities.nbmax && entities[io->num] == io)
-		return io->num;
-
-	for (long i = 0; i < entities.nbmax; i++)
-		if (entities[i] == io) return i;
-
-	return -1;
+long GetInterNum(const Entity * io) {
+	return (io == NULL) ? -1 : io->index();
 }
-
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io)
 {

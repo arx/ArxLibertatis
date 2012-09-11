@@ -1280,7 +1280,7 @@ void DanaeClearLevel(long flag)
 
 	UnlinkAllLinkedObjects();
 
-	FreeAllInter();
+	entities.clear();
 
 	ReleaseAllSpellResources();
 	TextureContainer::DeleteAll(TextureContainer::Level);
