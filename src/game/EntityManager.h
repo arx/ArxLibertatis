@@ -22,10 +22,14 @@
 
 #include <stddef.h>
 #include <string>
+#include <vector>
 
 struct Entity;
 
 class EntityManager {
+	
+	typedef std::vector<Entity *> Entries;
+	typedef Entries::iterator miterator;
 	
 public:
 	
@@ -38,25 +42,37 @@ public:
 	//! Free all entities except for the player
 	void clear();
 	
-	long nbmax;
+	long getById(const std::string & name) const;
+	Entity * getById(const std::string & name, Entity * self) const;
 	
-	long getById(const std::string & name);
-	Entity * getById(const std::string & name, Entity * self);
-	
-	Entity * operator[](size_t index) {
-		return iobj[index];
+	Entity * operator[](size_t index) const {
+		return entries[index];
 	}
 	
 	//! Get the player entity
-	Entity * player() {
-		return iobj[0];
+	Entity * player() const {
+		return entries[0];
 	}
+	
+	/*!
+	 * Get the total number of valid indices in this entity manager.
+	 *
+	 * The maximum valid index for operator[] is size() - 1, however
+	 * some of these indices might be unused, so the actual number of
+	 * entities in existence may be less.
+	 */
+	size_t size() const { return entries.size(); }
+	
+	typedef Entries::const_iterator iterator;
+	typedef Entries::const_iterator const_iterator;
+	
+	iterator begin() const { return entries.begin(); }
+	iterator end() const { return entries.end(); }
 	
 private:
 	
-	size_t minfree;
-	
-	Entity ** iobj;
+	Entries entries;
+	size_t minfree; // first unused index (value == NULL)
 	
 	size_t add(Entity * entity);
 	

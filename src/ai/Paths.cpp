@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <algorithm>
 
+#include <boost/foreach.hpp>
+
 #include "animation/Animation.h"
 
 #include "core/GameTime.h"
@@ -205,27 +207,27 @@ ARX_PATH * ARX_PATH_CheckPlayerInZone()
 }
 long JUST_RELOADED = 0;
 
-void ARX_PATH_UpdateAllZoneInOutInside()
-{
-	if (EDITMODE) return;
+void ARX_PATH_UpdateAllZoneInOutInside() {
+	
+	if(EDITMODE) {
+		return;
+	}
+	
+	static size_t count = 1;
+	
+	long f = clamp(static_cast<long>(FrameDiff), 10, 50);
+	
+	if(count >= entities.size()) {
+		count = 1;
+	}
 
-	static long count = 1;
-
-	long f = static_cast<long>(FrameDiff);
-
-	if (f < 10) f = 10;
-
-	if (f > 50) f = 50;
-
-	if (count >= entities.nbmax) count = 1;
-
-	if (entities.nbmax > 1)
+	if (entities.size() > 1)
 		for (long tt = 0; tt < f; tt++)
 		{
 			long i = count;
 			Entity * io = entities[i];
 
-			if ((count < entities.nbmax) && (io)
+			if ((count < entities.size()) && (io)
 			        && (io->ioflags & (IO_NPC | IO_ITEM))
 			        && (io->show != SHOW_FLAG_MEGAHIDE)
 			        && (io->show != SHOW_FLAG_DESTROYED)
@@ -317,7 +319,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		next:
 			count++;
 
-			if (count >= entities.nbmax) count = 1;
+			if (count >= entities.size()) count = 1;
 		}
 
 	// player check*************************************************
@@ -429,16 +431,11 @@ ARX_PATH::ARX_PATH(const std::string & _name, const Vec3f & _pos)
 	
 }
 
-void ARX_PATH_ClearAllUsePath()
-{
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i] != NULL)
-			if (entities[i]->usepath != NULL)
-			{
-				free(entities[i]->usepath);
-				entities[i]->usepath = NULL;
-			}
+void ARX_PATH_ClearAllUsePath() {
+	BOOST_FOREACH(Entity * e, entities) {
+		if(e && e->usepath) {
+			free(e->usepath), e->usepath = NULL;
+		}
 	}
 }
 

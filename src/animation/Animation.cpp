@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
+#include <boost/foreach.hpp>
+
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
@@ -1884,25 +1886,21 @@ void EERIE_ANIMMANAGER_ClearAll() {
 	}
 	
 }
-void EERIE_ANIMMANAGER_ReloadAll()
-{
-	for (long i=0;i<entities.nbmax;i++)
-	{
-		if (entities[i])
-		{
-			Entity * io=entities[i];
 
-			for (long j=0;j<MAX_ANIMS;j++)
-			{
-				EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
-				io->anims[j]=NULL;
+void EERIE_ANIMMANAGER_ReloadAll() {
+	
+	BOOST_FOREACH(Entity * e, entities) {
+		if(e) {
+			
+			for(size_t j = 0; j < MAX_ANIMS; j++) {
+				EERIE_ANIMMANAGER_ReleaseHandle(e->anims[j]);
+				e->anims[j] = NULL;
 			}
-
-			for (long count=0;count<MAX_ANIM_LAYERS;count++)
-			{
-				memset(&io->animlayer[count],0,sizeof(ANIM_USE));
-				io->animlayer[count].cur_anim=NULL;
-				io->animlayer[count].next_anim=NULL;
+			
+			for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
+				memset(&e->animlayer[count], 0, sizeof(ANIM_USE));
+				e->animlayer[count].cur_anim = NULL;
+				e->animlayer[count].next_anim = NULL;
 			}
 		}
 	}

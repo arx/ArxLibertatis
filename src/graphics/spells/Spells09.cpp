@@ -988,7 +988,7 @@ void CMassParalyse::Update(unsigned long _ulTime)
 
 	if (ulCurrentTime < ulDuration)
 	{
-		int	nb = entities.nbmax, nb2;
+		int nb = entities.size(), nb2;
 
 		while (nb--)
 		{

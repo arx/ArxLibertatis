@@ -552,13 +552,9 @@ void TreatBackgroundDynlights()
 					GLight[i]->tl = -1;
 					Vec3f _pos2;
 
-					for (long l = 0; l < entities.nbmax; l++)
-					{
-						if ((entities[l] != NULL) &&
-						        (entities[l]->ioflags & IO_MARKER))
-						{
+					for(size_t l = 0; l < entities.size(); l++) {
+						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
 							GetItemWorldPosition(entities[l], &_pos2);
-
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(entities[l], SM_CUSTOM, "douse");
 							}
@@ -573,13 +569,9 @@ void TreatBackgroundDynlights()
 				{
 					Vec3f _pos2;
 
-					for (long l = 0; l < entities.nbmax; l++)
-					{
-						if ((entities[l] != NULL) &&
-						        (entities[l]->ioflags & IO_MARKER))
-						{
+					for(size_t l = 0; l < entities.size(); l++) {
+						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
 							GetItemWorldPosition(entities[l], &_pos2);
-
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
 								SendIOScriptEvent(entities[l], SM_CUSTOM, "fire");
 							}

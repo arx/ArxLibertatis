@@ -311,9 +311,10 @@ public:
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
-			for(long l = 0 ; l < entities.nbmax ; l++) {
+			for(size_t l = 0 ; l < entities.size() ; l++) {
 				
-				if(!entities[l] || entities[l] == io || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!entities[l] || entities[l] == io
+				   || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
@@ -345,7 +346,7 @@ public:
 				return Failed;
 			}
 			
-			for(long l = 0; l < entities.nbmax; l++) {
+			for(size_t l = 0; l < entities.size(); l++) {
 				
 				if(!entities[l] || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
@@ -371,7 +372,7 @@ public:
 			
 		} else if(group) { // sends an event to all members of a group
 			
-			for(long l = 0; l < entities.nbmax; l++) {
+			for(size_t l = 0; l < entities.size(); l++) {
 				
 				if(!entities[l] || entities[l] == io) {
 					continue;

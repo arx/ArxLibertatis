@@ -166,22 +166,25 @@ void Set_DragInter(Entity * io)
 // Checks if an IO index number is valid
 long ValidIONum(long num) {
 	
-	if(num < 0 || num >= entities.nbmax || !entities[num]) {
+	if(num < 0 || num >= long(entities.size()) || !entities[num]) {
 		return 0;
 	}
 	
 	return 1;
 }
 
-long ValidIOAddress(const Entity * io)
-{
-	if (!io) return 0;
-
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i] == io) return 1;
+long ValidIOAddress(const Entity * io) {
+	
+	if(!io) {
+		return 0;
 	}
-
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] == io) {
+			return 1;
+		}
+	}
+	
 	return 0;
 }
 
@@ -475,36 +478,25 @@ bool ForceNPC_Above_Ground(Entity * io)
 	return false;
 }
 
-//*************************************************************************************
 // Unlinks all linked objects from all IOs
-//*************************************************************************************
-void UnlinkAllLinkedObjects()
-{
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i])
-		{
+void UnlinkAllLinkedObjects() {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
 			EERIE_LINKEDOBJ_ReleaseData(entities[i]->obj);
 		}
 	}
 }
 
-void IO_UnlinkAllLinkedObjects(Entity * io)
-{
-	if (io && io->obj)
-	{
-		for (long k = 0; k < io->obj->nblinked; k++)
-		{
-			if (io->obj->linked[k].io)
-			{
-				Entity * ioo = (Entity *)io->obj->linked[k].io;
-
-				if (ValidIOAddress(ioo))
+void IO_UnlinkAllLinkedObjects(Entity * io) {
+	if(io && io->obj) {
+		for(long k = 0; k < io->obj->nblinked; k++) {
+			if(io->obj->linked[k].io) {
+				Entity * ioo = io->obj->linked[k].io;
+				if(ValidIOAddress(ioo)) {
 					IO_Drop_Item(io, ioo);
-
+				}
 			}
 		}
-
 		EERIE_LINKEDOBJ_ReleaseData(io->obj);
 	}
 }
@@ -652,20 +644,19 @@ void PrepareIOTreatZone(long flag)
 	INTREATZONECOUNT = 0;
 
 	if(TreatAllIO) {
-		for(long ii = 1; ii < entities.nbmax; ii++) {
+		for(size_t ii = 1; ii < entities.size(); ii++) {
 			Entity * io = entities[ii];
 			if(io) {
 				io->gameFlags |= GFLAG_ISINTREATZONE;
 				TREATZONE_AddIO(io);
 			}
 		}
-		return; 
+		return;
 	}
 
 	char treat;
 
-	for (int i = 1; i < entities.nbmax; i++)
-	{
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if ((io)
@@ -774,8 +765,7 @@ void PrepareIOTreatZone(long flag)
 
 	long M_TREAT = TREATZONE_CUR;
 
-	for (int i = 1; i < entities.nbmax; i++)
-	{
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if ((io != NULL)
@@ -1066,35 +1056,29 @@ void ReleaseNode() {
 	}
 }
 
-//*************************************************************************************
-//	Removes an IO loaded by a script command
-//*************************************************************************************
+// Removes an IO loaded by a script command
 void CleanScriptLoadedIO() {
-	
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 		if(io) {
 			if(io->scriptload) {
 				delete io;
 			} else {
+				// TODO why not jus leave it as is?
 				io->show = SHOW_FLAG_IN_SCENE;
 			}
 		}
 	}
 }
 
-//*************************************************************************************
 // Restores an IO to its initial status (Game start Status)
-//*************************************************************************************
-void RestoreInitialIOStatus()
-{
+void RestoreInitialIOStatus() {
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
-
-	if (entities.player()) entities.player()->spellcast_data.castingspell = SPELL_NONE;
-
-	for (long i = 1; i < entities.nbmax; i++)
-	{
+	if(entities.player()) {
+		entities.player()->spellcast_data.castingspell = SPELL_NONE;
+	}
+	for(size_t i = 1; i < entities.size(); i++) {
 		RestoreInitialIOStatusOfIO(entities[i]);
 	}
 }
@@ -1258,14 +1242,11 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		}
 	}
 }
-void ARX_INTERACTIVE_ClearAllDynData()
-{
-	long i = 0;
+
+void ARX_INTERACTIVE_ClearAllDynData() {
 	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
-
-	for (i = 1; i < entities.nbmax; i++)
-	{
+	for(size_t i = 1; i < entities.size(); i++) {
 		ARX_INTERACTIVE_ClearIODynData(entities[i]);
 	}
 }
@@ -1285,7 +1266,7 @@ static void RestoreIOInitPos(Entity * io) {
 }
 
 void RestoreAllIOInitPos() {
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		RestoreIOInitPos(entities[i]);
 	}
 }
@@ -1506,12 +1487,10 @@ void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1)
 	}
 }
 
-//*************************************************************************************
 // Count IO number ignoring ScriptLoaded IOs
-//*************************************************************************************
 long GetNumberInterWithOutScriptLoad() {
 	long count = 0;
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] != NULL && !entities[i]->scriptload) {
 			count++;
 		}
@@ -1702,13 +1681,13 @@ void ComputeVVPos(Entity * io)
 		else io->_npcdata->vvpos = io->pos.y - fdiff;
 	}
 }
-long FLAG_ALLOW_CLOTHES = 1;
-void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
-{
 
-	if (!io)
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
+	
+	if(!io) {
 		return;
-
+	}
+	
 	FRAME_COUNT = -1;
 	Vec3f translate;
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
@@ -2125,7 +2104,7 @@ void ShowIOPath(Entity * io) {
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	
-	if(i < 1 || i >= entities.nbmax || !entities[i]) {
+	if(!ValidIONum(i) || i == 0) {
 		return;
 	}
 	
@@ -2142,13 +2121,9 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	delete entities[i];
 }
 
-//*************************************************************************************
 // Snaps to ground all selected IOs
-//*************************************************************************************
-void GroundSnapSelectedIO()
-{
-	for (long i = 1; i < entities.nbmax; i++)
-	{
+void GroundSnapSelectedIO() {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if ((entities[i] != NULL)
 		        &&	false /* is selected */)
 		{
@@ -2368,25 +2343,19 @@ void ReloadScript(Entity * io) {
 	}
 }
 
-//*************************************************************************************
 // Reloads All Scripts for all IOs
-//*************************************************************************************
-void ReloadAllScripts()
-{
+void ReloadAllScripts() {
 	ARX_SCRIPT_Timer_ClearAll();
-
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i])
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
 			ReloadScript(entities[i]);
+		}
 	}
 }
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-//*************************************************************************************
 // Creates an unique identifier for an IO
-//*************************************************************************************
 void MakeIOIdent(Entity * io) {
 	
 	if(!io) {
@@ -2428,7 +2397,7 @@ static bool ExistTemporaryIdent(Entity * io, long t) {
 	
 	string name = io->short_name();
 	
-	for(long i = 0; i < entities.nbmax; i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i]) {
 			if(entities[i]->ident == t && io != entities[i]) {
 				if (entities[i]->short_name() == name) {
@@ -2647,7 +2616,7 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 	}
 
 	int nStart = 1;
-	int nEnd = entities.nbmax;
+	int nEnd = entities.size();
 
 	if ((flag == 3) && _pTable && _pnNbInTable)
 	{
@@ -2825,15 +2794,11 @@ Entity * InterClick(Vec2s * pos) {
 	return NULL;
 }
 
-//*************************************************************************************
 // Need To upgrade to a more precise collision.
-//*************************************************************************************
-long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
-{
+long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
+	
 	Vec3f pos;
-
-	for (long i = 0; i < entities.nbmax; i++)
-	{
+	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if ((io)
@@ -2917,7 +2882,6 @@ void SetYlsideDeath(Entity * io)
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
-	long i;
 	long avoid = -1;
 	Entity * io_source = NULL;
 
@@ -2928,13 +2892,12 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 	}
 
-	for (i = 1; i < entities.nbmax; i++)
-	{
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if (
 		    (io)
-		    && (i != avoid)
+				&& long(i) != avoid
 		    && (!(io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)))
 		    && (io->show == SHOW_FLAG_IN_SCENE)
 		    && !(io->ioflags & IO_NO_COLLISIONS)
@@ -3182,16 +3145,15 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 	return col;
 }
 
-void UpdateCameras()
-{
+void UpdateCameras() {
+	
 	arxtime.get_updated();
-
-	for (long i = 1; i < entities.nbmax; i++)
-	{
+	
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
-
-		if (io)
-		{
+		
+		if(io) {
+			
 			// interpolate & send events
 			if(io->usepath) {
 
@@ -3267,8 +3229,7 @@ void UpdateCameras()
 				if ((io->damager_damages > 0)
 				        &&	(io->show == SHOW_FLAG_IN_SCENE))
 				{
-					for (long ii = 0; ii < entities.nbmax; ii++)
-					{
+					for(size_t ii = 0; ii < entities.size(); ii++) {
 						Entity * ioo = entities[ii];
 
 						if ((ioo)
@@ -3374,7 +3335,7 @@ void UpdateCameras()
 }
 
 void ARX_INTERACTIVE_UnfreezeAll() {
-	for(long i = 0; i < entities.nbmax; i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i]) {
 			entities[i]->ioflags &= ~IO_FREEZESCRIPT;
 		}
@@ -3424,7 +3385,7 @@ void RenderInter(float from, float to) {
 		ManageIgnition(entities.player());
 	}
 
-	for(long i = 1; i < entities.nbmax; i++) { // Player isn't rendered here...
+	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
 		
 		Entity * io = entities[i];
 

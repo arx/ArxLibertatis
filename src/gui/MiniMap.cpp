@@ -757,7 +757,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		}
 
 		// tsu
-		for (long lnpc = 1; lnpc < entities.nbmax; lnpc++)
+		for (size_t lnpc = 1; lnpc < entities.size(); lnpc++)
 		{
 			if ((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC))
 			{

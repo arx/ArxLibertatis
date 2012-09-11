@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <set>
 #include <utility>
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -620,20 +622,17 @@ void ARX_SPELLS_RemoveSpellOn(const long &caster, const long &spell)
 
 	io->spells_on = (long *)realloc(io->spells_on, sizeof(long) * io->nb_spells_on);
 }
-void ARX_SPELLS_RemoveMultiSpellOn(long spell_id)
-{
-	for (long i=0;i<entities.nbmax;i++)
-	{
-		ARX_SPELLS_RemoveSpellOn(i,spells[spell_id].type);
+
+void ARX_SPELLS_RemoveMultiSpellOn(long spell_id) {
+	for(size_t i = 0; i < entities.size(); i++) {
+		ARX_SPELLS_RemoveSpellOn(i, spells[spell_id].type);
 	}
 }
-//-----------------------------------------------------------------------------
-void ARX_SPELLS_RemoveAllSpellsOn(Entity *io)
-{
+
+void ARX_SPELLS_RemoveAllSpellsOn(Entity *io) {
 	free(io->spells_on), io->spells_on = NULL, io->nb_spells_on = 0;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPELLS_RequestSymbolDraw(Entity *io, const string & name, float duration) {
 	
 	const char * sequence;
@@ -1026,31 +1025,30 @@ static bool MakeSpellName(char * spell, Spell num) {
 	return true;
 }
 
-//-----------------------------------------------------------------------------
-void SPELLCAST_Notify(long num)
-{
-	if (num < 0) return;
-
-	if ((size_t)num >= MAX_SPELLS) return;
-
+void SPELLCAST_Notify(long num) {
+	
+	if(num < 0) {
+		return;
+	}
+	
+	if(size_t(num) >= MAX_SPELLS) {
+		return;
+	}
+	
 	char spell[128];
 	long source = spells[num].caster;
-
-	if (MakeSpellName(spell,spells[num].type))
-	{
-		for (long i=0;i<entities.nbmax;i++) 
-		{
-			if (entities[i]!=NULL) 
-			{
-				if (source >= 0) EVENT_SENDER = entities[source];
-				else EVENT_SENDER = NULL;
-
-				char param[256];
-				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-				SendIOScriptEvent(entities[i], SM_SPELLCAST, param);
-			}
-		}	
-	}	
+	if(!MakeSpellName(spell, spells[num].type)) {
+		return;
+	}
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] != NULL) {
+			EVENT_SENDER = (source >= 0) ? entities[source] : NULL;
+			char param[256];
+			sprintf(param, "%s %ld", spell, (long)spells[num].caster_level);
+			SendIOScriptEvent(entities[i], SM_SPELLCAST, param);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1093,40 +1091,35 @@ void SPELLEND_Notify(long num)
 		else 
 			EVENT_SENDER = NULL;
 
-		if (ValidIONum(spells[num].target))
-		{			
-			if (MakeSpellName(spell,spells[num].type))
-			{
+		if(ValidIONum(spells[num].target)) {
+			if(MakeSpellName(spell,spells[num].type)) {
+				Entity * targ = entities[spells[num].target];
 				char param[128];
-				Entity * targ= entities[spells[num].target];
 				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 				SendIOScriptEvent(targ,SM_SPELLEND,param);
 			}
 		}
-
 		return;
 	}
-
+	
 	// we only notify player spells end.
-	if (MakeSpellName(spell,spells[num].type))
-		for (long i=0;i<entities.nbmax;i++)
-			if (entities[i])
-			{
-				char param[128];
-
-				if (ValidIONum(source))
-					EVENT_SENDER = entities[source];
-				else 
-					EVENT_SENDER = NULL;
-
-				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
-				SendIOScriptEvent(entities[i],SM_SPELLEND,param);
-			}
+	if(!MakeSpellName(spell,spells[num].type)) {
+		return;
+	}
+	
+	for (size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			EVENT_SENDER = ValidIONum(source) ? entities[source] : NULL;
+			char param[128];
+			sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
+			SendIOScriptEvent(entities[i],SM_SPELLEND,param);
+		}
+	}
 }
 
-//-----------------------------------------------------------------------------
-void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int &_iMaxY)
-{
+void ReCenterSequence(char *_pcSequence, int & _iMinX, int & _iMinY,
+                      int & _iMaxX, int & _iMaxY) {
+	
 	int iSizeX=0,iSizeY=0;
 	_iMinX=_iMinY=0;
 	_iMaxX=_iMaxY=0;
@@ -1145,15 +1138,12 @@ void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int 
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_SPELLS_UpdateSymbolDraw() {
+	
 	unsigned long curtime = (unsigned long)(arxtime);
-
-	//1
-	for (long i=0;i<entities.nbmax;i++)
-	{
-		Entity * io=entities[i];
-
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		Entity * io = entities[i];
 		if (io) 
 		{
 			if (io->spellcast_data.castingspell != SPELL_NONE)
@@ -1402,12 +1392,12 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_SPELLS_ClearAllSymbolDraw()
-{
-	for (long i(0); i < entities.nbmax; i++) 
-		if (entities[i] && entities[i]->symboldraw)
-			free(entities[i]->symboldraw), entities[i]->symboldraw = NULL;
+void ARX_SPELLS_ClearAllSymbolDraw() {
+	BOOST_FOREACH(Entity * e, entities) {
+		if(e && e->symboldraw) {
+			free(e->symboldraw), e->symboldraw = NULL;
+		}
+	}
 }
 
 static void ARX_SPELLS_AnalyseSYMBOL() {
@@ -2602,19 +2592,15 @@ long CanPayMana(long num, float cost, bool _bSound = true) {
 		player.mana -= cost;
 		return 1;
 	}
-	else if (spells[num].caster<entities.nbmax)
-	{
-		if (entities[spells[num].caster]->ioflags & IO_NPC)
-		{
-			if (entities[spells[num].caster]->_npcdata->mana<cost)
-			{
+	else if(ValidIONum(spells[num].caster)) {
+		if(entities[spells[num].caster]->ioflags & IO_NPC) {
+			if(entities[spells[num].caster]->_npcdata->mana < cost) {
 				ARX_SPELLS_FizzleNoMana(num);
 				return 0;
 			}
-
-			entities[spells[num].caster]->_npcdata->mana-=cost;
+			entities[spells[num].caster]->_npcdata->mana -= cost;
 			return 1;
-		}		
+		}
 	}
 
 	return 0;
@@ -2635,7 +2621,6 @@ void ARX_SPELLS_ResetRecognition() {
 	CurrSpellSymbol = 0;
 }
 
-//-----------------------------------------------------------------------------
 // Adds a 2D point to currently drawn spell symbol
 void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 	plist[CurrPoint] = pos;
@@ -2645,32 +2630,23 @@ void ARX_SPELLS_AddPoint(const Vec2s & pos) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-long TemporaryGetSpellTarget(const Vec3f *from)
-{
+long TemporaryGetSpellTarget(const Vec3f * from) {
+	
 	float mindist = std::numeric_limits<float>::max();
-	long found(0);
-
-	for (long i(1); i < entities.nbmax; i++)
-		if (entities[i] && entities[i]->ioflags & IO_NPC)
-		{
+	long found = 0;
+	for(size_t i = 1; i < entities.size(); i++) {
+		if(entities[i] && entities[i]->ioflags & IO_NPC) {
 			float dist = distSqr(*from, entities[i]->pos);
-
-			if (dist < mindist)
-			{
+			if(dist < mindist) {
 				found = i;
 				mindist = dist;
 			}
 		}
-
+	}
+	
 	return found;
 }
 
-
-
-//KNOWNSPELLS knownspells;
-
-//-----------------------------------------------------------------------------
 static void ARX_SPEELS_GetMaxRect(const char *_pcName)
 {
 	char tcTxt[32];
@@ -2743,9 +2719,9 @@ void ARX_SPELLS_ClearAll() {
 		}
 	}
 	
-	for(long i = 0; i < entities.nbmax; i++) {
-		if(entities[i]) {
-			ARX_SPELLS_RemoveAllSpellsOn(entities[i]);
+	BOOST_FOREACH(Entity * e, entities) {
+		if(e) {
+			ARX_SPELLS_RemoveAllSpellsOn(e);
 		}
 	}
 }
@@ -3321,18 +3297,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 			Vec3f cpos = entities[source]->pos;
 
-			for ( long ii = 1 ; ii < entities.nbmax ; ii++ )
-			{
+			for(size_t ii = 1 ; ii < entities.size(); ii++) {
 				Entity * ioo = entities[ii];
-
-				if (	( ioo )
-					&&	( ioo->ioflags & IO_NPC )
-					&&	( ioo->_npcdata->life > 0.f )
-					&&	( ioo->show == SHOW_FLAG_IN_SCENE )
-					&&	( ioo->groups.find("demon") != ioo->groups.end())
-					&&	( closerThan(ioo->pos, cpos, 900.f))
-					)
-				{
+				if(ioo && (ioo->ioflags & IO_NPC) && ioo->_npcdata->life > 0.f
+				   && ioo->show == SHOW_FLAG_IN_SCENE
+				   && ioo->groups.find("demon") != ioo->groups.end()
+				   && closerThan(ioo->pos, cpos, 900.f)) {
 					tcount++;
 				}
 			}
@@ -3371,15 +3341,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	{
 		return false;
 	}
-
-	if ( source >= 0 && source < entities.nbmax )
-	{
-		if ( spellicons[typ].bAudibleAtStart )
-		{
-			ARX_NPC_SpawnAudibleSound(&entities[source]->pos,entities[source]);
-		}
+	
+	if(ValidIONum(source) && spellicons[typ].bAudibleAtStart) {
+		ARX_NPC_SpawnAudibleSound(&entities[source]->pos, entities[source]);
 	}
-
+	
 	spells[i].caster = source;	// Caster...
 	spells[i].target = target;	// No target if <0
 
@@ -4015,7 +3981,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
-			if(spells[i].caster >= 0 && spells[i].target < entities.nbmax) {
+			if(spells[i].caster >= 0 && spells[i].target < long(entities.size())) {
 				Entity * t = entities[spells[i].target];
 				if(t) {
 					t->speed_modif += spells[i].caster_level * 0.1f;
@@ -5438,10 +5404,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = (duration > -1) ? duration : 10000;
 			spells[i].longinfo2 = 0;
 			
-			for(long ii = 0; ii < entities.nbmax; ii++) {
+			for(size_t ii = 0; ii < entities.size(); ii++) {
 				
 				Entity * tio = entities[ii];
-				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
+				if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
 				}
 				
@@ -5545,7 +5511,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			long tcount = 0;
-			for(long ii = 1; ii < entities.nbmax; ii++) {
+			for(size_t ii = 1; ii < entities.size(); ii++) {
 				
 				Entity * ioo = entities[ii];
 				if(!ioo || !(ioo->ioflags & IO_NPC)) {
@@ -5612,10 +5578,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = 20000;
 			
 			long nb_targets=0;
-			for(long ii = 0; ii < entities.nbmax; ii++) {
+			for(size_t ii = 0; ii < entities.size(); ii++) {
 				
 				Entity * tio = entities[ii];
-				if(ii == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
+				if(long(ii) == spells[i].caster || !tio || !(tio->ioflags & IO_NPC)) {
 					continue;
 				}
 				
@@ -6100,7 +6066,7 @@ void ARX_SPELLS_Update()
 
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if ((spells[i].target>=0) && (spells[i].target<entities.nbmax))
+					if(spells[i].target >= 0 && spells[i].target < long(entities.size()))
 					{
 						if (entities[spells[i].target])
 							entities[spells[i].target]->speed_modif-=spells[i].caster_level*( 1.0f / 10 );
@@ -6225,7 +6191,7 @@ void ARX_SPELLS_Update()
 				case SPELL_SLOW_DOWN:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
-					if ((spells[i].target>=0) && (spells[i].target<entities.nbmax))
+					if(spells[i].target >= 0 && spells[i].target < long(entities.size()))
 					{
 						if (entities[spells[i].target])
 							entities[spells[i].target]->speed_modif+=spells[i].caster_level*( 1.0f / 20 );
@@ -6411,9 +6377,8 @@ void ARX_SPELLS_Update()
 				CHeal * ch=(CHeal *)pCSpellFX;
 
 				if (ch)
-				for (long ii=0;ii<entities.nbmax;ii++)
-				{
-					if ((entities[ii]) 						
+				for(size_t ii = 0; ii < entities.size(); ii++) {
+					if ((entities[ii])
 						&& (entities[ii]->show==SHOW_FLAG_IN_SCENE) 
 						&& (entities[ii]->gameFlags & GFLAG_ISINTREATZONE)
 								        && (entities[ii]->ioflags & IO_NPC)
@@ -6422,7 +6387,7 @@ void ARX_SPELLS_Update()
 					{
 						float dist;
 
-						if (ii==spells[i].caster) dist=0;
+						if (long(ii) == spells[i].caster) dist=0;
 						else dist=fdist(ch->eSrc, entities[ii]->pos);
 
 						if (dist<300.f)
@@ -6887,9 +6852,11 @@ void ARX_SPELLS_Update()
 									MakeTemporaryIOIdent(io);						
 									SendInitScriptEvent(io);
 
-									if ((spells[i].caster>=0) && (spells[i].caster<entities.nbmax))
-										EVENT_SENDER=entities[spells[i].caster];
-									else EVENT_SENDER=NULL;
+									if(ValidIONum(spells[i].caster)) {
+										EVENT_SENDER = entities[spells[i].caster];
+									} else {
+										EVENT_SENDER = NULL;
+									}
 
 									SendIOScriptEvent(io,SM_SUMMONED);
 										
@@ -7340,9 +7307,11 @@ void ARX_SPELLS_Update()
 									io->speed_modif=1.f;
 								}
 
-								if ((spells[i].caster>=0) && (spells[i].caster<entities.nbmax))
-									EVENT_SENDER=entities[spells[i].caster];
-								else EVENT_SENDER=NULL;
+								if(ValidIONum(spells[i].caster)) {
+									EVENT_SENDER = entities[spells[i].caster];
+								} else {
+									EVENT_SENDER = NULL;
+								}
 
 								SendIOScriptEvent(io,SM_SUMMONED);
 								

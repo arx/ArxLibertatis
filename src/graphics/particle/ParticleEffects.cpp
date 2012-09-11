@@ -907,7 +907,7 @@ void ManageTorch()
 		}
 	}
 
-	if(entities.nbmax > 0 && entities.player() && entities.player()->obj
+	if(entities.size() > 0 && entities.player() && entities.player()->obj
 	   && entities.player()->obj->fastaccess.head_group_origin > -1) {
 		el->pos.y = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.head_group_origin].v.y;
 	}
@@ -1279,10 +1279,9 @@ void Add3DBoom(Vec3f * position) {
 		player.physics.forces.z+=vect.z*power;
 	}
 
-	for (long i=0;i<entities.nbmax;i++)
-	{		
-		if ( entities[i] != NULL )
-		{
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			
 			if ( entities[i]->show!=1 ) continue;
 
 			if ( !(entities[i]->ioflags & IO_ITEM) ) continue;

@@ -205,7 +205,7 @@ public:
 		if(io->ioflags & IO_NO_COLLISIONS) {
 			
 			bool colliding = false;
-			for(long k = 0; k < entities.nbmax; k++) {
+			for(size_t k = 0; k < entities.size(); k++) {
 				Entity * ioo = entities[k];
 				if(ioo && IsCollidingIO(io, ioo)) {
 					Entity * oes = EVENT_SENDER;

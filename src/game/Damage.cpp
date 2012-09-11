@@ -275,23 +275,20 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 
 				SendIOScriptEvent(entities.player(), SM_DIE);
 
-				for (long i = 1; i < entities.nbmax; i++)
-				{
+				for(size_t i = 1; i < entities.size(); i++) {
 					Entity * ioo = entities[i];
-
-					if ((ioo) && (ioo->ioflags & IO_NPC))
-					{
-						if ((ioo->targetinfo == 0) || (ioo->targetinfo == TARGET_PLAYER))
-						{
+					if(ioo && (ioo->ioflags & IO_NPC)) {
+						if(ioo->targetinfo == TARGET_PLAYER) {
 							EVENT_SENDER = entities.player();
 							std::string killer;
-
-							if (source == 0) killer = "player";
-							else if (source <= -1) killer = "none";
-							else if(ValidIONum(source) && !entities[source]->filename.empty()) {
+							if(source == 0) {
+								killer = "player";
+							} else if(source <= -1) {
+								killer = "none";
+							} else if(ValidIONum(source)
+							          && !entities[source]->filename.empty()) {
 								killer = entities[source]->long_name();
 							}
-
 							SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");
 						}
 					}
@@ -550,8 +547,7 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			killer = io_killer->long_name();
 	}
 
-	for (long i = 1; i < entities.nbmax; i++)
-	{
+	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
 
 		if (ioo == io_dead)
@@ -1128,16 +1124,15 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 		float divradius = 1.f / damages[j].radius;
 
 		// checking for IO damages
-		for (long i = 0; i < entities.nbmax; i++)
-		{
+		for(size_t i = 0; i < entities.size(); i++) {
 			Entity * io = entities[i];
 
 			if ((io)
 			        &&	(io->gameFlags & GFLAG_ISINTREATZONE)
 			        &&	(io->show == SHOW_FLAG_IN_SCENE)
 			        &&	(!InExceptList(j, i))
-			        && ( (damages[j].source != i)
-			            || ((damages[j].source == i)
+			        && ( (damages[j].source != long(i))
+			            || ((damages[j].source == long(i))
 			                && (!(damages[j].flags & DAMAGE_FLAG_DONT_HURT_SOURCE))))
 			   )
 			{
@@ -1395,15 +1390,14 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 {
 	bool ret = false;
 
-	for (long i = 0; i < entities.nbmax; i++)
-	{
+	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if (io != NULL)
 
 			if (entities[i]->gameFlags & GFLAG_ISINTREATZONE)
 				if (io->show == SHOW_FLAG_IN_SCENE)
-					if (source != i)
+					if (source != long(i))
 					{
 						float threshold;
 						float rad = radius + 5.f;
@@ -1472,8 +1466,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 			}
 		}
 
-	for (long i = 0; i < entities.nbmax; i++)
-	{
+	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
 		if ((io)
@@ -1530,11 +1523,10 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 	float rad = 1.f / radius;
 	long validsource = ValidIONum(numsource);
 
-	for (long i = 0; i < entities.nbmax; i++)
-	{
+	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
 
-		if ((ioo) && (i != numsource) && (ioo->obj))
+		if ((ioo) && (long(i) != numsource) && (ioo->obj))
 		{
 			if ((i != 0) && (numsource != 0)
 			        && validsource && (HaveCommonGroup(ioo, entities[numsource])))

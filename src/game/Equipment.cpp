@@ -1169,10 +1169,8 @@ void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 
 	long validid = -1;
 
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i] == toequip)
-		{
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] == toequip) {
 			validid = i;
 			break;
 		}

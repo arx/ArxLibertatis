@@ -2095,11 +2095,8 @@ void CDisarmTrap::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CDisarmTrap::Render()
-{
-	int i = 0;
-
+float CDisarmTrap::Render() {
+	
 	float x = eSrc.x;
 	float y = eSrc.y;// + 100.0f;
 	float z = eSrc.z;
@@ -2112,19 +2109,16 @@ float CDisarmTrap::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-
-	for (i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i] != NULL)
-		{
+	
+	// TODO why not just entities.player()->pos ?
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
 			x = entities[i]->pos.x;
 			y = entities[i]->pos.y;
 			z = entities[i]->pos.z;
 		}
 	}
 
-	//-------------------------------------------------------------------------
 	GRenderer->SetTexture(0, tex_p2);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 

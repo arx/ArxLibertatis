@@ -99,8 +99,6 @@ extern int iHighLight;
 
 extern TextureContainer TexSpecialColor;
 
-extern long FLAG_ALLOW_CLOTHES;
-
 long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
@@ -482,13 +480,9 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 		}
 	}
 
-	if (FLAG_ALLOW_CLOTHES && eobj->cdata && eobj->sdata)
-	{
-		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-		{
-			eobj->vertexlist[i].vert.p.x = eobj->vertexlist3[i].v.x - pos->x;
-			eobj->vertexlist[i].vert.p.y = eobj->vertexlist3[i].v.y - pos->y;
-			eobj->vertexlist[i].vert.p.z = eobj->vertexlist3[i].v.z - pos->z;
+	if(eobj->cdata && eobj->sdata) {
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - *pos;
 		}
 	}
 

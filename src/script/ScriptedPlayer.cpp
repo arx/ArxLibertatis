@@ -298,7 +298,7 @@ public:
 class SetPlayerControlsCommand : public Command {
 	
 	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
-		for(long i = 0; i < entities.nbmax; i++) {
+		for(size_t i = 0; i < entities.size(); i++) {
 			if(entities[i] && (entities[i]->ioflags & IO_NPC)) {
 				Stack_SendIOScriptEvent(entities[i], msg, dat);
 			}

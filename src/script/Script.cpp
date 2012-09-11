@@ -140,16 +140,15 @@ long FindScriptPos(const EERIE_SCRIPT * es, const string & str) {
 ScriptResult SendMsgToAllIO(ScriptMessage msg, const string & params) {
 	
 	ScriptResult ret = ACCEPT;
-
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i])
-		{
-			if (SendIOScriptEvent(entities[i], msg, params) == REFUSE)
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			if(SendIOScriptEvent(entities[i], msg, params) == REFUSE) {
 				ret = REFUSE;
+			}
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -240,14 +239,10 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 	}
 }
 
-void ARX_SCRIPT_ResetAll(long flags)
-{
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i] != NULL)
-		{
-			if (!entities[i]->scriptload)
-				ARX_SCRIPT_Reset(entities[i], flags);
+void ARX_SCRIPT_ResetAll(long flags) {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] && !entities[i]->scriptload) {
+			ARX_SCRIPT_Reset(entities[i], flags);
 		}
 	}
 }
@@ -264,12 +259,12 @@ void ARX_SCRIPT_AllowInterScriptExec() {
 	
 	EVENT_SENDER = NULL;
 	
-	long heartbeat_count = min(entities.nbmax, 10L);
+	long heartbeat_count = min(long(entities.size()), 10l);
 	
 	for(long n = 0; n < heartbeat_count; n++) {
 		
 		long i = ppos++;
-		if(i >= entities.nbmax){
+		if(i >= long(entities.size())){
 			ppos = 0;
 			return;
 		}
@@ -974,7 +969,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 						if (spells[i].exist)
 						{
 							if (spells[i].type == id)
-								if ((spells[i].caster >= 0) && (spells[i].caster < entities.nbmax)
+								if(spells[i].caster >= 0 && spells[i].caster < long(entities.size())
 										&& (io == entities[spells[i].caster]))
 								{
 									*lcontent = 1;
@@ -2266,55 +2261,55 @@ void ARX_SCRIPT_Init_Event_Stats() {
 	
 	ScriptEvent::totalCount = 0;
 	
-	for(long i = 0; i < entities.nbmax; i++) {
-		if(entities[i] != NULL) {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
 			entities[i]->stat_count = 0;
 			entities[i]->stat_sent = 0;
 		}
 	}
 }
 
-Entity * ARX_SCRIPT_Get_IO_Max_Events()
-{
+Entity * ARX_SCRIPT_Get_IO_Max_Events() {
+	
 	long max = -1;
 	long ionum = -1;
-
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if ((entities[i] != NULL)
-				&&	(entities[i]->stat_count > max))
-		{
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] && entities[i]->stat_count > max) {
 			ionum = i;
 			max = entities[i]->stat_count;
 		}
 	}
-
-	if (max <= 0) return NULL;
-
-	if (ionum > -1) return entities[ionum];
-
+	
+	if(max <= 0) {
+		return NULL;
+	}
+	
+	if(ionum > -1) {
+		return entities[ionum];
+	}
+	
 	return NULL;
 }
 
-Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent()
-{
+Entity * ARX_SCRIPT_Get_IO_Max_Events_Sent() {
+	
 	long max = -1;
 	long ionum = -1;
-
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if ((entities[i] != NULL)
-				&&	(entities[i]->stat_sent > max))
-		{
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] && entities[i]->stat_sent > max) {
 			ionum = i;
 			max = entities[i]->stat_sent;
 		}
 	}
-
-	if (max <= 0) return NULL;
-
-	if (ionum > -1) return entities[ionum];
-
+	
+	if(max <= 0) {
+		return NULL;
+	}
+	
+	if(ionum > -1) {
+		return entities[ionum];
+	}
+	
 	return NULL;
 }
 

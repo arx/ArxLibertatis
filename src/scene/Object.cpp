@@ -1812,7 +1812,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 
 static EERIE_3DOBJ * GetExistingEerie(const res::path & file) {
 	
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] != NULL && !entities[i]->tweaky && entities[i]->obj) {
 			EERIE_3DOBJ * obj = entities[i]->obj;
 			if(!obj->originaltextures && entities[i]->obj->file == file) {

@@ -350,12 +350,11 @@ bool IsCollidingIO(Entity * io,Entity * ioo)
 
 // TODO include header?
 extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
-void PushIO_ON_Top(Entity * ioo,float ydec)
-{
-	if (ydec!=0.f)
-	for (long i=0;i<entities.nbmax;i++) 
-	{
-		Entity * io=entities[i];
+void PushIO_ON_Top(Entity * ioo, float ydec) {
+	
+	if(ydec != 0.f)
+	for(size_t i = 0; i < entities.size(); i++) {
+		Entity * io = entities[i];
 
 		if (   (io)
 			&& (io!=ioo)
@@ -467,21 +466,19 @@ void PushIO_ON_Top(Entity * ioo,float ydec)
 								}
 							}
 
-							break;					
+							break;
 						}
-					}	
+					}
 				}
 			}
 		}
-	}		
+	}
 }
-//-----------------------------------------------------------------------------
 
-bool IsAnyNPCInPlatform(Entity * pfrm)
-{
-	for (long i=0;i<entities.nbmax;i++)
-	{
-		Entity * io=entities[i];
+bool IsAnyNPCInPlatform(Entity * pfrm) {
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		Entity * io = entities[i];
 
 		if (	(io) 
 			&&	(io!=pfrm)
@@ -716,18 +713,15 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 			&&	(ioo->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
 		{
 			FULL_TEST=1;
-			AMOUNT=entities.nbmax;
+			AMOUNT=entities.size();
 		}
 
 		for (long i=0;i<AMOUNT;i++) 
 		{
-			if (FULL_TEST)
-			{
-				io=entities[i];			
-			}
-			else
-			{				
-				io=treatio[i].io;				
+			if(FULL_TEST) {
+				io=entities[i];
+			} else {
+				io=treatio[i].io;
 			}
 
 			if (	!io
@@ -1943,9 +1937,8 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 		sphere.origin.z=z;
 		sphere.radius=65.f;
 
-		for (long num=0;num<entities.nbmax;num++)
-		{
-			Entity * io=entities[num];
+		for(size_t num = 0; num < entities.size(); num++) {
+			Entity * io = entities[num];
 
 			if ((io) && (io->gameFlags & GFLAG_VIEW_BLOCKER))
 			{

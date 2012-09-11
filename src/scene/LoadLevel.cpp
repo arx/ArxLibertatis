@@ -253,7 +253,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// preparing INTER DATA, Ignoring Player Data
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] && !entities[i]->scriptload) {
 			
 			Entity * io = entities[i];

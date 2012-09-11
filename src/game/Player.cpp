@@ -193,7 +193,7 @@ void Manage_sp_max();
 bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
 
-	if(entities.nbmax > 0 && entities.player()
+	if(entities.size() > 0 && entities.player()
 	   && entities.player()->animlayer[1].cur_anim) {
 		
 		ANIM_USE * ause1 = &entities.player()->animlayer[1];
@@ -3712,7 +3712,7 @@ void ARX_GAME_Reset(long type) {
 
 	if (eyeball.exist) eyeball.exist = -100;
 
-	if(entities.nbmax > 0 && entities.player()) {
+	if(entities.size() > 0 && entities.player()) {
 		entities.player()->ouch_time = 0;
 		entities.player()->invisibility = 0.f;
 	}

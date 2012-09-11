@@ -443,7 +443,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	asi.gmods_desired = desired;
 	asi.gmods_current = current;
 	
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] != NULL
 		   && !(entities[i]->ioflags & IO_NOSAVE)
 		   && !IsInPlayerInventory(entities[i])
@@ -474,7 +474,7 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 	memcpy(dat, &asi, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
-	for(int i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] != NULL
 		   && !(entities[i]->ioflags & IO_NOSAVE)
 		   && !IsInPlayerInventory(entities[i])
@@ -821,11 +821,10 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	
 	delete[] dat;
 	
-	for (int i = 1; i < entities.nbmax; i++)
-	{
-		if ((IsInPlayerInventory(entities[i]))
-				||	(IsPlayerEquipedWith(entities[i])))
+	for(size_t i = 1; i < entities.size(); i++) {
+		if(IsInPlayerInventory(entities[i]) || IsPlayerEquipedWith(entities[i])) {
 			ARX_CHANGELEVEL_Push_IO(entities[i], level);
+		}
 	}
 
 	return 1;
@@ -833,9 +832,8 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 
 static long ARX_CHANGELEVEL_Push_AllIO(long level) {
 	
-	for (long i = 1; i < entities.nbmax; i++)
-	{
-
+	for(size_t i = 1; i < entities.size(); i++) {
+		
 		if ((entities[i] != NULL)
 				&&	(!(entities[i]->ioflags & IO_NOSAVE))
 				&&	(!IsInPlayerInventory(entities[i]))
@@ -855,7 +853,7 @@ static Entity * GetObjIOSource(const EERIE_3DOBJ * obj) {
 		return NULL;
 	}
 	
-	for(long i = 0; i < entities.nbmax; i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] && entities[i]->obj) {
 			if(entities[i]->obj == obj) {
 				return entities[i];
@@ -1607,7 +1605,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		
 		RestoreInitialIOStatus();
 		
-		for(long i = 1; i < entities.nbmax; i++) {
+		for(size_t i = 1; i < entities.size(); i++) {
 			if(entities[i] && !entities[i]->scriptload) {
 				ARX_SCRIPT_Reset(entities[i], 1);
 			}
@@ -2427,7 +2425,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
 	while(converted) {
 		converted = 0;
 		
-		for(long it = 1; it < MAX_IO_SAVELOAD && it < entities.nbmax; it++) {
+		for(size_t it = 1; it < MAX_IO_SAVELOAD && it < entities.size(); it++) {
 			Entity * io = entities[it];
 			
 			if(!io || treated[it]) {
@@ -2505,7 +2503,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
 	
 	if(reloadflag) {
 		
-		for(long i = 0; i < entities.nbmax; i++) {
+		for(size_t i = 0; i < entities.size(); i++) {
 			
 			if(!entities[i]) {
 				continue;
@@ -2530,7 +2528,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
 		
 	} else if (firstTime) {
 		
-		for(long i = 0; i < entities.nbmax; i++) {
+		for(size_t i = 0; i < entities.size(); i++) {
 			
 			if(!entities[i]) {
 				continue;
@@ -2555,7 +2553,7 @@ static void ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag, bool firstTime) {
 		
 	} else {
 		
-		for(long i = 0; i < entities.nbmax; i++) {
+		for(size_t i = 0; i < entities.size(); i++) {
 			
 			if(!entities[i]) {
 				continue;
@@ -2614,7 +2612,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 
 static void ReleaseGaids() {
 	
-	for(long i = 0; i < entities.nbmax; i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(Gaids[i]) {
 			delete Gaids[i];
 		}

@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/version.hpp>
+#include <boost/foreach.hpp>
 
 #include "Configure.h"
 
@@ -1747,12 +1748,9 @@ void SetEditMode(long ed, const bool stop_sound) {
 		player.life = 0.1f;
 	}
 	
-	for (long i=0;i<entities.nbmax;i++)
-	{
-		if (entities[i]!=NULL )
-		{
-			if (entities[i]->show == SHOW_FLAG_HIDDEN) entities[i]->show = SHOW_FLAG_IN_SCENE;
-			else if (entities[i]->show == SHOW_FLAG_KILLED) entities[i]->show = SHOW_FLAG_IN_SCENE;
+	BOOST_FOREACH(Entity * e, entities) {
+		if(e && (e->show == SHOW_FLAG_HIDDEN || e->show == SHOW_FLAG_KILLED)) {
+			e->show = SHOW_FLAG_IN_SCENE;
 		}
 	}
 
@@ -2217,22 +2215,11 @@ void FirstFrameHandling()
 		WILL_RESTORE_PLAYER_POSITION_FLAG=0;
 	}
 
-	if (!FLAG_ALLOW_CLOTHES)
-	{
-		for (long i=0;i<entities.nbmax;i++)
-		{
-			if (	(entities[i])
-				&&	(entities[i]->obj)	)
-				entities[i]->obj->cdata=NULL;
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] && (entities[i]->ioflags & IO_NPC)
+		   && entities[i]->_npcdata->cuts) {
+			ARX_NPC_ApplyCuts(entities[i]);
 		}
-	}
-
-	for (long ni=0;ni<entities.nbmax;ni++)
-	{
-		if (	(entities[ni])
-			&&	(entities[ni]->ioflags & IO_NPC)
-			&&	(entities[ni]->_npcdata->cuts)	)
-				ARX_NPC_ApplyCuts(entities[ni]);
 	}
 
 	ResetVVPos(entities.player());
@@ -3240,14 +3227,14 @@ void DrawMagicSightInterface()
 
 //*************************************************************************************
 
-void RenderAllNodes()
-{
+void RenderAllNodes() {
+	
 	Anglef angle(Anglef::ZERO);
-	float xx,yy;
-
+	float xx, yy;
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	for (long i=0;i<nodes.nbmax;i++)
+	
+	for(long i=0;i<nodes.nbmax;i++)
 	{
 		if (nodes.nodes[i].exist)
 		{
@@ -3825,10 +3812,10 @@ void ReleaseSystemObjects() {
 		hero=NULL;
 	}
 	
-	if(entities.nbmax > 0 && entities.player() != NULL) {
+	if(entities.size() > 0 && entities.player() != NULL) {
 		entities.player()->obj = NULL; // already deleted above (hero)
 		delete entities.player();
-		arx_assert(entities.nbmax > 0 && entities.player() == NULL);
+		arx_assert(entities.size() > 0 && entities.player() == NULL);
 	}
 
 	if(eyeballobj) {

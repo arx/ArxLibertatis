@@ -419,26 +419,19 @@ void ARX_NPC_Behaviour_Reset(Entity * io)
 	for (long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
 		io->_npcdata->stacked[i].exist = 0;
 }
-//***********************************************************************************************
+
 // Reset all Behaviours from all NPCs
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_Behaviour_ResetAll()
-{
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i])
+void ARX_NPC_Behaviour_ResetAll() {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
 			ARX_NPC_Behaviour_Reset(entities[i]);
+		}
 	}
 }
-//***********************************************************************************************
+
 // Stacks an NPC behaviour
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_Behaviour_Stack(Entity * io)
-{
+void ARX_NPC_Behaviour_Stack(Entity * io) {
+	
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
 		return;
@@ -1448,34 +1441,29 @@ void StareAtTarget(Entity * io)
 	return;
 }
 
-
-//***********************************************************************************************
-//***********************************************************************************************
-float GetTRUETargetDist(Entity * io)
-{
+float GetTRUETargetDist(Entity * io) {
+	
 	long t;
-
-	if (io->ioflags & IO_NPC)
+	if(io->ioflags & IO_NPC) {
 		t = io->_npcdata->pathfind.truetarget;
-	else t = io->targetinfo;
-
-	if ((t >= 0) && (t < entities.nbmax) && (entities[t] != NULL))
-	{
-		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
+	} else {
+		t = io->targetinfo;
+	}
+	
+	if(ValidIONum(t)) {
+		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
 			return dist(io->pos, io->initpos);
-
+		}
 		return dist(io->pos, entities[t]->pos);
 	}
-
+	
 	return 99999999.f;
 }
 
 extern TextureContainer * sphere_particle;
 extern Entity * EVENT_SENDER;
 
-//***********************************************************************************************
 // Checks If a NPC is dead
-//***********************************************************************************************
 bool IsDeadNPC(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
@@ -2783,14 +2771,12 @@ void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl) {
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ComputeTolerance(Entity * io, long targ, float * dst)
-{
+void ComputeTolerance(Entity * io, long targ, float * dst) {
+	
 	float TOLERANCE = 30.f;
-
-	if ((targ >= 0)
-	        &&	(targ < entities.nbmax)
-	        &&	(entities[targ]))
-	{
+	
+	if(ValidIONum(targ)) {
+		
 		float self_dist, targ_dist;
 
 		// Compute min target close-dist
@@ -3801,7 +3787,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 
-	for (long i = 0; i < entities.nbmax; i++)
+	for (size_t i = 0; i < entities.size(); i++)
 	{
 		Entity * io = entities[i];
 
@@ -4103,7 +4089,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 
 
-	for (long i = 0; i < entities.nbmax; i++)
+	for (size_t i = 0; i < entities.size(); i++)
 		if ((entities[i])
 		        &&	(entities[i]->ioflags & IO_NPC)
 		        &&	(entities[i]->gameFlags & GFLAG_ISINTREATZONE)

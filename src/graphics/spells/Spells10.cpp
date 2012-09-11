@@ -143,11 +143,9 @@ CControlTarget::CControlTarget()
 	fColor1[1] = 0.6f;
 	fColor1[2] = 0.2f;
 }
-//-----------------------------------------------------------------------------
-void CControlTarget::Create(Vec3f aeSrc, float afBeta)
-{
-	int i;
 
+void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
 
 	eSrc.x = aeSrc.x;
@@ -166,13 +164,9 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 	eTarget.y = eSrc.y + 100;
 	eTarget.z = eSrc.z + fBetaRadCos * 1000;
 
-	for (i = 1; i < entities.nbmax; i++)
-	{
-		if (entities[i] != NULL)
-		{
-			eTarget.x = entities[i]->pos.x;
-			eTarget.y = entities[i]->pos.y;
-			eTarget.z = entities[i]->pos.z;
+	for(size_t i = 1; i < entities.size(); i++) {
+		if(entities[i]) {
+			eTarget = entities[i]->pos;
 		}
 	}
 
@@ -200,7 +194,7 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 	e.y = eSrc.y;
 	e.z = eSrc.z;
 
-	i = 0;
+	int i = 0;
 
 	while (Visible(&s, &e, NULL, &h) && i < 20)
 	{
@@ -218,7 +212,7 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta)
 	pathways[9].p.z = eTarget.z;
 	Split(pathways, 0, 9, 150);
 
-	for (i = 0; i < 9; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		if (pathways[i].p.y >= eSrc.y + 150)
 		{

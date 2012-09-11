@@ -44,46 +44,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityManager.h"
 
 #include <cstdlib>
+#include <algorithm>
 
 #include "game/Entity.h"
 #include "platform/Platform.h"
 
 EntityManager entities;
 
-EntityManager::EntityManager() : nbmax(0), minfree(0), iobj(NULL) { }
+EntityManager::EntityManager() : minfree(0) { }
 
 EntityManager::~EntityManager() {
 	
 #ifdef _DEBUG
-	for(size_t i = 0; i < size_t(nbmax); i++) {
-		arx_assert_msg(iobj[i] == NULL, "object " PRINT_SIZE_T " not cleared", i);
+	for(size_t i = 0; i < size(); i++) {
+		arx_assert_msg(entries[i] == NULL,
+		               "object " PRINT_SIZE_T " not cleared", i);
 	}
 #endif // _DEBUG
-	
-	std::free(iobj);
 	
 }
 
 void EntityManager::init() {
-	arx_assert(nbmax == 0);
-	iobj = (Entity **)std::malloc(sizeof(Entity *));
-	iobj[0] = NULL;
-	nbmax = 1;
+	arx_assert(size() == 0);
+	entries.resize(1);
+	entries[0] = NULL;
+	minfree = 0;
 }
 
 void EntityManager::clear() {
 	
 	// Free all entities, ignoring the player.
-	for(long i = 1; i < nbmax; i++) {
-		delete entities[i];
-		arx_assert(entities[i] == NULL);
+	for(size_t i = 1; i < size(); i++) {
+		delete entries[i];
+		arx_assert(entries[i] == NULL);
 	}
 	
-	nbmax = 1;
-	iobj = (Entity **)std::realloc(iobj, sizeof(Entity *) * nbmax);
+	entries.resize(1);
+	minfree = 0;
 }
 
-long EntityManager::getById(const std::string & name) {
+long EntityManager::getById(const std::string & name) const {
 	
 	if(name.empty() || name == "none") {
 		return -1;
@@ -93,9 +93,10 @@ long EntityManager::getById(const std::string & name) {
 		return 0; // player is an IO with index 0
 	}
 	
-	for(long i = 0 ; i < nbmax ; i++) {
-		if(iobj[i] != NULL && iobj[i]->ident > -1) {
-			if(name == iobj[i]->long_name()) {
+	for(size_t i = 0 ; i < size() ; i++) {
+		if(entries[i] != NULL && entries[i]->ident > -1) {
+			// TODO this check is inefficient!
+			if(name == entries[i]->long_name()) {
 				return i;
 			}
 		}
@@ -104,34 +105,30 @@ long EntityManager::getById(const std::string & name) {
 	return -1;
 }
 
-Entity * EntityManager::getById(const std::string & name, Entity * self) {
+Entity * EntityManager::getById(const std::string & name, Entity * self) const {
 	long index = getById(name);
-	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
+	return (index == -1) ? NULL : (index == -2) ? self : entries[index]; 
 }
 
 size_t EntityManager::add(Entity * entity) {
 	
-	for(size_t i = minfree; i != size_t(nbmax); i++) {
-		if(iobj[i] == NULL) {
-			iobj[i] = entity;
+	for(size_t i = minfree; i < size(); i++) {
+		if(entries[i] == NULL) {
+			entries[i] = entity;
 			minfree = i + 1;
 			return i;
 		}
 	}
 	
-	size_t i = size_t(nbmax);
-	
-	nbmax++;
-	iobj = (Entity **)std::realloc(iobj, sizeof(Entity *) * nbmax);
-	
-	iobj[i] = entity;
+	size_t i = size();
+	entries.push_back(entity);
 	minfree = i + 1;
 	return i;
 }
 
 void EntityManager::remove(size_t index) {
 	
-	arx_assert_msg(index < size_t(nbmax) && iobj[index] != NULL,
+	arx_assert_msg(index < size() && entries[index] != NULL,
 	               "double free or memory corruption detected: index="
 	               PRINT_SIZE_T, index);
 	
@@ -139,5 +136,5 @@ void EntityManager::remove(size_t index) {
 		minfree = index;
 	}
 	
-	iobj[index] = NULL;
+	entries[index] = NULL;
 }

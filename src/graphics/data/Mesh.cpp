@@ -315,11 +315,8 @@ long MakeTopObjString(Entity * io,  string & dest) {
 		}
 	}
 
-	for (long i = 0; i < entities.nbmax; i++)
-	{
-		if (entities[i] != NULL)
-		{
-			if (entities[i] != io)
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] && entities[i] != io) {
 				if (entities[i]->show == SHOW_FLAG_IN_SCENE)
 					if ((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM))
 					{

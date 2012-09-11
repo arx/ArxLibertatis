@@ -838,7 +838,7 @@ InventoryPos removeFromInventories(Entity * item) {
 		return oldPos;
 	}
 	
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] && entities[i]->inventory) {
 			oldPos = getIoInventory(entities[i]).remove(item);
 			if(oldPos) {
@@ -857,7 +857,7 @@ InventoryPos locateInInventories(const Entity * item) {
 		return pos;
 	}
 	
-	for(long i = 1; i < entities.nbmax; i++) {
+	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i] && entities[i]->inventory) {
 			pos = getIoInventory(entities[i]).locate(item);
 			if(pos) {
@@ -1784,23 +1784,18 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 		}
 
 		// Is it in any other IO inventory ?
-		for (long i = 0; i < entities.nbmax; i++)
-		{
+		for(size_t i = 0; i < entities.size(); i++) {
 			Entity * ioo = entities[i];
-
-			if (ioo && ioo->inventory)
-			{
+			if(ioo && ioo->inventory) {
 				INVENTORY_DATA * id = ioo->inventory;
-
-				for (long j = 0; j < id->sizey; j++)
-					for (long k = 0; k < id->sizex; k++)
-					{
-						if (id->slot[k][j].io == io)
-						{
+				for(long j = 0; j < id->sizey; j++) {
+					for(long k = 0; k < id->sizex; k++) {
+						if(id->slot[k][j].io == io) {
 							*pos = ioo->pos;
 							return true;
 						}
 					}
+				}
 			}
 		}
 	}
@@ -1816,17 +1811,20 @@ bool GetItemWorldPosition(Entity * io, Vec3f * pos)
 // FUNCTION:
 //   Gets real world position for an IO to spawn a sound
 //*************************************************************************************
-bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos)
-{
-	if (!io) return false;
+bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos) {
+	
+	if(!io) {
+		return false;
+	}
 	
 	if (DRAGINTER == io) {
 		ARX_PLAYER_FrontPos(pos);
 		return true;
 	}
 	
-	if (io->show != SHOW_FLAG_IN_SCENE) {
-		if (IsEquipedByPlayer(io)) {
+	if(io->show != SHOW_FLAG_IN_SCENE) {
+		
+		if(IsEquipedByPlayer(io)) {
 			// in player inventory
 			ARX_PLAYER_FrontPos(pos);
 			return true;
@@ -1846,32 +1844,23 @@ bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos)
 			}
 		}
 		
-		for(long i = 0; i < entities.nbmax; i++) {
-			
+		for(size_t i = 0; i < entities.size(); i++) {
 			Entity * ioo = entities[i];
-			
-			if (ioo && ioo->inventory)
-			{
+			if(ioo && ioo->inventory) {
 				INVENTORY_DATA * id = ioo->inventory;
-
-				for (long j = 0; j < id->sizey; j++)
-					for (long k = 0; k < id->sizex; k++)
-					{
-						if (id->slot[k][j].io == io)
-						{
-							pos->x = ioo->pos.x;
-							pos->y = ioo->pos.y;
-							pos->z = ioo->pos.z;
+				for(long j = 0; j < id->sizey; j++) {
+					for(long k = 0; k < id->sizex; k++) {
+						if(id->slot[k][j].io == io) {
+							*pos = ioo->pos;
 							return true;
 						}
 					}
+				}
 			}
 		}
 	}
-
-	pos->x = io->pos.x;
-	pos->y = io->pos.y;
-	pos->z = io->pos.z;
+	
+	*pos = io->pos;
 	return true;
 }
 
@@ -1891,11 +1880,10 @@ void RemoveFromAllInventories(const Entity * io) {
 	playerInventory.remove(io);
 	
 	// Seek IO in Other IO's Inventories
-	for(long i = 0; i < entities.nbmax; i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] != NULL) {
 			if(entities[i]->inventory != NULL) {
 				INVENTORY_DATA * id = entities[i]->inventory;
-				
 				for(long j = 0; j < id->sizey; j++) {
 					for(long k = 0; k < id->sizex; k++) {
 						if(id->slot[k][j].io == io) {
@@ -1914,7 +1902,7 @@ void RemoveFromAllInventories(const Entity * io) {
 //*************************************************************************************
 void CheckForInventoryReplaceMe(Entity * io, Entity * old) {
 	
-	for(long i = 0; i < entities.nbmax; i++) {
+	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] != NULL) {
 			if(entities[i]->inventory != NULL) {
 				INVENTORY_DATA * id = entities[i]->inventory;
