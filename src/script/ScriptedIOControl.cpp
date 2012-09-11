@@ -169,7 +169,7 @@ public:
 			}
 			
 			if(io->scriptload) {
-				ReleaseInter(io);
+				delete io;
 				return AbortRefuse;
 			} else {
 				TREATZONE_RemoveIO(io);

@@ -1120,20 +1120,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 						ioo->scale = 1.f;
 					}
 
-					if (io->scriptload)
-					{
-						for (long ii = 0; ii < entities.nbmax; ii++)
-						{
-							if (entities[ii] == io)
-							{
-								ReleaseInter(entities[ii]);
-							}
-						}
-					}
-					else
-					{
-						io->show = SHOW_FLAG_KILLED;
-					}
+					io->destroy();
 
 					sInventory = -1;
 					return true;
@@ -1199,20 +1186,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, l
 							ioo->scale = 1.f;
 						}
 
-						if (io->scriptload)
-						{
-							for (long ii = 0; ii < entities.nbmax; ii++)
-							{
-								if (entities[ii] == io)
-								{
-									ReleaseInter(entities[ii]);
-								}
-							}
-						}
-						else
-						{
-							io->show = SHOW_FLAG_KILLED;
-						}
+						io->destroy();
 
 						return true;
 					}

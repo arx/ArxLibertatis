@@ -6217,10 +6217,9 @@ void ARX_SPELLS_Update()
 						DynLight[id].duration=800;
 					}
 
-					if (ValidIONum(spells[i].longinfo))
-					{				
-						ReleaseInter(entities[spells[i].longinfo]);
-					}					
+					if(ValidIONum(spells[i].longinfo)) {
+						delete entities[spells[i].longinfo];
+					}
 
 				break;
 				//----------------------------------------------------------------------------

@@ -1783,16 +1783,6 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 	ResetVVPos(io);
 }
 
-//*************************************************************************************
-// Releases An Interactive Object from memory
-//*************************************************************************************
-void ReleaseInter(Entity * io) {
-	if(io) {
-		delete io;
-	}
-}
-
-
 Entity * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags) {
 	
 	Entity * io = NULL;
@@ -1882,7 +1872,7 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 		Entity * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		io->_npcdata->weapon = NULL;
-		ReleaseInter(ioo);
+		delete ioo;
 	}
 	
 	res::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
@@ -2159,7 +2149,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 		}
 	}
 	
-	ReleaseInter(entities[i]), entities[i] = NULL;
+	delete entities[i];
 }
 
 //*************************************************************************************

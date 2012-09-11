@@ -198,7 +198,6 @@ Entity * AddFix(const res::path & file, AddInteractiveFlags flags = 0);
 Entity * AddNPC(const res::path & file, AddInteractiveFlags flags = 0);
 Entity * AddItem(const res::path & file, AddInteractiveFlags flags = 0);
 
-void ReleaseInter(Entity * io);
 void UpdateCameras();
 
 Entity * InterClick(Vec2s * pos);

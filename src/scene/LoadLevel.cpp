@@ -1475,7 +1475,7 @@ void CheckIO_NOT_SAVED() {
 			}
 		}
 		
-		ReleaseInter(entities[i]);
+		delete entities[i];
 	}
 	
 }

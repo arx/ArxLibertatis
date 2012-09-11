@@ -3441,14 +3441,9 @@ void ARX_PLAYER_AddGold(Entity * gold) {
 	
 	ARX_SOUND_PlayInterface(SND_GOLD);
 	
-	if(gold->scriptload) {
-		RemoveFromAllInventories(gold);
-		ReleaseInter(gold);
-	} else {
-		gold->show = SHOW_FLAG_KILLED;
-		gold->gameFlags &= ~GFLAG_ISINTREATZONE;
-	}
+	gold->gameFlags &= ~GFLAG_ISINTREATZONE;
 	
+	gold->destroy();
 }
 
 void ARX_PLAYER_Start_New_Quest() {
