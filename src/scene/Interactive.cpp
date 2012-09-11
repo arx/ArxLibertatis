@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Camera.h"
 #include "game/Damage.h"
+#include "game/EntityManager.h"
 #include "game/Equipment.h"
 #include "game/Inventory.h"
 #include "game/Item.h"
@@ -126,7 +127,6 @@ extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
 Entity * CURRENTINTER = NULL;
-EntityManager entities;
 float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
@@ -1879,33 +1879,6 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags)
 
 	MOLLESS_Clear(io->obj, 1);
 	ResetVVPos(io);
-}
-
-// Finds IO number by name
-long EntityManager::getById(const string & name) {
-	
-	if(name.empty() || name == "none") {
-		return -1;
-	} else if(name == "self" || name == "me") {
-		return -2;
-	} else if(name == "player") {
-		return 0; // player is an IO with index 0
-	}
-	
-	for(long i = 0 ; i < nbmax ; i++) {
-		if(iobj[i] != NULL && iobj[i]->ident > -1) {
-			if(name == iobj[i]->long_name()) {
-				return i;
-			}
-		}
-	}
-	
-	return -1;
-}
-
-Entity * EntityManager::getById(const string & name, Entity * self) {
-	long index = getById(name);
-	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
 }
 
 //*************************************************************************************

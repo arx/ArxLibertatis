@@ -40,106 +40,35 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Cyril Meynier
-//
-// Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 
-#include "physics/Attractors.h"
+#include "game/EntityManager.h"
 
 #include "game/Entity.h"
-#include "game/EntityManager.h"
-#include "graphics/Math.h"
-#include "scene/Interactive.h"
 
-struct ARX_SPECIAL_ATTRACTOR {
-	long	ionum;  // -1 == not defined
-	float	power;
-	float	radius;
-};
+EntityManager entities;
 
-static const size_t MAX_ATTRACTORS = 16;
-static ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];
-
-void ARX_SPECIAL_ATTRACTORS_Reset() {
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		attractors[i].ionum = -1;
+long EntityManager::getById(const std::string & name) {
+	
+	if(name.empty() || name == "none") {
+		return -1;
+	} else if(name == "self" || name == "me") {
+		return -2;
+	} else if(name == "player") {
+		return 0; // player is an IO with index 0
 	}
-}
-
-static void ARX_SPECIAL_ATTRACTORS_Remove(long ionum) {
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == ionum) {
-			attractors[i].ionum = -1;
+	
+	for(long i = 0 ; i < nbmax ; i++) {
+		if(iobj[i] != NULL && iobj[i]->ident > -1) {
+			if(name == iobj[i]->long_name()) {
+				return i;
+			}
 		}
 	}
-}
-
-static long ARX_SPECIAL_ATTRACTORS_Exist(long ionum) {
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == ionum) {
-			return i;
-		}
-	}
+	
 	return -1;
 }
 
-bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
-	
-	if(power == 0.f) {
-		ARX_SPECIAL_ATTRACTORS_Remove(ionum);
-	}
-	
-	long tst;
-	if((tst = ARX_SPECIAL_ATTRACTORS_Exist(ionum)) != -1) {
-		attractors[tst].power = power;
-		attractors[tst].radius = radius;
-		return false;
-	}
-	
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		if(attractors[i].ionum == -1) {
-			attractors[i].ionum = ionum;
-			attractors[i].power = power;
-			attractors[i].radius = radius;
-			return true;
-		}
-	}
-	
-	return false;
-}
-
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
-	
-	force = Vec3f::ZERO;
-	
-	for(size_t i = 0; i < MAX_ATTRACTORS; i++) {
-		
-		if(attractors[i].ionum == -1 || !ValidIONum(attractors[i].ionum)) {
-			continue;
-		}
-		
-		const Entity & io = *entities[attractors[i].ionum];
-		
-		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
-			 || !(io.gameFlags & GFLAG_ISINTREATZONE)) {
-			continue;
-		}
-		
-		float power = attractors[i].power;
-		float dist = fdist(ioo.pos, io.pos);
-		
-		if(dist > (ioo.physics.cyl.radius + io.physics.cyl.radius + 10.f) || power < 0.f) {
-			
-			float max_radius = attractors[i].radius; 
-			
-			if(dist < max_radius) {
-				float ratio_dist = 1.f - (dist / max_radius);
-				Vec3f vect = io.pos - ioo.pos;
-				fnormalize(vect);
-				power *= ratio_dist * 0.01f;
-				force = vect * power;
-			}
-		}
-		
-	}
+Entity * EntityManager::getById(const std::string & name, Entity * self) {
+	long index = getById(name);
+	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
 }

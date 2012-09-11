@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
-#include <boost-1_49/boost/concept_check.hpp>
 
 #include "game/Entity.h"
 #include "graphics/data/MeshManipulation.h"
@@ -62,27 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct EERIE_3DOBJ;
 
 namespace res { class path; }
-
-struct EntityManager {
-	
-	long init;
-	long nbmax;
-	
-	Entity ** iobj;
-	
-	long getById(const std::string & name);
-	Entity * getById(const std::string & name, Entity * self);
-	
-	Entity * operator[](size_t index) {
-		return iobj[index];
-	}
-	
-	//! Get the player entity
-	Entity * player() {
-		return iobj[0];
-	}
-	
-};
 
 const size_t MAX_LINKS = 12;
 
@@ -129,7 +107,6 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
 
 extern ARX_NODES nodes;
-extern EntityManager entities;
 extern Entity * CURRENTINTER;
 
 #ifdef BUILD_EDITOR
