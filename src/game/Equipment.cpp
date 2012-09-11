@@ -583,9 +583,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			if (io_source == entities.player())
 				ARX_DAMAGES_DamageFIX(io_target, player.Full_damages, 0, 0);
 			else if (io_source->ioflags & IO_NPC)
-				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, GetInterNum(io_source), 0);
+				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), 0);
 			else
-				ARX_DAMAGES_DamageFIX(io_target, 1, GetInterNum(io_source), 0);
+				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), 0);
 		}
 
 		return 0.f;
@@ -761,16 +761,13 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 				ppos *= 60.f;
 				ppos += ACTIVECAM->pos;
-				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
+				ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
 				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			}
 			else
 			{
 
-				Vec3f ppos;
-				ppos.x = io_source->pos.x - io_target->pos.x;
-				ppos.y = io_source->pos.y - io_target->pos.y;
-				ppos.z = io_source->pos.z - io_target->pos.z;
+				Vec3f ppos = io_source->pos - io_target->pos;
 
 				if (io_target == entities.player()) ppos.y -= PLAYER_BASE_HEIGHT;
 
@@ -783,9 +780,9 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 				//------- player NPC END
 				if (position)
-					ARX_DAMAGES_DamageNPC(io_target, dmgs, GetInterNum(io_source), 0, position);
+					ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, position);
 				else
-					ARX_DAMAGES_DamageNPC(io_target, dmgs, GetInterNum(io_source), 0, &io_target->pos);
+					ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, &io_target->pos);
 			}
 		}
 
@@ -819,8 +816,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 {
 	
 	bool ret = false;
-	long source = GetInterNum(io_source);
-	long weapon = GetInterNum(io_weapon);
+	long source = (io_source == NULL) ? -1 : io_source->index();
+	long weapon = io_weapon->index();
 	EERIE_SPHERE sphere;
 
 	Vec3f * v0;

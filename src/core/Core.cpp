@@ -3825,8 +3825,10 @@ void ReleaseSystemObjects() {
 		hero=NULL;
 	}
 	
-	if(entities.nbmax > 0) {
+	if(entities.nbmax > 0 && entities.player() != NULL) {
+		entities.player()->obj = NULL; // already deleted above (hero)
 		delete entities.player();
+		arx_assert(entities.nbmax > 0 && entities.player() == NULL);
 	}
 
 	if(eyeballobj) {

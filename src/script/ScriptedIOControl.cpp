@@ -109,8 +109,8 @@ public:
 			Set_DragInter(ioo);
 		}
 		
-		long neww = GetInterNum(ioo);
-		long oldd = GetInterNum(io);
+		long neww = ioo->index();
+		long oldd = io->index();
 		
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;
@@ -282,7 +282,7 @@ public:
 					ioo->pos.z += EEcos(radians(t->angle.b)) * dist;
 				}
 				
-				TREATZONE_AddIO(ioo, GetInterNum(ioo));
+				TREATZONE_AddIO(ioo, ioo->index());
 				
 			} else {
 				
@@ -301,7 +301,7 @@ public:
 				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
-				TREATZONE_AddIO(ioo, GetInterNum(ioo));
+				TREATZONE_AddIO(ioo, ioo->index());
 				
 			}
 			
@@ -757,7 +757,8 @@ public:
 			return Failed;
 		}
 		
-		ARX_DAMAGES_DealDamages(GetInterNum(t), damage, GetInterNum(context.getIO()), type, &t->pos);
+		long self = (context.getIO() == NULL) ? -1 : context.getIO()->index();
+		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
 		
 		return Success;
 	}

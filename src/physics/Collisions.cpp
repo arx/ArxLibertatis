@@ -833,10 +833,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 							{
 
 								if (ioo->damager_damages>0)
-									ARX_DAMAGES_DealDamages(i,ioo->damager_damages,GetInterNum(ioo),ioo->damager_type,&io->pos);
+									ARX_DAMAGES_DealDamages(i,ioo->damager_damages,ioo->index(),ioo->damager_type,&io->pos);
 
 								if (io->damager_damages>0)
-									ARX_DAMAGES_DealDamages(GetInterNum(ioo),io->damager_damages,GetInterNum(io),io->damager_type,&ioo->pos);
+									ARX_DAMAGES_DealDamages(ioo->index(),io->damager_damages,io->index(),io->damager_type,&ioo->pos);
 							}						
 
 							PUSHABLE_NPC=io;
@@ -928,10 +928,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 											dealt=1;
 
 											if (ioo->damager_damages>0)
-												ARX_DAMAGES_DealDamages(i,ioo->damager_damages,GetInterNum(ioo),ioo->damager_type,&io->pos);
+												ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 
 											if (io->damager_damages>0)
-												ARX_DAMAGES_DealDamages(GetInterNum(ioo),io->damager_damages,GetInterNum(io),io->damager_type,&ioo->pos);
+												ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 										}
 									}
 
@@ -995,10 +995,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 								dealt=1;
 											
 											if (ioo->damager_damages>0)
-												ARX_DAMAGES_DealDamages(i,ioo->damager_damages,GetInterNum(ioo),ioo->damager_type,&io->pos);
+												ARX_DAMAGES_DealDamages(i, ioo->damager_damages, ioo->index(), ioo->damager_type, &io->pos);
 									
 												if (io->damager_damages>0)
-													ARX_DAMAGES_DealDamages(GetInterNum(ioo),io->damager_damages,GetInterNum(io),io->damager_type,&ioo->pos);
+													ARX_DAMAGES_DealDamages(ioo->index(), io->damager_damages, io->index(), io->damager_type, &ioo->pos);
 											}
 										}
 										anything=min(anything,min(sp.origin.y-sp.radius,io->bbox3D.min.y));

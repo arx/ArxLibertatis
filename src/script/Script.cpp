@@ -171,10 +171,10 @@ void ARX_SCRIPT_SetMainEvent(Entity * io, const string & newevent) {
 void ARX_SCRIPT_ResetObject(Entity * io, long flags)
 {
 	// Now go for Script INIT/RESET depending on Mode
-	long num = GetInterNum(io);
-
-	if (ValidIONum(num))
-	{
+	if(io) {
+		
+		long num = io->index();
+		
 		if (entities[num] && entities[num]->script.data)
 		{
 			entities[num]->script.allowevents = 0;
@@ -1919,27 +1919,23 @@ ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std:
 	// checks invalid IO
 	if (!io) return REFUSE;
 
-	long num = GetInterNum(io);
-
-	if (ValidIONum(num))
+	long num = io->index();
+	
+	// if this IO only has a Local script, send event to it
+	if (entities[num] && !entities[num]->over_script.data)
 	{
-		// if this IO only has a Local script, send event to it
-		if (entities[num] && !entities[num]->over_script.data)
-		{
-			return ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
-		}
-
-		// If this IO has a Global script send to Local (if exists)
-		// then to local if no overriden by Local
-		if (entities[num] && (ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname) != REFUSE))
-		{
-
-			if (entities[num])
-				return (ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname));
-			else
-				return REFUSE;
-		}
-
+		return ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
+	}
+	
+	// If this IO has a Global script send to Local (if exists)
+	// then to local if no overriden by Local
+	if (entities[num] && (ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname) != REFUSE))
+	{
+	
+		if (entities[num])
+			return (ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname));
+		else
+			return REFUSE;
 	}
 
 	// Refused further processing.
@@ -1948,47 +1944,45 @@ ScriptResult SendIOScriptEventReverse(Entity * io, ScriptMessage msg, const std:
 
 ScriptResult SendIOScriptEvent(Entity * io, ScriptMessage msg, const std::string& params, const std::string& eventname)
 {
-	// checks invalid IO
-	if (!io) return REFUSE;
+	
+	if(!io) {
+		return REFUSE;
+	}
+	
+	long num = io->index();
+	
+	Entity * oes = EVENT_SENDER;
 
-	long num = GetInterNum(io);
-
-	if (ValidIONum(num))
+	if ((msg == SM_INIT) || (msg == SM_INITEND))
 	{
-		Entity * oes = EVENT_SENDER;
-
-		if ((msg == SM_INIT) || (msg == SM_INITEND))
+		if (entities[num])
 		{
-			if (entities[num])
-			{
-				SendIOScriptEventReverse(entities[num], msg, params, eventname);
-				EVENT_SENDER = oes;
-			}
+			SendIOScriptEventReverse(entities[num], msg, params, eventname);
+			EVENT_SENDER = oes;
 		}
+	}
 
-		// if this IO only has a Local script, send event to it
-		if (entities[num] && !entities[num]->over_script.data)
+	// if this IO only has a Local script, send event to it
+	if (entities[num] && !entities[num]->over_script.data)
+	{
+		ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
+		EVENT_SENDER = oes;
+		return ret;
+	}
+
+	// If this IO has a Global script send to Local (if exists)
+	// then to Global if no overriden by Local
+	if (entities[num] && ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname) != REFUSE) {
+		EVENT_SENDER = oes;
+
+		if (entities[num])
 		{
 			ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
 			EVENT_SENDER = oes;
 			return ret;
 		}
-
-		// If this IO has a Global script send to Local (if exists)
-		// then to Global if no overriden by Local
-		if (entities[num] && ScriptEvent::send(&entities[num]->over_script, msg, params, entities[num], eventname) != REFUSE) {
-			EVENT_SENDER = oes;
-
-			if (entities[num])
-			{
-				ScriptResult ret = ScriptEvent::send(&entities[num]->script, msg, params, entities[num], eventname);
-				EVENT_SENDER = oes;
-				return ret;
-			}
-			else
-				return REFUSE;
-		}
-
+		else
+			return REFUSE;
 	}
 
 	// Refused further processing.
@@ -2001,29 +1995,26 @@ ScriptResult SendInitScriptEvent(Entity * io) {
 
 	Entity * oes = EVENT_SENDER;
 	EVENT_SENDER = NULL;
-	long num = GetInterNum(io);
+	long num = io->index();
 
-	if (ValidIONum(num))
+	if (entities[num] && entities[num]->script.data)
 	{
-		if (entities[num] && entities[num]->script.data)
-		{
-			ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
-		}
+		ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
+	}
 
-		if (entities[num] && entities[num]->over_script.data)
-		{
-			ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
-		}
+	if (entities[num] && entities[num]->over_script.data)
+	{
+		ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
+	}
 
-		if (entities[num] && entities[num]->script.data)
-		{
-			ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
-		}
+	if (entities[num] && entities[num]->script.data)
+	{
+		ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
+	}
 
-		if (entities[num] && entities[num]->over_script.data)
-		{
-			ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
-		}
+	if (entities[num] && entities[num]->over_script.data)
+	{
+		ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
 	}
 
 	EVENT_SENDER = oes;

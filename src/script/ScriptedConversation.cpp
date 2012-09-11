@@ -107,7 +107,7 @@ public:
 			
 			oss << ' ' << target;
 			
-			main_conversation.actors[j] = GetInterNum(t);
+			main_conversation.actors[j] = (t == NULL) ? -1 : t->index();
 		}
 		
 		DebugScript(oss);
@@ -288,7 +288,7 @@ class SpeakCommand : public Command {
 		string target = context.getWord();
 		Entity * t = entities.getById(target, context.getIO());
 		
-		acs.ionum = GetInterNum(t);
+		acs.ionum = (t == NULL) ? -1 : t->index();
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
@@ -350,7 +350,7 @@ public:
 					acs.endangle.b = context.getFloat();
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
-					acs.ionum = GetInterNum(io);
+					acs.ionum = (io == NULL) ? -1 : io->index();
 					if(player) {
 						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {

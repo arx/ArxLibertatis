@@ -186,7 +186,8 @@ static long ReadTargetInfo(const char (&str)[N]) {
 	} else if(ident == "player") {
 		return 0;
 	} else {
-		return GetInterNum(convertToValidIO(ident));
+		Entity * e = convertToValidIO(ident);
+		return (e == NULL) ? -1 : e->index();
 	}
 }
 
@@ -404,24 +405,22 @@ static bool ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 
 bool IsPlayerEquipedWith(Entity * io) {
 	
-	if (!io) return false;
-
-	long num = GetInterNum(io);
-
-	if (io == CURRENT_TORCH)
+	if(!io) {
+		return false;
+	}
+	
+	long num = io->index();
+	
+	if(io == CURRENT_TORCH) {
 		return true;
-
-	if (ValidIONum(num))
-	{
-		for (long i = 0; i < MAX_EQUIPED; i++)
-		{
-			if (player.equiped[i] == num)
-			{
-				return true;
-			}
+	}
+	
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] == num) {
+			return true;
 		}
 	}
-
+	
 	return false;
 }
 
@@ -1859,7 +1858,8 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
 	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
-		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp->equiped[i]));
+		Entity * e = ConvertToValidIO(asp->equiped[i]);
+		player.equiped[i] = (e == NULL) ? -1 : e->index();
 		if(!ValidIONum(player.equiped[i])) {
 			player.equiped[i] = 0;
 		}
@@ -1994,7 +1994,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;
 	} else {
 		
-		long Gaids_Number = GetInterNum(io);
+		long Gaids_Number = io->index();
 		Gaids[Gaids_Number] = new ARX_CHANGELEVEL_INVENTORY_DATA_SAVE;
 		
 		memset(Gaids[Gaids_Number], 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE));

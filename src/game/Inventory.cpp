@@ -776,7 +776,7 @@ Inventory<3, INVENTORY_X, INVENTORY_Y> getPlayerInventory() {
 Inventory<1, 20, 20> getIoInventory(Entity * io) {
 	arx_assert(io != NULL && io->inventory != NULL);
 	INVENTORY_DATA * inv = io->inventory;
-	return Inventory<1, 20, 20>(GetInterNum(io), inv->slot, 1, inv->sizex, inv->sizey);
+	return Inventory<1, 20, 20>(io->index(), inv->slot, 1, inv->sizex, inv->sizey);
 }
 
 } // anonymous namespace
@@ -2061,9 +2061,8 @@ bool TakeFromInventory(Vec2s * pos)
 						ioo->_itemdata->count = 1;
 						io->_itemdata->count--;
 						ioo->scriptload = 1;
-						long ioon = GetInterNum(ioo);
 						ARX_SOUND_PlayInterface(SND_INVSTD);
-						Set_DragInter(entities[ioon]);
+						Set_DragInter(ioo);
 						RemoveFromAllInventories(ioo);
 						sInventory = 1;
 

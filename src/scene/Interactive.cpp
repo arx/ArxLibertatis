@@ -232,7 +232,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 {
 	if (!io) return;
 
-	long n = GetInterNum(io);
+	long n = io->index();
 
 	short sN = checked_range_cast<short>(n);
 
@@ -628,7 +628,7 @@ void PrepareIOTreatZone(long flag)
 		}
 	}
 
-	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER, GetInterNum(DRAGINTER), 0);
+	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER, DRAGINTER->index(), 0);
 
 	TREATZONE_LIMIT = 3200; 
 
@@ -1236,18 +1236,14 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		{
 			INVENTORY_DATA * id = io->inventory;
 
-			for (long nj = 0; nj < id->sizey; nj++)
-				for (long ni = 0; ni < id->sizex; ni++)
-				{
-					if (id->slot[ni][nj].io != NULL)
-					{
-						long tmp = GetInterNum(id->slot[ni][nj].io);
-						if(ValidIONum(tmp)) {
-							entities[tmp]->destroy();
-						}
+			for (long nj = 0; nj < id->sizey; nj++) {
+				for (long ni = 0; ni < id->sizex; ni++) {
+					if (id->slot[ni][nj].io != NULL) {
+						id->slot[ni][nj].io->destroy();
 						id->slot[ni][nj].io = NULL;
 					}
 				}
+			}
 
 			if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
 			{
@@ -1628,7 +1624,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 
 		if (num != -1)
 		{
-			long t = GetInterNum(io);
+			long t = io->index();
 			ActiveTimers++;
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
@@ -2360,7 +2356,7 @@ void ReloadScript(Entity * io) {
 	loadScript(io->script, resources->getFile(res::path(io->filename).set_ext("asl")));
 	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
 
-	long num = GetInterNum(io);
+	long num = io->index();
 
 	if (ValidIONum(num))
 	{
@@ -2782,7 +2778,7 @@ bool IsEquipedByPlayer(const Entity * io)
 	if ((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
 
-	long num = GetInterNum(io);
+	long num = io->index();
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
@@ -3695,7 +3691,7 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 		else
 		{
 			// Kill all spells
-			long numm = GetInterNum(ioo);
+			long numm = ioo->index();
 
 			if (ValidIONum(numm))
 				ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
@@ -3793,11 +3789,6 @@ static bool intersect(const std::set<std::string> & set1, const std::set<std::st
 
 bool HaveCommonGroup(Entity * io, Entity * ioo) {
 	return io && ioo && intersect(io->groups, ioo->groups);
-}
-
-// Retreives IO Number with its address
-long GetInterNum(const Entity * io) {
-	return (io == NULL) ? -1 : io->index();
 }
 
 float ARX_INTERACTIVE_GetArmorClass(Entity * io)

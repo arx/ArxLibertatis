@@ -139,8 +139,16 @@ void PrepareIOTreatZone(long flag = 0);
 void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach);
 
 void MakeTemporaryIOIdent(Entity * io);
+
+/* TODO remove
+ * ValidIONum and ValidIOAddress are fundamentally flawed and vulnerable to
+ * index / address aliasing as both indices and memory addresses can be reused.
+ *
+ * We should instead use a proper weak pointer!
+ */
 long ValidIONum(long num);
 long ValidIOAddress(const Entity * io);
+
 void RestoreInitialIOStatusOfIO(Entity * io);
 
 void SetWeapon_Back(Entity * io);
@@ -165,7 +173,6 @@ void RestoreNodeNumbers();
 long GetNumNodeByName(char * name);
 void ReleaseNode();
 void RestoreInitialIOStatus();
-long GetInterNum(const Entity * io);
 
 #ifdef BUILD_EDITOR
 void SelectIO(Entity * io);

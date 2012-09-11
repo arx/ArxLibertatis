@@ -208,7 +208,7 @@ static void CheckHit(Entity * io, float ratioaim) {
 
 								} else {
 									if(mindist <= 120.f) {
-										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
+										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), 0);
 									}
 								}
 							}
@@ -695,7 +695,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 
 	if ((target < 0) || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) 
 	{
-		target = GetInterNum(io);
+		target = io->index();
 
 		if (target == -1)
 			goto failure;
@@ -1160,7 +1160,7 @@ void ARX_PHYSICS_Apply()
 				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
 				
 				ARX_PARTICLES_Spawn_Splat(it->v, 20.f, Color::red);
-				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, GetInterNum(io));
+				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, io->index());
 			}
 
 			ARX_INTERACTIVE_DestroyIO(io);
@@ -1776,13 +1776,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 	fnormalize(vector);
 	pos = io->pos;
 	io->rubber					=	0.6f;
-
-
-	long long_no_collide = GetInterNum(ioo);
-	io->no_collide = checked_range_cast<short>(long_no_collide);
-
-
-
+	
+	io->no_collide = checked_range_cast<short>(long(ioo->index()));
+	
 	io->gameFlags |= GFLAG_GOREEXPLODE;
 	io->lastanimtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 	io->soundtime = 0;
@@ -2947,7 +2943,7 @@ static void ManageNPCMovement(Entity * io)
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
-					if (io->targetinfo != GetInterNum(io))
+					if (io->targetinfo != long(io->index()))
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
 				}
 				else if ((ause0->cur_anim == alist[ANIM_WAIT]) && (ause0->flags & EA_ANIMEND))
@@ -3683,7 +3679,7 @@ static void ManageNPCMovement(Entity * io)
 					{
 						if (!io->_npcdata->reachedtarget)
 						{
-							long num = GetInterNum(io);
+							long num = io->index();
 							io->_npcdata->reachedtarget = 1;
 							io->_npcdata->reachedtime = (unsigned long)(arxtime);
 
@@ -3720,7 +3716,7 @@ static void ManageNPCMovement(Entity * io)
 				if (io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
 
-				if (io->targetinfo != GetInterNum(io))
+				if (io->targetinfo != long(io->index()))
 					SendIOScriptEvent(io, SM_REACHEDTARGET);
 			}
 		}

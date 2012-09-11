@@ -73,7 +73,7 @@ public:
 		
 		DebugScript("");
 		
-		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
+		ARX_INTERACTIVE_ActivatePhysics(context.getIO()->index());
 		
 		return Success;
 	}
@@ -104,7 +104,7 @@ public:
 		
 		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
-		ARX_SPECIAL_ATTRACTORS_Add(GetInterNum(t), val, radius);
+		ARX_SPECIAL_ATTRACTORS_Add((t == NULL) ? -1 : t->index(), val, radius);
 		
 		return Success;
 	}
@@ -197,7 +197,10 @@ public:
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
-		ARX_INTERACTIVE_Attach(GetInterNum(t), GetInterNum(t2), source, target);
+		long i = (t == NULL) ? -1 : t->index();
+		long i2 = (t2 == NULL) ? -1 : t2->index();
+		
+		ARX_INTERACTIVE_Attach(i, i2, source, target);
 		
 		return Success;
 	}
@@ -384,7 +387,7 @@ public:
 			return Failed;
 		}
 		
-		ARX_INTERACTIVE_Detach(GetInterNum(t), GetInterNum(t2));
+		ARX_INTERACTIVE_Detach(t->index(), t2->index());
 		
 		return Success;
 	}

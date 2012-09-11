@@ -184,7 +184,7 @@ public:
 				
 				DebugScript(' ' << options << ' ' << spellname);
 				
-				long from = GetInterNum(context.getIO());
+				long from = context.getIO()->index();
 				if(ValidIONum(from)) {
 					long sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
 					if(sp >= 0) {
@@ -241,7 +241,7 @@ public:
 		
 		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration);
 		
-		TryToCastSpell(context.getIO(), spellid, level, GetInterNum(t), spflags, duration);
+		TryToCastSpell(context.getIO(), spellid, level, t->index(), spflags, duration);
 		
 		return Success;
 	}
@@ -475,8 +475,9 @@ public:
 			io->_camdata->cam.translatetarget = Vec3f::ZERO;
 		}
 		
+		long i = -1;
 		if(t != NULL) {
-			io->targetinfo = GetInterNum(t);
+			i = io->targetinfo = t->index();
 			GetTargetPos(io);
 		}
 		
@@ -487,11 +488,11 @@ public:
 			io->targetinfo = TARGET_NONE;
 		}
 		
-		if(old_target != GetInterNum(t)) {
+		if(old_target != i) {
 			if(io->ioflags & IO_NPC) {
 				io->_npcdata->reachedtarget = 0;
 			}
-			ARX_NPC_LaunchPathfind(io, GetInterNum(t));
+			ARX_NPC_LaunchPathfind(io, i);
 		}
 		
 		return Success;

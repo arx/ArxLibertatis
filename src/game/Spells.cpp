@@ -2954,9 +2954,8 @@ void ARX_SPELLS_CancelSpellTarget() {
 }
 
 void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
-	long num=GetInterNum(io);
-	if(num >= 0) {
-		ARX_SPELLS_Launch(t_spell.typ, t_spell.source, t_spell.flags, t_spell.level, num, t_spell.duration);
+	if(io) {
+		ARX_SPELLS_Launch(t_spell.typ, t_spell.source, t_spell.flags, t_spell.level, io->index(), t_spell.duration);
 	}
 }
 extern long FINAL_RELEASE;
@@ -4707,7 +4706,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				
 				ARX_INTERACTIVE_HideGore(io);
 				RestoreInitialIOStatusOfIO(io);
-				spells[i].longinfo = GetInterNum(io);
+				spells[i].longinfo = io->index();
 				io->scriptload = 1;
 				io->ioflags |= IO_NOSAVE | IO_FIELD;
 				io->initpos = io->pos = target;
@@ -6881,7 +6880,7 @@ void ARX_SPELLS_Update()
 
 										
 									io->ioflags|=IO_NOSAVE;
-									spells[i].longinfo=GetInterNum(io);
+									spells[i].longinfo = io->index();
 									io->scriptload=1;
 											
 									ARX_INTERACTIVE_Teleport(io,&phys.origin,0);
@@ -7357,7 +7356,7 @@ void ARX_SPELLS_Update()
 									MakeCoolFx(&pos);
 								}
 
-								if (tokeep==1)	spells[i].longinfo2=GetInterNum(io);
+								if (tokeep==1)	spells[i].longinfo2 = io->index();
 								else spells[i].longinfo2=-1;
 							}
 							}
@@ -7841,7 +7840,7 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 		||	(io->spellcast_data.spell_flags & SPELLCAST_FLAG_PRECAST))	
 	{
 		
-		ARX_SPELLS_Launch(io->spellcast_data.castingspell,GetInterNum(io),io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
+		ARX_SPELLS_Launch(io->spellcast_data.castingspell, io->index(), io->spellcast_data.spell_flags,io->spellcast_data.spell_level,io->spellcast_data.target,io->spellcast_data.duration);
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 
