@@ -559,6 +559,7 @@ set(GAME_SOURCES
 	src/game/Camera.cpp
 	src/game/Damage.cpp
 	src/game/Entity.cpp
+	src/game/EntityId.cpp
 	src/game/EntityManager.cpp
 	src/game/Equipment.cpp
 	src/game/Inventory.cpp
