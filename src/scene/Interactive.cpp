@@ -2385,67 +2385,57 @@ void MakeIOIdent(Entity * io) {
 
 #endif // BUILD_EDIT_LOADSAVE
 
-//*************************************************************************************
-// Tells if an ident corresponds to a temporary IO
-// And close after seek session
-//*************************************************************************************
-static bool ExistTemporaryIdent(Entity * io, long t) {
+// Creates a Temporary IO Ident
+void MakeTemporaryIOIdent(Entity * io) {
 	
 	if(!io) {
-		return false;
+		return;
 	}
 	
-	string name = io->short_name();
+	// TODO keep the current game open all the time (or even in memory)
+	ARX_Changelevel_CurGame_Open();
 	
-	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			if(entities[i]->ident == t && io != entities[i]) {
-				if (entities[i]->short_name() == name) {
-					return true;
+	std::string className = io->short_name();
+	res::path classDir = io->filename.parent();
+	
+	for(long t = 1; ; t++) {
+		
+		// Check if the candidate instance number is used in the current scene
+		bool used = false;
+		// TODO replace this loop by an (className, instance) index
+		for(size_t i = 0; i < entities.size(); i++) {
+			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
+				if(entities[i]->short_name() == className) {
+					used = true;
+					break;
 				}
 			}
 		}
-	}
-	
-	std::stringstream ss;
-	ss << name << '_' << std::setw(4) << std::setfill('0') << t;
-	
-	if(resources->getDirectory(io->filename.parent() / ss.str())) {
-		return true;
-	}
-	
-	if(ARX_Changelevel_CurGame_Seek(ss.str())) {
-		return true;
-	}
-	
-	return false;
-}
-//*************************************************************************************
-// Creates a Temporary IO Ident
-//*************************************************************************************
-void MakeTemporaryIOIdent(Entity * io) {
-	
-	long t = 1;
-
-	if (!io) return;
-
-	// TODO do we really need to open this every time?
-	ARX_Changelevel_CurGame_Open();
-
-	for (;;)
-	{
-		if (!ExistTemporaryIdent(io, t))
-		{
-			io->ident = t;
-
-			ARX_Changelevel_CurGame_Close();
-
-			return;
+		if(used) {
+			continue;
 		}
-
-		t++;
+		
+		std::stringstream ss;
+		ss << className << '_' << std::setw(4) << std::setfill('0') << t;
+		
+		// Check if the candidate instance number is reserved for any scene
+		if(resources->getDirectory(classDir / ss.str())) {
+			continue;
+		}
+		
+		// Check if the candidate instance number is used in any visited area
+		if(ARX_Changelevel_CurGame_Seek(ss.str())) {
+			continue;
+		}
+		
+		io->ident = t;
+		
+		ARX_Changelevel_CurGame_Close();
+		
+		return;
 	}
 }
+
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
