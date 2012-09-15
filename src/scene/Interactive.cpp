@@ -1756,34 +1756,30 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
 	ResetVVPos(io);
 }
 
-Entity * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags) {
+Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
+                        AddInteractiveFlags flags) {
+	
+	const string & ficc = classPath.string();
 	
 	Entity * io = NULL;
-	const string & ficc = file.string();
-	
 	if(IsIn(ficc, "items")) {
-		io = AddItem(file, flags);
+		io = AddItem(classPath, flags);
 	} else if(IsIn(ficc, "npc")) {
-		io = AddNPC(file, flags);
+		io = AddNPC(classPath, flags);
 	} else if(IsIn(ficc, "fix")) {
-		io = AddFix(file, flags);
+		io = AddFix(classPath, flags);
 	} else if(IsIn(ficc, "camera")) {
-		io = AddCamera(file);
+		io = AddCamera(classPath);
 	} else if (IsIn(ficc, "marker")) {
-		io = AddMarker(file);
+		io = AddMarker(classPath);
 	}
 	
 	if(io) {
-		if(id == 0) {
-#ifdef BUILD_EDITOR
-			MakeIOIdent(io);
-#else
-			arx_assert(false);
-#endif
-		} else if(id == -1) {
+		if(instance == -1) {
 			MakeTemporaryIOIdent(io);
 		} else {
-			io->ident = id;
+			arx_assert(instance > 0);
+			io->ident = instance;
 		}
 	}
 	

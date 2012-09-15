@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 
 #include "game/Entity.h"
+#include "game/EntityId.h"
 #include "graphics/data/MeshManipulation.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
@@ -199,7 +200,8 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag = 0, Vec3f * _pRef = NULL, En
  * Creates an IO Ident for added object if necessary
  * @param flags can be IO_IMMEDIATELOAD (1) to FORCE loading
  */
-Entity * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags = 0);
+Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
+                        AddInteractiveFlags flags = 0);
 Entity * AddFix(const res::path & file, AddInteractiveFlags flags = 0);
 Entity * AddNPC(const res::path & file, AddInteractiveFlags flags = 0);
 Entity * AddItem(const res::path & file, AddInteractiveFlags flags = 0);
