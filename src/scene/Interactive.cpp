@@ -1837,7 +1837,7 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	
 	res::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
 	
-	io->_npcdata->weapon = AddItem(file, -1, IO_IMMEDIATELOAD);
+	io->_npcdata->weapon = AddItem(file);
 
 	Entity * ioo = io->_npcdata->weapon;
 	if(ioo) {
@@ -2337,45 +2337,33 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 		if (GetTruePolyY(ep, &io->pos, &tempo))
 			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
-
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
 	
 	io->filename = object;
-
-	if (!io->obj)
-	{
-		if (flags & NO_MESH)
-		{
-			io->obj = NULL;
-
-		}
-		else
-		{
-			io->obj = loadObject(object, false);
-		}
+	
+	if(!io->obj && !(flags & NO_MESH)) {
+		io->obj = loadObject(object, false);
 	}
-
+	
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
 	io->_npcdata->pathfind.truetarget = -1;
-
-	if ((!(flags & NO_MESH))
-	        &&	(flags & IO_IMMEDIATELOAD))
+	
+	if(!(flags & NO_MESH) && (flags & IO_IMMEDIATELOAD)) {
 		EERIE_COLLISION_Cylinder_Create(io);
-
+	}
+	
 	io->infracolor.r = 1.f;
 	io->infracolor.g = 0.f;
 	io->infracolor.b = 0.2f;
 	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
-
+	
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
 }
@@ -2515,10 +2503,11 @@ Entity * AddItem(const res::path & classPath, EntityInstance instance,
 	io->_itemdata->playerstacksize = 1;
 
 	GetIOScript(io, script);
-
-	if (!(flags & NO_ON_LOAD))
+	
+	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(io, SM_LOAD);
-
+	}
+	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2546,31 +2535,27 @@ Entity * AddItem(const res::path & classPath, EntityInstance instance,
 	}
 
 	io->filename = object;
-
-	if (io->ioflags & IO_GOLD)
+	
+	if(io->ioflags & IO_GOLD) {
 		io->obj = GoldCoinsObj[0];
-
-	if (!io->obj)
-	{
-		if(flags & NO_MESH) {
-			io->obj = NULL;
-		} else {
-			io->obj = loadObject(object);
-		}
 	}
-
+	
+	if(!io->obj && !(flags & NO_MESH)) {
+			io->obj = loadObject(object);
+	}
+	
 	TextureContainer * tc;
-
-	if (io->ioflags & IO_MOVABLE)
+	if (io->ioflags & IO_MOVABLE) {
 		tc = Movable;
-	else if (io->ioflags & IO_GOLD)
+	} else if (io->ioflags & IO_GOLD) {
 		tc = GoldCoinsTC[0];
-	else
+	} else {
 		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
-
-	if (tc == NULL)
+	}
+	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
-
+	}
+	
 	if (tc)
 	{
 		unsigned long w = tc->m_dwWidth >> 5;

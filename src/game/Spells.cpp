@@ -7795,7 +7795,7 @@ static void ApplySPWep() {
 		
 		res::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
 		
-		Entity * ioo = AddItem(file, -1, IO_IMMEDIATELOAD);
+		Entity * ioo = AddItem(file);
 		
 		if(ioo) {
 			
@@ -7859,9 +7859,9 @@ static void ApplySPBow() {
 	
 	const char * bow = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
 	
-	Entity * ioo = AddItem(bow, -1, IO_IMMEDIATELOAD);
+	Entity * ioo = AddItem(bow);
 	
-	if(ioo!=NULL) {
+	if(ioo) {
 		
 		MakeCoolFx(&player.pos);
 		MakeCoolFx(&player.pos);
@@ -7897,7 +7897,7 @@ static void ApplySPArm() {
 		break;
 	}
 	
-	Entity * ioo = AddItem(file, -1, IO_IMMEDIATELOAD);
+	Entity * ioo = AddItem(file);
 	
 	if(ioo) {
 		

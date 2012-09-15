@@ -287,7 +287,7 @@ public:
 				
 				res::path path = "graph/obj3d/interactive/items" / file;
 				
-				Entity * ioo = AddItem(path, -1, IO_IMMEDIATELOAD);
+				Entity * ioo = AddItem(path);
 				if(!ioo) {
 					ScriptWarning << "failed to create item " << path;
 					return Failed;

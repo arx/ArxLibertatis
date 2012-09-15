@@ -211,7 +211,7 @@ class InventoryCommand : public Command {
 			
 			file = ("graph/obj3d/interactive/items" / file).append(".teo");
 			
-			Entity * ioo = AddItem(file, -1, IO_IMMEDIATELOAD);
+			Entity * ioo = AddItem(file);
 			if(!ioo) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
@@ -317,7 +317,7 @@ class InventoryCommand : public Command {
 				DebugScript(' ' << file);
 			}
 			
-			Entity * ioo = AddItem(file, -1, IO_IMMEDIATELOAD);
+			Entity * ioo = AddItem(file);
 			if(!ioo) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
