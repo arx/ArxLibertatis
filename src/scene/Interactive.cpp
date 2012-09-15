@@ -1933,7 +1933,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity(object);
+	Entity * io = new Entity(res::path(classPath).remove_ext());
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2035,7 +2035,7 @@ static Entity * AddCamera(const res::path & classPath,
 		return NULL;
 	}
 	
-	Entity * io = new Entity(object);
+	Entity * io = new Entity(res::path(classPath).remove_ext());
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2094,7 +2094,7 @@ static Entity * AddMarker(const res::path & classPath,
 		return NULL;
 	}
 	
-	Entity * io = new Entity(object);
+	Entity * io = new Entity(res::path(classPath).remove_ext());
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2292,7 +2292,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity(object);
+	Entity * io = new Entity(res::path(classPath).remove_ext());
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2438,30 +2438,30 @@ void MakeIOIdent(Entity * io) {
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-Entity * AddItem(const res::path & classPath, EntityInstance instance,
+Entity * AddItem(const res::path & classPath_, EntityInstance instance,
                  AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
 
-	res::path file = classPath;
+	res::path classPath = classPath_;
 	
-	if(!specialstrcmp(file.filename(), "gold_coin")) {
-		file.up() /= "gold_coin.asl";
+	if(!specialstrcmp(classPath.filename(), "gold_coin")) {
+		classPath.up() /= "gold_coin.asl";
 		type = IO_ITEM | IO_GOLD;
 	}
 
-	if(IsIn(file.string(), "movable")) {
+	if(IsIn(classPath.string(), "movable")) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
 	
-	res::path script = res::path(file).set_ext("asl");
+	res::path script = res::path(classPath).set_ext("asl");
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = res::path(classPath).set_ext("teo");
 	
-	res::path icon = res::path(file).remove_ext().append_basename("[icon]");
+	res::path icon = res::path(classPath).remove_ext().append_basename("[icon]");
 	
-	if(!resources->getFile(("game" / file).set_ext("ftl"))
-	   && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	   && !resources->getFile(classPath)) {
 		return NULL;
 	}
 	
@@ -2469,7 +2469,7 @@ Entity * AddItem(const res::path & classPath, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity(object);
+	Entity * io = new Entity(res::path(object).remove_ext());
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);

@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 Entity::Entity(const res::path & classPath)
 	: index_(entities.add(this)),
-	  classPath_(res::path(classPath).remove_ext()) {
+	  classPath_(classPath) {
 	
 	ioflags = 0;
 	lastpos = Vec3f::ZERO;

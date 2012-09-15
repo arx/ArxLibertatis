@@ -1540,7 +1540,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 	
-	Entity * io = new Entity("graph/obj3d/interactive/player/player.teo");
+	Entity * io = new Entity("graph/obj3d/interactive/player/player");
 	arx_assert_msg(io->index() == 0, "player entity didn't get index 0");
 	arx_assert(entities.player() == io);
 	
