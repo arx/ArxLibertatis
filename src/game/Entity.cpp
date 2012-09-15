@@ -310,7 +310,7 @@ Entity::~Entity() {
 }
 
 std::string Entity::short_name() const {
-	return classPath_.basename();
+	return classPath_.filename();
 }
 
 std::string Entity::long_name() const {

@@ -1978,10 +1978,11 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 	}
 	
 	std::string path = safestring(ais->filename);
-	
 	if((!path.empty() && path[0] == '\\')
-	   || (path.length() >= 3 && isalpha(path[0]) && path[1] == ':' && path[2] == '\\')) {
-		// Old save files stored absolute paths stripped everything before 'graph' when loading.
+	   || (path.length() >= 3 && isalpha(path[0]) && path[1] == ':'
+		     && path[2] == '\\')) {
+		// Old save files stored absolute paths,
+		// strip everything before 'graph' when loading.
 		makeLowercase(path);
 		size_t pos = path.find("graph");
 		if(pos != std::string::npos) {
@@ -1989,7 +1990,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		}
 	}
 	
-	Entity * io = LoadInter_Ex(res::path::load(path), num, ais->pos, ais->angle, MSP);
+	// TODO when we bump the save version, remove the ext in the save file
+	// if no class names contain dots, we might get away without changing the ver
+	res::path classPath = res::path::load(path).remove_ext();
+	Entity * io = LoadInter_Ex(classPath, num, ais->pos, ais->angle, MSP);
 	
 	if(!io) {
 		LogError << "CHANGELEVEL Error: Unable to load " << ident;

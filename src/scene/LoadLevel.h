@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_LOADLEVEL_H
 #define ARX_SCENE_LOADLEVEL_H
 
+#include "game/EntityId.h"
 #include "math/MathFwd.h"
 
 class Entity;
@@ -69,7 +70,9 @@ void RestoreLastLoadedLightning();
 
 extern long FAST_RELEASE;
 
-Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
+Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
+                      const Vec3f & pos, const Anglef & angle,
+                      const Vec3f & trans);
 
 extern Vec3f MSP;
 

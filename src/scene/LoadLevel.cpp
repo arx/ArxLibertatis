@@ -591,19 +591,22 @@ void SaveIOScript(Entity * io, long fl) {
 #endif // BUILD_EDIT_LOADSAVE
 
 
-Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
+Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
+                      const Vec3f & pos, const Anglef & angle,
+                      const Vec3f & trans) {
 	
 	std::ostringstream nameident;
-	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
+	nameident << classPath.filename()
+	          << std::setfill('0') << std::setw(4) << instance;
 	
 	long t = entities.getById(nameident.str());
 	if(t >= 0) {
 		return entities[t];
 	}
 	
-	arx_assert(ident != 0);
+	arx_assert(instance != 0);
 	
-	Entity * io = AddInteractive(res::path(name).remove_ext(), ident, NO_MESH | NO_ON_LOAD);
+	Entity * io = AddInteractive(classPath, instance, NO_MESH | NO_ON_LOAD);
 	if(!io) {
 		return NULL;
 	}
@@ -795,7 +798,8 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				pathstr = pathstr.substr(pos);
 			}
 			
-			LoadInter_Ex(res::path::load(pathstr), dli->ident, dli->pos, dli->angle, trans);
+			res::path classPath = res::path::load(pathstr).remove_ext();
+			LoadInter_Ex(classPath, dli->ident, dli->pos, dli->angle, trans);
 		}
 	}
 	
