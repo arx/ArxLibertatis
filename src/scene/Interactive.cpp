@@ -1501,11 +1501,13 @@ long GetNumberInterWithOutScriptLoad() {
 // Be careful with this func...
 Entity * CloneIOItem(Entity * src) {
 	
-	Entity * dest;
-	dest = AddItem(src->filename);
-
-	if (!dest) return NULL;
-
+	Entity * dest = AddItem(src->filename);
+	if(!dest) {
+		return NULL;
+	}
+	
+	MakeTemporaryIOIdent(dest);
+	
 	SendInitScriptEvent(dest);
 	dest->inv = src->inv;
 	dest->sizex = src->sizex;
@@ -1520,25 +1522,27 @@ Entity * CloneIOItem(Entity * src) {
 	dest->_itemdata->stealvalue = src->_itemdata->stealvalue;
 	dest->_itemdata->playerstacksize = src->_itemdata->playerstacksize;
 	dest->_itemdata->LightValue = src->_itemdata->LightValue;
-
-	if (src->_itemdata->equipitem)
-	{
+	
+	if(src->_itemdata->equipitem) {
 		dest->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
-		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem, sizeof(IO_EQUIPITEM));
+		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem,
+		       sizeof(IO_EQUIPITEM));
 	}
-
+	
 	dest->locname = src->locname;
-
-	if ((dest->obj->pbox == NULL) && (src->obj->pbox))
-	{
+	
+	if(dest->obj->pbox == NULL && src->obj->pbox != NULL) {
 		dest->obj->pbox = (PHYSICS_BOX_DATA *)malloc(sizeof(PHYSICS_BOX_DATA));
 		memcpy(dest->obj->pbox, src->obj->pbox, sizeof(PHYSICS_BOX_DATA));
-		dest->obj->pbox->vert = (PHYSVERT *)malloc(sizeof(PHYSVERT) * src->obj->pbox->nb_physvert);
-		memcpy(dest->obj->pbox->vert, src->obj->pbox->vert, sizeof(PHYSVERT)*src->obj->pbox->nb_physvert);
+		dest->obj->pbox->vert = (PHYSVERT *)malloc(sizeof(PHYSVERT)
+		                                           * src->obj->pbox->nb_physvert);
+		memcpy(dest->obj->pbox->vert, src->obj->pbox->vert,
+		       sizeof(PHYSVERT) * src->obj->pbox->nb_physvert);
 	}
-
+	
 	return dest;
 }
+
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target)
 {
 	EERIE_CYLINDER phys;

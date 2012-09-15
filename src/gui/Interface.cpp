@@ -2739,20 +2739,18 @@ void ArxGame::ManagePlayerControls()
 		{
 			Entity * io = ARX_INVENTORY_GetTorchLowestDurability();
 
-			if (io)
-			{
+			if(io) {
+				
 				Entity * ioo = io;
-
-				if (io->_itemdata->count>1)
-				{
-					ioo=CloneIOItem(io);
-					MakeTemporaryIOIdent(ioo);
-					ioo->show=SHOW_FLAG_NOT_DRAWN;
-					ioo->scriptload=1;
-					ioo->_itemdata->count=1;
+				
+				if(io->_itemdata->count > 1) {
+					ioo = CloneIOItem(io);
+					ioo->show = SHOW_FLAG_NOT_DRAWN;
+					ioo->scriptload = 1;
+					ioo->_itemdata->count = 1;
 					io->_itemdata->count--;
 				}
-
+				
 				ARX_PLAYER_ClickedOnTorch(ioo);
 			}
 		}

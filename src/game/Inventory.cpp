@@ -1962,10 +1962,8 @@ bool TakeFromInventory(Vec2s * pos)
 						ARX_SOUND_PlayInterface(SND_GOLD);
 						player.gold -= cos;
 
-						if (io->_itemdata->count > 1) // Multi-obj
-						{
+						if(io->_itemdata->count > 1) {
 							ioo = CloneIOItem(io);
-							MakeTemporaryIOIdent(ioo);
 							ioo->show = SHOW_FLAG_NOT_DRAWN;
 							ioo->scriptload = 1;
 							ioo->_itemdata->count = 1;
@@ -1977,13 +1975,10 @@ bool TakeFromInventory(Vec2s * pos)
 					}
 				}
 			}
-			else if ((io->ioflags & IO_ITEM) &&
-			         (io->_itemdata->count > 1))
-			{
-				if (!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))
-				{
+			else if ((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+				
+				if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 					ioo = CloneIOItem(io);
-					MakeTemporaryIOIdent(ioo);
 					ioo->show = SHOW_FLAG_NOT_DRAWN;
 					ioo->scriptload = 1;
 					ioo->_itemdata->count = 1;

@@ -720,10 +720,8 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
 	}
 }
 
-//-----------------------------------------------------------------------------
-void MakeCoolFx(Vec3f * pos)
-{
-	ARX_BOOMS_Add(pos,1);		
+void MakeCoolFx(Vec3f * pos) {
+	ARX_BOOMS_Add(pos,1);
 }
 
 //-----------------------------------------------------------------------------

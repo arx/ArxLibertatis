@@ -430,7 +430,6 @@ public:
 			Entity * ioo = io;
 			if(io->_itemdata->count > 1) {
 				ioo = CloneIOItem(io);
-				MakeTemporaryIOIdent(ioo);
 				ioo->show = SHOW_FLAG_IN_INVENTORY;
 				ioo->scriptload = 1;
 				ioo->_itemdata->count = 1;
