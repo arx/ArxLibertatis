@@ -286,6 +286,7 @@ public:
 			} else {
 				
 				res::path path = "graph/obj3d/interactive/items" / file;
+				path.remove_ext();
 				
 				Entity * ioo = AddItem(path);
 				if(!ioo) {

@@ -209,7 +209,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			file = ("graph/obj3d/interactive/items" / file).append(".teo");
+			file = "graph/obj3d/interactive/items" / file;
 			
 			Entity * ioo = AddItem(file);
 			if(!ioo) {
@@ -303,7 +303,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			file = ("graph/obj3d/interactive/items" / file).append(".teo");
+			file = "graph/obj3d/interactive/items" / file;
 			
 			long count = -1;
 			if(multi) {

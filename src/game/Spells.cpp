@@ -7793,10 +7793,8 @@ static void ApplySPWep() {
 		
 		ARX_SPSound();
 		
-		res::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
-		
-		Entity * ioo = AddItem(file);
-		
+		res::path cls = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx";
+		Entity * ioo = AddItem(cls);
 		if(ioo) {
 			
 			sp_wep = 1;
@@ -7857,10 +7855,8 @@ static void ApplySPBow() {
 	
 	ARX_SPSound();
 	
-	const char * bow = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
-	
-	Entity * ioo = AddItem(bow);
-	
+	const char * cls = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx";
+	Entity * ioo = AddItem(cls);
 	if(ioo) {
 		
 		MakeCoolFx(&player.pos);
@@ -7881,24 +7877,23 @@ static void ApplySPBow() {
 static void ApplySPArm() {
 	ARX_SPSound();
 	
-	res::path file;
+	res::path cls;
 	switch (sp_arm) {
 		case 0:
-			file = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm.teo";
+			cls = "graph/obj3d/interactive/items/armor/helmet_plate_cm/helmet_plate_cm";
 		break;
 		case 1:
-			file = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm.teo";
+			cls = "graph/obj3d/interactive/items/armor/legging_plate_cm/legging_plate_cm";
 		break;
 		case 2:
-			file = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm.teo";
+			cls = "graph/obj3d/interactive/items/armor/chest_plate_cm/chest_plate_cm";
 		break;
 		default:
 			return;
 		break;
 	}
 	
-	Entity * ioo = AddItem(file);
-	
+	Entity * ioo = AddItem(cls);
 	if(ioo) {
 		
 		sp_wep = 1;

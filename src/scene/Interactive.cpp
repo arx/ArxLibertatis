@@ -1506,7 +1506,7 @@ long GetNumberInterWithOutScriptLoad() {
 // Be careful with this func...
 Entity * CloneIOItem(Entity * src) {
 	
-	Entity * dest = AddItem(src->classPath() + ".teo");
+	Entity * dest = AddItem(src->classPath());
 	if(!dest) {
 		return NULL;
 	}
@@ -1766,7 +1766,7 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	
 	Entity * io = NULL;
 	if(IsIn(ficc, "items")) {
-		io = AddItem(classPath, instance, flags);
+		io = AddItem(res::path(classPath).remove_ext(), instance, flags);
 	} else if(IsIn(ficc, "npc")) {
 		io = AddNPC(classPath, instance, flags);
 	} else if(IsIn(ficc, "fix")) {
@@ -1838,11 +1838,8 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 		delete ioo;
 	}
 	
-	res::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
-	
-	io->_npcdata->weapon = AddItem(file);
-
-	Entity * ioo = io->_npcdata->weapon;
+	res::path file = "graph/obj3d/interactive/items/weapons" / temp / temp;
+	Entity * ioo = io->_npcdata->weapon = AddItem(file);
 	if(ioo) {
 		
 		SendIOScriptEvent(ioo, SM_INIT);
@@ -2446,7 +2443,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	res::path classPath = classPath_;
 	
 	if(!specialstrcmp(classPath.filename(), "gold_coin")) {
-		classPath.up() /= "gold_coin.asl";
+		classPath.up() /= "gold_coin";
 		type = IO_ITEM | IO_GOLD;
 	}
 
@@ -2454,14 +2451,12 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 		type = IO_ITEM | IO_MOVABLE;
 	}
 	
-	res::path script = res::path(classPath).set_ext("asl");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
+	res::path icon = classPath + "[icon]";
 	
-	res::path object = res::path(classPath).set_ext("teo");
-	
-	res::path icon = res::path(classPath).remove_ext().append_basename("[icon]");
-	
-	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
-	   && !resources->getFile(classPath)) {
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
 	
@@ -2469,7 +2464,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity(res::path(object).remove_ext());
+	Entity * io = new Entity(classPath);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
