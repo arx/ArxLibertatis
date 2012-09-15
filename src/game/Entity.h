@@ -402,8 +402,6 @@ public:
 	/*!
 	 * Get the class path for this entity.
 	 *
-	 * TODO for now this path still includes a .teo file extension
-	 *
 	 * @return the full path to this entity's class
 	 */
 	const res::path & classPath() const { return classPath_; }

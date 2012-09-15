@@ -270,7 +270,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			}
 			
 			dli.angle = io->initangle;
-			strncpy(dli.name, io->classPath().string().c_str(), sizeof(dli.name));
+			strncpy(dli.name, (io->classPath() + ".teo").string().c_str(),
+			        sizeof(dli.name));
 			
 			if(io->ident == 0) {
 				MakeIOIdent(io);
@@ -574,6 +575,8 @@ void SaveIOScript(Entity * io, long fl) {
 		default: return;
 	}
 	
+	file.append(".asl");
+	
 	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc | fs::fstream::binary);
 	if(!ofs.is_open()) {
 		LogError << ("Unable To Save...");
@@ -623,7 +626,7 @@ Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, con
 	
 	if(SendIOScriptEvent(io, SM_LOAD) == ACCEPT && io->obj == NULL) {
 		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
-		io->obj = loadObject(io->classPath(), pbox);
+		io->obj = loadObject(io->classPath() + ".teo", pbox);
 		if(io->ioflags & IO_NPC) {
 			EERIE_COLLISION_Cylinder_Create(io);
 		}

@@ -1506,7 +1506,7 @@ long GetNumberInterWithOutScriptLoad() {
 // Be careful with this func...
 Entity * CloneIOItem(Entity * src) {
 	
-	Entity * dest = AddItem(src->classPath());
+	Entity * dest = AddItem(src->classPath() + ".teo");
 	if(!dest) {
 		return NULL;
 	}
@@ -2372,8 +2372,8 @@ void ReloadScript(Entity * io) {
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	loadScript(io->script, resources->getFile(res::path(io->classPath()).set_ext("asl")));
-	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
+	loadScript(io->script, resources->getFile(io->classPath() + ".asl"));
+	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()) + ".asl"));
 
 	long num = io->index();
 

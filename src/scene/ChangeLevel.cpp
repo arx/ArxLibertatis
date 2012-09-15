@@ -481,7 +481,8 @@ static bool ARX_CHANGELEVEL_Push_Index(long num) {
 		   && !IsPlayerEquipedWith(entities[i])) {
 			ARX_CHANGELEVEL_IO_INDEX aii;
 			memset(&aii, 0, sizeof(aii));
-			strncpy(aii.filename, entities[i]->classPath().string().c_str(),
+			strncpy(aii.filename,
+			        (entities[i]->classPath() + ".teo").string().c_str(),
 			        sizeof(aii.filename));
 			aii.ident = entities[i]->ident;
 			aii.level = num;
@@ -919,7 +920,8 @@ static long ARX_CHANGELEVEL_Push_IO(const Entity * io, long level) {
 	ais.version = ARX_GAMESAVE_VERSION;
 	ais.savesystem_type = type;
 	ais.saveflags = 0;
-	strncpy(ais.filename, io->classPath().string().c_str(), sizeof(ais.filename));
+	strncpy(ais.filename, (io->classPath() + ".teo").string().c_str(),
+	        sizeof(ais.filename));
 	ais.ident = io->ident;
 	ais.ioflags = io->ioflags;
 
