@@ -1774,7 +1774,7 @@ Entity * AddInteractive(const res::path & file, long id, AddInteractiveFlags fla
 	}
 	
 	if(io) {
-		if(id == 0 && !(flags & NO_IDENT)) {
+		if(id == 0) {
 #ifdef BUILD_EDITOR
 			MakeIOIdent(io);
 #else

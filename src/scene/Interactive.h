@@ -90,10 +90,9 @@ enum TargetInfo {
 };
 
 enum AddInteractiveFlag {
-	NO_IDENT = 1,
-	NO_MESH = 2,
-	NO_ON_LOAD = 4,
-	IO_IMMEDIATELOAD = 8
+	NO_MESH          = (1<<0),
+	NO_ON_LOAD       = (1<<1),
+	IO_IMMEDIATELOAD = (1<<2)
 };
 DECLARE_FLAGS(AddInteractiveFlag, AddInteractiveFlags)
 DECLARE_FLAGS_OPERATORS(AddInteractiveFlags)
