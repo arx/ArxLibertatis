@@ -1772,7 +1772,7 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	} else if(IsIn(ficc, "fix")) {
 		io = AddFix(res::path(classPath).remove_ext(), instance, flags);
 	} else if(IsIn(ficc, "camera")) {
-		io = AddCamera(classPath, instance);
+		io = AddCamera(res::path(classPath).remove_ext(), instance);
 	} else if (IsIn(ficc, "marker")) {
 		io = AddMarker(classPath, instance);
 	}
@@ -1925,7 +1925,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
 	
-	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	if(!resources->getFile(("game" / classPath) + ".ftl")
 	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
@@ -2023,16 +2023,15 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 static Entity * AddCamera(const res::path & classPath,
                           EntityInstance instance) {
 	
-	res::path object = res::path(classPath).set_ext("teo");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
 	
-	res::path scriptfile = res::path(classPath).set_ext("asl");
-	
-	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
-	   && !resources->getFile(classPath)) {
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
 	
-	Entity * io = new Entity(res::path(classPath).remove_ext());
+	Entity * io = new Entity(classPath);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2041,7 +2040,7 @@ static Entity * AddCamera(const res::path & classPath,
 		io->ident = instance;
 	}
 	
-	GetIOScript(io, scriptfile);
+	GetIOScript(io, script);
 	
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2283,7 +2282,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 	res::path object = classPath + ".teo";
 	res::path script = classPath + ".asl";
 	
-	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	if(!resources->getFile(("game" / classPath) + ".ftl")
 	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
