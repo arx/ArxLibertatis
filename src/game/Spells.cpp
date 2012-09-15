@@ -6829,7 +6829,7 @@ void ARX_SPELLS_Update()
 							if(EEfabs(anything) < 30) {
 								
 								const char * cls =
-									"graph/obj3d/interactive/npc/undead_base/undead_base.asl";
+									"graph/obj3d/interactive/npc/undead_base/undead_base";
 								Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
 								
 								if(io) {
@@ -7221,33 +7221,33 @@ void ARX_SPELLS_Update()
 							if(spells[i].fdata == 1.f) {
 								if(rnd() > 0.5) {
 									tokeep = -1;
-									cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base.asl";
+									cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 								} else {
 									tokeep = 0;
-									cls = "graph/obj3d/interactive/npc/y_mx/y_mx.asl";
+									cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 								}
 							} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
 							   || (cur_mr >= 3 && rnd() > 0.3f)) {
 								tokeep = 0;
-								cls = "graph/obj3d/interactive/npc/y_mx/y_mx.asl";
+								cls = "graph/obj3d/interactive/npc/y_mx/y_mx";
 							} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
 							   || (cur_mr >= 3 && rnd() > 0.3f)) {
 								tokeep = -1;
-								cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base.asl";
+								cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 							} else if(spells[i].caster_level >= 9) {
 								tokeep = 1;
-								cls = "graph/obj3d/interactive/npc/demon/demon.asl";
+								cls = "graph/obj3d/interactive/npc/demon/demon";
 							} else if(rnd() > 0.98f) {
 								tokeep = -1;
-								cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base.asl";
+								cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base";
 							} else {
 								tokeep = 0;
-								cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base.asl";
+								cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
 							}
 							
 							Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
 							if(!io) {
-								cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base.asl";
+								cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base";
 								tokeep = 0;
 								io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
 							}

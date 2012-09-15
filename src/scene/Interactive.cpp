@@ -1768,7 +1768,7 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	if(IsIn(ficc, "items")) {
 		io = AddItem(res::path(classPath).remove_ext(), instance, flags);
 	} else if(IsIn(ficc, "npc")) {
-		io = AddNPC(classPath, instance, flags);
+		io = AddNPC(res::path(classPath).remove_ext(), instance, flags);
 	} else if(IsIn(ficc, "fix")) {
 		io = AddFix(classPath, instance, flags);
 	} else if(IsIn(ficc, "camera")) {
@@ -2280,16 +2280,15 @@ IO_NPCDATA::~IO_NPCDATA() {
 Entity * AddNPC(const res::path & classPath, EntityInstance instance,
                 AddInteractiveFlags flags) {
 	
-	res::path object = res::path(classPath).set_ext("teo");
-	
-	res::path scriptfile = res::path(classPath).set_ext("asl");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
 	
 	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
-	   && !resources->getFile(classPath)) {
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
 	
-	Entity * io = new Entity(res::path(classPath).remove_ext());
+	Entity * io = new Entity(classPath);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2304,7 +2303,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 	
 	io->ioflags = IO_NPC;
 
-	GetIOScript(io, scriptfile);
+	GetIOScript(io, script);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;

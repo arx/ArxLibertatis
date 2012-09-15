@@ -244,6 +244,7 @@ public:
 		if(type == "npc" || type == "item") {
 			
 			res::path file = res::path::load(context.getWord()); // object to spawn.
+			file.remove_ext();
 			
 			string target = context.getWord(); // object ident for position
 			Entity * t = entities.getById(target, context.getIO());
@@ -286,7 +287,6 @@ public:
 			} else {
 				
 				res::path path = "graph/obj3d/interactive/items" / file;
-				path.remove_ext();
 				
 				Entity * ioo = AddItem(path);
 				if(!ioo) {
