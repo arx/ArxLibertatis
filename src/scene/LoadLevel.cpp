@@ -270,7 +270,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			}
 			
 			dli.angle = io->initangle;
-			strncpy(dli.name, io->filename.string().c_str(), sizeof(dli.name));
+			strncpy(dli.name, io->classPath().string().c_str(), sizeof(dli.name));
 			
 			if(io->ident == 0) {
 				MakeIOIdent(io);
@@ -551,7 +551,7 @@ void SaveIOScript(Entity * io, long fl) {
 	switch(fl) {
 		
 		case 1: { // class script
-			file = fs::paths.user / io->filename.string();
+			file = fs::paths.user / io->classPath().string();
 			script = &io->script;
 			break;
 		}
@@ -623,7 +623,7 @@ Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, con
 	
 	if(SendIOScriptEvent(io, SM_LOAD) == ACCEPT && io->obj == NULL) {
 		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
-		io->obj = loadObject(io->filename, pbox);
+		io->obj = loadObject(io->classPath(), pbox);
 		if(io->ioflags & IO_NPC) {
 			EERIE_COLLISION_Cylinder_Create(io);
 		}

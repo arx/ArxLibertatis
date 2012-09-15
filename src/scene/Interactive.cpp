@@ -1457,19 +1457,22 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1)
-{
-	if ((!io) || (s1.empty()))
+void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
+	
+	if(!io || s1.empty()) {
 		return;
-
-	res::path icontochange = io->filename.parent() / s1;
-
-	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
-	if (tc == NULL)
+	}
+	
+	res::path icontochange = io->classPath().parent() / s1;
+	
+	TextureContainer * tc = TextureContainer::LoadUI(icontochange,
+	                                                 TextureContainer::Level);
+	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
-
-	if (tc != NULL)
-	{
+	}
+	
+	if(tc) {
+		
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5; 
 
@@ -1503,7 +1506,7 @@ long GetNumberInterWithOutScriptLoad() {
 // Be careful with this func...
 Entity * CloneIOItem(Entity * src) {
 	
-	Entity * dest = AddItem(src->filename);
+	Entity * dest = AddItem(src->classPath());
 	if(!dest) {
 		return NULL;
 	}
@@ -1879,7 +1882,7 @@ static void MakeTemporaryIOIdent(Entity * io) {
 	ARX_Changelevel_CurGame_Open();
 	
 	std::string className = io->short_name();
-	res::path classDir = io->filename.parent();
+	res::path classDir = io->classPath().parent();
 	
 	for(long t = 1; ; t++) {
 		
@@ -1930,7 +1933,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity();
+	Entity * io = new Entity(object);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -1975,8 +1978,6 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	io->filename = object;
 
 	if (!io->obj)
 	{
@@ -2034,7 +2035,7 @@ static Entity * AddCamera(const res::path & classPath,
 		return NULL;
 	}
 	
-	Entity * io = new Entity();
+	Entity * io = new Entity(object);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2070,8 +2071,6 @@ static Entity * AddCamera(const res::path & classPath,
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	io->filename = object;
- 
 	io->obj = cameraobj;
 
 	io->_camdata = (IO_CAMDATA *)malloc(sizeof(IO_CAMDATA));
@@ -2095,7 +2094,7 @@ static Entity * AddMarker(const res::path & classPath,
 		return NULL;
 	}
 	
-	Entity * io = new Entity();
+	Entity * io = new Entity(object);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2133,8 +2132,6 @@ static Entity * AddMarker(const res::path & classPath,
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	io->filename = object;
- 
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
@@ -2295,7 +2292,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity();
+	Entity * io = new Entity(object);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2344,8 +2341,6 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 	
-	io->filename = object;
-	
 	if(!io->obj && !(flags & NO_MESH)) {
 		io->obj = loadObject(object, false);
 	}
@@ -2377,7 +2372,7 @@ void ReloadScript(Entity * io) {
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	loadScript(io->script, resources->getFile(res::path(io->filename).set_ext("asl")));
+	loadScript(io->script, resources->getFile(res::path(io->classPath()).set_ext("asl")));
 	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
 
 	long num = io->index();
@@ -2474,7 +2469,7 @@ Entity * AddItem(const res::path & classPath, EntityInstance instance,
 		return NULL;
 	}
 	
-	Entity * io = new Entity();
+	Entity * io = new Entity(object);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -2534,8 +2529,6 @@ Entity * AddItem(const res::path & classPath, EntityInstance instance,
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
-	io->filename = object;
-	
 	if(io->ioflags & IO_GOLD) {
 		io->obj = GoldCoinsObj[0];
 	}
@@ -3693,7 +3686,7 @@ bool IsSameObject(Entity * io, Entity * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
-	        ||	io->filename != ioo->filename
+	        ||	io->classPath() != ioo->classPath()
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))

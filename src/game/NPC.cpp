@@ -1514,11 +1514,10 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	return -1;
 }
-//***********************************************************************************************
+
 // Spawns a body part from NPC
-//***********************************************************************************************
-void ARX_NPC_SpawnMember(Entity * ioo, long num)
-{
+void ARX_NPC_SpawnMember(Entity * ioo, long num) {
+	
 	if (!ioo) return;
 
 	EERIE_3DOBJ * from = ioo->obj;
@@ -1701,37 +1700,34 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 			if (nouvo->facelist[k].texid == gore)
 				nouvo->facelist[k].facetype |= POLY_DOUBLESIDED;
 		}
-
-
+		
 	}
-
+	
 	free(equival);
 	nouvo->texturecontainer = from->texturecontainer;
-
-	nouvo->linked			=	NULL;
-	nouvo->nblinked			=	0;
-	nouvo->originaltextures	=	NULL;
-
-	Entity * io = new Entity();
-
-	io->_itemdata	=	(IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
-
-	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
-
-	io->ioflags		=	IO_ITEM;
-	io->script.size	=	0;
-	io->script.data	=	NULL;
-	io->gameFlags	|=	GFLAG_NO_PHYS_IO_COL;
 	
-	io->filename = "noname";
-
+	nouvo->linked = NULL;
+	nouvo->nblinked = 0;
+	nouvo->originaltextures = NULL;
+	
+	Entity * io = new Entity("noname");
+	
+	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
+	
+	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
+	
+	io->ioflags = IO_ITEM;
+	io->script.size = 0;
+	io->script.data = NULL;
+	io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+	
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);
 	if(!nouvo->pbox){
 		delete nouvo;
 		return;
 	}
-
+	
 	io->infracolor = Color3f::blue * 0.8f;
 	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
@@ -1742,46 +1738,41 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num)
 	
 	io->gameFlags = ioo->gameFlags;
 	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
-	ioo->halo.dynlight	=	-1;
-	io->ioflags			|=	IO_MOVABLE;
-
-	io->angle.a					=	rnd() * 40.f + 340.f;
-	io->angle.b					=	rnd() * 360.f;
-	io->angle.g					=	0;
-	io->obj->pbox->active		=	1;
-	io->obj->pbox->stopcount	=	0;
-
-	Vec3f pos, vector;
-
-	io->velocity.x				=	0.f;
-	io->velocity.y				=	0.f;
-	io->velocity.z				=	0.f;
-	io->stopped					=	1;
-
-	vector.x					=	-(float)EEsin(radians(io->angle.b));
-	vector.y					=	EEsin(radians(io->angle.a)) * 2.f; 
-	vector.z					=	(float)EEcos(radians(io->angle.b));
+	ioo->halo.dynlight = -1;
+	io->ioflags |= IO_MOVABLE;
+	
+	io->angle.a = rnd() * 40.f + 340.f;
+	io->angle.b = rnd() * 360.f;
+	io->angle.g = 0;
+	io->obj->pbox->active = 1;
+	io->obj->pbox->stopcount = 0;
+	
+	io->velocity = Vec3f::ZERO;
+	io->stopped = 1;
+	
+	Vec3f vector;
+	vector.x = -(float)EEsin(radians(io->angle.b));
+	vector.y = EEsin(radians(io->angle.a)) * 2.f;
+	vector.z = (float)EEcos(radians(io->angle.b));
 	fnormalize(vector);
-	pos = io->pos;
-	io->rubber					=	0.6f;
+	Vec3f pos = io->pos;
+	io->rubber = 0.6f;
 	
 	io->no_collide = checked_range_cast<short>(long(ioo->index()));
 	
 	io->gameFlags |= GFLAG_GOREEXPLODE;
-	io->lastanimtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
+	io->lastanimtime = (unsigned long)(arxtime);
 	io->soundtime = 0;
 	io->soundcount = 0;
 	EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector, 3, &io->angle);
-	return;
-
 }
 
-#define	FLAG_CUT_HEAD	(1)
-#define	FLAG_CUT_TORSO	(1<<1)
-#define	FLAG_CUT_LARM	(1<<2)
-#define	FLAG_CUT_RARM	(1<<3)
-#define	FLAG_CUT_LLEG	(1<<4)
-#define	FLAG_CUT_RLEG	(1<<5)
+#define	FLAG_CUT_HEAD  (1<<0)
+#define	FLAG_CUT_TORSO (1<<1)
+#define	FLAG_CUT_LARM  (1<<2)
+#define	FLAG_CUT_RARM  (1<<3)
+#define	FLAG_CUT_LLEG  (1<<4)
+#define	FLAG_CUT_RLEG  (1<<5)
 
 static short GetCutFlag(const string & str) {
 	

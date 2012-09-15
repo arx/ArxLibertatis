@@ -235,7 +235,7 @@ class Entity {
 	
 public:
 	
-	explicit Entity();
+	explicit Entity(const res::path & classPath);
 	~Entity();
 	
 	EntityFlags ioflags; // IO type
@@ -295,7 +295,6 @@ public:
 	long stopped;
 	Vec3f initpos; // Initial Position
 	Anglef initangle; // Initial Angle
-	res::path filename;
 	float scale;
 	
 	ARX_USE_PATH * usepath;
@@ -400,12 +399,23 @@ public:
 	 */
 	void destroy();
 	
+	/*!
+	 * Get the class path for this entity.
+	 *
+	 * TODO for now this path still includes a .teo file extension
+	 *
+	 * @return the full path to this entity's class
+	 */
+	const res::path & classPath() const { return classPath_; }
+	
 private:
 	
 	//! Remove any remaining references to this entity.
 	void cleanReferences();
 	
 	const size_t index_; //!< index of this Entity in the EntityManager
+	
+	const res::path classPath_; //!< the full path to this entity's class
 	
 };
 

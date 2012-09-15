@@ -563,7 +563,7 @@ public:
 			DebugScript(' ' << type << ' ' << mesh);
 			
 			if(io->usemesh.empty()) {
-				mesh = io->filename.parent() / "tweaks" / mesh;
+				mesh = io->classPath().parent() / "tweaks" / mesh;
 			} else {
 				mesh = io->usemesh.parent() / "tweaks" / mesh;
 			}

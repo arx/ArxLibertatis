@@ -285,8 +285,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, DamageType type, long source) {
 								killer = "player";
 							} else if(source <= -1) {
 								killer = "none";
-							} else if(ValidIONum(source)
-							          && !entities[source]->filename.empty()) {
+							} else if(ValidIONum(source)) {
 								killer = entities[source]->long_name();
 							}
 							SendIOScriptEvent(entities[i], SM_NULL, killer, "target_death");

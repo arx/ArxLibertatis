@@ -2034,7 +2034,7 @@ bool TakeFromInventory(Vec2s * pos)
 			if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 				if(io->_itemdata->count - 1 > 0) {
 					
-					ioo = AddItem(io->filename);
+					ioo = AddItem(io->classPath());
 					ioo->show = SHOW_FLAG_NOT_DRAWN;
 					ioo->_itemdata->count = 1;
 					io->_itemdata->count--;

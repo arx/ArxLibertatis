@@ -67,7 +67,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/LoadLevel.h"
 
-Entity::Entity() : index_(entities.add(this)) {
+Entity::Entity(const res::path & classPath)
+	: index_(entities.add(this)),
+	  classPath_(classPath) {
 	
 	ioflags = 0;
 	lastpos = Vec3f::ZERO;
@@ -308,7 +310,7 @@ Entity::~Entity() {
 }
 
 std::string Entity::short_name() const {
-	return filename.basename();
+	return classPath_.basename();
 }
 
 std::string Entity::long_name() const {
@@ -318,7 +320,7 @@ std::string Entity::long_name() const {
 }
 
 res::path Entity::full_name() const {
-	return filename.parent() / long_name();
+	return classPath_.parent() / long_name();
 }
 
 void Entity::cleanReferences() {
