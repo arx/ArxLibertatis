@@ -143,8 +143,10 @@ long INTER_COMPUTE = 0;
 long ForceIODraw = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
-static Entity * AddCamera(const res::path & file);
-static Entity * AddMarker(const res::path & file);
+static Entity * AddCamera(const res::path & classPath,
+                          EntityInstance instance = -1);
+static Entity * AddMarker(const res::path & classPath,
+                          EntityInstance instance = -1);
 
 float STARTED_ANGLE = 0;
 void Set_DragInter(Entity * io)
@@ -1506,8 +1508,6 @@ Entity * CloneIOItem(Entity * src) {
 		return NULL;
 	}
 	
-	MakeTemporaryIOIdent(dest);
-	
 	SendInitScriptEvent(dest);
 	dest->inv = src->inv;
 	dest->sizex = src->sizex;
@@ -1763,24 +1763,15 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	
 	Entity * io = NULL;
 	if(IsIn(ficc, "items")) {
-		io = AddItem(classPath, flags);
+		io = AddItem(classPath, instance, flags);
 	} else if(IsIn(ficc, "npc")) {
-		io = AddNPC(classPath, flags);
+		io = AddNPC(classPath, instance, flags);
 	} else if(IsIn(ficc, "fix")) {
-		io = AddFix(classPath, flags);
+		io = AddFix(classPath, instance, flags);
 	} else if(IsIn(ficc, "camera")) {
-		io = AddCamera(classPath);
+		io = AddCamera(classPath, instance);
 	} else if (IsIn(ficc, "marker")) {
-		io = AddMarker(classPath);
-	}
-	
-	if(io) {
-		if(instance == -1) {
-			MakeTemporaryIOIdent(io);
-		} else {
-			arx_assert(instance > 0);
-			io->ident = instance;
-		}
+		io = AddMarker(classPath, instance);
 	}
 	
 	return io;
@@ -1846,12 +1837,11 @@ void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	
 	res::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
 	
-	io->_npcdata->weapon = AddItem(file, IO_IMMEDIATELOAD);
+	io->_npcdata->weapon = AddItem(file, -1, IO_IMMEDIATELOAD);
 
 	Entity * ioo = io->_npcdata->weapon;
 	if(ioo) {
 		
-		MakeTemporaryIOIdent(ioo);
 		SendIOScriptEvent(ioo, SM_INIT);
 		SendIOScriptEvent(ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -1866,44 +1856,100 @@ static void GetIOScript(Entity * io, const res::path & script) {
 	loadScript(io->script, resources->getFile(script));
 }
 
-//***********************************************************************************
 // Links an Interactive Object to another interactive object using an attach point
-//***********************************************************************************
-void LinkObjToMe(Entity * io, Entity * io2, const std::string& attach)
-{
-	if ((!io)
-	        ||	(!io2))
+void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
+	
+	if(!io || !io2) {
 		return;
-
+	}
+	
 	RemoveFromAllInventories(io2);
 	io2->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-Entity * AddFix(const res::path & file, AddInteractiveFlags flags) {
+// Creates a Temporary IO Ident
+static void MakeTemporaryIOIdent(Entity * io) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	if(!io) {
+		return;
+	}
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
+	// TODO keep the current game open all the time (or even in memory)
+	ARX_Changelevel_CurGame_Open();
+	
+	std::string className = io->short_name();
+	res::path classDir = io->filename.parent();
+	
+	for(long t = 1; ; t++) {
+		
+		// Check if the candidate instance number is used in the current scene
+		bool used = false;
+		// TODO replace this loop by an (className, instance) index
+		for(size_t i = 0; i < entities.size(); i++) {
+			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
+				if(entities[i]->short_name() == className) {
+					used = true;
+					break;
+				}
+			}
+		}
+		if(used) {
+			continue;
+		}
+		
+		std::stringstream ss;
+		ss << className << '_' << std::setw(4) << std::setfill('0') << t;
+		
+		// Check if the candidate instance number is reserved for any scene
+		if(resources->getDirectory(classDir / ss.str())) {
+			continue;
+		}
+		
+		// Check if the candidate instance number is used in any visited area
+		if(ARX_Changelevel_CurGame_Seek(ss.str())) {
+			continue;
+		}
+		
+		io->ident = t;
+		
+		ARX_Changelevel_CurGame_Close();
+		
+		return;
+	}
+}
 
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+Entity * AddFix(const res::path & classPath, EntityInstance instance,
+                AddInteractiveFlags flags) {
+	
+	res::path object = res::path(classPath).set_ext("teo");
+	res::path scriptfile = res::path(classPath).set_ext("asl");
+	
+	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	   && !resources->getFile(classPath)) {
 		return NULL;
 	}
-
-	LogDebug("AddFix " << file);
-
+	
 	Entity * io = new Entity();
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
 	
 	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
-
+	
 	GetIOScript(io, scriptfile);
-
-	if (!(flags & NO_ON_LOAD))
+	
+	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(io, SM_LOAD);
-
+	}
+	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -1976,22 +2022,29 @@ Entity * AddFix(const res::path & file, AddInteractiveFlags flags) {
 	return io;
 }
 
-static Entity * AddCamera(const res::path & file) {
+static Entity * AddCamera(const res::path & classPath,
+                          EntityInstance instance) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = res::path(classPath).set_ext("teo");
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
-
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	res::path scriptfile = res::path(classPath).set_ext("asl");
+	
+	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	   && !resources->getFile(classPath)) {
 		return NULL;
 	}
-
-	LogDebug("AddCamera " << file);
 	
 	Entity * io = new Entity();
 	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
 	GetIOScript(io, scriptfile);
-
+	
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
 	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
@@ -2030,19 +2083,26 @@ static Entity * AddCamera(const res::path & file) {
 	return io;
 }
 
-static Entity * AddMarker(const res::path & file) {
+static Entity * AddMarker(const res::path & classPath,
+                          EntityInstance instance) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = res::path(classPath).set_ext("teo");
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
+	res::path scriptfile = res::path(classPath).set_ext("asl");
 	
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	   && !resources->getFile(classPath)) {
 		return NULL;
 	}
 	
-	LogDebug("AddMarker " << file);
-	
 	Entity * io = new Entity();
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
 	
 	GetIOScript(io, scriptfile);
 	
@@ -2223,20 +2283,27 @@ IO_NPCDATA::~IO_NPCDATA() {
 	}
 }
 
-Entity * AddNPC(const res::path & file, AddInteractiveFlags flags) {
+Entity * AddNPC(const res::path & classPath, EntityInstance instance,
+                AddInteractiveFlags flags) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = res::path(classPath).set_ext("teo");
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
+	res::path scriptfile = res::path(classPath).set_ext("asl");
 	
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
+	   && !resources->getFile(classPath)) {
 		return NULL;
 	}
-
-	LogDebug("AddNPC " << file);
-
+	
 	Entity * io = new Entity();
-
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
 	io->forcedmove = Vec3f::ZERO;
 	
 	io->_npcdata = new IO_NPCDATA;
@@ -2385,65 +2452,15 @@ void MakeIOIdent(Entity * io) {
 
 #endif // BUILD_EDIT_LOADSAVE
 
-// Creates a Temporary IO Ident
-void MakeTemporaryIOIdent(Entity * io) {
-	
-	if(!io) {
-		return;
-	}
-	
-	// TODO keep the current game open all the time (or even in memory)
-	ARX_Changelevel_CurGame_Open();
-	
-	std::string className = io->short_name();
-	res::path classDir = io->filename.parent();
-	
-	for(long t = 1; ; t++) {
-		
-		// Check if the candidate instance number is used in the current scene
-		bool used = false;
-		// TODO replace this loop by an (className, instance) index
-		for(size_t i = 0; i < entities.size(); i++) {
-			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
-				if(entities[i]->short_name() == className) {
-					used = true;
-					break;
-				}
-			}
-		}
-		if(used) {
-			continue;
-		}
-		
-		std::stringstream ss;
-		ss << className << '_' << std::setw(4) << std::setfill('0') << t;
-		
-		// Check if the candidate instance number is reserved for any scene
-		if(resources->getDirectory(classDir / ss.str())) {
-			continue;
-		}
-		
-		// Check if the candidate instance number is used in any visited area
-		if(ARX_Changelevel_CurGame_Seek(ss.str())) {
-			continue;
-		}
-		
-		io->ident = t;
-		
-		ARX_Changelevel_CurGame_Close();
-		
-		return;
-	}
-}
-
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
 
-Entity * AddItem(const res::path & fil, AddInteractiveFlags flags) {
+Entity * AddItem(const res::path & classPath, EntityInstance instance,
+                 AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
 
-	res::path file = fil;
+	res::path file = classPath;
 	
 	if(!specialstrcmp(file.filename(), "gold_coin")) {
 		file.up() /= "gold_coin.asl";
@@ -2459,20 +2476,25 @@ Entity * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	res::path object = res::path(file).set_ext("teo");
 	
 	res::path icon = res::path(file).remove_ext().append_basename("[icon]");
-
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	
+	if(!resources->getFile(("game" / file).set_ext("ftl"))
+	   && !resources->getFile(file)) {
 		return NULL;
 	}
-
+	
 	if(!resources->getFile(res::path(icon).set_ext("bmp"))) {
 		return NULL;
 	}
-
+	
 	Entity * io = new Entity();
-
-
-	if (io == NULL) return NULL;
-
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
 	io->ioflags = type;
 	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
 	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));

@@ -4666,8 +4666,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CCreateField * effect  = new CCreateField();
 			effect->spellinstance = i;
 			
-			res::path o = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl";
-			Entity * io = AddFix(o, IO_IMMEDIATELOAD);
+			res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl";
+			Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
 			if(io) {
 				
 				ARX_INTERACTIVE_HideGore(io);
@@ -4676,7 +4676,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				io->scriptload = 1;
 				io->ioflags |= IO_NOSAVE | IO_FIELD;
 				io->initpos = io->pos = target;
-				MakeTemporaryIOIdent(io);
 				SendInitScriptEvent(io);
 				
 				effect->Create(target, 0);
@@ -6815,7 +6814,6 @@ void ARX_SPELLS_Update()
 					if ((tim>3000) && (spells[i].longinfo==-1))
 					{
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
-						char tmptext[256];						
 						CRiseDead *prise;
 						prise= (CRiseDead *)spells[i].pSpellFx;
 
@@ -6828,14 +6826,14 @@ void ARX_SPELLS_Update()
 	
 									float anything = CheckAnythingInCylinder(&phys, NULL, CFLAG_JUST_TEST);
 
-							if (EEfabs(anything)<30)
-							{
-								strcpy(tmptext,"graph/obj3d/interactive/npc/undead_base/undead_base.asl");
-								Entity * io;
-								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
-
-								if (io)
-								{
+							if(EEfabs(anything) < 30) {
+								
+								const char * cls =
+									"graph/obj3d/interactive/npc/undead_base/undead_base.asl";
+								Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+								
+								if(io) {
+									
 									ARX_INTERACTIVE_HideGore(io);
 									RestoreInitialIOStatusOfIO(io);
 									
@@ -6847,7 +6845,6 @@ void ARX_SPELLS_Update()
 									io->scriptload=1;
 									
 									ARX_INTERACTIVE_Teleport(io,&phys.origin,0);
-									MakeTemporaryIOIdent(io);
 									SendInitScriptEvent(io);
 
 									if(ValidIONum(spells[i].caster)) {
@@ -7205,7 +7202,6 @@ void ARX_SPELLS_Update()
 
 						spells[i].longinfo=0;
 						ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &spells[i].caster_pos);
-						char tmptext[256];						
 						CSummonCreature *pSummon;
 						pSummon= (CSummonCreature *)spells[i].pSpellFx;
 
@@ -7219,69 +7215,47 @@ void ARX_SPELLS_Update()
 
 							if (EEfabs(anything)<30)
 							{
- 
-							long tokeep=0;
 							
-
-							if (spells[i].caster_level>=9)
-							{
-								tokeep=1;
-								strcpy(tmptext,"graph/obj3d/interactive/npc/demon/demon.asl");
-							}
-							else 
-							{
-								tokeep=0;
-
-								if (rnd()>0.98f)
-								{
-									strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
-									tokeep=-1;
+							long tokeep;
+							res::path cls;
+							if(spells[i].fdata == 1.f) {
+								if(rnd() > 0.5) {
+									tokeep = -1;
+									cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base.asl";
+								} else {
+									tokeep = 0;
+									cls = "graph/obj3d/interactive/npc/y_mx/y_mx.asl";
 								}
-								else
-									strcpy(tmptext,"graph/obj3d/interactive/npc/chicken_base/chicken_base.asl");
+							} else if(rnd() > 0.997f || (sp_max && rnd() > 0.8f)
+							   || (cur_mr >= 3 && rnd() > 0.3f)) {
+								tokeep = 0;
+								cls = "graph/obj3d/interactive/npc/y_mx/y_mx.asl";
+							} else if(rnd() > 0.997f || (cur_rf >= 3 && rnd() > 0.8f)
+							   || (cur_mr >= 3 && rnd() > 0.3f)) {
+								tokeep = -1;
+								cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base.asl";
+							} else if(spells[i].caster_level >= 9) {
+								tokeep = 1;
+								cls = "graph/obj3d/interactive/npc/demon/demon.asl";
+							} else if(rnd() > 0.98f) {
+								tokeep = -1;
+								cls = "graph/obj3d/interactive/npc/wrat_base/wrat_base.asl";
+							} else {
+								tokeep = 0;
+								cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base.asl";
 							}
-
-							if ((rnd()>0.997f) || ((cur_rf>=3) && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
-							{
-								strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
-								tokeep=-1;
+							
+							Entity * io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
+							if(!io) {
+								cls = "graph/obj3d/interactive/npc/chicken_base/chicken_base.asl";
+								tokeep = 0;
+								io = AddNPC(cls, -1, IO_IMMEDIATELOAD);
 							}
-
-							if ((rnd()>0.997f) || (sp_max && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
-							{
-								strcpy(tmptext,"graph/obj3d/interactive/npc/y_mx/y_mx.asl");
-								tokeep=0;
-							}
-
-							if (spells[i].fdata==1.f)
-							{
-								if (rnd()>0.5) 
-								{
-									strcpy(tmptext,"graph/obj3d/interactive/npc/wrat_base/wrat_base.asl");
-									tokeep=-1;
-								}
-								else
-								{
-									strcpy(tmptext,"graph/obj3d/interactive/npc/y_mx/y_mx.asl");
-									tokeep=0;
-								}
-							}
-
-							Entity * io;
-							io=AddNPC(tmptext,IO_IMMEDIATELOAD);
-
-							if (!io)
-							{
-								strcpy(tmptext,"graph/obj3d/interactive/npc/chicken_base/chicken_base.asl");
-								tokeep=0;
-								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
-							}
-
-							if (io)
-							{
+							
+							if(io) {
+								
 								RestoreInitialIOStatusOfIO(io);
 								
-
 								long lSpellsCaster = spells[i].caster ; 
 								io->summoner = checked_range_cast<short>(lSpellsCaster);
 
@@ -7294,7 +7268,6 @@ void ARX_SPELLS_Update()
 											io->pos.x = phys.origin.x; 
 											io->pos.y = phys.origin.y;
 											io->pos.z = phys.origin.z;
-								MakeTemporaryIOIdent(io);
 								SendInitScriptEvent(io);
 
 								if (tokeep<0)
@@ -7815,21 +7788,21 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 }
 
 static void ApplySPWep() {
-	if (!sp_wep)
-	{		
+	
+	if(!sp_wep) {
+		
 		ARX_SPSound();
 		
 		res::path file = "graph/obj3d/interactive/items/weapons/sword_mx/sword_mx.teo";
 		
-		Entity * ioo = AddItem(file,IO_IMMEDIATELOAD);
-
-		if (ioo!=NULL)
-		{			
-			sp_wep=1;
+		Entity * ioo = AddItem(file, -1, IO_IMMEDIATELOAD);
+		
+		if(ioo) {
+			
+			sp_wep = 1;
 			MakeCoolFx(&player.pos);
 			MakeCoolFx(&player.pos);
-			ioo->scriptload=1;
-			MakeTemporaryIOIdent(ioo);
+			ioo->scriptload = 1;
 			SendInitScriptEvent(ioo);
 			
 			giveToPlayer(ioo);
@@ -7841,15 +7814,15 @@ static void ApplySPWep() {
 		}
 	}
 }
-void MakeSpCol()
-{
+
+void MakeSpCol() {
+	
 	ARX_SPSound();
-
-	for (long i=0;i<64;i++)
-	{
-		sp_max_y[i]=0;
+	
+	for(long i = 0; i < 64; i++) {
+		sp_max_y[i] = 0;
 	}
-
+	
 	sp_max_col[0] = Color::fromRGBA(0x00FF0000);
 	sp_max_col[1] = Color::fromRGBA(0x0000FF00);
 	sp_max_col[2] = Color::fromRGBA(0x000000FF);
@@ -7883,14 +7856,17 @@ static void ApplyCurSOS() {
 static void ApplySPBow() {
 	
 	ARX_SPSound();
-	const char OBJ_BOW[] = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
-	Entity * ioo = AddItem(OBJ_BOW, IO_IMMEDIATELOAD);
+	
+	const char * bow = "graph/obj3d/interactive/items/weapons/bow_mx/bow_mx.teo";
+	
+	Entity * ioo = AddItem(bow, -1, IO_IMMEDIATELOAD);
 	
 	if(ioo!=NULL) {
+		
 		MakeCoolFx(&player.pos);
 		MakeCoolFx(&player.pos);
-		ioo->scriptload=1;
-		MakeTemporaryIOIdent(ioo);
+		
+		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
 		
 		giveToPlayer(ioo);
@@ -7920,16 +7896,15 @@ static void ApplySPArm() {
 			return;
 		break;
 	}
-
-	Entity * ioo = AddItem(file, IO_IMMEDIATELOAD);
-
-	if (ioo!=NULL)
-	{
-		sp_wep=1;
+	
+	Entity * ioo = AddItem(file, -1, IO_IMMEDIATELOAD);
+	
+	if(ioo) {
+		
+		sp_wep = 1;
 		MakeCoolFx(&player.pos);
 		MakeCoolFx(&player.pos);
-		ioo->scriptload=1;
-		MakeTemporaryIOIdent(ioo);
+		ioo->scriptload = 1;
 		SendInitScriptEvent(ioo);
 		
 		giveToPlayer(ioo);

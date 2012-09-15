@@ -2028,39 +2028,33 @@ bool TakeFromInventory(Vec2s * pos)
 
 	int iPosX = checked_range_cast<int>(fCenterX);
 	int iPosY = checked_range_cast<int>(fSizY);
-
-
-	if (InPlayerInventoryPos(pos))
-	{
-		{
-			if (!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE))
-				if ((io->ioflags & IO_ITEM) && (io->_itemdata->count > 1)) // Multi-obj
-				{
-					if (io->_itemdata->count - 1 > 0)
-					{
-						ioo = AddItem(io->filename);
-						MakeTemporaryIOIdent(ioo);
-						ioo->show = SHOW_FLAG_NOT_DRAWN;
-						ioo->_itemdata->count = 1;
-						io->_itemdata->count--;
-						ioo->scriptload = 1;
-						ARX_SOUND_PlayInterface(SND_INVSTD);
-						Set_DragInter(ioo);
-						RemoveFromAllInventories(ioo);
-						sInventory = 1;
-
-
-						float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
-						float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
-
-						sInventoryX = checked_range_cast<short>(fX);
-						sInventoryY = checked_range_cast<short>(fY);
-
-						SendInitScriptEvent(ioo);
-						ARX_INVENTORY_IdentifyIO(ioo);
-						return true;
-					}
+	
+	if(InPlayerInventoryPos(pos)) {
+		if(!GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
+			if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
+				if(io->_itemdata->count - 1 > 0) {
+					
+					ioo = AddItem(io->filename);
+					ioo->show = SHOW_FLAG_NOT_DRAWN;
+					ioo->_itemdata->count = 1;
+					io->_itemdata->count--;
+					ioo->scriptload = 1;
+					ARX_SOUND_PlayInterface(SND_INVSTD);
+					Set_DragInter(ioo);
+					RemoveFromAllInventories(ioo);
+					sInventory = 1;
+					
+					float fX = (pos->x - iPosX) / INTERFACE_RATIO(32);
+					float fY = (pos->y - iPosY) / INTERFACE_RATIO(32);
+					
+					sInventoryX = checked_range_cast<short>(fX);
+					sInventoryY = checked_range_cast<short>(fY);
+					
+					SendInitScriptEvent(ioo);
+					ARX_INVENTORY_IdentifyIO(ioo);
+					return true;
 				}
+			}
 		}
 	}
 	

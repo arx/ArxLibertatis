@@ -262,7 +262,7 @@ public:
 				
 				res::path path = "graph/obj3d/interactive/npc" / file;
 				
-				Entity * ioo = AddNPC(path, IO_IMMEDIATELOAD);
+				Entity * ioo = AddNPC(path, -1, IO_IMMEDIATELOAD);
 				if(!ioo) {
 					ScriptWarning << "failed to create npc " << path;
 					return Failed;
@@ -273,7 +273,6 @@ public:
 				ioo->pos = t->pos;
 				
 				ioo->angle = t->angle;
-				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
 				if(t->ioflags & IO_NPC) {
@@ -288,7 +287,7 @@ public:
 				
 				res::path path = "graph/obj3d/interactive/items" / file;
 				
-				Entity * ioo = AddItem(path, IO_IMMEDIATELOAD);
+				Entity * ioo = AddItem(path, -1, IO_IMMEDIATELOAD);
 				if(!ioo) {
 					ScriptWarning << "failed to create item " << path;
 					return Failed;
@@ -298,7 +297,6 @@ public:
 				ioo->scriptload = 1;
 				ioo->pos = t->pos;
 				ioo->angle = t->angle;
-				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
 				TREATZONE_AddIO(ioo);
