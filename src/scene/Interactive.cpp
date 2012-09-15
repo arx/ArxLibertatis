@@ -1770,7 +1770,7 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	} else if(IsIn(ficc, "npc")) {
 		io = AddNPC(res::path(classPath).remove_ext(), instance, flags);
 	} else if(IsIn(ficc, "fix")) {
-		io = AddFix(classPath, instance, flags);
+		io = AddFix(res::path(classPath).remove_ext(), instance, flags);
 	} else if(IsIn(ficc, "camera")) {
 		io = AddCamera(classPath, instance);
 	} else if (IsIn(ficc, "marker")) {
@@ -1922,15 +1922,15 @@ static void MakeTemporaryIOIdent(Entity * io) {
 Entity * AddFix(const res::path & classPath, EntityInstance instance,
                 AddInteractiveFlags flags) {
 	
-	res::path object = res::path(classPath).set_ext("teo");
-	res::path scriptfile = res::path(classPath).set_ext("asl");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
 	
 	if(!resources->getFile(("game" / classPath).set_ext("ftl"))
-	   && !resources->getFile(classPath)) {
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
 	
-	Entity * io = new Entity(res::path(classPath).remove_ext());
+	Entity * io = new Entity(classPath);
 	
 	if(instance == -1) {
 		MakeTemporaryIOIdent(io);
@@ -1944,7 +1944,7 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
 	
-	GetIOScript(io, scriptfile);
+	GetIOScript(io, script);
 	
 	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(io, SM_LOAD);

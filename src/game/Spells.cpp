@@ -4666,7 +4666,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			CCreateField * effect  = new CCreateField();
 			effect->spellinstance = i;
 			
-			res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube.asl";
+			res::path cls = "graph/obj3d/interactive/fix_inter/blue_cube/blue_cube";
 			Entity * io = AddFix(cls, -1, IO_IMMEDIATELOAD);
 			if(io) {
 				
