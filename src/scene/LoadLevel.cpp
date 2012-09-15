@@ -603,7 +603,7 @@ Entity * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, con
 	
 	arx_assert(ident != 0);
 	
-	Entity * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
+	Entity * io = AddInteractive(res::path(name).remove_ext(), ident, NO_MESH | NO_ON_LOAD);
 	if(!io) {
 		return NULL;
 	}

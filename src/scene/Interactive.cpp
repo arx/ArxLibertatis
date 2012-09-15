@@ -1766,15 +1766,15 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	
 	Entity * io = NULL;
 	if(IsIn(ficc, "items")) {
-		io = AddItem(res::path(classPath).remove_ext(), instance, flags);
+		io = AddItem(classPath, instance, flags);
 	} else if(IsIn(ficc, "npc")) {
-		io = AddNPC(res::path(classPath).remove_ext(), instance, flags);
+		io = AddNPC(classPath, instance, flags);
 	} else if(IsIn(ficc, "fix")) {
-		io = AddFix(res::path(classPath).remove_ext(), instance, flags);
+		io = AddFix(classPath, instance, flags);
 	} else if(IsIn(ficc, "camera")) {
-		io = AddCamera(res::path(classPath).remove_ext(), instance);
+		io = AddCamera(classPath, instance);
 	} else if (IsIn(ficc, "marker")) {
-		io = AddMarker(res::path(classPath).remove_ext(), instance);
+		io = AddMarker(classPath, instance);
 	}
 	
 	return io;

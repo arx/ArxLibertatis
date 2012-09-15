@@ -84,15 +84,15 @@ public:
 		
 		res::path file;
 		if(io->ioflags & IO_NPC) {
-			file = ("graph/obj3d/interactive/npc" / object).append(".teo");
+			file = "graph/obj3d/interactive/npc" / object;
 		} else if(io->ioflags & IO_FIX) {
-			file = ("graph/obj3d/interactive/fix_inter" / object).append(".teo");
+			file = "graph/obj3d/interactive/fix_inter" / object;
 		} else {
-			file = ("graph/obj3d/interactive/items" / object).append(".teo");
+			file = "graph/obj3d/interactive/items" / object;
 		}
 		
 		Anglef last_angle = io->angle;
-		Entity * ioo = AddInteractive(file, -1);
+		Entity * ioo = AddInteractive(file);
 		if(!ioo) {
 			return Failed;
 		}
