@@ -112,11 +112,6 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	// pre-fork the crash handler
 	if(!fork()) {
-		
-#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
-		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
-#endif
-		
 		crashBroker();
 	}
 	
@@ -225,6 +220,12 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 
 void CrashHandlerPOSIX::crashBroker() {
 	
+	// Give this process a unique name
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
+		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
+#endif
+	
+	// Automatically terminate the crash handler if the main process exits
 #if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
 	prctl(PR_SET_PDEATHSIG, SIGTERM);
 #endif
@@ -235,6 +236,7 @@ void CrashHandlerPOSIX::crashBroker() {
 		exit(0);
 	}
 	
+	// The main process crashed, ignore when it exits
 #if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
 	prctl(PR_SET_PDEATHSIG, 0);
 #endif

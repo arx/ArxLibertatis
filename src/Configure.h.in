@@ -7,7 +7,6 @@
 // Threads
 #cmakedefine ARX_HAVE_PTHREADS
 #cmakedefine ARX_HAVE_PRCTL
-#cmakedefine ARX_HAVE_PR_SET_NAME
 #cmakedefine ARX_HAVE_PTHREAD_SETNAME_NP
 #cmakedefine ARX_HAVE_PTHREAD_SET_NAME_NP
 

@@ -112,14 +112,12 @@ else()
 endif()
 
 if(NOT ARX_HAVE_WINAPI)
-	# The is no DirectX under linux
+	# DirectX builds on the Win32 api
 	set(USE_D3D9 OFF)
 	set(USE_DSOUND OFF)
 	set(USE_DINPUT8 OFF)
-else()
-	if(USE_D3D9 OR USE_DINPUT8)
-		find_package(DirectX REQUIRED)
-	endif()
+elseif(USE_D3D9 OR USE_DINPUT8)
+	find_package(DirectX REQUIRED)
 endif()
 
 find_package(Freetype REQUIRED)
@@ -284,7 +282,6 @@ else(MSVC)
 	check_symbol_exists(pthread_setname_np "pthread.h" ARX_HAVE_PTHREAD_SETNAME_NP)
 	check_symbol_exists(pthread_set_name_np "pthread.h" ARX_HAVE_PTHREAD_SET_NAME_NP)
 	check_symbol_exists(prctl "sys/prctl.h" ARX_HAVE_PRCTL)
-	check_symbol_exists(PR_SET_NAME "linux/prctl.h" ARX_HAVE_PR_SET_NAME)
 	
 	check_symbol_exists(uname "sys/utsname.h" ARX_HAVE_UNAME)
 	check_symbol_exists(getrusage "sys/resource.h" ARX_HAVE_GETRUSAGE)

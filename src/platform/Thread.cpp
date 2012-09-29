@@ -32,9 +32,8 @@ void Thread::setThreadName(const std::string & _threadName) {
 #include <unistd.h>
 
 #if !defined(ARX_HAVE_PTHREAD_SETNAME_NP) && !defined(ARX_HAVE_PTHREAD_SET_NAME_NP) \
-    && defined(ARX_HAVE_PRCTL) && defined(ARX_HAVE_PR_SET_NAME)
+    && defined(ARX_HAVE_PRCTL)
 #include <sys/prctl.h>
-#include <linux/prctl.h>
 #endif
 
 Thread::Thread() : started(false) {
@@ -103,8 +102,13 @@ void * Thread::entryPoint(void * param) {
 #elif defined(ARX_HAVE_PTHREAD_SET_NAME_NP)
 	// FreeBSD & OpenBSD
 	pthread_set_name_np(thread.thread, thread.threadName.c_str());
-#elif defined(ARX_HAVE_PRCTL) && defined(ARX_HAVE_PR_SET_NAME)
+#elif defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
+	// Linux
 	prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(thread.threadName.c_str()), 0, 0, 0);
+#else
+	// This is non-fatal, but let's print a warning so future ports will be
+	// reminded to implement it.
+	#pragma message ( "No function available to set thread names!" )
 #endif
 	
 	CrashHandler::registerThreadCrashHandlers();
