@@ -26,6 +26,7 @@
 * Fixed problems with the unity build under Linux (crash reports #243, #245)
 * Fixed crashes and disappearing items when sorting the inventory
 * Crafting now always adds items to an existing stack if there is one
+  (feature request #109)
 * Inventory sorting now works on all bags at once
 * Fixed a script execution error when changing the heartbeat event while
   executing the heartbeat event
