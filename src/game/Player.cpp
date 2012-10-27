@@ -2706,7 +2706,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			FALLING_TIME = 0;
 		}
 		
-		// Apply Player Impulse Force
+		// Apply player impulse force
 		
 		float jump_mul = 1.f;
 		if(float(arxtime) - LAST_JUMP_ENDTIME < 600) {
@@ -2719,49 +2719,35 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 		}
 		
-		float TheoricalMove = 230;
-		long time = 1000;
-		if(entities.player()->animlayer[0].cur_anim) {
+		Vec3f impulse = moveto - player.pos;
+		if(impulse != Vec3f::ZERO) {
 			
-			Vec3f mv;
-			GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim,
-			                      entities.player()->animlayer[0].altidx_cur, &mv);
-			TheoricalMove = mv.length();
-			
-			short idx = entities.player()->animlayer[0].altidx_cur;
-			time = entities.player()->animlayer[0].cur_anim->anims[idx]->anim_time;
-			
-			if(player.jumpphase != NotJumping) {
-				if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
-					TheoricalMove = 40.f;
-				} else if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
-					TheoricalMove = 420.f;
-				} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT) {
-					TheoricalMove = 140.f;
-				} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT) {
-					TheoricalMove = 140.f;
+			float scale = 1.25f / 1000;
+			if(entities.player()->animlayer[0].cur_anim) {
+				if(player.jumpphase != NotJumping) {
+					if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
+						scale = 0.5f / 1000;
+					} else if(player.Current_Movement & PLAYER_MOVE_WALK_FORWARD) {
+						scale = 5.25f / 1000;
+					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT) {
+						scale = 1.75f / 1000;
+					} else if(player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT) {
+						scale = 1.75f / 1000;
+					} else {
+						scale = 0.125f / 1000;
+					}
+				} else if(levitate && !player.climbing) {
+					scale = 0.875f / 1000;
 				} else {
-					TheoricalMove = 10.f;
+					Vec3f mv;
+					short idx = entities.player()->animlayer[0].altidx_cur;
+					GetAnimTotalTranslate(entities.player()->animlayer[0].cur_anim, idx, &mv);
+					float time = entities.player()->animlayer[0].cur_anim->anims[idx]->anim_time;
+					scale = mv.length() / time * 0.0125f;
 				}
-				time = 1000;
-			} else if(levitate && !player.climbing) {
-				TheoricalMove = 70.f;
-				time = 1000;
 			}
 			
-		} else {
-			TheoricalMove = 100.f;
-			time = 1000;
-		}
-		
-		TheoricalMove *= jump_mul;
-		
-		Vec3f mv2 = moveto - player.pos;
-		if(mv2 != Vec3f::ZERO) {
-			float tt = 1.f / mv2.length();
-			float mval = TheoricalMove / time * DeltaTime;
-			tt *= mval * ( 1.0f / 80 );
-			mv2 *= tt;
+			impulse *= scale / impulse.length() * jump_mul * DeltaTime;
 		}
 		
 		if(player.jumpphase != NotJumping) {
@@ -2782,14 +2768,14 @@ void PlayerMovementIterate(float DeltaTime) {
 				moveto.z = player.pos.z;
 			}
 			if(player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD) {
-				mv2.x = 0;
-				mv2.z = 0;
+				impulse.x = 0;
+				impulse.z = 0;
 				moveto.x = player.pos.x;
 				moveto.z = player.pos.z;
 			}
 		}
 		
-		player.physics.forces += mv2;
+		player.physics.forces += impulse;
 		
 		// Apply Gravity force if not LEVITATING or JUMPING
 		if(!levitate && player.jumpphase != JumpAscending && !LAST_ON_PLATFORM) {

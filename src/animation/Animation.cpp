@@ -378,34 +378,22 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 	return count;
 }
 
-//*************************************************************************************
 // Fill "pos" with "eanim" total translation
-//*************************************************************************************
-void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
-{
+void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
 	
 	if(!pos) {
 		return;
 	}
-
-	if ((!eanim)
-		|| (!eanim->anims[alt_idx])
-		|| (!eanim->anims[alt_idx]->frames)
-		|| (eanim->anims[alt_idx]->nb_key_frames<=0) )
-	{
-		pos->x=0;
-		pos->y=0;
-		pos->z=0;
-		return;
+	
+	if(!eanim || !eanim->anims[alt_idx] || !eanim->anims[alt_idx]->frames
+	   || eanim->anims[alt_idx]->nb_key_frames <= 0) {
+		*pos = Vec3f::ZERO;
+	} else {
+		long idx = eanim->anims[alt_idx]->nb_key_frames - 1;
+		*pos = eanim->anims[alt_idx]->frames[idx].translate;
 	}
-
-	Vec3f * e3D=&eanim->anims[alt_idx]->frames[eanim->anims[alt_idx]->nb_key_frames-1].translate;
-	pos->x=e3D->x;
-	pos->y=e3D->y;
-	pos->z=e3D->z;
 }
 
-//*************************************************************************************
 // Main Procedure to draw an animated object
 //------------------------------------------
 // Needs some update...
@@ -416,9 +404,6 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 //  unsigned long time    Time increment to current animation in Ms
 //  Entity * io  Referrence to Interactive Object (NULL if no IO)
 //  long typ              Misc Type 0=World View 1=1st Person View
-//*************************************************************************************
-
-//-----------------------------------------------------------------------------
 void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
                  Entity * io) {
 	

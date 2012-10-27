@@ -613,7 +613,7 @@ void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
 		fnormalize(vect);
 		vect *= power;
 		if(io_target == entities.player()) {
-			PUSH_PLAYER_FORCE = vect;
+			PUSH_PLAYER_FORCE = vect; // TODO why not +=?
 		} else {
 			io_target->move += vect;
 		}
