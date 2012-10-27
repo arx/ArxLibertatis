@@ -2518,7 +2518,6 @@ void ARX_PLAYER_MakeStepNoise()
 extern bool bGCroucheToggle;
 extern float MAX_ALLOWED_PER_SECOND;
 
-long LAST_VECT_COUNT = -1;
 long LAST_FIRM_GROUND = 1;
 long TRUE_FIRM_GROUND = 1;
 long DISABLE_JUMP = 0;
@@ -2909,7 +2908,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				}
 			}
 			
-			LAST_VECT_COUNT = -1;
 		}
 		
 		// Apply velocity damping (natural velocity attenuation, stands for friction)
