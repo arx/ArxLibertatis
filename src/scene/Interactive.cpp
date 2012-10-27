@@ -126,7 +126,6 @@ ARX_NODES nodes;
 float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
-long TreatAllIO = 0;
 #ifdef BUILD_EDITOR
 long NbIOSelected = 0;
 #endif
@@ -627,20 +626,8 @@ void PrepareIOTreatZone(long flag)
 		if (ACTIVECAM->cdepth > 6000)
 			TREATZONE_LIMIT += 500;
 	}
-
-	if(TreatAllIO) {
-		for(size_t ii = 1; ii < entities.size(); ii++) {
-			Entity * io = entities[ii];
-			if(io) {
-				io->gameFlags |= GFLAG_ISINTREATZONE;
-				TREATZONE_AddIO(io);
-			}
-		}
-		return;
-	}
-
+	
 	char treat;
-
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
