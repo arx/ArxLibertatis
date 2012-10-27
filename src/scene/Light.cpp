@@ -483,8 +483,6 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	}
 }
 
-long	DYNAMIC_NORMALS = 1;
-
 extern EERIE_CAMERA DynLightCam;
 
 //-----------------------------------------------------------------------------

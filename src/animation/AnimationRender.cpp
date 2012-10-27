@@ -2472,8 +2472,6 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 }
 
 
-extern long DYNAMIC_NORMALS;
-
 void ApplyDynLight(EERIEPOLY * ep)
 {
 	long nbvert, i;
@@ -2516,16 +2514,11 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 		if (distSqr(el->pos, ep->center) <= square(el->fallend + 35.f))
 		{
-			if (Project.improve)
-			{
+			if(Project.improve) {
 				rgb.r = el->rgb255.r * 4.f;
 				rgb.g = rgb.b = 0.2f;
-			}
-			else
-			{
-				rgb.r = el->rgb255.r;
-				rgb.g = el->rgb255.g;
-				rgb.b = el->rgb255.b;
+			} else {
+				rgb = el->rgb255;
 			}
 
 			for (j = 0; j < nbvert; j++)
@@ -2544,18 +2537,12 @@ void ApplyDynLight(EERIEPOLY * ep)
 					float divd = 1.f / d;
 					float nvalue;
 
-					if (DYNAMIC_NORMALS)
-					{
-						Vec3f v1;
-						v1.x = (el->pos.x - ep->v[j].p.x) * divd;
-						v1.y = (el->pos.y - ep->v[j].p.y) * divd;
-						v1.z = (el->pos.z - ep->v[j].p.z) * divd;
-						nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
+					Vec3f v1;
+					v1 = (el->pos - ep->v[j].p) * divd;
+					nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
 
-						if (nvalue > 1.f) nvalue = 1.f;
-						else if (nvalue < 0.f) nvalue = 0.f;
-					}
-					else nvalue = 1.f;
+					if (nvalue > 1.f) nvalue = 1.f;
+					else if (nvalue < 0.f) nvalue = 0.f;
 
 					if (nvalue > 0.f)
 					{
