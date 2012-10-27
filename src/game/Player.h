@@ -308,7 +308,6 @@ extern ARXCHARACTER player;
 extern ARX_NECKLACE necklace;
 extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
-extern ANIM_HANDLE * herowait2;
 extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> PlayerQuest;
 extern std::vector<KEYRING_SLOT> Keyring;

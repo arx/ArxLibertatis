@@ -164,7 +164,6 @@ long sp_max = 0;
 
 // Player Anims FLAGS/Vars
 ANIM_HANDLE * herowaitbook = NULL;
-ANIM_HANDLE * herowait2 = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
 
 ARX_NECKLACE necklace;
@@ -1523,7 +1522,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 	const char ANIM_WAIT_BOOK[] = "graph/obj3d/anims/npc/human_wait_book.tea";
 	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
 	const char ANIM_WAIT_NORMAL[] = "graph/obj3d/anims/npc/human_normal_wait.tea";
-	herowait2 = EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
+	EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
 	const char ANIM_WAIT_TWOHANDED[] = "graph/obj3d/anims/npc/human_wait_book_2handed.tea";
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 	

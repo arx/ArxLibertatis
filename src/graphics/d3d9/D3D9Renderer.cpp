@@ -380,9 +380,9 @@ static D3DMATRIX * DX9MatrixOrthoOffCenterLH(D3DMATRIX * pout, float l, float r,
 	return pout;
 }
 
-D3DMATRIX g_MatProj;
-D3DMATRIX g_MatWorld;
-D3DMATRIX g_MatView;
+static D3DMATRIX g_MatProj;
+static D3DMATRIX g_MatWorld;
+static D3DMATRIX g_MatView;
 
 void D3D9Renderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	

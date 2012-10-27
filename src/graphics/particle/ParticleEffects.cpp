@@ -104,7 +104,7 @@ TextureContainer * water_splat[3];
 TextureContainer * water_drop[3];
 TextureContainer * smokeparticle=NULL;
 static TextureContainer * bloodsplatter = NULL;
-TextureContainer * healing=NULL;
+static TextureContainer * healing = NULL;
 TextureContainer * tzupouf=NULL;
 TextureContainer * fire2=NULL;
 
@@ -117,9 +117,9 @@ short			OPIPOrgb=0;
 short			PIPOrgb=0;
 short			shinum=1;
 long			NewSpell=0;
-TextureContainer	*GTC;
-float				ET_R,ET_G,ET_B;
-int					ET_MASK;
+static TextureContainer * GTC;
+static float ET_R, ET_G, ET_B;
+static int ET_MASK;
 long			HIDEMAGICDUST=0;
 
 //-----------------------------------------------------------------------------

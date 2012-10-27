@@ -75,7 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 EERIE_CAMERA	Camera;
 bool			LeftButton, RightButton;
 C_KEY		*	KeyCopy;
-int				LargeurRender, HauteurRender;
+static int LargeurRender, HauteurRender;
 bool			InRender;
 
 //vertex

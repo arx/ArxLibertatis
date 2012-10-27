@@ -109,7 +109,7 @@ INVENTORY_DATA * SecondaryInventory = NULL;
 Entity * DRAGINTER = NULL;
 Entity * ioSteal = NULL;
 long InventoryY = 100;
-long HERO_OR_SECONDARY = 0;
+static long HERO_OR_SECONDARY = 0;
 short sActiveInventory = 0;
 
 // 1 player 2 secondary

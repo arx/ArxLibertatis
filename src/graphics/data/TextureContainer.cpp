@@ -76,15 +76,13 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
 const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap | TextureContainer::NoRefinement);
 
-TextureContainer * g_ptcTextureList = NULL;
+static TextureContainer * g_ptcTextureList = NULL;
 
-TextureContainer * GetTextureList()
-{
+TextureContainer * GetTextureList() {
 	return g_ptcTextureList;
 }
 
-TextureContainer * GetAnyTexture()
-{
+TextureContainer * GetAnyTexture() {
 	return g_ptcTextureList;
 }
 
