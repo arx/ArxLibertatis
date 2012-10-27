@@ -622,21 +622,15 @@ void ARX_SPEECH_Update() {
 
 }
 
-//-----------------------------------------------------------------------------
-bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is)
-{
-	if (is < 0) return false;
-
-	if (aspeech[is].io == NULL)  return false;
-
-
-	conversationcamera->d_pos.x = aspeech[is].io->pos.x;
-	conversationcamera->d_pos.y = aspeech[is].io->pos.y + PLAYER_BASE_HEIGHT;
-	conversationcamera->d_pos.z = aspeech[is].io->pos.z;
+bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is) {
+	
+	if(is < 0 || !aspeech[is].io) {
+		return false;
+	}
+	
+	conversationcamera->d_pos = aspeech[is].io->pos + player.baseOffset();
 	float t = (aspeech[is].io->angle.b);
-	conversationcamera->pos.x = conversationcamera->d_pos.x + (float)EEsin(t) * 100.f;
-	conversationcamera->pos.y = conversationcamera->d_pos.y;
-	conversationcamera->pos.z = conversationcamera->d_pos.z - (float)EEcos(t) * 100.f;
-
+	conversationcamera->pos = conversationcamera->d_pos;
+	conversationcamera->pos += Vec3f(EEsin(t) * 100.f, 0.f, -EEcos(t) * 100.f);
 	return true;
 }

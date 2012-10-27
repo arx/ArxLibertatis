@@ -691,106 +691,70 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			absorb *= modif;
 		}
 	}
-
-
+	
 	if(!io_target->armormaterial.empty()) {
 		amat = &io_target->armormaterial;
 	}
-
+	
 	if(io_target == entities.player()) {
-		if(player.equiped[EQUIP_SLOT_ARMOR] > 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] > 0
+		   && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
 				amat = &io->armormaterial;
 			}
 		}
 	}
-
-	float dmgs = damages * backstab;
-	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
-
-	Vec3f pos;
-	pos.x = io_target->pos.x;
-	pos.y = io_target->pos.y;
-	pos.z = io_target->pos.z;
-	float power;
-	power = dmgs * ( 1.0f / 20 );
-
-	if (power > 1.f) power = 1.f;
 	
-	power = power * 0.1f + 0.9f;
+	float dmgs = damages * backstab;
+	dmgs -= dmgs * absorb * 0.01f;
+	
+	Vec3f pos = io_target->pos;
+	float power = std::min(1.f, dmgs * 0.05f) * 0.1f + 0.9f;
 	
 	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, &pos, io_source);
-
-
+	
 	float chance = 100.f - (ac - attack); 
-	float dice = rnd() * 100.f;
-
-	if (dice <= chance) 
-	{
-		ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
-
-		Vec3f pos;
-		pos.x = io_target->pos.x;
-		pos.y = io_target->pos.y + io_target->physics.cyl.height * ( 1.0f / 2 );
-		pos.z = io_target->pos.z;
-
-
-		if (dmgs > 0.f)
-		{
-			if (critical)
-			{
-				dmgs *= 1.5f; 
-			}
-
-			if (io_target == entities.player())
-			{
-				Vec3f ppos;
-				ppos.x = io_source->pos.x - player.pos.x;
-				ppos.y = io_source->pos.y - player.pos.y - PLAYER_BASE_HEIGHT;
-				ppos.z = io_source->pos.z - player.pos.z;
-				fnormalize(ppos);
-
-				//------- player push START
-				Vec3f push = ppos;
-				push.x *= -dmgs * ( 1.0f / 11 );
-				push.y *= -dmgs * ( 1.0f / 30 );
-				push.z *= -dmgs * ( 1.0f / 11 );
-				PUSH_PLAYER_FORCE += push;
-				//------- player push END
-
-				ppos *= 60.f;
-				ppos += ACTIVECAM->pos;
-				ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
-				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
-			}
-			else
-			{
-
-				Vec3f ppos = io_source->pos - io_target->pos;
-
-				if (io_target == entities.player()) ppos.y -= PLAYER_BASE_HEIGHT;
-
-				fnormalize(ppos);
-
-				//------- player NPC START
-				Vec3f push = ppos;
-				push *= -dmgs;
-				io_target->forcedmove += push;
-
-				//------- player NPC END
-				if (position)
-					ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, position);
-				else
-					ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, &io_target->pos);
-			}
-		}
-
-		return dmgs;
+	if(rnd() * 100.f > chance) {
+		return 0.f;
 	}
-
-
-	return 0.f;
+	
+	ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
+	
+	if(dmgs > 0.f) {
+		
+		if(critical) {
+			dmgs *= 1.5f; 
+		}
+		
+		if(io_target == entities.player()) {
+			
+			// TODO should this be  io_source->pos - player.basePosition();
+			Vec3f ppos = io_source->pos - player.pos - player.baseOffset();
+			fnormalize(ppos);
+			
+			// Push the player
+			PUSH_PLAYER_FORCE += ppos * -dmgs * Vec3f(1.0f / 11, 1.0f / 30, 1.0f / 11);
+			
+			ppos *= 60.f;
+			ppos += ACTIVECAM->pos;
+			ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
+			ARX_DAMAGES_DamagePlayerEquipment(dmgs);
+			
+		} else {
+			
+			Vec3f ppos = io_source->pos - io_target->pos;
+			fnormalize(ppos);
+			
+			// Push the NPC
+			io_target->forcedmove += ppos * -dmgs;
+			
+			Vec3f * pos = position ? position : &io_target->pos;
+			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, pos);
+		}
+	}
+	
+	return dmgs;
 }
 
 static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {

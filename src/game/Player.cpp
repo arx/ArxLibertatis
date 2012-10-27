@@ -178,9 +178,6 @@ ANIM_HANDLE * herowait_2h = NULL;
 ARX_NECKLACE necklace;
 
 vector<KEYRING_SLOT> Keyring;
-float PLAYER_BASE_RADIUS = 52;
-float PLAYER_BASE_HEIGHT = -170;
-float PLAYER_CROUCH_HEIGHT = -120;
 Entity * CURRENT_TORCH = NULL;
 
 unsigned long FALLING_TIME = 0;
@@ -1633,149 +1630,112 @@ extern long ON_PLATFORM;
 long LAST_ON_PLATFORM = 0;
 extern long MOVE_PRECEDENCE;
 extern long EXTERNALVIEW;
-//*************************************************************************************
-// void ARX_PLAYER_Manage_Visual()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Manages Player visual
-//   Choose the set of animations to use to represent current player
-//   situation.
-//*************************************************************************************
-void ARX_PLAYER_Manage_Visual()
-{
 
+// Manages Player visual
+// Choose the set of animations to use to represent current player
+// situation.
+void ARX_PLAYER_Manage_Visual() {
+	
 	unsigned long tim = (unsigned long)(arxtime);
-
-	if (player.Current_Movement & PLAYER_ROTATE)
-	{
-		if (ROTATE_START == 0)
-		{
+	
+	if(player.Current_Movement & PLAYER_ROTATE) {
+		if(ROTATE_START == 0) {
 			ROTATE_START = tim;
 		}
-	}
-	else
-	{
-		if (ROTATE_START)
-		{
-			float diff = (float)tim - (float)ROTATE_START;
-
-			if (diff > 100)
-				ROTATE_START = 0;
+	} else if (ROTATE_START) {
+		float diff = (float)tim - (float)ROTATE_START;
+		if(diff > 100) {
+			ROTATE_START = 0;
 		}
 	}
-
+	
 	static long special[3];
 	long light = 0;
-
-	if (entities.player())
-	{
+	
+	if(entities.player()) {
+		
 		Entity * io = entities.player();
-
-		if (!BLOCK_PLAYER_CONTROLS)
-			if (sp_max)
-			{
-				io->halo.color.r = 1.f;
-				io->halo.color.g = 0.f;
-				io->halo.color.b = 0.f;
-				io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
-				io->halo.radius = 20.f;
-				player.life += (float)FrameDiff * ( 1.0f / 10 ); 
-				player.life = std::min(player.life, player.maxlife);
-				player.mana += (float)FrameDiff * ( 1.0f / 10 ); 
-				player.mana = std::min(player.mana, player.maxmana);
-
-			}
-
-		if (cur_mr == 3)
-		{
-			player.life += (float)FrameDiff * ( 1.0f / 20 ); 
+		
+		if(!BLOCK_PLAYER_CONTROLS && sp_max) {
+			io->halo.color = Color3f::red;
+			io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
+			io->halo.radius = 20.f;
+			player.life += float(FrameDiff) * 0.1f;
 			player.life = std::min(player.life, player.maxlife);
-			player.mana += (float)FrameDiff * ( 1.0f / 20 ); 
+			player.mana += float(FrameDiff) * 0.1f;
 			player.mana = std::min(player.mana, player.maxmana);
 		}
-
-		io->pos.x = player.pos.x;
-		io->pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
-		io->pos.z = player.pos.z;
-
+		
+		if(cur_mr == 3) {
+			player.life += float(FrameDiff) * 0.05f;
+			player.life = std::min(player.life, player.maxlife);
+			player.mana += float(FrameDiff) * 0.05f;
+			player.mana = std::min(player.mana, player.maxmana);
+		}
+		
+		io->pos = player.basePosition();
+		
 		if(player.jumpphase == NotJumping && !LAST_ON_PLATFORM) {
-			float tempo;
-			EERIEPOLY * ep = CheckInPolyPrecis(player.pos.x, player.pos.y, player.pos.z, &tempo);
-
-			if (ep && ((io->pos.y > tempo - 30.f) && (io->pos.y < tempo)))
-			{
-					player.onfirmground = 1;
+			float t;
+			EERIEPOLY * ep = CheckInPolyPrecis(player.pos.x, player.pos.y, player.pos.z, &t);
+			if(ep && io->pos.y > t - 30.f && io->pos.y < t) {
+				player.onfirmground = 1;
 			}
 		}
-
+		
 		ComputeVVPos(io);
 		io->pos.y = io->_npcdata->vvpos;
-
-		if ((!(player.Current_Movement & PLAYER_CROUCH)) && (player.physics.cyl.height > -150.f))
-		{
+		
+		if(!(player.Current_Movement & PLAYER_CROUCH) && player.physics.cyl.height > -150.f) {
 			float old = player.physics.cyl.height;
-			player.physics.cyl.height = PLAYER_BASE_HEIGHT;
-			player.physics.cyl.origin.x = player.pos.x;
-			player.physics.cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
-			player.physics.cyl.origin.z = player.pos.z;
+			player.physics.cyl.height = player.baseHeight();
+			player.physics.cyl.origin = player.basePosition();
 			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player());
-
-			if (anything < 0.f)
-			{
+			if(anything < 0.f) {
 				player.Current_Movement |= PLAYER_CROUCH;
 				player.physics.cyl.height = old;
 			}
 		}
-
-		if (player.life > 0)
-		{
-			io->angle.a = 0;
-			io->angle.b = 180.f - player.angle.b; //+90.f;
-			io->angle.g = 0;
+		
+		if(player.life > 0) {
+			io->angle = Anglef(0.f, 180.f - player.angle.b, 0.f);
 		}
-
+		
 		io->gameFlags |= GFLAG_ISINTREATZONE;
-
+		
 		ANIM_USE * ause0 = &io->animlayer[0];
 		ANIM_USE * ause1 = &io->animlayer[1];
 		ANIM_USE * ause3 = &io->animlayer[3];
-
+		
 		ause0->next_anim = NULL;
 		entities.player()->animlayer[1].next_anim = NULL;
 		entities.player()->animlayer[2].next_anim = NULL;
 		entities.player()->animlayer[3].next_anim = NULL;
 		ANIM_HANDLE ** alist = io->anims;
-
-		if (ause0->flags & EA_FORCEPLAY)
-		{
-			if (ause0->flags & EA_ANIMEND)
-			{
+		
+		if(ause0->flags & EA_FORCEPLAY) {
+			if(ause0->flags & EA_ANIMEND) {
 				ause0->flags &= ~EA_FORCEPLAY;
 				ause0->flags |= EA_STATICANIM;
-				io->move.x = io->lastmove.x = 0.f;
-				io->move.y = io->lastmove.y = 0.f;
-				io->move.z = io->lastmove.z = 0.f;
-			}
-			else
-			{
+				io->move = io->lastmove = Vec3f::ZERO;
+			} else {
 				ause0->flags &= ~EA_STATICANIM;
-				io->pos.x = player.pos.x = moveto.x = player.pos.x + io->move.x;
-				io->pos.y = player.pos.y = moveto.y = player.pos.y + io->move.y;
-				io->pos.z = player.pos.z = moveto.z = player.pos.z + io->move.z;
-				io->pos.y += -PLAYER_BASE_HEIGHT;
+				player.pos = moveto = player.pos + io->move;
+				io->pos = player.basePosition();
 				goto nochanges;
 			}
 		}
-
+		
 		ANIM_HANDLE * ChangeMoveAnim = NULL;
 		ANIM_HANDLE * ChangeMoveAnim2 = NULL;
 		long ChangeMA_Loop = 1;
 		long ChangeMA_Stopend = 0;
-
-		if (io->ioflags & IO_FREEZESCRIPT) goto nochanges;
-
-		if (player.life <= 0)
-		{
+		
+		if(io->ioflags & IO_FREEZESCRIPT) {
+			goto nochanges;
+		}
+		
+		if(player.life <= 0) {
 			HERO_SHOW_1ST = -1;
 			io->animlayer[1].cur_anim = NULL;
 			ChangeMoveAnim = alist[ANIM_DIE];
@@ -1783,33 +1743,21 @@ void ARX_PLAYER_Manage_Visual()
 			ChangeMA_Stopend = 1;
 			goto makechanges;
 		}
-
-		if (player.Current_Movement == 0 || player.Current_Movement == PLAYER_MOVE_STEALTH)
-		{
-			if (player.Interface & INTER_COMBATMODE)
+		
+		if(player.Current_Movement == 0 || player.Current_Movement == PLAYER_MOVE_STEALTH
+		   || (player.Current_Movement & PLAYER_ROTATE)) {
+			if(player.Interface & INTER_COMBATMODE) {
 				ChangeMoveAnim = alist[ANIM_FIGHT_WAIT];
-			else if (EXTERNALVIEW)
+			} else if(EXTERNALVIEW) {
 				ChangeMoveAnim = alist[ANIM_WAIT];
-			else
+			} else {
 				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
-
+			}
 			ChangeMA_Loop = 1;
 		}
-
-		if (player.Current_Movement & PLAYER_ROTATE)
-		{
-			if (player.Interface & INTER_COMBATMODE)
-				ChangeMoveAnim = alist[ANIM_FIGHT_WAIT];
-			else	if (EXTERNALVIEW)
-				ChangeMoveAnim = alist[ANIM_WAIT];
-			else
-				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
-
-			ChangeMA_Loop = 1;
-		}
-
-		if ((ROTATE_START) && (player.angle.a > 60.f) && (player.angle.a < 180.f) && (LASTPLAYERA > 60.f) && (LASTPLAYERA < 180.f))
-		{
+		
+		if(ROTATE_START && player.angle.a > 60.f && player.angle.a < 180.f
+		   && LASTPLAYERA > 60.f && LASTPLAYERA < 180.f) {
 			if (PLAYER_ROTATION < 0)
 			{
 				if (player.Interface & INTER_COMBATMODE)
@@ -1995,7 +1943,7 @@ void ARX_PLAYER_Manage_Visual()
 				{
 					ChangeMoveAnim = alist[ANIM_CROUCH_WAIT];
 					ChangeMA_Loop = 1;
-					player.physics.cyl.height = PLAYER_CROUCH_HEIGHT;
+					player.physics.cyl.height = player.crouchHeight();
 				}
 			}
 			else
@@ -2313,16 +2261,12 @@ nochanges:
 		}
 	}
 }
-//*************************************************************************************
-// void InitPlayer()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Init Local Player Data
-//*************************************************************************************
+
+// Init Local Player Data
 void ARX_PLAYER_InitPlayer() {
 	player.Interface = INTER_MINIBOOK | INTER_MINIBACK | INTER_LIFE_MANA;
-	player.physics.cyl.height = PLAYER_BASE_HEIGHT;
-	player.physics.cyl.radius = PLAYER_BASE_RADIUS;
+	player.physics.cyl.height = player.baseHeight();
+	player.physics.cyl.radius = player.baseRadius();
 	player.life = player.maxlife = player.Full_maxlife = 100.f;
 	player.mana = player.maxmana = player.Full_maxmana = 100.f;
 	player.falling = 0;
@@ -2336,14 +2280,9 @@ void ARX_PLAYER_InitPlayer() {
 	ARX_PLAYER_MakeFreshHero();
 }
 
-//*************************************************************************************
-// void ForcePlayerLookAtIO(Entity * io)
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Forces player orientation to look at an IO
-//*************************************************************************************
-void ForcePlayerLookAtIO(Entity * io)
-{
+// Forces player orientation to look at an IO
+void ForcePlayerLookAtIO(Entity * io) {
+	
 	// Validity Check
 	if (!io) return;
 
@@ -2476,43 +2415,35 @@ void ARX_PLAYER_Frame_Update()
 
 	ARX_PLAYER_ManageTorch();
 }
-//*************************************************************************************
-// void ARX_PLAYER_MakeStepNoise()
-//-------------------------------------------------------------------------------------
-// FUNCTION/RESULT:
-//   Emit player step noise
-//*************************************************************************************
-void ARX_PLAYER_MakeStepNoise()
-{
-	if (ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) >= 0)
-		return;
 
-	if (USE_PLAYERCOLLISIONS)
-	{
+// Emit player step noise
+void ARX_PLAYER_MakeStepNoise() {
+	
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) >= 0) {
+		return;
+	}
+	
+	if(USE_PLAYERCOLLISIONS) {
+		
 		float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT;
 		float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT;
-
-		if (player.Current_Movement & PLAYER_MOVE_STEALTH)
-		{
+		
+		if(player.Current_Movement & PLAYER_MOVE_STEALTH) {
 			float skill_stealth;
-
 			skill_stealth = player.Full_Skill_Stealth / ARX_PLAYER_SKILL_STEALTH_MAX;
-
 			volume -= ARX_NPC_AUDIBLE_VOLUME_RANGE * skill_stealth;
 			factor += ARX_NPC_AUDIBLE_FACTOR_RANGE * skill_stealth;
 		}
-
-		Vec3f pos;
-
-		pos.x = player.pos.x;
-		pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
-		pos.z = player.pos.z;
-
+		
+		Vec3f pos = player.basePosition();
 		ARX_NPC_NeedStepSound(entities.player(), &pos, volume, factor);
 	}
-
-	while (currentdistance >= STEP_DISTANCE) currentdistance -= STEP_DISTANCE;
+	
+	while(currentdistance >= STEP_DISTANCE) {
+		currentdistance -= STEP_DISTANCE;
+	}
 }
+
 extern bool bGCroucheToggle;
 extern float MAX_ALLOWED_PER_SECOND;
 
@@ -2524,56 +2455,46 @@ extern float GLOBAL_SLOWDOWN;
 extern float Original_framedelay;
 
 unsigned long LAST_JUMP_ENDTIME = 0;
-bool Valid_Jump_Pos()
-{
-	if ((LAST_ON_PLATFORM) || player.climbing)
-		return true;
 
+bool Valid_Jump_Pos() {
+	
+	if(LAST_ON_PLATFORM || player.climbing) {
+		return true;
+	}
+	
 	EERIE_CYLINDER tmpp;
 	tmpp.height = player.physics.cyl.height;
-	tmpp.origin.x = player.pos.x;
-	tmpp.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
-	tmpp.origin.z = player.pos.z;
+	tmpp.origin = player.basePosition();
 	tmpp.radius = player.physics.cyl.radius * 0.85f;
-	float tmp = CheckAnythingInCylinder(&tmpp, entities.player(), CFLAG_PLAYER | CFLAG_JUST_TEST);
-
-	if (tmp <= 20.f)
+	float tmp = CheckAnythingInCylinder(&tmpp, entities.player(),
+	                                    CFLAG_PLAYER | CFLAG_JUST_TEST);
+	if(tmp <= 20.f) {
 		return true;
-
+	}
+	
 	long hum = 0;
-
-	for (float vv = 0; vv < 360.f; vv += 20.f)
-	{
-		tmpp.origin.x = player.pos.x - EEsin(radians(vv)) * 20.f;
-		tmpp.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
-		tmpp.origin.z = player.pos.z + EEcos(radians(vv)) * 20.f;
+	for(float vv = 0; vv < 360.f; vv += 20.f) {
+		tmpp.origin = player.basePosition();
+		tmpp.origin += Vec3f(-EEsin(radians(vv)) * 20.f, 0.f, EEcos(radians(vv)) * 20.f);
 		tmpp.radius = player.physics.cyl.radius;
-		float anything = CheckAnythingInCylinder(&tmpp, entities.player(), CFLAG_JUST_TEST); //-cyl->origin.y;
-
-		if (anything > 10)
-		{
+		float anything = CheckAnythingInCylinder(&tmpp, entities.player(), CFLAG_JUST_TEST);
+		if(anything > 10) {
 			hum = 1;
 			break;
 		}
 	}
-
-	if (!hum)
+	if(!hum) {
 		return true;
-
-
-	if (COLLIDED_CLIMB_POLY)
-	{
+	}
+	
+	if(COLLIDED_CLIMB_POLY) {
 		player.climbing = 1;
 		return true;
 	}
-
-	if ((tmp > 50.f))
-	{
-		return false;
-	}
-
-	return true;
+	
+	return (tmp <= 50.f);
 }
+
 extern float player_climb;
 extern float PLAYER_CLIMB_THRESHOLD;
 void PlayerMovementIterate(float DelatTime);
@@ -2626,10 +2547,11 @@ void PlayerMovementIterate(float DeltaTime) {
 	// A jump is requested so let's go !
 	if(REQUEST_JUMP) {
 		
-		if((player.Current_Movement & PLAYER_CROUCH) || player.physics.cyl.height > -170.f) {
+		if((player.Current_Movement & PLAYER_CROUCH)
+		   || player.physics.cyl.height > player.baseHeight()) {
 			float old = player.physics.cyl.height;
-			player.physics.cyl.height = PLAYER_BASE_HEIGHT;
-			player.physics.cyl.origin = player.pos - Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+			player.physics.cyl.height = player.baseHeight();
+			player.physics.cyl.origin = player.basePosition();
 			float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player(),
 			                                         CFLAG_JUST_TEST);
 			if(anything < 0.f) {
@@ -2639,7 +2561,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			} else {
 				bGCroucheToggle = false;
 				player.Current_Movement &= ~PLAYER_CROUCH;
-				player.physics.cyl.height = PLAYER_BASE_HEIGHT;
+				player.physics.cyl.height = player.baseHeight();
 			}
 		}
 		
@@ -2667,8 +2589,6 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 	}
 	
-	const float PLAYER_LEVITATE_HEIGHT = -220.f;
-	
 	float d = 0;
 	
 	if(!EDITMODE && USE_PLAYERCOLLISIONS) {
@@ -2680,10 +2600,10 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 		if(player.levitate) {
 			
-			if(player.physics.cyl.height != PLAYER_LEVITATE_HEIGHT) {
+			if(player.physics.cyl.height != player.levitateHeight()) {
 				float old = player.physics.cyl.height;
-				player.physics.cyl.height = PLAYER_LEVITATE_HEIGHT;
-				player.physics.cyl.origin = player.pos - Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+				player.physics.cyl.height = player.levitateHeight();
+				player.physics.cyl.origin = player.basePosition();
 				float anything = CheckAnythingInCylinder(&player.physics.cyl, entities.player());
 				if(anything < 0.f) {
 					player.physics.cyl.height = old;
@@ -2694,15 +2614,15 @@ void PlayerMovementIterate(float DeltaTime) {
 				}
 			}
 			
-			if(player.physics.cyl.height == PLAYER_LEVITATE_HEIGHT) {
+			if(player.physics.cyl.height == player.levitateHeight()) {
 				levitate = CFLAG_LEVITATE;
 				player.climbing = 0;
 				bGCroucheToggle = false;
 				player.Current_Movement &= ~PLAYER_CROUCH;
 			}
 			
-		} else if(player.physics.cyl.height == PLAYER_LEVITATE_HEIGHT) {
-			player.physics.cyl.height = PLAYER_BASE_HEIGHT;
+		} else if(player.physics.cyl.height == player.levitateHeight()) {
+			player.physics.cyl.height = player.baseHeight();
 		}
 		
 		if(player.jumpphase != JumpAscending && !levitate) {
@@ -2739,9 +2659,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		EERIE_CYLINDER cyl;
-		cyl.origin.x = player.pos.x;
-		cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT + 1.f;
-		cyl.origin.z = player.pos.z;
+		cyl.origin = player.basePosition() + Vec3f(0.f, 1.f, 0.f);
 		cyl.radius = player.physics.cyl.radius;
 		cyl.height = player.physics.cyl.height;
 		float anything2 = CheckAnythingInCylinder(&cyl, entities.player(), CFLAG_JUST_TEST | CFLAG_PLAYER); //-cyl->origin.y;
@@ -2888,15 +2806,15 @@ void PlayerMovementIterate(float DeltaTime) {
 			                             &epcentery);
 			if(ep) {
 				if((ep->type & POLY_LAVA)
-				   && EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) < 30) {
-					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT))
+				   && EEfabs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
+					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - player.baseHeight()))
 					                   * (1.0f / 30));
 					const float LAVA_DAMAGE = 10.f;
 					float damages = LAVA_DAMAGE * FrameDiff * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
-					Vec3f pos = player.pos - Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+					Vec3f pos = player.basePosition();
 					ARX_PARTICLES_Spawn_Lava_Burn(&pos, entities.player());
 				}
 			}
@@ -2964,7 +2882,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		} else {
 			
 			// Need to apply some physics/collision tests
-			player.physics.cyl.origin = player.pos - Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+			player.physics.cyl.origin = player.basePosition();
 			player.physics.startpos = player.physics.cyl.origin;
 			player.physics.targetpos = player.physics.startpos + player.physics.velocity;
 			
@@ -3069,7 +2987,7 @@ void PlayerMovementIterate(float DeltaTime) {
 				player.climbing = 0;
 			}
 			
-			moveto = player.physics.cyl.origin + Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+			moveto = player.physics.cyl.origin + player.baseOffset();
 			d = dist(player.pos, moveto);
 		}
 		
@@ -3189,21 +3107,14 @@ float GetPlayerStealth()
 	return 15 + player.Full_Skill_Stealth * ( 1.0f / 10 );
 }
 
-//******************************************************************************
 // Teleport player to any poly...
-//******************************************************************************
-void ARX_PLAYER_GotoAnyPoly()
-{
-	for (long j = 0; j < ACTIVEBKG->Zsize; j++)
-	{
-		for (long i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			if (eg->nbpoly)
-			{
+void ARX_PLAYER_GotoAnyPoly() {
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
+			if(eg->nbpoly) {
 				player.pos.x = moveto.x = eg->polydata[0].center.x;
-				player.pos.y = moveto.y = eg->polydata[0].center.y + PLAYER_BASE_HEIGHT;
+				player.pos.y = moveto.y = eg->polydata[0].center.y + player.baseHeight();
 				player.pos.z = moveto.z = eg->polydata[0].center.z;
 			}
 		}

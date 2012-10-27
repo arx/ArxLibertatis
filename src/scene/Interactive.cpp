@@ -1696,65 +1696,40 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
 	}
 	
 	FRAME_COUNT = -1;
-	Vec3f translate;
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;
-
-	if (io == entities.player())
-	{
-		moveto.x = player.pos.x = target->x;
-		moveto.y = player.pos.y = target->y + PLAYER_BASE_HEIGHT;
-		moveto.z = player.pos.z = target->z;
+	
+	if(io == entities.player()) {
+		moveto = player.pos = *target + player.baseOffset();
 	}
-
-	translate.x = target->x - io->pos.x;
-	translate.y = target->y - io->pos.y;
-	translate.z = target->z - io->pos.z;
-
+	
 	// In case it is being dragged... (except for drag teleport update)
-	if (!flags & 1)
-	{
-		if (io == DRAGINTER)
-			Set_DragInter(NULL);
+	if((!flags & 1) && io == DRAGINTER) { // TODO probably wrong
+		Set_DragInter(NULL);
 	}
-
-	io->pos.x += translate.x;
-	io->pos.y += translate.y;
-
-	if (io->ioflags & IO_NPC)
+	
+	if(io->ioflags & IO_NPC) {
 		io->_npcdata->vvpos = io->pos.y;
-
-	io->pos.z += translate.z;
-	io->lastpos.x = io->physics.cyl.origin.x = io->pos.x;
-	io->lastpos.y = io->physics.cyl.origin.y = io->pos.y;
-	io->lastpos.z = io->physics.cyl.origin.z = io->pos.z;
-
-	if (io->obj)
-	{
-		if (io->obj->pbox)
-		{
-			if (io->obj->pbox->active)
-			{
-				for (long i = 0; i < io->obj->pbox->nb_physvert; i++)
-				{
-					io->obj->pbox->vert[i].pos.x += translate.x;
-					io->obj->pbox->vert[i].pos.y += translate.y;
-					io->obj->pbox->vert[i].pos.z += translate.z;
+	}
+	
+	Vec3f translate = *target - io->pos;
+	io->lastpos = io->physics.cyl.origin = io->pos = *target;
+	
+	if(io->obj) {
+		if(io->obj->pbox) {
+			if(io->obj->pbox->active) {
+				for(long i = 0; i < io->obj->pbox->nb_physvert; i++) {
+					io->obj->pbox->vert[i].pos += translate;
 				}
-
 				io->obj->pbox->active = 0;
 			}
 		}
-
-		for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
-		{
-			io->obj->vertexlist3[i].v.x += translate.x;
-			io->obj->vertexlist3[i].v.y += translate.y;
-			io->obj->vertexlist3[i].v.z += translate.z;
+		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
+			io->obj->vertexlist3[i].v += translate;
 		}
 	}
-
+	
 	MOLLESS_Clear(io->obj, 1);
 	ResetVVPos(io);
 }
@@ -1951,72 +1926,42 @@ Entity * AddFix(const res::path & classPath, EntityInstance instance,
 	}
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
-
-	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
-
-	if (ep)
-	{
-		float tempo;
-
-		if (GetTruePolyY(ep, &io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo;
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	
+	float tempo;
+	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
-
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	if (!io->obj)
-	{
-		if (flags & NO_MESH)
-		{
-			io->obj = NULL;
-
-		}
-		else
-		{
-			io->obj = loadObject(object, false);
-		}
+	
+	if(!io->obj && !(flags & NO_MESH)) {
+		io->obj = loadObject(object, false);
 	}
-
-	io->infracolor.r = 0.6f;
-	io->infracolor.g = 0.f;
-	io->infracolor.b = 1.f;
-	TextureContainer * tc;
-	tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
-
-	if (tc)
-	{
+	
+	io->infracolor = Color3f(0.6f, 0.f, 1.f);
+	
+	TextureContainer * tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
+	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
-
-		if ((w << 5) != tc->m_dwWidth) io->sizex = (char)(w + 1);
-		else io->sizex = (char)(w);
-
-		if ((h << 5) != tc->m_dwHeight) io->sizey = (char)(h + 1);
-		else io->sizey = (char)(h);
-
-		if (io->sizex < 1) io->sizex = 1;
-		else if (io->sizex > 3) io->sizex = 3;
-
-		if (io->sizey < 1) io->sizey = 1;
-		else if (io->sizey > 3) io->sizey = 3;
-
+		io->sizex = char(clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
+		io->sizey = char(clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
 		io->inv = tc;
 	}
-
+	
 	io->collision = COLLIDE_WITH_PLAYER;
-
+	
 	return io;
 }
 
@@ -2042,39 +1987,36 @@ static Entity * AddCamera(const res::path & classPath,
 	
 	GetIOScript(io, script);
 	
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
-	float tempo;
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
+	float tempo;
 	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z, &tempo);
-
-	if (ep)
-	{
+	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z, &tempo);
+	if(ep) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
-
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
-
+	
+	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
+	
 	io->obj = cameraobj;
-
+	
 	io->_camdata = (IO_CAMDATA *)malloc(sizeof(IO_CAMDATA));
 	memcpy(&io->_camdata->cam, &subj, sizeof(EERIE_CAMERA));
 	io->_camdata->cam.focal = 350.f;
 	io->ioflags = IO_CAMERA;
 	io->collision = 0;
-
+	
 	return io;
 }
 
@@ -2100,37 +2042,32 @@ static Entity * AddMarker(const res::path & classPath,
 	
 	GetIOScript(io, script);
 	
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
+	float tempo;
 	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
-
-	if (ep)
-	{
-		float tempo;
-
-		if (GetTruePolyY(ep, &io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo;
+	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
-
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
-
+	
+	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
+	
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
-
+	
 	return io;
 }
 
@@ -2176,22 +2113,12 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 // Snaps to ground all selected IOs
 void GroundSnapSelectedIO() {
 	for(size_t i = 1; i < entities.size(); i++) {
-		if ((entities[i] != NULL)
-		        &&	false /* is selected */)
-		{
+		if(entities[i] != NULL && false /* is selected */) {
 			Entity * io = entities[i];
-			Vec3f ppos;
-			ppos.x = io->pos.x;
-			ppos.y = io->pos.y;
-			ppos.z = io->pos.z;
-			EERIEPOLY * ep = CheckInPoly(ppos.x, ppos.y + PLAYER_BASE_HEIGHT, ppos.z);
-
-			if (ep)
-			{
-				float ay;
-
-				if (GetTruePolyY(ep, &io->pos, &ay))
-					io->initpos.y = io->pos.y = ay;
+			float ay;
+			EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+			if(ep && GetTruePolyY(ep, &io->pos, &ay)) {
+				io->initpos.y = io->pos.y = ay;
 			}
 		}
 	}
@@ -2298,9 +2225,8 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 	io->forcedmove = Vec3f::ZERO;
 	
 	io->_npcdata = new IO_NPCDATA;
-	
 	io->ioflags = IO_NPC;
-
+	
 	GetIOScript(io, script);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
@@ -2308,25 +2234,22 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 	io->_npcdata->critical = 5.f;
 	io->_npcdata->reach = 20.f;
 	io->_npcdata->stare_factor = 1.f;
-
-	if (!(flags & NO_ON_LOAD))
+	
+	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(io, SM_LOAD);
-
-	io->pos = player.pos + Vec3f(-(float)sin(radians(player.angle.b)) * 140.f, 0, (float)cos(radians(player.angle.b)) * 140.f);
+	}
 	
-	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
-	io->lastpos.y = io->initpos.y = io->pos.y;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
 	
-	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
-
-	if (ep)
-	{
-		float tempo;
-
-		if (GetTruePolyY(ep, &io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
+	float tempo;
+	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
@@ -2347,9 +2270,7 @@ Entity * AddNPC(const res::path & classPath, EntityInstance instance,
 		EERIE_COLLISION_Cylinder_Create(io);
 	}
 	
-	io->infracolor.r = 1.f;
-	io->infracolor.g = 0.f;
-	io->infracolor.b = 0.2f;
+	io->infracolor = Color3f(1.f, 0.f, 0.2f);
 	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
 	

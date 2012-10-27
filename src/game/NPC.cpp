@@ -2739,17 +2739,16 @@ float GetIOHeight(Entity * io)
 
 	return min(v, -45.f);
 }
-float GetIORadius(Entity * io)
-{
-	if (io == entities.player())
-		return PLAYER_BASE_RADIUS;
 
-	float v = max(io->original_radius * io->scale, 25.f);
-
-	if (v > 60.f) return 60.f;
-
-	return v;
+float GetIORadius(Entity * io) {
+	
+	if(io == entities.player()) {
+		return player.baseRadius();
+	}
+	
+	return clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
+
 void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl) {
 	cyl->height = GetIOHeight(io);
 	cyl->radius = GetIORadius(io);
@@ -3909,115 +3908,84 @@ void CheckNPC(Entity * io)
 	}
 }
 extern long GLOBAL_Player_Room;
-//***********************************************************************************************
-// void CheckNPCEx(Entity * io)
-// ----------------------------------------------------------------------------------------------
-// FUNCTION:
-//   Checks an NPC Visibility Field (Player Detect)
+
+// Checks an NPC Visibility Field (Player Detect)
 // NECESSARY:
 //   Uses Invisibility/Confuse/Torch infos.
 // RESULT:
 //   Sends appropriate Detectplayer/Undetectplayer events to the IO
-//-----------------------------------------------------------------------------------------------
 // WARNINGS:
 //   io and io->obj must be valid (no check !)
-//***********************************************************************************************
-void CheckNPCEx(Entity * io)
-{
+void CheckNPCEx(Entity * io) {
+	
 	// Distance Between Player and IO
-	float ds = distSqr(io->pos, player.pos - (Vec3f::Y_AXIS * PLAYER_BASE_HEIGHT));
-
+	float ds = distSqr(io->pos, player.basePosition());
+	
 	// Start as not visible
 	long Visible = 0;
-
+	
 	// Check visibility only if player is visible, not too far and not dead
-	if ((!(entities.player()->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
-	{
+	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.life > 0.f) {
+		
 		// checks for near contact +/- 15 cm --> force visibility
-		if (io->room_flags & 1)
+		if(io->room_flags & 1) {
 			UpdateIORoom(io);
-
-		if (GLOBAL_Player_Room == -1)
+		}
+		
+		if(GLOBAL_Player_Room == -1) {
 			GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-
+		}
+		
 		float fdist = SP_GetRoomDist(&io->pos, &player.pos, io->room, GLOBAL_Player_Room);
-
+		
 		// Use Portal Room Distance for Extra Visibility Clipping.
-		if ((GLOBAL_Player_Room > -1) && (io->room > -1) && (fdist > 2000.f))
-		{
-		}
-		else if ((ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f))
-		         && (EEfabs(player.pos.y - io->pos.y) < 200.f))
-		{
+		if(GLOBAL_Player_Room > -1 && io->room > -1 && fdist > 2000.f) {
+			// nothing to do
+		} else if(ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f)
+		          && EEfabs(player.pos.y - io->pos.y) < 200.f) {
 			Visible = 1;
-		}
-		else // Make full visibility test
-		{
-			Vec3f orgn, dest;
+		} else { // Make full visibility test
+			
 			// Retreives Head group position for "eye" pos.
 			long grp = io->obj->fastaccess.head_group_origin;
-			if (grp < 0)
-			{
-				orgn.x = io->pos.x;
-				orgn.y = io->pos.y - 90.f;
-				orgn.z = io->pos.z;
-			}
-			else
-			{
-				orgn.x = io->pos.x;
-				orgn.y = io->pos.y - 120.f;
-				orgn.z = io->pos.z;
-			}
-
-			dest.x = player.pos.x;
-			dest.y = player.pos.y + 90.f;
-			dest.z = player.pos.z;
+			Vec3f orgn = io->pos - Vec3f(0.f, (grp < 0) ? 90.f : 120.f, 0.f);
+			Vec3f dest = player.pos + Vec3f(0.f, 90.f, 0.f);
 
 			// Check for Field of vision angle
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(degrees(aa));
 			float ab = MAKEANGLE(io->angle.b);
-
-			if (EEfabs(AngularDifference(aa, ab)) < 110.f)
-			{
+			if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
+				
 				// Check for Darkness/Stealth
-				if ((CURRENT_PLAYER_COLOR > GetPlayerStealth())
-				        ||	SHOW_TORCH
-				        ||	(ds < square(200.f)))
-				{
-					EERIEPOLY * epp = NULL;
+				if(CURRENT_PLAYER_COLOR > GetPlayerStealth() || SHOW_TORCH
+				   || ds < square(200.f)) {
 					Vec3f ppos;
-
 					// Check for Geometrical Visibility
-					if ((IO_Visible(&orgn, &dest, epp, &ppos))
-					        || distSqr(ppos, dest) < square(25.f))
+					if(IO_Visible(&orgn, &dest, NULL, &ppos)
+					   || distSqr(ppos, dest) < square(25.f)) {
 						Visible = 1;
+					}
 				}
 			}
 		}
-
-		if (Visible)
-		{
-			if (!io->_npcdata->detect)
-			{
-				// if visible but was NOT visible, sends an Detectplayer Event
-				EVENT_SENDER = NULL;
-				SendIOScriptEvent(io, SM_DETECTPLAYER);
-				io->_npcdata->detect = 1;
-			}
+		
+		if(Visible && !io->_npcdata->detect) {
+			// if visible but was NOT visible, sends an Detectplayer Event
+			EVENT_SENDER = NULL;
+			SendIOScriptEvent(io, SM_DETECTPLAYER);
+			io->_npcdata->detect = 1;
 		}
 	}
-
+	
 	// if not visible but was visible, sends an Undetectplayer Event
-	if ((!Visible) && (io->_npcdata->detect))
-	{
+	if(!Visible && io->_npcdata->detect) {
 		EVENT_SENDER = NULL;
 		SendIOScriptEvent(io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
 	}
 }
 
-//-------------------------------------------------------------------------
 void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const float power) {
 	
 	string _step_material = "foot_bare";

@@ -277,39 +277,29 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	long num = GetLevelNumByName("level" + level);
 
 	LoadLevelScreen(num);
-
-	if (num == -1)
-	{
+	
+	if(num == -1) {
 		// fatality...
 		LogWarning << "Internal Non-Fatal Error";
 		return;
 	}
-
-	// TO RESTORE !!!!!!!!!!!!
-	if (num == CURRENTLEVEL) // not changing level, just teleported
-	{
+	
+	// not changing level, just teleported
+	if(num == CURRENTLEVEL) {
 		long t = entities.getById(target);
-
-		if (t > 0)
-		{
+		if(t > 0) {
 			Vec3f pos;
-
-			if (entities[t])
-				if (GetItemWorldPosition(entities[t], &pos))
-				{
-					moveto.x = player.pos.x = pos.x;
-					moveto.y = player.pos.y = pos.y + PLAYER_BASE_HEIGHT;
-					moveto.z = player.pos.z = pos.z;
-					NO_PLAYER_POSITION_RESET = 1;
-				}
+			if(entities[t] && GetItemWorldPosition(entities[t], &pos)) {
+				moveto = player.pos = pos + player.baseOffset();
+				NO_PLAYER_POSITION_RESET = 1;
+			}
 		}
-
 		player.desiredangle.b = player.angle.b = (float)angle;
 		return; // nothing more to do :)
 	}
-
+	
 	ARX_PLAYER_Reset_Fall();
-
+	
 	arxtime.pause();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(num);
@@ -332,24 +322,23 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	delete pSaveBlock, pSaveBlock = NULL;
 	
 	arxtime.resume();
-
+	
 	LogDebug("Before ARX_CHANGELEVEL_PopLevel");
 	ARX_CHANGELEVEL_PopLevel(num, 1);
 	LogDebug("After  ARX_CHANGELEVEL_PopLevel");
-
+	
 	// Now restore player pos to destination
 	long t = entities.getById(target);
-
 	if(t > 0 && entities[t]) {
 		Vec3f pos;
 		if(GetItemWorldPosition(entities[t], &pos)) {
-			moveto = player.pos = pos + Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
+			moveto = player.pos = pos + player.baseOffset();
 			NO_PLAYER_POSITION_RESET = 1;
 			WILL_RESTORE_PLAYER_POSITION = moveto;
 			WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
 		}
 	}
-
+	
 	CURRENTLEVEL = num;
 	player.desiredangle.b = player.angle.b = (float)angle;
 	DONT_WANT_PLAYER_INZONE = 1;

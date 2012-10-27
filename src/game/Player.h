@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
+#include <boost-1_49/boost/concept_check.hpp>
 
 #include "game/Entity.h"
 #include "game/Spells.h"
@@ -271,6 +272,25 @@ struct ARXCHARACTER {
 	short bag;
 	ARX_INTERFACE_MEMORIZE_SPELL SpellToMemorize;
 	
+	static float baseRadius() { return 52.f; }
+	static float baseHeight() { return -170; }
+	static float crouchHeight() { return -120.f; }
+	static float levitateHeight() { return -220.f; }
+	
+	static Vec3f baseOffset() { return Vec3f(0.f, baseHeight(), 0.f); }
+	
+	Vec3f basePosition() {
+		return Vec3f(pos.x, pos.y - baseHeight(), pos.z);
+	}
+	
+	EERIE_CYLINDER baseCylinder() {
+		EERIE_CYLINDER c;
+		c.height = baseHeight();
+		c.radius = baseRadius();
+		c.origin = basePosition();
+		return c;
+	}
+	
 };
 
 struct KEYRING_SLOT {
@@ -297,8 +317,6 @@ extern float DeadCameraDistance;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long USE_PLAYERCOLLISIONS;
 extern long WILLRETURNTOCOMBATMODE;
-extern float PLAYER_BASE_RADIUS;
-extern float PLAYER_BASE_HEIGHT;
 
 void ARX_PLAYER_MakeSpHero();
 void ARX_PLAYER_LoadHeroAnimsAndMesh();

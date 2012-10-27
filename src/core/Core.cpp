@@ -470,14 +470,10 @@ void DanaeRestoreFullScreen() {
 	LoadScreen();
 }
 
-//-----------------------------------------------------------------------------------------------
-
 extern void InitTileLights();
 
-//-----------------------------------------------------------------------------
-
-void InitializeDanae()
-{
+void InitializeDanae() {
+	
 	InitTileLights();
 	
 	ARX_MISSILES_ClearAll();
@@ -487,12 +483,12 @@ void InitializeDanae()
 	ARX_PARTICLES_ClearAll();
 	ARX_BOOMS_ClearAll();
 	ARX_MAGICAL_FLARES_FirstInit();
-
+	
 	LastLoadedScene.clear();
-
+	
 	res::path levelPath;
 	res::path levelFullPath;
-
+	
 	if(Project.demo != NOLEVEL) {
 		char levelId[256];
 		GetLevelNameByNum(Project.demo, levelId);
@@ -504,96 +500,75 @@ void InitializeDanae()
 	ACTIVEBKG=&DefaultBkg;
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	InitNodes(1);
-
-	player.size.y=subj.size.a=-PLAYER_BASE_HEIGHT;
-	player.size.x=subj.size.b=PLAYER_BASE_RADIUS;
-	player.size.z=subj.size.g=PLAYER_BASE_RADIUS;
-	player.desiredangle.a=player.angle.a=subj.angle.a=3.f;
-	player.desiredangle.b=player.angle.b=subj.angle.b=268.f;
-	player.desiredangle.g=player.angle.g=subj.angle.g=0.f;
-	subj.pos.x=900.f;
-	subj.pos.y=PLAYER_BASE_HEIGHT;
-	subj.pos.z=4340.f;
-	subj.clip.left=0;
-	subj.clip.top=0;
-	subj.clip.right=640;
-	subj.clip.bottom=480;
-	subj.clipz0=0.f;
-	subj.clipz1=2.999f;
-	subj.centerx=subj.clip.right/2;
-	subj.centery=subj.clip.bottom/2;
-	subj.AddX=320.f;
-	subj.AddY=240.f;
-	subj.focal=BASE_FOCAL;
-	subj.Zdiv=3000.f;
-	subj.Zmul=1.f/subj.Zdiv;
-	subj.clip3D=60;
-	subj.type=CAM_SUBJVIEW;
+	
+	player.size.y = subj.size.a = -player.baseHeight();
+	player.size.x = subj.size.b = player.baseRadius();
+	player.size.z = subj.size.g = player.baseRadius();
+	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
+	subj.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
+	subj.clip = Rect(0, 0, 640, 480);
+	subj.clipz0 = 0.f;
+	subj.clipz1 = 2.999f;
+	subj.centerx = subj.clip.center().x;
+	subj.centery = subj.clip.center().y;
+	subj.AddX = 320.f;
+	subj.AddY = 240.f;
+	subj.focal = BASE_FOCAL;
+	subj.Zdiv = 3000.f;
+	subj.Zmul = 1.f / subj.Zdiv;
+	subj.clip3D = 60;
+	subj.type = CAM_SUBJVIEW;
 	subj.bkgcolor = Color::none;
-
+	
 	SetActiveCamera(&subj);
 	SetCameraDepth(2100.f);
-	memcpy(&bookcam,&subj,sizeof(EERIE_CAMERA));
-	memcpy(&raycam,&subj,sizeof(EERIE_CAMERA));
-	memcpy(&conversationcamera,&subj,sizeof(EERIE_CAMERA));
-	memcpy(&DynLightCam,&subj,sizeof(EERIE_CAMERA));
-
-	raycam.centerx=320;
-	raycam.centery=320;
-	raycam.AddX=320.f;
-	raycam.AddY=320.f;
-
-	bookcam.angle.a=0.f;
-	bookcam.angle.b=0.f;
-	bookcam.angle.g=0.f;
-	bookcam.pos.x = 0.f;
-	bookcam.pos.y=0.f;
-	bookcam.pos.z=0.f;
-	bookcam.focal=BASE_FOCAL;
-
-	mapcam.pos.x=1500.f;
-	mapcam.pos.y=-6000.f;
-	mapcam.pos.z=1500.f;
-	mapcam.angle.a=90.f;
-	mapcam.angle.b=0.f;
-	mapcam.angle.g=0.f;
-	mapcam.clip.left=0; 
-	mapcam.clip.top=0;
-	mapcam.clip.right=640;
-	mapcam.clip.bottom=480;
-	mapcam.clipz0=0.001f;
-	mapcam.clipz1=0.999f;
-	mapcam.centerx=(mapcam.clip.right-mapcam.clip.left)/2;
-	mapcam.centery=(mapcam.clip.bottom-mapcam.clip.top)/2;
-	mapcam.AddX=320.f;
-	mapcam.AddY=240.f;
-	mapcam.focal=400.f;
-	mapcam.Zdiv=3000.f;
-	mapcam.Zmul=1.f/mapcam.Zdiv;
-	mapcam.clip3D=1000;
-	mapcam.type=CAM_TOPVIEW;
+	memcpy(&bookcam, &subj, sizeof(EERIE_CAMERA));
+	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
+	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
+	memcpy(&DynLightCam, &subj, sizeof(EERIE_CAMERA));
+	
+	raycam.centerx = 320;
+	raycam.centery = 320;
+	raycam.AddX = 320.f;
+	raycam.AddY = 320.f;
+	
+	bookcam.angle = Anglef::ZERO;
+	bookcam.pos = Vec3f::ZERO;
+	bookcam.focal = BASE_FOCAL;
+	
+	mapcam.pos = Vec3f(1500.f, -6000.f, 1500.f);
+	mapcam.angle = Anglef(90.f, 0.f, 0.f);
+	mapcam.clip = Rect(0, 0, 640, 480);
+	mapcam.clipz0 = 0.001f;
+	mapcam.clipz1 = 0.999f;
+	mapcam.centerx = mapcam.clip.center().x;
+	mapcam.centery = mapcam.clip.center().x;
+	mapcam.AddX = 320.f;
+	mapcam.AddY = 240.f;
+	mapcam.focal = 400.f;
+	mapcam.Zdiv = 3000.f;
+	mapcam.Zmul = 1.f / mapcam.Zdiv;
+	mapcam.clip3D = 1000;
+	mapcam.type = CAM_TOPVIEW;
 	mapcam.bkgcolor = Color::fromBGRA(0x001F1F55);
 	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);
-
-	for (long i=0;i<32;i++)
+	
+	for(size_t i = 0; i < 32; i++) {
 		memcpy(&TCAM[i],&subj,sizeof(EERIE_CAMERA));
-
-	ACTIVEBKG->ambient.r = 0.09f;
-	ACTIVEBKG->ambient.g = 0.09f;
-	ACTIVEBKG->ambient.b = 0.09f;
-	ACTIVEBKG->ambient255.r=ACTIVEBKG->ambient.r*255.f;
-	ACTIVEBKG->ambient255.g=ACTIVEBKG->ambient.g*255.f;
-	ACTIVEBKG->ambient255.b=ACTIVEBKG->ambient.b*255.f;
-
+	}
+	
+	ACTIVEBKG->ambient = Color3f(0.09f, 0.09f, 0.09f);
+	ACTIVEBKG->ambient255 = ACTIVEBKG->ambient * 255.f;
+	
 	LoadSysTextures();
 	CreateInterfaceTextureContainers();
-
-	if (LaunchDemo) {
+	
+	if(LaunchDemo) {
 		LogInfo << "Launching splash screens.";
-		LaunchDemo=0;
-		SPLASH_THINGS_STAGE=11;
-	} else if (!levelPath.empty())	{
+		LaunchDemo = 0;
+		SPLASH_THINGS_STAGE = 11;
+	} else if(!levelPath.empty())	{
 		LogInfo << "Launching Level " << levelPath;
 		if (FastSceneLoad(levelPath)) {
 			FASTmse = 1;
@@ -703,9 +678,7 @@ void runGame() {
 	LogDebug("Svars Init");
 	
 	// Script Test
-	lastteleport.x=0.f;
-	lastteleport.y=PLAYER_BASE_HEIGHT;
-	lastteleport.z=0.f;
+	lastteleport = player.baseOffset();
 	
 	entities.init();
 	
@@ -2021,35 +1994,29 @@ Vec3f	WILL_RESTORE_PLAYER_POSITION;
 long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
 extern long FLAG_ALLOW_CLOTHES;
 
-//*************************************************************************************
-
-void FirstFrameHandling()
-{	
+void FirstFrameHandling() {
 	LogDebug("FirstFrameHandling");
 	Vec3f trans;
-	FirstFrame=-1;
-
+	FirstFrame = -1;
+	
 	ARX_PARTICLES_FirstInit();
 	ARX_SPELLS_Init_Rects();
 	ARX_FOGS_TimeReset();
-
-	PROGRESS_BAR_COUNT+=2.f;
+	
+	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
 	
 	FirstFrameProc();
 	
-	if (FASTmse)
-	{
-		FASTmse=0;
-
+	if(FASTmse) {
+		FASTmse = 0;
 		if(LOADEDD) {
 			trans = Mscenepos;
 			player.pos = loddpos + trans;
 		} else {
-			player.pos.y +=PLAYER_BASE_HEIGHT;
+			player.pos.y += player.baseHeight();
 		}
-
-		PROGRESS_BAR_COUNT+=4.f;
+		PROGRESS_BAR_COUNT += 4.f;
 		LoadLevelScreen();
 	}
 #ifdef BUILD_EDIT_LOADSAVE
@@ -2092,7 +2059,7 @@ void FirstFrameHandling()
 			if(LOADEDD) {
 				player.pos = loddpos + trans;
 			} else {
-				player.pos.y += PLAYER_BASE_HEIGHT;
+				player.pos.y += player.baseHeight();
 			}
 		}
 
@@ -2117,17 +2084,18 @@ void FirstFrameHandling()
 	{
 		SHOW_TORCH=0;
 	}
-
-	Kam=&subj;
-	mapcam.pos.x = lastteleport.x=subj.pos.x=moveto.x=player.pos.x;
-				lastteleport.y=subj.pos.y=moveto.y=player.pos.y;
-	mapcam.pos.z = lastteleport.z=subj.pos.z=moveto.z=player.pos.z;
-	lastteleport.y+=PLAYER_BASE_HEIGHT;
+	
+	Kam = &subj;
+	
+	lastteleport = player.basePosition();
+	subj.pos = moveto = player.pos;
+	mapcam.pos.x = player.pos.x;
+	mapcam.pos.z = player.pos.z;
 
 	subj.angle.a=player.angle.a;
 	subj.angle.b=player.angle.b;
 	subj.angle.g=player.angle.g;
-
+	
 	RestoreLastLoadedLightning();
 
 	PROGRESS_BAR_COUNT+=1.f;

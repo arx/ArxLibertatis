@@ -762,13 +762,8 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 #endif // BUILD_EDIT_LOADSAVE
 	else
 	{
-		lastteleport.x = 0.f;
-		lastteleport.y = PLAYER_BASE_HEIGHT;
-		lastteleport.z = 0.f;
-		trans.x = 0;
-		trans.y = 0;
-		trans.z = 0;
-		Mscenepos = trans;
+		lastteleport = player.baseOffset();
+		Mscenepos = trans = Vec3f::ZERO;
 	}
 	
 	MSP = trans;

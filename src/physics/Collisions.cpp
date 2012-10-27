@@ -375,17 +375,8 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 					maxy=max(maxy,ioo->obj->vertexlist3[ii].v.y);
 				}
 
-				float posy;
-
-				if (io==entities.player())
-					posy=player.pos.y-PLAYER_BASE_HEIGHT;					
-				else 
-					posy=io->pos.y;
-
-				float modd=0;
-
-				if (ydec>0)
-					modd=-20.f;
+				float posy = (io == entities.player()) ? player.basePosition().y : io->pos.y;
+				float modd = (ydec > 0) ? -20.f : 0;
 
 				if ((posy<=maxy) && (posy>=miny+modd))
 				{
@@ -411,60 +402,43 @@ void PushIO_ON_Top(Entity * ioo, float ydec) {
 								ep.v[kk].p.x = (ep.v[kk].p.x - cx) * tval + cx; 
 								ep.v[kk].p.z = (ep.v[kk].p.z - cz) * tval + cz; 
 						}
-
-						if (PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) 
-						{
-							EERIE_CYLINDER cyl;
-
-							if (io==entities.player())
-							{
-								if (ydec<=0)
-								{
-									player.pos.y+=ydec;
-									moveto.y+=ydec;
-									cyl.origin.x=player.pos.x;
-									cyl.origin.y=player.pos.y+170.f+ydec;
-									cyl.origin.z=player.pos.z;	
-									cyl.height=PLAYER_BASE_HEIGHT;
-									cyl.radius=PLAYER_BASE_RADIUS;
-									float vv;
-
-									if ((vv=CheckAnythingInCylinder(&cyl,entities.player(),0))<0)
-									{
-										player.pos.y+=ydec+vv;
+						
+						if(PointIn2DPolyXZ(&ep, io->pos.x, io->pos.z)) {
+							
+							if(io == entities.player()) {
+								
+								if(ydec <= 0) {
+									player.pos.y += ydec;
+									moveto.y += ydec;
+									EERIE_CYLINDER cyl = player.baseCylinder();
+									cyl.origin.y += ydec;
+									float vv = CheckAnythingInCylinder(&cyl, entities.player(), 0);
+									if(vv < 0) {
+										player.pos.y += ydec + vv;
+									}
+								} else {
+									EERIE_CYLINDER cyl = player.baseCylinder();
+									cyl.origin.y += ydec;
+									if(CheckAnythingInCylinder(&cyl, entities.player(), 0) >= 0) {
+										player.pos.y += ydec;
+										moveto.y += ydec;
 									}
 								}
-								else
-								{
-									cyl.origin.x=player.pos.x;
-									cyl.origin.y=player.pos.y+170.f+ydec;
-									cyl.origin.z=player.pos.z;	
-									cyl.height=PLAYER_BASE_HEIGHT;
-									cyl.radius=PLAYER_BASE_RADIUS;
-
-									if (CheckAnythingInCylinder(&cyl,entities.player(),0)>=0)
-									{
-										player.pos.y+=ydec;
-										moveto.y+=ydec;
+								
+							} else {
+								
+								if(ydec <= 0) {
+									io->pos.y += ydec;
+								} else {
+									EERIE_CYLINDER cyl;
+									GetIOCyl(io, &cyl);
+									cyl.origin.y += ydec;
+									if(CheckAnythingInCylinder(&cyl, io ,0) >= 0) {
+										io->pos.y += ydec;
 									}
 								}
+								
 							}
-							else
-							{
-								if (ydec<=0)
-								{
-									io->pos.y+=ydec;
-								}
-								else
-								{
-									GetIOCyl(io,&cyl);
-									cyl.origin.y=io->pos.y+ydec;
-
-									if (CheckAnythingInCylinder(&cyl,io,0)>=0)
-										io->pos.y+=ydec;
-								}
-							}
-
 							break;
 						}
 					}

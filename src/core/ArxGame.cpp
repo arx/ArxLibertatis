@@ -1171,60 +1171,39 @@ void ArxGame::Render() {
 		subj.d_angle.b=player.angle.b;
 		subj.d_angle.g=player.angle.g;
 		EXTERNALVIEW=1;
-	}
-	else
-	{
-		subj.angle.a=player.angle.a;
-		subj.angle.b=player.angle.b;
-		subj.angle.g=player.angle.g;
+		
+	} else {
+		
+		subj.angle = player.angle;
 		EXTERNALVIEW=0;
-
-		if (entities.player())
-		{
+		
+		if(entities.player()) {
 			long id = entities.player()->obj->fastaccess.view_attach;
-
-			if (id!=-1)
-			{
-				subj.pos.x=entities.player()->obj->vertexlist3[id].v.x;
-				subj.pos.y=entities.player()->obj->vertexlist3[id].v.y;
-				subj.pos.z=entities.player()->obj->vertexlist3[id].v.z;
-
+			if(id != -1) {
+				subj.pos = entities.player()->obj->vertexlist3[id].v;
 				Vec3f vect;
-				vect.x=subj.pos.x-player.pos.x;
-				vect.y=0;
-				vect.z=subj.pos.z-player.pos.z;
+				vect.x = subj.pos.x - player.pos.x;
+				vect.y = 0;
+				vect.z = subj.pos.z - player.pos.z;
 				float len = ffsqrt(vect.lengthSqr());
-
-				if (len>46.f)
-				{
-					float div=46.f/len;
-					vect.x*=div;
-					vect.z*=div;
+				if(len > 46.f) {
+					float div = 46.f / len;
+					vect.x *= div;
+					vect.z *= div;
 					subj.pos.x=player.pos.x+vect.x;
 					subj.pos.z=player.pos.z+vect.z;
 				}
+			} else {
+				subj.pos = player.basePosition();
 			}
-			else
-			{
-				subj.pos.x=player.pos.x;
-				subj.pos.y=player.pos.y;
-				subj.pos.z=player.pos.z;
-				subj.pos.y+=PLAYER_BASE_HEIGHT;
-			}
-	}
 		}
-
-	if (EXTERNALVIEW)
-	{
-		subj.pos.x=(subj.pos.x+subj.d_pos.x)*( 1.0f / 2 );
-		subj.pos.y=(subj.pos.y+subj.d_pos.y)*( 1.0f / 2 );
-		subj.pos.z=(subj.pos.z+subj.d_pos.z)*( 1.0f / 2 );
-
-		subj.angle.a=InterpolateAngle(subj.angle.a,subj.d_angle.a,0.1f);
-		subj.angle.b=InterpolateAngle(subj.angle.b,subj.d_angle.b,0.1f);
-		subj.angle.g=InterpolateAngle(subj.angle.g,subj.d_angle.g,0.1f);
 	}
-
+	
+	if(EXTERNALVIEW) {
+		subj.pos = (subj.pos + subj.d_pos) * 0.5f;
+		subj.angle = interpolate(subj.angle, subj.d_angle, 0.1f);
+	}
+	
 	if ((ARX_CONVERSATION) && (main_conversation.actors_nb))
 	{
 		// Decides who speaks !!
@@ -1565,9 +1544,7 @@ void ArxGame::Render() {
 		}
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
+		subj.pos = conversationcamera.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 			subj.angle.g = 0;
@@ -1594,11 +1571,7 @@ void ArxGame::Render() {
 			currentbeta=CAMERACONTROLLER->angle.b;
 		}
 
-			Vec3f targetpos;
-
-		targetpos.x=CAMERACONTROLLER->pos.x;
-		targetpos.y=CAMERACONTROLLER->pos.y+PLAYER_BASE_HEIGHT;
-		targetpos.z=CAMERACONTROLLER->pos.z;
+			Vec3f targetpos = CAMERACONTROLLER->pos + player.baseOffset();
 
 			float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
 			float delta_angle_t = delta_angle * FrameDiff * ( 1.0f / 1000 );
@@ -1612,9 +1585,7 @@ void ArxGame::Render() {
 		conversationcamera.pos.z=targetpos.z-(float)EEcos(t)*160.f;
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
+		subj.pos = conversationcamera.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g=0.f;
