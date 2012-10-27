@@ -223,7 +223,6 @@ extern long INVERTMOUSE;
 extern long CINEMASCOPE;
 extern long CINEMA_INC;
 extern long CurrFightPos;
-extern long CONSTANTUPDATELIGHT;
 
 //-----------------------------------------------------------------------------
 float INTERFACE_RATIO(const float);

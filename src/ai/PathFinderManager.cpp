@@ -106,7 +106,6 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 
 	return NULL;
 }
-Entity * CURPATHFINDIO = NULL;
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
 bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
@@ -189,8 +188,6 @@ long EERIE_PATHFINDER_Get_Queued_Number() {
 
 static void EERIE_PATHFINDER_Clear_Private() {
 	
-	CURPATHFINDIO = NULL;
-	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 	PATHFINDER_QUEUE_ELEMENT * next;
 	
@@ -259,7 +256,6 @@ void PathFinderThread::run() {
 
 			PATHFINDER_REQUEST curpr;
 			memcpy(&curpr, &pr, sizeof(PATHFINDER_REQUEST));
-			CURPATHFINDIO = curpr.ioid;
 			PATHFINDER_WORKING = 2;
 
 			if (curpr.ioid && curpr.ioid->_npcdata)
@@ -332,8 +328,6 @@ void PathFinderThread::run() {
 			}
 		}
 
-		CURPATHFINDIO = NULL;
-
 		PATHFINDER_WORKING = 0;
 
 		mutex->unlock();
@@ -352,8 +346,6 @@ void EERIE_PATHFINDER_Release() {
 	if(!pathfinder) {
 		return;
 	}
-	
-	CURPATHFINDIO = NULL;
 	
 	mutex->lock();
 	
@@ -375,8 +367,6 @@ void EERIE_PATHFINDER_Create() {
 	if(!mutex) {
 		mutex = new Lock();
 	}
-	
-	CURPATHFINDIO = NULL;
 	
 	pathfinder = new PathFinderThread();
 	pathfinder->setThreadName("Pathfinder");
