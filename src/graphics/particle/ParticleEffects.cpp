@@ -120,11 +120,8 @@ long			NewSpell=0;
 static TextureContainer * GTC;
 static float ET_R, ET_G, ET_B;
 static int ET_MASK;
-long			HIDEMAGICDUST=0;
 
-//-----------------------------------------------------------------------------
-long ARX_BOOMS_GetFree()
-{
+long ARX_BOOMS_GetFree() {
 	for(long i=0;i<MAX_POLYBOOM;i++) 
 	{
 		if (!polyboom[i].exist) 
@@ -2674,7 +2671,6 @@ void AddFlare(Vec2s * pos,float sm,short typ,Entity * io)
 			fl->dynlight=-1;
 			fl->move=OPIPOrgb;
 			
-			if (!HIDEMAGICDUST)
 			{
 				for (long kk=0;kk<3;kk++)
 				{
@@ -2721,7 +2717,7 @@ void AddFlare(Vec2s * pos,float sm,short typ,Entity * io)
 					}
 				}
 			}
-			return;					
+			return;
 		}
 	}
 }
@@ -2814,7 +2810,6 @@ void AddFlare2(Vec2s * pos,float sm,short typ,Entity * io)
 			fl->dynlight=-1;
 			fl->move=OPIPOrgb;
 			
-			if (!HIDEMAGICDUST)
 				for (long kk=0;kk<3;kk++)
 				{
 					long j=ARX_PARTICLES_GetFree();
