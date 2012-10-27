@@ -489,10 +489,8 @@ float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
 static long NPC_IN_CYLINDER = 0;
 
 // backup du dernier polingue
-EERIEPOLY * pEPBackup = NULL;
-extern int TSU_TEST_COLLISIONS;
-			
-	
+static EERIEPOLY * pEPBackup = NULL;
+
 extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
@@ -570,36 +568,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 	
-	if (TSU_TEST_COLLISIONS)
-	if (	(-1 >= px-rad)
-		&&	(-1 <= px-rad)
-		&&	(-1 >= pz-rad)
-		&&	(-1 <= pz-rad)
-		)
-	{
-		float minanything = min(anything,IsPolyInCylinder(pEPBackup,cyl,flags));
-
-		if (anything != minanything)
-		{
-			anything = minanything;
-		}
-
-		if (POLYIN && (pEPBackup->type & POLY_CLIMB))
-		{
-			COLLIDED_CLIMB_POLY=1;
-		}
-	}
-
-/* TO KEEP...
-	EERIE_BKG_INFO * eg=&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-	if (	(cyl->origin.y+cyl->height < eg->tile_miny)
-			&& (cyl->origin.y > eg->tile_miny)
-		//||	(cyl->origin.y > eg->tile_maxy)	
-		)
-	{
-		return 999999.f;
-	}
-	*/
 	for (long j=pz-rad;j<=pz+rad;j++)
 	for (long i=px-rad;i<=px+rad;i++) 
 	{
@@ -630,18 +598,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 
 		feg=&ACTIVEBKG->fastdata[i][j];
-		// tsu
-		bool bOk = true;
-		
-		if (TSU_TEST_COLLISIONS)
-		{
-			EERIE_BKG_INFO *eg=&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			if (!(eg->tile_miny < anything))
-				bOk = false;
-		}
-
-		if (bOk)
 		for (long k=0;k<feg->nbpoly;k++)
 		{
 			ep=&feg->polydata[k];	

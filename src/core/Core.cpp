@@ -3558,7 +3558,6 @@ void ShowTestText()
 	mainApp->OutputText( 0, 64, tex );
 }
 extern float CURRENT_PLAYER_COLOR;
-extern int TSU_TEST_COLLISIONS;
 extern long TSU_TEST;
 
 long TSU_TEST_NB = 0;

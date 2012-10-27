@@ -133,7 +133,6 @@ extern long USE_LIGHT_OPTIM;
 
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;
-int TSU_TEST_COLLISIONS = 0;
 extern float INVISIBILITY_OVERRIDE;
 //-----------------------------------------------------------------------------
 struct ARX_INTERFACE_HALO_STRUCT
