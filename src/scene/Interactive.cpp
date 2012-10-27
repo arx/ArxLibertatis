@@ -3296,27 +3296,15 @@ void RenderInter(float from, float to) {
 		{
 			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
 			        && (Book_Mode == BOOKMODE_STATS)) continue;
-
-			if (io->show != SHOW_FLAG_IN_SCENE) continue;
-
-			if (!ForceIODraw)
-			{
-				if ((Project.hide & HIDE_NPC) && (io->ioflags & IO_NPC)) continue;
-
-				if ((Project.hide & HIDE_ITEMS) && (io->ioflags & IO_ITEM)) continue;
-
-				if ((Project.hide & HIDE_FIXINTER) && (io->ioflags & IO_FIX)) continue;
+			
+			if(io->show != SHOW_FLAG_IN_SCENE) {
+				continue;
 			}
-
-			if ((Project.hide & HIDE_CAMERAS) && (io->ioflags & IO_CAMERA)) continue;
-
-			if (!EDITMODE)
-			{
-				if (io->ioflags & IO_CAMERA) continue;
-
-				if (io->ioflags & IO_MARKER) continue;
+			
+			if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
+				continue;
 			}
-
+			
 			if ((io->obj) &&
 			        (io->obj->pbox) &&
 			        (io->obj->pbox->active))  

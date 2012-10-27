@@ -1740,30 +1740,26 @@ void ArxGame::Render() {
 			ARX_SCENE_Render(1);
 		}
 	}
-
-	// Begin Particles ***************************************************************************
-	if (!(Project.hide & HIDE_PARTICLES))
-	{
-		if (pParticleManager)
-		{
-			pParticleManager->Update(static_cast<long>(FrameDiff));
-			pParticleManager->Render();
-		}
-
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_FOGS_Render();
-
-		ARX_PARTICLES_Render(&subj);
-		UpdateObjFx();
-		
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	
+	// Begin Particles
+	
+	if(pParticleManager) {
+		pParticleManager->Update(static_cast<long>(FrameDiff));
+		pParticleManager->Render();
 	}
-
-	// End Particles ***************************************************************************
-
+	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	ARX_FOGS_Render();
+	
+	ARX_PARTICLES_Render(&subj);
+	UpdateObjFx();
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
+	// End Particles
+	
 	if (!EDITMODE) // Playing Game
 	{
 		// Checks Magic Flares Drawing
@@ -1802,8 +1798,7 @@ void ArxGame::Render() {
 #ifdef BUILD_EDITOR
 	else  // EDITMODE == true
 	{
-		if (!(Project.hide & HIDE_NODES))
-			RenderAllNodes();
+		RenderAllNodes();
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
@@ -1876,36 +1871,33 @@ void ArxGame::Render() {
 		ARX_PLAYER_Manage_Death();
 
 	//-------------------------------------------------------------------------
-
+	
 	// INTERFACE
-		// Remove the Alphablend State if needed : NO Z Clear
+	// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, false);
-
+	
 	// Draw game interface if needed
-	if (ARXmenu.currentmode == AMCM_OFF)
-	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
-	{
+	if(ARXmenu.currentmode == AMCM_OFF && !CINEMASCOPE) {
+		
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		
 		ARX_INTERFACE_NoteManage();
 		DrawAllInterface();
 		DrawAllInterfaceFinish();
-
-		if ( (player.Interface & INTER_MAP )
-			&& (!(player.Interface & INTER_COMBATMODE))
-			&& flarenum
-			)
-		{
+		
+		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)
+		   && flarenum) {
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 			FRAMETICKS = (unsigned long)(arxtime);
 		}
+		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
-
+	
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	PopAllTriangleList();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);

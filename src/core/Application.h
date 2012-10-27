@@ -55,19 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class RenderWindow;
 
-enum HideFlag {
-	HIDE_BACKGROUND = (1<<0),
-	HIDE_NPC        = (1<<1),
-	HIDE_FIXINTER   = (1<<2),
-	HIDE_ITEMS      = (1<<3),
-	HIDE_PARTICLES  = (1<<4),
-	HIDE_INTERFACE  = (1<<5),
-	HIDE_NODES      = (1<<6),
-	HIDE_CAMERAS    = (1<<7)
-};
-DECLARE_FLAGS(HideFlag, HideFlags);
-DECLARE_FLAGS_OPERATORS(HideFlags);
-
 enum ViewModeFlag {
 	VIEWMODE_WIRE           = (1<<0),
 	VIEWMODE_NORMALS        = (1<<1),
@@ -91,22 +78,13 @@ DECLARE_FLAGS_OPERATORS(LightMode);
 
 struct PROJECT {
 	
-	PROJECT()
-		:
-		  compatibility(0),
-		  improve(0), detectliving(0),
-		  telekinesis(0), demo(0),
-		  hide(0),
-		  torch(Color3f::black) {
-	}
+	PROJECT() : improve(0), telekinesis(0), demo(0), torch(Color3f::black) { }
 	
-	long compatibility;
 	long improve;
-	long detectliving;
 	long telekinesis;
 	long demo;
-	HideFlags hide;
 	Color3f torch;
+	
 };
 
 extern PROJECT Project;

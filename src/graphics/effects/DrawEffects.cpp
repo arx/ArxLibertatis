@@ -103,12 +103,6 @@ void ARXDRAW_DrawInterShadows()
 			continue;
 		}
 
-			if ((Project.hide & HIDE_NPC) &&  (io->ioflags & IO_NPC)) continue;
-
-			if ((Project.hide & HIDE_ITEMS) &&  (io->ioflags & IO_ITEM)) continue;
-
-			if ((Project.hide & HIDE_FIXINTER) && (io->ioflags & IO_FIX)) continue;
-
 			long xx,yy;
 			xx = io->pos.x * ACTIVEBKG->Xmul;
 			yy = io->pos.z * ACTIVEBKG->Zmul;
@@ -420,8 +414,6 @@ void ARXDRAW_DrawPolyBoom()
 				continue;
 			}
 			
-			if (Project.hide & HIDE_BACKGROUND) continue;
-			else
 			{
 				long typp	=	polyboom[i].type;
 				typp		&=	~128;
@@ -679,7 +671,6 @@ void ARXDRAW_DrawAllTransPolysPos() {
 	{
 		ep = TransPol[i];
 
-		if ( ( !( Project.hide & HIDE_BACKGROUND ) ) )
 		{
 			if ( ep->type & POLY_DOUBLESIDED ) GRenderer->SetCulling(Renderer::CullNone);
 			else GRenderer->SetCulling(Renderer::CullCW);
