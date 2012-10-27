@@ -115,7 +115,7 @@ long			flarenum=0;
 long			ParticleCount=0;
 short			OPIPOrgb=0;
 short			PIPOrgb=0;
-short			shinum=1;
+static short shinum = 1;
 long			NewSpell=0;
 static TextureContainer * GTC;
 static float ET_R, ET_G, ET_B;

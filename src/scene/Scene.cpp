@@ -111,7 +111,6 @@ EERIE_PORTAL_DATA * portals = NULL;
 float WATEREFFECT=0.f;
 
 long TRANSPOLYSPOS=0;
-long SHOWSHADOWS=1;
 long TESTMODE=1;
 long FRAME_COUNT=0;
 
@@ -3255,8 +3254,9 @@ else
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_J))
 		bOLD_CLIPP=!bOLD_CLIPP;
 
-	if ((SHOWSHADOWS) && (!Project.improve))
+	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
+	}
 
 	FRAME_COUNT=LAST_FC;
 
