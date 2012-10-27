@@ -86,7 +86,6 @@ extern float DreamTable[];
 C_KEY			KeyTemp;
 bool			EditLight;
 bool			ShiftKey;
-bool			AltKey;
 
 bool			FlashBlancEnCours;
 bool			SpecialFadeEnCours;
@@ -95,9 +94,6 @@ float			OldSpeedSpecialFade;
 int				OldColorFlashBlanc;
 int				OldFxSpecialFade;
 
-/*---------------------------------------------------------------------------------*/
- 
-/*---------------------------------------------------------------------------------*/
 extern float	FlashAlpha;
 extern char FileNameDirLoad[];
 extern char FileNameDirSave[];
@@ -105,12 +101,11 @@ extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
 
-/*---------------------------------------------------------------------------------*/
-Cinematic::Cinematic(int _w, int _h)
-{
+Cinematic::Cinematic(int _w, int _h) {
+	
 	LargeurRender = _w;
 	HauteurRender = _h;
-
+	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
@@ -121,14 +116,11 @@ Cinematic::Cinematic(int _w, int _h)
 	ti = tichoose = INTERP_BEZIER;
 	speedchoose = 1.f;
 	ShiftKey = false;
-	AltKey = false;
-
+	
 	m_flIntensityRND = 0.f;
 }
 
-/*-------------------------------------------------------------------*/
-Cinematic::~Cinematic()
-{
+Cinematic::~Cinematic() {
 	DeleteAllBitmap();
 }
 
