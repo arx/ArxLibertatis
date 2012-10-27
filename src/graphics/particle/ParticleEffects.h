@@ -211,7 +211,6 @@ extern long BoomCount;
 extern POLYBOOM polyboom[MAX_POLYBOOM];
 extern FOG_DEF fogs[MAX_FOG];
 extern TextureContainer * smokeparticle;
-extern TextureContainer * bloodsplatter;
 extern TextureContainer * healing;
 extern TextureContainer * tzupouf;
 extern TextureContainer * fire2;
