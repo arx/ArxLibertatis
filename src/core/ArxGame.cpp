@@ -923,17 +923,14 @@ void ArxGame::Render() {
 		FirstFrameHandling();
 		goto norenderend;
 	}
-
-	if (CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
-	{
-		LastValidPlayerPos.x=player.pos.x;
-		LastValidPlayerPos.y=player.pos.y;
-		LastValidPlayerPos.z=player.pos.z;
+	
+	if(CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z)) {
+		LastValidPlayerPos = player.pos;
 	}
-
+	
 	// Updates Externalview
-	EXTERNALVIEW=0;
-
+	EXTERNALVIEW = 0;
+	
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {

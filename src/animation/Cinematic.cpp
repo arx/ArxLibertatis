@@ -73,7 +73,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*---------------------------------------------------------------------------------*/
 
 EERIE_CAMERA	Camera;
-bool			LeftButton, RightButton;
 static int LargeurRender, HauteurRender;
 
 //vertex
@@ -184,8 +183,6 @@ void Cinematic::OneTimeSceneReInit() {
 	
 	projectload = false;
 	
-	LeftButton = RightButton = false;
-	
 	DeleteAllBitmap();
 	DeleteAllSound();
 	
@@ -201,28 +198,27 @@ void Cinematic::OneTimeSceneReInit() {
 void Cinematic::New() {
 	
 	projectload = false;
-
+	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
 	key = NULL;
-	LeftButton = RightButton = false;
-
+	
 	DeleteTrack();
 	DeleteAllBitmap();
 	DeleteAllSound();
-
+	
 	AllocTrack(0, 100, 30.f);
 	FillKeyTemp(&pos, angz, 0, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
 	AddKey(&KeyTemp, true, true, true);
 	FillKeyTemp(&pos, angz, 100, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
-
+	
 	SetCurrFrame(GetStartFrame());
-
+	
 	projectload = true;
-
+	
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
 	

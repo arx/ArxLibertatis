@@ -114,8 +114,8 @@ int FX_FadeOUT(float a, int color, int colord)
 	return c;
 }
 
-float LastTime;
-/*---------------------------------------------------------------------------------*/
+static float LastTime;
+
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 {
 	int			nb;

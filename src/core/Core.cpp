@@ -187,7 +187,6 @@ extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;
 extern float	vdist;
-extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
 extern long		DONT_WANT_PLAYER_INZONE;
@@ -196,7 +195,7 @@ extern long		COLLIDED_CLIMB_POLY;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long PATHFINDER_WAIT;
 extern unsigned char * grps;
-extern long		LastSelectedIONum;
+extern long LastSelectedIONum;
 extern unsigned long ROTATE_START;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
@@ -206,6 +205,9 @@ extern long		FRAME_COUNT;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
 extern float OLD_PROGRESS_BAR_COUNT;
+#ifdef BUILD_EDITOR
+long LastSelectedIONum = -1;
+#endif
 
 extern EERIE_3DOBJ * ssol;
 extern long ssol_count;
@@ -371,7 +373,7 @@ unsigned long SPLASH_START=0;
 Color3f FADECOLOR;
 
 long START_NEW_QUEST=0;
-long LAST_WEAPON_TYPE=-1;
+static long LAST_WEAPON_TYPE = -1;
 long	FADEDURATION=0;
 long	FADEDIR=0;
 unsigned long FADESTART=0;
@@ -2178,16 +2180,11 @@ void FirstFrameHandling() {
 	if (	(!CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
 		&&	(LastValidPlayerPos.x!=0.f)
 		&&	(LastValidPlayerPos.y!=0.f)
-		&&	(LastValidPlayerPos.z!=0.f)	)
-	{
-		player.pos.x=LastValidPlayerPos.x;
-		player.pos.y=LastValidPlayerPos.y;
-		player.pos.z=LastValidPlayerPos.z;
+		&&	(LastValidPlayerPos.z!=0.f)) {
+		player.pos = LastValidPlayerPos;
 	}
 
-	LastValidPlayerPos.x=player.pos.x;
-	LastValidPlayerPos.y=player.pos.y;
-	LastValidPlayerPos.z=player.pos.z;
+	LastValidPlayerPos = player.pos;
 }
 
 //*************************************************************************************

@@ -174,7 +174,6 @@ extern float SLID_VALUE;
 extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
 extern long FORCE_NO_HIDE;
-extern long LastSelectedIONum;
 extern long lSLID_VALUE;
 
 extern long CHANGE_LEVEL_ICON;
@@ -275,7 +274,7 @@ long				LastMouseClick=0;
 long				MOVETYPE=MOVE_WAIT;
 
 //used to redist points - attributes and skill
-long				lCursorRedistValue = 0;
+static long lCursorRedistValue = 0;
 long				lFadeMapTime = 0;
 
 unsigned long		COMBAT_MODE_ON_START_TIME = 0;

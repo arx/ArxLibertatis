@@ -638,8 +638,8 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	return io;
 }
 
-long LastLoadedLightningNb = 0;
-u32 * LastLoadedLightning = NULL;
+static long LastLoadedLightningNb = 0;
+static u32 * LastLoadedLightning = NULL;
 Vec3f loddpos;
 Vec3f MSP;
 

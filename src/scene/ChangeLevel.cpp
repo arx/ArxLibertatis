@@ -756,17 +756,15 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 	asp->Skill_Close_Combat = player.Skill_Close_Combat;
 	asp->Skill_Defense = player.Skill_Defense;
 	asp->skin = player.skin;
-
+	
 	asp->xp = player.xp;
 	asp->nb_PlayerQuest = PlayerQuest.size();
 	asp->keyring_nb = Keyring.size();
 	asp->Global_Magic_Mode = GLOBAL_MAGIC_MODE;
 	asp->Nb_Mapmarkers = Mapmarkers.size();
-
-	asp->LAST_VALID_POS.x = LastValidPlayerPos.x;
-	asp->LAST_VALID_POS.y = LastValidPlayerPos.y;
-	asp->LAST_VALID_POS.z = LastValidPlayerPos.z;
-
+	
+	asp->LAST_VALID_POS = LastValidPlayerPos;
+	
 	for (int i = 0; i < MAX_ANIMS; i++)
 	{
 		memset(&asp->anims[i], 0, 256);
@@ -805,9 +803,7 @@ static long ARX_CHANGELEVEL_Push_Player(long level) {
 		pos += sizeof(SavedMapMarkerData);
 	}
 	
-	LastValidPlayerPos.x = asp->LAST_VALID_POS.x;
-	LastValidPlayerPos.y = asp->LAST_VALID_POS.y;
-	LastValidPlayerPos.z = asp->LAST_VALID_POS.z;
+	LastValidPlayerPos = asp->LAST_VALID_POS;
 	
 	pSaveBlock->save("player", dat, pos);
 	

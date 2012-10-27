@@ -131,7 +131,6 @@ long HERO_SHOW_1ST = 1;
 long TreatAllIO = 0;
 #ifdef BUILD_EDITOR
 long NbIOSelected = 0;
-long LastSelectedIONum = -1;
 #endif
 long INTER_DRAW = 0;
 
