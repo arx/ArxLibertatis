@@ -81,7 +81,6 @@ TexturedVertex		AllTLVertex[40000];
 extern float DreamTable[];
 
 C_KEY			KeyTemp;
-bool			ShiftKey;
 
 bool			FlashBlancEnCours;
 bool			SpecialFadeEnCours;
@@ -109,7 +108,6 @@ Cinematic::Cinematic(int _w, int _h) {
 	projectload = false; 
 	ti = tichoose = INTERP_BEZIER;
 	speedchoose = 1.f;
-	ShiftKey = false;
 	
 	m_flIntensityRND = 0.f;
 }
