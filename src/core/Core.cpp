@@ -514,7 +514,6 @@ void InitializeDanae() {
 
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_PARTICLES_ClearAll();
-	ARX_BOOMS_ClearAll();
 	ARX_MAGICAL_FLARES_FirstInit();
 	
 	LastLoadedScene.clear();

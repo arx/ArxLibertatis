@@ -1083,13 +1083,8 @@ void ARX_BOOMS_ClearAllPolyBooms()
 	BoomCount=0;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_BOOMS_ClearAll()
-{
-}
-//-----------------------------------------------------------------------------
-void ARX_BOOMS_Add(Vec3f * poss,long type)
-{
+void ARX_BOOMS_Add(Vec3f * poss,long type) {
+	
 	static TextureContainer * tc1=TextureContainer::Load("graph/particles/fire_hit");
 	static TextureContainer * tc2=TextureContainer::Load("graph/particles/boom");
 	long x0,x1;

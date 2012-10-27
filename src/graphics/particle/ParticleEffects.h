@@ -250,7 +250,6 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * pos);
 
 void ARX_BOOMS_ClearAllPolyBooms();
-void ARX_BOOMS_ClearAll();
 void ARX_BOOMS_Add(Vec3f * pos, long type = 0);
 
 void ARX_MAGICAL_FLARES_FirstInit();
