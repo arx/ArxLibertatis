@@ -162,7 +162,6 @@ extern ARX_PATH * ARX_PATHS_SelectedAP;
 extern long	ARX_PATHS_SelectedNum;
 extern long	ARX_PATHS_FlyingOverNum;
 #endif
-extern PathMods ARX_PATHS_HIERARCHYMOVE;
 extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
 

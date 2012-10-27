@@ -99,7 +99,6 @@ static bool IsPointInField(Vec3f * pos);
 ARX_PATH ** ARXpaths = NULL;
 ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
-PathMods ARX_PATHS_HIERARCHYMOVE = 0;
 long nbARXpaths = 0;
 long USE_CINEMATICS_CAMERA = 0;
 
