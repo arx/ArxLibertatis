@@ -87,7 +87,6 @@ extern long EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH aspeech[MAX_ASPEECH];
-long HIDESPEECH = 0;
 Notification speech[MAX_SPEECH];
 
 
@@ -535,8 +534,7 @@ void ARX_SPEECH_Update() {
 					if (!ok) goto next;
 				}
 
-				if (CINEMASCOPE && !HIDESPEECH)
-				{
+				if(CINEMASCOPE) {
 					if (CINEMA_DECAL >= 100.f)
 					{
 						Vec2i sSize = hFontInBook->GetTextSize(speech->text);
