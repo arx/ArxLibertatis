@@ -184,7 +184,6 @@ extern bool		bSkipVideoIntro;
 extern string SCRIPT_SEARCH_TEXT;
 extern string ShowText;
 extern string ShowText2;
-extern float Full_Jump_Height;
 extern float	MAX_ALLOWED_PER_SECOND;
 extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;

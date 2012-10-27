@@ -154,7 +154,6 @@ ARXCHARACTER player;
 EERIE_3DOBJ * hero = NULL;
 float currentdistance = 0.f;
 float CURRENT_PLAYER_COLOR = 0;
-float Full_Jump_Height = 0;
 float DeadCameraDistance = 0.f;
 float PLAYER_ROTATION = 0;
 
@@ -2129,7 +2128,6 @@ void ARX_PLAYER_Manage_Visual() {
 				
 				case JumpStart: { // Anticipation
 					FALLING_TIME = 0;
-					Full_Jump_Height = 0;
 					player.jumpphase = JumpAscending;
 					ChangeMoveAnim = alist[ANIM_JUMP_UP];
 					player.jumpstarttime = (unsigned long)(arxtime);
@@ -2884,7 +2882,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				
 				float p = (position - player.jumplastposition) * jump_up_height;
 				player.physics.targetpos.y -= p;
-				Full_Jump_Height += p;
 				player.jumplastposition = position;
 				levitate = 0;
 			}
