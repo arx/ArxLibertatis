@@ -134,7 +134,6 @@ long INTREATZONECOUNT = 0;
 long NbIOSelected = 0;
 long LastSelectedIONum = -1;
 #endif
-long INTERNMB = -1;
 long INTER_DRAW = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
@@ -2504,7 +2503,6 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 	float fMaxDist = flag ? 9999999999.f : 350;
 	Entity * foundBB = NULL;
 	Entity * foundPixel = NULL;
-	INTERNMB = -1;
 	bool bPlayerEquiped = false;
 
 	if (Project.telekinesis)
@@ -2572,7 +2570,6 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 					{
 						fdistBB = fp;
 						foundBB = io;
-						INTERNMB = i;
 					}
 
 					if ((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || (bPlayerEquiped && !flag))
@@ -2587,7 +2584,6 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 							fdistBB = fp;
 							foundBB = io;
 							foundPixel = io;
-							INTERNMB = i;
 						}
 
 						goto suite;
@@ -2613,7 +2609,6 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 								{
 									_fdist = fp;
 									foundPixel = io;
-									INTERNMB = i;
 									goto suite;
 								}
 							}
