@@ -2319,7 +2319,6 @@ void ARX_INTERFACE_Combat_Mode(long i)
 long CSEND=0;
 long MOVE_PRECEDENCE=0;
 
-extern long DISABLE_JUMP;
 extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
 void ArxGame::ManagePlayerControls()

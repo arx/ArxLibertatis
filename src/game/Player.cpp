@@ -2520,7 +2520,6 @@ extern float MAX_ALLOWED_PER_SECOND;
 
 long LAST_FIRM_GROUND = 1;
 long TRUE_FIRM_GROUND = 1;
-long DISABLE_JUMP = 0;
 float lastposy = -9999999.f;
 unsigned long REQUEST_JUMP = 0;
 extern float GLOBAL_SLOWDOWN;
@@ -2719,7 +2718,6 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		lastposy = player.pos.y;
-		DISABLE_JUMP = 0;
 		float anything;
 		EERIE_CYLINDER testcyl;
 		memcpy(&testcyl, &player.physics.cyl, sizeof(EERIE_CYLINDER));
@@ -2736,9 +2734,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				testcyl.radius -= 30.f;
 				testcyl.origin.y -= 10.f;
 				anything = CheckAnythingInCylinder(&testcyl, entities.player(), 0);
-				if(anything < 0.f) {
-					DISABLE_JUMP = 1;
-				}
 			}
 		} else {
 			TRUE_FIRM_GROUND = 0;
