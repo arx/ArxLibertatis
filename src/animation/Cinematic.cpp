@@ -86,7 +86,6 @@ bool			FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
 static float OldSpeedSpecialFade;
 static int OldColorFlashBlanc;
-static int OldFxSpecialFade;
 
 extern float	FlashAlpha;
 extern float SpecialFadeDx;
@@ -597,7 +596,6 @@ void Cinematic::Render(float FDIFF) {
 		}
 		
 		OldSpeedSpecialFade = speed;
-		OldFxSpecialFade = fx & 0x00ff0000;
 		
 		if(changekey) {
 			changekey = false;
