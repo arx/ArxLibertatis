@@ -122,7 +122,6 @@ extern Vec3f	PUSH_PLAYER_FORCE;
 extern QUAKE_FX_STRUCT QuakeFx;
 extern Entity * CURRENT_TORCH;
 extern Entity * CAMERACONTROLLER;
-extern TextureContainer * iconequip[];
 extern ParticleManager * pParticleManager;
 
 extern unsigned long LAST_JUMP_ENDTIME;

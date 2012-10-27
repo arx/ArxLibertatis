@@ -76,7 +76,6 @@ EERIE_CAMERA	Camera;
 bool			LeftButton, RightButton;
 C_KEY		*	KeyCopy;
 static int LargeurRender, HauteurRender;
-bool			InRender;
 
 //vertex
 TexturedVertex		AllTLVertex[40000];
@@ -445,7 +444,6 @@ void Cinematic::Render(float FDIFF) {
 	{
 		GRenderer->Clear(Renderer::ColorBuffer);
 		GRenderer->BeginScene();
-		InRender = true;
 
 		GereTrack(this, FDIFF);
 
@@ -650,7 +648,6 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		CalcFPS();
-		InRender = false;
 	}
 	
 }

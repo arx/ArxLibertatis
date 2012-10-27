@@ -102,7 +102,8 @@ using std::string;
 using std::ostringstream;
 using std::vector;
 
-extern float IN_FRONT_DIVIDER_ITEMS;
+static const float IN_FRONT_DIVIDER_ITEMS = 0.7505f;
+
 long MAX_LLIGHTS = 18;
 //-----------------------------------------------------------------------------
 extern EERIE_CAMERA TCAM[32];
@@ -1452,11 +1453,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		vert_list[2].uv.x=eobj->facelist[i].u[2];
 		vert_list[2].uv.y=eobj->facelist[i].v[2];	
 
-		if (FORCE_FRONT_DRAW)
-		{
-			vert_list[0].p.z*=IN_FRONT_DIVIDER_ITEMS;
-			vert_list[1].p.z*=IN_FRONT_DIVIDER_ITEMS;
-			vert_list[2].p.z*=IN_FRONT_DIVIDER_ITEMS;
+		if(FORCE_FRONT_DRAW) {
+			vert_list[0].p.z *= IN_FRONT_DIVIDER_ITEMS;
+			vert_list[1].p.z *= IN_FRONT_DIVIDER_ITEMS;
+			vert_list[2].p.z *= IN_FRONT_DIVIDER_ITEMS;
 		}
 
 		// Treat WATER Polys (modify UVs)

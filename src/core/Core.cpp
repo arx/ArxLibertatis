@@ -335,8 +335,6 @@ long SHOW_TORCH=0;
 float FrameDiff=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
-float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
-
 long USE_LIGHT_OPTIM	=1;
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
