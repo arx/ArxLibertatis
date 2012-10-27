@@ -128,7 +128,6 @@ float values[32];
 float vdist;
 long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
-long DEBUG_PATHFAIL = 1;
 long LOOK_AT_TARGET = 0;
 unsigned char * grps = NULL;
 long max_grps = 0;
@@ -1183,7 +1182,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 
 		if ( io->ioflags & IO_NPC )
 		{
-			if ( (DEBUG_PATHFAIL) && (!FINAL_RELEASE) )
+			if (!FINAL_RELEASE)
 			{
 				if ( io->_npcdata->pathfind.listnb == -2)
 					trappercent = 1;

@@ -529,7 +529,6 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 extern Entity * DESTROYED_DURING_RENDERING;
 long special_color_flag = 0;
 Color3f special_color;
-extern long DEBUG_PATHFAIL;
 extern long FINAL_RELEASE;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
@@ -557,7 +556,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 		if (io->ioflags & IO_NPC)
 		{
-			if ((DEBUG_PATHFAIL) && (!FINAL_RELEASE))
+			if (!FINAL_RELEASE)
 			{
 				if (io->_npcdata->pathfind.listnb == -2)
 					trappercent = 1;
