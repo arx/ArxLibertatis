@@ -94,7 +94,7 @@ struct PROJECT {
 	PROJECT()
 		:
 		  compatibility(0),
-		  improve(0), detectliving(0), improvespeed(0),
+		  improve(0), detectliving(0),
 		  telekinesis(0), demo(0),
 		  hide(0),
 		  torch(Color3f::black) {
@@ -103,7 +103,6 @@ struct PROJECT {
 	long compatibility;
 	long improve;
 	long detectliving;
-	long improvespeed;
 	long telekinesis;
 	long demo;
 	HideFlags hide;

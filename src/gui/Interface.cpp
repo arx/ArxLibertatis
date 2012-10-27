@@ -2546,8 +2546,6 @@ void ArxGame::ManagePlayerControls()
 				multi = 0.8f;
 			}
 
-			if (Project.improvespeed) multi+=1.2f;
-
 			t=radians(player.angle.b);
 			multi=5.f*(float)FD*MoveDiv*multi;
 			tm.x+=(float)EEsin(t)*multi;
@@ -2580,8 +2578,6 @@ void ArxGame::ManagePlayerControls()
 			{
 				multi=0.8f;
 			}
-
-			if (Project.improvespeed) multi+=1.5;
 
 			t=radians(player.angle.b);
 			multi=10.f*(float)FD*MoveDiv*multi;
