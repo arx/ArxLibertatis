@@ -67,7 +67,6 @@ Input * GInput = NULL;
 
 // TODO-input: Clean me!
 extern long EERIEMouseButton;
-extern long LastEERIEMouseButton;
 
 // All standard keys
 // "+" should not appear in names as it is used as a separator
@@ -290,7 +289,7 @@ void Input::reset()
 		keysStates[i]=0;
 	}
 
-	EERIEMouseButton=LastEERIEMouseButton=0;
+	EERIEMouseButton = 0;
 
 	iWheelDir = 0;
 }

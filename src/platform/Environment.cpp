@@ -191,8 +191,8 @@ std::string ws2s(const std::basic_string<WCHAR> & s) {
 }
 
 // Those two values are from ShlObj.h, but requires _WIN32_WINNT >= _WIN32_WINNT_VISTA
-const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
-const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
+static const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
+static const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
 
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"

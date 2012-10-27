@@ -209,7 +209,7 @@ long LASTEXTERNALVIEW=1;
 long ARX_CONVERSATION=0;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
-long LAST_CONVERSATION=0;
+static long LAST_CONVERSATION = 0;
 long SHOW_INGAME_MINIMAP= 1;
 long NEED_TEST_TEXT=0;
 static unsigned long FRAMETICKS=0;
@@ -1486,12 +1486,8 @@ void ArxGame::Render() {
 					case ARX_CINE_SPEECH_NONE: break;
 				}
 
-				LASTCAMPOS.x=subj.pos.x;
-				LASTCAMPOS.y=subj.pos.y;
-				LASTCAMPOS.z=subj.pos.z;
-				LASTCAMANGLE.a=subj.angle.a;
-				LASTCAMANGLE.b=subj.angle.b;
-				LASTCAMANGLE.g=subj.angle.g;
+				LASTCAMPOS = subj.pos;
+				LASTCAMANGLE = subj.angle;
 			}
 		}
 	}

@@ -113,8 +113,6 @@ extern TextureContainer * scursor[];
 extern long DANAESIZX;
 extern long DANAESIZY;
 
-extern long LastEERIEMouseButton;
-
 extern long REFUSE_GAME_RETURN;
 
 extern float PROGRESS_BAR_TOTAL;

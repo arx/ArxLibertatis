@@ -205,7 +205,6 @@ extern bool		PLAYER_MOUSELOOK_ON;
 extern long		FRAME_COUNT;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
-extern long LastEERIEMouseButton;
 extern float OLD_PROGRESS_BAR_COUNT;
 
 extern EERIE_3DOBJ * ssol;
@@ -3520,13 +3519,11 @@ void ReMappDanaeButton() {
 	    && GInput->getMouseButtonDoubleClick(button.key[0], 300))
 	   || (button.key[1] != -1 && (button.key[1] & Mouse::ButtonBase)
 	    && GInput->getMouseButtonDoubleClick(button.key[1], 300))) {
-		LastEERIEMouseButton = EERIEMouseButton;
 		EERIEMouseButton |= 4;
 		EERIEMouseButton &= ~1;
 	}
 	
 	if(GInput->actionNowPressed(CONTROLS_CUST_ACTION)) {
-		LastEERIEMouseButton = EERIEMouseButton;
 		if(EERIEMouseButton & 4) {
 			EERIEMouseButton &= ~1;
 		} else {
@@ -3535,7 +3532,6 @@ void ReMappDanaeButton() {
 		
 	}
 	if(GInput->actionNowReleased(CONTROLS_CUST_ACTION)) {
-		LastEERIEMouseButton = EERIEMouseButton;
 		EERIEMouseButton &= ~1;
 		EERIEMouseButton &= ~4;
 	}

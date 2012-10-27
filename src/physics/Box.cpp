@@ -627,8 +627,6 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, Vec3f * verts, long k, l
 	return ret;
 }
 
-EERIEPOLY * LAST_COLLISION_POLY = NULL;
-
 // Debug function used to show the physical box of an object
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	

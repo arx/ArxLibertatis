@@ -1429,7 +1429,7 @@ float CRuban::Render()
 
 extern bool IsValidPos3(Vec3f * pos);
 
-extern EERIEPOLY * LAST_COLLISION_POLY;
+static EERIEPOLY * LAST_COLLISION_POLY = NULL;
 extern long CUR_COLLISION_MATERIAL;
 
 extern float VELOCITY_THRESHOLD;

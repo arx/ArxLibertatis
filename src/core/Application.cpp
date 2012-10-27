@@ -77,7 +77,6 @@ using std::string;
 
 //-----------------------------------------------------------------------------
 long EERIEMouseButton = 0;
-long LastEERIEMouseButton = 0;
 long EERIEMouseGrab = 0;
 
 Application * mainApp = 0;
