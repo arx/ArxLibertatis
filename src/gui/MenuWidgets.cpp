@@ -97,7 +97,6 @@ static int newWidth;
 static int newHeight;
 static int newBpp;
 static bool newFullscreen;
-bool changeResolution = false;
 
 #define NODEBUGZONE
 
@@ -1956,17 +1955,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			ARXMenu_NewQuest();
 		}
 		break;
-	// MENULOADQUEST
-	case BUTTON_MENUOPTIONSVIDEO_INIT:
-		{
+		// MENULOADQUEST
+		case BUTTON_MENUOPTIONSVIDEO_INIT: {
 			newWidth = config.video.resolution.x;
 			newHeight = config.video.resolution.y;
 			newFullscreen = config.video.fullscreen;
 			newBpp = config.video.bpp;
-
-			changeResolution = false;
+			break;
 		}
-		break;
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
 		{
 			if ( pWindowMenu )
@@ -2128,26 +2124,19 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			break;
 		}
 		
-	case BUTTON_MENUOPTIONSVIDEO_APPLY:
-		{
-			//----------RESOLUTION
-			if( (newWidth!=config.video.resolution.x) ||
-				(newHeight!=config.video.resolution.y) ||
-				(newFullscreen != config.video.fullscreen) ||
-				(newBpp!=config.video.bpp) )
-			{
-				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight, newBpp);
-
-				pMenuSliderResol->iOldPos=-1;
-				pMenuSliderBpp->iOldPos=-1;
+		case BUTTON_MENUOPTIONSVIDEO_APPLY: {
+			if(newWidth != config.video.resolution.x || newHeight!=config.video.resolution.y
+			   || newFullscreen != config.video.fullscreen || newBpp != config.video.bpp) {
+				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight,
+				                                            newBpp);
+				pMenuSliderResol->iOldPos = -1;
+				pMenuSliderBpp->iOldPos = -1;
 				fullscreenCheckbox->iOldState = -1;
 			}
-
-			//----------END_RESOLUTION
-			changeResolution = false;
 			pMenu->bReInitAll=true;
 		}
 		break;
+		
 	// MENUOPTIONS_CONTROLS
 	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		{
@@ -4587,7 +4576,6 @@ bool CMenuSliderText::OnMouseClick(int)
 				
 			}
 			
-			changeResolution = true;
 			break;
 		}
 		
@@ -4620,24 +4608,21 @@ bool CMenuSliderText::OnMouseClick(int)
 			break;
 		}
 		
-	// MENUOPTIONS_VIDEO
-	case BUTTON_MENUOPTIONSVIDEO_BPP:
-		{
-			std::string pcText;
+		// MENUOPTIONS_VIDEO
+		case BUTTON_MENUOPTIONSVIDEO_BPP: {
 			std::stringstream ss;
-			pcText = vText[iPos]->lpszText;
-			ss << pcText;
+			ss << vText[iPos]->lpszText;
 			ss >> newBpp;
-			changeResolution = true;
+			break;
 		}
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS:
-		{
+		
+		case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS: {
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);
+			break;
 		}
-		break;
+		
 	}
-
+	
 	return false;
 }
 

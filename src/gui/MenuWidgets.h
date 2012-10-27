@@ -683,6 +683,4 @@ bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
 
-extern bool changeResolution;
-
 #endif // ARX_GUI_MENUWIDGETS_H

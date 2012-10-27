@@ -179,7 +179,6 @@ extern CMenuState		*pMenu;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern Entity * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
-extern bool		bSkipVideoIntro;
 extern string SCRIPT_SEARCH_TEXT;
 extern string ShowText;
 extern string ShowText2;
