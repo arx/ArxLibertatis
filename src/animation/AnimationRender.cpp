@@ -534,7 +534,6 @@ extern long FINAL_RELEASE;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 extern long FRAME_COUNT;
-extern long ALTERNATE_LIGHTING;
 
 extern float GLOBAL_LIGHT_FACTOR;
 
