@@ -136,7 +136,8 @@ long TRAP_DETECT = -1;
 long TRAP_SECRET = -1;
 long USEINTERNORM = 1;
 long HALOCUR = 0;
-long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
+
+static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
 //-----------------------------------------------------------------------------
 TexturedVertex tTexturedVertexTab2[4000];
