@@ -279,38 +279,30 @@ void ARX_MINIMAP_Reset()
 	memset(minimap, 0, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_PurgeTC()
-{
-	for (size_t i = 0; i < MAX_MINIMAPS; i++)
-	{
-		if (minimap[i].tc)
-		{
+void ARX_MINIMAP_PurgeTC() {
+	for(size_t i = 0; i < MAX_MINIMAPS; i++) {
+		if(minimap[i].tc) {
 			delete minimap[i].tc;
 			minimap[i].tc = NULL;
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
- 
- 
- 
 TextureContainer * MapMarkerTc = NULL;
 
-float DECALY = -150;
-float DECALX = +40;
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
-{
+void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2) {
+	
 	// Nuky - centralized some constants and dezoomed ingame minimap
-	static const int FL2_SIZE = 300;
-	static const int FL2_LEFT = 390;
-	static const int FL2_RIGHT = 590;
-	static const int FL2_TOP = 135;
-	static const int FL2_BOTTOM = 295;
-	static const float FL2_PLAYERSIZE = 4.f;
-
+	const int FL2_SIZE = 300;
+	const int FL2_LEFT = 390;
+	const int FL2_RIGHT = 590;
+	const int FL2_TOP = 135;
+	const int FL2_BOTTOM = 295;
+	const float FL2_PLAYERSIZE = 4.f;
+	
+	const float DECALY = -150;
+	const float DECALX = +40;
+	
 	if (!pTexDetect)
 		pTexDetect = TextureContainer::Load("graph/particles/flare");
 
