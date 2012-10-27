@@ -179,8 +179,6 @@ extern CMenuState		*pMenu;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern Entity * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
-extern string ShowText;
-extern string ShowText2;
 extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;

@@ -408,9 +408,6 @@ enum ScriptMessage {
 extern SCRIPT_VAR * svar;
 extern Entity * EVENT_SENDER;
 extern SCR_TIMER * scr_timer;
-extern std::string ShowTextWindowtext;
-extern std::string ShowText;
-extern std::string ShowText2;
 extern long NB_GLOBALS;
 extern long ActiveTimers;
 extern long FORBID_SCRIPT_IO_CREATION;

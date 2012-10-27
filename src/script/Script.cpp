@@ -93,9 +93,6 @@ using std::string;
 extern long lChangeWeapon;
 extern Entity * pIOChangeWeapon;
 
-std::string ShowText;
-std::string ShowText2;
-std::string ShowTextWindowtext;
 Entity * LASTSPAWNED = NULL;
 Entity * EVENT_SENDER = NULL;
 SCRIPT_VAR * svar = NULL;
