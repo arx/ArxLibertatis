@@ -157,7 +157,7 @@ long BLOCK_PLAYER_CONTROLS = 0;
 long WILLRETURNTOCOMBATMODE = 0;
 long DeadTime = 0;
 static unsigned long LastHungerSample = 0;
-unsigned long ROTATE_START = 0;
+static unsigned long ROTATE_START = 0;
 long sp_max = 0;
 
 // Player Anims FLAGS/Vars

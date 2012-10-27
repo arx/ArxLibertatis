@@ -210,7 +210,7 @@ void PopAllTriangleListTransparency();
 
 static PORTAL_ROOM_DRAW * RoomDraw = NULL;
 static long NbRoomDraw = 0;
-long * RoomDrawList=NULL;
+static long * RoomDrawList = NULL;
 static long NbRoomDrawList = 0;
 long TotalRoomDrawList=0;
 

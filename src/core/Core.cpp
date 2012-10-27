@@ -179,7 +179,6 @@ extern CMenuState		*pMenu;
 extern long SPECIAL_DRAGINTER_RENDER;
 extern Entity * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
-extern string SCRIPT_SEARCH_TEXT;
 extern string ShowText;
 extern string ShowText2;
 extern float	InventoryX;
@@ -192,7 +191,6 @@ extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 extern long LastSelectedIONum;
-extern unsigned long ROTATE_START;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern long		REFUSE_GAME_RETURN;
@@ -220,7 +218,6 @@ extern long smissile_count;
 extern EERIE_3DOBJ * spapi;
 extern long spapi_count;
 extern EERIE_3DOBJ * sfirewave;
-extern long sfirewave_count;
 extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
 
@@ -1795,7 +1792,6 @@ void DANAE_ReleaseAllDatasDynamic()
 	{
 		delete sfirewave;
 		sfirewave=NULL;
-		sfirewave_count=0;
 	}
 
 	if(svoodoo)

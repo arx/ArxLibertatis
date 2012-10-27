@@ -559,11 +559,8 @@ float CSummonCreature::Render()
 //-----------------------------------------------------------------------------
 CIncinerate::~CIncinerate()
 {
-	sfirewave_count--;
-
-	if (sfirewave && (sfirewave_count <= 0))
+	if (sfirewave)
 	{
-		sfirewave_count = 0;
 		delete sfirewave;
 		sfirewave = NULL;
 	}

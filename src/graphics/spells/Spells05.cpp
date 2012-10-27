@@ -90,7 +90,6 @@ long smissile_count = 0;
 EERIE_3DOBJ * spapi = NULL;
 long spapi_count = 0;
 EERIE_3DOBJ * sfirewave = NULL;
-long sfirewave_count = 0;
 EERIE_3DOBJ * svoodoo = NULL;
 long svoodoo_count = 0;
 //-----------------------------------------------------------------------------
