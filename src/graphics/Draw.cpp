@@ -55,7 +55,6 @@ using std::min;
 using std::max;
 
 TextureContainer * EERIE_DRAW_sphere_particle=NULL;
-TextureContainer * EERIE_DRAW_square_particle=NULL;
 
 long ZMAPMODE=1;
 TextureContainer * Zmap;

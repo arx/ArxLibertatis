@@ -1492,13 +1492,13 @@ void LoadSysTextures()
 
 	EERIE_DRAW_SetTextureZMAP(Z_map);
 	EERIE_DRAW_sphere_particle=sphere_particle;
-	EERIE_DRAW_square_particle=TextureContainer::LoadUI("graph/particles/square");
-
+	TextureContainer::LoadUI("graph/particles/square");
+	
 	TextureContainer::LoadUI("graph/particles/fire_hit");
 	TextureContainer::LoadUI("graph/particles/light");
 	TextureContainer::LoadUI("graph/particles/blood01");
 	TextureContainer::LoadUI("graph/particles/cross");
-
+	
 	//INTERFACE LOADING
 	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_red");
 	TextureContainer::LoadUI("graph/interface/bars/empty_gauge_blue");
@@ -1515,10 +1515,10 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/inventory/hero_inventory_link");
 	TextureContainer::LoadUI("graph/interface/inventory/ingame_inventory");
 	TextureContainer::LoadUI("graph/interface/inventory/gold");
-
+	
 	TextureContainer::LoadUI("graph/interface/inventory/inv_pick");
 	TextureContainer::LoadUI("graph/interface/inventory/inv_close");
-
+	
 	// MENU2
 	TextureContainer::LoadUI("graph/interface/cursors/cursor00");
 	TextureContainer::LoadUI("graph/interface/cursors/cursor01");
@@ -1532,7 +1532,7 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/menus/menu_main_background", TextureContainer::NoColorKey);
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background");
 	TextureContainer::LoadUI("graph/interface/menus/menu_console_background_border");
-
+	
 	//CURSORS LOADING
 	TextureContainer::LoadUI("graph/interface/cursors/cursor");
 	TextureContainer::LoadUI("graph/interface/cursors/magic");
@@ -1542,16 +1542,15 @@ void LoadSysTextures()
 	TextureContainer::LoadUI("graph/interface/cursors/target_off");
 	TextureContainer::LoadUI("graph/interface/cursors/drop");
 	TextureContainer::LoadUI("graph/interface/cursors/throw");
-
-	for (i=0;i<8;i++)
-	{
+	
+	for(i = 0; i < 8; i++) {
 		char temp[256];
-		sprintf(temp,"graph/interface/cursors/cursor%02ld",i);
-		scursor[i]=TextureContainer::LoadUI(temp);
+		sprintf(temp,"graph/interface/cursors/cursor%02ld", i);
+		scursor[i] = TextureContainer::LoadUI(temp);
 	}
-
+	
 	pTCCrossHair = TextureContainer::LoadUI("graph/interface/cursors/cruz");
-
+	
 	TextureContainer::LoadUI("graph/interface/bars/aim_empty");
 	TextureContainer::LoadUI("graph/interface/bars/aim_maxi");
 	TextureContainer::LoadUI("graph/interface/bars/flash_gauge");
