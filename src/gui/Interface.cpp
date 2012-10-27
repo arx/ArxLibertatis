@@ -2638,29 +2638,6 @@ void ArxGame::ManagePlayerControls()
 		moveto.z=player.pos.z+tm.z;
 	}
 
-	// To remove for FINAL_RELEASE---------------------------------------
-	if(ALLOW_CHEATS) {
-		if (GInput->isKeyPressedNowPressed(Keyboard::Key_NumPad5))
-		{
-			moveto.y=player.pos.y=FirstPolyPosY(player.pos.x,player.pos.z)-180.f;
-			player.angle.a=0.f;
-			player.desiredangle.a=0.f;
-		}
-
-		if (GInput->isKeyPressed(Keyboard::Key_A) && (GInput->isKeyPressed(Keyboard::Key_LeftShift) || GInput->isKeyPressed(Keyboard::Key_RightShift)))
-		{
-			BLOCK_PLAYER_CONTROLS=0;
-			player.life=player.Full_maxlife;
-			player.mana=player.Full_maxmana;
-			player.poison=0.f;
-			player.hunger=100;
-			DeadTime=0;
-			ARX_SOUND_PlayInterface(SND_PLAYER_FILLLIFEMANA, 0.9F + 0.2F * rnd());
-		}
-	}
-
-	// End of things to remove-------------------------------------------
-
 	// Checks CROUCH Key Status.
 	if (GInput->actionNowPressed(CONTROLS_CUST_CROUCHTOGGLE))
 	{

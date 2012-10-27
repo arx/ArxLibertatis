@@ -344,7 +344,6 @@ float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
-long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long FAST_SPLASHES		= 0;
 long FINAL_RELEASE		= 0;
@@ -602,7 +601,6 @@ void runGame() {
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
-	ALLOW_CHEATS = 0;
 	FAST_SPLASHES = 0;
 	FINAL_RELEASE = 1;
 	
