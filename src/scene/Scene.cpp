@@ -210,7 +210,6 @@ public:
 }
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
-EERIE_FRUSTRUM_PLANE efpPlaneFar;
 
 vector<EERIEPOLY*> vPolyWater;
 vector<EERIEPOLY*> vPolyLava;
@@ -1160,18 +1159,6 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
  
 	frustrum->nb=4;
 
-	//Ajout du plan Near & Far
-	a=matres._14-matres._13;
-	b=matres._24-matres._23;
-	c=matres._34-matres._33;
-	d=matres._44-matres._43;
-	b=-b;
- 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
-	efpPlaneFar.a=a*n;
-	efpPlaneFar.b=b*n;
-	efpPlaneFar.c=c*n;
-	efpPlaneFar.d=d*n;
-	
 	a=matres._14+matres._13;
 	b=matres._24+matres._23;
 	c=matres._34+matres._33;
