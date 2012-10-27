@@ -190,7 +190,6 @@ extern float	vdist;
 extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
-extern long		INTER_COMPUTE;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
@@ -3611,7 +3610,7 @@ void ShowInfoText() {
 		LASTfps2=fpss2;
 	}
 
-	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW, INTER_COMPUTE, 0, vdist);
+	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW, 0, 0, vdist);
 	mainApp->OutputText( 70, 32, tex );
 
 	float poss=-666.66f;

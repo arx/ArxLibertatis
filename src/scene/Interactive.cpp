@@ -137,7 +137,6 @@ long LastSelectedIONum = -1;
 long INTERNMB = -1;
 long LASTINTERCLICKNB = -1;
 long INTER_DRAW = 0;
-long INTER_COMPUTE = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
 static Entity * AddCamera(const res::path & classPath,
@@ -3274,7 +3273,6 @@ void RenderInter(float from, float to) {
 	Anglef temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
-	INTER_COMPUTE = 0;
 	float dist;
 	long diff;
 
