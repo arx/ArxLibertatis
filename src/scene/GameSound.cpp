@@ -1108,9 +1108,9 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	return ambiance_menu;
 }
 
-long nbelems = 0;
-char ** elems = NULL;
-long * numbers = NULL;
+static long nbelems = 0;
+static char ** elems = NULL;
+static long * numbers = NULL;
 
 void ARX_SOUND_FreeAnimSamples()
 {

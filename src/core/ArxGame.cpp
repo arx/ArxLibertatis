@@ -139,7 +139,6 @@ static bool showFPS = false;
 using std::string;
 
 extern long PLAY_LOADED_CINEMATIC;
-extern long NOBUILDMAP;
 extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
 extern long SPLASH_THINGS_STAGE;

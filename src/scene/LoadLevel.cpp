@@ -262,9 +262,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
 			
 			if(dlh.nb_scn != 0) {
-				dli.pos.x = io->initpos.x - Mscenepos.x;
-				dli.pos.y = io->initpos.y - Mscenepos.y;
-				dli.pos.z = io->initpos.z - Mscenepos.z;
+				dli.pos = io->initpos - Mscenepos;
 			} else {
 				dli.pos = io->initpos;
 			}
@@ -293,9 +291,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			memset(&dlf, 0, sizeof(DANAE_LS_FOG));
 			dlf.rgb = fogs[i].rgb;
 			dlf.angle = fogs[i].angle;
-			dlf.pos.x = fogs[i].pos.x - Mscenepos.x;
-			dlf.pos.y = fogs[i].pos.y - Mscenepos.y;
-			dlf.pos.z = fogs[i].pos.z - Mscenepos.z;
+			dlf.pos = fogs[i].pos - Mscenepos;
 			dlf.blend = fogs[i].blend;
 			dlf.frequency = fogs[i].frequency;
 			dlf.move = fogs[i].move;
@@ -316,9 +312,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			DANAE_LS_NODE dln;
 			memset(&dln, 0, sizeof(DANAE_LS_NODE));
 			strcpy(dln.name, nodes.nodes[i].name);
-			dln.pos.x = nodes.nodes[i].pos.x - Mscenepos.x;
-			dln.pos.y = nodes.nodes[i].pos.y - Mscenepos.y;
-			dln.pos.z = nodes.nodes[i].pos.z - Mscenepos.z;
+			dln.pos = nodes.nodes[i].pos - Mscenepos;
 			memcpy(dat + pos, &dln, sizeof(DANAE_LS_NODE));
 			pos += sizeof(DANAE_LS_NODE);
 			
@@ -343,12 +337,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		memset(&dlp, 0, sizeof(DANAE_LS_PATH));
 		dlp.flags = (short)ARXpaths[i]->flags;
 		dlp.idx = 0;
-		dlp.initpos.x = ARXpaths[i]->initpos.x - Mscenepos.x;
-		dlp.initpos.y = ARXpaths[i]->initpos.y - Mscenepos.y;
-		dlp.initpos.z = ARXpaths[i]->initpos.z - Mscenepos.z;
-		dlp.pos.x = ARXpaths[i]->pos.x - Mscenepos.x;
-		dlp.pos.y = ARXpaths[i]->pos.y - Mscenepos.y;
-		dlp.pos.z = ARXpaths[i]->pos.z - Mscenepos.z;
+		dlp.initpos = ARXpaths[i]->initpos - Mscenepos;
+		dlp.pos = ARXpaths[i]->pos - Mscenepos;
 		strncpy(dlp.name, ARXpaths[i]->name.c_str(), sizeof(dlp.name));
 		dlp.nb_pathways = ARXpaths[i]->nb_pathways;
 		dlp.height = ARXpaths[i]->height;
@@ -444,9 +434,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		dlight.fallend = el->fallend;
 		dlight.fallstart = el->fallstart;
 		dlight.intensity = el->intensity;
-		dlight.pos.x = el->pos.x - Mscenepos.x;
-		dlight.pos.y = el->pos.y - Mscenepos.y;
-		dlight.pos.z = el->pos.z - Mscenepos.z;
+		dlight.pos = el->pos - Mscenepos;
 		dlight.rgb = el->rgb;
 		
 		dlight.extras = el->extras;

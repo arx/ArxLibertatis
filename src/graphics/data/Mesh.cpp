@@ -1795,7 +1795,7 @@ bool GetRoomCenter(long room_num, Vec3f * center)
 }
 
 ROOM_DIST_DATA * RoomDistance = NULL;
-long NbRoomDistance = 0;
+static long NbRoomDistance = 0;
 
 static void SetRoomDistance(long i, long j, float val, const Vec3f * p1, const Vec3f * p2) {
 	

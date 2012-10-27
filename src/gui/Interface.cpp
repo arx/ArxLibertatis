@@ -126,7 +126,6 @@ using std::string;
 using std::vector;
 
 extern float MagicSightFader;
-extern long NEED_TEST_TEXT;
 extern float Original_framedelay;
 extern EERIE_3DOBJ *arrowobj;
 extern void InitTileLights();

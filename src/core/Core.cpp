@@ -335,7 +335,6 @@ long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
-long NOBUILDMAP			= 0;
 long DONT_ERASE_PLAYER	= 0;
 static float LastFrameTicks = 0;
 long SPLASH_THINGS_STAGE= 0;
@@ -616,8 +615,6 @@ void runGame() {
 	
 	LogInfo << "Starting " << version;
 	
-	NOBUILDMAP = 1;
-	
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();
 	
@@ -707,8 +704,6 @@ void runGame() {
 	
 	LaunchDemo = 1;
 	Project.demo = LEVEL10;
-	
-	NOBUILDMAP = 1;
 	
 	if(!AdjustUI()) {
 		return;
@@ -3102,7 +3097,7 @@ void ManageFade()
 }
 
 extern long cur_mr;
-TextureContainer * Mr_tc=NULL;
+static TextureContainer * Mr_tc = NULL;
 
 void CheckMr()
 {

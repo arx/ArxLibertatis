@@ -482,10 +482,11 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 
 	return false;
 }
+
 PORTAL_ROOM_DRAW * RoomDraw=NULL;
-long NbRoomDraw=0;
+static long NbRoomDraw = 0;
 long * RoomDrawList=NULL;
-long NbRoomDrawList=0;
+static long NbRoomDrawList = 0;
 long TotalRoomDrawList=0;
 
 bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
@@ -1172,17 +1173,18 @@ void RoomDrawRelease()
 
 	RoomDraw=NULL;
 }
-void RoomDrawListAdd(long num)
-{
-	if (TotalRoomDrawList<=NbRoomDrawList)
-	{
-		RoomDrawList=(long *)realloc(RoomDrawList,sizeof(long)*(NbRoomDrawList+1));
+
+void RoomDrawListAdd(long num) {
+	
+	if(TotalRoomDrawList <= NbRoomDrawList) {
+		RoomDrawList = (long *)realloc(RoomDrawList, sizeof(long) * (NbRoomDrawList + 1));
 		TotalRoomDrawList=NbRoomDrawList+1;
 	}
-
+	
 	RoomDrawList[NbRoomDrawList]=num;	
 	NbRoomDrawList++;
 }
+
 void RoomFrustrumAdd(long num,EERIE_FRUSTRUM * fr)
 {
 	if (RoomDraw[num].frustrum.nb_frustrums<MAX_FRUSTRUMS-1)
