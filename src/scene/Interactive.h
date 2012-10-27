@@ -107,7 +107,6 @@ DECLARE_FLAGS_OPERATORS(DeleteByIndexFlags)
 
 
 extern ARX_NODES nodes;
-extern Entity * CURRENTINTER;
 
 #ifdef BUILD_EDITOR
 extern long NbIOSelected;

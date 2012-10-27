@@ -198,7 +198,6 @@ extern FLARES flare[MAX_FLARES];
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
-extern long currboom;
 extern PARTICLE_DEF particle[MAX_PARTICLES];
 extern long BoomCount;
 extern POLYBOOM polyboom[MAX_POLYBOOM];

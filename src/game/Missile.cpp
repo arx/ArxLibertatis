@@ -214,7 +214,6 @@ void ARX_MISSILES_Update()
 				tro.y = 70.0F;
 				tro.z = 70.0F;
 
-				CURRENTINTER = NULL;
 				ep = GetMinPoly(dest.x, dest.y, dest.z);
 				epp = GetMaxPoly(dest.x, dest.y, dest.z);
 

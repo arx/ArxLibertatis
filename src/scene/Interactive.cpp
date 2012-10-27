@@ -126,7 +126,6 @@ extern long FOR_EXTERNAL_PEOPLE;
 extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
-Entity * CURRENTINTER = NULL;
 float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
@@ -2708,7 +2707,6 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
 		        && (!(io->ioflags & IO_NO_COLLISIONS))
 		        && (io->collision)
 		        && (io->gameFlags & GFLAG_ISINTREATZONE)
-		        && (io != CURRENTINTER)
 		        && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
 		        && (io->show == SHOW_FLAG_IN_SCENE)
 		   )
