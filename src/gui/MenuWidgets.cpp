@@ -134,7 +134,7 @@ CMenuState *pMenu;
 
 CMenuElement *pMenuElementResume=NULL;
 CMenuElement *pMenuElementApply=NULL;
-CMenuElementText *pLoadConfirm=NULL;
+static CMenuElementText * pLoadConfirm=NULL;
 CMenuElementText *pDeleteConfirm=NULL;
 CMenuElementText *pDeleteButton=NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;

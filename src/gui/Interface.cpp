@@ -191,7 +191,6 @@ extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
 extern bool bGToggleCombatModeWithKey;
-extern long PlayerWeaponBlocked;
 extern unsigned char ucFlick;
 
 extern TextManager *pTextManageFlyingOver;

@@ -914,13 +914,10 @@ bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
 }
 
 extern long CUR_COLLISION_MATERIAL;
-Entity * PHYSICS_CURIO = NULL;
-//***********************************************************************************************
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_TEMPORARY_TrySound(float volume)
-{
+static Entity * PHYSICS_CURIO = NULL;
+
+void ARX_TEMPORARY_TrySound(float volume) {
+	
 	if (PHYSICS_CURIO)
 	{
 		if (PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)

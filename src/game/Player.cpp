@@ -2482,12 +2482,10 @@ bool Valid_Jump_Pos() {
 	return (tmp <= 50.f);
 }
 
-extern float player_climb;
-extern float PLAYER_CLIMB_THRESHOLD;
 void PlayerMovementIterate(float DelatTime);
 
-void ARX_PLAYER_Manage_Movement()
-{
+void ARX_PLAYER_Manage_Movement() {
+	
 	// Is our player able to move ?
 	if ((CINEMASCOPE)
 	        ||	(BLOCK_PLAYER_CONTROLS)

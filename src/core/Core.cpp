@@ -360,7 +360,6 @@ long LaunchDemo=0;
 long FirstFrame=1;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
-unsigned long PlayerWeaponBlockTime=0;
 unsigned long SPLASH_START=0;
 //-----------------------------------------------------------------------------
 Color3f FADECOLOR;
@@ -2423,7 +2422,6 @@ void ManageCombatModeAnimations()
 												ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &io->obj->vertexlist3[id].v);
 
 											PlayerWeaponBlocked=useanim->ctime;
-										PlayerWeaponBlockTime = (unsigned long)(arxtime);
 										}
 
 										{
@@ -2467,7 +2465,6 @@ void ManageCombatModeAnimations()
 												ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &io->obj->vertexlist3[id].v);
 
 											PlayerWeaponBlocked=useanim->ctime;
-										PlayerWeaponBlockTime = (unsigned long)(arxtime);
 										}
 
 										{
@@ -2534,7 +2531,6 @@ void ManageCombatModeAnimations()
 						&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)))
 						{
 							PlayerWeaponBlocked=useanim->ctime;
-							PlayerWeaponBlockTime = (unsigned long)(arxtime);
 						}
 					}
 
@@ -2604,7 +2600,6 @@ void ManageCombatModeAnimations()
 								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 							{
 								PlayerWeaponBlocked=useanim->ctime;
-							PlayerWeaponBlockTime = (unsigned long)(arxtime);
 							}
 						}
 
@@ -2677,7 +2672,6 @@ void ManageCombatModeAnimations()
 								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 							{
 								PlayerWeaponBlocked=useanim->ctime;
-							PlayerWeaponBlockTime = (unsigned long)(arxtime);
 							}
 						}
 
