@@ -129,7 +129,6 @@ float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
 long TreatAllIO = 0;
-long INTREATZONECOUNT = 0;
 #ifdef BUILD_EDITOR
 long NbIOSelected = 0;
 long LastSelectedIONum = -1;
@@ -632,8 +631,6 @@ void PrepareIOTreatZone(long flag)
 			TREATZONE_LIMIT += 500;
 	}
 
-	INTREATZONECOUNT = 0;
-
 	if(TreatAllIO) {
 		for(size_t ii = 1; ii < entities.size(); ii++) {
 			Entity * io = entities[ii];
@@ -710,14 +707,14 @@ void PrepareIOTreatZone(long flag)
 				if (io == DRAGINTER)
 					treat = 1;
 			}
-
-			if (io->gameFlags & GFLAG_ISINTREATZONE)
+			
+			if(io->gameFlags & GFLAG_ISINTREATZONE) {
 				io->gameFlags |= GFLAG_WASINTREATZONE;
-			else
+			} else {
 				io->gameFlags &= ~GFLAG_WASINTREATZONE;
-
+			}
+			
 			if(treat) {
-				INTREATZONECOUNT++;
 				io->gameFlags |= GFLAG_ISINTREATZONE;
 				TREATZONE_AddIO(io);
 				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
@@ -725,9 +722,10 @@ void PrepareIOTreatZone(long flag)
 					iooo->room = io->room;
 					iooo->room_flags = io->room_flags;
 				}
+			} else {
+				io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			}
-			else	io->gameFlags &= ~GFLAG_ISINTREATZONE;
-
+			
 			EVENT_SENDER = NULL;
 
 			if ((io->gameFlags & GFLAG_ISINTREATZONE)

@@ -191,7 +191,6 @@ extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
 extern long		DONT_WANT_PLAYER_INZONE;
-extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
 extern long LOOKING_FOR_SPELL_TARGET;
