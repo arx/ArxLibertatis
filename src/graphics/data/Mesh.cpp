@@ -2462,13 +2462,7 @@ void SP_PrepareCamera(EERIE_CAMERA * cam)
 	cam->transform.posz = cam->pos.z;
 }
 
-extern long EDITION;
-
-//*************************************************************************************
-//*************************************************************************************
-
-void SetCameraDepth(float depth)
-{
+void SetCameraDepth(float depth) {
 	ACTIVECAM->cdepth = depth;
 	ACTIVECAM->Zdiv = depth * 1.2f;
 	ACTIVECAM->Zmul = 1.f / ACTIVECAM->Zdiv;
@@ -2476,14 +2470,8 @@ void SetCameraDepth(float depth)
 	ACTIVECAM->clip3D = (l / (long)BKG_SIZX) + 1;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-void RecalcLight(EERIE_LIGHT * el)
-{
-	el->rgb255.r = el->rgb.r * 255.f;
-	el->rgb255.g = el->rgb.g * 255.f;
-	el->rgb255.b = el->rgb.b * 255.f;
+void RecalcLight(EERIE_LIGHT * el) {
+	el->rgb255 = el->rgb * 255.f;
 	el->falldiff = el->fallend - el->fallstart;
 	el->falldiffmul = 1.f / el->falldiff;
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;

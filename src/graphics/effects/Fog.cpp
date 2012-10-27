@@ -267,10 +267,9 @@ void ARX_FOGS_Render() {
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
-void ARX_FOGS_RenderAll()
-{
+
+void ARX_FOGS_RenderAll() {
+	
 	Anglef angle = Anglef::ZERO;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);

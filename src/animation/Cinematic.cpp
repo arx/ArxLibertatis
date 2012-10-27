@@ -84,7 +84,6 @@ TexturedVertex		AllTLVertex[40000];
 extern float DreamTable[];
 
 C_KEY			KeyTemp;
-bool			EditLight;
 bool			ShiftKey;
 
 bool			FlashBlancEnCours;
@@ -245,22 +244,18 @@ void Cinematic::DeleteAllBitmap()
 	m_bitmaps.clear();
 }
 
-//*************************************************************************************
-// InitDeviceObjects()
 // Sets RenderStates
-//*************************************************************************************
 void Cinematic::InitDeviceObjects() {
 	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
+	
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
-
-	EditLight = false;
+	
 }
 
 void Cinematic::DeleteDeviceObjects() {
@@ -273,9 +268,13 @@ void Cinematic::DeleteDeviceObjects() {
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
-
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate,
+	                                          TextureStage::ArgTexture,
+	                                          TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate,
+	                                          TextureStage::ArgTexture,
+	                                          TextureStage::ArgDiffuse);
 	
 }
 
