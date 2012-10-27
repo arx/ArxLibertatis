@@ -266,7 +266,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 				entering:
 
 					if(JUST_RELOADED && (p->name == "ingot_maker" || p->name == "mauld_user")) {
-						ARX_DEAD_CODE();
+						ARX_DEAD_CODE(); // TODO remove JUST_RELOADED global
 					} else {
 						SendIOScriptEvent(io, SM_ENTERZONE, p->name);
 

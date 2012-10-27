@@ -74,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIE_CAMERA	Camera;
 bool			LeftButton, RightButton;
-C_KEY		*	KeyCopy;
 static int LargeurRender, HauteurRender;
 
 //vertex
@@ -184,7 +183,6 @@ void Cinematic::OneTimeSceneReInit() {
 	key = NULL;
 	
 	projectload = false;
-	KeyCopy = NULL;
 	
 	LeftButton = RightButton = false;
 	
@@ -208,7 +206,6 @@ void Cinematic::New() {
 	numbitmapsuiv = -1;
 	fx = -1;
 	key = NULL;
-	KeyCopy = NULL;
 	LeftButton = RightButton = false;
 
 	DeleteTrack();

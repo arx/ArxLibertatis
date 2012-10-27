@@ -1141,11 +1141,7 @@ long GetVertexPos(Entity * io, long id, Vec3f * pos)
 
 long EERIEDrawnPolys = 0;
 
-extern EERIE_CAMERA * Kam;
-
-//*************************************************************************************
 // Checks if point (x,y) is in a 2D poly defines by ep
-//*************************************************************************************
 int PointIn2DPoly(EERIEPOLY * ep, float x, float y) {
 	
 	int i, j, c = 0;
