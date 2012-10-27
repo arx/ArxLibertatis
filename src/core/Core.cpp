@@ -3610,7 +3610,7 @@ void ShowInfoText() {
 		LASTfps2=fpss2;
 	}
 
-	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld/%ld MIPMESH %d [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW, 0, 0, vdist);
+	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW, vdist);
 	mainApp->OutputText( 70, 32, tex );
 
 	float poss=-666.66f;

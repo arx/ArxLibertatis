@@ -135,7 +135,6 @@ long NbIOSelected = 0;
 long LastSelectedIONum = -1;
 #endif
 long INTERNMB = -1;
-long LASTINTERCLICKNB = -1;
 long INTER_DRAW = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
@@ -2652,8 +2651,6 @@ bool IsEquipedByPlayer(const Entity * io)
 extern long LOOKING_FOR_SPELL_TARGET;
 Entity * InterClick(Vec2s * pos) {
 	
-	LASTINTERCLICKNB = -1;
-
 	if (IsFlyingOverInventory(pos))
 	{
 		return NULL;
@@ -2672,19 +2669,16 @@ Entity * InterClick(Vec2s * pos) {
 	{
 		if(io->ioflags & IO_NPC) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
-				LASTINTERCLICKNB = INTERNMB;
 				return io;
 			}
 		}
 		else if ((Project.telekinesis) || (EDITMODE))
 		{
-			LASTINTERCLICKNB = INTERNMB;
 			return io;
 		}
 		else if (IsEquipedByPlayer(io)
 		         || closerThan(player.pos, io->pos, dist_Threshold))
 		{
-			LASTINTERCLICKNB = INTERNMB;
 			return io;
 		}
 	}
