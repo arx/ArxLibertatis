@@ -2331,9 +2331,7 @@ void ARX_PLAYER_Frame_Update()
 	}
 
 	// Reset player moveto info
-	moveto.x = player.pos.x;
-	moveto.y = player.pos.y;
-	moveto.z = player.pos.z;
+	moveto = player.pos;
 
 	// Reset current movement flags
 	player.Current_Movement = 0;
@@ -3087,9 +3085,7 @@ void ARX_PLAYER_GotoAnyPoly() {
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
 			if(eg->nbpoly) {
-				player.pos.x = moveto.x = eg->polydata[0].center.x;
-				player.pos.y = moveto.y = eg->polydata[0].center.y + player.baseHeight();
-				player.pos.z = moveto.z = eg->polydata[0].center.z;
+				player.pos = moveto = eg->polydata[0].center + player.baseOffset();
 			}
 		}
 	}

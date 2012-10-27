@@ -270,7 +270,6 @@ static long INTERFACE_HALO_NB = 0;
 static long INTERFACE_HALO_MAX_NB = 0;
 long				PRECAST_NUM=0;
 long				LastMouseClick=0;
-long				MOVETYPE=MOVE_WAIT;
 
 //used to redist points - attributes and skill
 static long lCursorRedistValue = 0;
@@ -2534,9 +2533,6 @@ void ArxGame::ManagePlayerControls()
 			CurrFightPos=3;
 			multi = 1;
 
-			if (MoveDiv==0.02f) MOVETYPE=MOVE_WALK;
-			else MOVETYPE=MOVE_RUN;
-
 			if (left || right)
 			{
 				multi = 0.8f;
@@ -2566,9 +2562,6 @@ void ArxGame::ManagePlayerControls()
 		{
 			CurrFightPos=2;
 			multi = 1;
-
-			if (MoveDiv==0.02f) MOVETYPE=MOVE_WALK;
-			else MOVETYPE=MOVE_RUN;
 
 			if (left || right)
 			{
@@ -2625,9 +2618,7 @@ void ArxGame::ManagePlayerControls()
 		}
 		else if (MOVE_PRECEDENCE==PLAYER_MOVE_STRAFE_RIGHT) MOVE_PRECEDENCE=0;
 
-		moveto.x=player.pos.x+tm.x;
-		moveto.y=player.pos.y+tm.y;
-		moveto.z=player.pos.z+tm.z;
+		moveto = player.pos + tm;
 	}
 
 	// Checks CROUCH Key Status.
@@ -3638,8 +3629,6 @@ void ArxGame::ManageKeyMouse() {
 	ARX_Menu_Manage();
 	Vec3f tm;
 	tm.x=tm.y=tm.z=0.f;
-
-	MOVETYPE=MOVE_WAIT;
 
 	if(bRestoreCoordMouse) {
 		DANAEMouse=GInput->getMousePosAbs();

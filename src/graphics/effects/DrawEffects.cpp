@@ -69,7 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long DANAESIZX;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
-extern long MOVETYPE;
 extern EERIE_3DOBJ * eyeballobj;
 extern TextureContainer * Boom;
 

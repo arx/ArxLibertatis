@@ -83,7 +83,7 @@ struct ARX_MISSILE
 };
 
 static const size_t MAX_MISSILES = 100;
-ARX_MISSILE missiles[MAX_MISSILES];
+static ARX_MISSILE missiles[MAX_MISSILES];
 
 // Gets a Free Projectile Slot
 long ARX_MISSILES_GetFree() {
