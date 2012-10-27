@@ -488,9 +488,6 @@ float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
 
 static long NPC_IN_CYLINDER = 0;
 
-// backup du dernier polingue
-static EERIEPOLY * pEPBackup = NULL;
-
 extern void GetIOCyl(Entity * io,EERIE_CYLINDER * cyl);
 
 inline void EE_RotateY(TexturedVertex *in,TexturedVertex *out,float c, float s)
