@@ -71,7 +71,6 @@ short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 
 static long POLYIN = 0;
 long COLLIDED_CLIMB_POLY=0;
-Entity * PUSHABLE_NPC=NULL;
 long MOVING_CYLINDER=0;
  
 Vec3f vector2D;
@@ -754,8 +753,6 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 									ARX_DAMAGES_DealDamages(ioo->index(),io->damager_damages,io->index(),io->damager_type,&ioo->pos);
 							}						
 
-							PUSHABLE_NPC=io;
-
 							if (io->targetinfo==i)
 							{
 								if (io->_npcdata->pathfind.listnb>0)
@@ -1390,9 +1387,8 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns true or false
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags)
-{
-	PUSHABLE_NPC=NULL;
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags) {
+	
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
 	if ((flags & CFLAG_LEVITATE) && (anything==0.f)) return true;
@@ -1615,10 +1611,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 		test.cyl.origin.x += vector2D.x; 
 		test.cyl.origin.y+=mvector.y*curmovedist;
 		test.cyl.origin.z += vector2D.z; 
-
 		
-		PUSHABLE_NPC=NULL;
-
 		if ((flags & CFLAG_CHECK_VALID_POS)
 			&& (CylinderAboveInvalidZone(&test.cyl)))
 				return false;

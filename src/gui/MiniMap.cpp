@@ -79,7 +79,7 @@ static float mini_offset_x[MAX_MINIMAPS];
 static float mini_offset_y[MAX_MINIMAPS];
 static float mapmaxy[32];
 
-TextureContainer * pTexDetect = NULL;
+static TextureContainer * pTexDetect = NULL;
 
 std::vector<MAPMARKER_DATA> Mapmarkers;
 
