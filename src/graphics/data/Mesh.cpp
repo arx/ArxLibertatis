@@ -152,12 +152,9 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-float fK3;
-
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _fZNear, float _fZFar)
-{
+void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
+                             float _fZNear, float _fZFar) {
+	
 	float fAspect = _fHeight / _fWidth;
 	float fFOV = radians(_fFOV);
 	float fFarPlane = _fZFar;
@@ -165,9 +162,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
 	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
 	float Q = fFarPlane / (fFarPlane - fNearPlane);
-
-	fK3 = (_fZFar - _fZNear);
-
+	
 	memset(&ProjectionMatrix, 0, sizeof(EERIEMATRIX));
 	ProjectionMatrix._11 = w;
 	ProjectionMatrix._22 = h;
@@ -175,7 +170,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._43 = (-Q * fNearPlane);
 	ProjectionMatrix._34 = 1.f;
 	GRenderer->SetProjectionMatrix(ProjectionMatrix);
-
+	
 	// Set view matrix to identity
 	EERIEMATRIX mat;
 	mat._11 = 1.f;
@@ -195,12 +190,12 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	mat._43 = 0.f;
 	mat._44 = 1.f;	
 	GRenderer->SetViewMatrix(mat);
-
+	
 	ProjectionMatrix._11 *= _fWidth * .5f;
 	ProjectionMatrix._22 *= _fHeight * .5f;
 	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
 	ProjectionMatrix._43 = Q;
-
+	
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 

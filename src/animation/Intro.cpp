@@ -68,49 +68,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-//-----------------------------------------------------------------------------
-extern float	PROGRESS_BAR_TOTAL;
-extern float	PROGRESS_BAR_COUNT;
-extern float	OLD_PROGRESS_BAR_COUNT;
+extern float PROGRESS_BAR_TOTAL;
+extern float PROGRESS_BAR_COUNT;
+extern float OLD_PROGRESS_BAR_COUNT;
 
-//-----------------------------------------------------------------------------
-TextureContainer	* FISHTANK_img = NULL;
-TextureContainer	* ARKANE_img = NULL;
+static TextureContainer * FISHTANK_img = NULL;
+static TextureContainer * ARKANE_img = NULL;
 
-//-----------------------------------------------------------------------------
-void LoadScreen()
-{
+void LoadScreen() {
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 }
 
-//-----------------------------------------------------------------------------
-bool ARX_INTERFACE_InitFISHTANK()
-{
-	if (FISHTANK_img == NULL)
+bool ARX_INTERFACE_InitFISHTANK() {
+	if(FISHTANK_img == NULL) {
 		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
-
+	}
 	return FISHTANK_img != NULL;
 }
 
-//-----------------------------------------------------------------------------
-bool ARX_INTERFACE_InitARKANE()
-{
-	if (ARKANE_img == NULL)
-		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
-
+bool ARX_INTERFACE_InitARKANE() {
+	if(ARKANE_img == NULL) {
+		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane",
+		                                      TextureContainer::NoColorKey);
+	}
 	return ARKANE_img != NULL;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_KillFISHTANK()
-{
+void ARX_INTERFACE_KillFISHTANK() {
 	delete FISHTANK_img;
 	FISHTANK_img = NULL;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_KillARKANE()
-{
+void ARX_INTERFACE_KillARKANE() {
 	delete ARKANE_img;
 	ARKANE_img = NULL;
 }
