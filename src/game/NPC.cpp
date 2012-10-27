@@ -121,7 +121,6 @@ static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
 extern long LastSelectedIONum;
 #endif
 
-extern long APPLY_PUSH;
 void StareAtTarget(Entity * io);
 #define RUN_WALK_RADIUS 450
 
@@ -3430,10 +3429,9 @@ static void ManageNPCMovement(Entity * io)
 		}
 	}
 #endif
-
-	APPLY_PUSH = 0; 
+	
 	DIRECT_PATH = true;
-
+	
 	// Now we try the physical move for real
 	if(io->physics.startpos == io->physics.targetpos
 	        || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC))
@@ -3456,10 +3454,7 @@ static void ManageNPCMovement(Entity * io)
 	io->physics.cyl.origin.z = io->pos.z = phys.cyl.origin.z;
 	io->physics.cyl.radius = GetIORadius(io);
 	io->physics.cyl.height = GetIOHeight(io);
-
-
-	APPLY_PUSH = 0;
-
+	
 	// Compute distance 2D to target.
 	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;

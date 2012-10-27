@@ -76,7 +76,6 @@ long MOVING_CYLINDER=0;
  
 Vec3f vector2D;
 bool DIRECT_PATH=true;
-long APPLY_PUSH=0;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)

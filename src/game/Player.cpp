@@ -141,7 +141,6 @@ extern bool bBookHalo;
 extern bool bGoldHalo;
 extern float InventoryX;
 extern float InventoryDir;
-extern long APPLY_PUSH;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
 extern long STARTED_A_GAME;
@@ -2992,7 +2991,6 @@ void PlayerMovementIterate(float DeltaTime) {
 			}
 			
 			bool test;
-			APPLY_PUSH = 1;
 			float PLAYER_CYLINDER_STEP = 40.f;
 			if(player.climbing) {
 				
@@ -3072,7 +3070,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				player.climbing = 0;
 			}
 			
-			APPLY_PUSH = 0;
 			moveto = player.physics.cyl.origin + Vec3f(0.f, PLAYER_BASE_HEIGHT, 0.f);
 			d = dist(player.pos, moveto);
 		}
