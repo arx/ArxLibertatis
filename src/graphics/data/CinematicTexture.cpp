@@ -55,8 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
-const int	MaxW = 256;
-const int	MaxH = 256;
+static const int MaxW = 256;
+static const int MaxH = 256;
 
 using std::string;
 

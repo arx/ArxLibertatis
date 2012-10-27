@@ -75,9 +75,9 @@ using std::max;
 using std::string;
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
-float mini_offset_x[MAX_MINIMAPS];
-float mini_offset_y[MAX_MINIMAPS];
-float mapmaxy[32];
+static float mini_offset_x[MAX_MINIMAPS];
+static float mini_offset_y[MAX_MINIMAPS];
+static float mapmaxy[32];
 
 TextureContainer * pTexDetect = NULL;
 

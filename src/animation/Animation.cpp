@@ -115,7 +115,6 @@ extern long ZMAPMODE;
 
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 
-bool MIPM;
 TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;
@@ -125,8 +124,7 @@ float values[32];
 float vdist;
 long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
-unsigned char * grps = NULL;
-long max_grps = 0;
+extern unsigned char * grps;
 long TRAP_DETECT = -1;
 long TRAP_SECRET = -1;
 long USEINTERNORM = 1;
@@ -1053,7 +1051,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
-	MIPM = 0;
 	vdist = 0.f;
 	{
 		ResetBBox3D( io );

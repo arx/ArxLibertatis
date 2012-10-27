@@ -82,7 +82,7 @@ struct ARX_MISSILE
 	long		owner;
 };
 
-const size_t MAX_MISSILES = 100;
+static const size_t MAX_MISSILES = 100;
 ARX_MISSILE missiles[MAX_MISSILES];
 
 // Gets a Free Projectile Slot

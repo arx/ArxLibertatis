@@ -2404,36 +2404,27 @@ void ARX_SPELLS_ManageMagic()
 				if (PIPOrgb>2) PIPOrgb=0;			
 			}
 			
-			if (EERIEMouseButton & 1)
-			{
-				Vec2s pos,pos2;
-				pos.x = DANAEMouse.x; 
-				pos.y = DANAEMouse.y;
+			if(EERIEMouseButton & 1) {
 				
-				if (TRUE_PLAYER_MOUSELOOK_ON)
-				{
-					pos.x = MemoMouse.x;
-					pos.y = MemoMouse.y;
+				Vec2s pos = DANAEMouse;
+				if(TRUE_PLAYER_MOUSELOOK_ON) {
+					pos = MemoMouse;
 				}
-
-				pos2.x=Lm.x;
-				pos2.y=Lm.y;
-
+				
+				Vec2s pos2 = Lm;
+				
 				if (!ARX_FLARES_broken) FlareLine(&pos2,&pos);
 
 				if (rnd()>0.6) AddFlare(&pos,1.f,-1);
 				else AddFlare(&pos,1.f,3);
-
-				OPIPOrgb=PIPOrgb;
-				Lm.x = DANAEMouse.x; 
-				Lm.y = DANAEMouse.y;
 				
-				if (TRUE_PLAYER_MOUSELOOK_ON)
-				{
-					Lm.x = MemoMouse.x;
-					Lm.y = MemoMouse.y;
+				OPIPOrgb = PIPOrgb;
+				
+				Lm = DANAEMouse;
+				if(TRUE_PLAYER_MOUSELOOK_ON) {
+					Lm = MemoMouse;
 				}
-
+				
 				ARX_FLARES_broken=0;
 				
 				if (!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))

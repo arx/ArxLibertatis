@@ -87,8 +87,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern unsigned char * grps;
-extern long max_grps;
+unsigned char * grps = NULL;
+static long max_grps = 0;
 extern long FORCE_NO_HIDE;
 extern long USEINTERNORM;
 extern long INTER_DRAW;
@@ -1983,24 +1983,21 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	float				timm;
 	Vec3f			ftr;
 	EERIE_C_DATA	*	obj;
-
 	
 	// Init some data
 	Cedric_ResetBoundingBox(io);
-
+	
 	// Set scale and invisibility factors
 	Cedric_GetScale(scale, invisibility, io);
-
+	
 	// Flag linked objects
 	//Cedric_FlagLinkedObjects(eobj); ???
-
+	
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
 	Cedric_GetTime(timm, io);
-
-
+	
 	// Buffer size check
-	if (eobj->nbgroups > max_grps)
-	{
+	if(eobj->nbgroups > max_grps) {
 		//todo free
 		grps = (unsigned char *)realloc(grps, eobj->nbgroups);
 		max_grps = eobj->nbgroups;

@@ -173,7 +173,7 @@ extern float SLID_VALUE;
 extern long BOOKBUTTON;
 extern long LASTBOOKBUTTON;
 extern long FORCE_NO_HIDE;
-extern long lSLID_VALUE;
+static long lSLID_VALUE = 0;
 
 extern long CHANGE_LEVEL_ICON;
 extern long BLOCK_PLAYER_CONTROLS;
@@ -242,7 +242,7 @@ float				OLD_PROGRESS_BAR_COUNT=0;
 bool				PLAYER_MOUSELOOK_ON = false;
 bool				TRUE_PLAYER_MOUSELOOK_ON = false;
 bool				LAST_PLAYER_MOUSELOOK_ON = false;
-bool				MEMO_PLAYER_MOUSELOOK_ON = false;
+static bool MEMO_PLAYER_MOUSELOOK_ON = false;
 
 long				COMBINEGOLD=0;
 ARX_INTERFACE_BOOK_MODE	Book_Mode=BOOKMODE_STATS;
@@ -3392,9 +3392,7 @@ void ArxGame::ManageKeyMouse() {
 				&& (eMouseState != MOUSE_IN_NOTE)
 				)
 			{
-				Vec2s poss;
-				poss.x=MemoMouse.x;
-				poss.y=MemoMouse.y;
+				Vec2s poss = MemoMouse;
 
 				// mode systemshock
 				if (config.input.mouseLookToggle && config.input.autoReadyWeapon == false)
@@ -3404,15 +3402,11 @@ void ArxGame::ManageKeyMouse() {
 					float fY =	DANAESIZY * 0.5f;
 					DANAEMouse.x = checked_range_cast<short>(fX);
 					DANAEMouse.y = checked_range_cast<short>(fY);
-
-
+					
 					pIO = FlyingOverObject(&DANAEMouse);
-
-					if (pIO)
-					{
+					if(pIO) {
 						FlyingOverIO = pIO;
-						MemoMouse.x = DANAEMouse.x;
-						MemoMouse.y = DANAEMouse.y;
+						MemoMouse = DANAEMouse;
 					}
 				}
 				else
@@ -3618,27 +3612,23 @@ void ArxGame::ManageKeyMouse() {
 	// Checks For MouseGrabbing/Restoration after Grab
 	bool bRestoreCoordMouse=true;
 
-	if((PLAYER_MOUSELOOK_ON) && (!LAST_PLAYER_MOUSELOOK_ON))
-	{
-		MemoMouse.x=DANAEMouse.x;
-		MemoMouse.y=DANAEMouse.y;
-		EERIEMouseGrab=1;
-	}
-	else if ((!PLAYER_MOUSELOOK_ON) && (LAST_PLAYER_MOUSELOOK_ON))
-	{
-		EERIEMouseGrab=0;
+	if(PLAYER_MOUSELOOK_ON && !LAST_PLAYER_MOUSELOOK_ON) {
 		
-		DANAEMouse.x=MemoMouse.x;
-		DANAEMouse.y=MemoMouse.y;
-
-		if(mainApp->GetWindow()->IsFullScreen())
-		{
+		MemoMouse = DANAEMouse;
+		EERIEMouseGrab = 1;
+		
+	} else if(!PLAYER_MOUSELOOK_ON && LAST_PLAYER_MOUSELOOK_ON) {
+		
+		EERIEMouseGrab = 0;
+		DANAEMouse = MemoMouse;
+		
+		if(mainApp->GetWindow()->IsFullScreen()) {
 			GInput->setMousePosAbs(DANAEMouse);
 		}
-
+		
 		bRestoreCoordMouse=false;
 	}
-
+	
 	LAST_PLAYER_MOUSELOOK_ON=PLAYER_MOUSELOOK_ON;
 	PLAYER_ROTATION=0;
 
