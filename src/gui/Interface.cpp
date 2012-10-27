@@ -163,7 +163,6 @@ extern TextureContainer * scursor[];
 extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
-extern FOG_DEF fogparam;
 extern TexturedVertex LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern Entity * CURRENT_TORCH;

@@ -107,7 +107,6 @@ long MAX_LLIGHTS = 18;
 //-----------------------------------------------------------------------------
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
-extern long ForceIODraw;
 extern long INTER_DRAW;
 extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
@@ -985,7 +984,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
-	if(io && io != entities.player() && !modinfo && !ForceIODraw && !MUST_DRAW && ACTIVEBKG) {
+	if(io && io != entities.player() && !modinfo && !MUST_DRAW && ACTIVEBKG) {
 		
 		long xx, yy;
 		xx = (pos.x) * ACTIVEBKG->Xmul;

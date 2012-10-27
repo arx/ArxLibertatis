@@ -187,7 +187,6 @@ extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;
 extern float	vdist;
-extern float	FLOATTEST;
 extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
@@ -240,7 +239,7 @@ Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 ParticleManager	*pParticleManager = NULL;
 TextureContainer *  ombrignon = NULL;
 TextureContainer *  teleportae = NULL;
-TextureContainer *  Flying_Eye = NULL;
+static TextureContainer *  Flying_Eye = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
 TextureContainer *	iconequip[5];
@@ -1990,7 +1989,6 @@ void FirstFrameProc() {
 Vec3f LastValidPlayerPos;
 Vec3f	WILL_RESTORE_PLAYER_POSITION;
 long WILL_RESTORE_PLAYER_POSITION_FLAG=0;
-extern long FLAG_ALLOW_CLOTHES;
 
 void FirstFrameHandling() {
 	LogDebug("FirstFrameHandling");

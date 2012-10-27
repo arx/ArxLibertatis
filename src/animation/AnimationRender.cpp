@@ -1941,11 +1941,10 @@ void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 
 extern long LOOK_AT_TARGET;
 
-extern long ForceIODraw;
 static bool Cedric_IO_Visible(Entity * io) {
 	if (io == entities.player()) return true;
 
-	if(!ForceIODraw && ACTIVEBKG && io) {
+	if(ACTIVEBKG && io) {
 		
 		if (distSqr(io->pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;

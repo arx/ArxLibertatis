@@ -139,7 +139,6 @@ long INTERNMB = -1;
 long LASTINTERCLICKNB = -1;
 long INTER_DRAW = 0;
 long INTER_COMPUTE = 0;
-long ForceIODraw = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
 static Entity * AddCamera(const res::path & classPath,
@@ -3365,18 +3364,14 @@ void RenderInter(float from, float to) {
 
 			}
 				
-			if (io->animlayer[0].cur_anim)
-			{
-				if (ForceIODraw && (dist > 2200.f)) continue;
-
-
+			if(io->animlayer[0].cur_anim) {
+				
 				temp.a = io->angle.a;
-
-				if (io->ioflags & IO_NPC)
+				if(io->ioflags & IO_NPC) {
 					temp.b = MAKEANGLE(180.f - io->angle.b);
-				else 
+				} else {
 					temp.b = MAKEANGLE(270.f - io->angle.b);
-
+				}
 				temp.g = io->angle.g;
 
 				if (io->animlayer[0].flags & EA_PAUSED)
@@ -3419,17 +3414,15 @@ void RenderInter(float from, float to) {
 			else 
 			{
 				if ((!EDITMODE) && (ARX_SCENE_PORTAL_Basic_ClipIO(io))) continue;
-
-				if (ForceIODraw && (dist > ACTIVECAM->cdepth * fZFogEnd)) continue;
-
+				
 				temp.a = io->angle.a;
-
-				if (io->ioflags & IO_NPC)
+				if(io->ioflags & IO_NPC) {
 					temp.b = MAKEANGLE(180.f - io->angle.b);
-				else	temp.b = MAKEANGLE(270.f - io->angle.b);
-
+				} else {
+					temp.b = MAKEANGLE(270.f - io->angle.b);
+				}
 				temp.g = io->angle.g;
-
+				
 				if ((io->ioflags & IO_GOLD) && io->obj)
 				{
 					if (io->_itemdata->price <= 3)

@@ -2699,8 +2699,6 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 	}
 }
 
-extern float FLOATTEST;
-
 Vec3f BBOXMIN, BBOXMAX;
 
 //*************************************************************************************
