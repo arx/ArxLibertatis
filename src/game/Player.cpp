@@ -2627,7 +2627,6 @@ void ARX_PLAYER_Manage_Movement()
 	StoredTime = DeltaTime;
 }
 
-long JUMP_DIVIDE = 0;
 void PlayerMovementIterate(float DeltaTime)
 {
 	// A jump is requested so let's go !
@@ -2861,8 +2860,6 @@ void PlayerMovementIterate(float DeltaTime)
 
 		if (LAST_JUMP_ENDTIME + 600 > float(arxtime))
 		{
-			JUMP_DIVIDE = 1;
-
 			if (LAST_JUMP_ENDTIME + 300 > float(arxtime))
 			{
 				jump_mul = 0.5f;
