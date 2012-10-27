@@ -205,7 +205,6 @@ long NEED_SPECIAL_RENDEREND=0;
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
 long EXTERNALVIEW=0;
-long LASTEXTERNALVIEW=1;
 long ARX_CONVERSATION=0;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
@@ -1679,8 +1678,6 @@ void ArxGame::Render() {
 	{
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(),1);
 	}
-
-	LASTEXTERNALVIEW=EXTERNALVIEW;
 
 	// NOW DRAW the player (Really...)
 	if ( (entities.player())
