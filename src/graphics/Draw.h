@@ -78,7 +78,6 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
                             Color col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
-void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
 void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);

@@ -129,7 +129,6 @@ extern float MagicSightFader;
 extern float Original_framedelay;
 extern EERIE_3DOBJ *arrowobj;
 extern void InitTileLights();
-extern long USE_LIGHT_OPTIM;
 
 long Manage3DCursor(long flags); // flags & 1 == simulation
 long IN_BOOK_DRAW=0;

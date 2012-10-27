@@ -202,7 +202,6 @@ extern PARTICLE_DEF particle[MAX_PARTICLES];
 extern long BoomCount;
 extern POLYBOOM polyboom[MAX_POLYBOOM];
 extern FOG_DEF fogs[MAX_FOG];
-extern TextureContainer * tzupouf;
 extern TextureContainer * fire2;
 extern long NewSpell;
 extern FLARETC flaretc;

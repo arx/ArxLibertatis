@@ -124,7 +124,6 @@ static const float DEC_FOCAL = 50.0f;
 static const float IMPROVED_FOCAL = 320.0f;
 
 void MakeSpCol();
-extern long WILLRETURNTOCOMBATMODE;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 long passwall=0;
 long WILLRETURNTOFREELOOK = 0;
@@ -161,7 +160,7 @@ extern long FistParticles;
 extern long ParticleCount;
 extern long sp_max;
 short uw_mode=0;
-short uw_mode_pos=0;
+static short uw_mode_pos=0;
 extern long MAGICMODE;
 extern Entity * CURRENT_TORCH;
 extern float GLOBAL_SLOWDOWN;

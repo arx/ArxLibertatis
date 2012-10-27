@@ -61,7 +61,6 @@ TextureContainer * Zmap;
 Vec3f SPRmins;
 Vec3f SPRmaxs;
 
-extern long WATERFX;
 extern TextureContainer * enviro;
 
 void CopyVertices(EERIEPOLY * ep,long to, long from) {
@@ -252,11 +251,6 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	}
 
 	return false;
-}
-
-void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
-{
-	Zmap=Z_map;
 }
 
 CircularVertexBuffer<TexturedVertex> * pDynamicVertexBuffer_TLVERTEX;

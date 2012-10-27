@@ -1432,7 +1432,7 @@ extern bool IsValidPos3(Vec3f * pos);
 static EERIEPOLY * LAST_COLLISION_POLY = NULL;
 extern long CUR_COLLISION_MATERIAL;
 
-extern float VELOCITY_THRESHOLD;
+float VELOCITY_THRESHOLD = 850.f;
 
 void ARX_ApplySpring(PHYSVERT * phys, long k, long l, float PHYSICS_constant,
                      float PHYSICS_Damp) {

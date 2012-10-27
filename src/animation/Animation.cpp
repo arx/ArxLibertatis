@@ -132,8 +132,7 @@ long HALOCUR = 0;
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
-//-----------------------------------------------------------------------------
-TexturedVertex tTexturedVertexTab2[4000];
+static TexturedVertex tTexturedVertexTab2[4000];
 
 extern long EXTERNALVIEW;
 void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility,

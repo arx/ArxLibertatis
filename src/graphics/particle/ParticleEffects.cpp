@@ -101,11 +101,11 @@ PARTICLE_DEF	particle[MAX_PARTICLES];
 FLARES			flare[MAX_FLARES];
 static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
-TextureContainer * water_drop[3];
+static TextureContainer * water_drop[3];
 static TextureContainer * smokeparticle = NULL;
 static TextureContainer * bloodsplatter = NULL;
 static TextureContainer * healing = NULL;
-TextureContainer * tzupouf=NULL;
+static TextureContainer * tzupouf = NULL;
 TextureContainer * fire2=NULL;
 
 static OBJFX objfx[MAX_OBJFX];

@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-float VELOCITY_THRESHOLD = 850.f;
 #define FULLTESTS 0
 
 long CUR_COLLISION_MATERIAL = 0;

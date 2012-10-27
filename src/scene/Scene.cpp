@@ -92,23 +92,17 @@ extern long USE_LIGHT_OPTIM;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long EXTERNALVIEW;
-extern long WATERFX;
 long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern Color ulBKGColor;
-//-----------------------------------------------------------------------------
-EERIEPOLY VF_Center;
-EERIEPOLY VF_Top;
-EERIEPOLY VF_Bottom;
-EERIEPOLY VF_Front;
 
 EERIEPOLY * TransPol[MAX_TRANSPOL];
 
 EERIE_PORTAL_DATA * portals = NULL;
 
-float WATEREFFECT=0.f;
+static float WATEREFFECT = 0.f;
 
 long TRANSPOLYSPOS=0;
 long FRAME_COUNT=0;
@@ -199,8 +193,8 @@ public:
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
 
-vector<EERIEPOLY*> vPolyWater;
-vector<EERIEPOLY*> vPolyLava;
+static vector<EERIEPOLY*> vPolyWater;
+static vector<EERIEPOLY*> vPolyLava;
 
 bool bOLD_CLIPP=false;
 

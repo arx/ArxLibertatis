@@ -248,7 +248,7 @@ TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
 TextureContainer *	TC_fire=NULL;
 TextureContainer *	TC_smoke=NULL;
-TextureContainer *	Z_map=NULL;
+static TextureContainer *	Z_map = NULL;
 TextureContainer *	Boom=NULL;
 //TextureContainer *	zbtex=NULL;
 TextureContainer *	mecanism_tc=NULL;
@@ -1421,7 +1421,7 @@ void LoadSysTextures()
 	TC_fire2=			TextureContainer::LoadUI("graph/particles/fire2");
 	TC_smoke=			TextureContainer::LoadUI("graph/particles/smoke");
 	TextureContainer::LoadUI("graph/particles/missile");
-	Z_map=				TextureContainer::LoadUI("graph/interface/misc/z-map");
+	Z_map = TextureContainer::LoadUI("graph/interface/misc/z-map");
 	Boom=				TextureContainer::LoadUI("graph/particles/boom");
 	lightsource_tc=		TextureContainer::LoadUI("graph/particles/light");
 	stealth_gauge_tc=	TextureContainer::LoadUI("graph/interface/icons/stealth_gauge");
@@ -1443,7 +1443,6 @@ void LoadSysTextures()
 
 	blood_splat=TextureContainer::LoadUI("graph/particles/new_blood2");
 
-	EERIE_DRAW_SetTextureZMAP(Z_map);
 	EERIE_DRAW_sphere_particle=sphere_particle;
 	TextureContainer::LoadUI("graph/particles/square");
 	
