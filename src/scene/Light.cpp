@@ -63,7 +63,6 @@ EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 long TOTPDL = 0;
 
-long PROGRESS_COUNT = 0;
 long PROGRESS_TOTAL = 0;
 
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
@@ -753,7 +752,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 		}
 	}
 
-	PROGRESS_COUNT = PROGRESS_TOTAL = 0;
+	PROGRESS_TOTAL = 0;
 
 	for (long j = minz; j <= maxz; j++)
 	{
@@ -776,7 +775,6 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 			for (long k = 0; k < eg->nbpoly; k++)
 			{
-				PROGRESS_COUNT++;
 				EERIEPOLY * ep = &eg->polydata[k];
 					
 				if(ep) {

@@ -265,7 +265,7 @@ long				CURCURDELAY=70;
 long				CURCURPOS=0;
 static long INTERFACE_HALO_NB = 0;
 static long INTERFACE_HALO_MAX_NB = 0;
-long				PRECAST_NUM=0;
+static long PRECAST_NUM = 0;
 long				LastMouseClick=0;
 
 //used to redist points - attributes and skill

@@ -180,9 +180,9 @@ static const KeyDescription keysDescriptions[] = {
 	{ Keyboard::Key_Equals, "=" },
 };
 
-const std::string PREFIX_KEY = "Key_";
-const std::string PREFIX_BUTTON = "Button";
-const char SEPARATOR = '+';
+static const std::string PREFIX_KEY = "Key_";
+static const std::string PREFIX_BUTTON = "Button";
+static const char SEPARATOR = '+';
 const std::string Input::KEY_NONE = "---";
 
 //-----------------------------------------------------------------------------

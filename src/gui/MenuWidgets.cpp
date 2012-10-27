@@ -127,19 +127,19 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 
 //-----------------------------------------------------------------------------
 
-MenuCursor* pMenuCursor=NULL;
+static MenuCursor * pMenuCursor = NULL;
 
 static CWindowMenu *pWindowMenu=NULL;
 CMenuState *pMenu;
 
-CMenuElement *pMenuElementResume=NULL;
-CMenuElement *pMenuElementApply=NULL;
-static CMenuElementText * pLoadConfirm=NULL;
+static CMenuElement * pMenuElementResume = NULL;
+static CMenuElement * pMenuElementApply = NULL;
+static CMenuElementText * pLoadConfirm = NULL;
 CMenuElementText *pDeleteConfirm=NULL;
 CMenuElementText *pDeleteButton=NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;
-CMenuSliderText *pMenuSliderResol=NULL;
-CMenuSliderText *pMenuSliderBpp=NULL;
+static CMenuSliderText * pMenuSliderResol = NULL;
+static CMenuSliderText * pMenuSliderBpp = NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
