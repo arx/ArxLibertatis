@@ -492,8 +492,6 @@ long NPC_IN_CYLINDER=0;
 
 // backup du dernier polingue
 EERIEPOLY * pEPBackup = NULL;
-int			iXBackup = -1;
-int			iYBackup = -1;
 extern int TSU_TEST_COLLISIONS;
 			
 	
@@ -575,10 +573,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 	FAST_BKG_DATA * feg;
 	
 	if (TSU_TEST_COLLISIONS)
-	if (	(iXBackup >= px-rad)
-		&&	(iXBackup <= px-rad)
-		&&	(iYBackup >= pz-rad)
-		&&	(iYBackup <= pz-rad)	
+	if (	(-1 >= px-rad)
+		&&	(-1 <= px-rad)
+		&&	(-1 >= pz-rad)
+		&&	(-1 <= pz-rad)
 		)
 	{
 		float minanything = min(anything,IsPolyInCylinder(pEPBackup,cyl,flags));
