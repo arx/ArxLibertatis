@@ -2920,7 +2920,6 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 		ARX_SPELLS_Launch(t_spell.typ, t_spell.source, t_spell.flags, t_spell.level, io->index(), t_spell.duration);
 	}
 }
-extern long FINAL_RELEASE;
 
 static float ARX_SPELLS_GetManaCost(Spell _lNumSpell,long lNumSpellTab) {
 	float Player_Magic_Level;
@@ -3171,26 +3170,21 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		level = std::max( level, 15L );
 	}
 	
-	if ( ( source == 0 ) && ( FINAL_RELEASE ) )
-	if ( !( flags & SPELLCAST_FLAG_NOCHECKCANCAST ) )
-	{
-		for (size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
-			if ( SpellSymbol[i] != RUNE_NONE )
-			{
-				if ( !( player.rune_flags & (RuneFlag)( 1 << SpellSymbol[i] ) ) )
-				{
+	if(source == 0 && !(flags & SPELLCAST_FLAG_NOCHECKCANCAST)) {
+		for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
+			if(SpellSymbol[i] != RUNE_NONE) {
+				if(!( player.rune_flags & (RuneFlag)(1 << SpellSymbol[i]))) {
 					ARX_SOUND_PlaySpeech("player_cantcast");
 					CurrSpellSymbol = 0;
 					ARX_SPELLS_ResetRecognition();
-					
 					return false;
 				}
 			}
 		}
 	}
-
+	
 	float Player_Magic_Level = 0;
-
+	
 	if ( !source )
 	{
 		ARX_SPELLS_ResetRecognition();

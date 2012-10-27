@@ -99,7 +99,6 @@ extern long START_NEW_QUEST;
 extern long LASTBOOKBUTTON;
 extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
-extern long FINAL_RELEASE;
 extern long FLYING_OVER;
 extern long BOOKZOOM;
 extern long FRAME_COUNT;
@@ -297,27 +296,26 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 }
 
 extern long NO_TIME_INIT;
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_QUIT()
-{
-	if (REFUSE_GAME_RETURN) return;
 
+void ARX_MENU_Clicked_QUIT() {
+	
+	if(REFUSE_GAME_RETURN) {
+		return;
+	}
+	
 	ARX_Menu_Resources_Release();
 	ARXmenu.currentmode = AMCM_OFF;
-
-	if (!NO_TIME_INIT)
+	if(!NO_TIME_INIT) {
 		arxtime.resume();
+	}
 }
 
 void ARX_MENU_Clicked_NEWQUEST() {
 	
 	arxtime.resume();
-
-	if (FINAL_RELEASE)
-	{
-		REFUSE_GAME_RETURN = 1;
-	}
-
+	
+	REFUSE_GAME_RETURN = 1;
+	
 	ARX_PLAYER_Start_New_Quest();
 	Book_Mode = BOOKMODE_STATS;
 	player.skin = 0;
@@ -326,18 +324,14 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	ARXmenu.currentmode = AMCM_NEWQUEST;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_NEW_QUEST_Clicked_QUIT()
-{
+void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	START_NEW_QUEST = 1;
 	REFUSE_GAME_RETURN = 0;
 	NEED_SPECIAL_RENDEREND = 1;
 	ARX_MENU_Clicked_QUIT();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_CREDITS()
-{
+void ARX_MENU_Clicked_CREDITS() {
 	ARXmenu.currentmode = AMCM_CREDITS;
 	Credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);

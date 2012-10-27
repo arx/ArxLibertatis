@@ -341,7 +341,6 @@ float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
 long FOR_EXTERNAL_PEOPLE =0;
-long FINAL_RELEASE		= 0;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
@@ -630,21 +629,18 @@ void runGame() {
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
-	FINAL_RELEASE = 1;
+	NOBUILDMAP = 1;
 	
-	
-	NOBUILDMAP=1;
-
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();
-
+	
 	mainApp = new ArxGame();
 	if(!mainApp->Initialize()) {
 		// Fallback to a generic critical error in case none was set yet...
 		LogCritical << "Application failed to initialize properly.";
 		return;
 	}
-
+	
 	// Check if the game will be able to use the current game directory.
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		LogCritical << "Error accessing current game directory.";
@@ -722,20 +718,10 @@ void runGame() {
 	
 	memset(&Project, 0, sizeof(PROJECT));
 	
-	if (FINAL_RELEASE) {
-		LogDebug("FINAL_RELEASE");
-		LaunchDemo=1;
-		Project.demo=LEVEL10;
-	} else {
-		LogInfo << "default LEVELDEMO2";
-		Project.demo=LEVELDEMO2;
-	}
+	LaunchDemo = 1;
+	Project.demo = LEVEL10;
 	
-	LogDebug("After Popup");
-	
-	if(LaunchDemo) {
-		NOBUILDMAP=1;
-	}
+	NOBUILDMAP = 1;
 	
 	if(!AdjustUI()) {
 		return;
@@ -1765,14 +1751,11 @@ void SetEditMode(long ed, const bool stop_sound) {
 		ARX_SCRIPT_ResetAll(1);
 		EERIE_ANIMMANAGER_PurgeUnused();
 	}
-
-	if (!DONT_ERASE_PLAYER)
-	{
-		if(!FINAL_RELEASE)
-			ARX_PLAYER_MakePowerfullHero();
-		else
-			ARX_PLAYER_MakeFreshHero();
+	
+	if(!DONT_ERASE_PLAYER) {
+		ARX_PLAYER_MakeFreshHero();
 	}
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -1993,21 +1976,15 @@ void FirstFrameProc() {
 
 		SLID_VALUE=0.f;
 	}
-
-	if (!LOAD_N_DONT_ERASE)
-	{
-		player.life=player.maxlife;
-		player.mana=player.maxmana;
-
-		if (!DONT_ERASE_PLAYER)
-		{
-			if(!FINAL_RELEASE)
-				ARX_PLAYER_MakePowerfullHero();
-			else
-				ARX_PLAYER_MakeFreshHero();
+	
+	if(!LOAD_N_DONT_ERASE) {
+		player.life = player.maxlife;
+		player.mana = player.maxmana;
+		if(!DONT_ERASE_PLAYER) {
+			ARX_PLAYER_MakeFreshHero();
 		}
 	}
-
+	
 	InitSnapShot(fs::paths.user / "snapshot");
 }
 Vec3f LastValidPlayerPos;

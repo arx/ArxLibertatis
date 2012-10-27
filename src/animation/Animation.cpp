@@ -105,7 +105,6 @@ using std::vector;
 extern float IN_FRONT_DIVIDER_ITEMS;
 long MAX_LLIGHTS = 18;
 //-----------------------------------------------------------------------------
-extern long FINAL_RELEASE;
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
 extern long ForceIODraw;
@@ -1182,15 +1181,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 
 		if ( io->ioflags & IO_NPC )
 		{
-			if (!FINAL_RELEASE)
-			{
-				if ( io->_npcdata->pathfind.listnb == -2)
-					trappercent = 1;
-
-				if ( io->_npcdata->pathfind.pathwait)
-					poisonpercent = 1;
-			}
-
 			if ( io->_npcdata->poisonned > 0.f )
 			{
 				poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );

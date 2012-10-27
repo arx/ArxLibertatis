@@ -115,8 +115,6 @@ extern long DANAESIZY;
 
 extern long LastEERIEMouseButton;
 
-extern long FINAL_RELEASE;
-
 extern long REFUSE_GAME_RETURN;
 
 extern float PROGRESS_BAR_TOTAL;
@@ -641,8 +639,6 @@ bool Menu2_Render() {
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
 					bool bBOOL;
 					ARXMenu_GetResumeGame(bBOOL);
-
-					if(!FINAL_RELEASE) bBOOL=true;
 
 					if (!bBOOL)
 					{

@@ -63,7 +63,6 @@ extern long ARX_CONVERSATION;
 extern long FRAME_COUNT;
 extern Vec3f LASTCAMPOS;
 extern Anglef LASTCAMANGLE;
-extern long FINAL_RELEASE;
 
 namespace script {
 
@@ -216,7 +215,7 @@ public:
 	Result execute(Context & context) {
 		
 		HandleFlags("d") {
-			if((flg & flag('d')) && FINAL_RELEASE) {
+			if((flg & flag('d'))) {
 				context.skipWord();
 				return Success;
 			}

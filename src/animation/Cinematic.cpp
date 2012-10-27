@@ -94,8 +94,6 @@ int				OldColorFlashBlanc;
 int				OldFxSpecialFade;
 
 extern float	FlashAlpha;
-extern char FileNameDirLoad[];
-extern char FileNameDirSave[];
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
