@@ -483,11 +483,8 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	}
 }
 
-extern EERIE_CAMERA DynLightCam;
-
-//-----------------------------------------------------------------------------
-void ComputeLight2DPos(EERIE_LIGHT * _pL)
-{
+void ComputeLight2DPos(EERIE_LIGHT * _pL) {
+	
 	TexturedVertex in, out;
 	in.p.x = _pL->pos.x;
 	in.p.y = _pL->pos.y;

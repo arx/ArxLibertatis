@@ -292,7 +292,6 @@ EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 static EERIE_BACKGROUND DefaultBkg;
 EERIE_CAMERA TCAM[32];
 EERIE_CAMERA subj,mapcam,bookcam,raycam,conversationcamera;
-EERIE_CAMERA DynLightCam;
 
 string WILLADDSPEECH;
 
@@ -556,7 +555,6 @@ void InitializeDanae() {
 	memcpy(&bookcam, &subj, sizeof(EERIE_CAMERA));
 	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
 	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
-	memcpy(&DynLightCam, &subj, sizeof(EERIE_CAMERA));
 	
 	raycam.centerx = 320;
 	raycam.centery = 320;
@@ -760,9 +758,7 @@ void runGame() {
 	
 	ARX_MINIMAP_FirstInit();
 	
-	Project.torch.r=1.f;
-	Project.torch.g = 0.8f;
-	Project.torch.b = 0.66666f;
+	Project.torch = Color3f(1.f, 0.8f, 0.66666f);
 	LogDebug("InitializeDanae");
 	InitializeDanae();
 	
