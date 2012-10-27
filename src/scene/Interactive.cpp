@@ -2336,7 +2336,6 @@ void MakeIOIdent(Entity * io) {
 #endif // BUILD_EDIT_LOADSAVE
 
 extern EERIE_3DOBJ	* arrowobj;
-extern long SP_DBG;
 
 Entity * AddItem(const res::path & classPath_, EntityInstance instance,
                  AddInteractiveFlags flags) {

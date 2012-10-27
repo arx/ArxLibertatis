@@ -272,7 +272,7 @@ long				LastMouseClick=0;
 static long lCursorRedistValue = 0;
 
 unsigned long		COMBAT_MODE_ON_START_TIME = 0;
-long SPECIAL_DRAW_WEAPON=0;
+static long SPECIAL_DRAW_WEAPON = 0;
 bool bGCroucheToggle=false;
 
 int iHighLight=0;

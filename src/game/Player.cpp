@@ -137,7 +137,6 @@ extern float InventoryDir;
 extern long COLLIDED_CLIMB_POLY;
 extern long HERO_SHOW_1ST;
 extern long STARTED_A_GAME;
-extern long SHOW_TORCH;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern unsigned long ulBookHaloTime;
 extern unsigned long ulGoldHaloTime;

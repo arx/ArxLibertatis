@@ -83,7 +83,6 @@ extern float DreamTable[];
 C_KEY			KeyTemp;
 
 bool			FlashBlancEnCours;
-bool			SpecialFadeEnCours;
 static float OldSpeedFlashBlanc;
 static float OldSpeedSpecialFade;
 static int OldColorFlashBlanc;
@@ -187,7 +186,6 @@ void Cinematic::OneTimeSceneReInit() {
 	DeleteTrack();
 	
 	FlashBlancEnCours = false;
-	SpecialFadeEnCours = false;
 	
 	m_flIntensityRND = 0.f;
 	
@@ -218,7 +216,6 @@ void Cinematic::New() {
 	projectload = true;
 	
 	FlashBlancEnCours = false;
-	SpecialFadeEnCours = false;
 	
 }
 
@@ -576,7 +573,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		//effets qui continuent avec le temps
-		if ((FlashBlancEnCours) && ((fx & 0x00FF0000) != FX_FLASH))
+		if ((FlashBlancEnCours) && ((fx & 0x00ff0000) != FX_FLASH))
 		{
 			speed = OldSpeedFlashBlanc;
 			colorflash = OldColorFlashBlanc;
@@ -594,34 +591,20 @@ void Cinematic::Render(float FDIFF) {
 			OldSpeedFlashBlanc = speed;
 			OldColorFlashBlanc = colorflash;
 		}
-
-		if ((SpecialFadeEnCours) &&
-		        (((fx & 0x00FF0000) != FX_APPEAR) && ((fx & 0x00FF0000) != FX_APPEAR2))
-		   )
-		{
-			speed = OldSpeedSpecialFade;
-
-			if (fx < 0) fx = OldFxSpecialFade;
-			else fx |= OldFxSpecialFade;
+		
+		if(changekey) {
+			SpecialFadeDx = 0.f;
 		}
-		else
-		{
-			if (changekey)
-			{
-				SpecialFadeDx = 0.f;
-			}
-
-			OldSpeedSpecialFade = speed;
-			OldFxSpecialFade = fx & 0x00FF0000;
-		}
-
-		if (changekey)
-		{
+		
+		OldSpeedSpecialFade = speed;
+		OldFxSpecialFade = fx & 0x00ff0000;
+		
+		if(changekey) {
 			changekey = false;
 		}
-
+		
 		//post fx
-		switch (fx & 0x00FF0000)
+		switch (fx & 0x00ff0000)
 		{
 			case FX_FLASH:
 				FlashBlancEnCours = FX_FlashBlanc((float)LargeurRender, (float)HauteurRender, speed, colorflash, GetTrackFPS(), FPS);

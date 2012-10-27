@@ -102,7 +102,7 @@ FLARES			flare[MAX_FLARES];
 static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
 TextureContainer * water_drop[3];
-TextureContainer * smokeparticle=NULL;
+static TextureContainer * smokeparticle = NULL;
 static TextureContainer * bloodsplatter = NULL;
 static TextureContainer * healing = NULL;
 TextureContainer * tzupouf=NULL;

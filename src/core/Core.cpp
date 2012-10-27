@@ -176,7 +176,6 @@ void ClearGame();
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CMenuState		*pMenu;
-extern long SPECIAL_DRAGINTER_RENDER;
 extern Entity * CURRENT_TORCH;
 extern EERIE_3DOBJ * fogobj;
 extern float	InventoryX;
