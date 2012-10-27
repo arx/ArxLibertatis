@@ -63,9 +63,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
-#include "graphics/VertexBuffer.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
 #include "graphics/Math.h"
+#include "graphics/VertexBuffer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -120,9 +121,6 @@ long TESTMODE=1;
 long FRAME_COUNT=0;
 
 long LAST_ROOM=-1;
-
-float fZFogStart=0.3f;
-float fZFogEnd=.5f;
 
 long iTotPoly;
 

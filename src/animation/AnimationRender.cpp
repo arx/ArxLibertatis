@@ -860,7 +860,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 							if (p <= 0.f)
 								cosangle = 0.f;
 							else
-								cosangle = p * Cur_llights->precalc; //>intensity*GLOBAL_LIGHT_FACTOR;
+								cosangle = p * Cur_llights->precalc;
 						}
 
 						r += Cur_llights->rgb255.r * cosangle;

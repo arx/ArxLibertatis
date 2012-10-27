@@ -112,7 +112,6 @@ extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
 extern Color ulBKGColor;
 extern long ZMAPMODE;
-extern float fZFogStart;
 
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 
@@ -633,12 +632,8 @@ suite:
 	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render, update_movement);
 }
 
-extern float GLOBAL_LIGHT_FACTOR;
 
-
-//*************************************************************************************
 // Procedure for drawing Interactive Objects (Not Animated)
-//*************************************************************************************
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * poss,
                           Entity * io, EERIE_MOD_INFO * modinfo) {
 	

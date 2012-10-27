@@ -29,8 +29,8 @@
 #include "io/resource/PakReader.h"
 #include "platform/CrashHandler.h"
 
-FT_Library g_FTLibrary = NULL;
-FontCache* FontCache::m_Instance = NULL;
+static FT_Library g_FTLibrary = NULL;
+FontCache * FontCache::m_Instance = NULL;
 
 void FontCache::Initialize() {
 	if(!m_Instance) {

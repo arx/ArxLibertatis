@@ -63,9 +63,6 @@ GLOBAL_MODS stacked;
 #define DEFAULT_ZCLIP		6400.f 
 #define DEFAULT_MINZCLIP	1200.f 
 
-extern float fZFogEnd;
-extern float fZFogStart;
-
 Color ulBKGColor = Color::none;
 
 void ARX_GLOBALMODS_Reset()

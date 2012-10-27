@@ -60,8 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
-#include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 
@@ -78,7 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 
 //TODO(lubosz): extern globals :(
-extern float fZFogEnd;
 extern Color ulBKGColor;
 
 struct OBJFX {
@@ -99,7 +99,6 @@ struct OBJFX {
 FLARETC			flaretc;
 PARTICLE_DEF	particle[MAX_PARTICLES];
 FLARES			flare[MAX_FLARES];
-TexturedVertex		g_Lumignon[4];
 static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
 TextureContainer * water_drop[3];
@@ -2504,18 +2503,13 @@ void TreatBackgroundActions()
 	}	
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MAGICAL_FLARES_FirstInit()
-{	
-	flarenum=0;
-
-	for(long i=0;i<MAX_FLARES;i++) flare[i].exist=0; 
-
-	g_Lumignon[0] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::Y_AXIS);
-	g_Lumignon[1] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::ZERO);
-	g_Lumignon[2] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f(1, 1));
-	g_Lumignon[3] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::X_AXIS);
+void ARX_MAGICAL_FLARES_FirstInit() {
+	flarenum = 0;
+	for(long i = 0; i < MAX_FLARES; i++) {
+		flare[i].exist = 0; 
+	}
 }
+
 void ARX_MAGICAL_FLARES_KillAll()
 {
 	for (long i=0;i<MAX_FLARES;i++)

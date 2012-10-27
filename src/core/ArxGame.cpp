@@ -169,7 +169,6 @@ extern float BOW_FOCAL;
 
 extern float GLOBAL_SLOWDOWN;
 extern float sp_max_start;
-extern float fZFogEnd;
 extern float LAST_FADEVALUE;
 
 extern float PROGRESS_BAR_TOTAL;
@@ -214,7 +213,7 @@ long ARX_CONVERSATION_LASTIS=-1;
 long LAST_CONVERSATION=0;
 long SHOW_INGAME_MINIMAP= 1;
 long NEED_TEST_TEXT=0;
-unsigned long FRAMETICKS=0;
+static unsigned long FRAMETICKS=0;
 
 float PLAYER_ARMS_FOCAL = 350.f;
 float currentbeta=0.f;

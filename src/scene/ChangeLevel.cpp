@@ -223,7 +223,8 @@ bool ARX_Changelevel_CurGame_Clear() {
 	return true;
 }
 
-SaveBlock * GLOBAL_pSaveB = NULL;
+static SaveBlock * GLOBAL_pSaveB = NULL;
+
 void ARX_Changelevel_CurGame_Open() {
 	
 	if(GLOBAL_pSaveB) {

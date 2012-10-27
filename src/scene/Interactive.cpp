@@ -575,7 +575,6 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 }
 
 long GLOBAL_Player_Room = -1;
-extern float fZFogEnd;
 void PrepareIOTreatZone(long flag)
 {
 	static long status = -1;

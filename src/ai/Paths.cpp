@@ -913,7 +913,6 @@ void CheckExp(long i) {
 	}
 }
 
-extern float fZFogEnd;
 extern long FRAME_COUNT;
 
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
