@@ -2885,10 +2885,7 @@ void ARX_SPELLS_Precast_Check()
 		}
 	}
 }
-void ARX_SPELLS_Precast_Launch2() {
-	
 
-}
 struct TARGETING_SPELL {
 	Spell typ;
 	long source;
@@ -2897,7 +2894,8 @@ struct TARGETING_SPELL {
 	long target;
 	long duration;
 };
-TARGETING_SPELL t_spell;
+
+static TARGETING_SPELL t_spell;
 
 long LOOKING_FOR_SPELL_TARGET=0;
 unsigned long LOOKING_FOR_SPELL_TARGET_TIME=0;

@@ -123,7 +123,7 @@ extern long EXTERNALVIEW;
 extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
-float TREATZONE_LIMIT = 1800.f;
+static float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
 #ifdef BUILD_EDITOR
@@ -491,7 +491,7 @@ void IO_UnlinkAllLinkedObjects(Entity * io) {
 // First is always the player
 TREATZONE_IO * treatio = NULL;
 long TREATZONE_CUR = 0;
-long TREATZONE_MAX = 0;
+static long TREATZONE_MAX = 0;
 
 void TREATZONE_Clear()
 {
