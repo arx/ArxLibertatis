@@ -61,7 +61,6 @@ TextureContainer * Zmap;
 Vec3f SPRmins;
 Vec3f SPRmaxs;
 
-extern long REFLECTFX;
 extern long WATERFX;
 extern TextureContainer * enviro;
 

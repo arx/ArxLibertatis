@@ -421,7 +421,6 @@ struct PORTAL_ROOM_DRAW
 	EERIE_2D_BBOX	bbox;
 	EERIE_FRUSTRUM_DATA	frustrum;
 };
-extern PORTAL_ROOM_DRAW * RoomDraw;
 
 // Default Mode for Portals when found
 #define NPC_ITEMS_AMBIENT_VALUE_255 35

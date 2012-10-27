@@ -93,7 +93,6 @@ extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long EXTERNALVIEW;
 extern long WATERFX;
-extern long REFLECTFX;
 long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
@@ -209,7 +208,11 @@ bool bOLD_CLIPP=false;
 
 void PopAllTriangleListTransparency();
 
-extern long TSU_TEST;
+static PORTAL_ROOM_DRAW * RoomDraw = NULL;
+static long NbRoomDraw = 0;
+long * RoomDrawList=NULL;
+static long NbRoomDrawList = 0;
+long TotalRoomDrawList=0;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -482,12 +485,6 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 
 	return false;
 }
-
-PORTAL_ROOM_DRAW * RoomDraw=NULL;
-static long NbRoomDraw = 0;
-long * RoomDrawList=NULL;
-static long NbRoomDrawList = 0;
-long TotalRoomDrawList=0;
 
 bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
 {

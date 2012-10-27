@@ -99,7 +99,6 @@ extern int iHighLight;
 
 extern TextureContainer TexSpecialColor;
 
-long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
 

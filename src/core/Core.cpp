@@ -3551,8 +3551,8 @@ void ShowTestText()
 	sprintf( tex,"Last Failed Sequence : %s",LAST_FAILED_SEQUENCE.c_str() );
 	mainApp->OutputText( 0, 64, tex );
 }
+
 extern float CURRENT_PLAYER_COLOR;
-extern long TSU_TEST;
 
 long TSU_TEST_NB = 0;
 long TSU_TEST_NB_LIGHT = 0;
@@ -3626,7 +3626,7 @@ void ShowInfoText() {
 	sprintf(tex,"Velocity %3.0f %3.0f %3.0f Slope %3.3f",player.physics.velocity.x,player.physics.velocity.y,player.physics.velocity.z,slope);
 	mainApp->OutputText( 70, 128, tex );
 
-	sprintf(tex, "TSU_TEST %ld - nblights %ld - nb %ld", TSU_TEST, TSU_TEST_NB_LIGHT, TSU_TEST_NB);
+	sprintf(tex, "nblights %ld - nb %ld", TSU_TEST_NB_LIGHT, TSU_TEST_NB);
 	mainApp->OutputText( 100, 208, tex );
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
