@@ -63,8 +63,6 @@ EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 long TOTPDL = 0;
 
-long PROGRESS_TOTAL = 0;
-
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
 
@@ -751,22 +749,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 			GLight[i]->precalc = GLight[i]->intensity * GLOBAL_LIGHT_FACTOR;
 		}
 	}
-
-	PROGRESS_TOTAL = 0;
-
-	for (long j = minz; j <= maxz; j++)
-	{
-		for (long i = minx; i <= maxx; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
-				PROGRESS_TOTAL++;
-			}
-		}
-	}
-
+	
 	for (long j = minz; j <= maxz; j++)
 	{
 		for (long i = minx; i <= maxx; i++)
