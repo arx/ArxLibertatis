@@ -644,7 +644,6 @@ Vec3f loddpos;
 Vec3f MSP;
 
 extern long FASTmse;
-long FAKE_DIR = 0;
 
 long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
@@ -712,8 +711,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		const DANAE_LS_SCENE * dls = reinterpret_cast<const DANAE_LS_SCENE *>(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 		
-		res::path scene = (FAKE_DIR) ? file.parent() : res::path::load(safestring(dls->name));
-		FAKE_DIR = 0;
+		res::path scene = res::path::load(safestring(dls->name));
 		
 		if(FastSceneLoad(scene)) {
 			LogDebug("done loading scene");

@@ -3435,9 +3435,7 @@ void ARX_GAME_Reset(long type) {
 	FADEDIR = 0;
 	FADEDURATION = 0;
 	FADESTART = 0;
-	FADECOLOR.r = 0;
-	FADECOLOR.b = 0;
-	FADECOLOR.g = 0;
+	FADECOLOR = Color3f::black;
 
 	// GLOBALMods
 	ARX_GLOBALMODS_Reset();

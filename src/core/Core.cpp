@@ -192,7 +192,6 @@ extern long		LastSelectedIONum;
 extern long		FistParticles;
 extern long		INTER_DRAW;
 extern long		INTER_COMPUTE;
-extern long		FAKE_DIR;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;

@@ -4212,12 +4212,10 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 extern TextureContainer * stealth_gauge_tc;
 extern float CURRENT_PLAYER_COLOR;
-extern long EXTERNALVIEW;
-//-----------------------------------------------------------------------------
+
 // Stealth Gauge Drawing
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_Draw_Stealth_Gauge()
-{
+void ARX_INTERFACE_Draw_Stealth_Gauge() {
+	
 	if ((stealth_gauge_tc) && (!CINEMASCOPE))
 	{
 		float v=GetPlayerStealth();
