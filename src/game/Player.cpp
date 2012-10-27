@@ -181,7 +181,6 @@ vector<KEYRING_SLOT> Keyring;
 float PLAYER_BASE_RADIUS = 52;
 float PLAYER_BASE_HEIGHT = -170;
 float PLAYER_CROUCH_HEIGHT = -120;
-float PLAYER_LEVITATE_HEIGHT = -195;
 Entity * CURRENT_TORCH = NULL;
 
 unsigned long FALLING_TIME = 0;
@@ -2668,7 +2667,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 	}
 	
-	PLAYER_LEVITATE_HEIGHT = -220.f;
+	const float PLAYER_LEVITATE_HEIGHT = -220.f;
 	
 	float d = 0;
 	
