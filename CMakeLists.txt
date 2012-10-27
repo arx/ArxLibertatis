@@ -546,10 +546,6 @@ set(CORE_SOURCES
 	src/core/Startup.cpp
 )
 
-set(EDITOR_SOURCES
-	src/core/Dialog.cpp
-)
-
 set(GAME_SOURCES
 	src/game/Camera.cpp
 	src/game/Damage.cpp
@@ -910,10 +906,6 @@ set(ARX_SOURCES
 # Set the icon for the Windows executable by adding this resource file to the sources
 if(MSVC)
 	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
-endif()
-
-if(BUILD_EDITOR)
-	list(APPEND ARX_SOURCES ${EDITOR_SOURCES})
 endif()
 
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)

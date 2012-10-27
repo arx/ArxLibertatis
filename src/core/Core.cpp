@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "core/ArxGame.h"
 #include "core/Config.h"
-#include "core/Dialog.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
 #include "core/Startup.h"
@@ -469,6 +468,42 @@ void DanaeRestoreFullScreen() {
 }
 
 extern void InitTileLights();
+
+enum LevelNumber {
+	LEVEL0     = 0,
+	LEVEL1     = 1,
+	LEVEL2     = 2,
+	LEVEL3     = 3,
+	LEVEL4     = 4,
+	LEVEL5     = 5,
+	LEVEL6     = 6,
+	LEVEL7     = 7,
+	LEVEL8     = 8,
+	LEVEL9     = 9,
+	LEVEL10    = 10,
+	LEVEL11    = 11,
+	LEVEL12    = 12,
+	LEVEL13    = 13,
+	LEVEL14    = 14,
+	LEVEL15    = 15,
+	LEVEL16    = 16,
+	LEVEL17    = 17,
+	LEVEL18    = 18,
+	LEVEL19    = 19,
+	LEVEL20    = 20,
+	LEVEL21    = 21,
+	LEVEL22    = 22,
+	LEVEL23    = 23,
+	LEVEL24    = 24,
+	LEVEL25    = 25,
+	LEVEL26    = 26,
+	LEVEL27    = 27,
+	LEVELDEMO  = 28,
+	LEVELDEMO2 = 29,
+	LEVELDEMO3 = 30,
+	LEVELDEMO4 = 31,
+	NOLEVEL    = 32
+};
 
 void InitializeDanae() {
 	
