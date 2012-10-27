@@ -225,7 +225,7 @@ long cur_bh=0;
 
 static float LASTTELEPORT(0.0F);
 long snip=0;
-Vec2s Lm;
+static Vec2s Lm;
 
 static const long MAX_POINTS(200);
 static Vec2s plist[MAX_POINTS];
@@ -233,8 +233,8 @@ std::string SpellMoves;
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol=0;
 
-long lMaxSymbolDrawSizeX;
-long lMaxSymbolDrawSizeY;
+static long lMaxSymbolDrawSizeX;
+static long lMaxSymbolDrawSizeY;
 
 unsigned char ucFlick=0;
 

@@ -120,7 +120,6 @@ extern long FRAME_COUNT;
 
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
 extern long NEED_TEST_TEXT;
 
@@ -3361,15 +3360,6 @@ void RenderInter(float from, float to) {
 				        &&	io->obj)
 					io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 
-				if (io->targetinfo >= 0)
-				{
-					if ((io->ioflags & IO_NPC)
-					        && !(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
-					        && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-					        && !(io->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT))
-						LOOK_AT_TARGET = 1;
-				}
-
 				Vec3f pos = io->pos;
 
 				if (io->ioflags & IO_NPC)
@@ -3381,7 +3371,6 @@ void RenderInter(float from, float to) {
 				bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
 
 				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
-				LOOK_AT_TARGET = 0;
 
 				if (DESTROYED_DURING_RENDERING)
 					continue;

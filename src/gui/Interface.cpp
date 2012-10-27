@@ -164,7 +164,6 @@ extern TextureContainer * pTCCrossHair;
 extern TextureContainer * mecanism_tc;
 extern TextureContainer * arrow_left_tc;
 extern TexturedVertex LATERDRAWHALO[];
-extern EERIE_LIGHT lightparam;
 extern Entity * CURRENT_TORCH;
 extern Notification speech[];
 extern std::string WILLADDSPEECH;

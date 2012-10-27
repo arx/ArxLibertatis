@@ -1938,8 +1938,6 @@ void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 	}
 }
 
-extern long LOOK_AT_TARGET;
-
 static bool Cedric_IO_Visible(Entity * io) {
 	if (io == entities.player()) return true;
 

@@ -125,7 +125,6 @@ float values[32];
 float vdist;
 long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
-long LOOK_AT_TARGET = 0;
 unsigned char * grps = NULL;
 long max_grps = 0;
 long TRAP_DETECT = -1;
