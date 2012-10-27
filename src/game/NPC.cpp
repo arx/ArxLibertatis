@@ -1104,14 +1104,11 @@ static void CheckUnderWaterIO(Entity * io)
 static void ManageNPCMovement(Entity * io);
 
 extern float MAX_ALLOWED_PER_SECOND;
-long REACTIVATION_COUNT = 0;
+
 void ARX_PHYSICS_Apply()
 {
 
 	static long CURRENT_DETECT = 0;
-	REACTIVATION_COUNT++;
-
-	if (REACTIVATION_COUNT > 12) REACTIVATION_COUNT = 0;
 
 	CURRENT_DETECT++;
 

@@ -118,7 +118,6 @@ extern long		REQUEST_SPEECH_SKIP;
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
-extern Vec3f	PUSH_PLAYER_FORCE;
 extern QUAKE_FX_STRUCT QuakeFx;
 extern Entity * CURRENT_TORCH;
 extern Entity * CAMERACONTROLLER;
