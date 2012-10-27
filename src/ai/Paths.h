@@ -152,7 +152,6 @@ enum PathMod {
 };
 DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
-const PathMods ARX_PATH_MOD_NONE = 0;
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_USE_PATH USE_CINEMATICS_PATH;
