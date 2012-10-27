@@ -1740,8 +1740,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	if(entities.player()) {
-		entities.player()->pos = player.pos;
-		entities.player()->pos.y += 170.f;
+		entities.player()->pos = player.basePosition();
 	}
 	
 	WILL_RESTORE_PLAYER_POSITION = asp->pos;

@@ -860,53 +860,38 @@ CNegateMagic::CNegateMagic()
 	
 }
 
-//-----------------------------------------------------------------------------
-void CNegateMagic::Create(Vec3f aeSrc, float afBeta)
-{
+void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	
+	eSrc = aeSrc;
+	
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	
+	eTarget = eSrc;
+	
 	fSize = 1;
-
+	
 	bDone = true;
 }
 
-//-----------------------------------------------------------------------------
-void CNegateMagic::Update(unsigned long _ulTime)
-{
+void CNegateMagic::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CNegateMagic::Render()
-{
+float CNegateMagic::Render() {
+	
 	int i = 0;
-
-	if (spells[spellinstance].caster == 0)
-	{
-		eSrc.x = player.pos.x;
-		eSrc.y = player.pos.y + 170.f;
-		eSrc.z = player.pos.z;
+	
+	if(spells[spellinstance].caster == 0) {
+		eSrc = player.basePosition();
+	} else {
+		eSrc = entities[spells[spellinstance].caster]->pos;
 	}
-	else
-	{
-		eSrc.x = entities[spells[spellinstance].caster]->pos.x;
-		eSrc.y = entities[spells[spellinstance].caster]->pos.y;
-		eSrc.z = entities[spells[spellinstance].caster]->pos.z;
-	}
-
+	
 	float x = eSrc.x;
 	float y = eSrc.y - 10.f;
 	float z = eSrc.z;

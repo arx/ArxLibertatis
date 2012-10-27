@@ -528,7 +528,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
 
 			if (	(room_num>=0) 
 				&&	(RoomDraw)
-				&&	(RoomDraw[room_num].count))				
+				&&	(RoomDraw[room_num].count))
 			{
 
 			switch (USE_PORTALS)

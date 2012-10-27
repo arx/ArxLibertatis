@@ -3143,7 +3143,7 @@ static void ManageNPCMovement(Entity * io)
 		{
 			ARX_NPC_LaunchPathfind(io, io->targetinfo); 
 		}
-		else if ((dis > 220)
+		else if ((dis > STRIKE_DISTANCE)
 		         &&	(io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 		         &&	(!(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_SNEAK))))
 		{

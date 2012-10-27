@@ -2165,33 +2165,26 @@ void FirstFrameHandling() {
 	if(ValidIONum(t)) {
 		entities[t]->ioflags |= IO_FORCEDRAW;
 	}
-
-	if (WILL_RESTORE_PLAYER_POSITION_FLAG)
-	{
+	
+	if(WILL_RESTORE_PLAYER_POSITION_FLAG) {
+		Entity * io = entities.player();
 		player.pos = WILL_RESTORE_PLAYER_POSITION;
-		entities.player()->pos = WILL_RESTORE_PLAYER_POSITION;
-		entities.player()->pos.y+=170.f;
-		Entity * io=entities.player();
-
-		for (size_t i=0;i<io->obj->vertexlist.size();i++)
-		{
-			io->obj->vertexlist3[i].v.x=io->obj->vertexlist[i].v.x+entities.player()->pos.x;
-			io->obj->vertexlist3[i].v.y=io->obj->vertexlist[i].v.y+entities.player()->pos.y;
-			io->obj->vertexlist3[i].v.z=io->obj->vertexlist[i].v.z+entities.player()->pos.z;
+		io->pos = player.basePosition();
+		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
+			io->obj->vertexlist3[i].v = io->obj->vertexlist[i].v + io->pos;
 		}
-
-		WILL_RESTORE_PLAYER_POSITION_FLAG=0;
+		WILL_RESTORE_PLAYER_POSITION_FLAG = 0;
 	}
-
+	
 	for(size_t i = 0; i < entities.size(); i++) {
 		if(entities[i] && (entities[i]->ioflags & IO_NPC)
 		   && entities[i]->_npcdata->cuts) {
 			ARX_NPC_ApplyCuts(entities[i]);
 		}
 	}
-
+	
 	ResetVVPos(entities.player());
-
+	
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
 	LoadLevelScreen(-2);

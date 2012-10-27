@@ -729,8 +729,8 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 		
 		if(io_target == entities.player()) {
 			
-			// TODO should this be  io_source->pos - player.basePosition();
-			Vec3f ppos = io_source->pos - player.pos - player.baseOffset();
+			// TODO should this be player.pos - player.baseOffset() = player.basePosition()?
+			Vec3f ppos = io_source->pos - (player.pos + player.baseOffset());
 			fnormalize(ppos);
 			
 			// Push the player

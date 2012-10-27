@@ -129,13 +129,11 @@ extern TextureContainer * iconequip[];
 extern ParticleManager * pParticleManager;
 
 extern unsigned long LAST_JUMP_ENDTIME;
-//-----------------------------------------------------------------------------
-#define WORLD_DAMPING	0.35f
-#define WORLD_GRAVITY	0.1f
-#define JUMP_GRAVITY	0.02f //OLD SETTING 0.03f
-#define STEP_DISTANCE	120.f
 
-//-----------------------------------------------------------------------------
+static const float WORLD_GRAVITY = 0.1f;
+static const float JUMP_GRAVITY = 0.02f;
+static const float STEP_DISTANCE = 120.f;
+
 extern Vec3f PUSH_PLAYER_FORCE;
 extern bool bBookHalo;
 extern bool bGoldHalo;
@@ -149,10 +147,9 @@ extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern unsigned long ulBookHaloTime;
 extern unsigned long ulGoldHaloTime;
 extern long cur_rf;
-//-----------------------------------------------------------------------------
-static const float ARX_PLAYER_SKILL_STEALTH_MAX(100.0F);
 
-//-----------------------------------------------------------------------------
+static const float ARX_PLAYER_SKILL_STEALTH_MAX = 100.f;
+
 ARXCHARACTER player;
 EERIE_3DOBJ * hero = NULL;
 float currentdistance = 0.f;
@@ -168,9 +165,8 @@ long DeadTime = 0;
 unsigned long LastHungerSample = 0;
 unsigned long ROTATE_START = 0;
 long sp_max = 0;
-//-----------------------------------------------------------------------------
+
 // Player Anims FLAGS/Vars
-//-----------------------------------------------------------------------------
 ANIM_HANDLE * herowaitbook = NULL;
 ANIM_HANDLE * herowait2 = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
@@ -2626,7 +2622,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		if(player.jumpphase != JumpAscending && !levitate) {
-			player.physics.cyl.origin = player.pos + Vec3f(0.f, 170.f, 0.f);
+			player.physics.cyl.origin = player.basePosition();
 		}
 		
 		if(EEfabs(lastposy - player.pos.y) < DeltaTime * 0.1f) {
@@ -3132,11 +3128,11 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val) {
 	ARX_PLAYER_RectifyPosition();
 	
 	if(player.jumpphase != NotJumping || player.falling) {
-		player.physics.cyl.origin = player.pos + Vec3f(0.f, 170.f, 0.f);
+		player.physics.cyl.origin = player.basePosition();
 		IO_PHYSICS phys;
 		memcpy(&phys, &player.physics, sizeof(IO_PHYSICS));
 		AttemptValidCylinderPos(&phys.cyl, entities.player(), CFLAG_RETURN_HEIGHT);
-		player.pos.y = phys.cyl.origin.y - 170.f;
+		player.pos.y = phys.cyl.origin.y + player.baseHeight();
 		player.jumpphase = NotJumping;
 		player.falling = 0;
 	}

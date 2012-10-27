@@ -1263,20 +1263,11 @@ void ArxGame::Render() {
 
 		Vec3f sourcepos,targetpos;
 
-		if (ApplySpeechPos(&conversationcamera,is))
-		{
-			targetpos.x=conversationcamera.d_pos.x;
-			targetpos.y=conversationcamera.d_pos.y;
-			targetpos.z=conversationcamera.d_pos.z;
-			sourcepos.x=conversationcamera.pos.x;
-			sourcepos.y=conversationcamera.pos.y;
-			sourcepos.z=conversationcamera.pos.z;
-		}
-		else
-		{
-			targetpos.x=player.pos.x;
-			targetpos.y=player.pos.y;
-			targetpos.z=player.pos.z;
+		if(ApplySpeechPos(&conversationcamera, is)) {
+			targetpos = conversationcamera.d_pos;
+			sourcepos = conversationcamera.pos;
+		} else {
+			targetpos = player.pos;
 			float t=radians(player.angle.b);
 			sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
 			sourcepos.y=targetpos.y;

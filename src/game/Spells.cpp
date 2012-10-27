@@ -4544,7 +4544,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			Vec3f target;
 			bool displace = true;
 			if(spells[i].caster == 0) {
-				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				target = player.basePosition();
 				beta = MAKEANGLE(player.angle.b);
 			} else {
 				target = entities[spells[i].caster]->pos;
@@ -4869,7 +4869,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float beta;
 			float displace = false;
 			if(spells[i].caster == 0) {
-				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				target = player.basePosition();
 				beta = player.angle.b;
 				displace = true;
 			} else {
@@ -4936,7 +4936,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float beta;
 			float displace = false;
 			if(spells[i].caster == 0) {
-				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				target = player.basePosition();
 				beta = player.angle.b;
 				displace = true;
 			} else {
@@ -5252,7 +5252,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			float beta;
 			bool displace = false;
 			if(spells[i].caster == 0) {
-				target = player.pos + Vec3f(0.f, 170.f, 0.f);
+				target = player.basePosition();
 				beta = player.angle.b;
 				displace = true;
 			} else {
@@ -5314,7 +5314,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			Vec3f target = entities[spells[i].target]->pos;
 			if(spells[i].target != 0) {
-				target.y -= 170.f;
+				target.y += player.baseHeight();
 			}
 			spells[i].target_pos = target;
 			

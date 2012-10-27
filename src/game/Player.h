@@ -273,7 +273,7 @@ struct ARXCHARACTER {
 	ARX_INTERFACE_MEMORIZE_SPELL SpellToMemorize;
 	
 	static float baseRadius() { return 52.f; }
-	static float baseHeight() { return -170; }
+	static float baseHeight() { return -170.f; }
 	static float crouchHeight() { return -120.f; }
 	static float levitateHeight() { return -220.f; }
 	
