@@ -157,7 +157,7 @@ long USE_PLAYERCOLLISIONS = 1;
 long BLOCK_PLAYER_CONTROLS = 0;
 long WILLRETURNTOCOMBATMODE = 0;
 long DeadTime = 0;
-unsigned long LastHungerSample = 0;
+static unsigned long LastHungerSample = 0;
 unsigned long ROTATE_START = 0;
 long sp_max = 0;
 
@@ -2436,8 +2436,8 @@ void ARX_PLAYER_MakeStepNoise() {
 extern bool bGCroucheToggle;
 extern float MAX_ALLOWED_PER_SECOND;
 
-long LAST_FIRM_GROUND = 1;
-long TRUE_FIRM_GROUND = 1;
+static long LAST_FIRM_GROUND = 1;
+static long TRUE_FIRM_GROUND = 1;
 float lastposy = -9999999.f;
 unsigned long REQUEST_JUMP = 0;
 extern float GLOBAL_SLOWDOWN;

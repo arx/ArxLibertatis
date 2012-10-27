@@ -1742,23 +1742,16 @@ void ResetAnim(ANIM_USE * eanim)
 	eanim->flags&=~EA_LOOP;
 	eanim->flags&=~EA_FORCEPLAY;
 }
-long LAST_LLIGHT_COUNT=0;
-//*************************************************************************************
-//*************************************************************************************
-void llightsInit()
-{
-	for (long i = 0; i < MAX_LLIGHTS; i++)
-	{
-		llights[i]=NULL;
-		dists[i]=999999999.f;
-		values[i]=999999999.f;
-	}	
 
-	LAST_LLIGHT_COUNT=0;
+void llightsInit() {
+	for(long i = 0; i < MAX_LLIGHTS; i++) {
+		llights[i] = NULL;
+		dists[i] = 999999999.f;
+		values[i] = 999999999.f;
+	}
 }
-//*************************************************************************************
+
 // Inserts Light in the List of Nearest Lights
-//*************************************************************************************
 void Insertllight(EERIE_LIGHT * el,float dist)
 {	
 	if (el==NULL) return;
@@ -1778,7 +1771,6 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 				llights[i]=el;
 				dists[i]=dist;
 				values[i]=val;
-				LAST_LLIGHT_COUNT++;
 				return;
 			}
 			else if (val <= values[i])  // Inserts light at the right place
@@ -1796,7 +1788,6 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 				llights[i]=el;
 				dists[i]=dist;
 				values[i]=val;
-				LAST_LLIGHT_COUNT++;
 				return;
 			}
 		}

@@ -300,18 +300,18 @@ char TELEPORT_TO_LEVEL[64];
 char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
-string WILL_LAUNCH_CINE;
+std::string WILL_LAUNCH_CINE;
 res::path LastLoadedScene;
-string LAST_LAUNCHED_CINE;
+static std::string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
 float SLID_VALUE=0.f;
 float framedelay;
 
-float LASTfps2=0;
+static float LASTfps2 = 0;
 static float fps2 = 0;
 static float fps2min = 0;
-long LASTfpscount=0;
+static long LASTfpscount = 0;
 
 long lSLID_VALUE=0;
 long LOAD_N_DONT_ERASE=0;
@@ -339,7 +339,7 @@ long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
 long NOBUILDMAP			= 0;
 long DONT_ERASE_PLAYER	= 0;
-float LastFrameTicks		= 0;
+static float LastFrameTicks = 0;
 long SPLASH_THINGS_STAGE= 0;
 long STARTED_A_GAME		= 0;
 long FASTmse			= 0;
@@ -3455,27 +3455,23 @@ void LaunchWaitingCine() {
 	WILL_LAUNCH_CINE.clear();
 }
 
-//*************************************************************************************
 // Manages Currently playing 2D cinematic
-//*************************************************************************************
-long DANAE_Manage_Cinematic()
-{
+long DANAE_Manage_Cinematic() {
 	
-	float FrameTicks=arxtime.get_updated( false );
-
-	if (PLAY_LOADED_CINEMATIC==1)
-	{
+	float FrameTicks = arxtime.get_updated(false);
+	
+	if(PLAY_LOADED_CINEMATIC == 1) {
 		LogDebug("really starting cinematic now");
-		LastFrameTicks=FrameTicks;
+		LastFrameTicks = FrameTicks;
 		PLAY_LOADED_CINEMATIC=2;
 	}
-
+	
 	PlayTrack(ControlCinematique);
 	ControlCinematique->InitDeviceObjects();
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	ControlCinematique->Render(FrameTicks-LastFrameTicks);
-
+	
+	ControlCinematique->Render(FrameTicks - LastFrameTicks);
+	
 	//fin de l'anim
 	if ((!ControlCinematique->key)
 		|| (GInput->isKeyPressedNowUnPressed(Keyboard::Key_Escape))
@@ -3506,8 +3502,8 @@ long DANAE_Manage_Cinematic()
 		ARX_SPEECH_Reset();
 		SendMsgToAllIO(SM_CINE_END, LAST_LAUNCHED_CINE);
 	}
-
-	LastFrameTicks=FrameTicks;
+	
+	LastFrameTicks = FrameTicks;
 	return 0;
 }
 
@@ -3590,21 +3586,18 @@ void ShowInfoText() {
 	float fpss2=1000.f/framedelay;
 	LASTfpscount++;
 	
-	float fps2v=max(fpss2,LASTfps2);
-	float fps2vmin=min(fpss2,LASTfps2);
+	float fps2v = std::max(fpss2, LASTfps2);
+	float fps2vmin = std::min(fpss2, LASTfps2);
 	
-	if (LASTfpscount>49) 
-	{
-		LASTfps2=0;
-		LASTfpscount=0;
-		fps2=fps2v;
-		fps2min=fps2vmin;
+	if(LASTfpscount > 49)  {
+		LASTfps2 = 0;
+		LASTfpscount = 0;
+		fps2 = fps2v;
+		fps2min = fps2vmin;
+	} else {
+		LASTfps2 = fpss2;
 	}
-	else
-	{
-		LASTfps2=fpss2;
-	}
-
+	
 	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld [%3.06f", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW, vdist);
 	mainApp->OutputText( 70, 32, tex );
 
