@@ -247,13 +247,11 @@ void ARX_SCRIPT_ResetAll(long flags) {
 	}
 }
 
-extern long PauseScript;
-
 void ARX_SCRIPT_AllowInterScriptExec() {
 	
 	static long ppos = 0;
 	
-	if(PauseScript || EDITMODE || arxtime.is_paused()) {
+	if(EDITMODE || arxtime.is_paused()) {
 		return;
 	}
 	

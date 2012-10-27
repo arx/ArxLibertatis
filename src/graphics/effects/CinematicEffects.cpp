@@ -62,8 +62,8 @@ extern EERIE_CAMERA	Camera;
 float		SpecialFadeDx;
 float		FlashAlpha;
 int			TotOldPos;
-Vec3f	OldPos[NBOLDPOS];
-float		OldAz[NBOLDPOS];
+static Vec3f OldPos[NBOLDPOS];
+static float OldAz[NBOLDPOS];
 
 /*---------------------------------------------------------------------------------*/
 int FX_FadeIN(float a, int color, int colord)

@@ -108,7 +108,7 @@ static TextureContainer * healing = NULL;
 TextureContainer * tzupouf=NULL;
 TextureContainer * fire2=NULL;
 
-OBJFX			objfx[MAX_OBJFX];
+static OBJFX objfx[MAX_OBJFX];
 long			BoomCount=0;
  
 long			flarenum=0;
@@ -1341,16 +1341,11 @@ void UpdateObjFx() {
 			}
 
 			val=(float)framediff/(float)objfx[i].duration;
-			pos.x=objfx[i].pos.x+objfx[i].move.x*val;
-			pos.y=objfx[i].pos.y+objfx[i].move.y*val;
-			pos.z=objfx[i].pos.z+objfx[i].move.z*val;
+			pos = objfx[i].pos + objfx[i].move * val;
 
 			Anglef angle;
-			Vec3f scale;
 			Color3f color;
-			scale.x=1.f+objfx[i].scale.x*val;
-			scale.y=1.f+objfx[i].scale.y*val;
-			scale.z=1.f+objfx[i].scale.z*val;
+			Vec3f scale = Vec3f(1.f, 1.f, 1.f) + objfx[i].scale * val;
 
 			if (Project.improve)
 			{

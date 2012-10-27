@@ -191,7 +191,6 @@ extern long		INTER_DRAW;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
-extern long PATHFINDER_WAIT;
 extern long LastSelectedIONum;
 extern unsigned long ROTATE_START;
 extern float ARXTimeMenu;
@@ -233,7 +232,7 @@ PROJECT Project;
 Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 ParticleManager	*pParticleManager = NULL;
-TextureContainer *  ombrignon = NULL;
+static TextureContainer * ombrignon = NULL;
 TextureContainer *  teleportae = NULL;
 static TextureContainer *  Flying_Eye = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
@@ -244,9 +243,9 @@ TextureContainer *	explo[MAX_EXPLO];		// TextureContainer for animated explosion
 TextureContainer *	blood_splat = NULL;		// TextureContainer for blood splat particles
 
 TextureContainer *	tflare = NULL;
-TextureContainer *	npc_fight=NULL;
-TextureContainer *	npc_follow=NULL;
-TextureContainer *	npc_stop=NULL;
+static TextureContainer * npc_fight = NULL;
+static TextureContainer * npc_follow = NULL;
+static TextureContainer * npc_stop = NULL;
 TextureContainer *	sphere_particle=NULL;
 TextureContainer *	inventory_font=NULL;
 TextureContainer *	enviro=NULL;
@@ -323,7 +322,6 @@ long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
 long CINE_PRELOAD=0;
 long PLAY_LOADED_CINEMATIC=0;
-long PauseScript=0;
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;

@@ -210,8 +210,6 @@ static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult 
 	return false;
 }
 
-extern long PauseScript;
-
 namespace script {
 
 namespace {
@@ -271,10 +269,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		return ret;
 	}
 
-	if ((EDITMODE || PauseScript)
-			&& msg != SM_LOAD
-			&& msg != SM_INIT
-			&& msg != SM_INITEND) {
+	if(EDITMODE && msg != SM_LOAD && msg != SM_INIT && msg != SM_INITEND) {
 		return ACCEPT;
 	}
 	

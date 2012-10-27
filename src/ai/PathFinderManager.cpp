@@ -62,16 +62,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::memcpy;
 
 
-static const float PATHFINDER_HEURISTIC_MIN(0.2F);
-static const float PATHFINDER_HEURISTIC_MAX(PathFinder::HEURISTIC_MAX);
-static const float PATHFINDER_HEURISTIC_RANGE(PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN);
-static const float PATHFINDER_DISTANCE_MAX(5000.0F);
+static const float PATHFINDER_HEURISTIC_MIN = 0.2f;
+static const float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
+static const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX
+                                                - PATHFINDER_HEURISTIC_MIN;
+static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 
 // Pathfinder Definitions
-static unsigned long PATHFINDER_UPDATE_INTERVAL(10);
+static unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
 PATHFINDER_REQUEST pr;
-long PATHFINDER_WORKING(0);
+long PATHFINDER_WORKING = 0;
 
 class PathFinderThread : public StoppableThread {
 	
@@ -88,7 +89,7 @@ struct PATHFINDER_QUEUE_ELEMENT {
 	long valid;
 };
 
-PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
+static PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
 
 // An Io can request Pathfinding only once so we insure that it's always the case.
 // A new pathfinder request from the same IO will overwrite the precedent.

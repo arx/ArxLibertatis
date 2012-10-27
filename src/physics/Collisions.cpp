@@ -469,26 +469,24 @@ bool IsAnyNPCInPlatform(Entity * pfrm) {
 
 	return false;
 }
-float CylinderPlatformCollide(EERIE_CYLINDER * cyl,Entity * io)
-{
- 
-	float miny,maxy;
-	miny=io->bbox3D.min.y;
-	maxy=io->bbox3D.max.y;
-			
-	if (maxy <= cyl->origin.y + cyl->height) return 0; 
-												
-	if (miny >= cyl->origin.y) return 0; 
-	
-	if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D,cyl->radius))
-	{
-		return 1.f;
-				}
 
+float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io) {
+ 
+	float miny = io->bbox3D.min.y;
+	float maxy = io->bbox3D.max.y;
+	
+	if(maxy <= cyl->origin.y + cyl->height || miny >= cyl->origin.y) {
+		return 0.f;
+	}
+	
+	if(In3DBBoxTolerance(&cyl->origin,&io->bbox3D,cyl->radius)) {
+		return 1.f;
+	}
+	
 	return 0.f;
-				}
-											
-long NPC_IN_CYLINDER=0;
+}
+
+static long NPC_IN_CYLINDER = 0;
 
 // backup du dernier polingue
 EERIEPOLY * pEPBackup = NULL;
@@ -543,12 +541,12 @@ bool CollidedFromBack(Entity * io,Entity * ioo)
 	return false;
 }
 
-//-----------------------------------------------------------------------------
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
-{	
-	NPC_IN_CYLINDER=0;
+float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
+	
+	NPC_IN_CYLINDER = 0;
+	
 	long rad = (cyl->radius + 100) * ACTIVEBKG->Xmul;
 	long px,pz;
 	px = cyl->origin.x*ACTIVEBKG->Xmul;
@@ -768,9 +766,8 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags)
 						)
 				{
 					
-					if (CylinderInCylinder(cyl,io_cyl))
-					{
- 						NPC_IN_CYLINDER=1;
+					if(CylinderInCylinder(cyl, io_cyl)) {
+ 						NPC_IN_CYLINDER = 1;
 						anything = min(anything, io_cyl->origin.y + io_cyl->height); 
 
 						if (!(flags & CFLAG_JUST_TEST) && ioo)
@@ -1496,15 +1493,16 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 					tolerate=0.f;
 				}
 			}
-
-			if (NPC_IN_CYLINDER)
-			{
-				tolerate=cyl->height*( 1.0f / 2 );
+			
+			if(NPC_IN_CYLINDER) {
+				tolerate = cyl->height * 0.5f;
 			}
-
-			if (anything<tolerate) return false;
+			
+			if(anything < tolerate) {
+				return false;
+			}
 		}
-
+		
 		if (io && (flags & CFLAG_PLAYER) && (anything<0.f) && (flags & CFLAG_JUST_TEST))
 		{
 			EERIE_CYLINDER tmpp;

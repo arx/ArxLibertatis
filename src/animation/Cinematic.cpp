@@ -85,10 +85,10 @@ bool			ShiftKey;
 
 bool			FlashBlancEnCours;
 bool			SpecialFadeEnCours;
-float			OldSpeedFlashBlanc;
-float			OldSpeedSpecialFade;
-int				OldColorFlashBlanc;
-int				OldFxSpecialFade;
+static float OldSpeedFlashBlanc;
+static float OldSpeedSpecialFade;
+static int OldColorFlashBlanc;
+static int OldFxSpecialFade;
 
 extern float	FlashAlpha;
 extern float SpecialFadeDx;
