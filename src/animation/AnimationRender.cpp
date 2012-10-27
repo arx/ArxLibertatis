@@ -273,8 +273,6 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 }
 
 
-long Looking_At = -1;
-
 // Animate skeleton
 static	void	Cedric_AnimateObject(Entity * io, EERIE_3DOBJ * eobj, ANIM_USE * animuse)
 {
@@ -2007,20 +2005,19 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 		grps = (unsigned char *)realloc(grps, eobj->nbgroups);
 		max_grps = eobj->nbgroups;
 	}
-
+	
 	memset(grps, 0, eobj->nbgroups);
-
+	
 	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);
-
+	
 	if(Cedric_IO_Visible(io)) {
-
+		
 		// Manage Extra Rotations in Local Space
 		Cedric_ManageExtraRotationsFirst(io, eobj);
-		Looking_At = -1;
-
+		
 		// Perform animation in Local space
 		Cedric_AnimateObject(io, eobj, animuse);
-
+		
 		// Check for Animation Blending in Local space
 		if (io)
 		{
