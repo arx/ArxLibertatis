@@ -84,7 +84,6 @@ C_KEY			KeyTemp;
 
 bool			FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
-static float OldSpeedSpecialFade;
 static int OldColorFlashBlanc;
 
 extern float	FlashAlpha;
@@ -594,8 +593,6 @@ void Cinematic::Render(float FDIFF) {
 		if(changekey) {
 			SpecialFadeDx = 0.f;
 		}
-		
-		OldSpeedSpecialFade = speed;
 		
 		if(changekey) {
 			changekey = false;
