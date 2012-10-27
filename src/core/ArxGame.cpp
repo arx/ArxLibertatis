@@ -1771,13 +1771,12 @@ void ArxGame::Render() {
 		{
 			if (EERIEMouseButton & 1)
 			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT))
+				if ((ARX_FLARES_Block==0) && 1 < MAX_SLOT)
 					ARX_SPELLS_AddPoint(DANAEMouse);
 				else
 				{
 					CurrPoint=0;
 					ARX_FLARES_Block=0;
-					CurrSlot=1;
 				}
 			}
 			else if (ARX_FLARES_Block==0)

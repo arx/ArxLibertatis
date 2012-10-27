@@ -214,7 +214,6 @@ extern Vec2s bookclick;
 extern SPELL_ICON spellicons[SPELL_COUNT];
 extern char LOADFROM[256];
 extern float CINEMA_DECAL;
-extern long CURRINVCOUNT;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 

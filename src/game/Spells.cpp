@@ -217,7 +217,6 @@ static float ARX_SPELLS_GetManaCost(Spell _lNumSpell,long _lNumSpellTab);
 ///////////////Spell Interpretation
 SPELL spells[MAX_SPELLS];
 short ARX_FLARES_broken(1);
-long CurrSlot(1);
 long CurrPoint(0);
 long cur_mx=0;
 long cur_pnux=0;
@@ -2309,42 +2308,42 @@ static void ARX_SPELLS_Analyse() {
 			switch ( dirs[i] )
 			{
 				case AUP:
-					spell[CurrSlot].SlotDir = 0;
+					spell[1].SlotDir = 0;
 					SpellMoves += "8"; //uses PAD values
 					break;
 
 				case ADOWN:
-					spell[CurrSlot].SlotDir = 4;
+					spell[1].SlotDir = 4;
 					SpellMoves += "2";
 					break;
 
 				case ALEFT:
-					spell[CurrSlot].SlotDir = 6;
+					spell[1].SlotDir = 6;
 					SpellMoves += "4";
 					break;
 
 				case ARIGHT:
-					spell[CurrSlot].SlotDir = 2;
+					spell[1].SlotDir = 2;
 					SpellMoves += "6";
 					break;
 
 				case AUPRIGHT:
-					spell[CurrSlot].SlotDir = 1;
+					spell[1].SlotDir = 1;
 					SpellMoves += "9";
 					break;
 
 				case ADOWNRIGHT:
-					spell[CurrSlot].SlotDir = 3;
+					spell[1].SlotDir = 3;
 					SpellMoves += "3";
 					break;
 
 				case AUPLEFT:
-					spell[CurrSlot].SlotDir = 7;
+					spell[1].SlotDir = 7;
 					SpellMoves += "7";
 					break;
 
 				case ADOWNLEFT:
-					spell[CurrSlot].SlotDir = 5;
+					spell[1].SlotDir = 5;
 					SpellMoves += "1";
 					break;
 			}

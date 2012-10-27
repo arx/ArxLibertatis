@@ -253,7 +253,6 @@ const size_t MAX_SPELLS = 20;
 extern SPELL spells[MAX_SPELLS];
 
 const unsigned long MAX_SLOT = 10; // nombre maximum de directions dans une sequence
-extern long CurrSlot;
 extern long CurrPoint;
 
 bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flags = 0, long level = -1, long target = -1, long duration = -1);
