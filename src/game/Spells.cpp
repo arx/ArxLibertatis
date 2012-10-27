@@ -194,9 +194,6 @@ void EERIE_OBJECT_SetBHMode()
 		sp_max_start=arxtime.get_updated();
 			}
 }
-struct Scan {
-	short SlotDir; 
-};
 
 struct SYMBOL_DRAW {
 	unsigned long	starttime;
@@ -235,8 +232,6 @@ static Vec2s plist[MAX_POINTS];
 std::string SpellMoves;
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol=0;
-
-static Scan spell[MAX_SLOT + 1];
 
 long lMaxSymbolDrawSizeX;
 long lMaxSymbolDrawSizeY;
@@ -2308,42 +2303,34 @@ static void ARX_SPELLS_Analyse() {
 			switch ( dirs[i] )
 			{
 				case AUP:
-					spell[1].SlotDir = 0;
 					SpellMoves += "8"; //uses PAD values
 					break;
 
 				case ADOWN:
-					spell[1].SlotDir = 4;
 					SpellMoves += "2";
 					break;
 
 				case ALEFT:
-					spell[1].SlotDir = 6;
 					SpellMoves += "4";
 					break;
 
 				case ARIGHT:
-					spell[1].SlotDir = 2;
 					SpellMoves += "6";
 					break;
 
 				case AUPRIGHT:
-					spell[1].SlotDir = 1;
 					SpellMoves += "9";
 					break;
 
 				case ADOWNRIGHT:
-					spell[1].SlotDir = 3;
 					SpellMoves += "3";
 					break;
 
 				case AUPLEFT:
-					spell[1].SlotDir = 7;
 					SpellMoves += "7";
 					break;
 
 				case ADOWNLEFT:
-					spell[1].SlotDir = 5;
 					SpellMoves += "1";
 					break;
 			}
