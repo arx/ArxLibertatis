@@ -125,7 +125,6 @@ float fZFogStart=0.3f;
 float fZFogEnd=.5f;
 
 long iTotPoly;
-unsigned long FrameCount;
 
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
@@ -2925,8 +2924,6 @@ long MAX_FRAME_COUNT=0;
 ///////////////////////////////////////////////////////////
 void ARX_SCENE_Render(long flag) {
 	
-	FrameCount++;
-
 	FRAME_COUNT++;
 
 	if (FRAME_COUNT>MAX_FRAME_COUNT) FRAME_COUNT=0;

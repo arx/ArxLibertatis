@@ -312,8 +312,8 @@ float SLID_VALUE=0.f;
 float framedelay;
 
 float LASTfps2=0;
-float fps2=0;
-float fps2min=0;
+static float fps2 = 0;
+static float fps2min = 0;
 long LASTfpscount=0;
 
 long lSLID_VALUE=0;
