@@ -98,7 +98,6 @@ using std::vector;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;
-extern bool ARXPausedTimer;
 
 static void EERIE_PORTAL_Release();
 

@@ -93,7 +93,6 @@ extern long NEED_TEST_TEXT;
 extern long EXTERNALVIEW;
 extern long WATERFX;
 extern long REFLECTFX;
-extern bool ARXPausedTimer;
 long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;

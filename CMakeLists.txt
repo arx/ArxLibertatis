@@ -548,8 +548,6 @@ set(CORE_SOURCES
 
 set(EDITOR_SOURCES
 	src/core/Dialog.cpp
-	src/script/ScriptDebugger.cpp
-	src/script/ScriptDebuggerDialog.cpp
 )
 
 set(GAME_SOURCES
