@@ -118,8 +118,6 @@ long FRAME_COUNT=0;
 
 long LAST_ROOM=-1;
 
-long iTotPoly;
-
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
 namespace {
@@ -936,8 +934,6 @@ void ARX_PORTALS_InitDrawnRooms()
 
 	vPolyWater.clear();
 	vPolyLava.clear();
-
-	iTotPoly=0;
 
 	if(pDynamicVertexBuffer) {
 		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardBuffer);
