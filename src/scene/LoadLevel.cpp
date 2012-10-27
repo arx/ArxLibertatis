@@ -1150,7 +1150,6 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 
 extern void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
-extern long DONT_CLEAR_SCENE;
 long FAST_RELEASE = 0;
 extern Entity * FlyingOverIO;
 extern void ARX_SOUND_Reinit();

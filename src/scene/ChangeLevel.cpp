@@ -2897,7 +2897,6 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 	return true;
 }
 
-long DONT_CLEAR_SCENE;
 extern long STARTED_A_GAME;
 
 long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
@@ -2929,8 +2928,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		PROGRESS_BAR_COUNT += 2.f;
 		LoadLevelScreen(pld.level);
 		
-		DONT_CLEAR_SCENE = (pld.level == CURRENTLEVEL) ? 1 : 0;
-		
 		float fPldTime = static_cast<float>(pld.time);
 		DanaeClearLevel();
 		PROGRESS_BAR_COUNT += 2.f;
@@ -2941,7 +2938,6 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 		arxtime.force_time_restore(fPldTime);
 		NO_TIME_INIT = 1;
 		FORCE_TIME_RESTORE = fPldTime;
-		DONT_CLEAR_SCENE = 0;
 		
 	} else {
 		LogError << "Error Loading Level...";

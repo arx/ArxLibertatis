@@ -92,7 +92,7 @@ static IDirectInput8A * DI_DInput8;
 static INPUT_INFO * DI_KeyBoardBuffer;
 static INPUT_INFO * DI_MouseState;
 
-const int DI8_KEY_ARRAY_SIZE = 256;
+static const int DI8_KEY_ARRAY_SIZE = 256;
 
 static int DInput8ToArxKeyTable[DI8_KEY_ARRAY_SIZE];
 

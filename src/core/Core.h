@@ -85,7 +85,6 @@ extern EERIE_MULTI3DSCENE * mse;
 extern long ADDED_IO_NOT_SAVED;
 #endif
 extern EERIE_CAMERA * Kam;
-extern EERIE_BACKGROUND DefaultBkg;
 extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 extern char TELEPORT_TO_LEVEL[64];

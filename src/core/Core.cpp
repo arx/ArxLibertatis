@@ -289,7 +289,7 @@ EERIE_3DOBJ * markerobj=NULL;			// Marker 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * nodeobj=NULL;				// Node 3D Object		// NEEDTO: Remove for Final
 EERIE_3DOBJ * eyeballobj=NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamically
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
-EERIE_BACKGROUND DefaultBkg;
+static EERIE_BACKGROUND DefaultBkg;
 EERIE_CAMERA TCAM[32];
 EERIE_CAMERA subj,mapcam,bookcam,raycam,conversationcamera;
 EERIE_CAMERA DynLightCam;
@@ -527,7 +527,7 @@ void InitializeDanae() {
 		levelFullPath = levelPath.string() + "/level" + levelId + ".dlf";
 	}
 	
-	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
+	memset(&DefaultBkg, 0, sizeof(EERIE_BACKGROUND));
 	ACTIVEBKG=&DefaultBkg;
 	InitBkg(ACTIVEBKG,MAX_BKGX,MAX_BKGZ,BKG_SIZX,BKG_SIZZ);
 	InitNodes(1);
