@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/TextureContainer.h"
+#include "graphics/effects/DrawEffects.h"
 
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
@@ -75,26 +76,6 @@ using std::max;
 using std::string;
 using std::vector;
 
-void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj) {
-	
-	if (!obj) return;
-
-	for (long i = 0; i < INTERTRANSPOLYSPOS; i++)
-	{
-		for (size_t ii = 0; ii < obj->texturecontainer.size(); ii++)
-		{
-			if (InterTransTC[i] == obj->texturecontainer[ii])
-			{
-				for (size_t jj = 0; jj < obj->facelist.size(); jj++)
-				{
-					if (InterTransFace[jj] == &obj->facelist[jj])
-						InterTransFace[jj] = NULL;
-				}
-			}
-		}
-	}
-}
- 
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & s1, const res::path & s2) {
 	
 	LogDebug("Tweak Skin " << s1 << " " << s2);
@@ -797,8 +778,6 @@ void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
 	if (io == NULL) return;
 
 	if (io->obj == NULL) return;
-
-	EERIE_MESH_ReleaseTransPolys(io->obj);
 
 	if(path.empty() && tw == TWEAK_REMOVE) {
 		

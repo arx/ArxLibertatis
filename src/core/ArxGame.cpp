@@ -154,7 +154,6 @@ extern long cur_mr;
 extern long cur_rf;
 extern long STRIKE_TIME;
 extern long DeadTime;
-extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 extern long FORCE_FRONT_DRAW;
 extern long LAST_ROOM;
@@ -1672,7 +1671,7 @@ void ArxGame::Render() {
 	}
 
 	// Reset Transparent Polys Idx
-	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
+	TRANSPOLYSPOS = 0;
 
 	// Check For Hiding/unHiding Player Gore
 	if ((EXTERNALVIEW) || (player.life<=0))

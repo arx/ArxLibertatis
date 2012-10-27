@@ -247,15 +247,11 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 			player.equiped[i] = 0;
 		}
 	}
-
-
+	
 	ARX_SPEECH_ReleaseIOSpeech(io);
-
-	if (!FAST_RELEASE)
-		EERIE_MESH_ReleaseTransPolys(io->obj);
-
+	
 	ARX_SCRIPT_EventStackClearForIo(io);
-
+	
 	if (ValidIONum(n))
 	{
 		for (size_t i = 0; i < MAX_SPELLS; i++)

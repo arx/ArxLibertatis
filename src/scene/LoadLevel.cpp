@@ -1267,40 +1267,38 @@ void DanaeClearLevel(long flag)
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	RemoveAllBackgroundActions();
 	ClearNodes();
-
+	
 #ifdef BUILD_EDIT_LOADSAVE
 	if(mse != NULL) {
 		ReleaseMultiScene(mse);
 		mse = NULL;
 	}
 #endif
-
+	
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();
 	TOTIOPDL = 0;
-
+	
 	UnlinkAllLinkedObjects();
-
+	
 	entities.clear();
-
+	
 	ReleaseAllSpellResources();
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	MapMarkerTc = NULL;
-
+	
 	arxtime.init();
-
+	
 	bGToggleCombatModeWithKey = false;
 	bGCroucheToggle = false;
-
-	INTERTRANSPOLYSPOS = 0;
-
+	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		DynLight[i].exist = 0;
 	}
-
+	
 	TREATZONE_Release();
 	TREATZONE_Clear();
-
+	
 	FAST_RELEASE = 0;
 }
 

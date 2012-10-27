@@ -76,6 +76,5 @@ long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const res::path & skintochange, const res::path & skinname);
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);
-void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj);
 
 #endif // ARX_GRAPHICS_DATA_MESHMANIPULATION_H

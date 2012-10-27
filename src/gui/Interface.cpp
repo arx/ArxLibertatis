@@ -7589,10 +7589,6 @@ long Manage3DCursor(long flags)
 							PrecalcIOLighting(NULL,0,1);
 							FRAME_COUNT=iOldFrameCount;
 
-							if (	(!SPECIAL_DRAGINTER_RENDER)
-								&&	(INTERTRANSPOLYSPOS)	)
-								ARXDRAW_DrawAllInterTransPolyPos();
-
 							if (!SPECIAL_DRAGINTER_RENDER && !DESTROYED_DURING_RENDERING)
 							{
 								io->obj->drawflags&=~DRAWFLAG_HIGHLIGHT;

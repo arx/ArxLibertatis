@@ -207,12 +207,9 @@ struct EERIE_BACKGROUND
 struct ANIM_USE;
 
 #define MAX_TRANSPOL 512
-#define MAX_INTERTRANSPOL 512
 
 #define CAM_SUBJVIEW 0
 #define CAM_TOPVIEW 1
-
-//-----------------------------------------------------------------------------
 
 extern long EERIEDrawnPolys;
 extern Vec3f BBOXMIN,BBOXMAX;
@@ -221,13 +218,7 @@ extern EERIE_CAMERA * ACTIVECAM;
 
 extern float Xratio;
 extern float Yratio;
-extern long INTERTRANSPOLYSPOS;
 
-extern TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
-extern EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
-extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
-
-//-----------------------------------------------------------------------------
 float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
 //	Entity Struct End

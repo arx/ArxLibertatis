@@ -599,68 +599,12 @@ void ARXDRAW_DrawPolyBoom()
 extern long TRANSPOLYSPOS;
 extern EERIEPOLY * TransPol[MAX_TRANSPOL];
 
-extern long INTERTRANSPOLYSPOS;
-extern TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
-extern EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
-extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
-
-void ARXDRAW_DrawAllInterTransPolyPos()
-{
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	EERIEDrawnPolys+=INTERTRANSPOLYSPOS;
-
-	for (long i=0;i<INTERTRANSPOLYSPOS;i++) 
-	{
-		if (!InterTransFace[i]) continue; // Object was destroyed after sending faces...
-
-		if (InterTransFace[i]->texid<0) continue;
-
-		if (InterTransFace[i]->facetype & POLY_DOUBLESIDED) 
-				GRenderer->SetCulling(Renderer::CullNone);
-		else	GRenderer->SetCulling(Renderer::CullCW);
-
-		GRenderer->SetTexture(0, InterTransTC[i]);
-		EERIE_FACE * ef=InterTransFace[i];
-		float ttt=ef->transval;
-
-		if (ttt>=2.f)  //MULTIPLICATIVE
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			ttt*=( 1.0f / 2 );
-			ttt+=0.5f;
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
-		}
-		else if (ttt>=1.f) //ADDITIVE
-		{	
-			ttt-=1.f;
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
-		}
-		else if (ttt>0.f)  //NORMAL TRANS
-		{
-			ttt=1.f-ttt;
-			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
-		}
-		else  //SUBTRACTIVE
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			ttt=1.f-ttt;
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
-		}
-
-		EERIEDRAWPRIM(Renderer::TriangleStrip, InterTransPol[i], 3, true);
-	}
-
-	INTERTRANSPOLYSPOS=0;
-}
-
 extern TextureContainer * enviro;
 
 void ARXDRAW_DrawAllTransPolysPos() {
 	
-	SetZBias( 1 );
-
+	SetZBias(1);
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	long i, to = 0; 

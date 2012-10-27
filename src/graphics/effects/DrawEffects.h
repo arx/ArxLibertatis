@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
 
 class TextureContainer;
+struct EERIE_FACE;
 
 extern TextureContainer * lightsource_tc;
 
@@ -56,7 +57,6 @@ void ARXDRAW_DrawInterShadows();
 void ARXDRAW_DrawPolyBoom();
 void ARXDRAW_DrawAllLights(long x0, long z0, long x1, long z1);
 void ARXDRAW_DrawEyeBall();
-void ARXDRAW_DrawAllInterTransPolyPos();
 void ARXDRAW_DrawAllTransPolysPos();
 
 #endif // ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
