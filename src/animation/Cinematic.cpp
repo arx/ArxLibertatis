@@ -75,14 +75,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 EERIE_CAMERA	Camera;
 static int LargeurRender, HauteurRender;
 
-//vertex
-TexturedVertex		AllTLVertex[40000];
+TexturedVertex AllTLVertex[40000];
 
 extern float DreamTable[];
 
-C_KEY			KeyTemp;
+C_KEY KeyTemp;
 
-bool			FlashBlancEnCours;
+static bool FlashBlancEnCours;
 static float OldSpeedFlashBlanc;
 static int OldColorFlashBlanc;
 
@@ -571,21 +570,18 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		//effets qui continuent avec le temps
-		if ((FlashBlancEnCours) && ((fx & 0x00ff0000) != FX_FLASH))
-		{
+		if(FlashBlancEnCours && (fx & 0x00ff0000) != FX_FLASH) {
 			speed = OldSpeedFlashBlanc;
 			colorflash = OldColorFlashBlanc;
-
-			if (fx < 0) fx = FX_FLASH;
-			else fx |= FX_FLASH;
-		}
-		else
-		{
-			if (changekey)
-			{
+			if(fx < 0) {
+				fx = FX_FLASH;
+			} else {
+				fx |= FX_FLASH;
+			}
+		} else {
+			if(changekey) {
 				FlashAlpha = 0.f;
 			}
-
 			OldSpeedFlashBlanc = speed;
 			OldColorFlashBlanc = colorflash;
 		}

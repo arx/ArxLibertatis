@@ -141,7 +141,6 @@ using std::string;
 extern long PLAY_LOADED_CINEMATIC;
 extern long START_NEW_QUEST;
 extern long CHANGE_LEVEL_ICON;
-extern long SPLASH_THINGS_STAGE;
 extern long REFUSE_GAME_RETURN;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;

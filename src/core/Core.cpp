@@ -226,7 +226,6 @@ Vec3f PUSH_PLAYER_FORCE;
 Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 ParticleManager	*pParticleManager = NULL;
 static TextureContainer * ombrignon = NULL;
-TextureContainer *  teleportae = NULL;
 static TextureContainer *  Flying_Eye = NULL;
 TextureContainer *	scursor[8];			// Animated Hand Cursor TC
 TextureContainer *	pTCCrossHair;			// Animated Hand Cursor TC
@@ -353,7 +352,7 @@ long LaunchDemo=0;
 long FirstFrame=1;
 unsigned long WILLADDSPEECHTIME=0;
 unsigned long AimTime;
-unsigned long SPLASH_START=0;
+static unsigned long SPLASH_START = 0;
 //-----------------------------------------------------------------------------
 Color3f FADECOLOR;
 
@@ -1417,7 +1416,7 @@ void LoadSysTextures()
 	flaretc.plasm=		TextureContainer::LoadUI("graph/particles/plasm");
 	tflare=				TextureContainer::LoadUI("graph/particles/flare");
 	ombrignon=			TextureContainer::LoadUI("graph/particles/ombrignon");
-	teleportae=			TextureContainer::LoadUI("graph/particles/teleportae");
+	TextureContainer::LoadUI("graph/particles/teleportae");
 	TC_fire=			TextureContainer::LoadUI("graph/particles/fire");
 	TC_fire2=			TextureContainer::LoadUI("graph/particles/fire2");
 	TC_smoke=			TextureContainer::LoadUI("graph/particles/smoke");

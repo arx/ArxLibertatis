@@ -131,7 +131,7 @@ bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
 long REFUSE_GAME_RETURN = 0;
 
-long SP_HEAD = 0;
+static long SP_HEAD = 0;
 
 //-----------------------------------------------------------------------------
 #define ARX_MENU_SIZE_Y 24
@@ -432,7 +432,6 @@ void ARX_Menu_Manage() {
 	}
 }
 extern long PLAYER_INTERFACE_HIDE_COUNT;
-extern long SPLASH_THINGS_STAGE;
 //-----------------------------------------------------------------------------
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed

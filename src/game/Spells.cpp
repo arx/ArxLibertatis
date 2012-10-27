@@ -229,7 +229,7 @@ static Vec2s Lm;
 
 static const long MAX_POINTS(200);
 static Vec2s plist[MAX_POINTS];
-std::string SpellMoves;
+static std::string SpellMoves;
 Rune SpellSymbol[MAX_SPELL_SYMBOLS];
 size_t CurrSpellSymbol=0;
 

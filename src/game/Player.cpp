@@ -914,9 +914,8 @@ void ARX_PLAYER_ComputePlayerFullStats()
 		player.Mod_armor_class += 20;
 		player.Full_AimTime = 100;
 	}
-
-	if (SPECIAL_PNUX)
-	{
+	
+	if(SPECIAL_PNUX) {
 		player.Mod_Attribute_Strength += Random::get(0, 5);
 		player.Mod_Attribute_Mind += Random::get(0, 5);
 		player.Mod_Attribute_Constitution += Random::get(0, 5);
@@ -936,7 +935,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 		player.Mod_damages += Random::get(0, 20);
 		player.Mod_armor_class += Random::get(0, 20);
 	}
-
+	
 	if (cur_rf == 3)
 	{
 		player.Mod_Attribute_Mind += 10;

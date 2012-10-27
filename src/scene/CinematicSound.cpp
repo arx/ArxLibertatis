@@ -69,7 +69,7 @@ struct CinematicSound {
 	
 };
 
-CinematicSound TabSound[256];
+static CinematicSound TabSound[256];
 
 } // anonymous namespace
 

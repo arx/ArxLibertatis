@@ -115,7 +115,6 @@ using std::min;
 using std::string;
 using std::vector;
 
-extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
 
 extern Entity * CAMERACONTROLLER;
