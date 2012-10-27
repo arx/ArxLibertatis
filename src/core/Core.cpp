@@ -338,9 +338,6 @@ float GLOBAL_LIGHT_FACTOR=0.85f;
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 
 long USE_LIGHT_OPTIM	=1;
-// set to 0 for dev mode
-long FOR_EXTERNAL_PEOPLE =0;
-//-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;
@@ -625,8 +622,6 @@ void runGame() {
 	Logger::add(new logger::File(fs::paths.user / "arx.log"));
 	
 	LogInfo << "Starting " << version;
-	
-	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
 	NOBUILDMAP = 1;
 	

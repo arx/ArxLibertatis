@@ -157,7 +157,6 @@ extern long DeadTime;
 extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 extern long FORCE_FRONT_DRAW;
-extern long FOR_EXTERNAL_PEOPLE;
 extern long LAST_ROOM;
 extern long LAST_PORTALS_COUNT;
 extern int iTimeToDrawD7;
@@ -1976,7 +1975,7 @@ void ArxGame::Render() {
 			ShowInfoText();
 		}
 		
-		if(USE_PORTALS && !FOR_EXTERNAL_PEOPLE) {
+		if(USE_PORTALS) {
 			char tex[250];
 			switch(USE_PORTALS) {
 				case 1:
@@ -1995,12 +1994,10 @@ void ArxGame::Render() {
 			OutputText( 320, 240, tex );
 		}
 		
-		if((!FOR_EXTERNAL_PEOPLE)) {
-			if(bOLD_CLIPP) {
-				OutputText(0, 240, "New Clipp" );
-			} else {
-				OutputText(0,274,"New Clipp");
-			}
+		if(bOLD_CLIPP) {
+			OutputText(0, 240, "New Clipp");
+		} else {
+			OutputText(0, 274, "New Clipp");
 		}
 	}
 

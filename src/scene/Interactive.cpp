@@ -122,7 +122,6 @@ extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
-extern long FOR_EXTERNAL_PEOPLE;
 extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
@@ -3485,7 +3484,7 @@ void RenderInter(float from, float to) {
 			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
 				ManageIgnition(io);
 
-			if((NEED_TEST_TEXT || EDITMODE) && !FOR_EXTERNAL_PEOPLE) {
+			if(NEED_TEST_TEXT || EDITMODE) {
 				Color color = Color::blue;
 				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);

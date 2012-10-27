@@ -81,16 +81,12 @@ float mapmaxy[32];
 
 TextureContainer * pTexDetect = NULL;
 
-extern long FOR_EXTERNAL_PEOPLE;
-
 std::vector<MAPMARKER_DATA> Mapmarkers;
 
-
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_GetData(long SHOWLEVEL)
-{
-	if (minimap[SHOWLEVEL].tc == NULL)
-	{
+void ARX_MINIMAP_GetData(long SHOWLEVEL) {
+	
+	if(minimap[SHOWLEVEL].tc == NULL) {
+		
 		char name[256];
 		char LevelMap[256];
 		GetLevelNameByNum(SHOWLEVEL, name);
@@ -520,15 +516,6 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2) {
 							minimap[SHOWLEVEL].revealed[i][j] = checked_range_cast<unsigned char>(ucLevel);
 
 
-						}
-					}
-
-					if (!FOR_EXTERNAL_PEOPLE)
-					{
-						if ((i >= 0) && (i < MINIMAP_MAX_X)
-								&&	(j >= 0) && (j < MINIMAP_MAX_Z))
-						{
-							minimap[SHOWLEVEL].revealed[i][j] = 255;
 						}
 					}
 
