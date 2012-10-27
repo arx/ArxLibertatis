@@ -785,15 +785,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	return work;
 }
-long ALLOW_MESH_TWEAKING = 1;
 
-//*************************************************************************************
-//*************************************************************************************
-
-void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path)
-{
-	if (!ALLOW_MESH_TWEAKING) return;
-
+void EERIE_MESH_TWEAK_Do(Entity * io, TweakType tw, const res::path & path) {
+	
 	res::path ftl_file = ("game" / path).set_ext("ftl");
 
 	if ((!resources->getFile(ftl_file)) && (!resources->getFile(path))) return;
