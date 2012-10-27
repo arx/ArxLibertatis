@@ -217,7 +217,6 @@ extern EERIE_3DOBJ * smissile;
 extern long smissile_count;
 extern EERIE_3DOBJ * spapi;
 extern long spapi_count;
-extern EERIE_3DOBJ * sfirewave;
 extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
 
@@ -1786,12 +1785,6 @@ void DANAE_ReleaseAllDatasDynamic()
 		delete spapi;
 		spapi=NULL;
 		spapi_count=0;
-	}
-
-	if(sfirewave)
-	{
-		delete sfirewave;
-		sfirewave=NULL;
 	}
 
 	if(svoodoo)

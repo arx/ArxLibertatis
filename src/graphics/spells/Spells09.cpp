@@ -554,17 +554,8 @@ float CSummonCreature::Render()
 	return (fSizeIntro / end);
 }
 
-//-----------------------------------------------------------------------------
 // INCINERATE
-//-----------------------------------------------------------------------------
-CIncinerate::~CIncinerate()
-{
-	if (sfirewave)
-	{
-		delete sfirewave;
-		sfirewave = NULL;
-	}
-}
+CIncinerate::~CIncinerate() { }
 
 //-----------------------------------------------------------------------------
 void CIncinerate::Create(Vec3f _eSrc, float _fBeta, float _fLevel)
