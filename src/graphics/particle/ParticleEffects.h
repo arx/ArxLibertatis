@@ -78,11 +78,6 @@ struct FLARES {
 	bool bDrawBitmap;
 };
 
-struct BOOM {
-	Vec3f pos;
-	long exist;
-};
-
 struct POLYBOOM {
 	long exist;
 	short tx;
