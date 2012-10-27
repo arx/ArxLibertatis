@@ -98,7 +98,6 @@ struct OBJFX {
 
 FLARETC			flaretc;
 PARTICLE_DEF	particle[MAX_PARTICLES];
-BOOM			booms[MAX_BOOMS];
 FLARES			flare[MAX_FLARES];
 TexturedVertex		g_Lumignon[4];
 static TextureContainer * bloodsplat[6];
@@ -1087,7 +1086,6 @@ void ARX_BOOMS_ClearAllPolyBooms()
 //-----------------------------------------------------------------------------
 void ARX_BOOMS_ClearAll()
 {
-	for (long i=0;i<MAX_BOOMS;i++) booms[i].exist=0;
 }
 //-----------------------------------------------------------------------------
 void ARX_BOOMS_Add(Vec3f * poss,long type)

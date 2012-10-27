@@ -157,7 +157,6 @@ struct FLARETC
 #define MAX_FOG 100
 #define FOG_DIRECTIONAL 1
 #define MAX_POLYBOOM 4000
-#define MAX_BOOMS 20
 #define PARTICLE_2D	256
 #define MAX_FLARES 300
 #define MAX_FLARELIFE 4000
@@ -206,7 +205,6 @@ extern short OPIPOrgb;
 extern short PIPOrgb;
 extern long currboom;
 extern PARTICLE_DEF particle[MAX_PARTICLES];
-extern BOOM booms[MAX_BOOMS];
 extern long BoomCount;
 extern POLYBOOM polyboom[MAX_POLYBOOM];
 extern FOG_DEF fogs[MAX_FOG];
