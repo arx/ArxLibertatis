@@ -275,7 +275,6 @@ long				MOVETYPE=MOVE_WAIT;
 
 //used to redist points - attributes and skill
 static long lCursorRedistValue = 0;
-long				lFadeMapTime = 0;
 
 unsigned long		COMBAT_MODE_ON_START_TIME = 0;
 long SPECIAL_DRAW_WEAPON=0;
@@ -3013,7 +3012,6 @@ void ArxGame::ManagePlayerControls()
 				SPECIAL_DRAW_WEAPON=1;
 				TRUE_PLAYER_MOUSELOOK_ON = true;
 				SLID_START=float(arxtime);
-				lFadeMapTime = (long)arxtime;
 				ARX_INTERFACE_Combat_Mode(2);
 				bGToggleCombatModeWithKey=true;
 
@@ -3542,8 +3540,7 @@ void ArxGame::ManageKeyMouse() {
 									{
 										TRUE_PLAYER_MOUSELOOK_ON = true;
 										EERIEMouseButton &= ~2;
-										SLID_START=float(arxtime);
-										lFadeMapTime = (long)arxtime;
+										SLID_START = float(arxtime);
 									}
 								}
 							}
@@ -3581,8 +3578,7 @@ void ArxGame::ManageKeyMouse() {
 							else
 							{
 								TRUE_PLAYER_MOUSELOOK_ON = true;
-								SLID_START=float(arxtime);
-								lFadeMapTime = (long)arxtime;
+								SLID_START = float(arxtime);
 							}
 						}
 					}
