@@ -115,9 +115,6 @@ using std::vector;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
-#ifdef BUILD_EDITOR
-extern long		NEED_DEBUGGER_CLEAR;
-#endif
 extern long		CHANGE_LEVEL_ICON;
 extern long		DONT_ERASE_PLAYER;
 extern long		GLOBAL_MAGIC_MODE;
@@ -3450,7 +3447,7 @@ void ARX_GAME_Reset(long type) {
 
 	// IO PDL
 	TOTIOPDL = 0;
-
+	
 	// Interface
 	ARX_INTERFACE_Reset();
 	ARX_INTERFACE_NoteClear();
@@ -3459,20 +3456,15 @@ void ARX_GAME_Reset(long type) {
 	TSecondaryInventory = NULL;
 	MasterCamera.exist = 0;
 	CHANGE_LEVEL_ICON = -1;
-
+	
 	CAMERACONTROLLER = NULL;
-
+	
 	// Kill Script Loaded IO
 	CleanScriptLoadedIO();
-
-#ifdef BUILD_EDITOR
-	// ARX Debugger
-	NEED_DEBUGGER_CLEAR = 1;
-#endif
-
+	
 	// ARX Timer
 	arxtime.init();
-
+	
 	ClearTileLights();
 }
 

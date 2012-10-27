@@ -2100,7 +2100,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	//Must KILL dir...
 	if(!(flag & FLAG_DONTKILLDIR) && entities[i]->scriptload == 0 && entities[i]->ident > 0) {
 		
-		fs::path dir = fs::paths.user / entities[i]->full_name();
+		fs::path dir = fs::paths.user / entities[i]->full_name().string();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;

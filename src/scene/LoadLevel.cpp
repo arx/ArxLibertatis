@@ -1449,31 +1449,22 @@ void AddIdent(std::string & ident, long num)
 
 #ifdef BUILD_EDITOR
 
-static void LogDirDestruction(const res::path & dir ) {
-	if(fs::is_directory(dir)) {
-		LogDebug("LogDirDestruction: " << dir);
-	}
-}
-
-//*************************************************************************************
 // Checks for IO created during this session but not saved...
-//*************************************************************************************
 void CheckIO_NOT_SAVED() {
 	
 	if(!ADDED_IO_NOT_SAVED) {
 		return;
 	}
 	
-	for(long i = 1; i < entities.nbmax; i++) { // ignoring player
+	for(size_t i = 1; i < entities.size(); i++) { // ignoring player
 
 		if(!entities[i] || !entities[i]->scriptload) {
 			continue;
 		}
 		
-		res::path temp = entities[i]->full_name();
+		fs::path temp = entities[i]->full_name().string();
 		
 		if(fs::is_directory(temp)) {
-			LogDirDestruction(temp);
 			if(!fs::remove_all(temp)) {
 				LogError << "Could not remove directory " << temp;
 			}
