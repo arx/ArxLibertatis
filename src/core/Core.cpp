@@ -341,7 +341,6 @@ float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long USE_LIGHT_OPTIM	=1;
 // set to 0 for dev mode
 long FOR_EXTERNAL_PEOPLE =0;
-long FAST_SPLASHES		= 0;
 long FINAL_RELEASE		= 0;
 //-------------------------------------------------------------------------------
 long STRIKE_TIME		= 0;
@@ -631,7 +630,6 @@ void runGame() {
 	
 	FOR_EXTERNAL_PEOPLE = 1; // TODO remove this
 	
-	FAST_SPLASHES = 0;
 	FINAL_RELEASE = 1;
 	
 	
@@ -855,7 +853,6 @@ Entity * FlyingOverObject(Vec2s * pos)
 	return NULL;
 }
 
-extern unsigned long FALLING_TIME;
 extern long ARX_NPC_ApplyCuts(Entity * io);
 
 //*************************************************************************************
@@ -3361,9 +3358,6 @@ bool DANAE_ManageSplashThings() {
 			SPLASH_THINGS_STAGE = 14;
 		}
 		
-		if (FAST_SPLASHES)
-			SPLASH_THINGS_STAGE=14;
-
 		if (SPLASH_THINGS_STAGE==11)
 		{
 			

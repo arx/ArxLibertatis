@@ -172,7 +172,7 @@ ARX_NECKLACE necklace;
 vector<KEYRING_SLOT> Keyring;
 Entity * CURRENT_TORCH = NULL;
 
-unsigned long FALLING_TIME = 0;
+static unsigned long FALLING_TIME = 0;
 
 vector<STRUCT_QUEST> PlayerQuest;
 long FistParticles = 0;
@@ -1579,7 +1579,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 float Falling_Height = 0;
 void ARX_PLAYER_StartFall()
 {
-	FALLING_TIME = (unsigned long)(arxtime);
+	FALLING_TIME = 1;
 	Falling_Height = 50.f;
 	float yy;
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &yy);
