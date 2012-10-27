@@ -424,8 +424,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
 		{
 			if ((flags & CFLAG_PLAYER) && (anything < 0.f))
 			{
-				if (player.jumpphase)
-				{
+				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}

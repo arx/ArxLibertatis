@@ -1170,7 +1170,7 @@ void ARX_PHYSICS_Apply()
 
 			if (io->ioflags & IO_NPC)
 			{
-#define LAVA_DAMAGE 10.f
+				const float LAVA_DAMAGE = 10.f;
 				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ), -1, 0, NULL);
 			}
 		}

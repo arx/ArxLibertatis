@@ -1702,7 +1702,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;
 	player.inzone = ARX_PATH_GetAddressByName(toLowercase(safestring(asp->inzone)));
-	player.jumpphase = asp->jumpphase;
+	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	player.jumpstarttime = asp->jumpstarttime;
 	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
 	

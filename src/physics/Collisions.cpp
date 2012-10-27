@@ -1506,9 +1506,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		{		
 			float tolerate;
 			
-			if ((flags & CFLAG_PLAYER)
-				&&	(player.jumpphase)	)
-			{
+			if((flags & CFLAG_PLAYER) && player.jumpphase != NotJumping) {
 				tolerate=0;
 			}
 			else if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.listnb > 0) && (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb))
@@ -1558,11 +1556,11 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags f
 		{
 			if ((flags & CFLAG_PLAYER) && (anything<0.f))
 			{
-				if (player.jumpphase)
-				{
-					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
+				
+				if(player.jumpphase != NotJumping) {
+					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
-				}				
+				}
 
 				float dist = max(vector2D.length(),1.f);
 				float pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 

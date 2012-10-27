@@ -122,6 +122,14 @@ enum RuneFlag {
 DECLARE_FLAGS(RuneFlag, RuneFlags)
 DECLARE_FLAGS_OPERATORS(RuneFlags)
 
+enum JumpPhase {
+	NotJumping = 0,
+	JumpStart = 1,
+	JumpAscending = 2,
+	JumpDescending = 4,
+	JumpEnd = 5
+};
+
 struct ARXCHARACTER {
 	
 	Vec3f pos;
@@ -132,7 +140,7 @@ struct ARXCHARACTER {
 	// Jump Sub-data
 	unsigned long jumpstarttime;
 	float jumplastposition;
-	long jumpphase; //!< 0 no jump, 1 doing anticipation anim, 2 moving_up, 3 moving_down, 4 finish_anim
+	JumpPhase jumpphase;
 	
 	short climbing;
 	short levitate;

@@ -2694,15 +2694,12 @@ void ArxGame::ManagePlayerControls()
 			player.Current_Movement|=PLAYER_LEAN_RIGHT;
 		}
 	}
-
+	
 	// Checks JUMP Key Status.
-	if ((player.jumpphase==0) &&
-		GInput->actionNowPressed(CONTROLS_CUST_JUMP) )
-	{
+	if(player.jumpphase == NotJumping && GInput->actionNowPressed(CONTROLS_CUST_JUMP)) {
 		REQUEST_JUMP = (unsigned long)(arxtime);
 	}
-
-
+	
 	// MAGIC
 	if (GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
 	{
