@@ -131,37 +131,29 @@ long ARX_BOOMS_GetFree() {
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
-void LaunchDummyParticle()
-{
-	long j=ARX_PARTICLES_GetFree();
-
-	if (	(j!=-1)
-		&&	(!arxtime.is_paused())	)
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=true;
-		pd->zdec=0;
-		float f=radians(player.angle.b);
-		pd->ov.x		=	player.pos.x+EEsin(f)*100.f;
-		pd->ov.y		=	player.pos.y;
-		pd->ov.z		=	player.pos.z-EEcos(f)*100.f;
-		pd->move.x		=	0.f;
-		pd->move.y		=	0.f;
-		pd->move.z		=	0.f;
-		pd->timcreation	=	(long)arxtime;
-		pd->tolive		=	600;
-		pd->tc			=	smokeparticle;
-		pd->siz			=	15.f;
-		pd->scale.x		=	-15.f+rnd()*5.f;
-		pd->scale.y		=	-15.f+rnd()*5.f;
-		pd->scale.z		=	-15.f+rnd()*5.f;
-		pd->special		=	FIRE_TO_SMOKE;
+void LaunchDummyParticle() {
+	
+	long j = ARX_PARTICLES_GetFree();
+	if(j == -1 || arxtime.is_paused()) {
+		return;
 	}
+	
+	ParticleCount++;
+	PARTICLE_DEF * pd = &particle[j];
+	pd->exist = true;
+	
+	float f = radians(player.angle.b);
+	pd->zdec = 0;
+	pd->ov = player.pos + Vec3f(EEsin(f) * 100.f, 0.f, -EEcos(f) * 100.f);
+	pd->move = Vec3f::ZERO;
+	pd->timcreation = long(arxtime);
+	pd->tolive = 600;
+	pd->tc = smokeparticle;
+	pd->siz = 15.f;
+	pd->scale = randomVec(-15.f, -10.f);
+	pd->special = FIRE_TO_SMOKE;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 	
 	Vec3f pos;
