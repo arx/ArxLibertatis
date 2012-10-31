@@ -156,65 +156,46 @@ void LaunchDummyParticle() {
 
 void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 	
-	Vec3f pos;
-	pos.x=poss->x;
-	pos.y=poss->y;
-	pos.z=poss->z;
-
-	if (	(io)
-		&&	(io->obj)
-		&&	!io->obj->facelist.empty()	)
-	{
-		long notok	=	10;
-		size_t num	=	0;
-
-		while ( notok-- )
-		{
+	Vec3f pos = *poss;
+	
+	if(io && io->obj && !io->obj->facelist.empty()) {
+		size_t num = 0;
+		long notok = 10;
+		while(notok--) {
 			num = Random::get(0, io->obj->facelist.size() - 1);
-
-			if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
-
-			if ( EEfabs( pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y ) > 50.f )
+			if(io->obj->facelist[num].facetype & POLY_HIDE) {
 				continue;
-
+			}
+			if(EEfabs(pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
+				continue;
+			}
 			notok = 0;
 		}
-
-		if ((notok >= 0) && 
-			( notok < 10 ) )
-		{
-			Vec3f * v	=	&io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-			pos.x			=	v->x;
-			pos.y			=	v->y;
-			pos.z			=	v->z;
+		// TODO notok is always -1 here!
+		if(notok >= 0) {
+			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 		}
 	}
-
+	
 	long j = ARX_PARTICLES_GetFree();
-
-	if (	( j != -1 )
-		&&	( !arxtime.is_paused() )	)
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd	=	&particle[j];
-		pd->exist			=	true;
-		pd->zdec			=	0;
-		pd->ov.x			=	pos.x;
-		pd->ov.y			=	pos.y;
-		pd->ov.z			=	pos.z;
-		pd->move.x			=	rnd() * 2 - 4.f;
-		pd->move.y			=	rnd() * - 12.f - 15;
-		pd->move.z			=	rnd() * 2 - 4.f;
-		pd->timcreation		=	(long)arxtime;
-		pd->tolive			=	800;
-		pd->tc				=	smokeparticle;
-		pd->siz				=	15.f;
-		pd->scale.x			=	15.f + rnd() * 5.f;
-		pd->scale.y			=	15.f + rnd() * 5.f;
-		pd->scale.z			=	15.f + rnd() * 5.f;
-		pd->special			=	FIRE_TO_SMOKE;
-
-		if ( rnd() > 0.5f ) pd->special |= SUBSTRACT;
+	if(j == -1 || arxtime.is_paused()) {
+		return;
+	}
+	
+	ParticleCount++;
+	PARTICLE_DEF * pd = &particle[j];
+	pd->exist = true;
+	pd->zdec = 0;
+	pd->ov = pos;
+	pd->move = Vec3f(rnd() * 2.f - 4.f, rnd() * -12.f - 15.f, rnd() * 2.f - 4.f);
+	pd->timcreation = long(arxtime);
+	pd->tolive = 800;
+	pd->tc = smokeparticle;
+	pd->siz = 15.f;
+	pd->scale = randomVec(15.f, 20.f);
+	pd->special = FIRE_TO_SMOKE;
+	if(rnd() > 0.5f) {
+		pd->special |= SUBSTRACT;
 	}
 }
 
