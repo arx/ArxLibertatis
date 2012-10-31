@@ -2043,194 +2043,137 @@ void ARX_MAGICAL_FLARES_KillAll()
 
 	flarenum=0;
 }
- 
 
-//-----------------------------------------------------------------------------
-void AddFlare(Vec2s * pos,float sm,short typ,Entity * io)
-{
+void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
+	
 	long i;
-	float vx,vy;
-	EERIE_CAMERA ka;
-	float zz;
-
-	for (i=0;i<MAX_FLARES;i++) 
-	{
-		if ( !flare[i].exist ) 
-		{
-			FLARES * fl=&flare[i];
-			fl->exist=1;
-			fl->bDrawBitmap=0;
-
-			if (io)
-			{
-				fl->flags=1;
-				fl->io=io;
-				io->flarecount++;
-			}
-			else
-			{
-				fl->flags=0;
-				fl->io=NULL;
-			}
-
-			flarenum++;
-			fl->x=pos->x-rnd()*4;
-			fl->y=pos->y-rnd()*4-50;
-			
-			fl->tv.rhw=fl->v.rhw=1.f;
-			fl->tv.specular=fl->v.specular=1;
-			memcpy(&ka,Kam,sizeof(EERIE_CAMERA));
-			
-			ka.angle.a=360.f-ka.angle.a;
-			ka.angle.b=360.f-ka.angle.b;
-			ka.angle.g=360.f-ka.angle.g;
-			EERIE_CAMERA * oldcam=ACTIVECAM;
-			SetActiveCamera(&ka);
-			PrepareCamera(&ka);
-			fl->v.p.x+=ka.pos.x;
-			fl->v.p.y+=ka.pos.y;
-			fl->v.p.z+=ka.pos.z;
-			EE_RTT(&fl->tv,&fl->v);
-			fl->v.p.x+=ka.pos.x;
-			fl->v.p.y+=ka.pos.y;
-			fl->v.p.z+=ka.pos.z;
-			
-			vx=-(fl->x-subj.centerx);
-			vy=(fl->y-subj.centery);
-			vx*=0.2173913f;///=4.6f;
-			vy*=0.1515151515151515f;///=6.6f;
-			
-			if (io)
-			{
-				fl->v.p.x=io->pos.x-(float)EEsin(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
-				fl->v.p.y=io->pos.y+(float)EEsin(radians(MAKEANGLE(io->angle.a+vy)))*100.f-150.f;
-				fl->v.p.z=io->pos.z+(float)EEcos(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
-				
-			}
-			else
-			{
-				fl->v.p.z=75.f;
-				fl->v.p.x=((float)(pos->x-(DANAESIZX>>1)))*fl->v.p.z*2.f/(float)DANAESIZX;
-				fl->v.p.y=((float)(pos->y-(DANAESIZY>>1)))*fl->v.p.z*2.f/((float)DANAESIZY*((float)DANAESIZX/(float)DANAESIZY));
-
-				ka=*oldcam;
-				SetActiveCamera(&ka);
-				PrepareCamera(&ka);
-
-				float temp=(fl->v.p.y*-ka.Xsin) + (fl->v.p.z*ka.Xcos);
-				fl->v.p.y = (fl->v.p.y*ka.Xcos) - (-fl->v.p.z*ka.Xsin);
-				fl->v.p.z =(temp*ka.Ycos) - (-fl->v.p.x*ka.Ysin);
-				fl->v.p.x = (temp*-ka.Ysin) + (fl->v.p.x*ka.Ycos);	
-
-				fl->v.p.x+=oldcam->pos.x;
-				fl->v.p.y+=oldcam->pos.y;
-				fl->v.p.z+=oldcam->pos.z;
-			}
-			
-			fl->tv.p.x=fl->v.p.x;
-			fl->tv.p.y=fl->v.p.y;
-			fl->tv.p.z=fl->v.p.z;
-			SetActiveCamera(oldcam);
-			
-			switch(PIPOrgb) {
-			case 0:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
-				break;
-			case 1:
-				fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
-				break;
-			case 2:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
-				break;
-			}
-			
-			if (typ == -1 ) 
-			{
-				if (EERIEMouseButton & 1) zz = 0.29f;
-				else if (sm>0.5f) zz=rnd();
-				else zz=1.f;
-
-				if ( zz < 0.2f ) 
-				{
-					fl->type=2;
-					fl->size=((rnd()*42)+42.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else if ( zz < 0.5f ) 
-				{
-					fl->type=3;
-					fl->size=((rnd()*52)+16.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else 
-				{
-					fl->type=1;
-					fl->size=((rnd()*24)+32.f) *sm;
-					fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-				}
-			}
-			else
-			{
-				zz=rnd();
-
-				if (zz>0.8f) fl->type=1;
-				else fl->type=4;
-
-				fl->size=((rnd()*38)+64.f) *sm;
-				fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-			}
-
-			fl->dynlight=-1;
-			fl->move=OPIPOrgb;
-			
-			{
-				for (long kk=0;kk<3;kk++)
-				{
-					long j=ARX_PARTICLES_GetFree();
-
-					if ((j!=-1) && (!arxtime.is_paused()) && (rnd()*100.f<50.f))
-					{
-						ParticleCount++;
-						PARTICLE_DEF * pd=&particle[j];
-						pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-
-						if(!io)
-						{
-							pd->special|=PARTICLE_NOZBUFFER;
-						}
-
-						pd->exist		=	true;
-						pd->zdec		=	0;
-						pd->ov.x		=	fl->v.p.x+rnd()*10.f-5.f;
-						pd->ov.y		=	fl->v.p.y+rnd()*10.f-5.f;
-						pd->ov.z		=	fl->v.p.z+rnd()*10.f-5.f;
-						
-						pd->move.x		=	0.f;
-						pd->move.y		=	5.f;
-						pd->move.z		=	0.f;
-						
-						pd->scale.x		=	-2.f;
-						pd->scale.y		=	-2.f;
-						pd->scale.z		=	-2.f;
-						pd->timcreation	=	(long)arxtime;
-						pd->tolive		=	1300 + kk*100 + Random::get(0, 800);
-						
-						pd->tc			=	fire2;
-
-						if (kk==1) 
-						{
-							pd->move.y = 5.f - (float)kk; 
-							pd->siz = 1.f + (float)(kk) * ( 1.0f / 2 ); 
-						}
-						else pd->siz=1.f+rnd()*1.f;
-
-						pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
-						pd->fparam=1.2f;
-					}
-				}
-			}
-			return;
+	for(i = 0; i < MAX_FLARES; i++) {
+		if(!flare[i].exist) {
+			break;
 		}
+	}
+	if(i >= MAX_FLARES) {
+		return;
+	}
+	
+	FLARES * fl = &flare[i];
+	fl->exist = 1;
+	flarenum++;
+	
+	fl->bDrawBitmap = 0;
+	fl->io=io;
+	if(io) {
+		fl->flags = 1;
+		io->flarecount++;
+	} else {
+		fl->flags = 0;
+	}
+	
+	fl->x = pos->x - rnd() * 4.f;
+	fl->y = pos->y - rnd() * 4.f - 50.f;
+	fl->tv.rhw = fl->v.rhw = 1.f;
+	fl->tv.specular = fl->v.specular = 1;
+	
+	EERIE_CAMERA ka = *Kam;
+	ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
+	EERIE_CAMERA * oldcam = ACTIVECAM;
+	SetActiveCamera(&ka);
+	PrepareCamera(&ka);
+	fl->v.p += ka.pos;
+	EE_RTT(&fl->tv, &fl->v);
+	fl->v.p += ka.pos;
+	
+	float vx = -(fl->x - subj.centerx) * 0.2173913f;
+	float vy = (fl->y - subj.centery) * 0.1515151515151515f;
+	if(io) {
+		fl->v.p.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+		fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
+		fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+	} else {
+		fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * fl->v.p.z * 2.f / float(DANAESIZX);
+		fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * fl->v.p.z * 2.f / float(DANAESIZX);
+		fl->v.p.z = 75.f;
+		ka = *oldcam;
+		SetActiveCamera(&ka);
+		PrepareCamera(&ka);
+		float temp = (fl->v.p.y * -ka.Xsin) + (fl->v.p.z * ka.Xcos);
+		fl->v.p.y = (fl->v.p.y * ka.Xcos) - (-fl->v.p.z * ka.Xsin);
+		fl->v.p.z = (temp * ka.Ycos) - (-fl->v.p.x * ka.Ysin);
+		fl->v.p.x = (temp * -ka.Ysin) + (fl->v.p.x * ka.Ycos);	
+		fl->v.p += oldcam->pos;
+	}
+	fl->tv.p = fl->v.p;
+	SetActiveCamera(oldcam);
+	
+	switch(PIPOrgb) {
+		case 0: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
+			break;
+		}
+		case 1: {
+			fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
+			break;
+		}
+		case 2: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
+			break;
+		}
+	}
+	
+	if(typ == -1) {
+		float zz = (EERIEMouseButton & 1) ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
+		if(zz < 0.2f) {
+			fl->type = 2;
+			fl->size = rnd() * 42.f + 42.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else if(zz < 0.5f) {
+			fl->type = 3;
+			fl->size = rnd() * 52.f + 16.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else {
+			fl->type = 1;
+			fl->size = (rnd() * 24.f + 32.f) * sm;
+			fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+		}
+	} else {
+		fl->type = (rnd() > 0.8f) ? 1 : 4;
+		fl->size = (rnd() * 38.f + 64.f) * sm;
+		fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+	}
+	
+	fl->dynlight = -1;
+	fl->move = OPIPOrgb;
+	
+	for(long kk = 0; kk < 3; kk++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j == -1 || arxtime.is_paused() || rnd() >= 0.5f) {
+			continue;
+		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		if(!io) {
+			pd->special |= PARTICLE_NOZBUFFER;
+		}
+		pd->zdec = 0;
+		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
+		pd->move = Vec3f(0.f, 5.f, 0.f);
+		pd->scale = Vec3f::repeat(-2.f);
+		pd->timcreation = long(arxtime);
+		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
+		pd->tc = fire2;
+		if(kk == 1) {
+			pd->move.y = 4.f;
+			pd->siz = 1.5f;
+		} else {
+			pd->siz = 1.f + rnd();
+		}
+		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
+		pd->fparam = 1.2f;
 	}
 }
 
