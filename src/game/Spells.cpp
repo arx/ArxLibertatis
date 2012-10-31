@@ -6947,12 +6947,12 @@ void ARX_SPELLS_Update()
 						el->rgb.g = 0.8f;
 						el->rgb.b = 0.6f;
 						el->duration = 600;
-						el->extras=0;						
+						el->extras=0;
 					}
 
  
 
-					if (VisibleSphere(pf->pos.x,pf->pos.y-120.f,pf->pos.z,350.f))					
+					if (VisibleSphere(pf->pos.x,pf->pos.y-120.f,pf->pos.z,350.f))
 					{
 						pCSpellFX->Render();
 
@@ -6971,9 +6971,9 @@ void ARX_SPELLS_Update()
 								PARTICLE_DEF * pd=&particle[j];
 								pd->exist=true;
 								pd->zdec=0;
-								float sy=rnd()*3.14159f*2.f-3.14159f;
-								float sx=EEsin(sy);
-								float sz=EEcos(sy);
+								float sy = rnd() * (PI * 2.f) - PI;
+								float sx = EEsin(sy);
+								float sz = EEcos(sy);
 								sy=EEsin(sy); 
 								pd->ov.x=pf->pos.x+120.f*sx*rnd();
 								pd->ov.y=pf->pos.y+15.f*sy*rnd();
