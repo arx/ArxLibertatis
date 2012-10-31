@@ -534,15 +534,9 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 		
 		long MAX_GROUND_SPLATS;
 		switch(config.video.levelOfDetail) {
-			case 2:
-				MAX_GROUND_SPLATS = 10;
-			break;
-			case 1:
-				MAX_GROUND_SPLATS = 5;
-			break;
-			default:
-				MAX_GROUND_SPLATS = 1;
-			break;
+			case 2:  MAX_GROUND_SPLATS = 10; break;
+			case 1:  MAX_GROUND_SPLATS = 5; break;
+			default: MAX_GROUND_SPLATS = 1; break;
 		}
 		
 		for(long k = 0; k < nb; k++) {
@@ -571,65 +565,61 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
-{
-	if (source<0) return;
-
+void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
+	
+	if(source < 0) {
+		return;
+	}
+	
 	float nearest_dist = std::numeric_limits<float>::max();
-	long nearest=-1;
-	long count=entities[source]->obj->nbgroups;
-
-	for (long i=0;i<count;i+=2)
-	{
-		float dist = distSqr(*pos, entities[source]->obj->vertexlist3[entities[source]->obj->grouplist[i].origin].v);
-
-		if (dist<nearest_dist)
-		{
-			nearest_dist=dist;
-			nearest=i;
+	long nearest = -1;
+	long count = entities[source]->obj->nbgroups;
+	for(long i = 0; i < count; i += 2) {
+		long vertex = entities[source]->obj->grouplist[i].origin;
+		float dist = distSqr(*pos, entities[source]->obj->vertexlist3[vertex].v);
+		if(dist < nearest_dist) {
+			nearest_dist = dist;
+			nearest = i;
 		}
 	}
-
+	if(nearest < 0) {
+		return;
+	}
+	
 	// Decides number of blood particles...
-	long spawn_nb;	
-	spawn_nb = (long)(dmgs * 2.0F);
-
-	if (spawn_nb<5) spawn_nb=5;
-	else if (spawn_nb>26) spawn_nb=26;
-
-	long totdelay=0;
-
-	if (nearest>=0)
-	for (long k=0;k<spawn_nb;k++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if ((j!=-1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-			pd->siz=0.f;
-			pd->scale.x=(float)spawn_nb;
-			pd->scale.y=(float)spawn_nb;
-			pd->scale.z=(float)spawn_nb;
-			
-				pd->timcreation	=	(long)arxtime;
-			pd->special		=	GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
-			pd->source		=	&entities[source]->obj->vertexlist3[nearest].v;
-			pd->sourceionum	=	source;
-			pd->tolive		=	1200+spawn_nb*5;
-			totdelay		+=	45 + Random::get(0, 150 - spawn_nb);
-			pd->delay		=	totdelay;
-			pd->rgb = Color3f(.9f, 0.f, 0.f);
-			pd->tc			=	bloodsplatter;
-			pd->fparam		=	rnd()*( 1.0f / 10 )-0.05f;
+	long spawn_nb = clamp(long(dmgs * 2.f), 5l, 26l);
+	
+	long totdelay = 0;
+	
+	for(long k = 0; k < spawn_nb; k++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j == -1 || arxtime.is_paused()) {
+			continue;
 		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		pd->zdec = 0;
+		pd->siz = 0.f;
+		pd->scale = Vec3f::repeat(float(spawn_nb));
+		pd->timcreation = long(arxtime);
+		pd->special = GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
+		pd->source = &entities[source]->obj->vertexlist3[nearest].v;
+		pd->sourceionum = source;
+		pd->tolive = 1200 + spawn_nb * 5;
+		totdelay += 45 + Random::get(0, 150 - spawn_nb);
+		pd->delay = totdelay;
+		pd->rgb = Color3f(.9f, 0.f, 0.f);
+		pd->tc = bloodsplatter;
+		pd->fparam = rnd() * 0.1f - 0.05f;
 	}
 }
-long SPARK_COUNT=0;
+
+long SPARK_COUNT = 0;
+
 //-----------------------------------------------------------------------------
 // flag & 1 punch failed
 // flag & 2 punch success
