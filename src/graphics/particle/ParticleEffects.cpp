@@ -814,168 +814,111 @@ void ManageTorch() {
 		el->pos.y = entities.player()->obj->vertexlist3[vertex].v.y;
 	}
 }
-#define DIV_MAX_FLARELIFE	0.00025f
-//-----------------------------------------------------------------------------
-void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
-{
 
-	shinum++;
-
-	if (shinum>=10) shinum=1;
-
-	long TICKS = long(arxtime) - FRAMETICKS;
-
-	if (TICKS<0)
-		return;
+void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
 	
-	/////////FLARE
+	shinum++;
+	if(shinum >= 10) {
+		shinum = 1;
+	}
+	
+	long TICKS = long(arxtime) - FRAMETICKS;
+	if(TICKS < 0) {
+		return;
+	}
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	float z,s,r,g,b;
-
-	TextureContainer * surf;
-	bool key=!GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
-
-	for (long j=1;j<5;j++) 
-	{
-		switch (j)
-		{
-		case 2:				
-			surf=flaretc.lumignon;
-			break;
-		case 3:
-			surf=flaretc.lumignon2;
-			break;
-		case 4:
-			surf=flaretc.plasm;
-			break;
-		default:
-			surf=flaretc.shine[shinum];
-			break;
+	
+	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+	
+	for(long j = 1; j < 5; j++) {
+		
+		TextureContainer * surf;
+		switch(j) {
+			case 2:  surf = flaretc.lumignon; break;
+			case 3:  surf = flaretc.lumignon2; break;
+			case 4:  surf = flaretc.plasm; break;
+			default: surf = flaretc.shine[shinum]; break;
 		}
-
-		for (long i=0;i<MAX_FLARES;i++)
-		{
-			if ((flare[i].exist)
-				&& (flare[i].type==j))
-			{
-				flare[i].tolive-=(float)TICKS*2;
-
-				if (flare[i].flags & 1)
-				{
-					flare[i].tolive-=(float)TICKS*4;
-				}
-				else if (key)						
-				{
-					flare[i].tolive-=TICKS*6;
-				}
-				
-				if (	(flare[i].tolive <= 0.f ) 
-					||	(flare[i].y< -64 )	
-					)
-				{
-					if (flare[i].io)
-					{
-						if (ValidIOAddress(flare[i].io))
-							flare[i].io->flarecount--;
-					}					
-
-					if (ValidDynLight(flare[i].dynlight))
-						DynLight[flare[i].dynlight].exist=0;
-
-					flare[i].dynlight=-1;
-					flare[i].exist=0;
-					flarenum--;
-				}
-				else 
-				{
-					
-					z = (flare[i].tolive * DIV_MAX_FLARELIFE); 
-
-					if(flare[i].type == 1) { 
-						s=flare[i].size*2*z;
-					} else if(flare[i].type == 4) {
-						s=flare[i].size*2.f*z+10.f;
-					}
-					else s=flare[i].size;
-					
-					if ( s<3.f ) 
-					{
-						if (flare[i].io)
-						{
-							if (ValidIOAddress(flare[i].io))
-								flare[i].io->flarecount--;
-						}					
-
-						if (ValidDynLight(flare[i].dynlight))
-							DynLight[flare[i].dynlight].exist=0;
-
-						flare[i].dynlight=-1;
-						flare[i].exist=0;
-						flarenum--;
-					}
-					else 
-					{
-						if(flare[i].type == 1 && z < 0.6f)  {
-							z = 0.6f;
-						}
-
-						g = flare[i].rgb.g * z;
-						r = flare[i].rgb.r * z;
-						b = flare[i].rgb.b * z;
-						
-						flare[i].tv.color = Color3f(r, g, b).toBGR();
-						flare[i].v.p.x=flare[i].tv.p.x;
-						flare[i].v.p.y=flare[i].tv.p.y;
-						flare[i].v.p.z=flare[i].tv.p.z;
-								
-						DynLight[0].rgb.r = std::max(DynLight[0].rgb.r, r);
-						DynLight[0].rgb.g = std::max(DynLight[0].rgb.g, g);
-						DynLight[0].rgb.b = std::max(DynLight[0].rgb.b, b);
-
-						if (ValidDynLight(flare[i].dynlight)) 
-						{
-							EERIE_LIGHT * el=&DynLight[flare[i].dynlight];
-							el->pos.x=flare[i].v.p.x;
-							el->pos.y=flare[i].v.p.y;
-							el->pos.z=flare[i].v.p.z;
-							el->rgb = Color3f(r, g, b);
-						}
-
-						if (!flare[i].io) 
-						{
-							GRenderer->SetRenderState(Renderer::DepthTest, false);
-						}
-						else
-						{
-							GRenderer->SetRenderState(Renderer::DepthTest, true);
-						}
-
-						if(flare[i].bDrawBitmap)
-						{
-							s*=2.f;
-							EERIEDrawBitmap(flare[i].v.p.x, flare[i].v.p.y, s, s, flare[i].v.p.z, surf, Color::fromBGRA(flare[i].tv.color));
-						}
-						else
-						{
-							EERIEDrawSprite(&flare[i].v,(float)s*0.025f+1.f, surf, Color::fromBGRA(flare[i].tv.color), 2.f);
-						}
-					}
-				}
-				
+		
+		for(long i = 0; i < MAX_FLARES; i++) {
+			
+			if(!flare[i].exist || flare[i].type != j) {
+				continue;
 			}
-					
+			
+			flare[i].tolive -= float(TICKS * 2);
+			if(flare[i].flags & 1) {
+				flare[i].tolive -= float(TICKS * 4);
+			} else if (key) {
+				flare[i].tolive -= float(TICKS * 6);
+			}
+			
+			float z = (flare[i].tolive * 0.00025f);
+			float s;
+			if(flare[i].type == 1) {
+				s = flare[i].size * 2 * z;
+			} else if(flare[i].type == 4) {
+				s = flare[i].size * 2.f * z + 10.f;
+			} else {
+				s = flare[i].size;
+			}
+			
+			if(flare[i].tolive <= 0.f || flare[i].y < -64.f || s < 3.f) {
+				
+				if(flare[i].io && ValidIOAddress(flare[i].io)) {
+					flare[i].io->flarecount--;
+				}
+				
+				if(ValidDynLight(flare[i].dynlight)) {
+					DynLight[flare[i].dynlight].exist = 0;
+				}
+				
+				flare[i].dynlight = -1;
+				flare[i].exist = 0;
+				flarenum--;
+				
+				continue;
+			}
+			
+			if(flare[i].type == 1 && z < 0.6f)  {
+				z = 0.6f;
+			}
+			
+			Color3f c = flare[i].rgb * z;
+			flare[i].tv.color = c.toBGR();
+			flare[i].v.p = flare[i].tv.p;
+			
+			DynLight[0].rgb = componentwise_max(DynLight[0].rgb, c);
+			
+			if(ValidDynLight(flare[i].dynlight)) {
+				EERIE_LIGHT * el = &DynLight[flare[i].dynlight];
+				el->pos = flare[i].v.p;
+				el->rgb = c;
+			}
+			
+			if(!flare[i].io) {
+				GRenderer->SetRenderState(Renderer::DepthTest, false);
+			} else {
+				GRenderer->SetRenderState(Renderer::DepthTest, true);
+			}
+			
+			if(flare[i].bDrawBitmap) {
+				s *= 2.f;
+				EERIEDrawBitmap(flare[i].v.p.x, flare[i].v.p.y, s, s, flare[i].v.p.z,
+				                surf, Color::fromBGRA(flare[i].tv.color));
+			} else {
+				EERIEDrawSprite(&flare[i].v, s * 0.025f + 1.f, surf,
+				                Color::fromBGRA(flare[i].tv.color), 2.f);
+			}
+			
 		}
 	}
-
-	if (DynLight[0].rgb.r>1.f) DynLight[0].rgb.r=1.f;
-
-	if (DynLight[0].rgb.g>1.f) DynLight[0].rgb.g=1.f;
-
-	if (DynLight[0].rgb.b>1.f) DynLight[0].rgb.b=1.f;
-
+	
+	DynLight[0].rgb = componentwise_min(DynLight[0].rgb, Color3f::white);
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true); 
 }
