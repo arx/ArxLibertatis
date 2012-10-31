@@ -1071,143 +1071,106 @@ void Add3DBoom(Vec3f * position) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void UpdateObjFx() {
-
-	unsigned long framediff;
-	float val,aa,bb;
-	float t1,t2,t3;
-	long p;
-	Vec3f pos;
-
-	TexturedVertex v[3];
-	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
-	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
-	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 	
+	ColorBGRA c = Color::white.toBGR();
+	TexturedVertex v[3];
+	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ONE);
 	TexturedVertex v2[3];
-	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
-	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
-	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
+	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ONE);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	for (long i=0;i<MAX_OBJFX;i++)
-	{
-		if (objfx[i].exist)
-		{
-			framediff = (unsigned long)(arxtime) - objfx[i].tim_start; 
-
-			if (framediff>objfx[i].duration) 
-			{
-				objfx[i].exist=false;
-
-				if (ValidDynLight(objfx[i].dynlight))
-					DynLight[objfx[i].dynlight].exist=0;
-
-				objfx[i].dynlight=-1;
-				continue;
+	
+	for(long i = 0; i < MAX_OBJFX; i++) {
+		
+		if(!objfx[i].exist) {
+			continue;
+		}
+		
+		unsigned long framediff = (unsigned long)(arxtime) - objfx[i].tim_start; 
+		if(framediff > objfx[i].duration) {
+			objfx[i].exist = false;
+			if(ValidDynLight(objfx[i].dynlight)) {
+				DynLight[objfx[i].dynlight].exist = 0;
 			}
-
-			val=(float)framediff/(float)objfx[i].duration;
-			pos = objfx[i].pos + objfx[i].move * val;
-
-			Anglef angle;
-			Color3f color;
-			Vec3f scale = Vec3f(1.f, 1.f, 1.f) + objfx[i].scale * val;
-
-			if (Project.improve)
-			{
-				color.r=1.f-objfx[i].fade.r*val;
-				color.g=0.f;
-				color.b=1.f-objfx[i].fade.b*val;
+			objfx[i].dynlight = -1;
+			continue;
+		}
+		
+		float val = float(framediff) / float(objfx[i].duration);
+		Vec3f pos = objfx[i].pos + objfx[i].move * val;
+		
+		
+		Color3f color = Color3f(1.f - objfx[i].fade.r * val, 0.f,
+		                        1.f - objfx[i].fade.b * val);
+		if(!Project.improve) {
+			color.g = 1.f - objfx[i].fade.g * val;
+		}
+		
+		Vec3f scale = Vec3f::ONE + objfx[i].scale * val;
+		Anglef angle = Anglef::ZERO;
+		
+		DrawEERIEObjEx(objfx[i].obj, &angle, &pos, &scale, &color);
+		
+		if(objfx[i].dynlight != -1) {
+			DynLight[objfx[i].dynlight].fallend = 250.f + 450.f * val;
+			DynLight[objfx[i].dynlight].fallstart = 150.f + 50.f * val;
+			Color3f c(1.f - val, 0.9f-val * 0.9f, 0.5f - val * 0.5f);
+			DynLight[objfx[i].dynlight].rgb = c;
+			DynLight[objfx[i].dynlight].pos = pos;
+		}
+		
+		if(!(objfx[i].special & SPECIAL_RAYZ)) {
+			continue;
+		}
+		
+		GRenderer->SetCulling(Renderer::CullNone);
+		
+		for(long k = 0; k < 8; k++) {
+			float aa = objfx[i].spe[k].g;
+			float bb = objfx[i].speinc[k].g;
+			
+			if(!arxtime.is_paused()) {
+				objfx[i].spe[k].a += objfx[i].speinc[k].a;
+				objfx[i].spe[k].b += objfx[i].speinc[k].b;
 			}
-			else
-			{
-				color.r=1.f-objfx[i].fade.r*val;
-				color.g=1.f-objfx[i].fade.g*val;
-				color.b=1.f-objfx[i].fade.b*val;
-			}
-
-			angle.a=0.f;
-			angle.b=0.f;
-			angle.g=0.f;
-
-			DrawEERIEObjEx(objfx[i].obj,
-					&angle,&pos,&scale,&color);
-
-			if (objfx[i].dynlight!=-1)
-			{
-				DynLight[objfx[i].dynlight].fallend=250.f+450.f*val;
-				DynLight[objfx[i].dynlight].fallstart=150.f+50.f*val;
-				DynLight[objfx[i].dynlight].rgb.r=1.f-val;
-				DynLight[objfx[i].dynlight].rgb.g=0.9f-val*0.9f;
-				DynLight[objfx[i].dynlight].rgb.b=0.5f-val*0.5f;
-				DynLight[objfx[i].dynlight].pos.x=pos.x;
-				DynLight[objfx[i].dynlight].pos.y=pos.y;
-				DynLight[objfx[i].dynlight].pos.z=pos.z;
-			}
-
-			if (objfx[i].special & SPECIAL_RAYZ)
-			{
-
-				GRenderer->SetCulling(Renderer::CullNone);
-
-				for (long k=0;k<8;k++)
-				{
-					aa=objfx[i].spe[k].g;
-					bb=objfx[i].speinc[k].g;
-
-					if (arxtime.is_paused())
-					{						
-					}
-					else
-					{
-						objfx[i].spe[k].a+=objfx[i].speinc[k].a;
-						objfx[i].spe[k].b+=objfx[i].speinc[k].b;
-					}
-
-					for (p=0;p<3;p++)
-					{
-						v[p].p.x=pos.x;
-						v[p].p.y=pos.y;
-						v[p].p.z=pos.z;
-					}
-						
-					t1=100.f*scale.x;
-					t2=100.f*scale.y;
-					t3=100.f*scale.z;
-					v[1].p.x-=EEsin(radians(objfx[i].spe[k].b))*t1;
-					v[1].p.y+=EEsin(radians(objfx[i].spe[k].a))*t2;
-					v[1].p.z+=EEcos(radians(objfx[i].spe[k].b))*t3;
-					v[2].p.x=v[0].p.x-EEsin(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t1;
-					v[2].p.y=v[0].p.y+EEsin(radians(MAKEANGLE(objfx[i].spe[k].a+aa)))*t2;
-					v[2].p.z=v[0].p.z+EEcos(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t3;
-					EE_RTP(&v[0],&v2[0]);
-					EE_RTP(&v[1],&v2[1]);
-					EE_RTP(&v[2],&v2[2]);
-
-					if(Project.improve) {
-						for(p = 0; p < 3; p++) {
-							v2[p].color = Color3f(color.r/(3.f + (float)p), 0.f, color.b/(5.f+(float)p)).toBGR();
-						}
-					} else {
-						for(p = 0; p < 3; p++) {
-							v2[p].color = Color3f(color.r/(3.f + (float)p), color.g/(4.f + (float)p), color.b/(5.f + (float)p)).toBGR();
-						}
-					}
-
-					GRenderer->ResetTexture(0);
-					EERIEDRAWPRIM(Renderer::TriangleFan, v2);
+			
+			Vec3f t = scale * 100.f;
+			v[0].p = pos;
+			v[1].p.x = pos.x - EEsin(radians(objfx[i].spe[k].b)) * t.x;
+			v[1].p.y = pos.y + EEsin(radians(objfx[i].spe[k].a)) * t.y;
+			v[1].p.z = pos.z + EEcos(radians(objfx[i].spe[k].b)) * t.z;
+			v[2].p.x = pos.x - EEsin(radians(MAKEANGLE(objfx[i].spe[k].b + bb))) * t.x;
+			v[2].p.y = pos.y + EEsin(radians(MAKEANGLE(objfx[i].spe[k].a + aa))) * t.y;
+			v[2].p.z = pos.z + EEcos(radians(MAKEANGLE(objfx[i].spe[k].b + bb))) * t.z;
+			EE_RTP(&v[0], &v2[0]);
+			EE_RTP(&v[1], &v2[1]);
+			EE_RTP(&v[2], &v2[2]);
+			
+			if(Project.improve) {
+				for(long p = 0; p < 3; p++) {
+					v2[p].color = Color3f(color.r / (3.f + float(p)), 0.f,
+					                      color.b / (5.f + float(p))).toBGR();
+				}
+			} else {
+				for(long p = 0; p < 3; p++) {
+					v2[p].color = Color3f(color.r / (3.f + float(p)), color.g / (4.f + float(p)),
+					                      color.b / (5.f + float(p))).toBGR();
 				}
 			}
+			
+			GRenderer->ResetTexture(0);
+			EERIEDRAWPRIM(Renderer::TriangleFan, v2);
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_PARTICLES_FirstInit() {
 	smokeparticle=TextureContainer::Load("graph/particles/smoke");
 	
