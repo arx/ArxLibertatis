@@ -1037,56 +1037,36 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 void Add3DBoom(Vec3f * position) {
 	
-	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), *position);
 	Vec3f poss = *position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
-
-	if (dist<300)
-	{
-		float onedist=1.f/dist;
-		Vec3f vect;
-		vect.x=(player.pos.x-position->x)*onedist; 
-		vect.y=(player.pos.y-160.f-position->y)*onedist; 
-		vect.z=(player.pos.z-position->z)*onedist;
-		float power=(300.f-dist)*( 1.0f / 80 );
-		player.physics.forces.x+=vect.x*power;
-		player.physics.forces.y+=vect.y*power;
-		player.physics.forces.z+=vect.z*power;
+	
+	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), *position);
+	if(dist < 300) {
+		Vec3f vect = (player.pos - *position - Vec3f(0.f, 160.f, 0.f)) / dist;
+		player.physics.forces += vect * ((300.f - dist) * 0.0125f);
 	}
-
+	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(entities[i]) {
-			
-			if ( entities[i]->show!=1 ) continue;
-
-			if ( !(entities[i]->ioflags & IO_ITEM) ) continue;
-
-			if ( entities[i]->obj)
-				if ( entities[i]->obj->pbox)
-				{
-					for (long k=0;k<entities[i]->obj->pbox->nb_physvert;k++)
-					{
-						float dist = fdist(entities[i]->obj->pbox->vert[k].pos, *position);
-
-						if (dist<300.f)
-						{
-							entities[i]->obj->pbox->active=1;
-							entities[i]->obj->pbox->stopcount=0;
-							float onedist=1.f/dist;
-							Vec3f vect;
-							vect.x=(entities[i]->obj->pbox->vert[k].pos.x-position->x)*onedist; 
-							vect.y=(entities[i]->obj->pbox->vert[k].pos.y-position->y)*onedist; 
-							vect.z=(entities[i]->obj->pbox->vert[k].pos.z-position->z)*onedist;
-							float power = (300.f - dist) * 10.f; 
-							entities[i]->obj->pbox->vert[k].velocity.x+=vect.x*power;
-							entities[i]->obj->pbox->vert[k].velocity.y+=vect.y*power;
-							entities[i]->obj->pbox->vert[k].velocity.z+=vect.z*power;
-						}
-					}
-				}
+		
+		Entity * entity = entities[i];
+		if(!entity || entity->show != 1 || !(entity->ioflags & IO_ITEM)) {
+			continue;
+		}
+		
+		if(!entity->obj || !entity->obj->pbox) {
+			continue;
+		}
+		
+		for(long k = 0; k < entity->obj->pbox->nb_physvert; k++) {
+			float dist = fdist(entity->obj->pbox->vert[k].pos, *position);
+			if(dist < 300.f) {
+				entity->obj->pbox->active = 1;
+				entity->obj->pbox->stopcount = 0;
+				Vec3f vect = (entity->obj->pbox->vert[k].pos - *position) / dist;
+				entity->obj->pbox->vert[k].velocity += vect * ((300.f - dist) * 10.f);
+			}
 		}
 	}
 }
