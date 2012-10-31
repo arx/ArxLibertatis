@@ -1380,50 +1380,41 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 			pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
 			pd->exist = true;
 			pd->ov = pos;
-			pd->move = Vec3f((rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f);
+			pd->move = randomVec(-11.5f, 11.5f);
 			pd->timcreation = (long)arxtime;
 			pd->tolive = (unsigned long)(1000 + dmgs*3);
 			pd->tc = blood_splat;
-			pd->siz = .3f + .01f*power;
-			pd->scale = Vec3f(.2f + .3f*power, .2f + .3f*power, .2f + .3f*power);
+			pd->siz = 0.3f + 0.01f * power;
+			pd->scale = Vec3f::repeat(0.2f + 0.3f * power);
 			pd->zdec = 1;
 			pd->rgb = col.to<float>();
 		}
 	}
 }
 
-void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
-{
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos) {
+	
 	long nbParticles = Random::get(15, 35);
-
-	for (long kk=0; kk < nbParticles; kk++)
-	{
+	for(long kk=0; kk < nbParticles; kk++) {
 		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
+		if(j != -1) {
+			
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | GRAVITY;
 			pd->special |= SPLAT_WATER;
-
+			
 			pd->exist = true;
-			pd->ov.x = _ePos->x + rnd()*30;
-			pd->ov.y = _ePos->y - rnd()*20;
-			pd->ov.z = _ePos->z + rnd()*30;
-			pd->move.x = (frand2()*5)*1.3f;
-			pd->move.y = -(rnd()*5)*2.3f;
-			pd->move.z = (frand2()*5)*1.3f;
-			pd->timcreation = (long)arxtime;
+			pd->ov = *_ePos + Vec3f(30.f * rnd(), -20.f * rnd(), 30.f * rnd());
+			pd->move = Vec3f(6.5f * frand2(), -11.5f * rnd(), 6.5f * frand2());
+			pd->timcreation = long(arxtime);
 			pd->tolive = Random::get(1000, 1300);
 			
 			int t = Random::get(0, 2);
 			pd->tc=water_drop[t];
 			pd->siz = 0.4f;
 			float s = rnd();
-			pd->scale.x = 1;
-			pd->scale.y = 1;
-			pd->scale.z = 1;
+			pd->scale = Vec3f::ONE;
 			pd->zdec = 1;
 			pd->rgb = Color3f::gray(s);
 		}
