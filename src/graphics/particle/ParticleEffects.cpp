@@ -1886,177 +1886,130 @@ void RestoreAllLightsInitialStatus() {
 }
 
 extern long FRAME_COUNT;
-//-----------------------------------------------------------------------------
+
 // Draws Flame Particles
-//-----------------------------------------------------------------------------
-void TreatBackgroundActions()
-{
-	if (FRAME_COUNT>0) return;
-
-	long n,j;
-	float sx,sy,sz;
-
-
-	float fZFar=ACTIVECAM->cdepth*fZFogEnd*1.3f;	
-
+void TreatBackgroundActions() {
+	
+	if(FRAME_COUNT > 0) {
+		return;
+	}
+	
+	float fZFar = square(ACTIVECAM->cdepth * fZFogEnd * 1.3f);
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT * gl=GLight[i];
-
-		if (gl==NULL) continue;
+		
+		EERIE_LIGHT * gl = GLight[i];
+		if(!gl) {
+			continue;
+		}
 		
 		float dist = distSqr(gl->pos,	ACTIVECAM->pos);
-
-		if(dist > square(fZFar)) // Out of Treat Range
-		{
+		if(dist > fZFar) {
+			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
 			gl->sample = audio::INVALID_ID;
 			continue;
 		}
-
 		
-		if ((gl->extras & EXTRAS_SPAWNFIRE) &&	(gl->status))
-			{
-				long id=ARX_DAMAGES_GetFree();
-
-				if (id!=-1)
-				{
+		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->status) {
+			long id = ARX_DAMAGES_GetFree();
+			if(id !=-1) {
 				damages[id].radius = gl->ex_radius; 
-				damages[id].damages = gl->ex_radius * ( 1.0f / 7 ); 
-					damages[id].area=DAMAGE_FULL;
-					damages[id].duration=1;
-					damages[id].source=-5;
+				damages[id].damages = gl->ex_radius * (1.0f / 7);
+				damages[id].area = DAMAGE_FULL;
+				damages[id].duration = 1;
+				damages[id].source = -5;
 				damages[id].flags = 0; 
-					damages[id].type=DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
-					damages[id].exist=true;
-					damages[id].pos.x=gl->pos.x;
-					damages[id].pos.y=gl->pos.y;
-					damages[id].pos.z=gl->pos.z;
-				}
+				damages[id].type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
+				damages[id].exist = true;
+				damages[id].pos = gl->pos;
 			}
-
-		if ((  (gl->extras & EXTRAS_SPAWNFIRE) 
-			|| (gl->extras & EXTRAS_SPAWNSMOKE))
-			&& (gl->status))
-		{
-			if (gl->sample == audio::INVALID_ID)
-			{
-				gl->sample = SND_FIREPLACE;
-					ARX_SOUND_PlaySFX(gl->sample, &gl->pos, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
-			}
-			else
-			{
-				ARX_SOUND_RefreshPosition(gl->sample, &gl->pos);
-			}
-
-
-			long count;
-
-			if(dist < square(ACTIVECAM->cdepth) * square(1.0f / 8)) count=4;
-			else if(dist < square(ACTIVECAM->cdepth) * square(1.0f / 6)) count=4;
-			else if(dist > square(ACTIVECAM->cdepth) * square(1.0f / 3)) count=3;
-			else count=2;
-
-			for (n=0;n<count;n++)
-			{
-				j=ARX_PARTICLES_GetFree();
-
-				if ((j!=-1) && (!arxtime.is_paused()) && ((rnd()<gl->ex_frequency)))
-				{
-					ParticleCount++;
-					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=true;
-					pd->zdec=0;
-					sy=rnd()*3.14159f;
-					sx=EEsin(sy);
-					sz=EEcos(sy);
-					sy=EEsin(sy);
-					pd->ov.x=gl->pos.x+gl->ex_radius*sx*rnd();
-					pd->ov.y=gl->pos.y+gl->ex_radius*sy*rnd();
-					pd->ov.z=gl->pos.z+gl->ex_radius*sz*rnd();
-					pd->move.x=(2.f-4.f*rnd())*gl->ex_speed;
-					pd->move.y=(2.f-22.f*rnd())*gl->ex_speed;
-					pd->move.z=(2.f-4.f*rnd())*gl->ex_speed;
-					pd->siz=7.f*gl->ex_size;
-					pd->tolive=500 + Random::get(0, 1000 * gl->ex_speed);
-
-					if ((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE))
-						pd->special=FIRE_TO_SMOKE;
-					else pd->special=0;
-
-					if (gl->extras & EXTRAS_SPAWNFIRE) 
-						pd->tc = fire2; 
-					else 
-						pd->tc = smokeparticle;
-					
-					pd->special		|=	ROTATING | MODULATE_ROTATION;
-					pd->fparam		=	0.1f-rnd()*0.2f*gl->ex_speed;
-					pd->scale.x		=	-8.f;
-					pd->scale.y		=	-8.f;
-					pd->scale.z		=	-8.f;
-					pd->timcreation	=	(long)arxtime;
-					
-					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
-				}
-
-				if ((gl->extras & EXTRAS_SPAWNFIRE) && (rnd()>0.95f))
-				{
-					j=ARX_PARTICLES_GetFree();
-
-					if ((j!=-1) && (!arxtime.is_paused()) && ((rnd()<gl->ex_frequency)))
-					{
-						ParticleCount++;
-						PARTICLE_DEF * pd=&particle[j];
-						pd->exist=true;
-						pd->zdec=0;
-						sy = rnd() * 3.14159f * 2.f - 3.14159f; 
-						sx=EEsin(sy);
-						sz=EEcos(sy);
-						sy=EEsin(sy);
-						pd->ov.x=gl->pos.x+gl->ex_radius*sx*rnd();
-						pd->ov.y=gl->pos.y+gl->ex_radius*sy*rnd();
-						pd->ov.z=gl->pos.z+gl->ex_radius*sz*rnd();
-						Vec3f vect = (pd->ov - gl->pos).getNormalized();
-
-						if (gl->extras & EXTRAS_FIREPLACE)
-						{
-							pd->move.x = vect.x * 6.f * gl->ex_speed; 
-							pd->move.y=(-10.f-8.f*rnd())*gl->ex_speed;
-							pd->move.z = vect.z * 6.f * gl->ex_speed; 
-						}
-						else
-						{
-							pd->move.x = vect.x * 4.f * gl->ex_speed; 
-							pd->move.y=(-10.f-8.f*rnd())*gl->ex_speed;
-							pd->move.z = vect.z * 4.f * gl->ex_speed; 
-						}
-
-						pd->siz=4.f*gl->ex_size*0.3f;
-						pd->tolive=1200+Random::get(0, 500*gl->ex_speed);
-						pd->special=0;//FIRE_TO_SMOKE;
-						pd->tc = fire2; 
-						
-						pd->special		|=	ROTATING | MODULATE_ROTATION | GRAVITY;
-						pd->fparam		=	0.1f-rnd()*0.2f*gl->ex_speed;
-						pd->scale.x		=	-3.f;
-						pd->scale.y		=	-3.f;
-						pd->scale.z		=	-3.f;
-						pd->timcreation	=	(long)arxtime;
-						
-						pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
-					}
-				}
-			}
-			
 		}
-		else
-		{
-			if ((!gl->status) && (gl->sample != audio::INVALID_ID))
-			{
+		
+		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->status) {
+			if(!gl->status && gl->sample != audio::INVALID_ID) {
 				ARX_SOUND_Stop(gl->sample);
 				gl->sample = audio::INVALID_ID;
 			}
+			continue;
 		}
-	}	
+		
+		if(gl->sample == audio::INVALID_ID) {
+			gl->sample = SND_FIREPLACE;
+			float pitch = 0.95f + 0.1f * rnd();
+			ARX_SOUND_PlaySFX(gl->sample, &gl->pos, pitch, ARX_SOUND_PLAY_LOOPED);
+		} else {
+			ARX_SOUND_RefreshPosition(gl->sample, &gl->pos);
+		}
+		
+		long count = 2;
+		if(dist < square(ACTIVECAM->cdepth * (1.f / 6))) {
+			count = 4;
+		} else if(dist > square(ACTIVECAM->cdepth * (1.f / 3))) {
+			count = 3;
+		}
+		
+		for(long n = 0; n < count; n++) {
+			
+			long j = ARX_PARTICLES_GetFree();
+			if(j != -1 && !arxtime.is_paused() && rnd() < gl->ex_frequency) {
+				
+				ParticleCount++;
+				PARTICLE_DEF * pd = &particle[j];
+				pd->exist = true;
+				
+				pd->zdec = 0;
+				float t = rnd() * PI;
+				Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
+				pd->ov = gl->pos + s * gl->ex_radius;
+				pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+				pd->move *= gl->ex_speed;
+				pd->siz = 7.f * gl->ex_size;
+				pd->tolive = 500 + Random::get(0, 1000 * gl->ex_speed);
+				if((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE)) {
+					pd->special = FIRE_TO_SMOKE;
+				} else {
+					pd->special = 0;
+				}
+				pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
+				pd->special |= ROTATING | MODULATE_ROTATION;
+				pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
+				pd->scale = Vec3f::repeat(-8.f);
+				pd->timcreation = long(arxtime);
+				pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
+			}
+			
+			if(!(gl->extras & EXTRAS_SPAWNFIRE) || rnd() <= 0.95f) {
+				continue;
+			}
+			
+			j = ARX_PARTICLES_GetFree();
+			if(j != -1 && !arxtime.is_paused() && rnd() < gl->ex_frequency) {
+				
+				ParticleCount++;
+				PARTICLE_DEF * pd = &particle[j];
+				pd->exist = true;
+				
+				pd->zdec = 0;
+				float t = rnd() * (PI * 2.f) - PI;
+				Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
+				pd->ov = gl->pos + s * gl->ex_radius;
+				Vec3f vect = (pd->ov - gl->pos).getNormalized();
+				float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
+				pd->move = Vec3f(vect.x * d, -10.f - 8.f * rnd(), vect.z * d) * gl->ex_speed;
+				pd->siz = 4.f * gl->ex_size * 0.3f;
+				pd->tolive = 1200 + Random::get(0, 500 * gl->ex_speed);
+				pd->special = 0;
+				pd->tc = fire2;
+				pd->special |= ROTATING | MODULATE_ROTATION | GRAVITY;
+				pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
+				pd->scale = Vec3f::repeat(-3.f);
+				pd->timcreation = (long)arxtime;
+				pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
+			}
+			
+		}
+	}
 }
 
 void ARX_MAGICAL_FLARES_FirstInit() {
