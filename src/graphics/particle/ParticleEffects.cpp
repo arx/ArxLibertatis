@@ -1471,56 +1471,42 @@ void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
 
 void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * rgb) {
 	
-	level*=1.6f;
-
-	if (explo[0]==NULL) return;
-
-	for (long nn=0;nn<1;nn++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->special=FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
-			pd->exist=true;
-			pd->ov = *poss;
-
-			if (direction)
-				pd->move = *direction;
-			else
-			{
-				pd->move.x = 0.f; 
-				pd->move.y = -rnd() * 5.f; 
-				pd->move.z = 0.f; 
-			}
-
-			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	Random::get(1600, 2200);
-			pd->tc			=	explo[0];
-			pd->siz			=	level*3.f+2.f*rnd();
-			pd->scale.x		=	level*3.f;
-			pd->scale.y		=	level*3.f;
-			pd->scale.z		=	level*3.f;
-			pd->zdec		=	1;
-			pd->cval1		=	0;
-			pd->cval2		=	MAX_EXPLO-1;
-
-			if(rgb) {
-				pd->rgb = *rgb;
-			}
-
-			if (nn==1)
-			{
-				pd->delay=300;
-				pd->tolive/=2;				
-				pd->scale.x*=2;
-				pd->scale.y*=2;
-				pd->scale.z*=2;
-			}
-		}
+	level *= 1.6f;
+	
+	if(explo[0] == NULL) {
+		return;
 	}
+	
+	long j = ARX_PARTICLES_GetFree();
+	if(j == -1) {
+		return;
+	}
+	
+	ParticleCount++;
+	PARTICLE_DEF * pd = &particle[j];
+	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
+	pd->exist   = true;
+	pd->ov      = *poss;
+	
+	if(direction) {
+		pd->move = *direction;
+	} else {
+		pd->move = Vec3f(0.f, -rnd() * 5.f, 0.f);
+	}
+	
+	pd->timcreation = long(arxtime);
+	pd->tolive      = Random::get(1600, 2200);
+	pd->tc          = explo[0];
+	pd->siz         = level * 3.f + 2.f * rnd();
+	pd->scale       = Vec3f::repeat(level * 3.f);
+	pd->zdec        = 1;
+	pd->cval1       = 0;
+	pd->cval2       = MAX_EXPLO - 1;
+	
+	if(rgb) {
+		pd->rgb = *rgb;
+	}
+	
 }
 
 //-----------------------------------------------------------------------------
