@@ -1873,24 +1873,18 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 
 void RestoreAllLightsInitialStatus() {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if ( (GLight[i]!=NULL) )
-		{
-			GLight[i]->status=1;
-
-			if (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) GLight[i]->status=0;
-
-			if (GLight[i]->status==0)
-			{
-				if (ValidDynLight(GLight[i]->tl))
-				{
-					DynLight[GLight[i]->tl].exist=0;
+		if(GLight[i]) {
+			GLight[i]->status = (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
+			if(GLight[i]->status == 0) {
+				if(ValidDynLight(GLight[i]->tl)) {
+					DynLight[GLight[i]->tl].exist = 0;
 				}
-
-				GLight[i]->tl=-1;
+				GLight[i]->tl = -1;
 			}
 		}
 	}
 }
+
 extern long FRAME_COUNT;
 //-----------------------------------------------------------------------------
 // Draws Flame Particles
