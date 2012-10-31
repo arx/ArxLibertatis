@@ -711,7 +711,7 @@ void AddRandomSmoke(Entity * io, long amount) {
 		pd->special = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
 		pd->tolive = Random::get(900, 1300);
 		pd->move = Vec3f(0.25f - 0.5f * rnd(), -1.f * rnd() + 0.3f, 0.25f - 0.5f * rnd());
-		pd->rgb = Color3f(.3f, .3f, .34f);
+		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
 		pd->tc = smokeparticle;
 		pd->fparam = 0.001f;
 	}
@@ -719,64 +719,37 @@ void AddRandomSmoke(Entity * io, long amount) {
 
 // flag 1 = randomize pos
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb) {
-
-	Vec3f mod;
-	mod.x = mod.y = mod.z = 0.f;
-
-	if (flags & 1)
-	{
-		mod.x=rnd()*100.f-50.f;
-		mod.y=rnd()*100.f-50.f;
-		mod.z=rnd()*100.f-50.f;
-	}
-
-	while(amount)
-	{
-		amount--;
-		long j=ARX_PARTICLES_GetFree();
-
-		if (	(j!=-1)
-			&&	(!arxtime.is_paused())	)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-			pd->ov.x=pos->x+mod.x;
-			pd->ov.y=pos->y+mod.y;
-			pd->ov.z=pos->z+mod.z;
-
-			if (flags & 2)
-			{
-				pd->siz=rnd()*20.f+15.f;
-				pd->scale.x=40.f+rnd()*15;
-				pd->scale.y=40.f+rnd()*15;
-				pd->scale.z=40.f+rnd()*15;
-			}
-			else
-			{
-				pd->siz=rnd()*8.f+5.f;
-
-				if (pd->siz<4.f) pd->siz=4.f;
-
-				pd->scale.x=10.f+rnd()*5;
-				pd->scale.y=10.f+rnd()*5;
-				pd->scale.z=10.f+rnd()*5;
-			}
-			
-			pd->timcreation	=	(long)arxtime;
-			pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
-			pd->tolive		=	Random::get(1100, 1500);
-			pd->delay		=	amount * 120 + Random::get(0, 100);
-			pd->move.x		=	0.25f-0.5f*rnd();
-			pd->move.y		=	-1.f*rnd()+0.3f;
-			pd->move.z		=	0.25f-0.5f*rnd();
-
-			pd->rgb = (rgb) ? *rgb : Color3f(.3f, .3f, .34f);
-
-			pd->tc = smokeparticle; 
-			pd->fparam = 0.01f; 
+	
+	Vec3f mod = (flags & 1) ? randomVec(-50.f, 50.f) : Vec3f::ZERO;
+	
+	while(amount--) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if (j == -1 || arxtime.is_paused()) {
+			continue;
 		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		pd->zdec = 0;
+		pd->ov = *pos + mod;
+		if(flags & 2) {
+			pd->siz = rnd() * 20.f + 15.f;
+			pd->scale = randomVec(40.f, 55.f);
+		} else {
+			pd->siz = std::max(4.f, rnd() * 8.f + 5.f);
+			pd->scale = randomVec(10.f, 15.f);
+		}
+		pd->timcreation = long(arxtime);
+		pd->special = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
+		pd->tolive = Random::get(1100, 1500);
+		pd->delay = amount * 120 + Random::get(0, 100);
+		pd->move = Vec3f(0.25f - 0.5f * rnd(), -1.f * rnd() + 0.3f, 0.25f - 0.5f * rnd());
+		pd->rgb = (rgb) ? *rgb : Color3f(0.3f, 0.3f, 0.34f);
+		pd->tc = smokeparticle;
+		pd->fparam = 0.01f;
 	}
 }
 
