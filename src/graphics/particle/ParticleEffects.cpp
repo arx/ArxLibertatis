@@ -620,67 +620,54 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 
 long SPARK_COUNT = 0;
 
-//-----------------------------------------------------------------------------
 // flag & 1 punch failed
 // flag & 2 punch success
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
-{
-	if (!pos) return;
+void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
+	
+	if(!pos) {
+		return;
+	}
 
 	long spawn_nb = dmgs;
 	
-	
-	if (SPARK_COUNT<1000)
-	{
-		SPARK_COUNT+=spawn_nb*25;
-	}
-	else
-	{
-		SPARK_COUNT	-=	static_cast<long>(FrameDiff);
+	if(SPARK_COUNT < 1000) {
+		SPARK_COUNT += spawn_nb * 25;
+	} else {
+		SPARK_COUNT -= static_cast<long>(FrameDiff);
 		return;
 	}
 	
-	for (long k=0;k<spawn_nb;k++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if ((j!=-1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-			pd->oldpos.x=pd->ov.x=pos->x+rnd()*10.f-5.f;
-			pd->oldpos.y=pd->ov.y=pos->y+rnd()*10.f-5.f;
-			pd->oldpos.z=pd->ov.z=pos->z+rnd()*10.f-5.f;
-			
-			pd->siz			=	2.f;
-			pd->move.x		=	6 - 12.f * rnd(); 
-			pd->move.y		=	6 - 12.f * rnd(); 
-			pd->move.z		=	6 - 12.f * rnd(); 
-				
-			pd->timcreation	=	(long)arxtime;
-			pd->special		=	PARTICLE_SPARK;
-			float len		=	(float)spawn_nb*( 1.0f / 3 );
-
-			if ( len > 8 ) len	=	8;
-
-			if ( len < 3 ) len	=	3;
-
-			pd->tolive		=	(unsigned long)(float)(len * 90 + (float)spawn_nb);
-
-			if(flags==0) {
-				pd->rgb = Color3f(.3f, .3f, 0.f);
-			} else if(flags & 1) {
-				pd->rgb = Color3f(.2f, .2f, .1f);
-			} else if(flags & 2) {
-				pd->rgb = Color3f(.45f, .1f, 0.f);
-			}
-
-			pd->tc=NULL;
-			pd->fparam = len + rnd() * len; // Spark Tail Length
+	for(long k = 0; k < spawn_nb; k++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j == -1 || arxtime.is_paused()) {
+			continue;
 		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		pd->zdec = 0;
+		pd->oldpos = pd->ov = *pos + randomVec(-5.f, 5.f);
+		pd->siz = 2.f;
+		pd->move = randomVec(-6.f, 6.f);
+		
+		pd->timcreation = long(arxtime);
+		pd->special = PARTICLE_SPARK;
+		float len = clamp(spawn_nb * (1.f / 3), 3.f, 8.f);
+		pd->tolive = (unsigned long)(len * 90.f + float(spawn_nb));
+		
+		if(flags == 0) {
+			pd->rgb = Color3f(.3f, .3f, 0.f);
+		} else if(flags & 1) {
+			pd->rgb = Color3f(.2f, .2f, .1f);
+		} else if(flags & 2) {
+			pd->rgb = Color3f(.45f, .1f, 0.f);
+		}
+		
+		pd->tc = NULL;
+		pd->fparam = len + rnd() * len; // Spark tail length
 	}
 }
 
