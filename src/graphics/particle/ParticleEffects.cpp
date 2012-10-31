@@ -1521,9 +1521,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	long xx, yy;
-	long framediff;
-	long framediff2;
 	long t;
 	TexturedVertex in, inn, out;
 	Color color;
@@ -1532,7 +1529,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 	float fd;
 	float rott;
 	
-	unsigned  long tim = (unsigned long)arxtime;
+	unsigned long tim = (unsigned long)arxtime;
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetFogColor(Color::none);
@@ -1544,10 +1541,10 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 		PARTICLE_DEF * part = &particle[i];
 		if(part->exist) {
 			
-			framediff = part->timcreation+part->tolive - tim;
-			framediff2 = tim-part->timcreation;
+			long framediff = part->timcreation+part->tolive - tim;
+			long framediff2 = tim - part->timcreation;
 			
-			if(framediff2 < (long)part->delay) {
+			if(framediff2 < part->delay) {
 				continue;
 			}
 			
@@ -1565,64 +1562,51 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				}
 				continue;
 			}
-
-			if (!(part->type & PARTICLE_2D))
-			{
-				xx = part->ov.x * ACTIVEBKG->Xmul;
-				yy = part->ov.z * ACTIVEBKG->Zmul;
-
-				if ((xx<0) || (yy<0) || (xx>ACTIVEBKG->Xsize) || (yy>ACTIVEBKG->Zsize))
-				{
-					part->exist=false;
-					ParticleCount--;
-					continue;
-				}
-
-				FAST_BKG_DATA * feg=(FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
-
-				if (!feg->treat)
-				{
-					part->exist=false;
-					ParticleCount--;
-					continue;
-				}
-			}	
 			
-			if (framediff<=0) 
-			{
-				if ((part->special & FIRE_TO_SMOKE) && (rnd()>0.7f))
-				{
-					part->ov.x+=part->move.x;
-					part->ov.y+=part->move.y;
-					part->ov.z+=part->move.z;
-					part->tolive += (part->tolive >> 2) + (part->tolive >> 3);
-					part->special&=~FIRE_TO_SMOKE;
-					part->timcreation=tim;
-					part->tc = smokeparticle;
-					part->scale.x*=2.4f;
-					part->scale.y*=2.4f;
-					part->scale.z*=2.4f;
-
-					if (part->scale.x<0.f) part->scale.x*=-1.f;
-
-					if (part->scale.y<0.f) part->scale.y*=-1.f;
-
-					if (part->scale.z<0.f) part->scale.z*=-1.f;
-
-					part->rgb = Color3f::gray(.45f);
-					part->move.x*=( 1.0f / 2 );
-					part->move.y*=( 1.0f / 2 );
-					part->move.z*=( 1.0f / 2 );
-					part->siz*=( 1.0f / 3 );			
-					part->special&=~FIRE_TO_SMOKE;
-					part->timcreation=tim;
-					part->tc = smokeparticle; 
-					
-					framediff=part->timcreation+part->tolive-tim;
+			if(!(part->type & PARTICLE_2D)) {
+				long xx = part->ov.x * ACTIVEBKG->Xmul;
+				long yy = part->ov.z * ACTIVEBKG->Zmul;
+				if(xx < 0 || yy < 0 || xx > ACTIVEBKG->Xsize || yy > ACTIVEBKG->Zsize) {
+					part->exist = false;
+					ParticleCount--;
+					continue;
 				}
-				else 
-				{
-					part->exist=false;
+				FAST_BKG_DATA & feg = ACTIVEBKG->fastdata[xx][yy];
+				if(!feg.treat) {
+					part->exist = false;
+					ParticleCount--;
+					continue;
+				}
+			}
+			
+			if(framediff <= 0) {
+				if((part->special & FIRE_TO_SMOKE) && rnd() > 0.7f) {
+					
+					part->ov += part->move;
+					part->tolive += (part->tolive / 4) + (part->tolive / 8);
+					part->special &= ~FIRE_TO_SMOKE;
+					part->tc = smokeparticle;
+					part->scale *= 2.4f;
+					if(part->scale.x < 0.f) {
+						part->scale.x *= -1.f;
+					}
+					if(part->scale.y < 0.f) {
+						part->scale.y *= -1.f;
+					}
+					if(part->scale.z < 0.f) {
+						part->scale.z *= -1.f;
+					}
+					part->rgb = Color3f::gray(.45f);
+					part->move *= 0.5f;
+					part->siz *= 1.f / 3;
+					part->special &= ~FIRE_TO_SMOKE;
+					part->timcreation = tim;
+					part->tc = smokeparticle;
+					
+					framediff = part->tolive;
+					
+				} else {
+					part->exist = false;
 					ParticleCount--;
 					continue;
 				}
