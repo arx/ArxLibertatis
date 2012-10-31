@@ -1172,6 +1172,7 @@ void UpdateObjFx() {
 }
 
 void ARX_PARTICLES_FirstInit() {
+	
 	smokeparticle=TextureContainer::Load("graph/particles/smoke");
 	
 	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
@@ -1421,59 +1422,49 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
-{
-	if (explo[0]==NULL) return;
-
-	level*=2.f;
-
-	for (long nn=0;nn<2;nn++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->special		=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING | MODULATE_ROTATION;
-			pd->fparam		=	0.02f-rnd()*0.02f;
-			pd->exist		=	true;
-			pd->ov.x		=	poss->x;
-			pd->ov.y		=	poss->y;
-			pd->ov.z		=	poss->z;
-			pd->move.x		=	0;
-			pd->move.y		=	-rnd() * 3.f; 
-			pd->move.z		=	0;
-			pd->timcreation	=	(long)arxtime;
-			pd->tc			=	explo[0];
-			pd->rgb = Color3f::gray(.7f);
-			pd->siz			=	level+2.f*rnd();
-
-			if (flags & 1)
-			{
-				pd->tolive	=	Random::get(400, 500);
-				pd->siz		*=	0.7f;
-				pd->scale.z=pd->scale.y=pd->scale.x=level*0.7f;				
-			}
-			else
-			{				
-				pd->scale.x=level;
-				pd->scale.y=level;
-				pd->scale.z=level;
-				pd->tolive=Random::get(800, 900);
-			}
-
-			pd->cval1=0;
-			pd->cval2=MAX_EXPLO-1;
-
-			if (nn==1)
-			{
-				pd->delay=Random::get(150, 250);
-				pd->ov.x=poss->x+vecto->x*pd->delay;
-				pd->ov.y=poss->y+vecto->y*pd->delay;
-				pd->ov.z=poss->z+vecto->z*pd->delay;
-			}
+void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
+	
+	if(!explo[0]) {
+		return;
+	}
+	
+	for(long nn = 0; nn < 2; nn++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j == -1) {
+			continue;
+		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING
+		              | MODULATE_ROTATION;
+		pd->fparam = 0.02f - rnd() * 0.02f;
+		pd->move = Vec3f(0.f, -rnd() * 3.f, 0.f);
+		pd->timcreation = long(arxtime);
+		pd->tc = explo[0];
+		pd->rgb = Color3f::gray(.7f);
+		pd->siz = (level + rnd()) * 2.f;
+		
+		if(flags & 1) {
+			pd->tolive = Random::get(400, 500);
+			pd->siz *= 0.7f;
+			pd->scale = Vec3f::repeat(level * 1.4f);
+		} else {
+			pd->scale = Vec3f::repeat(level * 2.f);
+			pd->tolive=Random::get(800, 900);
+		}
+		
+		pd->cval1 = 0;
+		pd->cval2 = MAX_EXPLO - 1;
+		
+		if(nn == 1) {
+			pd->delay = Random::get(150, 250);
+			pd->ov = *poss + *vecto * pd->delay;
+		} else {
+			pd->ov = *poss;
 		}
 	}
 }
