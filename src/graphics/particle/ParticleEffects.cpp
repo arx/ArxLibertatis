@@ -202,7 +202,6 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color col) {
 	
 	long j = ARX_PARTICLES_GetFree();
-
 	if(j == -1 || arxtime.is_paused()) {
 		return;
 	}
@@ -212,12 +211,14 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	ParticleCount++;
 	PARTICLE_DEF * pd = &particle[j];
 	pd->exist = true;
+	
 	pd->zdec = 0;
 	pd->ov = pos;
 	pd->siz = 3.1f * power;
 	pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/4);
 	pd->timcreation = (long)arxtime;
-	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | SPLAT_GROUND;
+	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
+	              | SPLAT_GROUND;
 	pd->tolive = 1600;
 	pd->delay = 0;
 	pd->move = Vec3f(rnd() * 60.f - 30.f, rnd() * -10.f - 15.f, rnd() * 60.f - 30.f);
@@ -228,28 +229,32 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	
 }
 
-static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col, long flags = 0) {
+static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
+                                       long flags = 0) {
 	
 	long j = ARX_PARTICLES_GetFree();
 	
 	if(j != -1 && !arxtime.is_paused()) {
 		
-		float power = (dmgs * (1.f/60)) + .9f;
 		ParticleCount++;
 		PARTICLE_DEF * pd = &particle[j];
 		pd->exist = true;
+		
+		float power = (dmgs * (1.f/60)) + .9f;
 		pd->zdec = 0;
-		pd->ov = pos + Vec3f(-sin(float(arxtime) * (1.f/1000)), sin(float(arxtime) * (1.f/1000)), cos(float(arxtime) * (1.f/1000))) * 30.f;
+		pd->ov = pos + Vec3f(-sin(float(arxtime) * 0.001f), sin(float(arxtime) * 0.001f),
+		               cos(float(arxtime) * 0.001f)) * 30.f;
 		pd->siz = 3.5f * power + sin(float(arxtime) * (1.f/1000));
-		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/2); 
-		pd->timcreation	=	(long)arxtime;
-		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | flags;
+		pd->scale = Vec3f::repeat(-pd->siz * 0.5f);
+		pd->timcreation = long(arxtime);
+		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
+		              | flags;
 		pd->tolive = 1100;
-		pd->delay=0;
+		pd->delay = 0;
 		pd->move = Vec3f::ZERO;
 		pd->rgb = col.to<float>();
 		pd->tc = bloodsplatter;
-		pd->fparam = rnd() * (1.f/10) - .05f;
+		pd->fparam = rnd() * 0.1f - .05f;
 	}
 	
 	if(rnd() > .90f) {
@@ -257,6 +262,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	}
 	
 }
+
 #define SPLAT_MULTIPLY 1.f
 
 void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
