@@ -117,9 +117,6 @@ short			OPIPOrgb=0;
 short			PIPOrgb=0;
 static short shinum = 1;
 long			NewSpell=0;
-static TextureContainer * GTC;
-static float ET_R, ET_G, ET_B;
-static int ET_MASK;
 
 long ARX_BOOMS_GetFree() {
 	for(long i=0;i<MAX_POLYBOOM;i++) 
@@ -1319,52 +1316,34 @@ void MakeBookFX(float posx,float posy,float posz)
 	NewSpell=1;	
 }
 
-//-----------------------------------------------------------------------------
-int ARX_GenereOneEtincelle(Vec3f *pos,Vec3f *dir)
-{
-	int	i;
+void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
+                           const Color3f & color, int mask) {
 	
-	i=ARX_PARTICLES_GetFree();
-
-	if(i<0) return -1;
-	
-	ParticleCount++;
-	PARTICLE_DEF * pd=&particle[i];
-	pd->exist		=	true;
-	pd->type		=	PARTICLE_ETINCELLE;
-	pd->special		=	GRAVITY;
-	pd->ov			=	pd->oldpos	=	*pos;
-	pd->move		=	*dir;
-	pd->tolive		=	Random::get(1000, 1500);
-	pd->timcreation	=	(long)arxtime;
-	pd->rgb = Color3f(ET_R, ET_G, ET_B);
-	pd->tc			=	GTC;
-	pd->mask		=	ET_MASK;
-	return i;
-}
-
-//-----------------------------------------------------------------------------
-void ARX_GenereSpheriqueEtincelles(Vec3f *pos,float r,TextureContainer *tc,float rr,float g,float b,int mask)
-{
-	GTC=tc;
-	ET_R=rr;
-	ET_G=g;
-	ET_B=b;
-	ET_MASK=mask;
-	int nb=rand()&0x1F;
-
-	while(nb)
-	{
-		Vec3f dir;
-
-		float a = radians(rnd()*360.f);
-		float b = radians(rnd()*360.f);
-		dir.x=(float) r*EEsin(a)*EEcos(b);
-		dir.z=(float) r*EEsin(a)*EEsin(b);
-		dir.y=(float) r*EEcos(a);
-
-		ARX_GenereOneEtincelle(pos,&dir);
-		nb--;
+	int nb = Random::get(0, 31);
+	for(int i = 0; i < nb; i++) {
+		
+		int i = ARX_PARTICLES_GetFree();
+		if(i == -1) {
+			return;
+		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[i];
+		pd->exist = true;
+		
+		float a = radians(rnd() * 360.f);
+		float sa = EEsin(a);
+		float ca = EEcos(a);
+		
+		pd->type = PARTICLE_SPARK2;
+		pd->special = GRAVITY;
+		pd->ov = pd->oldpos = pos;
+		pd->move = Vec3f(r * sa * ca, r * sa * sa, r * ca);
+		pd->tolive = Random::get(1000, 1500);
+		pd->timcreation = long(arxtime);
+		pd->rgb = color;
+		pd->tc = tc;
+		pd->mask = mask;
 	}
 }
 
@@ -1803,15 +1782,15 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 		float siz = part->siz + part->scale.x * fd;
 		
 		if(part->special & ROTATING) {
-			
-			float rott;
-			if(part->special & MODULATE_ROTATION) {
-				rott = MAKEANGLE(float(tim + framediff2) * part->fparam);
-			} else {
-				rott = MAKEANGLE(float(tim + framediff2 * 2) * 0.25f);
-			}
-			
 			if(!(part->type & PARTICLE_2D)) {
+				
+				float rott;
+				if(part->special & MODULATE_ROTATION) {
+					rott = MAKEANGLE(float(tim + framediff2) * part->fparam);
+				} else {
+					rott = MAKEANGLE(float(tim + framediff2 * 2) * 0.25f);
+				}
+				
 				float temp = (part->zdec) ? 0.0001f : 2.f;
 				if(part->special & PARTICLE_SUB2) {
 					TexturedVertex in2 = in;
@@ -1822,9 +1801,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				} else {
 					EERIEDrawRotatedSprite(&in, siz, tc, color, temp, rott);
 				}
+				
 			}
-			
-		} else if (part->type & PARTICLE_2D) {
+		} else if(part->type & PARTICLE_2D) {
 			
 			float siz2 = part->siz + part->scale.y * fd;
 			if(part->special & PARTICLE_SUB2) {
@@ -1837,31 +1816,27 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
 			}
 			
+		} else if(part->type & PARTICLE_SPARK2) {
+			
+			Vec3f pos = in.p;
+			Color col = (part->rgb * r).to<u8>();
+			Vec3f end = pos - (pos - op) * 2.5f;
+			Color masked = Color::fromBGRA(col.toBGRA() & part->mask);
+			Draw3DLineTex2(end, pos, 2.f, masked, col);
+			EERIEDrawSprite(&in, 0.7f, tc, col, 2.f);
+			
 		} else {
 			
-			if(part->type & PARTICLE_ETINCELLE) {
-				
-				Vec3f pos = in.p;
-				Color col = (part->rgb * r).to<u8>();
-				Vec3f end = pos - (pos - op) * 2.5f;
-				Color masked = Color::fromBGRA(col.toBGRA() & part->mask);
-				Draw3DLineTex2(end, pos, 2.f, masked, col);
-				EERIEDrawSprite(&in, 0.7f, tc, col, 2.f);
-				
+			float temp = (part->zdec) ? 0.0001f : 2.f;
+			if(part->special & PARTICLE_SUB2) {
+				TexturedVertex in2 = in;
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				EERIEDrawSprite(&in, siz, tc, color, temp);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				EERIEDrawSprite(&in2, siz, tc, Color::white, temp);
 			} else {
-				
-				float temp = (part->zdec) ? 0.0001f : 2.f;
-				if(part->special & PARTICLE_SUB2) {
-					TexturedVertex in2 = in;
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-					EERIEDrawSprite(&in, siz, tc, color, temp);
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					EERIEDrawSprite(&in2, siz, tc, Color::white, temp);
-				} else {
-					EERIEDrawSprite(&in,siz,tc,color,temp);
-				}
+				EERIEDrawSprite(&in,siz,tc,color,temp);
 			}
-			
 		}
 		
 		pcc--;

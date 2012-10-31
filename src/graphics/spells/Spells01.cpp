@@ -949,7 +949,8 @@ float CIgnit::Render() {
 				{
 					if ((this->tablight[nb].actif) && (rnd() > .5f))
 					{
-						ARX_GenereSpheriqueEtincelles(&this->tablight[nb].posfx, rnd() * 20.f * unsuri, this->tp, this->r, this->g, this->b, this->mask);
+						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp,
+						                      Color3f(r, g, b), mask);
 					}
 				}
 			}

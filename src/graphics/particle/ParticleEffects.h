@@ -168,18 +168,18 @@ enum ARX_PARTICLES_TYPE_FLAG {
 	GRAVITY             = 0x00000020,
 	SUBSTRACT           = 0x00000040,
 	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_ETINCELLE  = 0x00000100, // gère l'acceleration et la gravité
+	PARTICLE_SPARK2     = 0x00000100,
 	FOLLOW_SOURCE       = 0x00000200,
 	FOLLOW_SOURCE2      = 0x00000400,
 	DELAY_FOLLOW_SOURCE = 0x00000800,
 	NO_TRANS            = 0x00001000,
 	PARTICLE_ANIMATED   = 0x00002000,
-	PARTICLE_SPARK		= 0x00004000,
-	SPLAT_GROUND		= 0x00008000,
-	SPLAT_WATER			= 0x00010000,
-	PARTICLE_SUB2		= 0x00020000,
-	PARTICLE_GOLDRAIN	= 0x00040000,
-	PARTICLE_NOZBUFFER	= 0x80000000
+	PARTICLE_SPARK      = 0x00004000,
+	SPLAT_GROUND        = 0x00008000,
+	SPLAT_WATER         = 0x00010000,
+	PARTICLE_SUB2       = 0x00020000,
+	PARTICLE_GOLDRAIN   = 0x00040000,
+	PARTICLE_NOZBUFFER  = 0x80000000
 };
 
 //-----------------------------------------------------------------------------
@@ -223,7 +223,8 @@ void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 
-void ARX_GenereSpheriqueEtincelles(Vec3f * pos, float r, TextureContainer * tc, float rr, float g, float b, int mask);
+void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
+                           const Color3f & color, int mask);
 void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(Vec3f * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
