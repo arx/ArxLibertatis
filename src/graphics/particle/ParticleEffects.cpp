@@ -1524,7 +1524,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 	TexturedVertex in, inn, out;
 	Color color;
 	float siz, siz2;
-	float val;
 	float rott;
 	
 	unsigned long tim = (unsigned long)arxtime;
@@ -1547,7 +1546,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			}
 			
 			if(part->delay > 0) {
-				part->timcreation+=part->delay;
+				part->timcreation += part->delay;
 				part->delay=0;
 				if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum >= 0
 				   && entities[part->sourceionum]) {
@@ -1644,7 +1643,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				}
 			}
 			
-			val = (part->tolive - framediff) * 0.01f;
+			float val = (part->tolive - framediff) * 0.01f;
 			
 			if((part->special & FOLLOW_SOURCE) && part->sourceionum >= 0
 			   && entities[part->sourceionum]) {
@@ -1677,116 +1676,88 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				}
 			}
 			
-			if (!(part->type & PARTICLE_2D))
-			{
+			if(!(part->type & PARTICLE_2D)) {
+				
 				EERIE_SPHERE sp;
-				sp.origin.x=in.p.x;
-				sp.origin.y=in.p.y;
-				sp.origin.z=in.p.z;
-				EERIETreatPoint(&inn,&out);			
-
-				if (out.rhw<0) continue;
-
-				if (out.p.z>cam->cdepth*fZFogEnd) continue;
-
-				if (part->special & PARTICLE_SPARK)
-				{
-					if (part->special & NO_TRANS)
-					{
+				sp.origin = in.p;
+				EERIETreatPoint(&inn, &out);
+				if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
+					continue;
+				}
+				
+				if(part->special & PARTICLE_SPARK) {
+					
+					if(part->special & NO_TRANS) {
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-					else
-					{
+					} else {
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-						if (part->special & SUBSTRACT) 
-						{
+						if(part->special & SUBSTRACT) {
 							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						}
-						else
-						{
+						} else {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						}
 					}
-
+					
 					GRenderer->SetCulling(Renderer::CullNone);
 					Vec3f vect = part->oldpos - in.p;
 					fnormalize(vect);
 					TexturedVertex tv[3];
 					tv[0].color = part->rgb.toBGR();
-					tv[1].color=0xFF666666;
-					tv[2].color = 0xFF000000; 
-					tv[0].p.x=out.p.x;
-					tv[0].p.y=out.p.y;
-					tv[0].p.z=out.p.z;
-					tv[0].rhw=out.rhw;
+					tv[1].color = 0xFF666666;
+					tv[2].color = 0xFF000000;
+					tv[0].p = out.p;
+					tv[0].rhw = out.rhw;
 					TexturedVertex temp;
-					temp.p.x=in.p.x+rnd()*0.5f;
-					temp.p.y=in.p.y+0.8f;
-					temp.p.z=in.p.z+rnd()*0.5f;
-					EERIETreatPoint(&temp,&tv[1]);
-					temp.p.x=in.p.x+vect.x*part->fparam;
-					temp.p.y=in.p.y+vect.y*part->fparam;
-					temp.p.z=in.p.z+vect.z*part->fparam;
-
-					EERIETreatPoint(&temp,&tv[2]);
+					temp.p = in.p + Vec3f(rnd() * 0.5f, 0.8f, rnd() * 0.5f);
+					EERIETreatPoint(&temp, &tv[1]);
+					temp.p = in.p + vect * part->fparam;
+					
+					EERIETreatPoint(&temp, &tv[2]);
 					GRenderer->ResetTexture(0);
-
+					
 					EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
-					if(!arxtime.is_paused())
-					{
-						part->oldpos.x=in.p.x;
-						part->oldpos.y=in.p.y;
-						part->oldpos.z=in.p.z;
+					if(!arxtime.is_paused()) {
+						part->oldpos = in.p;
 					}
-
+					
 					continue;
 				}
-
-				if (part->special & SPLAT_GROUND)
-				{
-					siz=part->siz+part->scale.x*fd;			
-					sp.radius=siz*10;
-
-					if(CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL)) {
-						
-						Color3f rgb = part->rgb;
-
-						if (rnd()<0.9f)
-							SpawnGroundSplat(&sp,&rgb,sp.radius,0);
-
-						part->exist=false;
+				
+				if(part->special & SPLAT_GROUND) {
+					float siz = part->siz + part->scale.x * fd;
+					sp.radius = siz * 10.f;
+					if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+						if(rnd() < 0.9f) {
+							Color3f rgb = part->rgb;
+							SpawnGroundSplat(&sp, &rgb, sp.radius, 0);
+						}
+						part->exist = false;
 						ParticleCount--;
 						continue;
 					}
 				}
-
-				if (part->special & SPLAT_WATER)
-				{
-					siz=part->siz+part->scale.x*fd;
-					sp.radius=siz*(10 + rnd()*20);
-
-					if (CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL))
-					{
-						Color3f rgb(part->rgb.r * 0.5f, part->rgb.g * 0.5f, part->rgb.b * 0.5f);
-
-						if (rnd()<0.9f)
-							SpawnGroundSplat(&sp,&rgb,sp.radius,2);
-
-						part->exist=false;
+				
+				if(part->special & SPLAT_WATER) {
+					float siz = part->siz + part->scale.x * fd;
+					sp.radius = siz * (10.f + rnd() * 20.f);
+					if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+						if(rnd() < 0.9f) {
+							Color3f rgb = part->rgb * 0.5f;
+							SpawnGroundSplat(&sp, &rgb, sp.radius, 2);
+						}
+						part->exist = false;
 						ParticleCount--;
 						continue;
 					}
 				}
 				
 			}
-
-			if ((part->special & DISSIPATING) && (out.p.z<0.05f))
-			{
-				out.p.z=(out.p.z)*20.f;
-				r*=out.p.z;
+			
+			if((part->special & DISSIPATING) && out.p.z < 0.05f) {
+				out.p.z *= 20.f;
+				r *= out.p.z;
 			}
-
+			
 			if (r>0.f) 
 			{
 				if (part->special & NO_TRANS)
