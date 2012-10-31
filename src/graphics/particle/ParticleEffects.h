@@ -155,7 +155,7 @@ struct FLARETC
 #define PARTICLE_2D	256
 #define MAX_FLARES 300
 #define MAX_FLARELIFE 4000
-#define FLARE_MUL 2
+#define FLARE_MUL 2.f
 
 const unsigned long MAX_PARTICLES(2200);
 

@@ -2177,137 +2177,103 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-void AddFlare2(Vec2s * pos,float sm,short typ,Entity * io)
-{
+void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
+	
 	long i;
-	float zz;
-
-	for (i=0;i<MAX_FLARES;i++) 
-	{
-		if ( !flare[i].exist ) 
-		{
-			FLARES * fl=&flare[i];
-			fl->exist=1;
-			fl->bDrawBitmap=1;
-
-			if (io)
-			{
-				fl->flags=1;
-				fl->io=io;
-				io->flarecount++;
-			}
-			else
-			{
-				fl->flags=0;
-				fl->io=NULL;
-			}
-
-			flarenum++;
-			fl->x=pos->x-rnd()*4;
-			fl->y=pos->y-rnd()*4-50;
-			
-			fl->tv.rhw=fl->v.rhw=1.f;
-			fl->tv.specular=fl->v.specular=1;
-			
-			fl->tv.p.x=fl->x;
-			fl->tv.p.y=fl->y;
-			fl->tv.p.z = 0.001f; 
-
-			switch (PIPOrgb)  {
-			case 0:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
-				break;
-			case 1:
-				fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
-				break;
-			case 2:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
-				break;
-			}
-			
-			if (typ == -1 ) 
-			{
-				if (EERIEMouseButton & 1) zz = 0.29f;
-				else if (sm>0.5f) zz=rnd();
-				else zz=1.f;
-
-				if ( zz < 0.2f ) 
-				{
-					fl->type=2;
-					fl->size=((rnd()*42)+42.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else if ( zz < 0.5f ) 
-				{
-					fl->type=3;
-					fl->size=((rnd()*52)+16.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else 
-				{
-					fl->type=1;
-					fl->size=((rnd()*24)+32.f) *sm;
-					fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-				}
-			}
-			else
-			{
-				zz=rnd();
-
-				if (zz>0.8f) fl->type=1;
-				else fl->type=4;
-
-				fl->size=((rnd()*38)+64.f) *sm;
-				fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-			}
-
-			fl->dynlight=-1;
-			fl->move=OPIPOrgb;
-			
-				for (long kk=0;kk<3;kk++)
-				{
-					long j=ARX_PARTICLES_GetFree();
-
-					if ((j!=-1) && (!arxtime.is_paused()) && (rnd()*100.f<50.f))
-					{
-					
-						ParticleCount++;
-						PARTICLE_DEF * pd=&particle[j];
-						pd->special		=	FADE_IN_AND_OUT;
-						pd->exist		=	true;
-						pd->zdec		=	0;
-						pd->ov.x		=	fl->v.p.x+rnd()*10.f-5.f;
-						pd->ov.y		=	fl->v.p.y+rnd()*10.f-5.f;
-						pd->ov.z		=	fl->v.p.z+rnd()*10.f-5.f;
-						
-						pd->move.x		=	0.f;
-						pd->move.y		=	5.f;
-						pd->move.z		=	0.f;
-						
-						pd->scale.x		=	-2.f;
-						pd->scale.y		=	-2.f;
-						pd->scale.z		=	-2.f;
-						pd->timcreation	=	(long)arxtime;
-						pd->tolive		=	1300 + kk*100 + Random::get(0, 800);
-						
-						pd->tc			=	fire2;
-
-						if (kk==1) 
-						{
-							pd->move.y = 5.f - (float)kk; 
-							pd->siz = 1.f + (float)(kk) * ( 1.0f / 2 ); 
-						}
-						else pd->siz=1.f+rnd()*1.f;
-
-						pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
-						pd->fparam=1.2f;
-						pd->type=PARTICLE_2D;
-					}
-				}
-
-				i=MAX_FLARES + 1;
+	for(i = 0; i < MAX_FLARES; i++) {
+		if(!flare[i].exist) {
+			break;
 		}
+	}
+	if(i >= MAX_FLARES) {
+		return;
+	}
+	
+	FLARES * fl = &flare[i];
+	fl->exist = 1;
+	flarenum++;
+	
+	fl->bDrawBitmap = 1;
+	fl->io = io;
+	if(io) {
+		fl->flags = 1;
+		io->flarecount++;
+	} else {
+		fl->flags = 0;
+	}
+	
+	fl->x = float(pos->x) - rnd() * 4.f;
+	fl->y = float(pos->y) - rnd() * 4.f - 50.f;
+	fl->tv.rhw = fl->v.rhw = 1.f;
+	fl->tv.specular = fl->v.specular = 1;
+	fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
+	switch(PIPOrgb)  {
+		case 0: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
+			break;
+		}
+		case 1: {
+			fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
+			break;
+		}
+		case 2: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
+			break;
+		}
+	}
+	
+	if(typ == -1) {
+		float zz = (EERIEMouseButton & 1) ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
+		if(zz < 0.2f) {
+			fl->type = 2;
+			fl->size = rnd() * 42.f + 42.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else if(zz < 0.5f) {
+			fl->type = 3;
+			fl->size = rnd() * 52.f + 16.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else {
+			fl->type = 1;
+			fl->size = (rnd() * 24.f + 32.f) * sm;
+			fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+		}
+	} else {
+		fl->type = (rnd() > 0.8f) ? 1 : 4;
+		fl->size = (rnd() * 38.f + 64.f) * sm;
+		fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+	}
+	
+	fl->dynlight = -1;
+	fl->move = OPIPOrgb;
+	
+	for(long kk = 0; kk < 3; kk++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j == -1 || arxtime.is_paused() || rnd() >= 0.5f) {
+			continue;
+		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		pd->special = FADE_IN_AND_OUT;
+		pd->zdec = 0;
+		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
+		pd->move = Vec3f(0.f, 5.f, 0.f);
+		pd->scale = Vec3f::repeat(-2.f);
+		pd->timcreation = long(arxtime);
+		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
+		pd->tc = fire2;
+		if(kk == 1) {
+			pd->move.y = 4.f; 
+			pd->siz = 1.5f;
+		} else {
+			pd->siz = 1.f + rnd();
+		}
+		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
+		pd->fparam = 1.2f;
+		pd->type = PARTICLE_2D;
 	}
 }
 
