@@ -1509,69 +1509,60 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 	
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Render(EERIE_CAMERA * cam) 
-{
-	if (!ACTIVEBKG) return;
-
+void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
+	
+	if(!ACTIVEBKG) {
+		return;
+	}
+	
 	TreatBackgroundActions();
-
-	if 	(ParticleCount==0) return;
-
-	long xx,yy;
-	unsigned  long tim;
+	
+	if(ParticleCount == 0) {
+		return;
+	}
+	
+	long xx, yy;
 	long framediff;
 	long framediff2;
 	long t;
-	TexturedVertex in,inn,out;
+	TexturedVertex in, inn, out;
 	Color color;
-	float siz,siz2,r;
+	float siz, siz2, r;
 	float val;
 	float fd;
 	float rott;
 	
-	tim = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'	
+	unsigned  long tim = (unsigned long)arxtime;
 	
 	GRenderer->SetCulling(Renderer::CullNone);
-
 	GRenderer->SetFogColor(Color::none);
-
-	TextureContainer * tc=NULL;
-	long pcc=ParticleCount;
-
+	
+	TextureContainer * tc = NULL;
+	long pcc = ParticleCount;
+	
 	for(size_t i = 0; i < MAX_PARTICLES; i++) {
-		PARTICLE_DEF * part=&particle[i];
-
-		if (part->exist) 
-		{
-			framediff=part->timcreation+part->tolive-tim;
-			framediff2=tim-part->timcreation;	
-
-			if (framediff2 < (long)part->delay) continue;
-
-			if (part->delay>0)
-			{
+		PARTICLE_DEF * part = &particle[i];
+		if(part->exist) {
+			
+			framediff = part->timcreation+part->tolive - tim;
+			framediff2 = tim-part->timcreation;
+			
+			if(framediff2 < (long)part->delay) {
+				continue;
+			}
+			
+			if(part->delay > 0) {
 				part->timcreation+=part->delay;
 				part->delay=0;
-
-				if ((part->special & DELAY_FOLLOW_SOURCE)  && (part->sourceionum>=0) && (entities[part->sourceionum]))
-				{
-					part->ov.x = part->source->x; 
-					part->ov.y = part->source->y; 
-					part->ov.z = part->source->z; 
-					Entity * target=entities[part->sourceionum];
-					Vec3f vector;
-					vector.x=part->ov.x-target->pos.x;
-					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
-					vector.z=part->ov.z-target->pos.z;
+				if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum >= 0
+				   && entities[part->sourceionum]) {
+					part->ov = *part->source;
+					Entity * target = entities[part->sourceionum];
+					Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 					vector.normalize();
-
-					part->move.x = vector.x * 18 + rnd() - 0.5f; 
-					part->move.y = vector.y * 5 + rnd() - 0.5f; 
-					part->move.z = vector.z * 18 + rnd() - 0.5f; 
+					part->move = vector * Vec3f(18.f, 5.f, 18.f) + randomVec(-0.5f, 0.5f);
 					
-				}				
-
+				}
 				continue;
 			}
 
