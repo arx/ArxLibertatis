@@ -1521,12 +1521,10 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 		return;
 	}
 	
-	long t;
 	TexturedVertex in, inn, out;
 	Color color;
-	float siz, siz2, r;
+	float siz, siz2;
 	float val;
-	float fd;
 	float rott;
 	
 	unsigned long tim = (unsigned long)arxtime;
@@ -1612,100 +1610,73 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				}
 			}
 			
-			
 			if((part->special & FIRE_TO_SMOKE2)
-			   && framediff2 > long(part->tolive - (part->tolive >> 2))) {
+			   && framediff2 > long(part->tolive - (part->tolive / 4))) {
 				
-				part->special&=~FIRE_TO_SMOKE2;
-				int j=ARX_PARTICLES_GetFree();
-
-				if(j>=0)
-				{
+				part->special &= ~FIRE_TO_SMOKE2;
+				int j = ARX_PARTICLES_GetFree();
+				if(j >= 0) {
+					
+					particle[j] = particle[i];
+					
 					ParticleCount++;
-					PARTICLE_DEF * pd=&particle[j];
-					particle[j]=particle[i]; 
-					pd->exist=1;
-					pd->zdec=0;
-					pd->special|=SUBSTRACT;					
-					pd->ov.x=part->oldpos.x;
-					pd->ov.y=part->oldpos.y;
-					pd->ov.z=part->oldpos.z;
-					pd->timcreation=tim;
-					pd->tc = tzupouf; 
-					pd->scale.x*=4.f;
-					pd->scale.y*=4.f;
-					pd->scale.z*=4.f;
-
-					if (pd->scale.x<0.f) pd->scale.x*=-1.f;
-
-					if (pd->scale.y<0.f) pd->scale.y*=-1.f;
-
-					if (pd->scale.z<0.f) pd->scale.z*=-1.f;
-
-					pd->rgb = Color3f::white; 
-					pd->move *= (1.f/2);
-					pd->siz *= (1.f/3);
+					PARTICLE_DEF * pd = &particle[j];
+					pd->exist = 1;
+					
+					pd->zdec = 0;
+					pd->special |= SUBSTRACT;
+					pd->ov = part->oldpos;
+					pd->timcreation = tim;
+					pd->tc = tzupouf;
+					pd->scale *= 4.f;
+					if(pd->scale.x < 0.f) {
+						pd->scale.x *= -1.f;
+					}
+					if(pd->scale.y < 0.f) {
+						pd->scale.y *= -1.f;
+					}
+					if(pd->scale.z < 0.f) {
+						pd->scale.z *= -1.f;
+					}
+					pd->rgb = Color3f::white;
+					pd->move *= 0.5f;
+					pd->siz *= 1.f / 3;
 				}
 			}
 			
-			val=(part->tolive-framediff)*( 1.0f / 100 );
+			val = (part->tolive - framediff) * 0.01f;
 			
-			if ((part->special & FOLLOW_SOURCE) && (part->sourceionum>=0) && (entities[part->sourceionum]))
-			{
-				inn.p.x=in.p.x=part->source->x;
-				inn.p.y=in.p.y=part->source->y;
-				inn.p.z=in.p.z=part->source->z;
-			}
-			else if ((part->special & FOLLOW_SOURCE2) && (part->sourceionum>=0) && (entities[part->sourceionum]))
-			{
-				inn.p.x=in.p.x=part->source->x+part->move.x*val;
-				inn.p.y=in.p.y=part->source->y+part->move.y*val;
-				inn.p.z=in.p.z=part->source->z+part->move.z*val;
-			}
-			else
-			{
-				inn.p.x=in.p.x=part->ov.x+part->move.x*val;
-				inn.p.y=in.p.y=part->ov.y+part->move.y*val;
-				inn.p.z=in.p.z=part->ov.z+part->move.z*val;
-			}
-
-			if (part->special & GRAVITY)
-			{
-				inn.p.y += 0.98f * 1.5f * val * val;
-				in.p.y=inn.p.y;
+			if((part->special & FOLLOW_SOURCE) && part->sourceionum >= 0
+			   && entities[part->sourceionum]) {
+				inn.p = in.p = *part->source;
+			} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum >= 0
+			          && entities[part->sourceionum]) {
+				inn.p = in.p = *part->source + part->move * val;
+			} else {
+				inn.p = in.p = part->ov + part->move * val;
 			}
 			
-			if (part->special & PARTICLE_NOZBUFFER) 
-			{
+			if(part->special & GRAVITY) {
+				in.p.y = inn.p.y = inn.p.y + 1.47f * val * val;
+			}
+			
+			if(part->special & PARTICLE_NOZBUFFER) {
 				GRenderer->SetRenderState(Renderer::DepthTest, false);
-			}
-			else
-			{
+			} else {
 				GRenderer->SetRenderState(Renderer::DepthTest, true);
 			}
-
-			if (part->special & FADE_IN_AND_OUT) 
-			{
-				t=part->tolive>>1;
-
-				if (framediff2<=t)
-				{
-					r=((float)framediff2/(float)t);
+			
+			float fd = float(framediff2) / float(part->tolive);
+			float r = 1.f - fd;
+			if(part->special & FADE_IN_AND_OUT) {
+				long t = part->tolive / 2;
+				if(framediff2 <= t) {
+					r = float(framediff2) / float(t);
+				} else {
+					r = 1.f - float(framediff2 - t) / float(t);
 				}
-				else 
-				{
-					fd=((float)(framediff2-t)/(float)t);
-					r=1.f-fd;
-				}
-
-				fd=((float)framediff2/(float)part->tolive);
 			}
-			else
-			{
-				fd=((float)framediff2/(float)part->tolive);
-				r=1.f-fd;
-			}
-
+			
 			if (!(part->type & PARTICLE_2D))
 			{
 				EERIE_SPHERE sp;
