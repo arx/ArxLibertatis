@@ -21,6 +21,7 @@
 #define ARX_GRAPHICS_COLOR_H
 
 #include <limits>
+#include <algorithm>
 
 #include "platform/Platform.h"
 
@@ -228,5 +229,24 @@ const Color4<T> Color4<T>::none(Color3<T>::black, T(0));
 typedef Color3<float> Color3f;
 typedef Color4<float> Color4f;
 typedef Color4<u8> Color;
+
+template <typename T>
+Color4<T> componentwise_min(Color4<T> c0, Color4<T> c1) {
+	return Color4<T>(std::min(c0.r, c1.r), std::min(c0.g, c1.g), std::min(c0.b, c1.b),
+	                 std::min(c0.a, c1.a));
+}
+template <typename T>
+Color4<T> componentwise_max(Color4<T> c0, Color4<T> c1) {
+	return Color4<T>(std::max(c0.r, c1.r), std::max(c0.g, c1.g), std::max(c0.b, c1.b),
+	                 std::max(c0.a, c1.a));
+}
+template <typename T>
+Color3<T> componentwise_min(Color3<T> c0, Color3<T> c1) {
+	return Color3<T>(std::min(c0.r, c1.r), std::min(c0.g, c1.g), std::min(c0.b, c1.b));
+}
+template <typename T>
+Color3<T> componentwise_max(Color3<T> c0, Color3<T> c1) {
+	return Color3<T>(std::max(c0.r, c1.r), std::max(c0.g, c1.g), std::max(c0.b, c1.b));
+}
 
 #endif // ARX_GRAPHICS_COLOR_H

@@ -64,6 +64,11 @@ inline float rnd() {
 	return rand() * (1.0f / RAND_MAX);
 }
 
+inline Vec3f randomVec(float min, float max) {
+	float range = max - min;
+	return Vec3f(rnd() * range + min, rnd() * range + min, rnd() * range + min);
+}
+
 //Approximative Methods
 #define EEcos(val)  (float)cos((float)val)
 #define EEsin(val)  (float)sin((float)val)

@@ -63,6 +63,10 @@ public:
 	 */
 	Vector3(T pX, T pY, T pZ) : x(pX), y(pY), z(pZ) { }
 	
+	static Vector3 repeat(T value) {
+		return Vector3(value, value, value);
+	}
+	
 	/*!
 	 * Copy constructor.
 	 * @param other A vector to be copied.
@@ -368,6 +372,7 @@ public:
 	static const Vector3 Y_AXIS; //!< The Y axis.
 	static const Vector3 Z_AXIS; //!< The Z axis.
 	static const Vector3 ZERO; //!< A null vector.
+	static const Vector3 ONE; //!< A (1, 1, 1) vector.
 	
 };
 
@@ -376,6 +381,7 @@ template<class T> const Vector3<T> Vector3<T>::X_AXIS(T(1), T(0), T(0));
 template<class T> const Vector3<T> Vector3<T>::Y_AXIS(T(0), T(1), T(0));
 template<class T> const Vector3<T> Vector3<T>::Z_AXIS(T(0), T(0), T(1));
 template<class T> const Vector3<T> Vector3<T>::ZERO(T(0), T(0), T(0));
+template<class T> const Vector3<T> Vector3<T>::ONE(T(1), T(1), T(1));
 
 template<class T>
 inline T dist(const Vector3<T> & a, const Vector3<T> & b) {
