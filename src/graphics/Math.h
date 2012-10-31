@@ -64,6 +64,12 @@ inline float rnd() {
 	return rand() * (1.0f / RAND_MAX);
 }
 
+/*!
+ * Generate a random vertor with independently unform distributed components.
+ *
+ * @param min minimum value for all components
+ * @param max maximum value for all components
+ */
 inline Vec3f randomVec(float min, float max) {
 	float range = max - min;
 	return Vec3f(rnd() * range + min, rnd() * range + min, rnd() * range + min);

@@ -675,59 +675,47 @@ void MakeCoolFx(Vec3f * pos) {
 	ARX_BOOMS_Add(pos,1);
 }
 
-//-----------------------------------------------------------------------------
-void MakePlayerAppearsFX(Entity * io)
-{
-	if (io)
-	{
-		MakeCoolFx(&io->pos);		
-		MakeCoolFx(&io->pos);		
-		AddRandomSmoke(io,30);
-		ARX_PARTICLES_Add_Smoke(&io->pos,1 | 2,20); // flag 1 = randomize pos
-	}
+void MakePlayerAppearsFX(Entity * io) {
+	MakeCoolFx(&io->pos);
+	MakeCoolFx(&io->pos);
+	AddRandomSmoke(io, 30);
+	ARX_PARTICLES_Add_Smoke(&io->pos, 1 | 2, 20); // flag 1 = randomize pos
 }
 
-//-----------------------------------------------------------------------------
-void AddRandomSmoke(Entity * io,long amount)
-{
-	if (!io) return;
-
-	while (amount--)
-	{
-		long num = Random::get(0, (io->obj->vertexlist.size()>>2)-1);
-		num=(num<<2)+1;
-
-			long j=ARX_PARTICLES_GetFree();
-
-			if (	(j!=-1)
-				&&	(!arxtime.is_paused())	)
-			{
-				ParticleCount++;
-				PARTICLE_DEF * pd=&particle[j];
-				pd->exist		=	true;
-				pd->zdec		=	0;
-				pd->ov.x		=	io->obj->vertexlist3[num].v.x+rnd()*10.f-5.f;
-				pd->ov.y		=	io->obj->vertexlist3[num].v.y+rnd()*10.f-5.f;
-				pd->ov.z		=	io->obj->vertexlist3[num].v.z+rnd()*10.f-5.f;
-				pd->siz			=	rnd()*8.f;
-
-				if (pd->siz<4.f) pd->siz=4.f;
-
-				pd->scale.x		=	10.f;
-				pd->scale.y		=	10.f;
-				pd->scale.z		=	10.f;
-			pd->timcreation	=	(long)arxtime;
-				pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
-				pd->tolive		=	Random::get(900, 1300);
-				pd->move.x		=	0.25f-0.5f*rnd();
-				pd->move.y		=	-1.f*rnd()+0.3f;
-				pd->move.z		=	0.25f-0.5f*rnd();
-				pd->rgb = Color3f(.3f, .3f, .34f);
-				pd->tc			=	smokeparticle;//tc2;
-				pd->fparam		=	0.001f;//-rnd()*0.0002f;
-			}
-		}
+void AddRandomSmoke(Entity * io, long amount) {
+	
+	if(!io) {
+		return;
 	}
+	
+	for(long i = 0; i < amount; i++) {
+		
+		long j = ARX_PARTICLES_GetFree();
+		if(j == -1 || arxtime.is_paused()) {
+			break;
+		}
+		
+		ParticleCount++;
+		PARTICLE_DEF * pd=&particle[j];
+		pd->exist = true;
+		
+		long vertex = Random::get(0, io->obj->vertexlist.size());
+		pd->zdec = 0;
+		pd->ov = io->obj->vertexlist3[vertex].v + randomVec(-5.f, 5.f);
+		pd->siz = rnd() * 8.f;
+		if(pd->siz < 4.f) {
+			pd->siz = 4.f;
+		}
+		pd->scale = Vec3f::repeat(10.f);
+		pd->timcreation = long(arxtime);
+		pd->special = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
+		pd->tolive = Random::get(900, 1300);
+		pd->move = Vec3f(0.25f - 0.5f * rnd(), -1.f * rnd() + 0.3f, 0.25f - 0.5f * rnd());
+		pd->rgb = Color3f(.3f, .3f, .34f);
+		pd->tc = smokeparticle;
+		pd->fparam = 0.001f;
+	}
+}
 
 // flag 1 = randomize pos
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb) {
