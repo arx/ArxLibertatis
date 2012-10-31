@@ -754,72 +754,64 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 }
 
 extern long cur_mr;
-//-----------------------------------------------------------------------------
-void ManageTorch()
-{
-	EERIE_LIGHT * el=&DynLight[0];
-	
-	if (SHOW_TORCH) 
-	{
-		float rr=rnd();
-		el->pos.x = player.pos.x; 
-		el->pos.y=player.pos.y;
-		el->pos.z = player.pos.z; 
-		el->intensity=1.6f;
-		el->fallstart=280.f+rr*20.f;
-		el->fallend = el->fallstart + 280.f; 
-		el->exist=1;	
-		el->rgb = Color3f(Project.torch.r - rr * .1f, Project.torch.g - rr * .1f, Project.torch.b - rr * .1f);
-		el->duration=0;
-		el->extras=0;		
-	}
-	else if (cur_mr==3)
-	{		
-		el->pos.x = player.pos.x;
-		el->pos.y=player.pos.y;
-		el->pos.z = player.pos.z; 
-		el->intensity=1.8f;
-		el->fallstart=480.f;
-		el->fallend = el->fallstart + 480.f; 
-		el->exist=1;	
-		el->rgb = Color3f(1.f, .5f, .8f);
-		el->duration=0;
-		el->extras=0;		
-	}
-	else 
-	{
-		if (flarenum == 0) 
-			el->exist=0;
-		else 
-		{
-			float rr=rnd();
-			long count=0;
 
-			for (long i = 0; i < MAX_FLARES; i++)
-			{
-				if (flare[i].exist)
-				{
-					if (flare[i].flags==0) count++;
+void ManageTorch() {
+	
+	EERIE_LIGHT * el = &DynLight[0];
+	
+	if(SHOW_TORCH) {
+		
+		float rr = rnd();
+		el->pos = player.pos;
+		el->intensity = 1.6f;
+		el->fallstart = 280.f + rr * 20.f;
+		el->fallend = el->fallstart + 280.f;
+		el->exist = 1;
+		el->rgb = Color3f(Project.torch.r - rr * 0.1f, Project.torch.g - rr * 0.1f,
+		                  Project.torch.b - rr * 0.1f);
+		el->duration = 0;
+		el->extras = 0;
+		
+	} else if(cur_mr == 3) {
+		
+		el->pos = player.pos;
+		el->intensity = 1.8f;
+		el->fallstart = 480.f;
+		el->fallend = el->fallstart + 480.f; 
+		el->exist = 1;
+		el->rgb = Color3f(1.f, .5f, .8f);
+		el->duration = 0;
+		el->extras = 0;
+		
+	} else {
+		
+		if(flarenum == 0) {
+			el->exist = 0;
+		} else {
+			
+			long count = 0;
+			for(long i = 0; i < MAX_FLARES; i++) {
+				if(flare[i].exist && flare[i].flags == 0) {
+					count++;
 				}
 			}
-
-			if (count)
-			{
-				el->pos.x=player.pos.x;
-				el->pos.y=player.pos.y;
-				el->pos.z=player.pos.z;
-				el->fallstart=140.f+(float)count*0.333333f+rr*5.f;
-				el->fallend=220.f+(float)count*0.5f+rr*5.f;
-				el->intensity=1.6f;
-				el->exist=1;	
-				el->rgb = Color3f(.01f * count, .009f * count, .008f * count);
+			
+			if(count) {
+				float rr = rnd();
+				el->pos = player.pos;
+				el->fallstart = 140.f + float(count) * 0.333333f + rr * 5.f;
+				el->fallend = 220.f + float(count) * 0.5f + rr * 5.f;
+				el->intensity = 1.6f;
+				el->exist = 1;
+				el->rgb = Color3f(0.01f * count, 0.009f * count, 0.008f * count);
 			}
 		}
 	}
-
+	
 	if(entities.size() > 0 && entities.player() && entities.player()->obj
 	   && entities.player()->obj->fastaccess.head_group_origin > -1) {
-		el->pos.y = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.head_group_origin].v.y;
+		short vertex = entities.player()->obj->fastaccess.head_group_origin;
+		el->pos.y = entities.player()->obj->vertexlist3[vertex].v.y;
 	}
 }
 #define DIV_MAX_FLARELIFE	0.00025f
