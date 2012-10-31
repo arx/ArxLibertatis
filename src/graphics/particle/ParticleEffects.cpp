@@ -923,177 +923,116 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
 	GRenderer->SetRenderState(Renderer::DepthTest, true); 
 }
 
-//-----------------------------------------------------------------------------
-void ARX_BOOMS_ClearAllPolyBooms()
-{
-	for(long i=0;i<MAX_POLYBOOM;i++) polyboom[i].exist=0;
-
-	BoomCount=0;
+void ARX_BOOMS_ClearAllPolyBooms() {
+	for(long i = 0; i < MAX_POLYBOOM; i++) {
+		polyboom[i].exist = 0;
+	}
+	BoomCount = 0;
 }
 
 void ARX_BOOMS_Add(Vec3f * poss,long type) {
+	unsigned long tim = (unsigned long)arxtime;
 	
-	static TextureContainer * tc1=TextureContainer::Load("graph/particles/fire_hit");
-	static TextureContainer * tc2=TextureContainer::Load("graph/particles/boom");
-	long x0,x1;
-	long z0,z1,i,j;
-	unsigned long tim;
-	float ddd;
-	long typ;
-	long dod,n;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
-	tim = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'	
-
-	j=ARX_PARTICLES_GetFree();
-
-	if (j!=-1)
-	{
+	long j = ARX_PARTICLES_GetFree();
+	if(j != -1) {
+		
 		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=true;
-		pd->ov.x=poss->x;
-		pd->ov.y=poss->y;
-		pd->ov.z=poss->z;
-		pd->move.x=3.f-6.f*rnd();
-		pd->move.y=4.f-12.f*rnd();
-		pd->move.z=3.f-6.f*rnd();
-		pd->timcreation=tim;
-		pd->tolive=Random::get(600, 700);
-		pd->tc=tc1;
-		pd->siz=100.f+10.f*rnd();
-
-		if (type==1) pd->siz*=2;
-
-		pd->zdec=1;
-
+		PARTICLE_DEF * pd = &particle[j];
+		pd->exist = true;
+		
+		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
+		
+		pd->ov = *poss;
+		pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+		pd->timcreation = tim;
+		pd->tolive = Random::get(600, 700);
+		pd->tc = tc1;
+		pd->siz = (100.f + 10.f * rnd()) * ((type == 1) ? 2.f : 1.f);
+		pd->zdec = 1;
 		if(type == 1) {
 			pd->rgb = Color3f(.4f, .4f, 1.f);
 		}
-	
-		j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
+		
+		j = ARX_PARTICLES_GetFree();
+		if(j != -1) {
+			
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
 			pd->exist=true;
-			pd->ov.x=poss->x;
-			pd->ov.y=poss->y;
-			pd->ov.z=poss->z;
-			pd->move.x=3.f-6.f*rnd();
-			pd->move.y=4.f-12.f*rnd();
-			pd->move.z=3.f-6.f*rnd();
-			pd->timcreation=tim;
-			pd->tolive=Random::get(600, 700);
-			pd->tc=tc1;
-			pd->siz=40.f+30.f*rnd();
-
-			if (type==1) pd->siz*=2;
-
-			pd->zdec=1;
-
+			
+			pd->ov = *poss;
+			pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+			pd->timcreation = tim;
+			pd->tolive = Random::get(600, 700);
+			pd->tc = tc1;
+			pd->siz = (40.f + 30.f * rnd()) * ((type == 1) ? 2.f : 1.f);
+			pd->zdec = 1;
 			if(type == 1) {
 				pd->rgb = Color3f(.4f, .4f, 1.f);
 			}
 		}
 	}
-
-	typ=0;
-	x0 = poss->x * ACTIVEBKG->Xmul;
-	z0 = poss->z * ACTIVEBKG->Zmul;
-	x1=x0+3;
-	x0=x0-3;
-	z1=z0+3;
-	z0=z0-3;
-
-	if (x0<0) x0=0;
-	else if (x0>=ACTIVEBKG->Xsize) x0=ACTIVEBKG->Xsize-1;
-
-	if (x1<0) x1=0;
-	else if (x1>=ACTIVEBKG->Xsize) x1=ACTIVEBKG->Xsize-1;
-
-	if (z0<0) z0=0;
-	else if (z0>=ACTIVEBKG->Zsize) z0=ACTIVEBKG->Zsize-1;
-
-	if (z1<0) z1=0;
-	else if (z1>=ACTIVEBKG->Zsize) z1=ACTIVEBKG->Zsize-1;
-
-	long nbvert;
-	float temp_u1[4];
-	float temp_v1[4];
 	
-
-	(void)checked_range_cast<short>(z0);
-	(void)checked_range_cast<short>(x0);
-	(void)checked_range_cast<short>(z1);
-	(void)checked_range_cast<short>(x1);
-
-	//We never add BOOMS particle with this flag to prevent any render issues. TO DO check for blending of DrawPrimitve and DrawPrimitiveVB
-	for (j=z0;j<=z1;j++) 		
-	for (i=x0;i<=x1;i++) 
-	{
-		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long l = 0; l < eg->nbpoly; l++) 
-		{
-			ep=&eg->polydata[l];
-
-			if (ep->type & POLY_QUAD) nbvert=4;
-			else nbvert=3;
-
-			if ((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) goto suite;
-
-			dod=1;
-
-			if((ddd = fdist(ep->v[0].p, *poss)) < BOOM_RADIUS) {
-				temp_u1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
-				temp_v1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
-
-				for(long k=1;k<nbvert;k++) {
-					
-					ddd = fdist(ep->v[k].p, *poss);
-
-					if (ddd>BOOM_RADIUS) dod=0;
-					else 
-					{
-						temp_u1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
-						temp_v1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
-					}
-				}
-
-				if (dod) 
-				{
-					n=ARX_BOOMS_GetFree();
-
-					if (n>=0) 
-					{
-						BoomCount++;
-						POLYBOOM * pb=&polyboom[n];
-						pb->type=(short)typ;
-						pb->exist=1;
-						pb->ep=ep;
-						pb->tc=tc2;
-						pb->tolive=10000;
-						pb->timecreation=tim;
-
-						pb->tx = static_cast<short>(i);
-						pb->tz = static_cast<short>(j);
-
-
-						for (int k=0;k<nbvert;k++) 
-						{
-							pb->u[k]=temp_u1[k];
-							pb->v[k]=temp_v1[k];
-						}
-
-						pb->nbvert=(short)nbvert;
-					}
+	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
+	
+	// TODO was F2L at some point - should this be rounded?
+	long x0 = long(poss->x * ACTIVEBKG->Xmul) - 3;
+	long z0 = long(poss->z * ACTIVEBKG->Zmul) - 3;
+	long x1 = x0 + 6;
+	long z1 = z0 + 6;
+	x0 = clamp(x0, 0l, ACTIVEBKG->Xsize - 1l);
+	x1 = clamp(x1, 0l, ACTIVEBKG->Xsize - 1l);
+	z0 = clamp(z0, 0l, ACTIVEBKG->Zsize - 1l);
+	z1 = clamp(z1, 0l, ACTIVEBKG->Zsize - 1l);
+	
+	for(long j = z0; j <= z1; j++) for(long i = x0; i <= x1;i++) {
+		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
+		for(long l = 0; l < eg.nbpoly; l++) {
+			EERIEPOLY * ep = &eg.polydata[l];
+			
+			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) {
+				continue;
+			}
+			
+			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			
+			float temp_uv1[4];
+			
+			bool dod = true;
+			for(long k = 1; k < nbvert; k++) {
+				float ddd = fdist(ep->v[k].p, *poss);
+				if(ddd > BOOM_RADIUS) {
+					dod = false;
+					break;
+				} else {
+					temp_uv1[k] = 0.5f - ddd / BOOM_RADIUS * 0.5f;
 				}
 			}
-
-			suite:
-				;
+			if(!dod) {
+				continue;
+			}
+			
+			long n = ARX_BOOMS_GetFree();
+			if(n < 0) {
+				continue;
+			}
+			
+			BoomCount++;
+			POLYBOOM * pb = &polyboom[n];
+			pb->exist = 1;
+			
+			pb->type = 0;
+			pb->ep = ep;
+			pb->tc = tc2;
+			pb->tolive = 10000;
+			pb->timecreation = tim;
+			pb->tx = short(i);
+			pb->tz = short(j);
+			for(int k = 0; k < nbvert; k++) {
+				pb->v[k] = pb->u[k] = temp_uv1[k];
+			}
+			pb->nbvert = short(nbvert);
+			
 		}
 	}
 }
