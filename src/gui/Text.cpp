@@ -74,92 +74,108 @@ Font * hFontCredits = NULL;
 Font * hFontInGame = NULL;
 Font * hFontInGameNote = NULL;
 
-//-----------------------------------------------------------------------------
-void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, Color col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
-{
+void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
+                                  const Rect & rect, Color col, long * textHeight = 0,
+                                  long * numChars = 0, bool computeOnly = false) {
+	
 	std::string::const_iterator itLastLineBreak = text.begin();
 	std::string::const_iterator itLastWordBreak = text.begin();
 	std::string::const_iterator it = text.begin();
 	
-	int maxLineWidth = (_rRect.right == Rect::Limits::max() ? std::numeric_limits<int>::max() : _rRect.width());
+	int maxLineWidth;
+	if(rect.right == Rect::Limits::max()) {
+		maxLineWidth = std::numeric_limits<int>::max();
+	} else {
+		maxLineWidth = rect.width();
+	}
 	arx_assert(maxLineWidth > 0);
-	int penY = _rRect.top;
-
-	if(textHeight)
+	int penY = rect.top;
+	
+	if(textHeight) {
 		*textHeight = 0;
-
-	if(numChars)
+	}
+	
+	if(numChars) {
 		*numChars = 0;
-
+	}
+	
 	// Ensure we can at least draw one line...
-	if(penY + pFont->GetLineHeight() > _rRect.bottom)
+	if(penY + font->GetLineHeight() > rect.bottom) {
 		return;
-
-	for(it = text.begin(); it != text.end(); ++it)
-	{
-		bool bLineBreak = false;
-
+	}
+	
+	for(it = text.begin(); it != text.end(); ++it) {
+		
 		// Line break ?
-		if((*it == '\n') || (*it == '*'))
-		{
-			bLineBreak = true;
-		}
-		else
-		{
+		bool isLineBreak = false;
+		if(*it == '\n' || *it == '*') {
+			isLineBreak = true;
+		} else {
+			
 			// Word break ?
-			if((*it == ' ') || (*it == '\t'))
-			{
+			if(*it == ' ' || *it == '\t') {
 				itLastWordBreak = it;
 			}
-
+			
 			// Check length of string up to this point
-			Vec2i size = pFont->GetTextSize(itLastLineBreak, it+1);
-			if(size.x > maxLineWidth)	// Too long ?
-			{
-				bLineBreak = true;		// Draw a line from the last line break up to the last word break
-				it = itLastWordBreak;
-			}			
+			Vec2i size = font->GetTextSize(itLastLineBreak, it + 1);
+			if(size.x > maxLineWidth) { // Too long ?
+				isLineBreak = true;
+				if(itLastWordBreak > itLastLineBreak) {
+					// Draw a line from the last line break up to the last word break
+					it = itLastWordBreak;
+				} else if(it == itLastLineBreak) {
+					// Not enough space to render even one character!
+					break;
+				} else {
+					// The current word is too long to fit on a line, force a line break
+				}
+			}
 		}
 		
-		// If we have to draw a line 
+		// If we have to draw a line
 		//  OR
 		// This is the last character of the string
-		if(bLineBreak || (it+1 == text.end()))
-		{
+		if(isLineBreak || it + 1 == text.end()) {
+			
 			std::string::const_iterator itTextStart = itLastLineBreak;
 			std::string::const_iterator itTextEnd;
-
-			if(bLineBreak)
-				itTextEnd = it;
-			else
-				itTextEnd = it+1;
-
-			// Draw the line
-			if(!computeOnly)
-				pFont->Draw(_rRect.left, penY, itTextStart, itTextEnd, col);
 			
-			itLastLineBreak = it+1;
-
-			penY += pFont->GetLineHeight();
-
+			itTextEnd = (isLineBreak) ? it : it + 1;
+			
+			// Draw the line
+			if(!computeOnly) {
+				font->Draw(rect.left, penY, itTextStart, itTextEnd, col);
+			}
+			
+			if(it != text.end()) {
+				itLastLineBreak = it + 1;
+			}
+			
+			penY += font->GetLineHeight();
+			
 			// Validate that the new line will fit inside the rect...
-			if(penY + pFont->GetLineHeight() > _rRect.bottom)
+			if(penY + font->GetLineHeight() > rect.bottom) {
 				break;
+			}
 		}
 	}
-
+	
 	// Return text height
-	if(textHeight)
-		*textHeight = penY - _rRect.top;
-
+	if(textHeight) {
+		*textHeight = penY - rect.top;
+	}
+	
 	// Return num characters displayed
-	if(numChars)
+	if(numChars) {
 		*numChars = it - text.begin();
+	}
 }
 
-long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const string & text, const Rect & _rRect) {
+long ARX_UNICODE_ForceFormattingInRect(Font * font, const string & text,
+                                       const Rect & rect) {
 	long numChars;
-	ARX_UNICODE_FormattingInRect(pFont, text, _rRect, Color::none, 0, &numChars, true);
+	ARX_UNICODE_FormattingInRect(font, text, rect, Color::none, 0, &numChars, true);
 	return numChars;
 }
 
