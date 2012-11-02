@@ -1291,45 +1291,32 @@ float CPortal::Render()
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->ResetTexture(0);
 	GRenderer->drawIndexed(Renderer::TriangleList, this->sphered3d, this->spherenbpt, this->sphereind, this->spherenbfaces * 3);
-
-	//affichage eclair
-	this->DrawAllEclair();
-
-	//affichage des particules à l'interieur
-	if (rnd() > .25f)
-	{
-		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist = 1;
-			particle[j].zdec = 0;
-
-			float a = rnd() * 360.f;
-			float b = rnd() * 360.f;
-			float rr = this->r * (rnd() + .25f) * 0.05f;
-
-			particle[j].ov.x	=	this->pos.x;
-			particle[j].ov.y	=	this->pos.y;
-			particle[j].ov.z	=	this->pos.z;
-			particle[j].move.x	=	rr * EEsin(radians(a)) * EEcos(radians(b));
-			particle[j].move.y	=	rr * EEcos(radians(a));
-			particle[j].move.z	=	rr * EEsin(radians(a)) * EEsin(radians(b));
-			particle[j].siz		=	10.f;
-			particle[j].tolive	=	Random::get(1000, 2000);
-			particle[j].scale.x	=	1.f;
-			particle[j].scale.y	=	1.f;
-			particle[j].scale.z	=	1.f;
-			particle[j].timcreation	=	(long)arxtime;
-			particle[j].tc		=	tp;
-			particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			particle[j].fparam	=	0.0000001f;
-			particle[j].rgb = Color3f::white;
+	
+	// affichage eclair
+	DrawAllEclair();
+	
+	// affichage des particules à l'interieur
+	if(rnd() > .25f) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(pd) {
+			pd->zdec = 0;
+			float a = radians(rnd() * 360.f);
+			float b = radians(rnd() * 360.f);
+			float rr = r * (rnd() + .25f) * 0.05f;
+			pd->ov = pos;
+			pd->move = Vec3f(EEsin(a) * EEcos(b), EEcos(a), EEsin(a) * EEsin(b)) * rr;
+			pd->siz = 10.f;
+			pd->tolive = Random::get(1000, 2000);
+			pd->scale = Vec3f::ONE;
+			pd->tc = tp;
+			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+			pd->fparam = 0.0000001f;
+			pd->rgb = Color3f::white;
 		}
 	}
-
-	//affichage de la sphere front
+	
+	// affichage de la sphere front
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->ResetTexture(0);
 	GRenderer->drawIndexed(Renderer::TriangleList, this->sphered3d, this->spherenbpt, this->sphereind, this->spherenbfaces * 3);
