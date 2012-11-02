@@ -271,34 +271,22 @@ void ARX_MISSILES_Update()
 					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 					break;
 				}
-
-				long j = ARX_PARTICLES_GetFree();
-
-				if (j != -1 && !arxtime.is_paused())
-				{
-					ParticleCount++;
-					particle[j].exist = true;
-					particle[j].zdec = 0;
-					particle[j].ov.x = pos.x;
-					particle[j].ov.y = pos.y;
-					particle[j].ov.z = pos.z;
-					particle[j].move.x = missiles[i].velocity.x + 3.0f - 6.0F * rnd();
-					particle[j].move.y = missiles[i].velocity.y + 4.0F - 12.0F * rnd();
-					particle[j].move.z = missiles[i].velocity.z + 3.0F - 6.0F * rnd();
-					particle[j].timcreation = tim;
-					particle[j].tolive = Random::get(500, 1000);
-					particle[j].tc = tc;
-					particle[j].siz = 12.0F * (float)(missiles[i].tolive - framediff3) * ( 1.0f / 4000 );
-					particle[j].scale.x = 15.0F + rnd() * 5.0F;
-					particle[j].scale.y = 15.0F + rnd() * 5.0F;
-					particle[j].scale.z = 15.0F + rnd() * 5.0F;
-					particle[j].special = FIRE_TO_SMOKE;
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
+					pd->ov = pos;
+					pd->move = missiles[i].velocity;
+					pd->move += Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+					pd->tolive = Random::get(500, 1000);
+					pd->tc = tc;
+					pd->siz = 12.f * float(missiles[i].tolive - framediff3) * (1.f / 4000);
+					pd->scale = randomVec(15.f, 20.f);
+					pd->special = FIRE_TO_SMOKE;
 				}
-
-				missiles[i].lastpos.x = pos.x;
-				missiles[i].lastpos.y = pos.y;
-				missiles[i].lastpos.z = pos.z;
-
+				
+				missiles[i].lastpos = pos;
+				
 				break;
 			}
 		}
