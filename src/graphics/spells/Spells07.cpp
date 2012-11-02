@@ -860,51 +860,37 @@ float CConfuse::Render()
 	stitescale.y = 1;
 	stitescale.z = 1;
 	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
-	long j = -1;
-
-	for (i = 0; i < 6; i++)
-	{
-		j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist = 1;
-			particle[j].zdec = 0;
-
-			float ang				=	radians(rnd() * 360.f);
-			float rad				=	rnd() * 15.f;
-			particle[j].ov.x		=	stitepos.x - EEsin(ang) * rad;
-			particle[j].ov.y		=	stitepos.y;
-			particle[j].ov.z		=	stitepos.z + EEcos(ang) * rad;
-			particle[j].move.x		=	0;
-			particle[j].move.y		=	rnd() * 3 + 1;
-			particle[j].move.z		=	0;
-			particle[j].siz			=	0.25f;
-			particle[j].tolive		=	Random::get(2300, 3300);
-			particle[j].scale.x		=	1;
-			particle[j].scale.y		=	1;
-			particle[j].scale.z		=	1;
-			particle[j].timcreation	=	(long)arxtime;
-			particle[j].tc			=	tex_p1;
-			particle[j].special		=	PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			particle[j].fparam		=	0.0000001f;
-			float t1				=	rnd() * 0.4f + 0.4f;
-			float t2				=	rnd() * 0.6f + 0.2f;
-			float t3				=	rnd() * 0.4f + 0.4f;
-
-			while ((EEfabs(t1 - t2) > 0.3f) && (EEfabs(t2 - t3) > 0.3f))
-			{
-				t1 = rnd() * 0.4f + 0.4f;
-				t2 = rnd() * 0.6f + 0.2f;
-				t3 = rnd() * 0.4f + 0.4f;
-			}
-
-			particle[j].rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
+	
+	for(i = 0; i < 6; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
+		
+		pd->zdec = 0;
+		float ang = radians(rnd() * 360.f);
+		float rad = rnd() * 15.f;
+		pd->ov = stitepos + Vec3f(-EEsin(ang) * rad, 0.f, EEcos(ang) * rad);
+		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
+		pd->siz = 0.25f;
+		pd->tolive = Random::get(2300, 3300);
+		pd->scale = Vec3f::ONE;
+		pd->tc = tex_p1;
+		pd->special = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+		              | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		float t1 = rnd() * 0.4f + 0.4f;
+		float t2 = rnd() * 0.6f + 0.2f;
+		float t3 = rnd() * 0.4f + 0.4f;
+		while(EEfabs(t1 - t2) > 0.3f && EEfabs(t2 - t3) > 0.3f) {
+			t1 = rnd() * 0.4f + 0.4f;
+			t2 = rnd() * 0.6f + 0.2f;
+			t3 = rnd() * 0.4f + 0.4f;
+		}
+		pd->rgb = Color3f(t1 * 0.8f, t2 * 0.8f, t3 * 0.8f);
 	}
-
+	
 	if (this->lLightId == -1)
 		this->lLightId = GetFreeDynLight();
 
@@ -1322,80 +1308,44 @@ float CIceField::Render()
 		else
 			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
-
-	//----------------
-
-	for (i = 0; i < iMax * 0.5f; i++)
-	{
+	
+	for(i = 0; i < iMax * 0.5f; i++) {
+		
 		float t = rnd();
-
-		if (t < 0.01f)
-		{
-			float x = tPos[i].x;
-			float y = tPos[i].y;
-			float z = tPos[i].z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x		=	x + 5.f - rnd() * 10.f;
-				particle[j].ov.y		=	y + 5.f - rnd() * 10.f;
-				particle[j].ov.z		=	z + 5.f - rnd() * 10.f;
-				particle[j].move.x		=	2.f - 4.f * rnd();
-				particle[j].move.y		=	2.f - 4.f * rnd();
-				particle[j].move.z		=	2.f - 4.f * rnd();
-				particle[j].siz			=	20.f;
-				particle[j].tolive		=	Random::get(2000, 6000);
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc			=	tex_p2;
-				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+		if(t < 0.01f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
+				pd->move = randomVec(-2.f, 2.f);
+				pd->siz = 20.f;
+				pd->tolive = Random::get(2000, 6000);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p2;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-		}
-		else if (t > 0.095f)
-		{
-			float x = tPos[i].x;
-			float y = tPos[i].y - 50;
-			float z = tPos[i].z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x		=	x + 5.f - rnd() * 10.f;
-				particle[j].ov.y		=	y + 5.f - rnd() * 10.f;
-				particle[j].ov.z		=	z + 5.f - rnd() * 10.f;
-				particle[j].move.x		=	0;
-				particle[j].move.y		=	2.f - 4.f * rnd();
-				particle[j].move.z		=	0;
-				particle[j].siz			=	0.5f;
-				particle[j].tolive		=	Random::get(2000, 6000);
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation = (long)arxtime;
-				particle[j].tc			=	tex_p1;
-				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+			
+		} else if (t > 0.095f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
+				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
+				pd->siz = 0.5f;
+				pd->tolive = Random::get(2000, 6000);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p1;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
+			
 		}
 	}
-
-	//----------------
-
+	
 	return 1;
 }
