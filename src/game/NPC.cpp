@@ -4105,71 +4105,55 @@ void ManageIgnition(Entity * io)
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 	        &&	(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
-
-	if ((io->ioflags & IO_FIERY)
-	        &&	(!(io->type_flags & OBJECT_TYPE_BOW))
-	        && ((io->show == SHOW_FLAG_IN_SCENE) || (io == plw)))
-	{
+	
+	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
+	   && (io->show == SHOW_FLAG_IN_SCENE || io == plw)) {
+		
 		float p = io->ignition = 25.f;
-
-		while (p > 0.f)
-		{
+		while(p > 0.f) {
 			p -= 6.f;
-
-			if ((io) && (io->obj) && !io->obj->facelist.empty())
-			{
-				Vec3f	pos;
-				long		notok	=	10;
-				size_t num = 0;
-
-				while (notok-- > 0)
-				{
-					num = Random::get(0, io->obj->facelist.size() - 1);
-
-					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
-					
-					notok = -1;
-				}
-
-				// TODO when is this no true?
-				if (notok < 0)
-				{
-					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-
-					for (long nn = 0 ; nn < 1 ; nn++)
-					{
-						long j = ARX_PARTICLES_GetFree();
-
-						if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
-						{
-							ParticleCount++;
-							PARTICLE_DEF * pd	=	&particle[j];
-							pd->exist			=	true;
-							pd->zdec			=	0;
-							pd->ov = pos;
-							pd->move.x			=	(2.f - 4.f * rnd());
-							pd->move.y			=	(2.f - 22.f * rnd());
-							pd->move.z			=	(2.f - 4.f * rnd());
-							pd->siz				=	7.f;
-							pd->tolive			=	Random::get(500, 1500);
-							pd->special			=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-							pd->tc				=	fire2;//tc;
-							pd->fparam			=	0.1f - rnd() * 0.2f;
-							pd->scale.x			=	-8.f;
-							pd->scale.y			=	-8.f;
-							pd->scale.z			=	-8.f;
-							pd->timcreation		=	(long)arxtime;
-							pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-							//pd->delay=nn*180;
-						}
-					}
-
-				}
+			
+			if(!io || !io->obj || io->obj->facelist.empty()) {
+				break;
 			}
+			
+			long notok = 10;
+			size_t num = 0;
+			while(notok-- > 0) {
+				num = Random::get(0, io->obj->facelist.size() - 1);
+				if(io->obj->facelist[num].facetype & POLY_HIDE) {
+					continue;
+				}
+				notok = -1;
+			}
+			
+			if(notok >= 0) {
+				continue;
+			}
+			
+			if(rnd() >= 0.4f) {
+				continue;
+			}
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->zdec = 0;
+			pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+			pd->siz = 7.f;
+			pd->tolive = Random::get(500, 1500);
+			pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+			pd->tc = fire2;
+			pd->fparam = 0.1f - rnd() * 0.2f;
+			pd->scale = Vec3f::repeat(-8.f);
+			pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		}
-	}
-	else if (io->obj && (io->obj->fastaccess.fire >= 0) && (io->ignition > 0.f))
-	{
+		
+	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
+		
 		io->ignition = 25.f;
 		io->durability -= FrameDiff * ( 1.0f / 10000 );
 
@@ -4200,110 +4184,96 @@ void ManageIgnition(Entity * io)
 			ARX_INTERACTIVE_DestroyIO(io);
 			return;
 		}
-
+		
 		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
-
-		for (long nn = 0; nn < 2; nn++)
-		{
-			long j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
-			{
-				ParticleCount++;
-				PARTICLE_DEF * pd	=	&particle[j];
-				pd->exist		=	true;
-				pd->zdec		=	0;
-				pd->ov = pos;
-				pd->move.x		=	(2.f - 4.f * rnd());
-				pd->move.y		=	(2.f - 22.f * rnd());
-				pd->move.z		=	(2.f - 4.f * rnd());
-				pd->siz			=	7.f;
-				pd->tolive		=	Random::get(500, 1500);
-				pd->special		=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-				pd->tc			=	fire2;
-				pd->fparam		=	0.1f - rnd() * 0.2f;
-				pd->scale.x		=	-8.f;
-				pd->scale.y		=	-8.f;
-				pd->scale.z		=	-8.f;
-				pd->timcreation	=	(long)arxtime;
-				pd->rgb = Color3f(.71f, .43f, .29f);
-				pd->delay = nn * 2;
+		
+		for(long nn = 0; nn < 2; nn++) {
+			
+			if(rnd() >= 0.4f) {
+				continue;
 			}
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->zdec = 0;
+			pd->ov = pos;
+			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+			pd->siz = 7.f;
+			pd->tolive = Random::get(500, 1500);
+			pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+			pd->tc = fire2;
+			pd->fparam = 0.1f - rnd() * 0.2f;
+			pd->scale = Vec3f::repeat(-8.f);
+			pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+			pd->delay = nn * 2;
 		}
-	}
-	else
-	{
-		io->ignition -= framedelay * ( 1.0f / 100 );
-
-		if ((!io) || (!io->obj)) return;
-
-		float p = io->ignition * framedelay * ( 1.0f / 1000 ) * io->obj->facelist.size() * ( 1.0f / 1000 );
-
-		if (p > 5.f)
-			p = 5.f;
-
-		while (p > 0.f)
-		{
+		
+	} else {
+		
+		io->ignition -= framedelay * 0.01f;
+		if(!io->obj) {
+			return;
+		}
+		
+		float p = io->ignition * framedelay * 0.001f * io->obj->facelist.size() * 0.001f;
+		p = std::min(p, 5.f);
+		while(p > 0.f) {
 			p -= 0.5f;
-
-			if ((io) && (io->obj) && !io->obj->facelist.empty())
-			{
-				Vec3f	pos;
-				long		notok	=	10;
-				size_t num = 0;
-
-				while (notok-- > 0)
-				{
-					num = Random::get(0, io->obj->facelist.size() - 1);
-
-					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
-
-					notok = -1;
-				}
-
-				// TODO how can this not be true?
-				if (notok < 0)
-				{
-					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-
-					for (long nn = 0 ; nn < 6 ; nn++)
-					{
-						long j = ARX_PARTICLES_GetFree();
-
-						if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
-						{
-							ParticleCount++;
-							PARTICLE_DEF * pd	=	&particle[j];
-							pd->exist			=	true;
-							pd->zdec			=	0;
-							pd->ov = pos;
-							pd->move.x			=	(2.f - 4.f * rnd());
-							pd->move.y			=	(2.f - 22.f * rnd());
-							pd->move.z			=	(2.f - 4.f * rnd());
-							pd->siz				=	7.f;
-							pd->tolive			=	Random::get(500, 1500);
-							pd->special			=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-							pd->tc				=	fire2;//tc;
-							pd->fparam			=	0.1f - rnd() * 0.2f;
-							pd->scale.x			=	-8.f;
-							pd->scale.y			=	-8.f;
-							pd->scale.z			=	-8.f;
-							pd->timcreation		=	(long)arxtime;
-							pd->rgb = Color3f(.71f, .43f, .29f);
-							pd->delay			=	nn * 180;
-						}
-					}
-
-				}
+			
+			if(io->obj->facelist.empty()) {
+				break;
 			}
+			
+			long notok = 10;
+			size_t num = 0;
+			while(notok-- > 0) {
+				num = Random::get(0, io->obj->facelist.size() - 1);
+				if(io->obj->facelist[num].facetype & POLY_HIDE) {
+					continue;
+				}
+				notok = -1;
+			}
+			
+			if(notok >= 0) {
+				continue;
+			}
+			
+			for(long nn = 0 ; nn < 6 ; nn++) {
+				
+				if(rnd() >= 0.4f) {
+					continue;
+				}
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
+				}
+				
+				pd->zdec = 0;
+				pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+				pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+				pd->siz = 7.f;
+				pd->tolive = Random::get(500, 1500);
+				pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+				pd->tc = fire2;
+				pd->fparam = 0.1f - rnd() * 0.2f;
+				pd->scale = Vec3f::repeat(-8.f);
+				pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+				pd->delay = nn * 180;
+			}
+			
 		}
+		
 	}
-
+	
 	ManageIgnition_2(io);
 }
-//-------------------------------------------------------------------------
-void ManageIgnition_2(Entity * io)
-{
+
+void ManageIgnition_2(Entity * io) {
+	
 	if (!io) return;
 
 	if (io->ignition > 0.f)
