@@ -1005,24 +1005,28 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 							pos = Thrown[i].obj->vertexlist3[it->vid[0]].v;
 
 							for(long nn = 0; nn < 2; nn++) {
-								long j = ARX_PARTICLES_GetFree();
-								if(j != -1 && !arxtime.is_paused() && rnd() < 0.4f) {
-									ParticleCount++;
-									PARTICLE_DEF * pd = &particle[j];
-									pd->exist = true;
-									pd->zdec = 0;
-									pd->ov = pos;
-									pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
-									pd->siz = 7.f;
-									pd->tolive = Random::get(500, 1500);
-									pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-									pd->tc = fire2;
-									pd->fparam = 0.1f - rnd() * 0.2f;
-									pd->scale = Vec3f(-8.f, -8.f, -8.f);
-									pd->timcreation = (long)arxtime;
-									pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-									pd->delay = nn * 180;
+								
+								if(rnd() >= 0.4f) {
+									continue;
 								}
+								
+								PARTICLE_DEF * pd = createParticle();
+								if(!pd) {
+									break;
+								}
+								
+								pd->zdec = 0;
+								pd->ov = pos;
+								pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(),
+								                 2.f - 4.f * rnd());
+								pd->siz = 7.f;
+								pd->tolive = Random::get(500, 1500);
+								pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+								pd->tc = fire2;
+								pd->fparam = 0.1f - rnd() * 0.2f;
+								pd->scale = Vec3f::repeat(-8.f);
+								pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+								pd->delay = nn * 180;
 							}
 
 						}
