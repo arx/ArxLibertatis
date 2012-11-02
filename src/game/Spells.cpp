@@ -4783,23 +4783,17 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			for(long n = 0; n < 12; n++) {
 				
-				long j = ARX_PARTICLES_GetFree();
-				if(j == -1 || arxtime.is_paused()) {
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
 					continue;
 				}
 				
-				ParticleCount++;
-				PARTICLE_DEF * pd = &particle[j];
-				pd->exist = true;
 				pd->zdec = 0;
-				Vec3f rand(5.f - rnd() * 10.f, 5.f - rnd() * 10.f, 5.f - rnd() * 10.f);
-				pd->ov = eyeball.pos + rand;
-				Vec3f move(2.f - 4.f * rnd(), 2.f - 4.f * rnd(), 2.f - 4.f * rnd());
-				pd->move = move;
+				pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
+				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 28.f;
 				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f(12.f, 12.f, 12.f);
-				pd->timcreation = spells[i].lastupdate;
+				pd->scale = Vec3f::repeat(12.f);
 				pd->tc = tc4;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
@@ -5704,43 +5698,37 @@ void ARX_SPELLS_Kill(long i) {
 
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			break;
-		//----------------------------------------------------------------------------
-		case SPELL_FLYING_EYE :
-		{
+		
+		case SPELL_FLYING_EYE : {
+			
 			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_OUT);
 			eyeball.exist = -100;
-
-			for (long n=0;n<12;n++)
-			{
-				long j = ARX_PARTICLES_GetFree();
-
-				if ((j!=-1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=true;
-					pd->zdec=0;					
- 
-					pd->ov.x=eyeball.pos.x+5.f-rnd()*10.f;
-					pd->ov.y=eyeball.pos.y+5.f-rnd()*10.f;
-					pd->ov.z=eyeball.pos.z+5.f-rnd()*10.f;
-					pd->move.x=2.f-4.f*rnd();
-					pd->move.y=2.f-4.f*rnd();
-					pd->move.z=2.f-4.f*rnd();
-					pd->siz=28.f;
-					pd->tolive=Random::get(2000, 6000);
-					pd->scale = Vec3f(12.f, 12.f, 12.f);
-					pd->timcreation=spells[i].lastupdate;
-					pd->tc=tc4;
-					pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					pd->fparam=0.0000001f;
-					pd->rgb = Color3f(0.7f, 0.7f, 1.f);
+			
+			for(long n = 0; n < 12; n++) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
 				}
+				
+				pd->zdec = 0;
+				pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
+				pd->move = randomVec(-2.f, 2.f);
+				pd->siz = 28.f;
+				pd->tolive = Random::get(2000, 6000);
+				pd->scale = Vec3f::repeat(12.f);
+				pd->timcreation = spells[i].lastupdate;
+				pd->tc = tc4;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-
+			
 			config.input.mouseLookToggle = bOldLookToggle; 
+			
 			break;
 		}
+		
 		//----------------------------------------------------------------------------
 		// Level 06	
 		//---------------------------------------LEVEL1
@@ -6920,8 +6908,9 @@ void ARX_SPELLS_Update()
 				}
 			}
 			break;
-			case SPELL_FIRE_FIELD:
-			{
+			
+			case SPELL_FIRE_FIELD: {
+				
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
 				if (pCSpellFX)
@@ -6949,66 +6938,51 @@ void ARX_SPELLS_Update()
 						el->duration = 600;
 						el->extras=0;
 					}
-
- 
-
-					if (VisibleSphere(pf->pos.x,pf->pos.y-120.f,pf->pos.z,350.f))
-					{
+					
+					if(VisibleSphere(pf->pos.x, pf->pos.y - 120.f, pf->pos.z, 350.f)) {
+						
 						pCSpellFX->Render();
-
-
 						float fDiff = FrameDiff / 8.f;
 						int nTime = checked_range_cast<int>(fDiff);
-
 						
-						for (long nn=0;nn<=nTime+1;nn++)
-						{
-							long j=ARX_PARTICLES_GetFree();
-
-							if ((j!=-1) && (!arxtime.is_paused()) )
-							{
-								ParticleCount++;
-								PARTICLE_DEF * pd=&particle[j];
-								pd->exist=true;
-								pd->zdec=0;
-								float sy = rnd() * (PI * 2.f) - PI;
-								float sx = EEsin(sy);
-								float sz = EEcos(sy);
-								sy=EEsin(sy); 
-								pd->ov.x=pf->pos.x+120.f*sx*rnd();
-								pd->ov.y=pf->pos.y+15.f*sy*rnd();
-								pd->ov.z=pf->pos.z+120.f*sz*rnd();
-								
-								pd->move.x=(2.f-4.f*rnd());
-								pd->move.y=(1.f-8.f*rnd());
-								pd->move.z=(2.f-4.f*rnd());
-								
-								pd->siz			=	7.f;
-								pd->tolive		=	Random::get(500, 1500);
-								pd->special		=	0;
-								pd->tc			=	fire2;						
-										pd->special		|=	ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
-								pd->fparam		=	0.1f-rnd()*0.2f;
-								pd->scale.x		=	-8.f;
-								pd->scale.y		=	-8.f;
-								pd->scale.z		=	-8.f;
-										pd->timcreation	=	(long)arxtime;
-								pd->rgb = Color3f::white;
-								long j2			=	ARX_PARTICLES_GetFree();
-
-								if (j2!=-1)
-								{
-									ParticleCount++;
-									PARTICLE_DEF * pd2=&particle[j2];
-									memcpy(pd2,pd,sizeof(PARTICLE_DEF));
-									pd2->delay=Random::get(60, 210);
-								}
+						for(long nn=0;nn<=nTime+1;nn++) {
+							
+							PARTICLE_DEF * pd = createParticle();
+							if(!pd) {
+								break;
 							}
+							
+							pd->zdec = 0;
+							float t = rnd() * (PI * 2.f) - PI;
+							float ts = EEsin(t);
+							float tc = EEcos(t);
+							pd->ov = pf->pos + Vec3f(120.f * ts, 15.f * ts, 120.f * tc) * randomVec();
+							pd->move = Vec3f(2.f - 4.f * rnd(), 1.f - 8.f * rnd(), 2.f - 4.f * rnd());
+							pd->siz = 7.f;
+							pd->tolive = Random::get(500, 1500);
+							pd->tc = fire2;
+							pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
+							pd->fparam = 0.1f - rnd() * 0.2f;
+							pd->scale.x = -8.f;
+							pd->scale.y = -8.f;
+							pd->scale.z = -8.f;
+							pd->rgb = Color3f::white;
+							
+							PARTICLE_DEF * pd2 = createParticle();
+							if(!pd2) {
+								break;
+							}
+							
+							*pd2 = *pd;
+							pd2->delay = Random::get(60, 210);
 						}
+						
 					}
 				}
+				
+				break;
 			}
-			break;
+			
 			case SPELL_ICE_FIELD:
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
