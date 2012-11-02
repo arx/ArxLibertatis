@@ -44,6 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells10.h"
 
+#include <algorithm>
+
 #include "core/GameTime.h"
 
 #include "game/EntityManager.h"
@@ -297,79 +299,41 @@ float CControlTarget::Render()
 			p0 = 0.5f * (val - pathways[kpprec].p.z) ;
 			p1 = 0.5f * (pathways[kpsuivsuiv].p.z - pathways[kp].p.z) ;
 			v.z = f0 * pathways[kp].p.z + f1 * val + f2 * p0 + f3 * p1 ;
-
-			newpos.x = v.x;
-			newpos.y = v.y;
-			newpos.z = v.z;
-
-			if (!((fTrail - (i * n + toto)) > 70))
-			{
-				float c = 1.0f - ((fTrail - (i * n + toto)) / 70.0f);
-
-				int j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
-					particle[j].ov.x		= lastpos.x;
-					particle[j].ov.y		= lastpos.y;
-					particle[j].ov.z		= lastpos.z;
-					particle[j].move.x		= 0;
-					particle[j].move.y		= 0;
-					particle[j].move.z		= 0;
-					particle[j].siz			= 5 * c;
-					particle[j].tolive		= Random::get(10, 110);
-					particle[j].scale.x 	= 1;
-					particle[j].scale.y 	= 1;
-					particle[j].scale.z 	= 1;
-					particle[j].timcreation = (long)arxtime;
-					particle[j].tc			= tex_mm;
-					particle[j].special 	= FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam		= 0.0000001f;
-					particle[j].rgb = Color3f::gray(c);
+			
+			newpos = v;
+			
+			if(fTrail - (i * n + toto) <= 70) {
+				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
+					pd->ov = lastpos;
+					pd->move = Vec3f::ZERO;
+					pd->siz = 5 * c;
+					pd->tolive = Random::get(10, 110);
+					pd->scale = Vec3f::ONE;
+					pd->tc = tex_mm;
+					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::gray(c);
 				}
 			}
-
-			float nx = lastpos.x;
-			float ny = lastpos.y;
-			float nz = lastpos.z;
-
-			lastpos.x = newpos.x;
-			lastpos.y = newpos.y;
-			lastpos.z = newpos.z;
-
-			newpos.x = nx;
-			newpos.y = ny;
-			newpos.z = nz;
+			
+			std::swap(lastpos, newpos);
 			++arx_check_init;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist	= 1;
-				particle[j].zdec	= 0;
-
-				particle[j].ov.x	= lastpos.x;
-				particle[j].ov.y	= lastpos.y;
-				particle[j].ov.z	= lastpos.z;
-				particle[j].move.x	= 0;
-				particle[j].move.y	= 0;
-				particle[j].move.z	= 0;
-				particle[j].siz		= 5;
-				particle[j].tolive	= Random::get(10, 110);
-				particle[j].scale.x = 1;
-				particle[j].scale.y = 1;
-				particle[j].scale.z = 1;
-				particle[j].timcreation = (long)arxtime;
-				particle[j].tc		= tex_mm;
-				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam	= 0.0000001f;
-				particle[j].rgb = Color3f::gray(0.1f);
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = lastpos;
+				pd->move = Vec3f::ZERO;
+				pd->siz = 5;
+				pd->tolive = Random::get(10, 110);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_mm;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f::gray(0.1f);
 			}
 		}
 	}
