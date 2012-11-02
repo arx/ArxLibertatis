@@ -129,27 +129,21 @@ void ReleaseAnimFromIO(Entity * io, long num)
 
 void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	
-	long j = ARX_PARTICLES_GetFree();
+	arxtime.update();
 	
-	if(j != -1 && !arxtime.is_paused()) {
-		ParticleCount++;
-		particle[j].exist		=	true;
-		particle[j].zdec		=	0;
-		particle[j].ov.x		=	x;
-		particle[j].ov.y		=	y;
-		particle[j].ov.z		=	z;
-		particle[j].move.x		=	0.f;
-		particle[j].move.y		=	0.f;
-		particle[j].move.z		=	0.f;
-		particle[j].scale.x		=	0.f;
-		particle[j].scale.y		=	0.f;
-		particle[j].scale.z		=	0.f;
-		particle[j].timcreation = checked_range_cast<long>(arxtime.get_updated());
-		particle[j].tolive		=	tim;
-		particle[j].tc			=	EERIE_DRAW_sphere_particle;
-		particle[j].siz			=	siz;
-		particle[j].rgb = color.to<float>();
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
 	}
+	
+	pd->zdec = 0;
+	pd->ov = Vec3f(x, y, z);
+	pd->move = Vec3f::ZERO;
+	pd->scale = Vec3f::ZERO;
+	pd->tolive = tim;
+	pd->tc = EERIE_DRAW_sphere_particle;
+	pd->siz = siz;
+	pd->rgb = color.to<float>();
 }
 
 void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
