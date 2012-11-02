@@ -148,7 +148,6 @@ struct FLARETC
 	TextureContainer * shine[11];
 };
 
-//-----------------------------------------------------------------------------
 #define MAX_FOG 100
 #define FOG_DIRECTIONAL 1
 #define MAX_POLYBOOM 4000
@@ -156,8 +155,6 @@ struct FLARETC
 #define MAX_FLARES 300
 #define MAX_FLARELIFE 4000
 #define FLARE_MUL 2.f
-
-const unsigned long MAX_PARTICLES(2200);
 
 enum ARX_PARTICLES_TYPE_FLAG {
 	FIRE_TO_SMOKE       = 0x00000001,
@@ -198,14 +195,12 @@ extern FLARES flare[MAX_FLARES];
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
-extern PARTICLE_DEF particle[MAX_PARTICLES];
 extern long BoomCount;
 extern POLYBOOM polyboom[MAX_POLYBOOM];
 extern FOG_DEF fogs[MAX_FOG];
 extern TextureContainer * fire2;
 extern long NewSpell;
 extern FLARETC flaretc;
-extern long ParticleCount;
 
 void MagFX(const Vec3f & pos);
 void RestoreAllLightsInitialStatus();
@@ -229,6 +224,7 @@ void MakeCoolFx(Vec3f * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
 
 PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
+long getParticleCount();
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();

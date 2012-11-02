@@ -97,7 +97,6 @@ using std::string;
 using std::vector;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
-extern long ParticleCount;
 
 static void EERIE_PORTAL_Release();
 

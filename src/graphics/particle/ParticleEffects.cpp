@@ -96,8 +96,11 @@ struct OBJFX {
 	long dynlight;
 };
 
+static const size_t MAX_PARTICLES = 2200;
+static long ParticleCount = 0;
+static PARTICLE_DEF particle[MAX_PARTICLES];
+
 FLARETC			flaretc;
-PARTICLE_DEF	particle[MAX_PARTICLES];
 FLARES			flare[MAX_FLARES];
 static TextureContainer * bloodsplat[6];
 TextureContainer * water_splat[3];
@@ -112,7 +115,6 @@ static OBJFX objfx[MAX_OBJFX];
 long			BoomCount=0;
  
 long			flarenum=0;
-long			ParticleCount=0;
 short			OPIPOrgb=0;
 short			PIPOrgb=0;
 static short shinum = 1;
@@ -126,6 +128,10 @@ long ARX_BOOMS_GetFree() {
 	}
 
 	return -1;
+}
+
+long getParticleCount() {
+	return ParticleCount;
 }
 
 void LaunchDummyParticle() {
@@ -1104,7 +1110,7 @@ void UpdateObjFx() {
 
 void ARX_PARTICLES_FirstInit() {
 	
-	smokeparticle=TextureContainer::Load("graph/particles/smoke");
+	smokeparticle = TextureContainer::Load("graph/particles/smoke");
 	
 	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
 	// this may also apply to other textures

@@ -157,7 +157,6 @@ static void ApplyCurSOS();
  
  
 extern long FistParticles;
-extern long ParticleCount;
 extern long sp_max;
 short uw_mode=0;
 static short uw_mode_pos=0;

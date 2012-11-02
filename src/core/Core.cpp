@@ -3574,7 +3574,7 @@ void ShowInfoText() {
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
 	mainApp->OutputText( 70, 48, tex );
 	sprintf(tex,"AnchorPos x:%6.0f y:%6.0f z:%6.0f TIME %lds Part %ld - %d",player.pos.x-Mscenepos.x,player.pos.y+player.size.y-Mscenepos.y,player.pos.z-Mscenepos.z
-		,GAT,ParticleCount,player.doingmagic);
+		,GAT, getParticleCount(),player.doingmagic);
 	mainApp->OutputText( 70, 64, tex );
 
 	if (player.onfirmground==0) mainApp->OutputText( 200, 280, "OFFGRND" );

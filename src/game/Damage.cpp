@@ -99,7 +99,6 @@ using std::max;
 extern long REFUSE_GAME_RETURN;
 
 DAMAGE_INFO	damages[MAX_DAMAGES];
-extern long ParticleCount;
 extern Vec3f PUSH_PLAYER_FORCE;
 
 float Blood_Pos = 0.f;
