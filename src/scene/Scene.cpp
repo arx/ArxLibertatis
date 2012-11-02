@@ -396,75 +396,50 @@ bool VisibleSphere(float x, float y, float z, float radius) {
 	return true;
 }
 bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum);
-bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
-{
-	Vec3f point;
-	point.x=bbox->min.x;
-	point.y=bbox->min.y;
-	point.z=bbox->min.z;
 
-	if (!IsInFrustrum(&point,frustrum))
-	{
-		Vec3f point;
-		point.x=bbox->max.x;
-		point.y=bbox->min.y;
-		point.z=bbox->min.z;
-
-		if (!IsInFrustrum(&point,frustrum))
-		{
-			Vec3f point;
-			point.x=bbox->max.x;
-			point.y=bbox->max.y;
-			point.z=bbox->min.z;
-
-			if (!IsInFrustrum(&point,frustrum))
-			{
-				Vec3f point;
-				point.x=bbox->min.x;
-				point.y=bbox->max.y;
-				point.z=bbox->min.z;
-
-				if (!IsInFrustrum(&point,frustrum))
-				{
-					Vec3f point;
-					point.x=bbox->min.x;
-					point.y=bbox->min.y;
-					point.z=bbox->max.z;
-
-					if (!IsInFrustrum(&point,frustrum))
-					{
-						Vec3f point;
-						point.x=bbox->max.x;
-						point.y=bbox->min.y;
-						point.z=bbox->max.z;
-
-						if (!IsInFrustrum(&point,frustrum))
-						{
-							Vec3f point;
-							point.x=bbox->max.x;
-							point.y=bbox->max.y;
-							point.z=bbox->max.z;
-
-							if (!IsInFrustrum(&point,frustrum))
-							{
-								Vec3f point;
-								point.x=bbox->min.x;
-								point.y=bbox->max.y;
-								point.z=bbox->max.z;
-
-								if (!IsInFrustrum(&point,frustrum))
-								{
-									return	false;
-								}
-							}
-						}
-					}	
-				}
-			}
-		}
-	}	
-
-	return true;
+bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox, EERIE_FRUSTRUM * frustrum) {
+	
+	Vec3f point = bbox->min;
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->max.x, bbox->min.y, bbox->min.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->max.x, bbox->max.y, bbox->min.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->min.x, bbox->max.y, bbox->min.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->min.x, bbox->min.y, bbox->max.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->max.x, bbox->min.y, bbox->max.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = bbox->max;
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->min.x, bbox->max.y, bbox->max.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	return	false;
 }
 
 bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)

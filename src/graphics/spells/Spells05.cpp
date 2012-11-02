@@ -331,28 +331,18 @@ CRuneOfGuarding::~CRuneOfGuarding()
 		srune = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
-{
+
+void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
+	
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
-
-	eSrc.x = _eSrc.x;
-	eSrc.y = _eSrc.y;
-	eSrc.z = _eSrc.z;
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	eSrc = _eSrc;
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
-
+	
 	lLightId = GetFreeDynLight();
-
-	if (lLightId != -1)
-	{
+	if(lLightId != -1) {
 		long id = lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 0.7f + 2.3f;
@@ -361,21 +351,18 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
 		DynLight[id].rgb.r = 1.0f;
 		DynLight[id].rgb.g = 0.2f;
 		DynLight[id].rgb.b = 0.2f;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50;
-		DynLight[id].pos.z = eSrc.z;
+		DynLight[id].pos = eSrc - Vec3f(0.f, 50.f, 0.f);
 		DynLight[id].time_creation = (unsigned long)(arxtime);
 		DynLight[id].duration = 200;
 	}
 }
 
-//---------------------------------------------------------------------
-void CRuneOfGuarding::Update(unsigned long _ulTime)
-{
+void CRuneOfGuarding::Update(unsigned long _ulTime) {
+	
 	ulCurrentTime += _ulTime;
-
+	
 	float fa = 1.0f - rnd() * 0.15f;
-
+	
 	if (lLightId != -1)
 	{
 		long id = lLightId;
@@ -579,12 +566,8 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	e.y += 0.f;
 
-	pathways[0].p.x = eSrc.x;
-	pathways[0].p.y = eSrc.y;
-	pathways[0].p.z = eSrc.z;
-	pathways[9].p.x = e.x;
-	pathways[9].p.y = e.y;
-	pathways[9].p.z = e.z;
+	pathways[0].p = eSrc;
+	pathways[9].p = e;
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
 
 	if (0)
@@ -858,16 +841,14 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	(void)_afBeta;
 
 	float afBeta = 0.f;
-
-	spells[spellinstance].hand_group = entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;
-
-	if (spells[spellinstance].hand_group != -1)
-	{
-		spells[spellinstance].hand_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
-		spells[spellinstance].hand_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
-		spells[spellinstance].hand_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
+	
+	Entity * caster = entities[spells[spellinstance].caster];
+	spells[spellinstance].hand_group = caster->obj->fastaccess.primary_attach;
+	if(spells[spellinstance].hand_group != -1) {
+		long group = spells[spellinstance].hand_group;
+		spells[spellinstance].hand_pos = caster->obj->vertexlist3[group].v;
 	}
-
+	
 	if (spells[spellinstance].caster == 0) // player
 	{
 		afBeta = player.angle.b;
@@ -1066,39 +1047,32 @@ void CRepelUndead::Create(Vec3f aeSrc, float afBeta)
 	bDone = true;
 }
 
-//---------------------------------------------------------------------
-void CRepelUndead::Update(unsigned long _ulTime)
-{
+void CRepelUndead::Update(unsigned long _ulTime) {
+	
 	ulCurrentTime += _ulTime;
-
-	if (spellinstance < 0) return;
-
-	eSrc.x = entities[spells[spellinstance].target]->pos.x;
-	eSrc.y = entities[spells[spellinstance].target]->pos.y;
-	eSrc.z = entities[spells[spellinstance].target]->pos.z;
-
-	if (spells[spellinstance].target == 0)
+	if(spellinstance < 0) {
+		return;
+	}
+	
+	eSrc = entities[spells[spellinstance].target]->pos;
+	
+	if(spells[spellinstance].target == 0) {
 		fBeta = player.angle.b;
-	else
+	} else {
 		fBeta = entities[spells[spellinstance].target]->angle.b;
+	}
 }
 
-//---------------------------------------------------------------------
-float CRepelUndead::Render()
-{
- 
-
-
-	if (ulCurrentTime >= ulDuration)
-	{
+float CRepelUndead::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	//----------------------------
+	
 	Anglef  eObjAngle;
 	Vec3f  eObjPos;
 	Vec3f  eObjScale;

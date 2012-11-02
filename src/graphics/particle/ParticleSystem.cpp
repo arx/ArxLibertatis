@@ -166,54 +166,35 @@ ParticleSystem::~ParticleSystem()
 	listParticle.clear();
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::SetPos(const Vec3f & _p3)
-{
-	p3Pos.x = _p3.x;
-	p3Pos.y = _p3.y;
-	p3Pos.z = _p3.z;
-
-	if (lLightId != -1)
-	{
-		DynLight[lLightId].pos.x = p3Pos.x;
-		DynLight[lLightId].pos.y = p3Pos.y;
-		DynLight[lLightId].pos.z = p3Pos.z;
+void ParticleSystem::SetPos(const Vec3f & _p3) {
+	
+	p3Pos = _p3;
+	if(lLightId != -1) {
+		DynLight[lLightId].pos = p3Pos;
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::SetColor(float _fR, float _fG, float _fB)
-{
-	if (lLightId != -1)
-	{
-		DynLight[lLightId].rgb.r = _fR;
-		DynLight[lLightId].rgb.g = _fG;
-		DynLight[lLightId].rgb.b = _fB;
+void ParticleSystem::SetColor(float _fR, float _fG, float _fB) {
+	if(lLightId != -1) {
+		DynLight[lLightId].rgb = Color3f(_fR, _fG, _fB);
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::SetParams(const ParticleParams & _pp)
-{
+void ParticleSystem::SetParams(const ParticleParams & _pp) {
+	
 	iParticleNbMax		= _pp.iNbMax;
 	fParticleLife		= _pp.fLife;
 	fParticleLifeRandom = _pp.fLifeRandom;
-
-	p3ParticlePos.x = _pp.p3Pos.x;
-	p3ParticlePos.y = _pp.p3Pos.y;
-	p3ParticlePos.z = _pp.p3Pos.z;
-	p3ParticleDirection.x = _pp.p3Direction.x * ( 1.0f / 10 );
-	p3ParticleDirection.y = _pp.p3Direction.y * ( 1.0f / 10 );
-	p3ParticleDirection.z = _pp.p3Direction.z * ( 1.0f / 10 );
+	
+	p3ParticlePos = _pp.p3Pos;
+	p3ParticleDirection = _pp.p3Direction * 0.1f;
 	fParticleAngle = _pp.fAngle;
 	fParticleSpeed = _pp.fSpeed;
 	fParticleSpeedRandom = _pp.fSpeedRandom;
-	p3ParticleGravity.x = _pp.p3Gravity.x;
-	p3ParticleGravity.y = _pp.p3Gravity.y;
-	p3ParticleGravity.z = _pp.p3Gravity.z;
-
+	p3ParticleGravity = _pp.p3Gravity;
+	
 	fParticleFlash = _pp.fFlash * ( 1.0f / 100 );
-
+	
 	if (_pp.fRotation >= 2)
 	{
 		fParticleRotation = 1.0f / (101 - _pp.fRotation);
@@ -370,12 +351,10 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 	float fAngleX = rnd() * fParticleAngle; //*0.5f;
  
 	Vec3f vv1, vvz;
-	vv1.x = p3ParticleDirection.x;
-	vv1.y = p3ParticleDirection.y;
-	vv1.z = p3ParticleDirection.z;
-
+	vv1 = p3ParticleDirection;
+	
 	// ici modifs ----------------------------------
-
+	
 	vv1.x = 0;
 	vv1.y = -1;
 	vv1.z = 0;
@@ -386,9 +365,7 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 
 	float fSpeed = fParticleSpeed + rnd() * fParticleSpeedRandom;
 
-	pP->p3Velocity.x = vvz.x * fSpeed;
-	pP->p3Velocity.y = vvz.y * fSpeed;
-	pP->p3Velocity.z = vvz.z * fSpeed;
+	pP->p3Velocity = vvz * fSpeed;
 	pP->fSizeStart = fParticleStartSize + rnd() * fParticleStartSizeRandom;
 
 	if (bParticleStartColorRandomLock)
@@ -488,9 +465,7 @@ void ParticleSystem::Update(long _lTime)
 		if (pP->isAlive())
 		{
 			pP->Update(_lTime);
-			pP->p3Velocity.x += p3ParticleGravity.x * fTimeSec;
-			pP->p3Velocity.y += p3ParticleGravity.y * fTimeSec;
-			pP->p3Velocity.z += p3ParticleGravity.z * fTimeSec;
+			pP->p3Velocity += p3ParticleGravity * fTimeSec;
 			iParticleNbAlive ++;
 		}
 		else
@@ -595,20 +570,13 @@ void ParticleSystem::Render() {
 					}
 				}
 			}
-
+			
 			TexturedVertex p3pos;
-			p3pos.p.x = p->p3Pos.x;
-			p3pos.p.y = p->p3Pos.y;
-			p3pos.p.z = p->p3Pos.z;
-
-			if (bParticleFollow)
-			{
-				p3pos.p.x += p3Pos.x;
-				p3pos.p.y += p3Pos.y;
-				p3pos.p.z += p3Pos.z;
+			p3pos.p = p->p3Pos;
+			if(bParticleFollow) {
+				p3pos.p += p3Pos;
 			}
-
-
+			
 			if (fParticleRotation != 0)
 			{
 				float fRot;

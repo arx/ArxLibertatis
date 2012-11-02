@@ -1127,15 +1127,10 @@ void ArxGame::Render() {
 			if (BOW_FOCAL<0) BOW_FOCAL=0;
 		}
 
-		if (eyeball.exist == 2)
-		{
-		subj.d_pos.x=eyeball.pos.x;
-		subj.d_pos.y=eyeball.pos.y;
-		subj.d_pos.z=eyeball.pos.z;
-		subj.d_angle.a=eyeball.angle.a;
-		subj.d_angle.b=eyeball.angle.b;
-		subj.d_angle.g=eyeball.angle.g;
-		EXTERNALVIEW=1;
+		if(eyeball.exist == 2) {
+		subj.d_pos = eyeball.pos;
+		subj.d_angle = eyeball.angle;
+		EXTERNALVIEW = 1;
 	}
 	else if (EXTERNALVIEW)
 	{
@@ -1147,13 +1142,9 @@ void ArxGame::Render() {
 			tt.x=player.pos.x+(float)EEsin(t)*(float)l;
 			tt.y=player.pos.y-50.f;
 			tt.z=player.pos.z-(float)EEcos(t)*(float)l;
-			EERIEPOLY * ep =EECheckInPoly(&tt);
-
-			if (ep)
-			{
-				subj.d_pos.x=tt.x;
-				subj.d_pos.y=tt.y;
-				subj.d_pos.z=tt.z;
+			EERIEPOLY * ep = EECheckInPoly(&tt);
+			if(ep) {
+				subj.d_pos = tt;
 			}
 			else break;
 		}
@@ -1284,17 +1275,13 @@ void ArxGame::Render() {
 		if (conversationcamera.size.b!=0.f)
 			sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
 
-		conversationcamera.pos.x=sourcepos.x;
-		conversationcamera.pos.y=sourcepos.y;
-		conversationcamera.pos.z=sourcepos.z;
+		conversationcamera.pos = sourcepos;
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
-		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-		subj.angle.g=0.f;
-		EXTERNALVIEW=1;
+		subj.pos = conversationcamera.pos;
+		subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
+		subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
+		subj.angle.g = 0.f;
+		EXTERNALVIEW = 1;
 	}
 	else
 	{
@@ -1346,9 +1333,7 @@ void ArxGame::Render() {
 				switch (acs->type)
 				{
 					case ARX_CINE_SPEECH_KEEP: {
-						subj.pos.x=acs->pos1.x;
-						subj.pos.y=acs->pos1.y;
-						subj.pos.z=acs->pos1.z;
+						subj.pos = acs->pos1;
 						subj.angle.a=acs->pos2.x;
 						subj.angle.b=acs->pos2.y;
 						subj.angle.g=acs->pos2.z;
@@ -1365,9 +1350,7 @@ void ArxGame::Render() {
 						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
 						SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-						subj.pos.x=conversationcamera.pos.x;
-						subj.pos.y=conversationcamera.pos.y;
-						subj.pos.z=conversationcamera.pos.z;
+						subj.pos = conversationcamera.pos;
 						subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 						subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 						subj.angle.g=0.f;
@@ -1426,24 +1409,13 @@ void ArxGame::Render() {
 						if (ValidIONum(acs->ionum))
 						{
 							Vec3f targetpos;
-							if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
-								|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
-							{
-								conversationcamera.pos.x=acs->pos2.x;
-								conversationcamera.pos.y=acs->pos2.y;
-								conversationcamera.pos.z=acs->pos2.z;
-								targetpos.x=acs->pos1.x;
-								targetpos.y=acs->pos1.y;
-								targetpos.z=acs->pos1.z;
-							}
-							else
-							{
-								conversationcamera.pos.x=acs->pos1.x;
-								conversationcamera.pos.y=acs->pos1.y;
-								conversationcamera.pos.z=acs->pos1.z;
-								targetpos.x=acs->pos2.x;
-								targetpos.y=acs->pos2.y;
-								targetpos.z=acs->pos2.z;
+							if(acs->type == ARX_CINE_SPEECH_CCCLISTENER_L
+							   || acs->type == ARX_CINE_SPEECH_CCCLISTENER_R) {
+								conversationcamera.pos = acs->pos2;
+								targetpos = acs->pos1;
+							} else {
+								conversationcamera.pos = acs->pos1;
+								targetpos = acs->pos2;
 							}
 							
 							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );
@@ -1494,22 +1466,15 @@ void ArxGame::Render() {
 
 		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
 
-		Vec3f targetpos;
-
-		targetpos.x = player.pos.x;
-			targetpos.y = player.pos.y;
-			targetpos.z = player.pos.z;
-
-			long id  = entities.player()->obj->fastaccess.view_attach;
+		Vec3f targetpos = player.pos;
+		
+		long id  = entities.player()->obj->fastaccess.view_attach;
 		long id2 = GetActionPointIdx( entities.player()->obj, "chest2leggings" );
-
-		if (id!=-1)
-		{
-			targetpos.x = entities.player()->obj->vertexlist3[id].v.x;
-			targetpos.y = entities.player()->obj->vertexlist3[id].v.y;
-			targetpos.z = entities.player()->obj->vertexlist3[id].v.z;
+		
+		if(id != -1) {
+			targetpos = entities.player()->obj->vertexlist3[id].v;
 		}
-
+		
 		conversationcamera.pos.x = targetpos.x;
 		conversationcamera.pos.y = targetpos.y - DeadCameraDistance;
 		conversationcamera.pos.z = targetpos.z;

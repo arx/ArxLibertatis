@@ -175,24 +175,12 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 		tfRaysa[i] = 0.4f * rnd();
 		tfRaysb[i] = 0.4f * rnd(); 
 	}
-
-	target.p.x = eSrc.x - 100;
-	target.p.y = eSrc.y;
-	target.p.z = eSrc.z;
-
-	v1a[0].p.x = eSrc.x;
-	v1a[0].p.y = eSrc.y - 100;
-	v1a[0].p.z = eSrc.z;
-	v1a[end].p.x = eSrc.x;
-	v1a[end].p.y = eSrc.y + 100;
-	v1a[end].p.z = eSrc.z;
-
-	v1b[0].p.x = v1a[0].p.x;
-	v1b[0].p.y = v1a[0].p.y;
-	v1b[0].p.z = v1a[0].p.z;
-	v1b[end].p.x = v1a[end].p.x;
-	v1b[end].p.y = v1a[end].p.y;
-	v1b[end].p.z = v1a[end].p.z;
+	
+	target.p = eSrc - Vec3f(100.f, 0.f, 0.f);
+	v1a[0].p = eSrc - Vec3f(0.f, 100.f, 0.f);
+	v1a[end].p = eSrc + Vec3f(0.f, 100.f, 0.f);	
+	v1b[0].p = v1a[0].p;
+	v1b[end].p = v1a[end].p;
 
 	sizeF = 200;
 	Split(v1a, 0, end, 20);
@@ -231,17 +219,11 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 			v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
 		}
 	}
-
-	for (i = 0; i <= end; i++)
-	{
-		va[i].p.x = eSrc.x;
-		va[i].p.y = eSrc.y;
-		va[i].p.z = eSrc.z;
-		vb[i].p.x = eSrc.x;
-		vb[i].p.y = eSrc.y;
-		vb[i].p.z = eSrc.z;
+	
+	for(i = 0; i <= end; i++) {
+		vb[i].p = va[i].p = eSrc;
 	}
-
+	
 	sizeF = 0;
 }
 
@@ -419,16 +401,10 @@ void CSummonCreature::RenderFissure()
 	vr[3].uv.x = 1.0f + fTexWrap;
 	vr[3].uv.y = 0;
 
-	for (i = 0; i < end - 1; i++)
-	{	
-		if (i < fSizeIntro)
-		{
-			vt[0].p.x = va[i].p.x;
-			vt[0].p.y = va[i].p.y;
-			vt[0].p.z = va[i].p.z;
-			vt[1].p.x = va[i+1].p.x;
-			vt[1].p.y = va[i+1].p.y;
-			vt[1].p.z = va[i+1].p.z;
+	for(i = 0; i < end - 1; i++) {
+		if(i < fSizeIntro) {
+			vt[0].p = va[i].p;
+			vt[1].p = va[i + 1].p;
 			vt[2].p.x = va[i].p.x + (va[i].p.x - target.p.x) * 2;
 			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
 			vt[2].p.z = va[i].p.z + (va[i].p.z - target.p.z) * 2;
@@ -453,14 +429,9 @@ void CSummonCreature::RenderFissure()
 			                             &vr[3]);
 		}
 		
-		if (i < fSizeIntro)
-		{
-			vt[0].p.x = vb[i+1].p.x;
-			vt[0].p.y = vb[i+1].p.y;
-			vt[0].p.z = vb[i+1].p.z;
-			vt[1].p.x = vb[i].p.x;
-			vt[1].p.y = vb[i].p.y;
-			vt[1].p.z = vb[i].p.z;
+		if(i < fSizeIntro) {
+			vt[0].p = vb[i + 1].p;
+			vt[1].p = vb[i].p;
 			vt[2].p.x = vb[i+1].p.x + (vb[i+1].p.x - target.p.x) * 2;
 			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
 			vt[2].p.z = vb[i+1].p.z + (vb[i+1].p.z - target.p.z) * 2;
@@ -614,17 +585,13 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	float fCalc = (fd / 900.0f) * iMax;
 
 	iNumber = checked_range_cast<int>(fCalc);
-
+	
 	int end = 40;
-	tv1a[0].p.x = s.x;
-	tv1a[0].p.y = s.y;
-	tv1a[0].p.z = s.z;
-	tv1a[end].p.x = e.x;
-	tv1a[end].p.y = e.y;
-	tv1a[end].p.z = e.z;
-
+	tv1a[0].p = s;
+	tv1a[end].p = e;
+	
 	Split(tv1a, 0, end, 10, 1, 0, 1, 10, 1);
-
+	
 	ParticleParams cp;
 	cp.iNbMax = 250; 
 	cp.fLife = 1000;
@@ -753,10 +720,8 @@ void CIncinerate::Update(unsigned long _ulTime)
 	iMax = (int)((40) * fOneOnDuration * ulCurrentTime); //*2
 
 	if (iMax > 40) iMax = 40;
-
-	et.x = tv1a[iMax].p.x;
-	et.y = tv1a[iMax].p.y;
-	et.z = tv1a[iMax].p.z;
+	
+	et = tv1a[iMax].p;
 	pPSStream.SetPos(et);
 }
 
@@ -767,16 +732,8 @@ float CIncinerate::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	iMax++;
-	
 	for(int i = 0; i < 150 - 1; i++) {
-		Vec3f s, d;
-		s.x = tv1a[i].p.x;
-		s.y = tv1a[i].p.y;
-		s.z = tv1a[i].p.z;
-		d.x = tv1a[i+1].p.x;
-		d.y = tv1a[i+1].p.y;
-		d.z = tv1a[i+1].p.z;
-		EERIEDraw3DLine(s, d, Color::red);
+		EERIEDraw3DLine(tv1a[i].p, tv1a[i + 1].p, Color::red);
 	}
 	
 	GRenderer->SetCulling(Renderer::CullNone);

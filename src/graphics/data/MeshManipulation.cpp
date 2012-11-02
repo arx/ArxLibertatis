@@ -439,18 +439,11 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	}
 
 	// Is the origin of object in obj1 or obj2 ? Retreives it for work object
-	if (IsInSelection(obj1, obj1->origin, tw1) != -1)
-	{
-		work->point0.x = obj2->point0.x;
-		work->point0.y = obj2->point0.y;
-		work->point0.z = obj2->point0.z;
+	if(IsInSelection(obj1, obj1->origin, tw1) != -1) {
+		work->point0 = obj2->point0;
 		work->origin = ObjectAddVertex(work, &obj2vertexlist2[obj2->origin]); 
-	}
-	else
-	{
-		work->point0.x = obj1->point0.x;
-		work->point0.y = obj1->point0.y;
-		work->point0.z = obj1->point0.z;
+	} else {
+		work->point0 = obj1->point0;
 		work->origin = ObjectAddVertex(work, &obj1vertexlist2[obj1->origin]); 
 	}
 
@@ -589,12 +582,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Re-Creating sel_head
 	if (tw == TWEAK_HEAD)
 	{
-		for (size_t l = 0; l < obj2->selections[sel_head2].selected.size(); l++)
-		{
+		for(size_t l = 0; l < obj2->selections[sel_head2].selected.size(); l++) {
 			EERIE_VERTEX temp;
-			temp.v.x = obj2vertexlist2[obj2->selections[sel_head2].selected[l]].v.x;
-			temp.v.y = obj2vertexlist2[obj2->selections[sel_head2].selected[l]].v.y;
-			temp.v.z = obj2vertexlist2[obj2->selections[sel_head2].selected[l]].v.z;
+			temp.v = obj2vertexlist2[obj2->selections[sel_head2].selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if (t != -1)
@@ -606,9 +596,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	else for (size_t l = 0; l < obj1->selections[sel_head1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
-			temp.v.x = obj1vertexlist2[obj1->selections[sel_head1].selected[l]].v.x;
-			temp.v.y = obj1vertexlist2[obj1->selections[sel_head1].selected[l]].v.y;
-			temp.v.z = obj1vertexlist2[obj1->selections[sel_head1].selected[l]].v.z;
+			temp.v = obj1vertexlist2[obj1->selections[sel_head1].selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if (t != -1)
@@ -623,9 +611,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		for (size_t l = 0; l < obj2->selections[sel_torso2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
-			temp.v.x = obj2vertexlist2[obj2->selections[sel_torso2].selected[l]].v.x;
-			temp.v.y = obj2vertexlist2[obj2->selections[sel_torso2].selected[l]].v.y;
-			temp.v.z = obj2vertexlist2[obj2->selections[sel_torso2].selected[l]].v.z;
+			temp.v = obj2vertexlist2[obj2->selections[sel_torso2].selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if (t != -1)
@@ -637,9 +623,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	else for (size_t l = 0; l < obj1->selections[sel_torso1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
-			temp.v.x = obj1vertexlist2[obj1->selections[sel_torso1].selected[l]].v.x;
-			temp.v.y = obj1vertexlist2[obj1->selections[sel_torso1].selected[l]].v.y;
-			temp.v.z = obj1vertexlist2[obj1->selections[sel_torso1].selected[l]].v.z;
+			temp.v = obj1vertexlist2[obj1->selections[sel_torso1].selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if (t != -1)
@@ -654,9 +638,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 		for (size_t l = 0; l < obj2->selections[sel_legs2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
-			temp.v.x = obj2vertexlist2[obj2->selections[sel_legs2].selected[l]].v.x;
-			temp.v.y = obj2vertexlist2[obj2->selections[sel_legs2].selected[l]].v.y;
-			temp.v.z = obj2vertexlist2[obj2->selections[sel_legs2].selected[l]].v.z;
+			temp.v = obj2vertexlist2[obj2->selections[sel_legs2].selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if (t != -1)
@@ -668,9 +650,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	else for (size_t l = 0; l < obj1->selections[sel_legs1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
-			temp.v.x = obj1vertexlist2[obj1->selections[sel_legs1].selected[l]].v.x;
-			temp.v.y = obj1vertexlist2[obj1->selections[sel_legs1].selected[l]].v.y;
-			temp.v.z = obj1vertexlist2[obj1->selections[sel_legs1].selected[l]].v.z;
+			temp.v = obj1vertexlist2[obj1->selections[sel_legs1].selected[l]].v;
 			long t = GetEquivalentVertex(work, &temp);
 
 			if (t != -1)
@@ -691,9 +671,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			for (size_t l = 0; l < obj1->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
-				temp.v.x = obj1vertexlist2[obj1->selections[i].selected[l]].v.x;
-				temp.v.y = obj1vertexlist2[obj1->selections[i].selected[l]].v.y;
-				temp.v.z = obj1vertexlist2[obj1->selections[i].selected[l]].v.z;
+				temp.v = obj1vertexlist2[obj1->selections[i].selected[l]].v;
 				long t = GetEquivalentVertex(work, &temp);
 
 				if (t != -1)
@@ -708,9 +686,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 				for (size_t l = 0; l < obj2->selections[ii].selected.size(); l++)
 				{
 					EERIE_VERTEX temp;
-					temp.v.x = obj2vertexlist2[obj2->selections[ii].selected[l]].v.x;
-					temp.v.y = obj2vertexlist2[obj2->selections[ii].selected[l]].v.y;
-					temp.v.z = obj2vertexlist2[obj2->selections[ii].selected[l]].v.z;
+					temp.v = obj2vertexlist2[obj2->selections[ii].selected[l]].v;
 					long t = GetEquivalentVertex(work, &temp);
 
 					if (t != -1)
@@ -732,9 +708,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			for (size_t l = 0; l < obj2->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
-				temp.v.x = obj2vertexlist2[obj2->selections[i].selected[l]].v.x;
-				temp.v.y = obj2vertexlist2[obj2->selections[i].selected[l]].v.y;
-				temp.v.z = obj2vertexlist2[obj2->selections[i].selected[l]].v.z;
+				temp.v = obj2vertexlist2[obj2->selections[i].selected[l]].v;
 				long t = GetEquivalentVertex(work, &temp);
 
 				if (t != -1)

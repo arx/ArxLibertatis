@@ -1522,20 +1522,14 @@ void ClearSysTextures() {
 
 static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos, Anglef * angle) {
 	
-	Vec3f position;
 	Vec3f vect;
 	Vec3f dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
-	float anglea;
-	float angleb;
-	float velocity;
-
-	position.x=pos->x;
-	position.y=pos->y;
-	position.z=pos->z;
-	anglea=radians(angle->a);
-	angleb=radians(angle->b);
+	
+	Vec3f position = *pos;
+	float anglea = radians(angle->a);
+	float angleb = radians(angle->b);
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
@@ -1547,7 +1541,7 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
 	QuatFromMatrix(quat,mat);
-	velocity=(aimratio+0.3f);
+	float velocity = aimratio + 0.3f;
 
 	if (velocity<0.9f) velocity=0.9f;
 
@@ -2385,10 +2379,8 @@ void ManageCombatModeAnimations()
 								if (id!=-1)
 								{
 									EERIE_SPHERE sphere;
-									sphere.origin.x=io->obj->vertexlist3[id].v.x;
-									sphere.origin.y=io->obj->vertexlist3[id].v.y;
-									sphere.origin.z=io->obj->vertexlist3[id].v.z;
-									sphere.radius=25.f;
+									sphere.origin = io->obj->vertexlist3[id].v;
+									sphere.radius = 25.f;
 
 									if (FistParticles & 2) sphere.radius*=2.f;
 
@@ -2428,10 +2420,8 @@ void ManageCombatModeAnimations()
 								if (id!=-1)
 								{
 									EERIE_SPHERE sphere;
-									sphere.origin.x=io->obj->vertexlist3[id].v.x;
-									sphere.origin.y=io->obj->vertexlist3[id].v.y;
-									sphere.origin.z=io->obj->vertexlist3[id].v.z;
-									sphere.radius=25.f;
+									sphere.origin = io->obj->vertexlist3[id].v;
+									sphere.radius = 25.f;
 
 									if (FistParticles & 2) sphere.radius*=2.f;
 
@@ -3445,22 +3435,21 @@ long DANAE_Manage_Cinematic() {
 		ControlCinematique->DeleteDeviceObjects();
 		arxtime.resume();
 		PLAY_LOADED_CINEMATIC=0;
+		
 		bool bWasBlocked = false;
-
-		if (BLOCK_PLAYER_CONTROLS)
+		if(BLOCK_PLAYER_CONTROLS) {
 			bWasBlocked = true;
-
-		// !! avant le cine end
-		if (ACTIVECAM)
-		{
-			ACTIVECAM->pos.x = ePos.x;
-			ACTIVECAM->pos.y = ePos.y;
-			ACTIVECAM->pos.z = ePos.z;
 		}
-
-		if (bWasBlocked)
-			BLOCK_PLAYER_CONTROLS=1;
-
+		
+		// !! avant le cine end
+		if(ACTIVECAM) {
+			ACTIVECAM->pos = ePos;
+		}
+		
+		if(bWasBlocked) {
+			BLOCK_PLAYER_CONTROLS =1;
+		}
+		
 		ARX_SPEECH_Reset();
 		SendMsgToAllIO(SM_CINE_END, LAST_LAUNCHED_CINE);
 	}

@@ -311,14 +311,11 @@ void ARX_NPC_Revive(Entity * io, long flags)
 		io->_npcdata->life = io->_npcdata->maxlife;
 	}
 
-	if (flags & 1)
-	{
+	if(flags & 1) {
 		io->room_flags |= 1;
-		io->pos.x = io->initpos.x;
-		io->pos.y = io->initpos.y;
-		io->pos.z = io->initpos.z;
+		io->pos = io->initpos;
 	}
-
+	
 	long goretex = -1;
 
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
@@ -538,13 +535,9 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 
 		if (tot <= 3.5f) continue;
 
-		io->physics.startpos.x = io->pos.x;
-		io->physics.startpos.y = io->pos.y;
-		io->physics.startpos.z = io->pos.z;
+		io->physics.startpos = io->pos;
 		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+l_try];
-		io->physics.targetpos.x = ACTIVEBKG->anchors[pos].pos.x;
-		io->physics.targetpos.y = ACTIVEBKG->anchors[pos].pos.y;
-		io->physics.targetpos.z = ACTIVEBKG->anchors[pos].pos.z;
+		io->physics.targetpos = ACTIVEBKG->anchors[pos].pos;
 
 		if (EEfabs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f) continue;
 
@@ -639,9 +632,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		return false;
 
 	long MUST_SELECT_Start_Anchor = -1;
-	io->physics.cyl.origin.x = io->pos.x;
-	io->physics.cyl.origin.y = io->pos.y;
-	io->physics.cyl.origin.z = io->pos.z;
+	io->physics.cyl.origin = io->pos;
 	long old_target = io->targetinfo;
 
 	if	((!(io->ioflags & IO_PHYSICAL_OFF)))
@@ -673,18 +664,13 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 
 		io->_npcdata->pathfind.list = NULL;
 	}
-
-	if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-	{
-		pos1.x = io->pos.x;
-		pos1.y = io->pos.y;
-		pos1.z = io->pos.z;
-		pos2.x = io->pos.x + 1000.f;
-		pos2.y = io->pos.y;
-		pos2.z = io->pos.z + 1000.f;
+	
+	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+		pos1 = io->pos;
+		pos2 = io->pos + Vec3f(1000.f, 0.f, 1000.f);
 		goto wander;
 	}
-
+	
 	if ((target < 0) || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) 
 	{
 		target = io->index();
@@ -693,21 +679,12 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 			goto failure;
 
 		io->_npcdata->pathfind.truetarget = target;
-		pos1.x = io->pos.x;
-		pos1.y = io->pos.y;
-		pos1.z = io->pos.z;
-
-		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-		{
-			pos2.x = io->initpos.x;
-			pos2.y = io->initpos.y;
-			pos2.z = io->initpos.z;
-		}
-		else
-		{
-			pos2.x = pos1.x;
-			pos2.y = pos1.y;
-			pos2.z = pos1.z;
+		pos1 = io->pos;
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+			pos2 = io->initpos;
+		} else {
+			pos2 = pos1;
 		}
 
 		goto suite;
@@ -724,40 +701,19 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		io->_npcdata->reachedtarget = 0;
 
 	EVENT_SENDER = NULL;
-
-
-
-	pos1.x = io->pos.x;
-	pos1.y = io->pos.y;
-	pos1.z = io->pos.z;
-
-
-	if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-	{
-		pos2.x = io->initpos.x;
-		pos2.y = io->initpos.y;
-		pos2.z = io->initpos.z;
+	
+	pos1 = io->pos;
+	
+	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+		pos2 = io->initpos;
+	} else if(ValidIONum(target)) {
+		pos2 = entities[target]->pos;
+	} else {
+		pos2 = io->pos;
 	}
-	else
-	{
-		if (ValidIONum(target))
-		{
-			Entity * io2;
-			io2 = entities[target];
-			pos2.x = io2->pos.x;
-			pos2.y = io2->pos.y;
-			pos2.z = io2->pos.z;
-		}
-		else
-		{
-			pos2.x = io->pos.x;
-			pos2.y = io->pos.y;
-			pos2.z = io->pos.z;
-		}
-	}
-
+	
 	io->_npcdata->pathfind.truetarget = target;
-
+	
 	if ((distSqr(pos1, ACTIVECAM->pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
 	        && (distSqr(pos1, pos2) < square(520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
@@ -766,12 +722,8 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 	   )
 	{
 		// COLLISION Management START *********************************************************************
-		io->physics.startpos.x = pos1.x;
-		io->physics.startpos.y = pos1.y;
-		io->physics.startpos.z = pos1.z;
-		io->physics.targetpos.x = pos2.x;
-		io->physics.targetpos.y = pos2.y;
-		io->physics.targetpos.z = pos2.z;
+		io->physics.startpos = pos1;
+		io->physics.targetpos = pos2;
 		IO_PHYSICS phys;
 		memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 		GetIOCyl(io, &phys.cyl);
@@ -1043,27 +995,17 @@ void ARX_NPC_ManagePoison(Entity * io)
 
 	if (io->_npcdata->poisonned < 0.1f) io->_npcdata->poisonned = 0.f;
 }
-//*************************************************************************************
-//*************************************************************************************
 
-//***********************************************************************************************
-// void CheckUnderWaterIO(Entity * io)
-//-----------------------------------------------------------------------------------------------
 // FUNCTION:
 //   Checks if the bottom of an IO is underwater.
 // RESULT:
 //   Plays Water sounds
 //   Decrease/stops Ignition of this IO if necessary
-//-----------------------------------------------------------------------------------------------
 // WARNINGS:
 // io must be valid (no check !)
-//***********************************************************************************************
-static void CheckUnderWaterIO(Entity * io)
-{
-	Vec3f ppos;
-	ppos.x = io->pos.x;
-	ppos.y = io->pos.y;
-	ppos.z = io->pos.z;
+static void CheckUnderWaterIO(Entity * io) {
+	
+	Vec3f ppos = io->pos;
 	EERIEPOLY * ep = EEIsUnderWater(&ppos);
 
 	if (io->ioflags & IO_UNDERWATER)
@@ -1296,12 +1238,10 @@ void FaceTarget2(Entity * io)
 		        && (io->_npcdata->behavior & BEHAVIOUR_FLEE)) return;
 
 	}
-
+	
 	GetTargetPos(io);
-	tv.x = io->pos.x;
-	tv.y = io->pos.y;
-	tv.z = io->pos.z;
-
+	tv = io->pos;
+	
 	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
 		return;
 	}
@@ -1322,20 +1262,14 @@ void FaceTarget2(Entity * io)
 
 	if ((tt > 0.f) && (tt < 180.f)) rot = -rot;
 	else if ((tt < -180.f)) rot = -rot;
-
-	if (rot != 0)
-	{
-		Vec3f temp;
-		temp.x = io->move.x;
-		temp.y = io->move.y;
-		temp.z = io->move.z;
+	
+	if(rot != 0) {
+		Vec3f temp = io->move;
 		Vector_RotateY(&io->move, &temp, rot);
-		temp.x = io->lastmove.x;
-		temp.y = io->lastmove.y;
-		temp.z = io->lastmove.z;
+		temp = io->lastmove;
 		Vector_RotateY(&io->lastmove, &temp, rot);
 	}
-
+	
 	// Needed angle to turn toward target
 	io->angle.b = MAKEANGLE(io->angle.b - rot); // -tt
 }
@@ -2273,9 +2207,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
 
-	phys.startpos.x = io->pos.x;
-	phys.startpos.y = io->pos.y;
-	phys.startpos.z = io->pos.z;
+	phys.startpos = io->pos;
 	phys.targetpos.x = io->pos.x + trans2.x;
 	phys.targetpos.y = io->pos.y + trans2.y;
 	phys.targetpos.z = io->pos.z + trans2.z;
@@ -3373,11 +3305,9 @@ static void ManageNPCMovement(Entity * io)
 
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
-
-	io->forcedmove.x -= ForcedMove.x;
-	io->forcedmove.y -= ForcedMove.y;
-	io->forcedmove.z -= ForcedMove.z;
-
+	
+	io->forcedmove -= ForcedMove;
+	
 #ifdef BUILD_EDITOR
 	// Some visual debug stuff
 	if(DEBUGNPCMOVE) {
@@ -3700,11 +3630,9 @@ static void ManageNPCMovement(Entity * io)
 			if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
 		}
 	}
-
+	
 	// Now update lastpos values for next call use...
-	io->lastpos.x = io->pos.x;
-	io->lastpos.y = io->pos.y;
-	io->lastpos.z = io->pos.z;
+	io->lastpos = io->pos;
 }
 
 float AngularDifference(float a1, float a2)
@@ -4326,139 +4254,78 @@ void ManageIgnition_2(Entity * io) {
 
 extern EERIE_BACKGROUND * ACTIVEBKG;
 
-void GetTargetPos(Entity * io, unsigned long smoothing)
-{
-	if (io == NULL) return;
-
-	if (io->ioflags & IO_NPC)
-	{
-		if (io->_npcdata->behavior & BEHAVIOUR_NONE)
-		{
-			io->target.x = io->pos.x;
-			io->target.y = io->pos.y;
-			io->target.z = io->pos.z;
+void GetTargetPos(Entity * io, unsigned long smoothing) {
+	
+	if(!io) {
+		return;
+	}
+	
+	if(io->ioflags & IO_NPC) {
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
+			io->target = io->pos;
 			return;
 		}
-
-		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-		{
-			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
-			{
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+			if(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
 				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
-				io->target.x = ACTIVEBKG->anchors[pos].pos.x;
-				io->target.y = ACTIVEBKG->anchors[pos].pos.y;
-				io->target.z = ACTIVEBKG->anchors[pos].pos.z;
-				return;
+				io->target = ACTIVEBKG->anchors[pos].pos;
+			} else {
+				io->target = io->initpos;
 			}
-
-			io->target.x = io->initpos.x;
-			io->target.y = io->initpos.y;
-			io->target.z = io->initpos.z;
 			return;
 		}
-
-		if ((io->_npcdata) && (io->_npcdata->pathfind.listnb != -1) && (io->_npcdata->pathfind.list)
-				&& (!(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)))// Targeting Anchors !
-		{
-			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
-			{
+		
+		if(io->_npcdata && io->_npcdata->pathfind.listnb != -1 && io->_npcdata->pathfind.list
+		   && !(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
+			if(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
 				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
-				io->target.x = ACTIVEBKG->anchors[pos].pos.x;
-				io->target.y = ACTIVEBKG->anchors[pos].pos.y;
-				io->target.z = ACTIVEBKG->anchors[pos].pos.z;
+				io->target = ACTIVEBKG->anchors[pos].pos;
+			} else if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
+				io->target = entities[io->_npcdata->pathfind.truetarget]->pos;
 			}
-			else if (ValidIONum(io->_npcdata->pathfind.truetarget))
-			{
-				Entity * ioo = entities[io->_npcdata->pathfind.truetarget];
-				io->target.x = ioo->pos.x;
-				io->target.y = ioo->pos.y;
-				io->target.z = ioo->pos.z;
-			}
-
-
 			return;
 		}
 	}
-
-
-
-	if (io->targetinfo == TARGET_PATH)
-	{
-		if (io->usepath == NULL)
-		{
-			io->target.x = io->pos.x;
-			io->target.y = io->pos.y;
-			io->target.z = io->pos.z;
+	
+	if(io->targetinfo == TARGET_PATH) {
+		
+		if(!io->usepath) {
+			io->target = io->pos;
 			return;
 		}
-
+		
 		ARX_USE_PATH * aup = io->usepath;
 		aup->_curtime += smoothing + 100;
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
-
-		if (wp < 0)
-		{
-			if (io->ioflags & IO_CAMERA)
-				io->_camdata->cam.lastinfovalid = false;
+		if(wp >= 0) {
+			io->target = tp;
+		} else if(io->ioflags & IO_CAMERA) {
+			io->_camdata->cam.lastinfovalid = false;
 		}
-		else
-		{
-
-			io->target.x = tp.x;
-			io->target.y = tp.y;
-			io->target.z = tp.z;
-
-		}
-
+		
 		return;
 	}
-
-	if (io->targetinfo == TARGET_NONE)
-	{
-		io->target.x = io->pos.x;
-		io->target.y = io->pos.y;
-		io->target.z = io->pos.z;
+	
+	if(io->targetinfo == TARGET_NONE) {
+		io->target = io->pos;
 		return;
 	}
-
-
-
-
-
-
-
-
-	if ((io->targetinfo == TARGET_PLAYER) || (io->targetinfo == -1))
-	{
-		io->target.x = player.pos.x;
-		io->target.y = player.pos.y + player.size.y;
-		io->target.z = player.pos.z;
+	
+	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == -1) {
+		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
-	}
-	else
-	{
-		if (ValidIONum(io->targetinfo))
-		{
-			Vec3f pos;
-
-			if (GetItemWorldPosition(entities[io->targetinfo], &pos))
-			{
-				io->target.x = pos.x;
-				io->target.y = pos.y;
-				io->target.z = pos.z;
-				return;
-			}
-
-			io->target.x = entities[io->targetinfo]->pos.x;
-			io->target.y = entities[io->targetinfo]->pos.y;
-			io->target.z = entities[io->targetinfo]->pos.z;
+	} else if(ValidIONum(io->targetinfo)) {
+		Vec3f pos;
+		if(GetItemWorldPosition(entities[io->targetinfo], &pos)) {
+			io->target = pos;
 			return;
 		}
+		io->target = entities[io->targetinfo]->pos;
+		return;
 	}
-
-	io->target.x = io->pos.x;
-	io->target.y = io->pos.y;
-	io->target.z = io->pos.z;
+	
+	io->target = io->pos;
 }
-

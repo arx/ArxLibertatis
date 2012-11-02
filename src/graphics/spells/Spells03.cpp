@@ -268,9 +268,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	// Light
 	lLightId = -1; 
-	eCurPos.x = eSrc.x;
-	eCurPos.y = eSrc.y;
-	eCurPos.z = eSrc.z;
+	eCurPos = eSrc;
 }
 #define MIN_TIME_FIREBALL 2000  //750
 //-----------------------------------------------------------------------------
@@ -278,30 +276,16 @@ void CFireBall::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
 
-	if (ulCurrentTime > MIN_TIME_FIREBALL)
-	{
+	if(ulCurrentTime > MIN_TIME_FIREBALL) {
 		// smoke en retard
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.Update(aulTime);
-
-		float titi = aulTime * 0.0045f;
-
-		eCurPos.x = eCurPos.x + eMove.x * titi;
-		eCurPos.y = eCurPos.y + eMove.y * titi;
-		eCurPos.z = eCurPos.z + eMove.z * titi;
-
+		eCurPos += eMove * (aulTime * 0.0045f);
 		pPSFire.SetPos(eCurPos);
 		pPSFire.fParticleSpeed = 100;
 		pPSFire.fParticleSpeedRandom = 200;
-
-		pPSFire.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire.p3ParticleGravity.z = -eMove.z * 2;
-
-		pPSFire2.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire2.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire2.p3ParticleGravity.z = -eMove.z * 2;
-
+		pPSFire.p3ParticleGravity = -eMove * 2.f;
+		pPSFire2.p3ParticleGravity = -eMove * 2.f;
 		pPSFire2.SetPos(eCurPos);
 		pPSFire2.fParticleSpeed = 100;
 		pPSFire2.fParticleSpeedRandom = 100;
@@ -364,58 +348,38 @@ void CFireBall::Update(unsigned long aulTime)
 		Vec3f vMove = eMove.getNormalized();
 
 		// smoke en retard
-		pPSSmoke.p3ParticleDirection.x = -vMove.x;
-		pPSSmoke.p3ParticleDirection.y = -vMove.y;
-		pPSSmoke.p3ParticleDirection.z = -vMove.z;
+		pPSSmoke.p3ParticleDirection = -vMove;
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.RecomputeDirection();
-
-		float titi = aulTime * 0.0045f;
-
-		eCurPos.x = eCurPos.x + eMove.x * titi;
-		eCurPos.y = eCurPos.y + eMove.y * titi;
-		eCurPos.z = eCurPos.z + eMove.z * titi;
-
-		pPSFire.p3ParticleDirection.x = -vMove.x;
-		pPSFire.p3ParticleDirection.y = -vMove.y;
-		pPSFire.p3ParticleDirection.z = -vMove.z;
+		eCurPos = eCurPos + eMove * (aulTime * 0.0045f);
+		pPSFire.p3ParticleDirection = -vMove;
 		pPSFire.RecomputeDirection();
 		pPSFire.SetPos(eCurPos);
-
-		pPSFire.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire.p3ParticleGravity.z = -eMove.z * 2;
-
-		pPSFire2.p3ParticleDirection.x = -vMove.x;
-		pPSFire2.p3ParticleDirection.y = -vMove.y;
-		pPSFire2.p3ParticleDirection.z = -vMove.z;
-		pPSFire2.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire2.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire2.p3ParticleGravity.z = -eMove.z * 2;
+		pPSFire.p3ParticleGravity = -eMove * 2.f;
+		pPSFire2.p3ParticleDirection = -vMove;
+		pPSFire2.p3ParticleGravity = -eMove * 2.f;
 		pPSFire2.RecomputeDirection();
 		pPSFire2.SetPos(eCurPos);
 	}
-
+	
 	pPSFire.Update(aulTime);
 	pPSFire2.Update(aulTime);
 }
 
-//-----------------------------------------------------------------------------
-float CFireBall::Render()
-{
-	if (ulCurrentTime >= ulDuration)
-	{
+float CFireBall::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	pPSFire.Render();
 	pPSFire2.Render();
 	pPSSmoke.Render();
-
+	
 	return 1 - 0.5f * rnd();
 }
 
@@ -569,12 +533,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		}
 
 		long ttt = ARX_DAMAGES_GetFree();
-
-		if (ttt != -1)
-		{
-			damages[ttt].pos.x = tPos[i].x;
-			damages[ttt].pos.y = tPos[i].y;
-			damages[ttt].pos.z = tPos[i].z;
+		if(ttt != -1) {
+			damages[ttt].pos = tPos[i];
 			damages[ttt].radius = 60.f;
 			damages[ttt].damages = 0.1f * spells[spellinstance].caster_level;
 			damages[ttt].area = DAMAGE_FULL;
@@ -652,9 +612,7 @@ float CIceProjectile::Render()
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
 		stiteangle.a = 0;
 		stiteangle.g = 0;
-		stitepos.x = tPos[i].x;
-		stitepos.y = tPos[i].y;
-		stitepos.z = tPos[i].z;
+		stitepos = tPos[i];
 
 		float tt;
 		tt = tSizeMax[i].y * fColor;
@@ -667,9 +625,7 @@ float CIceProjectile::Render()
 
 		if (stitecolor.b > 1) stitecolor.b = 1;
 
-		stitescale.x = tSize[i].x;
-		stitescale.y = tSize[i].y;
-		stitescale.z = tSize[i].z;
+		stitescale = tSize[i];
 
 		if (tType[i] == 0)
 			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
@@ -796,11 +752,8 @@ void CSpeed::AddRuban(int * f, int id, int dec)
 
 	if (num >= 0)
 	{
-		this->truban[num].actif = 1;
-
-		this->truban[num].pos.x = entities[this->num]->obj->vertexlist3[id].v.x;
-		this->truban[num].pos.y = entities[this->num]->obj->vertexlist3[id].v.y;
-		this->truban[num].pos.z = entities[this->num]->obj->vertexlist3[id].v.z;
+		truban[num].actif = 1;
+		truban[num].pos = entities[this->num]->obj->vertexlist3[id].v;
 
 		if (*f < 0)
 		{
@@ -935,27 +888,18 @@ float CSpeed::Render()
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-CCreateFood::CCreateFood()
-{
+CCreateFood::CCreateFood() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
 	pPS = new ParticleSystem();
 }
 
-//-----------------------------------------------------------------------------
-CCreateFood::~CCreateFood()
-{
-}
+CCreateFood::~CCreateFood() { }
 
-//-----------------------------------------------------------------------------
-void CCreateFood::Create()
-{
-	eSrc.x = player.pos.x;
-	eSrc.y = player.pos.y;
-	eSrc.z = player.pos.z;
-
+void CCreateFood::Create() {
+	
+	eSrc = player.pos;
+	
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));

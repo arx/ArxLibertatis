@@ -321,9 +321,7 @@ void Ambiance::Track::keyPlay() {
 		
 		if(flags & POSITION) {
 			channel.flags |= FLAG_POSITION;
-			channel.position.x = key_i->x.cur;
-			channel.position.y = key_i->y.cur;
-			channel.position.z = key_i->z.cur;
+			channel.position = Vec3f(key_i->x.cur, key_i->y.cur, key_i->z.cur);
 			if(ambiance->channel.flags & FLAG_POSITION) {
 				channel.position += ambiance->channel.position;
 			}

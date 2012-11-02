@@ -311,13 +311,8 @@ void PutInFrontOfPlayer(Entity * io)
 
 	if (io->obj && io->obj->pbox)
 	{
-		Vec3f pos, vector;
-		vector.x = 0.f; 
-		vector.y = 100.f;
-		vector.z = 0.f;
-		pos.x = io->pos.x;
-		pos.y = io->pos.y;
-		pos.z = io->pos.z;
+		Vec3f vector = Vec3f(0.f, 100.f, 0.f);
+		Vec3f pos = io->pos;
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
@@ -344,16 +339,10 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 	io->angle.g = 0.f;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
-
-	if (io->obj && io->obj->pbox)
-	{
-		Vec3f pos, vector;
-		vector.x = 0.f; 
-		vector.y = 100.f;
-		vector.z = 0.f;
-		pos.x = io->pos.x;
-		pos.y = io->pos.y;
-		pos.z = io->pos.z;
+	
+	if(io->obj && io->obj->pbox) {
+		Vec3f vector(0.f, 100.f, 0.f);
+		Vec3f pos = io->pos;
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch_NOCOL(io, io->obj, &pos, &vector);

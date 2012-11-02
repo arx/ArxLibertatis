@@ -141,13 +141,11 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 
 		astart += av;
 		pLInfo->eStart = astart;
-
-		cnodetab[nbtotal].x = pLInfo->eStart.x;
-		cnodetab[nbtotal].y = pLInfo->eStart.y;
-		cnodetab[nbtotal].z = pLInfo->eStart.z;
+		
+		cnodetab[nbtotal].pos = pLInfo->eStart;
 		cnodetab[nbtotal].size = cnodetab[0].size * pLInfo->anb * invNbSegments;
 		cnodetab[nbtotal].parent = pLInfo->aParent;
-
+		
 		int anb = pLInfo->anb;
 		int anbrec = pLInfo->anbrec;
 
@@ -298,21 +296,19 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 		LInfo.fAngleYMax = fAngleYMax;
 		LInfo.fAngleZMin = fAngleZMin;
 		LInfo.fAngleZMax = fAngleZMax;
-
-		cnodetab[0].x = eSrc.x;
-		cnodetab[0].y = eSrc.y;
-		cnodetab[0].z = eSrc.z;
+		
+		cnodetab[0].pos = eSrc;
 		cnodetab[0].size = 15;
 		cnodetab[0].parent = 0;
-
+		
 		BuildS(&LInfo);
 	}
-
-
+	
+	
 	float fRandom	= 500 + rnd() * 1000;
-
+	
 	iTTL = checked_range_cast<int>(fRandom);
-
+	
 }
 
 //------------------------------------------------------------------------------
@@ -343,9 +339,7 @@ void CLightning::ReCreate()
 		LInfo.fAngleZMin = fAngleZMin;
 		LInfo.fAngleZMax = fAngleZMax;
 
-		cnodetab[0].x = eSrc.x;
-		cnodetab[0].y = eSrc.y;
-		cnodetab[0].z = eSrc.z;
+		cnodetab[0].pos = eSrc;
 		cnodetab[0].size = 8;
 		cnodetab[0].parent = 0;
 
@@ -470,9 +464,8 @@ float CLightning::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	cnodetab[0].fx = frand2() * 1.5f * fMySize; //5
-	cnodetab[0].fy = frand2() * 1.5f * fMySize; //5
-	cnodetab[0].fz = frand2() * 1.5f * fMySize; //5
+	float f = 1.5f * fMySize;
+	cnodetab[0].f = randomVec(-f, f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -482,71 +475,35 @@ float CLightning::Render()
 
 	float xx;
 	float zz;
-	float zzx, zzy, zzz;
 
-	fbeta = fBeta + rnd() * 2 * fMySize; //0;
+	fbeta = fBeta + rnd() * 2 * fMySize;
 
-	for (i = 0; i < nbtotal; i++)
-	{
-		if (i > fTotoro) break;
-
-		Vec3f astart;
-
-		astart.x = cnodetab[cnodetab[i].parent].x + cnodetab[cnodetab[i].parent].fx;
-		astart.y = cnodetab[cnodetab[i].parent].y + cnodetab[cnodetab[i].parent].fy;
-		astart.z = cnodetab[cnodetab[i].parent].z + cnodetab[cnodetab[i].parent].fz;
+	for(i = 0; i < nbtotal && i <= fTotoro; i++) {
+		Vec3f astart = cnodetab[cnodetab[i].parent].pos + cnodetab[cnodetab[i].parent].f;
 		float temp = 1.5f * fMySize;
-		zzx = cnodetab[cnodetab[i].parent].fx + frand2() * temp;
-		zzy = cnodetab[cnodetab[i].parent].fx + frand2() * temp;
-		zzz = cnodetab[cnodetab[i].parent].fx + frand2() * temp;
-
+		Vec3f z_z = cnodetab[cnodetab[i].parent].f + randomVec(-temp, temp);
 		zz = cnodetab[i].size + cnodetab[i].size * 0.3f * rnd();
 		xx = (float)(cnodetab[i].size * cos(radians(-fbeta)));
-
-		cnodetab[i].fx = zzx ;
-		cnodetab[i].fy = zzy ;
-		cnodetab[i].fz = zzz ;
-
-		float ax = cnodetab[i].x + zzx;
-		float ay = cnodetab[i].y + zzy;
-		float az = cnodetab[i].z + zzz;
-
-		if (lSrc != -1)
-		{
-			Vec3f vv1, vv2;
-			vv1.x = astart.x;
-			vv1.y = astart.y;
-			vv1.z = astart.z;
+		cnodetab[i].f = z_z;
+		
+		Vec3f a = cnodetab[i].pos + z_z;
+		if(lSrc != -1) {
+			Vec3f vv2;
+			Vec3f vv1 = astart;
 			VRotateX(&vv1, (falpha));  
 			Vector_RotateY(&vv2, &vv1,  180 - MAKEANGLE(fBeta)); 
-			astart.x = vv2.x;
-			astart.y = vv2.y;
-			astart.z = vv2.z;
-
-			vv1.x = ax;
-			vv1.y = ay;
-			vv1.z = az;
+			astart = vv2;
+			vv1 = a;
 			VRotateX(&vv1, (falpha)); 
 			Vector_RotateY(&vv2, &vv1, 180 - MAKEANGLE(fBeta)); 
-			ax = vv2.x;
-			ay = vv2.y;
-			az = vv2.z;
-
-			astart.x += ePos.x;
-			astart.y += ePos.y;
-			astart.z += ePos.z;
-
-			ax += ePos.x;
-			ay += ePos.y;
-			az += ePos.z;
+			a = vv2;
+			astart += ePos;
+			a += ePos;
 		}
-
-		if (((i >> 2) << 2) == i)
-		{
+		
+		if(i % 4 == 0) {
 			EERIE_SPHERE sphere;
-			sphere.origin.x = ax;
-			sphere.origin.y = ay;
-			sphere.origin.z = az;
+			sphere.origin = a;
 			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
 			if (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP))
@@ -567,123 +524,60 @@ float CLightning::Render()
 				}
 			}
 		}
-
+		
 		// version 4 faces
 		v2[0].color = v2[3].color = 0xFFFFFFFF;
 		v2[1].color = v2[2].color = 0xFF00005A;
-
-		v2[0].uv.x = 0.5f;
-		v2[0].uv.y = 0;
-		v2[1].uv.x = 0;
-		v2[1].uv.y = 0;
-		v2[2].uv.x = 0;
-		v2[2].uv.y = 1;
-		v2[3].uv.x = 0.5f;
-		v2[3].uv.y = 1;
-
-		v[0].p.x = astart.x;
-		v[0].p.y = astart.y;
-		v[0].p.z = astart.z;
-
-		v[1].p.x = astart.x;
-		v[1].p.y = astart.y + zz;
-		v[1].p.z = astart.z;
-
-		v[2].p.x = ax;
-		v[2].p.y = ay + zz;
-		v[2].p.z = az;
-
-		v[3].p.x = ax;
-		v[3].p.y = ay;
-		v[3].p.z = az;
-
+		v2[0].uv = Vec2f(0.5f, 0.f);
+		v2[1].uv = Vec2f::ZERO;
+		v2[2].uv = Vec2f::Y_AXIS;
+		v2[3].uv = Vec2f(0.5f, 1.f);
+		v[0].p = astart;
+		v[1].p = astart + Vec3f(0.f, zz, 0.f);
+		v[2].p = a + Vec3f(0.f, zz, 0.f);
+		v[3].p = a;
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
-
-		v2[0].uv.x = 0.5f;
-		v2[0].uv.y = 0;
-		v2[1].uv.x = 1.0f;
-		v2[1].uv.y = 0;
-		v2[2].uv.x = 1.0f;
-		v2[2].uv.y = 1.0f;
-		v2[3].uv.x = 0.5f;
-		v2[3].uv.y = 1.0f;
-
-		v[1].p.x = astart.x;
-		v[1].p.y = astart.y - zz;
-		v[1].p.z = astart.z;
-
-		v[2].p.x = ax;
-		v[2].p.y = ay - zz;
-		v[2].p.z = az;
-	
-		EE_RT2(&v[1], &v2[1]);
-		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
-
-	
-		zz *= (float) sin(radians(fbeta));
-
-		v2[1].uv.x = 1.0f;
-		v2[1].uv.y = 0;
-		v2[2].uv.x = 1.0f;
-		v2[2].uv.y = 1.0f;
-
-		v[1].p.x = astart.x + xx;
-		v[1].p.y = astart.y;
-		v[1].p.z = astart.z + zz;
-
-		v[2].p.x = ax + xx;
-		v[2].p.y = ay;
-		v[2].p.z = az + zz;
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 		
+		v2[0].uv = Vec2f(0.5f, 0.f);
+		v2[1].uv = Vec2f::X_AXIS;
+		v2[2].uv = Vec2f::ONE;
+		v2[3].uv = Vec2f(0.5f, 1.f);
+		v[1].p = astart - Vec3f(0.f, zz, 0.f);
+		v[2].p = a - Vec3f(0.f, zz, 0.f);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
-
-		v2[1].uv.x = 0;
-		v2[1].uv.y = 0;
-		v2[2].uv.x = 0;
-		v2[2].uv.y = 1.0f;
-
-		v[1].p.x = astart.x - xx;
-		v[1].p.y = astart.y;
-		v[1].p.z = astart.z - zz;
-
-		v[2].p.x = ax - xx;
-		v[2].p.y = ay;
-		v[2].p.z = az - zz;
-
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		
+		zz *= (float) sin(radians(fbeta));
+		
+		v2[1].uv = Vec2f::X_AXIS;
+		v2[2].uv = Vec2f::ONE;
+		v[1].p = astart + Vec3f(xx, 0.f, zz);
+		v[2].p = a + Vec3f(xx, 0.f, zz);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		
+		v2[1].uv = Vec2f::ZERO;
+		v2[2].uv = Vec2f::Y_AXIS;
+		v[1].p = astart - Vec3f(xx, 0.f, zz);
+		v[2].p = a - Vec3f(xx, 0.f, zz);
+		EE_RT2(&v[1], &v2[1]);
+		EE_RT2(&v[2], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
 	return falpha;
 }
 
@@ -736,45 +630,29 @@ CConfuse::CConfuse() {
 	au.altidx_next = 0;
 }
 
-//-----------------------------------------------------------------------------
-void CConfuse::Create(Vec3f aeSrc, float afBeta)
-{
+void CConfuse::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	eSrc = aeSrc;
 	SetAngle(afBeta);
-
 	fSize = 1;
 	bDone = true;
-	
-	eTarget.x = entities[spells[spellinstance].target]->pos.x;
-	eTarget.y = entities[spells[spellinstance].target]->pos.y;
-	eTarget.z = entities[spells[spellinstance].target]->pos.z;
-
+	eTarget = entities[spells[spellinstance].target]->pos;
 	end = 20 - 1;
 }
 
-//---------------------------------------------------------------------
-void CConfuse::Update(unsigned long _ulTime)
-{
+void CConfuse::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 	iElapsedTime = _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CConfuse::Render()
-{
+float CConfuse::Render() {
+	
 	int i = 0;
-
-	eTarget.x = entities[spells[spellinstance].target]->pos.x;
-	eTarget.y = entities[spells[spellinstance].target]->pos.y;
-	eTarget.z = entities[spells[spellinstance].target]->pos.z;
-
-	if (ulCurrentTime >= ulDuration)
-	{
+	
+	eTarget = entities[spells[spellinstance].target]->pos;
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
 
@@ -856,9 +734,7 @@ float CConfuse::Render()
 		DynLight[id].rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
 		DynLight[id].rgb.g = 0.3f;
 		DynLight[id].rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
-		DynLight[id].pos.x = stitepos.x;
-		DynLight[id].pos.y = stitepos.y;
-		DynLight[id].pos.z = stitepos.z;
+		DynLight[id].pos = stitepos;
 		DynLight[id].duration = 200;
 		DynLight[id].extras = 0;
 	}

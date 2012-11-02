@@ -59,18 +59,15 @@ long CUR_COLLISION_MATERIAL = 0;
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long flag, Anglef * angle)
 {
 	if ((!obj) || !(obj->pbox)) return;
-
+	
 	obj->pbox->storedtiming = 0;
-
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		obj->vertexlist[i].vert.p.x = obj->vertexlist[i].v.x;
-		obj->vertexlist[i].vert.p.y = obj->vertexlist[i].v.y;
-		obj->vertexlist[i].vert.p.z = obj->vertexlist[i].v.z;
+	
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		obj->vertexlist[i].vert.p = obj->vertexlist[i].v;
 	}
-
+	
 	float surface = 0.f;
-
+	
 	for(size_t i = 0; i < obj->facelist.size(); i++) {
 		const Vec3f & p0 = obj->vertexlist[obj->facelist[i].vid[0]].v;
 		const Vec3f & p1 = obj->vertexlist[obj->facelist[i].vid[1]].v;

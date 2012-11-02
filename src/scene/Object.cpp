@@ -1164,16 +1164,12 @@ static EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie_Impl(const res::path & dirr) {
 		es->cub.ymin = min(es->cub.ymin, es->scenes[i]->cub.ymin);
 		es->cub.zmax = max(es->cub.zmax, es->scenes[i]->cub.zmax);
 		es->cub.zmin = min(es->cub.zmin, es->scenes[i]->cub.zmin);
-		es->pos.x = es->scenes[i]->pos.x;
-		es->pos.y = es->scenes[i]->pos.y;
-		es->pos.z = es->scenes[i]->pos.z;
+		es->pos = es->scenes[i]->pos;
 		
 		if((es->scenes[i]->point0.x != -999999999999.f) &&
 		   (es->scenes[i]->point0.y != -999999999999.f) &&
 		   (es->scenes[i]->point0.z != -999999999999.f)) {
-			es->point0.x = es->scenes[i]->point0.x;
-			es->point0.y = es->scenes[i]->point0.y;
-			es->point0.z = es->scenes[i]->point0.z;
+			es->point0 = es->scenes[i]->point0;
 		}
 	}
 	
@@ -1552,16 +1548,12 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				AddIdxToBone(&eobj->c_data->bones[0], i);
 			}
 		}
-
-		for (long i = eobj->nbgroups - 1; i >= 0; i--)
-		{
-			if (eobj->c_data->bones[i].father >= 0)
-			{
-				eobj->c_data->bones[i].transinit.x -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.x;
-				eobj->c_data->bones[i].transinit.y -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.y;
-				eobj->c_data->bones[i].transinit.z -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.z;
+		
+		for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+			if(eobj->c_data->bones[i].father >= 0) {
+				long father = eobj->c_data->bones[i].father;
+				eobj->c_data->bones[i].transinit -= eobj->c_data->bones[father].transinit;
 			}
-
 			eobj->c_data->bones[i].transinit_global = eobj->c_data->bones[i].transinit;
 		}
 
@@ -1898,33 +1890,15 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 		return;
 
 	LogWarning << "NOT CENTERED " << ret->file;
-
-
-	for (size_t i = 0; i < ret->vertexlist.size(); i++)
-	{
-		ret->vertexlist[i].v.x -= offset.x;
-		ret->vertexlist[i].v.y -= offset.y;
-		ret->vertexlist[i].v.z -= offset.z;
-		ret->vertexlist[i].vert.p.x -= offset.x;
-		ret->vertexlist[i].vert.p.y -= offset.y;
-		ret->vertexlist[i].vert.p.z -= offset.z;
-
-		ret->vertexlist3[i].v.x -= offset.x;
-		ret->vertexlist3[i].v.y -= offset.y;
-		ret->vertexlist3[i].v.z -= offset.z;
-		ret->vertexlist3[i].vert.p.x -= offset.x;
-		ret->vertexlist3[i].vert.p.y -= offset.y;
-		ret->vertexlist3[i].vert.p.z -= offset.z;
-
-		ret->vertexlist3[i].v.x -= offset.x;
-		ret->vertexlist3[i].v.y -= offset.y;
-		ret->vertexlist3[i].v.z -= offset.z;
-		ret->vertexlist3[i].vert.p.x -= offset.x;
-		ret->vertexlist3[i].vert.p.y -= offset.y;
-		ret->vertexlist3[i].vert.p.z -= offset.z;
+	
+	for(size_t i = 0; i < ret->vertexlist.size(); i++) {
+		ret->vertexlist[i].v -= offset;
+		ret->vertexlist[i].vert.p -= offset;
+		ret->vertexlist3[i].v -= offset;
+		ret->vertexlist3[i].vert.p -= offset;
+		ret->vertexlist3[i].v -= offset;
+		ret->vertexlist3[i].vert.p -= offset;
 	}
-
-	ret->point0.x -= offset.x;
-	ret->point0.y -= offset.y;
-	ret->point0.z -= offset.z;
+	
+	ret->point0 -= offset;
 }

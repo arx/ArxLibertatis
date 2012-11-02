@@ -143,13 +143,9 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-
-
-	Vec3f eP;
-	eP.x = _ePos.x;
-	eP.y = _ePos.y;
-	eP.z = _ePos.z;
-
+	
+	Vec3f eP = _ePos;
+	
 	pPS->SetPos(eP);
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
@@ -176,9 +172,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 			DynLight[id].rgb.b = .8f;
 		}
 
-		DynLight[id].pos.x = eP.x;
-		DynLight[id].pos.y = eP.y;
-		DynLight[id].pos.z = eP.z;
+		DynLight[id].pos = eP;
 		DynLight[id].duration = 1500;
 	}
 
@@ -245,12 +239,8 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
 
-	pathways[0].p.x = eSrc.x;
-	pathways[0].p.y = eSrc.y;
-	pathways[0].p.z = eSrc.z;
-	pathways[5].p.x = e.x;
-	pathways[5].p.y = e.y;
-	pathways[5].p.z = e.z;
+	pathways[0].p = eSrc;
+	pathways[5].p = e;
 	Split(pathways, 0, 5, 50, 0.5f);
 
 	for (i = 0; i < 6; i++)
@@ -341,13 +331,9 @@ float CMagicMissile::Render()
 	{
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
 	}
-
-	lastpos.x = pathways[0].p.x;
-	lastpos.y = pathways[0].p.y;
-	lastpos.z = pathways[0].p.z;
-
-	newpos = lastpos;
-
+	
+	newpos = lastpos = pathways[0].p;
+	
 	for (i = 0; i < 5; i++)
 	{
 		int kp = i;
@@ -525,14 +511,13 @@ void CMultiMagicMissile::Create()
 		
 
 		spells[spellinstance].hand_group = GetActionPointIdx(entities[spells[spellinstance].caster]->obj, "primary_attach");
-
-		if (spells[spellinstance].hand_group != -1)
-		{
-			spells[spellinstance].hand_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
-			spells[spellinstance].hand_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
-			spells[spellinstance].hand_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
+		
+		if(spells[spellinstance].hand_group != -1) {
+			Entity * caster = entities[spells[spellinstance].caster];
+			long group = spells[spellinstance].hand_group;
+			spells[spellinstance].hand_pos = caster->obj->vertexlist3[group].v;
 		}
-
+		
 		Vec3f aePos;
 		float afAlpha, afBeta;
 		if (spells[spellinstance].caster == 0) // player

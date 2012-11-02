@@ -1615,11 +1615,9 @@ fini:
 	if (!found_ep) return true;
 
 	if (found_ep == epp) return true;
-
-	hit->x	=	found_hit.x;
-	hit->y	=	found_hit.y;
-	hit->z	=	found_hit.z;
-
+	
+	*hit = found_hit;
+	
 	return false;
 }
 
@@ -2144,9 +2142,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	{
 		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
 		EERIEPOLY * ep = &portals->portals[num].poly;
-		ep->center.x = ep->v[0].p.x;
-		ep->center.y = ep->v[0].p.y;
-		ep->center.z = ep->v[0].p.z;
+		ep->center = ep->v[0].p;
 		long to = 3;
 		float divide = ( 1.0f / 3 );
 
@@ -2155,28 +2151,14 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 			to = 4;
 			divide = ( 1.0f / 4 );
 		}
-
-		ep->min.x = ep->v[0].p.x;
-		ep->min.y = ep->v[0].p.y;
-		ep->min.z = ep->v[0].p.z;
-		ep->max.x = ep->v[0].p.x;
-		ep->max.y = ep->v[0].p.y;
-		ep->max.z = ep->v[0].p.z;
-
-		for (long i = 1; i < to; i++)
-		{
-			ep->center.x += ep->v[i].p.x;
-			ep->center.y += ep->v[i].p.y;
-			ep->center.z += ep->v[i].p.z;
-
-			ep->min.x = min(ep->min.x, ep->v[i].p.x);
-			ep->min.y = min(ep->min.y, ep->v[i].p.y);
-			ep->min.z = min(ep->min.z, ep->v[i].p.z);
-			ep->max.x = max(ep->max.x, ep->v[i].p.x);
-			ep->max.y = max(ep->max.y, ep->v[i].p.y);
-			ep->max.z = max(ep->max.z, ep->v[i].p.z);
+		
+		ep->max = ep->min = ep->v[0].p;
+		for(long i = 1; i < to; i++) {
+			ep->center += ep->v[i].p;
+			ep->min = componentwise_min(ep->min, ep->v[i].p);
+			ep->max = componentwise_max(ep->max, ep->v[i].p);
 		}
-
+		
 		ep->center *= divide;
 		float d = 0.f;
 
@@ -2535,17 +2517,10 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 
 	ColorBGRA coll = col->toBGR();
 
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-	{
-		vert_list[0].p.x = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
-		vert_list[0].p.y = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
-		vert_list[0].p.z = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
-		vert_list[1].p.x = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
-		vert_list[1].p.y = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
-		vert_list[1].p.z = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
-		vert_list[2].p.x = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
-		vert_list[2].p.y = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
-		vert_list[2].p.z = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
+		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
+		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
+		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
 		vert_list[0].uv.x = eobj->facelist[i].u[0];
 		vert_list[0].uv.y = eobj->facelist[i].v[0];
 		vert_list[1].uv.x = eobj->facelist[i].u[1];
@@ -2615,18 +2590,12 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
 
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-	{
-		vert_list[0].p.x = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
-		vert_list[0].p.y = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
-		vert_list[0].p.z = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
-		vert_list[1].p.x = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
-		vert_list[1].p.y = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
-		vert_list[1].p.z = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
-		vert_list[2].p.x = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
-		vert_list[2].p.y = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
-		vert_list[2].p.z = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
-
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
+		
+		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
+		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
+		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
+		
 		vert_list[0].uv.x = eobj->facelist[i].u[0];
 		vert_list[0].uv.y = eobj->facelist[i].v[0];
 		vert_list[1].uv.x = eobj->facelist[i].u[1];
@@ -2672,25 +2641,19 @@ void AcquireLastAnim(Entity * io)
 	io->nb_lastanimvertex = 1;
 }
 
-//*************************************************************************************
 // Declares an Animation as finished.
 // Usefull to update object true position with object virtual pos.
-//*************************************************************************************
-void FinishAnim(Entity * io, ANIM_HANDLE * eanim)
-{
-
-	if (io == NULL) return;
-
-	if (eanim == NULL) return;
-
-	// Only layer 0 controls movement...
-	if ((eanim == io->animlayer[0].cur_anim) && (io->ioflags & IO_NPC))
-	{
-		io->move.x = io->lastmove.x = 0;
-		io->move.y = io->lastmove.y = 0;
-		io->move.z = io->lastmove.z = 0;
+void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
+	
+	if(!io || !eanim) {
+		return;
 	}
-
+	
+	// Only layer 0 controls movement...
+	if(eanim == io->animlayer[0].cur_anim && (io->ioflags & IO_NPC)) {
+		io->move = io->lastmove = Vec3f::ZERO;
+	}
+	
 	return;
 }
 
@@ -3170,21 +3133,11 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 
 		if (!same) missing = i;
 	}
-
-	if (missing >= 0)
-	{
-		Vec3f temp;
-		temp.x = po->v[2].p.x;
-		temp.y = po->v[2].p.y;
-		temp.z = po->v[2].p.z;
-
-		po->v[2].p.x = ep->v[missing].p.x;
-		po->v[2].p.y = ep->v[missing].p.y;
-		po->v[2].p.z = ep->v[missing].p.z;
-
-		po->v[3].p.x = temp.x;
-		po->v[3].p.y = temp.y;
-		po->v[3].p.z = temp.z;
+	
+	if(missing >= 0) {
+		Vec3f temp = po->v[2].p;
+		po->v[2].p = ep->v[missing].p;
+		po->v[3].p = temp;
 		po->type |= POLY_QUAD;
 	}
 }
@@ -3230,11 +3183,8 @@ void ComputeRoomDistance() {
 	for (int i = 0; i < portals->nb_total; i++)
 	{
 		// Add 4 portal vertices
-		for (int nn = 0; nn < 4; nn++)
-		{
-			ad[curpos].pos.x = portals->portals[i].poly.v[nn].p.x;
-			ad[curpos].pos.y = portals->portals[i].poly.v[nn].p.y;
-			ad[curpos].pos.z = portals->portals[i].poly.v[nn].p.z;
+		for(int nn = 0; nn < 4; nn++) {
+			ad[curpos].pos = portals->portals[i].poly.v[nn].p;
 			ptr[curpos] = (void *)&portals->portals[i];
 			curpos++;
 		}
@@ -3405,18 +3355,12 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		float fDistMin = std::numeric_limits<float>::max();
 		float fDistMax = std::numeric_limits<float>::min();
 		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-		ep->center.x = ep->v[0].p.x;
-		ep->center.y = ep->v[0].p.y;
-		ep->center.z = ep->v[0].p.z;
-
-		for (long ii = 1; ii < nbvert; ii++)
-		{
-			ep->center.x += ep->v[ii].p.x;
-			ep->center.y += ep->v[ii].p.y;
-			ep->center.z += ep->v[ii].p.z;
+		
+		ep->center = ep->v[0].p;
+		for(long ii = 1; ii < nbvert; ii++) {
+			ep->center += ep->v[ii].p;
 		}
-
+		
 		ep->center /= nbvert;
 
 		for(int ii = 0; ii < nbvert; ii++) {

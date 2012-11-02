@@ -522,10 +522,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		memcpy(&test, ip, sizeof(IO_PHYSICS));
 
 		// uses test struct to simulate movement.
-		test.cyl.origin.x += mvector.x * curmovedist;
-		test.cyl.origin.y += mvector.y * curmovedist;
-		test.cyl.origin.z += mvector.z * curmovedist;
-
+		test.cyl.origin += mvector * curmovedist;
+		
 		vector2D.x = mvector.x * curmovedist;
 		vector2D.y = 0.f;
 		vector2D.z = mvector.z * curmovedist;
@@ -579,10 +577,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
 				float t = radians(MAKEANGLE(rangle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
-				test.cyl.origin.x	+=	vecatt.x * curmovedist;
-				test.cyl.origin.y	+=	vecatt.y * curmovedist;
-				test.cyl.origin.z	+=	vecatt.z * curmovedist;
-
+				test.cyl.origin += vecatt * curmovedist;
 				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
 					rpos = test.cyl.origin;
@@ -594,10 +589,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));   
 				t = radians(MAKEANGLE(langle));
 				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
-				test.cyl.origin.x	+=	vecatt.x * curmovedist;
-				test.cyl.origin.y	+=	vecatt.y * curmovedist;
-				test.cyl.origin.z	+=	vecatt.z * curmovedist;
-
+				test.cyl.origin += vecatt * curmovedist;
 				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
 					lpos = test.cyl.origin;
@@ -740,9 +732,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	bestcyl.radius = 0;
 	currcyl.radius = 40;
 	currcyl.height = -165.f;
-	currcyl.origin.x = pos->x;
-	currcyl.origin.y = pos->y;
-	currcyl.origin.z = pos->z;
+	currcyl.origin = *pos;
 
 	stop_radius = 0;
 	found = 0;
@@ -813,11 +803,9 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	eb->anchors = (ANCHOR_DATA *)realloc(eb->anchors, sizeof(ANCHOR_DATA) * (eb->nbanchors + 1));
 
 	ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
-	ad->pos.x = bestcyl.origin.x; 
-	ad->pos.y = bestcyl.origin.y;
-	ad->pos.z = bestcyl.origin.z; 
-	ad->height = bestcyl.height; 
-	ad->radius = bestcyl.radius; 
+	ad->pos = bestcyl.origin;
+	ad->height = bestcyl.height;
+	ad->radius = bestcyl.radius;
 	ad->linked = NULL;
 	ad->nblinked = 0;
 	ad->flags = 0;
@@ -934,11 +922,9 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	eb->anchors = (ANCHOR_DATA *)realloc(eb->anchors, sizeof(ANCHOR_DATA) * (eb->nbanchors + 1));
 
 	ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
-	ad->pos.x = bestcyl.origin.x; 
-	ad->pos.y = bestcyl.origin.y; 
-	ad->pos.z = bestcyl.origin.z; 
-	ad->height = bestcyl.height; 
-	ad->radius = bestcyl.radius; 
+	ad->pos = bestcyl.origin;
+	ad->height = bestcyl.height;
+	ad->radius = bestcyl.radius;
 	ad->linked = NULL;
 	ad->nblinked = 0;
 	ad->flags = 0;
@@ -1061,19 +1047,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 					
 							IO_PHYSICS ip;
-							ip.startpos.x = ip.cyl.origin.x = p1.x;
-							ip.startpos.y = ip.cyl.origin.y = p1.y;
-							ip.startpos.z = ip.cyl.origin.z = p1.z;
-							ip.targetpos.x = p2.x;
-							ip.targetpos.y = p2.y;
-							ip.targetpos.z = p2.z;
+							ip.startpos = ip.cyl.origin = p1;
+							ip.targetpos = p2;
 						
 							ip.cyl.height = eb->anchors[eg->ianchors[k]].height; 
 							ip.cyl.radius = eb->anchors[eg->ianchors[k]].radius;
-							Vec3f vect;
-							vect.x = p2.x - p1.x;
-							vect.y = p2.y - p1.y;
-							vect.z = p2.z - p1.z;
 
 							long t = 2;
 
@@ -1089,12 +1067,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 							if (t == 1)
 							{
-								ip.startpos.x = ip.cyl.origin.x = p2.x;
-								ip.startpos.y = ip.cyl.origin.y = p2.y;
-								ip.startpos.z = ip.cyl.origin.z = p2.z;
-								ip.targetpos.x = p1.x;
-								ip.targetpos.y = p1.y;
-								ip.targetpos.z = p1.z;
+								ip.startpos = ip.cyl.origin = p2;
+								ip.targetpos = p1;
 
 								ip.cyl.height = eb->anchors[eg2->ianchors[k2]].height;
 								ip.cyl.radius = eb->anchors[eg2->ianchors[k2]].radius; 
@@ -1162,9 +1136,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 			EERIE_CYLINDER currcyl;
 			currcyl.radius = 30;
 			currcyl.height = -150.f;
-			currcyl.origin.x = pos.x;
-			currcyl.origin.y = pos.y;
-			currcyl.origin.z = pos.z;
+			currcyl.origin = pos;
 
 			if (eg->nbpolyin)
 			{
@@ -1324,9 +1296,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				EERIE_CYLINDER currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
-				currcyl.origin.x = pos.x;
-				currcyl.origin.y = pos.y;
-				currcyl.origin.z = pos.z;
+				currcyl.origin = pos;
 
 				if (ep)
 				{

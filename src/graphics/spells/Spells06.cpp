@@ -385,32 +385,21 @@ CSlowDown::~CSlowDown()
 		srune = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CSlowDown::Create(Vec3f aeSrc, float afBeta)
-{
+
+void CSlowDown::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	eSrc = aeSrc;
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
 }
 
-//---------------------------------------------------------------------
-void CSlowDown::Update(unsigned long _ulTime)
-{
+void CSlowDown::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
@@ -595,12 +584,8 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 	v1a[end].p.y = eSrc.y;
 	v1a[end].p.z = eSrc.z - fBetaRadCos * 100;
 
-	v1b[0].p.x = v1a[0].p.x;
-	v1b[0].p.y = v1a[0].p.y;
-	v1b[0].p.z = v1a[0].p.z;
-	v1b[end].p.x = v1a[end].p.x;
-	v1b[end].p.y = v1a[end].p.y;
-	v1b[end].p.z = v1a[end].p.z;
+	v1b[0].p = v1a[0].p;
+	v1b[end].p = v1a[end].p;
 
 	sizeF = 200;
 	this->Split(v1a, 0, end, 20);
@@ -640,21 +625,14 @@ void CRiseDead::Create(Vec3f aeSrc, float afBeta)
 				v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
 			}
 		}
-
-	for (i = 0; i <= end; i++)
-	{
-		va[i].p.x = eSrc.x;
-		va[i].p.y = eSrc.y;
-		va[i].p.z = eSrc.z;
-		vb[i].p.x = eSrc.x;
-		vb[i].p.y = eSrc.y;
-		vb[i].p.z = eSrc.z;
+	
+	for(i = 0; i <= end; i++) {
+		vb[i].p = va[i].p = eSrc;
 	}
-
+	
 	sizeF = 0;
-
-
-	//cailloux					
+	
+	// cailloux
 	this->timestone = 0;
 	this->nbstone = 0;
 	this->stone[0] = stone0; 
@@ -999,14 +977,9 @@ void CRiseDead::RenderFissure()
 				tfRaysb[i+1] = 0.0f;
 		}
 		
-		if (i < fSizeIntro)
-		{
-			vt[0].p.x = va[i].p.x;
-			vt[0].p.y = va[i].p.y;
-			vt[0].p.z = va[i].p.z;
-			vt[1].p.x = va[i+1].p.x;
-			vt[1].p.y = va[i+1].p.y;
-			vt[1].p.z = va[i+1].p.z;
+		if(i < fSizeIntro) {
+			vt[0].p = va[i].p;
+			vt[1].p = va[i + 1].p;
 			vt[2].p.x = va[i].p.x ;
 			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
 			vt[2].p.z = va[i].p.z ;
@@ -1031,14 +1004,9 @@ void CRiseDead::RenderFissure()
 			                             &vr[3]);
 		}
 		
-		if (i < fSizeIntro)
-		{
-			vt[0].p.x = vb[i+1].p.x;
-			vt[0].p.y = vb[i+1].p.y;
-			vt[0].p.z = vb[i+1].p.z;
-			vt[1].p.x = vb[i].p.x;
-			vt[1].p.y = vb[i].p.y;
-			vt[1].p.z = vb[i].p.z;
+		if(i < fSizeIntro) {
+			vt[0].p = vb[i + 1].p;
+			vt[1].p = vb[i].p;
 			vt[2].p.x = vb[i+1].p.x ;
 			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
 			vt[2].p.z = vb[i+1].p.z ;
@@ -1323,11 +1291,7 @@ void CParalyse::CreateLittlePrismTriangleList()
 		}
 
 		v = prismvertex;
-		float t = sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
-		t = 1 / t;
-		vt.x = v->x * t;
-		vt.y = v->y * t;
-		vt.z = v->z * t;
+		vt = v->getNormalized();
 		tabprism[i].offset.x = r * vt.x;
 		tabprism[i].offset.y = 0;
 		tabprism[i].offset.z = r * vt.z;
@@ -1905,47 +1869,34 @@ CDisarmTrap::~CDisarmTrap()
 		srune = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CDisarmTrap::Create(Vec3f aeSrc, float afBeta)
-{
+
+void CDisarmTrap::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	eSrc = aeSrc;
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
 }
 
-//---------------------------------------------------------------------
-void CDisarmTrap::Update(unsigned long _ulTime)
-{
+void CDisarmTrap::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
 float CDisarmTrap::Render() {
 	
 	float x = eSrc.x;
-	float y = eSrc.y;// + 100.0f;
+	float y = eSrc.y;
 	float z = eSrc.z;
-
-	if (ulCurrentTime >= ulDuration)
-	{
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	

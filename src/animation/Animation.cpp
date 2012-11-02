@@ -1789,24 +1789,15 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 	}
 }
 
-//*************************************************************************************
 // Precalcs some misc things for lights
-//*************************************************************************************
-void Preparellights(Vec3f * pos)
-{
-	for (long i=0;i<MAX_LLIGHTS;i++) 
-	{
-		EERIE_LIGHT * el=llights[i];
-
-		if (el)
-		{
-			TCAM[i].pos.x=el->pos.x;			
-			TCAM[i].pos.y=el->pos.y;
-			TCAM[i].pos.z=el->pos.z;
+void Preparellights(Vec3f * pos) {
+	for (long i = 0; i < MAX_LLIGHTS; i++) {
+		EERIE_LIGHT * el = llights[i];
+		if(el) {
+			TCAM[i].pos = el->pos;
 			SetTargetCamera(&TCAM[i],pos->x,pos->y,pos->z);
 			F_PrepareCamera(&TCAM[i]);
-			
-		}		 
+		}
 	}
 }
 

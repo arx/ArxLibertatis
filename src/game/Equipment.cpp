@@ -799,12 +799,10 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
 		if (rad == -1) continue;
-
+		
 		v0 = &io_weapon->obj->vertexlist3[io_weapon->obj->actionlist[j].idx].v;
-		sphere.origin.x = v0->x;
-		sphere.origin.y = v0->y;
-		sphere.origin.z = v0->z;
-	
+		sphere.origin = *v0;
+		
 		sphere.radius = rad; 
 
 		if (source != 0) sphere.radius += 15.f;
@@ -829,10 +827,7 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					long		hitpoint	=	-1;
 					float		curdist		=	999999.f;
 					
-					Vec3f vector;
-					vector.x = sphere.origin.x - target->pos.x;
-					vector.y = (sphere.origin.y - target->pos.y) * ( 1.0f / 2 );
-					vector.z = sphere.origin.z - target->pos.z;
+					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 					vector.normalize();
 
 					for (size_t ii = 0; ii < target->obj->facelist.size(); ii++)

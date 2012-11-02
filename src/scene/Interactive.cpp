@@ -441,27 +441,16 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 }
 
 
-bool ForceNPC_Above_Ground(Entity * io)
-{
-	if (io
-	        &&	(io->ioflags & IO_NPC)
-	        && !(io->ioflags & IO_PHYSICAL_OFF))
-	{
-		io->physics.cyl.origin.x = io->pos.x;
-		io->physics.cyl.origin.y = io->pos.y;
-		io->physics.cyl.origin.z = io->pos.z;
- 
+bool ForceNPC_Above_Ground(Entity * io) {
+	
+	if(io && (io->ioflags & IO_NPC) && !(io->ioflags & IO_PHYSICAL_OFF)) {
+		io->physics.cyl.origin = io->pos;
 		AttemptValidCylinderPos(&io->physics.cyl, io, CFLAG_NO_INTERCOL);
-		{
-			if (EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f)
-			{
-				io->pos.y = io->physics.cyl.origin.y;
-				return true;
-			}
-			else return false;
+		if(EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
+			io->pos.y = io->physics.cyl.origin.y;
+			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -847,32 +836,22 @@ void SelectNode(long i)
 	if (nodes.nodes[i].exist)  nodes.nodes[i].selected = 1;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void UnselectAllNodes()
-{
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if (nodes.nodes[i].exist)  nodes.nodes[i].selected = 0;
-	}
-}
-//*************************************************************************************
-//*************************************************************************************
-void TranslateSelectedNodes(Vec3f * trans)
-{
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(nodes.nodes[i].selected))
-		{
-			nodes.nodes[i].pos.x += trans->x;
-			nodes.nodes[i].pos.y += trans->y;
-			nodes.nodes[i].pos.z += trans->z;
+void UnselectAllNodes() {
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist) {
+			nodes.nodes[i].selected = 0;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
+void TranslateSelectedNodes(Vec3f * trans) {
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && nodes.nodes[i].selected) {
+			nodes.nodes[i].pos += *trans;
+		}
+	}
+}
+
 bool IsLinkedNode(long i, long j)
 {
 	if ((!nodes.nodes[i].exist)
@@ -1347,13 +1326,10 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		{
 			io->obj->pbox->storedtiming = 0;
 		}
-
-		io->physics.cyl.origin.x = io->pos.x;
-		io->physics.cyl.origin.y = io->pos.y;
-		io->physics.cyl.origin.z = io->pos.z;
+		
+		io->physics.cyl.origin = io->pos;
 		io->physics.cyl.radius = io->original_radius;
 		io->physics.cyl.height = io->original_height;
-
 		io->fall = 0;
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = TARGET_NONE;
@@ -1517,29 +1493,23 @@ Entity * CloneIOItem(Entity * src) {
 	return dest;
 }
 
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target)
-{
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
+	
 	EERIE_CYLINDER phys;
-
-	if (io && (io != entities.player()))
-	{
+	if (io && io != entities.player()) {
 		phys.height = io->original_height * io->scale;
 		phys.radius = io->original_radius * io->scale;
-	}
-	else
-	{
+	} else {
 		phys.height = -200;
 		phys.radius = 50;
 	}
-
-	phys.origin.x = target->x;
-	phys.origin.y = target->y;
-	phys.origin.z = target->z;
+	
+	phys.origin = *target;
 	long count = 0;
 	float modx, modz;
-
-	while (count < 600)
-	{
+	
+	while(count < 600) {
+		
 		modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
 		modz = EEcos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
@@ -2898,9 +2868,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 					{
 						EERIE_SPHERE sphere;
-						sphere.origin.x = obj->pbox->vert[kk].pos.x;
-						sphere.origin.y = obj->pbox->vert[kk].pos.y;
-						sphere.origin.z = obj->pbox->vert[kk].pos.z;
+						sphere.origin = obj->pbox->vert[kk].pos;
 						sphere.radius = 30.f;
 						float miny, maxy;
 						miny = io->bbox3D.min.y;
@@ -3121,19 +3089,15 @@ void UpdateCameras() {
 					}
 				}
 			}
-
-			if (io->ioflags & IO_CAMERA)
-			{
-				entities[i]->_camdata->cam.pos.x = io->pos.x;
-				entities[i]->_camdata->cam.pos.y = io->pos.y;
-				entities[i]->_camdata->cam.pos.z = io->pos.z;
+			
+			if(io->ioflags & IO_CAMERA) {
+				
+				entities[i]->_camdata->cam.pos = io->pos;
 
 				if (io->targetinfo != TARGET_NONE) // Follows target
 				{
 					GetTargetPos(io, (unsigned long)entities[i]->_camdata->cam.smoothing);
-					io->target.x += io->_camdata->cam.translatetarget.x;
-					io->target.y += io->_camdata->cam.translatetarget.y;
-					io->target.z += io->_camdata->cam.translatetarget.z;
+					io->target += io->_camdata->cam.translatetarget;
 
 					if ((io->_camdata->cam.lastinfovalid) && (io->_camdata->cam.smoothing != 0.f))
 					{
@@ -3184,13 +3148,9 @@ void UpdateCameras() {
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
 					SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
-					io->_camdata->cam.lasttarget.x = io->target.x;
-					io->_camdata->cam.lasttarget.y = io->target.y;
-					io->_camdata->cam.lasttarget.z = io->target.z;
+					io->_camdata->cam.lasttarget = io->target;
 					io->_camdata->cam.lastinfovalid = true;
-					io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
-					io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
-					io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
+					io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 				}
 			}
 		}

@@ -287,21 +287,11 @@ float CExplosion::Render()
 				d3dvs2.p.z = pos.z + vertex->z * rin;
 				vertex++;
 
-				if (tactif[nb] >= 0)
-				{
-					Vec3f pos, dir;
-					pos.x = d3dvs2.p.x;
-					pos.y = d3dvs2.p.y;
-					pos.z = d3dvs2.p.z;
-					dir.x = d3dvs.p.x;
-					dir.y = d3dvs.p.y;
-					dir.z = d3dvs.p.z;
-
-					DynLight[tactif[nb]].pos.x = dir.x;
-					DynLight[tactif[nb]].pos.y = dir.y;
-					DynLight[tactif[nb]].pos.z = dir.z;
+				if(tactif[nb] >= 0) {
+					Vec3f pos = d3dvs2.p;
+					Vec3f dir = d3dvs.p;
+					DynLight[tactif[nb]].pos = dir;
 					DynLight[tactif[nb]].intensity = .7f + 2.f * rnd();
-
 					Collision(nb, &pos, &dir);
 					ExplosionAddParticule(nb, &d3dvs, tp);
 				}

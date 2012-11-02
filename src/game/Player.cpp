@@ -2013,40 +2013,24 @@ void ARX_PLAYER_Manage_Visual() {
 
 				pouet--;
 
-				if (id != -1)
-				{
-					if (special[pouet] == -1)
-					{
+				if(id != -1) {
+					
+					if(special[pouet] == -1) {
 						special[pouet] = GetFreeDynLight();
 					}
-
-					if (special[pouet] != -1)
-					{
+					if(special[pouet] != -1) {
 						EERIE_LIGHT * el = &DynLight[special[pouet]];
 						el->intensity = 1.3f;
 						el->exist = 1;
 						el->fallend = 180.f;
 						el->fallstart = 50.f;
-
-						if (FistParticles & 2)
-						{
-							el->rgb.r = 1.f;
-							el->rgb.g = 0.3f;
-							el->rgb.b = 0.2f;
+						if(FistParticles & 2) {
+							el->rgb = Color3f(1.f, 0.3f, 0.2f);
+						} else {
+							el->rgb = Color3f(0.7f, 0.3f, 1.f);
 						}
-						else
-						{
-							el->rgb.r = 0.7f;
-							el->rgb.g = 0.3f;
-							el->rgb.b = 1.f;
-						}
-
-						el->pos.x = eobj->vertexlist3[id].v.x;
-						el->pos.y = eobj->vertexlist3[id].v.y;
-						el->pos.z = eobj->vertexlist3[id].v.z;
-					}
-					else
-					{
+						el->pos = eobj->vertexlist3[id].v;
+					} else {
 						LogWarning << "Maximum number of dynamic lights exceeded.";
 					}
 					

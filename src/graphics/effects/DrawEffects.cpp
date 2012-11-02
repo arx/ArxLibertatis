@@ -245,12 +245,10 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 	GRenderer->SetCulling(Renderer::CullNone);
 	
 	if (el!=NULL)
-	if (el->treat) 
+	if (el->treat)
 	{
 		el->mins.x=999999999.f;
-		in.p.x=el->pos.x;
-		in.p.y=el->pos.y;
-		in.p.z=el->pos.z;
+		in.p = el->pos;
 
 		EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
 		if(ACTIVECAM->type != CAM_TOPVIEW) {
@@ -263,9 +261,7 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 				if ((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
 				if ((el->mins.y>=-200.f) && (el->mins.y<=1000.f))
 				{
-					in.p.x=el->pos.x;
-					in.p.y=el->pos.y;
-					in.p.z=el->pos.z;
+					in.p = el->pos;
 					EERIETreatPoint(&in,&center);	
 
 					if ((center.p.z>0.f) && (center.p.z<1000.f))
@@ -651,9 +647,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 					for ( long j = 0 ; j < to ; j++ )
 					{
-						verts[j].p.x		= ep->tv[j].p.x;
-						verts[j].p.y		= ep->tv[j].p.y;
-						verts[j].p.z		= ep->tv[j].p.z;
+						verts[j].p = ep->tv[j].p;
 						verts[j].rhw	= ep->tv[j].rhw;
 						verts[j].color	= 0xFFFFFFFF;
 						verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float) arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
@@ -695,9 +689,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 				for ( long j = 0 ; j < to ; j++ )
 				{
-					verts[j].p.x		= ep->tv[j].p.x;
-					verts[j].p.y		= ep->tv[j].p.y;
-					verts[j].p.z		= ep->tv[j].p.z;
+					verts[j].p = ep->tv[j].p;
 					verts[j].rhw	= ep->tv[j].rhw;
 					verts[j].color	= 0xFF505050;
 					verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );

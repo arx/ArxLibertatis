@@ -79,24 +79,16 @@ CHeal::~CHeal()
 	}
 }
 
-//-----------------------------------------------------------------------------
-void CHeal::Create()
-{
+void CHeal::Create() {
+	
 	SetAngle(MAKEANGLE(player.angle.b));
-
-	if (spells[spellinstance].caster == 0)
-	{
-		eSrc.x = player.pos.x;
-		eSrc.y = player.pos.y;
-		eSrc.z = player.pos.z;
+	
+	if(spells[spellinstance].caster == 0) {
+		eSrc = player.pos;
+	} else {
+		eSrc = entities[spells[spellinstance].caster]->pos;
 	}
-	else
-	{
-		eSrc.x = entities[spells[spellinstance].caster]->pos.x;
-		eSrc.y = entities[spells[spellinstance].caster]->pos.y;
-		eSrc.z = entities[spells[spellinstance].caster]->pos.z;
-	}
-
+	
 	pPS->lLightId = GetFreeDynLight();
 
 	if (pPS->lLightId != -1)
@@ -177,23 +169,13 @@ void CHeal::Update(unsigned long aulTime)
 	{
 		return;
 	}
-
-	if (spells[spellinstance].caster == 0)
-	{
-		eSrc.x = player.pos.x;
-		eSrc.y = player.pos.y;
-		eSrc.z = player.pos.z;
+	
+	if(spells[spellinstance].caster == 0) {
+		eSrc = player.pos;
+	} else if(ValidIONum(spells[spellinstance].target)) {
+		eSrc = entities[spells[spellinstance].target]->pos;
 	}
-	else
-	{
-		if (ValidIONum(spells[spellinstance].target))
-		{
-			eSrc.x = entities[spells[spellinstance].target]->pos.x;
-			eSrc.y = entities[spells[spellinstance].target]->pos.y;
-			eSrc.z = entities[spells[spellinstance].target]->pos.z;
-		}
-	}
-
+	
 	if (pPS->lLightId == -1)
 		pPS->lLightId = GetFreeDynLight();
 

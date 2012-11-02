@@ -769,10 +769,7 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 
 // Rotates a Vector around X. angle is given in degrees
 void VRotateX(Vec3f * out, const float angle) {
-	Vec3f in;
-	in.x = out->x;
-	in.y = out->y;
-	in.z = out->z;
+	Vec3f in = *out;
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
@@ -783,10 +780,7 @@ void VRotateX(Vec3f * out, const float angle) {
 
 // Rotates a Vector around Y. angle is given in degrees
 void VRotateY(Vec3f * out, const float angle) {
-	Vec3f in;
-	in.x = out->x;
-	in.y = out->y;
-	in.z = out->z;
+	Vec3f in = *out;
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
@@ -797,10 +791,7 @@ void VRotateY(Vec3f * out, const float angle) {
 
 // Rotates a Vector around Z. angle is given in degrees
 void VRotateZ(Vec3f * out, const float angle) {
-	Vec3f in;
-	in.x = out->x;
-	in.y = out->y;
-	in.z = out->z;
+	Vec3f in = *out;
 	float s = radians(angle);
 	float c = EEcos(s);
 	s = EEsin(s);
@@ -914,9 +905,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 	// Correct the Y reference vector
 	yAxis = cross(xAxis, zAxis).getNormalized();
-	yAxis.x = -yAxis.x;
-	yAxis.y = -yAxis.y;
-	yAxis.z = -yAxis.z;
+	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included
 	EERIEMATRIX rot, roll;

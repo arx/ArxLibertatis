@@ -441,32 +441,26 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
 		Vec3f vector = obj->bones[i].transanim;
-
+		
 		// Apply Scale
 		matrix._11 *= obj->bones[i].scaleanim.x;
 		matrix._12 *= obj->bones[i].scaleanim.x;
 		matrix._13 *= obj->bones[i].scaleanim.x;
-
+		
 		matrix._21 *= obj->bones[i].scaleanim.y;
 		matrix._22 *= obj->bones[i].scaleanim.y;
 		matrix._23 *= obj->bones[i].scaleanim.y;
-
+		
 		matrix._31 *= obj->bones[i].scaleanim.z;
 		matrix._32 *= obj->bones[i].scaleanim.z;
 		matrix._33 *= obj->bones[i].scaleanim.z;
-
-
-		for (v = 0; v != obj->bones[i].nb_idxvertices; v++)
-		{
+		
+		for(v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
 			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
-
 			TransformVertexMatrix(&matrix, inVert, &outVert->v);
-
 			outVert->v += vector;
-			outVert->vert.p.x = outVert->v.x;
-			outVert->vert.p.y = outVert->v.y;
-			outVert->vert.p.z = outVert->v.z;
+			outVert->vert.p = outVert->v;
 		}
 	}
 
@@ -665,9 +659,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 							AddRandomSmoke(io, 50);
 							Color3f rgb = io->_npcdata->blood_color.to<float>();
 							EERIE_SPHERE sp;
-							sp.origin.x = io->pos.x;
-							sp.origin.y = io->pos.y;
-							sp.origin.z = io->pos.z;
+							sp.origin = io->pos;
 							sp.radius = 200.f;
 							long count = 6;
 
@@ -1547,12 +1539,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				tv = PushVertexInTableCull(pTex);
 			}
 
-			for (long n = 0 ; n < 3 ; n++)
-			{
-				paf[n]		= eface->vid[n];
-				tv[n].p.x	= eobj->vertexlist3[paf[n]].vert.p.x;
-				tv[n].p.y	= eobj->vertexlist3[paf[n]].vert.p.y;
-				tv[n].p.z	= eobj->vertexlist3[paf[n]].vert.p.z;
+			for(long n = 0 ; n < 3 ; n++) {
+				paf[n] = eface->vid[n];
+				tv[n].p = eobj->vertexlist3[paf[n]].vert.p;
 
 				// Nuky - this code takes 20% of the whole game performance O_O
 				//        AFAIK it allows to correctly display the blue magic effects

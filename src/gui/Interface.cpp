@@ -7399,10 +7399,8 @@ long Manage3DCursor(long flags)
 					dest.y=player.pos.y+(float)EEsin(radians(player.angle.a))*10000.f
 							+mvectx.y+mvecty.y*5.f;
 					dest.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f
-		         + mvectx.z; 
-					pos.x=orgn.x;
-					pos.y=orgn.y;
-					pos.z=orgn.z;
+		         + mvectx.z;
+					pos = orgn;
 
 					Vec3f movev = (dest - orgn).getNormalized();
 
@@ -7472,18 +7470,13 @@ long Manage3DCursor(long flags)
 							collidpos = cyl2.origin;
 				bCollidposNoInit = false;
 
-							if ( lastanything < 0.f )
-							{
-								pos.y		+= lastanything;
-								collidpos.y	+= lastanything;
+							if(lastanything < 0.f) {
+								pos.y += lastanything;
+								collidpos.y += lastanything;
 							}
-						}
-						else
-						{
-							pos.x			= cyl2.origin.x;
-							pos.y			= cyl2.origin.y;
-							pos.z			= cyl2.origin.z;
-							lastanything	= anything;
+						} else {
+							pos = cyl2.origin;
+							lastanything = anything;
 						}
 
 						iterating--;

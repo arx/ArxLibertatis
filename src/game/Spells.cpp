@@ -5796,18 +5796,13 @@ void ARX_SPELLS_Kill(long i) {
 					MakeCoolFx(&posi);
 					long nn=GetFreeDynLight();
 
-					if (nn>=0)
-					{
+					if(nn >= 0) {
 						DynLight[nn].exist=1;
 						DynLight[nn].intensity = 0.7f + 2.f*rnd();
 						DynLight[nn].fallend = 600.f;
 						DynLight[nn].fallstart = 400.f;
-						DynLight[nn].rgb.r = 1.0f;
-						DynLight[nn].rgb.g = 0.8f;
-						DynLight[nn].rgb.b = .0f;
-						DynLight[nn].pos.x = posi.x;
-						DynLight[nn].pos.y = posi.y;
-						DynLight[nn].pos.z = posi.z;
+						DynLight[nn].rgb = Color3f(1.0f, 0.8f, 0.0f);
+						DynLight[nn].pos = posi;
 						DynLight[nn].duration=600;
 					}
 
@@ -6074,7 +6069,7 @@ void ARX_SPELLS_Update()
 				case SPELL_LEVITATE:
 				{
  
-					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);					
+					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
 					if (spells[i].target==0)
 						player.levitate=0;
@@ -6086,7 +6081,7 @@ void ARX_SPELLS_Update()
 				//----------------------------------------------------------------------------------
 				case SPELL_PARALYSE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
-					entities[spells[i].target]->ioflags&=~IO_FREEZESCRIPT;											
+					entities[spells[i].target]->ioflags&=~IO_FREEZESCRIPT;
 				break;
 				//----------------------------------------------------------------------------------
 				case SPELL_RISE_DEAD:
@@ -6103,19 +6098,14 @@ void ARX_SPELLS_Update()
 							MakeCoolFx(&posi);
 							long nn=GetFreeDynLight();
 
-							if (nn>=0)
-							{
+							if(nn >= 0) {
 								DynLight[nn].exist=1;
 								DynLight[nn].intensity = 0.7f + 2.f*rnd();
 								DynLight[nn].fallend = 600.f;
 								DynLight[nn].fallstart = 400.f;
-								DynLight[nn].rgb.r = 1.0f;
-								DynLight[nn].rgb.g = 0.8f;
-								DynLight[nn].rgb.b = .0f;
-								DynLight[nn].pos.x = posi.x;
-								DynLight[nn].pos.y = posi.y;
-								DynLight[nn].pos.z = posi.z;
-								DynLight[nn].duration=600;
+								DynLight[nn].rgb = Color3f(1.0f, 0.8f, 0.f);
+								DynLight[nn].pos = posi;
+								DynLight[nn].duration = 600;
 							}
 
 							ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo]);
@@ -6486,14 +6476,12 @@ void ARX_SPELLS_Update()
 						el->fallend = 500.f;
 						el->fallstart = 400.f;
 						el->rgb.r = 1.0f-rnd()*0.3f;
-						el->rgb.g = 0.6f-rnd()*0.1f;;
-						el->rgb.b = 0.3f-rnd()*0.1f;;
+						el->rgb.g = 0.6f-rnd()*0.1f;
+						el->rgb.b = 0.3f-rnd()*0.1f;
 					}
 
 					EERIE_SPHERE sphere;
-					sphere.origin.x=pCF->eCurPos.x;
-					sphere.origin.y=pCF->eCurPos.y;
-					sphere.origin.z=pCF->eCurPos.z;
+					sphere.origin = pCF->eCurPos;
 					sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 					#define MIN_TIME_FIREBALL 2000 
 
@@ -6655,9 +6643,7 @@ void ARX_SPELLS_Update()
 					if (pCRG)
 					{
 						EERIE_SPHERE sphere;
-						sphere.origin.x=pCRG->eSrc.x;
-						sphere.origin.y=pCRG->eSrc.y;
-						sphere.origin.z=pCRG->eSrc.z;
+						sphere.origin = pCRG->eSrc;
 						sphere.radius=std::max(spells[i].caster_level*15.f,50.f);
 
 						if (CheckAnythingInSphere(&sphere,spells[i].caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
@@ -6825,16 +6811,10 @@ void ARX_SPELLS_Update()
 								}
 							}
 							
-						}
-						else if ((!arxtime.is_paused()) && (tim<4000))
-						{
-						  if (rnd()>0.95f) 
-							{
+						} else if(!arxtime.is_paused() && tim < 4000) {
+						  if(rnd() > 0.95f) {
 								CRiseDead *pRD = (CRiseDead*)pCSpellFX;
-								Vec3f pos;
-								pos.x = pRD->eSrc.x;
-								pos.y = pRD->eSrc.y;
-								pos.z = pRD->eSrc.z;
+								Vec3f pos = pRD->eSrc;
 								MakeCoolFx(&pos);
 							}
 						}
@@ -6871,9 +6851,7 @@ void ARX_SPELLS_Update()
 					{
 						Entity * io=entities[spells[i].longinfo];
 						CCreateField * ccf=(CCreateField *)pCSpellFX;
-						io->pos.x = ccf->eSrc.x;
-						io->pos.y = ccf->eSrc.y;
-						io->pos.z = ccf->eSrc.z;
+						io->pos = ccf->eSrc;
 
 						if (IsAnyNPCInPlatform(io))
 						{
@@ -7100,15 +7078,9 @@ void ARX_SPELLS_Update()
 					{
 						if (rnd()>0.7f) 
 						{
-							Vec3f pos;
-							CSummonCreature *pSummon;
-							pSummon= (CSummonCreature *)spells[i].pSpellFx;
-
-							if (pSummon)
-							{
-								pos.x=pSummon->eSrc.x;
-								pos.y=pSummon->eSrc.y;
-								pos.z=pSummon->eSrc.z;
+							CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
+							if(pSummon) {
+								Vec3f pos = pSummon->eSrc;
 								MakeCoolFx(&pos);
 							}
 						}
@@ -7193,14 +7165,13 @@ void ARX_SPELLS_Update()
 								io->summoner = checked_range_cast<short>(lSpellsCaster);
 
 
-								io->scriptload=1;
-
-								if (tokeep==1)
-									io->ioflags|=IO_NOSAVE;
-
-											io->pos.x = phys.origin.x; 
-											io->pos.y = phys.origin.y;
-											io->pos.z = phys.origin.z;
+								io->scriptload = 1;
+								
+								if(tokeep == 1) {
+									io->ioflags |= IO_NOSAVE;
+								}
+								
+								io->pos = phys.origin;
 								SendInitScriptEvent(io);
 
 								if (tokeep<0)
@@ -7247,17 +7218,10 @@ void ARX_SPELLS_Update()
  
 
 					if (!arxtime.is_paused())
-						if (rnd()>0.7f) 
-						{
-							Vec3f pos;
-							CSummonCreature *pSummon;
-							pSummon= (CSummonCreature *)spells[i].pSpellFx;
-
-							if (pSummon)
-							{
-								pos.x=pSummon->eSrc.x;
-								pos.y=pSummon->eSrc.y;
-								pos.z=pSummon->eSrc.z;
+						if(rnd() > 0.7f) {
+							CSummonCreature * pSummon = (CSummonCreature *)spells[i].pSpellFx;
+							if(pSummon) {
+								Vec3f pos = pSummon->eSrc;
 								MakeCoolFx(&pos);
 							}
 						}
@@ -7345,29 +7309,21 @@ void ARX_SPELLS_Update()
 
 				spells[i].lastupdate=tim;
 
-				position.x=_source.x+rnd()*500.f-250.f;
-				position.y=_source.y+rnd()*500.f-250.f;
-				position.z=_source.z+rnd()*500.f-250.f;
+				position = _source + randomVec(-250.f, 250.f);
 				ARX_SOUND_RefreshPosition(spells[i].snd_loop, &position);
 				ARX_SOUND_RefreshVolume(spells[i].snd_loop, _fx + 0.5F);
 				ARX_SOUND_RefreshPitch(spells[i].snd_loop, 0.8F + 0.4F * rnd());
-
-				if (rnd()>0.62f) 
-				{
-					position.x=_source.x+rnd()*500.f-250.f;
-					position.y=_source.y+rnd()*500.f-250.f;
-					position.z=_source.z+rnd()*500.f-250.f;
+				
+				if(rnd() > 0.62f) {
+					position = _source  + randomVec(-250.f, 250.f);
 					ARX_SOUND_PlaySFX(SND_SPELL_SPARK, &position, 0.8F + 0.4F * rnd());
-				} 
-
-				if (rnd()>0.82f) 
-				{
-					position.x=_source.x+rnd()*500.f-250.f;
-					position.y=_source.y+rnd()*500.f-250.f;
-					position.z=_source.z+rnd()*500.f-250.f;
+				}
+				
+				if(rnd() > 0.82f) {
+					position = _source + randomVec(-250.f, 250.f);
 					ARX_SOUND_PlaySFX(SND_SPELL_ELECTRIC, &position, 0.8F + 0.4F * rnd());
 				}
-
+				
 				if ((_gct>spells[i].tolive-1800) && (spells[i].siz==0))
 				{
 					spells[i].siz=1;
@@ -7384,9 +7340,7 @@ void ARX_SPELLS_Update()
 					DynLight[spells[i].longinfo].intensity=1.3f+rnd()*1.f;
 					DynLight[spells[i].longinfo].fallend=850.f;
 					DynLight[spells[i].longinfo].fallstart=500.f;
-					DynLight[spells[i].longinfo].rgb.r=1.f*fxx;					
-					DynLight[spells[i].longinfo].rgb.g=0.f*fxx;
-					DynLight[spells[i].longinfo].rgb.b=0.f*fxx;
+					DynLight[spells[i].longinfo].rgb = Color3f::red * fxx;
 				}
 			}
 		break;

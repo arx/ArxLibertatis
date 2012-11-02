@@ -69,13 +69,11 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 		io->physics.cyl.height = 0.f;
 		return;
 	}
-
-	io->physics.cyl.origin.x = obj->vertexlist[obj->origin].v.x;
-	io->physics.cyl.origin.y = obj->vertexlist[obj->origin].v.y;
-	io->physics.cyl.origin.z = obj->vertexlist[obj->origin].v.z;
+	
+	io->physics.cyl.origin = obj->vertexlist[obj->origin].v;
+	
 	float d = 0.f;
 	float height = 0.f;
-
 	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
 		if((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f)) {
 			d = max(d, dist(io->physics.cyl.origin, obj->vertexlist[i].v));
@@ -88,13 +86,11 @@ void EERIE_COLLISION_Cylinder_Create(Entity * io)
 		io->physics.cyl.height = 0.f;
 		return;
 	}
-
+	
 	io->original_radius = d * 1.2f;
 	io->original_height = -height;
-	io->physics.cyl.origin.x = io->pos.x;
-	io->physics.cyl.origin.y = io->pos.y;
-	io->physics.cyl.origin.z = io->pos.z;
-
+	io->physics.cyl.origin = io->pos;
+	
 	if (io->original_height > -40)
 	{
 		float v = (-io->original_height) * ( 1.0f / 40 );

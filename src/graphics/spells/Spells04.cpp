@@ -187,46 +187,31 @@ float CBless::Render()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-void CDispellField::Create(Vec3f aeSrc, float afBeta)
-{
+void CDispellField::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	eSrc = aeSrc;
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
 }
 
-//---------------------------------------------------------------------
-void CDispellField::Update(unsigned long _ulTime)
-{
+void CDispellField::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CDispellField::Render()
-{
-	if (ulCurrentTime >= ulDuration)
-	{
+float CDispellField::Render() {
+	
+	if (ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 	GRenderer->SetTexture(0, tex_p2);
 	
 	Anglef stiteangle;
@@ -297,82 +282,21 @@ CTelekinesis::~CTelekinesis()
 		srune = NULL;
 	}
 }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
 
-//-----------------------------------------------------------------------------
-void CTelekinesis::Create(Vec3f aeSrc, float afBeta)
-{
+void CTelekinesis::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	eSrc = aeSrc;
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
 }
 
-//---------------------------------------------------------------------
-void CTelekinesis::Update(unsigned long _ulTime)
-{
+void CTelekinesis::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 

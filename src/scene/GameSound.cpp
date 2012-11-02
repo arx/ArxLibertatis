@@ -525,23 +525,16 @@ long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch
 		channel.flags |= FLAG_PITCH;
 		channel.pitch = pitch;
 	}
-
-	if (position)
-	{
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
-	}
-	else
-	{
+	
+	if(position) {
+		channel.position = *position;
+	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position.x = 0.0F;
-		channel.position.y = 0.0F;
-		channel.position.z = 1.0F;
+		channel.position = Vec3f::Z_AXIS;
 	}
-
+	
 	audio::samplePlay(sample_id, channel, loop);
-
+	
 	return sample_id;
 }
 
@@ -688,25 +681,23 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
-
+	
 	//Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
-
+	
 	if(position) {
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
+		channel.position = *position;
 	} else {
 		ARX_PLAYER_FrontPos(&channel.position);
 	}
-
+	
 	channel.pitch = 0.9F + 0.2F * rnd();
 	channel.volume = volume;
 	audio::samplePlay(sample_id, channel);
-
+	
 	size_t length;
 	audio::getSampleLength(sample_id, length);
-
+	
 	return (long)(channel.pitch * length);
 }
 
@@ -753,9 +744,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 	
 	if(position) {
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
+		channel.position = *position;
 		if(ACTIVECAM && fartherThan(ACTIVECAM->pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
@@ -834,9 +823,7 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 		channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
+		channel.position = *position;
 	}
 
 	if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
@@ -930,25 +917,20 @@ void ARX_SOUND_RefreshPosition(SourceId & sample_id, const Vec3f * position) {
 
 void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	
-	if (!bIsActive || !io || sample_id == INVALID_ID) return;
-
+	if(!bIsActive || !io || sample_id == INVALID_ID) {
+		return;
+	}
+	
 	Vec3f position;
-
-	if (io)
-	{
-		if (((io == entities.player()) && !EXTERNALVIEW) ||
-		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
-		{
+	if(io) {
+		if((io == entities.player() && !EXTERNALVIEW)
+		   || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER)) {
 			ARX_SOUND_IOFrontPos(io, position);
-		}
-		else
-		{
-			position.x = io->pos.x;
-			position.y = io->pos.y;
-			position.z = io->pos.z;
+		} else {
+			position = io->pos;
 		}
 	}
-
+	
 	audio::setSamplePosition(sample_id, position);
 }
 

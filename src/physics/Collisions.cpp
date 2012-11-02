@@ -797,9 +797,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 							for (long ii=0;ii<io->obj->nbgroups;ii++)
 							{
 								long idx = io->obj->grouplist[ii].origin;
-								sp.origin.x=vlist[idx].v.x;
-								sp.origin.y=vlist[idx].v.y;
-								sp.origin.z=vlist[idx].v.z;
+								sp.origin = vlist[idx].v;
 
 								if (ioo==entities.player())
 								{
@@ -874,9 +872,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 							{
 								if (ii != (size_t)io->obj->origin)
 								{
-									sp.origin.x=vlist[ii].v.x;
-									sp.origin.y=vlist[ii].v.y;
-									sp.origin.z=vlist[ii].v.z;
+									sp.origin = vlist[ii].v;
 									
 									if (SphereInCylinder(cyl,&sp))
 									{
@@ -1665,9 +1661,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
 				float t=radians(MAKEANGLE(rangle));
 				YRotatePoint(&mvector,&vecatt,EEcos(t),EEsin(t));
-				test.cyl.origin.x+=vecatt.x*curmovedist;
-				test.cyl.origin.y+=vecatt.y*curmovedist;
-				test.cyl.origin.z+=vecatt.z*curmovedist;
+				test.cyl.origin += vecatt * curmovedist;
 				float cc=io->_npcdata->climb_count;
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags)) 
@@ -1682,9 +1676,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
 				t=radians(MAKEANGLE(langle));
 				YRotatePoint(&mvector,&vecatt,EEcos(t),EEsin(t));
-				test.cyl.origin.x+=vecatt.x*curmovedist;
-				test.cyl.origin.y+=vecatt.y*curmovedist;
-				test.cyl.origin.z+=vecatt.z*curmovedist;
+				test.cyl.origin += vecatt * curmovedist;
 				cc=io->_npcdata->climb_count;
 
 				if (AttemptValidCylinderPos(&test.cyl, io, flags))
@@ -1893,31 +1885,25 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 					if (RayCollidingPoly(orgn,dest,ep,hit)) 
 					{
 						dd = fdist(*orgn, *hit);
-
-						if (dd<nearest)
-						{
-							nearest=dd;
-							found_ep=ep;
-							found_hit.x=hit->x;
-							found_hit.y=hit->y;
-							found_hit.z=hit->z;
+						if(dd < nearest) {
+							nearest = dd;
+							found_ep = ep;
+							found_hit = *hit;
 						}
-					}				
-				}			
+					}
+				}
 			}
-	
-		}	
-
+			
+		}
+		
 fini:
 	;
 	
 	if ( found_ep == NULL ) return true;
 
 	if ( found_ep == epp ) return true;
-
-	hit->x = found_hit.x;
-	hit->y = found_hit.y;
-	hit->z = found_hit.z;
+	
+	*hit = found_hit;
 	return false;
 }
 void ANCHOR_BLOCK_Clear()

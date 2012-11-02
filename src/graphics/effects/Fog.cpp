@@ -84,22 +84,15 @@ void ARX_FOGS_Clear()
 		memset(&fogs[i], 0, sizeof(FOG_DEF));
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
-void ARX_FOGS_TranslateSelected(Vec3f * trans)
-{
-	for (long i = 0; i < MAX_FOG; i++)
-	{
-		if (fogs[i].selected)
-		{
-			fogs[i].pos.x += trans->x;
-			fogs[i].pos.y += trans->y;
-			fogs[i].pos.z += trans->z;
+
+void ARX_FOGS_TranslateSelected(Vec3f * trans) {
+	for(long i = 0; i < MAX_FOG; i++) {
+		if(fogs[i].selected) {
+			fogs[i].pos += *trans;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ARX_FOGS_UnselectAll()
 {
 	for (long i = 0; i < MAX_FOG; i++)

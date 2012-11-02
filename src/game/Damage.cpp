@@ -587,12 +587,8 @@ void ARX_DAMAGES_ForceDeath(Entity * io_dead, Entity * io_killer) {
 			if(ValidIOAddress(ioo)) {
 				ioo->show = SHOW_FLAG_IN_SCENE;
 				ioo->ioflags |= IO_NO_NPC_COLLIDE;
-				ioo->pos.x = ioo->obj->vertexlist3[ioo->obj->origin].v.x;
-				ioo->pos.y = ioo->obj->vertexlist3[ioo->obj->origin].v.y;
-				ioo->pos.z = ioo->obj->vertexlist3[ioo->obj->origin].v.z;
-				ioo->velocity.x = 0.f;
-				ioo->velocity.y = 13.f;
-				ioo->velocity.z = 0.f;
+				ioo->pos = ioo->obj->vertexlist3[ioo->obj->origin].v;
+				ioo->velocity = Vec3f(0.f, 13.f, 0.f);
 				ioo->stopped = 0;
 			}
 		}
@@ -1051,26 +1047,15 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 	if (damages[j].exist)
 	{
 		if (!damages[j].active) return;
-
-		if (damages[j].flags & DAMAGE_FLAG_FOLLOW_SOURCE)
-		{
-			if (damages[j].source == 0)
-			{
-				damages[j].pos.x = player.pos.x;
-				damages[j].pos.y = player.pos.y;
-				damages[j].pos.z = player.pos.z;
-			}
-			else
-			{
-				if (ValidIONum(damages[j].source))
-				{
-					damages[j].pos.x = entities[damages[j].source]->pos.x;
-					damages[j].pos.y = entities[damages[j].source]->pos.y;
-					damages[j].pos.z = entities[damages[j].source]->pos.z;
-				}
+		
+		if(damages[j].flags & DAMAGE_FLAG_FOLLOW_SOURCE) {
+			if(damages[j].source == 0) {
+				damages[j].pos = player.pos;
+			} else if (ValidIONum(damages[j].source)) {
+				damages[j].pos = entities[damages[j].source]->pos;
 			}
 		}
-
+		
 		float dmg;
 		if (damages[j].flags & DAMAGE_NOT_FRAME_DEPENDANT)
 			dmg = damages[j].damages;
@@ -1108,9 +1093,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 						continue;
 
 					EERIE_SPHERE sphere;
-					sphere.origin.x = damages[j].pos.x;
-					sphere.origin.y = damages[j].pos.y;
-					sphere.origin.z = damages[j].pos.z;
+					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius - 10.f;
 
 					if (CheckIOInSphere(&sphere, i, true))
@@ -1306,9 +1289,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 				         &&	(!(damages[j].type & DAMAGE_TYPE_NO_FIX)))
 				{
 					EERIE_SPHERE sphere;
-					sphere.origin.x = damages[j].pos.x;
-					sphere.origin.y = damages[j].pos.y;
-					sphere.origin.z = damages[j].pos.z;
+					sphere.origin = damages[j].pos;
 					sphere.radius = damages[j].radius + 15.f;
 
 					if (CheckIOInSphere(&sphere, i))

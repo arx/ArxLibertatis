@@ -121,32 +121,23 @@ static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
 }
 
 
-//*************************************************************************************
-//*************************************************************************************
-void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink)
-{
-	if (obj && tounlink)
-		for (long k = 0; k < obj->nblinked; k++)
-		{
-			if (obj->linked[k].lgroup != -1)
-			{
-				if (obj->linked[k].obj == tounlink)
-				{
-					for (size_t i = 0; i < tounlink->vertexlist.size(); i++)
-					{
-						tounlink->vertexlist[i].vert.p.x = tounlink->vertexlist[i].v.x;
-						tounlink->vertexlist[i].vert.p.y = tounlink->vertexlist[i].v.y;
-						tounlink->vertexlist[i].vert.p.z = tounlink->vertexlist[i].v.z;
-					}
-
-					EERIE_LINKEDOBJ_Remove(obj, k);
-					return;
-				}
+void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink) {
+	
+	if(!obj || !tounlink) {
+		return;
+	}
+	
+	for (long k = 0; k < obj->nblinked; k++) {
+		if(obj->linked[k].lgroup != -1 && obj->linked[k].obj == tounlink) {
+			for(size_t i = 0; i < tounlink->vertexlist.size(); i++) {
+				tounlink->vertexlist[i].vert.p = tounlink->vertexlist[i].v;
 			}
+			EERIE_LINKEDOBJ_Remove(obj, k);
+			return;
 		}
+	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
 bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const std::string& actiontext, const std::string& actiontext2, Entity * io)
 {
 	long group = -1;

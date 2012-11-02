@@ -164,29 +164,19 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		}
 
 		CopyVertices(ep2,3,0);
-		ep2->v[3].p.x=ep->v[ep_notcommon].p.x;
-		ep2->v[3].p.y=ep->v[ep_notcommon].p.y;
-		ep2->v[3].p.z=ep->v[ep_notcommon].p.z;
+		ep2->v[3].p = ep->v[ep_notcommon].p;
 		ep2->tv[3].uv.x=ep2->v[3].uv.x=ep->v[ep_notcommon].uv.x;
 		ep2->tv[3].uv.y=ep2->v[3].uv.y=ep->v[ep_notcommon].uv.y;
 		ep2->tv[3].color=ep2->v[3].color=Color::white.toBGR();
 		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
-
+	
 	DeclareEGInfo(ep->v[3].p.x, ep->v[3].p.z);
-
-	ep2->center.x=(ep2->v[0].p.x+ep2->v[1].p.x+ep2->v[2].p.x+ep2->v[3].p.x)*( 1.0f / 4 );
-	ep2->center.y=(ep2->v[0].p.y+ep2->v[1].p.y+ep2->v[2].p.y+ep2->v[3].p.y)*( 1.0f / 4 );
-	ep2->center.z=(ep2->v[0].p.z+ep2->v[1].p.z+ep2->v[2].p.z+ep2->v[3].p.z)*( 1.0f / 4 );
-	ep2->max.x=max(ep2->max.x,ep2->v[3].p.x);
-	ep2->min.x=min(ep2->min.x,ep2->v[3].p.x);
-	ep2->max.y=max(ep2->max.y,ep2->v[3].p.y);
-	ep2->min.y=min(ep2->min.y,ep2->v[3].p.y);
-	ep2->max.z=max(ep2->max.z,ep2->v[3].p.z);
-	ep2->min.z=min(ep2->min.z,ep2->v[3].p.z);
-
-	ep2->norm2.x=ep->norm.x;
-	ep2->norm2.y=ep->norm.y;
-	ep2->norm2.z=ep->norm.z;
+	
+	ep2->center = (ep2->v[0].p + ep2->v[1].p + ep2->v[2].p + ep2->v[3].p) * 0.25f;
+	ep2->max = componentwise_max(ep2->max, ep2->v[3].p);
+	ep2->min = componentwise_min(ep2->min, ep2->v[3].p);
+	
+	ep2->norm2 = ep->norm;
 	
 	ep2->area += fdist((ep2->v[1].p + ep2->v[2].p) * .5f, ep2->v[3].p)
 	             * fdist(ep2->v[3].p, ep2->v[1].p)*.5f; // should this be v[2] instead of v[3]?
@@ -312,14 +302,12 @@ void Delayed_FlushAll() {
 					TexturedVertex verts[4];
 					GRenderer->SetTexture(0, enviro);
 
-					for (long i=0;i<to;i++)
-					{
-						verts[i].p.x=ep->tv[i].p.x;
-						verts[i].p.y=ep->tv[i].p.y;
-						verts[i].p.z=ep->tv[i].p.z;
-						verts[i].rhw=ep->tv[i].rhw;
-						verts[i].color=0xFFFFFFFF;
-
+					for(long i=0;i<to;i++) {
+						
+						verts[i].p = ep->tv[i].p;
+						verts[i].rhw = ep->tv[i].rhw;
+						verts[i].color = 0xFFFFFFFF;
+						
 						// Water
 						if (ep->type & POLY_LAVA)
 						{
@@ -421,19 +409,13 @@ void Delayed_FlushAll() {
 						
 						long tmp;
 
-						for (long j=0;j<to;j++)
-						{
-							verts[j].p.x=ep->tv[j].p.x;
-							verts[j].p.y=ep->tv[j].p.y;
-							verts[j].p.z=ep->tv[j].p.z;
-							verts[j].uv.x=ep->tv[j].uv.x*4.f;
-							verts[j].uv.y=ep->tv[j].uv.y*4.f;
-							verts[j].rhw=ep->tv[j].rhw;
-
-							float val;
-
-							val = (0.038f - verts[j].p.z); 
-
+						for(long j = 0; j < to; j++) {
+							
+							verts[j].p = ep->tv[j].p;
+							verts[j].uv = ep->tv[j].uv * 4.f;
+							verts[j].rhw = ep->tv[j].rhw;
+							
+							float val = (0.038f - verts[j].p.z); 
 							if (val<=0.f) 
 							{
 								verts[j].color=0xFF000000;
@@ -616,17 +598,13 @@ void EERIEDraw3DLine(const Vec3f & orgn, const Vec3f & dest, Color col) {
 	TexturedVertex v[2];
 	TexturedVertex in;
 	
-	in.p.x = orgn.x;
-	in.p.y = orgn.y;
-	in.p.z = orgn.z;
+	in.p = orgn;
 	EE_RTP(&in,&v[0]);
 	if(v[0].p.z < 0.f) {
 		return;
 	}
 	
-	in.p.x = dest.x;
-	in.p.y = dest.y;
-	in.p.z = dest.z;
+	in.p = dest;
 	EE_RTP(&in,&v[1]);
 	if(v[1].p.z<0.f) {
 		return;
@@ -806,29 +784,20 @@ void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
 	if (ep->type & POLY_QUAD) to=4;
 	else to=3;
 
-	lv.p.x=ep->center.x;
-	lv.p.y=ep->center.y;
-	lv.p.z=ep->center.z;
+	lv.p = ep->center;
 	EE_RTP(&lv,&ltv[0]);
-	lv.p.x+=ep->norm.x*10.f;
-	lv.p.y+=ep->norm.y*10.f;
-	lv.p.z+=ep->norm.z*10.f;
-	EE_RTP(&lv,&ltv[1]);					
+	lv.p += ep->norm * 10.f;
+	EE_RTP(&lv,&ltv[1]);
 	GRenderer->ResetTexture(0);
 	ltv[1].color=ltv[0].color=0xFFFF0000;
 
 	if ((ltv[1].p.z>0.f) && (ltv[0].p.z>0.f))
 		EERIEDRAWPRIM(Renderer::LineList, ltv, 3);
 
-	for (long h=0;h<to;h++)
-	{
-		lv.p.x=ep->v[h].p.x;
-		lv.p.y=ep->v[h].p.y;
-		lv.p.z=ep->v[h].p.z;
+	for(long h = 0; h < to; h++) {
+		lv.p = ep->v[h].p;
 		EE_RTP(&lv,&ltv[0]);
-		lv.p.x+=ep->nrml[h].x*10.f;
-		lv.p.y+=ep->nrml[h].y*10.f;
-		lv.p.z+=ep->nrml[h].z*10.f;
+		lv.p += ep->nrml[h] * 10.f;
 		EE_RTP(&lv,&ltv[1]);
 		GRenderer->ResetTexture(0);
 		ltv[1].color=ltv[0].color=Color::yellow.toBGR();

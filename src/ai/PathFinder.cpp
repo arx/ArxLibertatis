@@ -427,10 +427,7 @@ bool PathFinder::lookFor(NodeId from, const Vec3f & pos, float radius, Result & 
 	unsigned long step_c = Random::get(4, 9);
 	for(unsigned long i = 0; i < step_c; i++) {
 		
-		Vec3f pos;
-		pos.x = map_d[to].pos.x + radius * frnd();
-		pos.y = map_d[to].pos.y + radius * frnd();
-		pos.z = map_d[to].pos.z + radius * frnd();
+		Vec3f pos = map_d[to].pos + randomVec(-1.f, 1.f) * radius;
 		
 		NodeId next = getNearestNode(pos);
 		
