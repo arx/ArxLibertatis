@@ -416,7 +416,8 @@ public:
 			
 			DebugScript(" newspell");
 			
-			MakeBookFX(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f);
+			MakeBookFX(Vec3f(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148),
+			                 0.00001f));
 			
 		} else if(type == "torch") {
 			

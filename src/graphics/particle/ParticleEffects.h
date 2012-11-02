@@ -207,12 +207,11 @@ extern long NewSpell;
 extern FLARETC flaretc;
 extern long ParticleCount;
 
-//-----------------------------------------------------------------------------
-void MagFX(float posx, float posy, float posz);
+void MagFX(const Vec3f & pos);
 void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
-void MakeBookFX(float posx, float posy, float posz);
+void MakeBookFX(const Vec3f & pos);
 void UpdateObjFx() ;
 void Add3DBoom(Vec3f * position);
 void AddRandomSmoke(Entity * io, long amount = 1);
@@ -228,6 +227,8 @@ void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
 void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(Vec3f * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
+
+PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();

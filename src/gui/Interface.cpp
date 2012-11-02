@@ -5073,15 +5073,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 				float py=BOOKMARKS_POS_Y;
 				DrawBookInterfaceItem(ITC.Get("bookmark_magic"), px, py);
 
-				//////////////// TO BE REDONE/REMOVED - START
-				if (NewSpell==1)
-				{
-					NewSpell=2;
-
-					for (long nk=0;nk<2;nk++) MagFX(BOOKDECX+220.f,BOOKDECY+49.f,0.000001f);
+				if(NewSpell == 1) {
+					NewSpell = 2;
+					for(long nk = 0; nk < 2; nk++) {
+						MagFX(Vec3f(BOOKDECX + 220.f, BOOKDECY + 49.f, 0.000001f));
+					}
 				}
-
-				//////////////// TO BE REDONE/REMOVED - END
+				
 				if (	ITC.Get("bookmark_magic") 
 					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))
 				{
@@ -6438,53 +6436,41 @@ void ArxGame::DrawAllInterfaceFinish()
 	}
 }
 
-void ARX_INTERFACE_DrawCurrentTorch()
-{
-	if ((player.Interface & INTER_NOTE) && (TSecondaryInventory != NULL)
-		&& ((openNote.type() == gui::Note::BigNote) || (openNote.type() == gui::Note::Book))
-		)
+void ARX_INTERFACE_DrawCurrentTorch() {
+	
+	if((player.Interface & INTER_NOTE) && TSecondaryInventory != NULL
+	   && (openNote.type() == gui::Note::BigNote || openNote.type() == gui::Note::Book)) {
 		return;
-
-	float px, py;
-
-	px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
-
-	if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
-
-	py = DANAESIZY - INTERFACE_RATIO(158+32);
-
+	}
+	
+	float px = INTERFACE_RATIO(std::max(InventoryX + 110.f, 10.f));
+	float py = DANAESIZY - INTERFACE_RATIO(158.f + 32.f);
+	
 	EERIEDrawBitmap(px, py, INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth),
 	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
 	                0.001f, CURRENT_TORCH->inv, Color::white);
-
-	if ( rnd() > 0.2f )
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if ( ( j != -1 ) && ( !arxtime.is_paused() ) )
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd	=	&particle[j];
-			pd->special			=	FIRE_TO_SMOKE;
-			pd->exist			=	true;
-			pd->zdec			=	0;
-			pd->ov.x 			=	px + INTERFACE_RATIO( 12 ) + rnd() * INTERFACE_RATIO( 3.f ) - rnd() * INTERFACE_RATIO( 6.f );
-			pd->ov.y 			=	py + rnd() * INTERFACE_RATIO( 6.f );
-			pd->ov.z			=	0.0000001f;
-			pd->move.x 			=	INTERFACE_RATIO(1.5f)-rnd()*INTERFACE_RATIO(3.f);
-			pd->move.y 			=	-INTERFACE_RATIO(5.f)+rnd()*INTERFACE_RATIO(1.f);
-			pd->move.z 			=	0.f;
-			pd->scale.x 		=	1.8f;
-			pd->scale.y 		=	1.8f;
-			pd->scale.z 		=	1.f;
-			pd->timcreation		=	(long)arxtime;
-			pd->tolive			=	Random::get(500, 900);
-			pd->tc				=	fire2;
-			pd->rgb = Color3f(1.f, .6f, .5f);
-			pd->siz				=	INTERFACE_RATIO(14.f);
-			pd->type			=	PARTICLE_2D;
-		}
+	
+	if(rnd() <= 0.2f) {
+		return;
 	}
+	
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
+	}
+	
+	pd->special = FIRE_TO_SMOKE;
+	pd->zdec = 0;
+	pd->ov = Vec3f(px + INTERFACE_RATIO(12.f - rnd() * 3.f),
+	               py + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
+	pd->move = Vec3f(INTERFACE_RATIO(1.5f - rnd() * 3.f),
+	                 -INTERFACE_RATIO(5.f + rnd() * 1.f), 0.f);
+	pd->scale = Vec3f(1.8f, 1.8f, 1.f);
+	pd->tolive = Random::get(500, 900);
+	pd->tc = fire2;
+	pd->rgb = Color3f(1.f, .6f, .5f);
+	pd->siz = INTERFACE_RATIO(14.f);
+	pd->type = PARTICLE_2D;
 }
 
 extern float GLOBAL_SLOWDOWN;

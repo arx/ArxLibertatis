@@ -485,10 +485,10 @@ void ARX_Player_Rune_Add(RuneFlag _ulRune)
 			}
 		}
 	}
-
-	if (iNbSpellsAfter > iNbSpells)
-	{
-		MakeBookFX(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f);
+	
+	if(iNbSpellsAfter > iNbSpells) {
+		MakeBookFX(Vec3f(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148),
+		                 0.00001f));
 		bBookHalo = true;
 		ulBookHaloTime = 0;
 	}
@@ -2048,57 +2048,31 @@ void ARX_PLAYER_Manage_Visual() {
 					else
 					{
 						LogWarning << "Maximum number of dynamic lights exceeded.";
-						/*
-						EERIE_LIGHT * el = &DynLight[special[pouet]];
-						el->intensity = 1.3f + rnd() * 0.2f;
-						el->fallend = 175.f + rnd() * 10.f;
-
-						if (FistParticles & 2)
-						{
-							el->fallstart *= 2.f;
-							el->fallend *= 3.f;
-						}
-						*/
 					}
-
-					for (long kk = 0; kk < 2; kk++)
-					{
-						Vec3f  target;
-						target.x = eobj->vertexlist3[id].v.x;
-						target.y = eobj->vertexlist3[id].v.y;
-						target.z = eobj->vertexlist3[id].v.z;
-						long j = ARX_PARTICLES_GetFree();
-
-						if ((j != -1) && (!arxtime.is_paused()))
-						{
-							ParticleCount++;
-							particle[j].exist = true;
-							particle[j].zdec = 0;
-
-							particle[j].ov.x	=	target.x + 1.f - rnd() * 2.f;
-							particle[j].ov.y	=	target.y + 1.f - rnd() * 2.f;
-							particle[j].ov.z	=	target.z + 1.f - rnd() * 2.f;
-							particle[j].move.x	=	0.1f - 0.2f * rnd();
-							particle[j].move.y	=	-2.2f * rnd();
-							particle[j].move.z	=	0.1f - 0.2f * rnd();
-							particle[j].siz		=	5.f;
-							particle[j].tolive	=	Random::get(1500, 3500);
-							particle[j].scale.x	=	0.2f;
-							particle[j].scale.y	=	0.2f;
-							particle[j].scale.z	=	0.2f;
-							particle[j].timcreation	=	(long)arxtime;
-							particle[j].tc		=	TC_smoke;
-							particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;// | SUBSTRACT;
-							particle[j].sourceionum	=	0;
-							particle[j].source	=	&eobj->vertexlist3[id].v;
-							particle[j].fparam	=	0.0000001f;
-
-							if(FistParticles & 2) {
-								particle[j].move.y *= 2.f;
-								particle[j].rgb = Color3f(1.f - rnd() * .1f, .3f + rnd() * .1f, .2f - rnd() * .1f);
-							} else {
-								particle[j].rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
-							}
+					
+					for(long kk = 0; kk < 2; kk++) {
+						
+						PARTICLE_DEF * pd = createParticle();
+						if(!pd) {
+							break;
+						}
+						
+						pd->zdec = 0;
+						pd->ov = eobj->vertexlist3[id].v + randomVec(-1.f, 1.f);
+						pd->move = Vec3f(0.1f - 0.2f * rnd(), -2.2f * rnd(), 0.1f - 0.2f * rnd());
+						pd->siz = 5.f;
+						pd->tolive = Random::get(1500, 3500);
+						pd->scale = Vec3f::repeat(0.2f);
+						pd->tc = TC_smoke;
+						pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+						pd->sourceionum = 0;
+						pd->source = &eobj->vertexlist3[id].v;
+						pd->fparam = 0.0000001f;
+						if(FistParticles & 2) {
+							pd->move.y *= 2.f;
+							pd->rgb = Color3f(1.f - rnd() * .1f, .3f + rnd() * .1f, .2f - rnd() * .1f);
+						} else {
+							pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
 						}
 					}
 				}
