@@ -782,32 +782,23 @@ void CRiseDead::DrawStone()
 
 			int col = Color::white.toBGR((int)(255.f * (1.f - a)));
 			DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov = this->tstone[nb].pos;
-				particle[j].move.x = 0.f;
-				particle[j].move.y = 3.f * rnd();
-				particle[j].move.z = 0.f;
-				particle[j].siz = 3.f + 3.f * rnd();
-				particle[j].tolive = 1000;
-				particle[j].scale.x = 1.f;
-				particle[j].scale.y = 1.f;
-				particle[j].scale.z = 1.f;
-				particle[j].timcreation = -(long(arxtime) + 1000l); 
-				particle[j].tc = NULL;
-				particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam = 0.0000001f;
-				particle[j].rgb = Color3f::white;
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = tstone[nb].pos;
+				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
+				pd->siz = 3.f + 3.f * rnd();
+				pd->tolive = 1000;
+				pd->scale = Vec3f::ONE;
+				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
+				pd->tc = NULL;
+				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				              | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f::white;
 			}
-
-
+			
 			//update mvt
 			if (!arxtime.is_paused())
 			{
@@ -1680,10 +1671,10 @@ float CParalyse::Render()
 
 	int	nb2 = 50;
 
-	switch (this->key)
-	{
-		case -1:
-
+	switch(this->key) {
+		
+		case -1: {
+			
 			//calcul des chtis prism
 			while (nb2--)
 			{
@@ -1710,37 +1701,27 @@ float CParalyse::Render()
 				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 
 				vertex = this->tabprism[nb2].vertex;
-				int j;
-				j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
-					particle[j].ov.x 		=	this->pos.x + vertex->x * this->scale ;
-					particle[j].ov.y 		=	this->pos.y + vertex->y * this->scale ;
-					particle[j].ov.z 		=	this->pos.z + vertex->z * this->scale ;
-					particle[j].move.x 		=	0.f;
-					particle[j].move.y 		=	4.f * rnd();
-					particle[j].move.z 		=	0.f;
-					particle[j].siz 		=	10.f + 10.f * rnd();
-					particle[j].tolive		=	500;
-					particle[j].scale.x		=	1.f;
-					particle[j].scale.y		=	1.f;
-					particle[j].scale.z		=	1.f;
-					particle[j].timcreation	=	(long)arxtime;
-					particle[j].tc			=	tex_p;
-					particle[j].special 	=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam		=	0.0000001f;
-					particle[j].rgb = Color3f::white;
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
+					pd->ov = pos + *vertex * scale;
+					pd->move = Vec3f(0.f, 4.f * rnd(), 0.f);
+					pd->siz = 10.f + 10.f * rnd();
+					pd->tolive = 500;
+					pd->scale = Vec3f::ONE;
+					pd->tc = tex_p;
+					pd->special  = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+					               | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::white;
 				}
 			}
-
+			
 			break;
-		case 0:
-
+		}
+		
+		case 0: {
+			
 			while (nb2--)
 			{
 				vertex = this->tabprism[nb2].vertex;
@@ -1769,88 +1750,62 @@ float CParalyse::Render()
 				GRenderer->SetCulling(Renderer::CullCCW);
 				GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 			}
-
-			vertex = this->prismvertex;
-			vd3d = this->prismd3d;
-			nb = this->prismnbpt;
-
-			while (nb)
-			{
-				d3ds.p.x = this->pos.x + vertex->x * this->scale;
-				d3ds.p.y = this->pos.y + vertex->y * this->scale;
-				d3ds.p.z = this->pos.z + vertex->z * this->scale;
+			
+			vertex = prismvertex;
+			vd3d = prismd3d;
+			nb = prismnbpt;
+			while(nb) {
+				d3ds.p = pos + *vertex * scale;
 				EE_RTP(&d3ds, vd3d);
 				vd3d->color = Color::white.toBGR();
 				vertex++;
 				vd3d++;
 				nb--;
 			}
-
-			vertex = this->prismvertex;
-			int j;
-			j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x 		=	this->pos.x + vertex->x * this->scale;
-				particle[j].ov.y 		=	this->pos.y + vertex->y * this->scale;
-				particle[j].ov.z 		=	this->pos.z + vertex->z * this->scale;
-				particle[j].move.x 		=	0.f;
-				particle[j].move.y 		=	4.f * rnd();
-				particle[j].move.z 		=	0.f;
-				particle[j].siz 		=	20.f + 20.f * rnd();
-				particle[j].tolive		=	2000;
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc			=	tex_p;
-				particle[j].special 	=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f::white;
+			
+			vertex = prismvertex;
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = pos + *vertex * scale;
+				pd->move = Vec3f(0.f, 4.f * rnd(), 0.f);
+				pd->siz = 20.f + 20.f * rnd();
+				pd->tolive = 2000;
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p;
+				pd->special  = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				               | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f::white;
 			}
-
+			
 			vertex++;
-			nb = (this->prismnbpt - 1) >> 1;
-
-			while (nb)
-			{
-				j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
-					particle[j].ov.x = this->pos.x + vertex->x * this->scale;
-					particle[j].ov.y = this->pos.y + vertex->y * this->scale;
-					particle[j].ov.z = this->pos.z + vertex->z * this->scale;
-					particle[j].move.x = 0.f;
-					particle[j].move.y = 8.f * rnd();
-					particle[j].move.z = 0.f;
-					particle[j].siz = 10.f + 10.f * rnd();
-					particle[j].tolive = 1000;
-					particle[j].scale.x = 1.f;
-					particle[j].scale.y = 1.f;
-					particle[j].scale.z = 1.f;
-					particle[j].timcreation	=	(long)arxtime;
-					particle[j].tc = tex_p;
-					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam = 0.0000001f;
-					particle[j].rgb = Color3f::white;
+			nb = (prismnbpt - 1) / 2;
+			while(nb) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
+					pd->ov = pos + *vertex * scale;
+					pd->move = Vec3f(0.f, 8.f * rnd(), 0.f);
+					pd->siz = 10.f + 10.f * rnd();
+					pd->tolive = 1000;
+					pd->scale = Vec3f::ONE;
+					pd->tc = tex_p;
+					pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+					              | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::white;
 				}
-
+				
 				vertex += 2;
 				nb--;
 			}
-
+			
 			break;
-		case 1:
+		}
+		
+		case 1: {
 			ColorBGRA col = Color(((int)(this->prismrd + (this->prismre - this->prismrd) * this->prisminterpcol)) >> 1,
 			                    ((int)(this->prismgd + (this->prismge - this->prismgd) * this->prisminterpcol)) >> 1,
 			                    ((int)(this->prismbd + (this->prismbe - this->prismbd) * this->prisminterpcol)) >> 1).toBGRA();
@@ -1911,89 +1866,52 @@ float CParalyse::Render()
 			}
 
 			break;
+		}
 	}
 
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->drawIndexed(Renderer::TriangleList, prismd3d, prismnbpt, prismind, prismnbface * 3);
-
-
-	for (int i = 0; i < 20; i++)
-	{
+	
+	for(int i = 0; i < 20; i++) {
+		
+		float d = 2.f * r;
 		float t = rnd();
-
-		if (t < 0.01f)
-		{
-			float x = this->pos.x;
-			float y = this->pos.y;
-			float z = this->pos.z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x = x + this->r * 2.0f * frand2();
-				particle[j].ov.y = y + 5.f - rnd() * 10.f;
-				particle[j].ov.z = z + this->r * 2.0f * frand2();
-				particle[j].move.x = 2.f - 4.f * rnd();
-				particle[j].move.y = 2.f - 4.f * rnd();
-				particle[j].move.z = 2.f - 4.f * rnd();
-				particle[j].siz = 20.f;
-
-
-				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
-				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
-
-
-				particle[j].scale.x = 1.f;
-				particle[j].scale.y = 1.f;
-				particle[j].scale.z = 1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc = tex_p2;
-				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam = 0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+		if(t < 0.01f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = pos + Vec3f(d * frand2(), 5.f - rnd() * 10.f, d * frand2());
+				pd->move = randomVec(-2.f, 2.f);
+				pd->siz = 20.f;
+				float t = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
+				pd->tolive = checked_range_cast<unsigned long>(t);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p2;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-		}
-		else if (t > 0.095f)
-		{
-			float x = this->pos.x;
-			float y = this->pos.y - 50;
-			float z = this->pos.z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x = x + this->r * 2.0f * frand2();
-				particle[j].ov.y = y + 5.f - rnd() * 10.f;
-				particle[j].ov.z = z + this->r * 2.0f * frand2();
-				particle[j].move.x = 0;
-				particle[j].move.y = 2.f - 4.f * rnd();
-				particle[j].move.z = 0;
-				particle[j].siz = 0.5f;
-
-				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
-				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
-
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc			=	tex_p1;
-				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+			
+		} else if(t > 0.095f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = pos + Vec3f(d * frand2(), 55.f - rnd() * 10.f, d * frand2());
+				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
+				pd->siz = 0.5f;
+				float t = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
+				pd->tolive = checked_range_cast<unsigned long>(t);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p1;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
+			
 		}
 	}
 
