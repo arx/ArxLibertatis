@@ -167,54 +167,39 @@ float CBless::Render()
 	v3[2].uv.y = 1.f;
 	v3[3].uv.x = 1.f;
 	v3[3].uv.y = 1.f;
-
+	
 	EE_RT2(&v[0], &v3[0]);
 	EE_RT2(&v[1], &v3[1]);
 	EE_RT2(&v[2], &v3[2]);
 	EE_RT2(&v[3], &v3[3]);
-	ARX_DrawPrimitive(&v3[0],
-	                             &v3[1],
-	                             &v3[2]);
-	ARX_DrawPrimitive(&v3[1],
-	                             &v3[2],
-	                             &v3[3]);
+	ARX_DrawPrimitive(&v3[0], &v3[1], &v3[2]);
+	ARX_DrawPrimitive(&v3[1], &v3[2], &v3[3]);
 	
-	//----------------------------
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	for (i = 0; i < 12; i++)
-	{
-		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist = 1;
-			particle[j].zdec = 0;
-
-			particle[j].ov.x		=	eSrc.x;
-			particle[j].ov.y		=	eSrc.y - 20;
-			particle[j].ov.z		=	eSrc.z;
-			particle[j].move.x		=	3.f * frand2();
-			particle[j].move.y		=	rnd() * 0.5f;
-			particle[j].move.z		=	3.f * frand2();
-			particle[j].siz			=	0.005f;
-			particle[j].tolive		=	Random::get(1000, 2000);
-			particle[j].scale.x		=	1.f;
-			particle[j].scale.y		=	1.f;
-			particle[j].scale.z		=	1.f;
-			particle[j].timcreation	=	(long)arxtime;
-			particle[j].tc			=	tex_p1;
-			particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			particle[j].fparam		=	0.0000001f;
-			particle[j].rgb = Color3f(.7f, .6f, .2f);
+	
+	for(i = 0; i < 12; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
+		
+		pd->zdec = 0;
+		pd->ov = eSrc - Vec3f(0.f, 20.f, 0.f);
+		pd->move = Vec3f(3.f * frand2(), rnd() * 0.5f, 3.f * frand2());
+		pd->siz = 0.005f;
+		pd->tolive = Random::get(1000, 2000);
+		pd->scale = Vec3f::ONE;
+		pd->tc = tex_p1;
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		pd->fparam = 0.0000001f;
+		pd->rgb = Color3f(0.7f, 0.6f, 0.2f);
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	return 1;
 }
 
@@ -514,35 +499,31 @@ float CCurse::Render() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
-	Anglef stiteangle = Anglef(fRot, 0, 0);
-	Vec3f stitepos = eTarget;
-	Vec3f stitescale = Vec3f(1.f, 1.f, 1.f);
-	Color3f stitecolor = Color3f::white;
-	
 	if(svoodoo) {
+		Anglef stiteangle = Anglef(fRot, 0, 0);
+		Vec3f stitepos = eTarget;
+		Vec3f stitescale = Vec3f::ONE;
+		Color3f stitecolor = Color3f::white;
 		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
 	
 	for(int i = 0; i < 4; i++) {
 		
-		int j = ARX_PARTICLES_GetFree();
-		
-		if((j != -1) && (!arxtime.is_paused())) {
-			ParticleCount++;
-			PARTICLE_DEF * pd = &particle[j];
-			pd->exist = 1;
-			pd->zdec = 0;
-			pd->ov = eTarget;
-			pd->move = Vec3f(2.f * frand2(), rnd() * -10.f - 10.f, 2.f * frand2());
-			pd->siz = 0.015f;
-			pd->tolive = Random::get(1000, 1600);
-			pd->scale = Vec3f(1.f, 1.f, 1.f);
-			pd->timcreation = (long)arxtime;
-			pd->tc = tex_p1;
-			pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
-			pd->fparam = 0.0000001f;
-			pd->rgb = Color3f::white;
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
 		}
+		
+		pd->zdec = 0;
+		pd->ov = eTarget;
+		pd->move = Vec3f(2.f * frand2(), rnd() * -10.f - 10.f, 2.f * frand2());
+		pd->siz = 0.015f;
+		pd->tolive = Random::get(1000, 1600);
+		pd->scale = Vec3f::ONE;
+		pd->tc = tex_p1;
+		pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
+		pd->fparam = 0.0000001f;
+		pd->rgb = Color3f::white;
 	}
 	
 	return 1;
