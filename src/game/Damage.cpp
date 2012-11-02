@@ -1021,7 +1021,6 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io
 			break;
 		}
 		
-		pd->zdec = 0;
 		if(io) {
 			arx_assert(num >= 0);
 			pd->ov = io->obj->vertexlist3[num].v + randomVec(-5.f, 5.f);

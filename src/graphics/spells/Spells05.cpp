@@ -466,7 +466,6 @@ float CRuneOfGuarding::Render()
 			break;
 		}
 		
-		pd->zdec = 0;
 		pd->ov = Vec3f(x + frand2() * 40.f, y, z + frand2() * 40.f);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
 		pd->scale = Vec3f::repeat(-0.1f);
@@ -1161,7 +1160,6 @@ float CRepelUndead::Render()
 		
 		float dx = -EEsin(frand2() * 360.f) * vv;
 		float dz =  EEcos(frand2() * 360.f) * vv;
-		pd->zdec = 0;
 		pd->ov = eSrc + Vec3f(dx, 0.f, dz);
 		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
 		pd->scale = Vec3f::repeat(-0.1f);
@@ -1383,18 +1381,14 @@ void CLevitate::DrawStone()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = tstone[nb].pos;
 				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
 				pd->siz = 3.f + 3.f * rnd();
 				pd->tolive = 1000;
-				pd->scale = Vec3f::ONE;
 				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF?
-				pd->tc = NULL;
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
 				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f::white;
 			}
 			
 			//update mvt
@@ -1561,7 +1555,6 @@ float CLevitate::Render()
 					break;
 				}
 				
-				pd->zdec = 0;
 				float a = radians(360.f * rnd());
 				pd->ov = pos + Vec3f(rbase * EEcos(a), 0.f, rbase * EEsin(a));
 				float t = fdist(pd->ov, pos);
@@ -1569,13 +1562,10 @@ float CLevitate::Render()
 				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
 				pd->siz = 30.f + 30.f * rnd();
 				pd->tolive = 3000;
-				pd->scale = Vec3f::ONE;
 				pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
-				pd->tc = NULL;
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
 				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f::white;
 			}
 			break;
 		
@@ -1634,7 +1624,6 @@ float CLevitate::Render()
 					break;
 				}
 				
-				pd->zdec = 0;
 				float a = radians(360.f * rnd());
 				pd->ov = pos + Vec3f(rbase * EEcos(a), 0.f, rbase * EEsin(a));
 				float t = fdist(pd->ov, pos);
@@ -1642,14 +1631,12 @@ float CLevitate::Render()
 				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
 				pd->siz = 30.f + 30.f * rnd();
 				pd->tolive = 3000;
-				pd->scale = Vec3f::ONE;
 				pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
-				pd->tc = NULL;
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
 				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f::white;
 			}
+			
 			break;
 	}
 

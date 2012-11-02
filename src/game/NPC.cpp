@@ -4140,7 +4140,6 @@ void ManageIgnition(Entity * io)
 				break;
 			}
 			
-			pd->zdec = 0;
 			pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
 			pd->siz = 7.f;
@@ -4198,7 +4197,6 @@ void ManageIgnition(Entity * io)
 				break;
 			}
 			
-			pd->zdec = 0;
 			pd->ov = pos;
 			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
 			pd->siz = 7.f;
@@ -4252,7 +4250,6 @@ void ManageIgnition(Entity * io)
 					break;
 				}
 				
-				pd->zdec = 0;
 				pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 				pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
 				pd->siz = 7.f;

@@ -2057,7 +2057,6 @@ void ARX_PLAYER_Manage_Visual() {
 							break;
 						}
 						
-						pd->zdec = 0;
 						pd->ov = eobj->vertexlist3[id].v + randomVec(-1.f, 1.f);
 						pd->move = Vec3f(0.1f - 0.2f * rnd(), -2.2f * rnd(), 0.1f - 0.2f * rnd());
 						pd->siz = 5.f;

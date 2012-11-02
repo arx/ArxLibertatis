@@ -4788,7 +4788,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 					continue;
 				}
 				
-				pd->zdec = 0;
 				pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 28.f;
@@ -5711,7 +5710,6 @@ void ARX_SPELLS_Kill(long i) {
 					break;
 				}
 				
-				pd->zdec = 0;
 				pd->ov = eyeball.pos + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 28.f;
@@ -6952,7 +6950,6 @@ void ARX_SPELLS_Update()
 								break;
 							}
 							
-							pd->zdec = 0;
 							float t = rnd() * (PI * 2.f) - PI;
 							float ts = EEsin(t);
 							float tc = EEcos(t);
@@ -6963,10 +6960,7 @@ void ARX_SPELLS_Update()
 							pd->tc = fire2;
 							pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
 							pd->fparam = 0.1f - rnd() * 0.2f;
-							pd->scale.x = -8.f;
-							pd->scale.y = -8.f;
-							pd->scale.z = -8.f;
-							pd->rgb = Color3f::white;
+							pd->scale = Vec3f::repeat(-8.f);
 							
 							PARTICLE_DEF * pd2 = createParticle();
 							if(!pd2) {

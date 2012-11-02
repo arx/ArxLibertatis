@@ -136,9 +136,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 		return;
 	}
 	
-	pd->zdec = 0;
 	pd->ov = Vec3f(x, y, z);
-	pd->move = Vec3f::ZERO;
 	pd->scale = Vec3f::ZERO;
 	pd->tolive = tim;
 	pd->tc = EERIE_DRAW_sphere_particle;

@@ -785,18 +785,14 @@ void CRiseDead::DrawStone()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = tstone[nb].pos;
 				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
 				pd->siz = 3.f + 3.f * rnd();
 				pd->tolive = 1000;
-				pd->scale = Vec3f::ONE;
 				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF
-				pd->tc = NULL;
 				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				              | DISSIPATING;
 				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f::white;
 			}
 			
 			//update mvt
@@ -1703,17 +1699,14 @@ float CParalyse::Render()
 				vertex = this->tabprism[nb2].vertex;
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					pd->ov = pos + *vertex * scale;
 					pd->move = Vec3f(0.f, 4.f * rnd(), 0.f);
 					pd->siz = 10.f + 10.f * rnd();
 					pd->tolive = 500;
-					pd->scale = Vec3f::ONE;
 					pd->tc = tex_p;
 					pd->special  = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 					               | DISSIPATING;
 					pd->fparam = 0.0000001f;
-					pd->rgb = Color3f::white;
 				}
 			}
 			
@@ -1766,17 +1759,14 @@ float CParalyse::Render()
 			vertex = prismvertex;
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = pos + *vertex * scale;
 				pd->move = Vec3f(0.f, 4.f * rnd(), 0.f);
 				pd->siz = 20.f + 20.f * rnd();
 				pd->tolive = 2000;
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p;
 				pd->special  = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 				               | DISSIPATING;
 				pd->fparam = 0.0000001f;
-				pd->rgb = Color3f::white;
 			}
 			
 			vertex++;
@@ -1785,17 +1775,14 @@ float CParalyse::Render()
 				
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					pd->ov = pos + *vertex * scale;
 					pd->move = Vec3f(0.f, 8.f * rnd(), 0.f);
 					pd->siz = 10.f + 10.f * rnd();
 					pd->tolive = 1000;
-					pd->scale = Vec3f::ONE;
 					pd->tc = tex_p;
 					pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 					              | DISSIPATING;
 					pd->fparam = 0.0000001f;
-					pd->rgb = Color3f::white;
 				}
 				
 				vertex += 2;
@@ -1882,13 +1869,11 @@ float CParalyse::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = pos + Vec3f(d * frand2(), 5.f - rnd() * 10.f, d * frand2());
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
 				pd->tolive = checked_range_cast<unsigned long>(t);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p2;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;
@@ -1899,13 +1884,11 @@ float CParalyse::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = pos + Vec3f(d * frand2(), 55.f - rnd() * 10.f, d * frand2());
 				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
 				pd->siz = 0.5f;
 				float t = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
 				pd->tolive = checked_range_cast<unsigned long>(t);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p1;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;

@@ -274,7 +274,6 @@ void ARX_MISSILES_Update()
 				
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					pd->ov = pos;
 					pd->move = missiles[i].velocity;
 					pd->move += Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());

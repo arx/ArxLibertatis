@@ -306,12 +306,9 @@ float CControlTarget::Render()
 				float c = 1.0f - (fTrail - (i * n + toto)) / 70.0f;
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					pd->ov = lastpos;
-					pd->move = Vec3f::ZERO;
 					pd->siz = 5 * c;
 					pd->tolive = Random::get(10, 110);
-					pd->scale = Vec3f::ONE;
 					pd->tc = tex_mm;
 					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam = 0.0000001f;
@@ -324,12 +321,9 @@ float CControlTarget::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = lastpos;
-				pd->move = Vec3f::ZERO;
 				pd->siz = 5;
 				pd->tolive = Random::get(10, 110);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_mm;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;

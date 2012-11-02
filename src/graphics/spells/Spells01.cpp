@@ -1300,7 +1300,6 @@ float CPortal::Render()
 		
 		PARTICLE_DEF * pd = createParticle();
 		if(pd) {
-			pd->zdec = 0;
 			float a = radians(rnd() * 360.f);
 			float b = radians(rnd() * 360.f);
 			float rr = r * (rnd() + .25f) * 0.05f;
@@ -1308,11 +1307,9 @@ float CPortal::Render()
 			pd->move = Vec3f(EEsin(a) * EEcos(b), EEcos(a), EEsin(a) * EEsin(b)) * rr;
 			pd->siz = 10.f;
 			pd->tolive = Random::get(1000, 2000);
-			pd->scale = Vec3f::ONE;
 			pd->tc = tp;
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 			pd->fparam = 0.0000001f;
-			pd->rgb = Color3f::white;
 		}
 	}
 	

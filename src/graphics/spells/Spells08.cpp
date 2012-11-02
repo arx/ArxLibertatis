@@ -155,16 +155,13 @@ void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v,
 		return;
 	}
 	
-	pd->zdec = 0;
 	pd->ov = v->p;
 	pd->move = Vec3f(0.f, rnd(), 0.f);
 	pd->siz = 10.f + 20.f * rnd();
 	pd->tolive = Random::get(500, 1000);
-	pd->scale = Vec3f::ONE;
 	pd->tc = tp;
 	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION;
 	pd->fparam = 0.0000001f;
-	pd->rgb = Color3f::white;
 }
 
 void CExplosion::Collision(int num, Vec3f * v, Vec3f * dir) {
@@ -227,32 +224,26 @@ float CExplosion::Render()
 				
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					float a = radians(360.f * scale);
 					pd->ov = pos +  Vec3f(EEcos(a), 0.f, EEsin(a)) * rin;
 					pd->move = Vec3f(0.f, rnd(), 0.f);
 					pd->siz = 10.f + 10.f * rnd();
 					pd->tolive = Random::get(500, 1000);
-					pd->scale = Vec3f::ONE;
 					pd->tc = tp;
 					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam = 0.0000001f;
-					pd->rgb = Color3f::white;
 				}
 				
 				pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					float a = radians(-360.f * scale);
 					pd->ov = pos + Vec3f(EEcos(a), 0.f, EEsin(a)) * this->rin;
 					pd->move = Vec3f(0.f, rnd(), 0.f);
 					pd->siz = 10.f + 10.f * rnd();
 					pd->tolive = Random::get(500, 1000);
-					pd->scale = Vec3f::ONE;
 					pd->tc = tp;
 					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam = 0.0000001f;
-					pd->rgb = Color3f::white;
 				}
 				
 			}
@@ -261,18 +252,15 @@ float CExplosion::Render()
 				
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					float a = rnd() * 360.f;
 					float b = rin * rnd();
 					pd->ov = pos + Vec3f(b * EEcos(a), 70.f, b * EEsin(a));
 					pd->move = Vec3f(0.f, -5.f - 10.f * rnd(), 0.f);
 					pd->siz = 10.f + 20.f * rnd();
 					pd->tolive = Random::get(1000, 2000);
-					pd->scale = Vec3f::ONE;
 					pd->tc = tp2;
 					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 					pd->fparam = 0.0000001f;
-					pd->rgb = Color3f::white;
 				}
 				
 			}

@@ -1015,7 +1015,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 									break;
 								}
 								
-								pd->zdec = 0;
 								pd->ov = pos;
 								pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(),
 								                 2.f - 4.f * rnd());

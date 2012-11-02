@@ -185,7 +185,6 @@ void AddPoisonFog(Vec3f * pos, float power) {
 		float speed = 1.f;
 		float fval = speed * 0.2f;
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-		pd->zdec = 0;
 		pd->ov = *pos + randomVec(-100.f, 100.f);
 		pd->scale = Vec3f(8.f, 8.f, 10.f);
 		pd->move = Vec3f((speed - rnd()) * fval, (speed - speed * rnd()) * (1.f / 15),
@@ -227,7 +226,6 @@ void ARX_FOGS_Render() {
 			}
 			
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			pd->zdec = 0;
 			if(fogs[i].special & FOG_DIRECTIONAL) {
 				pd->ov = fogs[i].pos;
 				pd->move = fogs[i].move * (fogs[i].speed * 0.1f);

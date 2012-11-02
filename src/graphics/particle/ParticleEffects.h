@@ -101,7 +101,7 @@ struct PARTICLE_DEF {
 	Vec3f scale;
 	Vec3f oldpos;
 	float siz;
-	long zdec;
+	bool zdec;
 	long timcreation;
 	unsigned long tolive;
 	unsigned long delay;
@@ -232,7 +232,6 @@ PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
 
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
-long ARX_PARTICLES_GetFree();
 void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
 void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
 void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);

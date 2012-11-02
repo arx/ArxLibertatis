@@ -868,14 +868,12 @@ float CConfuse::Render()
 			break;
 		}
 		
-		pd->zdec = 0;
 		float ang = radians(rnd() * 360.f);
 		float rad = rnd() * 15.f;
 		pd->ov = stitepos + Vec3f(-EEsin(ang) * rad, 0.f, EEcos(ang) * rad);
 		pd->move = Vec3f(0.f, rnd() * 3.f + 1.f, 0.f);
 		pd->siz = 0.25f;
 		pd->tolive = Random::get(2300, 3300);
-		pd->scale = Vec3f::ONE;
 		pd->tc = tex_p1;
 		pd->special = PARTICLE_GOLDRAIN | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
 		              | DISSIPATING;
@@ -1316,12 +1314,10 @@ float CIceField::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p2;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;
@@ -1332,12 +1328,10 @@ float CIceField::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f) + Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
 				pd->siz = 0.5f;
 				pd->tolive = Random::get(2000, 6000);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p1;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;

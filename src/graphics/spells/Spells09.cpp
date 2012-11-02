@@ -905,17 +905,14 @@ float CNegateMagic::Render() {
 				break;
 			}
 			
-			pd->zdec = 0;
 			pd->ov = stitepos + Vec3f(frand2() * 150.f, 0.f, frand2() * 150.f);
 			pd->move = Vec3f(0.f, -3.0f * rnd(), 0.f);
 			pd->siz = 0.3f;
 			pd->tolive = Random::get(2000, 4000);
-			pd->scale = Vec3f::ONE;
 			pd->tc = tex_p2;
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
 			              | SUBSTRACT;
 			pd->fparam = 0.0000001f;
-			pd->rgb = Color3f::white;
 		}
 	}
 	

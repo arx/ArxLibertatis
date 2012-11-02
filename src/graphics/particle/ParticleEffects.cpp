@@ -136,9 +136,7 @@ void LaunchDummyParticle() {
 	}
 	
 	float f = radians(player.angle.b);
-	pd->zdec = 0;
 	pd->ov = player.pos + Vec3f(EEsin(f) * 100.f, 0.f, -EEcos(f) * 100.f);
-	pd->move = Vec3f::ZERO;
 	pd->tolive = 600;
 	pd->tc = smokeparticle;
 	pd->siz = 15.f;
@@ -174,7 +172,6 @@ void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
 		return;
 	}
 	
-	pd->zdec = 0;
 	pd->ov = pos;
 	pd->move = Vec3f(rnd() * 2.f - 4.f, rnd() * -12.f - 15.f, rnd() * 2.f - 4.f);
 	pd->tolive = 800;
@@ -194,14 +191,12 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 		return;
 	}
 	
-	pd->zdec = 0;
 	pd->ov = pos;
 	pd->siz = 3.1f * (dmgs * (1.f / 60) + .9f);
 	pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/4);
 	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 	              | SPLAT_GROUND;
 	pd->tolive = 1600;
-	pd->delay = 0;
 	pd->move = Vec3f(rnd() * 60.f - 30.f, rnd() * -10.f - 15.f, rnd() * 60.f - 30.f);
 	pd->rgb = col.to<float>();
 	long num = Random::get(0, 5);
@@ -217,7 +212,6 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	if(pd) {
 		
 		float power = (dmgs * (1.f/60)) + .9f;
-		pd->zdec = 0;
 		pd->ov = pos + Vec3f(-sin(float(arxtime) * 0.001f), sin(float(arxtime) * 0.001f),
 		               cos(float(arxtime) * 0.001f)) * 30.f;
 		pd->siz = 3.5f * power + sin(float(arxtime) * (1.f/1000));
@@ -225,8 +219,6 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 		              | flags;
 		pd->tolive = 1100;
-		pd->delay = 0;
-		pd->move = Vec3f::ZERO;
 		pd->rgb = col.to<float>();
 		pd->tc = bloodsplatter;
 		pd->fparam = rnd() * 0.1f - .05f;
@@ -573,7 +565,6 @@ void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 			return;
 		}
 		
-		pd->zdec = 0;
 		pd->siz = 0.f;
 		pd->scale = Vec3f::repeat(float(spawn_nb));
 		pd->special = GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
@@ -614,7 +605,6 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
 			return;
 		}
 		
-		pd->zdec = 0;
 		pd->oldpos = pd->ov = *pos + randomVec(-5.f, 5.f);
 		pd->siz = 2.f;
 		pd->move = randomVec(-6.f, 6.f);
@@ -631,7 +621,6 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
 			pd->rgb = Color3f(.45f, .1f, 0.f);
 		}
 		
-		pd->tc = NULL;
 		pd->fparam = len + rnd() * len; // Spark tail length
 	}
 }
@@ -661,7 +650,6 @@ void AddRandomSmoke(Entity * io, long amount) {
 		}
 		
 		long vertex = Random::get(0, io->obj->vertexlist.size());
-		pd->zdec = 0;
 		pd->ov = io->obj->vertexlist3[vertex].v + randomVec(-5.f, 5.f);
 		pd->siz = rnd() * 8.f;
 		if(pd->siz < 4.f) {
@@ -689,7 +677,6 @@ void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb
 			return;
 		}
 		
-		pd->zdec = 0;
 		pd->ov = *pos + mod;
 		if(flags & 2) {
 			pd->siz = rnd() * 20.f + 15.f;
@@ -897,7 +884,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 		pd->tolive = Random::get(600, 700);
 		pd->tc = tc1;
 		pd->siz = (100.f + 10.f * rnd()) * ((type == 1) ? 2.f : 1.f);
-		pd->zdec = 1;
+		pd->zdec = true;
 		if(type == 1) {
 			pd->rgb = Color3f(.4f, .4f, 1.f);
 		}
@@ -909,7 +896,7 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 			pd->tolive = Random::get(600, 700);
 			pd->tc = tc1;
 			pd->siz = (40.f + 30.f * rnd()) * ((type == 1) ? 2.f : 1.f);
-			pd->zdec = 1;
+			pd->zdec = true;
 			if(type == 1) {
 				pd->rgb = Color3f(.4f, .4f, 1.f);
 			}
@@ -1147,40 +1134,38 @@ void ARX_PARTICLES_ClearAll() {
 	ParticleCount = 0;
 }
 
-long ARX_PARTICLES_GetFree() {
-	
-	for(size_t i = 0; i < MAX_PARTICLES; i++) {
-		if(!particle[i].exist) {
-			PARTICLE_DEF * pd = &particle[i];
-			pd->type = 0;
-			pd->rgb = Color3f::white;
-			pd->tc = NULL;
-			pd->special = 0;
-			pd->source = NULL;
-			pd->delay = 0;
-			return i;
-		}
-	}
-	
-	return -1;
-}
-
 PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
 	
 	if(!allocateWhilePaused && arxtime.is_paused()) {
 		return NULL;
 	}
 	
-	long j = ARX_PARTICLES_GetFree();
-	if(j == -1) {
-		return NULL;
+	for(size_t i = 0; i < MAX_PARTICLES; i++) {
+		
+		PARTICLE_DEF * pd = &particle[i];
+		
+		if(pd->exist) {
+			continue;
+		}
+		
+		ParticleCount++;
+		pd->exist = true;
+		pd->timcreation = long(arxtime);
+		
+		pd->type = 0;
+		pd->rgb = Color3f::white;
+		pd->tc = NULL;
+		pd->special = 0;
+		pd->source = NULL;
+		pd->delay = 0;
+		pd->zdec = false;
+		pd->move = Vec3f::ZERO;
+		pd->scale = Vec3f::ONE;
+		
+		return pd;
 	}
 	
-	ParticleCount++;
-	PARTICLE_DEF * pd = &particle[j];
-	pd->exist = true;
-	pd->timcreation = long(arxtime);
-	return pd;
+	return NULL;
 }
 
 void MagFX(const Vec3f & pos) {
@@ -1190,7 +1175,6 @@ void MagFX(const Vec3f & pos) {
 		return;
 	}
 	
-	pd->zdec = 0;
 	pd->ov = pos + Vec3f(rnd() * 6.f - rnd() * 12.f, rnd() * 6.f-rnd() * 12.f, 0.f);
 	pd->move = Vec3f(6.f - rnd() * 12.f, -8.f + rnd() * 16.f, 0.f);
 	pd->scale = Vec3f(4.4f, 4.4f, 1.f);
@@ -1210,7 +1194,6 @@ void MakeBookFX(const Vec3f & pos) {
 			break;
 		}
 		
-		pd->zdec = 0;
 		pd->ov = pos + Vec3f(rnd() * 6.f - rnd() * 12.f, rnd() * 6.f - rnd() * 12.f, 0.f);
 		pd->move = Vec3f(6.f - rnd() * 12.f, -8.f + rnd() * 16.f, 0.f);
 		pd->scale = Vec3f(4.4f, 4.4f, 1.f);
@@ -1228,7 +1211,6 @@ void MakeBookFX(const Vec3f & pos) {
 			break;
 		}
 		
-		pd->zdec = 0;
 		pd->ov = pos - Vec3f(float(i * 2), float(i * 2), 0.f);
 		pd->move = Vec3f(-float(i) * 0.5f, -float(i) * 0.5f, 0.f);
 		pd->scale = Vec3f(float(i * 10), float(i * 10), 0.f);
@@ -1284,7 +1266,7 @@ void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 		pd->tc = blood_splat;
 		pd->siz = 0.3f + 0.01f * power;
 		pd->scale = Vec3f::repeat(0.2f + 0.3f * power);
-		pd->zdec = 1;
+		pd->zdec = true;
 		pd->rgb = col.to<float>();
 	}
 }
@@ -1309,8 +1291,7 @@ void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos) {
 		pd->tc = water_drop[t];
 		pd->siz = 0.4f;
 		float s = rnd();
-		pd->scale = Vec3f::ONE;
-		pd->zdec = 1;
+		pd->zdec = true;
 		pd->rgb = Color3f::gray(s);
 	}
 }
@@ -1377,7 +1358,7 @@ void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * 
 	pd->tc = explo[0];
 	pd->siz = level * 3.f + 2.f * rnd();
 	pd->scale = Vec3f::repeat(level * 3.f);
-	pd->zdec = 1;
+	pd->zdec = true;
 	pd->cval1 = 0;
 	pd->cval2 = MAX_EXPLO - 1;
 	if(rgb) {
@@ -1494,7 +1475,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 			if(pd) {
 				*pd = *part;
 				pd->timcreation = tim;
-				pd->zdec = 0;
+				pd->zdec = false;
 				pd->special |= SUBSTRACT;
 				pd->ov = part->oldpos;
 				pd->tc = tzupouf;
@@ -1822,7 +1803,6 @@ void TreatBackgroundActions() {
 			if(rnd() < gl->ex_frequency) {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					float t = rnd() * PI;
 					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
@@ -1832,8 +1812,6 @@ void TreatBackgroundActions() {
 					pd->tolive = 500 + Random::get(0, 1000 * gl->ex_speed);
 					if((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE)) {
 						pd->special = FIRE_TO_SMOKE;
-					} else {
-						pd->special = 0;
 					}
 					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
 					pd->special |= ROTATING | MODULATE_ROTATION;
@@ -1850,7 +1828,6 @@ void TreatBackgroundActions() {
 			if(rnd() < gl->ex_frequency) {
 				PARTICLE_DEF * pd = createParticle();
 				if(pd) {
-					pd->zdec = 0;
 					float t = rnd() * (PI * 2.f) - PI;
 					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
 					pd->ov = gl->pos + s * gl->ex_radius;
@@ -1859,7 +1836,6 @@ void TreatBackgroundActions() {
 					pd->move = Vec3f(vect.x * d, -10.f - 8.f * rnd(), vect.z * d) * gl->ex_speed;
 					pd->siz = 4.f * gl->ex_size * 0.3f;
 					pd->tolive = 1200 + Random::get(0, 500 * gl->ex_speed);
-					pd->special = 0;
 					pd->tc = fire2;
 					pd->special |= ROTATING | MODULATE_ROTATION | GRAVITY;
 					pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
@@ -2019,7 +1995,6 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 		if(!io) {
 			pd->special |= PARTICLE_NOZBUFFER;
 		}
-		pd->zdec = 0;
 		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f::repeat(-2.f);
@@ -2117,7 +2092,6 @@ void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
 		}
 		
 		pd->special = FADE_IN_AND_OUT;
-		pd->zdec = 0;
 		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
 		pd->move = Vec3f(0.f, 5.f, 0.f);
 		pd->scale = Vec3f::repeat(-2.f);

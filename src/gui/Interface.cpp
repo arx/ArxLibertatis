@@ -6460,7 +6460,6 @@ void ARX_INTERFACE_DrawCurrentTorch() {
 	}
 	
 	pd->special = FIRE_TO_SMOKE;
-	pd->zdec = 0;
 	pd->ov = Vec3f(px + INTERFACE_RATIO(12.f - rnd() * 3.f),
 	               py + INTERFACE_RATIO(rnd() * 6.f), 0.0000001f);
 	pd->move = Vec3f(INTERFACE_RATIO(1.5f - rnd() * 3.f),

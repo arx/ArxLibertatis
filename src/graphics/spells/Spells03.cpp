@@ -695,14 +695,12 @@ float CIceProjectile::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
 				pd->move = randomVec(-2.f, 2.f);
 				pd->siz = 20.f;
 				float t = min(2000.f + rnd() * 2000.f,
 				              ulDuration - ulCurrentTime + 500.0f * rnd());
 				pd->tolive = checked_range_cast<unsigned long>(t);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p2;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;
@@ -713,14 +711,12 @@ float CIceProjectile::Render()
 			
 			PARTICLE_DEF * pd = createParticle();
 			if(pd) {
-				pd->zdec = 0;
 				pd->ov = tPos[i] + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
 				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
 				pd->siz = 0.5f;
 				float t = min(2000.f + rnd() * 1000.f,
 				              ulDuration - ulCurrentTime + 500.0f * rnd());
 				pd->tolive = checked_range_cast<unsigned long>(t);
-				pd->scale = Vec3f::ONE;
 				pd->tc = tex_p1;
 				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 				pd->fparam = 0.0000001f;

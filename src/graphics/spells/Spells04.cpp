@@ -184,12 +184,10 @@ float CBless::Render()
 			break;
 		}
 		
-		pd->zdec = 0;
 		pd->ov = eSrc - Vec3f(0.f, 20.f, 0.f);
 		pd->move = Vec3f(3.f * frand2(), rnd() * 0.5f, 3.f * frand2());
 		pd->siz = 0.005f;
 		pd->tolive = Random::get(1000, 2000);
-		pd->scale = Vec3f::ONE;
 		pd->tc = tex_p1;
 		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
 		pd->fparam = 0.0000001f;
@@ -514,16 +512,13 @@ float CCurse::Render() {
 			break;
 		}
 		
-		pd->zdec = 0;
 		pd->ov = eTarget;
 		pd->move = Vec3f(2.f * frand2(), rnd() * -10.f - 10.f, 2.f * frand2());
 		pd->siz = 0.015f;
 		pd->tolive = Random::get(1000, 1600);
-		pd->scale = Vec3f::ONE;
 		pd->tc = tex_p1;
 		pd->special = ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT | GRAVITY;
 		pd->fparam = 0.0000001f;
-		pd->rgb = Color3f::white;
 	}
 	
 	return 1;
