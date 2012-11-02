@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
-#include <boost-1_49/boost/concept_check.hpp>
 
 #include "game/Entity.h"
 #include "game/Spells.h"
