@@ -993,93 +993,61 @@ long InExceptList(long dmg, long num)
 	return 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io)
-{
-
-	if (di->type & DAMAGE_TYPE_FAKEFIRE)
-	{
-		long num = -1;
-
-		if (io != NULL) num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
-
-		unsigned long tim = (unsigned long)(arxtime);
-
-		if (di->lastupd + 200 < tim)
-		{
-			di->lastupd = tim;
-
-			if (di->type & DAMAGE_TYPE_MAGICAL)
-				ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, pos, 0.8F + 0.4F * rnd());
-			else
-				ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, pos, 0.8F + 0.4F * rnd());
-		}
-
-		for (long k = 0 ; k < 14 ; k++)
-		{
-			long j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist	= true;
-				particle[j].zdec	= 0;
-
-				if (io != NULL)
-				{
-					arx_assert(num >= 0);
-
-					particle[j].ov.x = io->obj->vertexlist3[num].v.x + rnd() * 10.f - 5.f;;
-					particle[j].ov.y = io->obj->vertexlist3[num].v.y + rnd() * 10.f - 5.f;;
-					particle[j].ov.z = io->obj->vertexlist3[num].v.z + rnd() * 10.f - 5.f;;
-					//	}
-				}
-				else
-				{
-					particle[j].ov.x = pos->x + rnd() * 100.f - 50.f;
-					particle[j].ov.y = pos->y + rnd() * 100.f - 50.f;
-					particle[j].ov.z = pos->z + rnd() * 100.f - 50.f;
-				}
-
-				particle[j].siz = dmg;
-
-				if (particle[j].siz < 5.f) particle[j].siz = 5.f;
-				else if (particle[j].siz > 15.f) particle[j].siz = 15.f;
-
-				particle[j].scale.x			= -10.f;
-				particle[j].scale.y			= -10.f;
-				particle[j].scale.z			= -10.f;
-				particle[j].timcreation		= (long)arxtime;
-				particle[j].special		   |= ROTATING | MODULATE_ROTATION;
-				particle[j].special		   |= FIRE_TO_SMOKE;
-				particle[j].tolive			= Random::get(500, 900);
-
-				if(di->type & DAMAGE_TYPE_MAGICAL) {
-					particle[j].move.x	= 1.f - 2.f * rnd();
-					particle[j].move.y	= 2.f - 16.f * rnd();
-					particle[j].move.z	= 1.f - 2.f * rnd();
-					particle[j].rgb = Color3f(.3f, .3f, .8f);
-				} else {
-					particle[j].move.x	= 1.f - 2.f * rnd();
-					particle[j].move.y	= 2.f - 16.f * rnd();
-					particle[j].move.z	= 1.f - 2.f * rnd();
-					particle[j].rgb = Color3f::gray(.5f);
-				}
-
-				particle[j].tc		= TC_fire2;
-				particle[j].fparam	= 0.1f - rnd() * 0.2f;
-			}
+void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, Vec3f * pos, float dmg, Entity * io) {
+	
+	if(!(di->type & DAMAGE_TYPE_FAKEFIRE)) {
+		return;
+	}
+	
+	long num = -1;
+	if(io) {
+		num = Random::get(0, io->obj->vertexlist.size() / 4 - 1) * 4 + 1;
+	}
+	
+	unsigned long tim = (unsigned long)(arxtime);
+	if(di->lastupd + 200 < tim) {
+		di->lastupd = tim;
+		if(di->type & DAMAGE_TYPE_MAGICAL) {
+			ARX_SOUND_PlaySFX(SND_SPELL_MAGICAL_HIT, pos, 0.8F + 0.4F * rnd());
+		} else {
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, pos, 0.8F + 0.4F * rnd());
 		}
 	}
+	
+	for(long k = 0 ; k < 14 ; k++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->zdec = 0;
+		if(io) {
+			arx_assert(num >= 0);
+			pd->ov = io->obj->vertexlist3[num].v + randomVec(-5.f, 5.f);
+		} else {
+			pd->ov = *pos + randomVec(-50.f, 50.f);
+		}
+		pd->siz = clamp(dmg, 5.f, 15.f);
+		pd->scale = Vec3f::repeat(-10.f);
+		pd->special = ROTATING | MODULATE_ROTATION | FIRE_TO_SMOKE;
+		pd->tolive = Random::get(500, 900);
+		pd->move = Vec3f(1.f - 2.f * rnd(), 2.f - 16.f * rnd(), 1.f - 2.f * rnd());
+		if(di->type & DAMAGE_TYPE_MAGICAL) {
+			pd->rgb = Color3f(0.3f, 0.3f, 0.8f);
+		} else {
+			pd->rgb = Color3f::gray(0.5f);
+		}
+		pd->tc = TC_fire2;
+		pd->fparam = 0.1f - rnd() * 0.2f;
+	}
 }
-//*************************************************************************************
+
 // source = -1 no source but valid pos
 // source = 0  player
 // source > 0  IO
-//*************************************************************************************
-void ARX_DAMAGES_UpdateDamage(long j, float tim)
-{
+void ARX_DAMAGES_UpdateDamage(long j, float tim) {
+	
 	Vec3f sub;
 
 	if (damages[j].exist)
