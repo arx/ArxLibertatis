@@ -134,59 +134,43 @@ void CExplosion::Update(unsigned long _ulTime)
 	}
 }
 
-//-----------------------------------------------------------------------------
-void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v, TextureContainer * tp)
-{
-	if (DoSphericDamage(&v->p, 4.f, 30.f, DAMAGE_AREA, DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0)) // 0=player source
-	{
-		Vec3f hit;
-		hit.x = v->p.x;
-		hit.y = v->p.y;
-		hit.z = v->p.z;
+void CExplosion::ExplosionAddParticule(int num, TexturedVertex * v,
+                                       TextureContainer * tp) {
+	
+	if(DoSphericDamage(&v->p, 4.f, 30.f, DAMAGE_AREA,
+	                   DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE, 0 /* player */)) {
+		Vec3f hit = v->p;
 		DynLight[tactif[num]].exist = 0;
 		tactif[num] = -1;
 		ARX_BOOMS_Add(&hit);
 		Add3DBoom(&hit); 
 	}
-
-	if (rnd() > .25f)
-	{
-		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist = 1;
-			particle[j].zdec = 0;
-
-			particle[j].ov.x		=	v->p.x;
-			particle[j].ov.y		=	v->p.y;
-			particle[j].ov.z		=	v->p.z;
-			particle[j].move.x		=	0.f;
-			particle[j].move.y		=	rnd();
-			particle[j].move.z		=	0.f;
-			particle[j].siz			=	10.f + 20.f * rnd();
-			particle[j].tolive		=	Random::get(500, 1000);
-			particle[j].scale.x		=	1.f;
-			particle[j].scale.y		=	1.f;
-			particle[j].scale.z		=	1.f;
-			particle[j].timcreation	=	(long)arxtime;
-			particle[j].tc			=	tp;
-			particle[j].special		=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION;
-			particle[j].fparam		=	0.0000001f;
-			particle[j].rgb = Color3f::white;
-		}
+	
+	if(rnd() <= .25f) {
+		return;
 	}
+	
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
+	}
+	
+	pd->zdec = 0;
+	pd->ov = v->p;
+	pd->move = Vec3f(0.f, rnd(), 0.f);
+	pd->siz = 10.f + 20.f * rnd();
+	pd->tolive = Random::get(500, 1000);
+	pd->scale = Vec3f::ONE;
+	pd->tc = tp;
+	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION;
+	pd->fparam = 0.0000001f;
+	pd->rgb = Color3f::white;
 }
 
-//-----------------------------------------------------------------------------
-void CExplosion::Collision(int num, Vec3f * v, Vec3f * dir)
-{
+void CExplosion::Collision(int num, Vec3f * v, Vec3f * dir) {
 	Vec3f	hit;
-	EERIEPOLY	* tp = NULL;
-
-	if (EERIELaunchRay3(v, dir, &hit, tp, 1) != 0)	//@seb: ray cast more accurate
-	{
+	EERIEPOLY * tp = NULL;
+	if(EERIELaunchRay3(v, dir, &hit, tp, 1) != 0) {
 		DynLight[tactif[num]].exist = 0;
 		tactif[num] = -1;
 		ARX_BOOMS_Add(&hit);
@@ -238,100 +222,61 @@ float CExplosion::Render()
 				d3dv++;
 				nb--;
 			}
-
-			if (rnd() > .25f)
-			{
-				int j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
+			
+			if(rnd() > 0.25f) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
 					float a = radians(360.f * scale);
-					float b = rin; 
-
-					particle[j].ov.x		=	pos.x + b * EEcos(a);
-					particle[j].ov.y		=	pos.y;
-					particle[j].ov.z		=	pos.z + b * EEsin(a);
-					particle[j].move.x		=	0.f;
-					particle[j].move.y		=	rnd();
-					particle[j].move.z		=	0.f;
-					particle[j].siz			=	10.f + 10.f * rnd();
-					particle[j].tolive		=	Random::get(500, 1000);
-					particle[j].scale.x		=	1.f;
-					particle[j].scale.y		=	1.f;
-					particle[j].scale.z		=	1.f;
-					particle[j].timcreation	=	(long)arxtime;
-					particle[j].tc			=	tp;
-					particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam		=	0.0000001f;
-					particle[j].rgb = Color3f::white;
+					pd->ov = pos +  Vec3f(EEcos(a), 0.f, EEsin(a)) * rin;
+					pd->move = Vec3f(0.f, rnd(), 0.f);
+					pd->siz = 10.f + 10.f * rnd();
+					pd->tolive = Random::get(500, 1000);
+					pd->scale = Vec3f::ONE;
+					pd->tc = tp;
+					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::white;
 				}
-
-				j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
+				
+				pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
 					float a = radians(-360.f * scale);
-					float b = this->rin;
-
-					particle[j].ov.x	=	pos.x + b * EEcos(a);
-					particle[j].ov.y	=	pos.y;
-					particle[j].ov.z	=	pos.z + b * EEsin(a);
-					particle[j].move.x	=	0.f;
-					particle[j].move.y	=	rnd();
-					particle[j].move.z	=	0.f;
-					particle[j].siz		=	10.f + 10.f * rnd();
-					particle[j].tolive	=	Random::get(500, 1000);
-					particle[j].scale.x	=	1.f;
-					particle[j].scale.y	=	1.f;
-					particle[j].scale.z	=	1.f;
-					particle[j].timcreation	=	(long)arxtime;
-					particle[j].tc		=	tp;
-					particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam	=	0.0000001f;
-					particle[j].rgb = Color3f::white;
+					pd->ov = pos + Vec3f(EEcos(a), 0.f, EEsin(a)) * this->rin;
+					pd->move = Vec3f(0.f, rnd(), 0.f);
+					pd->siz = 10.f + 10.f * rnd();
+					pd->tolive = Random::get(500, 1000);
+					pd->scale = Vec3f::ONE;
+					pd->tc = tp;
+					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::white;
 				}
+				
 			}
-
-			if (rnd() > .1f)
-			{
-				int j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
-					float a = rnd() * 360.f; 
+			
+			if(rnd() > 0.1f) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->zdec = 0;
+					float a = rnd() * 360.f;
 					float b = rin * rnd();
-
-					particle[j].ov.x	=	pos.x + b * EEcos(a);
-					particle[j].ov.y	=	pos.y + 70.f;
-					particle[j].ov.z	=	pos.z + b * EEsin(a);
-					particle[j].move.x	=	0.f;
-					particle[j].move.y	=	-(5.f + 10.f * rnd());
-					particle[j].move.z	=	0.f;
-					particle[j].siz		=	10.f + 20.f * rnd();
-					particle[j].tolive	=	Random::get(1000, 2000);
-					particle[j].scale.x	=	1.f;
-					particle[j].scale.y	=	1.f;
-					particle[j].scale.z	=	1.f;
-					particle[j].timcreation	=	(long)arxtime;
-					particle[j].tc		=	tp2;
-					particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam	=	0.0000001f;
-					particle[j].rgb = Color3f::white;
+					pd->ov = pos + Vec3f(b * EEcos(a), 70.f, b * EEsin(a));
+					pd->move = Vec3f(0.f, -5.f - 10.f * rnd(), 0.f);
+					pd->siz = 10.f + 20.f * rnd();
+					pd->tolive = Random::get(1000, 2000);
+					pd->scale = Vec3f::ONE;
+					pd->tc = tp2;
+					pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+					pd->fparam = 0.0000001f;
+					pd->rgb = Color3f::white;
 				}
+				
 			}
-
+			
 			break;
 		case 1:
 			TexturedVertex d3dvs2;
