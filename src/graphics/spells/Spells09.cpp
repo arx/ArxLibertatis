@@ -880,9 +880,7 @@ float CNegateMagic::Render() {
 		eSrc = entities[spells[spellinstance].caster]->pos;
 	}
 	
-	float x = eSrc.x;
-	float y = eSrc.y - 10.f;
-	float z = eSrc.z;
+	Vec3f stitepos = eSrc - Vec3f(0.f, 10.f, 0.f);
 
 	if (ulCurrentTime >= ulDuration)
 	{
@@ -897,48 +895,33 @@ float CNegateMagic::Render() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	fSize = ulCurrentTime * fOneOnDuration * 200;
- 
-	for (i = 0; i < 360; i++)
-	{
-
+	
+	for(i = 0; i < 360; i++) {
 		float t = rnd();
-
-		if (t < 0.04f)
-		{
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x		=	x + frand2() * 150.f;
-				particle[j].ov.y		=	y;
-				particle[j].ov.z		=	z + frand2() * 150.f;
-				particle[j].move.x		=	0;
-				particle[j].move.y		=	- 3.0f * rnd();
-				particle[j].move.z		=	0;
-				particle[j].siz			=	 0.3f;
-				particle[j].tolive		=	Random::get(2000, 4000);
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc			=	tex_p2;
-				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f::white;
+		if(t < 0.04f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
 			}
+			
+			pd->zdec = 0;
+			pd->ov = stitepos + Vec3f(frand2() * 150.f, 0.f, frand2() * 150.f);
+			pd->move = Vec3f(0.f, -3.0f * rnd(), 0.f);
+			pd->siz = 0.3f;
+			pd->tolive = Random::get(2000, 4000);
+			pd->scale = Vec3f::ONE;
+			pd->tc = tex_p2;
+			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
+			              | SUBSTRACT;
+			pd->fparam = 0.0000001f;
+			pd->rgb = Color3f::white;
 		}
 	}
-	
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
-	Vec3f stitepos(x, y, z);
 	
 	Color3f stitecolor(.4f, .4f, .4f);
 	Vec3f stitescale(3.f, 3.f, 3.f);
