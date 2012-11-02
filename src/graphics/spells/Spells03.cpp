@@ -687,86 +687,49 @@ float CIceProjectile::Render()
 		else
 			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
-
-	float x, y, z;
-
-	//----------------
-	for (i = 0; i < min(iNumber, iMax + 1); i++)
-	{
+	
+	for(i = 0; i < min(iNumber, iMax + 1); i++) {
+		
 		float t = rnd();
-
-		if (t < 0.01f)
-		{
-			x = tPos[i].x;
-			y = tPos[i].y;
-			z = tPos[i].z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x = x + 5.f - rnd() * 10.f;
-				particle[j].ov.y = y + 5.f - rnd() * 10.f;
-				particle[j].ov.z = z + 5.f - rnd() * 10.f;
-				particle[j].move.x = 2.f - 4.f * rnd();
-				particle[j].move.y = 2.f - 4.f * rnd();
-				particle[j].move.z = 2.f - 4.f * rnd();
-				particle[j].siz = 20.f;
-
-				float fMin = min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
-				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
-
-				particle[j].scale.x = 1.f;
-				particle[j].scale.y = 1.f;
-				particle[j].scale.z = 1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc = tex_p2;
-				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam = 0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+		if(t < 0.01f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
+				pd->move = randomVec(-2.f, 2.f);
+				pd->siz = 20.f;
+				float t = min(2000.f + rnd() * 2000.f,
+				              ulDuration - ulCurrentTime + 500.0f * rnd());
+				pd->tolive = checked_range_cast<unsigned long>(t);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p2;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-		}
-		else if (t > 0.095f)
-		{
-			x = tPos[i].x;
-			y = tPos[i].y - 50;
-			z = tPos[i].z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x = x + 5.f - rnd() * 10.f;
-				particle[j].ov.y = y + 5.f - rnd() * 10.f;
-				particle[j].ov.z = z + 5.f - rnd() * 10.f;
-				particle[j].move.x = 0;
-				particle[j].move.y = 2.f - 4.f * rnd();
-				particle[j].move.z = 0;
-				particle[j].siz = 0.5f;
-
-				float fMin = min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
-				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
-
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc 			=	tex_p1;
-				particle[j].special 	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+			
+		} else if(t > 0.095f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->zdec = 0;
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
+				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
+				pd->siz = 0.5f;
+				float t = min(2000.f + rnd() * 1000.f,
+				              ulDuration - ulCurrentTime + 500.0f * rnd());
+				pd->tolive = checked_range_cast<unsigned long>(t);
+				pd->scale = Vec3f::ONE;
+				pd->tc = tex_p1;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
+			
 		}
 	}
-
+	
 	return 1;
 }
 
