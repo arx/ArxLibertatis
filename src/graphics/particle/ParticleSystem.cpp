@@ -116,21 +116,13 @@ ParticleSystem::ParticleSystem()
 	fParticleEndColor[3] = 0.1f;
 	fParticleSpeed = 10;
 	fParticleLife = 1000;
-
-	p3ParticlePos.x = 0;
-	p3ParticlePos.y = 0;
-	p3ParticlePos.z = 0;
-
+	p3ParticlePos = Vec3f::ZERO;
 	bParticleFollow = true;
-
 	fParticleFlash = 0;
 	fParticleRotation = 0;
 	bParticleRotationRandomDirection = false;
 	bParticleRotationRandomStart = false;
-
-	p3ParticleGravity.x = 0;
-	p3ParticleGravity.y = 0;
-	p3ParticleGravity.z = 0;
+	p3ParticleGravity = Vec3f::ZERO;
 	fParticleLifeRandom = 1000;
 	fParticleAngle = 0;
 	fParticleSpeedRandom = 10;
@@ -326,41 +318,27 @@ void ParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, b
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ParticleSystem::SpawnParticle(Particle * pP)
-{
-	pP->p3Pos.x = 0;
-	pP->p3Pos.y = 0;
-	pP->p3Pos.z = 0;
-
-	// CIRCULAR BORDER
-	if (((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) && ((ulParticleSpawn & PARTICLE_BORDER) == PARTICLE_BORDER))
-	{
+void ParticleSystem::SpawnParticle(Particle * pP) {
+	
+	pP->p3Pos = Vec3f::ZERO;
+	
+	if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR
+	   && (ulParticleSpawn & PARTICLE_BORDER) == PARTICLE_BORDER) {
 		float randd = rnd() * 360.f;
 		pP->p3Pos.x = EEsin(randd) * p3ParticlePos.x;
 		pP->p3Pos.y = rnd() * p3ParticlePos.y;
 		pP->p3Pos.z = EEcos(randd) * p3ParticlePos.z;
-	}
-	// CIRCULAR
-	else if ((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR)
-	{
+	} else if((ulParticleSpawn & PARTICLE_CIRCULAR) == PARTICLE_CIRCULAR) {
 		float randd = rnd() * 360.f;
 		pP->p3Pos.x = EEsin(randd) * rnd() * p3ParticlePos.x;
 		pP->p3Pos.y = rnd() * p3ParticlePos.y;
 		pP->p3Pos.z = EEcos(randd) * rnd() * p3ParticlePos.z;
+	} else {
+		pP->p3Pos = p3ParticlePos * randomVec(-1.f, 1.f);
 	}
-	else
-	{
-		pP->p3Pos.x = frand2() * p3ParticlePos.x;
-		pP->p3Pos.y = frand2() * p3ParticlePos.y;
-		pP->p3Pos.z = frand2() * p3ParticlePos.z;
-	}
-
-	if (bParticleFollow == false)
-	{
-		pP->p3Pos.x = p3Pos.x;
-		pP->p3Pos.y = p3Pos.y;
-		pP->p3Pos.z = p3Pos.z;
+	
+	if(bParticleFollow == false) {
+		pP->p3Pos = p3Pos;
 	}
 }
 

@@ -209,11 +209,9 @@ void ARX_MISSILES_Update()
 				
 				EERIEPOLY *ep;
 				EERIEPOLY *epp;
-				Vec3f tro;
-				tro.x = 70.0F;
-				tro.y = 70.0F;
-				tro.z = 70.0F;
-
+				
+				Vec3f tro = Vec3f::repeat(70.f);
+				
 				ep = GetMinPoly(dest.x, dest.y, dest.z);
 				epp = GetMaxPoly(dest.x, dest.y, dest.z);
 

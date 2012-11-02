@@ -61,40 +61,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-//-----------------------------------------------------------------------------
-CBless::CBless()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CBless::CBless() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(4000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_sol = TextureContainer::Load("graph/particles/(fx)_pentagram_bless");
 }
 
-//-----------------------------------------------------------------------------
-void CBless::Create(Vec3f _eSrc, float _fBeta)
-{
+void CBless::Create(Vec3f _eSrc, float _fBeta) {
+	
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
-
-	eSrc.x = _eSrc.x;
-	eSrc.y = _eSrc.y;
-	eSrc.z = _eSrc.z;
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	
+	eSrc = _eSrc;
+	eTarget = eSrc;
 	fSize = 1;
-
 	fRot = 0;
 	fRotPerMSec = 0.25f;
 	bDone = true;
@@ -261,17 +247,13 @@ float CDispellField::Render()
 	stitecolor.r = 0.7f;
 	stitecolor.g = 0.7f;
 	stitecolor.b = 0.7f;
-	stitescale.x = 1;
-	stitescale.y = -0.1f;
-	stitescale.z = 1;
+	stitescale = Vec3f(1.f, -0.1f, 1.f);
 
 	stiteangle.b = -stiteangle.b;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
+	stitescale = Vec3f::repeat(2.f);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
@@ -279,9 +261,7 @@ float CDispellField::Render()
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.z = 1.8f;
-	stitescale.y = 1.8f;
-	stitescale.x = 1.8f;
+	stitescale = Vec3f::repeat(1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;
@@ -428,57 +408,44 @@ float CTelekinesis::Render() {
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-CCurse::~CCurse()
-{
+CCurse::~CCurse() {
 	svoodoo_count--;
-
-	if (svoodoo && (svoodoo_count <= 0))
-	{
+	if(svoodoo && (svoodoo_count <= 0)) {
 		svoodoo_count = 0;
 		delete svoodoo;
 		svoodoo = NULL;
 	}
 }
-CCurse::CCurse()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
 
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CCurse::CCurse() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(3000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-
-	if (!svoodoo)
+	
+	if(!svoodoo) {
 		svoodoo = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_voodoodoll/fx_voodoodoll.teo");
-
+	}
+	
 	svoodoo_count++;
 }
 
-//-----------------------------------------------------------------------------
-void CCurse::Create(Vec3f aeSrc, float afBeta)
-{
+void CCurse::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	
+	eSrc = aeSrc;
+	
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	
+	eTarget = eSrc;
 	bDone = true;
 	fRot = 0;
 	fRotPerMSec = 0.25f;

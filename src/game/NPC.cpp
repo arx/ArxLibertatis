@@ -1187,29 +1187,20 @@ void ARX_PHYSICS_Apply()
 						io->damagedata = -1;
 					}
 				}
-
-				if (io->soundcount > 12)
-				{
+				
+				if(io->soundcount > 12) {
 					io->soundtime = 0;
-						io->soundcount = 0;
-
-						for (long k = 0; k < io->obj->pbox->nb_physvert; k++)
-						{
-							PHYSVERT * pv = &io->obj->pbox->vert[k];
-							pv->velocity.x = 0.f;
-							pv->velocity.y = 0.f;
-							pv->velocity.z = 0.f;
-						}
-
-						io->obj->pbox->active = 2;
-						io->obj->pbox->stopcount = 0;
+					io->soundcount = 0;
+					for(long k = 0; k < io->obj->pbox->nb_physvert; k++) {
+						io->obj->pbox->vert[k].velocity = Vec3f::ZERO;
+					}
+					io->obj->pbox->active = 2;
+					io->obj->pbox->stopcount = 0;
 				}
-
+				
 				io->room_flags |= 1;
-				io->pos.x = io->obj->pbox->vert[0].pos.x;
-				io->pos.y = io->obj->pbox->vert[0].pos.y; 
-				io->pos.z = io->obj->pbox->vert[0].pos.z; 
-
+				io->pos = io->obj->pbox->vert[0].pos;
+				
 				continue;
 			}
 		}
@@ -1622,32 +1613,23 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 			nummm = k;
 		}
 	}
-
+	
 	nouvo->origin = nummm;
-
-	nouvo->point0.x = nouvo->vertexlist[nouvo->origin].v.x;
-	nouvo->point0.y = nouvo->vertexlist[nouvo->origin].v.y;
-	nouvo->point0.z = nouvo->vertexlist[nouvo->origin].v.z;
-
+	nouvo->point0 = nouvo->vertexlist[nouvo->origin].v;
+	
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
-		nouvo->vertexlist[k].vert.p.x = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
-		nouvo->vertexlist[k].vert.p.y = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
-		nouvo->vertexlist[k].vert.p.z = nouvo->vertexlist[k].v.z -= nouvo->point0.z;
+		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v -= nouvo->point0;
 		nouvo->vertexlist[k].vert.color = 0xFFFFFFFF;
 	}
-
-	nouvo->point0.x = 0;
-	nouvo->point0.y = 0;
-	nouvo->point0.z = 0;
-
+	
+	nouvo->point0 = Vec3f::ZERO;
+	
 	nouvo->pbox = NULL;
 	nouvo->pdata = NULL;
-
 	nouvo->cdata = NULL;
 	nouvo->sdata = NULL;
-
 	nouvo->ndata = NULL;
-
+	
 	size_t nfaces = 0;
 	for (size_t k = 0; k < from->facelist.size(); k++)
 	{

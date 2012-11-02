@@ -218,9 +218,7 @@ void CCurePoison::Update(unsigned long aulTime)
 	{
 		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-		pPS->p3ParticleGravity.x = 0;
-		pPS->p3ParticleGravity.y = 0;
-		pPS->p3ParticleGravity.z = 0;
+		pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 
@@ -278,35 +276,29 @@ float CCurePoison::Render()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
 CRuneOfGuarding::CRuneOfGuarding() {
 	
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-	
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-
-	if (!ssol)
-		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 	
+	if(!ssol) {
+		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+	}
 	ssol_count++;
 
-	if (!slight)
+	if(!slight) {
 		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	
+	}
 	slight_count++;
-
-	if (!srune)
-		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 	
+	if(!srune) {
+		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
+	}
 	srune_count++;
 }
 
@@ -411,18 +403,14 @@ float CRuneOfGuarding::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
 	Color3f stitecolor;
-
+	
 	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
+	Vec3f stitepos = Vec3f(x, y, z);
 
 	float gtc = arxtime.get_updated();
 	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
@@ -430,30 +418,26 @@ float CRuneOfGuarding::Render()
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
 	stitecolor.b = 0.6f - v;
-	stitescale.x = 1;
-	stitescale.y = -0.1f;
-	stitescale.z = 1;
-
-	if (slight)
+	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
+	
+	if(slight) {
 		DrawEERIEObjEx(slight, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	}
+	
 	stiteangle.b = stiteangleb;
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.f;
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-
-	if (ssol)
+	stitescale = Vec3f::repeat(2.f);
+	
+	if(ssol) {
 		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	}
+	
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.3f;
 	stitecolor.b = 0.45f;
-	stitescale.z = 1.8f;
-	stitescale.y = 1.8f;
-	stitescale.x = 1.8f;
+	stitescale = Vec3f::repeat(1.8f);
 	
 	if(srune) {
 		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
@@ -478,18 +462,15 @@ float CRuneOfGuarding::Render()
 	return 1.0f - rnd() * 0.3f;
 }
 
-//-----------------------------------------------------------------------------
-void LaunchPoisonExplosion(Vec3f * aePos)
-{
+void LaunchPoisonExplosion(Vec3f * aePos) {
+	
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 80; 
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
-	cp.p3Pos.x = 5;
-	cp.p3Pos.y = 5;
-	cp.p3Pos.z = 5;
+	cp.p3Pos = Vec3f::repeat(5);
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = 4;
 	cp.p3Direction.z = 0;
@@ -1012,38 +993,33 @@ float CMultiPoisonProjectile::Render()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-CRepelUndead::CRepelUndead()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CRepelUndead::CRepelUndead() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-
-	if (!ssol) // Pentacle
+	
+	if(!ssol) { // Pentacle
 		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-
+	}
 	ssol_count++;
-
-	if (!slight) // Twirl
+	
+	if(!slight) { // Twirl
 		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-
+	}
 	slight_count++; //runes
-
-	if (!srune)
+	
+	if(!srune) {
 		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-
+	}
 	srune_count++;
 }
-CRepelUndead::~CRepelUndead()
-{
+
+CRepelUndead::~CRepelUndead() {
+	
 	ssol_count--;
 
 	if (ssol && (ssol_count <= 0))
@@ -1345,10 +1321,7 @@ void CLevitate::AddStone(Vec3f * pos)
 			this->tstone[nb].angvel.a = 5.f * rnd();
 			this->tstone[nb].angvel.b = 6.f * rnd();
 			this->tstone[nb].angvel.g = 3.f * rnd();
-			float a = 0.2f + rnd() * 0.3f;
-			this->tstone[nb].scale.x = a;
-			this->tstone[nb].scale.y = a;
-			this->tstone[nb].scale.z = a;
+			this->tstone[nb].scale = Vec3f::repeat(0.2f + rnd() * 0.3f);
 			this->tstone[nb].time = Random::get(2000, 2500);
 			this->tstone[nb].currtime = 0;
 			break;

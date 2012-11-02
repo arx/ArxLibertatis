@@ -335,39 +335,23 @@ void ARXDRAW_DrawEyeBall()
 	pos.x=eyeball.pos.x;
 	pos.y=eyeball.pos.y+eyeball.floating;
 	pos.z=eyeball.pos.z;
-	scale.x=d;
-	scale.y=d;
-	scale.z=d;
-	
-	Color3f rgb(d, d, d);
+	scale = Vec3f::repeat(d);
+	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
+	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, &rgb);	
 }
 
-//*************************************************************************************
 // This used to add a bias when the "forceZbias" config option was activated, but it
 // was off by default and we removed it.
-//*************************************************************************************
-void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut)
-{
-	_pOut[0].p.x=_pPoly->v[0].p.x;
-	_pOut[0].p.y=_pPoly->v[0].p.y;
-	_pOut[0].p.z=_pPoly->v[0].p.z;
-
-	_pOut[1].p.x=_pPoly->v[1].p.x;
-	_pOut[1].p.y=_pPoly->v[1].p.y;
-	_pOut[1].p.z=_pPoly->v[1].p.z;
-
-	_pOut[2].p.x=_pPoly->v[2].p.x;
-	_pOut[2].p.y=_pPoly->v[2].p.y;
-	_pOut[2].p.z=_pPoly->v[2].p.z;
-
-	if(_pPoly->type&POLY_QUAD)
-	{
-		_pOut[3].p.x=_pPoly->v[3].p.x;
-		_pOut[3].p.y=_pPoly->v[3].p.y;
-		_pOut[3].p.z=_pPoly->v[3].p.z;
+void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut) {
+	
+	_pOut[0].p = _pPoly->v[0].p;
+	_pOut[1].p = _pPoly->v[1].p;
+	_pOut[2].p = _pPoly->v[2].p;
+	
+	if(_pPoly->type&POLY_QUAD) {
+		_pOut[3].p = _pPoly->v[3].p;
 	}
 }
 

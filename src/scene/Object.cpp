@@ -465,12 +465,8 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 			   || (eerie->groups[pos].quat.y != 0.f)
 			   || (eerie->groups[pos].quat.z != 0.f)
 			   || (eerie->groups[pos].quat.w != 1.f)
-			   || (eerie->groups[pos].translate.x != 0.f)
-			   || (eerie->groups[pos].translate.y != 0.f)
-			   || (eerie->groups[pos].translate.z != 0.f)
-			   || (eerie->groups[pos].zoom.x != 0.f)
-			   || (eerie->groups[pos].zoom.y != 0.f)
-			   || (eerie->groups[pos].zoom.z != 0.f)) {
+			   || eerie->groups[pos].translate != Vec3f::ZERO
+			   || eerie->groups[pos].zoom != Vec3f::ZERO) {
 				voidd = false;
 				break;
 			}
@@ -949,11 +945,9 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 	pos += sizeof(s32);
 	
 	seerie->nbobj = nbo;
-	seerie->objs = allocStructZero<EERIE_3DOBJ *>(nbo); 
+	seerie->objs = allocStructZero<EERIE_3DOBJ *>(nbo);
 	
-	seerie->point0.x = -999999999999.f;
-	seerie->point0.y = -999999999999.f;
-	seerie->point0.z = -999999999999.f;
+	seerie->point0 = Vec3f::repeat(-999999999999.f);
 	
 	long id = 0;
 	
@@ -1770,16 +1764,10 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 			for(size_t idx = 0 ; idx < eerie->grouplist[head_idx].indexes.size(); idx++) {
 				center += eerie->vertexlist[ eerie->grouplist[head_idx].indexes[idx] ].v;
 			}
-
-			float divc = 1.f / count;
-			center.x *= divc;
-			center.y *= divc;
-			center.z *= divc;
-			center.x = (center.x + origin.x + origin.x) * ( 1.0f / 3 );
-			center.y = (center.y + origin.y + origin.y) * ( 1.0f / 3 );
-			center.z = (center.z + origin.z + origin.z) * ( 1.0f / 3 );
+			
+			center = (center * (1.f / count) + origin + origin) * (1.0f / 3);
 			float max_threshold = dist(origin, center);
-
+			
 			for (size_t i = 0; i < eerie->grouplist[head_idx].indexes.size(); i++)
 			{
 				EERIE_VERTEX * ev = &eerie->vertexlist[eerie->grouplist[head_idx].indexes[i]];

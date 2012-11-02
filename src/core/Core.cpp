@@ -3233,14 +3233,12 @@ void ManageQuakeFX()
 		if ((periodicity>0.5f) && (QuakeFx.flags & 1))
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
-		float truepower=periodicity*QuakeFx.intensity*itmod*( 1.0f / 100 );
-		float halfpower=truepower*.5f;
-		ACTIVECAM->pos.x+=rnd()*truepower-halfpower;
-		ACTIVECAM->pos.y+=rnd()*truepower-halfpower;
-		ACTIVECAM->pos.z+=rnd()*truepower-halfpower;
-		ACTIVECAM->angle.a+=rnd()*truepower-halfpower;
-		ACTIVECAM->angle.g+=rnd()*truepower-halfpower;
-		ACTIVECAM->angle.b+=rnd()*truepower-halfpower;
+		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
+		float halfpower = truepower * .5f;
+		ACTIVECAM->pos += randomVec(-halfpower, halfpower);
+		ACTIVECAM->angle.a += rnd() * truepower - halfpower;
+		ACTIVECAM->angle.g += rnd() * truepower - halfpower;
+		ACTIVECAM->angle.b += rnd() * truepower - halfpower;
 	}
 }
 

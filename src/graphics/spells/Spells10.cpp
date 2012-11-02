@@ -120,27 +120,20 @@ float CMassLightning::Render()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-CControlTarget::CControlTarget()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CControlTarget::CControlTarget() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(8000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_ctrl_target");
-
+	
 	fColor[0] = 1;
 	fColor[1] = 1;
 	fColor[2] = 0;
-
+	
 	fColor1[0] = 0.8f;
 	fColor1[1] = 0.6f;
 	fColor1[2] = 0.2f;
@@ -149,11 +142,9 @@ CControlTarget::CControlTarget()
 void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	
+	eSrc = aeSrc;
+	
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
@@ -161,72 +152,42 @@ void CControlTarget::Create(Vec3f aeSrc, float afBeta) {
 
 	fSize = 1;
 	bDone = true;
-
-	eTarget.x = eSrc.x - fBetaRadSin * 1000;
-	eTarget.y = eSrc.y + 100;
-	eTarget.z = eSrc.z + fBetaRadCos * 1000;
-
+	eTarget = eSrc + Vec3f(-fBetaRadSin * 1000.f, 100.f, fBetaRadCos * 1000.f);
+	
 	for(size_t i = 1; i < entities.size(); i++) {
 		if(entities[i]) {
 			eTarget = entities[i]->pos;
 		}
 	}
-
+	
 	end = 20 - 1;
-	v1a[0].p.x = eSrc.x;
-	v1a[0].p.y = eSrc.y + 100;
-	v1a[0].p.z = eSrc.z;
-	v1a[end].p.x = eTarget.x;
-	v1a[end].p.y = eTarget.y;
-	v1a[end].p.z = eTarget.z;
-
-	Vec3f s, e, h;
-	s.x = v1a[0].p.x;
-	s.y = v1a[0].p.y;
-	s.z = v1a[0].p.z;
-	e.x = v1a[end].p.x;
-	e.y = v1a[end].p.y;
-	e.z = v1a[end].p.z;
-	//	GenereArcElectrique(&s,&e,v1a,end,0);
-
-	s.x = eSrc.x;
-	s.y = eSrc.y;
-	s.z = eSrc.z;
-	e.x = eSrc.x;
-	e.y = eSrc.y;
-	e.z = eSrc.z;
-
+	v1a[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
+	v1a[end].p = eTarget;
+	
+	Vec3f h;
+	Vec3f s = eSrc;
+	Vec3f e = eSrc;
 	int i = 0;
-
-	while (Visible(&s, &e, NULL, &h) && i < 20)
-	{
+	while(Visible(&s, &e, NULL, &h) && i < 20) {
 		e.x -= fBetaRadSin * 50;
 		e.z += fBetaRadCos * 50;
-
 		i++;
 	}
-
-	pathways[0].p.x = eSrc.x;
-	pathways[0].p.y = eSrc.y + 100;
-	pathways[0].p.z = eSrc.z;
-	pathways[9].p.x = eTarget.x;
-	pathways[9].p.y = eTarget.y;
-	pathways[9].p.z = eTarget.z;
+	
+	pathways[0].p = eSrc + Vec3f(0.f, 100.f, 0.f);
+	pathways[9].p = eTarget;
 	Split(pathways, 0, 9, 150);
-
-	for (int i = 0; i < 9; i++)
-	{
-		if (pathways[i].p.y >= eSrc.y + 150)
-		{
+	
+	for(int i = 0; i < 9; i++) {
+		if(pathways[i].p.y >= eSrc.y + 150) {
 			pathways[i].p.y = eSrc.y + 150;
 		}
 	}
-
+	
 	fTrail = 0;
 }
-//-----------------------------------------------------------------------------
-void CControlTarget::Update(unsigned long _ulTime)
-{
+
+void CControlTarget::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
@@ -251,19 +212,12 @@ float CControlTarget::Render()
 
 	fTrail = (ulCurrentTime * fOneOnDuration) * 9 * (n + 2);
 
-	Vec3f lastpos, newpos;
 	Vec3f v;
-
+	
 	int arx_check_init = -1;
-	newpos.x = 0;
-	newpos.y = 0;
-	newpos.z = 0;
-
-
-	lastpos.x = pathways[0].p.x;
-	lastpos.y = pathways[0].p.y;
-	lastpos.z = pathways[0].p.z;
-
+	Vec3f newpos = Vec3f::ZERO;
+	Vec3f lastpos = pathways[0].p;
+	
 	for (i = 0; i < 9; i++)
 	{
 		int kp		= i;

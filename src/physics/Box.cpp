@@ -84,39 +84,20 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 	else if (ratio < 0.f) ratio = 0.f;
 
 	ratio = 1.f - (ratio * ( 1.0f / 4 ));
-
-	for (int i = 0; i < obj->pbox->nb_physvert; i++)
-	{
+	
+	for(int i = 0; i < obj->pbox->nb_physvert; i++) {
 		PHYSVERT * pv = &obj->pbox->vert[i];
-		pv->pos.x = pv->initpos.x + pos->x;
-		pv->pos.y = pv->initpos.y + pos->y;
-		pv->pos.z = pv->initpos.z + pos->z;
-
-		pv->inertia.x = 0.f;
-		pv->inertia.y = 0.f;
-		pv->inertia.z = 0.f;
-
-
-		pv->force.x = 0.f;
-		pv->force.y = 0.f;
-		pv->force.z = 0.f;
-
-		pv->velocity.x = vect->x * 250.f * ratio;
-		pv->velocity.y = vect->y * 250.f * ratio; 
-		pv->velocity.z = vect->z * 250.f * ratio;
-
+		pv->pos = pv->initpos + *pos;
+		pv->inertia = Vec3f::ZERO;
+		pv->force = Vec3f::ZERO;
+		pv->velocity = *vect * (250.f * ratio);
 		pv->mass = 0.4f + ratio * 0.1f; 
-
-		if (flag)
-		{
+		if(flag) {
 			Vector_RotateY(&pv->pos, &pv->initpos, angle->b);
-			pv->pos.x += pos->x;
-			pv->pos.y += pos->y;
-			pv->pos.z += pos->z;
+			pv->pos += *pos;
 		}
-
 	}
-
+	
 	obj->pbox->active = 1;
 	obj->pbox->stopcount = 0;
 }
@@ -685,41 +666,23 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	obj->pbox->vert =	(PHYSVERT *)
 	                    malloc(sizeof(PHYSVERT) * obj->pbox->nb_physvert);
 	memset(obj->pbox->vert, 0, sizeof(PHYSVERT)*obj->pbox->nb_physvert);
-
-	Vec3f cubmin, cubmax;
-	cubmin.x = std::numeric_limits<float>::max();
-	cubmin.y = std::numeric_limits<float>::max();
-	cubmin.z = std::numeric_limits<float>::max();
-
-	cubmax.x = -std::numeric_limits<float>::max();
-	cubmax.y = -std::numeric_limits<float>::max();
-	cubmax.z = -std::numeric_limits<float>::max();
-
-	for (size_t k = 0; k < obj->vertexlist.size(); k++)
-	{
-		if (k == (size_t)obj->origin) continue;
-
-		cubmin.x = min(cubmin.x, obj->vertexlist[k].v.x);
-		cubmin.y = min(cubmin.y, obj->vertexlist[k].v.y);
-		cubmin.z = min(cubmin.z, obj->vertexlist[k].v.z);
-
-		cubmax.x = max(cubmax.x, obj->vertexlist[k].v.x);
-		cubmax.y = max(cubmax.y, obj->vertexlist[k].v.y);
-		cubmax.z = max(cubmax.z, obj->vertexlist[k].v.z);
+	
+	Vec3f cubmin = Vec3f::repeat(std::numeric_limits<float>::max());
+	Vec3f cubmax = Vec3f::repeat(-std::numeric_limits<float>::max());
+	
+	for(size_t k = 0; k < obj->vertexlist.size(); k++) {
+		if(long(k) != obj->origin) {
+			cubmin = componentwise_min(cubmin, obj->vertexlist[k].v);
+			cubmax = componentwise_max(cubmax, obj->vertexlist[k].v);
+		}
 	}
-
-	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * .5f;
-	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * .5f;
-	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * .5f;
-
-	obj->pbox->vert[13].pos.x = obj->pbox->vert[0].pos.x;
+	
+	obj->pbox->vert[0].pos = cubmin + (cubmax - cubmin) * .5f;
+	obj->pbox->vert[13].pos = obj->pbox->vert[0].pos;
 	obj->pbox->vert[13].pos.y = cubmin.y;
-	obj->pbox->vert[13].pos.z = obj->pbox->vert[0].pos.z;
-
-	obj->pbox->vert[14].pos.x = obj->pbox->vert[0].pos.x;
+	obj->pbox->vert[14].pos = obj->pbox->vert[0].pos;
 	obj->pbox->vert[14].pos.y = cubmax.y;
-	obj->pbox->vert[14].pos.z = obj->pbox->vert[0].pos.z;
-
+	
 	for (int k = 1; k < obj->pbox->nb_physvert - 2; k++)
 	{
 		obj->pbox->vert[k].pos.x = obj->pbox->vert[0].pos.x;

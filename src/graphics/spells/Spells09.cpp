@@ -65,17 +65,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(Color3f::white), fColorRays2(Color3f::black) {
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CSummonCreature::CSummonCreature()
+	: fColorRays1(Color3f::white),
+	  fColorBorder(Color3f::white),
+	  fColorRays2(Color3f::black) {
+	
+	eSrc = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
-
+	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
-
+	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
@@ -636,9 +638,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.fAngle = radians(1);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 20;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -696,9 +696,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.fAngle = 0;
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -762,22 +760,15 @@ void CIncinerate::Update(unsigned long _ulTime)
 	pPSStream.SetPos(et);
 }
 
-//---------------------------------------------------------------------
-float CIncinerate::Render()
-{
-	int i = 0;
-
+float CIncinerate::Render() {
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	iMax ++;
-	float x = eSrc.x + (eTarget.x - eSrc.x) * (ulCurrentTime * fOneOnDuration);
-	float y = eSrc.y + (eTarget.y - eSrc.y) * (ulCurrentTime * fOneOnDuration);
-	float z = eSrc.z + (eTarget.z - eSrc.z) * (ulCurrentTime * fOneOnDuration);
-
-	for (i = 0; i < 150 - 1; i++)
-	{
+	iMax++;
+	
+	for(int i = 0; i < 150 - 1; i++) {
 		Vec3f s, d;
 		s.x = tv1a[i].p.x;
 		s.y = tv1a[i].p.y;
@@ -787,29 +778,13 @@ float CIncinerate::Render()
 		d.z = tv1a[i+1].p.z;
 		EERIEDraw3DLine(s, d, Color::red);
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-
-	stiteangle.b = 90 - fBeta;
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
-	stitescale.x = 0.5f;
-	stitescale.y = 0.5f;
-	stitescale.z = 0.5f;
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	pPSStream.Render();
-
+	
 	return 1;
 }
 
@@ -825,25 +800,21 @@ CNegateMagic::~CNegateMagic()
 		ssol = NULL;
 	}
 }
-CNegateMagic::CNegateMagic()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
 
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CNegateMagic::CNegateMagic() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
-
-	if (!ssol)
+	
+	if(!ssol) {
 		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-		
+	}
 	ssol_count++;
 	
 }
@@ -860,9 +831,7 @@ void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
 	fBetaRadSin = (float) sin(fBetaRad);
 	
 	eTarget = eSrc;
-	
 	fSize = 1;
-	
 	bDone = true;
 }
 

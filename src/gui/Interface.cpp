@@ -1974,14 +1974,9 @@ bool ArxGame::ManageEditorControls()
 							ARX_PLAYER_Remove_Invisibility();
 							io->obj->pbox->active=1;
 							io->obj->pbox->stopcount=0;
-							Vec3f pos;
-								pos.x = io->pos.x = player.pos.x;
-								pos.z = io->pos.z = player.pos.z;
-							pos.y=io->pos.y=player.pos.y+80.f;
-							io->velocity.x=0.f;
-							io->velocity.y=0.f;
-							io->velocity.z=0.f;
-							io->stopped=1;
+							Vec3f pos = io->pos = player.pos + Vec3f(0.f, 80.f, 0.f);
+							io->velocity = Vec3f::ZERO;
+							io->stopped = 1;
 							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
 							Vec3f viewvector;
@@ -7559,26 +7554,17 @@ long Manage3DCursor(long flags)
 								ARX_PLAYER_Remove_Invisibility();
 								io->obj->pbox->active=1;
 								io->obj->pbox->stopcount=0;
-								Vec3f pos;
-					pos.x = io->pos.x = collidpos.x;
-					pos.z = io->pos.z = collidpos.z;
-								pos.y=io->pos.y=collidpos.y;
-								io->velocity.x=0.f;
-								io->velocity.y=0.f;
-								io->velocity.z=0.f;
+								Vec3f pos = io->pos = collidpos;
+								io->velocity = Vec3f::ZERO;
 
-								io->stopped=1;
+								io->stopped = 1;
 								
-
-								movev.x*=0.0001f;
-								movev.z*=0.0001f;
-								movev.y=0.1f;
+								movev.x *= 0.0001f;
+								movev.y = 0.1f;
+								movev.z *= 0.0001f;
 								Vec3f viewvector = movev;
 
-								Anglef angle;
-								angle.a=temp.a;
-								angle.b=temp.b;
-								angle.g=temp.g;
+								Anglef angle = temp;
 								io->soundtime=0;
 								io->soundcount=0;
 								EERIE_PHYSICS_BOX_Launch(io->obj,&pos,&viewvector,1,&angle);

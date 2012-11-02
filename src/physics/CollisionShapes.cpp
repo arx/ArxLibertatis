@@ -206,12 +206,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, Vec3f * center, Vec3f * dirvect
 
 		if (distance < maxf) continue;
 
-		Vec3f targvect = target - *center;
-
-		float divdist = 1.f / distance;
-		targvect.x *= divdist;
-		targvect.y *= divdist;
-		targvect.z *= divdist;
+		Vec3f targvect = (target - *center) * 1.f / distance;
 		float val = dot(*dirvect, targvect);
 
 		if(fabs(val) < 1.2f) {

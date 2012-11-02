@@ -69,38 +69,28 @@ using std::max;
 
 extern ParticleManager * pParticleManager;
 
-//-----------------------------------------------------------------------------
-// CREATE FIELD
-//-----------------------------------------------------------------------------
 CCreateField::CCreateField() {
 	
 	fwrap = 0.f;
-	
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+	eSrc = Vec3f::ZERO;
 	fColor1[0] = 0.4f;
 	fColor1[1] = 0.0f;
 	fColor1[2] = 0.4f;
 	fColor2[0] = 0.0f;
 	fColor2[1] = 0.0f;
 	fColor2[2] = 0.6f;
-
+	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_jelly = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu3");
 }
 
-//-----------------------------------------------------------------------------
-void CCreateField::Create(Vec3f aeSrc, float afBeta)
-{
+void CCreateField::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
+	
+	eSrc = aeSrc;
 	fbeta = afBeta;
 	ysize = 0.1f;
 	size = 0.1f;
@@ -109,7 +99,6 @@ void CCreateField::Create(Vec3f aeSrc, float afBeta)
 	youp = true;
 }
 
-//-----------------------------------------------------------------------------
 void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVertex p3, TexturedVertex p4, int rec, Vec3f norm)
 {
 	TexturedVertex v[5];
@@ -340,37 +329,29 @@ float CCreateField::Render()
 	return falpha;
 }
 
-//-----------------------------------------------------------------------------
-// SLOW DOWN
-//-----------------------------------------------------------------------------
-CSlowDown::CSlowDown()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CSlowDown::CSlowDown() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-
-	if (!ssol) // Pentacle
+	
+	if(!ssol) { // Pentacle
 		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-
+	}
 	ssol_count++;
-
-	if (!slight) // Twirl
+	
+	if(!slight) { // Twirl
 		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-
+	}
 	slight_count++; //runes
-
-	if (!srune)
+	
+	if(!srune) {
 		srune  = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-
+	}
 	srune_count++;
 	
 }
@@ -433,47 +414,15 @@ void CSlowDown::Update(unsigned long _ulTime)
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CSlowDown::Render()
-{
-	if (ulCurrentTime >= ulDuration)
-	{
+float CSlowDown::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; 
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos.x = player.pos.x;
-	stitepos.y = player.pos.y + 80;
-	stitepos.z = player.pos.z;
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	stiteangle.b = -stiteangle.b * 1.5f;
-	stitescale.x = 1;
-	stitescale.y = -0.1f;
-	stitescale.z = 1;
-
-	stiteangle.b = -stiteangle.b;
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	stitepos.y = player.pos.y + 20;
-	stitescale.z = 1.8f;
-	stitescale.y = 1.8f;
-	stitescale.x = 1.8f;
 	
-
 	return 1;
 }
 
@@ -501,40 +450,38 @@ CRiseDead::~CRiseDead()
 	}
 }
 
-CRiseDead::CRiseDead()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CRiseDead::CRiseDead() {
+	
+	eSrc = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
-
+	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
-
+	
 	fColorBorder[0] = 1;
 	fColorBorder[1] = 1;
 	fColorBorder[2] = 1;
-
+	
 	fColorRays1[0] = 1;
 	fColorRays1[1] = 1;
 	fColorRays1[2] = 1;
-
+	
 	fColorRays2[0] = 0;
 	fColorRays2[1] = 0;
 	fColorRays2[2] = 0;
-
-	if(stone0 == NULL) {
+	
+	if(!stone0) {
 		stone0 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone01.teo");
 	}
 	stone0_count++;
 	
-	if(stone1 == NULL) {
+	if(!stone1) {
 		stone1 = loadObject("graph/obj3d/interactive/fix_inter/fx_raise_dead/stone02.teo");
 	}
 	stone1_count++;
-
+	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
@@ -751,9 +698,7 @@ void CRiseDead::AddStone(Vec3f * pos)
 			this->tstone[nb].angvel.b = 6.f * rnd();
 			this->tstone[nb].angvel.g = 3.f * rnd();
 			float a = 0.2f + rnd() * 0.3f;
-			this->tstone[nb].scale.x = a;
-			this->tstone[nb].scale.y = a;
-			this->tstone[nb].scale.z = a;
+			tstone[nb].scale = Vec3f::repeat(a);
 			this->tstone[nb].time = Random::get(2000, 2500);
 			this->tstone[nb].currtime = 0;
 			break;
@@ -1905,39 +1850,32 @@ float CParalyse::Render()
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-// DISARM TRAP
-//-----------------------------------------------------------------------------
-CDisarmTrap::CDisarmTrap()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CDisarmTrap::CDisarmTrap() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	
-	if (!smotte)
+	if(!smotte) {
 		smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-
+	}
 	smotte_count++;
-
-	if (!slight)
+	
+	if(!slight) {
 		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	
+	}
 	slight_count++; 
-
-	if (!srune)
-		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 	
+	if(!srune) {
+		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
+	}
 	srune_count++;
 }
+
 CDisarmTrap::~CDisarmTrap()
 {
 	smotte_count--;

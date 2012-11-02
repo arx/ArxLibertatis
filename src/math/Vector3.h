@@ -22,6 +22,7 @@
 
 #include <limits>
 #include <cmath>
+#include <algorithm>
 
 #include "math/MathFwd.h"
 
@@ -411,6 +412,15 @@ Vector3<T> cross(const Vector3<T> & a, const Vector3<T> & b) {
 template<class T>
 T dot(const Vector3<T> & a, const Vector3<T> & b) {
 	return (a.x*b.x + a.y*b.y + a.z*b.z);
+}
+
+template <typename T>
+Vector3<T> componentwise_min(Vector3<T> v0, Vector3<T> v1) {
+	return Vector3<T>(std::min(v0.x, v1.x), std::min(v0.y, v1.y), std::min(v0.z, v1.z));
+}
+template <typename T>
+Vector3<T> componentwise_max(Vector3<T> v0, Vector3<T> v1) {
+	return Vector3<T>(std::max(v0.x, v1.x), std::max(v0.y, v1.y), std::max(v0.z, v1.z));
 }
 
 #endif // ARX_MATH_VECTOR3_H

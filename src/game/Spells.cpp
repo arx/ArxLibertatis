@@ -6526,9 +6526,7 @@ void ARX_SPELLS_Update()
 						LaunchFireballBoom(&pCF->eCurPos,(float)spells[i].caster_level);
 						pCF->pPSFire.iParticleNbMax = 0;
 						pCF->pPSFire2.iParticleNbMax = 0;
-						pCF->eMove.x *= 0.5f;
-						pCF->eMove.y *= 0.5f;
-						pCF->eMove.z *= 0.5f;
+						pCF->eMove *= 0.5f;
 						pCF->pPSSmoke.iParticleNbMax = 0;
 						pCF->SetTTL(1500);
 						pCF->bExplo = true;
@@ -7632,32 +7630,26 @@ void ARX_SPELLS_Update()
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 						}
 					}
-				break;				
-				//-----------------------------------------------------------------------------------------
-				case SPELL_FLYING_EYE:
-					{
-						eyeball.floating=EEsin((spells[i].lastupdate-spells[i].timcreation)*( 1.0f / 1000 ))*10.f;					
+				break;
+				
+				case SPELL_FLYING_EYE: {
+					
+						eyeball.floating = EEsin(spells[i].lastupdate-spells[i].timcreation * 0.001f);
+						eyeball.floating *= 10.f;
 						
-							if (spells[i].lastupdate-spells[i].timcreation<=3000)
-							{
-								eyeball.exist = spells[i].lastupdate-spells[i].timcreation*( 1.0f / 30 );
-								float d=(float)eyeball.exist*( 1.0f / 100 );
-							
-							eyeball.size.x = 1.f - d; 
-							eyeball.size.y = 1.f - d; 
-							eyeball.size.z = 1.f - d; 
-								
-								eyeball.angle.b+=framediff3*( 1.0f / 10 )*6.f;
-							}
-							else 
-							{
-								eyeball.exist=2;
-							}
+						if(spells[i].lastupdate-spells[i].timcreation <= 3000) {
+							eyeball.exist = spells[i].lastupdate - spells[i].timcreation * (1.0f / 30);
+							eyeball.size = Vec3f::repeat(1.f - float(eyeball.exist) * 0.01f);
+							eyeball.angle.b += framediff3 * 0.6f;
+						} else {
+							eyeball.exist = 2;
+						}
 						
 						spells[i].lastupdate=tim;
-					}
-				break;
-			}		
+					break;
+				}
+				
+			}
 		}
 	}
 }

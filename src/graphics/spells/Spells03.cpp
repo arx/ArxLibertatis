@@ -64,20 +64,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-//-----------------------------------------------------------------------------
-CFireBall::CFireBall() : CSpellFx()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CFireBall::CFireBall() : CSpellFx() {
+	
+	eSrc = Vec3f::ZERO;
+	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	bExplo = false;
-
+	
 	// TODO using memset on a class is naughty
-
+	
 	memset(&fire_1, 0, sizeof(fire_1));
 	fire_1.iNbMax = 200;
 	fire_1.fLife = 550;
@@ -517,12 +514,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	iNumber = checked_range_cast<int>(fDist);
 
 	int end = iNumber / 2;
-	tv1a[0].p.x = s.x;
-	tv1a[0].p.y = s.y + 100;
-	tv1a[0].p.z = s.z;
-	tv1a[end].p.x = e.x;
-	tv1a[end].p.y = e.y + 100;
-	tv1a[end].p.z = e.z;
+	tv1a[0].p = s + Vec3f(0.f, 100.f, 0.f);
+	tv1a[end].p = e + Vec3f(0.f, 100.f, 0.f);
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
@@ -535,12 +528,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		else
 			tType[i] = 1;
 
-		tSize[i].x = 0;
-		tSize[i].y = 0;
-		tSize[i].z = 0;
-		tSizeMax[i].x = rnd();
-		tSizeMax[i].y = rnd() + 0.2f;
-		tSizeMax[i].z = rnd();
+		tSize[i] = Vec3f::ZERO;
+		tSizeMax[i] = randomVec() + Vec3f(0.f, 0.2f, 0.f);
 
 		if (tType[i] == 0)
 		{
@@ -1047,9 +1036,7 @@ if (ulCurrentTime >= ulDuration)
 		{
 			pPS->uMaxParticles = 0;
 			pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-			pPS->p3ParticleGravity.x = 0;
-			pPS->p3ParticleGravity.y = 0;
-			pPS->p3ParticleGravity.z = 0;
+			pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 

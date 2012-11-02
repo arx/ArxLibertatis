@@ -240,55 +240,35 @@ bool RayCollidingPoly(Vec3f * orgn, Vec3f * dest, EERIEPOLY * ep, Vec3f * hit)
 
 void ResetBBox3D(Entity * io) {
 	if(io) {
-		io->bbox3D.min.x = 99999999.f;
-		io->bbox3D.min.y = 99999999.f;
-		io->bbox3D.min.z = 99999999.f;
-		io->bbox3D.max.x = -99999999.f;
-		io->bbox3D.max.y = -99999999.f;
-		io->bbox3D.max.z = -99999999.f;
+		io->bbox3D.min = Vec3f::repeat(99999999.f);
+		io->bbox3D.max = Vec3f::repeat(-99999999.f);
 	}
 }
 
 void AddToBBox3D(Entity * io, Vec3f * pos) {
 	if(io) {
-		io->bbox3D.min.x = std::min(io->bbox3D.min.x, pos->x);
-		io->bbox3D.min.y = std::min(io->bbox3D.min.y, pos->y);
-		io->bbox3D.min.z = std::min(io->bbox3D.min.z, pos->z);
-		io->bbox3D.max.x = std::max(io->bbox3D.max.x, pos->x);
-		io->bbox3D.max.y = std::max(io->bbox3D.max.y, pos->y);
-		io->bbox3D.max.z = std::max(io->bbox3D.max.z, pos->z);
+		io->bbox3D.min = componentwise_min(io->bbox3D.min, *pos);
+		io->bbox3D.max = componentwise_max(io->bbox3D.max, *pos);
 	}
 }
 
 long MakeTopObjString(Entity * io,  string & dest) {
 	
-	Vec3f boxmin;
-	Vec3f boxmax;
-
-	if (io == NULL) return -1;
-
-	boxmin.x = 999999999.f;
-	boxmin.y = 999999999.f;
-	boxmin.z = 999999999.f;
-	boxmax.x = -999999999.f;
-	boxmax.y = -999999999.f;
-	boxmax.z = -999999999.f;
-
-	for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
-	{
-		boxmin.x = min(boxmin.x, io->obj->vertexlist3[i].v.x);
-		boxmin.y = min(boxmin.y, io->obj->vertexlist3[i].v.y);
-		boxmin.z = min(boxmin.z, io->obj->vertexlist3[i].v.z);
-
-		boxmax.x = max(boxmax.x, io->obj->vertexlist3[i].v.x);
-		boxmax.y = max(boxmax.y, io->obj->vertexlist3[i].v.y);
-		boxmax.z = max(boxmax.z, io->obj->vertexlist3[i].v.z);
+	if(!io) {
+		return -1;
 	}
-
+	
+	Vec3f boxmin = Vec3f::repeat(999999999.f);
+	Vec3f boxmax = Vec3f::repeat(-999999999.f);
+	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
+		boxmin = componentwise_min(boxmin, io->obj->vertexlist3[i].v);
+		boxmax = componentwise_max(boxmax, io->obj->vertexlist3[i].v);
+	}
 	boxmin.y -= 5.f;
 	boxmax.y -= 5.f;
+	
 	dest = "";
-
+	
 	if ((player.pos.x > boxmin.x)
 			&& (player.pos.x < boxmax.x)
 			&& (player.pos.z > boxmin.z)
@@ -1749,37 +1729,26 @@ void UpdateIORoom(Entity * io)
 	io->room_flags &= ~1;
 }
 
-bool GetRoomCenter(long room_num, Vec3f * center)
-{
-	if (!portals) return false;
-
-	if (room_num > portals->nb_rooms) return false;
-
-	if (portals->room[room_num].nb_polys <= 0) return false;
-
+bool GetRoomCenter(long room_num, Vec3f * center) {
+	
+	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0) {
+		return false;
+	}
+	
 	EERIE_3D_BBOX bbox;
-	bbox.min.x = 99999999.f;
-	bbox.min.y = 99999999.f;
-	bbox.min.z = 99999999.f;
-	bbox.max.x = -99999999.f;
-	bbox.max.y = -99999999.f;
-	bbox.max.z = -99999999.f;
-
-	for (long  lll = 0; lll < portals->room[room_num].nb_polys; lll++)
-	{
+	bbox.min = Vec3f::repeat(99999999.f);
+	bbox.max = Vec3f::repeat(-99999999.f);
+	
+	for(long  lll = 0; lll < portals->room[room_num].nb_polys; lll++) {
 		FAST_BKG_DATA * feg;
 		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
 		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
-		bbox.min.x = min(bbox.min.x, ep->center.x);
-		bbox.min.y = min(bbox.min.y, ep->center.y);
-		bbox.min.z = min(bbox.min.z, ep->center.z);
-		bbox.max.x = max(bbox.max.x, ep->center.x);
-		bbox.max.y = max(bbox.max.y, ep->center.y);
-		bbox.max.z = max(bbox.max.z, ep->center.z);
+		bbox.min = componentwise_min(bbox.min, ep->center);
+		bbox.max = componentwise_max(bbox.max, ep->center);
 	}
-
+	
 	*center = (bbox.max + bbox.min) * .5f;
-
+	
 	portals->room[room_num].center = *center;
 	portals->room[room_num].radius = fdist(*center, bbox.max);
 	return true;
@@ -2971,30 +2940,16 @@ static bool loadFastScene(const res::path & file, const char * data,
 					div = 0.333333333333f;
 				}
 				
-				ep2->center.x = 0.f;
-				ep2->center.y = 0.f;
-				ep2->center.z = 0.f;
-				
+				ep2->center = Vec3f::ZERO;
 				for(long h = 0; h < to; h++) {
-					
-					ep2->center.x += ep2->v[h].p.x;
-					ep2->center.y += ep2->v[h].p.y;
-					ep2->center.z += ep2->v[h].p.z;
-					
+					ep2->center += ep2->v[h].p;
 					if(h != 0) {
-						ep2->max.x = max(ep2->max.x, ep2->v[h].p.x);
-						ep2->min.x = min(ep2->min.x, ep2->v[h].p.x);
-						ep2->max.y = max(ep2->max.y, ep2->v[h].p.y);
-						ep2->min.y = min(ep2->min.y, ep2->v[h].p.y);
-						ep2->max.z = max(ep2->max.z, ep2->v[h].p.z);
-						ep2->min.z = min(ep2->min.z, ep2->v[h].p.z);
+						ep2->max = componentwise_max(ep2->max, ep2->v[h].p);
+						ep2->min = componentwise_min(ep2->min, ep2->v[h].p);
 					} else {
-						ep2->min.x = ep2->max.x = ep2->v[0].p.x;
-						ep2->min.y = ep2->max.y = ep2->v[0].p.y;
-						ep2->min.z = ep2->max.z = ep2->v[0].p.z;
+						ep2->min = ep2->max = ep2->v[0].p;
 					}
 				}
-				
 				ep2->center *= div;
 				
 				float dist = 0.f;

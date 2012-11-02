@@ -222,9 +222,7 @@ void CHeal::Update(unsigned long aulTime)
 	{
 		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-		pPS->p3ParticleGravity.x = 0;
-		pPS->p3ParticleGravity.y = 0;
-		pPS->p3ParticleGravity.z = 0;
+		pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 

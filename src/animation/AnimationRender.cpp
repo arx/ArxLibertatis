@@ -339,17 +339,10 @@ static	void	Cedric_AnimateObject(Entity * io, EERIE_3DOBJ * eobj, ANIM_USE * ani
 				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
 
 				scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
-
-				if (BH_MODE)
-				{
-					if (j == eobj->fastaccess.head_group)
-					{
-						scale.x += 1.f;
-						scale.y += 1.f;
-						scale.z += 1.f;
-					}
+				if(BH_MODE && j == eobj->fastaccess.head_group) {
+					scale += Vec3f::ONE;
 				}
-
+				
 				obj->bones[j].scaleinit = scale;
 			}
 		}
@@ -950,12 +943,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						tl.z = (Cur_llights->pos.z - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.z);
 						float dista = ffsqrt(tl.lengthSqr());
 
-						if (dista < Cur_llights->fallend)
-						{
-							float divv = 1.f / dista;
-							tl.x *= divv;
-							tl.y *= divv;
-							tl.z *= divv;
+						if(dista < Cur_llights->fallend) {
+							
+							tl *= 1.f / dista;
 
 							VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 

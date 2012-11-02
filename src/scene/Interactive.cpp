@@ -3294,31 +3294,13 @@ void RenderInter(float from, float to) {
 			    &&	(io->obj->pbox)
 			    &&	(io->obj->pbox->active))
 			{
-				Vec3f tmp;
-				tmp.x = (io->obj->pbox->vert[14].pos.x - io->obj->pbox->vert[13].pos.x);
-				tmp.y = (io->obj->pbox->vert[14].pos.y - io->obj->pbox->vert[13].pos.y);
-				tmp.z = (io->obj->pbox->vert[14].pos.z - io->obj->pbox->vert[13].pos.z);
-				Vec3f up;
-
-				up.x = io->obj->pbox->vert[2].pos.x - io->obj->pbox->vert[1].pos.x;
-				up.y = io->obj->pbox->vert[2].pos.y - io->obj->pbox->vert[1].pos.y;
-				up.z = io->obj->pbox->vert[2].pos.z - io->obj->pbox->vert[1].pos.z;
-
-				up.x += io->obj->pbox->vert[3].pos.x - io->obj->pbox->vert[4].pos.x;
-				up.y += io->obj->pbox->vert[3].pos.y - io->obj->pbox->vert[4].pos.y;
-				up.z += io->obj->pbox->vert[3].pos.z - io->obj->pbox->vert[4].pos.z;
-
-				up.x += io->obj->pbox->vert[10].pos.x - io->obj->pbox->vert[9].pos.x;
-				up.y += io->obj->pbox->vert[10].pos.y - io->obj->pbox->vert[9].pos.y;
-				up.z += io->obj->pbox->vert[10].pos.z - io->obj->pbox->vert[9].pos.z;
-
-				up.x += io->obj->pbox->vert[11].pos.x - io->obj->pbox->vert[12].pos.x;
-				up.y += io->obj->pbox->vert[11].pos.y - io->obj->pbox->vert[12].pos.y;
-				up.z += io->obj->pbox->vert[11].pos.z - io->obj->pbox->vert[12].pos.z;
-
-				up.x *= ( 1.0f / 4 );
-				up.y *= ( 1.0f / 4 );
-				up.z *= ( 1.0f / 4 );
+				Vec3f tmp = io->obj->pbox->vert[14].pos - io->obj->pbox->vert[13].pos;
+				Vec3f up = io->obj->pbox->vert[2].pos - io->obj->pbox->vert[1].pos;
+				up += io->obj->pbox->vert[3].pos - io->obj->pbox->vert[4].pos;
+				up += io->obj->pbox->vert[10].pos - io->obj->pbox->vert[9].pos;
+				up += io->obj->pbox->vert[11].pos - io->obj->pbox->vert[12].pos;
+				up *= 0.25f;
+				
 				MatrixSetByVectors(&mat, &up, &tmp);
 				mat._14 = mat._24 = mat._34 = 0.f;
 				mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
@@ -3630,19 +3612,10 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
-		Vec3f pos;
-		pos.x = io->pos.x;
-		pos.z = io->pos.z;
-		pos.y = io->pos.y;
-		io->velocity.x = 0.f;
-		io->velocity.y = 0.f;
-		io->velocity.z = 0.f;
-
+		Vec3f pos = io->pos;
+		io->velocity = Vec3f::ZERO;
 		io->stopped = 1;
-		Vec3f fallvector;
-		fallvector.x = 0.f;
-		fallvector.z = 0.f;
-		fallvector.y = 0.000001f;
+		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->soundtime = 0;
 		io->soundcount = 0;

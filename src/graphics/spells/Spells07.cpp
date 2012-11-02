@@ -426,65 +426,30 @@ float CLightning::Render()
 	// Create hand position if a hand is defined
 	//	spells[spellinstance].hand_group=entities[spells[spellinstance].caster]->obj->fastaccess.primary_attach;//GetActionPointIdx(entities[spells[spellinstance].caster]->obj,"primary_attach");
 	// Player source
-	if (spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE)
-	{
-
-
-		arx_assert( lSrc == -1 );	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
-		ePos.x = 0.f;
-		ePos.y = 0.f;
-		ePos.z = 0.f;
-
-	}
-	else
-	{
-		if (spells[spellinstance].caster == 0)
-		{
-			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
-
-			if (idx >= 0)
-			{
-				spells[spellinstance].caster_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x;
-				spells[spellinstance].caster_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				spells[spellinstance].caster_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z;
-			}
-			else
-			{
-				spells[spellinstance].caster_pos.x = player.pos.x;
-				spells[spellinstance].caster_pos.y = player.pos.y;
-				spells[spellinstance].caster_pos.z = player.pos.z;
-			}
-
+	if(spells[spellinstance].type == SPELL_MASS_LIGHTNING_STRIKE) {
+		arx_assert(lSrc == -1);	//ARX: jycorbel (2010-07-19) - We really need ePos when lSrc!=-1 ; in that case lSrc should be equal to -1 !
+		ePos = Vec3f::ZERO;
+	} else {
+		
+		Entity * caster = entities[spells[spellinstance].caster];
+		long idx = GetGroupOriginByName(caster->obj, "chest");
+		if(idx >= 0) {
+			spells[spellinstance].caster_pos = caster->obj->vertexlist3[idx].v;
+		} else {
+			spells[spellinstance].caster_pos = caster->pos;
+		}
+		
+		if(spells[spellinstance].caster == 0) {
 			falpha = -player.angle.a;
 			fBeta = player.angle.b;
-		}
-		// IO source
-		else
-		{
-			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
-
-			if (idx >= 0)
-			{
-				spells[spellinstance].caster_pos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x;
-				spells[spellinstance].caster_pos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				spells[spellinstance].caster_pos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z;
-			}
-			else
-			{
-				spells[spellinstance].caster_pos.x = entities[spells[spellinstance].caster]->pos.x;
-				spells[spellinstance].caster_pos.y = entities[spells[spellinstance].caster]->pos.y;
-				spells[spellinstance].caster_pos.z = entities[spells[spellinstance].caster]->pos.z;
-			}
-
-			fBeta = entities[spells[spellinstance].caster]->angle.b;
-			Entity * io = entities[spells[spellinstance].caster];
-
-			if (ValidIONum(io->targetinfo)
-			        &&	(io->targetinfo != spells[spellinstance].caster))
-			{
+		} else {
+			// IO source
+			fBeta = caster->angle.b;
+			if(ValidIONum(caster->targetinfo)
+			   && caster->targetinfo != spells[spellinstance].caster) {
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
 				Vec3f p2;
-				GetChestPos(io->targetinfo, &p2); 
+				GetChestPos(caster->targetinfo, &p2); 
 				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
@@ -495,10 +460,8 @@ float CLightning::Render()
 				falpha = MAKEANGLE(degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
-
-		ePos.x = spells[spellinstance].caster_pos.x;
-		ePos.y = spells[spellinstance].caster_pos.y;
-		ePos.z = spells[spellinstance].caster_pos.z;
+		
+		ePos = spells[spellinstance].caster_pos;
 	}
 
 	//-------------------------------------------------------------------------
@@ -736,34 +699,30 @@ CConfuse::~CConfuse()
 		spapi = NULL;
 	}
 }
-CConfuse::CConfuse()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
 
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CConfuse::CConfuse() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(5000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_trail = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
-
-	if (!spapi)
+	
+	if(!spapi) {
 		spapi = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.teo");
-
+	}
 	spapi_count++;
-
+	
 	const char tex[] = "graph/obj3d/interactive/fix_inter/fx_papivolle/fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
-
+	
 	fColor[0] = 0.3f;
 	fColor[1] = 0.3f;
 	fColor[2] = 0.8f;
-
+	
 	ANIM_Set(&au, anim_papii);
 	au.next_anim = NULL;
 	au.cur_anim = anim_papii;
@@ -845,20 +804,15 @@ float CConfuse::Render()
 		eCurPos.y = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.y - 50.f;
 		eCurPos.z = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.z;
 	}
-
-	stitepos.x = eCurPos.x;
-	stitepos.y = eCurPos.y;
-	stitepos.z = eCurPos.z;
-
+	
+	stitepos = eCurPos;
 	stiteangle.b = -degrees(arxtime.get_updated() * ( 1.0f / 500 ));
 	stiteangle.a = 0;
 	stiteangle.g = 0;
 	stitecolor.r = 1;
 	stitecolor.g = 1;
 	stitecolor.b = 1;
-	stitescale.x = 1;
-	stitescale.y = 1;
-	stitescale.z = 1;
+	stitescale = Vec3f::ONE;
 	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	
 	for(i = 0; i < 6; i++) {
@@ -950,9 +904,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.fAngle = 0;
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -1008,9 +960,7 @@ void CFireField::Create(float largeur, Vec3f * pos, int _ulDuration)
 	cp.fAngle = radians(10);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -1111,58 +1061,47 @@ CIceField::~CIceField()
 	}
 }
 
-CIceField::CIceField()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CIceField::CIceField() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	iNumber = 50;
-
+	
 	tex_p1 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
-
-	if (!stite)
+	
+	if(!stite) {
 		stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-		
+	}
 	stite_count++;
-
-	if (!smotte)
+	
+	if(!smotte) {
 		smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
-
+	}
 	smotte_count++;
 }
 
-//-----------------------------------------------------------------------------
-void CIceField::Create(Vec3f aeSrc, float afBeta)
-{
+void CIceField::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	
+	eSrc = aeSrc;
+	
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	
+	eTarget = eSrc;
 	iNumber = 50;
 	fSize = 1;
-
+	
 	float	xmin, ymin, zmin;
-
+	
 	for (int i = 0 ; i < iNumber ; i++)
 	{
 		float t = rnd();
@@ -1171,22 +1110,17 @@ void CIceField::Create(Vec3f aeSrc, float afBeta)
 			tType[i] = 0;
 		else
 			tType[i] = 1;
-
-		tSize[i].x = 0;
-		tSize[i].y = 0;
-		tSize[i].z = 0;
+		
+		tSize[i] = Vec3f::ZERO;
 		tSizeMax[i].x = rnd();
 		tSizeMax[i].y = rnd() + 0.2f;
 		tSizeMax[i].z = rnd();
-
-		if (tType[i] == 0)
-		{
+		
+		if(tType[i] == 0) {
 			xmin = 1.2f;
 			ymin = 1;
 			zmin = 1.2f;
-		}
-		else
-		{
+		} else {
 			xmin = 0.4f;
 			ymin = 0.3f;
 			zmin = 0.4f;
