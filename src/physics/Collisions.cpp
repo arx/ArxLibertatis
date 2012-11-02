@@ -1035,13 +1035,10 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 						EERIE_FACE * ef=&io->obj->facelist[ii];
 
 						if (ef->facetype & POLY_HIDE) continue;
-
-						Vec3f fcenter;
-						fcenter.x=(vlist[ef->vid[0]].v.x+vlist[ef->vid[1]].v.x+vlist[ef->vid[2]].v.x)*( 1.0f / 3 );
-						fcenter.y=(vlist[ef->vid[0]].v.y+vlist[ef->vid[1]].v.y+vlist[ef->vid[2]].v.y)*( 1.0f / 3 );
-						fcenter.z=(vlist[ef->vid[0]].v.z+vlist[ef->vid[1]].v.z+vlist[ef->vid[2]].v.z)*( 1.0f / 3 );
-
-						if (	distSqr(fcenter, sphere->origin) < square(sr30) ||	distSqr(vlist[ef->vid[0]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
+						
+						Vec3f fcenter = (vlist[ef->vid[0]].v + vlist[ef->vid[1]].v
+						                 + vlist[ef->vid[2]].v) * (1.0f / 3);
+						if (distSqr(fcenter, sphere->origin) < square(sr30) ||	distSqr(vlist[ef->vid[0]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[1]].v, sphere->origin) < square(sr30) || distSqr(vlist[ef->vid[2]].v, sphere->origin) < square(sr30)) {
 							EVERYTHING_IN_SPHERE[MAX_IN_SPHERE_Pos]=(short)ret_idx;
 							MAX_IN_SPHERE_Pos++;
 

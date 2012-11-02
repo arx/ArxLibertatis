@@ -111,27 +111,17 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 		rec ++;
 
 		// milieu
-		v[0].p.x = p1.p.x + (p3.p.x - p1.p.x) * 0.5f;
-		v[0].p.y = p1.p.y + (p3.p.y - p1.p.y) * 0.5f;
-		v[0].p.z = p1.p.z + (p3.p.z - p1.p.z) * 0.5f;
+		v[0].p = p1.p + (p3.p - p1.p) * 0.5f;
 		// gauche
-		v[1].p.x = p1.p.x + (p4.p.x - p1.p.x) * 0.5f;
-		v[1].p.y = p1.p.y + (p4.p.y - p1.p.y) * 0.5f;
-		v[1].p.z = p1.p.z + (p4.p.z - p1.p.z) * 0.5f;
+		v[1].p = p1.p + (p4.p - p1.p) * 0.5f;
 		// droite
-		v[2].p.x = p2.p.x + (p3.p.x - p2.p.x) * 0.5f;
-		v[2].p.y = p2.p.y + (p3.p.y - p2.p.y) * 0.5f;
-		v[2].p.z = p2.p.z + (p3.p.z - p2.p.z) * 0.5f;
+		v[2].p = p2.p + (p3.p - p2.p) * 0.5f;
 		// haut
-		v[3].p.x = p4.p.x + (p3.p.x - p4.p.x) * 0.5f;
-		v[3].p.y = p4.p.y + (p3.p.y - p4.p.y) * 0.5f;
-		v[3].p.z = p4.p.z + (p3.p.z - p4.p.z) * 0.5f;
+		v[3].p = p4.p + (p3.p - p4.p) * 0.5f;
 		// bas
-		v[4].p.x = p1.p.x + (p2.p.x - p1.p.x) * 0.5f;
-		v[4].p.y = p1.p.y + (p2.p.y - p1.p.y) * 0.5f;
-		v[4].p.z = p1.p.z + (p2.p.z - p1.p.z) * 0.5f;
+		v[4].p = p1.p + (p2.p - p1.p) * 0.5f;
 
-		float patchsize = 0.005f; 
+		float patchsize = 0.005f;
 
 		v[0].p.x += (float) sin(radians((v[0].p.x - eSrc.x) * patchsize + fwrap)) * 5;
 		v[0].p.y += (float) sin(radians((v[0].p.y - eSrc.y) * patchsize + fwrap)) * 5;
@@ -848,41 +838,25 @@ void CRiseDead::RenderFissure()
 
 	for (i = 0; i < min(end, (int)fSizeIntro); i++)
 	{
-		vt[2].p.x = va[i].p.x   - (va[i].p.x - eSrc.x) * 0.2f;
-		vt[2].p.y = va[i].p.y   - (va[i].p.y - eSrc.y) * 0.2f;
-		vt[2].p.z = va[i].p.z   - (va[i].p.z - eSrc.z) * 0.2f;
-		vt[3].p.x = va[i+1].p.x - (va[i+1].p.x - eSrc.x) * 0.2f;
-		vt[3].p.y = va[i+1].p.y - (va[i+1].p.y - eSrc.y) * 0.2f;
-		vt[3].p.z = va[i+1].p.z - (va[i+1].p.z - eSrc.z) * 0.2f;
+		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
+		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
 		
 		EE_RT2(&vt[3], &vr[0]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive(&vr[0],
-		                             &vr[1],
-		                             &vr[2]);
-		ARX_DrawPrimitive(&vr[1],
-		                             &vr[2],
-		                             &vr[3]);
-
-		vt[2].p.x = vb[i].p.x   - (vb[i].p.x - eSrc.x) * 0.2f;
-		vt[2].p.y = vb[i].p.y   - (vb[i].p.y - eSrc.y) * 0.2f;
-		vt[2].p.z = vb[i].p.z   - (vb[i].p.z - eSrc.z) * 0.2f;
-		vt[3].p.x = vb[i+1].p.x - (vb[i+1].p.x - eSrc.x) * 0.2f;
-		vt[3].p.y = vb[i+1].p.y - (vb[i+1].p.y - eSrc.y) * 0.2f;
-		vt[3].p.z = vb[i+1].p.z - (vb[i+1].p.z - eSrc.z) * 0.2f;
+		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		
+		vt[2].p = vb[i].p - (vb[i].p - eSrc) * 0.2f;
+		vt[3].p = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
 		
 		EE_RT2(&vb[i], &vr[3]);
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive(&vr[0],
-		                             &vr[1],
-		                             &vr[2]);
-		ARX_DrawPrimitive(&vr[1],
-		                             &vr[2],
-		                             &vr[3]);
+		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 	}
 
 	//-------------------------------------------------------------------------
@@ -1589,9 +1563,7 @@ float CParalyse::Render()
 
 				while (nb)
 				{
-					d3ds.p.x = tabprism[nb2].pos.x + vertex->x * this->scale + this->tabprism[nb2].offset.x;
-					d3ds.p.y = tabprism[nb2].pos.y + vertex->y * this->scale + this->tabprism[nb2].offset.y;
-					d3ds.p.z = tabprism[nb2].pos.z + vertex->z * this->scale + this->tabprism[nb2].offset.z;
+					d3ds.p = tabprism[nb2].pos + *vertex * scale + tabprism[nb2].offset;
 		
 					EE_RTP(&d3ds, vd3d);
 					vd3d->color = Color(50, 50, 64).toBGRA();

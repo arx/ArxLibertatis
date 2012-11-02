@@ -337,42 +337,26 @@ void CSummonCreature::RenderFissure()
 
 	for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
 	{
-		vt[2].p.x = va[i].p.x   - (va[i].p.x - eSrc.x) * 0.2f;
-		vt[2].p.y = va[i].p.y   - (va[i].p.y - eSrc.y) * 0.2f;
-		vt[2].p.z = va[i].p.z   - (va[i].p.z - eSrc.z) * 0.2f;
-		vt[3].p.x = va[i+1].p.x - (va[i+1].p.x - eSrc.x) * 0.2f;
-		vt[3].p.y = va[i+1].p.y - (va[i+1].p.y - eSrc.y) * 0.2f;
-		vt[3].p.z = va[i+1].p.z - (va[i+1].p.z - eSrc.z) * 0.2f;
-
+		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
+		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
+		
 		EE_RT2(&vt[3], &vr[0]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive(&vr[0],
-		                             &vr[1],
-		                             &vr[2]);
-		ARX_DrawPrimitive(&vr[1],
-		                             &vr[2],
-		                             &vr[3]);
-
-		vt[2].p.x = vb[i].p.x   - (vb[i].p.x - eSrc.x) * 0.2f;
-		vt[2].p.y = vb[i].p.y   - (vb[i].p.y - eSrc.y) * 0.2f;
-		vt[2].p.z = vb[i].p.z   - (vb[i].p.z - eSrc.z) * 0.2f;
-		vt[3].p.x = vb[i+1].p.x - (vb[i+1].p.x - eSrc.x) * 0.2f;
-		vt[3].p.y = vb[i+1].p.y - (vb[i+1].p.y - eSrc.y) * 0.2f;
-		vt[3].p.z = vb[i+1].p.z - (vb[i+1].p.z - eSrc.z) * 0.2f;
-
+		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		
+		vt[2].p = vb[i].p - (vb[i].p - eSrc) * 0.2f;
+		vt[3].p = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
+		
 		EE_RT2(&vb[i], &vr[3]);
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive(&vr[0],
-		                             &vr[1],
-		                             &vr[2]);
-		ARX_DrawPrimitive(&vr[1],
-		                             &vr[2],
-		                             &vr[3]);
-
+		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		
 	}
 
 	//-------------------------------------------------------------------------
@@ -402,58 +386,39 @@ void CSummonCreature::RenderFissure()
 	vr[3].uv.y = 0;
 
 	for(i = 0; i < end - 1; i++) {
+		
 		if(i < fSizeIntro) {
 			vt[0].p = va[i].p;
 			vt[1].p = va[i + 1].p;
-			vt[2].p.x = va[i].p.x + (va[i].p.x - target.p.x) * 2;
-			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
-			vt[2].p.z = va[i].p.z + (va[i].p.z - target.p.z) * 2;
-			vt[3].p.x = va[i+1].p.x + (va[i+1].p.x - target.p.x) * 2;
-			vt[3].p.y = va[i+1].p.y + (va[i+1].p.y - target.p.y) * 2;
-			vt[3].p.z = va[i+1].p.z + (va[i+1].p.z - target.p.z) * 2;
-
+			vt[2].p = va[i].p + (va[i].p - target.p) * 2.f;
+			vt[3].p = va[i + 1].p + (va[i + 1].p - target.p) * 2.f;
 			vr[0].color = (fColorRays1 * tfRaysa[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysa[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toBGR();
-			
 			EE_RT2(&vt[0], &vr[3]);
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 		
 		if(i < fSizeIntro) {
 			vt[0].p = vb[i + 1].p;
 			vt[1].p = vb[i].p;
-			vt[2].p.x = vb[i+1].p.x + (vb[i+1].p.x - target.p.x) * 2;
-			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
-			vt[2].p.z = vb[i+1].p.z + (vb[i+1].p.z - target.p.z) * 2;
-			vt[3].p.x = vb[i].p.x + (vb[i].p.x - target.p.x) * 2;
-			vt[3].p.y = vb[i].p.y + (vb[i].p.y - target.p.y) * 2;
-			vt[3].p.z = vb[i].p.z + (vb[i].p.z - target.p.z) * 2;
-
+			vt[2].p = vb[i + 1].p + (vb[i + 1].p - target.p) * 2.f;
+			vt[3].p = vb[i].p + (vb[i].p - target.p) * 2.f;
 			vr[0].color = (fColorRays1 * tfRaysb[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysb[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toBGR();
-
 			EE_RT2(&vt[0], &vr[3]);
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 		
 	}

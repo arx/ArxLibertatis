@@ -1495,10 +1495,10 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		
 		
 		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
-		nouvo->vertexlist[k].v.x	=	nouvo->vertexlist[k].vert.p.x	=	from->vertexlist3[from->selections[num].selected[k]].v.x - ioo->pos.x;
-		nouvo->vertexlist[k].v.y	=	nouvo->vertexlist[k].vert.p.y	=	from->vertexlist3[from->selections[num].selected[k]].v.y - ioo->pos.y;
-		nouvo->vertexlist[k].v.z	=	nouvo->vertexlist[k].vert.p.z	=	from->vertexlist3[from->selections[num].selected[k]].v.z - ioo->pos.z;
-
+		nouvo->vertexlist[k].v = from->vertexlist3[from->selections[num].selected[k]].v;
+		nouvo->vertexlist[k].v -= ioo->pos;
+		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
+		
 		nouvo->vertexlist[k].vert.color	=	from->vertexlist[k].vert.color;
 		nouvo->vertexlist[k].vert.uv.x	=	from->vertexlist[k].vert.uv.x;
 		nouvo->vertexlist[k].vert.uv.y	=	from->vertexlist[k].vert.uv.y;
@@ -1522,10 +1522,10 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 
 					if (count < nouvo->vertexlist.size())
 					{
-						memcpy(&nouvo->vertexlist[count], &from->vertexlist[from->facelist[k].vid[j]], sizeof(EERIE_VERTEX));
-						nouvo->vertexlist[count].v.x = nouvo->vertexlist[count].vert.p.x = from->vertexlist3[from->facelist[k].vid[j]].v.x - ioo->pos.x;
-						nouvo->vertexlist[count].v.y = nouvo->vertexlist[count].vert.p.y = from->vertexlist3[from->facelist[k].vid[j]].v.y - ioo->pos.y;
-						nouvo->vertexlist[count].v.z = nouvo->vertexlist[count].vert.p.z = from->vertexlist3[from->facelist[k].vid[j]].v.z - ioo->pos.z;
+						nouvo->vertexlist[count] = from->vertexlist[from->facelist[k].vid[j]];
+						nouvo->vertexlist[count].v = from->vertexlist3[from->facelist[k].vid[j]].v;
+						nouvo->vertexlist[count].v -= ioo->pos;
+						nouvo->vertexlist[count].vert.p = nouvo->vertexlist[count].v;
 						memcpy(&nouvo->vertexlist3[count], &nouvo->vertexlist[count], sizeof(EERIE_VERTEX));
 					}
 					else

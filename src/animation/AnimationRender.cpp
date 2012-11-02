@@ -1858,9 +1858,9 @@ void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 
 		Quat_Slerp(&eobj->c_data->bones[i].quatinit , &q2, &tquat, timm);
 
-		eobj->c_data->bones[i].transinit.x = eobj->c_data->bones[i].translast.x + (eobj->c_data->bones[i].transinit.x - eobj->c_data->bones[i].translast.x) * timm;
-		eobj->c_data->bones[i].transinit.y = eobj->c_data->bones[i].translast.y + (eobj->c_data->bones[i].transinit.y - eobj->c_data->bones[i].translast.y) * timm;
-		eobj->c_data->bones[i].transinit.z = eobj->c_data->bones[i].translast.z + (eobj->c_data->bones[i].transinit.z - eobj->c_data->bones[i].translast.z) * timm;
+		eobj->c_data->bones[i].transinit = eobj->c_data->bones[i].translast
+		                                   + (eobj->c_data->bones[i].transinit
+		                                      - eobj->c_data->bones[i].translast) * timm;
 	}
 }
 

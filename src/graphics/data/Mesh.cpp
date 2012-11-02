@@ -3518,9 +3518,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		YRotatePoint(&p, &rp, Ycos, Ysin);
 		XRotatePoint(&rp, &p, Xcos, Xsin);
 		ZRotatePoint(&p, &rp, Zcos, Zsin);
-		eobj->vertexlist[i].vert.p.x = rp.x + eobj->pos.x + eobj->point0.x;
-		eobj->vertexlist[i].vert.p.y = rp.y + eobj->pos.y + eobj->point0.y;
-		eobj->vertexlist[i].vert.p.z = rp.z + eobj->pos.z + eobj->point0.z;
+		eobj->vertexlist[i].vert.p = rp + eobj->pos + eobj->point0;
 	}
 
 	long type, val1, val2;
