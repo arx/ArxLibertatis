@@ -1206,14 +1206,10 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 static void RestoreIOInitPos(Entity * io) {
 	if(io) {
 		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
-		io->pos.x = io->lastpos.x = io->initpos.x;
-		io->pos.y = io->lastpos.y = io->initpos.y;
-		io->pos.z = io->lastpos.z = io->initpos.z;
-		io->move.x = io->move.y = io->move.z = 0.f;
+		io->pos = io->lastpos = io->initpos;
+		io->move = Vec3f::ZERO;
 		io->lastmove.x = io->lastmove.y = io->lastmove.z = 0.f;
-		io->angle.a = io->initangle.a;
-		io->angle.b = io->initangle.b;
-		io->angle.g = io->initangle.g;
+		io->angle = io->initangle;
 	}
 }
 
@@ -1224,9 +1220,7 @@ void RestoreAllIOInitPos() {
 }
 
 void ARX_HALO_SetToNative(Entity * io) {
-	io->halo.color.r = io->halo_native.color.r;
-	io->halo.color.g = io->halo_native.color.g;
-	io->halo.color.b = io->halo_native.color.b;
+	io->halo.color = io->halo_native.color;
 	io->halo.radius = io->halo_native.radius;
 	io->halo.flags = io->halo_native.flags;
 }

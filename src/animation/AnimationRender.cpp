@@ -930,9 +930,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					{
 						Vec3f & Cur_vTLights = vTLights[l];
 						Vec3f tl;
-						tl.x = (Cur_llights->pos.x - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.x);
-						tl.y = (Cur_llights->pos.y - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.y);
-						tl.z = (Cur_llights->pos.z - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.z);
+						tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
 						float dista = ffsqrt(tl.lengthSqr());
 
 						if(dista < Cur_llights->fallend) {
@@ -1478,22 +1476,13 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				continue;
 
 			//CULL3D
-			Vec3f nrm;
-			nrm.x = eobj->vertexlist3[eface->vid[0]].v.x - ACTIVECAM->pos.x;
-			nrm.y = eobj->vertexlist3[eface->vid[0]].v.y - ACTIVECAM->pos.y;
-			nrm.z = eobj->vertexlist3[eface->vid[0]].v.z - ACTIVECAM->pos.z;
-
-			if (!(eface->facetype & POLY_DOUBLESIDED))
-			{
+			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->pos;
+			
+			if(!(eface->facetype & POLY_DOUBLESIDED)) {
 				Vec3f normV10;
 				Vec3f normV20;
-				normV10.x = eobj->vertexlist3[eface->vid[1]].v.x - eobj->vertexlist3[eface->vid[0]].v.x;
-				normV10.y = eobj->vertexlist3[eface->vid[1]].v.y - eobj->vertexlist3[eface->vid[0]].v.y;
-				normV10.z = eobj->vertexlist3[eface->vid[1]].v.z - eobj->vertexlist3[eface->vid[0]].v.z;
-				normV20.x = eobj->vertexlist3[eface->vid[2]].v.x - eobj->vertexlist3[eface->vid[0]].v.x;
-				normV20.y = eobj->vertexlist3[eface->vid[2]].v.y - eobj->vertexlist3[eface->vid[0]].v.y;
-				normV20.z = eobj->vertexlist3[eface->vid[2]].v.z - eobj->vertexlist3[eface->vid[0]].v.z;
-
+				normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
+				normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
 				Vec3f normFace;
 				normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
@@ -2088,9 +2077,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 						continue;
 
 					long ll = eobj->linked[k].lidx2;
-					eobj->linked[k].modinfo.link_position.x = obj->vertexlist[ll].v.x - obj->vertexlist[obj->origin].v.x;
-					eobj->linked[k].modinfo.link_position.y = obj->vertexlist[ll].v.y - obj->vertexlist[obj->origin].v.y;
-					eobj->linked[k].modinfo.link_position.z = obj->vertexlist[ll].v.z - obj->vertexlist[obj->origin].v.z;
+					eobj->linked[k].modinfo.link_position = obj->vertexlist[ll].v - obj->vertexlist[obj->origin].v;
 
 					EERIE_QUAT quat;
 					ll = eobj->linked[k].lidx;
@@ -2324,23 +2311,16 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 		tv.y -= 60.f;
 	else
 		tv.y -= 90.f;
-
-
-	for (long l = 0; l != MAX_LLIGHTS; l++)
-	{
-		if (llights[l])
-		{
-			float		oolength = 1.f / dists[l];
-			vLight.x = (llights[l]->pos.x - tv.x) * oolength;
-			vLight.y = (llights[l]->pos.y - tv.y) * oolength;
-			vLight.z = (llights[l]->pos.z - tv.z) * oolength;
-
+	
+	for(long l = 0; l != MAX_LLIGHTS; l++) {
+		if(llights[l]) {
+			vLight = (llights[l]->pos - tv) / dists[l];
 			TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
-		}
-		else
+		} else {
 			break;
+		}
 	}
-
+	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
 	paf[1] = eobj->facelist[ii].vid[1];

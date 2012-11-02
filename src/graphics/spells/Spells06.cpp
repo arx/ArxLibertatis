@@ -1751,9 +1751,7 @@ float CParalyse::Render()
 
 			while (nb)
 			{
-				d3ds.p.x = this->pos.x + vertex->x;
-				d3ds.p.y = this->pos.y + vertex->y;
-				d3ds.p.z = this->pos.z + vertex->z;
+				d3ds.p = this->pos + *vertex;
 				EE_RTP(&d3ds, vd3d);
 				vd3d->color = col;
 				vertex++;

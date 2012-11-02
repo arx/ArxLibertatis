@@ -1492,16 +1492,11 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 					{
 						if (kk != k)
 						{
-							Vec3f posi;
-							posi.x = (entities[i]->obj->vertexlist3[k].v.x + entities[i]->obj->vertexlist3[kk].v.x) * ( 1.0f / 2 );
-							posi.y = (entities[i]->obj->vertexlist3[k].v.y + entities[i]->obj->vertexlist3[kk].v.y) * ( 1.0f / 2 );
-							posi.z = (entities[i]->obj->vertexlist3[k].v.z + entities[i]->obj->vertexlist3[kk].v.z) * ( 1.0f / 2 );
+							Vec3f posi = (entities[i]->obj->vertexlist3[k].v
+							              + entities[i]->obj->vertexlist3[kk].v) * 0.5f;
 							float dist = fdist(*pos, posi);
-
-							if (dist <= radius)
-							{
+							if(dist <= radius) {
 								count2++;
-
 								if (dist < mindist) mindist = dist;
 							}
 						}

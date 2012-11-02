@@ -235,34 +235,17 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 {
 	if ((ep->type & POLY_WATER) || (ep->type & POLY_LAVA) )
 	{
-		for (long k=0;k<to;k++) 
-		{
-			ep->tv[k].uv.x=ep->v[k].uv.x;
-			ep->tv[k].uv.y=ep->v[k].uv.y;
-			
-			
-			if (ep->type & POLY_LAVA)
-			{
+		for(long k = 0; k < to; k++) {
+			ep->tv[k].uv = ep->v[k].uv;
+			if(ep->type & POLY_LAVA) {
 				ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); 
 				ApplyLavaGlowToVertex(&ep->v[k].p,&ep->tv[k],0.6f);
-
-				if (rnd()>0.995f) 
-				{
-					if (ep->type & POLY_FALL)
-					{
-						Vec3f pos;
-						pos.x=ep->v[k].p.x+ep->norm.x*20.f;
-						pos.y=ep->v[k].p.y+ep->norm.y*20.f;
-						pos.z=ep->v[k].p.z+ep->norm.z*20.f;
-					}
-
-					
-				}
+			} else {
+				ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
 			}
-			else ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
-		}					
-	}	
-
+		}
+	}
+	
 	if (ep->type & POLY_FALL)
 	{
 		if (ep->type & POLY_LAVA)
@@ -1599,11 +1582,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				Vec3f nrm;
-				nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-				nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-				nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ((dot(ep->norm , nrm) > 0.f) &&
@@ -1756,11 +1735,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				Vec3f nrm;
-				nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-				nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-				nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ( (dot( ep->norm , nrm )>0.f) &&
@@ -2018,13 +1993,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			fDist-=ep->v[0].rhw;
 
-			Vec3f nrm;
-			nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-			nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-			nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+			Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
 			int to;
-
 			if(ep->type&POLY_QUAD)
 			{
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
@@ -2683,16 +2653,10 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			continue;
 		}
 
-		Vec3f pos;
-		pos.x=epp->center.x-ACTIVECAM->pos.x;
-		pos.y=epp->center.y-ACTIVECAM->pos.y;
-		pos.z=epp->center.z-ACTIVECAM->pos.z;
+		Vec3f pos = epp->center - ACTIVECAM->pos;
 		float fRes = dot(pos, epp->norm);
-
 		long ret=1;
-
-		if(IsSphereInFrustrum(epp->v[0].rhw,&epp->center,frustrum))
-		{
+		if(IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
 			ret=0;
 		}
 
@@ -2846,29 +2810,20 @@ long curpixel;
 
 
 
-bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
-	{
+bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
 		
-	Vec3f n,s21,s31;
-
-	s21.x=ep->v[1].p.x-ep->v[0].p.x;
-	s21.y=ep->v[1].p.y-ep->v[0].p.y;
-	s21.z=ep->v[1].p.z-ep->v[0].p.z;
-	s31.x=ep->v[2].p.x-ep->v[0].p.x;
-	s31.y=ep->v[2].p.y-ep->v[0].p.y;
-	s31.z=ep->v[2].p.z-ep->v[0].p.z;
-
-	n.y=(s21.z*s31.x)-(s21.x*s31.z);
-	n.x=(s21.y*s31.z)-(s21.z*s31.y);
-	n.z=(s21.x*s31.y)-(s21.y*s31.x);
-
-	// uses s21.x instead of d
-	s21.x=ep->v[0].p.x*n.x+ep->v[0].p.y*n.y+ep->v[0].p.z*n.z;
-
-	s21.x=(s21.x-(n.x*pos->x)-(n.z*pos->z))/n.y;
-	*ret=s21.x;
+	Vec3f s21 = ep->v[1].p - ep->v[0].p;
+	Vec3f s31 = ep->v[2].p - ep->v[0].p;
+	
+	Vec3f n;
+	n.y = (s21.z * s31.x) - (s21.x * s31.z);
+	n.x = (s21.y * s31.z) - (s21.z * s31.y);
+	n.z = (s21.x * s31.y) - (s21.y * s31.x);
+	
+	float d = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
+	*ret = (d - n.x * pos->x - n.z * pos->z) / n.y;
+	
 	return true;
-
 }
 
 extern long SPECIAL_DRAGINTER_RENDER;
@@ -3092,10 +3047,7 @@ else
 			else
 			{
 				
-				nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-				nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-				nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+				nrm = ep->v[2].p - ACTIVECAM->pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ( (dot( ep->norm , nrm )>0.f) &&

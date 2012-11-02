@@ -154,9 +154,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 		for (int i = 0; i < obj->cdata->nb_cvert; i++)
 		{
 			obj->cdata->cvert[i].idx = (short)obj->selections[sel].selected[i];
-			obj->cdata->cvert[i].pos.x = obj->cdata->cvert[i].t_pos.x = obj->vertexlist[obj->cdata->cvert[i].idx].v.x;
-			obj->cdata->cvert[i].pos.y = obj->cdata->cvert[i].t_pos.y = obj->vertexlist[obj->cdata->cvert[i].idx].v.y;
-			obj->cdata->cvert[i].pos.z = obj->cdata->cvert[i].t_pos.z = obj->vertexlist[obj->cdata->cvert[i].idx].v.z;
+			obj->cdata->cvert[i].pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
+			obj->cdata->cvert[i].t_pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
 			obj->cdata->cvert[i].mass = 0.5f; 
 
 			if ((selmounocol != -1) && (IsInSelection(obj, obj->selections[sel].selected[i], selmounocol) >= 0))

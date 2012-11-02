@@ -145,15 +145,10 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 			for (long o=0;o<5;o++)
 			{
 				float p=(float)o*( 1.0f / 5 );
-				center.x=(ep->v[n].p.x*p+ep->center.x*(1.f-p));
-				center.y=(ep->v[n].p.y*p+ep->center.y*(1.f-p));
-				center.z=(ep->v[n].p.z*p+ep->center.z*(1.f-p));
-
-				if (PointInCylinder(cyl, &center)) 
-				{	
+				center = ep->v[n].p * p + ep->center * (1.f-p);
+				if(PointInCylinder(cyl, &center)) {
 					anything=min(anything,center.y);
 					POLYIN=1;
-
 					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
 				}
 			}
@@ -162,24 +157,15 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		if ((ep->area>2000.f) 
 		        || (flags & CFLAG_EXTRA_PRECISION)  )
 		{
-			center.x=(ep->v[n].p.x+ep->v[r].p.x)*( 1.0f / 2 );
-			center.y=(ep->v[n].p.y+ep->v[r].p.y)*( 1.0f / 2 );
-			center.z=(ep->v[n].p.z+ep->v[r].p.z)*( 1.0f / 2 );
-
-			if (PointInCylinder(cyl, &center)) 
-			{	
+			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
+			if(PointInCylinder(cyl, &center)) {
 				anything=min(anything,center.y);
 				POLYIN=1;
-
 				if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
 			}
 
-			if ((ep->area>4000.f) || (flags & CFLAG_EXTRA_PRECISION))
-			{
-				center.x=(ep->v[n].p.x+ep->center.x)*( 1.0f / 2 );
-				center.y=(ep->v[n].p.y+ep->center.y)*( 1.0f / 2 );
-				center.z=(ep->v[n].p.z+ep->center.z)*( 1.0f / 2 );
-
+			if ((ep->area>4000.f) || (flags & CFLAG_EXTRA_PRECISION)) {
+				center = (ep->v[n].p + ep->center) * 0.5f;
 				if (PointInCylinder(cyl, &center)) 
 				{	
 					anything=min(anything,center.y);
@@ -189,13 +175,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 				}
 			}
 
-			if ((ep->area>6000.f) || (flags & CFLAG_EXTRA_PRECISION))
-			{
-				center.x=(center.x+ep->v[n].p.x)*( 1.0f / 2 );
-				center.y=(center.y+ep->v[n].p.y)*( 1.0f / 2 );
-				center.z=(center.z+ep->v[n].p.z)*( 1.0f / 2 );
-
-				if (PointInCylinder(cyl, &center))
+			if ((ep->area>6000.f) || (flags & CFLAG_EXTRA_PRECISION)) {
+				center = (center + ep->v[n].p) * 0.5f;
+				if(PointInCylinder(cyl, &center))
 				{
 					anything=min(anything,center.y);
 					POLYIN=1;
@@ -268,33 +250,20 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 	for (long n=0;n<to;n++)
 	{
-		if (ep->area>2000.f)
-		{
-			center.x=(ep->v[n].p.x+ep->v[r].p.x)*( 1.0f / 2 );
-			center.y=(ep->v[n].p.y+ep->v[r].p.y)*( 1.0f / 2 );
-			center.z=(ep->v[n].p.z+ep->v[r].p.z)*( 1.0f / 2 );
-
+		
+		if(ep->area > 2000.f) {
+			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
 			if(sph->contains(center)) {	
 				return true;
 			}
-
-			if (ep->area>4000.f)
-			{
-				center.x=(ep->v[n].p.x+ep->center.x)*( 1.0f / 2 );
-				center.y=(ep->v[n].p.y+ep->center.y)*( 1.0f / 2 );
-				center.z=(ep->v[n].p.z+ep->center.z)*( 1.0f / 2 );
-
-				if(sph->contains(center)) {	
+			if(ep->area > 4000.f) {
+				center = (ep->v[n].p + ep->center) * 0.5f;
+				if(sph->contains(center)) {
 					return true;
 				}
 			}
-
-			if (ep->area>6000.f)
-			{
-				center.x=(center.x+ep->v[n].p.x)*( 1.0f / 2 );
-				center.y=(center.y+ep->v[n].p.y)*( 1.0f / 2 );
-				center.z=(center.z+ep->v[n].p.z)*( 1.0f / 2 );
-
+			if(ep->area > 6000.f) {
+				center = (center + ep->v[n].p) * 0.5f;
 				if(sph->contains(center)) {
 					return true;
 				}
@@ -1346,10 +1315,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 								{
 									for (float nn=0.2f;nn<1.f;nn+=0.2f)
 									{
-									Vec3f posi;
-									posi.x=(vlist[ii].v.x*nn+vlist[kk].v.x*(1.f-nn));
-									posi.y=(vlist[ii].v.y*nn+vlist[kk].v.y*(1.f-nn));
-									posi.z=(vlist[ii].v.z*nn+vlist[kk].v.z*(1.f-nn));
+									Vec3f posi = vlist[ii].v * nn + vlist[kk].v * (1.f - nn);
 									if(distSqr(sphere->origin, posi) <= square(sr30 + 20)) {
 										count++;
 
@@ -1360,7 +1326,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionF
 
 											if (count>6) 
 												return true;
-										}										
+										}
 									}
 									}
 								}
@@ -1583,11 +1549,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 		return false;
 	}
 
-	float onedist=1.f/distance;
-	Vec3f mvector;
-	mvector.x=(ip->targetpos.x-ip->startpos.x)*onedist;
-	mvector.y=(ip->targetpos.y-ip->startpos.y)*onedist;
-	mvector.z=(ip->targetpos.z-ip->startpos.z)*onedist;
+	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
 	long count=100;
 
 	while ((distance>0.f) && (count--))

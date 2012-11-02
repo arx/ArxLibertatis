@@ -1028,22 +1028,16 @@ CRepelUndead::~CRepelUndead() {
 		srune = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CRepelUndead::Create(Vec3f aeSrc, float afBeta)
-{
+
+void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eTarget.x = eSrc.x = aeSrc.x;
-	eTarget.y = eSrc.y = aeSrc.y;
-	eTarget.z = eSrc.z = aeSrc.z;
-
+	eTarget = eSrc = aeSrc;
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-
+	fBetaRadCos = (float)cos(fBetaRad);
+	fBetaRadSin = (float)sin(fBetaRad);
 	fSize = 1;
-
 	bDone = true;
 }
 
@@ -1527,9 +1521,7 @@ float CLevitate::Render()
 
 				while (nb)
 				{
-					d3dvs.p.x = this->pos.x + vertex->x;
-					d3dvs.p.y = this->pos.y + vertex->y;
-					d3dvs.p.z = this->pos.z + vertex->z;
+					d3dvs.p = this->pos + *vertex;
 	
 					EE_RT2(&d3dvs, d3dv);
 					col = Random::get(0, 80);

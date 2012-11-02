@@ -986,9 +986,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		
 		string name = toLowercase(safestring(ptoh->object_name));
 		if(name == "map_origin") {
-			seerie->point0.x = seerie->objs[id]->point0.x + seerie->objs[id]->pos.x;
-			seerie->point0.y = seerie->objs[id]->point0.y + seerie->objs[id]->pos.y;
-			seerie->point0.z = seerie->objs[id]->point0.z + seerie->objs[id]->pos.z;
+			seerie->point0 = seerie->objs[id]->point0 + seerie->objs[id]->pos;
 			delete seerie->objs[id];
 			seerie->nbobj--;
 			id--;

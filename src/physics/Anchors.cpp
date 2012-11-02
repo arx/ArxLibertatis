@@ -223,12 +223,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 			for (long o = 0; o < 5; o++)
 			{
 				float p = (float)o * ( 1.0f / 5 );
-				center.x = (ep->v[n].p.x * p + ep->center.x * (1.f - p));
-				center.y = (ep->v[n].p.y * p + ep->center.y * (1.f - p));
-				center.z = (ep->v[n].p.z * p + ep->center.z * (1.f - p));
-
-				if (PointInCylinder(cyl, &center)) 
-				{
+				center = ep->v[n].p * p + ep->center * (1.f - p);
+				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
@@ -240,24 +236,16 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 		        || (flags & CFLAG_EXTRA_PRECISION)
 		   )
 		{
-			center.x = (ep->v[n].p.x + ep->v[r].p.x) * ( 1.0f / 2 );
-			center.y = (ep->v[n].p.y + ep->v[r].p.y) * ( 1.0f / 2 );
-			center.z = (ep->v[n].p.z + ep->v[r].p.z) * ( 1.0f / 2 );
-
-			if (PointInCylinder(cyl, &center)) 
-			{
+			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
+			if(PointInCylinder(cyl, &center)) {
 				anything = std::min(anything, center.y);
 				return anything;
 			}
 
 			if ((ep->area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (ep->v[n].p.x + ep->center.x) * ( 1.0f / 2 );
-				center.y = (ep->v[n].p.y + ep->center.y) * ( 1.0f / 2 );
-				center.z = (ep->v[n].p.z + ep->center.z) * ( 1.0f / 2 );
-
-				if (PointInCylinder(cyl, &center)) 
-				{
+				center = (ep->v[n].p + ep->center) * 0.5f;
+				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
@@ -265,12 +253,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 
 			if ((ep->area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (center.x + ep->v[n].p.x) * ( 1.0f / 2 );
-				center.y = (center.y + ep->v[n].p.y) * ( 1.0f / 2 );
-				center.z = (center.z + ep->v[n].p.z) * ( 1.0f / 2 );
-
-				if (PointInCylinder(cyl, &center)) 
-				{
+				center = (center + ep->v[n].p) * 0.5f;
+				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
@@ -505,11 +489,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 		return true; 
 	}
 
-	float onedist = 1.f / distance;
-	Vec3f mvector;
-	mvector.x = (ip->targetpos.x - ip->startpos.x) * onedist;
-	mvector.y = (ip->targetpos.y - ip->startpos.y) * onedist;
-	mvector.z = (ip->targetpos.z - ip->startpos.z) * onedist;
+	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
 
 	while (distance > 0.f)
 	{

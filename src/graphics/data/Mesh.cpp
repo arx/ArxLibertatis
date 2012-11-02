@@ -704,33 +704,27 @@ EERIEPOLY * EEIsUnderWater(const Vec3f * pos) {
 	return found;
 }
 
-bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
-{
-	Vec3f	n, s21, s31;
-
-	s21.x = ep->v[1].p.x - ep->v[0].p.x;
-	s21.y = ep->v[1].p.y - ep->v[0].p.y;
-	s21.z = ep->v[1].p.z - ep->v[0].p.z;
-	s31.x = ep->v[2].p.x - ep->v[0].p.x;
-	s31.y = ep->v[2].p.y - ep->v[0].p.y;
-	s31.z = ep->v[2].p.z - ep->v[0].p.z;
-
+bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
+	
+	
+	Vec3f s21 = ep->v[1].p - ep->v[0].p;
+	Vec3f s31 = ep->v[2].p - ep->v[0].p;
+	
+	Vec3f n;
 	n.y = (s21.z * s31.x) - (s21.x * s31.z);
-
 	if (n.y == 0.f) return false; 
-
 	n.x = (s21.y * s31.z) - (s21.z * s31.y);
 	n.z = (s21.x * s31.y) - (s21.y * s31.x);
-
+	
 	// uses s21.x instead of d
 	s21.x = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
-
+	
 	s21.x = (s21.x - (n.x * pos->x) - (n.z * pos->z)) / n.y;
-
+	
 	// Perhaps we can remove the two following lines... (need to test)
 	if (s21.x < ep->min.y) s21.x = ep->min.y;
 	else if (s21.x > ep->max.y) s21.x = ep->max.y;
-
+	
 	*ret = s21.x;
 	return true;
 }
@@ -752,13 +746,8 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 	if (ACTIVECAM != cam) ACTIVECAM = cam;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
-{
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
+void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
+	out->p = in->p - ACTIVECAM->pos;
 	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
 	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
@@ -782,11 +771,8 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
 	out->rhw = fZTemp;
 }
 
-void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
-{
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
+void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
+	out->p = in->p - ACTIVECAM->pos;
 	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
 	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
@@ -813,9 +799,7 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 
 void EE_RT(TexturedVertex * in, Vec3f * out) {
 	
-	out->x = in->p.x - ACTIVECAM->pos.x;
-	out->y = in->p.y - ACTIVECAM->pos.y;
-	out->z = in->p.z - ACTIVECAM->pos.z;
+	*out = in->p - ACTIVECAM->pos;
 	
 	float temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
 	out->x = (out->x * ACTIVECAM->Ycos) + (out->z * ACTIVECAM->Ysin);
@@ -831,9 +815,7 @@ void EE_RT(TexturedVertex * in, Vec3f * out) {
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
 	
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
+	out->p = in->p - ACTIVECAM->pos;
 	
 	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
@@ -926,9 +908,7 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
 static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam) {
 	
 	TexturedVertex tout;
-	out->p.x = in->p.x - cam->pos.x;
-	out->p.y = in->p.y - cam->pos.y;
-	out->p.z = in->p.z - cam->pos.z;
+	out->p = in->p - cam->pos;
 
 	tout.p.x = (out->p.x * cam->Ycos) + (out->p.z * cam->Ysin);
 	tout.p.z = (out->p.z * cam->Ycos) - (out->p.x * cam->Ysin);
@@ -2499,17 +2479,13 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.p.x = eobj->vertexlist[i].v.x * scale->x;
-		v.p.y = eobj->vertexlist[i].v.y * scale->y;
-		v.p.z = eobj->vertexlist[i].v.z * scale->z;
+		v.p = eobj->vertexlist[i].v * *scale;
 
 		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
 		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
 		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
-		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
-		eobj->vertexlist3[i].v.z = rv.p.z += pos->z;
+		eobj->vertexlist3[i].v = (rv.p += *pos);
 		
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -2574,17 +2550,13 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.p.x = eobj->vertexlist[i].v.x * scale->x;
-		v.p.y = eobj->vertexlist[i].v.y * scale->y;
-		v.p.z = eobj->vertexlist[i].v.z * scale->z;
+		v.p = eobj->vertexlist[i].v * *scale;
 
 		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
 		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
 		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
-		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
-		eobj->vertexlist3[i].v.z = rv.p.z += pos->z;
+		eobj->vertexlist3[i].v = (rv.p += *pos);
 
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -3197,9 +3169,8 @@ void ComputeRoomDistance() {
 		// Add V centers;
 		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
 		{
-			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * .5f;
-			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * .5f;
-			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * .5f;
+			ad[curpos].pos = (portals->portals[i].poly.v[nn].p
+			                + portals->portals[i].poly.v[nk].p) * 0.5f;
 			ptr[curpos] = (void *)&portals->portals[i];
 			curpos++;
 		}

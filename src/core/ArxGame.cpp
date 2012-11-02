@@ -1256,10 +1256,8 @@ void ArxGame::Render() {
 			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
 			}
 
-		Vec3f vect,vec2;
-		vect.x=targetpos.x-sourcepos.x;
-		vect.y=targetpos.y-sourcepos.y;
-		vect.z=targetpos.z-sourcepos.z;
+		Vec3f vec2;
+		Vec3f vect = targetpos - sourcepos;
 		fnormalize(vect);
 		float dist=250.f-conversationcamera.size.g;
 
@@ -1268,9 +1266,7 @@ void ArxGame::Render() {
 
 		YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
 		
-		sourcepos.x=targetpos.x-vec2.x*dist;
-		sourcepos.y=targetpos.y-vec2.y*dist;
-		sourcepos.z=targetpos.z-vec2.z*dist;
+		sourcepos = targetpos - vec2 * dist;
 
 		if (conversationcamera.size.b!=0.f)
 			sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
@@ -1420,10 +1416,7 @@ void ArxGame::Render() {
 							
 							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );
 							
-							Vec3f vect;
-							vect.x=conversationcamera.pos.x-targetpos.x;
-							vect.y=conversationcamera.pos.y-targetpos.y;
-							vect.z=conversationcamera.pos.z-targetpos.z;
+							Vec3f vect = conversationcamera.pos - targetpos;
 							Vec3f vect2;
 							Vector_RotateY(&vect2,&vect,90);
 							vect2.normalize();

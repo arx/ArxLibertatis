@@ -283,9 +283,7 @@ void CLightning::Create(Vec3f aeFrom, Vec3f aeTo, float beta) {
 		memset(&LInfo, 0, sizeof(LIGHTNING));
 
 		LInfo.eStart = eSrc;
-		LInfo.eVect.x = eDest.x - eSrc.x;
-		LInfo.eVect.y = eDest.y - eSrc.y;
-		LInfo.eVect.z = eDest.z - eSrc.z;
+		LInfo.eVect = eDest - eSrc;
 		LInfo.anb = lNbSegments;
 		LInfo.anbrec = 0;
 		LInfo.abFollow = true;
@@ -325,9 +323,7 @@ void CLightning::ReCreate()
 		memset(&LInfo, 0, sizeof(LIGHTNING));
 
 		LInfo.eStart = eSrc;
-		LInfo.eVect.x = eDest.x - eSrc.x;
-		LInfo.eVect.y = eDest.y - eSrc.y;
-		LInfo.eVect.z = eDest.z - eSrc.z;
+		LInfo.eVect = eDest - eSrc;
 		LInfo.anb = lNbSegments;
 		LInfo.anbrec = 0;
 		LInfo.abFollow = true;

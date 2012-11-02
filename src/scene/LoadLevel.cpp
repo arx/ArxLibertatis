@@ -893,9 +893,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			fd->exist = 1;
 			fd->rgb = dlf->rgb;
 			fd->angle = dlf->angle;
-			fd->pos.x = dlf->pos.x + trans.x;
-			fd->pos.y = dlf->pos.y + trans.y;
-			fd->pos.z = dlf->pos.z + trans.z;
+			fd->pos = Vec3f(dlf->pos) + trans;
 			fd->blend = dlf->blend;
 			fd->frequency = dlf->frequency;
 			fd->rotatespeed = dlf->rotatespeed;
@@ -1050,9 +1048,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			el->intensity = dlight->intensity;
 			
 			if(FASTmse) {
-				el->pos.x = dlight->pos.x + trans.x;
-				el->pos.y = dlight->pos.y + trans.y;
-				el->pos.z = dlight->pos.z + trans.z;
+				el->pos = Vec3f(dlight->pos) + trans;
 			} else {
 				el->pos = dlight->pos;
 			}

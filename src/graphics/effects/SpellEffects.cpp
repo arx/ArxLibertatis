@@ -287,9 +287,7 @@ void Split(TexturedVertex * v, int a, int b, float yo, float fMul)
 
 		if ((i != a) && (i != b))
 		{
-			v[i].p.x = (v[a].p.x + v[b].p.x) * 0.5f + yo * frand2(); 
-			v[i].p.y = (v[a].p.y + v[b].p.y) * 0.5f + yo * frand2(); 
-			v[i].p.z = (v[a].p.z + v[b].p.z) * 0.5f + yo * frand2(); 
+			v[i].p = (v[a].p + v[b].p) * 0.5f + randomVec(-yo, yo);
 			Split(v, a, i, yo * fMul);
 			Split(v, i, b, yo * fMul);
 		}

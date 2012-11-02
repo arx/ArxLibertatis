@@ -412,14 +412,12 @@ float CMagicMissile::Render()
 			newpos = temp_vector;
 		}
 	}
-
-	av.x = newpos.x - lastpos.x;
-	av.y = newpos.y - lastpos.y;
-	av.z = newpos.z - lastpos.z;
-
+	
+	av = newpos - lastpos;
+	
 	float bubu = getAngle(av.x, av.z, 0, 0);
 	float bubu1 = getAngle(av.x, av.y, 0, 0);
-
+	
 	stitepos = lastpos;
 
 	stiteangle.b = -degrees(bubu);

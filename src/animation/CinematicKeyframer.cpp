@@ -523,12 +523,8 @@ consequences on light :
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos.x = a * ksuiv->pos.x + unmoinsa * k->pos.x;
-			c->pos.y = a * ksuiv->pos.y + unmoinsa * k->pos.y;
-			c->pos.z = a * ksuiv->pos.z + unmoinsa * k->pos.z;
-
+			c->pos = ksuiv->pos * a + k->pos * unmoinsa;
 			c->angz = k->angz + a * GetAngleInterpolation(k->angz, ksuiv->angz);
-
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
@@ -554,14 +550,12 @@ consequences on light :
 					lend = c->lightd;
 				}
 
-				c->light.pos.x		= alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y		= alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z		= alight * lend.pos.z + unmoinsalight * ldep.pos.z;
-				c->light.fallin		= alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->light.fallout	= alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r			= alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g			= alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b			= alight * lend.b + unmoinsalight * ldep.b;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
+				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
+				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
 				c->light.intensity	= alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
@@ -623,9 +617,7 @@ consequences on light :
 					lend = c->lightd;
 				}
 
-				c->light.pos.x = alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y = alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z = alight * lend.pos.z + unmoinsalight * ldep.pos.z;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
 				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
@@ -759,12 +751,8 @@ bool GereTrackNoPlay(Cinematic * c)
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos.x = a * ksuiv->pos.x + unmoinsa * k->pos.x;
-			c->pos.y = a * ksuiv->pos.y + unmoinsa * k->pos.y;
-			c->pos.z = a * ksuiv->pos.z + unmoinsa * k->pos.z;
-
+			c->pos = ksuiv->pos * a + k->pos * unmoinsa;
 			c->angz = k->angz + a * GetAngleInterpolation(k->angz, ksuiv->angz);
-
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
@@ -790,14 +778,12 @@ bool GereTrackNoPlay(Cinematic * c)
 					lend = c->lightd;
 				}
 
-				c->light.pos.x  = alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y  = alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z  = alight * lend.pos.z + unmoinsalight * ldep.pos.z;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r		= alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g		= alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b		= alight * lend.b + unmoinsalight * ldep.b;
+				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
+				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
+				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
@@ -857,9 +843,7 @@ bool GereTrackNoPlay(Cinematic * c)
 					lend = c->lightd;
 				}
 
-				c->light.pos.x = alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y = alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z = alight * lend.pos.z + unmoinsalight * ldep.pos.z;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
 				c->light.r = alight * lend.r + unmoinsalight * ldep.r;

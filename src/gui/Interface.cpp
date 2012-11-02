@@ -7352,23 +7352,14 @@ long Manage3DCursor(long flags)
 					float maxy= -99999999.f;
 					Vec3f minoff;
 					Vec3f maxoff;
-					maxoff.x=minoff.x=io->obj->vertexlist[0].v.x;
-					maxoff.y=minoff.y=io->obj->vertexlist[0].v.y;
-					maxoff.z=minoff.z=io->obj->vertexlist[0].v.z;
-
-					for (size_t i=0;i<io->obj->vertexlist.size();i++)
-					{
-						maxoff.x=max(maxoff.x,io->obj->vertexlist[i].v.x);
-						maxoff.y=max(maxoff.y,io->obj->vertexlist[i].v.y);
-						maxoff.z=max(maxoff.z,io->obj->vertexlist[i].v.z);
-						minoff.x=min(minoff.x,io->obj->vertexlist[i].v.x);
-						minoff.y=min(minoff.y,io->obj->vertexlist[i].v.y);
-						minoff.z=min(minoff.z,io->obj->vertexlist[i].v.z);
-						miny=min(miny,io->obj->vertexlist[i].v.y);
-						maxy=max(maxy,io->obj->vertexlist[i].v.y);
+					maxoff = minoff = io->obj->vertexlist[0].v;
+					for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
+						maxoff = componentwise_max(maxoff, io->obj->vertexlist[i].v);
+						minoff = componentwise_min(minoff, io->obj->vertexlist[i].v);
+						miny = min(miny, io->obj->vertexlist[i].v.y);
+						maxy = max(maxy, io->obj->vertexlist[i].v.y);
 					}
-
-
+					
 					EERIE_CYLINDER cyl;
 					cyl.origin.x=pos.x-(maxoff.x-minoff.x)*0.5f;
 					cyl.origin.y=pos.y;

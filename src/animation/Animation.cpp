@@ -1343,21 +1343,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		paf[2]=eobj->facelist[i].vid[2];
 
 		//CULL3D
-		Vec3f nrm;
-		nrm.x=eobj->vertexlist3[paf[0]].v.x-ACTIVECAM->pos.x;
-		nrm.y=eobj->vertexlist3[paf[0]].v.y-ACTIVECAM->pos.y;
-		nrm.z=eobj->vertexlist3[paf[0]].v.z-ACTIVECAM->pos.z;
+		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->pos;
 
-		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED))
-		{
+		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED)) {
 			Vec3f normV10;
 			Vec3f normV20;
-			normV10.x=eobj->vertexlist3[paf[1]].v.x-eobj->vertexlist3[paf[0]].v.x;
-			normV10.y=eobj->vertexlist3[paf[1]].v.y-eobj->vertexlist3[paf[0]].v.y;
-			normV10.z=eobj->vertexlist3[paf[1]].v.z-eobj->vertexlist3[paf[0]].v.z;
-			normV20.x=eobj->vertexlist3[paf[2]].v.x-eobj->vertexlist3[paf[0]].v.x;
-			normV20.y=eobj->vertexlist3[paf[2]].v.y-eobj->vertexlist3[paf[0]].v.y;
-			normV20.z=eobj->vertexlist3[paf[2]].v.z-eobj->vertexlist3[paf[0]].v.z;
+			normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
+			normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
 			Vec3f normFace;
 			normFace.x=(normV10.y*normV20.z)-(normV10.z*normV20.y);
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);

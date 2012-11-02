@@ -2208,9 +2208,7 @@ bool TryIOAnimMove(Entity * io, long animnum)
 	GetIOCyl(io, &phys.cyl);
 
 	phys.startpos = io->pos;
-	phys.targetpos.x = io->pos.x + trans2.x;
-	phys.targetpos.y = io->pos.y + trans2.y;
-	phys.targetpos.z = io->pos.z + trans2.z;
+	phys.targetpos = io->pos + trans2;
 	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
 
 	if (res && (EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f))
@@ -2800,9 +2798,7 @@ static void ManageNPCMovement(Entity * io)
 	        &&	!(ause0->flags & EA_ANIMEND))
 	{
 		io->room_flags |= 1;
-		io->lastpos.x = io->pos.x += io->move.x;
-		io->lastpos.y = io->pos.y += io->move.y;
-		io->lastpos.z = io->pos.z += io->move.z;
+		io->lastpos = (io->pos += io->move);
 
 		return;
 	}
@@ -3262,13 +3258,8 @@ static void ManageNPCMovement(Entity * io)
 	// Try physics from last valid pos to current desired pos...
 	// For this frame we want to try a move from startpos (valid pos)
 	// to targetpos (potentially invalid pos)
-	io->physics.startpos.x = io->physics.cyl.origin.x = io->pos.x;
-	io->physics.startpos.y = io->physics.cyl.origin.y = io->pos.y;
-	io->physics.startpos.z = io->physics.cyl.origin.z = io->pos.z;
-
-
+	io->physics.startpos = io->physics.cyl.origin = io->pos;
 	
-
 	if(io->forcedmove == Vec3f::ZERO) {
 		ForcedMove = Vec3f::ZERO;
 	} else {
@@ -3353,9 +3344,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	io->room_flags |= 1;
-	io->physics.cyl.origin.x = io->pos.x = phys.cyl.origin.x;
-	io->physics.cyl.origin.y = io->pos.y = phys.cyl.origin.y;
-	io->physics.cyl.origin.z = io->pos.z = phys.cyl.origin.z;
+	io->physics.cyl.origin = io->pos = phys.cyl.origin;
 	io->physics.cyl.radius = GetIORadius(io);
 	io->physics.cyl.height = GetIOHeight(io);
 	
