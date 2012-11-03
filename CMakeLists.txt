@@ -145,7 +145,7 @@ if(USE_SDL)
 		# due to the need to have NSApplication correctly setup by SDLmain.
 		set(SDL_BUILDING_LIBRARY 1)
 	endif()
-	find_package(SDL 1.2 EXACT)
+	find_package(SDL 1.2)
 endif()
 
 if(MSVC)
