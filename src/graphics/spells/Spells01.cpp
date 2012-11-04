@@ -984,88 +984,41 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 	GRenderer->SetTexture(0, tex);
 	
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::grayb(tsp).toBGR();
-
-	float xx;
-	float zz;
-
-	for (i = 0; i < nbseg - 2; i++)
-	{
-		Vec3f astart;
-
-		astart = tabdef[i];
-
-		zz = 5; // size
-		xx = (float)(5 * cos(radians(fBeta)));
-
-		float ax = tabdef[i+1].x;
-		float ay = tabdef[i+1].y;
-		float az = tabdef[i+1].z;
-
+	
+	for(i = 0; i < nbseg - 2; i++) {
+		
+		Vec3f astart = tabdef[i];
+		Vec3f a = tabdef[i + 1];
+		
 		// version 2 faces
-		v2[0].uv.x = 0;
-		v2[0].uv.y = 0;
-		v2[1].uv.x = 1;
-		v2[1].uv.y = 0;
-		v2[2].uv.x = 1;
-		v2[2].uv.y = 1;
-		v2[3].uv.x = 0;
-		v2[3].uv.y = 1;
-
-		v[0].p.x = astart.x;
-		v[0].p.y = astart.y + zz;
-		v[0].p.z = astart.z;
-
-		v[1].p.x = astart.x;
-		v[1].p.y = astart.y - zz;
-		v[1].p.z = astart.z;
-
-		v[2].p.x = ax;
-		v[2].p.y = ay - zz;
-		v[2].p.z = az;
-
-		v[3].p.x = ax;
-		v[3].p.y = ay + zz;
-		v[3].p.z = az;
-
+		v2[0].uv = Vec2f::ZERO;
+		v2[1].uv = Vec2f::X_AXIS;
+		v2[2].uv = Vec2f::ONE;
+		v2[3].uv = Vec2f::Y_AXIS;
+		
+		Vec3f d(0.f, 5.f, 0.f);
+		v[0].p = astart + d;
+		v[1].p = astart - d;
+		v[2].p = a - d;
+		v[3].p = a + d;
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
-
-		zz *= (float) sin(radians(fBeta));
-
-		v[0].p.x = astart.x + xx;
-		v[0].p.y = astart.y;
-		v[0].p.z = astart.z + zz;
-
-		v[1].p.x = astart.x - xx;
-		v[1].p.y = astart.y;
-		v[1].p.z = astart.z - zz;
-
-		v[2].p.x = ax - xx;
-		v[2].p.y = ay;
-		v[2].p.z = az - zz;
-
-		v[3].p.x = ax + xx;
-		v[3].p.y = ay;
-		v[3].p.z = az + zz;
-
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		
+		d = Vec3f(5.f * (float)cos(radians(fBeta)), 0.f, 5.f * (float)sin(radians(fBeta)));
+		v[0].p = astart + d;
+		v[1].p = astart - d;
+		v[2].p = a - d;
+		v[3].p = a + d;
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 	}
 }
 

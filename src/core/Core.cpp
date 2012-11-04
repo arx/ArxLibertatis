@@ -1883,15 +1883,12 @@ void FirstFrameProc() {
 	if (!NO_GMOD_RESET)
 		ARX_GLOBALMODS_Reset();
 
-	NO_GMOD_RESET=0;
-
-	STARTDRAG.x=0;
-	STARTDRAG.y=0;
-	DANAEMouse.x=0;
-	DANAEMouse.y=0;
-	bookclick.x=-1;
-	bookclick.y=-1;
-
+	NO_GMOD_RESET = 0;
+	
+	STARTDRAG = Vec2s::ZERO;
+	DANAEMouse = Vec2s::ZERO;
+	bookclick = Vec2s(-1, -1);
+	
 	if (!LOAD_N_DONT_ERASE) arxtime.init();
 
 	ARX_BOOMS_ClearAllPolyBooms();

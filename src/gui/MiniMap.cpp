@@ -827,15 +827,11 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2) {
 					verts[2].p.y = (pos_y + size) * Yratio;
 					verts[3].p.x = (pos_x - size) * Xratio;
 					verts[3].p.y = (pos_y + size) * Yratio;
-					verts[0].uv.x = 0.f;
-					verts[0].uv.y = 0.f;
-					verts[1].uv.x = 1.f;
-					verts[1].uv.y = 0.f;
-					verts[2].uv.x = 1.f;
-					verts[2].uv.y = 1.f;
-					verts[3].uv.x = 0.f;
-					verts[3].uv.y = 1.f;
-
+					verts[0].uv = Vec2f::ZERO;
+					verts[1].uv = Vec2f::X_AXIS;
+					verts[2].uv = Vec2f::ONE;
+					verts[3].uv = Vec2f::Y_AXIS;
+					
 					if (!fl2 && MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y))
 					{
 

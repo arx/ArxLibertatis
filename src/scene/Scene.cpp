@@ -2965,14 +2965,10 @@ if (USE_PORTALS && portals)
 		{
 			case 1: {
 				EERIE_2D_BBOX bbox;
-				bbox.min.x=0;
-				bbox.min.y=0;
-
-				bbox.max.x = static_cast<float>( DANAESIZX );
-				bbox.max.y = static_cast<float>( DANAESIZY );
-
-				ARX_PORTALS_ComputeRoom(room_num,&bbox,lprec,tim);
-				ARX_PORTALS_RenderRooms(lprec,tim);
+				bbox.min = Vec2f::ZERO;
+				bbox.max = Vec2f(float(DANAESIZX), float(DANAESIZY));
+				ARX_PORTALS_ComputeRoom(room_num, &bbox, lprec, tim);
+				ARX_PORTALS_RenderRooms(lprec, tim);
 				break;
 			}
 			case 2: {

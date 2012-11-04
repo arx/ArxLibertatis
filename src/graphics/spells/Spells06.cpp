@@ -163,12 +163,8 @@ void CCreateField::RenderQuad(TexturedVertex p1, TexturedVertex p2, TexturedVert
 		EE_RT2(&p2, &v2[1]);
 		EE_RT2(&p3, &v2[2]);
 		EE_RT2(&p4, &v2[3]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[3]);
-		ARX_DrawPrimitive(&v2[1],
-		                             &v2[2],
-		                             &v2[3]);
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[3]);
+		ARX_DrawPrimitive(&v2[1], &v2[2], &v2[3]);
 	}
 }
 

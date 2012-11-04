@@ -137,22 +137,18 @@ float CBless::Render()
 	v[3].p.x = x + fBetaRadCos + fBetaRadSin;
 	v[3].p.y = y;
 	v[3].p.z = z + fBetaRadSin - fBetaRadCos;
-
+	
 	v3[0].color = color;
 	v3[1].color = color;
 	v3[2].color = color;
 	v3[3].color = color;
-
+	
 	GRenderer->SetTexture(0, tex_sol);
-
-	v3[0].uv.x = 0;
-	v3[0].uv.y = 0;
-	v3[1].uv.x = 1.f;
-	v3[1].uv.y = 0;
-	v3[2].uv.x = 0;
-	v3[2].uv.y = 1.f;
-	v3[3].uv.x = 1.f;
-	v3[3].uv.y = 1.f;
+	
+	v3[0].uv = Vec2f::ZERO;
+	v3[1].uv = Vec2f::X_AXIS;
+	v3[2].uv = Vec2f::Y_AXIS;
+	v3[3].uv = Vec2f::ONE;
 	
 	EE_RT2(&v[0], &v3[0]);
 	EE_RT2(&v[1], &v3[1]);

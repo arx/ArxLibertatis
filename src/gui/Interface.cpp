@@ -7766,23 +7766,15 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					break;
 				case CURSOR_FIREBALLAIM: {
 					surf=ITC.Get("target_on");
-
+					
 					Vec2i size;
-					if (surf)
-					{
-						size.x	=	surf->m_dwWidth;
-						size.y	=	surf->m_dwHeight;
-					}
-
-					else
-					{
+					if(surf) {
+						size = Vec2i(surf->m_dwWidth, surf->m_dwHeight);
+					} else {
 						ARX_DEAD_CODE();
-						size.x = 0;
-						size.y = 0;
+						size = Vec2i::ZERO;
 					}
-
-
-
+					
 					POSX = 320.f - size.x / 2.f;
 					POSY = 280.f - size.y / 2.f;
 					break;
