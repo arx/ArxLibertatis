@@ -263,28 +263,18 @@ void ARX_PLAYER_FrontPos(Vec3f * pos)
 	pos->z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b))) * 100.f;
 }
 
-//*************************************************************************************
-// void ARX_PLAYER_RectifyPosition()
-//-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Reset all extra-rotation groups of player
-//*************************************************************************************
-void ARX_PLAYER_RectifyPosition()
-{
+void ARX_PLAYER_RectifyPosition() {
 	Entity * io = entities.player();
-
-	if ((io) && (io->_npcdata->ex_rotate))
-	{
-		for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
-		{
-			io->_npcdata->ex_rotate->group_rotate[n].a = 0;
-			io->_npcdata->ex_rotate->group_rotate[n].b = 0;
-			io->_npcdata->ex_rotate->group_rotate[n].g = 0;
+	if(io && io->_npcdata->ex_rotate) {
+		for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
+			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 		}
-
 		io->_npcdata->ex_rotate->flags = 0;
 	}
 }
+
 //******************************************************************************
 // PLAYER TORCH FUNCTIONS
 //-----------------------------------------------------------------------------

@@ -4571,14 +4571,10 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			bookcam.centery = DANAECENTERY;
 			SetActiveCamera(&bookcam);
 			PrepareCamera(&bookcam);
-			pos.x = 0.f;
-			pos.y = 0.f;
-			pos.z = 2100.f;
-
-			angle.a=0.f;
-			angle.b=0.f;
-			angle.g=0.f;
-
+			
+			pos = Vec3f(0.f, 0.f, 2100.f);
+			angle = Anglef::ZERO;
+			
 			PDL[0]=&DynLight[0];
 			TOTPDL=1;
 

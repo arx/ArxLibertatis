@@ -640,35 +640,26 @@ unsigned long CRiseDead::GetDuration()
 {
 	return (ulDurationIntro + ulDurationRender + ulDurationOuttro);
 }
-/*--------------------------------------------------------------------------*/
-void CRiseDead::AddStone(Vec3f * pos)
-{
-	if (arxtime.is_paused()) return;
 
-	if (this->nbstone > 255) return;
-
-	int	nb = 256;
-
-	while (nb--)
-	{
-		if (!this->tstone[nb].actif)
-		{
-			this->nbstone++;
-
-			this->tstone[nb].actif = 1;
-			this->tstone[nb].numstone = rand() & 1;
-			this->tstone[nb].pos = *pos;
-			this->tstone[nb].yvel = rnd() * -5.f;
-			this->tstone[nb].ang.a = rnd() * 360.f;
-			this->tstone[nb].ang.b = rnd() * 360.f;
-			this->tstone[nb].ang.g = rnd() * 360.f;
-			this->tstone[nb].angvel.a = 5.f * rnd();
-			this->tstone[nb].angvel.b = 6.f * rnd();
-			this->tstone[nb].angvel.g = 3.f * rnd();
-			float a = 0.2f + rnd() * 0.3f;
-			tstone[nb].scale = Vec3f::repeat(a);
-			this->tstone[nb].time = Random::get(2000, 2500);
-			this->tstone[nb].currtime = 0;
+void CRiseDead::AddStone(Vec3f * pos) {
+	
+	if(arxtime.is_paused() || nbstone > 255) {
+		return;
+	}
+	
+	int nb = 256;
+	while(nb--) {
+		if(!tstone[nb].actif) {
+			nbstone++;
+			tstone[nb].actif = 1;
+			tstone[nb].numstone = rand() & 1;
+			tstone[nb].pos = *pos;
+			tstone[nb].yvel = rnd() * -5.f;
+			tstone[nb].ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
+			tstone[nb].angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
+			tstone[nb].scale = Vec3f::repeat(0.2f + rnd() * 0.3f);
+			tstone[nb].time = Random::get(2000, 2500);
+			tstone[nb].currtime = 0;
 			break;
 		}
 	}

@@ -255,40 +255,33 @@ void ARX_NPC_ReleasePathFindInfo(Entity * io)
 	io->_npcdata->pathfind.pathwait = 0;
 }
 
-//***********************************************************************************************
 // Creates an extra rotations structure for a NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_CreateExRotateData(Entity * io)
-{
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC))
-	        ||	(io->_npcdata->ex_rotate))
+void ARX_NPC_CreateExRotateData(Entity * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate) {
 		return;
-
+	}
+	
 	io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
 	io->head_rot = 0;
-
-	if (io->_npcdata->ex_rotate)
-	{
+	
+	if(io->_npcdata->ex_rotate) {
+		
 		io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 		io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
 		io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
 		io->_npcdata->ex_rotate->group_number[3] = (short)EERIE_OBJECT_GetGroup(io->obj, "belt");
-
-		for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
-		{
-			io->_npcdata->ex_rotate->group_rotate[n].a = 0;
-			io->_npcdata->ex_rotate->group_rotate[n].b = 0;
-			io->_npcdata->ex_rotate->group_rotate[n].g = 0;
+		
+		for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
+			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 		}
-
+		
 		io->_npcdata->ex_rotate->flags = 0;
 	}
-
+	
 	io->_npcdata->look_around_inc = 0.f;
 }
+
 //***********************************************************************************************
 // Resurects an NPC
 //-----------------------------------------------------------------------------------------------

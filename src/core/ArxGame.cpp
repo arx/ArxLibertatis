@@ -1211,38 +1211,29 @@ void ArxGame::Render() {
 		if (ARX_CONVERSATION_LASTIS!=is) ARX_CONVERSATION_MODE=-1;
 
 		ARX_CONVERSATION_LASTIS=is;
-
-		if (ARX_CONVERSATION_MODE==-1)
-		{
-			ARX_CONVERSATION_MODE=0;
-			conversationcamera.size.a=rnd()*50.f;
-			conversationcamera.size.b=0.f;
-			conversationcamera.size.g=rnd()*50.f;
-			conversationcamera.d_angle.a=0.f;
-			conversationcamera.d_angle.b=0.f;
-			conversationcamera.d_angle.g=0.f;
-
-			if (rnd()>0.4f) conversationcamera.d_angle.a=(1.f-rnd()*2.f)*( 1.0f / 30 );
-
-			if (rnd()>0.4f) conversationcamera.d_angle.b=(1.f-rnd()*1.2f)*( 1.0f / 5 );
-
-			if (rnd()>0.4f) conversationcamera.d_angle.g=(1.f-rnd()*2.f)*( 1.0f / 40 );
-
-			if (rnd()>0.5f)
-			{
-				conversationcamera.size.a=MAKEANGLE(180.f+rnd()*20.f-10.f);
-				conversationcamera.size.b=0.f;
-				conversationcamera.size.g=0.f;
-				conversationcamera.d_angle.g=0.08f;
-				conversationcamera.d_angle.b=0.f;
-				conversationcamera.d_angle.a = 0.f;
+		
+		if(ARX_CONVERSATION_MODE == -1) {
+			ARX_CONVERSATION_MODE = 0;
+			if(rnd() > 0.5f) {
+				conversationcamera.size = Anglef(MAKEANGLE(170.f + rnd() * 20.f), 0.f, 0.f);
+				conversationcamera.d_angle = Anglef(0.f, 0.f, 0.08f);
+			} else {
+				conversationcamera.size = Anglef(rnd() * 50.f, 0.f, rnd() * 50.f);
+				conversationcamera.d_angle = Anglef::ZERO;
+				if(rnd() > 0.4f) {
+					conversationcamera.d_angle.a = (1.f - rnd() * 2.f) * (1.f / 30);
+				}
+				if(rnd() > 0.4f) {
+					conversationcamera.d_angle.b = (1.f - rnd() * 1.2f) * 0.2f;
+				}
+				if(rnd() > 0.4f) {
+					conversationcamera.d_angle.g = (1.f - rnd() * 2.f) * 0.025f;
+				}
 			}
-		}
-		else
-		{
+		} else {
 			conversationcamera.size += conversationcamera.d_angle * FrameDiff;
 		}
-
+		
 		Vec3f sourcepos,targetpos;
 
 		if(ApplySpeechPos(&conversationcamera, is)) {

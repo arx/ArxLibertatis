@@ -2026,12 +2026,10 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			
 			for (long k = 0; k < eobj->nblinked; k++)
 			{
-				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
-				{
-					eobj->linked[k].modinfo.rot.a = 0;
-					eobj->linked[k].modinfo.rot.b = 0;
-					eobj->linked[k].modinfo.rot.g = 0;
-
+				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj) {
+					
+					eobj->linked[k].modinfo.rot = Anglef::ZERO;
+					
 					float old = 0.f;
 					Entity * ioo = (Entity *)eobj->linked[k].io;
 					EERIE_3DOBJ * obj = (EERIE_3DOBJ *) eobj->linked[k].obj;
