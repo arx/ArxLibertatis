@@ -166,10 +166,15 @@ else(MSVC)
 	
 	if(SET_OPTIMIZATION_FLAGS)
 		
-		# Link as few libraries as possible
-		# This is much easier than trying to decide which libraries are needed for each system
-		add_ldflag("-Wl,--as-needed")
-	
+		if(APPLE)
+			# TODO For some reason this check succeeds on OS X, but then
+			# flag causes the actual build to fail :(
+		else()
+			# Link as few libraries as possible
+			# This is much easier than trying to decide which libraries are needed for each system
+			add_ldflag("-Wl,--as-needed")
+		endif()
+		
 		if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 			
 			# set debug symbol level to -g3
