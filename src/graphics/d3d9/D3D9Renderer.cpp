@@ -274,19 +274,19 @@ void D3D9Renderer::EndScene() {
 }
 
 void D3D9Renderer::SetViewMatrix(const EERIEMATRIX & matView) {
-	GD3D9Device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&matView);
+	GD3D9Device->SetTransform(D3DTS_VIEW, (const D3DMATRIX *)&matView);
 }
 
 void D3D9Renderer::GetViewMatrix(EERIEMATRIX & matView) const {
-	GD3D9Device->GetTransform(D3DTS_VIEW, (D3DMATRIX*)&matView);
+	GD3D9Device->GetTransform(D3DTS_VIEW, (D3DMATRIX *)&matView);
 }
 
 void D3D9Renderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
-	GD3D9Device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&matProj);
+	GD3D9Device->SetTransform(D3DTS_PROJECTION, (const D3DMATRIX *)&matProj);
 }
 
 void D3D9Renderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
-	GD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&matProj);
+	GD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DMATRIX *)&matProj);
 }
 
 D3D9Renderer::~D3D9Renderer()
