@@ -211,44 +211,20 @@ float CDispellField::Render() {
 	}
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_p2);
-	
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Color3f stitecolor;
-
-	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120;
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos.x = player.pos.x;
-	stitepos.y = player.pos.y + 80;
-	stitepos.z = player.pos.z;
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	stiteangle.b = -stiteangle.b * 1.5f;
-	stitecolor.r = 0.7f;
-	stitecolor.g = 0.7f;
-	stitecolor.b = 0.7f;
-	stitescale = Vec3f(1.f, -0.1f, 1.f);
-
-	stiteangle.b = -stiteangle.b;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
-	stitescale = Vec3f::repeat(2.f);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	Anglef stiteangle(0.f, float(ulCurrentTime) * fOneOnDuration * 180.f, 0.f);
+	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
+	Color3f stitecolor = Color3f::white;
+	Vec3f stitescale = Vec3f::repeat(2.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	
 	stitepos.y = player.pos.y + 20;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
+	stitecolor = Color3f::white;
 	stitescale = Vec3f::repeat(1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	
 	return 1;
 }
 
@@ -308,25 +284,17 @@ float CTelekinesis::Render() {
 	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	
 	GRenderer->SetTexture(0, tex_p2);
 	
-	Anglef stiteangle((float) ulCurrentTime * fOneOnDuration * 120, 0.f, 0.f);
-	
+	Anglef stiteangle(0.f, float(ulCurrentTime) * fOneOnDuration * 180.f, 0.f);
 	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
-	
-	Color3f stitecolor;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
-	Vec3f stitescale(2.f, 2.f, 2.f);
+	Color3f stitecolor = Color3f::white;
+	Vec3f stitescale = Vec3f::repeat(2.f, 2.f, 2.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	
 	stitepos.y = player.pos.y + 20;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
-	stitescale = Vec3f(1.8f, 1.8f, 1.8f);
+	stitecolor = Color3f::white;
+	stitescale = Vec3f::repeat(1.8f);
 	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	
 	return 1;

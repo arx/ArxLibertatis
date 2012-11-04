@@ -65,19 +65,16 @@ GLOBAL_MODS stacked;
 
 Color ulBKGColor = Color::none;
 
-void ARX_GLOBALMODS_Reset()
-{
+void ARX_GLOBALMODS_Reset() {
 	memset(&desired, 0, sizeof(GLOBAL_MODS));
 	memset(&current, 0, sizeof(GLOBAL_MODS));
 	current.zclip = DEFAULT_ZCLIP;
 	memset(&stacked, 0, sizeof(GLOBAL_MODS));
 	stacked.zclip = DEFAULT_ZCLIP;
-
 	desired.zclip = DEFAULT_ZCLIP;
-	desired.depthcolor.r = 0.f;
-	desired.depthcolor.g = 0.f;
-	desired.depthcolor.b = 0.f;
+	desired.depthcolor = Color3f::black;
 }
+
 float Approach(float current, float desired, float increment)
 {
 	if (desired > current)
@@ -97,13 +94,10 @@ float Approach(float current, float desired, float increment)
 
 	return current;
 }
-void ARX_GLOBALMODS_Stack()
-{
-	memcpy(&stacked, &desired, sizeof(GLOBAL_MODS));
 
-	desired.depthcolor.r = 0.f;
-	desired.depthcolor.g = 0.f;
-	desired.depthcolor.b = 0.f;
+void ARX_GLOBALMODS_Stack() {
+	memcpy(&stacked, &desired, sizeof(GLOBAL_MODS));
+	desired.depthcolor = Color3f::black;
 	desired.zclip = DEFAULT_ZCLIP;
 }
 void ARX_GLOBALMODS_UnStack()

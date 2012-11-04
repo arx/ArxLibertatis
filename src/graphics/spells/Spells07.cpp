@@ -656,37 +656,22 @@ float CConfuse::Render() {
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetTexture(0, tex_trail);
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-	Color3f stitecolor;
-
-	eCurPos.x = entities[spells[spellinstance].target]->pos.x;
-	eCurPos.y = entities[spells[spellinstance].target]->pos.y;
-
-	if (spells[spellinstance].target != 0)
+	
+	eCurPos = entities[spells[spellinstance].target]->pos;
+	if(spells[spellinstance].target != 0) {
 		eCurPos.y += entities[spells[spellinstance].target]->physics.cyl.height - 30.f;
-
-	eCurPos.z = entities[spells[spellinstance].target]->pos.z;
-
-	long idx = entities[spells[spellinstance].target]->obj->fastaccess.head_group_origin;
-
-	if (idx >= 0)
-	{
-		eCurPos.x = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.x;
-		eCurPos.y = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.y - 50.f;
-		eCurPos.z = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v.z;
 	}
 	
-	stitepos = eCurPos;
-	stiteangle.b = -degrees(arxtime.get_updated() * ( 1.0f / 500 ));
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitecolor.r = 1;
-	stitecolor.g = 1;
-	stitecolor.b = 1;
-	stitescale = Vec3f::ONE;
+	long idx = entities[spells[spellinstance].target]->obj->fastaccess.head_group_origin;
+	if(idx >= 0) {
+		eCurPos = entities[spells[spellinstance].target]->obj->vertexlist3[idx].v;
+		eCurPos.y -= 50.f;
+	}
+	
+	Vec3f stitepos = eCurPos;
+	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
+	Color3f stitecolor = Color3f::white;
+	Vec3f stitescale = Vec3f::ONE;
 	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	
 	for(i = 0; i < 6; i++) {

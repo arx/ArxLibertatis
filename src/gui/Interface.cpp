@@ -6007,41 +6007,29 @@ void ARX_INTERFACE_ManageOpenedBook()
 		Vec3f pos;
 		EERIE_LIGHT eLight1;
 		EERIE_LIGHT eLight2;
-		eLight1.pos.x=50.f;
-		eLight1.pos.y=50.f;
-		eLight1.pos.z=200.f;
-
-		eLight1.exist=1;
-		eLight1.rgb.r = 0.15f;
-		eLight1.rgb.g = 0.06f;
-		eLight1.rgb.b = 0.003f;
+		
+		eLight1.pos = Vec3f(50.f, 50.f, 200.f);
+		eLight1.exist = 1;
+		eLight1.rgb = Color3f(0.15f, 0.06f, 0.003f);
 		eLight1.intensity = 8.8f;
 		eLight1.fallstart = 2020;
-		eLight1.fallend=eLight1.fallstart+60;
-		eLight1.rgb255.r=eLight1.rgb.r*255.f;
-		eLight1.rgb255.g=eLight1.rgb.g*255.f;
-		eLight1.rgb255.b=eLight1.rgb.b*255.f;
-		eLight1.falldiff=eLight1.fallend-eLight1.fallstart;
-		eLight1.falldiffmul=1.f/eLight1.falldiff;
-		eLight1.precalc=eLight1.intensity*GLOBAL_LIGHT_FACTOR;
-
-		eLight2.exist=1;
-		eLight2.pos.x=-50.f;
-		eLight2.pos.y=-50.f;
-		eLight2.pos.z = -200.f;
-		eLight2.rgb.r=0.6f;
-		eLight2.rgb.g=0.6f;
-		eLight2.rgb.b=0.6f;
+		eLight1.fallend = eLight1.fallstar t +60;
+		eLight1.rgb255 = eLight1.rgb * 255.f;
+		eLight1.falldiff = eLight1.fallend - eLight1.fallstart;
+		eLight1.falldiffmul = 1.f / eLight1.falldiff;
+		eLight1.precalc = eLight1.intensity * GLOBAL_LIGHT_FACTOR;
+		
+		eLight2.exist = 1;
+		eLight2.pos = Vec3f(-50.f, -50.f, -200.f);
+		eLight2.rgb = Color3f::gray(0.6f);
 		eLight2.intensity=3.8f;
 		eLight2.fallstart = 0;
-		eLight2.fallend=eLight2.fallstart+3460.f;
-		eLight2.rgb255.r=eLight2.rgb.r*255.f;
-		eLight2.rgb255.g=eLight2.rgb.g*255.f;
-		eLight2.rgb255.b=eLight2.rgb.b*255.f;
-		eLight2.falldiff=eLight2.fallend-eLight2.fallstart;
-		eLight2.falldiffmul=1.f/eLight2.falldiff;
-		eLight2.precalc=eLight2.intensity*GLOBAL_LIGHT_FACTOR;
-
+		eLight2.fallend = eLight2.fallstart + 3460.f;
+		eLight2.rgb255 = eLight2.rgb * 255.f;
+		eLight2.falldiff = eLight2.fallend - eLight2.fallstart;
+		eLight2.falldiffmul = 1.f / eLight2.falldiff;
+		eLight2.precalc = eLight2.intensity * GLOBAL_LIGHT_FACTOR;
+		
 		EERIE_LIGHT * SavePDL[2];
 		SavePDL[0]=PDL[0];
 		SavePDL[1]=PDL[1];

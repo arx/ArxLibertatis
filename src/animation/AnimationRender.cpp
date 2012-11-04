@@ -726,38 +726,23 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			}
 		}
 	}
-
-	if (eobj->drawflags & DRAWFLAG_HIGHLIGHT)
-	{
+	
+	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
 		special_color_flag	=	4;
-
-		special_color.r		=	static_cast<float>(iHighLight);   //100.f;
-		special_color.g		=	static_cast<float>(iHighLight);   //100.f;
-		special_color.b		=	static_cast<float>(iHighLight);   //100.f;
-
+		special_color = Color3f::gray(float(iHighLight));
 	}
-
-	if (FRAME_COUNT > 0) return true;
-
-	if (Project.improve)
-	{
-		if (io != NULL)
-		{
-			infra.r = io->infracolor.r;
-			infra.g = io->infracolor.g;
-			infra.b = io->infracolor.b;
-		}
-		else
-		{
-			infra.r = 0.6f;
-			infra.g = 0.f;
-			infra.b = 1.f;
-		}
+	
+	if(FRAME_COUNT > 0) {
+		return true;
 	}
-
+	
+	if(Project.improve) {
+		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+	}
+	
 	/* Get nearest lights */
 	tv = *pos;
-
+	
 	if ((io) && (io->obj->fastaccess.view_attach >= 0) && (io->obj->fastaccess.head_group_origin != -1))
 	{
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;

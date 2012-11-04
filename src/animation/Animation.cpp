@@ -1243,36 +1243,26 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				special_color_flag = 1;
 				float elapsed = float(arxtime) - io->sfx_time;
 
-				if ( elapsed > 0.f )
-				{
-					if ( elapsed < 3000.f ) // 5 seconds to red
-					{
-						float ratio = elapsed * ( 1.0f / 3000 );
-						special_color.r = 1.f;
-						special_color.g = 1.f - ratio;
-						special_color.b = 1.f - ratio;
+				if(elapsed > 0.f) {
+					
+					if(elapsed < 3000.f) { // 5 seconds to red
+						float ratio = elapsed * (1.0f / 3000);
+						special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 						AddRandomSmoke( io, 1 );
-					}
-					else if ( elapsed < 6000.f ) // 5 seconds to White
-					{
+						
+					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = ( elapsed - 3000.f ) * ( 1.0f / 3000 );
-						special_color.r = 1.f;
-						special_color.g = ratio;
-						special_color.b = ratio;
+						special_color = Color3f(1.f, ratio, ratio);
 						special_color_flag = 2;
-						AddRandomSmoke( io, 2 );
-					}
-					else if ( elapsed < 8000.f ) // 5 seconds to White
-					{
-						float ratio = ( elapsed - 6000.f ) * ( 1.0f / 2000 );
-						special_color.r = ratio;
-						special_color.g = ratio;
-						special_color.b = ratio;
+						AddRandomSmoke(io, 2);
+						
+					} else if (elapsed < 8000.f) { // 5 seconds to White
+						special_color = Color3f::gray((elapsed - 6000.f) * (1.f / 2000));
 						special_color_flag = 2;
-						AddRandomSmoke( io, 2 );
-					}
-					else // SFX finish
-					{
+						AddRandomSmoke(io, 2);
+						
+					} else { // SFX finish
+						
 						special_color_flag = 0;
 						
 						io->sfx_time=0;
