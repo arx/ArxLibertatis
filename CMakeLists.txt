@@ -287,6 +287,13 @@ find_package(PythonInterp)
 
 if(NOT MSVC)
 	
+	if(${Boost_VERSION} LESS 104800)
+		# Older Boost versions don't work with C++11
+		add_cxxflag("-std=c++03")
+	else()
+		add_cxxflag("-std=c++11")
+	endif()
+	
 	# Define _POSIX_C_SOURCE and _XOPEN_SOURCE for GNU systems
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "GNU"
 	   OR ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD")
@@ -721,7 +728,7 @@ elseif(USE_NATIVE_FS AND ARX_HAVE_WINAPI)
 	add_definitions(-DARX_HAVE_WINDOWS_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_WINDOWS_SOURCES})
 	set(ARX_HAVE_WIN32_FILESYSTEM 1)
-elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
+elseif(NOT ${Boost_VERSION} LESS 104400)
 	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
 	set(ARX_HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
