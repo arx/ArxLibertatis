@@ -374,7 +374,7 @@ static void	Cedric_ConcatenateTM(Entity * io, EERIE_C_DATA * obj, Anglef * angle
 			obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
 
 			/* Scale */
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f(1,1,1)) * obj->bones[obj->bones[i].father].scaleanim;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * obj->bones[obj->bones[i].father].scaleanim;
 
 		}
 		else // Root Bone
@@ -414,7 +414,7 @@ static void	Cedric_ConcatenateTM(Entity * io, EERIE_C_DATA * obj, Anglef * angle
 			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f(1,1,1)) * g_scale;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * g_scale;
 		}
 	}
 }

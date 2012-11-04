@@ -6486,7 +6486,7 @@ void ARX_SPELLS_Update()
 						{
 							if (rnd()<0.9f)
 							{
-								Vec3f move(0, 0, 0);
+								Vec3f move = Vec3f::ZERO;
 								float dd=(float)pCF->ulCurrentTime / (float)MIN_TIME_FIREBALL*10;
 
 								if (dd>spells[i].caster_level) dd=spells[i].caster_level;
@@ -6581,7 +6581,7 @@ void ARX_SPELLS_Update()
 			if (spells[i].pSpellFx)
 			{
 				CCurse * curse=(CCurse *)spells[i].pSpellFx;
-				Vec3f target(0, 0, 0);
+				Vec3f target = Vec3f::ZERO;
 					
 				if ((spells[i].target>=0) && (entities[spells[i].target]))
 				{

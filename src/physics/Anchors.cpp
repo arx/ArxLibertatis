@@ -534,8 +534,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
 			Vec3f vecatt;
-			Vec3f rpos(0,0,0);
-			Vec3f lpos(0,0,0);
+			Vec3f rpos = Vec3f::ZERO;
+			Vec3f lpos = Vec3f::ZERO;
 			long				RFOUND		=	0;
 			long				LFOUND		=	0;
 			long				maxRANGLE	=	90;

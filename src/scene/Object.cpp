@@ -1581,7 +1581,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 				/* Translation */
 				obj->bones[i].transanim = obj->bones[i].transinit;
 			}
-			obj->bones[i].scaleanim = Vec3f(1.0f, 1.0f, 1.0f);
+			obj->bones[i].scaleanim = Vec3f::ONE;
 		}
 
 		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
@@ -1744,7 +1744,7 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 
 	if ((head_idx >= 0) && (neck_orgn >= 0))
 	{
-		Vec3f center(0, 0, 0);
+		Vec3f center = Vec3f::ZERO;
 		Vec3f origin = eerie->vertexlist[neck_orgn].v;
 		float count = (float)eerie->grouplist[head_idx].indexes.size();
 

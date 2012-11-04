@@ -7322,7 +7322,7 @@ long Manage3DCursor(long flags)
 				pos.y=player.pos.y;
 
 				{
-					Vec3f objcenter(0, 0, 0);
+					Vec3f objcenter = Vec3f::ZERO;
 					float maxdist= 0.f;
 					float miny=  99999999.f;
 					float maxy= -99999999.f;

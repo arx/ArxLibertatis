@@ -655,7 +655,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
-							Vec3f c(0, 0, 0);
+							Vec3f c = Vec3f::ZERO;
 							float height=io->obj->vertexlist3[io->obj->facelist[ii].vid[0]].v.y;
 
 							for (long kk=0;kk<3;kk++)

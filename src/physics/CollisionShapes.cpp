@@ -263,7 +263,7 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, Vec3f * center, long group)
 	}
 
 	obj->vertexlist[nvertex].v = *center;
-	obj->vertexlist[nvertex].norm = Vec3f(50.f, 50.f, 50.f);
+	obj->vertexlist[nvertex].norm = Vec3f::repeat(50.f);
 
 	obj->vertexlist3.push_back(obj->vertexlist[nvertex]);
 	

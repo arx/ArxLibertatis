@@ -446,7 +446,7 @@ float CMagicMissile::Render()
 		stitecolor.b = 0.5f;
 	}
 
-	stitescale = Vec3f(1, 1, 1);
+	stitescale = Vec3f::ONE;
 	{
 		if ((smissile))
 			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
