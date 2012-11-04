@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <ostream>
 
 #include "math/MathFwd.h"
 #include "script/Script.h"
@@ -97,10 +98,7 @@ struct InventoryPos {
 	
 };
 
-template <typename Stream>
-Stream & operator<<(Stream & strm, const InventoryPos & pos) {
-	return strm << '(' << pos.io << ", " << pos.bag << ", " << pos.x << ", " << pos.y << ')';
-}
+std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
 class PlayerInventory {
 	

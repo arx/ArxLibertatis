@@ -121,7 +121,16 @@ else(MSVC)
 		if(NOT DEBUG_EXTRA)
 			
 			# icc
-			add_cxxflag("-wd1418") # 'external function definition with no prior declaration'
+			if(${CMAKE_CXX_COMPILER} MATCHES "(^|/)icp?c$")
+				# '... was declared but never referenced'
+				# While normally a sensible warning, it also fires when a member isn't used for
+				# *all* instantiations of a template class, making the warning too annoying to
+				# be useful
+				add_cxxflag("-wd177")
+				# 'external function definition with no prior declaration'
+				# This gets annoying fast with small inline/template functions.
+				add_cxxflag("-wd1418")
+			endif()
 			
 			# -Wuninitialized causes too many false positives
 			add_cxxflag("-Wno-uninitialized")

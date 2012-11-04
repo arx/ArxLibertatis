@@ -24,14 +24,15 @@
 
 #include "io/log/Logger.h"
 
-void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg, ...) {
+void assertionFailed(const char * expr, const char * file, unsigned int line,
+                     const char * msg, ...) {
 	
 	if(!file || file[0] == '\0') {
 		file = "<unknown>";
 	}
 	
 	Logger(file, line, Logger::Error) << "Assertion Failed: " << expr;
-	if(msg) {
+	if(msg && *msg) {
 		char formattedmsgbuf[4096];
 		va_list args;
 		va_start(args, msg);

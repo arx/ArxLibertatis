@@ -349,6 +349,10 @@ void IO_Drop_Item(Entity * io_src, Entity * io)
 	}
 }
 
+std::ostream & operator<<(std::ostream & strm, const InventoryPos & p) {
+	return strm << '(' << p.io << ", " << p.bag << ", " << p.x << ", " << p.y << ')';
+}
+
 namespace {
 
 // Glue code to access both player and IO inventories in a uniform way.
@@ -711,7 +715,7 @@ public:
 	 *
 	 * @return the position of the item
 	 */
-	Pos locate(const Entity * item) {
+	Pos locate(const Entity * item) const {
 		for(size_t bag = 0; bag < bags; bag++) {
 			for(size_t i = 0; i < width; i++) {
 				for(size_t j = 0; j < height; j++) {
@@ -751,7 +755,7 @@ public:
 		return pos;
 	}
 	
-	Entity * get(const Pos & pos) {
+	Entity * get(const Pos & pos) const {
 		return pos ? index(pos).io : NULL;
 	}
 	
