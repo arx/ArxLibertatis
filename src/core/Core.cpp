@@ -157,7 +157,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // TODO: I don't think this is wanted and we'll need to add the NSApplication setup
 // on the Arx Libertatis side instead of SDLmain's.
 #if defined(__APPLE__) && defined(__MACH__)
-    #include <SDL.h>
+	#include <SDL_main.h>
+#else
+	#undef main /* in case SDL.h was already included */
 #endif
 
 class TextManager;

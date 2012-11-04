@@ -142,7 +142,7 @@ else(MSVC)
 			add_cxxflag("-Wno-constant-logical-operand")
 			
 			# Xcode does not support -isystem yet
-			if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+			if(MACOSX)
 				add_cxxflag("-Wno-undef")
 			endif()
 			
@@ -166,7 +166,7 @@ else(MSVC)
 	
 	if(SET_OPTIMIZATION_FLAGS)
 		
-		if(APPLE)
+		if(MACOSX)
 			# TODO For some reason this check succeeds on OS X, but then
 			# flag causes the actual build to fail :(
 		else()

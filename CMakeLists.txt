@@ -16,13 +16,19 @@ endif()
 
 # Define configuration options
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(MACOSX 1)
+else()
+	set(MACOSX 0)
+endif()
+
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_TOOLS "Build tools" ON)
-if(APPLE)
+if(MACOSX)
 	option(BUILD_CRASHREPORTER "Build the crash reporter" OFF)
-else(APPLE)
+else()
 	option(BUILD_CRASHREPORTER "Build the crash reporter" ON)
-endif(APPLE)
+endif()
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(UNITY_BUILD "Unity build" OFF)
@@ -78,7 +84,7 @@ endif()
 if(WIN32)
 	set(USER_DIR            "Arx Libertatis"                CACHE STRING "User dir names")
 	set(USER_DIR_PREFIXES   "%FOLDERID_SavedGames%"         CACHE STRING "User dir paths")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+elseif(MACOSX)
 	set(DATA_DIR            "ArxLibertatis"                 CACHE STRING "Data dir names")
 	set(DATA_DIR_PREFIXES   "/Applications"                 CACHE STRING "Data dir paths")
 	set(USER_DIR            "ArxLibertatis"                 CACHE STRING "User dir names")
@@ -102,7 +108,6 @@ mark_as_advanced(USER_DIR_PREFIXES)
 mark_as_advanced(CONFIG_DIR)
 mark_as_advanced(CONFIG_DIR_PREFIXES)
 mark_as_advanced(IGNORE_EXE_DIR)
-mark_as_advanced(foobar) # TODO
 
 
 # Helper scrips
@@ -220,15 +225,24 @@ endif()
 
 # SDL
 if(USE_SDL)
-	if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	if(NOT MACOSX)
 		# Required to avoid linking with SDLmain except for OS X where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
 		set(SDL_BUILDING_LIBRARY 1)
 	endif()
 	find_package(SDL 1.2)
-	if(NOT MSVC AND SDL_FOUND)
-		check_link_library(SDL SDL_LIBRARY)
-	endif()
+	if(SDL_FOUND)
+		if(NOT MSVC)
+			check_link_library(SDL SDL_LIBRARY)
+		endif()
+		set(SDL_LIBRARIES ${SDL_LIBRARY})
+		if(MACOSX)
+			# For some reason SDLmain is not always included in SDL_LIBRARY
+			# But we always need it for OS X - so just include it anyway
+			# If it really isn't there, this will at least give better error messages
+			list(APPEND SDL_LIBRARIES "SDLmain")
+		endif()
+	endif(SDL_FOUND)
 endif()
 
 # Boost
@@ -601,7 +615,7 @@ set(PLATFORM_SOURCES
 	src/platform/String.cpp
 	src/platform/Time.cpp
 )
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(MACOSX)
 	list(APPEND PLATFORM_SOURCES src/platform/Dialog.mm)
 endif()
 
@@ -700,7 +714,7 @@ endif()
 if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${SDL_LIBRARY})
+	list(APPEND ARX_LIBRARIES ${SDL_LIBRARIES})
 	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 	set(ARX_HAVE_SDL 1)
 endif()
@@ -819,7 +833,7 @@ list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 # Add executables
 
-if(WIN32 OR APPLE)
+if(WIN32 OR MACOSX)
 	set(arx_INSTALL DESTINATION "bin")
 else()
 	set(arx_INSTALL DESTINATION "${GAMESBINDIR}")
@@ -906,7 +920,7 @@ if(ARX_HAVE_CRASHREPORTER)
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
 	
-	if(WIN32 OR APPLE)
+	if(WIN32 OR MACOSX)
 		set(arxcrashreporter_INSTALL DESTINATION "bin")
 	else()
 		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
@@ -996,7 +1010,7 @@ endif()
 
 
 # Install icon and desktop entry
-if(NOT WIN32 AND NOT APPLE)
+if(NOT WIN32 AND NOT MACOSX)
 	
 	find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
 	
