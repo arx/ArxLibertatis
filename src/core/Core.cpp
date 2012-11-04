@@ -2046,9 +2046,7 @@ void FirstFrameHandling() {
 	mapcam.pos.x = player.pos.x;
 	mapcam.pos.z = player.pos.z;
 
-	subj.angle.a=player.angle.a;
-	subj.angle.b=player.angle.b;
-	subj.angle.g=player.angle.g;
+	subj.angle = player.angle;
 	
 	RestoreLastLoadedLightning();
 

@@ -1328,10 +1328,8 @@ void CLevitate::DrawStone()
 			if (!arxtime.is_paused())
 			{
 				a = (((float)this->currframetime) * 100.f) / (float)this->tstone[nb].time;
-				this->tstone[nb].pos.y += this->tstone[nb].yvel * a;
-				this->tstone[nb].ang.a += this->tstone[nb].angvel.a * a;
-				this->tstone[nb].ang.b += this->tstone[nb].angvel.b * a;
-				this->tstone[nb].ang.g += this->tstone[nb].angvel.g * a;
+				tstone[nb].pos.y += tstone[nb].yvel * a;
+				tstone[nb].ang += tstone[nb].angvel * a;
 
 				this->tstone[nb].yvel *= 1.f - (1.f / 100.f);
 

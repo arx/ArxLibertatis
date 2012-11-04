@@ -402,10 +402,7 @@ static void	Cedric_ConcatenateTM(Entity * io, EERIE_C_DATA * obj, Anglef * angle
 			}
 			else
 			{
-				Anglef vt1 = *angle;
-				vt1.a = radians(vt1.a);
-				vt1.b = radians(vt1.b);
-				vt1.g = radians(vt1.g);
+				Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
@@ -2296,9 +2293,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 					vt1 = eobj->angle;
 			}
 
-			vt1.a = radians(vt1.a);
-			vt1.b = radians(vt1.b);
-			vt1.g = radians(vt1.g);
+			vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
