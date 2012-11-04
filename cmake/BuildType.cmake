@@ -130,6 +130,9 @@ else(MSVC)
 				# 'external function definition with no prior declaration'
 				# This gets annoying fast with small inline/template functions.
 				add_cxxflag("-wd1418")
+				# 'printf/scanf format not a string literal and no format arguments'
+				# balks when passing NULL as the format string
+				add_cxxflag("-wd2279")
 			endif()
 			
 			# -Wuninitialized causes too many false positives

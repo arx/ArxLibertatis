@@ -96,20 +96,26 @@ public:
 		
 		main_conversation.actors_nb = nb_people;
 		
+#ifdef _DEBUG
 		std::ostringstream oss;
 		oss << ' ' << nbpeople << ' ' << enabled;
+#endif
 		
 		for(long j = 0; j < nb_people; j++) {
 			
 			string target = context.getWord();
 			Entity * t = entities.getById(target, context.getIO());
 			
+#ifdef _DEBUG
 			oss << ' ' << target;
+#endif
 			
 			main_conversation.actors[j] = (t == NULL) ? -1 : t->index();
 		}
 		
-		DebugScript(oss);
+#ifdef _DEBUG
+		DebugScript(oss.rdbuf());
+#endif
 		
 		return Success;
 	}

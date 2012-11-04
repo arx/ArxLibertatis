@@ -200,23 +200,24 @@ typedef double f64; // 64 bits double float
 ------------------------------------------------------------*/
 
 void assertionFailed(const char * expression, const char * file, unsigned line,
-                     const char * message, ...) ARX_FORMAT_PRINTF(4, 5);
+                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 
 #ifdef _DEBUG
-	#define arx_assert_impl(Expression, File, Line, Message, ...) { \
+	#define arx_assert_impl(Expression, File, Line, ...) { \
 			if(!(Expression)) { \
-				assertionFailed(#Expression, File, Line, Message, ##__VA_ARGS__); \
+				assertionFailed(#Expression, File, Line, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		}
 #else // _DEBUG
-	#define arx_assert_impl(Expression, File, Line, Message, ...) \
+	#define arx_assert_impl(Expression, File, Line, ...) \
 		ARX_DISCARD(Expression, File, Line, Message, ##__VA_ARGS__)
 #endif // _DEBUG
 
 #define arx_assert_msg(Expression, Message, ...) \
 	arx_assert_impl(Expression, (__FILE__), __LINE__, Message, ##__VA_ARGS__)
-#define arx_assert(Expression) arx_assert_msg(Expression, "")
+#define arx_assert(Expression) \
+	arx_assert_impl(Expression, (__FILE__), __LINE__)
 
 #define arx_error_msg(Message, ...) arx_assert_msg(false, Message, ##__VA_ARGS__)
 #define arx_error() arx_assert(false)

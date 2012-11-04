@@ -32,7 +32,7 @@ void assertionFailed(const char * expr, const char * file, unsigned int line,
 	}
 	
 	Logger(file, line, Logger::Error) << "Assertion Failed: " << expr;
-	if(msg && *msg) {
+	if(msg) {
 		char formattedmsgbuf[4096];
 		va_list args;
 		va_start(args, msg);
