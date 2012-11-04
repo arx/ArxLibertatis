@@ -2724,7 +2724,6 @@ static stbi_uc *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
             get32le(s);
          }
          if (bpp == 16 || bpp == 32) {
-            mr = mg = mb = 0;
             if (compress == 0) {
                if (bpp == 32) {
                   mr = 0xffu << 16;
@@ -2964,8 +2963,8 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    int tga_palette_start = get16le(s);
    int tga_palette_len = get16le(s);
    int tga_palette_bits = get8u(s);
-   int tga_x_origin = get16le(s);
-   int tga_y_origin = get16le(s);
+   /* tga_x_origin = */ (void)get16le(s);
+   /* tga_y_origin = */ (void)get16le(s);
    int tga_width = get16le(s);
    int tga_height = get16le(s);
    int tga_bits_per_pixel = get8u(s);
@@ -3185,10 +3184,6 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    {
       free( tga_palette );
    }
-   //   the things I do to get rid of an error message, and yet keep
-   //   Microsoft's C compilers happy... [8^(
-   tga_palette_start = tga_palette_len = tga_palette_bits =
-         tga_x_origin = tga_y_origin = 0;
    //   OK, done
    return tga_data;
 }

@@ -936,13 +936,13 @@ void ARX_BOOMS_Add(Vec3f * poss,long type) {
 			float temp_uv1[4];
 			
 			bool dod = true;
-			for(long k = 1; k < nbvert; k++) {
+			for(long k = 0; k < nbvert; k++) {
 				float ddd = fdist(ep->v[k].p, *poss);
 				if(ddd > BOOM_RADIUS) {
 					dod = false;
 					break;
 				} else {
-					temp_uv1[k] = 0.5f - ddd / BOOM_RADIUS * 0.5f;
+					temp_uv1[k] = 0.5f - ddd * (0.5f / BOOM_RADIUS);
 				}
 			}
 			if(!dod) {

@@ -708,7 +708,7 @@ int view_pld(const char * dat, size_t size) {
 	
 	cout << "Game time: " << pld.time << endl;
 	
-	arx_assert(size >= pos); ARX_UNUSED(size);
+	arx_assert(size >= pos); ARX_UNUSED(size), ARX_UNUSED(pos);
 	
 	return 0;
 }

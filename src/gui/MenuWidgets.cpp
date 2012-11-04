@@ -2738,15 +2738,12 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	rZone.right = checked_range_cast<Rect::Num>(_fPosX + _iTaille + textSize.x);
 	rZone.bottom = checked_range_cast<Rect::Num>(_fPosY + std::max<int>(_iTaille, textSize.y));
 	pRef=this;
-
-	if (_pTex2) // TODO should this be _pTex1?
-	{
+	
+	if(_pTex1 && _pTex2) {
 		float rZoneR = ( RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f );
 		rZone.right = checked_range_cast<Rect::Num>(rZoneR);
 	}
-
-
-
+	
 	Move(iPosX, iPosY);
 }
 
@@ -3272,22 +3269,15 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 
 //-----------------------------------------------------------------------------
 
-void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement)
-{
+void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
+	
 	_pMenuElement->Move(-_pMenuElement->rZone.left, 0);
-	_pMenuElement->ePlace=CENTER;
-
-	int iDx = _pMenuElement->rZone.right-_pMenuElement->rZone.left;
-	int dx=((iWidth-iDx)>>1)-_pMenuElement->rZone.left;
-
-	if(dx<0)
-	{
-		dx=0;
-	}
-
-	iDx=_pMenuElement->rZone.right-_pMenuElement->rZone.left;
-
-	_pMenuElement->Move(dx,0);
+	_pMenuElement->ePlace = CENTER;
+	
+	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
+	int dx = (iWidth - iDx) / 2 - _pMenuElement->rZone.left;
+	
+	_pMenuElement->Move(std::max(dx, 0), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -4887,25 +4877,21 @@ void CMenuSlider::Render()
 	{
 		iTexW = 0;
 
-		if (i<iPos)
-		{
-			if(pTex1)
-			{
+		if(i < iPos) {
+			if(pTex1) {
 				pTex = pTex1;
 				iTexW = RATIO_X(pTex1->m_dwWidth);
 			}
+		} else if(pTex2) {
+			pTex = pTex2;
+			iTexW = RATIO_X(pTex2->m_dwWidth);
 		}
-		else
-		{
-			if(pTex2)
-			{
-				pTex = pTex2;
-				iTexW = RATIO_X(pTex2->m_dwWidth);
-			}
+		
+		if(pTex) {
+			EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight),
+			                 0, pTex, Color::white);
 		}
-
-		EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
-
+		
 		iX += iTexW;
 	}
 

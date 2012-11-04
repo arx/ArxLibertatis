@@ -1109,6 +1109,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
+	ARX_UNUSED(pos), ARX_UNUSED(FileSize);
 	arx_assert(pos <= FileSize);
 	
 	ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags

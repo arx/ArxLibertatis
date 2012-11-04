@@ -480,20 +480,20 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	pos += 512;
 	
 	// Pointer to Secondary Header
-	const ARX_FTL_SECONDARY_HEADER * afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
-	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
-	
+	const ARX_FTL_SECONDARY_HEADER * afsh;
+	afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
 	if(afsh->offset_3Ddata == -1) {
 		LogError << "ARX_FTL_Load: error loading data from " << filename;
 		free(dat);
 		return NULL;
 	}
+	pos = afsh->offset_3Ddata;
 	
 	// Available from here in whole function
 	EERIE_3DOBJ * obj = new EERIE_3DOBJ();
 	
-	pos = afsh->offset_3Ddata;
-	const ARX_FTL_3D_DATA_HEADER * af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
+	const ARX_FTL_3D_DATA_HEADER * af3Ddh;
+	af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 	
 	obj->vertexlist.resize(af3Ddh->nb_vertex);

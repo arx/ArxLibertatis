@@ -129,8 +129,8 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 	
 	if(ais.system_flags & SYSTEM_FLAG_INVENTORY) {
 		
-		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & aids = *reinterpret_cast<ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
-		pos +=  sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
+		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & aids
+			= *reinterpret_cast<ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 		
 		invChanged |= fix_ident(save, aids.io, idents, where + ".inventory.io", remap);
 		for(long m = 0; m < aids.sizex; m++) {
@@ -378,7 +378,6 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
 	ARX_CHANGELEVEL_IO_INDEX * idx_io = reinterpret_cast<ARX_CHANGELEVEL_IO_INDEX *>(dat + pos);
-	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter;
 	
 	Remap remap;
 	

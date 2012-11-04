@@ -560,7 +560,6 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 	pos += sizeof(THEO_OFFSETS);
 	
 	const THEO_NB * tn = reinterpret_cast<const THEO_NB *>(adr + pos);
-	pos += sizeof(THEO_NB);
 	
 	LogDebug("Nb Vertex " << tn->nb_vertex << " Nb Action Points " << tn->nb_action_point
 	         << " Nb Lines " << tn->nb_lines);

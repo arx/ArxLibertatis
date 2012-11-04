@@ -436,14 +436,12 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 	return false;
 }
 
-bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io)
-{
-	if (EDITMODE) return false;
-
-	if (io==entities.player()) return false;
-
-	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
-
+bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
+	
+	if(EDITMODE || io == entities.player() || (io->ioflags & IO_FORCEDRAW)) {
+		return false;
+	}
+	
 	if (USE_PORTALS && portals)
 	{
 		Vec3f posi;

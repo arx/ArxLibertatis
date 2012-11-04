@@ -1499,6 +1499,7 @@ static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
 		pos += asi->ambiances_data_size;
 	}
 	
+	ARX_UNUSED(pos);
 	arx_assert(pos <= size);
 	
 	free(dat);
@@ -2399,7 +2400,8 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		LoadLevelScreen();
 		
 		std::ostringstream oss;
-		oss << res::path::load(safestring(idx_io[i].filename)).basename() << '_' << std::setfill('0') << std::setw(4) << idx_io[i].ident;
+		oss << res::path::load(safestring(idx_io[i].filename)).basename() << '_'
+		    << std::setfill('0') << std::setw(4) << idx_io[i].ident;
 		if(entities.getById(oss.str()) < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
 		}

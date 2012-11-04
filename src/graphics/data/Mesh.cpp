@@ -2712,9 +2712,7 @@ bool FastSceneLoad(const res::path & partial_path) {
 		
 		
 		// Read the file header
-		size_t pos = 0;
 		const UNIQUE_HEADER * uh = fts_read<UNIQUE_HEADER>(data, end);
-		pos += sizeof(UNIQUE_HEADER);
 		if(uh->version != FTS_VERSION) {
 			LogError << "FTS version mismatch: got " << uh->version << ", expected "
 			         << FTS_VERSION << " in " << file;

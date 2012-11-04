@@ -936,6 +936,10 @@ void FlipDXT5(unsigned char * data, unsigned int count);
 
 void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth) {
 	
+	if(pWidth == 0 || pHeight == 0) {
+		return;
+	}
+	
 	unsigned int offset;
 	
 	if(!IsCompressed()) {
