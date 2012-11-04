@@ -8,26 +8,13 @@ if(MSVC)
 		set(CMAKE_LIBRARY_ARCHITECTURE "x64")
 	else()
 		set(CMAKE_LIBRARY_ARCHITECTURE "x86")
-	endif(CMAKE_CL_64)
+	endif()
 else()
 	cmake_minimum_required(VERSION 2.8)
 endif()
 
-# For custom cmake modules.
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-include(CheckTypeSize)
-include(CheckSymbolExists)
-include(CheckCXXSourceCompiles)
-
-include(BuildSystem)
-include(CompileCheck)
-include(VersionString)
-include(StyleCheck)
-include(PrintConfiguration)
-include(CreateSourceGroups)
-
-##############################################################################
+# Define configuration options
 
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_TOOLS "Build tools" ON)
@@ -39,16 +26,18 @@ endif(APPLE)
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
 option(UNITY_BUILD "Unity build" OFF)
+option(USE_OPENAL "Build the OpenAL audio backend" ON)
+option(USE_DSOUND "Build the DirectSound audio backend" ON)
+option(USE_OPENGL "Build the OpenGL renderer backend" ON)
+option(USE_D3D9 "Build the Direct3D 9 renderer backend" ON)
+option(USE_SDL "Build the SDL windowing backend" ON)
+option(USE_DINPUT8 "Build the DirectInput 8 input backend" ON)
+option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
 option(DEBUG_EXTRA "Expensive debug options" OFF)
-option(USE_OPENAL "Build the OpenAL audio backend." ON)
-option(USE_DSOUND "Build the DirectSound audio backend." ON)
-option(USE_OPENGL "Build the OpenGL renderer backend." ON)
-option(USE_D3D9 "Build the Direct3D 9 renderer backend." ON)
-option(USE_SDL "Build the SDL windowing backend." ON)
-option(USE_DINPUT8 "Build the DirectInput 8 input backend." ON)
-option(USE_NATIVE_FS "Use the native (POSIX / Win32) filesystem backend instead of boost." ON)
+option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
+option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 
-
+# Install destinations
 if(NOT WIN32)
 	if(CMAKE_VERSION VERSION_LESS 2.8.5)
 		set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
@@ -84,8 +73,61 @@ if(NOT WIN32)
 	mark_as_advanced(GAMESBINDIR)
 endif()
 
+# Default runtime user and data directories
+if(WIN32)
+	set(USER_DIR            "Arx Libertatis"                CACHE STRING "User dir names")
+	set(USER_DIR_PREFIXES   "%FOLDERID_SavedGames%"         CACHE STRING "User dir paths")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(DATA_DIR            "ArxLibertatis"                 CACHE STRING "Data dir names")
+	set(DATA_DIR_PREFIXES   "/Applications"                 CACHE STRING "Data dir paths")
+	set(USER_DIR            "ArxLibertatis"                 CACHE STRING "User dir names")
+	set(USER_DIR_PREFIXES   "~/Library/Application Support" CACHE STRING "User dir paths")
+else()
+	set(DATA_DIR            "games/arx:arx"                 CACHE STRING "Data dir names")
+	set(DATA_DIR_PREFIXES   "$XDG_DATA_DIRS:/opt"           CACHE STRING "Data dir paths")
+	set(USER_DIR            "arx"                           CACHE STRING "User dir names")
+	set(USER_DIR_PREFIXES   "$XDG_DATA_HOME"                CACHE STRING "User dir paths")
+	set(CONFIG_DIR          "arx"                           CACHE STRING "Config dir names")
+	set(CONFIG_DIR_PREFIXES "$XDG_CONFIG_HOME"              CACHE STRING "Config dir paths")
+	set(IGNORE_EXE_DIR
+		"/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin"
+		CACHE STRING "Executable locations that should not be used as a data dir"
+	)
+endif()
+mark_as_advanced(DATA_DIR)
+mark_as_advanced(DATA_DIR_PREFIXES)
+mark_as_advanced(USER_DIR)
+mark_as_advanced(USER_DIR_PREFIXES)
+mark_as_advanced(CONFIG_DIR)
+mark_as_advanced(CONFIG_DIR_PREFIXES)
+mark_as_advanced(IGNORE_EXE_DIR)
+mark_as_advanced(foobar) # TODO
 
-if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
+
+# Helper scrips
+
+include(CheckCXXSourceCompiles)
+include(CheckSymbolExists)
+include(CheckTypeSize)
+
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake") # For custom cmake modules
+include(BuildSystem)
+include(BuildType)
+include(CompileCheck)
+include(CreateSourceGroups)
+include(PrintConfiguration)
+include(StyleCheck)
+include(VersionString)
+
+
+# Find required libraries
+
+set(ARX_LIBRARIES)
+set(BASE_LIBRARIES)
+
+# Force re-checking libraries if the compiler or compiler flags change
+if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS)
+   OR (NOT LAST_CMAKE_CXX_COMPILER STREQUAL CMAKE_CXX_COMPILER))
 	force_recheck_library(ZLIB)
 	force_recheck_library(Freetype)
 	force_recheck_library(Threads)
@@ -97,20 +139,30 @@ if((NOT LAST_CMAKE_CXX_FLAGS STREQUAL CMAKE_CXX_FLAGS) OR (NOT LAST_CMAKE_CXX_CO
 	force_recheck_library(QtGui QT_QTGUI)
 	force_recheck_library(QtNetwork QT_QTNETWORK)
 	unset(Boost_INCLUDE_DIR CACHE)
-	set(LAST_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE INTERNAL "The last C++ compiler flags.")
-	set(LAST_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE INTERNAL "The last C++ compiler.")
+	set(LAST_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE INTERNAL
+	    "The last C++ compiler flags")
+	set(LAST_CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}" CACHE INTERNAL
+	    "The last C++ compiler")
 endif()
 
+# Win32 API
 if(WIN32)
-	if(NOT MSVC)
-		# We need to define WINVER for MinGW32 when requiring anything newer than Win95 / WinNT
+	if(MSVC)
+		# Ensure we aren't using functionalities not found under Window XP SP1
+		add_definitions(-D_WIN32_WINNT=0x0502)
+	else()
+		# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
 		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
 	endif()
+	add_definitions(-DNOMINMAX)
+	add_definitions(-DWIN32_LEAN_AND_MEAN)
+	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
 	set(ARX_HAVE_WINAPI 1)
 else()
 	set(ARX_HAVE_WINAPI 0)
 endif()
 
+# Direct X
 if(NOT ARX_HAVE_WINAPI)
 	# DirectX builds on the Win32 api
 	set(USE_D3D9 OFF)
@@ -120,38 +172,93 @@ elseif(USE_D3D9 OR USE_DINPUT8)
 	find_package(DirectX REQUIRED)
 endif()
 
-find_package(Freetype REQUIRED)
-find_package(ZLIB REQUIRED)
+# pthread / Win32 threads
 set(CMAKE_THREAD_PREFER_PTHREAD 1)
 find_package(Threads REQUIRED)
+if(NOT MSVC AND CMAKE_THREAD_LIBS_INIT)
+	check_link_library(Threads CMAKE_THREAD_LIBS_INIT)
+endif()
+list(APPEND ARX_LIBARIES ${CMAKE_THREAD_LIBS_INIT})
+
+# FreeType
+find_package(Freetype REQUIRED)
+if(NOT MSVC)
+	check_link_library(Freetype FREETYPE_LIBRARIES)
+endif()
+include_directories(SYSTEM ${FREETYPE_INCLUDE_DIRS})
+list(APPEND ARX_LIBRARIES ${FREETYPE_LIBRARIES})
+
+# zlib
+find_package(ZLIB REQUIRED)
+if(MSVC)
+	add_definitions(-DZLIB_WINAPI)
+else()
+	check_link_library(ZLIB ZLIB_LIBRARIES)
+endif()
+include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS})
+list(APPEND ARX_LIBRARIES ${ZLIB_LIBRARIES})
+
+# OpenGL
 if(USE_OPENGL)
 	find_package(OpenGL)
 	find_package(GLEW)
+	if(NOT MSVC AND OPENGL_FOUND AND GLEW_FOUND)
+		check_link_library(OpenGL OPENGL_gl_LIBRARY)
+		check_link_library(GLEW GLEW_LIBRARIES)
+	endif()
 endif()
+
+# OpenAL
 if(USE_OPENAL)
 	find_package(OpenAL 1.1)
 	find_package(OpenALEFX)
+	if(NOT MSVC AND OPENAL_FOUND)
+		check_link_library(OpenAL OPENAL_LIBRARY)
+	endif()
 endif()
-find_package(Doxygen)
-find_package(PythonInterp)
+
+# SDL
 if(USE_SDL)
-	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	else()
+	if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 		# Required to avoid linking with SDLmain except for OS X where it is necessary
 		# due to the need to have NSApplication correctly setup by SDLmain.
 		set(SDL_BUILDING_LIBRARY 1)
 	endif()
 	find_package(SDL 1.2)
+	if(NOT MSVC AND SDL_FOUND)
+		check_link_library(SDL SDL_LIBRARY)
+	endif()
 endif()
 
+# Boost
 if(MSVC)
 	# Link statically with Boost under Windows
 	set(Boost_USE_STATIC_LIBS ON)
-endif(MSVC)
-
+endif()
 set(BOOST_COMPONENTS program_options)
 find_package(Boost 1.39 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
+# release and debug libs get mixed up. On windows we will empty out the
+# Boost_LIBRARIES list and count on the auto-linking feature boost provides.
+# http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
+if(MSVC)
+	# Reset libraries list so VC will perform auto-linking.
+	set(Boost_LIBRARIES "")
+	# Not needed anymore as BOOST_ROOT finds these properly.
+	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
+	if("${Boost_INCLUDE_DIRS}" STREQUAL "")
+		set(Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
+	endif()
+	if("${Boost_LIBRARY_DIRS}" STREQUAL "")
+		set(Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
+	endif()
+	# Add boost lib directory to the list of libraries paths
+	link_directories(${Boost_LIBRARY_DIRS})
+endif ()
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 
+# Qt and DbgHelp
 set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
 	# Needed by the crash reporter
@@ -163,110 +270,24 @@ if(BUILD_CRASHREPORTER)
 				set(ARX_HAVE_CRASHREPORTER 1)
 			endif()
 		else()
+			check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
+			check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
+			check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
 			set(ARX_HAVE_CRASHREPORTER 1)
 		endif()
 	endif()
 endif()
 
-set(SRC_DIR src)
+find_package(Doxygen)
 
-if(MSVC)
-	# Disable deprecation warnings
-	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
-	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-	add_definitions(/wd4995)        # 'func': name was marked as #pragma deprecated
+find_package(PythonInterp)
 
-	# TEMP - disable warning caused by the F2L removal
-	add_definitions(/wd4244)        # Conversion from 'float' to 'long', possible loss of data
 
-	# TEMP - disable warning caused by conversion from a 64-bit type to a 32-bit one...
-	if(CMAKE_CL_64)
-		add_definitions(/wd4267)      # Conversion from 'size_t' to 'xxx', possible loss of data
-	endif()
+# Check for optional functionality and system configuration
 
-	add_definitions(/wd4127)        # warning C4127: conditional expression is constant
-	add_definitions(/wd4201)        # warning C4201: nonstandard extension used : nameless struct/union
-	add_definitions(/wd4503)        # warning C4503: 'xxx' : decorated name length exceeded, name was truncated
+if(NOT MSVC)
 	
-	if(NOT DEBUG_EXTRA)
-		add_definitions(-D_HAS_ITERATOR_DEBUGGING=0)
-		add_definitions(-D_SECURE_SCL=0)
-		add_definitions(-D_SECURE_SCL_THROWS=0)
-		add_definitions(-D_ITERATOR_DEBUG_LEVEL=0)
-	endif()
-
-	# Disable exceptions & rtti
-	add_definitions(/GR-)           # No RTTI
-
-	# Enable multiprocess build
-	add_definitions(/MP)
-	
-	# Ensure we aren't using functionalities not found under Window XP SP1
-	add_definitions(-D_WIN32_WINNT=0x0502)
-
-	foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
-		# Disable Run time checks
-		string(REGEX REPLACE "/RTC1" "" ${flag_var} "${${flag_var}}")
-
-		# Change runtime library from "Multi-threaded Debug DLL" to "Multi-threaded DLL"
-		string(REGEX REPLACE "/MDd" "/MD" ${flag_var} "${${flag_var}}")
-
-		# Remove definition of _DEBUG as it might conflict with libs we're linking with
-		string(REGEX REPLACE "/D_DEBUG" "/DNDEBUG" ${flag_var} "${${flag_var}}")
-		
-		# Force to always compile with warning level 3
-		string(REGEX REPLACE "/W[0-4]" "/W3" ${flag_var} "${${flag_var}}")
-	endforeach(flag_var)
-
-	# Avoid warning during link
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
-	
-	# Disable randomized base address (for better callstack matching)
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DYNAMICBASE:NO")
-	
-	# Always generate a PDB file
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
-
-	# Enable compiler optimization in release
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
-	
-	# Always build with debug information
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
-	
-	# Enable linker optimization in release
-	#  /OPT:REF   Eliminate unreferenced code
-	#  /OPT:ICF   COMDAT folding (merge functions generating the same code)
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF /LTCG")
-
-	# This is needed to use ZLIB
-	add_definitions(-DZLIB_WINAPI)
-
-else(MSVC)
-	
-	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
-	if(CMAKE_THREAD_LIBS_INIT)
-		check_link_library(Threads CMAKE_THREAD_LIBS_INIT)
-	endif()
-	check_link_library(ZLIB ZLIB_LIBRARIES)
-	check_link_library(Freetype FREETYPE_LIBRARIES)
-	if(USE_OPENAL AND OPENAL_FOUND)
-		check_link_library(OpenAL OPENAL_LIBRARY)
-	endif()
-	if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
-		check_link_library(OpenGL OPENGL_gl_LIBRARY)
-		check_link_library(GLEW GLEW_LIBRARIES)
-	endif()
-	if(USE_SDL AND SDL_FOUND)
-		check_link_library(SDL SDL_LIBRARY)
-	endif()
-	
-	if(ARX_HAVE_CRASHREPORTER)
-		check_link_library(QtCore QT_QTCORE_LIBRARY_RELEASE QT_QTCORE)
-		check_link_library(QtGui QT_QTGUI_LIBRARY_RELEASE QT_QTGUI)
-		check_link_library(QtNetwork QT_QTNETWORK_LIBRARY_RELEASE QT_QTNETWORK)
-	endif()
-	
+	# Define _POSIX_C_SOURCE and _XOPEN_SOURCE for GNU systems
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "GNU"
 	   OR ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD")
 		set(CMAKE_REQUIRED_DEFINITIONS "-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=600")
@@ -301,7 +322,8 @@ else(MSVC)
 		unset(CMAKE_REQUIRED_LIBRARIES)
 	endif()
 	if(NOT ARX_HAVE_CLOCK_GETTIME AND NOT ARX_HAVE_WINAPI)
-		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h" ARX_HAVE_MACH_CLOCK)
+		check_include_files("mach/clock.h;mach/clock_types.h;mach/mach_host.h"
+		                    ARX_HAVE_MACH_CLOCK)
 	endif()
 	
 	check_include_file("wordexp.h" ARX_HAVE_WORDEXP_H)
@@ -323,6 +345,9 @@ else(MSVC)
 	
 	check_include_file("sys/types.h" ARX_HAVE_SYS_TYPES_H)
 	check_symbol_exists(getpid "unistd.h" ARX_HAVE_GETPID)
+	if(CMAKE_USE_PTHREADS_INIT AND ARX_HAVE_SYS_TYPES_H AND ARX_HAVE_GETPID)
+		set(ARX_HAVE_PTHREADS 1)
+	endif()
 	
 	check_symbol_exists(sysconf "unistd.h" ARX_HAVE_SYSCONF)
 	
@@ -357,76 +382,7 @@ else(MSVC)
 			set(ARX_HAVE_POSIX_FILESYSTEM 1)
 		endif()
 		
-	endif()
-	
-	# Warning level
-	add_cxxflag("-Wall")
-	add_cxxflag("-Wextra")
-	add_cxxflag("-Wformat=2")
-	add_cxxflag("-Wundef")
-	add_cxxflag("-Wpointer-arith")
-	add_cxxflag("-Wcast-qual")
-	add_cxxflag("-Woverloaded-virtual")
-	add_cxxflag("-Wlogical-op")
-	
-	add_cxxflag("-Wliteral-conversion")
-	add_cxxflag("-Wshift-overflow")
-	add_cxxflag("-Woverflow")
-	add_cxxflag("-Wbool-conversions")
-	
-	# TODO enable:
-	# add_cxxflag("-Wconversion") # very noisy
-	# add_cxxflag("-Wsign-conversion") # very noisy
-	# add_cxxflag("-Wmissing-declarations") # to catch functions that should be marked as static
-	# add_cxxflag("-Wredundant-decls") # to catch extern definitions in .cpp files (with UNITYBUILD)
-	
-	if(CMAKE_BUILD_TYPE STREQUAL "")
-		set(CMAKE_BUILD_TYPE "Release")
-	endif()
-	
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		
-		#Debug
-		add_definitions(-D_DEBUG)
-		
-		check_compiler_flag(RESULT "-g3")
-		if(NOT RESULT STREQUAL "")
-			string(REGEX REPLACE "-g(|[0-9]|gdb)" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-			set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
-		endif()
-		
-		check_compiler_flag(RESULT "-O0")
-		string(REGEX REPLACE "-O[0-9]" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-		set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${RESULT}")
-		
-	elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-		
-		if((NOT CMAKE_CXX_FLAGS MATCHES "-g(|[0-9]|gdb)")
-			 AND (NOT CMAKE_CXX_FLAGS_RELEASE MATCHES "-g(|[0-9]|gdb)"))
-			add_cxxflag("-g2")
-		endif()
-		
-	endif()
-	
-	if(DEBUG_EXTRA)
-		add_cxxflag("-ftrapv") # to add checks for (undefined) signed integer overflow
-		add_cxxflag("-fbounds-checking")
-		add_cxxflag("-fcatch-undefined-behavior")
-		add_cxxflag("-Wstrict-aliasing=1")
-	else()
-		# -Wuninitialized causes too many false positives
-		add_cxxflag("-Wno-uninitialized")
-		# (clang only) Conflicts with using const variables for configuration.
-		add_cxxflag("-Wno-constant-logical-operand")
-	endif()
-	
-	# Because we are lazy
-	add_ldflag("-Wl,--as-needed")
-
-	# Xcode does not support -isystem yet
-	if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-		add_cxxflag("-Wno-undef")
-	endif()
+	endif(USE_NATIVE_FS)
 	
 	# check support for __attribute__((format(printf, i, j)))
 	check_cxx_source_compiles(
@@ -434,67 +390,13 @@ else(MSVC)
 		ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
 	)
 	
-endif(MSVC)
+endif(NOT MSVC)
 
-if(WIN32)
-	# Define default user and data directories.
-	if(NOT DEFINED USER_DIR)
-		set(USER_DIR "Arx Libertatis")
-	endif()
-	if(NOT DEFINED USER_DIR_PREFIXES)
-		set(USER_DIR_PREFIXES "%FOLDERID_SavedGames%")
-	endif()
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	# Define default user and data directories.
-	if(NOT DEFINED DATA_DIR)
-		set(DATA_DIR "ArxLibertatis")
-	endif()
-	if(NOT DEFINED USER_DIR)
-		set(USER_DIR "ArxLibertatis")
-	endif()
-	if(NOT DEFINED DATA_DIR_PREFIXES)
-		set(DATA_DIR_PREFIXES "/Applications")
-	endif()
-	if(NOT DEFINED USER_DIR_PREFIXES)
-		set(USER_DIR_PREFIXES "~/Library/Application Support")
-	endif()
-else()
-	# Define default user and data directories.
-	if(NOT DEFINED DATA_DIR)
-		set(DATA_DIR "games/arx:arx")
-	endif()
-	if(NOT DEFINED USER_DIR)
-		set(USER_DIR "arx")
-	endif()
-	if(NOT DEFINED CONFIG_DIR)
-		set(CONFIG_DIR "arx")
-	endif()
-	if(NOT DEFINED DATA_DIR_PREFIXES)
-		set(DATA_DIR_PREFIXES "$XDG_DATA_DIRS:/opt")
-	endif()
-	if(NOT DEFINED USER_DIR_PREFIXES)
-		set(USER_DIR_PREFIXES "$XDG_DATA_HOME")
-	endif()
-	if(NOT DEFINED CONFIG_DIR_PREFIXES)
-		set(CONFIG_DIR_PREFIXES "$XDG_CONFIG_HOME")
-	endif()
-	if(NOT DEFINED IGNORE_EXE_DIR)
-		set(IGNORE_EXE_DIR "/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin")
-	endif()
-endif()
-
-# Check that all required functionality is available.
-if(CMAKE_USE_PTHREADS_INIT AND ARX_HAVE_SYS_TYPES_H AND ARX_HAVE_GETPID)
-	set(ARX_HAVE_PTHREADS 1)
-endif()
-
-# Preprocessor definitions
-if(ARX_HAVE_WINAPI)
-	add_definitions(-DNOMINMAX)
-	add_definitions(-DWIN32_LEAN_AND_MEAN)
-endif(ARX_HAVE_WINAPI)
 
 # Sources
+
+set(SRC_DIR src)
+
 set(AI_SOURCES
 	src/ai/PathFinder.cpp
 	src/ai/PathFinderManager.cpp
@@ -749,35 +651,11 @@ set(WINDOW_D3D9_SOURCES src/window/D3D9Window.cpp)
 file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 
 include_directories(${SRC_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR}/tools)
-include_directories(SYSTEM ${ZLIB_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 
-# Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
-# release and debug libs get mixed up. On windows we will empty out the
-# Boost_LIBRARIES list and count on the auto-linking feature boost provides.
-# http://www.boost.org/doc/libs/1_47_0/more/getting_started/windows.html#auto-linking
-if (MSVC)
-	# Reset libraries list so VC will perform auto-linking.
-	set (Boost_LIBRARIES "")
-	
-	# Not needed anymore as BOOST_ROOT finds these properly.
-	# Didnt remove yet eiher so nothing breaks, added empty checks instead to not add duplicated.
-	if ("${Boost_INCLUDE_DIRS}" STREQUAL "")
-		set (Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} $ENV{BOOST_ROOT}/include)
-	endif ()
-	if ("${Boost_LIBRARY_DIRS}" STREQUAL "")
-		set (Boost_LIBRARY_DIRS ${Boost_LIBRARY_DIRS} $ENV{BOOST_ROOT}/lib)
-	endif ()
-	
-	# Add boost lib directory to the list of libraries paths
-	link_directories(${Boost_LIBRARY_DIRS})
-endif ()
 
-set(ARX_LIBRARIES ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+# Check for optional / alternative subsystem implementations
 
-if(ARX_HAVE_WINAPI)
-	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
-endif()
-
+# Audio
 if(USE_OPENAL AND OPENAL_FOUND)
 	list(APPEND AUDIO_SOURCES ${AUDIO_OPENAL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENAL_LIBRARY})
@@ -789,21 +667,20 @@ if(USE_OPENAL AND OPENAL_FOUND)
 	endif()
 endif()
 if(USE_DSOUND)
-	# TODO does this need DIRECTX_FOUND? if so, the find_package(DirectX) should also be run if USE_DSOUND is set but USE_D3D9 isn't
+	# TODO does this need DIRECTX_FOUND?if so, the find_package(DirectX) should
+	# also be run if USE_DSOUND is set but USE_D3D9 isn't
 	list(APPEND AUDIO_SOURCES ${AUDIO_DSOUND_SOURCES})
 	set(ARX_HAVE_DSOUND 1)
 endif()
 
+# Graphics
 if(USE_D3D9 AND DIRECTX_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_D3D9_SOURCES})
 	list(APPEND WINDOW_SOURCES ${WINDOW_WIN32_SOURCES} ${WINDOW_D3D9_SOURCES})
-		
 	list(APPEND ARX_LIBRARIES ${DIRECTX_D3D9_LIBRARY} ${DIRECTX_D3DX9_LIBRARY} ${DIRECTX_D3DCOMPILER_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	include_directories(SYSTEM ${DIRECTX_INCLUDE_DIR})
-	
 	set(ARX_HAVE_D3D9 1)
 endif()
-
 if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
 	list(APPEND ARX_LIBRARIES ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARIES})
@@ -812,6 +689,7 @@ if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
+# Windowing / input
 if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
 	list(APPEND WINDOW_SOURCES ${WINDOW_SDL_SOURCES})
 	list(APPEND INPUT_SOURCES ${INPUT_SDL_SOURCES})
@@ -819,13 +697,13 @@ if(USE_SDL AND ARX_HAVE_OPENGL AND SDL_FOUND)
 	include_directories(SYSTEM ${SDL_INCLUDE_DIR})
 	set(ARX_HAVE_SDL 1)
 endif()
-
 if(USE_DINPUT8 AND DIRECTX_FOUND)
 	list(APPEND INPUT_SOURCES ${INPUT_DINPUT8_SOURCES})
 	list(APPEND ARX_LIBRARIES ${DIRECTX_DINPUT8_LIBRARY} ${DIRECTX_DXGUID_LIBRARY} ${DIRECTX_DXERR9_LIBRARY})
 	set(ARX_HAVE_DINPUT8 1)
 endif()
 
+# Logging
 if(ARX_HAVE_ISATTY)
 	list(APPEND IO_LOGGER_SOURCES ${IO_LOGGER_POSIX_SOURCES})
 endif()
@@ -836,8 +714,7 @@ list(APPEND IO_SOURCES ${IO_LOGGER_SOURCES} ${IO_LOGGER_EXTRA_SOURCES})
 
 list(APPEND IO_SOURCES ${IO_RESOURCE_SOURCES})
 
-set(BASE_LIBRARIES)
-
+# Filesystem
 if(ARX_HAVE_POSIX_FILESYSTEM)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_POSIX_SOURCES})
 elseif(USE_NATIVE_FS AND ARX_HAVE_WINAPI)
@@ -848,13 +725,16 @@ elseif((Boost_MAJOR_VERSION GREATER 1) OR (NOT Boost_MINOR_VERSION LESS 44))
 	find_package(Boost 1.44 REQUIRED COMPONENTS ${BOOST_COMPONENTS} filesystem system)
 	set(ARX_HAVE_BOOST_FILESYSTEM_V3 1)
 	add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
+	add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 	list(APPEND IO_FILESYSTEM_SOURCES ${IO_FILESYSTEM_BOOST_SOURCES})
 	list(APPEND BASE_LIBRARIES ${Boost_LIBRARIES})
 else()
-	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API or enough POSIX functionality; Found boost version ${Boost_VERSION}")
+	message(FATAL_ERROR "You need either Boost >= 1.44 or Windows API"
+	        "or enough POSIX functionality; Found boost version ${Boost_VERSION}")
 endif()
 list(APPEND IO_SOURCES ${IO_FILESYSTEM_SOURCES})
 
+# Crash reporter
 if(ARX_HAVE_CRASHREPORTER)
 	if((ARX_HAVE_EXECLP OR ARX_HAVE_EXECL) AND ARX_HAVE_FORK AND ARX_HAVE_KILL)
 		list(APPEND PLATFORM_CRASHHANDLER_SOURCES ${PLATFORM_CRASHHANDLER_IMPL_SOURCES})
@@ -908,9 +788,10 @@ if(MSVC)
 	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
 endif()
 
-add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
-#create source groups
+# Prepare sources
+
+# Create source groups
 list(APPEND ALL_FILES_FOR_GROUPS ${ALL_INCLUDES} ${ARX_SOURCES})
 create_source_groups(ALL_FILES_FOR_GROUPS)
 
@@ -1075,11 +956,6 @@ endif()
 
 # Custom make targets
 
-add_custom_target(remake
-	#clean and compile with 1 thread per core
-	COMMAND make clean && rm CMakeCache.txt && cmake ${CMAKE_SOURCE_DIR} -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
-)
-
 if(DOXYGEN_EXECUTABLE)
 	set(DOXYGEN_OUTPUT_DIR "${CMAKE_BINARY_DIR}/doc")
 	configure_file("scripts/Doxyfile" "Doxyfile" ESCAPE_QUOTES)
@@ -1135,8 +1011,10 @@ endif()
 if(NOT WIN32)
 	install(FILES data/man/arx.6 DESTINATION "${CMAKE_INSTALL_MANDIR}/man6" OPTIONAL)
 	if(BUILD_TOOLS)
-		install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
-		install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1" OPTIONAL)
+		install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+		        OPTIONAL)
+		install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+		        OPTIONAL)
 	endif()
 endif()
 
@@ -1151,11 +1029,7 @@ if(NOT MSVC)
 	else()
 		set(BUILD_TYPE_SUFFIX "")
 	endif()
-	if(CMAKE_BUILD_TYPE STREQUAL "")
-		message(" - Build type: Release${BUILD_TYPE_SUFFIX}")
-	else()
-		message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
-	endif()
+	message(" - Build type: ${CMAKE_BUILD_TYPE}${BUILD_TYPE_SUFFIX}")
 endif(NOT MSVC)
 print_configuration("Filesystem backend" FIRST
 	ARX_HAVE_POSIX_FILESYSTEM "POSIX"

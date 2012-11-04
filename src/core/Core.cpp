@@ -780,7 +780,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		delete mainApp;
 		mainApp = NULL;
 	}
-
+	
 	Logger::shutdown();
 	
 	CrashHandler::shutdown();

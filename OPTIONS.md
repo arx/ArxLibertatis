@@ -21,3 +21,10 @@ All the configuration options above can reference environment variables in opera
 After environment variable expansion the variables are interpreted as colon-separated (Windows: semicolon-separated) lists of paths.
 
 The config directory defaults to the user directory if not specified.
+
+### Compiler flags
+
+Arx Libertatis adjust the compiler flags to provide an optimal configuration for developers and most users. The following CMake options can be used to disable this and use only the default flags provided by the build environment.
+
+* `SET_WARNING_FLAGS` (default: `ON`): Adjust compiler warning flags. This should not affect the produced binaries but is useful to catch potential problems.
+* `SET_OPTIMIZATION_FLAGS` (default: `ON`): Adjust compiler optimization flags. For non-debug builds the only thing this does is instruct the linker to only link against libraries that are actually needed.
