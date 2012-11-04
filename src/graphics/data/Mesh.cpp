@@ -3415,17 +3415,15 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	}
 
 	memcpy(&eg->polydata[eg->nbpoly], ep, sizeof(EERIEPOLY));
-
-	EERIEPOLY * epp = (EERIEPOLY *)&eg->polydata[eg->nbpoly];
-
-	for (j = 0; j < 3; j++)
-	{
-		epp->tv[j].uv.x	= epp->v[j].uv.x;
-		epp->tv[j].uv.y	= epp->v[j].uv.y;
+	
+	EERIEPOLY * epp = &eg->polydata[eg->nbpoly];
+	
+	for(j = 0; j < 3; j++) {
+		epp->tv[j].uv = epp->v[j].uv;
 		epp->tv[j].color = epp->v[j].color;
-		epp->tv[j].rhw	= 1.f;
+		epp->tv[j].rhw = 1.f;
 	}
-
+	
 	epp->center.x = cx; 
 	epp->center.y = cy; 
 	epp->center.z = cz; 

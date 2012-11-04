@@ -871,8 +871,7 @@ void ArxGame::Render() {
 				if ( ((EERIEMouseButton & 1) && !(LastMouseClick & 1) )
 					|| ((EERIEMouseButton & 2) && !(LastMouseClick & 2) ) )
 				{
-					bookclick.x=DANAEMouse.x;
-					bookclick.y=DANAEMouse.y;
+					bookclick = DANAEMouse;
 				}
 			}
 			else if (InSecondaryInventoryPos(&DANAEMouse))

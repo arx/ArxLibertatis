@@ -392,16 +392,13 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			GRenderer->SetTexture(0, mat->tex);
 		else
 			GRenderer->ResetTexture(0);
-
+		
 		int	nb2 = mat->nbvertexs;
-
-		while (nb2--)
-		{
-			AllTLVertex[uvs->indvertex].uv.x = uvs->uv.x;
-			AllTLVertex[uvs->indvertex].uv.y = uvs->uv.y;
+		while(nb2--) {
+			AllTLVertex[uvs->indvertex].uv = uvs->uv;
 			uvs++;
 		}
-
+		
 		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->nbvertexs,
 		                       &grille->inds->i1 + mat->startind, mat->nbind);
 	}

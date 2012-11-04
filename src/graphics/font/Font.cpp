@@ -139,10 +139,8 @@ bool Font::insertGlyph(u32 character) {
 		
 		// Compute UV mapping for each glyph.
 		const float textureSize = m_Textures->getTextureSize();
-		glyph.uv_start.x = offset.x / textureSize;
-		glyph.uv_start.y = offset.y / textureSize;
-		glyph.uv_end.x = (offset.x + glyph.size.x) / textureSize;
-		glyph.uv_end.y = (offset.y + glyph.size.y) / textureSize;
+		glyph.uv_start = offset.to<float>() / textureSize;
+		glyph.uv_end = (offset + glyph.size).to<float>() / textureSize;
 	}
 	
 	return true;

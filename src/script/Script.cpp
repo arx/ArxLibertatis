@@ -771,9 +771,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 				if (io
 						&&	GetItemWorldPosition(io, &pos)
-						&&	(pos.x == io->initpos.x)
-						&&	(pos.y == io->initpos.y)
-						&&	(pos.z == io->initpos.z))
+						&&	pos == io->initpos)
 				{
 					*lcontent = 1;
 					return TYPE_LONG;

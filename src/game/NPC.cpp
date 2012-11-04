@@ -1492,10 +1492,9 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 		nouvo->vertexlist[k].v -= ioo->pos;
 		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
 		
-		nouvo->vertexlist[k].vert.color	=	from->vertexlist[k].vert.color;
-		nouvo->vertexlist[k].vert.uv.x	=	from->vertexlist[k].vert.uv.x;
-		nouvo->vertexlist[k].vert.uv.y	=	from->vertexlist[k].vert.uv.y;
-
+		nouvo->vertexlist[k].vert.color = from->vertexlist[k].vert.color;
+		nouvo->vertexlist[k].vert.uv = from->vertexlist[k].vert.uv;
+		
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 

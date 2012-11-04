@@ -305,6 +305,11 @@ public:
 		};
 	};
 	
+	template <typename O>
+	Vector2<O> to() const {
+		return Vector2<O>(O(x), O(y));
+	}
+	
 	static const Vector2 X_AXIS; //!< The X axis.
 	static const Vector2 Y_AXIS; //!< The Y axis.
 	static const Vector2 ZERO; //!< A null vector.

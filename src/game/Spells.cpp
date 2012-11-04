@@ -1266,46 +1266,38 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				if (io != entities.player())
 				{
-					old_pos.x=pos1.x;
-					old_pos.y=pos1.y;
+					old_pos = pos1;
 
 					for (long j=0;j<nbcomponents;j++)
 					{
 						GetSymbVector(sd->sequence[j],&vect);
-						vect.x += vect.x >> 1;
-						vect.y += vect.y >> 1;
+						vect += vect / 2;
 
-						if (oldtime<=ti)
-						{							
-							float ratio=(float)(oldtime)*div_ti;
-							old_pos.x+=(short)(float)(ratio*(float)vect.x);
-							old_pos.y+=(short)(float)(ratio*(float)vect.y);
+						if(oldtime <= ti) {
+							float ratio = float(oldtime)*div_ti;
+							old_pos += (vect.to<float>() * ratio).to<short>();
 							break;
 						}
 
-						old_pos.x+=vect.x;
-						old_pos.y+=vect.y;
+						old_pos += vect;
 						oldtime-=(long)ti;
-					}						
+					}
 
 					for (int j=0;j<nbcomponents;j++)
 					{
 						GetSymbVector(sd->sequence[j],&vect);
-						vect.x += vect.x >> 1;
-						vect.y += vect.y >> 1;
+						vect += vect / 2;
 
 						if (newtime<=ti)
 						{
-							float ratio=(float)(newtime)*div_ti;
-							pos1.x+=(short)(float)(ratio*(float)vect.x);
-							pos1.y+=(short)(float)(ratio*(float)vect.y);
+							float ratio = float(newtime) * div_ti;
+							pos1 += (vect.to<float>() * ratio).to<short>();
 							AddFlare(&pos1,0.1f,1,entities[i]);
 							FlareLine(&old_pos,&pos1,entities[i]);
 							break;
 						}
 
-						pos1.x+=vect.x;
-						pos1.y+=vect.y;
+						pos1 += vect;
 						newtime-=(long)ti;
 					}
 				}
@@ -1373,12 +1365,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							break;
 						}
 
-						pos1.x+=vect.x;
-						pos1.y+=vect.y;
+						pos1 += vect;
 
 						newtime-=(long)ti;
 					}
-				}				
+				}
 			}
 		}
 	}

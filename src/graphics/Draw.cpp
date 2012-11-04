@@ -165,10 +165,9 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 		CopyVertices(ep2,3,0);
 		ep2->v[3].p = ep->v[ep_notcommon].p;
-		ep2->tv[3].uv.x=ep2->v[3].uv.x=ep->v[ep_notcommon].uv.x;
-		ep2->tv[3].uv.y=ep2->v[3].uv.y=ep->v[ep_notcommon].uv.y;
-		ep2->tv[3].color=ep2->v[3].color=Color::white.toBGR();
-		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
+		ep2->tv[3].uv = ep2->v[3].uv = ep->v[ep_notcommon].uv;
+		ep2->tv[3].color = ep2->v[3].color = Color::white.toBGR();
+		ep2->tv[3].rhw = ep2->v[3].rhw = 1.f;
 	
 	DeclareEGInfo(ep->v[3].p.x, ep->v[3].p.z);
 	

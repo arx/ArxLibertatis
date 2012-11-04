@@ -230,9 +230,8 @@ bool C_ARX_Carte::Render(void)
 
 						if (ep->tv[k].p.z>1.f) ep->tv[k].p.z=1.f;
 
-						ep->tv[k].color=0xFFFFFFFF;
-						ep->tv[k].uv.x=ep->v[k].uv.x;
-						ep->tv[k].uv.y=ep->v[k].uv.y;
+						ep->tv[k].color = 0xFFFFFFFF;
+						ep->tv[k].uv = ep->v[k].uv;
 					}
 
 					if(ep->tex)

@@ -274,9 +274,8 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 1000 );
 		}
 		
-		_pVertex[ep->uslInd[k]].uv.x = ep->tv[k].uv.x;
-		_pVertex[ep->uslInd[k]].uv.y = ep->tv[k].uv.y;
-	}					
+		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
+	}
 }
 
 void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
@@ -293,9 +292,8 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 12000 );
 		}
 		
-		_pVertex[ep->uslInd[k]].uv.x=ep->tv[k].uv.x;
-		_pVertex[ep->uslInd[k]].uv.y=ep->tv[k].uv.y;
-	}					
+		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
+	}
 }
 
 
@@ -957,23 +955,18 @@ bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 }
  
  
-void ARX_PORTALS_BlendBBox(long room_num,EERIE_2D_BBOX * bbox)
-{
-	if (RoomDraw[room_num].count==0)
-	{
-		RoomDraw[room_num].bbox.min.x=bbox->min.x;
-		RoomDraw[room_num].bbox.min.y=bbox->min.y;
-		RoomDraw[room_num].bbox.max.x=bbox->max.x;
-		RoomDraw[room_num].bbox.max.y=bbox->max.y;		
-	}
-	else
-	{
-		RoomDraw[room_num].bbox.min.x=min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
-		RoomDraw[room_num].bbox.min.y=min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
-		RoomDraw[room_num].bbox.max.x=max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
-		RoomDraw[room_num].bbox.max.y=max(RoomDraw[room_num].bbox.max.y, bbox->max.y);		
+void ARX_PORTALS_BlendBBox(long room_num,EERIE_2D_BBOX * bbox) {
+	if(RoomDraw[room_num].count == 0) {
+		RoomDraw[room_num].bbox.min = bbox->min;
+		RoomDraw[room_num].bbox.max = bbox->max;
+	} else {
+		RoomDraw[room_num].bbox.min.x = min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
+		RoomDraw[room_num].bbox.min.y = min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
+		RoomDraw[room_num].bbox.max.x = max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
+		RoomDraw[room_num].bbox.max.y = max(RoomDraw[room_num].bbox.max.y, bbox->max.y);
 	}
 }
+
 void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d)
 {
 	fr->plane[plane].a=a;
