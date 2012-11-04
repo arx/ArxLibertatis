@@ -603,7 +603,7 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
 	ARX_INTERACTIVE_HideGore(io);
 	
 	io->lastpos = io->initpos = io->pos = pos + trans;
-	io->move.x = io->move.y = io->move.z = 0.f;
+	io->move = Vec3f::ZERO;
 	io->initangle = io->angle = angle;
 	
 	res::path tmp = io->full_name(); // Get the directory name to check for

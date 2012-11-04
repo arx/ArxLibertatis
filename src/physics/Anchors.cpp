@@ -608,7 +608,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
 			}
 			else  //stopped
 			{
-				ip->velocity.x = ip->velocity.y = ip->velocity.z = 0.f;
+				ip->velocity = Vec3f::ZERO;
 				MOVING_CYLINDER = 0;
 				return false;
 			}

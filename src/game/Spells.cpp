@@ -6419,10 +6419,10 @@ void ARX_SPELLS_Update()
 							cabalcolor.r = 0.8f;
 							cabalcolor.g = 0.4f;
 							cabalcolor.b = 0.f;
-					cabalscale.z=cabalscale.y=cabalscale.x=Es;				
+					cabalscale = Vec3f::repeat(Es);
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 					mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-					cabalpos.y=refpos-mov;						
+					cabalpos.y = refpos - mov;
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 3.f;
 							cabalcolor.r = 0.5f;
@@ -7433,10 +7433,10 @@ void ARX_SPELLS_Update()
 							cabalcolor.r = cabalcolor.g = 0.4f;
 							cabalcolor.b = 0.8f;
 						
-						cabalscale.z=cabalscale.y=cabalscale.x=Es;				
+						cabalscale = Vec3f::repeat(Es);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-						cabalpos.y=refpos-mov;						
+						cabalpos.y = refpos - mov;
 							cabalcolor.r = cabalcolor.g = 0.2f;
 							cabalcolor.b = 0.5f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
@@ -7452,7 +7452,7 @@ void ARX_SPELLS_Update()
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
 						cabalpos.y=refpos-mov;
-						cabalscale.x=cabalscale.y=cabalscale.z=Es;
+						cabalscale = Vec3f::repeat(Es);
 							cabalcolor.r = cabalcolor.g = 0.f;
 							cabalcolor.b = 0.15f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
@@ -7530,10 +7530,10 @@ void ARX_SPELLS_Update()
 							cabalcolor.r = 0.8f;
 							cabalcolor.g = 0.f;
 							cabalcolor.b = 0.f;
-						cabalscale.z=cabalscale.y=cabalscale.x=Es;				
+						cabalscale = Vec3f::repeat(Es);
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(arxtime.get_frame_time()-30.f)*( 1.0f / 800 ))*scaley;
-						cabalpos.y=refpos-mov;						
+						cabalpos.y=refpos-mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.5f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
@@ -7549,7 +7549,7 @@ void ARX_SPELLS_Update()
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
 						cabalpos.y=refpos-mov;
-						cabalscale.x=cabalscale.y=cabalscale.z=Es;
+						cabalscale = Vec3f::repeat(Es);
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.15f;
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	

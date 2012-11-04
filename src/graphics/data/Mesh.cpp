@@ -192,19 +192,17 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 
 void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->p.x = in->p.x - et->posx;
-	out->p.y = in->p.y - et->posy;
-	out->p.z = in->p.z - et->posz;
-
+	EERIE_TRANSFORM * et = &ACTIVECAM->transform;
+	out->p = in->p - et->pos;
+	
 	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
 	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
 	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
 	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
-
+	
 	float fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-
+	
 	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->xmod;
 	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp;
@@ -832,9 +830,7 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
 void specialEE_RT(TexturedVertex * in, Vec3f * out) {
 	
 	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->x = in->p.x - et->posx;
-	out->y = in->p.y - et->posy;
-	out->z = in->p.z - et->posz;
+	*out = in->p - et->pos;
 	
 	float temp = (out->z * et->ycos) - (out->x * et->ysin);
 	out->x = (out->z * et->ysin) + (out->x * et->ycos);
@@ -1083,9 +1079,7 @@ long GetVertexPos(Entity * io, long id, Vec3f * pos)
 	}
 	else
 	{
-		pos->x = io->pos.x;
-		pos->y = io->pos.y + GetIOHeight(io);
-		pos->z = io->pos.z;
+		*pos = io->pos + Vec3f(0.f, GetIOHeight(io), 0.f);
 		return 2;
 	}
 }
@@ -1192,22 +1186,13 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 	cam->angle.g = 0.f;
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-
-int BackFaceCull2D(TexturedVertex * tv)
-{
-
+int BackFaceCull2D(TexturedVertex * tv) {
 	if ((tv[0].p.x - tv[1].p.x)*(tv[2].p.y - tv[1].p.y) - (tv[0].p.y - tv[1].p.y)*(tv[2].p.x - tv[1].p.x) > 0.f)
 		return 0;
 	else return 1;
 }
 
 extern EERIE_CAMERA raycam;
-
-//*************************************************************************************
-//*************************************************************************************
 
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 
@@ -1223,242 +1208,139 @@ static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 	return 0;
 }
 
-int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, long flag)
-{
-	float x, y, z; //current ray pos
-	float dx, dy, dz; // ray incs
-	float adx, ady, adz; // absolute ray incs
-	float ix, iy, iz;
+int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
+	
+	Vec3f p; //current ray pos
+	Vec3f d; // ray incs
+	Vec3f ad; // absolute ray incs
+	Vec3f i;
 	long lpx, lpz;
 	long voidlast;
 	long px, pz;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
 	float pas = 1.5f;
-
+	
 	long iii = 0;
 	float maxstepp = 20000.f / pas;
-	hit->x = x = orgn->x;
-	hit->y = y = orgn->y;
-	hit->z = z = orgn->z;
-
+	*hit = p = *orgn;
+	
 	voidlast = 0;
 	lpx = lpz = -1;
-	dx = (dest->x - orgn->x);
-	adx = EEfabs(dx);
-	dy = (dest->y - orgn->y);
-	ady = EEfabs(dy);
-	dz = (dest->z - orgn->z);
-	adz = EEfabs(dz);
-
-	if ((adx >= ady) && (adx >= adz))
-	{
-		if (adx != dx) ix = -1.f * pas;
-		else ix = 1.f * pas;
-
-		iy = dy / (adx / pas);
-		iz = dz / (adx / pas);
+	d.x = (dest->x - orgn->x);
+	ad.x = EEfabs(d.x);
+	d.y = (dest->y - orgn->y);
+	ad.y = EEfabs(d.y);
+	d.z = (dest->z - orgn->z);
+	ad.z = EEfabs(d.z);
+	
+	if(ad.x >= ad.y && ad.x >= ad.z) {
+		i.x = (ad.x != d.x) ? (-1.f * pas) : (1.f * pas);
+		i.y = d.y / (ad.x / pas);
+		i.z = d.z / (ad.x / pas);
+	} else if(ad.y >= ad.x && ad.y >= ad.z) {
+		i.x = d.x / (ad.y / pas);
+		i.y = (ad.y != d.y) ? (-1.f * pas) : (1.f * pas);
+		i.z = d.z / (ad.y / pas);
+	} else {
+		i.x = d.x / (ad.z / pas);
+		i.y = d.y / (ad.z / pas);
+		i.z = (ad.z != d.z) ? (-1.f * pas) : (1.f * pas);
 	}
-	else if ((ady >= adx) && (ady >= adz))
-	{
-		if (ady != dy) iy = -1.f * pas;
-		else iy = 1.f * pas;
-
-		ix = dx / (ady / pas);
-		iz = dz / (ady / pas);
-	}
-	else
-	{
-		if (adz != dz) iz = -1.f * pas;
-		else iz = 1.f * pas;
-
-		ix = dx / (adz / pas);
-		iy = dy / (adz / pas);
-	}
-
-	for (;;)
-	{
-		x += ix;
-		y += iy;
-		z += iz;
-
-		if ((ix == -1.f * pas) && (x <= dest->x))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+	
+	for(;;) {
+		
+		p += i;
+		
+		if(i.x == -1.f * pas && p.x <= dest->x) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((ix == 1.f * pas) && (x >= dest->x))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.x == 1.f * pas && p.x >= dest->x) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iy == -1.f * pas) && (y <= dest->y))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.y == -1.f * pas && p.y <= dest->y) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iy == 1.f * pas) && (y >= dest->y))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.y == 1.f * pas && p.y >= dest->y) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iz == -1.f * pas) && (z <= dest->z))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.z == -1.f * pas && p.z <= dest->z) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iz == 1.f * pas) && (z >= dest->z))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.z == 1.f * pas && p.z >= dest->z) {
+			*hit = p;
 			return 0;
 		}
-
+		
 		iii++;
-
-		if (iii > maxstepp)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
+		
+		if(iii > maxstepp) {
+			*hit = p;
 			return -1;
 		}
-
-		px = (long)(x * ACTIVEBKG->Xmul);
-		pz = (long)(z * ACTIVEBKG->Zmul);
-
-		if (px > ACTIVEBKG->Xsize - 1)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
+		
+		px = long(p.x * ACTIVEBKG->Xmul);
+		pz = long(p.z * ACTIVEBKG->Zmul);
+		
+		if(px > ACTIVEBKG->Xsize - 1 || px < 0) {
+			*hit = p;
 			return -1;
 		}
-
-		if (px < 0)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
+		
+		if(pz > ACTIVEBKG->Zsize - 1 || pz < 0) {
+			*hit = p;
 			return -1;
 		}
-
-		if (pz > ACTIVEBKG->Zsize - 1)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
-			return -1;
+		
+		if(lpx == px && lpz == pz && voidlast) {
+			continue;
 		}
-
-		if (pz < 0)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
-			return -1;
+		
+		lpx = px;
+		lpz = pz;
+		voidlast = !flag;
+		long jx1 = clamp(px - 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long jx2 = clamp(px + 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long jz1 = clamp(pz - 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		long jz2 = clamp(pz + 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
+		if(eg->nbpoly == 0) {
+			*hit = p;
+			return 1;
 		}
-
-		if (((lpx == px) && (lpz == pz)) && voidlast)
-		{
-		}
-		else
-		{
-			lpx = px;
-			lpz = pz;
-			voidlast = !flag;
-			long jx1 = px - 1;
-			long jx2 = px + 1;
-			long jz1 = pz - 1;
-			long jz2 = pz + 1;
-
-			if (jx1 < 0) jx1 = 0;
-
-			if (jx2 < 0) jx2 = 0;
-
-			if (jz1 < 0) jz1 = 0;
-
-			if (jz2 < 0) jz2 = 0;
-
-			if (jx1 > ACTIVEBKG->Xsize - 1) jx1 = ACTIVEBKG->Xsize - 1;
-
-			if (jx2 > ACTIVEBKG->Xsize - 1) jx2 = ACTIVEBKG->Xsize - 1;
-
-			if (jz1 > ACTIVEBKG->Zsize - 1) jz1 = ACTIVEBKG->Zsize - 1;
-
-			if (jz2 > ACTIVEBKG->Zsize - 1) jz2 = ACTIVEBKG->Zsize - 1;
-
-
-			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-			if (eg->nbpoly == 0)
-			{
-				hit->x = x;
-				hit->y = y;
-				hit->z = z;
-				return 1;
-			}
-
-			for (pz = jz1; pz < jz2; pz++)
-				for (px = jx1; px < jx2; px++)
-				{
-					eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-					for (long k = 0; k < eg->nbpoly; k++)
-					{
-						ep = &eg->polydata[k];
-
-						if (!(ep->type & POLY_TRANS))
-						{
-							if ((y >= ep->min.y - 10.f) && (y <= ep->max.y + 10.f)
-									&& (x >= ep->min.x - 10.f) && (x <= ep->max.x + 10.f)
-									&& (z >= ep->min.z - 10.f) && (z <= ep->max.z + 10.f))
-							{
-								voidlast = 0;
-
-								if (RayIn3DPolyNoCull(orgn, dest, ep))
-								{
-									hit->x = x;
-									hit->y = y;
-									hit->z = z;
-
-									if (ep == epp) return 0;
-
-									return 1;
-								}
-							}
-						}
-
-					}
+		
+		for(pz = jz1; pz < jz2; pz++) for (px = jx1; px < jx2; px++) {
+			eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
+			for(long k = 0; k < eg->nbpoly; k++) {
+				EERIEPOLY * ep = &eg->polydata[k];
+				if(ep->type & POLY_TRANS) {
+					continue;
 				}
+				if(p.y < ep->min.y - 10.f || p.y > ep->max.y + 10.f
+				   || p.x < ep->min.x - 10.f || p.x > ep->max.x + 10.f
+				   || p.z < ep->min.z - 10.f || p.z > ep->max.z + 10.f) {
+					continue;
+				}
+				voidlast = 0;
+				if(RayIn3DPolyNoCull(orgn, dest, ep)) {
+					*hit = p;
+					return (ep == epp) ? 0 : 1;
+				}
+			}
 		}
 	}
 }
 
-//*************************************************************************************
 // Computes the visibility from a point to another... (sort of...)
-//*************************************************************************************
 bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	float			x, y, z; //current ray pos
@@ -1469,12 +1351,10 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	EERIEPOLY	*	ep;
 	EERIE_BKG_INFO	* eg;
 	float			pas			=	35.f;
-	Vec3f		found_hit;
+	Vec3f found_hit = Vec3f::ZERO;
 	EERIEPOLY	*	found_ep	=	NULL;
 	float iter, t;
-
-	found_hit.x = found_hit.y = found_hit.z = 0.f;
-
+	
 	x	=	orgn->x;
 	y	=	orgn->y;
 	z	=	orgn->z;
@@ -2343,9 +2223,7 @@ void PrepareCamera(EERIE_CAMERA * cam)
 	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
 	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->centery + cam->clip.top);
 	cam->transform.zmod = cam->Zmul;
-	cam->transform.posx = cam->pos.x;
-	cam->transform.posy = cam->pos.y;
-	cam->transform.posz = cam->pos.z;
+	cam->transform.pos = cam->pos;
 
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
 							static_cast<float>(DANAESIZY),
@@ -2370,9 +2248,7 @@ void SP_PrepareCamera(EERIE_CAMERA * cam)
 	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
 	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->centery + cam->clip.top);
 	cam->transform.zmod = cam->Zmul;
-	cam->transform.posx = cam->pos.x;
-	cam->transform.posy = cam->pos.y;
-	cam->transform.posz = cam->pos.z;
+	cam->transform.pos = cam->pos;
 }
 
 void SetCameraDepth(float depth) {

@@ -1006,9 +1006,7 @@ struct SavedMatrix {
 
 struct SavedTransform {
 	
-	f32 posx;
-	f32 posy;
-	f32 posz;
+	SavedVec3 pos;
 	f32 ycos;
 	f32 ysin;
 	f32 xsin;
@@ -1020,7 +1018,7 @@ struct SavedTransform {
 	
 	inline operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
-		a.posx = posx, a.posy = posy, a.posz = posz;
+		a.pos = pos;
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
 		a.use_focal = use_focal;
 		a.xmod = xmod, a.ymod = ymod, a.zmod = zmod;
@@ -1028,7 +1026,7 @@ struct SavedTransform {
 	}
 	
 	inline SavedTransform & operator=(const EERIE_TRANSFORM & b) {
-		posx = b.posx, posy = b.posy, posz = b.posz;
+		pos = b.pos;
 		ycos = b.ycos, ysin = b.ysin, xsin = b.xsin, xcos = b.xcos;
 		use_focal = b.use_focal;
 		xmod = b.xmod, ymod = b.ymod, zmod = b.zmod;

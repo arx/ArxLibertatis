@@ -1666,7 +1666,7 @@ int view_io(SaveBlock & save, const char * dat, size_t size) {
 			
 			const SavedTransform & t = ac->cam.transform;
 			cout << "  Transform:" << endl;
-			cout << "    pos=(" << t.posx << ", " << t.posy << ", " << t.posz << ')' << endl;
+			cout << "    pos=(" << t.pos.x << ", " << t.pos.y << ", " << t.pos.z << ')' << endl;
 			cout << "    ycos=" << t.ycos << " ysin=" << t.ysin << " xsin=" << t.xsin << " xcos=" << t.xcos << endl;
 			cout << "    use_focal=" << t.use_focal << endl;
 			cout << "    mod=(" << t.xmod << ", " << t.ymod << ", " << t.zmod << ')' << endl;

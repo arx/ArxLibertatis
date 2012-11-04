@@ -71,11 +71,8 @@ struct ANIM_HANDLE {
 	
 };
 
-struct EERIE_TRANSFORM
-{
-	float posx;
-	float posy;
-	float posz;
+struct EERIE_TRANSFORM {
+	Vec3f pos;
 	float ycos;
 	float ysin;
 	float xsin;

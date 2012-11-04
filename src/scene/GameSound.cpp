@@ -574,23 +574,17 @@ long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 }
 
 
-void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos)
-{
-	if (io)
-	{
+void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
+	if(io) {
 		pos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b))) * 100.0F;
 		pos.y = io->pos.y - 100.0F;
 		pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b))) * 100.0F;
-	}
-	else if (ACTIVECAM)
-	{
+	} else if(ACTIVECAM) {
 		pos.x = ACTIVECAM->pos.x - EEsin(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
 		pos.y = ACTIVECAM->pos.y - 100.0F;
 		pos.z = ACTIVECAM->pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
-	}
-	else
-	{
-		pos.x = pos.y = pos.z = 0.f;
+	} else {
+		pos = Vec3f::ZERO;
 	}
 }
 

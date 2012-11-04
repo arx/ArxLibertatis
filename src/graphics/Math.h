@@ -167,21 +167,15 @@ inline unsigned int GetNextPowerOf2(unsigned int n) {
 // Rotations
 
 inline void ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	out->x = (in->x * c) + (in->y * s);
-	out->y = (in->y * c) - (in->x * s);
-	out->z = in->z;
+	*out = Vec3f(in->x * c + in->y * s, in->y * c - in->x * s, in->z);
 }
 
 inline void YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	out->x = (in->x * c) + (in->z * s);
-	out->y = in->y;
-	out->z = (in->z * c) - (in->x * s);
+	*out = Vec3f(in->x * c + in->z * s, in->y, in->z * c - in->x * s);
 }
 
 inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	out->x = in->x;
-	out->y = (in->y * c) - (in->z * s);
-	out->z = (in->y * s) + (in->z * c);
+	*out = Vec3f(in->x, in->y * c - in->z * s, in->y * s + in->z * c);
 }
 
 //! Normalizes a Vector approximately. Returns its approcimate length before normalization.

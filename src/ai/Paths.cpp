@@ -102,31 +102,27 @@ MASTER_CAMERA_STRUCT MasterCamera;
 long nbARXpaths = 0;
 long USE_CINEMATICS_CAMERA = 0;
 
-void ARX_PATH_ComputeBB(ARX_PATH * ap)
-{
-	ap->bbmin.x = ap->bbmin.y = ap->bbmin.z = 9999999999.f;
-	ap->bbmax.x = ap->bbmax.y = ap->bbmax.z = -9999999999.f;
-
-	for (long i = 0; i < ap->nb_pathways; i++)
-	{
+void ARX_PATH_ComputeBB(ARX_PATH * ap) {
+	
+	ap->bbmin = Vec3f::repeat(9999999999.f);
+	ap->bbmax = Vec3f::repeat(-9999999999.f);
+	
+	for(long i = 0; i < ap->nb_pathways; i++) {
 		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
 		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
-
 		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
 		ap->bbmax.z = std::max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
 	}
-
-	if (ap->height > 0)
-	{
+	
+	if(ap->height > 0) {
 		ap->bbmin.y = ap->pos.y - ap->height;
 		ap->bbmax.y = ap->pos.y;
-	}
-	else
-	{
+	} else {
 		ap->bbmin.y = -99999999.f;
 		ap->bbmax.y = 99999999.f;
 	}
 }
+
 void ARX_PATH_ComputeAllBoundingBoxes()
 {
 	for (long i = 0; i < nbARXpaths; i++)

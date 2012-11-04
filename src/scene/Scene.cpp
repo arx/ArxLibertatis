@@ -302,9 +302,7 @@ extern EERIEMATRIX ProjectionMatrix;
 void specialEE_RTP2(TexturedVertex * in, TexturedVertex * out) {
 	
 	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->p.x = in->p.x - et->posx;
-	out->p.y = in->p.y - et->posy;
-	out->p.z = in->p.z - et->posz;
+	out->p = in->p - et->pos;
 	
 	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
 	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);

@@ -199,7 +199,7 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	
 	pd->ov = pos;
 	pd->siz = 3.1f * (dmgs * (1.f / 60) + .9f);
-	pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/4);
+	pd->scale = Vec3f::repeat(-pd->siz * 0.25f);
 	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
 	              | SPLAT_GROUND;
 	pd->tolive = 1600;
@@ -303,10 +303,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	TheoricalSplat.v[3].p.z=-splatsize*SPLAT_MULTIPLY;
 	TheoricalSplat.type=POLY_QUAD;
 
-	Vec3f RealSplatStart;
-	RealSplatStart.x=-size;
-	RealSplatStart.y=py;
-	RealSplatStart.z=-size;
+	Vec3f RealSplatStart(-size, py, -size);
 
 	TheoricalSplat.v[0].p.x+=poss->x;
 	TheoricalSplat.v[0].p.z+=poss->z;

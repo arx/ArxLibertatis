@@ -826,8 +826,8 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		eerie->actionlist[i].name = toLowercase(safestring(ptap->name));
 	}
 	
-	eerie->angle.g = eerie->angle.b = eerie->angle.a = 0.f;
-	eerie->pos.z = eerie->pos.y = eerie->pos.x = 0.f;
+	eerie->angle = Anglef::ZERO;
+	eerie->pos = Vec3f::ZERO;
 	
 	// Now Interpret Extra Data chunk
 	pos = to->extras_seek + 4;
@@ -1676,8 +1676,8 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 	
 	pos = pth->object_seek;
 	loadObjectData(eerie, adr, &pos, pth->version);
-	eerie->angle.a = eerie->angle.b = eerie->angle.g = 0.f;
-	eerie->pos.x = eerie->pos.y = eerie->pos.z = 0.f;
+	eerie->angle = Anglef::ZERO;
+	eerie->pos = Vec3f::ZERO;
 
 	// NORMALS CALCULATIONS
 	Vec3f nrml;

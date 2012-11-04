@@ -810,10 +810,9 @@ void ClearNode(long i, long first = 0) {
 	}
 
 	strcpy(nodes.nodes[i].name, "");
-	nodes.nodes[i].pos.z = nodes.nodes[i].pos.y = nodes.nodes[i].pos.x = 0.f;
+	nodes.nodes[i].pos = Vec3f::ZERO;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ClearNodes()
 {
 	static long first = 1;
@@ -1208,7 +1207,7 @@ static void RestoreIOInitPos(Entity * io) {
 		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
 		io->pos = io->lastpos = io->initpos;
 		io->move = Vec3f::ZERO;
-		io->lastmove.x = io->lastmove.y = io->lastmove.z = 0.f;
+		io->lastmove = Vec3f::ZERO;
 		io->angle = io->initangle;
 	}
 }

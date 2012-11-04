@@ -1677,7 +1677,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,Entity * io,float MOVE_CYLINDER
 			}
 			else  //stopped
 			{ 
-				ip->velocity.x=ip->velocity.y=ip->velocity.z=0.f;
+				ip->velocity = Vec3f::ZERO;
 				MOVING_CYLINDER=0;
 				return false;
 			}
@@ -1713,11 +1713,9 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 	float pas=35.f;
  
 
-	Vec3f found_hit;
+	Vec3f found_hit = Vec3f::ZERO;
 	EERIEPOLY * found_ep=NULL;
 	float iter,t;
-
-	found_hit.x = found_hit.y = found_hit.z = 0;
 
 	x=orgn->x;
 	y=orgn->y;

@@ -123,11 +123,8 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 
 				if (!oldnbxx) nbx = 1;
 
-				while (nbx--)
-				{
-					v->x = depxx;
-					v->y = depy;
-					v->z = 0.f;
+				while(nbx--) {
+					*v = Vec3f(depxx, depy, 0.f);
 					depxx += dxx;
 					v++;
 				}

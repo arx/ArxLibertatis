@@ -230,34 +230,22 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 
 	GRenderer->SetTexture(0, mask);
 
-	v[0].p.x = SpecialFadeDx - w;
-	v[0].p.y = 0;
-	v[0].p.z = 0.01f;
+	v[0].p = Vec3f(SpecialFadeDx - w, 0.f, 0.01f);
 	v[0].rhw = 1.f;
 	v[0].color = 0xFFFFFFFF;
-	v[0].uv.x = 0.01f;
-	v[0].uv.y = 0.f;
-	v[1].p.x = SpecialFadeDx - w + w - 1;
-	v[1].p.y = 0;
-	v[1].p.z = 0.01f;
+	v[0].uv = Vec2f(0.01f, 0.f);
+	v[1].p = Vec3f(SpecialFadeDx - w + w - 1.f, 0.f, 0.01f);
 	v[1].rhw = 1.f;
 	v[1].color = 0xFF000000;
-	v[1].uv.x = 0.9999999f;
-	v[1].uv.y = 0.f;
-	v[2].p.x = SpecialFadeDx - w;
-	v[2].p.y = h;
-	v[2].p.z = 0.01f;
+	v[1].uv = Vec2f(0.9999999f, 0.f);
+	v[2].p = Vec3f(SpecialFadeDx - w, h, 0.01f);
 	v[2].rhw = 1.f;
 	v[2].color = 0xFFFFFFFF;
-	v[2].uv.x = 0.01f;
-	v[2].uv.y = dv;
-	v[3].p.x = SpecialFadeDx - w + w - 1;
-	v[3].p.y = h;
-	v[3].p.z = 0.01f;
+	v[2].uv = Vec2f(0.01f, dv);
+	v[3].p = Vec3f(SpecialFadeDx - w + w - 1.f, h, 0.01f);
 	v[3].rhw = 1.f;
 	v[3].color = 0xFF000000;
-	v[3].uv.x = 0.999999f;
-	v[3].uv.y = dv;
+	v[3].uv = Vec2f(0.999999f, dv);
 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 

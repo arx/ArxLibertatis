@@ -2398,10 +2398,9 @@ void ArxGame::ManagePlayerControls()
 	}
 
 	float MoveDiv;
-
-	Vec3f tm;
-	tm.x=tm.y=tm.z=0.f;
-
+	
+	Vec3f tm = Vec3f::ZERO;
+	
 	// Checks STEALTH Key Status.
 	if (GInput->actionPressed(CONTROLS_CUST_STEALTHMODE) )
 	{
@@ -3618,9 +3617,7 @@ void ArxGame::ManageKeyMouse() {
 	long mouseDiffY = GInput->getMousePosRel().y;
 	
 	ARX_Menu_Manage();
-	Vec3f tm;
-	tm.x=tm.y=tm.z=0.f;
-
+	
 	if(bRestoreCoordMouse) {
 		DANAEMouse=GInput->getMousePosAbs();
 	}
@@ -7404,12 +7401,10 @@ long Manage3DCursor(long flags)
 					if ( maxdist > 150.f ) maxdist = 150.f;
 
 		bool			bCollidposNoInit = true;
-					Vec3f		collidpos;
+					Vec3f		collidpos = Vec3f::ZERO;
 					EERIE_CYLINDER	cyl2;
 					float			inc			=	10.f;
 					long			iterating	=	40;
-
-		collidpos.x = collidpos.y = collidpos.z = 0;
 		
 		cyl2.height	=	min(-30.f, height); 
 		cyl2.radius	=	max(20.f, maxdist); 
@@ -7419,7 +7414,7 @@ long Manage3DCursor(long flags)
 					{
 
 			cyl2.origin.x = pos.x + movev.x * inc;
-			cyl2.origin.y = pos.y + maxy + movev.y * inc;
+			cyl2.origin.y = pos.y + movev.y * inc + maxy;
 			cyl2.origin.z = pos.z + movev.z * inc;
 
 						float anything = CheckAnythingInCylinder( &cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE );

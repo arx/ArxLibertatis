@@ -60,28 +60,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::list;
 
-void ParticleSystem::RecomputeDirection()
-{
-	Vec3f eVect;
-	eVect.x = p3ParticleDirection.x;
-	eVect.y = -p3ParticleDirection.y;
-	eVect.z = p3ParticleDirection.z;
+void ParticleSystem::RecomputeDirection() {
+	Vec3f eVect = p3ParticleDirection;
+	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(&eMat, &eVect, 0);
 }
-//-----------------------------------------------------------------------------
-ParticleSystem::ParticleSystem()
-{
-	int i;
 
-	for (i = 0; i < 20; i++)
-	{
+ParticleSystem::ParticleSystem() {
+	
+	int i;
+	for(i = 0; i < 20; i++) {
 		tex_tab[i] = NULL;
 	}
-
+	
 	lLightId = -1;
-
+	
 	iParticleNbMax = 50;
-
+	
 	ulTime = 0;
 	ulNbParticleGen = 10;
 	iParticleNbAlive = 0;
@@ -93,17 +88,12 @@ ParticleSystem::ParticleSystem()
 	iSrcBlend = Renderer::BlendOne;
 	iDstBlend = Renderer::BlendOne;
 	ulParticleSpawn = 0;
-
+	
 	// default settings for EDITOR MODE only
-	p3ParticleDirection.x = 0;
-	p3ParticleDirection.y = -1;
-	p3ParticleDirection.z = 0;
-	Vec3f eVect;
-	eVect.x = p3ParticleDirection.x;
-	eVect.y = -p3ParticleDirection.y;
-	eVect.z = p3ParticleDirection.z;
+	Vec3f eVect = p3ParticleDirection = -Vec3f::Y_AXIS;
+	eVect.y = -eVect.y;
 	GenerateMatrixUsingVector(&eMat, &eVect, 0);
-
+	
 	fParticleStartSize = 1;
 	fParticleEndSize = 1;
 	fParticleStartColor[0] = 0.1f;
@@ -355,10 +345,8 @@ void ParticleSystem::SetParticleParams(Particle * pP)
 	
 	// ici modifs ----------------------------------
 	
-	vv1.x = 0;
-	vv1.y = -1;
-	vv1.z = 0;
-
+	vv1 = -Vec3f::Y_AXIS;
+	
 	VectorRotateZ(vv1, vvz, fAngleX); 
 	VectorRotateY(vvz, vv1, radians(rnd() * 360.0f));
 	VectorMatrixMultiply(&vvz, &vv1, &eMat);

@@ -83,7 +83,7 @@ public:
 	C_KEY * next;
 	
 	CinematicLight() {
-		pos.x = pos.y = pos.z = 0.f;
+		pos = Vec3f::ZERO;
 		fallin = 100.f;
 		fallout = 200.f;
 		color = Color3f::white * 255.f;
