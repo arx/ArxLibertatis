@@ -323,7 +323,9 @@ void D3D9Renderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFact
 }
 
 void D3D9Renderer::SetViewport(const Rect & viewport) {
-	D3DVIEWPORT9 tmpViewport = { viewport.left, viewport.top, viewport.width(), viewport.height(), 0.f, 1.f };
+	D3DVIEWPORT9 tmpViewport = { DWORD(viewport.left), DWORD(viewport.top),
+	                             DWORD(viewport.width()), DWORD(viewport.height()),
+	                             0.f, 1.f };
 	GD3D9Device->SetViewport(&tmpViewport);
 }
 
