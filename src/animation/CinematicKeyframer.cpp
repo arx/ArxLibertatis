@@ -553,11 +553,10 @@ consequences on light :
 				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensity	= alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 		case INTERP_BEZIER:
@@ -620,11 +619,10 @@ consequences on light :
 				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 	}
@@ -781,13 +779,13 @@ bool GereTrackNoPlay(Cinematic * c)
 				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
+			
 		case INTERP_BEZIER:
 			ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
 			kprec = (num > 1) ? k - 1 : k;
@@ -846,11 +844,10 @@ bool GereTrackNoPlay(Cinematic * c)
 				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 	}

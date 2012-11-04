@@ -62,7 +62,7 @@ struct CinematicLight_1_71 {
 	SavedVec3 pos;
 	f32 fallin;
 	f32 fallout;
-	f32 r, g, b;
+	SavedColor color;
 	f32 intensity;
 	f32 intensiternd;
 	s32 prev; // ignored
@@ -73,9 +73,7 @@ struct CinematicLight_1_71 {
 		l.pos = pos;
 		l.fallin = fallin;
 		l.fallout = fallout;
-		l.r = r;
-		l.g = g;
-		l.b = b;
+		l.color = color;
 		l.intensity = intensity;
 		l.intensiternd = intensiternd;
 		return l;

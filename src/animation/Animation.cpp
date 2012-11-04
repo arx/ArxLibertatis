@@ -1526,9 +1526,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 		}
-
-		if ( special_color_flag & 1)
-		{
+		
+		if(special_color_flag & 1) {
 			for(long j = 0 ; j < 3 ; j++) {
 				Color color = Color::fromBGR(vert_list[j].color);
 				color.r = long(color.r * special_color.r) & 255;
@@ -1537,8 +1536,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				vert_list[j].color = color.toBGR();
 			}
 		}
+		
 	}
-
+	
 	if (FRAME_COUNT!=0)
 	for (long j=0;j<3;j++)
 		vert_list[j].color = eobj->facelist[i].color[j].toBGRA();

@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <vector>
 
+#include "graphics/Color.h"
 #include "math/Vector3.h"
 
 // TODO macros
@@ -75,7 +76,7 @@ public:
 	Vec3f pos;
 	float fallin;
 	float fallout;
-	float r, g, b;
+	Color3f color;
 	float intensity;
 	float intensiternd;
 	C_KEY * prev;
@@ -85,7 +86,7 @@ public:
 		pos.x = pos.y = pos.z = 0.f;
 		fallin = 100.f;
 		fallout = 200.f;
-		r = g = b = 255.f;
+		color = Color3f::white * 255.f;
 		intensity = 1.f;
 		intensiternd = 0.2f;
 		next = NULL;

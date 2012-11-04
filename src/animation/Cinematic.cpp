@@ -271,28 +271,19 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 	}
 	else
 	{
-		float r, g, b;
+		Color3f color;
 
-		if (ra < light->fallin)
-		{
-			r = light->r * LightRND;
-			g = light->g * LightRND;
-			b = light->b * LightRND;
-		}
-		else
-		{
+		if(ra < light->fallin) {
+			color = light->color * LightRND;
+		} else {
 			ra = (light->fallout - ra) / (light->fallout - light->fallin);
-			float t = LightRND * ra;
-			r = light->r * t;
-			g = light->g * t;
-			b = light->b * t;
+			color = light->color * (LightRND * ra);
 		}
-
-
+		
 		Color in = Color::fromBGRA(col);
-		in.r = min(in.r + (int)r, 255);
-		in.g = min(in.g + (int)g, 255);
-		in.b = min(in.b + (int)b, 255);
+		in.r = min(in.r + (int)color.r, 255);
+		in.g = min(in.g + (int)color.g, 255);
+		in.b = min(in.b + (int)color.b, 255);
 		return in.toBGRA();
 	}
 }
