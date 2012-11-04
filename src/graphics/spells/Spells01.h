@@ -113,7 +113,7 @@ private:
 	float interp;
 	
 	TextureContainer * tp;
-	float r, g, b;
+	Color3f rgb;
 	int mask;
 	
 	struct T_LINKLIGHTTOFX {
@@ -144,9 +144,7 @@ public:
 	void Action(int mode);
 	
 	void ChangeRGBMask(float r, float g, float b, int mask) {
-		this->r = r;
-		this->g = g;
-		this->b = b;
+		rgb = Color3f(r, g, b);
 		this->mask = mask;
 	}
 	

@@ -289,7 +289,7 @@ float CTelekinesis::Render() {
 	Anglef stiteangle(0.f, float(ulCurrentTime) * fOneOnDuration * 180.f, 0.f);
 	Vec3f stitepos = player.pos + Vec3f(0.f, 80.f, 0.f);
 	Color3f stitecolor = Color3f::white;
-	Vec3f stitescale = Vec3f::repeat(2.f, 2.f, 2.f);
+	Vec3f stitescale = Vec3f::repeat(2.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	
 	stitepos.y = player.pos.y + 20;

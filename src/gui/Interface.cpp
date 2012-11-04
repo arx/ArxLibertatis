@@ -4547,25 +4547,17 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			EERIE_LIGHT tl;
 			memcpy(&tl,&DynLight[0],sizeof(EERIE_LIGHT));
 
-			DynLight[0].pos.x=500.f;
-			DynLight[0].pos.y=-1960.f;
-			DynLight[0].pos.z=1590.f;
-
-				DynLight[0].exist=1;
-				DynLight[0].rgb.r=0.6f;
-				DynLight[0].rgb.g=0.7f;
-				DynLight[0].rgb.b=0.9f;
-				DynLight[0].intensity=1.8f;
-
+			DynLight[0].pos = Vec3f(500.f, -1960.f, 1590.f);
+			DynLight[0].exist = 1;
+			DynLight[0].rgb = Color3f(0.6f, 0.7f, 0.9f);
+			DynLight[0].intensity  = 1.8f;
 			DynLight[0].fallstart=4520.f;
 			DynLight[0].fallend = DynLight[0].fallstart + 600.f;
-			DynLight[0].rgb255.r=DynLight[0].rgb.r*255.f;
-			DynLight[0].rgb255.g=DynLight[0].rgb.g*255.f;
-			DynLight[0].rgb255.b=DynLight[0].rgb.b*255.f;
-			DynLight[0].falldiff=DynLight[0].fallend-DynLight[0].fallstart;
-			DynLight[0].falldiffmul=1.f/DynLight[0].falldiff;
-			DynLight[0].precalc=DynLight[0].intensity*GLOBAL_LIGHT_FACTOR;
-
+			DynLight[0].rgb255 = DynLight[0].rgb * 255.f;
+			DynLight[0].falldiff = DynLight[0].fallend-DynLight[0].fallstart;
+			DynLight[0].falldiffmul = 1.f / DynLight[0].falldiff;
+			DynLight[0].precalc = DynLight[0].intensity * GLOBAL_LIGHT_FACTOR;
+			
 			EERIE_CAMERA * oldcam=ACTIVECAM;
 			bookcam.centerx = DANAECENTERX;
 			bookcam.centery = DANAECENTERY;
@@ -6013,7 +6005,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		eLight1.rgb = Color3f(0.15f, 0.06f, 0.003f);
 		eLight1.intensity = 8.8f;
 		eLight1.fallstart = 2020;
-		eLight1.fallend = eLight1.fallstar t +60;
+		eLight1.fallend = eLight1.fallstart + 60;
 		eLight1.rgb255 = eLight1.rgb * 255.f;
 		eLight1.falldiff = eLight1.fallend - eLight1.fallstart;
 		eLight1.falldiffmul = 1.f / eLight1.falldiff;

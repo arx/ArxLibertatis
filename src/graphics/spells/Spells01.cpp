@@ -835,9 +835,7 @@ void CIgnit::AddLight(int aiLight)
 		el->intensity = 0.7f + 2.f * rnd();
 		el->fallend = 400.f;
 		el->fallstart = 300.f;
-		el->rgb.r = this->r;
-		el->rgb.g = this->g;
-		el->rgb.b = this->b;
+		el->rgb = rgb;
 		el->pos = this->tablight[this->nblight].poslight;
 	}
 
@@ -927,7 +925,7 @@ float CIgnit::Render() {
 					if ((this->tablight[nb].actif) && (rnd() > .5f))
 					{
 						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp,
-						                      Color3f(r, g, b), mask);
+						                      rgb, mask);
 					}
 				}
 			}

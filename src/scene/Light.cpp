@@ -105,10 +105,8 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
 			if ((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
 			        && (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
 			{
-
-				el->rgb255.r = el->rgb.r * 255.f;
-				el->rgb255.g = el->rgb.g * 255.f;
-				el->rgb255.b = el->rgb.b * 255.f;
+				
+				el->rgb255 = el->rgb * 255.f;
 				el->falldiff = el->fallend - el->fallstart;
 				el->falldiffmul = 1.f / el->falldiff;
 				el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
@@ -609,9 +607,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 			        && bDist)
 			{
 				el->treat = 1;
-				el->rgb255.r = el->rgb.r * 255.f;
-				el->rgb255.g = el->rgb.g * 255.f;
-				el->rgb255.b = el->rgb.b * 255.f;
+				el->rgb255 = el->rgb * 255.f;
 				el->falldiff = el->fallend - el->fallstart;
 				el->falldiffmul = 1.f / el->falldiff;
 				el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
@@ -712,9 +708,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 			GLight[i]->falldiff = GLight[i]->fallend - GLight[i]->fallstart;
 			GLight[i]->falldiffmul = 1.f / GLight[i]->falldiff;
-			GLight[i]->rgb255.r = GLight[i]->rgb.r * 255.f;
-			GLight[i]->rgb255.g = GLight[i]->rgb.g * 255.f;
-			GLight[i]->rgb255.b = GLight[i]->rgb.b * 255.f;
+			GLight[i]->rgb255 = GLight[i]->rgb * 255.f;
 			GLight[i]->precalc = GLight[i]->intensity * GLOBAL_LIGHT_FACTOR;
 		}
 	}

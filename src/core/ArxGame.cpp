@@ -1658,11 +1658,9 @@ void ArxGame::Render() {
 
 		if (FRAME_COUNT<=0)
 				PrecalcIOLighting(&ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f);
-
-		ACTIVECAM->fadecolor.r=current.depthcolor.r;
-		ACTIVECAM->fadecolor.g=current.depthcolor.g;
-		ACTIVECAM->fadecolor.b=current.depthcolor.b;
-
+		
+		ACTIVECAM->fadecolor = current.depthcolor;
+		
 		if (uw_mode)
 		{
 			float val=10.f;
