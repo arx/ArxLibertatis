@@ -111,16 +111,6 @@
 	#define __func__ __FUNCTION__	// MSVC doesn't know about C99 __func__
 #endif
 
-// TODO check for these in CMakeLists.txt
-#if ARX_COMPILER_MSVC || ARX_COMPILER == ARX_COMPILER_MINGW
-	#define PRINT_SIZE_T_F "Iu"
-#elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG
-	#define PRINT_SIZE_T_F "zu"
-#else
-	#define PRINT_SIZE_T_F "lu"
-#endif
-#define PRINT_SIZE_T "%" PRINT_SIZE_T_F
-
 /* ---------------------------------------------------------
                            Types
 ------------------------------------------------------------*/

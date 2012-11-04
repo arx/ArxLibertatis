@@ -788,7 +788,7 @@ aalError OpenALSource::updateBuffers() {
 	time = time - read + newRead;
 	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	
-	arx_assert_msg(time >= oldTime, " oldTime=" PRINT_SIZE_T " time=" PRINT_SIZE_T " read=" PRINT_SIZE_T " newRead=%d nbuffersProcessed=%d status=%d sourceState=%d" , oldTime, time, read, newRead, nbuffersProcessed, (int)status, sourceState);
+	arx_assert_msg(time >= oldTime, " oldTime=%lu time=%lu read=%lu newRead=%d nbuffersProcessed=%d status=%d sourceState=%d" , (unsigned long)oldTime, (unsigned long)time, (unsigned long)read, newRead, nbuffersProcessed, (int)status, sourceState);
 	ARX_UNUSED(oldTime);
 	read = newRead;
 	
