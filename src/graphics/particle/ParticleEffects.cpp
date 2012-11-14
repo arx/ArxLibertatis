@@ -1712,7 +1712,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				EERIEDrawSprite(&in2, siz, tc, Color::white, temp);
 			} else {
-				EERIEDrawSprite(&in,siz,tc,color,temp);
+				EERIEDrawSprite(&in, siz, tc, color, temp);
 			}
 		}
 		
@@ -1900,7 +1900,7 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	flarenum++;
 	
 	fl->bDrawBitmap = 0;
-	fl->io=io;
+	fl->io = io;
 	if(io) {
 		fl->flags = 1;
 		io->flarecount++;
@@ -1929,8 +1929,8 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 		fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
 		fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
 	} else {
-		fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * fl->v.p.z * 2.f / float(DANAESIZX);
-		fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * fl->v.p.z * 2.f / float(DANAESIZX);
+		fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
+		fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
 		fl->v.p.z = 75.f;
 		ka = *oldcam;
 		SetActiveCamera(&ka);
