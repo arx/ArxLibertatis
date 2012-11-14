@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Arx Libertatis
 GenericName=First-Person Role-Playing Game
+GenericName[de]=3D-Rollenspiel
 Comment=Cross-platform port of Arx Fatalis, a first-person role-playing game
 Exec=arx
 Icon=arx-libertatis
