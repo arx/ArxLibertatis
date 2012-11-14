@@ -650,6 +650,8 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 			{
 				const char * max = name.c_str() + 5;
 
+				// TODO should max be inclusive or exclusive?
+				// if inclusive, use proper integer random, otherwise fix rnd()?
 				if (max[0])
 				{
 					float t = (float)atof(max);
@@ -1377,6 +1379,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 	}
 
 
+	// TODO this can never be true as name always starts with a ^ for all GetSystemVar calls
 	if (!specialstrcmp(name, " "))
 	{
 		if (io == entities.player())
