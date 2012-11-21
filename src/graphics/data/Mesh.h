@@ -80,7 +80,6 @@ struct EERIE_TRANSFORM {
 	float use_focal;
 	float xmod;
 	float ymod;
-	float zmod;
 };
 
 struct EERIE_CAMERA {

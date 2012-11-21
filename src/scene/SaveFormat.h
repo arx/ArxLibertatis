@@ -1021,7 +1021,7 @@ struct SavedTransform {
 		a.pos = pos;
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
 		a.use_focal = use_focal;
-		a.xmod = xmod, a.ymod = ymod, a.zmod = zmod;
+		a.xmod = xmod, a.ymod = ymod;
 		return a;
 	}
 	
@@ -1029,7 +1029,7 @@ struct SavedTransform {
 		pos = b.pos;
 		ycos = b.ycos, ysin = b.ysin, xsin = b.xsin, xcos = b.xcos;
 		use_focal = b.use_focal;
-		xmod = b.xmod, ymod = b.ymod, zmod = b.zmod;
+		xmod = b.xmod, ymod = b.ymod, zmod = 0.f;
 		return *this;
 	}
 	

@@ -1207,7 +1207,6 @@ static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	cam->Zsin = (float)EEsin(tmp);
 	cam->transform.xmod = cam->pos2.x = (float)(cam->center.x + cam->clip.left);
 	cam->transform.ymod = cam->pos2.y = (float)(cam->center.y + cam->clip.top);
-	cam->transform.zmod = cam->Zmul;
 	cam->transform.pos = cam->pos;
 }
 
