@@ -832,14 +832,10 @@ void ArxGame::Render() {
 		memset(TELEPORT_TO_POSITION,0,64);
 	}
 	
-	//Setting long from long
-	subj.centerx = DANAECENTERX;
-	subj.centery = DANAECENTERY;
-
-	//Casting long to float
-	subj.posleft = subj.transform.xmod = static_cast<float>( DANAECENTERX );
-	subj.postop  = subj.transform.ymod = static_cast<float>( DANAECENTERY );
-
+	subj.center = Vec2i(DANAECENTERX, DANAECENTERY);
+	subj.posleft = subj.transform.xmod = static_cast<float>(DANAECENTERX);
+	subj.postop  = subj.transform.ymod = static_cast<float>(DANAECENTERY);
+	
 	// Finally computes current focal
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
 
@@ -1590,15 +1586,11 @@ void ArxGame::Render() {
 	// Prepare ActiveCamera
 	PrepareCamera(ACTIVECAM);
 	// Recenter Viewport depending on Resolution
-
-	// setting long from long
-	ACTIVECAM->centerx = DANAECENTERX;
-	ACTIVECAM->centery = DANAECENTERY;
-	// casting long to float
-	ACTIVECAM->posleft = ACTIVECAM->transform.xmod = static_cast<float>( DANAECENTERX );
-	ACTIVECAM->postop = ACTIVECAM->transform.ymod = static_cast<float>( DANAECENTERY );
-
-
+	
+	ACTIVECAM->center = Vec2i(DANAECENTERX, DANAECENTERY);
+	ACTIVECAM->posleft = ACTIVECAM->transform.xmod = static_cast<float>(DANAECENTERX);
+	ACTIVECAM->postop = ACTIVECAM->transform.ymod = static_cast<float>(DANAECENTERY);
+	
 	// Set Listener Position
 	{
 		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));

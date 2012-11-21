@@ -115,8 +115,7 @@ struct EERIE_CAMERA {
 	Rect clip;
 	float clipz0;
 	float clipz1;
-	long centerx;
-	long centery;
+	Vec2i center;
 	
 	float smoothing;
 	float AddX;
@@ -320,7 +319,6 @@ long GetFreeDynLight();
 // CAMERA FUNCTIONS START
 void SetTargetCamera(EERIE_CAMERA * cam,float x,float y, float z);
 void PrepareCamera(EERIE_CAMERA *cam);
-void SP_PrepareCamera(EERIE_CAMERA * cam);
 void PrepareActiveCamera();
 // CAMERA FUNCTIONS END
 //****************************************************************************

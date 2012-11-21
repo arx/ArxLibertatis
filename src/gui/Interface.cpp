@@ -4556,8 +4556,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			DynLight[0].precalc = DynLight[0].intensity * GLOBAL_LIGHT_FACTOR;
 			
 			EERIE_CAMERA * oldcam=ACTIVECAM;
-			bookcam.centerx = DANAECENTERX;
-			bookcam.centery = DANAECENTERY;
+			bookcam.center = Vec2i(DANAECENTERX, DANAECENTERY);
 			SetActiveCamera(&bookcam);
 			PrepareCamera(&bookcam);
 			
@@ -4576,8 +4575,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				
 				if (necklace.runes[i])
 				{
-					bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
-					bookcam.centery = (100 + ypos * 64 + BOOKDECY) * Yratio;
+					bookcam.center.x = (382 + xpos * 45 + BOOKDECX) * Xratio;
+					bookcam.center.y = (100 + ypos * 64 + BOOKDECY) * Yratio;
 
 					SetActiveCamera(&bookcam);
 					PrepareCamera(&bookcam);
@@ -4604,8 +4603,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						DynLight[0].exist=0;
 						float tt;
 						
-						bookcam.centerx = (382 + xpos * 45 + BOOKDECX + 3) * Xratio;
-						bookcam.centery = (100 + ypos * 64 + BOOKDECY + 2) * Yratio;
+						bookcam.center.x = (382 + xpos * 45 + BOOKDECX + 3) * Xratio;
+						bookcam.center.y = (100 + ypos * 64 + BOOKDECY + 2) * Yratio;
 						SetActiveCamera(&bookcam);
 						PrepareCamera(&bookcam);
 
@@ -4619,8 +4618,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						DynLight[0].exist=1;	
 						
-						bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
-						bookcam.centery = (100 + ypos * 64 + BOOKDECY) * Yratio;
+						bookcam.center.x = (382 + xpos * 45 + BOOKDECX) * Xratio;
+						bookcam.center.y = (100 + ypos * 64 + BOOKDECY) * Yratio;
 						SetActiveCamera(&bookcam);
 						PrepareCamera(&bookcam);
 
@@ -6028,9 +6027,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		PDL[1] = &eLight2;
 		TOTPDL = 2;
 
-		EERIE_CAMERA * oldcam=ACTIVECAM;
-		bookcam.centerx = rec.center().x;
-		bookcam.centery = rec.center().y;
+		EERIE_CAMERA * oldcam = ACTIVECAM;
+		bookcam.center = rec.center();
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 

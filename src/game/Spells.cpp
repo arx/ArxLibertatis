@@ -1259,8 +1259,8 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				sd->lasttim=(short)tim;
 
-				pos1.x = (short)subj.centerx -OFFSET_X*2 + sd->cPosStartX*OFFSET_X;
-				pos1.y = (short)subj.centery -OFFSET_Y*2 + sd->cPosStartY*OFFSET_Y;
+				pos1.x = (short)subj.center.x - OFFSET_X * 2 + sd->cPosStartX * OFFSET_X;
+				pos1.y = (short)subj.center.y - OFFSET_Y * 2 + sd->cPosStartY * OFFSET_Y;
 
 				float div_ti=1.f/ti;
 

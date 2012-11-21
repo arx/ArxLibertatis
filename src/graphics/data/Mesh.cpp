@@ -1194,6 +1194,23 @@ int BackFaceCull2D(TexturedVertex * tv) {
 
 extern EERIE_CAMERA raycam;
 
+static void SP_PrepareCamera(EERIE_CAMERA * cam) {
+	float tmp = radians(cam->angle.a);
+	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
+	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
+	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
+	tmp = radians(cam->angle.b);
+	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
+	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
+	tmp = radians(cam->angle.g);
+	cam->Zcos = (float)EEcos(tmp);
+	cam->Zsin = (float)EEsin(tmp);
+	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->center.x + cam->clip.left);
+	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->center.y + cam->clip.top);
+	cam->transform.zmod = cam->Zmul;
+	cam->transform.pos = cam->pos;
+}
+
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 
 	EERIEPOLY ep;
@@ -2160,8 +2177,8 @@ void PrepareActiveCamera() {
 	tmp = radians(ACTIVECAM->angle.g);
 	ACTIVECAM->Zcos = (float)EEcos(tmp);
 	ACTIVECAM->Zsin = (float)EEsin(tmp);
-	ACTIVECAM->posleft = (float)(ACTIVECAM->centerx + ACTIVECAM->clip.left);
-	ACTIVECAM->postop = (float)(ACTIVECAM->centery + ACTIVECAM->clip.top);
+	ACTIVECAM->posleft = (float)(ACTIVECAM->center.x + ACTIVECAM->clip.left);
+	ACTIVECAM->postop = (float)(ACTIVECAM->center.y + ACTIVECAM->clip.top);
 	
 	MatrixReset(&ACTIVECAM->matrix);
 	
@@ -2206,24 +2223,10 @@ void F_PrepareCamera(EERIE_CAMERA * cam)
 	cam->Zcos = 1;
 	cam->Zsin = 0.f;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void PrepareCamera(EERIE_CAMERA * cam)
 {
-	float tmp = radians(cam->angle.a);
-	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
-	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
-	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.b);
-	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
-	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.g);
-	cam->Zcos = (float)EEcos(tmp);
-	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
-	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->centery + cam->clip.top);
-	cam->transform.zmod = cam->Zmul;
-	cam->transform.pos = cam->pos;
+	SP_PrepareCamera(cam);
 
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
 							static_cast<float>(DANAESIZY),
@@ -2231,24 +2234,6 @@ void PrepareCamera(EERIE_CAMERA * cam)
 							1.f,
 							cam->cdepth);
 
-}
-
-void SP_PrepareCamera(EERIE_CAMERA * cam)
-{
-	float tmp = radians(cam->angle.a);
-	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
-	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
-	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.b);
-	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
-	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.g);
-	cam->Zcos = (float)EEcos(tmp);
-	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
-	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->centery + cam->clip.top);
-	cam->transform.zmod = cam->Zmul;
-	cam->transform.pos = cam->pos;
 }
 
 void SetCameraDepth(float depth) {

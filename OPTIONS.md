@@ -1,5 +1,5 @@
 
-This file describes additional build options that are recognized by the CMakeLists.txt but will ptobably not need to be modifed:
+This file describes additional build options that are recognized by the CMakeLists.txt but will probably not need to be modifed:
 
 ### Default data directories
 

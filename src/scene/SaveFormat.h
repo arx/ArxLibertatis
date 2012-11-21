@@ -1109,7 +1109,7 @@ struct SavedCamera {
 		a.norm = norm;
 		a.fadecolor = fadecolor, a.clip = clip;
 		a.clipz0 = clipz0, a.clipz1 = clipz1;
-		a.centerx = centerx, a.centery = centery;
+		a.center = Vec2i(centerx, centery);
 		
 		a.smoothing = smoothing;
 		a.AddX = AddX, a.AddY = AddY;
@@ -1148,7 +1148,7 @@ struct SavedCamera {
 		norm = b.norm;
 		fadecolor = b.fadecolor, clip = b.clip;
 		clipz0 = b.clipz0, clipz1 = b.clipz1;
-		centerx = b.centerx, centery = b.centery;
+		centerx = b.center.x, centery = b.center.y;
 		
 		smoothing = b.smoothing;
 		AddX = b.AddX, AddY = b.AddY;

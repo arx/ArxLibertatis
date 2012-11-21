@@ -515,8 +515,7 @@ void InitializeDanae() {
 	subj.clip = Rect(0, 0, 640, 480);
 	subj.clipz0 = 0.f;
 	subj.clipz1 = 2.999f;
-	subj.centerx = subj.clip.center().x;
-	subj.centery = subj.clip.center().y;
+	subj.center = subj.clip.center();
 	subj.AddX = 320.f;
 	subj.AddY = 240.f;
 	subj.focal = BASE_FOCAL;
@@ -532,8 +531,7 @@ void InitializeDanae() {
 	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
 	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
 	
-	raycam.centerx = 320;
-	raycam.centery = 320;
+	raycam.center = Vec2i(320, 320);
 	raycam.AddX = 320.f;
 	raycam.AddY = 320.f;
 	
@@ -541,13 +539,13 @@ void InitializeDanae() {
 	bookcam.pos = Vec3f::ZERO;
 	bookcam.focal = BASE_FOCAL;
 	
+	// TODO probably not really used anymore!
 	mapcam.pos = Vec3f(1500.f, -6000.f, 1500.f);
 	mapcam.angle = Anglef(90.f, 0.f, 0.f);
 	mapcam.clip = Rect(0, 0, 640, 480);
 	mapcam.clipz0 = 0.001f;
 	mapcam.clipz1 = 0.999f;
-	mapcam.centerx = mapcam.clip.center().x;
-	mapcam.centery = mapcam.clip.center().x;
+	mapcam.center = mapcam.clip.center();
 	mapcam.AddX = 320.f;
 	mapcam.AddY = 240.f;
 	mapcam.focal = 400.f;
