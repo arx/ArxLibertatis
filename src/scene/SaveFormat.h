@@ -1098,7 +1098,6 @@ struct SavedCamera {
 		a.Zmul = Zmul;
 		a.pos2.x = posleft, a.pos2.y = postop;
 		
-		a.xmod = xmod, a.ymod = ymod;
 		a.matrix = matrix;
 		a.angle = angle;
 		
@@ -1136,7 +1135,7 @@ struct SavedCamera {
 		Zmul = b.Zmul;
 		posleft = b.pos2.x, postop = b.pos2.y;
 		
-		xmod = b.xmod, ymod = b.ymod;
+		xmod = 0.f, ymod = 0.f;
 		matrix = b.matrix;
 		angle = b.angle;
 		
@@ -1150,7 +1149,7 @@ struct SavedCamera {
 		centerx = b.center.x, centery = b.center.y;
 		
 		smoothing = b.smoothing;
-		AddX = 0, AddY = 0;
+		AddX = 0.f, AddY = 0.f;
 		Xsnap = b.Xsnap, Zsnap = b.Zsnap, Zdiv = b.Zdiv;
 		
 		clip3D = b.clip3D;

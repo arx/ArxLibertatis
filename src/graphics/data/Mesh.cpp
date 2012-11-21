@@ -1205,8 +1205,8 @@ static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	tmp = radians(cam->angle.g);
 	cam->Zcos = (float)EEcos(tmp);
 	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->xmod = cam->pos2.x = (float)(cam->center.x + cam->clip.left);
-	cam->transform.ymod = cam->ymod = cam->pos2.y = (float)(cam->center.y + cam->clip.top);
+	cam->transform.xmod = cam->pos2.x = (float)(cam->center.x + cam->clip.left);
+	cam->transform.ymod = cam->pos2.y = (float)(cam->center.y + cam->clip.top);
 	cam->transform.zmod = cam->Zmul;
 	cam->transform.pos = cam->pos;
 }

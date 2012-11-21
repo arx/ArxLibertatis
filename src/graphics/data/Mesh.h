@@ -98,8 +98,6 @@ struct EERIE_CAMERA {
 	float Zmul;
 	Vec2f pos2;
 	
-	float xmod;
-	float ymod;
 	EERIEMATRIX matrix;
 	Anglef angle;
 	
