@@ -203,8 +203,8 @@ void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->ymod;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->mod.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->mod.y;
 	out->rhw = fZTemp;
 }
 
@@ -853,8 +853,8 @@ void specialEE_P(Vec3f * in, TexturedVertex * out) {
 	float fZTemp = clamp_and_invert(in->z);
 	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->mod.x;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->mod.y;
 	out->rhw = fZTemp; 
 }
 
@@ -1205,8 +1205,7 @@ static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	tmp = radians(cam->angle.g);
 	cam->Zcos = (float)EEcos(tmp);
 	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->pos2.x = (float)(cam->center.x + cam->clip.left);
-	cam->transform.ymod = cam->pos2.y = (float)(cam->center.y + cam->clip.top);
+	cam->transform.mod = cam->pos2 = (cam->center + cam->clip.origin).to<float>();
 	cam->transform.pos = cam->pos;
 }
 

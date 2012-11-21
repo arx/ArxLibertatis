@@ -312,8 +312,8 @@ void specialEE_RTP2(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp = 1.f / out->p.z;
 	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp+et->xmod;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp+et->ymod;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->mod.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->mod.y;
 	out->rhw = fZTemp;
 }
 

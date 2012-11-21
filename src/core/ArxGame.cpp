@@ -833,8 +833,7 @@ void ArxGame::Render() {
 	}
 	
 	subj.center = Vec2i(DANAECENTERX, DANAECENTERY);
-	subj.pos2.x = subj.transform.xmod = static_cast<float>(DANAECENTERX);
-	subj.pos2.y = subj.transform.ymod = static_cast<float>(DANAECENTERY);
+	subj.pos2 = subj.transform.mod = subj.center.to<float>();
 	
 	// Finally computes current focal
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
@@ -1588,8 +1587,7 @@ void ArxGame::Render() {
 	// Recenter Viewport depending on Resolution
 	
 	ACTIVECAM->center = Vec2i(DANAECENTERX, DANAECENTERY);
-	ACTIVECAM->pos2.x = ACTIVECAM->transform.xmod = static_cast<float>(DANAECENTERX);
-	ACTIVECAM->pos2.y = ACTIVECAM->transform.ymod = static_cast<float>(DANAECENTERY);
+	ACTIVECAM->pos2 = ACTIVECAM->transform.mod = ACTIVECAM->center.to<float>();
 	
 	// Set Listener Position
 	{

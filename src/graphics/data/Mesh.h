@@ -78,8 +78,7 @@ struct EERIE_TRANSFORM {
 	float xsin;
 	float xcos;
 	float use_focal;
-	float xmod;
-	float ymod;
+	Vec2f mod;
 };
 
 struct EERIE_CAMERA {
