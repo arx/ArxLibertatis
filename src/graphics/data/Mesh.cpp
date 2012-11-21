@@ -764,8 +764,8 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
@@ -789,8 +789,8 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp * 3000.f;
 
 }
@@ -863,8 +863,8 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 	float fZTemp = clamp_and_invert(in->z);
 	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
@@ -874,8 +874,8 @@ void EE_P2(TexturedVertex * in, TexturedVertex * out)
 	fZTemp = 1.f / in->p.z;
 
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
@@ -896,8 +896,8 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
@@ -933,8 +933,8 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 
 	tout.rhw = cam->use_focal * out->rhw;
 	out->p.z = out->p.z * cam->Zmul;
-	out->p.x = cam->posleft + (tout.p.x * tout.rhw);
-	out->p.y = cam->postop + (tout.p.y * tout.rhw) ;
+	out->p.x = cam->pos2.x + (tout.p.x * tout.rhw);
+	out->p.y = cam->pos2.y + (tout.p.y * tout.rhw) ;
 }
 
 //*************************************************************************************
@@ -1205,8 +1205,8 @@ static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	tmp = radians(cam->angle.g);
 	cam->Zcos = (float)EEcos(tmp);
 	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->center.x + cam->clip.left);
-	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->center.y + cam->clip.top);
+	cam->transform.xmod = cam->xmod = cam->pos2.x = (float)(cam->center.x + cam->clip.left);
+	cam->transform.ymod = cam->ymod = cam->pos2.y = (float)(cam->center.y + cam->clip.top);
 	cam->transform.zmod = cam->Zmul;
 	cam->transform.pos = cam->pos;
 }
@@ -2177,8 +2177,7 @@ void PrepareActiveCamera() {
 	tmp = radians(ACTIVECAM->angle.g);
 	ACTIVECAM->Zcos = (float)EEcos(tmp);
 	ACTIVECAM->Zsin = (float)EEsin(tmp);
-	ACTIVECAM->posleft = (float)(ACTIVECAM->center.x + ACTIVECAM->clip.left);
-	ACTIVECAM->postop = (float)(ACTIVECAM->center.y + ACTIVECAM->clip.top);
+	ACTIVECAM->pos2 = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
 	
 	MatrixReset(&ACTIVECAM->matrix);
 	

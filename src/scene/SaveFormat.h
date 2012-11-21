@@ -1096,7 +1096,7 @@ struct SavedCamera {
 		a.Zcos = Zcos, a.Zsin = Zsin;
 		a.focal = focal, a.use_focal = use_focal;
 		a.Zmul = Zmul;
-		a.posleft = posleft, a.postop = postop;
+		a.pos2.x = posleft, a.pos2.y = postop;
 		
 		a.xmod = xmod, a.ymod = ymod;
 		a.matrix = matrix;
@@ -1134,7 +1134,7 @@ struct SavedCamera {
 		Zcos = b.Zcos, Zsin = b.Zsin;
 		focal = b.focal, use_focal = b.use_focal;
 		Zmul = b.Zmul;
-		posleft = b.posleft, postop = b.postop;
+		posleft = b.pos2.x, postop = b.pos2.y;
 		
 		xmod = b.xmod, ymod = b.ymod;
 		matrix = b.matrix;

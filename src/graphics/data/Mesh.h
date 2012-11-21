@@ -86,18 +86,17 @@ struct EERIE_TRANSFORM {
 struct EERIE_CAMERA {
 	
 	EERIE_TRANSFORM transform;
-	Vec3f pos; // 0 4 8
-	float	Ycos; // 12
-	float	Ysin; // 16
-	float	Xcos; // 20
-	float	Xsin; // 24
-	float	Zcos; // 28
-	float	Zsin; // 32
-	float	focal;// 36
-	float	use_focal;
-	float	Zmul; // 40
-	float posleft;// 44
-	float postop; // 48 do not move/insert before this point !!!
+	Vec3f pos;
+	float Ycos;
+	float Ysin;
+	float Xcos;
+	float Xsin;
+	float Zcos;
+	float Zsin;
+	float focal;
+	float use_focal;
+	float Zmul;
+	Vec2f pos2;
 	
 	float xmod;
 	float ymod;
