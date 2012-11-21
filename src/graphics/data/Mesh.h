@@ -118,8 +118,6 @@ struct EERIE_CAMERA {
 	Vec2i center;
 	
 	float smoothing;
-	float AddX;
-	float AddY;
 	long Xsnap;
 	long Zsnap;
 	float Zdiv;

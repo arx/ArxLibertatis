@@ -151,8 +151,6 @@ void Cinematic::OneTimeSceneReInit() {
 	Camera.clipz1 = 2.999f;
 	Camera.clip = Rect(LargeurRender, HauteurRender);
 	Camera.center = Camera.clip.center();
-	Camera.AddX = 320.f;
-	Camera.AddY = 240.f;
 	Camera.focal = 350.f;
 	Camera.Zdiv = 3000.f;
 	Camera.Zmul = 1.f / Camera.Zdiv;

@@ -516,8 +516,6 @@ void InitializeDanae() {
 	subj.clipz0 = 0.f;
 	subj.clipz1 = 2.999f;
 	subj.center = subj.clip.center();
-	subj.AddX = 320.f;
-	subj.AddY = 240.f;
 	subj.focal = BASE_FOCAL;
 	subj.Zdiv = 3000.f;
 	subj.Zmul = 1.f / subj.Zdiv;
@@ -532,8 +530,6 @@ void InitializeDanae() {
 	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
 	
 	raycam.center = Vec2i(320, 320);
-	raycam.AddX = 320.f;
-	raycam.AddY = 320.f;
 	
 	bookcam.angle = Anglef::ZERO;
 	bookcam.pos = Vec3f::ZERO;
@@ -546,8 +542,6 @@ void InitializeDanae() {
 	mapcam.clipz0 = 0.001f;
 	mapcam.clipz1 = 0.999f;
 	mapcam.center = mapcam.clip.center();
-	mapcam.AddX = 320.f;
-	mapcam.AddY = 240.f;
 	mapcam.focal = 400.f;
 	mapcam.Zdiv = 3000.f;
 	mapcam.Zmul = 1.f / mapcam.Zdiv;

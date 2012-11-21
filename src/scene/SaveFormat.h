@@ -1112,7 +1112,6 @@ struct SavedCamera {
 		a.center = Vec2i(centerx, centery);
 		
 		a.smoothing = smoothing;
-		a.AddX = AddX, a.AddY = AddY;
 		a.Xsnap = Xsnap, a.Zsnap = Zsnap, a.Zdiv = Zdiv;
 		
 		a.clip3D = clip3D;
@@ -1151,7 +1150,7 @@ struct SavedCamera {
 		centerx = b.center.x, centery = b.center.y;
 		
 		smoothing = b.smoothing;
-		AddX = b.AddX, AddY = b.AddY;
+		AddX = 0, AddY = 0;
 		Xsnap = b.Xsnap, Zsnap = b.Zsnap, Zdiv = b.Zdiv;
 		
 		clip3D = b.clip3D;
