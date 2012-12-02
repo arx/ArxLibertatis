@@ -66,7 +66,7 @@ static path findUserPath(const char * name, const path & force,
 	if(!force.empty()) {
 		path dir = canonical(force);
 		if(create && !create_directories(dir)) {
-			LogError << "Could not create " << name << " dir " << dir;
+			LogCritical << "Could not create " << name << " directory " << dir << '.';
 			return path();
 		} else {
 			LogDebug("using " << name << " dir from command-line: " << dir);
@@ -85,7 +85,7 @@ static path findUserPath(const char * name, const path & force,
 			         << "\" = " << dir);
 			return dir;
 		} else {
-			LogError << "Could not create " << name << " dir " << dir;
+			LogError << "Could not create " << name << " directory " << dir << '.';
 			LogDebug("ignoring " << name << " dir from registry: \"" << temp << '"');
 		}
 	}
@@ -123,9 +123,9 @@ static path findUserPath(const char * name, const path & force,
 		if(!create) {
 			return to_create;
 		} else if(!create_directories(to_create)) {
-			LogError << "Could not create " << name << " dir " << to_create;
+			LogError << "Could not create " << name << " directory " << to_create << '.';
 		} else {
-			LogInfo << "Created new " << name << " directory at " << to_create;
+			LogInfo << "Created new " << name << " directory at " << to_create << '.';
 			return to_create;
 		}
 	}
