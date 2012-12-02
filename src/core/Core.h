@@ -171,4 +171,6 @@ void ManageNONCombatModeAnimations();
 
 Entity * FlyingOverObject(Vec2s * pos);
 
+void runGame();
+
 #endif // ARX_CORE_CORE_H

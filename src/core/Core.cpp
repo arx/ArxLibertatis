@@ -58,10 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-#ifdef ARX_HAVE_WINAPI
-#include <windows.h>
-#endif
-
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -74,7 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
-#include "core/Startup.h"
 #include "core/Version.h"
 
 #include "game/Damage.h"
@@ -122,8 +117,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/CinematicLoad.h"
 #include "io/Screenshot.h"
-#include "io/log/FileLogger.h"
-#include "io/log/CriticalLogger.h"
 #include "io/log/Logger.h"
 
 #include "math/Angle.h"
@@ -173,7 +166,8 @@ Image savegame_thumbnail;
 
 #define MAX_EXPLO 24
 
-void ClearGame();
+static bool initializeGame();
+static void shutdownGame();
 
 extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
@@ -583,20 +577,7 @@ void InitializeDanae() {
 	}
 }
 
-void runGame() {
-	
-	CrashHandler::setReportLocation(fs::paths.user / "crashes");
-	CrashHandler::deleteOldReports(5);
-	CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
-	CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
-	CrashHandler::registerCrashCallback(Logger::quickShutdown);
-	
-	Time::init();
-	
-	// Now that data directories are initialized, create a log file.
-	Logger::add(new logger::File(fs::paths.user / "arx.log"));
-	
-	LogInfo << "Starting " << version;
+static bool initializeGame() {
 	
 	// TODO Time will be re-initialized later, but if we don't initialize it now casts to int might overflow.
 	arxtime.init();
@@ -605,13 +586,13 @@ void runGame() {
 	if(!mainApp->Initialize()) {
 		// Fallback to a generic critical error in case none was set yet...
 		LogCritical << "Application failed to initialize properly.";
-		return;
+		return false;
 	}
 	
 	// Check if the game will be able to use the current game directory.
 	if(!ARX_Changelevel_CurGame_Clear()) {
 		LogCritical << "Error accessing current game directory.";
-		return;
+		return false;
 	}
 	
 	ScriptEvent::init();
@@ -689,7 +670,7 @@ void runGame() {
 	Project.demo = LEVEL10;
 	
 	if(!AdjustUI()) {
-		return;
+		return false;
 	}
 	
 	ARX_SetAntiAliasing();
@@ -734,53 +715,28 @@ void runGame() {
 		
 		default: ARX_DEAD_CODE();
 	}
-
-	// Init all done, start the main loop
-	mainApp->Run();
-
-	ClearGame();
+	
+	return true;
 }
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-extern int main(int argc, char ** argv) {
-#else
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
-	ARX_UNUSED(hInstance);
-	ARX_UNUSED(hPrevInstance);
-	ARX_UNUSED(nCmdShow);
-#endif // #if ARX_PLATFORM != ARX_PLATFORM_WIN32
+void runGame() {
 	
-	// Initialize Random now so that the crash handler can use it.
-	Random::seed();
-	
-	CrashHandler::initialize();
-	
-	// Also intialize the logging system early as we might need it.
-	Logger::init();
-	Logger::add(new logger::CriticalErrorDialog);
-	
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-	if(!parseCommandLine(argc, argv))
-		return false;
-#else
-	if(!parseCommandLine(lpCmdLine))
-		return false;
-#endif
-	
-	runGame();
+	if(initializeGame()) {
+		
+		// Init all done, start the main loop
+		mainApp->Run();
+		
+		// TODO run cleanup on partial initialization
+		shutdownGame();
+	}
 	
 	if(mainApp) {
 		mainApp->Shutdown();
 		delete mainApp;
 		mainApp = NULL;
 	}
-	
-	Logger::shutdown();
-	
-	CrashHandler::shutdown();
-	
-	return EXIT_SUCCESS;
 }
+
 
 //*************************************************************************************
 // Entity * FlyingOverObject(EERIE_S2D * pos)
@@ -3734,7 +3690,7 @@ void ReleaseSystemObjects() {
 	}
 }
 
-void ClearGame() {
+void shutdownGame() {
 	
 	ARX_Menu_Resources_Release();
 	arxtime.resume();

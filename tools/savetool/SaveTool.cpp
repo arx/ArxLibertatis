@@ -116,7 +116,7 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 
 int main(int argc, char ** argv) {
 	
-	Logger::init();
+	Logger::initialize();
 	
 	if(argc < 3) {
 		print_help();

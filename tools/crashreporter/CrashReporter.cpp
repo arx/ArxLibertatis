@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	
 #endif
 	
-	Logger::init();
+	Logger::initialize();
 	
 	LogWarning << "Arx Crash Reporter starting!";
 	

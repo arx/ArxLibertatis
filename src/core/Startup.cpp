@@ -17,7 +17,6 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core/Startup.h"
 
 #include <stddef.h>
 #include <string>
@@ -26,6 +25,13 @@
 #include <set>
 #include <sstream>
 #include <algorithm>
+
+#include "platform/Platform.h"
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+#include <windows.h>
+#include <stdlib.h>
+#endif
 
 #if ARX_COMPILER_MSVC
 	#pragma warning(push)
@@ -37,30 +43,33 @@
 #endif
 
 #include "core/Config.h"
+#include "core/Core.h"
+#include "core/Version.h"
+#include "io/fs/Filesystem.h"
 #include "io/fs/SystemPaths.h"
+#include "io/log/CriticalLogger.h"
+#include "io/log/FileLogger.h"
 #include "io/log/Logger.h"
+#include "math/Random.h"
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
 #include "platform/String.h"
+#include "platform/Time.h"
 
 
 namespace po = boost::program_options;
 
+namespace {
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-bool parseCommandLine(int argc, char ** argv) {
-	
-	std::string command_line;
-	for(int i = 1; i < argc; i++) {
-		command_line += argv[i];
-		command_line += ' ';
-	}
-	
-#else
-bool parseCommandLine(const char * command_line) {
-#endif
-	
-	CrashHandler::setVariable("Command line", command_line);
+enum ExitStatus {
+	ExitSuccess,
+	ExitFailure,
+	RunProgram
+};
+
+} // anonymous namespace
+
+static ExitStatus parseCommandLine(int argc, char ** argv) {
 	
 	std::string userDir;
 	std::string configDir;
@@ -84,21 +93,14 @@ bool parseCommandLine(const char * command_line) {
 	
 	try {
 		
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 		const char * argv0 = argv[0];
 		po::store(po::parse_command_line(argc, argv, options_desc), options);
-#else
-		const char * argv0 = NULL;
-		std::vector<std::string> args = po::split_winmain(command_line);
-		po::store(po::command_line_parser(args).options(options_desc).run(),
-		          options);
-#endif
 		
 		po::notify(options);
 		
 		if(options.count("help")) {
 			std::cout << options_desc << std::endl;
-			return false;
+			return ExitSuccess;
 		}
 		
 		po::variables_map::const_iterator debug = options.find("debug");
@@ -123,17 +125,86 @@ bool parseCommandLine(const char * command_line) {
 			               " - --data-dir (-d) command-line parameters\n"
 			               " only without --no-data-dir (-n): \n");
 			std::cout << std::endl;
-			return false;
-		} else if(fs::paths.user.empty()) {
-			LogCritical << "Could not create user directory.";
-			return false;
+			return ExitSuccess;
+		} else if(fs::paths.user.empty() || fs::paths.config.empty()) {
+			LogCritical << "Could not select user or config directory.";
+			return ExitFailure;
 		}
 		
 	} catch(po::error & e) {
 		std::cerr << "Error parsing command-line: " << e.what() << "\n\n";
 		std::cout << options_desc << std::endl;
-		return false;
+		return ExitFailure;
 	}
 	
-	return true;
+	return RunProgram;
+}
+
+
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+extern int main(int argc, char ** argv) {
+#else
+// For windows we can't use main() in a GUI application
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
+                   INT nCmdShow) {
+	ARX_UNUSED(hInstance);
+	ARX_UNUSED(hPrevInstance);
+	ARX_UNUSED(lpCmdLine);
+	ARX_UNUSED(nCmdShow);
+	int argc = __argc;
+	char ** argv = __argv;
+#endif
+	
+	// Initialize Random now so that the crash handler can use it
+	Random::seed();
+	
+	// Initialize the crash handler
+	{
+		CrashHandler::initialize();
+		CrashHandler::setVariable("Compiler", ARX_COMPILER_VERNAME);
+		CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
+		std::string command_line;
+		for(int i = 1; i < argc; i++) {
+			command_line += argv[i]; // TODO escape
+			command_line += ' ';
+		}
+		CrashHandler::setVariable("Command line", command_line);
+	}
+	
+	// Also intialize the logging system early as we might need it
+	Logger::initialize();
+	CrashHandler::registerCrashCallback(Logger::quickShutdown);
+	Logger::add(new logger::CriticalErrorDialog);
+	
+	ExitStatus status = parseCommandLine(argc, argv);
+	
+	// Parse the command-line and setup user, config and data directories
+	if(status == RunProgram) {
+		
+		// Configure the crash report location
+		CrashHandler::setReportLocation(fs::paths.user / "crashes");
+		CrashHandler::deleteOldReports(/* nb to keep = */5);
+		
+		// Now that data directories are initialized, create a log file
+		{
+			fs::path logFile = fs::paths.user / "arx.log";
+			Logger::add(new logger::File(logFile));
+			CrashHandler::addAttachedFile(logFile);
+		}
+		
+		Time::init();
+		
+		// 14: Start the game already!
+		LogInfo << "Starting " << version;
+		runGame();
+		
+	}
+	
+	// Shutdown the logging system
+	// If there has been a critical error, a dialog will be shown now
+	Logger::shutdown();
+	
+	CrashHandler::shutdown();
+	
+	return (status == ExitFailure) ? EXIT_FAILURE : EXIT_SUCCESS;
 }

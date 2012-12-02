@@ -2348,7 +2348,7 @@ void ARX_PLAYER_Frame_Update()
 }
 
 // Emit player step noise
-void ARX_PLAYER_MakeStepNoise() {
+static void ARX_PLAYER_MakeStepNoise() {
 	
 	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_LEVITATE) >= 0) {
 		return;
