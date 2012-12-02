@@ -19,6 +19,8 @@
  
 #include "platform/Dialog.h"
 
+#include <iostream>
+
 #include "platform/Platform.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -33,7 +35,6 @@
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 
-#include "io/log/Logger.h"
 #include "platform/String.h"
 
 
@@ -277,11 +278,12 @@ bool showDialog(DialogType type, const std::string & message,
 	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != NULL);
 	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != NULL);
 	
-	dialogCommand_t commands[4];
-	commands[0] = usingKDE ? &kdialogCommand : &zenityCommand;
-	commands[1] = usingKDE ? &zenityCommand : &kdialogCommand;
-	commands[2] = &gxmessageCommand;
-	commands[3] = &xmessageCommand;
+	dialogCommand_t commands[] = {
+		usingKDE ? &kdialogCommand : &zenityCommand,
+		usingKDE ? &zenityCommand : &kdialogCommand,
+		&gxmessageCommand,
+		&xmessageCommand
+	};
 	
 	BOOST_FOREACH(dialogCommand_t command, commands) {
 		int exitCode = command(type, message, dialogTitle);
@@ -291,28 +293,28 @@ bool showDialog(DialogType type, const std::string & message,
 		}
 	}
 	
-	LogWarning << "Failed to show a dialog: [" << dialogTitle << "] " << message;
+	std::cerr << "Failed to show a dialog: " << dialogTitle << ": " << message << std::endl;
 	return true;
 }
 #endif
-	
-void showInfo(const std::string& message, const std::string& dialogTitle) {
+
+void showInfo(const std::string & message, const std::string & dialogTitle) {
 	showDialog(DialogInfo, message, dialogTitle);
 }
 
-void showWarning(const std::string& message, const std::string& dialogTitle) {
+void showWarning(const std::string & message, const std::string & dialogTitle) {
 	showDialog(DialogWarning, message, dialogTitle);
 }
 
-void showError(const std::string& message, const std::string& dialogTitle) {
+void showError(const std::string & message, const std::string & dialogTitle) {
 	showDialog(DialogError, message, dialogTitle);
 }
 
-bool askYesNo(const std::string& question, const std::string& dialogTitle) {
+bool askYesNo(const std::string & question, const std::string & dialogTitle) {
 	return showDialog(DialogYesNo, question, dialogTitle);
 }
 
-bool askOkCancel(const std::string& question, const std::string& dialogTitle) {
+bool askOkCancel(const std::string & question, const std::string & dialogTitle) {
 	return showDialog(DialogOkCancel, question, dialogTitle);
 }
 
