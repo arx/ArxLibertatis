@@ -618,8 +618,8 @@ static bool initializeGame() {
 	LogDebug("Spell Init");
 	
 	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
-		GoldCoinsObj[t]=NULL;
-		GoldCoinsTC[t]=NULL;
+		GoldCoinsObj[t] = NULL;
+		GoldCoinsTC[t] = NULL;
 	}
 	
 	LogDebug("LSV Init");
@@ -1672,134 +1672,38 @@ void SetEditMode(long ed, const bool stop_sound) {
 	
 }
 
-//-----------------------------------------------------------------------------
-
-void DANAE_ReleaseAllDatasDynamic()
-{
-
-	if(ssol)
-	{
-		delete ssol;
-		ssol=NULL;
-		ssol_count=0;
-	}
-
-	if(slight)
-	{
-		delete slight;
-		slight=NULL;
-		slight_count=0;
-	}
-
-	if(srune)
-	{
-		delete srune;
-		srune=NULL;
-		srune_count=0;
-	}
-
-	if(smotte)
-	{
-		delete smotte;
-		smotte=NULL;
-		smotte_count=0;
-	}
-
-	if(stite)
-	{
-		delete stite;
-		stite=NULL;
-		stite_count=0;
-	}
-
-	if(smissile)
-	{
-		delete smissile;
-		smissile=NULL;
-		smissile_count=0;
-	}
-
-	if(spapi)
-	{
-		delete spapi;
-		spapi=NULL;
-		spapi_count=0;
-	}
-
-	if(svoodoo)
-	{
-		delete svoodoo;
-		svoodoo=NULL;
-		svoodoo_count=0;
-	}
+void DANAE_ReleaseAllDatasDynamic() {
+	delete ssol, ssol = NULL, ssol_count = 0;
+	delete slight, slight = NULL, slight_count = 0;
+	delete srune, srune = NULL, srune_count = 0;
+	delete smotte, smotte = NULL, smotte_count = 0;
+	delete stite, stite = NULL, stite_count = 0;
+	delete smissile, smissile = NULL, smissile_count = 0;
+	delete spapi, spapi = NULL, spapi_count = 0;
+	delete svoodoo, svoodoo = NULL, svoodoo_count = 0;
 }
 
-//-----------------------------------------------------------------------------
-
-void ReleaseDanaeBeforeRun()
-{
-	if(necklace.lacet)
-	{
-		delete necklace.lacet;
-		necklace.lacet=NULL;
+void ReleaseDanaeBeforeRun() {
+	
+	delete necklace.lacet, necklace.lacet = NULL;
+	
+	for(long i = 0; i < 20; i++) { 
+		delete necklace.runes[i], necklace.runes[i] = NULL;
+		necklace.pTexTab[i] = NULL;
 	}
-
-	for (long i=0; i<20; i++)
-	{
-		if(necklace.runes[i]) {
-			delete necklace.runes[i];
-			necklace.runes[i] = NULL;
-		}
-
-		if (necklace.pTexTab[i])
-		{
-
-			necklace.pTexTab[i] = NULL;
-		}
+	
+	delete eyeballobj, eyeballobj = NULL;
+	delete cabal, cabal = NULL;
+	delete nodeobj, nodeobj = NULL;
+	delete fogobj, fogobj = NULL;
+	delete cameraobj, cameraobj = NULL;
+	delete markerobj, markerobj = NULL;
+	delete arrowobj, arrowobj = NULL;
+	
+	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
+		delete obj, obj = NULL;
 	}
-
-	if(eyeballobj) {
-		delete eyeballobj;
-		eyeballobj = NULL;
-	}
-
-	if(cabal) {
-		delete cabal;
-		cabal = NULL;
-	}
-
-	if(nodeobj) {
-		delete nodeobj;
-		nodeobj = NULL;
-	}
-
-	if(fogobj) {
-		delete fogobj;
-		fogobj = NULL;
-	}
-
-	if(cameraobj) {
-		delete cameraobj;
-		cameraobj = NULL;
-	}
-
-	if(markerobj) {
-		delete markerobj;
-		markerobj = NULL;
-	}
-
-	if(arrowobj) {
-		delete arrowobj;
-		arrowobj = NULL;
-	}
-
-	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
-		if(GoldCoinsObj[i]) {
-			delete GoldCoinsObj[i];
-			GoldCoinsObj[i] = NULL;
-		}
-	}
-
+	
 }
 
 void FirstTimeThings() {
@@ -2019,24 +1923,20 @@ void FirstFrameHandling() {
 	
 	if (!NO_TIME_INIT)
 		arxtime.init();
-
+	
 	arxtime.update_last_frame_time();
-
- PROGRESS_BAR_COUNT+=1.f;
- LoadLevelScreen();
-		
-	if (ITC.Get("presentation")) 
-	{
-      delete ITC.Get("presentation");
-		ITC.Set("presentation", NULL);
+	
+	PROGRESS_BAR_COUNT += 1.f;
+	LoadLevelScreen();
+	
+	delete ITC.Get("presentation");
+	ITC.Set("presentation", NULL);
+	
+	if(DONT_WANT_PLAYER_INZONE) {
+		player.inzone = NULL;
+		DONT_WANT_PLAYER_INZONE = 0;
 	}
-
-	if (DONT_WANT_PLAYER_INZONE)
-	{
-		player.inzone=NULL;
-		DONT_WANT_PLAYER_INZONE=0;
-	}
-
+	
 	PROGRESS_BAR_COUNT+=1.f;
 	LoadLevelScreen();
 
@@ -3636,57 +3536,24 @@ void ARX_SetAntiAliasing() {
 
 void ReleaseSystemObjects() {
 	
-	if(hero) {
-		delete hero;
-		hero=NULL;
-	}
+	delete hero, hero = NULL;
 	
 	if(entities.size() > 0 && entities.player() != NULL) {
 		entities.player()->obj = NULL; // already deleted above (hero)
 		delete entities.player();
 		arx_assert(entities.size() > 0 && entities.player() == NULL);
 	}
-
-	if(eyeballobj) {
-		delete eyeballobj;
-		eyeballobj = NULL;
-	}
-
-	if(cabal) {
-		delete cabal;
-		cabal = NULL;
-	}
-
-	if(nodeobj) {
-		delete nodeobj;
-		nodeobj = NULL;
-	}
-
-	if(fogobj) {
-		delete fogobj;
-		fogobj = NULL;
-	}
-
-	if(cameraobj) {
-		delete cameraobj;
-		cameraobj = NULL;
-	}
-
-	if(markerobj) {
-		delete markerobj;
-		markerobj = NULL;
-	}
-
-	if(arrowobj) {
-		delete arrowobj;
-		arrowobj = NULL;
-	}
-
-	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
-		if(GoldCoinsObj[i]) {
-			delete GoldCoinsObj[i];
-			GoldCoinsObj[i] = NULL;
-		}
+	
+	delete eyeballobj, eyeballobj = NULL;
+	delete cabal, cabal = NULL;
+	delete nodeobj, nodeobj = NULL;
+	delete fogobj, fogobj = NULL;
+	delete cameraobj, cameraobj = NULL;
+	delete markerobj, markerobj = NULL;
+	delete arrowobj, arrowobj = NULL;
+	
+	BOOST_FOREACH(EERIE_3DOBJ * & obj, GoldCoinsObj) {
+		delete obj, obj = NULL;
 	}
 }
 
@@ -3703,62 +3570,47 @@ void shutdownGame() {
 	Menu2_Close();
 	DanaeClearLevel(2);
 	TextureContainer::DeleteAll();
-
-	if(ControlCinematique) {
-		delete ControlCinematique;
-		ControlCinematique=NULL;
-	}
 	
-	//configuration
+	delete ControlCinematique, ControlCinematique = NULL;
+	
 	config.save();
 	
 	RoomDrawRelease();
 	EXITING=1;
 	TREATZONE_Release();
 	ClearTileLights();
-
-	//texts and textures
+	
+	// texts and textures
 	ClearSysTextures();
 	
-	if (pParticleManager) {
-		delete pParticleManager;
-		pParticleManager = NULL;
-	}
-
+	delete pParticleManager, pParticleManager = NULL;
+	
 	//sound
 	ARX_SOUND_Release();
 	MCache_ClearAll();
-
+	
 	//pathfinding
 	ARX_PATH_ReleaseAllPath();
 	ReleaseSystemObjects();
 	
 	//background
 	ClearBackground(ACTIVEBKG);
-
+	
 	//animations
 	EERIE_ANIMMANAGER_ClearAll();
-
+	
 	//Scripts
-	if (svar) {
-		for (long i=0; i<NB_GLOBALS; i++) {
-			if (svar[i].text) {
-				free(svar[i].text);
-				svar[i].text=NULL;
-			}
+	if(svar) {
+		for(long i = 0; i < NB_GLOBALS; i++) {
+			free(svar[i].text), svar[i].text = NULL;
 		}
-
-		free(svar);
-		svar=NULL;
+		free(svar), svar = NULL;
 	}
-
+	
 	ARX_SCRIPT_Timer_ClearAll();
-
-	if(scr_timer) {
-		delete[] scr_timer;
-		scr_timer = NULL;
-	}
-
+	
+	delete[] scr_timer, scr_timer = NULL;
+	
 	//Speech
 	ARX_SPEECH_ClearAll();
 	ARX_Text_Close();

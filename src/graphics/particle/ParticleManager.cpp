@@ -43,48 +43,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/particle/ParticleManager.h"
 
+#include <boost/foreach.hpp>
+
 #include "graphics/particle/ParticleSystem.h"
 
 using std::list;
 
-//-----------------------------------------------------------------------------
-ParticleManager::ParticleManager()
-{
+ParticleManager::ParticleManager() {
 	listParticleSystem.clear();
 }
 
-//-----------------------------------------------------------------------------
-ParticleManager::~ParticleManager()
-{
+ParticleManager::~ParticleManager() {
 	Clear();
 }
 
-//-----------------------------------------------------------------------------
-void ParticleManager::Clear()
-{
-	list<ParticleSystem *>::iterator i;
-
-	i = listParticleSystem.begin();
-	ParticleSystem * pP;
-
-	while (i != listParticleSystem.end())
-	{
-		pP = *i;
-		++i;
-
-		if (pP)
-		{
-			delete pP;
-			listParticleSystem.remove(pP);
-		}
+void ParticleManager::Clear() {
+	
+	BOOST_FOREACH(ParticleSystem * p, listParticleSystem) {
+		delete p;
 	}
-
+	
 	listParticleSystem.clear();
 }
 
-//-----------------------------------------------------------------------------
-void ParticleManager::AddSystem(ParticleSystem * _pPS)
-{
+void ParticleManager::AddSystem(ParticleSystem * _pPS) {
 	listParticleSystem.insert(listParticleSystem.end(), _pPS);
 }
 

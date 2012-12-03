@@ -152,12 +152,7 @@ void ARX_MENU_LaunchAmb(const string & _lpszAmb) {
 
 void ARX_Menu_Resources_Create() {
 	
-	if (ARXmenu.mda)
-	{
-		delete ARXmenu.mda;
-		ARXmenu.mda = NULL;
-	}
-
+	delete ARXmenu.mda;
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
 	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
 	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg", TextureContainer::NoColorKey);
@@ -260,39 +255,24 @@ void ARX_Menu_Resources_Create() {
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Menu_Resources_Release(bool _bNoSound)
-{
+void ARX_Menu_Resources_Release(bool _bNoSound) {
+	
 	config.save();
-
-	if (ARXmenu.mda == NULL)
+	
+	if(ARXmenu.mda == NULL) {
 		return;
-
-	if (ARXmenu.mda->Background != NULL)
-	{
-		delete ARXmenu.mda->Background;
-		ARXmenu.mda->Background = NULL;
-	}
-
-	if (ARXmenu.mda->BookBackground != NULL)
-	{
-		delete ARXmenu.mda->BookBackground;
-		ARXmenu.mda->BookBackground = NULL;
 	}
 	
-	delete ARXmenu.mda;
-	ARXmenu.mda = NULL;
-
+	delete ARXmenu.mda->Background;
+	delete ARXmenu.mda->BookBackground;
+	delete ARXmenu.mda, ARXmenu.mda = NULL;
+	
 	//Synchronize game mixers with menu mixers and switch between them
 	if(_bNoSound) {
 		ARXMenu_Options_Audio_ApplyGameVolumes();
 	}
-
-	if (pTextureLoad)
-	{
-		delete pTextureLoad;
-		pTextureLoad = NULL;
-	}
+	
+	delete pTextureLoad, pTextureLoad = NULL;
 }
 
 extern long NO_TIME_INIT;

@@ -1513,10 +1513,7 @@ static void cleanup_jpeg(jpeg *j)
          free(j->img_comp[i].raw_data);
          j->img_comp[i].data = NULL;
       }
-      if (j->img_comp[i].linebuf) {
-         free(j->img_comp[i].linebuf);
-         j->img_comp[i].linebuf = NULL;
-      }
+      free(j->img_comp[i].linebuf), j->img_comp[i].linebuf = NULL;
    }
 }
 
@@ -3180,10 +3177,7 @@ static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
       }
    }
    //   clear my palette, if I had one
-   if ( tga_palette != NULL )
-   {
-      free( tga_palette );
-   }
+   free(tga_palette);
    //   OK, done
    return tga_data;
 }

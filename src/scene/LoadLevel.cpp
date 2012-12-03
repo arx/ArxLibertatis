@@ -793,12 +793,9 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		if(!lightingFile) {
 			
 			LastLoadedLightningNb = bcount;
-			if(LastLoadedLightning != NULL) {
-				free(LastLoadedLightning);
-				LastLoadedLightning = NULL;
-			}
 			
-			//DANAE_LS_VLIGHTING
+			// DANAE_LS_VLIGHTING
+			free(LastLoadedLightning);
 			u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 			
 			if(dlh.version > 1.001f) {
@@ -1088,14 +1085,10 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	long bcount = dll->nb_values;
 	LastLoadedLightningNb = bcount;
-	if(LastLoadedLightning != NULL) {
-		free(LastLoadedLightning);
-		LastLoadedLightning = NULL;
-	}
 	
 	//DANAE_LS_VLIGHTING
-	u32 * ll;
-	ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
+	free(LastLoadedLightning);
+	u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 	if(dlh.version > 1.001f) {
 		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
 		pos += sizeof(u32) * bcount;
@@ -1131,97 +1124,16 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 }
 
-extern void MCache_ClearAll();
+void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
 long FAST_RELEASE = 0;
 extern Entity * FlyingOverIO;
-extern void ARX_SOUND_Reinit();
 extern unsigned long LAST_JUMP_ENDTIME;
 
 extern EERIE_3DOBJ * stone0;
 extern long stone0_count;
 extern EERIE_3DOBJ * stone1;
 extern long stone1_count;
-extern EERIE_3DOBJ * ssol;
-extern long ssol_count;
-extern EERIE_3DOBJ * slight;
-extern long slight_count;
-extern EERIE_3DOBJ * srune;
-extern long srune_count;
-extern EERIE_3DOBJ * smotte;
-extern long smotte_count;
-extern EERIE_3DOBJ * stite;
-extern long stite_count;
-extern EERIE_3DOBJ * smissile;
-extern long smissile_count;
-extern EERIE_3DOBJ * spapi;
-extern long spapi_count;
-extern EERIE_3DOBJ * svoodoo;
-extern long svoodoo_count;
-
-void ReleaseAllSpellResources() {
-	
-	smissile_count = 0;
-	if(smissile) {
-		delete smissile;
-		smissile = NULL;
-	}
-	
-	stite_count = 0;
-	if(stite) {
-		delete stite;
-		stite = NULL;
-	}
-	
-	smotte_count = 0;
-	if(smotte) {
-		delete smotte;
-		smotte = NULL;
-	}
-	
-	ssol_count = 0;
-	if(ssol) {
-		delete ssol;
-		ssol = NULL;
-	}
-	
-	slight_count = 0;
-	if(slight) {
-		delete slight;
-		slight = NULL;
-	}
-	
-	srune_count = 0;
-	if(srune) {
-		delete srune;
-		srune = NULL;
-	}
-	
-	svoodoo_count--;
-	if(svoodoo) {
-		delete svoodoo;
-		svoodoo = NULL;
-	}
-	
-	stone0_count = 0;
-	if(stone0) {
-		delete stone0;
-		stone0 = NULL;
-	}
-	
-	stone1_count = 0;
-	if(stone1) {
-		delete stone1;
-		stone1 = NULL;
-	}
-	
-	spapi_count = 0;
-	if(spapi) {
-		delete spapi;
-		spapi = NULL;
-	}
-	
-}
 
 extern long JUST_RELOADED;
 
@@ -1260,7 +1172,10 @@ void DanaeClearLevel(long flag)
 	
 	entities.clear();
 	
-	ReleaseAllSpellResources();
+	DANAE_ReleaseAllDatasDynamic();
+	delete stone0, stone0 = NULL, stone0_count = 0;
+	delete stone1, stone1 = NULL, stone1_count = 0;
+	
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	MapMarkerTc = NULL;
 	
@@ -1368,179 +1283,3 @@ plusloin:
 		}
 	}
 }
-struct DLFCHECK
-{
-	char ident[256];
-	char nums[512];
-	long occurence;
-};
-DLFCHECK * dlfcheck = NULL;
-long dlfcount = 0;
-void ARX_SAVELOAD_DLFCheckInit()
-{
-	if (dlfcheck)
-		free(dlfcheck);
-
-	dlfcheck = NULL;
-	dlfcount = 0;
-}
-
-long GetIdent( const std::string& ident)
-{
-	for (long n = 0; n < dlfcount; n++)
-	{
-		if (dlfcheck[n].ident == ident)
-			return n;
-	}
-
-	return -1;
-}
-
-void AddIdent(std::string & ident, long num)
-{
-	long n = GetIdent(ident);
-
-	if (n != -1)
-	{
-		dlfcheck[n].occurence++;
-		char temp[64];
-		sprintf(temp, "%ld ", num);
-
-		if (strlen(dlfcheck[n].nums) < 500)
-			strcat(dlfcheck[n].nums, temp);
-	}
-	else
-	{
-		dlfcheck = (DLFCHECK *)realloc(dlfcheck, sizeof(DLFCHECK) * (dlfcount + 1));
-		strcpy(dlfcheck[dlfcount].ident, ident.c_str());
-		dlfcheck[dlfcount].occurence = 1;
-		sprintf(dlfcheck[dlfcount].nums, "%ld ", num);
-		dlfcount++;
-	}
-}
-
-#ifdef BUILD_EDITOR
-
-// Checks for IO created during this session but not saved...
-void CheckIO_NOT_SAVED() {
-	
-	if(!ADDED_IO_NOT_SAVED) {
-		return;
-	}
-	
-	for(size_t i = 1; i < entities.size(); i++) { // ignoring player
-
-		if(!entities[i] || !entities[i]->scriptload) {
-			continue;
-		}
-		
-		fs::path temp = entities[i]->full_name().string();
-		
-		if(fs::is_directory(temp)) {
-			if(!fs::remove_all(temp)) {
-				LogError << "Could not remove directory " << temp;
-			}
-		}
-		
-		delete entities[i];
-	}
-	
-}
-
-static void ARX_SAVELOAD_DLFCheckAdd(const res::path & path, long num) {
-
-	char _error[512];
-	DANAE_LS_HEADER				dlh;
-	DANAE_LS_INTER		*		dli;
-	unsigned char * dat = NULL;
-
-	long pos = 0;
-	long i;
-	size_t FileSize = 0;
-	
-	res::path fic = res::path(path).set_ext("dlf");
-	
-	dat = (unsigned char *)resources->readAlloc(fic, FileSize);
-	if(!dat) {
-		return;
-	}
-	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
-	pos += sizeof(DANAE_LS_HEADER);
-
-	if (dlh.version > DLH_CURRENT_VERSION) // using compression
-	{
-		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
-		free(dat);
-		dat = NULL;
-		return;
-	}
-
-	if (dlh.version >= 1.44f) // using compression
-	{
-		char * torelease = (char *)dat;
-		char * compressed = (char *)(dat + pos);
-		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
-
-		if (dat == NULL)
-		{
-			free(torelease);
-			return;
-		}
-
-		free(torelease);
-		compressed = NULL;
-		pos = 0;
-	}
-
-	if (strcmp(dlh.ident, "DANAE_FILE"))
-	{
-		free(dat);
-		sprintf(_error, "File %s is not a valid file", fic.string().c_str());
-		return;
-	}
-
-	// Loading Scene
-	if (dlh.nb_scn >= 1)
-	{
-		pos += sizeof(DANAE_LS_SCENE);
-	}
-
-	for (i = 0; i < dlh.nb_inter; i++)
-	{
-		dli = (DANAE_LS_INTER *)(dat + pos);
-		pos += sizeof(DANAE_LS_INTER);
-		std::stringstream ss;
-		ss << res::path::load(dli->name).basename() << '_' << std::setfill('0') << std::setw(4) << dli->ident;
-		string id = ss.str();
-		AddIdent(id, num);
-	}
-
-	free(dat);
-}
-
-void ARX_SAVELOAD_CheckDLFs() {
-	
-	ARX_SAVELOAD_DLFCheckInit();
-
-	for (long n = 0; n < 24; n++)
-	{
-		char temp[256];
-		sprintf(temp, "graph/levels/level%ld/level%ld.dlf", n, n);
-		ARX_SAVELOAD_DLFCheckAdd(temp, n);
-	}
-
-	for (int n = 0; n < dlfcount; n++)
-	{
-		char text[256];
-
-		if (dlfcheck[n].occurence > 1)
-		{
-			sprintf(text, "Found %ld times : %s in levels %s", dlfcheck[n].occurence, dlfcheck[n].ident, dlfcheck[n].nums);
-			LogError << (text);
-		}
-	}
-
-	ARX_SAVELOAD_DLFCheckInit();
-}
-
-#endif // BUILD_EDITOR

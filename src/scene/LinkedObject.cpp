@@ -56,13 +56,13 @@ using std::realloc;
 using std::memcpy;
 
 // Releases Data for linked objects
-void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj)
-{
-	if (obj == NULL) return;
-
-	if (obj->linked) free(obj->linked);
-
-	obj->linked = NULL;
+void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj) {
+	
+	if(!obj) {
+		return;
+	}
+	
+	free(obj->linked), obj->linked = NULL;
 	obj->nblinked = 0;
 }
 

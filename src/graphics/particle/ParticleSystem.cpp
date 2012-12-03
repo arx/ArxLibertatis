@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstring>
 
+#include <boost/foreach.hpp>
+
 #include "core/GameTime.h"
 
 #include "graphics/Draw.h"
@@ -135,24 +137,12 @@ ParticleSystem::ParticleSystem() {
 	iDstBlend = Renderer::BlendOne;
 }
 
-//-----------------------------------------------------------------------------
-ParticleSystem::~ParticleSystem()
-{
-	list<Particle *>::iterator i = listParticle.begin();
-	Particle * pP;
-
-	while (i != listParticle.end())
-	{
-		pP = *i;
-		++i;
-
-		if (pP)
-		{
-			delete pP;
-			listParticle.remove(pP);
-		}
+ParticleSystem::~ParticleSystem() {
+	
+	BOOST_FOREACH(Particle * p, listParticle) {
+		delete p;
 	}
-
+	
 	listParticle.clear();
 }
 

@@ -267,22 +267,17 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 				flare[i].io = NULL;
 		}
 	}
-
-	if (io->ioflags & IO_NPC)
-	{
+	
+	if(io->ioflags & IO_NPC) {
 		// to check again later...
 		long count = 50;
-
-		while ((io->_npcdata->pathfind.pathwait == 1) && count--)
-		{
+		while((io->_npcdata->pathfind.pathwait == 1) && count--) {
 			Thread::sleep(1);
 		}
-
-		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
+		free(io->_npcdata->pathfind.list);
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 	}
-
+	
 	if (ValidDynLight(io->dynlight))
 	{
 		DynLight[io->dynlight].exist = 0;
@@ -482,16 +477,12 @@ TREATZONE_IO * treatio = NULL;
 long TREATZONE_CUR = 0;
 static long TREATZONE_MAX = 0;
 
-void TREATZONE_Clear()
-{
+void TREATZONE_Clear() {
 	TREATZONE_CUR = 0;
 }
 
-void TREATZONE_Release()
-{
-	if (treatio) free(treatio);
-
-	treatio = NULL;
+void TREATZONE_Release() {
+	free(treatio), treatio = NULL;
 	TREATZONE_MAX = 0;
 	TREATZONE_CUR = 0;
 }
@@ -1001,10 +992,8 @@ long GetFreeNode()
 }
 
 void ReleaseNode() {
-	if(nodes.nodes) {
-		free(nodes.nodes), nodes.nodes = NULL;
-		nodes.nbmax = 0;
-	}
+	free(nodes.nodes), nodes.nodes = NULL;
+	nodes.nbmax = 0;
 }
 
 // Removes an IO loaded by a script command
@@ -1054,10 +1043,7 @@ bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp) {
 		return false;
 	}
 	
-	if(io->obj) {
-		delete io->obj;
-		io->obj = NULL;
-	}
+	delete io->obj, io->obj = NULL;
 	
 	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
 	io->obj = loadObject(io->usemesh, pbox);
@@ -1090,24 +1076,23 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 
 void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	
-	if (io)
-	{
-		if (ValidDynLight(io->dynlight))
-			DynLight[io->dynlight].exist = 0;
-
-		io->dynlight = -1;
-
-		if (ValidDynLight(io->halo.dynlight))
-			DynLight[io->halo.dynlight].exist = 0;
-
-		io->halo.dynlight = -1;
-
-		if (io->symboldraw)
-			free(io->symboldraw);
-
-		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = SPELL_NONE;
+	if(!io) {
+		return;
 	}
+	
+	if(ValidDynLight(io->dynlight)) {
+		DynLight[io->dynlight].exist = 0;
+	}
+	io->dynlight = -1;
+	
+	if(ValidDynLight(io->halo.dynlight)) {
+		DynLight[io->halo.dynlight].exist = 0;
+	}
+	io->halo.dynlight = -1;
+	
+	free(io->symboldraw), io->symboldraw = NULL;
+	
+	io->spellcast_data.castingspell = SPELL_NONE;
 }
 
 void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
@@ -1124,18 +1109,14 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 		ARX_INTERACTIVE_HideGore(io);
 		MOLLESS_Clear(io->obj);
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
-
+		
 		io->stepmaterial.clear();
 		io->armormaterial.clear();
 		io->weaponmaterial.clear();
 		io->strikespeech.clear();
-
-		if (io->lastanimvertex)
-			free(io->lastanimvertex);
-
-		io->lastanimvertex = NULL;
-		io->nb_lastanimvertex = 0;
-
+		
+		free(io->lastanimvertex), io->lastanimvertex = NULL, io->nb_lastanimvertex = 0;
+		
 		for (long j = 0; j < MAX_ANIMS; j++)
 		{
 			EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
@@ -1144,23 +1125,17 @@ void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 
 		ARX_SPELLS_RemoveAllSpellsOn(io);
 		ARX_EQUIPMENT_ReleaseAll(io);
-
-		if (io->ioflags & IO_NPC)
-		{
-			if (io->_npcdata->pathfind.list)
-				free(io->_npcdata->pathfind.list);
-
-			io->_npcdata->pathfind.list = NULL;
+		
+		if(io->ioflags & IO_NPC) {
+			free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 			memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 			io->_npcdata->pathfind.truetarget = -1;
 			io->_npcdata->pathfind.listnb = -1;
 			ARX_NPC_Behaviour_Reset(io);
 		}
-
-		if(io->tweakerinfo) {
-			delete io->tweakerinfo, io->tweakerinfo = NULL;
-		}
-
+		
+		delete io->tweakerinfo, io->tweakerinfo = NULL;
+		
 		if (io->inventory != NULL)
 		{
 			INVENTORY_DATA * id = io->inventory;
@@ -2126,14 +2101,8 @@ IO_NPCDATA::IO_NPCDATA() {
 }
 
 IO_NPCDATA::~IO_NPCDATA() {
-	
-	if(ex_rotate) {
-		free(ex_rotate);
-	}
-	
-	if(pathfind.list) {
-		free(pathfind.list);
-	}
+	free(ex_rotate);
+	free(pathfind.list);
 }
 
 Entity * AddNPC(const res::path & classPath, EntityInstance instance,

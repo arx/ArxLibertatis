@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <cstdlib>
 
+#include <boost/foreach.hpp>
+
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
@@ -175,23 +177,12 @@ int AddMaterial(CinematicGrid * grille, Texture2D* tex)
 
 void FreeGrille(CinematicGrid * grille) {
 	
-	if(grille->vertexs) {
-		free(grille->vertexs), grille->vertexs = NULL;
-	}
+	free(grille->vertexs), grille->vertexs = NULL;
+	free(grille->uvs), grille->uvs = NULL;
+	free(grille->inds), grille->inds = NULL;
 	
-	if(grille->uvs) {
-		free(grille->uvs), grille->uvs = NULL;
-	}
-	
-	if(grille->inds) {
-		free(grille->inds), grille->inds = NULL;
-	}
-	
-	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it) {
-		C_INDEXED* mat = &(*it);
-		if(mat->tex) {
-			delete mat->tex;
-		}
+	BOOST_FOREACH(C_INDEXED & mat, grille->mats) {
+		delete mat.tex;
 	}
 	
 	grille->mats.clear();

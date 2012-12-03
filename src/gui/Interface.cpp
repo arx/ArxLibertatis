@@ -634,17 +634,10 @@ void ARX_INTERFACE_HALO_Draw(Entity * io, TextureContainer * tc, TextureContaine
 	aiHalo[INTERFACE_HALO_NB-1].fRatioY = _fRatioY;
 }
 
-//-----------------------------------------------------------------------------
-void ReleaseHalo()
-{
-	if (aiHalo)
-	{
-		free(aiHalo);
-		aiHalo=NULL;
-	}
+void ReleaseHalo() {
+	free(aiHalo), aiHalo=NULL;
 }
 
-//-----------------------------------------------------------------------------
 void ARX_INTERFACE_HALO_Flush() {
 	
 	for (long i=0;i<INTERFACE_HALO_NB;i++)

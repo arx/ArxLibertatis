@@ -80,18 +80,19 @@ bool AllocTrack(int sf, int ef, float fps)
 
 	return true;
 }
-/*----------------------------------------------------------------------*/
-bool DeleteTrack(void)
-{
-	if (!CKTrack) return false;
 
-	if (CKTrack->key) free(CKTrack->key);
-
+bool DeleteTrack() {
+	
+	if(!CKTrack) {
+		return false;
+	}
+	
+	free(CKTrack->key);
 	free(CKTrack), CKTrack = NULL;
 	
 	return true;
 }
-/*----------------------------------------------------------------------*/
+
 static C_KEY * SearchAndMoveKey(int f)
 {
 	int		nb;

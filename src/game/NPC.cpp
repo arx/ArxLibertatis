@@ -233,23 +233,17 @@ void ARX_NPC_Kill_Spell_Launch(Entity * io)
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
-//***********************************************************************************************
+
 // Releases Pathfinder info from an NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_ReleasePathFindInfo(Entity * io)
-{
+void ARX_NPC_ReleasePathFindInfo(Entity * io) {
+	
 	// Checks for valid IO/NPC
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
+	}
+	
 	// Releases data & resets vars
-	if (io->_npcdata->pathfind.list)
-		free(io->_npcdata->pathfind.list);
-
-	io->_npcdata->pathfind.list = NULL;
+	free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->pathfind.listpos = 0;
 	io->_npcdata->pathfind.pathwait = 0;
@@ -643,21 +637,16 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 		io->_npcdata->pathfind.pathwait = 0;
 		return false;
 	}
-
-	Vec3f pos1, pos2;
-
-	if (io->_npcdata->pathfind.listnb > 0)
-	{
+	
+	if(io->_npcdata->pathfind.listnb > 0) {
 		io->_npcdata->pathfind.listnb = -1;
 		io->_npcdata->pathfind.listpos = 0;
 		io->_npcdata->pathfind.pathwait = 0;
 		io->_npcdata->pathfind.truetarget = TARGET_NONE;
-
-		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-		io->_npcdata->pathfind.list = NULL;
+		free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 	}
 	
+	Vec3f pos1, pos2;
 	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
 		pos1 = io->pos;
 		pos2 = io->pos + Vec3f(1000.f, 0.f, 1000.f);
@@ -782,15 +771,12 @@ wander:
 			{
 				io->_npcdata->pathfind.truetarget = TARGET_NONE;
 			}
-
+			
 			io->_npcdata->pathfind.listnb = -1;
 			io->_npcdata->pathfind.listpos = 0;
 			io->_npcdata->pathfind.pathwait = 1;
-
-			if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-			io->_npcdata->pathfind.list = NULL;
-
+			free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+			
 			PATHFINDER_REQUEST tpr;
 			tpr.from = from;
 			tpr.to = to;
@@ -3488,10 +3474,7 @@ static void ManageNPCMovement(Entity * io)
 				io->_npcdata->pathfind.listpos = 0;
 				io->_npcdata->pathfind.listnb = -1;
 				io->_npcdata->pathfind.pathwait = 0;
-
-				if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-				io->_npcdata->pathfind.list = NULL;
+				free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 
 				if	(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
 				{
@@ -3521,10 +3504,8 @@ static void ManageNPCMovement(Entity * io)
 					io->_npcdata->pathfind.listpos = 0;
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
-
-					if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-					io->_npcdata->pathfind.list = NULL;
+					free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+					
 					EVENT_SENDER = NULL;
 
 					if ((io->_npcdata->behavior & BEHAVIOUR_FLEE)

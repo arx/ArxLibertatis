@@ -308,9 +308,7 @@ directory_iterator::~directory_iterator() {
 		closedir(DIR_HANDLE(handle));
 		DIR_HANDLE_FREE(handle);
 	}
-	if(buf) {
-		free(buf);
-	}
+	free(buf);
 }
 
 directory_iterator & directory_iterator::operator++() {

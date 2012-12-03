@@ -1088,31 +1088,17 @@ static long nbelems = 0;
 static char ** elems = NULL;
 static long * numbers = NULL;
 
-void ARX_SOUND_FreeAnimSamples()
-{
-	if (elems)
-	{
-		for (long i = 0; i < nbelems; i++)
-		{
-			if (elems[i])
-			{
-				free(elems[i]);
-				elems[i] = NULL;
-			}
+void ARX_SOUND_FreeAnimSamples() {
+	
+	if(elems) {
+		for(long i = 0; i < nbelems; i++) {
+			free(elems[i]), elems[i] = NULL;
 		}
-
-		free(elems);
-		elems = NULL;
+		free(elems), elems = NULL;
 	}
-
-	if (numbers)
-	{
-		free(numbers);
-		numbers = NULL;
-	}
-
 	nbelems = 0;
-
+	
+	free(numbers), numbers = NULL;
 }
 
 extern ANIM_HANDLE animations[];

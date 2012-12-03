@@ -1185,51 +1185,39 @@ CLevitate::~CLevitate()
 	}
 }
 
-void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def, int numcone) {
+void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def,
+                                int numcone) {
 	
-	if(cone[numcone].coned3d) {
-		free(cone[numcone].coned3d);
-	}
-	if(cone[numcone].conevertex) {
-		free(cone[numcone].conevertex);
-	}
-	if(cone[numcone].coneind) {
-		free(cone[numcone].coneind);
-	}
+	T_CONE & c = cone[numcone];
 	
-	this->cone[numcone].conenbvertex = def * 2 + 2;
-	this->cone[numcone].conenbfaces = def * 2 + 2;
-	this->cone[numcone].coned3d = (TexturedVertex *)malloc(this->cone[numcone].conenbvertex * sizeof(TexturedVertex));
-	this->cone[numcone].conevertex = (Vec3f *)malloc(this->cone[numcone].conenbvertex * sizeof(Vec3f));
-	this->cone[numcone].coneind = (unsigned short *)malloc(this->cone[numcone].conenbvertex * sizeof(unsigned short));
-
-	float			a, da;
-	Vec3f	*	vertex = this->cone[numcone].conevertex;
-	unsigned short	* pind = this->cone[numcone].coneind, ind = 0;
-	int				nb;
-	a = 0.f;
-	da = 360.f / (float)def;
+	free(c.coned3d);
+	free(c.conevertex);
+	free(c.coneind);
+	
+	c.conenbvertex = def * 2 + 2;
+	c.conenbfaces = def * 2 + 2;
+	c.coned3d = (TexturedVertex *)malloc(c.conenbvertex * sizeof(TexturedVertex));
+	c.conevertex = (Vec3f *)malloc(c.conenbvertex * sizeof(Vec3f));
+	c.coneind = (unsigned short *)malloc(c.conenbvertex * sizeof(unsigned short));
+	
+	Vec3f * vertex = c.conevertex;
+	unsigned short * pind = c.coneind;
+	unsigned short ind = 0;
+	int nb;
+	float a = 0.f;
+	float da = 360.f / (float)def;
 	nb = this->cone[numcone].conenbvertex >> 1;
-
-	while (nb)
-	{
+	
+	while(nb) {
 		*pind++ = ind++;
 		*pind++ = ind++;
-
-		vertex->x = rhaut * EEcos(radians(a));
-		vertex->y = -hauteur;
-		vertex->z = rhaut * EEsin(radians(a));
-		vertex++;
-		vertex->x = rbase * EEcos(radians(a));
-		vertex->y = 0.f;
-		vertex->z = rbase * EEsin(radians(a));
-		vertex++;
-
+		*vertex++ = Vec3f(rhaut * EEcos(radians(a)), -hauteur, rhaut * EEsin(radians(a)));
+		*vertex++ = Vec3f(rbase * EEcos(radians(a)), 0.f, rbase * EEsin(radians(a)));
 		a += da;
 		nb--;
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f * pos, unsigned long _ulDuration)
 {
 	SetDuration(_ulDuration);

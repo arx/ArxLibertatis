@@ -39,10 +39,8 @@ void FontCache::Initialize() {
 }
 
 void FontCache::Shutdown() {
-	if(m_Instance) {
-		delete m_Instance;
-		m_Instance = NULL;
-	}
+	delete m_Instance;
+	m_Instance = NULL;
 }
 
 FontCache::FontCache() {

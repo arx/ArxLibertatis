@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/EntityId.h"
 #include "math/MathFwd.h"
 
+#include "Configure.h"
+
 class Entity;
 namespace res { class path; }
 
@@ -75,11 +77,5 @@ Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
                       const Vec3f & trans);
 
 extern Vec3f MSP;
-
-#ifdef BUILD_EDITOR
-void BIG_PURGE();
-void ARX_SAVELOAD_CheckDLFs();
-void CheckIO_NOT_SAVED();
-#endif
 
 #endif // ARX_SCENE_LOADLEVEL_H

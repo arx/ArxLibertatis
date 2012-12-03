@@ -120,14 +120,8 @@ PackedTexture::TextureTree::Node::Node() {
 }
 
 PackedTexture::TextureTree::Node::~Node() {
-	
-	if(children[0]) {
-		delete children[0];
-	}
-	
-	if(children[1]) {
-		delete children[1];
-	}
+	delete children[0];
+	delete children[1];
 }
 
 PackedTexture::TextureTree::Node * PackedTexture::TextureTree::Node::insertImage(const Image & image) {

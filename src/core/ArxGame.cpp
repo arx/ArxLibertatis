@@ -2217,7 +2217,7 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 
 void ArxGame::onRendererShutdown(RenderWindow &) {
 	
-	if(GRenderer == NULL) {
+	if(!GRenderer) {
 		// onRendererInit() failed
 		return;
 	}
@@ -2225,16 +2225,9 @@ void ArxGame::onRendererShutdown(RenderWindow &) {
 	m_bReady = false;
 	
 	GRenderer->ReleaseAllTextures();
-
-	if(pDynamicVertexBuffer_TLVERTEX) {
-		delete pDynamicVertexBuffer_TLVERTEX;
-		pDynamicVertexBuffer_TLVERTEX = NULL;
-	}
 	
-	if(pDynamicVertexBuffer) {
-		delete pDynamicVertexBuffer;
-		pDynamicVertexBuffer = NULL;
-	}
+	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = NULL;
+	delete pDynamicVertexBuffer, pDynamicVertexBuffer = NULL;
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	

@@ -459,24 +459,18 @@ ARX_PATH * ARX_PATH_GetAddressByName(const string & name) {
 	return NULL;
 }
 
-void ARX_PATH_ReleaseAllPath()
-{
+void ARX_PATH_ReleaseAllPath() {
+	
 	ARX_PATH_ClearAllUsePath();
-
-	for (long i = 0; i < nbARXpaths; i++)
-	{
-		if (ARXpaths[i])
-		{
-			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
-
-			ARXpaths[i]->pathways = NULL;
+	
+	for(long i = 0; i < nbARXpaths; i++) {
+		if(ARXpaths[i]) {
+			free(ARXpaths[i]->pathways), ARXpaths[i]->pathways = NULL;
 			delete ARXpaths[i], ARXpaths[i] = NULL;
 		}
 	}
-
-	if (ARXpaths) free(ARXpaths);
-
-	ARXpaths = NULL;
+	
+	free(ARXpaths), ARXpaths = NULL;
 	nbARXpaths = 0;
 }
 
@@ -613,18 +607,11 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, Vec3f * pos) {
 
 ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 long Thrown_Count = 0;
-void ARX_THROWN_OBJECT_Kill(long num)
-{
-	if ((num >= 0) && ((size_t)num < MAX_THROWN_OBJECTS))
-	{
+void ARX_THROWN_OBJECT_Kill(long num) {
+	if(num >= 0 && size_t(num) < MAX_THROWN_OBJECTS) {
 		Thrown[num].flags = 0;
 		Thrown_Count--;
-
-		if (Thrown[num].pRuban)
-		{
-			delete Thrown[num].pRuban;
-			Thrown[num].pRuban = NULL;
-		}
+		delete Thrown[num].pRuban, Thrown[num].pRuban = NULL;
 	}
 }
 

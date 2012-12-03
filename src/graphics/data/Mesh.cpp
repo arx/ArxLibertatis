@@ -1539,18 +1539,11 @@ long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb)
 
 	return count;
 }
-//*************************************************************************************
+
 // Releases BKG_INFO from a tile
-//*************************************************************************************
-void ReleaseBKG_INFO(EERIE_BKG_INFO * eg)
-{
-	if (eg->polydata) free(eg->polydata);
-
-	eg->polydata = NULL;
-
-	if (eg->polyin) free(eg->polyin);
-
-	eg->polyin = NULL;
+void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
+	free(eg->polydata), eg->polydata = NULL;
+	free(eg->polyin), eg->polyin = NULL;
 	eg->nbpolyin = 0;
 	memset(eg, 0, sizeof(EERIE_BKG_INFO));
 }
@@ -1685,43 +1678,29 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 }
 
 // Clears a background of its infos
-void ClearBackground(EERIE_BACKGROUND * eb)
-{
-	EERIE_BKG_INFO * eg;
-
-	if (eb == NULL) return;
-
+void ClearBackground(EERIE_BACKGROUND * eb) {
+	
+	if(eb == NULL) {
+		return;
+	}
+	
 	AnchorData_ClearAll(eb);
-
-	if (eb->minmax) free(eb->minmax);
-
-	eb->minmax = NULL;
-
-	for (long i = 0; i < eb->Xsize * eb->Zsize; i++)
-	{
-		eg = &eb->Backg[i];
-		ReleaseBKG_INFO(eg);
+	
+	free(eb->minmax), eb->minmax = NULL;
+	
+	for(long i = 0; i < eb->Xsize * eb->Zsize; i++) {
+		ReleaseBKG_INFO(&eb->Backg[i]);
 	}
-
-	if (eb->Backg) free(eb->Backg);
-
-	eb->Backg = NULL;
-
-	if (RoomDistance)
-	{
-		free(RoomDistance);
-		RoomDistance = NULL;
-		NbRoomDistance = 0;
-	}
+	free(eb->Backg), eb->Backg = NULL;
+	
+	free(RoomDistance), RoomDistance = NULL;
+	NbRoomDistance = 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
-{
-
+int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
+	
 	EERIE_BKG_INFO * eg;
-
+	
 	if (eb == NULL) return 0;
 
 	if(eb->exist) {
@@ -1838,16 +1817,14 @@ void EERIEPOLY_Compute_PolyIn()
 	long ai, aj;
 	long nbvert;
 
-	for (long j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (long i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+			
 			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			if (eg->polyin) free(eg->polyin);
-
-			eg->polyin = NULL;
+			
+			free(eg->polyin), eg->polyin = NULL;
 			eg->nbpolyin = 0;
-
+			
 			ii = max(i - 2, 0L);
 			ij = max(j - 2, 0L);
 			ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
@@ -2059,57 +2036,29 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 
 static void EERIE_PORTAL_Release() {
 	
-	if (portals)
-	{
-		if (portals->portals)
-		{
-			free(portals->portals);
-			portals->portals = NULL;
-		}
-
-		if (portals->room)
-		{
-			if (portals->nb_rooms > 0)
-			{
-				for (long nn = 0; nn < portals->nb_rooms + 1; nn++)
-				{
-					if (portals->room[nn].epdata)
-						free(portals->room[nn].epdata);
-
-					if (portals->room[nn].portals)
-						free(portals->room[nn].portals);
-
-					portals->room[nn].epdata = NULL;
-					portals->room[nn].portals = NULL;
-
-					if(portals->room[nn].pVertexBuffer) {
-						delete portals->room[nn].pVertexBuffer;
-						portals->room[nn].pVertexBuffer = NULL;
-					}
-					
-					if(portals->room[nn].pussIndice) {
-						free(portals->room[nn].pussIndice);
-						portals->room[nn].pussIndice = NULL;
-					}
-					
-					if(portals->room[nn].ppTextureContainer) {
-						free(portals->room[nn].ppTextureContainer);
-						portals->room[nn].ppTextureContainer = NULL;
-					}
-					
-				}
-			}
-
-			free(portals->room);
-			portals->room = NULL;
-		}
-
-		free(portals);
-		portals = NULL;
+	if(!portals) {
+		return;
 	}
+	
+	free(portals->portals), portals->portals = NULL;
+	
+	if(portals->room) {
+		if(portals->nb_rooms > 0) {
+			for(long nn = 0; nn < portals->nb_rooms + 1; nn++) {
+				free(portals->room[nn].epdata), portals->room[nn].epdata = NULL;
+				free(portals->room[nn].portals), portals->room[nn].portals = NULL;
+				delete portals->room[nn].pVertexBuffer, portals->room[nn].pVertexBuffer = NULL;
+				free(portals->room[nn].pussIndice), portals->room[nn].pussIndice = NULL;
+				free(portals->room[nn].ppTextureContainer);
+				portals->room[nn].ppTextureContainer = NULL;
+			}
+		}
+		free(portals->room), portals->room = NULL;
+	}
+	
+	free(portals), portals = NULL;
 }
 
-//-----------------------------------------------------------------------------
 float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 {
 	if (_fOldFocal < 200)
@@ -2893,10 +2842,7 @@ static bool loadFastScene(const res::path & file, const char * data,
 	
 	
 	// Load distances between rooms
-	if(RoomDistance) {
-		free(RoomDistance);
-		RoomDistance = NULL;
-	}
+	free(RoomDistance), RoomDistance = NULL;
 	NbRoomDistance = 0;
 	if(portals) {
 		NbRoomDistance = portals->nb_rooms + 1;
@@ -2974,14 +2920,13 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 
 void ComputeRoomDistance() {
 	
-	if (RoomDistance)
-		free(RoomDistance);
-
-	RoomDistance = NULL;
+	free(RoomDistance), RoomDistance = NULL;
 	NbRoomDistance = 0;
-
-	if (portals == NULL) return;
-
+	
+	if(portals == NULL) {
+		return;
+	}
+	
 	NbRoomDistance = portals->nb_rooms + 1;
 	RoomDistance =
 		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
@@ -3788,23 +3733,10 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
 	LogDebug("Destroying scene VBOs");
 	
 	for(long i = 0; i < portals->nb_rooms + 1; i++) {
-		
 		portals->room[i].usNbTextures = 0;
-		
-		if(portals->room[i].pVertexBuffer) {
-			delete portals->room[i].pVertexBuffer;
-			portals->room[i].pVertexBuffer = NULL;
-		}
-		
-		if(portals->room[i].pussIndice) {
-			free(portals->room[i].pussIndice);
-			portals->room[i].pussIndice = NULL;
-		}
-		
-		if(portals->room[i].ppTextureContainer) {
-			free(portals->room[i].ppTextureContainer);
-			portals->room[i].ppTextureContainer = NULL;
-		}
+		delete portals->room[i].pVertexBuffer, portals->room[i].pVertexBuffer = NULL;
+		free(portals->room[i].pussIndice), portals->room[i].pussIndice = NULL;
+		free(portals->room[i].ppTextureContainer), portals->room[i].ppTextureContainer = NULL;
 	}
 }
 

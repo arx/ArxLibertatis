@@ -212,9 +212,7 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 	//Release Script Local Variables
 	if(io->script.lvar) {
 		for(long n = 0; n < io->script.nblvar; n++) {
-			if(io->script.lvar[n].text) {
-				free(io->script.lvar[n].text), io->script.lvar[n].text = NULL;
-			}
+			free(io->script.lvar[n].text), io->script.lvar[n].text = NULL;
 		}
 		io->script.nblvar = 0;
 		free(io->script.lvar), io->script.lvar = NULL;
@@ -223,9 +221,7 @@ void ARX_SCRIPT_Reset(Entity * io, long flags) {
 	//Release Script Over-Script Local Variables
 	if(io->over_script.lvar) {
 		for(long n = 0; n < io->over_script.nblvar; n++) {
-			if(io->over_script.lvar[n].text) {
-				free(io->over_script.lvar[n].text), io->over_script.lvar[n].text = NULL;
-			}
+			free(io->over_script.lvar[n].text), io->over_script.lvar[n].text = NULL;
 		}
 		io->over_script.nblvar = 0;
 		free(io->over_script.lvar), io->over_script.lvar = NULL;
@@ -289,13 +285,9 @@ void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es) {
 	}
 	
 	for(long i = 0; i < es->nb_labels; i++) {
-		if(es->labels[i].string) {
-			free(es->labels[i].string);
-		}
+		free(es->labels[i].string);
 	}
-	
-	free(es->labels), es->labels = NULL;
-	es->nb_labels = 0;
+	free(es->labels), es->labels = NULL, es->nb_labels = 0;
 }
 
 void ReleaseScript(EERIE_SCRIPT * es) {
@@ -306,19 +298,15 @@ void ReleaseScript(EERIE_SCRIPT * es) {
 	
 	if(es->lvar) {
 		for(long i = 0; i < es->nblvar; i++) {
-			if(es->lvar[i].text) {
-				free(es->lvar[i].text), es->lvar[i].text = NULL;
-			}
+			free(es->lvar[i].text);
 		}
 		free(es->lvar), es->lvar = NULL;
 	}
 	
-	if(es->data) {
-		free(es->data), es->data = NULL;
-	}
+	free(es->data), es->data = NULL;
 	
 	ARX_SCRIPT_ReleaseLabels(es);
-	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
+	memset(es->shortcut, 0, sizeof(long) * MAX_SHORTCUT);
 }
 
 ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name, std::string& txtcontent, float * fcontent,long * lcontent) {
@@ -1394,48 +1382,30 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 	return TYPE_LONG;
 }
 
-void ARX_SCRIPT_Free_All_Global_Variables()
-{
-	if (svar)
-	{
-		for (long i = 0; i < NB_GLOBALS; i++)
-		{
-			if (svar[i].text)
-			{
-				free(svar[i].text);
-				svar[i].text = NULL;
-			}
+void ARX_SCRIPT_Free_All_Global_Variables() {
+	
+	if(svar) {
+		for(long i = 0; i < NB_GLOBALS; i++) {
+			free(svar[i].text);
 		}
-
-		free(svar);
-		svar = NULL;
-		NB_GLOBALS = 0;
+		free(svar), svar = NULL, NB_GLOBALS = 0;
 	}
-
+	
 }
 
-void CloneLocalVars(Entity * ioo, Entity * io)
-{
-	if (!ioo) return;
-
-	if (!io) return;
-
-	if (ioo->script.lvar)
-	{
-		for (long n = 0; n < ioo->script.nblvar; n++)
-		{
-			if (ioo->script.lvar[n].text)
-			{
-				free(ioo->script.lvar[n].text);
-				ioo->script.lvar[n].text = NULL;
-			}
-		}
-
-		ioo->script.nblvar = 0;
-		free(ioo->script.lvar);
-		ioo->script.lvar = NULL;
+void CloneLocalVars(Entity * ioo, Entity * io) {
+	
+	if(!ioo || !io) {
+		return;
 	}
-
+	
+	if(ioo->script.lvar) {
+		for(long n = 0; n < ioo->script.nblvar; n++) {
+			free(ioo->script.lvar[n].text);
+		}
+		free(ioo->script.lvar), ioo->script.lvar = NULL, ioo->script.nblvar = 0;
+	}
+	
 	if (io->script.lvar)
 	{
 		ioo->script.nblvar = io->script.nblvar;
@@ -1654,19 +1624,13 @@ SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 
 		strcpy(tsv->name, name.c_str());
 	}
-
-	if(tsv->text) {
-		free(tsv->text), tsv->text = NULL;
-	}
-
+	
+	
 	tsv->ival = val.length() + 1;
-
-	if (tsv->ival)
-		tsv->text = strdup(val.c_str());
-	else
-		tsv->text = NULL;
-
-
+	
+	free(tsv->text);
+	tsv->text = (tsv->ival) ? strdup(val.c_str()) : NULL;
+	
 	return tsv;
 }
 
@@ -2110,12 +2074,10 @@ long MAX_TIMER_SCRIPT = 0;
 void ARX_SCRIPT_Timer_FirstInit(long number)
 {
 	if (number < 100) number = 100;
-
+	
 	MAX_TIMER_SCRIPT = number;
-
-	if (scr_timer) delete[] scr_timer;
-
-	//todo free
+	
+	delete[] scr_timer;
 	scr_timer = new SCR_TIMER[MAX_TIMER_SCRIPT];
 	ActiveTimers = 0;
 }
@@ -2439,9 +2401,7 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 		return;
 	}
 	
-	if(script.data) {
-		free(script.data);
-	}
+	free(script.data);
 	
 	script.data = file->readAlloc();
 	script.size = file->size();
@@ -2449,10 +2409,8 @@ void loadScript(EERIE_SCRIPT & script, PakFile * file) {
 	std::transform(script.data, script.data + script.size, script.data, ::tolower);
 	
 	script.allowevents = 0;
-	script.nblvar = 0;
-	if(script.lvar) {
-		free(script.lvar), script.lvar = NULL;
-	}
+	
+	free(script.lvar), script.lvar = NULL, script.nblvar = 0;
 	
 	script.master = NULL;
 	

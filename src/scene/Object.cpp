@@ -198,30 +198,24 @@ void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
 	eerie->fastaccess.sel_leggings = checked_range_cast<short>(lLeggings);
 }
 
-//-----------------------------------------------------------------------------------------------------
-void ReleaseAnim(EERIE_ANIM * ea)
-{
-	if (!ea) return;
-
-	if (ea->frames)
-	{
-		for (long i = 0; i < ea->nb_key_frames; i++)
-		{
+void ReleaseAnim(EERIE_ANIM * ea) {
+	
+	if(!ea) {
+		return;
+	}
+	
+	if(ea->frames) {
+		for(long i = 0; i < ea->nb_key_frames; i++) {
 			ARX_SOUND_Free(ea->frames[i].sample);
 		}
-
 		free(ea->frames);
 	}
-
-	if (ea->groups)
-		free(ea->groups);
-
-	if (ea->voidgroups)
-		free(ea->voidgroups);
-
+	
+	free(ea->groups);
+	free(ea->voidgroups);
 	free(ea);
 }
-//-----------------------------------------------------------------------------------------------------
+
 float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 {
 	if (!ea) return 0;
@@ -1069,35 +1063,20 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 
 static void ReleaseScene(EERIE_3DSCENE * scene) {
 	
-	if(scene->texturecontainer != NULL) {
-		free(scene->texturecontainer);
-		scene->texturecontainer = NULL;
-	}
+	free(scene->texturecontainer), scene->texturecontainer = NULL;
 	
 	for(long i = 0; i < scene->nbobj; i++) {
 		delete scene->objs[i];
 	}
 	
-	if(scene->objs != NULL) {
-		free(scene->objs);
-		scene->objs = NULL;
-	}
-	
-	if(scene->texturecontainer != NULL) {
-		free(scene->texturecontainer);
-		scene->texturecontainer = NULL;
-	}
+	free(scene->objs), scene->objs = NULL;
+	free(scene->texturecontainer), scene->texturecontainer = NULL;
 	
 	if(scene->light) {
 		for(long i = 0; i < scene->nblight; i++) {
-			if(scene->light[i] != NULL) {
-				free(scene->light[i]);
-				scene->light[i] = NULL;
-			}
+			free(scene->light[i]), scene->light[i] = NULL;
 		}
-		
-		free(scene->light);
-		scene->light = NULL;
+		free(scene->light), scene->light = NULL;
 	}
 	
 	free(scene);
@@ -1264,10 +1243,7 @@ void Clear3DScene(EERIE_3DSCENE * eerie) {
 // TODO move to destructor?
 EERIE_3DOBJ::~EERIE_3DOBJ() {
 	
-	if(originaltextures) {
-		free(originaltextures);
-		originaltextures = NULL;
-	}
+	free(originaltextures), originaltextures = NULL;
 	
 	if(ndata) {
 		KillNeighbours(this);
@@ -1285,16 +1261,8 @@ EERIE_3DOBJ::~EERIE_3DOBJ() {
 	EERIE_PHYSICS_BOX_Release(this);
 	EERIE_COLLISION_SPHERES_Release(this);
 	
-	if(grouplist) {
-		delete[] grouplist;
-		grouplist = NULL;
-	}
-	
-	// TODO why check for nblinked?
-	if(nblinked && linked) {
-		free(linked);
-		linked = NULL;
-	}
+	delete[] grouplist;
+	free(linked);
 }
 
 EERIE_3DOBJ * Eerie_Copy(const EERIE_3DOBJ * obj) {
@@ -1432,34 +1400,24 @@ long GetFather(EERIE_3DOBJ * eobj, long origin, long startgroup)
 
 	return -1;
 }
-//-----------------------------------------------------------------------------------------------------
-void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj)
-{
-	if (!eobj) return;
 
-	if (!eobj->c_data) return;
-
-	for (long i = 0; i < eobj->c_data->nb_bones; i++)
-	{
-		if (eobj->c_data->bones[i].idxvertices)
-			free(eobj->c_data->bones[i].idxvertices);
-
-		eobj->c_data->bones[i].idxvertices = NULL;
+void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj) {
+	
+	if(!eobj || !eobj->c_data) {
+		return;
 	}
-
-	if (eobj->c_data->bones) delete[] eobj->c_data->bones;
-
-	eobj->c_data->bones = NULL;
-	delete eobj->c_data;
-	eobj->c_data = NULL;
-
-	if (eobj->vertexlocal) delete[] eobj->vertexlocal;
-
-	eobj->vertexlocal = NULL;
+	
+	for(long i = 0; i < eobj->c_data->nb_bones; i++) {
+		free(eobj->c_data->bones[i].idxvertices), eobj->c_data->bones[i].idxvertices = NULL;
+	}
+	
+	delete[] eobj->c_data->bones, eobj->c_data->bones = NULL;
+	delete eobj->c_data, eobj->c_data = NULL;
+	delete[] eobj->vertexlocal, eobj->vertexlocal = NULL;
 }
-//-----------------------------------------------------------------------------------------------------
-void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
-{
+
+void EERIE_CreateCedricData(EERIE_3DOBJ * eobj) {
+	
 	eobj->c_data = new EERIE_C_DATA();
 	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
 

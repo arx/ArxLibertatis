@@ -86,56 +86,33 @@ TextureContainer * GetAnyTexture() {
 	return g_ptcTextureList;
 }
 
-void ResetVertexLists(TextureContainer * ptcTexture) {
+void ResetVertexLists(TextureContainer * tex) {
 	
-	if(!ptcTexture) {
+	if(!tex) {
 		return;
 	}
 	
-	ptcTexture->ulNbVertexListCull = 0;
-	ptcTexture->ulNbVertexListCull_TNormalTrans = 0;
-	ptcTexture->ulNbVertexListCull_TAdditive = 0;
-	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
-	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
+	tex->ulNbVertexListCull = 0;
+	tex->ulNbVertexListCull_TNormalTrans = 0;
+	tex->ulNbVertexListCull_TAdditive = 0;
+	tex->ulNbVertexListCull_TSubstractive = 0;
+	tex->ulNbVertexListCull_TMultiplicative = 0;
 	
-	ptcTexture->ulMaxVertexListCull = 0;
-	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
-	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
-	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
-	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
+	tex->ulMaxVertexListCull = 0;
+	tex->ulMaxVertexListCull_TNormalTrans = 0;
+	tex->ulMaxVertexListCull_TAdditive = 0;
+	tex->ulMaxVertexListCull_TSubstractive = 0;
+	tex->ulMaxVertexListCull_TMultiplicative = 0;
 	
-	ptcTexture->vPolyInterZMap.clear();
-	ptcTexture->vPolyZMap.clear();
+	tex->vPolyInterZMap.clear();
+	tex->vPolyZMap.clear();
 	
-	if(ptcTexture->pVertexListCull) {
-		free(ptcTexture->pVertexListCull);
-		ptcTexture->pVertexListCull = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TNormalTrans) {
-		free(ptcTexture->pVertexListCull_TNormalTrans);
-		ptcTexture->pVertexListCull_TNormalTrans = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TAdditive) {
-		free(ptcTexture->pVertexListCull_TAdditive);
-		ptcTexture->pVertexListCull_TAdditive = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TSubstractive) {
-		free(ptcTexture->pVertexListCull_TSubstractive);
-		ptcTexture->pVertexListCull_TSubstractive = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TMultiplicative) {
-		free(ptcTexture->pVertexListCull_TMultiplicative);
-		ptcTexture->pVertexListCull_TMultiplicative = NULL;
-	}
-		
-	if(ptcTexture->tMatRoom) {
-		free(ptcTexture->tMatRoom);
-		ptcTexture->tMatRoom = NULL;
-	}
+	free(tex->pVertexListCull), tex->pVertexListCull = NULL;
+	free(tex->pVertexListCull_TNormalTrans), tex->pVertexListCull_TNormalTrans = NULL;
+	free(tex->pVertexListCull_TAdditive), tex->pVertexListCull_TAdditive = NULL;
+	free(tex->pVertexListCull_TSubstractive), tex->pVertexListCull_TSubstractive = NULL;
+	free(tex->pVertexListCull_TMultiplicative), tex->pVertexListCull_TMultiplicative = NULL;
+	free(tex->tMatRoom), tex->tMatRoom = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -195,27 +172,24 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	vPolyZMap.clear();
 }
 
-TextureContainer::~TextureContainer()
-{
+TextureContainer::~TextureContainer() {
+	
 	delete m_pTexture;
 	delete TextureHalo;
-
-	if (delayed)
-	{
-		free(delayed);
-		delayed = NULL;
-	}
-
+	
+	free(delayed), delayed = NULL;
+	
 	// Remove the texture container from the global list
-	if (g_ptcTextureList == this)
+	if(g_ptcTextureList == this) {
 		g_ptcTextureList = m_pNext;
-	else
-	{
-		for (TextureContainer * ptc = g_ptcTextureList; ptc; ptc = ptc->m_pNext)
-			if (ptc->m_pNext == this)
+	} else {
+		for(TextureContainer * ptc = g_ptcTextureList; ptc; ptc = ptc->m_pNext) {
+			if(ptc->m_pNext == this) {
 				ptc->m_pNext = m_pNext;
+			}
+		}
 	}
-
+	
 	ResetVertexLists(this);
 }
 
@@ -233,10 +207,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		return false;
 	}
 	
-	if(m_pTexture) {
-		delete m_pTexture;
-	}
-	
+	delete m_pTexture, m_pTexture = NULL;
 	m_pTexture = GRenderer->CreateTexture2D();
 	if(!m_pTexture) {
 		return false;

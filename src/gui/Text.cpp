@@ -354,13 +354,9 @@ bool ARX_Text_Init() {
 	// TODO font size jumps around scale = 1
 	float small_scale = scale > 1.0f ? scale * 0.8f : scale;
 	
-	if(pTextManage) {
-		delete pTextManage;
-	}
+	delete pTextManage;
 	pTextManage = new TextManager();
-	if(pTextManageFlyingOver) {
-		
-	}
+	delete pTextManageFlyingOver;
 	pTextManageFlyingOver = new TextManager();
 	
 	FontCache::Initialize();

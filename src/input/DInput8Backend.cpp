@@ -319,17 +319,11 @@ void releaseDevice(INPUT_INFO & info) {
 	
 	switch(GET_DIDEVICE_TYPE(info.type)) {
 		case DI8DEVTYPE_MOUSE: {
-			if(info.mousestate) {
-				delete[] info.mousestate;
-				info.mousestate = NULL;
-			}
+			delete[] info.mousestate, info.mousestate = NULL;
 			break;
 		}
 		case DI8DEVTYPE_KEYBOARD: {
-			if(info.bufferstate) {
-				delete[] info.bufferstate;
-				info.bufferstate = NULL;
-			}
+			delete[] info.bufferstate, info.bufferstate = NULL;
 			break;
 		}
 	}

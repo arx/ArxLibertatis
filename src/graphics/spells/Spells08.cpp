@@ -56,38 +56,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/Light.h"
 
-//-----------------------------------------------------------------------------
-CExplosion::~CExplosion()
-{
-	this->Kill();
+CExplosion::~CExplosion() {
+	Kill();
 }
 
-void CExplosion::Kill(void) {
+void CExplosion::Kill() {
 	
-	if(disqued3d) {
-		free(disqued3d), disqued3d = NULL;
-	}
+	free(disqued3d), disqued3d = NULL;
+	free(disquevertex), disquevertex = NULL;
+	free(disqueind), disqueind = NULL;
 	
-	if(disquevertex) {
-		free(disquevertex), disquevertex = NULL;
-	}
-
-	if(disqueind) {
-		free(disqueind), disqueind = NULL;
-	}
-	
-	if (tactif)
-	{
-		int nb = (disquenbvertex >> 1);
-
-		while (nb--)
-		{
-			if (tactif[nb] >= 0)
-			{
+	if(tactif) {
+		int nb = disquenbvertex / 2;
+		while(nb--) {
+			if(tactif[nb] >= 0) {
 				DynLight[tactif[nb]].exist = 0;
 			}
 		}
-
 		free(tactif), tactif = NULL;
 	}
 }

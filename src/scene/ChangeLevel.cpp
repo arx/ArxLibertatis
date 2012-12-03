@@ -97,8 +97,6 @@ extern Vec3f WILL_RESTORE_PLAYER_POSITION;
 extern long WILL_RESTORE_PLAYER_POSITION_FLAG;
 extern long NO_GMOD_RESET;
 
-void DANAE_ReleaseAllDatasDynamic();
-
 extern float PROGRESS_BAR_COUNT;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
@@ -258,10 +256,7 @@ bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
 }
 
 void ARX_Changelevel_CurGame_Close() {
-	if(GLOBAL_pSaveB) {
-		delete GLOBAL_pSaveB;
-		GLOBAL_pSaveB = NULL;
-	}
+	delete GLOBAL_pSaveB, GLOBAL_pSaveB = NULL;
 }
 
 extern long JUST_RELOADED;
@@ -1921,19 +1916,14 @@ static bool loadScriptData(EERIE_SCRIPT & script, const char * dat, size_t & pos
 	script.allowevents = DisabledEvents::load(ass->allowevents); // TODO save/load flags
 	script.nblvar = ass->nblvar;
 	
-	if(script.lvar) {
-		free(script.lvar);
-		script.lvar = NULL;
-	}
-	
+	free(script.lvar), script.lvar = NULL;
 	if(ass->nblvar > 0) {
 		script.lvar = (SCRIPT_VAR *)malloc(sizeof(SCRIPT_VAR) * script.nblvar);
 		memset(script.lvar, 0, sizeof(SCRIPT_VAR)* script.nblvar);
-	} else {
-		script.lvar = NULL;
 	}
 	
-	return loadScriptVariables(script.lvar, script.nblvar, dat, pos, TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
+	return loadScriptVariables(script.lvar, script.nblvar, dat, pos,
+	                           TYPE_L_TEXT, TYPE_L_LONG, TYPE_L_FLOAT);
 }
 
 static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
@@ -2263,14 +2253,10 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				io->_itemdata->playerstacksize = ai->playerstacksize;
 				io->_itemdata->LightValue = ai->LightValue;
 				
+				free(io->_itemdata->equipitem), io->_itemdata->equipitem = NULL;
 				if(ais->system_flags & SYSTEM_FLAG_EQUIPITEMDATA) {
-					if(io->_itemdata->equipitem) {
-						free(io->_itemdata->equipitem);
-					}
 					io->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
 					*io->_itemdata->equipitem = ai->equipitem;
-				} else {
-					io->_itemdata->equipitem = NULL;
 				}
 				
 				break;
@@ -2310,10 +2296,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			memset(io->inventory, 0, sizeof(INVENTORY_DATA));
 			
 		} else {
-			if(io->inventory) {
-				free(io->inventory);
-				io->inventory = NULL;
-			}
+			free(io->inventory), io->inventory = NULL;
 		}
 		
 		if(ais->system_flags & SYSTEM_FLAG_TWEAKER_INFO) {
@@ -2355,10 +2338,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			
 			if(io->obj->nblinked) {
 				
-				if(io->obj->linked) {
-					free(io->obj->linked);
-				}
-				
+				free(io->obj->linked);
 				io->obj->linked = (EERIE_LINKED *)malloc(sizeof(EERIE_LINKED) * io->obj->nblinked);
 				
 				for(long n = 0; n < ais->nb_linked; n++) {
@@ -2607,9 +2587,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 static void ReleaseGaids() {
 	
 	for(size_t i = 0; i < entities.size(); i++) {
-		if(Gaids[i]) {
-			delete Gaids[i];
-		}
+		delete Gaids[i];
 	}
 	
 	delete[] Gaids, Gaids = NULL;
@@ -2621,9 +2599,7 @@ static void ARX_CHANGELEVEL_PopLevel_Abort() {
 	
 	arxtime.resume();
 	
-	if(idx_io) {
-		delete[] idx_io, idx_io = NULL;
-	}
+	delete[] idx_io, idx_io = NULL;
 	
 	ReleaseGaids();
 	FORBID_SCRIPT_IO_CREATION = 0;
@@ -2770,9 +2746,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LogDebug("After  Player Misc Init");
 	
 	LogDebug("Before Memory Release");
-	if(idx_io) {
-		delete[] idx_io, idx_io = NULL;
-	}
+	delete[] idx_io, idx_io = NULL;
 	FORBID_SCRIPT_IO_CREATION = 0;
 	NO_TIME_INIT = 1;
 	LogDebug("After  Memory Release");

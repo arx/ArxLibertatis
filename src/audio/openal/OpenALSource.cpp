@@ -131,10 +131,7 @@ OpenALSource::~OpenALSource() {
 		if(buffers[0]) {
 			arx_assert(!refcount || *refcount > 0);
 			if(!refcount || !--*refcount) {
-				if(refcount) {
-					delete refcount;
-					refcount = NULL;
-				}
+				delete refcount, refcount = NULL;
 				TraceAL("deleting buffer " << buffers[0]);
 				alDeleteBuffers(1, &buffers[0]);
 				nbbuffers--;

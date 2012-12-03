@@ -720,26 +720,19 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 								if (io->damager_damages>0)
 									ARX_DAMAGES_DealDamages(ioo->index(),io->damager_damages,io->index(),io->damager_type,&ioo->pos);
-							}						
-
-							if (io->targetinfo==i)
-							{
-								if (io->_npcdata->pathfind.listnb>0)
-								{
-									io->_npcdata->pathfind.listpos=0;
-									io->_npcdata->pathfind.listnb=-1;
-
-									if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-									io->_npcdata->pathfind.list=NULL;
-									SendIOScriptEvent(io,SM_NULL,"","pathfinder_end");
-								}							
-
-								if (!io->_npcdata->reachedtarget)
-								{							
-									EVENT_SENDER=ioo;
-									SendIOScriptEvent(io,SM_REACHEDTARGET);
-									io->_npcdata->reachedtarget=1;			
+							}
+							
+							if(io->targetinfo == i) {
+								if(io->_npcdata->pathfind.listnb > 0) {
+									io->_npcdata->pathfind.listpos = 0;
+									io->_npcdata->pathfind.listnb = -1;
+									free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+									SendIOScriptEvent(io, SM_NULL, "", "pathfinder_end");
+								}
+								if(!io->_npcdata->reachedtarget) {
+									EVENT_SENDER = ioo;
+									SendIOScriptEvent(io, SM_REACHEDTARGET);
+									io->_npcdata->reachedtarget = 1;
 								}
 							}
 						}

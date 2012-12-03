@@ -68,15 +68,8 @@ CHeal::CHeal()
 	pPS = new ParticleSystem();
 }
 
-//-----------------------------------------------------------------------------
-CHeal::~CHeal()
-{
-	// kill ParticleSystem
-	if (pPS)
-	{
-		delete pPS;
-		pPS = NULL;
-	}
+CHeal::~CHeal() {
+	delete pPS, pPS = NULL;
 }
 
 void CHeal::Create() {

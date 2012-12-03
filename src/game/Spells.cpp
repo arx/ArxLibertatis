@@ -2031,9 +2031,7 @@ struct SpellDefinition {
 
 	~SpellDefinition() {
 		for(size_t i = 0; i < RUNE_COUNT; i++) {
-			if(next[i]) {
-				delete next[i];
-			}
+			delete next[i];
 		}
 	}
 };
@@ -2677,11 +2675,7 @@ void ARX_SPELLS_ClearAll() {
 		if(spells[i].exist) {
 			spells[i].tolive = 0;
 			spells[i].exist = false;
-			
-			if(spells[i].pSpellFx) {
-				delete spells[i].pSpellFx;
-				spells[i].pSpellFx = NULL;
-			}
+			delete spells[i].pSpellFx, spells[i].pSpellFx = NULL;
 		}
 	}
 	
@@ -5584,9 +5578,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	return true;
 }
 
-//*************************************************************************************
 // Used for specific Spell-End FX
-//*************************************************************************************
 void ARX_SPELLS_Kill(long i) {
 	
 	static TextureContainer * tc4=TextureContainer::Load("graph/particles/smoke");
@@ -5602,91 +5594,76 @@ void ARX_SPELLS_Kill(long i) {
 		DynLight[spells[i].pSpellFx->lLightId].time_creation = (unsigned long)(arxtime);
 	}
 
-	switch(spells[i].type)
-	{
-		//----------------------------------------------------------------------------
-		case SPELL_FIREBALL :
-
-			if (spells[i].longinfo!=-1) 
-			{
-				DynLight[spells[i].longinfo].duration = 500; 
+	switch(spells[i].type) {
+		
+		case SPELL_FIREBALL: {
+			
+			if(spells[i].longinfo != -1) {
+				DynLight[spells[i].longinfo].duration = 500;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
-
-			spells[i].longinfo=-1;
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_LIGHTNING_STRIKE :
-
-			if (spells[i].longinfo!=-1) 
-			{
-				DynLight[spells[i].longinfo].duration = 200; 
+			spells[i].longinfo = -1;
+			
+			break;
+		}
+		
+		case SPELL_LIGHTNING_STRIKE: {
+			
+			if(spells[i].longinfo != -1) {
+				DynLight[spells[i].longinfo].duration = 200;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
-
-			spells[i].longinfo=-1;
+			spells[i].longinfo = -1;
+			
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_MASS_LIGHTNING_STRIKE :
-
-			if (spells[i].longinfo!=-1) 
-			{
-				DynLight[spells[i].longinfo].duration = 200; 
+			
+			break;
+		}
+		
+		case SPELL_MASS_LIGHTNING_STRIKE: {
+			
+			if(spells[i].longinfo != -1) {
+				DynLight[spells[i].longinfo].duration = 200;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
-
-			spells[i].longinfo=-1;
+			spells[i].longinfo = -1;
+			
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_END);
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
-		break;
-		case SPELL_REPEL_UNDEAD:
-
-			if (spells[i].longinfo!=-1) 
-			{
-				DynLight[spells[i].longinfo].duration = 200; 
+			
+			break;
+		}
+		
+		case SPELL_REPEL_UNDEAD: {
+			
+			if(spells[i].longinfo != -1) {
+				DynLight[spells[i].longinfo].duration = 200;
 				DynLight[spells[i].longinfo].time_creation = (unsigned long)(arxtime);
 			}
-
-			spells[i].longinfo=-1;
+			spells[i].longinfo = -1;
+			
 			ARX_SOUND_Stop(spells[i].snd_loop);
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_HARM :
-		case SPELL_LIFE_DRAIN :
-		case SPELL_MANA_DRAIN :
-
-			if (spells[i].longinfo!=-1) damages[spells[i].longinfo].exist=false;	
-
-			if (spells[i].longinfo2!=-1) 
-			{
+			
+			break;
+		}
+		
+		case SPELL_HARM:
+		case SPELL_LIFE_DRAIN:
+		case SPELL_MANA_DRAIN: {
+			
+			if(spells[i].longinfo != -1) {
+				damages[spells[i].longinfo].exist = false;
+			}
+			
+			if(spells[i].longinfo2 != -1) {
 				DynLight[spells[i].longinfo2].time_creation = (unsigned long)(arxtime);
 				DynLight[spells[i].longinfo2].duration = 600; 
 			}
-
+			
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			break;
+		}
 		
 		case SPELL_FLYING_EYE : {
 			
@@ -5717,115 +5694,78 @@ void ARX_SPELLS_Kill(long i) {
 			break;
 		}
 		
-		//----------------------------------------------------------------------------
-		// Level 06	
-		//---------------------------------------LEVEL1
-		case SPELL_IGNIT:
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
-		break;
-		case SPELL_DOUSE:
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
-		break;
-		//----------------------------------------------------------------------------
-		case SPELL_PARALYSE:
+		// Level 06
+		
+		case SPELL_PARALYSE: {
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 			break;
-
-		//---------------------------------------------------------------------
+		}
+		
 		// Level 7
-		case SPELL_FIRE_FIELD:
-			{
-				ARX_SOUND_Stop(spells[i].snd_loop);
-				ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
-		}
-		break;
-		case SPELL_LOWER_ARMOR:
-		break;
-
-		//----------------------------------------------------------------------------
-		case SPELL_EXPLOSION:
-		{
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
+		
+		case SPELL_FIRE_FIELD: {
+			ARX_SOUND_Stop(spells[i].snd_loop);
+			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 			break;
 		}
-
-		//----------------------------------------------------------------------------
-		case SPELL_MASS_PARALYSE:
-
+		
+		case SPELL_MASS_PARALYSE: {
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE_END);
 			break;
-		//----------------------------------------------------------------------------
-		case SPELL_SUMMON_CREATURE:
-
-			if (spells[i].pSpellFx->lLightId > -1)
-			{
+		}
+		
+		case SPELL_SUMMON_CREATURE: {
+			
+			if(spells[i].pSpellFx->lLightId > -1) {
 				long id = spells[i].pSpellFx->lLightId;
 				DynLight[id].exist = 0;
 				spells[i].pSpellFx->lLightId=-1;
 			}
-
-			if (ValidIONum(spells[i].longinfo2) && (spells[i].longinfo2!=0))
-			{
-				if (	(entities[spells[i].longinfo2]->scriptload)
-					&&	(entities[spells[i].longinfo2]->ioflags & IO_NOSAVE)	)
-				{
-					AddRandomSmoke(entities[spells[i].longinfo2],100);
-					Vec3f posi;
-					posi = entities[spells[i].longinfo2]->pos;
-					posi.y-=100.f;
+			
+			if(ValidIONum(spells[i].longinfo2) && spells[i].longinfo2 != 0) {
+				
+				if(entities[spells[i].longinfo2]->scriptload
+				   && (entities[spells[i].longinfo2]->ioflags & IO_NOSAVE)) {
+					
+					AddRandomSmoke(entities[spells[i].longinfo2], 100);
+					Vec3f posi = entities[spells[i].longinfo2]->pos;
+					posi.y -= 100.f;
 					MakeCoolFx(&posi);
-					long nn=GetFreeDynLight();
-
+				
+					long nn = GetFreeDynLight();
 					if(nn >= 0) {
-						DynLight[nn].exist=1;
-						DynLight[nn].intensity = 0.7f + 2.f*rnd();
+						DynLight[nn].exist = 1;
+						DynLight[nn].intensity = 0.7f + 2.f * rnd();
 						DynLight[nn].fallend = 600.f;
 						DynLight[nn].fallstart = 400.f;
 						DynLight[nn].rgb = Color3f(1.0f, 0.8f, 0.0f);
 						DynLight[nn].pos = posi;
-						DynLight[nn].duration=600;
+						DynLight[nn].duration = 600;
 					}
-
+					
 					ARX_INTERACTIVE_DestroyIO(entities[spells[i].longinfo2]);
 				}
 			}
-
-			spells[i].longinfo2=0;
-		break;
-		case SPELL_FAKE_SUMMON:
-
-			if (spells[i].pSpellFx->lLightId > -1)
-			{
+			
+			spells[i].longinfo2 = 0;
+			break;
+		}
+		
+		case SPELL_FAKE_SUMMON: {
+			
+			if(spells[i].pSpellFx->lLightId > -1) {
 				long id = spells[i].pSpellFx->lLightId;
 				DynLight[id].exist = 0;
-				spells[i].pSpellFx->lLightId=-1;
+				spells[i].pSpellFx->lLightId = -1;
 			}
-
-		break;
-		default:
-
-			if (spells[i].pSpellFx)
-				delete spells[i].pSpellFx;
-
-			spells[i].pSpellFx=NULL;
+			
 			break;
+		}
+		
+		default: break;
 	}
-
-	if (spells[i].pSpellFx)
-		delete spells[i].pSpellFx;
-
-	spells[i].pSpellFx=NULL;
+	
+	delete spells[i].pSpellFx, spells[i].pSpellFx = NULL;
 }
 
 
@@ -7886,14 +7826,16 @@ static void ApplySPMax() {
 	}
 	else
 	{
-		TextureContainer * tcm=TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
-
-		if (tcm)
-		{
+		TextureContainer * tcm;
+		tcm = TextureContainer::Load("graph/obj3d/textures/npc_human_cm_hero_head");
+		if(tcm) {
 			delete tcm;
-			player.heads[0]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
-			player.heads[1]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
-			player.heads[2]=TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
+			player.heads[0]
+				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero_head");
+			player.heads[1]
+				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero2_head");
+			player.heads[2]
+				= TextureContainer::Load("graph/obj3d/textures/npc_human_base_hero3_head");
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		}
 	}	

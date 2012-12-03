@@ -627,22 +627,15 @@ void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 // Releases physic box data from an object
-void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj)
-{
-	if (obj == NULL) return;
-
-	if (obj->pbox == NULL) return;
-
-	if (obj->pbox->vert != NULL)
-	{
-		free(obj->pbox->vert);
-		obj->pbox->vert = NULL;
+void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj) {
+	
+	if(!obj || !obj->pbox) {
+		return;
 	}
-
-	free(obj->pbox);
-	obj->pbox = NULL;
+	
+	free(obj->pbox->vert), obj->pbox->vert = NULL;
+	free(obj->pbox), obj->pbox = NULL;
 }
 
 // Creation of the physics box... quite cabalistic and extensive func...

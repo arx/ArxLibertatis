@@ -62,17 +62,11 @@ Image::Image(const Image & pOther) : mData(NULL) {
 }
 
 Image::~Image() {
-	if(mData) {
-		delete[] mData;
-	}
+	delete[] mData;
 }
 
 void Image::Reset() {
-	
-	if(mData) {
-		delete[] mData, mData = NULL;
-	}
-	
+	delete[] mData, mData = NULL;
 	mWidth = 0;
 	mHeight = 0;
 	mDepth = 0;
@@ -88,9 +82,7 @@ const Image& Image::operator=(const Image & pOther) {
 		return *this;
 	}
 	
-	if(mData) {
-		delete[] mData;
-	}
+	delete[] mData, mData = NULL;
 	
 	mWidth      = pOther.mWidth;
 	mHeight     = pOther.mHeight;
@@ -100,7 +92,7 @@ const Image& Image::operator=(const Image & pOther) {
 	mDataSize   = pOther.mDataSize;
 	mData       = new unsigned char[mDataSize];
 	
-	memcpy( mData, pOther.mData, mDataSize );
+	memcpy(mData, pOther.mData, mDataSize);
 	
 	return *this;
 }

@@ -150,33 +150,26 @@ static long lastnum = -1;
 
 void LoadLevelScreen(long num) {
 	
-
-	if (num < -1) // resets status
-	{
-		if (tc)
-		{
-			delete tc;
-			tc = NULL;
-		}
-
+	// resets status
+	if(num < -1) {
+		delete tc, tc = NULL;
 		lastloadednum = -1;
 		lastnum = -1;
 		PROGRESS_BAR_TOTAL = 0;
 		return;
 	}
-
-	if (num == -1)
+	
+	if(num == -1) {
 		num = lastnum;
-
+	}
 	lastnum = num;
-
-	if (num < 0)
-	{
+	
+	if(num < 0) {
 		return;
 	}
-
+	
 	static u32 last_progress_bar_update = Time::getMs();
-
+	
 	// only update if time since last update to progress bar > 16ms
 	// and progress bar's value has actually changed
 	if (Time::getElapsedMs(last_progress_bar_update) > 16 &&
@@ -209,12 +202,7 @@ void LoadLevelScreen(long num) {
 		nopbar = 1;
 		
 		if(num != lastloadednum) {
-			
-			if(tc) {
-				delete tc;
-				tc = NULL;
-			}
-			
+			delete tc, tc = NULL;
 			lastloadednum = num;
 			char temp[256];
 			char tx[256];

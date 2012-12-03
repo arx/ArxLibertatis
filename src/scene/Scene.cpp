@@ -181,10 +181,7 @@ public:
 	}
 	
 	~DynamicVertexBuffer() {
-		if(indices) {
-			delete[] indices;
-		}
-		
+		delete[] indices;
 	}
 	
 } dynamicVertices;
@@ -1097,17 +1094,9 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	efpPlaneNear.d=d*n;
 }
 
-void RoomDrawRelease()
-{
-	if (RoomDrawList)
-		free(RoomDrawList);
-
-	RoomDrawList=NULL;
-
-	if (RoomDraw)
-		free(RoomDraw);
-
-	RoomDraw=NULL;
+void RoomDrawRelease() {
+	free(RoomDrawList), RoomDrawList = NULL;
+	free(RoomDraw), RoomDraw = NULL;
 }
 
 void RoomDrawListAdd(long num) {
@@ -1883,23 +1872,13 @@ void ComputeTileLights(short x,short z)
 	}
 }
 
-void ClearTileLights()
-{
-	for (long j=0;j<MAX_BKGZ;j++)
-	for (long i=0;i<MAX_BKGZ;i++)
-	{
-		tilelights[i][j].max=0;
-		tilelights[i][j].num=0;
-
-		if (tilelights[i][j].el != NULL)
-		{
-			free (tilelights[i][j].el);
-			tilelights[i][j].el=NULL;
-		}
+void ClearTileLights() {
+	for(long j = 0; j < MAX_BKGZ; j++) for(long i = 0; i < MAX_BKGZ; i++) {
+		tilelights[i][j].max = 0;
+		tilelights[i][j].num = 0;
+		free(tilelights[i][j].el), tilelights[i][j].el = NULL;
 	}
 }
-
-//-----------------------------------------------------------------------------
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
 {

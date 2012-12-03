@@ -31,10 +31,7 @@ using std::find_first_of;
 using std::malloc;
 
 PakFile::~PakFile() {
-	
-	if(_alternative) {
-		delete _alternative;
-	}
+	delete _alternative;
 }
 
 char * PakFile::readAlloc() const {

@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -373,13 +375,8 @@ bool Menu2_Render() {
 	
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
 		
-		if(pWindowMenu) {
-			delete pWindowMenu, pWindowMenu = NULL;
-		}
-		
-		if(pMenu) {
-			delete pMenu, pMenu = NULL;
-		}
+		delete pWindowMenu, pWindowMenu = NULL;
+		delete pMenu, pMenu = NULL;
 		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
 			Credits::render();
@@ -421,24 +418,13 @@ bool Menu2_Render() {
 		std::string szMenuText;
 		bool bBOOL = false;
 		CMenuElementText *me;
-
-		if( (pMenu) && (pMenu->bReInitAll) )
-		{
-			eOldMenuState=pMenu->eOldMenuState;
-
-			if(pWindowMenu)
-			{
-				delete pWindowMenu;
-				pWindowMenu=NULL;
-			}
-
-			if(pMenu)
-			{
-				delete pMenu;
-				pMenu=NULL;
-			}
+		
+		if(pMenu && pMenu->bReInitAll) {
+			eOldMenuState = pMenu->eOldMenuState;
+			delete pWindowMenu, pWindowMenu = NULL;
+			delete pMenu, pMenu = NULL;
 		}
-
+		
 		pMenu = new CMenuState(MAIN);
 		pMenu->eOldMenuWindowState=eM;
 
@@ -516,19 +502,10 @@ bool Menu2_Render() {
 			ARXmenu.currentmode = AMCM_OFF;
 			pMenu->eMenuState = NOP;
 			pMenu->pZoneClick = NULL;
-
-			if(pWindowMenu)
-			{
-				delete pWindowMenu;
-				pWindowMenu=NULL;
-			}
-
-			if(pMenu)
-			{
-				delete pMenu;
-				pMenu=NULL;
-			}
-
+			
+			delete pWindowMenu, pWindowMenu = NULL;
+			delete pMenu, pMenu = NULL;
+			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -540,13 +517,9 @@ bool Menu2_Render() {
 		else if (eMenuState!=NOP )
 		{
 			pMenu->eOldMenuState=eMenuState;
-
-			if(pWindowMenu)
-			{
-				delete pWindowMenu;
-				pWindowMenu=NULL;
-			}
-
+			
+			delete pWindowMenu, pWindowMenu = NULL;
+			
 			//suivant la resolution
 			int iWindowMenuWidth=(321);
 			int iWindowMenuHeight=(430);
@@ -2335,9 +2308,7 @@ void CMenuElementText::RenderMouseOver()
 			if(!image.empty()) {
 				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 				if(t != pTextureLoad) {
-					if(pTextureLoad) {
-						delete pTextureLoad;
-					}
+					delete pTextureLoad;
 					pTextureLoad = t;
 				}
 				pTextureLoadRender = pTextureLoad;
@@ -2376,36 +2347,18 @@ CMenuState::CMenuState(MENUSTATE _ms)
 	iPosMenu=-1;
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuState::~CMenuState()
-{
-	if(pMenuAllZone) delete pMenuAllZone;
-
-	if (pTexBackGround)
-	{
-		delete pTexBackGround;
-		pTexBackGround = NULL;
-	}
-
-	if (pTexBackGround1)
-	{
-		delete pTexBackGround1;
-		pTexBackGround1 = NULL;
-	}
+CMenuState::~CMenuState() {
+	delete pMenuAllZone;
+	delete pTexBackGround;
+	delete pTexBackGround1;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuState::AddMenuElement(CMenuElement * _me) {
+	pMenuAllZone->AddZone((CMenuZone *)_me);
+}
 
-void CMenuState::AddMenuElement(CMenuElement *_me)
-{
-	pMenuAllZone->AddZone((CMenuZone*)_me);
-	}
-
-	//-----------------------------------------------------------------------------
-
-MENUSTATE CMenuState::Update(int _iDTime)
-{
+MENUSTATE CMenuState::Update(int _iDTime) {
+	
 	fPos += _iDTime*( 1.0f / 700 );
 
 	pZoneClick=NULL;
@@ -2747,31 +2700,20 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	Move(iPosX, iPosY);
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuCheckButton::~CMenuCheckButton()
-{
-
-	vTex.clear();
-
-	if (pText)
-	{
-		delete pText;
-		pText = NULL;
-	}
+CMenuCheckButton::~CMenuCheckButton() {
+	delete pText;
 }
 
-void CMenuCheckButton::Move(int _iX, int _iY)
-{
+void CMenuCheckButton::Move(int _iX, int _iY) {
+	
 	CMenuElement::Move(_iX, _iY);
-
-	if (pText)
+	
+	if(pText) {
 		pText->Move(_iX, _iY);
-
+	}
+	
 	ComputeTexturesPosition();
 }
-
-//-----------------------------------------------------------------------------
 
 bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 	
@@ -4374,35 +4316,16 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 	pRef = this;
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuSliderText::~CMenuSliderText()
-{
-	if (pLeftButton)
-	{
-		delete pLeftButton;
-		pLeftButton = NULL;
-	}
-
-	if (pRightButton)
-	{
-		delete pRightButton;
-		pRightButton = NULL;
-	}
-
-	vector<CMenuElementText*>::iterator i;
-
-	for(i=vText.begin();i!=vText.end();++i)
-	{
-		delete (*i);
-		*i = NULL;
+CMenuSliderText::~CMenuSliderText() {
+	delete pLeftButton;
+	delete pRightButton;
+	BOOST_FOREACH(CMenuElementText * e, vText) {
+		delete e;
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-void CMenuSliderText::SetWidth(int _iWidth)
-{
+void CMenuSliderText::SetWidth(int _iWidth) {
+	
 	rZone.right  = max(rZone.right, rZone.left +  _iWidth);
 	pRightButton->SetPos(rZone.right - pRightButton->GetWidth(), pRightButton->rZone.top);
 
@@ -4720,30 +4643,16 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	pRef = this;
 }
 
-CMenuSlider::~CMenuSlider()
-{
-	if (pLeftButton)
-	{
-		delete pLeftButton;
-		pLeftButton = NULL;
-	}
-
-	if (pRightButton)
-	{
-		delete pRightButton;
-		pRightButton = NULL;
-	}
+CMenuSlider::~CMenuSlider() {
+	delete pLeftButton;
+	delete pRightButton;
 }
 
-void CMenuSlider::Move(int _iX, int _iY)
-{
+void CMenuSlider::Move(int _iX, int _iY) {
 	CMenuZone::Move(_iX, _iY);
-
 	pLeftButton->Move(_iX, _iY);
 	pRightButton->Move(_iX, _iY);
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuSlider::EmptyFunction()
 {
@@ -5190,29 +5099,11 @@ void MenuCursor::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-//-----------------------------------------------------------------------------
-
-void Menu2_Close()
-{
+void Menu2_Close() {
+	
 	ARXmenu.currentmode = AMCM_OFF;
-
-	if (pMenu)
-	{
-		pMenu->eMenuState = NOP;
-		pMenu->pZoneClick = NULL;
-		delete pMenu;
-		pMenu = NULL;
-	}
-
-	if(pWindowMenu)
-	{
-		delete pWindowMenu;
-		pWindowMenu=NULL;
-	}
-
-	if(pMenuCursor)
-	{
-		delete pMenuCursor;
-		pMenuCursor = NULL;
-	}
+	
+	delete pWindowMenu, pWindowMenu = NULL;
+	delete pMenu, pMenu = NULL;
+	delete pMenuCursor, pMenuCursor = NULL;
 }

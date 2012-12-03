@@ -232,13 +232,8 @@ Entity::~Entity() {
 	
 	ARX_SPELLS_RemoveAllSpellsOn(this);
 	
-	if(tweakerinfo) {
-		delete tweakerinfo;
-	}
-
-	if(tweaky) {
-		delete tweaky, tweaky = NULL;
-	}
+	delete tweakerinfo;
+	delete tweaky, tweaky = NULL;
 	
 	RemoveFromAllInventories(this);
 	
@@ -264,26 +259,15 @@ Entity::~Entity() {
 		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
 	}
 	
-	if(lastanimvertex) {
-		free(lastanimvertex);
-	}
-	
-	if(usepath) {
-		free(usepath);
-	}
-	
-	if(symboldraw) {
-		free(symboldraw), symboldraw = NULL;
-	}
+	free(lastanimvertex);
+	free(usepath);
+	free(symboldraw), symboldraw = NULL;
 	
 	if(ioflags & IO_NPC) {
 		delete _npcdata;
 		
 	} else if(ioflags & IO_ITEM) {
-		if(_itemdata->equipitem) {
-			free(_itemdata->equipitem);
-		}
-		_itemdata->equipitem = NULL;
+		free(_itemdata->equipitem);
 		free(_itemdata);
 		
 	} else if(ioflags & IO_FIX) {
@@ -300,9 +284,7 @@ Entity::~Entity() {
 		TSecondaryInventory = NULL;
 	}
 	
-	if(inventory != NULL) {
-		free(inventory);
-	}
+	free(inventory);
 	
 	if(index_ != size_t(-1)) {
 		entities.remove(index_);

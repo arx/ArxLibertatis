@@ -172,40 +172,19 @@ void ARX_EQUIPMENT_Release(long id)
 	}
 }
 
-//***********************************************************************************************
 // Releases Equipment Structure
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
-static void ARX_EQUIPMENT_ReleaseEquipItem(Entity * io)
-{
-	if (!io) return;
-
-	if (!(io->ioflags & IO_ITEM)) return;
-
-	if (io->_itemdata->equipitem)
-	{
-		free(io->_itemdata->equipitem);
-		io->_itemdata->equipitem = NULL;
+void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
+	
+	if(!io || !(io->ioflags & IO_ITEM)) {
+		return;
 	}
+	
+	free(io->_itemdata->equipitem), io->_itemdata->equipitem = NULL;
 }
 
-//***********************************************************************************************
-// Releases all id equipments in IO io
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
-void ARX_EQUIPMENT_ReleaseAll(Entity * io)
-{
-	if (io)
-		ARX_EQUIPMENT_ReleaseEquipItem(io);
-}
 extern long EXITING;
-//***********************************************************************************************
+
 // Recreates player mesh from scratch
-//***********************************************************************************************
-
-
 static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selection) {
 	
 	if(!player.equiped[equip] || !ValidIONum(player.equiped[equip])) {

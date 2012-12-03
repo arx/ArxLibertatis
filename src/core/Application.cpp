@@ -133,10 +133,7 @@ bool Application::Initialize() {
 }
 
 void Application::Shutdown() {
-	if(m_MainWindow) {
-		delete m_MainWindow;
-		m_MainWindow = 0;
-	}
+	delete m_MainWindow, m_MainWindow = NULL;
 }
 
 void Application::Quit() {

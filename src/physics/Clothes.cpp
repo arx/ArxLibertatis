@@ -276,24 +276,11 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 void KillClothesData(EERIE_3DOBJ * obj) {
 	
-	if(obj == NULL) {
+	if(!obj || !obj->cdata) {
 		return;
 	}
 	
-	if(obj->cdata == NULL) {
-		return;
-	}
-	
-	if(obj->cdata->cvert) {
-		delete[] obj->cdata->cvert;
-		obj->cdata->cvert = NULL;
-	}
-	
-	if(obj->cdata->backup) {
-		delete[] obj->cdata->backup;
-		obj->cdata->backup = NULL;
-	}
-	
-	delete obj->cdata;
-	obj->cdata = NULL;
+	delete[] obj->cdata->cvert, obj->cdata->cvert = NULL;
+	delete[] obj->cdata->backup, obj->cdata->backup = NULL;
+	delete obj->cdata, obj->cdata = NULL;
 }

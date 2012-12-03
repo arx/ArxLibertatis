@@ -222,34 +222,23 @@ ANIM_HANDLE::ANIM_HANDLE() : path() {
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		
-		if ((!animations[i].path.empty())
-			&& (animations[i].locks==0))
-		{
-			for (long k=0;k<animations[i].alt_nb;k++)
-			{
+		if(!animations[i].path.empty() && animations[i].locks == 0) {
+			for(long k = 0; k < animations[i].alt_nb; k++) {
 				ReleaseAnim(animations[i].anims[k]);
-				animations[i].anims[k]=NULL;
+				animations[i].anims[k] = NULL;
 			}
-
-			if (animations[i].anims)
-				free(animations[i].anims);
-
-			animations[i].anims=NULL;
-
+			free(animations[i].anims), animations[i].anims = NULL;
 			animations[i].path.clear();
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
-{
-	if (anim)
-	{
+void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
+	if(anim) {
 		anim->locks--;
-
-		if (anim->locks<0) anim->locks=0;
+		if(anim->locks < 0) {
+			anim->locks = 0;
+		}
 	}
 }
 
@@ -1783,19 +1772,14 @@ void Preparellights(Vec3f * pos) {
 	}
 }
 
-void EERIE_ANIMMANAGER_Clear(long i)
-{
-	for (long k=0;k<animations[i].alt_nb;k++)
-	{
-		ReleaseAnim(animations[i].anims[k]);
-		animations[i].anims[k]=NULL;					
+void EERIE_ANIMMANAGER_Clear(long i) {
+	
+	for(long k = 0; k < animations[i].alt_nb; k++) {
+		ReleaseAnim(animations[i].anims[k]), animations[i].anims[k] = NULL;
 	}
-
-	if (animations[i].anims)
-		free(animations[i].anims);
-
-	animations[i].anims=NULL;
-
+	
+	free(animations[i].anims), animations[i].anims = NULL;
+	
 	animations[i].path.clear();
 }
 
@@ -1807,11 +1791,7 @@ void EERIE_ANIMMANAGER_ClearAll() {
 		}
 	}
 	
-	if(grps) {
-		free(grps);
-		grps = NULL;
-	}
-	
+	free(grps), grps = NULL;
 }
 
 void EERIE_ANIMMANAGER_ReloadAll() {

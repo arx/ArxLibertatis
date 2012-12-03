@@ -260,27 +260,14 @@ void ARX_MINIMAP_FirstInit()
 	ARX_MINIMAP_Load_Offsets();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_Reset()
-{
-	for (size_t i = 0; i < MAX_MINIMAPS; i++)
-	{
-		if (minimap[i].tc)
-		{
-			delete minimap[i].tc;
-			minimap[i].tc = NULL;
-		}
-	}
-
-	memset(minimap, 0, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
+void ARX_MINIMAP_Reset() {
+	ARX_MINIMAP_PurgeTC();
+	memset(minimap, 0, sizeof(MINI_MAP_DATA) * MAX_MINIMAPS);
 }
 
 void ARX_MINIMAP_PurgeTC() {
 	for(size_t i = 0; i < MAX_MINIMAPS; i++) {
-		if(minimap[i].tc) {
-			delete minimap[i].tc;
-			minimap[i].tc = NULL;
-		}
+		delete minimap[i].tc, minimap[i].tc = NULL;
 	}
 }
 

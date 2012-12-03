@@ -1024,21 +1024,13 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 
 CPortal::~CPortal() {
 	
-	if(sphereind) {
-		free(sphereind);
-	}
-	if(spherevertex) {
-		free(spherevertex);
-	}
-	if(sphered3d) {
-		free(sphered3d);
-	}
+	free(sphereind);
+	free(spherevertex);
+	free(sphered3d);
 	
 	int nb = 256;
 	while(nb--) {
-		if(tabeclair[nb].seg) {
-			free(tabeclair[nb].seg);
-		}
+		free(tabeclair[nb].seg);
 	}
 }
 
