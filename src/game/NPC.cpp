@@ -1090,9 +1090,9 @@ void ARX_PHYSICS_Apply()
 		}
 
 		CheckUnderWaterIO(io);
-
-		if (io->obj->pbox)
-		{
+		
+		if(io->obj && io->obj->pbox) {
+			
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
 			if(io->obj->pbox->active == 1) {
