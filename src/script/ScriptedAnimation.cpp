@@ -233,9 +233,11 @@ public:
 			return Failed;
 		}
 		
+		ANIM_USE & layer = iot->animlayer[nu];
+		
 		if(anim == "none") {
-			iot->animlayer[nu].cur_anim = NULL;
-			iot->animlayer[nu].next_anim = NULL;
+			layer.cur_anim = NULL;
+			layer.next_anim = NULL;
 			return Success;
 		}
 		
@@ -258,7 +260,7 @@ public:
 		}
 		
 		if(iot == entities.player()) {
-			iot->animlayer[nu].flags &= ~EA_STATICANIM;
+			layer.flags &= ~EA_STATICANIM;
 		}
 		
 		if(execute) {
@@ -277,7 +279,14 @@ public:
 				scr_timer[num2].es = context.getScript();
 				scr_timer[num2].exist = 1;
 				scr_timer[num2].io = context.getIO();
-				scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.f);
+				scr_timer[num2].msecs = 1000.f;
+				// Don't assume that we successfully set the animation - use the current animation
+				if(layer.cur_anim) {
+					arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
+					if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].msecs) {
+						scr_timer[num2].msecs = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+					}
+				}
 				scr_timer[num2].name = timername;
 				scr_timer[num2].pos = pos;
 				scr_timer[num2].tim = (unsigned long)(arxtime);
