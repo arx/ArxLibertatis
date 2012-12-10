@@ -171,7 +171,8 @@ else(MSVC)
 			# flag causes the actual build to fail :(
 		else()
 			# Link as few libraries as possible
-			# This is much easier than trying to decide which libraries are needed for each system
+			# This is much easier than trying to decide which libraries are needed for each
+			# system
 			add_ldflag("-Wl,--as-needed")
 		endif()
 		
