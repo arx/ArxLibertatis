@@ -87,20 +87,17 @@ class CLowerArmor: public CSpellFx
 		float	Render();
 };
 
-class CArmor: public CSpellFx
-{
-	private:
-		int			iNpc;
-
-	public:
-		CArmor();
-		~CArmor();
-
-		// surcharge
-		void	Create(long);
-		void	Update(unsigned long);
-		float	Render();
- 
+class CArmor: public CSpellFx {
+	
+public:
+	
+	CArmor();
+	~CArmor();
+	
+	void Create(long);
+	void Update(unsigned long);
+	float Render();
+	
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS02_H
