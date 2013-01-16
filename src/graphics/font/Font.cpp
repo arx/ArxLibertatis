@@ -108,6 +108,7 @@ bool Font::insertGlyph(u32 character) {
 	
 	// Fill in info for this glyph.
 	Glyph & glyph = m_Glyphs[character];
+	glyph.index = glyphIndex;
 	glyph.size.x = m_FTFace->glyph->bitmap.width;
 	glyph.size.y = m_FTFace->glyph->bitmap.rows;
 	glyph.advance.x = m_FTFace->glyph->linearHoriAdvance / 65536.0f;
@@ -171,47 +172,52 @@ bool Font::WriteToDisk() {
 	return ok;
 }
 
-inline static bool read_utf8(Font::text_iterator & it, Font::text_iterator end, u32 & chr) {
+typedef u32 Unicode;
+static const Unicode INVALID_CHAR = Unicode(-1);
+static const Unicode REPLACEMENT_CHAR = 0xfffd;
+
+inline static Unicode read_utf8(Font::text_iterator & it, Font::text_iterator end) {
 	
 	if(it == end) {
-		return false;
+		return INVALID_CHAR;
 	}
-	chr = *it++;
+	Unicode chr = *it++;
 	
 	if(chr & (1 << 7)) {
 		
 		if(!(chr & (1 << 6))) {
-			// TODO bad start position
+			// bad start position
 		}
 		
 		if(it == end) {
-			return false;
+			return INVALID_CHAR;
 		}
 		chr &= 0x3f, chr <<= 6, chr |= ((*it++) & 0x3f);
 		
 		if(chr & (1 << (5 + 6))) {
 			
 			if(it == end) {
-				return false;
+				return INVALID_CHAR;
 			}
 			chr &= ~(1 << (5 + 6)), chr <<= 6, chr |= ((*it++) & 0x3f);
 			
 			if(chr & (1 << (4 + 6 + 6))) {
 				
 				if(it == end) {
-					return false;
+					return INVALID_CHAR;
 				}
 				chr &= ~(1 << (4 + 6 + 6)), chr <<= 6, chr |= ((*it++) & 0x3f);
 				
 				if(chr & (1 << (3 + 6 + 6 + 6))) {
-					// TODO bad UTF-8 string
+					// bad UTF-8 string
+					chr = REPLACEMENT_CHAR;
 				}
 				
 			}
 		}
 	}
 	
-	return true;
+	return chr;
 }
 
 bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
@@ -219,7 +225,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	u32 chr;
 	bool changed = false;
 	
-	for(text_iterator it = begin; read_utf8(it, end, chr); ) {
+	for(text_iterator it = begin; (chr = read_utf8(it, end)) != INVALID_CHAR; ) {
 		if(m_Glyphs.find(chr) == m_Glyphs.end()) {
 			if(chr >= 256 && insertGlyph(chr)) {
 				changed = true;
@@ -230,9 +236,10 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	return changed;
 }
 
-Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end, u32 & chr) {
+Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	
-	if(!read_utf8(it, end, chr)) {
+	Unicode chr = read_utf8(it, end);
+	if(chr == INVALID_CHAR) {
 		return m_Glyphs.end();
 	}
 	
@@ -262,58 +269,65 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end, u
 	return m_Glyphs.find(chr); // the newly inserted glyph
 }
 
-void Font::Draw(int x, int y, text_iterator itStart, text_iterator itEnd, Color color) {
+template <bool DoDraw>
+Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color color) {
 	
-	GRenderer->SetRenderState(Renderer::Lighting, false);
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
-	
-	GRenderer->SetRenderState(Renderer::DepthTest, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GRenderer->SetCulling(Renderer::CullNone);
-	
-	// 2D projection setup... Put origin (0,0) in the top left corner like GDI... 
-	Rect viewport = GRenderer->GetViewport();
-	GRenderer->Begin2DProjection(viewport.left, viewport.right, viewport.bottom, viewport.top, -1.f, 1.f);
-	
-	// Fixed pipeline texture stage operation
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
-	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+	if(DoDraw) {
+		
+		GRenderer->SetRenderState(Renderer::Lighting, false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
+		
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+		GRenderer->SetCulling(Renderer::CullNone);
+		
+		// 2D projection setup... Put origin (0,0) in the top left corner like GDI...
+		Rect viewport = GRenderer->GetViewport();
+		GRenderer->Begin2DProjection(viewport.left, viewport.right,
+		                             viewport.bottom, viewport.top, -1.f, 1.f);
+		
+		// Fixed pipeline texture stage operation
+		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
+		GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
+		
+		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+		GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
+		GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
+		
+	}
 	
 	float penX = x;
 	float penY = y;
 	
-	// Substract one line height (since we flipped the Y origin to be like GDI)
-	penY += m_FTFace->size->metrics.ascender >> 6;
+	int startX = 0;
+	int endX = 0;
 	
-	FT_UInt currentGlyphIdx;
-	FT_UInt previousGlyphIdx = 0;
+	if(DoDraw) {
+		// Substract one line height (since we flipped the Y origin to be like GDI)
+		penY += m_FTFace->size->metrics.ascender >> 6;
+	}
+	
+	FT_UInt prevGlyphIndex = 0;
 	FT_Pos prevRsbDelta = 0;
 	
-	u32 chr;
-	for(text_iterator it = itStart; it != itEnd; ) {
+	for(text_iterator it = start; it != end; ) {
 		
 		// Get glyph in glyph map
-		glyph_iterator itGlyph = getNextGlyph(it, itEnd, chr);
+		glyph_iterator itGlyph = getNextGlyph(it, end);
 		if(itGlyph == m_Glyphs.end()) {
 			continue;
 		}
-		
 		const Glyph & glyph = itGlyph->second;
 		
 		// Kerning
 		if(FT_HAS_KERNING(m_FTFace)) {
-			currentGlyphIdx = FT_Get_Char_Index(m_FTFace, chr);
-			if(previousGlyphIdx != 0) {
+			if(prevGlyphIndex != 0) {
 				FT_Vector delta;
-				FT_Get_Kerning(m_FTFace, previousGlyphIdx, currentGlyphIdx, FT_KERNING_DEFAULT, &delta);
+				FT_Get_Kerning(m_FTFace, prevGlyphIndex, glyph.index, FT_KERNING_DEFAULT, &delta);
 				penX += delta.x >> 6;
 			}
-			previousGlyphIdx = currentGlyphIdx;
+			prevGlyphIndex = glyph.index;
 		}
 		
 		// Auto hinting adjustments
@@ -325,88 +339,57 @@ void Font::Draw(int x, int y, text_iterator itStart, text_iterator itEnd, Color 
 		prevRsbDelta = glyph.rsb_delta;
 		
 		// Draw
-		if(glyph.size.x != 0 && glyph.size.y != 0) {
+		if(DoDraw && glyph.size.x != 0 && glyph.size.y != 0) {
 			GRenderer->SetTexture(0, &m_Textures->getTexture(glyph.texture));
-			GRenderer->DrawTexturedRect(((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color);
+			GRenderer->DrawTexturedRect(
+				((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y,
+				glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x,
+				glyph.uv_start.y, color
+			);
+		} else {
+			ARX_UNUSED(penY), ARX_UNUSED(color);
 		}
-		
-		// Advance
-		penX += glyph.advance.x;
-	}
-	
-	GRenderer->ResetTexture(0);
-	
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgCurrent);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgTexture);
-	
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterLinear);
-	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterLinear);
-	
-	GRenderer->End2DProjection();
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GRenderer->SetCulling(Renderer::CullCCW);
-}
-
-Vec2i Font::GetTextSize(const std::string & str) {
-	return GetTextSize(str.begin(), str.end());
-}
-
-Vec2i Font::GetTextSize(text_iterator itStart, text_iterator itEnd) {
-	
-	FT_UInt currentGlyph;
-	FT_UInt previousGlyph = 0;
-	
-	int startX = 0;
-	int endX = 0;
-	float penX = 0;
-	FT_Pos prevRsbDelta = 0;
-	
-	u32 chr;
-	for(text_iterator it = itStart; it != itEnd; ) {
-		
-		// Get glyph in glyph map
-		glyph_iterator itGlyph = getNextGlyph(it, itEnd, chr);
-		if(itGlyph == m_Glyphs.end()) {
-			continue;
-		}
-		
-		const Glyph & glyph = itGlyph->second;
-		
-		// Kerning
-		if(FT_HAS_KERNING(m_FTFace)) {
-			currentGlyph = FT_Get_Char_Index(m_FTFace, chr);
-			if(previousGlyph != 0) {
-				FT_Vector delta;
-				FT_Get_Kerning(m_FTFace, previousGlyph, currentGlyph, FT_KERNING_DEFAULT, &delta);
-				penX += delta.x >> 6;
-			}
-			previousGlyph = currentGlyph;
-		}
-		
-		// Auto hinting adjustments
-		if(prevRsbDelta - glyph.lsb_delta >= 32) {
-			penX--;
-		} else if(prevRsbDelta - glyph.lsb_delta < -32) {
-			penX++;
-		}
-		prevRsbDelta = glyph.rsb_delta;
 		
 		// If this is the first drawn char, note the start position
 		if(startX == endX) {
 			startX = glyph.draw_offset.x;
 		}
-		
 		endX = penX + glyph.draw_offset.x + glyph.size.x;
 		
+		// Advance
 		penX += glyph.advance.x;
+	}
+	
+	if(DoDraw) {
+		
+		GRenderer->ResetTexture(0);
+		TextureStage * stage = GRenderer->GetTextureStage(0);
+		stage->SetColorOp(TextureStage::OpModulate,
+		                  TextureStage::ArgTexture, TextureStage::ArgCurrent);
+		stage->SetAlphaOp(TextureStage::ArgTexture);
+		stage->SetWrapMode(TextureStage::WrapRepeat);
+		stage->SetMinFilter(TextureStage::FilterLinear);
+		stage->SetMagFilter(TextureStage::FilterLinear);
+		
+		GRenderer->End2DProjection();
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
+		GRenderer->SetCulling(Renderer::CullCCW);
+		
 	}
 	
 	int sizeX = endX - startX;
 	int sizeY = m_FTFace->size->metrics.height >> 6;
 	
 	return Vec2i(sizeX, sizeY);
+}
+
+void Font::Draw(int x, int y, text_iterator start, text_iterator end, Color color) {
+	process<true>(x, y, start, end, color);
+}
+
+Vec2i Font::GetTextSize(text_iterator start, text_iterator end) {
+	return process<false>(0, 0, start, end, Color::none);
 }
 
 int Font::GetLineHeight() const {

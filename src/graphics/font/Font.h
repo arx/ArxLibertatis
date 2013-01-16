@@ -57,6 +57,8 @@ public:
 	//! Representation of a glyph.
 	struct Glyph {
 		
+		unsigned int index; //!< Index of the glyph in the font.
+		
 		Vec2i size;        //!< Size of the glyph.
 		Vec2i draw_offset; //!< Offset to use when drawing.
 		Vec2f advance;     //!< Pen advance after write this glyph.
@@ -82,14 +84,17 @@ public:
 		Draw(p.x, p.y, str, color);
 	}
 	
-	void Draw(int pX, int pY, const std::string & str, Color color) {
-		Draw(pX, pY, str.begin(), str.end(), color);
+	void Draw(int x, int y, const std::string & str, Color color) {
+		Draw(x, y, str.begin(), str.end(), color);
 	}
 	
-	void Draw(int pX, int pY, text_iterator itStart, text_iterator itEnd, Color color);
+	void Draw(int x, int y, text_iterator start, text_iterator end, Color color);
 	
-	Vec2i GetTextSize(const std::string & str);
-	Vec2i GetTextSize(text_iterator itStart, text_iterator itEnd);
+	Vec2i GetTextSize(const std::string & str) {
+		return GetTextSize(str.begin(), str.end());
+	}
+	
+	Vec2i GetTextSize(text_iterator start, text_iterator end);
 	
 	int GetLineHeight() const;
 	
@@ -122,6 +127,9 @@ private:
 	
 private:
 	
+	template <bool Draw>
+	Vec2i process(int pX, int pY, text_iterator start, text_iterator end, Color color);
+	
 	Info m_Info;
 	unsigned int m_RefCount;
 	
@@ -134,7 +142,7 @@ private:
 	 * Inserts missing glyphs if possible.
 	 * @return a glyph iterator or m_Glyphs.end()
 	 */
-	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end, u32 & chr);
+	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end);
 	
 	class PackedTexture * m_Textures;
 	
