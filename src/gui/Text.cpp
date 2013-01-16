@@ -299,7 +299,7 @@ static Font * createFont(const res::path & fontFace,
 
 	fontSize *= scaleFactor;
 
-	Font * newFont = FontCache::GetFont(fontFace, fontSize);
+	Font * newFont = FontCache::getFont(fontFace, fontSize);
 	if(!newFont) {
 		LogError << "error loading font: " << fontFace << " of size " << fontSize;
 	}
@@ -359,7 +359,7 @@ bool ARX_Text_Init() {
 	delete pTextManageFlyingOver;
 	pTextManageFlyingOver = new TextManager();
 	
-	FontCache::Initialize();
+	FontCache::initialize();
 	
 	Font * nFontMainMenu = createFont(file, "system_font_mainmenu_size", 58, scale);
 	Font * nFontMenu = createFont(file, "system_font_menu_size", 32, scale);
@@ -370,13 +370,13 @@ bool ARX_Text_Init() {
 	Font * nFontInBook = createFont(file, "system_font_book_size", 18, small_scale);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
-	FontCache::ReleaseFont(hFontMainMenu);
-	FontCache::ReleaseFont(hFontMenu);
-	FontCache::ReleaseFont(hFontControls);
-	FontCache::ReleaseFont(hFontCredits);
-	FontCache::ReleaseFont(hFontInGame);
-	FontCache::ReleaseFont(hFontInGameNote);
-	FontCache::ReleaseFont(hFontInBook);
+	FontCache::releaseFont(hFontMainMenu);
+	FontCache::releaseFont(hFontMenu);
+	FontCache::releaseFont(hFontControls);
+	FontCache::releaseFont(hFontCredits);
+	FontCache::releaseFont(hFontInGame);
+	FontCache::releaseFont(hFontInGameNote);
+	FontCache::releaseFont(hFontInBook);
 	
 	hFontMainMenu = nFontMainMenu;
 	hFontMenu = nFontMenu;
@@ -405,26 +405,26 @@ void ARX_Text_Close() {
 	delete pTextManageFlyingOver;
 	pTextManageFlyingOver = NULL;
 	
-	FontCache::ReleaseFont(hFontInBook);
+	FontCache::releaseFont(hFontInBook);
 	hFontInBook = NULL;
 	
-	FontCache::ReleaseFont(hFontMainMenu);
+	FontCache::releaseFont(hFontMainMenu);
 	hFontMainMenu = NULL;
 	
-	FontCache::ReleaseFont(hFontMenu);
+	FontCache::releaseFont(hFontMenu);
 	hFontMenu = NULL;
 	
-	FontCache::ReleaseFont(hFontControls);
+	FontCache::releaseFont(hFontControls);
 	hFontControls = NULL;
 	
-	FontCache::ReleaseFont(hFontCredits);
+	FontCache::releaseFont(hFontCredits);
 	hFontCredits = NULL;
 	
-	FontCache::ReleaseFont(hFontInGame);
+	FontCache::releaseFont(hFontInGame);
 	hFontInGame = NULL;
 	
-	FontCache::ReleaseFont(hFontInGameNote);
+	FontCache::releaseFont(hFontInGameNote);
 	hFontInGameNote = NULL;
 	
-	FontCache::Shutdown();
+	FontCache::shutdown();
 }

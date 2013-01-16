@@ -30,17 +30,17 @@
 #include "platform/CrashHandler.h"
 
 static FT_Library g_FTLibrary = NULL;
-FontCache * FontCache::m_Instance = NULL;
+FontCache * FontCache::instance = NULL;
 
-void FontCache::Initialize() {
-	if(!m_Instance) {
-		m_Instance = new FontCache();
+void FontCache::initialize() {
+	if(!instance) {
+		instance = new FontCache();
 	}
 }
 
-void FontCache::Shutdown() {
-	delete m_Instance;
-	m_Instance = NULL;
+void FontCache::shutdown() {
+	delete instance;
+	instance = NULL;
 }
 
 FontCache::FontCache() {
@@ -54,6 +54,7 @@ FontCache::FontCache() {
 	version << ftMajor << '.' << ftMinor << '.' << ftPatch;
 	
 	CrashHandler::setVariable("FreeType version", version.str());
+	LogInfo << "Using FreeType " << version.str();
 }
 
 FontCache::~FontCache() {
@@ -62,14 +63,14 @@ FontCache::~FontCache() {
 	g_FTLibrary = NULL;
 }
 
-Font * FontCache::GetFont(const res::path & fontFile, unsigned int fontSize) {
+Font * FontCache::getFont(const res::path & fontFile, unsigned int fontSize) {
 	
-	FontFile & file = m_Instance->files[fontFile];
+	FontFile & file = instance->files[fontFile];
 	
 	Font * pFont = 0;
 	FontMap::iterator it = file.sizes.find(fontSize);
 	if(it == file.sizes.end()) {
-		pFont = m_Instance->Create(fontFile, file, fontSize);
+		pFont = instance->create(fontFile, file, fontSize);
 		if(pFont) {
 			file.sizes[fontSize] = pFont;
 		}
@@ -80,13 +81,13 @@ Font * FontCache::GetFont(const res::path & fontFile, unsigned int fontSize) {
 	if(pFont) {
 		pFont->referenceCount++;
 	} else if(!file.sizes.empty()) {
-		m_Instance->files.erase(fontFile);
+		instance->files.erase(fontFile);
 	}
 	
 	return pFont;
 }
 
-Font * FontCache::Create(const res::path & font, FontFile & file, unsigned int size) {
+Font * FontCache::create(const res::path & font, FontFile & file, unsigned int size) {
 	
 	if(!file.data) {
 		LogDebug("loading file " << font);
@@ -121,7 +122,7 @@ Font * FontCache::Create(const res::path & font, FontFile & file, unsigned int s
 	return new Font(font, size, face);
 }
 
-void FontCache::ReleaseFont(Font * font) {
+void FontCache::releaseFont(Font * font) {
 	
 	if(!font) {
 		return;
@@ -131,14 +132,14 @@ void FontCache::ReleaseFont(Font * font) {
 	
 	if(font->referenceCount == 0) {
 		
-		FontFile & file = m_Instance->files[font->getName()];
+		FontFile & file = instance->files[font->getName()];
 		
 		file.sizes.erase(font->getSize());
 		LogDebug("destroying font " << font->GetName() << " @ " << font->GetSize());
 		
 		if(file.sizes.empty()) {
 			free(file.data);
-			m_Instance->files.erase(font->getName());
+			instance->files.erase(font->getName());
 			LogDebug("unloading file " << font->GetName());
 		}
 		

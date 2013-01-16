@@ -45,11 +45,11 @@ class FontCache {
 	
 public:
 	
-	static void Initialize();
-	static void Shutdown();
+	static void initialize();
+	static void shutdown();
 	
-	static Font * GetFont(const res::path & fontFile, unsigned int fontSize);
-	static void ReleaseFont(Font * pFont);
+	static Font * getFont(const res::path & fontFile, unsigned int fontSize);
+	static void releaseFont(Font * pFont);
 	
 private:
 	
@@ -57,13 +57,13 @@ private:
 	FontCache();
 	~FontCache();
 	
-	Font * Create(const res::path & fontFile, FontFile & file, unsigned int fontSize);
+	Font * create(const res::path & fontFile, FontFile & file, unsigned int fontSize);
 	
 	
 	typedef std::map<res::path, FontFile> FontFiles;
 	FontFiles files;
 	
-	static FontCache * m_Instance;
+	static FontCache * instance;
 };
 
 #endif // ARX_GRAPHICS_FONT_FONTCACHE_H
