@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Application.h"
 #include "core/Localisation.h"
-#include "core/Unicode.hpp"
 #include "core/Core.h"
 
 #include "game/Player.h"
@@ -87,6 +86,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
+
+#include "util/Unicode.h"
 
 using std::string;
 using std::istringstream;
@@ -195,16 +196,16 @@ void ARX_Menu_Resources_Create() {
 	string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
-	u16 * creditsData = (u16*)resources->readAlloc(creditsFile, creditsSize);
+	char * credits = resources->readAlloc(creditsFile, creditsSize);
 	
 	string englishCreditsFile;
-	if(!creditsData) {
+	if(!credits) {
 		// Fallback if there is no localised credits file
 		englishCreditsFile = "localisation/ucredits_english.txt";
-		creditsData = (u16*)resources->readAlloc(englishCreditsFile, creditsSize);
+		credits = resources->readAlloc(englishCreditsFile, creditsSize);
 	}
 	
-	if(!creditsData) {
+	if(!credits) {
 		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
 			LogWarning << "unable to read credits files " << creditsFile
 			           << " and " << englishCreditsFile;
@@ -213,19 +214,10 @@ void ARX_Menu_Resources_Create() {
 		}
 	} else {
 		
-		u16 * credits = creditsData;
-		
-		creditsSize /= sizeof(*credits);
-		
-		if(creditsSize >= 1 && credits[0] == 0xFEFF) {
-			credits++;
-			creditsSize--;
-		}
-		
 		LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
 		
 		// TODO move this to an external file once we ship our own resources
-		ARXmenu.mda->str_cre_credits =
+		ARXmenu.mda->credits =
 			"~ARX LIBERTATIS TEAM\n"
 			"Daniel Scharrer (dscharrer)\n"
 			"Erik Lund (Akhilla)\n"
@@ -240,18 +232,22 @@ void ARX_Menu_Resources_Create() {
 			"\n~TESTERS\n"
 			"vytautas (aka. ProzacR)\n"
 			"\n\n~Arx Libertatis is free software:\n"
-			"you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\n"
-			"Arx Libertatis is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\n"
-			"You should have received a copy of the GNU General Public License along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.\n\n"
+			"you can redistribute it and/or modify it under the terms of the"
+			" GNU General Public License as published by the Free Software Foundation,"
+			" either version 3 of the License, or (at your option) any later version.\n\n"
+			"Arx Libertatis is distributed in the hope that it will be useful,"
+			" but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY"
+			" or FITNESS FOR A PARTICULAR PURPOSE."
+			"  See the GNU General Public License for more details.\n\n"
+			"You should have received a copy of the GNU General Public License"
+			" along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.\n\n"
 			"\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 		
-		ARXmenu.mda->str_cre_credits.reserve(ARXmenu.mda->str_cre_credits.size() + creditsSize);
+		ARXmenu.mda->credits += util::convertUTF16LEToUTF8(credits, credits + creditsSize);
 		
-		UTF16ToUTF8(credits, &credits[creditsSize],
-		            std::back_inserter(ARXmenu.mda->str_cre_credits));
-		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size());
+		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->credits.size());
 		
-		free(creditsData);
+		free(credits);
 	}
 }
 

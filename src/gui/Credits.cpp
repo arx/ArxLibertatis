@@ -204,7 +204,7 @@ static void strip(string & str) {
 static void ExtractAllCreditsTextInformations() {
 	
 	// Retrieve the rows to display
-	std::istringstream iss(ARXmenu.mda->str_cre_credits);
+	std::istringstream iss(ARXmenu.mda->credits);
 	string phrase;
 
 	//Use to calculate the positions

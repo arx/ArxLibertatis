@@ -38,7 +38,7 @@ public:
 	
 	struct Info {
 		
-		Info(const res::path & fontFile, unsigned int fontSize )
+		Info(const res::path & fontFile, unsigned int fontSize)
 			: name(fontFile), size(fontSize) { }
 		
 		bool operator==(const Info & other) const {
@@ -54,25 +54,47 @@ public:
 		
 	};
 	
-	//! Representation of a glyph.
+	//! Representation of a glyph
 	struct Glyph {
 		
-		unsigned int index; //!< Index of the glyph in the font.
+		//! Index of the glyph in the font
+		unsigned int index;
 		
-		Vec2i size;        //!< Size of the glyph.
-		Vec2i draw_offset; //!< Offset to use when drawing.
-		Vec2f advance;     //!< Pen advance after write this glyph.
-		int lsb_delta;     //!< The difference between hinted and unhinted left side bearing while autohinting is active. Zero otherwise.
-		int rsb_delta;     //!< The difference between hinted and unhinted right side bearing while autohinting is active. Zero otherwise.
+		//! Size of the glyph
+		Vec2i size;
 		
-		Vec2f uv_start; //!< UV coordinates.
-		Vec2f uv_end;   //!< UV coordinates.
+		//! Offset to use when drawing
+		Vec2i draw_offset;
 		
-		unsigned int texture; //!< Texture page on which the glyph can be found.
+		//! Pen advance after write this glyph
+		Vec2f advance;
+		
+		/*!
+		 * The difference between hinted and unhinted left side bearing
+		 * while autohinting is active. Zero otherwise
+		 */
+		int lsb_delta;
+		
+		/*!
+		 * The difference between hinted and unhinted right side bearing
+		 * while autohinting is active. Zero otherwise
+		 */
+		int rsb_delta;
+		
+		//!< UV coordinates
+		Vec2f uv_start;
+		
+		//!< UV coordinates
+		Vec2f uv_end;
+		
+		//!< Texture page on which the glyph can be found
+		unsigned int texture;
 		
 	};
 	
 public:
+	
+	typedef u32 Char;
 	
 	typedef std::string::const_iterator text_iterator;
 	
@@ -111,7 +133,7 @@ private:
 	~Font();
 	
 	//! Maps the given character to a placeholder glyph
-	void insertPlaceholderGlyph(u32 character);
+	void insertPlaceholderGlyph(Char character);
 	
 	/*!
 	 * Inserts a single glyph
@@ -119,7 +141,7 @@ private:
 	 * is no glyph for the given character
 	 * @return true if the glyph textures were changed
 	 */
-	bool insertGlyph(u32 character);
+	bool insertGlyph(Char character);
 	
 	/*!
 	 * Inserts any missing glyphs for the characters in the UTF-8 string [begin, end)
@@ -136,8 +158,8 @@ private:
 	unsigned int referenceCount;
 	
 	struct FT_FaceRec_ * face;
-	std::map<unsigned int, Glyph> glyphs;
-	typedef std::map<unsigned int, Glyph>::const_iterator glyph_iterator;
+	std::map<Char, Glyph> glyphs;
+	typedef std::map<Char, Glyph>::const_iterator glyph_iterator;
 	
 	/*!
 	 * Parses UTF-8 input and returns the glyph for the first character

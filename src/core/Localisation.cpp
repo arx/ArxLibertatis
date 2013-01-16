@@ -26,7 +26,6 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
-#include "core/Unicode.hpp"
 #include "core/Config.h"
 
 #include "io/resource/ResourcePath.h"
@@ -35,6 +34,8 @@
 #include "io/log/Logger.h"
 
 #include "platform/Platform.h"
+
+#include "util/Unicode.h"
 
 using std::string;
 
@@ -142,37 +143,25 @@ bool initLocalisation() {
 	
 	arx_assert(!config.language.empty());
 	
-	u16 * localisation = reinterpret_cast<u16 *>(file->readAlloc());
-	u16 * toFree = localisation;
-	
-	// Scale the loaded size to new stride of uint16_t vs char
-	size_t loc_file_size = file->size() / sizeof(*localisation);
-	
-	// Ignore any byte order mark.
-	if(loc_file_size >= 1 && *localisation == 0xfeff) {
-		loc_file_size--, localisation++;
+	char * data = file->readAlloc();
+	if(!data) {
+		return false;
 	}
-
-	LogDebug("Loaded localisation file of size " << loc_file_size);
-	size_t nchars = GetUTF16Length(localisation, &localisation[loc_file_size]);
-	ARX_UNUSED(nchars);
-	LogDebug("UTF-16 size is " << nchars);
-	std::string out;
-	out.reserve(loc_file_size);
-	UTF16ToUTF8(localisation, &localisation[loc_file_size], std::back_inserter(out));
+	
+	LogDebug("Loaded localisation file of size " << file->size());
+	std::string out = util::convertUTF16LEToUTF8(data, data + file->size());
 	LogDebug("Converted to UTF8 string of length " << out.size());
-
-	if(localisation && loc_file_size) {
+	
+	if(!out.empty()) {
 		LogDebug("Preparing to parse localisation file");
-		std::istringstream iss( out );
+		std::istringstream iss(out);
 		if(!::localisation.read(iss)) {
 			LogWarning << "Error parsing localisation file localisation/utext_"
 			           << config.language << ".ini";
 		}
-		
 	}
 	
-	free(toFree);
+	free(data);
 	
 	return true;
 }

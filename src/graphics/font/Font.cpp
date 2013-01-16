@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -30,9 +31,12 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 #include "graphics/texture/TextureStage.h"
+
 #include "io/fs/FilePath.h"
 #include "io/resource/ResourcePath.h"
 #include "io/log/Logger.h"
+
+#include "util/Unicode.h"
 
 using std::string;
 
@@ -48,9 +52,15 @@ Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 	// Insert all the glyphs into texture pages
 	textures = new PackedTexture(TEXTURE_SIZE, Image::Format_A8);
 	
-	// Pre-load common glyphs
-	for(u32 chr = 32; chr < 256; ++chr) {
-		insertGlyph(chr);
+	// Insert the replacement characters first as they may be needed if others are missing
+	insertGlyph('?');
+	insertGlyph(util::REPLACEMENT_CHAR);
+	
+	// Pre-load glyphs for displayable ASCII characters
+	for(Char chr = 32; chr < 127; ++chr) {
+		if(chr != '?') {
+			insertGlyph(chr);
+		}
 	}
 	
 	textures->upload();
@@ -64,12 +74,17 @@ Font::~Font() {
 	FT_Done_Face(face);
 }
 
-void Font::insertPlaceholderGlyph(u32 character) {
+void Font::insertPlaceholderGlyph(Char character) {
 	
-	// Glyp does not exist - insert something so we don't look it up for every render pass.
-	if(character < 256) {
+	// Glyp does not exist - insert something so we don't look it up for every render pass
+	if(character == util::REPLACEMENT_CHAR) {
 		
-		// ignore non-displayable ANSI characters (and some more)
+		// Use '?' as a fallback replacement character
+		glyphs[character] = glyphs['?'];
+		
+	} else if(character < 32 || character == '?') {
+		
+		// Ignore non-displayable ANSI characters
 		Glyph & glyph = glyphs[character];
 		glyph.size = Vec2i::ZERO;
 		glyph.advance = Vec2f::ZERO;
@@ -80,12 +95,18 @@ void Font::insertPlaceholderGlyph(u32 character) {
 		glyph.texture = 0;
 		
 	} else {
-		glyphs[character] = glyphs['?'];
-		LogWarning << "No glyph for character U+" << std::hex << character;
+		
+		std::ostringstream oss;
+		util::writeUTF8(std::ostream_iterator<char>(oss), character);
+		LogWarning << "No glyph for character U+" << std::hex << character
+		           << " (" << oss.str() << ") in font " << info.name;
+		
+		glyphs[character] = glyphs[util::REPLACEMENT_CHAR];
+		
 	}
 }
 
-bool Font::insertGlyph(u32 character) {
+bool Font::insertGlyph(Char character) {
 	
 	FT_Error error;
 	FT_UInt glyphIndex = FT_Get_Char_Index(face, character);
@@ -172,60 +193,12 @@ bool Font::writeToDisk() {
 	return ok;
 }
 
-typedef u32 Unicode;
-static const Unicode INVALID_CHAR = Unicode(-1);
-static const Unicode REPLACEMENT_CHAR = 0xfffd;
-
-inline static Unicode read_utf8(Font::text_iterator & it, Font::text_iterator end) {
-	
-	if(it == end) {
-		return INVALID_CHAR;
-	}
-	Unicode chr = *it++;
-	
-	if(chr & (1 << 7)) {
-		
-		if(!(chr & (1 << 6))) {
-			// Bad start position
-		}
-		
-		if(it == end) {
-			return INVALID_CHAR;
-		}
-		chr &= 0x3f, chr <<= 6, chr |= ((*it++) & 0x3f);
-		
-		if(chr & (1 << (5 + 6))) {
-			
-			if(it == end) {
-				return INVALID_CHAR;
-			}
-			chr &= ~(1 << (5 + 6)), chr <<= 6, chr |= ((*it++) & 0x3f);
-			
-			if(chr & (1 << (4 + 6 + 6))) {
-				
-				if(it == end) {
-					return INVALID_CHAR;
-				}
-				chr &= ~(1 << (4 + 6 + 6)), chr <<= 6, chr |= ((*it++) & 0x3f);
-				
-				if(chr & (1 << (3 + 6 + 6 + 6))) {
-					// Bad UTF-8 string
-					chr = REPLACEMENT_CHAR;
-				}
-				
-			}
-		}
-	}
-	
-	return chr;
-}
-
 bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	
-	u32 chr;
+	Char chr;
 	bool changed = false;
 	
-	for(text_iterator it = begin; (chr = read_utf8(it, end)) != INVALID_CHAR; ) {
+	for(text_iterator it = begin; (chr = util::readUTF8(it, end)) != util::INVALID_CHAR; ) {
 		if(glyphs.find(chr) == glyphs.end()) {
 			if(chr >= 256 && insertGlyph(chr)) {
 				changed = true;
@@ -238,8 +211,8 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 
 Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 	
-	Unicode chr = read_utf8(it, end);
-	if(chr == INVALID_CHAR) {
+	Char chr = util::readUTF8(it, end);
+	if(chr == util::INVALID_CHAR) {
 		return glyphs.end();
 	}
 	
