@@ -195,7 +195,6 @@ private:
 	
 	Vec3f sphereposdep;
 	Vec3f sphereposend;
-	float spherescale;
 	Vec3f * spherevertex;
 	unsigned short * sphereind;
 	int spherenbpt;
