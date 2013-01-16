@@ -232,7 +232,6 @@ private:
 	
 	//! \cond docNever
 	QHexEditPrivate * qHexEdit_p;
-	QScrollArea * scrollArea;
 	//! \endcond docNever
 };
 
