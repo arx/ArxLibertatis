@@ -70,24 +70,21 @@ class CHeal: public CSpellFx
  
 };
 
-class CLowerArmor: public CSpellFx
-{
-	public:
-		int		iNpc;
-
-	public:
-		CLowerArmor();
-		~CLowerArmor();
-
-		// surcharge
-	public:
-		void	Create(long);
-		void	Kill();
-		void	Update(unsigned long);
-		float	Render();
+class CLowerArmor : public CSpellFx {
+	
+public:
+	
+	CLowerArmor();
+	~CLowerArmor();
+	
+	void Create(long);
+	void Kill();
+	void Update(unsigned long);
+	float Render();
+	
 };
 
-class CArmor: public CSpellFx {
+class CArmor : public CSpellFx {
 	
 public:
 	
