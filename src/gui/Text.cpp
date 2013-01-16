@@ -100,7 +100,7 @@ void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 	}
 	
 	// Ensure we can at least draw one line...
-	if(penY + font->GetLineHeight() > rect.bottom) {
+	if(penY + font->getLineHeight() > rect.bottom) {
 		return;
 	}
 	
@@ -118,7 +118,7 @@ void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 			}
 			
 			// Check length of string up to this point
-			Vec2i size = font->GetTextSize(itLastLineBreak, it + 1);
+			Vec2i size = font->getTextSize(itLastLineBreak, it + 1);
 			if(size.x > maxLineWidth) { // Too long ?
 				isLineBreak = true;
 				if(itLastWordBreak > itLastLineBreak) {
@@ -145,17 +145,17 @@ void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
 			
 			// Draw the line
 			if(!computeOnly) {
-				font->Draw(rect.left, penY, itTextStart, itTextEnd, col);
+				font->draw(rect.left, penY, itTextStart, itTextEnd, col);
 			}
 			
 			if(it != text.end()) {
 				itLastLineBreak = it + 1;
 			}
 			
-			penY += font->GetLineHeight();
+			penY += font->getLineHeight();
 			
 			// Validate that the new line will fit inside the rect...
-			if(penY + font->GetLineHeight() > rect.bottom) {
+			if(penY + font->getLineHeight() > rect.bottom) {
 				break;
 			}
 		}
@@ -243,11 +243,11 @@ void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, 
 
 long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, Color col )
 {
-	Vec2i size = font->GetTextSize(str);
+	Vec2i size = font->getTextSize(str);
 	int drawX = ((int)x) - (size.x / 2);
 	int drawY = (int)y;
 
-	font->Draw(drawX, drawY, str, col);
+	font->draw(drawX, drawY, str, col);
 
 	return size.x;
 }
@@ -386,10 +386,10 @@ bool ARX_Text_Init() {
 	hFontInGameNote = nFontInGameNote;
 	hFontInBook = nFontInBook;
 	
-	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->GetSize() << ", "
-	        << hFontMenu->GetSize() << ", " << hFontControls->GetSize()
-	        << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", "
-	        << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
+	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->getSize() << ", "
+	        << hFontMenu->getSize() << ", " << hFontControls->getSize()
+	        << ", " << hFontCredits->getSize() << ", " << hFontInGame->getSize() << ", "
+	        << hFontInGameNote->getSize() << ", " << hFontInBook->getSize();
 	
 	return true;
 }

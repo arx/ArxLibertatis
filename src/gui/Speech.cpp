@@ -180,7 +180,7 @@ void ARX_SPEECH_Render() {
 	
 	long igrec = 14;
 	
-	Vec2i sSize = hFontInBook->GetTextSize("p");
+	Vec2i sSize = hFontInBook->getTextSize("p");
 	sSize.y *= 3;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -537,7 +537,7 @@ void ARX_SPEECH_Update() {
 				if(CINEMASCOPE) {
 					if (CINEMA_DECAL >= 100.f)
 					{
-						Vec2i sSize = hFontInBook->GetTextSize(speech->text);
+						Vec2i sSize = hFontInBook->getTextSize(speech->text);
 						
 						float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;

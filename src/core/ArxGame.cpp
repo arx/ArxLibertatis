@@ -618,7 +618,7 @@ void ArxGame::Cleanup3DEnvironment() {
 //*************************************************************************************
 void ArxGame::OutputText(int x, int y, const string & str) {
 	if (m_bReady) {
-		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
+		hFontInGame->draw(x, y, str, Color(255, 255, 0));
 	}
 }
 
@@ -634,12 +634,12 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 	// find display size
 	const Vec2i &window = GetWindow()->GetSize();
 
-	const int tsize = selected_font->GetLineHeight();
+	const int tsize = selected_font->getLineHeight();
 
 
 	// TODO: could use quadrants for width or something similar
 	// TODO: could center text in column/row
-	const Vector2<int> size(window.x / 4, selected_font->GetLineHeight());
+	const Vector2<int> size(window.x / 4, selected_font->getLineHeight());
 
 	const Vector2<int> spacing(2, 2);
 	const Vector2<float> p(column + (column < 0), row + (row < 0));
@@ -648,7 +648,7 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 	const Vector2<int> offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
 
 	// print the text directly using our selected font
-	selected_font->Draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
+	selected_font->draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
 
 }
 

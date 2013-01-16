@@ -461,7 +461,7 @@ bool Menu2_Render() {
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-		float verPosX = RATIO_X(620) - hFontControls->GetTextSize(version).x;
+		float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
 		me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
 		
 		me->SetCheckOff();
@@ -1765,7 +1765,7 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 
 	lpszText= _pText;
 
-	Vec2i textSize = _pFont->GetTextSize(_pText);
+	Vec2i textSize = _pFont->getTextSize(_pText);
 	rZone.left = checked_range_cast<Rect::Num>(_fPosX);
 	rZone.top = checked_range_cast<Rect::Num>(_fPosY);
 	rZone.right  = rZone.left + textSize.x;
@@ -1794,7 +1794,7 @@ void CMenuElementText::SetText( const std::string& _pText )
 {
 	lpszText = _pText;
 
-	Vec2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->getTextSize(_pText);
 
 	rZone.right  = textSize.x + rZone.left;
 	rZone.bottom = textSize.y + rZone.top;
@@ -2328,7 +2328,7 @@ void CMenuElementText::RenderMouseOver()
 
 Vec2i CMenuElementText::GetTextSize() const
 {
-	return pFont->GetTextSize(lpszText);
+	return pFont->getTextSize(lpszText);
 }
 
 //-----------------------------------------------------------------------------
@@ -2679,7 +2679,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 
 	if ( pText )
 	{
-		textSize = pText->pFont->GetTextSize(pText->lpszText); 
+		textSize = pText->pFont->getTextSize(pText->lpszText); 
 
 		_iTaille = std::max<int>(_iTaille, textSize.y);
 		textSize.x += pText->rZone.left;
@@ -3329,7 +3329,7 @@ void CWindowMenuConsole::UpdateText()
 
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
-		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
+		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->getTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
 
@@ -4172,7 +4172,7 @@ void CMenuButton::AddText( const std::string& _pText)
 	int iSizeXButton=rZone.right-rZone.left;
 	int iSizeYButton=rZone.bottom-rZone.top;
 	
-	Vec2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->getTextSize(_pText);
 
 	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
 	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;

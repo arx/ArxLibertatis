@@ -98,7 +98,7 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const Rect & 
 	
 	if(iNbLigneClipp) 
 	{
-		Vec2i sSize = _pFont->GetTextSize(pArxText->lpszUText);
+		Vec2i sSize = _pFont->getTextSize(pArxText->lpszUText);
 		sSize.y *= iNbLigneClipp;
 	
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;

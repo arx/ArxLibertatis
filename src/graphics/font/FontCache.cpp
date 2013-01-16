@@ -78,7 +78,7 @@ Font * FontCache::GetFont(const res::path & fontFile, unsigned int fontSize) {
 	}
 	
 	if(pFont) {
-		pFont->m_RefCount++;
+		pFont->referenceCount++;
 	} else if(!file.sizes.empty()) {
 		m_Instance->files.erase(fontFile);
 	}
@@ -127,18 +127,18 @@ void FontCache::ReleaseFont(Font * font) {
 		return;
 	}
 	
-	font->m_RefCount--;
+	font->referenceCount--;
 	
-	if(font->m_RefCount == 0) {
+	if(font->referenceCount == 0) {
 		
-		FontFile & file = m_Instance->files[font->GetName()];
+		FontFile & file = m_Instance->files[font->getName()];
 		
-		file.sizes.erase(font->GetSize());
+		file.sizes.erase(font->getSize());
 		LogDebug("destroying font " << font->GetName() << " @ " << font->GetSize());
 		
 		if(file.sizes.empty()) {
 			free(file.data);
-			m_Instance->files.erase(font->GetName());
+			m_Instance->files.erase(font->getName());
 			LogDebug("unloading file " << font->GetName());
 		}
 		

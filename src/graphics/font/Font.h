@@ -39,18 +39,18 @@ public:
 	struct Info {
 		
 		Info(const res::path & fontFile, unsigned int fontSize )
-			: m_Name(fontFile), m_Size(fontSize) { }
+			: name(fontFile), size(fontSize) { }
 		
-		bool operator==(const Info & pOther) const {
-			return m_Name == pOther.m_Name && m_Size == pOther.m_Size;
+		bool operator==(const Info & other) const {
+			return name == other.name && size == other.size;
 		}
 		
-		bool operator<(const Info & pOther) const  {
-			return m_Name == pOther.m_Name ? m_Size < pOther.m_Size : m_Name < pOther.m_Name;
+		bool operator<(const Info & other) const  {
+			return name == other.name ? size < other.size : name < other.name;
 		}
 		
-		res::path m_Name;
-		unsigned int m_Size;
+		res::path name;
+		unsigned int size;
 		
 	};
 	
@@ -76,31 +76,33 @@ public:
 	
 	typedef std::string::const_iterator text_iterator;
 	
-	const Info & GetInfo() const { return m_Info; }
-	const res::path & GetName() const { return m_Info.m_Name; }
-	unsigned int GetSize() const { return m_Info.m_Size; }
+	const Info & getInfo() const { return info; }
+	const res::path & getName() const { return info.name; }
+	unsigned int getSize() const { return info.size; }
 	
-	void Draw(const Vector2<int> & p, const std::string & str, const Color & color) {
-		Draw(p.x, p.y, str, color);
+	void draw(const Vector2<int> & p, const std::string & str, const Color & color) {
+		draw(p.x, p.y, str, color);
 	}
 	
-	void Draw(int x, int y, const std::string & str, Color color) {
-		Draw(x, y, str.begin(), str.end(), color);
+	void draw(int x, int y, const std::string & str, Color color) {
+		draw(x, y, str.begin(), str.end(), color);
 	}
 	
-	void Draw(int x, int y, text_iterator start, text_iterator end, Color color);
+	void draw(int x, int y, text_iterator start, text_iterator end, Color color);
 	
-	Vec2i GetTextSize(const std::string & str) {
-		return GetTextSize(str.begin(), str.end());
+	Vec2i getTextSize(const std::string & str) {
+		return getTextSize(str.begin(), str.end());
 	}
 	
-	Vec2i GetTextSize(text_iterator start, text_iterator end);
+	Vec2i getTextSize(text_iterator start, text_iterator end);
 	
-	int GetLineHeight() const;
+	int getLineHeight() const;
 	
-	// For debugging purpose... will write one image file per page
-	// under "name_style_size_pagen.png"
-	bool WriteToDisk();
+	/*!
+	 * For debugging purpose... will write one image file per page
+	 * under "name_style_size_pagen.png"
+	 */
+	bool writeToDisk();
 	
 private:
 	
@@ -130,11 +132,11 @@ private:
 	template <bool Draw>
 	Vec2i process(int pX, int pY, text_iterator start, text_iterator end, Color color);
 	
-	Info m_Info;
-	unsigned int m_RefCount;
+	Info info;
+	unsigned int referenceCount;
 	
-	struct FT_FaceRec_ * m_FTFace;
-	std::map<unsigned int, Glyph> m_Glyphs;
+	struct FT_FaceRec_ * face;
+	std::map<unsigned int, Glyph> glyphs;
 	typedef std::map<unsigned int, Glyph>::const_iterator glyph_iterator;
 	
 	/*!
@@ -144,7 +146,7 @@ private:
 	 */
 	glyph_iterator getNextGlyph(text_iterator & it, text_iterator end);
 	
-	class PackedTexture * m_Textures;
+	class PackedTexture * textures;
 	
 };
 
