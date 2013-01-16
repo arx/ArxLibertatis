@@ -193,7 +193,6 @@ private:
 	int nbeclair; // eclair
 	T_ECLAIR tabeclair[256];
 	
-	TextureContainer * spheretc; // sphere
 	Vec3f sphereposdep;
 	Vec3f sphereposend;
 	float spherescale;
