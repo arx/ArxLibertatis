@@ -518,7 +518,6 @@ set(GRAPHICS_SOURCES
 	src/graphics/spells/Spells05.cpp
 	src/graphics/spells/Spells06.cpp
 	src/graphics/spells/Spells07.cpp
-	src/graphics/spells/Spells08.cpp
 	src/graphics/spells/Spells09.cpp
 	src/graphics/spells/Spells10.cpp
 	src/graphics/texture/PackedTexture.cpp
