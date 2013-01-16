@@ -214,7 +214,6 @@ private:
 	short key;
 	int duration;
 	int currduration;
-	int num;
 	int iNumThrow;
 	
 	struct T_RUBAN {
