@@ -135,12 +135,12 @@ void FontCache::releaseFont(Font * font) {
 		FontFile & file = instance->files[font->getName()];
 		
 		file.sizes.erase(font->getSize());
-		LogDebug("destroying font " << font->GetName() << " @ " << font->GetSize());
+		LogDebug("destroying font " << font->getName() << " @ " << font->getSize());
 		
 		if(file.sizes.empty()) {
 			free(file.data);
 			instance->files.erase(font->getName());
-			LogDebug("unloading file " << font->GetName());
+			LogDebug("unloading file " << font->getName());
 		}
 		
 		delete font;

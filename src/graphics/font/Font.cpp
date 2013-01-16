@@ -80,6 +80,7 @@ void Font::insertPlaceholderGlyph(Char character) {
 	if(character == util::REPLACEMENT_CHAR) {
 		
 		// Use '?' as a fallback replacement character
+		arx_assert(glyphs.find('?') != glyphs.end());
 		glyphs[character] = glyphs['?'];
 		
 	} else if(character < 32 || character == '?') {
@@ -101,6 +102,7 @@ void Font::insertPlaceholderGlyph(Char character) {
 		LogWarning << "No glyph for character U+" << std::hex << character
 		           << " (" << oss.str() << ") in font " << info.name;
 		
+		arx_assert(glyphs.find(util::REPLACEMENT_CHAR) != glyphs.end());
 		glyphs[character] = glyphs[util::REPLACEMENT_CHAR];
 		
 	}
@@ -231,7 +233,7 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 		return glyphs.find(chr);
 	}
 	
-	arx_assert(m_Glyphs.find(chr) != m_Glyphs.end());
+	arx_assert(glyphs.find(chr) != glyphs.end());
 	
 	// As we need to re-upload the textures now, first check for more missing glyphs
 	insertMissingGlyphs(it, end);
