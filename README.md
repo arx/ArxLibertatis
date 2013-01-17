@@ -37,7 +37,7 @@ Systems without Win32 or POSIX filesystem support will also need **Boost 1.44** 
 
 There are rendering backends for both OpenGL and Direct3D. You need either:
 
-* **SDL 1.2**
+* **SDL 1.2.10**+
 * **OpenGL 1.5**+ (OpenGL 2.1 or newer is recommended)
 * **GLEW 1.5.2**+
 
