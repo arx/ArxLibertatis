@@ -74,7 +74,7 @@ function(add_style_check_target TARGET_NAME SOURCES_LIST INCLUDES_LIST)
 	if(PYTHONINTERP_FOUND)
 		
 		add_custom_target(${TARGET_NAME}
-			COMMAND cmake -E chdir
+			COMMAND "${CMAKE_COMMAND}" -E chdir
 				"${CMAKE_SOURCE_DIR}"
 				"${PYTHON_EXECUTABLE}"
 				"${CMAKE_SOURCE_DIR}/scripts/cpplint.py"

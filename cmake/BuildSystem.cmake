@@ -31,7 +31,16 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 		get_filename_component(source_file "${source_file}" ABSOLUTE)
 		
 		string(REGEX REPLACE ".*\\/" "" short_file "${source_file}")
-		file(APPEND ${unit_build_file} "#pragma message (\"[${currentIdx}/${numfiles}] Compiling ${short_file}...\")\n")
+		if(MSVC OR ${CMAKE_CXX_COMPILER} MATCHES "(^|/)icp?c$")
+			file(APPEND ${unit_build_file} "#pragma message"
+			     " (\"[${currentIdx}/${numfiles}] Compiling ${short_file}...\")\n")
+		else()
+			# While it's nice to see what actual source files are bing included, gcc
+			# and some gcc-compatible compilers such as clang show a warning and/or
+			# call stack for #pragma message.
+			# This makes actual warnings much harder to notice, so we only enable
+			# the message for whitelisted compilers.
+		endif()
 		file(APPEND ${unit_build_file} "#include \"${source_file}\"\n\n")
 		math(EXPR currentIdx "${currentIdx} + 1")
 		
@@ -41,7 +50,7 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 	set(${SOURCE_VARIABLE_NAME} ${${SOURCE_VARIABLE_NAME}} ${unit_build_file} PARENT_SCOPE)
 	
 	# Put ub file at the root of the project
-	source_group( "" FILES ${unit_build_file} )
+	source_group("" FILES ${unit_build_file})
 endfunction(enable_unity_build)
 
 
@@ -213,9 +222,12 @@ endfunction(shared_build)
 # Build each executable by including all the source files into one big master file.
 function(unity_build)
 	
+	add_custom_target(ub_notice COMMENT "Note: The unity build executables may take a long time to compile, without any indication of progress. Be patient.")
+	
 	foreach(exe IN LISTS SHARED_BUILD_EXECUTABLES)
 		enable_unity_build(${exe} SHARED_BUILD_${exe}_SOURCES)
 		_shared_build_add_executable(${exe})
+		add_dependencies(${exe} ub_notice)
 	endforeach(exe)
 	
 	_shared_build_cleanup()
