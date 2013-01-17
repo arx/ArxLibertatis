@@ -479,11 +479,19 @@ void SDLInputBackend::onInputEvent(const SDL_Event & event) {
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP: {
 			Uint8 button = event.button.button;
+#ifdef SDL_BUTTON_WHEELUP
 			if(button == SDL_BUTTON_WHEELUP) {
 				wheel++;
-			} else if(button == SDL_BUTTON_WHEELDOWN) {
+				break;
+			}
+#endif
+#ifdef SDL_BUTTON_WHEELDOWN
+			if(button == SDL_BUTTON_WHEELDOWN) {
 				wheel--;
-			} else if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
+				break;
+			}
+#endif
+			if(button < ARRAY_SIZE(sdlToArxButton) && sdlToArxButton[button] >= 0) {
 				size_t i = sdlToArxButton[button] - Mouse::ButtonBase;
 				if((event.button.state == SDL_PRESSED)) {
 					buttonStates[i] = true, clickCount[i]++;

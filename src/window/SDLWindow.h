@@ -22,6 +22,10 @@
 
 #include <SDL.h>
 
+#ifndef SDLCALL
+#define SDLCALL
+#endif
+
 #include "window/RenderWindow.h"
 
 class SDLInputBackend;
