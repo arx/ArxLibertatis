@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <utility>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "animation/Cinematic.h"
@@ -77,7 +78,7 @@ extern C_KEY KeyTemp;
 
 static res::path fixTexturePath(const string & path) {
 	
-	string copy = toLowercase(path);
+	string copy = boost::to_lower_copy(path);
 	
 	size_t abs_dir = copy.find("arx\\");
 	
@@ -90,7 +91,7 @@ static res::path fixTexturePath(const string & path) {
 
 static std::pair<res::path, bool> fixSoundPath(const string & str) {
 	
-	string path = toLowercase(str);
+	string path = boost::to_lower_copy(str);
 	
 	// Remove the .wav file extension
 	if(boost::ends_with(path, ".wav")) {

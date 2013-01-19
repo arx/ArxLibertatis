@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <set>
 #include <sstream>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/foreach.hpp>
 
 #include "core/Config.h"
@@ -143,7 +144,7 @@ void Application::Quit() {
 static bool migrateFilenames(fs::path path, bool is_dir) {
 	
 	string name = path.filename();
-	string lowercase = toLowercase(name);
+	string lowercase = boost::to_lower_copy(name);
 	
 	bool migrated = true;
 	
@@ -186,7 +187,7 @@ static bool migrateFilenames(const fs::path & configFile) {
 	
 	for(fs::directory_iterator it(fs::paths.user); !it.end(); ++it) {
 		string file = it.name();
-		if(fileset.find(toLowercase(file)) != fileset.end()) {
+		if(fileset.find(boost::to_lower_copy(file)) != fileset.end()) {
 			migrated &= migrateFilenames(fs::paths.user / file, it.is_directory());
 		}
 	}

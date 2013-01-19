@@ -22,14 +22,16 @@
 #include "Configure.h"
 
 #include <vector>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <dirent.h>
 #include <unistd.h>
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
+
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
@@ -153,7 +155,7 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 	
 	if(!overwrite && exists(new_p)) {
 #if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_CASE_SENSITIVE)
-		if(toLowercase(old_p.string()) == toLowercase(new_p.string())) {
+		if(boost::to_lower_copy(old_p.string()) == boost::to_lower_copy(new_p.string())) {
 			if(pathconf(old_p.string().c_str(), _PC_CASE_SENSITIVE)) {
 				return false; // filesystem is case-sensitive and destination file already exists
 			}

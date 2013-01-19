@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -772,7 +774,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		if(loadEntities) {
 			
-			string pathstr = toLowercase(safestring(dli->name));
+			string pathstr = boost::to_lower_copy(safestring(dli->name));
 			
 			size_t pos = pathstr.find("graph");
 			if(pos != std::string::npos) {
@@ -924,12 +926,12 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
 		
-		strcpy(nodes.nodes[i].name, toLowercase(safestring(dln->name)).c_str());
+		strcpy(nodes.nodes[i].name, boost::to_lower_copy(safestring(dln->name)).c_str());
 		nodes.nodes[i].pos = (Vec3f)dln->pos + trans;
 		
 		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
 			if(dat[pos] != '\0') {
-				strcpy(nodes.nodes[i].lnames[j], toLowercase(safestring(dat + pos, 64)).c_str());
+				strcpy(nodes.nodes[i].lnames[j], boost::to_lower_copy(safestring(dat + pos, 64)).c_str());
 			}
 			pos += 64;
 		}
@@ -951,7 +953,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		pos += sizeof(DANAE_LS_PATH);
 		
 		Vec3f ppos = Vec3f(dlp->initpos) + trans;
-		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(toLowercase(safestring(dlp->name)), ppos);
+		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(boost::to_lower_copy(safestring(dlp->name)), ppos);
 		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->pos = Vec3f(dlp->pos) + trans;

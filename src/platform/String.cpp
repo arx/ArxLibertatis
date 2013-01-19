@@ -26,21 +26,12 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
-using std::string;
-using std::transform;
-
-void makeLowercase(string & str) {
-	transform(str.begin(), str.end(), str.begin(), ::tolower);
+void makeLowercase(std::string & str) {
+	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 }
 
-string toLowercase(const string & str) {
-	string copy = str;
-	makeLowercase(copy);
-	return copy;
-}
-
-string safestring(const char * data, size_t maxLength) {
-	return string(data, std::find(data, data + maxLength, '\0'));
+std::string safestring(const char * data, size_t maxLength) {
+	return std::string(data, std::find(data, data + maxLength, '\0'));
 }
 
 int atoi(const std::string & str) {

@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "animation/Animation.h"
 
 #include "audio/Audio.h"
@@ -1660,7 +1662,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
 					
 					ostringstream oss;
-					oss << toLowercase(key.getValue());
+					oss << boost::to_lower_copy(key.getValue());
 					if(mi) {
 						oss << mi;
 					}
@@ -1669,7 +1671,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					
 					if(sample == INVALID_ID) {
 						ostringstream oss2;
-						oss2 << toLowercase(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
+						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = audio::createSample(oss2.str());
 					}
 					

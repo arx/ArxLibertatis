@@ -48,6 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "core/Config.h"
@@ -775,7 +776,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		std::copy((const long*)(adr + pos), (const long*)(adr + pos) + ptg3011->nb_index, eerie->grouplist[i].indexes.begin());
 		pos += ptg3011->nb_index * sizeof(long);
 		
-		eerie->grouplist[i].name = toLowercase(safestring(adr + pos, 256));
+		eerie->grouplist[i].name = boost::to_lower_copy(safestring(adr + pos, 256));
 		pos += 256;
 		eerie->grouplist[i].siz = 0.f;
 		
@@ -799,7 +800,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		const THEO_SELECTED * pts = reinterpret_cast<const THEO_SELECTED *>(adr + pos);
 		pos += sizeof(THEO_SELECTED);
 		
-		eerie->selections[i].name = toLowercase(safestring(pts->name));
+		eerie->selections[i].name = boost::to_lower_copy(safestring(pts->name));
 		eerie->selections[i].selected.resize(pts->nb_index);
 		
 		if(pts->nb_index > 0) {
@@ -819,7 +820,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		eerie->actionlist[i].act = ptap->action;
 		eerie->actionlist[i].sfx = ptap->num_sfx;
 		eerie->actionlist[i].idx = ptap->vert_index;
-		eerie->actionlist[i].name = toLowercase(safestring(ptap->name));
+		eerie->actionlist[i].name = boost::to_lower_copy(safestring(ptap->name));
 	}
 	
 	eerie->angle = Anglef::ZERO;
@@ -979,7 +980,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
 		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
 		
-		string name = toLowercase(safestring(ptoh->object_name));
+		string name = boost::to_lower_copy(safestring(ptoh->object_name));
 		if(name == "map_origin") {
 			seerie->point0 = seerie->objs[id]->point0 + seerie->objs[id]->pos;
 			delete seerie->objs[id];

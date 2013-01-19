@@ -23,7 +23,6 @@
 #include <string>
 
 void makeLowercase(std::string & str);
-std::string toLowercase(const std::string & str);
 
 /*!
  * Load an std::string from a const char * that may not be null-terminated.
