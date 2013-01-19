@@ -72,7 +72,7 @@ class ReplaceMeCommand : public Command {
 	
 public:
 	
-	ReplaceMeCommand() : Command("replaceme", ANY_IO) { }
+	ReplaceMeCommand() : Command("replaceme", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -80,7 +80,7 @@ public:
 		
 		DebugScript(' ' << object);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		res::path file;
 		if(io->ioflags & IO_NPC) {
@@ -187,7 +187,7 @@ class CollisionCommand : public Command {
 	
 public:
 	
-	CollisionCommand() : Command("collision", ANY_IO) { }
+	CollisionCommand() : Command("collision", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -195,7 +195,7 @@ public:
 		
 		DebugScript(' ' << choice);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(!choice) {
 			io->ioflags |= IO_NO_COLLISIONS;
@@ -247,7 +247,7 @@ public:
 			file.remove_ext();
 			
 			string target = context.getWord(); // object ident for position
-			Entity * t = entities.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: npc " << file << ' ' << target;
 				return Failed;
@@ -306,7 +306,7 @@ public:
 			
 		} else if(type == "fireball") {
 			
-			Entity * io = context.getIO();
+			Entity * io = context.getEntity();
 			if(!io) {
 				ScriptWarning << "must be npc to spawn fireballs";
 				return  Failed;
@@ -335,13 +335,13 @@ class KillMeCommand : public Command {
 	
 public:
 	
-	KillMeCommand() : Command("killme", ANY_IO) { }
+	KillMeCommand() : Command("killme", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;
 		} else {
@@ -360,13 +360,13 @@ class PhysicalCommand : public Command {
 	
 public:
 	
-	PhysicalCommand() : Command("physical", ANY_IO) { }
+	PhysicalCommand() : Command("physical", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		string type = context.getWord();
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(type == "on") {
 			io->ioflags &= ~IO_PHYSICAL_OFF;
@@ -404,7 +404,7 @@ class LinkObjToMeCommand : public Command {
 	
 public:
 	
-	LinkObjToMeCommand() : Command("linkobjtome", ANY_IO) { }
+	LinkObjToMeCommand() : Command("linkobjtome", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -420,7 +420,7 @@ public:
 			return Failed;
 		}
 		
-		LinkObjToMe(context.getIO(), entities[t], attach);
+		LinkObjToMe(context.getEntity(), entities[t], attach);
 		
 		return Success;
 	}
@@ -472,7 +472,7 @@ class IfVisibleCommand : public Command {
 	
 public:
 	
-	IfVisibleCommand() : Command("ifvisible", ANY_IO) { }
+	IfVisibleCommand() : Command("ifvisible", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -482,7 +482,7 @@ public:
 		
 		long t = entities.getById(target);
 		
-		if(!ValidIONum(t) || !hasVisibility(context.getIO(), entities[t])) {
+		if(!ValidIONum(t) || !hasVisibility(context.getEntity(), entities[t])) {
 			context.skipStatement();
 		}
 		
@@ -505,7 +505,7 @@ public:
 		}
 		
 		string target = context.getWord();
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		bool hide = context.getBool();
 		
@@ -598,11 +598,11 @@ public:
 		DebugScript(' ' << options << ' ' << player.angle.b << ' ' << target);
 		
 		if(target == "behind") {
-			ARX_INTERACTIVE_TeleportBehindTarget(context.getIO());
+			ARX_INTERACTIVE_TeleportBehindTarget(context.getEntity());
 			return Success;
 		}
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(!teleport_player && !io) {
 			ScriptWarning << "must either use -p or use in IO context";
 			return Failed;
@@ -610,7 +610,7 @@ public:
 		
 		if(!initpos) {
 			
-			Entity * t = entities.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -663,14 +663,14 @@ class TargetPlayerPosCommand : public Command {
 	
 public:
 	
-	TargetPlayerPosCommand() : Command("targetplayerpos", ANY_IO) { }
+	TargetPlayerPosCommand() : Command("targetplayerpos", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		context.getIO()->targetinfo = TARGET_PLAYER;
-		GetTargetPos(context.getIO());
+		context.getEntity()->targetinfo = TARGET_PLAYER;
+		GetTargetPos(context.getEntity());
 		
 		return Success;
 	}
@@ -689,12 +689,12 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			return Success;
 		}
 		
-		bool self = (t == context.getIO());
+		bool self = (t == context.getEntity());
 		
 		ARX_INTERACTIVE_DestroyIO(t);
 		
@@ -750,13 +750,13 @@ public:
 		
 		DebugScript(' ' << type << ' ' << target);
 		
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		long self = (context.getIO() == NULL) ? -1 : context.getIO()->index();
+		long self = (context.getEntity() == NULL) ? -1 : context.getEntity()->index();
 		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
 		
 		return Success;
@@ -768,11 +768,11 @@ class DamagerCommand : public AbstractDamageCommand {
 	
 public:
 	
-	DamagerCommand() : AbstractDamageCommand("damager", ANY_IO) { }
+	DamagerCommand() : AbstractDamageCommand("damager", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		io->damager_type = getDamageType(context) | DAMAGE_TYPE_PER_SECOND;
 		

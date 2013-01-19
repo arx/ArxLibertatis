@@ -42,11 +42,11 @@ string loadUnlocalized(const std::string & str) {
 	return str;
 }
 
-Context::Context(EERIE_SCRIPT * _script, size_t _pos, Entity * _io, ScriptMessage msg)
-	: script(_script), pos(_pos), io(_io), message(msg) { }
+Context::Context(EERIE_SCRIPT * script, size_t pos, Entity * entity, ScriptMessage msg)
+	: script(script), pos(pos), entity(entity), message(msg) { }
 
 string Context::getStringVar(const string & var) const {
-	return GetVarValueInterpretedAsText(var, getMaster(), io);
+	return GetVarValueInterpretedAsText(var, getMaster(), entity);
 }
 
 #define ScriptParserWarning Logger(__FILE__,__LINE__, isSuppressed(*this, "?") ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(*this) << ": "
@@ -108,7 +108,7 @@ string Context::getWord() {
 				return word;
 			} else if(esdat[pos] == '~') {
 				if(tilde) {
-					word += GetVarValueInterpretedAsText(var, getMaster(), getIO());
+					word += GetVarValueInterpretedAsText(var, getMaster(), getEntity());
 					var.clear();
 				}
 				tilde = !tilde;
@@ -134,7 +134,7 @@ string Context::getWord() {
 				ScriptParserWarning << "unexpected '\"' inside token";
 			} else if(esdat[pos] == '~') {
 				if(tilde) {
-					word += GetVarValueInterpretedAsText(var, getMaster(), getIO());
+					word += GetVarValueInterpretedAsText(var, getMaster(), getEntity());
 					var.clear();
 				}
 				tilde = !tilde;
@@ -229,7 +229,7 @@ bool Context::getBool() {
 }
 
 float Context::getFloatVar(const std::string & name) const {
-	return GetVarValueInterpretedAsFloat(name, getMaster(), io);
+	return GetVarValueInterpretedAsFloat(name, getMaster(), entity);
 }
 
 size_t Context::skipCommand() {
@@ -346,7 +346,7 @@ bool contains(const SuppressionsForPos & list, const Context & context, const st
 		return false;
 	}
 	
-	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getIO() ? ((context.getScript() == &context.getIO()->script) ? context.getIO()->short_name() : context.getIO()->long_name()) : "unknown");
+	SuppressionsForFile::const_iterator i1 = i0->second.find(context.getEntity() ? ((context.getScript() == &context.getEntity()->script) ? context.getEntity()->short_name() : context.getEntity()->long_name()) : "unknown");
 	if(i1 == i0->second.end()) {
 		return false;
 	}

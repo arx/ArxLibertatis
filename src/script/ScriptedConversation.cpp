@@ -104,7 +104,7 @@ public:
 		for(long j = 0; j < nb_people; j++) {
 			
 			string target = context.getWord();
-			Entity * t = entities.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			
 #ifdef _DEBUG
 			oss << ' ' << target;
@@ -126,7 +126,7 @@ class PlayCommand : public Command {
 	
 public:
 	
-	PlayCommand() : Command("play", ANY_IO) { }
+	PlayCommand() : Command("play", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -152,7 +152,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << sample);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(stop) {
 			ARX_SOUND_Stop(io->sound);
 			io->sound = audio::INVALID_ID;
@@ -199,7 +199,7 @@ public:
 		
 		DebugScript(' ' << sample);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == audio::INVALID_ID) {
@@ -257,7 +257,7 @@ public:
 		
 		DebugScript(' ' << pitch);
 		
-		context.getIO()->_npcdata->speakpitch = pitch;
+		context.getEntity()->_npcdata->speakpitch = pitch;
 		
 		return Success;
 	}
@@ -291,7 +291,7 @@ class SpeakCommand : public Command {
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
 		string target = context.getWord();
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		acs.ionum = (t == NULL) ? -1 : t->index();
 		acs.startpos = context.getFloat();
@@ -300,7 +300,7 @@ class SpeakCommand : public Command {
 		if(player) {
 			computeACSPos(acs, entities.player(), acs.ionum);
 		} else {
-			computeACSPos(acs, context.getIO(), acs.ionum);
+			computeACSPos(acs, context.getEntity(), acs.ionum);
 		}
 	}
 	
@@ -313,7 +313,7 @@ public:
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		bool player = false, unbreakable = false;
 		SpeechFlags voixoff = 0;
@@ -440,13 +440,13 @@ class SetStrikeSpeechCommand : public Command {
 	
 public:
 	
-	SetStrikeSpeechCommand() : Command("setstrikespeech", ANY_IO) { }
+	SetStrikeSpeechCommand() : Command("setstrikespeech", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->strikespeech = script::loadUnlocalized(context.getWord());
+		context.getEntity()->strikespeech = script::loadUnlocalized(context.getWord());
 		
-		DebugScript(' ' << context.getIO()->strikespeech);
+		DebugScript(' ' << context.getEntity()->strikespeech);
 		
 		return Success;
 	}

@@ -69,7 +69,7 @@ public:
 	Result execute(Context & context) {
 		
 		string target = context.getWord();
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		float val = clamp(context.getFloat(), 0.f, 100.f);
 		
@@ -88,7 +88,7 @@ class SetPoisonousCommand : public Command {
 	
 public:
 	
-	SetPoisonousCommand() : Command("setpoisonous", ANY_IO) { }
+	SetPoisonousCommand() : Command("setpoisonous", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -97,7 +97,7 @@ public:
 		
 		DebugScript(' ' << poisonous << ' ' << poisonous_count);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(poisonous_count == 0) {
 			io->poisonous_count = 0;
 		} else {
@@ -122,7 +122,7 @@ public:
 		
 		DebugScript(' ' << stealvalue);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(stealvalue == "off") {
 			io->_itemdata->stealvalue = -1;
 		} else {
@@ -150,9 +150,9 @@ public:
 		DebugScript(' ' << lightvalue);
 		
 		if(lightvalue == "off") {
-			context.getIO()->_itemdata->LightValue = -1;
+			context.getEntity()->_itemdata->LightValue = -1;
 		} else {
-			context.getIO()->_itemdata->LightValue = clamp((int)context.getFloatVar(lightvalue), -1, 1);
+			context.getEntity()->_itemdata->LightValue = clamp((int)context.getFloatVar(lightvalue), -1, 1);
 		}
 		
 		return Success;
@@ -172,7 +172,7 @@ public:
 		
 		DebugScript(' ' << food_value);
 		
-		context.getIO()->_itemdata->food_value = (char)food_value;
+		context.getEntity()->_itemdata->food_value = (char)food_value;
 		
 		return Success;
 	}
@@ -183,7 +183,7 @@ class SetObjectTypeCommand : public Command {
 	
 public:
 	
-	SetObjectTypeCommand() : Command("setobjecttype", ANY_IO) { }
+	SetObjectTypeCommand() : Command("setobjecttype", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -196,7 +196,7 @@ public:
 		
 		DebugScript(' ' << type << ' ' << set);
 		
-		if(!ARX_EQUIPMENT_SetObjectType(*context.getIO(), type, set)) {
+		if(!ARX_EQUIPMENT_SetObjectType(*context.getEntity(), type, set)) {
 			ScriptWarning << "unknown object type: " << type;
 			return Failed;
 		}
@@ -217,7 +217,7 @@ public:
 		bool special = false;
 		HandleFlags("rs") {
 			if(flg & flag('r')) {
-				ARX_EQUIPMENT_Remove_All_Special(context.getIO());
+				ARX_EQUIPMENT_Remove_All_Special(context.getEntity());
 			}
 			if(flg & flag('s')) {
 				special = true;
@@ -235,7 +235,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << param2 << ' ' << fval << ' ' << flag);
 		
-		ARX_EQUIPMENT_SetEquip(context.getIO(), special, param2, fval, flag);
+		ARX_EQUIPMENT_SetEquip(context.getEntity(), special, param2, fval, flag);
 		
 		return Success;
 	}
@@ -246,11 +246,11 @@ class SetDurabilityCommand : public Command {
 	
 public:
 	
-	SetDurabilityCommand() : Command("setdurability", ANY_IO) { }
+	SetDurabilityCommand() : Command("setdurability", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(io->ioflags & IO_NPC) {
 			ScriptWarning << "cannot set durability on NPCs";
 			return Failed;
@@ -287,7 +287,7 @@ public:
 		
 		DebugScript(' ' << count);
 		
-		context.getIO()->_itemdata->maxcount = count;
+		context.getEntity()->_itemdata->maxcount = count;
 		
 		return Success;
 	}
@@ -302,11 +302,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		short count = clamp((short)context.getFloat(), (short)1, context.getIO()->_itemdata->maxcount);
+		short count = clamp((short)context.getFloat(), (short)1, context.getEntity()->_itemdata->maxcount);
 		
 		DebugScript(' ' << count);
 		
-		context.getIO()->_itemdata->count = count;
+		context.getEntity()->_itemdata->count = count;
 		
 		return Success;
 	}
@@ -325,7 +325,7 @@ public:
 		
 		DebugScript(' ' << price);
 		
-		context.getIO()->_itemdata->price = price;
+		context.getEntity()->_itemdata->price = price;
 		
 		return Success;
 	}
@@ -344,7 +344,7 @@ public:
 		
 		DebugScript(' ' << size);
 		
-		context.getIO()->_itemdata->playerstacksize = size;
+		context.getEntity()->_itemdata->playerstacksize = size;
 		
 		return Success;
 	}
@@ -355,13 +355,13 @@ class EatMeCommand : public Command {
 	
 public:
 	
-	EatMeCommand() : Command("eatme", ANY_IO) { }
+	EatMeCommand() : Command("eatme", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(io->ioflags & IO_ITEM) {
 			player.hunger += min(io->_itemdata->food_value * 4.f, 100.f);

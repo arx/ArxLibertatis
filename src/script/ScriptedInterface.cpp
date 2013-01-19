@@ -355,7 +355,7 @@ class DrawSymbolCommand : public Command {
 	
 public:
 	
-	DrawSymbolCommand() : Command("drawsymbol", ANY_IO) { }
+	DrawSymbolCommand() : Command("drawsymbol", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -365,7 +365,7 @@ public:
 		
 		DebugScript(' ' << symbol << ' ' << duration);
 		
-		ARX_SPELLS_RequestSymbolDraw(context.getIO(), symbol, duration);
+		ARX_SPELLS_RequestSymbolDraw(context.getEntity(), symbol, duration);
 		
 		return Success;
 	}

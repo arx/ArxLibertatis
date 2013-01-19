@@ -245,13 +245,13 @@ class SetPlayerTweakCommand : public Command {
 	
 public:
 	
-	SetPlayerTweakCommand() : Command("setplayertweak", ANY_IO) { }
+	SetPlayerTweakCommand() : Command("setplayertweak", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		string command = context.getWord();
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(!io->tweakerinfo) {
 			io->tweakerinfo = new IO_TWEAKER_INFO;
 			if(!io->tweakerinfo) {
@@ -312,7 +312,7 @@ public:
 	Result execute(Context & context) {
 		
 		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = context.getIO();
+		EVENT_SENDER = context.getEntity();
 		
 		bool enable = context.getBool();
 		
@@ -356,7 +356,7 @@ public:
 		
 		player.Interface |= INTER_STEAL;
 		InventoryDir = 1;
-		ioSteal = context.getIO();
+		ioSteal = context.getEntity();
 		
 		return Success;
 	}
@@ -373,7 +373,7 @@ public:
 		
 		string type = context.getWord();
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(type == "ylside_death") {
 			DebugScript(" ylside_death");
@@ -506,7 +506,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -557,7 +557,7 @@ public:
 			duration = 2000 + level * 2000;
 		}
 		
-		if(context.getIO() != entities.player()) {
+		if(context.getEntity() != entities.player()) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
@@ -627,7 +627,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << enable);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(!player && !io) {
 			ScriptWarning << "must either use -p or execute in IO context";
 			return Failed;

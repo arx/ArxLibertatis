@@ -86,13 +86,14 @@ private:
 	
 	EERIE_SCRIPT * script;
 	size_t pos;
-	Entity * io;
+	Entity * entity;
 	ScriptMessage message;
 	std::vector<size_t> stack;
 	
 public:
 	
-	Context(EERIE_SCRIPT * script, size_t pos = 0, Entity * io = NULL, ScriptMessage msg = SM_NULL);
+	Context(EERIE_SCRIPT * script, size_t pos = 0, Entity * entity = NULL,
+	        ScriptMessage msg = SM_NULL);
 	
 	std::string getStringVar(const std::string & var) const;
 	std::string getFlags();
@@ -103,7 +104,7 @@ public:
 	
 	void skipWhitespace(bool skipNewlines = false);
 	
-	inline Entity * getIO() const { return io; }
+	inline Entity * getEntity() const { return entity; }
 	
 	bool getBool();
 	
@@ -135,7 +136,7 @@ public:
 class Command : private boost::noncopyable {
 	
 	const std::string name;
-	const long ioflags;
+	const long entityFlags;
 	
 public:
 	
@@ -148,16 +149,17 @@ public:
 		Jumped
 	};
 	
-	static const long ANY_IO = -1;
+	static const long AnyEntity = -1;
 	
-	inline Command(const std::string & _name, long _ioflags = 0) : name(_name), ioflags(_ioflags) { }
+	inline Command(const std::string & name, long entityFlags = 0)
+		: name(name), entityFlags(entityFlags) { }
 	
 	virtual Result execute(Context & context) = 0;
 	
 	virtual ~Command() { }
 	
 	inline const std::string & getName() const { return name; }
-	inline long getIOFlags() const { return ioflags; }
+	inline long getEntityFlags() const { return entityFlags; }
 };
 
 bool isSuppressed(const Context & context, const std::string & command);
@@ -166,7 +168,7 @@ bool isBlockEndSuprressed(const Context & context, const std::string & command);
 
 size_t initSuppressions();
 
-#define ScriptContextPrefix(context) '[' << ((context).getIO() ? (((context).getScript() == &(context).getIO()->script) ? (context).getIO()->short_name() : (context).getIO()->long_name()) : "unknown") << ':' << (context).getPosition() << "] "
+#define ScriptContextPrefix(context) '[' << ((context).getEntity() ? (((context).getScript() == &(context).getEntity()->script) ? (context).getEntity()->short_name() : (context).getEntity()->long_name()) : "unknown") << ':' << (context).getPosition() << "] "
 #define ScriptPrefix ScriptContextPrefix(context) << getName() <<
 #define DebugScript(args) LogDebug(ScriptPrefix args)
 #define ScriptInfo(args) LogInfo << ScriptPrefix args

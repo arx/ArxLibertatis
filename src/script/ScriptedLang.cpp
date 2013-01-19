@@ -175,7 +175,7 @@ class SetMainEventCommand : public Command {
 	
 public:
 	
-	explicit SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
+	explicit SetMainEventCommand(const string & command) : Command(command, AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -183,7 +183,7 @@ public:
 		
 		DebugScript(' ' << event);
 		
-		ARX_SCRIPT_SetMainEvent(context.getIO(), event);
+		ARX_SCRIPT_SetMainEvent(context.getEntity(), event);
 		
 		return Success;
 	}
@@ -305,9 +305,9 @@ public:
 		}
 		
 		Entity * oes = EVENT_SENDER;
-		EVENT_SENDER = context.getIO();
+		EVENT_SENDER = context.getEntity();
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
@@ -457,7 +457,7 @@ class IfCommand : public Command {
 		char c = (var.empty() ? '\0' : var[0]);
 		
 		EERIE_SCRIPT * es = context.getMaster();
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		switch(c) {
 			
@@ -619,7 +619,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			Entity * t = entities.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getEntity());
 			
 			return (t != NULL && t->groups.find(group) != t->groups.end());
 		}
@@ -634,7 +634,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			Entity * t = entities.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getEntity());
 			
 			return (t != NULL && t->groups.find(group) == t->groups.end());
 		}
@@ -649,7 +649,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
-			Entity * t = entities.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getEntity());
 			
 			ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(type);
 			if(!flag) {
@@ -852,7 +852,7 @@ void timerCommand(const string & timer, Context & context) {
 	
 	DebugScript(' ' << options << ' ' << command);
 	
-	Entity * io = context.getIO();
+	Entity * io = context.getEntity();
 	
 	if(command == "kill_local") {
 		DebugScript(' ' << options << " kill_local");

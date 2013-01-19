@@ -75,11 +75,11 @@ class RotateCommand : public Command {
 	
 public:
 	
-	RotateCommand() : Command("rotate", ANY_IO) { }
+	RotateCommand() : Command("rotate", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		float t1 = context.getFloat();
 		float t2 = context.getFloat();
@@ -123,7 +123,7 @@ class ForceAnimCommand : public Command {
 	
 public:
 	
-	ForceAnimCommand() : Command("forceanim", ANY_IO) { }
+	ForceAnimCommand() : Command("forceanim", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -137,7 +137,7 @@ public:
 			return Failed;
 		}
 		
-		Entity & io = *context.getIO();
+		Entity & io = *context.getEntity();
 		if(!io.anims[num]) {
 			ScriptWarning << "animation " << anim << " not set";
 			return Failed;
@@ -154,7 +154,7 @@ class ForceAngleCommand : public Command {
 	
 public:
 	
-	ForceAngleCommand() : Command("forceangle", ANY_IO) { }
+	ForceAngleCommand() : Command("forceangle", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -162,7 +162,7 @@ public:
 		
 		DebugScript(' ' << angle);
 		
-		context.getIO()->angle.b = angle;
+		context.getEntity()->angle.b = angle;
 		
 		return Success;
 	}
@@ -199,7 +199,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		Entity * iot = context.getIO();
+		Entity * iot = context.getEntity();
 		long nu = 0;
 		bool loop = false;
 		bool nointerpol = false;
@@ -278,7 +278,7 @@ public:
 				ActiveTimers++;
 				scr_timer[num2].es = context.getScript();
 				scr_timer[num2].exist = 1;
-				scr_timer[num2].io = context.getIO();
+				scr_timer[num2].io = context.getEntity();
 				scr_timer[num2].msecs = 1000.f;
 				// Don't assume that we successfully set the animation - use the current animation
 				if(layer.cur_anim) {
@@ -308,7 +308,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		Entity * iot = context.getIO();
+		Entity * iot = context.getEntity();
 		
 		HandleFlags("p") {
 			if(flg & flag('p')) {
@@ -366,7 +366,7 @@ class MoveCommand : public Command {
 	
 public:
 	
-	MoveCommand() : Command("move", ANY_IO) { }
+	MoveCommand() : Command("move", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -376,7 +376,7 @@ public:
 		
 		DebugScript(' ' << dx << ' ' << dy << ' ' << dz);
 		
-		context.getIO()->pos += Vec3f(dx, dy, dz);
+		context.getEntity()->pos += Vec3f(dx, dy, dz);
 		
 		return Success;
 	}
@@ -387,7 +387,7 @@ class UsePathCommand : public Command {
 	
 public:
 	
-	UsePathCommand() : Command("usepath", ANY_IO) { }
+	UsePathCommand() : Command("usepath", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -395,7 +395,7 @@ public:
 		
 		DebugScript(' ' << type);
 		
-		ARX_USE_PATH * aup = context.getIO()->usepath;
+		ARX_USE_PATH * aup = context.getEntity()->usepath;
 		if(!aup) {
 			ScriptWarning << "no path set";
 			return Failed;
@@ -452,7 +452,7 @@ class SetPathCommand : public Command {
 	
 public:
 	
-	SetPathCommand() : Command("setpath", ANY_IO) { }
+	SetPathCommand() : Command("setpath", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -467,7 +467,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << name);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(name == "none") {
 			free(io->usepath), io->usepath = NULL;
 		} else {
@@ -518,7 +518,7 @@ public:
 			return Failed;
 		}
 		
-		ap->controled = context.getIO()->long_name();
+		ap->controled = context.getEntity()->long_name();
 		
 		return Success;
 	}

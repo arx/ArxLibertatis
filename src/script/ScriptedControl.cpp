@@ -67,13 +67,13 @@ class ActivatePhysicsCommand : public Command {
 	
 public:
 	
-	ActivatePhysicsCommand() : Command("activatephysics", ANY_IO) { }
+	ActivatePhysicsCommand() : Command("activatephysics", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		ARX_INTERACTIVE_ActivatePhysics(context.getIO()->index());
+		ARX_INTERACTIVE_ActivatePhysics(context.getEntity()->index());
 		
 		return Success;
 	}
@@ -90,7 +90,7 @@ public:
 		
 		string target = context.getWord();
 		
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		string power = context.getWord();
 		
@@ -162,7 +162,7 @@ class AnchorBlockCommand : public Command {
 	
 public:
 	
-	AnchorBlockCommand() : Command("anchorblock", ANY_IO) { }
+	AnchorBlockCommand() : Command("anchorblock", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -170,7 +170,7 @@ public:
 		
 		DebugScript(' ' << choice);
 		
-		ANCHOR_BLOCK_By_IO(context.getIO(), choice ? 1 : 0);
+		ANCHOR_BLOCK_By_IO(context.getEntity(), choice ? 1 : 0);
 		
 		return Success;
 	}
@@ -186,12 +186,12 @@ public:
 	Result execute(Context & context) {
 		
 		string sourceio = context.getWord();
-		Entity * t = entities.getById(sourceio, context.getIO());
+		Entity * t = entities.getById(sourceio, context.getEntity());
 		
 		string source = context.getWord(); // source action_point
 		
 		string targetio = context.getWord();
-		Entity * t2 = entities.getById(targetio, context.getIO());
+		Entity * t2 = entities.getById(targetio, context.getEntity());
 		
 		string target = context.getWord();
 		
@@ -251,7 +251,7 @@ class SetGroupCommand : public Command {
 	
 public:
 	
-	SetGroupCommand() : Command("setgroup", ANY_IO) { }
+	SetGroupCommand() : Command("setgroup", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -264,7 +264,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << group);
 		
-		Entity & io = *context.getIO();
+		Entity & io = *context.getEntity();
 		if(group == "door") {
 			if(rem) {
 				io.gameFlags &= ~GFLAG_DOOR;
@@ -375,13 +375,13 @@ public:
 		
 		DebugScript(' ' << source << ' ' << target);
 		
-		Entity * t = entities.getById(source, context.getIO());
+		Entity * t = entities.getById(source, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown source: " << source;
 			return Failed;
 		}
 		
-		Entity * t2 = entities.getById(target, context.getIO());
+		Entity * t2 = entities.getById(target, context.getEntity());
 		if(!t2) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;

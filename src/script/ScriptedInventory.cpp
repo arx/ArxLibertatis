@@ -80,7 +80,7 @@ class InventoryCommand : public Command {
 	public:
 		
 		explicit SubCommand(const std::string & name)
-			: Command("inventory " + name, ANY_IO), command(name) { }
+			: Command("inventory " + name, AnyEntity), command(name) { }
 		
 		inline const string & getCommand() { return command; }
 		
@@ -112,7 +112,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			Entity * io = context.getIO();
+			Entity * io = context.getEntity();
 			
 			if(io->inventory) {
 				
@@ -154,9 +154,9 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			context.getIO()->inventory_skin = res::path::load(context.getWord());
+			context.getEntity()->inventory_skin = res::path::load(context.getWord());
 			
-			DebugScript(' ' << context.getIO()->inventory_skin);
+			DebugScript(' ' << context.getEntity()->inventory_skin);
 			
 			return Success;
 		}
@@ -175,7 +175,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			Entity * t = entities.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -257,7 +257,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			Entity * t = entities.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -273,7 +273,7 @@ class InventoryCommand : public Command {
 			t->show = SHOW_FLAG_IN_INVENTORY;
 			
 			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getIO()->inventory, t, &xx, &yy)) {
+			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, t, &xx, &yy)) {
 				PutInFrontOfPlayer(t);
 			}
 			
@@ -294,7 +294,7 @@ class InventoryCommand : public Command {
 			
 			res::path file = res::path::load(context.getWord());
 			
-			Entity * io = context.getIO();
+			Entity * io = context.getEntity();
 			
 			if(FORBID_SCRIPT_IO_CREATION || !io->inventory) {
 				if(multi) {
@@ -342,7 +342,7 @@ class InventoryCommand : public Command {
 			}
 			
 			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getIO()->inventory, ioo, &xx, &yy)) {
+			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, ioo, &xx, &yy)) {
 					PutInFrontOfPlayer(ioo);
 			}
 			
@@ -361,7 +361,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			Entity * io = context.getIO();
+			Entity * io = context.getEntity();
 			if(io->inventory) {
 				if(SecondaryInventory == io->inventory) {
 					SecondaryInventory = NULL;
@@ -384,8 +384,8 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			if(SecondaryInventory != context.getIO()->inventory) {
-				SecondaryInventory = context.getIO()->inventory;
+			if(SecondaryInventory != context.getEntity()->inventory) {
+				SecondaryInventory = context.getEntity()->inventory;
 				ARX_SOUND_PlayInterface(SND_BACKPACK);
 			}
 			
@@ -404,7 +404,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			if(context.getIO()->inventory != NULL) {
+			if(context.getEntity()->inventory != NULL) {
 				SecondaryInventory = NULL;
 				ARX_SOUND_PlayInterface(SND_BACKPACK);
 			}
@@ -416,7 +416,7 @@ class InventoryCommand : public Command {
 	
 public:
 	
-	InventoryCommand() : Command("inventory", ANY_IO) {
+	InventoryCommand() : Command("inventory", AnyEntity) {
 		addCommand(new CreateCommand);
 		addCommand(new SkinCommand);
 		addCommand(new PlayerAddFromSceneCommand);
@@ -452,7 +452,7 @@ class EquipCommand : public Command {
 	
 public:
 	
-	EquipCommand() : Command("equip", ANY_IO) { }
+	EquipCommand() : Command("equip", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -474,15 +474,15 @@ public:
 		if(unequip) {
 			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = entities[t];
-			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPOUT);
+			Stack_SendIOScriptEvent(context.getEntity(), SM_EQUIPOUT);
 			EVENT_SENDER = oes;
-			ARX_EQUIPMENT_UnEquip(entities[t], context.getIO());
+			ARX_EQUIPMENT_UnEquip(entities[t], context.getEntity());
 		} else {
 			Entity * oes = EVENT_SENDER;
 			EVENT_SENDER = entities[t];
-			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPIN);
+			Stack_SendIOScriptEvent(context.getEntity(), SM_EQUIPIN);
 			EVENT_SENDER = oes;
-			ARX_EQUIPMENT_Equip(entities[t], context.getIO());
+			ARX_EQUIPMENT_Equip(entities[t], context.getEntity());
 		}
 		
 		return Success;
@@ -502,7 +502,7 @@ public:
 		
 		DebugScript(' ' << draw);
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(draw) {
 			if(io->_npcdata->weaponinhand == 0) {
@@ -533,7 +533,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		Entity * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		io->gameFlags &= ~GFLAG_HIDEWEAPON;
 		HandleFlags("h") {

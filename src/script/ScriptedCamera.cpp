@@ -76,7 +76,7 @@ public:
 		
 		DebugScript(' ' << enable);
 		
-		CAMERACONTROLLER = enable ? context.getIO() : NULL;
+		CAMERACONTROLLER = enable ? context.getEntity() : NULL;
 		
 		return Success;
 	}
@@ -103,7 +103,7 @@ public:
 		
 		FRAME_COUNT = 0;
 		
-		Entity * t = entities.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		if(!t || !(t->ioflags & IO_CAMERA)) {
 			return Failed;
@@ -131,7 +131,7 @@ public:
 		
 		DebugScript(' ' << smoothing);
 		
-		context.getIO()->_camdata->cam.smoothing = smoothing;
+		context.getEntity()->_camdata->cam.smoothing = smoothing;
 		
 		return Success;
 	}
@@ -176,7 +176,7 @@ public:
 		
 		DebugScript(' ' << focal);
 		
-		context.getIO()->_camdata->cam.focal = focal;
+		context.getEntity()->_camdata->cam.focal = focal;
 		
 		return Success;
 	}
@@ -197,7 +197,7 @@ public:
 		
 		DebugScript(' ' << x << ' ' << y << ' ' << z);
 		
-		context.getIO()->_camdata->cam.translatetarget = Vec3f(x, y, z);
+		context.getEntity()->_camdata->cam.translatetarget = Vec3f(x, y, z);
 		
 		return Success;
 	}
