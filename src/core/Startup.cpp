@@ -165,7 +165,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
 		std::string command_line;
 		for(int i = 1; i < argc; i++) {
-			command_line += argv[i]; // TODO escape
+			command_line += escapeString(argv[i], "\\\" '$!");
 			command_line += ' ';
 		}
 		CrashHandler::setVariable("Command line", command_line);
