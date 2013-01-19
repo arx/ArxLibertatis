@@ -36,14 +36,6 @@ int atoi(const std::string & str) {
 	return out;
 }
 
-std::string itoa(int i) {
-	std::stringstream ss;
-	ss << i;
-	std::string out;
-	ss >> out;
-	return out;
-}
-
 struct character_escaper {
 	template<typename FinderT>
 	std::string operator()(const FinderT & match) const {

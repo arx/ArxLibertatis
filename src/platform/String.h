@@ -40,18 +40,11 @@ std::string safestring(const char (&data)[N]) {
 int atoi(const std::string & str);
 
 /*!
- * Converts a given integer to a string using stringstream
- * @param i The integer to be converted
- * @return The string created by stringstream
- */
-std::string itoa(int i);
-
-/*!
  * Escape a string containing the specified characters to escape
  * @param text The string to escape
  * @param escapeChars String containing the characters you wish to escape
  * @return The escaped string
  */
-std::string escapeString(const std::string & text, const char* escapeChars);
+std::string escapeString(const std::string & text, const char * escapeChars);
 
 #endif // ARX_PLATFORM_STRING_H

@@ -44,14 +44,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Spells.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 #include <limits>
 #include <map>
 #include <set>
+#include <sstream>
 #include <utility>
 
 #include <boost/foreach.hpp>
@@ -5467,10 +5468,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				
 				if(closerThan(ioo->pos, spells[i].caster_pos, 900.f)) {
 					tcount++;
-					long n = spells[i].caster_level;
-					std::string str = entities[spells[i].target]->long_name() + ' '
-					                  + itoa(n);
-					SendIOScriptEvent(ioo, SM_NULL, str, "npc_control");
+					std::ostringstream oss;
+					oss << entities[spells[i].target]->long_name();
+					oss << ' ' << long(spells[i].caster_level);
+					SendIOScriptEvent(ioo, SM_NULL, oss.str(), "npc_control");
 				}
 			}
 			if(tcount == 0) {

@@ -743,7 +743,11 @@ string equip_slot_name(size_t i) {
 		case 5: return "Armor";
 		case 6: return "Helmet";
 		case 7: return "Leggings";
-		default: return "Slot #" + itoa(i);
+		default: {
+			std::ostringstream oss;
+			oss << "Slot #" << i;
+			return oss.str();
+		}
 	}
 }
 

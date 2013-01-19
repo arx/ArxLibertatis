@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "animation/AnimationRender.h"
 
@@ -324,7 +325,8 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		int pathcount = 2;
 		res::path altpath;
 		do {
-			altpath = res::path(path).append_basename(itoa(pathcount++));
+			altpath = res::path(path);
+			altpath.append_basename(boost::lexical_cast<std::string>(pathcount++));
 		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], altpath));
 		
 		return &animations[i];
