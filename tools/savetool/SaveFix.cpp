@@ -25,6 +25,8 @@
 #include <map>
 #include <sstream>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "Configure.h"
 #ifdef BUILD_EDITOR
 #undef BUILD_EDITOR
@@ -239,7 +241,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 		
 		s32 flags = ais.ioflags;
 		
-		if(!specialstrcmp(file.basename(), "gold_coin")) {
+		if(boost::starts_with(file.basename(), "gold_coin")) {
 			file.up() /= "gold_coin.asl";
 			flags = EntityFlags::load(ais.ioflags) | IO_GOLD; // TODO save/load flags
 		}

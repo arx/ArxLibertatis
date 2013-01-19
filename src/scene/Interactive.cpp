@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"
@@ -2262,7 +2264,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 
 	res::path classPath = classPath_;
 	
-	if(!specialstrcmp(classPath.filename(), "gold_coin")) {
+	if(boost::starts_with(classPath.filename(), "gold_coin")) {
 		classPath.up() /= "gold_coin";
 		type = IO_ITEM | IO_GOLD;
 	}

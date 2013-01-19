@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <iostream>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "animation/Animation.h"
 
 #include "core/Application.h"
@@ -2027,10 +2029,11 @@ bool ArxGame::ManageEditorControls()
 					std::string temp = COMBINE->long_name();
 					EVENT_SENDER=COMBINE;
 
-					if (!specialstrcmp( COMBINE->short_name(),"keyring"))
+					if(boost::starts_with(COMBINE->short_name(), "keyring")) {
 						ARX_KEYRING_Combine(io);
-					else
-						SendIOScriptEvent(io,SM_COMBINE,temp);
+					} else {
+						SendIOScriptEvent(io, SM_COMBINE, temp);
+					}
 				}
 			}
 		}

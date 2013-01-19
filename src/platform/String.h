@@ -65,13 +65,6 @@ std::string btoa(bool b);
  */
 bool atob(const std::string & str);
 
-/*!
- * Checks if a string (seek) is at the start of another string (text)
- * returns 0 if "seek" is at the start of "text"
- * else returns 1
- */
-long specialstrcmp(const std::string & text, const std::string & seek);
-
 void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
 /*!

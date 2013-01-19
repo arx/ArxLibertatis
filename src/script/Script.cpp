@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <algorithm>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/Paths.h"
 
 #include "core/GameTime.h"
@@ -468,7 +470,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'a': {
 			
-			if(!specialstrcmp(name, "^amount")) {
+			if(boost::starts_with(name, "^amount")) {
 				if(entity && (entity->ioflags & IO_ITEM)) {
 					*fcontent = entity->_itemdata->count;
 				} else {
@@ -526,7 +528,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'r': {
 			
-			if(!specialstrcmp(name, "^realdist_")) {
+			if(boost::starts_with(name, "^realdist_")) {
 				if(entity) {
 					const char * obj = name.c_str() + 10;
 					
@@ -572,7 +574,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				}
 			}
 			
-			if(!specialstrcmp(name, "^repairprice_")) {
+			if(boost::starts_with(name, "^repairprice_")) {
 				long t = entities.getById(name.substr(13));
 				if(ValidIONum(t)) {
 					*fcontent = ARX_DAMAGES_ComputeRepairPrice(entities[t], entity);
@@ -582,7 +584,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^rnd_")) {
+			if(boost::starts_with(name, "^rnd_")) {
 				const char * max = name.c_str() + 5;
 				// TODO should max be inclusive or exclusive?
 				// if inclusive, use proper integer random, otherwise fix rnd()?
@@ -595,7 +597,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^rune_")) {
+			if(boost::starts_with(name, "^rune_")) {
 				string temp = name.substr(6);
 				*lcontent = 0;
 				if(temp == "aam") {
@@ -647,7 +649,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'i': {
 			
-			if(!specialstrcmp(name, "^inzone_")) {
+			if(boost::starts_with(name, "^inzone_")) {
 				const char * zone = name.c_str() + 8;
 				ARX_PATH * ap = ARX_PATH_GetAddressByName(zone);
 				*lcontent = 0;
@@ -659,7 +661,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_LONG;
 			}
 			
-			if(!specialstrcmp(name, "^ininitpos")) {
+			if(boost::starts_with(name, "^ininitpos")) {
 				Vec3f pos;
 				*lcontent = 0;
 				if(entity && GetItemWorldPosition(entity, &pos) && pos == entity->initpos) {
@@ -668,7 +670,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_LONG;
 			}
 			
-			if(!specialstrcmp(name, "^inplayerinventory")) {
+			if(boost::starts_with(name, "^inplayerinventory")) {
 				*lcontent = 0;
 				if(entity && (entity->ioflags & IO_ITEM) && IsInPlayerInventory(entity)) {
 					*lcontent = 1;
@@ -681,7 +683,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'b': {
 			
-			if(!specialstrcmp(name, "^behavior")) {
+			if(boost::starts_with(name, "^behavior")) {
 				txtcontent = "";
 				if(entity && (entity->ioflags & IO_NPC)) {
 					if(entity->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND) {
@@ -735,7 +737,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 's': {
 			
-			if(!specialstrcmp(name, "^sender")) {
+			if(boost::starts_with(name, "^sender")) {
 				if(!EVENT_SENDER) {
 					txtcontent = "none";
 				} else if(EVENT_SENDER == entities.player()) {
@@ -746,12 +748,12 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_TEXT;
 			}
 			
-			if(!specialstrcmp(name, "^scale")) {
+			if(boost::starts_with(name, "^scale")) {
 				*fcontent = (entity) ? entity->scale * 100.f : 0.f;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^speaking")) {
+			if(boost::starts_with(name, "^speaking")) {
 				if(entity) {
 					for(size_t i = 0; i < MAX_ASPEECH; i++) {
 						if(aspeech[i].exist && entity == aspeech[i].io) {
@@ -769,7 +771,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'm': {
 			
-			if(!specialstrcmp(name, "^me")) {
+			if(boost::starts_with(name, "^me")) {
 				if(!entity) {
 					txtcontent = "none";
 				} if (entity == entities.player()) {
@@ -780,7 +782,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_TEXT;
 			}
 			
-			if(!specialstrcmp(name, "^maxlife")) {
+			if(boost::starts_with(name, "^maxlife")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
 					*fcontent = entity->_npcdata->maxlife;
@@ -788,7 +790,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^mana")) {
+			if(boost::starts_with(name, "^mana")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
 					*fcontent = entity->_npcdata->mana;
@@ -796,7 +798,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^maxmana")) {
+			if(boost::starts_with(name, "^maxmana")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
 					*fcontent = entity->_npcdata->maxmana;
@@ -804,7 +806,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^myspell_")) {
+			if(boost::starts_with(name, "^myspell_")) {
 				Spell id = GetSpellId(name.substr(9));
 				if(id != SPELL_NONE) {
 					for(size_t i = 0; i < MAX_SPELLS; i++) {
@@ -820,7 +822,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_LONG;
 			}
 			
-			if(!specialstrcmp(name, "^maxdurability")) {
+			if(boost::starts_with(name, "^maxdurability")) {
 				*fcontent = (entity) ? entity->max_durability : 0.f;
 				return TYPE_FLOAT;
 			}
@@ -830,7 +832,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'l': {
 			
-			if(!specialstrcmp(name, "^life")) {
+			if(boost::starts_with(name, "^life")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
 					*fcontent = entity->_npcdata->life;
@@ -838,7 +840,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^last_spawned")) {
+			if(boost::starts_with(name, "^last_spawned")) {
 				txtcontent = (LASTSPAWNED) ? LASTSPAWNED->long_name() : "none";
 				return TYPE_TEXT;
 			}
@@ -848,7 +850,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'd': {
 			
-			if(!specialstrcmp(name, "^dist_")) {
+			if(boost::starts_with(name, "^dist_")) {
 				if(entity) {
 					const char * obj = name.c_str() + 6;
 					
@@ -876,12 +878,12 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				}
 			}
 			
-			if(!specialstrcmp(name, "^demo")) {
+			if(boost::starts_with(name, "^demo")) {
 				*lcontent = (resources->getReleaseType() & PakReader::Demo) ? 1 : 0;
 				return TYPE_LONG;
 			}
 			
-			if(!specialstrcmp(name, "^durability")) {
+			if(boost::starts_with(name, "^durability")) {
 				*fcontent = (entity) ? entity->durability : 0.f;
 				return TYPE_FLOAT;
 			}
@@ -891,7 +893,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'p': {
 			
-			if(!specialstrcmp(name, "^price")) {
+			if(boost::starts_with(name, "^price")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_ITEM)) {
 					*fcontent = static_cast<float>(entity->_itemdata->price);
@@ -899,17 +901,17 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_zone")) {
+			if(boost::starts_with(name, "^player_zone")) {
 				txtcontent = (player.inzone) ? player.inzone->name : "none";
 				return TYPE_TEXT;
 			}
 			
-			if(!specialstrcmp(name, "^player_life")) {
+			if(boost::starts_with(name, "^player_life")) {
 				*fcontent = player.Full_life; // TODO why not player.life like everywhere else?
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^poisoned")) {
+			if(boost::starts_with(name, "^poisoned")) {
 				*fcontent = 0;
 				if(entity && (entity->ioflags & IO_NPC)) {
 					*fcontent = entity->_npcdata->poisonned;
@@ -917,12 +919,12 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^poisonous")) {
+			if(boost::starts_with(name, "^poisonous")) {
 				*fcontent = (entity) ? entity->poisonous : 0.f;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^possess_")) {
+			if(boost::starts_with(name, "^possess_")) {
 				long t = entities.getById(name.substr(9));
 				if(ValidIONum(t)) {
 					if(IsInPlayerInventory(entities[t])) {
@@ -940,92 +942,92 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_LONG;
 			}
 			
-			if(!specialstrcmp(name, "^player_gold")) {
+			if(boost::starts_with(name, "^player_gold")) {
 				*fcontent = static_cast<float>(player.gold);
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_maxlife")) {
+			if(boost::starts_with(name, "^player_maxlife")) {
 				*fcontent = player.Full_maxlife;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_attribute_strength")) {
+			if(boost::starts_with(name, "^player_attribute_strength")) {
 				*fcontent = player.Full_Attribute_Strength;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_attribute_dexterity")) {
+			if(boost::starts_with(name, "^player_attribute_dexterity")) {
 				*fcontent = player.Full_Attribute_Dexterity;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_attribute_constitution")) {
+			if(boost::starts_with(name, "^player_attribute_constitution")) {
 				*fcontent = player.Full_Attribute_Constitution;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_attribute_mind")) {
+			if(boost::starts_with(name, "^player_attribute_mind")) {
 				*fcontent = player.Full_Attribute_Mind;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_stealth")) {
+			if(boost::starts_with(name, "^player_skill_stealth")) {
 				*fcontent = player.Full_Skill_Stealth;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_mecanism")) {
+			if(boost::starts_with(name, "^player_skill_mecanism")) {
 				*fcontent = player.Full_Skill_Mecanism;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_intuition")) {
+			if(boost::starts_with(name, "^player_skill_intuition")) {
 				*fcontent = player.Full_Skill_Intuition;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_etheral_link")) {
+			if(boost::starts_with(name, "^player_skill_etheral_link")) {
 				*fcontent = player.Full_Skill_Etheral_Link;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_object_knowledge")) {
+			if(boost::starts_with(name, "^player_skill_object_knowledge")) {
 				*fcontent = player.Full_Skill_Object_Knowledge;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_casting")) {
+			if(boost::starts_with(name, "^player_skill_casting")) {
 				*fcontent = player.Full_Skill_Casting;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_projectile")) {
+			if(boost::starts_with(name, "^player_skill_projectile")) {
 				*fcontent = player.Full_Skill_Projectile;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_close_combat")) {
+			if(boost::starts_with(name, "^player_skill_close_combat")) {
 				*fcontent = player.Full_Skill_Close_Combat;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_skill_defense")) {
+			if(boost::starts_with(name, "^player_skill_defense")) {
 				*fcontent = player.Full_Skill_Defense;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_hunger")) {
+			if(boost::starts_with(name, "^player_hunger")) {
 				*fcontent = player.hunger;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^player_poison")) {
+			if(boost::starts_with(name, "^player_poison")) {
 				*fcontent = player.poison;
 				return TYPE_FLOAT;
 			}
 			
-			if(!specialstrcmp(name, "^playercasting")) {
+			if(boost::starts_with(name, "^playercasting")) {
 				for(size_t i = 0; i < MAX_SPELLS; i++) {
 					if(spells[i].exist && spells[i].caster == 0) {
 						if(spells[i].type == SPELL_LIFE_DRAIN
@@ -1043,7 +1045,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 				return TYPE_LONG;
 			}
 			
-			if(!specialstrcmp(name, "^playerspell_")) {
+			if(boost::starts_with(name, "^playerspell_")) {
 				string temp = name.substr(13);
 				
 				Spell id = GetSpellId(temp);
@@ -1070,7 +1072,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'n': {
 			
-			if(!specialstrcmp(name, "^npcinsight")) {
+			if(boost::starts_with(name, "^npcinsight")) {
 				Entity * ioo = ARX_NPC_GetFirstNPCInSight(entity);
 				if(!ioo) {
 					txtcontent = "none";
@@ -1087,7 +1089,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 't': {
 			
-			if(!specialstrcmp(name, "^target")) {
+			if(boost::starts_with(name, "^target")) {
 				if(!entity) {
 					txtcontent = "none";
 				} else if(entity->targetinfo == 0) {
@@ -1105,14 +1107,14 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 		
 		case 'f': {
 			
-			if(!specialstrcmp(name, "^focal")) {
+			if(boost::starts_with(name, "^focal")) {
 				if(entity && (entity->ioflags & IO_CAMERA)) {
 					*fcontent = entity->_camdata->cam.focal;
 					return TYPE_FLOAT;
 				}
 			}
 			
-			if(!specialstrcmp(name, "^fighting")) {
+			if(boost::starts_with(name, "^fighting")) {
 				*lcontent = long(ARX_PLAYER_IsInFightMode());
 				return TYPE_LONG;
 			}

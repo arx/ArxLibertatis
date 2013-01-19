@@ -47,10 +47,6 @@ bool IsIn(const string & strin, const string & str) {
 	return (strin.find( str ) != string::npos);
 }
 
-long specialstrcmp(const string & text, const string & seek) {
-	return text.compare(0, seek.length(), seek) ? 1 : 0;
-}
-
 int atoi( const std::string& str )
 {
 	std::stringstream ss( str );
