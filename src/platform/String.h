@@ -65,8 +65,6 @@ std::string btoa(bool b);
  */
 bool atob(const std::string & str);
 
-void SAFEstrcpy(char * dest, const char * src, unsigned long max);
-
 /*!
  * Escape a string containing the specified characters to escape
  * @param text The string to escape

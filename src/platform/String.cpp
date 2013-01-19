@@ -81,14 +81,6 @@ std::string btoa( bool i )
 	return out;
 }
 
-void SAFEstrcpy(char * dest, const char * src, unsigned long max) {
-	if(strlen(src) > max) {
-		memcpy(dest, src, max);
-	} else {
-		strcpy(dest, src);
-	}
-}
-
 struct character_escaper
 {
     template<typename FinderT>
