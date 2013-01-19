@@ -860,6 +860,7 @@ if(ARX_HAVE_CRASHREPORTER)
 		${PLATFORM_SOURCES}
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
+		${UTIL_SOURCES}
 		tools/crashreporter/CrashReporter.cpp
 		tools/crashreporter/ErrorReport.h
 		tools/crashreporter/ErrorReport.cpp
@@ -960,6 +961,7 @@ if(BUILD_TOOLS)
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
+		${UTIL_SOURCES}
 		tools/unpak/UnPak.cpp
 	)
 	
