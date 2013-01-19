@@ -108,7 +108,7 @@ string Context::getWord() {
 				return word;
 			} else if(esdat[pos] == '~') {
 				if(tilde) {
-					word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
+					word += GetVarValueInterpretedAsText(var, getMaster(), getIO());
 					var.clear();
 				}
 				tilde = !tilde;
@@ -134,7 +134,7 @@ string Context::getWord() {
 				ScriptParserWarning << "unexpected '\"' inside token";
 			} else if(esdat[pos] == '~') {
 				if(tilde) {
-					word += GetVarValueInterpretedAsText(var, getMaster(), NULL);
+					word += GetVarValueInterpretedAsText(var, getMaster(), getIO());
 					var.clear();
 				}
 				tilde = !tilde;
