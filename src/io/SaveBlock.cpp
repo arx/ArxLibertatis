@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include <zlib.h>
 
 #include "io/log/Logger.h"
@@ -309,7 +311,7 @@ bool SaveBlock::loadFileTable() {
 			return false;
 		}
 		if(version < SAV_VERSION_NOEXT) {
-			makeLowercase(name);
+			boost::to_lower(name);
 			if(name.size() > 4 && !name.compare(name.size() - 4, 4, ".sav", 4)) {
 				name.resize(name.size() - 4);
 			}
@@ -614,7 +616,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 			return NULL;
 		}
 		if(version < SAV_VERSION_NOEXT) {
-			makeLowercase(name);
+			boost::to_lower(name);
 			if(name.size() > 4 && !name.compare(name.size() - 4, 4, ".sav", 4)) {
 				name.resize(name.size() - 4);
 			}

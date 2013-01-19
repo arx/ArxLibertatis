@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <utility>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
@@ -437,7 +439,7 @@ static void LoadRefinementMap(const res::path & fileName, map<res::path, res::pa
 		} else if(count == 1) {
 			
 			
-			makeLowercase(data);
+			boost::to_lower(data);
 			
 			if(data != "none") {
 				refinementMap[res::path::load(name)] = res::path::load(data);

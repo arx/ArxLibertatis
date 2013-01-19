@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <iomanip>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "io/log/Logger.h"
 #include "io/Blast.h"
 #include "io/resource/PakEntry.h"
@@ -659,7 +661,7 @@ bool PakReader::addFiles(PakDirectory * dir, const fs::path & path) {
 		std::string name = it.name();
 		fs::path entry = path / name;
 		
-		makeLowercase(name);
+		boost::to_lower(name);
 		
 		if(it.is_directory()) {
 			ret &= addFiles(dir->addDirectory(name), entry);

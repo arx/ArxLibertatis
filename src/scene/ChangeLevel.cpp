@@ -1961,7 +1961,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		     && path[2] == '\\')) {
 		// Old save files stored absolute paths,
 		// strip everything before 'graph' when loading.
-		makeLowercase(path);
+		boost::to_lower(path);
 		size_t pos = path.find("graph");
 		if(pos != std::string::npos) {
 			path = path.substr(pos);

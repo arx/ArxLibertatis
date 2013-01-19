@@ -19,16 +19,11 @@
 
 #include "platform/String.h"
 
-#include <cstring>
 #include <algorithm>
 #include <sstream>
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
-
-void makeLowercase(std::string & str) {
-	std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-}
 
 std::string safestring(const char * data, size_t maxLength) {
 	return std::string(data, std::find(data, data + maxLength, '\0'));
