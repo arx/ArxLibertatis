@@ -50,6 +50,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <vector>
 
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include "game/Damage.h"
 #include "game/EntityManager.h"
 #include "game/Equipment.h"
@@ -1459,20 +1462,15 @@ void ARX_EQUIPMENT_IdentifyAll()
 		}
 	}
 }
-float GetHitValue( const std::string& name)
-{
-	long len = name.length();
 
-	if (len < 5) return -1;
-
-	if ((name[0] == 'h')
-	        && (name[1] == 'i')
-	        && (name[2] == 't')
-	        && (name[3] == '_'))
-	{
-		long val = atoi( name.substr(4) ); // Get the number after the first 4 characters in the string
-		return (float)val;
+float GetHitValue( const std::string & name) {
+	
+	if(boost::starts_with(name, "hit_")) {
+		// Get the number after the first 4 characters in the string
+		try {
+			return float(boost::lexical_cast<long>(name.substr(4)));
+		} catch(...) { /* ignore */ }
 	}
-
+	
 	return -1;
 }

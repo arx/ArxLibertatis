@@ -20,20 +20,12 @@
 #include "platform/String.h"
 
 #include <algorithm>
-#include <sstream>
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
 std::string safestring(const char * data, size_t maxLength) {
 	return std::string(data, std::find(data, data + maxLength, '\0'));
-}
-
-int atoi(const std::string & str) {
-	std::stringstream ss( str );
-	int out;
-	ss >> out;
-	return out;
 }
 
 struct character_escaper {

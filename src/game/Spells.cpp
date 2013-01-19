@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <utility>
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "core/Application.h"
 #include "core/Config.h"
@@ -1386,7 +1387,13 @@ void ARX_SPELLS_ClearAllSymbolDraw() {
 
 static void ARX_SPELLS_AnalyseSYMBOL() {
 	
-	long sm = atoi(SpellMoves);
+	long sm = 0;
+	try {
+		sm = boost::lexical_cast<long>(SpellMoves);
+	} catch(...) {
+		LogDebug("bad spell moves: " << SpellMoves);
+	}
+	
 	switch(sm) {
 		
 		// COSUM

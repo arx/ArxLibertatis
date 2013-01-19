@@ -33,13 +33,6 @@ std::string safestring(const char (&data)[N]) {
 }
 
 /*!
- * Converts a given string to an integer using stringstream
- * @param str The string to be converted
- * @return The integer created by stringstream
- */
-int atoi(const std::string & str);
-
-/*!
  * Escape a string containing the specified characters to escape
  * @param text The string to escape
  * @param escapeChars String containing the characters you wish to escape
