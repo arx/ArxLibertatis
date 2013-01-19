@@ -44,21 +44,6 @@ std::string itoa(int i) {
 	return out;
 }
 
-bool atob(const std::string & str) {
-	std::stringstream ss( str );
-	bool out;
-	ss >> out;
-	return out;
-}
-
-std::string btoa(bool i) {
-	std::stringstream ss;
-	ss << i;
-	std::string out;
-	ss >> out;
-	return out;
-}
-
 struct character_escaper {
 	template<typename FinderT>
 	std::string operator()(const FinderT & match) const {

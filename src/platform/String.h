@@ -47,20 +47,6 @@ int atoi(const std::string & str);
 std::string itoa(int i);
 
 /*!
- * Converts a given bool value to a string using stringstream
- * @param b The bool to be converted
- * @return The string string created by stringstream
- */
-std::string btoa(bool b);
-
-/*!
- * Converts a given string to a bool using stringstream
- * @param str The string to be converted
- * @return The bool created by stringstream
- */
-bool atob(const std::string & str);
-
-/*!
  * Escape a string containing the specified characters to escape
  * @param text The string to escape
  * @param escapeChars String containing the characters you wish to escape
