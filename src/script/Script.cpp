@@ -377,7 +377,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!name.compare("^#playerdist"))
 			{
-				if (io != NULL)
+				if (io)
 				{
 					*lcontent = (long)fdist(player.pos, io->pos);
 					return TYPE_LONG;
@@ -404,7 +404,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!name.compare("^#timer1"))
 			{
-				if (io != NULL)
+				if (io)
 				{
 					if (io->script.timers[0] == 0) *lcontent = 0;
 					else
@@ -420,7 +420,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!name.compare("^#timer2"))
 			{
-				if (io != NULL)
+				if (io)
 				{
 					if (io->script.timers[1] == 0) *lcontent = 0;
 					else
@@ -436,7 +436,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!name.compare("^#timer3"))
 			{
-				if (io != NULL)
+				if (io)
 				{
 					if (io->script.timers[2] == 0) *lcontent = 0;
 					else
@@ -452,7 +452,7 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!name.compare("^#timer4"))
 			{
-				if (io != NULL)
+				if (io)
 				{
 					if (io->script.timers[3] == 0) *lcontent = 0;
 					else
@@ -897,10 +897,13 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!specialstrcmp(name, "^me"))
 			{
-				if (io == entities.player())
+				if(!io) {
+					txtcontent = "none";
+				} if (io == entities.player()) {
 					txtcontent = "player";
-				else
+				} else {
 					txtcontent = io->long_name();
+				}
 
 				return TYPE_TEXT;
 			}
@@ -1327,7 +1330,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 
 			if (!specialstrcmp(name, "^target"))
 			{
-				if (io->targetinfo == 0) txtcontent = "player";
+				if(!io) {
+					txtcontent = "none";
+				} if (io->targetinfo == 0) txtcontent = "player";
 				else
 				{
 					if (!ValidIONum(io->targetinfo))
@@ -1370,7 +1375,9 @@ ValueType GetSystemVar(const EERIE_SCRIPT * es, Entity * io, const string & name
 	// TODO this can never be true as name always starts with a ^ for all GetSystemVar calls
 	if (!specialstrcmp(name, " "))
 	{
-		if (io == entities.player())
+		if(!io) {
+			txtcontent = "none";
+		} else if (io == entities.player())
 			txtcontent = "player";
 		else
 			txtcontent = io->long_name();
