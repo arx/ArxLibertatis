@@ -772,7 +772,7 @@ ValueType getSystemVar(const EERIE_SCRIPT * es, Entity * entity, const string & 
 			if(boost::starts_with(name, "^me")) {
 				if(!entity) {
 					txtcontent = "none";
-				} if (entity == entities.player()) {
+				} else if(entity == entities.player()) {
 					txtcontent = "player";
 				} else {
 					txtcontent = entity->long_name();
