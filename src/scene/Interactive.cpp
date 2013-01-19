@@ -1651,15 +1651,15 @@ Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
 	const string & ficc = classPath.string();
 	
 	Entity * io = NULL;
-	if(IsIn(ficc, "items")) {
+	if(boost::contains(ficc, "items")) {
 		io = AddItem(classPath, instance, flags);
-	} else if(IsIn(ficc, "npc")) {
+	} else if(boost::contains(ficc, "npc")) {
 		io = AddNPC(classPath, instance, flags);
-	} else if(IsIn(ficc, "fix")) {
+	} else if(boost::contains(ficc, "fix")) {
 		io = AddFix(classPath, instance, flags);
-	} else if(IsIn(ficc, "camera")) {
+	} else if(boost::contains(ficc, "camera")) {
 		io = AddCamera(classPath, instance);
-	} else if (IsIn(ficc, "marker")) {
+	} else if (boost::contains(ficc, "marker")) {
 		io = AddMarker(classPath, instance);
 	}
 	
@@ -2269,7 +2269,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 		type = IO_ITEM | IO_GOLD;
 	}
 
-	if(IsIn(classPath.string(), "movable")) {
+	if(boost::contains(classPath.string(), "movable")) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
 	
@@ -3553,29 +3553,29 @@ string GetMaterialString(const res::path & texture) {
 	const string & origin = texture.string();
 	
 	// need to be precomputed !!!
-	if(IsIn(origin, "stone")) return "stone";
-	else if(IsIn(origin, "marble")) return "stone";
-	else if(IsIn(origin, "rock")) return "stone";
-	else if(IsIn(origin, "wood")) return "wood";
-	else if(IsIn(origin, "wet")) return "wet";
-	else if(IsIn(origin, "mud")) return "wet";
-	else if(IsIn(origin, "blood")) return "wet";
-	else if(IsIn(origin, "bone")) return "wet";
-	else if(IsIn(origin, "flesh")) return "wet";
-	else if(IsIn(origin, "shit")) return "wet";
-	else if(IsIn(origin, "soil")) return "gravel";
-	else if(IsIn(origin, "gravel")) return "gravel";
-	else if(IsIn(origin, "earth")) return "gravel";
-	else if(IsIn(origin, "dust")) return "gravel";
-	else if(IsIn(origin, "sand")) return "gravel";
-	else if(IsIn(origin, "straw")) return "gravel";
-	else if(IsIn(origin, "metal")) return "metal";
-	else if(IsIn(origin, "iron")) return "metal";
-	else if(IsIn(origin, "glass")) return "metal";
-	else if(IsIn(origin, "rust")) return "metal";
-	else if(IsIn(origin, "earth")) return "earth";
-	else if(IsIn(origin, "ice")) return "ice";
-	else if(IsIn(origin, "fabric")) return "carpet";
-	else if(IsIn(origin, "moss")) return "carpet";
+	if(boost::contains(origin, "stone")) return "stone";
+	else if(boost::contains(origin, "marble")) return "stone";
+	else if(boost::contains(origin, "rock")) return "stone";
+	else if(boost::contains(origin, "wood")) return "wood";
+	else if(boost::contains(origin, "wet")) return "wet";
+	else if(boost::contains(origin, "mud")) return "wet";
+	else if(boost::contains(origin, "blood")) return "wet";
+	else if(boost::contains(origin, "bone")) return "wet";
+	else if(boost::contains(origin, "flesh")) return "wet";
+	else if(boost::contains(origin, "shit")) return "wet";
+	else if(boost::contains(origin, "soil")) return "gravel";
+	else if(boost::contains(origin, "gravel")) return "gravel";
+	else if(boost::contains(origin, "earth")) return "gravel";
+	else if(boost::contains(origin, "dust")) return "gravel";
+	else if(boost::contains(origin, "sand")) return "gravel";
+	else if(boost::contains(origin, "straw")) return "gravel";
+	else if(boost::contains(origin, "metal")) return "metal";
+	else if(boost::contains(origin, "iron")) return "metal";
+	else if(boost::contains(origin, "glass")) return "metal";
+	else if(boost::contains(origin, "rust")) return "metal";
+	else if(boost::contains(origin, "earth")) return "earth";
+	else if(boost::contains(origin, "ice")) return "ice";
+	else if(boost::contains(origin, "fabric")) return "carpet";
+	else if(boost::contains(origin, "moss")) return "carpet";
 	else return "unknown";
 }

@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "core/Config.h"
 #include "core/Core.h"
 
@@ -489,30 +491,30 @@ void MakeUserFlag(TextureContainer * tc) {
 	
 	const string & tex = tc->m_texName.string();
 	
-	if(IsIn(tex, "npc_")) {
+	if(boost::contains(tex, "npc_")) {
 		tc->userflags |= POLY_LATE_MIP;
 	}
 	
-	if(IsIn(tex, "nocol")) {
+	if(boost::contains(tex, "nocol")) {
 		tc->userflags |= POLY_NOCOL;
 	}
 	
-	if(IsIn(tex, "climb")) {
+	if(boost::contains(tex, "climb")) {
 		tc->userflags |= POLY_CLIMB;
 	}
 	
-	if(IsIn(tex, "fall")) {
+	if(boost::contains(tex, "fall")) {
 		tc->userflags |= POLY_FALL;
 	}
 	
-	if(IsIn(tex, "lava")) {
+	if(boost::contains(tex, "lava")) {
 		tc->userflags |= POLY_LAVA;
 	}
 	
-	if (IsIn(tex, "water") || IsIn(tex, "spider_web")) {
+	if(boost::contains(tex, "water") || boost::contains(tex, "spider_web")) {
 		tc->userflags |= POLY_WATER;
 		tc->userflags |= POLY_TRANS;
-	} else if(IsIn(tex, "[metal]")) {
+	} else if(boost::contains(tex, "[metal]")) {
 		tc->userflags |= POLY_METAL;
 	}
 	

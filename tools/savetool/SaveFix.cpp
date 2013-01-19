@@ -246,7 +246,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 			flags = EntityFlags::load(ais.ioflags) | IO_GOLD; // TODO save/load flags
 		}
 		
-		if(IsIn(file.string(), "movable")) {
+		if(boost::contains(file.string(), "movable")) {
 			flags = EntityFlags::load(ais.ioflags) | IO_MOVABLE; // TODO save/load flags
 		}
 		

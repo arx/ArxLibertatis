@@ -43,20 +43,14 @@ string safestring(const char * data, size_t maxLength) {
 	return string(data, std::find(data, data + maxLength, '\0'));
 }
 
-bool IsIn(const string & strin, const string & str) {
-	return (strin.find( str ) != string::npos);
-}
-
-int atoi( const std::string& str )
-{
+int atoi(const std::string & str) {
 	std::stringstream ss( str );
 	int out;
 	ss >> out;
 	return out;
 }
 
-std::string itoa( int i )
-{
+std::string itoa(int i) {
 	std::stringstream ss;
 	ss << i;
 	std::string out;
@@ -64,16 +58,14 @@ std::string itoa( int i )
 	return out;
 }
 
-bool atob( const std::string& str )
-{
+bool atob(const std::string & str) {
 	std::stringstream ss( str );
 	bool out;
 	ss >> out;
 	return out;
 }
 
-std::string btoa( bool i )
-{
+std::string btoa(bool i) {
 	std::stringstream ss;
 	ss << i;
 	std::string out;
@@ -81,21 +73,21 @@ std::string btoa( bool i )
 	return out;
 }
 
-struct character_escaper
-{
-    template<typename FinderT>
-    std::string operator()(const FinderT& match) const
-    {
-        std::string s;
-        for (typename FinderT::const_iterator i = match.begin(); i != match.end(); i++) {
-            s += std::string("\\") + *i;
-        }
-        return s;
-    }
+struct character_escaper {
+	template<typename FinderT>
+	std::string operator()(const FinderT & match) const {
+		std::string s;
+		for(typename FinderT::const_iterator i = match.begin(); i != match.end(); i++) {
+			s += std::string("\\") + *i;
+		}
+		return s;
+	}
 };
 
-std::string escapeString(const std::string & str, const char* escapeChars) {
+std::string escapeString(const std::string & str, const char * escapeChars) {
 	std::string escapedStr(str);
-	boost::find_format_all(escapedStr, boost::token_finder(boost::is_any_of(escapeChars)), character_escaper());
+	boost::find_format_all(escapedStr,
+	                       boost::token_finder(boost::is_any_of(escapeChars)),
+	                                           character_escaper());
 	return escapedStr;
 }

@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <vector>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -309,7 +311,7 @@ void ARX_NPC_Revive(Entity * io, long flags)
 	{
 		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
+		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -1433,7 +1435,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
 		if (from->texturecontainer[k]
-		        && (IsIn(from->texturecontainer[k]->m_texName.string(), "gore")))
+		        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
 		{
 			gore = k;
 			break;
@@ -1573,7 +1575,7 @@ void ARX_NPC_SpawnMember(Entity * ioo, long num) {
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
-			        && (IsIn(from->texturecontainer[k]->m_texName.string(), "gore")))
+			        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
 			{
 				gore = k;
 				break;
@@ -1760,7 +1762,7 @@ long ARX_NPC_ApplyCuts(Entity * io)
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
 		if (io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
+		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -1824,7 +1826,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
 		if (target->obj->texturecontainer[i]
-		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
+		        &&	(boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -1834,7 +1836,7 @@ void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
 		if ((target->obj->selections[i].selected.size() > 0)
-		        &&	(IsIn(target->obj->selections[i].name, "cut_")))
+		        &&	(boost::contains(target->obj->selections[i].name, "cut_")))
 		{
 			short fll = GetCutFlag( target->obj->selections[i].name );
 

@@ -35,8 +35,6 @@ std::string safestring(const char (&data)[N]) {
 	return safestring(data, N);
 }
 
-bool IsIn(const std::string & strin, const std::string & str);
-
 /*!
  * Converts a given string to an integer using stringstream
  * @param str The string to be converted
