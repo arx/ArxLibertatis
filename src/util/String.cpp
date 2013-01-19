@@ -17,14 +17,16 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "platform/String.h"
+#include "util/String.h"
 
 #include <algorithm>
 
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
-std::string safestring(const char * data, size_t maxLength) {
+namespace util {
+
+std::string loadString(const char * data, size_t maxLength) {
 	return std::string(data, std::find(data, data + maxLength, '\0'));
 }
 
@@ -46,3 +48,5 @@ std::string escapeString(const std::string & str, const char * escapeChars) {
 	                                           character_escaper());
 	return escapedStr;
 }
+
+} // namespace util

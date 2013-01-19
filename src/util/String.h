@@ -17,19 +17,22 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_PLATFORM_STRING_H
-#define ARX_PLATFORM_STRING_H
+#ifndef ARX_UTIL_STRING_H
+#define ARX_UTIL_STRING_H
 
+#include <stddef.h>
 #include <string>
+
+namespace util {
 
 /*!
  * Load an std::string from a const char * that may not be null-terminated.
  */
-std::string safestring(const char * data, size_t maxLength);
+std::string loadString(const char * data, size_t maxLength);
 
 template <size_t N>
-std::string safestring(const char (&data)[N]) {
-	return safestring(data, N);
+std::string loadString(const char (&data)[N]) {
+	return loadString(data, N);
 }
 
 /*!
@@ -40,4 +43,6 @@ std::string safestring(const char (&data)[N]) {
  */
 std::string escapeString(const std::string & text, const char * escapeChars);
 
-#endif // ARX_PLATFORM_STRING_H
+} // namespace util
+
+#endif // ARX_UTIL_STRING_H

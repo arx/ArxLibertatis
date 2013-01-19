@@ -36,8 +36,8 @@
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
-#include "platform/String.h"
 #include "scene/SaveFormat.h"
+#include "util/String.h"
 
 using std::stringstream;
 using std::setfill;
@@ -169,7 +169,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	string fname = name.substr(0, pos);
 	
-	res::path dir = res::path::load(safestring(ais.filename)).parent();
+	res::path dir = res::path::load(util::loadString(ais.filename)).parent();
 	
 	long i = 1;
 	string ident;
@@ -238,7 +238,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	
 	if(ais.ioflags & IO_ITEM) {
 		
-		res::path file = res::path::load(safestring(ais.filename));
+		res::path file = res::path::load(util::loadString(ais.filename));
 		
 		s32 flags = ais.ioflags;
 		
@@ -281,7 +281,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 	
 	cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << endl;
 	
-	string namestr = boost::to_lower_copy(safestring(name, SIZE_ID));
+	string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
 	size_t pos = namestr.find_last_of('_');
 	
@@ -292,7 +292,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 
 static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const string & where, Remap & remap) {
 	
-	string lname = boost::to_lower_copy(safestring(name, SIZE_ID));
+	string lname = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
 	if(lname.empty() || lname == "none" || lname == "player" || lname == "self") {
 		return false;
@@ -388,7 +388,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	for(long i = 0; i < asi.nb_inter; i++) {
 		long res;
-		string ident = makeIdent(res::path::load(safestring(idx_io[i].filename)).basename(), idx_io[i].ident);
+		string ident = makeIdent(res::path::load(util::loadString(idx_io[i].filename)).basename(), idx_io[i].ident);
 		Remap::const_iterator it = remap.find(ident);
 		stringstream where;
 		where << "level" << num << "[" << i << "]";

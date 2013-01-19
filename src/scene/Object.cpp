@@ -73,13 +73,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/CollisionShapes.h"
 
-#include "platform/String.h"
-
 #include "scene/LinkedObject.h"
 #include "scene/GameSound.h"
 #include "scene/ObjectFormat.h"
 #include "scene/Interactive.h"
 #include "scene/Light.h"
+
+#include "util/String.h"
 
 using std::sprintf;
 using std::min;
@@ -389,7 +389,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 			LogDebug(" -> sample " << ts->sample_name << " size " << ts->sample_size
 			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE));
 			
-			eerie->frames[i].sample = ARX_SOUND_Load(res::path::load(safestring(ts->sample_name)));
+			eerie->frames[i].sample = ARX_SOUND_Load(res::path::load(util::loadString(ts->sample_name)));
 		}
 		
 		pos += 4; // num_sfx
@@ -776,7 +776,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		std::copy((const long*)(adr + pos), (const long*)(adr + pos) + ptg3011->nb_index, eerie->grouplist[i].indexes.begin());
 		pos += ptg3011->nb_index * sizeof(long);
 		
-		eerie->grouplist[i].name = boost::to_lower_copy(safestring(adr + pos, 256));
+		eerie->grouplist[i].name = boost::to_lower_copy(util::loadString(adr + pos, 256));
 		pos += 256;
 		eerie->grouplist[i].siz = 0.f;
 		
@@ -800,7 +800,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		const THEO_SELECTED * pts = reinterpret_cast<const THEO_SELECTED *>(adr + pos);
 		pos += sizeof(THEO_SELECTED);
 		
-		eerie->selections[i].name = boost::to_lower_copy(safestring(pts->name));
+		eerie->selections[i].name = boost::to_lower_copy(util::loadString(pts->name));
 		eerie->selections[i].selected.resize(pts->nb_index);
 		
 		if(pts->nb_index > 0) {
@@ -820,7 +820,7 @@ static void loadObjectData(EERIE_3DOBJ * eerie, const char * adr, size_t * poss,
 		eerie->actionlist[i].act = ptap->action;
 		eerie->actionlist[i].sfx = ptap->num_sfx;
 		eerie->actionlist[i].idx = ptap->vert_index;
-		eerie->actionlist[i].name = boost::to_lower_copy(safestring(ptap->name));
+		eerie->actionlist[i].name = boost::to_lower_copy(util::loadString(ptap->name));
 	}
 	
 	eerie->angle = Anglef::ZERO;
@@ -904,7 +904,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 			const THEO_TEXTURE * tt = reinterpret_cast<const THEO_TEXTURE *>(adr + pos);
 			pos += sizeof(THEO_TEXTURE);
 			
-			res::path mapsname = temp / res::path::load(safestring(tt->texture_name)).remove_ext();
+			res::path mapsname = temp / res::path::load(util::loadString(tt->texture_name)).remove_ext();
 			seerie->texturecontainer[i] = TextureContainer::Load(mapsname, TextureContainer::Level);
 		}
 		
@@ -920,11 +920,11 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 				if(psth->version >= 3019) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = res::path::load(safestring(tsmi3019->texture_name)).remove_ext();
+					name = res::path::load(util::loadString(tsmi3019->texture_name)).remove_ext();
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = res::path::load(safestring(tsmi->texture_name)).remove_ext();
+					name = res::path::load(util::loadString(tsmi->texture_name)).remove_ext();
 				}
 				
 				if(!name.empty()) {
@@ -980,7 +980,7 @@ static EERIE_3DSCENE * ScnToEerie(const char * adr, size_t size, const res::path
 		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
 		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
 		
-		string name = boost::to_lower_copy(safestring(ptoh->object_name));
+		string name = boost::to_lower_copy(util::loadString(ptoh->object_name));
 		if(name == "map_origin") {
 			seerie->point0 = seerie->objs[id]->point0 + seerie->objs[id]->pos;
 			delete seerie->objs[id];
@@ -1621,11 +1621,11 @@ static EERIE_3DOBJ * TheoToEerie(const char * adr, long size, const res::path & 
 				if(pth->version >= 3008) {
 					const THEO_SAVE_MAPS_IN_3019 * tsmi3019 = reinterpret_cast<const THEO_SAVE_MAPS_IN_3019 *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-					name = res::path::load(safestring(tsmi3019->texture_name)).remove_ext();
+					name = res::path::load(util::loadString(tsmi3019->texture_name)).remove_ext();
 				} else {
 					const THEO_SAVE_MAPS_IN * tsmi = reinterpret_cast<const THEO_SAVE_MAPS_IN *>(adr + pos);
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					name = res::path::load(safestring(tsmi->texture_name)).remove_ext();
+					name = res::path::load(util::loadString(tsmi->texture_name)).remove_ext();
 				}
 				
 				if(!name.empty()) {

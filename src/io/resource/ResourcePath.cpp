@@ -19,6 +19,7 @@
 
 #include "io/resource/ResourcePath.h"
 
+#include <cctype>
 #include <algorithm>
 
 #include "platform/Platform.h"
@@ -338,7 +339,7 @@ path path::load(const std::string & str) {
 		}
 		
 		for(size_t p = start; p < pos; p++) {
-			copy[ostart++] = tolower(str[p]);
+			copy[ostart++] = std::tolower(str[p]);
 		}
 		
 	}

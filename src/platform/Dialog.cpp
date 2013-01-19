@@ -35,7 +35,7 @@
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
 
-#include "platform/String.h"
+#include "util/String.h"
 
 
 namespace dialog {
@@ -76,7 +76,7 @@ bool showDialog(DialogType type, const std::string & message,
 #else
 
 static std::string escape(const std::string & input) {
-	return escapeString(input, "\\\"$");
+	return util::escapeString(input, "\\\"$");
 }
 
 static bool isAllowedInUrl(char c) {

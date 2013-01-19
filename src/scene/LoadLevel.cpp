@@ -85,13 +85,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/CollisionShapes.h"
 
-#include "platform/String.h"
-
 #include "scene/Object.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/LevelFormat.h"
 #include "scene/Light.h"
+
+#include "util/String.h"
 
 using std::max;
 using std::string;
@@ -689,7 +689,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
-		LogError << "Not a valid file " << file << ": \"" << safestring(dlh.ident) << '"';
+		LogError << "Not a valid file " << file << ": \"" << util::loadString(dlh.ident) << '"';
 		return -1;
 	}
 	
@@ -701,7 +701,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		const DANAE_LS_SCENE * dls = reinterpret_cast<const DANAE_LS_SCENE *>(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 		
-		res::path scene = res::path::load(safestring(dls->name));
+		res::path scene = res::path::load(util::loadString(dls->name));
 		
 		if(FastSceneLoad(scene)) {
 			LogDebug("done loading scene");
@@ -774,7 +774,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		
 		if(loadEntities) {
 			
-			string pathstr = boost::to_lower_copy(safestring(dli->name));
+			string pathstr = boost::to_lower_copy(util::loadString(dli->name));
 			
 			size_t pos = pathstr.find("graph");
 			if(pos != std::string::npos) {
@@ -926,12 +926,12 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
 		
-		strcpy(nodes.nodes[i].name, boost::to_lower_copy(safestring(dln->name)).c_str());
+		strcpy(nodes.nodes[i].name, boost::to_lower_copy(util::loadString(dln->name)).c_str());
 		nodes.nodes[i].pos = (Vec3f)dln->pos + trans;
 		
 		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
 			if(dat[pos] != '\0') {
-				strcpy(nodes.nodes[i].lnames[j], boost::to_lower_copy(safestring(dat + pos, 64)).c_str());
+				strcpy(nodes.nodes[i].lnames[j], boost::to_lower_copy(util::loadString(dat + pos, 64)).c_str());
 			}
 			pos += 64;
 		}
@@ -953,13 +953,13 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		pos += sizeof(DANAE_LS_PATH);
 		
 		Vec3f ppos = Vec3f(dlp->initpos) + trans;
-		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(boost::to_lower_copy(safestring(dlp->name)), ppos);
+		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(boost::to_lower_copy(util::loadString(dlp->name)), ppos);
 		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->pos = Vec3f(dlp->pos) + trans;
 		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
-		ap->ambiance = res::path::load(safestring(dlp->ambiance));
+		ap->ambiance = res::path::load(util::loadString(dlp->ambiance));
 		
 		ap->amb_max_vol = dlp->amb_max_vol;
 		if(ap->amb_max_vol <= 1.f) {

@@ -24,6 +24,7 @@
 #include <iomanip>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/foreach.hpp>
 
 #include "io/log/Logger.h"
 #include "io/Blast.h"
@@ -31,13 +32,6 @@
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
 #include "io/fs/FileStream.h"
-
-#include "platform/String.h"
-
-using std::min;
-using std::strlen;
-using std::string;
-using std::vector;
 
 namespace {
 
@@ -292,7 +286,7 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 		}
 	}
 	
-	size_t toCopy = min(len, p->endOffset - p->currentOffset);
+	size_t toCopy = std::min(len, p->endOffset - p->currentOffset);
 	
 	arx_assert(toCopy != 0);
 	
@@ -323,7 +317,7 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 	out.buf = reinterpret_cast<char *>(buf);
 	out.currentOffset = 0;
 	out.startOffset = offset;
-	out.endOffset = min(offset + size, file.size());
+	out.endOffset = std::min(offset + size, file.size());
 	
 	if(out.endOffset <= out.startOffset) {
 		return 0;
@@ -520,7 +514,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 				goto error;
 			}
 			
-			size_t len = strlen(filename);
+			size_t len = std::strlen(filename);
 			std::transform(filename, filename + len, filename, ::tolower);
 			
 			u32 offset;
@@ -541,7 +535,7 @@ bool PakReader::addArchive(const fs::path & pakfile) {
 				file = new UncompressedFile(ifs, offset, size);
 			}
 			
-			dir->addFile(string(filename, len), file);
+			dir->addFile(std::string(filename, len), file);
 		}
 		
 	}
@@ -566,8 +560,8 @@ void PakReader::clear() {
 	files.clear();
 	dirs.clear();
 	
-	for(vector<std::istream *>::const_iterator i = paks.begin(); i != paks.end(); i++) {
-		delete *i;
+	BOOST_FOREACH(std::istream * is, paks) {
+		delete is;
 	}
 }
 

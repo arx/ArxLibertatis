@@ -65,20 +65,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicFormat.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 
 #include "scene/CinematicSound.h"
 
-using std::string;
-using std::copy;
-using std::strcmp;
-using std::free;
-
 extern C_KEY KeyTemp;
 
-static res::path fixTexturePath(const string & path) {
+static res::path fixTexturePath(const std::string & path) {
 	
-	string copy = boost::to_lower_copy(path);
+	std::string copy = boost::to_lower_copy(path);
 	
 	size_t abs_dir = copy.find("arx\\");
 	
@@ -89,9 +83,9 @@ static res::path fixTexturePath(const string & path) {
 	}
 }
 
-static std::pair<res::path, bool> fixSoundPath(const string & str) {
+static std::pair<res::path, bool> fixSoundPath(const std::string & str) {
 	
-	string path = boost::to_lower_copy(str);
+	std::string path = boost::to_lower_copy(str);
 	
 	// Remove the .wav file extension
 	if(boost::ends_with(path, ".wav")) {
@@ -100,17 +94,17 @@ static std::pair<res::path, bool> fixSoundPath(const string & str) {
 	
 	// Remove irrelevant absolute path components
 	size_t sfx_pos = path.find("\\sfx\\");
-	if(sfx_pos != string::npos) {
+	if(sfx_pos != std::string::npos) {
 		path.erase(0, sfx_pos + 1);
 	}
 	
 	// I guess they changed their minds about language names
 	size_t uk_pos = path.find("\\uk\\");
-	if(uk_pos != string::npos) {
+	if(uk_pos != std::string::npos) {
 		path.replace(uk_pos, 4, "\\english\\");
 	}
 	size_t fr_pos = path.find("\\fr\\");
-	if(fr_pos != string::npos) {
+	if(fr_pos != std::string::npos) {
 		path.replace(fr_pos, 4, "\\francais\\");
 	}
 	
@@ -123,7 +117,7 @@ static std::pair<res::path, bool> fixSoundPath(const string & str) {
 	bool is_speech = false;
 	if(boost::starts_with(path, "speech\\")) {
 		size_t pos = path.find('\\', 7);
-		if(pos != string::npos) {
+		if(pos != std::string::npos) {
 			path.erase(0, pos + 1);
 			is_speech = true;
 		}
@@ -146,7 +140,7 @@ bool loadCinematic(Cinematic * c, const res::path & file) {
 	}
 	
 	bool ret = parseCinematic(c, data, size);
-	free(data);
+	std::free(data);
 	if(!ret) {
 		LogError << "loading cinematic " << file;
 		c->New();
@@ -163,7 +157,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	if(strcmp(cinematicId, "KFA")) {
+	if(std::strcmp(cinematicId, "KFA")) {
 		LogError << "wrong magic number";
 		return false;
 	}

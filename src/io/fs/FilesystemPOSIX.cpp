@@ -35,11 +35,6 @@
 
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
-#include "platform/String.h"
-
-using std::string;
-using std::malloc;
-using std::free;
 
 namespace fs {
 
@@ -260,7 +255,7 @@ static void readdir(void * _handle, void * & _buf) {
 		
 		dirent * entry;
 		if(readdir_r(handle, buf, &entry) || !entry) {
-			free(_buf), _buf = NULL;
+			std::free(_buf), _buf = NULL;
 			return;
 		}
 		
@@ -299,7 +294,7 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		if(size < sizeof(dirent)) {
 			size = sizeof(dirent);
 		}
-		buf = malloc(size);
+		buf = std::malloc(size);
 		
 		readdir(handle, buf);
 	}
@@ -310,7 +305,7 @@ directory_iterator::~directory_iterator() {
 		closedir(DIR_HANDLE(handle));
 		DIR_HANDLE_FREE(handle);
 	}
-	free(buf);
+	std::free(buf);
 }
 
 directory_iterator & directory_iterator::operator++() {
@@ -325,7 +320,7 @@ bool directory_iterator::end() {
 	return !buf;
 }
 
-string directory_iterator::name() {
+std::string directory_iterator::name() {
 	arx_assert(buf != NULL);
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }

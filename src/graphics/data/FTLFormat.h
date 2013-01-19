@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsFormat.h"
 #include "platform/Platform.h"
-#include "platform/String.h"
+#include "util/String.h"
 
 #define CURRENT_FTL_VERSION  0.83257f
 
@@ -160,7 +160,7 @@ struct EERIE_ACTIONLIST_FTL {
 	
 	inline operator EERIE_ACTIONLIST() const {
 		EERIE_ACTIONLIST a;
-		a.name = boost::to_lower_copy(safestring(name));
+		a.name = boost::to_lower_copy(util::loadString(name));
 		a.idx = idx;
 		a.act = action;
 		a.sfx = sfx;

@@ -71,10 +71,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 #include "platform/Thread.h"
 
 #include "scene/Interactive.h"
+
+#include "util/String.h"
 
 using std::map;
 using std::string;
@@ -1232,7 +1233,7 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 		
 		const PlayingAmbiance * playing = &play_list[i];
 		
-		res::path name = res::path::load(safestring(playing->name));
+		res::path name = res::path::load(util::loadString(playing->name));
 		
 		// TODO save/load enum
 		switch (playing->type) {

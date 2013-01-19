@@ -100,7 +100,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Clothes.h"
 
-#include "platform/String.h"
 #include "platform/Thread.h"
 
 #include "scene/ChangeLevel.h"

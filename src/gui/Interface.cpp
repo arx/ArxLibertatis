@@ -111,8 +111,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Box.h"
 #include "physics/Collisions.h"
 
-#include "platform/String.h"
-
 #include "scene/LinkedObject.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
@@ -121,11 +119,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/Script.h"
 
 #include "window/RenderWindow.h"
-
-using std::min;
-using std::max;
-using std::string;
-using std::vector;
 
 extern float MagicSightFader;
 extern float Original_framedelay;
@@ -718,7 +711,7 @@ void ARX_INTERFACE_NoteClear() {
 	openNote.clear();
 }
 
-void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const string & text) {
+void ARX_INTERFACE_NoteOpen(gui::Note::Type type, const std::string & text) {
 	
 	if(player.Interface & INTER_NOTE) {
 		ARX_INTERFACE_NoteClose();
@@ -6076,7 +6069,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		FORCE_NO_HIDE=1;
 		IN_BOOK_DRAW=1;
-		vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
+		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
 
 		if(player.useanim.cur_anim != NULL) {
 			EERIEDrawAnimQuat(entities.player()->obj, &player.useanim, &ePlayerAngle, &pos,
@@ -7121,7 +7114,7 @@ void ArxGame::DrawAllInterface() {
 			float fSLID_VALUE_neg = static_cast<float>(-lSLID_VALUE);
 
 			if(player.poison > 0.f) {
-				float val = min(player.poison, 0.2f) * 255.f * 5.f;
+				float val = std::min(player.poison, 0.2f) * 255.f * 5.f;
 				long g = val;
 				ulcolor = Color(u8(255 - g), u8(g) , 0);
 			}
@@ -7323,8 +7316,8 @@ long Manage3DCursor(long flags)
 					for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
 						maxoff = componentwise_max(maxoff, io->obj->vertexlist[i].v);
 						minoff = componentwise_min(minoff, io->obj->vertexlist[i].v);
-						miny = min(miny, io->obj->vertexlist[i].v.y);
-						maxy = max(maxy, io->obj->vertexlist[i].v.y);
+						miny = std::min(miny, io->obj->vertexlist[i].v.y);
+						maxy = std::max(maxy, io->obj->vertexlist[i].v.y);
 					}
 					
 					EERIE_CYLINDER cyl;
@@ -7373,7 +7366,7 @@ long Manage3DCursor(long flags)
 					
 					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{
-						maxdist = max(maxdist, dist(Vec2f(objcenter.x, objcenter.z),
+						maxdist = std::max(maxdist, dist(Vec2f(objcenter.x, objcenter.z),
 			                               Vec2f(io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z)) - 4.f);
 					}
 
@@ -7381,7 +7374,7 @@ long Manage3DCursor(long flags)
 					{
 						for (int i=1;i<io->obj->pbox->nb_physvert;i++)
 						{
-							maxdist = max(maxdist, dist(Vec2f(io->obj->pbox->vert[0].initpos.x,
+							maxdist = std::max(maxdist, dist(Vec2f(io->obj->pbox->vert[0].initpos.x,
 												io->obj->pbox->vert[0].initpos.z),
 												Vec2f(io->obj->pbox->vert[i].initpos.x,
 				                               io->obj->pbox->vert[i].initpos.z)) + 14.f);
@@ -7400,8 +7393,8 @@ long Manage3DCursor(long flags)
 					float			inc			=	10.f;
 					long			iterating	=	40;
 		
-		cyl2.height	=	min(-30.f, height); 
-		cyl2.radius	=	max(20.f, maxdist); 
+		cyl2.height = std::min(-30.f, height);
+		cyl2.radius = std::max(20.f, maxdist);
 					
 
 					while ( iterating>0 )
@@ -7497,7 +7490,7 @@ long Manage3DCursor(long flags)
 						}
 						else
 						{
-				if (EEfabs(lastanything) > min(EEfabs(height), 12.0f))
+				if (EEfabs(lastanything) > std::min(EEfabs(height), 12.0f))
 							{
 								Entity * io=DRAGINTER;
 								ARX_PLAYER_Remove_Invisibility();

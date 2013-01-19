@@ -52,8 +52,8 @@
 #include <sys/sysctl.h>
 #endif
 
-#include "platform/String.h"
 #include "platform/Platform.h"
+#include "util/String.h"
 
 
 std::string expandEnvironmentVariables(const std::string & in) {
@@ -322,7 +322,7 @@ std::string getExecutablePath() {
 	size_t size = sizeof(pathname);
 	int error = sysctl(mib, 4, pathname, &size, NULL, 0);
 	if(error != -1 && size > 0 && size < sizeof(pathname)) {
-		return safestring(pathname, size);
+		return util::loadString(pathname, size);
 	}
 	#endif
 	

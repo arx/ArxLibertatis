@@ -70,9 +70,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/log/Logger.h"
 
-#include "platform/String.h"
-
 #include "scene/Object.h"
+
+#include "util/String.h"
 
 using std::string;
 using std::vector;
@@ -504,7 +504,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
-	obj->file = res::path::load(safestring(af3Ddh->name));
+	obj->file = res::path::load(util::loadString(af3Ddh->name));
 	
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
@@ -570,7 +570,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 				obj->texturecontainer[i] = NULL;
 			} else {
 				// Create the texture and put it in the container list
-				res::path name = res::path::load(safestring(tex->name)).remove_ext();
+				res::path name = res::path::load(util::loadString(tex->name)).remove_ext();
 				obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
 			}
 		}
@@ -588,7 +588,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			const EERIE_GROUPLIST_FTL* group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
 			
-			obj->grouplist[i].name = boost::to_lower_copy(safestring(group->name));
+			obj->grouplist[i].name = boost::to_lower_copy(util::loadString(group->name));
 			obj->grouplist[i].origin = group->origin;
 			obj->grouplist[i].indexes.resize(group->nb_index);
 			obj->grouplist[i].siz = group->siz;
@@ -617,7 +617,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		const EERIE_SELECTIONS_FTL * selection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
-		obj->selections[i].name = boost::to_lower_copy(safestring(selection->name));
+		obj->selections[i].name = boost::to_lower_copy(util::loadString(selection->name));
 		obj->selections[i].selected.resize(selection->nb_selected);
 	}
 	

@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/Filesystem.h"
 #include "io/Blast.h"
 
-#include "platform/String.h"
 #include "platform/Platform.h"
 
 using std::string;

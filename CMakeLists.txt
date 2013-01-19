@@ -611,7 +611,6 @@ set(PLATFORM_SOURCES
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
 	src/platform/Platform.cpp
-	src/platform/String.cpp
 	src/platform/Time.cpp
 )
 if(MACOSX)
@@ -658,6 +657,10 @@ set(SCRIPT_SOURCES
 	src/script/ScriptedVariable.cpp
 	src/script/ScriptEvent.cpp
 	src/script/ScriptUtils.cpp
+)
+
+set(UTIL_SOURCES
+	src/util/String.cpp
 )
 
 set(WINDOW_SOURCES
@@ -800,6 +803,7 @@ set(ARX_SOURCES
 	${PLATFORM_CRASHHANDLER_SOURCES}
 	${SCENE_SOURCES}
 	${SCRIPT_SOURCES}
+	${UTIL_SOURCES}
 	${WINDOW_SOURCES}
 )
 
@@ -937,6 +941,7 @@ if(BUILD_TOOLS)
 		${IO_FILESYSTEM_SOURCES}
 		${IO_LOGGER_SOURCES}
 		${IO_RESOURCE_SOURCES}
+		${UTIL_SOURCES}
 		src/core/Localisation.cpp
 		src/io/SaveBlock.cpp
 		src/io/IniReader.cpp

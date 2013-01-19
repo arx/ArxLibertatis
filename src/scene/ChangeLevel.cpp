@@ -80,8 +80,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/SaveBlock.h"
 #include "io/log/Logger.h"
 
-#include "platform/String.h"
-
 #include "scene/Interactive.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
@@ -89,6 +87,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 
 #include "script/ScriptEvent.h"
+
+#include "util/String.h"
 
 using std::string;
 
@@ -171,13 +171,13 @@ static Entity * convertToValidIO(const string & ident) {
 
 template <size_t N>
 static Entity * ConvertToValidIO(const char (&str)[N]) {
-	return convertToValidIO(boost::to_lower_copy(safestring(str)));
+	return convertToValidIO(boost::to_lower_copy(util::loadString(str)));
 }
 
 template <size_t N>
 static long ReadTargetInfo(const char (&str)[N]) {
 	
-	string ident = boost::to_lower_copy(safestring(str));
+	string ident = boost::to_lower_copy(util::loadString(str));
 	
 	if(ident == "none") {
 		return -1;
@@ -1530,10 +1530,10 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 		const ARX_CHANGELEVEL_PATH * acp = reinterpret_cast<const ARX_CHANGELEVEL_PATH *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_PATH);
 		
-		ARX_PATH * ap = ARX_PATH_GetAddressByName(boost::to_lower_copy(safestring(acp->name)));
+		ARX_PATH * ap = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(acp->name)));
 		
 		if(ap) {
-			ap->controled = boost::to_lower_copy(safestring(acp->controled));
+			ap->controled = boost::to_lower_copy(util::loadString(acp->controled));
 		}
 	}
 	
@@ -1664,13 +1664,13 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.playerflags = PlayerFlags::load(asp->playerflags); // TODO save/load flags
 	
 	if(asp->TELEPORT_TO_LEVEL[0]) {
-		strcpy(TELEPORT_TO_LEVEL, boost::to_lower_copy(safestring(asp->TELEPORT_TO_LEVEL)).c_str());
+		strcpy(TELEPORT_TO_LEVEL, boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_LEVEL)).c_str());
 	} else {
 		memset(TELEPORT_TO_LEVEL, 0, 64);
 	}
 	
 	if(asp->TELEPORT_TO_POSITION[0]) {
-		strcpy(TELEPORT_TO_POSITION, boost::to_lower_copy(safestring(asp->TELEPORT_TO_POSITION)).c_str());
+		strcpy(TELEPORT_TO_POSITION, boost::to_lower_copy(util::loadString(asp->TELEPORT_TO_POSITION)).c_str());
 	} else {
 		memset(TELEPORT_TO_POSITION, 0, 64);
 	}
@@ -1685,7 +1685,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	player.falling = asp->falling;
 	player.gold = asp->gold;
 	entities.player()->invisibility = asp->invisibility;
-	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(safestring(asp->inzone)));
+	player.inzone = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(asp->inzone)));
 	player.jumpphase = JumpPhase(asp->jumpphase); // TODO save/load enum
 	player.jumpstarttime = asp->jumpstarttime;
 	player.Last_Movement = PlayerMovement::load(asp->Last_Movement); // TODO save/load flags
@@ -1775,7 +1775,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 			ReleaseAnimFromIO(&io, i);
 		}
 		if(asp->anims[i][0]) {
-			io.anims[i] = EERIE_ANIMMANAGER_Load(res::path::load(safestring(asp->anims[i])));
+			io.anims[i] = EERIE_ANIMMANAGER_Load(res::path::load(util::loadString(asp->anims[i])));
 		}
 	}
 	
@@ -1796,7 +1796,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	ARX_PLAYER_Quest_Init();
 	for(int i = 0; i < asp->nb_PlayerQuest; i++) {
-		ARX_PLAYER_Quest_Add(script::loadUnlocalized(boost::to_lower_copy(safestring(dat + pos, 80))), true);
+		ARX_PLAYER_Quest_Add(script::loadUnlocalized(boost::to_lower_copy(util::loadString(dat + pos, 80))), true);
 		pos += 80;
 	}
 	
@@ -1807,7 +1807,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	ARX_KEYRING_Init();
 	LogDebug(asp->keyring_nb);
 	for(int i = 0; i < asp->keyring_nb; i++) {
-		ARX_KEYRING_Add(boost::to_lower_copy(safestring(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
+		ARX_KEYRING_Add(boost::to_lower_copy(util::loadString(dat + pos, SAVED_KEYRING_SLOT_SIZE)));
 		pos += SAVED_KEYRING_SLOT_SIZE;
 	}
 	
@@ -1821,7 +1821,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
 		const SavedMapMarkerData * acmd = reinterpret_cast<const SavedMapMarkerData *>(dat + pos);
 		pos += sizeof(SavedMapMarkerData);
-		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(safestring(acmd->name))));
+		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, script::loadUnlocalized(boost::to_lower_copy(util::loadString(acmd->name))));
 	}
 	
 	ARX_PLAYER_Restore_Skin();
@@ -1865,7 +1865,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 		avs = reinterpret_cast<const ARX_CHANGELEVEL_VARIABLE_SAVE *>(dat + pos);
 		pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 		
-		string name = boost::to_lower_copy(safestring(avs->name));
+		string name = boost::to_lower_copy(util::loadString(avs->name));
 		strcpy(var[i].name, name.c_str());
 		
 		if(name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != string::npos) {
@@ -1893,7 +1893,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 		
 		if(type == ttext) {
 			if(var[i].ival) {
-				var[i].text = strdup(boost::to_lower_copy(safestring(dat + pos, var[i].ival)).c_str());
+				var[i].text = strdup(boost::to_lower_copy(util::loadString(dat + pos, var[i].ival)).c_str());
 				pos += var[i].ival;
 				if(var[i].text[0] == '\xCC') {
 					var[i].text[0] = 0;
@@ -1902,7 +1902,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 			}
 		}
 		
-		LogDebug(((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") << ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") << " \"" << safestring(var[i].name).substr(1) << "\" = " << var[i].fval << ' ' << Logger::nullstr(var[i].text));
+		LogDebug(((type & (TYPE_G_TEXT|TYPE_G_LONG|TYPE_G_FLOAT)) ? "global " : "local ") << ((type & (TYPE_L_TEXT|TYPE_G_TEXT)) ? "text" : (type & (TYPE_L_LONG|TYPE_G_LONG)) ? "long" : (type & (TYPE_L_FLOAT|TYPE_G_FLOAT)) ? "float" : "unknown") << " \"" << util::loadString(var[i].name).substr(1) << "\" = " << var[i].fval << ' ' << Logger::nullstr(var[i].text));
 		
 	}
 	
@@ -1955,7 +1955,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		return NULL;
 	}
 	
-	std::string path = safestring(ais->filename);
+	std::string path = util::loadString(ais->filename);
 	if((!path.empty() && path[0] == '\\')
 	   || (path.length() >= 3 && isalpha(path[0]) && path[1] == ':'
 		     && path[2] == '\\')) {
@@ -1997,7 +1997,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->angle = ais->angle;
 		io->scale = ais->scale;
 		io->weight = ais->weight;
-		io->locname = script::loadUnlocalized(boost::to_lower_copy(safestring(ais->locname)));
+		io->locname = script::loadUnlocalized(boost::to_lower_copy(util::loadString(ais->locname)));
 		io->gameFlags = GameFlags::load(ais->gameFlags); // TODO save/load flags
 		io->material = (Material)ais->material; // TODO save/load enum
 		
@@ -2005,7 +2005,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		io->scriptload = ais->scriptload;
 		io->show = EntityVisilibity(ais->show); // TODO save/load enum
 		io->collision = IOCollisionFlags::load(ais->collision); // TODO save/load flags
-		io->mainevent = boost::to_lower_copy(safestring(ais->mainevent));
+		io->mainevent = boost::to_lower_copy(util::loadString(ais->mainevent));
 		
 		// Physics data
 		io->velocity = ais->velocity;
@@ -2037,21 +2037,21 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			aup->initpos = ais->usepath_initpos;
 			aup->lastWP = ais->usepath_lastWP;
 			aup->_starttime = static_cast<float>(ais->usepath_starttime);
-			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(safestring(ais->usepath_name)));
+			aup->path = ARX_PATH_GetAddressByName(boost::to_lower_copy(util::loadString(ais->usepath_name)));
 		}
 		
-		io->shop_category = boost::to_lower_copy(safestring(ais->shop_category));
+		io->shop_category = boost::to_lower_copy(util::loadString(ais->shop_category));
 		
 		io->halo_native = ais->halo;
 		io->halo_native.dynlight = -1;
 		io->halo.dynlight = -1;
 		ARX_HALO_SetToNative(io);
 		
-		io->inventory_skin = res::path::load(safestring(ais->inventory_skin));
-		io->stepmaterial = boost::to_lower_copy(safestring(ais->stepmaterial));
-		io->armormaterial = boost::to_lower_copy(safestring(ais->armormaterial));
-		io->weaponmaterial = boost::to_lower_copy(safestring(ais->weaponmaterial));
-		io->strikespeech = script::loadUnlocalized(boost::to_lower_copy(safestring(ais->strikespeech)));
+		io->inventory_skin = res::path::load(util::loadString(ais->inventory_skin));
+		io->stepmaterial = boost::to_lower_copy(util::loadString(ais->stepmaterial));
+		io->armormaterial = boost::to_lower_copy(util::loadString(ais->armormaterial));
+		io->weaponmaterial = boost::to_lower_copy(util::loadString(ais->weaponmaterial));
+		io->strikespeech = script::loadUnlocalized(boost::to_lower_copy(util::loadString(ais->strikespeech)));
 		
 		for(long i = 0; i < MAX_ANIMS; i++) {
 			
@@ -2063,7 +2063,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 				continue;
 			}
 			
-			res::path path = res::path::load(safestring(ais->anims[i]));
+			res::path path = res::path::load(util::loadString(ais->anims[i]));
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
 			if(io->anims[i]) {
@@ -2142,7 +2142,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
 			scr_timer[num].msecs = ats->msecs;
-			scr_timer[num].name = boost::to_lower_copy(safestring(ats->name));
+			scr_timer[num].name = boost::to_lower_copy(util::loadString(ats->name));
 			scr_timer[num].pos = ats->pos;
 			// TODO if the script has changed since the last save, this position may be invalid
 			
@@ -2310,16 +2310,16 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			const SavedTweakerInfo * sti = reinterpret_cast<const SavedTweakerInfo *>(dat + pos);
 			pos += sizeof(SavedTweakerInfo);
 			
-			io->tweakerinfo->filename = res::path::load(safestring(sti->filename));
-			io->tweakerinfo->skintochange = boost::to_lower_copy(safestring(sti->skintochange));
-			io->tweakerinfo->skinchangeto = res::path::load(safestring(sti->skinchangeto));
+			io->tweakerinfo->filename = res::path::load(util::loadString(sti->filename));
+			io->tweakerinfo->skintochange = boost::to_lower_copy(util::loadString(sti->skintochange));
+			io->tweakerinfo->skinchangeto = res::path::load(util::loadString(sti->skinchangeto));
 		}
 		
 		io->groups.clear();
 		for(size_t i = 0; i < nb_iogroups; i++) {
 			const SavedGroupData * sgd = reinterpret_cast<const SavedGroupData *>(dat + pos);
 			pos += sizeof(SavedGroupData);
-			io->groups.insert(boost::to_lower_copy(safestring(sgd->name)));
+			io->groups.insert(boost::to_lower_copy(util::loadString(sgd->name)));
 		}
 		
 		io->tweaks.resize(ais->Tweak_nb);
@@ -2328,8 +2328,8 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			pos += sizeof(SavedTweakInfo);
 			
 			io->tweaks[i].type = TweakType::load(sti->type); // TODO save/load flags
-			io->tweaks[i].param1 = res::path::load(safestring(sti->param1));
-			io->tweaks[i].param2 = res::path::load(safestring(sti->param2));
+			io->tweaks[i].param1 = res::path::load(util::loadString(sti->param1));
+			io->tweaks[i].param2 = res::path::load(util::loadString(sti->param2));
 		}
 		
 		ARX_INTERACTIVE_APPLY_TWEAK_INFO(io);
@@ -2382,7 +2382,7 @@ static void ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi) {
 		LoadLevelScreen();
 		
 		std::ostringstream oss;
-		oss << res::path::load(safestring(idx_io[i].filename)).basename() << '_'
+		oss << res::path::load(util::loadString(idx_io[i].filename)).basename() << '_'
 		    << std::setfill('0') << std::setw(4) << idx_io[i].ident;
 		if(entities.getById(oss.str()) < 0) {
 			ARX_CHANGELEVEL_Pop_IO(oss.str(), idx_io[i].ident);
@@ -2938,7 +2938,7 @@ long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, string & name, float & v
 	
 	// IMPROVE this will load the whole save file FAT just to get one file!
 	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, savefile)) {
-		name = safestring(pld.name);
+		name = util::loadString(pld.name);
 		version = pld.version;
 		level = pld.level;
 		time = (pld.time / 1000);

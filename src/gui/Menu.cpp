@@ -80,17 +80,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 
-#include "platform/String.h"
-
 #include "scene/LoadLevel.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 
 #include "util/Unicode.h"
-
-using std::string;
-using std::istringstream;
 
 extern TextManager * pTextManage;
 extern Anglef ePlayerAngle;
@@ -147,7 +142,7 @@ void ARX_MENU_CLICKSOUND() {
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-void ARX_MENU_LaunchAmb(const string & _lpszAmb) {
+void ARX_MENU_LaunchAmb(const std::string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 
@@ -193,12 +188,12 @@ void ARX_Menu_Resources_Create() {
 	
 	// Load credits.
 	
-	string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
+	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
 	char * credits = resources->readAlloc(creditsFile, creditsSize);
 	
-	string englishCreditsFile;
+	std::string englishCreditsFile;
 	if(!credits) {
 		// Fallback if there is no localised credits file
 		englishCreditsFile = "localisation/ucredits_english.txt";

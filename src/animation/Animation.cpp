@@ -88,7 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 
 #include "scene/Object.h"
 #include "scene/GameSound.h"

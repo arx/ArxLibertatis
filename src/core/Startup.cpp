@@ -53,8 +53,8 @@
 #include "math/Random.h"
 #include "platform/CrashHandler.h"
 #include "platform/Environment.h"
-#include "platform/String.h"
 #include "platform/Time.h"
+#include "util/String.h"
 
 
 namespace po = boost::program_options;
@@ -165,7 +165,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 		CrashHandler::setVariable("Boost version", BOOST_LIB_VERSION);
 		std::string command_line;
 		for(int i = 1; i < argc; i++) {
-			command_line += escapeString(argv[i], "\\\" '$!");
+			command_line += util::escapeString(argv[i], "\\\" '$!");
 			command_line += ' ';
 		}
 		CrashHandler::setVariable("Command line", command_line);
