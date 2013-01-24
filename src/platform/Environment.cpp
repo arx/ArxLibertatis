@@ -162,25 +162,13 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	return false;
 }
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-
-static const char * executablePath = NULL;
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 
 void defineSystemDirectories(const char * argv0) {
-	
-	const char * _home = getenv("HOME");
-	std::string home = _home ? _home : "~";
-	
-	setenv("XDG_DATA_HOME", (home + "/.local/share").c_str(), 0);
-	setenv("XDG_CONFIG_HOME", (home + "/.config").c_str(), 0);
-	setenv("XDG_DATA_DIRS", "/usr/local/share/:/usr/share/", 0);
-	setenv("XDG_CONFIG_DIRS", "/etc/xdg", 0);
-	setenv("XDG_CACHE_HOME", (home + "/.cache").c_str(), 0);
-	
-	executablePath = argv0;
+	ARX_UNUSED(argv0);
 }
 
-#else
+#elif defined(ARX_HAVE_WINAPI)
 
 std::string ws2s(const std::basic_string<WCHAR> & s) {
 	size_t slength = (int)s.length() + 1;
@@ -242,6 +230,14 @@ void defineSystemDirectories(const char * argv0) {
 	}
 }
 
+#else
+
+static const char * executablePath = NULL;
+
+void defineSystemDirectories(const char * argv0) {
+	executablePath = argv0;
+}
+
 #endif
 
 #if defined(ARX_HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
@@ -279,8 +275,6 @@ std::string getExecutablePath() {
 			return exerealpath;
 		}
 	}
-	
-	ARX_UNUSED(executablePath);
 	
 #elif defined(ARX_HAVE_WINAPI)
 	

@@ -90,12 +90,30 @@ elseif(MACOSX)
 	set(USER_DIR            "ArxLibertatis"                 CACHE STRING "User dir names")
 	set(USER_DIR_PREFIXES   "~/Library/Application Support" CACHE STRING "User dir paths")
 else()
-	set(DATA_DIR            "games/arx:arx"                 CACHE STRING "Data dir names")
-	set(DATA_DIR_PREFIXES   "$XDG_DATA_DIRS:/opt"           CACHE STRING "Data dir paths")
-	set(USER_DIR            "arx"                           CACHE STRING "User dir names")
-	set(USER_DIR_PREFIXES   "$XDG_DATA_HOME"                CACHE STRING "User dir paths")
-	set(CONFIG_DIR          "arx"                           CACHE STRING "Config dir names")
-	set(CONFIG_DIR_PREFIXES "$XDG_CONFIG_HOME"              CACHE STRING "Config dir paths")
+	set(DATA_DIR
+		"games/arx:arx"
+		CACHE STRING "Data dir names"
+	)
+	set(DATA_DIR_PREFIXES
+		"\${XDG_DATA_DIRS:-/usr/local/share/:/usr/share/}:/opt"
+		CACHE STRING "Data dir paths"
+	)
+	set(USER_DIR
+		"arx"
+		CACHE STRING "User dir names"
+	)
+	set(USER_DIR_PREFIXES
+		"\${XDG_DATA_HOME:-$HOME/.local/share}"
+		CACHE STRING "User dir paths"
+	)
+	set(CONFIG_DIR
+		"arx"
+		CACHE STRING "Config dir names"
+	)
+	set(CONFIG_DIR_PREFIXES
+		"\${XDG_CONFIG_HOME:-$HOME/.config}"
+		CACHE STRING "Config dir paths"
+	)
 	set(IGNORE_EXE_DIR
 		"/usr/bin:/usr/games:/usr/games/bin:/usr/local/bin:/usr/local/games:/usr/local/games/bin"
 		CACHE STRING "Executable locations that should not be used as a data dir"

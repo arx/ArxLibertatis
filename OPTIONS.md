@@ -3,14 +3,32 @@ This file describes additional build options that are recognized by the CMakeLis
 
 ### Default data directories
 
-| Option                | Windows default         |  Linux / other default | Mac default     |
-|---------------------- | ----------------------- | ---------------------- | --------------- |
-| `USER_DIR_PREFIXES`   | `%FOLDERID_SavedGames%` | `$XDG_DATA_HOME`       | `~/Library/Application Support` |
-| `USER_DIR`            | `Arx Libertatis`        | `arx`                  | `ArxLibertatis` |
-| `CONFIG_DIR_PREFIXES` |                         | `$XDG_CONFIG_HOME`     |                 |
-| `CONFIG_DIR`          |                         | `arx`                  |                 |
-| `DATA_DIR_PREFIXES`   |                         | `$XDG_DATA_DIRS:/opt`  | `/Applications` |
-| `DATA_DIR`            |                         | `games/arx:arx`        | `ArxLibertatis` |
+| Option                | Windows default                                        |
+|---------------------- | ------------------------------------------------------ |
+| `USER_DIR_PREFIXES`   | `%FOLDERID_SavedGames%`                                |
+| `USER_DIR`            | `Arx Libertatis`                                       |
+| `CONFIG_DIR_PREFIXES` |                                                        |
+| `CONFIG_DIR`          |                                                        |
+| `DATA_DIR_PREFIXES`   |                                                        |
+| `DATA_DIR`            |                                                        |
+
+| Option                | Mac default                                            |
+|---------------------- | ------------------------------------------------------ |
+| `USER_DIR_PREFIXES`   | `~/Library/Application Support`                        |
+| `USER_DIR`            | `ArxLibertatis`                                        |
+| `CONFIG_DIR_PREFIXES` |                                                        |
+| `CONFIG_DIR`          |                                                        |
+| `DATA_DIR_PREFIXES`   | `/Applications`                                        |
+| `DATA_DIR`            | `ArxLibertatis`                                        |
+
+| Option                |  Linux / BSD / other default                           |
+|---------------------- | ------------------------------------------------------ |
+| `USER_DIR_PREFIXES`   | `${XDG_DATA_HOME:-$HOME/.local/share}`                 |
+| `USER_DIR`            | `arx`                                                  |
+| `CONFIG_DIR_PREFIXES` | `${XDG_CONFIG_HOME:-$HOME/.config}`                    |
+| `CONFIG_DIR`          | `arx`                                                  |
+| `DATA_DIR_PREFIXES`   | `${XDG_DATA_DIRS:-/usr/local/share/:/usr/share/}:/opt` |
+| `DATA_DIR`            | `games/arx:arx`                                        |
 
 These pairs define prefixes and suffixes that are combined to form searched paths for the user, config and data directories respectively.
 
