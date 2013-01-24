@@ -183,6 +183,23 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		}
 	}
 	
+	// Search the executable directory
+	path exepath = getExecutablePath();
+	if(!exepath.empty()) {
+		path dir = canonical(exepath.parent());
+		bool ignored = false;
+		if(ignore_exe_dir) {
+			std::vector<path> ignored_dirs = fs::getSearchPaths(ignore_exe_dir);
+			ignored = (std::find(ignored_dirs.begin(), ignored_dirs.end(), dir)
+			           != ignored_dirs.end());
+		}
+		if(!ignored && addSearchPath(result, dir, filter)) {
+			LogDebug("got data dir from exe: " << exepath << " -> " << dir);
+		} else {
+			LogDebug("ignoring data dir from exe: " << exepath << " -> " << dir);
+		}
+	}
+	
 	// Search standard locations
 	std::vector<path> prefixes = fs::getSearchPaths(data_dir_prefixes);
 	std::vector<path> suffixes = fs::getSearchPaths(data_dir);
@@ -198,23 +215,6 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 					         << " + " << suffix << " = " << dir);
 				}
 			}
-		}
-	}
-	
-	// Search the executable directory
-	path exepath = getExecutablePath();
-	if(!exepath.empty()) {
-		path dir = canonical(exepath.parent());
-		bool ignored = false;
-		if(ignore_exe_dir) {
-			std::vector<path> ignored_dirs = fs::getSearchPaths(ignore_exe_dir);
-			ignored = (std::find(ignored_dirs.begin(), ignored_dirs.end(), dir)
-			           != ignored_dirs.end());
-		}
-		if(!ignored && addSearchPath(result, dir, filter)) {
-			LogDebug("got data dir from exe: " << exepath << " -> " << dir);
-		} else {
-			LogDebug("ignoring data dir from exe: " << exepath << " -> " << dir);
 		}
 	}
 	
@@ -336,8 +336,8 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	if(!forceData.empty()) {
 		os << forceData;
 	}
-	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
 	os << " - The directory containing the game executable\n";
+	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
 	os << "selected:";
 	if(data.empty()) {
 		os << " (none)\n";
