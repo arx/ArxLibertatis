@@ -260,9 +260,17 @@ void ArxGame::setFullscreen(bool fullscreen) {
 			mode = GetWindow()->getDisplayModes().back();
 		}
 		
+		// Clamp to a sane resolution!
+		mode.resolution.x = std::max(mode.resolution.x, s32(640));
+		mode.resolution.y = std::max(mode.resolution.y, s32(480));
+		
 		GetWindow()->setFullscreenMode(mode.resolution, mode.depth);
 		
 	} else {
+		
+		// Clamp to a sane window size!
+		config.window.size.x = std::max(config.window.size.x, s32(640));
+		config.window.size.y = std::max(config.window.size.y, s32(480));
 		
 		GetWindow()->setWindowSize(config.window.size);
 		
@@ -308,6 +316,12 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		}
 		
 	}
+	
+	// Clamp to a sane resolution and window size!
+	mode.resolution.x = std::max(mode.resolution.x, s32(640));
+	mode.resolution.y = std::max(mode.resolution.y, s32(480));
+	config.window.size.x = std::max(config.window.size.x, s32(640));
+	config.window.size.y = std::max(config.window.size.y, s32(480));
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
@@ -518,6 +532,8 @@ void ArxGame::OnWindowLostFocus(const Window &) {
 }
 
 void ArxGame::OnResizeWindow(const Window & window) {
+	
+	arx_assert(window.GetSize() != Vec2i::ZERO);
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
