@@ -296,7 +296,7 @@ bool DInput8Backend::init() {
 		return false;
 	}
 
-	setAbsoluteMouseCoords(mainApp->GetWindow()->GetSize().x / 2, mainApp->GetWindow()->GetSize().y / 2);
+	setAbsoluteMouseCoords(mainApp->GetWindow()->getSize().x / 2, mainApp->GetWindow()->getSize().y / 2);
 	
 	LogInfo << "Using DirectInput 8";
 	
@@ -462,7 +462,7 @@ bool getKeyboardInputDevice(DXIMode mode) {
 			continue;
 		}
 		
-		if(chooseInputDevice((HWND)mainApp->GetWindow()->GetHandle(), *i, mode)) {
+		if(chooseInputDevice((HWND)mainApp->GetWindow()->getHandle(), *i, mode)) {
 			return true;
 		}
 		
@@ -484,7 +484,7 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 			continue;
 		}
 		
-		if(chooseInputDevice((HWND)mainApp->GetWindow()->GetHandle(), *i, mode)) {
+		if(chooseInputDevice((HWND)mainApp->GetWindow()->getHandle(), *i, mode)) {
 			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
 				return true;
 			} else {
@@ -611,7 +611,7 @@ bool DInput8Backend::getAbsoluteMouseCoords(int & absX, int & absY) const {
 	POINT pt;
 	absX = pt.x = cursorPos.x;
 	absY = pt.y = cursorPos.y;
-	GetClientRect((HWND)mainApp->GetWindow()->GetHandle(), &rc);
+	GetClientRect((HWND)mainApp->GetWindow()->getHandle(), &rc);
 	return PtInRect(&rc, pt) == TRUE;
 }
 
@@ -619,7 +619,7 @@ void DInput8Backend::setAbsoluteMouseCoords(int absX, int absY) {
 	POINT pt;
 	pt.x = absX;
 	pt.y = absY;
-	ClientToScreen((HWND)mainApp->GetWindow()->GetHandle(), &pt);
+	ClientToScreen((HWND)mainApp->GetWindow()->getHandle(), &pt);
 	SetCursorPos(pt.x, pt.y);
 }
 

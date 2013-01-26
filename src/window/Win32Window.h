@@ -31,10 +31,11 @@ public:
 	
 	Win32Window();
 	virtual ~Win32Window();
-
-	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0);
 	
-	virtual void * GetHandle();
+	virtual bool initialize(const std::string & title, Vec2i size, bool fullscreen,
+	                        unsigned depth = 0);
+	
+	virtual void * getHandle();
 	virtual void setFullscreenMode(Vec2i resolution, unsigned depth = 0);
 	virtual void setWindowSize(Vec2i size);
 	virtual void tick();
@@ -43,14 +44,14 @@ public:
 	void updateSize();
 	
 	virtual void changeDisplay(Vec2i resolution, unsigned _depth) = 0;
-
+	
 	virtual void hide();
 	
 private:
 	
-	static bool RegisterWindowClass();
-	static void UnregisterWindowClass();
-
+	static bool registerWindowClass();
+	static void unregisterWindowClass();
+	
 	static LRESULT CALLBACK WindowProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 	
 	HWND m_hWnd;
@@ -59,6 +60,7 @@ private:
 	static WNDCLASS m_WindowClass;
 	static int m_WindowClassRegistered;
 	static std::map<HWND,Win32Window*> m_WindowsMap;
+	
 };
 
 #endif // ARX_WINDOW_WIN32WINDOW_H

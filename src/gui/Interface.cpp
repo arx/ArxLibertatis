@@ -3592,7 +3592,7 @@ void ArxGame::ManageKeyMouse() {
 		EERIEMouseGrab = 0;
 		DANAEMouse = MemoMouse;
 		
-		if(mainApp->GetWindow()->IsFullScreen()) {
+		if(mainApp->GetWindow()->isFullScreen()) {
 			GInput->setMousePosAbs(DANAEMouse);
 		}
 		

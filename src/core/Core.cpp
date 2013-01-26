@@ -402,8 +402,8 @@ void DANAE_KillCinematic()
 static bool AdjustUI() {
 	
 	// Sets Danae Screen size depending on windowed/full-screen state
-	DANAESIZX = mainApp->GetWindow()->GetSize().x;
-	DANAESIZY = mainApp->GetWindow()->GetSize().y;
+	DANAESIZX = mainApp->GetWindow()->getSize().x;
+	DANAESIZY = mainApp->GetWindow()->getSize().y;
 	
 	// Now computes screen center
 	DANAECENTERX = DANAESIZX>>1;

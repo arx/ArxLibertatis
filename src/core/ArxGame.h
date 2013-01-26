@@ -98,12 +98,12 @@ public:
 	
 private:
 	
-	virtual void OnWindowGotFocus(const Window & window);
-	virtual void OnWindowLostFocus(const Window & window);
-	virtual void OnResizeWindow(const Window & window);
-	virtual void OnPaintWindow(const Window & window);
-	virtual void OnDestroyWindow(const Window & window);
-	virtual void OnToggleFullscreen(const Window & window);
+	virtual void onWindowGotFocus(const Window & window);
+	virtual void onWindowLostFocus(const Window & window);
+	virtual void onResizeWindow(const Window & window);
+	virtual void onPaintWindow(const Window & window);
+	virtual void onDestroyWindow(const Window & window);
+	virtual void onToggleFullscreen(const Window & window);
 	
 	bool wasResized;
 	

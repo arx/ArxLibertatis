@@ -35,18 +35,19 @@ public:
 		Vec2i resolution;
 		unsigned depth;
 		
-		inline DisplayMode() { }
-		inline DisplayMode(const DisplayMode & o) : resolution(o.resolution), depth(o.depth) { }
-		inline DisplayMode(Vec2i res, unsigned bits) : resolution(res), depth(bits) { }
+		DisplayMode() { }
+		DisplayMode(const DisplayMode & o) : resolution(o.resolution), depth(o.depth) { }
+		DisplayMode(Vec2i res, unsigned bits) : resolution(res), depth(bits) { }
 		bool operator<(const DisplayMode & other) const;
-		inline bool operator==(const DisplayMode & other) const {
+		bool operator==(const DisplayMode & other) const {
 			return resolution == other.resolution && depth == other.depth;
 		}
+		
 	};
 	
 	typedef std::vector<DisplayMode> DisplayModes;
 	
-	inline RenderWindow() : renderer(NULL) { }
+	RenderWindow() : renderer(NULL) { }
 	virtual ~RenderWindow() { }
 	
 	class RendererListener {
@@ -64,15 +65,15 @@ public:
 	 * Initialize the framework.
 	 * This needs to be called before init() or getDisplayModes()
 	 */
-	virtual bool initFramework() = 0;
+	virtual bool initializeFramework() = 0;
 	
-	inline Renderer * getRenderer() { return renderer; }
+	Renderer * getRenderer() { return renderer; }
 	
 	//! Get a sorted list of supported fullscreen display modes.
-	inline const DisplayModes & getDisplayModes() { return displayModes; }
+	const DisplayModes & getDisplayModes() { return displayModes; }
 	
-	void addListener(RendererListener * listener);
-	void removeListener(RendererListener * listener);
+	void addRenderListener(RendererListener * listener);
+	void removeRenderListener(RendererListener * listener);
 	
 	virtual void showFrame() = 0;
 	
@@ -89,6 +90,7 @@ private:
 	typedef std::vector<RendererListener *> RendererListeners;
 	
 	RendererListeners renderListeners; //! Listeners for renderer events
+	
 };
 
 #endif // ARX_WINDOW_RENDERWINDOW_H

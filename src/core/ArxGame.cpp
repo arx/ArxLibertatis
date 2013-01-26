@@ -283,14 +283,14 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	m_MainWindow = window;
 	
-	if(!m_MainWindow->initFramework()) {
+	if(!m_MainWindow->initializeFramework()) {
 		m_MainWindow = NULL;
 		return false;
 	}
 	
 	// Register ourself as a listener for this window messages
-	m_MainWindow->AddListener(this);
 	m_MainWindow->addListener(this);
+	m_MainWindow->addRenderListener(this);
 	
 	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
 	
@@ -325,7 +325,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
-	if(!m_MainWindow->init(version, size, config.video.fullscreen, mode.depth)) {
+	if(!m_MainWindow->initialize(version, size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
 	}
@@ -336,7 +336,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		return false;
 	}
 	
-	if(!m_MainWindow->IsFullScreen() && config.video.resolution != Vec2i::ZERO) {
+	if(!m_MainWindow->isFullScreen() && config.video.resolution != Vec2i::ZERO) {
 		config.video.resolution = mode.resolution;
 	}
 	config.video.bpp = mode.depth;
@@ -515,7 +515,7 @@ bool ArxGame::Create() {
 	return true;
 }
 
-void ArxGame::OnWindowGotFocus(const Window &) {
+void ArxGame::onWindowGotFocus(const Window &) {
 	
 	if(GInput) {
 		GInput->reset();
@@ -524,47 +524,47 @@ void ArxGame::OnWindowGotFocus(const Window &) {
 	}
 }
 
-void ArxGame::OnWindowLostFocus(const Window &) {
+void ArxGame::onWindowLostFocus(const Window &) {
 	
 	if(GInput) {
 		GInput->unacquireDevices();
 	}
 }
 
-void ArxGame::OnResizeWindow(const Window & window) {
+void ArxGame::onResizeWindow(const Window & window) {
 	
-	arx_assert(window.GetSize() != Vec2i::ZERO);
+	arx_assert(window.getSize() != Vec2i::ZERO);
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
 	wasResized = true;
 	
-	if(window.IsFullScreen()) {
+	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i::ZERO) {
-			LogInfo << "auto selected fullscreen resolution " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
+			LogInfo << "auto selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
 		} else {
-			LogInfo << "changed fullscreen resolution to " << window.GetSize().x << 'x' << window.GetSize().y << '@' << window.getDepth();
-			config.video.resolution = window.GetSize();
+			LogInfo << "changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
+			config.video.resolution = window.getSize();
 		}
 	} else {
-		LogInfo << "changed window size to " << window.GetSize().x << 'x' << window.GetSize().y;
-		config.window.size = window.GetSize();
+		LogInfo << "changed window size to " << window.getSize().x << 'x' << window.getSize().y;
+		config.window.size = window.getSize();
 	}
 }
 
-void ArxGame::OnPaintWindow(const Window& window)
+void ArxGame::onPaintWindow(const Window& window)
 {
 	ARX_UNUSED(window);
 }
 
-void ArxGame::OnDestroyWindow(const Window &) {
+void ArxGame::onDestroyWindow(const Window &) {
 	
 	LogInfo << "Application window is being destroyed";
 	Quit();
 }
 
-void ArxGame::OnToggleFullscreen(const Window & window) {
-	config.video.fullscreen = window.IsFullScreen();
+void ArxGame::onToggleFullscreen(const Window & window) {
+	config.video.fullscreen = window.isFullScreen();
 	GInput->reset();
 	wasResized = true;
 }
@@ -584,7 +584,7 @@ void ArxGame::Run() {
 			break;
 		}
 		
-		if(m_MainWindow->HasFocus() && m_bReady) {
+		if(m_MainWindow->hasFocus() && m_bReady) {
 			Render3DEnvironment();
 		}
 	}
@@ -648,7 +648,7 @@ void ArxGame::OutputTextGrid(float column, float row, const std::string &text, c
 	Font *selected_font = hFontInGame;
 
 	// find display size
-	const Vec2i &window = GetWindow()->GetSize();
+	const Vec2i &window = GetWindow()->getSize();
 
 	const int tsize = selected_font->getLineHeight();
 
@@ -672,7 +672,7 @@ bool ArxGame::BeforeRun() {
 	
 	LogDebug("Before Run...");
 	
-	const Vec2i & size = GetWindow()->GetSize();
+	const Vec2i & size = GetWindow()->getSize();
 	ControlCinematique = new Cinematic(size.x, size.y);
 	
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
@@ -942,7 +942,7 @@ void ArxGame::Render() {
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_TOGGLE_FULLSCREEN)) {
-		setFullscreen(!GetWindow()->IsFullScreen());
+		setFullscreen(!GetWindow()->isFullScreen());
 	}
 	
 	if(ARX_Menu_Render()) {

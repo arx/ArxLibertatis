@@ -50,14 +50,14 @@ SDLWindow::~SDLWindow() {
 	
 }
 
-bool SDLWindow::initFramework() {
+bool SDLWindow::initializeFramework() {
 	
 	arx_assert_msg(mainWindow == NULL, "SDL only supports one window");
 	arx_assert(displayModes.empty());
 	
-	const char * header_version = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
-	                              "." ARX_STR(SDL_PATCHLEVEL);
-	CrashHandler::setVariable("SDL version (headers)", header_version);
+	const char * headerVersion = ARX_STR(SDL_MAJOR_VERSION) "." ARX_STR(SDL_MINOR_VERSION)
+	                             "." ARX_STR(SDL_PATCHLEVEL);
+	CrashHandler::setVariable("SDL version (headers)", headerVersion);
 	
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) < 0) {
 		LogError << "Failed to initialize SDL: " << SDL_GetError();
@@ -65,10 +65,10 @@ bool SDLWindow::initFramework() {
 	}
 	
 	const SDL_version * ver = SDL_Linked_Version();
-	std::ostringstream runtime_version;
-	runtime_version << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
-	CrashHandler::setVariable("SDL version", runtime_version.str());
-	LogInfo << "Using SDL " << runtime_version.str();
+	std::ostringstream runtimeVersion;
+	runtimeVersion << int(ver->major) << '.' << int(ver->minor) << '.' << int(ver->patch);
+	CrashHandler::setVariable("SDL version", runtimeVersion.str());
+	LogInfo << "Using SDL " << runtimeVersion.str();
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	
@@ -76,8 +76,9 @@ bool SDLWindow::initFramework() {
 	desktopMode.resolution.y = vid->current_h;
 	desktopMode.depth = vid->vfmt->BitsPerPixel;
 	
-	SDL_Rect ** modes = SDL_ListModes(NULL, SDL_FULLSCREEN | SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE);
-	if(modes == (SDL_Rect**)(-1)) {
+	u32 flags = SDL_FULLSCREEN | SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
+	SDL_Rect ** modes = SDL_ListModes(NULL, flags);
+	if(modes == (SDL_Rect **)(-1)) {
 		
 		// Any mode is supported, add some standard modes.
 		
@@ -115,7 +116,8 @@ bool SDLWindow::initFramework() {
 		
 	} else if(modes) {
 		for(; *modes; modes++) {
-			displayModes.push_back(DisplayMode(Vec2i((*modes)->w, (*modes)->h), desktopMode.depth));
+			DisplayMode mode(Vec2i((*modes)->w, (*modes)->h), desktopMode.depth);
+			displayModes.push_back(mode);
 		}
 	} else {
 		return false;
@@ -128,7 +130,8 @@ bool SDLWindow::initFramework() {
 	return true;
 }
 
-bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, unsigned _depth) {
+bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscreen,
+                           unsigned depth) {
 	
 	arx_assert(!displayModes.empty());
 	
@@ -146,8 +149,8 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, config.video.vsync ? 1 : 0);
 	
-	m_Size = Vec2i::ZERO;
-	depth = 0;
+	size_ = Vec2i::ZERO;
+	depth_ = 0;
 	
 	for(int msaa = config.video.antialiasing ? 8 : 1; msaa >= 0; msaa--) {
 		
@@ -162,26 +165,27 @@ bool SDLWindow::init(const std::string & title, Vec2i size, bool fullscreen, uns
 			return false;
 		}
 		
-		if(setMode(DisplayMode(size, fullscreen ? _depth : 0), fullscreen)) {
+		if(setMode(DisplayMode(size, fullscreen ? depth : 0), fullscreen)) {
 			break;
 		}
 	}
 	
-	m_IsFullscreen = fullscreen;
+	isFullscreen_ = fullscreen;
 	
 	SDL_WM_SetCaption(title.c_str(), title.c_str());
+	title_ = title;
 	
 	SDL_ShowCursor(SDL_DISABLE);
 	
-	OnCreate();
+	onCreate();
 	
 	renderer = new OpenGLRenderer;
 	renderer->Initialize();
 	
 	updateSize(false);
 	
-	OnShow(true);
-	OnFocus(true);
+	onShow(true);
+	onFocus(true);
 	
 	onRendererInit();
 	
@@ -199,7 +203,7 @@ bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 	bool needsReinit;
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
-	needsReinit = m_IsFullscreen || fullscreen;
+	needsReinit = isFullscreen_ || fullscreen;
 #elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM != ARX_PLATFORM_BSD
 	needsReinit = false;
 #else
@@ -215,7 +219,8 @@ bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 	
 	Uint32 flags = SDL_ANYFORMAT | SDL_OPENGL | SDL_HWSURFACE;
 	flags |= (fullscreen) ? SDL_FULLSCREEN : SDL_RESIZABLE;
-	SDL_Surface * win = SDL_SetVideoMode(mode.resolution.x, mode.resolution.y, mode.depth, flags);
+	SDL_Surface * win = SDL_SetVideoMode(mode.resolution.x, mode.resolution.y,
+	                                     mode.depth, flags);
 	
 	return (win != NULL);
 }
@@ -224,10 +229,10 @@ void SDLWindow::updateSize(bool reinit) {
 	
 	const SDL_VideoInfo * vid = SDL_GetVideoInfo();
 	
-	DisplayMode oldMode(m_Size, depth);
+	DisplayMode oldMode(size_, depth_);
 	
-	m_Size = Vec2i(vid->current_w, vid->current_h);
-	depth = vid->vfmt->BitsPerPixel;
+	size_ = Vec2i(vid->current_w, vid->current_h);
+	depth_ = vid->vfmt->BitsPerPixel;
 	
 	// Finally, set the viewport for the newly created device
 	arx_assert(renderer != NULL);
@@ -242,18 +247,18 @@ void SDLWindow::updateSize(bool reinit) {
 	
 	if(reinit && !reinterpret_cast<OpenGLRenderer *>(renderer)->isInitialized()) {
 		reinterpret_cast<OpenGLRenderer *>(renderer)->reinit();
-		renderer->SetViewport(Rect(m_Size.x, m_Size.y));
+		renderer->SetViewport(Rect(size_.x, size_.y));
 		onRendererInit();
 	} else {
-		renderer->SetViewport(Rect(m_Size.x, m_Size.y));
+		renderer->SetViewport(Rect(size_.x, size_.y));
 	}
 	
-	if(m_Size != oldMode.resolution) {
-		OnResize(m_Size.x, m_Size.y);
+	if(size_ != oldMode.resolution) {
+		onResize(size_.x, size_.y);
 	}
 }
 
-void * SDLWindow::GetHandle() {
+void * SDLWindow::getHandle() {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	
@@ -277,18 +282,18 @@ void * SDLWindow::GetHandle() {
 
 void SDLWindow::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
-	if(m_IsFullscreen && m_Size == resolution && depth == _depth) {
+	if(isFullscreen_ && size_ == resolution && depth_ == _depth) {
 		return;
 	}
 	
-	if(!setMode(DisplayMode(resolution, depth), true)) {
+	if(!setMode(DisplayMode(resolution, depth_), true)) {
 		return;
 	}
 	
-	if(!m_IsFullscreen) {
-		m_IsFullscreen = true;
+	if(!isFullscreen_) {
+		isFullscreen_ = true;
 		updateSize(true);
-		OnToggleFullscreen();
+		onToggleFullscreen();
 	} else {
 		updateSize(true);
 	}
@@ -297,7 +302,7 @@ void SDLWindow::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 
 void SDLWindow::setWindowSize(Vec2i size) {
 	
-	if(!m_IsFullscreen && size == GetSize()) {
+	if(!isFullscreen_ && size == getSize()) {
 		return;
 	}
 	
@@ -305,17 +310,17 @@ void SDLWindow::setWindowSize(Vec2i size) {
 		return;
 	}
 	
-	if(m_IsFullscreen) {
-		m_IsFullscreen = false;
+	if(isFullscreen_) {
+		isFullscreen_ = false;
 		updateSize(true);
-		OnToggleFullscreen();
+		onToggleFullscreen();
 	}
 }
 
 int SDLCALL SDLWindow::eventFilter(const SDL_Event * event) {
 	
 	if(mainWindow && event->type == SDL_QUIT) {
-		return (mainWindow->OnClose()) ? 1 : 0;
+		return (mainWindow->onClose()) ? 1 : 0;
 	}
 	
 	return 1;
@@ -334,9 +339,9 @@ void SDLWindow::tick() {
 				}
 				if(event.active.state & SDL_APPACTIVE) {
 					if(event.active.gain) {
-						OnRestore();
+						onRestore();
 					} else {
-						OnMinimize();
+						onMinimize();
 					}
 				}
 				if(input != NULL && (event.active.state & SDL_APPMOUSEFOCUS)) {
@@ -346,15 +351,22 @@ void SDLWindow::tick() {
 			}
 			
 			case SDL_KEYDOWN:
-				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message should be sent
-				// when ALT-F4 is pressed on Windows, but it doesn't look like it's working as expected...
-				if(event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
-					OnDestroy();
+				
+				// For some reason, release notes from SDL 1.2.12 says a SDL_QUIT message
+				// should be sent when ALT-F4 is pressed on Windows,
+				// but it doesn't look like it's working as expected...
+				if(event.key.keysym.sym == SDLK_F4
+					&& (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+					onDestroy();
 					break;
 				}
 				
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-				if(event.key.keysym.sym == SDLK_TAB && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
+				// The SDL X11 backend always grabs all keys when in fullscreen mode,
+				// ufortunately breaking window manager shortcuts.
+				// At least provide users with a way to switch to other windows.
+				if(event.key.keysym.sym == SDLK_TAB
+				   && (event.key.keysym.mod & KMOD_ALT) != KMOD_NONE) {
 					SDL_WM_IconifyWindow();
 				}
 #endif
@@ -375,21 +387,21 @@ void SDLWindow::tick() {
 			}
 			
 			case SDL_QUIT: {
-				OnDestroy();
+				onDestroy();
 				break;
 			}
 			
 			case SDL_VIDEORESIZE: {
 				Vec2i newSize(event.resize.w, event.resize.h);
-				if(newSize != m_Size && !m_IsFullscreen) {
-					setMode(DisplayMode(newSize, depth), false);
+				if(newSize != size_ && !isFullscreen_) {
+					setMode(DisplayMode(newSize, depth_), false);
 					updateSize(false);
 				}
 				break;
 			}
 			
 			case SDL_VIDEOEXPOSE: {
-				OnPaint();
+				onPaint();
 				break;
 			}
 			
@@ -406,11 +418,10 @@ Vec2i SDLWindow::getCursorPosition() const {
 }
 
 void SDLWindow::showFrame() {
-	
 	SDL_GL_SwapBuffers();
 }
 
 void SDLWindow::hide() {
 	SDL_WM_IconifyWindow();
-	OnShow(false);
+	onShow(false);
 }
