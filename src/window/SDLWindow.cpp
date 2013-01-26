@@ -156,7 +156,7 @@ bool SDLWindow::initialize(const std::string & title, Vec2i size, bool fullscree
 		
 		if(msaa > 1) {
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa);
 		} else if(msaa > 0) {
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
