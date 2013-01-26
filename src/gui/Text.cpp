@@ -386,6 +386,13 @@ bool ARX_Text_Init() {
 	hFontInGameNote = nFontInGameNote;
 	hFontInBook = nFontInBook;
 	
+	if(!hFontMainMenu || !hFontMenu || !hFontControls || !hFontCredits || !hFontInGame
+	   || !hFontInGameNote || !hFontInBook) {
+		LogCritical << "Could not load font " << file << " for scale " << scale
+		            << " / small scale " << small_scale;
+		return false;
+	}
+	
 	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->getSize() << ", "
 	        << hFontMenu->getSize() << ", " << hFontControls->getSize()
 	        << ", " << hFontCredits->getSize() << ", " << hFontInGame->getSize() << ", "
