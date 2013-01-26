@@ -296,54 +296,61 @@ void* Win32Window::GetHandle() {
 void Win32Window::updateSize() {
 	
 	RECT rcClient;
-	GetClientRect(m_hWnd, &rcClient);
+	BOOL ret = GetClientRect(m_hWnd, &rcClient);
+	
+	if(!ret || rcClient.right == rcClient.left || rcClient.bottom == rcClient.top) {
+		LogWarning << "Ignoring bad window size: (" << rcClient.left << ", " << rcClient.top
+		           << ") -- (" << rcClient.right << ", " << rcClient.bottom << ")";
+	}
 	
 	Vec2i newSize = Vec2i(rcClient.right - rcClient.left, rcClient.bottom - rcClient.top);
 	
 	if(newSize != m_Size) {
-        OnResize(newSize.x, newSize.y);
+		OnResize(newSize.x, newSize.y);
 		changeDisplay(newSize, 0);
 	}
 }
 
 void Win32Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
+	
 	SetWindowLong(m_hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
 	
 	depth = _depth;
-
+	
 	SetWindowPos(m_hWnd, HWND_TOP, 0, 0, resolution.x, resolution.y, SWP_SHOWWINDOW);
-
+	
 	if(!m_IsFullscreen) {
 		m_IsFullscreen = true;
 		OnToggleFullscreen();
 	}
-
+	
 	OnResize(resolution.x, resolution.y);
 }
 
 void Win32Window::setWindowSize(Vec2i size) {
+	
 	SetWindowLong(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-
+	
 	depth = 0;
 	
 	DWORD windowStyle = WS_OVERLAPPEDWINDOW;
 	DWORD windowExtendedStyle = WS_EX_APPWINDOW;
-
+	
 	RECT rcWnd;
-
+	
 	SetRect(&rcWnd, 0, 0, size.x, size.y);
 	AdjustWindowRectEx(&rcWnd, windowStyle, GetMenu(m_hWnd) != NULL, windowExtendedStyle);
-
+	
 	int dx = rcWnd.right - rcWnd.left - size.x;
 	int dy = rcWnd.bottom - rcWnd.top - size.y;
-
+	
 	SetWindowPos(m_hWnd, HWND_NOTOPMOST, 0, 0, size.x + dx, size.y + dy, SWP_SHOWWINDOW);
-
+	
 	if(m_IsFullscreen) {
 		m_IsFullscreen = false;
 		OnToggleFullscreen();
 	}
-
+	
 	OnResize(size.x, size.y);
 }
 
