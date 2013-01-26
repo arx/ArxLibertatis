@@ -58,8 +58,8 @@ private:
 	bool initialize();
 	void destroyObjects();
 	
-	bool updatePresentParams(DisplayMode mode);
-	void changeDisplay(Vec2i resolution, unsigned _depth);
+	bool updatePresentParams(unsigned depth);
+	void changeDisplay(unsigned depth);
 	
 	std::vector<DeviceInfo> devices;
 	DeviceInfo * deviceInfo;

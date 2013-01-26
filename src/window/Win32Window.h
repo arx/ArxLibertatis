@@ -41,11 +41,13 @@ public:
 	virtual void tick();
 	virtual Vec2i getCursorPosition() const;
 	
+	virtual void hide();
+	
+protected:
+	
 	void updateSize();
 	
-	virtual void changeDisplay(Vec2i resolution, unsigned _depth) = 0;
-	
-	virtual void hide();
+	virtual void changeDisplay(unsigned _depth) = 0;
 	
 private:
 	

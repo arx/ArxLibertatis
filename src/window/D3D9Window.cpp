@@ -152,9 +152,7 @@ bool D3D9Window::initialize(const std::string & title, Vec2i size, bool fullscre
 		return false;
 	}
 	
-	DisplayMode displayMode(size, depth);
-	
-	if(!updatePresentParams(displayMode)) {
+	if(!updatePresentParams(depth)) {
 		return false;
 	}
 	
@@ -237,7 +235,7 @@ void D3D9Window::showFrame() {
 	GD3D9Device->Present(NULL, NULL, NULL, NULL);
 }
 
-bool D3D9Window::updatePresentParams(DisplayMode mode) {
+bool D3D9Window::updatePresentParams(unsigned depth) {
 	
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -256,7 +254,7 @@ bool D3D9Window::updatePresentParams(DisplayMode mode) {
 		d3dpp.Windowed = FALSE;
 		d3dpp.BackBufferWidth = size_.x;
 		d3dpp.BackBufferHeight = size_.y;
-		d3dpp.BackBufferFormat = (mode.depth == 16) ? D3DFMT_R5G6B5 : D3DFMT_X8R8G8B8;
+		d3dpp.BackBufferFormat = (depth == 16) ? D3DFMT_R5G6B5 : D3DFMT_X8R8G8B8;
 	} else {
 		D3DDISPLAYMODE displayMode;
 		d3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &displayMode);
@@ -354,9 +352,9 @@ bool D3D9Window::initialize() {
 	return true;
 }
 
-void D3D9Window::changeDisplay(Vec2i resolution, unsigned _depth) {
+void D3D9Window::changeDisplay(unsigned depth) {
 	
-	updatePresentParams(DisplayMode(resolution, _depth));
+	updatePresentParams(depth);
 	
 	destroyObjects();
 	d3d9Renderer->reset(d3dpp);
@@ -371,7 +369,7 @@ void D3D9Window::setFullscreenMode(Vec2i resolution, unsigned _depth) {
 	
 	Win32Window::setFullscreenMode(resolution, _depth);
 	
-	changeDisplay(resolution, _depth);
+	changeDisplay(_depth);
 }
 
 void D3D9Window::setWindowSize(Vec2i size) {
@@ -382,7 +380,7 @@ void D3D9Window::setWindowSize(Vec2i size) {
 	
 	Win32Window::setWindowSize(size);
 	
-	changeDisplay(size, 0);
+	changeDisplay(0);
 }
 
 void D3D9Window::restoreObjects() {

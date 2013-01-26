@@ -314,7 +314,7 @@ void Win32Window::updateSize() {
 	
 	if(newSize != size_) {
 		onResize(newSize.x, newSize.y);
-		changeDisplay(newSize, 0);
+		changeDisplay(0);
 	}
 }
 
