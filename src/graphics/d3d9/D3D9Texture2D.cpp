@@ -58,8 +58,8 @@ DX9Texture2D::~DX9Texture2D()
 	Destroy();
 }
 
-bool DX9Texture2D::Create()
-{	
+bool DX9Texture2D::Create() {
+	
 	arx_assert_msg(m_pTexture == 0, "Texture already created!");
 	arx_assert(size.x != 0);
 	arx_assert(size.y != 0);

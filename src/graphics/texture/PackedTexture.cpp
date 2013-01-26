@@ -21,6 +21,7 @@
 
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
+#include "io/log/Logger.h"
 
 PackedTexture::PackedTexture(unsigned int pSize, Image::Format pFormat)
 	: textureSize(pSize), textureFormat(pFormat) { }
@@ -49,7 +50,12 @@ PackedTexture::TextureTree::TextureTree(unsigned int textureSize,
 	root.rect = Rect(0, 0, textureSize - 1, textureSize - 1);
 	
 	texture = GRenderer->CreateTexture2D();
-	texture->Init(textureSize, textureSize, textureFormat);
+	if(!texture->Init(textureSize, textureSize, textureFormat)) {
+		LogError << "Could not create texture for size " << textureSize
+		         << " and format " << textureFormat;
+		delete texture, texture = NULL;
+		return;
+	}
 	texture->GetImage().Clear();
 	dirty = true;
 }
@@ -89,7 +95,12 @@ bool PackedTexture::insertImage(const Image & image, unsigned int & textureIndex
 	
 	// No space found, create a new texture
 	if(!node) {
-		textures.push_back(new TextureTree(textureSize, textureFormat));
+		TextureTree * newTree = new TextureTree(textureSize, textureFormat);
+		if(!newTree->texture) {
+			delete newTree;
+			return false;
+		}
+		textures.push_back(newTree);
 		node = textures[textures.size() - 1]->insertImage(image);
 		nodeTree = textures.size() - 1;
 	}

@@ -159,7 +159,14 @@ bool Font::insertGlyph(Char character) {
 		memcpy(dst, src, glyph.size.x * glyph.size.y);
 		
 		Vec2i offset;
-		textures->insertImage(imgGlyph, glyph.texture, offset);
+		if(!textures->insertImage(imgGlyph, glyph.texture, offset)) {
+			std::ostringstream oss;
+			util::writeUTF8(std::ostream_iterator<char>(oss), character);
+			LogWarning << "Could not upload glyph for character U+" << std::hex << character
+			           << " (" << oss.str() << ") in font " << info.name;
+			insertPlaceholderGlyph(character);
+			return false;
+		}
 		
 		// Compute UV mapping for each glyph.
 		const float textureSize = textures->getTextureSize();
