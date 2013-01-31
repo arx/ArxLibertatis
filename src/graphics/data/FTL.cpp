@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <boost/static_assert.hpp>
 
 #include "graphics/data/FTLFormat.h"
@@ -69,14 +70,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/log/Logger.h"
 
-#include "platform/String.h"
-
 #include "scene/Object.h"
+
+#include "util/String.h"
 
 using std::string;
 using std::vector;
-
-extern long NOCHECKSUM;
 
 #ifdef BUILD_EDIT_LOADSAVE
 
@@ -482,20 +481,20 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	pos += 512;
 	
 	// Pointer to Secondary Header
-	const ARX_FTL_SECONDARY_HEADER * afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
-	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
-	
+	const ARX_FTL_SECONDARY_HEADER * afsh;
+	afsh = reinterpret_cast<const ARX_FTL_SECONDARY_HEADER *>(dat + pos);
 	if(afsh->offset_3Ddata == -1) {
 		LogError << "ARX_FTL_Load: error loading data from " << filename;
 		free(dat);
 		return NULL;
 	}
+	pos = afsh->offset_3Ddata;
 	
 	// Available from here in whole function
 	EERIE_3DOBJ * obj = new EERIE_3DOBJ();
 	
-	pos = afsh->offset_3Ddata;
-	const ARX_FTL_3D_DATA_HEADER * af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
+	const ARX_FTL_3D_DATA_HEADER * af3Ddh;
+	af3Ddh = reinterpret_cast<const ARX_FTL_3D_DATA_HEADER *>(dat + pos);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 	
 	obj->vertexlist.resize(af3Ddh->nb_vertex);
@@ -505,7 +504,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 	obj->actionlist.resize(af3Ddh->nb_action);
 	obj->selections.resize(af3Ddh->nb_selections);
 	obj->origin = af3Ddh->origin;
-	obj->file = res::path::load(safestring(af3Ddh->name));
+	obj->file = res::path::load(util::loadString(af3Ddh->name));
 	
 	// Alloc'n'Copy vertices
 	if(!obj->vertexlist.empty()) {
@@ -571,7 +570,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 				obj->texturecontainer[i] = NULL;
 			} else {
 				// Create the texture and put it in the container list
-				res::path name = res::path::load(safestring(tex->name)).remove_ext();
+				res::path name = res::path::load(util::loadString(tex->name)).remove_ext();
 				obj->texturecontainer[i] = TextureContainer::Load(name, TextureContainer::Level);
 			}
 		}
@@ -589,7 +588,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 			const EERIE_GROUPLIST_FTL* group = reinterpret_cast<const EERIE_GROUPLIST_FTL *>(dat + pos);
 			pos += sizeof(EERIE_GROUPLIST_FTL);
 			
-			obj->grouplist[i].name = toLowercase(safestring(group->name));
+			obj->grouplist[i].name = boost::to_lower_copy(util::loadString(group->name));
 			obj->grouplist[i].origin = group->origin;
 			obj->grouplist[i].indexes.resize(group->nb_index);
 			obj->grouplist[i].siz = group->siz;
@@ -618,7 +617,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const res::path & file) {
 		const EERIE_SELECTIONS_FTL * selection = reinterpret_cast<const EERIE_SELECTIONS_FTL *>(dat + pos);
 		pos += sizeof(EERIE_SELECTIONS_FTL);
 		
-		obj->selections[i].name = toLowercase(safestring(selection->name));
+		obj->selections[i].name = boost::to_lower_copy(util::loadString(selection->name));
 		obj->selections[i].selected.resize(selection->nb_selected);
 	}
 	

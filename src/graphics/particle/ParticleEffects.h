@@ -48,16 +48,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_GRAPHICS_PARTICLE_PARTICLEEFFECTS_H
 
 #include <stddef.h>
+
 #include "graphics/Color.h"
 #include "graphics/Vertex.h"
 #include "math/MathFwd.h"
 #include "math/Vector3.h"
 #include "math/Angle.h"
-class TextureContainer;
+
 struct EERIEPOLY;
 struct EERIE_CAMERA;
 struct EERIE_SPHERE;
-struct INTERACTIVE_OBJ;
+class TextureContainer;
+class Entity;
 
 struct FLARES {
 	unsigned char exist;
@@ -72,13 +74,8 @@ struct FLARES {
 	float size;
 	long dynlight;
 	long move;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	bool bDrawBitmap;
-};
-
-struct BOOM {
-	Vec3f pos;
-	long exist;
 };
 
 struct POLYBOOM {
@@ -104,7 +101,7 @@ struct PARTICLE_DEF {
 	Vec3f scale;
 	Vec3f oldpos;
 	float siz;
-	long zdec;
+	bool zdec;
 	long timcreation;
 	unsigned long tolive;
 	unsigned long delay;
@@ -151,17 +148,13 @@ struct FLARETC
 	TextureContainer * shine[11];
 };
 
-//-----------------------------------------------------------------------------
 #define MAX_FOG 100
 #define FOG_DIRECTIONAL 1
 #define MAX_POLYBOOM 4000
-#define MAX_BOOMS 20
 #define PARTICLE_2D	256
 #define MAX_FLARES 300
 #define MAX_FLARELIFE 4000
-#define FLARE_MUL 2
-
-const unsigned long MAX_PARTICLES(2200);
+#define FLARE_MUL 2.f
 
 enum ARX_PARTICLES_TYPE_FLAG {
 	FIRE_TO_SMOKE       = 0x00000001,
@@ -172,18 +165,18 @@ enum ARX_PARTICLES_TYPE_FLAG {
 	GRAVITY             = 0x00000020,
 	SUBSTRACT           = 0x00000040,
 	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_ETINCELLE  = 0x00000100, // gère l'acceleration et la gravité
+	PARTICLE_SPARK2     = 0x00000100,
 	FOLLOW_SOURCE       = 0x00000200,
 	FOLLOW_SOURCE2      = 0x00000400,
 	DELAY_FOLLOW_SOURCE = 0x00000800,
 	NO_TRANS            = 0x00001000,
 	PARTICLE_ANIMATED   = 0x00002000,
-	PARTICLE_SPARK		= 0x00004000,
-	SPLAT_GROUND		= 0x00008000,
-	SPLAT_WATER			= 0x00010000,
-	PARTICLE_SUB2		= 0x00020000,
-	PARTICLE_GOLDRAIN	= 0x00040000,
-	PARTICLE_NOZBUFFER	= 0x80000000
+	PARTICLE_SPARK      = 0x00004000,
+	SPLAT_GROUND        = 0x00008000,
+	SPLAT_WATER         = 0x00010000,
+	PARTICLE_SUB2       = 0x00020000,
+	PARTICLE_GOLDRAIN   = 0x00040000,
+	PARTICLE_NOZBUFFER  = 0x80000000
 };
 
 //-----------------------------------------------------------------------------
@@ -202,56 +195,49 @@ extern FLARES flare[MAX_FLARES];
 extern long flarenum;
 extern short OPIPOrgb;
 extern short PIPOrgb;
-extern long currboom;
-extern PARTICLE_DEF particle[MAX_PARTICLES];
-extern BOOM booms[MAX_BOOMS];
 extern long BoomCount;
 extern POLYBOOM polyboom[MAX_POLYBOOM];
 extern FOG_DEF fogs[MAX_FOG];
-extern TextureContainer * smokeparticle;
-extern TextureContainer * bloodsplatter;
-extern TextureContainer * healing;
-extern TextureContainer * tzupouf;
 extern TextureContainer * fire2;
 extern long NewSpell;
 extern FLARETC flaretc;
-extern long ParticleCount;
 
-//-----------------------------------------------------------------------------
-void MagFX(float posx, float posy, float posz);
+void MagFX(const Vec3f & pos);
 void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
-void MakeBookFX(float posx, float posy, float posz);
+void MakeBookFX(const Vec3f & pos);
 void UpdateObjFx() ;
 void Add3DBoom(Vec3f * position);
-void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
-void AddFlare(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
-void AddFlare2(Vec2s * pos, float sm, short typ, INTERACTIVE_OBJ * io);
-void AddLFlare(float x, float y, INTERACTIVE_OBJ * io = NULL) ;
-void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io = NULL);
+void AddRandomSmoke(Entity * io, long amount = 1);
+void AddFlare(Vec2s * pos, float sm, short typ, Entity * io = NULL);
+void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io);
+void AddLFlare(float x, float y, Entity * io = NULL) ;
+void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io = NULL);
 void LaunchDummyParticle();
 void ManageTorch();
 
-void ARX_GenereSpheriqueEtincelles(Vec3f * pos, float r, TextureContainer * tc, float rr, float g, float b, int mask);
-void MakePlayerAppearsFX(INTERACTIVE_OBJ * io);
+void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
+                           const Color3f & color, int mask);
+void MakePlayerAppearsFX(Entity * io);
 void MakeCoolFx(Vec3f * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags);
 
+PARTICLE_DEF * createParticle(bool allocateWhilePaused = false);
+long getParticleCount();
+
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
-long ARX_PARTICLES_GetFree();
 void ARX_PARTICLES_Render(EERIE_CAMERA * cam);
 void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source);
-void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERACTIVE_OBJ * io);
-void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, INTERACTIVE_OBJ * io = NULL);
+void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io);
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * pos, Entity * io = NULL);
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags);
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col);
 void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * pos);
 
 void ARX_BOOMS_ClearAllPolyBooms();
-void ARX_BOOMS_ClearAll();
 void ARX_BOOMS_Add(Vec3f * pos, long type = 0);
 
 void ARX_MAGICAL_FLARES_FirstInit();

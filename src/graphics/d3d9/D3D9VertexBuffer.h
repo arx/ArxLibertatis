@@ -55,7 +55,7 @@ public:
 		D3DFORMAT format = sizeof(Index) == 2 ? D3DFMT_INDEX16 : D3DFMT_INDEX32;
 
 		HRESULT hr = GD3D9Device->CreateIndexBuffer(capacity * sizeof(Index), dwUsage, format, poolType, &ib, 0);
-		arx_assert_msg(SUCCEEDED(hr), "error creating index buffer: %08x", hr);
+		arx_assert_msg(SUCCEEDED(hr), "error creating index buffer: %08lx", hr);
 		ARX_UNUSED(hr);
 	}
 
@@ -71,7 +71,7 @@ public:
 		Index * dest = NULL;
 		
 		HRESULT hr = ib->Lock(offset * sizeof(Index), count * sizeof(Index), (LPVOID*)&dest, ARXToDXBufferFlags[flags]);
-		arx_assert_msg(SUCCEEDED(hr), "error locking index buffer: %08x", hr);
+		arx_assert_msg(SUCCEEDED(hr), "error locking index buffer: %08lx", hr);
 		ARX_UNUSED(hr);
 		
 		return dest;
@@ -114,7 +114,7 @@ public:
 		dwFVF = format;
 		
 		HRESULT hr = GD3D9Device->CreateVertexBuffer(capacity * sizeof(Vertex), dwUsage, dwFVF, poolType, &vb, 0);
-		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08x", hr);
+		arx_assert_msg(SUCCEEDED(hr), "error creating vertex buffer: %08lx", hr);
 		ARX_UNUSED(hr);		
 	}
 	
@@ -134,7 +134,7 @@ public:
 			count = VertexBuffer<Vertex>::capacity();
 
 		HRESULT hr = vb->Lock(offset * sizeof(Vertex), count * sizeof(Vertex), (LPVOID*)&dest, ARXToDXBufferFlags[flags]);
-		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08x", hr);
+		arx_assert_msg(SUCCEEDED(hr), "error locking vertex buffer: %08lx", hr);
 		ARX_UNUSED(hr);
 		
 		return dest;
@@ -156,7 +156,7 @@ public:
 
 		HRESULT hr = GD3D9Device->DrawPrimitive(type, 0, nbPrimitives);
 
-		arx_assert_msg(SUCCEEDED(hr), "DrawPrimitiveVB failed: %08x", hr);
+		arx_assert_msg(SUCCEEDED(hr), "DrawPrimitiveVB failed: %08lx", hr);
 		ARX_UNUSED(hr);
 	}
 		
@@ -176,7 +176,7 @@ public:
 		
 		HRESULT hr = GD3D9Device->DrawIndexedPrimitive(type, 0, 0, count, 0, nbPrimitives);
 		
-		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08x", hr);
+		arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveVB failed: %08lx", hr);
 		ARX_UNUSED(hr);
 	}
 	

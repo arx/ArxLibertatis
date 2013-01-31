@@ -50,10 +50,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <algorithm>
 
+#include <boost/lexical_cast.hpp>
+
 #include "core/Core.h"
 #include "core/Localisation.h"
 #include "core/GameTime.h"
 
+#include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 
 #include "gui/Interface.h"
@@ -83,7 +87,6 @@ extern long EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH aspeech[MAX_ASPEECH];
-long HIDESPEECH = 0;
 Notification speech[MAX_SPEECH];
 
 
@@ -177,7 +180,7 @@ void ARX_SPEECH_Render() {
 	
 	long igrec = 14;
 	
-	Vec2i sSize = hFontInBook->GetTextSize("p");
+	Vec2i sSize = hFontInBook->getTextSize("p");
 	sSize.y *= 3;
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -237,7 +240,7 @@ void ARX_SPEECH_Check()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, INTERACTIVE_OBJ * io_source, long mood)
+void ARX_SPEECH_Launch_No_Unicode_Seek(const string & text, Entity * io_source, long mood)
 {
 	mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, text, mood, ARX_SPEECH_FLAG_NOTEXT);
@@ -298,7 +301,7 @@ long ARX_SPEECH_GetFree() {
 	return -1;
 }
 
-long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io) {
+long ARX_SPEECH_GetIOSpeech(Entity * io) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
 		if(aspeech[i].exist && aspeech[i].io == io) {
@@ -324,10 +327,10 @@ void ARX_SPEECH_Release(long i) {
 	}
 }
 
-void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io) {
+void ARX_SPEECH_ReleaseIOSpeech(Entity * io) {
 	
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if(aspeech[i].exist && aspeech->io == io) {
+		if(aspeech[i].exist && aspeech[i].io == io) {
 			ARX_SPEECH_Release(i);
 		}
 	}
@@ -339,7 +342,7 @@ void ARX_SPEECH_Reset() {
 	}
 }
 
-void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
+void ARX_SPEECH_ClearIOSpeech(Entity * io) {
 	
 	if(!io) {
 		return;
@@ -352,7 +355,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
 		}
 		
 		EERIE_SCRIPT * es = aspeech[i].es;
-		INTERACTIVE_OBJ * io = aspeech[i].ioscript;
+		Entity * io = aspeech[i].ioscript;
 		long scrpos = aspeech[i].scrpos;
 		ARX_SPEECH_Release(i);
 		
@@ -363,7 +366,8 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io) {
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mood, SpeechFlags flags) {
+long ARX_SPEECH_AddSpeech(Entity * io, const std::string & data, long mood,
+                          SpeechFlags flags) {
 	
 	if(data.empty()) {
 		return -1;
@@ -387,49 +391,51 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 	aspeech[num].fPixelScroll = 0.f;
 	aspeech[num].mood = mood;
 
-	long flg = 0;
-
-	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
-	{
+	LogDebug("speech \"" << data << '"');
+	
+	res::path sample;
+	
+	if(flags & ARX_SPEECH_FLAG_NOTEXT) {
+		
+		// For non-conversation speech choose a random variant
+		
+		long count = getLocalisedKeyCount(data);  
+		long variant = 1;
+		
+		// TODO For some samples there are no corresponding entries
+		// in the localization file  (utext_*.ini) -> count will be 0
+		// We should probably just count the number of sample files
+		
+		if(count > 1) {
+			do {
+				variant = Random::get(1, count);
+			} while(io->lastspeechflag == variant);
+			io->lastspeechflag = checked_range_cast<short>(variant);
+		}
+		
+		LogDebug(" -> " << variant << " / " << count);
+		
+		if(variant > 1) {
+			sample = data + boost::lexical_cast<std::string>(variant);
+		} else {
+			sample = data;
+		}
+		
+	} else {
+		
 		std::string _output = getLocalised(data);
-
+		
 		io->lastspeechflag = 0;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
 		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
-	}
-	
-	
-	LogDebug("speech \"" << data << '"');
-
-	if (flags & ARX_SPEECH_FLAG_NOTEXT)
-	{
-		long count = 0;
-
-		count = getLocalisedKeyCount(data);
-
-		do {
-			flg = rnd() * count + 1;
-		} while(io->lastspeechflag == flg && count > 1);
-
-		if (flg > count) flg = count;
-		else if (flg <= 0) flg = 1;
 		
-		LogDebug(" -> " << flg << " / " << count);
-
-		io->lastspeechflag = (short)flg;
+		sample = data;
 	}
-
-	char speech_sample[256];
-	if (flg > 1)
-		sprintf(speech_sample, "%s%ld", data.c_str(), flg);
-	else
-		strcpy(speech_sample, data.c_str());
-
-	if (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)
-		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample);
-	else
-		aspeech[num].sample = ARX_SOUND_PlaySpeech(speech_sample, io);
+	
+	Entity * source = (aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE) ? NULL : io;
+	aspeech[num].sample = ARX_SOUND_PlaySpeech(sample, source);
+	
 	if(aspeech[num].sample == ARX_SOUND_TOO_FAR) {
 		aspeech[num].sample = audio::INVALID_ID;
 	}
@@ -446,7 +452,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const std::string& data, long mo
 
 	if (ARX_CONVERSATION && io)
 		for (long j = 0; j < main_conversation.actors_nb; j++)
-			if (main_conversation.actors[j] >= 0 && io == inter.iobj[main_conversation.actors[j]])
+			if (main_conversation.actors[j] >= 0 && io == entities[main_conversation.actors[j]])
 				main_conversation.current = num;
 
 	return num;
@@ -462,7 +468,7 @@ void ARX_SPEECH_Update() {
 	{
 		if (aspeech[i].exist)
 		{
-			INTERACTIVE_OBJ * io = aspeech[i].io;
+			Entity * io = aspeech[i].io;
 
 			// updates animations
 			if (io)
@@ -472,7 +478,7 @@ void ARX_SPEECH_Update() {
 				else
 					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
 
-				if (((io != inter.iobj[0]) || ((io == inter.iobj[0])  && (EXTERNALVIEW)))
+				if (((io != entities.player()) || ((io == entities.player())  && (EXTERNALVIEW)))
 						&&	ValidIOAddress(io))
 				{
 					if (io->anims[aspeech[i].mood] == NULL)	aspeech[i].mood = ANIM_TALK_NEUTRAL;
@@ -493,7 +499,7 @@ void ARX_SPEECH_Update() {
 			if (tim >= aspeech[i].time_creation + aspeech[i].duration)
 			{
 				EERIE_SCRIPT	*	es		= aspeech[i].es;
-				INTERACTIVE_OBJ	* io		= aspeech[i].ioscript;
+				Entity	* io		= aspeech[i].ioscript;
 				long				scrpos	= aspeech[i].scrpos;
 				ARX_SPEECH_Release(i);
 
@@ -519,7 +525,7 @@ void ARX_SPEECH_Update() {
 					for (long j = 0 ; j < main_conversation.actors_nb ; j++)
 					{
 						if (main_conversation.actors[j] >= 0)
-							if (speech->io == inter.iobj[main_conversation.actors[j]])
+							if (speech->io == entities[main_conversation.actors[j]])
 							{
 								ok = 1;
 							}
@@ -528,11 +534,10 @@ void ARX_SPEECH_Update() {
 					if (!ok) goto next;
 				}
 
-				if (CINEMASCOPE && !HIDESPEECH)
-				{
+				if(CINEMASCOPE) {
 					if (CINEMA_DECAL >= 100.f)
 					{
-						Vec2i sSize = hFontInBook->GetTextSize(speech->text);
+						Vec2i sSize = hFontInBook->getTextSize(speech->text);
 						
 						float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;
@@ -615,21 +620,15 @@ void ARX_SPEECH_Update() {
 
 }
 
-//-----------------------------------------------------------------------------
-bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is)
-{
-	if (is < 0) return false;
-
-	if (aspeech[is].io == NULL)  return false;
-
-
-	conversationcamera->d_pos.x = aspeech[is].io->pos.x;
-	conversationcamera->d_pos.y = aspeech[is].io->pos.y + PLAYER_BASE_HEIGHT;
-	conversationcamera->d_pos.z = aspeech[is].io->pos.z;
+bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is) {
+	
+	if(is < 0 || !aspeech[is].io) {
+		return false;
+	}
+	
+	conversationcamera->d_pos = aspeech[is].io->pos + player.baseOffset();
 	float t = (aspeech[is].io->angle.b);
-	conversationcamera->pos.x = conversationcamera->d_pos.x + (float)EEsin(t) * 100.f;
-	conversationcamera->pos.y = conversationcamera->d_pos.y;
-	conversationcamera->pos.z = conversationcamera->d_pos.z - (float)EEcos(t) * 100.f;
-
+	conversationcamera->pos = conversationcamera->d_pos;
+	conversationcamera->pos += Vec3f(EEsin(t) * 100.f, 0.f, -EEcos(t) * 100.f);
 	return true;
 }

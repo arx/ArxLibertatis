@@ -52,9 +52,13 @@ public:
 	const Image& operator=(const Image & pOther);
 	
 	bool LoadFromFile(const res::path & filename);
-	bool LoadFromMemory(void * pData, unsigned int size);
+	bool LoadFromMemory(void * pData, unsigned int size,
+	                    const char * file = NULL);
 	
 	void Create(unsigned int width, unsigned int height, Format format, unsigned int numMipmaps = 1, unsigned int depth = 1);
+
+	// Convert 
+	bool ConvertTo(Format format);
 	
 	// reset to fresh constructor state
 	void Reset();
@@ -121,9 +125,6 @@ public:
 	static unsigned int	GetSizeWithMipmaps(Format pFormat, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth = 1, int pMipmapCount = -1);
 	static unsigned int	GetNumChannels(Format pFormat);
 	static bool IsCompressed(Format pFormat);
-	
-	static void init();
-	static void shutdown();
 	
 private:
 	

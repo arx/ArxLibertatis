@@ -198,7 +198,7 @@ bool Server::findIssue(const QString& text, int& issue_id)
 		// add a dependency to QtXmlPatterns...
 		// Look for the first "/rss/channel/item/link" entry...
 		const QString XML_PATH[] = { "rss", "channel", "item", "link" };
-		int currentItem = 0;
+		size_t currentItem = 0;
 		QString issueLink;
 
 		while(!xml.atEnd() && !xml.hasError())
@@ -206,7 +206,7 @@ bool Server::findIssue(const QString& text, int& issue_id)
 			// Read next element
 			QXmlStreamReader::TokenType token = xml.readNext();
 
-			if(currentItem == boost::size(XML_PATH))
+			if(currentItem == size_t(boost::size(XML_PATH)))
 			{
 				issueLink = xml.text().toString();
 				break;

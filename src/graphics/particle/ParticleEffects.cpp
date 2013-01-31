@@ -54,12 +54,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 
 #include "game/Damage.h"
+#include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 
 #include "gui/Interface.h"
 
-#include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/SpellEffects.h"
 
@@ -76,7 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::max;
 
 //TODO(lubosz): extern globals :(
-extern float fZFogEnd;
 extern Color ulBKGColor;
 
 struct OBJFX {
@@ -94,37 +96,31 @@ struct OBJFX {
 	long dynlight;
 };
 
+static const size_t MAX_PARTICLES = 2200;
+static long ParticleCount = 0;
+static PARTICLE_DEF particle[MAX_PARTICLES];
+
 FLARETC			flaretc;
-PARTICLE_DEF	particle[MAX_PARTICLES];
-BOOM			booms[MAX_BOOMS];
 FLARES			flare[MAX_FLARES];
-TexturedVertex		g_Lumignon[4];
-TextureContainer *bloodsplat[6];
-TextureContainer *water_splat[3];
-TextureContainer *water_drop[3];
-TextureContainer * smokeparticle=NULL;
-TextureContainer * bloodsplatter=NULL;
-TextureContainer * healing=NULL;
-TextureContainer * tzupouf=NULL;
+static TextureContainer * bloodsplat[6];
+TextureContainer * water_splat[3];
+static TextureContainer * water_drop[3];
+static TextureContainer * smokeparticle = NULL;
+static TextureContainer * bloodsplatter = NULL;
+static TextureContainer * healing = NULL;
+static TextureContainer * tzupouf = NULL;
 TextureContainer * fire2=NULL;
 
-OBJFX			objfx[MAX_OBJFX];
+static OBJFX objfx[MAX_OBJFX];
 long			BoomCount=0;
  
 long			flarenum=0;
-long			ParticleCount=0;
 short			OPIPOrgb=0;
 short			PIPOrgb=0;
-short			shinum=1;
+static short shinum = 1;
 long			NewSpell=0;
-TextureContainer	*GTC;
-float				ET_R,ET_G,ET_B;
-int					ET_MASK;
-long			HIDEMAGICDUST=0;
 
-//-----------------------------------------------------------------------------
-long ARX_BOOMS_GetFree()
-{
+long ARX_BOOMS_GetFree() {
 	for(long i=0;i<MAX_POLYBOOM;i++) 
 	{
 		if (!polyboom[i].exist) 
@@ -134,123 +130,79 @@ long ARX_BOOMS_GetFree()
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
-void LaunchDummyParticle()
-{
-	long j=ARX_PARTICLES_GetFree();
-
-	if (	(j!=-1)
-		&&	(!arxtime.is_paused())	)
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=true;
-		pd->zdec=0;
-		float f=radians(player.angle.b);
-		pd->ov.x		=	player.pos.x+EEsin(f)*100.f;
-		pd->ov.y		=	player.pos.y;
-		pd->ov.z		=	player.pos.z-EEcos(f)*100.f;
-		pd->move.x		=	0.f;
-		pd->move.y		=	0.f;
-		pd->move.z		=	0.f;
-		pd->timcreation	=	(long)arxtime;
-		pd->tolive		=	600;
-		pd->tc			=	smokeparticle;
-		pd->siz			=	15.f;
-		pd->scale.x		=	-15.f+rnd()*5.f;
-		pd->scale.y		=	-15.f+rnd()*5.f;
-		pd->scale.z		=	-15.f+rnd()*5.f;
-		pd->special		=	FIRE_TO_SMOKE;
-	}
+long getParticleCount() {
+	return ParticleCount;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, INTERACTIVE_OBJ * io) {
+void LaunchDummyParticle() {
+		
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
+	}
 	
-	Vec3f pos;
-	pos.x=poss->x;
-	pos.y=poss->y;
-	pos.z=poss->z;
+	float f = radians(player.angle.b);
+	pd->ov = player.pos + Vec3f(EEsin(f) * 100.f, 0.f, -EEcos(f) * 100.f);
+	pd->tolive = 600;
+	pd->tc = smokeparticle;
+	pd->siz = 15.f;
+	pd->scale = randomVec(-15.f, -10.f);
+	pd->special = FIRE_TO_SMOKE;
+}
 
-	if (	(io)
-		&&	(io->obj)
-		&&	!io->obj->facelist.empty()	)
-	{
-		long notok	=	10;
-		size_t num	=	0;
-
-		while ( notok-- )
-		{
-			num = rnd() * io->obj->facelist.size();
-			arx_assert(num < io->obj->facelist.size());
-
-			if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
-
-			if ( EEfabs( pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y ) > 50.f )
+void ARX_PARTICLES_Spawn_Lava_Burn(Vec3f * poss, Entity * io) {
+	
+	Vec3f pos = *poss;
+	
+	if(io && io->obj && !io->obj->facelist.empty()) {
+		size_t num = 0;
+		long notok = 10;
+		while(notok--) {
+			num = Random::get(0, io->obj->facelist.size() - 1);
+			if(io->obj->facelist[num].facetype & POLY_HIDE) {
 				continue;
-
+			}
+			if(EEfabs(pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y) > 50.f) {
+				continue;
+			}
 			notok = 0;
 		}
-
-		if ((notok >= 0) && 
-			( notok < 10 ) )
-		{
-			Vec3f * v	=	&io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-			pos.x			=	v->x;
-			pos.y			=	v->y;
-			pos.z			=	v->z;
+		// TODO notok is always -1 here!
+		if(notok >= 0) {
+			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 		}
 	}
-
-	long j = ARX_PARTICLES_GetFree();
-
-	if (	( j != -1 )
-		&&	( !arxtime.is_paused() )	)
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd	=	&particle[j];
-		pd->exist			=	true;
-		pd->zdec			=	0;
-		pd->ov.x			=	pos.x;
-		pd->ov.y			=	pos.y;
-		pd->ov.z			=	pos.z;
-		pd->move.x			=	rnd() * 2 - 4.f;
-		pd->move.y			=	rnd() * - 12.f - 15;
-		pd->move.z			=	rnd() * 2 - 4.f;
-		pd->timcreation		=	(long)arxtime;
-		pd->tolive			=	800;
-		pd->tc				=	smokeparticle;
-		pd->siz				=	15.f;
-		pd->scale.x			=	15.f + rnd() * 5.f;
-		pd->scale.y			=	15.f + rnd() * 5.f;
-		pd->scale.z			=	15.f + rnd() * 5.f;
-		pd->special			=	FIRE_TO_SMOKE;
-
-		if ( rnd() > 0.5f ) pd->special |= SUBSTRACT;
+	
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
+	}
+	
+	pd->ov = pos;
+	pd->move = Vec3f(rnd() * 2.f - 4.f, rnd() * -12.f - 15.f, rnd() * 2.f - 4.f);
+	pd->tolive = 800;
+	pd->tc = smokeparticle;
+	pd->siz = 15.f;
+	pd->scale = randomVec(15.f, 20.f);
+	pd->special = FIRE_TO_SMOKE;
+	if(rnd() > 0.5f) {
+		pd->special |= SUBSTRACT;
 	}
 }
 
 static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color col) {
 	
-	long j = ARX_PARTICLES_GetFree();
-
-	if(j == -1 || arxtime.is_paused()) {
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
 		return;
 	}
 	
-	float power = (dmgs * (1.f/60)) + .9f;
-	
-	ParticleCount++;
-	PARTICLE_DEF * pd = &particle[j];
-	pd->exist = true;
-	pd->zdec = 0;
 	pd->ov = pos;
-	pd->siz = 3.1f * power;
-	pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/4);
-	pd->timcreation = (long)arxtime;
-	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | SPLAT_GROUND;
+	pd->siz = 3.1f * (dmgs * (1.f / 60) + .9f);
+	pd->scale = Vec3f::repeat(-pd->siz * 0.25f);
+	pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
+	              | SPLAT_GROUND;
 	pd->tolive = 1600;
-	pd->delay = 0;
 	pd->move = Vec3f(rnd() * 60.f - 30.f, rnd() * -10.f - 15.f, rnd() * 60.f - 30.f);
 	pd->rgb = col.to<float>();
 	long num = Random::get(0, 5);
@@ -259,28 +211,23 @@ static void ARX_PARTICLES_Spawn_Rogue_Blood(const Vec3f & pos, float dmgs, Color
 	
 }
 
-static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col, long flags = 0) {
+static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
+                                       long flags = 0) {
 	
-	long j = ARX_PARTICLES_GetFree();
-	
-	if(j != -1 && !arxtime.is_paused()) {
+	PARTICLE_DEF * pd = createParticle();
+	if(pd) {
 		
 		float power = (dmgs * (1.f/60)) + .9f;
-		ParticleCount++;
-		PARTICLE_DEF * pd = &particle[j];
-		pd->exist = true;
-		pd->zdec = 0;
-		pd->ov = pos + Vec3f(-sin(float(arxtime) * (1.f/1000)), sin(float(arxtime) * (1.f/1000)), cos(float(arxtime) * (1.f/1000))) * 30.f;
+		pd->ov = pos + Vec3f(-sin(float(arxtime) * 0.001f), sin(float(arxtime) * 0.001f),
+		               cos(float(arxtime) * 0.001f)) * 30.f;
 		pd->siz = 3.5f * power + sin(float(arxtime) * (1.f/1000));
-		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * (1.f/2); 
-		pd->timcreation	=	(long)arxtime;
-		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION | flags;
+		pd->scale = Vec3f::repeat(-pd->siz * 0.5f);
+		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION
+		              | flags;
 		pd->tolive = 1100;
-		pd->delay=0;
-		pd->move = Vec3f::ZERO;
 		pd->rgb = col.to<float>();
 		pd->tc = bloodsplatter;
-		pd->fparam = rnd() * (1.f/10) - .05f;
+		pd->fparam = rnd() * 0.1f - .05f;
 	}
 	
 	if(rnd() > .90f) {
@@ -288,6 +235,7 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	}
 	
 }
+
 #define SPLAT_MULTIPLY 1.f
 
 void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
@@ -355,10 +303,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	TheoricalSplat.v[3].p.z=-splatsize*SPLAT_MULTIPLY;
 	TheoricalSplat.type=POLY_QUAD;
 
-	Vec3f RealSplatStart;
-	RealSplatStart.x=-size;
-	RealSplatStart.y=py;
-	RealSplatStart.z=-size;
+	Vec3f RealSplatStart(-size, py, -size);
 
 	TheoricalSplat.v[0].p.x+=poss->x;
 	TheoricalSplat.v[0].p.z+=poss->z;
@@ -538,10 +483,7 @@ void SpawnGroundSplat(EERIE_SPHERE * sp, Color3f * rgb, float size, long flags) 
 	ARX_POLYSPLAT_Add(&sp->origin, rgb, size, flags);
 }
 
-
-long TOTAL_BODY_CHUNKS_COUNT=0;
-
-void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERACTIVE_OBJ * io) {
+void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, Entity * io) {
 	
 	bool isNpc = io && (io->ioflags & IO_NPC);
 	
@@ -562,15 +504,9 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERA
 		
 		long MAX_GROUND_SPLATS;
 		switch(config.video.levelOfDetail) {
-			case 2:
-				MAX_GROUND_SPLATS = 10;
-			break;
-			case 1:
-				MAX_GROUND_SPLATS = 5;
-			break;
-			default:
-				MAX_GROUND_SPLATS = 1;
-			break;
+			case 2:  MAX_GROUND_SPLATS = 10; break;
+			case 1:  MAX_GROUND_SPLATS = 5; break;
+			default: MAX_GROUND_SPLATS = 1; break;
 		}
 		
 		for(long k = 0; k < nb; k++) {
@@ -599,867 +535,579 @@ void ARX_PARTICLES_Spawn_Blood2(const Vec3f & pos, float dmgs, Color col, INTERA
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood(Vec3f * pos,float dmgs,long source)
-{
-	if (source<0) return;
-
-	float nearest_dist = std::numeric_limits<float>::max();
-	long nearest=-1;
-	long count=inter.iobj[source]->obj->nbgroups;
-
-	for (long i=0;i<count;i+=2)
-	{
-		float dist = distSqr(*pos, inter.iobj[source]->obj->vertexlist3[inter.iobj[source]->obj->grouplist[i].origin].v);
-
-		if (dist<nearest_dist)
-		{
-			nearest_dist=dist;
-			nearest=i;
-		}
-	}
-
-	// Decides number of blood particles...
-	long spawn_nb;	
-	spawn_nb = (long)(dmgs * 2.0F);
-
-	if (spawn_nb<5) spawn_nb=5;
-	else if (spawn_nb>26) spawn_nb=26;
-
-	long totdelay=0;
-
-	if (nearest>=0)
-	for (long k=0;k<spawn_nb;k++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if ((j!=-1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-			pd->siz=0.f;
-			pd->scale.x=(float)spawn_nb;
-			pd->scale.y=(float)spawn_nb;
-			pd->scale.z=(float)spawn_nb;
-			
-				pd->timcreation	=	(long)arxtime;
-			pd->special		=	GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
-			pd->source		=	&inter.iobj[source]->obj->vertexlist3[nearest].v;
-			pd->sourceionum	=	source;
-			pd->tolive		=	1200+spawn_nb*5;
-			totdelay		+=	45 + Random::get(0, 150 - spawn_nb);
-			pd->delay		=	totdelay;
-			pd->rgb = Color3f(.9f, 0.f, 0.f);
-			pd->tc			=	bloodsplatter;
-			pd->fparam		=	rnd()*( 1.0f / 10 )-0.05f;
-		}
-	}
-}
-long SPARK_COUNT=0;
-//-----------------------------------------------------------------------------
-// flag & 1 punch failed
-// flag & 2 punch success
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Spark(Vec3f * pos,float dmgs,long flags)
-{
-	if (!pos) return;
-
-	long spawn_nb = dmgs;
+void ARX_PARTICLES_Spawn_Blood(Vec3f * pos, float dmgs, long source) {
 	
-	
-	if (SPARK_COUNT<1000)
-	{
-		SPARK_COUNT+=spawn_nb*25;
-	}
-	else
-	{
-		SPARK_COUNT	-=	static_cast<long>(FrameDiff);
+	if(source < 0) {
 		return;
 	}
 	
-	for (long k=0;k<spawn_nb;k++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if ((j!=-1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-			pd->oldpos.x=pd->ov.x=pos->x+rnd()*10.f-5.f;
-			pd->oldpos.y=pd->ov.y=pos->y+rnd()*10.f-5.f;
-			pd->oldpos.z=pd->ov.z=pos->z+rnd()*10.f-5.f;
-			
-			pd->siz			=	2.f;
-			pd->move.x		=	6 - 12.f * rnd(); 
-			pd->move.y		=	6 - 12.f * rnd(); 
-			pd->move.z		=	6 - 12.f * rnd(); 
-				
-			pd->timcreation	=	(long)arxtime;
-			pd->special		=	PARTICLE_SPARK;
-			float len		=	(float)spawn_nb*( 1.0f / 3 );
-
-			if ( len > 8 ) len	=	8;
-
-			if ( len < 3 ) len	=	3;
-
-			pd->tolive		=	(unsigned long)(float)(len * 90 + (float)spawn_nb);
-
-			if(flags==0) {
-				pd->rgb = Color3f(.3f, .3f, 0.f);
-			} else if(flags & 1) {
-				pd->rgb = Color3f(.2f, .2f, .1f);
-			} else if(flags & 2) {
-				pd->rgb = Color3f(.45f, .1f, 0.f);
-			}
-
-			pd->tc=NULL;
-			pd->fparam = len + rnd() * len; // Spark Tail Length
+	float nearest_dist = std::numeric_limits<float>::max();
+	long nearest = -1;
+	long count = entities[source]->obj->nbgroups;
+	for(long i = 0; i < count; i += 2) {
+		long vertex = entities[source]->obj->grouplist[i].origin;
+		float dist = distSqr(*pos, entities[source]->obj->vertexlist3[vertex].v);
+		if(dist < nearest_dist) {
+			nearest_dist = dist;
+			nearest = i;
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-void MakeCoolFx(Vec3f * pos)
-{
-	ARX_BOOMS_Add(pos,1);		
-}
-
-//-----------------------------------------------------------------------------
-void MakePlayerAppearsFX(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
-		MakeCoolFx(&io->pos);		
-		MakeCoolFx(&io->pos);		
-		AddRandomSmoke(io,30);
-		ARX_PARTICLES_Add_Smoke(&io->pos,1 | 2,20); // flag 1 = randomize pos
+	if(nearest < 0) {
+		return;
 	}
-}
-
-//-----------------------------------------------------------------------------
-void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
-{
-	if (!io) return;
-
-	while (amount--)
-	{
-		long num = Random::get(0, (io->obj->vertexlist.size()>>2)-1);
-		num=(num<<2)+1;
-
-			long j=ARX_PARTICLES_GetFree();
-
-			if (	(j!=-1)
-				&&	(!arxtime.is_paused())	)
-			{
-				ParticleCount++;
-				PARTICLE_DEF * pd=&particle[j];
-				pd->exist		=	true;
-				pd->zdec		=	0;
-				pd->ov.x		=	io->obj->vertexlist3[num].v.x+rnd()*10.f-5.f;
-				pd->ov.y		=	io->obj->vertexlist3[num].v.y+rnd()*10.f-5.f;
-				pd->ov.z		=	io->obj->vertexlist3[num].v.z+rnd()*10.f-5.f;
-				pd->siz			=	rnd()*8.f;
-
-				if (pd->siz<4.f) pd->siz=4.f;
-
-				pd->scale.x		=	10.f;
-				pd->scale.y		=	10.f;
-				pd->scale.z		=	10.f;
-			pd->timcreation	=	(long)arxtime;
-				pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
-				pd->tolive		=	Random::get(900, 1300);
-				pd->move.x		=	0.25f-0.5f*rnd();
-				pd->move.y		=	-1.f*rnd()+0.3f;
-				pd->move.z		=	0.25f-0.5f*rnd();
-				pd->rgb = Color3f(.3f, .3f, .34f);
-				pd->tc			=	smokeparticle;//tc2;
-				pd->fparam		=	0.001f;//-rnd()*0.0002f;
-			}
+	
+	// Decides number of blood particles...
+	long spawn_nb = clamp(long(dmgs * 2.f), 5l, 26l);
+	
+	long totdelay = 0;
+	
+	for(long k = 0; k < spawn_nb; k++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
 		}
+		
+		pd->siz = 0.f;
+		pd->scale = Vec3f::repeat(float(spawn_nb));
+		pd->special = GRAVITY | ROTATING | MODULATE_ROTATION | DELAY_FOLLOW_SOURCE;
+		pd->source = &entities[source]->obj->vertexlist3[nearest].v;
+		pd->sourceionum = source;
+		pd->tolive = 1200 + spawn_nb * 5;
+		totdelay += 45 + Random::get(0, 150 - spawn_nb);
+		pd->delay = totdelay;
+		pd->rgb = Color3f(.9f, 0.f, 0.f);
+		pd->tc = bloodsplatter;
+		pd->fparam = rnd() * 0.1f - 0.05f;
 	}
+}
+
+long SPARK_COUNT = 0;
+
+// flag & 1 punch failed
+// flag & 2 punch success
+void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
+	
+	if(!pos) {
+		return;
+	}
+
+	long spawn_nb = dmgs;
+	
+	if(SPARK_COUNT < 1000) {
+		SPARK_COUNT += spawn_nb * 25;
+	} else {
+		SPARK_COUNT -= static_cast<long>(FrameDiff);
+		return;
+	}
+	
+	for(long k = 0; k < spawn_nb; k++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
+		}
+		
+		pd->oldpos = pd->ov = *pos + randomVec(-5.f, 5.f);
+		pd->siz = 2.f;
+		pd->move = randomVec(-6.f, 6.f);
+		
+		pd->special = PARTICLE_SPARK;
+		float len = clamp(spawn_nb * (1.f / 3), 3.f, 8.f);
+		pd->tolive = (unsigned long)(len * 90.f + float(spawn_nb));
+		
+		if(flags == 0) {
+			pd->rgb = Color3f(.3f, .3f, 0.f);
+		} else if(flags & 1) {
+			pd->rgb = Color3f(.2f, .2f, .1f);
+		} else if(flags & 2) {
+			pd->rgb = Color3f(.45f, .1f, 0.f);
+		}
+		
+		pd->fparam = len + rnd() * len; // Spark tail length
+	}
+}
+
+void MakeCoolFx(Vec3f * pos) {
+	ARX_BOOMS_Add(pos,1);
+}
+
+void MakePlayerAppearsFX(Entity * io) {
+	MakeCoolFx(&io->pos);
+	MakeCoolFx(&io->pos);
+	AddRandomSmoke(io, 30);
+	ARX_PARTICLES_Add_Smoke(&io->pos, 1 | 2, 20); // flag 1 = randomize pos
+}
+
+void AddRandomSmoke(Entity * io, long amount) {
+	
+	if(!io) {
+		return;
+	}
+	
+	for(long i = 0; i < amount; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
+		}
+		
+		long vertex = Random::get(0, io->obj->vertexlist.size());
+		pd->ov = io->obj->vertexlist3[vertex].v + randomVec(-5.f, 5.f);
+		pd->siz = rnd() * 8.f;
+		if(pd->siz < 4.f) {
+			pd->siz = 4.f;
+		}
+		pd->scale = Vec3f::repeat(10.f);
+		pd->special = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
+		pd->tolive = Random::get(900, 1300);
+		pd->move = Vec3f(0.25f - 0.5f * rnd(), -1.f * rnd() + 0.3f, 0.25f - 0.5f * rnd());
+		pd->rgb = Color3f(0.3f, 0.3f, 0.34f);
+		pd->tc = smokeparticle;
+		pd->fparam = 0.001f;
+	}
+}
 
 // flag 1 = randomize pos
 void ARX_PARTICLES_Add_Smoke(Vec3f * pos, long flags, long amount, Color3f * rgb) {
-
-	Vec3f mod;
-	mod.x = mod.y = mod.z = 0.f;
-
-	if (flags & 1)
-	{
-		mod.x=rnd()*100.f-50.f;
-		mod.y=rnd()*100.f-50.f;
-		mod.z=rnd()*100.f-50.f;
-	}
-
-	while(amount)
-	{
-		amount--;
-		long j=ARX_PARTICLES_GetFree();
-
-		if (	(j!=-1)
-			&&	(!arxtime.is_paused())	)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->zdec=0;
-			pd->ov.x=pos->x+mod.x;
-			pd->ov.y=pos->y+mod.y;
-			pd->ov.z=pos->z+mod.z;
-
-			if (flags & 2)
-			{
-				pd->siz=rnd()*20.f+15.f;
-				pd->scale.x=40.f+rnd()*15;
-				pd->scale.y=40.f+rnd()*15;
-				pd->scale.z=40.f+rnd()*15;
-			}
-			else
-			{
-				pd->siz=rnd()*8.f+5.f;
-
-				if (pd->siz<4.f) pd->siz=4.f;
-
-				pd->scale.x=10.f+rnd()*5;
-				pd->scale.y=10.f+rnd()*5;
-				pd->scale.z=10.f+rnd()*5;
-			}
-			
-			pd->timcreation	=	(long)arxtime;
-			pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
-			pd->tolive		=	Random::get(1100, 1500);
-			pd->delay		=	amount * 120 + Random::get(0, 100);
-			pd->move.x		=	0.25f-0.5f*rnd();
-			pd->move.y		=	-1.f*rnd()+0.3f;
-			pd->move.z		=	0.25f-0.5f*rnd();
-
-			pd->rgb = (rgb) ? *rgb : Color3f(.3f, .3f, .34f);
-
-			pd->tc = smokeparticle; 
-			pd->fparam = 0.01f; 
+	
+	Vec3f mod = (flags & 1) ? randomVec(-50.f, 50.f) : Vec3f::ZERO;
+	
+	while(amount--) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			return;
 		}
+		
+		pd->ov = *pos + mod;
+		if(flags & 2) {
+			pd->siz = rnd() * 20.f + 15.f;
+			pd->scale = randomVec(40.f, 55.f);
+		} else {
+			pd->siz = std::max(4.f, rnd() * 8.f + 5.f);
+			pd->scale = randomVec(10.f, 15.f);
+		}
+		pd->special = ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT;
+		pd->tolive = Random::get(1100, 1500);
+		pd->delay = amount * 120 + Random::get(0, 100);
+		pd->move = Vec3f(0.25f - 0.5f * rnd(), -1.f * rnd() + 0.3f, 0.25f - 0.5f * rnd());
+		pd->rgb = (rgb) ? *rgb : Color3f(0.3f, 0.3f, 0.34f);
+		pd->tc = smokeparticle;
+		pd->fparam = 0.01f;
 	}
 }
 
 extern long cur_mr;
-//-----------------------------------------------------------------------------
-void ManageTorch()
-{
-	EERIE_LIGHT * el=&DynLight[0];
-	
-	if (SHOW_TORCH) 
-	{
-		float rr=rnd();
-		el->pos.x = player.pos.x; 
-		el->pos.y=player.pos.y;
-		el->pos.z = player.pos.z; 
-		el->intensity=1.6f;
-		el->fallstart=280.f+rr*20.f;
-		el->fallend = el->fallstart + 280.f; 
-		el->exist=1;	
-		el->rgb = Color3f(Project.torch.r - rr * .1f, Project.torch.g - rr * .1f, Project.torch.b - rr * .1f);
-		el->duration=0;
-		el->extras=0;		
-	}
-	else if (cur_mr==3)
-	{		
-		el->pos.x = player.pos.x;
-		el->pos.y=player.pos.y;
-		el->pos.z = player.pos.z; 
-		el->intensity=1.8f;
-		el->fallstart=480.f;
-		el->fallend = el->fallstart + 480.f; 
-		el->exist=1;	
-		el->rgb = Color3f(1.f, .5f, .8f);
-		el->duration=0;
-		el->extras=0;		
-	}
-	else 
-	{
-		if (flarenum == 0) 
-			el->exist=0;
-		else 
-		{
-			float rr=rnd();
-			long count=0;
 
-			for (long i = 0; i < MAX_FLARES; i++)
-			{
-				if (flare[i].exist)
-				{
-					if (flare[i].flags==0) count++;
+void ManageTorch() {
+	
+	EERIE_LIGHT * el = &DynLight[0];
+	
+	if(SHOW_TORCH) {
+		
+		float rr = rnd();
+		el->pos = player.pos;
+		el->intensity = 1.6f;
+		el->fallstart = 280.f + rr * 20.f;
+		el->fallend = el->fallstart + 280.f;
+		el->exist = 1;
+		el->rgb = Color3f(Project.torch.r - rr * 0.1f, Project.torch.g - rr * 0.1f,
+		                  Project.torch.b - rr * 0.1f);
+		el->duration = 0;
+		el->extras = 0;
+		
+	} else if(cur_mr == 3) {
+		
+		el->pos = player.pos;
+		el->intensity = 1.8f;
+		el->fallstart = 480.f;
+		el->fallend = el->fallstart + 480.f; 
+		el->exist = 1;
+		el->rgb = Color3f(1.f, .5f, .8f);
+		el->duration = 0;
+		el->extras = 0;
+		
+	} else {
+		
+		if(flarenum == 0) {
+			el->exist = 0;
+		} else {
+			
+			long count = 0;
+			for(long i = 0; i < MAX_FLARES; i++) {
+				if(flare[i].exist && flare[i].flags == 0) {
+					count++;
 				}
 			}
-
-			if (count)
-			{
-				el->pos.x=player.pos.x;
-				el->pos.y=player.pos.y;
-				el->pos.z=player.pos.z;
-				el->fallstart=140.f+(float)count*0.333333f+rr*5.f;
-				el->fallend=220.f+(float)count*0.5f+rr*5.f;
-				el->intensity=1.6f;
-				el->exist=1;	
-				el->rgb = Color3f(.01f * count, .009f * count, .008f * count);
+			
+			if(count) {
+				float rr = rnd();
+				el->pos = player.pos;
+				el->fallstart = 140.f + float(count) * 0.333333f + rr * 5.f;
+				el->fallend = 220.f + float(count) * 0.5f + rr * 5.f;
+				el->intensity = 1.6f;
+				el->exist = 1;
+				el->rgb = Color3f(0.01f * count, 0.009f * count, 0.008f * count);
 			}
 		}
 	}
-
-	if (inter.iobj && inter.iobj[0] && inter.iobj[0]->obj
-		&& (inter.iobj[0]->obj->fastaccess.head_group_origin>-1))
-	{
-		el->pos.y=inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.head_group_origin].v.y;
+	
+	if(entities.size() > 0 && entities.player() && entities.player()->obj
+	   && entities.player()->obj->fastaccess.head_group_origin > -1) {
+		short vertex = entities.player()->obj->fastaccess.head_group_origin;
+		el->pos.y = entities.player()->obj->vertexlist3[vertex].v.y;
 	}
 }
-#define DIV_MAX_FLARELIFE	0.00025f
-//-----------------------------------------------------------------------------
-void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
-{
-	/////////FLARE
+
+void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS) {
+	
+	shinum++;
+	if(shinum >= 10) {
+		shinum = 1;
+	}
+	
+	long TICKS = long(arxtime) - FRAMETICKS;
+	if(TICKS < 0) {
+		return;
+	}
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	shinum++;
-
-	if (shinum>=10) shinum=1;
-
-	long TICKS = long(arxtime) - FRAMETICKS;
-
-	if (TICKS<0) 
-		return;
-
-	float z,s,r,g,b;
-
-	TextureContainer * surf;
-	bool key=!GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
-
-	for (long j=1;j<5;j++) 
-	{
-		switch (j)
-		{
-		case 2:				
-			surf=flaretc.lumignon;
-			break;
-		case 3:
-			surf=flaretc.lumignon2;
-			break;
-		case 4:
-			surf=flaretc.plasm;
-			break;
-		default:
-			surf=flaretc.shine[shinum];
-			break;
+	
+	bool key = !GInput->actionPressed(CONTROLS_CUST_MAGICMODE);
+	
+	for(long j = 1; j < 5; j++) {
+		
+		TextureContainer * surf;
+		switch(j) {
+			case 2:  surf = flaretc.lumignon; break;
+			case 3:  surf = flaretc.lumignon2; break;
+			case 4:  surf = flaretc.plasm; break;
+			default: surf = flaretc.shine[shinum]; break;
 		}
-
-		for (long i=0;i<MAX_FLARES;i++)
-		{
-			if ((flare[i].exist)
-				&& (flare[i].type==j))
-			{
-				flare[i].tolive-=(float)TICKS*2;
-
-				if (flare[i].flags & 1)
-				{
-					flare[i].tolive-=(float)TICKS*4;
-				}
-				else if (key)						
-				{
-					flare[i].tolive-=TICKS*6;
-				}
-				
-				if (	(flare[i].tolive <= 0.f ) 
-					||	(flare[i].y< -64 )	
-					)
-				{
-					if (flare[i].io)
-					{
-						if (ValidIOAddress(flare[i].io))
-							flare[i].io->flarecount--;
-					}					
-
-					if (ValidDynLight(flare[i].dynlight))
-						DynLight[flare[i].dynlight].exist=0;
-
-					flare[i].dynlight=-1;
-					flare[i].exist=0;
-					flarenum--;
-				}
-				else 
-				{
-					
-					z = (flare[i].tolive * DIV_MAX_FLARELIFE); 
-
-					if(flare[i].type == 1) { 
-						s=flare[i].size*2*z;
-					} else if(flare[i].type == 4) {
-						s=flare[i].size*2.f*z+10.f;
-					}
-					else s=flare[i].size;
-					
-					if ( s<3.f ) 
-					{
-						if (flare[i].io)
-						{
-							if (ValidIOAddress(flare[i].io))
-								flare[i].io->flarecount--;
-						}					
-
-						if (ValidDynLight(flare[i].dynlight))
-							DynLight[flare[i].dynlight].exist=0;
-
-						flare[i].dynlight=-1;
-						flare[i].exist=0;
-						flarenum--;
-					}
-					else 
-					{
-						if(flare[i].type == 1 && z < 0.6f)  {
-							z = 0.6f;
-						}
-
-						g = flare[i].rgb.g * z;
-						r = flare[i].rgb.r * z;
-						b = flare[i].rgb.b * z;
-						
-						flare[i].tv.color = Color3f(r, g, b).toBGR();
-						flare[i].v.p.x=flare[i].tv.p.x;
-						flare[i].v.p.y=flare[i].tv.p.y;
-						flare[i].v.p.z=flare[i].tv.p.z;
-								
-						DynLight[0].rgb.r = std::max(DynLight[0].rgb.r, r);
-						DynLight[0].rgb.g = std::max(DynLight[0].rgb.g, g);
-						DynLight[0].rgb.b = std::max(DynLight[0].rgb.b, b);
-
-						if (ValidDynLight(flare[i].dynlight)) 
-						{
-							EERIE_LIGHT * el=&DynLight[flare[i].dynlight];
-							el->pos.x=flare[i].v.p.x;
-							el->pos.y=flare[i].v.p.y;
-							el->pos.z=flare[i].v.p.z;
-							el->rgb = Color3f(r, g, b);
-						}
-
-						if (!flare[i].io) 
-						{
-							GRenderer->SetRenderState(Renderer::DepthTest, false);
-						}
-						else
-						{
-							GRenderer->SetRenderState(Renderer::DepthTest, true);
-						}
-
-						if(flare[i].bDrawBitmap)
-						{
-							s*=2.f;
-							EERIEDrawBitmap(flare[i].v.p.x, flare[i].v.p.y, s, s, flare[i].v.p.z, surf, Color::fromBGRA(flare[i].tv.color));
-						}
-						else
-						{
-							EERIEDrawSprite(&flare[i].v,(float)s*0.025f+1.f, surf, Color::fromBGRA(flare[i].tv.color), 2.f);
-						}
-					}
-				}
-				
+		
+		for(long i = 0; i < MAX_FLARES; i++) {
+			
+			if(!flare[i].exist || flare[i].type != j) {
+				continue;
 			}
-					
+			
+			flare[i].tolive -= float(TICKS * 2);
+			if(flare[i].flags & 1) {
+				flare[i].tolive -= float(TICKS * 4);
+			} else if (key) {
+				flare[i].tolive -= float(TICKS * 6);
+			}
+			
+			float z = (flare[i].tolive * 0.00025f);
+			float s;
+			if(flare[i].type == 1) {
+				s = flare[i].size * 2 * z;
+			} else if(flare[i].type == 4) {
+				s = flare[i].size * 2.f * z + 10.f;
+			} else {
+				s = flare[i].size;
+			}
+			
+			if(flare[i].tolive <= 0.f || flare[i].y < -64.f || s < 3.f) {
+				
+				if(flare[i].io && ValidIOAddress(flare[i].io)) {
+					flare[i].io->flarecount--;
+				}
+				
+				if(ValidDynLight(flare[i].dynlight)) {
+					DynLight[flare[i].dynlight].exist = 0;
+				}
+				
+				flare[i].dynlight = -1;
+				flare[i].exist = 0;
+				flarenum--;
+				
+				continue;
+			}
+			
+			if(flare[i].type == 1 && z < 0.6f)  {
+				z = 0.6f;
+			}
+			
+			Color3f c = flare[i].rgb * z;
+			flare[i].tv.color = c.toBGR();
+			flare[i].v.p = flare[i].tv.p;
+			
+			DynLight[0].rgb = componentwise_max(DynLight[0].rgb, c);
+			
+			if(ValidDynLight(flare[i].dynlight)) {
+				EERIE_LIGHT * el = &DynLight[flare[i].dynlight];
+				el->pos = flare[i].v.p;
+				el->rgb = c;
+			}
+			
+			if(!flare[i].io) {
+				GRenderer->SetRenderState(Renderer::DepthTest, false);
+			} else {
+				GRenderer->SetRenderState(Renderer::DepthTest, true);
+			}
+			
+			if(flare[i].bDrawBitmap) {
+				s *= 2.f;
+				EERIEDrawBitmap(flare[i].v.p.x, flare[i].v.p.y, s, s, flare[i].v.p.z,
+				                surf, Color::fromBGRA(flare[i].tv.color));
+			} else {
+				EERIEDrawSprite(&flare[i].v, s * 0.025f + 1.f, surf,
+				                Color::fromBGRA(flare[i].tv.color), 2.f);
+			}
+			
 		}
 	}
-
-	if (DynLight[0].rgb.r>1.f) DynLight[0].rgb.r=1.f;
-
-	if (DynLight[0].rgb.g>1.f) DynLight[0].rgb.g=1.f;
-
-	if (DynLight[0].rgb.b>1.f) DynLight[0].rgb.b=1.f;
-
+	
+	DynLight[0].rgb = componentwise_min(DynLight[0].rgb, Color3f::white);
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true); 
 }
 
-//-----------------------------------------------------------------------------
-void ARX_BOOMS_ClearAllPolyBooms()
-{
-	for(long i=0;i<MAX_POLYBOOM;i++) polyboom[i].exist=0;
-
-	BoomCount=0;
+void ARX_BOOMS_ClearAllPolyBooms() {
+	for(long i = 0; i < MAX_POLYBOOM; i++) {
+		polyboom[i].exist = 0;
+	}
+	BoomCount = 0;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_BOOMS_ClearAll()
-{
-	for (long i=0;i<MAX_BOOMS;i++) booms[i].exist=0;
-}
-//-----------------------------------------------------------------------------
-void ARX_BOOMS_Add(Vec3f * poss,long type)
-{
-	static TextureContainer * tc1=TextureContainer::Load("graph/particles/fire_hit");
-	static TextureContainer * tc2=TextureContainer::Load("graph/particles/boom");
-	long x0,x1;
-	long z0,z1,i,j;
-	unsigned long tim;
-	float ddd;
-	long typ;
-	long dod,n;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
-	tim = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'	
-
-	j=ARX_PARTICLES_GetFree();
-
-	if (j!=-1)
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=true;
-		pd->ov.x=poss->x;
-		pd->ov.y=poss->y;
-		pd->ov.z=poss->z;
-		pd->move.x=3.f-6.f*rnd();
-		pd->move.y=4.f-12.f*rnd();
-		pd->move.z=3.f-6.f*rnd();
-		pd->timcreation=tim;
-		pd->tolive=Random::get(600, 700);
-		pd->tc=tc1;
-		pd->siz=100.f+10.f*rnd();
-
-		if (type==1) pd->siz*=2;
-
-		pd->zdec=1;
-
+void ARX_BOOMS_Add(Vec3f * poss,long type) {
+	
+	PARTICLE_DEF * pd = createParticle(true);
+	if(pd) {
+		
+		static TextureContainer * tc1 = TextureContainer::Load("graph/particles/fire_hit");
+		
+		pd->ov = *poss;
+		pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+		pd->tolive = Random::get(600, 700);
+		pd->tc = tc1;
+		pd->siz = (100.f + 10.f * rnd()) * ((type == 1) ? 2.f : 1.f);
+		pd->zdec = true;
 		if(type == 1) {
 			pd->rgb = Color3f(.4f, .4f, 1.f);
 		}
-	
-		j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=true;
-			pd->ov.x=poss->x;
-			pd->ov.y=poss->y;
-			pd->ov.z=poss->z;
-			pd->move.x=3.f-6.f*rnd();
-			pd->move.y=4.f-12.f*rnd();
-			pd->move.z=3.f-6.f*rnd();
-			pd->timcreation=tim;
-			pd->tolive=Random::get(600, 700);
-			pd->tc=tc1;
-			pd->siz=40.f+30.f*rnd();
-
-			if (type==1) pd->siz*=2;
-
-			pd->zdec=1;
-
+		
+		pd = createParticle(true);
+		if(pd) {
+			pd->ov = *poss;
+			pd->move = Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+			pd->tolive = Random::get(600, 700);
+			pd->tc = tc1;
+			pd->siz = (40.f + 30.f * rnd()) * ((type == 1) ? 2.f : 1.f);
+			pd->zdec = true;
 			if(type == 1) {
 				pd->rgb = Color3f(.4f, .4f, 1.f);
 			}
 		}
+		
 	}
-
-	typ=0;
-	x0 = poss->x * ACTIVEBKG->Xmul;
-	z0 = poss->z * ACTIVEBKG->Zmul;
-	x1=x0+3;
-	x0=x0-3;
-	z1=z0+3;
-	z0=z0-3;
-
-	if (x0<0) x0=0;
-	else if (x0>=ACTIVEBKG->Xsize) x0=ACTIVEBKG->Xsize-1;
-
-	if (x1<0) x1=0;
-	else if (x1>=ACTIVEBKG->Xsize) x1=ACTIVEBKG->Xsize-1;
-
-	if (z0<0) z0=0;
-	else if (z0>=ACTIVEBKG->Zsize) z0=ACTIVEBKG->Zsize-1;
-
-	if (z1<0) z1=0;
-	else if (z1>=ACTIVEBKG->Zsize) z1=ACTIVEBKG->Zsize-1;
-
-	long nbvert;
-	float temp_u1[4];
-	float temp_v1[4];
 	
-
-	(void)checked_range_cast<short>(z0);
-	(void)checked_range_cast<short>(x0);
-	(void)checked_range_cast<short>(z1);
-	(void)checked_range_cast<short>(x1);
-
-	//We never add BOOMS particle with this flag to prevent any render issues. TO DO check for blending of DrawPrimitve and DrawPrimitiveVB
-	for (j=z0;j<=z1;j++) 		
-	for (i=x0;i<=x1;i++) 
-	{
-		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long l = 0; l < eg->nbpoly; l++) 
-		{
-			ep=&eg->polydata[l];
-
-			if (ep->type & POLY_QUAD) nbvert=4;
-			else nbvert=3;
-
-			if ((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) goto suite;
-
-			dod=1;
-
-			if((ddd = fdist(ep->v[0].p, *poss)) < BOOM_RADIUS) {
-				temp_u1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
-				temp_v1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
-
-				for(long k=1;k<nbvert;k++) {
-					
-					ddd = fdist(ep->v[k].p, *poss);
-
-					if (ddd>BOOM_RADIUS) dod=0;
-					else 
-					{
-						temp_u1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
-						temp_v1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
-					}
-				}
-
-				if (dod) 
-				{
-					n=ARX_BOOMS_GetFree();
-
-					if (n>=0) 
-					{
-						BoomCount++;
-						POLYBOOM * pb=&polyboom[n];
-						pb->type=(short)typ;
-						pb->exist=1;
-						pb->ep=ep;
-						pb->tc=tc2;
-						pb->tolive=10000;
-						pb->timecreation=tim;
-
-						pb->tx = static_cast<short>(i);
-						pb->tz = static_cast<short>(j);
-
-
-						for (int k=0;k<nbvert;k++) 
-						{
-							pb->u[k]=temp_u1[k];
-							pb->v[k]=temp_v1[k];
-						}
-
-						pb->nbvert=(short)nbvert;
-					}
+	static TextureContainer * tc2 = TextureContainer::Load("graph/particles/boom");
+	
+	// TODO was F2L at some point - should this be rounded?
+	long x0 = long(poss->x * ACTIVEBKG->Xmul) - 3;
+	long z0 = long(poss->z * ACTIVEBKG->Zmul) - 3;
+	long x1 = x0 + 6;
+	long z1 = z0 + 6;
+	x0 = clamp(x0, 0l, ACTIVEBKG->Xsize - 1l);
+	x1 = clamp(x1, 0l, ACTIVEBKG->Xsize - 1l);
+	z0 = clamp(z0, 0l, ACTIVEBKG->Zsize - 1l);
+	z1 = clamp(z1, 0l, ACTIVEBKG->Zsize - 1l);
+	
+	for(long j = z0; j <= z1; j++) for(long i = x0; i <= x1;i++) {
+		EERIE_BKG_INFO & eg = ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
+		for(long l = 0; l < eg.nbpoly; l++) {
+			EERIEPOLY * ep = &eg.polydata[l];
+			
+			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) {
+				continue;
+			}
+			
+			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+			
+			float temp_uv1[4];
+			
+			bool dod = true;
+			for(long k = 0; k < nbvert; k++) {
+				float ddd = fdist(ep->v[k].p, *poss);
+				if(ddd > BOOM_RADIUS) {
+					dod = false;
+					break;
+				} else {
+					temp_uv1[k] = 0.5f - ddd * (0.5f / BOOM_RADIUS);
 				}
 			}
-
-			suite:
-				;
+			if(!dod) {
+				continue;
+			}
+			
+			long n = ARX_BOOMS_GetFree();
+			if(n < 0) {
+				continue;
+			}
+			
+			BoomCount++;
+			POLYBOOM * pb = &polyboom[n];
+			pb->exist = 1;
+			
+			pb->type = 0;
+			pb->ep = ep;
+			pb->tc = tc2;
+			pb->tolive = 10000;
+			pb->timecreation = long(arxtime);
+			pb->tx = short(i);
+			pb->tz = short(j);
+			for(int k = 0; k < nbvert; k++) {
+				pb->v[k] = pb->u[k] = temp_uv1[k];
+			}
+			pb->nbvert = short(nbvert);
+			
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
 void Add3DBoom(Vec3f * position) {
 	
-	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), *position);
 	Vec3f poss = *position;
 	ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &poss);
-
-	if (dist<300)
-	{
-		float onedist=1.f/dist;
-		Vec3f vect;
-		vect.x=(player.pos.x-position->x)*onedist; 
-		vect.y=(player.pos.y-160.f-position->y)*onedist; 
-		vect.z=(player.pos.z-position->z)*onedist;
-		float power=(300.f-dist)*( 1.0f / 80 );
-		player.physics.forces.x+=vect.x*power;
-		player.physics.forces.y+=vect.y*power;
-		player.physics.forces.z+=vect.z*power;
+	
+	float dist = fdist(player.pos - Vec3f(0, 160.f, 0.f), *position);
+	if(dist < 300) {
+		Vec3f vect = (player.pos - *position - Vec3f(0.f, 160.f, 0.f)) / dist;
+		player.physics.forces += vect * ((300.f - dist) * 0.0125f);
 	}
-
-	for (long i=0;i<inter.nbmax;i++)
-	{		
-		if ( inter.iobj[i] != NULL )
-		{
-			if ( inter.iobj[i]->show!=1 ) continue;
-
-			if ( !(inter.iobj[i]->ioflags & IO_ITEM) ) continue;
-
-			if ( inter.iobj[i]->obj)
-				if ( inter.iobj[i]->obj->pbox)
-				{
-					for (long k=0;k<inter.iobj[i]->obj->pbox->nb_physvert;k++)
-					{
-						float dist = fdist(inter.iobj[i]->obj->pbox->vert[k].pos, *position);
-
-						if (dist<300.f)
-						{
-							inter.iobj[i]->obj->pbox->active=1;
-							inter.iobj[i]->obj->pbox->stopcount=0;
-							float onedist=1.f/dist;
-							Vec3f vect;
-							vect.x=(inter.iobj[i]->obj->pbox->vert[k].pos.x-position->x)*onedist; 
-							vect.y=(inter.iobj[i]->obj->pbox->vert[k].pos.y-position->y)*onedist; 
-							vect.z=(inter.iobj[i]->obj->pbox->vert[k].pos.z-position->z)*onedist;
-							float power = (300.f - dist) * 10.f; 
-							inter.iobj[i]->obj->pbox->vert[k].velocity.x+=vect.x*power;
-							inter.iobj[i]->obj->pbox->vert[k].velocity.y+=vect.y*power;
-							inter.iobj[i]->obj->pbox->vert[k].velocity.z+=vect.z*power;
-						}
-					}
-				}
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		
+		Entity * entity = entities[i];
+		if(!entity || entity->show != 1 || !(entity->ioflags & IO_ITEM)) {
+			continue;
+		}
+		
+		if(!entity->obj || !entity->obj->pbox) {
+			continue;
+		}
+		
+		for(long k = 0; k < entity->obj->pbox->nb_physvert; k++) {
+			float dist = fdist(entity->obj->pbox->vert[k].pos, *position);
+			if(dist < 300.f) {
+				entity->obj->pbox->active = 1;
+				entity->obj->pbox->stopcount = 0;
+				Vec3f vect = (entity->obj->pbox->vert[k].pos - *position) / dist;
+				entity->obj->pbox->vert[k].velocity += vect * ((300.f - dist) * 10.f);
+			}
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
 void UpdateObjFx() {
-
-	unsigned long framediff;
-	float val,aa,bb;
-	float t1,t2,t3;
-	long p;
-	Vec3f pos;
-
-	TexturedVertex v[3];
-	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
-	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
-	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 	
+	ColorBGRA c = Color::white.toBGR();
+	TexturedVertex v[3];
+	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ONE);
 	TexturedVertex v2[3];
-	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
-	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
-	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
+	v[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ZERO);
+	v[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::X_AXIS);
+	v[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, c, 1, Vec2f::ONE);
 	
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	for (long i=0;i<MAX_OBJFX;i++)
-	{
-		if (objfx[i].exist)
-		{
-			framediff = (unsigned long)(arxtime) - objfx[i].tim_start; 
-
-			if (framediff>objfx[i].duration) 
-			{
-				objfx[i].exist=false;
-
-				if (ValidDynLight(objfx[i].dynlight))
-					DynLight[objfx[i].dynlight].exist=0;
-
-				objfx[i].dynlight=-1;
-				continue;
+	
+	for(long i = 0; i < MAX_OBJFX; i++) {
+		
+		if(!objfx[i].exist) {
+			continue;
+		}
+		
+		unsigned long framediff = (unsigned long)(arxtime) - objfx[i].tim_start; 
+		if(framediff > objfx[i].duration) {
+			objfx[i].exist = false;
+			if(ValidDynLight(objfx[i].dynlight)) {
+				DynLight[objfx[i].dynlight].exist = 0;
 			}
-
-			val=(float)framediff/(float)objfx[i].duration;
-			pos.x=objfx[i].pos.x+objfx[i].move.x*val;
-			pos.y=objfx[i].pos.y+objfx[i].move.y*val;
-			pos.z=objfx[i].pos.z+objfx[i].move.z*val;
-
-			Anglef angle;
-			Vec3f scale;
-			Color3f color;
-			scale.x=1.f+objfx[i].scale.x*val;
-			scale.y=1.f+objfx[i].scale.y*val;
-			scale.z=1.f+objfx[i].scale.z*val;
-
-			if (Project.improve)
-			{
-				color.r=1.f-objfx[i].fade.r*val;
-				color.g=0.f;
-				color.b=1.f-objfx[i].fade.b*val;
+			objfx[i].dynlight = -1;
+			continue;
+		}
+		
+		float val = float(framediff) / float(objfx[i].duration);
+		Vec3f pos = objfx[i].pos + objfx[i].move * val;
+		
+		
+		Color3f color = Color3f(1.f - objfx[i].fade.r * val, 0.f,
+		                        1.f - objfx[i].fade.b * val);
+		if(!Project.improve) {
+			color.g = 1.f - objfx[i].fade.g * val;
+		}
+		
+		Vec3f scale = Vec3f::ONE + objfx[i].scale * val;
+		Anglef angle = Anglef::ZERO;
+		
+		DrawEERIEObjEx(objfx[i].obj, &angle, &pos, &scale, &color);
+		
+		if(objfx[i].dynlight != -1) {
+			DynLight[objfx[i].dynlight].fallend = 250.f + 450.f * val;
+			DynLight[objfx[i].dynlight].fallstart = 150.f + 50.f * val;
+			Color3f c(1.f - val, 0.9f-val * 0.9f, 0.5f - val * 0.5f);
+			DynLight[objfx[i].dynlight].rgb = c;
+			DynLight[objfx[i].dynlight].pos = pos;
+		}
+		
+		if(!(objfx[i].special & SPECIAL_RAYZ)) {
+			continue;
+		}
+		
+		GRenderer->SetCulling(Renderer::CullNone);
+		
+		for(long k = 0; k < 8; k++) {
+			float aa = objfx[i].spe[k].g;
+			float bb = objfx[i].speinc[k].g;
+			
+			if(!arxtime.is_paused()) {
+				objfx[i].spe[k].a += objfx[i].speinc[k].a;
+				objfx[i].spe[k].b += objfx[i].speinc[k].b;
 			}
-			else
-			{
-				color.r=1.f-objfx[i].fade.r*val;
-				color.g=1.f-objfx[i].fade.g*val;
-				color.b=1.f-objfx[i].fade.b*val;
-			}
-
-			angle.a=0.f;
-			angle.b=0.f;
-			angle.g=0.f;
-
-			DrawEERIEObjEx(objfx[i].obj,
-					&angle,&pos,&scale,&color);
-
-			if (objfx[i].dynlight!=-1)
-			{
-				DynLight[objfx[i].dynlight].fallend=250.f+450.f*val;
-				DynLight[objfx[i].dynlight].fallstart=150.f+50.f*val;
-				DynLight[objfx[i].dynlight].rgb.r=1.f-val;
-				DynLight[objfx[i].dynlight].rgb.g=0.9f-val*0.9f;
-				DynLight[objfx[i].dynlight].rgb.b=0.5f-val*0.5f;
-				DynLight[objfx[i].dynlight].pos.x=pos.x;
-				DynLight[objfx[i].dynlight].pos.y=pos.y;
-				DynLight[objfx[i].dynlight].pos.z=pos.z;
-			}
-
-			if (objfx[i].special & SPECIAL_RAYZ)
-			{
-
-				GRenderer->SetCulling(Renderer::CullNone);
-
-				for (long k=0;k<8;k++)
-				{
-					aa=objfx[i].spe[k].g;
-					bb=objfx[i].speinc[k].g;
-
-					if (arxtime.is_paused())
-					{						
-					}
-					else
-					{
-						objfx[i].spe[k].a+=objfx[i].speinc[k].a;
-						objfx[i].spe[k].b+=objfx[i].speinc[k].b;
-					}
-
-					for (p=0;p<3;p++)
-					{
-						v[p].p.x=pos.x;
-						v[p].p.y=pos.y;
-						v[p].p.z=pos.z;
-					}
-						
-					t1=100.f*scale.x;
-					t2=100.f*scale.y;
-					t3=100.f*scale.z;
-					v[1].p.x-=EEsin(radians(objfx[i].spe[k].b))*t1;
-					v[1].p.y+=EEsin(radians(objfx[i].spe[k].a))*t2;
-					v[1].p.z+=EEcos(radians(objfx[i].spe[k].b))*t3;
-					v[2].p.x=v[0].p.x-EEsin(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t1;
-					v[2].p.y=v[0].p.y+EEsin(radians(MAKEANGLE(objfx[i].spe[k].a+aa)))*t2;
-					v[2].p.z=v[0].p.z+EEcos(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t3;
-					EE_RTP(&v[0],&v2[0]);
-					EE_RTP(&v[1],&v2[1]);
-					EE_RTP(&v[2],&v2[2]);
-
-					if(Project.improve) {
-						for(p = 0; p < 3; p++) {
-							v2[p].color = Color3f(color.r/(3.f + (float)p), 0.f, color.b/(5.f+(float)p)).toBGR();
-						}
-					} else {
-						for(p = 0; p < 3; p++) {
-							v2[p].color = Color3f(color.r/(3.f + (float)p), color.g/(4.f + (float)p), color.b/(5.f + (float)p)).toBGR();
-						}
-					}
-
-					GRenderer->ResetTexture(0);
-					EERIEDRAWPRIM(Renderer::TriangleFan, v2);
+			
+			Vec3f t = scale * 100.f;
+			v[0].p = pos;
+			v[1].p.x = pos.x - EEsin(radians(objfx[i].spe[k].b)) * t.x;
+			v[1].p.y = pos.y + EEsin(radians(objfx[i].spe[k].a)) * t.y;
+			v[1].p.z = pos.z + EEcos(radians(objfx[i].spe[k].b)) * t.z;
+			v[2].p.x = pos.x - EEsin(radians(MAKEANGLE(objfx[i].spe[k].b + bb))) * t.x;
+			v[2].p.y = pos.y + EEsin(radians(MAKEANGLE(objfx[i].spe[k].a + aa))) * t.y;
+			v[2].p.z = pos.z + EEcos(radians(MAKEANGLE(objfx[i].spe[k].b + bb))) * t.z;
+			EE_RTP(&v[0], &v2[0]);
+			EE_RTP(&v[1], &v2[1]);
+			EE_RTP(&v[2], &v2[2]);
+			
+			if(Project.improve) {
+				for(long p = 0; p < 3; p++) {
+					v2[p].color = Color3f(color.r / (3.f + float(p)), 0.f,
+					                      color.b / (5.f + float(p))).toBGR();
+				}
+			} else {
+				for(long p = 0; p < 3; p++) {
+					v2[p].color = Color3f(color.r / (3.f + float(p)), color.g / (4.f + float(p)),
+					                      color.b / (5.f + float(p))).toBGR();
 				}
 			}
+			
+			GRenderer->ResetTexture(0);
+			EERIEDRAWPRIM(Renderer::TriangleFan, v2);
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_PARTICLES_FirstInit() {
-	smokeparticle=TextureContainer::Load("graph/particles/smoke");
+	
+	smokeparticle = TextureContainer::Load("graph/particles/smoke");
 	
 	// TODO bloodsplat and water_splat cannot use mipmapping because they need a constant color border pixel
 	// this may also apply to other textures
@@ -1484,1049 +1132,732 @@ void ARX_PARTICLES_FirstInit() {
 	fire2=TextureContainer::Load("graph/particles/fire2");
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_ClearAll() 
-{
-	memset(particle,0,sizeof(PARTICLE_DEF)*MAX_PARTICLES);
-	ParticleCount=0;
+void ARX_PARTICLES_ClearAll() {
+	memset(particle, 0, sizeof(PARTICLE_DEF) * MAX_PARTICLES);
+	ParticleCount = 0;
 }
 
-//-----------------------------------------------------------------------------
-long ARX_PARTICLES_GetFree()
-{	
-	for ( size_t i = 0 ; i < MAX_PARTICLES ; i++)
-		if ( !particle[i].exist )
-		{
-			PARTICLE_DEF *pd	= &particle[i];
-			pd->type			= 0;
-			pd->rgb = Color3f::white;
-			pd->tc				= NULL;
-			pd->special			= 0;
-			pd->source			= NULL;
-			pd->delay			= 0;
-
-			return i;
+PARTICLE_DEF * createParticle(bool allocateWhilePaused) {
+	
+	if(!allocateWhilePaused && arxtime.is_paused()) {
+		return NULL;
+	}
+	
+	for(size_t i = 0; i < MAX_PARTICLES; i++) {
+		
+		PARTICLE_DEF * pd = &particle[i];
+		
+		if(pd->exist) {
+			continue;
 		}
-
-	return -1;
-}
-
-//-----------------------------------------------------------------------------
-void MagFX(float posx,float posy,float posz)
-{
-	long j;
-	j=ARX_PARTICLES_GetFree();
-
-	if ((j!=-1) && (!arxtime.is_paused()))
-	{
+		
 		ParticleCount++;
-		PARTICLE_DEF * pd	=	&particle[j];
-		pd->exist			=	true;
-		pd->zdec			=	0;
-		pd->ov.x			=	posx+rnd()*6.f-rnd()*12.f;
-		pd->ov.y			=	posy+rnd()*6.f-rnd()*12.f;
-		pd->ov.z			=	posz;
-		pd->move.x			=	6.f-rnd()*12.f;
-		pd->move.y			=	-8.f+rnd()*16.f;
-		pd->move.z			=	0.f;
-		pd->scale.x			=	4.4f;
-		pd->scale.y			=	4.4f;
-		pd->scale.z			=	1.f;
-		pd->timcreation		=	(long)arxtime;
-		pd->tolive			=	Random::get(1500, 2400);
-		pd->tc				=	healing;
+		pd->exist = true;
+		pd->timcreation = long(arxtime);
+		
+		pd->type = 0;
+		pd->rgb = Color3f::white;
+		pd->tc = NULL;
+		pd->special = 0;
+		pd->source = NULL;
+		pd->delay = 0;
+		pd->zdec = false;
+		pd->move = Vec3f::ZERO;
+		pd->scale = Vec3f::ONE;
+		
+		return pd;
+	}
+	
+	return NULL;
+}
+
+void MagFX(const Vec3f & pos) {
+	
+	PARTICLE_DEF * pd	=	createParticle();
+	if(!pd) {
+		return;
+	}
+	
+	pd->ov = pos + Vec3f(rnd() * 6.f - rnd() * 12.f, rnd() * 6.f-rnd() * 12.f, 0.f);
+	pd->move = Vec3f(6.f - rnd() * 12.f, -8.f + rnd() * 16.f, 0.f);
+	pd->scale = Vec3f(4.4f, 4.4f, 1.f);
+	pd->tolive = Random::get(1500, 2400);
+	pd->tc = healing;
+	pd->rgb = Color3f::magenta;
+	pd->siz = 56.f;
+	pd->type = PARTICLE_2D;
+}
+
+void MakeBookFX(const Vec3f & pos) {
+	
+	for(long i = 0; i < 12; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = pos + Vec3f(rnd() * 6.f - rnd() * 12.f, rnd() * 6.f - rnd() * 12.f, 0.f);
+		pd->move = Vec3f(6.f - rnd() * 12.f, -8.f + rnd() * 16.f, 0.f);
+		pd->scale = Vec3f(4.4f, 4.4f, 1.f);
+		pd->tolive = Random::get(1500, 2400);
+		pd->tc = healing;
 		pd->rgb = Color3f::magenta;
-		pd->siz				=	56.f;
-		pd->type			=	PARTICLE_2D;
+		pd->siz = 56.f;
+		pd->type = PARTICLE_2D;
 	}
-}
-
-//-----------------------------------------------------------------------------
-void MakeBookFX(float posx,float posy,float posz)
-{
-	long j;
-
-	for (long i=0;i<12;i++)
-	{
-		j=ARX_PARTICLES_GetFree();
-
-		if ((j!=-1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist		=	true;
-			pd->zdec		=	0;
-			pd->ov.x		=	posx+rnd()*6.f-rnd()*12.f;
-			pd->ov.y		=	posy+rnd()*6.f-rnd()*12.f;
-			pd->ov.z		=	posz;
-			pd->move.x		=	6.f-rnd()*12.f;
-			pd->move.y		=	-8.f+rnd()*16.f;
-			pd->move.z		=	0.f;
-			pd->scale.x		=	4.4f;
-			pd->scale.y		=	4.4f;
-			pd->scale.z		=	1.f;
-			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	Random::get(1500, 2400);
-			pd->tc			=	healing;
-			pd->rgb = Color3f::magenta;
-			pd->siz			=	56.f;
-			pd->type			=	PARTICLE_2D;
-		}
-	}
-
-	for (int i=0;i<5;i++)
-	{
-		j=ARX_PARTICLES_GetFree();
-
-		if ((j!=-1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->exist		=	true;
-			pd->zdec		=	0;
-
-			pd->ov.x		=	posx - i * 2; 
-			pd->ov.y		=	posy - i * 2; 
-			pd->ov.z		=	posz;
-			pd->move.x		=	-(float)(i)*( 1.0f / 2 );
-			pd->move.y		=	-(float)(i)*( 1.0f / 2 );
-			pd->move.z		=	0.f;
-			pd->scale.y		=	pd->scale.x			=	(float)(i*10);			
-			pd->scale.z		=	0.f;
-			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	Random::get(1200, 1600);
-			pd->tc			=	ITC.Get("book");
-			pd->rgb = Color3f(1.f - i * .1f, i * .1f, .5f - i * .1f);
-			pd->siz			=	32.f+i*4;
-			pd->type		=	PARTICLE_2D;
-		}
-	}
-
-	NewSpell=1;	
-}
-
-//-----------------------------------------------------------------------------
-int ARX_GenereOneEtincelle(Vec3f *pos,Vec3f *dir)
-{
-	int	i;
 	
-	i=ARX_PARTICLES_GetFree();
-
-	if(i<0) return -1;
+	for(int i = 0; i < 5; i++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = pos - Vec3f(float(i * 2), float(i * 2), 0.f);
+		pd->move = Vec3f(-float(i) * 0.5f, -float(i) * 0.5f, 0.f);
+		pd->scale = Vec3f(float(i * 10), float(i * 10), 0.f);
+		pd->tolive = Random::get(1200, 1600);
+		pd->tc = ITC.Get("book");
+		pd->rgb = Color3f(1.f - float(i) * 0.1f, float(i) * 0.1f, 0.5f - float(i) * 0.1f);
+		pd->siz = 32.f + float(i * 4);
+		pd->type = PARTICLE_2D;
+	}
 	
-	ParticleCount++;
-	PARTICLE_DEF * pd=&particle[i];
-	pd->exist		=	true;
-	pd->type		=	PARTICLE_ETINCELLE;
-	pd->special		=	GRAVITY;
-	pd->ov			=	pd->oldpos	=	*pos;
-	pd->move		=	*dir;
-	pd->tolive		=	Random::get(1000, 1500);
-	pd->timcreation	=	(long)arxtime;
-	pd->rgb = Color3f(ET_R, ET_G, ET_B);
-	pd->tc			=	GTC;
-	pd->mask		=	ET_MASK;
-	return i;
+	NewSpell = 1;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_GenereSpheriqueEtincelles(Vec3f *pos,float r,TextureContainer *tc,float rr,float g,float b,int mask)
-{
-	GTC=tc;
-	ET_R=rr;
-	ET_G=g;
-	ET_B=b;
-	ET_MASK=mask;
-	int nb=rand()&0x1F;
-
-	while(nb)
-	{
-		Vec3f dir;
-
-		float a = radians(rnd()*360.f);
-		float b = radians(rnd()*360.f);
-		dir.x=(float) r*EEsin(a)*EEcos(b);
-		dir.z=(float) r*EEsin(a)*EEsin(b);
-		dir.y=(float) r*EEcos(a);
-
-		ARX_GenereOneEtincelle(pos,&dir);
-		nb--;
+void createSphericalSparks(const Vec3f & pos, float r, TextureContainer * tc,
+                           const Color3f & color, int mask) {
+	
+	int nb = Random::get(0, 31);
+	for(int i = 0; i < nb; i++) {
+		
+		PARTICLE_DEF * pd = createParticle(true);
+		if(!pd) {
+			return;
+		}
+		
+		float a = radians(rnd() * 360.f);
+		float b = radians(rnd() * 360.f);
+		pd->type = PARTICLE_SPARK2;
+		pd->special = GRAVITY;
+		pd->ov = pd->oldpos = pos;
+		pd->move = Vec3f(EEsin(a) * EEcos(b), EEsin(a) * EEsin(b), EEcos(a)) * r;
+		pd->tolive = Random::get(1000, 1500);
+		pd->rgb = color;
+		pd->tc = tc;
+		pd->mask = mask;
 	}
 }
 
 void ARX_PARTICLES_Spawn_Splat(const Vec3f & pos, float dmgs, Color col) {
 	
-	float power = (dmgs * (1.f/60)) + .9f;
+	float power = (dmgs * (1.f / 60)) + .9f;
 	
 	for(long kk = 0; kk < 20; kk++) {
 		
-		long j = ARX_PARTICLES_GetFree();
-		if(j != -1) {
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
-			pd->exist = true;
-			pd->ov = pos;
-			pd->move = Vec3f((rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f, (rnd() * 10 - 5.f) * 2.3f);
-			pd->timcreation = (long)arxtime;
-			pd->tolive = (unsigned long)(1000 + dmgs*3);
-			pd->tc = blood_splat;
-			pd->siz = .3f + .01f*power;
-			pd->scale = Vec3f(.2f + .3f*power, .2f + .3f*power, .2f + .3f*power);
-			pd->zdec = 1;
-			pd->rgb = col.to<float>();
+		PARTICLE_DEF * pd = createParticle(true);
+		if(!pd) {
+			return;
 		}
+		
+		pd->special = PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
+		pd->ov = pos;
+		pd->move = randomVec(-11.5f, 11.5f);
+		pd->tolive = (unsigned long)(1000 + dmgs*3);
+		pd->tc = blood_splat;
+		pd->siz = 0.3f + 0.01f * power;
+		pd->scale = Vec3f::repeat(0.2f + 0.3f * power);
+		pd->zdec = true;
+		pd->rgb = col.to<float>();
 	}
 }
 
-void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos)
-{
+void ARX_PARTICLES_SpawnWaterSplash(const Vec3f * _ePos) {
+	
 	long nbParticles = Random::get(15, 35);
-
-	for (long kk=0; kk < nbParticles; kk++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | GRAVITY;
-			pd->special |= SPLAT_WATER;
-
-			pd->exist = true;
-			pd->ov.x = _ePos->x + rnd()*30;
-			pd->ov.y = _ePos->y - rnd()*20;
-			pd->ov.z = _ePos->z + rnd()*30;
-			pd->move.x = (frand2()*5)*1.3f;
-			pd->move.y = -(rnd()*5)*2.3f;
-			pd->move.z = (frand2()*5)*1.3f;
-			pd->timcreation = (long)arxtime;
-			pd->tolive = Random::get(1000, 1300);
-			
-			int t = Random::get(0, 2);
-			pd->tc=water_drop[t];
-			pd->siz = 0.4f;
-			float s = rnd();
-			pd->scale.x = 1;
-			pd->scale.y = 1;
-			pd->scale.z = 1;
-			pd->zdec = 1;
-			pd->rgb = Color3f::gray(s);
+	for(long kk=0; kk < nbParticles; kk++) {
+		
+		PARTICLE_DEF * pd = createParticle(true);
+		if(!pd) {
+			return;
 		}
+		
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
+		              | GRAVITY | SPLAT_WATER;
+		pd->ov = *_ePos + Vec3f(30.f * rnd(), -20.f * rnd(), 30.f * rnd());
+		pd->move = Vec3f(6.5f * frand2(), -11.5f * rnd(), 6.5f * frand2());
+		pd->tolive = Random::get(1000, 1300);
+		
+		int t = Random::get(0, 2);
+		pd->tc = water_drop[t];
+		pd->siz = 0.4f;
+		float s = rnd();
+		pd->zdec = true;
+		pd->rgb = Color3f::gray(s);
 	}
 }
 
-//-----------------------------------------------------------------------------
-void SpawnFireballTail(Vec3f * poss,Vec3f * vecto,float level,long flags)
-{
-	if (explo[0]==NULL) return;
-
-	level*=2.f;
-
-	for (long nn=0;nn<2;nn++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->special		=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING | MODULATE_ROTATION;
-			pd->fparam		=	0.02f-rnd()*0.02f;
-			pd->exist		=	true;
-			pd->ov.x		=	poss->x;
-			pd->ov.y		=	poss->y;
-			pd->ov.z		=	poss->z;
-			pd->move.x		=	0;
-			pd->move.y		=	-rnd() * 3.f; 
-			pd->move.z		=	0;
-			pd->timcreation	=	(long)arxtime;
-			pd->tc			=	explo[0];
-			pd->rgb = Color3f::gray(.7f);
-			pd->siz			=	level+2.f*rnd();
-
-			if (flags & 1)
-			{
-				pd->tolive	=	Random::get(400, 500);
-				pd->siz		*=	0.7f;
-				pd->scale.z=pd->scale.y=pd->scale.x=level*0.7f;				
-			}
-			else
-			{				
-				pd->scale.x=level;
-				pd->scale.y=level;
-				pd->scale.z=level;
-				pd->tolive=Random::get(800, 900);
-			}
-
-			pd->cval1=0;
-			pd->cval2=MAX_EXPLO-1;
-
-			if (nn==1)
-			{
-				pd->delay=Random::get(150, 250);
-				pd->ov.x=poss->x+vecto->x*pd->delay;
-				pd->ov.y=poss->y+vecto->y*pd->delay;
-				pd->ov.z=poss->z+vecto->z*pd->delay;
-			}
+void SpawnFireballTail(Vec3f * poss, Vec3f * vecto, float level, long flags) {
+	
+	if(!explo[0]) {
+		return;
+	}
+	
+	for(long nn = 0; nn < 2; nn++) {
+		
+		PARTICLE_DEF * pd = createParticle(true);
+		if(!pd) {
+			return;
+		}
+		
+		pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING
+		              | MODULATE_ROTATION;
+		pd->fparam = 0.02f - rnd() * 0.02f;
+		pd->move = Vec3f(0.f, -rnd() * 3.f, 0.f);
+		pd->tc = explo[0];
+		pd->rgb = Color3f::gray(.7f);
+		pd->siz = (level + rnd()) * 2.f;
+		
+		if(flags & 1) {
+			pd->tolive = Random::get(400, 500);
+			pd->siz *= 0.7f;
+			pd->scale = Vec3f::repeat(level * 1.4f);
+		} else {
+			pd->scale = Vec3f::repeat(level * 2.f);
+			pd->tolive=Random::get(800, 900);
+		}
+		
+		pd->cval1 = 0;
+		pd->cval2 = MAX_EXPLO - 1;
+		
+		if(nn == 1) {
+			pd->delay = Random::get(150, 250);
+			pd->ov = *poss + *vecto * pd->delay;
+		} else {
+			pd->ov = *poss;
 		}
 	}
 }
 
 void LaunchFireballBoom(Vec3f * poss, float level, Vec3f * direction, Color3f * rgb) {
 	
-	level*=1.6f;
-
-	if (explo[0]==NULL) return;
-
-	for (long nn=0;nn<1;nn++)
-	{
-		long j=ARX_PARTICLES_GetFree();
-
-		if (j!=-1)
-		{
-			ParticleCount++;
-			PARTICLE_DEF * pd=&particle[j];
-			pd->special=FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
-			pd->exist=true;
-			pd->ov = *poss;
-
-			if (direction)
-				pd->move = *direction;
-			else
-			{
-				pd->move.x = 0.f; 
-				pd->move.y = -rnd() * 5.f; 
-				pd->move.z = 0.f; 
-			}
-
-			pd->timcreation	=	(long)arxtime;
-			pd->tolive		=	Random::get(1600, 2200);
-			pd->tc			=	explo[0];
-			pd->siz			=	level*3.f+2.f*rnd();
-			pd->scale.x		=	level*3.f;
-			pd->scale.y		=	level*3.f;
-			pd->scale.z		=	level*3.f;
-			pd->zdec		=	1;
-			pd->cval1		=	0;
-			pd->cval2		=	MAX_EXPLO-1;
-
-			if(rgb) {
-				pd->rgb = *rgb;
-			}
-
-			if (nn==1)
-			{
-				pd->delay=300;
-				pd->tolive/=2;				
-				pd->scale.x*=2;
-				pd->scale.y*=2;
-				pd->scale.z*=2;
-			}
-		}
+	level *= 1.6f;
+	
+	if(explo[0] == NULL) {
+		return;
 	}
+	
+	PARTICLE_DEF * pd = createParticle(true);
+	if(!pd) {
+		return;
+	}
+	
+	pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
+	pd->ov = *poss;
+	pd->move = (direction) ? *direction : Vec3f(0.f, -rnd() * 5.f, 0.f);
+	pd->tolive = Random::get(1600, 2200);
+	pd->tc = explo[0];
+	pd->siz = level * 3.f + 2.f * rnd();
+	pd->scale = Vec3f::repeat(level * 3.f);
+	pd->zdec = true;
+	pd->cval1 = 0;
+	pd->cval2 = MAX_EXPLO - 1;
+	if(rgb) {
+		pd->rgb = *rgb;
+	}
+	
 }
 
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Render(EERIE_CAMERA * cam) 
-{
-	if (!ACTIVEBKG) return;
-
-	TreatBackgroundActions();
-
-	if 	(ParticleCount==0) return;
-
-	long xx,yy;
-	unsigned  long tim;
-	long framediff;
-	long framediff2;
-	long t;
-	TexturedVertex in,inn,out;
-	Color color;
-	float siz,siz2,r;
-	float val;
-	float fd;
-	float rott;
+void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 	
-	tim = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'	
+	if(!ACTIVEBKG) {
+		return;
+	}
+	
+	TreatBackgroundActions();
+	
+	if(ParticleCount == 0) {
+		return;
+	}
+	
+	TexturedVertex in, inn, out;
+	
+	unsigned long tim = (unsigned long)arxtime;
 	
 	GRenderer->SetCulling(Renderer::CullNone);
-
 	GRenderer->SetFogColor(Color::none);
-
-	TextureContainer * tc=NULL;
-	long pcc=ParticleCount;
-
-	for(size_t i = 0; i < MAX_PARTICLES; i++) {
-		PARTICLE_DEF * part=&particle[i];
-
-		if (part->exist) 
-		{
-			framediff=part->timcreation+part->tolive-tim;
-			framediff2=tim-part->timcreation;	
-
-			if (framediff2 < (long)part->delay) continue;
-
-			if (part->delay>0)
-			{
-				part->timcreation+=part->delay;
-				part->delay=0;
-
-				if ((part->special & DELAY_FOLLOW_SOURCE)  && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
-				{
-					part->ov.x = part->source->x; 
-					part->ov.y = part->source->y; 
-					part->ov.z = part->source->z; 
-					INTERACTIVE_OBJ * target=inter.iobj[part->sourceionum];
-					Vec3f vector;
-					vector.x=part->ov.x-target->pos.x;
-					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
-					vector.z=part->ov.z-target->pos.z;
-					vector.normalize();
-
-					part->move.x = vector.x * 18 + rnd() - 0.5f; 
-					part->move.y = vector.y * 5 + rnd() - 0.5f; 
-					part->move.z = vector.z * 18 + rnd() - 0.5f; 
-					
-				}				
-
+	
+	long pcc = ParticleCount;
+	
+	for(size_t i = 0; i < MAX_PARTICLES && pcc > 0; i++) {
+		
+		PARTICLE_DEF * part = &particle[i];
+		if(!part->exist) {
+			continue;
+		}
+		
+		long framediff = part->timcreation + part->tolive - tim;
+		long framediff2 = tim - part->timcreation;
+		
+		if(framediff2 < long(part->delay)) {
+			continue;
+		}
+		
+		if(part->delay > 0) {
+			part->timcreation += part->delay;
+			part->delay=0;
+			if((part->special & DELAY_FOLLOW_SOURCE) && part->sourceionum >= 0
+					&& entities[part->sourceionum]) {
+				part->ov = *part->source;
+				Entity * target = entities[part->sourceionum];
+				Vec3f vector = (part->ov - target->pos) * Vec3f(1.f, 0.5f, 1.f);
+				vector.normalize();
+				part->move = vector * Vec3f(18.f, 5.f, 18.f) + randomVec(-0.5f, 0.5f);
+				
+			}
+			continue;
+		}
+		
+		if(!(part->type & PARTICLE_2D)) {
+			long xx = part->ov.x * ACTIVEBKG->Xmul;
+			long yy = part->ov.z * ACTIVEBKG->Zmul;
+			if(xx < 0 || yy < 0 || xx > ACTIVEBKG->Xsize || yy > ACTIVEBKG->Zsize) {
+				part->exist = false;
+				ParticleCount--;
 				continue;
 			}
-
-			if (!(part->type & PARTICLE_2D))
-			{
-				xx = part->ov.x * ACTIVEBKG->Xmul;
-				yy = part->ov.z * ACTIVEBKG->Zmul;
-
-				if ((xx<0) || (yy<0) || (xx>ACTIVEBKG->Xsize) || (yy>ACTIVEBKG->Zsize))
-				{
-					part->exist=false;
-					ParticleCount--;
-					continue;
-				}
-
-				FAST_BKG_DATA * feg=(FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
-
-				if (!feg->treat)
-				{
-					part->exist=false;
-					ParticleCount--;
-					continue;
-				}
-			}	
-			
-			if (framediff<=0) 
-			{
-				if ((part->special & FIRE_TO_SMOKE) && (rnd()>0.7f))
-				{
-					part->ov.x+=part->move.x;
-					part->ov.y+=part->move.y;
-					part->ov.z+=part->move.z;
-					part->tolive += (part->tolive >> 2) + (part->tolive >> 3);
-					part->special&=~FIRE_TO_SMOKE;
-					part->timcreation=tim;
-					part->tc = smokeparticle;
-					part->scale.x*=2.4f;
-					part->scale.y*=2.4f;
-					part->scale.z*=2.4f;
-
-					if (part->scale.x<0.f) part->scale.x*=-1.f;
-
-					if (part->scale.y<0.f) part->scale.y*=-1.f;
-
-					if (part->scale.z<0.f) part->scale.z*=-1.f;
-
-					part->rgb = Color3f::gray(.45f);
-					part->move.x*=( 1.0f / 2 );
-					part->move.y*=( 1.0f / 2 );
-					part->move.z*=( 1.0f / 2 );
-					part->siz*=( 1.0f / 3 );			
-					part->special&=~FIRE_TO_SMOKE;
-					part->timcreation=tim;
-					part->tc = smokeparticle; 
-					
-					framediff=part->timcreation+part->tolive-tim;
-				}
-				else 
-				{
-					part->exist=false;
-					ParticleCount--;
-					continue;
-				}
+			FAST_BKG_DATA & feg = ACTIVEBKG->fastdata[xx][yy];
+			if(!feg.treat) {
+				part->exist = false;
+				ParticleCount--;
+				continue;
 			}
-			
-			
-			if((part->special & FIRE_TO_SMOKE2)
-			   && framediff2 > long(part->tolive - (part->tolive >> 2))) {
+		}
+		
+		if(framediff <= 0) {
+			if((part->special & FIRE_TO_SMOKE) && rnd() > 0.7f) {
 				
-				part->special&=~FIRE_TO_SMOKE2;
-				int j=ARX_PARTICLES_GetFree();
-
-				if(j>=0)
-				{
-					ParticleCount++;
-					PARTICLE_DEF * pd=&particle[j];
-					particle[j]=particle[i]; 
-					pd->exist=1;
-					pd->zdec=0;
-					pd->special|=SUBSTRACT;					
-					pd->ov.x=part->oldpos.x;
-					pd->ov.y=part->oldpos.y;
-					pd->ov.z=part->oldpos.z;
-					pd->timcreation=tim;
-					pd->tc = tzupouf; 
-					pd->scale.x*=4.f;
-					pd->scale.y*=4.f;
-					pd->scale.z*=4.f;
-
-					if (pd->scale.x<0.f) pd->scale.x*=-1.f;
-
-					if (pd->scale.y<0.f) pd->scale.y*=-1.f;
-
-					if (pd->scale.z<0.f) pd->scale.z*=-1.f;
-
-					pd->rgb = Color3f::white; 
-					pd->move *= (1.f/2);
-					pd->siz *= (1.f/3);
+				part->ov += part->move;
+				part->tolive += (part->tolive / 4) + (part->tolive / 8);
+				part->special &= ~FIRE_TO_SMOKE;
+				part->tc = smokeparticle;
+				part->scale *= 2.4f;
+				if(part->scale.x < 0.f) {
+					part->scale.x *= -1.f;
 				}
-			}
-			
-			val=(part->tolive-framediff)*( 1.0f / 100 );
-			
-			if ((part->special & FOLLOW_SOURCE) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
-			{
-				inn.p.x=in.p.x=part->source->x;
-				inn.p.y=in.p.y=part->source->y;
-				inn.p.z=in.p.z=part->source->z;
-			}
-			else if ((part->special & FOLLOW_SOURCE2) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
-			{
-				inn.p.x=in.p.x=part->source->x+part->move.x*val;
-				inn.p.y=in.p.y=part->source->y+part->move.y*val;
-				inn.p.z=in.p.z=part->source->z+part->move.z*val;
-			}
-			else
-			{
-				inn.p.x=in.p.x=part->ov.x+part->move.x*val;
-				inn.p.y=in.p.y=part->ov.y+part->move.y*val;
-				inn.p.z=in.p.z=part->ov.z+part->move.z*val;
-			}
-
-			if (part->special & GRAVITY)
-			{
-				inn.p.y += 0.98f * 1.5f * val * val;
-				in.p.y=inn.p.y;
-			}
-			
-			if (part->special & PARTICLE_NOZBUFFER) 
-			{
-				GRenderer->SetRenderState(Renderer::DepthTest, false);
-			}
-			else
-			{
-				GRenderer->SetRenderState(Renderer::DepthTest, true);
-			}
-
-			if (part->special & FADE_IN_AND_OUT) 
-			{
-				t=part->tolive>>1;
-
-				if (framediff2<=t)
-				{
-					r=((float)framediff2/(float)t);
+				if(part->scale.y < 0.f) {
+					part->scale.y *= -1.f;
 				}
-				else 
-				{
-					fd=((float)(framediff2-t)/(float)t);
-					r=1.f-fd;
+				if(part->scale.z < 0.f) {
+					part->scale.z *= -1.f;
 				}
-
-				fd=((float)framediff2/(float)part->tolive);
-			}
-			else
-			{
-				fd=((float)framediff2/(float)part->tolive);
-				r=1.f-fd;
-			}
-
-			if (!(part->type & PARTICLE_2D))
-			{
-				EERIE_SPHERE sp;
-				sp.origin.x=in.p.x;
-				sp.origin.y=in.p.y;
-				sp.origin.z=in.p.z;
-				EERIETreatPoint(&inn,&out);			
-
-				if (out.rhw<0) continue;
-
-				if (out.p.z>cam->cdepth*fZFogEnd) continue;
-
-				if (part->special & PARTICLE_SPARK)
-				{
-					if (part->special & NO_TRANS)
-					{
-						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					}
-					else
-					{
-						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-						if (part->special & SUBSTRACT) 
-						{
-							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-						}
-						else
-						{
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-						}
-					}
-
-					GRenderer->SetCulling(Renderer::CullNone);
-					Vec3f vect = part->oldpos - in.p;
-					fnormalize(vect);
-					TexturedVertex tv[3];
-					tv[0].color = part->rgb.toBGR();
-					tv[1].color=0xFF666666;
-					tv[2].color = 0xFF000000; 
-					tv[0].p.x=out.p.x;
-					tv[0].p.y=out.p.y;
-					tv[0].p.z=out.p.z;
-					tv[0].rhw=out.rhw;
-					TexturedVertex temp;
-					temp.p.x=in.p.x+rnd()*0.5f;
-					temp.p.y=in.p.y+0.8f;
-					temp.p.z=in.p.z+rnd()*0.5f;
-					EERIETreatPoint(&temp,&tv[1]);
-					temp.p.x=in.p.x+vect.x*part->fparam;
-					temp.p.y=in.p.y+vect.y*part->fparam;
-					temp.p.z=in.p.z+vect.z*part->fparam;
-
-					EERIETreatPoint(&temp,&tv[2]);
-					GRenderer->ResetTexture(0);
-
-					EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
-					if(!arxtime.is_paused())
-					{
-						part->oldpos.x=in.p.x;
-						part->oldpos.y=in.p.y;
-						part->oldpos.z=in.p.z;
-					}
-
-					continue;
-				}
-
-				if (part->special & SPLAT_GROUND)
-				{
-					siz=part->siz+part->scale.x*fd;			
-					sp.radius=siz*10;
-
-					if(CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL)) {
-						
-						Color3f rgb = part->rgb;
-
-						if (rnd()<0.9f)
-							SpawnGroundSplat(&sp,&rgb,sp.radius,0);
-
-						part->exist=false;
-						ParticleCount--;
-						continue;
-					}
-				}
-
-				if (part->special & SPLAT_WATER)
-				{
-					siz=part->siz+part->scale.x*fd;
-					sp.radius=siz*(10 + rnd()*20);
-
-					if (CheckAnythingInSphere(&sp,0,CAS_NO_NPC_COL))
-					{
-						Color3f rgb(part->rgb.r * 0.5f, part->rgb.g * 0.5f, part->rgb.b * 0.5f);
-
-						if (rnd()<0.9f)
-							SpawnGroundSplat(&sp,&rgb,sp.radius,2);
-
-						part->exist=false;
-						ParticleCount--;
-						continue;
-					}
-				}
+				part->rgb = Color3f::gray(.45f);
+				part->move *= 0.5f;
+				part->siz *= 1.f / 3;
+				part->special &= ~FIRE_TO_SMOKE;
+				part->timcreation = tim;
+				part->tc = smokeparticle;
 				
+				framediff = part->tolive;
+				
+			} else {
+				part->exist = false;
+				ParticleCount--;
+				continue;
 			}
-
-			if ((part->special & DISSIPATING) && (out.p.z<0.05f))
-			{
-				out.p.z=(out.p.z)*20.f;
-				r*=out.p.z;
+		}
+		
+		if((part->special & FIRE_TO_SMOKE2)
+				&& framediff2 > long(part->tolive - (part->tolive / 4))) {
+			
+			part->special &= ~FIRE_TO_SMOKE2;
+		
+			PARTICLE_DEF * pd = createParticle(true);
+			if(pd) {
+				*pd = *part;
+				pd->timcreation = tim;
+				pd->zdec = false;
+				pd->special |= SUBSTRACT;
+				pd->ov = part->oldpos;
+				pd->tc = tzupouf;
+				pd->scale *= 4.f;
+				if(pd->scale.x < 0.f) {
+					pd->scale.x *= -1.f;
+				}
+				if(pd->scale.y < 0.f) {
+					pd->scale.y *= -1.f;
+				}
+				if(pd->scale.z < 0.f) {
+					pd->scale.z *= -1.f;
+				}
+				pd->rgb = Color3f::white;
+				pd->move *= 0.5f;
+				pd->siz *= 1.f / 3;
 			}
-
-			if (r>0.f) 
-			{
-				if (part->special & NO_TRANS)
-				{
+		}
+		
+		float val = (part->tolive - framediff) * 0.01f;
+		
+		if((part->special & FOLLOW_SOURCE) && part->sourceionum >= 0
+				&& entities[part->sourceionum]) {
+			inn.p = in.p = *part->source;
+		} else if((part->special & FOLLOW_SOURCE2) && part->sourceionum >= 0
+							&& entities[part->sourceionum]) {
+			inn.p = in.p = *part->source + part->move * val;
+		} else {
+			inn.p = in.p = part->ov + part->move * val;
+		}
+		
+		if(part->special & GRAVITY) {
+			in.p.y = inn.p.y = inn.p.y + 1.47f * val * val;
+		}
+		
+		if(part->special & PARTICLE_NOZBUFFER) {
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
+		} else {
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+		}
+		
+		float fd = float(framediff2) / float(part->tolive);
+		float r = 1.f - fd;
+		if(part->special & FADE_IN_AND_OUT) {
+			long t = part->tolive / 2;
+			if(framediff2 <= t) {
+				r = float(framediff2) / float(t);
+			} else {
+				r = 1.f - float(framediff2 - t) / float(t);
+			}
+		}
+		
+		if(!(part->type & PARTICLE_2D)) {
+			
+			EERIE_SPHERE sp;
+			sp.origin = in.p;
+			EERIETreatPoint(&inn, &out);
+			if(out.rhw < 0 || out.p.z > cam->cdepth * fZFogEnd) {
+				continue;
+			}
+			
+			if(part->special & PARTICLE_SPARK) {
+				
+				if(part->special & NO_TRANS) {
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				}
-				else
-				{
+				} else {
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-					if (part->special & SUBSTRACT) 
-					{
+					if(part->special & SUBSTRACT) {
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-					}
-					else
-					{
+					} else {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					}
 				}
 				
-				Vec3f op=part->oldpos;
-
-				if(!arxtime.is_paused())
-				{
-					part->oldpos.x=in.p.x;
-					part->oldpos.y=in.p.y;
-					part->oldpos.z=in.p.z; 
+				GRenderer->SetCulling(Renderer::CullNone);
+				Vec3f vect = part->oldpos - in.p;
+				fnormalize(vect);
+				TexturedVertex tv[3];
+				tv[0].color = part->rgb.toBGR();
+				tv[1].color = 0xFF666666;
+				tv[2].color = 0xFF000000;
+				tv[0].p = out.p;
+				tv[0].rhw = out.rhw;
+				TexturedVertex temp;
+				temp.p = in.p + Vec3f(rnd() * 0.5f, 0.8f, rnd() * 0.5f);
+				EERIETreatPoint(&temp, &tv[1]);
+				temp.p = in.p + vect * part->fparam;
+				
+				EERIETreatPoint(&temp, &tv[2]);
+				GRenderer->ResetTexture(0);
+				
+				EERIEDRAWPRIM(Renderer::TriangleStrip, tv);
+				if(!arxtime.is_paused()) {
+					part->oldpos = in.p;
 				}
-
-				if (part->special & PARTICLE_GOLDRAIN)
-				{
-					float v=(rnd()-0.5f)*( 1.0f / 5 );
-
-					if((part->rgb.r+v<=1.f) && (part->rgb.r+v>0.f)
-						&& (part->rgb.g+v<=1.f) && (part->rgb.g+v>0.f)
-						&& (part->rgb.b+v<=1.f) && (part->rgb.b+v>0.f) ) {
-						part->rgb.r += v;
-						part->rgb.g += v;
-						part->rgb.b += v;
+				
+				continue;
+			}
+			
+			if(part->special & SPLAT_GROUND) {
+				float siz = part->siz + part->scale.x * fd;
+				sp.radius = siz * 10.f;
+				if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+					if(rnd() < 0.9f) {
+						Color3f rgb = part->rgb;
+						SpawnGroundSplat(&sp, &rgb, sp.radius, 0);
 					}
-				}
-
-				if(Project.improve) {
-					color = Color3f(part->rgb.r * r, 0.f, part->rgb.b * r).to<u8>();
-				} else {
-					color = Color3f(part->rgb.r * r, part->rgb.g * r, part->rgb.b * r).to<u8>();
-				}
-
-				tc=part->tc;
-
-				if ((tc==explo[0]) && (part->special & PARTICLE_ANIMATED))
-				{
-					long animrange=part->cval2-part->cval1;
-					float tt=(float)framediff2/(float)part->tolive*animrange;
-					long num = tt;
-
-					if (num<part->cval1) num=part->cval1;
-
-					if (num>part->cval2) num=part->cval2;
-
-					tc=explo[num];
-				}
-
-				siz=part->siz+part->scale.x*fd;			
-
-				if (part->special & ROTATING) 
-				{
-					if (part->special & MODULATE_ROTATION) rott=MAKEANGLE((float)(tim+framediff2)*part->fparam);
-					else rott=(MAKEANGLE((float)(tim+framediff2*2)*( 1.0f / 4 )));
-
-					if (part->type & PARTICLE_2D) 
-					{}
-					else 
-					{
-						float temp;
-
-						if (part->zdec) temp=0.0001f;
-						else temp=2.f;
-						
-						if (part->special & PARTICLE_SUB2) 
-						{
-							TexturedVertex in2;
-							memcpy(&in2,&in,sizeof(TexturedVertex));
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
-							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
-							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
-							EERIEDrawRotatedSprite(&in2,siz,tc,Color::white,temp,rott);
-						}
-						else
-							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
-					}					
-				}
-				else if (part->type & PARTICLE_2D) 
-				{
-					siz2=part->siz+part->scale.y*fd;
-					
-					if (part->special & PARTICLE_SUB2) 
-					{
-						TexturedVertex in2;
-						memcpy(&in2,&in,sizeof(TexturedVertex));
-						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
-						EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
-						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
-						EERIEDrawBitmap(in2.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
-					}
-					else
-						EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc,color);
-				}
-				else 
-				{
-					if(part->type & PARTICLE_ETINCELLE)
-					{
-						Vec3f pos,end;
-						pos.x=in.p.x;
-						pos.y=in.p.y;
-						pos.z=in.p.z;
-						Color col = Color3f(part->rgb.r * r, part->rgb.g * r, part->rgb.b * r).to<u8>();
-						end.x=pos.x-(pos.x-op.x)*2.5f;
-						end.y=pos.y-(pos.y-op.y)*2.5f;
-						end.z=pos.z-(pos.z-op.z)*2.5f;
-						Draw3DLineTex2(end,pos,2.f, Color::fromBGRA(col.toBGRA() & part->mask), col);
-						
-						EERIEDrawSprite(&in, .7f, tc, col, 2.f);
-						
-					}
-					else
-					{
-						float temp;
-
-						if (part->zdec) temp=0.0001f;
-						else temp=2.f;
-						
-						if (part->special & PARTICLE_SUB2) 
-						{
-							TexturedVertex in2;
-							memcpy(&in2,&in,sizeof(TexturedVertex));
-							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-							EERIEDrawSprite(&in,siz,tc,color,temp);				
-							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-							EERIEDrawSprite(&in2,siz,tc,Color::white,temp);				
-						}
-						else 
-							EERIEDrawSprite(&in,siz,tc,color,temp);				
-					}
+					part->exist = false;
+					ParticleCount--;
+					continue;
 				}
 			}
-
+			
+			if(part->special & SPLAT_WATER) {
+				float siz = part->siz + part->scale.x * fd;
+				sp.radius = siz * (10.f + rnd() * 20.f);
+				if(CheckAnythingInSphere(&sp, 0, CAS_NO_NPC_COL)) {
+					if(rnd() < 0.9f) {
+						Color3f rgb = part->rgb * 0.5f;
+						SpawnGroundSplat(&sp, &rgb, sp.radius, 2);
+					}
+					part->exist = false;
+					ParticleCount--;
+					continue;
+				}
+			}
+			
+		}
+		
+		if((part->special & DISSIPATING) && out.p.z < 0.05f) {
+			out.p.z *= 20.f;
+			r *= out.p.z;
+		}
+		
+		if(r <= 0.f) {
 			pcc--;
-
-			if (pcc<=0)
-			{
-				GRenderer->SetFogColor(ulBKGColor);
-				return;
+			continue;
+		}
+		
+		if(part->special & NO_TRANS) {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+		} else {
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+			if(part->special & SUBSTRACT) {
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			} else {
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			}
-		}	
+		}
+		
+		Vec3f op = part->oldpos;
+		if(!arxtime.is_paused()) {
+			part->oldpos = in.p;
+		}
+		
+		if(part->special & PARTICLE_GOLDRAIN) {
+			float v = (rnd() - 0.5f) * 0.2f;
+			if(part->rgb.r + v <= 1.f && part->rgb.r + v > 0.f
+				&& part->rgb.g + v <= 1.f && part->rgb.g + v > 0.f
+				&& part->rgb.b + v <= 1.f && part->rgb.b + v > 0.f) {
+				part->rgb = Color3f(part->rgb.r + v, part->rgb.g + v, part->rgb.b + v);
+			}
+		}
+		
+		Color color = (part->rgb * r).to<u8>();
+		if(Project.improve) {
+			color.g = 0;
+		}
+		
+		TextureContainer * tc = part->tc;
+		if(tc == explo[0] && (part->special & PARTICLE_ANIMATED)) {
+			long animrange = part->cval2 - part->cval1;
+			long num = long(float(framediff2) / float(part->tolive) * animrange);
+			num = clamp(num, part->cval1, part->cval2);
+			tc = explo[num];
+		}
+		
+		float siz = part->siz + part->scale.x * fd;
+		
+		if(part->special & ROTATING) {
+			if(!(part->type & PARTICLE_2D)) {
+				
+				float rott;
+				if(part->special & MODULATE_ROTATION) {
+					rott = MAKEANGLE(float(tim + framediff2) * part->fparam);
+				} else {
+					rott = MAKEANGLE(float(tim + framediff2 * 2) * 0.25f);
+				}
+				
+				float temp = (part->zdec) ? 0.0001f : 2.f;
+				if(part->special & PARTICLE_SUB2) {
+					TexturedVertex in2 = in;
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+					EERIEDrawRotatedSprite(&in, siz, tc, color, temp, rott);
+					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+					EERIEDrawRotatedSprite(&in2, siz, tc, Color::white, temp, rott);
+				} else {
+					EERIEDrawRotatedSprite(&in, siz, tc, color, temp, rott);
+				}
+				
+			}
+		} else if(part->type & PARTICLE_2D) {
+			
+			float siz2 = part->siz + part->scale.y * fd;
+			if(part->special & PARTICLE_SUB2) {
+				TexturedVertex in2 = in;
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				EERIEDrawBitmap(in2.p.x, in.p.y, siz, siz2, in.p.z, tc, Color::white);
+			} else {
+				EERIEDrawBitmap(in.p.x, in.p.y, siz, siz2, in.p.z, tc, color);
+			}
+			
+		} else if(part->type & PARTICLE_SPARK2) {
+			
+			Vec3f pos = in.p;
+			Color col = (part->rgb * r).to<u8>();
+			Vec3f end = pos - (pos - op) * 2.5f;
+			Color masked = Color::fromBGRA(col.toBGRA() & part->mask);
+			Draw3DLineTex2(end, pos, 2.f, masked, col);
+			EERIEDrawSprite(&in, 0.7f, tc, col, 2.f);
+			
+		} else {
+			
+			float temp = (part->zdec) ? 0.0001f : 2.f;
+			if(part->special & PARTICLE_SUB2) {
+				TexturedVertex in2 = in;
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+				EERIEDrawSprite(&in, siz, tc, color, temp);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				EERIEDrawSprite(&in2, siz, tc, Color::white, temp);
+			} else {
+				EERIEDrawSprite(&in, siz, tc, color, temp);
+			}
+		}
+		
+		pcc--;
 	}
-
+	
 	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 
 void RestoreAllLightsInitialStatus() {
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if ( (GLight[i]!=NULL) )
-		{
-			GLight[i]->status=1;
-
-			if (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) GLight[i]->status=0;
-
-			if (GLight[i]->status==0)
-			{
-				if (ValidDynLight(GLight[i]->tl))
-				{
-					DynLight[GLight[i]->tl].exist=0;
+		if(GLight[i]) {
+			GLight[i]->status = (GLight[i]->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
+			if(GLight[i]->status == 0) {
+				if(ValidDynLight(GLight[i]->tl)) {
+					DynLight[GLight[i]->tl].exist = 0;
 				}
-
-				GLight[i]->tl=-1;
+				GLight[i]->tl = -1;
 			}
 		}
 	}
 }
+
 extern long FRAME_COUNT;
-//-----------------------------------------------------------------------------
+
 // Draws Flame Particles
-//-----------------------------------------------------------------------------
-void TreatBackgroundActions()
-{
-	if (FRAME_COUNT>0) return;
-
-	long n,j;
-	float sx,sy,sz;
-
-
-	float fZFar=ACTIVECAM->cdepth*fZFogEnd*1.3f;	
-
+void TreatBackgroundActions() {
+	
+	if(FRAME_COUNT > 0) {
+		return;
+	}
+	
+	float fZFar = square(ACTIVECAM->cdepth * fZFogEnd * 1.3f);
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		EERIE_LIGHT * gl=GLight[i];
-
-		if (gl==NULL) continue;
+		
+		EERIE_LIGHT * gl = GLight[i];
+		if(!gl) {
+			continue;
+		}
 		
 		float dist = distSqr(gl->pos,	ACTIVECAM->pos);
-
-		if(dist > square(fZFar)) // Out of Treat Range
-		{
+		if(dist > fZFar) {
+			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
 			gl->sample = audio::INVALID_ID;
 			continue;
 		}
-
 		
-		if ((gl->extras & EXTRAS_SPAWNFIRE) &&	(gl->status))
-			{
-				long id=ARX_DAMAGES_GetFree();
-
-				if (id!=-1)
-				{
+		if((gl->extras & EXTRAS_SPAWNFIRE) && gl->status) {
+			long id = ARX_DAMAGES_GetFree();
+			if(id !=-1) {
 				damages[id].radius = gl->ex_radius; 
-				damages[id].damages = gl->ex_radius * ( 1.0f / 7 ); 
-					damages[id].area=DAMAGE_FULL;
-					damages[id].duration=1;
-					damages[id].source=-5;
+				damages[id].damages = gl->ex_radius * (1.0f / 7);
+				damages[id].area = DAMAGE_FULL;
+				damages[id].duration = 1;
+				damages[id].source = -5;
 				damages[id].flags = 0; 
-					damages[id].type=DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
-					damages[id].exist=true;
-					damages[id].pos.x=gl->pos.x;
-					damages[id].pos.y=gl->pos.y;
-					damages[id].pos.z=gl->pos.z;
-				}
+				damages[id].type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
+				damages[id].exist = true;
+				damages[id].pos = gl->pos;
 			}
-
-		if ((  (gl->extras & EXTRAS_SPAWNFIRE) 
-			|| (gl->extras & EXTRAS_SPAWNSMOKE))
-			&& (gl->status))
-		{
-			if (gl->sample == audio::INVALID_ID)
-			{
-				gl->sample = SND_FIREPLACE;
-					ARX_SOUND_PlaySFX(gl->sample, &gl->pos, 0.95F + 0.1F * rnd(), ARX_SOUND_PLAY_LOOPED);
+		}
+		
+		if(!(gl->extras & (EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)) || !gl->status) {
+			if(!gl->status && gl->sample != audio::INVALID_ID) {
+				ARX_SOUND_Stop(gl->sample);
+				gl->sample = audio::INVALID_ID;
 			}
-			else
-			{
-				ARX_SOUND_RefreshPosition(gl->sample, &gl->pos);
-			}
-
-
-			long count;
-
-			if(dist < square(ACTIVECAM->cdepth) * square(1.0f / 8)) count=4;
-			else if(dist < square(ACTIVECAM->cdepth) * square(1.0f / 6)) count=4;
-			else if(dist > square(ACTIVECAM->cdepth) * square(1.0f / 3)) count=3;
-			else count=2;
-
-			for (n=0;n<count;n++)
-			{
-				j=ARX_PARTICLES_GetFree();
-
-				if ((j!=-1) && (!arxtime.is_paused()) && ((rnd()<gl->ex_frequency)))
-				{
-					ParticleCount++;
-					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=true;
-					pd->zdec=0;
-					sy=rnd()*3.14159f;
-					sx=EEsin(sy);
-					sz=EEcos(sy);
-					sy=EEsin(sy);
-					pd->ov.x=gl->pos.x+gl->ex_radius*sx*rnd();
-					pd->ov.y=gl->pos.y+gl->ex_radius*sy*rnd();
-					pd->ov.z=gl->pos.z+gl->ex_radius*sz*rnd();
-					pd->move.x=(2.f-4.f*rnd())*gl->ex_speed;
-					pd->move.y=(2.f-22.f*rnd())*gl->ex_speed;
-					pd->move.z=(2.f-4.f*rnd())*gl->ex_speed;
-					pd->siz=7.f*gl->ex_size;
-					pd->tolive=500 + Random::get(0, 1000 * gl->ex_speed);
-
-					if ((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE))
-						pd->special=FIRE_TO_SMOKE;
-					else pd->special=0;
-
-					if (gl->extras & EXTRAS_SPAWNFIRE) 
-						pd->tc = fire2; 
-					else 
-						pd->tc = smokeparticle;
-					
-					pd->special		|=	ROTATING | MODULATE_ROTATION;
-					pd->fparam		=	0.1f-rnd()*0.2f*gl->ex_speed;
-					pd->scale.x		=	-8.f;
-					pd->scale.y		=	-8.f;
-					pd->scale.z		=	-8.f;
-					pd->timcreation	=	(long)arxtime;
-					
+			continue;
+		}
+		
+		if(gl->sample == audio::INVALID_ID) {
+			gl->sample = SND_FIREPLACE;
+			float pitch = 0.95f + 0.1f * rnd();
+			ARX_SOUND_PlaySFX(gl->sample, &gl->pos, pitch, ARX_SOUND_PLAY_LOOPED);
+		} else {
+			ARX_SOUND_RefreshPosition(gl->sample, &gl->pos);
+		}
+		
+		long count = 2;
+		if(dist < square(ACTIVECAM->cdepth * (1.f / 6))) {
+			count = 4;
+		} else if(dist > square(ACTIVECAM->cdepth * (1.f / 3))) {
+			count = 3;
+		}
+		
+		for(long n = 0; n < count; n++) {
+			
+			if(rnd() < gl->ex_frequency) {
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					float t = rnd() * PI;
+					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
+					pd->ov = gl->pos + s * gl->ex_radius;
+					pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+					pd->move *= gl->ex_speed;
+					pd->siz = 7.f * gl->ex_size;
+					pd->tolive = 500 + Random::get(0, 1000 * gl->ex_speed);
+					if((gl->extras & EXTRAS_SPAWNFIRE) && (gl->extras & EXTRAS_SPAWNSMOKE)) {
+						pd->special = FIRE_TO_SMOKE;
+					}
+					pd->tc = (gl->extras & EXTRAS_SPAWNFIRE) ? fire2 : smokeparticle;
+					pd->special |= ROTATING | MODULATE_ROTATION;
+					pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
+					pd->scale = Vec3f::repeat(-8.f);
 					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}
-
-				if ((gl->extras & EXTRAS_SPAWNFIRE) && (rnd()>0.95f))
-				{
-					j=ARX_PARTICLES_GetFree();
-
-					if ((j!=-1) && (!arxtime.is_paused()) && ((rnd()<gl->ex_frequency)))
-					{
-						ParticleCount++;
-						PARTICLE_DEF * pd=&particle[j];
-						pd->exist=true;
-						pd->zdec=0;
-						sy = rnd() * 3.14159f * 2.f - 3.14159f; 
-						sx=EEsin(sy);
-						sz=EEcos(sy);
-						sy=EEsin(sy);
-						pd->ov.x=gl->pos.x+gl->ex_radius*sx*rnd();
-						pd->ov.y=gl->pos.y+gl->ex_radius*sy*rnd();
-						pd->ov.z=gl->pos.z+gl->ex_radius*sz*rnd();
-						Vec3f vect = (pd->ov - gl->pos).getNormalized();
-
-						if (gl->extras & EXTRAS_FIREPLACE)
-						{
-							pd->move.x = vect.x * 6.f * gl->ex_speed; 
-							pd->move.y=(-10.f-8.f*rnd())*gl->ex_speed;
-							pd->move.z = vect.z * 6.f * gl->ex_speed; 
-						}
-						else
-						{
-							pd->move.x = vect.x * 4.f * gl->ex_speed; 
-							pd->move.y=(-10.f-8.f*rnd())*gl->ex_speed;
-							pd->move.z = vect.z * 4.f * gl->ex_speed; 
-						}
-
-						pd->siz=4.f*gl->ex_size*0.3f;
-						pd->tolive=1200+Random::get(0, 500*gl->ex_speed);
-						pd->special=0;//FIRE_TO_SMOKE;
-						pd->tc = fire2; 
-						
-						pd->special		|=	ROTATING | MODULATE_ROTATION | GRAVITY;
-						pd->fparam		=	0.1f-rnd()*0.2f*gl->ex_speed;
-						pd->scale.x		=	-3.f;
-						pd->scale.y		=	-3.f;
-						pd->scale.z		=	-3.f;
-						pd->timcreation	=	(long)arxtime;
-						
-						pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
-					}
+			}
+			
+			if(!(gl->extras & EXTRAS_SPAWNFIRE) || rnd() <= 0.95f) {
+				continue;
+			}
+			
+			if(rnd() < gl->ex_frequency) {
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					float t = rnd() * (PI * 2.f) - PI;
+					Vec3f s = Vec3f(EEsin(t), EEsin(t), EEcos(t)) * randomVec();
+					pd->ov = gl->pos + s * gl->ex_radius;
+					Vec3f vect = (pd->ov - gl->pos).getNormalized();
+					float d = (gl->extras & EXTRAS_FIREPLACE) ? 6.f : 4.f;
+					pd->move = Vec3f(vect.x * d, -10.f - 8.f * rnd(), vect.z * d) * gl->ex_speed;
+					pd->siz = 4.f * gl->ex_size * 0.3f;
+					pd->tolive = 1200 + Random::get(0, 500 * gl->ex_speed);
+					pd->tc = fire2;
+					pd->special |= ROTATING | MODULATE_ROTATION | GRAVITY;
+					pd->fparam = 0.1f - rnd() * 0.2f * gl->ex_speed;
+					pd->scale = Vec3f::repeat(-3.f);
+					pd->rgb = (gl->extras & EXTRAS_COLORLEGACY) ? gl->rgb : Color3f::white;
 				}
 			}
 			
 		}
-		else
-		{
-			if ((!gl->status) && (gl->sample != audio::INVALID_ID))
-			{
-				ARX_SOUND_Stop(gl->sample);
-				gl->sample = audio::INVALID_ID;
-			}
-		}
-	}	
+	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MAGICAL_FLARES_FirstInit()
-{	
-	flarenum=0;
-
-	for(long i=0;i<MAX_FLARES;i++) flare[i].exist=0; 
-
-	g_Lumignon[0] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::Y_AXIS);
-	g_Lumignon[1] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::ZERO);
-	g_Lumignon[2] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f(1, 1));
-	g_Lumignon[3] = TexturedVertex(Vec3f(0, 0, .5f), .5f, 0xFFFFFFFF, 0, Vec2f::X_AXIS);
+void ARX_MAGICAL_FLARES_FirstInit() {
+	flarenum = 0;
+	for(long i = 0; i < MAX_FLARES; i++) {
+		flare[i].exist = 0; 
+	}
 }
+
 void ARX_MAGICAL_FLARES_KillAll()
 {
 	for (long i=0;i<MAX_FLARES;i++)
@@ -2551,335 +1882,238 @@ void ARX_MAGICAL_FLARES_KillAll()
 
 	flarenum=0;
 }
- 
 
-//-----------------------------------------------------------------------------
-void AddFlare(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
-{
+void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
+	
 	long i;
-	float vx,vy;
-	EERIE_CAMERA ka;
-	float zz;
-
-	for (i=0;i<MAX_FLARES;i++) 
-	{
-		if ( !flare[i].exist ) 
-		{
-			FLARES * fl=&flare[i];
-			fl->exist=1;
-			fl->bDrawBitmap=0;
-
-			if (io)
-			{
-				fl->flags=1;
-				fl->io=io;
-				io->flarecount++;
-			}
-			else
-			{
-				fl->flags=0;
-				fl->io=NULL;
-			}
-
-			flarenum++;
-			fl->x=pos->x-rnd()*4;
-			fl->y=pos->y-rnd()*4-50;
-			
-			fl->tv.rhw=fl->v.rhw=1.f;
-			fl->tv.specular=fl->v.specular=1;
-			memcpy(&ka,Kam,sizeof(EERIE_CAMERA));
-			
-			ka.angle.a=360.f-ka.angle.a;
-			ka.angle.b=360.f-ka.angle.b;
-			ka.angle.g=360.f-ka.angle.g;
-			EERIE_CAMERA * oldcam=ACTIVECAM;
-			SetActiveCamera(&ka);
-			PrepareCamera(&ka);
-			fl->v.p.x+=ka.pos.x;
-			fl->v.p.y+=ka.pos.y;
-			fl->v.p.z+=ka.pos.z;
-			EE_RTT(&fl->tv,&fl->v);
-			fl->v.p.x+=ka.pos.x;
-			fl->v.p.y+=ka.pos.y;
-			fl->v.p.z+=ka.pos.z;
-			
-			vx=-(fl->x-subj.centerx);
-			vy=(fl->y-subj.centery);
-			vx*=0.2173913f;///=4.6f;
-			vy*=0.1515151515151515f;///=6.6f;
-			
-			if (io)
-			{
-				fl->v.p.x=io->pos.x-(float)EEsin(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
-				fl->v.p.y=io->pos.y+(float)EEsin(radians(MAKEANGLE(io->angle.a+vy)))*100.f-150.f;
-				fl->v.p.z=io->pos.z+(float)EEcos(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
-				
-			}
-			else
-			{
-				fl->v.p.z=75.f;
-				fl->v.p.x=((float)(pos->x-(DANAESIZX>>1)))*fl->v.p.z*2.f/(float)DANAESIZX;
-				fl->v.p.y=((float)(pos->y-(DANAESIZY>>1)))*fl->v.p.z*2.f/((float)DANAESIZY*((float)DANAESIZX/(float)DANAESIZY));
-
-				ka=*oldcam;
-				SetActiveCamera(&ka);
-				PrepareCamera(&ka);
-
-				float temp=(fl->v.p.y*-ka.Xsin) + (fl->v.p.z*ka.Xcos);
-				fl->v.p.y = (fl->v.p.y*ka.Xcos) - (-fl->v.p.z*ka.Xsin);
-				fl->v.p.z =(temp*ka.Ycos) - (-fl->v.p.x*ka.Ysin);
-				fl->v.p.x = (temp*-ka.Ysin) + (fl->v.p.x*ka.Ycos);	
-
-				fl->v.p.x+=oldcam->pos.x;
-				fl->v.p.y+=oldcam->pos.y;
-				fl->v.p.z+=oldcam->pos.z;
-			}
-			
-			fl->tv.p.x=fl->v.p.x;
-			fl->tv.p.y=fl->v.p.y;
-			fl->tv.p.z=fl->v.p.z;
-			SetActiveCamera(oldcam);
-			
-			switch(PIPOrgb) {
-			case 0:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
-				break;
-			case 1:
-				fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
-				break;
-			case 2:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
-				break;
-			}
-			
-			if (typ == -1 ) 
-			{
-				if (EERIEMouseButton & 1) zz = 0.29f;
-				else if (sm>0.5f) zz=rnd();
-				else zz=1.f;
-
-				if ( zz < 0.2f ) 
-				{
-					fl->type=2;
-					fl->size=((rnd()*42)+42.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else if ( zz < 0.5f ) 
-				{
-					fl->type=3;
-					fl->size=((rnd()*52)+16.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else 
-				{
-					fl->type=1;
-					fl->size=((rnd()*24)+32.f) *sm;
-					fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-				}
-			}
-			else
-			{
-				zz=rnd();
-
-				if (zz>0.8f) fl->type=1;
-				else fl->type=4;
-
-				fl->size=((rnd()*38)+64.f) *sm;
-				fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-			}
-
-			fl->dynlight=-1;
-			fl->move=OPIPOrgb;
-			
-			if (!HIDEMAGICDUST)
-			{
-				for (long kk=0;kk<3;kk++)
-				{
-					long j=ARX_PARTICLES_GetFree();
-
-					if ((j!=-1) && (!arxtime.is_paused()) && (rnd()*100.f<50.f))
-					{
-						ParticleCount++;
-						PARTICLE_DEF * pd=&particle[j];
-						pd->special=FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-
-						if(!io)
-						{
-							pd->special|=PARTICLE_NOZBUFFER;
-						}
-
-						pd->exist		=	true;
-						pd->zdec		=	0;
-						pd->ov.x		=	fl->v.p.x+rnd()*10.f-5.f;
-						pd->ov.y		=	fl->v.p.y+rnd()*10.f-5.f;
-						pd->ov.z		=	fl->v.p.z+rnd()*10.f-5.f;
-						
-						pd->move.x		=	0.f;
-						pd->move.y		=	5.f;
-						pd->move.z		=	0.f;
-						
-						pd->scale.x		=	-2.f;
-						pd->scale.y		=	-2.f;
-						pd->scale.z		=	-2.f;
-						pd->timcreation	=	(long)arxtime;
-						pd->tolive		=	1300 + kk*100 + Random::get(0, 800);
-						
-						pd->tc			=	fire2;
-
-						if (kk==1) 
-						{
-							pd->move.y = 5.f - (float)kk; 
-							pd->siz = 1.f + (float)(kk) * ( 1.0f / 2 ); 
-						}
-						else pd->siz=1.f+rnd()*1.f;
-
-						pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
-						pd->fparam=1.2f;
-					}
-				}
-			}
-			return;					
+	for(i = 0; i < MAX_FLARES; i++) {
+		if(!flare[i].exist) {
+			break;
 		}
+	}
+	if(i >= MAX_FLARES) {
+		return;
+	}
+	
+	FLARES * fl = &flare[i];
+	fl->exist = 1;
+	flarenum++;
+	
+	fl->bDrawBitmap = 0;
+	fl->io = io;
+	if(io) {
+		fl->flags = 1;
+		io->flarecount++;
+	} else {
+		fl->flags = 0;
+	}
+	
+	fl->x = pos->x - rnd() * 4.f;
+	fl->y = pos->y - rnd() * 4.f - 50.f;
+	fl->tv.rhw = fl->v.rhw = 1.f;
+	fl->tv.specular = fl->v.specular = 1;
+	
+	EERIE_CAMERA ka = *Kam;
+	ka.angle = Anglef(360.f, 360.f, 360.f) - ka.angle;
+	EERIE_CAMERA * oldcam = ACTIVECAM;
+	SetActiveCamera(&ka);
+	PrepareCamera(&ka);
+	fl->v.p += ka.pos;
+	EE_RTT(&fl->tv, &fl->v);
+	fl->v.p += ka.pos;
+	
+	float vx = -(fl->x - subj.center.x) * 0.2173913f;
+	float vy = (fl->y - subj.center.y) * 0.1515151515151515f;
+	if(io) {
+		fl->v.p.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+		fl->v.p.y = io->pos.y + EEsin(radians(MAKEANGLE(io->angle.a + vy))) * 100.f - 150.f;
+		fl->v.p.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b + vx))) * 100.f;
+	} else {
+		fl->v.p.x = float(pos->x - (DANAESIZX / 2)) * 150.f / float(DANAESIZX);
+		fl->v.p.y = float(pos->y - (DANAESIZY / 2)) * 150.f / float(DANAESIZX);
+		fl->v.p.z = 75.f;
+		ka = *oldcam;
+		SetActiveCamera(&ka);
+		PrepareCamera(&ka);
+		float temp = (fl->v.p.y * -ka.Xsin) + (fl->v.p.z * ka.Xcos);
+		fl->v.p.y = (fl->v.p.y * ka.Xcos) - (-fl->v.p.z * ka.Xsin);
+		fl->v.p.z = (temp * ka.Ycos) - (-fl->v.p.x * ka.Ysin);
+		fl->v.p.x = (temp * -ka.Ysin) + (fl->v.p.x * ka.Ycos);	
+		fl->v.p += oldcam->pos;
+	}
+	fl->tv.p = fl->v.p;
+	SetActiveCamera(oldcam);
+	
+	switch(PIPOrgb) {
+		case 0: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
+			break;
+		}
+		case 1: {
+			fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
+			break;
+		}
+		case 2: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
+			break;
+		}
+	}
+	
+	if(typ == -1) {
+		float zz = (EERIEMouseButton & 1) ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
+		if(zz < 0.2f) {
+			fl->type = 2;
+			fl->size = rnd() * 42.f + 42.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else if(zz < 0.5f) {
+			fl->type = 3;
+			fl->size = rnd() * 52.f + 16.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else {
+			fl->type = 1;
+			fl->size = (rnd() * 24.f + 32.f) * sm;
+			fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+		}
+	} else {
+		fl->type = (rnd() > 0.8f) ? 1 : 4;
+		fl->size = (rnd() * 38.f + 64.f) * sm;
+		fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+	}
+	
+	fl->dynlight = -1;
+	fl->move = OPIPOrgb;
+	
+	for(long kk = 0; kk < 3; kk++) {
+		
+		if(rnd() < 0.5f) {
+			continue;
+		}
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+		if(!io) {
+			pd->special |= PARTICLE_NOZBUFFER;
+		}
+		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
+		pd->move = Vec3f(0.f, 5.f, 0.f);
+		pd->scale = Vec3f::repeat(-2.f);
+		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
+		pd->tc = fire2;
+		if(kk == 1) {
+			pd->move.y = 4.f;
+			pd->siz = 1.5f;
+		} else {
+			pd->siz = 1.f + rnd();
+		}
+		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
+		pd->fparam = 1.2f;
+	}
+}
+
+void AddFlare2(Vec2s * pos, float sm, short typ, Entity * io) {
+	
+	long i;
+	for(i = 0; i < MAX_FLARES; i++) {
+		if(!flare[i].exist) {
+			break;
+		}
+	}
+	if(i >= MAX_FLARES) {
+		return;
+	}
+	
+	FLARES * fl = &flare[i];
+	fl->exist = 1;
+	flarenum++;
+	
+	fl->bDrawBitmap = 1;
+	fl->io = io;
+	if(io) {
+		fl->flags = 1;
+		io->flarecount++;
+	} else {
+		fl->flags = 0;
+	}
+	
+	fl->x = float(pos->x) - rnd() * 4.f;
+	fl->y = float(pos->y) - rnd() * 4.f - 50.f;
+	fl->tv.rhw = fl->v.rhw = 1.f;
+	fl->tv.specular = fl->v.specular = 1;
+	fl->tv.p = Vec3f(fl->x, fl->y, 0.001f);
+	switch(PIPOrgb)  {
+		case 0: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
+			break;
+		}
+		case 1: {
+			fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
+			break;
+		}
+		case 2: {
+			fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
+			break;
+		}
+	}
+	
+	if(typ == -1) {
+		float zz = (EERIEMouseButton & 1) ? 0.29f : ((sm > 0.5f) ? rnd() : 1.f);
+		if(zz < 0.2f) {
+			fl->type = 2;
+			fl->size = rnd() * 42.f + 42.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else if(zz < 0.5f) {
+			fl->type = 3;
+			fl->size = rnd() * 52.f + 16.f;
+			fl->tolive = (800.f + rnd() * 800.f) * FLARE_MUL;
+		} else {
+			fl->type = 1;
+			fl->size = (rnd() * 24.f + 32.f) * sm;
+			fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+		}
+	} else {
+		fl->type = (rnd() > 0.8f) ? 1 : 4;
+		fl->size = (rnd() * 38.f + 64.f) * sm;
+		fl->tolive = (1700.f + rnd() * 500.f) * FLARE_MUL;
+	}
+	
+	fl->dynlight = -1;
+	fl->move = OPIPOrgb;
+	
+	for(long kk = 0; kk < 3; kk++) {
+		
+		if(rnd() < 0.5f) {
+			continue;
+		}
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->special = FADE_IN_AND_OUT;
+		pd->ov = fl->v.p + randomVec(-5.f, 5.f);
+		pd->move = Vec3f(0.f, 5.f, 0.f);
+		pd->scale = Vec3f::repeat(-2.f);
+		pd->tolive = 1300 + kk * 100 + Random::get(0, 800);
+		pd->tc = fire2;
+		if(kk == 1) {
+			pd->move.y = 4.f; 
+			pd->siz = 1.5f;
+		} else {
+			pd->siz = 1.f + rnd();
+		}
+		pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
+		pd->fparam = 1.2f;
+		pd->type = PARTICLE_2D;
 	}
 }
 
 //-----------------------------------------------------------------------------
-void AddFlare2(Vec2s * pos,float sm,short typ,INTERACTIVE_OBJ * io)
-{
-	long i;
-	float zz;
-
-	for (i=0;i<MAX_FLARES;i++) 
-	{
-		if ( !flare[i].exist ) 
-		{
-			FLARES * fl=&flare[i];
-			fl->exist=1;
-			fl->bDrawBitmap=1;
-
-			if (io)
-			{
-				fl->flags=1;
-				fl->io=io;
-				io->flarecount++;
-			}
-			else
-			{
-				fl->flags=0;
-				fl->io=NULL;
-			}
-
-			flarenum++;
-			fl->x=pos->x-rnd()*4;
-			fl->y=pos->y-rnd()*4-50;
-			
-			fl->tv.rhw=fl->v.rhw=1.f;
-			fl->tv.specular=fl->v.specular=1;
-			
-			fl->tv.p.x=fl->x;
-			fl->tv.p.y=fl->y;
-			fl->tv.p.z = 0.001f; 
-
-			switch (PIPOrgb)  {
-			case 0:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * (2.f/3), rnd() * (2.f/3) + .4f);
-				break;
-			case 1:
-				fl->rgb = Color3f(rnd() * .625f + .5f, rnd() * .625f + .5f, rnd() * .55f);
-				break;
-			case 2:
-				fl->rgb = Color3f(rnd() * (2.f/3) + .4f, rnd() * .55f, rnd() * .55f);
-				break;
-			}
-			
-			if (typ == -1 ) 
-			{
-				if (EERIEMouseButton & 1) zz = 0.29f;
-				else if (sm>0.5f) zz=rnd();
-				else zz=1.f;
-
-				if ( zz < 0.2f ) 
-				{
-					fl->type=2;
-					fl->size=((rnd()*42)+42.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else if ( zz < 0.5f ) 
-				{
-					fl->type=3;
-					fl->size=((rnd()*52)+16.f);
-					fl->tolive=((800.f+rnd()*800.f)*(float)FLARE_MUL);
-				}
-				else 
-				{
-					fl->type=1;
-					fl->size=((rnd()*24)+32.f) *sm;
-					fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-				}
-			}
-			else
-			{
-				zz=rnd();
-
-				if (zz>0.8f) fl->type=1;
-				else fl->type=4;
-
-				fl->size=((rnd()*38)+64.f) *sm;
-				fl->tolive=((1700.f+rnd()*500.f)*(float)FLARE_MUL);
-			}
-
-			fl->dynlight=-1;
-			fl->move=OPIPOrgb;
-			
-			if (!HIDEMAGICDUST)
-				for (long kk=0;kk<3;kk++)
-				{
-					long j=ARX_PARTICLES_GetFree();
-
-					if ((j!=-1) && (!arxtime.is_paused()) && (rnd()*100.f<50.f))
-					{
-					
-						ParticleCount++;
-						PARTICLE_DEF * pd=&particle[j];
-						pd->special		=	FADE_IN_AND_OUT;
-						pd->exist		=	true;
-						pd->zdec		=	0;
-						pd->ov.x		=	fl->v.p.x+rnd()*10.f-5.f;
-						pd->ov.y		=	fl->v.p.y+rnd()*10.f-5.f;
-						pd->ov.z		=	fl->v.p.z+rnd()*10.f-5.f;
-						
-						pd->move.x		=	0.f;
-						pd->move.y		=	5.f;
-						pd->move.z		=	0.f;
-						
-						pd->scale.x		=	-2.f;
-						pd->scale.y		=	-2.f;
-						pd->scale.z		=	-2.f;
-						pd->timcreation	=	(long)arxtime;
-						pd->tolive		=	1300 + kk*100 + Random::get(0, 800);
-						
-						pd->tc			=	fire2;
-
-						if (kk==1) 
-						{
-							pd->move.y = 5.f - (float)kk; 
-							pd->siz = 1.f + (float)(kk) * ( 1.0f / 2 ); 
-						}
-						else pd->siz=1.f+rnd()*1.f;
-
-						pd->rgb = Color3f(fl->rgb.r * (2.f/3), fl->rgb.g * (2.f/3), fl->rgb.b * (2.f/3));
-						pd->fparam=1.2f;
-						pd->type=PARTICLE_2D;
-					}
-				}
-
-				i=MAX_FLARES + 1;
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-void AddLFlare(float x, float y,INTERACTIVE_OBJ * io) 
+void AddLFlare(float x, float y,Entity * io) 
 {
 	Vec2s pos;
 	pos.x=(short)x;
@@ -2888,7 +2122,7 @@ void AddLFlare(float x, float y,INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void FlareLine(Vec2s * pos0, Vec2s * pos1, INTERACTIVE_OBJ * io) 
+void FlareLine(Vec2s * pos0, Vec2s * pos1, Entity * io) 
 {
 	float dx,dy,adx,ady,m;
 	long i;

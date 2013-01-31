@@ -51,7 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/Localisation.h"
 
+#include "game/EntityManager.h"
 #include "game/Levels.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 
 #include "gui/Text.h"
@@ -73,22 +75,18 @@ using std::max;
 using std::string;
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
-float mini_offset_x[MAX_MINIMAPS];
-float mini_offset_y[MAX_MINIMAPS];
-float mapmaxy[32];
+static float mini_offset_x[MAX_MINIMAPS];
+static float mini_offset_y[MAX_MINIMAPS];
+static float mapmaxy[32];
 
-TextureContainer * pTexDetect = NULL;
-
-extern long FOR_EXTERNAL_PEOPLE;
+static TextureContainer * pTexDetect = NULL;
 
 std::vector<MAPMARKER_DATA> Mapmarkers;
 
-
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_GetData(long SHOWLEVEL)
-{
-	if (minimap[SHOWLEVEL].tc == NULL)
-	{
+void ARX_MINIMAP_GetData(long SHOWLEVEL) {
+	
+	if(minimap[SHOWLEVEL].tc == NULL) {
+		
 		char name[256];
 		char LevelMap[256];
 		GetLevelNameByNum(SHOWLEVEL, name);
@@ -262,53 +260,32 @@ void ARX_MINIMAP_FirstInit()
 	ARX_MINIMAP_Load_Offsets();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_Reset()
-{
-	for (size_t i = 0; i < MAX_MINIMAPS; i++)
-	{
-		if (minimap[i].tc)
-		{
-			delete minimap[i].tc;
-			minimap[i].tc = NULL;
-		}
-	}
-
-	memset(minimap, 0, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
+void ARX_MINIMAP_Reset() {
+	ARX_MINIMAP_PurgeTC();
+	memset(minimap, 0, sizeof(MINI_MAP_DATA) * MAX_MINIMAPS);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_PurgeTC()
-{
-	for (size_t i = 0; i < MAX_MINIMAPS; i++)
-	{
-		if (minimap[i].tc)
-		{
-			delete minimap[i].tc;
-			minimap[i].tc = NULL;
-		}
+void ARX_MINIMAP_PurgeTC() {
+	for(size_t i = 0; i < MAX_MINIMAPS; i++) {
+		delete minimap[i].tc, minimap[i].tc = NULL;
 	}
 }
 
-//-----------------------------------------------------------------------------
- 
- 
- 
 TextureContainer * MapMarkerTc = NULL;
 
-float DECALY = -150;
-float DECALX = +40;
-//-----------------------------------------------------------------------------
-void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
-{
+void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2) {
+	
 	// Nuky - centralized some constants and dezoomed ingame minimap
-	static const int FL2_SIZE = 300;
-	static const int FL2_LEFT = 390;
-	static const int FL2_RIGHT = 590;
-	static const int FL2_TOP = 135;
-	static const int FL2_BOTTOM = 295;
-	static const float FL2_PLAYERSIZE = 4.f;
-
+	const int FL2_SIZE = 300;
+	const int FL2_LEFT = 390;
+	const int FL2_RIGHT = 590;
+	const int FL2_TOP = 135;
+	const int FL2_BOTTOM = 295;
+	const float FL2_PLAYERSIZE = 4.f;
+	
+	const float DECALY = -150;
+	const float DECALX = +40;
+	
 	if (!pTexDetect)
 		pTexDetect = TextureContainer::Load("graph/particles/flare");
 
@@ -529,15 +506,6 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 						}
 					}
 
-					if (!FOR_EXTERNAL_PEOPLE)
-					{
-						if ((i >= 0) && (i < MINIMAP_MAX_X)
-								&&	(j >= 0) && (j < MINIMAP_MAX_Z))
-						{
-							minimap[SHOWLEVEL].revealed[i][j] = 255;
-						}
-					}
-
 					verts[3].p.x = verts[0].p.x = (posx);
 					verts[1].p.y = verts[0].p.y = (posy);
 					verts[2].p.x = verts[1].p.x = posx + (casex * Xratio);
@@ -755,42 +723,42 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		}
 
 		// tsu
-		for (long lnpc = 1; lnpc < inter.nbmax; lnpc++)
+		for (size_t lnpc = 1; lnpc < entities.size(); lnpc++)
 		{
-			if ((inter.iobj[lnpc] != NULL) && (inter.iobj[lnpc]->ioflags & IO_NPC))
+			if ((entities[lnpc] != NULL) && (entities[lnpc]->ioflags & IO_NPC))
 			{
-				if (inter.iobj[lnpc]->_npcdata->life > 0.f)
-					if (!((inter.iobj[lnpc]->GameFlags & GFLAG_MEGAHIDE) ||
-							(inter.iobj[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-							&& (inter.iobj[lnpc]->show == SHOW_FLAG_IN_SCENE))
-						if (!(inter.iobj[lnpc]->show == SHOW_FLAG_HIDDEN))
-							if (inter.iobj[lnpc]->_npcdata->fDetect >= 0)
+				if (entities[lnpc]->_npcdata->life > 0.f)
+					if (!((entities[lnpc]->gameFlags & GFLAG_MEGAHIDE) ||
+							(entities[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+							&& (entities[lnpc]->show == SHOW_FLAG_IN_SCENE))
+						if (!(entities[lnpc]->show == SHOW_FLAG_HIDDEN))
+							if (entities[lnpc]->_npcdata->fDetect >= 0)
 							{
-								if (player.Full_Skill_Etheral_Link >= inter.iobj[lnpc]->_npcdata->fDetect)
+								if (player.Full_Skill_Etheral_Link >= entities[lnpc]->_npcdata->fDetect)
 								{
 									float fpx;
 									float fpy;
 								
-									fpx = sstartx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
+									fpx = sstartx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
 									                 + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
 									fpy = sstarty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-									                 - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+									                 - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
 
 									if (flag == 1)
 									{
 
-										fpx = startx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
+										fpx = startx + ((entities[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
 										                + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
 										fpy = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-										                - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+										                - (entities[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
 
 
 									}
 
-									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z));
+									float d = fdist(Vec2f(player.pos.x, player.pos.z), Vec2f(entities[lnpc]->pos.x, entities[lnpc]->pos.z));
 
 
-									if ((d <= 800) && (fabs(inter.iobj[0]->pos.y - inter.iobj[lnpc]->pos.y) < 250.f))
+									if ((d <= 800) && (fabs(entities.player()->pos.y - entities[lnpc]->pos.y) < 250.f))
 									{
 										float col = 1.f;
 
@@ -846,15 +814,11 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 					verts[2].p.y = (pos_y + size) * Yratio;
 					verts[3].p.x = (pos_x - size) * Xratio;
 					verts[3].p.y = (pos_y + size) * Yratio;
-					verts[0].uv.x = 0.f;
-					verts[0].uv.y = 0.f;
-					verts[1].uv.x = 1.f;
-					verts[1].uv.y = 0.f;
-					verts[2].uv.x = 1.f;
-					verts[2].uv.y = 1.f;
-					verts[3].uv.x = 0.f;
-					verts[3].uv.y = 1.f;
-
+					verts[0].uv = Vec2f::ZERO;
+					verts[1].uv = Vec2f::X_AXIS;
+					verts[2].uv = Vec2f::ONE;
+					verts[3].uv = Vec2f::Y_AXIS;
+					
 					if (!fl2 && MouseInRect(verts[0].p.x, verts[0].p.y, verts[2].p.x, verts[2].p.y))
 					{
 

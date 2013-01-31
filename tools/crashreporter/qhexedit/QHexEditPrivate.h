@@ -127,7 +127,6 @@ private:
 	XByteArray _xData;                  //!< holds the content of the hex editor
 	
 	bool _blink;                        //!< true: then cursor blinks
-	bool _renderingRequired;            //!< Flag to store that rendering is necessary
 	bool _addressArea;                  //!< left area of QHexEdit
 	bool _asciiArea;                    //!< medium area
 	bool _highlighting;                 //!< highlighting of changed bytes

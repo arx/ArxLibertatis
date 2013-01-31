@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <sstream>
 
+#include <boost/preprocessor/stringize.hpp>
+
 #include "input/Input.h"
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
@@ -42,20 +44,16 @@ namespace {
 /* Default values for config */
 namespace Default {
 
-#undef _LITERALSTR
-#undef _VALSTR
-#define _LITERALSTR(x) # x
-#define _VALSTR(x) _LITERALSTR(x)
-
-#define DEFAULT_WIDTH 640
-#define DEFAULT_HEIGHT 480
+#define ARX_DEFAULT_WIDTH 640
+#define ARX_DEFAULT_HEIGHT 480
 
 const string
 	language = string(),
 	resolution = "auto",
 	audioBackend = "auto",
 	windowFramework = "auto",
-	windowSize = _VALSTR(DEFAULT_WIDTH) "x" _VALSTR(DEFAULT_HEIGHT),
+	windowSize = BOOST_PP_STRINGIZE(ARX_DEFAULT_WIDTH) "x"
+	             BOOST_PP_STRINGIZE(ARX_DEFAULT_HEIGHT),
 	inputBackend = "auto",
 	debugLevels = "";
 
@@ -436,7 +434,7 @@ static Vec2i parseResolution(const string & resolution) {
 	iss >> res.y;
 	if(iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
 		LogWarning << "bad resolution string: " << resolution;
-		return Vec2i(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		return Vec2i(ARX_DEFAULT_WIDTH, ARX_DEFAULT_HEIGHT);
 	} else {
 		return res;
 	}

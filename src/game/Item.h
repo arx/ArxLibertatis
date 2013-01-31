@@ -41,68 +41,75 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#ifndef ARX_SCRIPT_SCRIPTDEBUGGERDIALOG_H
-#define ARX_SCRIPT_SCRIPTDEBUGGERDIALOG_H
+#ifndef ARX_GAME_ITEM_H
+#define ARX_GAME_ITEM_H
 
-#include "Configure.h"
+#include "game/Entity.h"
 
-#ifdef BUILD_EDITOR
-
-#include <windows.h>
-
-struct Vars {
-	char * lpszVarName;
-	char * lpszVarValue;
+enum EquipmentModifierType {
+	IO_EQUIPITEM_ELEMENT_STRENGTH         = 0,
+	IO_EQUIPITEM_ELEMENT_DEXTERITY        = 1,
+	IO_EQUIPITEM_ELEMENT_CONSTITUTION     = 2,
+	IO_EQUIPITEM_ELEMENT_MIND             = 3,
+	IO_EQUIPITEM_ELEMENT_Stealth          = 4,
+	IO_EQUIPITEM_ELEMENT_Mecanism         = 5,
+	IO_EQUIPITEM_ELEMENT_Intuition        = 6,
+	IO_EQUIPITEM_ELEMENT_Etheral_Link     = 7,
+	IO_EQUIPITEM_ELEMENT_Object_Knowledge = 8,
+	IO_EQUIPITEM_ELEMENT_Casting          = 9,
+	IO_EQUIPITEM_ELEMENT_Projectile       = 10,
+	IO_EQUIPITEM_ELEMENT_Close_Combat     = 11,
+	IO_EQUIPITEM_ELEMENT_Defense          = 12,
+	IO_EQUIPITEM_ELEMENT_Armor_Class      = 13,
+	IO_EQUIPITEM_ELEMENT_Resist_Magic     = 14,
+	IO_EQUIPITEM_ELEMENT_Resist_Poison    = 15,
+	IO_EQUIPITEM_ELEMENT_Critical_Hit     = 16,
+	IO_EQUIPITEM_ELEMENT_Damages          = 17,
+	IO_EQUIPITEM_ELEMENT_Duration         = 18,
+	IO_EQUIPITEM_ELEMENT_AimTime          = 19,
+	IO_EQUIPITEM_ELEMENT_Identify_Value   = 20,
+	IO_EQUIPITEM_ELEMENT_Life             = 21,
+	IO_EQUIPITEM_ELEMENT_Mana             = 22,
+	IO_EQUIPITEM_ELEMENT_MaxLife          = 23,
+	IO_EQUIPITEM_ELEMENT_MaxMana          = 24,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_1        = 25,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_2        = 26,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_3        = 27,
+	IO_EQUIPITEM_ELEMENT_SPECIAL_4        = 28,
+	IO_EQUIPITEM_ELEMENT_Number
 };
 
-struct ScriptDebuggerUpdate {
-	bool bVariables;
-	bool bEvents;
-	bool bTimers;
-	bool bPause;
-	bool bStep;
-	bool bUpdateGlobalVar;
-	Vars globalVar;
-	bool bUpdateLocalVar;
-	Vars localVar;
+enum EquipmentModifierFlag {
+	IO_ELEMENT_FLAG_PERCENT = (1<<0)
+};
+DECLARE_FLAGS(EquipmentModifierFlag, EquipmentModifierFlags)
+DECLARE_FLAGS_OPERATORS(EquipmentModifierFlags)
+
+enum EquipmentModifiedSpecialType {
+	IO_SPECIAL_ELEM_NONE       = 0,
+	IO_SPECIAL_ELEM_PARALYZE   = 1,
+	IO_SPECIAL_ELEM_DRAIN_LIFE = 2,
 };
 
-struct ScriptDebuggerInfos {
-	bool bClear;
-	//obj inter
-	char * lpszObjName;
-	char * p3ObjPos[3];
-	//target
-	char * lpszTargetName;
-	char * p3TargetPos[3];
-	//globals
-	int iNbGlobals;
-	Vars * pGlobalVars;
-	//locals
-	int iNbLocals;
-	Vars * pLocalVars;
-	//behavior
-	char * lpszBehavior;
-	//events
-	bool bEvents;
-	char * lpszEvents;
-	//timers
-	bool bTimers;
-	char * lpszTimers;
+struct IO_EQUIPITEM_ELEMENT {
+	float value;
+	EquipmentModifierFlags flags;
+	EquipmentModifiedSpecialType special;
 };
 
-unsigned long	SCRIPT_DEBUGGER_GetVersion();
+struct IO_EQUIPITEM {
+	IO_EQUIPITEM_ELEMENT elements[IO_EQUIPITEM_ELEMENT_Number];
+};
 
-void SCRIPT_DEBUGGER_CreateDialog(HWND);
+struct IO_ITEMDATA {
+	IO_EQUIPITEM * equipitem; // Equipitem Datas
+	long price;
+	short maxcount; // max number cumulable
+	short count; // current number
+	char food_value;
+	char stealvalue;
+	short playerstacksize;
+	short LightValue;
+};
 
-void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos &);
-
-void SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate &);
-
-bool SCRIPT_DEBUGGER_WindowOpened();
-
-void SCRIPT_DEBUGGER_Destroy();
-
-#endif // BUILD_EDITOR
-
-#endif // ARX_SCRIPT_SCRIPTDEBUGGERDIALOG_H
+#endif // ARX_GAME_ITEM_H

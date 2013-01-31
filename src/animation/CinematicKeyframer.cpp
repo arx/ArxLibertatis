@@ -58,28 +58,9 @@ using std::realloc;
 using std::memcpy;
 using std::memmove;
 
-
-/*----------------------------------------------------------------------*/
-//undo/redo
-#define UNDOPILE	256*2
-#define PILE_ADD	1
-#define PILE_DEL	2
-#define PILE_MOD	3
-
-struct C_UNDOPILE
-{
-	int		action;
-	C_KEY	key;
-};
-/*----------------------------------------------------------------------*/
-extern bool ProjectModif;
 /*----------------------------------------------------------------------*/
 CinematicTrack	* CKTrack;
 
-int UndoPile;
-static int TotUndoPile, FillUndo;
-static C_UNDOPILE UndoKey[UNDOPILE];
-extern int LSoundChoose;
 /*----------------------------------------------------------------------*/
 bool AllocTrack(int sf, int ef, float fps)
 {
@@ -97,22 +78,21 @@ bool AllocTrack(int sf, int ef, float fps)
 	CKTrack->key = NULL;
 	CKTrack->pause = true;
 
-	InitUndo();
-
 	return true;
 }
-/*----------------------------------------------------------------------*/
-bool DeleteTrack(void)
-{
-	if (!CKTrack) return false;
 
-	if (CKTrack->key) free(CKTrack->key);
-
+bool DeleteTrack() {
+	
+	if(!CKTrack) {
+		return false;
+	}
+	
+	free(CKTrack->key);
 	free(CKTrack), CKTrack = NULL;
 	
 	return true;
 }
-/*----------------------------------------------------------------------*/
+
 static C_KEY * SearchAndMoveKey(int f)
 {
 	int		nb;
@@ -162,45 +142,6 @@ C_KEY * SearchKey(int f, int * num)
 	}
 
 	return NULL;
-}
-/*----------------------------------------------------------------------*/
-static void AddPileUndo(C_KEY * k, int type)
-{
-	C_UNDOPILE	* up;
-
-	if (!FillUndo) return;
-
-	if (UndoPile >= UNDOPILE)
-	{
-		memmove(UndoKey, UndoKey + 2, sizeof(C_UNDOPILE)*(UNDOPILE - 2));
-		UndoPile -= 2;
-	}
-
-	up = &UndoKey[UndoPile];
-	UndoPile++;
-
-	TotUndoPile = UndoPile;
-	up->action = type;
-	up->key = *k;
-}
-/*----------------------------------------------------------------------*/
-void InitUndo(void)
-{
-	int			nb;
-	C_UNDOPILE	* up;
-
-	UndoPile = TotUndoPile = 0;
-	up = UndoKey;
-	nb = UNDOPILE;
-
-	while (nb)
-	{
-		up->action = 0;
-		up++;
-		nb--;
-	}
-
-	FillUndo = true;
 }
  
 /*----------------------------------------------------------------------*/
@@ -338,11 +279,6 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 		CKTrack->nbkey++;
 
 		k->frame = key->frame;
-		AddPileUndo(k, PILE_ADD);
-	}
-	else
-	{
-		AddPileUndo(k, PILE_MOD);
 	}
 
 	if (key->numbitmap > -2) k->numbitmap = key->numbitmap;
@@ -377,7 +313,9 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	if (writecolorf) k->colorf = key->colorf;
 
-	if (key->idsound[LSoundChoose>>8] > -2) k->idsound[LSoundChoose>>8] = key->idsound[LSoundChoose>>8];
+	if(key->idsound > -2) {
+		k->idsound = key->idsound;
+	}
 
 	if (key->force > -2) k->force = key->force;
 
@@ -400,9 +338,6 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	UpDateAllKeyLight();
 
-	AddPileUndo(k, PILE_ADD);
-
-	ProjectModif = true;
 	return true;
 }
 /*----------------------------------------------------------------------*/
@@ -440,8 +375,7 @@ bool AddKeyLoad(C_KEY * key)
 	k->pos = key->pos;
 	k->angz = key->angz;
 	k->typeinterp = key->typeinterp;
-
-	memcpy(k->idsound, key->idsound, 16 * 4);
+	k->idsound = key->idsound;
 	k->force = key->force;
 	k->light = key->light;
 	k->posgrille = key->posgrille;
@@ -450,52 +384,6 @@ bool AddKeyLoad(C_KEY * key)
 
 	return true;
 }
-/*----------------------------------------------------------------------*/
-static bool DiffKey(C_KEY * key1, C_KEY * key2)
-{
-	return((key1->pos.x != key2->pos.x) || (key1->pos.y != key2->pos.y) || (key1->pos.z != key2->pos.z) ||
-	       (key1->angz != key2->angz) ||
-	       (key1->numbitmap != key2->numbitmap) ||
-	       (key1->fx != key2->fx) ||
-	       (key1->typeinterp != key2->typeinterp) ||
-	       (key1->color != key2->color) || (key1->colord != key2->colord) || (key1->colorf != key2->colorf) ||
-	       (key1->speed != key2->speed) ||
-	       (key1->idsound[LSoundChoose>>8] != key2->idsound[LSoundChoose>>8]) ||
-	       (key1->force != key2->force) ||
-	       (key1->light.pos.x != key2->light.pos.x) || (key1->light.pos.y != key2->light.pos.y) || (key1->light.pos.z != key2->light.pos.z) ||
-	       (key1->light.fallin != key2->light.fallin) || (key1->light.fallout != key2->light.fallout) ||
-	       (key1->light.r != key2->light.r) || (key1->light.g != key2->light.g) || (key1->light.b != key2->light.b) ||
-	       (key1->light.intensity != key2->light.intensity) || (key1->light.intensiternd != key2->light.intensiternd) ||
-	       (key1->posgrille.x != key2->posgrille.x) || (key1->posgrille.y != key2->posgrille.y) || (key1->posgrille.z != key2->posgrille.z) ||
-	       (key1->angzgrille != key2->angzgrille) ||
-	       (key1->speedtrack != key2->speedtrack)
-	      );
-}
-/*----------------------------------------------------------------------*/
-void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
-{
-	C_KEY	* k, *ksuiv;
-	int		num;
-
-	if (!CKTrack || !CKTrack->pause) return;
-
-	k = GetKey((int)CKTrack->currframe, &num);
-
-	if (!k) return;
-
-	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
-
-	if (DiffKey(k, key))
-	{
-		if (DiffKey(ksuiv, key))
-		{
-			key->frame = (int)CKTrack->currframe;
-			AddKey(key, writecolor, writecolord, writecolorf);
-			GereTrackNoPlay(c);
-		}
-	}
-}
-/*----------------------------------------------------------------------*/
 
 C_KEY * GetKey(int f, int * num)
 {
@@ -569,7 +457,7 @@ bool GereTrack(Cinematic * c, float fpscurr)
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
 	c->speed			= k->speed;
-	c->idsound			= k->idsound[LSoundChoose>>8];
+	c->idsound			= k->idsound;
 	c->force			= k->force;
 
 	if ((k->fx & 0xFF000000) == FX_LIGHT)
@@ -636,12 +524,8 @@ consequences on light :
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos.x = a * ksuiv->pos.x + unmoinsa * k->pos.x;
-			c->pos.y = a * ksuiv->pos.y + unmoinsa * k->pos.y;
-			c->pos.z = a * ksuiv->pos.z + unmoinsa * k->pos.z;
-
+			c->pos = ksuiv->pos * a + k->pos * unmoinsa;
 			c->angz = k->angz + a * GetAngleInterpolation(k->angz, ksuiv->angz);
-
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
@@ -667,16 +551,13 @@ consequences on light :
 					lend = c->lightd;
 				}
 
-				c->light.pos.x		= alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y		= alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z		= alight * lend.pos.z + unmoinsalight * ldep.pos.z;
-				c->light.fallin		= alight * lend.fallin + unmoinsalight * ldep.fallin;
-				c->light.fallout	= alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r			= alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g			= alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b			= alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensity	= alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
+				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
+				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 		case INTERP_BEZIER:
@@ -736,16 +617,13 @@ consequences on light :
 					lend = c->lightd;
 				}
 
-				c->light.pos.x = alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y = alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z = alight * lend.pos.z + unmoinsalight * ldep.pos.z;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 	}
@@ -802,7 +680,7 @@ bool GereTrackNoPlay(Cinematic * c)
 	c->colord			= k->colord;
 	c->colorflash		= k->colorf;
 	c->speed			= k->speed;
-	c->idsound			= k->idsound[LSoundChoose>>8];
+	c->idsound			= k->idsound;
 	c->force			= k->force;
 
 	if ((k->fx & 0xFF000000) == FX_LIGHT)
@@ -872,12 +750,8 @@ bool GereTrackNoPlay(Cinematic * c)
 			c->speedtrack = k->speedtrack;
 			break;
 		case INTERP_LINEAR:
-			c->pos.x = a * ksuiv->pos.x + unmoinsa * k->pos.x;
-			c->pos.y = a * ksuiv->pos.y + unmoinsa * k->pos.y;
-			c->pos.z = a * ksuiv->pos.z + unmoinsa * k->pos.z;
-
+			c->pos = ksuiv->pos * a + k->pos * unmoinsa;
 			c->angz = k->angz + a * GetAngleInterpolation(k->angz, ksuiv->angz);
-
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
@@ -903,18 +777,16 @@ bool GereTrackNoPlay(Cinematic * c)
 					lend = c->lightd;
 				}
 
-				c->light.pos.x  = alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y  = alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z  = alight * lend.pos.z + unmoinsalight * ldep.pos.z;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r		= alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g		= alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b		= alight * lend.b + unmoinsalight * ldep.b;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
+			
 		case INTERP_BEZIER:
 			ksuivsuiv = ((num + 1) < CKTrack->nbkey) ? ksuiv + 1 : ksuiv;
 			kprec = (num > 1) ? k - 1 : k;
@@ -970,16 +842,13 @@ bool GereTrackNoPlay(Cinematic * c)
 					lend = c->lightd;
 				}
 
-				c->light.pos.x = alight * lend.pos.x + unmoinsalight * ldep.pos.x;
-				c->light.pos.y = alight * lend.pos.y + unmoinsalight * ldep.pos.y;
-				c->light.pos.z = alight * lend.pos.z + unmoinsalight * ldep.pos.z;
+				c->light.pos = lend.pos * alight + ldep.pos * unmoinsalight;
 				c->light.fallin = alight * lend.fallin + unmoinsalight * ldep.fallin;
 				c->light.fallout = alight * lend.fallout + unmoinsalight * ldep.fallout;
-				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
-				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
-				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
+				c->light.color = lend.color * alight + ldep.color * unmoinsalight;
 				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
-				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
+				c->light.intensiternd = alight * lend.intensiternd
+				                        + unmoinsalight * ldep.intensiternd;
 			}
 			break;
 	}

@@ -164,11 +164,7 @@ StreamWAV::StreamWAV() :
 }
 
 StreamWAV::~StreamWAV() {
-	
-	if(codec) {
-		delete codec;
-	}
-	
+	delete codec;
 	free(header);
 }
 

@@ -49,15 +49,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "animation/Animation.h"
 
 #include "audio/Audio.h"
 
 #include "core/Config.h"
 
+#include "game/EntityManager.h"
+#include "game/Inventory.h"
 #include "game/NPC.h"
 #include "game/Player.h"
-#include "game/Inventory.h"
 
 #include "graphics/Math.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -68,10 +71,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/log/Logger.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 #include "platform/Thread.h"
 
 #include "scene/Interactive.h"
+
+#include "util/String.h"
 
 using std::map;
 using std::string;
@@ -94,7 +98,7 @@ using audio::FLAG_RELATIVE;
 using audio::FLAG_AUTOFREE;
 
 extern long EXTERNALVIEW;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 
 
 enum PlayingAmbianceType {
@@ -524,23 +528,16 @@ long ARX_SOUND_PlaySFX(SourceId & sample_id, const Vec3f * position, float pitch
 		channel.flags |= FLAG_PITCH;
 		channel.pitch = pitch;
 	}
-
-	if (position)
-	{
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
-	}
-	else
-	{
+	
+	if(position) {
+		channel.position = *position;
+	} else {
 		channel.flags |= FLAG_RELATIVE;
-		channel.position.x = 0.0F;
-		channel.position.y = 0.0F;
-		channel.position.z = 1.0F;
+		channel.position = Vec3f::Z_AXIS;
 	}
-
+	
 	audio::samplePlay(sample_id, channel, loop);
-
+	
 	return sample_id;
 }
 
@@ -580,37 +577,35 @@ long ARX_SOUND_PlayMenu(SourceId & sample_id, float pitch, SoundLoopMode loop) {
 }
 
 
-void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, Vec3f & pos)
-{
-	if (io)
-	{
+void ARX_SOUND_IOFrontPos(const Entity * io, Vec3f & pos) {
+	if(io) {
 		pos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b))) * 100.0F;
 		pos.y = io->pos.y - 100.0F;
 		pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b))) * 100.0F;
-	}
-	else if (ACTIVECAM)
-	{
+	} else if(ACTIVECAM) {
 		pos.x = ACTIVECAM->pos.x - EEsin(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
 		pos.y = ACTIVECAM->pos.y - 100.0F;
 		pos.z = ACTIVECAM->pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
-	}
-	else
-	{
-		pos.x = pos.y = pos.z = 0.f;
+	} else {
+		pos = Vec3f::ZERO;
 	}
 }
 
-long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
+static res::path speechFileName(const res::path & name) {
+	return res::path("speech") / config.language / name;
+}
+
+long ARX_SOUND_PlaySpeech(const res::path & name, const Entity * io)
 {
 	if (!bIsActive) return INVALID_ID;
 
 	audio::Channel channel;
 	SampleId sample_id;
-
-	res::path file_name = res::path("speech") / config.language / name;
-	file_name.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
-
-	sample_id = audio::createSample(file_name);
+	
+	res::path file = speechFileName(name);
+	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
+	
+	sample_id = audio::createSample(file);
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = FLAG_VOLUME | FLAG_POSITION | FLAG_REVERBERATION | FLAG_AUTOFREE | FLAG_FALLOFF;
@@ -620,7 +615,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
 
 	if (io)
 	{
-		if (((io == inter.iobj[0]) && !EXTERNALVIEW) ||
+		if (((io == entities.player()) && !EXTERNALVIEW) ||
 		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
 			ARX_SOUND_IOFrontPos(io, channel.position);
 		else
@@ -650,7 +645,7 @@ long ARX_SOUND_PlaySpeech(const res::path & name, const INTERACTIVE_OBJ * io)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source)
+long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Vec3f * position, Entity * source)
 {
 	if (!bIsActive) return 0;
 
@@ -683,29 +678,27 @@ long ARX_SOUND_PlayCollision(long mat1, long mat2, float volume, float power, Ve
 		if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
 			return -1;
 	}
-
+	
 	//Launch 'ON HEAR' script event
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
-
+	
 	if(position) {
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
+		channel.position = *position;
 	} else {
 		ARX_PLAYER_FrontPos(&channel.position);
 	}
-
+	
 	channel.pitch = 0.9F + 0.2F * rnd();
 	channel.volume = volume;
 	audio::samplePlay(sample_id, channel);
-
+	
 	size_t length;
 	audio::getSampleLength(sample_id, length);
-
+	
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, INTERACTIVE_OBJ * source) {
+long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float volume, float power, Vec3f * position, Entity * source) {
 	
 	if(!bIsActive) {
 		return 0;
@@ -748,9 +741,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	ARX_NPC_SpawnAudibleSound(position, source, power, presence);
 	
 	if(position) {
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
+		channel.position = *position;
 		if(ACTIVECAM && fartherThan(ACTIVECAM->pos, *position, ARX_SOUND_REFUSE_DISTANCE)) {
 			return -1;
 		}
@@ -768,7 +759,7 @@ long ARX_SOUND_PlayCollision(const string & name1, const string & name2, float v
 	return (long)(channel.pitch * length);
 }
 
-long ARX_SOUND_PlayScript(const res::path & name, const INTERACTIVE_OBJ * io, float pitch, SoundLoopMode loop)
+long ARX_SOUND_PlayScript(const res::path & name, const Entity * io, float pitch, SoundLoopMode loop)
 {
 	if (!bIsActive) {
 		return INVALID_ID;
@@ -829,9 +820,7 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 		float presence = GetSamplePresenceFactor(sample_name);
 		channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART * presence;
 		channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND * presence;
-		channel.position.x = position->x;
-		channel.position.y = position->y;
-		channel.position.z = position->z;
+		channel.position = *position;
 	}
 
 	if (ACTIVECAM && distSqr(ACTIVECAM->pos, *position) > square(ARX_SOUND_REFUSE_DISTANCE))
@@ -842,28 +831,26 @@ long ARX_SOUND_PlayAnim(SourceId & sample_id, const Vec3f * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const res::path & name) {
+long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	
-	LogDebug("playing cinematic sound");
+	res::path file = (isSpeech) ? speechFileName(name) : name;
+	file.set_ext(ARX_SOUND_FILE_EXTENSION_WAV);
 	
-	s32 sample_id;
-	audio::Channel channel;
-
-	sample_id = audio::createSample(name);
-
+	s32 sample_id = audio::createSample(file);
 	if(sample_id == INVALID_ID) {
-		LogError << "cannot load sound for cinematic: " << name;
+		LogError << "cannot load sound for cinematic: " << file;
 		return INVALID_ID;
 	}
-
+	
+	audio::Channel channel;
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
-	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_FALLOFF | FLAG_REVERBERATION | FLAG_POSITION;
-	channel.volume = 1.0F;
+	channel.flags = FLAG_VOLUME | FLAG_AUTOFREE | FLAG_POSITION | FLAG_FALLOFF
+	                | FLAG_REVERBERATION | FLAG_POSITION;
+	channel.volume = 1.0f;
 	channel.falloff.start = ARX_SOUND_DEFAULT_FALLSTART;
 	channel.falloff.end = ARX_SOUND_DEFAULT_FALLEND;
-
-	if (ACTIVECAM)
-	{
+	
+	if (ACTIVECAM) {
 		Vec3f front, up;
 		float t;
 		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
@@ -876,11 +863,11 @@ long ARX_SOUND_PlayCinematic(const res::path & name) {
 		up.z = 0.f;
 		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
 	}
-
+	
 	ARX_SOUND_IOFrontPos(NULL, channel.position); 
-
+	
 	audio::samplePlay(sample_id, channel);
-
+	
 	return sample_id;
 }
 
@@ -925,27 +912,22 @@ void ARX_SOUND_RefreshPosition(SourceId & sample_id, const Vec3f * position) {
 	}
 }
 
-void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const INTERACTIVE_OBJ * io) {
+void ARX_SOUND_RefreshSpeechPosition(SourceId & sample_id, const Entity * io) {
 	
-	if (!bIsActive || !io || sample_id == INVALID_ID) return;
-
+	if(!bIsActive || !io || sample_id == INVALID_ID) {
+		return;
+	}
+	
 	Vec3f position;
-
-	if (io)
-	{
-		if (((io == inter.iobj[0]) && !EXTERNALVIEW) ||
-		        (io->ioflags & IO_CAMERA && io == CAMERACONTROLLER))
-		{
+	if(io) {
+		if((io == entities.player() && !EXTERNALVIEW)
+		   || ((io->ioflags & IO_CAMERA) && io == CAMERACONTROLLER)) {
 			ARX_SOUND_IOFrontPos(io, position);
-		}
-		else
-		{
-			position.x = io->pos.x;
-			position.y = io->pos.y;
-			position.z = io->pos.z;
+		} else {
+			position = io->pos;
 		}
 	}
-
+	
 	audio::setSamplePosition(sample_id, position);
 }
 
@@ -1105,35 +1087,21 @@ AmbianceId ARX_SOUND_PlayMenuAmbiance(const res::path & ambiance_name) {
 	return ambiance_menu;
 }
 
-long nbelems = 0;
-char ** elems = NULL;
-long * numbers = NULL;
+static long nbelems = 0;
+static char ** elems = NULL;
+static long * numbers = NULL;
 
-void ARX_SOUND_FreeAnimSamples()
-{
-	if (elems)
-	{
-		for (long i = 0; i < nbelems; i++)
-		{
-			if (elems[i])
-			{
-				free(elems[i]);
-				elems[i] = NULL;
-			}
+void ARX_SOUND_FreeAnimSamples() {
+	
+	if(elems) {
+		for(long i = 0; i < nbelems; i++) {
+			free(elems[i]), elems[i] = NULL;
 		}
-
-		free(elems);
-		elems = NULL;
+		free(elems), elems = NULL;
 	}
-
-	if (numbers)
-	{
-		free(numbers);
-		numbers = NULL;
-	}
-
 	nbelems = 0;
-
+	
+	free(numbers), numbers = NULL;
 }
 
 extern ANIM_HANDLE animations[];
@@ -1265,7 +1233,7 @@ void ARX_SOUND_AmbianceRestorePlayList(const char * _play_list, size_t size) {
 		
 		const PlayingAmbiance * playing = &play_list[i];
 		
-		res::path name = res::path::load(safestring(playing->name));
+		res::path name = res::path::load(util::loadString(playing->name));
 		
 		// TODO save/load enum
 		switch (playing->type) {
@@ -1652,7 +1620,7 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 
 	for (size_t i = 0; i < MAX_VARIANTS; i++)
 	{
-		sprintf(path, "%s_" PRINT_SIZE_T ".wav", name, i + 1);
+		sprintf(path, "%s_%lu.wav", name, (unsigned long)(i + 1));
 		Inter_Materials[mat1][mat2][i] = audio::createSample(path);
 
 		if (mat1 != mat2)
@@ -1695,7 +1663,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 				for(size_t mi = 0; mi < MAX_VARIANTS; mi++) {
 					
 					ostringstream oss;
-					oss << toLowercase(key.getValue());
+					oss << boost::to_lower_copy(key.getValue());
 					if(mi) {
 						oss << mi;
 					}
@@ -1704,7 +1672,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 					
 					if(sample == INVALID_ID) {
 						ostringstream oss2;
-						oss2 << toLowercase(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
+						oss2 << boost::to_lower_copy(key.getValue()) << '_' << mi << ARX_SOUND_FILE_EXTENSION_WAV;
 						sample = audio::createSample(oss2.str());
 					}
 					
@@ -1846,11 +1814,10 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 }
 
-static char BADSAMPLECHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // TODO(case-sensitive) remove
-
 static float GetSamplePresenceFactor(const res::path & name) {
 	
-	arx_assert(name.string().find_first_of(BADSAMPLECHAR) == string::npos); ARX_UNUSED(BADSAMPLECHAR); // TODO(case-sensitive) remove
+	arx_assert_msg(name.string().find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == string::npos,
+	               "bad sample name: \"%s\"", name.string().c_str());
 	
 	PresenceFactors::const_iterator it = presence.find(name);
 	if(it != presence.end()) {

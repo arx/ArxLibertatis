@@ -21,21 +21,20 @@
 
 #include "Configure.h"
 
-#include <sys/stat.h>
-#include <sys/errno.h>
-#include <dirent.h>
-#include <unistd.h>
+#include <vector>
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 
+#include <sys/stat.h>
+#include <sys/errno.h>
+#include <dirent.h>
+#include <unistd.h>
+
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
-#include "platform/String.h"
-
-using std::string;
-using std::malloc;
-using std::free;
 
 namespace fs {
 
@@ -148,10 +147,10 @@ bool copy_file(const path & from_p, const path & to_p, bool overwrite) {
 }
 
 bool rename(const path & old_p, const path & new_p, bool overwrite) {
-
+	
 	if(!overwrite && exists(new_p)) {
-#if defined(HAVE_PATHCONF) && defined(HAVE_PC_CASE_SENSITIVE)
-		if(toLowercase(old_p.string()) == toLowercase(new_p.string())) {
+#if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_CASE_SENSITIVE)
+		if(boost::to_lower_copy(old_p.string()) == boost::to_lower_copy(new_p.string())) {
 			if(pathconf(old_p.string().c_str(), _PC_CASE_SENSITIVE)) {
 				return false; // filesystem is case-sensitive and destination file already exists
 			}
@@ -160,12 +159,43 @@ bool rename(const path & old_p, const path & new_p, bool overwrite) {
 		}
 #else
 		return false;
-#endif		
+#endif
 	}
+	
 	return !::rename(old_p.string().c_str(), new_p.string().c_str());
 }
 
-#if defined(HAVE_DIRFD) && defined(HAVE_FSTATAT)
+path current_path() {
+	
+	size_t intitial_length = 1024;
+#if defined(ARX_HAVE_PATHCONF) && defined(ARX_HAVE_PC_NAME_MAX)
+	size_t path_max = pathconf(".", _PC_PATH_MAX);
+	if(path_max <= 0) {
+		intitial_length = 1024;
+	} else if(path_max > 10240) {
+		intitial_length = 10240;
+	} else {
+    intitial_length = path_max;
+	}
+#endif
+	
+	std::vector<char> buffer(intitial_length);
+	
+	while(true) {
+	
+		char * ptr = getcwd(&buffer.front(), buffer.size());
+		if(ptr != NULL) {
+			return ptr;
+		} else if(errno != ERANGE) {
+			return path();
+		}
+		
+		buffer.reserve(buffer.size() * 2);
+	}
+	
+}
+
+#if defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FSTATAT)
 
 #define ITERATOR_HANDLE(handle)
 
@@ -225,7 +255,7 @@ static void readdir(void * _handle, void * & _buf) {
 		
 		dirent * entry;
 		if(readdir_r(handle, buf, &entry) || !entry) {
-			free(_buf), _buf = NULL;
+			std::free(_buf), _buf = NULL;
 			return;
 		}
 		
@@ -241,21 +271,21 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		
 		// Allocate a large enough buffer for readdir_r.
 		long name_max;
-#if ((defined(HAVE_DIRFD) && defined(HAVE_FPATHCONF)) || defined(HAVE_PATHCONF)) \
-		&& defined(HAVE_PC_NAME_MAX)
-#  if defined(HAVE_DIRFD) && defined(HAVE_FPATHCONF)
+#if ((defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FPATHCONF)) || defined(ARX_HAVE_PATHCONF)) \
+		&& defined(ARX_HAVE_PC_NAME_MAX)
+#  if defined(ARX_HAVE_DIRFD) && defined(ARX_HAVE_FPATHCONF)
 		name_max = fpathconf(dirfd(DIR_HANDLE(handle)), _PC_NAME_MAX);
 #else
 		name_max = pathconf(p.string().c_str(), _PC_NAME_MAX);
 #endif
 		if(name_max == -1) {
-#  if defined(HAVE_NAME_MAX)
+#  if defined(ARX_HAVE_NAME_MAX)
 			name_max = std::max(NAME_MAX, 255);
 #  else
 			arx_assert_msg(false, "cannot determine maximum dirname size");
 #  endif
 		}
-#elif defined(HAVE_NAME_MAX)
+#elif defined(ARX_HAVE_NAME_MAX)
 		name_max = std::max(NAME_MAX, 255);
 #else
 #  error "buffer size for readdir_r cannot be determined"
@@ -264,7 +294,7 @@ directory_iterator::directory_iterator(const path & p) : buf(NULL) {
 		if(size < sizeof(dirent)) {
 			size = sizeof(dirent);
 		}
-		buf = malloc(size);
+		buf = std::malloc(size);
 		
 		readdir(handle, buf);
 	}
@@ -275,9 +305,7 @@ directory_iterator::~directory_iterator() {
 		closedir(DIR_HANDLE(handle));
 		DIR_HANDLE_FREE(handle);
 	}
-	if(buf) {
-		free(buf);
-	}
+	std::free(buf);
 }
 
 directory_iterator & directory_iterator::operator++() {
@@ -292,7 +320,7 @@ bool directory_iterator::end() {
 	return !buf;
 }
 
-string directory_iterator::name() {
+std::string directory_iterator::name() {
 	arx_assert(buf != NULL);
 	return reinterpret_cast<dirent *>(buf)->d_name;
 }

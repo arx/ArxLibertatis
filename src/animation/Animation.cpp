@@ -54,6 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
@@ -61,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 
 #include "game/Damage.h"
+#include "game/EntityManager.h"
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
@@ -84,7 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 
 #include "scene/Object.h"
 #include "scene/GameSound.h"
@@ -99,24 +102,19 @@ using std::string;
 using std::ostringstream;
 using std::vector;
 
-extern float IN_FRONT_DIVIDER_ITEMS;
+static const float IN_FRONT_DIVIDER_ITEMS = 0.7505f;
+
 long MAX_LLIGHTS = 18;
 //-----------------------------------------------------------------------------
-extern long FINAL_RELEASE;
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
-extern float _framedelay;
-extern long ForceIODraw;
 extern long INTER_DRAW;
-extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
 extern Color ulBKGColor;
 extern long ZMAPMODE;
-extern float fZFogStart;
 
 ANIM_HANDLE animations[MAX_ANIMATIONS];
 
-bool MIPM;
 TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;
@@ -124,23 +122,20 @@ EERIEMATRIX * BIGMAT;
 float dists[32];
 float values[32];
 float vdist;
-long __MUST_DRAW = 0;
+long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
-long DEBUG_PATHFAIL = 1;
-long LOOK_AT_TARGET = 0;
-unsigned char * grps = NULL;
-long max_grps = 0;
+extern unsigned char * grps;
 long TRAP_DETECT = -1;
 long TRAP_SECRET = -1;
 long USEINTERNORM = 1;
 long HALOCUR = 0;
-long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
-//-----------------------------------------------------------------------------
-TexturedVertex tTexturedVertexTab2[4000];
+static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
+
+static TexturedVertex tTexturedVertexTab2[4000];
 
 extern long EXTERNALVIEW;
-void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io, float & invisibility,
+void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility,
                                        float & scale) {
 	
 	if(io) {
@@ -148,7 +143,7 @@ void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io, float & invisibilit
 
 		if (invisibility > 1.f) invisibility -= 1.f;
 
-		if(io != inter.iobj[0] && invisibility > 0.f && !EXTERNALVIEW) {
+		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
 			if(num >= 0) {
@@ -227,34 +222,23 @@ ANIM_HANDLE::ANIM_HANDLE() : path() {
 void EERIE_ANIMMANAGER_PurgeUnused() {
 	
 	for(size_t i = 0; i < MAX_ANIMATIONS; i++) {
-		
-		if ((!animations[i].path.empty())
-			&& (animations[i].locks==0))
-		{
-			for (long k=0;k<animations[i].alt_nb;k++)
-			{
+		if(!animations[i].path.empty() && animations[i].locks == 0) {
+			for(long k = 0; k < animations[i].alt_nb; k++) {
 				ReleaseAnim(animations[i].anims[k]);
-				animations[i].anims[k]=NULL;
+				animations[i].anims[k] = NULL;
 			}
-
-			if (animations[i].anims)
-				free(animations[i].anims);
-
-			animations[i].anims=NULL;
-
+			free(animations[i].anims), animations[i].anims = NULL;
 			animations[i].path.clear();
 		}
 	}
 }
 
-//-----------------------------------------------------------------------------
-void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
-{
-	if (anim)
-	{
+void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim) {
+	if(anim) {
 		anim->locks--;
-
-		if (anim->locks<0) anim->locks=0;
+		if(anim->locks < 0) {
+			anim->locks = 0;
+		}
 	}
 }
 
@@ -340,7 +324,8 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load_NoWarning(const res::path & path) {
 		int pathcount = 2;
 		res::path altpath;
 		do {
-			altpath = res::path(path).append_basename(itoa(pathcount++));
+			altpath = res::path(path);
+			altpath.append_basename(boost::lexical_cast<std::string>(pathcount++));
 		} while(EERIE_ANIMMANAGER_AddAltAnim(&animations[i], altpath));
 		
 		return &animations[i];
@@ -366,7 +351,7 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 			strcpy(txx,animations[i].path.string().c_str());
 			long totsize=0;
 
-			sprintf(temp, "%3ld[%3" PRINT_SIZE_T_F "] %s size %ld Locks %ld Alt %d\r\n", count, i,
+			sprintf(temp, "%3ld[%3lu] %s size %ld Locks %ld Alt %d\r\n", count, (unsigned long)i,
 			        txx, totsize, animations[i].locks, animations[i].alt_nb - 1);
 			memsize+=totsize;
 			tex += temp;
@@ -376,34 +361,22 @@ long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 	return count;
 }
 
-//*************************************************************************************
 // Fill "pos" with "eanim" total translation
-//*************************************************************************************
-void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
-{
+void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
 	
 	if(!pos) {
 		return;
 	}
-
-	if ((!eanim)
-		|| (!eanim->anims[alt_idx])
-		|| (!eanim->anims[alt_idx]->frames)
-		|| (eanim->anims[alt_idx]->nb_key_frames<=0) )
-	{
-		pos->x=0;
-		pos->y=0;
-		pos->z=0;
-		return;
+	
+	if(!eanim || !eanim->anims[alt_idx] || !eanim->anims[alt_idx]->frames
+	   || eanim->anims[alt_idx]->nb_key_frames <= 0) {
+		*pos = Vec3f::ZERO;
+	} else {
+		long idx = eanim->anims[alt_idx]->nb_key_frames - 1;
+		*pos = eanim->anims[alt_idx]->frames[idx].translate;
 	}
-
-	Vec3f * e3D=&eanim->anims[alt_idx]->frames[eanim->anims[alt_idx]->nb_key_frames-1].translate;
-	pos->x=e3D->x;
-	pos->y=e3D->y;
-	pos->z=e3D->z;
 }
 
-//*************************************************************************************
 // Main Procedure to draw an animated object
 //------------------------------------------
 // Needs some update...
@@ -412,13 +385,10 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,Vec3f * pos)
 //  EERIE_3D * angle      Object Angle
 //  EERIE_3D  * pos       Object Position
 //  unsigned long time    Time increment to current animation in Ms
-//  INTERACTIVE_OBJ * io  Referrence to Interactive Object (NULL if no IO)
+//  Entity * io  Referrence to Interactive Object (NULL if no IO)
 //  long typ              Misc Type 0=World View 1=1st Person View
-//*************************************************************************************
-
-//-----------------------------------------------------------------------------
 void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
-                 INTERACTIVE_OBJ * io) {
+                 Entity * io) {
 	
 	long tcf,tnf;
 	long fr;
@@ -571,7 +541,7 @@ suite:
 			   && (eanim->cur_anim->anims[eanim->altidx_cur]->frames[fr].flag > 0)
 			   && (eanim->lastframe != fr)) {
 				
-				if (io!=inter.iobj[0])
+				if (io!=entities.player())
 				{
 					if ((eanim->lastframe<fr) && (eanim->lastframe!=-1))
 					{
@@ -594,18 +564,18 @@ suite:
 		}
 	}
 }
-INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;
+Entity * DESTROYED_DURING_RENDERING=NULL;
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
                        ANIM_USE * eanim,
                        Anglef * angle,
                        Vec3f * pos,
                        unsigned long time,
-                       INTERACTIVE_OBJ * io,
+                       Entity * io,
                        bool render,
                        bool update_movement) {
 	
-	if(io && io != inter.iobj[0]) {
+	if(io && io != entities.player()) {
 		
 		float speedfactor = io->basespeed+io->speed_modif;
 
@@ -648,14 +618,10 @@ suite:
 	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render, update_movement);
 }
 
-extern float GLOBAL_LIGHT_FACTOR;
 
-
-//*************************************************************************************
 // Procedure for drawing Interactive Objects (Not Animated)
-//*************************************************************************************
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * poss,
-                          INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo) {
+                          Entity * io, EERIE_MOD_INFO * modinfo) {
 	
 	BIGQUAT=NULL;
 	BIGMAT=mat;
@@ -985,7 +951,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 extern long FORCE_FRONT_DRAW;
 
 void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
-                    INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo) {
+                    Entity * io, EERIE_MOD_INFO * modinfo) {
 	
 	if(!eobj) {
 		return;
@@ -999,7 +965,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
-	if(io && io != inter.iobj[0] && !modinfo && !ForceIODraw && !__MUST_DRAW && ACTIVEBKG) {
+	if(io && io != entities.player() && !modinfo && !MUST_DRAW && ACTIVEBKG) {
 		
 		long xx, yy;
 		xx = (pos.x) * ACTIVEBKG->Xmul;
@@ -1074,7 +1040,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
-	MIPM = 0;
 	vdist = 0.f;
 	{
 		ResetBBox3D( io );
@@ -1110,8 +1075,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			}
 			else
 			{
-				_YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
-				_XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
+				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
+				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
 
 				// Misc Optim to avoid 1 infrequent rotation around Z
 				if(Zsin == 0.f) {
@@ -1123,7 +1088,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				}
 				else
 				{
-					_ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
+					ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
 					eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
 					specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
@@ -1195,15 +1160,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 
 		if ( io->ioflags & IO_NPC )
 		{
-			if ( (DEBUG_PATHFAIL) && (!FINAL_RELEASE) )
-			{
-				if ( io->_npcdata->pathfind.listnb == -2)
-					trappercent = 1;
-
-				if ( io->_npcdata->pathfind.pathwait)
-					poisonpercent = 1;
-			}
-
 			if ( io->_npcdata->poisonned > 0.f )
 			{
 				poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
@@ -1277,36 +1233,26 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				special_color_flag = 1;
 				float elapsed = float(arxtime) - io->sfx_time;
 
-				if ( elapsed > 0.f )
-				{
-					if ( elapsed < 3000.f ) // 5 seconds to red
-					{
-						float ratio = elapsed * ( 1.0f / 3000 );
-						special_color.r = 1.f;
-						special_color.g = 1.f - ratio;
-						special_color.b = 1.f - ratio;
+				if(elapsed > 0.f) {
+					
+					if(elapsed < 3000.f) { // 5 seconds to red
+						float ratio = elapsed * (1.0f / 3000);
+						special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 						AddRandomSmoke( io, 1 );
-					}
-					else if ( elapsed < 6000.f ) // 5 seconds to White
-					{
+						
+					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = ( elapsed - 3000.f ) * ( 1.0f / 3000 );
-						special_color.r = 1.f;
-						special_color.g = ratio;
-						special_color.b = ratio;
+						special_color = Color3f(1.f, ratio, ratio);
 						special_color_flag = 2;
-						AddRandomSmoke( io, 2 );
-					}
-					else if ( elapsed < 8000.f ) // 5 seconds to White
-					{
-						float ratio = ( elapsed - 6000.f ) * ( 1.0f / 2000 );
-						special_color.r = ratio;
-						special_color.g = ratio;
-						special_color.b = ratio;
+						AddRandomSmoke(io, 2);
+						
+					} else if (elapsed < 8000.f) { // 5 seconds to White
+						special_color = Color3f::gray((elapsed - 6000.f) * (1.f / 2000));
 						special_color_flag = 2;
-						AddRandomSmoke( io, 2 );
-					}
-					else // SFX finish
-					{
+						AddRandomSmoke(io, 2);
+						
+					} else { // SFX finish
+						
 						special_color_flag = 0;
 						
 						io->sfx_time=0;
@@ -1343,7 +1289,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 								while (num>=0)
 								{
 									spells[num].tolive=0;
-									ARX_DAMAGES_DamageNPC(io,20,0,1,&inter.iobj[0]->pos);
+									ARX_DAMAGES_DamageNPC(io,20,0,1,&entities.player()->pos);
 									num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 								}
 							}
@@ -1377,21 +1323,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		paf[2]=eobj->facelist[i].vid[2];
 
 		//CULL3D
-		Vec3f nrm;
-		nrm.x=eobj->vertexlist3[paf[0]].v.x-ACTIVECAM->pos.x;
-		nrm.y=eobj->vertexlist3[paf[0]].v.y-ACTIVECAM->pos.y;
-		nrm.z=eobj->vertexlist3[paf[0]].v.z-ACTIVECAM->pos.z;
+		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->pos;
 
-		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED))
-		{
+		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED)) {
 			Vec3f normV10;
 			Vec3f normV20;
-			normV10.x=eobj->vertexlist3[paf[1]].v.x-eobj->vertexlist3[paf[0]].v.x;
-			normV10.y=eobj->vertexlist3[paf[1]].v.y-eobj->vertexlist3[paf[0]].v.y;
-			normV10.z=eobj->vertexlist3[paf[1]].v.z-eobj->vertexlist3[paf[0]].v.z;
-			normV20.x=eobj->vertexlist3[paf[2]].v.x-eobj->vertexlist3[paf[0]].v.x;
-			normV20.y=eobj->vertexlist3[paf[2]].v.y-eobj->vertexlist3[paf[0]].v.y;
-			normV20.z=eobj->vertexlist3[paf[2]].v.z-eobj->vertexlist3[paf[0]].v.z;
+			normV10 = eobj->vertexlist3[paf[1]].v - eobj->vertexlist3[paf[0]].v;
+			normV20 = eobj->vertexlist3[paf[2]].v - eobj->vertexlist3[paf[0]].v;
 			Vec3f normFace;
 			normFace.x=(normV10.y*normV20.z)-(normV10.z*normV20.y);
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
@@ -1481,11 +1419,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		vert_list[2].uv.x=eobj->facelist[i].u[2];
 		vert_list[2].uv.y=eobj->facelist[i].v[2];	
 
-		if (FORCE_FRONT_DRAW)
-		{
-			vert_list[0].p.z*=IN_FRONT_DIVIDER_ITEMS;
-			vert_list[1].p.z*=IN_FRONT_DIVIDER_ITEMS;
-			vert_list[2].p.z*=IN_FRONT_DIVIDER_ITEMS;
+		if(FORCE_FRONT_DRAW) {
+			vert_list[0].p.z *= IN_FRONT_DIVIDER_ITEMS;
+			vert_list[1].p.z *= IN_FRONT_DIVIDER_ITEMS;
+			vert_list[2].p.z *= IN_FRONT_DIVIDER_ITEMS;
 		}
 
 		// Treat WATER Polys (modify UVs)
@@ -1579,9 +1516,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 		}
-
-		if ( special_color_flag & 1)
-		{
+		
+		if(special_color_flag & 1) {
 			for(long j = 0 ; j < 3 ; j++) {
 				Color color = Color::fromBGR(vert_list[j].color);
 				color.r = long(color.r * special_color.r) & 255;
@@ -1590,8 +1526,9 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				vert_list[j].color = color.toBGR();
 			}
 		}
+		
 	}
-
+	
 	if (FRAME_COUNT!=0)
 	for (long j=0;j<3;j++)
 		vert_list[j].color = eobj->facelist[i].color[j].toBGRA();
@@ -1629,7 +1566,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			if(BIGMAT) {
 				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, BIGMAT);
 			} else {
-				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
+				YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
 			}
 	
 			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
@@ -1772,23 +1709,16 @@ void ResetAnim(ANIM_USE * eanim)
 	eanim->flags&=~EA_LOOP;
 	eanim->flags&=~EA_FORCEPLAY;
 }
-long LAST_LLIGHT_COUNT=0;
-//*************************************************************************************
-//*************************************************************************************
-void llightsInit()
-{
-	for (long i = 0; i < MAX_LLIGHTS; i++)
-	{
-		llights[i]=NULL;
-		dists[i]=999999999.f;
-		values[i]=999999999.f;
-	}	
 
-	LAST_LLIGHT_COUNT=0;
+void llightsInit() {
+	for(long i = 0; i < MAX_LLIGHTS; i++) {
+		llights[i] = NULL;
+		dists[i] = 999999999.f;
+		values[i] = 999999999.f;
+	}
 }
-//*************************************************************************************
+
 // Inserts Light in the List of Nearest Lights
-//*************************************************************************************
 void Insertllight(EERIE_LIGHT * el,float dist)
 {	
 	if (el==NULL) return;
@@ -1808,7 +1738,6 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 				llights[i]=el;
 				dists[i]=dist;
 				values[i]=val;
-				LAST_LLIGHT_COUNT++;
 				return;
 			}
 			else if (val <= values[i])  // Inserts light at the right place
@@ -1826,47 +1755,32 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 				llights[i]=el;
 				dists[i]=dist;
 				values[i]=val;
-				LAST_LLIGHT_COUNT++;
 				return;
 			}
 		}
 	}
 }
 
-//*************************************************************************************
 // Precalcs some misc things for lights
-//*************************************************************************************
-void Preparellights(Vec3f * pos)
-{
-	for (long i=0;i<MAX_LLIGHTS;i++) 
-	{
-		EERIE_LIGHT * el=llights[i];
-
-		if (el)
-		{
-			TCAM[i].pos.x=el->pos.x;			
-			TCAM[i].pos.y=el->pos.y;
-			TCAM[i].pos.z=el->pos.z;
+void Preparellights(Vec3f * pos) {
+	for (long i = 0; i < MAX_LLIGHTS; i++) {
+		EERIE_LIGHT * el = llights[i];
+		if(el) {
+			TCAM[i].pos = el->pos;
 			SetTargetCamera(&TCAM[i],pos->x,pos->y,pos->z);
 			F_PrepareCamera(&TCAM[i]);
-			
-		}		 
+		}
 	}
 }
 
-void EERIE_ANIMMANAGER_Clear(long i)
-{
-	for (long k=0;k<animations[i].alt_nb;k++)
-	{
-		ReleaseAnim(animations[i].anims[k]);
-		animations[i].anims[k]=NULL;					
+void EERIE_ANIMMANAGER_Clear(long i) {
+	
+	for(long k = 0; k < animations[i].alt_nb; k++) {
+		ReleaseAnim(animations[i].anims[k]), animations[i].anims[k] = NULL;
 	}
-
-	if (animations[i].anims)
-		free(animations[i].anims);
-
-	animations[i].anims=NULL;
-
+	
+	free(animations[i].anims), animations[i].anims = NULL;
+	
 	animations[i].path.clear();
 }
 
@@ -1878,31 +1792,23 @@ void EERIE_ANIMMANAGER_ClearAll() {
 		}
 	}
 	
-	if(grps) {
-		free(grps);
-		grps = NULL;
-	}
-	
+	free(grps), grps = NULL;
 }
-void EERIE_ANIMMANAGER_ReloadAll()
-{
-	for (long i=0;i<inter.nbmax;i++)
-	{
-		if (inter.iobj[i])
-		{
-			INTERACTIVE_OBJ * io=inter.iobj[i];
 
-			for (long j=0;j<MAX_ANIMS;j++)
-			{
-				EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
-				io->anims[j]=NULL;
+void EERIE_ANIMMANAGER_ReloadAll() {
+	
+	BOOST_FOREACH(Entity * e, entities) {
+		if(e) {
+			
+			for(size_t j = 0; j < MAX_ANIMS; j++) {
+				EERIE_ANIMMANAGER_ReleaseHandle(e->anims[j]);
+				e->anims[j] = NULL;
 			}
-
-			for (long count=0;count<MAX_ANIM_LAYERS;count++)
-			{
-				memset(&io->animlayer[count],0,sizeof(ANIM_USE));
-				io->animlayer[count].cur_anim=NULL;
-				io->animlayer[count].next_anim=NULL;
+			
+			for(size_t count = 0; count < MAX_ANIM_LAYERS; count++) {
+				memset(&e->animlayer[count], 0, sizeof(ANIM_USE));
+				e->animlayer[count].cur_anim = NULL;
+				e->animlayer[count].next_anim = NULL;
 			}
 		}
 	}

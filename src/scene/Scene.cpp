@@ -56,15 +56,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Core.h"
 
-#include "game/Spells.h"
-#include "game/Player.h"
+#include "game/EntityManager.h"
 #include "game/Inventory.h"
+#include "game/Player.h"
+#include "game/Spells.h"
 
 #include "gui/Interface.h"
 
-#include "graphics/VertexBuffer.h"
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
 #include "graphics/Math.h"
+#include "graphics/VertexBuffer.h"
 #include "graphics/data/TextureContainer.h"
 #include "graphics/effects/DrawEffects.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -90,42 +92,22 @@ extern long USE_LIGHT_OPTIM;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long EXTERNALVIEW;
-extern long WATERFX;
-extern long REFLECTFX;
-extern bool ARXPausedTimer;
 long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern Color ulBKGColor;
-//-----------------------------------------------------------------------------
-EERIEPOLY VF_Center;
-EERIEPOLY VF_Top;
-EERIEPOLY VF_Bottom;
-EERIEPOLY VF_Front;
 
 EERIEPOLY * TransPol[MAX_TRANSPOL];
-TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
-EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
-TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
 EERIE_PORTAL_DATA * portals = NULL;
 
-float WATEREFFECT=0.f;
-long INTERTRANSPOLYSPOS=0;
+static float WATEREFFECT = 0.f;
 
 long TRANSPOLYSPOS=0;
-long SHOWSHADOWS=1;
-long TESTMODE=1;
 long FRAME_COUNT=0;
 
 long LAST_ROOM=-1;
-
-float fZFogStart=0.3f;
-float fZFogEnd=.5f;
-
-long iTotPoly;
-unsigned long FrameCount;
 
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
@@ -199,10 +181,7 @@ public:
 	}
 	
 	~DynamicVertexBuffer() {
-		if(indices) {
-			delete[] indices;
-		}
-		
+		delete[] indices;
 	}
 	
 } dynamicVertices;
@@ -210,16 +189,19 @@ public:
 }
 
 EERIE_FRUSTRUM_PLANE efpPlaneNear;
-EERIE_FRUSTRUM_PLANE efpPlaneFar;
 
-vector<EERIEPOLY*> vPolyWater;
-vector<EERIEPOLY*> vPolyLava;
+static vector<EERIEPOLY*> vPolyWater;
+static vector<EERIEPOLY*> vPolyLava;
 
 bool bOLD_CLIPP=false;
 
 void PopAllTriangleListTransparency();
 
-extern long TSU_TEST;
+static PORTAL_ROOM_DRAW * RoomDraw = NULL;
+static long NbRoomDraw = 0;
+static long * RoomDrawList = NULL;
+static long NbRoomDrawList = 0;
+long TotalRoomDrawList=0;
 
 //*************************************************************************************
 //*************************************************************************************
@@ -231,8 +213,8 @@ void ApplyWaterFXToVertex(Vec3f * odtv,TexturedVertex * dtv,float power)
 }
 
 static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power) {
-	register float f;
-	register long lr, lg, lb;
+	float f;
+	long lr, lg, lb;
 	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
 	f = ((dtv->color >> 16) & 255) * power;
 	lr = clipByte(f);
@@ -250,34 +232,17 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 {
 	if ((ep->type & POLY_WATER) || (ep->type & POLY_LAVA) )
 	{
-		for (long k=0;k<to;k++) 
-		{
-			ep->tv[k].uv.x=ep->v[k].uv.x;
-			ep->tv[k].uv.y=ep->v[k].uv.y;
-			
-			
-			if (ep->type & POLY_LAVA)
-			{
+		for(long k = 0; k < to; k++) {
+			ep->tv[k].uv = ep->v[k].uv;
+			if(ep->type & POLY_LAVA) {
 				ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); 
 				ApplyLavaGlowToVertex(&ep->v[k].p,&ep->tv[k],0.6f);
-
-				if (rnd()>0.995f) 
-				{
-					if (ep->type & POLY_FALL)
-					{
-						Vec3f pos;
-						pos.x=ep->v[k].p.x+ep->norm.x*20.f;
-						pos.y=ep->v[k].p.y+ep->norm.y*20.f;
-						pos.z=ep->v[k].p.z+ep->norm.z*20.f;
-					}
-
-					
-				}
+			} else {
+				ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
 			}
-			else ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
-		}					
-	}	
-
+		}
+	}
+	
 	if (ep->type & POLY_FALL)
 	{
 		if (ep->type & POLY_LAVA)
@@ -306,9 +271,8 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 1000 );
 		}
 		
-		_pVertex[ep->uslInd[k]].uv.x = ep->tv[k].uv.x;
-		_pVertex[ep->uslInd[k]].uv.y = ep->tv[k].uv.y;
-	}					
+		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
+	}
 }
 
 void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long tim, SMY_VERTEX * _pVertex) {
@@ -325,33 +289,29 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 			ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 12000 );
 		}
 		
-		_pVertex[ep->uslInd[k]].uv.x=ep->tv[k].uv.x;
-		_pVertex[ep->uslInd[k]].uv.y=ep->tv[k].uv.y;
-	}					
+		_pVertex[ep->uslInd[k]].uv = ep->tv[k].uv;
+	}
 }
 
 
 
 extern EERIEMATRIX ProjectionMatrix;
-void specialEE_RTP2(TexturedVertex *in,TexturedVertex *out)
-{
-	register EERIE_TRANSFORM * et=(EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->p.x = in->p.x - et->posx;	
-	out->p.y = in->p.y - et->posy;
-	out->p.z = in->p.z - et->posz;
-
-	register float temp =(out->p.z*et->ycos) - (out->p.x*et->ysin);
-	out->p.x = (out->p.z*et->ysin) + (out->p.x*et->ycos);	
-	out->p.z = (out->p.y*et->xsin) + (temp*et->xcos);	
-	out->p.y = (out->p.y*et->xcos) - (temp*et->xsin);
-
-	float fZTemp = 1.f / out->p.z;
-		
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; 
-		out->p.x=out->p.x*ProjectionMatrix._11*fZTemp+et->xmod;
-		out->p.y=out->p.y*ProjectionMatrix._22*fZTemp+et->ymod;
-		out->rhw=fZTemp;
+void specialEE_RTP2(TexturedVertex * in, TexturedVertex * out) {
 	
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	out->p = in->p - et->pos;
+	
+	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
+	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
+	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
+	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
+	
+	float fZTemp = 1.f / out->p.z;
+	
+	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->mod.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->mod.y;
+	out->rhw = fZTemp;
 }
 
 long EERIERTPPoly2(EERIEPOLY *ep)
@@ -412,75 +372,50 @@ bool VisibleSphere(float x, float y, float z, float radius) {
 	return true;
 }
 bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum);
-bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
-{
-	Vec3f point;
-	point.x=bbox->min.x;
-	point.y=bbox->min.y;
-	point.z=bbox->min.z;
 
-	if (!IsInFrustrum(&point,frustrum))
-	{
-		Vec3f point;
-		point.x=bbox->max.x;
-		point.y=bbox->min.y;
-		point.z=bbox->min.z;
-
-		if (!IsInFrustrum(&point,frustrum))
-		{
-			Vec3f point;
-			point.x=bbox->max.x;
-			point.y=bbox->max.y;
-			point.z=bbox->min.z;
-
-			if (!IsInFrustrum(&point,frustrum))
-			{
-				Vec3f point;
-				point.x=bbox->min.x;
-				point.y=bbox->max.y;
-				point.z=bbox->min.z;
-
-				if (!IsInFrustrum(&point,frustrum))
-				{
-					Vec3f point;
-					point.x=bbox->min.x;
-					point.y=bbox->min.y;
-					point.z=bbox->max.z;
-
-					if (!IsInFrustrum(&point,frustrum))
-					{
-						Vec3f point;
-						point.x=bbox->max.x;
-						point.y=bbox->min.y;
-						point.z=bbox->max.z;
-
-						if (!IsInFrustrum(&point,frustrum))
-						{
-							Vec3f point;
-							point.x=bbox->max.x;
-							point.y=bbox->max.y;
-							point.z=bbox->max.z;
-
-							if (!IsInFrustrum(&point,frustrum))
-							{
-								Vec3f point;
-								point.x=bbox->min.x;
-								point.y=bbox->max.y;
-								point.z=bbox->max.z;
-
-								if (!IsInFrustrum(&point,frustrum))
-								{
-									return	false;
-								}
-							}
-						}
-					}	
-				}
-			}
-		}
-	}	
-
-	return true;
+bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox, EERIE_FRUSTRUM * frustrum) {
+	
+	Vec3f point = bbox->min;
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->max.x, bbox->min.y, bbox->min.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->max.x, bbox->max.y, bbox->min.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->min.x, bbox->max.y, bbox->min.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->min.x, bbox->min.y, bbox->max.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->max.x, bbox->min.y, bbox->max.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = bbox->max;
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	point = Vec3f(bbox->min.x, bbox->max.y, bbox->max.z);
+	if(IsInFrustrum(&point, frustrum)) {
+		return true;
+	}
+	
+	return	false;
 }
 
 bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
@@ -493,20 +428,13 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 
 	return false;
 }
-PORTAL_ROOM_DRAW * RoomDraw=NULL;
-long NbRoomDraw=0;
-long * RoomDrawList=NULL;
-long NbRoomDrawList=0;
-long TotalRoomDrawList=0;
 
-bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
-{
-	if (EDITMODE) return false;
-
-	if (io==inter.iobj[0]) return false;
-
-	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
-
+bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
+	
+	if(EDITMODE || io == entities.player() || (io->ioflags & IO_FORCEDRAW)) {
+		return false;
+	}
+	
 	if (USE_PORTALS && portals)
 	{
 		Vec3f posi;
@@ -528,7 +456,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 
 			if (	(room_num>=0) 
 				&&	(RoomDraw)
-				&&	(RoomDraw[room_num].count))				
+				&&	(RoomDraw[room_num].count))
 			{
 
 			switch (USE_PORTALS)
@@ -585,24 +513,20 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 
 	return false;
 }
-//*********************************************************************************************************************
-// bool ARX_SCENE__PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
-//---------------------------------------------------------------------------------------------------------------------
+
 // USAGE/FUNCTION
 //   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
 //   bboxmin & bboxmax ARE in fact 2D-screen BBOXes using only (x,y).
 // RETURN:
 //   return true if IO cannot be seen, false if visible
-//---------------------------------------------------------------------------------------------------------------------
 // TODO:
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
-//*********************************************************************************************************************
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, Vec3f * position) {
+bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 	
 	if (EDITMODE) return false;
 
-	if (io==inter.iobj[0]) return false;
+	if (io==entities.player()) return false;
 
 	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
 
@@ -950,8 +874,6 @@ void ARX_PORTALS_InitDrawnRooms()
 	vPolyWater.clear();
 	vPolyLava.clear();
 
-	iTotPoly=0;
-
 	if(pDynamicVertexBuffer) {
 		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
@@ -1028,23 +950,18 @@ bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 }
  
  
-void ARX_PORTALS_BlendBBox(long room_num,EERIE_2D_BBOX * bbox)
-{
-	if (RoomDraw[room_num].count==0)
-	{
-		RoomDraw[room_num].bbox.min.x=bbox->min.x;
-		RoomDraw[room_num].bbox.min.y=bbox->min.y;
-		RoomDraw[room_num].bbox.max.x=bbox->max.x;
-		RoomDraw[room_num].bbox.max.y=bbox->max.y;		
-	}
-	else
-	{
-		RoomDraw[room_num].bbox.min.x=min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
-		RoomDraw[room_num].bbox.min.y=min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
-		RoomDraw[room_num].bbox.max.x=max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
-		RoomDraw[room_num].bbox.max.y=max(RoomDraw[room_num].bbox.max.y, bbox->max.y);		
+void ARX_PORTALS_BlendBBox(long room_num,EERIE_2D_BBOX * bbox) {
+	if(RoomDraw[room_num].count == 0) {
+		RoomDraw[room_num].bbox.min = bbox->min;
+		RoomDraw[room_num].bbox.max = bbox->max;
+	} else {
+		RoomDraw[room_num].bbox.min.x = min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
+		RoomDraw[room_num].bbox.min.y = min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
+		RoomDraw[room_num].bbox.max.x = max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
+		RoomDraw[room_num].bbox.max.y = max(RoomDraw[room_num].bbox.max.y, bbox->max.y);
 	}
 }
+
 void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d)
 {
 	fr->plane[plane].a=a;
@@ -1055,7 +972,7 @@ void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d
 
 void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt1,Vec3f * pt2)
 {
-	register float Ax,Ay,Az,Bx,By,Bz,epnlen;
+	float Ax, Ay, Az, Bx, By, Bz, epnlen;
 	Ax=pt1->x-orgn->x;
 	Ay=pt1->y-orgn->y;
 	Az=pt1->z-orgn->z;
@@ -1165,18 +1082,6 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
  
 	frustrum->nb=4;
 
-	//Ajout du plan Near & Far
-	a=matres._14-matres._13;
-	b=matres._24-matres._23;
-	c=matres._34-matres._33;
-	d=matres._44-matres._43;
-	b=-b;
- 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
-	efpPlaneFar.a=a*n;
-	efpPlaneFar.b=b*n;
-	efpPlaneFar.c=c*n;
-	efpPlaneFar.d=d*n;
-	
 	a=matres._14+matres._13;
 	b=matres._24+matres._23;
 	c=matres._34+matres._33;
@@ -1189,29 +1094,22 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	efpPlaneNear.d=d*n;
 }
 
-void RoomDrawRelease()
-{
-	if (RoomDrawList)
-		free(RoomDrawList);
-
-	RoomDrawList=NULL;
-
-	if (RoomDraw)
-		free(RoomDraw);
-
-	RoomDraw=NULL;
+void RoomDrawRelease() {
+	free(RoomDrawList), RoomDrawList = NULL;
+	free(RoomDraw), RoomDraw = NULL;
 }
-void RoomDrawListAdd(long num)
-{
-	if (TotalRoomDrawList<=NbRoomDrawList)
-	{
-		RoomDrawList=(long *)realloc(RoomDrawList,sizeof(long)*(NbRoomDrawList+1));
+
+void RoomDrawListAdd(long num) {
+	
+	if(TotalRoomDrawList <= NbRoomDrawList) {
+		RoomDrawList = (long *)realloc(RoomDrawList, sizeof(long) * (NbRoomDrawList + 1));
 		TotalRoomDrawList=NbRoomDrawList+1;
 	}
-
+	
 	RoomDrawList[NbRoomDrawList]=num;	
 	NbRoomDrawList++;
 }
+
 void RoomFrustrumAdd(long num,EERIE_FRUSTRUM * fr)
 {
 	if (RoomDraw[num].frustrum.nb_frustrums<MAX_FRUSTRUMS-1)
@@ -1662,11 +1560,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				Vec3f nrm;
-				nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-				nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-				nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ((dot(ep->norm , nrm) > 0.f) &&
@@ -1819,11 +1713,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				Vec3f nrm;
-				nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-				nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-				nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ( (dot( ep->norm , nrm )>0.f) &&
@@ -1982,35 +1872,24 @@ void ComputeTileLights(short x,short z)
 	}
 }
 
-void ClearTileLights()
-{
-	for (long j=0;j<MAX_BKGZ;j++)
-	for (long i=0;i<MAX_BKGZ;i++)
-	{
-		tilelights[i][j].max=0;
-		tilelights[i][j].num=0;
-
-		if (tilelights[i][j].el != NULL)
-		{
-			free (tilelights[i][j].el);
-			tilelights[i][j].el=NULL;
-		}
+void ClearTileLights() {
+	for(long j = 0; j < MAX_BKGZ; j++) for(long i = 0; i < MAX_BKGZ; i++) {
+		tilelights[i][j].max = 0;
+		tilelights[i][j].num = 0;
+		free(tilelights[i][j].el), tilelights[i][j].el = NULL;
 	}
 }
-
-//-----------------------------------------------------------------------------
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
 {
 
 	
-	if (RoomDraw[room_num].count)
-	{
-		if(!portals->room[room_num].pVertexBuffer)
-		{
-			char tTxt[256];
-			sprintf(tTxt,"portals %ld - Zero Polys",room_num);
-			LogError<< tTxt<<" Error Portals";
+	if(RoomDraw[room_num].count) {
+		
+		if(!portals->room[room_num].pVertexBuffer) {
+			// No need to spam this for every frame as there will already be an
+			// earlier warning
+			LogDebug("no vertex data for room " << room_num);
 			return;
 		}
 		
@@ -2082,13 +1961,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			fDist-=ep->v[0].rhw;
 
-			Vec3f nrm;
-			nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-			nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-			nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+			Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
 			int to;
-
 			if(ep->type&POLY_QUAD)
 			{
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
@@ -2747,16 +2621,10 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			continue;
 		}
 
-		Vec3f pos;
-		pos.x=epp->center.x-ACTIVECAM->pos.x;
-		pos.y=epp->center.y-ACTIVECAM->pos.y;
-		pos.z=epp->center.z-ACTIVECAM->pos.z;
+		Vec3f pos = epp->center - ACTIVECAM->pos;
 		float fRes = dot(pos, epp->norm);
-
 		long ret=1;
-
-		if(IsSphereInFrustrum(epp->v[0].rhw,&epp->center,frustrum))
-		{
+		if(IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
 			ret=0;
 		}
 
@@ -2806,19 +2674,18 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			{
 				portals->portals[portals->room[room_num].portals[lll]].useportal=1;
 				ARX_PORTALS_Frustrum_ComputeRoom(po->room_1,&fd,prec,tim);
-			}			
-		}	
+			}
+		}
 	}
 
 	return portals_count; 
-			}
+}
 
-		
-bool Clip_Visible(const Vec3f * orgn, Vec3f * dest)
-{
-	register float dx,dy,dz,adx,ady,adz,ix,iz;
-	register float x0,z0;
-	register float forr,temp;
+bool Clip_Visible(const Vec3f * orgn, Vec3f * dest) {
+	
+	float dx, dy, dz, adx, ady, adz, ix, iz;
+	float x0, z0;
+	float forr, temp;
  
 	dx=(dest->x-orgn->x);
 	adx=EEfabs(dx);
@@ -2911,29 +2778,20 @@ long curpixel;
 
 
 
-bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
-	{
+bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
 		
-	Vec3f n,s21,s31;
-
-	s21.x=ep->v[1].p.x-ep->v[0].p.x;
-	s21.y=ep->v[1].p.y-ep->v[0].p.y;
-	s21.z=ep->v[1].p.z-ep->v[0].p.z;
-	s31.x=ep->v[2].p.x-ep->v[0].p.x;
-	s31.y=ep->v[2].p.y-ep->v[0].p.y;
-	s31.z=ep->v[2].p.z-ep->v[0].p.z;
-
-	n.y=(s21.z*s31.x)-(s21.x*s31.z);
-	n.x=(s21.y*s31.z)-(s21.z*s31.y);
-	n.z=(s21.x*s31.y)-(s21.y*s31.x);
-
-	// uses s21.x instead of d
-	s21.x=ep->v[0].p.x*n.x+ep->v[0].p.y*n.y+ep->v[0].p.z*n.z;
-
-	s21.x=(s21.x-(n.x*pos->x)-(n.z*pos->z))/n.y;
-	*ret=s21.x;
+	Vec3f s21 = ep->v[1].p - ep->v[0].p;
+	Vec3f s31 = ep->v[2].p - ep->v[0].p;
+	
+	Vec3f n;
+	n.y = (s21.z * s31.x) - (s21.x * s31.z);
+	n.x = (s21.y * s31.z) - (s21.z * s31.y);
+	n.z = (s21.x * s31.y) - (s21.y * s31.x);
+	
+	float d = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
+	*ret = (d - n.x * pos->x - n.z * pos->z) / n.y;
+	
 	return true;
-
 }
 
 extern long SPECIAL_DRAGINTER_RENDER;
@@ -2945,13 +2803,9 @@ long MAX_FRAME_COUNT=0;
 ///////////////////////////////////////////////////////////
 void ARX_SCENE_Render(long flag) {
 	
-	FrameCount++;
-
 	FRAME_COUNT++;
 
 	if (FRAME_COUNT>MAX_FRAME_COUNT) FRAME_COUNT=0;
-
-	if (!TESTMODE) FRAME_COUNT=0;
 
 	if (EDITMODE) FRAME_COUNT=0;
 
@@ -2968,7 +2822,7 @@ void ARX_SCENE_Render(long flag) {
 
 	unsigned long tim = (unsigned long)(arxtime);
 	
-	WATEREFFECT+=0.0005f*_framedelay;
+	WATEREFFECT+=0.0005f*framedelay;
 
 	if (flag == 3)
 		return;
@@ -3081,14 +2935,10 @@ if (USE_PORTALS && portals)
 		{
 			case 1: {
 				EERIE_2D_BBOX bbox;
-				bbox.min.x=0;
-				bbox.min.y=0;
-
-				bbox.max.x = static_cast<float>( DANAESIZX );
-				bbox.max.y = static_cast<float>( DANAESIZY );
-
-				ARX_PORTALS_ComputeRoom(room_num,&bbox,lprec,tim);
-				ARX_PORTALS_RenderRooms(lprec,tim);
+				bbox.min = Vec2f::ZERO;
+				bbox.max = Vec2f(float(DANAESIZX), float(DANAESIZY));
+				ARX_PORTALS_ComputeRoom(room_num, &bbox, lprec, tim);
+				ARX_PORTALS_RenderRooms(lprec, tim);
 				break;
 			}
 			case 2: {
@@ -3161,10 +3011,7 @@ else
 			else
 			{
 				
-				nrm.x=ep->v[2].p.x-ACTIVECAM->pos.x;
-				nrm.y=ep->v[2].p.y-ACTIVECAM->pos.y;
-				nrm.z=ep->v[2].p.z-ACTIVECAM->pos.z;
-
+				nrm = ep->v[2].p - ACTIVECAM->pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ( (dot( ep->norm , nrm )>0.f) &&
@@ -3289,8 +3136,9 @@ else
 	if(GInput->isKeyPressedNowPressed(Keyboard::Key_J))
 		bOLD_CLIPP=!bOLD_CLIPP;
 
-	if ((SHOWSHADOWS) && (!Project.improve))
+	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
+	}
 
 	FRAME_COUNT=LAST_FC;
 

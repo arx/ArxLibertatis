@@ -46,7 +46,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include "game/Entity.h"
+#include "game/EntityManager.h"
+#include "game/Equipment.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "io/resource/ResourcePath.h"
@@ -60,7 +65,7 @@ using std::malloc;
 using std::memset;
 using std::strcpy;
 
-extern INTERACTIVE_OBJ * LASTSPAWNED;
+extern Entity * LASTSPAWNED;
 
 namespace script {
 
@@ -75,7 +80,7 @@ class InventoryCommand : public Command {
 	public:
 		
 		explicit SubCommand(const std::string & name)
-			: Command("inventory " + name, ANY_IO), command(name) { }
+			: Command("inventory " + name, AnyEntity), command(name) { }
 		
 		inline const string & getCommand() { return command; }
 		
@@ -107,7 +112,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getEntity();
 			
 			if(io->inventory) {
 				
@@ -116,20 +121,12 @@ class InventoryCommand : public Command {
 				for(long nj = 0; nj < id->sizey; nj++) {
 					for(long ni = 0; ni < id->sizex; ni++) {
 						
-						INTERACTIVE_OBJ * item = id->slot[ni][nj].io;
+						Entity * item = id->slot[ni][nj].io;
 						if(!item) {
 							continue;
 						}
 						
-						if(item->scriptload) {
-							long tmp = GetInterNum(item);
-							arx_assert(ValidIONum(tmp) && inter.iobj[tmp] == item);
-							RemoveFromAllInventories(item);
-							ReleaseInter(item);
-							inter.iobj[tmp] = NULL;
-						} else {
-							item->show = SHOW_FLAG_KILLED;
-						}
+						item->destroy();
 						
 						id->slot[ni][nj].io = NULL;
 					}
@@ -157,9 +154,9 @@ class InventoryCommand : public Command {
 		
 		Result execute(Context & context) {
 			
-			context.getIO()->inventory_skin = res::path::load(context.getWord());
+			context.getEntity()->inventory_skin = res::path::load(context.getWord());
 			
-			DebugScript(' ' << context.getIO()->inventory_skin);
+			DebugScript(' ' << context.getEntity()->inventory_skin);
 			
 			return Success;
 		}
@@ -178,17 +175,15 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
 			RemoveFromAllInventories(t);
-			t->show = SHOW_FLAG_IN_INVENTORY;
-			if(!CanBePutInInventory(t)) {
-				PutInFrontOfPlayer(t);
-			}
+			
+			giveToPlayer(t);
 			
 			return Success;
 		}
@@ -214,9 +209,9 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			file = ("graph/obj3d/interactive/items" / file).append(".teo");
+			file = "graph/obj3d/interactive/items" / file;
 			
-			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
+			Entity * ioo = AddItem(file);
 			if(!ioo) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
@@ -224,7 +219,6 @@ class InventoryCommand : public Command {
 			
 			LASTSPAWNED = ioo;
 			ioo->scriptload = 1;
-			MakeTemporaryIOIdent(ioo);
 			SendInitScriptEvent(ioo);
 			
 			if(multi) {
@@ -244,11 +238,7 @@ class InventoryCommand : public Command {
 				DebugScript(' ' << file);
 			}
 			
-			ioo->show = SHOW_FLAG_IN_INVENTORY;
-			
-			if(!CanBePutInInventory(ioo)) {
-				PutInFrontOfPlayer(ioo);
-			}
+			giveToPlayer(ioo);
 			
 			return Success;
 		}
@@ -267,14 +257,14 @@ class InventoryCommand : public Command {
 			
 			DebugScript(' ' << target);
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
 			}
 			
 			if(ARX_EQUIPMENT_IsPlayerEquip(t)) {
-				ARX_EQUIPMENT_UnEquip(inter.iobj[0], t, 1);
+				ARX_EQUIPMENT_UnEquip(entities.player(), t, 1);
 			} else {
 				RemoveFromAllInventories(t);
 			}
@@ -283,7 +273,7 @@ class InventoryCommand : public Command {
 			t->show = SHOW_FLAG_IN_INVENTORY;
 			
 			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getIO()->inventory, t, &xx, &yy)) {
+			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, t, &xx, &yy)) {
 				PutInFrontOfPlayer(t);
 			}
 			
@@ -304,7 +294,7 @@ class InventoryCommand : public Command {
 			
 			res::path file = res::path::load(context.getWord());
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getEntity();
 			
 			if(FORBID_SCRIPT_IO_CREATION || !io->inventory) {
 				if(multi) {
@@ -313,7 +303,7 @@ class InventoryCommand : public Command {
 				return Failed;
 			}
 			
-			file = ("graph/obj3d/interactive/items" / file).append(".teo");
+			file = "graph/obj3d/interactive/items" / file;
 			
 			long count = -1;
 			if(multi) {
@@ -327,7 +317,7 @@ class InventoryCommand : public Command {
 				DebugScript(' ' << file);
 			}
 			
-			INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(file, IO_IMMEDIATELOAD);
+			Entity * ioo = AddItem(file);
 			if(!ioo) {
 				ScriptWarning << "could not add item " << file;
 				return Failed;
@@ -339,7 +329,6 @@ class InventoryCommand : public Command {
 			
 			LASTSPAWNED = ioo;
 			ioo->scriptload = 1;
-			MakeTemporaryIOIdent(ioo);
 			SendInitScriptEvent(ioo);
 			ioo->show = SHOW_FLAG_IN_INVENTORY;
 			
@@ -353,7 +342,7 @@ class InventoryCommand : public Command {
 			}
 			
 			long xx, yy;
-			if(!CanBePutInSecondaryInventory(context.getIO()->inventory, ioo, &xx, &yy)) {
+			if(!CanBePutInSecondaryInventory(context.getEntity()->inventory, ioo, &xx, &yy)) {
 					PutInFrontOfPlayer(ioo);
 			}
 			
@@ -372,7 +361,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getEntity();
 			if(io->inventory) {
 				if(SecondaryInventory == io->inventory) {
 					SecondaryInventory = NULL;
@@ -395,8 +384,8 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			if(SecondaryInventory != context.getIO()->inventory) {
-				SecondaryInventory = context.getIO()->inventory;
+			if(SecondaryInventory != context.getEntity()->inventory) {
+				SecondaryInventory = context.getEntity()->inventory;
 				ARX_SOUND_PlayInterface(SND_BACKPACK);
 			}
 			
@@ -415,7 +404,7 @@ class InventoryCommand : public Command {
 			
 			DebugScript("");
 			
-			if(context.getIO()->inventory != NULL) {
+			if(context.getEntity()->inventory != NULL) {
 				SecondaryInventory = NULL;
 				ARX_SOUND_PlayInterface(SND_BACKPACK);
 			}
@@ -427,7 +416,7 @@ class InventoryCommand : public Command {
 	
 public:
 	
-	InventoryCommand() : Command("inventory", ANY_IO) {
+	InventoryCommand() : Command("inventory", AnyEntity) {
 		addCommand(new CreateCommand);
 		addCommand(new SkinCommand);
 		addCommand(new PlayerAddFromSceneCommand);
@@ -463,7 +452,7 @@ class EquipCommand : public Command {
 	
 public:
 	
-	EquipCommand() : Command("equip", ANY_IO) { }
+	EquipCommand() : Command("equip", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -476,24 +465,24 @@ public:
 		
 		DebugScript(' ' << options << ' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
 		if(unequip) {
-			INTERACTIVE_OBJ * oes = EVENT_SENDER;
-			EVENT_SENDER = inter.iobj[t];
-			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPOUT);
+			Entity * oes = EVENT_SENDER;
+			EVENT_SENDER = entities[t];
+			Stack_SendIOScriptEvent(context.getEntity(), SM_EQUIPOUT);
 			EVENT_SENDER = oes;
-			ARX_EQUIPMENT_UnEquip(inter.iobj[t], context.getIO());
+			ARX_EQUIPMENT_UnEquip(entities[t], context.getEntity());
 		} else {
-			INTERACTIVE_OBJ * oes = EVENT_SENDER;
-			EVENT_SENDER = inter.iobj[t];
-			Stack_SendIOScriptEvent(context.getIO(), SM_EQUIPIN);
+			Entity * oes = EVENT_SENDER;
+			EVENT_SENDER = entities[t];
+			Stack_SendIOScriptEvent(context.getEntity(), SM_EQUIPIN);
 			EVENT_SENDER = oes;
-			ARX_EQUIPMENT_Equip(inter.iobj[t], context.getIO());
+			ARX_EQUIPMENT_Equip(entities[t], context.getEntity());
 		}
 		
 		return Success;
@@ -513,7 +502,7 @@ public:
 		
 		DebugScript(' ' << draw);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(draw) {
 			if(io->_npcdata->weaponinhand == 0) {
@@ -544,12 +533,12 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
-		io->GameFlags &= ~GFLAG_HIDEWEAPON;
+		io->gameFlags &= ~GFLAG_HIDEWEAPON;
 		HandleFlags("h") {
 			if(flg & flag('h')) {
-				io->GameFlags |= GFLAG_HIDEWEAPON;
+				io->gameFlags |= GFLAG_HIDEWEAPON;
 			}
 		}
 		

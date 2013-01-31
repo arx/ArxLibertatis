@@ -61,7 +61,18 @@ using std::max;
 
 // RANDOM Sequences Funcs/Defs
 inline float rnd() {
-	return rand() * (1.0f / (RAND_MAX - 1));
+	return rand() * (1.0f / RAND_MAX);
+}
+
+/*!
+ * Generate a random vertor with independently unform distributed components.
+ *
+ * @param min minimum value for all components (default: 0.f)
+ * @param max maximum value for all components (default: 1.f)
+ */
+inline Vec3f randomVec(float min = 0.f, float max = 1.f) {
+	float range = max - min;
+	return Vec3f(rnd() * range + min, rnd() * range + min, rnd() * range + min);
 }
 
 //Approximative Methods
@@ -155,22 +166,16 @@ inline unsigned int GetNextPowerOf2(unsigned int n) {
 
 // Rotations
 
-inline void _ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	out->x = (in->x * c) + (in->y * s);
-	out->y = (in->y * c) - (in->x * s);
-	out->z = in->z;
+inline void ZRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+	*out = Vec3f(in->x * c + in->y * s, in->y * c - in->x * s, in->z);
 }
 
-inline void _YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	out->x = (in->x * c) + (in->z * s);
-	out->y = in->y;
-	out->z = (in->z * c) - (in->x * s);
+inline void YRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+	*out = Vec3f(in->x * c + in->z * s, in->y, in->z * c - in->x * s);
 }
 
-inline void _XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
-	out->x = in->x;
-	out->y = (in->y * c) - (in->z * s);
-	out->z = (in->y * s) + (in->z * c);
+inline void XRotatePoint(Vec3f * in, Vec3f * out, float c, float s) {
+	*out = Vec3f(in->x, in->y * c - in->z * s, in->y * s + in->z * c);
 }
 
 //! Normalizes a Vector approximately. Returns its approcimate length before normalization.
@@ -190,19 +195,14 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 // Rotation Functions
 
-inline void _YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
-	register float tempy;
+inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
+	float tempy;
 	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
 	out->y = (in->x * cam->Ycos) + (in->z * cam->Ysin);
 	tempy = (in->y * cam->Xcos) - (out->z * cam->Xsin);
 	out->x = (out->y * cam->Zcos) + (tempy * cam->Zsin);
 	out->y = (tempy * cam->Zcos) - (out->y * cam->Zsin);
 	out->z = (in->y * cam->Xsin) + (out->z * cam->Xcos);
-}
-
-//! Fast normal rotation :p
-inline void _YXZRotateNorm(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
-	out->z = (in->y * cam->Xsin) + (((in->z * cam->Ycos) - (in->x * cam->Ysin)) * cam->Xcos);
 }
 
 // QUATERNION Funcs/Defs
@@ -234,10 +234,10 @@ inline void TransformVertexMatrix(EERIEMATRIX * mat, Vec3f * vertexin, Vec3f * v
 // Transforms a Vertex by a quaternion
 inline void TransformVertexQuat(EERIE_QUAT * quat, Vec3f * vertexin, Vec3f * vertexout) {
 	
-	register float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
-	register float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;
-	register float rz = vertexin->z * quat->w - vertexin->x * quat->y + vertexin->y * quat->x;
-	register float rw = vertexin->x * quat->x + vertexin->y * quat->y + vertexin->z * quat->z;
+	float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
+	float ry = vertexin->y * quat->w - vertexin->z * quat->x + vertexin->x * quat->z;
+	float rz = vertexin->z * quat->w - vertexin->x * quat->y + vertexin->y * quat->x;
+	float rw = vertexin->x * quat->x + vertexin->y * quat->y + vertexin->z * quat->z;
 	
 	vertexout->x = quat->w * rx + quat->x * rw + quat->y * rz - quat->z * ry;
 	vertexout->y = quat->w * ry + quat->y * rw + quat->z * rx - quat->x * rz;
@@ -336,32 +336,41 @@ struct _checked_range_cast {
 	const char * file;
 	size_t line;
 	
-	inline _checked_range_cast(const char * _file, size_t _line) : file(_file), line(_line) { }
+	_checked_range_cast(const char * _file, size_t _line) : file(_file), line(_line) { }
 	
 	template <class T, class V>
-	inline T cast(V value) {
-		arx_assert_impl(value >= min(T(0)) && value <= std::numeric_limits<T>::max(), file, line, format(value), cast(value));
+	T cast(V value) {
+		check(in_range<T>(value), value);
 		return static_cast<T>(value);
 	}
 	
 private:
 	
 	template <class T>
-	static inline T min(T t) { ARX_UNUSED(t); return std::numeric_limits<T>::min(); }
-	static inline float min(float t) { ARX_UNUSED(t); return -std::numeric_limits<float>::max(); }
-	static inline double min(double t) { ARX_UNUSED(t); return -std::numeric_limits<double>::max(); }
+	static T min(T t) { ARX_UNUSED(t); return std::numeric_limits<T>::min(); }
+	static float min(float t) { ARX_UNUSED(t); return -std::numeric_limits<float>::max(); }
+	static double min(double t) { ARX_UNUSED(t); return -std::numeric_limits<double>::max(); }
 	
-	static inline const char * format(unsigned long v) { ARX_UNUSED(v); return "value is %ul"; }
-	static inline const char * format(long v) { ARX_UNUSED(v); return "value is %l"; }
-	static inline const char * format(unsigned int v) { ARX_UNUSED(v); return "value is %ud"; }
-	static inline const char * format(int v) { ARX_UNUSED(v); return "value is %d"; }
-	static inline const char * format(double v) { ARX_UNUSED(v); return "value is %f"; }
+	template <class T, class V>
+	static bool in_range(V value) {
+		return value >= min(T(0)) && value <= std::numeric_limits<T>::max();
+	}
 	
-	static inline unsigned long cast(unsigned long v) { return v; }
-	static inline long cast(long v) { return v; }
-	static inline unsigned int cast(unsigned int v) { return v; }
-	static inline int cast(int v) { return v; }
-	static inline double cast(double v) { return v; }
+	void check(bool in_range, unsigned long v) {
+		arx_assert_impl(in_range, file, line, "value is %lu", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, long v) {
+		arx_assert_impl(in_range, file, line, "value is %ld", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, unsigned int v) {
+		arx_assert_impl(in_range, file, line, "value is %u", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, int v) {
+		arx_assert_impl(in_range, file, line, "value is %d", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
+	void check(bool in_range, double v) {
+		arx_assert_impl(in_range, file, line, "value is %f", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
+	}
 	
 };
 

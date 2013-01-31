@@ -74,92 +74,108 @@ Font * hFontCredits = NULL;
 Font * hFontInGame = NULL;
 Font * hFontInGameNote = NULL;
 
-//-----------------------------------------------------------------------------
-void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, const Rect & _rRect, Color col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
-{
+void ARX_UNICODE_FormattingInRect(Font * font, const std::string & text,
+                                  const Rect & rect, Color col, long * textHeight = 0,
+                                  long * numChars = 0, bool computeOnly = false) {
+	
 	std::string::const_iterator itLastLineBreak = text.begin();
 	std::string::const_iterator itLastWordBreak = text.begin();
 	std::string::const_iterator it = text.begin();
 	
-	int maxLineWidth = (_rRect.right == Rect::Limits::max() ? std::numeric_limits<int>::max() : _rRect.width());
+	int maxLineWidth;
+	if(rect.right == Rect::Limits::max()) {
+		maxLineWidth = std::numeric_limits<int>::max();
+	} else {
+		maxLineWidth = rect.width();
+	}
 	arx_assert(maxLineWidth > 0);
-	int penY = _rRect.top;
-
-	if(textHeight)
+	int penY = rect.top;
+	
+	if(textHeight) {
 		*textHeight = 0;
-
-	if(numChars)
+	}
+	
+	if(numChars) {
 		*numChars = 0;
-
+	}
+	
 	// Ensure we can at least draw one line...
-	if(penY + pFont->GetLineHeight() > _rRect.bottom)
+	if(penY + font->getLineHeight() > rect.bottom) {
 		return;
-
-	for(it = text.begin(); it != text.end(); ++it)
-	{
-		bool bLineBreak = false;
-
+	}
+	
+	for(it = text.begin(); it != text.end(); ++it) {
+		
 		// Line break ?
-		if((*it == '\n') || (*it == '*'))
-		{
-			bLineBreak = true;
-		}
-		else
-		{
+		bool isLineBreak = false;
+		if(*it == '\n' || *it == '*') {
+			isLineBreak = true;
+		} else {
+			
 			// Word break ?
-			if((*it == ' ') || (*it == '\t'))
-			{
+			if(*it == ' ' || *it == '\t') {
 				itLastWordBreak = it;
 			}
-
+			
 			// Check length of string up to this point
-			Vec2i size = pFont->GetTextSize(itLastLineBreak, it+1);
-			if(size.x > maxLineWidth)	// Too long ?
-			{
-				bLineBreak = true;		// Draw a line from the last line break up to the last word break
-				it = itLastWordBreak;
-			}			
+			Vec2i size = font->getTextSize(itLastLineBreak, it + 1);
+			if(size.x > maxLineWidth) { // Too long ?
+				isLineBreak = true;
+				if(itLastWordBreak > itLastLineBreak) {
+					// Draw a line from the last line break up to the last word break
+					it = itLastWordBreak;
+				} else if(it == itLastLineBreak) {
+					// Not enough space to render even one character!
+					break;
+				} else {
+					// The current word is too long to fit on a line, force a line break
+				}
+			}
 		}
 		
-		// If we have to draw a line 
+		// If we have to draw a line
 		//  OR
 		// This is the last character of the string
-		if(bLineBreak || (it+1 == text.end()))
-		{
+		if(isLineBreak || it + 1 == text.end()) {
+			
 			std::string::const_iterator itTextStart = itLastLineBreak;
 			std::string::const_iterator itTextEnd;
-
-			if(bLineBreak)
-				itTextEnd = it;
-			else
-				itTextEnd = it+1;
-
-			// Draw the line
-			if(!computeOnly)
-				pFont->Draw(_rRect.left, penY, itTextStart, itTextEnd, col);
 			
-			itLastLineBreak = it+1;
-
-			penY += pFont->GetLineHeight();
-
+			itTextEnd = (isLineBreak) ? it : it + 1;
+			
+			// Draw the line
+			if(!computeOnly) {
+				font->draw(rect.left, penY, itTextStart, itTextEnd, col);
+			}
+			
+			if(it != text.end()) {
+				itLastLineBreak = it + 1;
+			}
+			
+			penY += font->getLineHeight();
+			
 			// Validate that the new line will fit inside the rect...
-			if(penY + pFont->GetLineHeight() > _rRect.bottom)
+			if(penY + font->getLineHeight() > rect.bottom) {
 				break;
+			}
 		}
 	}
-
+	
 	// Return text height
-	if(textHeight)
-		*textHeight = penY - _rRect.top;
-
+	if(textHeight) {
+		*textHeight = penY - rect.top;
+	}
+	
 	// Return num characters displayed
-	if(numChars)
+	if(numChars) {
 		*numChars = it - text.begin();
+	}
 }
 
-long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const string & text, const Rect & _rRect) {
+long ARX_UNICODE_ForceFormattingInRect(Font * font, const string & text,
+                                       const Rect & rect) {
 	long numChars;
-	ARX_UNICODE_FormattingInRect(pFont, text, _rRect, Color::none, 0, &numChars, true);
+	ARX_UNICODE_FormattingInRect(font, text, rect, Color::none, 0, &numChars, true);
 	return numChars;
 }
 
@@ -227,11 +243,11 @@ void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, 
 
 long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, Color col )
 {
-	Vec2i size = font->GetTextSize(str);
+	Vec2i size = font->getTextSize(str);
 	int drawX = ((int)x) - (size.x / 2);
 	int drawY = (int)y;
 
-	font->Draw(drawX, drawY, str, col);
+	font->draw(drawX, drawY, str, col);
 
 	return size.x;
 }
@@ -264,7 +280,9 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	return 0;
 }
 
-static Font * _CreateFont(const res::path & fontFace, const string & fontProfileName, unsigned int fontSize, float scaleFactor) {
+static Font * createFont(const res::path & fontFace,
+                         const string & fontProfileName, unsigned int fontSize,
+                         float scaleFactor) {
 	
 	std::stringstream ss;
 
@@ -281,7 +299,7 @@ static Font * _CreateFont(const res::path & fontFace, const string & fontProfile
 
 	fontSize *= scaleFactor;
 
-	Font * newFont = FontCache::GetFont(fontFace, fontSize);
+	Font * newFont = FontCache::getFont(fontFace, fontSize);
 	if(!newFont) {
 		LogError << "error loading font: " << fontFace << " of size " << fontSize;
 	}
@@ -336,33 +354,29 @@ bool ARX_Text_Init() {
 	// TODO font size jumps around scale = 1
 	float small_scale = scale > 1.0f ? scale * 0.8f : scale;
 	
-	if(pTextManage) {
-		delete pTextManage;
-	}
+	delete pTextManage;
 	pTextManage = new TextManager();
-	if(pTextManageFlyingOver) {
-		
-	}
+	delete pTextManageFlyingOver;
 	pTextManageFlyingOver = new TextManager();
 	
-	FontCache::Initialize();
+	FontCache::initialize();
 	
-	Font * nFontMainMenu = _CreateFont(file, "system_font_mainmenu_size", 58, scale);
-	Font * nFontMenu = _CreateFont(file, "system_font_menu_size", 32, scale);
-	Font * nFontControls = _CreateFont(file, "system_font_menucontrols_size", 22, scale);
-	Font * nFontCredits = _CreateFont(file, "system_font_menucredits_size", 36, scale);
-	Font * nFontInGame = _CreateFont(file, "system_font_book_size", 18, small_scale);
-	Font * nFontInGameNote = _CreateFont(file, "system_font_note_size", 18, small_scale);
-	Font * nFontInBook = _CreateFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontMainMenu = createFont(file, "system_font_mainmenu_size", 58, scale);
+	Font * nFontMenu = createFont(file, "system_font_menu_size", 32, scale);
+	Font * nFontControls = createFont(file, "system_font_menucontrols_size", 22, scale);
+	Font * nFontCredits = createFont(file, "system_font_menucredits_size", 36, scale);
+	Font * nFontInGame = createFont(file, "system_font_book_size", 18, small_scale);
+	Font * nFontInGameNote = createFont(file, "system_font_note_size", 18, small_scale);
+	Font * nFontInBook = createFont(file, "system_font_book_size", 18, small_scale);
 	
 	// Only release old fonts after creating new ones to allow same fonts to be cached.
-	FontCache::ReleaseFont(hFontMainMenu);
-	FontCache::ReleaseFont(hFontMenu);
-	FontCache::ReleaseFont(hFontControls);
-	FontCache::ReleaseFont(hFontCredits);
-	FontCache::ReleaseFont(hFontInGame);
-	FontCache::ReleaseFont(hFontInGameNote);
-	FontCache::ReleaseFont(hFontInBook);
+	FontCache::releaseFont(hFontMainMenu);
+	FontCache::releaseFont(hFontMenu);
+	FontCache::releaseFont(hFontControls);
+	FontCache::releaseFont(hFontCredits);
+	FontCache::releaseFont(hFontInGame);
+	FontCache::releaseFont(hFontInGameNote);
+	FontCache::releaseFont(hFontInBook);
 	
 	hFontMainMenu = nFontMainMenu;
 	hFontMenu = nFontMenu;
@@ -372,10 +386,17 @@ bool ARX_Text_Init() {
 	hFontInGameNote = nFontInGameNote;
 	hFontInBook = nFontInBook;
 	
-	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->GetSize() << ", "
-	        << hFontMenu->GetSize() << ", " << hFontControls->GetSize()
-	        << ", " << hFontCredits->GetSize() << ", " << hFontInGame->GetSize() << ", "
-	        << hFontInGameNote->GetSize() << ", " << hFontInBook->GetSize();
+	if(!hFontMainMenu || !hFontMenu || !hFontControls || !hFontCredits || !hFontInGame
+	   || !hFontInGameNote || !hFontInBook) {
+		LogCritical << "Could not load font " << file << " for scale " << scale
+		            << " / small scale " << small_scale;
+		return false;
+	}
+	
+	LogInfo << "Loaded font " << file << " with sizes " << hFontMainMenu->getSize() << ", "
+	        << hFontMenu->getSize() << ", " << hFontControls->getSize()
+	        << ", " << hFontCredits->getSize() << ", " << hFontInGame->getSize() << ", "
+	        << hFontInGameNote->getSize() << ", " << hFontInBook->getSize();
 	
 	return true;
 }
@@ -391,26 +412,26 @@ void ARX_Text_Close() {
 	delete pTextManageFlyingOver;
 	pTextManageFlyingOver = NULL;
 	
-	FontCache::ReleaseFont(hFontInBook);
+	FontCache::releaseFont(hFontInBook);
 	hFontInBook = NULL;
 	
-	FontCache::ReleaseFont(hFontMainMenu);
+	FontCache::releaseFont(hFontMainMenu);
 	hFontMainMenu = NULL;
 	
-	FontCache::ReleaseFont(hFontMenu);
+	FontCache::releaseFont(hFontMenu);
 	hFontMenu = NULL;
 	
-	FontCache::ReleaseFont(hFontControls);
+	FontCache::releaseFont(hFontControls);
 	hFontControls = NULL;
 	
-	FontCache::ReleaseFont(hFontCredits);
+	FontCache::releaseFont(hFontCredits);
 	hFontCredits = NULL;
 	
-	FontCache::ReleaseFont(hFontInGame);
+	FontCache::releaseFont(hFontInGame);
 	hFontInGame = NULL;
 	
-	FontCache::ReleaseFont(hFontInGameNote);
+	FontCache::releaseFont(hFontInGameNote);
 	hFontInGameNote = NULL;
 	
-	FontCache::Shutdown();
+	FontCache::shutdown();
 }

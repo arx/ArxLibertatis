@@ -68,49 +68,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-//-----------------------------------------------------------------------------
-extern float	PROGRESS_BAR_TOTAL;
-extern float	PROGRESS_BAR_COUNT;
-extern float	OLD_PROGRESS_BAR_COUNT;
+extern float PROGRESS_BAR_TOTAL;
+extern float PROGRESS_BAR_COUNT;
+extern float OLD_PROGRESS_BAR_COUNT;
 
-//-----------------------------------------------------------------------------
-TextureContainer	* FISHTANK_img = NULL;
-TextureContainer	* ARKANE_img = NULL;
+static TextureContainer * FISHTANK_img = NULL;
+static TextureContainer * ARKANE_img = NULL;
 
-//-----------------------------------------------------------------------------
-void LoadScreen()
-{
+void LoadScreen() {
 	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 }
 
-//-----------------------------------------------------------------------------
-bool ARX_INTERFACE_InitFISHTANK()
-{
-	if (FISHTANK_img == NULL)
+bool ARX_INTERFACE_InitFISHTANK() {
+	if(FISHTANK_img == NULL) {
 		FISHTANK_img = TextureContainer::LoadUI("misc/logo", TextureContainer::NoColorKey);
-
+	}
 	return FISHTANK_img != NULL;
 }
 
-//-----------------------------------------------------------------------------
-bool ARX_INTERFACE_InitARKANE()
-{
-	if (ARKANE_img == NULL)
-		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane", TextureContainer::NoColorKey);
-
+bool ARX_INTERFACE_InitARKANE() {
+	if(ARKANE_img == NULL) {
+		ARKANE_img = TextureContainer::LoadUI("graph/interface/misc/arkane",
+		                                      TextureContainer::NoColorKey);
+	}
 	return ARKANE_img != NULL;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_KillFISHTANK()
-{
+void ARX_INTERFACE_KillFISHTANK() {
 	delete FISHTANK_img;
 	FISHTANK_img = NULL;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_KillARKANE()
-{
+void ARX_INTERFACE_KillARKANE() {
 	delete ARKANE_img;
 	ARKANE_img = NULL;
 }
@@ -161,39 +150,26 @@ static long lastnum = -1;
 
 void LoadLevelScreen(long num) {
 	
-
-	if (num < -1) // resets status
-	{
-		if (tc)
-		{
-			delete tc;
-			tc = NULL;
-		}
-
+	// resets status
+	if(num < -1) {
+		delete tc, tc = NULL;
 		lastloadednum = -1;
 		lastnum = -1;
 		PROGRESS_BAR_TOTAL = 0;
 		return;
 	}
-
-	if (num == -1)
+	
+	if(num == -1) {
 		num = lastnum;
-
+	}
 	lastnum = num;
-
-	if (num < 0)
-	{
+	
+	if(num < 0) {
 		return;
 	}
-
-#ifdef BUILD_EDITOR
-	if(MOULINEX) {
-		return;
-	}
-#endif
-
+	
 	static u32 last_progress_bar_update = Time::getMs();
-
+	
 	// only update if time since last update to progress bar > 16ms
 	// and progress bar's value has actually changed
 	if (Time::getElapsedMs(last_progress_bar_update) > 16 &&
@@ -226,12 +202,7 @@ void LoadLevelScreen(long num) {
 		nopbar = 1;
 		
 		if(num != lastloadednum) {
-			
-			if(tc) {
-				delete tc;
-				tc = NULL;
-			}
-			
+			delete tc, tc = NULL;
 			lastloadednum = num;
 			char temp[256];
 			char tx[256];

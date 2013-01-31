@@ -276,11 +276,11 @@ void Logger::configure(const string config) {
 	
 }
 
-void Logger::init() {
+void Logger::initialize() {
 	
 	add(logger::Console::get());
-
-#ifdef HAVE_WINAPI
+	
+#ifdef ARX_HAVE_WINAPI
 	add(logger::MsvcDebugger::get());
 #endif
 	
@@ -292,14 +292,14 @@ void Logger::init() {
 }
 
 void Logger::shutdown() {
-
+	
 	Autolock lock(LogManager::lock);
 	
 	LogManager::sources.clear();
 	LogManager::rules.clear();
-
+	
 	LogManager::minimumLevel = LogManager::defaultLevel;
-
+	
 	LogManager::deleteAllBackends();
 }
 

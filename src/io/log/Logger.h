@@ -181,7 +181,7 @@ public:
 	/*!
 	 * Initialize standard log backends.
 	 */
-	static void init();
+	static void initialize();
 	
 	/*!
 	 * Shutdown the logging and free all registered backends.

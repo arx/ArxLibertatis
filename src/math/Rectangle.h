@@ -26,7 +26,7 @@
 
 // name Rectangle is used in windows headers
 template<class T>
-class _Rectangle {
+class Rectangle_ {
 	
 public:
 	
@@ -68,23 +68,23 @@ public:
 		DummyVec2 end;
 	};
 	
-	_Rectangle(const _Rectangle & other) : origin(other.origin), end(other.end) { }
+	Rectangle_(const Rectangle_ & other) : origin(other.origin), end(other.end) { }
 	
-	_Rectangle() { }
+	Rectangle_() { }
 	
-	_Rectangle(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
+	Rectangle_(T _left, T _top, T _right, T _bottom) : left(_left), top(_top), right(_right), bottom(_bottom) { }
 	
-	_Rectangle(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
+	Rectangle_(const Vector2<T> & _origin, T width = T(0), T height = T(0)) : left(_origin.x), top(_origin.y), right(_origin.x + width), bottom(_origin.y + height) { }
 	
-	_Rectangle(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
+	Rectangle_(const Vector2<T> & _origin, const Vector2<T> & _end) : left(_origin.x), top(_origin.y), right(_end.x), bottom(_end.y) { }
 	
-	_Rectangle(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
+	Rectangle_(T width, T height) : left(T(0)), top(T(0)), right(width), bottom(height) { }
 	
-	bool operator==(const _Rectangle & o) const {
+	bool operator==(const Rectangle_ & o) const {
 		return (origin == o.origin && end == o.end);
 	}
 	
-	_Rectangle & operator=(const _Rectangle & other) {
+	Rectangle_ & operator=(const Rectangle_ & other) {
 		origin = other.origin, end = other.end;
 		return *this;
 	}
@@ -97,11 +97,11 @@ public:
 		return bottom - top;
 	}
 	
-	_Rectangle operator+(const Vector2<T> & offset) const {
-		return _Rectangle(origin + offset, end + offset);
+	Rectangle_ operator+(const Vector2<T> & offset) const {
+		return Rectangle_(origin + offset, end + offset);
 	}
 	
-	_Rectangle & operator+=(const Vector2<T> & offset) {
+	Rectangle_ & operator+=(const Vector2<T> & offset) {
 		origin += offset, end += offset;
 		return *this;
 	}
@@ -118,11 +118,11 @@ public:
 		return (x >= left && x < right && y >= top && y < bottom);
 	}
 	
-	bool contains(const _Rectangle & other) const {
+	bool contains(const Rectangle_ & other) const {
 		return (other.left >= left && other.right <= right && other.top >= top && other.bottom <= bottom);
 	}
 	
-	bool overlaps(const _Rectangle & other) const {
+	bool overlaps(const Rectangle_ & other) const {
 		return (left < other.right && other.left < right && top < other.bottom && bottom < other.top);
 	}
 	
@@ -130,8 +130,8 @@ public:
 	 * Calculate a rectangle contained in both this rectangle and the other rectange.
 	 * Assumes that both rectangles are valid.
 	 */
-	_Rectangle operator&(const _Rectangle & other) const {
-		_Rectangle result(std::max(left, other.left), std::max(top, other.top), std::min(right, other.right), std::min(bottom, other.bottom));
+	Rectangle_ operator&(const Rectangle_ & other) const {
+		Rectangle_ result(std::max(left, other.left), std::max(top, other.top), std::min(right, other.right), std::min(bottom, other.bottom));
 		if(result.left > result.right) {
 			result.left = result.right = T(0);
 		}
@@ -145,8 +145,8 @@ public:
 	 * Calculate a bounding rectangle containing both this rectangle and the other rectangle.
 	 * Assumes that both rectangles are valid.
 	 */
-	_Rectangle operator|(const _Rectangle & other) const {
-		return _Rectangle(std::min(left, other.left), std::min(top, other.top), std::max(right, other.right), std::max(bottom, other.bottom));
+	Rectangle_ operator|(const Rectangle_ & other) const {
+		return Rectangle_(std::min(left, other.left), std::min(top, other.top), std::max(right, other.right), std::max(bottom, other.bottom));
 	}
 	
 	bool empty() const {
@@ -161,10 +161,10 @@ public:
 		return Vector2<T>(left + (right - left) / 2, top + (bottom - top) / 2);
 	}
 	
-	static const _Rectangle ZERO;
+	static const Rectangle_ ZERO;
 	
 };
 
-template<class T> const _Rectangle<T> _Rectangle<T>::ZERO(T(0), T(0), T(0), T(0));
+template<class T> const Rectangle_<T> Rectangle_<T>::ZERO(T(0), T(0), T(0), T(0));
 
 #endif // ARX_MATH_RECTANGLE_H

@@ -49,8 +49,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 
-#include "game/Spells.h"
+#include "game/EntityManager.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
@@ -67,35 +68,20 @@ CHeal::CHeal()
 	pPS = new ParticleSystem();
 }
 
-//-----------------------------------------------------------------------------
-CHeal::~CHeal()
-{
-	// kill ParticleSystem
-	if (pPS)
-	{
-		delete pPS;
-		pPS = NULL;
-	}
+CHeal::~CHeal() {
+	delete pPS, pPS = NULL;
 }
 
-//-----------------------------------------------------------------------------
-void CHeal::Create()
-{
+void CHeal::Create() {
+	
 	SetAngle(MAKEANGLE(player.angle.b));
-
-	if (spells[spellinstance].caster == 0)
-	{
-		eSrc.x = player.pos.x;
-		eSrc.y = player.pos.y;
-		eSrc.z = player.pos.z;
+	
+	if(spells[spellinstance].caster == 0) {
+		eSrc = player.pos;
+	} else {
+		eSrc = entities[spells[spellinstance].caster]->pos;
 	}
-	else
-	{
-		eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x;
-		eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-		eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z;
-	}
-
+	
 	pPS->lLightId = GetFreeDynLight();
 
 	if (pPS->lLightId != -1)
@@ -176,23 +162,13 @@ void CHeal::Update(unsigned long aulTime)
 	{
 		return;
 	}
-
-	if (spells[spellinstance].caster == 0)
-	{
-		eSrc.x = player.pos.x;
-		eSrc.y = player.pos.y;
-		eSrc.z = player.pos.z;
+	
+	if(spells[spellinstance].caster == 0) {
+		eSrc = player.pos;
+	} else if(ValidIONum(spells[spellinstance].target)) {
+		eSrc = entities[spells[spellinstance].target]->pos;
 	}
-	else
-	{
-		if (ValidIONum(spells[spellinstance].target))
-		{
-			eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-			eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
-			eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
-		}
-	}
-
+	
 	if (pPS->lLightId == -1)
 		pPS->lLightId = GetFreeDynLight();
 
@@ -221,9 +197,7 @@ void CHeal::Update(unsigned long aulTime)
 	{
 		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-		pPS->p3ParticleGravity.x = 0;
-		pPS->p3ParticleGravity.y = 0;
-		pPS->p3ParticleGravity.z = 0;
+		pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 
@@ -280,7 +254,7 @@ void CArmor::Create(long _ulDuration) {
 	if (spellinstance != -1)
 	{
 
-		INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+		Entity * io = entities[spells[spellinstance].caster];
 
 		if ((io) && (!io->halo.flags & HALO_ACTIVE))
 		{
@@ -328,7 +302,7 @@ void CLowerArmor::Create(long _ulDuration) {
 
 	if (spellinstance != -1)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].target];
+		Entity * io = entities[spells[spellinstance].target];
 
 		if ((io) && (!io->halo.flags & HALO_ACTIVE))
 		{

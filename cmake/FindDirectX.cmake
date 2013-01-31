@@ -72,48 +72,6 @@ if(WIN32)
 	include(FindPackageHandleStandardArgs)
 	find_package_handle_standard_args(DirectX DEFAULT_MSG DIRECTX_LIBRARY DIRECTX_INCLUDE_DIR)
 	
-elseif(WINE)
-	
-	function(__check_wine_dx_library VARNAME LIB)
-		
-		try_link_library(${VARNAME} "${LIB}" ERR)
-		
-		if(CHECK_${VARNAME}_LINK)
-			set(${VARNAME} "${LIB}" PARENT_SCOPE)
-		else()
-			message(STATUS "Missing DX library ${LIB}.")
-			set(${VARNAME} "${VARNAME}-NOTFOUND" PARENT_SCOPE)
-		endif()
-		
-	endfunction(__check_wine_dx_library)
-	
-	# wineg++ will handle this automatically
-	set(DIRECTX_INCLUDE_DIR "")
-	
-	__check_wine_dx_library(DIRECTX_D3D9_LIBRARY d3d9)
-	__check_wine_dx_library(DIRECTX_D3DX9_LIBRARY d3dx9)
-	__check_wine_dx_library(DIRECTX_DXERR9_LIBRARY dxerr9)
-	__check_wine_dx_library(DIRECTX_DXGUID_LIBRARY dxguid)
-	__check_wine_dx_library(DIRECTX_DINPUT8_LIBRARY dinput8)
-	__check_wine_dx_library(DIRECTX_XINPUT_LIBRARY xinput)
-	__check_wine_dx_library(DIRECTX_DXGI_LIBRARY dxgi)
-	__check_wine_dx_library(DIRECTX_D3DCOMPILER_LIBRARY d3dcompiler)
-	
-	set(DIRECTX_LIBRARY
-		${DIRECTX_D3D9_LIBRARY}
-		${DIRECTX_D3DX9_LIBRARY}
-		${DIRECTX_DXERR9_LIBRARY}
-		${DIRECTX_DXGUID_LIBRARY}
-		${DIRECTX_DINPUT8_LIBRARY}
-		${DIRECTX_DXGI_LIBRARY}
-		${DIRECTX_D3DCOMPILER_LIBRARY}
-	)
-	
-	# handle the QUIETLY and REQUIRED arguments and set DIRECTX_FOUND to TRUE if
-	# all listed variables are TRUE
-	include(FindPackageHandleStandardArgs)
-	find_package_handle_standard_args(DirectX DEFAULT_MSG DIRECTX_LIBRARY)
-	
 endif()
 
 if(DIRECTX_FOUND)

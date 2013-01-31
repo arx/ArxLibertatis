@@ -8,15 +8,21 @@ die() {
 # Handle arguments
 
 if [ "$1" != "--help" ] && [ "$1" != "-h" ] ; then
-	source="$(readlink -f "$1")"
+	source="$(readlink -m "$1")"
 fi
 
 [ "$source" = "" ] && die "\
-Usage: install-copy path/to/ArxFatalis/ [output_dir]"
+Usage: install-copy path/to/ArxFatalis/ [output_dir]
+
+This script can be used to copy the game data from a fully patched
+Arx Fatalis 1.21 install (for example a Steam download).
+Files will be verified and renamed as needed by Arx Libertatis.
+
+You can get the 1.21 patch from http://www.arkane-studios.com/uk/arx_downloads.php"
 
 if [ "$2" = "" ]
 	then destdir="$(pwd)"
-	else destdir="$(readlink -f "$2")"
+	else destdir="$(readlink -m "$2")"
 fi
 
 cd "$(dirname "$0")"

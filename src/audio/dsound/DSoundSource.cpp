@@ -523,11 +523,11 @@ bool DSoundSource::updateCulling() {
 	
 	Vec3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
-		listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
+		listener_pos = Vec3f::ZERO;
 	} else {
 		D3DVECTOR pos;
 		backend->listener->GetPosition(&pos);
-		listener_pos.x = pos.x, listener_pos.y = pos.y, listener_pos.z = pos.z;
+		listener_pos = Vec3f(pos.x, pos.y, pos.z);
 	}
 	
 	float d = dist(channel.position, listener_pos);

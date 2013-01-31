@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -63,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Version.h"
 
 #include "game/Damage.h"
+#include "game/EntityManager.h"
 #include "game/Inventory.h"
 #include "game/Levels.h"
 #include "game/Missile.h"
@@ -105,6 +108,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 #include "io/fs/FilePath.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/PakReader.h"
 #include "io/Screenshot.h"
 #include "io/log/Logger.h"
@@ -121,11 +125,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 
 #include "Configure.h"
+#include "core/URLConstants.h"
 
-#ifdef HAVE_D3D9
+#ifdef ARX_HAVE_D3D9
 #include "window/D3D9Window.h"
 #endif
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 #include "window/SDLWindow.h"
 #endif
 
@@ -133,15 +138,10 @@ static bool showFPS = false;
 
 using std::string;
 
-extern long GAME_EDITOR;
 extern long PLAY_LOADED_CINEMATIC;
-extern long CHANGE_LEVEL_PROC_RESULT;
-extern long NOBUILDMAP;
-extern long NOCHECKSUM;
 extern long START_NEW_QUEST;
 long LOADQUEST_SLOT = -1; // OH NO, ANOTHER GLOBAL! - TEMP PATCH TO CLEAN CODE FLOW
 extern long CHANGE_LEVEL_ICON;
-extern long SPLASH_THINGS_STAGE;
 extern long REFUSE_GAME_RETURN;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
@@ -153,10 +153,8 @@ extern long cur_mr;
 extern long cur_rf;
 extern long STRIKE_TIME;
 extern long DeadTime;
-extern long INTERTRANSPOLYSPOS;
 extern long TRANSPOLYSPOS;
 extern long FORCE_FRONT_DRAW;
-extern long FOR_EXTERNAL_PEOPLE;
 extern long LAST_ROOM;
 extern long LAST_PORTALS_COUNT;
 extern int iTimeToDrawD7;
@@ -169,7 +167,6 @@ extern float BOW_FOCAL;
 
 extern float GLOBAL_SLOWDOWN;
 extern float sp_max_start;
-extern float fZFogEnd;
 extern float LAST_FADEVALUE;
 
 extern float PROGRESS_BAR_TOTAL;
@@ -186,7 +183,7 @@ extern EERIE_3DOBJ* eyeballobj;
 extern EERIE_3DOBJ * arrowobj;
 extern TextureContainer * Movable;
 extern TextureContainer * tflare;
-extern INTERACTIVE_OBJ * FlyingOverIO;
+extern Entity * FlyingOverIO;
 extern E_ARX_STATE_MOUSE eMouseState;
 extern Vec3f LastValidPlayerPos;
 extern Color ulBKGColor;
@@ -204,14 +201,13 @@ TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red 
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
 long EXTERNALVIEW=0;
-long LASTEXTERNALVIEW=1;
 long ARX_CONVERSATION=0;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
-long LAST_CONVERSATION=0;
+static long LAST_CONVERSATION = 0;
 long SHOW_INGAME_MINIMAP= 1;
 long NEED_TEST_TEXT=0;
-unsigned long FRAMETICKS=0;
+static unsigned long FRAMETICKS=0;
 
 float PLAYER_ARMS_FOCAL = 350.f;
 
@@ -219,8 +215,8 @@ unsigned char ARX_FLARES_Block=1;
 
 Vec3f LASTCAMPOS;
 Anglef LASTCAMANGLE;
-INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
-INTERACTIVE_OBJ *lastCAMERACONTROLLER=NULL;
+Entity * CAMERACONTROLLER=NULL;
+Entity *lastCAMERACONTROLLER=NULL;
 
 // ArxGame constructor. Sets attributes for the app.
 ArxGame::ArxGame() : wasResized(false) { }
@@ -261,9 +257,17 @@ void ArxGame::setFullscreen(bool fullscreen) {
 			mode = getWindow()->getDisplayModes().back();
 		}
 		
+		// Clamp to a sane resolution!
+		mode.resolution.x = std::max(mode.resolution.x, s32(640));
+		mode.resolution.y = std::max(mode.resolution.y, s32(480));
+		
 		getWindow()->setFullscreenMode(mode.resolution, mode.depth);
 		
 	} else {
+		
+		// Clamp to a sane window size!
+		config.window.size.x = std::max(config.window.size.x, s32(640));
+		config.window.size.y = std::max(config.window.size.y, s32(480));
 		
 		getWindow()->setWindowSize(config.window.size);
 		
@@ -276,14 +280,14 @@ bool ArxGame::initWindow(RenderWindow * window) {
 	
 	m_MainWindow = window;
 	
-	if(!m_MainWindow->initFramework()) {
+	if(!m_MainWindow->initializeFramework()) {
 		m_MainWindow = NULL;
 		return false;
 	}
 	
 	// Register ourself as a listener for this window messages
-	m_MainWindow->addWindowListener(this);
-	m_MainWindow->addRenderWindowListener(this);
+	m_MainWindow->addListener(this);
+	m_MainWindow->addRenderListener(this);
 	
 	const RenderWindow::DisplayModes & modes = window->getDisplayModes();
 	
@@ -310,9 +314,15 @@ bool ArxGame::initWindow(RenderWindow * window) {
 		
 	}
 	
+	// Clamp to a sane resolution and window size!
+	mode.resolution.x = std::max(mode.resolution.x, s32(640));
+	mode.resolution.y = std::max(mode.resolution.y, s32(480));
+	config.window.size.x = std::max(config.window.size.x, s32(640));
+	config.window.size.y = std::max(config.window.size.y, s32(480));
+	
 	Vec2i size = config.video.fullscreen ? mode.resolution : config.window.size;
 	
-	if(!m_MainWindow->init(version, size, config.video.fullscreen, mode.depth)) {
+	if(!m_MainWindow->initialize(version, size, config.video.fullscreen, mode.depth)) {
 		m_MainWindow = NULL;
 		return false;
 	}
@@ -342,7 +352,7 @@ bool ArxGame::initWindow() {
 		
 		bool matched = false;
 		
-		#ifdef HAVE_D3D9
+		#ifdef ARX_HAVE_D3D9
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "D3D9")) {
 			matched = true;
 			RenderWindow * window = new D3D9Window;
@@ -352,7 +362,7 @@ bool ArxGame::initWindow() {
 		}
 		#endif
 
-		#ifdef HAVE_SDL
+		#ifdef ARX_HAVE_SDL
 		if(!m_MainWindow && first == (autoFramework || config.window.framework == "SDL")) {
 			matched = true;
 			RenderWindow * window = new SDLWindow;
@@ -420,63 +430,75 @@ static const char * default_paks[][2] = {
 	{ "speech.pak", "speech_default.pak" },
 };
 
-static void add_paks(const fs::path & base, bool * found) {
-	
-	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
-		if(resources->addArchive(base / default_paks[i][0])) {
-			found[i] = true;
-		} else if(default_paks[i][1] && resources->addArchive(base / default_paks[i][1])) {
-			found[i] = true;
-		}
-	}
-	
-	resources->addFiles(base / "editor", "editor");
-	resources->addFiles(base / "game", "game");
-	resources->addFiles(base / "graph", "graph");
-	resources->addFiles(base / "localisation", "localisation");
-	resources->addFiles(base / "misc", "misc");
-	resources->addFiles(base / "sfx", "sfx");
-	resources->addFiles(base / "speech", "speech");
-}
-
 bool ArxGame::addPaks() {
 	
 	arx_assert(!resources);
 	
 	resources = new PakReader;
 	
-	bool found[ARRAY_SIZE(default_paks)];
-	std::fill_n(found, ARRAY_SIZE(default_paks), false);
-	
-	
-	if(!config.paths.data.empty()) {
-		add_paks(config.paths.data, found);
+	// Load required pak files
+	std::vector<size_t> missing;
+	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
+		if(resources->addArchive(fs::paths.find(default_paks[i][0]))) {
+			continue;
+		}
+		if(default_paks[i][1]
+		   && resources->addArchive(fs::paths.find(default_paks[i][1]))) {
+			continue;
+		}
+		missing.push_back(i);
 	}
 	
-	add_paks(config.paths.user, found);
-	
-	for(size_t i = 0; i < ARRAY_SIZE(default_paks); i++) {
-		if(!found[i]) {
-			if(config.paths.data.empty()) {
-				if(default_paks[i][1]) {
-					LogCritical << "Unable to find " << default_paks[i][0] << " or "
-					            << default_paks[i][1] << " in " << config.paths.user;
+	// Construct an informative error message about missing files
+	if(!missing.empty()) {
+		std::ostringstream oss;
+		oss << "Could not load required ";
+		oss << (missing.size() == 1 ? "file" : "files");
+		size_t length = oss.tellp();
+		for(size_t i = 0; i < missing.size(); i++) {
+			if(i != 0) {
+				if(i + 1 == missing.size()) {
+					oss << " and", length += 4;
 				} else {
-					LogCritical << "Unable to find " << default_paks[i][0] << " in "
-					            << config.paths.user;
-				}
-			} else {
-				if(default_paks[i][1]) {
-					LogCritical << "Unable to find " << default_paks[i][0] << " or "
-					            << default_paks[i][1] << " in either " << config.paths.data
-					            << " or " << config.paths.user;
-				} else {
-					LogCritical << "Unable to find " << default_paks[i][0]
-					            << " in either " << config.paths.data << " or " << config.paths.user;
+					oss << ",", length++;
 				}
 			}
-			return false;
+			size_t add = 1 + strlen(default_paks[missing[i]][0]) + 1;
+			if(default_paks[missing[i]][1]) {
+				add += 6 + strlen(default_paks[missing[i]][1]) + 2;
+			}
+			if(length + add > 75) {
+				oss << "\n ", length = add + 1;
+			} else {
+				oss << ' ', length += add + 1;
+			}
+			oss << '"' << default_paks[missing[i]][0] << '"';
+			if(default_paks[missing[i]][1]) {
+				oss << " (or \"" << default_paks[missing[i]][1] << "\")";
+				length += 3 + strlen(default_paks[missing[i]][1]) + 2;
+			}
 		}
+		oss << ".\n\nSearched in these locations:\n";
+		std::vector<fs::path> search = fs::paths.getSearchPaths();
+		BOOST_FOREACH(const fs::path & dir, search) {
+			oss << " * " << dir.string() << "/\n";
+		}
+		oss << "\nSee  " << url::help_get_data;
+		oss << "  and  " << url::help_install_data << "\n";
+		oss << "\nThe search path can be adjusted with command-line parameters.\n";
+		LogCritical << oss.str();
+		return false;
+	}
+	
+	// Load optional patch files
+	BOOST_REVERSE_FOREACH(const fs::path & base, fs::paths.data) {
+		resources->addFiles(base / "editor", "editor");
+		resources->addFiles(base / "game", "game");
+		resources->addFiles(base / "graph", "graph");
+		resources->addFiles(base / "localisation", "localisation");
+		resources->addFiles(base / "misc", "misc");
+		resources->addFiles(base / "sfx", "sfx");
+		resources->addFiles(base / "speech", "speech");
 	}
 	
 	return true;
@@ -504,6 +526,8 @@ void ArxGame::onWindowLostFocus(const Window &) {
 }
 
 void ArxGame::onResizeWindow(const Window & window) {
+	
+	arx_assert(window.getSize() != Vec2i::ZERO);
 	
 	// A new window size will require a new backbuffer
 	// size, so the 3D structures must be changed accordingly.
@@ -563,8 +587,6 @@ void ArxGame::run() {
 	}
 }
 
-long MouseDragX, MouseDragY;
- 
 //*************************************************************************************
 // doFrame()
 // Draws the scene.
@@ -649,7 +671,7 @@ void ArxGame::cleanup3DEnvironment() {
 //*************************************************************************************
 void ArxGame::outputText(int x, int y, const string & str) {
 	if (m_bReady) {
-		hFontInGame->Draw(x, y, str, Color(255, 255, 0));
+		hFontInGame->draw(x, y, str, Color(255, 255, 0));
 	}
 }
 
@@ -665,12 +687,12 @@ void ArxGame::outputTextGrid(float column, float row, const std::string &text, c
 	// find display size
 	const Vec2i &window = getWindow()->getSize();
 
-	const int tsize = selected_font->GetLineHeight();
+	const int tsize = selected_font->getLineHeight();
 
 
 	// TODO: could use quadrants for width or something similar
 	// TODO: could center text in column/row
-	const Vector2<int> size(window.x / 4, selected_font->GetLineHeight());
+	const Vector2<int> size(window.x / 4, selected_font->getLineHeight());
 
 	const Vector2<int> spacing(2, 2);
 	const Vector2<float> p(column + (column < 0), row + (row < 0));
@@ -679,7 +701,7 @@ void ArxGame::outputTextGrid(float column, float row, const std::string &text, c
 	const Vector2<int> offset((column < 0 ? window.x - tsize - size.x : tsize), (row < 0 ? window.y - tsize - size.y : tsize));
 
 	// print the text directly using our selected font
-	selected_font->Draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
+	selected_font->draw(offset + Vector2<int>(p.x * (size + spacing).x, p.y * (size + spacing).y), text, color);
 
 }
 
@@ -745,13 +767,12 @@ bool ArxGame::beforeRun() {
 		}
 	}
 	
-	// TODO this is the only place where _LoadTheObj is used
-	EERIE_3DOBJ * _fogobj = _LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
+	EERIE_3DOBJ * _fogobj = LoadTheObj("editor/obj3d/fog_generator.teo", "node_teo maps");
 	ARX_FOGS_Set_Object(_fogobj);
 	
-	eyeballobj = _LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
-	cabal = _LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
-	nodeobj = _LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
+	eyeballobj = LoadTheObj("editor/obj3d/eyeball.teo", "eyeball_teo maps");
+	cabal = LoadTheObj("editor/obj3d/cabal.teo", "cabal_teo maps");
+	nodeobj = LoadTheObj("editor/obj3d/node.teo", "node_teo maps");
 	
 	cameraobj = loadObject("graph/obj3d/interactive/system/camera/camera.teo");
 	markerobj = loadObject("graph/obj3d/interactive/system/marker/marker.teo");
@@ -792,7 +813,7 @@ bool ArxGame::beforeRun() {
 
 void ArxGame::updateFirstPersonCamera() {
 
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 	ANIM_USE * useanim = &io->animlayer[1];
 	ANIM_HANDLE ** alist = io->anims;
 
@@ -806,15 +827,10 @@ void ArxGame::updateFirstPersonCamera() {
 		if (BOW_FOCAL<0) BOW_FOCAL=0;
 	}
 
-	if (eyeball.exist == 2)
-	{
-		subj.d_pos.x=eyeball.pos.x;
-		subj.d_pos.y=eyeball.pos.y;
-		subj.d_pos.z=eyeball.pos.z;
-		subj.d_angle.a=eyeball.angle.a;
-		subj.d_angle.b=eyeball.angle.b;
-		subj.d_angle.g=eyeball.angle.g;
-		EXTERNALVIEW=1;
+	if(eyeball.exist == 2) {
+		subj.d_pos = eyeball.pos;
+		subj.d_angle = eyeball.angle;
+		EXTERNALVIEW = 1;
 	}
 	else if (EXTERNALVIEW)
 	{
@@ -826,13 +842,9 @@ void ArxGame::updateFirstPersonCamera() {
 			tt.x=player.pos.x+(float)EEsin(t)*(float)l;
 			tt.y=player.pos.y-50.f;
 			tt.z=player.pos.z-(float)EEcos(t)*(float)l;
-			EERIEPOLY * ep =EECheckInPoly(&tt);
-
-			if (ep)
-			{
-				subj.d_pos.x=tt.x;
-				subj.d_pos.y=tt.y;
-				subj.d_pos.z=tt.z;
+			EERIEPOLY * ep = EECheckInPoly(&tt);
+			if(ep) {
+				subj.d_pos = tt;
 			}
 			else break;
 		}
@@ -840,57 +852,38 @@ void ArxGame::updateFirstPersonCamera() {
 		subj.d_angle.a=player.angle.a+30.f;
 		subj.d_angle.b=player.angle.b;
 		subj.d_angle.g=player.angle.g;
-	}
-	else
-	{
-		subj.angle.a=player.angle.a;
-		subj.angle.b=player.angle.b;
-		subj.angle.g=player.angle.g;
+		
+	} else {
+	
+		subj.angle = player.angle;
+		
+		if (entities.player()) {
+			long id = entities.player()->obj->fastaccess.view_attach;
 
-		if (inter.iobj[0])
-		{
-			long id = inter.iobj[0]->obj->fastaccess.view_attach;
-
-			if (id!=-1)
-			{
-				subj.pos.x=inter.iobj[0]->obj->vertexlist3[id].v.x;
-				subj.pos.y=inter.iobj[0]->obj->vertexlist3[id].v.y;
-				subj.pos.z=inter.iobj[0]->obj->vertexlist3[id].v.z;
-
+			if (id!=-1) {
+				subj.pos = entities.player()->obj->vertexlist3[id].v;
 				Vec3f vect;
-				vect.x=subj.pos.x-player.pos.x;
-				vect.y=0;
-				vect.z=subj.pos.z-player.pos.z;
+				vect.x = subj.pos.x - player.pos.x;
+				vect.y = 0;
+				vect.z = subj.pos.z - player.pos.z;
 				float len = ffsqrt(vect.lengthSqr());
 
-				if (len>46.f)
-				{
-					float div=46.f/len;
-					vect.x*=div;
-					vect.z*=div;
-					subj.pos.x=player.pos.x+vect.x;
-					subj.pos.z=player.pos.z+vect.z;
+				if (len>46.f) {
+					float div = 46.f / len;
+					vect.x *= div;
+					vect.z *= div;
+					subj.pos.x = player.pos.x + vect.x;
+					subj.pos.z = player.pos.z + vect.z;
 				}
-			}
-			else
-			{
-				subj.pos.x=player.pos.x;
-				subj.pos.y=player.pos.y;
-				subj.pos.z=player.pos.z;
-				subj.pos.y+=PLAYER_BASE_HEIGHT;
+			} else {
+				subj.pos = player.basePosition();
 			}
 		}
 	}
 
-	if (EXTERNALVIEW)
-	{
-		subj.pos.x=(subj.pos.x+subj.d_pos.x)*( 1.0f / 2 );
-		subj.pos.y=(subj.pos.y+subj.d_pos.y)*( 1.0f / 2 );
-		subj.pos.z=(subj.pos.z+subj.d_pos.z)*( 1.0f / 2 );
-
-		subj.angle.a=InterpolateAngle(subj.angle.a,subj.d_angle.a,0.1f);
-		subj.angle.b=InterpolateAngle(subj.angle.b,subj.d_angle.b,0.1f);
-		subj.angle.g=InterpolateAngle(subj.angle.g,subj.d_angle.g,0.1f);
+	if (EXTERNALVIEW) {
+		subj.pos = (subj.pos + subj.d_pos) * 0.5f;
+		subj.angle = interpolate(subj.angle, subj.d_angle, 0.1f);
 	}
 }
 
@@ -906,7 +899,7 @@ void ArxGame::updateConversationCamera() {
 				{
 					for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
 						if (aspeech[k].exist)
-							if (aspeech[k].io==inter.iobj[main_conversation.actors[j]])
+							if (aspeech[k].io==entities[main_conversation.actors[j]])
 							{
 								main_conversation.current=k;
 								j=main_conversation.actors_nb+1;
@@ -922,89 +915,63 @@ void ArxGame::updateConversationCamera() {
 
 			ARX_CONVERSATION_LASTIS=is;
 
-			if (ARX_CONVERSATION_MODE==-1)
-			{
-				ARX_CONVERSATION_MODE=0;
-				conversationcamera.size.a=rnd()*50.f;
-				conversationcamera.size.b=0.f;
-				conversationcamera.size.g=rnd()*50.f;
-				conversationcamera.d_angle.a=0.f;
-				conversationcamera.d_angle.b=0.f;
-				conversationcamera.d_angle.g=0.f;
-
-				if (rnd()>0.4f) conversationcamera.d_angle.a=(1.f-rnd()*2.f)*( 1.0f / 30 );
-
-				if (rnd()>0.4f) conversationcamera.d_angle.b=(1.f-rnd()*1.2f)*( 1.0f / 5 );
-
-				if (rnd()>0.4f) conversationcamera.d_angle.g=(1.f-rnd()*2.f)*( 1.0f / 40 );
-
-				if (rnd()>0.5f)
-				{
-					conversationcamera.size.a=MAKEANGLE(180.f+rnd()*20.f-10.f);
-					conversationcamera.size.b=0.f;
-					conversationcamera.size.g=0.f;
-					conversationcamera.d_angle.g=0.08f;
-					conversationcamera.d_angle.b=0.f;
-					conversationcamera.d_angle.a = 0.f;
+			if(ARX_CONVERSATION_MODE == -1) {
+				ARX_CONVERSATION_MODE = 0;
+				if(rnd() > 0.5f) {
+					conversationcamera.size = Anglef(MAKEANGLE(170.f + rnd() * 20.f), 0.f, 0.f);
+					conversationcamera.d_angle = Anglef(0.f, 0.f, 0.08f);
+				} else {
+					conversationcamera.size = Anglef(rnd() * 50.f, 0.f, rnd() * 50.f);
+					conversationcamera.d_angle = Anglef::ZERO;
+					if(rnd() > 0.4f) {
+						conversationcamera.d_angle.a = (1.f - rnd() * 2.f) * (1.f / 30);
+					}
+					if(rnd() > 0.4f) {
+						conversationcamera.d_angle.b = (1.f - rnd() * 1.2f) * 0.2f;
+					}
+					if(rnd() > 0.4f) {
+						conversationcamera.d_angle.g = (1.f - rnd() * 2.f) * 0.025f;
+					}
 				}
-			}
-			else
-			{
+			} else {
 				conversationcamera.size += conversationcamera.d_angle * FrameDiff;
 			}
 
 			Vec3f sourcepos,targetpos;
 
-			if (ApplySpeechPos(&conversationcamera,is))
-			{
-				targetpos.x=conversationcamera.d_pos.x;
-				targetpos.y=conversationcamera.d_pos.y;
-				targetpos.z=conversationcamera.d_pos.z;
-				sourcepos.x=conversationcamera.pos.x;
-				sourcepos.y=conversationcamera.pos.y;
-				sourcepos.z=conversationcamera.pos.z;
-			}
-			else
-			{
-				targetpos.x=player.pos.x;
-				targetpos.y=player.pos.y;
-				targetpos.z=player.pos.z;
+			if(ApplySpeechPos(&conversationcamera, is)) {
+				targetpos = conversationcamera.d_pos;
+				sourcepos = conversationcamera.pos;
+			} else {
+				targetpos = player.pos;
 				float t=radians(player.angle.b);
 				sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
 				sourcepos.y=targetpos.y;
 				sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
 			}
 
-			Vec3f vect,vec2;
-			vect.x=targetpos.x-sourcepos.x;
-			vect.y=targetpos.y-sourcepos.y;
-			vect.z=targetpos.z-sourcepos.z;
+			Vec3f vec2;
+			Vec3f vect = targetpos - sourcepos;
 			fnormalize(vect);
 			float dist=250.f-conversationcamera.size.g;
 
 			if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
 			else if (dist<90.f) dist=90.f;
 
-			_YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
+			YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
 
-			sourcepos.x=targetpos.x-vec2.x*dist;
-			sourcepos.y=targetpos.y-vec2.y*dist;
-			sourcepos.z=targetpos.z-vec2.z*dist;
+			sourcepos = targetpos - vec2 * dist;
 
 			if (conversationcamera.size.b!=0.f)
 				sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
 
-			conversationcamera.pos.x=sourcepos.x;
-			conversationcamera.pos.y=sourcepos.y;
-			conversationcamera.pos.z=sourcepos.z;
+			conversationcamera.pos = sourcepos;
 			SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-			subj.pos.x=conversationcamera.pos.x;
-			subj.pos.y=conversationcamera.pos.y;
-			subj.pos.z=conversationcamera.pos.z;
-			subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
-			subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
-			subj.angle.g=0.f;
-			EXTERNALVIEW=1;
+			subj.pos = conversationcamera.pos;
+			subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
+			subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
+			subj.angle.g = 0.f;
+			EXTERNALVIEW = 1;
 	}
 	else
 	{
@@ -1013,9 +980,9 @@ void ArxGame::updateConversationCamera() {
 
 		if (LAST_CONVERSATION)
 		{
-			AcquireLastAnim(inter.iobj[0]);
-			ANIM_Set(&inter.iobj[0]->animlayer[1],inter.iobj[0]->anims[ANIM_WAIT]);
-			inter.iobj[0]->animlayer[1].flags|=EA_LOOP;
+			AcquireLastAnim(entities.player());
+			ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_WAIT]);
+			entities.player()->animlayer[1].flags|=EA_LOOP;
 		}
 	}
 }
@@ -1038,7 +1005,7 @@ void ArxGame::speechControlledCinematic() {
 	if (valid>=0)
 	{
 		CinematicSpeech * acs=&aspeech[valid].cine;
-		INTERACTIVE_OBJ * io=aspeech[valid].io;
+		Entity * io=aspeech[valid].io;
 		float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
 		if (rtime<0) rtime=0;
@@ -1054,9 +1021,7 @@ void ArxGame::speechControlledCinematic() {
 			switch (acs->type)
 			{
 			case ARX_CINE_SPEECH_KEEP: {
-				subj.pos.x=acs->pos1.x;
-				subj.pos.y=acs->pos1.y;
-				subj.pos.z=acs->pos1.z;
+				subj.pos = acs->pos1;
 				subj.angle.a=acs->pos2.x;
 				subj.angle.b=acs->pos2.y;
 				subj.angle.g=acs->pos2.z;
@@ -1073,9 +1038,7 @@ void ArxGame::speechControlledCinematic() {
 				conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 				conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
 				SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-				subj.pos.x=conversationcamera.pos.x;
-				subj.pos.y=conversationcamera.pos.y;
-				subj.pos.z=conversationcamera.pos.z;
+				subj.pos = conversationcamera.pos;
 				subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 				subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 				subj.angle.g=0.f;
@@ -1134,32 +1097,18 @@ void ArxGame::speechControlledCinematic() {
 				if (ValidIONum(acs->ionum))
 				{
 					Vec3f targetpos;
-					if ((acs->type==ARX_CINE_SPEECH_CCCLISTENER_L)
-						|| (acs->type==ARX_CINE_SPEECH_CCCLISTENER_R))
-					{
-						conversationcamera.pos.x=acs->pos2.x;
-						conversationcamera.pos.y=acs->pos2.y;
-						conversationcamera.pos.z=acs->pos2.z;
-						targetpos.x=acs->pos1.x;
-						targetpos.y=acs->pos1.y;
-						targetpos.z=acs->pos1.z;
-					}
-					else
-					{
-						conversationcamera.pos.x=acs->pos1.x;
-						conversationcamera.pos.y=acs->pos1.y;
-						conversationcamera.pos.z=acs->pos1.z;
-						targetpos.x=acs->pos2.x;
-						targetpos.y=acs->pos2.y;
-						targetpos.z=acs->pos2.z;
+					if(acs->type == ARX_CINE_SPEECH_CCCLISTENER_L
+						 || acs->type == ARX_CINE_SPEECH_CCCLISTENER_R) {
+						conversationcamera.pos = acs->pos2;
+						targetpos = acs->pos1;
+					} else {
+						conversationcamera.pos = acs->pos1;
+						targetpos = acs->pos2;
 					}
 
 					distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );
 
-					Vec3f vect;
-					vect.x=conversationcamera.pos.x-targetpos.x;
-					vect.y=conversationcamera.pos.y-targetpos.y;
-					vect.z=conversationcamera.pos.z-targetpos.z;
+					Vec3f vect = conversationcamera.pos - targetpos;
 					Vec3f vect2;
 					Vector_RotateY(&vect2,&vect,90);
 					vect2.normalize();
@@ -1188,12 +1137,8 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_NONE: break;
 			}
 
-			LASTCAMPOS.x=subj.pos.x;
-			LASTCAMPOS.y=subj.pos.y;
-			LASTCAMPOS.z=subj.pos.z;
-			LASTCAMANGLE.a=subj.angle.a;
-			LASTCAMANGLE.b=subj.angle.b;
-			LASTCAMANGLE.g=subj.angle.g;
+			LASTCAMPOS = subj.pos;
+			LASTCAMANGLE = subj.angle;
 		}
 	}
 }
@@ -1208,20 +1153,13 @@ void ArxGame::handlePlayerDeath() {
 
 		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
 
-		Vec3f targetpos;
+		Vec3f targetpos = player.pos;
 
-		targetpos.x = player.pos.x;
-		targetpos.y = player.pos.y;
-		targetpos.z = player.pos.z;
+		long id  = entities.player()->obj->fastaccess.view_attach;
+		long id2 = GetActionPointIdx( entities.player()->obj, "chest2leggings" );
 
-		long id  = inter.iobj[0]->obj->fastaccess.view_attach;
-		long id2 = GetActionPointIdx( inter.iobj[0]->obj, "chest2leggings" );
-
-		if (id!=-1)
-		{
-			targetpos.x = inter.iobj[0]->obj->vertexlist3[id].v.x;
-			targetpos.y = inter.iobj[0]->obj->vertexlist3[id].v.y;
-			targetpos.z = inter.iobj[0]->obj->vertexlist3[id].v.z;
+		if (id!=-1) {
+			targetpos = entities.player()->obj->vertexlist3[id].v;
 		}
 
 		conversationcamera.pos.x = targetpos.x;
@@ -1230,9 +1168,9 @@ void ArxGame::handlePlayerDeath() {
 
 		if (id2!=-1)
 		{
-			conversationcamera.pos.x=inter.iobj[0]->obj->vertexlist3[id2].v.x;
-			conversationcamera.pos.y=inter.iobj[0]->obj->vertexlist3[id2].v.y-DeadCameraDistance;
-			conversationcamera.pos.z=inter.iobj[0]->obj->vertexlist3[id2].v.z;
+			conversationcamera.pos.x=entities.player()->obj->vertexlist3[id2].v.x;
+			conversationcamera.pos.y=entities.player()->obj->vertexlist3[id2].v.y-DeadCameraDistance;
+			conversationcamera.pos.z=entities.player()->obj->vertexlist3[id2].v.z;
 		}
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
@@ -1243,11 +1181,7 @@ void ArxGame::handlePlayerDeath() {
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g = 0;
 		EXTERNALVIEW=1;
-
-#ifdef BUILD_EDITOR
-		if(!GAME_EDITOR)
-			BLOCK_PLAYER_CONTROLS=1;
-#endif
+		BLOCK_PLAYER_CONTROLS=1;
 	}
 	else
 	{
@@ -1266,11 +1200,7 @@ void ArxGame::handleCameraController() {
 			currentbeta=CAMERACONTROLLER->angle.b;
 		}
 
-		Vec3f targetpos;
-
-		targetpos.x=CAMERACONTROLLER->pos.x;
-		targetpos.y=CAMERACONTROLLER->pos.y+PLAYER_BASE_HEIGHT;
-		targetpos.z=CAMERACONTROLLER->pos.z;
+		Vec3f targetpos = CAMERACONTROLLER->pos + player.baseOffset();
 
 		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
 		float delta_angle_t = delta_angle * FrameDiff * ( 1.0f / 1000 );
@@ -1284,9 +1214,7 @@ void ArxGame::handleCameraController() {
 		conversationcamera.pos.z=targetpos.z-(float)EEcos(t)*160.f;
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
+		subj.pos = conversationcamera.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g=0.f;
@@ -1326,12 +1254,8 @@ void ArxGame::updateActiveCamera() {
 	PrepareCamera(ACTIVECAM);
 	// Recenter Viewport depending on Resolution
 
-	// setting long from long
-	ACTIVECAM->centerx = DANAECENTERX;
-	ACTIVECAM->centery = DANAECENTERY;
-	// casting long to float
-	ACTIVECAM->posleft = ACTIVECAM->transform.xmod = static_cast<float>( DANAECENTERX );
-	ACTIVECAM->postop = ACTIVECAM->transform.ymod = static_cast<float>( DANAECENTERY );
+	ACTIVECAM->center = Vec2i(DANAECENTERX, DANAECENTERY);
+	ACTIVECAM->pos2 = ACTIVECAM->transform.mod = ACTIVECAM->center.to<float>();
 }
 
 void ArxGame::updateTime() {
@@ -1350,15 +1274,15 @@ void ArxGame::updateTime() {
 		arxtime.update_frame_time();
 	}
 
-	_framedelay = arxtime.get_frame_delay();
-	arx_assert(_framedelay >= 0.0f);
+	framedelay = arxtime.get_frame_delay();
+	arx_assert(framedelay >= 0.0f);
 
 	// limit fps above 10fps
 	const float max_framedelay = 1000.0f / 10.0f;
-	_framedelay = _framedelay > max_framedelay ? max_framedelay : _framedelay;
+	framedelay = framedelay > max_framedelay ? max_framedelay : framedelay;
 
-	// TODO eliminate FrameDiff == _framedelay (replace)
-	FrameDiff = _framedelay;
+	// TODO eliminate FrameDiff == framedelay (replace)
+	FrameDiff = framedelay;
 }
 
 void ArxGame::updateInput() {
@@ -1465,13 +1389,13 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
+	if ( (entities.player()) && (entities.player()->animlayer[0].cur_anim) )
 	{
 		ManageNONCombatModeAnimations();
 		long old=USEINTERNORM;
 		USEINTERNORM=0;
 		float speedfactor;
-		speedfactor=inter.iobj[0]->basespeed+inter.iobj[0]->speed_modif;
+		speedfactor=entities.player()->basespeed+entities.player()->speed_modif;
 
 		if (cur_mr==3) speedfactor+=0.5f;
 
@@ -1492,23 +1416,23 @@ void ArxGame::renderLevel() {
 
 			float cur=0;
 
-			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
+			while ((cur<tFrameDiff) && (!(entities.player()->ioflags & IO_FREEZESCRIPT)))
 			{
 				long step=min(50L,tFrameDiff);
 
-				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
+				if (entities.player()->ioflags & IO_FREEZESCRIPT) step=0;
 
 
 				float iCalc = step*speedfactor ;
 
-				arx_assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-					&inter.iobj[0]->pos, checked_range_cast<unsigned long>(iCalc), inter.iobj[0], false, false);
+				arx_assert(entities.player()->obj != NULL);
+				EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
+					&entities.player()->pos, checked_range_cast<unsigned long>(iCalc), entities.player(), false, false);
 
-				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
+				if ((player.Interface & INTER_COMBATMODE) && (entities.player()->animlayer[1].cur_anim != NULL))
 					ManageCombatModeAnimations();
 
-				if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
+				if (entities.player()->animlayer[1].cur_anim!=NULL)
 					ManageCombatModeAnimationsEND();
 
 				cur+=step*speedfactor;
@@ -1528,17 +1452,17 @@ void ArxGame::renderLevel() {
 
 			float val=(float)tFrameDiff*speedfactor;
 
-			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
+			if (entities.player()->ioflags & IO_FREEZESCRIPT) val=0;
 
-			arx_assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-				&inter.iobj[0]->pos, checked_range_cast<unsigned long>(val), inter.iobj[0], false, false);
+			arx_assert(entities.player()->obj != NULL);
+			EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
+				&entities.player()->pos, checked_range_cast<unsigned long>(val), entities.player(), false, false);
 
 
-			if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
+			if ((player.Interface & INTER_COMBATMODE) && (entities.player()->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
 
-			if (inter.iobj[0]->animlayer[1].cur_anim!=NULL)
+			if (entities.player()->animlayer[1].cur_anim!=NULL)
 				ManageCombatModeAnimationsEND();
 
 			ACTIVECAM->use_focal=restore;
@@ -1620,24 +1544,22 @@ void ArxGame::renderLevel() {
 	}
 
 	// Reset Transparent Polys Idx
-	INTERTRANSPOLYSPOS=TRANSPOLYSPOS=0;
+	TRANSPOLYSPOS=0;
 
 	// Check For Hiding/unHiding Player Gore
 	if ((EXTERNALVIEW) || (player.life<=0))
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(),0);
 	}
 
 	if (!EXTERNALVIEW)
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0],1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(),1);
 	}
 
-	LASTEXTERNALVIEW=EXTERNALVIEW;
-
 	// NOW DRAW the player (Really...)
-	if ( (inter.iobj[0])
-		&& (inter.iobj[0]->animlayer[0].cur_anim) )
+	if ( (entities.player())
+		&& (entities.player()->animlayer[0].cur_anim) )
 	{
 		float restore=ACTIVECAM->use_focal;
 
@@ -1649,11 +1571,11 @@ void ArxGame::renderLevel() {
 		if (!EXTERNALVIEW)
 			FORCE_FRONT_DRAW=1;
 
-		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
+		if (entities.player()->invisibility>0.9f) entities.player()->invisibility=0.9f;
 
-		arx_assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(inter.iobj[0]->obj, &inter.iobj[0]->animlayer[0], &inter.iobj[0]->angle,
-			&inter.iobj[0]->pos, 0, inter.iobj[0]);
+		arx_assert(entities.player()->obj != NULL);
+		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
+			&entities.player()->pos, 0, entities.player());
 
 		ACTIVECAM->use_focal=restore;
 		FORCE_FRONT_DRAW=0;
@@ -1669,9 +1591,7 @@ void ArxGame::renderLevel() {
 	if (FRAME_COUNT<=0)
 		PrecalcIOLighting(&ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f);
 
-	ACTIVECAM->fadecolor.r=current.depthcolor.r;
-	ACTIVECAM->fadecolor.g=current.depthcolor.g;
-	ACTIVECAM->fadecolor.b=current.depthcolor.b;
+	ACTIVECAM->fadecolor = current.depthcolor;
 
 	if (uw_mode)
 	{
@@ -1684,49 +1604,41 @@ void ArxGame::renderLevel() {
 		ARX_SCENE_Render(1);
 	}
 
-	// Begin Particles ***************************************************************************
-	if (!(Project.hide & HIDE_PARTICLES))
-	{
-		if (pParticleManager)
-		{
-			pParticleManager->Update(static_cast<long>(FrameDiff));
-			pParticleManager->Render();
-		}
-
-		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		ARX_FOGS_Render();
-
-		ARX_PARTICLES_Render(&subj);
-		UpdateObjFx();
-
-		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
+	// Begin Particles
+	
+	if(pParticleManager) {
+		pParticleManager->Update(static_cast<long>(FrameDiff));
+		pParticleManager->Render();
 	}
-
-	// End Particles ***************************************************************************
+	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	ARX_FOGS_Render();
+	
+	ARX_PARTICLES_Render(&subj);
+	UpdateObjFx();
+	
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	
+	// End Particles
 
 	if (!EDITMODE) // Playing Game
 	{
 		// Checks Magic Flares Drawing
-		if (!PLAYER_PARALYSED)
-		{
-			if (EERIEMouseButton & 1)
-			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT))
+		if(!PLAYER_PARALYSED) {
+			if(EERIEMouseButton & 1) {
+				if(ARX_FLARES_Block == 0) {
 					ARX_SPELLS_AddPoint(DANAEMouse);
-				else
-				{
-					CurrPoint=0;
-					ARX_FLARES_Block=0;
-					CurrSlot=1;
+				} else {
+					CurrPoint = 0;
+					ARX_FLARES_Block = 0;
 				}
+			} else if(ARX_FLARES_Block == 0) {
+				ARX_FLARES_Block = 1;
 			}
-			else if (ARX_FLARES_Block==0)
-				ARX_FLARES_Block=1;
 		}
-
+		
 		ARX_SPELLS_Precast_Check();
 		ARX_SPELLS_ManageMagic();
 		ARX_SPELLS_UpdateSymbolDraw();
@@ -1746,8 +1658,7 @@ void ArxGame::renderLevel() {
 #ifdef BUILD_EDITOR
 	else  // EDITMODE == true
 	{
-		if (!(Project.hide & HIDE_NODES))
-			RenderAllNodes();
+		RenderAllNodes();
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
@@ -1807,7 +1718,6 @@ void ArxGame::renderLevel() {
 
 	// Manage Notes/Books opened on screen
 	GRenderer->SetRenderState(Renderer::Fog, false);
-	ARX_INTERFACE_NoteManage();
 
 finish:
 
@@ -1826,21 +1736,21 @@ finish:
 	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	// Draw game interface if needed
-	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
-	{
+	if(ARXmenu.currentmode == AMCM_OFF && !CINEMASCOPE) {
+	
 		GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
+		
+		ARX_INTERFACE_NoteManage();
 		drawAllInterface();
 		drawAllInterfaceFinish();
 
-		if ( (player.Interface & INTER_MAP )
-			&& (!(player.Interface & INTER_COMBATMODE))
-			&& flarenum
-			)
-		{
+		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)
+       && flarenum) {
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 			FRAMETICKS = (unsigned long)(arxtime);
 		}
+		
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 
@@ -1920,7 +1830,7 @@ finish:
 			ShowInfoText();
 		}
 
-		if(USE_PORTALS && !FOR_EXTERNAL_PEOPLE) {
+		if(USE_PORTALS) {
 			char tex[250];
 			switch(USE_PORTALS) {
 			case 1:
@@ -1939,12 +1849,10 @@ finish:
 			outputText( 320, 240, tex );
 		}
 
-		if((!FOR_EXTERNAL_PEOPLE)) {
-			if(bOLD_CLIPP) {
-				outputText(0, 240, "New Clipp" );
-			} else {
-				outputText(0,274,"New Clipp");
-			}
+		if(bOLD_CLIPP) {
+			outputText(0, 240, "New Clipp" );
+		} else {
+			outputText(0,274,"New Clipp");
 		}
 	}
 
@@ -1966,13 +1874,8 @@ void ArxGame::render() {
 	// Update Various Player Infos for this frame.
 	ARX_PLAYER_Frame_Update();
 		
-	//Setting long from long
-	subj.centerx = DANAECENTERX;
-	subj.centery = DANAECENTERY;
-
-	//Casting long to float
-	subj.posleft = subj.transform.xmod = static_cast<float>( DANAECENTERX );
-	subj.postop  = subj.transform.ymod = static_cast<float>( DANAECENTERY );
+	subj.center = Vec2i(DANAECENTERX, DANAECENTERY);
+	subj.pos2 = subj.transform.mod = subj.center.to<float>();
 
 	// Finally computes current focal
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
@@ -2005,8 +1908,7 @@ void ArxGame::render() {
 				if ( ((EERIEMouseButton & 1) && !(LastMouseClick & 1) )
 					|| ((EERIEMouseButton & 2) && !(LastMouseClick & 2) ) )
 				{
-					bookclick.x=DANAEMouse.x;
-					bookclick.y=DANAEMouse.y;
+					bookclick = DANAEMouse;
 				}
 			}
 			else if (InSecondaryInventoryPos(&DANAEMouse))
@@ -2048,15 +1950,12 @@ void ArxGame::render() {
 		}
 	}
 
-	if (CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
-	{
-		LastValidPlayerPos.x=player.pos.x;
-		LastValidPlayerPos.y=player.pos.y;
-		LastValidPlayerPos.z=player.pos.z;
+	if(CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z)) {
+		LastValidPlayerPos = player.pos;
 	}
 
 	// Updates Externalview
-	EXTERNALVIEW=0;
+	EXTERNALVIEW = 0;
 
 	if(isInMenu()) {
 		renderMenu();
@@ -2075,7 +1974,6 @@ void ArxGame::render() {
 	
 	if (LaunchDemo)
 	{
-		NOCHECKSUM=1;
 		LaunchDemo=0;
 		LaunchDummyParticle();
 	}
@@ -2117,10 +2015,10 @@ void ArxGame::goFor2DFX()
 	if (!needed) return;
 
 					{
-		INTERACTIVE_OBJ* pTableIO[256];
+		Entity* pTableIO[256];
 		int nNbInTableIO = 0;
 
-		float temp_increase=_framedelay*( 1.0f / 1000 )*4.f;
+		float temp_increase=framedelay*( 1.0f / 1000 )*4.f;
 		{
 			bool bComputeIO = false;
 
@@ -2325,7 +2223,7 @@ void ArxGame::onRendererInit(RenderWindow & window) {
 
 void ArxGame::onRendererShutdown(RenderWindow &) {
 	
-	if(GRenderer == NULL) {
+	if(!GRenderer) {
 		// onRendererInit() failed
 		return;
 	}
@@ -2334,15 +2232,8 @@ void ArxGame::onRendererShutdown(RenderWindow &) {
 	
 	GRenderer->ReleaseAllTextures();
 
-	if(pDynamicVertexBuffer_TLVERTEX) {
-		delete pDynamicVertexBuffer_TLVERTEX;
-		pDynamicVertexBuffer_TLVERTEX = NULL;
-	}
-	
-	if(pDynamicVertexBuffer) {
-		delete pDynamicVertexBuffer;
-		pDynamicVertexBuffer = NULL;
-	}
+	delete pDynamicVertexBuffer_TLVERTEX, pDynamicVertexBuffer_TLVERTEX = NULL;
+	delete pDynamicVertexBuffer, pDynamicVertexBuffer = NULL;
 	
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 	

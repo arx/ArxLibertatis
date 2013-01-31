@@ -7,18 +7,34 @@ die() {
 
 # Handle arguments
 
+innoextract_opts=''
+if [ "$1" = "--no-progress" ] ; then
+	innoextract_opts='--progress=off'
+	shift
+fi
+
 if [ "$1" != "--help" ] && [ "$1" != "-h" ] ; then
-	cd="$(readlink -f "$1")"
-	patch="$(readlink -f "$2")"
+	cd="$(readlink -m "$1")"
+	patch="$(readlink -m "$2")"
 fi
 
 [ "$patch" = "" ] && die "\
 Usage: install-cd path/to/mount/point/ path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
-or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]"
+or     install-cd path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
+
+Optional option (must be the first argument):
+ --no-progress  Disable the innoextract progress bar
+
+This script can be used to install the Arx Fatalis data from a CD or ISO.
+Files will be verified and renamed as needed by Arx Libertatis.
+
+ArxFatalis_1.21_MULTILANG.exe can be downloaded from the official Arx Fatalis website
+at http://www.arkane-studios.com/uk/arx_downloads.php
+If you know the language of your CD, you can use the language-specific patch instead."
 
 if [ "$3" = "" ]
 	then destdir="$(pwd)"
-	else destdir="$(readlink -f "$3")"
+	else destdir="$(readlink -m "$3")"
 fi
 
 cd "$(dirname "$0")"
@@ -40,7 +56,7 @@ innoextract=`which innoextract 2> /dev/null`
 	|| die "Please install cabextract (http://www.cabextract.org.uk/)"
 
 [ -f "$innoextract" ] \
-	|| die "Please install innoextract (http://innoextract.constexpr.org/)"
+	|| die "Please install innoextract (http://constexpr.org/innoextract/)"
 
 [ -e "$cd" ] || die "$cd does not exist"
 [ -f "$patch" ] || die "$patch does not exist"
@@ -158,7 +174,8 @@ cd "$srcdir" && detect_language
 
 # Extract patch files
 
-cd "$patchdir" && "$innoextract" --lowercase --language="$data_lang" "$patch"
+cd "$patchdir" && "$innoextract" $innoextract_opts --lowercase \
+	--language="$data_lang" "$patch"
 
 # Install required files
 

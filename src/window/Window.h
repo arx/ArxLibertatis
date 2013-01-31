@@ -20,7 +20,7 @@
 #ifndef ARX_WINDOW_WINDOW_H
 #define ARX_WINDOW_WINDOW_H
 
-#include <list>
+#include <vector>
 #include <string>
 
 #include "math/Vector2.h"
@@ -32,7 +32,8 @@ public:
 	Window();
 	virtual ~Window();
 	
-	virtual bool init(const std::string & title, Vec2i size, bool fullscreen, unsigned depth = 0) = 0;
+	virtual bool initialize(const std::string & title, Vec2i size, bool fullscreen,
+	                        unsigned depth = 0) = 0;
 	
 	/*!
 	 * Enter fullscreen and set the given video mode.
@@ -47,6 +48,9 @@ public:
 	virtual void tick() = 0;
 	
 	virtual void hide() = 0;
+
+	//! Obtain the cursor position relative to this window.
+	virtual Vec2i getCursorPosition() const = 0;
 	
 	class Listener {
 		
@@ -54,64 +58,67 @@ public:
 		
 		virtual ~Listener() { }
 		
-		virtual void onCreateWindow(const Window & pWindow);
-		virtual void onDestroyWindow(const Window & pWindow);
-		virtual bool onCloseWindow(const Window & pWindow);
-		virtual void onMoveWindow(const Window & pWindow);
-		virtual void onResizeWindow(const Window & pWindow);
-		virtual void onMinimizeWindow(const Window & pWindow);
-		virtual void onMaximizeWindow(const Window & pWindow);
-		virtual void onRestoreWindow(const Window & pWindow);
-		virtual void onToggleFullscreen(const Window & pWindow);
-		virtual void onWindowGotFocus(const Window & pWindow);
-		virtual void onWindowLostFocus(const Window & pWindow);
-		virtual void onPaintWindow(const Window & pWindow);
+		virtual void onCreateWindow(const Window & window);
+		virtual void onDestroyWindow(const Window & window);
+		virtual bool onCloseWindow(const Window & window);
+		virtual void onMoveWindow(const Window & window);
+		virtual void onResizeWindow(const Window & window);
+		virtual void onMinimizeWindow(const Window & window);
+		virtual void onMaximizeWindow(const Window & window);
+		virtual void onRestoreWindow(const Window & window);
+		virtual void onToggleFullscreen(const Window & window);
+		virtual void onWindowGotFocus(const Window & window);
+		virtual void onWindowLostFocus(const Window & window);
+		virtual void onPaintWindow(const Window & window);
 		
 	};
 	
-	void addWindowListener(Listener * pListener);
-	void removeWindowListener(Listener * pListener);
+	void addListener(Listener * listener);
+	void removeListener(Listener * listener);
 	
-	inline bool hasFocus() const {
-		return m_HasFocus && !m_IsMinimized; // We treat minimized as not having focus
+	bool hasFocus() const {
+		return hasFocus_ && !isMinimized_; // We treat minimized as not having focus
 	}
-	inline bool isMinimized() const { return m_IsMinimized; }
-	inline bool isMaximized() const { return m_IsMaximized; }
-	inline bool isVisible() const { return m_IsVisible; }
+	bool isMinimized() const { return isMinimized_; }
+	bool isMaximized() const { return isMaximized_; }
+	bool isVisible() const { return isVisible_; }
 	
-	inline const Vec2i & getSize() const { return m_Size; }
-	inline unsigned getDepth() const { return depth; }
+	const Vec2i & getSize() const { return size_; }
+	unsigned getDepth() const { return depth_; }
 	
-	inline bool isFullScreen() const { return m_IsFullscreen; }
+	bool isFullScreen() const { return isFullscreen_; }
 	
 protected:
 	
 	bool onClose();
 	void onDestroy();
-	void onMove(s32 pPosX, s32 pPosY);
-	void onResize(s32 pWidth, s32 pHeight);
+	void onMove(s32 x, s32 y);
+	void onResize(s32 width, s32 height);
 	void onMinimize();
 	void onMaximize();
 	void onRestore();
-	void onShow(bool bShow);
+	void onShow(bool show);
 	void onToggleFullscreen();
-	void onFocus(bool bHasFocus);
+	void onFocus(bool hasFocus);
 	void onPaint();
 	void onCreate();
 	
-	std::string m_Title; //!< Window title bar caption.
-	Vec2i m_Position; //!< Screen position in pixels (relative to the upper left corner)
-	Vec2i m_Size; //!< Size in pixels
-	bool m_IsMinimized; //!< Is minimized ?
-	bool m_IsMaximized; //!< Is maximized ?
-	bool m_IsVisible; //!< Is visible ?
-	bool m_IsFullscreen; //!< Is fullscreen ?
-	bool m_HasFocus; //!< Has focus ?
-	unsigned depth;
+	std::string title_; //!< Window title bar caption.
+	Vec2i position_; //!< Screen position in pixels (relative to the upper left corner)
+	Vec2i size_; //!< Size in pixels
+	bool isMinimized_; //!< Is minimized ?
+	bool isMaximized_; //!< Is maximized ?
+	bool isVisible_; //!< Is visible ?
+	bool isFullscreen_; //!< Is fullscreen ?
+	bool hasFocus_; //!< Has focus ?
+	unsigned depth_;
 	
 private:
 	
-	std::list<Listener*> m_Listeners; //! Listeners that will be notified of change in the window properties.
+	typedef std::vector<Listener *> Listeners;
+	
+	//! Listeners that will be notified of change in the window properties.
+	Listeners listeners;
 	
 };
 

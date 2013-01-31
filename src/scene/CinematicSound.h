@@ -20,27 +20,12 @@
 #ifndef ARX_SCENE_CINEMATICSOUND_H
 #define ARX_SCENE_CINEMATICSOUND_H
 
-#include "audio/AudioTypes.h"
 #include "io/resource/ResourcePath.h"
-
-#define MAX_SOUND 256
-
-struct CinematicSound {
-	
-	CinematicSound();
-	
-	short active;
-	res::path file;
-	audio::SourceId handle;
-	
-};
+#include "platform/Platform.h"
 
 void DeleteAllSound();
-
-CinematicSound * GetFreeSound(int * num);
-bool DeleteFreeSound(int num);
-int AddSoundToList(const res::path & path);
-bool PlaySoundKeyFramer(int id);
-void StopSoundKeyFramer(void);
+void AddSoundToList(const res::path & path, bool isSpeech);
+bool PlaySoundKeyFramer(int index);
+void StopSoundKeyFramer();
 
 #endif // ARX_SCENE_CINEMATICSOUND_H

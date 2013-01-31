@@ -19,8 +19,11 @@
 
 #include "graphics/image/Image.h"
 
+#include <sstream>
 #include <cstring>
-#include <il.h>
+
+#include "graphics/image/stb_image.h"
+#include "graphics/image/stb_image_write.h"
 
 #include "graphics/Math.h"
 #include "io/fs/FilePath.h"
@@ -50,26 +53,6 @@ const unsigned int SIZE_TABLE[Image::Format_Num] = {
 
 } // anonymous namespace
 
-void Image::init() {
-	
-	// Initialize DevIL
-	ilInit();
-	
-	CrashHandler::setVariable("DevIL version (header)", IL_VERSION);
-	CrashHandler::setVariable("DevIL version", ilGetString(IL_VERSION_NUM));
-	
-	// Set the origin to be used when loading all images, 
-	// so that any image with a different origin will be
-	// flipped to have the set origin
-	ilOriginFunc(IL_ORIGIN_UPPER_LEFT);
-	ilEnable(IL_ORIGIN_SET);
-}
-
-void Image::shutdown() {
-	// Shutdown DevIL
-	ilShutDown();
-}
-
 Image::Image() : mData(0) {
 	Reset();
 }
@@ -79,17 +62,11 @@ Image::Image(const Image & pOther) : mData(NULL) {
 }
 
 Image::~Image() {
-	if(mData) {
-		delete[] mData;
-	}
+	delete[] mData;
 }
 
 void Image::Reset() {
-	
-	if(mData) {
-		delete[] mData, mData = NULL;
-	}
-	
+	delete[] mData, mData = NULL;
 	mWidth = 0;
 	mHeight = 0;
 	mDepth = 0;
@@ -105,9 +82,7 @@ const Image& Image::operator=(const Image & pOther) {
 		return *this;
 	}
 	
-	if(mData) {
-		delete[] mData;
-	}
+	delete[] mData, mData = NULL;
 	
 	mWidth      = pOther.mWidth;
 	mHeight     = pOther.mHeight;
@@ -117,7 +92,7 @@ const Image& Image::operator=(const Image & pOther) {
 	mDataSize   = pOther.mDataSize;
 	mData       = new unsigned char[mDataSize];
 	
-	memcpy( mData, pOther.mData, mDataSize );
+	memcpy(mData, pOther.mData, mDataSize);
 	
 	return *this;
 }
@@ -195,94 +170,53 @@ bool Image::LoadFromFile(const res::path & filename) {
 		return false;
 	}
 	
-	bool ret = LoadFromMemory(pData, size);
+	bool ret = LoadFromMemory(pData, size, filename.string().c_str());
 	
 	free(pData);
 	
 	return ret;
 }
 
-Image::Format GetImageFormat(ILint pImgTextureFormat, ILint pBPP) {
-	
-	// Convert DevIL image format to our internal format.
-	// TODO why test pBPP? shouldn't the IL format be enough?
-	switch(pBPP) {
-		
-		case 1:
-			return Image::Format_L8;
-			
-		case 2: {
-			switch(pImgTextureFormat) {
-				case IL_LUMINANCE_ALPHA:
-					return Image::Format_L8A8;
-			}
-			break;
-		}
-		
-		case 3: {
-			switch(pImgTextureFormat) {
-				case IL_RGB:
-					return Image::Format_R8G8B8;
-				case IL_BGR:
-					return Image::Format_B8G8R8;
-			}
-			break;
-		}
-		
-		case 4: {
-			switch(pImgTextureFormat) {
-				case IL_RGBA:
-					return Image::Format_R8G8B8A8;
-				case IL_BGRA:
-					return Image::Format_B8G8R8A8;
-			}
-			break;
-		}
-	}
-	
-	return Image::Format_Unknown;
-}
-
-bool Image::LoadFromMemory(void * pData, unsigned int size) {
+bool Image::LoadFromMemory(void * pData, unsigned int size, const char * file) {
 	
 	if(!pData) {
 		return false;
 	}
+
+	int width, height, bpp, fmt, req_bpp = 0;
+
+	// 2bpp TGAs needs to be converted!
+	int ret = stbi::stbi_info_from_memory((const stbi::stbi_uc*)pData, size, &width, &height, &bpp, &fmt);
+	if(ret && fmt == stbi::STBI_tga && bpp == 2)
+		req_bpp = 3;
 	
-	ILuint imageName;
-	ilGenImages(1, &imageName);
-	ilBindImage(imageName);
-	
-	ILboolean bLoaded = ilLoadL(IL_TYPE_UNKNOWN, pData, size);
-	if(!bLoaded) {
+	unsigned char* data = stbi::stbi_load_from_memory((const stbi::stbi_uc*)pData, size, &width, &height, &bpp, req_bpp);
+	if(!data) {
+		std::ostringstream message;
+		message << "error loading image";
+		if(file) {
+			message << " \"" << file << '"';
+		}
+		LogError << message.str();
 		return false;
 	}
-	
-	mWidth  = ilGetInteger(IL_IMAGE_WIDTH);
-	mHeight = ilGetInteger(IL_IMAGE_HEIGHT);
+
+	if(req_bpp != 0)
+		bpp = req_bpp;
+
+	mWidth  = width;
+	mHeight = height;
 	mDepth  = 1;
 	mNumMipmaps = 1;
-	
-	ILint imgFormat = ilGetInteger(IL_IMAGE_FORMAT);
-	
-	// We do not support palettized texture currently, so un-palettize them!
-	if(imgFormat == IL_COLOR_INDEX) {
-		switch(ilGetInteger(IL_PALETTE_TYPE)) {
-			case IL_PAL_RGB24:
-			case IL_PAL_RGB32:  imgFormat = IL_RGB; break;
-			case IL_PAL_BGR24:
-			case IL_PAL_BGR32:  imgFormat = IL_BGR; break;
-			case IL_PAL_RGBA32: imgFormat = IL_RGBA; break;
-			case IL_PAL_BGRA32: imgFormat = IL_BGRA; break;
-			default: arx_assert_msg(0, "Invalid palette type");
-		}
-		ilConvertImage(imgFormat, IL_UNSIGNED_BYTE);
-		imgFormat = ilGetInteger(IL_IMAGE_FORMAT);
+
+	switch(bpp) {
+		case stbi::STBI_grey:       mFormat = Image::Format_L8; break;
+		case stbi::STBI_grey_alpha: mFormat = Image::Format_L8A8; break;
+		case stbi::STBI_rgb:        mFormat = Image::Format_R8G8B8; break;
+		case stbi::STBI_rgb_alpha:  mFormat = Image::Format_R8G8B8A8; break;
+		default: arx_assert_msg(0, "Invalid bpp");
 	}
 	
-	ILint bytesPerPixel = ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL);
-	
-	mFormat = GetImageFormat(imgFormat, bytesPerPixel);
 	unsigned int dataSize = Image::GetSizeWithMipmaps(mFormat, mWidth, mHeight, mDepth, mNumMipmaps);
 	
 	// Delete previous buffer if size don't match
@@ -298,11 +232,11 @@ bool Image::LoadFromMemory(void * pData, unsigned int size) {
 	// Copy image data to our buffer
 	if(mData) {
 		mDataSize = dataSize;
-		memcpy(mData, ilGetData(), mDataSize);
+		memcpy(mData, data, mDataSize);
 	}
 	
 	// Release resources
-	ilDeleteImages(1, &imageName);
+	stbi::stbi_image_free(data);
 	
 	return (mData != NULL);
 }
@@ -329,6 +263,39 @@ void Image::Create(unsigned int pWidth, unsigned int pHeight, Image::Format pFor
 	if(!mData) {
 		mData = new unsigned char[mDataSize];
 	}
+}
+
+
+bool Image::ConvertTo(Image::Format format) {
+	arx_assert_msg( !IsCompressed(), "[Image::ConvertTo] Conversion of compressed images not supported yet!" );
+	arx_assert_msg( !IsVolume(), "[Image::ConvertTo] Conversion of volume images not supported yet!" );
+	arx_assert_msg( GetSize(mFormat) == GetSize(format), "[Image::ConvertTo] Conversion of images with different BPP not supported yet!" );
+	if(IsCompressed() || IsVolume() || GetSize(mFormat) != GetSize(format))
+		return false;
+
+	if(mFormat == format)
+		return true;
+
+	unsigned int numComponents = GetSize(mFormat);
+	unsigned int size = mWidth * mHeight;
+	unsigned char * data = mData;
+
+	switch(format) {
+	case Format_R8G8B8:
+	case Format_B8G8R8:
+	case Format_R8G8B8A8:
+	case Format_B8G8R8A8:
+		for(unsigned int i = 0; i < size; i++, data += numComponents) {
+			std::swap(data[0], data[2]);
+		}
+		break;
+	default:
+		arx_error_msg("[Image::ConvertTo] Unsupported conversion!" );
+		return false;
+	};
+
+	mFormat = format;
+	return true;
 }
 
 // creates an image of the desired size and rescales the source into it
@@ -961,6 +928,10 @@ void FlipDXT5(unsigned char * data, unsigned int count);
 
 void Image::FlipY(unsigned char * pData, unsigned int pWidth, unsigned int pHeight, unsigned int pDepth) {
 	
+	if(pWidth == 0 || pHeight == 0) {
+		return;
+	}
+	
 	unsigned int offset;
 	
 	if(!IsCompressed()) {
@@ -1128,48 +1099,22 @@ void Flip3dc(unsigned char * data, unsigned int count) {
 	}
 }
 
-static ILenum ARXImageToILFormat[] = {
-	IL_LUMINANCE,       // Format_L8
-#ifdef IL_ALPHA
-	IL_ALPHA,           // Format_A8
-#else
-	0,                  // Format_A8 not supported by the IL version
-#endif
-	IL_LUMINANCE_ALPHA, // Format_L8A8
-	IL_RGB,             // Format_R8G8B8
-	IL_BGR,             // Format_B8G8R8
-	IL_RGBA,            // Format_R8G8B8A8
-	IL_BGRA,            // Format_B8G8R8A8
-	IL_DXT1,            // Format_DXT1
-	IL_DXT3,            // Format_DXT3
-	IL_DXT5,            // Format_DXT5
-};
-
 bool Image::save(const fs::path & filename) const {
 	
-	BOOST_STATIC_ASSERT(ARRAY_SIZE(ARXImageToILFormat) == Format_Unknown);
-	if(mFormat < 0 || mFormat >= Format_Unknown || ARXImageToILFormat[mFormat] == 0) {
+	if(mFormat < 0 || mFormat >= Format_Unknown) {
 		return false;
 	}
 	
-	ILuint imageName;
-	ilGenImages(1, &imageName);
-	ilBindImage(imageName);
-	
-	ILboolean ret = ilTexImage(mWidth, mHeight, mDepth, GetNumChannels(),
-	                           ARXImageToILFormat[mFormat], IL_UNSIGNED_BYTE, mData);
-	if(ret) {
-		ilRegisterOrigin(IL_ORIGIN_UPPER_LEFT);
-		ilEnable(IL_FILE_OVERWRITE);
-		ret = ilSaveImage(filename.string().c_str());
+	int ret = 0;
+	if(filename.ext() == ".png") {
+		ret = stbi::stbi_write_png(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData, 0);
+	} else if(filename.ext() == ".bmp") {
+		ret = stbi::stbi_write_bmp(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
+	} else if(filename.ext() == ".tga") {
+		ret = stbi::stbi_write_tga(filename.string().c_str(), mWidth, mHeight, GetSize(mFormat), mData);
+	} else {
+		LogError << "Unsupported file extension.";
 	}
 	
-	ilDeleteImages(1, &imageName);
-	
-	if(!ret) {
-		LogWarning << "ilSaveImage failed: " << ilGetError();
-		return false;
-	}
-	
-	return true;
+	return ret != 0;
 }

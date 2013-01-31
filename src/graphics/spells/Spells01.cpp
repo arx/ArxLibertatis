@@ -48,10 +48,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/GameTime.h"
 
-#include "game/Spells.h"
-#include "game/NPC.h"
 #include "game/Damage.h"
+#include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
 #include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
@@ -81,18 +82,12 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 	cp.iNbMax = 100 + t * 50;
 	cp.fLife = 1500;
 	cp.fLifeRandom = 0;
-	cp.p3Pos.x = 10;
-	cp.p3Pos.y = 10;
-	cp.p3Pos.z = 10;
-	cp.p3Direction.x = 0;
-	cp.p3Direction.y = -10;
-	cp.p3Direction.z = 0;
+	cp.p3Pos = Vec3f::repeat(10.f);
+	cp.p3Direction = Vec3f(0.f, -10.f, 0.f);
 	cp.fAngle = radians(360);
 	cp.fSpeed = 130;
 	cp.fSpeedRandom = 100;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 10;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f(0.f, 10.f, 0.f);
 	cp.fFlash = 0;
 	cp.fRotation = 16;
 
@@ -148,13 +143,9 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
-
-
-	Vec3f eP;
-	eP.x = _ePos.x;
-	eP.y = _ePos.y;
-	eP.z = _ePos.z;
-
+	
+	Vec3f eP = _ePos;
+	
 	pPS->SetPos(eP);
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
@@ -181,9 +172,7 @@ void LaunchMagicMissileExplosion(Vec3f & _ePos, int t = 0, long spellinstance = 
 			DynLight[id].rgb.b = .8f;
 		}
 
-		DynLight[id].pos.x = eP.x;
-		DynLight[id].pos.y = eP.y;
-		DynLight[id].pos.z = eP.z;
+		DynLight[id].pos = eP;
 		DynLight[id].duration = 1500;
 	}
 
@@ -203,7 +192,7 @@ CMagicMissile::CMagicMissile() : CSpellFx(), fColor(Color3f::white), eSrc(Vec3f:
 	tex_mm = TextureContainer::Load("graph/obj3d/textures/(fx)_bandelette_blue");
 
 	if (!smissile)
-		smissile = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
+		smissile = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_magic_missile/fx_magic_missile.teo");
 
 	smissile_count++;
 
@@ -250,12 +239,8 @@ void CMagicMissile::Create(const Vec3f & aeSrc, const Anglef & angles)
 	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
 
-	pathways[0].p.x = eSrc.x;
-	pathways[0].p.y = eSrc.y;
-	pathways[0].p.z = eSrc.z;
-	pathways[5].p.x = e.x;
-	pathways[5].p.y = e.y;
-	pathways[5].p.z = e.z;
+	pathways[0].p = eSrc;
+	pathways[5].p = e;
 	Split(pathways, 0, 5, 50, 0.5f);
 
 	for (i = 0; i < 6; i++)
@@ -346,13 +331,9 @@ float CMagicMissile::Render()
 	{
 		fTrail = (ulCurrentTime * fOneOnDuration) * (iBezierPrecision + 2) * 5;
 	}
-
-	lastpos.x = pathways[0].p.x;
-	lastpos.y = pathways[0].p.y;
-	lastpos.z = pathways[0].p.z;
-
-	newpos = lastpos;
-
+	
+	newpos = lastpos = pathways[0].p;
+	
 	for (i = 0; i < 5; i++)
 	{
 		int kp = i;
@@ -431,14 +412,12 @@ float CMagicMissile::Render()
 			newpos = temp_vector;
 		}
 	}
-
-	av.x = newpos.x - lastpos.x;
-	av.y = newpos.y - lastpos.y;
-	av.z = newpos.z - lastpos.z;
-
+	
+	av = newpos - lastpos;
+	
 	float bubu = getAngle(av.x, av.z, 0, 0);
 	float bubu1 = getAngle(av.x, av.y, 0, 0);
-
+	
 	stitepos = lastpos;
 
 	stiteangle.b = -degrees(bubu);
@@ -467,7 +446,7 @@ float CMagicMissile::Render()
 		stitecolor.b = 0.5f;
 	}
 
-	stitescale = Vec3f(1, 1, 1);
+	stitescale = Vec3f::ONE;
 	{
 		if ((smissile))
 			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
@@ -529,15 +508,14 @@ void CMultiMagicMissile::Create()
 	{
 		
 
-		spells[spellinstance].hand_group = GetActionPointIdx(inter.iobj[spells[spellinstance].caster]->obj, "primary_attach");
-
-		if (spells[spellinstance].hand_group != -1)
-		{
-			spells[spellinstance].hand_pos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
-			spells[spellinstance].hand_pos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
-			spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
+		spells[spellinstance].hand_group = GetActionPointIdx(entities[spells[spellinstance].caster]->obj, "primary_attach");
+		
+		if(spells[spellinstance].hand_group != -1) {
+			Entity * caster = entities[spells[spellinstance].caster];
+			long group = spells[spellinstance].hand_group;
+			spells[spellinstance].hand_pos = caster->obj->vertexlist3[group].v;
 		}
-
+		
 		Vec3f aePos;
 		float afAlpha, afBeta;
 		if (spells[spellinstance].caster == 0) // player
@@ -563,7 +541,7 @@ void CMultiMagicMissile::Create()
 		else
 		{
 			afAlpha = 0;
-			afBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
+			afBeta = entities[spells[spellinstance].caster]->angle.b;
 			Vec3f vector;
 			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 			vector.y = EEsin(radians(afAlpha)) * 60;
@@ -575,21 +553,21 @@ void CMultiMagicMissile::Create()
 			}
 			else
 			{
-				aePos = inter.iobj[spells[spellinstance].caster]->pos + vector;
+				aePos = entities[spells[spellinstance].caster]->pos + vector;
 			}
 
-			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = entities[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
-				Vec3f * p2 = &inter.iobj[io->targetinfo]->pos;
+				Vec3f * p2 = &entities[io->targetinfo]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				Vec3f * p1 = &spells[spellinstance].caster_pos;
-				Vec3f * p2 = &inter.iobj[spells[spellinstance].target]->pos;
+				Vec3f * p2 = &entities[spells[spellinstance].target]->pos;
 				afAlpha = -(degrees(getAngle(p1->y, p1->z, p2->y, p2->z + dist(Vec2f(p2->x, p2->z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
 		}
@@ -679,7 +657,7 @@ void CMultiMagicMissile::CheckCollision()
 					{
  
 						LaunchMagicMissileExplosion(pMM->eCurPos, 0, spellinstance);
-						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, inter.iobj[spells[spellinstance].caster]);
+						ARX_NPC_SpawnAudibleSound(&pMM->eCurPos, entities[spells[spellinstance].caster]);
 
 						pMM->SetTTL(1000);
 						pMM->bExplo = true;
@@ -857,9 +835,7 @@ void CIgnit::AddLight(int aiLight)
 		el->intensity = 0.7f + 2.f * rnd();
 		el->fallend = 400.f;
 		el->fallstart = 300.f;
-		el->rgb.r = this->r;
-		el->rgb.g = this->g;
-		el->rgb.b = this->b;
+		el->rgb = rgb;
 		el->pos = this->tablight[this->nblight].poslight;
 	}
 
@@ -948,7 +924,8 @@ float CIgnit::Render() {
 				{
 					if ((this->tablight[nb].actif) && (rnd() > .5f))
 					{
-						ARX_GenereSpheriqueEtincelles(&this->tablight[nb].posfx, rnd() * 20.f * unsuri, this->tp, this->r, this->g, this->b, this->mask);
+						createSphericalSparks(tablight[nb].posfx, rnd() * 20.f * unsuri, tp,
+						                      rgb, mask);
 					}
 				}
 			}
@@ -1007,108 +984,53 @@ void DrawArcElectrique(Vec3f * tabdef, int nbseg, TextureContainer * tex, float 
 	GRenderer->SetTexture(0, tex);
 	
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = Color::grayb(tsp).toBGR();
-
-	float xx;
-	float zz;
-
-	for (i = 0; i < nbseg - 2; i++)
-	{
-		Vec3f astart;
-
-		astart = tabdef[i];
-
-		zz = 5; // size
-		xx = (float)(5 * cos(radians(fBeta)));
-
-		float ax = tabdef[i+1].x;
-		float ay = tabdef[i+1].y;
-		float az = tabdef[i+1].z;
-
+	
+	for(i = 0; i < nbseg - 2; i++) {
+		
+		Vec3f astart = tabdef[i];
+		Vec3f a = tabdef[i + 1];
+		
 		// version 2 faces
-		v2[0].uv.x = 0;
-		v2[0].uv.y = 0;
-		v2[1].uv.x = 1;
-		v2[1].uv.y = 0;
-		v2[2].uv.x = 1;
-		v2[2].uv.y = 1;
-		v2[3].uv.x = 0;
-		v2[3].uv.y = 1;
-
-		v[0].p.x = astart.x;
-		v[0].p.y = astart.y + zz;
-		v[0].p.z = astart.z;
-
-		v[1].p.x = astart.x;
-		v[1].p.y = astart.y - zz;
-		v[1].p.z = astart.z;
-
-		v[2].p.x = ax;
-		v[2].p.y = ay - zz;
-		v[2].p.z = az;
-
-		v[3].p.x = ax;
-		v[3].p.y = ay + zz;
-		v[3].p.z = az;
-
+		v2[0].uv = Vec2f::ZERO;
+		v2[1].uv = Vec2f::X_AXIS;
+		v2[2].uv = Vec2f::ONE;
+		v2[3].uv = Vec2f::Y_AXIS;
+		
+		Vec3f d(0.f, 5.f, 0.f);
+		v[0].p = astart + d;
+		v[1].p = astart - d;
+		v[2].p = a - d;
+		v[3].p = a + d;
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
-
-		zz *= (float) sin(radians(fBeta));
-
-		v[0].p.x = astart.x + xx;
-		v[0].p.y = astart.y;
-		v[0].p.z = astart.z + zz;
-
-		v[1].p.x = astart.x - xx;
-		v[1].p.y = astart.y;
-		v[1].p.z = astart.z - zz;
-
-		v[2].p.x = ax - xx;
-		v[2].p.y = ay;
-		v[2].p.z = az - zz;
-
-		v[3].p.x = ax + xx;
-		v[3].p.y = ay;
-		v[3].p.z = az + zz;
-
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
+		
+		d = Vec3f(5.f * (float)cos(radians(fBeta)), 0.f, 5.f * (float)sin(radians(fBeta)));
+		v[0].p = astart + d;
+		v[1].p = astart - d;
+		v[2].p = a - d;
+		v[3].p = a + d;
 		EE_RT2(&v[0], &v2[0]);
 		EE_RT2(&v[1], &v2[1]);
 		EE_RT2(&v[2], &v2[2]);
 		EE_RT2(&v[3], &v2[3]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[1],
-		                             &v2[2]);
-		ARX_DrawPrimitive(&v2[0],
-		                             &v2[2],
-		                             &v2[3]);
+		ARX_DrawPrimitive(&v2[0], &v2[1], &v2[2]);
+		ARX_DrawPrimitive(&v2[0], &v2[2], &v2[3]);
 	}
 }
 
 CPortal::~CPortal() {
 	
-	if(sphereind) {
-		free(sphereind);
-	}
-	if(spherevertex) {
-		free(spherevertex);
-	}
-	if(sphered3d) {
-		free(sphered3d);
-	}
+	free(sphereind);
+	free(spherevertex);
+	free(sphered3d);
 	
 	int nb = 256;
 	while(nb--) {
-		if(tabeclair[nb].seg) {
-			free(tabeclair[nb].seg);
-		}
+		free(tabeclair[nb].seg);
 	}
 }
 
@@ -1289,45 +1211,29 @@ float CPortal::Render()
 	GRenderer->SetCulling(Renderer::CullCW);
 	GRenderer->ResetTexture(0);
 	GRenderer->drawIndexed(Renderer::TriangleList, this->sphered3d, this->spherenbpt, this->sphereind, this->spherenbfaces * 3);
-
-	//affichage eclair
-	this->DrawAllEclair();
-
-	//affichage des particules à l'interieur
-	if (rnd() > .25f)
-	{
-		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist = 1;
-			particle[j].zdec = 0;
-
-			float a = rnd() * 360.f;
-			float b = rnd() * 360.f;
-			float rr = this->r * (rnd() + .25f) * 0.05f;
-
-			particle[j].ov.x	=	this->pos.x;
-			particle[j].ov.y	=	this->pos.y;
-			particle[j].ov.z	=	this->pos.z;
-			particle[j].move.x	=	rr * EEsin(radians(a)) * EEcos(radians(b));
-			particle[j].move.y	=	rr * EEcos(radians(a));
-			particle[j].move.z	=	rr * EEsin(radians(a)) * EEsin(radians(b));
-			particle[j].siz		=	10.f;
-			particle[j].tolive	=	Random::get(1000, 2000);
-			particle[j].scale.x	=	1.f;
-			particle[j].scale.y	=	1.f;
-			particle[j].scale.z	=	1.f;
-			particle[j].timcreation	=	(long)arxtime;
-			particle[j].tc		=	tp;
-			particle[j].special	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			particle[j].fparam	=	0.0000001f;
-			particle[j].rgb = Color3f::white;
+	
+	// affichage eclair
+	DrawAllEclair();
+	
+	// affichage des particules à l'interieur
+	if(rnd() > .25f) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(pd) {
+			float a = radians(rnd() * 360.f);
+			float b = radians(rnd() * 360.f);
+			float rr = r * (rnd() + .25f) * 0.05f;
+			pd->ov = pos;
+			pd->move = Vec3f(EEsin(a) * EEcos(b), EEcos(a), EEsin(a) * EEsin(b)) * rr;
+			pd->siz = 10.f;
+			pd->tolive = Random::get(1000, 2000);
+			pd->tc = tp;
+			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+			pd->fparam = 0.0000001f;
 		}
 	}
-
-	//affichage de la sphere front
+	
+	// affichage de la sphere front
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->ResetTexture(0);
 	GRenderer->drawIndexed(Renderer::TriangleList, this->sphered3d, this->spherenbpt, this->sphereind, this->spherenbfaces * 3);

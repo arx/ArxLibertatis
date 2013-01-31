@@ -65,15 +65,9 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag) {
 	
 	if ((obj) && (obj->cdata)) {
 		for (long i = 0; i < obj->cdata->nb_cvert; i++) {
-			
 			CLOTHESVERTEX * cv = &obj->cdata->cvert[i];
-			cv->velocity.x = 0.f;
-			cv->velocity.y = 0.f;
-			cv->velocity.z = 0.f;
-			cv->force.x = 0.f;
-			cv->force.y = 0.f;
-			cv->force.z = 0.f;
-			
+			cv->velocity = Vec3f::ZERO;
+			cv->force = Vec3f::ZERO;
 			if(!(flag & 1)) {
 				cv->coll = -1;
 				cv->t_pos = cv->pos = obj->vertexlist[cv->idx].v;
@@ -160,9 +154,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 		for (int i = 0; i < obj->cdata->nb_cvert; i++)
 		{
 			obj->cdata->cvert[i].idx = (short)obj->selections[sel].selected[i];
-			obj->cdata->cvert[i].pos.x = obj->cdata->cvert[i].t_pos.x = obj->vertexlist[obj->cdata->cvert[i].idx].v.x;
-			obj->cdata->cvert[i].pos.y = obj->cdata->cvert[i].t_pos.y = obj->vertexlist[obj->cdata->cvert[i].idx].v.y;
-			obj->cdata->cvert[i].pos.z = obj->cdata->cvert[i].t_pos.z = obj->vertexlist[obj->cdata->cvert[i].idx].v.z;
+			obj->cdata->cvert[i].pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
+			obj->cdata->cvert[i].t_pos = obj->vertexlist[obj->cdata->cvert[i].idx].v;
 			obj->cdata->cvert[i].mass = 0.5f; 
 
 			if ((selmounocol != -1) && (IsInSelection(obj, obj->selections[sel].selected[i], selmounocol) >= 0))
@@ -283,24 +276,11 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 void KillClothesData(EERIE_3DOBJ * obj) {
 	
-	if(obj == NULL) {
+	if(!obj || !obj->cdata) {
 		return;
 	}
 	
-	if(obj->cdata == NULL) {
-		return;
-	}
-	
-	if(obj->cdata->cvert) {
-		delete[] obj->cdata->cvert;
-		obj->cdata->cvert = NULL;
-	}
-	
-	if(obj->cdata->backup) {
-		delete[] obj->cdata->backup;
-		obj->cdata->backup = NULL;
-	}
-	
-	delete obj->cdata;
-	obj->cdata = NULL;
+	delete[] obj->cdata->cvert, obj->cdata->cvert = NULL;
+	delete[] obj->cdata->backup, obj->cdata->backup = NULL;
+	delete obj->cdata, obj->cdata = NULL;
 }

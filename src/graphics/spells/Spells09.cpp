@@ -48,8 +48,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/GameTime.h"
 
-#include "game/Spells.h"
+#include "game/EntityManager.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
@@ -64,17 +65,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-CSummonCreature::CSummonCreature() : fColorRays1(Color3f::white), fColorBorder(Color3f::white), fColorRays2(Color3f::black) {
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CSummonCreature::CSummonCreature()
+	: fColorRays1(Color3f::white),
+	  fColorBorder(Color3f::white),
+	  fColorRays2(Color3f::black) {
+	
+	eSrc = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDurationIntro + ulDurationRender + ulDurationOuttro + 1;
-
+	
 	iSize = 100;
 	fOneOniSize = 1.0f / ((float) iSize);
-
+	
 	tex_light = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu4");
 }
 
@@ -172,24 +175,12 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 		tfRaysa[i] = 0.4f * rnd();
 		tfRaysb[i] = 0.4f * rnd(); 
 	}
-
-	target.p.x = eSrc.x - 100;
-	target.p.y = eSrc.y;
-	target.p.z = eSrc.z;
-
-	v1a[0].p.x = eSrc.x;
-	v1a[0].p.y = eSrc.y - 100;
-	v1a[0].p.z = eSrc.z;
-	v1a[end].p.x = eSrc.x;
-	v1a[end].p.y = eSrc.y + 100;
-	v1a[end].p.z = eSrc.z;
-
-	v1b[0].p.x = v1a[0].p.x;
-	v1b[0].p.y = v1a[0].p.y;
-	v1b[0].p.z = v1a[0].p.z;
-	v1b[end].p.x = v1a[end].p.x;
-	v1b[end].p.y = v1a[end].p.y;
-	v1b[end].p.z = v1a[end].p.z;
+	
+	target.p = eSrc - Vec3f(100.f, 0.f, 0.f);
+	v1a[0].p = eSrc - Vec3f(0.f, 100.f, 0.f);
+	v1a[end].p = eSrc + Vec3f(0.f, 100.f, 0.f);	
+	v1b[0].p = v1a[0].p;
+	v1b[end].p = v1a[end].p;
 
 	sizeF = 200;
 	Split(v1a, 0, end, 20);
@@ -228,17 +219,11 @@ void CSummonCreature::Create(Vec3f aeSrc, float afBeta)
 			v1b[i].p.z = v1a[i].p.z + rnd() * 20.0f;
 		}
 	}
-
-	for (i = 0; i <= end; i++)
-	{
-		va[i].p.x = eSrc.x;
-		va[i].p.y = eSrc.y;
-		va[i].p.z = eSrc.z;
-		vb[i].p.x = eSrc.x;
-		vb[i].p.y = eSrc.y;
-		vb[i].p.z = eSrc.z;
+	
+	for(i = 0; i <= end; i++) {
+		vb[i].p = va[i].p = eSrc;
 	}
-
+	
 	sizeF = 0;
 }
 
@@ -352,42 +337,26 @@ void CSummonCreature::RenderFissure()
 
 	for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
 	{
-		vt[2].p.x = va[i].p.x   - (va[i].p.x - eSrc.x) * 0.2f;
-		vt[2].p.y = va[i].p.y   - (va[i].p.y - eSrc.y) * 0.2f;
-		vt[2].p.z = va[i].p.z   - (va[i].p.z - eSrc.z) * 0.2f;
-		vt[3].p.x = va[i+1].p.x - (va[i+1].p.x - eSrc.x) * 0.2f;
-		vt[3].p.y = va[i+1].p.y - (va[i+1].p.y - eSrc.y) * 0.2f;
-		vt[3].p.z = va[i+1].p.z - (va[i+1].p.z - eSrc.z) * 0.2f;
-
+		vt[2].p = va[i].p - (va[i].p - eSrc) * 0.2f;
+		vt[3].p = va[i + 1].p - (va[i + 1].p - eSrc) * 0.2f;
+		
 		EE_RT2(&vt[3], &vr[0]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&va[i+1], &vr[2]);
 		EE_RT2(&va[i], &vr[3]);
-		ARX_DrawPrimitive(&vr[0],
-		                             &vr[1],
-		                             &vr[2]);
-		ARX_DrawPrimitive(&vr[1],
-		                             &vr[2],
-		                             &vr[3]);
-
-		vt[2].p.x = vb[i].p.x   - (vb[i].p.x - eSrc.x) * 0.2f;
-		vt[2].p.y = vb[i].p.y   - (vb[i].p.y - eSrc.y) * 0.2f;
-		vt[2].p.z = vb[i].p.z   - (vb[i].p.z - eSrc.z) * 0.2f;
-		vt[3].p.x = vb[i+1].p.x - (vb[i+1].p.x - eSrc.x) * 0.2f;
-		vt[3].p.y = vb[i+1].p.y - (vb[i+1].p.y - eSrc.y) * 0.2f;
-		vt[3].p.z = vb[i+1].p.z - (vb[i+1].p.z - eSrc.z) * 0.2f;
-
+		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		
+		vt[2].p = vb[i].p - (vb[i].p - eSrc) * 0.2f;
+		vt[3].p = vb[i + 1].p - (vb[i + 1].p - eSrc) * 0.2f;
+		
 		EE_RT2(&vb[i], &vr[3]);
 		EE_RT2(&vb[i+1], &vr[2]);
 		EE_RT2(&vt[2], &vr[1]);
 		EE_RT2(&vt[3], &vr[0]);
-		ARX_DrawPrimitive(&vr[0],
-		                             &vr[1],
-		                             &vr[2]);
-		ARX_DrawPrimitive(&vr[1],
-		                             &vr[2],
-		                             &vr[3]);
-
+		ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+		ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
+		
 	}
 
 	//-------------------------------------------------------------------------
@@ -416,70 +385,40 @@ void CSummonCreature::RenderFissure()
 	vr[3].uv.x = 1.0f + fTexWrap;
 	vr[3].uv.y = 0;
 
-	for (i = 0; i < end - 1; i++)
-	{	
-		if (i < fSizeIntro)
-		{
-			vt[0].p.x = va[i].p.x;
-			vt[0].p.y = va[i].p.y;
-			vt[0].p.z = va[i].p.z;
-			vt[1].p.x = va[i+1].p.x;
-			vt[1].p.y = va[i+1].p.y;
-			vt[1].p.z = va[i+1].p.z;
-			vt[2].p.x = va[i].p.x + (va[i].p.x - target.p.x) * 2;
-			vt[2].p.y = va[i].p.y + (va[i].p.y - target.p.y) * 2;
-			vt[2].p.z = va[i].p.z + (va[i].p.z - target.p.z) * 2;
-			vt[3].p.x = va[i+1].p.x + (va[i+1].p.x - target.p.x) * 2;
-			vt[3].p.y = va[i+1].p.y + (va[i+1].p.y - target.p.y) * 2;
-			vt[3].p.z = va[i+1].p.z + (va[i+1].p.z - target.p.z) * 2;
-
+	for(i = 0; i < end - 1; i++) {
+		
+		if(i < fSizeIntro) {
+			vt[0].p = va[i].p;
+			vt[1].p = va[i + 1].p;
+			vt[2].p = va[i].p + (va[i].p - target.p) * 2.f;
+			vt[3].p = va[i + 1].p + (va[i + 1].p - target.p) * 2.f;
 			vr[0].color = (fColorRays1 * tfRaysa[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysa[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysa[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysa[i + 1]).toBGR();
-			
 			EE_RT2(&vt[0], &vr[3]);
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 		
-		if (i < fSizeIntro)
-		{
-			vt[0].p.x = vb[i+1].p.x;
-			vt[0].p.y = vb[i+1].p.y;
-			vt[0].p.z = vb[i+1].p.z;
-			vt[1].p.x = vb[i].p.x;
-			vt[1].p.y = vb[i].p.y;
-			vt[1].p.z = vb[i].p.z;
-			vt[2].p.x = vb[i+1].p.x + (vb[i+1].p.x - target.p.x) * 2;
-			vt[2].p.y = vb[i+1].p.y + (vb[i+1].p.y - target.p.y) * 2;
-			vt[2].p.z = vb[i+1].p.z + (vb[i+1].p.z - target.p.z) * 2;
-			vt[3].p.x = vb[i].p.x + (vb[i].p.x - target.p.x) * 2;
-			vt[3].p.y = vb[i].p.y + (vb[i].p.y - target.p.y) * 2;
-			vt[3].p.z = vb[i].p.z + (vb[i].p.z - target.p.z) * 2;
-
+		if(i < fSizeIntro) {
+			vt[0].p = vb[i + 1].p;
+			vt[1].p = vb[i].p;
+			vt[2].p = vb[i + 1].p + (vb[i + 1].p - target.p) * 2.f;
+			vt[3].p = vb[i].p + (vb[i].p - target.p) * 2.f;
 			vr[0].color = (fColorRays1 * tfRaysb[i]).toBGR();
 			vr[1].color = (fColorRays1 * tfRaysb[i + 1]).toBGR();
 			vr[2].color = (fColorRays2 * tfRaysb[i]).toBGR();
 			vr[3].color = (fColorRays2 * tfRaysb[i + 1]).toBGR();
-
 			EE_RT2(&vt[0], &vr[3]);
 			EE_RT2(&vt[1], &vr[2]);
 			EE_RT2(&vt[2], &vr[1]);
 			EE_RT2(&vt[3], &vr[0]);
-			ARX_DrawPrimitive(&vr[0],
-			                             &vr[1],
-			                             &vr[2]);
-			ARX_DrawPrimitive(&vr[1],
-			                             &vr[2],
-			                             &vr[3]);
+			ARX_DrawPrimitive(&vr[0], &vr[1], &vr[2]);
+			ARX_DrawPrimitive(&vr[1], &vr[2], &vr[3]);
 		}
 		
 	}
@@ -553,20 +492,8 @@ float CSummonCreature::Render()
 	return (fSizeIntro / end);
 }
 
-//-----------------------------------------------------------------------------
 // INCINERATE
-//-----------------------------------------------------------------------------
-CIncinerate::~CIncinerate()
-{
-	sfirewave_count--;
-
-	if (sfirewave && (sfirewave_count <= 0))
-	{
-		sfirewave_count = 0;
-		delete sfirewave;
-		sfirewave = NULL;
-	}
-}
+CIncinerate::~CIncinerate() { }
 
 //-----------------------------------------------------------------------------
 void CIncinerate::Create(Vec3f _eSrc, float _fBeta, float _fLevel)
@@ -623,17 +550,13 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	float fCalc = (fd / 900.0f) * iMax;
 
 	iNumber = checked_range_cast<int>(fCalc);
-
+	
 	int end = 40;
-	tv1a[0].p.x = s.x;
-	tv1a[0].p.y = s.y;
-	tv1a[0].p.z = s.z;
-	tv1a[end].p.x = e.x;
-	tv1a[end].p.y = e.y;
-	tv1a[end].p.z = e.z;
-
+	tv1a[0].p = s;
+	tv1a[end].p = e;
+	
 	Split(tv1a, 0, end, 10, 1, 0, 1, 10, 1);
-
+	
 	ParticleParams cp;
 	cp.iNbMax = 250; 
 	cp.fLife = 1000;
@@ -647,9 +570,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.fAngle = radians(1);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 20;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -707,9 +628,7 @@ void CIncinerate::Create(Vec3f _eSrc, float _fBeta)
 	cp.fAngle = 0;
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
-	cp.p3Gravity.x = 0;
-	cp.p3Gravity.y = 0;
-	cp.p3Gravity.z = 0;
+	cp.p3Gravity = Vec3f::ZERO;
 	cp.fFlash = 0;
 	cp.fRotation = 0;
 	cp.bRotationRandomDirection = false;
@@ -766,61 +685,28 @@ void CIncinerate::Update(unsigned long _ulTime)
 	iMax = (int)((40) * fOneOnDuration * ulCurrentTime); //*2
 
 	if (iMax > 40) iMax = 40;
-
-	et.x = tv1a[iMax].p.x;
-	et.y = tv1a[iMax].p.y;
-	et.z = tv1a[iMax].p.z;
+	
+	et = tv1a[iMax].p;
 	pPSStream.SetPos(et);
 }
 
-//---------------------------------------------------------------------
-float CIncinerate::Render()
-{
-	int i = 0;
-
+float CIncinerate::Render() {
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
-	iMax ++;
-	float x = eSrc.x + (eTarget.x - eSrc.x) * (ulCurrentTime * fOneOnDuration);
-	float y = eSrc.y + (eTarget.y - eSrc.y) * (ulCurrentTime * fOneOnDuration);
-	float z = eSrc.z + (eTarget.z - eSrc.z) * (ulCurrentTime * fOneOnDuration);
-
-	for (i = 0; i < 150 - 1; i++)
-	{
-		Vec3f s, d;
-		s.x = tv1a[i].p.x;
-		s.y = tv1a[i].p.y;
-		s.z = tv1a[i].p.z;
-		d.x = tv1a[i+1].p.x;
-		d.y = tv1a[i+1].p.y;
-		d.z = tv1a[i+1].p.z;
-		EERIEDraw3DLine(s, d, Color::red);
+	iMax++;
+	for(int i = 0; i < 150 - 1; i++) {
+		EERIEDraw3DLine(tv1a[i].p, tv1a[i + 1].p, Color::red);
 	}
-
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
-
-	stiteangle.b = 90 - fBeta;
-	stiteangle.a = 0;
-	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
-	stitescale.x = 0.5f;
-	stitescale.y = 0.5f;
-	stitescale.z = 0.5f;
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	pPSStream.Render();
-
+	
 	return 1;
 }
 
@@ -836,79 +722,56 @@ CNegateMagic::~CNegateMagic()
 		ssol = NULL;
 	}
 }
-CNegateMagic::CNegateMagic()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
 
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CNegateMagic::CNegateMagic() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 	tex_sol = TextureContainer::Load("graph/obj3d/textures/(fx)_negate_magic");
-
-	if (!ssol)
-		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-		
+	
+	if(!ssol) {
+		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+	}
 	ssol_count++;
 	
 }
 
-//-----------------------------------------------------------------------------
-void CNegateMagic::Create(Vec3f aeSrc, float afBeta)
-{
+void CNegateMagic::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eSrc.x = aeSrc.x;
-	eSrc.y = aeSrc.y;
-	eSrc.z = aeSrc.z;
-
+	
+	eSrc = aeSrc;
+	
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
 }
 
-//-----------------------------------------------------------------------------
-void CNegateMagic::Update(unsigned long _ulTime)
-{
+void CNegateMagic::Update(unsigned long _ulTime) {
 	ulCurrentTime += _ulTime;
 }
 
-//---------------------------------------------------------------------
-float CNegateMagic::Render()
-{
+float CNegateMagic::Render() {
+	
 	int i = 0;
-
-	if (spells[spellinstance].caster == 0)
-	{
-		eSrc.x = player.pos.x;
-		eSrc.y = player.pos.y + 170.f;
-		eSrc.z = player.pos.z;
+	
+	if(spells[spellinstance].caster == 0) {
+		eSrc = player.basePosition();
+	} else {
+		eSrc = entities[spells[spellinstance].caster]->pos;
 	}
-	else
-	{
-		eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x;
-		eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-		eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z;
-	}
-
-	float x = eSrc.x;
-	float y = eSrc.y - 10.f;
-	float z = eSrc.z;
+	
+	Vec3f stitepos = eSrc - Vec3f(0.f, 10.f, 0.f);
 
 	if (ulCurrentTime >= ulDuration)
 	{
@@ -923,55 +786,36 @@ float CNegateMagic::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	fSize = ulCurrentTime * fOneOnDuration * 200;
- 
-	for (i = 0; i < 360; i++)
-	{
-
+	
+	for(i = 0; i < 360; i++) {
 		float t = rnd();
-
-		if (t < 0.04f)
-		{
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x		=	x + frand2() * 150.f;
-				particle[j].ov.y		=	y;
-				particle[j].ov.z		=	z + frand2() * 150.f;
-				particle[j].move.x		=	0;
-				particle[j].move.y		=	- 3.0f * rnd();
-				particle[j].move.z		=	0;
-				particle[j].siz			=	 0.3f;
-				particle[j].tolive		=	Random::get(2000, 4000);
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc			=	tex_p2;
-				particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | SUBSTRACT;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f::white;
+		if(t < 0.04f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
 			}
+			
+			pd->ov = stitepos + Vec3f(frand2() * 150.f, 0.f, frand2() * 150.f);
+			pd->move = Vec3f(0.f, -3.0f * rnd(), 0.f);
+			pd->siz = 0.3f;
+			pd->tolive = Random::get(2000, 4000);
+			pd->tc = tex_p2;
+			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING
+			              | SUBSTRACT;
+			pd->fparam = 0.0000001f;
 		}
 	}
-	
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
-	Vec3f stitepos(x, y, z);
-	
-	Color3f stitecolor(.4f, .4f, .4f);
-	Vec3f stitescale(3.f, 3.f, 3.f);
+	Color3f stitecolor = Color3f::gray(.4f);
+	Vec3f stitescale = Vec3f::repeat(3.f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	stitecolor = Color3f(.5f, 0.f, .5f);
-	stitescale = Vec3f(3.1f, 3.1f, 3.1f);
+	stitescale = Vec3f::repeat(3.1f);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;
@@ -987,13 +831,13 @@ void CMassParalyse::Update(unsigned long _ulTime)
 
 	if (ulCurrentTime < ulDuration)
 	{
-		int	nb = inter.nbmax, nb2;
+		int nb = entities.size(), nb2;
 
 		while (nb--)
 		{
-			if (inter.iobj[nb])
+			if (entities[nb])
 			{
-				if(!fartherThan(ePos, inter.iobj[nb]->pos, fRayon)) {
+				if(!fartherThan(ePos, entities[nb]->pos, fRayon)) {
 					nb2 = iNbParalyse;
 
 					while (nb2--)
@@ -1005,7 +849,7 @@ void CMassParalyse::Update(unsigned long _ulTime)
 					{
 						tabparalyse[iNbParalyse].id = nb;
 						tabparalyse[iNbParalyse].paralyse = new CParalyse();
-						(tabparalyse[iNbParalyse].paralyse)->Create(4, 50, 200.f, 150.f, &inter.iobj[nb]->pos, 10000);
+						(tabparalyse[iNbParalyse].paralyse)->Create(4, 50, 200.f, 150.f, &entities[nb]->pos, 10000);
 						iNbParalyse++;
 					}
 				}

@@ -92,7 +92,7 @@ EERIE_3DOBJ * loadObject(const res::path & file, bool pbox = true);
 /*!
  * @param texpath texture path relative to file
  */
-EERIE_3DOBJ * _LoadTheObj(const res::path & file, const res::path & texpath = res::path());
+EERIE_3DOBJ * LoadTheObj(const res::path & file, const res::path & texpath = res::path());
 
 EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & fic);
 

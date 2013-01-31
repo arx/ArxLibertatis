@@ -44,10 +44,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedIOControl.h"
 
 #include "core/Core.h"
+#include "game/EntityManager.h"
+#include "game/Equipment.h"
 #include "game/Inventory.h"
-#include "game/Player.h"
+#include "game/Item.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
+#include "game/Player.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
@@ -58,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern INTERACTIVE_OBJ * LASTSPAWNED;
+extern Entity * LASTSPAWNED;
 extern long CHANGE_LEVEL_ICON;
 
 namespace script {
@@ -69,7 +72,7 @@ class ReplaceMeCommand : public Command {
 	
 public:
 	
-	ReplaceMeCommand() : Command("replaceme", ANY_IO) { }
+	ReplaceMeCommand() : Command("replaceme", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -77,19 +80,19 @@ public:
 		
 		DebugScript(' ' << object);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		res::path file;
 		if(io->ioflags & IO_NPC) {
-			file = ("graph/obj3d/interactive/npc" / object).append(".teo");
+			file = "graph/obj3d/interactive/npc" / object;
 		} else if(io->ioflags & IO_FIX) {
-			file = ("graph/obj3d/interactive/fix_inter" / object).append(".teo");
+			file = "graph/obj3d/interactive/fix_inter" / object;
 		} else {
-			file = ("graph/obj3d/interactive/items" / object).append(".teo");
+			file = "graph/obj3d/interactive/items" / object;
 		}
 		
 		Anglef last_angle = io->angle;
-		INTERACTIVE_OBJ * ioo = AddInteractive(file, -1);
+		Entity * ioo = AddInteractive(file);
 		if(!ioo) {
 			return Failed;
 		}
@@ -106,13 +109,18 @@ public:
 			Set_DragInter(ioo);
 		}
 		
-		long neww = GetInterNum(ioo);
-		long oldd = GetInterNum(io);
+		long neww = ioo->index();
+		long oldd = io->index();
 		
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;
 			SendInitScriptEvent(ioo);
-			CheckForInventoryReplaceMe(ioo, io);
+			
+			if(playerInventory.locate(io)) {
+				giveToPlayer(ioo);
+			} else {
+				CheckForInventoryReplaceMe(ioo, io);
+			}
 		} else {
 			
 			for(size_t i = 0; i < MAX_SPELLS; i++) {
@@ -122,22 +130,46 @@ public:
 			}
 			
 			io->show = SHOW_FLAG_KILLED;
-			ReplaceInAllInventories(io, ioo);
+			
+			InventoryPos oldPos = removeFromInventories(io);
+			
 			SendInitScriptEvent(ioo);
 			ioo->angle = last_angle;
-			TREATZONE_AddIO(ioo, neww);
+			TREATZONE_AddIO(ioo);
 			
+			// check that the init script didn't put the item anywhere
+			// if we ignore this we might create duplucate references
+			bool reInsert = true; // should the new item be inserted at the old items position?
+			if(locateInInventories(ioo)) {
+				// the init script already inserted the item into an inventory
+				reInsert = false;
+			}
 			for(int i = 0; i < MAX_EQUIPED; i++) {
 				if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
-					if(inter.iobj[player.equiped[i]] == io) {
-						ARX_EQUIPMENT_UnEquip(inter.iobj[0], io, 1);
-						ARX_EQUIPMENT_Equip(inter.iobj[0], ioo);
+					if(entities[player.equiped[i]] == ioo) {
+						// the init script was sneaky and equiped the item
+						reInsert = false;
+					}
+				}
+			}
+			
+			if(reInsert) {
+				if(oldPos) {
+					insertIntoInventory(ioo, oldPos);
+				} else {
+					for(int i = 0; i < MAX_EQUIPED; i++) {
+						if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+							if(entities[player.equiped[i]] == io) {
+								ARX_EQUIPMENT_UnEquip(entities.player(), io, 1);
+								ARX_EQUIPMENT_Equip(entities.player(), ioo);
+							}
+						}
 					}
 				}
 			}
 			
 			if(io->scriptload) {
-				ReleaseInter(io);
+				delete io;
 				return AbortRefuse;
 			} else {
 				TREATZONE_RemoveIO(io);
@@ -155,7 +187,7 @@ class CollisionCommand : public Command {
 	
 public:
 	
-	CollisionCommand() : Command("collision", ANY_IO) { }
+	CollisionCommand() : Command("collision", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -163,7 +195,7 @@ public:
 		
 		DebugScript(' ' << choice);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(!choice) {
 			io->ioflags |= IO_NO_COLLISIONS;
@@ -173,10 +205,10 @@ public:
 		if(io->ioflags & IO_NO_COLLISIONS) {
 			
 			bool colliding = false;
-			for(long k = 0; k < inter.nbmax; k++) {
-				INTERACTIVE_OBJ * ioo = inter.iobj[k];
+			for(size_t k = 0; k < entities.size(); k++) {
+				Entity * ioo = entities[k];
 				if(ioo && IsCollidingIO(io, ioo)) {
-					INTERACTIVE_OBJ * oes = EVENT_SENDER;
+					Entity * oes = EVENT_SENDER;
 					EVENT_SENDER = ioo;
 					Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
 					EVENT_SENDER = oes;
@@ -185,7 +217,7 @@ public:
 			}
 			
 			if(colliding) {
-				INTERACTIVE_OBJ * oes = EVENT_SENDER;
+				Entity * oes = EVENT_SENDER;
 				EVENT_SENDER = NULL;
 				Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR);
 				EVENT_SENDER = oes;
@@ -212,9 +244,10 @@ public:
 		if(type == "npc" || type == "item") {
 			
 			res::path file = res::path::load(context.getWord()); // object to spawn.
+			file.remove_ext();
 			
 			string target = context.getWord(); // object ident for position
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: npc " << file << ' ' << target;
 				return Failed;
@@ -230,7 +263,7 @@ public:
 				
 				res::path path = "graph/obj3d/interactive/npc" / file;
 				
-				INTERACTIVE_OBJ * ioo = AddNPC(path, IO_IMMEDIATELOAD);
+				Entity * ioo = AddNPC(path, -1, IO_IMMEDIATELOAD);
 				if(!ioo) {
 					ScriptWarning << "failed to create npc " << path;
 					return Failed;
@@ -241,7 +274,6 @@ public:
 				ioo->pos = t->pos;
 				
 				ioo->angle = t->angle;
-				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
 				if(t->ioflags & IO_NPC) {
@@ -250,13 +282,13 @@ public:
 					ioo->pos.z += EEcos(radians(t->angle.b)) * dist;
 				}
 				
-				TREATZONE_AddIO(ioo, GetInterNum(ioo));
+				TREATZONE_AddIO(ioo);
 				
 			} else {
 				
 				res::path path = "graph/obj3d/interactive/items" / file;
 				
-				INTERACTIVE_OBJ * ioo = AddItem(path, IO_IMMEDIATELOAD);
+				Entity * ioo = AddItem(path);
 				if(!ioo) {
 					ScriptWarning << "failed to create item " << path;
 					return Failed;
@@ -266,16 +298,15 @@ public:
 				ioo->scriptload = 1;
 				ioo->pos = t->pos;
 				ioo->angle = t->angle;
-				MakeTemporaryIOIdent(ioo);
 				SendInitScriptEvent(ioo);
 				
-				TREATZONE_AddIO(ioo, GetInterNum(ioo));
+				TREATZONE_AddIO(ioo);
 				
 			}
 			
 		} else if(type == "fireball") {
 			
-			INTERACTIVE_OBJ * io = context.getIO();
+			Entity * io = context.getEntity();
 			if(!io) {
 				ScriptWarning << "must be npc to spawn fireballs";
 				return  Failed;
@@ -304,18 +335,18 @@ class KillMeCommand : public Command {
 	
 public:
 	
-	KillMeCommand() : Command("killme", ANY_IO) { }
+	KillMeCommand() : Command("killme", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if((io->ioflags & IO_ITEM) && io->_itemdata->count > 1) {
 			io->_itemdata->count--;
 		} else {
 			io->show = SHOW_FLAG_KILLED;
-			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(io);
 			ARX_DAMAGES_ForceDeath(io, EVENT_SENDER);
 		}
@@ -329,13 +360,13 @@ class PhysicalCommand : public Command {
 	
 public:
 	
-	PhysicalCommand() : Command("physical", ANY_IO) { }
+	PhysicalCommand() : Command("physical", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		string type = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(type == "on") {
 			io->ioflags &= ~IO_PHYSICAL_OFF;
@@ -373,7 +404,7 @@ class LinkObjToMeCommand : public Command {
 	
 public:
 	
-	LinkObjToMeCommand() : Command("linkobjtome", ANY_IO) { }
+	LinkObjToMeCommand() : Command("linkobjtome", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -383,13 +414,13 @@ public:
 		
 		DebugScript(' ' << name << ' ' << attach);
 		
-		long t = inter.getById(name);
+		long t = entities.getById(name);
 		if(!ValidIONum(t)) {
 			ScriptWarning << "unknown target: " << name;
 			return Failed;
 		}
 		
-		LinkObjToMe(context.getIO(), inter.iobj[t], attach);
+		LinkObjToMe(context.getEntity(), entities[t], attach);
 		
 		return Success;
 	}
@@ -408,7 +439,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		
 		if(t == -1) {
 			context.skipStatement();
@@ -421,7 +452,7 @@ public:
 
 class IfVisibleCommand : public Command {
 	
-	static bool hasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+	static bool hasVisibility(Entity * io, Entity * ioo) {
 		
 		if(distSqr(io->pos, ioo->pos) > square(20000)) {
 			return false;
@@ -441,7 +472,7 @@ class IfVisibleCommand : public Command {
 	
 public:
 	
-	IfVisibleCommand() : Command("ifvisible", ANY_IO) { }
+	IfVisibleCommand() : Command("ifvisible", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -449,9 +480,9 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = inter.getById(target);
+		long t = entities.getById(target);
 		
-		if(!ValidIONum(t) || !hasVisibility(context.getIO(), inter.iobj[t])) {
+		if(!ValidIONum(t) || !hasVisibility(context.getEntity(), entities[t])) {
 			context.skipStatement();
 		}
 		
@@ -474,7 +505,7 @@ public:
 		}
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		bool hide = context.getBool();
 		
@@ -484,10 +515,10 @@ public:
 			return Failed;
 		}
 		
-		t->GameFlags &= ~GFLAG_MEGAHIDE;
+		t->gameFlags &= ~GFLAG_MEGAHIDE;
 		if(hide) {
 			if(megahide) {
-				t->GameFlags |= GFLAG_MEGAHIDE;
+				t->gameFlags |= GFLAG_MEGAHIDE;
 				t->show = SHOW_FLAG_MEGAHIDE;
 			} else {
 				t->show = SHOW_FLAG_HIDDEN;
@@ -567,11 +598,11 @@ public:
 		DebugScript(' ' << options << ' ' << player.angle.b << ' ' << target);
 		
 		if(target == "behind") {
-			ARX_INTERACTIVE_TeleportBehindTarget(context.getIO());
+			ARX_INTERACTIVE_TeleportBehindTarget(context.getEntity());
 			return Success;
 		}
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(!teleport_player && !io) {
 			ScriptWarning << "must either use -p or use in IO context";
 			return Failed;
@@ -579,7 +610,7 @@ public:
 		
 		if(!initpos) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			if(!t) {
 				ScriptWarning << "unknown target: " << target;
 				return Failed;
@@ -592,7 +623,7 @@ public:
 			}
 			
 			if(teleport_player) {
-				ARX_INTERACTIVE_Teleport(inter.iobj[0], &pos);
+				ARX_INTERACTIVE_Teleport(entities.player(), &pos);
 				return Success;
 			}
 			
@@ -613,7 +644,7 @@ public:
 			if(teleport_player) {
 				Vec3f pos;
 				if(GetItemWorldPosition(io, &pos)) {
-					ARX_INTERACTIVE_Teleport(inter.iobj[0], &pos);
+					ARX_INTERACTIVE_Teleport(entities.player(), &pos);
 				}
 			} else if(!(io->ioflags & IO_NPC) || io->_npcdata->life > 0) {
 				if(io->show != SHOW_FLAG_HIDDEN && io->show != SHOW_FLAG_MEGAHIDE) {
@@ -632,14 +663,14 @@ class TargetPlayerPosCommand : public Command {
 	
 public:
 	
-	TargetPlayerPosCommand() : Command("targetplayerpos", ANY_IO) { }
+	TargetPlayerPosCommand() : Command("targetplayerpos", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		context.getIO()->targetinfo = TARGET_PLAYER;
-		GetTargetPos(context.getIO());
+		context.getEntity()->targetinfo = TARGET_PLAYER;
+		GetTargetPos(context.getEntity());
 		
 		return Success;
 	}
@@ -658,12 +689,12 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			return Success;
 		}
 		
-		bool self = (t == context.getIO());
+		bool self = (t == context.getEntity());
 		
 		ARX_INTERACTIVE_DestroyIO(t);
 		
@@ -719,13 +750,14 @@ public:
 		
 		DebugScript(' ' << type << ' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ARX_DAMAGES_DealDamages(GetInterNum(t), damage, GetInterNum(context.getIO()), type, &t->pos);
+		long self = (context.getEntity() == NULL) ? -1 : context.getEntity()->index();
+		ARX_DAMAGES_DealDamages(t->index(), damage, self, type, &t->pos);
 		
 		return Success;
 	}
@@ -736,11 +768,11 @@ class DamagerCommand : public AbstractDamageCommand {
 	
 public:
 	
-	DamagerCommand() : AbstractDamageCommand("damager", ANY_IO) { }
+	DamagerCommand() : AbstractDamageCommand("damager", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		io->damager_type = getDamageType(context) | DAMAGE_TYPE_PER_SECOND;
 		

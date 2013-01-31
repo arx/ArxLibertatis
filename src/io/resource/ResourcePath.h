@@ -204,7 +204,20 @@ public:
 	
 	static path load(const std::string & str);
 	
+	/*!
+	 * Append a string to the paths filename component
+	 *
+	 * The appended string must not contain a path seperator or be "." or "..".
+	 */
 	path & append(const std::string & str);
+	
+	//! @return append(str)
+	path & operator+=(const std::string & str) { append(str); return *this; }
+	
+	//! @return path(*this).append(str)
+	path operator+(const std::string & str) const {
+		return path(*this) += str;
+	}
 	
 	inline void clear() { pathstr.clear(); }
 	

@@ -21,6 +21,8 @@
 
 #include <algorithm>
 
+#include <boost/foreach.hpp>
+
 #include "graphics/Math.h"
 
 bool RenderWindow::DisplayMode::operator<(const DisplayMode & o) const {
@@ -34,22 +36,23 @@ bool RenderWindow::DisplayMode::operator<(const DisplayMode & o) const {
 	}
 }
 
-void RenderWindow::addRenderWindowListener(RendererListener * listener) {
+void RenderWindow::addRenderListener(RendererListener * listener) {
 	renderListeners.push_back(listener);
 }
 
-void RenderWindow::removeRenderWindowListener(RendererListener * listener) {
-	renderListeners.erase(std::remove(renderListeners.begin(), renderListeners.end(), listener), renderListeners.end());
+void RenderWindow::removeRenderListener(RendererListener * listener) {
+	renderListeners.erase(std::remove(renderListeners.begin(), renderListeners.end(),
+	                      listener), renderListeners.end());
 }
 
 void RenderWindow::onRendererInit() {
-	for(RendererListeners::iterator i = renderListeners.begin(); i != renderListeners.end(); ++i) {
-		(*i)->onRendererInit(*this);
+	BOOST_FOREACH(RendererListener * listener, renderListeners) {
+		listener->onRendererInit(*this);
 	}
 }
 
 void RenderWindow::onRendererShutdown() {
-	for(RendererListeners::iterator i = renderListeners.begin(); i != renderListeners.end(); ++i) {
-		(*i)->onRendererShutdown(*this);
+	BOOST_FOREACH(RendererListener * listener, renderListeners) {
+		listener->onRendererShutdown(*this);
 	}
 }

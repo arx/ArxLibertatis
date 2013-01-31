@@ -79,7 +79,7 @@ int main(int argc, char ** argv) {
 	
 	ARX_UNUSED(resources);
 	
-	Logger::init();
+	Logger::initialize();
 	
 	if(argc < 2) {
 		printf("usage: unpak <pakfile> [<pakfile>...]\n");

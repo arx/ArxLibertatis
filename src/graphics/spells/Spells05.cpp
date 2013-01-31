@@ -52,8 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 
 #include "game/Damage.h"
-#include "game/Spells.h"
+#include "game/EntityManager.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
@@ -88,8 +89,6 @@ EERIE_3DOBJ * smissile = NULL;
 long smissile_count = 0;
 EERIE_3DOBJ * spapi = NULL;
 long spapi_count = 0;
-EERIE_3DOBJ * sfirewave = NULL;
-long sfirewave_count = 0;
 EERIE_3DOBJ * svoodoo = NULL;
 long svoodoo_count = 0;
 //-----------------------------------------------------------------------------
@@ -112,13 +111,13 @@ void CCurePoison::Create()
 {
 	SetAngle(0);
 
-	eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
+	eSrc.x = entities[spells[spellinstance].target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].target]->pos.y;
 
 	if (spells[spellinstance].target == 0)
 		eSrc.y += 200;
 
-	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eSrc.z = entities[spells[spellinstance].target]->pos.z;
 
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
@@ -200,13 +199,13 @@ void CCurePoison::Update(unsigned long aulTime)
 		return;
 	}
 
-	eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
+	eSrc.x = entities[spells[spellinstance].target]->pos.x;
+	eSrc.y = entities[spells[spellinstance].target]->pos.y;
 
 	if (spells[spellinstance].target == 0)
 		eSrc.y += 200;
 
-	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
+	eSrc.z = entities[spells[spellinstance].target]->pos.z;
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
@@ -219,9 +218,7 @@ void CCurePoison::Update(unsigned long aulTime)
 	{
 		pPS->uMaxParticles = 0;
 		pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-		pPS->p3ParticleGravity.x = 0;
-		pPS->p3ParticleGravity.y = 0;
-		pPS->p3ParticleGravity.z = 0;
+		pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 
@@ -279,35 +276,29 @@ float CCurePoison::Render()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
 CRuneOfGuarding::CRuneOfGuarding() {
 	
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-	
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
 	
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
 	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-
-	if (!ssol)
-		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
 	
+	if(!ssol) {
+		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+	}
 	ssol_count++;
 
-	if (!slight)
-		slight = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-	
+	if(!slight) {
+		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
+	}
 	slight_count++;
-
-	if (!srune)
-		srune = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
 	
+	if(!srune) {
+		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
+	}
 	srune_count++;
 }
 
@@ -340,28 +331,18 @@ CRuneOfGuarding::~CRuneOfGuarding()
 		srune = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
-{
+
+void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta) {
+	
 	SetDuration(ulDuration);
 	SetAngle(_fBeta);
-
-	eSrc.x = _eSrc.x;
-	eSrc.y = _eSrc.y;
-	eSrc.z = _eSrc.z;
-
-	eTarget.x = eSrc.x;
-	eTarget.y = eSrc.y;
-	eTarget.z = eSrc.z;
-
+	eSrc = _eSrc;
+	eTarget = eSrc;
 	fSize = 1;
-
 	bDone = true;
-
+	
 	lLightId = GetFreeDynLight();
-
-	if (lLightId != -1)
-	{
+	if(lLightId != -1) {
 		long id = lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 0.7f + 2.3f;
@@ -370,21 +351,18 @@ void CRuneOfGuarding::Create(Vec3f _eSrc, float _fBeta)
 		DynLight[id].rgb.r = 1.0f;
 		DynLight[id].rgb.g = 0.2f;
 		DynLight[id].rgb.b = 0.2f;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50;
-		DynLight[id].pos.z = eSrc.z;
+		DynLight[id].pos = eSrc - Vec3f(0.f, 50.f, 0.f);
 		DynLight[id].time_creation = (unsigned long)(arxtime);
 		DynLight[id].duration = 200;
 	}
 }
 
-//---------------------------------------------------------------------
-void CRuneOfGuarding::Update(unsigned long _ulTime)
-{
+void CRuneOfGuarding::Update(unsigned long _ulTime) {
+	
 	ulCurrentTime += _ulTime;
-
+	
 	float fa = 1.0f - rnd() * 0.15f;
-
+	
 	if (lLightId != -1)
 	{
 		long id = lLightId;
@@ -412,18 +390,14 @@ float CRuneOfGuarding::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	Anglef stiteangle;
-	Vec3f stitepos;
-	Vec3f stitescale;
 	Color3f stitecolor;
-
+	
 	float stiteangleb = (float) ulCurrentTime * fOneOnDuration * 120;
 	stiteangle.a = 0;
 	stiteangle.g = 0;
-	stitepos.x = x;
-	stitepos.y = y;
-	stitepos.z = z;
+	Vec3f stitepos = Vec3f(x, y, z);
 
 	float gtc = arxtime.get_updated();
 	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
@@ -431,78 +405,59 @@ float CRuneOfGuarding::Render()
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
 	stitecolor.b = 0.6f - v;
-	stitescale.x = 1;
-	stitescale.y = -0.1f;
-	stitescale.z = 1;
-
-	if (slight)
+	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
+	
+	if(slight) {
 		DrawEERIEObjEx(slight, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	}
+	
 	stiteangle.b = stiteangleb;
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.f;
-	stitescale.x = 2;
-	stitescale.y = 2;
-	stitescale.z = 2;
-
-	if (ssol)
+	stitescale = Vec3f::repeat(2.f);
+	
+	if(ssol) {
 		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
+	}
+	
 	stitecolor.r = 0.6f;
 	stitecolor.g = 0.3f;
 	stitecolor.b = 0.45f;
-	stitescale.z = 1.8f;
-	stitescale.y = 1.8f;
-	stitescale.x = 1.8f;
-
-
-	if (srune)
+	stitescale = Vec3f::repeat(1.8f);
+	
+	if(srune) {
 		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
-
-
-	for (int n = 0; n < 4; n++)
-	{
-		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist		=	1;
-			particle[j].zdec		=	0;
- 
-			particle[j].ov.x		=	x + frand2() * 40; 
-			particle[j].ov.y		=	y;
-			particle[j].ov.z		=	z + frand2() * 40;
-			particle[j].move.x		=	0.8f * frand2(); 
-			particle[j].move.y		=	-4.f * rnd(); 
-			particle[j].move.z		=	0.8f * frand2(); 
-			particle[j].scale.x		=	-0.1f;
-			particle[j].scale.y		=	-0.1f;
-			particle[j].scale.z		=	-0.1f;
-			particle[j].timcreation = (long)arxtime;
-			particle[j].tolive		=	Random::get(2600, 3200);
-			particle[j].tc			=	tex_p2;
-			particle[j].siz			=	0.3f;
-			particle[j].rgb = Color3f(.4f, .4f, .6f);
-		}
 	}
-
+	
+	for(int n = 0; n < 4; n++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		pd->ov = Vec3f(x + frand2() * 40.f, y, z + frand2() * 40.f);
+		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
+		pd->scale = Vec3f::repeat(-0.1f);
+		pd->tolive = Random::get(2600, 3200);
+		pd->tc = tex_p2;
+		pd->siz = 0.3f;
+		pd->rgb = Color3f(.4f, .4f, .6f);
+	}
+	
 	return 1.0f - rnd() * 0.3f;
 }
 
-//-----------------------------------------------------------------------------
-void LaunchPoisonExplosion(Vec3f * aePos)
-{
+void LaunchPoisonExplosion(Vec3f * aePos) {
+	
 	// système de partoches pour l'explosion
 	ParticleSystem * pPS = new ParticleSystem();
 	ParticleParams cp;
 	cp.iNbMax = 80; 
 	cp.fLife = 1500;
 	cp.fLifeRandom = 500;
-	cp.p3Pos.x = 5;
-	cp.p3Pos.y = 5;
-	cp.p3Pos.z = 5;
+	cp.p3Pos = Vec3f::repeat(5);
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = 4;
 	cp.p3Direction.z = 0;
@@ -611,12 +566,8 @@ void CPoisonProjectile::Create(Vec3f _eSrc, float _fBeta)
 
 	e.y += 0.f;
 
-	pathways[0].p.x = eSrc.x;
-	pathways[0].p.y = eSrc.y;
-	pathways[0].p.z = eSrc.z;
-	pathways[9].p.x = e.x;
-	pathways[9].p.y = e.y;
-	pathways[9].p.z = e.z;
+	pathways[0].p = eSrc;
+	pathways[9].p = e;
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
 
 	if (0)
@@ -890,16 +841,14 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	(void)_afBeta;
 
 	float afBeta = 0.f;
-
-	spells[spellinstance].hand_group = inter.iobj[spells[spellinstance].caster]->obj->fastaccess.primary_attach;
-
-	if (spells[spellinstance].hand_group != -1)
-	{
-		spells[spellinstance].hand_pos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.x;
-		spells[spellinstance].hand_pos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.y;
-		spells[spellinstance].hand_pos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[spells[spellinstance].hand_group].v.z;
+	
+	Entity * caster = entities[spells[spellinstance].caster];
+	spells[spellinstance].hand_group = caster->obj->fastaccess.primary_attach;
+	if(spells[spellinstance].hand_group != -1) {
+		long group = spells[spellinstance].hand_group;
+		spells[spellinstance].hand_pos = caster->obj->vertexlist3[group].v;
 	}
-
+	
 	if (spells[spellinstance].caster == 0) // player
 	{
 		afBeta = player.angle.b;
@@ -919,7 +868,7 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 	}
 	else
 	{
-		afBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
+		afBeta = entities[spells[spellinstance].caster]->angle.b;
 
 		if (spells[spellinstance].hand_group != -1)
 		{
@@ -929,9 +878,9 @@ void CMultiPoisonProjectile::Create(Vec3f _eSrc, float _afBeta = 0) {
 		}
 		else
 		{
-			_eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x - EEsin(radians(afBeta)) * 90;
-			_eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-			_eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z + EEcos(radians(afBeta)) * 90;
+			_eSrc.x = entities[spells[spellinstance].caster]->pos.x - EEsin(radians(afBeta)) * 90;
+			_eSrc.y = entities[spells[spellinstance].caster]->pos.y;
+			_eSrc.z = entities[spells[spellinstance].caster]->pos.z + EEcos(radians(afBeta)) * 90;
 		}
 	}
 
@@ -1012,7 +961,7 @@ float CMultiPoisonProjectile::Render()
 			damages[t].radius = 120.f;
 			float v = spells[spellinstance].caster_level;
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
-			damages[t].damages	= v * ( 1.0f / 1000 ) * _framedelay;
+			damages[t].damages	= v * ( 1.0f / 1000 ) * framedelay;
 			damages[t].area		= DAMAGE_FULL;
 			damages[t].duration	= static_cast<long>(FrameDiff);
 			damages[t].source	= spells[spellinstance].caster;
@@ -1025,38 +974,33 @@ float CMultiPoisonProjectile::Render()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-CRepelUndead::CRepelUndead()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
-	eTarget.x = 0;
-	eTarget.y = 0;
-	eTarget.z = 0;
-
+CRepelUndead::CRepelUndead() {
+	
+	eSrc = Vec3f::ZERO;
+	eTarget = Vec3f::ZERO;
+	
 	ulCurrentTime = ulDuration + 1;
-
+	
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_blueting");
-
-	if (!ssol) // Pentacle
-		ssol = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
-
+	
+	if(!ssol) { // Pentacle
+		ssol = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard.teo");
+	}
 	ssol_count++;
-
-	if (!slight) // Twirl
-		slight = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
-
+	
+	if(!slight) { // Twirl
+		slight = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard02.teo");
+	}
 	slight_count++; //runes
-
-	if (!srune)
-		srune = _LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
-
+	
+	if(!srune) {
+		srune = LoadTheObj("graph/obj3d/interactive/fix_inter/fx_rune_guard/fx_rune_guard03.teo");
+	}
 	srune_count++;
 }
-CRepelUndead::~CRepelUndead()
-{
+
+CRepelUndead::~CRepelUndead() {
+	
 	ssol_count--;
 
 	if (ssol && (ssol_count <= 0))
@@ -1084,58 +1028,45 @@ CRepelUndead::~CRepelUndead()
 		srune = NULL;
 	}
 }
-//-----------------------------------------------------------------------------
-void CRepelUndead::Create(Vec3f aeSrc, float afBeta)
-{
+
+void CRepelUndead::Create(Vec3f aeSrc, float afBeta) {
+	
 	SetDuration(ulDuration);
-
-	eTarget.x = eSrc.x = aeSrc.x;
-	eTarget.y = eSrc.y = aeSrc.y;
-	eTarget.z = eSrc.z = aeSrc.z;
-
+	eTarget = eSrc = aeSrc;
 	fBeta = afBeta;
 	fBetaRad = radians(fBeta);
-	fBetaRadCos = (float) cos(fBetaRad);
-	fBetaRadSin = (float) sin(fBetaRad);
-
+	fBetaRadCos = (float)cos(fBetaRad);
+	fBetaRadSin = (float)sin(fBetaRad);
 	fSize = 1;
-
 	bDone = true;
 }
 
-//---------------------------------------------------------------------
-void CRepelUndead::Update(unsigned long _ulTime)
-{
+void CRepelUndead::Update(unsigned long _ulTime) {
+	
 	ulCurrentTime += _ulTime;
-
-	if (spellinstance < 0) return;
-
-	eSrc.x = inter.iobj[spells[spellinstance].target]->pos.x;
-	eSrc.y = inter.iobj[spells[spellinstance].target]->pos.y;
-	eSrc.z = inter.iobj[spells[spellinstance].target]->pos.z;
-
-	if (spells[spellinstance].target == 0)
+	if(spellinstance < 0) {
+		return;
+	}
+	
+	eSrc = entities[spells[spellinstance].target]->pos;
+	
+	if(spells[spellinstance].target == 0) {
 		fBeta = player.angle.b;
-	else
-		fBeta = inter.iobj[spells[spellinstance].target]->angle.b;
+	} else {
+		fBeta = entities[spells[spellinstance].target]->angle.b;
+	}
 }
 
-//---------------------------------------------------------------------
-float CRepelUndead::Render()
-{
- 
-
-
-	if (ulCurrentTime >= ulDuration)
-	{
+float CRepelUndead::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	//----------------------------
+	
 	Anglef  eObjAngle;
 	Vec3f  eObjPos;
 	Vec3f  eObjScale;
@@ -1157,59 +1088,47 @@ float CRepelUndead::Render()
 	eObjScale.z = vv;
 	eObjScale.y = vv;
 	eObjScale.x = vv;
-
-	if (ssol)
+	
+	if(ssol) {
 		DrawEERIEObjEx(ssol, &eObjAngle, &eObjPos, &eObjScale, &rgbObjColor);
-
-	vv *= 100.f;
-
-	for (int n = 0; n < 4; n++)
-	{
-		int j = ARX_PARTICLES_GetFree();
-
-		if ((j != -1) && (!arxtime.is_paused()))
-		{
-			ParticleCount++;
-			particle[j].exist		=	1;
-			particle[j].zdec		=	0;
- 
-			particle[j].ov.x		=	eSrc.x - EEsin(frand2() * 360.f) * vv; 
-			particle[j].ov.y		=	eSrc.y;
-			particle[j].ov.z		=	eSrc.z + EEcos(frand2() * 360.f) * vv; 
-			particle[j].move.x		=	0.8f * frand2(); 
-			particle[j].move.y		=	-4.f * rnd(); 
-			particle[j].move.z		=	0.8f * frand2(); 
-			particle[j].scale.x		=	-0.1f;
-			particle[j].scale.y		=	-0.1f;
-			particle[j].scale.z		=	-0.1f;
-			particle[j].timcreation =	(long)arxtime;
-			particle[j].tolive		=	Random::get(2600, 3200);
-			particle[j].tc			=	tex_p2;
-			particle[j].siz			=	0.3f;
-			particle[j].rgb = Color3f(.4f, .4f, .6f);
-		}
 	}
-
-	if (this->lLightId == -1)
-		this->lLightId = GetFreeDynLight();
-
-	if (this->lLightId != -1)
-	{
-		long id = this->lLightId;
+	
+	vv *= 100.f;
+	
+	for(int n = 0; n < 4; n++) {
+		
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+		
+		float dx = -EEsin(frand2() * 360.f) * vv;
+		float dz =  EEcos(frand2() * 360.f) * vv;
+		pd->ov = eSrc + Vec3f(dx, 0.f, dz);
+		pd->move = Vec3f(0.8f * frand2(), -4.f * rnd(), 0.8f * frand2());
+		pd->scale = Vec3f::repeat(-0.1f);
+		pd->tolive = Random::get(2600, 3200);
+		pd->tc = tex_p2;
+		pd->siz = 0.3f;
+		pd->rgb = Color3f(.4f, .4f, .6f);
+	}
+	
+	if(lLightId == -1) {
+		lLightId = GetFreeDynLight();
+	}
+	
+	if(lLightId != -1) {
+		long id = lLightId;
 		DynLight[id].exist = 1;
 		DynLight[id].intensity = 2.3f;
 		DynLight[id].fallend = 350.f;
 		DynLight[id].fallstart = 150.f;
-		DynLight[id].rgb.r = 0.8f;
-		DynLight[id].rgb.g = 0.8f;
-		DynLight[id].rgb.b = 1;
-		DynLight[id].pos.x = eSrc.x;
-		DynLight[id].pos.y = eSrc.y - 50.f;
-		DynLight[id].pos.z = eSrc.z;
+		DynLight[id].rgb = Color3f(0.8f, 0.8f, 1.f);
+		DynLight[id].pos = eSrc + Vec3f(0.f, -50.f, 0.f);
 		DynLight[id].duration = 200;
 		DynLight[id].time_creation = (unsigned long)(arxtime);
 	}
-
+	
 	return 1;
 }
 
@@ -1266,51 +1185,39 @@ CLevitate::~CLevitate()
 	}
 }
 
-void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def, int numcone) {
+void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def,
+                                int numcone) {
 	
-	if(cone[numcone].coned3d) {
-		free(cone[numcone].coned3d);
-	}
-	if(cone[numcone].conevertex) {
-		free(cone[numcone].conevertex);
-	}
-	if(cone[numcone].coneind) {
-		free(cone[numcone].coneind);
-	}
+	T_CONE & c = cone[numcone];
 	
-	this->cone[numcone].conenbvertex = def * 2 + 2;
-	this->cone[numcone].conenbfaces = def * 2 + 2;
-	this->cone[numcone].coned3d = (TexturedVertex *)malloc(this->cone[numcone].conenbvertex * sizeof(TexturedVertex));
-	this->cone[numcone].conevertex = (Vec3f *)malloc(this->cone[numcone].conenbvertex * sizeof(Vec3f));
-	this->cone[numcone].coneind = (unsigned short *)malloc(this->cone[numcone].conenbvertex * sizeof(unsigned short));
-
-	float			a, da;
-	Vec3f	*	vertex = this->cone[numcone].conevertex;
-	unsigned short	* pind = this->cone[numcone].coneind, ind = 0;
-	int				nb;
-	a = 0.f;
-	da = 360.f / (float)def;
+	free(c.coned3d);
+	free(c.conevertex);
+	free(c.coneind);
+	
+	c.conenbvertex = def * 2 + 2;
+	c.conenbfaces = def * 2 + 2;
+	c.coned3d = (TexturedVertex *)malloc(c.conenbvertex * sizeof(TexturedVertex));
+	c.conevertex = (Vec3f *)malloc(c.conenbvertex * sizeof(Vec3f));
+	c.coneind = (unsigned short *)malloc(c.conenbvertex * sizeof(unsigned short));
+	
+	Vec3f * vertex = c.conevertex;
+	unsigned short * pind = c.coneind;
+	unsigned short ind = 0;
+	int nb;
+	float a = 0.f;
+	float da = 360.f / (float)def;
 	nb = this->cone[numcone].conenbvertex >> 1;
-
-	while (nb)
-	{
+	
+	while(nb) {
 		*pind++ = ind++;
 		*pind++ = ind++;
-
-		vertex->x = rhaut * EEcos(radians(a));
-		vertex->y = -hauteur;
-		vertex->z = rhaut * EEsin(radians(a));
-		vertex++;
-		vertex->x = rbase * EEcos(radians(a));
-		vertex->y = 0.f;
-		vertex->z = rbase * EEsin(radians(a));
-		vertex++;
-
+		*vertex++ = Vec3f(rhaut * EEcos(radians(a)), -hauteur, rhaut * EEsin(radians(a)));
+		*vertex++ = Vec3f(rbase * EEcos(radians(a)), 0.f, rbase * EEsin(radians(a)));
 		a += da;
 		nb--;
 	}
 }
-/*--------------------------------------------------------------------------*/
+
 void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f * pos, unsigned long _ulDuration)
 {
 	SetDuration(_ulDuration);
@@ -1345,43 +1252,31 @@ void CLevitate::Create(int def, float rbase, float rhaut, float hauteur, Vec3f *
 		this->tstone[nb].actif = 0;
 	}
 }
-/*--------------------------------------------------------------------------*/
-void CLevitate::AddStone(Vec3f * pos)
-{
-	if (arxtime.is_paused()) return;
 
-	if (this->nbstone > 255) return;
-
-	int	nb = 256;
-
-	while (nb--)
-	{
-		if (!this->tstone[nb].actif)
-		{
-			this->nbstone++;
-
-			this->tstone[nb].actif = 1;
-			this->tstone[nb].numstone = rand() & 1;
-			this->tstone[nb].pos = *pos;
-			this->tstone[nb].yvel = rnd() * -5.f;
-			this->tstone[nb].ang.a = rnd() * 360.f;
-			this->tstone[nb].ang.b = rnd() * 360.f;
-			this->tstone[nb].ang.g = rnd() * 360.f;
-			this->tstone[nb].angvel.a = 5.f * rnd();
-			this->tstone[nb].angvel.b = 6.f * rnd();
-			this->tstone[nb].angvel.g = 3.f * rnd();
-			float a = 0.2f + rnd() * 0.3f;
-			this->tstone[nb].scale.x = a;
-			this->tstone[nb].scale.y = a;
-			this->tstone[nb].scale.z = a;
-			this->tstone[nb].time = Random::get(2000, 2500);
-			this->tstone[nb].currtime = 0;
+void CLevitate::AddStone(Vec3f * pos) {
+	
+	if(arxtime.is_paused() || nbstone > 255) {
+		return;
+	}
+	
+	int nb = 256;
+	while(nb--) {
+		if(!tstone[nb].actif) {
+			nbstone++;
+			tstone[nb].actif = 1;
+			tstone[nb].numstone = rand() & 1;
+			tstone[nb].pos = *pos;
+			tstone[nb].yvel = rnd() * -5.f;
+			tstone[nb].ang = Anglef(rnd() * 360.f, rnd() * 360.f, rnd() * 360.f);
+			tstone[nb].angvel = Anglef(5.f * rnd(), 6.f * rnd(), 3.f * rnd());
+			tstone[nb].scale = Vec3f::repeat(0.2f + rnd() * 0.3f);
+			tstone[nb].time = Random::get(2000, 2500);
+			tstone[nb].currtime = 0;
 			break;
 		}
 	}
 }
 
-/*--------------------------------------------------------------------------*/
 void CLevitate::DrawStone()
 {
 	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
@@ -1404,40 +1299,25 @@ void CLevitate::DrawStone()
 
 			if (this->stone[this->tstone[nb].numstone])
 				DrawEERIEObjExEx(this->stone[this->tstone[nb].numstone], &this->tstone[nb].ang, &this->tstone[nb].pos, &this->tstone[nb].scale, col);
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov = this->tstone[nb].pos;
-				particle[j].move.x = 0.f;
-				particle[j].move.y = 3.f * rnd();
-				particle[j].move.z = 0.f;
-				particle[j].siz = 3.f + 3.f * rnd();
-				particle[j].tolive = 1000;
-				particle[j].scale.x = 1.f;
-				particle[j].scale.y = 1.f;
-				particle[j].scale.z = 1.f;
-				particle[j].timcreation = -(long(arxtime) + 1000l);
-				particle[j].tc = NULL;
-				particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam = 0.0000001f;
-				particle[j].rgb = Color3f::white;
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = tstone[nb].pos;
+				pd->move = Vec3f(0.f, 3.f * rnd(), 0.f);
+				pd->siz = 3.f + 3.f * rnd();
+				pd->tolive = 1000;
+				pd->timcreation = -(long(arxtime) + 1000l); // TODO WTF?
+				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				              | DISSIPATING;
+				pd->fparam = 0.0000001f;
 			}
-
-
+			
 			//update mvt
 			if (!arxtime.is_paused())
 			{
 				a = (((float)this->currframetime) * 100.f) / (float)this->tstone[nb].time;
-				this->tstone[nb].pos.y += this->tstone[nb].yvel * a;
-				this->tstone[nb].ang.a += this->tstone[nb].angvel.a * a;
-				this->tstone[nb].ang.b += this->tstone[nb].angvel.b * a;
-				this->tstone[nb].ang.g += this->tstone[nb].angvel.g * a;
+				tstone[nb].pos.y += tstone[nb].yvel * a;
+				tstone[nb].ang += tstone[nb].angvel * a;
 
 				this->tstone[nb].yvel *= 1.f - (1.f / 100.f);
 
@@ -1587,39 +1467,27 @@ float CLevitate::Render()
 			}
 
 			nbc = 3;
-
-			while (nbc--)
-			{
-				int j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
-					float a = radians(360.f * rnd());
-
-					particle[j].ov.x = pos.x + rbase * EEcos(a);
-					particle[j].ov.y = pos.y;
-					particle[j].ov.z = pos.z + rbase * EEsin(a);
-					float t = fdist(particle[j].ov, pos);
-					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - pos.x) / t);
-					particle[j].move.y = 3.f * rnd();
-					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - pos.z) / t);
-					particle[j].siz = 30.f + 30.f * rnd();
-					particle[j].tolive = 3000;
-					particle[j].scale.x = 1.f;
-					particle[j].scale.y = 1.f;
-					particle[j].scale.z = 1.f;
-					particle[j].timcreation = -(long(arxtime) + 3000l); //spells[i].lastupdate;
-					particle[j].tc = NULL;
-					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam = 0.0000001f;
-					particle[j].rgb = Color3f::white;
+			while(nbc--) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
 				}
+				
+				float a = radians(360.f * rnd());
+				pd->ov = pos + Vec3f(rbase * EEcos(a), 0.f, rbase * EEsin(a));
+				float t = fdist(pd->ov, pos);
+				pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
+				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
+				pd->siz = 30.f + 30.f * rnd();
+				pd->tolive = 3000;
+				pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
+				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				              | DISSIPATING;
+				pd->fparam = 0.0000001f;
 			}
 			break;
+		
 		case 1:
 			nbc = 2;
 
@@ -1631,9 +1499,7 @@ float CLevitate::Render()
 
 				while (nb)
 				{
-					d3dvs.p.x = this->pos.x + vertex->x;
-					d3dvs.p.y = this->pos.y + vertex->y;
-					d3dvs.p.z = this->pos.z + vertex->z;
+					d3dvs.p = this->pos + *vertex;
 	
 					EE_RT2(&d3dvs, d3dv);
 					col = Random::get(0, 80);
@@ -1666,41 +1532,28 @@ float CLevitate::Render()
 				u = ddu;
 				du = -du;
 			}
-
+			
 			nbc = 10;
-
-			while (nbc--)
-			{
-				int j = ARX_PARTICLES_GetFree();
-
-				if ((j != -1) && (!arxtime.is_paused()))
-				{
-					ParticleCount++;
-					particle[j].exist = 1;
-					particle[j].zdec = 0;
-
-					float a = radians(360.f * rnd());
-
-					particle[j].ov.x = pos.x + rbase * EEcos(a);
-					particle[j].ov.y = pos.y;
-					particle[j].ov.z = pos.z + rbase * EEsin(a);
-					float t = fdist(particle[j].ov, pos);
-					particle[j].move.x = (5.f + 5.f * rnd()) * ((particle[j].ov.x - pos.x) / t);
-					particle[j].move.y = 3.f * rnd();
-					particle[j].move.z = (5.f + 5.f * rnd()) * ((particle[j].ov.z - pos.z) / t);
-					particle[j].siz = 30.f + 30.f * rnd();
-					particle[j].tolive = 3000;
-					particle[j].scale.x = 1.f;
-					particle[j].scale.y = 1.f;
-					particle[j].scale.z = 1.f;
-					particle[j].timcreation = -(long(arxtime) + 3000l);
-					particle[j].tc = NULL;
-					particle[j].special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].fparam = 0.0000001f;
-					particle[j].rgb = Color3f::white;
+			while(nbc--) {
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
 				}
+				
+				float a = radians(360.f * rnd());
+				pd->ov = pos + Vec3f(rbase * EEcos(a), 0.f, rbase * EEsin(a));
+				float t = fdist(pd->ov, pos);
+				pd->move = Vec3f((5.f + 5.f * rnd()) * ((pd->ov.x - pos.x) / t), 3.f * rnd(),
+				                 (5.f + 5.f * rnd()) * ((pd->ov.z - pos.z) / t));
+				pd->siz = 30.f + 30.f * rnd();
+				pd->tolive = 3000;
+				pd->timcreation = -(long(arxtime) + 3000l); // TODO WTF
+				pd->special = FIRE_TO_SMOKE | FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION
+				              | DISSIPATING;
+				pd->fparam = 0.0000001f;
 			}
-
+			
 			break;
 	}
 

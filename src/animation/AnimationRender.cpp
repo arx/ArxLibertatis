@@ -54,8 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Core.h"
 
-#include "game/Equipment.h"
 #include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/EntityManager.h"
 #include "game/NPC.h"
 #include "game/Player.h"
 #include "game/Spells.h"
@@ -86,8 +87,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern unsigned char * grps;
-extern long max_grps;
+unsigned char * grps = NULL;
+static long max_grps = 0;
 extern long FORCE_NO_HIDE;
 extern long USEINTERNORM;
 extern long INTER_DRAW;
@@ -98,9 +99,6 @@ extern int iHighLight;
 
 extern TextureContainer TexSpecialColor;
 
-extern long FLAG_ALLOW_CLOTHES;
-
-long TSU_TEST = 0;
 extern long TSU_TEST_NB;
 extern long TSU_TEST_NB_LIGHT;
 
@@ -110,7 +108,7 @@ extern long TSU_TEST_NB_LIGHT;
 #endif
 
 /* Init bounding box */
-inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
+inline	static	void	Cedric_ResetBoundingBox(Entity * io)
 {
 	// resets 2D Bounding Box
 	BBOXMIN.y = BBOXMIN.x = 32000;
@@ -121,7 +119,7 @@ inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 
 extern float INVISIBILITY_OVERRIDE;
 extern long EXTERNALVIEW;
-static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ * io)
+static	void	Cedric_GetScale(float & scale, float & invisibility, Entity * io)
 {
 	if (io)
 	{
@@ -129,7 +127,7 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ
 
 		if (invisibility > 1.f) invisibility -= 1.f;
 
-		if ((io != inter.iobj[0]) && (invisibility > 0.f) && (!EXTERNALVIEW))
+		if ((io != entities.player()) && (invisibility > 0.f) && (!EXTERNALVIEW))
 		{
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
@@ -165,7 +163,7 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ
 	}
 }
 
-static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
+static void Cedric_GetTime(float & timm, Entity * io) {
 	
 	if(!io || !io->nb_lastanimvertex) {
 		timm = 0.f;
@@ -188,7 +186,7 @@ static void Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io) {
 }
 
 /* Evaluate main entity translation */
-static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse, float scale,
+static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float scale,
                                        Vec3f & ftr, bool update_movement) {
 	
 	// Resets Frame Translate
@@ -248,9 +246,9 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 
 				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
-				if (io == inter.iobj[0]) temp = radians(MAKEANGLE(180.f - player.angle.b));
+				if (io == entities.player()) temp = radians(MAKEANGLE(180.f - player.angle.b));
 
-				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
+				YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
 				// stores Translations for a later use
 				io->move = ftr2;
@@ -264,7 +262,7 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 		if(io->ioflags & IO_NPC) {
 			ftr = Vec3f::ZERO;
 			io->move -= io->lastmove;
-		} else if (io->GameFlags & GFLAG_ELEVATOR) {
+		} else if (io->gameFlags & GFLAG_ELEVATOR) {
 			// Must recover translations for NON-NPC IO
 			PushIO_ON_Top(io, io->move.y - io->lastmove.y);
 		}
@@ -274,10 +272,8 @@ static void Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 }
 
 
-long Looking_At = -1;
-
 // Animate skeleton
-static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_USE * animuse)
+static	void	Cedric_AnimateObject(Entity * io, EERIE_3DOBJ * eobj, ANIM_USE * animuse)
 {
 	int				j, l;
 	EERIE_C_DATA	* obj = eobj->c_data;
@@ -343,17 +339,10 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
 
 				scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
-
-				if (BH_MODE)
-				{
-					if (j == eobj->fastaccess.head_group)
-					{
-						scale.x += 1.f;
-						scale.y += 1.f;
-						scale.z += 1.f;
-					}
+				if(BH_MODE && j == eobj->fastaccess.head_group) {
+					scale += Vec3f::ONE;
 				}
-
+				
 				obj->bones[j].scaleinit = scale;
 			}
 		}
@@ -363,7 +352,7 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 
 
 /* Apply transformations on all bones */
-static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Anglef * angle, Vec3f * pos, Vec3f & ftr, float g_scale)
+static void	Cedric_ConcatenateTM(Entity * io, EERIE_C_DATA * obj, Anglef * angle, Vec3f * pos, Vec3f & ftr, float g_scale)
 {
 	int i;
 
@@ -385,7 +374,7 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 			obj->bones[i].transanim = obj->bones[obj->bones[i].father].transanim + obj->bones[i].transanim;
 
 			/* Scale */
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f(1,1,1)) * obj->bones[obj->bones[i].father].scaleanim;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * obj->bones[obj->bones[i].father].scaleanim;
 
 		}
 		else // Root Bone
@@ -413,10 +402,7 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 			}
 			else
 			{
-				Anglef vt1 = *angle;
-				vt1.a = radians(vt1.a);
-				vt1.b = radians(vt1.b);
-				vt1.g = radians(vt1.g);
+				Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
@@ -428,7 +414,7 @@ static void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, Angle
 			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
 
 			// Compute Global Object Scale AND Global Animation Scale
-			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f(1,1,1)) * g_scale;
+			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * g_scale;
 		}
 	}
 }
@@ -438,7 +424,7 @@ void EE_P(Vec3f * in, TexturedVertex * out);
 void EE_P2(TexturedVertex * in, TexturedVertex * out);
 
 /* Transform object vertices  */
-int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
+int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
                           Vec3f * pos) {
 	int v;
 
@@ -452,42 +438,32 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
 		Vec3f vector = obj->bones[i].transanim;
-
+		
 		// Apply Scale
 		matrix._11 *= obj->bones[i].scaleanim.x;
 		matrix._12 *= obj->bones[i].scaleanim.x;
 		matrix._13 *= obj->bones[i].scaleanim.x;
-
+		
 		matrix._21 *= obj->bones[i].scaleanim.y;
 		matrix._22 *= obj->bones[i].scaleanim.y;
 		matrix._23 *= obj->bones[i].scaleanim.y;
-
+		
 		matrix._31 *= obj->bones[i].scaleanim.z;
 		matrix._32 *= obj->bones[i].scaleanim.z;
 		matrix._33 *= obj->bones[i].scaleanim.z;
-
-
-		for (v = 0; v != obj->bones[i].nb_idxvertices; v++)
-		{
+		
+		for(v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
 			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
-
 			TransformVertexMatrix(&matrix, inVert, &outVert->v);
-
 			outVert->v += vector;
-			outVert->vert.p.x = outVert->v.x;
-			outVert->vert.p.y = outVert->v.y;
-			outVert->vert.p.z = outVert->v.z;
+			outVert->vert.p = outVert->v;
 		}
 	}
 
-	if (FLAG_ALLOW_CLOTHES && eobj->cdata && eobj->sdata)
-	{
-		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-		{
-			eobj->vertexlist[i].vert.p.x = eobj->vertexlist3[i].v.x - pos->x;
-			eobj->vertexlist[i].vert.p.y = eobj->vertexlist3[i].v.y - pos->y;
-			eobj->vertexlist[i].vert.p.z = eobj->vertexlist3[i].v.z - pos->z;
+	if(eobj->cdata && eobj->sdata) {
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
+			eobj->vertexlist[i].vert.p = eobj->vertexlist3[i].v - *pos;
 		}
 	}
 
@@ -514,7 +490,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 	        &&	(distSqr(io->pos, player.pos) < square(240.f)))
 		return true;
 
-	if ((io != inter.iobj[0])
+	if ((io != entities.player())
 	        &&	(!EXTERNALVIEW)
 	        &&	(!eobj->cdata)
 	        &&	((BBOXMIN.x >= DANAESIZX - 1)
@@ -531,20 +507,17 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 
 	return true;
 }
-extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
+extern Entity * DESTROYED_DURING_RENDERING;
 long special_color_flag = 0;
 Color3f special_color;
-extern long DEBUG_PATHFAIL;
-extern long FINAL_RELEASE;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 extern long FRAME_COUNT;
-extern long ALTERNATE_LIGHTING;
 
 extern float GLOBAL_LIGHT_FACTOR;
 
 /* Object dynamic lighting */
-static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos) {
+static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos) {
 	
 	Color3f infra = Color3f::black;
 	int				i, v, l;
@@ -563,15 +536,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 
 		if (io->ioflags & IO_NPC)
 		{
-			if ((DEBUG_PATHFAIL) && (!FINAL_RELEASE))
-			{
-				if (io->_npcdata->pathfind.listnb == -2)
-					trappercent = 1;
-
-				if (io->_npcdata->pathfind.pathwait)
-					poisonpercent = 1;
-			}
-
 			if (io->_npcdata->poisonned > 0.f)
 			{
 				poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
@@ -692,9 +656,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 							AddRandomSmoke(io, 50);
 							Color3f rgb = io->_npcdata->blood_color.to<float>();
 							EERIE_SPHERE sp;
-							sp.origin.x = io->pos.x;
-							sp.origin.y = io->pos.y;
-							sp.origin.z = io->pos.z;
+							sp.origin = io->pos;
 							sp.radius = 200.f;
 							long count = 6;
 
@@ -744,7 +706,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 									damages = ARX_SPELLS_ApplyFireProtection(io, damages);
 
 									if (ValidIONum(spells[num].caster))
-										ARX_DAMAGES_DamageNPC(io, damages, spells[num].caster, 1, &inter.iobj[spells[num].caster]->pos);
+										ARX_DAMAGES_DamageNPC(io, damages, spells[num].caster, 1, &entities[spells[num].caster]->pos);
 									else
 										ARX_DAMAGES_DamageNPC(io, damages, spells[num].caster, 1, &io->pos);
 
@@ -764,38 +726,23 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 			}
 		}
 	}
-
-	if (eobj->drawflags & DRAWFLAG_HIGHLIGHT)
-	{
+	
+	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
 		special_color_flag	=	4;
-
-		special_color.r		=	static_cast<float>(iHighLight);   //100.f;
-		special_color.g		=	static_cast<float>(iHighLight);   //100.f;
-		special_color.b		=	static_cast<float>(iHighLight);   //100.f;
-
+		special_color = Color3f::gray(float(iHighLight));
 	}
-
-	if (FRAME_COUNT > 0) return true;
-
-	if (Project.improve)
-	{
-		if (io != NULL)
-		{
-			infra.r = io->infracolor.r;
-			infra.g = io->infracolor.g;
-			infra.b = io->infracolor.b;
-		}
-		else
-		{
-			infra.r = 0.6f;
-			infra.g = 0.f;
-			infra.b = 1.f;
-		}
+	
+	if(FRAME_COUNT > 0) {
+		return true;
 	}
-
+	
+	if(Project.improve) {
+		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
+	}
+	
 	/* Get nearest lights */
 	tv = *pos;
-
+	
 	if ((io) && (io->obj->fastaccess.view_attach >= 0) && (io->obj->fastaccess.head_group_origin != -1))
 	{
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;
@@ -841,7 +788,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 				/* Ambient light */
 				if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 				{
-					r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 				}
 				else
 				{
@@ -877,7 +824,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 							if (p <= 0.f)
 								cosangle = 0.f;
 							else
-								cosangle = p * Cur_llights->precalc; //>intensity*GLOBAL_LIGHT_FACTOR;
+								cosangle = p * Cur_llights->precalc;
 						}
 
 						r += Cur_llights->rgb255.r * cosangle;
@@ -946,7 +893,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 				/* Ambient light */
 				if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 				{
-					r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 				}
 				else
 				{
@@ -965,17 +912,12 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERAC
 					{
 						Vec3f & Cur_vTLights = vTLights[l];
 						Vec3f tl;
-						tl.x = (Cur_llights->pos.x - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.x);
-						tl.y = (Cur_llights->pos.y - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.y);
-						tl.z = (Cur_llights->pos.z - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v.z);
+						tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
 						float dista = ffsqrt(tl.lengthSqr());
 
-						if (dista < Cur_llights->fallend)
-						{
-							float divv = 1.f / dista;
-							tl.x *= divv;
-							tl.y *= divv;
-							tl.z *= divv;
+						if(dista < Cur_llights->fallend) {
+							
+							tl *= 1.f / dista;
 
 							VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 
@@ -1169,7 +1111,7 @@ TexturedVertex * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Tex
 
 #ifdef USE_SOFTWARE_CLIPPING
 
-int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, TexturedVertex ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, Color3f * _pRGB) {
+int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, TexturedVertex ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, Entity * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, Color3f * _pRGB) {
 	
 	int iPointAdd = 3;
 	int iClipp = 0;
@@ -1403,7 +1345,7 @@ long FORCE_FRONT_DRAW = 0;
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
 	
 	float MAX_ZEDE = 0.f;
 
@@ -1424,25 +1366,25 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 	need_halo = 0;
 
-	INTERACTIVE_OBJ * hio_helmet	= NULL;
-	INTERACTIVE_OBJ * hio_armor		= NULL;
-	INTERACTIVE_OBJ * hio_leggings	= NULL;
-	INTERACTIVE_OBJ * hio_player	= NULL;
-	INTERACTIVE_OBJ * use_io		= io;
+	Entity * hio_helmet	= NULL;
+	Entity * hio_armor		= NULL;
+	Entity * hio_leggings	= NULL;
+	Entity * hio_player	= NULL;
+	Entity * use_io		= io;
 
 	if ((!io)
 	        &&	(IN_BOOK_DRAW)
-	        &&	(eobj == inter.iobj[0]->obj))
-		use_io = inter.iobj[0];
+	        &&	(eobj == entities.player()->obj))
+		use_io = entities.player();
 
 	if (use_io)
 	{
-		if (use_io == inter.iobj[0])
+		if (use_io == entities.player())
 		{
 			if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
 			        && ValidIONum(player.equiped[EQUIP_SLOT_HELMET]))
 			{
-				INTERACTIVE_OBJ * tio = inter.iobj[player.equiped[EQUIP_SLOT_HELMET]];
+				Entity * tio = entities[player.equiped[EQUIP_SLOT_HELMET]];
 
 				if (tio->halo.flags & HALO_ACTIVE)
 					hio_helmet = tio;
@@ -1451,7 +1393,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			if ((player.equiped[EQUIP_SLOT_ARMOR] != 0)
 			        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
 			{
-				INTERACTIVE_OBJ * tio = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+				Entity * tio = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 
 				if (tio->halo.flags & HALO_ACTIVE)
 					hio_armor = tio;
@@ -1460,7 +1402,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 			if ((player.equiped[EQUIP_SLOT_LEGGINGS] != 0)
 			        &&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
 			{
-				INTERACTIVE_OBJ * tio = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
+				Entity * tio = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 
 				if (tio->halo.flags & HALO_ACTIVE)
 					hio_leggings = tio;
@@ -1516,22 +1458,13 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				continue;
 
 			//CULL3D
-			Vec3f nrm;
-			nrm.x = eobj->vertexlist3[eface->vid[0]].v.x - ACTIVECAM->pos.x;
-			nrm.y = eobj->vertexlist3[eface->vid[0]].v.y - ACTIVECAM->pos.y;
-			nrm.z = eobj->vertexlist3[eface->vid[0]].v.z - ACTIVECAM->pos.z;
-
-			if (!(eface->facetype & POLY_DOUBLESIDED))
-			{
+			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->pos;
+			
+			if(!(eface->facetype & POLY_DOUBLESIDED)) {
 				Vec3f normV10;
 				Vec3f normV20;
-				normV10.x = eobj->vertexlist3[eface->vid[1]].v.x - eobj->vertexlist3[eface->vid[0]].v.x;
-				normV10.y = eobj->vertexlist3[eface->vid[1]].v.y - eobj->vertexlist3[eface->vid[0]].v.y;
-				normV10.z = eobj->vertexlist3[eface->vid[1]].v.z - eobj->vertexlist3[eface->vid[0]].v.z;
-				normV20.x = eobj->vertexlist3[eface->vid[2]].v.x - eobj->vertexlist3[eface->vid[0]].v.x;
-				normV20.y = eobj->vertexlist3[eface->vid[2]].v.y - eobj->vertexlist3[eface->vid[0]].v.y;
-				normV20.z = eobj->vertexlist3[eface->vid[2]].v.z - eobj->vertexlist3[eface->vid[0]].v.z;
-
+				normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
+				normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
 				Vec3f normFace;
 				normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
 				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
@@ -1577,12 +1510,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 				tv = PushVertexInTableCull(pTex);
 			}
 
-			for (long n = 0 ; n < 3 ; n++)
-			{
-				paf[n]		= eface->vid[n];
-				tv[n].p.x	= eobj->vertexlist3[paf[n]].vert.p.x;
-				tv[n].p.y	= eobj->vertexlist3[paf[n]].vert.p.y;
-				tv[n].p.z	= eobj->vertexlist3[paf[n]].vert.p.z;
+			for(long n = 0 ; n < 3 ; n++) {
+				paf[n] = eface->vid[n];
+				tv[n].p = eobj->vertexlist3[paf[n]].vert.p;
 
 				// Nuky - this code takes 20% of the whole game performance O_O
 				//        AFAIK it allows to correctly display the blue magic effects
@@ -1625,12 +1555,11 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 					}
 				}
 			}
-		
-
+			
 			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
 			}
-						
+			
 #ifdef USE_SOFTWARE_CLIPPING
 			if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
 			                                   &eobj->vertexlist3[paf[1]],
@@ -1672,7 +1601,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 				long max_c;
 
-				if (use_io == inter.iobj[0])
+				if (use_io == entities.player())
 					max_c = 4;
 				else
 					max_c = 1;
@@ -1683,7 +1612,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 					{
 						case 0:
 
-							if (use_io == inter.iobj[0])
+							if (use_io == entities.player())
 							{
 								if (hio_player)
 								{
@@ -1822,7 +1751,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACT
 
 							float siz = ddist * (curhalo.radius * (EEsin((float)(arxtime.get_frame_time() + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
-							if ((io == inter.iobj[0]) && (ddist > 0.8f) && !EXTERNALVIEW)
+							if ((io == entities.player()) && (ddist > 0.8f) && !EXTERNALVIEW)
 								siz *= 1.5f;
 
 							vect1.x = workon[first].p.x - workon[third].p.x;
@@ -1911,13 +1840,13 @@ void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 
 		Quat_Slerp(&eobj->c_data->bones[i].quatinit , &q2, &tquat, timm);
 
-		eobj->c_data->bones[i].transinit.x = eobj->c_data->bones[i].translast.x + (eobj->c_data->bones[i].transinit.x - eobj->c_data->bones[i].translast.x) * timm;
-		eobj->c_data->bones[i].transinit.y = eobj->c_data->bones[i].translast.y + (eobj->c_data->bones[i].transinit.y - eobj->c_data->bones[i].translast.y) * timm;
-		eobj->c_data->bones[i].transinit.z = eobj->c_data->bones[i].translast.z + (eobj->c_data->bones[i].transinit.z - eobj->c_data->bones[i].translast.z) * timm;
+		eobj->c_data->bones[i].transinit = eobj->c_data->bones[i].translast
+		                                   + (eobj->c_data->bones[i].transinit
+		                                      - eobj->c_data->bones[i].translast) * timm;
 	}
 }
 
-void Cedric_SaveBlendData(INTERACTIVE_OBJ * io) {
+void Cedric_SaveBlendData(Entity * io) {
 	if (io->obj->c_data)
 	{
 		for (long i = 0; i < io->obj->c_data->nb_bones; i++)
@@ -1929,7 +1858,7 @@ void Cedric_SaveBlendData(INTERACTIVE_OBJ * io) {
 	}
 }
  
-void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
+void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 {
 	for (long i = 0; i != obj->c_data->nb_bones; i++)
 	{
@@ -1956,13 +1885,10 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 	}
 }
 
-extern long LOOK_AT_TARGET;
+static bool Cedric_IO_Visible(Entity * io) {
+	if (io == entities.player()) return true;
 
-extern long ForceIODraw;
-static bool Cedric_IO_Visible(INTERACTIVE_OBJ * io) {
-	if (io == inter.iobj[0]) return true;
-
-	if(!ForceIODraw && ACTIVEBKG && io) {
+	if(ACTIVEBKG && io) {
 		
 		if (distSqr(io->pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
@@ -1989,7 +1915,7 @@ static bool Cedric_IO_Visible(INTERACTIVE_OBJ * io) {
 	return true;
 }
 
-extern long __MUST_DRAW;
+extern long MUST_DRAW;
 extern long EXTERNALVIEW;
 
 /* Apply animation and draw object */
@@ -1997,7 +1923,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
                               ANIM_USE * animuse,
                               Anglef * angle,
                               Vec3f * pos,
-                              INTERACTIVE_OBJ * io,
+                              Entity * io,
                               bool render,
                               bool update_movement) {
 	
@@ -2006,42 +1932,38 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	float				timm;
 	Vec3f			ftr;
 	EERIE_C_DATA	*	obj;
-
 	
 	// Init some data
 	Cedric_ResetBoundingBox(io);
-
+	
 	// Set scale and invisibility factors
 	Cedric_GetScale(scale, invisibility, io);
-
+	
 	// Flag linked objects
 	//Cedric_FlagLinkedObjects(eobj); ???
-
+	
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
 	Cedric_GetTime(timm, io);
-
-
+	
 	// Buffer size check
-	if (eobj->nbgroups > max_grps)
-	{
+	if(eobj->nbgroups > max_grps) {
 		//todo free
 		grps = (unsigned char *)realloc(grps, eobj->nbgroups);
 		max_grps = eobj->nbgroups;
 	}
-
+	
 	memset(grps, 0, eobj->nbgroups);
-
+	
 	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);
-
+	
 	if(Cedric_IO_Visible(io)) {
-
+		
 		// Manage Extra Rotations in Local Space
 		Cedric_ManageExtraRotationsFirst(io, eobj);
-		Looking_At = -1;
-
+		
 		// Perform animation in Local space
 		Cedric_AnimateObject(io, eobj, animuse);
-
+		
 		// Check for Animation Blending in Local space
 		if (io)
 		{
@@ -2086,14 +2008,12 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			
 			for (long k = 0; k < eobj->nblinked; k++)
 			{
-				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
-				{
-					eobj->linked[k].modinfo.rot.a = 0;
-					eobj->linked[k].modinfo.rot.b = 0;
-					eobj->linked[k].modinfo.rot.g = 0;
-
+				if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj) {
+					
+					eobj->linked[k].modinfo.rot = Anglef::ZERO;
+					
 					float old = 0.f;
-					INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)eobj->linked[k].io;
+					Entity * ioo = (Entity *)eobj->linked[k].io;
 					EERIE_3DOBJ * obj = (EERIE_3DOBJ *) eobj->linked[k].obj;
 
 					// Store item invisibility flag
@@ -2101,7 +2021,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 					{
 						old = ioo->invisibility;
 
-						if (io == inter.iobj[0])
+						if (io == entities.player())
 						{
 							ioo->invisibility = INVISIBILITY_OVERRIDE;
 						}
@@ -2128,18 +2048,16 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 							ManageIgnition(ioo);
 					}
 
-					__MUST_DRAW = 1;
+					MUST_DRAW = 1;
 
 					// specific check to avoid drawing player weapon on its back when in subjective view
-					if ((io == inter.iobj[0]) &&
-					        (eobj->linked[k].lidx == inter.iobj[0]->obj->fastaccess.weapon_attach)
+					if ((io == entities.player()) &&
+					        (eobj->linked[k].lidx == entities.player()->obj->fastaccess.weapon_attach)
 					        && (!EXTERNALVIEW))
 						continue;
 
 					long ll = eobj->linked[k].lidx2;
-					eobj->linked[k].modinfo.link_position.x = obj->vertexlist[ll].v.x - obj->vertexlist[obj->origin].v.x;
-					eobj->linked[k].modinfo.link_position.y = obj->vertexlist[ll].v.y - obj->vertexlist[obj->origin].v.y;
-					eobj->linked[k].modinfo.link_position.z = obj->vertexlist[ll].v.z - obj->vertexlist[obj->origin].v.z;
+					eobj->linked[k].modinfo.link_position = obj->vertexlist[ll].v - obj->vertexlist[obj->origin].v;
 
 					EERIE_QUAT quat;
 					ll = eobj->linked[k].lidx;
@@ -2155,7 +2073,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 					if (ioo)
 						ioo->invisibility = old;
 
-					__MUST_DRAW = 0;
+					MUST_DRAW = 0;
 
 				}
 			}
@@ -2164,7 +2082,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	}
 }
 
-void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
+void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
 {
 	if ((Project.improve) && (!io))
 	{
@@ -2248,7 +2166,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * p
 
 			if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 			{
-				r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+				r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 			}
 			else
 			{
@@ -2328,7 +2246,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * p
 		}
 }
 
-void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii) {
+void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii) {
 	
 	Vec3f vLight;
 	Vec3f vTLights[32];
@@ -2360,9 +2278,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * 
 					vt1 = eobj->angle;
 			}
 
-			vt1.a = radians(vt1.a);
-			vt1.b = radians(vt1.b);
-			vt1.g = radians(vt1.g);
+			vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
@@ -2373,23 +2289,16 @@ void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * 
 		tv.y -= 60.f;
 	else
 		tv.y -= 90.f;
-
-
-	for (long l = 0; l != MAX_LLIGHTS; l++)
-	{
-		if (llights[l])
-		{
-			float		oolength = 1.f / dists[l];
-			vLight.x = (llights[l]->pos.x - tv.x) * oolength;
-			vLight.y = (llights[l]->pos.y - tv.y) * oolength;
-			vLight.z = (llights[l]->pos.z - tv.z) * oolength;
-
+	
+	for(long l = 0; l != MAX_LLIGHTS; l++) {
+		if(llights[l]) {
+			vLight = (llights[l]->pos - tv) / dists[l];
 			TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
-		}
-		else
+		} else {
 			break;
+		}
 	}
-
+	
 	long paf[3];
 	paf[0] = eobj->facelist[ii].vid[0];
 	paf[1] = eobj->facelist[ii].vid[1];
@@ -2402,7 +2311,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * 
 
 		if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 		{
-			r = g = b = NPC_ITEMS__AMBIENT_VALUE_255;
+			r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
 		}
 		else
 		{
@@ -2479,8 +2388,6 @@ void MakeCLight2(INTERACTIVE_OBJ * io, Color3f * infra, Anglef * angle, Vec3f * 
 }
 
 
-extern long DYNAMIC_NORMALS;
-
 void ApplyDynLight(EERIEPOLY * ep)
 {
 	long nbvert, i;
@@ -2523,16 +2430,11 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 		if (distSqr(el->pos, ep->center) <= square(el->fallend + 35.f))
 		{
-			if (Project.improve)
-			{
+			if(Project.improve) {
 				rgb.r = el->rgb255.r * 4.f;
 				rgb.g = rgb.b = 0.2f;
-			}
-			else
-			{
-				rgb.r = el->rgb255.r;
-				rgb.g = el->rgb255.g;
-				rgb.b = el->rgb255.b;
+			} else {
+				rgb = el->rgb255;
 			}
 
 			for (j = 0; j < nbvert; j++)
@@ -2551,18 +2453,12 @@ void ApplyDynLight(EERIEPOLY * ep)
 					float divd = 1.f / d;
 					float nvalue;
 
-					if (DYNAMIC_NORMALS)
-					{
-						Vec3f v1;
-						v1.x = (el->pos.x - ep->v[j].p.x) * divd;
-						v1.y = (el->pos.y - ep->v[j].p.y) * divd;
-						v1.z = (el->pos.z - ep->v[j].p.z) * divd;
-						nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
+					Vec3f v1;
+					v1 = (el->pos - ep->v[j].p) * divd;
+					nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
 
-						if (nvalue > 1.f) nvalue = 1.f;
-						else if (nvalue < 0.f) nvalue = 0.f;
-					}
-					else nvalue = 1.f;
+					if (nvalue > 1.f) nvalue = 1.f;
+					else if (nvalue < 0.f) nvalue = 0.f;
 
 					if (nvalue > 0.f)
 					{

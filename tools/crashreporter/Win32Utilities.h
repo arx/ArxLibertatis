@@ -23,7 +23,7 @@
 #include "Configure.h"
 #include "platform/Platform.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 
 #include <windows.h>
 #include <string>
@@ -36,6 +36,6 @@ bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::s
 std::string GetRegisters(PCONTEXT pCtx);
 std::string GetExceptionString(DWORD dwCode);
 
-#endif
+#endif // ARX_HAVE_WINAPI
 
 #endif // ARX_TOOLS_CRASHREPORTER_WIN32UTILITIES_H

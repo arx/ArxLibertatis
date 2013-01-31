@@ -45,6 +45,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 #include "core/GameTime.h"
+#include "game/Entity.h"
+#include "game/EntityManager.h"
+#include "game/Equipment.h"
 #include "game/Inventory.h"
 #include "graphics/Math.h"
 #include "scene/Interactive.h"
@@ -172,7 +175,7 @@ class SetMainEventCommand : public Command {
 	
 public:
 	
-	explicit SetMainEventCommand(const string & command) : Command(command, ANY_IO) { }
+	explicit SetMainEventCommand(const string & command) : Command(command, AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -180,7 +183,7 @@ public:
 		
 		DebugScript(' ' << event);
 		
-		ARX_SCRIPT_SetMainEvent(context.getIO(), event);
+		ARX_SCRIPT_SetMainEvent(context.getEntity(), event);
 		
 		return Success;
 	}
@@ -301,34 +304,35 @@ public:
 			DebugScript(' ' << event << (params.empty() ? "" : " \"" + params + '"') << " to " << target);
 		}
 		
-		INTERACTIVE_OBJ * oes = EVENT_SENDER;
-		EVENT_SENDER = context.getIO();
+		Entity * oes = EVENT_SENDER;
+		EVENT_SENDER = context.getEntity();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(radius) { // SEND EVENT TO ALL OBJECTS IN A RADIUS
 			
-			for(long l = 0 ; l < inter.nbmax ; l++) {
+			for(size_t l = 0 ; l < entities.size() ; l++) {
 				
-				if(!inter.iobj[l] || inter.iobj[l] == io || (inter.iobj[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!entities[l] || entities[l] == io
+				   || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
+				if(group && entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (inter.iobj[l]->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM))) {
+				if(((sendto & SEND_NPC) && (entities[l]->ioflags & IO_NPC))
+				   || ((sendto & SEND_FIX) && (entities[l]->ioflags & IO_FIX))
+				   || ((sendto & SEND_ITEM) && (entities[l]->ioflags & IO_ITEM))) {
 					
 					Vec3f _pos, _pos2;
-					GetItemWorldPosition(inter.iobj[l], &_pos);
+					GetItemWorldPosition(entities[l], &_pos);
 					GetItemWorldPosition(io, &_pos2);
 					
 					if(distSqr(_pos, _pos2) <= square(rad)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
+						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 					}
 				}
 			}
@@ -342,49 +346,49 @@ public:
 				return Failed;
 			}
 			
-			for(long l = 0; l < inter.nbmax; l++) {
+			for(size_t l = 0; l < entities.size(); l++) {
 				
-				if(!inter.iobj[l] || (inter.iobj[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
+				if(!entities[l] || (entities[l]->ioflags & (IO_CAMERA|IO_MARKER))) {
 					continue;
 				}
 				
-				if(group && inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
+				if(group && entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
 					continue;
 				}
 				
-				if(((sendto & SEND_NPC) && (inter.iobj[l]->ioflags & IO_NPC))
-				   || ((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
-				   || ((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM))) {
+				if(((sendto & SEND_NPC) && (entities[l]->ioflags & IO_NPC))
+				   || ((sendto & SEND_FIX) && (entities[l]->ioflags & IO_FIX))
+				   || ((sendto & SEND_ITEM) && (entities[l]->ioflags & IO_ITEM))) {
 					
 					Vec3f _pos;
-					GetItemWorldPosition(inter.iobj[l], &_pos);
+					GetItemWorldPosition(entities[l], &_pos);
 					
 					if(ARX_PATH_IsPosInZone(ap, _pos.x, _pos.y, _pos.z)) {
 						io->stat_sent++;
-						Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
+						Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 					}
 				}
 			}
 			
 		} else if(group) { // sends an event to all members of a group
 			
-			for(long l = 0; l < inter.nbmax; l++) {
+			for(size_t l = 0; l < entities.size(); l++) {
 				
-				if(!inter.iobj[l] || inter.iobj[l] == io) {
+				if(!entities[l] || entities[l] == io) {
 					continue;
 				}
 				
-				if(inter.iobj[l]->groups.find(groupname) == inter.iobj[l]->groups.end()) {
+				if(entities[l]->groups.find(groupname) == entities[l]->groups.end()) {
 					continue;
 				}
 				
 				io->stat_sent++;
-				Stack_SendIOScriptEvent(inter.iobj[l], SM_NULL, params, event);
+				Stack_SendIOScriptEvent(entities[l], SM_NULL, params, event);
 			}
 			
 		} else { // single object event
 			
-			INTERACTIVE_OBJ * t = inter.getById(target, io);
+			Entity * t = entities.getById(target, io);
 			if(!t) {
 				EVENT_SENDER = oes;
 				return Failed;
@@ -453,14 +457,14 @@ class IfCommand : public Command {
 		char c = (var.empty() ? '\0' : var[0]);
 		
 		EERIE_SCRIPT * es = context.getMaster();
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		switch(c) {
 			
 			case '^': {
 				
 				long l;
-				switch(GetSystemVar(es, io, var, s, &f, &l)) {
+				switch(getSystemVar(es, io, var, s, &f, &l)) {
 					
 					case TYPE_TEXT: return TYPE_TEXT;
 					
@@ -615,7 +619,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getEntity());
 			
 			return (t != NULL && t->groups.find(group) != t->groups.end());
 		}
@@ -630,7 +634,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & group) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getEntity());
 			
 			return (t != NULL && t->groups.find(group) == t->groups.end());
 		}
@@ -645,7 +649,7 @@ class IfCommand : public Command {
 		
 		bool text(const Context & context, const string & obj, const string & type) {
 			
-			INTERACTIVE_OBJ * t = inter.getById(obj, context.getIO());
+			Entity * t = entities.getById(obj, context.getEntity());
 			
 			ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(type);
 			if(!flag) {
@@ -848,7 +852,7 @@ void timerCommand(const string & timer, Context & context) {
 	
 	DebugScript(' ' << options << ' ' << command);
 	
-	INTERACTIVE_OBJ * io = context.getIO();
+	Entity * io = context.getEntity();
 	
 	if(command == "kill_local") {
 		DebugScript(' ' << options << " kill_local");

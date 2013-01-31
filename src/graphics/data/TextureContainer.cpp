@@ -52,6 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <utility>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
 
@@ -62,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/Filesystem.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 
 using std::string;
 using std::map;
@@ -76,68 +77,43 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
 const TextureContainer::TCFlags TextureContainer::UI = (TextureContainer::NoMipmap | TextureContainer::NoRefinement);
 
-TextureContainer * g_ptcTextureList = NULL;
+static TextureContainer * g_ptcTextureList = NULL;
 
-TextureContainer * GetTextureList()
-{
+TextureContainer * GetTextureList() {
 	return g_ptcTextureList;
 }
 
-TextureContainer * GetAnyTexture()
-{
+TextureContainer * GetAnyTexture() {
 	return g_ptcTextureList;
 }
 
-void ResetVertexLists(TextureContainer * ptcTexture) {
+void ResetVertexLists(TextureContainer * tex) {
 	
-	if(!ptcTexture) {
+	if(!tex) {
 		return;
 	}
 	
-	ptcTexture->ulNbVertexListCull = 0;
-	ptcTexture->ulNbVertexListCull_TNormalTrans = 0;
-	ptcTexture->ulNbVertexListCull_TAdditive = 0;
-	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
-	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
+	tex->ulNbVertexListCull = 0;
+	tex->ulNbVertexListCull_TNormalTrans = 0;
+	tex->ulNbVertexListCull_TAdditive = 0;
+	tex->ulNbVertexListCull_TSubstractive = 0;
+	tex->ulNbVertexListCull_TMultiplicative = 0;
 	
-	ptcTexture->ulMaxVertexListCull = 0;
-	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
-	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
-	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
-	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
+	tex->ulMaxVertexListCull = 0;
+	tex->ulMaxVertexListCull_TNormalTrans = 0;
+	tex->ulMaxVertexListCull_TAdditive = 0;
+	tex->ulMaxVertexListCull_TSubstractive = 0;
+	tex->ulMaxVertexListCull_TMultiplicative = 0;
 	
-	ptcTexture->vPolyInterZMap.clear();
-	ptcTexture->vPolyZMap.clear();
+	tex->vPolyInterZMap.clear();
+	tex->vPolyZMap.clear();
 	
-	if(ptcTexture->pVertexListCull) {
-		free(ptcTexture->pVertexListCull);
-		ptcTexture->pVertexListCull = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TNormalTrans) {
-		free(ptcTexture->pVertexListCull_TNormalTrans);
-		ptcTexture->pVertexListCull_TNormalTrans = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TAdditive) {
-		free(ptcTexture->pVertexListCull_TAdditive);
-		ptcTexture->pVertexListCull_TAdditive = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TSubstractive) {
-		free(ptcTexture->pVertexListCull_TSubstractive);
-		ptcTexture->pVertexListCull_TSubstractive = NULL;
-	}
-	
-	if(ptcTexture->pVertexListCull_TMultiplicative) {
-		free(ptcTexture->pVertexListCull_TMultiplicative);
-		ptcTexture->pVertexListCull_TMultiplicative = NULL;
-	}
-		
-	if(ptcTexture->tMatRoom) {
-		free(ptcTexture->tMatRoom);
-		ptcTexture->tMatRoom = NULL;
-	}
+	free(tex->pVertexListCull), tex->pVertexListCull = NULL;
+	free(tex->pVertexListCull_TNormalTrans), tex->pVertexListCull_TNormalTrans = NULL;
+	free(tex->pVertexListCull_TAdditive), tex->pVertexListCull_TAdditive = NULL;
+	free(tex->pVertexListCull_TSubstractive), tex->pVertexListCull_TSubstractive = NULL;
+	free(tex->pVertexListCull_TMultiplicative), tex->pVertexListCull_TMultiplicative = NULL;
+	free(tex->tMatRoom), tex->tMatRoom = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +122,8 @@ void ResetVertexLists(TextureContainer * ptcTexture) {
 //-----------------------------------------------------------------------------
 TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m_texName(strName) {
 	
-	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"), "bad texture name: \"%s\"", strName.string().c_str()); // TODO(case-sensitive) remove
+	arx_assert_msg(!strName.has_ext("bmp") && !strName.has_ext("tga"),
+	               "bad texture name: \"%s\"", strName.string().c_str());
 	
 	m_dwWidth = 0;
 	m_dwHeight = 0;
@@ -196,33 +173,28 @@ TextureContainer::TextureContainer(const res::path & strName, TCFlags flags) : m
 	vPolyZMap.clear();
 }
 
-TextureContainer::~TextureContainer()
-{
+TextureContainer::~TextureContainer() {
+	
 	delete m_pTexture;
 	delete TextureHalo;
-
-	if (delayed)
-	{
-		free(delayed);
-		delayed = NULL;
-	}
-
+	
+	free(delayed), delayed = NULL;
+	
 	// Remove the texture container from the global list
-	if (g_ptcTextureList == this)
+	if(g_ptcTextureList == this) {
 		g_ptcTextureList = m_pNext;
-	else
-	{
-		for (TextureContainer * ptc = g_ptcTextureList; ptc; ptc = ptc->m_pNext)
-			if (ptc->m_pNext == this)
+	} else {
+		for(TextureContainer * ptc = g_ptcTextureList; ptc; ptc = ptc->m_pNext) {
+			if(ptc->m_pNext == this) {
 				ptc->m_pNext = m_pNext;
+			}
+		}
 	}
-
+	
 	ResetVertexLists(this);
 }
 
 bool TextureContainer::LoadFile(const res::path & strPathname) {
-	
-	bool bLoaded = false;
 	
 	res::path tempPath = strPathname;
 	bool foundPath = resources->getFile(tempPath.append(".png")) != NULL;
@@ -236,36 +208,35 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 		return false;
 	}
 	
-	if(m_pTexture)
-		delete m_pTexture;
-
+	delete m_pTexture, m_pTexture = NULL;
 	m_pTexture = GRenderer->CreateTexture2D();
-	if(m_pTexture)
-	{
-		
-		Texture::TextureFlags flags = 0;
-		
-		if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
-			flags |= Texture::HasColorKey;
-		}
-		
-		if(!(m_dwFlags & NoMipmap)) {
-			flags |= Texture::HasMipmaps;
-		}
-		
-		bLoaded = m_pTexture->Init(tempPath, flags);
-		if(bLoaded)
-		{
-			m_dwWidth = m_pTexture->getSize().x;
-			m_dwHeight = m_pTexture->getSize().y;
-			
-			Vec2i storedSize = m_pTexture->getStoredSize();
-			uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
-			hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
-		}
+	if(!m_pTexture) {
+		return false;
 	}
-
-	return bLoaded;
+	
+	Texture::TextureFlags flags = 0;
+	
+	if(!(m_dwFlags & NoColorKey) && tempPath.ext() == ".bmp") {
+		flags |= Texture::HasColorKey;
+	}
+	
+	if(!(m_dwFlags & NoMipmap)) {
+		flags |= Texture::HasMipmaps;
+	}
+	
+	if(!m_pTexture->Init(tempPath, flags)) {
+		LogError << "error creating texture " << tempPath;
+		return false;
+	}
+	
+	m_dwWidth = m_pTexture->getSize().x;
+	m_dwHeight = m_pTexture->getSize().y;
+	
+	Vec2i storedSize = m_pTexture->getStoredSize();
+	uv = Vec2f(float(m_dwWidth) / storedSize.x, float(m_dwHeight) / storedSize.y);
+	hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
+	
+	return true;
 }
 
 bool TextureContainer::hasColorKey() {
@@ -314,8 +285,13 @@ TextureContainer * TextureContainer::LoadUI(const res::path & strName, TCFlags f
 	return Load(strName, flags | UI);
 }
 
-bool TextureContainer::CreateHalo()
-{
+bool TextureContainer::CreateHalo() {
+	
+	Image srcImage;
+	if(!srcImage.LoadFromFile(m_pTexture->getFileName())) {
+		return false;
+	}
+	
 	// Allocate and add the texture to the linked list of textures;
 	res::path haloName = m_texName.string();
 	haloName.append("_halo");
@@ -323,51 +299,51 @@ bool TextureContainer::CreateHalo()
 	if(!TextureHalo) {
 		return false;
 	}
-
+	
 	TextureHalo->m_pTexture = GRenderer->CreateTexture2D();
-	if(TextureHalo->m_pTexture)
-	{
-		Image srcImage;
-		srcImage.LoadFromFile(m_pTexture->getFileName());
-		
-		bool bLoaded = TextureHalo->m_pTexture->Init(m_dwWidth + HALO_RADIUS*2, m_dwHeight + HALO_RADIUS*2, srcImage.GetFormat());
-		if(bLoaded)
-		{
-			TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
-			TextureHalo->m_dwHeight = TextureHalo->m_pTexture->getSize().y;
-			
-			Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
-			TextureHalo->uv = Vec2f(float(TextureHalo->m_dwWidth) / storedSize.x, float(TextureHalo->m_dwHeight) / storedSize.y);
-			TextureHalo->hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
-
-			Image &im = TextureHalo->m_pTexture->GetImage();
-
-			// Center the image, offset by radius to contain the edges of the blur
-			im.Clear();
-			im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
-
-			// Keep a copy of the image at this stage, in order to apply proper alpha masking later
-			Image copy = im;			
-			
-			// Convert image to grayscale, and turn it to black & white
-			im.ToGrayscale(Image::Format_L8A8);
-			im.ApplyThreshold(0, ~0);
-
-			// Blur the image
-			im.Blur(HALO_RADIUS);
-
-			// Increase the gamma of the blur outline
-			im.QuakeGamma(10.0f);
-		
-			// Set alpha to inverse of original image alpha
-			copy.ApplyColorKeyToAlpha();
-			im.SetAlpha(copy, true);
-						
-			// adejr: assertion here seems to fail often, i don't understand why?
-			TextureHalo->m_pTexture->Restore();
-		}
+	if(!TextureHalo->m_pTexture) {
+		return true;
 	}
+	
+	Image im;
+	
+	int width = m_dwWidth + HALO_RADIUS * 2;
+	int height = m_dwHeight + HALO_RADIUS * 2;
+	im.Create(width, height, srcImage.GetFormat());
+	
+	// Center the image, offset by radius to contain the edges of the blur
+	im.Clear();
+	im.Copy(srcImage, HALO_RADIUS, HALO_RADIUS);
+	
+	// Keep a copy of the image at this stage, in order to apply proper alpha masking later
+	Image copy = im;
+	
+	// Convert image to grayscale, and turn it to black & white
+	im.ToGrayscale(Image::Format_L8A8);
+	im.ApplyThreshold(0, ~0);
 
+	// Blur the image
+	im.Blur(HALO_RADIUS);
+
+	// Increase the gamma of the blur outline
+	im.QuakeGamma(10.0f);
+
+	// Set alpha to inverse of original image alpha
+	copy.ApplyColorKeyToAlpha();
+	im.SetAlpha(copy, true);
+	
+	TextureHalo->m_pTexture->Init(im, 0);
+	
+	TextureHalo->m_dwWidth = TextureHalo->m_pTexture->getSize().x;
+	TextureHalo->m_dwHeight = TextureHalo->m_pTexture->getSize().y;
+	
+	Vec2i storedSize = TextureHalo->m_pTexture->getStoredSize();
+	TextureHalo->uv = Vec2f(
+		float(TextureHalo->m_dwWidth) / storedSize.x,
+		float(TextureHalo->m_dwHeight) / storedSize.y
+	);
+	TextureHalo->hd = Vec2f(.5f / storedSize.x, .5f / storedSize.y);
+	
 	return true;
 }
 
@@ -462,7 +438,7 @@ static void LoadRefinementMap(const res::path & fileName, map<res::path, res::pa
 		} else if(count == 1) {
 			
 			
-			makeLowercase(data);
+			boost::to_lower(data);
 			
 			if(data != "none") {
 				refinementMap[res::path::load(name)] = res::path::load(data);

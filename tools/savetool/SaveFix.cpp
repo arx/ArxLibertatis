@@ -25,15 +25,19 @@
 #include <map>
 #include <sstream>
 
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "Configure.h"
 #ifdef BUILD_EDITOR
 #undef BUILD_EDITOR
 #endif
 
 #include "io/SaveBlock.h"
+#include "io/log/Logger.h"
 #include "io/resource/PakReader.h"
-#include "platform/String.h"
 #include "scene/SaveFormat.h"
+#include "util/String.h"
 
 using std::stringstream;
 using std::setfill;
@@ -128,14 +132,14 @@ static bool fix_iodata(SaveBlock & save, Idents & idents, char * dat, const stri
 	
 	if(ais.system_flags & SYSTEM_FLAG_INVENTORY) {
 		
-		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & aids = *reinterpret_cast<ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
-		pos +=  sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
+		ARX_CHANGELEVEL_INVENTORY_DATA_SAVE & aids
+			= *reinterpret_cast<ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *>(dat + pos);
 		
 		invChanged |= fix_ident(save, aids.io, idents, where + ".inventory.io", remap);
 		for(long m = 0; m < aids.sizex; m++) {
 			for(long n = 0; n < aids.sizey; n++) {
 				stringstream where2;
-				where2 << where << ".inventory.slot_io[" << m << "][" << n << "]";
+				where2 << where << ".inventory[" << m << "][" << n << "]";
 				invChanged |= fix_ident(save, aids.slot_io[m][n], idents, where2.str(), remap);
 			}
 		}
@@ -165,7 +169,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	string fname = name.substr(0, pos);
 	
-	res::path dir = res::path::load(safestring(ais.filename)).parent();
+	res::path dir = res::path::load(util::loadString(ais.filename)).parent();
 	
 	long i = 1;
 	string ident;
@@ -192,7 +196,7 @@ static long copy_io(SaveBlock & save, const string & name, Idents & idents, cons
 	
 	fix_iodata(save, idents, dat, where + ":" + ident, remap);
 	
-	printf("#saving0 %s\n", ident.c_str());
+	LogDebug("#saving copied io " << ident);
 	save.save(ident, dat, size);
 	
 	return i;
@@ -234,17 +238,17 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	
 	if(ais.ioflags & IO_ITEM) {
 		
-		res::path file = res::path::load(safestring(ais.filename));
+		res::path file = res::path::load(util::loadString(ais.filename));
 		
 		s32 flags = ais.ioflags;
 		
-		if(!specialstrcmp(file.basename(), "gold_coin")) {
+		if(boost::starts_with(file.basename(), "gold_coin")) {
 			file.up() /= "gold_coin.asl";
-			flags = ais.ioflags | IO_GOLD;
+			flags = EntityFlags::load(ais.ioflags) | IO_GOLD; // TODO save/load flags
 		}
 		
-		if(IsIn(file.string(), "movable")) {
-			flags = ais.ioflags | IO_MOVABLE;
+		if(boost::contains(file.string(), "movable")) {
+			flags = EntityFlags::load(ais.ioflags) | IO_MOVABLE; // TODO save/load flags
 		}
 		
 		if(flags != ais.ioflags) {
@@ -258,7 +262,7 @@ static long fix_io(SaveBlock & save, const string & name, Idents & idents, const
 	changed |= fix_iodata(save, idents, dat, where + ":" + name, remap);
 	
 	if(changed) {
-		printf("#saving1 %s\n", savefile.c_str());
+		LogDebug("#saving fixed io " << savefile);
 		if(!save.save(savefile, dat, size)) {
 			cerr << "error saving " << savefile;
 		}
@@ -277,7 +281,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 	
 	cout << "fixing ident in " << where << ": " << name << " -> " << newIdent << endl;
 	
-	string namestr = toLowercase(safestring(name, SIZE_ID));
+	string namestr = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
 	size_t pos = namestr.find_last_of('_');
 	
@@ -288,7 +292,7 @@ static bool patch_ident(char (&name)[SIZE_ID], long newIdent, const string & whe
 
 static bool fix_ident(SaveBlock & save, char (&name)[SIZE_ID], Idents & idents, const string & where, Remap & remap) {
 	
-	string lname = toLowercase(safestring(name, SIZE_ID));
+	string lname = boost::to_lower_copy(util::loadString(name, SIZE_ID));
 	
 	if(lname.empty() || lname == "none" || lname == "player" || lname == "self") {
 		return false;
@@ -326,7 +330,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
 			for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
 				stringstream where;
-				where << "player.id_inventory[" << iNbBag << "][" << n << "][" << m << "]"; 
+				where << "player.inventory[" << iNbBag << "][" << n << "][" << m << "]"; 
 				changed |= fix_ident(save, asp.id_inventory[iNbBag][n][m], idents, where.str(), remap);
 			}
 		}
@@ -346,7 +350,7 @@ static void fix_player(SaveBlock & save, Idents & idents) {
 	}
 	
 	if(changed) {
-		printf("#saving2 %s\n", loadfile.c_str());
+		LogDebug("saving fixed " << loadfile);
 		save.save(loadfile, dat, size);
 	}
 	
@@ -377,7 +381,6 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
 	
 	ARX_CHANGELEVEL_IO_INDEX * idx_io = reinterpret_cast<ARX_CHANGELEVEL_IO_INDEX *>(dat + pos);
-	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter;
 	
 	Remap remap;
 	
@@ -385,7 +388,7 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 	
 	for(long i = 0; i < asi.nb_inter; i++) {
 		long res;
-		string ident = makeIdent(res::path::load(safestring(idx_io[i].filename)).basename(), idx_io[i].ident);
+		string ident = makeIdent(res::path::load(util::loadString(idx_io[i].filename)).basename(), idx_io[i].ident);
 		Remap::const_iterator it = remap.find(ident);
 		stringstream where;
 		where << "level" << num << "[" << i << "]";
@@ -395,14 +398,14 @@ static void fix_level(SaveBlock & save, long num, Idents & idents) {
 			res = fix_io(save, ident, idents, where.str(), remap);
 		}
 		if(res != 0) {
-			cout << "fixing ident in " << where << ": " << ident << " -> " << res << endl;
+			cout << "fixing ident in " << where.str() << ": " << ident << " -> " << res << endl;
 			idx_io[i].ident = res;
 			changed = true;
 		}
 	}
 	
 	if(changed) {
-		printf("#saving3 %s\n", ss.str().c_str());
+		LogDebug("#saving fixed " << ss.str());
 		save.save(ss.str(), dat, size);
 	}
 	

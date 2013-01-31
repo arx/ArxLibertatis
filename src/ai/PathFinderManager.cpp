@@ -51,24 +51,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 
 #include "ai/PathFinder.h"
+#include "game/Entity.h"
+#include "game/NPC.h"
 #include "graphics/Math.h"
 #include "platform/Thread.h"
 #include "platform/Lock.h"
+#include "physics/Anchors.h"
 #include "scene/Light.h"
 
 using std::memcpy;
 
 
-static const float PATHFINDER_HEURISTIC_MIN(0.2F);
-static const float PATHFINDER_HEURISTIC_MAX(PathFinder::HEURISTIC_MAX);
-static const float PATHFINDER_HEURISTIC_RANGE(PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN);
-static const float PATHFINDER_DISTANCE_MAX(5000.0F);
+static const float PATHFINDER_HEURISTIC_MIN = 0.2f;
+static const float PATHFINDER_HEURISTIC_MAX = PathFinder::HEURISTIC_MAX;
+static const float PATHFINDER_HEURISTIC_RANGE = PATHFINDER_HEURISTIC_MAX
+                                                - PATHFINDER_HEURISTIC_MIN;
+static const float PATHFINDER_DISTANCE_MAX = 5000.0f;
 
 // Pathfinder Definitions
-static unsigned long PATHFINDER_UPDATE_INTERVAL(10);
+static unsigned long PATHFINDER_UPDATE_INTERVAL = 10;
 
 PATHFINDER_REQUEST pr;
-long PATHFINDER_WORKING(0);
+long PATHFINDER_WORKING = 0;
 
 class PathFinderThread : public StoppableThread {
 	
@@ -85,11 +89,11 @@ struct PATHFINDER_QUEUE_ELEMENT {
 	long valid;
 };
 
-PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
+static PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
 
 // An Io can request Pathfinding only once so we insure that it's always the case.
 // A new pathfinder request from the same IO will overwrite the precedent.
-static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io) {
+static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(Entity * io) {
 	
 	if (!pathfinder_queue_start) return NULL;
 
@@ -103,7 +107,6 @@ static PATHFINDER_QUEUE_ELEMENT * PATHFINDER_Find_ioid(INTERACTIVE_OBJ * io) {
 
 	return NULL;
 }
-INTERACTIVE_OBJ * CURPATHFINDIO = NULL;
 
 // Adds a Pathfinder Search Element to the pathfinder queue.
 bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * req) {
@@ -186,8 +189,6 @@ long EERIE_PATHFINDER_Get_Queued_Number() {
 
 static void EERIE_PATHFINDER_Clear_Private() {
 	
-	CURPATHFINDIO = NULL;
-	
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 	PATHFINDER_QUEUE_ELEMENT * next;
 	
@@ -256,7 +257,6 @@ void PathFinderThread::run() {
 
 			PATHFINDER_REQUEST curpr;
 			memcpy(&curpr, &pr, sizeof(PATHFINDER_REQUEST));
-			CURPATHFINDIO = curpr.ioid;
 			PATHFINDER_WORKING = 2;
 
 			if (curpr.ioid && curpr.ioid->_npcdata)
@@ -329,8 +329,6 @@ void PathFinderThread::run() {
 			}
 		}
 
-		CURPATHFINDIO = NULL;
-
 		PATHFINDER_WORKING = 0;
 
 		mutex->unlock();
@@ -349,8 +347,6 @@ void EERIE_PATHFINDER_Release() {
 	if(!pathfinder) {
 		return;
 	}
-	
-	CURPATHFINDIO = NULL;
 	
 	mutex->lock();
 	
@@ -372,8 +368,6 @@ void EERIE_PATHFINDER_Create() {
 	if(!mutex) {
 		mutex = new Lock();
 	}
-	
-	CURPATHFINDIO = NULL;
 	
 	pathfinder = new PathFinderThread();
 	pathfinder->setThreadName("Pathfinder");

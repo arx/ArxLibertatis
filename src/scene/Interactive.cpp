@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"
@@ -63,12 +65,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 
-#include "game/Equipment.h"
-#include "game/NPC.h"
+#include "game/Camera.h"
 #include "game/Damage.h"
-#include "game/Player.h"
-#include "game/Levels.h"
+#include "game/EntityManager.h"
+#include "game/Equipment.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/Levels.h"
+#include "game/NPC.h"
+#include "game/Player.h"
 
 #include "gui/Speech.h"
 #include "gui/Interface.h"
@@ -82,18 +87,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/fs/FilePath.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
 #include "math/Random.h"
 
+#include "physics/Anchors.h"
 #include "physics/Collisions.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Box.h"
 #include "physics/Clothes.h"
 
-#include "platform/String.h"
 #include "platform/Thread.h"
 
 #include "scene/ChangeLevel.h"
@@ -110,70 +116,30 @@ using std::min;
 using std::string;
 using std::vector;
 
-extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
 
-#define BASE_RUBBER 1.5f
-
-extern INTERACTIVE_OBJ * FlyingOverIO;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long LOOK_AT_TARGET;
 extern long EXTERNALVIEW;
-extern long CURRENTLEVEL;
-extern long FOR_EXTERNAL_PEOPLE;
 extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
-INTERACTIVE_OBJ * CURRENTINTER = NULL;
-INTERACTIVE_OBJECTS inter;
-float TREATZONE_LIMIT = 1800.f;
+static float TREATZONE_LIMIT = 1800.f;
  
 long HERO_SHOW_1ST = 1;
-long TreatAllIO = 0;
-long INTREATZONECOUNT = 0;
 #ifdef BUILD_EDITOR
 long NbIOSelected = 0;
-long LastSelectedIONum = -1;
 #endif
-long INTERNMB = -1;
-long LASTINTERCLICKNB = -1;
 long INTER_DRAW = 0;
-long INTER_COMPUTE = 0;
-long ForceIODraw = 0;
 
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos);
-static INTERACTIVE_OBJ * AddCamera(const res::path & file);
-static INTERACTIVE_OBJ * AddMarker(const res::path & file);
-
-
-/* Return the short name for this Object where only the name
- * of the file is returned
- */
-std::string INTERACTIVE_OBJ::short_name() const {
-	return filename.basename();
-}
-
-/* Returns the long name for this Object where the filename
- * is combined with the identifying number
- * in the form of "%s_4ld"
- */
-std::string INTERACTIVE_OBJ::long_name() const {
-	std::stringstream ss;
-	ss << short_name() << '_' << std::setw(4) << std::setfill('0') << ident;
-	return ss.str();
-}
-
-/* Returns the full name for this Object where the
- * directory portion of the filename member is combined
- * with the the result of long_name()
- */
-res::path INTERACTIVE_OBJ::full_name() const {
-	return filename.parent() / long_name();
-}
+static bool IsCollidingInter(Entity * io, Vec3f * pos);
+static Entity * AddCamera(const res::path & classPath,
+                          EntityInstance instance = -1);
+static Entity * AddMarker(const res::path & classPath,
+                          EntityInstance instance = -1);
 
 float STARTED_ANGLE = 0;
-void Set_DragInter(INTERACTIVE_OBJ * io)
+void Set_DragInter(Entity * io)
 {
 	if (io != DRAGINTER)
 		STARTED_ANGLE = player.angle.b;
@@ -189,37 +155,32 @@ void Set_DragInter(INTERACTIVE_OBJ * io)
 	}
 }
 
-//***********************************************************************************************
-// ValidIONum
 // Checks if an IO index number is valid
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/16)
-//***********************************************************************************************
-long ValidIONum(long num)
-{
-	if ((num <	 0)
-	        ||	(num >= inter.nbmax)
-	        ||	(!inter.iobj)
-	        ||	(!inter.iobj[num]))
-	{
+long ValidIONum(long num) {
+	
+	if(num < 0 || num >= long(entities.size()) || !entities[num]) {
 		return 0;
 	}
-
+	
 	return 1;
 }
-long ValidIOAddress(const INTERACTIVE_OBJ * io)
-{
-	if (!io) return 0;
 
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] == io) return 1;
+long ValidIOAddress(const Entity * io) {
+	
+	if(!io) {
+		return 0;
 	}
-
+	
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] == io) {
+			return 1;
+		}
+	}
+	
 	return 0;
 }
 
-static float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+static float ARX_INTERACTIVE_fGetPrice(Entity * io, Entity * shop) {
 	
 	if ((!io)
 	        ||	(!(io->ioflags & IO_ITEM)))
@@ -234,11 +195,11 @@ static float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * s
 	return io->_itemdata->price * shop_multiply * durability_ratio;
 
 }
-long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+long ARX_INTERACTIVE_GetPrice(Entity * io, Entity * shop) {
 	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
 
-static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
+static void ARX_INTERACTIVE_ForceIOLeaveZone(Entity * io, long flags) {
 	
 	ARX_PATH * op = io->inzone;
 
@@ -251,23 +212,22 @@ static void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags) {
 
 		if(!op->controled.empty())
 		{
-			long t = inter.getById(op->controled);
+			long t = entities.getById(op->controled);
 
 			if (t >= 0)
 			{
 				std::string str = io->long_name() + ' ' + temp;
-				SendIOScriptEvent( inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, str ); 
+				SendIOScriptEvent( entities[t], SM_CONTROLLEDZONE_LEAVE, str ); 
 			}
 		}
 	}
 }
 
-extern long FAST_RELEASE;
-void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_DestroyDynamicInfo(Entity * io)
 {
 	if (!io) return;
 
-	long n = GetInterNum(io);
+	long n = io->index();
 
 	short sN = checked_range_cast<short>(n);
 
@@ -279,19 +239,15 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 		        &&	(player.equiped[i] == n)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			ARX_EQUIPMENT_UnEquip(inter.iobj[0], inter.iobj[player.equiped[i]], 1);
+			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]], 1);
 			player.equiped[i] = 0;
 		}
 	}
-
-
+	
 	ARX_SPEECH_ReleaseIOSpeech(io);
-
-	if (!FAST_RELEASE)
-		EERIE_MESH_ReleaseTransPolys(io->obj);
-
+	
 	ARX_SCRIPT_EventStackClearForIo(io);
-
+	
 	if (ValidIONum(n))
 	{
 		for (size_t i = 0; i < MAX_SPELLS; i++)
@@ -312,22 +268,17 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 				flare[i].io = NULL;
 		}
 	}
-
-	if (io->ioflags & IO_NPC)
-	{
+	
+	if(io->ioflags & IO_NPC) {
 		// to check again later...
 		long count = 50;
-
-		while ((io->_npcdata->pathfind.pathwait == 1) && count--)
-		{
+		while((io->_npcdata->pathfind.pathwait == 1) && count--) {
 			Thread::sleep(1);
 		}
-
-		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
+		free(io->_npcdata->pathfind.list);
 		memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 	}
-
+	
 	if (ValidDynLight(io->dynlight))
 	{
 		DynLight[io->dynlight].exist = 0;
@@ -343,25 +294,21 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 		{
 			if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
 			{
-				INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)eobj->linked[k].io;
+				Entity * ioo = (Entity *)eobj->linked[k].io;
 
 				if ((ioo) && ValidIOAddress(ioo))
 				{
 					long ll = eobj->linked[k].lidx;
 					Vec3f pos, vector;
-					pos.x = io->obj->vertexlist3[ll].v.x;
-					pos.y = io->obj->vertexlist3[ll].v.y;
-					pos.z = io->obj->vertexlist3[ll].v.z;
-					ioo->angle.a = rnd() * 40.f + 340.f;
-					ioo->angle.b = rnd() * 360.f;
-					ioo->angle.g = 0;
+					pos = io->obj->vertexlist3[ll].v;
+					ioo->angle = Anglef(rnd() * 40.f + 340.f, rnd() * 360.f, 0.f);
 					vector.x = -(float)EEsin(radians(ioo->angle.b)) * ( 1.0f / 2 );
 					vector.y = EEsin(radians(ioo->angle.a));
 					vector.z = (float)EEcos(radians(ioo->angle.b)) * ( 1.0f / 2 );
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
 					EERIE_PHYSICS_BOX_Launch_NOCOL(ioo, ioo->obj, &pos, &vector, 2, &ioo->angle);
-					ioo->show = 1;
+					ioo->show = SHOW_FLAG_IN_SCENE;
 					ioo->no_collide = sN;
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 				}
@@ -376,10 +323,10 @@ bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const std::string& ap_
 	if (!ValidIONum(n_source) || !ValidIONum(n_target))
 		return false;
 
-	inter.iobj[n_source]->show = SHOW_FLAG_LINKED;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[n_target]->obj, inter.iobj[n_source]->obj);
-	return EERIE_LINKEDOBJ_LinkObjectToObject(inter.iobj[n_target]->obj,
-	        inter.iobj[n_source]->obj, ap_target, ap_source, inter.iobj[n_source]);
+	entities[n_source]->show = SHOW_FLAG_LINKED;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[n_target]->obj, entities[n_source]->obj);
+	return EERIE_LINKEDOBJ_LinkObjectToObject(entities[n_target]->obj,
+	        entities[n_source]->obj, ap_target, ap_source, entities[n_source]);
 }
 void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 {
@@ -387,11 +334,11 @@ void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 	        ||	!ValidIONum(n_target))
 		return;
 
-	inter.iobj[n_source]->show = SHOW_FLAG_IN_SCENE;
-	EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[n_target]->obj, inter.iobj[n_source]->obj);
+	entities[n_source]->show = SHOW_FLAG_IN_SCENE;
+	EERIE_LINKEDOBJ_UnLinkObjectFromObject(entities[n_target]->obj, entities[n_source]->obj);
 }
 
-void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
+void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 {
 	if ((!io)
 	        ||	(HERO_SHOW_1ST == state))
@@ -421,11 +368,11 @@ void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
 		}
 	}
 
-	ARX_INTERACTIVE_HideGore(inter.iobj[0], 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 }
 
 
-void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_RemoveGoreOnIO(Entity * io)
 {
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
@@ -457,12 +404,12 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 // flag & 1 == no unhide non-gore
 // TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
-void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
+void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 {
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
-	if ((io == inter.iobj[0]) && (!flag & 1))
+	if ((io == entities.player()) && (!flag & 1))
 		return;
 
 	long gorenum = -1;
@@ -490,60 +437,38 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 }
 
 
-bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
-{
-	if (io
-	        &&	(io->ioflags & IO_NPC)
-	        && !(io->ioflags & IO_PHYSICAL_OFF))
-	{
-		io->physics.cyl.origin.x = io->pos.x;
-		io->physics.cyl.origin.y = io->pos.y;
-		io->physics.cyl.origin.z = io->pos.z;
- 
+bool ForceNPC_Above_Ground(Entity * io) {
+	
+	if(io && (io->ioflags & IO_NPC) && !(io->ioflags & IO_PHYSICAL_OFF)) {
+		io->physics.cyl.origin = io->pos;
 		AttemptValidCylinderPos(&io->physics.cyl, io, CFLAG_NO_INTERCOL);
-		{
-			if (EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f)
-			{
-				io->pos.y = io->physics.cyl.origin.y;
-				return true;
-			}
-			else return false;
+		if(EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f) {
+			io->pos.y = io->physics.cyl.origin.y;
+			return true;
 		}
 	}
-
 	return false;
 }
 
-//*************************************************************************************
 // Unlinks all linked objects from all IOs
-//*************************************************************************************
-void UnlinkAllLinkedObjects()
-{
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i])
-		{
-			EERIE_LINKEDOBJ_ReleaseData(inter.iobj[i]->obj);
+void UnlinkAllLinkedObjects() {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			EERIE_LINKEDOBJ_ReleaseData(entities[i]->obj);
 		}
 	}
 }
 
-void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io)
-{
-	if (io && io->obj)
-	{
-		for (long k = 0; k < io->obj->nblinked; k++)
-		{
-			if (io->obj->linked[k].io)
-			{
-				INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->obj->linked[k].io;
-
-				if (ValidIOAddress(ioo))
+void IO_UnlinkAllLinkedObjects(Entity * io) {
+	if(io && io->obj) {
+		for(long k = 0; k < io->obj->nblinked; k++) {
+			if(io->obj->linked[k].io) {
+				Entity * ioo = io->obj->linked[k].io;
+				if(ValidIOAddress(ioo)) {
 					IO_Drop_Item(io, ioo);
-
+				}
 			}
 		}
-
 		EERIE_LINKEDOBJ_ReleaseData(io->obj);
 	}
 }
@@ -551,23 +476,19 @@ void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io)
 // First is always the player
 TREATZONE_IO * treatio = NULL;
 long TREATZONE_CUR = 0;
-long TREATZONE_MAX = 0;
+static long TREATZONE_MAX = 0;
 
-void TREATZONE_Clear()
-{
+void TREATZONE_Clear() {
 	TREATZONE_CUR = 0;
 }
 
-void TREATZONE_Release()
-{
-	if (treatio) free(treatio);
-
-	treatio = NULL;
+void TREATZONE_Release() {
+	free(treatio), treatio = NULL;
 	TREATZONE_MAX = 0;
 	TREATZONE_CUR = 0;
 }
 
-void TREATZONE_RemoveIO(INTERACTIVE_OBJ * io)
+void TREATZONE_RemoveIO(Entity * io)
 {
 	if (treatio)
 	{
@@ -584,7 +505,7 @@ void TREATZONE_RemoveIO(INTERACTIVE_OBJ * io)
 }
 
 // flag & 1 IO_JUST_COLLIDE
-void TREATZONE_AddIO(INTERACTIVE_OBJ * io, long num, long flag)
+void TREATZONE_AddIO(Entity * io, long flag)
 {
 	if (TREATZONE_MAX == TREATZONE_CUR)
 	{
@@ -604,15 +525,15 @@ void TREATZONE_AddIO(INTERACTIVE_OBJ * io, long num, long flag)
 	if (flag & 1) treatio[TREATZONE_CUR].ioflags |= IO_JUST_COLLIDE;
 
 	treatio[TREATZONE_CUR].show = io->show;
-	treatio[TREATZONE_CUR].num = num;
+	treatio[TREATZONE_CUR].num = io->index();
 	TREATZONE_CUR++;
 }
 
-void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num)
+void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
 	if ((io)
 	        &&	(io->animlayer[num].cur_anim)
-	        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
+	        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
 	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
 	{
 
@@ -623,7 +544,6 @@ void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num)
 }
 
 long GLOBAL_Player_Room = -1;
-extern float fZFogEnd;
 void PrepareIOTreatZone(long flag)
 {
 	static long status = -1;
@@ -648,7 +568,7 @@ void PrepareIOTreatZone(long flag)
 	TREATZONE_Clear();
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos, 1);
 	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-	TREATZONE_AddIO(inter.iobj[0], 0, 0);
+	TREATZONE_AddIO(entities.player());
 
 	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
 
@@ -657,7 +577,7 @@ void PrepareIOTreatZone(long flag)
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = entities[player.equiped[i]];
 
 			if (toequip)
 			{
@@ -667,7 +587,7 @@ void PrepareIOTreatZone(long flag)
 		}
 	}
 
-	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER, GetInterNum(DRAGINTER), 0);
+	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER);
 
 	TREATZONE_LIMIT = 3200; 
 
@@ -687,30 +607,10 @@ void PrepareIOTreatZone(long flag)
 		if (ACTIVECAM->cdepth > 6000)
 			TREATZONE_LIMIT += 500;
 	}
-
-	INTREATZONECOUNT = 0;
-
-	if (TreatAllIO)
-	{
-		for (long ii = 1; ii < inter.nbmax; ii++)
-		{
-			INTERACTIVE_OBJ * io = inter.iobj[ii];
-
-			if (io)
-			{
-				io->GameFlags |= GFLAG_ISINTREATZONE;
-				TREATZONE_AddIO(io, ii, 0);
-			}
-		}
-
-		return; 
-	}
-
+	
 	char treat;
-
-	for (int i = 1; i < inter.nbmax; i++)
-	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * io = entities[i];
 
 		if ((io)
 		        &&	((io->show == SHOW_FLAG_IN_SCENE)
@@ -772,47 +672,46 @@ void PrepareIOTreatZone(long flag)
 				if (io == DRAGINTER)
 					treat = 1;
 			}
-
-			if (io->GameFlags & GFLAG_ISINTREATZONE)
-				io->GameFlags |= GFLAG_WASINTREATZONE;
-			else
-				io->GameFlags &= ~GFLAG_WASINTREATZONE;
-
-			if (treat)
-			{
-				INTREATZONECOUNT++;
-				io->GameFlags |= GFLAG_ISINTREATZONE;
-				TREATZONE_AddIO(io, i, 0);
-
+			
+			if(io->gameFlags & GFLAG_ISINTREATZONE) {
+				io->gameFlags |= GFLAG_WASINTREATZONE;
+			} else {
+				io->gameFlags &= ~GFLAG_WASINTREATZONE;
+			}
+			
+			if(treat) {
+				io->gameFlags |= GFLAG_ISINTREATZONE;
+				TREATZONE_AddIO(io);
 				if((io->ioflags & IO_NPC) && io->_npcdata->weapon) {
-					INTERACTIVE_OBJ * iooo = io->_npcdata->weapon;
+					Entity * iooo = io->_npcdata->weapon;
 					iooo->room = io->room;
 					iooo->room_flags = io->room_flags;
 				}
+			} else {
+				io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			}
-			else	io->GameFlags &= ~GFLAG_ISINTREATZONE;
-
+			
 			EVENT_SENDER = NULL;
 
-			if ((io->GameFlags & GFLAG_ISINTREATZONE)
-			        && (!(io->GameFlags & GFLAG_WASINTREATZONE)))
+			if ((io->gameFlags & GFLAG_ISINTREATZONE)
+			        && (!(io->gameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
-				//	SendIOScriptEvent(inter.iobj[i],SM_TREATIN);
+				//	SendIOScriptEvent(entities[i],SM_TREATIN);
 
 			}
-			else if ((!(io->GameFlags & GFLAG_ISINTREATZONE))
-			         &&	(io->GameFlags & GFLAG_WASINTREATZONE))
+			else if ((!(io->gameFlags & GFLAG_ISINTREATZONE))
+			         &&	(io->gameFlags & GFLAG_WASINTREATZONE))
 			{
 				//going away;
-				io->GameFlags |= GFLAG_ISINTREATZONE;
+				io->gameFlags |= GFLAG_ISINTREATZONE;
 
 				if (SendIOScriptEvent(io, SM_TREATOUT) != REFUSE)
 				{
 					if (io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 
-					io->GameFlags &= ~GFLAG_ISINTREATZONE;
+					io->gameFlags &= ~GFLAG_ISINTREATZONE;
 				}
 			}
 		}
@@ -820,12 +719,11 @@ void PrepareIOTreatZone(long flag)
 
 	long M_TREAT = TREATZONE_CUR;
 
-	for (int i = 1; i < inter.nbmax; i++)
-	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * io = entities[i];
 
 		if ((io != NULL)
-		        &&	!(io->GameFlags & GFLAG_ISINTREATZONE)
+		        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->show == SHOW_FLAG_IN_SCENE)
 		            ||	(io->show == SHOW_FLAG_TELEPORTING)
 		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
@@ -840,7 +738,7 @@ void PrepareIOTreatZone(long flag)
 
 			for (long ii = 1; ii < M_TREAT; ii++)
 			{
-				INTERACTIVE_OBJ * ioo = treatio[ii].io;
+				Entity * ioo = treatio[ii].io;
 
 				if (ioo)
 				{
@@ -852,8 +750,9 @@ void PrepareIOTreatZone(long flag)
 				}
 			}
 
-			if (toadd)
-				TREATZONE_AddIO(io, i, 1);
+			if(toadd) {
+				TREATZONE_AddIO(io, 1);
+			}
 		}
 	}
 }
@@ -903,10 +802,9 @@ void ClearNode(long i, long first = 0) {
 	}
 
 	strcpy(nodes.nodes[i].name, "");
-	nodes.nodes[i].pos.z = nodes.nodes[i].pos.y = nodes.nodes[i].pos.x = 0.f;
+	nodes.nodes[i].pos = Vec3f::ZERO;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void ClearNodes()
 {
 	static long first = 1;
@@ -929,32 +827,22 @@ void SelectNode(long i)
 	if (nodes.nodes[i].exist)  nodes.nodes[i].selected = 1;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void UnselectAllNodes()
-{
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if (nodes.nodes[i].exist)  nodes.nodes[i].selected = 0;
-	}
-}
-//*************************************************************************************
-//*************************************************************************************
-void TranslateSelectedNodes(Vec3f * trans)
-{
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if ((nodes.nodes[i].exist)
-		        &&	(nodes.nodes[i].selected))
-		{
-			nodes.nodes[i].pos.x += trans->x;
-			nodes.nodes[i].pos.y += trans->y;
-			nodes.nodes[i].pos.z += trans->z;
+void UnselectAllNodes() {
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist) {
+			nodes.nodes[i].selected = 0;
 		}
 	}
 }
-//*************************************************************************************
-//*************************************************************************************
+
+void TranslateSelectedNodes(Vec3f * trans) {
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist && nodes.nodes[i].selected) {
+			nodes.nodes[i].pos += *trans;
+		}
+	}
+}
+
 bool IsLinkedNode(long i, long j)
 {
 	if ((!nodes.nodes[i].exist)
@@ -968,24 +856,17 @@ bool IsLinkedNode(long i, long j)
 
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
-long CountNodes()
-{
-	register long count = 0;
 
-	for (long i = 0; i < nodes.nbmax; i++)
-	{
-		if (nodes.nodes[i].exist)
-		{
+long CountNodes() {
+	long count = 0;
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist) {
 			count++;
 		}
 	}
-
 	return count;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void AddLink(long i, long j)
 {
 	if ((!nodes.nodes[i].exist)
@@ -1112,64 +993,38 @@ long GetFreeNode()
 }
 
 void ReleaseNode() {
-	if(nodes.nodes) {
-		free(nodes.nodes), nodes.nodes = NULL;
-		nodes.nbmax = 0;
-	}
+	free(nodes.nodes), nodes.nodes = NULL;
+	nodes.nbmax = 0;
 }
 
-// Initialises Interactive Objects Main Structure (pointer list)
-void InitInter(long nb) {
-	if (nb < 10) nb = 10;
-
-	inter.nbmax = nb;
-
-	if(inter.init) {
-		free(inter.iobj);
-		inter.iobj = NULL;
-	}
-
-	inter.init = 1;
-	inter.iobj = (INTERACTIVE_OBJ **)malloc(sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
-	memset(inter.iobj, 0, sizeof(*inter.iobj) * inter.nbmax);
-}
-
-//*************************************************************************************
-//	Removes an IO loaded by a script command
-//*************************************************************************************
+// Removes an IO loaded by a script command
 void CleanScriptLoadedIO() {
-	
-	for(long i = 1; i < inter.nbmax; i++) {
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * io = entities[i];
 		if(io) {
 			if(io->scriptload) {
-				RemoveFromAllInventories(io);
-				ReleaseInter(io);
-				inter.iobj[i] = NULL;
+				delete io;
 			} else {
+				// TODO why not jus leave it as is?
 				io->show = SHOW_FLAG_IN_SCENE;
 			}
 		}
 	}
 }
 
-//*************************************************************************************
 // Restores an IO to its initial status (Game start Status)
-//*************************************************************************************
-void RestoreInitialIOStatus()
-{
-	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
+void RestoreInitialIOStatus() {
+	ARX_INTERACTIVE_HideGore(entities.player());
 	ARX_NPC_Behaviour_ResetAll();
-
-	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = SPELL_NONE;
-
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		RestoreInitialIOStatusOfIO(inter.iobj[i]);
+	if(entities.player()) {
+		entities.player()->spellcast_data.castingspell = SPELL_NONE;
+	}
+	for(size_t i = 1; i < entities.size(); i++) {
+		RestoreInitialIOStatusOfIO(entities[i]);
 	}
 }
 
-bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp) {
+bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp) {
 	
 	if(!io || temp.empty()) {
 		return false;
@@ -1189,10 +1044,7 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp) {
 		return false;
 	}
 	
-	if(io->obj) {
-		delete io->obj;
-		io->obj = NULL;
-	}
+	delete io->obj, io->obj = NULL;
 	
 	bool pbox = (!(io->ioflags & IO_FIX) && !(io->ioflags & IO_NPC));
 	io->obj = loadObject(io->usemesh, pbox);
@@ -1201,7 +1053,7 @@ bool ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const res::path & temp) {
 	return true;
 }
 
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res::path & param1, const res::path & param2) {
+void ARX_INTERACTIVE_MEMO_TWEAK(Entity * io, TweakType type, const res::path & param1, const res::path & param2) {
 	
 	io->tweaks.resize(io->tweaks.size() + 1);
 	
@@ -1210,7 +1062,7 @@ void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, TweakType type, const res:
 	io->tweaks.back().param2 = param2;
 }
 
-void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
+void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io) {
 	
 	for(std::vector<TWEAK_INFO>::const_iterator i = io->tweaks.begin(); i != io->tweaks.end(); ++i) {
 		switch(i->type) {
@@ -1223,29 +1075,28 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void ARX_INTERACTIVE_ClearIODynData(INTERACTIVE_OBJ * io) {
+void ARX_INTERACTIVE_ClearIODynData(Entity * io) {
 	
-	if (io)
-	{
-		if (ValidDynLight(io->dynlight))
-			DynLight[io->dynlight].exist = 0;
-
-		io->dynlight = -1;
-
-		if (ValidDynLight(io->halo.dynlight))
-			DynLight[io->halo.dynlight].exist = 0;
-
-		io->halo.dynlight = -1;
-
-		if (io->symboldraw)
-			free(io->symboldraw);
-
-		io->symboldraw = NULL;
-		io->spellcast_data.castingspell = SPELL_NONE;
+	if(!io) {
+		return;
 	}
+	
+	if(ValidDynLight(io->dynlight)) {
+		DynLight[io->dynlight].exist = 0;
+	}
+	io->dynlight = -1;
+	
+	if(ValidDynLight(io->halo.dynlight)) {
+		DynLight[io->halo.dynlight].exist = 0;
+	}
+	io->halo.dynlight = -1;
+	
+	free(io->symboldraw), io->symboldraw = NULL;
+	
+	io->spellcast_data.castingspell = SPELL_NONE;
 }
 
-void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_ClearIODynData_II(Entity * io)
 {
 	if (io)
 	{
@@ -1259,18 +1110,14 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		ARX_INTERACTIVE_HideGore(io);
 		MOLLESS_Clear(io->obj);
 		ARX_SCRIPT_Timer_Clear_For_IO(io);
-
+		
 		io->stepmaterial.clear();
 		io->armormaterial.clear();
 		io->weaponmaterial.clear();
 		io->strikespeech.clear();
-
-		if (io->lastanimvertex)
-			free(io->lastanimvertex);
-
-		io->lastanimvertex = NULL;
-		io->nb_lastanimvertex = 0;
-
+		
+		free(io->lastanimvertex), io->lastanimvertex = NULL, io->nb_lastanimvertex = 0;
+		
 		for (long j = 0; j < MAX_ANIMS; j++)
 		{
 			EERIE_ANIMMANAGER_ReleaseHandle(io->anims[j]);
@@ -1279,47 +1126,29 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 
 		ARX_SPELLS_RemoveAllSpellsOn(io);
 		ARX_EQUIPMENT_ReleaseAll(io);
-
-		if (io->ioflags & IO_NPC)
-		{
-			if (io->_npcdata->pathfind.list)
-				free(io->_npcdata->pathfind.list);
-
-			io->_npcdata->pathfind.list = NULL;
+		
+		if(io->ioflags & IO_NPC) {
+			free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 			memset(&io->_npcdata->pathfind, 0, sizeof(IO_PATHFIND));
 			io->_npcdata->pathfind.truetarget = -1;
 			io->_npcdata->pathfind.listnb = -1;
 			ARX_NPC_Behaviour_Reset(io);
 		}
-
-		if(io->tweakerinfo) {
-			delete io->tweakerinfo, io->tweakerinfo = NULL;
-		}
-
+		
+		delete io->tweakerinfo, io->tweakerinfo = NULL;
+		
 		if (io->inventory != NULL)
 		{
 			INVENTORY_DATA * id = io->inventory;
 
-			for (long nj = 0; nj < id->sizey; nj++)
-				for (long ni = 0; ni < id->sizex; ni++)
-				{
-					if (id->slot[ni][nj].io != NULL)
-					{
-						long tmp = GetInterNum(id->slot[ni][nj].io);
-
-						if (ValidIONum(tmp))
-						{
-							if (inter.iobj[tmp]->scriptload)
-							{
-								RemoveFromAllInventories(inter.iobj[tmp]);
-								ReleaseInter(inter.iobj[tmp]);
-								inter.iobj[tmp] = NULL;
-							}
-							else inter.iobj[tmp]->show = SHOW_FLAG_KILLED;
-						}
+			for (long nj = 0; nj < id->sizey; nj++) {
+				for (long ni = 0; ni < id->sizex; ni++) {
+					if (id->slot[ni][nj].io != NULL) {
+						id->slot[ni][nj].io->destroy();
 						id->slot[ni][nj].io = NULL;
 					}
 				}
+			}
 
 			if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
 			{
@@ -1331,7 +1160,7 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		}
 
 		io->inventory = NULL;
-		io->GameFlags |= GFLAG_INTERACTIVITY;
+		io->gameFlags |= GFLAG_INTERACTIVITY;
 
 		if(io->tweaky) {
 			delete io->obj;
@@ -1340,47 +1169,38 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-void ARX_INTERACTIVE_ClearAllDynData()
-{
-	long i = 0;
-	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
-	ARX_NPC_Behaviour_ResetAll();
 
-	for (i = 1; i < inter.nbmax; i++)
-	{
-		ARX_INTERACTIVE_ClearIODynData(inter.iobj[i]);
+void ARX_INTERACTIVE_ClearAllDynData() {
+	ARX_INTERACTIVE_HideGore(entities.player());
+	ARX_NPC_Behaviour_ResetAll();
+	for(size_t i = 1; i < entities.size(); i++) {
+		ARX_INTERACTIVE_ClearIODynData(entities[i]);
 	}
 }
 
-static void RestoreIOInitPos(INTERACTIVE_OBJ * io) {
+static void RestoreIOInitPos(Entity * io) {
 	if(io) {
 		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
-		io->pos.x = io->lastpos.x = io->initpos.x;
-		io->pos.y = io->lastpos.y = io->initpos.y;
-		io->pos.z = io->lastpos.z = io->initpos.z;
-		io->move.x = io->move.y = io->move.z = 0.f;
-		io->lastmove.x = io->lastmove.y = io->lastmove.z = 0.f;
-		io->angle.a = io->initangle.a;
-		io->angle.b = io->initangle.b;
-		io->angle.g = io->initangle.g;
+		io->pos = io->lastpos = io->initpos;
+		io->move = Vec3f::ZERO;
+		io->lastmove = Vec3f::ZERO;
+		io->angle = io->initangle;
 	}
 }
 
 void RestoreAllIOInitPos() {
-	for(long i = 1; i < inter.nbmax; i++) {
-		RestoreIOInitPos(inter.iobj[i]);
+	for(size_t i = 1; i < entities.size(); i++) {
+		RestoreIOInitPos(entities[i]);
 	}
 }
 
-void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io) {
-	io->halo.color.r = io->halo_native.color.r;
-	io->halo.color.g = io->halo_native.color.g;
-	io->halo.color.b = io->halo_native.color.b;
+void ARX_HALO_SetToNative(Entity * io) {
+	io->halo.color = io->halo_native.color;
 	io->halo.radius = io->halo_native.radius;
 	io->halo.flags = io->halo_native.flags;
 }
 
-void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
+void RestoreInitialIOStatusOfIO(Entity * io)
 {
 	if (io)
 	{
@@ -1399,7 +1219,6 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		ARX_HALO_SetToNative(io);
 		io->halo.dynlight = -1;
 
-		io->level = io->truelevel;
 		io->forcedmove = Vec3f::ZERO;
 		io->ioflags &= ~IO_NO_COLLISIONS;
 		io->ioflags &= ~IO_INVERTED;
@@ -1423,17 +1242,17 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		io->frameloss = 0.f;
 		io->sfx_flag = 0;
 		io->max_durability = io->durability = 100;
-		io->GameFlags &= ~GFLAG_INVISIBILITY;
-		io->GameFlags &= ~GFLAG_MEGAHIDE;
-		io->GameFlags &= ~GFLAG_NOGORE;
-		io->GameFlags &= ~GFLAG_ISINTREATZONE;
-		io->GameFlags &= ~GFLAG_PLATFORM;
-		io->GameFlags &= ~GFLAG_ELEVATOR;
-		io->GameFlags &= ~GFLAG_HIDEWEAPON;
-		io->GameFlags &= ~GFLAG_NOCOMPUTATION;
-		io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
-		io->GameFlags &= ~GFLAG_DOOR;
-		io->GameFlags &= ~GFLAG_GOREEXPLODE;
+		io->gameFlags &= ~GFLAG_INVISIBILITY;
+		io->gameFlags &= ~GFLAG_MEGAHIDE;
+		io->gameFlags &= ~GFLAG_NOGORE;
+		io->gameFlags &= ~GFLAG_ISINTREATZONE;
+		io->gameFlags &= ~GFLAG_PLATFORM;
+		io->gameFlags &= ~GFLAG_ELEVATOR;
+		io->gameFlags &= ~GFLAG_HIDEWEAPON;
+		io->gameFlags &= ~GFLAG_NOCOMPUTATION;
+		io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+		io->gameFlags &= ~GFLAG_DOOR;
+		io->gameFlags &= ~GFLAG_GOREEXPLODE;
 		io->invisibility = 0.f;
 		io->rubber = BASE_RUBBER;
 		io->scale = 1.f;
@@ -1476,13 +1295,10 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 		{
 			io->obj->pbox->storedtiming = 0;
 		}
-
-		io->physics.cyl.origin.x = io->pos.x;
-		io->physics.cyl.origin.y = io->pos.y;
-		io->physics.cyl.origin.z = io->pos.z;
+		
+		io->physics.cyl.origin = io->pos;
 		io->physics.cyl.radius = io->original_radius;
 		io->physics.cyl.height = io->original_height;
-
 		io->fall = 0;
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->targetinfo = TARGET_NONE;
@@ -1557,19 +1373,22 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const res::path & s1)
-{
-	if ((!io) || (s1.empty()))
+void ARX_INTERACTIVE_TWEAK_Icon(Entity * io, const res::path & s1) {
+	
+	if(!io || s1.empty()) {
 		return;
-
-	res::path icontochange = io->filename.parent() / s1;
-
-	TextureContainer * tc = TextureContainer::LoadUI(icontochange, TextureContainer::Level);
-	if (tc == NULL)
+	}
+	
+	res::path icontochange = io->classPath().parent() / s1;
+	
+	TextureContainer * tc = TextureContainer::LoadUI(icontochange,
+	                                                 TextureContainer::Level);
+	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
-
-	if (tc != NULL)
-	{
+	}
+	
+	if(tc) {
+		
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5; 
 
@@ -1589,221 +1408,25 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const res::path & s1)
 	}
 }
 
-//*************************************************************************************
 // Count IO number ignoring ScriptLoaded IOs
-//*************************************************************************************
-long GetNumberInterWithOutScriptLoadForLevel(long level)
-{
-	register long count = 0;
-
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL) && (!inter.iobj[i]->scriptload)
-		        && (inter.iobj[i]->truelevel == level)) count++;
+long GetNumberInterWithOutScriptLoad() {
+	long count = 0;
+	for(size_t i = 1; i < entities.size(); i++) {
+		if(entities[i] != NULL && !entities[i]->scriptload) {
+			count++;
+		}
 	}
-
 	return count;
 }
-//*************************************************************************************
-// Clears All Inter From Memory
-//*************************************************************************************
-void FreeAllInter()
-{
-	for (long i = 1; i < inter.nbmax; i++) //ignoring Player.
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			ReleaseInter(inter.iobj[i]);
-			inter.iobj[i] = NULL;
-		}
-	}
 
-	inter.nbmax = 1;
-	inter.iobj = (INTERACTIVE_OBJ **)realloc(inter.iobj, sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
-}
-
-INTERACTIVE_OBJ::INTERACTIVE_OBJ(long _num) : num(_num) {
-	
-	ioflags = 0;
-	lastpos = Vec3f::ZERO;
-	pos = Vec3f::ZERO;
-	move = Vec3f::ZERO;
-	lastmove = Vec3f::ZERO;
-	forcedmove = Vec3f::ZERO;
-	
-	angle = Anglef::ZERO;
-	memset(&physics, 0, sizeof(IO_PHYSICS)); // TODO use constructor
-	room = -1;
-	room_flags = 1;
-	original_height = 0.f;
-	original_radius = 0.f;
-	inv = NULL;
-	obj = NULL;
-	std::fill_n(anims, MAX_ANIMS, (ANIM_HANDLE *)NULL);
-	memset(animlayer, 0, sizeof(ANIM_USE) * MAX_ANIM_LAYERS); // TODO use constructor
-	lastanimvertex = NULL;
-	nb_lastanimvertex = 0;
-	lastanimtime = 0;
-	
-	memset(&bbox3D, 0, sizeof(EERIE_3D_BBOX)); // TODO use constructor
-	
-	bbox1 = Vec2s(-1, -1);
-	bbox2 = Vec2s(-1, -1);
-	tweaky = NULL;
-	sound = audio::INVALID_ID;
-	type_flags = 0;
-	scriptload = 0;
-	target = Vec3f::ZERO;
-	targetinfo = TARGET_NONE;
-	
-	_itemdata = NULL, _fixdata = NULL, _npcdata = NULL, _camdata = NULL;
-	
-	inventory = NULL;
-	show = SHOW_FLAG_IN_SCENE;
-	collision = 0;
-	infracolor = Color3f::blue;
-	changeanim = -1;
-	
-	ident = 0;
-	weight = 1.f;
-	EditorFlags = 0;
-	GameFlags = GFLAG_NEEDINIT | GFLAG_INTERACTIVITY;
-	velocity = Vec3f::ZERO;
-	fall = 0.f;
-	
-	stopped = 1;
-	initpos = Vec3f::ZERO;
-	initangle = Anglef::ZERO;
-	scale = 1.f;
-	
-	usepath = NULL;
-	symboldraw = NULL;
-	dynlight = -1;
-	lastspeechflag = 2;
-	inzone = NULL;
-	memset(&halo, 0, sizeof(IO_HALO)); // TODO use constructor
-	memset(&halo_native, 0, sizeof(IO_HALO)); // TODO use constructor
-	halo_native.color = Color3f(0.2f, 0.5f, 1.f);
-	halo_native.radius = 45.f;
-	halo_native.flags = 0;
-	halo_native.dynlight = -1;
-	ARX_HALO_SetToNative(this);
-	halo.dynlight = -1;
-	
-	memset(&script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
-	memset(&over_script, 0, sizeof(EERIE_SCRIPT)); // TODO use constructor
-	stat_count = 0;
-	stat_sent = 0;
-	tweakerinfo = NULL;
-	material = MATERIAL_NONE;
-	
-	sizex = 1;
-	sizey = 1;
-	soundtime = 0;
-	soundcount = 0;
-	
-	if(CURRENTLEVEL == -1) {
-		CURRENTLEVEL = GetLevelNumByName(LastLoadedScene.string());
-	}
-	level = truelevel = CURRENTLEVEL;
-	
-	sfx_time = 0;
-	collide_door_time = 0;
-	ouch_time = 0;
-	dmg_sum = 0.f;
-	
-	memset(&spellcast_data, 0, sizeof(IO_SPELLCAST_DATA));
-	flarecount = 0;
-	no_collide = -1;
-	invisibility = 0.f;
-	frameloss = 0.f;
-	basespeed = 1.f;
-	
-	speed_modif = 0.f;
-	spells_on = NULL;
-	nb_spells_on = 0;
-	damagedata = -1;
-	
-	rubber = BASE_RUBBER;
-	max_durability = durability = 100.f;
-	poisonous = 0;
-	poisonous_count = 0;
-	
-	ignition = 0.f;
-	ignit_light = -1;
-	ignit_sound = audio::INVALID_ID;
-	head_rot = 0.f;
-	
-	damager_damages = 0;
-	damager_type = 0;
-	
-	sfx_flag = 0;
-	secretvalue = -1;
-	
-	shop_multiply = 1.f;
-	aflags = 0;
-	inzone_show = 0;
-	summoner = 0;
-	spark_n_blood = 0;
-	
-	ARX_SCRIPT_SetMainEvent(this, "main");
-	
-}
-
-//*************************************************************************************
-// Creates a new free Interactive Object
-//*************************************************************************************
-INTERACTIVE_OBJ * CreateFreeInter(long num)
-{
-	long i;
-	long tocreate = -1;
-
-	if (num == 0) //used to create player
-	{
-		tocreate = 0;
-
-		if (inter.iobj[0] != NULL) return NULL;
-
-		goto create;
-	}
-
-	for (i = 1; i < inter.nbmax; i++) // ignoring player
-		{			
-			if (!inter.iobj[i])
-			{
-				tocreate = i;
-				break;
-			}
-		}
-
-	if (tocreate == -1)
-	{
-		inter.nbmax++;
-		inter.iobj = (INTERACTIVE_OBJ **)realloc(inter.iobj, sizeof(INTERACTIVE_OBJ *) * inter.nbmax);
-		tocreate = inter.nbmax - 1;
-		inter.iobj[tocreate] = NULL;
-	}
-
-	if (tocreate != -1)
-	{
-	create:
-		;
-		i = tocreate;
-		
-		return inter.iobj[i] = new INTERACTIVE_OBJ(i);
-		
-	}
-	
-	return NULL;
-}
 // Be careful with this func...
-INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
+Entity * CloneIOItem(Entity * src) {
 	
-	INTERACTIVE_OBJ * dest;
-	dest = AddItem(src->filename);
-
-	if (!dest) return NULL;
-
+	Entity * dest = AddItem(src->classPath());
+	if(!dest) {
+		return NULL;
+	}
+	
 	SendInitScriptEvent(dest);
 	dest->inv = src->inv;
 	dest->sizex = src->sizex;
@@ -1818,48 +1441,44 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src) {
 	dest->_itemdata->stealvalue = src->_itemdata->stealvalue;
 	dest->_itemdata->playerstacksize = src->_itemdata->playerstacksize;
 	dest->_itemdata->LightValue = src->_itemdata->LightValue;
-
-	if (src->_itemdata->equipitem)
-	{
+	
+	if(src->_itemdata->equipitem) {
 		dest->_itemdata->equipitem = (IO_EQUIPITEM *)malloc(sizeof(IO_EQUIPITEM));
-		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem, sizeof(IO_EQUIPITEM));
+		memcpy(dest->_itemdata->equipitem, src->_itemdata->equipitem,
+		       sizeof(IO_EQUIPITEM));
 	}
-
+	
 	dest->locname = src->locname;
-
-	if ((dest->obj->pbox == NULL) && (src->obj->pbox))
-	{
+	
+	if(dest->obj->pbox == NULL && src->obj->pbox != NULL) {
 		dest->obj->pbox = (PHYSICS_BOX_DATA *)malloc(sizeof(PHYSICS_BOX_DATA));
 		memcpy(dest->obj->pbox, src->obj->pbox, sizeof(PHYSICS_BOX_DATA));
-		dest->obj->pbox->vert = (PHYSVERT *)malloc(sizeof(PHYSVERT) * src->obj->pbox->nb_physvert);
-		memcpy(dest->obj->pbox->vert, src->obj->pbox->vert, sizeof(PHYSVERT)*src->obj->pbox->nb_physvert);
+		dest->obj->pbox->vert = (PHYSVERT *)malloc(sizeof(PHYSVERT)
+		                                           * src->obj->pbox->nb_physvert);
+		memcpy(dest->obj->pbox->vert, src->obj->pbox->vert,
+		       sizeof(PHYSVERT) * src->obj->pbox->nb_physvert);
 	}
-
+	
 	return dest;
 }
-bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target)
-{
-	EERIE_CYLINDER phys;
 
-	if (io && (io != inter.iobj[0]))
-	{
+bool ARX_INTERACTIVE_ConvertToValidPosForIO(Entity * io, Vec3f * target) {
+	
+	EERIE_CYLINDER phys;
+	if (io && io != entities.player()) {
 		phys.height = io->original_height * io->scale;
 		phys.radius = io->original_radius * io->scale;
-	}
-	else
-	{
+	} else {
 		phys.height = -200;
 		phys.radius = 50;
 	}
-
-	phys.origin.x = target->x;
-	phys.origin.y = target->y;
-	phys.origin.z = target->z;
+	
+	phys.origin = *target;
 	long count = 0;
 	float modx, modz;
-
-	while (count < 600)
-	{
+	
+	while(count < 600) {
+		
 		modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
 		modz = EEcos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
@@ -1885,7 +1504,7 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, Vec3f * target
 
 	return false;
 }
-void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
+void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 {
 	if (!io) return;
 
@@ -1895,7 +1514,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 
 		if (num != -1)
 		{
-			long t = GetInterNum(io);
+			long t = io->index();
 			ActiveTimers++;
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
@@ -1905,28 +1524,28 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = (unsigned long)(arxtime);
 			scr_timer[num].times = 1;
-			inter.iobj[t]->show = SHOW_FLAG_TELEPORTING;
+			entities[t]->show = SHOW_FLAG_TELEPORTING;
 			AddRandomSmoke(io, 10);
 			ARX_PARTICLES_Add_Smoke(&io->pos, 3, 20);
 			Vec3f pos;
-			pos.x = inter.iobj[t]->pos.x;
-			pos.y = inter.iobj[t]->pos.y + inter.iobj[t]->physics.cyl.height * ( 1.0f / 2 );
-			pos.z = inter.iobj[t]->pos.z;
+			pos.x = entities[t]->pos.x;
+			pos.y = entities[t]->pos.y + entities[t]->physics.cyl.height * ( 1.0f / 2 );
+			pos.z = entities[t]->pos.z;
 			io->room_flags |= 1;
 			io->room = -1;
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 			MakeCoolFx(&io->pos);
-			io->GameFlags |= GFLAG_INVISIBILITY;
+			io->gameFlags |= GFLAG_INVISIBILITY;
 			FRAME_COUNT = 0;
 		}
 	}
 }
-void ResetVVPos(INTERACTIVE_OBJ * io)
+void ResetVVPos(Entity * io)
 {
 	if ((io) && (io->ioflags & IO_NPC))
 		io->_npcdata->vvpos = io->pos.y;
 }
-void ComputeVVPos(INTERACTIVE_OBJ * io)
+void ComputeVVPos(Entity * io)
 {
 	if (io->ioflags & IO_NPC)
 	{
@@ -1979,274 +1598,68 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 		else io->_npcdata->vvpos = io->pos.y - fdiff;
 	}
 }
-long FLAG_ALLOW_CLOTHES = 1;
-void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, Vec3f * target, long flags)
-{
 
-	if (!io)
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
+	
+	if(!io) {
 		return;
-
+	}
+	
 	FRAME_COUNT = -1;
-	Vec3f translate;
-	io->GameFlags &= ~GFLAG_NOCOMPUTATION;
+	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;
-
-	if (io == inter.iobj[0])
-	{
-		moveto.x = player.pos.x = target->x;
-		moveto.y = player.pos.y = target->y + PLAYER_BASE_HEIGHT;
-		moveto.z = player.pos.z = target->z;
+	
+	if(io == entities.player()) {
+		moveto = player.pos = *target + player.baseOffset();
 	}
-
-	translate.x = target->x - io->pos.x;
-	translate.y = target->y - io->pos.y;
-	translate.z = target->z - io->pos.z;
-
+	
 	// In case it is being dragged... (except for drag teleport update)
-	if (!flags & 1)
-	{
-		if (io == DRAGINTER)
-			Set_DragInter(NULL);
+	if((!flags & 1) && io == DRAGINTER) { // TODO probably wrong
+		Set_DragInter(NULL);
 	}
-
-	io->pos.x += translate.x;
-	io->pos.y += translate.y;
-
-	if (io->ioflags & IO_NPC)
+	
+	if(io->ioflags & IO_NPC) {
 		io->_npcdata->vvpos = io->pos.y;
-
-	io->pos.z += translate.z;
-	io->lastpos.x = io->physics.cyl.origin.x = io->pos.x;
-	io->lastpos.y = io->physics.cyl.origin.y = io->pos.y;
-	io->lastpos.z = io->physics.cyl.origin.z = io->pos.z;
-
-	if (io->obj)
-	{
-		if (io->obj->pbox)
-		{
-			if (io->obj->pbox->active)
-			{
-				for (long i = 0; i < io->obj->pbox->nb_physvert; i++)
-				{
-					io->obj->pbox->vert[i].pos.x += translate.x;
-					io->obj->pbox->vert[i].pos.y += translate.y;
-					io->obj->pbox->vert[i].pos.z += translate.z;
+	}
+	
+	Vec3f translate = *target - io->pos;
+	io->lastpos = io->physics.cyl.origin = io->pos = *target;
+	
+	if(io->obj) {
+		if(io->obj->pbox) {
+			if(io->obj->pbox->active) {
+				for(long i = 0; i < io->obj->pbox->nb_physvert; i++) {
+					io->obj->pbox->vert[i].pos += translate;
 				}
-
 				io->obj->pbox->active = 0;
 			}
 		}
-
-		for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
-		{
-			io->obj->vertexlist3[i].v.x += translate.x;
-			io->obj->vertexlist3[i].v.y += translate.y;
-			io->obj->vertexlist3[i].v.z += translate.z;
+		for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
+			io->obj->vertexlist3[i].v += translate;
 		}
 	}
-
+	
 	MOLLESS_Clear(io->obj, 1);
 	ResetVVPos(io);
 }
 
-// Finds IO number by name
-long INTERACTIVE_OBJECTS::getById(const string & name) {
+Entity * AddInteractive(const res::path & classPath, EntityInstance instance,
+                        AddInteractiveFlags flags) {
 	
-	if(name.empty() || name == "none") {
-		return -1;
-	} else if(name == "self" || name == "me") {
-		return -2;
-	} else if(name == "player") {
-		return 0; // player is an IO with index 0
-	}
+	const string & ficc = classPath.string();
 	
-	for(long i = 0 ; i < nbmax ; i++) {
-		if(iobj[i] != NULL && iobj[i]->ident > -1) {
-			if(name == iobj[i]->long_name()) {
-				return i;
-			}
-		}
-	}
-	
-	return -1;
-}
-
-INTERACTIVE_OBJ * INTERACTIVE_OBJECTS::getById(const string & name, INTERACTIVE_OBJ * self) {
-	long index = getById(name);
-	return (index == -1) ? NULL : (index == -2) ? self : iobj[index]; 
-}
-
-extern long TOTAL_BODY_CHUNKS_COUNT;
-
-INTERACTIVE_OBJ::~INTERACTIVE_OBJ() {
-	
-	if(!FAST_RELEASE) {
-		TREATZONE_RemoveIO(this);
-	}
-	
-	if(ioflags & IO_BODY_CHUNK) {
-		TOTAL_BODY_CHUNKS_COUNT--;
-		if (TOTAL_BODY_CHUNKS_COUNT < 0) TOTAL_BODY_CHUNKS_COUNT = 0;
-	}
-	
-	if(ignit_light > -1) {
-		DynLight[ignit_light].exist = 0, ignit_light = -1;
-	}
-	
-	if(ignit_sound != audio::INVALID_ID) {
-		ARX_SOUND_Stop(ignit_sound), ignit_sound = audio::INVALID_ID;
-	}
-	
-	if(this == FlyingOverIO) {
-		FlyingOverIO = NULL;
-	}
-	
-	if((MasterCamera.exist & 1) && MasterCamera.io == this) {
-		MasterCamera.exist = 0;
-	}
-	
-	if((MasterCamera.exist & 2) && MasterCamera.want_io == this) {
-		MasterCamera.exist = 0;
-	}
-	
-	ARX_INTERACTIVE_DestroyDynamicInfo(this);
-	IO_UnlinkAllLinkedObjects(this);
-	
-	// Releases ToBeDrawn Transparent Polys linked to this object !
-	tweaks.clear();
-	ARX_SCRIPT_Timer_Clear_For_IO(this);
-	
-	if(obj && !(ioflags & IO_CAMERA) && !(ioflags & IO_MARKER) && !(ioflags & IO_GOLD)) {
-		delete obj, obj = NULL;
-	}
-	
-	ARX_SPELLS_RemoveAllSpellsOn(this);
-	
-	if(tweakerinfo) {
-		delete tweakerinfo;
-	}
-
-	if(tweaky) {
-		delete tweaky, tweaky = NULL;
-	}
-	
-	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
-		for(size_t j = 0; j < INVENTORY_Y; j++) for(size_t i = 0; i < INVENTORY_X; i++) {
-			if(::inventory[iNbBag][i][j].io == this) {
-				::inventory[iNbBag][i][j].io = NULL;
-			}
-		}
-	}
-	
-	ReleaseScript(&script);
-	ReleaseScript(&over_script);
-	
-	for(long n = 0; n < MAX_ANIMS; n++) {
-		if(anims[n]) {
-			EERIE_ANIMMANAGER_ReleaseHandle(anims[n]);
-			anims[n] = NULL;
-		}
-	}
-	
-	if(damagedata >= 0) {
-		damages[damagedata].exist = 0;
-	}
-	
-	if(ValidDynLight(dynlight)) {
-		DynLight[dynlight].exist = 0, dynlight = -1;
-	}
-	
-	if(ValidDynLight(halo.dynlight)) {
-		DynLight[halo.dynlight].exist = 0, halo.dynlight = -1;
-	}
-	
-	if(lastanimvertex) {
-		free(lastanimvertex);
-	}
-	
-	if(usepath) {
-		free(usepath);
-	}
-	
-	if(symboldraw) {
-		free(symboldraw), symboldraw = NULL;
-	}
-	
-	if(ioflags & IO_NPC) {
-		delete _npcdata;
-		
-	} else if(ioflags & IO_ITEM) {
-		if(_itemdata->equipitem) {
-			free(_itemdata->equipitem);
-		}
-		_itemdata->equipitem = NULL;
-		free(_itemdata);
-		
-	} else if(ioflags & IO_FIX) {
-		free(_fixdata);
-		
-	} else if(ioflags & IO_CAMERA && _camdata) {
-		if(ACTIVECAM == &_camdata->cam) {
-			ACTIVECAM = &subj;
-		}
-		free(_camdata);
-	}
-	
-	if(TSecondaryInventory && TSecondaryInventory->io == this) {
-		TSecondaryInventory = NULL;
-	}
-	
-	if(inventory != NULL) {
-		free(inventory);
-	}
-	
-	long ion = GetInterNum(this);
-	if(ion > -1) {
-		inter.iobj[ion] = NULL;
-	}
-	
-}
-
-//*************************************************************************************
-// Releases An Interactive Object from memory
-//*************************************************************************************
-void ReleaseInter(INTERACTIVE_OBJ * io) {
-	if(io) {
-		delete io;
-	}
-}
-
-
-INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractiveFlags flags) {
-	
-	INTERACTIVE_OBJ * io = NULL;
-	const string & ficc = file.string();
-	
-	if(IsIn(ficc, "items")) {
-		io = AddItem(file, flags);
-	} else if(IsIn(ficc, "npc")) {
-		io = AddNPC(file, flags);
-	} else if(IsIn(ficc, "fix")) {
-		io = AddFix(file, flags);
-	} else if(IsIn(ficc, "camera")) {
-		io = AddCamera(file);
-	} else if (IsIn(ficc, "marker")) {
-		io = AddMarker(file);
-	}
-	
-	if(io) {
-		if(id == 0 && !(flags & NO_IDENT)) {
-#ifdef BUILD_EDITOR
-			MakeIOIdent(io);
-#else
-			arx_assert(false);
-#endif
-		} else if(id == -1) {
-			MakeTemporaryIOIdent(io);
-		} else {
-			io->ident = id;
-		}
+	Entity * io = NULL;
+	if(boost::contains(ficc, "items")) {
+		io = AddItem(classPath, instance, flags);
+	} else if(boost::contains(ficc, "npc")) {
+		io = AddNPC(classPath, instance, flags);
+	} else if(boost::contains(ficc, "fix")) {
+		io = AddFix(classPath, instance, flags);
+	} else if(boost::contains(ficc, "camera")) {
+		io = AddCamera(classPath, instance);
+	} else if (boost::contains(ficc, "marker")) {
+		io = AddMarker(classPath, instance);
 	}
 	
 	return io;
@@ -2257,13 +1670,13 @@ INTERACTIVE_OBJ * AddInteractive(const res::path & file, long id, AddInteractive
 // "io".
 //***********************************************************************************
 
-void SetWeapon_On(INTERACTIVE_OBJ * io) {
+void SetWeapon_On(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
 	
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 	
 	if(ioo && ioo->obj) {
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
@@ -2271,19 +1684,19 @@ void SetWeapon_On(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void SetWeapon_Back(INTERACTIVE_OBJ * io) {
+void SetWeapon_Back(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
 	}
 	
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 	
 	if(ioo && ioo->obj) {
 		
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 
-		if (io->GameFlags & GFLAG_HIDEWEAPON) return;
+		if (io->gameFlags & GFLAG_HIDEWEAPON) return;
 
 		long ni = io->obj->fastaccess.weapon_attach;
 
@@ -2299,25 +1712,21 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io) {
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp) {
+void Prepare_SetWeapon(Entity * io, const res::path & temp) {
 	
 	arx_assert(io && (io->ioflags & IO_NPC));
 	
 	if(io->_npcdata->weapon) {
-		INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+		Entity * ioo = io->_npcdata->weapon;
 		EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, ioo->obj);
 		io->_npcdata->weapon = NULL;
-		ReleaseInter(ioo);
+		delete ioo;
 	}
 	
-	res::path file = ("graph/obj3d/interactive/items/weapons" / temp / temp).append(".teo");
-	
-	io->_npcdata->weapon = AddItem(file, IO_IMMEDIATELOAD);
-
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	res::path file = "graph/obj3d/interactive/items/weapons" / temp / temp;
+	Entity * ioo = io->_npcdata->weapon = AddItem(file);
 	if(ioo) {
 		
-		MakeTemporaryIOIdent(ioo);
 		SendIOScriptEvent(ioo, SM_INIT);
 		SendIOScriptEvent(ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2328,395 +1737,298 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const res::path & temp) {
 	}
 }
 
-static void GetIOScript(INTERACTIVE_OBJ * io, const res::path & script) {
+static void GetIOScript(Entity * io, const res::path & script) {
 	loadScript(io->script, resources->getFile(script));
 }
 
-//***********************************************************************************
 // Links an Interactive Object to another interactive object using an attach point
-//***********************************************************************************
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const std::string& attach)
-{
-	if ((!io)
-	        ||	(!io2))
+void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach) {
+	
+	if(!io || !io2) {
 		return;
-
+	}
+	
 	RemoveFromAllInventories(io2);
 	io2->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, io2->obj, attach, attach, io2);
 }
 
-INTERACTIVE_OBJ * AddFix(const res::path & file, AddInteractiveFlags flags) {
+// Creates a Temporary IO Ident
+static void MakeTemporaryIOIdent(Entity * io) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	if(!io) {
+		return;
+	}
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
+	// TODO keep the current game open all the time (or even in memory)
+	ARX_Changelevel_CurGame_Open();
+	
+	std::string className = io->short_name();
+	res::path classDir = io->classPath().parent();
+	
+	for(long t = 1; ; t++) {
+		
+		// Check if the candidate instance number is used in the current scene
+		bool used = false;
+		// TODO replace this loop by an (className, instance) index
+		for(size_t i = 0; i < entities.size(); i++) {
+			if(entities[i] && entities[i]->ident == t && io != entities[i]) {
+				if(entities[i]->short_name() == className) {
+					used = true;
+					break;
+				}
+			}
+		}
+		if(used) {
+			continue;
+		}
+		
+		std::stringstream ss;
+		ss << className << '_' << std::setw(4) << std::setfill('0') << t;
+		
+		// Check if the candidate instance number is reserved for any scene
+		if(resources->getDirectory(classDir / ss.str())) {
+			continue;
+		}
+		
+		// Check if the candidate instance number is used in any visited area
+		if(ARX_Changelevel_CurGame_Seek(ss.str())) {
+			continue;
+		}
+		
+		io->ident = t;
+		
+		ARX_Changelevel_CurGame_Close();
+		
+		return;
+	}
+}
 
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+Entity * AddFix(const res::path & classPath, EntityInstance instance,
+                AddInteractiveFlags flags) {
+	
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
+	
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
-
-	LogDebug("AddFix " << file);
-
-	INTERACTIVE_OBJ * io = CreateFreeInter();
-
-	if (!io)
-		return NULL;
-
-
+	
+	Entity * io = new Entity(classPath);
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
 	io->_fixdata = (IO_FIXDATA *)malloc(sizeof(IO_FIXDATA));
 	memset(io->_fixdata, 0, sizeof(IO_FIXDATA));
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
-
-	GetIOScript(io, scriptfile);
-
-	if (!(flags & NO_ON_LOAD))
+	
+	GetIOScript(io, script);
+	
+	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(io, SM_LOAD);
-
-	io->spellcast_data.castingspell = SPELL_NONE;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
-
-	EERIEPOLY * ep;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
-
-	if (ep)
-	{
-		float tempo;
-
-		if (GetTruePolyY(ep, &io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
-
+	
+	io->spellcast_data.castingspell = SPELL_NONE;
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	
+	float tempo;
+	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
+	}
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	io->filename = object;
-
-	if (!io->obj)
-	{
-		if (flags & NO_MESH)
-		{
-			io->obj = NULL;
-
-		}
-		else
-		{
-			io->obj = loadObject(object, false);
-		}
+	
+	if(!io->obj && !(flags & NO_MESH)) {
+		io->obj = loadObject(object, false);
 	}
-
-	io->infracolor.r = 0.6f;
-	io->infracolor.g = 0.f;
-	io->infracolor.b = 1.f;
-	TextureContainer * tc;
-	tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
-
-	if (tc)
-	{
+	
+	io->infracolor = Color3f(0.6f, 0.f, 1.f);
+	
+	TextureContainer * tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]"); 
+	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
-
-		if ((w << 5) != tc->m_dwWidth) io->sizex = (char)(w + 1);
-		else io->sizex = (char)(w);
-
-		if ((h << 5) != tc->m_dwHeight) io->sizey = (char)(h + 1);
-		else io->sizey = (char)(h);
-
-		if (io->sizex < 1) io->sizex = 1;
-		else if (io->sizex > 3) io->sizex = 3;
-
-		if (io->sizey < 1) io->sizey = 1;
-		else if (io->sizey > 3) io->sizey = 3;
-
+		io->sizex = char(clamp(((w << 5) != tc->m_dwWidth) ? (w + 1) : w, 1ul, 3ul));
+		io->sizey = char(clamp(((h << 5) != tc->m_dwHeight) ? (h + 1) : h, 1ul, 3ul));
 		io->inv = tc;
 	}
-
+	
 	io->collision = COLLIDE_WITH_PLAYER;
-
+	
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddCamera(const res::path & file) {
+static Entity * AddCamera(const res::path & classPath,
+                          EntityInstance instance) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
-
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
-
-	LogDebug("AddCamera " << file);
-
-	INTERACTIVE_OBJ * io = CreateFreeInter();
-	EERIEPOLY * ep;
-
-	if (!io) return NULL;
-
-	GetIOScript(io, scriptfile);
-
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
+	
+	Entity * io = new Entity(classPath);
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
+	GetIOScript(io, script);
+	
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	
 	float tempo;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z, &tempo);
-
-	if (ep)
-	{
+	EERIEPOLY * ep;
+	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z, &tempo);
+	if(ep) {
 		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
 	}
-
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
-
-	io->filename = object;
- 
+	
+	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
+	
 	io->obj = cameraobj;
-
+	
 	io->_camdata = (IO_CAMDATA *)malloc(sizeof(IO_CAMDATA));
 	memcpy(&io->_camdata->cam, &subj, sizeof(EERIE_CAMERA));
 	io->_camdata->cam.focal = 350.f;
 	io->ioflags = IO_CAMERA;
 	io->collision = 0;
-
+	
 	return io;
 }
 
-static INTERACTIVE_OBJ * AddMarker(const res::path & file) {
+static Entity * AddMarker(const res::path & classPath,
+                          EntityInstance instance) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
-	
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
 	
-	LogDebug("AddMarker " << file);
+	Entity * io = new Entity(classPath);
 	
-	INTERACTIVE_OBJ * io = CreateFreeInter();
-	EERIEPOLY * ep;
-	
-	if (!io) return NULL;
-	
-	GetIOScript(io, scriptfile);
-	
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
-	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
-	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
-
-	if (ep)
-	{
-		float tempo;
-
-		if (GetTruePolyY(ep, &io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo;
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
 	}
-
+	
+	GetIOScript(io, script);
+	
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	
+	float tempo;
+	EERIEPOLY * ep;
+	ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo;
+	}
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
-	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
-
-	io->filename = object;
- 
+	
+	io->lastpos.y = io->initpos.y = io->pos.y += player.baseHeight();
+	
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
-
+	
 	return io;
 }
-void ShowIOPath(INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < ACTIVEBKG->nbanchors; i++)
-	{
-		_ANCHOR_DATA * ad = &ACTIVEBKG->anchors[i];
-		ad->flags &= ~1;
-	}
 
-	if ((io) && (io->ioflags & IO_NPC))
-		for (long j = 0; j < io->_npcdata->pathfind.listnb; j++)
-		{
-			_ANCHOR_DATA * ad = &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[j]];
-			ad->flags |= 1;
+void ShowIOPath(Entity * io) {
+	
+	for(long i = 0; i < ACTIVEBKG->nbanchors; i++) {
+		ANCHOR_DATA * ad = &ACTIVEBKG->anchors[i];
+		ad->flags &= ~ANCHOR_FLAG_GREEN_DRAW;
+	}
+	
+	if(io && (io->ioflags & IO_NPC)) {
+		for(long j = 0; j < io->_npcdata->pathfind.listnb; j++) {
+			ANCHOR_DATA * ad = &ACTIVEBKG->anchors[io->_npcdata->pathfind.list[j]];
+			ad->flags |= ANCHOR_FLAG_GREEN_DRAW;
 		}
+	}
 }
 
 #ifdef BUILD_EDITOR
-
-//*************************************************************************************
-// Unselect an IO
-//*************************************************************************************
-void UnSelectIO(INTERACTIVE_OBJ * io)
-{
-	if ((io)
-	        && (io->EditorFlags & EFLAG_SELECTED))
-	{
-		io->EditorFlags &= ~EFLAG_SELECTED;
-		NbIOSelected--;
-		LastSelectedIONum = -1;
-	}
-}
-//*************************************************************************************
-// Select an IO
-//*************************************************************************************
-void SelectIO(INTERACTIVE_OBJ * io)
-{
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			UnSelectIO(inter.iobj[i]);
-		}
-	}
-
-	if ((io)
-	        &&	(!(io->EditorFlags & EFLAG_SELECTED)))
-	{
-		io->EditorFlags |= EFLAG_SELECTED;
-		NbIOSelected++;
-		Vec3f curpos;
-		GetItemWorldPosition(io, &curpos);
-		LastSelectedIONum = GetInterNum(io);
-		ShowIOPath(io);
-	}
-}
-//*************************************************************************************
-// Translate all selected IOs
-//*************************************************************************************
-void TranslateSelectedIO(Vec3f * op)
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			inter.iobj[i]->initpos.x = inter.iobj[i]->pos.x = inter.iobj[i]->initpos.x + op->x;
-			inter.iobj[i]->initpos.y = inter.iobj[i]->pos.y = inter.iobj[i]->initpos.y + op->y;
-			inter.iobj[i]->initpos.z = inter.iobj[i]->pos.z = inter.iobj[i]->initpos.z + op->z;
-		}
-	}
-}
-//*************************************************************************************
-// Reset all selected IOs rotations
-//*************************************************************************************
-void ResetSelectedIORot()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			inter.iobj[i]->initangle.a = inter.iobj[i]->angle.a = 0.f;
-			inter.iobj[i]->initangle.b = inter.iobj[i]->angle.b = 0.f;
-			inter.iobj[i]->initangle.g = inter.iobj[i]->angle.g = 0.f;
-		}
-	}
-}
-
-//*************************************************************************************
-// Rotate all selected IOs
-//*************************************************************************************
-void RotateSelectedIO(Anglef * op)
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			inter.iobj[i]->initangle.a = inter.iobj[i]->angle.a = inter.iobj[i]->initangle.a + op->a;
-			inter.iobj[i]->initangle.b = inter.iobj[i]->angle.b = inter.iobj[i]->initangle.b + op->b;
-			inter.iobj[i]->initangle.g = inter.iobj[i]->angle.g = inter.iobj[i]->initangle.g + op->g;
-		}
-	}
-}
 
 //*************************************************************************************
 // Delete All Selected IOs
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, DeleteByIndexFlags flag) {
 	
-	if(i < 1 || i >= inter.nbmax || !inter.iobj[i]) {
+	if(!ValidIONum(i) || i == 0) {
 		return;
 	}
 	
 	//Must KILL dir...
-	if(!(flag & FLAG_DONTKILLDIR) && inter.iobj[i]->scriptload == 0 && inter.iobj[i]->ident > 0) {
+	if(!(flag & FLAG_DONTKILLDIR) && entities[i]->scriptload == 0 && entities[i]->ident > 0) {
 		
-		fs::path dir = config.paths.user / inter.iobj[i]->full_name();
+		fs::path dir = fs::paths.user / entities[i]->full_name().string();
 		
 		if(fs::is_directory(dir) && !fs::remove_all(dir)) {
 			LogError << "Could not remove directory " << dir;
 		}
 	}
 	
-	ReleaseInter(inter.iobj[i]), inter.iobj[i] = NULL;
+	delete entities[i];
 }
 
-void DeleteSelectedIO()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			UnSelectIO(inter.iobj[i]);
-			ARX_INTERACTIVE_DeleteByIndex(i, 0);
-		}
-	}
-}
-
-//*************************************************************************************
 // Snaps to ground all selected IOs
-//*************************************************************************************
-void GroundSnapSelectedIO()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->EditorFlags & EFLAG_SELECTED))
-		{
-			INTERACTIVE_OBJ * io = inter.iobj[i];
-			Vec3f ppos;
-			ppos.x = io->pos.x;
-			ppos.y = io->pos.y;
-			ppos.z = io->pos.z;
-			EERIEPOLY * ep = CheckInPoly(ppos.x, ppos.y + PLAYER_BASE_HEIGHT, ppos.z);
-
-			if (ep)
-			{
-				float ay;
-
-				if (GetTruePolyY(ep, &io->pos, &ay))
-					io->initpos.y = io->pos.y = ay;
+void GroundSnapSelectedIO() {
+	for(size_t i = 1; i < entities.size(); i++) {
+		if(entities[i] != NULL && false /* is selected */) {
+			Entity * io = entities[i];
+			float ay;
+			EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+			if(ep && GetTruePolyY(ep, &io->pos, &ay)) {
+				io->initpos.y = io->pos.y = ay;
 			}
 		}
 	}
@@ -2790,103 +2102,82 @@ IO_NPCDATA::IO_NPCDATA() {
 }
 
 IO_NPCDATA::~IO_NPCDATA() {
-	
-	if(ex_rotate) {
-		free(ex_rotate);
-	}
-	
-	if(pathfind.list) {
-		free(pathfind.list);
-	}
+	free(ex_rotate);
+	free(pathfind.list);
 }
 
-INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags) {
+Entity * AddNPC(const res::path & classPath, EntityInstance instance,
+                AddInteractiveFlags flags) {
 	
-	res::path object = res::path(file).set_ext("teo");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
 	
-	res::path scriptfile = res::path(file).set_ext("asl");
-	
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
-
-	LogDebug("AddNPC " << file);
-
-	INTERACTIVE_OBJ * io = CreateFreeInter();
-	EERIEPOLY * ep;
-
-	if (io == NULL) return NULL;
-
+	
+	Entity * io = new Entity(classPath);
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
 	io->forcedmove = Vec3f::ZERO;
 	
 	io->_npcdata = new IO_NPCDATA;
-	
 	io->ioflags = IO_NPC;
-
-	GetIOScript(io, scriptfile);
+	
+	GetIOScript(io, script);
 	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->_npcdata->mana = io->_npcdata->maxmana = 10.f;
 	io->_npcdata->critical = 5.f;
 	io->_npcdata->reach = 20.f;
 	io->_npcdata->stare_factor = 1.f;
-
-	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD);
-
-	io->pos = player.pos + Vec3f(-(float)sin(radians(player.angle.b)) * 140.f, 0, (float)cos(radians(player.angle.b)) * 140.f);
 	
-	io->lastpos.x = io->initpos.x = (float)((long)(io->pos.x / 20)) * 20.f;
-	io->lastpos.y = io->initpos.y = io->pos.y;
-	io->lastpos.z = io->initpos.z = (float)((long)(io->pos.z / 20)) * 20.f;
-	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
-
-	if (ep)
-	{
-		float tempo;
-
-		if (GetTruePolyY(ep, &io->pos, &tempo))
-			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
+	if(!(flags & NO_ON_LOAD)) {
+		SendIOScriptEvent(io, SM_LOAD);
 	}
-
+	
+	io->pos = player.pos;
+	io->pos.x -= EEsin(radians(player.angle.b)) * 140.f;
+	io->pos.z += EEcos(radians(player.angle.b)) * 140.f;
+	io->lastpos = io->initpos = io->pos;
+	io->lastpos.x = io->initpos.x = EEfabs(io->initpos.x / 20) * 20.f;
+	io->lastpos.z = io->initpos.z = EEfabs(io->initpos.z / 20) * 20.f;
+	
+	float tempo;
+	EERIEPOLY * ep = CheckInPoly(io->pos.x, io->pos.y + player.baseHeight(), io->pos.z);
+	if(ep && GetTruePolyY(ep, &io->pos, &tempo)) {
+		io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
+	}
+	
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
-
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
-
 	
-	io->filename = object;
-
-	if (!io->obj)
-	{
-		if (flags & NO_MESH)
-		{
-			io->obj = NULL;
-
-		}
-		else
-		{
-			io->obj = loadObject(object, false);
-		}
+	if(!io->obj && !(flags & NO_MESH)) {
+		io->obj = loadObject(object, false);
 	}
-
+	
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->behavior = BEHAVIOUR_NONE;
 	io->_npcdata->pathfind.truetarget = -1;
-
-	if ((!(flags & NO_MESH))
-	        &&	(flags & IO_IMMEDIATELOAD))
+	
+	if(!(flags & NO_MESH) && (flags & IO_IMMEDIATELOAD)) {
 		EERIE_COLLISION_Cylinder_Create(io);
-
-	io->infracolor.r = 1.f;
-	io->infracolor.g = 0.f;
-	io->infracolor.b = 0.2f;
+	}
+	
+	io->infracolor = Color3f(1.f, 0.f, 0.2f);
 	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
-
+	
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
 }
@@ -2894,69 +2185,57 @@ INTERACTIVE_OBJ * AddNPC(const res::path & file, AddInteractiveFlags flags) {
 //*************************************************************************************
 // Reload Scripts (Class & Local) for an IO
 //*************************************************************************************
-void ReloadScript(INTERACTIVE_OBJ * io) {
+void ReloadScript(Entity * io) {
 	
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	loadScript(io->script, resources->getFile(res::path(io->filename).set_ext("asl")));
-	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()).set_ext("asl")));
+	loadScript(io->script, resources->getFile(io->classPath() + ".asl"));
+	loadScript(io->over_script, resources->getFile((io->full_name() / io->short_name()) + ".asl"));
 
-	long num = GetInterNum(io);
+	long num = io->index();
 
 	if (ValidIONum(num))
 	{
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->script.data)
+			ScriptEvent::send(&entities[num]->script, SM_INIT, "", entities[num], "");
 
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->over_script.data)
+			ScriptEvent::send(&entities[num]->over_script, SM_INIT, "", entities[num], "");
 
-		if (inter.iobj[num] && inter.iobj[num]->script.data)
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->script.data)
+			ScriptEvent::send(&entities[num]->script, SM_INITEND, "", entities[num], "");
 
-		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
+		if (entities[num] && entities[num]->over_script.data)
+			ScriptEvent::send(&entities[num]->over_script, SM_INITEND, "", entities[num], "");
 	}
 }
 
-//*************************************************************************************
 // Reloads All Scripts for all IOs
-//*************************************************************************************
-void ReloadAllScripts()
-{
+void ReloadAllScripts() {
 	ARX_SCRIPT_Timer_ClearAll();
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i])
-			ReloadScript(inter.iobj[i]);
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			ReloadScript(entities[i]);
+		}
 	}
 }
 
 #ifdef BUILD_EDIT_LOADSAVE
 
-//*************************************************************************************
 // Creates an unique identifier for an IO
-//*************************************************************************************
-void MakeIOIdent(INTERACTIVE_OBJ * io) {
+void MakeIOIdent(Entity * io) {
 	
 	if(!io) {
 		return;
 	}
 	
-#ifdef BUILD_EDITOR
-	if(NODIRCREATION) {
-		return;
-	}
-#endif
-	
 	long t = 1;
 	
 	while(io->ident == 0) {
 		
-		fs::path temp = config.paths.user / io->full_name().string();
+		fs::path temp = fs::paths.user / io->full_name().string();
 		
 		if(!fs::is_directory(temp)) {
 			io->ident = t;
@@ -2975,105 +2254,46 @@ void MakeIOIdent(INTERACTIVE_OBJ * io) {
 
 #endif // BUILD_EDIT_LOADSAVE
 
-//*************************************************************************************
-// Tells if an ident corresponds to a temporary IO
-// And close after seek session
-//*************************************************************************************
-static bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t) {
-	
-	if(!io) {
-		return false;
-	}
-	
-	string name = io->short_name();
-	
-	for(long i = 0; i < inter.nbmax; i++) {
-		if(inter.iobj[i]) {
-			if(inter.iobj[i]->ident == t && io != inter.iobj[i]) {
-				if (inter.iobj[i]->short_name() == name) {
-					return true;
-				}
-			}
-		}
-	}
-	
-	std::stringstream ss;
-	ss << name << '_' << std::setw(4) << std::setfill('0') << t;
-	
-	if(resources->getDirectory(io->filename.parent() / ss.str())) {
-		return true;
-	}
-	
-	if(ARX_Changelevel_CurGame_Seek(ss.str())) {
-		return true;
-	}
-	
-	return false;
-}
-//*************************************************************************************
-// Creates a Temporary IO Ident
-//*************************************************************************************
-void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io) {
-	
-	long t = 1;
-
-	if (!io) return;
-
-	// TODO do we really need to open this every time?
-	ARX_Changelevel_CurGame_Open();
-
-	for (;;)
-	{
-		if (!ExistTemporaryIdent(io, t))
-		{
-			io->ident = t;
-
-			ARX_Changelevel_CurGame_Close();
-
-			return;
-		}
-
-		t++;
-	}
-}
 extern EERIE_3DOBJ	* arrowobj;
-extern long SP_DBG;
 
-INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
+Entity * AddItem(const res::path & classPath_, EntityInstance instance,
+                 AddInteractiveFlags flags) {
 	
-	long type = IO_ITEM;
+	EntityFlags type = IO_ITEM;
 
-	res::path file = fil;
+	res::path classPath = classPath_;
 	
-	if(!specialstrcmp(file.filename(), "gold_coin")) {
-		file.up() /= "gold_coin.asl";
+	if(boost::starts_with(classPath.filename(), "gold_coin")) {
+		classPath.up() /= "gold_coin";
 		type = IO_ITEM | IO_GOLD;
 	}
 
-	if(IsIn(file.string(), "movable")) {
+	if(boost::contains(classPath.string(), "movable")) {
 		type = IO_ITEM | IO_MOVABLE;
 	}
 	
-	res::path script = res::path(file).set_ext("asl");
+	res::path object = classPath + ".teo";
+	res::path script = classPath + ".asl";
+	res::path icon = classPath + "[icon]";
 	
-	res::path object = res::path(file).set_ext("teo");
-	
-	res::path icon = res::path(file).remove_ext().append_basename("[icon]");
-
-	if(!resources->getFile(("game" / file).set_ext("ftl")) && !resources->getFile(file)) {
+	if(!resources->getFile(("game" / classPath) + ".ftl")
+	   && !resources->getFile(object) && !resources->getFile(script)) {
 		return NULL;
 	}
-
+	
 	if(!resources->getFile(res::path(icon).set_ext("bmp"))) {
 		return NULL;
 	}
-
-	INTERACTIVE_OBJ * io = CreateFreeInter();
-
-	EERIEPOLY * ep;
-
-	if (io == NULL) return NULL;
-
+	
+	Entity * io = new Entity(classPath);
+	
+	if(instance == -1) {
+		MakeTemporaryIOIdent(io);
+	} else {
+		arx_assert(instance > 0);
+		io->ident = instance;
+	}
+	
 	io->ioflags = type;
 	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
 	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
@@ -3094,10 +2314,11 @@ INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	io->_itemdata->playerstacksize = 1;
 
 	GetIOScript(io, script);
-
-	if (!(flags & NO_ON_LOAD))
+	
+	if(!(flags & NO_ON_LOAD)) {
 		SendIOScriptEvent(io, SM_LOAD);
-
+	}
+	
 	io->spellcast_data.castingspell = SPELL_NONE;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -3105,6 +2326,7 @@ INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
+	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y - 60.f, io->pos.z);
 
 	if (ep)
@@ -3123,32 +2345,26 @@ INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
 
-	io->filename = object;
-
-	if (io->ioflags & IO_GOLD)
+	if(io->ioflags & IO_GOLD) {
 		io->obj = GoldCoinsObj[0];
-
-	if (!io->obj)
-	{
-		if(flags & NO_MESH) {
-			io->obj = NULL;
-		} else {
-			io->obj = loadObject(object);
-		}
 	}
-
+	
+	if(!io->obj && !(flags & NO_MESH)) {
+			io->obj = loadObject(object);
+	}
+	
 	TextureContainer * tc;
-
-	if (io->ioflags & IO_MOVABLE)
+	if (io->ioflags & IO_MOVABLE) {
 		tc = Movable;
-	else if (io->ioflags & IO_GOLD)
+	} else if (io->ioflags & IO_GOLD) {
 		tc = GoldCoinsTC[0];
-	else
+	} else {
 		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
-
-	if (tc == NULL)
+	}
+	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
-
+	}
+	
 	if (tc)
 	{
 		unsigned long w = tc->m_dwWidth >> 5;
@@ -3188,16 +2404,15 @@ INTERACTIVE_OBJ * AddItem(const res::path & fil, AddInteractiveFlags flags) {
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
 //*************************************************************************************
-INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTERACTIVE_OBJ ** _pTable, int * _pnNbInTable)
+Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pTable, int * _pnNbInTable)
 {
 	float n;
  
 	float _fdist = 9999999999.f;
 	float fdistBB = 9999999999.f;
 	float fMaxDist = flag ? 9999999999.f : 350;
-	INTERACTIVE_OBJ * foundBB = NULL;
-	INTERACTIVE_OBJ * foundPixel = NULL;
-	INTERNMB = -1;
+	Entity * foundBB = NULL;
+	Entity * foundPixel = NULL;
 	bool bPlayerEquiped = false;
 
 	if (Project.telekinesis)
@@ -3206,21 +2421,25 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 	}
 
 	int nStart = 1;
-	int nEnd = inter.nbmax;
-	INTERACTIVE_OBJ ** pTableIO = inter.iobj;
+	int nEnd = entities.size();
 
 	if ((flag == 3) && _pTable && _pnNbInTable)
 	{
 		nStart = 0;
 		nEnd = *_pnNbInTable;
-		pTableIO = _pTable;
 	}
 
 	for (long i = nStart; i < nEnd; i++)
 	{
 		bool bPass = true;
 
-		INTERACTIVE_OBJ * io = pTableIO[i];
+		Entity * io;
+		
+		if ((flag == 3) && _pTable && _pnNbInTable) {
+			io = _pTable[i];
+		} else {
+			io = entities[i];
+		}
 
 		// Is Object Valid ??
 		if (io == NULL) continue;
@@ -3228,12 +2447,12 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 		if (((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))
 		        && (EDITMODE != 1)) continue;
 
-		if ((!(io->GameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
+		if ((!(io->gameFlags & GFLAG_INTERACTIVITY)) && (!EDITMODE)) continue;
 
 		// Is Object in TreatZone ??
 		bPlayerEquiped = IsEquipedByPlayer(io);
 		if ((bPlayerEquiped  && (player.Interface & INTER_MAP))
-		    || (io->GameFlags & GFLAG_ISINTREATZONE))
+		    || (io->gameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
 			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
@@ -3261,7 +2480,6 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 					{
 						fdistBB = fp;
 						foundBB = io;
-						INTERNMB = i;
 					}
 
 					if ((io->ioflags & (IO_CAMERA | IO_MARKER | IO_GOLD)) || (bPlayerEquiped && !flag))
@@ -3276,7 +2494,6 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 							fdistBB = fp;
 							foundBB = io;
 							foundPixel = io;
-							INTERNMB = i;
 						}
 
 						goto suite;
@@ -3302,7 +2519,6 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 								{
 									_fdist = fp;
 									foundPixel = io;
-									INTERNMB = i;
 									goto suite;
 								}
 							}
@@ -3319,7 +2535,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, INTE
 
 	return foundBB;
 }
-bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
+bool IsEquipedByPlayer(const Entity * io)
 {
 	if (!io)
 		return false;
@@ -3327,7 +2543,7 @@ bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 	if ((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
 
-	long num = GetInterNum(io);
+	long num = io->index();
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
@@ -3338,10 +2554,8 @@ bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
+Entity * InterClick(Vec2s * pos) {
 	
-	LASTINTERCLICKNB = -1;
-
 	if (IsFlyingOverInventory(pos))
 	{
 		return NULL;
@@ -3354,25 +2568,22 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 	else
 		dist_Threshold = 360.f;
 
-	INTERACTIVE_OBJ * io = GetFirstInterAtPos(pos);
+	Entity * io = GetFirstInterAtPos(pos);
 
 	if(io != NULL)
 	{
 		if(io->ioflags & IO_NPC) {
 			if(closerThan(player.pos, io->pos, dist_Threshold)) {
-				LASTINTERCLICKNB = INTERNMB;
 				return io;
 			}
 		}
 		else if ((Project.telekinesis) || (EDITMODE))
 		{
-			LASTINTERCLICKNB = INTERNMB;
 			return io;
 		}
 		else if (IsEquipedByPlayer(io)
 		         || closerThan(player.pos, io->pos, dist_Threshold))
 		{
-			LASTINTERCLICKNB = INTERNMB;
 			return io;
 		}
 	}
@@ -3380,22 +2591,17 @@ INTERACTIVE_OBJ * InterClick(Vec2s * pos) {
 	return NULL;
 }
 
-//*************************************************************************************
 // Need To upgrade to a more precise collision.
-//*************************************************************************************
-long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
-{
+long IsCollidingAnyInter(float x, float y, float z, Vec3f * size) {
+	
 	Vec3f pos;
-
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+	for(size_t i = 0; i < entities.size(); i++) {
+		Entity * io = entities[i];
 
 		if ((io)
 		        && (!(io->ioflags & IO_NO_COLLISIONS))
 		        && (io->collision)
-		        && (io->GameFlags & GFLAG_ISINTREATZONE)
-		        && (io != CURRENTINTER)
+		        && (io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX))
 		        && (io->show == SHOW_FLAG_IN_SCENE)
 		   )
@@ -3427,7 +2633,7 @@ long IsCollidingAnyInter(float x, float y, float z, Vec3f * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
+static bool IsCollidingInter(Entity * io, Vec3f * pos) {
 	
 	if ((!io)
 	        ||	(!io->obj))
@@ -3464,7 +2670,7 @@ static bool IsCollidingInter(INTERACTIVE_OBJ * io, Vec3f * pos) {
 	return false;
 }
 
-void SetYlsideDeath(INTERACTIVE_OBJ * io)
+void SetYlsideDeath(Entity * io)
 {
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
 	io->sfx_time = (unsigned long)(arxtime); 	
@@ -3472,24 +2678,22 @@ void SetYlsideDeath(INTERACTIVE_OBJ * io)
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
 	bool col = false;
-	long i;
 	long avoid = -1;
-	INTERACTIVE_OBJ * io_source = NULL;
+	Entity * io_source = NULL;
 
 	if (ValidIONum(source))
 	{
-		io_source = inter.iobj[source];
+		io_source = entities[source];
 		avoid = io_source->no_collide;
 
 	}
 
-	for (i = 1; i < inter.nbmax; i++)
-	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * io = entities[i];
 
 		if (
 		    (io)
-		    && (i != avoid)
+				&& long(i) != avoid
 		    && (!(io->ioflags & (IO_CAMERA | IO_MARKER | IO_ITEM)))
 		    && (io->show == SHOW_FLAG_IN_SCENE)
 		    && !(io->ioflags & IO_NO_COLLISIONS)
@@ -3530,7 +2734,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 							sp.origin = vlist[ii].v;
 
 							if(sp.contains(obj->pbox->vert[kk].pos)) {
-								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+								if ((io_source) && (io->gameFlags & GFLAG_DOOR))
 								{
 									if (float(arxtime) > io->collide_door_time + 500)
 									{
@@ -3559,12 +2763,12 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 	bool col = false;
 	long i;
 	long avoid = -1;
-	INTERACTIVE_OBJ * io_source = NULL;
-	INTERACTIVE_OBJ * io = NULL;
+	Entity * io_source = NULL;
+	Entity * io = NULL;
 
 	if (ValidIONum(source))
 	{
-		io_source = inter.iobj[source];
+		io_source = entities[source];
 		avoid = io_source->no_collide;
 
 	}
@@ -3577,7 +2781,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 		io = treatio[i].io;
 
-		if ((io == io_source) || (!io->obj) || (io == inter.iobj[0])) 
+		if ((io == io_source) || (!io->obj) || (io == entities.player())) 
 			continue;
 
 		if (treatio[i].num == avoid) continue;
@@ -3622,14 +2826,12 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 
-				if (io->GameFlags & GFLAG_PLATFORM)
+				if (io->gameFlags & GFLAG_PLATFORM)
 				{
 					for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 					{
 						EERIE_SPHERE sphere;
-						sphere.origin.x = obj->pbox->vert[kk].pos.x;
-						sphere.origin.y = obj->pbox->vert[kk].pos.y;
-						sphere.origin.z = obj->pbox->vert[kk].pos.z;
+						sphere.origin = obj->pbox->vert[kk].pos;
 						sphere.radius = 30.f;
 						float miny, maxy;
 						miny = io->bbox3D.min.y;
@@ -3690,7 +2892,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 									if(sp.contains(obj->pbox->vert[kk].pos)) {
-										if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+										if ((io_source) && (io->gameFlags & GFLAG_DOOR))
 										{
 											if (float(arxtime) > io->collide_door_time + 500)
 											{
@@ -3713,7 +2915,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 							if (sp.contains(obj->pbox->vert[kk].pos))
 							{
-								if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+								if ((io_source) && (io->gameFlags & GFLAG_DOOR))
 								{
 									if (float(arxtime) > io->collide_door_time + 500)
 									{
@@ -3737,16 +2939,15 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 	return col;
 }
 
-void UpdateCameras()
-{
+void UpdateCameras() {
+	
 	arxtime.get_updated();
-
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
-
-		if (io)
-		{
+	
+	for(size_t i = 1; i < entities.size(); i++) {
+		Entity * io = entities[i];
+		
+		if(io) {
+			
 			// interpolate & send events
 			if(io->usepath) {
 
@@ -3822,9 +3023,8 @@ void UpdateCameras()
 				if ((io->damager_damages > 0)
 				        &&	(io->show == SHOW_FLAG_IN_SCENE))
 				{
-					for (long ii = 0; ii < inter.nbmax; ii++)
-					{
-						INTERACTIVE_OBJ * ioo = inter.iobj[ii];
+					for(size_t ii = 0; ii < entities.size(); ii++) {
+						Entity * ioo = entities[ii];
 
 						if ((ioo)
 						        &&	(ii != i)
@@ -3852,19 +3052,15 @@ void UpdateCameras()
 					}
 				}
 			}
-
-			if (io->ioflags & IO_CAMERA)
-			{
-				inter.iobj[i]->_camdata->cam.pos.x = io->pos.x;
-				inter.iobj[i]->_camdata->cam.pos.y = io->pos.y;
-				inter.iobj[i]->_camdata->cam.pos.z = io->pos.z;
+			
+			if(io->ioflags & IO_CAMERA) {
+				
+				entities[i]->_camdata->cam.pos = io->pos;
 
 				if (io->targetinfo != TARGET_NONE) // Follows target
 				{
-					GetTargetPos(io, (unsigned long)inter.iobj[i]->_camdata->cam.smoothing);
-					io->target.x += io->_camdata->cam.translatetarget.x;
-					io->target.y += io->_camdata->cam.translatetarget.y;
-					io->target.z += io->_camdata->cam.translatetarget.z;
+					GetTargetPos(io, (unsigned long)entities[i]->_camdata->cam.smoothing);
+					io->target += io->_camdata->cam.translatetarget;
 
 					if ((io->_camdata->cam.lastinfovalid) && (io->_camdata->cam.smoothing != 0.f))
 					{
@@ -3876,7 +3072,7 @@ void UpdateCameras()
 
 						vv = (8000 - vv) * ( 1.0f / 4000 );
 
-						float f1 = _framedelay * ( 1.0f / 1000 ) * vv; 
+						float f1 = framedelay * ( 1.0f / 1000 ) * vv; 
 
 						if (f1 > 1.f) f1 = 1.f;
 
@@ -3915,48 +3111,42 @@ void UpdateCameras()
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
 					SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
-					io->_camdata->cam.lasttarget.x = io->target.x;
-					io->_camdata->cam.lasttarget.y = io->target.y;
-					io->_camdata->cam.lasttarget.z = io->target.z;
+					io->_camdata->cam.lasttarget = io->target;
 					io->_camdata->cam.lastinfovalid = true;
-					io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
-					io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
-					io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
+					io->_camdata->cam.lastpos = io->_camdata->cam.pos;
 				}
 			}
 		}
 	}
 }
-void ARX_INTERACTIVE_UnfreezeAll()
-{
-	if (inter.iobj)
-	{
-		for (long i = 0; i < inter.nbmax; i++)
-		{
-			if (inter.iobj[i] != NULL)
-				inter.iobj[i]->ioflags &= ~IO_FREEZESCRIPT;
+
+void ARX_INTERACTIVE_UnfreezeAll() {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			entities[i]->ioflags &= ~IO_FREEZESCRIPT;
 		}
 	}
 }
-void UpdateIOInvisibility(INTERACTIVE_OBJ * io)
+
+void UpdateIOInvisibility(Entity * io)
 {
 	if (io && (io->invisibility <= 1.f))
 	{
-		if ((io->GameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
+		if ((io->gameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
 		{
-			io->invisibility += _framedelay * ( 1.0f / 1000 );
+			io->invisibility += framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility > 1.f) io->invisibility = 1.f;
 		}
-		else if ((!(io->GameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
+		else if ((!(io->gameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
 		{
-			io->invisibility -= _framedelay * ( 1.0f / 1000 );
+			io->invisibility -= framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility < 0.f) io->invisibility = 0.f;
 		}
 	}
 }
-extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
+extern Entity * DESTROYED_DURING_RENDERING;
 
 //*************************************************************************************
 // Renders Interactive objects.
@@ -3972,46 +3162,33 @@ void RenderInter(float from, float to) {
 	Anglef temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
-	INTER_COMPUTE = 0;
 	float dist;
 	long diff;
 
-	if (inter.iobj[0] && (inter.iobj[0]->ignition > 0.f))
+	if (entities.player() && (entities.player()->ignition > 0.f))
 	{
-		ManageIgnition(inter.iobj[0]);
+		ManageIgnition(entities.player());
 	}
 
-	for(long i = 1; i < inter.nbmax; i++) { // Player isn't rendered here...
+	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
 		
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((io)
 		        &&	(io != DRAGINTER)
-		        &&	(io->GameFlags & GFLAG_ISINTREATZONE))
+		        &&	(io->gameFlags & GFLAG_ISINTREATZONE))
 		{
 			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
 			        && (Book_Mode == BOOKMODE_STATS)) continue;
-
-			if (io->show != SHOW_FLAG_IN_SCENE) continue;
-
-			if (!ForceIODraw)
-			{
-				if ((Project.hide & HIDE_NPC) && (io->ioflags & IO_NPC)) continue;
-
-				if ((Project.hide & HIDE_ITEMS) && (io->ioflags & IO_ITEM)) continue;
-
-				if ((Project.hide & HIDE_FIXINTER) && (io->ioflags & IO_FIX)) continue;
+			
+			if(io->show != SHOW_FLAG_IN_SCENE) {
+				continue;
 			}
-
-			if ((Project.hide & HIDE_CAMERAS) && (io->ioflags & IO_CAMERA)) continue;
-
-			if (!EDITMODE)
-			{
-				if (io->ioflags & IO_CAMERA) continue;
-
-				if (io->ioflags & IO_MARKER) continue;
+			
+			if(!EDITMODE && ((io->ioflags & IO_CAMERA) || (io->ioflags & IO_MARKER))) {
+				continue;
 			}
-
+			
 			if ((io->obj) &&
 			        (io->obj->pbox) &&
 			        (io->obj->pbox->active))  
@@ -4040,31 +3217,13 @@ void RenderInter(float from, float to) {
 			    &&	(io->obj->pbox)
 			    &&	(io->obj->pbox->active))
 			{
-				Vec3f tmp;
-				tmp.x = (io->obj->pbox->vert[14].pos.x - io->obj->pbox->vert[13].pos.x);
-				tmp.y = (io->obj->pbox->vert[14].pos.y - io->obj->pbox->vert[13].pos.y);
-				tmp.z = (io->obj->pbox->vert[14].pos.z - io->obj->pbox->vert[13].pos.z);
-				Vec3f up;
-
-				up.x = io->obj->pbox->vert[2].pos.x - io->obj->pbox->vert[1].pos.x;
-				up.y = io->obj->pbox->vert[2].pos.y - io->obj->pbox->vert[1].pos.y;
-				up.z = io->obj->pbox->vert[2].pos.z - io->obj->pbox->vert[1].pos.z;
-
-				up.x += io->obj->pbox->vert[3].pos.x - io->obj->pbox->vert[4].pos.x;
-				up.y += io->obj->pbox->vert[3].pos.y - io->obj->pbox->vert[4].pos.y;
-				up.z += io->obj->pbox->vert[3].pos.z - io->obj->pbox->vert[4].pos.z;
-
-				up.x += io->obj->pbox->vert[10].pos.x - io->obj->pbox->vert[9].pos.x;
-				up.y += io->obj->pbox->vert[10].pos.y - io->obj->pbox->vert[9].pos.y;
-				up.z += io->obj->pbox->vert[10].pos.z - io->obj->pbox->vert[9].pos.z;
-
-				up.x += io->obj->pbox->vert[11].pos.x - io->obj->pbox->vert[12].pos.x;
-				up.y += io->obj->pbox->vert[11].pos.y - io->obj->pbox->vert[12].pos.y;
-				up.z += io->obj->pbox->vert[11].pos.z - io->obj->pbox->vert[12].pos.z;
-
-				up.x *= ( 1.0f / 4 );
-				up.y *= ( 1.0f / 4 );
-				up.z *= ( 1.0f / 4 );
+				Vec3f tmp = io->obj->pbox->vert[14].pos - io->obj->pbox->vert[13].pos;
+				Vec3f up = io->obj->pbox->vert[2].pos - io->obj->pbox->vert[1].pos;
+				up += io->obj->pbox->vert[3].pos - io->obj->pbox->vert[4].pos;
+				up += io->obj->pbox->vert[10].pos - io->obj->pbox->vert[9].pos;
+				up += io->obj->pbox->vert[11].pos - io->obj->pbox->vert[12].pos;
+				up *= 0.25f;
+				
 				MatrixSetByVectors(&mat, &up, &tmp);
 				mat._14 = mat._24 = mat._34 = 0.f;
 				mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
@@ -4072,18 +3231,14 @@ void RenderInter(float from, float to) {
 
 			}
 				
-			if (io->animlayer[0].cur_anim)
-			{
-				if (ForceIODraw && (dist > 2200.f)) continue;
-
-
+			if(io->animlayer[0].cur_anim) {
+				
 				temp.a = io->angle.a;
-
-				if (io->ioflags & IO_NPC)
+				if(io->ioflags & IO_NPC) {
 					temp.b = MAKEANGLE(180.f - io->angle.b);
-				else 
+				} else {
 					temp.b = MAKEANGLE(270.f - io->angle.b);
-
+				}
 				temp.g = io->angle.g;
 
 				if (io->animlayer[0].flags & EA_PAUSED)
@@ -4094,15 +3249,6 @@ void RenderInter(float from, float to) {
 				        &&	(!(io->ioflags & IO_NPC))
 				        &&	io->obj)
 					io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
-
-				if (io->targetinfo >= 0)
-				{
-					if ((io->ioflags & IO_NPC)
-					        && !(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
-					        && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-					        && !(io->_npcdata->behavior & BEHAVIOUR_LOOK_FOR) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT))
-						LOOK_AT_TARGET = 1;
-				}
 
 				Vec3f pos = io->pos;
 
@@ -4115,7 +3261,6 @@ void RenderInter(float from, float to) {
 				bool render = (EDITMODE || !ARX_SCENE_PORTAL_Basic_ClipIO(io));
 
 				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
-				LOOK_AT_TARGET = 0;
 
 				if (DESTROYED_DURING_RENDERING)
 					continue;
@@ -4126,17 +3271,15 @@ void RenderInter(float from, float to) {
 			else 
 			{
 				if ((!EDITMODE) && (ARX_SCENE_PORTAL_Basic_ClipIO(io))) continue;
-
-				if (ForceIODraw && (dist > ACTIVECAM->cdepth * fZFogEnd)) continue;
-
+				
 				temp.a = io->angle.a;
-
-				if (io->ioflags & IO_NPC)
+				if(io->ioflags & IO_NPC) {
 					temp.b = MAKEANGLE(180.f - io->angle.b);
-				else	temp.b = MAKEANGLE(270.f - io->angle.b);
-
+				} else {
+					temp.b = MAKEANGLE(270.f - io->angle.b);
+				}
 				temp.g = io->angle.g;
-
+				
 				if ((io->ioflags & IO_GOLD) && io->obj)
 				{
 					if (io->_itemdata->price <= 3)
@@ -4199,8 +3342,8 @@ void RenderInter(float from, float to) {
 			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
 				ManageIgnition(io);
 
-			if((NEED_TEST_TEXT || EDITMODE) && !FOR_EXTERNAL_PEOPLE) {
-				Color color = (EDITMODE && (io->EditorFlags & EFLAG_SELECTED)) ? Color::yellow : Color::blue;
+			if(NEED_TEST_TEXT || EDITMODE) {
+				Color color = Color::blue;
 				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
 					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
@@ -4217,7 +3360,7 @@ void RenderInter(float from, float to) {
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 }
 
-void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
+void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 {
 	if (ioo)
 	{
@@ -4242,7 +3385,7 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 		else
 		{
 			// Kill all spells
-			long numm = GetInterNum(ioo);
+			long numm = ioo->index();
 
 			if (ValidIONum(numm))
 				ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
@@ -4250,7 +3393,7 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 			// Need To Kill timers
 			ARX_SCRIPT_Timer_Clear_By_IO(ioo);
 			ioo->show = SHOW_FLAG_DESTROYED;
-			ioo->GameFlags &= ~GFLAG_ISINTREATZONE;
+			ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
 			if (!FAST_RELEASE)
 				RemoveFromAllInventories(ioo);
@@ -4265,7 +3408,7 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 
 					if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
 					{
-						INTERACTIVE_OBJ * iooo = (INTERACTIVE_OBJ *)eobj->linked[k].io;
+						Entity * iooo = (Entity *)eobj->linked[k].io;
 
 						if ((iooo) && ValidIOAddress(iooo))
 						{
@@ -4278,13 +3421,8 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 
 			ARX_INTERACTIVE_DestroyDynamicInfo(ioo);
 
-			if (ioo->scriptload)
-			{
-				long num = GetInterNum(ioo);
-				ReleaseInter(ioo);
-
-				if (ValidIONum(num))
-					inter.iobj[num] = NULL;
+			if(ioo->scriptload) {
+				delete ioo;
 			}
 		}
 	}
@@ -4293,11 +3431,11 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 //*************************************************************************************
 //
 //*************************************************************************************
-bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
+bool IsSameObject(Entity * io, Entity * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
-	        ||	io->filename != ioo->filename
+	        ||	io->classPath() != ioo->classPath()
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))
@@ -4343,32 +3481,11 @@ static bool intersect(const std::set<std::string> & set1, const std::set<std::st
 	return false;
 }
 
-bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo) {
+bool HaveCommonGroup(Entity * io, Entity * ioo) {
 	return io && ioo && intersect(io->groups, ioo->groups);
 }
 
-//***********************************************************************************************
-// Retreives IO Number with its address
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/16)
-//***********************************************************************************************
-// Nuky - modified to use cached value first. For now it's safe and will use former method if
-//        the cached value is incorrect, but I think it never happens
-long GetInterNum(const INTERACTIVE_OBJ * io)
-{
-	if (io == NULL) return -1;
-
-	if ( io->num > -1 && io->num < inter.nbmax && inter.iobj[io->num] == io)
-		return io->num;
-
-	for (long i = 0; i < inter.nbmax; i++)
-		if (inter.iobj[i] == io) return i;
-
-	return -1;
-}
-
-
-float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
+float ARX_INTERACTIVE_GetArmorClass(Entity * io)
 {
 	if (!io) return -1;
 
@@ -4404,7 +3521,7 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 {
 	if (ValidIONum(t))
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[t];
+		Entity * io = entities[t];
 
 		if ((io == DRAGINTER)
 		        ||	(io->show != SHOW_FLAG_IN_SCENE))
@@ -4418,19 +3535,10 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 
 		io->obj->pbox->active = 1;
 		io->obj->pbox->stopcount = 0;
-		Vec3f pos;
-		pos.x = io->pos.x;
-		pos.z = io->pos.z;
-		pos.y = io->pos.y;
-		io->velocity.x = 0.f;
-		io->velocity.y = 0.f;
-		io->velocity.z = 0.f;
-
+		Vec3f pos = io->pos;
+		io->velocity = Vec3f::ZERO;
 		io->stopped = 1;
-		Vec3f fallvector;
-		fallvector.x = 0.f;
-		fallvector.z = 0.f;
-		fallvector.y = 0.000001f;
+		Vec3f fallvector = Vec3f(0.0f, 0.000001f, 0.f);
 		io->show = SHOW_FLAG_IN_SCENE;
 		io->soundtime = 0;
 		io->soundcount = 0;
@@ -4444,29 +3552,29 @@ string GetMaterialString(const res::path & texture) {
 	const string & origin = texture.string();
 	
 	// need to be precomputed !!!
-	if(IsIn(origin, "stone")) return "stone";
-	else if(IsIn(origin, "marble")) return "stone";
-	else if(IsIn(origin, "rock")) return "stone";
-	else if(IsIn(origin, "wood")) return "wood";
-	else if(IsIn(origin, "wet")) return "wet";
-	else if(IsIn(origin, "mud")) return "wet";
-	else if(IsIn(origin, "blood")) return "wet";
-	else if(IsIn(origin, "bone")) return "wet";
-	else if(IsIn(origin, "flesh")) return "wet";
-	else if(IsIn(origin, "shit")) return "wet";
-	else if(IsIn(origin, "soil")) return "gravel";
-	else if(IsIn(origin, "gravel")) return "gravel";
-	else if(IsIn(origin, "earth")) return "gravel";
-	else if(IsIn(origin, "dust")) return "gravel";
-	else if(IsIn(origin, "sand")) return "gravel";
-	else if(IsIn(origin, "straw")) return "gravel";
-	else if(IsIn(origin, "metal")) return "metal";
-	else if(IsIn(origin, "iron")) return "metal";
-	else if(IsIn(origin, "glass")) return "metal";
-	else if(IsIn(origin, "rust")) return "metal";
-	else if(IsIn(origin, "earth")) return "earth";
-	else if(IsIn(origin, "ice")) return "ice";
-	else if(IsIn(origin, "fabric")) return "carpet";
-	else if(IsIn(origin, "moss")) return "carpet";
+	if(boost::contains(origin, "stone")) return "stone";
+	else if(boost::contains(origin, "marble")) return "stone";
+	else if(boost::contains(origin, "rock")) return "stone";
+	else if(boost::contains(origin, "wood")) return "wood";
+	else if(boost::contains(origin, "wet")) return "wet";
+	else if(boost::contains(origin, "mud")) return "wet";
+	else if(boost::contains(origin, "blood")) return "wet";
+	else if(boost::contains(origin, "bone")) return "wet";
+	else if(boost::contains(origin, "flesh")) return "wet";
+	else if(boost::contains(origin, "shit")) return "wet";
+	else if(boost::contains(origin, "soil")) return "gravel";
+	else if(boost::contains(origin, "gravel")) return "gravel";
+	else if(boost::contains(origin, "earth")) return "gravel";
+	else if(boost::contains(origin, "dust")) return "gravel";
+	else if(boost::contains(origin, "sand")) return "gravel";
+	else if(boost::contains(origin, "straw")) return "gravel";
+	else if(boost::contains(origin, "metal")) return "metal";
+	else if(boost::contains(origin, "iron")) return "metal";
+	else if(boost::contains(origin, "glass")) return "metal";
+	else if(boost::contains(origin, "rust")) return "metal";
+	else if(boost::contains(origin, "earth")) return "earth";
+	else if(boost::contains(origin, "ice")) return "ice";
+	else if(boost::contains(origin, "fabric")) return "carpet";
+	else if(boost::contains(origin, "moss")) return "carpet";
 	else return "unknown";
 }

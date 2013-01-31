@@ -70,37 +70,31 @@ class CHeal: public CSpellFx
  
 };
 
-class CLowerArmor: public CSpellFx
-{
-	public:
-		int		iNpc;
-
-	public:
-		CLowerArmor();
-		~CLowerArmor();
-
-		// surcharge
-	public:
-		void	Create(long);
-		void	Kill();
-		void	Update(unsigned long);
-		float	Render();
+class CLowerArmor : public CSpellFx {
+	
+public:
+	
+	CLowerArmor();
+	~CLowerArmor();
+	
+	void Create(long);
+	void Kill();
+	void Update(unsigned long);
+	float Render();
+	
 };
 
-class CArmor: public CSpellFx
-{
-	private:
-		int			iNpc;
-
-	public:
-		CArmor();
-		~CArmor();
-
-		// surcharge
-		void	Create(long);
-		void	Update(unsigned long);
-		float	Render();
- 
+class CArmor : public CSpellFx {
+	
+public:
+	
+	CArmor();
+	~CArmor();
+	
+	void Create(long);
+	void Update(unsigned long);
+	float Render();
+	
 };
 
 #endif // ARX_GRAPHICS_SPELLS_SPELLS02_H

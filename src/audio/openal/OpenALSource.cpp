@@ -131,10 +131,7 @@ OpenALSource::~OpenALSource() {
 		if(buffers[0]) {
 			arx_assert(!refcount || *refcount > 0);
 			if(!refcount || !--*refcount) {
-				if(refcount) {
-					delete refcount;
-					refcount = NULL;
-				}
+				delete refcount, refcount = NULL;
 				TraceAL("deleting buffer " << buffers[0]);
 				alDeleteBuffers(1, &buffers[0]);
 				nbbuffers--;
@@ -624,7 +621,7 @@ bool OpenALSource::updateCulling() {
 	
 	Vec3f listener_pos;
 	if(channel.flags & FLAG_RELATIVE) {
-		listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
+		listener_pos = Vec3f::ZERO;
 	} else {
 		alGetListener3f(AL_POSITION, &listener_pos.x, &listener_pos.y, &listener_pos.z);
 		AL_CHECK_ERROR_N("getting listener position", return tooFar;)
@@ -788,7 +785,7 @@ aalError OpenALSource::updateBuffers() {
 	time = time - read + newRead;
 	TraceAL("update: read " << read << " -> " << newRead << "  time " << oldTime << " -> " << time);
 	
-	arx_assert_msg(time >= oldTime, " oldTime=" PRINT_SIZE_T " time=" PRINT_SIZE_T " read=" PRINT_SIZE_T " newRead=%d nbuffersProcessed=%d status=%d sourceState=%d" , oldTime, time, read, newRead, nbuffersProcessed, (int)status, sourceState);
+	arx_assert_msg(time >= oldTime, " oldTime=%lu time=%lu read=%lu newRead=%d nbuffersProcessed=%d status=%d sourceState=%d" , (unsigned long)oldTime, (unsigned long)time, (unsigned long)read, newRead, nbuffersProcessed, (int)status, sourceState);
 	ARX_UNUSED(oldTime);
 	read = newRead;
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2012 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -17,21 +17,19 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ARX_CORE_STARTUP_H
-#define ARX_CORE_STARTUP_H
+#ifndef ARX_CORE_URLCONSTANTS_H
+#define ARX_CORE_URLCONSTANTS_H
 
-#include "platform/Platform.h"
+namespace url {
 
-/*!
- * Parse the command line.
- * @return false if the program should exit immediately.
- */
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
-bool parseCommandLine(int argc, char ** argv);
-#else
-bool parseCommandLine(const char * command_line);
-#endif
+typedef const char * const str_t;
 
-bool createUserAndConfigDirectory();
+//! Documentation on how to get the game data
+static str_t help_get_data = "http://arx.vg/Getting_the_game_data";
 
-#endif // ARX_CORE_STARTUP_H
+//! Documentation on how and where to install the game data
+static str_t help_install_data = "http://arx.vg/Data_directories";
+
+} // namespace url
+
+#endif // ARX_CORE_URLCONSTANTS_H

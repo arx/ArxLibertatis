@@ -49,9 +49,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #include "ai/PathFinderManager.h"
+#include "game/NPC.h"
 #include "game/Player.h"
 #include "graphics/Math.h"
 #include "io/log/Logger.h"
+#include "physics/Collisions.h"
 
 using std::min;
 using std::max;
@@ -178,10 +180,11 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 
 	return found;
 }
- 
 
 extern Vec3f vector2D;
-float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) {
+
+float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
+                              CollisionFlags flags) {
 	
 	if (!(flags & CFLAG_EXTRA_PRECISION))
 	{
@@ -220,12 +223,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 			for (long o = 0; o < 5; o++)
 			{
 				float p = (float)o * ( 1.0f / 5 );
-				center.x = (ep->v[n].p.x * p + ep->center.x * (1.f - p));
-				center.y = (ep->v[n].p.y * p + ep->center.y * (1.f - p));
-				center.z = (ep->v[n].p.z * p + ep->center.z * (1.f - p));
-
-				if (PointInCylinder(cyl, &center)) 
-				{
+				center = ep->v[n].p * p + ep->center * (1.f - p);
+				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
@@ -237,24 +236,16 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 		        || (flags & CFLAG_EXTRA_PRECISION)
 		   )
 		{
-			center.x = (ep->v[n].p.x + ep->v[r].p.x) * ( 1.0f / 2 );
-			center.y = (ep->v[n].p.y + ep->v[r].p.y) * ( 1.0f / 2 );
-			center.z = (ep->v[n].p.z + ep->v[r].p.z) * ( 1.0f / 2 );
-
-			if (PointInCylinder(cyl, &center)) 
-			{
+			center = (ep->v[n].p + ep->v[r].p) * 0.5f;
+			if(PointInCylinder(cyl, &center)) {
 				anything = std::min(anything, center.y);
 				return anything;
 			}
 
 			if ((ep->area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (ep->v[n].p.x + ep->center.x) * ( 1.0f / 2 );
-				center.y = (ep->v[n].p.y + ep->center.y) * ( 1.0f / 2 );
-				center.z = (ep->v[n].p.z + ep->center.z) * ( 1.0f / 2 );
-
-				if (PointInCylinder(cyl, &center)) 
-				{
+				center = (ep->v[n].p + ep->center) * 0.5f;
+				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
@@ -262,12 +253,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 
 			if ((ep->area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (center.x + ep->v[n].p.x) * ( 1.0f / 2 );
-				center.y = (center.y + ep->v[n].p.y) * ( 1.0f / 2 );
-				center.z = (center.z + ep->v[n].p.z) * ( 1.0f / 2 );
-
-				if (PointInCylinder(cyl, &center)) 
-				{
+				center = (center + ep->v[n].p) * 0.5f;
+				if(PointInCylinder(cyl, &center)) {
 					anything = std::min(anything, center.y);
 					return anything;
 				}
@@ -295,7 +282,8 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, long flags) 
 //-----------------------------------------------------------------------------
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
+static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
+                                            CollisionFlags flags) {
 	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
@@ -369,7 +357,9 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
 }
 
 extern long MOVING_CYLINDER;
-static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags) {
+static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io,
+	                                         CollisionFlags flags) {
+	
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
 	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
@@ -418,8 +408,7 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ
 		{
 			if ((flags & CFLAG_PLAYER) && (anything < 0.f))
 			{
-				if (player.jumpphase)
-				{
+				if(player.jumpphase != NotJumping) {
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
 					return false;
 				}
@@ -478,7 +467,9 @@ static bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ
 }
 
 
-static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags) {
+static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io,
+                                               float MOVE_CYLINDER_STEP,
+                                               CollisionFlags flags) {
 	
 	MOVING_CYLINDER = 1;
 	DIRECT_PATH = true;
@@ -498,11 +489,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 		return true; 
 	}
 
-	float onedist = 1.f / distance;
-	Vec3f mvector;
-	mvector.x = (ip->targetpos.x - ip->startpos.x) * onedist;
-	mvector.y = (ip->targetpos.y - ip->startpos.y) * onedist;
-	mvector.z = (ip->targetpos.z - ip->startpos.z) * onedist;
+	Vec3f mvector = (ip->targetpos - ip->startpos) / distance;
 
 	while (distance > 0.f)
 	{
@@ -515,10 +502,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 		memcpy(&test, ip, sizeof(IO_PHYSICS));
 
 		// uses test struct to simulate movement.
-		test.cyl.origin.x += mvector.x * curmovedist;
-		test.cyl.origin.y += mvector.y * curmovedist;
-		test.cyl.origin.z += mvector.z * curmovedist;
-
+		test.cyl.origin += mvector * curmovedist;
+		
 		vector2D.x = mvector.x * curmovedist;
 		vector2D.y = 0.f;
 		vector2D.z = mvector.z * curmovedist;
@@ -549,8 +534,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
 			Vec3f vecatt;
-			Vec3f rpos(0,0,0);
-			Vec3f lpos(0,0,0);
+			Vec3f rpos = Vec3f::ZERO;
+			Vec3f lpos = Vec3f::ZERO;
 			long				RFOUND		=	0;
 			long				LFOUND		=	0;
 			long				maxRANGLE	=	90;
@@ -563,19 +548,16 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 			}
 			else ANGLESTEPP	=	30.f;
 
-			register float rangle	=	ANGLESTEPP;
-			register float langle	=	360.f - ANGLESTEPP;
+			float rangle = ANGLESTEPP;
+			float langle = 360.f - ANGLESTEPP;
 
 
 			while (rangle <= maxRANGLE)   //tries on the Right and Left sides
 			{
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
 				float t = radians(MAKEANGLE(rangle));
-				_YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
-				test.cyl.origin.x	+=	vecatt.x * curmovedist;
-				test.cyl.origin.y	+=	vecatt.y * curmovedist;
-				test.cyl.origin.z	+=	vecatt.z * curmovedist;
-
+				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				test.cyl.origin += vecatt * curmovedist;
 				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
 					rpos = test.cyl.origin;
@@ -586,11 +568,8 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));   
 				t = radians(MAKEANGLE(langle));
-				_YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
-				test.cyl.origin.x	+=	vecatt.x * curmovedist;
-				test.cyl.origin.y	+=	vecatt.y * curmovedist;
-				test.cyl.origin.z	+=	vecatt.z * curmovedist;
-
+				YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
+				test.cyl.origin += vecatt * curmovedist;
 				if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 				{
 					lpos = test.cyl.origin;
@@ -629,7 +608,7 @@ static bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ 
 			}
 			else  //stopped
 			{
-				ip->velocity.x = ip->velocity.y = ip->velocity.z = 0.f;
+				ip->velocity = Vec3f::ZERO;
 				MOVING_CYLINDER = 0;
 				return false;
 			}
@@ -733,9 +712,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	bestcyl.radius = 0;
 	currcyl.radius = 40;
 	currcyl.height = -165.f;
-	currcyl.origin.x = pos->x;
-	currcyl.origin.y = pos->y;
-	currcyl.origin.z = pos->z;
+	currcyl.origin = *pos;
 
 	stop_radius = 0;
 	found = 0;
@@ -780,7 +757,7 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 
 	for (long k = 0; k < eb->nbanchors; k++)
 	{
-		_ANCHOR_DATA * ad = &eb->anchors[k];
+		ANCHOR_DATA * ad = &eb->anchors[k];
 
 		if(closerThan(ad->pos, bestcyl.origin, 50.f)) {
 			return false;
@@ -803,14 +780,12 @@ static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INF
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
-	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
+	eb->anchors = (ANCHOR_DATA *)realloc(eb->anchors, sizeof(ANCHOR_DATA) * (eb->nbanchors + 1));
 
-	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
-	ad->pos.x = bestcyl.origin.x; 
-	ad->pos.y = bestcyl.origin.y;
-	ad->pos.z = bestcyl.origin.z; 
-	ad->height = bestcyl.height; 
-	ad->radius = bestcyl.radius; 
+	ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
+	ad->pos = bestcyl.origin;
+	ad->height = bestcyl.height;
+	ad->radius = bestcyl.radius;
 	ad->linked = NULL;
 	ad->nblinked = 0;
 	ad->flags = 0;
@@ -901,7 +876,7 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	if (0)
 		for (long k = 0; k < eb->nbanchors; k++)
 		{
-			_ANCHOR_DATA * ad = &eb->anchors[k];
+			ANCHOR_DATA * ad = &eb->anchors[k];
 
 			if ((ad->pos.x == bestcyl.origin.x)
 			        &&	(ad->pos.y == bestcyl.origin.y)
@@ -924,14 +899,12 @@ static bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg
 	eg->ianchors[eg->nbianchors] = eb->nbanchors;
 	eg->nbianchors++;
 
-	eb->anchors = (_ANCHOR_DATA *)realloc(eb->anchors, sizeof(_ANCHOR_DATA) * (eb->nbanchors + 1));
+	eb->anchors = (ANCHOR_DATA *)realloc(eb->anchors, sizeof(ANCHOR_DATA) * (eb->nbanchors + 1));
 
-	_ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
-	ad->pos.x = bestcyl.origin.x; 
-	ad->pos.y = bestcyl.origin.y; 
-	ad->pos.z = bestcyl.origin.z; 
-	ad->height = bestcyl.height; 
-	ad->radius = bestcyl.radius; 
+	ANCHOR_DATA * ad = &eb->anchors[eb->nbanchors];
+	ad->pos = bestcyl.origin;
+	ad->height = bestcyl.height;
+	ad->radius = bestcyl.radius;
 	ad->linked = NULL;
 	ad->nblinked = 0;
 	ad->flags = 0;
@@ -1054,19 +1027,11 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 					
 							IO_PHYSICS ip;
-							ip.startpos.x = ip.cyl.origin.x = p1.x;
-							ip.startpos.y = ip.cyl.origin.y = p1.y;
-							ip.startpos.z = ip.cyl.origin.z = p1.z;
-							ip.targetpos.x = p2.x;
-							ip.targetpos.y = p2.y;
-							ip.targetpos.z = p2.z;
+							ip.startpos = ip.cyl.origin = p1;
+							ip.targetpos = p2;
 						
 							ip.cyl.height = eb->anchors[eg->ianchors[k]].height; 
 							ip.cyl.radius = eb->anchors[eg->ianchors[k]].radius;
-							Vec3f vect;
-							vect.x = p2.x - p1.x;
-							vect.y = p2.y - p1.y;
-							vect.z = p2.z - p1.z;
 
 							long t = 2;
 
@@ -1082,12 +1047,8 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 							if (t == 1)
 							{
-								ip.startpos.x = ip.cyl.origin.x = p2.x;
-								ip.startpos.y = ip.cyl.origin.y = p2.y;
-								ip.startpos.z = ip.cyl.origin.z = p2.z;
-								ip.targetpos.x = p1.x;
-								ip.targetpos.y = p1.y;
-								ip.targetpos.z = p1.z;
+								ip.startpos = ip.cyl.origin = p2;
+								ip.targetpos = p1;
 
 								ip.cyl.height = eb->anchors[eg2->ianchors[k2]].height;
 								ip.cyl.radius = eb->anchors[eg2->ianchors[k2]].radius; 
@@ -1155,9 +1116,7 @@ static void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb) {
 			EERIE_CYLINDER currcyl;
 			currcyl.radius = 30;
 			currcyl.height = -150.f;
-			currcyl.origin.x = pos.x;
-			currcyl.origin.y = pos.y;
-			currcyl.origin.z = pos.z;
+			currcyl.origin = pos;
 
 			if (eg->nbpolyin)
 			{
@@ -1317,9 +1276,7 @@ void AnchorData_Create(EERIE_BACKGROUND * eb) {
 				EERIE_CYLINDER currcyl;
 				currcyl.radius = 20 - (4.f * divv);
 				currcyl.height = -120.f;
-				currcyl.origin.x = pos.x;
-				currcyl.origin.y = pos.y;
-				currcyl.origin.z = pos.z;
+				currcyl.origin = pos;
 
 				if (ep)
 				{

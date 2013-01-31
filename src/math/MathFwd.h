@@ -29,9 +29,9 @@ typedef Angle<float> Anglef;
 typedef Angle<double> Angled;
 
 template<class T>
-class _Rectangle;
-typedef _Rectangle<s32> Rect;
-typedef _Rectangle<float> Rectf;
+class Rectangle_;
+typedef Rectangle_<s32> Rect;
+typedef Rectangle_<float> Rectf;
 
 template <class T>
 class Vector2;

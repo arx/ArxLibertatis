@@ -50,13 +50,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 
+#include "game/Entity.h"
 #include "game/Spells.h"
-#include "graphics/data/Mesh.h"
 #include "math/MathFwd.h"
 #include "platform/Flags.h"
 
 struct EERIE_3DOBJ;
 class TextureContainer;
+
+#define MAX_EQUIPED 12
 
 struct ARX_NECKLACE {
 	EERIE_3DOBJ * lacet;
@@ -120,6 +122,14 @@ enum RuneFlag {
 DECLARE_FLAGS(RuneFlag, RuneFlags)
 DECLARE_FLAGS_OPERATORS(RuneFlags)
 
+enum JumpPhase {
+	NotJumping = 0,
+	JumpStart = 1,
+	JumpAscending = 2,
+	JumpDescending = 4,
+	JumpEnd = 5
+};
+
 struct ARXCHARACTER {
 	
 	Vec3f pos;
@@ -130,14 +140,14 @@ struct ARXCHARACTER {
 	// Jump Sub-data
 	unsigned long jumpstarttime;
 	float jumplastposition;
-	long jumpphase; //!< 0 no jump, 1 doing anticipation anim, 2 moving_up, 3 moving_down, 4 finish_anim
+	JumpPhase jumpphase;
 	
 	short climbing;
 	short levitate;
 	
 	Anglef desiredangle;
 	Vec3f size;
-	void * inzone;
+	ARX_PATH * inzone;
 	
 	long falling;
 	short doingmagic;
@@ -147,10 +157,10 @@ struct ARXCHARACTER {
 	PlayerMovement Last_Movement;
 	long onfirmground;
 	
-	INTERACTIVE_OBJ * rightIO;
-	INTERACTIVE_OBJ * leftIO;
-	INTERACTIVE_OBJ * equipsecondaryIO;
-	INTERACTIVE_OBJ * equipshieldIO;
+	Entity * rightIO;
+	Entity * leftIO;
+	Entity * equipsecondaryIO;
+	Entity * equipshieldIO;
 	
 	short equiped[MAX_EQUIPED]; 
 	
@@ -173,10 +183,6 @@ struct ARXCHARACTER {
 	float Mod_resist_poison;
 	float Mod_Critical_Hit;
 	float Mod_damages;
-	float Mod_life;
-	float Mod_maxlife;
-	float Mod_mana;
-	float Mod_maxmana;
 	
 	// Full Frame values (including items)
 	float Full_Attribute_Strength;
@@ -204,7 +210,6 @@ struct ARXCHARACTER {
 	long Full_Weapon_Type;
 	float Full_life;
 	float Full_maxlife;
-	float Full_mana;
 	float Full_maxmana;
 	
 	// true (naked) Player Values
@@ -261,11 +266,29 @@ struct ARXCHARACTER {
 	float damages;
 	float poison;
 	float hunger;
-	float grnd_color;
 	PlayerFlags playerflags;
 	long gold;
 	short bag;
 	ARX_INTERFACE_MEMORIZE_SPELL SpellToMemorize;
+	
+	static float baseRadius() { return 52.f; }
+	static float baseHeight() { return -170.f; }
+	static float crouchHeight() { return -120.f; }
+	static float levitateHeight() { return -220.f; }
+	
+	static Vec3f baseOffset() { return Vec3f(0.f, baseHeight(), 0.f); }
+	
+	Vec3f basePosition() {
+		return Vec3f(pos.x, pos.y - baseHeight(), pos.z);
+	}
+	
+	EERIE_CYLINDER baseCylinder() {
+		EERIE_CYLINDER c;
+		c.height = baseHeight();
+		c.radius = baseRadius();
+		c.origin = basePosition();
+		return c;
+	}
 	
 };
 
@@ -284,7 +307,6 @@ extern ARXCHARACTER player;
 extern ARX_NECKLACE necklace;
 extern EERIE_3DOBJ * hero;
 extern ANIM_HANDLE * herowaitbook;
-extern ANIM_HANDLE * herowait2;
 extern ANIM_HANDLE * herowait_2h;
 extern std::vector<STRUCT_QUEST> PlayerQuest;
 extern std::vector<KEYRING_SLOT> Keyring;
@@ -293,14 +315,12 @@ extern float DeadCameraDistance;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long USE_PLAYERCOLLISIONS;
 extern long WILLRETURNTOCOMBATMODE;
-extern float PLAYER_BASE_RADIUS;
-extern float PLAYER_BASE_HEIGHT;
 
 void ARX_PLAYER_MakeSpHero();
 void ARX_PLAYER_LoadHeroAnimsAndMesh();
 void ARX_PLAYER_InitPlayer();
 void ARX_PLAYER_BecomesDead();
-void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io);
+void ARX_PLAYER_ClickedOnTorch(Entity * io);
 void ARX_PLAYER_RectifyPosition();
 void ARX_PLAYER_Frame_Update();
 void ARX_PLAYER_Manage_Movement();
@@ -315,35 +335,26 @@ void ARX_PLAYER_MakeFreshHero();
 void ARX_PLAYER_QuickGeneration();
 void ARX_PLAYER_MakeAverageHero();
 void ARX_PLAYER_Modify_XP(long val);
-void ARX_PLAYER_FrameCheck(float _framedelay);
+void ARX_PLAYER_FrameCheck(float Framedelay);
 void ARX_PLAYER_Poison(float val);
 void ARX_PLAYER_Manage_Visual();
 void ARX_PLAYER_Remove_Invisibility();
 void ARX_Player_Rune_Add(RuneFlag rune);
 void ARX_Player_Rune_Remove(RuneFlag rune);
 void ARX_PLAYER_AddGold(long value);
-void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold);
+void ARX_PLAYER_AddGold(Entity * gold);
 void ARX_PLAYER_AddBag();
-bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ * item);
+bool ARX_PLAYER_CanStealItem(Entity * item);
 
 void ARX_KEYRING_Init();
 void ARX_KEYRING_Add(const std::string & key);
-void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io);
+void ARX_KEYRING_Combine(Entity * io);
 
 void ARX_PLAYER_Reset_Fall();
 void ARX_PLAYER_KillTorch();
 void ARX_PLAYER_PutPlayerInNormalStance(long val);
 void ARX_PLAYER_Start_New_Quest();
 void ARX_PLAYER_Rune_Add_All();
-float ARX_PLAYER_Get_Skill_Stealth(long type);
-float ARX_PLAYER_Get_Skill_Mecanism(long type);
-float ARX_PLAYER_Get_Skill_Intuition(long type);
-float ARX_PLAYER_Get_Skill_Etheral_Link(long type);
-float ARX_PLAYER_Get_Skill_Object_Knowledge(long type);
-float ARX_PLAYER_Get_Skill_Casting(long type);
-float ARX_PLAYER_Get_Skill_Projectile(long type);
-float ARX_PLAYER_Get_Skill_Close_Combat(long type);
-float ARX_PLAYER_Get_Skill_Defense(long type);
  
 void ARX_PLAYER_Restore_Skin();
 float GetPlayerStealth();
@@ -354,6 +365,6 @@ long GetXPforLevel(long level);
 bool ARX_PLAYER_IsInFightMode();
 void ARX_PLAYER_Invulnerability(long flag);
 
-void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
+void ForcePlayerLookAtIO(Entity * io);
 
 #endif // ARX_GAME_PLAYER_H

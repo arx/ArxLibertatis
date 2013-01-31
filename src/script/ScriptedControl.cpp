@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "game/EntityManager.h"
 #include "graphics/GraphicsModes.h"
 #include "physics/Attractors.h"
 #include "physics/Collisions.h"
@@ -66,13 +67,13 @@ class ActivatePhysicsCommand : public Command {
 	
 public:
 	
-	ActivatePhysicsCommand() : Command("activatephysics", ANY_IO) { }
+	ActivatePhysicsCommand() : Command("activatephysics", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		DebugScript("");
 		
-		ARX_INTERACTIVE_ActivatePhysics(GetInterNum(context.getIO()));
+		ARX_INTERACTIVE_ActivatePhysics(context.getEntity()->index());
 		
 		return Success;
 	}
@@ -89,7 +90,7 @@ public:
 		
 		string target = context.getWord();
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		string power = context.getWord();
 		
@@ -103,7 +104,7 @@ public:
 		
 		DebugScript(' ' << target << ' ' << val << ' ' << radius);
 		
-		ARX_SPECIAL_ATTRACTORS_Add(GetInterNum(t), val, radius);
+		ARX_SPECIAL_ATTRACTORS_Add((t == NULL) ? -1 : t->index(), val, radius);
 		
 		return Success;
 	}
@@ -161,7 +162,7 @@ class AnchorBlockCommand : public Command {
 	
 public:
 	
-	AnchorBlockCommand() : Command("anchorblock", ANY_IO) { }
+	AnchorBlockCommand() : Command("anchorblock", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -169,7 +170,7 @@ public:
 		
 		DebugScript(' ' << choice);
 		
-		ANCHOR_BLOCK_By_IO(context.getIO(), choice ? 1 : 0);
+		ANCHOR_BLOCK_By_IO(context.getEntity(), choice ? 1 : 0);
 		
 		return Success;
 	}
@@ -185,18 +186,21 @@ public:
 	Result execute(Context & context) {
 		
 		string sourceio = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(sourceio, context.getIO());
+		Entity * t = entities.getById(sourceio, context.getEntity());
 		
 		string source = context.getWord(); // source action_point
 		
 		string targetio = context.getWord();
-		INTERACTIVE_OBJ * t2 = inter.getById(targetio, context.getIO());
+		Entity * t2 = entities.getById(targetio, context.getEntity());
 		
 		string target = context.getWord();
 		
 		DebugScript(' ' << sourceio << ' ' << source << ' ' << targetio << ' ' << target);
 		
-		ARX_INTERACTIVE_Attach(GetInterNum(t), GetInterNum(t2), source, target);
+		long i = (t == NULL) ? -1 : t->index();
+		long i2 = (t2 == NULL) ? -1 : t2->index();
+		
+		ARX_INTERACTIVE_Attach(i, i2, source, target);
 		
 		return Success;
 	}
@@ -247,7 +251,7 @@ class SetGroupCommand : public Command {
 	
 public:
 	
-	SetGroupCommand() : Command("setgroup", ANY_IO) { }
+	SetGroupCommand() : Command("setgroup", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -260,12 +264,12 @@ public:
 		
 		DebugScript(' ' << options << ' ' << group);
 		
-		INTERACTIVE_OBJ & io = *context.getIO();
+		Entity & io = *context.getEntity();
 		if(group == "door") {
 			if(rem) {
-				io.GameFlags &= ~GFLAG_DOOR;
+				io.gameFlags &= ~GFLAG_DOOR;
 			} else {
-				io.GameFlags |= GFLAG_DOOR;
+				io.gameFlags |= GFLAG_DOOR;
 			}
 		}
 		
@@ -371,19 +375,19 @@ public:
 		
 		DebugScript(' ' << source << ' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(source, context.getIO());
+		Entity * t = entities.getById(source, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown source: " << source;
 			return Failed;
 		}
 		
-		INTERACTIVE_OBJ * t2 = inter.getById(target, context.getIO());
+		Entity * t2 = entities.getById(target, context.getEntity());
 		if(!t2) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ARX_INTERACTIVE_Detach(GetInterNum(t), GetInterNum(t2));
+		ARX_INTERACTIVE_Detach(t->index(), t2->index());
 		
 		return Success;
 	}

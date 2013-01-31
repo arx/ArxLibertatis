@@ -19,6 +19,8 @@
  
 #include "platform/Dialog.h"
 
+#include <iostream>
+
 #include "platform/Platform.h"
 
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
@@ -31,15 +33,17 @@
 #endif
 
 #include <boost/format.hpp>
+#include <boost/foreach.hpp>
 
-#include "io/log/Logger.h"
-#include "platform/String.h"
+#include "util/String.h"
+
 
 namespace dialog {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-bool showDialog(DialogType type, const std::string& message, const std::string & dialogTitle) {
+bool showDialog(DialogType type, const std::string & message,
+                const std::string & dialogTitle) {
 	
 	UINT flags;
 	switch(type) {
@@ -50,7 +54,8 @@ bool showDialog(DialogType type, const std::string& message, const std::string &
 		case DialogOkCancel: flags = MB_ICONQUESTION | MB_OKCANCEL; break;
 	}
 	
-	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(), flags | MB_SETFOREGROUND | MB_TOPMOST);
+	int ret = MessageBoxA(NULL, message.c_str(), dialogTitle.c_str(),
+	                      flags | MB_SETFOREGROUND | MB_TOPMOST);
 	
 	switch(ret) {
 		case IDCANCEL:
@@ -70,24 +75,133 @@ bool showDialog(DialogType type, const std::string& message, const std::string &
                     const std::string & dialogTitle);
 #else
 
-std::string escape(const std::string & input) {
-	return escapeString(input, "\\\"$");
+static std::string escape(const std::string & input) {
+	return util::escapeString(input, "\\\"$");
 }
 
-int zenityCommand(DialogType type, const std::string & message, const std::string & dialogTitle) {
+static bool isAllowedInUrl(char c) {
+	return !isspace(c) && c != '"' && c != '\'' && c != ')';
+}
+
+static void closeLink(std::stringstream & oss, size_t start) {
+	size_t end = oss.tellp();
+	std::vector<char> url(end - start);
+	oss.seekg(start).read(&url.front(), end - start);
+	oss << "\">";
+	oss.write(&url.front(), end - start);
+	oss << "</a>";
+}
+
+/*!
+ * Minimal HTML formatter for error messages
+ *
+ * Features:
+ * ' * ' => html link or nicer bullet point
+ * 'http://' / 'https://' => link
+ * "..." => "<b>...</b>"
+ *
+ * @param newline Keep don't convert newlines to &lt;br&gr; tags.
+ * @param ul      Use HTML lists.
+ */
+static std::string formatAsHtml(const std::string & text, bool newline, bool ul = false) {
+	
+	std::stringstream oss;
+	std::istringstream iss(text);
+	
+	bool list = false, first = true;
+	
+	std::string line;
+	while(!std::getline(iss, line).fail()) {
+		
+		size_t i = 0;
+		
+		if(line.length() >= 3 && line.compare(0, 3, " * ", 3) == 0) {
+			i += 3;
+			
+			if(ul && !list) {
+				oss << "<ul>";
+				list = true;
+			} else if(!ul && !first) {
+				oss << (newline ? "\n" : "<br>");
+			}
+			
+			oss << (ul ? "<li>" : " &#8226; ");
+			
+		} else if(list) {
+			oss << "</ul>";
+			list = false;
+		} else if(!first) {
+			oss << (newline ? "\n" : "<br>");
+		}
+		first = false;
+		
+		bool quote = false, link = false;
+		
+		size_t link_start;
+		
+		for(; i < line.length(); i++) {
+			
+			if(link && !isAllowedInUrl(line[i])) {
+				closeLink(oss, link_start);
+				link = false;
+			}
+			
+			if(line[i] == '<') {
+				oss << "&lt;";
+			} else if(line[i] == '>') {
+				oss << "&gt;";
+			} else if(line[i] == '"') {
+				if(!quote) {
+					oss << "\"<b>";
+				} else {
+					oss << "</b>\"";
+				}
+				quote = !quote;
+			} else if(!link && line.compare(i, 7, "http://", 7) == 0) {
+				oss << "<a href=\"";
+				link_start = oss.tellp(), link = true;
+				oss << "http://";
+				i += 6;
+			} else if(!link && line.compare(i, 8, "https://", 8) == 0) {
+				oss << "<a href=";
+				link_start = oss.tellp(), link = true;
+				oss << "https://";
+				i += 7;
+			} else {
+				oss << line[i];
+			}
+			
+		}
+		
+		if(link) {
+			closeLink(oss, link_start);
+		}
+		
+		if(quote) {
+			oss << "</code>";
+		}
+	}
+	
+	return oss.str();
+}
+
+int zenityCommand(DialogType type, const std::string & message,
+                  const std::string & dialogTitle) {
 	
 	const char * options = "";
 	switch(type) {
 		case DialogInfo:     options = "--info"; break;
 		case DialogWarning:  options = "--warning"; break;
 		case DialogError:    options = "--error"; break;
-		case DialogYesNo:    options = "--question --ok-label=\"Yes\" --cancel-label=\"No\""; break;
-		case DialogOkCancel: options = "--question --ok-label=\"OK\" --cancel-label=\"Cancel\""; break;
+		case DialogYesNo:    options = "--question --ok-label=\"Yes\""
+		                               " --cancel-label=\"No\""; break;
+		case DialogOkCancel: options = "--question --ok-label=\"OK\""
+		                               " --cancel-label=\"Cancel\""; break;
 	}
 	
 	boost::format command("zenity %1% --text=\"%2%\" --title=\"%3%\"");
 	command = command % options;
-	command = command % escape(message);
+	command = command % escape(formatAsHtml(message, true));
 	command = command % escape(dialogTitle);
 	
 	return system(command.str().c_str());
@@ -105,10 +219,29 @@ int kdialogCommand(DialogType type, const std::string & message,
 		case DialogOkCancel: options = "--warningcontinuecancel"; break;
 	}
 	
-	boost::format command("kdialog %1% \"%2%\" --title \"%3%\"");
+	boost::format command("kdialog %1% \"%2%\" --title \"%3%\""
+	                      " --icon arx-libertatis");
 	command = command % options;
-	command = command % escape(message);
+	command = command % escape(formatAsHtml(message, false));
 	command = command % escape(dialogTitle);
+	
+	return system(command.str().c_str());
+}
+
+int gxmessageCommand(DialogType type, const std::string & message,
+                    const std::string & dialogTitle) {
+	
+	const char * options = "";
+	switch(type) {
+		default:             options = "-buttons OK"; break;
+		case DialogYesNo:    options = "-buttons Yes:0,No:1"; break;
+		case DialogOkCancel: options = "-buttons OK:0,Cancel:1"; break;
+	}
+	
+	boost::format command("gxmessage -center %1% -title \"%2%\" \"%3%\"");
+	command = command % options;
+	command = command % escape(dialogTitle);
+	command = command % escape(message);
 	
 	return system(command.str().c_str());
 }
@@ -137,7 +270,6 @@ bool showDialog(DialogType type, const std::string & message,
 	
 	typedef int (*dialogCommand_t)(DialogType type, const std::string & message,
 	                               const std::string & dialogTitle);
-	std::vector<dialogCommand_t> commands;
 	
 	// This may not be the best way
 	const char * session = getenv("DESKTOP_SESSION");
@@ -146,45 +278,43 @@ bool showDialog(DialogType type, const std::string & message,
 	usingKDE = usingKDE || (getenv("KDE_SESSION_UID") != NULL);
 	usingKDE = usingKDE || (getenv("KDE_SESSION_VERSION") != NULL);
 	
-	if(usingKDE) {
-		commands.push_back(&kdialogCommand);
-		commands.push_back(&zenityCommand);
-	} else {
-		commands.push_back(&zenityCommand);
-		commands.push_back(&kdialogCommand);
-	}
-	commands.push_back(&xmessageCommand);
+	dialogCommand_t commands[] = {
+		usingKDE ? &kdialogCommand : &zenityCommand,
+		usingKDE ? &zenityCommand : &kdialogCommand,
+		&gxmessageCommand,
+		&xmessageCommand
+	};
 	
-	for(std::vector<dialogCommand_t>::const_iterator it = commands.begin();
-			it != commands.end(); ++it) {
-		int exitCode = (*it)(type, message, dialogTitle);
-		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0 && WEXITSTATUS(exitCode) < 127) {
+	BOOST_FOREACH(dialogCommand_t command, commands) {
+		int exitCode = command(type, message, dialogTitle);
+		if(WIFEXITED(exitCode) && WEXITSTATUS(exitCode) >= 0
+		   && WEXITSTATUS(exitCode) < 127) {
 			return WEXITSTATUS(exitCode) == 0;
 		}
 	}
 	
-	LogWarning << "Failed to show a dialog: [" << dialogTitle << "] " << message;
+	std::cerr << "Failed to show a dialog: " << dialogTitle << ": " << message << std::endl;
 	return true;
 }
 #endif
-	
-void showInfo(const std::string& message, const std::string& dialogTitle) {
+
+void showInfo(const std::string & message, const std::string & dialogTitle) {
 	showDialog(DialogInfo, message, dialogTitle);
 }
 
-void showWarning(const std::string& message, const std::string& dialogTitle) {
+void showWarning(const std::string & message, const std::string & dialogTitle) {
 	showDialog(DialogWarning, message, dialogTitle);
 }
 
-void showError(const std::string& message, const std::string& dialogTitle) {
+void showError(const std::string & message, const std::string & dialogTitle) {
 	showDialog(DialogError, message, dialogTitle);
 }
 
-bool askYesNo(const std::string& question, const std::string& dialogTitle) {
+bool askYesNo(const std::string & question, const std::string & dialogTitle) {
 	return showDialog(DialogYesNo, question, dialogTitle);
 }
 
-bool askOkCancel(const std::string& question, const std::string& dialogTitle) {
+bool askOkCancel(const std::string & question, const std::string & dialogTitle) {
 	return showDialog(DialogOkCancel, question, dialogTitle);
 }
 

@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "core/GameTime.h"
 #include "core/Core.h"
+#include "game/Entity.h"
+#include "game/EntityManager.h"
 #include "game/Inventory.h"
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
@@ -60,9 +62,6 @@ EERIE_LIGHT DynLight[MAX_DYNLIGHTS];
 
 EERIE_LIGHT * PDL[MAX_DYNLIGHTS];
 long TOTPDL = 0;
-
-long PROGRESS_COUNT = 0;
-long PROGRESS_TOTAL = 0;
 
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
@@ -79,29 +78,23 @@ bool ValidDynLight(long num)
 	return false;
 }
 
-void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
-{
+void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
+	
 	static Vec3f lastpos;
-
-	if (flags & 1)
-	{
-		lastpos.x = 99999.f + lastpos.x;
-		lastpos.y = 99999.f + lastpos.y;
-		lastpos.z = 99999.f + lastpos.z;
+	if(flags & 1) {
+		lastpos = Vec3f::repeat(99999.f) + lastpos;
 		return;
 	}
-
+	
 	// Lastpos optim
 	if(closerThan(*pos, lastpos, 100.f)) {
 		return;
 	}
-
-	lastpos.x = pos->x;
-	lastpos.y = pos->y;
-	lastpos.z = pos->z;
-
+	
+	lastpos = *pos;
+	
 	TOTIOPDL = 0;
-
+	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
 		
 		EERIE_LIGHT * el = GLight[i];
@@ -112,10 +105,8 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags)
 			if ((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
 			        && (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
 			{
-
-				el->rgb255.r = el->rgb.r * 255.f;
-				el->rgb255.g = el->rgb.g * 255.f;
-				el->rgb255.b = el->rgb.b * 255.f;
+				
+				el->rgb255 = el->rgb * 255.f;
 				el->falldiff = el->fallend - el->fallstart;
 				el->falldiffmul = 1.f / el->falldiff;
 				el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
@@ -347,13 +338,11 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
 
-	Vec3f orgn, dest;
+	Vec3f dest;
 	Vec3f hit;
-
-	orgn.x = light->pos.x;
-	orgn.y = light->pos.y;
-	orgn.z = light->pos.z;
-
+	
+	Vec3f orgn = light->pos;
+	
 	for (long j = pz - 2; j <= pz + 2; j++)
 		for (long i = px - 2; i <= px + 2; i++)
 		{
@@ -380,18 +369,11 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 								(fabs(ep->v[a].p.z - z) <= fDiff))
 						{
 
-							if (dot(*mon_ep->nrml, *ep->nrml) > 0.0f)
-							{
+							if(dot(*mon_ep->nrml, *ep->nrml) > 0.0f) {
 								nb_totalvertexinpoly += nbvert;
-
-								for (b = 0; b < nbvert; b++)
-								{
-									dest.x = ep->v[b].p.x;
-									dest.y = ep->v[b].p.y;
-									dest.z = ep->v[b].p.z;
-
-									if (Visible(&orgn, &dest, ep, &hit))
-									{
+								for(b = 0; b < nbvert; b++) {
+									dest = ep->v[b].p;
+									if(Visible(&orgn, &dest, ep, &hit)) {
 										nb_shadowvertexinpoly ++;
 									}
 								}
@@ -481,19 +463,12 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 	}
 }
 
-long	DYNAMIC_NORMALS = 1;
-
-extern EERIE_CAMERA DynLightCam;
-
-//-----------------------------------------------------------------------------
-void ComputeLight2DPos(EERIE_LIGHT * _pL)
-{
+void ComputeLight2DPos(EERIE_LIGHT * _pL) {
+	
 	TexturedVertex in, out;
-	in.p.x = _pL->pos.x;
-	in.p.y = _pL->pos.y;
-	in.p.z = _pL->pos.z;
+	in.p = _pL->pos;
 	EERIETreatPoint(&in, &out);
-
+	
 	if ((out.p.z > 0.f) && (out.p.z < 1000.f) && (out.rhw > 0))
 	{
 		float t;
@@ -550,15 +525,11 @@ void TreatBackgroundDynlights()
 					GLight[i]->tl = -1;
 					Vec3f _pos2;
 
-					for (long l = 0; l < inter.nbmax; l++)
-					{
-						if ((inter.iobj[l] != NULL) &&
-						        (inter.iobj[l]->ioflags & IO_MARKER))
-						{
-							GetItemWorldPosition(inter.iobj[l], &_pos2);
-
+					for(size_t l = 0; l < entities.size(); l++) {
+						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
+							GetItemWorldPosition(entities[l], &_pos2);
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "douse");
+								SendIOScriptEvent(entities[l], SM_CUSTOM, "douse");
 							}
 						}
 					}
@@ -571,29 +542,21 @@ void TreatBackgroundDynlights()
 				{
 					Vec3f _pos2;
 
-					for (long l = 0; l < inter.nbmax; l++)
-					{
-						if ((inter.iobj[l] != NULL) &&
-						        (inter.iobj[l]->ioflags & IO_MARKER))
-						{
-							GetItemWorldPosition(inter.iobj[l], &_pos2);
-
+					for(size_t l = 0; l < entities.size(); l++) {
+						if(entities[l] && (entities[l]->ioflags & IO_MARKER)) {
+							GetItemWorldPosition(entities[l], &_pos2);
 							if(!fartherThan(GLight[i]->pos, _pos2, 300.f)) {
-								SendIOScriptEvent(inter.iobj[l], SM_CUSTOM, "fire");
+								SendIOScriptEvent(entities[l], SM_CUSTOM, "fire");
 							}
 						}
 					}
 
 					GLight[i]->tl = GetFreeDynLight();
 				}
-
+				
 				n = GLight[i]->tl;
-
-				if (n != -1)
-				{
-					DynLight[n].pos.x		=	GLight[i]->pos.x;
-					DynLight[n].pos.y		=	GLight[i]->pos.y;
-					DynLight[n].pos.z		=	GLight[i]->pos.z;
+				if(n != -1) {
+					DynLight[n].pos = GLight[i]->pos;
 					DynLight[n].exist		=	1;
 					DynLight[n].fallstart	=	GLight[i]->fallstart;
 					DynLight[n].fallend		=	GLight[i]->fallend;
@@ -606,17 +569,9 @@ void TreatBackgroundDynlights()
 					DynLight[n].rgb.r = GLight[i]->rgb.r - GLight[i]->rgb.r * GLight[i]->ex_flicker.r * rnd() * ( 1.0f / 2 ); 
 					DynLight[n].rgb.g = GLight[i]->rgb.g - GLight[i]->rgb.g * GLight[i]->ex_flicker.g * rnd() * ( 1.0f / 2 ); 
 					DynLight[n].rgb.b = GLight[i]->rgb.b - GLight[i]->rgb.b * GLight[i]->ex_flicker.b * rnd() * ( 1.0f / 2 ); 
-
-					if (DynLight[n].rgb.r < 0.f) DynLight[n].rgb.r = 0.f;
-
-					if (DynLight[n].rgb.g < 0.f) DynLight[n].rgb.g = 0.f;
-
-					if (DynLight[n].rgb.b < 0.f) DynLight[n].rgb.b = 0.f;
 					
-					DynLight[n].rgb255.r = DynLight[n].rgb.r * 255.f;
-					DynLight[n].rgb255.g = DynLight[n].rgb.g * 255.f;
-					DynLight[n].rgb255.b = DynLight[n].rgb.b * 255.f;
-
+					DynLight[n].rgb = componentwise_max(DynLight[n].rgb, Color3f::black);
+					DynLight[n].rgb255 = DynLight[n].rgb * 255.f;
 					DynLight[n].falldiff = DynLight[n].fallend - DynLight[n].fallstart;
 					DynLight[n].falldiffmul = 1.f / DynLight[n].falldiff;
 					DynLight[n].precalc = DynLight[n].intensity * GLOBAL_LIGHT_FACTOR;
@@ -628,13 +583,11 @@ void TreatBackgroundDynlights()
 }
 
 
-//-----------------------------------------------------------------------------
-void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
-{
-
+void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
+	
 	TreatBackgroundDynlights();
 	TOTPDL = 0;
-
+	
 	float fx0 = ACTIVEBKG->Xdiv * (float)x0;
 	float fz0 = ACTIVEBKG->Zdiv * (float)z0;
 	float fx1 = ACTIVEBKG->Xdiv * (float)x1;
@@ -654,9 +607,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 			        && bDist)
 			{
 				el->treat = 1;
-				el->rgb255.r = el->rgb.r * 255.f;
-				el->rgb255.g = el->rgb.g * 255.f;
-				el->rgb255.b = el->rgb.b * 255.f;
+				el->rgb255 = el->rgb * 255.f;
 				el->falldiff = el->fallend - el->fallstart;
 				el->falldiffmul = 1.f / el->falldiff;
 				el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
@@ -676,7 +627,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1)
 				{
 
 
-					float sub = _framedelay * 0.001f;
+					float sub = framedelay * 0.001f;
 					el->rgb.r -= sub;
 
 					if (el->rgb.r < 0) el->rgb.r = 0.f;
@@ -757,15 +708,11 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 			GLight[i]->falldiff = GLight[i]->fallend - GLight[i]->fallstart;
 			GLight[i]->falldiffmul = 1.f / GLight[i]->falldiff;
-			GLight[i]->rgb255.r = GLight[i]->rgb.r * 255.f;
-			GLight[i]->rgb255.g = GLight[i]->rgb.g * 255.f;
-			GLight[i]->rgb255.b = GLight[i]->rgb.b * 255.f;
+			GLight[i]->rgb255 = GLight[i]->rgb * 255.f;
 			GLight[i]->precalc = GLight[i]->intensity * GLOBAL_LIGHT_FACTOR;
 		}
 	}
-
-	PROGRESS_COUNT = PROGRESS_TOTAL = 0;
-
+	
 	for (long j = minz; j <= maxz; j++)
 	{
 		for (long i = minx; i <= maxx; i++)
@@ -774,20 +721,6 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 			for (long k = 0; k < eg->nbpoly; k++)
 			{
-				PROGRESS_TOTAL++;
-			}
-		}
-	}
-
-	for (long j = minz; j <= maxz; j++)
-	{
-		for (long i = minx; i <= maxx; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
-				PROGRESS_COUNT++;
 				EERIEPOLY * ep = &eg->polydata[k];
 					
 				if(ep) {
@@ -799,7 +732,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	}
 }
 
-void _RecalcLightZone(float x, float z, long siz) {
+void RecalcLightZone(float x, float z, long siz) {
 	
 	long i, j, x0, x1, z0, z1;
 

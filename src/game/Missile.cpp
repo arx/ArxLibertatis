@@ -82,8 +82,8 @@ struct ARX_MISSILE
 	long		owner;
 };
 
-const size_t MAX_MISSILES = 100;
-ARX_MISSILE missiles[MAX_MISSILES];
+static const size_t MAX_MISSILES = 100;
+static ARX_MISSILE missiles[MAX_MISSILES];
 
 // Gets a Free Projectile Slot
 long ARX_MISSILES_GetFree() {
@@ -126,13 +126,13 @@ void ARX_MISSILES_ClearAll() {
 
 //-----------------------------------------------------------------------------
 // Spawns a Projectile using type, starting position/TargetPosition
-void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos) {
+void ARX_MISSILES_Spawn(Entity * io, ARX_SPELLS_MISSILE_TYPE type, const Vec3f * startpos, const Vec3f * targetpos) {
 	
 	long i(ARX_MISSILES_GetFree());
 
 	if (i == -1) return;
 
-	missiles[i].owner = GetInterNum(io);
+	missiles[i].owner = (io == NULL) ? -1 : io->index();
 	missiles[i].type = type;
 	missiles[i].lastpos = missiles[i].startpos = *startpos;
 
@@ -204,107 +204,86 @@ void ARX_MISSILES_Update()
 					DynLight[missiles[i].longinfo].pos = pos;
 				}
 
-#ifdef BUILD_EDITOR
-				if (USE_COLLISIONS)
-#endif
-				{
-					orgn = missiles[i].lastpos;
-					dest = pos;
-					
-					EERIEPOLY *ep;
-					EERIEPOLY *epp;
-					Vec3f tro;
-					tro.x = 70.0F;
-					tro.y = 70.0F;
-					tro.z = 70.0F;
+				orgn = missiles[i].lastpos;
+				dest = pos;
+				
+				EERIEPOLY *ep;
+				EERIEPOLY *epp;
+				
+				Vec3f tro = Vec3f::repeat(70.f);
+				
+				ep = GetMinPoly(dest.x, dest.y, dest.z);
+				epp = GetMaxPoly(dest.x, dest.y, dest.z);
 
-					CURRENTINTER = NULL;
-					ep = GetMinPoly(dest.x, dest.y, dest.z);
-					epp = GetMaxPoly(dest.x, dest.y, dest.z);
-
-					if(closerThan(player.pos, pos, 200.f)) {
-						ARX_MISSILES_Kill(i);
-						ARX_BOOMS_Add(&pos);
-						Add3DBoom(&pos);
-						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-						break;
-					}
-
-					if (ep  && ep->center.y < dest.y)
-					{
-						ARX_MISSILES_Kill(i);
-						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest);
-						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-						break;
-					}
-
-					if (epp && epp->center.y > dest.y)
-					{
-						ARX_MISSILES_Kill(i);
-						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest);
-						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-						break;
-					}
-
-					if (EERIELaunchRay3(&orgn, &dest, &hit, tp, 1))
-					{
-						ARX_MISSILES_Kill(i);
-						ARX_BOOMS_Add(&hit);
-						Add3DBoom(&hit);
-						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-						break;
-					}
-
-					if ( !EECheckInPoly(&dest) || EEIsUnderWater(&dest) )
-					{
-						ARX_MISSILES_Kill(i);
-						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest);
-						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-						break;
-					}
-
-					long ici = IsCollidingAnyInter(dest.x, dest.y, dest.z, &tro);
-
-					if (ici != -1 && ici != missiles[i].owner)
-					{
-						ARX_MISSILES_Kill(i);
-						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest);
-						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
-						break;
-					}
+				if(closerThan(player.pos, pos, 200.f)) {
+					ARX_MISSILES_Kill(i);
+					ARX_BOOMS_Add(&pos);
+					Add3DBoom(&pos);
+					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					break;
 				}
 
-				long j = ARX_PARTICLES_GetFree();
-
-				if (j != -1 && !arxtime.is_paused())
+				if (ep  && ep->center.y < dest.y)
 				{
-					ParticleCount++;
-					particle[j].exist = true;
-					particle[j].zdec = 0;
-					particle[j].ov.x = pos.x;
-					particle[j].ov.y = pos.y;
-					particle[j].ov.z = pos.z;
-					particle[j].move.x = missiles[i].velocity.x + 3.0f - 6.0F * rnd();
-					particle[j].move.y = missiles[i].velocity.y + 4.0F - 12.0F * rnd();
-					particle[j].move.z = missiles[i].velocity.z + 3.0F - 6.0F * rnd();
-					particle[j].timcreation = tim;
-					particle[j].tolive = Random::get(500, 1000);
-					particle[j].tc = tc;
-					particle[j].siz = 12.0F * (float)(missiles[i].tolive - framediff3) * ( 1.0f / 4000 );
-					particle[j].scale.x = 15.0F + rnd() * 5.0F;
-					particle[j].scale.y = 15.0F + rnd() * 5.0F;
-					particle[j].scale.z = 15.0F + rnd() * 5.0F;
-					particle[j].special = FIRE_TO_SMOKE;
+					ARX_MISSILES_Kill(i);
+					ARX_BOOMS_Add(&dest);
+					Add3DBoom(&dest);
+					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					break;
 				}
 
-				missiles[i].lastpos.x = pos.x;
-				missiles[i].lastpos.y = pos.y;
-				missiles[i].lastpos.z = pos.z;
+				if (epp && epp->center.y > dest.y)
+				{
+					ARX_MISSILES_Kill(i);
+					ARX_BOOMS_Add(&dest);
+					Add3DBoom(&dest);
+					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					break;
+				}
 
+				if (EERIELaunchRay3(&orgn, &dest, &hit, tp, 1))
+				{
+					ARX_MISSILES_Kill(i);
+					ARX_BOOMS_Add(&hit);
+					Add3DBoom(&hit);
+					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					break;
+				}
+
+				if ( !EECheckInPoly(&dest) || EEIsUnderWater(&dest) )
+				{
+					ARX_MISSILES_Kill(i);
+					ARX_BOOMS_Add(&dest);
+					Add3DBoom(&dest);
+					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					break;
+				}
+
+				long ici = IsCollidingAnyInter(dest.x, dest.y, dest.z, &tro);
+
+				if (ici != -1 && ici != missiles[i].owner)
+				{
+					ARX_MISSILES_Kill(i);
+					ARX_BOOMS_Add(&dest);
+					Add3DBoom(&dest);
+					DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
+					break;
+				}
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(pd) {
+					pd->ov = pos;
+					pd->move = missiles[i].velocity;
+					pd->move += Vec3f(3.f - 6.f * rnd(), 4.f - 12.f * rnd(), 3.f - 6.f * rnd());
+					pd->tolive = Random::get(500, 1000);
+					pd->tc = tc;
+					pd->siz = 12.f * float(missiles[i].tolive - framediff3) * (1.f / 4000);
+					pd->scale = randomVec(15.f, 20.f);
+					pd->special = FIRE_TO_SMOKE;
+				}
+				
+				missiles[i].lastpos = pos;
+				
 				break;
 			}
 		}

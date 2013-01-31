@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifdef BUILD_EDITOR
 
-extern int iCreateMap;
-
 bool NeedMapCreation();
 void DANAE_Manage_CreateMap();
 

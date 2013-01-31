@@ -72,8 +72,7 @@ void ARX_MENU_LaunchAmb(const string & _lpszAmb);
 struct CreditsTextInformations {
 	
 	CreditsTextInformations() {
-		sPos.x = 0;
-		sPos.y = 0;
+		sPos = Vec2i::ZERO;
 		fColors = Color::none;
 	}
 	
@@ -143,7 +142,7 @@ static void addCreditsLine(string & phrase, float & drawpos) {
 	//int linesize = hFontCredits->GetTextSize(phrase).x;
 	
 	static const int MARGIN_WIDTH = 20;
-	Rect linerect(DANAESIZX - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->GetLineHeight());
+	Rect linerect(DANAESIZX - MARGIN_WIDTH - MARGIN_WIDTH, hFontCredits->getLineHeight());
 	
 	while(!phrase.empty()) {
 		
@@ -155,7 +154,7 @@ static void addCreditsLine(string & phrase, float & drawpos) {
 		phrase = phrase.substr(n + 1);
 		
 		// Center the text on the screen
-		int linesize = hFontCredits->GetTextSize(infomations.sText).x;
+		int linesize = hFontCredits->getTextSize(infomations.sText).x;
 		infomations.sPos.x = (DANAESIZX - linesize) / 2;
 		
 		LogDebug("credit line: '" << infomations.sText << "' (" << linesize << "," << infomations.sText.length() << ")");
@@ -173,7 +172,7 @@ static void addCreditsLine(string & phrase, float & drawpos) {
 static void CalculAverageWidth() {
 	
 	// Calculate the average value
-	Vec2i size = hFontCredits->GetTextSize("aA(");
+	Vec2i size = hFontCredits->getTextSize("aA(");
 	CreditsData.iFontAverageHeight = size.y;
 }
 
@@ -205,7 +204,7 @@ static void strip(string & str) {
 static void ExtractAllCreditsTextInformations() {
 	
 	// Retrieve the rows to display
-	std::istringstream iss(ARXmenu.mda->str_cre_credits);
+	std::istringstream iss(ARXmenu.mda->credits);
 	string phrase;
 
 	//Use to calculate the positions
@@ -262,7 +261,7 @@ void Credits::render() {
 			//Display the text only if he is on the viewport
 			if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
 			{
-				hFontCredits->Draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
+				hFontCredits->draw(it->sPos.x, static_cast<int>(yy), it->sText, it->fColors);
 			}
 			
 			if (yy <= -CreditsData.iFontAverageHeight)

@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GRAPHICS_SPELLS_SPELLS07_H
 #define ARX_GRAPHICS_SPELLS_SPELLS07_H
 
+#include "game/Entity.h"
 #include "graphics/Vertex.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/effects/SpellEffects.h"
@@ -53,13 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Vector3.h"
 
 // Done By : Didier Pedreno
-class CLightningNode
-{
-	public:
-		float x, y, z;
-		float size;
-		int parent;
-		float fx, fy, fz;
+struct CLightningNode {
+	Vec3f pos;
+	float size;
+	int parent;
+	Vec3f f;
 };
 
 class CLightning: public CSpellFx

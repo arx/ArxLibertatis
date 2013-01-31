@@ -28,15 +28,15 @@ std::string expandEnvironmentVariables(const std::string & in);
 
 bool getSystemConfiguration(const std::string & name, std::string & result);
 
-void defineSystemDirectories();
+void defineSystemDirectories(const char * argv0);
 
 //! Get the path to the current running executable if possible or an empty string otherwise.
 std::string getExecutablePath();
 
 #if ARX_PLATFORM != ARX_PLATFORM_WIN32
-const char env_list_seperator = ':';
+static const char * const env_list_seperators = ":";
 #else
-const char env_list_seperator = ';';
+static const char * const env_list_seperators = ";";
 #endif
 
 #endif // ARX_PLATFORM_ENVIRONMENT_H

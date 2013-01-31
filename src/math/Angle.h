@@ -166,7 +166,7 @@ inline float MAKEANGLE(float a) {
 
 float InterpolateAngle(float a1, float a2, float p);
 
-inline Anglef interploate(const Anglef & a1, const Anglef & a2, float p) {
+inline Anglef interpolate(const Anglef & a1, const Anglef & a2, float p) {
 	return Anglef(InterpolateAngle(a1.a, a2.a, p), InterpolateAngle(a1.b, a2.b, p), InterpolateAngle(a1.g, a2.g, p));
 }
 

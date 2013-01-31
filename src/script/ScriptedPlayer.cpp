@@ -44,8 +44,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "script/ScriptedPlayer.h"
 
 #include "core/Core.h"
-#include "game/Player.h"
+#include "game/EntityManager.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/Player.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -59,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 
 extern float InventoryDir;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 
 namespace script {
 
@@ -243,13 +245,13 @@ class SetPlayerTweakCommand : public Command {
 	
 public:
 	
-	SetPlayerTweakCommand() : Command("setplayertweak", ANY_IO) { }
+	SetPlayerTweakCommand() : Command("setplayertweak", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		string command = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(!io->tweakerinfo) {
 			io->tweakerinfo = new IO_TWEAKER_INFO;
 			if(!io->tweakerinfo) {
@@ -296,9 +298,9 @@ public:
 class SetPlayerControlsCommand : public Command {
 	
 	static void Stack_SendMsgToAllNPC_IO(ScriptMessage msg, const char * dat) {
-		for(long i = 0; i < inter.nbmax; i++) {
-			if(inter.iobj[i] && (inter.iobj[i]->ioflags & IO_NPC)) {
-				Stack_SendIOScriptEvent(inter.iobj[i], msg, dat);
+		for(size_t i = 0; i < entities.size(); i++) {
+			if(entities[i] && (entities[i]->ioflags & IO_NPC)) {
+				Stack_SendIOScriptEvent(entities[i], msg, dat);
 			}
 		}
 	}
@@ -309,8 +311,8 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * oes = EVENT_SENDER;
-		EVENT_SENDER = context.getIO();
+		Entity * oes = EVENT_SENDER;
+		EVENT_SENDER = context.getEntity();
 		
 		bool enable = context.getBool();
 		
@@ -354,7 +356,7 @@ public:
 		
 		player.Interface |= INTER_STEAL;
 		InventoryDir = 1;
-		ioSteal = context.getIO();
+		ioSteal = context.getEntity();
 		
 		return Success;
 	}
@@ -371,7 +373,7 @@ public:
 		
 		string type = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(type == "ylside_death") {
 			DebugScript(" ylside_death");
@@ -414,7 +416,8 @@ public:
 			
 			DebugScript(" newspell");
 			
-			MakeBookFX(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148), 0.00001f);
+			MakeBookFX(Vec3f(DANAESIZX - INTERFACE_RATIO(35), DANAESIZY - INTERFACE_RATIO(148),
+			                 0.00001f));
 			
 		} else if(type == "torch") {
 			
@@ -425,10 +428,9 @@ public:
 				return Failed;
 			}
 			
-			INTERACTIVE_OBJ * ioo = io;
+			Entity * ioo = io;
 			if(io->_itemdata->count > 1) {
 				ioo = CloneIOItem(io);
-				MakeTemporaryIOIdent(ioo);
 				ioo->show = SHOW_FLAG_IN_INVENTORY;
 				ioo->scriptload = 1;
 				ioo->_itemdata->count = 1;
@@ -504,7 +506,7 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
@@ -555,11 +557,11 @@ public:
 			duration = 2000 + level * 2000;
 		}
 		
-		if(context.getIO() != inter.iobj[0]) {
+		if(context.getEntity() != entities.player()) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
-		TryToCastSpell(inter.iobj[0], spellid, level, -1, spflags, duration);
+		TryToCastSpell(entities.player(), spellid, level, -1, spflags, duration);
 		
 		return Success;
 	}
@@ -625,7 +627,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << enable);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(!player && !io) {
 			ScriptWarning << "must either use -p or execute in IO context";
 			return Failed;

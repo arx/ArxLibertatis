@@ -112,6 +112,9 @@ bool rename(const path & old_p, const path & new_p, bool overwrite = false);
  */
 char * read_file(const path & p, size_t & size);
 
+//! @return the current working directory
+path current_path();
+
 class directory_iterator {
 	
 	directory_iterator operator++(int dummy); //!< prevent postfix ++

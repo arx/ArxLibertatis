@@ -47,6 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Localisation.h"
 #include "graphics/Math.h"
+#include "game/Entity.h"
+#include "game/EntityManager.h"
+#include "game/NPC.h"
 #include "gui/Speech.h"
 #include "gui/Interface.h"
 #include "io/resource/ResourcePath.h"
@@ -60,7 +63,6 @@ extern long ARX_CONVERSATION;
 extern long FRAME_COUNT;
 extern Vec3f LASTCAMPOS;
 extern Anglef LASTCAMANGLE;
-extern long FINAL_RELEASE;
 
 namespace script {
 
@@ -94,20 +96,26 @@ public:
 		
 		main_conversation.actors_nb = nb_people;
 		
+#ifdef _DEBUG
 		std::ostringstream oss;
 		oss << ' ' << nbpeople << ' ' << enabled;
+#endif
 		
 		for(long j = 0; j < nb_people; j++) {
 			
 			string target = context.getWord();
-			INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+			Entity * t = entities.getById(target, context.getEntity());
 			
+#ifdef _DEBUG
 			oss << ' ' << target;
+#endif
 			
-			main_conversation.actors[j] = GetInterNum(t);
+			main_conversation.actors[j] = (t == NULL) ? -1 : t->index();
 		}
 		
-		DebugScript(oss);
+#ifdef _DEBUG
+		DebugScript(oss.rdbuf());
+#endif
 		
 		return Success;
 	}
@@ -118,7 +126,7 @@ class PlayCommand : public Command {
 	
 public:
 	
-	PlayCommand() : Command("play", ANY_IO) { }
+	PlayCommand() : Command("play", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -144,7 +152,7 @@ public:
 		
 		DebugScript(' ' << options << ' ' << sample);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(stop) {
 			ARX_SOUND_Stop(io->sound);
 			io->sound = audio::INVALID_ID;
@@ -191,7 +199,7 @@ public:
 		
 		DebugScript(' ' << sample);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		audio::SampleId num = ARX_SOUND_PlaySpeech(sample, io && io->show == 1 ? io : NULL);
 		
 		if(num == audio::INVALID_ID) {
@@ -213,7 +221,7 @@ public:
 	Result execute(Context & context) {
 		
 		HandleFlags("d") {
-			if((flg & flag('d')) && FINAL_RELEASE) {
+			if((flg & flag('d'))) {
 				context.skipWord();
 				return Success;
 			}
@@ -249,7 +257,7 @@ public:
 		
 		DebugScript(' ' << pitch);
 		
-		context.getIO()->_npcdata->speakpitch = pitch;
+		context.getEntity()->_npcdata->speakpitch = pitch;
 		
 		return Success;
 	}
@@ -258,7 +266,7 @@ public:
 
 class SpeakCommand : public Command {
 	
-	static void computeACSPos(CinematicSpeech & acs, INTERACTIVE_OBJ * io, long ionum) {
+	static void computeACSPos(CinematicSpeech & acs, Entity * io, long ionum) {
 		
 		if(io) {
 			long id = io->obj->fastaccess.view_attach;
@@ -270,7 +278,7 @@ class SpeakCommand : public Command {
 		}
 		
 		if(ValidIONum(ionum)) {
-			INTERACTIVE_OBJ * ioo = inter.iobj[ionum];
+			Entity * ioo = entities[ionum];
 			long id = ioo->obj->fastaccess.view_attach;
 			if(id != -1) {
 				acs.pos2 = ioo->obj->vertexlist3[id].v;
@@ -283,16 +291,16 @@ class SpeakCommand : public Command {
 	static void parseParams(CinematicSpeech & acs, Context & context, bool player) {
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
-		acs.ionum = GetInterNum(t);
+		acs.ionum = (t == NULL) ? -1 : t->index();
 		acs.startpos = context.getFloat();
 		acs.endpos = context.getFloat();
 		
 		if(player) {
-			computeACSPos(acs, inter.iobj[0], acs.ionum);
+			computeACSPos(acs, entities.player(), acs.ionum);
 		} else {
-			computeACSPos(acs, context.getIO(), acs.ionum);
+			computeACSPos(acs, context.getEntity(), acs.ionum);
 		}
 	}
 	
@@ -305,7 +313,7 @@ public:
 		CinematicSpeech acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		bool player = false, unbreakable = false;
 		SpeechFlags voixoff = 0;
@@ -347,9 +355,9 @@ public:
 					acs.endangle.b = context.getFloat();
 					acs.startpos = context.getFloat();
 					acs.endpos = context.getFloat();
-					acs.ionum = GetInterNum(io);
+					acs.ionum = (io == NULL) ? -1 : io->index();
 					if(player) {
-						computeACSPos(acs, inter.iobj[0], acs.ionum);
+						computeACSPos(acs, entities.player(), acs.ionum);
 					} else {
 						computeACSPos(acs, io, -1);
 					}
@@ -403,7 +411,7 @@ public:
 		
 		long speechnum;
 		if(player) {
-			speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], data, mood, voixoff);
+			speechnum = ARX_SPEECH_AddSpeech(entities.player(), data, mood, voixoff);
 		} else {
 			speechnum = ARX_SPEECH_AddSpeech(io, data, mood, voixoff);
 		}
@@ -432,13 +440,13 @@ class SetStrikeSpeechCommand : public Command {
 	
 public:
 	
-	SetStrikeSpeechCommand() : Command("setstrikespeech", ANY_IO) { }
+	SetStrikeSpeechCommand() : Command("setstrikespeech", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->strikespeech = script::loadUnlocalized(context.getWord());
+		context.getEntity()->strikespeech = script::loadUnlocalized(context.getWord());
 		
-		DebugScript(' ' << context.getIO()->strikespeech);
+		DebugScript(' ' << context.getEntity()->strikespeech);
 		
 		return Success;
 	}

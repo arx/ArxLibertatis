@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
+#include "game/Entity.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "io/resource/ResourcePath.h"
@@ -63,13 +64,13 @@ class ShopCategoryCommand : public Command {
 	
 public:
 	
-	ShopCategoryCommand() : Command("shopcategory", ANY_IO) { }
+	ShopCategoryCommand() : Command("shopcategory", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->shop_category = context.getWord();
+		context.getEntity()->shop_category = context.getWord();
 		
-		DebugScript(' ' << context.getIO()->shop_category);
+		DebugScript(' ' << context.getEntity()->shop_category);
 		
 		return Success;
 	}
@@ -80,13 +81,13 @@ class ShopMultiplyCommand : public Command {
 	
 public:
 	
-	ShopMultiplyCommand() : Command("shopmultiply", ANY_IO) { }
+	ShopMultiplyCommand() : Command("shopmultiply", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->shop_multiply = context.getFloat();
+		context.getEntity()->shop_multiply = context.getFloat();
 		
-		DebugScript(' ' << context.getIO()->shop_multiply);
+		DebugScript(' ' << context.getEntity()->shop_multiply);
 		
 		return Success;
 	}
@@ -95,12 +96,13 @@ public:
 
 class GameFlagCommand : public Command {
 	
-	unsigned short flag;
+	GameFlag flag;
 	bool inv;
 	
 public:
 	
-	GameFlagCommand(string name, short _flag, bool _inv = false) : Command(name, ANY_IO), flag(_flag), inv(_inv) { }
+	GameFlagCommand(string name, GameFlag _flag, bool _inv = false)
+		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
 		
@@ -108,12 +110,12 @@ public:
 		
 		DebugScript(' ' << enable);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(enable ^ inv) {
-			io->GameFlags |= flag;
+			io->gameFlags |= flag;
 		} else {
-			io->GameFlags &= ~flag;
+			io->gameFlags &= ~flag;
 		}
 		
 		return Success;
@@ -123,12 +125,13 @@ public:
 
 class IOFlagCommand : public Command {
 	
-	long flag;
+	EntityFlag flag;
 	bool inv;
 	
 public:
 	
-	IOFlagCommand(string name, long _flag, bool _inv = false) : Command(name, ANY_IO), flag(_flag), inv(_inv) { }
+	IOFlagCommand(string name, EntityFlag _flag, bool _inv = false)
+		: Command(name, AnyEntity), flag(_flag), inv(_inv) { }
 	
 	Result execute(Context & context) {
 		
@@ -136,7 +139,7 @@ public:
 		
 		DebugScript(' ' << enable);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		if(enable ^ inv) {
 			io->ioflags |= flag;
@@ -162,9 +165,9 @@ public:
 		DebugScript(' ' << trapvalue);
 		
 		if(trapvalue == "off") {
-			context.getIO()->_fixdata->trapvalue = -1;
+			context.getEntity()->_fixdata->trapvalue = -1;
 		} else {
-			context.getIO()->_fixdata->trapvalue = clamp((int)context.getFloatVar(trapvalue), -1, 100);
+			context.getEntity()->_fixdata->trapvalue = clamp((int)context.getFloatVar(trapvalue), -1, 100);
 		}
 		
 		return Success;
@@ -176,7 +179,7 @@ class SetSecretCommand : public Command {
 	
 public:
 	
-	SetSecretCommand() : Command("setsecret", ANY_IO) { }
+	SetSecretCommand() : Command("setsecret", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -185,9 +188,9 @@ public:
 		DebugScript(' ' << secretvalue);
 		
 		if(secretvalue == "off") {
-			context.getIO()->secretvalue = -1;
+			context.getEntity()->secretvalue = -1;
 		} else {
-			context.getIO()->secretvalue = clamp((int)context.getFloatVar(secretvalue), -1, 100);
+			context.getEntity()->secretvalue = clamp((int)context.getFloatVar(secretvalue), -1, 100);
 		}
 		
 		return Success;
@@ -202,7 +205,7 @@ class SetMaterialCommand : public Command {
 	
 public:
 	
-	SetMaterialCommand() : Command("setmaterial", ANY_IO) {
+	SetMaterialCommand() : Command("setmaterial", AnyEntity) {
 		materials["weapon"] = MATERIAL_WEAPON;
 		materials["flesh"] = MATERIAL_FLESH;
 		materials["metal"] = MATERIAL_METAL;
@@ -230,9 +233,9 @@ public:
 		Materials::const_iterator it = materials.find(name);
 		if(it == materials.end()) {
 			ScriptWarning << "unknown material: " << name;
-			context.getIO()->material = MATERIAL_NONE;
+			context.getEntity()->material = MATERIAL_NONE;
 		} else {
-			context.getIO()->material = it->second;
+			context.getEntity()->material = it->second;
 		}
 		
 		return Success;
@@ -244,13 +247,13 @@ class SetNameCommand : public Command {
 	
 public:
 	
-	SetNameCommand() : Command("setname", ANY_IO) { }
+	SetNameCommand() : Command("setname", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->locname = loadUnlocalized(context.getWord());
+		context.getEntity()->locname = loadUnlocalized(context.getWord());
 		
-		DebugScript(' ' << context.getIO()->locname);
+		DebugScript(' ' << context.getEntity()->locname);
 		
 		return Success;
 	}
@@ -261,22 +264,22 @@ class SetInteractivityCommand : public Command {
 	
 public:
 	
-	SetInteractivityCommand() : Command("setinteractivity", ANY_IO) { }
+	SetInteractivityCommand() : Command("setinteractivity", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
 		string interactivity = context.getWord();
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(interactivity == "none") {
-			io->GameFlags &= ~GFLAG_INTERACTIVITY;
-			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+			io->gameFlags &= ~GFLAG_INTERACTIVITY;
+			io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 		} else if(interactivity == "hide") {
-			io->GameFlags &= ~GFLAG_INTERACTIVITY;
-			io->GameFlags |= GFLAG_INTERACTIVITYHIDE;
+			io->gameFlags &= ~GFLAG_INTERACTIVITY;
+			io->gameFlags |= GFLAG_INTERACTIVITYHIDE;
 		} else {
-			io->GameFlags |= GFLAG_INTERACTIVITY;
-			io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
+			io->gameFlags |= GFLAG_INTERACTIVITY;
+			io->gameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 		}
 		
 		return Success;
@@ -288,13 +291,13 @@ class SetStepMaterialCommand : public Command {
 	
 public:
 	
-	SetStepMaterialCommand() : Command("setstepmaterial", ANY_IO) { }
+	SetStepMaterialCommand() : Command("setstepmaterial", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->stepmaterial = context.getWord();
+		context.getEntity()->stepmaterial = context.getWord();
 		
-		DebugScript(' ' << context.getIO()->stepmaterial);
+		DebugScript(' ' << context.getEntity()->stepmaterial);
 		
 		return Success;
 	}
@@ -305,13 +308,13 @@ class SetArmorMaterialCommand : public Command {
 	
 public:
 	
-	SetArmorMaterialCommand() : Command("setarmormaterial", ANY_IO) { }
+	SetArmorMaterialCommand() : Command("setarmormaterial", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->armormaterial = context.getWord();
+		context.getEntity()->armormaterial = context.getWord();
 		
-		DebugScript(' ' << context.getIO()->armormaterial);
+		DebugScript(' ' << context.getEntity()->armormaterial);
 		
 		return Success;
 	}
@@ -322,13 +325,13 @@ class SetWeaponMaterialCommand : public Command {
 	
 public:
 	
-	SetWeaponMaterialCommand() : Command("setweaponmaterial", ANY_IO) { }
+	SetWeaponMaterialCommand() : Command("setweaponmaterial", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->weaponmaterial = context.getWord();
+		context.getEntity()->weaponmaterial = context.getWord();
 		
-		DebugScript(' ' << context.getIO()->weaponmaterial);
+		DebugScript(' ' << context.getEntity()->weaponmaterial);
 		
 		return Success;
 	}
@@ -341,7 +344,7 @@ class SetCollisionCommand : public Command {
 	
 public:
 	
-	SetCollisionCommand(const string & command, IOCollisionFlags::Enum _flag) : Command(command, ANY_IO), flag(_flag) { }
+	SetCollisionCommand(const string & command, IOCollisionFlags::Enum _flag) : Command(command, AnyEntity), flag(_flag) { }
 	
 	Result execute(Context & context) {
 		
@@ -350,9 +353,9 @@ public:
 		DebugScript(' ' << enable);
 		
 		if(enable) {
-			context.getIO()->collision |= flag;
+			context.getEntity()->collision |= flag;
 		} else {
-			context.getIO()->collision &= ~flag;
+			context.getEntity()->collision &= ~flag;
 		}
 		
 		return Success;
@@ -364,13 +367,13 @@ class SetWeightCommand : public Command {
 	
 public:
 	
-	SetWeightCommand() : Command("setweight", ANY_IO) { }
+	SetWeightCommand() : Command("setweight", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->weight = std::max(context.getFloat(), 0.f);
+		context.getEntity()->weight = std::max(context.getFloat(), 0.f);
 		
-		DebugScript(' ' << context.getIO()->weight);
+		DebugScript(' ' << context.getEntity()->weight);
 		
 		return Success;
 	}
@@ -381,7 +384,7 @@ class SetTransparencyCommand : public Command {
 	
 public:
 	
-	SetTransparencyCommand() : Command("settransparency", ANY_IO) { }
+	SetTransparencyCommand() : Command("settransparency", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -389,7 +392,7 @@ public:
 		
 		DebugScript(' ' << trans);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		io->invisibility = 1.f + trans * 0.01f;
 		if(io->invisibility == 1.f) {
 			io->invisibility = 0;
@@ -404,7 +407,7 @@ class SetIRColorCommand : public Command {
 	
 public:
 	
-	SetIRColorCommand() : Command("setircolor", ANY_IO) { }
+	SetIRColorCommand() : Command("setircolor", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -414,7 +417,7 @@ public:
 		
 		DebugScript(' ' << r << ' ' << g << ' ' << b);
 		
-		context.getIO()->infracolor = Color3f(r, g, b);
+		context.getEntity()->infracolor = Color3f(r, g, b);
 		
 		return Success;
 	}
@@ -425,13 +428,13 @@ class SetScaleCommand : public Command {
 	
 public:
 	
-	SetScaleCommand() : Command("setscale", ANY_IO) { }
+	SetScaleCommand() : Command("setscale", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		context.getIO()->scale = context.getFloat() * 0.01f;
+		context.getEntity()->scale = context.getFloat() * 0.01f;
 		
-		DebugScript(' ' << context.getIO()->scale);
+		DebugScript(' ' << context.getEntity()->scale);
 		
 		return Success;
 	}
@@ -442,11 +445,11 @@ class HaloCommand : public Command {
 	
 public:
 	
-	HaloCommand() : Command("halo", ANY_IO) { }
+	HaloCommand() : Command("halo", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		HandleFlags("ofnlcs") {
 		
@@ -499,11 +502,11 @@ class TweakCommand : public Command {
 	
 public:
 	
-	TweakCommand() : Command("tweak", ANY_IO) { }
+	TweakCommand() : Command("tweak", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		string type = context.getWord();
 		
@@ -560,7 +563,7 @@ public:
 			DebugScript(' ' << type << ' ' << mesh);
 			
 			if(io->usemesh.empty()) {
-				mesh = io->filename.parent() / "tweaks" / mesh;
+				mesh = io->classPath().parent() / "tweaks" / mesh;
 			} else {
 				mesh = io->usemesh.parent() / "tweaks" / mesh;
 			}
@@ -578,7 +581,7 @@ class UseMeshCommand : public Command {
 	
 public:
 	
-	UseMeshCommand() : Command("usemesh", ANY_IO) { }
+	UseMeshCommand() : Command("usemesh", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -586,8 +589,8 @@ public:
 		
 		DebugScript(' ' << mesh);
 		
-		ARX_INTERACTIVE_MEMO_TWEAK(context.getIO(), TWEAK_TYPE_MESH, mesh, res::path());
-		ARX_INTERACTIVE_USEMESH(context.getIO(), mesh);
+		ARX_INTERACTIVE_MEMO_TWEAK(context.getEntity(), TWEAK_TYPE_MESH, mesh, res::path());
+		ARX_INTERACTIVE_USEMESH(context.getEntity(), mesh);
 		
 		return Success;
 	}

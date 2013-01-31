@@ -46,19 +46,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <string>
+#include <ostream>
 
 #include "math/MathFwd.h"
 #include "script/Script.h"
 
-struct INTERACTIVE_OBJ;
+class Entity;
 
 struct INVENTORY_SLOT {
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long show;
 };
 
 struct INVENTORY_DATA {
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 	long sizex;
 	long sizey;
 	INVENTORY_SLOT slot[20][20];
@@ -67,43 +68,191 @@ struct INVENTORY_DATA {
 const size_t INVENTORY_X = 16;
 const size_t INVENTORY_Y = 3;
 
+// TODO this should be completely wrapped in PlayerInventory!
 extern INVENTORY_SLOT inventory[3][INVENTORY_X][INVENTORY_Y];
+
 extern INVENTORY_DATA * SecondaryInventory;
 extern INVENTORY_DATA * TSecondaryInventory;
-extern INTERACTIVE_OBJ * DRAGINTER;
-extern INTERACTIVE_OBJ * ioSteal;
+extern Entity * DRAGINTER;
+extern Entity * ioSteal;
 extern long InventoryY;
 
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
-bool CanBePutInInventory(INTERACTIVE_OBJ * io);
+struct InventoryPos {
+	
+	typedef unsigned short index_type;
+	
+	long io;
+	index_type bag;
+	index_type x;
+	index_type y;
+	
+	InventoryPos() : io(-1) { }
+	
+	InventoryPos(long io, index_type bag, index_type x, index_type y)
+		: io(io), bag(bag), x(x), y(y) { }
+	
+	//! @return true if this is a valid position
+	operator bool() const {
+		return (io != -1);
+	}
+	
+};
 
-bool GetItemWorldPosition(INTERACTIVE_OBJ * io, Vec3f * pos);
-bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, Vec3f * pos);
+std::ostream & operator<<(std::ostream & strm, const InventoryPos & pos);
 
-INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
-void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);
+class PlayerInventory {
+	
+	typedef InventoryPos Pos;
+	
+public:
+	
+	/*!
+	 * Insert an item into the player inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * @param item the item to insert
+	 *
+	 * @return true if the item was inserted, false otherwise
+	 */
+	static bool insert(Entity * item);
+	
+	/*!
+	 * Insert an item into the player inventory
+	 * The item will be added to existing stacks if possible.
+	 * Otherwise, the item will be inserted at the specified position.
+	 * If that fails, the first empty slot will be used.
+	 *
+	 * Does not check if the item is already in the inventory!
+	 *
+	 * @param item the item to insert
+	 *
+	 * @return true if the item was inserted, false otherwise
+	 */
+	static bool insert(Entity * item, const Pos & pos);
+	
+	//! Sort the inventory and stack duplicate items
+	static void optimize();
+	
+	/*!
+	 * Get the position of an item in the inventory.
+	 *
+	 * @return the position of the item
+	 */
+	static Pos locate(const Entity * item);
+	
+	/*!
+	 * Remove an item from the inventory.
+	 * The item is not deleted.
+	 *
+	 * @return the old position of the item
+	 */
+	static Pos remove(const Entity * item);
+	
+	static Entity * get(const Pos & pos) {
+		return pos ? inventory[pos.bag][pos.x][pos.y].io : NULL;
+	}
+	
+};
+
+extern PlayerInventory playerInventory;
+
+/*!
+ * Insert an item into the player inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise a the first empty slot will be used.
+ * If no slot was available, the item is dropped in front of the player
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was added to the inventory, false if it was dropped
+ */
+bool giveToPlayer(Entity * item);
+
+/*!
+ * Insert an item into the player inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified position.
+ * If that fails, a the first empty slot will be used.
+ * If no slot was available, the item is dropped in front of the player
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was added to the inventory, false if it was dropped
+ */
+bool giveToPlayer(Entity * item, const InventoryPos & pos);
+
+/*!
+ * Insert an item into an inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified position.
+ * If that fails, the first empty slot will be used.
+ *
+ * Does not check if the item is already in the inventory!
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was inserted, false otherwise
+ */
+bool insertIntoInventory(Entity * item, const InventoryPos & pos);
+
+/*!
+ * Get the position of an item in the inventory.
+ *
+ * @return the position of the item
+ */
+InventoryPos locateInInventories(const Entity * item);
+
+/*!
+ * Remove an item from all inventories.
+ * The item is not deleted.
+ *
+ * @return the old position of the item
+ */
+InventoryPos removeFromInventories(Entity * item);
+
+/*!
+ * Insert an item into an NPC's inventory
+ * The item will be added to existing stacks if possible.
+ * Otherwise, the item will be inserted at the specified position.
+ * If that fails, a the first empty slot will be used.
+ * If no slot was available, the item is dropped in front of the player
+ *
+ * @param item the item to insert
+ *
+ * @return true if the item was added to the inventory, false if it was dropped
+ */
+bool putInInventory(Entity * item, const InventoryPos & pos);
+
+void PutInFrontOfPlayer(Entity * io);
+
+bool GetItemWorldPosition(Entity * io, Vec3f * pos);
+bool GetItemWorldPositionSound(const Entity * io, Vec3f * pos);
+
+Entity * GetInventoryObj_INVENTORYUSE(Vec2s * pos);
+void CheckForInventoryReplaceMe(Entity * io, Entity * old);
 
 bool InSecondaryInventoryPos(Vec2s * pos);
 bool InPlayerInventoryPos(Vec2s * pos);
-bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
+bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, Entity * io, long * xx, long * yy);
 
 void CleanInventory();
 void SendInventoryObjectCommand(const std::string & _lpszText, ScriptMessage _lCommand);
 bool PutInInventory();
 bool TakeFromInventory(Vec2s * pos);
-INTERACTIVE_OBJ * GetFromInventory(Vec2s * pos);
+Entity * GetFromInventory(Vec2s * pos);
 bool IsFlyingOverInventory(Vec2s * pos);
-void ForcePlayerInventoryObjectLevel(long level);
-bool IsInPlayerInventory(INTERACTIVE_OBJ * io);
-bool IsInSecondaryInventory(INTERACTIVE_OBJ * io);
+bool IsInPlayerInventory(Entity * io);
+bool IsInSecondaryInventory(Entity * io);
 bool InInventoryPos(Vec2s * pos);
-void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
-void RemoveFromAllInventories(const INTERACTIVE_OBJ * io);
-INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();
+void RemoveFromAllInventories(const Entity * io);
+Entity * ARX_INVENTORY_GetTorchLowestDurability();
 void ARX_INVENTORY_IdentifyAll();
-void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * io);
+void ARX_INVENTORY_OpenClose(Entity * io);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
-void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io);
+void IO_Drop_Item(Entity * io_src, Entity * io);
 
 #endif // ARX_GAME_INVENTORY_H

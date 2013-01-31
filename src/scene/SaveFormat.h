@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <boost/static_assert.hpp>
 
 #include "gui/MiniMap.h"
+#include "game/Item.h"
+#include "game/NPC.h"
 #include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"
@@ -588,7 +590,7 @@ struct SavedHalo {
 		IO_HALO a;
 		a.color = color;
 		a.radius = radius;
-		a.flags = flags;
+		a.flags = HaloFlags::load(flags); // TODO save/load flags
 		a.dynlight = dynlight;
 		a.offset = offset;
 		return a;
@@ -626,10 +628,10 @@ struct ARX_CHANGELEVEL_IO_SAVE {
 	
 	char locname[64];
 	u16 EditorFlags;
-	u16 GameFlags;
+	u16 gameFlags;
 	s32 material;
-	s16 level;
-	s16 truelevel;
+	s16 level; // unused
+	s16 truelevel; // unused
 	s32 nbtimers;
 	// Script data
 	s32 scriptload;
@@ -765,7 +767,7 @@ struct SavedExtraRotate {
 	
 	inline operator EERIE_EXTRA_ROTATE() const {
 		EERIE_EXTRA_ROTATE a;
-		a.flags = flags;
+		a.flags = ExtraRotateFlags::load(flags); // TODO save/load flags
 		BOOST_STATIC_ASSERT(SAVED_MAX_EXTRA_ROTATE == MAX_EXTRA_ROTATE);
 		std::copy(group_number, group_number + SAVED_MAX_EXTRA_ROTATE, a.group_number);
 		std::copy(group_rotate, group_rotate + SAVED_MAX_EXTRA_ROTATE, a.group_rotate);
@@ -848,8 +850,8 @@ struct SavedEquipItemElement {
 	inline operator IO_EQUIPITEM_ELEMENT() const {
 		IO_EQUIPITEM_ELEMENT a;
 		a.value = value;
-		a.flags = flags;
-		a.special = special;
+		a.flags = EquipmentModifierFlags::load(flags); // TODO save/load flags
+		a.special = EquipmentModifiedSpecialType(special); // TODO save/load enum
 		return a;
 	}
 	
@@ -1004,9 +1006,7 @@ struct SavedMatrix {
 
 struct SavedTransform {
 	
-	f32 posx;
-	f32 posy;
-	f32 posz;
+	SavedVec3 pos;
 	f32 ycos;
 	f32 ysin;
 	f32 xsin;
@@ -1018,18 +1018,18 @@ struct SavedTransform {
 	
 	inline operator EERIE_TRANSFORM() const {
 		EERIE_TRANSFORM a;
-		a.posx = posx, a.posy = posy, a.posz = posz;
+		a.pos = pos;
 		a.ycos = ycos, a.ysin = ysin, a.xsin = xsin, a.xcos = xcos;
 		a.use_focal = use_focal;
-		a.xmod = xmod, a.ymod = ymod, a.zmod = zmod;
+		a.mod.x = xmod, a.mod.y = ymod;
 		return a;
 	}
 	
 	inline SavedTransform & operator=(const EERIE_TRANSFORM & b) {
-		posx = b.posx, posy = b.posy, posz = b.posz;
+		pos = b.pos;
 		ycos = b.ycos, ysin = b.ysin, xsin = b.xsin, xcos = b.xcos;
 		use_focal = b.use_focal;
-		xmod = b.xmod, ymod = b.ymod, zmod = b.zmod;
+		xmod = b.mod.x, ymod = b.mod.y, zmod = 0.f;
 		return *this;
 	}
 	
@@ -1096,9 +1096,8 @@ struct SavedCamera {
 		a.Zcos = Zcos, a.Zsin = Zsin;
 		a.focal = focal, a.use_focal = use_focal;
 		a.Zmul = Zmul;
-		a.posleft = posleft, a.postop = postop;
+		a.pos2.x = posleft, a.pos2.y = postop;
 		
-		a.xmod = xmod, a.ymod = ymod;
 		a.matrix = matrix;
 		a.angle = angle;
 		
@@ -1109,10 +1108,9 @@ struct SavedCamera {
 		a.norm = norm;
 		a.fadecolor = fadecolor, a.clip = clip;
 		a.clipz0 = clipz0, a.clipz1 = clipz1;
-		a.centerx = centerx, a.centery = centery;
+		a.center = Vec2i(centerx, centery);
 		
 		a.smoothing = smoothing;
-		a.AddX = AddX, a.AddY = AddY;
 		a.Xsnap = Xsnap, a.Zsnap = Zsnap, a.Zdiv = Zdiv;
 		
 		a.clip3D = clip3D;
@@ -1135,9 +1133,9 @@ struct SavedCamera {
 		Zcos = b.Zcos, Zsin = b.Zsin;
 		focal = b.focal, use_focal = b.use_focal;
 		Zmul = b.Zmul;
-		posleft = b.posleft, postop = b.postop;
+		posleft = b.pos2.x, postop = b.pos2.y;
 		
-		xmod = b.xmod, ymod = b.ymod;
+		xmod = 0.f, ymod = 0.f;
 		matrix = b.matrix;
 		angle = b.angle;
 		
@@ -1148,10 +1146,10 @@ struct SavedCamera {
 		norm = b.norm;
 		fadecolor = b.fadecolor, clip = b.clip;
 		clipz0 = b.clipz0, clipz1 = b.clipz1;
-		centerx = b.centerx, centery = b.centery;
+		centerx = b.center.x, centery = b.center.y;
 		
 		smoothing = b.smoothing;
-		AddX = b.AddX, AddY = b.AddY;
+		AddX = 0.f, AddY = 0.f;
 		Xsnap = b.Xsnap, Zsnap = b.Zsnap, Zdiv = b.Zdiv;
 		
 		clip3D = b.clip3D;

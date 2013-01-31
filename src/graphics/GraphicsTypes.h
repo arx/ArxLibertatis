@@ -61,9 +61,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Configure.h"
 
-struct INTERACTIVE_OBJ;
 struct EERIE_3DOBJ;
 class TextureContainer;
+class Entity;
 
 struct EERIE_TRI {
 	Vec3f v[3];
@@ -72,11 +72,6 @@ struct EERIE_TRI {
 struct EERIE_2D_BBOX {
 	Vec2f min;
 	Vec2f max;
-};
-
-struct EERIE_3D_BBOX {
-	Vec3f min;
-	Vec3f max;
 };
 
 struct EERIE_LIGHT {
@@ -184,26 +179,6 @@ struct EERIEPOLY {
 	short			room;
 	short			misc;
 	unsigned short	uslInd[4];
-};
-
-enum Material {
-	MATERIAL_NONE,
-	MATERIAL_WEAPON,
-	MATERIAL_FLESH,
-	MATERIAL_METAL,
-	MATERIAL_GLASS,
-	MATERIAL_CLOTH,
-	MATERIAL_WOOD,
-	MATERIAL_EARTH,
-	MATERIAL_WATER,
-	MATERIAL_ICE,
-	MATERIAL_GRAVEL,
-	MATERIAL_STONE,
-	MATERIAL_FOOT_LARGE,
-	MATERIAL_FOOT_BARE,
-	MATERIAL_FOOT_SHOE,
-	MATERIAL_FOOT_METAL,
-	MATERIAL_FOOT_STEALTH
 };
 
 #define IOPOLYVERT 3
@@ -363,7 +338,7 @@ struct EERIE_LINKED {
 	long lidx2;
 	EERIE_3DOBJ * obj;
 	EERIE_MOD_INFO modinfo;
-	INTERACTIVE_OBJ * io;
+	Entity * io;
 };
 
 struct EERIE_SELECTIONS {
@@ -400,7 +375,7 @@ struct EERIE_FASTACCESS
 	short	sel_leggings;
 
 	short	carry_attach;
-	short	__padd;
+	short	padding_;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -486,7 +461,7 @@ struct EERIE_3DOBJ
 		fastaccess.sel_chest = 0;
 		fastaccess.sel_leggings = 0;
 		fastaccess.carry_attach = 0;
-		fastaccess.__padd = 0;
+		fastaccess.padding_ = 0;
 
 		c_data = NULL;
 	}
@@ -651,28 +626,18 @@ struct SMY_ARXMAT
 
 	unsigned long uslStartCull;
 	unsigned long uslNbIndiceCull;
-	unsigned long uslStartNoCull;
-	unsigned long uslNbIndiceNoCull;
 
 	unsigned long uslStartCull_TNormalTrans;
 	unsigned long uslNbIndiceCull_TNormalTrans;
-	unsigned long uslStartNoCull_TNormalTrans;
-	unsigned long uslNbIndiceNoCull_TNormalTrans;
 
 	unsigned long uslStartCull_TMultiplicative;
 	unsigned long uslNbIndiceCull_TMultiplicative;
-	unsigned long uslStartNoCull_TMultiplicative;
-	unsigned long uslNbIndiceNoCull_TMultiplicative;
 
 	unsigned long uslStartCull_TAdditive;
 	unsigned long uslNbIndiceCull_TAdditive;
-	unsigned long uslStartNoCull_TAdditive;
-	unsigned long uslNbIndiceNoCull_TAdditive;
 
 	unsigned long uslStartCull_TSubstractive;
 	unsigned long uslNbIndiceCull_TSubstractive;
-	unsigned long uslStartNoCull_TSubstractive;
-	unsigned long uslNbIndiceNoCull_TSubstractive;
 };
 
 extern long USE_PORTALS;

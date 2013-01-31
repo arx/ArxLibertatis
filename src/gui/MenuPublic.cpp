@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
+#include "animation/Animation.h"
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -82,7 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern bool bQuickGenFirstClick;
 extern long DANAESIZX;
 extern long DANAESIZY;
-extern long STARTED_A_GAME;
 
 extern long LOADQUEST_SLOT;
 
@@ -93,7 +94,6 @@ extern bool	bFadeInOut;
 extern int iFadeAction;
 
 extern long ZMAPMODE;
-extern long MAX_LLIGHTS;
 extern long FRAME_COUNT;
 
 void ARX_SOUND_PushAnimSamples();
@@ -139,7 +139,6 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
 
 extern long MAX_FRAME_COUNT;
 extern long USEINTERNORM;
-extern long DYNAMIC_NORMALS;
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 {
@@ -156,21 +155,18 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 			MAX_LLIGHTS = 6; 
 			MAX_FRAME_COUNT = 3;
 			USEINTERNORM = 1; 
-			DYNAMIC_NORMALS = 1; 
 			break;
 		case 1:
 			ZMAPMODE = 1;
 			MAX_LLIGHTS = 10; 
 			MAX_FRAME_COUNT = 2;
 			USEINTERNORM = 1; 
-			DYNAMIC_NORMALS = 1; 
 			break;
 		case 2:
 			ZMAPMODE = 1;
 			MAX_LLIGHTS = 15; 
 			MAX_FRAME_COUNT = 1;
 			USEINTERNORM = 1; 
-			DYNAMIC_NORMALS = 1; 
 			break;
 	}
 }

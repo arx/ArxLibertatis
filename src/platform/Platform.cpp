@@ -24,7 +24,8 @@
 
 #include "io/log/Logger.h"
 
-void assertionFailed(const char * expr, const char * file, unsigned int line, const char * msg, ...) {
+void assertionFailed(const char * expr, const char * file, unsigned int line,
+                     const char * msg, ...) {
 	
 	if(!file || file[0] == '\0') {
 		file = "<unknown>";

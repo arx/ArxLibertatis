@@ -46,6 +46,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Core.h"
 
+#include "game/Entity.h"
+#include "game/NPC.h"
+
 #include "io/log/Logger.h"
 
 #include "script/ScriptUtils.h"
@@ -168,11 +171,11 @@ ScriptEvent::~ScriptEvent() {
 	// TODO Auto-generated destructor stub
 }
 
-static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, ScriptResult & ret) {
+static bool checkInteractiveObject(Entity * io, ScriptMessage msg, ScriptResult & ret) {
 	
 	io->stat_count++;
 	
-	if((io->GameFlags & GFLAG_MEGAHIDE) && msg != SM_RELOAD) {
+	if((io->gameFlags & GFLAG_MEGAHIDE) && msg != SM_RELOAD) {
 		ret = ACCEPT;
 		return true;
 	}
@@ -206,8 +209,6 @@ static bool checkInteractiveObject(INTERACTIVE_OBJ * io, ScriptMessage msg, Scri
 	
 	return false;
 }
-
-extern long PauseScript;
 
 namespace script {
 
@@ -255,7 +256,8 @@ static const char * toString(ScriptResult ret) {
 }
 #endif
 
-ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info) {
+ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::string & params,
+                               Entity * io, const std::string & evname, long info) {
 	
 	ScriptResult ret = ACCEPT;
 	string eventname;
@@ -267,10 +269,7 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 		return ret;
 	}
 
-	if ((EDITMODE || PauseScript)
-			&& msg != SM_LOAD
-			&& msg != SM_INIT
-			&& msg != SM_INITEND) {
+	if(EDITMODE && msg != SM_LOAD && msg != SM_INIT && msg != SM_INITEND) {
 		return ACCEPT;
 	}
 	
@@ -413,11 +412,11 @@ ScriptResult ScriptEvent::send(EERIE_SCRIPT * es, ScriptMessage msg, const std::
 			script::Command & command = *(it->second);
 			
 			script::Command::Result res;
-			if(command.getIOFlags()
-			   && (!io || (command.getIOFlags() != script::Command::ANY_IO
-			               && !(command.getIOFlags() & io->ioflags)))) {
+			if(command.getEntityFlags()
+			   && (!io || (command.getEntityFlags() != script::Command::AnyEntity
+			               && !(command.getEntityFlags() & long(io->ioflags))))) {
 				ScriptEventWarning << "command " << command.getName() << " needs an IO of type "
-				                   << command.getIOFlags();
+				                   << command.getEntityFlags();
 				context.skipCommand();
 				res = script::Command::Failed;
 			} else {

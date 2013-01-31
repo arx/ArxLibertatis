@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
+#include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 #include "script/ScriptEvent.h"
 #include "script/ScriptUtils.h"
@@ -299,9 +300,7 @@ class UnsetCommand : public Command {
 			return false;
 		}
 		
-		if(svf[i].text) {
-			free(svf[i].text), svf[i].text = NULL;
-		}
+		free(svf[i].text), svf[i].text = NULL;
 		
 		if(i + 1 < nb) {
 			memcpy(&svf[i], &svf[i + 1], sizeof(SCRIPT_VAR) * (nb - i - 1));

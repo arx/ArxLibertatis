@@ -47,6 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <cstdlib>
 
+#include <boost/foreach.hpp>
+
 #include "graphics/Math.h"
 #include "graphics/Renderer.h"
 #include "graphics/texture/Texture.h"
@@ -55,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/resource/PakReader.h"
 #include "io/log/Logger.h"
 
-const int	MaxW = 256;
-const int	MaxH = 256;
+static const int MaxW = 256;
+static const int MaxH = 256;
 
 using std::string;
 
@@ -123,11 +125,8 @@ bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, f
 
 				if (!oldnbxx) nbx = 1;
 
-				while (nbx--)
-				{
-					v->x = depxx;
-					v->y = depy;
-					v->z = 0.f;
+				while(nbx--) {
+					*v = Vec3f(depxx, depy, 0.f);
 					depxx += dxx;
 					v++;
 				}
@@ -178,23 +177,12 @@ int AddMaterial(CinematicGrid * grille, Texture2D* tex)
 
 void FreeGrille(CinematicGrid * grille) {
 	
-	if(grille->vertexs) {
-		free(grille->vertexs), grille->vertexs = NULL;
-	}
+	free(grille->vertexs), grille->vertexs = NULL;
+	free(grille->uvs), grille->uvs = NULL;
+	free(grille->inds), grille->inds = NULL;
 	
-	if(grille->uvs) {
-		free(grille->uvs), grille->uvs = NULL;
-	}
-	
-	if(grille->inds) {
-		free(grille->inds), grille->inds = NULL;
-	}
-	
-	for(std::vector<C_INDEXED>::iterator it = grille->mats.begin(); it != grille->mats.end(); ++it) {
-		C_INDEXED* mat = &(*it);
-		if(mat->tex) {
-			delete mat->tex;
-		}
+	BOOST_FOREACH(C_INDEXED & mat, grille->mats) {
+		delete mat.tex;
 	}
 	
 	grille->mats.clear();

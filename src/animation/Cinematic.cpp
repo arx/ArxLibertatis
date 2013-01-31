@@ -73,48 +73,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*---------------------------------------------------------------------------------*/
 
 EERIE_CAMERA	Camera;
-bool			LeftButton, RightButton;
-int				 InsertKey;
-C_KEY		*	KeyCopy;
-int				LargeurRender, HauteurRender;
-bool			InRender;
-bool			ProjectModif;
+static int LargeurRender, HauteurRender;
 
-//vertex
-TexturedVertex		AllTLVertex[40000];
+TexturedVertex AllTLVertex[40000];
 
 extern float DreamTable[];
 
-C_KEY			KeyTemp;
-bool			EditLight;
-bool			ShiftKey;
-bool			AltKey;
+C_KEY KeyTemp;
 
-bool			FlashBlancEnCours;
-bool			SpecialFadeEnCours;
-float			OldSpeedFlashBlanc;
-float			OldSpeedSpecialFade;
-int				OldColorFlashBlanc;
-int				OldFxSpecialFade;
-int				LSoundChoose;
+static bool FlashBlancEnCours;
+static float OldSpeedFlashBlanc;
+static int OldColorFlashBlanc;
 
-/*---------------------------------------------------------------------------------*/
- 
-/*---------------------------------------------------------------------------------*/
 extern float	FlashAlpha;
-extern char FileNameDirLoad[];
-extern char FileNameDirSave[];
-extern int UndoPile;
 extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
 
-/*---------------------------------------------------------------------------------*/
-Cinematic::Cinematic(int _w, int _h)
-{
+Cinematic::Cinematic(int _w, int _h) {
+	
 	LargeurRender = _w;
 	HauteurRender = _h;
-
+	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
@@ -124,16 +104,11 @@ Cinematic::Cinematic(int _w, int _h)
 	projectload = false; 
 	ti = tichoose = INTERP_BEZIER;
 	speedchoose = 1.f;
-	InsertKey = 0;
-	ShiftKey = false;
-	AltKey = false;
-
+	
 	m_flIntensityRND = 0.f;
 }
 
-/*-------------------------------------------------------------------*/
-Cinematic::~Cinematic()
-{
+Cinematic::~Cinematic() {
 	DeleteAllBitmap();
 }
 
@@ -150,7 +125,7 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 	KeyTemp.color = color;
 	KeyTemp.colord = colord;
 	KeyTemp.colorf = colorf;
-	KeyTemp.idsound[LSoundChoose>>8] = idsound;
+	KeyTemp.idsound = idsound;
 	KeyTemp.speed = speed;
 	KeyTemp.posgrille = *posgrille;
 	KeyTemp.angzgrille = azgrille;
@@ -170,22 +145,12 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 void Cinematic::OneTimeSceneReInit() {
 	
 	Camera.size = Anglef(160.f, 60.f, 60.f);
-	Camera.pos.x = 900.f;
-	Camera.pos.y = -160.f;
-	Camera.pos.z = 4340.f;
-	Camera.angle.a = 3.f;
-	Camera.angle.b = 268.f;
-	Camera.angle.g = 0.f;
-	Camera.clip.left = 0;
-	Camera.clip.top = 0;
-	Camera.clip.right = LargeurRender;
-	Camera.clip.bottom = HauteurRender;
+	Camera.pos = Vec3f(900.f, -160.f, 4340.f);
+	Camera.angle = Anglef(3.f, 268.f, 0.f);
 	Camera.clipz0 = 0.f;
 	Camera.clipz1 = 2.999f;
-	Camera.centerx = LargeurRender / 2;
-	Camera.centery = HauteurRender / 2;
-	Camera.AddX = 320.f;
-	Camera.AddY = 240.f;
+	Camera.clip = Rect(LargeurRender, HauteurRender);
+	Camera.center = Camera.clip.center();
 	Camera.focal = 350.f;
 	Camera.Zdiv = 3000.f;
 	Camera.Zmul = 1.f / Camera.Zdiv;
@@ -201,10 +166,6 @@ void Cinematic::OneTimeSceneReInit() {
 	key = NULL;
 	
 	projectload = false;
-	InsertKey = 0;
-	KeyCopy = NULL;
-	
-	LeftButton = RightButton = false;
 	
 	DeleteAllBitmap();
 	DeleteAllSound();
@@ -212,9 +173,6 @@ void Cinematic::OneTimeSceneReInit() {
 	DeleteTrack();
 	
 	FlashBlancEnCours = false;
-	SpecialFadeEnCours = false;
-	
-	LSoundChoose = C_KEY::English << 8;
 	
 	m_flIntensityRND = 0.f;
 	
@@ -223,38 +181,28 @@ void Cinematic::OneTimeSceneReInit() {
 void Cinematic::New() {
 	
 	projectload = false;
-
+	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
 	key = NULL;
-	InsertKey = 0;
-	KeyCopy = NULL;
-	LeftButton = RightButton = false;
-
+	
 	DeleteTrack();
 	DeleteAllBitmap();
 	DeleteAllSound();
-
+	
 	AllocTrack(0, 100, 30.f);
 	FillKeyTemp(&pos, angz, 0, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
 	AddKey(&KeyTemp, true, true, true);
 	FillKeyTemp(&pos, angz, 100, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
-
-	InitUndo();
-
+	
 	SetCurrFrame(GetStartFrame());
-
+	
 	projectload = true;
-
+	
 	FlashBlancEnCours = false;
-	SpecialFadeEnCours = false;
-
-	ProjectModif = false;
-
-	LSoundChoose = C_KEY::English << 8;
 	
 }
 
@@ -268,22 +216,18 @@ void Cinematic::DeleteAllBitmap()
 	m_bitmaps.clear();
 }
 
-//*************************************************************************************
-// InitDeviceObjects()
 // Sets RenderStates
-//*************************************************************************************
 void Cinematic::InitDeviceObjects() {
 	
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-
+	
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::Fog, false);
-
-	EditLight = false;
+	
 }
 
 void Cinematic::DeleteDeviceObjects() {
@@ -296,15 +240,17 @@ void Cinematic::DeleteDeviceObjects() {
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::Fog, true);
-
-	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
-	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate, TextureStage::ArgTexture, TextureStage::ArgDiffuse);
+	
+	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate,
+	                                          TextureStage::ArgTexture,
+	                                          TextureStage::ArgDiffuse);
+	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::OpModulate,
+	                                          TextureStage::ArgTexture,
+	                                          TextureStage::ArgDiffuse);
 	
 }
 
-float LightRND;
-
-/*---------------------------------------------------------------*/
+static float LightRND;
 
 int CalculLight(CinematicLight * light, float x, float y, int col)
 {
@@ -315,41 +261,32 @@ int CalculLight(CinematicLight * light, float x, float y, int col)
 	}
 	else
 	{
-		float r, g, b;
+		Color3f color;
 
-		if (ra < light->fallin)
-		{
-			r = light->r * LightRND;
-			g = light->g * LightRND;
-			b = light->b * LightRND;
-		}
-		else
-		{
+		if(ra < light->fallin) {
+			color = light->color * LightRND;
+		} else {
 			ra = (light->fallout - ra) / (light->fallout - light->fallin);
-			float t = LightRND * ra;
-			r = light->r * t;
-			g = light->g * t;
-			b = light->b * t;
+			color = light->color * (LightRND * ra);
 		}
-
-
+		
 		Color in = Color::fromBGRA(col);
-		in.r = min(in.r + (int)r, 255);
-		in.g = min(in.g + (int)g, 255);
-		in.b = min(in.b + (int)b, 255);
+		in.r = min(in.r + (int)color.r, 255);
+		in.g = min(in.g + (int)color.g, 255);
+		in.b = min(in.b + (int)color.b, 255);
 		return in.toBGRA();
 	}
 }
-/*---------------------------------------------------------------*/
-Vec3f	LocalPos;
-float		LocalSin, LocalCos;
-void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv)
-{
+
+static Vec3f LocalPos;
+static float LocalSin, LocalCos;
+
+void TransformLocalVertex(Vec3f * vbase, TexturedVertex * d3dv) {
 	d3dv->p.x = vbase->x * LocalCos + vbase->y * LocalSin + LocalPos.x;
 	d3dv->p.y = vbase->x * -LocalSin + vbase->y * LocalCos + LocalPos.y;
 	d3dv->p.z = vbase->z + LocalPos.z;
 }
-/*---------------------------------------------------------------*/
+
 void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light, Vec3f * posgrille, float angzgrille)
 {
 	int nb = grille->nbvertexs;
@@ -445,16 +382,13 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			GRenderer->SetTexture(0, mat->tex);
 		else
 			GRenderer->ResetTexture(0);
-
+		
 		int	nb2 = mat->nbvertexs;
-
-		while (nb2--)
-		{
-			AllTLVertex[uvs->indvertex].uv.x = uvs->uv.x;
-			AllTLVertex[uvs->indvertex].uv.y = uvs->uv.y;
+		while(nb2--) {
+			AllTLVertex[uvs->indvertex].uv = uvs->uv;
 			uvs++;
 		}
-
+		
 		GRenderer->drawIndexed(Renderer::TriangleList, AllTLVertex, grille->nbvertexs,
 		                       &grille->inds->i1 + mat->startind, mat->nbind);
 	}
@@ -471,15 +405,6 @@ void Cinematic::Render(float FDIFF) {
 	{
 		GRenderer->Clear(Renderer::ColorBuffer);
 		GRenderer->BeginScene();
-		InRender = true;
-
-		if (InsertKey && m_bitmaps.size() > 0)
-		{
-			FillKeyTemp(&pos, angz, GetCurrentFrame(), numbitmap, fx, ti, colorchoose, colorchoosed, colorflashchoose, speedchoose, idsound, force, &light, &posgrille, angzgrille, speedtrack);
-			AddDiffKey(this, &KeyTemp, true, true, true);
-
-			InsertKey = 0;
-		}
 
 		GereTrack(this, FDIFF);
 
@@ -540,10 +465,9 @@ void Cinematic::Render(float FDIFF) {
 		SetTargetCamera(&Camera, Camera.pos.x, Camera.pos.y, 0.f);
 		Camera.angle.b = 0;
 		Camera.angle.g = angz;
-		Camera.centerx = LargeurRender >> 1;
-		Camera.centery = HauteurRender >> 1;
 		Camera.clip.right = LargeurRender;
 		Camera.clip.bottom = HauteurRender;
+		Camera.center = Vec2i(LargeurRender / 2, HauteurRender / 2);
 		PrepareCamera(&Camera);
 		SetActiveCamera(&Camera);
 
@@ -623,52 +547,32 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		//effets qui continuent avec le temps
-		if ((FlashBlancEnCours) && ((fx & 0x00FF0000) != FX_FLASH))
-		{
+		if(FlashBlancEnCours && (fx & 0x00ff0000) != FX_FLASH) {
 			speed = OldSpeedFlashBlanc;
 			colorflash = OldColorFlashBlanc;
-
-			if (fx < 0) fx = FX_FLASH;
-			else fx |= FX_FLASH;
-		}
-		else
-		{
-			if (changekey)
-			{
+			if(fx < 0) {
+				fx = FX_FLASH;
+			} else {
+				fx |= FX_FLASH;
+			}
+		} else {
+			if(changekey) {
 				FlashAlpha = 0.f;
 			}
-
 			OldSpeedFlashBlanc = speed;
 			OldColorFlashBlanc = colorflash;
 		}
-
-		if ((SpecialFadeEnCours) &&
-		        (((fx & 0x00FF0000) != FX_APPEAR) && ((fx & 0x00FF0000) != FX_APPEAR2))
-		   )
-		{
-			speed = OldSpeedSpecialFade;
-
-			if (fx < 0) fx = OldFxSpecialFade;
-			else fx |= OldFxSpecialFade;
+		
+		if(changekey) {
+			SpecialFadeDx = 0.f;
 		}
-		else
-		{
-			if (changekey)
-			{
-				SpecialFadeDx = 0.f;
-			}
-
-			OldSpeedSpecialFade = speed;
-			OldFxSpecialFade = fx & 0x00FF0000;
-		}
-
-		if (changekey)
-		{
+		
+		if(changekey) {
 			changekey = false;
 		}
-
+		
 		//post fx
-		switch (fx & 0x00FF0000)
+		switch (fx & 0x00ff0000)
 		{
 			case FX_FLASH:
 				FlashBlancEnCours = FX_FlashBlanc((float)LargeurRender, (float)HauteurRender, speed, colorflash, GetTrackFPS(), FPS);
@@ -686,6 +590,5 @@ void Cinematic::Render(float FDIFF) {
 		GRenderer->EndScene();
 
 		CalcFPS();
-		InRender = false;
 	}	
 }

@@ -51,8 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 namespace fs { class path; }
 
-extern long FORBID_SAVE;
-
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle);
 
 long ARX_CHANGELEVEL_GetInfo(const fs::path & savefile, std::string & name, float & version, long & level, unsigned long & time);

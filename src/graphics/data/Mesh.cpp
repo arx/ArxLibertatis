@@ -50,6 +50,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <map>
 
+#include <boost/scoped_array.hpp>
+#include <boost/unordered_map.hpp>
+
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
@@ -60,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 
+#include "game/EntityManager.h"
 #include "game/Player.h"
 
 #include "graphics/Draw.h"
@@ -84,7 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/Interactive.h"
 
-#include "platform/String.h"
+#include "util/String.h"
 
 using std::min;
 using std::max;
@@ -93,24 +97,18 @@ using std::string;
 using std::vector;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
-extern long ParticleCount;
-extern bool ARXPausedTimer;
 
 static void EERIE_PORTAL_Release();
 
 float Xratio = 1.f;
 float Yratio = 1.f;
-long COMPUTE_PORTALS = 1;
 
 
-
-
- 
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp);
 
 EERIEMATRIX ProjectionMatrix;
 
-void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
+void ReleaseAnimFromIO(Entity * io, long num)
 {
 	for (long count = 0; count < MAX_ANIM_LAYERS; count++)
 	{
@@ -130,35 +128,24 @@ void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
 
 void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	
-	long j = ARX_PARTICLES_GetFree();
+	arxtime.update();
 	
-	if(j != -1 && !arxtime.is_paused()) {
-		ParticleCount++;
-		particle[j].exist		=	true;
-		particle[j].zdec		=	0;
-		particle[j].ov.x		=	x;
-		particle[j].ov.y		=	y;
-		particle[j].ov.z		=	z;
-		particle[j].move.x		=	0.f;
-		particle[j].move.y		=	0.f;
-		particle[j].move.z		=	0.f;
-		particle[j].scale.x		=	0.f;
-		particle[j].scale.y		=	0.f;
-		particle[j].scale.z		=	0.f;
-		particle[j].timcreation = checked_range_cast<long>(arxtime.get_updated());
-		particle[j].tolive		=	tim;
-		particle[j].tc			=	EERIE_DRAW_sphere_particle;
-		particle[j].siz			=	siz;
-		particle[j].rgb = color.to<float>();
+	PARTICLE_DEF * pd = createParticle();
+	if(!pd) {
+		return;
 	}
+	
+	pd->ov = Vec3f(x, y, z);
+	pd->scale = Vec3f::ZERO;
+	pd->tolive = tim;
+	pd->tc = EERIE_DRAW_sphere_particle;
+	pd->siz = siz;
+	pd->rgb = color.to<float>();
 }
 
-//*************************************************************************************
-//*************************************************************************************
-float fK3;
-
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _fZNear, float _fZFar)
-{
+void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
+                             float _fZNear, float _fZFar) {
+	
 	float fAspect = _fHeight / _fWidth;
 	float fFOV = radians(_fFOV);
 	float fFarPlane = _fZFar;
@@ -166,9 +153,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
 	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
 	float Q = fFarPlane / (fFarPlane - fNearPlane);
-
-	fK3 = (_fZFar - _fZNear);
-
+	
 	memset(&ProjectionMatrix, 0, sizeof(EERIEMATRIX));
 	ProjectionMatrix._11 = w;
 	ProjectionMatrix._22 = h;
@@ -176,7 +161,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._43 = (-Q * fNearPlane);
 	ProjectionMatrix._34 = 1.f;
 	GRenderer->SetProjectionMatrix(ProjectionMatrix);
-
+	
 	// Set view matrix to identity
 	EERIEMATRIX mat;
 	mat._11 = 1.f;
@@ -196,32 +181,30 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	mat._43 = 0.f;
 	mat._44 = 1.f;	
 	GRenderer->SetViewMatrix(mat);
-
+	
 	ProjectionMatrix._11 *= _fWidth * .5f;
 	ProjectionMatrix._22 *= _fHeight * .5f;
 	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
 	ProjectionMatrix._43 = Q;
-
+	
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
-void specialEE_RTP(TexturedVertex * in, TexturedVertex * out)
-{
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->p.x = in->p.x - et->posx;
-	out->p.y = in->p.y - et->posy;
-	out->p.z = in->p.z - et->posz;
-
-	register float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
+void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
+	
+	EERIE_TRANSFORM * et = &ACTIVECAM->transform;
+	out->p = in->p - et->pos;
+	
+	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
 	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
 	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
 	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
-
+	
 	float fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->ymod;
+	
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->mod.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->mod.y;
 	out->rhw = fZTemp;
 }
 
@@ -253,35 +236,37 @@ bool RayCollidingPoly(Vec3f * orgn, Vec3f * dest, EERIEPOLY * ep, Vec3f * hit)
 	return false;
 }
 
-long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
-	
-	Vec3f boxmin;
-	Vec3f boxmax;
-
-	if (io == NULL) return -1;
-
-	boxmin.x = 999999999.f;
-	boxmin.y = 999999999.f;
-	boxmin.z = 999999999.f;
-	boxmax.x = -999999999.f;
-	boxmax.y = -999999999.f;
-	boxmax.z = -999999999.f;
-
-	for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
-	{
-		boxmin.x = min(boxmin.x, io->obj->vertexlist3[i].v.x);
-		boxmin.y = min(boxmin.y, io->obj->vertexlist3[i].v.y);
-		boxmin.z = min(boxmin.z, io->obj->vertexlist3[i].v.z);
-
-		boxmax.x = max(boxmax.x, io->obj->vertexlist3[i].v.x);
-		boxmax.y = max(boxmax.y, io->obj->vertexlist3[i].v.y);
-		boxmax.z = max(boxmax.z, io->obj->vertexlist3[i].v.z);
+void ResetBBox3D(Entity * io) {
+	if(io) {
+		io->bbox3D.min = Vec3f::repeat(99999999.f);
+		io->bbox3D.max = Vec3f::repeat(-99999999.f);
 	}
+}
 
+void AddToBBox3D(Entity * io, Vec3f * pos) {
+	if(io) {
+		io->bbox3D.min = componentwise_min(io->bbox3D.min, *pos);
+		io->bbox3D.max = componentwise_max(io->bbox3D.max, *pos);
+	}
+}
+
+long MakeTopObjString(Entity * io,  string & dest) {
+	
+	if(!io) {
+		return -1;
+	}
+	
+	Vec3f boxmin = Vec3f::repeat(999999999.f);
+	Vec3f boxmax = Vec3f::repeat(-999999999.f);
+	for(size_t i = 0; i < io->obj->vertexlist.size(); i++) {
+		boxmin = componentwise_min(boxmin, io->obj->vertexlist3[i].v);
+		boxmax = componentwise_max(boxmax, io->obj->vertexlist3[i].v);
+	}
 	boxmin.y -= 5.f;
 	boxmax.y -= 5.f;
+	
 	dest = "";
-
+	
 	if ((player.pos.x > boxmin.x)
 			&& (player.pos.x < boxmax.x)
 			&& (player.pos.z > boxmin.z)
@@ -293,22 +278,19 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
 		}
 	}
 
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			if (inter.iobj[i] != io)
-				if (inter.iobj[i]->show == SHOW_FLAG_IN_SCENE)
-					if ((inter.iobj[i]->ioflags & IO_NPC) || (inter.iobj[i]->ioflags & IO_ITEM))
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] && entities[i] != io) {
+				if (entities[i]->show == SHOW_FLAG_IN_SCENE)
+					if ((entities[i]->ioflags & IO_NPC) || (entities[i]->ioflags & IO_ITEM))
 					{
-						if (((inter.iobj[i]->pos.x) > boxmin.x)
-								&& ((inter.iobj[i]->pos.x) < boxmax.x)
-								&& ((inter.iobj[i]->pos.z) > boxmin.z)
-								&& ((inter.iobj[i]->pos.z) < boxmax.z))
+						if (((entities[i]->pos.x) > boxmin.x)
+								&& ((entities[i]->pos.x) < boxmax.x)
+								&& ((entities[i]->pos.z) > boxmin.z)
+								&& ((entities[i]->pos.z) < boxmax.z))
 						{
-							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
+							if (EEfabs(entities[i]->pos.y - boxmin.y) < 40.f)
 							{
-								dest += ' ' + inter.iobj[i]->long_name();
+								dest += ' ' + entities[i]->long_name();
 								
 							}
 						}
@@ -720,33 +702,27 @@ EERIEPOLY * EEIsUnderWater(const Vec3f * pos) {
 	return found;
 }
 
-bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret)
-{
-	Vec3f	n, s21, s31;
-
-	s21.x = ep->v[1].p.x - ep->v[0].p.x;
-	s21.y = ep->v[1].p.y - ep->v[0].p.y;
-	s21.z = ep->v[1].p.z - ep->v[0].p.z;
-	s31.x = ep->v[2].p.x - ep->v[0].p.x;
-	s31.y = ep->v[2].p.y - ep->v[0].p.y;
-	s31.z = ep->v[2].p.z - ep->v[0].p.z;
-
+bool GetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
+	
+	
+	Vec3f s21 = ep->v[1].p - ep->v[0].p;
+	Vec3f s31 = ep->v[2].p - ep->v[0].p;
+	
+	Vec3f n;
 	n.y = (s21.z * s31.x) - (s21.x * s31.z);
-
 	if (n.y == 0.f) return false; 
-
 	n.x = (s21.y * s31.z) - (s21.z * s31.y);
 	n.z = (s21.x * s31.y) - (s21.y * s31.x);
-
+	
 	// uses s21.x instead of d
 	s21.x = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
-
+	
 	s21.x = (s21.x - (n.x * pos->x) - (n.z * pos->z)) / n.y;
-
+	
 	// Perhaps we can remove the two following lines... (need to test)
 	if (s21.x < ep->min.y) s21.x = ep->min.y;
 	else if (s21.x > ep->max.y) s21.x = ep->max.y;
-
+	
 	*ret = s21.x;
 	return true;
 }
@@ -768,13 +744,8 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 	if (ACTIVECAM != cam) ACTIVECAM = cam;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
-{
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
+void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
+	out->p = in->p - ACTIVECAM->pos;
 	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
 	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
@@ -793,16 +764,13 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out)
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
-void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
-{
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
+void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
+	out->p = in->p - ACTIVECAM->pos;
 	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
 	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
@@ -821,47 +789,38 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out)
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp * 3000.f;
 
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EE_RT(TexturedVertex * in, Vec3f * out)
-{
-	out->x = in->p.x - ACTIVECAM->pos.x;
-	out->y = in->p.y - ACTIVECAM->pos.y;
-	out->z = in->p.z - ACTIVECAM->pos.z;
-
-	register float temp;
-	temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
+void EE_RT(TexturedVertex * in, Vec3f * out) {
+	
+	*out = in->p - ACTIVECAM->pos;
+	
+	float temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
 	out->x = (out->x * ACTIVECAM->Ycos) + (out->z * ACTIVECAM->Ysin);
-
+	
 	out->z = (out->y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
 	out->y = (out->y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
-
+	
 	// Might Prove Usefull one day...
 	temp = (out->y * ACTIVECAM->Zcos) - (out->x * ACTIVECAM->Zsin);
 	out->x = (out->x * ACTIVECAM->Zcos) + (out->y * ACTIVECAM->Zsin);
 	out->y = temp;
 }
 
-void EE_RT2(TexturedVertex * in, TexturedVertex * out)
-{
-
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
-
-	register float temp;
-	temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
+	
+	out->p = in->p - ACTIVECAM->pos;
+	
+	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-
+	
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
 	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
-
+	
 	// Might Prove Usefull one day...
 	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
 	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
@@ -870,12 +829,10 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out)
 
 void specialEE_RT(TexturedVertex * in, Vec3f * out) {
 	
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
-	out->x = in->p.x - et->posx;
-	out->y = in->p.y - et->posy;
-	out->z = in->p.z - et->posz;
-
-	register float temp = (out->z * et->ycos) - (out->x * et->ysin);
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	*out = in->p - et->pos;
+	
+	float temp = (out->z * et->ycos) - (out->x * et->ysin);
 	out->x = (out->z * et->ysin) + (out->x * et->ycos);
 	out->z = (out->y * et->xsin) + (temp * et->xcos);
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
@@ -891,13 +848,13 @@ static inline float clamp_and_invert(float z) {
 
 void specialEE_P(Vec3f * in, TexturedVertex * out) {
 	
-	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	
 	float fZTemp = clamp_and_invert(in->z);
 	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->xmod;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->mod.x;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->mod.y;
 	out->rhw = fZTemp; 
 }
 
@@ -906,8 +863,8 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 	float fZTemp = clamp_and_invert(in->z);
 	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
@@ -917,45 +874,37 @@ void EE_P2(TexturedVertex * in, TexturedVertex * out)
 	fZTemp = 1.f / in->p.z;
 
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
 
-void EE_RTP(TexturedVertex * in, TexturedVertex * out)
-{
-	//register float rhw;
-	out->p.x = in->p.x - ACTIVECAM->pos.x;
-	out->p.y = in->p.y - ACTIVECAM->pos.y;
-	out->p.z = in->p.z - ACTIVECAM->pos.z;
-
-	register float temp;
-	temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
+void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
+	
+	out->p = in->p - ACTIVECAM->pos;
+	
+	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
 	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-
 	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
 	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
-
+	
 	// Might Prove Usefull one day...
 	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
 	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
 	out->p.y = temp;
-
+	
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->pos2.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->pos2.y;
 	out->rhw = fZTemp;
 }
-//*************************************************************************************
-//*************************************************************************************
-__inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam)
-{
+
+static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam) {
+	
 	TexturedVertex tout;
-	out->p.x = in->p.x - cam->pos.x;
-	out->p.y = in->p.y - cam->pos.y;
-	out->p.z = in->p.z - cam->pos.z;
+	out->p = in->p - cam->pos;
 
 	tout.p.x = (out->p.x * cam->Ycos) + (out->p.z * cam->Ysin);
 	tout.p.z = (out->p.z * cam->Ycos) - (out->p.x * cam->Ysin);
@@ -984,8 +933,8 @@ __inline void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA 
 
 	tout.rhw = cam->use_focal * out->rhw;
 	out->p.z = out->p.z * cam->Zmul;
-	out->p.x = cam->posleft + (tout.p.x * tout.rhw);
-	out->p.y = cam->postop + (tout.p.y * tout.rhw) ;
+	out->p.x = cam->pos2.x + (tout.p.x * tout.rhw);
+	out->p.y = cam->pos2.y + (tout.p.y * tout.rhw) ;
 }
 
 //*************************************************************************************
@@ -997,8 +946,8 @@ void EE_RTT(TexturedVertex * in, TexturedVertex * out)
 
 //*************************************************************************************
 //*************************************************************************************
-__inline void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam)
-{
+static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
+	
 	camEE_RTP(&ep->v[0], &ep->tv[0], cam);
 	camEE_RTP(&ep->v[1], &ep->tv[1], cam);
 	camEE_RTP(&ep->v[2], &ep->tv[2], cam);
@@ -1092,10 +1041,10 @@ float GetColorz(float x, float y, float z) {
 		ApplyDynLight(ep);
 
 		for(long i = 0; i < to; i++) {
-			Color3f col = Color3f::fromBGR(ep->tv[i].color);
-			_ffr += col.r;
-			_ffg += col.g;
-			_ffb += col.b;
+			Color col = Color::fromBGR(ep->tv[i].color);
+			_ffr += float(col.r);
+			_ffg += float(col.g);
+			_ffb += float(col.b);
 		}
 
 		_ffr *= div;
@@ -1116,10 +1065,10 @@ float GetColorz(float x, float y, float z) {
 //*************************************************************************************
 //*************************************************************************************
 
-extern float GetIOHeight(INTERACTIVE_OBJ * io);
-extern float GetIORadius(INTERACTIVE_OBJ * io);
+extern float GetIOHeight(Entity * io);
+extern float GetIORadius(Entity * io);
 
-long GetVertexPos(INTERACTIVE_OBJ * io, long id, Vec3f * pos)
+long GetVertexPos(Entity * io, long id, Vec3f * pos)
 {
 	if (!io) return 0;
 
@@ -1130,23 +1079,17 @@ long GetVertexPos(INTERACTIVE_OBJ * io, long id, Vec3f * pos)
 	}
 	else
 	{
-		pos->x = io->pos.x;
-		pos->y = io->pos.y + GetIOHeight(io);
-		pos->z = io->pos.z;
+		*pos = io->pos + Vec3f(0.f, GetIOHeight(io), 0.f);
 		return 2;
 	}
 }
 
 long EERIEDrawnPolys = 0;
 
-extern EERIE_CAMERA * Kam;
-
-//*************************************************************************************
 // Checks if point (x,y) is in a 2D poly defines by ep
-//*************************************************************************************
-int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
-{
-	register int i, j, c = 0;
+int PointIn2DPoly(EERIEPOLY * ep, float x, float y) {
+	
+	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1172,9 +1115,9 @@ int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 //*************************************************************************************
 //*************************************************************************************
 
-float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
-{
-	register int i, j, c = 0;
+float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
+	
+	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1190,12 +1133,9 @@ float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
 		return 0.f;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
-{
-	register int i, j, c = 0;
+float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z) {
+	
+	int i, j, c = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1209,11 +1149,9 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 	else return 0.f;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z)
-{
-	register int i, j, c = 0, d = 0;
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
+	
+	int i, j, c = 0, d = 0;
 
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
@@ -1248,13 +1186,7 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 	cam->angle.g = 0.f;
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-
-int BackFaceCull2D(TexturedVertex * tv)
-{
-
+int BackFaceCull2D(TexturedVertex * tv) {
 	if ((tv[0].p.x - tv[1].p.x)*(tv[2].p.y - tv[1].p.y) - (tv[0].p.y - tv[1].p.y)*(tv[2].p.x - tv[1].p.x) > 0.f)
 		return 0;
 	else return 1;
@@ -1262,8 +1194,20 @@ int BackFaceCull2D(TexturedVertex * tv)
 
 extern EERIE_CAMERA raycam;
 
-//*************************************************************************************
-//*************************************************************************************
+static void SP_PrepareCamera(EERIE_CAMERA * cam) {
+	float tmp = radians(cam->angle.a);
+	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
+	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
+	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
+	tmp = radians(cam->angle.b);
+	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
+	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
+	tmp = radians(cam->angle.g);
+	cam->Zcos = (float)EEcos(tmp);
+	cam->Zsin = (float)EEsin(tmp);
+	cam->transform.mod = cam->pos2 = (cam->center + cam->clip.origin).to<float>();
+	cam->transform.pos = cam->pos;
+}
 
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 
@@ -1279,242 +1223,139 @@ static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 	return 0;
 }
 
-int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, long flag)
-{
-	float x, y, z; //current ray pos
-	float dx, dy, dz; // ray incs
-	float adx, ady, adz; // absolute ray incs
-	float ix, iy, iz;
+int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, long flag) {
+	
+	Vec3f p; //current ray pos
+	Vec3f d; // ray incs
+	Vec3f ad; // absolute ray incs
+	Vec3f i;
 	long lpx, lpz;
 	long voidlast;
 	long px, pz;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
 	float pas = 1.5f;
-
+	
 	long iii = 0;
 	float maxstepp = 20000.f / pas;
-	hit->x = x = orgn->x;
-	hit->y = y = orgn->y;
-	hit->z = z = orgn->z;
-
+	*hit = p = *orgn;
+	
 	voidlast = 0;
 	lpx = lpz = -1;
-	dx = (dest->x - orgn->x);
-	adx = EEfabs(dx);
-	dy = (dest->y - orgn->y);
-	ady = EEfabs(dy);
-	dz = (dest->z - orgn->z);
-	adz = EEfabs(dz);
-
-	if ((adx >= ady) && (adx >= adz))
-	{
-		if (adx != dx) ix = -1.f * pas;
-		else ix = 1.f * pas;
-
-		iy = dy / (adx / pas);
-		iz = dz / (adx / pas);
+	d.x = (dest->x - orgn->x);
+	ad.x = EEfabs(d.x);
+	d.y = (dest->y - orgn->y);
+	ad.y = EEfabs(d.y);
+	d.z = (dest->z - orgn->z);
+	ad.z = EEfabs(d.z);
+	
+	if(ad.x >= ad.y && ad.x >= ad.z) {
+		i.x = (ad.x != d.x) ? (-1.f * pas) : (1.f * pas);
+		i.y = d.y / (ad.x / pas);
+		i.z = d.z / (ad.x / pas);
+	} else if(ad.y >= ad.x && ad.y >= ad.z) {
+		i.x = d.x / (ad.y / pas);
+		i.y = (ad.y != d.y) ? (-1.f * pas) : (1.f * pas);
+		i.z = d.z / (ad.y / pas);
+	} else {
+		i.x = d.x / (ad.z / pas);
+		i.y = d.y / (ad.z / pas);
+		i.z = (ad.z != d.z) ? (-1.f * pas) : (1.f * pas);
 	}
-	else if ((ady >= adx) && (ady >= adz))
-	{
-		if (ady != dy) iy = -1.f * pas;
-		else iy = 1.f * pas;
-
-		ix = dx / (ady / pas);
-		iz = dz / (ady / pas);
-	}
-	else
-	{
-		if (adz != dz) iz = -1.f * pas;
-		else iz = 1.f * pas;
-
-		ix = dx / (adz / pas);
-		iy = dy / (adz / pas);
-	}
-
-	for (;;)
-	{
-		x += ix;
-		y += iy;
-		z += iz;
-
-		if ((ix == -1.f * pas) && (x <= dest->x))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+	
+	for(;;) {
+		
+		p += i;
+		
+		if(i.x == -1.f * pas && p.x <= dest->x) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((ix == 1.f * pas) && (x >= dest->x))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.x == 1.f * pas && p.x >= dest->x) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iy == -1.f * pas) && (y <= dest->y))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.y == -1.f * pas && p.y <= dest->y) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iy == 1.f * pas) && (y >= dest->y))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.y == 1.f * pas && p.y >= dest->y) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iz == -1.f * pas) && (z <= dest->z))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.z == -1.f * pas && p.z <= dest->z) {
+			*hit = p;
 			return 0;
 		}
-
-		if ((iz == 1.f * pas) && (z >= dest->z))
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
+		
+		if(i.z == 1.f * pas && p.z >= dest->z) {
+			*hit = p;
 			return 0;
 		}
-
+		
 		iii++;
-
-		if (iii > maxstepp)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
+		
+		if(iii > maxstepp) {
+			*hit = p;
 			return -1;
 		}
-
-		px = (long)(x * ACTIVEBKG->Xmul);
-		pz = (long)(z * ACTIVEBKG->Zmul);
-
-		if (px > ACTIVEBKG->Xsize - 1)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
+		
+		px = long(p.x * ACTIVEBKG->Xmul);
+		pz = long(p.z * ACTIVEBKG->Zmul);
+		
+		if(px > ACTIVEBKG->Xsize - 1 || px < 0) {
+			*hit = p;
 			return -1;
 		}
-
-		if (px < 0)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
+		
+		if(pz > ACTIVEBKG->Zsize - 1 || pz < 0) {
+			*hit = p;
 			return -1;
 		}
-
-		if (pz > ACTIVEBKG->Zsize - 1)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
-			return -1;
+		
+		if(lpx == px && lpz == pz && voidlast) {
+			continue;
 		}
-
-		if (pz < 0)
-		{
-			hit->x = x;
-			hit->y = y;
-			hit->z = z;
-			epp = NULL;
-			return -1;
+		
+		lpx = px;
+		lpz = pz;
+		voidlast = !flag;
+		long jx1 = clamp(px - 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long jx2 = clamp(px + 1l, 0l, ACTIVEBKG->Xsize - 1l);
+		long jz1 = clamp(pz - 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		long jz2 = clamp(pz + 1l, 0l, ACTIVEBKG->Zsize - 1l);
+		
+		EERIE_BKG_INFO * eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
+		if(eg->nbpoly == 0) {
+			*hit = p;
+			return 1;
 		}
-
-		if (((lpx == px) && (lpz == pz)) && voidlast)
-		{
-		}
-		else
-		{
-			lpx = px;
-			lpz = pz;
-			voidlast = !flag;
-			long jx1 = px - 1;
-			long jx2 = px + 1;
-			long jz1 = pz - 1;
-			long jz2 = pz + 1;
-
-			if (jx1 < 0) jx1 = 0;
-
-			if (jx2 < 0) jx2 = 0;
-
-			if (jz1 < 0) jz1 = 0;
-
-			if (jz2 < 0) jz2 = 0;
-
-			if (jx1 > ACTIVEBKG->Xsize - 1) jx1 = ACTIVEBKG->Xsize - 1;
-
-			if (jx2 > ACTIVEBKG->Xsize - 1) jx2 = ACTIVEBKG->Xsize - 1;
-
-			if (jz1 > ACTIVEBKG->Zsize - 1) jz1 = ACTIVEBKG->Zsize - 1;
-
-			if (jz2 > ACTIVEBKG->Zsize - 1) jz2 = ACTIVEBKG->Zsize - 1;
-
-
-			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-			if (eg->nbpoly == 0)
-			{
-				hit->x = x;
-				hit->y = y;
-				hit->z = z;
-				return 1;
-			}
-
-			for (pz = jz1; pz < jz2; pz++)
-				for (px = jx1; px < jx2; px++)
-				{
-					eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-					for (long k = 0; k < eg->nbpoly; k++)
-					{
-						ep = &eg->polydata[k];
-
-						if (!(ep->type & POLY_TRANS))
-						{
-							if ((y >= ep->min.y - 10.f) && (y <= ep->max.y + 10.f)
-									&& (x >= ep->min.x - 10.f) && (x <= ep->max.x + 10.f)
-									&& (z >= ep->min.z - 10.f) && (z <= ep->max.z + 10.f))
-							{
-								voidlast = 0;
-
-								if (RayIn3DPolyNoCull(orgn, dest, ep))
-								{
-									hit->x = x;
-									hit->y = y;
-									hit->z = z;
-
-									if (ep == epp) return 0;
-
-									return 1;
-								}
-							}
-						}
-
-					}
+		
+		for(pz = jz1; pz < jz2; pz++) for (px = jx1; px < jx2; px++) {
+			eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
+			for(long k = 0; k < eg->nbpoly; k++) {
+				EERIEPOLY * ep = &eg->polydata[k];
+				if(ep->type & POLY_TRANS) {
+					continue;
 				}
+				if(p.y < ep->min.y - 10.f || p.y > ep->max.y + 10.f
+				   || p.x < ep->min.x - 10.f || p.x > ep->max.x + 10.f
+				   || p.z < ep->min.z - 10.f || p.z > ep->max.z + 10.f) {
+					continue;
+				}
+				voidlast = 0;
+				if(RayIn3DPolyNoCull(orgn, dest, ep)) {
+					*hit = p;
+					return (ep == epp) ? 0 : 1;
+				}
+			}
 		}
 	}
 }
 
-//*************************************************************************************
 // Computes the visibility from a point to another... (sort of...)
-//*************************************************************************************
 bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
 	float			x, y, z; //current ray pos
@@ -1525,12 +1366,10 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	EERIEPOLY	*	ep;
 	EERIE_BKG_INFO	* eg;
 	float			pas			=	35.f;
-	Vec3f		found_hit;
+	Vec3f found_hit = Vec3f::ZERO;
 	EERIEPOLY	*	found_ep	=	NULL;
 	float iter, t;
-
-	found_hit.x = found_hit.y = found_hit.z = 0.f;
-
+	
 	x	=	orgn->x;
 	y	=	orgn->y;
 	z	=	orgn->z;
@@ -1651,11 +1490,9 @@ fini:
 	if (!found_ep) return true;
 
 	if (found_ep == epp) return true;
-
-	hit->x	=	found_hit.x;
-	hit->y	=	found_hit.y;
-	hit->z	=	found_hit.z;
-
+	
+	*hit = found_hit;
+	
 	return false;
 }
 
@@ -1702,18 +1539,11 @@ long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb)
 
 	return count;
 }
-//*************************************************************************************
+
 // Releases BKG_INFO from a tile
-//*************************************************************************************
-void ReleaseBKG_INFO(EERIE_BKG_INFO * eg)
-{
-	if (eg->polydata) free(eg->polydata);
-
-	eg->polydata = NULL;
-
-	if (eg->polyin) free(eg->polyin);
-
-	eg->polyin = NULL;
+void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
+	free(eg->polydata), eg->polydata = NULL;
+	free(eg->polyin), eg->polyin = NULL;
 	eg->nbpolyin = 0;
 	memset(eg, 0, sizeof(EERIE_BKG_INFO));
 }
@@ -1741,7 +1571,7 @@ void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 //*************************************************************************************
 //*************************************************************************************
 
-void AddAData(_ANCHOR_DATA * ad, long linked)
+void AddAData(ANCHOR_DATA * ad, long linked)
 {
 	for (long i=0;i<ad->nblinked;i++)
 		if (ad->linked[i] == linked) return;
@@ -1752,7 +1582,7 @@ void AddAData(_ANCHOR_DATA * ad, long linked)
 	ad->nblinked++;
 }
 
-void UpdateIORoom(INTERACTIVE_OBJ * io)
+void UpdateIORoom(Entity * io)
 {
 	Vec3f pos = io->pos;
 	pos.y -= 60.f;
@@ -1765,44 +1595,33 @@ void UpdateIORoom(INTERACTIVE_OBJ * io)
 	io->room_flags &= ~1;
 }
 
-bool GetRoomCenter(long room_num, Vec3f * center)
-{
-	if (!portals) return false;
-
-	if (room_num > portals->nb_rooms) return false;
-
-	if (portals->room[room_num].nb_polys <= 0) return false;
-
+bool GetRoomCenter(long room_num, Vec3f * center) {
+	
+	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0) {
+		return false;
+	}
+	
 	EERIE_3D_BBOX bbox;
-	bbox.min.x = 99999999.f;
-	bbox.min.y = 99999999.f;
-	bbox.min.z = 99999999.f;
-	bbox.max.x = -99999999.f;
-	bbox.max.y = -99999999.f;
-	bbox.max.z = -99999999.f;
-
-	for (long  lll = 0; lll < portals->room[room_num].nb_polys; lll++)
-	{
+	bbox.min = Vec3f::repeat(99999999.f);
+	bbox.max = Vec3f::repeat(-99999999.f);
+	
+	for(long  lll = 0; lll < portals->room[room_num].nb_polys; lll++) {
 		FAST_BKG_DATA * feg;
 		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
 		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
-		bbox.min.x = min(bbox.min.x, ep->center.x);
-		bbox.min.y = min(bbox.min.y, ep->center.y);
-		bbox.min.z = min(bbox.min.z, ep->center.z);
-		bbox.max.x = max(bbox.max.x, ep->center.x);
-		bbox.max.y = max(bbox.max.y, ep->center.y);
-		bbox.max.z = max(bbox.max.z, ep->center.z);
+		bbox.min = componentwise_min(bbox.min, ep->center);
+		bbox.max = componentwise_max(bbox.max, ep->center);
 	}
-
+	
 	*center = (bbox.max + bbox.min) * .5f;
-
+	
 	portals->room[room_num].center = *center;
 	portals->room[room_num].radius = fdist(*center, bbox.max);
 	return true;
 }
 
 ROOM_DIST_DATA * RoomDistance = NULL;
-long NbRoomDistance = 0;
+static long NbRoomDistance = 0;
 
 static void SetRoomDistance(long i, long j, float val, const Vec3f * p1, const Vec3f * p2) {
 	
@@ -1857,216 +1676,31 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 
 	return dst;
 }
-void ComputeRoomDistance()
-{
-	if (RoomDistance)
-		free(RoomDistance);
-
-	RoomDistance = NULL;
-	NbRoomDistance = 0;
-
-	if (portals == NULL) return;
-
-	NbRoomDistance = portals->nb_rooms + 1;
-	RoomDistance =
-		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
-
-	for (long n = 0; n < NbRoomDistance; n++)
-		for (long m = 0; m < NbRoomDistance; m++)
-			SetRoomDistance(m, n, -1.f, NULL, NULL);
-
-	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
-	_ANCHOR_DATA * ad = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * nb_anchors);
-
-	memset(ad, 0, sizeof(_ANCHOR_DATA)*nb_anchors);
-
-	void ** ptr = NULL;
-	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
-	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
-
-
-	for (long i = 0; i < NbRoomDistance; i++)
-	{
-		GetRoomCenter(i, &ad[i].pos);
-		ptr[i] = (void *)&portals->room[i];
-	}
-
-	long curpos = NbRoomDistance;
-
-	for (int i = 0; i < portals->nb_total; i++)
-	{
-		// Add 4 portal vertices
-		for (int nn = 0; nn < 4; nn++)
-		{
-			ad[curpos].pos.x = portals->portals[i].poly.v[nn].p.x;
-			ad[curpos].pos.y = portals->portals[i].poly.v[nn].p.y;
-			ad[curpos].pos.z = portals->portals[i].poly.v[nn].p.z;
-			ptr[curpos] = (void *)&portals->portals[i];
-			curpos++;
-		}
-
-		// Add center;
-		ad[curpos].pos = portals->portals[i].poly.center;
-		ptr[curpos] = (void *)&portals->portals[i];
-		curpos++;
-
-		// Add V centers;
-		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
-		{
-			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].p.x + portals->portals[i].poly.v[nk].p.x) * .5f;
-			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].p.y + portals->portals[i].poly.v[nk].p.y) * .5f;
-			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].p.z + portals->portals[i].poly.v[nk].p.z) * .5f;
-			ptr[curpos] = (void *)&portals->portals[i];
-			curpos++;
-		}
-	}
-
-	// Link Room Centers to all its Room portals...
-	for (int i = 0; i <= portals->nb_rooms; i++)
-	{
-		for (long j = 0; j < portals->nb_total; j++)
-		{
-			if ((portals->portals[j].room_1 == i)
-					||	(portals->portals[j].room_2 == i))
-			{
-				for (long tt = 0; tt < nb_anchors; tt++)
-				{
-					if (ptr[tt] == (void *)(&portals->portals[j]))
-					{
-						AddAData(&ad[tt], i);
-						AddAData(&ad[i], tt);
-					}
-				}
-			}
-		}
-	}
-
-	// Link All portals of a room to all other portals of that room
-	for (int i = 0; i <= portals->nb_rooms; i++)
-	{
-		for (long j = 0; j < portals->nb_total; j++)
-		{
-			if (((portals->portals[j].room_1 == i)
-					|| (portals->portals[j].room_2 == i)))
-				for (long jj = 0; jj < portals->nb_total; jj++)
-				{
-					if ((jj != j)
-							&&	((portals->portals[jj].room_1 == i)
-								 ||	(portals->portals[jj].room_2 == i)))
-					{
-						long p1 = -1;
-						long p2 = -1;
-
-						for (long tt = 0; tt < nb_anchors; tt++)
-						{
-							if (ptr[tt] == (void *)(&portals->portals[jj]))
-								p1 = tt;
-
-							if (ptr[tt] == (void *)(&portals->portals[j]))
-								p2 = tt;
-						}
-
-						if ((p1 >= 0) && (p2 >= 0))
-						{
-							AddAData(&ad[p1], p2);
-							AddAData(&ad[p2], p1);
-						}
-					}
-				}
-		}
-	}
-
-	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
-
-	for (int i = 0; i < NbRoomDistance; i++)
-		for (long j = 0; j < NbRoomDistance; j++)
-		{
-			if (i == j)
-			{
-				SetRoomDistance(i, j, -1, NULL, NULL);
-				continue;
-			}
-			
-			PathFinder::Result rl;
-
-			bool found = pathfinder.move(i, j, rl);
-
-			if (found)
-			{
-				float d = 0.f;
-
-				for (size_t id = 1; id < rl.size() - 1; id++)
-				{
-					d += dist(ad[rl[id-1]].pos, ad[rl[id]].pos);
-				}
-
-				if (d < 0.f) d = 0.f;
-
-				float old = GetRoomDistance(i, j, NULL, NULL);
-
-				if (((d < old) || (old < 0.f)) && rl.size() >= 2)
-					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
-			}
-
-		}
-
-	// Don't use this for contiguous rooms !
-	for (int i = 0; i < portals->nb_total; i++)
-	{
-		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
-		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
-	}
-
-	// Release our temporary Pathfinder data
-	for (int ii = 0; ii < nb_anchors; ii++)
-	{
-		if (ad[ii].nblinked)
-		{
-			free(ad[ii].linked);
-		}
-	}
-
-	free(ad);
-}
 
 // Clears a background of its infos
-void ClearBackground(EERIE_BACKGROUND * eb)
-{
-	EERIE_BKG_INFO * eg;
-
-	if (eb == NULL) return;
-
+void ClearBackground(EERIE_BACKGROUND * eb) {
+	
+	if(eb == NULL) {
+		return;
+	}
+	
 	AnchorData_ClearAll(eb);
-
-	if (eb->minmax) free(eb->minmax);
-
-	eb->minmax = NULL;
-
-	for (long i = 0; i < eb->Xsize * eb->Zsize; i++)
-	{
-		eg = &eb->Backg[i];
-		ReleaseBKG_INFO(eg);
+	
+	free(eb->minmax), eb->minmax = NULL;
+	
+	for(long i = 0; i < eb->Xsize * eb->Zsize; i++) {
+		ReleaseBKG_INFO(&eb->Backg[i]);
 	}
-
-	if (eb->Backg) free(eb->Backg);
-
-	eb->Backg = NULL;
-
-	if (RoomDistance)
-	{
-		free(RoomDistance);
-		RoomDistance = NULL;
-		NbRoomDistance = 0;
-	}
+	free(eb->Backg), eb->Backg = NULL;
+	
+	free(RoomDistance), RoomDistance = NULL;
+	NbRoomDistance = 0;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
-{
-
+int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
+	
 	EERIE_BKG_INFO * eg;
-
+	
 	if (eb == NULL) return 0;
 
 	if(eb->exist) {
@@ -2183,16 +1817,14 @@ void EERIEPOLY_Compute_PolyIn()
 	long ai, aj;
 	long nbvert;
 
-	for (long j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (long i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+			
 			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			if (eg->polyin) free(eg->polyin);
-
-			eg->polyin = NULL;
+			
+			free(eg->polyin), eg->polyin = NULL;
 			eg->nbpolyin = 0;
-
+			
 			ii = max(i - 2, 0L);
 			ij = max(j - 2, 0L);
 			ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
@@ -2354,21 +1986,15 @@ bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 	return false;
 }
 
-extern long COMPUTE_PORTALS;
-
-void EERIE_PORTAL_Blend_Portals_And_Rooms()
-{
-	if (!COMPUTE_PORTALS) return;
-
+void EERIE_PORTAL_Blend_Portals_And_Rooms() {
+	
 	if (!portals) return;
 
 	for (long num = 0; num < portals->nb_total; num++)
 	{
 		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
 		EERIEPOLY * ep = &portals->portals[num].poly;
-		ep->center.x = ep->v[0].p.x;
-		ep->center.y = ep->v[0].p.y;
-		ep->center.z = ep->v[0].p.z;
+		ep->center = ep->v[0].p;
 		long to = 3;
 		float divide = ( 1.0f / 3 );
 
@@ -2377,28 +2003,14 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 			to = 4;
 			divide = ( 1.0f / 4 );
 		}
-
-		ep->min.x = ep->v[0].p.x;
-		ep->min.y = ep->v[0].p.y;
-		ep->min.z = ep->v[0].p.z;
-		ep->max.x = ep->v[0].p.x;
-		ep->max.y = ep->v[0].p.y;
-		ep->max.z = ep->v[0].p.z;
-
-		for (long i = 1; i < to; i++)
-		{
-			ep->center.x += ep->v[i].p.x;
-			ep->center.y += ep->v[i].p.y;
-			ep->center.z += ep->v[i].p.z;
-
-			ep->min.x = min(ep->min.x, ep->v[i].p.x);
-			ep->min.y = min(ep->min.y, ep->v[i].p.y);
-			ep->min.z = min(ep->min.z, ep->v[i].p.z);
-			ep->max.x = max(ep->max.x, ep->v[i].p.x);
-			ep->max.y = max(ep->max.y, ep->v[i].p.y);
-			ep->max.z = max(ep->max.z, ep->v[i].p.z);
+		
+		ep->max = ep->min = ep->v[0].p;
+		for(long i = 1; i < to; i++) {
+			ep->center += ep->v[i].p;
+			ep->min = componentwise_min(ep->min, ep->v[i].p);
+			ep->max = componentwise_max(ep->max, ep->v[i].p);
 		}
-
+		
 		ep->center *= divide;
 		float d = 0.f;
 
@@ -2424,57 +2036,29 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 
 static void EERIE_PORTAL_Release() {
 	
-	if (portals)
-	{
-		if (portals->portals)
-		{
-			free(portals->portals);
-			portals->portals = NULL;
-		}
-
-		if (portals->room)
-		{
-			if (portals->nb_rooms > 0)
-			{
-				for (long nn = 0; nn < portals->nb_rooms + 1; nn++)
-				{
-					if (portals->room[nn].epdata)
-						free(portals->room[nn].epdata);
-
-					if (portals->room[nn].portals)
-						free(portals->room[nn].portals);
-
-					portals->room[nn].epdata = NULL;
-					portals->room[nn].portals = NULL;
-
-					if(portals->room[nn].pVertexBuffer) {
-						delete portals->room[nn].pVertexBuffer;
-						portals->room[nn].pVertexBuffer = NULL;
-					}
-					
-					if(portals->room[nn].pussIndice) {
-						free(portals->room[nn].pussIndice);
-						portals->room[nn].pussIndice = NULL;
-					}
-					
-					if(portals->room[nn].ppTextureContainer) {
-						free(portals->room[nn].ppTextureContainer);
-						portals->room[nn].ppTextureContainer = NULL;
-					}
-					
-				}
-			}
-
-			free(portals->room);
-			portals->room = NULL;
-		}
-
-		free(portals);
-		portals = NULL;
+	if(!portals) {
+		return;
 	}
+	
+	free(portals->portals), portals->portals = NULL;
+	
+	if(portals->room) {
+		if(portals->nb_rooms > 0) {
+			for(long nn = 0; nn < portals->nb_rooms + 1; nn++) {
+				free(portals->room[nn].epdata), portals->room[nn].epdata = NULL;
+				free(portals->room[nn].portals), portals->room[nn].portals = NULL;
+				delete portals->room[nn].pVertexBuffer, portals->room[nn].pVertexBuffer = NULL;
+				free(portals->room[nn].pussIndice), portals->room[nn].pussIndice = NULL;
+				free(portals->room[nn].ppTextureContainer);
+				portals->room[nn].ppTextureContainer = NULL;
+			}
+		}
+		free(portals->room), portals->room = NULL;
+	}
+	
+	free(portals), portals = NULL;
 }
 
-//-----------------------------------------------------------------------------
 float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 {
 	if (_fOldFocal < 200)
@@ -2529,9 +2113,9 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 	}
 }
 
-void PrepareActiveCamera()
-{
-	register float tmp = radians(ACTIVECAM->angle.a);
+void PrepareActiveCamera() {
+	
+	float tmp = radians(ACTIVECAM->angle.a);
 	ACTIVECAM->Xcos = (float)EEcos(tmp);
 	ACTIVECAM->Xsin = (float)EEsin(tmp);
 	tmp = radians(ACTIVECAM->angle.b);
@@ -2540,11 +2124,10 @@ void PrepareActiveCamera()
 	tmp = radians(ACTIVECAM->angle.g);
 	ACTIVECAM->Zcos = (float)EEcos(tmp);
 	ACTIVECAM->Zsin = (float)EEsin(tmp);
-	ACTIVECAM->posleft = (float)(ACTIVECAM->centerx + ACTIVECAM->clip.left);
-	ACTIVECAM->postop = (float)(ACTIVECAM->centery + ACTIVECAM->clip.top);
-
+	ACTIVECAM->pos2 = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
+	
 	MatrixReset(&ACTIVECAM->matrix);
-
+	
 	float cx = ACTIVECAM->Xcos;
 	float sx = ACTIVECAM->Xsin;
 	float cy = ACTIVECAM->Ycos;
@@ -2552,30 +2135,28 @@ void PrepareActiveCamera()
 	float cz = ACTIVECAM->Zcos;
 	float sz = ACTIVECAM->Zsin;
 	float const1, const2, const3, const4 ;
-
-	const1 = -sz * cx ;
-	const2 = cx * cz ;
-	const3 = sx * sz ;
-	const4 = -sx * cz ;
-
-	ACTIVECAM->matrix._11 = cz * cy ;
-	ACTIVECAM->matrix._21 = const4 * sy + const1 ;
-	ACTIVECAM->matrix._31 = const3 - const2 * sy ;
-	ACTIVECAM->matrix._12 = cy * sz ;
-	ACTIVECAM->matrix._22 = const2 - const3 * sy ;
-	ACTIVECAM->matrix._32 = const1 * sy + const4 ;
-	ACTIVECAM->matrix._13 = sy ;
-	ACTIVECAM->matrix._23 = sx * cy ;
-	ACTIVECAM->matrix._33 = cx * cy ;
-
+	
+	const1 = -sz * cx;
+	const2 = cx * cz;
+	const3 = sx * sz;
+	const4 = -sx * cz;
+	
+	ACTIVECAM->matrix._11 = cz * cy;
+	ACTIVECAM->matrix._21 = const4 * sy + const1;
+	ACTIVECAM->matrix._31 = const3 - const2 * sy;
+	ACTIVECAM->matrix._12 = cy * sz;
+	ACTIVECAM->matrix._22 = const2 - const3 * sy;
+	ACTIVECAM->matrix._32 = const1 * sy + const4;
+	ACTIVECAM->matrix._13 = sy;
+	ACTIVECAM->matrix._23 = sx * cy;
+	ACTIVECAM->matrix._33 = cx * cy;
+	
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
-							static_cast<float>(DANAESIZY),
-							EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
-							1.f,
-							ACTIVECAM->cdepth);
-
-
+	                        static_cast<float>(DANAESIZY),
+	                        EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
+	                        1.f, ACTIVECAM->cdepth);
 }
+
 void F_PrepareCamera(EERIE_CAMERA * cam)
 {
 	float tmp = radians(cam->angle.a);
@@ -2588,26 +2169,10 @@ void F_PrepareCamera(EERIE_CAMERA * cam)
 	cam->Zcos = 1;
 	cam->Zsin = 0.f;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 void PrepareCamera(EERIE_CAMERA * cam)
 {
-	float tmp = radians(cam->angle.a);
-	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
-	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
-	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.b);
-	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
-	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.g);
-	cam->Zcos = (float)EEcos(tmp);
-	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
-	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->centery + cam->clip.top);
-	cam->transform.zmod = cam->Zmul;
-	cam->transform.posx = cam->pos.x;
-	cam->transform.posy = cam->pos.y;
-	cam->transform.posz = cam->pos.z;
+	SP_PrepareCamera(cam);
 
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
 							static_cast<float>(DANAESIZY),
@@ -2617,33 +2182,7 @@ void PrepareCamera(EERIE_CAMERA * cam)
 
 }
 
-void SP_PrepareCamera(EERIE_CAMERA * cam)
-{
-	float tmp = radians(cam->angle.a);
-	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
-	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
-	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.b);
-	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
-	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.g);
-	cam->Zcos = (float)EEcos(tmp);
-	cam->Zsin = (float)EEsin(tmp);
-	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
-	cam->transform.ymod = cam->ymod = cam->postop = (float)(cam->centery + cam->clip.top);
-	cam->transform.zmod = cam->Zmul;
-	cam->transform.posx = cam->pos.x;
-	cam->transform.posy = cam->pos.y;
-	cam->transform.posz = cam->pos.z;
-}
-
-extern long EDITION;
-
-//*************************************************************************************
-//*************************************************************************************
-
-void SetCameraDepth(float depth)
-{
+void SetCameraDepth(float depth) {
 	ACTIVECAM->cdepth = depth;
 	ACTIVECAM->Zdiv = depth * 1.2f;
 	ACTIVECAM->Zmul = 1.f / ACTIVECAM->Zdiv;
@@ -2651,16 +2190,8 @@ void SetCameraDepth(float depth)
 	ACTIVECAM->clip3D = (l / (long)BKG_SIZX) + 1;
 }
 
-extern float _framedelay;
-
-//*************************************************************************************
-//*************************************************************************************
-
-void RecalcLight(EERIE_LIGHT * el)
-{
-	el->rgb255.r = el->rgb.r * 255.f;
-	el->rgb255.g = el->rgb.g * 255.f;
-	el->rgb255.b = el->rgb.b * 255.f;
+void RecalcLight(EERIE_LIGHT * el) {
+	el->rgb255 = el->rgb * 255.f;
 	el->falldiff = el->fallend - el->fallstart;
 	el->falldiffmul = 1.f / el->falldiff;
 	el->precalc = el->intensity * GLOBAL_LIGHT_FACTOR;
@@ -2755,17 +2286,13 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.p.x = eobj->vertexlist[i].v.x * scale->x;
-		v.p.y = eobj->vertexlist[i].v.y * scale->y;
-		v.p.z = eobj->vertexlist[i].v.z * scale->z;
+		v.p = eobj->vertexlist[i].v * *scale;
 
-		_YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
-		_XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
-		_ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
+		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
+		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
+		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
-		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
-		eobj->vertexlist3[i].v.z = rv.p.z += pos->z;
+		eobj->vertexlist3[i].v = (rv.p += *pos);
 		
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
@@ -2773,17 +2300,10 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * sc
 
 	ColorBGRA coll = col->toBGR();
 
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-	{
-		vert_list[0].p.x = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
-		vert_list[0].p.y = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
-		vert_list[0].p.z = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
-		vert_list[1].p.x = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
-		vert_list[1].p.y = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
-		vert_list[1].p.z = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
-		vert_list[2].p.x = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
-		vert_list[2].p.y = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
-		vert_list[2].p.z = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
+		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
+		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
+		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
 		vert_list[0].uv.x = eobj->facelist[i].u[0];
 		vert_list[0].uv.y = eobj->facelist[i].v[0];
 		vert_list[1].uv.x = eobj->facelist[i].u[1];
@@ -2837,34 +2357,24 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.p.x = eobj->vertexlist[i].v.x * scale->x;
-		v.p.y = eobj->vertexlist[i].v.y * scale->y;
-		v.p.z = eobj->vertexlist[i].v.z * scale->z;
+		v.p = eobj->vertexlist[i].v * *scale;
 
-		_YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
-		_XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
-		_ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
+		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
+		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
+		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.x = rv.p.x += pos->x;
-		eobj->vertexlist3[i].v.y = rv.p.y += pos->y;
-		eobj->vertexlist3[i].v.z = rv.p.z += pos->z;
+		eobj->vertexlist3[i].v = (rv.p += *pos);
 
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
 
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-	{
-		vert_list[0].p.x = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
-		vert_list[0].p.y = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
-		vert_list[0].p.z = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.z;
-		vert_list[1].p.x = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.x;
-		vert_list[1].p.y = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.y;
-		vert_list[1].p.z = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld.z;
-		vert_list[2].p.x = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.x;
-		vert_list[2].p.y = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.y;
-		vert_list[2].p.z = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld.z;
-
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
+		
+		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
+		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
+		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
+		
 		vert_list[0].uv.x = eobj->facelist[i].u[0];
 		vert_list[0].uv.y = eobj->facelist[i].v[0];
 		vert_list[1].uv.x = eobj->facelist[i].u[1];
@@ -2893,14 +2403,12 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 	}
 }
 
-extern float FLOATTEST;
-
 Vec3f BBOXMIN, BBOXMAX;
 
 //*************************************************************************************
 // Memorizes information for animation to animation smoothing interpolation
 //*************************************************************************************
-void AcquireLastAnim(INTERACTIVE_OBJ * io)
+void AcquireLastAnim(Entity * io)
 {
 	if ((!io->animlayer[0].cur_anim)
 			&&	(!io->animlayer[1].cur_anim)
@@ -2912,25 +2420,19 @@ void AcquireLastAnim(INTERACTIVE_OBJ * io)
 	io->nb_lastanimvertex = 1;
 }
 
-//*************************************************************************************
 // Declares an Animation as finished.
 // Usefull to update object true position with object virtual pos.
-//*************************************************************************************
-void FinishAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * eanim)
-{
-
-	if (io == NULL) return;
-
-	if (eanim == NULL) return;
-
-	// Only layer 0 controls movement...
-	if ((eanim == io->animlayer[0].cur_anim) && (io->ioflags & IO_NPC))
-	{
-		io->move.x = io->lastmove.x = 0;
-		io->move.y = io->lastmove.y = 0;
-		io->move.z = io->lastmove.z = 0;
+void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
+	
+	if(!io || !eanim) {
+		return;
 	}
-
+	
+	// Only layer 0 controls movement...
+	if(eanim == io->animlayer[0].cur_anim && (io->ioflags & IO_NPC)) {
+		io->move = io->lastmove = Vec3f::ZERO;
+	}
+	
 	return;
 }
 
@@ -2953,113 +2455,161 @@ extern void LoadLevelScreen();
 extern void LoadLevelScreen(long lev);
 
 extern float PROGRESS_BAR_COUNT;
-long NOCHECKSUM = 0;
-long USE_FAST_SCENES = 1;
 
+
+struct file_truncated_exception { };
+
+template <typename T>
+const T * fts_read(const char * & data, const char * end, size_t n = 1) {
+	
+	size_t toread = sizeof(T) * n;
+	
+	if(data + toread > end) {
+		LogDebug(sizeof(T) << " * " << n << " > " << (end - data));
+		throw file_truncated_exception();
+	}
+	
+	const T * result = reinterpret_cast<const T *>(data);
+	
+	data += toread;
+	
+	return result;
+}
+
+
+static bool loadFastScene(const res::path & file, const char * data,
+                          const char * end);
+
+template <typename T>
+class scoped_malloc {
+	
+	T * data;
+	
+public:
+	
+	explicit scoped_malloc(T * data) : data(data) { }
+	
+	~scoped_malloc() { free(data); }
+	
+	T * get() { return data; }
+	const T * get() const { return data; }
+	
+};
 
 bool FastSceneLoad(const res::path & partial_path) {
 	
-	// TODO bounds checking
+	res::path file = "game" / partial_path / "fast.fts";
 	
-	LogDebug("Fast Scene Load " << partial_path);
-	if(!USE_FAST_SCENES) {
-		LogDebug("Not using fast scenes.");
+	const char * data = NULL, * end = NULL;
+	boost::scoped_array<char> bytes;
+	
+	try {
+		
+		// Load the whole file
+		LogDebug("Loading " << file);
+		size_t size;
+		scoped_malloc<char> dat(resources->readAlloc(file, size));
+		data = dat.get(), end = dat.get() + size;
+		// TODO use new[] instead of malloc so we can use (boost::)unique_ptr
+		LogDebug("FTS: read " << size << " bytes");
+		if(!data) {
+			LogError << "FTS: could not read " << file;
+			return false;
+		}
+		
+		
+		// Read the file header
+		const UNIQUE_HEADER * uh = fts_read<UNIQUE_HEADER>(data, end);
+		if(uh->version != FTS_VERSION) {
+			LogError << "FTS version mismatch: got " << uh->version << ", expected "
+			         << FTS_VERSION << " in " << file;
+			return false;
+		}
+		PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+		
+		
+		// Skip .scn file list and initialize the scene data
+		(void)fts_read<UNIQUE_HEADER3>(data, end, uh->count);
+		InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
+		PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
+		
+		
+		// Decompress the actual scene data
+		size_t input_size = end - data;
+		LogDebug("FTS: decompressing " << input_size << " -> "
+		                               << uh->uncompressedsize);
+		bytes.reset(new char[uh->uncompressedsize]);
+		if(!bytes) {
+			LogError << "FTS: can't allocate buffer for uncompressed data";
+			return false;
+		}
+		size = blastMem(data, input_size, bytes.get(), uh->uncompressedsize);
+		data = bytes.get(), end = bytes.get() + size;
+		if(!size) {
+			LogError << "FTS: error decompressing scene data in " << file;
+			return false;
+		} else if(size != size_t(uh->uncompressedsize)) {
+			LogWarning << "FTS: unexpected decompressed size: " << size << " < "
+			           << uh->uncompressedsize << " in " << file;
+		}
+		PROGRESS_BAR_COUNT += 3.f, LoadLevelScreen();
+		
+		
+	} catch(file_truncated_exception) {
+		LogError << "FTS: truncated file " << file;
 		return false;
 	}
 	
-	res::path path = "game" / partial_path;
-	res::path file = path / "fast.fts";
-	
-	size_t size;
-	char * dat = resources->readAlloc(file, size);
-	if(!dat) {
-		LogError << "FastSceneLoad: could not find " << file;
-	}
-	
-	size_t pos = 0;
-	const UNIQUE_HEADER * uh = reinterpret_cast<const UNIQUE_HEADER *>(dat + pos);
-	pos += sizeof(UNIQUE_HEADER);
-	
-	if(!NOCHECKSUM && res::path::load(uh->path) != path) {
-		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
-		free(dat);
+	try {
+		return loadFastScene(file, data, end);
+	} catch(file_truncated_exception) {
+		LogError << "FTS: truncated compressed data in " << file;
 		return false;
 	}
+}
+
+
+static bool loadFastScene(const res::path & file, const char * data,
+                          const char * end) {
 	
-	if(uh->version != FTS_VERSION) {
-		LogError << "FastSceneLoad version mistmatch: got " << uh->version << " expected " << FTS_VERSION;
-		free(dat);
-		return false;
-	}
-	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-	
-	// Skip .scn file list.
-	pos += uh->count * (512 + sizeof(UNIQUE_HEADER2));
-	
-	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-	
-	char * rawdata = new char[uh->uncompressedsize];
-	if(rawdata == NULL) {
-		LogError << "FastSceneLoad: can't allocate buffer for uncompressed data";
-		free(dat);
-		return false;
-	}
-	
-	size_t rawsize = blastMem(dat + pos, size - pos, rawdata, uh->uncompressedsize);
-	free(dat);
-	if(!rawsize) {
-		LogDebug("FastSceneLoad: blastMem didn't return anything " << size << " " << pos);
-		delete[] rawdata;
-		return false;
-	}
-	
-	PROGRESS_BAR_COUNT += 3.f;
-	LoadLevelScreen();
-	pos = 0;
-	
-	const FAST_SCENE_HEADER * fsh = reinterpret_cast<const FAST_SCENE_HEADER *>(rawdata + pos);
-	pos += sizeof(FAST_SCENE_HEADER);
-	
+	// Read the scene header
+	const FAST_SCENE_HEADER * fsh = fts_read<FAST_SCENE_HEADER>(data, end);
 	if(fsh->version != FTS_VERSION) {
-		LogError << "FastSceneLoad: version mismatch in FAST_SCENE_HEADER";
-		delete[] rawdata;
+		LogError << "FTS: version mismatch: got " << fsh->version << ", expected "
+		         << FTS_VERSION << " in " << file;
 		return false;
 	}
-	
 	if(fsh->sizex != ACTIVEBKG->Xsize || fsh->sizez != ACTIVEBKG->Zsize) {
-		LogError << "FastSceneLoad: size mismatch in FAST_SCENE_HEADER";
-		delete[] rawdata;
+		LogError << "FTS: size mismatch in FAST_SCENE_HEADER";
 		return false;
 	}
-	
 	player.pos = fsh->playerpos;
 	Mscenepos = fsh->Mscenepos;
 	
-	// load textures
+	
+	// Load textures
 	typedef std::map<s32, TextureContainer *> TextureContainerMap;
 	TextureContainerMap textures;
+	const FAST_TEXTURE_CONTAINER * ftc;
+	ftc = fts_read<FAST_TEXTURE_CONTAINER>(data, end, fsh->nb_textures);
 	for(long k = 0; k < fsh->nb_textures; k++) {
-		const FAST_TEXTURE_CONTAINER * ftc = reinterpret_cast<const FAST_TEXTURE_CONTAINER *>(rawdata + pos);
-		res::path file = res::path::load(safestring(ftc->fic)).remove_ext();
-		TextureContainer * tmpTC = TextureContainer::Load(file, TextureContainer::Level);
+		res::path file = res::path::load(util::loadString(ftc[k].fic)).remove_ext();
+		TextureContainer * tmpTC;
+		tmpTC = TextureContainer::Load(file, TextureContainer::Level);
 		if(tmpTC) {
-			textures[ftc->tc] = tmpTC;
+			textures[ftc[k].tc] = tmpTC;
 		}
-		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}
+	PROGRESS_BAR_COUNT += 4.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 4.f;
-	LoadLevelScreen();
 	
+	// Load cells with polygons and anchors
+	LogDebug("FTS: loading " << fsh->sizex << " x " << fsh->sizez
+	         << " cells ...");
 	for(long j = 0; j < fsh->sizez; j++) {
 		for(long i = 0; i < fsh->sizex; i++) {
 			
-			const FAST_SCENE_INFO * fsi = reinterpret_cast<const FAST_SCENE_INFO *>(rawdata + pos);
-			pos += sizeof(FAST_SCENE_INFO);
+			const FAST_SCENE_INFO * fsi = fts_read<FAST_SCENE_INFO>(data, end);
 			
 			EERIE_BKG_INFO & bkg = ACTIVEBKG->Backg[i + (j * fsh->sizex)];
 			
@@ -3078,13 +2628,15 @@ bool FastSceneLoad(const res::path & partial_path) {
 			bkg.frustrum_maxy = -99999999.f;
 			bkg.frustrum_miny = 99999999.f;
 			
+			const FAST_EERIEPOLY * eps;
+			eps = fts_read<FAST_EERIEPOLY>(data, end, fsi->nbpoly);
 			for(long k = 0; k < fsi->nbpoly; k++) {
 				
-				const FAST_EERIEPOLY * ep = reinterpret_cast<const FAST_EERIEPOLY *>(rawdata + pos);
-				pos += sizeof(FAST_EERIEPOLY);
-				
+				const FAST_EERIEPOLY * ep = &eps[k];
 				EERIEPOLY * ep2 = &bkg.polydata[k];
+				
 				memset(ep2, 0, sizeof(EERIEPOLY));
+				
 				ep2->room = ep->room;
 				ep2->area = ep->area;
 				ep2->norm = ep->norm;
@@ -3128,30 +2680,16 @@ bool FastSceneLoad(const res::path & partial_path) {
 					div = 0.333333333333f;
 				}
 				
-				ep2->center.x = 0.f;
-				ep2->center.y = 0.f;
-				ep2->center.z = 0.f;
-				
+				ep2->center = Vec3f::ZERO;
 				for(long h = 0; h < to; h++) {
-					
-					ep2->center.x += ep2->v[h].p.x;
-					ep2->center.y += ep2->v[h].p.y;
-					ep2->center.z += ep2->v[h].p.z;
-					
+					ep2->center += ep2->v[h].p;
 					if(h != 0) {
-						ep2->max.x = max(ep2->max.x, ep2->v[h].p.x);
-						ep2->min.x = min(ep2->min.x, ep2->v[h].p.x);
-						ep2->max.y = max(ep2->max.y, ep2->v[h].p.y);
-						ep2->min.y = min(ep2->min.y, ep2->v[h].p.y);
-						ep2->max.z = max(ep2->max.z, ep2->v[h].p.z);
-						ep2->min.z = min(ep2->min.z, ep2->v[h].p.z);
+						ep2->max = componentwise_max(ep2->max, ep2->v[h].p);
+						ep2->min = componentwise_min(ep2->min, ep2->v[h].p);
 					} else {
-						ep2->min.x = ep2->max.x = ep2->v[0].p.x;
-						ep2->min.y = ep2->max.y = ep2->v[0].p.y;
-						ep2->min.z = ep2->max.z = ep2->v[0].p.z;
+						ep2->min = ep2->max = ep2->v[0].p;
 					}
 				}
-				
 				ep2->center *= div;
 				
 				float dist = 0.f;
@@ -3177,74 +2715,73 @@ bool FastSceneLoad(const res::path & partial_path) {
 				bkg.ianchors = NULL;
 			} else {
 				bkg.ianchors = (long *)malloc(sizeof(long) * fsi->nbianchors);
-				memset(bkg.ianchors, 0, sizeof(long)*fsi->nbianchors);
+				const s32 * anchors = fts_read<s32>(data, end, fsi->nbianchors);
+				std::copy(anchors, anchors + fsi->nbianchors, bkg.ianchors);
 			}
 			
-			for(long k = 0; k < fsi->nbianchors; k++) {
-				const s32 * ianch = reinterpret_cast<const s32 *>(rawdata + pos);
-				pos += sizeof(s32);
-				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors[k] = *ianch;
-			}
 		}
 	}
+	PROGRESS_BAR_COUNT += 4.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 4.f;
-	LoadLevelScreen();
+	
+	// Load anchor links
+	LogDebug("FTS: loading " << fsh->nb_anchors << " anchors ...");
 	ACTIVEBKG->nbanchors = fsh->nb_anchors;
-	
 	if(fsh->nb_anchors > 0) {
-		ACTIVEBKG->anchors = (_ANCHOR_DATA *)malloc(sizeof(_ANCHOR_DATA) * fsh->nb_anchors);
-		memset(ACTIVEBKG->anchors, 0, sizeof(_ANCHOR_DATA)*fsh->nb_anchors);
+		size_t anchorsize = sizeof(ANCHOR_DATA) * fsh->nb_anchors;
+		ACTIVEBKG->anchors = (ANCHOR_DATA *)malloc(anchorsize);
+		memset(ACTIVEBKG->anchors, 0, anchorsize);
 	} else {
 		ACTIVEBKG->anchors = NULL;
 	}
-	
 	for(long i = 0; i < fsh->nb_anchors; i++) {
 		
-		const FAST_ANCHOR_DATA * fad = reinterpret_cast<const FAST_ANCHOR_DATA *>(rawdata + pos);
-		pos += sizeof(FAST_ANCHOR_DATA);
+		const FAST_ANCHOR_DATA * fad = fts_read<FAST_ANCHOR_DATA>(data, end);
 		
-		_ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
-		anchor.flags = fad->flags;
+		ANCHOR_DATA & anchor = ACTIVEBKG->anchors[i];
+		anchor.flags = AnchorFlags::load(fad->flags); // TODO save/load flags
 		anchor.pos = fad->pos;
 		anchor.nblinked = fad->nb_linked;
 		anchor.height = fad->height;
 		anchor.radius = fad->radius;
 		
-		if(fad->nb_linked > 0) {
-			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
-		} else {
+		if(fad->nb_linked <= 0) {
 			anchor.linked = NULL;
-		}
-		
-		for(long kk = 0; kk < fad->nb_linked; kk++) {
-			const s32 * lng = reinterpret_cast<const s32 *>(rawdata + pos);
-			pos += sizeof(s32);
-			anchor.linked[kk] = *lng;
+		} else {
+			anchor.linked = (long *)malloc(sizeof(long) * fad->nb_linked);
+			const s32 * links = fts_read<s32>(data, end, fad->nb_linked);
+			std::copy(links, links + fad->nb_linked, anchor.linked);
 		}
 	}
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
 	
-	if(fsh->nb_rooms > 0) {
+	// Load rooms and portals
+	if(fsh->nb_rooms <= 0) {
+		USE_PORTALS = 0;
+	} else {
 		
 		EERIE_PORTAL_Release();
 		
 		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
 		portals->nb_rooms = fsh->nb_rooms;
-		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA) * (portals->nb_rooms + 1));
+		portals->room = (EERIE_ROOM_DATA *)malloc(sizeof(EERIE_ROOM_DATA)
+		                                          * (portals->nb_rooms + 1));
 		portals->nb_total = fsh->nb_portals;
-		portals->portals = (EERIE_PORTALS *)malloc(sizeof(EERIE_PORTALS) * portals->nb_total);
+		portals->portals = (EERIE_PORTALS *)malloc(sizeof(EERIE_PORTALS)
+		                                           * portals->nb_total);
 		
+		
+		LogDebug("FTS: loading " << portals->nb_total << " portals ...");
+		const EERIE_SAVE_PORTALS * epos;
+		epos = fts_read<EERIE_SAVE_PORTALS>(data, end, portals->nb_total);
 		for(long i = 0; i < portals->nb_total; i++) {
 			
-			const EERIE_SAVE_PORTALS * epo = reinterpret_cast<const EERIE_SAVE_PORTALS *>(rawdata + pos);
-			pos += sizeof(EERIE_SAVE_PORTALS);
-			
+			const EERIE_SAVE_PORTALS * epo = &epos[i];
 			EERIE_PORTALS & portal = portals->portals[i];
 			
 			memset(&portal, 0, sizeof(EERIE_PORTALS));
+			
 			portal.room_1 = epo->room_1;
 			portal.room_2 = epo->room_2;
 			portal.useportal = epo->useportal;
@@ -3260,15 +2797,17 @@ bool FastSceneLoad(const res::path & partial_path) {
 			portal.poly.norm = epo->poly.norm;
 			portal.poly.norm2 = epo->poly.norm2;
 			
-			copy(epo->poly.nrml, epo->poly.nrml + 4, portal.poly.nrml);
-			copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
-			copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
+			std::copy(epo->poly.nrml, epo->poly.nrml + 4, portal.poly.nrml);
+			std::copy(epo->poly.v, epo->poly.v + 4, portal.poly.v);
+			std::copy(epo->poly.tv, epo->poly.tv + 4, portal.poly.tv);
 		}
 		
+		
+		LogDebug("FTS: loading " << (portals->nb_rooms + 1) << " rooms ...");
 		for(long i = 0; i < portals->nb_rooms + 1; i++) {
 			
-			const EERIE_SAVE_ROOM_DATA * erd = reinterpret_cast<const EERIE_SAVE_ROOM_DATA *>(rawdata + pos);
-			pos += sizeof(EERIE_SAVE_ROOM_DATA);
+			const EERIE_SAVE_ROOM_DATA * erd;
+			erd = fts_read<EERIE_SAVE_ROOM_DATA>(data, end);
 			
 			EERIE_ROOM_DATA & room = portals->room[i];
 			
@@ -3276,71 +2815,76 @@ bool FastSceneLoad(const res::path & partial_path) {
 			room.nb_portals = erd->nb_portals;
 			room.nb_polys = erd->nb_polys;
 			
+			LogDebug(" - room " << i << ": " << room.nb_portals << " portals, "
+			         << room.nb_polys << " polygons");
+			
 			if(room.nb_portals) {
 				room.portals = (long *)malloc(sizeof(long) * room.nb_portals);
-				const s32 * start = reinterpret_cast<const s32 *>(rawdata + pos);
-				pos += sizeof(s32) * portals->room[i].nb_portals;
-				copy(start, reinterpret_cast<const s32 *>(rawdata + pos), room.portals);
+				const s32 * start = fts_read<s32>(data, end, room.nb_portals);
+				std::copy(start, start + room.nb_portals, room.portals);
 			} else {
 				room.portals = NULL;
 			}
 			
 			if(room.nb_polys) {
 				room.epdata = (EP_DATA *)malloc(sizeof(EP_DATA) * room.nb_polys);
-				const FAST_EP_DATA * ed = reinterpret_cast<const FAST_EP_DATA *>(rawdata + pos);
-				pos += sizeof(FAST_EP_DATA) * portals->room[i].nb_polys;
-				copy(ed, reinterpret_cast<const FAST_EP_DATA *>(rawdata + pos), room.epdata);
+				const FAST_EP_DATA * ed;
+				ed = fts_read<FAST_EP_DATA>(data, end, room.nb_polys);
+				std::copy(ed, ed + room.nb_polys, room.epdata);
 			} else {
 				portals->room[i].epdata = NULL;
 			}
 			
 		}
 		
-		USE_PORTALS = (COMPUTE_PORTALS == 0) ? 0 : 4;
-	} else {
-		USE_PORTALS = 0;
+		USE_PORTALS = 4;
 	}
 	
-	if(RoomDistance) {
-		free(RoomDistance);
-	}
-	RoomDistance = NULL;
+	
+	// Load distances between rooms
+	free(RoomDistance), RoomDistance = NULL;
 	NbRoomDistance = 0;
-	
 	if(portals) {
 		NbRoomDistance = portals->nb_rooms + 1;
-		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+		RoomDistance = (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA)
+		                                        * NbRoomDistance * NbRoomDistance);
+		LogDebug("FTS: loading " << (NbRoomDistance * NbRoomDistance)
+		         << " room distances ...");
 		for(long n = 0; n < NbRoomDistance; n++) {
 			for(long m = 0; m < NbRoomDistance; m++) {
-				const ROOM_DIST_DATA_SAVE * rdds = reinterpret_cast<const ROOM_DIST_DATA_SAVE *>(rawdata + pos);
-				pos += sizeof(ROOM_DIST_DATA_SAVE);
+				const ROOM_DIST_DATA_SAVE * rdds;
+				rdds = fts_read<ROOM_DIST_DATA_SAVE>(data, end);
 				Vec3f start = rdds->startpos;
 				Vec3f end = rdds->endpos;
 				SetRoomDistance(m, n, rdds->distance, &start, &end);
 			}
 		}
 	}
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
+	
+	// Prepare the loaded data
+	
+	LogDebug("FTS: preparing scene data ...");
 	
 	EERIEPOLY_Compute_PolyIn();
-	PROGRESS_BAR_COUNT += 3.f;
-	LoadLevelScreen();
+	PROGRESS_BAR_COUNT += 3.f, LoadLevelScreen();
+	
 	EERIE_PATHFINDER_Create();
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
 	ComputePortalVertexBuffer();
+	PROGRESS_BAR_COUNT += 1.f, LoadLevelScreen();
 	
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-	delete[] rawdata;
 	
-	LogDebug("FastSceneLoad: done loading.");
+	if(data != end) {
+		LogWarning << "FTS: ignoring " << (end - data) << " bytes at the end of "
+		           << file;
+	}
+	LogDebug("FTS: done loading");
+	
 	return true;
-	
 }
 
 #define checkalloc if(pos >= allocsize - 100000) { free(dat); return false; }
@@ -3363,44 +2907,184 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 
 		if (!same) missing = i;
 	}
-
-	if (missing >= 0)
-	{
-		Vec3f temp;
-		temp.x = po->v[2].p.x;
-		temp.y = po->v[2].p.y;
-		temp.z = po->v[2].p.z;
-
-		po->v[2].p.x = ep->v[missing].p.x;
-		po->v[2].p.y = ep->v[missing].p.y;
-		po->v[2].p.z = ep->v[missing].p.z;
-
-		po->v[3].p.x = temp.x;
-		po->v[3].p.y = temp.y;
-		po->v[3].p.z = temp.z;
+	
+	if(missing >= 0) {
+		Vec3f temp = po->v[2].p;
+		po->v[2].p = ep->v[missing].p;
+		po->v[3].p = temp;
 		po->type |= POLY_QUAD;
 	}
 }
 
-struct SINFO_TEXTURE_VERTEX
-{
-	int					iNbVertex;
-	int					iNbIndiceCull;
-	int					iNbIndiceNoCull;
-	int					iNbIndiceCull_TMultiplicative;
-	int					iNbIndiceNoCull_TMultiplicative;
-	int					iNbIndiceCull_TAdditive;
-	int					iNbIndiceNoCull_TAdditive;
-	int					iNbIndiceCull_TNormalTrans;
-	int					iNbIndiceNoCull_TNormalTrans;
-	int					iNbIndiceCull_TSubstractive;
-	int					iNbIndiceNoCull_TSubstractive;
-	TextureContainer	* pTex;
-	int					iMin;
-	int					iMax;
-};
-
 #ifdef BUILD_EDIT_LOADSAVE
+
+void ComputeRoomDistance() {
+	
+	free(RoomDistance), RoomDistance = NULL;
+	NbRoomDistance = 0;
+	
+	if(portals == NULL) {
+		return;
+	}
+	
+	NbRoomDistance = portals->nb_rooms + 1;
+	RoomDistance =
+		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+
+	for (long n = 0; n < NbRoomDistance; n++)
+		for (long m = 0; m < NbRoomDistance; m++)
+			SetRoomDistance(m, n, -1.f, NULL, NULL);
+
+	long nb_anchors = NbRoomDistance + (portals->nb_total * 9);
+	ANCHOR_DATA * ad = (ANCHOR_DATA *)malloc(sizeof(ANCHOR_DATA) * nb_anchors);
+
+	memset(ad, 0, sizeof(ANCHOR_DATA)*nb_anchors);
+
+	void ** ptr = NULL;
+	ptr = (void **)malloc(sizeof(*ptr) * nb_anchors);
+	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
+
+
+	for (long i = 0; i < NbRoomDistance; i++)
+	{
+		GetRoomCenter(i, &ad[i].pos);
+		ptr[i] = (void *)&portals->room[i];
+	}
+
+	long curpos = NbRoomDistance;
+
+	for (int i = 0; i < portals->nb_total; i++)
+	{
+		// Add 4 portal vertices
+		for(int nn = 0; nn < 4; nn++) {
+			ad[curpos].pos = portals->portals[i].poly.v[nn].p;
+			ptr[curpos] = (void *)&portals->portals[i];
+			curpos++;
+		}
+
+		// Add center;
+		ad[curpos].pos = portals->portals[i].poly.center;
+		ptr[curpos] = (void *)&portals->portals[i];
+		curpos++;
+
+		// Add V centers;
+		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
+		{
+			ad[curpos].pos = (portals->portals[i].poly.v[nn].p
+			                + portals->portals[i].poly.v[nk].p) * 0.5f;
+			ptr[curpos] = (void *)&portals->portals[i];
+			curpos++;
+		}
+	}
+
+	// Link Room Centers to all its Room portals...
+	for (int i = 0; i <= portals->nb_rooms; i++)
+	{
+		for (long j = 0; j < portals->nb_total; j++)
+		{
+			if ((portals->portals[j].room_1 == i)
+					||	(portals->portals[j].room_2 == i))
+			{
+				for (long tt = 0; tt < nb_anchors; tt++)
+				{
+					if (ptr[tt] == (void *)(&portals->portals[j]))
+					{
+						AddAData(&ad[tt], i);
+						AddAData(&ad[i], tt);
+					}
+				}
+			}
+		}
+	}
+
+	// Link All portals of a room to all other portals of that room
+	for (int i = 0; i <= portals->nb_rooms; i++)
+	{
+		for (long j = 0; j < portals->nb_total; j++)
+		{
+			if (((portals->portals[j].room_1 == i)
+					|| (portals->portals[j].room_2 == i)))
+				for (long jj = 0; jj < portals->nb_total; jj++)
+				{
+					if ((jj != j)
+							&&	((portals->portals[jj].room_1 == i)
+								 ||	(portals->portals[jj].room_2 == i)))
+					{
+						long p1 = -1;
+						long p2 = -1;
+
+						for (long tt = 0; tt < nb_anchors; tt++)
+						{
+							if (ptr[tt] == (void *)(&portals->portals[jj]))
+								p1 = tt;
+
+							if (ptr[tt] == (void *)(&portals->portals[j]))
+								p2 = tt;
+						}
+
+						if ((p1 >= 0) && (p2 >= 0))
+						{
+							AddAData(&ad[p1], p2);
+							AddAData(&ad[p2], p1);
+						}
+					}
+				}
+		}
+	}
+
+	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
+
+	for (int i = 0; i < NbRoomDistance; i++)
+		for (long j = 0; j < NbRoomDistance; j++)
+		{
+			if (i == j)
+			{
+				SetRoomDistance(i, j, -1, NULL, NULL);
+				continue;
+			}
+			
+			PathFinder::Result rl;
+
+			bool found = pathfinder.move(i, j, rl);
+
+			if (found)
+			{
+				float d = 0.f;
+
+				for (size_t id = 1; id < rl.size() - 1; id++)
+				{
+					d += dist(ad[rl[id-1]].pos, ad[rl[id]].pos);
+				}
+
+				if (d < 0.f) d = 0.f;
+
+				float old = GetRoomDistance(i, j, NULL, NULL);
+
+				if (((d < old) || (old < 0.f)) && rl.size() >= 2)
+					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
+			}
+
+		}
+
+	// Don't use this for contiguous rooms !
+	for (int i = 0; i < portals->nb_total; i++)
+	{
+		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
+		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
+	}
+
+	// Release our temporary Pathfinder data
+	for (int ii = 0; ii < nb_anchors; ii++)
+	{
+		if (ad[ii].nblinked)
+		{
+			free(ad[ii].linked);
+		}
+	}
+
+	free(ad);
+	free(ptr);
+}
 
 long NEED_ANCHORS = 1;
 
@@ -3416,8 +3100,6 @@ static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py
 
 static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long px, long py, long idx) {
 	
-	if (!COMPUTE_PORTALS) return;
-
 	long type, val1, val2;
 
 	if (!GetNameInfo(name, type, val1, val2)) return;
@@ -3445,18 +3127,12 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		float fDistMin = std::numeric_limits<float>::max();
 		float fDistMax = std::numeric_limits<float>::min();
 		int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
-
-		ep->center.x = ep->v[0].p.x;
-		ep->center.y = ep->v[0].p.y;
-		ep->center.z = ep->v[0].p.z;
-
-		for (long ii = 1; ii < nbvert; ii++)
-		{
-			ep->center.x += ep->v[ii].p.x;
-			ep->center.y += ep->v[ii].p.y;
-			ep->center.z += ep->v[ii].p.z;
+		
+		ep->center = ep->v[0].p;
+		for(long ii = 1; ii < nbvert; ii++) {
+			ep->center += ep->v[ii].p;
 		}
-
+		
 		ep->center /= nbvert;
 
 		for(int ii = 0; ii < nbvert; ii++) {
@@ -3542,17 +3218,15 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	}
 
 	memcpy(&eg->polydata[eg->nbpoly], ep, sizeof(EERIEPOLY));
-
-	EERIEPOLY * epp = (EERIEPOLY *)&eg->polydata[eg->nbpoly];
-
-	for (j = 0; j < 3; j++)
-	{
-		epp->tv[j].uv.x	= epp->v[j].uv.x;
-		epp->tv[j].uv.y	= epp->v[j].uv.y;
+	
+	EERIEPOLY * epp = &eg->polydata[eg->nbpoly];
+	
+	for(j = 0; j < 3; j++) {
+		epp->tv[j].uv = epp->v[j].uv;
 		epp->tv[j].color = epp->v[j].color;
-		epp->tv[j].rhw	= 1.f;
+		epp->tv[j].rhw = 1.f;
 	}
-
+	
 	epp->center.x = cx; 
 	epp->center.y = cy; 
 	epp->center.z = cz; 
@@ -3640,60 +3314,45 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	{
 		//Local Transform
 		p = eobj->vertexlist[i].v - eobj->point0;
-		_YRotatePoint(&p, &rp, Ycos, Ysin);
-		_XRotatePoint(&rp, &p, Xcos, Xsin);
-		_ZRotatePoint(&p, &rp, Zcos, Zsin);
-		eobj->vertexlist[i].vert.p.x = rp.x + eobj->pos.x + eobj->point0.x;
-		eobj->vertexlist[i].vert.p.y = rp.y + eobj->pos.y + eobj->point0.y;
-		eobj->vertexlist[i].vert.p.z = rp.z + eobj->pos.z + eobj->point0.z;
+		YRotatePoint(&p, &rp, Ycos, Ysin);
+		XRotatePoint(&rp, &p, Xcos, Xsin);
+		ZRotatePoint(&p, &rp, Zcos, Zsin);
+		eobj->vertexlist[i].vert.p = rp + eobj->pos + eobj->point0;
 	}
 
 	long type, val1, val2;
 
-	if (COMPUTE_PORTALS)
+	if (GetNameInfo(eobj->name, type, val1, val2))
 	{
-		if (GetNameInfo(eobj->name, type, val1, val2))
+		if (type == TYPE_PORTAL)
 		{
-			if (type == TYPE_PORTAL)
-			{
-				EERIEPOLY ep;
-				EERIEPOLY epp;
+			EERIEPOLY ep;
+			EERIEPOLY epp;
 
-				for (size_t i = 0; i < eobj->facelist.size(); i++)
+			for (size_t i = 0; i < eobj->facelist.size(); i++)
+			{
+				for (long kk = 0; kk < 3; kk++)
 				{
-					for (long kk = 0; kk < 3; kk++)
-					{
-						memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
-					}
-
-					if (i == 0)
-					{
-						memcpy(&epp, &ep, sizeof(EERIEPOLY));
-						epp.type = 0;
-					}
-					else if (i == 1)
-					{
-						EERIEPOLY_FillMissingVertex(&epp, &ep);
-					}
-					else break;
+					memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
 				}
 
-				if(!eobj->facelist.empty()) {
-					EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
+				if (i == 0)
+				{
+					memcpy(&epp, &ep, sizeof(EERIEPOLY));
+					epp.type = 0;
 				}
+				else if (i == 1)
+				{
+					EERIEPOLY_FillMissingVertex(&epp, &ep);
+				}
+				else break;
+			}
 
-				return;
+			if(!eobj->facelist.empty()) {
+				EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
 			}
-		}
-	}
-	else
-	{
-		if (GetNameInfo(eobj->name, type, val1, val2))
-		{
-			if (type == TYPE_PORTAL)
-			{
-				return;
-			}
+
+			return;
 		}
 	}
 
@@ -4061,376 +3720,262 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 
 #endif // BUILD_EDIT_LOADSAVE
 
-void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
-{
-	if (portals)
-	{
-		if (portals->room)
-		{
-			if (portals->nb_rooms > 0)
-			{
-				for (long nn = 0; nn < portals->nb_rooms + 1; nn++)
-				{
-					portals->room[nn].usNbTextures = 0;
-					
-					if(portals->room[nn].pVertexBuffer) {
-						delete portals->room[nn].pVertexBuffer;
-						portals->room[nn].pVertexBuffer = NULL;
-					}
-					
-					if(portals->room[nn].pussIndice) {
-						free(portals->room[nn].pussIndice);
-						portals->room[nn].pussIndice = NULL;
-					}
-					
-					if(portals->room[nn].ppTextureContainer) {
-						free(portals->room[nn].ppTextureContainer);
-						portals->room[nn].ppTextureContainer = NULL;
-					}
-				}
-			}
-		}
+void EERIE_PORTAL_ReleaseOnlyVertexBuffer() {
+	
+	if(!portals) {
+		return;
+	}
+	
+	if(!portals->room || portals->nb_rooms <= 0) {
+		return;
+	}
+	
+	LogDebug("Destroying scene VBOs");
+	
+	for(long i = 0; i < portals->nb_rooms + 1; i++) {
+		portals->room[i].usNbTextures = 0;
+		delete portals->room[i].pVertexBuffer, portals->room[i].pVertexBuffer = NULL;
+		free(portals->room[i].pussIndice), portals->room[i].pussIndice = NULL;
+		free(portals->room[i].ppTextureContainer), portals->room[i].ppTextureContainer = NULL;
 	}
 }
 
-struct COPY3D
-{
-	float	x, y, z;
-	int		color;
-	float	u, v;
+namespace {
+
+struct SINFO_TEXTURE_VERTEX {
+	
+	int opaque;
+	int multiplicative;
+	int additive;
+	int blended;
+	int subtractive;
+	
+	SINFO_TEXTURE_VERTEX()
+		: opaque(0), multiplicative(0), additive(0), blended(0), subtractive(0) { }
 };
 
-vector<COPY3D> vCopy3d;
+} // anonymous namespace
 
-//-----------------------------------------------------------------------------
-void ComputePortalVertexBuffer()
-{
-	if (!portals) return;
-
-	if (COMPUTE_PORTALS)
-	{
-		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
-
-		vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
-
-		int iMaxRoom = min(portals->nb_rooms, 255L);
-
-		if (portals->nb_rooms > 255)
-		{
-			char tTxt[256];
-			sprintf(tTxt, "rooms > 255");
-			LogError<<tTxt<<" Error Portals";
-			return;
+void ComputePortalVertexBuffer() {
+	
+	if(!portals) {
+		return;
+	}
+	
+	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
+	
+	LogDebug("Creating scene VBOs");
+	
+	if(portals->nb_rooms > 255) {
+		LogError << "Too many rooms: " << portals->nb_rooms + 1;
+		return;
+	}
+	
+	typedef boost::unordered_map<TextureContainer *,  SINFO_TEXTURE_VERTEX>
+		TextureMap;
+	TextureMap infos;
+	
+	for(int i = 0; i < portals->nb_rooms + 1; i++) {
+		
+		EERIE_ROOM_DATA * room = &portals->room[i];
+		
+		// Skip empty rooms
+		if(!room->nb_polys) {
+			continue;
 		}
-
-		for (int iNb = 0; iNb <= iMaxRoom; iNb++)
-		{
-			EERIE_ROOM_DATA * pRoom = &portals->room[iNb];
-
-			if (!pRoom->nb_polys)
-			{
+		
+		infos.clear();
+		
+		// Count vertices / indices for each texture and blend types
+		int vertexCount = 0, indexCount = 0, ignored = 0, hidden = 0, notex = 0;
+		for(int j = 0; j < room->nb_polys; j++) {
+			int x = room->epdata[j].px, y = room->epdata[j].py;
+			EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
+			EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
+			
+			if(poly.type & POLY_IGNORE) {
+				ignored++;
 				continue;
 			}
-
-			vTextureVertex.clear();
-
-			//check le nombre de vertexs par room + liste de texturecontainer*
-			int iNbVertexForRoom = 0;
-			int iNbIndiceForRoom = 0;
-
-			for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
-			{
-				int iPx = pRoom->epdata[iNbPoly].px;
-				int iPy = pRoom->epdata[iNbPoly].py;
-				EERIE_BKG_INFO * pBkgInfo = &ACTIVEBKG->Backg[iPx+iPy*ACTIVEBKG->Xsize];
-
-				EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
-
-				if ((pPoly->type & POLY_IGNORE) ||
-						(pPoly->type & POLY_HIDE) ||
-						(!pPoly->tex)) continue;
-
-				if(!pPoly->tex->tMatRoom) {
-					pPoly->tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT) * (iMaxRoom + 1));
-				}
-
-				SINFO_TEXTURE_VERTEX * pTextureVertex = NULL;
-				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
-				for (it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it)
-				{
-					if (((*it)->pTex) == pPoly->tex)
-					{
-						pTextureVertex = *it;
-						break;
-					}
-				}
-
-				if (!pTextureVertex)
-				{
-					pTextureVertex = (SINFO_TEXTURE_VERTEX *)malloc(sizeof(SINFO_TEXTURE_VERTEX));
-					memset(pTextureVertex, 0, sizeof(SINFO_TEXTURE_VERTEX));
-					pTextureVertex->pTex = pPoly->tex;
-					vTextureVertex.insert(vTextureVertex.end(), pTextureVertex);
-				}
-
-				int iNbVertex;
-				int iNbIndice;
-
-				if (pPoly->type & POLY_QUAD)
-				{
-					iNbVertex = 4;
-					iNbIndice = 6;
-				}
-				else
-				{
-					iNbVertex = 3;
-					iNbIndice = 3;
-				}
-
-				pTextureVertex->iNbVertex += iNbVertex;
-
-				if (pPoly->type & POLY_DOUBLESIDED)
-				{
-					if (pPoly->type & POLY_TRANS)
-					{
-						float fTransp = pPoly->transval;
-
-						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
-						{
-							pTextureVertex->iNbIndiceNoCull_TMultiplicative += iNbIndice;
-							fTransp *= .5f;
-							fTransp += .5f;
-						}
-						else
-						{
-							if (pPoly->transval >= 1.f) //ADDITIVE
-							{
-								pTextureVertex->iNbIndiceNoCull_TAdditive += iNbIndice;
-								fTransp -= 1.f;
-							}
-							else
-							{
-								if (pPoly->transval > 0.f) //NORMAL TRANS
-								{
-									pTextureVertex->iNbIndiceNoCull_TNormalTrans += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-								else
-								{
-									//SUBTRACTIVE
-									pTextureVertex->iNbIndiceNoCull_TSubstractive += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-							}
-						}
-
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
-					}
-					else
-					{
-						pTextureVertex->iNbIndiceNoCull += iNbIndice;
-					}
-				}
-				else
-				{
-					if (pPoly->type & POLY_TRANS)
-					{
-						float fTransp = pPoly->transval;
-
-						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
-						{
-							pTextureVertex->iNbIndiceCull_TMultiplicative += iNbIndice;
-							fTransp *= .5f;
-							fTransp += .5f;
-						}
-						else
-						{
-							if (pPoly->transval >= 1.f) //ADDITIVE
-							{
-								pTextureVertex->iNbIndiceCull_TAdditive += iNbIndice;
-								fTransp -= 1.f;
-							}
-							else
-							{
-								if (pPoly->transval > 0.f) //NORMAL TRANS
-								{
-									pTextureVertex->iNbIndiceCull_TNormalTrans += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-								else
-								{
-									//SUBTRACTIVE
-									pTextureVertex->iNbIndiceCull_TSubstractive += iNbIndice;
-									fTransp = 1.f - fTransp;
-								}
-							}
-						}
-
-						pPoly->v[3].color = pPoly->v[2].color = pPoly->v[1].color = pPoly->v[0].color = Color::gray(fTransp).toBGR();
-					}
-					else
-					{
-						pTextureVertex->iNbIndiceCull += iNbIndice;
-					}
-				}
-
-				iNbVertexForRoom += iNbVertex;
-				iNbIndiceForRoom += iNbIndice;
-			}
-
-			if(!iNbVertexForRoom) {
-				LogError << "portals " << iNb << " - Zero Vertex" << " Error Portals";
-				
-				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-				
-				for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-					free(*it);
-				}
-				
+			
+			if(poly.type & POLY_HIDE) {
+				hidden++;
 				continue;
 			}
-
-			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
 			
-			// TODO should be static, but is updated for dynamic lighting
-			pRoom->pVertexBuffer = GRenderer->createVertexBuffer(iNbVertexForRoom, Renderer::Dynamic);
-
-			SMY_VERTEX * pVertex = pRoom->pVertexBuffer->lock(NoOverwrite);
-
-			int iStartVertex = 0;
-			int iStartCull = 0;
-			std::vector<SINFO_TEXTURE_VERTEX *>::iterator it;
-
-			for(it = vTextureVertex.begin(); it < vTextureVertex.end(); ++it) {
-				
-				TextureContainer * pTextureContainer = (*it)->pTex;
-
-				unsigned short iIndiceInVertex = 0;
-
-				for (int iNbPoly = 0; iNbPoly < pRoom->nb_polys; iNbPoly++)
-				{
-					int iPx = pRoom->epdata[iNbPoly].px;
-					int iPy = pRoom->epdata[iNbPoly].py;
-					EERIE_BKG_INFO * pBkgInfo = &ACTIVEBKG->Backg[iPx+iPy*ACTIVEBKG->Xsize];
-
-					EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
-
-					if ((pPoly->type & POLY_IGNORE) ||
-							(pPoly->type & POLY_HIDE) ||
-							(!pPoly->tex)) continue;
-
-					if (pPoly->tex == pTextureContainer)
-					{
-						pVertex->p.x = pPoly->v[0].p.x;
-						pVertex->p.y = -(pPoly->v[0].p.y);
-						pVertex->p.z = pPoly->v[0].p.z;
-						pVertex->color = pPoly->v[0].color;
-						pVertex->uv.x = pPoly->v[0].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[0].uv.y + pTextureContainer->hd.y;
-						pVertex++;
-
-						pVertex->p.x = pPoly->v[1].p.x;
-						pVertex->p.y = -(pPoly->v[1].p.y);
-						pVertex->p.z = pPoly->v[1].p.z;
-						pVertex->color = pPoly->v[1].color;
-						pVertex->uv.x = pPoly->v[1].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[1].uv.y + pTextureContainer->hd.y;
-						pVertex++;
-
-						pVertex->p.x = pPoly->v[2].p.x;
-						pVertex->p.y = -(pPoly->v[2].p.y);
-						pVertex->p.z = pPoly->v[2].p.z;
-						pVertex->color = pPoly->v[2].color;
-						pVertex->uv.x = pPoly->v[2].uv.x + pTextureContainer->hd.x;
-						pVertex->uv.y = pPoly->v[2].uv.y + pTextureContainer->hd.y;
-						pVertex++;
-
-						pPoly->uslInd[0] = iIndiceInVertex++;
-						pPoly->uslInd[1] = iIndiceInVertex++;
-						pPoly->uslInd[2] = iIndiceInVertex++;
-
-						if (pPoly->type & POLY_QUAD)
-						{
-							pVertex->p.x = pPoly->v[3].p.x;
-							pVertex->p.y = -(pPoly->v[3].p.y);
-							pVertex->p.z = pPoly->v[3].p.z;
-							pVertex->color = pPoly->v[3].color;
-							pVertex->uv.x = pPoly->v[3].uv.x + pTextureContainer->hd.x;
-							pVertex->uv.y = pPoly->v[3].uv.y + pTextureContainer->hd.y;
-							pVertex++;
-
-							pPoly->uslInd[3] = iIndiceInVertex++;
-						}
-					}
-				}
-
-				//texturecontainer
-				pRoom->usNbTextures++;
-                pRoom->ppTextureContainer = (TextureContainer **)realloc(pRoom->ppTextureContainer, sizeof(TextureContainer *) * pRoom->usNbTextures);
-				pRoom->ppTextureContainer[pRoom->usNbTextures-1] = pTextureContainer;
-
-				pTextureContainer->tMatRoom[iNb].uslStartVertex = iStartVertex;
-				pTextureContainer->tMatRoom[iNb].uslNbVertex = iIndiceInVertex;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull = iStartCull;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull = pTextureContainer->tMatRoom[iNb].uslStartCull + (*it)->iNbIndiceCull;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartNoCull + (*it)->iNbIndiceNoCull;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TNormalTrans = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans = pTextureContainer->tMatRoom[iNb].uslStartCull_TNormalTrans + (*it)->iNbIndiceCull_TNormalTrans;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TNormalTrans = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TNormalTrans + (*it)->iNbIndiceNoCull_TNormalTrans;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TMultiplicative = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative = pTextureContainer->tMatRoom[iNb].uslStartCull_TMultiplicative + (*it)->iNbIndiceCull_TMultiplicative;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TMultiplicative = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TMultiplicative + (*it)->iNbIndiceNoCull_TMultiplicative;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TAdditive = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive = pTextureContainer->tMatRoom[iNb].uslStartCull_TAdditive + (*it)->iNbIndiceCull_TAdditive;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TAdditive = 0;
-
-				pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartNoCull_TAdditive + (*it)->iNbIndiceNoCull_TAdditive;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceCull_TSubstractive = 0;
-				pTextureContainer->tMatRoom[iNb].uslStartNoCull_TSubstractive = pTextureContainer->tMatRoom[iNb].uslStartCull_TSubstractive + (*it)->iNbIndiceCull_TSubstractive;
-				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TSubstractive = 0;
-
-				if (((*it)->iNbIndiceCull > 65535) ||
-						((*it)->iNbIndiceNoCull > 65535) ||
-						((*it)->iNbIndiceCull_TNormalTrans > 65535) ||
-						((*it)->iNbIndiceNoCull_TNormalTrans > 65535) ||
-						((*it)->iNbIndiceCull_TMultiplicative > 65535) ||
-						((*it)->iNbIndiceNoCull_TMultiplicative > 65535) ||
-						((*it)->iNbIndiceCull_TAdditive > 65535) ||
-						((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
-						((*it)->iNbIndiceCull_TSubstractive > 65535) ||
-						((*it)->iNbIndiceNoCull_TSubstractive > 65535)) {
-					LogError << "CreateVertexBuffer - Indices>65535" << " Error TransForm";
-				}
-
-				iStartCull +=	(*it)->iNbIndiceCull +
-								(*it)->iNbIndiceNoCull +
-								(*it)->iNbIndiceCull_TNormalTrans +
-								(*it)->iNbIndiceNoCull_TNormalTrans +
-								(*it)->iNbIndiceCull_TMultiplicative +
-								(*it)->iNbIndiceNoCull_TMultiplicative +
-								(*it)->iNbIndiceCull_TAdditive +
-								(*it)->iNbIndiceNoCull_TAdditive +
-								(*it)->iNbIndiceCull_TSubstractive +
-								(*it)->iNbIndiceNoCull_TSubstractive;
-				
-				iStartVertex += iIndiceInVertex;
-				
-				free(*it);
+			if(!poly.tex) {
+				notex++;
+				continue;
 			}
 			
-			pRoom->pVertexBuffer->unlock();
+			if(!poly.tex->tMatRoom) {
+				poly.tex->tMatRoom = (SMY_ARXMAT *)malloc(sizeof(SMY_ARXMAT)
+				                                           * (portals->nb_rooms + 1));
+			}
+			
+			SINFO_TEXTURE_VERTEX & info = infos[poly.tex];
+			
+			int nvertices = (poly.type & POLY_QUAD) ? 4 : 3;
+			int nindices  = (poly.type & POLY_QUAD) ? 6 : 3;
+			
+			if(poly.type & POLY_TRANS) {
+				
+				float trans = poly.transval;
+				
+				if(poly.transval >= 2.f) { // multiplicative
+					info.multiplicative += nindices;
+					trans = trans * 0.5f + 0.5f;
+				} else if(poly.transval >= 1.f) { // additive
+					info.additive += nindices;
+					trans -= 1.f;
+				} else if(poly.transval > 0.f) { // normal trans
+					info.blended += nindices;
+					trans = 1.f - trans;
+				} else { // subtractive
+					info.subtractive += nindices;
+					trans = 1.f - trans;
+				}
+				
+				poly.v[3].color = poly.v[2].color = poly.v[1].color = poly.v[0].color
+					= Color::gray(trans).toBGR();
+				
+			} else {
+				info.opaque += nindices;
+			}
+			
+			vertexCount += nvertices;
+			indexCount += nindices;
 		}
-
-		vTextureVertex.clear();
+		
+		
+		if(!vertexCount) {
+			LogWarning << "no visible vertices in room " << i << ": "
+			           << ignored << " ignored, " << hidden << " hidden, "
+			           << notex << " untextured";
+			continue;
+		}
+		
+		
+		// Allocate the index buffer for this room
+		room->pussIndice = (unsigned short *)malloc(sizeof(unsigned short)
+		                                            * indexCount);
+		
+		// Allocate the vertex buffer for this room
+		// TODO should be static, but is updated for dynamic lighting
+		room->pVertexBuffer = GRenderer->createVertexBuffer(vertexCount,
+		                                                    Renderer::Dynamic);
+		
+		
+		// Now fill the buffers
+		
+		SMY_VERTEX * vertex = room->pVertexBuffer->lock(NoOverwrite);
+		
+		int startIndex = 0;
+		int startIndexCull = 0;
+		
+		size_t ntextures = infos.size();
+		
+		LogDebug(" - room " << i << ": " << ntextures << " textures, "
+		         << vertexCount << " vertices, " << indexCount << " indices");
+		
+		// Allocate space to list all textures for this room
+		// TODO use std::vector
+		room->ppTextureContainer = (TextureContainer **)realloc(
+			room->ppTextureContainer,
+			sizeof(*room->ppTextureContainer) * (room->usNbTextures + ntextures)
+		);
+		
+		TextureMap::const_iterator it;
+		for(it = infos.begin(); it != infos.end(); ++it) {
+			
+			TextureContainer * texture = it->first;
+			const SINFO_TEXTURE_VERTEX & info = it->second;
+			
+			unsigned short index = 0;
+			
+			// Upload all vertices for this texture and remember the indices
+			for(int j = 0; j < room->nb_polys; j++) {
+				int x = room->epdata[j].px, y = room->epdata[j].py;
+				EERIE_BKG_INFO & cell = ACTIVEBKG->Backg[x + y * ACTIVEBKG->Xsize];
+				EERIEPOLY & poly = cell.polydata[room->epdata[j].idx];
+				
+				if((poly.type & POLY_IGNORE) || (poly.type & POLY_HIDE) || !poly.tex) {
+					continue;
+				}
+				
+				if(poly.tex != texture) {
+					continue;
+				}
+				
+				vertex->p.x = poly.v[0].p.x;
+				vertex->p.y = -(poly.v[0].p.y);
+				vertex->p.z = poly.v[0].p.z;
+				vertex->color = poly.v[0].color;
+				vertex->uv = poly.v[0].uv + texture->hd;
+				vertex++;
+				poly.uslInd[0] = index++;
+				
+				vertex->p.x = poly.v[1].p.x;
+				vertex->p.y = -(poly.v[1].p.y);
+				vertex->p.z = poly.v[1].p.z;
+				vertex->color = poly.v[1].color;
+				vertex->uv = poly.v[1].uv + texture->hd;
+				vertex++;
+				poly.uslInd[1] = index++;
+				
+				vertex->p.x = poly.v[2].p.x;
+				vertex->p.y = -(poly.v[2].p.y);
+				vertex->p.z = poly.v[2].p.z;
+				vertex->color = poly.v[2].color;
+				vertex->uv = poly.v[2].uv + texture->hd;
+				vertex++;
+				poly.uslInd[2] = index++;
+				
+				if(poly.type & POLY_QUAD) {
+					vertex->p.x = poly.v[3].p.x;
+					vertex->p.y = -(poly.v[3].p.y);
+					vertex->p.z = poly.v[3].p.z;
+					vertex->color = poly.v[3].color;
+					vertex->uv = poly.v[3].uv + texture->hd;
+					vertex++;
+					poly.uslInd[3] = index++;
+				}
+			}
+			
+			// Record that the texture is used for this room
+			room->ppTextureContainer[room->usNbTextures++] = texture;
+			
+			// Save the 
+			
+			SMY_ARXMAT & m = texture->tMatRoom[i];
+			
+			m.uslStartVertex = startIndex;
+			m.uslNbVertex = index;
+			
+			m.uslStartCull                 =  startIndexCull;
+			m.uslStartCull_TNormalTrans    = (startIndexCull += info.opaque);
+			m.uslStartCull_TMultiplicative = (startIndexCull += info.blended);
+			m.uslStartCull_TAdditive       = (startIndexCull += info.multiplicative);
+			m.uslStartCull_TSubstractive   = (startIndexCull += info.additive);
+			                                 (startIndexCull += info.subtractive);
+			
+			m.uslNbIndiceCull = 0;
+			m.uslNbIndiceCull_TNormalTrans = 0;
+			m.uslNbIndiceCull_TMultiplicative = 0;
+			m.uslNbIndiceCull_TAdditive = 0;
+			m.uslNbIndiceCull_TSubstractive = 0;
+			
+			if(info.opaque > 65535 || info.multiplicative > 65535
+			   || info.additive > 65535 || info.blended > 65535
+			   || info.subtractive > 65535) {
+				LogWarning << "Too many indices for texture " << texture->m_texName
+				           << " in room " << i;
+			}
+			
+			startIndex += index;
+		}
+		
+		room->pVertexBuffer->unlock();
 	}
 }
 

@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 
+#include <boost/algorithm/string/case_conv.hpp>
+
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 
@@ -59,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Config.h"
 #include "core/Core.h"
 
+#include "game/EntityManager.h"
 #include "game/Levels.h"
 #include "game/Player.h"
 
@@ -73,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/FilePath.h"
 #include "io/fs/FileStream.h"
 #include "io/fs/Filesystem.h"
+#include "io/fs/SystemPaths.h"
 #include "io/resource/ResourcePath.h"
 #include "io/resource/PakReader.h"
 #include "io/Blast.h"
@@ -81,13 +85,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/CollisionShapes.h"
 
-#include "platform/String.h"
-
 #include "scene/Object.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
 #include "scene/LevelFormat.h"
 #include "scene/Light.h"
+
+#include "util/String.h"
 
 using std::max;
 using std::string;
@@ -150,7 +154,7 @@ void LogDirCreation(const fs::path & dir) {
 
 long DanaeSaveLevel(const fs::path & _fic) {
 	
-	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
+	long nb_inter = GetNumberInterWithOutScriptLoad(); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	
 	fs::path fic = _fic;
@@ -219,11 +223,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	
 	// Preparing HEADER
 	dlh.version = DLH_CURRENT_VERSION;
-#ifdef BUILD_EDITOR
-	if(NODIRCREATION) {
-		dlh.version = 1.004f;
-	}
-#endif
 	
 	strcpy(dlh.ident, "DANAE_FILE");
 	
@@ -256,25 +255,23 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	}
 	
 	// preparing INTER DATA, Ignoring Player Data
-	for(long i = 1; i < inter.nbmax; i++) {
-		if((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload)
-			&& (inter.iobj[i]->truelevel == CURRENTLEVEL)) {
+	for(size_t i = 1; i < entities.size(); i++) {
+		if(entities[i] && !entities[i]->scriptload) {
 			
-			INTERACTIVE_OBJ * io = inter.iobj[i];
+			Entity * io = entities[i];
 			
 			DANAE_LS_INTER dli;
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
 			
 			if(dlh.nb_scn != 0) {
-				dli.pos.x = io->initpos.x - Mscenepos.x;
-				dli.pos.y = io->initpos.y - Mscenepos.y;
-				dli.pos.z = io->initpos.z - Mscenepos.z;
+				dli.pos = io->initpos - Mscenepos;
 			} else {
 				dli.pos = io->initpos;
 			}
 			
 			dli.angle = io->initangle;
-			strncpy(dli.name, io->filename.string().c_str(), sizeof(dli.name));
+			strncpy(dli.name, (io->classPath() + ".teo").string().c_str(),
+			        sizeof(dli.name));
 			
 			if(io->ident == 0) {
 				MakeIOIdent(io);
@@ -285,7 +282,6 @@ long DanaeSaveLevel(const fs::path & _fic) {
 				dli.flags = IO_FREEZESCRIPT;
 			}
 			
-			inter.iobj[i]->EditorFlags &= ~EFLAG_NOTSAVED;
 			memcpy(dat + pos, &dli, sizeof(DANAE_LS_INTER));
 			pos += sizeof(DANAE_LS_INTER);
 		}
@@ -297,9 +293,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			memset(&dlf, 0, sizeof(DANAE_LS_FOG));
 			dlf.rgb = fogs[i].rgb;
 			dlf.angle = fogs[i].angle;
-			dlf.pos.x = fogs[i].pos.x - Mscenepos.x;
-			dlf.pos.y = fogs[i].pos.y - Mscenepos.y;
-			dlf.pos.z = fogs[i].pos.z - Mscenepos.z;
+			dlf.pos = fogs[i].pos - Mscenepos;
 			dlf.blend = fogs[i].blend;
 			dlf.frequency = fogs[i].frequency;
 			dlf.move = fogs[i].move;
@@ -320,9 +314,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 			DANAE_LS_NODE dln;
 			memset(&dln, 0, sizeof(DANAE_LS_NODE));
 			strcpy(dln.name, nodes.nodes[i].name);
-			dln.pos.x = nodes.nodes[i].pos.x - Mscenepos.x;
-			dln.pos.y = nodes.nodes[i].pos.y - Mscenepos.y;
-			dln.pos.z = nodes.nodes[i].pos.z - Mscenepos.z;
+			dln.pos = nodes.nodes[i].pos - Mscenepos;
 			memcpy(dat + pos, &dln, sizeof(DANAE_LS_NODE));
 			pos += sizeof(DANAE_LS_NODE);
 			
@@ -347,12 +339,8 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		memset(&dlp, 0, sizeof(DANAE_LS_PATH));
 		dlp.flags = (short)ARXpaths[i]->flags;
 		dlp.idx = 0;
-		dlp.initpos.x = ARXpaths[i]->initpos.x - Mscenepos.x;
-		dlp.initpos.y = ARXpaths[i]->initpos.y - Mscenepos.y;
-		dlp.initpos.z = ARXpaths[i]->initpos.z - Mscenepos.z;
-		dlp.pos.x = ARXpaths[i]->pos.x - Mscenepos.x;
-		dlp.pos.y = ARXpaths[i]->pos.y - Mscenepos.y;
-		dlp.pos.z = ARXpaths[i]->pos.z - Mscenepos.z;
+		dlp.initpos = ARXpaths[i]->initpos - Mscenepos;
+		dlp.pos = ARXpaths[i]->pos - Mscenepos;
 		strncpy(dlp.name, ARXpaths[i]->name.c_str(), sizeof(dlp.name));
 		dlp.nb_pathways = ARXpaths[i]->nb_pathways;
 		dlp.height = ARXpaths[i]->height;
@@ -448,9 +436,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 		dlight.fallend = el->fallend;
 		dlight.fallstart = el->fallstart;
 		dlight.intensity = el->intensity;
-		dlight.pos.x = el->pos.x - Mscenepos.x;
-		dlight.pos.y = el->pos.y - Mscenepos.y;
-		dlight.pos.z = el->pos.z - Mscenepos.z;
+		dlight.pos = el->pos - Mscenepos;
 		dlight.rgb = el->rgb;
 		
 		dlight.extras = el->extras;
@@ -526,7 +512,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	return 1;
 }
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
+void WriteIOInfo(Entity * io, const fs::path & dir) {
 	
 	if(!fs::is_directory(dir)) {
 		return;
@@ -548,7 +534,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir) {
 	
 }
 
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
+void SaveIOScript(Entity * io, long fl) {
 	
 	fs::path file;
 	EERIE_SCRIPT * script;
@@ -556,7 +542,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 	switch(fl) {
 		
 		case 1: { // class script
-			file = config.paths.user / io->filename.string();
+			file = fs::paths.user / io->classPath().string();
 			script = &io->script;
 			break;
 		}
@@ -566,7 +552,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 				LogError << ("NO IDENT...");
 				return;
 			}
-			file = config.paths.user / io->full_name().string();
+			file = fs::paths.user / io->full_name().string();
 			if(!fs::is_directory(file)) {
 				LogError << "Local DIR don't Exists...";
 				return;
@@ -578,6 +564,8 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 		
 		default: return;
 	}
+	
+	file.append(".asl");
 	
 	fs::ofstream ofs(file, fs::fstream::out | fs::fstream::trunc | fs::fstream::binary);
 	if(!ofs.is_open()) {
@@ -593,17 +581,22 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl) {
 #endif // BUILD_EDIT_LOADSAVE
 
 
-INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans) {
+Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
+                      const Vec3f & pos, const Anglef & angle,
+                      const Vec3f & trans) {
 	
 	std::ostringstream nameident;
-	nameident << name.basename() << std::setfill('0') << std::setw(4) << ident;
+	nameident << classPath.filename()
+	          << std::setfill('0') << std::setw(4) << instance;
 	
-	long t = inter.getById(nameident.str());
+	long t = entities.getById(nameident.str());
 	if(t >= 0) {
-		return inter.iobj[t];
+		return entities[t];
 	}
 	
-	INTERACTIVE_OBJ * io = AddInteractive(name, ident, NO_MESH | NO_ON_LOAD);
+	arx_assert(instance != 0);
+	
+	Entity * io = AddInteractive(classPath, instance, NO_MESH | NO_ON_LOAD);
 	if(!io) {
 		return NULL;
 	}
@@ -612,7 +605,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f &
 	ARX_INTERACTIVE_HideGore(io);
 	
 	io->lastpos = io->initpos = io->pos = pos + trans;
-	io->move.x = io->move.y = io->move.z = 0.f;
+	io->move = Vec3f::ZERO;
 	io->initangle = io->angle = angle;
 	
 	res::path tmp = io->full_name(); // Get the directory name to check for
@@ -626,7 +619,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f &
 	
 	if(SendIOScriptEvent(io, SM_LOAD) == ACCEPT && io->obj == NULL) {
 		bool pbox = (io->ioflags & IO_ITEM) == IO_ITEM;
-		io->obj = loadObject(io->filename, pbox);
+		io->obj = loadObject(io->classPath() + ".teo", pbox);
 		if(io->ioflags & IO_NPC) {
 			EERIE_COLLISION_Cylinder_Create(io);
 		}
@@ -635,19 +628,14 @@ INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f &
 	return io;
 }
 
-long LastLoadedLightningNb = 0;
-u32 * LastLoadedLightning = NULL;
+static long LastLoadedLightningNb = 0;
+static u32 * LastLoadedLightning = NULL;
 Vec3f loddpos;
 Vec3f MSP;
 
-//*************************************************************************************
-//*************************************************************************************
-
 extern long FASTmse;
-long DONT_LOAD_INTERS = 0;
-long FAKE_DIR = 0;
 
-long DanaeLoadLevel(const res::path & file) {
+long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 	
 	LogInfo << "Loading Level " << file;
 	
@@ -701,7 +689,7 @@ long DanaeLoadLevel(const res::path & file) {
 	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
-		LogError << "Not a valid file " << file << ": \"" << safestring(dlh.ident) << '"';
+		LogError << "Not a valid file " << file << ": \"" << util::loadString(dlh.ident) << '"';
 		return -1;
 	}
 	
@@ -713,8 +701,7 @@ long DanaeLoadLevel(const res::path & file) {
 		const DANAE_LS_SCENE * dls = reinterpret_cast<const DANAE_LS_SCENE *>(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
 		
-		res::path scene = (FAKE_DIR) ? file.parent() : res::path::load(safestring(dls->name));
-		FAKE_DIR = 0;
+		res::path scene = res::path::load(util::loadString(dls->name));
 		
 		if(FastSceneLoad(scene)) {
 			LogDebug("done loading scene");
@@ -722,7 +709,7 @@ long DanaeLoadLevel(const res::path & file) {
 		} else {
 #ifdef BUILD_EDIT_LOADSAVE
 			LogDebug("fast loading scene failed");
-			ARX_SOUND_PlayCinematic("editor_humiliation.wav");
+			ARX_SOUND_PlayCinematic("editor_humiliation", false);
 			mse = PAK_MultiSceneToEerie(scene);
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
@@ -753,9 +740,9 @@ long DanaeLoadLevel(const res::path & file) {
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		mse->pos.y = Mscenepos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport.x = mapcam.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
-		lastteleport.z = mapcam.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
-		lastteleport.y                = player.pos.y = subj.pos.y = moveto.y = mse->pos.y + mse->point0.y;
+		lastteleport = player.pos = subj.pos = moveto = mse->pos + mse->point0;
+		mapcam.pos.x = player.pos.x;
+		mapcam.pos.z = player.pos.z;
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.pos.y -= 180.f;
 		trans = mse->pos;
@@ -763,13 +750,8 @@ long DanaeLoadLevel(const res::path & file) {
 #endif // BUILD_EDIT_LOADSAVE
 	else
 	{
-		lastteleport.x = 0.f;
-		lastteleport.y = PLAYER_BASE_HEIGHT;
-		lastteleport.z = 0.f;
-		trans.x = 0;
-		trans.y = 0;
-		trans.z = 0;
-		Mscenepos = trans;
+		lastteleport = player.baseOffset();
+		Mscenepos = trans = Vec3f::ZERO;
 	}
 	
 	MSP = trans;
@@ -789,16 +771,18 @@ long DanaeLoadLevel(const res::path & file) {
 		
 		const DANAE_LS_INTER * dli = reinterpret_cast<const DANAE_LS_INTER *>(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
-		if(!DONT_LOAD_INTERS) {
+		
+		if(loadEntities) {
 			
-			string pathstr = toLowercase(safestring(dli->name));
+			string pathstr = boost::to_lower_copy(util::loadString(dli->name));
 			
 			size_t pos = pathstr.find("graph");
 			if(pos != std::string::npos) {
 				pathstr = pathstr.substr(pos);
 			}
 			
-			LoadInter_Ex(res::path::load(pathstr), dli->ident, dli->pos, dli->angle, trans);
+			res::path classPath = res::path::load(pathstr).remove_ext();
+			LoadInter_Ex(classPath, dli->ident, dli->pos, dli->angle, trans);
 		}
 	}
 	
@@ -811,12 +795,9 @@ long DanaeLoadLevel(const res::path & file) {
 		if(!lightingFile) {
 			
 			LastLoadedLightningNb = bcount;
-			if(LastLoadedLightning != NULL) {
-				free(LastLoadedLightning);
-				LastLoadedLightning = NULL;
-			}
 			
-			//DANAE_LS_VLIGHTING
+			// DANAE_LS_VLIGHTING
+			free(LastLoadedLightning);
 			u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 			
 			if(dlh.version > 1.001f) {
@@ -911,9 +892,7 @@ long DanaeLoadLevel(const res::path & file) {
 			fd->exist = 1;
 			fd->rgb = dlf->rgb;
 			fd->angle = dlf->angle;
-			fd->pos.x = dlf->pos.x + trans.x;
-			fd->pos.y = dlf->pos.y + trans.y;
-			fd->pos.z = dlf->pos.z + trans.z;
+			fd->pos = Vec3f(dlf->pos) + trans;
 			fd->blend = dlf->blend;
 			fd->frequency = dlf->frequency;
 			fd->rotatespeed = dlf->rotatespeed;
@@ -927,9 +906,9 @@ long DanaeLoadLevel(const res::path & file) {
 			fd->move.z = 0.f;
 			Vec3f out;
 			float ta = radians(MAKEANGLE(fd->angle.b));
-			_YRotatePoint(&fd->move, &out, EEcos(ta), EEsin(ta));
+			YRotatePoint(&fd->move, &out, EEcos(ta), EEsin(ta));
 			float tb = radians(MAKEANGLE(fd->angle.a));
-			_XRotatePoint(&out, &fd->move, EEcos(tb), EEsin(tb));
+			XRotatePoint(&out, &fd->move, EEcos(tb), EEsin(tb));
 		}
 	}
 	
@@ -947,12 +926,12 @@ long DanaeLoadLevel(const res::path & file) {
 		const DANAE_LS_NODE * dln = reinterpret_cast<const DANAE_LS_NODE *>(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
 		
-		strcpy(nodes.nodes[i].name, toLowercase(safestring(dln->name)).c_str());
+		strcpy(nodes.nodes[i].name, boost::to_lower_copy(util::loadString(dln->name)).c_str());
 		nodes.nodes[i].pos = (Vec3f)dln->pos + trans;
 		
 		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
 			if(dat[pos] != '\0') {
-				strcpy(nodes.nodes[i].lnames[j], toLowercase(safestring(dat + pos, 64)).c_str());
+				strcpy(nodes.nodes[i].lnames[j], boost::to_lower_copy(util::loadString(dat + pos, 64)).c_str());
 			}
 			pos += 64;
 		}
@@ -974,13 +953,13 @@ long DanaeLoadLevel(const res::path & file) {
 		pos += sizeof(DANAE_LS_PATH);
 		
 		Vec3f ppos = Vec3f(dlp->initpos) + trans;
-		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(toLowercase(safestring(dlp->name)), ppos);
+		ARX_PATH * ap = ARXpaths[i] = new ARX_PATH(boost::to_lower_copy(util::loadString(dlp->name)), ppos);
 		
 		ap->flags = PathFlags::load(dlp->flags); // TODO save/load flags
 		ap->pos = Vec3f(dlp->pos) + trans;
 		ap->nb_pathways = dlp->nb_pathways;
 		ap->height = dlp->height;
-		ap->ambiance = res::path::load(safestring(dlp->ambiance));
+		ap->ambiance = res::path::load(util::loadString(dlp->ambiance));
 		
 		ap->amb_max_vol = dlp->amb_max_vol;
 		if(ap->amb_max_vol <= 1.f) {
@@ -1068,9 +1047,7 @@ long DanaeLoadLevel(const res::path & file) {
 			el->intensity = dlight->intensity;
 			
 			if(FASTmse) {
-				el->pos.x = dlight->pos.x + trans.x;
-				el->pos.y = dlight->pos.y + trans.y;
-				el->pos.z = dlight->pos.z + trans.z;
+				el->pos = Vec3f(dlight->pos) + trans;
 			} else {
 				el->pos = dlight->pos;
 			}
@@ -1110,14 +1087,10 @@ long DanaeLoadLevel(const res::path & file) {
 	
 	long bcount = dll->nb_values;
 	LastLoadedLightningNb = bcount;
-	if(LastLoadedLightning != NULL) {
-		free(LastLoadedLightning);
-		LastLoadedLightning = NULL;
-	}
 	
 	//DANAE_LS_VLIGHTING
-	u32 * ll;
-	ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
+	free(LastLoadedLightning);
+	u32 * ll = LastLoadedLightning = (u32 *)malloc(sizeof(u32) * bcount);
 	if(dlh.version > 1.001f) {
 		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
 		pos += sizeof(u32) * bcount;
@@ -1131,6 +1104,7 @@ long DanaeLoadLevel(const res::path & file) {
 		}
 	}
 	
+	ARX_UNUSED(pos), ARX_UNUSED(FileSize);
 	arx_assert(pos <= FileSize);
 	
 	ModeLight = LightMode::load(dll->ModeLight); // TODO save/load flags
@@ -1152,106 +1126,16 @@ long DanaeLoadLevel(const res::path & file) {
 	
 }
 
-extern void MCache_ClearAll();
+void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
-extern long DONT_CLEAR_SCENE;
 long FAST_RELEASE = 0;
-extern INTERACTIVE_OBJ * FlyingOverIO;
-extern void ARX_SOUND_Reinit();
+extern Entity * FlyingOverIO;
 extern unsigned long LAST_JUMP_ENDTIME;
 
 extern EERIE_3DOBJ * stone0;
 extern long stone0_count;
 extern EERIE_3DOBJ * stone1;
 extern long stone1_count;
-extern EERIE_3DOBJ * ssol;
-extern long ssol_count;
-extern EERIE_3DOBJ * slight;
-extern long slight_count;
-extern EERIE_3DOBJ * srune;
-extern long srune_count;
-extern EERIE_3DOBJ * smotte;
-extern long smotte_count;
-extern EERIE_3DOBJ * stite;
-extern long stite_count;
-extern EERIE_3DOBJ * smissile;
-extern long smissile_count;
-extern EERIE_3DOBJ * spapi;
-extern long spapi_count;
-extern EERIE_3DOBJ * sfirewave;
-extern long sfirewave_count;
-extern EERIE_3DOBJ * svoodoo;
-extern long svoodoo_count;
-
-void ReleaseAllSpellResources() {
-	
-	smissile_count = 0;
-	if(smissile) {
-		delete smissile;
-		smissile = NULL;
-	}
-	
-	stite_count = 0;
-	if(stite) {
-		delete stite;
-		stite = NULL;
-	}
-	
-	smotte_count = 0;
-	if(smotte) {
-		delete smotte;
-		smotte = NULL;
-	}
-	
-	ssol_count = 0;
-	if(ssol) {
-		delete ssol;
-		ssol = NULL;
-	}
-	
-	slight_count = 0;
-	if(slight) {
-		delete slight;
-		slight = NULL;
-	}
-	
-	srune_count = 0;
-	if(srune) {
-		delete srune;
-		srune = NULL;
-	}
-	
-	svoodoo_count--;
-	if(svoodoo) {
-		delete svoodoo;
-		svoodoo = NULL;
-	}
-	
-	stone0_count = 0;
-	if(stone0) {
-		delete stone0;
-		stone0 = NULL;
-	}
-	
-	stone1_count = 0;
-	if(stone1) {
-		delete stone1;
-		stone1 = NULL;
-	}
-	
-	spapi_count = 0;
-	if(spapi) {
-		delete spapi;
-		spapi = NULL;
-	}
-	
-	sfirewave_count = 0;
-	if(sfirewave) {
-		delete sfirewave;
-		sfirewave = NULL;
-	}
-	
-}
 
 extern long JUST_RELOADED;
 
@@ -1274,40 +1158,41 @@ void DanaeClearLevel(long flag)
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	RemoveAllBackgroundActions();
 	ClearNodes();
-
+	
 #ifdef BUILD_EDIT_LOADSAVE
 	if(mse != NULL) {
 		ReleaseMultiScene(mse);
 		mse = NULL;
 	}
 #endif
-
+	
 	EERIE_LIGHT_GlobalInit();
 	ARX_FOGS_Clear();
 	TOTIOPDL = 0;
-
+	
 	UnlinkAllLinkedObjects();
-
-	FreeAllInter();
-
-	ReleaseAllSpellResources();
+	
+	entities.clear();
+	
+	DANAE_ReleaseAllDatasDynamic();
+	delete stone0, stone0 = NULL, stone0_count = 0;
+	delete stone1, stone1 = NULL, stone1_count = 0;
+	
 	TextureContainer::DeleteAll(TextureContainer::Level);
 	MapMarkerTc = NULL;
-
+	
 	arxtime.init();
-
+	
 	bGToggleCombatModeWithKey = false;
 	bGCroucheToggle = false;
-
-	INTERTRANSPOLYSPOS = 0;
-
+	
 	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		DynLight[i].exist = 0;
 	}
-
+	
 	TREATZONE_Release();
 	TREATZONE_Clear();
-
+	
 	FAST_RELEASE = 0;
 }
 
@@ -1396,196 +1281,7 @@ plusloin:
 					break;
 			}
 
-			if (modd) _RecalcLightZone(actions[i].pos.x, actions[i].pos.z, (long)((float)(DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul) + 5.f));
+			if (modd) RecalcLightZone(actions[i].pos.x, actions[i].pos.z, (long)((float)(DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul) + 5.f));
 		}
 	}
 }
-struct DLFCHECK
-{
-	char ident[256];
-	char nums[512];
-	long occurence;
-};
-DLFCHECK * dlfcheck = NULL;
-long dlfcount = 0;
-void ARX_SAVELOAD_DLFCheckInit()
-{
-	if (dlfcheck)
-		free(dlfcheck);
-
-	dlfcheck = NULL;
-	dlfcount = 0;
-}
-
-long GetIdent( const std::string& ident)
-{
-	for (long n = 0; n < dlfcount; n++)
-	{
-		if (dlfcheck[n].ident == ident)
-			return n;
-	}
-
-	return -1;
-}
-
-void AddIdent(std::string & ident, long num)
-{
-	long n = GetIdent(ident);
-
-	if (n != -1)
-	{
-		dlfcheck[n].occurence++;
-		char temp[64];
-		sprintf(temp, "%ld ", num);
-
-		if (strlen(dlfcheck[n].nums) < 500)
-			strcat(dlfcheck[n].nums, temp);
-	}
-	else
-	{
-		dlfcheck = (DLFCHECK *)realloc(dlfcheck, sizeof(DLFCHECK) * (dlfcount + 1));
-		strcpy(dlfcheck[dlfcount].ident, ident.c_str());
-		dlfcheck[dlfcount].occurence = 1;
-		sprintf(dlfcheck[dlfcount].nums, "%ld ", num);
-		dlfcount++;
-	}
-}
-
-#ifdef BUILD_EDITOR
-
-static void LogDirDestruction(const res::path & dir ) {
-	if(fs::is_directory(dir)) {
-		LogDebug("LogDirDestruction: " << dir);
-	}
-}
-
-//*************************************************************************************
-// Checks for IO created during this session but not saved...
-//*************************************************************************************
-void CheckIO_NOT_SAVED() {
-	
-	if(!ADDED_IO_NOT_SAVED) {
-		return;
-	}
-	
-	for(long i = 1; i < inter.nbmax; i++) { // ignoring player
-
-		if(!inter.iobj[i] || !inter.iobj[i]->scriptload) {
-			continue;
-		}
-		
-		if(!(inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED) || inter.iobj[i]->ident <= 0) {
-			continue;
-		}
-		
-		res::path temp = inter.iobj[i]->full_name();
-		
-		if(fs::is_directory(temp)) {
-			LogDirDestruction(temp);
-			if(!fs::remove_all(temp)) {
-				LogError << "Could not remove directory " << temp;
-			}
-		}
-		
-		ReleaseInter(inter.iobj[i]);
-	}
-	
-}
-
-static void ARX_SAVELOAD_DLFCheckAdd(const res::path & path, long num) {
-
-	char _error[512];
-	DANAE_LS_HEADER				dlh;
-	DANAE_LS_INTER		*		dli;
-	unsigned char * dat = NULL;
-
-	long pos = 0;
-	long i;
-	size_t FileSize = 0;
-	
-	res::path fic = res::path(path).set_ext("dlf");
-	
-	dat = (unsigned char *)resources->readAlloc(fic, FileSize);
-	if(!dat) {
-		return;
-	}
-	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
-	pos += sizeof(DANAE_LS_HEADER);
-
-	if (dlh.version > DLH_CURRENT_VERSION) // using compression
-	{
-		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
-		free(dat);
-		dat = NULL;
-		return;
-	}
-
-	if (dlh.version >= 1.44f) // using compression
-	{
-		char * torelease = (char *)dat;
-		char * compressed = (char *)(dat + pos);
-		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
-
-		if (dat == NULL)
-		{
-			free(torelease);
-			return;
-		}
-
-		free(torelease);
-		compressed = NULL;
-		pos = 0;
-	}
-
-	if (strcmp(dlh.ident, "DANAE_FILE"))
-	{
-		free(dat);
-		sprintf(_error, "File %s is not a valid file", fic.string().c_str());
-		return;
-	}
-
-	// Loading Scene
-	if (dlh.nb_scn >= 1)
-	{
-		pos += sizeof(DANAE_LS_SCENE);
-	}
-
-	for (i = 0; i < dlh.nb_inter; i++)
-	{
-		dli = (DANAE_LS_INTER *)(dat + pos);
-		pos += sizeof(DANAE_LS_INTER);
-		std::stringstream ss;
-		ss << res::path::load(dli->name).basename() << '_' << std::setfill('0') << std::setw(4) << dli->ident;
-		string id = ss.str();
-		AddIdent(id, num);
-	}
-
-	free(dat);
-}
-
-void ARX_SAVELOAD_CheckDLFs() {
-	
-	ARX_SAVELOAD_DLFCheckInit();
-
-	for (long n = 0; n < 24; n++)
-	{
-		char temp[256];
-		sprintf(temp, "graph/levels/level%ld/level%ld.dlf", n, n);
-		ARX_SAVELOAD_DLFCheckAdd(temp, n);
-	}
-
-	for (int n = 0; n < dlfcount; n++)
-	{
-		char text[256];
-
-		if (dlfcheck[n].occurence > 1)
-		{
-			sprintf(text, "Found %ld times : %s in levels %s", dlfcheck[n].occurence, dlfcheck[n].ident, dlfcheck[n].nums);
-			LogError << (text);
-		}
-	}
-
-	ARX_SAVELOAD_DLFCheckInit();
-}
-
-#endif // BUILD_EDITOR

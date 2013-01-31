@@ -85,13 +85,12 @@ extern EERIE_MULTI3DSCENE * mse;
 extern long ADDED_IO_NOT_SAVED;
 #endif
 extern EERIE_CAMERA * Kam;
-extern EERIE_BACKGROUND DefaultBkg;
-extern INTERACTIVE_OBJ * COMBINE;
+extern Entity * COMBINE;
 extern res::path LastLoadedScene;
 extern char TELEPORT_TO_LEVEL[64];
 extern char TELEPORT_TO_POSITION[64];
 extern float PULSATE;
-extern float _framedelay;
+extern float framedelay;
 extern float BASE_FOCAL;
 
 extern float Xratio;
@@ -106,18 +105,7 @@ extern bool FirstFrame;
 #ifdef BUILD_EDITOR
 extern long EDITMODE;
 extern long EDITION;
-extern long MOULINEX;
-extern long USE_COLLISIONS;
-extern long WILLLOADLEVEL; // Is a LoadLevel command waiting ?
-extern long WILLSAVELEVEL; // Is a SaveLevel command waiting ?
-extern long NODIRCREATION; // No IO Directory Creation ?
-extern const char * GTE_TITLE;
-extern char * GTE_TEXT;
-extern long GTE_SIZE;
-extern long CHANGE_LEVEL_PROC_RESULT;
 extern long DEBUGNPCMOVE;
-extern long GAME_EDITOR;
-extern long TRUEFIGHT;
 #else
 const long EDITMODE = 0;
 #endif
@@ -181,6 +169,10 @@ void ManageCombatModeAnimations();
 void ManageCombatModeAnimationsEND();
 void ManageNONCombatModeAnimations();
 
-INTERACTIVE_OBJ * FlyingOverObject(Vec2s * pos);
+Entity * FlyingOverObject(Vec2s * pos);
+
+void runGame();
+
+void DANAE_ReleaseAllDatasDynamic();
 
 #endif // ARX_CORE_CORE_H

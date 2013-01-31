@@ -47,6 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 #include "core/GameTime.h"
+#include "game/EntityManager.h"
 #include "game/NPC.h"
 #include "graphics/data/Mesh.h"
 #include "io/resource/ResourcePath.h"
@@ -74,11 +75,11 @@ class RotateCommand : public Command {
 	
 public:
 	
-	RotateCommand() : Command("rotate", ANY_IO) { }
+	RotateCommand() : Command("rotate", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		float t1 = context.getFloat();
 		float t2 = context.getFloat();
@@ -103,7 +104,7 @@ public:
 
 class ForceAnimCommand : public Command {
 	
-	static void forceAnim(INTERACTIVE_OBJ & io, ANIM_HANDLE * ea) {
+	static void forceAnim(Entity & io, ANIM_HANDLE * ea) {
 		
 		if(io.animlayer[0].cur_anim
 		   && io.animlayer[0].cur_anim != io.anims[ANIM_DIE]
@@ -122,7 +123,7 @@ class ForceAnimCommand : public Command {
 	
 public:
 	
-	ForceAnimCommand() : Command("forceanim", ANY_IO) { }
+	ForceAnimCommand() : Command("forceanim", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -136,7 +137,7 @@ public:
 			return Failed;
 		}
 		
-		INTERACTIVE_OBJ & io = *context.getIO();
+		Entity & io = *context.getEntity();
 		if(!io.anims[num]) {
 			ScriptWarning << "animation " << anim << " not set";
 			return Failed;
@@ -153,7 +154,7 @@ class ForceAngleCommand : public Command {
 	
 public:
 	
-	ForceAngleCommand() : Command("forceangle", ANY_IO) { }
+	ForceAngleCommand() : Command("forceangle", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -161,7 +162,7 @@ public:
 		
 		DebugScript(' ' << angle);
 		
-		context.getIO()->angle.b = angle;
+		context.getEntity()->angle.b = angle;
 		
 		return Success;
 	}
@@ -170,7 +171,7 @@ public:
 
 class PlayAnimCommand : public Command {
 	
-	static void setNextAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
+	static void setNextAnim(Entity * io, ANIM_HANDLE * ea, long layer, bool loop, bool nointerpol) {
 		
 		if(IsDeadNPC(io)) {
 			return;
@@ -198,7 +199,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * iot = context.getIO();
+		Entity * iot = context.getEntity();
 		long nu = 0;
 		bool loop = false;
 		bool nointerpol = false;
@@ -218,7 +219,7 @@ public:
 			nointerpol = test_flag(flg, 'n');
 			execute = test_flag(flg, 'e');
 			if(flg & flag('p')) {
-				iot = inter.iobj[0];
+				iot = entities.player();
 				iot->move = iot->lastmove = Vec3f::ZERO;
 			}
 		}
@@ -232,9 +233,11 @@ public:
 			return Failed;
 		}
 		
+		ANIM_USE & layer = iot->animlayer[nu];
+		
 		if(anim == "none") {
-			iot->animlayer[nu].cur_anim = NULL;
-			iot->animlayer[nu].next_anim = NULL;
+			layer.cur_anim = NULL;
+			layer.next_anim = NULL;
 			return Success;
 		}
 		
@@ -256,8 +259,8 @@ public:
 			CheckSetAnimOutOfTreatZone(iot, nu);
 		}
 		
-		if(iot == inter.iobj[0]) {
-			iot->animlayer[nu].flags &= ~EA_STATICANIM;
+		if(iot == entities.player()) {
+			layer.flags &= ~EA_STATICANIM;
 		}
 		
 		if(execute) {
@@ -275,8 +278,15 @@ public:
 				ActiveTimers++;
 				scr_timer[num2].es = context.getScript();
 				scr_timer[num2].exist = 1;
-				scr_timer[num2].io = context.getIO();
-				scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.f);
+				scr_timer[num2].io = context.getEntity();
+				scr_timer[num2].msecs = 1000.f;
+				// Don't assume that we successfully set the animation - use the current animation
+				if(layer.cur_anim) {
+					arx_assert(layer.altidx_cur >= 0 && layer.altidx_cur < layer.cur_anim->alt_nb);
+					if(layer.cur_anim->anims[layer.altidx_cur]->anim_time > scr_timer[num2].msecs) {
+						scr_timer[num2].msecs = layer.cur_anim->anims[layer.altidx_cur]->anim_time;
+					}
+				}
 				scr_timer[num2].name = timername;
 				scr_timer[num2].pos = pos;
 				scr_timer[num2].tim = (unsigned long)(arxtime);
@@ -298,11 +308,11 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * iot = context.getIO();
+		Entity * iot = context.getEntity();
 		
 		HandleFlags("p") {
 			if(flg & flag('p')) {
-				iot = inter.iobj[0];
+				iot = entities.player();
 			}
 		}
 		
@@ -334,7 +344,7 @@ public:
 		}
 		
 		res::path path;
-		if(iot == inter.iobj[0] || (iot->ioflags & IO_NPC)) {
+		if(iot == entities.player() || (iot->ioflags & IO_NPC)) {
 			path = ("graph/obj3d/anims/npc" / file).set_ext("tea");
 		} else {
 			path = ("graph/obj3d/anims/fix_inter" / file).set_ext("tea");
@@ -356,7 +366,7 @@ class MoveCommand : public Command {
 	
 public:
 	
-	MoveCommand() : Command("move", ANY_IO) { }
+	MoveCommand() : Command("move", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -366,7 +376,7 @@ public:
 		
 		DebugScript(' ' << dx << ' ' << dy << ' ' << dz);
 		
-		context.getIO()->pos += Vec3f(dx, dy, dz);
+		context.getEntity()->pos += Vec3f(dx, dy, dz);
 		
 		return Success;
 	}
@@ -377,7 +387,7 @@ class UsePathCommand : public Command {
 	
 public:
 	
-	UsePathCommand() : Command("usepath", ANY_IO) { }
+	UsePathCommand() : Command("usepath", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -385,7 +395,7 @@ public:
 		
 		DebugScript(' ' << type);
 		
-		ARX_USE_PATH * aup = context.getIO()->usepath;
+		ARX_USE_PATH * aup = context.getEntity()->usepath;
 		if(!aup) {
 			ScriptWarning << "no path set";
 			return Failed;
@@ -442,7 +452,7 @@ class SetPathCommand : public Command {
 	
 public:
 	
-	SetPathCommand() : Command("setpath", ANY_IO) { }
+	SetPathCommand() : Command("setpath", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -457,11 +467,9 @@ public:
 		
 		DebugScript(' ' << options << ' ' << name);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(name == "none") {
-			if(io->usepath) {
-				free(io->usepath), io->usepath = NULL;
-			}
+			free(io->usepath), io->usepath = NULL;
 		} else {
 			
 			ARX_PATH * ap = ARX_PATH_GetAddressByName(name);
@@ -470,9 +478,7 @@ public:
 				return Failed;
 			}
 			
-			if(io->usepath != NULL) {
-				free(io->usepath), io->usepath = NULL;
-			}
+			free(io->usepath), io->usepath = NULL;
 			
 			ARX_USE_PATH * aup = (ARX_USE_PATH *)malloc(sizeof(ARX_USE_PATH));
 			aup->_starttime = aup->_curtime = arxtime;
@@ -512,7 +518,7 @@ public:
 			return Failed;
 		}
 		
-		ap->controled = context.getIO()->long_name();
+		ap->controled = context.getEntity()->long_name();
 		
 		return Success;
 	}

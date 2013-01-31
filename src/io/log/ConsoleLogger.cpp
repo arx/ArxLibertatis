@@ -24,7 +24,7 @@
 
 #include "Configure.h"
 
-#if defined(HAVE_ISATTY) || defined(HAVE_READLINK)
+#if defined(ARX_HAVE_ISATTY) || defined(ARX_HAVE_READLINK)
 #include <unistd.h>
 #include <errno.h>
 #endif
@@ -52,7 +52,7 @@ static bool is_fd_disabled(int fd) {
 	ARX_UNUSED(fd);
 	
 	// Disable the console log backend if output is redirected to /dev/null
-#ifdef HAVE_READLINK
+#ifdef ARX_HAVE_READLINK
 	static const char * names[] = { NULL, "/proc/self/fd/1", "/proc/self/fd/2" };
 	char path[64];
 	ssize_t len = readlink(names[fd], path, ARRAY_SIZE(path));
@@ -68,7 +68,7 @@ static bool is_fd_disabled(int fd) {
 
 Backend * Console::get() {
 	
-#ifdef HAVE_ISATTY
+#ifdef ARX_HAVE_ISATTY
 	if(isatty(1) && isatty(2)) {
 		return new ColorConsole;
 	}

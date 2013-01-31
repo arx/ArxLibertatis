@@ -17,4 +17,32 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "core/Dialog.h"
+#ifndef ARX_UTIL_STRING_H
+#define ARX_UTIL_STRING_H
+
+#include <stddef.h>
+#include <string>
+
+namespace util {
+
+/*!
+ * Load an std::string from a const char * that may not be null-terminated.
+ */
+std::string loadString(const char * data, size_t maxLength);
+
+template <size_t N>
+std::string loadString(const char (&data)[N]) {
+	return loadString(data, N);
+}
+
+/*!
+ * Escape a string containing the specified characters to escape
+ * @param text The string to escape
+ * @param escapeChars String containing the characters you wish to escape
+ * @return The escaped string
+ */
+std::string escapeString(const std::string & text, const char * escapeChars);
+
+} // namespace util
+
+#endif // ARX_UTIL_STRING_H

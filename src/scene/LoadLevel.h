@@ -47,35 +47,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_LOADLEVEL_H
 #define ARX_SCENE_LOADLEVEL_H
 
+#include "game/EntityId.h"
 #include "math/MathFwd.h"
 
-struct INTERACTIVE_OBJ;
+#include "Configure.h"
 
+class Entity;
 namespace res { class path; }
 
 extern Vec3f loddpos;
 
 #ifdef BUILD_EDIT_LOADSAVE
+namespace fs { class path; }
 long DanaeSaveLevel(const fs::path & file);
 void LogDirCreation(const fs::path & dir);
-void WriteIOInfo(INTERACTIVE_OBJ * io, const fs::path & dir);
-void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
+void WriteIOInfo(Entity * io, const fs::path & dir);
+void SaveIOScript(Entity * io, long fl);
 #endif
 
-long DanaeLoadLevel(const res::path & file);
+long DanaeLoadLevel(const res::path & file, bool loadEntities = true);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
 
+extern long FAST_RELEASE;
 
-INTERACTIVE_OBJ * LoadInter_Ex(const res::path & name, long ident, const Vec3f & pos, const Anglef & angle, const Vec3f & trans);
+Entity * LoadInter_Ex(const res::path & classPath, EntityInstance instance,
+                      const Vec3f & pos, const Anglef & angle,
+                      const Vec3f & trans);
 
 extern Vec3f MSP;
-
-#ifdef BUILD_EDITOR
-void BIG_PURGE();
-void ARX_SAVELOAD_CheckDLFs();
-void CheckIO_NOT_SAVED();
-#endif
 
 #endif // ARX_SCENE_LOADLEVEL_H

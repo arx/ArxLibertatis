@@ -21,123 +21,125 @@
 
 #include <algorithm>
 
-void Window::Listener::onCreateWindow( const Window& /*pWindow*/ ) {}
-bool Window::Listener::onCloseWindow( const Window& /*pWindow*/ ) { return true; }
-void Window::Listener::onDestroyWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::onMoveWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::onResizeWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::onMinimizeWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::onMaximizeWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::onRestoreWindow( const Window& /*pWindow*/ ) {}
-void Window::Listener::onToggleFullscreen( const Window& /*pWindow*/ ) {}
-void Window::Listener::onWindowGotFocus( const Window& /*pWindow*/ ) {}
-void Window::Listener::onWindowLostFocus( const Window& /*pWindow*/ ) {}
-void Window::Listener::onPaintWindow( const Window& /*pWindow*/ ) {}
+#include <boost/foreach.hpp>
+
+void Window::Listener::onCreateWindow( const Window & /*window*/ ) {}
+bool Window::Listener::onCloseWindow( const Window & /*window*/ ) { return true; }
+void Window::Listener::onDestroyWindow( const Window & /*window*/ ) {}
+void Window::Listener::onMoveWindow( const Window & /*window*/ ) {}
+void Window::Listener::onResizeWindow( const Window & /*window*/ ) {}
+void Window::Listener::onMinimizeWindow( const Window & /*window*/ ) {}
+void Window::Listener::onMaximizeWindow( const Window & /*window*/ ) {}
+void Window::Listener::onRestoreWindow( const Window & /*window*/ ) {}
+void Window::Listener::onToggleFullscreen( const Window & /*window*/ ) {}
+void Window::Listener::onWindowGotFocus( const Window & /*window*/ ) {}
+void Window::Listener::onWindowLostFocus( const Window & /*window*/ ) {}
+void Window::Listener::onPaintWindow( const Window & /*window*/ ) {}
 
 Window::Window()
-	: m_Position(0, 0)
-	, m_Size(640, 480)
-	, m_IsMinimized(false)
-	, m_IsMaximized(false)
-	, m_IsVisible(false)
-	, m_IsFullscreen(false)
-	, m_HasFocus(false) {
+	: position_(0, 0)
+	, size_(640, 480)
+	, isMinimized_(false)
+	, isMaximized_(false)
+	, isVisible_(false)
+	, isFullscreen_(false)
+	, hasFocus_(false) { }
+
+Window::~Window() { }
+
+void Window::addListener(Listener * listener) {
+	listeners.push_back(listener);
 }
 
-Window::~Window() {
-}
-
-void Window::addWindowListener( Window::Listener* pListener ) {
-	m_Listeners.push_back(pListener);
-}
-
-void Window::removeWindowListener( Window::Listener* pListener ) {
-	std::list<Listener*>::iterator it = std::find( m_Listeners.begin(), m_Listeners.end(), pListener );
-
-	if( it != m_Listeners.end() )
-		m_Listeners.erase(it);
+void Window::removeListener(Listener * listener) {
+	Listeners::iterator it = std::find(listeners.begin(), listeners.end(), listener);
+	if(it != listeners.end()) {
+		listeners.erase(it);
+	}
 }
 
 bool Window::onClose() {
-	bool bShouldClose = true;
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end() && bShouldClose; ++it )
-		bShouldClose = (*it)->onCloseWindow( *this );
-
-	return bShouldClose;
+	BOOST_FOREACH(Listener * listener, listeners) {
+		bool shouldClose = listener->onCloseWindow(*this);
+		if(!shouldClose) {
+			return false;
+		}
+	}
+	return true;
 }
-	
+
 void Window::onCreate() {
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onCreateWindow( *this );
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onCreateWindow(*this);
+	}
 }
 
 void Window::onDestroy() {
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onDestroyWindow( *this );
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onDestroyWindow(*this);
+	}
 }
 
-void Window::onMove( s32 pPosX, s32 pPosY ) {
-	m_Position.x = pPosX;
-	m_Position.y = pPosY;
-
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onMoveWindow( *this );
+void Window::onMove(s32 x, s32 y) {
+	position_ = Vec2i(x, y);
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onMoveWindow(*this);
+	}
 }
 
-void Window::onResize( s32 pWidth, s32 pHeight ) {
-	m_Size.x = pWidth;
-	m_Size.y = pHeight;
-
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onResizeWindow( *this );
+void Window::onResize(s32 width, s32 height) {
+	size_ = Vec2i(width, height);
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onResizeWindow(*this);
+	}
 }
 
 void Window::onMinimize() {
-	m_IsMinimized = true;
-	m_IsMaximized = false;
-	
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onMinimizeWindow( *this );
+	isMinimized_ = true, isMaximized_ = false;
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onMinimizeWindow(*this);
+	}
 }
 	
 void Window::onMaximize() {
-	m_IsMinimized = false;
-	m_IsMaximized = true;
-	
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onMaximizeWindow( *this );
+	isMinimized_ = false, isMaximized_ = true;
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onMaximizeWindow(*this);
+	}
 }
 
 void Window::onRestore() {
-	m_IsMinimized = false;
-	m_IsMaximized = false;
-	
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onRestoreWindow( *this );
+	isMinimized_ = false, isMaximized_ = false;
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onRestoreWindow(*this);
+	}
 }
 
-void Window::onShow( bool bVisible ) {
-	m_IsVisible = bVisible;
+void Window::onShow(bool isVisible) {
+	isVisible_ = isVisible;
 }
 	
 void Window::onToggleFullscreen() {
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onToggleFullscreen( *this );
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onToggleFullscreen(*this);
+	}
 }
 	
-void Window::onFocus(bool bHasFocus) {
-	m_HasFocus = bHasFocus;
-	
-	if(bHasFocus) {
-		for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-			(*it)->onWindowGotFocus( *this );
+void Window::onFocus(bool hasFocus) {
+	hasFocus_ = hasFocus;
+	if(hasFocus) {
+		BOOST_FOREACH(Listener * listener, listeners) {
+			listener->onWindowGotFocus(*this);
+		}
 	} else {
-		for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-			(*it)->onWindowLostFocus( *this );
+		BOOST_FOREACH(Listener * listener, listeners) {
+			listener->onWindowLostFocus(*this);
+		}
 	}
 }
 
 void Window::onPaint() {
-	for( std::list<Listener*>::iterator it = m_Listeners.begin(); it != m_Listeners.end(); ++it )
-		(*it)->onPaintWindow( *this );
+	BOOST_FOREACH(Listener * listener, listeners) {
+		listener->onPaintWindow(*this);
+	}
 }

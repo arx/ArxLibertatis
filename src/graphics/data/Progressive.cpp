@@ -145,29 +145,20 @@ void CreateNeighbours(EERIE_3DOBJ * obj)
 	}
 
 }
-void KillNeighbours(EERIE_3DOBJ * obj)
-{
-	if (!obj->ndata) return;
-
-	for (size_t i = 0; i < obj->vertexlist.size(); i++)
-	{
-		if (obj->ndata[i].Nfaces) free(obj->ndata[i].Nfaces);
-
-		if (obj->ndata[i].Nvertex) free(obj->ndata[i].Nvertex);
-
-		obj->ndata[i].Nfaces = NULL;
-		obj->ndata[i].Nvertex = NULL;
+void KillNeighbours(EERIE_3DOBJ * obj) {
+	
+	if(!obj->ndata) {
+		return;
 	}
-
-	free(obj->ndata);
-	obj->ndata = NULL;
+	
+	for(size_t i = 0; i < obj->vertexlist.size(); i++) {
+		free(obj->ndata[i].Nfaces), obj->ndata[i].Nfaces = NULL;
+		free(obj->ndata[i].Nvertex), obj->ndata[i].Nvertex = NULL;
+	}
+	
+	free(obj->ndata), obj->ndata = NULL;
 }
 
-void KillProgressiveData(EERIE_3DOBJ * obj)
-{
-	if (obj->pdata)
-	{
-		free(obj->pdata);
-		obj->pdata = NULL;
-	}
+void KillProgressiveData(EERIE_3DOBJ * obj) {
+	free(obj->pdata), obj->pdata = NULL;
 }

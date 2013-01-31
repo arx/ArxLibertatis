@@ -62,8 +62,8 @@ extern EERIE_CAMERA	Camera;
 float		SpecialFadeDx;
 float		FlashAlpha;
 int			TotOldPos;
-Vec3f	OldPos[NBOLDPOS];
-float		OldAz[NBOLDPOS];
+static Vec3f OldPos[NBOLDPOS];
+static float OldAz[NBOLDPOS];
 
 /*---------------------------------------------------------------------------------*/
 int FX_FadeIN(float a, int color, int colord)
@@ -114,8 +114,8 @@ int FX_FadeOUT(float a, int color, int colord)
 	return c;
 }
 
-float LastTime;
-/*---------------------------------------------------------------------------------*/
+static float LastTime;
+
 bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 {
 	int			nb;
@@ -167,57 +167,48 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 
 	return true;
 }
-/*---------------------------------------------------------------------------------*/
+
 //POST FX
-/*---------------------------------------------------------------------------------*/
 bool FX_FlashBlanc(float w, float h, float speed, int color, float fps, float currfps)
 {
 	TexturedVertex	v[4];
 	int			col;
-
+	
 	if (FlashAlpha < 0.f)
 	{
 		return false;
 	}
-
+	
 	if (FlashAlpha == 0.f) FlashAlpha = 1.f;
-
+	
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::ArgDiffuse);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::ArgDiffuse);
 	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendOne);
-
+	
 	col = (int)(255.f * FlashAlpha);
 	col <<= 24;
 	col |= color;
-
-	v[0].p.x = 0;
-	v[0].p.y = 0;
-	v[0].p.z = 0.01f;
+	
+	v[0].p = Vec3f(0.f, 0.f, 0.01f);
 	v[0].rhw = 1.f;
 	v[0].color = col;
-	v[1].p.x = w - 1;
-	v[1].p.y = 0;
-	v[1].p.z = 0.01f;
+	v[1].p = Vec3f(w - 1.f, 0.f, 0.01f);
 	v[1].rhw = 1.f;
 	v[1].color = col;
-	v[2].p.x = 0;
-	v[2].p.y = h - 1;
-	v[2].p.z = 0.01f;
+	v[2].p = Vec3f(0.f, h - 1.f, 0.01f);
 	v[2].rhw = 1.f;
 	v[2].color = col;
-	v[3].p.x = w - 1;
-	v[3].p.y = h - 1;
-	v[3].p.z = 0.01f;
+	v[3].p = Vec3f(w - 1.f, h - 1.f, 0.01f);
 	v[3].rhw = 1.f;
 	v[3].color = col;
-
+	
 	FlashAlpha -= speed * fps / currfps;
-
+	
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
-
+	
 	return true;
 }
-/*---------------------------------------------------------------------------------*/
+
 bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
 	TexturedVertex	v[4];
@@ -239,34 +230,22 @@ bool SpecialFade(TextureContainer * mask, float ws, float h, float speed, float 
 
 	GRenderer->SetTexture(0, mask);
 
-	v[0].p.x = SpecialFadeDx - w;
-	v[0].p.y = 0;
-	v[0].p.z = 0.01f;
+	v[0].p = Vec3f(SpecialFadeDx - w, 0.f, 0.01f);
 	v[0].rhw = 1.f;
 	v[0].color = 0xFFFFFFFF;
-	v[0].uv.x = 0.01f;
-	v[0].uv.y = 0.f;
-	v[1].p.x = SpecialFadeDx - w + w - 1;
-	v[1].p.y = 0;
-	v[1].p.z = 0.01f;
+	v[0].uv = Vec2f(0.01f, 0.f);
+	v[1].p = Vec3f(SpecialFadeDx - w + w - 1.f, 0.f, 0.01f);
 	v[1].rhw = 1.f;
 	v[1].color = 0xFF000000;
-	v[1].uv.x = 0.9999999f;
-	v[1].uv.y = 0.f;
-	v[2].p.x = SpecialFadeDx - w;
-	v[2].p.y = h;
-	v[2].p.z = 0.01f;
+	v[1].uv = Vec2f(0.9999999f, 0.f);
+	v[2].p = Vec3f(SpecialFadeDx - w, h, 0.01f);
 	v[2].rhw = 1.f;
 	v[2].color = 0xFFFFFFFF;
-	v[2].uv.x = 0.01f;
-	v[2].uv.y = dv;
-	v[3].p.x = SpecialFadeDx - w + w - 1;
-	v[3].p.y = h;
-	v[3].p.z = 0.01f;
+	v[2].uv = Vec2f(0.01f, dv);
+	v[3].p = Vec3f(SpecialFadeDx - w + w - 1.f, h, 0.01f);
 	v[3].rhw = 1.f;
 	v[3].color = 0xFF000000;
-	v[3].uv.x = 0.999999f;
-	v[3].uv.y = dv;
+	v[3].uv = Vec2f(0.999999f, dv);
 
 	EERIEDRAWPRIM(Renderer::TriangleStrip, v, 4);
 

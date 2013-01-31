@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <sstream>
 
+#include <boost/foreach.hpp>
+
 #include "core/Application.h"
 #include "core/Config.h"
 #include "core/Core.h"
@@ -97,7 +99,6 @@ static int newWidth;
 static int newHeight;
 static int newBpp;
 static bool newFullscreen;
-bool changeResolution = false;
 
 #define NODEBUGZONE
 
@@ -114,10 +115,6 @@ extern TextureContainer * scursor[];
 extern long DANAESIZX;
 extern long DANAESIZY;
 
-extern long LastEERIEMouseButton;
-
-extern long FINAL_RELEASE;
-
 extern long REFUSE_GAME_RETURN;
 
 extern float PROGRESS_BAR_TOTAL;
@@ -132,17 +129,19 @@ void ARXMenu_Private_Options_Video_SetResolution(bool fullscreen, int _iWidth, i
 
 //-----------------------------------------------------------------------------
 
-MenuCursor* pMenuCursor=NULL;
+static MenuCursor * pMenuCursor = NULL;
 
 static CWindowMenu *pWindowMenu=NULL;
 CMenuState *pMenu;
 
-CMenuElement *pMenuElementResume=NULL;
-CMenuElement *pMenuElementApply=NULL;
-CMenuElementText *pLoadConfirm=NULL;
+static CMenuElement * pMenuElementResume = NULL;
+static CMenuElement * pMenuElementApply = NULL;
+static CMenuElementText * pLoadConfirm = NULL;
+CMenuElementText *pDeleteConfirm=NULL;
+CMenuElementText *pDeleteButton=NULL;
 CMenuCheckButton * fullscreenCheckbox = NULL;
-CMenuSliderText *pMenuSliderResol=NULL;
-CMenuSliderText *pMenuSliderBpp=NULL;
+static CMenuSliderText * pMenuSliderResol = NULL;
+static CMenuSliderText * pMenuSliderBpp = NULL;
 
 float ARXTimeMenu;
 float ARXOldTimeMenu;
@@ -395,13 +394,8 @@ bool Menu2_Render() {
 	
 	if(AMCM_NEWQUEST == ARXmenu.currentmode || AMCM_CREDITS == ARXmenu.currentmode) {
 		
-		if(pWindowMenu) {
-			delete pWindowMenu, pWindowMenu = NULL;
-		}
-		
-		if(pMenu) {
-			delete pMenu, pMenu = NULL;
-		}
+		delete pWindowMenu, pWindowMenu = NULL;
+		delete pMenu, pMenu = NULL;
 		
 		if(ARXmenu.currentmode == AMCM_CREDITS){
 			Credits::render();
@@ -443,24 +437,13 @@ bool Menu2_Render() {
 		std::string szMenuText;
 		bool bBOOL = false;
 		CMenuElementText *me;
-
-		if( (pMenu) && (pMenu->bReInitAll) )
-		{
-			eOldMenuState=pMenu->eOldMenuState;
-
-			if(pWindowMenu)
-			{
-				delete pWindowMenu;
-				pWindowMenu=NULL;
-			}
-
-			if(pMenu)
-			{
-				delete pMenu;
-				pMenu=NULL;
-			}
+		
+		if(pMenu && pMenu->bReInitAll) {
+			eOldMenuState = pMenu->eOldMenuState;
+			delete pWindowMenu, pWindowMenu = NULL;
+			delete pMenu, pMenu = NULL;
 		}
-
+		
 		pMenu = new CMenuState(MAIN);
 		pMenu->eOldMenuWindowState=eM;
 
@@ -497,7 +480,7 @@ bool Menu2_Render() {
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-		float verPosX = RATIO_X(620) - hFontControls->GetTextSize(version).x;
+		float verPosX = RATIO_X(620) - hFontControls->getTextSize(version).x;
 		me = new CMenuElementText( -1, hFontControls, version, verPosX, RATIO_Y(80), lColor, 1.0f, NOP );
 		
 		me->SetCheckOff();
@@ -538,19 +521,10 @@ bool Menu2_Render() {
 			ARXmenu.currentmode = AMCM_OFF;
 			pMenu->eMenuState = NOP;
 			pMenu->pZoneClick = NULL;
-
-			if(pWindowMenu)
-			{
-				delete pWindowMenu;
-				pWindowMenu=NULL;
-			}
-
-			if(pMenu)
-			{
-				delete pMenu;
-				pMenu=NULL;
-			}
-
+			
+			delete pWindowMenu, pWindowMenu = NULL;
+			delete pMenu, pMenu = NULL;
+			
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -562,13 +536,9 @@ bool Menu2_Render() {
 		else if (eMenuState!=NOP )
 		{
 			pMenu->eOldMenuState=eMenuState;
-
-			if(pWindowMenu)
-			{
-				delete pWindowMenu;
-				pWindowMenu=NULL;
-			}
-
+			
+			delete pWindowMenu, pWindowMenu = NULL;
+			
 			//suivant la resolution
 			int iWindowMenuWidth=(321);
 			int iWindowMenuHeight=(430);
@@ -660,8 +630,6 @@ bool Menu2_Render() {
 					bool bBOOL;
 					ARXMenu_GetResumeGame(bBOOL);
 
-					if(!FINAL_RELEASE) bBOOL=true;
-
 					if (!bBOOL)
 					{
 						me->SetCheckOff();
@@ -736,26 +704,36 @@ bool Menu2_Render() {
 						confirm->SetCheckOff();
 						confirm->lData = -1;
 						pWindowMenuConsole->AddMenuCenterY(confirm);
-
-						CMenuPanel *pc = new CMenuPanel();
+						
+						// Delete button
+						szMenuText = getLocalised("system_menus_main_editquest_delete");
+						szMenuText += "   ";
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_LOAD);
+						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(42));
+						pDeleteConfirm=(CMenuElementText*)me;
+						me->SetCheckOff();
+						((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+						((CMenuElementText*)me)->lColor = Color::grayb(127);
+						pWindowMenuConsole->AddMenu(me);
+						
+						// Load button
 						szMenuText = getLocalised("system_menus_main_editquest_load");
 						szMenuText += "   ";
 						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-
 						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
-
 						pLoadConfirm=(CMenuElementText*)me;
 						me->SetCheckOff();
-						((CMenuElementText*)me)->lOldColor=((CMenuElementText*)me)->lColor;
-						((CMenuElementText*)me)->lColor=Color(127,127,127);
-
+						((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+						((CMenuElementText*)me)->lColor = Color::grayb(127);
 						pWindowMenuConsole->AddMenu(me);
+						
+						// Back button
+						CMenuPanel *pc = new CMenuPanel();
 						pTex = TextureContainer::Load("graph/interface/menus/back");
 						me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 						me->eMenuState = EDIT_QUEST;
 						me->SetShortCut(Keyboard::Key_Escape);
 						pc->AddElementNoCenterIn(me);
-
 						pWindowMenuConsole->AddMenu(pc);
 					}
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -814,7 +792,7 @@ bool Menu2_Render() {
 						std::ostringstream text;
 						text << '-' << std::setfill('0') << std::setw(4) << i << '-';
 						
-						CMenuElementText * e = new CMenuElementText(-1, hFontControls, text.str(), fPosX1,
+						CMenuElementText * e = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, text.str(), fPosX1,
 						                                            0.f, lColor, .8f,
 						                                            EDIT_QUEST_SAVE_CONFIRM);
 
@@ -856,14 +834,22 @@ bool Menu2_Render() {
 					me->ePlace=CENTER;
 
 					pPanel = new CMenuPanel();
-
+					
+					// Delete button
+					szMenuText = getLocalised("system_menus_main_editquest_delete");
+					me = new CMenuElementText(BUTTON_MENUEDITQUEST_DELETE, hFontMenu, szMenuText, 0, 0,lColor,1.f, EDIT_QUEST_SAVE);
+					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), RATIO_Y(5));
+					pDeleteButton = (CMenuElementText*)me;
+					((CMenuElementText*)me)->lOldColor = ((CMenuElementText*)me)->lColor;
+					pPanel->AddElementNoCenterIn(me);
+					
+					// Save button
 					szMenuText = getLocalised("system_menus_main_editquest_save");
-
 					me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
-
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
 					pPanel->AddElementNoCenterIn(me);
-
+					
+					// Back button
 					pTex = TextureContainer::Load("graph/interface/menus/back");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = EDIT_QUEST_SAVE;
@@ -922,13 +908,13 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenGL", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_OPENGL));
 						if(config.window.framework == "SDL") {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef HAVE_D3D9
+#ifdef ARX_HAVE_D3D9
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "D3D 9", 0, 0, lColor, 1.f, OPTIONS_VIDEO_RENDERER_D3D9));
 						if(config.window.framework == "D3D9") {
 							slider->iPos = slider->vText.size() - 1;
@@ -944,6 +930,12 @@ bool Menu2_Render() {
 					
 					
 					szMenuText = getLocalised("system_menus_options_videos_full_screen");
+					if(szMenuText.empty()) {
+						// TODO once we ship our own amendmends to the loc files a cleaner
+						// fix would be to just define system_menus_options_videos_full_screen
+						// for the german version there
+						szMenuText = getLocalised("system_menus_options_video_full_screen");
+					}
 					szMenuText += "  ";
 					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
@@ -1160,13 +1152,13 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef HAVE_OPENAL
+#ifdef ARX_HAVE_OPENAL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "OpenAL", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_OPENAL));
 						if(config.audio.backend == "OpenAL") {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef HAVE_DSOUND
+#ifdef ARX_HAVE_DSOUND
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Direct Sound", 0, 0, lColor, 1.f, OPTIONS_AUDIO_BACKEND_DSOUND));
 						if(config.audio.backend == "DirectSound") {
 							slider->iPos = slider->vText.size() - 1;
@@ -1255,13 +1247,13 @@ bool Menu2_Render() {
 						
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "Auto-Select", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_AUTOMATIC));
 						slider->iPos = slider->vText.size() - 1;
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "SDL", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_SDL));
 						if(config.input.backend == "SDL") {
 							slider->iPos = slider->vText.size() - 1;
 						}
 #endif
-#ifdef HAVE_DINPUT8
+#ifdef ARX_HAVE_DINPUT8
 						slider->AddText(new CMenuElementText(-1, hFontMenu, "DInput 8", 0, 0, lColor, 1.f, OPTIONS_INPUT_BACKEND_DINPUT));
 						if(config.input.backend == "DirectInput8") {
 							slider->iPos = slider->vText.size() - 1;
@@ -1561,24 +1553,24 @@ bool Menu2_Render() {
 					std::string szMenuText;
 					CMenuElement *me = NULL;
 					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
-					szMenuText = getLocalised( "system_menus_main_quit" );
+					szMenuText = getLocalised("system_menus_main_quit");
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
-					szMenuText = getLocalised( "system_menus_main_editquest_confirm" );
+					szMenuText = getLocalised("system_menus_main_editquest_confirm");
 					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
 					me->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
 
 					CMenuPanel *pPanel = new CMenuPanel();
-					szMenuText = getLocalised( "system_yes" ); // TODO Is case sensitive, fix pak
+					szMenuText = getLocalised("system_yes");
 
 					me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
 
 					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
 					pPanel->AddElementNoCenterIn(me);
-					szMenuText = getLocalised( "system_no" ); // TODO Is case sensitive, fix pak
+					szMenuText = getLocalised("system_no");
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
 					me->SetShortCut(Keyboard::Key_Escape);
 					pPanel->AddElementNoCenterIn(me);
@@ -1687,9 +1679,6 @@ bool Menu2_Render() {
 			CINEMASCOPE = 0;
 			break;
 		case AMCM_OFF:
-#ifdef BUILD_EDITOR
-			GAME_EDITOR = 0;
-#endif
 			ARX_MENU_Clicked_QUIT_GAME();
 			iFadeAction=-1;
 			bFadeInOut=false;
@@ -1741,6 +1730,16 @@ CMenuElement::~CMenuElement()
 		pLoadConfirm = NULL;
 	}
 
+	if( this == pDeleteConfirm )
+	{
+		pDeleteConfirm = NULL;
+	}
+
+	if( this == pDeleteButton )
+	{
+		pDeleteButton = NULL;
+	}
+
 	if( this == pMenuSliderResol )
 	{
 		pMenuSliderResol = NULL;
@@ -1785,7 +1784,7 @@ CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _p
 
 	lpszText= _pText;
 
-	Vec2i textSize = _pFont->GetTextSize(_pText);
+	Vec2i textSize = _pFont->getTextSize(_pText);
 	rZone.left = checked_range_cast<Rect::Num>(_fPosX);
 	rZone.top = checked_range_cast<Rect::Num>(_fPosY);
 	rZone.right  = rZone.left + textSize.x;
@@ -1814,7 +1813,7 @@ void CMenuElementText::SetText( const std::string& _pText )
 {
 	lpszText = _pText;
 
-	Vec2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->getTextSize(_pText);
 
 	rZone.right  = textSize.x + rZone.left;
 	rZone.bottom = textSize.y + rZone.top;
@@ -1942,17 +1941,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			ARXMenu_NewQuest();
 		}
 		break;
-	// MENULOADQUEST
-	case BUTTON_MENUOPTIONSVIDEO_INIT:
-		{
+		// MENULOADQUEST
+		case BUTTON_MENUOPTIONSVIDEO_INIT: {
 			newWidth = config.video.resolution.x;
 			newHeight = config.video.resolution.y;
 			newFullscreen = config.video.fullscreen;
 			newBpp = config.video.bpp;
-
-			changeResolution = false;
+			break;
 		}
-		break;
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
 		{
 			if ( pWindowMenu )
@@ -1982,7 +1978,9 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			if (pWindowMenu)
 			{
 			pLoadConfirm->SetCheckOn();
-			pLoadConfirm->lColor=pLoadConfirm->lOldColor;
+			pLoadConfirm->lColor = pLoadConfirm->lOldColor;
+			pDeleteConfirm->SetCheckOn();
+			pDeleteConfirm->lColor = pDeleteConfirm->lOldColor;
 
 				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
@@ -2019,7 +2017,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 
 				if(p->eMenuState == EDIT_QUEST_LOAD) {
 					
-					lData = pWindowMenu->vWindowConsoleElement[i]->lData;
+					lData = p->lData;
 					if(lData != -1) {
 						eMenuState = MAIN;
 						GRenderer->Clear(Renderer::DepthBuffer);
@@ -2032,15 +2030,19 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					}
 				}
 			}
-
+			
 			pLoadConfirm->SetCheckOff();
-			pLoadConfirm->lColor=Color( 127, 127, 127 );
+			pLoadConfirm->lColor = Color::grayb(127);
+			pDeleteConfirm->SetCheckOff();
+			pDeleteConfirm->lColor = Color::grayb(127);
 			}
 		}
 		break;
 	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
 		pLoadConfirm->SetCheckOff();
-		pLoadConfirm->lColor=Color(127,127,127);
+		pLoadConfirm->lColor = Color::grayb(127);
+		pDeleteConfirm->SetCheckOff();
+		pDeleteConfirm->lColor = Color::grayb(127);
 		break;
 	// MENUSAVEQUEST
 	case BUTTON_MENUEDITQUEST_SAVE:
@@ -2064,47 +2066,63 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 			}
 		}
 		break;
-	case BUTTON_MENUEDITQUEST_DELETE:
-		{
-			if (pWindowMenu)
-				for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
-			{
-				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
-
-				if(p->eMenuState == EDIT_QUEST_DELETE_CONFIRM) {
-					
-					p->lData = lData;
-					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
-					
-					if(me) {
-						eMenuState = MAIN;
-						savegames.remove(me->lData);
-						break;
+		
+		// Delete save from the load menu
+		case BUTTON_MENUEDITQUEST_DELETE_CONFIRM: {
+			if(pWindowMenu) {
+				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					if(p->eMenuState == EDIT_QUEST_LOAD) {
+						lData = p->lData;
+						if(lData != -1) {
+							eMenuState = EDIT_QUEST_LOAD;
+							pMenu->bReInitAll = true;
+							savegames.remove(lData);
+							break;
+						}
 					}
 				}
 			}
+			pLoadConfirm->SetCheckOff();
+			pLoadConfirm->lColor = Color::grayb(127);
+			pDeleteConfirm->SetCheckOff();
+			pDeleteConfirm->lColor = Color::grayb(127);
+			break;
 		}
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_APPLY:
-		{
-			//----------RESOLUTION
-			if( (newWidth!=config.video.resolution.x) ||
-				(newHeight!=config.video.resolution.y) ||
-				(newFullscreen != config.video.fullscreen) ||
-				(newBpp!=config.video.bpp) )
-			{
-				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight, newBpp);
-
-				pMenuSliderResol->iOldPos=-1;
-				pMenuSliderBpp->iOldPos=-1;
+		
+		// Delete save from the save menu
+		case BUTTON_MENUEDITQUEST_DELETE: {
+			if(pWindowMenu) {
+				for(size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size(); i++) {
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+					if(p->eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+						p->lData = lData;
+						CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+						if(me) {
+							eMenuState = EDIT_QUEST_SAVE;
+							pMenu->bReInitAll = true;
+							savegames.remove(me->lData);
+							break;
+						}
+					}
+				}
+			}
+			break;
+		}
+		
+		case BUTTON_MENUOPTIONSVIDEO_APPLY: {
+			if(newWidth != config.video.resolution.x || newHeight!=config.video.resolution.y
+			   || newFullscreen != config.video.fullscreen || newBpp != config.video.bpp) {
+				ARXMenu_Private_Options_Video_SetResolution(newFullscreen, newWidth, newHeight,
+				                                            newBpp);
+				pMenuSliderResol->iOldPos = -1;
+				pMenuSliderBpp->iOldPos = -1;
 				fullscreenCheckbox->iOldState = -1;
 			}
-
-			//----------END_RESOLUTION
-			changeResolution = false;
 			pMenu->bReInitAll=true;
 		}
 		break;
+		
 	// MENUOPTIONS_CONTROLS
 	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
 		{
@@ -2206,10 +2224,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 		break;
 	}
 
-	if ((eMenuState == EDIT_QUEST_LOAD_CONFIRM) ||
-		(eMenuState == EDIT_QUEST_SAVE_CONFIRM) ||
-		(eMenuState == EDIT_QUEST_DELETE_CONFIRM))
-	{
+	if(eMenuState == EDIT_QUEST_SAVE_CONFIRM) {
+		
 		for (size_t i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 		{
 			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
@@ -2225,7 +2241,11 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton) {
 					
 					if(lData != -1) {
 						me->SetText(savegames[lData].name);
+						pDeleteButton->lColor = pDeleteButton->lOldColor;
+						pDeleteButton->SetCheckOn();
 					} else {
+						pDeleteButton->lColor = Color::grayb(127);
+						pDeleteButton->SetCheckOff();
 						me->SetText(getLocalised("system_menu_editquest_newsavegame"));
 					}
 					
@@ -2307,9 +2327,7 @@ void CMenuElementText::RenderMouseOver()
 			if(!image.empty()) {
 				TextureContainer * t = TextureContainer::LoadUI(image, TextureContainer::NoColorKey);
 				if(t != pTextureLoad) {
-					if(pTextureLoad) {
-						delete pTextureLoad;
-					}
+					delete pTextureLoad;
 					pTextureLoad = t;
 				}
 				pTextureLoadRender = pTextureLoad;
@@ -2329,7 +2347,7 @@ void CMenuElementText::RenderMouseOver()
 
 Vec2i CMenuElementText::GetTextSize() const
 {
-	return pFont->GetTextSize(lpszText);
+	return pFont->getTextSize(lpszText);
 }
 
 //-----------------------------------------------------------------------------
@@ -2348,36 +2366,18 @@ CMenuState::CMenuState(MENUSTATE _ms)
 	iPosMenu=-1;
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuState::~CMenuState()
-{
-	if(pMenuAllZone) delete pMenuAllZone;
-
-	if (pTexBackGround)
-	{
-		delete pTexBackGround;
-		pTexBackGround = NULL;
-	}
-
-	if (pTexBackGround1)
-	{
-		delete pTexBackGround1;
-		pTexBackGround1 = NULL;
-	}
+CMenuState::~CMenuState() {
+	delete pMenuAllZone;
+	delete pTexBackGround;
+	delete pTexBackGround1;
 }
 
-//-----------------------------------------------------------------------------
+void CMenuState::AddMenuElement(CMenuElement * _me) {
+	pMenuAllZone->AddZone((CMenuZone *)_me);
+}
 
-void CMenuState::AddMenuElement(CMenuElement *_me)
-{
-	pMenuAllZone->AddZone((CMenuZone*)_me);
-	}
-
-	//-----------------------------------------------------------------------------
-
-MENUSTATE CMenuState::Update(int _iDTime)
-{
+MENUSTATE CMenuState::Update(int _iDTime) {
+	
 	fPos += _iDTime*( 1.0f / 700 );
 
 	pZoneClick=NULL;
@@ -2698,7 +2698,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 
 	if ( pText )
 	{
-		textSize = pText->pFont->GetTextSize(pText->lpszText); 
+		textSize = pText->pFont->getTextSize(pText->lpszText); 
 
 		_iTaille = std::max<int>(_iTaille, textSize.y);
 		textSize.x += pText->rZone.left;
@@ -2710,43 +2710,29 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	rZone.right = checked_range_cast<Rect::Num>(_fPosX + _iTaille + textSize.x);
 	rZone.bottom = checked_range_cast<Rect::Num>(_fPosY + std::max<int>(_iTaille, textSize.y));
 	pRef=this;
-
-	if (_pTex2) // TODO should this be _pTex1?
-	{
+	
+	if(_pTex1 && _pTex2) {
 		float rZoneR = ( RATIO_X(200.f) + RATIO_X(_pTex1->m_dwWidth) + (RATIO_X(12*9) - RATIO_X(_pTex1->m_dwWidth))*0.5f );
 		rZone.right = checked_range_cast<Rect::Num>(rZoneR);
 	}
-
-
-
+	
 	Move(iPosX, iPosY);
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuCheckButton::~CMenuCheckButton()
-{
-
-	vTex.clear();
-
-	if (pText)
-	{
-		delete pText;
-		pText = NULL;
-	}
+CMenuCheckButton::~CMenuCheckButton() {
+	delete pText;
 }
 
-void CMenuCheckButton::Move(int _iX, int _iY)
-{
+void CMenuCheckButton::Move(int _iX, int _iY) {
+	
 	CMenuElement::Move(_iX, _iY);
-
-	if (pText)
+	
+	if(pText) {
 		pText->Move(_iX, _iY);
-
+	}
+	
 	ComputeTexturesPosition();
 }
-
-//-----------------------------------------------------------------------------
 
 bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
 	
@@ -3244,22 +3230,15 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 
 //-----------------------------------------------------------------------------
 
-void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement)
-{
+void CWindowMenuConsole::AlignElementCenter(CMenuElement *_pMenuElement) {
+	
 	_pMenuElement->Move(-_pMenuElement->rZone.left, 0);
-	_pMenuElement->ePlace=CENTER;
-
-	int iDx = _pMenuElement->rZone.right-_pMenuElement->rZone.left;
-	int dx=((iWidth-iDx)>>1)-_pMenuElement->rZone.left;
-
-	if(dx<0)
-	{
-		dx=0;
-	}
-
-	iDx=_pMenuElement->rZone.right-_pMenuElement->rZone.left;
-
-	_pMenuElement->Move(dx,0);
+	_pMenuElement->ePlace = CENTER;
+	
+	int iDx = _pMenuElement->rZone.right - _pMenuElement->rZone.left;
+	int dx = (iWidth - iDx) / 2 - _pMenuElement->rZone.left;
+	
+	_pMenuElement->Move(std::max(dx, 0), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -3369,7 +3348,7 @@ void CWindowMenuConsole::UpdateText()
 
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
-		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
+		Vec2i textSize = ((CMenuElementText*)pZoneClick)->pFont->getTextSize("|");
 		pZoneClick->rZone.bottom += textSize.y;
 	}
 
@@ -4212,7 +4191,7 @@ void CMenuButton::AddText( const std::string& _pText)
 	int iSizeXButton=rZone.right-rZone.left;
 	int iSizeYButton=rZone.bottom-rZone.top;
 	
-	Vec2i textSize = pFont->GetTextSize(_pText);
+	Vec2i textSize = pFont->getTextSize(_pText);
 
 	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
 	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;
@@ -4356,35 +4335,16 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 	pRef = this;
 }
 
-//-----------------------------------------------------------------------------
-
-CMenuSliderText::~CMenuSliderText()
-{
-	if (pLeftButton)
-	{
-		delete pLeftButton;
-		pLeftButton = NULL;
-	}
-
-	if (pRightButton)
-	{
-		delete pRightButton;
-		pRightButton = NULL;
-	}
-
-	vector<CMenuElementText*>::iterator i;
-
-	for(i=vText.begin();i!=vText.end();++i)
-	{
-		delete (*i);
-		*i = NULL;
+CMenuSliderText::~CMenuSliderText() {
+	delete pLeftButton;
+	delete pRightButton;
+	BOOST_FOREACH(CMenuElementText * e, vText) {
+		delete e;
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-void CMenuSliderText::SetWidth(int _iWidth)
-{
+void CMenuSliderText::SetWidth(int _iWidth) {
+	
 	rZone.right  = max(rZone.right, rZone.left +  _iWidth);
 	pRightButton->SetPos(rZone.right - pRightButton->GetWidth(), pRightButton->rZone.top);
 
@@ -4542,7 +4502,6 @@ bool CMenuSliderText::OnMouseClick(int)
 				
 			}
 			
-			changeResolution = true;
 			break;
 		}
 		
@@ -4575,24 +4534,21 @@ bool CMenuSliderText::OnMouseClick(int)
 			break;
 		}
 		
-	// MENUOPTIONS_VIDEO
-	case BUTTON_MENUOPTIONSVIDEO_BPP:
-		{
-			std::string pcText;
+		// MENUOPTIONS_VIDEO
+		case BUTTON_MENUOPTIONSVIDEO_BPP: {
 			std::stringstream ss;
-			pcText = vText[iPos]->lpszText;
-			ss << pcText;
+			ss << vText[iPos]->lpszText;
 			ss >> newBpp;
-			changeResolution = true;
+			break;
 		}
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS:
-		{
+		
+		case BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS: {
 			ARXMenu_Options_Video_SetDetailsQuality(iPos);
+			break;
 		}
-		break;
+		
 	}
-
+	
 	return false;
 }
 
@@ -4706,30 +4662,16 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	pRef = this;
 }
 
-CMenuSlider::~CMenuSlider()
-{
-	if (pLeftButton)
-	{
-		delete pLeftButton;
-		pLeftButton = NULL;
-	}
-
-	if (pRightButton)
-	{
-		delete pRightButton;
-		pRightButton = NULL;
-	}
+CMenuSlider::~CMenuSlider() {
+	delete pLeftButton;
+	delete pRightButton;
 }
 
-void CMenuSlider::Move(int _iX, int _iY)
-{
+void CMenuSlider::Move(int _iX, int _iY) {
 	CMenuZone::Move(_iX, _iY);
-
 	pLeftButton->Move(_iX, _iY);
 	pRightButton->Move(_iX, _iY);
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuSlider::EmptyFunction()
 {
@@ -4863,25 +4805,21 @@ void CMenuSlider::Render()
 	{
 		iTexW = 0;
 
-		if (i<iPos)
-		{
-			if(pTex1)
-			{
+		if(i < iPos) {
+			if(pTex1) {
 				pTex = pTex1;
 				iTexW = RATIO_X(pTex1->m_dwWidth);
 			}
+		} else if(pTex2) {
+			pTex = pTex2;
+			iTexW = RATIO_X(pTex2->m_dwWidth);
 		}
-		else
-		{
-			if(pTex2)
-			{
-				pTex = pTex2;
-				iTexW = RATIO_X(pTex2->m_dwWidth);
-			}
+		
+		if(pTex) {
+			EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight),
+			                 0, pTex, Color::white);
 		}
-
-		EERIEDrawBitmap2(iX, iY, RATIO_X(pTex->m_dwWidth), RATIO_Y(pTex->m_dwHeight), 0, pTex, Color::white);
-
+		
 		iX += iTexW;
 	}
 
@@ -4942,7 +4880,9 @@ MenuCursor::MenuCursor()
 	
 	iNbOldCoord=0;
 	iMaxOldCoord=40;
-
+	
+	exited = true;
+	
 	bMouseOver=false;
 
 	if(pTex[0])
@@ -4993,6 +4933,10 @@ void MenuCursor::SetMouseOver()
 
 void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 	
+	if(!GInput->isMouseInWindow()) {
+		return;
+	}
+	
 	GRenderer->GetTextureStage(0)->SetMinFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
@@ -5009,6 +4953,13 @@ void MenuCursor::DrawOneCursor(const Vec2s& mousePos) {
 
 void MenuCursor::Update() {
 	
+	bool inWindow = GInput->isMouseInWindow();
+	if(inWindow && exited) {
+		// Mouse is re-entering the window - reset the cursor trail
+		iNbOldCoord = 0;
+	}
+	exited = !inWindow;
+	
 	Vec2s iDiff;
 	if(pTex[eNumTex]) {
 		iDiff = Vec2s(pTex[eNumTex]->m_dwWidth / 2, pTex[eNumTex]->m_dwHeight / 2);
@@ -5023,7 +4974,7 @@ void MenuCursor::Update() {
 		iNbOldCoord = iMaxOldCoord - 1;
 		memmove(iOldCoord, iOldCoord + 1, sizeof(Vec2s) * iNbOldCoord);
 	}
-
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -5167,29 +5118,11 @@ void MenuCursor::DrawCursor()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-//-----------------------------------------------------------------------------
-
-void Menu2_Close()
-{
+void Menu2_Close() {
+	
 	ARXmenu.currentmode = AMCM_OFF;
-
-	if (pMenu)
-	{
-		pMenu->eMenuState = NOP;
-		pMenu->pZoneClick = NULL;
-		delete pMenu;
-		pMenu = NULL;
-	}
-
-	if(pWindowMenu)
-	{
-		delete pWindowMenu;
-		pWindowMenu=NULL;
-	}
-
-	if(pMenuCursor)
-	{
-		delete pMenuCursor;
-		pMenuCursor = NULL;
-	}
+	
+	delete pWindowMenu, pWindowMenu = NULL;
+	delete pMenu, pMenu = NULL;
+	delete pMenuCursor, pMenuCursor = NULL;
 }

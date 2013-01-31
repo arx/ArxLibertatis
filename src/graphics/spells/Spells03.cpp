@@ -48,9 +48,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/GameTime.h"
 
-#include "game/Spells.h"
 #include "game/Damage.h"
+#include "game/EntityManager.h"
 #include "game/Player.h"
+#include "game/Spells.h"
 
 #include "graphics/Math.h"
 #include "graphics/data/TextureContainer.h"
@@ -63,20 +64,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Interactive.h"
 
-//-----------------------------------------------------------------------------
-CFireBall::CFireBall() : CSpellFx()
-{
-	eSrc.x = 0;
-	eSrc.y = 0;
-	eSrc.z = 0;
-
+CFireBall::CFireBall() : CSpellFx() {
+	
+	eSrc = Vec3f::ZERO;
+	
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
-
+	
 	bExplo = false;
-
+	
 	// TODO using memset on a class is naughty
-
+	
 	memset(&fire_1, 0, sizeof(fire_1));
 	fire_1.iNbMax = 200;
 	fire_1.fLife = 550;
@@ -270,9 +268,7 @@ void CFireBall::Create(Vec3f aeSrc, float afBeta, float afAlpha, float _fLevel)
 
 	// Light
 	lLightId = -1; 
-	eCurPos.x = eSrc.x;
-	eCurPos.y = eSrc.y;
-	eCurPos.z = eSrc.z;
+	eCurPos = eSrc;
 }
 #define MIN_TIME_FIREBALL 2000  //750
 //-----------------------------------------------------------------------------
@@ -280,30 +276,16 @@ void CFireBall::Update(unsigned long aulTime)
 {
 	ulCurrentTime += aulTime;
 
-	if (ulCurrentTime > MIN_TIME_FIREBALL)
-	{
+	if(ulCurrentTime > MIN_TIME_FIREBALL) {
 		// smoke en retard
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.Update(aulTime);
-
-		float titi = aulTime * 0.0045f;
-
-		eCurPos.x = eCurPos.x + eMove.x * titi;
-		eCurPos.y = eCurPos.y + eMove.y * titi;
-		eCurPos.z = eCurPos.z + eMove.z * titi;
-
+		eCurPos += eMove * (aulTime * 0.0045f);
 		pPSFire.SetPos(eCurPos);
 		pPSFire.fParticleSpeed = 100;
 		pPSFire.fParticleSpeedRandom = 200;
-
-		pPSFire.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire.p3ParticleGravity.z = -eMove.z * 2;
-
-		pPSFire2.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire2.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire2.p3ParticleGravity.z = -eMove.z * 2;
-
+		pPSFire.p3ParticleGravity = -eMove * 2.f;
+		pPSFire2.p3ParticleGravity = -eMove * 2.f;
 		pPSFire2.SetPos(eCurPos);
 		pPSFire2.fParticleSpeed = 100;
 		pPSFire2.fParticleSpeedRandom = 100;
@@ -316,13 +298,13 @@ void CFireBall::Update(unsigned long aulTime)
 		{
 			SetAngle(player.angle.b);
 			afAlpha = player.angle.a;
-			long idx = GetGroupOriginByName(inter.iobj[spells[spellinstance].caster]->obj, "chest");
+			long idx = GetGroupOriginByName(entities[spells[spellinstance].caster]->obj, "chest");
 
 			if (idx)
 			{
-				eCurPos.x = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
-				eCurPos.y = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
-				eCurPos.z = inter.iobj[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
+				eCurPos.x = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.x - fBetaRadSin * 60;
+				eCurPos.y = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.y;
+				eCurPos.z = entities[spells[spellinstance].caster]->obj->vertexlist3[idx].v.z + fBetaRadCos * 60;
 			}
 			else
 			{
@@ -333,26 +315,26 @@ void CFireBall::Update(unsigned long aulTime)
 		}
 		else
 		{
-			SetAngle(inter.iobj[spells[spellinstance].caster]->angle.b);
+			SetAngle(entities[spells[spellinstance].caster]->angle.b);
 
-			eCurPos.x = inter.iobj[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
-			eCurPos.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-			eCurPos.z = inter.iobj[spells[spellinstance].caster]->pos.z + fBetaRadCos * 60;
+			eCurPos.x = entities[spells[spellinstance].caster]->pos.x - fBetaRadSin * 60;
+			eCurPos.y = entities[spells[spellinstance].caster]->pos.y;
+			eCurPos.z = entities[spells[spellinstance].caster]->pos.z + fBetaRadCos * 60;
 
 			if ((ValidIONum(spells[spellinstance].caster))
-			        && (inter.iobj[spells[spellinstance].caster]->ioflags & IO_NPC))
+			        && (entities[spells[spellinstance].caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= EEsin(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.x -= EEsin(radians(entities[spells[spellinstance].caster]->angle.b)) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += EEcos(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.z += EEcos(radians(entities[spells[spellinstance].caster]->angle.b)) * 30.f;
 			}
 			
-			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
+			Entity * io = entities[spells[spellinstance].caster];
 
 			if (ValidIONum(io->targetinfo))
 			{
 				Vec3f * p1 = &eCurPos;
-				Vec3f p2 = inter.iobj[io->targetinfo]->pos;
+				Vec3f p2 = entities[io->targetinfo]->pos;
 				p2.y -= 60.f;
 				afAlpha = 360.f - (degrees(getAngle(p1->y, p1->z, p2.y, p2.z + dist(Vec2f(p2.x, p2.z), Vec2f(p1->x, p1->z))))); //alpha entre orgn et dest;
 			}
@@ -366,58 +348,38 @@ void CFireBall::Update(unsigned long aulTime)
 		Vec3f vMove = eMove.getNormalized();
 
 		// smoke en retard
-		pPSSmoke.p3ParticleDirection.x = -vMove.x;
-		pPSSmoke.p3ParticleDirection.y = -vMove.y;
-		pPSSmoke.p3ParticleDirection.z = -vMove.z;
+		pPSSmoke.p3ParticleDirection = -vMove;
 		pPSSmoke.SetPos(eCurPos);
 		pPSSmoke.RecomputeDirection();
-
-		float titi = aulTime * 0.0045f;
-
-		eCurPos.x = eCurPos.x + eMove.x * titi;
-		eCurPos.y = eCurPos.y + eMove.y * titi;
-		eCurPos.z = eCurPos.z + eMove.z * titi;
-
-		pPSFire.p3ParticleDirection.x = -vMove.x;
-		pPSFire.p3ParticleDirection.y = -vMove.y;
-		pPSFire.p3ParticleDirection.z = -vMove.z;
+		eCurPos = eCurPos + eMove * (aulTime * 0.0045f);
+		pPSFire.p3ParticleDirection = -vMove;
 		pPSFire.RecomputeDirection();
 		pPSFire.SetPos(eCurPos);
-
-		pPSFire.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire.p3ParticleGravity.z = -eMove.z * 2;
-
-		pPSFire2.p3ParticleDirection.x = -vMove.x;
-		pPSFire2.p3ParticleDirection.y = -vMove.y;
-		pPSFire2.p3ParticleDirection.z = -vMove.z;
-		pPSFire2.p3ParticleGravity.x = -eMove.x * 2;
-		pPSFire2.p3ParticleGravity.y = -eMove.y * 2;
-		pPSFire2.p3ParticleGravity.z = -eMove.z * 2;
+		pPSFire.p3ParticleGravity = -eMove * 2.f;
+		pPSFire2.p3ParticleDirection = -vMove;
+		pPSFire2.p3ParticleGravity = -eMove * 2.f;
 		pPSFire2.RecomputeDirection();
 		pPSFire2.SetPos(eCurPos);
 	}
-
+	
 	pPSFire.Update(aulTime);
 	pPSFire2.Update(aulTime);
 }
 
-//-----------------------------------------------------------------------------
-float CFireBall::Render()
-{
-	if (ulCurrentTime >= ulDuration)
-	{
+float CFireBall::Render() {
+	
+	if(ulCurrentTime >= ulDuration) {
 		return 0.f;
 	}
-
+	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
+	
 	pPSFire.Render();
 	pPSFire2.Render();
 	pPSSmoke.Render();
-
+	
 	return 1 - 0.5f * rnd();
 }
 
@@ -453,12 +415,12 @@ CIceProjectile::CIceProjectile()
 	tex_p2 = TextureContainer::Load("graph/obj3d/textures/(fx)_tsu_bluepouf");
 
 	if (!stite)
-		stite = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
+		stite = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/stalagmite.teo");
 
 	stite_count++;
 
 	if (!smotte)
-		smotte = _LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
+		smotte = LoadTheObj("graph/obj3d/interactive/fix_inter/stalagmite/motte.teo");
 
 	smotte_count++;
 
@@ -516,12 +478,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 	iNumber = checked_range_cast<int>(fDist);
 
 	int end = iNumber / 2;
-	tv1a[0].p.x = s.x;
-	tv1a[0].p.y = s.y + 100;
-	tv1a[0].p.z = s.z;
-	tv1a[end].p.x = e.x;
-	tv1a[end].p.y = e.y + 100;
-	tv1a[end].p.z = e.z;
+	tv1a[0].p = s + Vec3f(0.f, 100.f, 0.f);
+	tv1a[end].p = e + Vec3f(0.f, 100.f, 0.f);
 
 	Split(tv1a, 0, end, 80, 0.5f, 0, 1, 80, 0.5f);
 
@@ -534,12 +492,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		else
 			tType[i] = 1;
 
-		tSize[i].x = 0;
-		tSize[i].y = 0;
-		tSize[i].z = 0;
-		tSizeMax[i].x = rnd();
-		tSizeMax[i].y = rnd() + 0.2f;
-		tSizeMax[i].z = rnd();
+		tSize[i] = Vec3f::ZERO;
+		tSizeMax[i] = randomVec() + Vec3f(0.f, 0.2f, 0.f);
 
 		if (tType[i] == 0)
 		{
@@ -579,12 +533,8 @@ void CIceProjectile::Create(Vec3f aeSrc, float afBeta)
 		}
 
 		long ttt = ARX_DAMAGES_GetFree();
-
-		if (ttt != -1)
-		{
-			damages[ttt].pos.x = tPos[i].x;
-			damages[ttt].pos.y = tPos[i].y;
-			damages[ttt].pos.z = tPos[i].z;
+		if(ttt != -1) {
+			damages[ttt].pos = tPos[i];
 			damages[ttt].radius = 60.f;
 			damages[ttt].damages = 0.1f * spells[spellinstance].caster_level;
 			damages[ttt].area = DAMAGE_FULL;
@@ -662,9 +612,7 @@ float CIceProjectile::Render()
 		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
 		stiteangle.a = 0;
 		stiteangle.g = 0;
-		stitepos.x = tPos[i].x;
-		stitepos.y = tPos[i].y;
-		stitepos.z = tPos[i].z;
+		stitepos = tPos[i];
 
 		float tt;
 		tt = tSizeMax[i].y * fColor;
@@ -677,95 +625,52 @@ float CIceProjectile::Render()
 
 		if (stitecolor.b > 1) stitecolor.b = 1;
 
-		stitescale.x = tSize[i].x;
-		stitescale.y = tSize[i].y;
-		stitescale.z = tSize[i].z;
+		stitescale = tSize[i];
 
 		if (tType[i] == 0)
 			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
 		else
 			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
-
-	float x, y, z;
-
-	//----------------
-	for (i = 0; i < min(iNumber, iMax + 1); i++)
-	{
+	
+	for(i = 0; i < min(iNumber, iMax + 1); i++) {
+		
 		float t = rnd();
-
-		if (t < 0.01f)
-		{
-			x = tPos[i].x;
-			y = tPos[i].y;
-			z = tPos[i].z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x = x + 5.f - rnd() * 10.f;
-				particle[j].ov.y = y + 5.f - rnd() * 10.f;
-				particle[j].ov.z = z + 5.f - rnd() * 10.f;
-				particle[j].move.x = 2.f - 4.f * rnd();
-				particle[j].move.y = 2.f - 4.f * rnd();
-				particle[j].move.z = 2.f - 4.f * rnd();
-				particle[j].siz = 20.f;
-
-				float fMin = min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
-				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
-
-				particle[j].scale.x = 1.f;
-				particle[j].scale.y = 1.f;
-				particle[j].scale.z = 1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc = tex_p2;
-				particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam = 0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+		if(t < 0.01f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f);
+				pd->move = randomVec(-2.f, 2.f);
+				pd->siz = 20.f;
+				float t = min(2000.f + rnd() * 2000.f,
+				              ulDuration - ulCurrentTime + 500.0f * rnd());
+				pd->tolive = checked_range_cast<unsigned long>(t);
+				pd->tc = tex_p2;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
-		}
-		else if (t > 0.095f)
-		{
-			x = tPos[i].x;
-			y = tPos[i].y - 50;
-			z = tPos[i].z;
-
-			int j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()))
-			{
-				ParticleCount++;
-				particle[j].exist = 1;
-				particle[j].zdec = 0;
-
-				particle[j].ov.x = x + 5.f - rnd() * 10.f;
-				particle[j].ov.y = y + 5.f - rnd() * 10.f;
-				particle[j].ov.z = z + 5.f - rnd() * 10.f;
-				particle[j].move.x = 0;
-				particle[j].move.y = 2.f - 4.f * rnd();
-				particle[j].move.z = 0;
-				particle[j].siz = 0.5f;
-
-				float fMin = min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
-				particle[j].tolive = checked_range_cast<unsigned long>(fMin);
-
-				particle[j].scale.x		=	1.f;
-				particle[j].scale.y		=	1.f;
-				particle[j].scale.z		=	1.f;
-				particle[j].timcreation	=	(long)arxtime;
-				particle[j].tc 			=	tex_p1;
-				particle[j].special 	=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-				particle[j].fparam		=	0.0000001f;
-				particle[j].rgb = Color3f(.7f, .7f, 1.f);
+			
+		} else if(t > 0.095f) {
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(pd) {
+				pd->ov = tPos[i] + randomVec(-5.f, 5.f) - Vec3f(0.f, 50.f, 0.f);
+				pd->move = Vec3f(0.f, 2.f - 4.f * rnd(), 0.f);
+				pd->siz = 0.5f;
+				float t = min(2000.f + rnd() * 1000.f,
+				              ulDuration - ulCurrentTime + 500.0f * rnd());
+				pd->tolive = checked_range_cast<unsigned long>(t);
+				pd->tc = tex_p1;
+				pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
+				pd->fparam = 0.0000001f;
+				pd->rgb = Color3f(0.7f, 0.7f, 1.f);
 			}
+			
 		}
 	}
-
+	
 	return 1;
 }
 
@@ -788,11 +693,11 @@ void CSpeed::Create(int numinteractive, int duration)
 		this->truban[nb].actif = 0;
 	}
 
-	nb = (inter.iobj[this->num]->obj)->nbgroups;
+	nb = (entities[this->num]->obj)->nbgroups;
 
 	if (nb > 256) nb = 256;
 
-	EERIE_GROUPLIST * grouplist = inter.iobj[this->num]->obj->grouplist;
+	EERIE_GROUPLIST * grouplist = entities[this->num]->obj->grouplist;
 	nb >>= 1;
 
 	while (nb--)
@@ -847,11 +752,8 @@ void CSpeed::AddRuban(int * f, int id, int dec)
 
 	if (num >= 0)
 	{
-		this->truban[num].actif = 1;
-
-		this->truban[num].pos.x = inter.iobj[this->num]->obj->vertexlist3[id].v.x;
-		this->truban[num].pos.y = inter.iobj[this->num]->obj->vertexlist3[id].v.y;
-		this->truban[num].pos.z = inter.iobj[this->num]->obj->vertexlist3[id].v.z;
+		truban[num].actif = 1;
+		truban[num].pos = entities[this->num]->obj->vertexlist3[id].v;
 
 		if (*f < 0)
 		{
@@ -986,27 +888,18 @@ float CSpeed::Render()
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-CCreateFood::CCreateFood()
-{
+CCreateFood::CCreateFood() {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
-
 	pPS = new ParticleSystem();
 }
 
-//-----------------------------------------------------------------------------
-CCreateFood::~CCreateFood()
-{
-}
+CCreateFood::~CCreateFood() { }
 
-//-----------------------------------------------------------------------------
-void CCreateFood::Create()
-{
-	eSrc.x = player.pos.x;
-	eSrc.y = player.pos.y;
-	eSrc.z = player.pos.z;
-
+void CCreateFood::Create() {
+	
+	eSrc = player.pos;
+	
 	pPS->SetPos(eSrc);
 	ParticleParams cp;
 	memset(&cp, 0, sizeof(cp));
@@ -1070,9 +963,7 @@ if (ulCurrentTime >= ulDuration)
 */
 //ARX_END: jycorbel (2010-07-20)
 
-	eSrc.x = inter.iobj[0]->pos.x;
-	eSrc.y = inter.iobj[0]->pos.y;
-	eSrc.z = inter.iobj[0]->pos.z;
+	eSrc = entities.player()->pos;
 
 
 //ARX_BEGIN: jycorbel (2010-07-20) - Correct bug when this spell is cast, the function update particule after-life
@@ -1089,9 +980,7 @@ if (ulCurrentTime >= ulDuration)
 		{
 			pPS->uMaxParticles = 0;
 			pPS->ulParticleSpawn = PARTICLE_CIRCULAR;
-			pPS->p3ParticleGravity.x = 0;
-			pPS->p3ParticleGravity.y = 0;
-			pPS->p3ParticleGravity.z = 0;
+			pPS->p3ParticleGravity = Vec3f::ZERO;
 
 		std::list<Particle *>::iterator i;
 

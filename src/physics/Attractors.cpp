@@ -46,6 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Attractors.h"
 
+#include "game/Entity.h"
+#include "game/EntityManager.h"
 #include "graphics/Math.h"
 #include "scene/Interactive.h"
 
@@ -106,7 +108,7 @@ bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius) {
 	return false;
 }
 
-void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, Vec3f & force) {
+void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const Entity & ioo, Vec3f & force) {
 	
 	force = Vec3f::ZERO;
 	
@@ -116,10 +118,10 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(const INTERACTIVE_OBJ & ioo, Vec3f & fo
 			continue;
 		}
 		
-		const INTERACTIVE_OBJ & io = *inter.iobj[attractors[i].ionum];
+		const Entity & io = *entities[attractors[i].ionum];
 		
 		if(io.show != SHOW_FLAG_IN_SCENE || (io.ioflags & IO_NO_COLLISIONS)
-			 || !(io.GameFlags & GFLAG_ISINTREATZONE)) {
+			 || !(io.gameFlags & GFLAG_ISINTREATZONE)) {
 			continue;
 		}
 		

@@ -23,22 +23,22 @@
 #include <algorithm>
 #include <vector>
 
-#include <stdlib.h> // needed for setenv, realpath
+#include <stdlib.h> // needed for setenv, realpath and more
 
 #include <boost/scoped_array.hpp>
 
 #include "Configure.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 #include <windows.h>
 #include <shlobj.h>
 #endif
 
-#ifdef HAVE_WORDEXP_H
+#ifdef ARX_HAVE_WORDEXP_H
 #include <wordexp.h>
 #endif
 
-#if defined(HAVE_READLINK)
+#ifdef ARX_HAVE_READLINK
 #include <unistd.h>
 #endif
 
@@ -47,9 +47,18 @@
 #include <sys/param.h>
 #endif
 
+#ifdef ARX_HAVE_SYSCTL
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
+#include "platform/Platform.h"
+#include "util/String.h"
+
+
 std::string expandEnvironmentVariables(const std::string & in) {
 	
-#if defined(HAVE_WORDEXP_H)
+#if defined(ARX_HAVE_WORDEXP_H)
 	
 	wordexp_t p;
 	
@@ -70,7 +79,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 	
 	return oss.str();
 	
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 	
 	size_t length = std::max<size_t>(in.length() * 2, 1024);
 	boost::scoped_array<char> buffer(new char[length]);
@@ -95,7 +104,7 @@ std::string expandEnvironmentVariables(const std::string & in) {
 #endif
 }
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & result) {
 	
 	boost::scoped_array<char> buffer(NULL);
@@ -136,7 +145,7 @@ static bool getRegistryValue(HKEY hkey, const std::string & name, std::string & 
 
 bool getSystemConfiguration(const std::string & name, std::string & result) {
 	
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 	
 	if(getRegistryValue(HKEY_CURRENT_USER, name, result)) {
 		return true;
@@ -153,21 +162,13 @@ bool getSystemConfiguration(const std::string & name, std::string & result) {
 	return false;
 }
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#if ARX_PLATFORM == ARX_PLATFORM_MACOSX
 
-void defineSystemDirectories() {
-	
-	const char * _home = getenv("HOME");
-	std::string home = _home ? _home : "~";
-	
-	setenv("XDG_DATA_HOME", (home + "/.local/share").c_str(), 0);
-	setenv("XDG_CONFIG_HOME", (home + "/.config").c_str(), 0);
-	setenv("XDG_DATA_DIRS", "/usr/local/share/:/usr/share/", 0);
-	setenv("XDG_CONFIG_DIRS", "/etc/xdg", 0);
-	setenv("XDG_CACHE_HOME", (home + "/.cache").c_str(), 0);
+void defineSystemDirectories(const char * argv0) {
+	ARX_UNUSED(argv0);
 }
 
-#else
+#elif defined(ARX_HAVE_WINAPI)
 
 std::string ws2s(const std::basic_string<WCHAR> & s) {
 	size_t slength = (int)s.length() + 1;
@@ -178,13 +179,16 @@ std::string ws2s(const std::basic_string<WCHAR> & s) {
 }
 
 // Those two values are from ShlObj.h, but requires _WIN32_WINNT >= _WIN32_WINNT_VISTA
-const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
-const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
+static const int kfFlagCreate  = 0x00008000; // KF_FLAG_CREATE
+static const int kfFlagNoAlias = 0x00001000; // KF_FLAG_NO_ALIAS
 
 // Obtain the right savegame paths for the platform
 // XP is "%USERPROFILE%\My Documents\My Games"
 // Vista and up : "%USERPROFILE%\Saved Games"
-void defineSystemDirectories() {
+void defineSystemDirectories(const char * argv0) {
+	
+	ARX_UNUSED(argv0);
+	
 	std::string strPath;
 	DWORD winver = GetVersion();
 	
@@ -226,9 +230,17 @@ void defineSystemDirectories() {
 	}
 }
 
+#else
+
+static const char * executablePath = NULL;
+
+void defineSystemDirectories(const char * argv0) {
+	executablePath = argv0;
+}
+
 #endif
 
-#if defined(HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
+#if defined(ARX_HAVE_READLINK) && ARX_PLATFORM != ARX_PLATFORM_MACOSX
 static bool try_readlink(std::vector<char> & buffer, const char * path) {
 	
 	int ret = readlink(path, &buffer.front(), buffer.size());
@@ -264,30 +276,64 @@ std::string getExecutablePath() {
 		}
 	}
 	
-#elif defined(HAVE_READLINK)
-	
-	std::vector<char> buffer(1024);
-	
-	if(try_readlink(buffer, "/proc/self/exe")) {
-		return std::string(buffer.begin(), buffer.end());
-	}
-	
-	if(try_readlink(buffer, "/proc/curproc/file")) {
-		return std::string(buffer.begin(), buffer.end());
-	}
-	
-	if(try_readlink(buffer, "/proc/self/path/a.out")) {
-		return std::string(buffer.begin(), buffer.end());
-	}
-	
-	// we can also try argv[0]!
-	
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 	
 	std::vector<char> buffer;
 	buffer.resize(MAX_PATH);
 	if(GetModuleFileNameA(NULL, buffer.data(), buffer.size()) > 0) {
 		return std::string(buffer.data(), buffer.size());
+	}
+	
+#else
+	
+	// Try to get the path from OS-specific procfs entries
+	#ifdef ARX_HAVE_READLINK
+	std::vector<char> buffer(1024);
+	// Linux
+	if(try_readlink(buffer, "/proc/self/exe")) {
+		return std::string(buffer.begin(), buffer.end());
+	}
+	// BSD
+	if(try_readlink(buffer, "/proc/curproc/file")) {
+		return std::string(buffer.begin(), buffer.end());
+	}
+	// Solaris
+	if(try_readlink(buffer, "/proc/self/path/a.out")) {
+		return std::string(buffer.begin(), buffer.end());
+	}
+	#endif
+	
+	// FreeBSD
+	#if defined(ARX_HAVE_SYSCTL) && defined(CTL_KERN) && defined(KERN_PROC) \
+	    && defined(KERN_PROC_PATHNAME) && ARX_PLATFORM == ARX_PLATFORM_BSD \
+	    && defined(PATH_MAX)
+	int mib[4];
+	mib[0] = CTL_KERN;
+	mib[1] = KERN_PROC;
+	mib[2] = KERN_PROC_PATHNAME;
+	mib[3] = -1;
+	char pathname[PATH_MAX];
+	size_t size = sizeof(pathname);
+	int error = sysctl(mib, 4, pathname, &size, NULL, 0);
+	if(error != -1 && size > 0 && size < sizeof(pathname)) {
+		return util::loadString(pathname, size);
+	}
+	#endif
+	
+	// Solaris
+	#ifdef ARX_HAVE_GETEXECNAME
+	const char * execname = getexecname();
+	if(execname != NULL) {
+		return execname;
+	}
+	#endif
+	
+	// Fall back to argv[0] if possible
+	if(executablePath != NULL) {
+		std::string path(executablePath);
+		if(path.find('/') != std::string::npos) {
+			return path;
+		}
 	}
 	
 #endif

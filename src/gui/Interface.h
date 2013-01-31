@@ -55,12 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Note.h"
 
-class TextureContainer;
 struct EERIE_CAMERA;
-struct INTERACTIVE_OBJ;
+class TextureContainer;
+class Entity;
 
 extern float BOOKDECX;
 extern float BOOKDECY;
+
+extern Entity * FlyingOverIO;
 
 //-----------------------------------------------------------------------------
 class INTERFACE_TC
@@ -210,9 +212,7 @@ extern Vec2s MemoMouse;
 extern Vec2s bookclick;
 
 extern SPELL_ICON spellicons[SPELL_COUNT];
-extern char LOADFROM[256];
 extern float CINEMA_DECAL;
-extern long CURRINVCOUNT;
 extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 
@@ -221,8 +221,6 @@ extern long INVERTMOUSE;
 extern long CINEMASCOPE;
 extern long CINEMA_INC;
 extern long CurrFightPos;
-extern long FORBID_SAVE;
-extern long CONSTANTUPDATELIGHT;
 
 //-----------------------------------------------------------------------------
 float INTERFACE_RATIO(const float);
@@ -261,7 +259,7 @@ void LoadLevelScreen();
 void LoadLevelScreen(long lev);
 void ReleaseHalo();
 void ResetPlayerInterface();
-void Set_DragInter(INTERACTIVE_OBJ * io);
+void Set_DragInter(Entity * io);
 void CreateInterfaceTextureContainers();
 void KillInterfaceTextureContainers();
 

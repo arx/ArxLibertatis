@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "core/Application.h"
 #include "core/Localisation.h"
-#include "core/Unicode.hpp"
 #include "core/Core.h"
 
 #include "game/Player.h"
@@ -81,15 +80,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/fs/Filesystem.h"
 #include "io/log/Logger.h"
 
-#include "platform/String.h"
-
 #include "scene/LoadLevel.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "scene/Light.h"
 
-using std::string;
-using std::istringstream;
+#include "util/Unicode.h"
 
 extern TextManager * pTextManage;
 extern Anglef ePlayerAngle;
@@ -99,7 +95,6 @@ extern long START_NEW_QUEST;
 extern long LASTBOOKBUTTON;
 extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
-extern long FINAL_RELEASE;
 extern long FLYING_OVER;
 extern long BOOKZOOM;
 extern long FRAME_COUNT;
@@ -131,7 +126,7 @@ bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
 long REFUSE_GAME_RETURN = 0;
 
-long SP_HEAD = 0;
+static long SP_HEAD = 0;
 
 //-----------------------------------------------------------------------------
 #define ARX_MENU_SIZE_Y 24
@@ -146,18 +141,13 @@ void ARX_MENU_CLICKSOUND() {
 // Menu Sounds
 //-----------------------------------------------------------------------------
 
-void ARX_MENU_LaunchAmb(const string & _lpszAmb) {
+void ARX_MENU_LaunchAmb(const std::string & _lpszAmb) {
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 
 void ARX_Menu_Resources_Create() {
 	
-	if (ARXmenu.mda)
-	{
-		delete ARXmenu.mda;
-		ARXmenu.mda = NULL;
-	}
-
+	delete ARXmenu.mda;
 	ARXmenu.mda = new MENU_DYNAMIC_DATA();
 	ARXmenu.mda->pTexCredits = TextureContainer::LoadUI("graph/interface/menus/menu_credits");
 	ARXmenu.mda->BookBackground = TextureContainer::LoadUI("graph/interface/book/character_sheet/char_creation_bg", TextureContainer::NoColorKey);
@@ -197,28 +187,31 @@ void ARX_Menu_Resources_Create() {
 	
 	// Load credits.
 	
-	string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
+	std::string creditsFile = "localisation/ucredits_" +  config.language + ".txt";
 	
 	size_t creditsSize;
-	u16 * creditsData = (u16*)resources->readAlloc(creditsFile, creditsSize);
+	char * credits = resources->readAlloc(creditsFile, creditsSize);
 	
-	if(!creditsData) {
-		LogWarning << "unable to read credits file " << creditsFile;
-	} else {
-		
-		u16 * credits = creditsData;
-		
-		creditsSize /= sizeof(*credits);
-		
-		if(creditsSize >= 1 && credits[0] == 0xFEFF) {
-			credits++;
-			creditsSize--;
+	std::string englishCreditsFile;
+	if(!credits) {
+		// Fallback if there is no localised credits file
+		englishCreditsFile = "localisation/ucredits_english.txt";
+		credits = resources->readAlloc(englishCreditsFile, creditsSize);
+	}
+	
+	if(!credits) {
+		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
+			LogWarning << "unable to read credits files " << creditsFile
+			           << " and " << englishCreditsFile;
+		} else {
+			LogWarning << "unable to read credits file " << creditsFile;
 		}
+	} else {
 		
 		LogDebug("Loaded credits file: " << creditsFile << " of size " << creditsSize);
 		
 		// TODO move this to an external file once we ship our own resources
-		ARXmenu.mda->str_cre_credits =
+		ARXmenu.mda->credits =
 			"~ARX LIBERTATIS TEAM\n"
 			"Daniel Scharrer (dscharrer)\n"
 			"Erik Lund (Akhilla)\n"
@@ -233,78 +226,66 @@ void ARX_Menu_Resources_Create() {
 			"\n~TESTERS\n"
 			"vytautas (aka. ProzacR)\n"
 			"\n\n~Arx Libertatis is free software:\n"
-			"you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\n"
-			"Arx Libertatis is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\n"
-			"You should have received a copy of the GNU General Public License along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.\n\n"
+			"you can redistribute it and/or modify it under the terms of the"
+			" GNU General Public License as published by the Free Software Foundation,"
+			" either version 3 of the License, or (at your option) any later version.\n\n"
+			"Arx Libertatis is distributed in the hope that it will be useful,"
+			" but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY"
+			" or FITNESS FOR A PARTICULAR PURPOSE."
+			"  See the GNU General Public License for more details.\n\n"
+			"You should have received a copy of the GNU General Public License"
+			" along with Arx Libertatis. If not, see <http://www.gnu.org/licenses/>.\n\n"
 			"\n~ORIGINAL ARX FATALIS CREDITS:\n\n\n";
 		
-		ARXmenu.mda->str_cre_credits.reserve(ARXmenu.mda->str_cre_credits.size() + creditsSize);
+		ARXmenu.mda->credits += util::convertUTF16LEToUTF8(credits, credits + creditsSize);
 		
-		UTF16ToUTF8(credits, &credits[creditsSize],
-		            std::back_inserter(ARXmenu.mda->str_cre_credits));
-		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size());
+		LogDebug("Converted to UTF8 string of length " << ARXmenu.mda->credits.size());
 		
-		free(creditsData);
+		free(credits);
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Menu_Resources_Release(bool _bNoSound)
-{
+void ARX_Menu_Resources_Release(bool _bNoSound) {
+	
 	config.save();
-
-	if (ARXmenu.mda == NULL)
+	
+	if(ARXmenu.mda == NULL) {
 		return;
-
-	if (ARXmenu.mda->Background != NULL)
-	{
-		delete ARXmenu.mda->Background;
-		ARXmenu.mda->Background = NULL;
-	}
-
-	if (ARXmenu.mda->BookBackground != NULL)
-	{
-		delete ARXmenu.mda->BookBackground;
-		ARXmenu.mda->BookBackground = NULL;
 	}
 	
-	delete ARXmenu.mda;
-	ARXmenu.mda = NULL;
-
+	delete ARXmenu.mda->Background;
+	delete ARXmenu.mda->BookBackground;
+	delete ARXmenu.mda, ARXmenu.mda = NULL;
+	
 	//Synchronize game mixers with menu mixers and switch between them
 	if(_bNoSound) {
 		ARXMenu_Options_Audio_ApplyGameVolumes();
 	}
-
-	if (pTextureLoad)
-	{
-		delete pTextureLoad;
-		pTextureLoad = NULL;
-	}
+	
+	delete pTextureLoad, pTextureLoad = NULL;
 }
 
 extern long NO_TIME_INIT;
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_QUIT()
-{
-	if (REFUSE_GAME_RETURN) return;
 
+void ARX_MENU_Clicked_QUIT() {
+	
+	if(REFUSE_GAME_RETURN) {
+		return;
+	}
+	
 	ARX_Menu_Resources_Release();
 	ARXmenu.currentmode = AMCM_OFF;
-
-	if (!NO_TIME_INIT)
+	if(!NO_TIME_INIT) {
 		arxtime.resume();
+	}
 }
 
 void ARX_MENU_Clicked_NEWQUEST() {
 	
 	arxtime.resume();
-
-	if (FINAL_RELEASE)
-	{
-		REFUSE_GAME_RETURN = 1;
-	}
-
+	
+	REFUSE_GAME_RETURN = 1;
+	
 	ARX_PLAYER_Start_New_Quest();
 	Book_Mode = BOOKMODE_STATS;
 	player.skin = 0;
@@ -313,31 +294,19 @@ void ARX_MENU_Clicked_NEWQUEST() {
 	ARXmenu.currentmode = AMCM_NEWQUEST;
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_NEW_QUEST_Clicked_QUIT()
-{
+void ARX_MENU_NEW_QUEST_Clicked_QUIT() {
 	START_NEW_QUEST = 1;
 	REFUSE_GAME_RETURN = 0;
 	ARX_MENU_Clicked_QUIT();
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_Clicked_CREDITS()
-{
+void ARX_MENU_Clicked_CREDITS() {
 	ARXmenu.currentmode = AMCM_CREDITS;
 	Credits::reset();
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 
 void ARX_MENU_Clicked_QUIT_GAME() {
-	
-#ifdef BUILD_EDITOR
-	if(GAME_EDITOR) {
-		ARX_MENU_Clicked_QUIT();
-		return;
-	}
-#endif
-	
 	mainApp->quit();
 }
 
@@ -432,7 +401,6 @@ void ARX_Menu_Manage() {
 	}
 }
 extern long PLAYER_INTERFACE_HIDE_COUNT;
-extern long SPLASH_THINGS_STAGE;
 //-----------------------------------------------------------------------------
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed

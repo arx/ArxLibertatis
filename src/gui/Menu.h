@@ -61,7 +61,7 @@ struct MENU_DYNAMIC_DATA {
 	float creditspos;
 	float creditstart;
 	std::string flyover[MAX_FLYOVER];
-	std::string str_cre_credits;
+	std::string credits;
 	// New Quest Buttons Strings
 	std::string str_button_quickgen;
 	std::string str_button_skin;

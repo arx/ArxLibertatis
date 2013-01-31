@@ -92,7 +92,7 @@ static IDirectInput8A * DI_DInput8;
 static INPUT_INFO * DI_KeyBoardBuffer;
 static INPUT_INFO * DI_MouseState;
 
-const int DI8_KEY_ARRAY_SIZE = 256;
+static const int DI8_KEY_ARRAY_SIZE = 256;
 
 static int DInput8ToArxKeyTable[DI8_KEY_ARRAY_SIZE];
 
@@ -236,9 +236,7 @@ static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvR
 	return DIENUM_CONTINUE;
 }
 
-DInput8Backend::DInput8Backend()
-{
-	iLastMouseX = iLastMouseY = 0;
+DInput8Backend::DInput8Backend() {
 }
 
 DInput8Backend::~DInput8Backend()
@@ -298,10 +296,7 @@ bool DInput8Backend::init() {
 		return false;
 	}
 
-    iLastMouseX = mainApp->getWindow()->getSize().x / 2;
-	iLastMouseY = mainApp->getWindow()->getSize().y / 2;
-
-	setMouseCoordinates(iLastMouseX, iLastMouseY);
+	setAbsoluteMouseCoords(mainApp->getWindow()->getSize().x / 2, mainApp->getWindow()->getSize().y / 2);
 	
 	LogInfo << "Using DirectInput 8";
 	
@@ -324,17 +319,11 @@ void releaseDevice(INPUT_INFO & info) {
 	
 	switch(GET_DIDEVICE_TYPE(info.type)) {
 		case DI8DEVTYPE_MOUSE: {
-			if(info.mousestate) {
-				delete[] info.mousestate;
-				info.mousestate = NULL;
-			}
+			delete[] info.mousestate, info.mousestate = NULL;
 			break;
 		}
 		case DI8DEVTYPE_KEYBOARD: {
-			if(info.bufferstate) {
-				delete[] info.bufferstate;
-				info.bufferstate = NULL;
-			}
+			delete[] info.bufferstate, info.bufferstate = NULL;
 			break;
 		}
 	}
@@ -509,14 +498,14 @@ bool getMouseInputDevice(DXIMode mode, int minbutton, int minaxe) {
 }
 
 bool DInput8Backend::update() {
-	
+
 	bool success = true;
 	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); ++i) {
-		
+
 		if(!i->active) {
 			continue;
 		}
-		
+
 		switch(GET_DIDEVICE_TYPE(i->type)) {
 			
 			case DI8DEVTYPE_MOUSE: {
@@ -528,11 +517,11 @@ bool DInput8Backend::update() {
 						success = false;
 					}
 				}
-				
+
 				i->nbele = (int)dwNbele;
 				break;
 			}
-			
+
 			case DI8DEVTYPE_KEYBOARD: {
 				char keyBuffer[DI8_KEY_ARRAY_SIZE];
 				if(FAILED(i->inputdevice8->GetDeviceState(DI8_KEY_ARRAY_SIZE, keyBuffer))) {
@@ -556,17 +545,9 @@ bool DInput8Backend::update() {
 				}
 				break;
 			}
-			
 		}
 	}
-	
-	// When running fullscreen, make sure to recenter mouse in the middle of the screen
-	if(mainApp->getWindow()->isFullScreen()) {
-		int x = (int)mainApp->getWindow()->getSize().x / 2;
-		int y = (int)mainApp->getWindow()->getSize().y / 2;
-		SetCursorPos(x, y);
-	}
-	
+
 	return success;
 }
 
@@ -622,49 +603,42 @@ bool DInput8Backend::getKeyAsText(int keyId, char& result) const {
 	return true;
 }
 
-void DInput8Backend::getMouseCoordinates(int & absX, int & absY, int & wheelDir) const {
-		
-	// DInput relative
+bool DInput8Backend::getAbsoluteMouseCoords(int & absX, int & absY) const {
+
+	Vec2i cursorPos = mainApp->getWindow()->getCursorPosition();
+
+	RECT rc;
+	POINT pt;
+	absX = pt.x = cursorPos.x;
+	absY = pt.y = cursorPos.y;
+	GetClientRect((HWND)mainApp->getWindow()->getHandle(), &rc);
+	return PtInRect(&rc, pt) == TRUE;
+}
+
+void DInput8Backend::setAbsoluteMouseCoords(int absX, int absY) {
+	POINT pt;
+	pt.x = absX;
+	pt.y = absY;
+	ClientToScreen((HWND)mainApp->getWindow()->getHandle(), &pt);
+	SetCursorPos(pt.x, pt.y);
+}
+
+void DInput8Backend::getRelativeMouseCoords(int & relX, int & relY, int & relWheel) const {
+	relX = 0;
+	relY = 0;
+	relWheel = 0;
+
 	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
 	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
 		if(od->dwOfs == (DWORD)DIMOFS_X) {
-			iLastMouseX += od->dwData;
+			relX += od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Y) {
-			iLastMouseY += od->dwData;
+			relY += od->dwData;
 		}
 		else if(od->dwOfs == (DWORD)DIMOFS_Z) {
-			wheelDir += od->dwData;
+			relWheel += od->dwData;
 		}
-	}
-
-	iLastMouseX = clamp(iLastMouseX, 0, (int)mainApp->getWindow()->getSize().x);
-	iLastMouseY = clamp(iLastMouseY, 0, (int)mainApp->getWindow()->getSize().y);
-	
-	if(mainApp->getWindow()->isFullScreen()) {
-		absX = iLastMouseX;
-		absY = iLastMouseY;
-	} else {
-		// Win absolute
-		POINT pt;
-		GetCursorPos(&pt);
-		ScreenToClient((HWND)mainApp->getWindow()->getHandle(), &pt);
-		absX = pt.x;
-		absY = pt.y;
-	}	
-}
-
-void DInput8Backend::setMouseCoordinates(int absX, int absY)
-{
-	iLastMouseX = absX;
-	iLastMouseY = absY;
-	
-	if(!mainApp->getWindow()->isFullScreen()) {
-		POINT pt;
-		pt.x = absX;
-		pt.y = absY;
-		ClientToScreen((HWND)mainApp->getWindow()->getHandle(), &pt);
-		SetCursorPos(pt.x, pt.y);
 	}
 }
 

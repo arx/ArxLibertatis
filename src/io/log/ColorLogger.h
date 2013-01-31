@@ -24,7 +24,7 @@
 
 #include "Configure.h"
 
-#ifdef HAVE_ISATTY
+#ifdef ARX_HAVE_ISATTY
 
 namespace logger {
 
@@ -45,6 +45,6 @@ public:
 
 } // namespace logger
 
-#endif // #ifdef HAVE_ISATTY
+#endif // #ifdef ARX_HAVE_ISATTY
 
 #endif // ARX_IO_LOG_COLORLOGGER_H

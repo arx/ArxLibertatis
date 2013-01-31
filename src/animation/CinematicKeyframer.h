@@ -53,13 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct C_KEY {
 	
-	enum Language {
-		French = 0,
-		German = 1,
-		Spanish = 2,
-		English = 3
-	};
-	
 	int frame;
 	int numbitmap;
 	int fx; // associated fx
@@ -74,7 +67,8 @@ struct C_KEY {
 	Vec3f posgrille;
 	float angzgrille;
 	float speedtrack;
-	int idsound[16]; // 16 languages max.
+	
+	int idsound;
 	
 };
 
@@ -92,7 +86,6 @@ bool DeleteTrack();
 bool AllocTrack(int sf, int ef, float fps);
 bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
 bool AddKeyLoad(C_KEY * key);
-void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
 bool GereTrack(Cinematic * c, float fpscurr);
 
 void PlayTrack(Cinematic * c);
@@ -107,7 +100,6 @@ C_KEY * GetKey(int f, int * num);
 C_KEY * SearchKey(int f, int * num);
 
 float GetTimeKeyFramer();
-void InitUndo();
 void UpDateAllKeyLight();
 
 #endif // ARX_ANIMATION_CINEMATICKEYFRAMER_H

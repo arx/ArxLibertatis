@@ -66,30 +66,14 @@ CodecADPCM::CodecADPCM() :
 }
 
 CodecADPCM::~CodecADPCM() {
-	if(predictor) {
-		delete[] predictor;
-	}
-	if(delta) {
-		delete[] delta;
-	}
-	if(samp1) {
-		delete[] samp1;
-	}
-	if(samp2) {
-		delete[] samp2;
-	}
-	if(coef1) {
-		delete[] coef1;
-	}
-	if(coef2) {
-		delete[] coef2;
-	}
-	if(cache_l) {
-		delete[] (s8*)cache_l;
-	}
-	if(nybble_l) {
-		delete[] nybble_l;
-	}
+	delete[] predictor;
+	delete[] delta;
+	delete[] samp1;
+	delete[] samp2;
+	delete[] coef1;
+	delete[] coef2;
+	delete[] (s8*)cache_l;
+	delete[] nybble_l;
 }
 
 aalError CodecADPCM::setHeader(void * _header) {

@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedNPC.h"
 
+#include "game/Camera.h"
+#include "game/EntityManager.h"
 #include "game/NPC.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
@@ -64,7 +66,7 @@ public:
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		
 		Behaviour behavior = 0;
 		HandleFlags("lsdmfa012") {
@@ -143,7 +145,7 @@ class ReviveCommand : public Command {
 	
 public:
 	
-	ReviveCommand() : Command("revive", ANY_IO) { }
+	ReviveCommand() : Command("revive", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -154,7 +156,7 @@ public:
 		
 		DebugScript(' ' << options);
 		
-		ARX_NPC_Revive(context.getIO(), init ? 1 : 0);
+		ARX_NPC_Revive(context.getEntity(), init ? 1 : 0);
 		
 		return Success;
 	}
@@ -165,7 +167,7 @@ class SpellcastCommand : public Command {
 	
 public:
 	
-	SpellcastCommand() : Command("spellcast", ANY_IO) { }
+	SpellcastCommand() : Command("spellcast", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -182,7 +184,7 @@ public:
 				
 				DebugScript(' ' << options << ' ' << spellname);
 				
-				long from = GetInterNum(context.getIO());
+				long from = context.getEntity()->index();
 				if(ValidIONum(from)) {
 					long sp = ARX_SPELLS_GetInstanceForThisCaster(spellid, from);
 					if(sp >= 0) {
@@ -227,19 +229,19 @@ public:
 		Spell spellid = GetSpellId(spellname);
 		
 		string target = context.getWord();
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		if(!t || spellid == SPELL_NONE) {
 			return Failed;
 		}
 		
-		if(context.getIO() != inter.iobj[0]) {
+		if(context.getEntity() != entities.player()) {
 			spflags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 		}
 		
 		DebugScript(' ' << spellname << ' ' << level << ' ' << target << ' ' << spflags << ' ' << duration);
 		
-		TryToCastSpell(context.getIO(), spellid, level, GetInterNum(t), spflags, duration);
+		TryToCastSpell(context.getEntity(), spellid, level, t->index(), spflags, duration);
 		
 		return Success;
 	}
@@ -259,9 +261,9 @@ public:
 		DebugScript(' ' << detectvalue);
 		
 		if(detectvalue == "off") {
-			context.getIO()->_npcdata->fDetect = -1;
+			context.getEntity()->_npcdata->fDetect = -1;
 		} else {
-			context.getIO()->_npcdata->fDetect = clamp((int)context.getFloatVar(detectvalue), -1, 100);
+			context.getEntity()->_npcdata->fDetect = clamp((int)context.getFloatVar(detectvalue), -1, 100);
 		}
 		
 		return Success;
@@ -283,7 +285,7 @@ public:
 		
 		DebugScript(' ' << r << ' ' << g << ' ' << b);
 		
-		context.getIO()->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
+		context.getEntity()->_npcdata->blood_color = Color3f(r, g, b).to<u8>();
 		
 		return Success;
 	}
@@ -294,7 +296,7 @@ class SetSpeedCommand : public Command {
 	
 public:
 	
-	SetSpeedCommand() : Command("setspeed", ANY_IO) { }
+	SetSpeedCommand() : Command("setspeed", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -302,7 +304,7 @@ public:
 		
 		DebugScript(' ' << speed);
 		
-		context.getIO()->basespeed = speed;
+		context.getEntity()->basespeed = speed;
 		
 		return Success;
 	}
@@ -321,7 +323,7 @@ public:
 		
 		DebugScript(' ' << stare_factor);
 		
-		context.getIO()->_npcdata->stare_factor = stare_factor;
+		context.getEntity()->_npcdata->stare_factor = stare_factor;
 		
 		return Success;
 	}
@@ -341,7 +343,7 @@ public:
 		
 		DebugScript(' ' << stat << ' ' << value);
 		
-		if(!ARX_NPC_SetStat(*context.getIO(), stat, value)) {
+		if(!ARX_NPC_SetStat(*context.getEntity(), stat, value)) {
 			ScriptWarning << "unknown stat name: " << stat << ' ' << value;
 			return Failed;
 		}
@@ -366,7 +368,7 @@ public:
 		
 		DebugScript(' ' << xpvalue);
 		
-		context.getIO()->_npcdata->xpvalue = (long)xpvalue;
+		context.getEntity()->_npcdata->xpvalue = (long)xpvalue;
 		
 		return Success;
 	}
@@ -385,7 +387,7 @@ public:
 		
 		DebugScript(' ' << mode);
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(mode == "walk") {
 			ARX_NPC_ChangeMoveMode(io, WALKMODE);
 		} else if(mode == "run") {
@@ -416,7 +418,7 @@ public:
 		
 		DebugScript(' ' << life);
 		
-		context.getIO()->_npcdata->maxlife = context.getIO()->_npcdata->life = life;
+		context.getEntity()->_npcdata->maxlife = context.getEntity()->_npcdata->life = life;
 		
 		return Success;
 	}
@@ -427,11 +429,11 @@ class SetTargetCommand : public Command {
 	
 public:
 	
-	SetTargetCommand() : Command("settarget", ANY_IO) { }
+	SetTargetCommand() : Command("settarget", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
-		INTERACTIVE_OBJ * io = context.getIO();
+		Entity * io = context.getEntity();
 		if(io->ioflags & IO_NPC) {
 			io->_npcdata->pathfind.flags &= ~(PATHFIND_ALWAYS|PATHFIND_ONCE|PATHFIND_NO_UPDATE);
 		}
@@ -465,7 +467,7 @@ public:
 			target = context.getWord();
 		}
 		target = context.getStringVar(target);
-		INTERACTIVE_OBJ * t = inter.getById(target, io);
+		Entity * t = entities.getById(target, io);
 		
 		DebugScript(' ' << options << ' ' << target);
 		
@@ -473,8 +475,9 @@ public:
 			io->_camdata->cam.translatetarget = Vec3f::ZERO;
 		}
 		
+		long i = -1;
 		if(t != NULL) {
-			io->targetinfo = GetInterNum(t);
+			i = io->targetinfo = t->index();
 			GetTargetPos(io);
 		}
 		
@@ -485,11 +488,11 @@ public:
 			io->targetinfo = TARGET_NONE;
 		}
 		
-		if(old_target != GetInterNum(t)) {
+		if(old_target != i) {
 			if(io->ioflags & IO_NPC) {
 				io->_npcdata->reachedtarget = 0;
 			}
-			ARX_NPC_LaunchPathfind(io, GetInterNum(t));
+			ARX_NPC_LaunchPathfind(io, i);
 		}
 		
 		return Success;
@@ -501,7 +504,7 @@ class ForceDeathCommand : public Command {
 	
 public:
 	
-	ForceDeathCommand() : Command("forcedeath", ANY_IO) { }
+	ForceDeathCommand() : Command("forcedeath", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -509,13 +512,13 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		if(!t) {
 			ScriptWarning << "unknown target: " << target;
 			return Failed;
 		}
 		
-		ARX_DAMAGES_ForceDeath(t, context.getIO());
+		ARX_DAMAGES_ForceDeath(t, context.getEntity());
 		
 		return Success;
 	}
@@ -534,8 +537,8 @@ public:
 		
 		DebugScript(' ' << target);
 		
-		long t = inter.getById(target);
-		ARX_NPC_LaunchPathfind(context.getIO(), t);
+		long t = entities.getById(target);
+		ARX_NPC_LaunchPathfind(context.getEntity(), t);
 		
 		return Success;
 	}

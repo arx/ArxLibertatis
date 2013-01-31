@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/GameTime.h"
 
+#include "game/Entity.h"
 #include "game/Spells.h"
 
 #include "graphics/Draw.h"
@@ -68,7 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long DANAESIZX;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
-extern long MOVETYPE;
 extern EERIE_3DOBJ * eyeballobj;
 extern TextureContainer * Boom;
 
@@ -94,19 +94,13 @@ void ARXDRAW_DrawInterShadows()
 	{
 		if ((treatio[i].show!=1) || (treatio[i].io==NULL)) continue;
 
-		INTERACTIVE_OBJ * io=treatio[i].io;
+		Entity * io=treatio[i].io;
 
 		if (	(!io->obj) 
 			||	(io->ioflags & IO_JUST_COLLIDE)	)
 		{
 			continue;
 		}
-
-			if ((Project.hide & HIDE_NPC) &&  (io->ioflags & IO_NPC)) continue;
-
-			if ((Project.hide & HIDE_ITEMS) &&  (io->ioflags & IO_ITEM)) continue;
-
-			if ((Project.hide & HIDE_FIXINTER) && (io->ioflags & IO_FIX)) continue;
 
 			long xx,yy;
 			xx = io->pos.x * ACTIVEBKG->Xmul;
@@ -123,7 +117,7 @@ void ARXDRAW_DrawInterShadows()
 			if ( io->show==SHOW_FLAG_IN_SCENE ) 
 			if ( !(io->ioflags & IO_GOLD) ) 
 			{
-				register EERIEPOLY * ep;
+				EERIEPOLY * ep;
 				TexturedVertex in;
 				
 				TexturedVertex ltv[4];
@@ -251,12 +245,10 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 	GRenderer->SetCulling(Renderer::CullNone);
 	
 	if (el!=NULL)
-	if (el->treat) 
+	if (el->treat)
 	{
 		el->mins.x=999999999.f;
-		in.p.x=el->pos.x;
-		in.p.y=el->pos.y;
-		in.p.z=el->pos.z;
+		in.p = el->pos;
 
 		EERIEDrawSprite(&in, 11.f, lightsource_tc, el->rgb.to<u8>(), 2.f);
 		if(ACTIVECAM->type != CAM_TOPVIEW) {
@@ -269,9 +261,7 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 				if ((el->mins.x>=-200.f) && (el->mins.x<=1000.f))
 				if ((el->mins.y>=-200.f) && (el->mins.y<=1000.f))
 				{
-					in.p.x=el->pos.x;
-					in.p.y=el->pos.y;
-					in.p.z=el->pos.z;
+					in.p = el->pos;
 					EERIETreatPoint(&in,&center);	
 
 					if ((center.p.z>0.f) && (center.p.z<1000.f))
@@ -313,7 +303,7 @@ void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 		}
 	}
 }
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 extern long ARX_CONVERSATION;
 
 void ARXDRAW_DrawEyeBall()
@@ -341,39 +331,23 @@ void ARXDRAW_DrawEyeBall()
 	pos.x=eyeball.pos.x;
 	pos.y=eyeball.pos.y+eyeball.floating;
 	pos.z=eyeball.pos.z;
-	scale.x=d;
-	scale.y=d;
-	scale.z=d;
-	
-	Color3f rgb(d, d, d);
+	scale = Vec3f::repeat(d);
+	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
+	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, &rgb);	
 }
 
-//*************************************************************************************
 // This used to add a bias when the "forceZbias" config option was activated, but it
 // was off by default and we removed it.
-//*************************************************************************************
-void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut)
-{
-	_pOut[0].p.x=_pPoly->v[0].p.x;
-	_pOut[0].p.y=_pPoly->v[0].p.y;
-	_pOut[0].p.z=_pPoly->v[0].p.z;
-
-	_pOut[1].p.x=_pPoly->v[1].p.x;
-	_pOut[1].p.y=_pPoly->v[1].p.y;
-	_pOut[1].p.z=_pPoly->v[1].p.z;
-
-	_pOut[2].p.x=_pPoly->v[2].p.x;
-	_pOut[2].p.y=_pPoly->v[2].p.y;
-	_pOut[2].p.z=_pPoly->v[2].p.z;
-
-	if(_pPoly->type&POLY_QUAD)
-	{
-		_pOut[3].p.x=_pPoly->v[3].p.x;
-		_pOut[3].p.y=_pPoly->v[3].p.y;
-		_pOut[3].p.z=_pPoly->v[3].p.z;
+void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut) {
+	
+	_pOut[0].p = _pPoly->v[0].p;
+	_pOut[1].p = _pPoly->v[1].p;
+	_pOut[2].p = _pPoly->v[2].p;
+	
+	if(_pPoly->type&POLY_QUAD) {
+		_pOut[3].p = _pPoly->v[3].p;
 	}
 }
 
@@ -419,8 +393,6 @@ void ARXDRAW_DrawPolyBoom()
 				continue;
 			}
 			
-			if (Project.hide & HIDE_BACKGROUND) continue;
-			else
 			{
 				long typp	=	polyboom[i].type;
 				typp		&=	~128;
@@ -606,79 +578,22 @@ void ARXDRAW_DrawPolyBoom()
 extern long TRANSPOLYSPOS;
 extern EERIEPOLY * TransPol[MAX_TRANSPOL];
 
-extern long INTERTRANSPOLYSPOS;
-extern TexturedVertex InterTransPol[MAX_INTERTRANSPOL][4];
-extern EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
-extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
-
-void ARXDRAW_DrawAllInterTransPolyPos()
-{
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	EERIEDrawnPolys+=INTERTRANSPOLYSPOS;
-
-	for (long i=0;i<INTERTRANSPOLYSPOS;i++) 
-	{
-		if (!InterTransFace[i]) continue; // Object was destroyed after sending faces...
-
-		if (InterTransFace[i]->texid<0) continue;
-
-		if (InterTransFace[i]->facetype & POLY_DOUBLESIDED) 
-				GRenderer->SetCulling(Renderer::CullNone);
-		else	GRenderer->SetCulling(Renderer::CullCW);
-
-		GRenderer->SetTexture(0, InterTransTC[i]);
-		EERIE_FACE * ef=InterTransFace[i];
-		float ttt=ef->transval;
-
-		if (ttt>=2.f)  //MULTIPLICATIVE
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			ttt*=( 1.0f / 2 );
-			ttt+=0.5f;
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
-		}
-		else if (ttt>=1.f) //ADDITIVE
-		{	
-			ttt-=1.f;
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
-		}
-		else if (ttt>0.f)  //NORMAL TRANS
-		{
-			ttt=1.f-ttt;
-			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
-		}
-		else  //SUBTRACTIVE
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			ttt=1.f-ttt;
-			InterTransPol[i][2].color = InterTransPol[i][1].color = InterTransPol[i][0].color = Color::gray(ttt).toBGR();
-		}
-
-		EERIEDRAWPRIM(Renderer::TriangleStrip, InterTransPol[i], 3, true);
-	}
-
-	INTERTRANSPOLYSPOS=0;
-}
-
 extern TextureContainer * enviro;
 
 void ARXDRAW_DrawAllTransPolysPos() {
 	
-	SetZBias( 1 );
-
+	SetZBias(1);
+	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	long i, to = 0; 
 
-	register EERIEPOLY * ep;
+	EERIEPOLY * ep;
 
 	for ( i = 0 ; i < TRANSPOLYSPOS ; i++ ) 
 	{
 		ep = TransPol[i];
 
-		if ( ( !( Project.hide & HIDE_BACKGROUND ) ) )
 		{
 			if ( ep->type & POLY_DOUBLESIDED ) GRenderer->SetCulling(Renderer::CullNone);
 			else GRenderer->SetCulling(Renderer::CullCW);
@@ -732,9 +647,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 					for ( long j = 0 ; j < to ; j++ )
 					{
-						verts[j].p.x		= ep->tv[j].p.x;
-						verts[j].p.y		= ep->tv[j].p.y;
-						verts[j].p.z		= ep->tv[j].p.z;
+						verts[j].p = ep->tv[j].p;
 						verts[j].rhw	= ep->tv[j].rhw;
 						verts[j].color	= 0xFFFFFFFF;
 						verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float) arxtime.get_frame_time() * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
@@ -776,9 +689,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 				for ( long j = 0 ; j < to ; j++ )
 				{
-					verts[j].p.x		= ep->tv[j].p.x;
-					verts[j].p.y		= ep->tv[j].p.y;
-					verts[j].p.z		= ep->tv[j].p.z;
+					verts[j].p = ep->tv[j].p;
 					verts[j].rhw	= ep->tv[j].rhw;
 					verts[j].color	= 0xFF505050;
 					verts[j].uv.x		= ep->v[j].p.x * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].p.x ) * ( 1.0f / 200 ) + (float)arxtime.get_frame_time() * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );

@@ -46,6 +46,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <cstring>
 #include <cstdlib>
+#include <iomanip>
+#include <utility>
+
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
@@ -60,21 +65,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicFormat.h"
 
 #include "platform/Platform.h"
-#include "platform/String.h"
 
 #include "scene/CinematicSound.h"
 
-using std::string;
-using std::copy;
-using std::strcmp;
-using std::free;
-
 extern C_KEY KeyTemp;
-extern int LSoundChoose;
 
-static res::path fixTexturePath(const string & path) {
+static res::path fixTexturePath(const std::string & path) {
 	
-	string copy = toLowercase(path);
+	std::string copy = boost::to_lower_copy(path);
 	
 	size_t abs_dir = copy.find("arx\\");
 	
@@ -85,40 +83,47 @@ static res::path fixTexturePath(const string & path) {
 	}
 }
 
-static res::path fixSoundPath(const string & str) {
+static std::pair<res::path, bool> fixSoundPath(const std::string & str) {
 	
-	string path = toLowercase(str);
+	std::string path = boost::to_lower_copy(str);
 	
-	size_t sfx_pos = path.find("sfx");
-	
-	// Sfx
-	if(sfx_pos != string::npos) {
-		path.erase(0, sfx_pos);
-		
-		size_t uk_pos = path.find("uk");
-		if(uk_pos != string::npos) {
-			path.replace(uk_pos, 3, "english\\");
-		}
-		
-		size_t fr_pos = path.find("fr");
-		if(fr_pos != string::npos) {
-			path.replace(fr_pos, 3, "francais\\");
-		}
-		
-		size_t sfxspeech_pos = path.find("sfx\\speech\\");
-		if(sfxspeech_pos != string::npos) {
-			path.erase(0, sfxspeech_pos + 4);
-		}
-		
-		return res::path::load(path);
+	// Remove the .wav file extension
+	if(boost::ends_with(path, ".wav")) {
+		path.resize(path.size() - 4);
 	}
 	
-	// Speech
+	// Remove irrelevant absolute path components
+	size_t sfx_pos = path.find("\\sfx\\");
+	if(sfx_pos != std::string::npos) {
+		path.erase(0, sfx_pos + 1);
+	}
 	
-	size_t namepos = path.find_last_of('\\');
-	namepos = (namepos == string::npos) ? 0 : namepos + 1;
+	// I guess they changed their minds about language names
+	size_t uk_pos = path.find("\\uk\\");
+	if(uk_pos != std::string::npos) {
+		path.replace(uk_pos, 4, "\\english\\");
+	}
+	size_t fr_pos = path.find("\\fr\\");
+	if(fr_pos != std::string::npos) {
+		path.replace(fr_pos, 4, "\\francais\\");
+	}
 	
-	return res::path("speech") / config.language / path.substr(namepos);
+	// Change the speech directory
+	if(boost::starts_with(path, "sfx\\speech\\")) {
+		path.erase(0, 4);
+	}
+	
+	// Remove hardcoded language for localised speech
+	bool is_speech = false;
+	if(boost::starts_with(path, "speech\\")) {
+		size_t pos = path.find('\\', 7);
+		if(pos != std::string::npos) {
+			path.erase(0, pos + 1);
+			is_speech = true;
+		}
+	}
+	
+	return std::make_pair(res::path::load(path), is_speech);
 }
 
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
@@ -135,7 +140,7 @@ bool loadCinematic(Cinematic * c, const res::path & file) {
 	}
 	
 	bool ret = parseCinematic(c, data, size);
-	free(data);
+	std::free(data);
 	if(!ret) {
 		LogError << "loading cinematic " << file;
 		c->New();
@@ -152,7 +157,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	if(strcmp(cinematicId, "KFA")) {
+	if(std::strcmp(cinematicId, "KFA")) {
 		LogError << "wrong magic number";
 		return false;
 	}
@@ -182,7 +187,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		LogError << "error reading bitmap count";
 		return false;
 	}
-	LogDebug("nbitmaps " << nbitmaps);
+	LogDebug(nbitmaps << " images:");
 	
 	c->m_bitmaps.reserve(nbitmaps);
 	
@@ -199,9 +204,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading bitmap path";
 			return false;
 		}
+		LogDebug(" - " << i << ": \"" << str << '"');
 		res::path path = fixTexturePath(str);
+		LogDebug("   => " << path << " (scale x" << scale << ')');
 		
-		LogDebug("adding bitmap " << i << ": " << path);
 		
 		CinematicBitmap * newBitmap = CreateCinematicBitmap(path, scale);
 		if(newBitmap) {
@@ -210,24 +216,21 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	
 	// Load sounds.
-	LSoundChoose = C_KEY::French;
-			
 	s32 nsounds;
 	if(!safeGet(nsounds, data, size)) {
 		LogError << "error reading sound count";
 		return false;
 	}
 	
-	LogDebug("nsounds " << nsounds);
+	LogDebug(nsounds << " sounds:");
 	for(int i = 0; i < nsounds; i++) {
 		
 		if(version >= CINEMATIC_VERSION_1_76) {
-			s16 il;
-			if(!safeGet(il, data, size)) {
+			s16 ignored;
+			if(!safeGet(ignored, data, size)) {
 				LogError << "error reading sound id";
 				return false;
 			}
-			LSoundChoose = il;
 		}
 		
 		const char * str = safeGetString(data, size);
@@ -235,13 +238,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			LogError << "error reading sound path";
 			return false;
 		}
-		res::path path = fixSoundPath(str);
+		LogDebug(" - " << i << ": \"" << str << '"');
+		std::pair<res::path, bool> path = fixSoundPath(str);
+		LogDebug("   => " << path.first << (path.second ? " (speech)" : ""));
 		
-		LogDebug("adding sound " << i << ": " << path);
-		
-		if(AddSoundToList(path) < 0) {
-			LogError << "AddSoundToList failed for " << path;
-		}
+		AddSoundToList(path.first, path.second);
 	}
 	
 	// Load track and keys.
@@ -253,13 +254,12 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
-	LogDebug("nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76));
+	LogDebug(t.nbkey << " keyframes:");
 	for(int i = 0; i < t.nbkey; i++) {
 		
 		C_KEY k;
+		int idsound;
 		
-		LogDebug("loading key " << i << " " << size);
-				
 		if(version <= CINEMATIC_VERSION_1_75) {
 			
 			C_KEY_1_75 k175;
@@ -279,10 +279,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speed = k175.speed;
 			k.typeinterp = k175.typeinterp;
 			k.force = k175.force;
-			k.idsound[0] = k175.idsound;
-			for(size_t i = 1; i < 16; i++) {
-				k.idsound[i] = -1;
-			}
+			idsound = k175.idsound;
+			k.idsound = -1;
 			k.light = k175.light;
 			k.posgrille = k175.posgrille;
 			k.angzgrille = k175.angzgrille;
@@ -311,7 +309,8 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.posgrille = k176.posgrille;
 			k.angzgrille = k176.angzgrille;
 			k.speedtrack = k176.speedtrack;
-			copy(k176.idsound, k176.idsound + 16, k.idsound);
+			idsound = k176.idsound[0]; // 0 was the language code for 'French'
+			k.idsound = k176.idsound[3]; // 3 was the language code for 'English'
 			
 		}
 		
@@ -319,9 +318,13 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.force = 1;
 		}
 		
-		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, -1, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
-		copy(k.idsound, k.idsound + 16, KeyTemp.idsound);
+		FillKeyTemp(&k.pos, k.angz, k.frame, k.numbitmap, k.fx, k.typeinterp, k.color, k.colord, k.colorf, k.speed, k.idsound, k.force, &k.light, &k.posgrille, k.angzgrille, k.speedtrack);
 		AddKeyLoad(&KeyTemp);
+		
+		LogDebug(" - " << i << ": frame " << k.frame << " image: " << k.numbitmap);
+		if(k.idsound >= 0) {
+			LogDebug("   + sound: " << k.idsound);
+		}
 		
 		if(i == 0) {
 			c->pos = k.pos;
@@ -333,7 +336,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			c->colord = c->colorchoosed = k.colord;
 			c->colorflash = c->colorflashchoose = k.colorf;
 			c->speed = c->speedchoose = k.speed;
-			c->idsound = k.idsound[C_KEY::French];
+			c->idsound = idsound;
 			c->force = k.force;
 			c->light = c->lightchoose = k.light;
 			c->posgrille = k.posgrille;
@@ -349,10 +352,6 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	GereTrackNoPlay(c);
 	c->projectload = true;
-	
-	InitUndo();
-	
-	LSoundChoose = C_KEY::English << 8;
 	
 	LogDebug("loaded cinematic");
 	

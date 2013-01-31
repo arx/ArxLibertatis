@@ -105,20 +105,17 @@ class CDispellField: public CSpellFx
 		float	Render();
 };
 
-class CFireProtection: public CSpellFx
-{
-	private:
-		int			iNpc;
-
-	public:
-		CFireProtection();
-		~CFireProtection();
-
-		// surcharge
-		void	Create(long);
-		void	Update(unsigned long);
-		float	Render();
- 
+class CFireProtection: public CSpellFx {
+	
+public:
+	
+	CFireProtection();
+	~CFireProtection();
+	
+	void Create(long);
+	void Update(unsigned long);
+	float Render();
+	
 };
 
 class CColdProtection: public CSpellFx

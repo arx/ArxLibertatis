@@ -24,7 +24,7 @@
 
 #include <al.h>
 #include <alc.h>
-#ifdef HAVE_OPENAL_EFX
+#ifdef ARX_HAVE_OPENAL_EFX
 	#include <efx.h>
 #endif
 
@@ -72,7 +72,7 @@ private:
 	ALCdevice * device;
 	ALCcontext * context;
 	
-#ifdef HAVE_OPENAL_EFX
+#ifdef ARX_HAVE_OPENAL_EFX
 	
 	aalError setEffect(ALenum type, float val);
 	

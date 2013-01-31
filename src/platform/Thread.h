@@ -24,24 +24,24 @@
 
 #include <string>
 
-#if defined(HAVE_PTHREADS)
+#if defined(ARX_HAVE_PTHREADS)
 #include <pthread.h>
 #include <sys/types.h>
 typedef pthread_t thread_id_type;
 typedef pid_t process_id_type;
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 #include <windows.h>
 typedef DWORD thread_id_type;
 typedef DWORD process_id_type;
 #else
-#error "Threads not supported: need either HAVE_PTHREADS or HAVE_WINAPI"
+#error "Threads not supported: need either ARX_HAVE_PTHREADS or ARX_HAVE_WINAPI"
 #endif
 
 class Thread {
 	
 private:
 	
-#if defined(HAVE_PTHREADS)
+#if defined(ARX_HAVE_PTHREADS)
 	
 	pthread_t thread;
 	int priority;
@@ -49,7 +49,7 @@ private:
 	
 	static void * entryPoint(void * param);
 	
-#elif defined(HAVE_WINAPI)
+#elif defined(ARX_HAVE_WINAPI)
 	
 	HANDLE thread;
 

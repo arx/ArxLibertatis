@@ -22,6 +22,8 @@
 
 #include <stddef.h>
 
+#include "platform/PlatformConfig.h"
+
 /* ---------------------------------------------------------
                           Platforms
 ------------------------------------------------------------*/
@@ -109,16 +111,6 @@
 	#define __func__ __FUNCTION__	// MSVC doesn't know about C99 __func__
 #endif
 
-// TODO check for these in CMakeLists.txt
-#if ARX_COMPILER_MSVC || ARX_COMPILER == ARX_COMPILER_MINGW
-	#define PRINT_SIZE_T_F "Iu"
-#elif ARX_COMPILER == ARX_COMPILER_GCC || ARX_COMPILER == ARX_COMPILER_CLANG
-	#define PRINT_SIZE_T_F "zu"
-#else
-	#define PRINT_SIZE_T_F "lu"
-#endif
-#define PRINT_SIZE_T "%" PRINT_SIZE_T_F
-
 /* ---------------------------------------------------------
                            Types
 ------------------------------------------------------------*/
@@ -172,12 +164,9 @@ typedef double f64; // 64 bits double float
 	#define ARX_DEBUG_BREAK() ((void)0)
 #endif
 
-
 /* ---------------------------------------------------------
-                     Maccro for assertion
+                Compiler-specific attributes
 ------------------------------------------------------------*/
-
-void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = NULL, ...);
 
 #if ARX_COMPILER_MSVC  // MS compilers support noop which discards everything inside the parens
 	#define ARX_DISCARD(...) __noop
@@ -185,22 +174,42 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _i
 	#define ARX_DISCARD(...) ((void)0)
 #endif
 
+#ifdef ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+
+#define ARX_FORMAT_PRINTF(message_arg, param_vararg) \
+	__attribute__((format(printf, message_arg, param_vararg)))
+
+#else // ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+
+#define ARX_FORMAT_PRINTF(message_arg, param_vararg)
+
+#endif // ARX_HAVE_ATTRIBUTE_FORMAT_PRINTF
+
+/* ---------------------------------------------------------
+                     Macro for assertion
+------------------------------------------------------------*/
+
+void assertionFailed(const char * expression, const char * file, unsigned line,
+                     const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
+
 #ifdef _DEBUG
-	#define arx_assert_impl(_Expression, file, line, _Message, ...) { \
-			if(!(_Expression)) { \
-				assertionFailed(#_Expression, file, line, _Message, ##__VA_ARGS__); \
+	#define arx_assert_impl(Expression, File, Line, ...) { \
+			if(!(Expression)) { \
+				assertionFailed(#Expression, File, Line, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		}
 #else // _DEBUG
-	#define arx_assert_impl(_Expression, file, line, _Message, ...) \
-		ARX_DISCARD(_Expression, file, line, _Message, ##__VA_ARGS__)
+	#define arx_assert_impl(Expression, File, Line, ...) \
+		ARX_DISCARD(Expression, File, Line, Message, ##__VA_ARGS__)
 #endif // _DEBUG
 
-#define arx_assert_msg(_Expression, _Message, ...) arx_assert_impl(_Expression, (__FILE__), __LINE__, _Message, ##__VA_ARGS__)
-#define arx_assert(_Expression) arx_assert_msg(_Expression, NULL)
+#define arx_assert_msg(Expression, Message, ...) \
+	arx_assert_impl(Expression, (__FILE__), __LINE__, Message, ##__VA_ARGS__)
+#define arx_assert(Expression) \
+	arx_assert_impl(Expression, (__FILE__), __LINE__)
 
-#define arx_error_msg(_Message, ...) arx_assert_msg(false, _Message, ##__VA_ARGS__)
+#define arx_error_msg(Message, ...) arx_assert_msg(false, Message, ##__VA_ARGS__)
 #define arx_error() arx_assert(false)
 
 /* ---------------------------------------------------------

@@ -21,11 +21,11 @@
 
 #include "Configure.h"
 
-#if defined(HAVE_BACKTRACE)
+#ifdef ARX_HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
 
-#if defined(HAVE_PRCTL)
+#ifdef ARX_HAVE_PRCTL
 #include <sys/prctl.h>
 #ifndef PR_SET_PTRACER
 #define PR_SET_PTRACER 0x59616d61
@@ -36,10 +36,12 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <iostream>
+
 #include "platform/Environment.h"
 
 
-#ifdef HAVE_SIGACTION
+#ifdef ARX_HAVE_SIGACTION
 
 static void signalHandler(int signal, siginfo_t * info, void * context) {
 	ARX_UNUSED(context);
@@ -90,7 +92,7 @@ struct PlatformCrashHandlers {
 
 CrashHandlerPOSIX* CrashHandlerPOSIX::m_sInstance = 0;
 
-CrashHandlerPOSIX::CrashHandlerPOSIX() {
+CrashHandlerPOSIX::CrashHandlerPOSIX() : m_pPreviousCrashHandlers(NULL) {
 	m_sInstance = this;
 	m_CrashHandlerApp = "arxcrashreporter";
 }
@@ -103,18 +105,13 @@ bool CrashHandlerPOSIX::initialize() {
 	
 	m_pCrashInfo->signal = 0;
 	
-#if defined(HAVE_PRCTL)
+#ifdef ARX_HAVE_PRCTL
 	// Allow all processes in the same pid namespace to PTRACE this process
 	prctl(PR_SET_PTRACER, getpid());
 #endif
 	
 	// pre-fork the crash handler
 	if(!fork()) {
-		
-#if defined(HAVE_PRCTL) && defined(PR_SET_NAME)
-		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
-#endif
-		
 		crashBroker();
 	}
 	
@@ -223,7 +220,13 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 
 void CrashHandlerPOSIX::crashBroker() {
 	
-#if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
+	// Give this process a unique name
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
+		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
+#endif
+	
+	// Automatically terminate the crash handler if the main process exits
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
 	prctl(PR_SET_PDEATHSIG, SIGTERM);
 #endif
 	
@@ -233,7 +236,8 @@ void CrashHandlerPOSIX::crashBroker() {
 		exit(0);
 	}
 	
-#if defined(HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
+	// The main process crashed, ignore when it exits
+#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
 	prctl(PR_SET_PDEATHSIG, 0);
 #endif
 	
@@ -242,7 +246,7 @@ void CrashHandlerPOSIX::crashBroker() {
 	strcat(arguments, m_SharedMemoryName.c_str());
 	
 	// Try a the crash reporter in the same directory as arx or in the current directory.
-#ifdef HAVE_EXECL
+#ifdef ARX_HAVE_EXECL
 	if(!m_CrashHandlerPath.empty()) {
 		execl(m_CrashHandlerPath.string().c_str(), m_CrashHandlerPath.string().c_str(),
 		      arguments, NULL);
@@ -250,13 +254,19 @@ void CrashHandlerPOSIX::crashBroker() {
 #endif
 	
 	// Try a crash reporter in the system path.
-#ifdef HAVE_EXECLP
+#ifdef ARX_HAVE_EXECLP
 	execlp(m_CrashHandlerApp.c_str(), m_CrashHandlerApp.c_str(), arguments, NULL);
 #endif
 	
 	// Something went wrong - the crash reporter failed to start!
 	
 	// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
+	
+	std::cerr << "Arx Libertatis crashed with signal " << m_pCrashInfo->signal
+	          << ", but " << m_CrashHandlerApp << " could not be found.\n";
+	std::cerr << "arx.log might contain more information.\n";
+	std::cerr << "Please install " << m_CrashHandlerApp
+	          << " to generate a detailed bug report!" << std::endl;
 	
 	// Kill the original, busy-waiting process.
 	kill(m_pCrashInfo->processId, SIGKILL);
@@ -279,7 +289,7 @@ void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	m_pCrashInfo->code = code;
 	
 	// Store the backtrace in the shared crash info
-	#ifdef HAVE_BACKTRACE
+	#ifdef ARX_HAVE_BACKTRACE
 		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
 	#endif
 	

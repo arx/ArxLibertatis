@@ -54,10 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/GameTime.h"
 #include "graphics/Math.h"
 #include "input/InputBackend.h"
-#ifdef HAVE_DINPUT8
+#ifdef ARX_HAVE_DINPUT8
 #include "input/DInput8Backend.h"
 #endif
-#ifdef HAVE_SDL
+#ifdef ARX_HAVE_SDL
 #include "input/SDLInputBackend.h"
 #endif
 #include "io/log/Logger.h"
@@ -67,7 +67,6 @@ Input * GInput = NULL;
 
 // TODO-input: Clean me!
 extern long EERIEMouseButton;
-extern long LastEERIEMouseButton;
 
 // All standard keys
 // "+" should not appear in names as it is used as a separator
@@ -181,9 +180,9 @@ static const KeyDescription keysDescriptions[] = {
 	{ Keyboard::Key_Equals, "=" },
 };
 
-const std::string PREFIX_KEY = "Key_";
-const std::string PREFIX_BUTTON = "Button";
-const char SEPARATOR = '+';
+static const std::string PREFIX_KEY = "Key_";
+static const std::string PREFIX_BUTTON = "Button";
+static const char SEPARATOR = '+';
 const std::string Input::KEY_NONE = "---";
 
 //-----------------------------------------------------------------------------
@@ -230,7 +229,7 @@ bool Input::init() {
 		
 		bool matched = false;
 		
-		#ifdef HAVE_DINPUT8
+		#ifdef ARX_HAVE_DINPUT8
 		if(!backend && first == (autoBackend || config.input.backend == "DirectInput8")) {
 			matched = true;
 			backend = new DInput8Backend;
@@ -240,7 +239,7 @@ bool Input::init() {
 		}
 		#endif
 
-		#ifdef HAVE_SDL
+		#ifdef ARX_HAVE_SDL
 		if(!backend && first == (autoBackend || config.input.backend == "SDL")) {
 			matched = true;
 			backend = new SDLInputBackend;
@@ -290,7 +289,7 @@ void Input::reset()
 		keysStates[i]=0;
 	}
 
-	EERIEMouseButton=LastEERIEMouseButton=0;
+	EERIEMouseButton = 0;
 
 	iWheelDir = 0;
 }
@@ -306,25 +305,13 @@ void Input::unacquireDevices()
 }
 
 //-----------------------------------------------------------------------------
-
-const Vec2s& Input::getMousePosAbs() const {
-	return iMouseA;
-}
-
-//-----------------------------------------------------------------------------
-
-const Vec2s& Input::getMousePosRel() const {
-	return iMouseR;
-}
-
-//-----------------------------------------------------------------------------
-void Input::setMousePosAbs(const Vec2s& mousePos)
-{
-	if(backend)
-		backend->setMouseCoordinates(mousePos.x, mousePos.y);
-
+void Input::setMousePosAbs(const Vec2s& mousePos) {
+	
+	if(backend) {
+		backend->setAbsoluteMouseCoords(mousePos.x, mousePos.y);
+	}
+	
 	iMouseA = mousePos;
-	iMouseARaw = mousePos;
 }
 
 //-----------------------------------------------------------------------------
@@ -501,42 +488,30 @@ void Input::update()
 			}
 		}
 	}
-
-	Vec2s iLastMouseARaw = iMouseARaw;
 	
 	// Get the new coordinates
 	int absX, absY;
-	backend->getMouseCoordinates(absX, absY, iWheelDir);
-
+	mouseInWindow = backend->getAbsoluteMouseCoords(absX, absY);
+	
 	Vec2i wndSize = mainApp->getWindow()->getSize();
-
-	// Do not update mouse position when it is outside of the window
-	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y)
-	{
-		iMouseARaw = Vec2s((short)absX, (short)absY);
-
-		// In fullscreen, use the sensitivity config value to adjust mouse mouvements
-		if(mainApp->getWindow()->isFullScreen()) {
-			float fSensMax = 1.f / 6.f;
-			float fSensMin = 2.f;
-			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
-			fSens = pow( .7f, fSens ) * 2.f;
-
-			Vec2f fD;
-			fD.x=( iMouseARaw.x - iLastMouseARaw.x ) * fSens;
-			fD.y=( iMouseARaw.y - iLastMouseARaw.y ) * fSens;
-
-			iMouseR.x = (int)fD.x;
-			iMouseR.y = (int)fD.y;
-			iMouseA += iMouseR;
-		} else {
-			iMouseR = iMouseARaw - iMouseA;
-			iMouseA = iMouseARaw;		
-		}
-
-		// Clamp to window rect
-		iMouseA.x = clamp(iMouseA.x, 0, (short)wndSize.x - 1);
-		iMouseA.y = clamp(iMouseA.y, 0, (short)wndSize.y - 1);
+	if(absX >= 0 && absX < wndSize.x && absY >= 0 && absY < wndSize.y) {
+		
+		// Use the absolute mouse position reported by the backend, as is
+		iMouseA = Vec2s((short)absX, (short)absY);
+		
+		int relX, relY;
+		backend->getRelativeMouseCoords(relX, relY, iWheelDir);
+		
+		// Use the sensitivity config value to adjust relative mouse mouvements
+		float fSensMax = 1.f / 6.f;
+		float fSensMin = 2.f;
+		float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
+		fSens = pow( .7f, fSens ) * 2.f;
+		iMouseR.x = relX * fSens;
+		iMouseR.y = relY * fSens;
+		
+	} else {
+		mouseInWindow = false;
 	}
 }
 
@@ -644,32 +619,11 @@ InputKeyId Input::getKeyId(const std::string & name) {
 
 //-----------------------------------------------------------------------------
 
-void Input::setMouseSensitivity(int _iSensibility)
-{
+void Input::setMouseSensitivity(int _iSensibility) {
 	iSensibility = _iSensibility;
 }
 
 //-----------------------------------------------------------------------------
-
-int Input::getMouseSensitivity() const {
-	return iSensibility;
-}
-
-//-----------------------------------------------------------------------------
-
-int Input::getMouseWheelDir() const {
-	return iWheelDir;
-}
-
-//-----------------------------------------------------------------------------
-int Input::getKeyPressed() const {
-	return iKeyId;
-}
-
-//-----------------------------------------------------------------------------
-bool Input::isAnyKeyPressed() const {
-	return iKeyId >= 0;
-}
 
 bool Input::isKeyPressed(int keyId) const {
 	arx_assert(keyId >= Keyboard::KeyBase && keyId < Keyboard::KeyMax);
@@ -742,11 +696,6 @@ bool Input::getMouseButtonDoubleClick(int buttonId, int timeMs) const {
 
 	int buttonIdx = buttonId - Mouse::ButtonBase;
 	return (iMouseTimeSet[buttonIdx] == 2) && (iMouseTime[buttonIdx] < timeMs);
-}
-
-//-----------------------------------------------------------------------------
-bool Input::hasMouseMoved() const {
-	return iMouseR.x != 0 || iMouseR.y != 0;
 }
 
 //-----------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 
 #include "Configure.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 
 namespace logger {
 
@@ -48,6 +48,6 @@ public:
 
 } // namespace logger
 
-#endif // HAVE_WINAPI
+#endif // ARX_HAVE_WINAPI
 
 #endif // ARX_IO_LOG_MSVCLOGGER_H

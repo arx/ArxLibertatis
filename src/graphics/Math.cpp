@@ -53,13 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-// TODO not defined and not threadsafe
-#ifdef ASSEMBLER_OPTIMS	 //////////////////////
-float __mov;
-#endif
-
-
-
 /* Triangle/triangle intersection test routine,
  * int tri_tri_intersect(float V0[3],float V1[3],float V2[3],
  *                         float U0[3],float U1[3],float U2[3])
@@ -566,30 +559,28 @@ void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2
 	dest->w = q1->w * q2->w + q1->x * q2->x + q1->y * q2->y + q1->z * q2->z;
 }
 
-//*************************************************************************************
 // Invert-Transform of vertex by a quaternion
-//*************************************************************************************
-void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin, Vec3f * vertexout)
-{
+void TransformInverseVertexQuat(const EERIE_QUAT * quat, const Vec3f * vertexin,
+                                Vec3f * vertexout) {
+	
 	EERIE_QUAT rev_quat;
-
 	Quat_Copy(&rev_quat, quat);
 	Quat_Reverse(&rev_quat);
-
-	register float x = vertexin->x;
-	register float y = vertexin->y;
-	register float z = vertexin->z;
-
-	register float qx = rev_quat.x;
-	register float qy = rev_quat.y;
-	register float qz = rev_quat.z;
-	register float qw = rev_quat.w;
-
-	register float rx = x * qw - y * qz + z * qy;
-	register float ry = y * qw - z * qx + x * qz;
-	register float rz = z * qw - x * qy + y * qx;
-	register float rw = x * qx + y * qy + z * qz;
-
+	
+	float x = vertexin->x;
+	float y = vertexin->y;
+	float z = vertexin->z;
+	
+	float qx = rev_quat.x;
+	float qy = rev_quat.y;
+	float qz = rev_quat.z;
+	float qw = rev_quat.w;
+	
+	float rx = x * qw - y * qz + z * qy;
+	float ry = y * qw - z * qx + x * qz;
+	float rz = z * qw - x * qy + y * qx;
+	float rw = x * qx + y * qy + z * qz;
+	
 	vertexout->x = qw * rx + qx * rw + qy * rz - qz * ry;
 	vertexout->y = qw * ry + qy * rw + qz * rx - qx * rz;
 	vertexout->z = qw * rz + qz * rw + qx * ry - qy * rx;
@@ -776,119 +767,81 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 // VECTORS Functions
 //--------------------------------------------------------------------------------------
 
-//*************************************************************************************
 // Rotates a Vector around X. angle is given in degrees
-//*************************************************************************************
-void VRotateX(Vec3f * out, const float angle)
-{
-	Vec3f in;
-	in.x = out->x;
-	in.y = out->y;
-	in.z = out->z;
-	register float s = radians(angle);
-	register float c = EEcos(s);
+void VRotateX(Vec3f * out, const float angle) {
+	Vec3f in = *out;
+	float s = radians(angle);
+	float c = EEcos(s);
 	s = EEsin(s);
-	out->x = in.x;
-	out->y = (in.y * c) + (in.z * s);
-	out->z = (in.z * c) - (in.y * s);
+	*out = Vec3f(in.x, (in.y * c) + (in.z * s), (in.z * c) - (in.y * s));
 }
 
-//*************************************************************************************
 // Rotates a Vector around Y. angle is given in degrees
-//*************************************************************************************
-void VRotateY(Vec3f * out, const float angle)
-{
-	Vec3f in;
-	in.x = out->x;
-	in.y = out->y;
-	in.z = out->z;
-	register float s = radians(angle);
-	register float c = EEcos(s);
+void VRotateY(Vec3f * out, const float angle) {
+	Vec3f in = *out;
+	float s = radians(angle);
+	float c = EEcos(s);
 	s = EEsin(s);
-	out->x = (in.x * c) + (in.z * s);
-	out->y = in.y;
-	out->z = (in.z * c) - (in.x * s);
-}
-//*************************************************************************************
-// Rotates a Vector around Z. angle is given in degrees
-//*************************************************************************************
-void VRotateZ(Vec3f * out, const float angle)
-{
-	Vec3f in;
-	in.x = out->x;
-	in.y = out->y;
-	in.z = out->z;
-	register float s = radians(angle);
-	register float c = EEcos(s);
-	s = EEsin(s);
-	out->x = (in.x * c) + (in.y * s);
-	out->y = (in.y * c) - (in.x * s);
-	out->z = in.z;
+	*out = Vec3f((in.x * c) + (in.z * s), in.y, (in.z * c) - (in.x * s));
 }
 
-//*************************************************************************************
-// Rotates a Vector around Y. angle is given in degrees
-//*************************************************************************************
-void Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle)
-{
-	register float s = radians(angle);
-	register float c = EEcos(s);
-	s = EEsin(s);
-	dest->x = (src->x * c) + (src->z * s);
-	dest->y = src->y;
-	dest->z = (src->z * c) - (src->x * s);
-}
-//*************************************************************************************
 // Rotates a Vector around Z. angle is given in degrees
-//*************************************************************************************
-void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle)
-{
-	register float s = radians(angle);
-	register float c = EEcos(s);
+void VRotateZ(Vec3f * out, const float angle) {
+	Vec3f in = *out;
+	float s = radians(angle);
+	float c = EEcos(s);
 	s = EEsin(s);
-	dest->x = (src->x * c) + (src->y * s);
-	dest->y = (src->y * c) - (src->x * s);
-	dest->z = src->z;
+	*out = Vec3f((in.x * c) + (in.y * s), (in.y * c) - (in.x * s), in.z);
+}
+
+// Rotates a Vector around Y. angle is given in degrees
+void Vector_RotateY(Vec3f * dest, const Vec3f * src, const float angle) {
+	float s = radians(angle);
+	float c = EEcos(s);
+	s = EEsin(s);
+	*dest = Vec3f((src->x * c) + (src->z * s), src->y, (src->z * c) - (src->x * s));
+}
+
+// Rotates a Vector around Z. angle is given in degrees
+void Vector_RotateZ(Vec3f * dest, const Vec3f * src, const float angle) {
+	float s = radians(angle);
+	float c = EEcos(s);
+	s = EEsin(s);
+	*dest = Vec3f((src->x * c) + (src->y * s), (src->y * c) - (src->x * s), src->z);
 }
 
 //A x B = <Ay*Bz - Az*By, Az*Bx - Ax*Bz, Ax*By - Ay*Bx>
 void CalcFaceNormal(EERIEPOLY * ep, const TexturedVertex * v) {
 	
-	register float Ax, Ay, Az, Bx, By, Bz;
+	float Ax, Ay, Az, Bx, By, Bz;
 	Ax = v[1].p.x - v[0].p.x;
 	Ay = v[1].p.y - v[0].p.y;
 	Az = v[1].p.z - v[0].p.z;
-
+	
 	Bx = v[2].p.x - v[0].p.x;
 	By = v[2].p.y - v[0].p.y;
 	Bz = v[2].p.z - v[0].p.z;
-
-	ep->norm.x = Ay * Bz - Az * By;
-	ep->norm.y = Az * Bx - Ax * Bz;
-	ep->norm.z = Ax * By - Ay * Bx;
 	
+	ep->norm = Vec3f(Ay * Bz - Az * By, Az * Bx - Ax * Bz, Ax * By - Ay * Bx);
 	fnormalize(ep->norm);
 }
 
-void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2, EERIE_FACE * ef)
-{
-	register float Ax, Ay, Az, Bx, By, Bz;
+void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
+                       EERIE_FACE * ef) {
+	
+	float Ax, Ay, Az, Bx, By, Bz;
 	Ax = v1->x - v0->x;
 	Ay = v1->y - v0->y;
 	Az = v1->z - v0->z;
-
 	Bx = v2->x - v0->x;
 	By = v2->y - v0->y;
 	Bz = v2->z - v0->z;
-
-	ef->norm.x = Ay * Bz - Az * By;
-	ef->norm.y = Az * Bx - Ax * Bz;
-	ef->norm.z = Ax * By - Ay * Bx;
 	
+	ef->norm = Vec3f(Ay * Bz - Az * By, Az * Bx - Ax * Bz, Ax * By - Ay * Bx);
 	ef->norm.normalize();
 }
-void MatrixReset(EERIEMATRIX * mat)
-{
+
+void MatrixReset(EERIEMATRIX * mat) {
 	memset(mat, 0, sizeof(EERIEMATRIX));
 }
 
@@ -936,9 +889,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 	// Correct the Y reference vector
 	yAxis = cross(xAxis, zAxis).getNormalized();
-	yAxis.x = -yAxis.x;
-	yAxis.y = -yAxis.y;
-	yAxis.z = -yAxis.z;
+	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included
 	EERIEMATRIX rot, roll;
@@ -990,16 +941,11 @@ void MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 }
 
 // Desc: Multiplies a vector by a matrix
-void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc,
-                          const EERIEMATRIX * mat)
-{
+void VectorMatrixMultiply(Vec3f * vDest, const Vec3f * vSrc, const EERIEMATRIX * mat) {
 	float x = vSrc->x * mat->_11 + vSrc->y * mat->_21 + vSrc->z * mat->_31 + mat->_41;
 	float y = vSrc->x * mat->_12 + vSrc->y * mat->_22 + vSrc->z * mat->_32 + mat->_42;
 	float z = vSrc->x * mat->_13 + vSrc->y * mat->_23 + vSrc->z * mat->_33 + mat->_43;
-
-	vDest->x = x;
-	vDest->y = y;
-	vDest->z = z;
+	*vDest = Vec3f(x, y, z);
 }
 
 #undef X

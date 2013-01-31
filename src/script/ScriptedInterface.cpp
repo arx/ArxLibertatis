@@ -43,8 +43,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "script/ScriptedInterface.h"
 
-#include "game/Player.h"
 #include "game/Inventory.h"
+#include "game/Entity.h"
+#include "game/Player.h"
 #include "gui/Interface.h"
 #include "gui/Menu.h"
 #include "gui/MiniMap.h"
@@ -114,7 +115,7 @@ public:
 			return Success;
 		}
 		
-		INTERACTIVE_OBJ * pio = (SecondaryInventory) ? SecondaryInventory->io : ioSteal;
+		Entity * pio = (SecondaryInventory) ? SecondaryInventory->io : ioSteal;
 		if(pio && pio == ioSteal) {
 			InventoryDir = -1;
 			SendIOScriptEvent(pio, SM_INVENTORY2_CLOSE);
@@ -354,7 +355,7 @@ class DrawSymbolCommand : public Command {
 	
 public:
 	
-	DrawSymbolCommand() : Command("drawsymbol", ANY_IO) { }
+	DrawSymbolCommand() : Command("drawsymbol", AnyEntity) { }
 	
 	Result execute(Context & context) {
 		
@@ -364,7 +365,7 @@ public:
 		
 		DebugScript(' ' << symbol << ' ' << duration);
 		
-		ARX_SPELLS_RequestSymbolDraw(context.getIO(), symbol, duration);
+		ARX_SPELLS_RequestSymbolDraw(context.getEntity(), symbol, duration);
 		
 		return Success;
 	}

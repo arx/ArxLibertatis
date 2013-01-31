@@ -78,7 +78,7 @@ namespace arx
 		}
 
 		inline operator float() const {
-			return delta_time; 
+			return delta_time;
 		}
 
 		inline operator long() const {
@@ -94,7 +94,7 @@ namespace arx
 			delta_time = v;
 		}
 
-		inline void update(const bool &use_pause = true) {
+		inline void update(const bool & use_pause = true) {
 
 			if (is_paused() && use_pause) {
 				delta_time = float(Time::getElapsedUs(start_time, pause_time)) / 1000.0f;
@@ -103,13 +103,13 @@ namespace arx
 			}
 		}
 
-		inline float get_updated(const bool &use_pause = true) {
+		inline float get_updated(const bool & use_pause = true) {
 			
-			update(use_pause);			
+			update(use_pause);
 			return delta_time;
 		}
 
-		inline unsigned long get_updated_ul(const bool &use_pause = true) {
+		inline unsigned long get_updated_ul(const bool & use_pause = true) {
 
 			update(use_pause);
 			return checked_range_cast<unsigned long>(delta_time);
@@ -120,7 +120,7 @@ namespace arx
 		}
 
 		// used only for "slow time" spell
-		inline void increment_start_time(const u64 &inc) {
+		inline void increment_start_time(const u64 & inc) {
 			start_time += inc;
 		}
 

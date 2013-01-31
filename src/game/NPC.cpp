@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits>
 #include <vector>
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "ai/Paths.h"
 #include "ai/PathFinderManager.h"
 
@@ -62,17 +64,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "core/Config.h"
 
+#include "game/Camera.h"
 #include "game/Damage.h"
+#include "game/EntityManager.h"
 #include "game/Equipment.h"
-#include "game/Spells.h"
-#include "game/Player.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/Player.h"
+#include "game/Spells.h"
 
 #include "gui/Interface.h"
 #include "gui/Speech.h"
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "graphics/Color.h"
+#include "graphics/Draw.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
 #include "graphics/Vertex.h"
@@ -86,11 +92,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "math/Random.h"
 #include "math/Vector3.h"
 
+#include "physics/Anchors.h"
 #include "physics/Box.h"
 #include "physics/CollisionShapes.h"
 #include "physics/Collisions.h"
 
-#include "platform/String.h"
 #include "platform/Flags.h"
 #include "platform/Platform.h"
 
@@ -107,7 +113,7 @@ using std::min;
 using std::max;
 using std::string;
 
-void CheckNPCEx(INTERACTIVE_OBJ * io);
+void CheckNPCEx(Entity * io);
 
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
@@ -116,11 +122,10 @@ static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM(800.0F);
 extern long LastSelectedIONum;
 #endif
 
-extern long APPLY_PUSH;
-void StareAtTarget(INTERACTIVE_OBJ * io);
+void StareAtTarget(Entity * io);
 #define RUN_WALK_RADIUS 450
 
-static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
+static void CheckHit(Entity * io, float ratioaim) {
 
 	if (io == NULL) return;
 
@@ -159,7 +164,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 		if (!ValidIONum(i)) return;
 
 		{
-			INTERACTIVE_OBJ * ioo = inter.iobj[i];
+			Entity * ioo = entities[i];
 
 			if (! ioo) return;
 
@@ -168,7 +173,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 			if (ioo->ioflags & IO_CAMERA) return;
 
 
-			if (ioo->GameFlags & GFLAG_ISINTREATZONE)
+			if (ioo->gameFlags & GFLAG_ISINTREATZONE)
 				if (ioo->show == SHOW_FLAG_IN_SCENE)
 					if (ioo->obj)
 						if (ioo->pos.y >	(io->pos.y + io->physics.cyl.height))
@@ -180,10 +185,10 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
-									float dist = fdist(pos, inter.iobj[i]->obj->vertexlist3[k].v);
+									float dist = fdist(pos, entities[i]->obj->vertexlist3[k].v);
 
 									if ((dist <= dist_limit)
-											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
+											&&	(EEfabs(pos.y - entities[i]->obj->vertexlist3[k].v.y) < 60.f))
 									{
 										count++;
 
@@ -203,7 +208,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 
 								} else {
 									if(mindist <= 120.f) {
-										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, GetInterNum(io), 0);
+										ARX_DAMAGES_DamageFIX(ioo, dmg * ratio, io->index(), 0);
 									}
 								}
 							}
@@ -213,7 +218,7 @@ static void CheckHit(INTERACTIVE_OBJ * io, float ratioaim) {
 	}
 }
 
-void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
+void ARX_NPC_Kill_Spell_Launch(Entity * io)
 {
 	if (io)
 	{
@@ -229,68 +234,55 @@ void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io)
 		io->spellcast_data.castingspell = SPELL_NONE;
 	}
 }
-//***********************************************************************************************
+
 // Releases Pathfinder info from an NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_ReleasePathFindInfo(INTERACTIVE_OBJ * io)
-{
+void ARX_NPC_ReleasePathFindInfo(Entity * io) {
+	
 	// Checks for valid IO/NPC
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if(!io || !(io->ioflags & IO_NPC)) {
 		return;
-
+	}
+	
 	// Releases data & resets vars
-	if (io->_npcdata->pathfind.list)
-		free(io->_npcdata->pathfind.list);
-
-	io->_npcdata->pathfind.list = NULL;
+	free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 	io->_npcdata->pathfind.listnb = -1;
 	io->_npcdata->pathfind.listpos = 0;
 	io->_npcdata->pathfind.pathwait = 0;
 }
 
-//***********************************************************************************************
 // Creates an extra rotations structure for a NPC
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_CreateExRotateData(INTERACTIVE_OBJ * io)
-{
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC))
-	        ||	(io->_npcdata->ex_rotate))
+void ARX_NPC_CreateExRotateData(Entity * io) {
+	
+	if(!io || !(io->ioflags & IO_NPC) || io->_npcdata->ex_rotate) {
 		return;
-
+	}
+	
 	io->_npcdata->ex_rotate = (EERIE_EXTRA_ROTATE *)malloc(sizeof(EERIE_EXTRA_ROTATE));
 	io->head_rot = 0;
-
-	if (io->_npcdata->ex_rotate)
-	{
+	
+	if(io->_npcdata->ex_rotate) {
+		
 		io->_npcdata->ex_rotate->group_number[0] = (short)EERIE_OBJECT_GetGroup(io->obj, "head");
 		io->_npcdata->ex_rotate->group_number[1] = (short)EERIE_OBJECT_GetGroup(io->obj, "neck");
 		io->_npcdata->ex_rotate->group_number[2] = (short)EERIE_OBJECT_GetGroup(io->obj, "chest");
 		io->_npcdata->ex_rotate->group_number[3] = (short)EERIE_OBJECT_GetGroup(io->obj, "belt");
-
-		for (long n = 0; n < MAX_EXTRA_ROTATE; n++)
-		{
-			io->_npcdata->ex_rotate->group_rotate[n].a = 0;
-			io->_npcdata->ex_rotate->group_rotate[n].b = 0;
-			io->_npcdata->ex_rotate->group_rotate[n].g = 0;
+		
+		for(long n = 0; n < MAX_EXTRA_ROTATE; n++) {
+			io->_npcdata->ex_rotate->group_rotate[n] = Anglef::ZERO;
 		}
-
+		
 		io->_npcdata->ex_rotate->flags = 0;
 	}
-
+	
 	io->_npcdata->look_around_inc = 0.f;
 }
+
 //***********************************************************************************************
 // Resurects an NPC
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
+void ARX_NPC_Revive(Entity * io, long flags)
 {
 	if ((TSecondaryInventory) && (TSecondaryInventory->io == io))
 	{
@@ -307,21 +299,18 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 		io->_npcdata->life = io->_npcdata->maxlife;
 	}
 
-	if (flags & 1)
-	{
+	if(flags & 1) {
 		io->room_flags |= 1;
-		io->pos.x = io->initpos.x;
-		io->pos.y = io->initpos.y;
-		io->pos.z = io->initpos.z;
+		io->pos = io->initpos;
 	}
-
+	
 	long goretex = -1;
 
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
 		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
+		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -348,7 +337,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long behavior_param)
+void ARX_NPC_Behaviour_Change(Entity * io, Behaviour behavior, long behavior_param)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -403,7 +392,7 @@ void ARX_NPC_Behaviour_Change(INTERACTIVE_OBJ * io, Behaviour behavior, long beh
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_Reset(INTERACTIVE_OBJ * io)
+void ARX_NPC_Behaviour_Reset(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -414,26 +403,19 @@ void ARX_NPC_Behaviour_Reset(INTERACTIVE_OBJ * io)
 	for (long i = 0; i < MAX_STACKED_BEHAVIOR; i++)
 		io->_npcdata->stacked[i].exist = 0;
 }
-//***********************************************************************************************
+
 // Reset all Behaviours from all NPCs
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_Behaviour_ResetAll()
-{
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i])
-			ARX_NPC_Behaviour_Reset(inter.iobj[i]);
+void ARX_NPC_Behaviour_ResetAll() {
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i]) {
+			ARX_NPC_Behaviour_Reset(entities[i]);
+		}
 	}
 }
-//***********************************************************************************************
+
 // Stacks an NPC behaviour
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_NPC_Behaviour_Stack(INTERACTIVE_OBJ * io)
-{
+void ARX_NPC_Behaviour_Stack(Entity * io) {
+	
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
 		return;
@@ -465,7 +447,7 @@ void ARX_NPC_Behaviour_Stack(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_Behaviour_UnStack(INTERACTIVE_OBJ * io)
+void ARX_NPC_Behaviour_UnStack(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -495,15 +477,15 @@ void ARX_NPC_Behaviour_UnStack(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
+extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
 //***********************************************************************************************
-// long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
+// long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 // Description:
 //			Checks for any direct shortcut between NPC and future anchors...
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
+long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC))
@@ -541,13 +523,9 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 
 		if (tot <= 3.5f) continue;
 
-		io->physics.startpos.x = io->pos.x;
-		io->physics.startpos.y = io->pos.y;
-		io->physics.startpos.z = io->pos.z;
+		io->physics.startpos = io->pos;
 		long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos+l_try];
-		io->physics.targetpos.x = ACTIVEBKG->anchors[pos].pos.x;
-		io->physics.targetpos.y = ACTIVEBKG->anchors[pos].pos.y;
-		io->physics.targetpos.z = ACTIVEBKG->anchors[pos].pos.z;
+		io->physics.targetpos = ACTIVEBKG->anchors[pos].pos;
 
 		if (EEfabs(io->physics.startpos.y - io->physics.targetpos.y) > 60.f) continue;
 
@@ -635,16 +613,14 @@ static long AnchorData_GetNearest_Except(Vec3f * pos, EERIE_CYLINDER * cyl, long
 	return returnvalue;
 }
 
-bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
+bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 {
 	// Check Validity
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return false;
 
 	long MUST_SELECT_Start_Anchor = -1;
-	io->physics.cyl.origin.x = io->pos.x;
-	io->physics.cyl.origin.y = io->pos.y;
-	io->physics.cyl.origin.z = io->pos.z;
+	io->physics.cyl.origin = io->pos;
 	long old_target = io->targetinfo;
 
 	if	((!(io->ioflags & IO_PHYSICAL_OFF)))
@@ -662,62 +638,43 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		io->_npcdata->pathfind.pathwait = 0;
 		return false;
 	}
-
-	Vec3f pos1, pos2;
-
-	if (io->_npcdata->pathfind.listnb > 0)
-	{
+	
+	if(io->_npcdata->pathfind.listnb > 0) {
 		io->_npcdata->pathfind.listnb = -1;
 		io->_npcdata->pathfind.listpos = 0;
 		io->_npcdata->pathfind.pathwait = 0;
 		io->_npcdata->pathfind.truetarget = TARGET_NONE;
-
-		if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-		io->_npcdata->pathfind.list = NULL;
+		free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 	}
-
-	if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-	{
-		pos1.x = io->pos.x;
-		pos1.y = io->pos.y;
-		pos1.z = io->pos.z;
-		pos2.x = io->pos.x + 1000.f;
-		pos2.y = io->pos.y;
-		pos2.z = io->pos.z + 1000.f;
+	
+	Vec3f pos1, pos2;
+	if(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND) {
+		pos1 = io->pos;
+		pos2 = io->pos + Vec3f(1000.f, 0.f, 1000.f);
 		goto wander;
 	}
-
+	
 	if ((target < 0) || (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)) 
 	{
-		target = GetInterNum(io);
+		target = io->index();
 
 		if (target == -1)
 			goto failure;
 
 		io->_npcdata->pathfind.truetarget = target;
-		pos1.x = io->pos.x;
-		pos1.y = io->pos.y;
-		pos1.z = io->pos.z;
-
-		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-		{
-			pos2.x = io->initpos.x;
-			pos2.y = io->initpos.y;
-			pos2.z = io->initpos.z;
-		}
-		else
-		{
-			pos2.x = pos1.x;
-			pos2.y = pos1.y;
-			pos2.z = pos1.z;
+		pos1 = io->pos;
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+			pos2 = io->initpos;
+		} else {
+			pos2 = pos1;
 		}
 
 		goto suite;
 	}
 
 	if ((ValidIONum(target))
-	        &&	(inter.iobj[target] == io))
+	        &&	(entities[target] == io))
 	{
 		io->_npcdata->pathfind.pathwait = 0;
 		return false; // cannot pathfind self...
@@ -727,40 +684,19 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		io->_npcdata->reachedtarget = 0;
 
 	EVENT_SENDER = NULL;
-
-
-
-	pos1.x = io->pos.x;
-	pos1.y = io->pos.y;
-	pos1.z = io->pos.z;
-
-
-	if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-	{
-		pos2.x = io->initpos.x;
-		pos2.y = io->initpos.y;
-		pos2.z = io->initpos.z;
+	
+	pos1 = io->pos;
+	
+	if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+		pos2 = io->initpos;
+	} else if(ValidIONum(target)) {
+		pos2 = entities[target]->pos;
+	} else {
+		pos2 = io->pos;
 	}
-	else
-	{
-		if (ValidIONum(target))
-		{
-			INTERACTIVE_OBJ * io2;
-			io2 = inter.iobj[target];
-			pos2.x = io2->pos.x;
-			pos2.y = io2->pos.y;
-			pos2.z = io2->pos.z;
-		}
-		else
-		{
-			pos2.x = io->pos.x;
-			pos2.y = io->pos.y;
-			pos2.z = io->pos.z;
-		}
-	}
-
+	
 	io->_npcdata->pathfind.truetarget = target;
-
+	
 	if ((distSqr(pos1, ACTIVECAM->pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
 	        && (distSqr(pos1, pos2) < square(520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
@@ -769,12 +705,8 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	   )
 	{
 		// COLLISION Management START *********************************************************************
-		io->physics.startpos.x = pos1.x;
-		io->physics.startpos.y = pos1.y;
-		io->physics.startpos.z = pos1.z;
-		io->physics.targetpos.x = pos2.x;
-		io->physics.targetpos.y = pos2.y;
-		io->physics.targetpos.z = pos2.z;
+		io->physics.startpos = pos1;
+		io->physics.targetpos = pos2;
 		IO_PHYSICS phys;
 		memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 		GetIOCyl(io, &phys.cyl);
@@ -840,15 +772,12 @@ wander:
 			{
 				io->_npcdata->pathfind.truetarget = TARGET_NONE;
 			}
-
+			
 			io->_npcdata->pathfind.listnb = -1;
 			io->_npcdata->pathfind.listpos = 0;
 			io->_npcdata->pathfind.pathwait = 1;
-
-			if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-			io->_npcdata->pathfind.list = NULL;
-
+			free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+			
 			PATHFINDER_REQUEST tpr;
 			tpr.from = from;
 			tpr.to = to;
@@ -876,7 +805,7 @@ failure:
 	return false;
 }
 
-bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) {
+bool ARX_NPC_SetStat(Entity& io, const string & statname, float value) {
 	
 	arx_assert(io.ioflags & IO_NPC);
 	
@@ -917,13 +846,10 @@ bool ARX_NPC_SetStat(INTERACTIVE_OBJ& io, const string & statname, float value) 
 }
 
 extern long CUR_COLLISION_MATERIAL;
-INTERACTIVE_OBJ * PHYSICS_CURIO = NULL;
-//***********************************************************************************************
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/15)
-//***********************************************************************************************
-void ARX_TEMPORARY_TrySound(float volume)
-{
+static Entity * PHYSICS_CURIO = NULL;
+
+void ARX_TEMPORARY_TrySound(float volume) {
+	
 	if (PHYSICS_CURIO)
 	{
 		if (PHYSICS_CURIO->ioflags & IO_BODY_CHUNK)
@@ -956,7 +882,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE)
+void ARX_NPC_ChangeMoveMode(Entity * io, MoveMode MOVEMODE)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -1023,10 +949,10 @@ void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, MoveMode MOVEMODE)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
+void ARX_NPC_ManagePoison(Entity * io)
 {
 	float cp = io->_npcdata->poisonned;
-	cp *= ( 1.0f / 2 ) * _framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
+	cp *= ( 1.0f / 2 ) * framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
 
 	if (faster < 0.f) faster = 0.f;
@@ -1049,27 +975,17 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 
 	if (io->_npcdata->poisonned < 0.1f) io->_npcdata->poisonned = 0.f;
 }
-//*************************************************************************************
-//*************************************************************************************
 
-//***********************************************************************************************
-// void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
-//-----------------------------------------------------------------------------------------------
 // FUNCTION:
 //   Checks if the bottom of an IO is underwater.
 // RESULT:
 //   Plays Water sounds
 //   Decrease/stops Ignition of this IO if necessary
-//-----------------------------------------------------------------------------------------------
 // WARNINGS:
 // io must be valid (no check !)
-//***********************************************************************************************
-static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
-{
-	Vec3f ppos;
-	ppos.x = io->pos.x;
-	ppos.y = io->pos.y;
-	ppos.z = io->pos.z;
+static void CheckUnderWaterIO(Entity * io) {
+	
+	Vec3f ppos = io->pos;
 	EERIEPOLY * ep = EEIsUnderWater(&ppos);
 
 	if (io->ioflags & IO_UNDERWATER)
@@ -1107,17 +1023,14 @@ static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-static void ManageNPCMovement(INTERACTIVE_OBJ * io);
+static void ManageNPCMovement(Entity * io);
 
 extern float MAX_ALLOWED_PER_SECOND;
-long REACTIVATION_COUNT = 0;
+
 void ARX_PHYSICS_Apply()
 {
 
 	static long CURRENT_DETECT = 0;
-	REACTIVATION_COUNT++;
-
-	if (REACTIVATION_COUNT > 12) REACTIVATION_COUNT = 0;
 
 	CURRENT_DETECT++;
 
@@ -1130,7 +1043,7 @@ void ARX_PHYSICS_Apply()
 		if (treatio[i].ioflags & (IO_FIX | IO_JUST_COLLIDE))
 			continue;
 
-		INTERACTIVE_OBJ * io = treatio[i].io;
+		Entity * io = treatio[i].io;
 
 		if (!io) continue;
 
@@ -1138,7 +1051,7 @@ void ARX_PHYSICS_Apply()
 
 		if ((io->ioflags & IO_ITEM)
 		        &&	(io->show != SHOW_FLAG_DESTROYED)
-		        &&	((io->GameFlags & GFLAG_GOREEXPLODE)
+		        &&	((io->gameFlags & GFLAG_GOREEXPLODE)
 		             &&	(float(arxtime) - io->lastanimtime > 300))
 		        &&	((io->obj)
 		             &&	!io->obj->vertexlist.empty())
@@ -1155,7 +1068,7 @@ void ARX_PHYSICS_Apply()
 				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
 				
 				ARX_PARTICLES_Spawn_Splat(it->v, 20.f, Color::red);
-				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, GetInterNum(io));
+				ARX_PARTICLES_Spawn_Blood(&it->v, 20.f, io->index());
 			}
 
 			ARX_INTERACTIVE_DestroyIO(io);
@@ -1172,16 +1085,16 @@ void ARX_PHYSICS_Apply()
 
 			if (io->ioflags & IO_NPC)
 			{
-#define LAVA_DAMAGE 10.f
+				const float LAVA_DAMAGE = 10.f;
 				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ), -1, 0, NULL);
 			}
 		}
 
 		CheckUnderWaterIO(io);
-
-		if (io->obj->pbox)
-		{
-			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
+		
+		if(io->obj && io->obj->pbox) {
+			
+			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
@@ -1196,29 +1109,20 @@ void ARX_PHYSICS_Apply()
 						io->damagedata = -1;
 					}
 				}
-
-				if (io->soundcount > 12)
-				{
+				
+				if(io->soundcount > 12) {
 					io->soundtime = 0;
-						io->soundcount = 0;
-
-						for (long k = 0; k < io->obj->pbox->nb_physvert; k++)
-						{
-							PHYSVERT * pv = &io->obj->pbox->vert[k];
-							pv->velocity.x = 0.f;
-							pv->velocity.y = 0.f;
-							pv->velocity.z = 0.f;
-						}
-
-						io->obj->pbox->active = 2;
-						io->obj->pbox->stopcount = 0;
+					io->soundcount = 0;
+					for(long k = 0; k < io->obj->pbox->nb_physvert; k++) {
+						io->obj->pbox->vert[k].velocity = Vec3f::ZERO;
+					}
+					io->obj->pbox->active = 2;
+					io->obj->pbox->stopcount = 0;
 				}
-
+				
 				io->room_flags |= 1;
-				io->pos.x = io->obj->pbox->vert[0].pos.x;
-				io->pos.y = io->obj->pbox->vert[0].pos.y; 
-				io->pos.z = io->obj->pbox->vert[0].pos.z; 
-
+				io->pos = io->obj->pbox->vert[0].pos;
+				
 				continue;
 			}
 		}
@@ -1266,7 +1170,7 @@ void ARX_PHYSICS_Apply()
 			{
 #ifdef BUILD_EDITOR
 				if ((ValidIONum(LastSelectedIONum)) &&
-				        (io == inter.iobj[LastSelectedIONum])) ShowIOPath(io);
+				        (io == entities[LastSelectedIONum])) ShowIOPath(io);
 #endif
 				if (io->_npcdata->pathfind.listnb == 0) // Not Found
 				{
@@ -1298,7 +1202,7 @@ void ARX_PHYSICS_Apply()
 }
 //*************************************************************************************
 //*************************************************************************************
-void FaceTarget2(INTERACTIVE_OBJ * io)
+void FaceTarget2(Entity * io)
 {
 	Vec3f tv;
 
@@ -1314,12 +1218,10 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 		        && (io->_npcdata->behavior & BEHAVIOUR_FLEE)) return;
 
 	}
-
+	
 	GetTargetPos(io);
-	tv.x = io->pos.x;
-	tv.y = io->pos.y;
-	tv.z = io->pos.z;
-
+	tv = io->pos;
+	
 	if(!fartherThan(Vec2f(tv.x, tv.z), Vec2f(io->target.x, io->target.z), 5.f)) {
 		return;
 	}
@@ -1332,7 +1234,7 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 
 	if (tt == 0) return;
 
-	float rot = 0.33f * _framedelay; 
+	float rot = 0.33f * framedelay; 
 
 	if (EEfabs(tt) < rot) rot = (float)EEfabs(tt);
 
@@ -1340,27 +1242,21 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 
 	if ((tt > 0.f) && (tt < 180.f)) rot = -rot;
 	else if ((tt < -180.f)) rot = -rot;
-
-	if (rot != 0)
-	{
-		Vec3f temp;
-		temp.x = io->move.x;
-		temp.y = io->move.y;
-		temp.z = io->move.z;
+	
+	if(rot != 0) {
+		Vec3f temp = io->move;
 		Vector_RotateY(&io->move, &temp, rot);
-		temp.x = io->lastmove.x;
-		temp.y = io->lastmove.y;
-		temp.z = io->lastmove.z;
+		temp = io->lastmove;
 		Vector_RotateY(&io->lastmove, &temp, rot);
 	}
-
+	
 	// Needed angle to turn toward target
 	io->angle.b = MAKEANGLE(io->angle.b - rot); // -tt
 }
 
 //***********************************************************************************************
 //***********************************************************************************************
-void StareAtTarget(INTERACTIVE_OBJ * io)
+void StareAtTarget(Entity * io)
 {
 	if (io->_npcdata->ex_rotate == NULL)
 	{
@@ -1385,7 +1281,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 
 	if (((io->target.x - tv.x) == 0) && ((io->target.z - tv.z) == 0)) return;
 
-	float rot = 0.27f * _framedelay;
+	float rot = 0.27f * framedelay;
 	float alpha = MAKEANGLE(io->angle.b);
 	float beta = -io->head_rot; 
 	float pouet = MAKEANGLE(180.f + degrees(getAngle(io->target.x, io->target.z, tv.x, tv.z)));
@@ -1443,35 +1339,29 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	return;
 }
 
-
-//***********************************************************************************************
-//***********************************************************************************************
-float GetTRUETargetDist(INTERACTIVE_OBJ * io)
-{
+float GetTRUETargetDist(Entity * io) {
+	
 	long t;
-
-	if (io->ioflags & IO_NPC)
+	if(io->ioflags & IO_NPC) {
 		t = io->_npcdata->pathfind.truetarget;
-	else t = io->targetinfo;
-
-	if ((t >= 0) && (t < inter.nbmax) && (inter.iobj[t] != NULL))
-	{
-		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-			return dist(io->pos, io->initpos);
-
-		return dist(io->pos, inter.iobj[t]->pos);
+	} else {
+		t = io->targetinfo;
 	}
-
+	
+	if(ValidIONum(t)) {
+		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+			return dist(io->pos, io->initpos);
+		}
+		return dist(io->pos, entities[t]->pos);
+	}
+	
 	return 99999999.f;
 }
 
-extern TextureContainer * sphere_particle;
-extern INTERACTIVE_OBJ * EVENT_SENDER;
+extern Entity * EVENT_SENDER;
 
-//***********************************************************************************************
 // Checks If a NPC is dead
-//***********************************************************************************************
-bool IsDeadNPC(INTERACTIVE_OBJ * io) {
+bool IsDeadNPC(Entity * io) {
 	
 	if(!io || !(io->ioflags & IO_NPC)) {
 		return false;
@@ -1521,11 +1411,10 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	return -1;
 }
-//***********************************************************************************************
+
 // Spawns a body part from NPC
-//***********************************************************************************************
-void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
-{
+void ARX_NPC_SpawnMember(Entity * ioo, long num) {
+	
 	if (!ioo) return;
 
 	EERIE_3DOBJ * from = ioo->obj;
@@ -1545,7 +1434,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
 		if (from->texturecontainer[k]
-		        && (IsIn(from->texturecontainer[k]->m_texName.string(), "gore")))
+		        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
 		{
 			gore = k;
 			break;
@@ -1586,14 +1475,13 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		
 		
 		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
-		nouvo->vertexlist[k].v.x	=	nouvo->vertexlist[k].vert.p.x	=	from->vertexlist3[from->selections[num].selected[k]].v.x - ioo->pos.x;
-		nouvo->vertexlist[k].v.y	=	nouvo->vertexlist[k].vert.p.y	=	from->vertexlist3[from->selections[num].selected[k]].v.y - ioo->pos.y;
-		nouvo->vertexlist[k].v.z	=	nouvo->vertexlist[k].vert.p.z	=	from->vertexlist3[from->selections[num].selected[k]].v.z - ioo->pos.z;
-
-		nouvo->vertexlist[k].vert.color	=	from->vertexlist[k].vert.color;
-		nouvo->vertexlist[k].vert.uv.x	=	from->vertexlist[k].vert.uv.x;
-		nouvo->vertexlist[k].vert.uv.y	=	from->vertexlist[k].vert.uv.y;
-
+		nouvo->vertexlist[k].v = from->vertexlist3[from->selections[num].selected[k]].v;
+		nouvo->vertexlist[k].v -= ioo->pos;
+		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v;
+		
+		nouvo->vertexlist[k].vert.color = from->vertexlist[k].vert.color;
+		nouvo->vertexlist[k].vert.uv = from->vertexlist[k].vert.uv;
+		
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
@@ -1613,10 +1501,10 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 					if (count < nouvo->vertexlist.size())
 					{
-						memcpy(&nouvo->vertexlist[count], &from->vertexlist[from->facelist[k].vid[j]], sizeof(EERIE_VERTEX));
-						nouvo->vertexlist[count].v.x = nouvo->vertexlist[count].vert.p.x = from->vertexlist3[from->facelist[k].vid[j]].v.x - ioo->pos.x;
-						nouvo->vertexlist[count].v.y = nouvo->vertexlist[count].vert.p.y = from->vertexlist3[from->facelist[k].vid[j]].v.y - ioo->pos.y;
-						nouvo->vertexlist[count].v.z = nouvo->vertexlist[count].vert.p.z = from->vertexlist3[from->facelist[k].vid[j]].v.z - ioo->pos.z;
+						nouvo->vertexlist[count] = from->vertexlist[from->facelist[k].vid[j]];
+						nouvo->vertexlist[count].v = from->vertexlist3[from->facelist[k].vid[j]].v;
+						nouvo->vertexlist[count].v -= ioo->pos;
+						nouvo->vertexlist[count].vert.p = nouvo->vertexlist[count].v;
 						memcpy(&nouvo->vertexlist3[count], &nouvo->vertexlist[count], sizeof(EERIE_VERTEX));
 					}
 					else
@@ -1638,32 +1526,23 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			nummm = k;
 		}
 	}
-
+	
 	nouvo->origin = nummm;
-
-	nouvo->point0.x = nouvo->vertexlist[nouvo->origin].v.x;
-	nouvo->point0.y = nouvo->vertexlist[nouvo->origin].v.y;
-	nouvo->point0.z = nouvo->vertexlist[nouvo->origin].v.z;
-
+	nouvo->point0 = nouvo->vertexlist[nouvo->origin].v;
+	
 	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
-		nouvo->vertexlist[k].vert.p.x = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
-		nouvo->vertexlist[k].vert.p.y = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
-		nouvo->vertexlist[k].vert.p.z = nouvo->vertexlist[k].v.z -= nouvo->point0.z;
+		nouvo->vertexlist[k].vert.p = nouvo->vertexlist[k].v -= nouvo->point0;
 		nouvo->vertexlist[k].vert.color = 0xFFFFFFFF;
 	}
-
-	nouvo->point0.x = 0;
-	nouvo->point0.y = 0;
-	nouvo->point0.z = 0;
-
+	
+	nouvo->point0 = Vec3f::ZERO;
+	
 	nouvo->pbox = NULL;
 	nouvo->pdata = NULL;
-
 	nouvo->cdata = NULL;
 	nouvo->sdata = NULL;
-
 	nouvo->ndata = NULL;
-
+	
 	size_t nfaces = 0;
 	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
@@ -1695,7 +1574,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
-			        && (IsIn(from->texturecontainer[k]->m_texName.string(), "gore")))
+			        && (boost::contains(from->texturecontainer[k]->m_texName.string(), "gore")))
 			{
 				gore = k;
 				break;
@@ -1708,41 +1587,34 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			if (nouvo->facelist[k].texid == gore)
 				nouvo->facelist[k].facetype |= POLY_DOUBLESIDED;
 		}
-
-
+		
 	}
-
+	
 	free(equival);
 	nouvo->texturecontainer = from->texturecontainer;
-
-	nouvo->linked			=	NULL;
-	nouvo->nblinked			=	0;
-	nouvo->originaltextures	=	NULL;
-
-	INTERACTIVE_OBJ * io = CreateFreeInter();
-	if(!io) {
-		delete nouvo;
-		return;
-	}
-
-	io->_itemdata	=	(IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
-
-	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
-
-	io->ioflags		=	IO_ITEM;
-	io->script.size	=	0;
-	io->script.data	=	NULL;
-	io->GameFlags	|=	GFLAG_NO_PHYS_IO_COL;
 	
-	io->filename = "noname";
-
+	nouvo->linked = NULL;
+	nouvo->nblinked = 0;
+	nouvo->originaltextures = NULL;
+	
+	Entity * io = new Entity("noname");
+	
+	io->_itemdata = (IO_ITEMDATA *)malloc(sizeof(IO_ITEMDATA));
+	
+	memset(io->_itemdata, 0, sizeof(IO_ITEMDATA));
+	
+	io->ioflags = IO_ITEM;
+	io->script.size = 0;
+	io->script.data = NULL;
+	io->gameFlags |= GFLAG_NO_PHYS_IO_COL;
+	
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);
 	if(!nouvo->pbox){
 		delete nouvo;
 		return;
 	}
-
+	
 	io->infracolor = Color3f::blue * 0.8f;
 	io->collision = COLLIDE_WITH_PLAYER;
 	io->inv = NULL;
@@ -1751,52 +1623,43 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->lastpos = io->initpos = io->pos = ioo->obj->vertexlist3[inpos].v;
 	io->angle = ioo->angle;
 	
-	io->GameFlags = ioo->GameFlags;
+	io->gameFlags = ioo->gameFlags;
 	memcpy(&io->halo, &ioo->halo, sizeof(IO_HALO));
-	ioo->halo.dynlight	=	-1;
-	io->ioflags			|=	IO_MOVABLE;
-
-	io->angle.a					=	rnd() * 40.f + 340.f;
-	io->angle.b					=	rnd() * 360.f;
-	io->angle.g					=	0;
-	io->obj->pbox->active		=	1;
-	io->obj->pbox->stopcount	=	0;
-
-	Vec3f pos, vector;
-
-	io->velocity.x				=	0.f;
-	io->velocity.y				=	0.f;
-	io->velocity.z				=	0.f;
-	io->stopped					=	1;
-
-	vector.x					=	-(float)EEsin(radians(io->angle.b));
-	vector.y					=	EEsin(radians(io->angle.a)) * 2.f; 
-	vector.z					=	(float)EEcos(radians(io->angle.b));
+	ioo->halo.dynlight = -1;
+	io->ioflags |= IO_MOVABLE;
+	
+	io->angle.a = rnd() * 40.f + 340.f;
+	io->angle.b = rnd() * 360.f;
+	io->angle.g = 0;
+	io->obj->pbox->active = 1;
+	io->obj->pbox->stopcount = 0;
+	
+	io->velocity = Vec3f::ZERO;
+	io->stopped = 1;
+	
+	Vec3f vector;
+	vector.x = -(float)EEsin(radians(io->angle.b));
+	vector.y = EEsin(radians(io->angle.a)) * 2.f;
+	vector.z = (float)EEcos(radians(io->angle.b));
 	fnormalize(vector);
-	pos = io->pos;
-	io->rubber					=	0.6f;
-
-
-	long long_no_collide = GetInterNum(ioo);
-	io->no_collide = checked_range_cast<short>(long_no_collide);
-
-
-
-	io->GameFlags |= GFLAG_GOREEXPLODE;
-	io->lastanimtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
+	Vec3f pos = io->pos;
+	io->rubber = 0.6f;
+	
+	io->no_collide = checked_range_cast<short>(long(ioo->index()));
+	
+	io->gameFlags |= GFLAG_GOREEXPLODE;
+	io->lastanimtime = (unsigned long)(arxtime);
 	io->soundtime = 0;
 	io->soundcount = 0;
 	EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector, 3, &io->angle);
-	return;
-
 }
 
-#define	FLAG_CUT_HEAD	(1)
-#define	FLAG_CUT_TORSO	(1<<1)
-#define	FLAG_CUT_LARM	(1<<2)
-#define	FLAG_CUT_RARM	(1<<3)
-#define	FLAG_CUT_LLEG	(1<<4)
-#define	FLAG_CUT_RLEG	(1<<5)
+#define	FLAG_CUT_HEAD  (1<<0)
+#define	FLAG_CUT_TORSO (1<<1)
+#define	FLAG_CUT_LARM  (1<<2)
+#define	FLAG_CUT_RARM  (1<<3)
+#define	FLAG_CUT_LLEG  (1<<4)
+#define	FLAG_CUT_RLEG  (1<<5)
 
 static short GetCutFlag(const string & str) {
 	
@@ -1817,7 +1680,7 @@ static short GetCutFlag(const string & str) {
 	return 0;
 }
 
-long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
+long GetCutSelection(Entity * io, short flag)
 {
 	if ((!io) || (!(io->ioflags & IO_NPC)) || flag == 0)
 		return -1;
@@ -1853,7 +1716,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	return -1;
 }
 
-void ReComputeCutFlags(INTERACTIVE_OBJ * io)
+void ReComputeCutFlags(Entity * io)
 {
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return;
@@ -1865,7 +1728,7 @@ void ReComputeCutFlags(INTERACTIVE_OBJ * io)
 		io->_npcdata->cuts &= ~FLAG_CUT_RARM;
 	}
 }
-bool IsAlreadyCut(INTERACTIVE_OBJ * io, short fl)
+bool IsAlreadyCut(Entity * io, short fl)
 {
 	if (io->_npcdata->cuts & fl)
 		return true;
@@ -1884,7 +1747,7 @@ bool IsAlreadyCut(INTERACTIVE_OBJ * io, short fl)
 
 	return false;
 }
-long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
+long ARX_NPC_ApplyCuts(Entity * io)
 {
 	if ((!io) || (!(io->ioflags & IO_NPC)))
 		return 0 ;
@@ -1898,7 +1761,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
 		if (io->obj->texturecontainer[i]
-		        &&	(IsIn(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
+		        &&	(boost::contains(io->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -1945,14 +1808,14 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 //***********************************************************************************************
 // Attempt to cut something on NPC
 //***********************************************************************************************
-void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
+void ARX_NPC_TryToCutSomething(Entity * target, Vec3f * pos)
 {
 	//return;
 	if (!target) return;
 
 	if (!(target->ioflags & IO_NPC)) return;
 
-	if	(target->GameFlags & GFLAG_NOGORE)
+	if	(target->gameFlags & GFLAG_NOGORE)
 		return;
 
 	float mindistSqr = std::numeric_limits<float>::max();
@@ -1962,7 +1825,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
 		if (target->obj->texturecontainer[i]
-		        &&	(IsIn(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
+		        &&	(boost::contains(target->obj->texturecontainer[i]->m_texName.string(), "gore")))
 		{
 			goretex = i;
 			break;
@@ -1972,7 +1835,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 	for (size_t i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
 		if ((target->obj->selections[i].selected.size() > 0)
-		        &&	(IsIn(target->obj->selections[i].name, "cut_")))
+		        &&	(boost::contains(target->obj->selections[i].name, "cut_")))
 		{
 			short fll = GetCutFlag( target->obj->selections[i].name );
 
@@ -2027,9 +1890,8 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, Vec3f * pos)
 		}
 	}
 
-	if (hid)
-	{
-		ARX_SOUND_PlayCinematic("flesh_critical.wav");
+	if(hid) {
+		ARX_SOUND_PlayCinematic("flesh_critical", false); // TODO why play cinmeatic sound?
 		ARX_NPC_SpawnMember(target, numsel);
 	}
 }
@@ -2042,7 +1904,7 @@ extern float STRIKE_AIMTIME;
 //***********************************************************************************************
 bool IsPlayerStriking()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 
 	if (!io) return false;
 
@@ -2102,7 +1964,7 @@ bool IsPlayerStriking()
 }
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_Manage_NON_Fight(INTERACTIVE_OBJ * io)
+void ARX_NPC_Manage_NON_Fight(Entity * io)
 {
 	ANIM_USE * ause1 = &io->animlayer[1];
 
@@ -2118,18 +1980,18 @@ void ARX_NPC_Manage_NON_Fight(INTERACTIVE_OBJ * io)
 }
 //***********************************************************************************************
 //***********************************************************************************************
-void Strike_StartTickCount(INTERACTIVE_OBJ * io)
+void Strike_StartTickCount(Entity * io)
 {
 	io->_npcdata->strike_time = 0;
 }
 //***********************************************************************************************
 //***********************************************************************************************
 // NPC IS in fight mode and close to target...
-void ARX_NPC_Manage_Fight(INTERACTIVE_OBJ * io)
+void ARX_NPC_Manage_Fight(Entity * io)
 {
 	if (!(io->ioflags & IO_NPC)) return;
 
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 
 	if (ioo)
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2271,7 +2133,7 @@ void ARX_NPC_Manage_Fight(INTERACTIVE_OBJ * io)
 }
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_Manage_Anims_End(INTERACTIVE_OBJ * io)
+void ARX_NPC_Manage_Anims_End(Entity * io)
 {
 	ANIM_USE * ause = &io->animlayer[0];
 
@@ -2312,24 +2174,20 @@ void ARX_NPC_Manage_Anims_End(INTERACTIVE_OBJ * io)
 		}
 	}
 }
-bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
+bool TryIOAnimMove(Entity * io, long animnum)
 {
 	if ((!io) || (!io->anims[animnum])) return false;
 
 	Vec3f trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
 	float temp = radians(MAKEANGLE(180.f - io->angle.b));
-	_YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
+	YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
 	IO_PHYSICS phys;
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
 
-	phys.startpos.x = io->pos.x;
-	phys.startpos.y = io->pos.y;
-	phys.startpos.z = io->pos.z;
-	phys.targetpos.x = io->pos.x + trans2.x;
-	phys.targetpos.y = io->pos.y + trans2.y;
-	phys.targetpos.z = io->pos.z + trans2.z;
+	phys.startpos = io->pos;
+	phys.targetpos = io->pos + trans2;
 	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
 
 	if (res && (EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f))
@@ -2337,7 +2195,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 
 	return false;
 }
-void TryAndCheckAnim(INTERACTIVE_OBJ * io, long animnum, long layer)
+void TryAndCheckAnim(Entity * io, long animnum, long layer)
 {
 	if (!io) return;
 
@@ -2361,7 +2219,7 @@ void TryAndCheckAnim(INTERACTIVE_OBJ * io, long animnum, long layer)
 // Main animations management
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
+void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 {
 	io->_npcdata->strike_time += (short)FrameDiff;
 	ANIM_USE * ause = &io->animlayer[0];
@@ -2369,16 +2227,16 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 	float tdist = std::numeric_limits<float>::max();
 
 	if ((io->_npcdata->pathfind.listnb) && (ValidIONum(io->_npcdata->pathfind.truetarget))) {
-		tdist = distSqr(io->pos, inter.iobj[io->_npcdata->pathfind.truetarget]->pos);
+		tdist = distSqr(io->pos, entities[io->_npcdata->pathfind.truetarget]->pos);
 	} else if(ValidIONum(io->targetinfo)) {
-		tdist = distSqr(io->pos, inter.iobj[io->targetinfo]->pos);
+		tdist = distSqr(io->pos, entities[io->targetinfo]->pos);
 	}
 
 
 
 
 
-	INTERACTIVE_OBJ * ioo = io->_npcdata->weapon;
+	Entity * ioo = io->_npcdata->weapon;
 
 	if (ValidIOAddress(ioo))
 		io->_npcdata->weapontype = ioo->type_flags;
@@ -2523,12 +2381,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(io->_npcdata->strike_time > 0))
 			{
 				AcquireLastAnim(io);
-				j = rnd() * 4;
-
-				if (j < 0) j = 0;
-
-				if (j > 3) j = 3;
-
+				j = Random::get(0, 3);
 				FinishAnim(io, ause1->cur_anim);
 				ANIM_Set(ause1, io->anims[ANIM_BARE_STRIKE_LEFT_START+j*3]);
 			}
@@ -2681,12 +2534,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				{
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
-					j = rnd() * 4;
-
-					if (j < 0) j = 0;
-
-					if (j > 3) j = 3;
-
+					j = Random::get(0, 3);
 					ANIM_Set(ause1, io->anims[ANIM_1H_STRIKE_LEFT_START+j*3+ANIMBase]);
 				}
 			}
@@ -2762,9 +2610,9 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 
 
 }
-float GetIOHeight(INTERACTIVE_OBJ * io)
+float GetIOHeight(Entity * io)
 {
-	if (io == inter.iobj[0])
+	if (io == entities.player())
 	{
 		return io->physics.cyl.height; 
 	}
@@ -2775,18 +2623,17 @@ float GetIOHeight(INTERACTIVE_OBJ * io)
 
 	return min(v, -45.f);
 }
-float GetIORadius(INTERACTIVE_OBJ * io)
-{
-	if (io == inter.iobj[0])
-		return PLAYER_BASE_RADIUS;
 
-	float v = max(io->original_radius * io->scale, 25.f);
-
-	if (v > 60.f) return 60.f;
-
-	return v;
+float GetIORadius(Entity * io) {
+	
+	if(io == entities.player()) {
+		return player.baseRadius();
+	}
+	
+	return clamp(io->original_radius * io->scale, 25.f, 60.f);
 }
-void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl) {
+
+void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl) {
 	cyl->height = GetIOHeight(io);
 	cyl->radius = GetIORadius(io);
 	cyl->origin = io->pos;
@@ -2797,20 +2644,18 @@ void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl) {
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
-{
+void ComputeTolerance(Entity * io, long targ, float * dst) {
+	
 	float TOLERANCE = 30.f;
-
-	if ((targ >= 0)
-	        &&	(targ < inter.nbmax)
-	        &&	(inter.iobj[targ]))
-	{
+	
+	if(ValidIONum(targ)) {
+		
 		float self_dist, targ_dist;
 
 		// Compute min target close-dist
-		if (inter.iobj[targ]->ioflags & IO_NO_COLLISIONS)
+		if (entities[targ]->ioflags & IO_NO_COLLISIONS)
 			targ_dist = 0.f;
-		else targ_dist = max(inter.iobj[targ]->physics.cyl.radius, GetIORadius(inter.iobj[targ])); //inter.iobj[targ]->physics.cyl.radius;
+		else targ_dist = max(entities[targ]->physics.cyl.radius, GetIORadius(entities[targ])); //entities[targ]->physics.cyl.radius;
 
 		// Compute min self close-dist
 		if (io->ioflags & IO_NO_COLLISIONS)
@@ -2825,11 +2670,11 @@ void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
 			TOLERANCE = 0.f;
 		}
 
-		if (inter.iobj[targ]->ioflags & IO_FIX)
+		if (entities[targ]->ioflags & IO_FIX)
 			TOLERANCE += 100.f;
 
 		// If target is a NPC add another tolerance
-		if (inter.iobj[targ]->_npcdata)
+		if (entities[targ]->_npcdata)
 		{
 			TOLERANCE += 20.f;
 		}
@@ -2850,7 +2695,7 @@ void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
 			TOLERANCE += 300.f;
 
 		// if target is a marker set to a minimal tolerance
-		if (inter.iobj[targ]->ioflags & IO_MARKER)
+		if (entities[targ]->ioflags & IO_MARKER)
 			TOLERANCE = 21.f + (float)io->_npcdata->moveproblem * ( 1.0f / 10 );
 	}
 
@@ -2864,7 +2709,7 @@ extern long FRAME_COUNT;
 //***********************************************************************************************
 //***********************************************************************************************
 
-static void ManageNPCMovement(INTERACTIVE_OBJ * io)
+static void ManageNPCMovement(Entity * io)
 {
 	float dis = std::numeric_limits<float>::max();
 	IO_PHYSICS phys;
@@ -2932,9 +2777,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	        &&	!(ause0->flags & EA_ANIMEND))
 	{
 		io->room_flags |= 1;
-		io->lastpos.x = io->pos.x += io->move.x;
-		io->lastpos.y = io->pos.y += io->move.y;
-		io->lastpos.z = io->pos.z += io->move.z;
+		io->lastpos = (io->pos += io->move);
 
 		return;
 	}
@@ -2957,7 +2800,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->reachedtarget = 1;
 					io->_npcdata->reachedtime = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
-					if (io->targetinfo != GetInterNum(io))
+					if (io->targetinfo != long(io->index()))
 						SendIOScriptEvent(io, SM_REACHEDTARGET);
 				}
 				else if ((ause0->cur_anim == alist[ANIM_WAIT]) && (ause0->flags & EA_ANIMEND))
@@ -3083,7 +2926,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				for (long n = 0; n < 4; n++)
 				{
 					float t = 1.5f - (float)n * ( 1.0f / 5 );
-					io->_npcdata->ex_rotate->group_rotate[n].b += io->_npcdata->look_around_inc * _framedelay * t;
+					io->_npcdata->ex_rotate->group_rotate[n].b += io->_npcdata->look_around_inc * framedelay * t;
 				}
 
 				if (io->_npcdata->ex_rotate->group_rotate[0].b > 30)
@@ -3182,7 +3025,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		{
 			ARX_NPC_LaunchPathfind(io, io->targetinfo); 
 		}
-		else if ((dis > 220)
+		else if ((dis > STRIKE_DISTANCE)
 		         &&	(io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 		         &&	(!(io->_npcdata->behavior & (BEHAVIOUR_FIGHT | BEHAVIOUR_MAGIC | BEHAVIOUR_SNEAK))))
 		{
@@ -3394,13 +3237,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	// Try physics from last valid pos to current desired pos...
 	// For this frame we want to try a move from startpos (valid pos)
 	// to targetpos (potentially invalid pos)
-	io->physics.startpos.x = io->physics.cyl.origin.x = io->pos.x;
-	io->physics.startpos.y = io->physics.cyl.origin.y = io->pos.y;
-	io->physics.startpos.z = io->physics.cyl.origin.z = io->pos.z;
-
-
+	io->physics.startpos = io->physics.cyl.origin = io->pos;
 	
-
 	if(io->forcedmove == Vec3f::ZERO) {
 		ForcedMove = Vec3f::ZERO;
 	} else {
@@ -3437,11 +3275,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
 	GetIOCyl(io, &phys.cyl);
-
-	io->forcedmove.x -= ForcedMove.x;
-	io->forcedmove.y -= ForcedMove.y;
-	io->forcedmove.z -= ForcedMove.z;
-
+	
+	io->forcedmove -= ForcedMove;
+	
 #ifdef BUILD_EDITOR
 	// Some visual debug stuff
 	if(DEBUGNPCMOVE) {
@@ -3467,10 +3303,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		}
 	}
 #endif
-
-	APPLY_PUSH = 0; 
+	
 	DIRECT_PATH = true;
-
+	
 	// Now we try the physical move for real
 	if(io->physics.startpos == io->physics.targetpos
 	        || ARX_COLLISION_Move_Cylinder(&phys, io, 40, levitate | CFLAG_NPC))
@@ -3488,15 +3323,10 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	}
 
 	io->room_flags |= 1;
-	io->physics.cyl.origin.x = io->pos.x = phys.cyl.origin.x;
-	io->physics.cyl.origin.y = io->pos.y = phys.cyl.origin.y;
-	io->physics.cyl.origin.z = io->pos.z = phys.cyl.origin.z;
+	io->physics.cyl.origin = io->pos = phys.cyl.origin;
 	io->physics.cyl.radius = GetIORadius(io);
 	io->physics.cyl.height = GetIOHeight(io);
-
-
-	APPLY_PUSH = 0;
-
+	
 	// Compute distance 2D to target.
 	_dist = dist(Vec2f(io->pos.x, io->pos.z), Vec2f(io->target.x, io->target.z));
 	dis = _dist;
@@ -3538,7 +3368,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	{
 		if (ValidIONum(io->_npcdata->pathfind.truetarget))
 		{
-			Vec3f * p = &inter.iobj[io->_npcdata->pathfind.truetarget]->pos;
+			Vec3f * p = &entities[io->_npcdata->pathfind.truetarget]->pos;
 			long t = AnchorData_GetNearest(p, &io->physics.cyl); 
 
 			if ((t != -1) && (t != io->_npcdata->pathfind.list[io->_npcdata->pathfind.listnb-1]))
@@ -3561,7 +3391,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			if ((io->_npcdata->reachedtarget))
 			{
 				if (ValidIONum(io->targetinfo))
-					EVENT_SENDER = inter.iobj[io->targetinfo];
+					EVENT_SENDER = entities[io->targetinfo];
 				else
 					EVENT_SENDER = NULL;
 
@@ -3645,10 +3475,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				io->_npcdata->pathfind.listpos = 0;
 				io->_npcdata->pathfind.listnb = -1;
 				io->_npcdata->pathfind.pathwait = 0;
-
-				if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-				io->_npcdata->pathfind.list = NULL;
+				free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
 
 				if	(ause0->cur_anim == alist[ANIM_FIGHT_WALK_FORWARD])
 				{
@@ -3678,10 +3505,8 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->pathfind.listpos = 0;
 					io->_npcdata->pathfind.listnb = -1;
 					io->_npcdata->pathfind.pathwait = 0;
-
-					if (io->_npcdata->pathfind.list) free(io->_npcdata->pathfind.list);
-
-					io->_npcdata->pathfind.list = NULL;
+					free(io->_npcdata->pathfind.list), io->_npcdata->pathfind.list = NULL;
+					
 					EVENT_SENDER = NULL;
 
 					if ((io->_npcdata->behavior & BEHAVIOUR_FLEE)
@@ -3693,7 +3518,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					{
 						if (!io->_npcdata->reachedtarget)
 						{
-							long num = GetInterNum(io);
+							long num = io->index();
 							io->_npcdata->reachedtarget = 1;
 							io->_npcdata->reachedtime = (unsigned long)(arxtime);
 
@@ -3720,7 +3545,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			else if (!io->_npcdata->reachedtarget) 
 			{
 				if (ValidIONum(io->targetinfo))
-					EVENT_SENDER = inter.iobj[io->targetinfo];
+					EVENT_SENDER = entities[io->targetinfo];
 				else
 					EVENT_SENDER = NULL;
 
@@ -3730,7 +3555,7 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				if (io->animlayer[1].flags & EA_ANIMEND)
 					io->animlayer[1].cur_anim = NULL;
 
-				if (io->targetinfo != GetInterNum(io))
+				if (io->targetinfo != long(io->index()))
 					SendIOScriptEvent(io, SM_REACHEDTARGET);
 			}
 		}
@@ -3768,11 +3593,9 @@ static void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
 		}
 	}
-
+	
 	// Now update lastpos values for next call use...
-	io->lastpos.x = io->pos.x;
-	io->lastpos.y = io->pos.y;
-	io->lastpos.z = io->pos.z;
+	io->lastpos = io->pos;
 }
 
 float AngularDifference(float a1, float a2)
@@ -3798,12 +3621,12 @@ float AngularDifference(float a1, float a2)
 }
 extern float CURRENT_PLAYER_COLOR;
 //***********************************************************************************************
-// INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
+// Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 //-----------------------------------------------------------------------------------------------
 // FUNCTION:
 //   returns the "first" NPC in sight for another NPC (ioo)
 //***********************************************************************************************
-INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
+Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 {
 	if (!ioo) return NULL;
 
@@ -3812,12 +3635,12 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 		return NULL;
 	}
 
-	INTERACTIVE_OBJ * found_io = NULL;
+	Entity * found_io = NULL;
 	float found_dist = std::numeric_limits<float>::max();
 
-	for (long i = 0; i < inter.nbmax; i++)
+	for (size_t i = 0; i < entities.size(); i++)
 	{
-		INTERACTIVE_OBJ * io = inter.iobj[i];
+		Entity * io = entities[i];
 
 		if ((!io)
 		        ||	(IsDeadNPC(io))
@@ -3855,7 +3678,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 			orgn.y = ioo->pos.y - 90.f;
 			orgn.z = ioo->pos.z;
 
-			if (ioo == inter.iobj[0])	orgn.y = player.pos.y + 90.f;
+			if (ioo == entities.player())	orgn.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(ioo, ioo->obj->fastaccess.head_group_origin, &orgn);
@@ -3868,7 +3691,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 			dest.y = io->pos.y - 90.f;
 			dest.z = io->pos.z;
 
-			if (io == inter.iobj[0])	dest.y = player.pos.y + 90.f;
+			if (io == entities.player())	dest.y = player.pos.y + 90.f;
 		}
 		else
 			GetVertexPos(io, io->obj->fastaccess.head_group_origin, &dest);
@@ -3927,12 +3750,12 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 extern float CURRENT_PLAYER_COLOR;
  
 //***********************************************************************************************
-// void CheckNPC(INTERACTIVE_OBJ * io)
+// void CheckNPC(Entity * io)
 //-----------------------------------------------------------------------------------------------
 // FUNCTION
 //   Checks if a NPC is dead to prevent further Layers Animation
 //***********************************************************************************************
-void CheckNPC(INTERACTIVE_OBJ * io)
+void CheckNPC(Entity * io)
 {
 	if ((!io)
 	        ||	(io->show != SHOW_FLAG_IN_SCENE))
@@ -3951,116 +3774,85 @@ void CheckNPC(INTERACTIVE_OBJ * io)
 	}
 }
 extern long GLOBAL_Player_Room;
-//***********************************************************************************************
-// void CheckNPCEx(INTERACTIVE_OBJ * io)
-// ----------------------------------------------------------------------------------------------
-// FUNCTION:
-//   Checks an NPC Visibility Field (Player Detect)
+
+// Checks an NPC Visibility Field (Player Detect)
 // NECESSARY:
 //   Uses Invisibility/Confuse/Torch infos.
 // RESULT:
 //   Sends appropriate Detectplayer/Undetectplayer events to the IO
-//-----------------------------------------------------------------------------------------------
 // WARNINGS:
 //   io and io->obj must be valid (no check !)
-//***********************************************************************************************
-void CheckNPCEx(INTERACTIVE_OBJ * io)
-{
+void CheckNPCEx(Entity * io) {
+	
 	// Distance Between Player and IO
-	float ds = distSqr(io->pos, player.pos - (Vec3f::Y_AXIS * PLAYER_BASE_HEIGHT));
-
+	float ds = distSqr(io->pos, player.basePosition());
+	
 	// Start as not visible
 	long Visible = 0;
-
+	
 	// Check visibility only if player is visible, not too far and not dead
-	if ((!(inter.iobj[0]->invisibility > 0.f)) && (ds < square(2000.f)) && (player.life > 0))
-	{
+	if(entities.player()->invisibility <= 0.f && ds < square(2000.f) && player.life > 0.f) {
+		
 		// checks for near contact +/- 15 cm --> force visibility
-		if (io->room_flags & 1)
+		if(io->room_flags & 1) {
 			UpdateIORoom(io);
-
-		if (GLOBAL_Player_Room == -1)
+		}
+		
+		if(GLOBAL_Player_Room == -1) {
 			GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-
+		}
+		
 		float fdist = SP_GetRoomDist(&io->pos, &player.pos, io->room, GLOBAL_Player_Room);
-
+		
 		// Use Portal Room Distance for Extra Visibility Clipping.
-		if ((GLOBAL_Player_Room > -1) && (io->room > -1) && (fdist > 2000.f))
-		{
-		}
-		else if ((ds < square(GetIORadius(io) + GetIORadius(inter.iobj[0]) + 15.f))
-		         && (EEfabs(player.pos.y - io->pos.y) < 200.f))
-		{
+		if(GLOBAL_Player_Room > -1 && io->room > -1 && fdist > 2000.f) {
+			// nothing to do
+		} else if(ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f)
+		          && EEfabs(player.pos.y - io->pos.y) < 200.f) {
 			Visible = 1;
-		}
-		else // Make full visibility test
-		{
-			Vec3f orgn, dest;
+		} else { // Make full visibility test
+			
 			// Retreives Head group position for "eye" pos.
 			long grp = io->obj->fastaccess.head_group_origin;
-			if (grp < 0)
-			{
-				orgn.x = io->pos.x;
-				orgn.y = io->pos.y - 90.f;
-				orgn.z = io->pos.z;
-			}
-			else
-			{
-				orgn.x = io->pos.x;
-				orgn.y = io->pos.y - 120.f;
-				orgn.z = io->pos.z;
-			}
-
-			dest.x = player.pos.x;
-			dest.y = player.pos.y + 90.f;
-			dest.z = player.pos.z;
+			Vec3f orgn = io->pos - Vec3f(0.f, (grp < 0) ? 90.f : 120.f, 0.f);
+			Vec3f dest = player.pos + Vec3f(0.f, 90.f, 0.f);
 
 			// Check for Field of vision angle
 			float aa = getAngle(orgn.x, orgn.z, dest.x, dest.z);
 			aa = MAKEANGLE(degrees(aa));
 			float ab = MAKEANGLE(io->angle.b);
-
-			if (EEfabs(AngularDifference(aa, ab)) < 110.f)
-			{
+			if(EEfabs(AngularDifference(aa, ab)) < 110.f) {
+				
 				// Check for Darkness/Stealth
-				if ((CURRENT_PLAYER_COLOR > GetPlayerStealth())
-				        ||	SHOW_TORCH
-				        ||	(ds < square(200.f)))
-				{
-					EERIEPOLY * epp = NULL;
+				if(CURRENT_PLAYER_COLOR > GetPlayerStealth() || SHOW_TORCH
+				   || ds < square(200.f)) {
 					Vec3f ppos;
-
 					// Check for Geometrical Visibility
-					if ((IO_Visible(&orgn, &dest, epp, &ppos))
-					        || distSqr(ppos, dest) < square(25.f))
+					if(IO_Visible(&orgn, &dest, NULL, &ppos)
+					   || distSqr(ppos, dest) < square(25.f)) {
 						Visible = 1;
+					}
 				}
 			}
 		}
-
-		if (Visible)
-		{
-			if (!io->_npcdata->detect)
-			{
-				// if visible but was NOT visible, sends an Detectplayer Event
-				EVENT_SENDER = NULL;
-				SendIOScriptEvent(io, SM_DETECTPLAYER);
-				io->_npcdata->detect = 1;
-			}
+		
+		if(Visible && !io->_npcdata->detect) {
+			// if visible but was NOT visible, sends an Detectplayer Event
+			EVENT_SENDER = NULL;
+			SendIOScriptEvent(io, SM_DETECTPLAYER);
+			io->_npcdata->detect = 1;
 		}
 	}
-
+	
 	// if not visible but was visible, sends an Undetectplayer Event
-	if ((!Visible) && (io->_npcdata->detect))
-	{
+	if(!Visible && io->_npcdata->detect) {
 		EVENT_SENDER = NULL;
 		SendIOScriptEvent(io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
 	}
 }
 
-//-------------------------------------------------------------------------
-void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume, const float power) {
+void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const float power) {
 	
 	string _step_material = "foot_bare";
 	const string * step_material = &_step_material;
@@ -4081,9 +3873,9 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume
 		step_material = &io->stepmaterial;
 	}
 	
-	if(io == inter.iobj[0] && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
+	if(io == entities.player() && player.equiped[EQUIP_SLOT_LEGGINGS] > 0) {
 		if(ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
-			INTERACTIVE_OBJ * ioo = inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]];
+			Entity * ioo = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 			if(!ioo->stepmaterial.empty()) {
 				step_material = &ioo->stepmaterial;
 			}
@@ -4098,11 +3890,11 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, Vec3f * pos, const float volume
 // Sends ON HEAR events to NPCs for audible sounds
 // factor > 1.0F harder to hear, < 0.0F easier to hear
 //***********************************************************************************************
-void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const float factor, const float presence)
+void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor, const float presence)
 {
 	float max_distance;
 
-	if (source == inter.iobj[0])
+	if (source == entities.player())
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP;
 	else if (source && source->ioflags & IO_ITEM)
 		max_distance = ARX_NPC_ON_HEAR_MAX_DISTANCE_ITEM;
@@ -4117,26 +3909,26 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const floa
 	long Source_Room = ARX_PORTALS_GetRoomNumForPosition(pos, 1);
 
 
-	for (long i = 0; i < inter.nbmax; i++)
-		if ((inter.iobj[i])
-		        &&	(inter.iobj[i]->ioflags & IO_NPC)
-		        &&	(inter.iobj[i]->GameFlags & GFLAG_ISINTREATZONE)
-		        &&	(inter.iobj[i] != source)
-		        &&	((inter.iobj[i]->show == SHOW_FLAG_IN_SCENE)
-		             ||	(inter.iobj[i]->show == SHOW_FLAG_HIDDEN))
-		        &&	(inter.iobj[i]->_npcdata->life > 0.f)
+	for (size_t i = 0; i < entities.size(); i++)
+		if ((entities[i])
+		        &&	(entities[i]->ioflags & IO_NPC)
+		        &&	(entities[i]->gameFlags & GFLAG_ISINTREATZONE)
+		        &&	(entities[i] != source)
+		        &&	((entities[i]->show == SHOW_FLAG_IN_SCENE)
+		             ||	(entities[i]->show == SHOW_FLAG_HIDDEN))
+		        &&	(entities[i]->_npcdata->life > 0.f)
 		   )
 		{
-			float distance = fdist(*pos, inter.iobj[i]->pos);
+			float distance = fdist(*pos, entities[i]->pos);
 
 			if (distance < max_distance)
 			{
-				if (inter.iobj[i]->room_flags & 1)
-					UpdateIORoom(inter.iobj[i]);
+				if (entities[i]->room_flags & 1)
+					UpdateIORoom(entities[i]);
 
-				if ((Source_Room > -1) && (inter.iobj[i]->room > -1))
+				if ((Source_Room > -1) && (entities[i]->room > -1))
 				{
-					float fdist = SP_GetRoomDist(pos, &inter.iobj[i]->pos, Source_Room, inter.iobj[i]->room);
+					float fdist = SP_GetRoomDist(pos, &entities[i]->pos, Source_Room, entities[i]->room);
 
 					if (fdist < max_distance * 1.5f)
 					{
@@ -4145,7 +3937,7 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const floa
 
 						sprintf(temp, "%ld", ldistance);
 
-						SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
+						SendIOScriptEvent(entities[i], SM_HEAR, temp);
 					}
 				} else {
 					long ldistance = distance;
@@ -4153,14 +3945,14 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, INTERACTIVE_OBJ * source, const floa
 
 					sprintf(temp, "%ld", ldistance);
 
-					SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
+					SendIOScriptEvent(entities[i], SM_HEAR, temp);
 				}
 			}
 		}
 }
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern Entity * CURRENT_TORCH;
 //-------------------------------------------------------------------------
-void ManageIgnition(INTERACTIVE_OBJ * io)
+void ManageIgnition(Entity * io)
 {
 	if (!io) return;
 
@@ -4181,78 +3973,59 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 	}
 
 	// Torch Management
-	INTERACTIVE_OBJ * plw = NULL;
+	Entity * plw = NULL;
 
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 	        &&	(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
-		plw = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
-
-	if ((io->ioflags & IO_FIERY)
-	        &&	(!(io->type_flags & OBJECT_TYPE_BOW))
-	        && ((io->show == SHOW_FLAG_IN_SCENE) || (io == plw)))
-	{
+		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+	
+	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
+	   && (io->show == SHOW_FLAG_IN_SCENE || io == plw)) {
+		
 		float p = io->ignition = 25.f;
-
-		while (p > 0.f)
-		{
+		while(p > 0.f) {
 			p -= 6.f;
-
-			if ((io) && (io->obj) && !io->obj->facelist.empty())
-			{
-				Vec3f	pos;
-				long		notok	=	10;
-				size_t num = 0;
-
-				while (notok-- > 0)
-				{
-					num = rnd() * io->obj->facelist.size();
-					
-					arx_assert(num < io->obj->facelist.size());
-					
-					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
-					
-					notok = -1;
-				}
-
-				// TODO when is this no true?
-				if (notok < 0)
-				{
-					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-
-					for (long nn = 0 ; nn < 1 ; nn++)
-					{
-						long j = ARX_PARTICLES_GetFree();
-
-						if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
-						{
-							ParticleCount++;
-							PARTICLE_DEF * pd	=	&particle[j];
-							pd->exist			=	true;
-							pd->zdec			=	0;
-							pd->ov = pos;
-							pd->move.x			=	(2.f - 4.f * rnd());
-							pd->move.y			=	(2.f - 22.f * rnd());
-							pd->move.z			=	(2.f - 4.f * rnd());
-							pd->siz				=	7.f;
-							pd->tolive			=	Random::get(500, 1500);
-							pd->special			=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-							pd->tc				=	fire2;//tc;
-							pd->fparam			=	0.1f - rnd() * 0.2f;
-							pd->scale.x			=	-8.f;
-							pd->scale.y			=	-8.f;
-							pd->scale.z			=	-8.f;
-							pd->timcreation		=	(long)arxtime;
-							pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-							//pd->delay=nn*180;
-						}
-					}
-
-				}
+			
+			if(!io || !io->obj || io->obj->facelist.empty()) {
+				break;
 			}
+			
+			long notok = 10;
+			size_t num = 0;
+			while(notok-- > 0) {
+				num = Random::get(0, io->obj->facelist.size() - 1);
+				if(io->obj->facelist[num].facetype & POLY_HIDE) {
+					continue;
+				}
+				notok = -1;
+			}
+			
+			if(notok >= 0) {
+				continue;
+			}
+			
+			if(rnd() >= 0.4f) {
+				continue;
+			}
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+			pd->siz = 7.f;
+			pd->tolive = Random::get(500, 1500);
+			pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+			pd->tc = fire2;
+			pd->fparam = 0.1f - rnd() * 0.2f;
+			pd->scale = Vec3f::repeat(-8.f);
+			pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		}
-	}
-	else if (io->obj && (io->obj->fastaccess.fire >= 0) && (io->ignition > 0.f))
-	{
+		
+	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
+		
 		io->ignition = 25.f;
 		io->durability -= FrameDiff * ( 1.0f / 10000 );
 
@@ -4269,11 +4042,10 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				io->ignit_sound = audio::INVALID_ID;
 			}
 
-			ARX_SPEECH_ReleaseIOSpeech(io);
 			// Need To Kill timers
 			ARX_SCRIPT_Timer_Clear_By_IO(io);
 			io->show = SHOW_FLAG_KILLED;
-			io->GameFlags &= ~GFLAG_ISINTREATZONE;
+			io->gameFlags &= ~GFLAG_ISINTREATZONE;
 			RemoveFromAllInventories(io);
 			ARX_INTERACTIVE_DestroyDynamicInfo(io);
 			ARX_SOUND_PlaySFX(SND_TORCH_END, &io->pos);
@@ -4284,111 +4056,94 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			ARX_INTERACTIVE_DestroyIO(io);
 			return;
 		}
-
+		
 		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
-
-		for (long nn = 0; nn < 2; nn++)
-		{
-			long j = ARX_PARTICLES_GetFree();
-
-			if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
-			{
-				ParticleCount++;
-				PARTICLE_DEF * pd	=	&particle[j];
-				pd->exist		=	true;
-				pd->zdec		=	0;
-				pd->ov = pos;
-				pd->move.x		=	(2.f - 4.f * rnd());
-				pd->move.y		=	(2.f - 22.f * rnd());
-				pd->move.z		=	(2.f - 4.f * rnd());
-				pd->siz			=	7.f;
-				pd->tolive		=	Random::get(500, 1500);
-				pd->special		=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-				pd->tc			=	fire2;
-				pd->fparam		=	0.1f - rnd() * 0.2f;
-				pd->scale.x		=	-8.f;
-				pd->scale.y		=	-8.f;
-				pd->scale.z		=	-8.f;
-				pd->timcreation	=	(long)arxtime;
-				pd->rgb = Color3f(.71f, .43f, .29f);
-				pd->delay = nn * 2;
+		
+		for(long nn = 0; nn < 2; nn++) {
+			
+			if(rnd() >= 0.4f) {
+				continue;
 			}
+			
+			PARTICLE_DEF * pd = createParticle();
+			if(!pd) {
+				break;
+			}
+			
+			pd->ov = pos;
+			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+			pd->siz = 7.f;
+			pd->tolive = Random::get(500, 1500);
+			pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+			pd->tc = fire2;
+			pd->fparam = 0.1f - rnd() * 0.2f;
+			pd->scale = Vec3f::repeat(-8.f);
+			pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+			pd->delay = nn * 2;
 		}
-	}
-	else
-	{
-		io->ignition -= _framedelay * ( 1.0f / 100 );
-
-		if ((!io) || (!io->obj)) return;
-
-		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->facelist.size() * ( 1.0f / 1000 );
-
-		if (p > 5.f)
-			p = 5.f;
-
-		while (p > 0.f)
-		{
+		
+	} else {
+		
+		io->ignition -= framedelay * 0.01f;
+		if(!io->obj) {
+			return;
+		}
+		
+		float p = io->ignition * framedelay * 0.001f * io->obj->facelist.size() * 0.001f;
+		p = std::min(p, 5.f);
+		while(p > 0.f) {
 			p -= 0.5f;
-
-			if ((io) && (io->obj) && !io->obj->facelist.empty())
-			{
-				Vec3f	pos;
-				long		notok	=	10;
-				size_t num = 0;
-
-				while (notok-- > 0)
-				{
-					num = rnd() * io->obj->facelist.size();
-					arx_assert(num < io->obj->facelist.size());
-
-					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
-
-					notok = -1;
-				}
-
-				// TODO how can this not be true?
-				if (notok < 0)
-				{
-					pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-
-					for (long nn = 0 ; nn < 6 ; nn++)
-					{
-						long j = ARX_PARTICLES_GetFree();
-
-						if ((j != -1) && (!arxtime.is_paused()) && (rnd() < 0.4f))
-						{
-							ParticleCount++;
-							PARTICLE_DEF * pd	=	&particle[j];
-							pd->exist			=	true;
-							pd->zdec			=	0;
-							pd->ov = pos;
-							pd->move.x			=	(2.f - 4.f * rnd());
-							pd->move.y			=	(2.f - 22.f * rnd());
-							pd->move.z			=	(2.f - 4.f * rnd());
-							pd->siz				=	7.f;
-							pd->tolive			=	Random::get(500, 1500);
-							pd->special			=	FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-							pd->tc				=	fire2;//tc;
-							pd->fparam			=	0.1f - rnd() * 0.2f;
-							pd->scale.x			=	-8.f;
-							pd->scale.y			=	-8.f;
-							pd->scale.z			=	-8.f;
-							pd->timcreation		=	(long)arxtime;
-							pd->rgb = Color3f(.71f, .43f, .29f);
-							pd->delay			=	nn * 180;
-						}
-					}
-
-				}
+			
+			if(io->obj->facelist.empty()) {
+				break;
 			}
+			
+			long notok = 10;
+			size_t num = 0;
+			while(notok-- > 0) {
+				num = Random::get(0, io->obj->facelist.size() - 1);
+				if(io->obj->facelist[num].facetype & POLY_HIDE) {
+					continue;
+				}
+				notok = -1;
+			}
+			
+			if(notok >= 0) {
+				continue;
+			}
+			
+			for(long nn = 0 ; nn < 6 ; nn++) {
+				
+				if(rnd() >= 0.4f) {
+					continue;
+				}
+				
+				PARTICLE_DEF * pd = createParticle();
+				if(!pd) {
+					break;
+				}
+				
+				pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
+				pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+				pd->siz = 7.f;
+				pd->tolive = Random::get(500, 1500);
+				pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+				pd->tc = fire2;
+				pd->fparam = 0.1f - rnd() * 0.2f;
+				pd->scale = Vec3f::repeat(-8.f);
+				pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+				pd->delay = nn * 180;
+			}
+			
 		}
+		
 	}
-
+	
 	ManageIgnition_2(io);
 }
-//-------------------------------------------------------------------------
-void ManageIgnition_2(INTERACTIVE_OBJ * io)
-{
+
+void ManageIgnition_2(Entity * io) {
+	
 	if (!io) return;
 
 	if (io->ignition > 0.f)
@@ -4462,139 +4217,78 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 
 extern EERIE_BACKGROUND * ACTIVEBKG;
 
-void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
-{
-	if (io == NULL) return;
-
-	if (io->ioflags & IO_NPC)
-	{
-		if (io->_npcdata->behavior & BEHAVIOUR_NONE)
-		{
-			io->target.x = io->pos.x;
-			io->target.y = io->pos.y;
-			io->target.z = io->pos.z;
+void GetTargetPos(Entity * io, unsigned long smoothing) {
+	
+	if(!io) {
+		return;
+	}
+	
+	if(io->ioflags & IO_NPC) {
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_NONE) {
+			io->target = io->pos;
 			return;
 		}
-
-		if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-		{
-			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
-			{
+		
+		if(io->_npcdata->behavior & BEHAVIOUR_GO_HOME) {
+			if(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
 				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
-				io->target.x = ACTIVEBKG->anchors[pos].pos.x;
-				io->target.y = ACTIVEBKG->anchors[pos].pos.y;
-				io->target.z = ACTIVEBKG->anchors[pos].pos.z;
-				return;
+				io->target = ACTIVEBKG->anchors[pos].pos;
+			} else {
+				io->target = io->initpos;
 			}
-
-			io->target.x = io->initpos.x;
-			io->target.y = io->initpos.y;
-			io->target.z = io->initpos.z;
 			return;
 		}
-
-		if ((io->_npcdata) && (io->_npcdata->pathfind.listnb != -1) && (io->_npcdata->pathfind.list)
-				&& (!(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)))// Targeting Anchors !
-		{
-			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
-			{
+		
+		if(io->_npcdata && io->_npcdata->pathfind.listnb != -1 && io->_npcdata->pathfind.list
+		   && !(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)) { // Targeting Anchors !
+			if(io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb) {
 				long pos = io->_npcdata->pathfind.list[io->_npcdata->pathfind.listpos];
-				io->target.x = ACTIVEBKG->anchors[pos].pos.x;
-				io->target.y = ACTIVEBKG->anchors[pos].pos.y;
-				io->target.z = ACTIVEBKG->anchors[pos].pos.z;
+				io->target = ACTIVEBKG->anchors[pos].pos;
+			} else if(ValidIONum(io->_npcdata->pathfind.truetarget)) {
+				io->target = entities[io->_npcdata->pathfind.truetarget]->pos;
 			}
-			else if (ValidIONum(io->_npcdata->pathfind.truetarget))
-			{
-				INTERACTIVE_OBJ * ioo = inter.iobj[io->_npcdata->pathfind.truetarget];
-				io->target.x = ioo->pos.x;
-				io->target.y = ioo->pos.y;
-				io->target.z = ioo->pos.z;
-			}
-
-
 			return;
 		}
 	}
-
-
-
-	if (io->targetinfo == TARGET_PATH)
-	{
-		if (io->usepath == NULL)
-		{
-			io->target.x = io->pos.x;
-			io->target.y = io->pos.y;
-			io->target.z = io->pos.z;
+	
+	if(io->targetinfo == TARGET_PATH) {
+		
+		if(!io->usepath) {
+			io->target = io->pos;
 			return;
 		}
-
+		
 		ARX_USE_PATH * aup = io->usepath;
 		aup->_curtime += smoothing + 100;
 		Vec3f tp;
 		long wp = ARX_PATHS_Interpolate(aup, &tp);
-
-		if (wp < 0)
-		{
-			if (io->ioflags & IO_CAMERA)
-				io->_camdata->cam.lastinfovalid = false;
+		if(wp >= 0) {
+			io->target = tp;
+		} else if(io->ioflags & IO_CAMERA) {
+			io->_camdata->cam.lastinfovalid = false;
 		}
-		else
-		{
-
-			io->target.x = tp.x;
-			io->target.y = tp.y;
-			io->target.z = tp.z;
-
-		}
-
+		
 		return;
 	}
-
-	if (io->targetinfo == TARGET_NONE)
-	{
-		io->target.x = io->pos.x;
-		io->target.y = io->pos.y;
-		io->target.z = io->pos.z;
+	
+	if(io->targetinfo == TARGET_NONE) {
+		io->target = io->pos;
 		return;
 	}
-
-
-
-
-
-
-
-
-	if ((io->targetinfo == TARGET_PLAYER) || (io->targetinfo == -1))
-	{
-		io->target.x = player.pos.x;
-		io->target.y = player.pos.y + player.size.y;
-		io->target.z = player.pos.z;
+	
+	if(io->targetinfo == TARGET_PLAYER || io->targetinfo == -1) {
+		io->target = player.pos + Vec3f(0.f, player.size.y, 0.f);
 		return;
-	}
-	else
-	{
-		if (ValidIONum(io->targetinfo))
-		{
-			Vec3f pos;
-
-			if (GetItemWorldPosition(inter.iobj[io->targetinfo], &pos))
-			{
-				io->target.x = pos.x;
-				io->target.y = pos.y;
-				io->target.z = pos.z;
-				return;
-			}
-
-			io->target.x = inter.iobj[io->targetinfo]->pos.x;
-			io->target.y = inter.iobj[io->targetinfo]->pos.y;
-			io->target.z = inter.iobj[io->targetinfo]->pos.z;
+	} else if(ValidIONum(io->targetinfo)) {
+		Vec3f pos;
+		if(GetItemWorldPosition(entities[io->targetinfo], &pos)) {
+			io->target = pos;
 			return;
 		}
+		io->target = entities[io->targetinfo]->pos;
+		return;
 	}
-
-	io->target.x = io->pos.x;
-	io->target.y = io->pos.y;
-	io->target.z = io->pos.z;
+	
+	io->target = io->pos;
 }
-

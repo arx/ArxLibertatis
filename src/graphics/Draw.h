@@ -52,7 +52,6 @@ struct EERIE_3DOBJ;
 struct EERIE_CYLINDER;
 struct TexturedVertex;
 
-extern long ARX_ALTERNATE_3D;
 extern Vec3f SPRmins;
 extern Vec3f SPRmaxs;
 
@@ -79,7 +78,6 @@ void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, Textu
                             Color col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
-void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
 void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos);
 void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * tex, Color col, float Zpos, float rot);
@@ -88,7 +86,6 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color col = Color::none);
 void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 
 extern TextureContainer * EERIE_DRAW_sphere_particle;
-extern TextureContainer * EERIE_DRAW_square_particle;
 
 void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, Color col);
 

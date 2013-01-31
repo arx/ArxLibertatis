@@ -47,8 +47,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_ANCHORS_H
 #define ARX_PHYSICS_ANCHORS_H
 
+#include "math/Vector3.h"
+#include "platform/Flags.h"
+
 struct EERIE_BACKGROUND;
 struct EERIE_CYLINDER;
+
+enum AnchorFlag {
+	ANCHOR_FLAG_GREEN_DRAW = (1<<0),
+	ANCHOR_FLAG_BLOCKED    = (1<<3)
+};
+DECLARE_FLAGS(AnchorFlag, AnchorFlags)
+DECLARE_FLAGS_OPERATORS(AnchorFlags)
+
+struct ANCHOR_DATA {
+	Vec3f pos;
+	short nblinked;
+	AnchorFlags flags;
+	long * linked;
+	float radius;
+	float height;
+};
 
 /*!
  * Clears all Anchor data from a Background

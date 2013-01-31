@@ -49,9 +49,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 
+#include "game/Entity.h"
 #include "graphics/data/Mesh.h"
 #include "platform/Flags.h"
 #include "math/MathFwd.h"
+
+// ARX_COLLISIONS flags (cylinder move)
+enum CollisionFlag {
+	CFLAG_LEVITATE          = (1<<0),
+	CFLAG_NO_INTERCOL       = (1<<1),
+	CFLAG_SPECIAL           = (1<<2),
+	CFLAG_EASY_SLIDING      = (1<<3),
+	CFLAG_CLIMBING          = (1<<4),
+	CFLAG_JUST_TEST         = (1<<5),
+	CFLAG_NPC               = (1<<6),
+	CFLAG_PLAYER            = (1<<7),
+	CFLAG_RETURN_HEIGHT     = (1<<8),
+	CFLAG_EXTRA_PRECISION   = (1<<9),
+	CFLAG_CHECK_VALID_POS   = (1<<10),
+	CFLAG_ANCHOR_GENERATION = (1<<11),
+	CFLAG_COLLIDE_NOCOL     = (1<<12),
+	CFLAG_NO_NPC_COLLIDE    = (1<<13),
+	CFLAG_NO_HEIGHT_MOD     = (1<<14)
+};
+DECLARE_FLAGS(CollisionFlag, CollisionFlags)
+DECLARE_FLAGS_OPERATORS(CollisionFlags)
 
 const size_t MAX_IN_SPHERE = 20;
 
@@ -61,8 +83,8 @@ extern size_t EXCEPTIONS_LIST_Pos;
 extern short EXCEPTIONS_LIST[MAX_IN_SPHERE + 1];
 extern bool DIRECT_PATH;
 
-bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
-float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags = 0);
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, Entity * io, float MOVE_CYLINDER_STEP, CollisionFlags flags = 0);
+float CheckAnythingInCylinder(EERIE_CYLINDER * cyl, Entity * ioo, long flags = 0);
 
 enum CheckAnythingInSphereFlag {
 	 CAS_NO_NPC_COL        = (1<<0),
@@ -84,20 +106,20 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere, long source, long targ = -1)
 //except source...
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere);
  
-bool IsCollidingIO(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
+bool IsCollidingIO(Entity * io, Entity * ioo);
 
 /*!
  * @param ignoreNoCollisionFlag true if the IO_NO_COLLISIONS on the interactive object should be ignored
  */
 bool CheckIOInSphere(EERIE_SPHERE * sphere, long target, bool ignoreNoCollisionFlag = false);
 
-bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, CollisionFlags flags);
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl, Entity * io, CollisionFlags flags);
 bool IO_Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit);
 
-void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io, long status);
+void ANCHOR_BLOCK_By_IO(Entity * io, long status);
 void ANCHOR_BLOCK_Clear();
-float CylinderPlatformCollide(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io);
-bool IsAnyNPCInPlatform(INTERACTIVE_OBJ * pfrm);
-void PushIO_ON_Top(INTERACTIVE_OBJ * ioo, float ydec);
+float CylinderPlatformCollide(EERIE_CYLINDER * cyl, Entity * io);
+bool IsAnyNPCInPlatform(Entity * pfrm);
+void PushIO_ON_Top(Entity * ioo, float ydec);
 
 #endif // ARX_PHYSICS_COLLISIONS_H

@@ -46,6 +46,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 #include "core/Core.h"
 #include "core/GameTime.h"
+#include "game/Entity.h"
+#include "game/EntityManager.h"
+#include "game/Camera.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "gui/Interface.h"
@@ -54,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::string;
 
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern Entity * CAMERACONTROLLER;
 extern long FRAME_COUNT;
 
 namespace script {
@@ -73,7 +76,7 @@ public:
 		
 		DebugScript(' ' << enable);
 		
-		CAMERACONTROLLER = enable ? context.getIO() : NULL;
+		CAMERACONTROLLER = enable ? context.getEntity() : NULL;
 		
 		return Success;
 	}
@@ -100,7 +103,7 @@ public:
 		
 		FRAME_COUNT = 0;
 		
-		INTERACTIVE_OBJ * t = inter.getById(target, context.getIO());
+		Entity * t = entities.getById(target, context.getEntity());
 		
 		if(!t || !(t->ioflags & IO_CAMERA)) {
 			return Failed;
@@ -128,7 +131,7 @@ public:
 		
 		DebugScript(' ' << smoothing);
 		
-		context.getIO()->_camdata->cam.smoothing = smoothing;
+		context.getEntity()->_camdata->cam.smoothing = smoothing;
 		
 		return Success;
 	}
@@ -173,7 +176,7 @@ public:
 		
 		DebugScript(' ' << focal);
 		
-		context.getIO()->_camdata->cam.focal = focal;
+		context.getEntity()->_camdata->cam.focal = focal;
 		
 		return Success;
 	}
@@ -194,7 +197,7 @@ public:
 		
 		DebugScript(' ' << x << ' ' << y << ' ' << z);
 		
-		context.getIO()->_camdata->cam.translatetarget = Vec3f(x, y, z);
+		context.getEntity()->_camdata->cam.translatetarget = Vec3f(x, y, z);
 		
 		return Success;
 	}

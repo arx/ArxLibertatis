@@ -50,11 +50,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <vector>
 
-#include "game/Equipment.h"
-#include "game/NPC.h"
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include "game/Damage.h"
-#include "game/Player.h"
+#include "game/EntityManager.h"
+#include "game/Equipment.h"
 #include "game/Inventory.h"
+#include "game/Item.h"
+#include "game/NPC.h"
+#include "game/Player.h"
 #include "game/Spells.h"
 
 #include "gui/Interface.h"
@@ -77,7 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Collisions.h"
 
-#include "platform/String.h"
 #include "platform/Platform.h"
 
 #include "scene/Object.h"
@@ -170,51 +174,30 @@ void ARX_EQUIPMENT_Release(long id)
 	}
 }
 
-//***********************************************************************************************
 // Releases Equipment Structure
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
-static void ARX_EQUIPMENT_ReleaseEquipItem(INTERACTIVE_OBJ * io)
-{
-	if (!io) return;
-
-	if (!(io->ioflags & IO_ITEM)) return;
-
-	if (io->_itemdata->equipitem)
-	{
-		free(io->_itemdata->equipitem);
-		io->_itemdata->equipitem = NULL;
+void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
+	
+	if(!io || !(io->ioflags & IO_ITEM)) {
+		return;
 	}
+	
+	free(io->_itemdata->equipitem), io->_itemdata->equipitem = NULL;
 }
 
-//***********************************************************************************************
-// Releases all id equipments in IO io
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
-void ARX_EQUIPMENT_ReleaseAll(INTERACTIVE_OBJ * io)
-{
-	if (io)
-		ARX_EQUIPMENT_ReleaseEquipItem(io);
-}
 extern long EXITING;
-//***********************************************************************************************
+
 // Recreates player mesh from scratch
-//***********************************************************************************************
-
-
 static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selection) {
 	
 	if(!player.equiped[equip] || !ValidIONum(player.equiped[equip])) {
 		return;
 	}
 	
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 	
-	arx_assert(inter.iobj[player.equiped[equip]]->tweakerinfo != NULL);
+	arx_assert(entities[player.equiped[equip]]->tweakerinfo != NULL);
 	
-	const IO_TWEAKER_INFO & tweak = *inter.iobj[player.equiped[equip]]->tweakerinfo;
+	const IO_TWEAKER_INFO & tweak = *entities[player.equiped[equip]]->tweakerinfo;
 	
 	if(!tweak.filename.empty()) {
 		res::path mesh = "graph/obj3d/interactive/npc/human_base/tweaks" / tweak.filename;
@@ -269,7 +252,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 		return;
 	}
 	
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 	if(!io) {
 		return;
 	}
@@ -283,8 +266,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	applyTweak(EQUIP_SLOT_ARMOR, TWEAK_TORSO, "chest");
 	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
 	
-	INTERACTIVE_OBJ * target = inter.iobj[0];
-	INTERACTIVE_OBJ * toequip = NULL;
+	Entity * target = entities.player();
+	Entity * toequip = NULL;
 
 	if (!target) return;
 
@@ -293,7 +276,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			toequip = inter.iobj[player.equiped[i]];
+			toequip = entities[player.equiped[i]];
 
 			if (toequip)
 			{
@@ -328,18 +311,18 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 
 	if (EXTERNALVIEW)
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
 	}
 	else 
 	{
-		ARX_INTERACTIVE_Show_Hide_1st(inter.iobj[0], 1);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 
-	ARX_INTERACTIVE_HideGore(inter.iobj[0], 1);
+	ARX_INTERACTIVE_HideGore(entities.player(), 1);
 	EERIE_Object_Precompute_Fast_Access(hero);
-	EERIE_Object_Precompute_Fast_Access(inter.iobj[0]->obj);
+	EERIE_Object_Precompute_Fast_Access(entities.player()->obj);
 
-	ARX_INTERACTIVE_RemoveGoreOnIO(inter.iobj[0]); 
+	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player()); 
 }
 
 void ARX_EQUIPMENT_UnEquipAllPlayer()
@@ -348,7 +331,7 @@ void ARX_EQUIPMENT_UnEquipAllPlayer()
 	{
 		if ((player.equiped[i]) && (ValidIONum(player.equiped[i])))
 		{
-			ARX_EQUIPMENT_UnEquip(inter.iobj[0], inter.iobj[player.equiped[i]]);
+			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]]);
 		}
 	}
 
@@ -356,20 +339,20 @@ void ARX_EQUIPMENT_UnEquipAllPlayer()
 }
 
 
-bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO)
+bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO)
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 
 	if (io == NULL) return false;
 
-	if (io != inter.iobj[0]) return false;
+	if (io != entities.player()) return false;
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
 		if ((player.equiped[i] != 0) &&
 		        ValidIONum(player.equiped[i]))
 		{
-			INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = entities[player.equiped[i]];
 
 			if (toequip == _pIO)
 			{
@@ -385,41 +368,37 @@ bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO)
 //***********************************************************************************************
 // flags & 1 == destroyed !
 //***********************************************************************************************
-void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip, long flags)
+void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 {
 	if (target == NULL) return;
 
 	if (tounequip == NULL) return;
 
-	if (target != inter.iobj[0]) return;
+	if (target != entities.player()) return;
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i])
-		        &&	(inter.iobj[player.equiped[i]] == tounequip))
+		        &&	(entities[player.equiped[i]] == tounequip))
 		{
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
 			ARX_EQUIPMENT_Release(player.equiped[i]);
 			target->bbox1.x = 9999;
 			target->bbox2.x = -9999;
-
-			if (!flags & 1)
-			{
-				if (DRAGINTER == NULL)
-				{
+			
+			if(!flags & 1) {
+				if(DRAGINTER == NULL) {
 					ARX_SOUND_PlayInterface(SND_INVSTD);
 					Set_DragInter(tounequip);
-				}
-				else if (!CanBePutInInventory(tounequip))
-				{
-					PutInFrontOfPlayer(tounequip);
+				} else {
+					giveToPlayer(tounequip);
 				}
 			}
-
+			
 			EVENT_SENDER = tounequip;
-			SendIOScriptEvent(inter.iobj[0], SM_EQUIPOUT);
-			EVENT_SENDER = inter.iobj[0];
+			SendIOScriptEvent(entities.player(), SM_EQUIPOUT);
+			EVENT_SENDER = entities.player();
 			SendIOScriptEvent(tounequip, SM_EQUIPOUT);
 		}
 	}
@@ -433,8 +412,8 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 //***********************************************************************************************
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 {
-	INTERACTIVE_OBJ * target = inter.iobj[0];
-	INTERACTIVE_OBJ * toequip = NULL;
+	Entity * target = entities.player();
+	Entity * toequip = NULL;
 
 	if (!target) return;
 
@@ -443,7 +422,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			toequip = inter.iobj[player.equiped[i]];
+			toequip = entities[player.equiped[i]];
 
 			if (toequip)
 			{
@@ -465,8 +444,8 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 //***********************************************************************************************
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 {
-	INTERACTIVE_OBJ * target = inter.iobj[0];
-	INTERACTIVE_OBJ * toequip = NULL;
+	Entity * target = entities.player();
+	Entity * toequip = NULL;
 
 	if (!target) return;
 
@@ -475,7 +454,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			toequip = inter.iobj[player.equiped[i]];
+			toequip = entities[player.equiped[i]];
 
 			if (toequip)
 			{
@@ -504,14 +483,14 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 //***********************************************************************************************
 long ARX_EQUIPMENT_GetPlayerWeaponType()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 
 	if (!io) return WEAPON_BARE;
 
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 	        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 	{
-		INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
+		Entity * toequip = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 		if (toequip)
 		{
@@ -531,7 +510,7 @@ long ARX_EQUIPMENT_GetPlayerWeaponType()
 //***********************************************************************************************
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 
 	if (!io) return;
 
@@ -569,7 +548,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 }
 //***********************************************************************************************
 //***********************************************************************************************
-float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_target, float ratioaim, Vec3f * position)
+float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * position)
 {
 	EVENT_SENDER = io_source;
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
@@ -582,12 +561,12 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	{
 		if (io_target->ioflags & IO_FIX)
 		{
-			if (io_source == inter.iobj[0])
+			if (io_source == entities.player())
 				ARX_DAMAGES_DamageFIX(io_target, player.Full_damages, 0, 0);
 			else if (io_source->ioflags & IO_NPC)
-				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, GetInterNum(io_source), 0);
+				ARX_DAMAGES_DamageFIX(io_target, io_source->_npcdata->damages, io_source->index(), 0);
 			else
-				ARX_DAMAGES_DamageFIX(io_target, 1, GetInterNum(io_source), 0);
+				ARX_DAMAGES_DamageFIX(io_target, 1, io_source->index(), 0);
 		}
 
 		return 0.f;
@@ -604,10 +583,10 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	bool critical = false;
 
-	if(io_source == inter.iobj[0]) {
+	if(io_source == entities.player()) {
 		
 		if(player.equiped[EQUIP_SLOT_WEAPON] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
-			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
+			Entity * io = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 			if(io && !io->weaponmaterial.empty()) {
 				wmat = &io->weaponmaterial;
 			}
@@ -642,7 +621,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		}
 		
 		if(io_source->_npcdata->weapon != NULL) {
-			INTERACTIVE_OBJ * iow = io_source->_npcdata->weapon;
+			Entity * iow = io_source->_npcdata->weapon;
 			if(!iow->weaponmaterial.empty()) {
 				wmat = &iow->weaponmaterial;
 			}
@@ -651,11 +630,6 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		attack = io_source->_npcdata->tohit;
 		
 		damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
-#ifdef BUILD_EDITOR
-		if(GAME_EDITOR) {
-			damages = io_source->_npcdata->damages * ratioaim;
-		}
-#endif
 
 		long value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
 
@@ -680,7 +654,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	float absorb;
 
-	if (io_target == inter.iobj[0])
+	if (io_target == entities.player())
 	{
 		ac = player.Full_armor_class;
 		absorb = player.Full_Skill_Defense * ( 1.0f / 2 );
@@ -698,112 +672,73 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 			absorb *= modif;
 		}
 	}
-
-
+	
 	if(!io_target->armormaterial.empty()) {
 		amat = &io_target->armormaterial;
 	}
-
-	if(io_target == inter.iobj[0]) {
-		if(player.equiped[EQUIP_SLOT_ARMOR] > 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
-			INTERACTIVE_OBJ * io = inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]];
+	
+	if(io_target == entities.player()) {
+		if(player.equiped[EQUIP_SLOT_ARMOR] > 0
+		   && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
+			Entity * io = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 			if(io && !io->armormaterial.empty()) {
 				amat = &io->armormaterial;
 			}
 		}
 	}
-
-	float dmgs = damages * backstab;
-	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
-
-	Vec3f pos;
-	pos.x = io_target->pos.x;
-	pos.y = io_target->pos.y;
-	pos.z = io_target->pos.z;
-	float power;
-	power = dmgs * ( 1.0f / 20 );
-
-	if (power > 1.f) power = 1.f;
 	
-	power = power * 0.1f + 0.9f;
+	float dmgs = damages * backstab;
+	dmgs -= dmgs * absorb * 0.01f;
+	
+	Vec3f pos = io_target->pos;
+	float power = std::min(1.f, dmgs * 0.05f) * 0.1f + 0.9f;
 	
 	ARX_SOUND_PlayCollision(*amat, *wmat, power, 1.f, &pos, io_source);
-
-
+	
 	float chance = 100.f - (ac - attack); 
-	float dice = rnd() * 100.f;
-
-	if (dice <= chance) 
-	{
-		ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
-
-		Vec3f pos;
-		pos.x = io_target->pos.x;
-		pos.y = io_target->pos.y + io_target->physics.cyl.height * ( 1.0f / 2 );
-		pos.z = io_target->pos.z;
-
-
-		if (dmgs > 0.f)
-		{
-			if (critical)
-			{
-				dmgs *= 1.5f; 
-			}
-
-			if (io_target == inter.iobj[0])
-			{
-				Vec3f ppos;
-				ppos.x = io_source->pos.x - player.pos.x;
-				ppos.y = io_source->pos.y - player.pos.y - PLAYER_BASE_HEIGHT;
-				ppos.z = io_source->pos.z - player.pos.z;
-				fnormalize(ppos);
-
-				//------- player push START
-				Vec3f push = ppos;
-				push.x *= -dmgs * ( 1.0f / 11 );
-				push.y *= -dmgs * ( 1.0f / 30 );
-				push.z *= -dmgs * ( 1.0f / 11 );
-				PUSH_PLAYER_FORCE += push;
-				//------- player push END
-
-				ppos *= 60.f;
-				ppos += ACTIVECAM->pos;
-				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
-				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
-			}
-			else
-			{
-
-				Vec3f ppos;
-				ppos.x = io_source->pos.x - io_target->pos.x;
-				ppos.y = io_source->pos.y - io_target->pos.y;
-				ppos.z = io_source->pos.z - io_target->pos.z;
-
-				if (io_target == inter.iobj[0]) ppos.y -= PLAYER_BASE_HEIGHT;
-
-				fnormalize(ppos);
-
-				//------- player NPC START
-				Vec3f push = ppos;
-				push *= -dmgs;
-				io_target->forcedmove += push;
-
-				//------- player NPC END
-				if (position)
-					ARX_DAMAGES_DamageNPC(io_target, dmgs, GetInterNum(io_source), 0, position);
-				else
-					ARX_DAMAGES_DamageNPC(io_target, dmgs, GetInterNum(io_source), 0, &io_target->pos);
-			}
-		}
-
-		return dmgs;
+	if(rnd() * 100.f > chance) {
+		return 0.f;
 	}
-
-
-	return 0.f;
+	
+	ARX_SOUND_PlayCollision("flesh", *wmat, power, 1.f, &pos, io_source);
+	
+	if(dmgs > 0.f) {
+		
+		if(critical) {
+			dmgs *= 1.5f; 
+		}
+		
+		if(io_target == entities.player()) {
+			
+			// TODO should this be player.pos - player.baseOffset() = player.basePosition()?
+			Vec3f ppos = io_source->pos - (player.pos + player.baseOffset());
+			fnormalize(ppos);
+			
+			// Push the player
+			PUSH_PLAYER_FORCE += ppos * -dmgs * Vec3f(1.0f / 11, 1.0f / 30, 1.0f / 11);
+			
+			ppos *= 60.f;
+			ppos += ACTIVECAM->pos;
+			ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
+			ARX_DAMAGES_DamagePlayerEquipment(dmgs);
+			
+		} else {
+			
+			Vec3f ppos = io_source->pos - io_target->pos;
+			fnormalize(ppos);
+			
+			// Push the NPC
+			io_target->forcedmove += ppos * -dmgs;
+			
+			Vec3f * pos = position ? position : &io_target->pos;
+			ARX_DAMAGES_DamageNPC(io_target, dmgs, io_source->index(), 0, pos);
+		}
+	}
+	
+	return dmgs;
 }
 
-static float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val) {
+static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 	
 	if ((!io) || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem) return -1;
 
@@ -822,16 +757,12 @@ static float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val) {
 // flags & 1 = blood spawn only
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float ratioaim, long flags, long targ)
+bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ratioaim, long flags, long targ)
 {
 	
-#ifdef BUILD_EDITOR
-	if (TRUEFIGHT) ratioaim = 1.f;
-#endif
-	
 	bool ret = false;
-	long source = GetInterNum(io_source);
-	long weapon = GetInterNum(io_weapon);
+	long source = (io_source == NULL) ? -1 : io_source->index();
+	long weapon = io_weapon->index();
 	EERIE_SPHERE sphere;
 
 	Vec3f * v0;
@@ -849,12 +780,10 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
 		if (rad == -1) continue;
-
+		
 		v0 = &io_weapon->obj->vertexlist3[io_weapon->obj->actionlist[j].idx].v;
-		sphere.origin.x = v0->x;
-		sphere.origin.y = v0->y;
-		sphere.origin.z = v0->z;
-	
+		sphere.origin = *v0;
+		
 		sphere.radius = rad; 
 
 		if (source != 0) sphere.radius += 15.f;
@@ -864,7 +793,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 			for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
 			{
 				if (ValidIONum(EVERYTHING_IN_SPHERE[jj])
-				        && (!(inter.iobj[EVERYTHING_IN_SPHERE[jj]]->ioflags & IO_BODY_CHUNK)))
+				        && (!(entities[EVERYTHING_IN_SPHERE[jj]]->ioflags & IO_BODY_CHUNK)))
 				{
 					long HIT_SPARK = 0;
 					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = EVERYTHING_IN_SPHERE[jj];
@@ -872,17 +801,14 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 					if (EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE) EXCEPTIONS_LIST_Pos--;
 
-					INTERACTIVE_OBJ * target = inter.iobj[EVERYTHING_IN_SPHERE[jj]];
+					Entity * target = entities[EVERYTHING_IN_SPHERE[jj]];
 			
 					Vec3f	pos;
 					Color color = Color::white;
 					long		hitpoint	=	-1;
 					float		curdist		=	999999.f;
 					
-					Vec3f vector;
-					vector.x = sphere.origin.x - target->pos.x;
-					vector.y = (sphere.origin.y - target->pos.y) * ( 1.0f / 2 );
-					vector.z = sphere.origin.z - target->pos.z;
+					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 					vector.normalize();
 
 					for (size_t ii = 0; ii < target->obj->facelist.size(); ii++)
@@ -943,7 +869,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							}
 						}
 
-						if (io_source == inter.iobj[0])
+						if (io_source == entities.player())
 						{
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 0.2f);
 						}
@@ -991,7 +917,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							ARX_NPC_SpawnAudibleSound(&pos, io_source);
 
-							if (io_source == inter.iobj[0])
+							if (io_source == entities.player())
 								HIT_SPARK = 1;
 						}
 					}
@@ -1036,19 +962,14 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							HIT_SPARK = 1;
 					}
 
-					if (HIT_SPARK)
-					{
-						if (!(io_source->aflags & IO_NPC_AFLAG_HIT_BACKGROUND))
-						{
+					if(HIT_SPARK) {
+						if(!io_source->isHit) {
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
-							io_source->aflags |= IO_NPC_AFLAG_HIT_BACKGROUND;
-
-							if (!ValidIONum(weapon))
-							{
+							io_source->isHit = true;
+							
+							if(!ValidIONum(weapon)) {
 								io_weapon = NULL;
-							}
-							else
-							{
+							} else {
 								string _weapon_material = "metal";
 								const string * weapon_material = &_weapon_material;
 
@@ -1072,12 +993,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
 		if (ep)
 		{
-			if (io_source == inter.iobj[0])
+			if (io_source == entities.player())
 			{
-				if (!(io_source->aflags & IO_NPC_AFLAG_HIT_BACKGROUND))
-				{
+				if(!io_source->isHit) {
+					
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
-					io_source->aflags |= IO_NPC_AFLAG_HIT_BACKGROUND;
+					io_source->isHit = true;
 
 					if (!ValidIONum(weapon))
 					{
@@ -1114,7 +1035,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 //***********************************************************************************************
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 
 	if (!io) return;
 
@@ -1159,14 +1080,14 @@ void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 	        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 	{
-		INTERACTIVE_OBJ * pioOldDragInter;
+		Entity * pioOldDragInter;
 		pioOldDragInter = DRAGINTER;
-		DRAGINTER = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
+		DRAGINTER = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
 		if (DRAGINTER)
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 
-		ARX_EQUIPMENT_UnEquip(inter.iobj[0], inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]);
+		ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[EQUIP_SLOT_WEAPON]]);
 		DRAGINTER = pioOldDragInter;
 	}
 
@@ -1178,20 +1099,18 @@ bool bRing = false;
 //***********************************************************************************************
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
+void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 {
 	if (!target) return;
 
 	if (!toequip) return;
 
-	if (target != inter.iobj[0]) return;
+	if (target != entities.player()) return;
 
 	long validid = -1;
 
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] == toequip)
-		{
+	for(size_t i = 0; i < entities.size(); i++) {
+		if(entities[i] == toequip) {
 			validid = i;
 			break;
 		}
@@ -1214,7 +1133,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		{
-			ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]);
+			ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_WEAPON]]);
 		}
 
 		player.equiped[EQUIP_SLOT_WEAPON] = (short)validid;
@@ -1232,7 +1151,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		{
 			if (player.equiped[EQUIP_SLOT_SHIELD] != 0)
 			{
-				ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_SHIELD]]);
+				ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_SHIELD]]);
 			}
 		}
 	}
@@ -1241,7 +1160,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		if ((player.equiped[EQUIP_SLOT_SHIELD] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_SHIELD]))
 		{
-			ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_SHIELD]]);
+			ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_SHIELD]]);
 		}
 
 		player.equiped[EQUIP_SLOT_SHIELD] = (short)validid;
@@ -1250,18 +1169,18 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		{
-			if ((inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) ||
-			        (inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_BOW))
+			if ((entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) ||
+			        (entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_BOW))
 			{
-				ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]]);
+				ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_WEAPON]]);
 			}
 		}
 	}
 	else if (toequip->type_flags & OBJECT_TYPE_RING)
 	{
 		// check first, if not already equiped
-		if (!((ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]) && (toequip == inter.iobj[player.equiped[EQUIP_SLOT_RING_LEFT]]))
-		        ||	(ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]) && (toequip == inter.iobj[player.equiped[EQUIP_SLOT_RING_RIGHT]]))))
+		if (!((ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]) && (toequip == entities[player.equiped[EQUIP_SLOT_RING_LEFT]]))
+		        ||	(ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]) && (toequip == entities[player.equiped[EQUIP_SLOT_RING_RIGHT]]))))
 		{
 			long willequip = -1;
 
@@ -1274,14 +1193,14 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 				if (bRing)
 				{
 					if (ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]))
-						ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_RING_RIGHT]]);
+						ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_RING_RIGHT]]);
 
 					willequip = EQUIP_SLOT_RING_RIGHT;
 				}
 				else
 				{
 					if (ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]))
-						ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_RING_LEFT]]);
+						ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_RING_LEFT]]);
 
 					willequip = EQUIP_SLOT_RING_LEFT;
 				}
@@ -1297,7 +1216,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		if ((player.equiped[EQUIP_SLOT_ARMOR] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
 		{
-			ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_ARMOR]]);
+			ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_ARMOR]]);
 		}
 
 		player.equiped[EQUIP_SLOT_ARMOR] = (short)validid;
@@ -1307,7 +1226,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		if ((player.equiped[EQUIP_SLOT_LEGGINGS] != 0)
 		        &&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
 		{
-			ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_LEGGINGS]]);
+			ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_LEGGINGS]]);
 		}
 
 		player.equiped[EQUIP_SLOT_LEGGINGS] = (short)validid;
@@ -1317,7 +1236,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 		if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
 		        &&	(ValidIONum(player.equiped[EQUIP_SLOT_HELMET])))
 		{
-			ARX_EQUIPMENT_UnEquip(target, inter.iobj[player.equiped[EQUIP_SLOT_HELMET]]);
+			ARX_EQUIPMENT_UnEquip(target, entities[player.equiped[EQUIP_SLOT_HELMET]]);
 		}
 
 		player.equiped[EQUIP_SLOT_HELMET] = (short)validid;
@@ -1331,7 +1250,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-bool ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ & io, const string & temp, bool set) {
+bool ARX_EQUIPMENT_SetObjectType(Entity & io, const string & temp, bool set) {
 	
 	ItemType flag = ARX_EQUIPMENT_GetObjectTypeFlag(temp);
 	
@@ -1388,7 +1307,7 @@ void ARX_EQUIPMENT_Init()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io)
+void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 {
 	if (!io) return;
 
@@ -1403,11 +1322,12 @@ void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io)
 // Sets an equipment property
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-float ARX_EQUIPMENT_Apply(INTERACTIVE_OBJ * io, long ident, float trueval)
-{
+float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
+                          float trueval) {
+	
 	if (io == NULL) return trueval;
 
-	if (io != inter.iobj[0]) return trueval;
+	if (io != entities.player()) return trueval;
 
 	float toadd = 0;
 
@@ -1416,13 +1336,13 @@ float ARX_EQUIPMENT_Apply(INTERACTIVE_OBJ * io, long ident, float trueval)
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = entities[player.equiped[i]];
 
 			if ((toequip) && (toequip->ioflags & IO_ITEM) && (toequip->_itemdata->equipitem))
 			{
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
 
-				if (!(elem->flags & 1)) 
+				if (!(elem->flags & IO_ELEMENT_FLAG_PERCENT)) 
 					toadd += elem->value;
 			}
 		}
@@ -1431,11 +1351,12 @@ float ARX_EQUIPMENT_Apply(INTERACTIVE_OBJ * io, long ident, float trueval)
 	return toadd;
 }
 
-float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval)
-{
+float ARX_EQUIPMENT_ApplyPercent(Entity * io, EquipmentModifierType ident,
+                                 float trueval) {
+	
 	if (io == NULL) return trueval;
 
-	if (io != inter.iobj[0]) return trueval;
+	if (io != entities.player()) return trueval;
 
 	float toadd = 0;
 
@@ -1444,13 +1365,13 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = entities[player.equiped[i]];
 
 			if ((toequip) && (toequip->ioflags & IO_ITEM) && (toequip->_itemdata->equipitem))
 			{
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
 
-				if (elem->flags & 1) // percentile value...
+				if (elem->flags & IO_ELEMENT_FLAG_PERCENT) // percentile value...
 				{
 					toadd += elem->value;
 				}
@@ -1461,8 +1382,10 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 	return (toadd * trueval * ( 1.0f / 100 ));
 }
 
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, bool special, const std::string & param2, float val, short flags)
-{
+void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
+                            const std::string & param2, float val,
+                            EquipmentModifierFlags flags) {
+	
 	if (io == NULL) return;
 
 	if (!(io->ioflags & IO_ITEM)) return;
@@ -1503,7 +1426,7 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, bool special, const std::strin
 		for(long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++) {
 			if(param2 == equipinfo[i].name) {
 				io->_itemdata->equipitem->elements[i].value = val;
-				io->_itemdata->equipitem->elements[i].special = 0;
+				io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_NONE;
 				io->_itemdata->equipitem->elements[i].flags = flags;
 				return;
 			}
@@ -1514,18 +1437,18 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, bool special, const std::strin
 //-----------------------------------------------------------------------------
 void ARX_EQUIPMENT_IdentifyAll()
 {
-	INTERACTIVE_OBJ * io = inter.iobj[0];
+	Entity * io = entities.player();
 
 	if (io == NULL) return;
 
-	if (io != inter.iobj[0]) return;
+	if (io != entities.player()) return;
 
 	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
 		{
-			INTERACTIVE_OBJ * toequip = inter.iobj[player.equiped[i]];
+			Entity * toequip = entities[player.equiped[i]];
 
 			if ((toequip) && (toequip->ioflags & IO_ITEM) && (toequip->_itemdata->equipitem))
 			{
@@ -1538,20 +1461,15 @@ void ARX_EQUIPMENT_IdentifyAll()
 		}
 	}
 }
-float GetHitValue( const std::string& name)
-{
-	long len = name.length();
 
-	if (len < 5) return -1;
-
-	if ((name[0] == 'h')
-	        && (name[1] == 'i')
-	        && (name[2] == 't')
-	        && (name[3] == '_'))
-	{
-		long val = atoi( name.substr(4) ); // Get the number after the first 4 characters in the string
-		return (float)val;
+float GetHitValue( const std::string & name) {
+	
+	if(boost::starts_with(name, "hit_")) {
+		// Get the number after the first 4 characters in the string
+		try {
+			return float(boost::lexical_cast<long>(name.substr(4)));
+		} catch(...) { /* ignore */ }
 	}
-
+	
 	return -1;
 }

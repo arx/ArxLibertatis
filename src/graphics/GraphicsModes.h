@@ -47,6 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Color.h"
 #include "platform/Flags.h"
 
+const float fZFogStart = 0.3f;
+const float fZFogEnd = 0.5f;
+
 enum GMODFlag {
 	GMOD_DCOLOR = (1<<0),
 	GMOD_ZCLIP  = (1<<1)

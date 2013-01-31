@@ -21,7 +21,7 @@
 
 #include <list>
 
-// TODO(broken-wine) wine's d3dx9math.h requires min and max but doesn't include them!
+// MinGW's d3dx9math.h requires min and max but doesn't include them!
 #include <algorithm>
 using std::max;
 using std::min;
@@ -156,7 +156,7 @@ UINT GetNumberOfPrimitives(Renderer::Primitive primitive, UINT nindices) {
 #define D3DFVF_LVERTEX		D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1
 #define D3DFVF_TLVERTEX		D3DFVF_XYZRHW | D3DFVF_DIFFUSE  |D3DFVF_SPECULAR | D3DFVF_TEX1
 
-typedef struct _D3DLVERTEX {
+typedef struct D3DLVERTEX {
     union {
        float x;
        float dvX;
@@ -185,13 +185,13 @@ typedef struct _D3DLVERTEX {
         float tv;
         float dvTV;
     };
-    _D3DLVERTEX() { }
-    _D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
+    D3DLVERTEX() { }
+    D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
         { x = v.x; y = v.y; z = v.z; 
           color = col; specular = spec;
           tu = _tu; tv = _tv;
     }
-} D3DLVERTEX, *LPD3DLVERTEX;
+} *LPD3DLVERTEX;
 
 
 
@@ -274,19 +274,19 @@ void D3D9Renderer::EndScene() {
 }
 
 void D3D9Renderer::SetViewMatrix(const EERIEMATRIX & matView) {
-	GD3D9Device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&matView);
+	GD3D9Device->SetTransform(D3DTS_VIEW, (const D3DMATRIX *)&matView);
 }
 
 void D3D9Renderer::GetViewMatrix(EERIEMATRIX & matView) const {
-	GD3D9Device->GetTransform(D3DTS_VIEW, (D3DMATRIX*)&matView);
+	GD3D9Device->GetTransform(D3DTS_VIEW, (D3DMATRIX *)&matView);
 }
 
 void D3D9Renderer::SetProjectionMatrix(const EERIEMATRIX & matProj) {
-	GD3D9Device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&matProj);
+	GD3D9Device->SetTransform(D3DTS_PROJECTION, (const D3DMATRIX *)&matProj);
 }
 
 void D3D9Renderer::GetProjectionMatrix(EERIEMATRIX & matProj) const {
-	GD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&matProj);
+	GD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DMATRIX *)&matProj);
 }
 
 D3D9Renderer::~D3D9Renderer()
@@ -323,7 +323,9 @@ void D3D9Renderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFact
 }
 
 void D3D9Renderer::SetViewport(const Rect & viewport) {
-	D3DVIEWPORT9 tmpViewport = { viewport.left, viewport.top, viewport.width(), viewport.height(), 0.f, 1.f };
+	D3DVIEWPORT9 tmpViewport = { DWORD(viewport.left), DWORD(viewport.top),
+	                             DWORD(viewport.width()), DWORD(viewport.height()),
+	                             0.f, 1.f };
 	GD3D9Device->SetViewport(&tmpViewport);
 }
 
@@ -380,9 +382,9 @@ static D3DMATRIX * DX9MatrixOrthoOffCenterLH(D3DMATRIX * pout, float l, float r,
 	return pout;
 }
 
-D3DMATRIX g_MatProj;
-D3DMATRIX g_MatWorld;
-D3DMATRIX g_MatView;
+static D3DMATRIX g_MatProj;
+static D3DMATRIX g_MatWorld;
+static D3DMATRIX g_MatView;
 
 void D3D9Renderer::Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar) {
 	
@@ -523,7 +525,7 @@ void D3D9Renderer::drawIndexed(Primitive primitive, const TexturedVertex * verti
 
 	GD3D9Device->SetFVF(D3DFVF_TLVERTEX);
 	HRESULT hr = GD3D9Device->DrawIndexedPrimitiveUP(type, 0, nvertices, numPrimitives, indices, D3DFMT_INDEX16, vertices, sizeof(TexturedVertex));
-	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveUP failed: %08x", hr);
+	arx_assert_msg(SUCCEEDED(hr), "DrawIndexedPrimitiveUP failed: %08lx", hr);
 	ARX_UNUSED(hr);
 	
 }

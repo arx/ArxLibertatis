@@ -24,10 +24,10 @@
 
 #include "Configure.h"
 
-#ifdef HAVE_WINAPI
+#ifdef ARX_HAVE_WINAPI
 // Win32
 #include <winsock2.h>
-#endif // HAVE_WINAPI
+#endif // ARX_HAVE_WINAPI
 
 // BOOST
 #define BOOST_DATE_TIME_NO_LIB

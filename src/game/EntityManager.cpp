@@ -40,43 +40,101 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 
-#ifndef ARX_GRAPHICS_SPELLS_SPELLS08_H
-#define ARX_GRAPHICS_SPELLS_SPELLS08_H
+#include "game/EntityManager.h"
 
-#include "graphics/effects/SpellEffects.h"
+#include <cstdlib>
+#include <algorithm>
 
-// Done By : Sébastien Scieux
-class CExplosion: public CSpellFx
-{
-	private:
-		short		key;
-		Vec3f	pos;
-		float		rout, rin, scale, puissance;
-		float		ang;
-		TextureContainer * tp, *tp2;
+#include "game/Entity.h"
+#include "platform/Platform.h"
 
-		int				disquenbvertex;
-		int				disquenbfaces;
-		Vec3f	*	disquevertex;
-		TexturedVertex	*	disqued3d;
-		unsigned short	* disqueind;
+EntityManager entities;
 
-		int		*		tactif;
+EntityManager::EntityManager() : minfree(0) { }
 
+EntityManager::~EntityManager() {
+	
+#ifdef _DEBUG
+	for(size_t i = 0; i < size(); i++) {
+		arx_assert_msg(entries[i] == NULL,
+		               "object %lu not cleared", (unsigned long)i);
+	}
+#endif // _DEBUG
+	
+}
 
- 
-		void ExplosionAddParticule(int, TexturedVertex *, TextureContainer *);
-		void Collision(int, Vec3f *, Vec3f *);
-	public:
- 
-		~CExplosion();
+void EntityManager::init() {
+	arx_assert(size() == 0);
+	entries.resize(1);
+	entries[0] = NULL;
+	minfree = 0;
+}
 
- 
-		void	Update(unsigned long);
-		float	Render();
-		void	Kill();
-};
+void EntityManager::clear() {
+	
+	// Free all entities, ignoring the player.
+	for(size_t i = 1; i < size(); i++) {
+		delete entries[i];
+		arx_assert(entries[i] == NULL);
+	}
+	
+	entries.resize(1);
+	minfree = 0;
+}
 
-#endif // ARX_GRAPHICS_SPELLS_SPELLS08_H
+long EntityManager::getById(const std::string & name) const {
+	
+	if(name.empty() || name == "none") {
+		return -1;
+	} else if(name == "self" || name == "me") {
+		return -2;
+	} else if(name == "player") {
+		return 0; // player is an IO with index 0
+	}
+	
+	for(size_t i = 0 ; i < size() ; i++) {
+		if(entries[i] != NULL && entries[i]->ident > -1) {
+			// TODO this check is inefficient!
+			if(name == entries[i]->long_name()) {
+				return i;
+			}
+		}
+	}
+	
+	return -1;
+}
+
+Entity * EntityManager::getById(const std::string & name, Entity * self) const {
+	long index = getById(name);
+	return (index == -1) ? NULL : (index == -2) ? self : entries[index]; 
+}
+
+size_t EntityManager::add(Entity * entity) {
+	
+	for(size_t i = minfree; i < size(); i++) {
+		if(entries[i] == NULL) {
+			entries[i] = entity;
+			minfree = i + 1;
+			return i;
+		}
+	}
+	
+	size_t i = size();
+	entries.push_back(entity);
+	minfree = i + 1;
+	return i;
+}
+
+void EntityManager::remove(size_t index) {
+	
+	arx_assert_msg(index < size() && entries[index] != NULL,
+	               "double free or memory corruption detected: index=%lu",
+	               (unsigned long)index);
+	
+	if(index < minfree) {
+		minfree = index;
+	}
+	
+	entries[index] = NULL;
+}
