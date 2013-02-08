@@ -2865,17 +2865,9 @@ void ARX_SCENE_Render(long flag) {
 	FRAME_COUNT=0;
 
 	if ((FRAME_COUNT<=0) && (ModeLight & MODE_DYNAMICLIGHT)) PrecalcDynamicLighting(x0,z0,x1,z1);
-
-	float temp0=radians(ACTIVECAM->angle.b);
-	ACTIVECAM->norm.x=-(float)EEsin(temp0);
-	ACTIVECAM->norm.y= (float)EEsin(radians(ACTIVECAM->angle.a));
-	ACTIVECAM->norm.z= (float)EEcos(temp0);
-	
-	fnormalize(ACTIVECAM->norm);
 	
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
-	temp0=0;
 	Vec3f nrm;
 
 	long zsnap=ACTIVECAM->Zsnap;
@@ -2972,8 +2964,6 @@ else
 {
 	for (long n=0;n<=lcval;n++)
 	{
-		temp0+=100.f;
-
 	for (long j=zsnap-n;j<=zsnap+n;j++)
 	{
 	for (i=xsnap-n;i<=xsnap+n;i++)
