@@ -1065,8 +1065,8 @@ struct SavedCamera {
 	SavedVec3 norm; //TODO Remove
 	SavedColor fadecolor;
 	SavedRect clip;
-	f32 clipz0;
-	f32 clipz1;
+	f32 clipz0; //TODO Remove
+	f32 clipz1; //TODO Remove
 	s32 centerx;
 	s32 centery;
 	
@@ -1106,7 +1106,6 @@ struct SavedCamera {
 		a.translatetarget = translatetarget;
 		a.lastinfovalid = lastinfovalid != 0;
 		a.fadecolor = fadecolor, a.clip = clip;
-		a.clipz0 = clipz0, a.clipz1 = clipz1;
 		a.center = Vec2i(centerx, centery);
 		
 		a.smoothing = smoothing;
@@ -1144,7 +1143,7 @@ struct SavedCamera {
 		lastinfovalid = b.lastinfovalid;
 		norm = Vec3f(0,0,0); //TODO Remove
 		fadecolor = b.fadecolor, clip = b.clip;
-		clipz0 = b.clipz0, clipz1 = b.clipz1;
+		clipz0 = 0.0f, clipz1 = 0.0f;
 		centerx = b.center.x, centery = b.center.y;
 		
 		smoothing = b.smoothing;

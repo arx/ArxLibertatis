@@ -507,8 +507,6 @@ void InitializeDanae() {
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
 	subj.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
 	subj.clip = Rect(0, 0, 640, 480);
-	subj.clipz0 = 0.f;
-	subj.clipz1 = 2.999f;
 	subj.center = subj.clip.center();
 	subj.focal = BASE_FOCAL;
 	subj.Zdiv = 3000.f;
@@ -533,8 +531,6 @@ void InitializeDanae() {
 	mapcam.pos = Vec3f(1500.f, -6000.f, 1500.f);
 	mapcam.angle = Anglef(90.f, 0.f, 0.f);
 	mapcam.clip = Rect(0, 0, 640, 480);
-	mapcam.clipz0 = 0.001f;
-	mapcam.clipz1 = 0.999f;
 	mapcam.center = mapcam.clip.center();
 	mapcam.focal = 400.f;
 	mapcam.Zdiv = 3000.f;

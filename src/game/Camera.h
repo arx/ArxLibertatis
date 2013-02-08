@@ -58,8 +58,6 @@ struct EERIE_CAMERA {
 	bool lastinfovalid;
 	Color3f fadecolor;
 	Rect clip;
-	float clipz0;
-	float clipz1;
 	Vec2i center;
 
 	float smoothing;
