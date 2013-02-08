@@ -97,10 +97,8 @@ extern long CHANGE_LEVEL_ICON;
 extern float FrameDiff;
 static bool IsPointInField(Vec3f * pos);
 ARX_PATH ** ARXpaths = NULL;
-ARX_USE_PATH USE_CINEMATICS_PATH;
 MASTER_CAMERA_STRUCT MasterCamera;
 long nbARXpaths = 0;
-long USE_CINEMATICS_CAMERA = 0;
 
 void ARX_PATH_ComputeBB(ARX_PATH * ap) {
 	

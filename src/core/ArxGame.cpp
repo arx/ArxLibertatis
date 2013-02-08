@@ -1489,40 +1489,6 @@ void ArxGame::renderLevel() {
 
 	handleCameraController();
 
-	if ((USE_CINEMATICS_CAMERA) && (USE_CINEMATICS_PATH.path!=NULL))
-	{
-		Vec3f pos,pos2;
-		USE_CINEMATICS_PATH._curtime = arxtime.get_updated();
-
-		USE_CINEMATICS_PATH._curtime+=50;
-		long pouet2=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos);
-		USE_CINEMATICS_PATH._curtime-=50;
-		long pouet=ARX_PATHS_Interpolate(&USE_CINEMATICS_PATH,&pos2);
-
-		if ((pouet!=-1) && (pouet2!=-1))
-		{
-			if(USE_CINEMATICS_CAMERA == 2) {
-				subj.pos = pos;
-				subj.d_angle = subj.angle;
-				pos2 = (pos2 + pos) * (1.0f/2);
-				SetTargetCamera(&subj, pos2.x, pos2.y, pos2.z);
-			} else {
-				DebugSphere(pos.x, pos.y, pos.z, 2, 50, Color::red);
-			}
-
-			if (USE_CINEMATICS_PATH.aupflags & ARX_USEPATH_FLAG_FINISHED) // was .path->flags
-			{
-				USE_CINEMATICS_CAMERA=0;
-				USE_CINEMATICS_PATH.path=NULL;
-			}
-		}
-		else
-		{
-			USE_CINEMATICS_CAMERA=0;
-			USE_CINEMATICS_PATH.path=NULL;
-		}
-	}
-
 	UpdateCameras();
 
 	///////////////////////////////////////////
