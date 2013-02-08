@@ -147,8 +147,6 @@ void Cinematic::OneTimeSceneReInit() {
 	Camera.size = Anglef(160.f, 60.f, 60.f);
 	Camera.pos = Vec3f(900.f, -160.f, 4340.f);
 	Camera.angle = Anglef(3.f, 268.f, 0.f);
-	Camera.clipz0 = 0.f;
-	Camera.clipz1 = 2.999f;
 	Camera.clip = Rect(LargeurRender, HauteurRender);
 	Camera.center = Camera.clip.center();
 	Camera.focal = 350.f;
