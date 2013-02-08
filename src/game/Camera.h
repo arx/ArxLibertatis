@@ -20,7 +20,65 @@
 #ifndef ARX_GAME_CAMERA_H
 #define ARX_GAME_CAMERA_H
 
-#include "graphics/data/Mesh.h"
+#include "math/Rectangle.h"
+#include "graphics/GraphicsTypes.h"
+
+struct EERIE_TRANSFORM {
+	Vec3f pos;
+	float ycos;
+	float ysin;
+	float xsin;
+	float xcos;
+	float use_focal;
+	Vec2f mod;
+};
+
+struct EERIE_CAMERA {
+
+	EERIE_TRANSFORM transform;
+	Vec3f pos;
+	float Ycos;
+	float Ysin;
+	float Xcos;
+	float Xsin;
+	float Zcos;
+	float Zsin;
+	float focal;
+	float use_focal;
+	float Zmul;
+	Vec2f pos2;
+
+	EERIEMATRIX matrix;
+	Anglef angle;
+
+	Vec3f d_pos;
+	Anglef d_angle;
+	Vec3f lasttarget;
+	Vec3f lastpos;
+	Vec3f translatetarget;
+	bool lastinfovalid;
+	Vec3f norm;
+	Color3f fadecolor;
+	Rect clip;
+	float clipz0;
+	float clipz1;
+	Vec2i center;
+
+	float smoothing;
+	long Xsnap;
+	long Zsnap;
+	float Zdiv;
+
+	long clip3D;
+	long type;
+	Color bkgcolor; // TODO was BGR!
+	long nbdrawn;
+	float cdepth;
+
+	Anglef size;
+
+};
+
 
 struct IO_CAMDATA {
 	EERIE_CAMERA cam;
