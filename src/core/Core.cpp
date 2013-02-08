@@ -512,7 +512,6 @@ void InitializeDanae() {
 	subj.Zdiv = 3000.f;
 	subj.Zmul = 1.f / subj.Zdiv;
 	subj.clip3D = 60;
-	subj.type = CAM_SUBJVIEW;
 	subj.bkgcolor = Color::none;
 	
 	SetActiveCamera(&subj);
@@ -536,7 +535,6 @@ void InitializeDanae() {
 	mapcam.Zdiv = 3000.f;
 	mapcam.Zmul = 1.f / mapcam.Zdiv;
 	mapcam.clip3D = 1000;
-	mapcam.type = CAM_TOPVIEW;
 	mapcam.bkgcolor = Color::fromBGRA(0x001F1F55);
 	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);

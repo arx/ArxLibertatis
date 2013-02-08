@@ -153,7 +153,6 @@ void Cinematic::OneTimeSceneReInit() {
 	Camera.Zdiv = 3000.f;
 	Camera.Zmul = 1.f / Camera.Zdiv;
 	Camera.clip3D = 60;
-	Camera.type = CAM_SUBJVIEW;
 	Camera.bkgcolor = Color::none;
 	
 	numbitmap = -1;

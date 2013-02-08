@@ -23,6 +23,9 @@
 #include "math/Rectangle.h"
 #include "graphics/GraphicsTypes.h"
 
+#define CAM_SUBJVIEW 0
+#define CAM_TOPVIEW 1
+
 struct EERIE_TRANSFORM {
 	Vec3f pos;
 	float ycos;
