@@ -272,7 +272,7 @@ EERIE_3DOBJ * eyeballobj=NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamicall
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 static EERIE_BACKGROUND DefaultBkg;
 EERIE_CAMERA TCAM[32];
-EERIE_CAMERA subj,mapcam,bookcam,raycam,conversationcamera;
+EERIE_CAMERA subj,bookcam,raycam,conversationcamera;
 
 string WILLADDSPEECH;
 
@@ -525,20 +525,7 @@ void InitializeDanae() {
 	bookcam.angle = Anglef::ZERO;
 	bookcam.pos = Vec3f::ZERO;
 	bookcam.focal = BASE_FOCAL;
-	
-	// TODO probably not really used anymore!
-	mapcam.pos = Vec3f(1500.f, -6000.f, 1500.f);
-	mapcam.angle = Anglef(90.f, 0.f, 0.f);
-	mapcam.clip = Rect(0, 0, 640, 480);
-	mapcam.center = mapcam.clip.center();
-	mapcam.focal = 400.f;
-	mapcam.Zdiv = 3000.f;
-	mapcam.Zmul = 1.f / mapcam.Zdiv;
-	mapcam.clip3D = 1000;
-	mapcam.bkgcolor = Color::fromBGRA(0x001F1F55);
-	SetActiveCamera(&mapcam);
-	SetCameraDepth(10000.f);
-	
+		
 	for(size_t i = 0; i < 32; i++) {
 		memcpy(&TCAM[i],&subj,sizeof(EERIE_CAMERA));
 	}
@@ -1888,8 +1875,6 @@ void FirstFrameHandling() {
 	
 	lastteleport = player.basePosition();
 	subj.pos = moveto = player.pos;
-	mapcam.pos.x = player.pos.x;
-	mapcam.pos.z = player.pos.z;
 
 	subj.angle = player.angle;
 	
