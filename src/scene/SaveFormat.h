@@ -1078,7 +1078,7 @@ struct SavedCamera {
 	f32 Zdiv;
 	
 	s32 clip3D;
-	s32 type;
+	s32 type; //TODO Remove
 	s32 bkgcolor;
 	s32 nbdrawn;
 	f32 cdepth;
@@ -1112,7 +1112,6 @@ struct SavedCamera {
 		a.Xsnap = Xsnap, a.Zsnap = Zsnap, a.Zdiv = Zdiv;
 		
 		a.clip3D = clip3D;
-		a.type = type;
 		a.bkgcolor = Color::fromBGRA(bkgcolor);
 		a.nbdrawn = nbdrawn;
 		a.cdepth = cdepth;
@@ -1151,7 +1150,7 @@ struct SavedCamera {
 		Xsnap = b.Xsnap, Zsnap = b.Zsnap, Zdiv = b.Zdiv;
 		
 		clip3D = b.clip3D;
-		type = b.type;
+		type = 0;
 		bkgcolor = b.bkgcolor.toBGRA();
 		nbdrawn = b.nbdrawn;
 		cdepth = b.cdepth;

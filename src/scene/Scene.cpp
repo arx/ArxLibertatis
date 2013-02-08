@@ -3155,8 +3155,6 @@ else
 	
 					}
 
-	if (ACTIVECAM->type!=CAM_TOPVIEW) 
-	{
 		
 		if ((eyeball.exist!=0) && eyeballobj)
 			ARXDRAW_DrawEyeBall();
@@ -3179,7 +3177,6 @@ else
 			if (TRANSPOLYSPOS)
 				ARXDRAW_DrawAllTransPolysPos();
 		}
-	}
 
 if (HALOCUR>0)
 {
