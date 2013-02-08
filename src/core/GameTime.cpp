@@ -57,10 +57,10 @@ arx::time::time() {
 	start_time      = 0ull;
 	pause_time      = 0ull;
 	paused          = false;
-	delta_time      = 0.0f;
-	frame_time      = 0.0f;
-	last_frame_time = 0.0f;
-	frame_delay     = 0.0f;
+	delta_time_us      = 0.0f;
+	frame_time_us      = 0.0f;
+	last_frame_time_us = 0.0f;
+	frame_delay_ms     = 0.0f;
 }
 
 void arx::time::init() {
@@ -68,10 +68,10 @@ void arx::time::init() {
 	start_time      = Time::getUs();
 	pause_time      = 0ull;
 	paused          = false;
-	delta_time      = 0.0f;
-	frame_time      = 0.0f;
-	last_frame_time = 0.0f;
-	frame_delay     = 0.0f;
+	delta_time_us      = 0.0f;
+	frame_time_us      = 0.0f;
+	last_frame_time_us = 0.0f;
+	frame_delay_ms     = 0.0f;
 }
 
 void arx::time::pause() {
@@ -99,7 +99,7 @@ void arx::time::force_time_restore(const float &time) {
 	u64 requested_time = u64(time * 1000.0f);
 	
 	start_time = Time::getElapsedUs(requested_time);
-	delta_time = float(requested_time) / 1000.0f;
+	delta_time_us = float(requested_time);
 	
 	pause_time = 0ull;
 	paused     = false;

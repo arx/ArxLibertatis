@@ -69,50 +69,50 @@ namespace arx
 
 		// TODO probably the source of the need to clip frame_delay
 		inline void force_frame_time_restore(const float &v) {
-			frame_time = v;
-			last_frame_time = v;
+			frame_time_us = v * 1000;
+			last_frame_time_us = v * 1000;
 		}
 
 		inline bool operator>(const float &v) const { 
-			return delta_time > v; 
+			return delta_time_us > (v * 1000); 
 		}
 
 		inline operator float() const {
-			return delta_time;
+			return delta_time_us / 1000.0f;
 		}
 
 		inline operator long() const {
 			//return static_cast<long>(delta_time);
-			return checked_range_cast<long>(delta_time);
+			return checked_range_cast<long>(delta_time_us / 1000);
 		}
 
 		inline operator unsigned long() const {
-			return checked_range_cast<unsigned long>(delta_time);
+			return checked_range_cast<unsigned long>(delta_time_us / 1000);
 		}
 
-		inline void set(const float &v) {
-			delta_time = v;
+		inline void setMs(const float &v) {
+			delta_time_us = v * 1000;
 		}
 
 		inline void update(const bool & use_pause = true) {
 
 			if (is_paused() && use_pause) {
-				delta_time = float(Time::getElapsedUs(start_time, pause_time)) / 1000.0f;
+				delta_time_us = Time::getElapsedUs(start_time, pause_time);
 			} else {
-				delta_time = float(Time::getElapsedUs(start_time)) / 1000.0f;
+				delta_time_us = Time::getElapsedUs(start_time);
 			}
 		}
 
 		inline float get_updated(const bool & use_pause = true) {
 			
 			update(use_pause);
-			return delta_time;
+			return delta_time_us / 1000.0f;
 		}
 
 		inline unsigned long get_updated_ul(const bool & use_pause = true) {
 
 			update(use_pause);
-			return checked_range_cast<unsigned long>(delta_time);
+			return checked_range_cast<unsigned long>(delta_time_us / 1000);
 		}
 
 		inline bool is_paused() const { 
@@ -125,28 +125,29 @@ namespace arx
 		}
 
 		inline float get_frame_time() const { 
-			return frame_time; 
+			return frame_time_us / 1000.0f; 
 		}
 
 		inline float get_last_frame_time() const {
-			return last_frame_time;
+			return last_frame_time_us / 1000.0f;
 		}
 
 		inline float get_frame_delay() const {
-			return frame_delay;
+			return frame_delay_ms;
 		}
 
 		inline void update_frame_time() {
 			update();
-			frame_time = delta_time;
-			frame_delay = frame_time - last_frame_time;
+			frame_time_us = delta_time_us;
+			frame_delay_ms = (frame_time_us - last_frame_time_us) / 1000.0f;
 		}
 
 		inline void update_last_frame_time() {
-			last_frame_time = frame_time;
+			last_frame_time_us = frame_time_us;
 		}
 
 	private:
+		bool paused;
 
 		// these values are expected to wrap
 		u64 pause_time;
@@ -155,12 +156,12 @@ namespace arx
 		// TODO this sometimes respects pause and sometimes not! [adejr]: is this TODO still valid?
 		// TODO an absolute time value stored in a floating point number will lose precision 
 		// when large numbers are stored.
-		float delta_time;
-		bool paused;
+		u64 delta_time_us;
+		
+		u64 last_frame_time_us;
+		u64 frame_time_us;
+		float frame_delay_ms;
 
-		float last_frame_time;
-		float frame_time;
-		float frame_delay;
 		/* TODO RFC (adejr: safe to allow varied precision?)
 		** since these values and their accessors are isolated in this class, 
 		** last_frame_time and frame_time could be replaced with u64 values 
