@@ -244,9 +244,12 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 				
 				ftr *= scale;
 
-				float temp = radians(MAKEANGLE(180.f - io->angle.b));
-
-				if (io == entities.player()) temp = radians(MAKEANGLE(180.f - player.angle.b));
+				float temp;
+				if (io == entities.player()) {
+					temp = radians(MAKEANGLE(180.f - player.angle.b));
+				} else {
+					temp = radians(MAKEANGLE(180.f - io->angle.b));
+				}
 
 				YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
