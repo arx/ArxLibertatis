@@ -154,7 +154,6 @@ DECLARE_FLAGS(PathMod, PathMods)
 DECLARE_FLAGS_OPERATORS(PathMods)
 
 extern MASTER_CAMERA_STRUCT MasterCamera;
-extern ARX_USE_PATH USE_CINEMATICS_PATH;
 extern ARX_PATH ** ARXpaths;
 #ifdef BUILD_EDITOR
 extern ARX_PATH * ARX_PATHS_FlyingOverAP;
@@ -162,7 +161,6 @@ extern ARX_PATH * ARX_PATHS_SelectedAP;
 extern long	ARX_PATHS_SelectedNum;
 extern long	ARX_PATHS_FlyingOverNum;
 #endif
-extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
 
 void ARX_PATH_UpdateAllZoneInOutInside();
