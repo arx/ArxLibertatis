@@ -293,12 +293,7 @@ void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 				(tz>=z0) && (tz<=z1)) 
 			{
 				GLight[i]->treat=1;
-
-				if (ACTIVECAM->type!=CAM_TOPVIEW)
-				{
-					 EERIEDrawLight(GLight[i]);
-				}
-				else EERIEDrawLight(GLight[i]); 
+				EERIEDrawLight(GLight[i]);
 			}
 		}
 	}
