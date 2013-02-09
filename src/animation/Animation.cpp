@@ -117,7 +117,6 @@ ANIM_HANDLE animations[MAX_ANIMATIONS];
 
 TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
-EERIE_QUAT * BIGQUAT;
 EERIEMATRIX * BIGMAT;
 float dists[32];
 float values[32];
@@ -623,7 +622,6 @@ suite:
 void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * poss,
                           Entity * io, EERIE_MOD_INFO * modinfo) {
 	
-	BIGQUAT=NULL;
 	BIGMAT=mat;
 
 	if (BIGMAT==NULL) return;
@@ -1057,11 +1055,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 					vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale-io->obj->point0;
 				}
 
-				if(BIGQUAT == NULL) {
-					VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, BIGMAT);
-				} else {
-					TransformVertexQuat(BIGQUAT, &vert_list_static[0].p, &vert_list_static[1].p);
-				}
+				VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, BIGMAT);
 
 				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
@@ -1109,7 +1103,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	
 	// Precalc local lights for this object then interpolate
 	if(FRAME_COUNT <= 0) {
-		MakeCLight(io,&infra,angle,&pos,eobj,BIGMAT,BIGQUAT);
+		MakeCLight(io,&infra,angle,&pos,eobj,BIGMAT);
 	}
 
 	INTER_DRAW++;
@@ -1332,7 +1326,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			continue;
 
 		if ((io) && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,BIGQUAT,i);
+			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,i);
 
 		float			fTransp = 0.f;
 
