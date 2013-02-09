@@ -995,7 +995,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		}
 	}
 
-	float Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
 	TexturedVertex vert_list_static[4];
 	long k;
 	
@@ -1014,29 +1013,24 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	// Precalc rotations
 	if ( angle != NULL )
 	{
-		if ( modinfo )
-			Zsin = radians(MAKEANGLE(angle->a + modinfo->rot.a));
-		else
-			Zsin = radians(angle->a);
+		Anglef tempAngle = *angle;
+		if (modinfo) {
+			tempAngle += modinfo->rot;
+			tempAngle.normalize();
+		}
 
-		Ncam.orgTrans.xcos = Xcos = EEcos(Zsin);
-		Ncam.orgTrans.xsin = Xsin = EEsin(Zsin);
+		float temp;
+		temp = radians(tempAngle.a);
+		Ncam.orgTrans.xcos = EEcos(temp);
+		Ncam.orgTrans.xsin = EEsin(temp);
 
-		if ( modinfo )
-			Zsin = radians(MAKEANGLE(angle->b + modinfo->rot.b));
-		else
-			Zsin = radians(angle->b);
-
-		Ncam.orgTrans.ycos = Ycos = EEcos(Zsin);
-		Ncam.orgTrans.ysin = Ysin = EEsin(Zsin);
+		temp = radians(tempAngle.b);
+		Ncam.orgTrans.ycos = EEcos(temp);
+		Ncam.orgTrans.ysin = EEsin(temp);
 		
-		if ( modinfo )
-			Zsin = radians(MAKEANGLE(angle->g + modinfo->rot.g));
-		else
-			Zsin = radians(angle->g);
-
-		Ncam.orgTrans.zcos = Zcos = EEcos(Zsin);
-		Ncam.orgTrans.zsin = Zsin = EEsin(Zsin);
+		temp = radians(tempAngle.g);
+		Ncam.orgTrans.zcos = EEcos(temp);
+		Ncam.orgTrans.zsin = EEsin(temp);
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
@@ -1075,11 +1069,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			}
 			else
 			{
-				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ycos, Ysin);
-				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Xcos, Xsin);
+				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
+				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
 
 				// Misc Optim to avoid 1 infrequent rotation around Z
-				if(Zsin == 0.f) {
+				if(Ncam.orgTrans.zsin == 0.f) {
 					
 					eobj->vertexlist3[i].v = vert_list_static[0].p += pos;
 					
@@ -1088,7 +1082,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				}
 				else
 				{
-					ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Zcos, Zsin);
+					ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
 					eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
 					specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
