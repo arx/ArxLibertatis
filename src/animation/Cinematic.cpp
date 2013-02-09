@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 /*---------------------------------------------------------------------------------*/
 
-EERIE_CAMERA	Camera;
 static int LargeurRender, HauteurRender;
 
 TexturedVertex AllTLVertex[40000];
@@ -144,16 +143,16 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 /* Reinit */
 void Cinematic::OneTimeSceneReInit() {
 	
-	Camera.size = Anglef(160.f, 60.f, 60.f);
-	Camera.orgTrans.pos = Vec3f(900.f, -160.f, 4340.f);
-	Camera.angle = Anglef(3.f, 268.f, 0.f);
-	Camera.clip = Rect(LargeurRender, HauteurRender);
-	Camera.center = Camera.clip.center();
-	Camera.focal = 350.f;
-	Camera.Zdiv = 3000.f;
-	Camera.Zmul = 1.f / Camera.Zdiv;
-	Camera.clip3D = 60;
-	Camera.bkgcolor = Color::none;
+	m_camera.size = Anglef(160.f, 60.f, 60.f);
+	m_camera.orgTrans.pos = Vec3f(900.f, -160.f, 4340.f);
+	m_camera.angle = Anglef(3.f, 268.f, 0.f);
+	m_camera.clip = Rect(LargeurRender, HauteurRender);
+	m_camera.center = m_camera.clip.center();
+	m_camera.focal = 350.f;
+	m_camera.Zdiv = 3000.f;
+	m_camera.Zmul = 1.f / m_camera.Zdiv;
+	m_camera.clip3D = 60;
+	m_camera.bkgcolor = Color::none;
 	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
@@ -437,7 +436,7 @@ void Cinematic::Render(float FDIFF) {
 				col = FX_FadeOUT(a, color, colord);
 				break;
 			case FX_BLUR:
-				FX_Blur(this, tb);
+				FX_Blur(this, tb, m_camera);
 				break;
 			default:
 				break;
@@ -458,15 +457,15 @@ void Cinematic::Render(float FDIFF) {
 				break;
 		}
 
-		Camera.orgTrans.pos = pos;
-		SetTargetCamera(&Camera, Camera.orgTrans.pos.x, Camera.orgTrans.pos.y, 0.f);
-		Camera.angle.b = 0;
-		Camera.angle.g = angz;
-		Camera.clip.right = LargeurRender;
-		Camera.clip.bottom = HauteurRender;
-		Camera.center = Vec2i(LargeurRender / 2, HauteurRender / 2);
-		PrepareCamera(&Camera);
-		SetActiveCamera(&Camera);
+		m_camera.orgTrans.pos = pos;
+		SetTargetCamera(&m_camera, m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
+		m_camera.angle.b = 0;
+		m_camera.angle.g = angz;
+		m_camera.clip.right = LargeurRender;
+		m_camera.clip.bottom = HauteurRender;
+		m_camera.center = Vec2i(LargeurRender / 2, HauteurRender / 2);
+		PrepareCamera(&m_camera);
+		SetActiveCamera(&m_camera);
 
 		int alpha = ((int)(a * 255.f)) << 24;
 
@@ -507,11 +506,11 @@ void Cinematic::Render(float FDIFF) {
 			switch (ti)
 			{
 				case INTERP_NO:
-					Camera.orgTrans.pos = possuiv;
-					SetTargetCamera(&Camera, Camera.orgTrans.pos.x, Camera.orgTrans.pos.y, 0.f);
-					Camera.angle.b = 0;
-					Camera.angle.g = angzsuiv;
-					PrepareCamera(&Camera);
+					m_camera.orgTrans.pos = possuiv;
+					SetTargetCamera(&m_camera, m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
+					m_camera.angle.b = 0;
+					m_camera.angle.g = angzsuiv;
+					PrepareCamera(&m_camera);
 					break;
 				case INTERP_LINEAR:
 					break;
