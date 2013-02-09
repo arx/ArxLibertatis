@@ -70,7 +70,6 @@ struct EERIE_CAMERA {
 	float Zdiv;
 
 	long clip3D;
-	long type;
 	Color bkgcolor; // TODO was BGR!
 	long nbdrawn;
 	float cdepth;
