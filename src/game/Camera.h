@@ -52,7 +52,6 @@ struct EERIE_CAMERA {
 	float use_focal;
 	float Zmul;
 
-	EERIEMATRIX matrix;
 	Anglef angle;
 
 	Vec3f d_pos;
