@@ -2084,7 +2084,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	}
 }
 
-void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT)
+void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT)
 {
 	if ((Project.improve) && (!io))
 	{
@@ -2131,12 +2131,6 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 	}
 	else
 	{
-		if (BIGQUAT != NULL)
-		{
-			qInvert = *BIGQUAT;
-		}
-		else
-		{
 			//FIX LIGHT 
 			Anglef vt1;
 
@@ -2156,7 +2150,6 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 			vt1.b = radians(MAKEANGLE(vt1.b));
 			vt1.g = radians(MAKEANGLE(vt1.a));
 			QuatFromAngles(&qInvert, &vt1);
-		}
 	}
 
 
@@ -2248,7 +2241,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 		}
 }
 
-void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, EERIE_QUAT * BIGQUAT, long ii) {
+void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, long ii) {
 	
 	Vec3f vLight;
 	Vec3f vTLights[32];
@@ -2260,12 +2253,6 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 	}
 	else
 	{
-		if (BIGQUAT != NULL)
-		{
-			qInvert = *BIGQUAT;
-		}
-		else
-		{
 			Anglef vt1;
 
 			if (angle)
@@ -2282,7 +2269,6 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 
 			vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
 			QuatFromAngles(&qInvert, &vt1);
-		}
 	}
 
 	Vec3f tv = *pos;
