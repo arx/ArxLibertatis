@@ -5503,7 +5503,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 			
-			spells[i].siz = spells[i].caster_level * 0.08f;
+			float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
+			spells[i].siz = clamp(spells[i].caster_level * 0.08f, 0.f, max_slowdown);
 			GLOBAL_SLOWDOWN -= spells[i].siz;
 			
 			spells[i].exist = true;
@@ -6172,10 +6173,11 @@ void ARX_SPELLS_Update()
 				//**********************************************************************************
 				// LEVEL 10 ------------------------------------------------------------------------
 				//----------------------------------------------------------------------------------
-				case SPELL_FREEZE_TIME:
-						GLOBAL_SLOWDOWN += spells[i].siz;
-					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);					
-				break;
+				case SPELL_FREEZE_TIME: {
+					GLOBAL_SLOWDOWN += spells[i].siz;
+					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);
+					break;
+				}
 				case SPELL_MASS_INCINERATE:
 					ARX_SPELLS_RemoveMultiSpellOn(i);
 					ARX_SOUND_Stop(spells[i].snd_loop);
