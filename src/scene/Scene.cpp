@@ -298,7 +298,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 extern EERIEMATRIX ProjectionMatrix;
 void specialEE_RTP2(TexturedVertex * in, TexturedVertex * out) {
 	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
 	out->p = in->p - et->pos;
 	
 	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);

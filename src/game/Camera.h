@@ -40,7 +40,6 @@ struct EERIE_TRANSFORM {
 
 struct EERIE_CAMERA {
 
-	EERIE_TRANSFORM transform;
 	EERIE_TRANSFORM orgTrans;
 
 	float focal;

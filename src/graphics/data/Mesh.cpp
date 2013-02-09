@@ -192,7 +192,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 
 void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	
-	EERIE_TRANSFORM * et = &ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = &ACTIVECAM->orgTrans;
 	out->p = in->p - et->pos;
 	
 	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
@@ -764,8 +764,8 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->transform.mod.x;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->transform.mod.y;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
 	out->rhw = fZTemp;
 }
 
@@ -789,8 +789,8 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->transform.mod.x;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->transform.mod.y;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
 	out->rhw = fZTemp * 3000.f;
 
 }
@@ -829,7 +829,7 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
 
 void specialEE_RT(TexturedVertex * in, Vec3f * out) {
 	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
 	*out = in->p - et->pos;
 	
 	float temp = (out->z * et->ycos) - (out->x * et->ysin);
@@ -848,7 +848,7 @@ static inline float clamp_and_invert(float z) {
 
 void specialEE_P(Vec3f * in, TexturedVertex * out) {
 	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
 	
 	float fZTemp = clamp_and_invert(in->z);
 	
@@ -863,8 +863,8 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 	float fZTemp = clamp_and_invert(in->z);
 	
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->transform.mod.x;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->transform.mod.y;
+	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
 	out->rhw = fZTemp;
 }
 
@@ -874,8 +874,8 @@ void EE_P2(TexturedVertex * in, TexturedVertex * out)
 	fZTemp = 1.f / in->p.z;
 
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->transform.mod.x;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->transform.mod.y;
+	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
 	out->rhw = fZTemp;
 }
 
@@ -896,8 +896,8 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->transform.mod.x;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->transform.mod.y;
+	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
+	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
 	out->rhw = fZTemp;
 }
 
@@ -933,8 +933,8 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 
 	tout.rhw = cam->orgTrans.use_focal * out->rhw;
 	out->p.z = out->p.z * cam->Zmul;
-	out->p.x = cam->transform.mod.x + (tout.p.x * tout.rhw);
-	out->p.y = cam->transform.mod.y + (tout.p.y * tout.rhw) ;
+	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
+	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;
 }
 
 //*************************************************************************************
@@ -1196,17 +1196,17 @@ extern EERIE_CAMERA raycam;
 
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	float tmp = radians(cam->angle.a);
-	cam->transform.use_focal = cam->orgTrans.use_focal = cam->focal * Xratio;
-	cam->transform.xcos = cam->orgTrans.xcos = (float)EEcos(tmp);
-	cam->transform.xsin = cam->orgTrans.xsin = (float)EEsin(tmp);
+	cam->orgTrans.use_focal = cam->focal * Xratio;
+	cam->orgTrans.xcos = (float)EEcos(tmp);
+	cam->orgTrans.xsin = (float)EEsin(tmp);
 	tmp = radians(cam->angle.b);
-	cam->transform.ycos = cam->orgTrans.ycos = (float)EEcos(tmp);
-	cam->transform.ysin = cam->orgTrans.ysin = (float)EEsin(tmp);
+	cam->orgTrans.ycos = (float)EEcos(tmp);
+	cam->orgTrans.ysin = (float)EEsin(tmp);
 	tmp = radians(cam->angle.g);
 	cam->orgTrans.zcos = (float)EEcos(tmp);
 	cam->orgTrans.zsin = (float)EEsin(tmp);
-	cam->transform.mod = (cam->center + cam->clip.origin).to<float>();
-	cam->transform.pos = cam->orgTrans.pos;
+	cam->orgTrans.mod = (cam->center + cam->clip.origin).to<float>();
+	cam->orgTrans.pos = cam->orgTrans.pos;
 }
 
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
@@ -2124,7 +2124,7 @@ void PrepareActiveCamera() {
 	tmp = radians(ACTIVECAM->angle.g);
 	ACTIVECAM->orgTrans.zcos = (float)EEcos(tmp);
 	ACTIVECAM->orgTrans.zsin = (float)EEsin(tmp);
-	ACTIVECAM->transform.mod = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
+	ACTIVECAM->orgTrans.mod = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
 		
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
 	                        static_cast<float>(DANAESIZY),
