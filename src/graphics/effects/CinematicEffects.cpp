@@ -55,8 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/texture/TextureStage.h"
 
 /*---------------------------------------------------------------------------------*/
-extern EERIE_CAMERA	Camera;
-/*---------------------------------------------------------------------------------*/
 #define		NBOLDPOS	10
 /*---------------------------------------------------------------------------------*/
 float		SpecialFadeDx;
@@ -116,7 +114,7 @@ int FX_FadeOUT(float a, int color, int colord)
 
 static float LastTime;
 
-bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
+bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera)
 {
 	int			nb;
 	Vec3f	* pos;
@@ -150,11 +148,11 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb)
 
 	while (nb)
 	{
-		Camera.orgTrans.pos = *pos;
-		SetTargetCamera(&Camera, Camera.orgTrans.pos.x, Camera.orgTrans.pos.y, 0.f);
-		Camera.angle.b = 0;
-		Camera.angle.g = *az;
-		PrepareCamera(&Camera);
+		camera.orgTrans.pos = *pos;
+		SetTargetCamera(&camera, camera.orgTrans.pos.x, camera.orgTrans.pos.y, 0.f);
+		camera.angle.b = 0;
+		camera.angle.g = *az;
+		PrepareCamera(&camera);
 
 		col = (int)alpha;
 		col = (col << 24) | 0x00FFFFFF;
