@@ -1048,8 +1048,8 @@ struct SavedCamera {
 	f32 focal;
 	f32 use_focal;
 	f32 Zmul;
-	f32 posleft;
-	f32 postop;
+	f32 posleft; //TODO Remove
+	f32 postop; //TODO Remove
 	
 	f32 xmod;
 	f32 ymod;
@@ -1096,7 +1096,6 @@ struct SavedCamera {
 		a.orgTrans.zcos = Zcos, a.orgTrans.zsin = Zsin;
 		a.focal = focal, a.orgTrans.use_focal = use_focal;
 		a.Zmul = Zmul;
-		a.orgTrans.mod.x = posleft, a.orgTrans.mod.y = postop;
 		
 		a.angle = angle;
 		
@@ -1129,7 +1128,7 @@ struct SavedCamera {
 		Zcos = b.orgTrans.zcos, Zsin = b.orgTrans.zsin;
 		focal = b.focal, use_focal = b.orgTrans.use_focal;
 		Zmul = b.Zmul;
-		posleft = b.orgTrans.mod.x, postop = b.orgTrans.mod.y;
+		posleft = 0.f, postop = 0.f;
 		
 		xmod = 0.f, ymod = 0.f;
 		matrix = EERIEMATRIX();

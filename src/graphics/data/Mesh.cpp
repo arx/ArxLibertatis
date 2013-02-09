@@ -1073,7 +1073,6 @@ static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	cam->orgTrans.use_focal = cam->focal * Xratio;
 	cam->orgTrans.updateFromAngle(cam->angle);
 	cam->orgTrans.mod = (cam->center + cam->clip.origin).to<float>();
-	cam->orgTrans.pos = cam->orgTrans.pos;
 }
 
 static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
