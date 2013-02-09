@@ -1071,23 +1071,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			{
 				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
 				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
+				ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
+				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
-				// Misc Optim to avoid 1 infrequent rotation around Z
-				if(Ncam.orgTrans.zsin == 0.f) {
-					
-					eobj->vertexlist3[i].v = vert_list_static[0].p += pos;
-					
-					specialEE_RT(&vert_list_static[0],&eobj->vertexlist[i].vworld);
-					specialEE_P(&eobj->vertexlist[i].vworld,&eobj->vertexlist[i].vert);
-				}
-				else
-				{
-					ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
-					eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
-				
-					specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
-					specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
-				}
+				specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
+				specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 			}
 
 			// Memorizes 2D Bounding Box using vertex min/max x,y pos
