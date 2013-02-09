@@ -25,6 +25,11 @@
 
 #include "math/MathFwd.h"
 
+inline float MAKEANGLE(float a) {
+	float angle = std::fmod(a, 360.f);
+	return (angle >= 0) ? angle : angle + 360.f;
+}
+
 /*!
  * A 3-dimensional euler-angle.
  * @brief 3x1 Vector class.
@@ -138,6 +143,12 @@ public:
 		return a > (other.a - pEps) && a < (other.a + pEps) && b > (other.b - pEps) && b < (other.b + pEps) && g > (other.g - pEps) && g < (other.g + pEps);
 	}
 	
+	void normalize() {
+		a = MAKEANGLE(a);
+		b = MAKEANGLE(b);
+		g = MAKEANGLE(g);
+	}
+
 	union {
 		T a;
 		T yaw;
@@ -158,11 +169,6 @@ public:
 template<class T> const Angle<T> Angle<T>::ZERO(T(0), T(0), T(0));
 
 float AngleDifference(float d, float e);
-
-inline float MAKEANGLE(float a) {
-	float angle = std::fmod(a, 360.f);
-	return (angle >= 0) ? angle : angle + 360.f;
-}
 
 float InterpolateAngle(float a1, float a2, float p);
 
