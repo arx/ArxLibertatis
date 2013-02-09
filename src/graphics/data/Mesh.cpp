@@ -1070,16 +1070,8 @@ int BackFaceCull2D(TexturedVertex * tv) {
 extern EERIE_CAMERA raycam;
 
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
-	float tmp = radians(cam->angle.a);
 	cam->orgTrans.use_focal = cam->focal * Xratio;
-	cam->orgTrans.xcos = (float)EEcos(tmp);
-	cam->orgTrans.xsin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.b);
-	cam->orgTrans.ycos = (float)EEcos(tmp);
-	cam->orgTrans.ysin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.g);
-	cam->orgTrans.zcos = (float)EEcos(tmp);
-	cam->orgTrans.zsin = (float)EEsin(tmp);
+	cam->orgTrans.updateFromAngle(cam->angle);
 	cam->orgTrans.mod = (cam->center + cam->clip.origin).to<float>();
 	cam->orgTrans.pos = cam->orgTrans.pos;
 }
@@ -1988,17 +1980,8 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 	}
 }
 
-void PrepareActiveCamera() {
-	
-	float tmp = radians(ACTIVECAM->angle.a);
-	ACTIVECAM->orgTrans.xcos = (float)EEcos(tmp);
-	ACTIVECAM->orgTrans.xsin = (float)EEsin(tmp);
-	tmp = radians(ACTIVECAM->angle.b);
-	ACTIVECAM->orgTrans.ycos = (float)EEcos(tmp);
-	ACTIVECAM->orgTrans.ysin = (float)EEsin(tmp);
-	tmp = radians(ACTIVECAM->angle.g);
-	ACTIVECAM->orgTrans.zcos = (float)EEcos(tmp);
-	ACTIVECAM->orgTrans.zsin = (float)EEsin(tmp);
+void PrepareActiveCamera() {	
+	ACTIVECAM->orgTrans.updateFromAngle(ACTIVECAM->angle);
 	ACTIVECAM->orgTrans.mod = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
 		
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
@@ -2009,15 +1992,8 @@ void PrepareActiveCamera() {
 
 void F_PrepareCamera(EERIE_CAMERA * cam)
 {
-	float tmp = radians(cam->angle.a);
 	cam->orgTrans.use_focal = cam->focal * Xratio;
-	cam->orgTrans.xcos = (float)EEcos(tmp);
-	cam->orgTrans.xsin = (float)EEsin(tmp);
-	tmp = radians(cam->angle.b);
-	cam->orgTrans.ycos = (float)EEcos(tmp);
-	cam->orgTrans.ysin = (float)EEsin(tmp);
-	cam->orgTrans.zcos = 1;
-	cam->orgTrans.zsin = 0.f;
+	cam->orgTrans.updateFromAngle(cam->angle);
 }
 
 void PrepareCamera(EERIE_CAMERA * cam)
