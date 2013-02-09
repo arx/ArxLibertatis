@@ -1424,7 +1424,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 			float mdist = ACTIVECAM->cdepth * ( 1.0f / 2 );
 
-			ddist = mdist - fdist(*pos + ftr, ACTIVECAM->pos);
+			ddist = mdist - fdist(*pos + ftr, ACTIVECAM->orgTrans.pos);
 
 			ddist = (ddist / mdist);  //*0.1f;
 			ddist *= ddist * ddist * ddist * ddist * ddist;
@@ -1461,7 +1461,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				continue;
 
 			//CULL3D
-			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->pos;
+			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
 			
 			if(!(eface->facetype & POLY_DOUBLESIDED)) {
 				Vec3f normV10;
@@ -1893,7 +1893,7 @@ static bool Cedric_IO_Visible(Entity * io) {
 
 	if(ACTIVEBKG && io) {
 		
-		if (distSqr(io->pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth) * square(0.6f))
+		if (distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
 
 		long xx, yy;

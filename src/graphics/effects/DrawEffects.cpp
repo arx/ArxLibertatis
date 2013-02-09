@@ -266,7 +266,7 @@ void EERIEDrawLight(EERIE_LIGHT * el)
 
 					if ((center.p.z>0.f) && (center.p.z<1000.f))
 					{
-						float t=(1.f-center.p.z)*ACTIVECAM->use_focal*( 1.0f / 3000 );
+						float t=(1.f-center.p.z)*ACTIVECAM->orgTrans.use_focal*( 1.0f / 3000 );
 						float rad=el->fallstart*t;
 						EERIEDrawCircle(center.p.x, center.p.y, rad, Color::yellow, 0.0001f);
 						rad=el->fallend*t;

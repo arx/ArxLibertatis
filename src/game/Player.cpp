@@ -2225,9 +2225,9 @@ void ForcePlayerLookAtIO(Entity * io) {
 	long id = entities.player()->obj->fastaccess.view_attach;
 
 	if(id != -1) {
-		tcam.pos = entities.player()->obj->vertexlist3[id].v;
+		tcam.orgTrans.pos = entities.player()->obj->vertexlist3[id].v;
 	} else {
-		tcam.pos = player.pos;
+		tcam.orgTrans.pos = player.pos;
 	}
 
 	id = io->obj->fastaccess.view_attach;

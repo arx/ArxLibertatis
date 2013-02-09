@@ -931,7 +931,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->facelist[lIdList].v[iI]*4.f);
 		}
 
-		float fDist=fdist(ACTIVECAM->pos, _pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
+		float fDist=fdist(ACTIVECAM->orgTrans.pos, _pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
 
 		if (fDist<10.f) fDist=10.f;
 
@@ -1019,24 +1019,24 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		else
 			Zsin = radians(angle->a);
 
-		Ncam.xcos = Xcos = EEcos(Zsin);
-		Ncam.xsin = Xsin = EEsin(Zsin);
+		Ncam.orgTrans.xcos = Xcos = EEcos(Zsin);
+		Ncam.orgTrans.xsin = Xsin = EEsin(Zsin);
 
 		if ( modinfo )
 			Zsin = radians(MAKEANGLE(angle->b + modinfo->rot.b));
 		else
 			Zsin = radians(angle->b);
 
-		Ncam.ycos = Ycos = EEcos(Zsin);
-		Ncam.ysin = Ysin = EEsin(Zsin);
+		Ncam.orgTrans.ycos = Ycos = EEcos(Zsin);
+		Ncam.orgTrans.ysin = Ysin = EEsin(Zsin);
 		
 		if ( modinfo )
 			Zsin = radians(MAKEANGLE(angle->g + modinfo->rot.g));
 		else
 			Zsin = radians(angle->g);
 
-		Ncam.zcos = Zcos = EEcos(Zsin);
-		Ncam.zsin = Zsin = EEsin(Zsin);
+		Ncam.orgTrans.zcos = Zcos = EEcos(Zsin);
+		Ncam.orgTrans.zsin = Zsin = EEsin(Zsin);
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
@@ -1138,7 +1138,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	if(io && (io->halo.flags & HALO_ACTIVE)) {
 		
 		float mdist=ACTIVECAM->cdepth;
-		ddist=mdist-fdist(pos, ACTIVECAM->pos);
+		ddist=mdist-fdist(pos, ACTIVECAM->orgTrans.pos);
 		ddist=(ddist/mdist);
 		ddist*=ddist*ddist*ddist*ddist*ddist;
 
@@ -1323,7 +1323,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		paf[2]=eobj->facelist[i].vid[2];
 
 		//CULL3D
-		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->pos;
+		Vec3f nrm = eobj->vertexlist3[paf[0]].v - ACTIVECAM->orgTrans.pos;
 
 		if(!(eobj->facelist[i].facetype&POLY_DOUBLESIDED)) {
 			Vec3f normV10;
@@ -1549,13 +1549,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	// HALO HANDLING START
 	if	(need_halo)			
 	{
-		Ncam.xcos = 1.f;
-		Ncam.xsin = 0.f;
-		Ncam.zcos = 1.f;
-		Ncam.zsin = 0.f;
+		Ncam.orgTrans.xcos = 1.f;
+		Ncam.orgTrans.xsin = 0.f;
+		Ncam.orgTrans.zcos = 1.f;
+		Ncam.orgTrans.zsin = 0.f;
 		float power=radians(MAKEANGLE(subj.angle.b));
-		Ncam.ycos = (float)EEcos(power);
-		Ncam.ysin = (float)EEsin(power);
+		Ncam.orgTrans.ycos = (float)EEcos(power);
+		Ncam.orgTrans.ysin = (float)EEsin(power);
 		float tot=0;
 		float _ffr[3];
 			
@@ -1766,7 +1766,7 @@ void Preparellights(Vec3f * pos) {
 	for (long i = 0; i < MAX_LLIGHTS; i++) {
 		EERIE_LIGHT * el = llights[i];
 		if(el) {
-			TCAM[i].pos = el->pos;
+			TCAM[i].orgTrans.pos = el->pos;
 			SetTargetCamera(&TCAM[i],pos->x,pos->y,pos->z);
 			F_PrepareCamera(&TCAM[i]);
 		}

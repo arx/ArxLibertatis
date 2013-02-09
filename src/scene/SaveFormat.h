@@ -1090,11 +1090,11 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.transform = transform;
-		a.pos = pos;
-		a.ycos = Ycos, a.ysin = Ysin;
-		a.xcos = Xcos, a.xsin = Xsin;
-		a.zcos = Zcos, a.zsin = Zsin;
-		a.focal = focal, a.use_focal = use_focal;
+		a.orgTrans.pos = pos;
+		a.orgTrans.ycos = Ycos, a.orgTrans.ysin = Ysin;
+		a.orgTrans.xcos = Xcos, a.orgTrans.xsin = Xsin;
+		a.orgTrans.zcos = Zcos, a.orgTrans.zsin = Zsin;
+		a.focal = focal, a.orgTrans.use_focal = use_focal;
 		a.Zmul = Zmul;
 		a.transform.mod.x = posleft, a.transform.mod.y = postop;
 		
@@ -1123,11 +1123,11 @@ struct SavedCamera {
 	inline SavedCamera & operator=(const EERIE_CAMERA & b) {
 		
 		transform = b.transform;
-		pos = b.pos;
-		Ycos = b.ycos, Ysin = b.ysin;
-		Xcos = b.xcos, Xsin = b.xsin;
-		Zcos = b.zcos, Zsin = b.zsin;
-		focal = b.focal, use_focal = b.use_focal;
+		pos = b.orgTrans.pos;
+		Ycos = b.orgTrans.ycos, Ysin = b.orgTrans.ysin;
+		Xcos = b.orgTrans.xcos, Xsin = b.orgTrans.xsin;
+		Zcos = b.orgTrans.zcos, Zsin = b.orgTrans.zsin;
+		focal = b.focal, use_focal = b.orgTrans.use_focal;
 		Zmul = b.Zmul;
 		posleft = b.transform.mod.x, postop = b.transform.mod.y;
 		

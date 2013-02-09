@@ -145,7 +145,7 @@ void FillKeyTemp(Vec3f * pos, float az, int frame, int numbitmap, int numfx, sho
 void Cinematic::OneTimeSceneReInit() {
 	
 	Camera.size = Anglef(160.f, 60.f, 60.f);
-	Camera.pos = Vec3f(900.f, -160.f, 4340.f);
+	Camera.orgTrans.pos = Vec3f(900.f, -160.f, 4340.f);
 	Camera.angle = Anglef(3.f, 268.f, 0.f);
 	Camera.clip = Rect(LargeurRender, HauteurRender);
 	Camera.center = Camera.clip.center();
@@ -458,8 +458,8 @@ void Cinematic::Render(float FDIFF) {
 				break;
 		}
 
-		Camera.pos = pos;
-		SetTargetCamera(&Camera, Camera.pos.x, Camera.pos.y, 0.f);
+		Camera.orgTrans.pos = pos;
+		SetTargetCamera(&Camera, Camera.orgTrans.pos.x, Camera.orgTrans.pos.y, 0.f);
 		Camera.angle.b = 0;
 		Camera.angle.g = angz;
 		Camera.clip.right = LargeurRender;
@@ -507,8 +507,8 @@ void Cinematic::Render(float FDIFF) {
 			switch (ti)
 			{
 				case INTERP_NO:
-					Camera.pos = possuiv;
-					SetTargetCamera(&Camera, Camera.pos.x, Camera.pos.y, 0.f);
+					Camera.orgTrans.pos = possuiv;
+					SetTargetCamera(&Camera, Camera.orgTrans.pos.x, Camera.orgTrans.pos.y, 0.f);
 					Camera.angle.b = 0;
 					Camera.angle.g = angzsuiv;
 					PrepareCamera(&Camera);

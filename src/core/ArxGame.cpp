@@ -861,28 +861,28 @@ void ArxGame::updateFirstPersonCamera() {
 			long id = entities.player()->obj->fastaccess.view_attach;
 
 			if (id!=-1) {
-				subj.pos = entities.player()->obj->vertexlist3[id].v;
+				subj.transform.pos = entities.player()->obj->vertexlist3[id].v;
 				Vec3f vect;
-				vect.x = subj.pos.x - player.pos.x;
+				vect.x = subj.transform.pos.x - player.pos.x;
 				vect.y = 0;
-				vect.z = subj.pos.z - player.pos.z;
+				vect.z = subj.transform.pos.z - player.pos.z;
 				float len = ffsqrt(vect.lengthSqr());
 
 				if (len>46.f) {
 					float div = 46.f / len;
 					vect.x *= div;
 					vect.z *= div;
-					subj.pos.x = player.pos.x + vect.x;
-					subj.pos.z = player.pos.z + vect.z;
+					subj.transform.pos.x = player.pos.x + vect.x;
+					subj.transform.pos.z = player.pos.z + vect.z;
 				}
 			} else {
-				subj.pos = player.basePosition();
+				subj.transform.pos = player.basePosition();
 			}
 		}
 	}
 
 	if (EXTERNALVIEW) {
-		subj.pos = (subj.pos + subj.d_pos) * 0.5f;
+		subj.transform.pos = (subj.transform.pos + subj.d_pos) * 0.5f;
 		subj.angle = interpolate(subj.angle, subj.d_angle, 0.1f);
 	}
 }
@@ -941,7 +941,7 @@ void ArxGame::updateConversationCamera() {
 
 			if(ApplySpeechPos(&conversationcamera, is)) {
 				targetpos = conversationcamera.d_pos;
-				sourcepos = conversationcamera.pos;
+				sourcepos = conversationcamera.transform.pos;
 			} else {
 				targetpos = player.pos;
 				float t=radians(player.angle.b);
@@ -965,9 +965,9 @@ void ArxGame::updateConversationCamera() {
 			if (conversationcamera.size.b!=0.f)
 				sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
 
-			conversationcamera.pos = sourcepos;
+			conversationcamera.transform.pos = sourcepos;
 			SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-			subj.pos = conversationcamera.pos;
+			subj.transform.pos = conversationcamera.transform.pos;
 			subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
 			subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
 			subj.angle.g = 0.f;
@@ -1021,7 +1021,7 @@ void ArxGame::speechControlledCinematic() {
 			switch (acs->type)
 			{
 			case ARX_CINE_SPEECH_KEEP: {
-				subj.pos = acs->pos1;
+				subj.transform.pos = acs->pos1;
 				subj.angle.a=acs->pos2.x;
 				subj.angle.b=acs->pos2.y;
 				subj.angle.g=acs->pos2.z;
@@ -1034,11 +1034,11 @@ void ArxGame::speechControlledCinematic() {
 				beta=acs->startangle.b*itime+acs->endangle.b*rtime;
 				distance=acs->startpos*itime+acs->endpos*rtime;
 				Vec3f targetpos = acs->pos1;
-				conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
-				conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
-				conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
+				conversationcamera.transform.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
+				conversationcamera.transform.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
+				conversationcamera.transform.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
 				SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-				subj.pos = conversationcamera.pos;
+				subj.transform.pos = conversationcamera.transform.pos;
 				subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 				subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 				subj.angle.g=0.f;
@@ -1075,11 +1075,11 @@ void ArxGame::speechControlledCinematic() {
 					targetpos.x=tfrom.x*itime+tto.x*rtime;
 					targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
 					targetpos.z=tfrom.z*itime+tto.z*rtime;
-					conversationcamera.pos.x=targetpos.x+vect2.x;
-					conversationcamera.pos.y=targetpos.y+vect2.y+acs->f2;
-					conversationcamera.pos.z=targetpos.z+vect2.z;
+					conversationcamera.transform.pos.x=targetpos.x+vect2.x;
+					conversationcamera.transform.pos.y=targetpos.y+vect2.y+acs->f2;
+					conversationcamera.transform.pos.z=targetpos.z+vect2.z;
 					SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-					subj.pos = conversationcamera.pos;
+					subj.transform.pos = conversationcamera.transform.pos;
 					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 					subj.angle.g=0.f;
@@ -1099,16 +1099,16 @@ void ArxGame::speechControlledCinematic() {
 					Vec3f targetpos;
 					if(acs->type == ARX_CINE_SPEECH_CCCLISTENER_L
 						 || acs->type == ARX_CINE_SPEECH_CCCLISTENER_R) {
-						conversationcamera.pos = acs->pos2;
+						conversationcamera.transform.pos = acs->pos2;
 						targetpos = acs->pos1;
 					} else {
-						conversationcamera.pos = acs->pos1;
+						conversationcamera.transform.pos = acs->pos1;
 						targetpos = acs->pos2;
 					}
 
 					distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );
 
-					Vec3f vect = conversationcamera.pos - targetpos;
+					Vec3f vect = conversationcamera.transform.pos - targetpos;
 					Vec3f vect2;
 					Vector_RotateY(&vect2,&vect,90);
 					vect2.normalize();
@@ -1123,9 +1123,9 @@ void ArxGame::speechControlledCinematic() {
 						vect2 = -vect2;
 					}
 
-					conversationcamera.pos = vect + targetpos + vect2;
+					conversationcamera.transform.pos = vect + targetpos + vect2;
 					SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-					subj.pos = conversationcamera.pos;
+					subj.transform.pos = conversationcamera.transform.pos;
 					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 					subj.angle.g=0.f;
@@ -1137,7 +1137,7 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_NONE: break;
 			}
 
-			LASTCAMPOS = subj.pos;
+			LASTCAMPOS = subj.transform.pos;
 			LASTCAMANGLE = subj.angle;
 		}
 	}
@@ -1162,21 +1162,21 @@ void ArxGame::handlePlayerDeath() {
 			targetpos = entities.player()->obj->vertexlist3[id].v;
 		}
 
-		conversationcamera.pos.x = targetpos.x;
-		conversationcamera.pos.y = targetpos.y - DeadCameraDistance;
-		conversationcamera.pos.z = targetpos.z;
+		conversationcamera.transform.pos.x = targetpos.x;
+		conversationcamera.transform.pos.y = targetpos.y - DeadCameraDistance;
+		conversationcamera.transform.pos.z = targetpos.z;
 
 		if (id2!=-1)
 		{
-			conversationcamera.pos.x=entities.player()->obj->vertexlist3[id2].v.x;
-			conversationcamera.pos.y=entities.player()->obj->vertexlist3[id2].v.y-DeadCameraDistance;
-			conversationcamera.pos.z=entities.player()->obj->vertexlist3[id2].v.z;
+			conversationcamera.transform.pos.x=entities.player()->obj->vertexlist3[id2].v.x;
+			conversationcamera.transform.pos.y=entities.player()->obj->vertexlist3[id2].v.y-DeadCameraDistance;
+			conversationcamera.transform.pos.z=entities.player()->obj->vertexlist3[id2].v.z;
 		}
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos.x=conversationcamera.pos.x;
-		subj.pos.y=conversationcamera.pos.y;
-		subj.pos.z=conversationcamera.pos.z;
+		subj.transform.pos.x=conversationcamera.transform.pos.x;
+		subj.transform.pos.y=conversationcamera.transform.pos.y;
+		subj.transform.pos.z=conversationcamera.transform.pos.z;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g = 0;
@@ -1209,12 +1209,12 @@ void ArxGame::handleCameraController() {
 
 		currentbeta += delta_angle_t;
 		float t=radians(MAKEANGLE(currentbeta));
-		conversationcamera.pos.x=targetpos.x+(float)EEsin(t)*160.f;
-		conversationcamera.pos.y=targetpos.y+40.f;
-		conversationcamera.pos.z=targetpos.z-(float)EEcos(t)*160.f;
+		conversationcamera.transform.pos.x=targetpos.x+(float)EEsin(t)*160.f;
+		conversationcamera.transform.pos.y=targetpos.y+40.f;
+		conversationcamera.transform.pos.z=targetpos.z-(float)EEcos(t)*160.f;
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.pos = conversationcamera.pos;
+		subj.transform.pos = conversationcamera.transform.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g=0.f;
@@ -1255,7 +1255,7 @@ void ArxGame::updateActiveCamera() {
 	// Recenter Viewport depending on Resolution
 
 	ACTIVECAM->center = Vec2i(DANAECENTERX, DANAECENTERY);
-	ACTIVECAM->pos2 = ACTIVECAM->transform.mod = ACTIVECAM->center.to<float>();
+	ACTIVECAM->transform.mod = ACTIVECAM->center.to<float>();
 }
 
 void ArxGame::updateTime() {
@@ -1407,11 +1407,11 @@ void ArxGame::renderLevel() {
 
 		if ((player.Interface & INTER_COMBATMODE) && (STRIKE_TIME))// need some precision for weapon...
 		{
-			float restore=ACTIVECAM->use_focal;
+			float restore=ACTIVECAM->transform.use_focal;
 
 			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
 			{
-				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
+				ACTIVECAM->transform.use_focal=PLAYER_ARMS_FOCAL*Xratio;
 			}
 
 			float cur=0;
@@ -1438,15 +1438,15 @@ void ArxGame::renderLevel() {
 				cur+=step*speedfactor;
 			}
 
-			ACTIVECAM->use_focal=restore;
+			ACTIVECAM->transform.use_focal=restore;
 		}
 		else
 		{
-			float restore=ACTIVECAM->use_focal;
+			float restore=ACTIVECAM->transform.use_focal;
 
 			if ((!EXTERNALVIEW) && (!BOW_FOCAL))
 			{
-				ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
+				ACTIVECAM->transform.use_focal=PLAYER_ARMS_FOCAL*Xratio;
 			}
 
 
@@ -1465,7 +1465,7 @@ void ArxGame::renderLevel() {
 			if (entities.player()->animlayer[1].cur_anim!=NULL)
 				ManageCombatModeAnimationsEND();
 
-			ACTIVECAM->use_focal=restore;
+			ACTIVECAM->transform.use_focal=restore;
 		}
 
 		USEINTERNORM=old;
@@ -1508,7 +1508,7 @@ void ArxGame::renderLevel() {
 
 		//TODO Hardcoded up vector
 		Vec3f up(0.f, 1.f, 0.f);
-		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
+		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
 	}
 
 	// Reset Transparent Polys Idx
@@ -1529,11 +1529,11 @@ void ArxGame::renderLevel() {
 	if ( (entities.player())
 		&& (entities.player()->animlayer[0].cur_anim) )
 	{
-		float restore=ACTIVECAM->use_focal;
+		float restore=ACTIVECAM->orgTrans.use_focal;
 
 		if ((!EXTERNALVIEW) && (!BOW_FOCAL))
 		{
-			ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
+			ACTIVECAM->orgTrans.use_focal=PLAYER_ARMS_FOCAL*Xratio;
 		}
 
 		if (!EXTERNALVIEW)
@@ -1545,7 +1545,7 @@ void ArxGame::renderLevel() {
 		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
 			&entities.player()->pos, 0, entities.player());
 
-		ACTIVECAM->use_focal=restore;
+		ACTIVECAM->transform.use_focal=restore;
 		FORCE_FRONT_DRAW=0;
 	}
 
@@ -1557,7 +1557,7 @@ void ArxGame::renderLevel() {
 	ARX_PHYSICS_Apply();
 
 	if (FRAME_COUNT<=0)
-		PrecalcIOLighting(&ACTIVECAM->pos, ACTIVECAM->cdepth * 0.6f);
+		PrecalcIOLighting(&ACTIVECAM->transform.pos, ACTIVECAM->cdepth * 0.6f);
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 
@@ -1843,7 +1843,7 @@ void ArxGame::render() {
 	ARX_PLAYER_Frame_Update();
 		
 	subj.center = Vec2i(DANAECENTERX, DANAECENTERY);
-	subj.pos2 = subj.transform.mod = subj.center.to<float>();
+	subj.transform.mod = subj.center.to<float>();
 
 	// Finally computes current focal
 	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
@@ -1973,7 +1973,7 @@ void ArxGame::goFor2DFX()
 
 		if (el->extras & EXTRAS_FLARE)
 		{
-			if(distSqr(ACTIVECAM->pos, el->pos) < square(2200)) {
+			if(distSqr(ACTIVECAM->orgTrans.pos, el->pos) < square(2200)) {
 				needed=1;
 				break;
 			}
@@ -2024,7 +2024,7 @@ void ArxGame::goFor2DFX()
 						(ltvv.p.y<(DANAESIZY-(CINEMA_DECAL*Yratio)))
 						)
 					{
-						Vec3f vector = lv.p - ACTIVECAM->pos;
+						Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
 						lv.p -= vector * (50.f / vector.length());
 						TexturedVertex ltvv2;
 						specialEE_RTP(&lv, &ltvv2);
@@ -2048,7 +2048,7 @@ void ArxGame::goFor2DFX()
 
 						if(
 							(ltvv.p.z>fZFar)||
-							EERIELaunchRay3(&ACTIVECAM->pos,&ee3dlv,&hit,tp,1)||
+							EERIELaunchRay3(&ACTIVECAM->orgTrans.pos,&ee3dlv,&hit,tp,1)||
 							GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 							)
 						{

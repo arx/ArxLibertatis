@@ -492,7 +492,7 @@ long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 	        ||	(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
 
-	float dists = distSqr(io->pos, ACTIVECAM->pos);
+	float dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
 
 	if (dists > square(ACTIVECAM->cdepth) * square(1.0f / 2))
 		return 0;
@@ -697,7 +697,7 @@ bool ARX_NPC_LaunchPathfind(Entity * io, long target)
 	
 	io->_npcdata->pathfind.truetarget = target;
 	
-	if ((distSqr(pos1, ACTIVECAM->pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
+	if ((distSqr(pos1, ACTIVECAM->orgTrans.pos) < square(ACTIVECAM->cdepth) * square(1.0f / 2))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
 	        && (distSqr(pos1, pos2) < square(520)) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
@@ -3631,7 +3631,7 @@ Entity * ARX_NPC_GetFirstNPCInSight(Entity * ioo)
 	if (!ioo) return NULL;
 
 	// Basic Clipping to avoid performance loss
-	if(distSqr(ACTIVECAM->pos, ioo->pos) > square(2500)) {
+	if(distSqr(ACTIVECAM->orgTrans.pos, ioo->pos) > square(2500)) {
 		return NULL;
 	}
 

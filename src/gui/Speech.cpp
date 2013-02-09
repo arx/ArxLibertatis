@@ -625,7 +625,7 @@ bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is) {
 	
 	conversationcamera->d_pos = aspeech[is].io->pos + player.baseOffset();
 	float t = (aspeech[is].io->angle.b);
-	conversationcamera->pos = conversationcamera->d_pos;
-	conversationcamera->pos += Vec3f(EEsin(t) * 100.f, 0.f, -EEcos(t) * 100.f);
+	conversationcamera->orgTrans.pos = conversationcamera->d_pos;
+	conversationcamera->orgTrans.pos += Vec3f(EEsin(t) * 100.f, 0.f, -EEcos(t) * 100.f);
 	return true;
 }

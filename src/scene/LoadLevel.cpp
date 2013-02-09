@@ -231,7 +231,7 @@ long DanaeSaveLevel(const fs::path & _fic) {
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
 	
-	dlh.pos_edit = (dlh.nb_scn != 0) ? subj.pos - Mscenepos : subj.pos;
+	dlh.pos_edit = (dlh.nb_scn != 0) ? subj.orgTrans.pos - Mscenepos : subj.orgTrans.pos;
 
 	dlh.angle_edit = player.angle;
 	dlh.lighting = false; // must be false
@@ -685,7 +685,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		}
 	}
 	
-	loddpos = subj.pos = dlh.pos_edit;
+	loddpos = subj.orgTrans.pos = dlh.pos_edit;
 	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
 	
 	if(strcmp(dlh.ident, "DANAE_FILE")) {
@@ -740,9 +740,9 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		mse->pos.y = Mscenepos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport = player.pos = subj.pos = moveto = mse->pos + mse->point0;
+		lastteleport = player.pos = subj.orgTrans.pos = moveto = mse->pos + mse->point0;
 		lastteleport.y -= 180.f;
-		player.pos.y = subj.pos.y -= 180.f;
+		player.pos.y = subj.orgTrans.pos.y -= 180.f;
 		trans = mse->pos;
 	}
 #endif // BUILD_EDIT_LOADSAVE

@@ -908,7 +908,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 		if (Thrown[i].flags & ATO_EXIST)
 		{
 			// Is Object Visible & Near ?
-			if(fartherThan(ACTIVECAM->pos, Thrown[i].position, ACTIVECAM->cdepth * fZFogEnd + 50.f)) {
+			if(fartherThan(ACTIVECAM->orgTrans.pos, Thrown[i].position, ACTIVECAM->cdepth * fZFogEnd + 50.f)) {
 				continue;
 			}
 
