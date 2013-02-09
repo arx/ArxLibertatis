@@ -633,8 +633,6 @@ void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * poss,
 }
 // List of TO-TREAT vertex for MIPMESHING
 
-void specialEE_P(TexturedVertex *in,TexturedVertex *out);
-
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private
 TextureContainer TexSpecialColor("specialcolor_list", TextureContainer::NoInsert);
 
@@ -950,6 +948,8 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 
 extern long FORCE_FRONT_DRAW;
 
+void EE_P(Vec3f * in, TexturedVertex * out);
+
 void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
                     Entity * io, EERIE_MOD_INFO * modinfo) {
 	
@@ -1065,7 +1065,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
 				specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld );
-				specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert );
+				EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert );
 			}
 			else
 			{
@@ -1075,7 +1075,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
 				specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
-				specialEE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
+				EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 			}
 
 			// Memorizes 2D Bounding Box using vertex min/max x,y pos

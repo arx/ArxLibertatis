@@ -800,18 +800,6 @@ static inline float clamp_and_invert(float z) {
 	return 1.f / std::max(z, near_clamp);
 }
 
-void specialEE_P(Vec3f * in, TexturedVertex * out) {
-	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
-	
-	float fZTemp = clamp_and_invert(in->z);
-	
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = in->x * ProjectionMatrix._11 * fZTemp + et->mod.x;
-	out->p.y = in->y * ProjectionMatrix._22 * fZTemp + et->mod.y;
-	out->rhw = fZTemp; 
-}
-
 void EE_P(Vec3f * in, TexturedVertex * out) {
 	
 	float fZTemp = clamp_and_invert(in->z);
