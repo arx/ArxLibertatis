@@ -744,39 +744,21 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 	if (ACTIVECAM != cam) ACTIVECAM = cam;
 }
 
-void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
+void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out, float rhwScale) {
 	out->p = in->p - ACTIVECAM->orgTrans.pos;
-	in->p.x = (out->p.x * ACTIVECAM->orgTrans.ycos) + (out->p.z * ACTIVECAM->orgTrans.ysin);
-	in->p.z = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
+	in->p.x  = (out->p.x * ACTIVECAM->orgTrans.ycos) + (out->p.z * ACTIVECAM->orgTrans.ysin);
+	in->p.z  = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
 	out->p.z = (out->p.y * ACTIVECAM->orgTrans.xsin) + (in->p.z * ACTIVECAM->orgTrans.xcos);
 	out->p.y = (out->p.y * ACTIVECAM->orgTrans.xcos) - (in->p.z * ACTIVECAM->orgTrans.xsin);
-	in->p.y = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
-	in->p.x = (in->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
+	in->p.y  = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
+	in->p.x  = (in->p.x  * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
 
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
 	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
-	out->rhw = fZTemp;
-}
-
-void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
-	out->p = in->p - ACTIVECAM->orgTrans.pos;
-	in->p.x = (out->p.x * ACTIVECAM->orgTrans.ycos) + (out->p.z * ACTIVECAM->orgTrans.ysin);
-	in->p.z = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
-	out->p.z = (out->p.y * ACTIVECAM->orgTrans.xsin) + (in->p.z * ACTIVECAM->orgTrans.xcos);
-	out->p.y = (out->p.y * ACTIVECAM->orgTrans.xcos) - (in->p.z * ACTIVECAM->orgTrans.xsin);
-	in->p.y = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
-	in->p.x = (in->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
-
-	float fZTemp;
-	fZTemp = 1.f / out->p.z;
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
-	out->rhw = fZTemp * 3000.f;
-
+	out->rhw = fZTemp * rhwScale;
 }
 
 void EE_RT(TexturedVertex * in, Vec3f * out) {

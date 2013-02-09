@@ -314,8 +314,7 @@ void CreateInWorld();
 void EERIE_LIGHT_ChangeLighting();
 void SetCameraDepth(float depth);
 
-extern void EERIETreatPoint(TexturedVertex *in,TexturedVertex *out);
-extern void EERIETreatPoint2(TexturedVertex *in,TexturedVertex *out);
+extern void EERIETreatPoint(TexturedVertex *in, TexturedVertex *out, float rhwScale = 1.0f);
 bool RayCollidingPoly(Vec3f * orgn,Vec3f * dest,EERIEPOLY * ep,Vec3f * hit);
 
 void EERIEPOLY_Compute_PolyIn();
