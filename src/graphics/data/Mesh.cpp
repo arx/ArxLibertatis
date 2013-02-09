@@ -833,13 +833,6 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 
 //*************************************************************************************
 //*************************************************************************************
-void EE_RTT(TexturedVertex * in, TexturedVertex * out)
-{
-	specialEE_RTP(in, out);
-}
-
-//*************************************************************************************
-//*************************************************************************************
 static void EERIERTPPolyCam(EERIEPOLY * ep, EERIE_CAMERA * cam) {
 	
 	camEE_RTP(&ep->v[0], &ep->tv[0], cam);

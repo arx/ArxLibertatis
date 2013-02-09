@@ -197,7 +197,6 @@ int EERIELaunchRay2(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, lo
 int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * tp, long flag);
 float GetGroundY(Vec3f * pos);
 void EE_IRTP(TexturedVertex *in,TexturedVertex *out);
-void EE_RTT(TexturedVertex *in,TexturedVertex *out);
 
 void extEE_RTP(TexturedVertex *in,TexturedVertex *out);
 void MakeColorz(Entity * io);
