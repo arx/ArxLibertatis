@@ -810,17 +810,6 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 	out->rhw = fZTemp;
 }
 
-void EE_P2(TexturedVertex * in, TexturedVertex * out)
-{
-	float fZTemp;
-	fZTemp = 1.f / in->p.z;
-
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	out->p.x = in->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
-	out->p.y = in->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
-	out->rhw = fZTemp;
-}
-
 void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	
 	out->p = in->p - ACTIVECAM->orgTrans.pos;
