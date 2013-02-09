@@ -81,8 +81,8 @@ if(MSVC)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 	
 	# Enable compiler optimization in release
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}
-	    /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
+	set(CMAKE_CXX_FLAGS_RELEASE
+	    "${CMAKE_CXX_FLAGS_RELEASE} /Ox /Oi /Ot /GL /arch:SSE2 /GS- /fp:fast")
 	
 	# Always build with debug information
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi")
@@ -90,8 +90,8 @@ if(MSVC)
 	# Enable linker optimization in release
 	#  /OPT:REF   Eliminate unreferenced code
 	#  /OPT:ICF   COMDAT folding (merge functions generating the same code)
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE}
-	    /OPT:REF /OPT:ICF /LTCG")
+	set(CMAKE_EXE_LINKER_FLAGS_RELEASE
+		"${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:REF /OPT:ICF /LTCG")
 	
 else(MSVC)
 	
