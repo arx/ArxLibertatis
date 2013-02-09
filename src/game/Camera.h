@@ -42,12 +42,12 @@ struct EERIE_CAMERA {
 
 	EERIE_TRANSFORM transform;
 	Vec3f pos;
-	float Ycos;
-	float Ysin;
-	float Xcos;
-	float Xsin;
-	float Zcos;
-	float Zsin;
+	float ycos;
+	float ysin;
+	float xcos;
+	float xsin;
+	float zcos;
+	float zsin;
 	float focal;
 	float use_focal;
 	float Zmul;

@@ -198,12 +198,12 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 
 inline void YXZRotatePoint(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam) {
 	float tempy;
-	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
-	out->y = (in->x * cam->Ycos) + (in->z * cam->Ysin);
-	tempy = (in->y * cam->Xcos) - (out->z * cam->Xsin);
-	out->x = (out->y * cam->Zcos) + (tempy * cam->Zsin);
-	out->y = (tempy * cam->Zcos) - (out->y * cam->Zsin);
-	out->z = (in->y * cam->Xsin) + (out->z * cam->Xcos);
+	out->z = (in->z * cam->ycos) - (in->x * cam->ysin);
+	out->y = (in->x * cam->ycos) + (in->z * cam->ysin);
+	tempy = (in->y * cam->xcos) - (out->z * cam->xsin);
+	out->x = (out->y * cam->zcos) + (tempy * cam->zsin);
+	out->y = (tempy * cam->zcos) - (out->y * cam->zsin);
+	out->z = (in->y * cam->xsin) + (out->z * cam->xcos);
 }
 
 // QUATERNION Funcs/Defs

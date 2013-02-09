@@ -1019,24 +1019,24 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		else
 			Zsin = radians(angle->a);
 
-		Ncam.Xcos = Xcos = EEcos(Zsin);
-		Ncam.Xsin = Xsin = EEsin(Zsin);
+		Ncam.xcos = Xcos = EEcos(Zsin);
+		Ncam.xsin = Xsin = EEsin(Zsin);
 
 		if ( modinfo )
 			Zsin = radians(MAKEANGLE(angle->b + modinfo->rot.b));
 		else
 			Zsin = radians(angle->b);
 
-		Ncam.Ycos = Ycos = EEcos(Zsin);
-		Ncam.Ysin = Ysin = EEsin(Zsin);
+		Ncam.ycos = Ycos = EEcos(Zsin);
+		Ncam.ysin = Ysin = EEsin(Zsin);
 		
 		if ( modinfo )
 			Zsin = radians(MAKEANGLE(angle->g + modinfo->rot.g));
 		else
 			Zsin = radians(angle->g);
 
-		Ncam.Zcos = Zcos = EEcos(Zsin);
-		Ncam.Zsin = Zsin = EEsin(Zsin);
+		Ncam.zcos = Zcos = EEcos(Zsin);
+		Ncam.zsin = Zsin = EEsin(Zsin);
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
@@ -1549,13 +1549,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	// HALO HANDLING START
 	if	(need_halo)			
 	{
-		Ncam.Xcos = 1.f;
-		Ncam.Xsin = 0.f;
-		Ncam.Zcos = 1.f;
-		Ncam.Zsin = 0.f;
+		Ncam.xcos = 1.f;
+		Ncam.xsin = 0.f;
+		Ncam.zcos = 1.f;
+		Ncam.zsin = 0.f;
 		float power=radians(MAKEANGLE(subj.angle.b));
-		Ncam.Ycos = (float)EEcos(power);	
-		Ncam.Ysin = (float)EEsin(power);
+		Ncam.ycos = (float)EEcos(power);
+		Ncam.ysin = (float)EEsin(power);
 		float tot=0;
 		float _ffr[3];
 			

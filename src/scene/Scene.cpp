@@ -1024,10 +1024,10 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	Vec3f vTout(0.0f, 0.0f, 10000.0f);
 	
 	Vec3f vTarget;
-	vTarget.y = -(vTout.z * ACTIVECAM->Xsin);
-	vTarget.z = -(vTout.z * ACTIVECAM->Xcos);
-	vTarget.x =  (vTarget.z * ACTIVECAM->Ysin);
-	vTarget.z = -(vTarget.z * ACTIVECAM->Ycos);
+	vTarget.y = -(vTout.z * ACTIVECAM->xsin);
+	vTarget.z = -(vTout.z * ACTIVECAM->xcos);
+	vTarget.x =  (vTarget.z * ACTIVECAM->ysin);
+	vTarget.z = -(vTarget.z * ACTIVECAM->ycos);
 	vTarget.x += ACTIVECAM->pos.x;
 	vTarget.y -= ACTIVECAM->pos.y;
 	vTarget.z += ACTIVECAM->pos.z;

@@ -746,19 +746,19 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 
 void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
 	out->p = in->p - ACTIVECAM->pos;
-	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
-	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
-	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (in->p.z * ACTIVECAM->Xsin);
+	in->p.x = (out->p.x * ACTIVECAM->ycos) + (out->p.z * ACTIVECAM->ysin);
+	in->p.z = (out->p.z * ACTIVECAM->ycos) - (out->p.x * ACTIVECAM->ysin);
+	out->p.z = (out->p.y * ACTIVECAM->xsin) + (in->p.z * ACTIVECAM->xcos);
+	out->p.y = (out->p.y * ACTIVECAM->xcos) - (in->p.z * ACTIVECAM->xsin);
 
-	if (ACTIVECAM->Zsin == 0)
+	if (ACTIVECAM->zsin == 0)
 	{
 		in->p.y = out->p.y;
 	}
 	else
 	{
-		in->p.y = (out->p.y * ACTIVECAM->Zcos) - (in->p.x * ACTIVECAM->Zsin);
-		in->p.x = (in->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
+		in->p.y = (out->p.y * ACTIVECAM->zcos) - (in->p.x * ACTIVECAM->zsin);
+		in->p.x = (in->p.x * ACTIVECAM->zcos) + (out->p.y * ACTIVECAM->zsin);
 	}
 
 	float fZTemp;
@@ -771,19 +771,19 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
 
 void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
 	out->p = in->p - ACTIVECAM->pos;
-	in->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-	in->p.z = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
-	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (in->p.z * ACTIVECAM->Xcos);
-	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (in->p.z * ACTIVECAM->Xsin);
+	in->p.x = (out->p.x * ACTIVECAM->ycos) + (out->p.z * ACTIVECAM->ysin);
+	in->p.z = (out->p.z * ACTIVECAM->ycos) - (out->p.x * ACTIVECAM->ysin);
+	out->p.z = (out->p.y * ACTIVECAM->xsin) + (in->p.z * ACTIVECAM->xcos);
+	out->p.y = (out->p.y * ACTIVECAM->xcos) - (in->p.z * ACTIVECAM->xsin);
 
-	if (ACTIVECAM->Zsin == 0)
+	if (ACTIVECAM->zsin == 0)
 	{
 		in->p.y = out->p.y;
 	}
 	else
 	{
-		in->p.y = (out->p.y * ACTIVECAM->Zcos) - (in->p.x * ACTIVECAM->Zsin);
-		in->p.x = (in->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
+		in->p.y = (out->p.y * ACTIVECAM->zcos) - (in->p.x * ACTIVECAM->zsin);
+		in->p.x = (in->p.x * ACTIVECAM->zcos) + (out->p.y * ACTIVECAM->zsin);
 	}
 
 	float fZTemp;
@@ -799,15 +799,15 @@ void EE_RT(TexturedVertex * in, Vec3f * out) {
 	
 	*out = in->p - ACTIVECAM->pos;
 	
-	float temp = (out->z * ACTIVECAM->Ycos) - (out->x * ACTIVECAM->Ysin);
-	out->x = (out->x * ACTIVECAM->Ycos) + (out->z * ACTIVECAM->Ysin);
+	float temp = (out->z * ACTIVECAM->ycos) - (out->x * ACTIVECAM->ysin);
+	out->x = (out->x * ACTIVECAM->ycos) + (out->z * ACTIVECAM->ysin);
 	
-	out->z = (out->y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
-	out->y = (out->y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
+	out->z = (out->y * ACTIVECAM->xsin) + (temp * ACTIVECAM->xcos);
+	out->y = (out->y * ACTIVECAM->xcos) - (temp * ACTIVECAM->xsin);
 	
 	// Might Prove Usefull one day...
-	temp = (out->y * ACTIVECAM->Zcos) - (out->x * ACTIVECAM->Zsin);
-	out->x = (out->x * ACTIVECAM->Zcos) + (out->y * ACTIVECAM->Zsin);
+	temp = (out->y * ACTIVECAM->zcos) - (out->x * ACTIVECAM->zsin);
+	out->x = (out->x * ACTIVECAM->zcos) + (out->y * ACTIVECAM->zsin);
 	out->y = temp;
 }
 
@@ -815,15 +815,15 @@ void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
 	
 	out->p = in->p - ACTIVECAM->pos;
 	
-	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
-	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
+	float temp = (out->p.z * ACTIVECAM->ycos) - (out->p.x * ACTIVECAM->ysin);
+	out->p.x = (out->p.x * ACTIVECAM->ycos) + (out->p.z * ACTIVECAM->ysin);
 	
-	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
-	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
+	out->p.z = (out->p.y * ACTIVECAM->xsin) + (temp * ACTIVECAM->xcos);
+	out->p.y = (out->p.y * ACTIVECAM->xcos) - (temp * ACTIVECAM->xsin);
 	
 	// Might Prove Usefull one day...
-	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
-	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
+	temp = (out->p.y * ACTIVECAM->zcos) - (out->p.x * ACTIVECAM->zsin);
+	out->p.x = (out->p.x * ACTIVECAM->zcos) + (out->p.y * ACTIVECAM->zsin);
 	out->p.y = temp;
 }
 
@@ -883,14 +883,14 @@ void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	
 	out->p = in->p - ACTIVECAM->pos;
 	
-	float temp = (out->p.z * ACTIVECAM->Ycos) - (out->p.x * ACTIVECAM->Ysin);
-	out->p.x = (out->p.x * ACTIVECAM->Ycos) + (out->p.z * ACTIVECAM->Ysin);
-	out->p.z = (out->p.y * ACTIVECAM->Xsin) + (temp * ACTIVECAM->Xcos);
-	out->p.y = (out->p.y * ACTIVECAM->Xcos) - (temp * ACTIVECAM->Xsin);
+	float temp = (out->p.z * ACTIVECAM->ycos) - (out->p.x * ACTIVECAM->ysin);
+	out->p.x = (out->p.x * ACTIVECAM->ycos) + (out->p.z * ACTIVECAM->ysin);
+	out->p.z = (out->p.y * ACTIVECAM->xsin) + (temp * ACTIVECAM->xcos);
+	out->p.y = (out->p.y * ACTIVECAM->xcos) - (temp * ACTIVECAM->xsin);
 	
 	// Might Prove Usefull one day...
-	temp = (out->p.y * ACTIVECAM->Zcos) - (out->p.x * ACTIVECAM->Zsin);
-	out->p.x = (out->p.x * ACTIVECAM->Zcos) + (out->p.y * ACTIVECAM->Zsin);
+	temp = (out->p.y * ACTIVECAM->zcos) - (out->p.x * ACTIVECAM->zsin);
+	out->p.x = (out->p.x * ACTIVECAM->zcos) + (out->p.y * ACTIVECAM->zsin);
 	out->p.y = temp;
 	
 	float fZTemp;
@@ -906,20 +906,20 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 	TexturedVertex tout;
 	out->p = in->p - cam->pos;
 
-	tout.p.x = (out->p.x * cam->Ycos) + (out->p.z * cam->Ysin);
-	tout.p.z = (out->p.z * cam->Ycos) - (out->p.x * cam->Ysin);
+	tout.p.x = (out->p.x * cam->ycos) + (out->p.z * cam->ysin);
+	tout.p.z = (out->p.z * cam->ycos) - (out->p.x * cam->ysin);
 
-	out->p.z = (out->p.y * cam->Xsin) + (tout.p.z * cam->Xcos);
-	out->p.y = (out->p.y * cam->Xcos) - (tout.p.z * cam->Xsin);
+	out->p.z = (out->p.y * cam->xsin) + (tout.p.z * cam->xcos);
+	out->p.y = (out->p.y * cam->xcos) - (tout.p.z * cam->xsin);
 
-	if (ACTIVECAM->Zsin == 0)
+	if (ACTIVECAM->zsin == 0)
 	{
 		tout.p.y = out->p.y;
 	}
 	else
 	{
-		tout.p.y = (out->p.y * cam->Zcos) - (tout.p.x * cam->Zsin);
-		tout.p.x = (tout.p.x * cam->Zcos) + (out->p.y * cam->Zsin);
+		tout.p.y = (out->p.y * cam->zcos) - (tout.p.x * cam->zsin);
+		tout.p.x = (tout.p.x * cam->zcos) + (out->p.y * cam->zsin);
 	}
 
 	if (out->p.z <= 0.f)
@@ -1197,14 +1197,14 @@ extern EERIE_CAMERA raycam;
 static void SP_PrepareCamera(EERIE_CAMERA * cam) {
 	float tmp = radians(cam->angle.a);
 	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
-	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
-	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
+	cam->transform.xcos = cam->xcos = (float)EEcos(tmp);
+	cam->transform.xsin = cam->xsin = (float)EEsin(tmp);
 	tmp = radians(cam->angle.b);
-	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
-	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
+	cam->transform.ycos = cam->ycos = (float)EEcos(tmp);
+	cam->transform.ysin = cam->ysin = (float)EEsin(tmp);
 	tmp = radians(cam->angle.g);
-	cam->Zcos = (float)EEcos(tmp);
-	cam->Zsin = (float)EEsin(tmp);
+	cam->zcos = (float)EEcos(tmp);
+	cam->zsin = (float)EEsin(tmp);
 	cam->transform.mod = (cam->center + cam->clip.origin).to<float>();
 	cam->transform.pos = cam->pos;
 }
@@ -2116,24 +2116,24 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 void PrepareActiveCamera() {
 	
 	float tmp = radians(ACTIVECAM->angle.a);
-	ACTIVECAM->Xcos = (float)EEcos(tmp);
-	ACTIVECAM->Xsin = (float)EEsin(tmp);
+	ACTIVECAM->xcos = (float)EEcos(tmp);
+	ACTIVECAM->xsin = (float)EEsin(tmp);
 	tmp = radians(ACTIVECAM->angle.b);
-	ACTIVECAM->Ycos = (float)EEcos(tmp);
-	ACTIVECAM->Ysin = (float)EEsin(tmp);
+	ACTIVECAM->ycos = (float)EEcos(tmp);
+	ACTIVECAM->ysin = (float)EEsin(tmp);
 	tmp = radians(ACTIVECAM->angle.g);
-	ACTIVECAM->Zcos = (float)EEcos(tmp);
-	ACTIVECAM->Zsin = (float)EEsin(tmp);
+	ACTIVECAM->zcos = (float)EEcos(tmp);
+	ACTIVECAM->zsin = (float)EEsin(tmp);
 	ACTIVECAM->transform.mod = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
 	
 	MatrixReset(&ACTIVECAM->matrix);
 	
-	float cx = ACTIVECAM->Xcos;
-	float sx = ACTIVECAM->Xsin;
-	float cy = ACTIVECAM->Ycos;
-	float sy = ACTIVECAM->Ysin;
-	float cz = ACTIVECAM->Zcos;
-	float sz = ACTIVECAM->Zsin;
+	float cx = ACTIVECAM->xcos;
+	float sx = ACTIVECAM->xsin;
+	float cy = ACTIVECAM->ycos;
+	float sy = ACTIVECAM->ysin;
+	float cz = ACTIVECAM->zcos;
+	float sz = ACTIVECAM->zsin;
 	float const1, const2, const3, const4 ;
 	
 	const1 = -sz * cx;
@@ -2161,13 +2161,13 @@ void F_PrepareCamera(EERIE_CAMERA * cam)
 {
 	float tmp = radians(cam->angle.a);
 	cam->use_focal = cam->focal * Xratio;
-	cam->Xcos = (float)EEcos(tmp);
-	cam->Xsin = (float)EEsin(tmp);
+	cam->xcos = (float)EEcos(tmp);
+	cam->xsin = (float)EEsin(tmp);
 	tmp = radians(cam->angle.b);
-	cam->Ycos = (float)EEcos(tmp);
-	cam->Ysin = (float)EEsin(tmp);
-	cam->Zcos = 1;
-	cam->Zsin = 0.f;
+	cam->ycos = (float)EEcos(tmp);
+	cam->ysin = (float)EEsin(tmp);
+	cam->zcos = 1;
+	cam->zsin = 0.f;
 }
 
 void PrepareCamera(EERIE_CAMERA * cam)
