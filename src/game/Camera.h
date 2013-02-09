@@ -23,6 +23,7 @@
 #include "math/Rectangle.h"
 #include "graphics/GraphicsTypes.h"
 
+//TODO Remove
 #define CAM_SUBJVIEW 0
 #define CAM_TOPVIEW 1
 

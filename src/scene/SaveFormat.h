@@ -1090,11 +1090,7 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.orgTrans = transform;
-		a.orgTrans.pos = pos;
-		a.orgTrans.ycos = Ycos, a.orgTrans.ysin = Ysin;
-		a.orgTrans.xcos = Xcos, a.orgTrans.xsin = Xsin;
-		a.orgTrans.zcos = Zcos, a.orgTrans.zsin = Zsin;
-		a.focal = focal, a.orgTrans.use_focal = use_focal;
+		a.focal = focal;
 		a.Zmul = Zmul;
 		
 		a.angle = angle;
@@ -1122,14 +1118,20 @@ struct SavedCamera {
 	inline SavedCamera & operator=(const EERIE_CAMERA & b) {
 		
 		transform = b.orgTrans;
+
+		//TODO Remove
 		pos = b.orgTrans.pos;
 		Ycos = b.orgTrans.ycos, Ysin = b.orgTrans.ysin;
 		Xcos = b.orgTrans.xcos, Xsin = b.orgTrans.xsin;
 		Zcos = b.orgTrans.zcos, Zsin = b.orgTrans.zsin;
-		focal = b.focal, use_focal = b.orgTrans.use_focal;
+		use_focal = b.orgTrans.use_focal;
+		posleft = b.orgTrans.mod.x;
+		postop  = b.orgTrans.mod.y;
+
+		focal = b.focal;
 		Zmul = b.Zmul;
-		posleft = 0.f, postop = 0.f;
-		
+
+
 		xmod = 0.f, ymod = 0.f;
 		matrix = EERIEMATRIX();
 		angle = b.angle;
@@ -1148,7 +1150,7 @@ struct SavedCamera {
 		Xsnap = b.Xsnap, Zsnap = b.Zsnap, Zdiv = b.Zdiv;
 		
 		clip3D = b.clip3D;
-		type = 0;
+		type = CAM_SUBJVIEW;
 		bkgcolor = b.bkgcolor.toBGRA();
 		nbdrawn = b.nbdrawn;
 		cdepth = b.cdepth;
