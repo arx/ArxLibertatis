@@ -293,35 +293,16 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 	}
 }
 
-
-
-extern EERIEMATRIX ProjectionMatrix;
-void specialEE_RTP2(TexturedVertex * in, TexturedVertex * out) {
-	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
-	out->p = in->p - et->pos;
-	
-	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
-	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
-	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
-	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
-	
-	float fZTemp = 1.f / out->p.z;
-	
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->mod.x;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->mod.y;
-	out->rhw = fZTemp;
-}
-
 long EERIERTPPoly2(EERIEPOLY *ep)
 {
-	specialEE_RTP2(&ep->v[0],&ep->tv[0]);	
-	specialEE_RTP2(&ep->v[1],&ep->tv[1]);
-	specialEE_RTP2(&ep->v[2],&ep->tv[2]);	
+	specialEE_RTP(&ep->v[0],&ep->tv[0]);
+	specialEE_RTP(&ep->v[1],&ep->tv[1]);
+	specialEE_RTP(&ep->v[2],&ep->tv[2]);
 
-	if (ep->type & POLY_QUAD) specialEE_RTP2(&ep->v[3],&ep->tv[3]);	
-	else ep->tv[3].p.z=1.f;
+	if(ep->type & POLY_QUAD)
+		specialEE_RTP(&ep->v[3],&ep->tv[3]);
+	else
+		ep->tv[3].p.z=1.f;
 
 	if ((ep->tv[0].p.z<=0.f) &&
 		(ep->tv[1].p.z<=0.f) &&
