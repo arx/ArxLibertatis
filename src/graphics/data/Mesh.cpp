@@ -778,19 +778,7 @@ void EE_RT(TexturedVertex * in, Vec3f * out) {
 }
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
-	
-	out->p = in->p - ACTIVECAM->orgTrans.pos;
-	
-	float temp = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
-	out->p.x = (out->p.x * ACTIVECAM->orgTrans.ycos) + (out->p.z * ACTIVECAM->orgTrans.ysin);
-	
-	out->p.z = (out->p.y * ACTIVECAM->orgTrans.xsin) + (temp * ACTIVECAM->orgTrans.xcos);
-	out->p.y = (out->p.y * ACTIVECAM->orgTrans.xcos) - (temp * ACTIVECAM->orgTrans.xsin);
-	
-	// Might Prove Usefull one day...
-	temp = (out->p.y * ACTIVECAM->orgTrans.zcos) - (out->p.x * ACTIVECAM->orgTrans.zsin);
-	out->p.x = (out->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
-	out->p.y = temp;
+	EE_RT(in, &out->p);
 }
 
 void specialEE_RT(TexturedVertex * in, Vec3f * out) {
