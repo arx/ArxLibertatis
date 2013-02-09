@@ -1053,7 +1053,7 @@ struct SavedCamera {
 	
 	f32 xmod;
 	f32 ymod;
-	SavedMatrix matrix;
+	SavedMatrix matrix; //TODO Remove
 	SavedAnglef angle;
 	
 	SavedVec3 d_pos;
@@ -1098,7 +1098,6 @@ struct SavedCamera {
 		a.Zmul = Zmul;
 		a.transform.mod.x = posleft, a.transform.mod.y = postop;
 		
-		a.matrix = matrix;
 		a.angle = angle;
 		
 		a.d_pos = d_pos, a.d_angle = d_angle;
@@ -1133,7 +1132,7 @@ struct SavedCamera {
 		posleft = b.transform.mod.x, postop = b.transform.mod.y;
 		
 		xmod = 0.f, ymod = 0.f;
-		matrix = b.matrix;
+		matrix = EERIEMATRIX();
 		angle = b.angle;
 		
 		d_pos = b.d_pos, d_angle = b.d_angle;

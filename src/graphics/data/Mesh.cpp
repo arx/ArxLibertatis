@@ -2125,32 +2125,7 @@ void PrepareActiveCamera() {
 	ACTIVECAM->zcos = (float)EEcos(tmp);
 	ACTIVECAM->zsin = (float)EEsin(tmp);
 	ACTIVECAM->transform.mod = (ACTIVECAM->center + ACTIVECAM->clip.origin).to<float>();
-	
-	MatrixReset(&ACTIVECAM->matrix);
-	
-	float cx = ACTIVECAM->xcos;
-	float sx = ACTIVECAM->xsin;
-	float cy = ACTIVECAM->ycos;
-	float sy = ACTIVECAM->ysin;
-	float cz = ACTIVECAM->zcos;
-	float sz = ACTIVECAM->zsin;
-	float const1, const2, const3, const4 ;
-	
-	const1 = -sz * cx;
-	const2 = cx * cz;
-	const3 = sx * sz;
-	const4 = -sx * cz;
-	
-	ACTIVECAM->matrix._11 = cz * cy;
-	ACTIVECAM->matrix._21 = const4 * sy + const1;
-	ACTIVECAM->matrix._31 = const3 - const2 * sy;
-	ACTIVECAM->matrix._12 = cy * sz;
-	ACTIVECAM->matrix._22 = const2 - const3 * sy;
-	ACTIVECAM->matrix._32 = const1 * sy + const4;
-	ACTIVECAM->matrix._13 = sy;
-	ACTIVECAM->matrix._23 = sx * cy;
-	ACTIVECAM->matrix._33 = cx * cy;
-	
+		
 	EERIE_CreateMatriceProj(static_cast<float>(DANAESIZX),
 	                        static_cast<float>(DANAESIZY),
 	                        EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),

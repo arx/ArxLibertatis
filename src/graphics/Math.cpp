@@ -841,10 +841,6 @@ void CalcObjFaceNormal(const Vec3f * v0, const Vec3f * v1, const Vec3f * v2,
 	ef->norm.normalize();
 }
 
-void MatrixReset(EERIEMATRIX * mat) {
-	memset(mat, 0, sizeof(EERIEMATRIX));
-}
-
 void MatrixSetByVectors(EERIEMATRIX * m, const Vec3f * d, const Vec3f * u)
 {
 	float t;
@@ -892,9 +888,8 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const Vec3f * vect, float r
 	yAxis = -yAxis;
 
 	// Generate rotation matrix without roll included
-	EERIEMATRIX rot, roll;
-	MatrixReset(&rot);
-	MatrixReset(&roll);
+	EERIEMATRIX rot;
+	EERIEMATRIX roll;
 	rot._11 = yAxis.x;
 	rot._12 = yAxis.y;
 	rot._13 = yAxis.z;
