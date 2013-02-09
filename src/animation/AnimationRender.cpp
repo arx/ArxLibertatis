@@ -424,7 +424,6 @@ static void	Cedric_ConcatenateTM(Entity * io, EERIE_C_DATA * obj, Anglef * angle
 
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
-void EE_P2(TexturedVertex * in, TexturedVertex * out);
 
 /* Transform object vertices  */
 int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
