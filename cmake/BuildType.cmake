@@ -45,7 +45,10 @@ if(MSVC)
 	if(SET_OPTIMIZATION_FLAGS)
 		
 		# Disable exceptions & rtti
-		add_definitions(/GR-)           # No RTTI
+		add_definitions(/GR-) # No RTTI
+		foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE)
+			string(REGEX REPLACE "/GR( |$)" "/GR-\\1" ${flag_var} "${${flag_var}}")
+		endforeach(flag_var)
 		
 		# Enable multiprocess build
 		add_definitions(/MP)
