@@ -1755,7 +1755,7 @@ void TreatBackgroundActions() {
 			continue;
 		}
 		
-		float dist = distSqr(gl->pos,	ACTIVECAM->pos);
+		float dist = distSqr(gl->pos,	ACTIVECAM->orgTrans.pos);
 		if(dist > fZFar) {
 			// Out of treat range
 			ARX_SOUND_Stop(gl->sample);
@@ -1918,9 +1918,9 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	EERIE_CAMERA * oldcam = ACTIVECAM;
 	SetActiveCamera(&ka);
 	PrepareCamera(&ka);
-	fl->v.p += ka.pos;
+	fl->v.p += ka.orgTrans.pos;
 	EE_RTT(&fl->tv, &fl->v);
-	fl->v.p += ka.pos;
+	fl->v.p += ka.orgTrans.pos;
 	
 	float vx = -(fl->x - subj.center.x) * 0.2173913f;
 	float vy = (fl->y - subj.center.y) * 0.1515151515151515f;
@@ -1935,11 +1935,11 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 		ka = *oldcam;
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka);
-		float temp = (fl->v.p.y * -ka.xsin) + (fl->v.p.z * ka.xcos);
-		fl->v.p.y = (fl->v.p.y * ka.xcos) - (-fl->v.p.z * ka.xsin);
-		fl->v.p.z = (temp * ka.ycos) - (-fl->v.p.x * ka.ysin);
-		fl->v.p.x = (temp * -ka.ysin) + (fl->v.p.x * ka.ycos);
-		fl->v.p += oldcam->pos;
+		float temp = (fl->v.p.y * -ka.orgTrans.xsin) + (fl->v.p.z * ka.orgTrans.xcos);
+		fl->v.p.y = (fl->v.p.y * ka.orgTrans.xcos) - (-fl->v.p.z * ka.orgTrans.xsin);
+		fl->v.p.z = (temp * ka.orgTrans.ycos) - (-fl->v.p.x * ka.orgTrans.ysin);
+		fl->v.p.x = (temp * -ka.orgTrans.ysin) + (fl->v.p.x * ka.orgTrans.ycos);
+		fl->v.p += oldcam->orgTrans.pos;
 	}
 	fl->tv.p = fl->v.p;
 	SetActiveCamera(oldcam);

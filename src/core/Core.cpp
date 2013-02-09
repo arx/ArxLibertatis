@@ -505,7 +505,7 @@ void InitializeDanae() {
 	player.size.x = subj.size.b = player.baseRadius();
 	player.size.z = subj.size.g = player.baseRadius();
 	player.desiredangle = player.angle = subj.angle = Anglef(3.f, 268.f, 0.f);
-	subj.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
+	subj.orgTrans.pos = Vec3f(900.f, player.baseHeight(), 4340.f);
 	subj.clip = Rect(0, 0, 640, 480);
 	subj.center = subj.clip.center();
 	subj.focal = BASE_FOCAL;
@@ -523,7 +523,7 @@ void InitializeDanae() {
 	raycam.center = Vec2i(320, 320);
 	
 	bookcam.angle = Anglef::ZERO;
-	bookcam.pos = Vec3f::ZERO;
+	bookcam.orgTrans.pos = Vec3f::ZERO;
 	bookcam.focal = BASE_FOCAL;
 		
 	for(size_t i = 0; i < 32; i++) {
@@ -1874,7 +1874,7 @@ void FirstFrameHandling() {
 	Kam = &subj;
 	
 	lastteleport = player.basePosition();
-	subj.pos = moveto = player.pos;
+	subj.orgTrans.pos = moveto = player.pos;
 
 	subj.angle = player.angle;
 	
@@ -3049,7 +3049,7 @@ void ManageQuakeFX()
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
 		float halfpower = truepower * .5f;
-		ACTIVECAM->pos += randomVec(-halfpower, halfpower);
+		ACTIVECAM->orgTrans.pos += randomVec(-halfpower, halfpower);
 		ACTIVECAM->angle.a += rnd() * truepower - halfpower;
 		ACTIVECAM->angle.g += rnd() * truepower - halfpower;
 		ACTIVECAM->angle.b += rnd() * truepower - halfpower;
@@ -3197,7 +3197,7 @@ void LaunchWaitingCine() {
 	LogDebug("LaunchWaitingCine " << CINE_PRELOAD);
 
 	if(ACTIVECAM) {
-		ePos = ACTIVECAM->pos;
+		ePos = ACTIVECAM->orgTrans.pos;
 	}
 	
 	DANAE_KillCinematic();
@@ -3267,7 +3267,7 @@ void DANAE_Manage_Cinematic() {
 		
 		// !! avant le cine end
 		if(ACTIVECAM) {
-			ACTIVECAM->pos = ePos;
+			ACTIVECAM->orgTrans.pos = ePos;
 		}
 		
 		if(bWasBlocked) {

@@ -718,7 +718,7 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 			PUSH_PLAYER_FORCE += ppos * -dmgs * Vec3f(1.0f / 11, 1.0f / 30, 1.0f / 11);
 			
 			ppos *= 60.f;
-			ppos += ACTIVECAM->pos;
+			ppos += ACTIVECAM->orgTrans.pos;
 			ARX_DAMAGES_DamagePlayer(dmgs, 0, io_source->index());
 			ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			

@@ -534,7 +534,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 	if ((io)
 	        &&	(io->animlayer[num].cur_anim)
 	        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
-	        &&	distSqr(io->pos, ACTIVECAM->pos) > square(2500.f))
+			&&	distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(2500.f))
 	{
 
 		io->animlayer[num].ctime =
@@ -553,20 +553,20 @@ void PrepareIOTreatZone(long flag)
 	        ||	(status == -1))
 	{
 		status = 0;
-		lastpos = ACTIVECAM->pos;
+		lastpos = ACTIVECAM->orgTrans.pos;
 	}
 	else if (status == 3) status = 0;
 
-	if (distSqr(ACTIVECAM->pos, lastpos) > square(100.f))
+	if (distSqr(ACTIVECAM->orgTrans.pos, lastpos) > square(100.f))
 	{
 		status = 0;
-		lastpos = ACTIVECAM->pos;
+		lastpos = ACTIVECAM->orgTrans.pos;
 	}
 
 	if (status++) return;
 
 	TREATZONE_Clear();
-	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos, 1);
+	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos, 1);
 	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
 	TREATZONE_AddIO(entities.player());
 
@@ -637,14 +637,14 @@ void PrepareIOTreatZone(long flag)
 					{
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dists = distSqr(ACTIVECAM->pos, pos);
+						dists = distSqr(ACTIVECAM->orgTrans.pos, pos);
 					}
 					else
 					{
 						if (io->room_flags & 1)
 							UpdateIORoom(io);
 
-						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->pos, io->room, Cam_Room));
+						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
 					}
 				}
 				else
@@ -653,10 +653,10 @@ void PrepareIOTreatZone(long flag)
 					{
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
-						dists = distSqr(ACTIVECAM->pos, pos); //&io->pos,&pos);
+						dists = distSqr(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
 					}
 					else
-						dists = distSqr(io->pos, ACTIVECAM->pos);
+						dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
 				}
 		
 				if (dists < square(TREATZONE_LIMIT)) treat = 1;
@@ -2469,8 +2469,8 @@ Entity * GetFirstInterAtPos(Vec2s * pos, long flag, Vec3f * _pRef, Entity ** _pT
 				{
 					if (flag && _pRef)
 					{
-						float flDistanceToRef = distSqr(ACTIVECAM->pos, *_pRef);
-						float flDistanceToIO = distSqr(ACTIVECAM->pos, io->pos);
+						float flDistanceToRef = distSqr(ACTIVECAM->orgTrans.pos, *_pRef);
+						float flDistanceToIO = distSqr(ACTIVECAM->orgTrans.pos, io->pos);
 						bPass = bPlayerEquiped || (flDistanceToIO < flDistanceToRef);
 					}
 
@@ -3055,7 +3055,7 @@ void UpdateCameras() {
 			
 			if(io->ioflags & IO_CAMERA) {
 				
-				entities[i]->_camdata->cam.pos = io->pos;
+				entities[i]->_camdata->cam.orgTrans.pos = io->pos;
 
 				if (io->targetinfo != TARGET_NONE) // Follows target
 				{
@@ -3082,20 +3082,20 @@ void UpdateCameras() {
 						SetTargetCamera(&io->_camdata->cam, smoothtarget.x, smoothtarget.y, smoothtarget.z);
 						io->_camdata->cam.lasttarget = smoothtarget;
 						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
+						io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 					}
 					else
 					{
-						if ((io->target.x == io->_camdata->cam.pos.x)
-						        &&	(io->target.y == io->_camdata->cam.pos.y)
-						        &&	(io->target.z == io->_camdata->cam.pos.z))
+						if ((io->target.x == io->_camdata->cam.orgTrans.pos.x)
+								&&	(io->target.y == io->_camdata->cam.orgTrans.pos.y)
+								&&	(io->target.z == io->_camdata->cam.orgTrans.pos.z))
 						{
 						}
 						else SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
 
 						io->_camdata->cam.lasttarget = io->target;
 						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos = io->_camdata->cam.pos;
+						io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 					}
 
 					io->_camdata->cam.angle.b -= 180.f;
@@ -3113,7 +3113,7 @@ void UpdateCameras() {
 					SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
 					io->_camdata->cam.lasttarget = io->target;
 					io->_camdata->cam.lastinfovalid = true;
-					io->_camdata->cam.lastpos = io->_camdata->cam.pos;
+					io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 				}
 			}
 		}
@@ -3193,9 +3193,9 @@ void RenderInter(float from, float to) {
 			        (io->obj->pbox) &&
 			        (io->obj->pbox->active))  
 			{
-				dist = fdist(ACTIVECAM->pos, io->obj->pbox->vert[0].pos);
+				dist = fdist(ACTIVECAM->orgTrans.pos, io->obj->pbox->vert[0].pos);
 			}
-			else dist = fdist(ACTIVECAM->pos, io->pos);
+			else dist = fdist(ACTIVECAM->orgTrans.pos, io->pos);
 
 			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
 			{

@@ -41,15 +41,9 @@ struct EERIE_TRANSFORM {
 struct EERIE_CAMERA {
 
 	EERIE_TRANSFORM transform;
-	Vec3f pos;
-	float ycos;
-	float ysin;
-	float xcos;
-	float xsin;
-	float zcos;
-	float zsin;
+	EERIE_TRANSFORM orgTrans;
+
 	float focal;
-	float use_focal;
 	float Zmul;
 
 	Anglef angle;

@@ -352,7 +352,7 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 bool VisibleSphere(float x, float y, float z, float radius) {
 	
 	Vec3f pos(x, y, z);
-	if(distSqr(pos, ACTIVECAM->pos) > square(ACTIVECAM->cdepth*0.5f + radius))
+	if(distSqr(pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth*0.5f + radius))
 		return false;
 
 	long room_num = ARX_PORTALS_GetRoomNumForPosition(&pos);
@@ -746,7 +746,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 long ARX_PORTALS_GetRoomNumForCamera(float * height)
 {
 	EERIEPOLY * ep; 
-	ep=CheckInPolyPrecis(ACTIVECAM->pos.x,ACTIVECAM->pos.y,ACTIVECAM->pos.z);
+	ep=CheckInPolyPrecis(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
 
 	if ((ep) && (ep->room>-1))	
 	{
@@ -755,7 +755,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 		return ep->room;
 	}
 
-	ep=GetMinPoly(ACTIVECAM->pos.x,ACTIVECAM->pos.y,ACTIVECAM->pos.z);
+	ep=GetMinPoly(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
 
 	if ((ep) && (ep->room>-1))	
 	{
@@ -769,9 +769,9 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 	while (dist<=20.f)
 	{		
 		float vvv=radians(ACTIVECAM->angle.b);
-		ep=CheckInPolyPrecis(	ACTIVECAM->pos.x+EEsin(vvv)*dist,
-								ACTIVECAM->pos.y,
-								ACTIVECAM->pos.z-EEcos(vvv)*dist);
+		ep=CheckInPolyPrecis(	ACTIVECAM->orgTrans.pos.x+EEsin(vvv)*dist,
+								ACTIVECAM->orgTrans.pos.y,
+								ACTIVECAM->orgTrans.pos.z-EEcos(vvv)*dist);
 
 		if ((ep) && (ep->room>-1))	
 		{
@@ -1004,15 +1004,15 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
 	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 	
 	if(cull) {
-		CreatePlane(frustrum, 0, &ACTIVECAM->pos, &ep->v[0].p, &ep->v[1].p);
-		CreatePlane(frustrum, 1, &ACTIVECAM->pos, &ep->v[3].p, &ep->v[2].p);
-		CreatePlane(frustrum, 2, &ACTIVECAM->pos, &ep->v[1].p, &ep->v[3].p);
-		CreatePlane(frustrum, 3, &ACTIVECAM->pos, &ep->v[2].p, &ep->v[0].p);
+		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[1].p);
+		CreatePlane(frustrum, 1, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[2].p);
+		CreatePlane(frustrum, 2, &ACTIVECAM->orgTrans.pos, &ep->v[1].p, &ep->v[3].p);
+		CreatePlane(frustrum, 3, &ACTIVECAM->orgTrans.pos, &ep->v[2].p, &ep->v[0].p);
 	} else {
-		CreatePlane(frustrum, 0, &ACTIVECAM->pos, &ep->v[1].p, &ep->v[0].p);
-		CreatePlane(frustrum, 1, &ACTIVECAM->pos, &ep->v[2].p, &ep->v[3].p);
-		CreatePlane(frustrum, 2, &ACTIVECAM->pos, &ep->v[3].p, &ep->v[1].p);
-		CreatePlane(frustrum, 3, &ACTIVECAM->pos, &ep->v[0].p, &ep->v[2].p);
+		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[1].p, &ep->v[0].p);
+		CreatePlane(frustrum, 1, &ACTIVECAM->orgTrans.pos, &ep->v[2].p, &ep->v[3].p);
+		CreatePlane(frustrum, 2, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[1].p);
+		CreatePlane(frustrum, 3, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[2].p);
 	}
 	
 	frustrum->nb = to;
@@ -1020,17 +1020,17 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	
-	Vec3f vEyePt(ACTIVECAM->pos.x, -ACTIVECAM->pos.y, ACTIVECAM->pos.z);
+	Vec3f vEyePt(ACTIVECAM->orgTrans.pos.x, -ACTIVECAM->orgTrans.pos.y, ACTIVECAM->orgTrans.pos.z);
 	Vec3f vTout(0.0f, 0.0f, 10000.0f);
 	
 	Vec3f vTarget;
-	vTarget.y = -(vTout.z * ACTIVECAM->xsin);
-	vTarget.z = -(vTout.z * ACTIVECAM->xcos);
-	vTarget.x =  (vTarget.z * ACTIVECAM->ysin);
-	vTarget.z = -(vTarget.z * ACTIVECAM->ycos);
-	vTarget.x += ACTIVECAM->pos.x;
-	vTarget.y -= ACTIVECAM->pos.y;
-	vTarget.z += ACTIVECAM->pos.z;
+	vTarget.y = -(vTout.z * ACTIVECAM->orgTrans.xsin);
+	vTarget.z = -(vTout.z * ACTIVECAM->orgTrans.xcos);
+	vTarget.x =  (vTarget.z * ACTIVECAM->orgTrans.ysin);
+	vTarget.z = -(vTarget.z * ACTIVECAM->orgTrans.ycos);
+	vTarget.x += ACTIVECAM->orgTrans.pos.x;
+	vTarget.y -= ACTIVECAM->orgTrans.pos.y;
+	vTarget.z += ACTIVECAM->orgTrans.pos.z;
 	
 	Vec3f vUpVec(0.f, 1.f, 0.f);
 	
@@ -1560,7 +1560,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ((dot(ep->norm , nrm) > 0.f) &&
@@ -1713,7 +1713,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
-				Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ( (dot( ep->norm , nrm )>0.f) &&
@@ -1961,7 +1961,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			fDist-=ep->v[0].rhw;
 
-			Vec3f nrm = ep->v[2].p - ACTIVECAM->pos;
+			Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 			int to;
 			if(ep->type&POLY_QUAD)
 			{
@@ -2331,7 +2331,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 							tv[nu]=ep->v[nu].uv.y*4.f;						
 						}
 						
-						float t = max(10.f, fdist(ACTIVECAM->pos, ep->v[nu].p) - 80.f);
+						float t = max(10.f, fdist(ACTIVECAM->orgTrans.pos, ep->v[nu].p) - 80.f);
 						
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
 						
@@ -2485,9 +2485,9 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 		EERIEPOLY * epp=&po->poly;
 		
 		float threshold = square(ACTIVECAM->cdepth - ACTIVECAM->cdepth * fZFogEnd);
-		if((distSqr(ACTIVECAM->pos, epp->v[0].p) > threshold)
-		   && (distSqr(ACTIVECAM->pos, epp->v[2].p) > threshold) 
-		   && (distSqr(ACTIVECAM->pos, epp->center) > threshold)) {
+		if((distSqr(ACTIVECAM->orgTrans.pos, epp->v[0].p) > threshold)
+		   && (distSqr(ACTIVECAM->orgTrans.pos, epp->v[2].p) > threshold)
+		   && (distSqr(ACTIVECAM->orgTrans.pos, epp->center) > threshold)) {
 			portals->portals[portals->room[room_num].portals[lll]].useportal=2;
 			continue;
 		}
@@ -2621,7 +2621,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			continue;
 		}
 
-		Vec3f pos = epp->center - ACTIVECAM->pos;
+		Vec3f pos = epp->center - ACTIVECAM->orgTrans.pos;
 		float fRes = dot(pos, epp->norm);
 		long ret=1;
 		if(IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
@@ -2835,8 +2835,8 @@ void ARX_SCENE_Render(long flag) {
 	{
 
 		PrepareActiveCamera();
-		float xx=(float)(ACTIVECAM->pos.x*ACTIVEBKG->Xmul);
-		float yy=(float)(ACTIVECAM->pos.z*ACTIVEBKG->Zmul);
+		float xx=(float)(ACTIVECAM->orgTrans.pos.x*ACTIVEBKG->Xmul);
+		float yy=(float)(ACTIVECAM->orgTrans.pos.z*ACTIVEBKG->Zmul);
 		
 		ACTIVECAM->Xsnap = xx;
 		ACTIVECAM->Zsnap = yy;
@@ -2914,7 +2914,7 @@ void ARX_SCENE_Render(long flag) {
 
 if (USE_PORTALS && portals)
 {
-	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->pos,1);
+	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
 	LAST_ROOM=room_num;
 
 	if (room_num>-1)
@@ -3001,7 +3001,7 @@ else
 			else
 			{
 				
-				nrm = ep->v[2].p - ACTIVECAM->pos;
+				nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 				if ( ep->type & POLY_QUAD) 
 				{
 					if ( (dot( ep->norm , nrm )>0.f) &&

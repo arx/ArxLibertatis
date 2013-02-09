@@ -512,7 +512,7 @@ void TreatBackgroundDynlights()
 
 			if (Project.telekinesis) fMaxdist = 850;
 
-			if(!fartherThan(GLight[i]->pos, ACTIVECAM->pos, fMaxdist)) {
+			if(!fartherThan(GLight[i]->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
 				ComputeLight2DPos(GLight[i]);
 			}
 
@@ -600,7 +600,7 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 		if ((el->exist) && (el->rgb.r >= 0.f))
 		{
 
-			bool bDist = (distSqr(el->pos, ACTIVECAM->pos) < square(ACTIVECAM->cdepth));
+			bool bDist = (distSqr(el->pos, ACTIVECAM->orgTrans.pos) < square(ACTIVECAM->cdepth));
 
 			if ((el->pos.x >= fx0) && (el->pos.x <= fx1)
 			        && (el->pos.z >= fz0) && (el->pos.z <= fz1)
