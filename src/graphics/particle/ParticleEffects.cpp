@@ -1935,10 +1935,10 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 		ka = *oldcam;
 		SetActiveCamera(&ka);
 		PrepareCamera(&ka);
-		float temp = (fl->v.p.y * -ka.Xsin) + (fl->v.p.z * ka.Xcos);
-		fl->v.p.y = (fl->v.p.y * ka.Xcos) - (-fl->v.p.z * ka.Xsin);
-		fl->v.p.z = (temp * ka.Ycos) - (-fl->v.p.x * ka.Ysin);
-		fl->v.p.x = (temp * -ka.Ysin) + (fl->v.p.x * ka.Ycos);	
+		float temp = (fl->v.p.y * -ka.xsin) + (fl->v.p.z * ka.xcos);
+		fl->v.p.y = (fl->v.p.y * ka.xcos) - (-fl->v.p.z * ka.xsin);
+		fl->v.p.z = (temp * ka.ycos) - (-fl->v.p.x * ka.ysin);
+		fl->v.p.x = (temp * -ka.ysin) + (fl->v.p.x * ka.ycos);
 		fl->v.p += oldcam->pos;
 	}
 	fl->tv.p = fl->v.p;
