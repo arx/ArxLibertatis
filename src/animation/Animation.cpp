@@ -948,6 +948,7 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 
 extern long FORCE_FRONT_DRAW;
 
+void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
 void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
@@ -1064,7 +1065,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 
 				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 				
-				specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld );
+				EE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld );
 				EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert );
 			}
 			else
@@ -1074,7 +1075,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
 				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
 
-				specialEE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
+				EE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
 				EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 			}
 
