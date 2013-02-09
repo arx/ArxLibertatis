@@ -280,8 +280,8 @@ std::string getExecutablePath() {
 	
 	std::vector<char> buffer;
 	buffer.resize(MAX_PATH);
-	if(GetModuleFileNameA(NULL, buffer.data(), buffer.size()) > 0) {
-		return std::string(buffer.data(), buffer.size());
+	if(GetModuleFileNameA(NULL, &*buffer.begin(), buffer.size()) > 0) {
+		return std::string(buffer.begin(), buffer.end());
 	}
 	
 #else
