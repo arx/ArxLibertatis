@@ -763,33 +763,22 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out, float rhwScale) 
 
 void EE_RT(TexturedVertex * in, Vec3f * out) {
 	
-	*out = in->p - ACTIVECAM->orgTrans.pos;
+	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
+	*out = in->p - et->pos;
 	
-	float temp = (out->z * ACTIVECAM->orgTrans.ycos) - (out->x * ACTIVECAM->orgTrans.ysin);
-	out->x = (out->x * ACTIVECAM->orgTrans.ycos) + (out->z * ACTIVECAM->orgTrans.ysin);
-	
-	out->z = (out->y * ACTIVECAM->orgTrans.xsin) + (temp * ACTIVECAM->orgTrans.xcos);
-	out->y = (out->y * ACTIVECAM->orgTrans.xcos) - (temp * ACTIVECAM->orgTrans.xsin);
+	float temp = (out->z * et->ycos) - (out->x * et->ysin);
+	out->x = (out->x * et->ycos) + (out->z * et->ysin);
+	out->z = (out->y * et->xsin) + (temp * et->xcos);
+	out->y = (out->y * et->xcos) - (temp * et->xsin);
 	
 	// Might Prove Usefull one day...
-	temp = (out->y * ACTIVECAM->orgTrans.zcos) - (out->x * ACTIVECAM->orgTrans.zsin);
-	out->x = (out->x * ACTIVECAM->orgTrans.zcos) + (out->y * ACTIVECAM->orgTrans.zsin);
+	temp = (out->y * et->zcos) - (out->x * et->zsin);
+	out->x = (out->x * et->zcos) + (out->y * et->zsin);
 	out->y = temp;
 }
 
 void EE_RT2(TexturedVertex * in, TexturedVertex * out) {
 	EE_RT(in, &out->p);
-}
-
-void specialEE_RT(TexturedVertex * in, Vec3f * out) {
-	
-	EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->orgTrans;
-	*out = in->p - et->pos;
-	
-	float temp = (out->z * et->ycos) - (out->x * et->ysin);
-	out->x = (out->z * et->ysin) + (out->x * et->ycos);
-	out->z = (out->y * et->xsin) + (temp * et->xcos);
-	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
 // TODO get rid of sw transform

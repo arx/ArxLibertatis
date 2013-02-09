@@ -323,8 +323,6 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const Vec3f * pt) {
 
 void QuatFromAngles(EERIE_QUAT * q, const Anglef * angle);
 
-void specialEE_RT(TexturedVertex * in, Vec3f * out);
-
 template <class T1, class T2, class T3>
 inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);

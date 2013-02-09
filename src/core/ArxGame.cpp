@@ -1961,6 +1961,8 @@ void ArxGame::render() {
 	LastMouseClick=EERIEMouseButton;
 }
 
+void EE_RT(TexturedVertex * in, Vec3f * out);
+
 void ArxGame::goFor2DFX()
 {
 	TexturedVertex lv,ltvv;
@@ -2089,7 +2091,7 @@ void ArxGame::goFor2DFX()
 					{
 						lv.p = el->pos;
 						lv.rhw = 1.f;
-						specialEE_RT(&lv, &ltvv.p);
+						EE_RT(&lv, &ltvv.p);
 						float v=el->temp;
 
 						if (FADEDIR)
