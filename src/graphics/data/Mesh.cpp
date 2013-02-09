@@ -750,16 +750,8 @@ void EERIETreatPoint(TexturedVertex * in, TexturedVertex * out) {
 	in->p.z = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
 	out->p.z = (out->p.y * ACTIVECAM->orgTrans.xsin) + (in->p.z * ACTIVECAM->orgTrans.xcos);
 	out->p.y = (out->p.y * ACTIVECAM->orgTrans.xcos) - (in->p.z * ACTIVECAM->orgTrans.xsin);
-
-	if (ACTIVECAM->orgTrans.zsin == 0)
-	{
-		in->p.y = out->p.y;
-	}
-	else
-	{
-		in->p.y = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
-		in->p.x = (in->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
-	}
+	in->p.y = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
+	in->p.x = (in->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
 
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
@@ -775,16 +767,8 @@ void EERIETreatPoint2(TexturedVertex * in, TexturedVertex * out) {
 	in->p.z = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
 	out->p.z = (out->p.y * ACTIVECAM->orgTrans.xsin) + (in->p.z * ACTIVECAM->orgTrans.xcos);
 	out->p.y = (out->p.y * ACTIVECAM->orgTrans.xcos) - (in->p.z * ACTIVECAM->orgTrans.xsin);
-
-	if (ACTIVECAM->orgTrans.zsin == 0)
-	{
-		in->p.y = out->p.y;
-	}
-	else
-	{
-		in->p.y = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
-		in->p.x = (in->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
-	}
+	in->p.y = (out->p.y * ACTIVECAM->orgTrans.zcos) - (in->p.x * ACTIVECAM->orgTrans.zsin);
+	in->p.x = (in->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
 
 	float fZTemp;
 	fZTemp = 1.f / out->p.z;
@@ -908,19 +892,10 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 
 	tout.p.x = (out->p.x * cam->orgTrans.ycos) + (out->p.z * cam->orgTrans.ysin);
 	tout.p.z = (out->p.z * cam->orgTrans.ycos) - (out->p.x * cam->orgTrans.ysin);
-
 	out->p.z = (out->p.y * cam->orgTrans.xsin) + (tout.p.z * cam->orgTrans.xcos);
 	out->p.y = (out->p.y * cam->orgTrans.xcos) - (tout.p.z * cam->orgTrans.xsin);
-
-	if (ACTIVECAM->orgTrans.zsin == 0)
-	{
-		tout.p.y = out->p.y;
-	}
-	else
-	{
-		tout.p.y = (out->p.y * cam->orgTrans.zcos) - (tout.p.x * cam->orgTrans.zsin);
-		tout.p.x = (tout.p.x * cam->orgTrans.zcos) + (out->p.y * cam->orgTrans.zsin);
-	}
+	tout.p.y = (out->p.y * cam->orgTrans.zcos) - (tout.p.x * cam->orgTrans.zsin);
+	tout.p.x = (tout.p.x * cam->orgTrans.zcos) + (out->p.y * cam->orgTrans.zsin);
 
 	if (out->p.z <= 0.f)
 	{
