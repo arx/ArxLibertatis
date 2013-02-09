@@ -32,6 +32,8 @@ struct EERIE_TRANSFORM {
 	float ysin;
 	float xsin;
 	float xcos;
+	float zcos;
+	float zsin;
 	float use_focal;
 	Vec2f mod;
 };

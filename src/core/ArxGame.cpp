@@ -1505,6 +1505,8 @@ void ArxGame::renderLevel() {
 		float t = radians(MAKEANGLE(ACTIVECAM->angle.b));
 		Vec3f front(-EEsin(t), 0.f, EEcos(t));
 		front.normalize();
+
+		//TODO Hardcoded up vector
 		Vec3f up(0.f, 1.f, 0.f);
 		ARX_SOUND_SetListener(&ACTIVECAM->pos, &front, &up);
 	}
