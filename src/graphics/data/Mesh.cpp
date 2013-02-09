@@ -800,25 +800,8 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 }
 
 void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
-	
-	out->p = in->p - ACTIVECAM->orgTrans.pos;
-	
-	float temp = (out->p.z * ACTIVECAM->orgTrans.ycos) - (out->p.x * ACTIVECAM->orgTrans.ysin);
-	out->p.x = (out->p.x * ACTIVECAM->orgTrans.ycos) + (out->p.z * ACTIVECAM->orgTrans.ysin);
-	out->p.z = (out->p.y * ACTIVECAM->orgTrans.xsin) + (temp * ACTIVECAM->orgTrans.xcos);
-	out->p.y = (out->p.y * ACTIVECAM->orgTrans.xcos) - (temp * ACTIVECAM->orgTrans.xsin);
-	
-	// Might Prove Usefull one day...
-	temp = (out->p.y * ACTIVECAM->orgTrans.zcos) - (out->p.x * ACTIVECAM->orgTrans.zsin);
-	out->p.x = (out->p.x * ACTIVECAM->orgTrans.zcos) + (out->p.y * ACTIVECAM->orgTrans.zsin);
-	out->p.y = temp;
-	
-	float fZTemp;
-	fZTemp = 1.f / out->p.z;
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + ACTIVECAM->orgTrans.mod.x;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + ACTIVECAM->orgTrans.mod.y;
-	out->rhw = fZTemp;
+	EE_RT2(in, out);
+	EE_P(&out->p, out);
 }
 
 static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * cam) {
