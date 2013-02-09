@@ -1018,18 +1018,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			tempAngle.normalize();
 		}
 
-		float temp;
-		temp = radians(tempAngle.a);
-		Ncam.orgTrans.xcos = EEcos(temp);
-		Ncam.orgTrans.xsin = EEsin(temp);
-
-		temp = radians(tempAngle.b);
-		Ncam.orgTrans.ycos = EEcos(temp);
-		Ncam.orgTrans.ysin = EEsin(temp);
-		
-		temp = radians(tempAngle.g);
-		Ncam.orgTrans.zcos = EEcos(temp);
-		Ncam.orgTrans.zsin = EEsin(temp);
+		Ncam.orgTrans.updateFromAngle(tempAngle);
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
@@ -1526,13 +1515,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	// HALO HANDLING START
 	if	(need_halo)			
 	{
-		Ncam.orgTrans.xcos = 1.f;
-		Ncam.orgTrans.xsin = 0.f;
-		Ncam.orgTrans.zcos = 1.f;
-		Ncam.orgTrans.zsin = 0.f;
+		Ncam.orgTrans.updateFromAngle(subj.angle);
 		float power=radians(MAKEANGLE(subj.angle.b));
-		Ncam.orgTrans.ycos = (float)EEcos(power);
-		Ncam.orgTrans.ysin = (float)EEsin(power);
 		float tot=0;
 		float _ffr[3];
 			
