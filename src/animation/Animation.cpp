@@ -1516,6 +1516,12 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	if	(need_halo)			
 	{
 		Ncam.orgTrans.updateFromAngle(subj.angle);
+
+		Ncam.orgTrans.xcos = 1.f;
+		Ncam.orgTrans.xsin = 0.f;
+		Ncam.orgTrans.zcos = 1.f;
+		Ncam.orgTrans.zsin = 0.f;
+
 		float power=radians(MAKEANGLE(subj.angle.b));
 		float tot=0;
 		float _ffr[3];
