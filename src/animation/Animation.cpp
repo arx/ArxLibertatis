@@ -1148,10 +1148,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			if (trappercent>0.f)
 			{
 				trappercent = 0.6f + trappercent * ( 1.0f / 100 );
-
-				if (trappercent<0.6f) trappercent=0.6f;
-
-				if (trappercent>1.f) trappercent=1.f;
+				clamp(trappercent, 0.6f, 1.f);
 			}
 		}
 
@@ -1162,10 +1159,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			if (secretpercent>0.f)
 			{
 				secretpercent = 0.6f + secretpercent * .01f;
-
-				if (secretpercent<0.6f) secretpercent=0.6f;
-
-				if (secretpercent>1.f) secretpercent=1.f;
+				clamp(trappercent, 0.6f, 1.f);
 			}
 		}
 
