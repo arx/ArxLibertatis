@@ -999,7 +999,21 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
 }
 
 
-void Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom, const Vec3f & vAt, const Vec3f & vWorldUp) {
+void Util_SetViewMatrix(EERIEMATRIX & mat) {
+
+	Vec3f vFrom(ACTIVECAM->orgTrans.pos.x, -ACTIVECAM->orgTrans.pos.y, ACTIVECAM->orgTrans.pos.z);
+	Vec3f vTout(0.0f, 0.0f, 10000.0f);
+
+	Vec3f vAt;
+	vAt.y = -(vTout.z * ACTIVECAM->orgTrans.xsin);
+	vAt.z = -(vTout.z * ACTIVECAM->orgTrans.xcos);
+	vAt.x =  (vAt.z * ACTIVECAM->orgTrans.ysin);
+	vAt.z = -(vAt.z * ACTIVECAM->orgTrans.ycos);
+	vAt.x += ACTIVECAM->orgTrans.pos.x;
+	vAt.y -= ACTIVECAM->orgTrans.pos.y;
+	vAt.z += ACTIVECAM->orgTrans.pos.z;
+
+	Vec3f vWorldUp(0.f, 1.f, 0.f);
 
 	// Get the z basis vector, which points straight ahead. This is the
 	// difference from the eyepoint to the lookat point.
@@ -1061,22 +1075,8 @@ void Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom, const Vec3f & vA
 
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	
-	Vec3f vEyePt(ACTIVECAM->orgTrans.pos.x, -ACTIVECAM->orgTrans.pos.y, ACTIVECAM->orgTrans.pos.z);
-	Vec3f vTout(0.0f, 0.0f, 10000.0f);
-	
-	Vec3f vTarget;
-	vTarget.y = -(vTout.z * ACTIVECAM->orgTrans.xsin);
-	vTarget.z = -(vTout.z * ACTIVECAM->orgTrans.xcos);
-	vTarget.x =  (vTarget.z * ACTIVECAM->orgTrans.ysin);
-	vTarget.z = -(vTarget.z * ACTIVECAM->orgTrans.ycos);
-	vTarget.x += ACTIVECAM->orgTrans.pos.x;
-	vTarget.y -= ACTIVECAM->orgTrans.pos.y;
-	vTarget.z += ACTIVECAM->orgTrans.pos.z;
-	
-	Vec3f vUpVec(0.f, 1.f, 0.f);
-	
 	EERIEMATRIX tempViewMatrix;
-	Util_SetViewMatrix(tempViewMatrix, vEyePt, vTarget, vUpVec);
+	Util_SetViewMatrix(tempViewMatrix);
 	GRenderer->SetViewMatrix(tempViewMatrix);
 	
 	EERIEMATRIX matProj;
