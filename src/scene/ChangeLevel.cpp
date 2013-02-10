@@ -1565,7 +1565,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num) {
 	return 1;
 }
 
-long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long FirstTime) {
+long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, bool firstTime) {
 	
 	char levelId[256];
 	GetLevelNameByNum(num, levelId);
@@ -1583,12 +1583,12 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	
 	ARX_CHANGELEVEL_Pop_Globals();
 	
-	DanaeLoadLevel(levelFile, FirstTime);
+	DanaeLoadLevel(levelFile, firstTime);
 	CleanScriptLoadedIO();
 	
 	FirstFrame = 1;
 	
-	if(FirstTime) {
+	if(firstTime) {
 		
 		RestoreInitialIOStatus();
 		
@@ -2641,24 +2641,24 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	// first time in this level ?
-	long FirstTime;
+	bool firstTime;
 	if(!pSaveBlock->open() || !pSaveBlock->hasFile(loadfile.str())) {
-		FirstTime = 1;
+		firstTime = true;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
 	} else {
-		FirstTime = 0;
+		firstTime = false;
 		FORBID_SCRIPT_IO_CREATION = 1;
 		NO_PLAYER_POSITION_RESET = 1;
 	}
-	LogDebug("FirstTime = " << FirstTime);
+	LogDebug("firstTime = " << firstTime);
 	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(instance);
 	
 	arx_assert(idx_io == NULL);
 	
-	if(!FirstTime) {
+	if(!firstTime) {
 		
 		LogDebug("Before ARX_CHANGELEVEL_Pop_Index");
 		if(ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1) {
@@ -2680,7 +2680,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LoadLevelScreen(instance);
 	
 	LogDebug("Before ARX_CHANGELEVEL_Pop_Level");
-	if(ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1) {
+	if(ARX_CHANGELEVEL_Pop_Level(&asi, instance, firstTime) != 1) {
 		LogError << "Cannot Load Level data";
 		ARX_CHANGELEVEL_PopLevel_Abort();
 		return false;
@@ -2690,7 +2690,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(instance);
 	
-	if(FirstTime) {
+	if(firstTime) {
 		unsigned long ulDTime = checked_range_cast<unsigned long>(ARX_CHANGELEVEL_DesiredTime);
 		for(long i = 0; i < MAX_TIMER_SCRIPT; i++) {
 			if(scr_timer[i].exist) {
@@ -2716,7 +2716,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	
 	LogDebug("Before ARX_CHANGELEVEL_PopAllIO_FINISH");
 	// Restoring all Missing Objects required by other objects...
-	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag, bool(FirstTime));
+	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag, firstTime);
 	LogDebug("After  ARX_CHANGELEVEL_PopAllIO_FINISH");
 	
 	PROGRESS_BAR_COUNT += 15.f;
@@ -2727,7 +2727,7 @@ static bool ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
 	
-	if(!FirstTime) {
+	if(!firstTime) {
 		LogDebug("Before ARX_CHANGELEVEL_Pop_Zones_n_Lights");
 		ARX_CHANGELEVEL_Pop_Zones_n_Lights(&asi, instance);
 		LogDebug("After  ARX_CHANGELEVEL_Pop_Zones_n_Lights");
