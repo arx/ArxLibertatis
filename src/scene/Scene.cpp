@@ -2549,36 +2549,14 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		//clipp NEAR & FAR
 		unsigned char ucVisibilityNear=0;
 		unsigned char ucVisibilityFar=0;
-		float fDist0=(efpPlaneNear.a*epp->v[0].p.x)+(efpPlaneNear.b*epp->v[0].p.y)+(efpPlaneNear.c*epp->v[0].p.z)+efpPlaneNear.d;
 
-		if(fDist0<0.f) ucVisibilityNear++;
-		else
-		{
-			if(fDist0>fClippZFar) ucVisibilityFar++;
-		}
-
-		fDist0=(efpPlaneNear.a*epp->v[1].p.x)+(efpPlaneNear.b*epp->v[1].p.y)+(efpPlaneNear.c*epp->v[1].p.z)+efpPlaneNear.d;
-
-		if(fDist0<0.f) ucVisibilityNear++;
-		else
-		{
-			if(fDist0>fClippZFar) ucVisibilityFar++;
-		}
-
-		fDist0=(efpPlaneNear.a*epp->v[2].p.x)+(efpPlaneNear.b*epp->v[2].p.y)+(efpPlaneNear.c*epp->v[2].p.z)+efpPlaneNear.d;
-
-		if(fDist0<0.f) ucVisibilityNear++;
-		else
-		{
-			if(fDist0>fClippZFar) ucVisibilityFar++;
-		}
-
-		fDist0=(efpPlaneNear.a*epp->v[3].p.x)+(efpPlaneNear.b*epp->v[3].p.y)+(efpPlaneNear.c*epp->v[3].p.z)+efpPlaneNear.d;
-
-		if(fDist0<0.f) ucVisibilityNear++;
-		else
-		{
-			if(fDist0>fClippZFar) ucVisibilityFar++;
+		float fDist0;
+		for(size_t i=0; i<ARRAY_SIZE(epp->v); i++) {
+			fDist0=(efpPlaneNear.a*epp->v[i].p.x)+(efpPlaneNear.b*epp->v[i].p.y)+(efpPlaneNear.c*epp->v[i].p.z)+efpPlaneNear.d;
+			if(fDist0<0.f)
+				ucVisibilityNear++;
+			else if(fDist0>fClippZFar)
+				ucVisibilityFar++;
 		}
 
 		if(	(ucVisibilityFar&4)||(ucVisibilityNear&4) )
