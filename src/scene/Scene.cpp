@@ -998,6 +998,67 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
 	frustrum->nb = to;
 }
 
+
+void Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom, const Vec3f & vAt, const Vec3f & vWorldUp) {
+
+	// Get the z basis vector, which points straight ahead. This is the
+	// difference from the eyepoint to the lookat point.
+	Vec3f vView = vAt - vFrom;
+
+	// Normalize the z basis vector
+	float fLength = vView.normalize();
+
+	if (fLength < 1e-6f)
+		return;
+
+	// Get the dot product, and calculate the projection of the z basis
+	// vector onto the up vector. The projection is the y basis vector.
+	float fDotProduct = dot(vWorldUp, vView);
+
+	Vec3f vUp = vWorldUp - vView * fDotProduct;
+
+	// If this vector has near-zero length because the input specified a
+	// bogus up vector, let's try a default up vector
+	if (1e-6f > (fLength = vUp.length()))
+	{
+		vUp = Vec3f::Y_AXIS - vView * vView.y;
+
+		// If we still have near-zero length, resort to a different axis.
+		if (1e-6f > (fLength = vUp.length()))
+		{
+			vUp = Vec3f::Z_AXIS - vView * vView.z;
+
+			if (1e-6f > (fLength = vUp.length()))
+				return;
+		}
+	}
+
+	// Normalize the y basis vector
+	vUp /= fLength;
+
+	// The x basis vector is found simply with the cross product of the y
+	// and z basis vectors
+	Vec3f vRight = cross(vUp, vView);
+
+	// Start building the matrix. The first three rows contains the basis
+	// vectors used to rotate the view to point at the lookat point
+	mat._11 = vRight.x;
+	mat._12 = vUp.x;
+	mat._13 = vView.x;
+	mat._21 = vRight.y;
+	mat._22 = vUp.y;
+	mat._23 = vView.y;
+	mat._31 = vRight.z;
+	mat._32 = vUp.z;
+	mat._33 = vView.z;
+
+	// Do the translation values (rotations are still about the eyepoint)
+	mat._41 = -dot(vFrom, vRight);
+	mat._42 = -dot(vFrom, vUp);
+	mat._43 = -dot(vFrom, vView);
+	mat._44 = 1.0f;
+}
+
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	
 	Vec3f vEyePt(ACTIVECAM->orgTrans.pos.x, -ACTIVECAM->orgTrans.pos.y, ACTIVECAM->orgTrans.pos.z);
@@ -1014,8 +1075,9 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	
 	Vec3f vUpVec(0.f, 1.f, 0.f);
 	
-	// Set the app view matrix for normal viewing
-	GRenderer->SetViewMatrix(vEyePt, vTarget, vUpVec);
+	EERIEMATRIX tempViewMatrix;
+	Util_SetViewMatrix(tempViewMatrix, vEyePt, vTarget, vUpVec);
+	GRenderer->SetViewMatrix(tempViewMatrix);
 	
 	EERIEMATRIX matProj;
 	GRenderer->GetProjectionMatrix(matProj);
