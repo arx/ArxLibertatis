@@ -1538,12 +1538,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	
 			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
-			if (power>255.f) 
-			{
-				power=255.f;					
-			}
-			else if (power<0.f) 
-				power=0.f;
+			clamp(power, 0.f, 255.f);
 
 			tot+=power;
 			
