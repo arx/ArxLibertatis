@@ -55,11 +55,3 @@ Renderer::~Renderer() {
 		delete m_TextureStages[i];
 	}
 }
-
-void Renderer::SetViewMatrix(const Vec3f & position, const Vec3f & dir, const Vec3f & up) {
-	
-	EERIEMATRIX mat;
-	Util_SetViewMatrix(mat, position, dir, up);
-	
-	SetViewMatrix(mat);
-}

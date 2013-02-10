@@ -61,16 +61,5 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
-// TODO move to matrix class
-
-// Desc: Given an eye point, a lookat point, and an up vector, this
-//       function builds a 4x4 view matrix.
-bool Util_SetViewMatrix(EERIEMATRIX & mat, const Vec3f & vFrom, const Vec3f & vAt, const Vec3f & vUp);
-
-inline void Util_SetIdentityMatrix(EERIEMATRIX & m) {
-	m._12 = m._13 = m._14 = m._21 = m._23 = m._24 = 0.0f;
-	m._31 = m._32 = m._34 = m._41 = m._42 = m._43 = 0.0f;
-	m._11 = m._22 = m._33 = m._44 = 1.0f;
-}
 
 #endif // ARX_GRAPHICS_GRAPHICSUTILITY_H
