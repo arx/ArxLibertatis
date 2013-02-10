@@ -1090,6 +1090,8 @@ struct SavedCamera {
 		EERIE_CAMERA a;
 		
 		a.orgTrans = transform;
+		a.orgTrans.zcos = Zcos;
+		a.orgTrans.zsin = Zsin;
 		a.focal = focal;
 		a.Zmul = Zmul;
 		
