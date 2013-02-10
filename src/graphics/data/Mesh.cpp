@@ -164,22 +164,7 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 	
 	// Set view matrix to identity
 	EERIEMATRIX mat;
-	mat._11 = 1.f;
-	mat._12 = 0.f;
-	mat._13 = 0.f;
-	mat._14 = 0.f;
-	mat._21 = 0.f;
-	mat._22 = 1.f;
-	mat._23 = 0.f;
-	mat._24 = 0.f;
-	mat._31 = 0.f;
-	mat._32 = 0.f;
-	mat._33 = 1.f;
-	mat._34 = 0.f;
-	mat._41 = 0.f;
-	mat._42 = 0.f;
-	mat._43 = 0.f;
-	mat._44 = 1.f;	
+	mat.setToIdentity();
 	GRenderer->SetViewMatrix(mat);
 	
 	ProjectionMatrix._11 *= _fWidth * .5f;
