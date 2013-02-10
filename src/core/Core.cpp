@@ -316,7 +316,6 @@ long SHOW_TORCH=0;
 float FrameDiff=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
-long USE_LIGHT_OPTIM	=1;
 long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;

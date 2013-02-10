@@ -88,7 +88,6 @@ using std::vector;
 #define PASS 50.f 
 
 //-----------------------------------------------------------------------------
-extern long USE_LIGHT_OPTIM;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;
 extern long EXTERNALVIEW;
@@ -1815,7 +1814,6 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 	}
 }
 
-void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_VERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_VERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
@@ -1908,9 +1906,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 					if (!feg2->treat)
 					{
 						feg2->treat=1;
-
-						if (USE_LIGHT_OPTIM) 
-								ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
+						ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
 					}
 				}
 			}
@@ -2086,23 +2082,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						{
 							if(ModeLight & MODE_DYNAMICLIGHT)
 							{
-																		
-									if (USE_LIGHT_OPTIM)
 									ApplyDynLight_VertexBuffer_2(	ep,pEPDATA->px,pEPDATA->py,
 																pMyVertexCurr,
 																ep->uslInd[0],
 																ep->uslInd[1],
 																ep->uslInd[2],
-																ep->uslInd[3]);
-																
-									else
-									ApplyDynLight_VertexBuffer(	ep,
-																pMyVertexCurr,
-																ep->uslInd[0],
-																ep->uslInd[1],
-																ep->uslInd[2],
-																ep->uslInd[3]);
-								
+																ep->uslInd[3]);								
 								}
 							else
 							{
@@ -2858,23 +2843,6 @@ void ARX_SCENE_Render(long flag) {
 	xsnap=min((int)xsnap,ACTIVEBKG->Xsize-1);
 	xsnap=max((int)xsnap,1);
 
- 
-
-	if (!USE_LIGHT_OPTIM)
-	{
- 		for (long j=0;j<ACTIVEBKG->Zsize;j++)
-		{
-			feg=&ACTIVEBKG->fastdata[0][j];
-
-			for (i=0; i<ACTIVEBKG->Xsize; i++, feg++)
-			{
-				if (feg->treat)
-					feg->treat=0;			
-			}
-		}
-	}
-	else
-	{
 		for (long j=z0;j<=z1;j++)
 		{			
 			for (i=x0; i<x1; i++)
@@ -2890,8 +2858,6 @@ void ARX_SCENE_Render(long flag) {
 			if (tilelights[i][j].num)
 				tilelights[i][j].num=0;
 		}
-			}
-
 
 if (USE_PORTALS && portals)
 {
