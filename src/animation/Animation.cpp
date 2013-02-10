@@ -1513,8 +1513,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 
 	////////////////////////////////////////////////////////////////////////
 	// HALO HANDLING START
-	if	(need_halo)			
-	{
+	if(need_halo) {
 		Ncam.orgTrans.updateFromAngle(subj.angle);
 
 		Ncam.orgTrans.xcos = 1.f;
@@ -1528,8 +1527,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			
 		TexturedVertex * workon=vert_list;
 
-		for (long o=0;o<3;o++)
-		{
+		for(long o=0; o<3; o++) {
 			if(BIGMAT) {
 				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, BIGMAT);
 			} else {
@@ -1549,99 +1547,86 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			workon[o].color = (0xFF << 24) | ((lfr & 0xFF) << 16) | ((lfg & 0xFF) << 8) | (lfb & 0xFF);
 		}
 
-			if (tot>150.f)
-			{
-				long first;
-				long second;
-				long third;
+		if (tot>150.f) {
+			long first;
+			long second;
+			long third;
 
-				if ( (_ffr[0]>=_ffr[1]) && (_ffr[1]>=_ffr[2]))
-			{
+			if( (_ffr[0]>=_ffr[1]) && (_ffr[1]>=_ffr[2])) {
 				first = 0;
 				second = 1;
 				third = 2;
-			}
-				else if ( (_ffr[0]>=_ffr[2]) && (_ffr[2]>=_ffr[1]))
-			{
+			} else if( (_ffr[0]>=_ffr[2]) && (_ffr[2]>=_ffr[1])) {
 				first = 0;
 				second = 2;
 				third = 1;
-			}
-				else if ( (_ffr[1]>=_ffr[0]) && (_ffr[0]>=_ffr[2]))
-			{
+			} else if( (_ffr[1]>=_ffr[0]) && (_ffr[0]>=_ffr[2])) {
 				first = 1;
 				second = 0;
 				third = 2;
-			}
-				else if ( (_ffr[1]>=_ffr[2]) && (_ffr[2]>=_ffr[0]))
-			{
+			} else if( (_ffr[1]>=_ffr[2]) && (_ffr[2]>=_ffr[0])) {
 				first = 1;
 				second = 2;
 				third = 0;
-			}
-				else if ( (_ffr[2]>=_ffr[0]) && (_ffr[0]>=_ffr[1]))
-			{
+			} else if( (_ffr[2]>=_ffr[0]) && (_ffr[0]>=_ffr[1])) {
 				first = 2;
 				second = 0;
 				third = 1;
-			}
-				else
-			{
+			}else{
 				first = 2;
 				second = 1;
 				third = 0;
 			}
 
-			if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
-				{
-					Vec3f vect1,vect2;
-					TexturedVertex * vert=&LATERDRAWHALO[(HALOCUR<<2)];
+			if((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) {
+				Vec3f vect1,vect2;
+				TexturedVertex * vert=&LATERDRAWHALO[(HALOCUR<<2)];
 
-					if(HALOCUR < ((long)HALOMAX) - 1) {
-						HALOCUR++;
-					}
-
-					memcpy(&vert[0],&workon[first],sizeof(TexturedVertex));
-					memcpy(&vert[1],&workon[first],sizeof(TexturedVertex));
-					memcpy(&vert[2],&workon[second],sizeof(TexturedVertex));
-					memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
-
-					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time()+i) * .01f) * .1f
-					                                               + .7f)) * .6f;
-					vect1.x=workon[first].p.x-workon[third].p.x;
-					vect1.y=workon[first].p.y-workon[third].p.y;
-					float len1=1.f/ffsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
-
-					if (vect1.x<0.f) len1*=1.2f;
-
-					vect1.x*=len1;
-					vect1.y*=len1;
-					vect2.x=workon[second].p.x-workon[third].p.x;
-					vect2.y=workon[second].p.y-workon[third].p.y;
-					float len2=1.f/ffsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
-
-					if (vect2.x<0.f) len2*=1.2f;
-
-					vect2.x*=len2;
-					vect2.y*=len2;
-				vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz; 
-				vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
-					vert[1].color=0xFF000000;
-
-					vert[0].p.z += 0.0001f;
-					vert[3].p.z += 0.0001f;
-
-					vert[1].rhw*=.8f;
-					vert[2].rhw*=.8f;
-				vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
-				vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
-
-					if (io->halo.flags & HALO_NEGATIVE)
-						vert[2].color=0x00000000;
-					else 
-						vert[2].color=0xFF000000;
+				if(HALOCUR < ((long)HALOMAX) - 1) {
+					HALOCUR++;
 				}
+
+				memcpy(&vert[0],&workon[first],sizeof(TexturedVertex));
+				memcpy(&vert[1],&workon[first],sizeof(TexturedVertex));
+				memcpy(&vert[2],&workon[second],sizeof(TexturedVertex));
+				memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
+
+				float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time()+i) * .01f) * .1f
+															   + .7f)) * .6f;
+				vect1.x=workon[first].p.x-workon[third].p.x;
+				vect1.y=workon[first].p.y-workon[third].p.y;
+				float len1=1.f/ffsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
+
+				if (vect1.x<0.f) len1*=1.2f;
+
+				vect1.x*=len1;
+				vect1.y*=len1;
+				vect2.x=workon[second].p.x-workon[third].p.x;
+				vect2.y=workon[second].p.y-workon[third].p.y;
+				float len2=1.f/ffsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
+
+				if (vect2.x<0.f) len2*=1.2f;
+
+				vect2.x*=len2;
+				vect2.y*=len2;
+				vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+				vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
+				vert[1].color=0xFF000000;
+
+				vert[0].p.z += 0.0001f;
+				vert[3].p.z += 0.0001f;
+
+				vert[1].rhw*=.8f;
+				vert[2].rhw*=.8f;
+				vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+				vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
+
+				if (io->halo.flags & HALO_NEGATIVE)
+					vert[2].color=0x00000000;
+				else
+					vert[2].color=0xFF000000;
 			}
+		}
 		}
 	}
 
