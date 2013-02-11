@@ -1027,13 +1027,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 
 		for(size_t i = 0 ; i < eobj->vertexlist.size(); i++) {
 			
+			vert_list_static[0].p = eobj->vertexlist[i].v;
+
 			if(modinfo && !angle && BIGMAT) {
-				vert_list_static[0].p = (eobj->vertexlist[i].v - modinfo->link_position) * scale;
-			} else if(scale != 1.f) {
-				vert_list_static[0].p = eobj->vertexlist[i].v * scale;
-			} else {
-				vert_list_static[0].p = eobj->vertexlist[i].v;
+				vert_list_static[0].p -= modinfo->link_position;
 			}
+
+			vert_list_static[0].p *= scale;
 			
 			if ( !angle )
 			{
