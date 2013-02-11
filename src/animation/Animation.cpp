@@ -995,8 +995,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		invisibility = INVISIBILITY_OVERRIDE;
 	
 	// Precalc rotations
-	if ( angle != NULL )
-	{
+	if(angle) {
 		Anglef tempAngle = *angle;
 		if (modinfo) {
 			tempAngle += modinfo->rot;
@@ -1021,11 +1020,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 			vert_list_static[0].p *= scale;
 			
-			if ( !angle )
-			{
-				if ( ( io != NULL ) && ( modinfo == NULL ) )
-				{
-					
+			if(!angle) {
+				if(io && !modinfo) {
 					vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale-io->obj->point0;
 				}
 
@@ -1065,7 +1061,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		goto finish;
 	}
 
-	if ((!modinfo) && (ARX_SCENE_PORTAL_ClipIO(io,&pos)))
+	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io,&pos))
 		return;
 	
 	
@@ -1097,19 +1093,14 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	Color3f special_color = Color3f::black;
 
 	if(io) {
-		
 		float poisonpercent = 0.f;
 		float trappercent = 0.f;
 		float secretpercent = 0.f;
 
-		if ( io->ioflags & IO_NPC )
-		{
-			if ( io->_npcdata->poisonned > 0.f )
-			{
-				poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
-
-				if ( poisonpercent > 1.f ) poisonpercent = 1.f;
-			}
+		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f) {
+			poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
+			if ( poisonpercent > 1.f )
+				poisonpercent = 1.f;
 		}
 
 		if((io->ioflags & IO_ITEM) && io->poisonous > 0.f && io->poisonous_count != 0) {
@@ -1119,23 +1110,17 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 
-		if ((io->ioflags & IO_FIX) && (io->_fixdata->trapvalue>-1))
-		{
+		if((io->ioflags & IO_FIX) && io->_fixdata->trapvalue > -1) {
 			trappercent=(float)TRAP_DETECT-(float)io->_fixdata->trapvalue;
-
-			if (trappercent>0.f)
-			{
+			if(trappercent>0.f) {
 				trappercent = 0.6f + trappercent * ( 1.0f / 100 );
 				clamp(trappercent, 0.6f, 1.f);
 			}
 		}
 
 		if((io->ioflags & IO_FIX) && io->secretvalue > -1) {
-			
 			secretpercent=(float)TRAP_SECRET-(float)io->secretvalue;
-
-			if (secretpercent>0.f)
-			{
+			if(secretpercent>0.f) {
 				secretpercent = 0.6f + secretpercent * .01f;
 				clamp(trappercent, 0.6f, 1.f);
 			}
@@ -1156,47 +1141,36 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
 		}
 
-		if (io->sfx_flag & SFX_TYPE_YLSIDE_DEATH)
-		{
-			if (io->show==SHOW_FLAG_TELEPORTING)
-			{
+		if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
+			if (io->show==SHOW_FLAG_TELEPORTING) {
 				float fCalc = io->sfx_time + FrameDiff;
 				io->sfx_time = checked_range_cast<unsigned long>(fCalc);
 
 				if (io->sfx_time >= (unsigned long)(arxtime))
 					io->sfx_time = (unsigned long)(arxtime);
-			}
-			else
-			{
+			} else {
 				special_color_flag = 1;
 				float elapsed = float(arxtime) - io->sfx_time;
 
 				if(elapsed > 0.f) {
-					
 					if(elapsed < 3000.f) { // 5 seconds to red
 						float ratio = elapsed * (1.0f / 3000);
 						special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 						AddRandomSmoke( io, 1 );
-						
 					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = ( elapsed - 3000.f ) * ( 1.0f / 3000 );
 						special_color = Color3f(1.f, ratio, ratio);
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
-						
 					} else if (elapsed < 8000.f) { // 5 seconds to White
 						special_color = Color3f::gray((elapsed - 6000.f) * (1.f / 2000));
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
-						
 					} else { // SFX finish
-						
 						special_color_flag = 0;
-						
 						io->sfx_time=0;
 
-						if (io->ioflags & IO_NPC)
-						{
+						if(io->ioflags & IO_NPC) {
 							MakePlayerAppearsFX(io);
 							AddRandomSmoke(io,50);
 							Color3f rgb = io->_npcdata->blood_color.to<float>();
@@ -1206,7 +1180,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 							long count=6;
 
 							while(count--) {
-								
 								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
 								sp.origin.y-=rnd()*150.f;
 
@@ -1218,32 +1191,25 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 								sp.radius=rnd()*100.f+100.f;
 							}
 
-							if (io->sfx_flag & SFX_TYPE_INCINERATE)
-							{
+							if (io->sfx_flag & SFX_TYPE_INCINERATE) {
 								io->sfx_flag&=~SFX_TYPE_INCINERATE;
 								io->sfx_flag&=~SFX_TYPE_YLSIDE_DEATH;
 								long num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 
-								while (num>=0)
-								{
+								while(num>=0) {
 									spells[num].tolive=0;
 									ARX_DAMAGES_DamageNPC(io,20,0,1,&entities.player()->pos);
 									num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 								}
-							}
-							else
-							{
+							} else {
 								io->sfx_flag&=~SFX_TYPE_YLSIDE_DEATH;
 								ARX_INTERACTIVE_DestroyIO(io);
 								DESTROYED_DURING_RENDERING=io;
 								return;
-							}
-							
+							}	
 						}
 					}
-				}
-				else
-				{
+				} else {
 					ARX_DEAD_CODE();
 					//To avoid using special_color when it is not defined, currently equal 0
 				}
