@@ -439,7 +439,6 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 				&&	(RoomDraw[room_num].count))
 			{
 
-			if(USE_PORTALS) {
 					EERIE_SPHERE sphere;
 
 					if (io->ioflags & IO_ITEM)
@@ -481,7 +480,6 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 
 						return true;
 					}
-			}
 			}
 			else return false;
 		}
@@ -547,7 +545,6 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 				return true;
 			}
 
-			if (USE_PORTALS) {
 					if(io) {
 						
 						EERIE_SPHERE sphere;
@@ -582,7 +579,6 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 							return true;
 						}
 					}
-			}
 		}
 	}
 
@@ -2870,15 +2866,10 @@ if (USE_PORTALS && portals)
 		
 		long lprec = checked_range_cast<long>(prec);
 
-		if(USE_PORTALS) {
-			EERIE_FRUSTRUM frustrum;
-			CreateScreenFrustrum(&frustrum);
-			LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-			ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
-		}
-
-
-		//ARX_SCENE_DilateBackground();
+		EERIE_FRUSTRUM frustrum;
+		CreateScreenFrustrum(&frustrum);
+		LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
+		ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
 	}
 }
 else
