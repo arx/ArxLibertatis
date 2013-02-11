@@ -3322,7 +3322,7 @@ void RenderInter(float from, float to) {
 						if ((io->obj->pbox)
 						        &&	(io->obj->pbox->active))
 						{
-							DrawEERIEInterMatrix(io->obj, &mat, &io->pos, io);
+							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat);
 						}
 						else
 						{

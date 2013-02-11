@@ -941,7 +941,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			MatrixFromQuat(&mat, &Thrown[i].quat);
 			long ccount = FRAME_COUNT;
 			FRAME_COUNT = 0;
-			DrawEERIEInterMatrix(Thrown[i].obj, &mat, &Thrown[i].position, NULL);
+			DrawEERIEInter(Thrown[i].obj, NULL, &Thrown[i].position, NULL, &mat);
 
 			if((Thrown[i].flags & ATO_FIERY) && (Thrown[i].flags & ATO_MOVING)
 			   && !(Thrown[i].flags & ATO_UNDERWATER)) {
