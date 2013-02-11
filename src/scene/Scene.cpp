@@ -2254,7 +2254,7 @@ long MAX_FRAME_COUNT=0;
 // ie: Big Mess
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
-void ARX_SCENE_Render(long flag) {
+void ARX_SCENE_Render() {
 	
 	FRAME_COUNT++;
 
@@ -2276,9 +2276,6 @@ void ARX_SCENE_Render(long flag) {
 	unsigned long tim = (unsigned long)(arxtime);
 	
 	WATEREFFECT+=0.0005f*framedelay;
-
-	if (flag == 3)
-		return;
 	
 	float cval=(float)ACTIVECAM->clip3D+4;
 	long lcval = cval;
