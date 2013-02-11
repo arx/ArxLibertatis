@@ -362,7 +362,7 @@ float Original_framedelay=0.f;
 float PULSATE;
 long EXITING=0;
 
-long USE_PORTALS = 3;
+bool USE_PORTALS = false;
 
 Vec3f ePos;
 extern EERIE_CAMERA * ACTIVECAM;

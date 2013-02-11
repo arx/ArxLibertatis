@@ -439,11 +439,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 				&&	(RoomDraw[room_num].count))
 			{
 
-			switch (USE_PORTALS)
-			{
-				case 2:
-				case 3:
-				case 4:
+			if(USE_PORTALS) {
 					EERIE_SPHERE sphere;
 
 					if (io->ioflags & IO_ITEM)
@@ -551,31 +547,7 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 				return true;
 			}
 
-			switch (USE_PORTALS)
-			{
-				case 1: // 2D portal
-				{
-					EERIE_2D_BBOX * bbox=&RoomDraw[room_num].bbox;
-
-					if (	bbox->min.x > BBOXMAX.x || BBOXMIN.x > bbox->max.x
-						||	bbox->min.y > BBOXMAX.y || BBOXMIN.y > bbox->max.y)
-					{
-						if (io)
-						{
-							io->bbox1.x=(short)-1;
-							io->bbox2.x=(short)-1;
-							io->bbox1.y=(short)-1;
-							io->bbox2.y=(short)-1;		
-						}
-
-						return true;
-					}
-				}
-				break;
-				case 2:
-				case 3:
-				case 4:
-
+			if (USE_PORTALS) {
 					if(io) {
 						
 						EERIE_SPHERE sphere;
@@ -610,8 +582,6 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 							return true;
 						}
 					}
-
-				break;
 			}
 		}
 	}
@@ -1528,12 +1498,9 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
-		if(USE_PORTALS==4)
-		{
+		if(USE_PORTALS) {
 			ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
-		}
-		else
-		{
+		} else {
 			LogWarning << "unimplemented";
 		}
 	}
@@ -2903,37 +2870,11 @@ if (USE_PORTALS && portals)
 		
 		long lprec = checked_range_cast<long>(prec);
 
-		switch (USE_PORTALS)
-		{
-			case 1: {
-				EERIE_2D_BBOX bbox;
-				bbox.min = Vec2f::ZERO;
-				bbox.max = Vec2f(float(DANAESIZX), float(DANAESIZY));
-				ARX_PORTALS_ComputeRoom(room_num, &bbox, lprec, tim);
-				ARX_PORTALS_RenderRooms(lprec, tim);
-				break;
-			}
-			case 2: {
-				EERIE_FRUSTRUM frustrum;
-				CreateScreenFrustrum(&frustrum);
-				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-				ARX_PORTALS_Frustrum_RenderRooms(lprec,tim);
-				break;
-			}
-			case 3: {
-				EERIE_FRUSTRUM frustrum;
-				CreateScreenFrustrum(&frustrum);
-				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-				LogWarning << "unimplemented";
-				break;
-			}
-			case 4: {
-				EERIE_FRUSTRUM frustrum;
-				CreateScreenFrustrum(&frustrum);
-				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-				ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
-				break;
-			}
+		if(USE_PORTALS) {
+			EERIE_FRUSTRUM frustrum;
+			CreateScreenFrustrum(&frustrum);
+			LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
+			ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
 		}
 
 
@@ -3112,7 +3053,7 @@ else
 
 	FRAME_COUNT=LAST_FC;
 
-	if(USE_PORTALS<3)
+	if(!USE_PORTALS)
 			Delayed_FlushAll();
 		
 		ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(FrameDiff));
@@ -3125,7 +3066,7 @@ else
 		SPECIAL_DRAGINTER_RENDER=1;
 		ARX_INTERFACE_RenderCursor();
 
-		if(USE_PORTALS<3)
+		if(!USE_PORTALS)
 			Delayed_FlushAll();
 
 		SPECIAL_DRAGINTER_RENDER=0;
@@ -3147,9 +3088,7 @@ else
 
 		PopAllTriangleListTransparency();
 		
-		if(	(USE_PORTALS>2)&&
-			(portals) )
-		{
+		if(USE_PORTALS && portals) {
 			ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
 		}
 		else

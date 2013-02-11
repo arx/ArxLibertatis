@@ -640,7 +640,7 @@ struct SMY_ARXMAT
 	unsigned long uslNbIndiceCull_TSubstractive;
 };
 
-extern long USE_PORTALS;
+extern bool USE_PORTALS;
 extern EERIE_PORTAL_DATA * portals;
 
 #endif // ARX_GRAPHICS_GRAPHICSTYPES_H

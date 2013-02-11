@@ -2568,7 +2568,7 @@ static bool loadFastScene(const res::path & file, const char * data,
 	
 	// Load rooms and portals
 	if(fsh->nb_rooms <= 0) {
-		USE_PORTALS = 0;
+		USE_PORTALS = false;
 	} else {
 		
 		EERIE_PORTAL_Release();
@@ -2647,7 +2647,7 @@ static bool loadFastScene(const res::path & file, const char * data,
 			
 		}
 		
-		USE_PORTALS = 4;
+		USE_PORTALS = true;
 	}
 	
 	
@@ -2924,7 +2924,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portals->room = NULL;
 		portals->nb_total = 0;
 		portals->portals = NULL;
-		USE_PORTALS = 4;
+		USE_PORTALS = true;
 	}
 
 	if (type == TYPE_PORTAL) //portal_def
