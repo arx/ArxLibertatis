@@ -105,8 +105,6 @@ static float WATEREFFECT = 0.f;
 long TRANSPOLYSPOS=0;
 long FRAME_COUNT=0;
 
-long LAST_ROOM=-1;
-
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
 namespace {
@@ -2458,7 +2456,6 @@ void ARX_SCENE_Render(long flag) {
 if (USE_PORTALS && portals)
 {
 	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
-	LAST_ROOM=room_num;
 
 	if (room_num>-1)
 	{
