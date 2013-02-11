@@ -1091,16 +1091,7 @@ void RoomFrustrumAdd(long num,EERIE_FRUSTRUM * fr)
 		
 	}	
 }
-void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long tim);
-void ARX_PORTALS_RenderRooms(long prec,long tim)
-{
-	for (long i=0;i<NbRoomDrawList;i++)
-	{
-		ARX_PORTALS_RenderRoom(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].bbox,prec,tim);
-	}
 
-	NbRoomDrawList=0;
-}
 void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
 void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 {
@@ -1502,142 +1493,7 @@ void ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(long prec,long tim)
 		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
 	}
 }
-void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long tim)
-{
-	
-	if (RoomDraw[room_num].count)
-	{
-		EERIEDraw2DRect(bbox->min.x, bbox->min.y ,bbox->max.x, bbox->max.y, 0.0001f, Color::blue);
 
-	for (long  lll=0;lll<portals->room[room_num].nb_polys;lll++)
-	{
-			
-		FAST_BKG_DATA * feg;
-		feg=&ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
-
-		if (!feg->treat)
-			continue;
-
-		EERIEPOLY * ep=&feg->polydata[portals->room[room_num].epdata[lll].idx];
-
-		if (ep->type & (POLY_IGNORE | POLY_NODRAW))		
-			continue;
-			
-			// GO for 3D Backface Culling
-			if (ep->type & POLY_DOUBLESIDED)
-				GRenderer->SetCulling(Renderer::CullNone);
-			else
-			{
-				Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
-				if ( ep->type & POLY_QUAD) 
-				{
-					if ((dot(ep->norm , nrm) > 0.f) &&
-						 (dot(ep->norm2 , nrm) > 0.f) )	
-						continue;
-				}
-				else if (dot(ep->norm , nrm) > 0.f)
-						continue;
-
-				GRenderer->SetCulling(Renderer::CullCW);
-			}
-			 
-			if (!EERIERTPPoly(ep)) // RotTransProject Vertices
-				continue; 
-
-			if (BBoxClipPoly(bbox,ep))
-				continue;
-
-			long to;
-
-			if ( ep->type & POLY_QUAD) 
-			{
-				if (FRAME_COUNT<=0) 
-					ep->tv[3].color=ep->v[3].color;	
-
-				to=4;
-			}
-			else to=3;
-
-			if (ep->type & POLY_TRANS) 
-			{
-				ManageLavaWater(ep,to,tim);
-				TransPol[TRANSPOLYSPOS++]=ep;
-
-				if (TRANSPOLYSPOS>=MAX_TRANSPOL) TRANSPOLYSPOS=MAX_TRANSPOL-1;
-
-				if (ViewMode)
-				{
-					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(ep);
-					
-					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(ep);
-				}	
-
-				continue;
-			}
-
-			if (!Project.improve) { // Normal View...
-				if(ep->type & POLY_GLOW) {
-					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
-				} else {
-					if(FRAME_COUNT<=0) {
-						if(ModeLight & MODE_DYNAMICLIGHT) {
-							ApplyDynLight(ep);
-						} else {
-							ep->tv[0].color=ep->v[0].color;	
-							ep->tv[1].color=ep->v[1].color;	
-							ep->tv[2].color=ep->v[2].color;		
-						}						
-					}
-				}
-				ManageLavaWater(ep,to,tim);
-				Delayed_EERIEDRAWPRIM(ep);
-
-				if(ViewMode) {
-					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(ep);
-					
-					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(ep);
-				}	
-			} else { // Improve Vision Activated
-				if(FRAME_COUNT <= 0) {
-					if(ModeLight & MODE_DYNAMICLIGHT) {
-						ApplyDynLight(ep);
-					} else {
-						ep->tv[0].color=ep->v[0].color;	
-						ep->tv[1].color=ep->v[1].color;	
-						ep->tv[2].color=ep->v[2].color;				
-					}
-				
-					for(long k=0; k<to; k++) {
-						long lr=(ep->tv[k].color>>16) & 255;
-						float ffr=(float)(lr);
-							
-						float dd=(ep->tv[k].p.z*prec);
-
-						clamp(dd, 0.f, 1.f);
-						
-						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
-
-						if (fr<0.f) fr=0.f;
-						else fr=max(ffr,fr*255.f);
-
-						fb*=255.f;
-						long lfr = fr;
-						long lfb = fb;
-						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
-						//GG component locked at 0x1E
-				}
-			}
-
-			Delayed_EERIEDRAWPRIM(ep);
-		}			
-	}			
-	}
-}
 void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
 {
 	
