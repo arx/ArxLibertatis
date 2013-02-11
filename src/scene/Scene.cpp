@@ -2403,30 +2403,26 @@ void ARX_SCENE_Render(long flag) {
 	//TODO(lubosz): no if / loop ?
 
 	{
+	PrepareActiveCamera();
+	float xx=(float)(ACTIVECAM->orgTrans.pos.x*ACTIVEBKG->Xmul);
+	float yy=(float)(ACTIVECAM->orgTrans.pos.z*ACTIVEBKG->Zmul);
+	ACTIVECAM->Xsnap = xx;
+	ACTIVECAM->Zsnap = yy;
+	ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
+	ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 
-		PrepareActiveCamera();
-		float xx=(float)(ACTIVECAM->orgTrans.pos.x*ACTIVEBKG->Xmul);
-		float yy=(float)(ACTIVECAM->orgTrans.pos.z*ACTIVEBKG->Zmul);
-		
-		ACTIVECAM->Xsnap = xx;
-		ACTIVECAM->Zsnap = yy;
-		ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
-		ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
-		
-		x0=ACTIVECAM->Xsnap-lcval;
-		x1=ACTIVECAM->Xsnap+lcval;
-		z0=ACTIVECAM->Zsnap-lcval;
-		z1=ACTIVECAM->Zsnap+lcval;
-		x0 = clamp(x0,0,ACTIVEBKG->Xsize-1);
-		x1 = clamp(x1,0,ACTIVEBKG->Xsize-1);
-		z0 = clamp(z0,0,ACTIVEBKG->Zsize-2);
-		z1 = clamp(z1,0,ACTIVEBKG->Xsize-2);
-			
-			
-		ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;
-		float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul);
+	x0=ACTIVECAM->Xsnap-lcval;
+	x1=ACTIVECAM->Xsnap+lcval;
+	z0=ACTIVECAM->Zsnap-lcval;
+	z1=ACTIVECAM->Zsnap+lcval;
+	x0 = clamp(x0,0,ACTIVEBKG->Xsize-1);
+	x1 = clamp(x1,0,ACTIVEBKG->Xsize-1);
+	z0 = clamp(z0,0,ACTIVEBKG->Zsize-2);
+	z1 = clamp(z1,0,ACTIVEBKG->Xsize-2);
 
-			
+
+	ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;
+	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul);
 
 	long lll;
 	
@@ -2445,21 +2441,19 @@ void ARX_SCENE_Render(long flag) {
 	long xsnap=ACTIVECAM->Xsnap;
 	clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
-		for (long j=z0;j<=z1;j++)
-		{			
-			for (i=x0; i<x1; i++)
-			{
-				feg=&ACTIVEBKG->fastdata[i][j];
-				feg->treat=0;												
-			}
+	for(long j=z0; j<=z1; j++) {
+		for (i=x0; i<x1; i++) {
+			feg=&ACTIVEBKG->fastdata[i][j];
+			feg->treat=0;
 		}
+	}
 
-		for (long j=0;j<ACTIVEBKG->Zsize;j++)
-		for (i=0; i<ACTIVEBKG->Xsize; i++)
-		{
+	for(long j=0; j<ACTIVEBKG->Zsize; j++) {
+		for (i=0; i<ACTIVEBKG->Xsize; i++) {
 			if (tilelights[i][j].num)
 				tilelights[i][j].num=0;
 		}
+	}
 
 if (USE_PORTALS && portals)
 {
