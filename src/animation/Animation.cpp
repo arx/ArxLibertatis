@@ -1366,14 +1366,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 
-			if(Project.improve)
-			{
+			if(Project.improve) {
 				int to=3;
 
-				for (long k=0;k<to;k++) 
-				{
-					long lfr,lfb;
-					float fr,fb;
+				for (long k=0; k<to; k++) {
 					long lr=(vert_list[k].color>>16) & 255;
 					float ffr=(float)(lr);
 					
@@ -1383,10 +1379,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 					if (dd<0.f) dd=0.f;
 					
-					fb = ((1.f - dd) * 6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x)
-					      + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
-					fr = ((.6f - dd) * 6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z)
-					      + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
+					float fb=((1.f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
+					float fr=((.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
 
 					if (fr<0.f) fr=0.f;
 					else fr=max(ffr,fr*255.f);
@@ -1394,8 +1388,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					fr=min(fr,255.f);
 					fb*=255.f;
 					fb=min(fb,255.f);
-					lfr = fr;
-					lfb = fb;
+					long lfr = fr;
+					long lfb = fb;
 					vert_list[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 				}
 			}

@@ -1608,23 +1608,17 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 						EERIEPOLY_DrawNormals(ep);
 				}	
 			}
-			else // Improve Vision Activated
-			{			
-				if (FRAME_COUNT<=0)
-				{
-					if ( ModeLight & MODE_DYNAMICLIGHT ) 	ApplyDynLight(ep);										
-					else 
-					{	
+			else { // Improve Vision Activated
+				if(FRAME_COUNT <= 0) {
+					if(ModeLight & MODE_DYNAMICLIGHT) {
+						ApplyDynLight(ep);
+					} else {
 						ep->tv[0].color=ep->v[0].color;	
 						ep->tv[1].color=ep->v[1].color;	
 						ep->tv[2].color=ep->v[2].color;				
 					}
 				
-
-					for (long k=0;k<to;k++) 
-					{
-						long lfr,lfb;
-						float fr,fb;
+					for(long k=0; k<to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 							
@@ -1634,15 +1628,15 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 
 						if (dd<0.f) dd=0.f;
 						
-						fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
+						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
+						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
 
 						if (fr<0.f) fr=0.f;
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						lfr = fr;
-						lfb = fb;
+						long lfr = fr;
+						long lfb = fb;
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 				}
@@ -1756,23 +1750,17 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 						EERIEPOLY_DrawNormals(ep);
 				}	
 			}
-			else // Improve Vision Activated
-			{			
-				if (FRAME_COUNT<=0)
-				{
-					if ( ModeLight & MODE_DYNAMICLIGHT ) 	ApplyDynLight(ep);										
-					else 
-					{	
+			else { // Improve Vision Activated
+				if(FRAME_COUNT <= 0) {
+					if(ModeLight & MODE_DYNAMICLIGHT) {
+						ApplyDynLight(ep);
+					} else {
 						ep->tv[0].color=ep->v[0].color;	
 						ep->tv[1].color=ep->v[1].color;	
 						ep->tv[2].color=ep->v[2].color;				
 					}
 				
-
-					for (long k=0;k<to;k++) 
-					{
-						long lfr,lfb;
-						float fr,fb;
+					for(long k=0; k<to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 							
@@ -1782,15 +1770,15 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 						if (dd<0.f) dd=0.f;
 						
-						fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
+						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
+						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
 
 						if (fr<0.f) fr=0.f;
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						lfr = fr;
-						lfb = fb;
+						long lfr = fr;
+						long lfb = fb;
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 				}
@@ -2091,33 +2079,25 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				}
 
 					}
-			else // Improve Vision Activated
-			{			
-				//!!!!!!!!! NOT OPTIMIZED T&L !!!!!!!!!!
-				if ((FRAME_COUNT<=0)&&(!(ep->type&POLY_TRANS)))
-				{
-					if (!EERIERTPPoly(ep)) // RotTransProject Vertices
-					{
+			else { // Improve Vision Activated
+				if(FRAME_COUNT <= 0 && !(ep->type&POLY_TRANS)) {
+					if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
 						continue; 
 					}
 
-					if ( ModeLight & MODE_DYNAMICLIGHT ) 	ApplyDynLight(ep);										
-					else 
-					{	
+					if(ModeLight & MODE_DYNAMICLIGHT) {
+						ApplyDynLight(ep);
+					} else {
 						ep->tv[0].color=ep->v[0].color;	
 						ep->tv[1].color=ep->v[1].color;	
 						ep->tv[2].color=ep->v[2].color;				
 
-						if(to&4)
-						{
+						if(to&4) {
 							ep->tv[3].color=ep->v[3].color;
 						}
 					}
 				
-					for (long k=0;k<to;k++) 
-					{
-						long lfr,lfb;
-						float fr,fb;
+					for(long k=0; k<to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 						
@@ -2127,8 +2107,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 						if (dd<0.f) dd=0.f;
 						
-						fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						fr = ((0.6f - dd) * 6.f + (EEfabs(ep->nrml[k].z) + EEfabs(ep->nrml[k].y))) * 0.125f;
+						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
+						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;
 
 						if (fr<0.f) fr=0.f;
 						else fr=max(ffr,fr*255.f);
@@ -2136,8 +2116,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						fr=min(fr,255.f);
 						fb*=255.f;
 						fb=min(fb,255.f);
-						lfr = fr;
-						lfb = fb;
+						long lfr = fr;
+						long lfb = fb;
 				
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 					
@@ -2940,21 +2920,17 @@ else
 						EERIEPOLY_DrawNormals(ep);
 				}	
 			}
-			else // Improve Vision Activated
-			{			
-				if (FRAME_COUNT<=0)
-				{
-					if ( ModeLight & MODE_DYNAMICLIGHT ) 	ApplyDynLight(ep);										
-					else 
-					{	
+			else { // Improve Vision Activated
+				if(FRAME_COUNT <= 0) {
+					if(ModeLight & MODE_DYNAMICLIGHT) {
+						ApplyDynLight(ep);
+					} else {
 						ep->tv[0].color=ep->v[0].color;	
 						ep->tv[1].color=ep->v[1].color;	
 						ep->tv[2].color=ep->v[2].color;				
 					}
-				
 
-					for (long k=0;k<to;k++) 
-					{
+					for(long k=0; k<to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 							
@@ -2965,7 +2941,7 @@ else
 						if (dd<0.f) dd=0.f;
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
-						float fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
+						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
 
 						if (fr<0.f) fr=0.f;
 						else fr=max(ffr,fr*255.f);
