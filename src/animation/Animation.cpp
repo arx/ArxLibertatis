@@ -1375,9 +1375,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					
 					float dd=(vert_list[k].rhw*prec);
 
-					if (dd>1.f) dd=1.f;
-
-					if (dd<0.f) dd=0.f;
+					clamp(dd, 0.f, 1.f);
 					
 					float fb=((1.f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
 					float fr=((.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
