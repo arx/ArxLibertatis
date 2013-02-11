@@ -1955,32 +1955,18 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			if(ep->type&POLY_TRANS)
 			{
-				if(ep->transval>=2.f)  //MULTIPLICATIVE
-				{
+				if(ep->transval>=2.f) { //MULTIPLICATIVE
 					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TMultiplicative+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
 					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
-				}
-				else
-				{
-					if(ep->transval>=1.f) //ADDITIVE
-					{
-						pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TAdditive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-						pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
-					}
-					else
-					{
-						if(ep->transval>0.f) //NORMAL TRANS
-						{
-							pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TNormalTrans+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-							pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
-						}
-						else
-						{
-							//SUBTRACTIVE
-							pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TSubstractive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-							pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
-						}
-					}
+				}else if(ep->transval>=1.f) { //ADDITIVE
+					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TAdditive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
+					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TAdditive;
+				} else if(ep->transval>0.f) { //NORMAL TRANS
+					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TNormalTrans+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
+					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans;
+				} else { //SUBTRACTIVE
+					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TSubstractive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
+					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
 				}
 			}
 			else

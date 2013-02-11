@@ -602,27 +602,20 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 			float ttt = ep->transval;
 
-			if ( ttt >= 2.f )  //MULTIPLICATIVE
-			{
+			if(ttt >= 2.f) { //MULTIPLICATIVE
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				ttt	*= ( 1.0f / 2 );
 				ttt	+= 0.5f;
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
-			}
-			else if ( ttt >= 1.f ) //ADDITIVE
-			{	
+			} else if(ttt >= 1.f) { //ADDITIVE
 				ttt -= 1.f;
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
-			}
-			else if ( ttt > 0.f )  //NORMAL TRANS
-			{
+			} else if(ttt > 0.f) { //NORMAL TRANS
 				ttt = 1.f - ttt;
 				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR(Color::Limits::max() * ttt);
-			}
-			else  //SUBTRACTIVE
-			{
+			} else { //SUBTRACTIVE
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				ttt = 1.f - ttt;
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = Color::gray(ttt).toBGR();
