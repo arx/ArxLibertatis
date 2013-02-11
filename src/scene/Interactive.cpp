@@ -121,7 +121,6 @@ extern long FRAME_COUNT;
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 extern long EXTERNALVIEW;
-extern long NEED_TEST_TEXT;
 
 ARX_NODES nodes;
 static float TREATZONE_LIMIT = 1800.f;
@@ -3342,7 +3341,7 @@ void RenderInter(float from, float to) {
 			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
 				ManageIgnition(io);
 
-			if(NEED_TEST_TEXT || EDITMODE) {
+			if(EDITMODE) {
 				Color color = Color::blue;
 				if(io->bbox1.x != io->bbox2.x && io->bbox1.x < DANAESIZX) {
 					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);

@@ -204,7 +204,6 @@ long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
 static long LAST_CONVERSATION = 0;
 long SHOW_INGAME_MINIMAP= 1;
-long NEED_TEST_TEXT=0;
 static unsigned long FRAMETICKS=0;
 
 float PLAYER_ARMS_FOCAL = 350.f;
@@ -1787,21 +1786,6 @@ finish:
 
 	if (sp_max_start)
 		Manage_sp_max();
-
-	if(NEED_TEST_TEXT) {
-
-		ShowTestText();
-
-		if(ViewMode & VIEWMODE_INFOTEXT) {
-			ShowInfoText();
-		}
-
-		if(USE_PORTALS) {
-			char tex[250];
-			sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-			outputText(320, 240, tex);
-		}
-	}
 
 	GRenderer->EndScene();
 }

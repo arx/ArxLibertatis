@@ -89,7 +89,6 @@ using std::vector;
 
 //-----------------------------------------------------------------------------
 extern EERIE_3DOBJ * eyeballobj;
-extern long NEED_TEST_TEXT;
 extern long EXTERNALVIEW;
 long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
@@ -2591,10 +2590,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		if (ret) 
 		{
 			EERIERTPPoly2(epp);
-
-			if (NEED_TEST_TEXT)
-				EERIEPOLY_DrawWired(epp, Color::magenta);
-
 			continue;
 		}
 
@@ -2610,15 +2605,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		
 		EERIE_FRUSTRUM fd;
 		CreateFrustrum(&fd,epp,Cull);
-		
-		if (NEED_TEST_TEXT)
-		{
-			if (Cull)
-				EERIEPOLY_DrawWired(epp, Color::red);
-			else
-				EERIEPOLY_DrawWired(epp, Color::blue);
-		}
-		
 
 		if (po->room_1==room_num)
 		{
