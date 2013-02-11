@@ -591,23 +591,19 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
 		}
 	}
 
-	if (time <= 0) goto suite;
+	if(time > 0) {
+		//TODO remove ?
+		if (time>200) time=200; // TO REMOVE !!!!!!!!!
+		PrepareAnim(eobj,eanim,time,io);
 
-	//TODO remove ?
-	if (time>200) time=200; // TO REMOVE !!!!!!!!!
-
-	PrepareAnim(eobj,eanim,time,io);
-	
-	if (io)
-	for (long count=1;count<MAX_ANIM_LAYERS;count++)
-	{
-		ANIM_USE * animuse=&io->animlayer[count];
-
-		if (animuse->cur_anim)
-			PrepareAnim(eobj,animuse,time,io);
+		if(io) {
+			for(long count=1; count<MAX_ANIM_LAYERS; count++) {
+				ANIM_USE * animuse=&io->animlayer[count];
+				if (animuse->cur_anim)
+					PrepareAnim(eobj,animuse,time,io);
+			}
+		}
 	}
-
-suite:
 
 	DESTROYED_DURING_RENDERING=NULL;
 
