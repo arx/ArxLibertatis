@@ -1577,38 +1577,31 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				continue;
 			}
 
-			if (!Project.improve)  // Normal View...			
-			{
-				if (ep->type & POLY_GLOW) 
+			if (!Project.improve) { // Normal View...
+				if(ep->type & POLY_GLOW) {
 					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
-				else 
-				{
-					if (FRAME_COUNT<=0)
-					{
-						if (ModeLight & MODE_DYNAMICLIGHT) 	ApplyDynLight(ep);					
-						else
-						{
+				} else {
+					if(FRAME_COUNT<=0) {
+						if(ModeLight & MODE_DYNAMICLIGHT) {
+							ApplyDynLight(ep);
+						} else {
 							ep->tv[0].color=ep->v[0].color;	
 							ep->tv[1].color=ep->v[1].color;	
 							ep->tv[2].color=ep->v[2].color;		
 						}						
 					}
 				}
-
 				ManageLavaWater(ep,to,tim);
-				
 				Delayed_EERIEDRAWPRIM(ep);
 
-				if (ViewMode)
-				{
+				if(ViewMode) {
 					if (ViewMode & VIEWMODE_WIRE) 
 						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
 						EERIEPOLY_DrawNormals(ep);
 				}	
-			}
-			else { // Improve Vision Activated
+			} else { // Improve Vision Activated
 				if(FRAME_COUNT <= 0) {
 					if(ModeLight & MODE_DYNAMICLIGHT) {
 						ApplyDynLight(ep);
@@ -1718,37 +1711,31 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				continue;
 			}
 
-			if (!Project.improve)  // Normal View...			
-			{
-				if (ep->type & POLY_GLOW) ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
-				else 
-				{
-					if (FRAME_COUNT<=0)
-					{
-						if (ModeLight & MODE_DYNAMICLIGHT) 	ApplyDynLight(ep);					
-						else
-						{
+			if (!Project.improve) { // Normal View...
+				if(ep->type & POLY_GLOW) {
+					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
+				} else {
+					if(FRAME_COUNT<=0) {
+						if(ModeLight & MODE_DYNAMICLIGHT) {
+							ApplyDynLight(ep);
+						} else {
 							ep->tv[0].color=ep->v[0].color;	
 							ep->tv[1].color=ep->v[1].color;	
 							ep->tv[2].color=ep->v[2].color;		
 						}						
 					}
 				}
-
-				ManageLavaWater(ep,to,tim);
-				
+				ManageLavaWater(ep,to,tim);	
 				Delayed_EERIEDRAWPRIM(ep);
 
-				if (ViewMode)
-				{
+				if(ViewMode) {
 					if (ViewMode & VIEWMODE_WIRE) 
 						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
 						EERIEPOLY_DrawNormals(ep);
 				}	
-			}
-			else { // Improve Vision Activated
+			} else { // Improve Vision Activated
 				if(FRAME_COUNT <= 0) {
 					if(ModeLight & MODE_DYNAMICLIGHT) {
 						ApplyDynLight(ep);
@@ -1989,33 +1976,22 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			if (!Project.improve)  // Normal View...			
 			{
-				if(ep->type&POLY_GLOW) 
-				{
+				if(ep->type & POLY_GLOW) {
 					pMyVertexCurr[ep->uslInd[0]].color=pMyVertexCurr[ep->uslInd[1]].color=pMyVertexCurr[ep->uslInd[2]].color=0xFFFFFFFF;
-
-					if(to&4)
-					{
+					if(to&4) {
 						pMyVertexCurr[ep->uslInd[3]].color=0xFFFFFFFF;
 					}
-				}
-				else 
-				{
-					if(ep->type&POLY_LAVA)
-					{
-						if((FRAME_COUNT<=0)&&(!(ep->type&POLY_TRANS)))
-						{
-							if(ModeLight & MODE_DYNAMICLIGHT)
-							{
+				} else {
+					if(ep->type & POLY_LAVA) {
+						if(FRAME_COUNT<=0 && !(ep->type & POLY_TRANS)) {
+							if(ModeLight & MODE_DYNAMICLIGHT) {
 								ApplyDynLight(ep);
-							}
-							else
-							{
+							} else {
 								ep->tv[0].color=ep->v[0].color;	
 								ep->tv[1].color=ep->v[1].color;	
 								ep->tv[2].color=ep->v[2].color;		
 
-								if(to&4)
-								{
+								if(to&4) {
 									ep->tv[3].color=ep->v[3].color;
 								}
 							}
@@ -2029,8 +2005,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						pMyVertexCurr[ep->uslInd[1]].color=ep->tv[1].color;
 						pMyVertexCurr[ep->uslInd[2]].color=ep->tv[2].color;
 
-						if(to&4)
-						{
+						if(to&4) {
 							pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
 						}
 					}
@@ -2073,9 +2048,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 					if (EERIERTPPoly(ep))
 						EERIEPOLY_DrawWired(ep);
 				}
-
-					}
-			else { // Improve Vision Activated
+			} else { // Improve Vision Activated
 				if(FRAME_COUNT <= 0 && !(ep->type&POLY_TRANS)) {
 					if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
 						continue; 
@@ -2882,39 +2855,31 @@ else
 				continue;
 			}
 
-			if (!Project.improve)  // Normal View...			
-			{
-				if (ep->type & POLY_GLOW) ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
-				else 
-				{
-					if (FRAME_COUNT<=0)
-					{
-						if (ModeLight & MODE_DYNAMICLIGHT) 	ApplyDynLight(ep);					
-						else
-						{
+			if (!Project.improve) { // Normal View...
+				if(ep->type & POLY_GLOW) {
+					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
+				} else {
+					if(FRAME_COUNT<=0) {
+						if(ModeLight & MODE_DYNAMICLIGHT) {
+							ApplyDynLight(ep);
+						} else {
 							ep->tv[0].color=ep->v[0].color;	
 							ep->tv[1].color=ep->v[1].color;	
 							ep->tv[2].color=ep->v[2].color;		
 						}
-						
 					}
 				}
-
 				ManageLavaWater(ep,to,tim);
-				
 				Delayed_EERIEDRAWPRIM(ep);
 
-				if (ViewMode)
-				{
-		
+				if(ViewMode) {
 					if (ViewMode & VIEWMODE_WIRE) 
 						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
 						EERIEPOLY_DrawNormals(ep);
 				}	
-			}
-			else { // Improve Vision Activated
+			} else { // Improve Vision Activated
 				if(FRAME_COUNT <= 0) {
 					if(ModeLight & MODE_DYNAMICLIGHT) {
 						ApplyDynLight(ep);
