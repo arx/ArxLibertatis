@@ -155,7 +155,6 @@ extern long STRIKE_TIME;
 extern long DeadTime;
 extern long TRANSPOLYSPOS;
 extern long FORCE_FRONT_DRAW;
-extern long LAST_ROOM;
 extern long LAST_PORTALS_COUNT;
 extern int iTimeToDrawD7;
 extern long LaunchDemo;
