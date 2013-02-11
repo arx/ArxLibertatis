@@ -119,7 +119,6 @@ TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 float dists[32];
 float values[32];
-float vdist;
 long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
 extern unsigned char * grps;
@@ -1006,7 +1005,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	}
 	
 	// Test for Mipmeshing then pre-computes vertices
-	vdist = 0.f;
 	{
 		ResetBBox3D( io );
 
