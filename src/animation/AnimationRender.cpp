@@ -1437,21 +1437,17 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				
 				fTransp = (invisibility > 0.f) ? 2.f - invisibility : eobj->facelist[i].transval;
 				
-				if(fTransp >= 2.f) {
-					//MULTIPLICATIVE
+				if(fTransp >= 2.f) { //MULTIPLICATIVE
 					fTransp *= (1.f/2);
 					fTransp += .5f;
 					tv = PushVertexInTableCull_TMultiplicative(pTex);
-				} else if(fTransp >= 1.f) {
-					//ADDITIVE
+				} else if(fTransp >= 1.f) { //ADDITIVE
 					fTransp -= 1.f;
 					tv = PushVertexInTableCull_TAdditive(pTex);
-				} else if(fTransp > 0.f) {
-					//NORMAL TRANS
+				} else if(fTransp > 0.f) { //NORMAL TRANS
 					fTransp = 1.f - fTransp;
 					tv = PushVertexInTableCull_TNormalTrans(pTex);
-				} else {
-					//SUBTRACTIVE
+				} else { //SUBTRACTIVE
 					fTransp = 1.f - fTransp;
 					tv = PushVertexInTableCull_TSubstractive(pTex);
 				}
