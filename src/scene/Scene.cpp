@@ -2606,21 +2606,29 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		EERIE_FRUSTRUM fd;
 		CreateFrustrum(&fd,epp,Cull);
 
+		long roomToCompute = 0;
+		bool computeRoom = false;
+
 		if (po->room_1==room_num)
 		{
 			if (!Cull)
 			{
-				portals->portals[portals->room[room_num].portals[lll]].useportal=1;
-				ARX_PORTALS_Frustrum_ComputeRoom(po->room_2,&fd,prec,tim);
+				roomToCompute = po->room_2;
+				computeRoom = true;
 			}
 		}
 		else if (po->room_2==room_num)
 		{
 			if (Cull)
 			{
-				portals->portals[portals->room[room_num].portals[lll]].useportal=1;
-				ARX_PORTALS_Frustrum_ComputeRoom(po->room_1,&fd,prec,tim);
+				roomToCompute = po->room_1;
+				computeRoom = true;
 			}
+		}
+
+		if(computeRoom) {
+			portals->portals[portals->room[room_num].portals[lll]].useportal=1;
+			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute,&fd,prec,tim);
 		}
 	}
 
