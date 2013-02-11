@@ -1552,7 +1552,7 @@ void ArxGame::renderLevel() {
 	ARX_PHYSICS_Apply();
 
 	if (FRAME_COUNT<=0)
-		PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
+			PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 
@@ -1560,11 +1560,11 @@ void ArxGame::renderLevel() {
 	{
 		float val=10.f;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-		ARX_SCENE_Render(1);
+		ARX_SCENE_Render();
 		val=-0.3f;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 	} else {
-		ARX_SCENE_Render(1);
+		ARX_SCENE_Render();
 	}
 
 	// Begin Particles
