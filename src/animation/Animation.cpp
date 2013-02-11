@@ -117,7 +117,6 @@ ANIM_HANDLE animations[MAX_ANIMATIONS];
 
 TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
-EERIEMATRIX * BIGMAT;
 float dists[32];
 float values[32];
 float vdist;
@@ -618,15 +617,11 @@ suite:
 
 
 // Procedure for drawing Interactive Objects (Not Animated)
-void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj, EERIEMATRIX * mat, Vec3f  * poss,
-                          Entity * io, EERIE_MOD_INFO * modinfo) {
+void DrawEERIEInterMatrix(EERIE_3DOBJ *eobj, EERIEMATRIX *mat, Vec3f *poss, Entity *io, EERIE_MOD_INFO *modinfo) {
+	if (!mat)
+		return;
 	
-	BIGMAT=mat;
-
-	if (BIGMAT==NULL) return;
-	
-	DrawEERIEInter(eobj,NULL,poss,io,modinfo);
-	BIGMAT=NULL;
+	DrawEERIEInter(eobj, NULL, poss, io, mat, modinfo);
 }
 // List of TO-TREAT vertex for MIPMESHING
 
@@ -948,9 +943,8 @@ extern long FORCE_FRONT_DRAW;
 void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
-void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
-                    Entity * io, EERIE_MOD_INFO * modinfo) {
-	
+void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, EERIEMATRIX *mat, EERIE_MOD_INFO *modinfo) {
+
 	if(!eobj) {
 		return;
 	}
@@ -1029,7 +1023,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			
 			vert_list_static[0].p = eobj->vertexlist[i].v;
 
-			if(modinfo && !angle && BIGMAT) {
+			if(modinfo && !angle && mat) {
 				vert_list_static[0].p -= modinfo->link_position;
 			}
 
@@ -1043,7 +1037,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 					vert_list_static[0].p -= io->obj->pbox->vert[0].initpos * scale-io->obj->point0;
 				}
 
-				VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, BIGMAT);
+				VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, mat);
 			} else {
 				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
 				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
@@ -1085,7 +1079,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	
 	// Precalc local lights for this object then interpolate
 	if(FRAME_COUNT <= 0) {
-		MakeCLight(io,&infra,angle,&pos,eobj,BIGMAT);
+		MakeCLight(io,&infra,angle,&pos,eobj,mat);
 	}
 
 	INTER_DRAW++;
@@ -1301,7 +1295,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 			continue;
 
 		if ((io) && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io,&infra,angle,&pos,eobj,BIGMAT,i);
+			MakeCLight2(io,&infra,angle,&pos,eobj,mat,i);
 
 		float			fTransp = 0.f;
 
@@ -1514,8 +1508,8 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 		TexturedVertex * workon=vert_list;
 
 		for(long o=0; o<3; o++) {
-			if(BIGMAT) {
-				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, BIGMAT);
+			if(mat) {
+				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, mat);
 			} else {
 				YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
 			}
