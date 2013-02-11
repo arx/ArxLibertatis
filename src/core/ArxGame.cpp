@@ -1800,21 +1800,8 @@ finish:
 
 		if(USE_PORTALS) {
 			char tex[250];
-			switch(USE_PORTALS) {
-			case 1:
-				sprintf(tex, "2DPortals_ROOM: %ld", LAST_ROOM);
-				break;
-			case 2:
-				sprintf(tex, "3DPortals_ROOM: %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-				break;
-			case 3:
-				sprintf(tex, "3DPortals_ROOM(Transform): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-				break;
-			case 4:
-				sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
-				break;
-			}
-			outputText( 320, 240, tex );
+			sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
+			outputText(320, 240, tex);
 		}
 
 		if(bOLD_CLIPP) {
