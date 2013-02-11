@@ -1624,9 +1624,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 							
 						float dd=(ep->tv[k].p.z*prec);
 
-						if (dd>1.f) dd=1.f;
-
-						if (dd<0.f) dd=0.f;
+						clamp(dd, 0.f, 1.f);
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
 						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
@@ -1766,9 +1764,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 							
 						float dd=(ep->tv[k].p.z*prec);
 
-						if (dd>1.f) dd=1.f;
-
-						if (dd<0.f) dd=0.f;
+						clamp(dd, 0.f, 1.f);
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
 						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
@@ -2103,9 +2099,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						
 						float dd=(ep->tv[k].rhw*prec);
 
-						if (dd>1.f) dd=1.f;
-
-						if (dd<0.f) dd=0.f;
+						clamp(dd, 0.f, 1.f);
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
 						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;
@@ -2936,9 +2930,7 @@ else
 							
 						float dd=(ep->tv[k].p.z*prec);
 
-						if (dd>1.f) dd=1.f;
-
-						if (dd<0.f) dd=0.f;
+						clamp(dd, 0.f, 1.f);
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
 						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
