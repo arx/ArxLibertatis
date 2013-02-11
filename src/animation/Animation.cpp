@@ -1103,12 +1103,11 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 	if(io && (io->halo.flags & HALO_ACTIVE)) {
 		
 		float mdist=ACTIVECAM->cdepth;
-		ddist=mdist-fdist(pos, ACTIVECAM->orgTrans.pos);
-		ddist=(ddist/mdist);
-		ddist*=ddist*ddist*ddist*ddist*ddist;
+		ddist = mdist-fdist(pos, ACTIVECAM->orgTrans.pos);
+		ddist = ddist/mdist;
+		ddist = std::pow(ddist, 6);
 
-		if (ddist<=0.25f) ddist=0.25f;
-		else if (ddist>0.9f) ddist=0.9f;
+		clamp(ddist, 0.25f, 0.9f);
 
 		need_halo=1;
 	}
