@@ -1469,17 +1469,6 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
-void ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(long prec,long tim)
-{
-	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
-
-	for (long i=0;i<NbRoomDrawList;i++)
-	{
-		ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
-	}
-}
-
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_VERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
@@ -2465,7 +2454,13 @@ if (USE_PORTALS && portals)
 		EERIE_FRUSTRUM frustrum;
 		CreateScreenFrustrum(&frustrum);
 		ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-		ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
+
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+
+		for (long i=0;i<NbRoomDrawList;i++)
+		{
+			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
+		}
 	}
 }
 else
