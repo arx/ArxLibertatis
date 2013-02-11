@@ -90,7 +90,6 @@ using std::vector;
 //-----------------------------------------------------------------------------
 extern EERIE_3DOBJ * eyeballobj;
 extern long EXTERNALVIEW;
-long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;
@@ -2465,7 +2464,7 @@ if (USE_PORTALS && portals)
 
 		EERIE_FRUSTRUM frustrum;
 		CreateScreenFrustrum(&frustrum);
-		LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
+		ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
 		ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(lprec,tim);
 	}
 }
