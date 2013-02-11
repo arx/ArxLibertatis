@@ -2441,11 +2441,9 @@ void ARX_SCENE_Render(long flag) {
 	Vec3f nrm;
 
 	long zsnap=ACTIVECAM->Zsnap;
-	zsnap=min((int)zsnap,ACTIVEBKG->Zsize-1);
-	zsnap=max((int)zsnap,1);
+	clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
 	long xsnap=ACTIVECAM->Xsnap;
-	xsnap=min((int)xsnap,ACTIVEBKG->Xsize-1);
-	xsnap=max((int)xsnap,1);
+	clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
 		for (long j=z0;j<=z1;j++)
 		{			
