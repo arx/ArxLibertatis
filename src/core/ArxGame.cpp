@@ -173,8 +173,6 @@ extern float PROGRESS_BAR_TOTAL;
 extern float PROGRESS_BAR_COUNT;
 extern float OLD_PROGRESS_BAR_COUNT;
 
-extern bool bOLD_CLIPP;
-
 extern void DANAE_KillCinematic();
 extern void LaunchWaitingCine();
 
@@ -1802,12 +1800,6 @@ finish:
 			char tex[250];
 			sprintf(tex, "3DPortals_ROOM(TransformSC): %ld - Vis %ld", LAST_ROOM, LAST_PORTALS_COUNT);
 			outputText(320, 240, tex);
-		}
-
-		if(bOLD_CLIPP) {
-			outputText(0, 240, "New Clipp" );
-		} else {
-			outputText(0,274,"New Clipp");
 		}
 	}
 

@@ -192,8 +192,6 @@ EERIE_FRUSTRUM_PLANE efpPlaneNear;
 static vector<EERIEPOLY*> vPolyWater;
 static vector<EERIEPOLY*> vPolyLava;
 
-bool bOLD_CLIPP=false;
-
 void PopAllTriangleListTransparency();
 
 static PORTAL_ROOM_DRAW * RoomDraw = NULL;
@@ -3034,9 +3032,6 @@ else
 	}
 	}
 }
-
-	if(GInput->isKeyPressedNowPressed(Keyboard::Key_J))
-		bOLD_CLIPP=!bOLD_CLIPP;
 
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
