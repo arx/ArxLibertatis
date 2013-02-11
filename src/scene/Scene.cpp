@@ -407,7 +407,7 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 }
 
 bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
-	
+	arx_assert(io);
 	if(EDITMODE || io == entities.player() || (io->ioflags & IO_FORCEDRAW)) {
 		return false;
 	}
@@ -465,16 +465,11 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 						
 					EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
 
-					if (FrustrumsClipSphere(frustrums,&sphere))
-					{
-						if (io)
-						{
-							io->bbox1.x=(short)-1;
-							io->bbox2.x=(short)-1;
-							io->bbox1.y=(short)-1;
-							io->bbox2.y=(short)-1;		
-						}
-
+					if (FrustrumsClipSphere(frustrums,&sphere)) {
+						io->bbox1.x=(short)-1;
+						io->bbox2.x=(short)-1;
+						io->bbox1.y=(short)-1;
+						io->bbox2.y=(short)-1;
 						return true;
 					}
 			}
@@ -711,6 +706,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 
 	return -1;
 }
+
 // flag==1 for player
 long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 {
