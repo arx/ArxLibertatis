@@ -594,6 +594,7 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
 
 	if (time <= 0) goto suite;
 
+	//TODO remove ?
 	if (time>200) time=200; // TO REMOVE !!!!!!!!!
 
 	PrepareAnim(eobj,eanim,time,io);
@@ -1090,6 +1091,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	long special_color_flag = 0;
 	Color3f special_color = Color3f::black;
 
+	//TODO copy-paste
 	if(io) {
 		float poisonpercent = 0.f;
 		float trappercent = 0.f;
@@ -1097,30 +1099,29 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f) {
 			poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
-			if ( poisonpercent > 1.f )
+			if(poisonpercent > 1.f)
 				poisonpercent = 1.f;
 		}
 
-		if((io->ioflags & IO_ITEM) && io->poisonous > 0.f && io->poisonous_count != 0) {
-			poisonpercent = io->poisonous * (1.f / 20);
-			if(poisonpercent > 1.f) {
+		if((io->ioflags & IO_ITEM) && io->poisonous > 0.f && io->poisonous_count) {
+			poisonpercent = (float)io->poisonous * (1.0f / 20);
+			if(poisonpercent > 1.f)
 				poisonpercent = 1.f;
-			}
 		}
 
 		if((io->ioflags & IO_FIX) && io->_fixdata->trapvalue > -1) {
-			trappercent=(float)TRAP_DETECT-(float)io->_fixdata->trapvalue;
-			if(trappercent>0.f) {
+			trappercent = (float)TRAP_DETECT - (float)io->_fixdata->trapvalue;
+			if(trappercent > 0.f) {
 				trappercent = 0.6f + trappercent * ( 1.0f / 100 );
 				clamp(trappercent, 0.6f, 1.f);
 			}
 		}
 
 		if((io->ioflags & IO_FIX) && io->secretvalue > -1) {
-			secretpercent=(float)TRAP_SECRET-(float)io->secretvalue;
-			if(secretpercent>0.f) {
-				secretpercent = 0.6f + secretpercent * .01f;
-				clamp(trappercent, 0.6f, 1.f);
+			secretpercent = (float)TRAP_SECRET - (float)io->secretvalue;
+			if(secretpercent > 0.f) {
+				secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
+				clamp(secretpercent, 0.6f, 1.f);
 			}
 		}
 
@@ -1154,7 +1155,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					if(elapsed < 3000.f) { // 5 seconds to red
 						float ratio = elapsed * (1.0f / 3000);
 						special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
-						AddRandomSmoke( io, 1 );
+						AddRandomSmoke(io, 1);
 					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = ( elapsed - 3000.f ) * ( 1.0f / 3000 );
 						special_color = Color3f(1.f, ratio, ratio);
@@ -1166,43 +1167,43 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 						AddRandomSmoke(io, 2);
 					} else { // SFX finish
 						special_color_flag = 0;
-						io->sfx_time=0;
+						io->sfx_time = 0;
 
 						if(io->ioflags & IO_NPC) {
 							MakePlayerAppearsFX(io);
-							AddRandomSmoke(io,50);
+							AddRandomSmoke(io, 50);
 							Color3f rgb = io->_npcdata->blood_color.to<float>();
 							EERIE_SPHERE sp;
 							sp.origin = io->pos;
 							sp.radius = 200.f;
-							long count=6;
+							long count = 6;
 
 							while(count--) {
-								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
-								sp.origin.y-=rnd()*150.f;
+								SpawnGroundSplat(&sp, &rgb, rnd() * 30.f + 30.f, 1);
+								sp.origin.y -= rnd() * 150.f;
 
 								ARX_PARTICLES_Spawn_Splat(sp.origin, 200.f, io->_npcdata->blood_color);
 
-								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
-								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
-								sp.origin.z=io->pos.z+rnd()*200.f-100.f;
-								sp.radius=rnd()*100.f+100.f;
+								sp.origin.x = io->pos.x + rnd() * 200.f - 100.f;
+								sp.origin.y = io->pos.y + rnd() * 20.f - 10.f;
+								sp.origin.z = io->pos.z + rnd() * 200.f - 100.f;
+								sp.radius = rnd() * 100.f + 100.f;
 							}
 
-							if (io->sfx_flag & SFX_TYPE_INCINERATE) {
-								io->sfx_flag&=~SFX_TYPE_INCINERATE;
-								io->sfx_flag&=~SFX_TYPE_YLSIDE_DEATH;
-								long num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
+							if(io->sfx_flag & SFX_TYPE_INCINERATE) {
+								io->sfx_flag &= ~SFX_TYPE_INCINERATE;
+								io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
+								long num = ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 
 								while(num>=0) {
-									spells[num].tolive=0;
+									spells[num].tolive = 0;
 									ARX_DAMAGES_DamageNPC(io,20,0,1,&entities.player()->pos);
 									num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 								}
 							} else {
-								io->sfx_flag&=~SFX_TYPE_YLSIDE_DEATH;
+								io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 								ARX_INTERACTIVE_DestroyIO(io);
-								DESTROYED_DURING_RENDERING=io;
+								DESTROYED_DURING_RENDERING = io;
 								return;
 							}	
 						}
