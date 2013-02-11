@@ -335,7 +335,6 @@ struct EERIE_FRUSTRUM_PLANE
 struct EERIE_FRUSTRUM
 {
 	EERIE_FRUSTRUM_PLANE plane[4];
-	long nb;
 };
 
 struct EERIE_FRUSTRUM_DATA
