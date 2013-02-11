@@ -943,9 +943,7 @@ void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt
 }
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum);
 void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
-	
-	long to = (ep->type & POLY_QUAD) ? 4 : 3;
-	
+		
 	if(cull) {
 		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[1].p);
 		CreatePlane(frustrum, 1, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[2].p);
@@ -957,8 +955,6 @@ void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
 		CreatePlane(frustrum, 2, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[1].p);
 		CreatePlane(frustrum, 3, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[2].p);
 	}
-	
-	frustrum->nb = to;
 }
 
 
@@ -1077,8 +1073,6 @@ void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	n = (float)(1.f/sqrt(a*a+b*b+c*c));
 
 	Frustrum_Set(frustrum,3,a*n,b*n,c*n,d*n);
- 
-	frustrum->nb=4;
 
 	a=matres._14+matres._13;
 	b=matres._24+matres._23;
