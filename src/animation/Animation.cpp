@@ -615,14 +615,6 @@ suite:
 	Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, render, update_movement);
 }
 
-
-// Procedure for drawing Interactive Objects (Not Animated)
-void DrawEERIEInterMatrix(EERIE_3DOBJ *eobj, EERIEMATRIX *mat, Vec3f *poss, Entity *io, EERIE_MOD_INFO *modinfo) {
-	if (!mat)
-		return;
-	
-	DrawEERIEInter(eobj, NULL, poss, io, mat, modinfo);
-}
 // List of TO-TREAT vertex for MIPMESHING
 
 // TODO: Convert to a RenderBatch & make TextureContainer constructor private

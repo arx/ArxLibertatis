@@ -2067,7 +2067,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 					
 					EERIEMATRIX	 matrix;
 					MatrixFromQuat(&matrix, &quat);
-					DrawEERIEInterMatrix(obj, &matrix, posi, ioo, &eobj->linked[k].modinfo);
+					DrawEERIEInter(obj, NULL, posi, ioo, &matrix, &eobj->linked[k].modinfo);
 					INVISIBILITY_OVERRIDE = 0.f;
 
 					// Restore item invisibility flag
