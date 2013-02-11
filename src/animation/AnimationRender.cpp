@@ -1420,17 +1420,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		        ||	hio_helmet
 		        ||	(use_io->halo.flags & HALO_ACTIVE))
 		{
+			Vec3f ftrPos = *pos + ftr;
 
-			float mdist = ACTIVECAM->cdepth * ( 1.0f / 2 );
+			//TODO copy-pase
+			float mdist = ACTIVECAM->cdepth;
+			mdist *= ( 1.0f / 2 );
+			ddist = mdist-fdist(ftrPos, ACTIVECAM->orgTrans.pos);
+			ddist = ddist/mdist;
+			ddist = std::pow(ddist, 6);
 
-			ddist = mdist - fdist(*pos + ftr, ACTIVECAM->orgTrans.pos);
-
-			ddist = (ddist / mdist);  //*0.1f;
-			ddist *= ddist * ddist * ddist * ddist * ddist;
-
-			if (ddist <= 0.25f) ddist = 0.25f;
-
-			else if (ddist > 0.9f) ddist = 0.9f;
+			clamp(ddist, 0.25f, 0.9f);
 
 			Cedric_PrepareHalo(eobj, obj);
 			need_halo	= 1;
