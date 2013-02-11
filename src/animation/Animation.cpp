@@ -1044,22 +1044,16 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * poss,
 				}
 
 				VectorMatrixMultiply(&vert_list_static[1].p, &vert_list_static[0].p, BIGMAT);
-
-				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
-				
-				EE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld );
-				EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert );
-			}
-			else
-			{
+			} else {
 				YRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.ycos, Ncam.orgTrans.ysin);
 				XRotatePoint(&vert_list_static[1].p, &vert_list_static[0].p, Ncam.orgTrans.xcos, Ncam.orgTrans.xsin);
 				ZRotatePoint(&vert_list_static[0].p, &vert_list_static[1].p, Ncam.orgTrans.zcos, Ncam.orgTrans.zsin);
-				eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
-
-				EE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
-				EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 			}
+
+			eobj->vertexlist3[i].v = vert_list_static[1].p += pos;
+			EE_RT( &vert_list_static[1], &eobj->vertexlist[i].vworld);
+			EE_P( &eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
+
 
 			// Memorizes 2D Bounding Box using vertex min/max x,y pos
 			if(eobj->vertexlist[i].vert.rhw > 0.f) {
