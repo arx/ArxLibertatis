@@ -108,7 +108,6 @@ long MAX_LLIGHTS = 18;
 //-----------------------------------------------------------------------------
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
-extern long INTER_DRAW;
 extern long FRAME_COUNT;
 extern Color ulBKGColor;
 extern long ZMAPMODE;
@@ -1069,7 +1068,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		MakeCLight(io,&infra,angle,&pos,eobj,mat);
 	}
 
-	INTER_DRAW++;
 	float ddist;
 	ddist=0;
 	long need_halo;
