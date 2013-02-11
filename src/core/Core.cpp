@@ -178,7 +178,6 @@ extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;
 extern long		FistParticles;
-extern long		INTER_DRAW;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
@@ -3369,7 +3368,7 @@ void ShowInfoText() {
 		LASTfps2 = fpss2;
 	}
 	
-	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms] INTER:%ld", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay, INTER_DRAW);
+	sprintf(tex, "%ld Prims %4.02f fps ( %3.02f - %3.02f ) [%3.0fms]", EERIEDrawnPolys, FPS, fps2min, fps2, framedelay);
 	mainApp->outputText(70, 32, tex);
 
 	float poss=-666.66f;

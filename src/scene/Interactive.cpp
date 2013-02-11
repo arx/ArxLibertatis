@@ -129,7 +129,6 @@ long HERO_SHOW_1ST = 1;
 #ifdef BUILD_EDITOR
 long NbIOSelected = 0;
 #endif
-long INTER_DRAW = 0;
 
 static bool IsCollidingInter(Entity * io, Vec3f * pos);
 static Entity * AddCamera(const res::path & classPath,
@@ -3160,7 +3159,6 @@ void RenderInter(float from, float to) {
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 	Anglef temp;
 	EERIEMATRIX mat;
-	INTER_DRAW = 0;
 	float dist;
 	long diff;
 

@@ -91,7 +91,6 @@ unsigned char * grps = NULL;
 static long max_grps = 0;
 extern long FORCE_NO_HIDE;
 extern long USEINTERNORM;
-extern long INTER_DRAW;
 
 extern float dists[];
 extern long BH_MODE;
@@ -1933,8 +1932,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 		if(Cedric_TransformVerts(io, eobj, obj, pos) && render) {
 			
-			INTER_DRAW++;
-
 			if(!Cedric_ApplyLighting(eobj, obj, io, pos)) {
 				return;
 			}
