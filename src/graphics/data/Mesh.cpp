@@ -175,13 +175,6 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
-void EE_RT(TexturedVertex * in, Vec3f * out);
-void EE_P(Vec3f * in, TexturedVertex * out);
-void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
-	EE_RT(in, &out->p);
-	EE_P(&out->p, out);
-}
-
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
 	
 	Vec3f v = l2 - l1;
@@ -763,6 +756,11 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 
 void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	EE_RT2(in, out);
+	EE_P(&out->p, out);
+}
+
+void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
+	EE_RT(in, &out->p);
 	EE_P(&out->p, out);
 }
 
