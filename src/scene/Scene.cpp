@@ -2517,7 +2517,13 @@ else
 		
 		ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(FrameDiff));
 		
-		RenderInter(0.f, 3200.f);
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.6f);
+
+	RenderInter(0.f, 3200.f);
+
+	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
 		
 
 	if (DRAGINTER) // To render Dragged objs

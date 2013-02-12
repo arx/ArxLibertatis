@@ -3154,9 +3154,7 @@ extern Entity * DESTROYED_DURING_RENDERING;
 //*************************************************************************************
 void RenderInter(float from, float to) {
 
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-	float val = -0.6f;
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
+
 	Anglef temp;
 	EERIEMATRIX mat;
 	float dist;
@@ -3344,11 +3342,6 @@ void RenderInter(float from, float to) {
 			}
 		}
 	}
-
-
-	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-	val = -0.3f;
-	GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 }
 
 void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
