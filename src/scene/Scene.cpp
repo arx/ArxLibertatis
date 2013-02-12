@@ -2269,7 +2269,6 @@ void ARX_SCENE_Render() {
 	static long x1=0;
 	static long z0=0;
 	static long z1=0;
-	long i;
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
@@ -2322,49 +2321,36 @@ void ARX_SCENE_Render() {
 	clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
 	for(long j=z0; j<=z1; j++) {
-		for (i=x0; i<x1; i++) {
+		for (long i=x0; i<x1; i++) {
 			feg=&ACTIVEBKG->fastdata[i][j];
 			feg->treat=0;
 		}
 	}
 
 	for(long j=0; j<ACTIVEBKG->Zsize; j++) {
-		for (i=0; i<ACTIVEBKG->Xsize; i++) {
+		for (long  i=0; i<ACTIVEBKG->Xsize; i++) {
 			if (tilelights[i][j].num)
 				tilelights[i][j].num=0;
 		}
 	}
 
-if (USE_PORTALS && portals)
-{
-	long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
-
-	if (room_num>-1)
-	{
-		ARX_PORTALS_InitDrawnRooms();
-		
-		long lprec = checked_range_cast<long>(prec);
-
-		EERIE_FRUSTRUM frustrum;
-		CreateScreenFrustrum(&frustrum);
-		ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-
-		for (long i=0;i<NbRoomDrawList;i++)
-		{
-			ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
+	if(USE_PORTALS && portals) {
+		long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
+		if(room_num>-1) {
+			ARX_PORTALS_InitDrawnRooms();
+			long lprec = checked_range_cast<long>(prec);
+			EERIE_FRUSTRUM frustrum;
+			CreateScreenFrustrum(&frustrum);
+			ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			for(long i=0;i<NbRoomDrawList;i++) {
+				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
+			}
 		}
-	}
-}
-else
-{
-	for (long n=0;n<=lcval;n++)
-	{
-	for (long j=zsnap-n;j<=zsnap+n;j++)
-	{
-	for (i=xsnap-n;i<=xsnap+n;i++)
-	{
+	} else {
+	for(long n=0; n<=lcval; n++) {
+	for(long j=zsnap-n; j<=zsnap+n; j++) {
+	for(long i=xsnap-n; i<=xsnap+n; i++) {
 		if ( (i!=xsnap-n) && (i!=xsnap+n) && (j!=zsnap-n) && (j!=zsnap+n) )
 		{
 			continue;
@@ -2504,7 +2490,7 @@ else
 		}
 	}
 	}
-}
+	}
 
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
@@ -2515,7 +2501,7 @@ else
 	if(!USE_PORTALS)
 			Delayed_FlushAll();
 		
-		ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(FrameDiff));
+	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(FrameDiff));
 		
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.6f);
@@ -2539,8 +2525,7 @@ else
 
 	PopAllTriangleList();
 	
-					}
-
+	}
 		
 		if ((eyeball.exist!=0) && eyeballobj)
 			ARXDRAW_DrawEyeBall();
@@ -2570,8 +2555,7 @@ if (HALOCUR>0)
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	for (i=0;i<HALOCUR;i++)
-	{
+	for (long i=0; i<HALOCUR; i++) {
 		//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
 		TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
 
@@ -2585,7 +2569,7 @@ if (HALOCUR>0)
 		else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 	}
 
-		 HALOCUR = 0; 
+	HALOCUR = 0;
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
 }
 
