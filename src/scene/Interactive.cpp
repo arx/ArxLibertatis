@@ -3154,7 +3154,6 @@ extern Entity * DESTROYED_DURING_RENDERING;
 //*************************************************************************************
 void RenderInter(float from, float to) {
 	Anglef temp;
-	float dist;
 	long diff;
 
 	if(entities.player() && (entities.player()->ignition > 0.f)){
@@ -3172,15 +3171,15 @@ void RenderInter(float from, float to) {
 				continue;
 			}
 			
-			if(io->obj && io->obj->pbox && io->obj->pbox->active)
-				dist = fdist(ACTIVECAM->orgTrans.pos, io->obj->pbox->vert[0].pos);
-			else
-				dist = fdist(ACTIVECAM->orgTrans.pos, io->pos);
-
-			if(io && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
-			{}
-			else if ((dist < from) || (dist >= to))
-				continue;
+			if( !((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) ) {
+				Vec3f posToCheck = io->pos;
+				if(io->obj && io->obj->pbox && io->obj->pbox->active) {
+					posToCheck = io->obj->pbox->vert[0].pos;
+				}
+				float dist = fdist(ACTIVECAM->orgTrans.pos, posToCheck);
+				if ((dist < from) || (dist >= to))
+					continue;
+			}
 
 			UpdateIOInvisibility(io);
 
