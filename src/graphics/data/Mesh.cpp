@@ -1399,26 +1399,6 @@ void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
 	memset(eg, 0, sizeof(EERIE_BKG_INFO));
 }
 
-void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
-{
-	if (!portals) return;
-
-	for (long room_num = 0; room_num <= portals->nb_rooms; room_num++)
-	{
-		for (long  lll = 0; lll < portals->room[room_num].nb_polys; lll++)
-		{
-			if ((portals->room[room_num].epdata[lll].px == px)
-					&& (portals->room[room_num].epdata[lll].py == py))
-			{
-				if (portals->room[room_num].epdata[lll].idx == ep_idx)
-					portals->room[room_num].epdata[lll].idx = ep_idx2;
-				else if (portals->room[room_num].epdata[lll].idx == ep_idx2)
-					portals->room[room_num].epdata[lll].idx = ep_idx;
-			}
-		}
-	}
-}
-
 //*************************************************************************************
 //*************************************************************************************
 
