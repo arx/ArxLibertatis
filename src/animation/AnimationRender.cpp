@@ -120,41 +120,33 @@ extern float INVISIBILITY_OVERRIDE;
 extern long EXTERNALVIEW;
 static	void	Cedric_GetScale(float & scale, float & invisibility, Entity * io)
 {
-	if (io)
-	{
+	if(io) {
 		invisibility = io->invisibility;
 
-		if (invisibility > 1.f) invisibility -= 1.f;
+		if (invisibility > 1.f)
+			invisibility -= 1.f;
 
-		if ((io != entities.player()) && (invisibility > 0.f) && (!EXTERNALVIEW))
-		{
+		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
-			if (num >= 0)
-			{
-				if (player.Full_Skill_Intuition > spells[num].caster_level * 10)
-				{
+			if(num >= 0) {
+				if(player.Full_Skill_Intuition > spells[num].caster_level * 10) {
 					invisibility -= (float)player.Full_Skill_Intuition * ( 1.0f / 100 ) + (float)spells[num].caster_level * ( 1.0f / 10 );
 
-					if (invisibility < 0.1f) invisibility = 0.1f;
-					else if (invisibility > 1.f) invisibility = 1.f;
+					clamp(invisibility, 0.1f, 1.f);
 				}
 			}
 		}
 
 		// Scaling Value for this object (Movements will also be scaled)
 		scale = io->scale;
-	}
-	else
-	{
-		if (INVISIBILITY_OVERRIDE != 0.f)
-		{
+	} else {
+		if(INVISIBILITY_OVERRIDE != 0.f) {
 			invisibility = INVISIBILITY_OVERRIDE;
 
-			if (invisibility > 1.f) invisibility -= 1.f;
-		}
-		else
-		{
+			if (invisibility > 1.f)
+				invisibility -= 1.f;
+		} else {
 			invisibility = 0.f;
 		}
 
