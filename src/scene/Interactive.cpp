@@ -3153,10 +3153,7 @@ extern Entity * DESTROYED_DURING_RENDERING;
 // from camera position.
 //*************************************************************************************
 void RenderInter(float from, float to) {
-
-
 	Anglef temp;
-	EERIEMATRIX mat;
 	float dist;
 	long diff;
 
@@ -3199,27 +3196,7 @@ void RenderInter(float from, float to) {
 #ifdef BUILD_EDITOR
 			if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
 				EERIE_PHYSICS_BOX_Show(io->obj);
-#endif
-
-			if (
-			    (io->obj)
-			    &&	(io->obj->pbox)
-			    &&	(io->obj->pbox->active))
-			{
-				Vec3f tmp = io->obj->pbox->vert[14].pos - io->obj->pbox->vert[13].pos;
-				Vec3f up = io->obj->pbox->vert[2].pos - io->obj->pbox->vert[1].pos;
-				up += io->obj->pbox->vert[3].pos - io->obj->pbox->vert[4].pos;
-				up += io->obj->pbox->vert[10].pos - io->obj->pbox->vert[9].pos;
-				up += io->obj->pbox->vert[11].pos - io->obj->pbox->vert[12].pos;
-				up *= 0.25f;
-				
-				MatrixSetByVectors(&mat, &up, &tmp);
-				mat._14 = mat._24 = mat._34 = 0.f;
-				mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
-
-
-			}
-				
+#endif				
 			if(io->animlayer[0].cur_anim) {
 				
 				temp.a = io->angle.a;
@@ -3309,9 +3286,19 @@ void RenderInter(float from, float to) {
 							io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 						}
 
-						if ((io->obj->pbox)
-						        &&	(io->obj->pbox->active))
-						{
+						if(io->obj->pbox && io->obj->pbox->active) {
+							Vec3f tmp = io->obj->pbox->vert[14].pos - io->obj->pbox->vert[13].pos;
+							Vec3f up = io->obj->pbox->vert[2].pos - io->obj->pbox->vert[1].pos;
+							up += io->obj->pbox->vert[3].pos - io->obj->pbox->vert[4].pos;
+							up += io->obj->pbox->vert[10].pos - io->obj->pbox->vert[9].pos;
+							up += io->obj->pbox->vert[11].pos - io->obj->pbox->vert[12].pos;
+							up *= 0.25f;
+
+							EERIEMATRIX mat;
+							MatrixSetByVectors(&mat, &up, &tmp);
+							mat._14 = mat._24 = mat._34 = 0.f;
+							mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
+
 							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat);
 						}
 						else
