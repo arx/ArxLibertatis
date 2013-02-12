@@ -82,12 +82,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::vector;
 
 //-----------------------------------------------------------------------------
-#define MAX_OUT 4 
-#define VAL_THRESHOLD 100.f
-#define PASSS 0.5f 
-#define PASS 50.f 
-
-//-----------------------------------------------------------------------------
 extern EERIE_3DOBJ * eyeballobj;
 extern long EXTERNALVIEW;
 //-----------------------------------------------------------------------------
@@ -2129,103 +2123,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 
 	return portals_count; 
 }
-
-bool Clip_Visible(const Vec3f * orgn, Vec3f * dest) {
-	
-	float dx, dy, dz, adx, ady, adz, ix, iz;
-	float x0, z0;
-	float forr, temp;
- 
-	dx=(dest->x-orgn->x);
-	adx=EEfabs(dx);
-	dy=(dest->y-orgn->y);
-	ady=EEfabs(dy);
-	dz=(dest->z-orgn->z);
-	adz=EEfabs(dz);
-
-	x0=orgn->x;
-	z0=orgn->z;
-
-	if ( (adx>=ady) && (adx>=adz)) 
-	{
-		if (adx != dx)
-		{
-			ix = -1.f * PASS;
-		}
-		else
-		{
-			ix = 1.f * PASS;
-		}
-
-		forr=adx;
-		temp=1.f/(adx/PASS);
-		iz=dz*temp;
-	}
-	else if ( (ady>=adx) && (ady>=adz)) 
-	{
-		forr=ady;
-		temp=1.f/(ady/PASS);
-		ix=dx*temp;
-		iz=dz*temp;
-	}
-	else 
-	{
-		if (adz != dz)
-		{
-			iz = -1.f * PASS;
-		}
-		else
-		{
-			iz = 1.f * PASS;
-		}
-
-		forr=adz;
-		temp=1.f/(adz/PASS);
-		ix=dx*temp;
-	}
-	
-
-long curpixel;
-	long tot;
-	tot=0;
-	
-	long x,y;
-	FAST_BKG_DATA * LAST_eg=NULL;
-	curpixel=2;
-	x0+=ix*2;
-		z0+=iz*2;
-		forr-=PASS*2;		
-
-	while (forr>PASSS)
-	{
-			FAST_BKG_DATA * feg;
-			x = x0 * ACTIVEBKG->Xmul;
-			y = z0 * ACTIVEBKG->Zmul;
-			feg=&ACTIVEBKG->fastdata[x][y];
-
-		if (feg!=LAST_eg)
-		{
-				
-			LAST_eg=feg;
-			
-			if (feg->nothing)	tot += 2; 
-		
-			if (tot>MAX_OUT) return false;
-		}
-
-		float v=(float)curpixel*( 1.0f / 5 );
-
-		if (v<1.f) v=1.f;
-
-		x0+=ix*v;
-		z0+=iz*v;
-		forr-=PASS*v;		
-	}
-
-	return true;//hard;
-}
-
-
 
 bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
 		
