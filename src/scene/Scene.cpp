@@ -918,7 +918,7 @@ void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt
 	
 }
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum);
-void CreateFrustrum(EERIE_FRUSTRUM * frustrum, EERIEPOLY * ep, long cull) {
+void CreateFrustrum(EERIE_FRUSTRUM *frustrum, EERIEPOLY *ep, bool cull) {
 		
 	if(cull) {
 		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[1].p);
@@ -2096,11 +2096,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 
 		EERIERTPPoly2(epp);
 
-		int Cull;
-
-		if (fRes<0.f) Cull=0;
-		else Cull=1;
-
+		bool Cull = !(fRes<0.f);
 		
 		EERIE_FRUSTRUM fd;
 		CreateFrustrum(&fd,epp,Cull);
