@@ -175,16 +175,11 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
+void EE_RT(TexturedVertex * in, Vec3f * out);
 void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
+	EE_RT(in, &out->p);
 	
-	EERIE_TRANSFORM * et = &ACTIVECAM->orgTrans;
-	out->p = in->p - et->pos;
-	
-	float temp = (out->p.z * et->ycos) - (out->p.x * et->ysin);
-	out->p.x = (out->p.z * et->ysin) + (out->p.x * et->ycos);
-	out->p.z = (out->p.y * et->xsin) + (temp * et->xcos);
-	out->p.y = (out->p.y * et->xcos) - (temp * et->xsin);
-	
+	EERIE_TRANSFORM *et = &ACTIVECAM->orgTrans;
 	float fZTemp = 1.f / out->p.z;
 	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
 	
