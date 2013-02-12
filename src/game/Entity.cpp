@@ -68,8 +68,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 
 Entity::Entity(const res::path & classPath)
-	: index_(entities.add(this)),
-	  classPath_(classPath) {
+	: m_index(size_t(-1)),
+	  m_classPath(classPath) {
+	
+	m_index = entities.add(this);
 	
 	ioflags = 0;
 	lastpos = Vec3f::ZERO;
@@ -286,13 +288,13 @@ Entity::~Entity() {
 	
 	free(inventory);
 	
-	if(index_ != size_t(-1)) {
-		entities.remove(index_);
+	if(m_index != size_t(-1)) {
+		entities.remove(m_index);
 	}
 }
 
 std::string Entity::short_name() const {
-	return classPath_.filename();
+	return m_classPath.filename();
 }
 
 std::string Entity::long_name() const {
@@ -302,7 +304,7 @@ std::string Entity::long_name() const {
 }
 
 res::path Entity::full_name() const {
-	return classPath_.parent() / long_name();
+	return m_classPath.parent() / long_name();
 }
 
 void Entity::cleanReferences() {

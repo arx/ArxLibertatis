@@ -2,8 +2,12 @@
 Name=Arx Libertatis
 GenericName=First-Person Role-Playing Game
 GenericName[de]=3D-Rollenspiel
+GenericName[fr]=Jeu de rôle à la première personne
+GenericName[ru]=Ролевая игра от первого лица
 Comment=Cross-platform port of Arx Fatalis, a first-person role-playing game
 Comment[de]=Plattformübergreifende Version von Arx Fatalis, ein 3D-Rollenspiel
+Comment[fr]=Version multi-plateforme d'Arx Fatalis, un jeu de rôle à la première personne
+Comment[ru]=Кроссплатформенная версия ролевой игры от первого лица Arx Fatalis
 Exec=arx
 Icon=arx-libertatis
 Terminal=false

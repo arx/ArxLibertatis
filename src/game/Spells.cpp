@@ -2895,236 +2895,74 @@ void ARX_SPELLS_LaunchSpellTarget(Entity * io) {
 	}
 }
 
-static float ARX_SPELLS_GetManaCost(Spell _lNumSpell,long lNumSpellTab) {
-	float Player_Magic_Level;
-	Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
-	Player_Magic_Level= std::max(1.0f,Player_Magic_Level*( 1.0f / 10 ));
-	Player_Magic_Level= std::min(10.0f,Player_Magic_Level);
-
-	switch (_lNumSpell) 
-	{
-	//-----------------------------
-	case SPELL_MAGIC_SIGHT:
-		return 0.3f;
-		break;
-	case SPELL_MAGIC_MISSILE:
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level;
-
-		return spells[lNumSpellTab].caster_level;
-		break;
-	case SPELL_IGNIT:
-		return 1.f;
-		break;
-	case SPELL_DOUSE:
-		return 1.f;
-		break;
-	case SPELL_ACTIVATE_PORTAL:
-		return 2.f;
-		break;
-	//-----------------------------
-	case SPELL_HEAL:
-		return 4.f;
-		break;
-	case SPELL_DETECT_TRAP:
-		return 0.03f;
-		break;
-	case SPELL_ARMOR:
-		return 0.01f;
-		break;
-	case SPELL_LOWER_ARMOR:
-		return 0.01f;
-		break;
-	case SPELL_HARM:
-		return 0.4f;
-		break;
-	//-----------------------------
-	case SPELL_SPEED:            
-		return 0.01f;
-		break;
-	case SPELL_DISPELL_ILLUSION: 
-		return 7.f;
-		break;
-	case SPELL_FIREBALL:
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*3.f;
-
-		return 3.f*spells[lNumSpellTab].caster_level;
-		break;
-	case SPELL_CREATE_FOOD:      
-		return 5.f;
-		break;
-	case SPELL_ICE_PROJECTILE:   
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*1.5f;
-
-		return 1.5f*spells[lNumSpellTab].caster_level;
-		break;
-	//----------------------------
-	case SPELL_BLESS:            
-		return 0.01f;
-		break;
-	case SPELL_DISPELL_FIELD:    
-		return 7.f;
-		break;
-	case SPELL_FIRE_PROTECTION:  
-		return 1.f;
-		break;
-	case SPELL_TELEKINESIS:      
-		return 0.001f;
-		break;
-	case SPELL_CURSE:            
-		return 0.001f;
-		break;
-	case SPELL_COLD_PROTECTION:  
-		return 1.f;
-		break;
-	//-----------------------------
-	case SPELL_RUNE_OF_GUARDING: 
-		return 9.f;
-		break;
-	case SPELL_LEVITATE:         
-		return 1.f;
-		break;
-	case SPELL_CURE_POISON:      
-		return 10.f;
-		break;
-	case SPELL_REPEL_UNDEAD:     
-		return 18.f;
-		break;
-	case SPELL_POISON_PROJECTILE:
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*2.f;
-
-		return 2.f*spells[lNumSpellTab].caster_level;
-		break;
-	//-----------------------------
-	case SPELL_RISE_DEAD:        
-		return 12.f;
-		break;
-	case SPELL_PARALYSE:         
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*3.f;
-
-		return 3.f*spells[lNumSpellTab].caster_level;
-		break;
-	case SPELL_CREATE_FIELD:     
-		return 1.2f;
-		break;
-	case SPELL_DISARM_TRAP:      
-		return 15.f;
-		break;
-	case SPELL_SLOW_DOWN:        
-		return 1.2f;
-		break;
-	//-----------------------------
-	case SPELL_FLYING_EYE:       
-		return 4.f;
-		break;
-	case SPELL_FIRE_FIELD:       
-		return 15.f;
-		break;
-	case SPELL_ICE_FIELD:        
-		return 15.f;
-		break;
-	case SPELL_LIGHTNING_STRIKE: 
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*6.f;
-
-		return 6.f*spells[lNumSpellTab].caster_level;
-		break;
-	case SPELL_CONFUSE:          
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*0.1f;
-
-		return 0.1f*spells[lNumSpellTab].caster_level;
-		break;
-	//-----------------------------
-	case SPELL_INVISIBILITY:     
-		return 3.f;
-		break;
-	case SPELL_MANA_DRAIN:       
-		return 0.4f;
-		break;
-	case SPELL_EXPLOSION:        
-		return 45.f;
-		break;
-	case SPELL_ENCHANT_WEAPON:   
-		return 35.f;
-		break;
-	case SPELL_LIFE_DRAIN:       
-		return 3.f;//0.9f; //0.4f;
-		break;
-	//-----------------------------
-	case SPELL_SUMMON_CREATURE:  
-
-		if (lNumSpellTab<0)
-		{
-			if(Player_Magic_Level>=9)
-			return 	80.f;
-		}
-
-		if(spells[lNumSpellTab].caster_level>=9)
-			return 80.f;
-
-		return 20.f;
-		break;
-	case SPELL_NEGATE_MAGIC:     
-		return 2.f;
-		break;
-	case SPELL_INCINERATE:       
-		return 40.f;
-		break;
-	case SPELL_MASS_PARALYSE:    
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*3.f;
-
-		return 3.f*spells[lNumSpellTab].caster_level;
-		break;
-	//----------------------------
-	case SPELL_MASS_LIGHTNING_STRIKE:
-
-		if (lNumSpellTab<0)
-			return 	Player_Magic_Level*8.f;
-
-		return 8.f*spells[lNumSpellTab].caster_level;
-		break;
-	case SPELL_CONTROL_TARGET:       
-		return 40.f;
-		break;
-	case SPELL_FREEZE_TIME:          
-		return 60.f;
-		break;
-	case SPELL_MASS_INCINERATE:      
-		return 160.f;
-		break;
-	case SPELL_FAKE_SUMMON:			
-
-		if (lNumSpellTab<0)
-		{
-			if(Player_Magic_Level>=9)
-			return 	80.f;
-		}
-
-		if(spells[lNumSpellTab].caster_level>=9)
-			return 80.f;
-
-		return 20.f;
-		break;
-	//-----------------------------
-	case SPELL_TELEPORT:	
-		return 10.f;
-		break;
-	default:
-		return 0.f;
+static float ARX_SPELLS_GetManaCost(Spell spell, long index) {
+	
+	// Calculate the player's magic level
+	float playerCasterLevel = player.Full_Skill_Casting + player.Full_Attribute_Mind;
+	playerCasterLevel = clamp(playerCasterLevel * 0.1f, 1.f, 10.f);
+	
+	float casterLevel = ((index < 0) ? playerCasterLevel : spells[index].caster_level);
+	
+	// TODO this data should not be hardcoded
+	
+	switch(spell)  {
+		
+		default:                          return   0.f;
+		
+		case SPELL_TELEKINESIS:           return   0.001f;
+		case SPELL_CURSE:                 return   0.001f;
+		case SPELL_ARMOR:                 return   0.01f;
+		case SPELL_LOWER_ARMOR:           return   0.01f;
+		case SPELL_SPEED:                 return   0.01f;
+		case SPELL_BLESS:                 return   0.01f;
+		case SPELL_DETECT_TRAP:           return   0.03f;
+		case SPELL_MAGIC_SIGHT:           return   0.3f;
+		case SPELL_HARM:                  return   0.4f;
+		case SPELL_MANA_DRAIN:            return   0.4f;
+		case SPELL_IGNIT:                 return   1.f;
+		case SPELL_DOUSE:                 return   1.f;
+		case SPELL_FIRE_PROTECTION:       return   1.f;
+		case SPELL_COLD_PROTECTION:       return   1.f;
+		case SPELL_LEVITATE:              return   1.f;
+		case SPELL_CREATE_FIELD:          return   1.2f;
+		case SPELL_SLOW_DOWN:             return   1.2f;
+		case SPELL_ACTIVATE_PORTAL:       return   2.f;
+		case SPELL_NEGATE_MAGIC:          return   2.f;
+		case SPELL_INVISIBILITY:          return   3.f;
+		case SPELL_LIFE_DRAIN:            return   3.f;
+		case SPELL_HEAL:                  return   4.f;
+		case SPELL_FLYING_EYE:            return   4.f;
+		case SPELL_CREATE_FOOD:           return   5.f;
+		case SPELL_DISPELL_ILLUSION:      return   7.f;
+		case SPELL_DISPELL_FIELD:         return   7.f;
+		case SPELL_RUNE_OF_GUARDING:      return   9.f;
+		case SPELL_CURE_POISON:           return  10.f;
+		case SPELL_TELEPORT:              return  10.f;
+		case SPELL_RISE_DEAD:             return  12.f;
+		case SPELL_DISARM_TRAP:           return  15.f;
+		case SPELL_FIRE_FIELD:            return  15.f;
+		case SPELL_ICE_FIELD:             return  15.f;
+		case SPELL_REPEL_UNDEAD:          return  18.f;
+		case SPELL_ENCHANT_WEAPON:        return  35.f;
+		case SPELL_INCINERATE:            return  40.f;
+		case SPELL_CONTROL_TARGET:        return  40.f;
+		case SPELL_EXPLOSION:             return  45.f;
+		case SPELL_FREEZE_TIME:           return  60.f;
+		case SPELL_MASS_INCINERATE:       return 160.f;
+		
+		case SPELL_CONFUSE:               return casterLevel * 0.1f;
+		case SPELL_MAGIC_MISSILE:         return casterLevel * 1.f;
+		case SPELL_ICE_PROJECTILE:        return casterLevel * 1.5f;
+		case SPELL_POISON_PROJECTILE:     return casterLevel * 2.f;
+		case SPELL_FIREBALL:              return casterLevel * 3.f;
+		case SPELL_PARALYSE:              return casterLevel * 3.f;
+		case SPELL_MASS_PARALYSE:         return casterLevel * 3.f;
+		case SPELL_LIGHTNING_STRIKE:      return casterLevel * 6.f;
+		case SPELL_MASS_LIGHTNING_STRIKE: return casterLevel * 8.f;
+		
+		case SPELL_SUMMON_CREATURE:       return (casterLevel < 9) ? 20.f : 80.f;
+		case SPELL_FAKE_SUMMON:           return (casterLevel < 9) ? 20.f : 80.f;
+		
 	}
 }
 
@@ -5503,7 +5341,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_FREEZETIME);
 			
-			spells[i].siz = spells[i].caster_level * 0.08f;
+			float max_slowdown = std::max(0.f, GLOBAL_SLOWDOWN - 0.01f);
+			spells[i].siz = clamp(spells[i].caster_level * 0.08f, 0.f, max_slowdown);
 			GLOBAL_SLOWDOWN -= spells[i].siz;
 			
 			spells[i].exist = true;
@@ -6172,10 +6011,11 @@ void ARX_SPELLS_Update()
 				//**********************************************************************************
 				// LEVEL 10 ------------------------------------------------------------------------
 				//----------------------------------------------------------------------------------
-				case SPELL_FREEZE_TIME:
-						GLOBAL_SLOWDOWN += spells[i].siz;
-					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);					
-				break;
+				case SPELL_FREEZE_TIME: {
+					GLOBAL_SLOWDOWN += spells[i].siz;
+					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);
+					break;
+				}
 				case SPELL_MASS_INCINERATE:
 					ARX_SPELLS_RemoveMultiSpellOn(i);
 					ARX_SOUND_Stop(spells[i].snd_loop);

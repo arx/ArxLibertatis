@@ -161,18 +161,14 @@ long ARX_SPEECH_Add(const string & text, long duration) {
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
-bool CheckLastSpeech(int _iI)
-{
-	for (size_t i = _iI + 1; i < MAX_SPEECH; i++)
-	{
-		if ((speech[i].timecreation != 0) &&
-				(!speech[i].text.empty()))
-		{
+static bool isLastSpeech(size_t index) {
+	
+	for(size_t i = index + 1; i < MAX_SPEECH; i++) {
+		if(speech[i].timecreation != 0 && !speech[i].text.empty()) {
 			return false;
 		}
 	}
-
+	
 	return true;
 }
 
@@ -199,7 +195,8 @@ void ARX_SPEECH_Render() {
 		
 		igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
 		                           ' ' + speech[i].text, Color::white, NULL);
-		if(igrec > iEnd && !CheckLastSpeech(i)) {
+		
+		if(igrec > iEnd && !isLastSpeech(i)) {
 			ARX_SPEECH_MoveUp();
 			break;
 		}
