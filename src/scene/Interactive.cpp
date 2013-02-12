@@ -3146,6 +3146,24 @@ void UpdateIOInvisibility(Entity * io)
 }
 extern Entity * DESTROYED_DURING_RENDERING;
 
+
+
+EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
+	Vec3f tmp = box.vert[14].pos - box.vert[13].pos;
+	Vec3f up  = box.vert[2].pos  - box.vert[1].pos;
+	up += box.vert[3].pos  - box.vert[4].pos;
+	up += box.vert[10].pos - box.vert[9].pos;
+	up += box.vert[11].pos - box.vert[12].pos;
+	up *= 0.25f;
+
+	EERIEMATRIX mat;
+	MatrixSetByVectors(&mat, &up, &tmp);
+	mat._14 = mat._24 = mat._34 = 0.f;
+	mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
+
+	return mat;
+}
+
 //*************************************************************************************
 // Renders Interactive objects.
 // Will render objects between distance "from" (included)
@@ -3261,18 +3279,7 @@ void RenderInter(float from, float to) {
 						}
 
 						if(io->obj->pbox && io->obj->pbox->active) {
-							Vec3f tmp = io->obj->pbox->vert[14].pos - io->obj->pbox->vert[13].pos;
-							Vec3f up = io->obj->pbox->vert[2].pos - io->obj->pbox->vert[1].pos;
-							up += io->obj->pbox->vert[3].pos - io->obj->pbox->vert[4].pos;
-							up += io->obj->pbox->vert[10].pos - io->obj->pbox->vert[9].pos;
-							up += io->obj->pbox->vert[11].pos - io->obj->pbox->vert[12].pos;
-							up *= 0.25f;
-
-							EERIEMATRIX mat;
-							MatrixSetByVectors(&mat, &up, &tmp);
-							mat._14 = mat._24 = mat._34 = 0.f;
-							mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
-
+							EERIEMATRIX mat = convertToMatrixForDrawEERIEInter(*io->obj->pbox);
 							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat);
 						} else {
 							DrawEERIEInter(io->obj, &temp, &io->pos, io);
