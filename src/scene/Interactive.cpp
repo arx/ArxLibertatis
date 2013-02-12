@@ -3157,15 +3157,12 @@ void RenderInter(float from, float to) {
 	float dist;
 	long diff;
 
-	if (entities.player() && (entities.player()->ignition > 0.f))
-	{
+	if(entities.player() && (entities.player()->ignition > 0.f)){
 		ManageIgnition(entities.player());
 	}
 
-	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...
-		
+	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...		
 		Entity * io = entities[i];
-
 		if(io && (io != DRAGINTER) && (io->gameFlags & GFLAG_ISINTREATZONE)) {
 			if(io->show != SHOW_FLAG_IN_SCENE) {
 				continue;
@@ -3175,18 +3172,15 @@ void RenderInter(float from, float to) {
 				continue;
 			}
 			
-			if ((io->obj) &&
-			        (io->obj->pbox) &&
-			        (io->obj->pbox->active))  
-			{
+			if(io->obj && io->obj->pbox && io->obj->pbox->active)
 				dist = fdist(ACTIVECAM->orgTrans.pos, io->obj->pbox->vert[0].pos);
-			}
-			else dist = fdist(ACTIVECAM->orgTrans.pos, io->pos);
+			else
+				dist = fdist(ACTIVECAM->orgTrans.pos, io->pos);
 
-			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
-			{
-			}
-			else if ((dist < from) || (dist >= to)) continue;
+			if(io && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
+			{}
+			else if ((dist < from) || (dist >= to))
+				continue;
 
 			UpdateIOInvisibility(io);
 
@@ -3198,7 +3192,6 @@ void RenderInter(float from, float to) {
 				EERIE_PHYSICS_BOX_Show(io->obj);
 #endif				
 			if(io->animlayer[0].cur_anim) {
-				
 				temp.a = io->angle.a;
 				if(io->ioflags & IO_NPC) {
 					temp.b = MAKEANGLE(180.f - io->angle.b);
@@ -3207,19 +3200,17 @@ void RenderInter(float from, float to) {
 				}
 				temp.g = io->angle.g;
 
-				if (io->animlayer[0].flags & EA_PAUSED)
+				if(io->animlayer[0].flags & EA_PAUSED)
 					diff = 0;
-				else diff = static_cast<long>(FrameDiff);
+				else
+					diff = static_cast<long>(FrameDiff);
 
-				if ((io == FlyingOverIO)
-				        &&	(!(io->ioflags & IO_NPC))
-				        &&	io->obj)
+				if(io == FlyingOverIO && !(io->ioflags & IO_NPC) && io->obj)
 					io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 
 				Vec3f pos = io->pos;
 
-				if (io->ioflags & IO_NPC)
-				{
+				if(io->ioflags & IO_NPC) {
 					ComputeVVPos(io);
 					pos.y = io->_npcdata->vvpos;
 				}
@@ -3228,15 +3219,14 @@ void RenderInter(float from, float to) {
 
 				EERIEDrawAnimQuat(io->obj, &io->animlayer[0], &temp, &pos, diff, io, render);
 
-				if (DESTROYED_DURING_RENDERING)
+				if(DESTROYED_DURING_RENDERING)
 					continue;
 
-				if (io->obj)
+				if(io->obj)
 					io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
-			}
-			else 
-			{
-				if ((!EDITMODE) && (ARX_SCENE_PORTAL_Basic_ClipIO(io))) continue;
+			} else {
+				if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
+					continue;
 				
 				temp.a = io->angle.a;
 				if(io->ioflags & IO_NPC) {
@@ -3246,43 +3236,28 @@ void RenderInter(float from, float to) {
 				}
 				temp.g = io->angle.g;
 				
-				if ((io->ioflags & IO_GOLD) && io->obj)
-				{
-					if (io->_itemdata->price <= 3)
-					{
+				if((io->ioflags & IO_GOLD) && io->obj) {
+					if(io->_itemdata->price <= 3) {
 						io->obj = GoldCoinsObj[io->_itemdata->price-1];
 						io->inv = GoldCoinsTC[io->_itemdata->price-1];
-					}
-					else if (io->_itemdata->price <= 8)
-					{
+					} else if(io->_itemdata->price <= 8) {
 						io->obj = GoldCoinsObj[3];
 						io->inv = GoldCoinsTC[3];
-					}
-					else if (io->_itemdata->price <= 20)
-					{
+					} else if(io->_itemdata->price <= 20) {
 						io->obj = GoldCoinsObj[4];
 						io->inv = GoldCoinsTC[4];
-					}
-					else if (io->_itemdata->price <= 50)
-					{
+					} else if(io->_itemdata->price <= 50) {
 						io->obj = GoldCoinsObj[5];
 						io->inv = GoldCoinsTC[5];
-					}
-					else
-					{
+					} else {
 						io->obj = GoldCoinsObj[6];
 						io->inv = GoldCoinsTC[6];
 					}
 				}
 
-				if ((!(io->ioflags & IO_NPC))
-				        ||	(EDITMODE))
-				{
-					if (io->obj)
-					{
-						if ((io == FlyingOverIO)
-						        &&	(!(io->ioflags & IO_NPC)))
-						{
+				if(!(io->ioflags & IO_NPC) || EDITMODE) {
+					if(io->obj) {
+						if(io == FlyingOverIO&& !(io->ioflags & IO_NPC)) {
 							io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 						}
 
@@ -3300,22 +3275,19 @@ void RenderInter(float from, float to) {
 							mat._41 = mat._42 = mat._43 = mat._44 = 0.f;
 
 							DrawEERIEInter(io->obj, NULL, &io->pos, io, &mat);
-						}
-						else
-						{
+						} else {
 							DrawEERIEInter(io->obj, &temp, &io->pos, io);
 						}
 
-						if (DESTROYED_DURING_RENDERING)
+						if(DESTROYED_DURING_RENDERING)
 							continue;
 
 						io->obj->drawflags &= ~DRAWFLAG_HIGHLIGHT;
-
 					}
 				}
 			}
 
-			if ((io->ignition > 0.f) || (io->ioflags & IO_FIERY))
+			if(io->ignition > 0.f || (io->ioflags & IO_FIERY))
 				ManageIgnition(io);
 
 			if(EDITMODE) {
