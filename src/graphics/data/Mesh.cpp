@@ -176,16 +176,10 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
 }
 
 void EE_RT(TexturedVertex * in, Vec3f * out);
+void EE_P(Vec3f * in, TexturedVertex * out);
 void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	EE_RT(in, &out->p);
-	
-	EERIE_TRANSFORM *et = &ACTIVECAM->orgTrans;
-	float fZTemp = 1.f / out->p.z;
-	out->p.z = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; //HYPERBOLIC
-	
-	out->p.x = out->p.x * ProjectionMatrix._11 * fZTemp + et->mod.x;
-	out->p.y = out->p.y * ProjectionMatrix._22 * fZTemp + et->mod.y;
-	out->rhw = fZTemp;
+	EE_P(&out->p, out);
 }
 
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
