@@ -911,9 +911,8 @@ void CreatePlane(EERIE_FRUSTRUM * frustrum,long numplane,Vec3f * orgn,Vec3f * pt
 
 	
 }
-void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum);
+
 void CreateFrustrum(EERIE_FRUSTRUM *frustrum, EERIEPOLY *ep, bool cull) {
-		
 	if(cull) {
 		CreatePlane(frustrum, 0, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[1].p);
 		CreatePlane(frustrum, 1, &ACTIVECAM->orgTrans.pos, &ep->v[3].p, &ep->v[2].p);
@@ -926,7 +925,6 @@ void CreateFrustrum(EERIE_FRUSTRUM *frustrum, EERIEPOLY *ep, bool cull) {
 		CreatePlane(frustrum, 3, &ACTIVECAM->orgTrans.pos, &ep->v[0].p, &ep->v[2].p);
 	}
 }
-
 
 void Util_SetViewMatrix(EERIEMATRIX & mat) {
 
