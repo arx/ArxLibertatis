@@ -3171,13 +3171,7 @@ void RenderInter(float from, float to) {
 		
 		Entity * io = entities[i];
 
-		if ((io)
-		        &&	(io != DRAGINTER)
-		        &&	(io->gameFlags & GFLAG_ISINTREATZONE))
-		{
-			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
-			        && (Book_Mode == BOOKMODE_STATS)) continue;
-			
+		if(io && (io != DRAGINTER) && (io->gameFlags & GFLAG_ISINTREATZONE)) {
 			if(io->show != SHOW_FLAG_IN_SCENE) {
 				continue;
 			}
