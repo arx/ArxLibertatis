@@ -389,7 +389,7 @@ public:
 	res::path full_name() const;
 	
 	//! @return the index of this Entity in the EntityManager
-	size_t index() const { return index_; }
+	size_t index() const { return m_index; }
 	
 	/*!
 	 * Marks the entity as destroyed.
@@ -404,16 +404,16 @@ public:
 	 *
 	 * @return the full path to this entity's class
 	 */
-	const res::path & classPath() const { return classPath_; }
+	const res::path & classPath() const { return m_classPath; }
 	
 private:
 	
 	//! Remove any remaining references to this entity.
 	void cleanReferences();
 	
-	const size_t index_; //!< index of this Entity in the EntityManager
+	size_t m_index; //!< index of this Entity in the EntityManager
 	
-	const res::path classPath_; //!< the full path to this entity's class
+	const res::path m_classPath; //!< the full path to this entity's class
 	
 };
 

@@ -481,7 +481,7 @@ bool ArxGame::addPaks() {
 		oss << ".\n\nSearched in these locations:\n";
 		std::vector<fs::path> search = fs::paths.getSearchPaths();
 		BOOST_FOREACH(const fs::path & dir, search) {
-			oss << " * " << dir.string() << "/\n";
+			oss << " * " << dir.string() << fs::path::dir_sep << "\n";
 		}
 		oss << "\nSee  " << url::help_get_data;
 		oss << "  and  " << url::help_install_data << "\n";

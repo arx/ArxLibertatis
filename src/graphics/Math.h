@@ -51,6 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/static_assert.hpp>
 
 using std::min;
@@ -331,51 +332,8 @@ inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);
 }
 
-struct _checked_range_cast {
-	
-	const char * file;
-	size_t line;
-	
-	_checked_range_cast(const char * _file, size_t _line) : file(_file), line(_line) { }
-	
-	template <class T, class V>
-	T cast(V value) {
-		check(in_range<T>(value), value);
-		return static_cast<T>(value);
-	}
-	
-private:
-	
-	template <class T>
-	static T min(T t) { ARX_UNUSED(t); return std::numeric_limits<T>::min(); }
-	static float min(float t) { ARX_UNUSED(t); return -std::numeric_limits<float>::max(); }
-	static double min(double t) { ARX_UNUSED(t); return -std::numeric_limits<double>::max(); }
-	
-	template <class T, class V>
-	static bool in_range(V value) {
-		return value >= min(T(0)) && value <= std::numeric_limits<T>::max();
-	}
-	
-	void check(bool in_range, unsigned long v) {
-		arx_assert_impl(in_range, file, line, "value is %lu", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
-	}
-	void check(bool in_range, long v) {
-		arx_assert_impl(in_range, file, line, "value is %ld", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
-	}
-	void check(bool in_range, unsigned int v) {
-		arx_assert_impl(in_range, file, line, "value is %u", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
-	}
-	void check(bool in_range, int v) {
-		arx_assert_impl(in_range, file, line, "value is %d", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
-	}
-	void check(bool in_range, double v) {
-		arx_assert_impl(in_range, file, line, "value is %f", v); ARX_UNUSED(v), ARX_UNUSED(in_range);
-	}
-	
-};
-
 #ifdef _DEBUG
-#define checked_range_cast _checked_range_cast(__FILE__, __LINE__).cast
+#define checked_range_cast boost::numeric_cast
 #else
 #define checked_range_cast static_cast
 #endif

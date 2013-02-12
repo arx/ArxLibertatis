@@ -326,6 +326,10 @@ if(NOT MSVC)
 		add_cxxflag("-std=c++11")
 	endif()
 	
+	# Don't expose internal symbols to the outside world by default
+	add_cxxflag("-fvisibility=hidden")
+	add_cxxflag("-fvisibility-inlines-hidden")
+	
 	# Define _POSIX_C_SOURCE and _XOPEN_SOURCE for GNU systems
 	if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "GNU"
 	   OR ${CMAKE_SYSTEM_NAME} MATCHES "kFreeBSD")
