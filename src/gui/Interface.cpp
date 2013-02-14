@@ -5160,10 +5160,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		if ((Book_Mode==BOOKMODE_SPELLS) || (Book_Mode==BOOKMODE_MINIMAP))
 		{
-			if (bOnglet[1])
-			{
-				if (Book_Page!=1) 
-				{
+			if(bOnglet[1]) {
+				if(Book_Page!=1) {
 					float px=100.f;
 					float py=82.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py);
@@ -5174,36 +5172,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(ITC.Get("accessible_1"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=1;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
-				} else {
-					DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 				}
+				else DrawBookInterfaceItem(ITC.Get("current_1"), 102.f, 82.f);
 			}
 
-			if (bOnglet[2])
-			{
-				if (Book_Page!=2) 
-				{
+			if(bOnglet[2]) {
+				if(Book_Page!=2) {
 					float px=98.f;
 					float py=112.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py);
 
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
+					if(MouseInBookRect(px, py, px + 32, py + 32)) {
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						DrawBookInterfaceItem(ITC.Get("accessible_2"), px, py, Color::grayb(0x55));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
+						if(bookclick.x != -1) {
 							Book_Page=2;
 							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
@@ -5212,10 +5202,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_2"), 100.f, 114.f);
 			}
 
-			if (bOnglet[3])
-			{
-				if (Book_Page!=3) 
-				{
+			if(bOnglet[3]) {
+				if(Book_Page!=3) {
 					float px=97.f;
 					float py=143.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_3"), px, py);
@@ -5235,10 +5223,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_3"), 101.f, 141.f);
 			}
 
-			if (bOnglet[4])
-			{
-				if (Book_Page!=4)
-				{
+			if(bOnglet[4]) {
+				if(Book_Page!=4) {
 					float px=95.f;
 					float py=170.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_4"), px, py);
@@ -5258,10 +5244,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_4"), 100.f, 170.f);
 			}
 
-			if (bOnglet[5])
-			{
-				if (Book_Page!=5) 
-				{
+			if(bOnglet[5]) {
+				if(Book_Page!=5) {
 					float px=95.f;
 					float py=200.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_5"), px, py);
@@ -5281,10 +5265,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_5"), 97.f, 199.f);
 			}
 
-			if (bOnglet[6])
-			{
-				if (Book_Page!=6) 
-				{
+			if(bOnglet[6]) {
+				if(Book_Page!=6) {
 					float px=94.f;
 					float py=229.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_6"), px, py);
@@ -5304,10 +5286,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_6"), 103.f, 226.f);
 			}
 
-			if (bOnglet[7])
-			{
-				if (Book_Page!=7)
-				{
+			if(bOnglet[7]) {
+				if(Book_Page!=7) {
 					float px=94.f;
 					float py=259.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_7"), px, py);
@@ -5327,10 +5307,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_7"), 101.f, 255.f);
 			}
 
-			if (bOnglet[8])
-			{
-				if (Book_Page!=8) 
-				{
+			if(bOnglet[8]) {
+				if(Book_Page!=8) {
 					float px=92.f;
 					float py=282.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_8"), px, py);
@@ -5350,10 +5328,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_8"), 99.f, 283.f);
 			}
 
-			if (bOnglet[9])
-			{
-				if (Book_Page!=9) 
-				{
+			if(bOnglet[9]) {
+				if(Book_Page!=9) {
 					float px=90.f;
 					float py=308.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_9"), px, py);
@@ -5373,10 +5349,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				else DrawBookInterfaceItem(ITC.Get("current_9"), 99.f, 307.f);
 			}
 
-			if (bOnglet[10])
-			{
-				if (Book_Page!=10) 
-				{
+			if (bOnglet[10]) {
+				if (Book_Page!=10) {
 					float px=97.f;
 					float py=331.f;
 					DrawBookInterfaceItem(ITC.Get("accessible_10"), px, py);
