@@ -1506,12 +1506,8 @@ void ClearTileLights() {
 	}
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
-{
-
-	
+void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA *frustrums, long prec, long tim) {
 	if(RoomDraw[room_num].count) {
-		
 		if(!portals->room[room_num].pVertexBuffer) {
 			// No need to spam this for every frame as there will already be an
 			// earlier warning
@@ -1527,13 +1523,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 		EERIEPOLY * ep;
 		EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
 
-		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++)
-		{
-
+		for(long lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++) {
 			feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
 
-			if (!feg->treat)
-			{
+			if(!feg->treat) {
 				long ix=max(0,pEPDATA->px-1);
 				long ax=min(ACTIVEBKG->Xsize-1,pEPDATA->px+1);
 				long iz=max(0,pEPDATA->py-1);
@@ -1544,14 +1537,11 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				(void)checked_range_cast<short>(az);
 				(void)checked_range_cast<short>(ax);
 
-				for (long nz=iz;nz<=az;nz++)
-				for (long nx=ix;nx<=ax;nx++)
-
-				{
+				for(long nz=iz; nz<=az; nz++)
+				for(long nx=ix; nx<=ax; nx++) {
 					FAST_BKG_DATA * feg2 = &ACTIVEBKG->fastdata[nx][nz];
 
-					if (!feg2->treat)
-					{
+					if(!feg2->treat) {
 						feg2->treat=1;
 						ComputeTileLights(static_cast<short>(nx), static_cast<short>(nz));
 					}
@@ -1560,26 +1550,22 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			ep=&feg->polydata[pEPDATA->idx];
 
-			if	(!ep->tex)
-			{
+			if(!ep->tex) {
 				continue;
 			}
 
-			if (ep->type & (POLY_IGNORE | POLY_NODRAW| POLY_HIDE))
-			{
+			if(ep->type & (POLY_IGNORE | POLY_NODRAW| POLY_HIDE)) {
 				continue;
 			}
 			
-			if (FrustrumsClipPoly(frustrums,ep))
-			{
+			if(FrustrumsClipPoly(frustrums,ep)) {
 				continue;
 			}
 
 			//Clipp ZNear + Distance pour les ZMapps!!!
 			float fDist=(ep->center.x*efpPlaneNear.a + ep->center.y*efpPlaneNear.b + ep->center.z*efpPlaneNear.c + efpPlaneNear.d);
 
-			if(ep->v[0].rhw<-fDist)
-			{
+			if(ep->v[0].rhw<-fDist) {
 				continue;
 			}
 
@@ -1587,8 +1573,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 
 			Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 			int to;
-			if(ep->type&POLY_QUAD)
-			{
+			if(ep->type&POLY_QUAD) {
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
 					(dot( ep->norm , nrm )>0.f)&&
 					(dot( ep->norm2 , nrm )>0.f) )
@@ -1597,9 +1582,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 				}
 
 				to=4;
-			}
-			else
-			{
+			} else {
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
 					(dot( ep->norm , nrm )>0.f) )
 				{
@@ -1612,8 +1595,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 			unsigned short *pIndicesCurr;
 			unsigned long *pNumIndices;
 
-			if(ep->type&POLY_TRANS)
-			{
+			if(ep->type & POLY_TRANS) {
 				if(ep->transval>=2.f) { //MULTIPLICATIVE
 					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TMultiplicative+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
 					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative;
@@ -1627,16 +1609,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 					pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull_TSubstractive+ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
 					pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull_TSubstractive;
 				}
-			}
-			else
-			{
+			} else {
 				pIndicesCurr=pIndices+ep->tex->tMatRoom[room_num].uslStartCull+ep->tex->tMatRoom[room_num].uslNbIndiceCull;
 				pNumIndices=&ep->tex->tMatRoom[room_num].uslNbIndiceCull;
 				
-				if(ZMAPMODE)
-				{
-					if((fDist<200)&&(ep->tex->TextureRefinement))
-					{
+				if(ZMAPMODE) {
+					if((fDist<200)&&(ep->tex->TextureRefinement)) {
 						ep->tex->TextureRefinement->vPolyZMap.push_back(ep);
 					}
 				}
@@ -1696,11 +1674,8 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						if(to&4) {
 							pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
 						}
-					}
-					else
-					{
-						if((FRAME_COUNT<=0)&&(!(ep->type&POLY_TRANS)))
-						{
+					} else {
+						if((FRAME_COUNT<=0)&&(!(ep->type&POLY_TRANS))) {
 							if(ModeLight & MODE_DYNAMICLIGHT)
 							{
 									ApplyDynLight_VertexBuffer_2(	ep,pEPDATA->px,pEPDATA->py,
@@ -1709,22 +1684,18 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 																ep->uslInd[1],
 																ep->uslInd[2],
 																ep->uslInd[3]);								
-								}
-							else
-							{
-										pMyVertexCurr[ep->uslInd[0]].color=ep->v[0].color;
-										pMyVertexCurr[ep->uslInd[1]].color=ep->v[1].color;
-										pMyVertexCurr[ep->uslInd[2]].color=ep->v[2].color;
+							} else {
+								pMyVertexCurr[ep->uslInd[0]].color=ep->v[0].color;
+								pMyVertexCurr[ep->uslInd[1]].color=ep->v[1].color;
+								pMyVertexCurr[ep->uslInd[2]].color=ep->v[2].color;
 
-									if(to&4)
-									{
-											pMyVertexCurr[ep->uslInd[3]].color=ep->v[3].color;
-										}
-									}
+								if(to&4) {
+									pMyVertexCurr[ep->uslInd[3]].color=ep->v[3].color;
 								}
+							}
+						}
 
-						if(ep->type&POLY_WATER)
-						{
+						if(ep->type&POLY_WATER) {
 							ManageWater_VertexBuffer(ep,to,tim,pMyVertexCurr);
 							vPolyWater.push_back(ep);
 						}
@@ -1775,15 +1746,13 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA 
 						long lfb = fb;
 				
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
-					
 					}
 
 					pMyVertexCurr[ep->uslInd[0]].color=ep->tv[0].color;
 					pMyVertexCurr[ep->uslInd[1]].color=ep->tv[1].color;
 					pMyVertexCurr[ep->uslInd[2]].color=ep->tv[2].color;
 
-					if(to&4)
-					{
+					if(to&4) {
 						pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
 					}
 				}
