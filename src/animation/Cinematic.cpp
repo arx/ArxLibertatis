@@ -469,10 +469,6 @@ void Cinematic::Render(float FDIFF) {
 
 		int alpha = ((int)(a * 255.f)) << 24;
 
-		int stopline = tb->nbx;
-
-		if (stopline & 1) stopline++;
-
 		if (force ^ 1) alpha = 0xFF000000;
 
 		col |= alpha;
