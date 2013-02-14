@@ -2201,10 +2201,10 @@ void ARX_SCENE_Render() {
 			long lprec = checked_range_cast<long>(prec);
 			EERIE_FRUSTRUM frustrum;
 			CreateScreenFrustrum(&frustrum);
-			ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
+			ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum, lprec, tim);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			for(long i=0;i<NbRoomDrawList;i++) {
-				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
+				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, lprec, tim);
 			}
 		}
 	} else {
