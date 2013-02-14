@@ -926,16 +926,16 @@ void CreateFrustrum(EERIE_FRUSTRUM *frustrum, EERIEPOLY *ep, bool cull) {
 	}
 }
 
-void Util_SetViewMatrix(EERIEMATRIX & mat) {
+void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 
-	Vec3f vFrom(ACTIVECAM->orgTrans.pos.x, -ACTIVECAM->orgTrans.pos.y, ACTIVECAM->orgTrans.pos.z);
+	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
 	Vec3f vTout(0.0f, 0.0f, 10000.0f);
 
 	Vec3f vView;
-	vView.y = -(vTout.z * ACTIVECAM->orgTrans.xsin);
-	vView.z = -(vTout.z * ACTIVECAM->orgTrans.xcos);
-	vView.x =  (vView.z * ACTIVECAM->orgTrans.ysin);
-	vView.z = -(vView.z * ACTIVECAM->orgTrans.ycos);
+	vView.y = -(vTout.z * transform.xsin);
+	vView.z = -(vTout.z * transform.xcos);
+	vView.x =  (vView.z * transform.ysin);
+	vView.z = -(vView.z * transform.ycos);
 
 	Vec3f vWorldUp(0.f, 1.f, 0.f);
 
@@ -996,7 +996,7 @@ void Util_SetViewMatrix(EERIEMATRIX & mat) {
 void CreateScreenFrustrum(EERIE_FRUSTRUM * frustrum) {
 	
 	EERIEMATRIX tempViewMatrix;
-	Util_SetViewMatrix(tempViewMatrix);
+	Util_SetViewMatrix(tempViewMatrix, ACTIVECAM->orgTrans);
 	GRenderer->SetViewMatrix(tempViewMatrix);
 	
 	EERIEMATRIX matProj;
