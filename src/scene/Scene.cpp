@@ -751,31 +751,24 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 			
 void ARX_PORTALS_InitDrawnRooms()
 {
-	if (!portals) return;
+	arx_assert(portals);
 
 	EERIE_PORTALS *ep = &portals->portals[0];
 
-	for (long i=0;i<portals->nb_total;i++)
-	{
+	for(long i=0;i<portals->nb_total;i++) {
 		ep->useportal=0;
 		ep++;
 	}
 
-
-	if ((RoomDraw==NULL) || (NbRoomDraw<portals->nb_rooms+1))
-	{
-		RoomDraw=(PORTAL_ROOM_DRAW *)realloc(RoomDraw,sizeof(PORTAL_ROOM_DRAW)*(portals->nb_rooms+1));
+	if(RoomDraw==NULL || NbRoomDraw < portals->nb_rooms+1) {
+		RoomDraw = (PORTAL_ROOM_DRAW *)realloc(RoomDraw, sizeof(PORTAL_ROOM_DRAW)*(portals->nb_rooms+1));
 
 		if (RoomDraw)
-		{
-			NbRoomDraw=portals->nb_rooms+1;
-		}
+			NbRoomDraw = portals->nb_rooms+1;
 	}
 
-	if (RoomDraw)
-	{
-		for (long i=0;i<NbRoomDraw;i++)
-		{
+	if(RoomDraw) {
+		for(long i=0; i<NbRoomDraw; i++) {
 			RoomDraw[i].count=0;		
 			RoomDraw[i].flags=0;
 			RoomDraw[i].frustrum.nb_frustrums=0;
@@ -789,8 +782,8 @@ void ARX_PORTALS_InitDrawnRooms()
 		pDynamicVertexBuffer->vb->setData(NULL, 0, 0, DiscardBuffer);
 		dynamicVertices.reset();
 	}
-	
 }
+
 bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 {
 	EERIE_2D_BBOX n_bbox;
