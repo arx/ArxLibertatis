@@ -1524,13 +1524,12 @@ void ArxGame::renderLevel() {
 	{
 		float restore=ACTIVECAM->orgTrans.use_focal;
 
-		if ((!EXTERNALVIEW) && (!BOW_FOCAL))
-		{
-			ACTIVECAM->orgTrans.use_focal=PLAYER_ARMS_FOCAL*Xratio;
-		}
+		if(!EXTERNALVIEW) {
+			if(!BOW_FOCAL)
+				ACTIVECAM->orgTrans.use_focal=PLAYER_ARMS_FOCAL*Xratio;
 
-		if (!EXTERNALVIEW)
 			FORCE_FRONT_DRAW=1;
+		}
 
 		if (entities.player()->invisibility>0.9f) entities.player()->invisibility=0.9f;
 
