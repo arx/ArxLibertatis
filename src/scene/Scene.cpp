@@ -2040,13 +2040,8 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 
 		Vec3f pos = epp->center - ACTIVECAM->orgTrans.pos;
 		float fRes = dot(pos, epp->norm);
-		long ret=1;
-		if(IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
-			ret=0;
-		}
 
-		if (ret) 
-		{
+		if(!IsSphereInFrustrum(epp->v[0].rhw, &epp->center, frustrum)) {
 			EERIERTPPoly2(epp);
 			continue;
 		}
