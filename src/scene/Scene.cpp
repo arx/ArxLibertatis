@@ -230,18 +230,16 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 		}
 	}
 	
-	if (ep->type & POLY_FALL)
-	{
-		if (ep->type & POLY_LAVA)
-			for (long k=0;k<to;k++) 
-			{
-				ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 12000 );
-			}
-			else
-				for (long k=0;k<to;k++) 
-				{
-					ep->tv[k].uv.y-=(float)(tim)*( 1.0f / 1000 );
-				}
+	if (ep->type & POLY_FALL) {
+		float scale;
+		if(ep->type & POLY_LAVA)
+			scale = (1.0f / 12000);
+		else
+			scale = (1.0f / 1000);
+
+		for(long k=0; k<to; k++) {
+			ep->tv[k].uv.y-=(float)(tim)*scale;
+		}
 	}
 }
 
