@@ -1169,9 +1169,7 @@ void ArxGame::handlePlayerDeath() {
 		}
 
 		SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
-		subj.orgTrans.pos.x=conversationcamera.orgTrans.pos.x;
-		subj.orgTrans.pos.y=conversationcamera.orgTrans.pos.y;
-		subj.orgTrans.pos.z=conversationcamera.orgTrans.pos.z;
+		subj.orgTrans.pos=conversationcamera.orgTrans.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g = 0;
