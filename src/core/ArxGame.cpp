@@ -1519,9 +1519,7 @@ void ArxGame::renderLevel() {
 	}
 
 	// NOW DRAW the player (Really...)
-	if ( (entities.player())
-		&& (entities.player()->animlayer[0].cur_anim) )
-	{
+	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		float restore=ACTIVECAM->orgTrans.use_focal;
 
 		if(!EXTERNALVIEW) {
