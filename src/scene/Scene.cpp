@@ -424,32 +424,29 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 				&&	(RoomDraw)
 				&&	(RoomDraw[room_num].count))
 			{
+					float yOffset = 0.f;
+					float radius = 0.f;
+					if(io->ioflags & IO_ITEM) {
+						yOffset = -40.f;
+						if(io->ioflags & IO_MOVABLE)
+							radius = 160.f;
+						else
+							radius = 75.f;
+					} else if(io->ioflags & IO_FIX) {
+						yOffset = -60.f;
+						radius = 340.f;
+					} else if(io->ioflags & IO_NPC) {
+						yOffset = -120.f;
+						radius = 120.f;
+					}
 
 					EERIE_SPHERE sphere;
 
-					if (io->ioflags & IO_ITEM)
-					{
+					if(radius != 0.f) {
 						sphere.origin.x=io->pos.x;
-						sphere.origin.y=io->pos.y-40.f;
+						sphere.origin.y=io->pos.y + yOffset;
 						sphere.origin.z=io->pos.z;
-
-						if (io->ioflags & IO_MOVABLE)
-							sphere.radius=160.f;
-							else sphere.radius = 75.f; 
-					}
-					else if (io->ioflags & IO_FIX)
-					{
-						sphere.origin.x=io->pos.x;
-						sphere.origin.y=io->pos.y-60.f;
-						sphere.origin.z=io->pos.z;
-						sphere.radius=340.f;
-					}
-					else if (io->ioflags & IO_NPC)
-					{
-						sphere.origin.x=io->pos.x;
-						sphere.origin.y=io->pos.y-120.f;
-						sphere.origin.z=io->pos.z;
-						sphere.radius=120.f;
+						sphere.radius=radius;
 					}
 						
 					EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
