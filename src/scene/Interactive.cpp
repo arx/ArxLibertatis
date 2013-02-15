@@ -529,15 +529,15 @@ void TREATZONE_AddIO(Entity * io, long flag)
 
 void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 {
-	if ((io)
-	        &&	(io->animlayer[num].cur_anim)
-	        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
-			&&	distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(2500.f))
+	arx_assert(io);
+
+	if( io->animlayer[num].cur_anim &&
+		!(io->gameFlags & GFLAG_ISINTREATZONE) &&
+		distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(2500.f))
 	{
 
 		io->animlayer[num].ctime =
 		    checked_range_cast<long>(io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1.f);
-
 	}
 }
 
