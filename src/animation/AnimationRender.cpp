@@ -2428,8 +2428,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 	TILE_LIGHTS * tls = &tilelights[_x][_y];
 	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-	if (tls->num == 0)
-	{
+	if(tls->num == 0) {
 		_pVertex[_usInd0].color = ep->v[0].color;
 		ep->tv[0].color         = ep->v[0].color;
 		_pVertex[_usInd1].color = ep->v[1].color;
@@ -2437,8 +2436,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		_pVertex[_usInd2].color = ep->v[2].color;
 		ep->tv[2].color         = ep->v[2].color;
 
-		if (nbvert & 4)
-		{
+		if(nbvert & 4) {
 			_pVertex[_usInd3].color = ep->v[3].color;
 			ep->tv[3].color         = ep->v[3].color;
 		}
@@ -2451,25 +2449,20 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 	float epg[4];
 	float epb[4];
 	
-	for (i = 0; i < nbvert; i++)
-	{
+	for(i = 0; i < nbvert; i++) {
 		long c = ep->v[i].color;
 		epr[i] = (float)(long)((c >> 16) & 255);
 		epg[i] = (float)(long)((c >> 8) & 255);
 		epb[i] = (float)(long)(c & 255);
 	}
 
-	for (i = 0; i < tls->num; i++)
-	{
+	for(i = 0; i < tls->num; i++) {
 		EERIE_LIGHT * el = tls->el[i];
 	
-		for (j = 0; j < nbvert; j++)
-		{
-		
+		for (j = 0; j < nbvert; j++) {
 			float d = fdist(el->pos, ep->v[j].p);
 
-			if (d < el->fallend)
-			{
+			if (d < el->fallend) {
 				float nvalue;
 				
 				nvalue =	((el->pos.x - ep->v[j].p.x) * ep->nrml[j].x
@@ -2477,31 +2470,21 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 				             +	(el->pos.z - ep->v[j].p.z) * ep->nrml[j].z
 				         ) * 0.5f / d; 
 				
-				if (nvalue > 0.f)
-				{
-					if (d <= el->fallstart)
-					{
-						
+				if (nvalue > 0.f) {
+					if (d <= el->fallstart) {
 						d = el->precalc * nvalue; 
-					}
-					else
-					{
+					} else {
 						d -= el->fallstart;
-					
 						d = (el->falldiff - d) * el->falldiffmul * el->precalc * nvalue; 
 					}
-
 					epr[j] += el->rgb255.r * d;
-
 					epg[j] += el->rgb255.g * d;
-
 					epb[j] += el->rgb255.b * d;
 				}
 			}
 			else if (d > el->fallend + 100.f)
 				break;
-		}
-		
+		}	
 	}
 
 	long lepr, lepg, lepb;
