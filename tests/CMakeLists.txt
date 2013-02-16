@@ -17,3 +17,10 @@ add_executable(math
 )
 
 target_link_libraries(math cppunit)
+
+add_executable(arxtest
+        ../src/graphics/GraphicsUtility.cpp
+        graphics/GraphicsUtilityTest.cpp
+)
+
+target_link_libraries(arxtest cppunit)
