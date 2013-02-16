@@ -11,16 +11,12 @@ include_directories(
 	../src
 )
 
-add_executable(math 
-	math/vectors.cpp 
-	../src/graphics/Math.cpp 
-)
-
-target_link_libraries(math cppunit)
-
 add_executable(arxtest
+        testMain.cpp
         ../src/graphics/GraphicsUtility.cpp
         graphics/GraphicsUtilityTest.cpp
+        math/vectors.cpp
+        ../src/graphics/Math.cpp
 )
 
 target_link_libraries(arxtest cppunit)
