@@ -88,4 +88,24 @@ void GraphicsUtilityTest::runTest() {
 	  expected._42 = 200;
 	  expected._43 = -3000;
 	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
-  }
+
+	  transform.updateFromAngle(Anglef(45.f, -45.f, 0.f));
+	  Util_SetViewMatrix(matrix, transform);
+	  expected._11 = 0.707106709f;
+	  expected._12 = 0.5f;
+	  expected._13 = 0.5f;
+	  expected._14 = 0.f;
+	  expected._21 = 1.49011612e-08f;
+	  expected._22 = 0.707106769f;
+	  expected._23 = -0.707106769f;
+	  expected._24 = 0.f;
+	  expected._31 = -0.707106769f;
+	  expected._32 = 0.49999997f;
+	  expected._33 = 0.49999994f;
+	  expected._34 = 0.f;
+	  expected._41 = 2114.24927f;
+	  expected._42 = -1363.57849f;
+	  expected._43 = -1646.42126f;
+	  expected._44 = 1.f;
+	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+}
