@@ -221,11 +221,10 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 	{
 		for(long k = 0; k < to; k++) {
 			ep->tv[k].uv = ep->v[k].uv;
+
+			ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
 			if(ep->type & POLY_LAVA) {
-				ApplyWaterFXToVertex(&ep->v[k].p, &ep->tv[k], 0.35f); 
 				ApplyLavaGlowToVertex(&ep->v[k].p,&ep->tv[k],0.6f);
-			} else {
-				ApplyWaterFXToVertex(&ep->v[k].p,&ep->tv[k],0.35f);
 			}
 		}
 	}
