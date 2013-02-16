@@ -49,7 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
 
 	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
-	Vec3f vTout(0.0f, 0.0f, 10000.0f);
+	Vec3f vTout(0.0f, 0.0f, 1.0f);
 
 	Vec3f vView;
 	vView.y = -(vTout.z * transform.xsin);
