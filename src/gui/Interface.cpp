@@ -7342,11 +7342,10 @@ long Manage3DCursor(long flags)
 
 					VRotateY(&objcenter,temp.b);
 
-					if(maxdist < 15.f)maxdist = 15.f;
-					if(maxdist > 150.f)maxdist = 150.f;
+					clamp(maxdist, 15.f, 150.f);
 
 					bool bCollidposNoInit = true;
-					Vec3f		collidpos = Vec3f::ZERO;
+					Vec3f           collidpos   = Vec3f::ZERO;
 					EERIE_CYLINDER	cyl2;
 					float			inc			=	10.f;
 					long			iterating	=	40;
@@ -7412,9 +7411,7 @@ long Manage3DCursor(long flags)
 							}
 
 							if(SPECIAL_DRAGINTER_RENDER) {
-							if (((lastanything<0.f) && (EEfabs(lastanything)>EEfabs(height)))
-								|| (lastanything>EEfabs(height)))
-							{
+							if( (lastanything<0.f && EEfabs(lastanything) > EEfabs(height)) || lastanything > EEfabs(height)){
 								io->invisibility = 0.5f;
 								DrawEERIEInter(io->obj,&temp,&collidpos,io);
 								io->invisibility=old;
@@ -7428,8 +7425,7 @@ long Manage3DCursor(long flags)
 							PrecalcIOLighting(NULL,0,1);
 							FRAME_COUNT=iOldFrameCount;
 
-							if (!SPECIAL_DRAGINTER_RENDER && !DESTROYED_DURING_RENDERING)
-							{
+							if(!SPECIAL_DRAGINTER_RENDER && !DESTROYED_DURING_RENDERING){
 								io->obj->drawflags&=~DRAWFLAG_HIGHLIGHT;
 
 								if (io->ignition>0.f)
