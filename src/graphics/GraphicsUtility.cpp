@@ -45,3 +45,70 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 
 #include "graphics/GraphicsUtility.h"
+
+void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform) {
+
+	Vec3f vFrom(transform.pos.x, -transform.pos.y, transform.pos.z);
+	Vec3f vTout(0.0f, 0.0f, 10000.0f);
+
+	Vec3f vView;
+	vView.y = -(vTout.z * transform.xsin);
+	vView.z = -(vTout.z * transform.xcos);
+	vView.x =  (vView.z * transform.ysin);
+	vView.z = -(vView.z * transform.ycos);
+
+	Vec3f vWorldUp(0.f, 1.f, 0.f);
+
+	// Normalize the z basis vector
+	float fLength = vView.normalize();
+
+	if (fLength < 1e-6f)
+		return;
+
+	// Get the dot product, and calculate the projection of the z basis
+	// vector onto the up vector. The projection is the y basis vector.
+	float fDotProduct = dot(vWorldUp, vView);
+
+	Vec3f vUp = vWorldUp - vView * fDotProduct;
+
+	// If this vector has near-zero length because the input specified a
+	// bogus up vector, let's try a default up vector
+	if (1e-6f > (fLength = vUp.length()))
+	{
+		vUp = Vec3f::Y_AXIS - vView * vView.y;
+
+		// If we still have near-zero length, resort to a different axis.
+		if (1e-6f > (fLength = vUp.length()))
+		{
+			vUp = Vec3f::Z_AXIS - vView * vView.z;
+
+			if (1e-6f > (fLength = vUp.length()))
+				return;
+		}
+	}
+
+	// Normalize the y basis vector
+	vUp /= fLength;
+
+	// The x basis vector is found simply with the cross product of the y
+	// and z basis vectors
+	Vec3f vRight = cross(vUp, vView);
+
+	// Start building the matrix. The first three rows contains the basis
+	// vectors used to rotate the view to point at the lookat point
+	mat._11 = vRight.x;
+	mat._12 = vUp.x;
+	mat._13 = vView.x;
+	mat._21 = vRight.y;
+	mat._22 = vUp.y;
+	mat._23 = vView.y;
+	mat._31 = vRight.z;
+	mat._32 = vUp.z;
+	mat._33 = vView.z;
+
+	// Do the translation values (rotations are still about the eyepoint)
+	mat._41 = -dot(vFrom, vRight);
+	mat._42 = -dot(vFrom, vUp);
+	mat._43 = -dot(vFrom, vView);
+	mat._44 = 1.0f;
+}
