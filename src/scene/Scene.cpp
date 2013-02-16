@@ -548,22 +548,19 @@ bool ARX_SCENE_PORTAL_ClipIO(Entity * io, Vec3f * position) {
 
 long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 {
-	
 	EERIEPOLY * ep; 
 
-	if (flag & 1)
-	{
+	if(flag & 1) {
 		ep=CheckInPolyPrecis(pos->x,pos->y-150.f,pos->z);
 
 		if (!ep)
 			ep=CheckInPolyPrecis(pos->x,pos->y-1.f,pos->z);
-	}
-	else
+	} else
 		ep=CheckInPoly(pos->x,pos->y,pos->z);
 
-	if ((ep) && (ep->room>-1))	
-	{
-		if (height) *height=ep->center.y;
+	if(ep && ep->room>-1) {
+		if (height)
+			*height=ep->center.y;
 
 		return ep->room;
 	}
@@ -571,81 +568,77 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 	// Security... ?
 	ep=GetMinPoly(pos->x,pos->y,pos->z);
 
-	if ((ep) && (ep->room>-1))	
-	{
-		if (height) *height=ep->center.y;
+	if(ep && ep->room > -1) {
+		if (height)
+			*height=ep->center.y;
 
 		return ep->room;
-	}
-	else if (!(flag & 1))
-	{
+	} else if( !(flag & 1) ) {
 		ep=CheckInPolyPrecis(pos->x,pos->y,pos->z);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room > -1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
 	}
 
-	if (flag & 2)
-	{
+	if(flag & 2) {
 		float off=20.f;
 		ep=CheckInPolyPrecis(pos->x-off,pos->y-off,pos->z);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room > -1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
 
 		ep=CheckInPolyPrecis(pos->x-off,pos->y-20,pos->z-off);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room > -1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
 
 		ep=CheckInPolyPrecis(pos->x-off,pos->y-20,pos->z+off);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room > -1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
 
 		ep=CheckInPolyPrecis(pos->x+off,pos->y-20,pos->z);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room>-1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
 
 		ep=CheckInPolyPrecis(pos->x+off,pos->y-20,pos->z+off);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room > -1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
 
 		ep=CheckInPolyPrecis(pos->x+off,pos->y-20,pos->z-off);
 
-		if ((ep) && (ep->room>-1))	
-		{
-			if (height) *height=ep->center.y;
+		if(ep && ep->room > -1) {
+			if (height)
+				*height=ep->center.y;
 
 			return ep->room;
 		}
-
 	}
 
 	return -1;
