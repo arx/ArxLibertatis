@@ -279,8 +279,6 @@ void ResetAnim(ANIM_USE * eanim);
 
 long EERIERTPPoly(EERIEPOLY *ep);
 
-void EE_RTP3(Vec3f * in, Vec3f * out, EERIE_CAMERA * cam);
-
 void ReleaseAnimFromIO(Entity * io,long num);
 
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
