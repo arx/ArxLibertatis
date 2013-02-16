@@ -6318,8 +6318,7 @@ void ArxGame::drawAllInterfaceFinish()
 	float rrr;
 	rrr=1.f-PULSATE*0.5f;
 
-	if (rrr>1.f) rrr=1.f;
-	else if (rrr<0.f) rrr=0.f;
+	clamp(rrr, 0.f, 1.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
