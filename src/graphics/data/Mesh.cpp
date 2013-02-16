@@ -2039,74 +2039,12 @@ long CountBkgVertex()
 }
 
 
-void DrawEERIEObjEx(EERIE_3DOBJ * eobj, Anglef * angle, Vec3f  * pos, Vec3f * scale, Color3f * col) {
-	
-	if(eobj == NULL) {
+void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, Color3f *col) {
+	if(!eobj)
 		return;
-	}
-
-	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	TexturedVertex v;
-	TexturedVertex rv;
-	TexturedVertex vert_list[4];
-
-
-	Zsin = radians(angle->a);
-	Xcos = (float)EEcos(Zsin);
-	Xsin = (float)EEsin(Zsin);
-	Zsin = radians(angle->b);
-	Ycos = (float)EEcos(Zsin);
-	Ysin = (float)EEsin(Zsin);
-	Zsin = radians(angle->g);
-	Zcos = (float)EEcos(Zsin);
-	Zsin = (float)EEsin(Zsin);
-
-	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-	{
-		v.p = eobj->vertexlist[i].v * *scale;
-
-		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
-		XRotatePoint(&rv.p, &v.p, Xcos, Xsin);
-		ZRotatePoint(&v.p, &rv.p, Zcos, Zsin);
-
-		eobj->vertexlist3[i].v = (rv.p += *pos);
-		
-		EE_RT(&rv, &eobj->vertexlist[i].vworld);
-		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
-	}
 
 	ColorBGRA coll = col->toBGR();
-
-	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
-		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
-		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
-		vert_list[0].uv.x = eobj->facelist[i].u[0];
-		vert_list[0].uv.y = eobj->facelist[i].v[0];
-		vert_list[1].uv.x = eobj->facelist[i].u[1];
-		vert_list[1].uv.y = eobj->facelist[i].v[1];
-		vert_list[2].uv.x = eobj->facelist[i].u[2];
-		vert_list[2].uv.y = eobj->facelist[i].v[2];
-		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
-
-		if ((eobj->facelist[i].facetype == 0)
-				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
-		{
-			GRenderer->ResetTexture(0);
-		}
-		else
-		{
-			GRenderer->SetTexture(0, eobj->texturecontainer[eobj->facelist[i].texid]);
-		}
-
-		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			GRenderer->SetCulling(Renderer::CullNone);
-		else GRenderer->SetCulling(Renderer::CullCW);
-
-		ARX_DrawPrimitive(&vert_list[0],
-									 &vert_list[1],
-									 &vert_list[2]);
-	}
+	DrawEERIEObjExEx(eobj, angle, pos, scale, coll);
 }
 //*************************************************************************************
 //routine qui gere l'alpha au vertex SEB
