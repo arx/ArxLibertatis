@@ -1533,8 +1533,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	eb->Zsize = sz;
 
 	if (Xdiv < 0) Xdiv = 1;
-
-	if (Zdiv < 0) Xdiv = 1;
+	if (Zdiv < 0) Zdiv = 1;
 
 	eb->Xdiv = Xdiv;
 	eb->Zdiv = Zdiv;
