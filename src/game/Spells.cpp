@@ -1351,11 +1351,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 							pos.x=(short)(pos1.x*Xratio);	
 							pos.y=(short)(pos1.y*Yratio);
 
-							if (io == entities.player())
-								AddFlare2(&pos,0.1f,1,entities[i]);
-							else
-								AddFlare(&pos,0.1f,1,entities[i]);
-
+							AddFlare2(&pos,0.1f,1,entities[i]);
 
 							break;
 						}
