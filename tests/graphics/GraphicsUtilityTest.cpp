@@ -17,6 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cppunit/TestAssert.h>
+
 #include "GraphicsUtilityTest.h"
 
 #include "graphics/Math.h"
@@ -26,11 +28,27 @@ bool checkFloat(float a, float b) {
 	return std::fabs(a-b) < 0.00001f;
 }
 
-bool expectMatrix(EERIEMATRIX &mat,EERIEMATRIX &other) {
-	return  checkFloat(mat._11,other._11) && checkFloat(mat._12,other._12) && checkFloat(mat._13,other._13) && checkFloat(mat._14,other._14) &&
-			checkFloat(mat._21,other._21) && checkFloat(mat._22,other._22) && checkFloat(mat._23,other._23) && checkFloat(mat._24,other._24) &&
-			checkFloat(mat._31,other._31) && checkFloat(mat._32,other._32) && checkFloat(mat._33,other._33) && checkFloat(mat._34,other._34) &&
-			checkFloat(mat._41,other._41) && checkFloat(mat._42,other._42) && checkFloat(mat._43,other._43) && checkFloat(mat._44,other._44);
+namespace CppUnit {
+
+	template<>
+	struct assertion_traits<EERIEMATRIX> {
+		static bool equal(const EERIEMATRIX &mat, const EERIEMATRIX &other) {
+			return  checkFloat(mat._11,other._11) && checkFloat(mat._12,other._12) && checkFloat(mat._13,other._13) && checkFloat(mat._14,other._14) &&
+					checkFloat(mat._21,other._21) && checkFloat(mat._22,other._22) && checkFloat(mat._23,other._23) && checkFloat(mat._24,other._24) &&
+					checkFloat(mat._31,other._31) && checkFloat(mat._32,other._32) && checkFloat(mat._33,other._33) && checkFloat(mat._34,other._34) &&
+					checkFloat(mat._41,other._41) && checkFloat(mat._42,other._42) && checkFloat(mat._43,other._43) && checkFloat(mat._44,other._44);
+		}
+
+		static std::string toString(const EERIEMATRIX &matrix) {
+			OStringStream ost;
+			ost << std::endl;
+			ost << matrix._11 << "\t" << matrix._12 << "\t" << matrix._13 << "\t" << matrix._14 << std::endl;
+			ost << matrix._21 << "\t" << matrix._22 << "\t" << matrix._23 << "\t" << matrix._24 << std::endl;
+			ost << matrix._31 << "\t" << matrix._32 << "\t" << matrix._33 << "\t" << matrix._34 << std::endl;
+			ost << matrix._41 << "\t" << matrix._42 << "\t" << matrix._43 << "\t" << matrix._44 << std::endl;
+			return ost.str();
+		}
+	};
 }
 
 void GraphicsUtilityTest::runTest() {
@@ -42,7 +60,7 @@ void GraphicsUtilityTest::runTest() {
 	  transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
 	  Util_SetViewMatrix(matrix, transform);
 	  expected.setToIdentity();
-	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
 
 	  transform.pos = Vec3f(0.f, 0.f, 0.f);
 	  transform.updateFromAngle(Anglef(90.f, 90.f, 0.f));
@@ -55,7 +73,7 @@ void GraphicsUtilityTest::runTest() {
 	  expected._23 = -1.f;
 	  expected._32 = 1.f;
 	  expected._33 = 1.91068547e-15f;
-	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
 
 	  transform.updateFromAngle(Anglef(-90.f, -90.f, 0.f));
 	  Util_SetViewMatrix(matrix, transform);
@@ -68,7 +86,7 @@ void GraphicsUtilityTest::runTest() {
 	  expected._23 = 1.f;
 	  expected._32 = 1.f;
 	  expected._33 = 1.91068547e-15f;
-	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
 
 	  transform.updateFromAngle(Anglef(180.f, 180.f, 0.f));
 	  Util_SetViewMatrix(matrix, transform);
@@ -78,7 +96,7 @@ void GraphicsUtilityTest::runTest() {
 	  expected._23 = 8.74227766e-08f;
 	  expected._31 = 8.74227766e-08f;
 	  expected._32 = -8.74227766e-08f;
-	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
 
 	  transform.pos = Vec3f(10.f, 200.f, 3000.f);
 	  transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
@@ -87,7 +105,7 @@ void GraphicsUtilityTest::runTest() {
 	  expected._41 = -10;
 	  expected._42 = 200;
 	  expected._43 = -3000;
-	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
 
 	  transform.updateFromAngle(Anglef(45.f, -45.f, 0.f));
 	  Util_SetViewMatrix(matrix, transform);
@@ -107,5 +125,5 @@ void GraphicsUtilityTest::runTest() {
 	  expected._42 = -1363.57849f;
 	  expected._43 = -1646.42126f;
 	  expected._44 = 1.f;
-	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
+	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
 }
