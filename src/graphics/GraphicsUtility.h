@@ -53,13 +53,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/BaseGraphicsTypes.h"
 #include "math/MathFwd.h"
+#include "game/Camera.h"
 
-//-----------------------------------------------------------------------------
-// Miscellaneous helper functions
-//-----------------------------------------------------------------------------
- 
+void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform);
 
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
-
-#endif // ARX_GRAPHICS_GRAPHICSUTILITY_H
+#endif
