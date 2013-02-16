@@ -25,7 +25,7 @@
 #include "graphics/GraphicsUtility.h"
 
 bool checkFloat(float a, float b) {
-	return std::fabs(a-b) < 0.00001f;
+	return std::fabs(a-b) < 0.001f;
 }
 
 namespace CppUnit {
@@ -41,7 +41,7 @@ namespace CppUnit {
 
 		static std::string toString(const EERIEMATRIX &matrix) {
 			OStringStream ost;
-			ost << std::endl;
+			ost << std::endl << std::fixed;
 			ost << matrix._11 << "\t" << matrix._12 << "\t" << matrix._13 << "\t" << matrix._14 << std::endl;
 			ost << matrix._21 << "\t" << matrix._22 << "\t" << matrix._23 << "\t" << matrix._24 << std::endl;
 			ost << matrix._31 << "\t" << matrix._32 << "\t" << matrix._33 << "\t" << matrix._34 << std::endl;
@@ -118,8 +118,8 @@ void GraphicsUtilityTest::runTest() {
 	  expected._23 = -0.707106769f;
 	  expected._24 = 0.f;
 	  expected._31 = -0.707106769f;
-	  expected._32 = 0.49999997f;
-	  expected._33 = 0.49999994f;
+	  expected._32 = 0.5f;
+	  expected._33 = 0.5f;
 	  expected._34 = 0.f;
 	  expected._41 = 2114.24927f;
 	  expected._42 = -1363.57849f;
