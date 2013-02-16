@@ -17,7 +17,8 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <cppunit/TestCase.h>
+#include "GraphicsUtilityTest.h"
+
 #include "graphics/Math.h"
 #include "graphics/GraphicsUtility.h"
 
@@ -32,11 +33,7 @@ bool expectMatrix(EERIEMATRIX &mat,EERIEMATRIX &other) {
 			checkFloat(mat._41,other._41) && checkFloat(mat._42,other._42) && checkFloat(mat._43,other._43) && checkFloat(mat._44,other._44);
 }
 
-class GraphicsUtilityTest : public CppUnit::TestCase {
-public:
-  GraphicsUtilityTest(std::string name) : CppUnit::TestCase(name) {}
-
-  void runTest() {
+void GraphicsUtilityTest::runTest() {
 	  EERIE_TRANSFORM transform;
 	  EERIEMATRIX matrix;
 	  EERIEMATRIX expected;
@@ -92,9 +89,3 @@ public:
 	  expected._43 = -3000;
 	  CPPUNIT_ASSERT(expectMatrix(matrix, expected));
   }
-};
-
-int main(int argc, char *argv[]) {
-  GraphicsUtilityTest test("GraphicsUtilityTest");
-  test.runTest();
-}

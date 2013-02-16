@@ -33,9 +33,3 @@ public:
 	CPPUNIT_ASSERT( a._11 == b._11 );
   }
 };
-
-
-int main(int argc, char *argv[]) {
-  VectorTest foo("bar");
-  foo.runTest();
-}
