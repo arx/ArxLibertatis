@@ -1878,56 +1878,22 @@ static void EERIE_PORTAL_Release() {
 
 float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 {
-	if (_fOldFocal < 200)
-	{
+	if(_fOldFocal < 200)
 		return (-.34f * _fOldFocal + 168.5f);
-	}
+	else if(_fOldFocal < 300)
+		return (-.25f * _fOldFocal + 150.5f);
+	else if(_fOldFocal < 400)
+		return (-.155f * _fOldFocal + 124.f);
+	else if(_fOldFocal < 500)
+		return (-.11f * _fOldFocal + 106.f);
+	else if(_fOldFocal < 600)
+		return (-.075f * _fOldFocal + 88.5f);
+	else if(_fOldFocal < 700)
+		return (-.055f * _fOldFocal + 76.5f);
+	else if(_fOldFocal < 800)
+		return (-.045f * _fOldFocal + 69.5f);
 	else
-	{
-		if (_fOldFocal < 300)
-		{
-			return (-.25f * _fOldFocal + 150.5f);
-		}
-		else
-		{
-			if (_fOldFocal < 400)
-			{
-				return (-.155f * _fOldFocal + 124.f);
-			}
-			else
-			{
-				if (_fOldFocal < 500)
-				{
-					return (-.11f * _fOldFocal + 106.f);
-				}
-				else
-				{
-					if (_fOldFocal < 600)
-					{
-						return (-.075f * _fOldFocal + 88.5f);
-					}
-					else
-					{
-						if (_fOldFocal < 700)
-						{
-							return (-.055f * _fOldFocal + 76.5f);
-						}
-						else
-						{
-							if (_fOldFocal < 800)
-							{
-								return (-.045f * _fOldFocal + 69.5f);
-							}
-							else
-							{
-								return 33.5f;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+		return 33.5f;
 }
 
 void PrepareActiveCamera() {	
