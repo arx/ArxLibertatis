@@ -7255,27 +7255,21 @@ long Manage3DCursor(long flags)
 				if (mod<0) mod=0;
 
 				mod*=( 1.0f / 20 );
-	va = (vd) * (1.3f + 0.3f * mod); 
+				va = (vd) * (1.3f + 0.3f * mod);
 				
 				vd=((1.f-zrange)*0.6f-vd)*150.f;
 
 				if (va<0) va=0;
-
 				if (vd<0) vd=0;
 
 				float mx = DANAEMouse.x;
 
-				if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon))
-				{
+				if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon) {
 					mx = MemoMouse.x;
 				}
 
-				pos.x=player.pos.x+EEsin(angle2)*(DANAECENTERX-mx)*0.7f*va
-					-EEsin(angle)*(va*zrange*400.f+vd);
-
-				pos.z=player.pos.z-EEcos(angle2)*(DANAECENTERX-mx)*0.7f*va
-					+EEcos(angle)*(va*zrange*400.f+vd);
-
+				pos.x=player.pos.x+EEsin(angle2)*(DANAECENTERX-mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
+				pos.z=player.pos.z-EEcos(angle2)*(DANAECENTERX-mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
 				pos.y=player.pos.y;
 
 				{
@@ -7301,9 +7295,9 @@ long Manage3DCursor(long flags)
 					cyl.radius=40.f;
 
 					Vec3f orgn,dest,mvectx;
-		mvectx.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
-		mvectx.y = 0; 
-		mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
+					mvectx.x = -(float)EEsin(radians(player.angle.b - 90.f));
+					mvectx.y = 0;
+					mvectx.z = +(float)EEcos(radians(player.angle.b - 90.f));
 					mvectx.normalize();
 
 					float xmod=(float)(DANAEMouse.x-DANAECENTERX)/(float)DANAECENTERX*160.f;
@@ -7311,19 +7305,13 @@ long Manage3DCursor(long flags)
 					mvectx *= xmod;
 					Vec3f mvecty(0, ymod, 0);
 
-					orgn.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f
-		         + mvectx.x; 
-					orgn.y=player.pos.y+(float)EEsin(radians(player.angle.a))*50.f
-							+mvectx.y+mvecty.y;
-					orgn.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f
-		         + mvectx.z; 
+					orgn.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f + mvectx.x;
+					orgn.y=player.pos.y+(float)EEsin(radians(player.angle.a))*50.f + mvectx.y + mvecty.y;
+					orgn.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f + mvectx.z;
 	
-					dest.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f
-		         + mvectx.x; 
-					dest.y=player.pos.y+(float)EEsin(radians(player.angle.a))*10000.f
-							+mvectx.y+mvecty.y*5.f;
-					dest.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f
-		         + mvectx.z;
+					dest.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f + mvectx.x;
+					dest.y=player.pos.y+(float)EEsin(radians(player.angle.a))*10000.f + mvectx.y + mvecty.y * 5.f;
+					dest.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f + mvectx.z;
 					pos = orgn;
 
 					Vec3f movev = (dest - orgn).getNormalized();
@@ -7333,9 +7321,9 @@ long Manage3DCursor(long flags)
 
 					if ( height > -30.f ) height = -30.f;
 					
-		objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * 0.5f;  
-		objcenter.y	=	0;	
-		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * 0.5f;  
+					objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * 0.5f;
+					objcenter.y	=	0;
+					objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * 0.5f;
 					
 					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{
@@ -7343,10 +7331,8 @@ long Manage3DCursor(long flags)
 			                               Vec2f(io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z)) - 4.f);
 					}
 
-					if (io->obj->pbox)
-					{
-						for (int i=1;i<io->obj->pbox->nb_physvert;i++)
-						{
+					if (io->obj->pbox) {
+						for (int i=1; i<io->obj->pbox->nb_physvert; i++) {
 							maxdist = std::max(maxdist, dist(Vec2f(io->obj->pbox->vert[0].initpos.x,
 												io->obj->pbox->vert[0].initpos.z),
 												Vec2f(io->obj->pbox->vert[i].initpos.x,
@@ -7356,33 +7342,28 @@ long Manage3DCursor(long flags)
 
 					VRotateY(&objcenter,temp.b);
 
-					if ( maxdist < 15.f ) maxdist = 15.f;
+					if(maxdist < 15.f)maxdist = 15.f;
+					if(maxdist > 150.f)maxdist = 150.f;
 
-					if ( maxdist > 150.f ) maxdist = 150.f;
-
-		bool			bCollidposNoInit = true;
+					bool bCollidposNoInit = true;
 					Vec3f		collidpos = Vec3f::ZERO;
 					EERIE_CYLINDER	cyl2;
 					float			inc			=	10.f;
 					long			iterating	=	40;
 		
-		cyl2.height = std::min(-30.f, height);
-		cyl2.radius = std::max(20.f, maxdist);
+					cyl2.height = std::min(-30.f, height);
+					cyl2.radius = std::max(20.f, maxdist);
 					
 
-					while ( iterating>0 )
-					{
-
-			cyl2.origin.x = pos.x + movev.x * inc;
-			cyl2.origin.y = pos.y + movev.y * inc + maxy;
-			cyl2.origin.z = pos.z + movev.z * inc;
+					while(iterating > 0) {
+						cyl2.origin.x = pos.x + movev.x * inc;
+						cyl2.origin.y = pos.y + movev.y * inc + maxy;
+						cyl2.origin.z = pos.z + movev.z * inc;
 
 						float anything = CheckAnythingInCylinder( &cyl2, io, CFLAG_JUST_TEST | CFLAG_COLLIDE_NOCOL | CFLAG_NO_NPC_COLLIDE );
 
-						if ( anything < 0.f )
-						{
-							if ( iterating == 40 )
-							{
+						if(anything < 0.f) {
+							if(iterating == 40) {
 								CANNOT_PUT_IT_HERE = 1;
 								return -1;
 							}
@@ -7390,7 +7371,7 @@ long Manage3DCursor(long flags)
 							iterating = 0;
 
 							collidpos = cyl2.origin;
-				bCollidposNoInit = false;
+							bCollidposNoInit = false;
 
 							if(lastanything < 0.f) {
 								pos.y += lastanything;
@@ -7409,16 +7390,13 @@ long Manage3DCursor(long flags)
 					pos.x		-=	objcenter.x;
 					pos.z		-=	objcenter.z;
 
-					if ( iterating != -1 )
-					{
+					if ( iterating != -1 ) {
 						CANNOT_PUT_IT_HERE = 1;
 						return 0;
 					}
 
-		if ((iterating == -1) && closerThan(player.pos, pos, 300.f))
-					{
-						if ( flags & 1 )
-						{
+					if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
+						if(flags & 1) {
 							io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 							ARX_INTERACTIVE_Teleport( io, &pos, 1 );
 
@@ -7429,25 +7407,22 @@ long Manage3DCursor(long flags)
 							float old			=	io->invisibility;
 
 
-							if( bCollidposNoInit )
-							{
-					ARX_DEAD_CODE();
+							if( bCollidposNoInit ) {
+								ARX_DEAD_CODE();
 							}
 
-							if (SPECIAL_DRAGINTER_RENDER)
-							{
-
+							if(SPECIAL_DRAGINTER_RENDER) {
 							if (((lastanything<0.f) && (EEfabs(lastanything)>EEfabs(height)))
 								|| (lastanything>EEfabs(height)))
 							{
-						io->invisibility = 0.5f;
+								io->invisibility = 0.5f;
 								DrawEERIEInter(io->obj,&temp,&collidpos,io);
 								io->invisibility=old;
 							}
 							else if (lastanything>0.f)
-						DrawEERIEInter( io->obj, &temp, &pos, io);
+								DrawEERIEInter(io->obj, &temp, &pos, io);
 							else
-								DrawEERIEInter(io->obj,&temp,&pos,io);
+								DrawEERIEInter(io->obj, &temp, &pos, io);
 							}
 
 							PrecalcIOLighting(NULL,0,1);
@@ -7460,11 +7435,8 @@ long Manage3DCursor(long flags)
 								if (io->ignition>0.f)
 									ManageIgnition(io);
 							}
-						}
-						else
-						{
-				if (EEfabs(lastanything) > std::min(EEfabs(height), 12.0f))
-							{
+						} else {
+							if(EEfabs(lastanything) > std::min(EEfabs(height), 12.0f)) {
 								Entity * io=DRAGINTER;
 								ARX_PLAYER_Remove_Invisibility();
 								io->obj->pbox->active=1;
@@ -7486,10 +7458,7 @@ long Manage3DCursor(long flags)
 								ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
 								io->show=SHOW_FLAG_IN_SCENE;
 								Set_DragInter(NULL);
-							}
-							else
-							{
-
+							} else {
 								ARX_PLAYER_Remove_Invisibility();
 								ARX_SOUND_PlayInterface(SND_INVSTD);
 								ARX_INTERACTIVE_Teleport(io,&pos,1);
@@ -7506,9 +7475,7 @@ long Manage3DCursor(long flags)
 
 						GRenderer->SetCulling(Renderer::CullNone);
 						return 1;
-					}
-					else
-					{
+					} else {
 						CANNOT_PUT_IT_HERE=-1;
 					}
 				}
