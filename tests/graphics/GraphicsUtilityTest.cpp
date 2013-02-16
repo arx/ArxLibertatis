@@ -22,7 +22,9 @@
 #include "GraphicsUtilityTest.h"
 
 #include "graphics/Math.h"
-#include "graphics/GraphicsUtility.h"
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION(GraphicsUtilityTest);
 
 bool checkFloat(float a, float b) {
 	return std::fabs(a-b) < 0.001f;
@@ -51,79 +53,90 @@ namespace CppUnit {
 	};
 }
 
-void GraphicsUtilityTest::runTest() {
-	  EERIE_TRANSFORM transform;
-	  EERIEMATRIX matrix;
-	  EERIEMATRIX expected;
+void GraphicsUtilityTest::front() {
+	transform.pos = Vec3f(0.f, 0.f, 0.f);
+	transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
+	Util_SetViewMatrix(matrix, transform);
+	expected.setToIdentity();
+	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+}
 
-	  transform.pos = Vec3f(0.f, 0.f, 0.f);
-	  transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
-	  Util_SetViewMatrix(matrix, transform);
-	  expected.setToIdentity();
-	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
+void GraphicsUtilityTest::back() {
+	transform.updateFromAngle(Anglef(180.f, 180.f, 0.f));
+	Util_SetViewMatrix(matrix, transform);
+	expected.setToIdentity();
+	expected._12 = 7.64274186e-15f;
+	expected._13 = -8.74227766e-08f;
+	expected._23 = 8.74227766e-08f;
+	expected._31 = 8.74227766e-08f;
+	expected._32 = -8.74227766e-08f;
+	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+}
 
-	  transform.pos = Vec3f(0.f, 0.f, 0.f);
-	  transform.updateFromAngle(Anglef(90.f, 90.f, 0.f));
-	  Util_SetViewMatrix(matrix, transform);
-	  expected.setToIdentity();
-	  expected._12 = -8.35187172e-23f;
-	  expected._13 = 4.37113883e-08f;
-	  expected._21 = 4.37113883e-08f;
-	  expected._22 = 1.91068547e-15f;
-	  expected._23 = -1.f;
-	  expected._32 = 1.f;
-	  expected._33 = 1.91068547e-15f;
-	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
+void GraphicsUtilityTest::edgeCase1()
+{
+	transform.pos = Vec3f(0.f, 0.f, 0.f);
+	transform.updateFromAngle(Anglef(90.f, 90.f, 0.f));
+	Util_SetViewMatrix(matrix, transform);
+	expected.setToIdentity();
+	expected._12 = -8.35187172e-23f;
+	expected._13 = 4.37113883e-08f;
+	expected._21 = 4.37113883e-08f;
+	expected._22 = 1.91068547e-15f;
+	expected._23 = -1.f;
+	expected._32 = 1.f;
+	expected._33 = 1.91068547e-15f;
+	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+}
 
-	  transform.updateFromAngle(Anglef(-90.f, -90.f, 0.f));
-	  Util_SetViewMatrix(matrix, transform);
-	  expected.setToIdentity();
-	  expected._11 = -1.f;
-	  expected._12 = 8.35187172e-23f;
-	  expected._13 = -4.37113883e-08f;
-	  expected._21 = -4.37113883e-08f;
-	  expected._22 = -1.91068547e-15f;
-	  expected._23 = 1.f;
-	  expected._32 = 1.f;
-	  expected._33 = 1.91068547e-15f;
-	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
+void GraphicsUtilityTest::edgeCase2()
+{
+	transform.updateFromAngle(Anglef(-90.f, -90.f, 0.f));
+	Util_SetViewMatrix(matrix, transform);
+	expected.setToIdentity();
+	expected._11 = -1.f;
+	expected._12 = 8.35187172e-23f;
+	expected._13 = -4.37113883e-08f;
+	expected._21 = -4.37113883e-08f;
+	expected._22 = -1.91068547e-15f;
+	expected._23 = 1.f;
+	expected._32 = 1.f;
+	expected._33 = 1.91068547e-15f;
+	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+}
 
-	  transform.updateFromAngle(Anglef(180.f, 180.f, 0.f));
-	  Util_SetViewMatrix(matrix, transform);
-	  expected.setToIdentity();
-	  expected._12 = 7.64274186e-15f;
-	  expected._13 = -8.74227766e-08f;
-	  expected._23 = 8.74227766e-08f;
-	  expected._31 = 8.74227766e-08f;
-	  expected._32 = -8.74227766e-08f;
-	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
+void GraphicsUtilityTest::translation()
+{
+	transform.pos = Vec3f(10.f, 200.f, 3000.f);
+	transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
+	Util_SetViewMatrix(matrix, transform);
+	expected.setToIdentity();
+	expected._41 = -10;
+	expected._42 = 200;
+	expected._43 = -3000;
+	CPPUNIT_ASSERT_EQUAL(expected, matrix);
+}
 
-	  transform.pos = Vec3f(10.f, 200.f, 3000.f);
-	  transform.updateFromAngle(Anglef(0.f, 0.f, 0.f));
-	  Util_SetViewMatrix(matrix, transform);
-	  expected.setToIdentity();
-	  expected._41 = -10;
-	  expected._42 = 200;
-	  expected._43 = -3000;
-	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
-
-	  transform.updateFromAngle(Anglef(45.f, -45.f, 0.f));
-	  Util_SetViewMatrix(matrix, transform);
-	  expected._11 = 0.707106709f;
-	  expected._12 = 0.5f;
-	  expected._13 = 0.5f;
-	  expected._14 = 0.f;
-	  expected._21 = 1.49011612e-08f;
-	  expected._22 = 0.707106769f;
-	  expected._23 = -0.707106769f;
-	  expected._24 = 0.f;
-	  expected._31 = -0.707106769f;
-	  expected._32 = 0.5f;
-	  expected._33 = 0.5f;
-	  expected._34 = 0.f;
-	  expected._41 = 2114.24927f;
-	  expected._42 = -1363.57849f;
-	  expected._43 = -1646.42126f;
-	  expected._44 = 1.f;
-	  CPPUNIT_ASSERT_EQUAL(expected, matrix);
+void GraphicsUtilityTest::combined()
+{
+	transform.pos = Vec3f(10.f, 200.f, 3000.f);
+	transform.updateFromAngle(Anglef(45.f, -45.f, 0.f));
+	Util_SetViewMatrix(matrix, transform);
+	expected._11 = 0.707106709f;
+	expected._12 = 0.5f;
+	expected._13 = 0.5f;
+	expected._14 = 0.f;
+	expected._21 = 1.49011612e-08f;
+	expected._22 = 0.707106769f;
+	expected._23 = -0.707106769f;
+	expected._24 = 0.f;
+	expected._31 = -0.707106769f;
+	expected._32 = 0.5f;
+	expected._33 = 0.5f;
+	expected._34 = 0.f;
+	expected._41 = 2114.24927f;
+	expected._42 = -1363.57849f;
+	expected._43 = -1646.42126f;
+	expected._44 = 1.f;
+	CPPUNIT_ASSERT_EQUAL(expected, matrix);
 }
