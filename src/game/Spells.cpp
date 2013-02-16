@@ -1265,12 +1265,10 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 
 				float div_ti=1.f/ti;
 
-				if (io != entities.player())
-				{
+				if(io != entities.player()) {
 					old_pos = pos1;
 
-					for (long j=0;j<nbcomponents;j++)
-					{
+					for(long j=0; j<nbcomponents; j++) {
 						GetSymbVector(sd->sequence[j],&vect);
 						vect += vect / 2;
 
@@ -1284,13 +1282,11 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						oldtime-=(long)ti;
 					}
 
-					for (int j=0;j<nbcomponents;j++)
-					{
+					for(int j=0; j<nbcomponents; j++) {
 						GetSymbVector(sd->sequence[j],&vect);
 						vect += vect / 2;
 
-						if (newtime<=ti)
-						{
+						if(newtime <= ti) {
 							float ratio = float(newtime) * div_ti;
 							pos1 += (vect.to<float>() * ratio).to<short>();
 							AddFlare(&pos1,0.1f,1,entities[i]);
@@ -1301,9 +1297,7 @@ void ARX_SPELLS_UpdateSymbolDraw() {
 						pos1 += vect;
 						newtime-=(long)ti;
 					}
-				}
-				else 
-				{
+				} else {
 					int iMinX,iMinY,iMaxX,iMaxY;
 					int iSizeX,iSizeY;
 					ReCenterSequence(sd->sequence,iMinX,iMinY,iMaxX,iMaxY);
