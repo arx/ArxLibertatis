@@ -3755,7 +3755,8 @@ void ArxGame::manageKeyMouse() {
 			if(GInput->actionPressed(CONTROLS_CUST_CENTERVIEW))
 			{
 				eyeball.angle.a=eyeball.angle.g=0.f;
-				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
+				player.desiredangle.a=player.angle.a=0.f;
+				player.desiredangle.g=player.angle.g=0.f;
 			}
 
 			float fd = (((float)GInput->getMouseSensitivity()) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));

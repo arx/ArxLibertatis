@@ -1648,8 +1648,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	
 	player.AimTime = asp->AimTime;
 	player.angle = asp->angle;
-	player.desiredangle.a = player.angle.a;
-	player.desiredangle.b = player.angle.b;
+	player.desiredangle = player.angle;
 	
 	player.armor_class = checked_range_cast<unsigned char>(asp->armor_class);
 	
