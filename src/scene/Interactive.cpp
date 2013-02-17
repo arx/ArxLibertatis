@@ -3084,12 +3084,8 @@ void UpdateCameras() {
 					}
 					else
 					{
-						if ((io->target.x == io->_camdata->cam.orgTrans.pos.x)
-								&&	(io->target.y == io->_camdata->cam.orgTrans.pos.y)
-								&&	(io->target.z == io->_camdata->cam.orgTrans.pos.z))
-						{
-						}
-						else SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
+						if ( !(io->target == io->_camdata->cam.orgTrans.pos))
+							SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
 
 						io->_camdata->cam.lasttarget = io->target;
 						io->_camdata->cam.lastinfovalid = true;
