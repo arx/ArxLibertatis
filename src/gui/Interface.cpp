@@ -3804,7 +3804,7 @@ void ArxGame::manageKeyMouse() {
 
 	if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
 		if (DRAGINTER == NULL) {
-			if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
+			if(config.input.autoDescription || ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4)))
 			{
 				Entity * temp;
 				temp = FlyingOverIO;
@@ -3854,66 +3854,14 @@ void ArxGame::manageKeyMouse() {
 						Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * Yratio);
 						Rect rDraw(x, y, w, h);
 						pTextManage->Clear();
-						pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143), 2000 + WILLADDSPEECH.length()*60);
+						if(!config.input.autoDescription) {
+							pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143), 2000 + WILLADDSPEECH.length()*60);
+						} else {
+							pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143));
+						}
 					}
 
 					WILLADDSPEECH.clear();
-				}
-			} else {
-				if(config.input.autoDescription) {
-					Entity * temp;
-					temp = FlyingOverIO;
-
-					if(temp && !temp->locname.empty()) {
-
-						if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
-							&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
-							>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-						{
-							SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
-						}
-
-						WILLADDSPEECH = getLocalised(temp->locname);
-
-						if(temp->ioflags & IO_GOLD) {
-							std::stringstream ss;
-							ss << temp->_itemdata->price << " " << WILLADDSPEECH;
-							WILLADDSPEECH = ss.str();
-						}
-
-						if(temp->poisonous > 0 && temp->poisonous_count != 0) {
-							std::string Text = getLocalised("description_poisoned", "error");
-							std::stringstream ss;
-							ss << " (" << Text << " " << (int)temp->poisonous << ")";
-							WILLADDSPEECH += ss.str();
-						}
-
-						if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
-							std::string Text = getLocalised("description_durability", "error");
-							std::stringstream ss;
-							ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-							WILLADDSPEECH += ss.str();
-						}
-
-						WILLADDSPEECHTIME = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
-
-						bool bAddText = true;
-						if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
-							bAddText=false;
-						}
-
-						if(bAddText) {
-							Rect::Num x = checked_range_cast<Rect::Num>(120 * Xratio);
-							Rect::Num y = checked_range_cast<Rect::Num>(14 * Yratio);
-							Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * Xratio);
-							Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * Yratio);
-							Rect rDraw(x, y, w, h);
-							pTextManage->Clear();
-							pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143));
-						}
-
-						WILLADDSPEECH.clear();
-					}
 				}
 			}
 		}
