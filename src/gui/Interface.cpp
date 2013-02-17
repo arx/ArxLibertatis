@@ -3760,9 +3760,7 @@ void ArxGame::manageKeyMouse() {
 
 					eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
 				}
-			}
-			else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove)
-			if (ARXmenu.currentmode != AMCM_NEWQUEST) {
+			} else if(ARXmenu.currentmode != AMCM_NEWQUEST && (PLAYER_MOUSELOOK_ON || bKeySpecialMove)) {
 				if(mouseDiffY != 0) {
 					float ia = ((float)mouseDiffY * (1.0f / 5) * fd);
 
