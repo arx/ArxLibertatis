@@ -295,45 +295,27 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 
 	if ((fx & 0x0000FF00) == FX_DREAM)
 	{
-		if (light)
-		{
-			float * dream = DreamTable;
+		float * dream = DreamTable;
 
-			while (nb--)
-			{
-				TexturedVertex vtemp;
-				Vec3f t;
-				t.x = v->x + *dream++;
-				t.y = v->y + *dream++;
-				t.z = v->z;
-				TransformLocalVertex(&t, &vtemp);
-				EE_RTP(&vtemp, d3dv);
+		while (nb--) {
+			TexturedVertex vtemp;
+			Vec3f t;
+			t.x = v->x + *dream++;
+			t.y = v->y + *dream++;
+			t.z = v->z;
+			TransformLocalVertex(&t, &vtemp);
+			EE_RTP(&vtemp, d3dv);
+			if(light) {
 				d3dv->color = CalculLight(light, d3dv->p.x, d3dv->p.y, col);
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
-				v++;
-				d3dv++;
-			}
-		}
-		else
-		{
-			float * dream = DreamTable;
-
-			while (nb--)
-			{
-				TexturedVertex vtemp;
-				Vec3f t;
-				t.x = v->x + *dream++;
-				t.y = v->y + *dream++;
-				t.z = v->z;
-				TransformLocalVertex(&t, &vtemp);
-				EE_RTP(&vtemp, d3dv);
+			} else {
 				d3dv->p.x = ADJUSTX(d3dv->p.x);
 				d3dv->p.y = ADJUSTY(d3dv->p.y);
 				d3dv->color = col;
-				v++;
-				d3dv++;
 			}
+			v++;
+			d3dv++;
 		}
 	}
 	else
