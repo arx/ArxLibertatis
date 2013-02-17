@@ -2246,9 +2246,10 @@ void ForcePlayerLookAtIO(Entity * io) {
 	}
 
 	tcam.setTargetCamera(target.x, target.y, target.z);
-	player.desiredangle.a = player.angle.a = MAKEANGLE(-tcam.angle.a);
-	player.desiredangle.b = player.angle.b = MAKEANGLE(tcam.angle.b - 180.f);
+	player.angle.a = MAKEANGLE(-tcam.angle.a);
+	player.angle.b = MAKEANGLE(tcam.angle.b - 180.f);
 	player.angle.g = 0;
+	player.desiredangle = player.angle;
 }
 extern float PLAYER_ARMS_FOCAL;
 extern long CURRENT_BASE_FOCAL;
@@ -2281,15 +2282,13 @@ void ARX_PLAYER_Frame_Update()
 	player.Current_Movement = 0;
 
 	// Updates player angles to desired angles
-	player.angle.a = player.desiredangle.a;
-	player.angle.b = player.desiredangle.b;
+	player.angle = player.desiredangle;
 
 	// Updates player Extra-Rotate Informations
 	Entity * io;
 	io = entities.player();
 
-	if ((io) && (io->_npcdata->ex_rotate))
-	{
+	if(io && io->_npcdata->ex_rotate) {
 		float v = player.angle.a;
 
 		if (v > 160) v = -(360 - v);
