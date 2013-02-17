@@ -3802,8 +3802,7 @@ void ArxGame::manageKeyMouse() {
 		}
 	}
 
-	if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE))
-	{
+	if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) {
 		if (DRAGINTER == NULL) {
 			if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
 			{
@@ -3841,7 +3840,7 @@ void ArxGame::manageKeyMouse() {
 						WILLADDSPEECH += ss.str();
 					}
 
-					WILLADDSPEECHTIME = (unsigned long)(arxtime);
+					WILLADDSPEECHTIME = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
 					bool bAddText = true;
 					if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
@@ -3885,20 +3884,20 @@ void ArxGame::manageKeyMouse() {
 						if(temp->poisonous > 0 && temp->poisonous_count != 0) {
 							std::string Text = getLocalised("description_poisoned", "error");
 							std::stringstream ss;
-							ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
-							WILLADDSPEECH = ss.str();
+							ss << " (" << Text << " " << (int)temp->poisonous << ")";
+							WILLADDSPEECH += ss.str();
 						}
 
 						if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
 							std::string Text = getLocalised("description_durability", "error");
 							std::stringstream ss;
-							ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
-							WILLADDSPEECH = ss.str();
+							ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+							WILLADDSPEECH += ss.str();
 						}
 
 						WILLADDSPEECHTIME = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
 
-						bool bAddText=true;
+						bool bAddText = true;
 						if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
 							bAddText=false;
 						}
@@ -3906,8 +3905,8 @@ void ArxGame::manageKeyMouse() {
 						if(bAddText) {
 							Rect::Num x = checked_range_cast<Rect::Num>(120 * Xratio);
 							Rect::Num y = checked_range_cast<Rect::Num>(14 * Yratio);
-							Rect::Num w = checked_range_cast<Rect::Num>((120 + 500 ) * Xratio);
-							Rect::Num h = checked_range_cast<Rect::Num>((14 + 200 ) * Yratio);
+							Rect::Num w = checked_range_cast<Rect::Num>((120 + 500) * Xratio);
+							Rect::Num h = checked_range_cast<Rect::Num>((14 + 200) * Yratio);
 							Rect rDraw(x, y, w, h);
 							pTextManage->Clear();
 							pTextManage->AddText(hFontInBook, WILLADDSPEECH, rDraw, Color(232, 204, 143));
