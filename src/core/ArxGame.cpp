@@ -1400,13 +1400,11 @@ void ArxGame::renderLevel() {
 
 		long tFrameDiff = Original_framedelay;
 
+		float restore=ACTIVECAM->orgTrans.use_focal;
+		if(!EXTERNALVIEW && !BOW_FOCAL)
+			ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
+
 		if((player.Interface & INTER_COMBATMODE) && STRIKE_TIME) { // need some precision for weapon...
-			float restore = ACTIVECAM->orgTrans.use_focal;
-
-			if(!EXTERNALVIEW && !BOW_FOCAL) {
-				ACTIVECAM->orgTrans.use_focal=PLAYER_ARMS_FOCAL*Xratio;
-			}
-
 			float cur=0;
 
 			while(cur < tFrameDiff && !(entities.player()->ioflags & IO_FREEZESCRIPT)) {
@@ -1428,14 +1426,7 @@ void ArxGame::renderLevel() {
 
 				cur+=step*speedfactor;
 			}
-
-			ACTIVECAM->orgTrans.use_focal=restore;
 		} else {
-			float restore=ACTIVECAM->orgTrans.use_focal;
-
-			if(!EXTERNALVIEW && !BOW_FOCAL)
-				ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
-
 			float val = (float)tFrameDiff * speedfactor;
 
 			if (entities.player()->ioflags & IO_FREEZESCRIPT)
@@ -1450,9 +1441,8 @@ void ArxGame::renderLevel() {
 
 			if (entities.player()->animlayer[1].cur_anim!=NULL)
 				ManageCombatModeAnimationsEND();
-
-			ACTIVECAM->orgTrans.use_focal = restore;
 		}
+		ACTIVECAM->orgTrans.use_focal = restore;
 		USEINTERNORM = old;
 	}
 
