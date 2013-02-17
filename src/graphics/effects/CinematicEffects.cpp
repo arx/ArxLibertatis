@@ -149,7 +149,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera)
 	while (nb)
 	{
 		camera.orgTrans.pos = *pos;
-		SetTargetCamera(&camera, camera.orgTrans.pos.x, camera.orgTrans.pos.y, 0.f);
+		camera.setTargetCamera(camera.orgTrans.pos.x, camera.orgTrans.pos.y, 0.f);
 		camera.angle.b = 0;
 		camera.angle.g = *az;
 		PrepareCamera(&camera);

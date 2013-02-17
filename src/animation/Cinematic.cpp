@@ -458,7 +458,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		m_camera.orgTrans.pos = pos;
-		SetTargetCamera(&m_camera, m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
+		m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
 		m_camera.angle.b = 0;
 		m_camera.angle.g = angz;
 		m_camera.clip.right = LargeurRender;
@@ -503,7 +503,7 @@ void Cinematic::Render(float FDIFF) {
 			{
 				case INTERP_NO:
 					m_camera.orgTrans.pos = possuiv;
-					SetTargetCamera(&m_camera, m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
+					m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
 					m_camera.angle.b = 0;
 					m_camera.angle.g = angzsuiv;
 					PrepareCamera(&m_camera);
