@@ -3612,8 +3612,7 @@ void ArxGame::manageKeyMouse() {
 	}
 
 	// Player/Eyeball Freelook Management
-	if (!BLOCK_PLAYER_CONTROLS)
-	{
+	if(!BLOCK_PLAYER_CONTROLS) {
 		GetInventoryObj_INVENTORYUSE(&DANAEMouse);
 
 		if ((!(player.Interface & INTER_MAP )) || ((player.Interface & INTER_MAP ) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS) || (Book_Mode != -1)))
@@ -3624,126 +3623,99 @@ void ArxGame::manageKeyMouse() {
 			static int flPushTimeY[2]={0,0};
 			bool bKeySpecialMove=false;
 
-			if(!GInput->actionPressed(CONTROLS_CUST_STRAFE))
-			{
-
+			if(!GInput->actionPressed(CONTROLS_CUST_STRAFE)) {
 				float fTime = arxtime.get_updated();
-
 				int	iTime = checked_range_cast<int>(fTime);
 
-				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT))
-				{
+				if(GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
 					if(!flPushTimeX[0])
-					{
 						flPushTimeX[0]	=	iTime;
-					}
 
-					bKeySpecialMove=true;
+					bKeySpecialMove = true;
 				}
-				else flPushTimeX[0]=0;
+				else
+					flPushTimeX[0]=0;
 
-				if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT))
-				{
+				if(GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
 					if(!flPushTimeX[1])
-					{
 						flPushTimeX[1]	=	iTime;
-					}
 
-					bKeySpecialMove=true;
+					bKeySpecialMove = true;
 				}
-				else flPushTimeX[1]=0;
+				else
+					flPushTimeX[1]=0;
 			}
 
-			if (USE_PLAYERCOLLISIONS)
-			{
-
+			if(USE_PLAYERCOLLISIONS) {
 				float fTime = arxtime.get_updated();
 				int iTime = checked_range_cast<int>(fTime);
 
-				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP))
-				{
+				if(GInput->actionPressed(CONTROLS_CUST_LOOKUP)) {
 					if(!flPushTimeY[0])
-					{
 						flPushTimeY[0]	=	iTime;
-					}
 
-					bKeySpecialMove=true;
+					bKeySpecialMove = true;
 				}
-				else flPushTimeY[0]=0;
+				else
+					flPushTimeY[0]=0;
 
-				if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN))
-				{
+				if(GInput->actionPressed(CONTROLS_CUST_LOOKDOWN)) {
 					if(!flPushTimeY[1])
-					{
 						flPushTimeY[1]	=	iTime;
-					}
 
-					bKeySpecialMove=true;
+					bKeySpecialMove = true;
 				}
-				else flPushTimeY[1]=0;
+				else
+					flPushTimeY[1]=0;
 			}
 
-			if(bKeySpecialMove)
-			{
+			if(bKeySpecialMove) {
 				int iAction=0;
 
-				if(	flPushTimeX[0]||
-					flPushTimeX[1] )
-				{
-					if(flPushTimeX[0]<flPushTimeX[1]) mouseDiffX=10;
-					else mouseDiffX=-10;
+				if(flPushTimeX[0] || flPushTimeX[1]) {
+					if(flPushTimeX[0] < flPushTimeX[1])
+						mouseDiffX=10;
+					else
+						mouseDiffX=-10;
 
-					iAction|=1;
+					iAction |= 1;
 				}
 
-				if(	flPushTimeY[0]||
-					flPushTimeY[1] )
-				{
-					if(flPushTimeY[0]<flPushTimeY[1]) mouseDiffY=10;
-					else mouseDiffY=-10;
+				if(flPushTimeY[0] || flPushTimeY[1]) {
+					if(flPushTimeY[0]<flPushTimeY[1])
+						mouseDiffY=10;
+					else
+						mouseDiffY=-10;
 
-					iAction|=2;
+					iAction |= 2;
 				}
 
-				if(!(iAction&1)) mouseDiffX=0;
+				if(!(iAction & 1))
+					mouseDiffX=0;
 
-				if(!(iAction&2)) mouseDiffY=0;
-			}
-			else
-			{
-				if (bRenderInCursorMode)
-				{
+				if(!(iAction & 2))
+					mouseDiffY=0;
+			} else {
+				if(bRenderInCursorMode) {
 					Vec2s mousePosRel = GInput->getMousePosRel();
-					if(	(DANAEMouse.x==(DANAESIZX-1))&&
-							(mousePosRel.x > 8) )
-					{
+					if(DANAEMouse.x == (DANAESIZX-1) && mousePosRel.x > 8) {
 						mouseDiffY=0;
 						mouseDiffX=mousePosRel.x;
 						bKeySpecialMove=true;
-					}
-					else
-					{
-						if( (!DANAEMouse.x)&&
-								(mousePosRel.x < -8))
-						{
+					} else {
+						if(!DANAEMouse.x&& mousePosRel.x < -8) {
 							mouseDiffY=0;
 							mouseDiffX=mousePosRel.x;
 							bKeySpecialMove=true;
 						}
 					}
 
-					if(	(DANAEMouse.y==(DANAESIZY-1))&&
-						    (mousePosRel.y > 8))
-					{
+					if(DANAEMouse.y == (DANAESIZY-1) && mousePosRel.y > 8) {
 						mouseDiffY=mousePosRel.y;
 						mouseDiffX=0;
 						bKeySpecialMove=true;
-					}
-					else
-					{
-						if(	(!DANAEMouse.y)&&
-							    (mousePosRel.y < -8))
-						{
+					} else {
+						if(!DANAEMouse.y && mousePosRel.y < -8) {
 							mouseDiffY=mousePosRel.y;
 							mouseDiffX=0;
 							bKeySpecialMove=true;
