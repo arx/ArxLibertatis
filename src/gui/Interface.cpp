@@ -3821,23 +3821,20 @@ void ArxGame::manageKeyMouse() {
 
 					WILLADDSPEECH = getLocalised(temp->locname);
 
-					if (temp->ioflags & IO_GOLD)
-					{
+					if(temp->ioflags & IO_GOLD) {
 						std::stringstream ss;
 						ss << temp->_itemdata->price << " " << WILLADDSPEECH;
 						WILLADDSPEECH = ss.str();
 					}
 
-					if ((temp->poisonous>0) && (temp->poisonous_count!=0))
-					{
+					if(temp->poisonous > 0 && temp->poisonous_count != 0) {
 						std::string Text = getLocalised("description_poisoned", "error");
 						std::stringstream ss;
 						ss << " (" << Text << " " << (int)temp->poisonous << ")";
 						WILLADDSPEECH += ss.str();
 					}
 
-					if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
-					{
+					if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
 						std::string Text = getLocalised("description_durability", "error");
 						std::stringstream ss;
 						ss << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
@@ -3847,11 +3844,7 @@ void ArxGame::manageKeyMouse() {
 					WILLADDSPEECHTIME = (unsigned long)(arxtime);
 
 					bool bAddText = true;
-
-					if( (temp->obj)&&
-						(temp->obj->pbox)&&
-						(temp->obj->pbox->active == 1))
-					{
+					if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
 						bAddText=false;
 					}
 
@@ -3867,12 +3860,8 @@ void ArxGame::manageKeyMouse() {
 
 					WILLADDSPEECH.clear();
 				}
-			}
-			else
-			{
-				if(config.input.autoDescription)
-				{
-
+			} else {
+				if(config.input.autoDescription) {
 					Entity * temp;
 					temp = FlyingOverIO;
 
@@ -3887,23 +3876,20 @@ void ArxGame::manageKeyMouse() {
 
 						WILLADDSPEECH = getLocalised(temp->locname);
 
-						if (temp->ioflags & IO_GOLD)
-						{
+						if(temp->ioflags & IO_GOLD) {
 							std::stringstream ss;
 							ss << temp->_itemdata->price << " " << WILLADDSPEECH;
 							WILLADDSPEECH = ss.str();
 						}
 
-						if ((temp->poisonous>0) && (temp->poisonous_count!=0))
-						{
+						if(temp->poisonous > 0 && temp->poisonous_count != 0) {
 							std::string Text = getLocalised("description_poisoned", "error");
 							std::stringstream ss;
 							ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 							WILLADDSPEECH = ss.str();
 						}
 
-						if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
-						{
+						if((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
 							std::string Text = getLocalised("description_durability", "error");
 							std::stringstream ss;
 							ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
@@ -3911,12 +3897,9 @@ void ArxGame::manageKeyMouse() {
 						}
 
 						WILLADDSPEECHTIME = (unsigned long)(arxtime);//treat warning C4244 conversion from 'float' to 'unsigned long'
-						bool bAddText=true;
 
-						if( (temp->obj)&&
-							(temp->obj->pbox)&&
-						(temp->obj->pbox->active == 1))
-						{
+						bool bAddText=true;
+						if(temp->obj && temp->obj->pbox && temp->obj->pbox->active == 1) {
 							bAddText=false;
 						}
 
