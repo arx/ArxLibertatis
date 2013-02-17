@@ -487,9 +487,8 @@ extern void GetIOCyl(Entity * io, EERIE_CYLINDER * cyl);
 //***********************************************************************************************
 long ARX_NPC_GetNextAttainableNodeIncrement(Entity * io)
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC))
-	        ||	(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
+	arx_assert(io);
+	if(!(io->ioflags & IO_NPC) || (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 		return 0;
 
 	float dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
