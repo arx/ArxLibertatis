@@ -253,7 +253,6 @@ long GetFreeDynLight();
 
 //****************************************************************************
 // CAMERA FUNCTIONS START
-void SetTargetCamera(EERIE_CAMERA * cam,float x,float y, float z);
 void PrepareCamera(EERIE_CAMERA *cam);
 void PrepareActiveCamera();
 // CAMERA FUNCTIONS END

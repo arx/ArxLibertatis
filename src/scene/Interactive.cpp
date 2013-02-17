@@ -3077,7 +3077,7 @@ void UpdateCameras() {
 						float f2 = 1.f - f1;
 						smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 
-						SetTargetCamera(&io->_camdata->cam, smoothtarget.x, smoothtarget.y, smoothtarget.z);
+						io->_camdata->cam.setTargetCamera(smoothtarget.x, smoothtarget.y, smoothtarget.z);
 						io->_camdata->cam.lasttarget = smoothtarget;
 						io->_camdata->cam.lastinfovalid = true;
 						io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
@@ -3085,7 +3085,7 @@ void UpdateCameras() {
 					else
 					{
 						if ( !(io->target == io->_camdata->cam.orgTrans.pos))
-							SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
+							io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
 
 						io->_camdata->cam.lasttarget = io->target;
 						io->_camdata->cam.lastinfovalid = true;
@@ -3104,7 +3104,7 @@ void UpdateCameras() {
 					io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
-					SetTargetCamera(&io->_camdata->cam, io->target.x, io->target.y, io->target.z);
+					io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
 					io->_camdata->cam.lasttarget = io->target;
 					io->_camdata->cam.lastinfovalid = true;
 					io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;

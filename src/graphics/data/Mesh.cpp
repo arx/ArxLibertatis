@@ -1020,19 +1020,6 @@ int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z) {
 	return c + d;
 }
 
-//*************************************************************************************
-// Sets the target of a camera...
-//*************************************************************************************
-
-void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
-{
-	if ((cam->orgTrans.pos.x == x) && (cam->orgTrans.pos.y == y) && (cam->orgTrans.pos.z == z)) return;
-
-	cam->angle.a = (degrees(getAngle(cam->orgTrans.pos.y, cam->orgTrans.pos.z, y, cam->orgTrans.pos.z + dist(Vec2f(x, z), Vec2f(cam->orgTrans.pos.x, cam->orgTrans.pos.z))))); //alpha entre orgn et dest;
-	cam->angle.b = (180.f + degrees(getAngle(cam->orgTrans.pos.x, cam->orgTrans.pos.z, x, z))); //beta entre orgn et dest;
-	cam->angle.g = 0.f;
-}
-
 int BackFaceCull2D(TexturedVertex * tv) {
 	if ((tv[0].p.x - tv[1].p.x)*(tv[2].p.y - tv[1].p.y) - (tv[0].p.y - tv[1].p.y)*(tv[2].p.x - tv[1].p.x) > 0.f)
 		return 0;
@@ -1052,7 +1039,7 @@ static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 	EERIEPOLY ep;
 	memcpy(&ep, epp, sizeof(EERIEPOLY));
 	raycam.orgTrans.pos = *orgn;
-	SetTargetCamera(&raycam, dest->x, dest->y, dest->z);
+	raycam.setTargetCamera(dest->x, dest->y, dest->z);
 	SP_PrepareCamera(&raycam);
 	EERIERTPPolyCam(&ep, &raycam);
 

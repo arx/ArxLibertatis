@@ -82,6 +82,15 @@ struct EERIE_CAMERA {
 	float cdepth;
 
 	Anglef size;
+
+	void setTargetCamera(float x, float y, float z)
+	{
+		if ((orgTrans.pos.x == x) && (orgTrans.pos.y == y) && (orgTrans.pos.z == z)) return;
+
+		angle.a = (degrees(getAngle(orgTrans.pos.y, orgTrans.pos.z, y, orgTrans.pos.z + dist(Vec2f(x, z), Vec2f(orgTrans.pos.x, orgTrans.pos.z))))); //alpha entre orgn et dest;
+		angle.b = (180.f + degrees(getAngle(orgTrans.pos.x, orgTrans.pos.z, x, z))); //beta entre orgn et dest;
+		angle.g = 0.f;
+	}
 };
 
 
