@@ -3762,42 +3762,42 @@ void ArxGame::manageKeyMouse() {
 				}
 			}
 			else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove)
-				if (ARXmenu.currentmode != AMCM_NEWQUEST) {
-					if(mouseDiffY != 0) {
-							float ia = ((float)mouseDiffY * (1.0f / 5) * fd);
+			if (ARXmenu.currentmode != AMCM_NEWQUEST) {
+				if(mouseDiffY != 0) {
+					float ia = ((float)mouseDiffY * (1.0f / 5) * fd);
 
-							if(entities.player() && EEfabs(ia)>2.f)
-								entities.player()->lastanimtime = 0;
+					if(entities.player() && EEfabs(ia)>2.f)
+						entities.player()->lastanimtime = 0;
 
-							if(INVERTMOUSE)
-								ia=-ia;
+					if(INVERTMOUSE)
+						ia=-ia;
 
-							float iangle = player.angle.a;
+					float iangle = player.angle.a;
 
-							player.desiredangle.a = player.angle.a;
-							player.desiredangle.a += ia;
-							player.desiredangle.a = MAKEANGLE(player.desiredangle.a);
+					player.desiredangle.a = player.angle.a;
+					player.desiredangle.a += ia;
+					player.desiredangle.a = MAKEANGLE(player.desiredangle.a);
 
-							if(player.desiredangle.a >= 74.9f && player.desiredangle.a <= 301.f) {
-								if (iangle<75.f)
-									player.desiredangle.a = 74.9f; //69
-								else
-									player.desiredangle.a = 301.f;
-							}
-
-						}
-
-					if(mouseDiffX != 0) {
-							float ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd); 
-
-							if(ib!=0.f)
-								player.Current_Movement|=PLAYER_ROTATE;
-
-							player.desiredangle.b=player.angle.b;
-							player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);
-							PLAYER_ROTATION=ib;
+					if(player.desiredangle.a >= 74.9f && player.desiredangle.a <= 301.f) {
+						if (iangle<75.f)
+							player.desiredangle.a = 74.9f; //69
+						else
+							player.desiredangle.a = 301.f;
 					}
+
 				}
+
+				if(mouseDiffX != 0) {
+					float ib = ((float)mouseDiffX * ( 1.0f / 5 ) * fd);
+
+					if(ib!=0.f)
+						player.Current_Movement|=PLAYER_ROTATE;
+
+					player.desiredangle.b=player.angle.b;
+					player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);
+					PLAYER_ROTATION=ib;
+				}
+			}
 		}
 	}
 
