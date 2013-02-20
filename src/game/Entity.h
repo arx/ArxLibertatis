@@ -213,7 +213,7 @@ enum GameFlag {
 	GFLAG_HIDEWEAPON        = (1<<12),
 	GFLAG_NOGORE            = (1<<13),
 	GFLAG_GOREEXPLODE       = (1<<14),
-	GFLAG_NOCOMPUTATION     = (1<<15),
+	GFLAG_NOCOMPUTATION     = (1<<15)
 };
 DECLARE_FLAGS(GameFlag, GameFlags)
 DECLARE_FLAGS_OPERATORS(GameFlags)
