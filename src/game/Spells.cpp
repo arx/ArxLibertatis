@@ -7395,8 +7395,7 @@ void TryToCastSpell(Entity * io, Spell spellid, long level, long target, Spellca
 	for (unsigned long j(0); j < 4; j++) io->spellcast_data.symb[j] = RUNE_NONE;
 
 	// checks for symbol drawing...
-	if (!(flags & SPELLCAST_FLAG_NOANIM) && io->ioflags & IO_NPC)
-	{
+	if(!flags.has(SPELLCAST_FLAG_NOANIM) && io->ioflags.has(IO_NPC)) {
 		ANIM_USE *ause1 = &io->animlayer[1];
 
 		AcquireLastAnim(io);
