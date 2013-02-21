@@ -944,31 +944,25 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	
 	// Avoids To treat an object that isn't Visible
 	if(io && io != entities.player() && !modinfo && ACTIVEBKG) {
-		long xx, yy;
-		xx = (pos.x) * ACTIVEBKG->Xmul;
-		yy = (pos.z) * ACTIVEBKG->Zmul;
+		long xx = pos.x * ACTIVEBKG->Xmul;
+		long yy = pos.z * ACTIVEBKG->Zmul;
 		
 		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize - 1 && yy < ACTIVEBKG->Zsize - 1) {
-			
-			long ok = 0;
+			bool ok = 0;
 
-			for (long ky = yy - 1 ; ky <= yy + 1 ; ky++ )
-			{
-				for ( long kx = xx - 1 ; kx <= xx + 1 ; kx++ )
-				{
+			for(long ky = yy - 1; ky <= yy + 1; ky++) {
+				for(long kx = xx - 1; kx <= xx + 1; kx++) {
 					FAST_BKG_DATA * feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[kx][ky];
-
 					if(feg->treat) {
-						ok = 1;
+						ok = true;
 						break;
 					}
 				}
-
-				if ( ok )
+				if(ok)
 					break;
 			}
-
-			if ( !ok ) return;
+			if(!ok)
+				return;
 		}
 	}
 
