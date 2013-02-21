@@ -1891,7 +1891,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	
 	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);
 	
-	if(Cedric_IO_Visible(io)) {
+	if(!Cedric_IO_Visible(io))
+		return;
 		
 		// Manage Extra Rotations in Local Space
 		Cedric_ManageExtraRotationsFirst(io, eobj);
@@ -2007,7 +2008,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			}
 
 		}
-	}
 }
 
 void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT)
