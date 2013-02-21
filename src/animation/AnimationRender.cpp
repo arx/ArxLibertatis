@@ -118,8 +118,7 @@ inline	static	void	Cedric_ResetBoundingBox(Entity * io)
 
 extern float INVISIBILITY_OVERRIDE;
 extern long EXTERNALVIEW;
-static	void	Cedric_GetScale(float & scale, float & invisibility, Entity * io)
-{
+static void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
 	if(io) {
 		invisibility = io->invisibility;
 
@@ -131,7 +130,8 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, Entity * io)
 
 			if(num >= 0) {
 				if(player.Full_Skill_Intuition > spells[num].caster_level * 10) {
-					invisibility -= (float)player.Full_Skill_Intuition * ( 1.0f / 100 ) + (float)spells[num].caster_level * ( 1.0f / 10 );
+					invisibility -= (float)player.Full_Skill_Intuition * (1.0f / 100)
+									+ (float)spells[num].caster_level * (1.0f / 10);
 
 					clamp(invisibility, 0.1f, 1.f);
 				}
