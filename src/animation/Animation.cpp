@@ -130,21 +130,20 @@ static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1
 static TexturedVertex tTexturedVertexTab2[4000];
 
 extern long EXTERNALVIEW;
-void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility,
-                                       float & scale) {
-	
+void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility, float & scale) {
 	if(io) {
 		invisibility = io->invisibility;
 
-		if (invisibility > 1.f) invisibility -= 1.f;
+		if (invisibility > 1.f)
+			invisibility -= 1.f;
 
 		if(io != entities.player() && invisibility > 0.f && !EXTERNALVIEW) {
 			long num = ARX_SPELLS_GetSpellOn(io, SPELL_INVISIBILITY);
 
 			if(num >= 0) {
-				if(player.Full_Skill_Intuition>spells[num].caster_level * 10) {
-					invisibility -= (float)player.Full_Skill_Intuition * .01f
-					                + (float)spells[num].caster_level * .1f;
+				if(player.Full_Skill_Intuition > spells[num].caster_level * 10) {
+					invisibility -= (float)player.Full_Skill_Intuition * (1.0f / 100)
+									+ (float)spells[num].caster_level * (1.0f / 10);
 
 					clamp(invisibility, 0.1f, 1.f);
 				}
@@ -153,7 +152,6 @@ void EERIE_ANIM_Get_Scale_Invisibility(Entity * io, float & invisibility,
 
 		// Scaling Value for this object (Movements will also be scaled)
 		scale = io->scale;
-		
 	} else {
 		invisibility = 0.f;
 		scale = 1.f;
