@@ -992,10 +992,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	// Precalc rotations
 	if(angle) {
 		Anglef tempAngle = *angle;
-		if (modinfo) {
-			tempAngle += modinfo->rot;
-			tempAngle.normalize();
-		}
+		arx_assert(!modinfo);
 
 		Ncam.orgTrans.updateFromAngle(tempAngle);
 	}
