@@ -1508,65 +1508,6 @@ static void PlayerLaunchArrow_Test(float aimratio, float poisonous, Vec3f * pos,
 }
 
 extern long sp_max;
-void PlayerLaunchArrow(float aimratio,float poisonous)
-{
-	Vec3f position;
-	Vec3f vect;
-	Vec3f dvect;
-	EERIEMATRIX mat;
-	EERIE_QUAT quat;
-
-	float anglea = radians(player.angle.a);
-	float angleb = radians(player.angle.b);
-	vect.x=-EEsin(angleb)*EEcos(anglea);
-	vect.y= EEsin(anglea);
-	vect.z= EEcos(angleb)*EEcos(anglea);
-	Vec3f upvect(0,0,-1);
-	VRotateX(&upvect,anglea);
-	VRotateY(&upvect,angleb);
-	upvect = Vec3f(0,-1,0);
-	VRotateX(&upvect,anglea);
-	VRotateY(&upvect,angleb);
-	MatrixSetByVectors(&mat,&dvect,&upvect);
-	QuatFromMatrix(quat,mat);
-	float velocity = aimratio + 0.3f;
-
-	if (velocity<0.9f) velocity=0.9f;
-
-	Vec3f v1,v2;
-	Vec3f vv(0,0,1);
-	float aa=player.angle.a;
-	float ab=90-player.angle.b;
-	Vector_RotateZ(&v1,&vv,aa);
-	VRotateY(&v1,ab);
-	vv = Vec3f(0,-1,0);
-	Vector_RotateZ(&v2,&vv,aa);
-	VRotateY(&v2,ab);
-	EERIEMATRIX tmat;
-	MatrixSetByVectors(&tmat,&v1,&v2);
-	QuatFromMatrix(quat,tmat);
-
-	float wd=(float)ARX_EQUIPMENT_Apply(
-		entities.player(),IO_EQUIPITEM_ELEMENT_Damages,1);
-
-	float weapon_damages=wd;
-
-	float damages=
-		weapon_damages
-		*(1.f+
-		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
-
-	ARX_THROWN_OBJECT_Throw(
-										0, //source
-										&position,
-										&vect,
-										&upvect,
-										&quat,
-							velocity,
-										damages,
-										poisonous); //damages
-
-}
 
 extern unsigned long LAST_JUMP_ENDTIME;
 
