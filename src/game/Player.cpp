@@ -2325,12 +2325,6 @@ void ARX_PLAYER_Frame_Update()
 			io->_npcdata->ex_rotate->flags &= ~EXTRA_ROTATE_REALISTIC;
 	}
 
-	// Changes player ARMS focal depending on alpha angle.
-	if (player.angle.a > 180)
-		PLAYER_ARMS_FOCAL = (float)CURRENT_BASE_FOCAL - 80.f;
-	else
-		PLAYER_ARMS_FOCAL = (float)CURRENT_BASE_FOCAL - 80.f + player.angle.a;
-
 	PLAYER_ARMS_FOCAL = static_cast<float>(CURRENT_BASE_FOCAL);
 
 	ARX_PLAYER_ComputePlayerFullStats();
