@@ -7313,8 +7313,6 @@ long Manage3DCursor(long flags)
 				DrawEERIEInter(io->obj,&temp,&collidpos,io);
 				io->invisibility=old;
 			}
-			else if (lastanything>0.f)
-				DrawEERIEInter(io->obj, &temp, &pos, io);
 			else
 				DrawEERIEInter(io->obj, &temp, &pos, io);
 			}
