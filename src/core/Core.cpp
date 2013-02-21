@@ -1515,9 +1515,6 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	Vec3f dvect;
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
-	float anglea;
-	float angleb;
-	float velocity;
 
 	if ((sp_max) && (poisonous<3.f))
 		poisonous=3.f;
@@ -1531,23 +1528,20 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 		position = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.left_attach].v;
 	}
 
-	anglea=radians(player.angle.a);
-	angleb=radians(player.angle.b);
+	float anglea = radians(player.angle.a);
+	float angleb = radians(player.angle.b);
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
-
 	Vec3f upvect(0,0,-1);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
-
 	upvect = Vec3f(0,-1,0);
 	VRotateX(&upvect,anglea);
 	VRotateY(&upvect,angleb);
 	MatrixSetByVectors(&mat,&dvect,&upvect);
 	QuatFromMatrix(quat,mat);
-
-	velocity=(aimratio+0.3f);
+	float velocity = aimratio + 0.3f;
 
 	if (velocity<0.9f) velocity=0.9f;
 
