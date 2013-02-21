@@ -1516,9 +1516,6 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 
-	if ((sp_max) && (poisonous<3.f))
-		poisonous=3.f;
-
 	position.x=player.pos.x;
 	position.y=player.pos.y+40.f;
 	position.z=player.pos.z;
@@ -1578,27 +1575,6 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 										damages,
 										poisonous); //damages
 
-	if (sp_max)
-	{
-		Anglef angle;
-		Vec3f pos;
-		pos.x=player.pos.x;
-		pos.y=player.pos.y+40.f;
-		pos.z=player.pos.z;
-		angle.a=player.angle.a;
-		angle.b=player.angle.b+8;
-		angle.g=player.angle.g;
-		PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
-		angle.a=player.angle.a;
-		angle.b=player.angle.b-8;
-		PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
-		angle.a=player.angle.a;
-		angle.b=player.angle.b+4.f;
-		PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
-		angle.a=player.angle.a;
-		angle.b=player.angle.b-4.f;
-		PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
-	}
 }
 
 extern unsigned long LAST_JUMP_ENDTIME;
@@ -2561,7 +2537,35 @@ void ManageCombatModeAnimations()
 					}
 				}
 
-				PlayerLaunchArrow(STRIKE_AIMTIME,poisonous);
+				float aimratio = STRIKE_AIMTIME;
+
+				if ((sp_max) && (poisonous<3.f))
+					poisonous=3.f;
+
+				PlayerLaunchArrow(aimratio,poisonous);
+
+				if (sp_max)
+				{
+					Anglef angle;
+					Vec3f pos;
+					pos.x=player.pos.x;
+					pos.y=player.pos.y+40.f;
+					pos.z=player.pos.z;
+					angle.a=player.angle.a;
+					angle.b=player.angle.b+8;
+					angle.g=player.angle.g;
+					PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
+					angle.a=player.angle.a;
+					angle.b=player.angle.b-8;
+					PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
+					angle.a=player.angle.a;
+					angle.b=player.angle.b+4.f;
+					PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
+					angle.a=player.angle.a;
+					angle.b=player.angle.b-4.f;
+					PlayerLaunchArrow_Test(aimratio,poisonous,&pos,&angle);
+				}
+
 				AimTime=0;
 			}
 			else if (useanim->cur_anim==alist[ANIM_MISSILE_STRIKE])
