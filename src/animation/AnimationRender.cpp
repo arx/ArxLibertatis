@@ -140,17 +140,6 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, Entity * io)
 
 		// Scaling Value for this object (Movements will also be scaled)
 		scale = io->scale;
-	} else {
-		if(INVISIBILITY_OVERRIDE != 0.f) {
-			invisibility = INVISIBILITY_OVERRIDE;
-
-			if (invisibility > 1.f)
-				invisibility -= 1.f;
-		} else {
-			invisibility = 0.f;
-		}
-
-		scale = 1.f;
 	}
 }
 
@@ -1874,6 +1863,19 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	// Set scale and invisibility factors
 	Cedric_GetScale(scale, invisibility, io);
 	
+	if(!io) {
+		if(INVISIBILITY_OVERRIDE != 0.f) {
+			invisibility = INVISIBILITY_OVERRIDE;
+
+			if (invisibility > 1.f)
+				invisibility -= 1.f;
+		} else {
+			invisibility = 0.f;
+		}
+
+		scale = 1.f;
+	}
+
 	// Flag linked objects
 	//Cedric_FlagLinkedObjects(eobj); ???
 	
