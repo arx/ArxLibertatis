@@ -1516,15 +1516,6 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	EERIEMATRIX mat;
 	EERIE_QUAT quat;
 
-	position.x=player.pos.x;
-	position.y=player.pos.y+40.f;
-	position.z=player.pos.z;
-
-	if (entities.player()->obj->fastaccess.left_attach>=0)
-	{
-		position = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.left_attach].v;
-	}
-
 	float anglea = radians(player.angle.a);
 	float angleb = radians(player.angle.b);
 	vect.x=-EEsin(angleb)*EEcos(anglea);
@@ -2542,7 +2533,19 @@ void ManageCombatModeAnimations()
 				if ((sp_max) && (poisonous<3.f))
 					poisonous=3.f;
 
-				PlayerLaunchArrow(aimratio,poisonous);
+				Vec3f orgPos;
+				orgPos.x=player.pos.x;
+				orgPos.y=player.pos.y+40.f;
+				orgPos.z=player.pos.z;
+
+				if (entities.player()->obj->fastaccess.left_attach>=0)
+				{
+					orgPos = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.left_attach].v;
+				}
+
+				Anglef orgAngle = player.angle;
+
+				PlayerLaunchArrow_Test(aimratio,poisonous, &orgPos, &orgAngle);
 
 				if (sp_max)
 				{
