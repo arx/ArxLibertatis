@@ -978,7 +978,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 	EERIE_ANIM_Get_Scale_Invisibility(io, invisibility, scale);
 
-	if ( ( !io ) && ( INVISIBILITY_OVERRIDE != 0.f ) )
+	if(!io && INVISIBILITY_OVERRIDE != 0.f)
 		invisibility = INVISIBILITY_OVERRIDE;
 	
 	// Precalc rotations
