@@ -118,7 +118,6 @@ TexturedVertex LATERDRAWHALO[HALOMAX * 4];
 EERIE_LIGHT * llights[32];
 float dists[32];
 float values[32];
-long MUST_DRAW = 0;
 long FORCE_NO_HIDE = 0;
 extern unsigned char * grps;
 long TRAP_DETECT = -1;
@@ -944,8 +943,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	Vec3f pos = *poss;
 	
 	// Avoids To treat an object that isn't Visible
-	if(io && io != entities.player() && !modinfo && !MUST_DRAW && ACTIVEBKG) {
-		
+	if(io && io != entities.player() && !modinfo && ACTIVEBKG) {
 		long xx, yy;
 		xx = (pos.x) * ACTIVEBKG->Xmul;
 		yy = (pos.z) * ACTIVEBKG->Zmul;
