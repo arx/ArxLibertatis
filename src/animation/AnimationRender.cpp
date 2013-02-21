@@ -1901,10 +1901,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	Cedric_AnimateObject(io, eobj, animuse);
 
 	// Check for Animation Blending in Local space
-	if (io)
-	{
-		if (timm > 0.f)
-		{
+	if(io) {
+		if(timm > 0.f) {
 			Cedric_BlendAnimation(eobj, timm);
 			Cedric_SaveBlendData(io);
 		}
@@ -1918,20 +1916,18 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	/* Display the object */
 	obj = eobj->c_data;
 
-	if (!obj)
+	if(!obj)
 		return;
 
 	if(!(Cedric_TransformVerts(io, eobj, obj, pos) && render))
 		return;
 
-	if(!Cedric_ApplyLighting(eobj, obj, io, pos)) {
+	if(!Cedric_ApplyLighting(eobj, obj, io, pos))
 		return;
-	}
 
 	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
-	if (io)
-	{
+	if(io) {
 		io->bbox1.x = (short)BBOXMIN.x;
 		io->bbox2.x = (short)BBOXMAX.x;
 		io->bbox1.y = (short)BBOXMIN.y;
@@ -1940,9 +1936,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 	// Now we can render Linked Objects
 
-	for (long k = 0; k < eobj->nblinked; k++)
-	{
-		if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj) {
+	for (long k = 0; k < eobj->nblinked; k++) {
+		if((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj) {
 
 			eobj->linked[k].modinfo.rot = Anglef::ZERO;
 
@@ -1951,41 +1946,33 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			EERIE_3DOBJ * obj = (EERIE_3DOBJ *) eobj->linked[k].obj;
 
 			// Store item invisibility flag
-			if (io && ioo)
-			{
+			if(io && ioo) {
 				old = ioo->invisibility;
 
-				if (io == entities.player())
-				{
+				if(io == entities.player()) {
 					ioo->invisibility = INVISIBILITY_OVERRIDE;
-				}
-				else
-				{
+				} else {
 					INVISIBILITY_OVERRIDE = 0.f;
 					ioo->invisibility = invisibility;
 				}
-			}
-			else
-			{
-				if (ioo)
-				{
+			} else {
+				if(ioo) {
 					INVISIBILITY_OVERRIDE = 0.f;
 					ioo->invisibility = invisibility;
-				}
-				else
+				} else
 					INVISIBILITY_OVERRIDE = invisibility;
 			}
 
-			if (ioo)
-			{
-				if ((ioo->ignition > 0.f) || (ioo->ioflags & IO_FIERY))
+			if(ioo) {
+				if((ioo->ignition > 0.f) || (ioo->ioflags & IO_FIERY))
 					ManageIgnition(ioo);
 			}
 
 			// specific check to avoid drawing player weapon on its back when in subjective view
-			if ((io == entities.player()) &&
-					(eobj->linked[k].lidx == entities.player()->obj->fastaccess.weapon_attach)
-					&& (!EXTERNALVIEW))
+			if(io == entities.player() &&
+				eobj->linked[k].lidx == entities.player()->obj->fastaccess.weapon_attach &&
+				!EXTERNALVIEW
+			)
 				continue;
 
 			long ll = eobj->linked[k].lidx2;
@@ -1996,13 +1983,13 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			Vec3f * posi = &eobj->vertexlist3[ll].v;
 			Quat_Copy(&quat, &eobj->c_data->bones[eobj->linked[k].lgroup].quatanim);
 
-			EERIEMATRIX	 matrix;
+			EERIEMATRIX matrix;
 			MatrixFromQuat(&matrix, &quat);
 			DrawEERIEInter(obj, NULL, posi, ioo, &matrix, &eobj->linked[k].modinfo);
-			INVISIBILITY_OVERRIDE = 0.f;
 
+			INVISIBILITY_OVERRIDE = 0.f;
 			// Restore item invisibility flag
-			if (ioo)
+			if(ioo)
 				ioo->invisibility = old;
 		}
 	}
