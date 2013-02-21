@@ -2265,12 +2265,9 @@ extern long TRAP_SECRET;
 //*************************************************************************************
 void ARX_PLAYER_Frame_Update()
 {
-	if (ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) >= 0)
-	{
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_PARALYSE) >= 0) {
 		PLAYER_PARALYSED = 1;
-	}
-	else
-	{
+	} else {
 		entities.player()->ioflags &= ~IO_FREEZESCRIPT;
 		PLAYER_PARALYSED = 0;
 	}
@@ -2291,29 +2288,23 @@ void ARX_PLAYER_Frame_Update()
 	if(io && io->_npcdata->ex_rotate) {
 		float v = player.angle.a;
 
-		if (v > 160) v = -(360 - v);
+		if(v > 160)
+			v = -(360 - v);
 
-		if (player.Interface & INTER_COMBATMODE)
-		{
-			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW)
-			{
+		if(player.Interface & INTER_COMBATMODE) {
+			if (ARX_EQUIPMENT_GetPlayerWeaponType() == WEAPON_BOW) {
 				io->_npcdata->ex_rotate->group_rotate[0].a = 0; //head
 				io->_npcdata->ex_rotate->group_rotate[1].a = 0; //neck
 				io->_npcdata->ex_rotate->group_rotate[2].a = 0; //chest
 				io->_npcdata->ex_rotate->group_rotate[3].a = v; //belt
-			}
-			else
-			{
+			} else {
 				v *= ( 1.0f / 10 ); 
 				io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
 				io->_npcdata->ex_rotate->group_rotate[1].a = v; //neck
 				io->_npcdata->ex_rotate->group_rotate[2].a = v * 4; //chest
 				io->_npcdata->ex_rotate->group_rotate[3].a = v * 4; //belt
 			}
-
-		}
-		else
-		{
+		} else {
 			v *= ( 1.0f / 4 ); 
 			io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
 			io->_npcdata->ex_rotate->group_rotate[1].a = v; //neck
@@ -2321,7 +2312,7 @@ void ARX_PLAYER_Frame_Update()
 			io->_npcdata->ex_rotate->group_rotate[3].a = v; //belt*/
 		}
 
-		if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic == 2))
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic == 2)
 			io->_npcdata->ex_rotate->flags &= ~EXTRA_ROTATE_REALISTIC;
 	}
 
@@ -2332,7 +2323,7 @@ void ARX_PLAYER_Frame_Update()
 	TRAP_DETECT = checked_range_cast<long>(player.Full_Skill_Mecanism);
 	TRAP_SECRET = checked_range_cast<long>(player.Full_Skill_Intuition);
 
-	if (ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) >= 0)
+	if(ARX_SPELLS_GetSpellOn(entities.player(), SPELL_DETECT_TRAP) >= 0)
 		TRAP_DETECT = 100;
 
 	ModeLight |= MODE_DEPTHCUEING;
