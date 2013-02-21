@@ -1922,7 +1922,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			return;
 
 
-		if(Cedric_TransformVerts(io, eobj, obj, pos) && render) {
+		if(!(Cedric_TransformVerts(io, eobj, obj, pos) && render))
+			return;
 			
 			if(!Cedric_ApplyLighting(eobj, obj, io, pos)) {
 				return;
@@ -2007,7 +2008,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 				}
 			}
 
-		}
+
 }
 
 void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT)
