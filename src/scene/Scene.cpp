@@ -2077,10 +2077,11 @@ void ARX_SCENE_Render() {
 	long lll;
 	
 	// Temporary Hack...
-	long LAST_FC=FRAME_COUNT;
-	FRAME_COUNT=0;
+	long LAST_FC = FRAME_COUNT;
+	FRAME_COUNT = 0;
 
-	if ((FRAME_COUNT<=0) && (ModeLight & MODE_DYNAMICLIGHT)) PrecalcDynamicLighting(x0,z0,x1,z1);
+	if(FRAME_COUNT <= 0 && (ModeLight & MODE_DYNAMICLIGHT))
+		PrecalcDynamicLighting(x0, z0, x1, z1);
 	
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
@@ -2122,88 +2123,82 @@ void ARX_SCENE_Render() {
 	for(long n=0; n<=lcval; n++) {
 	for(long j=zsnap-n; j<=zsnap+n; j++) {
 	for(long i=xsnap-n; i<=xsnap+n; i++) {
-		if ( (i!=xsnap-n) && (i!=xsnap+n) && (j!=zsnap-n) && (j!=zsnap+n) )
-		{
+		if((i!=xsnap-n) && (i!=xsnap+n) && (j!=zsnap-n) && (j!=zsnap+n))
 			continue;
-		}
 
-		if ( (i<0) || (j<0) || (i>=ACTIVEBKG->Xsize) || (j>=ACTIVEBKG->Zsize) ) continue;
+		if(i < 0 || j < 0 || i >= ACTIVEBKG->Xsize || j >= ACTIVEBKG->Zsize)
+			continue;
 
-		if (i<x0) continue;
+		if(i < x0)
+			continue;
 
-		if (i>x1) continue;
+		if(i > x1)
+			continue;
 	
-						feg = &ACTIVEBKG->fastdata[i][j]; 
+		feg = &ACTIVEBKG->fastdata[i][j];
 
-		if (!feg->treat) continue;		
+		if(!feg->treat)
+			continue;
 
-		for ( lll=0;lll<feg->nbpoly;lll++)
-		{
+		for(lll=0; lll<feg->nbpoly; lll++) {
 			//SPECIFIC INTEL COMPILER  
 			ep=&feg->polydata[lll];
 
-			if (ep->type & (POLY_IGNORE | POLY_NODRAW))		
+			if(ep->type & (POLY_IGNORE | POLY_NODRAW))
 				continue;
 
-			if ((ep->min.y > feg->frustrum_maxy)	
-				|| (ep->max.y < feg->frustrum_miny))
+			if(ep->min.y > feg->frustrum_maxy || ep->max.y < feg->frustrum_miny)
 				continue;
 			
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
 				GRenderer->SetCulling(Renderer::CullNone);
-			else
-			{
-				
+			else {
 				nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
-				if ( ep->type & POLY_QUAD) 
-				{
-					if ( (dot( ep->norm , nrm )>0.f) &&
-						 (dot( ep->norm2 , nrm )>0.f) )	
+				if(ep->type & POLY_QUAD) {
+					if(dot(ep->norm ,nrm) > 0.f && dot(ep->norm2, nrm) > 0.f)
 						continue;
 				}
-				else if ( dot( ep->norm , nrm )>0.f)
-						continue;
+				else if(dot(ep->norm, nrm) > 0.f)
+					continue;
 
 				GRenderer->SetCulling(Renderer::CullCW);
 			}
 			 
-							if (!EERIERTPPoly(ep)) 
-				continue; 
+			if(!EERIERTPPoly(ep))
+				continue;
 
 			long to;
-			if ( ep->type & POLY_QUAD) 
-			{
-				if (FRAME_COUNT<=0) ep->tv[3].color=ep->v[3].color;	
+			if(ep->type & POLY_QUAD) {
+				if(FRAME_COUNT <= 0)
+					ep->tv[3].color=ep->v[3].color;
 
 				to=4;
-			}
-			else to=3;
+			} else
+				to=3;
 
-			if (ep->type & POLY_TRANS) 
-			{
+			if(ep->type & POLY_TRANS) {
 				ManageLavaWater(ep,to,tim);
 				TransPol[TRANSPOLYSPOS++]=ep;
 
-				if (TRANSPOLYSPOS>=MAX_TRANSPOL) TRANSPOLYSPOS=MAX_TRANSPOL-1;
+				if(TRANSPOLYSPOS >= MAX_TRANSPOL)
+					TRANSPOLYSPOS = MAX_TRANSPOL-1;
 
-				if (ViewMode)
-				{
-					if (ViewMode & VIEWMODE_WIRE) 
+				if(ViewMode) {
+					if(ViewMode & VIEWMODE_WIRE)
 						EERIEPOLY_DrawWired(ep);
 					
-					if (ViewMode & VIEWMODE_NORMALS) 
+					if(ViewMode & VIEWMODE_NORMALS)
 						EERIEPOLY_DrawNormals(ep);
-				}	
-
+				}
 				continue;
 			}
 
-			if (!Project.improve) { // Normal View...
+			if(!Project.improve) { // Normal View...
 				if(ep->type & POLY_GLOW) {
 					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
 				} else {
-					if(FRAME_COUNT<=0) {
+					if(FRAME_COUNT <= 0) {
 						if(ModeLight & MODE_DYNAMICLIGHT) {
 							ApplyDynLight(ep);
 						} else {
@@ -2217,10 +2212,10 @@ void ARX_SCENE_Render() {
 				Delayed_EERIEDRAWPRIM(ep);
 
 				if(ViewMode) {
-					if (ViewMode & VIEWMODE_WIRE) 
+					if(ViewMode & VIEWMODE_WIRE)
 						EERIEPOLY_DrawWired(ep);
 					
-					if (ViewMode & VIEWMODE_NORMALS) 
+					if(ViewMode & VIEWMODE_NORMALS)
 						EERIEPOLY_DrawNormals(ep);
 				}	
 			} else { // Improve Vision Activated
@@ -2253,12 +2248,12 @@ void ARX_SCENE_Render() {
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 					}
-								}
+				}
 
 				Delayed_EERIEDRAWPRIM(ep);
 			}			
-			}			
 		}
+	}
 	}
 	}
 	}
