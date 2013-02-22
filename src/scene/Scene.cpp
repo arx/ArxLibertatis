@@ -2293,51 +2293,51 @@ void ARX_SCENE_Render() {
 	
 	}
 		
-		if ((eyeball.exist!=0) && eyeballobj)
-			ARXDRAW_DrawEyeBall();
+	if ((eyeball.exist!=0) && eyeballobj)
+		ARXDRAW_DrawEyeBall();
 
-		
-		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-		if (BoomCount) 
-			ARXDRAW_DrawPolyBoom();
-
-		PopAllTriangleListTransparency();
-		
-		if(USE_PORTALS && portals) {
-			ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
-		}
-		else
-		{
-			if (TRANSPOLYSPOS)
-				ARXDRAW_DrawAllTransPolysPos();
-		}
-
-if (HALOCUR>0)
-{
-	GRenderer->ResetTexture(0);
-	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
-	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	for (long i=0; i<HALOCUR; i++) {
-		//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
-		TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
+	if (BoomCount)
+		ARXDRAW_DrawPolyBoom();
 
-		if (vert[2].color == 0)
-		{
-			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);									
-			vert[2].color =0xFF000000;
-			EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
-			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
-		}
-		else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+	PopAllTriangleListTransparency();
+
+	if(USE_PORTALS && portals) {
+		ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
+	}
+	else
+	{
+		if (TRANSPOLYSPOS)
+			ARXDRAW_DrawAllTransPolysPos();
 	}
 
-	HALOCUR = 0;
-	GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
-}
+	if (HALOCUR>0)
+	{
+		GRenderer->ResetTexture(0);
+		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+		GRenderer->SetCulling(Renderer::CullNone);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
+
+		for (long i=0; i<HALOCUR; i++) {
+			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
+			TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
+
+			if (vert[2].color == 0)
+			{
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+				vert[2].color =0xFF000000;
+				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+			}
+			else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+		}
+
+		HALOCUR = 0;
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	}
 
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
