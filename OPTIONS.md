@@ -47,3 +47,21 @@ Arx Libertatis adjust the compiler flags to provide an optimal configuration for
 * `SET_WARNING_FLAGS` (default: `ON`): Adjust compiler warning flags. This should not affect the produced binaries but is useful to catch potential problems.
 * `SET_OPTIMIZATION_FLAGS` (default: `ON`): Adjust compiler optimization flags. For non-debug builds the only thing this does is instruct the linker to only link against libraries that are actually needed.
 * `USE_CXX11` (default: `ON`): Try to compile in C++11 mode if available.
+
+### Static linking
+
+* `USE_STATIC_LIBS` (default: `ON` on Windows, `OFF` elsewhere): Turns on static linking for all libraries, including `-static-libgcc` and `-static-libstdc++`. You can also use the individual options below:
+* `GLEW_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link GLEW.
+* `Boost_USE_STATIC_LIBS` (default: `ON` iff `USE_STATIC_LIBS` is enabled): Statically link Boost. See also `FindBoost.cmake` in your CMake installation.
+
+### Install options
+
+The following options can be used to customize where `make install` puts the various components. All of the following paths can either be absolute or relative to the `CMAKE_INSTALL_PREFIX`.
+
+* `CMAKE_INSTALL_DATAROOTDIR` (default: `share`): Where to install data files
+* `ICONDIR` (default: `${DATAROOTDIR}/pixmaps`): Where to install icons
+* `APPDIR` (default: `${DATAROOTDIR}/applications`): Where to install .desktop files
+* `CMAKE_INSTALL_MANDIR` (default: `${DATAROOTDIR}/man`): Where to install man pages
+* `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
+* `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables
+* `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables

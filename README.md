@@ -87,7 +87,7 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `USE_SDL` (default=ON): Build the SDL windowing and input backends
 * `USE_NATIVE_FS` (default=ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
 
-Windows-only options (always OFF for non-windows platforms):
+Windows-only options (always `OFF` for non-windows platforms):
 
 * `USE_DSOUND` (default=ON): Build the DirectSound audio backend
 * `USE_D3D9` (default=ON): Build the Direct3D 9 renderer backend
@@ -97,19 +97,11 @@ Install options:
 
 * `CMAKE_INSTALL_PREFIX` (default: `/usr/local` on UNIX and `C:/Program Files` on Windows): Where to install Arx Libertatis
 
-Linux-only install options (absolute or relative to `CMAKE_INSTALL_PREFIX`):
-
-* `CMAKE_INSTALL_DATAROOTDIR` (default: `share`): Where to install data files
-* `ICONDIR` (default: `DATAROOTDIR/pixmaps`): Where to install icons
-* `APPDIR` (default: `DATAROOTDIR/applications`): Where to install .desktop files
-* `CMAKE_INSTALL_MANDIR` (default: `DATAROOTDIR/man`): Where to install man pages
-* `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
-* `GAMESBINDIR` (default: BINDIR): Where to install game executables
-* `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
-
 Set options by passing `-D<option>=<value>` to cmake.
 
 Backends that are not available are disabled by default. The `cmake` run should display a summary of the enabled backends at the end.
+
+Advanced options not listed here are documented in **OPTIONS.md**.
 
 ## Data file, config and savegame locations
 

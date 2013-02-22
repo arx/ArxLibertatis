@@ -22,16 +22,20 @@ else()
 	set(MACOSX 0)
 endif()
 
+# Components
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_TOOLS "Build tools" ON)
+set(def_BUILD_CRASHREPORTER ON)
 if(MACOSX)
-	option(BUILD_CRASHREPORTER "Build the crash reporter" OFF)
-else()
-	option(BUILD_CRASHREPORTER "Build the crash reporter" ON)
+	set(def_BUILD_CRASHREPORTER OFF)
+elseif(WIN32 AND NOT MSVC)
+	set(def_BUILD_CRASHREPORTER OFF)
 endif()
+option(BUILD_CRASHREPORTER "Build the crash reporter" ${def_BUILD_CRASHREPORTER})
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
-option(UNITY_BUILD "Unity build" OFF)
+
+# Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
 option(USE_DSOUND "Build the DirectSound audio backend" ON)
 option(USE_OPENGL "Build the OpenGL renderer backend" ON)
@@ -39,46 +43,60 @@ option(USE_D3D9 "Build the Direct3D 9 renderer backend" ON)
 option(USE_SDL "Build the SDL windowing backend" ON)
 option(USE_DINPUT8 "Build the DirectInput 8 input backend" ON)
 option(USE_NATIVE_FS "Use the native filesystem backend directly instead of boost" ON)
+
+# Build types
+option(UNITY_BUILD "Unity build" OFF)
 option(DEBUG_EXTRA "Expensive debug options" OFF)
 option(SET_WARNING_FLAGS "Adjust compiler warning flags" ON)
 option(SET_OPTIMIZATION_FLAGS "Adjust compiler optimization flags" ON)
 option(USE_CXX11 "Try to use C++11 if available" ON)
 
-# Install destinations
-if(NOT WIN32)
-	if(CMAKE_VERSION VERSION_LESS 2.8.5)
-		set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
-		    STRING "read-only architecture-independent data root (share) (relative to prefix).")
-		mark_as_advanced(CMAKE_INSTALL_DATAROOTDIR)
-		set(CMAKE_INSTALL_BINDIR "bin" CACHE
-		    STRING "user executables (bin) (relative to prefix).")
-		mark_as_advanced(CMAKE_INSTALL_BINDIR)
-		set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
-		    STRING "program executables (libexec) (relative to prefix).")
-		mark_as_advanced(CMAKE_INSTALL_LIBEXECDIR)
-		set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
-		    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
-		mark_as_advanced(CMAKE_INSTALL_MANDIR)
-		foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
-			if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
-				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
-			else()
-				set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
-			endif()
-		endforeach()
-	else()
-		include(GNUInstallDirs)
-	endif()
-	set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
-	    STRING "Install location for icons (relative to prefix).")
-	mark_as_advanced(ICONDIR)
-	set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
-	    STRING "Install location for .desktop files (relative to prefix).")
-	mark_as_advanced(APPDIR)
-	set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
-	    STRING "Install location for game executables (relative to prefix).")
-	mark_as_advanced(GAMESBINDIR)
+# Static libs
+set(default_USE_STATIC_LIBS OF)
+if(WIN32)
+	set(default_USE_STATIC_LIBS ON)
 endif()
+option(USE_STATIC_LIBS       "Statically link libraries" ${default_USE_STATIC_LIBS})
+option(GLEW_USE_STATIC_LIBS  "Statically link GLEW"      ${USE_STATIC_LIBS})
+option(Boost_USE_STATIC_LIBS "Statically link Boost"     ${USE_STATIC_LIBS})
+
+# Install destinations
+if(CMAKE_VERSION VERSION_LESS 2.8.5)
+	set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
+	    STRING "read-only architecture-independent data root (share) (relative to prefix).")
+	set(CMAKE_INSTALL_BINDIR "bin" CACHE
+	    STRING "user executables (bin) (relative to prefix).")
+	set(CMAKE_INSTALL_LIBEXECDIR "libexec" CACHE
+	    STRING "program executables (libexec) (relative to prefix).")
+	set(CMAKE_INSTALL_MANDIR "${CMAKE_INSTALL_DATAROOTDIR}/man" CACHE
+	    STRING "man documentation (DATAROOTDIR/man) (relative to prefix).")
+	foreach(dir BINDIR LIBEXECDIR DATAROOTDIR MANDIR)
+		if(NOT IS_ABSOLUTE ${CMAKE_INSTALL_${dir}})
+			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_${dir}}")
+		else()
+			set(CMAKE_INSTALL_FULL_${dir} "${CMAKE_INSTALL_${dir}}")
+		endif()
+	endforeach()
+	mark_as_advanced(
+		CMAKE_INSTALL_DATAROOTDIR
+		CMAKE_INSTALL_BINDIR
+		CMAKE_INSTALL_LIBEXECDIR
+		CMAKE_INSTALL_MANDIR
+	)
+else()
+	include(GNUInstallDirs)
+endif()
+set(ICONDIR "${CMAKE_INSTALL_DATAROOTDIR}/pixmaps" CACHE
+    STRING "Install location for icons (relative to prefix).")
+set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
+    STRING "Install location for .desktop files (relative to prefix).")
+set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
+    STRING "Install location for game executables (relative to prefix).")
+mark_as_advanced(
+	ICONDIR
+	APPDIR
+	GAMESBINDIR
+)
 
 # Default runtime user and data directories
 if(WIN32)
@@ -119,13 +137,15 @@ else()
 		CACHE STRING "Executable locations that should not be used as a data dir"
 	)
 endif()
-mark_as_advanced(DATA_DIR)
-mark_as_advanced(DATA_DIR_PREFIXES)
-mark_as_advanced(USER_DIR)
-mark_as_advanced(USER_DIR_PREFIXES)
-mark_as_advanced(CONFIG_DIR)
-mark_as_advanced(CONFIG_DIR_PREFIXES)
-mark_as_advanced(IGNORE_EXE_DIR)
+mark_as_advanced(
+	DATA_DIR
+	DATA_DIR_PREFIXES
+	USER_DIR
+	USER_DIR_PREFIXES
+	CONFIG_DIR
+	CONFIG_DIR_PREFIXES
+	IGNORE_EXE_DIR
+)
 
 
 # Helper scrips
@@ -264,10 +284,6 @@ if(USE_SDL)
 endif()
 
 # Boost
-if(MSVC)
-	# Link statically with Boost under Windows
-	set(Boost_USE_STATIC_LIBS ON)
-endif()
 set(BOOST_COMPONENTS program_options)
 find_package(Boost 1.39 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 # Setting the BOOST_ROOT will result in linking failures on Visual Studio as found
@@ -319,6 +335,11 @@ find_package(PythonInterp)
 # Check for optional functionality and system configuration
 
 if(NOT MSVC)
+	
+	if(USE_STATIC_LIBS)
+		add_ldflag("-static-libstdc++")
+		add_ldflag("-static-libgcc")
+	endif()
 	
 	if(${Boost_VERSION} LESS 104800)
 		# Older Boost versions don't work with C++11
@@ -728,10 +749,10 @@ if(USE_D3D9 AND DIRECTX_FOUND)
 endif()
 if(USE_OPENGL AND OPENGL_FOUND AND GLEW_FOUND)
 	list(APPEND GRAPHICS_SOURCES ${GRAPHICS_OPENGL_SOURCES})
-	list(APPEND ARX_LIBRARIES ${OPENGL_gl_LIBRARY} ${GLEW_LIBRARIES})
+	list(APPEND ARX_LIBRARIES ${GLEW_LIBRARIES} ${OPENGL_gl_LIBRARY})
 	include_directories(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
+	add_definitions(${GLEW_DEFINITIONS})
 	set(ARX_HAVE_OPENGL 1)
-	add_definitions(-DGL_GLEXT_PROTOTYPES)
 endif()
 
 # Windowing / input
@@ -858,14 +879,8 @@ list(APPEND ARX_SOURCES "${VERSION_FILE}")
 
 # Add executables
 
-if(WIN32 OR MACOSX)
-	set(arx_INSTALL DESTINATION "bin")
-else()
-	set(arx_INSTALL DESTINATION "${GAMESBINDIR}")
-endif()
-
 add_executable_shared(arx WIN32 "${ARX_SOURCES}" "${ARX_LIBRARIES}"
-                      "${ALL_INCLUDES}" "${arx_INSTALL}")
+                      "${ALL_INCLUDES}" "${GAMESBINDIR}")
 
 if(ARX_HAVE_CRASHREPORTER)
 	
@@ -946,14 +961,8 @@ if(ARX_HAVE_CRASHREPORTER)
 		include_directories(SYSTEM ${DBGHELP_INCLUDE_DIR})
 	endif()
 	
-	if(WIN32 OR MACOSX)
-		set(arxcrashreporter_INSTALL DESTINATION "bin")
-	else()
-		set(arxcrashreporter_INSTALL DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
-	endif()
-	
 	add_executable_shared(arxcrashreporter WIN32 "${arxcrashreporter_SOURCES}"
-	                      "${arxcrashreporter_LIBRARIES}" "" "${arxcrashreporter_INSTALL}")
+	                      "${arxcrashreporter_LIBRARIES}" "" "${CMAKE_INSTALL_LIBEXECDIR}")
 	
 endif()
 
@@ -1057,14 +1066,12 @@ if(NOT WIN32 AND NOT MACOSX)
 endif()
 
 # Install man pages
-if(NOT WIN32)
-	install(FILES data/man/arx.6 DESTINATION "${CMAKE_INSTALL_MANDIR}/man6" OPTIONAL)
-	if(BUILD_TOOLS)
-		install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
-		        OPTIONAL)
-		install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
-		        OPTIONAL)
-	endif()
+install(FILES data/man/arx.6 DESTINATION "${CMAKE_INSTALL_MANDIR}/man6" OPTIONAL)
+if(BUILD_TOOLS)
+	install(FILES data/man/arxsavetool.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+	        OPTIONAL)
+	install(FILES data/man/arxunpak.1 DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+	        OPTIONAL)
 endif()
 
 

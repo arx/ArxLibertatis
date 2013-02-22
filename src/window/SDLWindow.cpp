@@ -204,7 +204,7 @@ bool SDLWindow::setMode(DisplayMode mode, bool fullscreen) {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 	needsReinit = isFullscreen_ || fullscreen;
-#elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM != ARX_PLATFORM_BSD
+#elif ARX_PLATFORM == ARX_PLATFORM_LINUX || ARX_PLATFORM == ARX_PLATFORM_BSD
 	needsReinit = false;
 #else
 	needsReinit = true; // By default, always reinit to avoid issues on untested platforms
