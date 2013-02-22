@@ -2029,17 +2029,15 @@ void ARX_SCENE_Render() {
 	
 	FRAME_COUNT++;
 
-	if (FRAME_COUNT>MAX_FRAME_COUNT) FRAME_COUNT=0;
-
-	if (EDITMODE) FRAME_COUNT=0;
-
-	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE))) 
+	if(FRAME_COUNT > MAX_FRAME_COUNT)
 		FRAME_COUNT=0;
-		
-	static long x0=0;
-	static long x1=0;
-	static long z0=0;
-	static long z1=0;
+
+	if(EDITMODE)
+		FRAME_COUNT=0;
+
+	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))
+		FRAME_COUNT=0;
+
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
@@ -2050,8 +2048,6 @@ void ARX_SCENE_Render() {
 	float cval=(float)ACTIVECAM->clip3D+4;
 	long lcval = cval;
 
-	//TODO(lubosz): no if / loop ?
-
 	{
 	PrepareActiveCamera();
 	float xx=(float)(ACTIVECAM->orgTrans.pos.x*ACTIVEBKG->Xmul);
@@ -2061,20 +2057,17 @@ void ARX_SCENE_Render() {
 	ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
 	ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 
-	x0=ACTIVECAM->Xsnap-lcval;
-	x1=ACTIVECAM->Xsnap+lcval;
-	z0=ACTIVECAM->Zsnap-lcval;
-	z1=ACTIVECAM->Zsnap+lcval;
+	static long x0=ACTIVECAM->Xsnap-lcval;
+	static long x1=ACTIVECAM->Xsnap+lcval;
+	static long z0=ACTIVECAM->Zsnap-lcval;
+	static long z1=ACTIVECAM->Zsnap+lcval;
 	x0 = clamp(x0,0,ACTIVEBKG->Xsize-1);
 	x1 = clamp(x1,0,ACTIVEBKG->Xsize-1);
 	z0 = clamp(z0,0,ACTIVEBKG->Zsize-2);
 	z1 = clamp(z1,0,ACTIVEBKG->Xsize-2);
 
-
 	ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;
 	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul);
-
-	long lll;
 	
 	// Temporary Hack...
 	long LAST_FC = FRAME_COUNT;
@@ -2093,14 +2086,14 @@ void ARX_SCENE_Render() {
 	clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
 	for(long j=z0; j<=z1; j++) {
-		for (long i=x0; i<x1; i++) {
+		for(long i=x0; i<x1; i++) {
 			feg=&ACTIVEBKG->fastdata[i][j];
 			feg->treat=0;
 		}
 	}
 
 	for(long j=0; j<ACTIVEBKG->Zsize; j++) {
-		for (long  i=0; i<ACTIVEBKG->Xsize; i++) {
+		for(long i=0; i<ACTIVEBKG->Xsize; i++) {
 			if (tilelights[i][j].num)
 				tilelights[i][j].num=0;
 		}
@@ -2115,7 +2108,7 @@ void ARX_SCENE_Render() {
 			CreateScreenFrustrum(&frustrum);
 			ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum, lprec, tim);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			for(long i=0;i<NbRoomDrawList;i++) {
+			for(long i=0; i<NbRoomDrawList; i++) {
 				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, lprec, tim);
 			}
 		}
@@ -2140,7 +2133,7 @@ void ARX_SCENE_Render() {
 		if(!feg->treat)
 			continue;
 
-		for(lll=0; lll<feg->nbpoly; lll++) {
+		for(long lll = 0; lll < feg->nbpoly; lll++) {
 			//SPECIFIC INTEL COMPILER  
 			ep=&feg->polydata[lll];
 
@@ -2265,7 +2258,7 @@ void ARX_SCENE_Render() {
 	FRAME_COUNT=LAST_FC;
 
 	if(!USE_PORTALS)
-			Delayed_FlushAll();
+		Delayed_FlushAll();
 		
 	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(FrameDiff));
 		
@@ -2277,9 +2270,8 @@ void ARX_SCENE_Render() {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 	GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
 		
-
-	if (DRAGINTER) // To render Dragged objs
-	{
+	// To render Dragged objs
+	if(DRAGINTER) {
 		SPECIAL_DRAGINTER_RENDER=1;
 		ARX_INTERFACE_RenderCursor();
 
@@ -2293,46 +2285,40 @@ void ARX_SCENE_Render() {
 	
 	}
 		
-	if ((eyeball.exist!=0) && eyeballobj)
+	if(eyeball.exist != 0 && eyeballobj)
 		ARXDRAW_DrawEyeBall();
-
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	if (BoomCount)
+	if(BoomCount)
 		ARXDRAW_DrawPolyBoom();
 
 	PopAllTriangleListTransparency();
 
-	if(USE_PORTALS && portals) {
+	if(USE_PORTALS && portals)
 		ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
-	}
-	else
-	{
-		if (TRANSPOLYSPOS)
-			ARXDRAW_DrawAllTransPolysPos();
-	}
+	else if(TRANSPOLYSPOS)
+		ARXDRAW_DrawAllTransPolysPos();
 
-	if (HALOCUR>0)
-	{
+	if(HALOCUR>0) {
 		GRenderer->ResetTexture(0);
 		GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-		for (long i=0; i<HALOCUR; i++) {
+		for(long i=0; i<HALOCUR; i++) {
 			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
 			TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
 
-			if (vert[2].color == 0)
-			{
+			if(vert[2].color == 0) {
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				vert[2].color =0xFF000000;
 				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 			}
-			else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
+			else
+				EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4);
 		}
 
 		HALOCUR = 0;
