@@ -118,7 +118,7 @@ inline	static	void	Cedric_ResetBoundingBox(Entity * io)
 
 extern float INVISIBILITY_OVERRIDE;
 extern long EXTERNALVIEW;
-static void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
+void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
 	if(io) {
 		invisibility = io->invisibility;
 
