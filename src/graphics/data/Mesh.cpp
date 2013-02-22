@@ -755,11 +755,6 @@ void EE_P(Vec3f * in, TexturedVertex * out) {
 }
 
 void EE_RTP(TexturedVertex * in, TexturedVertex * out) {
-	EE_RT2(in, out);
-	EE_P(&out->p, out);
-}
-
-void specialEE_RTP(TexturedVertex * in, TexturedVertex * out) {
 	EE_RT(in, &out->p);
 	EE_P(&out->p, out);
 }
@@ -3639,13 +3634,13 @@ void ComputePortalVertexBuffer() {
 
 long EERIERTPPoly(EERIEPOLY *ep)
 {
-	specialEE_RTP(&ep->v[0],&ep->tv[0]);
-	specialEE_RTP(&ep->v[1],&ep->tv[1]);
-	specialEE_RTP(&ep->v[2],&ep->tv[2]);	
+	EE_RTP(&ep->v[0],&ep->tv[0]);
+	EE_RTP(&ep->v[1],&ep->tv[1]);
+	EE_RTP(&ep->v[2],&ep->tv[2]);
 
 	if (ep->type & POLY_QUAD) 
 	{
-		specialEE_RTP(&ep->v[3],&ep->tv[3]);	
+		EE_RTP(&ep->v[3],&ep->tv[3]);
 
 		if ((ep->tv[0].p.z<=0.f) &&
 			(ep->tv[1].p.z<=0.f) &&

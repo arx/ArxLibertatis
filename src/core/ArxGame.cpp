@@ -1950,7 +1950,7 @@ void ArxGame::goFor2DFX()
 				if (el->extras & EXTRAS_FLARE)
 				{
 					lv.p = el->pos;
-					specialEE_RTP(&lv,&ltvv);
+					EE_RTP(&lv,&ltvv);
 					el->temp-=temp_increase;
 
 					if (!(player.Interface & INTER_COMBATMODE)
@@ -1967,7 +1967,7 @@ void ArxGame::goFor2DFX()
 						Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
 						lv.p -= vector * (50.f / vector.length());
 						TexturedVertex ltvv2;
-						specialEE_RTP(&lv, &ltvv2);
+						EE_RTP(&lv, &ltvv2);
 
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
