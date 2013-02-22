@@ -126,9 +126,6 @@ void ARXDRAW_DrawInterShadows()
 				ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
 				ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
 				
-				float s1=16.f*io->scale;
-				float s2=s1 * ( 1.0f / 2 );	
-
 				if (io->obj->nbgroups<=1)
 				{
 					for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
@@ -144,13 +141,15 @@ void ARXDRAW_DrawInterShadows()
 
 							if (r<=0.f) continue;
 							
+							float s1=16.f*io->scale;
+							float s2=s1*( 1.0f / 2 );
 							in.p.x=io->obj->vertexlist3[k].v.x-s2;						
 							in.p.z=io->obj->vertexlist3[k].v.z-s2;
 
 							r*=255.f;
 							long lv = r;
 							ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-							
+
 							if (first)
 							{
 								first=0;
@@ -198,7 +197,7 @@ void ARXDRAW_DrawInterShadows()
 
 							r*=255.f;
 							long lv = r;
-							ltv[0].color=	ltv[1].color	=	ltv[2].color	=	ltv[3].color	=	0xFF000000 | lv<<16 | lv<<8 | lv;
+							ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
 
 							if (first)
 							{
