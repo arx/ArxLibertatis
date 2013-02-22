@@ -1919,7 +1919,7 @@ void AddFlare(Vec2s * pos, float sm, short typ, Entity * io) {
 	SetActiveCamera(&ka);
 	PrepareCamera(&ka);
 	fl->v.p += ka.orgTrans.pos;
-	specialEE_RTP(&fl->tv, &fl->v);
+	EE_RTP(&fl->tv, &fl->v);
 	fl->v.p += ka.orgTrans.pos;
 	
 	float vx = -(fl->x - subj.center.x) * 0.2173913f;
