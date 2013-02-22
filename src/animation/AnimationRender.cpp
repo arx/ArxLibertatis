@@ -409,16 +409,13 @@ void EE_RT(TexturedVertex * in, Vec3f * out);
 void EE_P(Vec3f * in, TexturedVertex * out);
 
 /* Transform object vertices  */
-int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
-                          Vec3f * pos) {
-	int v;
+int Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3f *pos) {
 
 	EERIE_3DPAD * inVert;
 	EERIE_VERTEX * outVert;
 
  	/* Transform & project all vertices */
-	for (long i = 0; i != obj->nb_bones; i++)
-	{
+	for(long i = 0; i != obj->nb_bones; i++) {
 		EERIEMATRIX	 matrix;
 
 		MatrixFromQuat(&matrix, &obj->bones[i].quatanim);
@@ -437,7 +434,7 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 		matrix._32 *= obj->bones[i].scaleanim.z;
 		matrix._33 *= obj->bones[i].scaleanim.z;
 		
-		for(v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 			inVert  = &eobj->vertexlocal[obj->bones[i].idxvertices[v]];
 			outVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]];
 			TransformVertexMatrix(&matrix, inVert, &outVert->v);
@@ -452,16 +449,14 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 		}
 	}
 
-	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-	{
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		outVert = &eobj->vertexlist3[i];
 		AddToBBox3D(io, &outVert->v);
 		EE_RT(&outVert->vert, &outVert->vworld);
 		EE_P(&outVert->vworld, &outVert->vert);
 
 		// Updates 2D Bounding Box
-		if (outVert->vert.rhw > 0.f)
-		{
+		if(outVert->vert.rhw > 0.f) {
 			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.p.x);
 			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.p.x);
 			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.p.y);
@@ -469,25 +464,14 @@ int Cedric_TransformVerts(Entity * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
 		}
 	}
 
-	if ((io)
-	        &&	(io->ioflags & IO_NPC)
-	        &&	(io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-	        &&	(distSqr(io->pos, player.pos) < square(240.f)))
+	if(io && (io->ioflags & IO_NPC) && (io->_npcdata->behavior & BEHAVIOUR_FIGHT) && distSqr(io->pos, player.pos) < square(240.f))
 		return true;
 
-	if ((io != entities.player())
-	        &&	(!EXTERNALVIEW)
-	        &&	(!eobj->cdata)
-	        &&	((BBOXMIN.x >= DANAESIZX - 1)
-	             ||	(BBOXMAX.x <= 1)
-	             ||	(BBOXMIN.y >= DANAESIZY - 1)
-	             ||	(BBOXMAX.y <= 1))
-	   )
-	{
+	if(io != entities.player() && !EXTERNALVIEW && !eobj->cdata
+			&& ((BBOXMIN.x >= DANAESIZX - 1) || (BBOXMAX.x <= 1) || (BBOXMIN.y >= DANAESIZY - 1) || (BBOXMAX.y <= 1)))
 		return false;
-	}
 
-	if (ARX_SCENE_PORTAL_ClipIO(io, pos))
+	if(ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return false;
 
 	return true;
