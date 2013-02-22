@@ -2001,16 +2001,15 @@ void DrawEERIEObjEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, 
 //*************************************************************************************
 //routine qui gere l'alpha au vertex SEB
 //*************************************************************************************
-void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
-					  Anglef * angle, Vec3f  * pos, Vec3f * scale, int coll)
+void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale, int coll)
 {
-	if (eobj == NULL) return;
+	if(!eobj)
+		return;
 
-	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
+	float Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	TexturedVertex v;
 	TexturedVertex rv;
 	TexturedVertex vert_list[4];
-
 
 	Zsin = radians(angle->a);
 	Xcos = (float)EEcos(Zsin);
@@ -2022,8 +2021,7 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
-	{
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		v.p = eobj->vertexlist[i].v * *scale;
 
 		YRotatePoint(&v.p, &rv.p, Ycos, Ysin);
@@ -2037,7 +2035,6 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 	}
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
-		
 		vert_list[0].p = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld;
 		vert_list[1].p = eobj->vertexlist[eobj->facelist[i].vid[1]].vworld;
 		vert_list[2].p = eobj->vertexlist[eobj->facelist[i].vid[2]].vworld;
@@ -2050,23 +2047,17 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		vert_list[2].uv.y = eobj->facelist[i].v[2];
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
-		if ((eobj->facelist[i].facetype == 0)
-				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
-		{
+		if(eobj->facelist[i].facetype == 0 || eobj->texturecontainer[eobj->facelist[i].texid] == NULL)
 			GRenderer->ResetTexture(0);
-		}
 		else
-		{
 			GRenderer->SetTexture(0, eobj->texturecontainer[eobj->facelist[i].texid]);
-		}
 
-		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
+		if(eobj->facelist[i].facetype & POLY_DOUBLESIDED)
 			GRenderer->SetCulling(Renderer::CullNone);
-		else GRenderer->SetCulling(Renderer::CullCW);
+		else
+			GRenderer->SetCulling(Renderer::CullCW);
 
-		ARX_DrawPrimitive(&vert_list[0],
-									 &vert_list[1],
-									 &vert_list[2]);
+		ARX_DrawPrimitive(&vert_list[0], &vert_list[1], &vert_list[2]);
 	}
 }
 
