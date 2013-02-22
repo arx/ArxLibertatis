@@ -90,27 +90,23 @@ void ARXDRAW_DrawInterShadows()
 
 	long first=1;
 	
-	for (long i=0;i<TREATZONE_CUR;i++) 
-	{
-		if ((treatio[i].show!=1) || (treatio[i].io==NULL)) continue;
-
-		Entity * io=treatio[i].io;
-
-		if (	(!io->obj) 
-			||	(io->ioflags & IO_JUST_COLLIDE)	)
-		{
+	for(long i=0; i<TREATZONE_CUR; i++) {
+		if(treatio[i].show != 1 || !treatio[i].io)
 			continue;
-		}
 
-			long xx,yy;
-			xx = io->pos.x * ACTIVEBKG->Xmul;
-			yy = io->pos.z * ACTIVEBKG->Zmul;
+		Entity *io = treatio[i].io;
 
-			if ( (xx>=1) && (yy>=1) && (xx<ACTIVEBKG->Xsize-1) && (yy<ACTIVEBKG->Zsize-1) )
-			{
-				FAST_BKG_DATA * feg=(FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
+		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE))
+			continue;
 
-				if(!feg->treat) continue;
+			long xx = io->pos.x * ACTIVEBKG->Xmul;
+			long yy = io->pos.z * ACTIVEBKG->Zmul;
+
+			if(xx >= 1 && yy >= 1 && (xx<ACTIVEBKG->Xsize-1) && (yy<ACTIVEBKG->Zsize-1)) {
+				FAST_BKG_DATA *feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
+
+				if(!feg->treat)
+					continue;
 			}
 
 			if (!( io->ioflags & IO_NOSHADOW ) )
