@@ -2057,10 +2057,10 @@ void ARX_SCENE_Render() {
 	ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
 	ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 
-	static long x0=ACTIVECAM->Xsnap-lcval;
-	static long x1=ACTIVECAM->Xsnap+lcval;
-	static long z0=ACTIVECAM->Zsnap-lcval;
-	static long z1=ACTIVECAM->Zsnap+lcval;
+	long x0=ACTIVECAM->Xsnap-lcval;
+	long x1=ACTIVECAM->Xsnap+lcval;
+	long z0=ACTIVECAM->Zsnap-lcval;
+	long z1=ACTIVECAM->Zsnap+lcval;
 	x0 = clamp(x0,0,ACTIVEBKG->Xsize-1);
 	x1 = clamp(x1,0,ACTIVEBKG->Xsize-1);
 	z0 = clamp(z0,0,ACTIVEBKG->Zsize-2);
