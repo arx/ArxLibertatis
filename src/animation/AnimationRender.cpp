@@ -1220,65 +1220,55 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	float MAX_ZEDE = 0.f;
 
 	// Sets IO BBox to calculated BBox :)
-	if (io)
-	{
+	if(io) {
 		io->bbox1.x = (short) BBOXMIN.x;
 		io->bbox2.x = (short) BBOXMAX.x;
 		io->bbox1.y = (short) BBOXMIN.y;
 		io->bbox2.y = (short) BBOXMAX.y;
 	}
 
-	if (invisibility == 1.f)
+	if(invisibility == 1.f)
 		return;
 
-	float	ddist		= 0.f;
-	long	need_halo;
+	float ddist = 0.f;
+	long need_halo;
 
 	need_halo = 0;
 
-	Entity * hio_helmet	= NULL;
-	Entity * hio_armor		= NULL;
-	Entity * hio_leggings	= NULL;
-	Entity * hio_player	= NULL;
-	Entity * use_io		= io;
+	Entity *hio_helmet	= NULL;
+	Entity *hio_armor = NULL;
+	Entity *hio_leggings = NULL;
+	Entity *hio_player = NULL;
 
-	if ((!io)
-	        &&	(IN_BOOK_DRAW)
-	        &&	(eobj == entities.player()->obj))
+	Entity *use_io = io;
+
+	if(!io && IN_BOOK_DRAW && eobj == entities.player()->obj)
 		use_io = entities.player();
 
-	if (use_io)
-	{
-		if (use_io == entities.player())
-		{
-			if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
-			        && ValidIONum(player.equiped[EQUIP_SLOT_HELMET]))
-			{
+	if(use_io) {
+		if(use_io == entities.player()) {
+			if(player.equiped[EQUIP_SLOT_HELMET] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
 				Entity * tio = entities[player.equiped[EQUIP_SLOT_HELMET]];
 
 				if (tio->halo.flags & HALO_ACTIVE)
 					hio_helmet = tio;
 			}
 
-			if ((player.equiped[EQUIP_SLOT_ARMOR] != 0)
-			        &&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]))
-			{
+			if(player.equiped[EQUIP_SLOT_ARMOR] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
 				Entity * tio = entities[player.equiped[EQUIP_SLOT_ARMOR]];
 
 				if (tio->halo.flags & HALO_ACTIVE)
 					hio_armor = tio;
 			}
 
-			if ((player.equiped[EQUIP_SLOT_LEGGINGS] != 0)
-			        &&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]))
-			{
+			if(player.equiped[EQUIP_SLOT_LEGGINGS] != 0 && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
 				Entity * tio = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
 
 				if (tio->halo.flags & HALO_ACTIVE)
 					hio_leggings = tio;
 			}
 
-			if (use_io->halo.flags & HALO_ACTIVE)
+			if(use_io->halo.flags & HALO_ACTIVE)
 				hio_player = use_io;
 		}
 
