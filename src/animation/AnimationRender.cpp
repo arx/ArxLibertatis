@@ -1379,22 +1379,16 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
 			}
 
-			if (special_color_flag)
-			{
-				if (special_color_flag & 1)
-				{
-					for (long j = 0 ; j < 3 ; j++)
-					{
+			if(special_color_flag) {
+				if(special_color_flag & 1) {
+					for(long j = 0; j < 3; j++) {
 						tv[j].color = 0xFF000000L
 						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
 						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
 						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 					}
-				}
-				else if (special_color_flag & 2)
-				{
-					for (long j = 0 ; j < 3 ; j++)
-					{
+				} else if(special_color_flag & 2) {
+					for (long j = 0; j < 3; j++) {
 						tv[j].color = 0xFFFF0000;
 					}
 				}
