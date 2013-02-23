@@ -1961,21 +1961,20 @@ void ARX_SCENE_Render() {
 
 	{
 	PrepareActiveCamera();
-	float xx=(float)(ACTIVECAM->orgTrans.pos.x*ACTIVEBKG->Xmul);
-	float yy=(float)(ACTIVECAM->orgTrans.pos.z*ACTIVEBKG->Zmul);
-	ACTIVECAM->Xsnap = xx;
-	ACTIVECAM->Zsnap = yy;
-	ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
-	ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 
-	long x0=ACTIVECAM->Xsnap-lcval;
-	long x1=ACTIVECAM->Xsnap+lcval;
-	long z0=ACTIVECAM->Zsnap-lcval;
-	long z1=ACTIVECAM->Zsnap+lcval;
-	x0 = clamp(x0,0,ACTIVEBKG->Xsize-1);
-	x1 = clamp(x1,0,ACTIVEBKG->Xsize-1);
-	z0 = clamp(z0,0,ACTIVEBKG->Zsize-2);
-	z1 = clamp(z1,0,ACTIVEBKG->Xsize-2);
+	ACTIVECAM->Xsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
+	ACTIVECAM->Zsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+	ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap, 0, ACTIVEBKG->Xsize-1);
+	ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap, 0, ACTIVEBKG->Zsize-1);
+
+	long x0 = ACTIVECAM->Xsnap - lcval;
+	long x1 = ACTIVECAM->Xsnap + lcval;
+	long z0 = ACTIVECAM->Zsnap - lcval;
+	long z1 = ACTIVECAM->Zsnap + lcval;
+	x0 = clamp(x0, 0, ACTIVEBKG->Xsize-1);
+	x1 = clamp(x1, 0, ACTIVEBKG->Xsize-1);
+	z0 = clamp(z0, 0, ACTIVEBKG->Zsize-2);
+	z1 = clamp(z1, 0, ACTIVEBKG->Xsize-2);
 
 	ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;
 	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul);
