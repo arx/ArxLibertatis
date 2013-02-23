@@ -1289,24 +1289,21 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 			MAX_ZEDE = 0.f;
 			for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
-				if (eobj->vertexlist3[i].vert.rhw > 0.f)
+				if(eobj->vertexlist3[i].vert.rhw > 0.f)
 					MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
 			}
 		}
 	}
 
 	{
-		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
-		{
-			TexturedVertex	* tv			= NULL;
+		for(size_t i = 0; i < eobj->facelist.size(); i++) {
+			TexturedVertex *tv = NULL;
 
- 
-			EERIE_FACE	*	eface;
-			long 			paf[3];
+			long paf[3];
 
-			eface = &eobj->facelist[i];
+			EERIE_FACE *eface = &eobj->facelist[i];
 
-			if ((eface->facetype & POLY_HIDE) && (!FORCE_NO_HIDE))
+			if((eface->facetype & POLY_HIDE) && !FORCE_NO_HIDE)
 				continue;
 
 			//CULL3D
@@ -1322,19 +1319,18 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
 				normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
 
-				if ((dot(normFace , nrm) > 0.f)) continue;
+				if(dot(normFace, nrm) > 0.f)
+					continue;
 			}
-
-			TextureContainer * pTex;
 
 			if(eobj->facelist[i].texid < 0)
 				continue;
 
-			pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+			TextureContainer *pTex = eobj->texturecontainer[eobj->facelist[i].texid];
 			if(!pTex)
 				continue;
 
-			float			fTransp = 0;
+			float fTransp = 0;
 
 			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 				
