@@ -306,31 +306,20 @@ void EERIE_LIGHT_MoveAll(const Vec3f * trans) {
 //*************************************************************************************
 float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light)
 {
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 
-
-	if (px > ACTIVEBKG->Xsize - 3)
-	{
+	if(px > ACTIVEBKG->Xsize - 3)
 		return 0;
-	}
 
-	if (px < 2)
-	{
+	if(px < 2)
 		return 0;
-	}
 
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz > ACTIVEBKG->Zsize - 3)
-	{
+	if(pz > ACTIVEBKG->Zsize - 3)
 		return 0;
-	}
 
-	if (pz < 2)
-	{
+	if(pz < 2)
 		return 0;
-	}
 
 	float nb_shadowvertexinpoly = 0.0f;
 	float nb_totalvertexinpoly = 0.0f;
@@ -734,27 +723,35 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 void RecalcLightZone(float x, float z, long siz) {
 	
-	long i, j, x0, x1, z0, z1;
+	long x0, x1, z0, z1;
 
-	i = x * ACTIVEBKG->Xmul;
-	j = z * ACTIVEBKG->Zmul;
+	long i = x * ACTIVEBKG->Xmul;
+	long j = z * ACTIVEBKG->Zmul;
 	
 	x0 = i - siz;
 	x1 = i + siz;
 	z0 = j - siz;
 	z1 = j + siz;
 	
-	if (x0 < 2) x0 = 2;
-	else if (x0 >= ACTIVEBKG->Xsize - 2) x0 = ACTIVEBKG->Xsize - 3;
+	if(x0 < 2)
+		x0 = 2;
+	else if(x0 >= ACTIVEBKG->Xsize - 2)
+		x0 = ACTIVEBKG->Xsize - 3;
 	
-	if (x1 < 2) x1 = 0;
-	else if (x1 >= ACTIVEBKG->Xsize - 2) x1 = ACTIVEBKG->Xsize - 3;
+	if(x1 < 2)
+		x1 = 0;
+	else if(x1 >= ACTIVEBKG->Xsize - 2)
+		x1 = ACTIVEBKG->Xsize - 3;
 	
-	if (z0 < 2) z0 = 0;
-	else if (z0 >= ACTIVEBKG->Zsize - 2) z0 = ACTIVEBKG->Zsize - 3;
+	if(z0 < 2)
+		z0 = 0;
+	else if(z0 >= ACTIVEBKG->Zsize - 2)
+		z0 = ACTIVEBKG->Zsize - 3;
 	
-	if (z1 < 2) z1 = 0;
-	else if (z1 >= ACTIVEBKG->Zsize - 2) z1 = ACTIVEBKG->Zsize - 3;
+	if(z1 < 2)
+		z1 = 0;
+	else if(z1 >= ACTIVEBKG->Zsize - 2)
+		z1 = ACTIVEBKG->Zsize - 3;
 	
 	LightMode oldml = ModeLight;
 	ModeLight &= ~MODE_RAYLAUNCH;

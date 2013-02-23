@@ -325,8 +325,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	hdiv=vdiv=1.f/(size*2);
 
 
-	long x0,x1;
-	long z0,z1,i,j;
+	long x1;
+	long z1,i,j;
 	unsigned long tim;
 	long n;
 	EERIE_BKG_INFO * eg;
@@ -340,28 +340,36 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 		}
 	}
 
-	x0 = static_cast<long>(poss->x * ACTIVEBKG->Xmul);
-	z0 = static_cast<long>(poss->z * ACTIVEBKG->Zmul);
+	long x0 = static_cast<long>(poss->x * ACTIVEBKG->Xmul);
+	long z0 = static_cast<long>(poss->z * ACTIVEBKG->Zmul);
 	x1 = x0 + 3; 
 	x0 = x0 - 3; 
 	z1 = z0 + 3; 
 	z0 = z0 - 3; 
 
-	if (x0<0) x0=0;
+	if(x0 < 0)
+		x0=0;
 
-	if (x0>=ACTIVEBKG->Xsize) x0=ACTIVEBKG->Xsize-1;
+	if(x0 >= ACTIVEBKG->Xsize)
+		x0 = ACTIVEBKG->Xsize-1;
 
-	if (x1<0) x1=0;
+	if(x1 < 0)
+		x1 = 0;
 
-	if (x1>=ACTIVEBKG->Xsize) x1=ACTIVEBKG->Xsize-1;
+	if(x1 >= ACTIVEBKG->Xsize)
+		x1 = ACTIVEBKG->Xsize-1;
 
-	if (z0<0) z0=0;
+	if(z0 < 0)
+		z0 = 0;
 
-	if (z0>=ACTIVEBKG->Zsize) z0=ACTIVEBKG->Zsize-1;
+	if(z0 >= ACTIVEBKG->Zsize)
+		z0 = ACTIVEBKG->Zsize-1;
 
-	if (z1<0) z1=0;
+	if(z1 < 0)
+		z1 = 0;
 
-	if (z1>=ACTIVEBKG->Zsize) z1=ACTIVEBKG->Zsize-1;
+	if(z1 >= ACTIVEBKG->Zsize)
+		z1 = ACTIVEBKG->Zsize-1;
 
 	long nbvert;
 	float vratio=size*( 1.0f / 40 );

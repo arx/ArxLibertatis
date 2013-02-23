@@ -1632,11 +1632,12 @@ static bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep,
 static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 	
 	bool ret = true;
-	long px, pz;
+
 	float x = obj->pbox->vert[0].pos.x;
-	px = x * ACTIVEBKG->Xmul;
 	float z = obj->pbox->vert[0].pos.z;
-	pz = z * ACTIVEBKG->Zmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
+
 	long ix, iz, ax, az;
 	long n;
 	n = obj->pbox->radius * ( 1.0f / 100 );

@@ -64,30 +64,20 @@ extern bool DIRECT_PATH;
 
 static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 	
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 
-	if (px >= ACTIVEBKG->Xsize - 1)
-	{
+	if(px >= ACTIVEBKG->Xsize - 1)
 		return NULL;
-	}
 
-	if (px <= 0)
-	{
+	if(px <= 0)
 		return NULL;
-	}
 
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize - 1)
-	{
+	if(pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
-	}
 
-	if (pz <= 0)
-	{
+	if(pz <= 0)
 		return NULL;
-	}
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
@@ -130,30 +120,20 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 
 static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 	
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 
-	if (px >= ACTIVEBKG->Xsize)
-	{
+	if(px >= ACTIVEBKG->Xsize)
 		return NULL;
-	}
 
-	if (px < 0)
-	{
+	if(px < 0)
 		return NULL;
-	}
 
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)
-	{
+	if(pz >= ACTIVEBKG->Zsize)
 		return NULL;
-	}
 
-	if (pz < 0)
-	{
+	if(pz < 0)
 		return NULL;
-	}
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
@@ -287,16 +267,14 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
 	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
-	long px, pz;
-	px = cyl->origin.x * ACTIVEBKG->Xmul;
+	long px = cyl->origin.x * ACTIVEBKG->Xmul;
+	long pz = cyl->origin.z * ACTIVEBKG->Zmul;
 
 	if (px > ACTIVEBKG->Xsize - 2 - rad)
 		return 0.f;
 
 	if (px < 1 + rad)
 		return 0.f;
-
-	pz = cyl->origin.z * ACTIVEBKG->Zmul;
 
 	if (pz > ACTIVEBKG->Zsize - 2 - rad)
 		return 0.f;

@@ -511,21 +511,20 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 	NPC_IN_CYLINDER = 0;
 	
 	long rad = (cyl->radius + 100) * ACTIVEBKG->Xmul;
-	long px,pz;
-	px = cyl->origin.x*ACTIVEBKG->Xmul;
 
-	if (px>ACTIVEBKG->Xsize-2-rad)  
+	long px = cyl->origin.x*ACTIVEBKG->Xmul;
+	long pz = cyl->origin.z*ACTIVEBKG->Zmul;
+
+	if(px > ACTIVEBKG->Xsize-2-rad)
 		return 0.f;
 
-	if (px< 1+rad)  
+	if(px < 1+rad)
 		return 0.f;
 	
-	pz = cyl->origin.z*ACTIVEBKG->Zmul;
-
-	if (pz>ACTIVEBKG->Zsize-2-rad)  
+	if(pz > ACTIVEBKG->Zsize-2-rad)
 		return 0.f;
 
-	if (pz< 1+rad)  
+	if(pz < 1+rad)
 		return 0.f;
 
 	float anything = 999999.f; 
@@ -1056,9 +1055,9 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 {
 	long rad = sphere->radius*ACTIVEBKG->Xmul;
 	rad+=2;
-	long px,pz;
-	px = sphere->origin.x * ACTIVEBKG->Xmul;
-	pz = sphere->origin.z * ACTIVEBKG->Zmul;
+
+	long px = sphere->origin.x * ACTIVEBKG->Xmul;
+	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
@@ -1815,11 +1814,15 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 		px=(long)(x* ACTIVEBKG->Xmul);
 		pz=(long)(z* ACTIVEBKG->Zmul);
 
-		if (px>=ACTIVEBKG->Xsize)		goto fini;
-		else if (px< 0)					goto fini;
+		if(px >= ACTIVEBKG->Xsize)
+			goto fini;
+		else if(px < 0)
+			goto fini;
 
-		if (pz>= ACTIVEBKG->Zsize)		goto fini;
-		else if (pz< 0)					goto fini;
+		if(pz >= ACTIVEBKG->Zsize)
+			goto fini;
+		else if(pz < 0)
+			goto fini;
 
 			feg=&ACTIVEBKG->fastdata[px][pz];
 

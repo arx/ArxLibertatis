@@ -101,30 +101,20 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, Vec3f * pos, Vec3f * vect, long
 
 bool IsValidPos3(Vec3f * pos)
 {
-	long px, pz;
-	px = pos->x * ACTIVEBKG->Xmul;
+	long px = pos->x * ACTIVEBKG->Xmul;
+	long pz = pos->z * ACTIVEBKG->Zmul;
 
-	if (px >= ACTIVEBKG->Xsize)
-	{
+	if(px >= ACTIVEBKG->Xsize)
 		return false;
-	}
 
-	if (px < 0)
-	{
+	if(px < 0)
 		return false;
-	}
 
-	pz = pos->z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)
-	{
+	if(pz >= ACTIVEBKG->Zsize)
 		return false;
-	}
 
-	if (pz < 0)
-	{
+	if(pz < 0)
 		return false;
-	}
 
 	EERIE_BKG_INFO * eg;
 
