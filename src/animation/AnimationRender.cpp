@@ -733,19 +733,19 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					}
 				}
 
-					if(special_color_flag & 1) {
-						r *= special_color.r;
-						g *= special_color.g;
-						b *= special_color.b;
-					} else if(special_color_flag & 2) {
-						r = 1.f;
-						g = 0.f;
-						b = 0.f;
-					} else if(special_color_flag & 4) { // HIGHLIGHT
-						r += special_color.r;
-						g += special_color.g;
-						b += special_color.b;
-					}
+				if(special_color_flag & 1) {
+					r *= special_color.r;
+					g *= special_color.g;
+					b *= special_color.b;
+				} else if(special_color_flag & 2) {
+					r = 1.f;
+					g = 0.f;
+					b = 0.f;
+				} else if(special_color_flag & 4) { // HIGHLIGHT
+					r += special_color.r;
+					g += special_color.g;
+					b += special_color.b;
+				}
 
 				/* PACK color */
 				ir = clipByte255(r);
@@ -831,19 +831,19 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					b *= infra.b;
 				}
 
-					if(special_color_flag & 1) {
-						r *= special_color.r;
-						g *= special_color.g;
-						b *= special_color.b;
-					} else if(special_color_flag & 2) {
-						r = 1.f;
-						g = 0.f;
-						b = 0.f;
-					} else if(special_color_flag & 4) { // HIGHLIGHT
-						r += special_color.r;
-						g += special_color.g;
-						b += special_color.b;
-					}
+				if(special_color_flag & 1) {
+					r *= special_color.r;
+					g *= special_color.g;
+					b *= special_color.b;
+				} else if(special_color_flag & 2) {
+					r = 1.f;
+					g = 0.f;
+					b = 0.f;
+				} else if(special_color_flag & 4) { // HIGHLIGHT
+					r += special_color.r;
+					g += special_color.g;
+					b += special_color.b;
+				}
 
 				/* PACK color */
 				ir = clipByte255(r);
@@ -1375,18 +1375,18 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
 			}
 
-				if(special_color_flag & 1) {
-					for(long j = 0; j < 3; j++) {
-						tv[j].color = 0xFF000000L
-						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
-						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
-					}
-				} else if(special_color_flag & 2) {
-					for (long j = 0; j < 3; j++) {
-						tv[j].color = 0xFFFF0000;
-					}
+			if(special_color_flag & 1) {
+				for(long j = 0; j < 3; j++) {
+					tv[j].color = 0xFF000000L
+								   | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
+								   | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
+								   | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 				}
+			} else if(special_color_flag & 2) {
+				for (long j = 0; j < 3; j++) {
+					tv[j].color = 0xFFFF0000;
+				}
+			}
 			
 			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
