@@ -1259,60 +1259,46 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-bool ArxGame::manageEditorControls()
-{
-	Vec3f trans;
+bool ArxGame::manageEditorControls() {
 
 	eMouseState = MOUSE_IN_WORLD;
 
-	if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon == false) && (config.input.mouseLookToggle))
-	{
-
-		float fX =  DANAESIZX * 0.5f;
-		float fY =	DANAESIZY * 0.5f;
+	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
+		float fX = DANAESIZX * 0.5f;
+		float fY =DANAESIZY * 0.5f;
 		DANAEMouse.x = checked_range_cast<short>(fX);
 		DANAEMouse.y = checked_range_cast<short>(fY);
-
-
 	}
-
 
 	/////////////////////////////////////////////////////
 	// begining to count time for sliding interface
-	if ((!PLAYER_INTERFACE_HIDE_COUNT) && (SMOOTHSLID==0))
-	{
+	if(!PLAYER_INTERFACE_HIDE_COUNT && !SMOOTHSLID) {
 		bool bOk = true;
 
-		if (TRUE_PLAYER_MOUSELOOK_ON)
-		{
-			if (!(player.Interface & INTER_COMBATMODE) && (player.doingmagic!=2) && !InInventoryPos(&DANAEMouse))
-			{
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
+			if(!(player.Interface & INTER_COMBATMODE) && player.doingmagic != 2 && !InInventoryPos(&DANAEMouse)) {
 				bOk = false;
 
 				float t=float(arxtime);
 
-				if (t-SLID_START>10000.f)
-				{
-					SLID_VALUE+=(float)Original_framedelay*( 1.0f / 10 );
+				if(t-SLID_START > 10000.f) {
+					SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
 
-					if (SLID_VALUE>100.f) SLID_VALUE=100.f;
+					if (SLID_VALUE>100.f)
+						SLID_VALUE=100.f;
 
 					lSLID_VALUE = SLID_VALUE;
-				}
-				else
-				{
+				} else {
 					bOk = true;
-
 				}
-
 			}
 		}
 
-		if (bOk)
-		{
-			SLID_VALUE-=(float)Original_framedelay*( 1.0f / 10 );
+		if(bOk) {
+			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
 
-			if (SLID_VALUE<0.f) SLID_VALUE=0.f;
+			if(SLID_VALUE<0.f)
+				SLID_VALUE=0.f;
 
 			lSLID_VALUE = SLID_VALUE;
 		}
