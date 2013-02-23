@@ -1524,72 +1524,50 @@ bool ArxGame::manageEditorControls() {
 				py = DANAESIZY - INTERFACE_RATIO(113);
 				static float flDelay=0;
 
-				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))||flDelay)
-				{
-					eMouseState=MOUSE_IN_INVENTORY_ICON;
-					SpecialCursor=CURSOR_INTERACTION_ON;
+				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))||flDelay) {
+					eMouseState = MOUSE_IN_INVENTORY_ICON;
+					SpecialCursor = CURSOR_INTERACTION_ON;
 
-					if (EERIEMouseButton & 4)
-					{
+					if(EERIEMouseButton & 4) {
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
 						playerInventory.optimize();
 
 						flDelay=0;
 						EERIEMouseButton&=~4;
-					}
-					else if (((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay)
-					{
-						if (!flDelay)
-						{
+					} else if(((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay) {
+						if(!flDelay) {
 							flDelay=arxtime.get_updated();
 							return false;
-						}
-						else
-						{
-							if ((arxtime.get_updated() - flDelay) < 300)
-							{
+						} else {
+							if((arxtime.get_updated() - flDelay) < 300) {
 								return false;
-							}
-							else
-							{
+							} else {
 								flDelay=0;
 							}
 						}
 
-						if (player.Interface & INTER_INVENTORYALL)
-						{
+						if(player.Interface & INTER_INVENTORYALL) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							bInventoryClosing = true;
-
-						}
-						else
-						{
+						} else {
 							bInverseInventory=!bInverseInventory;
 							lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 						}
 
 						EERIEMouseButton &=~1;
-					}
-					else if ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
-					{
+					} else if ((EERIEMouseButton & 2) && !(LastMouseClick & 2)) {
 						ARX_INTERFACE_BookOpenClose(2);
 						ARX_INVENTORY_OpenClose(NULL);
 
-						if (player.Interface & INTER_INVENTORYALL)
-						{
+						if (player.Interface & INTER_INVENTORYALL) {
 							bInventoryClosing = true;
-						}
-						else
-						{
-							if ((player.Interface & INTER_INVENTORY))
-							{
+						} else {
+							if(player.Interface & INTER_INVENTORY) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								bInventoryClosing = true;
 								bInventorySwitch = true;
-							}
-							else
-							{
+							} else {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								player.Interface |= INTER_INVENTORYALL;
 
@@ -1598,8 +1576,7 @@ bool ArxGame::manageEditorControls() {
 
 								ARX_INTERFACE_NoteClose();
 
-								if (TRUE_PLAYER_MOUSELOOK_ON)
-								{
+								if(TRUE_PLAYER_MOUSELOOK_ON) {
 									WILLRETURNTOFREELOOK = 1;
 								}
 							}
