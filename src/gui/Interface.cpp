@@ -1265,7 +1265,7 @@ bool ArxGame::manageEditorControls() {
 
 	if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon == false && config.input.mouseLookToggle) {
 		float fX = DANAESIZX * 0.5f;
-		float fY =DANAESIZY * 0.5f;
+		float fY = DANAESIZY * 0.5f;
 		DANAEMouse.x = checked_range_cast<short>(fX);
 		DANAEMouse.y = checked_range_cast<short>(fY);
 	}
@@ -1305,26 +1305,19 @@ bool ArxGame::manageEditorControls() {
 	}
 
 	// on ferme
-	if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
-	{
+	if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
 		Entity * io = NULL;
 
-		if (SecondaryInventory!=NULL)
-		{
+		if(SecondaryInventory)
 			io = (Entity *)SecondaryInventory->io;
-		}
 		else if (player.Interface & INTER_STEAL)
-		{
 			io = ioSteal;
-		}
 
-		if (io!=NULL)
-		{
-			InventoryDir=-1;
-			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
-			TSecondaryInventory=SecondaryInventory;
-			SecondaryInventory=NULL;
-
+		if(io) {
+			InventoryDir = -1;
+			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
+			TSecondaryInventory = SecondaryInventory;
+			SecondaryInventory = NULL;
 		}
 	}
 
