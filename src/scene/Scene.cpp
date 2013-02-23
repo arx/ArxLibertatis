@@ -1855,25 +1855,24 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 {
 	long portals_count=0;
 
-	if (portals==NULL) return 0;
+	if(!portals)
+		return 0;
 
-	if (RoomDraw[room_num].count==0)
-	{
+	if(RoomDraw[room_num].count == 0)
 		RoomDrawListAdd(room_num);
-	}
 
 	RoomFrustrumAdd(room_num,frustrum);
 	RoomDraw[room_num].count++;
 
-	float fClippZFar=ACTIVECAM->cdepth*(fZFogEnd*1.1f);
+	float fClippZFar = ACTIVECAM->cdepth * (fZFogEnd*1.1f);
 
 	// Now Checks For room Portals !!!
-	for (long lll=0;lll<portals->room[room_num].nb_portals;lll++)
-	{
-		if (portals->portals[portals->room[room_num].portals[lll]].useportal) continue;
+	for(long lll=0; lll<portals->room[room_num].nb_portals; lll++) {
+		if(portals->portals[portals->room[room_num].portals[lll]].useportal)
+			continue;
 
-		EERIE_PORTALS * po=&portals->portals[portals->room[room_num].portals[lll]];
-		EERIEPOLY * epp=&po->poly;
+		EERIE_PORTALS *po = &portals->portals[portals->room[room_num].portals[lll]];
+		EERIEPOLY *epp = &po->poly;
 	
 		//clipp NEAR & FAR
 		unsigned char ucVisibilityNear=0;
@@ -1881,15 +1880,14 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 
 		float fDist0;
 		for(size_t i=0; i<ARRAY_SIZE(epp->v); i++) {
-			fDist0=(efpPlaneNear.a*epp->v[i].p.x)+(efpPlaneNear.b*epp->v[i].p.y)+(efpPlaneNear.c*epp->v[i].p.z)+efpPlaneNear.d;
-			if(fDist0<0.f)
+			fDist0 = (efpPlaneNear.a*epp->v[i].p.x)+(efpPlaneNear.b*epp->v[i].p.y)+(efpPlaneNear.c*epp->v[i].p.z)+efpPlaneNear.d;
+			if(fDist0 < 0.f)
 				ucVisibilityNear++;
-			else if(fDist0>fClippZFar)
+			if(fDist0 > fClippZFar)
 				ucVisibilityFar++;
 		}
 
-		if(	(ucVisibilityFar&4)||(ucVisibilityNear&4) )
-		{
+		if((ucVisibilityFar & 4) || (ucVisibilityNear & 4)) {
 			portals->portals[portals->room[room_num].portals[lll]].useportal=2;
 			continue;
 		}
@@ -1909,26 +1907,17 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		bool Cull = !(fRes<0.f);
 		
 		EERIE_FRUSTRUM fd;
-		CreateFrustrum(&fd,epp,Cull);
+		CreateFrustrum(&fd, epp, Cull);
 
 		long roomToCompute = 0;
 		bool computeRoom = false;
 
-		if (po->room_1==room_num)
-		{
-			if (!Cull)
-			{
-				roomToCompute = po->room_2;
-				computeRoom = true;
-			}
-		}
-		else if (po->room_2==room_num)
-		{
-			if (Cull)
-			{
-				roomToCompute = po->room_1;
-				computeRoom = true;
-			}
+		if(po->room_1 == room_num && !Cull) {
+			roomToCompute = po->room_2;
+			computeRoom = true;
+		}else if(po->room_2 == room_num && Cull) {
+			roomToCompute = po->room_1;
+			computeRoom = true;
 		}
 
 		if(computeRoom) {
