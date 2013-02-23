@@ -1340,14 +1340,14 @@ bool ArxGame::manageEditorControls() {
 	}
 
 	if(CINEMA_INC == 1) {
-		CINEMA_DECAL+=(float)Original_framedelay*( 1.0f / 10 );
+		CINEMA_DECAL += (float)Original_framedelay*( 1.0f / 10 );
 
 		if(CINEMA_DECAL > 100.f) {
 			CINEMA_DECAL = 100.f;
 			CINEMA_INC = 0;
 		}
 	} else if(CINEMA_INC == -1) {
-		CINEMA_DECAL-=(float)Original_framedelay*( 1.0f / 10 );
+		CINEMA_DECAL -= (float)Original_framedelay*( 1.0f / 10 );
 
 		if(CINEMA_DECAL < 0.f) {
 			CINEMA_DECAL = 0.f;
@@ -1365,16 +1365,13 @@ bool ArxGame::manageEditorControls() {
 			STARTDRAG = DANAEMouse;
 			DRAGGING = 0;
 			dragThreshold = Vec2s::ZERO;
-			
 		} else {
-			
 			dragThreshold += GInput->getMousePosRel();
 			if((abs(DANAEMouse.x - STARTDRAG.x) > 2 && abs(DANAEMouse.y - STARTDRAG.y) > 2)
 			   || (abs(dragThreshold.x) > 2 || abs(dragThreshold.y) > 2)) {
 				DRAGGING = 1;
 			}
 		}
-		
 	} else {
 		DRAGGING = 0;
 	}
@@ -1386,32 +1383,25 @@ bool ArxGame::manageEditorControls() {
 	float px = 0;
 	float py = 0;
 
-	if (!BLOCK_PLAYER_CONTROLS)
-	{
-		if ((!(player.Interface & INTER_COMBATMODE)))
-		{
-
-			if (!TRUE_PLAYER_MOUSELOOK_ON)
-			{
+	if(!BLOCK_PLAYER_CONTROLS) {
+		if(!(player.Interface & INTER_COMBATMODE)) {
+			if(!TRUE_PLAYER_MOUSELOOK_ON) {
 				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
 
-				if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
+				if(px < INTERFACE_RATIO(10))
+					px = INTERFACE_RATIO(10);
 
 				py = DANAESIZY - INTERFACE_RATIO(158+32);
 
-				if (CURRENT_TORCH != NULL)
-				{
-					if (MouseInRect(px,py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(64)))
-					{
+				if(CURRENT_TORCH) {
+					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(64))) {
 						eMouseState=MOUSE_IN_TORCH_ICON;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
-						if ((LastMouseClick & 1) && (!(EERIEMouseButton & 1)) )
-						{
+						if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
 							Entity * temp = CURRENT_TORCH;
 
 							if(temp && !temp->locname.empty()) {
-								
 								if (((CURRENT_TORCH->ioflags & IO_ITEM) && CURRENT_TORCH->_itemdata->equipitem)
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
@@ -1421,42 +1411,36 @@ bool ArxGame::manageEditorControls() {
 
 								WILLADDSPEECH = getLocalised(temp->locname);
 
-								if (temp->ioflags & IO_GOLD)
-								{
+								if(temp->ioflags & IO_GOLD) {
 									std::stringstream ss;
 									ss << temp->_itemdata->price << " " << WILLADDSPEECH;
 									WILLADDSPEECH = ss.str();
 								}
 
-								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
-								{
+								if(temp->poisonous > 0 && temp->poisonous_count != 0) {
 									std::string Text = getLocalised("description_poisoned", "error");
 									std::stringstream ss;
 									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
 									WILLADDSPEECH = ss.str();
 								}
 
-								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
-								{
+								if ((temp->ioflags & IO_ITEM) && temp->durability < 100.f) {
 									std::string Text = getLocalised("description_durability", "error");
 									std::stringstream ss;
 									ss << WILLADDSPEECH << " " << Text << " " << std::fixed << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
 									WILLADDSPEECH = ss.str();
 								}
 
-
 								WILLADDSPEECHTIME = (unsigned long)(arxtime);
 							}
 						}
 
-						if  ((EERIEMouseButton & 1) && (LastMouseClick &1))
-						{
-							if ( (abs(DANAEMouse.x-STARTDRAG.x)>2) ||
-								(abs(DANAEMouse.y-STARTDRAG.y)>2) )	DRAGGING = 1;
+						if((EERIEMouseButton & 1) && (LastMouseClick & 1)) {
+							if(abs(DANAEMouse.x-STARTDRAG.x) > 2 || abs(DANAEMouse.y-STARTDRAG.y) > 2)
+								DRAGGING = 1;
 						}
 
-						if ((DRAGINTER == NULL)  && (!PLAYER_MOUSELOOK_ON) && DRAGGING)
-						{
+						if(!DRAGINTER && !PLAYER_MOUSELOOK_ON && DRAGGING) {
 							Entity * io=CURRENT_TORCH;
 							CURRENT_TORCH->show=SHOW_FLAG_IN_SCENE;
 							ARX_SOUND_PlaySFX(SND_TORCH_END);
@@ -1466,16 +1450,12 @@ bool ArxGame::manageEditorControls() {
 							DynLight[0].exist=0;
 							Set_DragInter(io);
 							DRAGINTER->ignition=1;
-						}
-						else
-						{
-							if ((EERIEMouseButton & 4) && (COMBINE == NULL))
-							{
+						} else {
+							if((EERIEMouseButton & 4) && !COMBINE) {
 								COMBINE = CURRENT_TORCH;
 							}
 
-							if (!(EERIEMouseButton & 2) && (LastMouseClick & 2))
-							{
+							if(!(EERIEMouseButton & 2) && (LastMouseClick & 2)) {
 								ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 								EERIEMouseButton &= ~2;
 								TRUE_PLAYER_MOUSELOOK_ON = false;
@@ -1485,47 +1465,41 @@ bool ArxGame::manageEditorControls() {
 				}
 
 				// redist
-				if ((player.Skill_Redistribute) || (player.Attribute_Redistribute))
-				{
+				if((player.Skill_Redistribute) || (player.Attribute_Redistribute)) {
 					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 					py = DANAESIZY - INTERFACE_RATIO(218);
 
-					if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
-					{
-						eMouseState=MOUSE_IN_REDIST_ICON;
-						SpecialCursor=CURSOR_INTERACTION_ON;
+					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+						eMouseState = MOUSE_IN_REDIST_ICON;
+						SpecialCursor = CURSOR_INTERACTION_ON;
 
-						if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-						{
+						if ((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 							ARX_INTERFACE_BookOpenClose(1);
 							EERIEMouseButton &=~1;
 						}
-
 						return false;
 					}
 				}
 
 
 				// gold
-				if (player.gold>0)
-				{
+				if(player.gold > 0) {
 					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 					py = DANAESIZY - INTERFACE_RATIO(183);
 
-					if (MouseInRect(px,py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
-					{
-						eMouseState=MOUSE_IN_GOLD_ICON;
-						SpecialCursor=CURSOR_INTERACTION_ON;
+					if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+						eMouseState = MOUSE_IN_GOLD_ICON;
+						SpecialCursor = CURSOR_INTERACTION_ON;
 
-						if ((player.gold > 0)
-							&& (!GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
-							&& (COMBINE==NULL) && (!COMBINEGOLD))
+						if(player.gold > 0
+							&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE)
+							&& !COMBINE && !COMBINEGOLD)
 						{
 							if (EERIEMouseButton & 4)
 								COMBINEGOLD=1;
 						}
 
-						if (DRAGINTER == NULL)
+						if(!DRAGINTER)
 							return false;
 					}
 				}
@@ -1534,17 +1508,14 @@ bool ArxGame::manageEditorControls() {
 				px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
 				py = DANAESIZY - INTERFACE_RATIO(148);
 
-				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
-				{
-					eMouseState=MOUSE_IN_BOOK_ICON;
-					SpecialCursor=CURSOR_INTERACTION_ON;
+				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) {
+					eMouseState = MOUSE_IN_BOOK_ICON;
+					SpecialCursor = CURSOR_INTERACTION_ON;
 
-					if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
-					{
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 						ARX_INTERFACE_BookOpenClose(0);
 						EERIEMouseButton &=~1;
 					}
-
 					return false;
 				}
 
