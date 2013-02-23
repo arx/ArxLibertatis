@@ -59,4 +59,4 @@ void Util_SetViewMatrix(EERIEMATRIX &mat, EERIE_TRANSFORM &transform);
 
 #define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
 
-#endif
+#endif // ARX_GRAPHICS_GRAPHICSUTILITY_H

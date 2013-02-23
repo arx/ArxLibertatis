@@ -555,8 +555,9 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 
 		if (!ep)
 			ep=CheckInPolyPrecis(pos->x,pos->y-1.f,pos->z);
-	} else
+	} else {
 		ep=CheckInPoly(pos->x,pos->y,pos->z);
+	}
 
 	if(ep && ep->room>-1) {
 		if(height)
@@ -2144,9 +2145,9 @@ void ARX_SCENE_Render() {
 				continue;
 			
 			// GO for 3D Backface Culling
-			if (ep->type & POLY_DOUBLESIDED)
+			if(ep->type & POLY_DOUBLESIDED) {
 				GRenderer->SetCulling(Renderer::CullNone);
-			else {
+			} else {
 				nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 				if(ep->type & POLY_QUAD) {
 					if(dot(ep->norm ,nrm) > 0.f && dot(ep->norm2, nrm) > 0.f)
@@ -2167,8 +2168,9 @@ void ARX_SCENE_Render() {
 					ep->tv[3].color=ep->v[3].color;
 
 				to=4;
-			} else
+			} else {
 				to=3;
+			}
 
 			if(ep->type & POLY_TRANS) {
 				ManageLavaWater(ep,to,tim);

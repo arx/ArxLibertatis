@@ -691,9 +691,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					posVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 
 				/* Ambient light */
-				if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
 					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
-				else {
+				} else {
 					r = ACTIVEBKG->ambient255.r;
 					g = ACTIVEBKG->ambient255.g;
 					b = ACTIVEBKG->ambient255.b;
@@ -714,9 +714,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						float distance = fdist(Cur_llights->pos, *posVert);
 
 						/* Evaluate its intensity depending on the distance Light<->Object */
-						if (distance <= Cur_llights->fallstart)
+						if (distance <= Cur_llights->fallstart) {
 							cosangle = Cur_llights->intensity * GLOBAL_LIGHT_FACTOR;
-						else {
+						} else {
 							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
 
 							if(p <= 0.f)
@@ -728,8 +728,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						r += Cur_llights->rgb255.r * cosangle;
 						g += Cur_llights->rgb255.g * cosangle;
 						b += Cur_llights->rgb255.b * cosangle;
-					} else
+					} else {
 						break;
+					}
 				}
 
 				if(special_color_flag) {
@@ -776,16 +777,16 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				inVert = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
 				/* Ambient light */
-				if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
 					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
-				else {
+				} else {
 					r = ACTIVEBKG->ambient255.r;
 					g = ACTIVEBKG->ambient255.g;
 					b = ACTIVEBKG->ambient255.b;
 				}
 
 				/* Dynamic lights */
-				for(l = 0 ; l != MAX_LLIGHTS; l++) {
+				for(l = 0; l != MAX_LLIGHTS; l++) {
 					EERIE_LIGHT * Cur_llights = llights[l];
 
 					if(Cur_llights) {
@@ -804,9 +805,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 							/* If light visible */
 							if(cosangle > 0.0f) {
 								/* Evaluate its intensity depending on the distance Light<->Object */
-								if(dista <= Cur_llights->fallstart)
+								if(dista <= Cur_llights->fallstart) {
 									cosangle *= Cur_llights->precalc; 
-								else {
+								} else {
 									float p = ((Cur_llights->fallend - dista) * Cur_llights->falldiffmul);
 
 									if (p <= 0.f)
@@ -820,8 +821,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 								b += Cur_llights->rgb255.b * cosangle;
 							}
 						}
-					} else
+					} else {
 						break;
+					}
 				}
 
 				/* Fake adjust */
@@ -1895,8 +1897,9 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 				if(ioo) {
 					INVISIBILITY_OVERRIDE = 0.f;
 					ioo->invisibility = invisibility;
-				} else
+				} else {
 					INVISIBILITY_OVERRIDE = invisibility;
+				}
 			}
 
 			if(ioo) {
