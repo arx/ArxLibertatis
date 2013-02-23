@@ -106,30 +106,20 @@ extern bool bGCroucheToggle;
 
 bool CanPurge(Vec3f * pos)
 {
-	long px, pz;
-	px = pos->x * ACTIVEBKG->Xmul;
+	long px = pos->x * ACTIVEBKG->Xmul;
+	long pz = pos->z * ACTIVEBKG->Zmul;
 
-	if (px > ACTIVEBKG->Xsize - 3)
-	{
+	if(px > ACTIVEBKG->Xsize - 3)
 		return true;
-	}
 
-	if (px < 2)
-	{
+	if(px < 2)
 		return true;
-	}
 
-	pz = pos->z * ACTIVEBKG->Zmul;
-
-	if (pz > ACTIVEBKG->Zsize - 3)
-	{
+	if(pz > ACTIVEBKG->Zsize - 3)
 		return true;
-	}
 
-	if (pz < 2)
-	{
+	if(pz < 2)
 		return true;
-	}
 
 	EERIE_BKG_INFO * eg;
 

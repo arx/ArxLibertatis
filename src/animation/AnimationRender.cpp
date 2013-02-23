@@ -1753,14 +1753,12 @@ void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 static bool Cedric_IO_Visible(Entity * io) {
 	if (io == entities.player()) return true;
 
-	if(ACTIVEBKG && io) {
-		
+	if(ACTIVEBKG && io) {	
 		if (distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
 
-		long xx, yy;
-		xx = io->pos.x * ACTIVEBKG->Xmul;
-		yy = io->pos.z * ACTIVEBKG->Zmul;
+		long xx = io->pos.x * ACTIVEBKG->Xmul;
+		long yy = io->pos.z * ACTIVEBKG->Zmul;
 
 		if ((xx >= 1) && (yy >= 1) && (xx < ACTIVEBKG->Xsize - 1) && (yy < ACTIVEBKG->Zsize - 1))
 		{

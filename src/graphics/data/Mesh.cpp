@@ -274,11 +274,10 @@ long MakeTopObjString(Entity * io,  string & dest) {
 
 EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 {
-	long px, pz;
 	Vec3f poss(x, y, z);
 
-	px = poss.x * ACTIVEBKG->Xmul;
-	pz = poss.z * ACTIVEBKG->Zmul;
+	long px = poss.x * ACTIVEBKG->Xmul;
+	long pz = poss.z * ACTIVEBKG->Zmul;
 
 	if ((pz >= ACTIVEBKG->Zsize - 1)
 			||	(pz <= 0)
@@ -386,11 +385,10 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 }
 EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 {
-	long px, pz;
 	Vec3f poss(x, y, z);
 
-	px = poss.x * ACTIVEBKG->Xmul;
-	pz = poss.z * ACTIVEBKG->Zmul;
+	long px = poss.x * ACTIVEBKG->Xmul;
+	long pz = poss.z * ACTIVEBKG->Zmul;
 
 	if ((pz >= ACTIVEBKG->Zsize - 1)
 			||	(pz <= 0)
@@ -503,11 +501,12 @@ EERIEPOLY * EECheckInPoly(const Vec3f * pos, float * needY) {
 static FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
 	
 	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
+
 	if(px < 0 || px >= ACTIVEBKG->Xsize) {
 		return NULL;
 	}
 	
-	long pz = z * ACTIVEBKG->Zmul;
 	if(pz < 0 || pz >= ACTIVEBKG->Zsize) {
 		return NULL;
 	}
@@ -1270,11 +1269,17 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 		px = (long)(x * ACTIVEBKG->Xmul);
 		pz = (long)(z * ACTIVEBKG->Zmul);
 
-		if (px > ACTIVEBKG->Xsize - 1)		goto fini;
-		else if (px < 0)					goto fini;
+		if(px > ACTIVEBKG->Xsize - 1)
+			goto fini;
 
-		if (pz > ACTIVEBKG->Zsize - 1)		goto fini;
-		else if (pz < 0)					goto fini;
+		if(px < 0)
+			goto fini;
+
+		if(pz > ACTIVEBKG->Zsize - 1)
+			goto fini;
+
+		if(pz < 0)
+			goto fini;
 
 		{
 			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
@@ -1567,14 +1572,19 @@ bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
 void DeclareEGInfo(float x, float z)
 {
 	long posx = x * ACTIVEBKG->Xmul;
-
-	if (posx < 0) return;
-	else if (posx >= ACTIVEBKG->Xsize) return;
-
 	long posz = (long)(float)(z * ACTIVEBKG->Zmul);
 
-	if (posz < 0) return;
-	else if (posz >= ACTIVEBKG->Zsize) return;
+	if(posx < 0)
+		return;
+
+	if(posx >= ACTIVEBKG->Xsize)
+		return;
+
+	if(posz < 0)
+		return;
+
+	if(posz >= ACTIVEBKG->Zsize)
+		return;
 
 	EERIE_BKG_INFO * eg;
 	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
