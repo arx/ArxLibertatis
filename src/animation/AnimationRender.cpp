@@ -1272,14 +1272,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				hio_player = use_io;
 		}
 
-		if (hio_player
-		        ||	hio_armor
-		        ||	hio_leggings
-		        ||	hio_helmet
-		        ||	(use_io->halo.flags & HALO_ACTIVE))
-		{
-			Vec3f ftrPos = *pos + ftr;
+		if(hio_player || hio_armor || hio_leggings || hio_helmet || (use_io->halo.flags & HALO_ACTIVE)) {
 
+			Vec3f ftrPos = *pos + ftr;
 			//TODO copy-pase
 			float mdist = ACTIVECAM->cdepth;
 			mdist *= ( 1.0f / 2 );
@@ -1290,15 +1285,13 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			ddist = clamp(ddist, 0.25f, 0.9f);
 
 			Cedric_PrepareHalo(eobj, obj);
-			need_halo	= 1;
-			MAX_ZEDE	= 0.f;
+			need_halo = 1;
 
-			for (size_t i = 0 ; i < eobj->vertexlist.size() ; i++)
-			{
+			MAX_ZEDE = 0.f;
+			for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 				if (eobj->vertexlist3[i].vert.rhw > 0.f)
 					MAX_ZEDE = max(eobj->vertexlist3[i].vert.p.z, MAX_ZEDE);
 			}
-			
 		}
 	}
 
