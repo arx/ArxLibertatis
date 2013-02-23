@@ -2109,18 +2109,16 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 
 	for (long i = 0; i < 3; i++)
 	{
-		float r, g, b;
+		Color3f tempColor;
 		long ir, ig, ib;
 
 		if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
 		{
-			r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
+			tempColor = Color3f(NPC_ITEMS_AMBIENT_VALUE_255, NPC_ITEMS_AMBIENT_VALUE_255, NPC_ITEMS_AMBIENT_VALUE_255);
 		}
 		else
 		{
-			r = ACTIVEBKG->ambient255.r;
-			g = ACTIVEBKG->ambient255.g;
-			b = ACTIVEBKG->ambient255.b;
+			tempColor = ACTIVEBKG->ambient255;
 		}
 
 		Vec3f * posVert = &eobj->vertexlist3[paf[i]].v;
@@ -2160,9 +2158,9 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 							cosangle *= p * Cur_llights->precalc; 
 					}
 
-					r += Cur_llights->rgb255.r * cosangle;
-					g += Cur_llights->rgb255.g * cosangle;
-					b += Cur_llights->rgb255.b * cosangle;
+					tempColor.r += Cur_llights->rgb255.r * cosangle;
+					tempColor.g += Cur_llights->rgb255.g * cosangle;
+					tempColor.b += Cur_llights->rgb255.b * cosangle;
 				}
 			}
 			else
@@ -2171,21 +2169,21 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 
 		if (eobj->drawflags & DRAWFLAG_HIGHLIGHT)
 		{
-			r += iHighLight; 
-			g += iHighLight; 
-			b += iHighLight;
+			tempColor.r += iHighLight;
+			tempColor.g += iHighLight;
+			tempColor.b += iHighLight;
 		}
 
 		if (Project.improve)
 		{
-			r *= infra->r;
-			g *= infra->g;
-			b *= infra->b;
+			tempColor.r *= infra->r;
+			tempColor.g *= infra->g;
+			tempColor.b *= infra->b;
 		}
 
-		ir = clipByte255(r);
-		ig = clipByte255(g);
-		ib = clipByte255(b);
+		ir = clipByte255(tempColor.r);
+		ig = clipByte255(tempColor.g);
+		ib = clipByte255(tempColor.b);
 		eobj->vertexlist3[paf[i]].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 	}
 }
