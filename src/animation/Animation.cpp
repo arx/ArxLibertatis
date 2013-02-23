@@ -1373,7 +1373,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		Ncam.orgTrans.zcos = 1.f;
 		Ncam.orgTrans.zsin = 0.f;
 
-		float power=radians(MAKEANGLE(subj.angle.b));
 		float tot=0;
 		float _ffr[3];
 			
@@ -1386,7 +1385,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
 			}
 	
-			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
+			float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
 			clamp(power, 0.f, 255.f);
 
