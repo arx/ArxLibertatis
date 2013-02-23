@@ -1940,22 +1940,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 	return portals_count; 
 }
 
-bool spGetTruePolyY(const EERIEPOLY * ep, const Vec3f * pos, float * ret) {
-		
-	Vec3f s21 = ep->v[1].p - ep->v[0].p;
-	Vec3f s31 = ep->v[2].p - ep->v[0].p;
-	
-	Vec3f n;
-	n.y = (s21.z * s31.x) - (s21.x * s31.z);
-	n.x = (s21.y * s31.z) - (s21.z * s31.y);
-	n.z = (s21.x * s31.y) - (s21.y * s31.x);
-	
-	float d = ep->v[0].p.x * n.x + ep->v[0].p.y * n.y + ep->v[0].p.z * n.z;
-	*ret = (d - n.x * pos->x - n.z * pos->z) / n.y;
-	
-	return true;
-}
-
 extern long SPECIAL_DRAGINTER_RENDER;
 long MAX_FRAME_COUNT=0;
 //*************************************************************************************
