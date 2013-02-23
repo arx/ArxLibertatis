@@ -238,50 +238,52 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 
 void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	
-	if (BoomCount > (MAX_POLYBOOM >> 2) - 30) return;
+	if(BoomCount > (MAX_POLYBOOM >> 2) - 30)
+		return;
 
-	if ((BoomCount>250.f) 
-		&& (size<10)) return;
+	if(BoomCount > 250.f && size < 10)
+		return;
 
 	float splatsize=90;
 
-	if (size>40.f) size=40.f;	
+	if(size > 40.f)
+		size = 40.f;
 
-	size*=0.75f;
+	size *= 0.75f;
 
-	switch (config.video.levelOfDetail)
-	{
+	switch(config.video.levelOfDetail) {
 		case 2:
+			if(BoomCount > 160.f)
+				return;
 
-			if (BoomCount>160.f)  return;
-
-			splatsize=90;
-			size*=1.f;
+			splatsize = 90;
+			size *= 1.f;
 		break;
 		case 1:
+			if(BoomCount > 60.f)
+				return;
 
-			if (BoomCount>60.f)  return;
-
-			splatsize=60;
-			size*=0.5f;
+			splatsize = 60;
+			size *= 0.5f;
 		break;
 		default:
+			if(BoomCount > 10.f)
+				return;
 
-			if (BoomCount>10.f)  return;
-
-			splatsize=30;
-			size*=0.25f;
+			splatsize = 30;
+			size *= 0.25f;
 		break;
 	}
 
 
 	float py;
-	EERIEPOLY * ep=CheckInPoly(poss->x,poss->y-40,poss->z,&py);
+	EERIEPOLY *ep = CheckInPoly(poss->x, poss->y-40, poss->z, &py);
 
-	if (!ep) return;
+	if(!ep)
+		return;
 	
-
-	if (flags & 1) py=poss->y;
+	if(flags & 1)
+		py=poss->y;
 
 	EERIEPOLY TheoricalSplat; // clockwise
 	TheoricalSplat.v[0].p.x=-splatsize;
@@ -362,51 +364,47 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	if(z1 >= ACTIVEBKG->Zsize)
 		z1 = ACTIVEBKG->Zsize-1;
 
-	long nbvert;
 	float vratio=size*( 1.0f / 40 );
-
 
 	(void)checked_range_cast<short>(z0);
 	(void)checked_range_cast<short>(x0);
 	(void)checked_range_cast<short>(z1);
 	(void)checked_range_cast<short>(x1);
 
-
-
 	for(long j=z0; j<=z1; j++)
 	for(long i=x0; i<=x1; i++)
 	{
-		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+		eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-			for (long l = 0; l < eg->nbpolyin; l++) 
-		{
-				ep = eg->polyin[l]; 
+		for(long l = 0; l < eg->nbpolyin; l++) {
+			ep = eg->polyin[l];
 
-			if (flags & 2)
-			{
-				if (!(ep->type & POLY_WATER)) continue;
-			}
+			if((flags & 2) && !(ep->type & POLY_WATER))
+				continue;
 
-			if ((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) continue;
+			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER))
+				continue;
 
-			if (ep->type & POLY_QUAD) nbvert=4;
-			else nbvert=3;
+			long nbvert;
+			if(ep->type & POLY_QUAD)
+				nbvert=4;
+			else
+				nbvert=3;
 
 			long oki=0;
 
-			for (long k=0;k<nbvert;k++)
-			{
+			for(long k=0; k<nbvert; k++) {
 				if ((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z))
 					&& ((float)fabs(ep->v[k].p.y-py) < 100.f) )
 				{
-					 oki=1;
+					oki=1;
 					break;
 				}
 
 				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x)*( 1.0f / 2 ), (ep->v[k].p.z+ep->center.z)*( 1.0f / 2 )))
 					&& ((float)fabs(ep->v[k].p.y-py) < 100.f) )
 				{
-					 oki=1;
+					oki=1;
 					break;
 				}
 			}
