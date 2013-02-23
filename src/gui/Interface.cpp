@@ -6130,7 +6130,7 @@ void ArxGame::drawAllInterfaceFinish()
 	float rrr;
 	rrr=1.f-PULSATE*0.5f;
 
-	clamp(rrr, 0.f, 1.f);
+	rrr = clamp(rrr, 0.f, 1.f);
 
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -7153,7 +7153,7 @@ long Manage3DCursor(long flags)
 
 	VRotateY(&objcenter,temp.b);
 
-	clamp(maxdist, 15.f, 150.f);
+	maxdist = clamp(maxdist, 15.f, 150.f);
 
 	bool bCollidposNoInit = true;
 	Vec3f           collidpos   = Vec3f::ZERO;
