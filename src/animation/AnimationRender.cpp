@@ -484,9 +484,9 @@ extern float GLOBAL_LIGHT_FACTOR;
 static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos) {
 	
 	Color3f infra = Color3f::black;
-	int				i, v, l;
-	Vec3f		tv;
-	Vec3f		vTLights[32]; /* Same as above but in bone space (for faster calculation) */
+
+	Vec3f tv;
+	Vec3f vTLights[32]; /* Same as above but in bone space (for faster calculation) */
 
 	special_color_flag = 0;
 
@@ -662,14 +662,14 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 	llightsInit();
 
-	for(i = 0; i < TOTIOPDL; i++) {
+	for(int i = 0; i < TOTIOPDL; i++) {
 		if (IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
 	}
 
-	for(i = 0; i < TOTPDL; i++) {
+	for(int i = 0; i < TOTPDL; i++) {
 		if (PDL[i]->fallend + 500.f < 0)
 			continue;
 
@@ -678,9 +678,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 	if(!USEINTERNORM) {
 		/* Apply light on all vertices */
-		for(i = 0; i != obj->nb_bones; i++) {
+		for(int i = 0; i != obj->nb_bones; i++) {
 			/* Get light value for each vertex */
-			for(v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				Vec3f *posVert;
 				float r, g, b;
 				long  ir, ig, ib;
@@ -700,7 +700,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				}
 
 				/* Dynamic lights */
-				for(l = 0 ; l != MAX_LLIGHTS; l++) {
+				for(int l = 0; l != MAX_LLIGHTS; l++) {
 					EERIE_LIGHT * Cur_llights = llights[l];
 
 					if(Cur_llights) {
@@ -757,7 +757,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 		}
 	} else {
 		/* Apply light on all vertices */
-		for(i = 0; i != obj->nb_bones; i++) {
+		for(int i = 0; i != obj->nb_bones; i++) {
 			EERIE_QUAT qt1;
 		
 			EERIEMATRIX matrix;//,omatrix;
@@ -767,7 +767,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			//	FMatrixInvert(matrix,omatrix);
 
 			/* Get light value for each vertex */
-			for(v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				EERIE_3DPAD *inVert;
 				float r, g, b;
 				long  ir, ig, ib;
@@ -784,7 +784,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				}
 
 				/* Dynamic lights */
-				for(l = 0; l != MAX_LLIGHTS; l++) {
+				for(int l = 0; l != MAX_LLIGHTS; l++) {
 					EERIE_LIGHT * Cur_llights = llights[l];
 
 					if(Cur_llights) {
