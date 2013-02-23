@@ -311,13 +311,10 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 
 	if(px > ACTIVEBKG->Xsize - 3)
 		return 0;
-
 	if(px < 2)
 		return 0;
-
 	if(pz > ACTIVEBKG->Zsize - 3)
 		return 0;
-
 	if(pz < 2)
 		return 0;
 
@@ -723,34 +720,30 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 void RecalcLightZone(float x, float z, long siz) {
 	
-	long x0, x1, z0, z1;
-
 	long i = x * ACTIVEBKG->Xmul;
 	long j = z * ACTIVEBKG->Zmul;
 	
-	x0 = i - siz;
-	x1 = i + siz;
-	z0 = j - siz;
-	z1 = j + siz;
+	long x0 = i - siz;
+	long z0 = j - siz;
+	long x1 = i + siz;
+	long z1 = j + siz;
 	
 	if(x0 < 2)
 		x0 = 2;
-	else if(x0 >= ACTIVEBKG->Xsize - 2)
+	if(x0 >= ACTIVEBKG->Xsize - 2)
 		x0 = ACTIVEBKG->Xsize - 3;
+	if(z0 < 2)
+		z0 = 0;
+	if(z0 >= ACTIVEBKG->Zsize - 2)
+		z0 = ACTIVEBKG->Zsize - 3;
 	
 	if(x1 < 2)
 		x1 = 0;
-	else if(x1 >= ACTIVEBKG->Xsize - 2)
+	if(x1 >= ACTIVEBKG->Xsize - 2)
 		x1 = ACTIVEBKG->Xsize - 3;
-	
-	if(z0 < 2)
-		z0 = 0;
-	else if(z0 >= ACTIVEBKG->Zsize - 2)
-		z0 = ACTIVEBKG->Zsize - 3;
-	
 	if(z1 < 2)
 		z1 = 0;
-	else if(z1 >= ACTIVEBKG->Zsize - 2)
+	if(z1 >= ACTIVEBKG->Zsize - 2)
 		z1 = ACTIVEBKG->Zsize - 3;
 	
 	LightMode oldml = ModeLight;

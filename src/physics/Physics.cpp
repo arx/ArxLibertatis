@@ -57,10 +57,13 @@ EERIEPOLY * BCCheckInPoly(float x, float y, float z)
 	long px = x * ACTIVEBKG->Xmul;
 	long pz = z * ACTIVEBKG->Zmul;
 
-	if(px >= ACTIVEBKG->Xsize || px < 0)
+	if(px >= ACTIVEBKG->Xsize)
 		return NULL;
-
-	if(pz >= ACTIVEBKG->Zsize || pz < 0)
+	if(px < 0)
+		return NULL;
+	if(pz >= ACTIVEBKG->Zsize)
+		return NULL;
+	if(pz < 0)
 		return NULL;
 
 	EERIEPOLY * ep;

@@ -320,32 +320,25 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	RealSplatStart.x+=poss->x;
 	RealSplatStart.z+=poss->z;
 
-
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 
-
-	long x1;
-	long z1,i,j;
-	unsigned long tim;
 	long n;
 	EERIE_BKG_INFO * eg;
-	tim = (unsigned long)(arxtime);
+	unsigned long tim = (unsigned long)(arxtime);
 
-	for (i=0;i<MAX_POLYBOOM;i++)
-	{
-		if (polyboom[i].exist)
-		{
-			polyboom[i].type|=128;
-		}
+	for(long i = 0; i < MAX_POLYBOOM; i++) {
+		if(polyboom[i].exist)
+			polyboom[i].type |= 128;
 	}
 
 	long x0 = static_cast<long>(poss->x * ACTIVEBKG->Xmul);
 	long z0 = static_cast<long>(poss->z * ACTIVEBKG->Zmul);
-	x1 = x0 + 3; 
-	x0 = x0 - 3; 
-	z1 = z0 + 3; 
-	z0 = z0 - 3; 
+
+	long x1 = x0 + 3;
+	long z1 = z0 + 3;
+	x0 = x0 - 3;
+	z0 = z0 - 3;
 
 	if(x0 < 0)
 		x0=0;
@@ -382,8 +375,8 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 
 
-	for (j=z0;j<=z1;j++) 		
-	for (i=x0;i<=x1;i++) 
+	for(long j=z0; j<=z1; j++)
+	for(long i=x0; i<=x1; i++)
 	{
 		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 

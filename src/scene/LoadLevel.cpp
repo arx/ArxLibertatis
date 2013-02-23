@@ -111,13 +111,10 @@ bool CanPurge(Vec3f * pos)
 
 	if(px > ACTIVEBKG->Xsize - 3)
 		return true;
-
 	if(px < 2)
 		return true;
-
 	if(pz > ACTIVEBKG->Zsize - 3)
 		return true;
-
 	if(pz < 2)
 		return true;
 

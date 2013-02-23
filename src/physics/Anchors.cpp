@@ -69,13 +69,10 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 
 	if(px >= ACTIVEBKG->Xsize - 1)
 		return NULL;
-
 	if(px <= 0)
 		return NULL;
-
 	if(pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
-
 	if(pz <= 0)
 		return NULL;
 
@@ -125,13 +122,10 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 
 	if(px >= ACTIVEBKG->Xsize)
 		return NULL;
-
 	if(px < 0)
 		return NULL;
-
 	if(pz >= ACTIVEBKG->Zsize)
 		return NULL;
-
 	if(pz < 0)
 		return NULL;
 
@@ -270,16 +264,13 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
 	long px = cyl->origin.x * ACTIVEBKG->Xmul;
 	long pz = cyl->origin.z * ACTIVEBKG->Zmul;
 
-	if (px > ACTIVEBKG->Xsize - 2 - rad)
+	if(px > ACTIVEBKG->Xsize - 2 - rad)
 		return 0.f;
-
-	if (px < 1 + rad)
+	if(px < 1 + rad)
 		return 0.f;
-
-	if (pz > ACTIVEBKG->Zsize - 2 - rad)
+	if(pz > ACTIVEBKG->Zsize - 2 - rad)
 		return 0.f;
-
-	if (pz < 1 + rad)
+	if(pz < 1 + rad)
 		return 0.f;
 
 	float anything = 999999.f; 
