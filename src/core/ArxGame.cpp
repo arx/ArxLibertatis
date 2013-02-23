@@ -1003,7 +1003,7 @@ void ArxGame::speechControlledCinematic() {
 		Entity * io=aspeech[valid].io;
 		float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
 
-		clamp(rtime, 0.f, 1.f);
+		rtime = clamp(rtime, 0.f, 1.f);
 
 		float itime=1.f-rtime;
 

@@ -1036,7 +1036,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		ddist = ddist/mdist;
 		ddist = std::pow(ddist, 6);
 
-		clamp(ddist, 0.25f, 0.9f);
+		ddist = clamp(ddist, 0.25f, 0.9f);
 
 		need_halo=1;
 	}
@@ -1067,7 +1067,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			trappercent = (float)TRAP_DETECT - (float)io->_fixdata->trapvalue;
 			if(trappercent > 0.f) {
 				trappercent = 0.6f + trappercent * ( 1.0f / 100 );
-				clamp(trappercent, 0.6f, 1.f);
+				trappercent = clamp(trappercent, 0.6f, 1.f);
 			}
 		}
 
@@ -1075,7 +1075,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			secretpercent = (float)TRAP_SECRET - (float)io->secretvalue;
 			if(secretpercent > 0.f) {
 				secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
-				clamp(secretpercent, 0.6f, 1.f);
+				secretpercent = clamp(secretpercent, 0.6f, 1.f);
 			}
 		}
 
@@ -1298,7 +1298,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					
 					float dd=(vert_list[k].rhw*prec);
 
-					clamp(dd, 0.f, 1.f);
+					dd = clamp(dd, 0.f, 1.f);
 					
 					float fb=((1.f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.x) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
 					float fr=((.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z) + EEfabs(eobj->vertexlist[paf[k]].norm.y))) * 0.125f;
@@ -1387,7 +1387,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	
 			float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
-			clamp(power, 0.f, 255.f);
+			power = clamp(power, 0.f, 255.f);
 
 			tot+=power;
 			

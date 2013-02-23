@@ -133,7 +133,7 @@ void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
 					invisibility -= (float)player.Full_Skill_Intuition * (1.0f / 100)
 									+ (float)spells[num].caster_level * (1.0f / 10);
 
-					clamp(invisibility, 0.1f, 1.f);
+					invisibility = clamp(invisibility, 0.1f, 1.f);
 				}
 			}
 		}
@@ -512,7 +512,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			trappercent = (float)TRAP_DETECT - (float)io->_fixdata->trapvalue;
 			if(trappercent > 0.f) {
 				trappercent = 0.6f + trappercent * ( 1.0f / 100 );
-				clamp(trappercent, 0.6f, 1.f);
+				trappercent = clamp(trappercent, 0.6f, 1.f);
 			}
 		}
 
@@ -520,7 +520,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			secretpercent = (float)TRAP_SECRET - (float)io->secretvalue;
 			if(secretpercent > 0.f) {
 				secretpercent = 0.6f + secretpercent * ( 1.0f / 100 );
-				clamp(secretpercent, 0.6f, 1.f);
+				secretpercent = clamp(secretpercent, 0.6f, 1.f);
 			}
 		}
 
@@ -1297,7 +1297,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			ddist = ddist/mdist;
 			ddist = std::pow(ddist, 6);
 
-			clamp(ddist, 0.25f, 0.9f);
+			ddist = clamp(ddist, 0.25f, 0.9f);
 
 			Cedric_PrepareHalo(eobj, obj);
 			need_halo	= 1;
