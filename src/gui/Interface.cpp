@@ -1524,7 +1524,7 @@ bool ArxGame::manageEditorControls() {
 				py = DANAESIZY - INTERFACE_RATIO(113);
 				static float flDelay=0;
 
-				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))||flDelay) {
+				if(MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)) || flDelay) {
 					eMouseState = MOUSE_IN_INVENTORY_ICON;
 					SpecialCursor = CURSOR_INTERACTION_ON;
 

@@ -1567,17 +1567,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 				} else {
 					if(ep->type & POLY_LAVA) {
 						if(FRAME_COUNT<=0 && !(ep->type & POLY_TRANS)) {
-							if(ModeLight & MODE_DYNAMICLIGHT) {
 								ApplyDynLight(ep);
-							} else {
-								ep->tv[0].color=ep->v[0].color;	
-								ep->tv[1].color=ep->v[1].color;	
-								ep->tv[2].color=ep->v[2].color;		
-
-								if(to&4) {
-									ep->tv[3].color=ep->v[3].color;
-								}
-							}
 						}
 
 						ManageLava_VertexBuffer(ep,to,tim,pMyVertexCurr);
@@ -1593,23 +1583,13 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						}
 					} else {
 						if((FRAME_COUNT<=0)&&(!(ep->type&POLY_TRANS))) {
-							if(ModeLight & MODE_DYNAMICLIGHT)
-							{
+
 									ApplyDynLight_VertexBuffer_2(	ep,pEPDATA->px,pEPDATA->py,
 																pMyVertexCurr,
 																ep->uslInd[0],
 																ep->uslInd[1],
 																ep->uslInd[2],
-																ep->uslInd[3]);								
-							} else {
-								pMyVertexCurr[ep->uslInd[0]].color=ep->v[0].color;
-								pMyVertexCurr[ep->uslInd[1]].color=ep->v[1].color;
-								pMyVertexCurr[ep->uslInd[2]].color=ep->v[2].color;
-
-								if(to&4) {
-									pMyVertexCurr[ep->uslInd[3]].color=ep->v[3].color;
-								}
-							}
+																ep->uslInd[3]);
 						}
 
 						if(ep->type&POLY_WATER) {
@@ -1630,17 +1610,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						continue; 
 					}
 
-					if(ModeLight & MODE_DYNAMICLIGHT) {
-						ApplyDynLight(ep);
-					} else {
-						ep->tv[0].color=ep->v[0].color;	
-						ep->tv[1].color=ep->v[1].color;	
-						ep->tv[2].color=ep->v[2].color;				
-
-						if(to&4) {
-							ep->tv[3].color=ep->v[3].color;
-						}
-					}
+					ApplyDynLight(ep);
 				
 					for(long k=0; k<to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
@@ -2074,7 +2044,7 @@ void ARX_SCENE_Render() {
 	long LAST_FC = FRAME_COUNT;
 	FRAME_COUNT = 0;
 
-	if(FRAME_COUNT <= 0 && (ModeLight & MODE_DYNAMICLIGHT))
+	if(FRAME_COUNT <= 0)
 		PrecalcDynamicLighting(x0, z0, x1, z1);
 	
 	// Go for a growing-square-spirallike-render around the camera position
@@ -2194,13 +2164,7 @@ void ARX_SCENE_Render() {
 					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
 				} else {
 					if(FRAME_COUNT <= 0) {
-						if(ModeLight & MODE_DYNAMICLIGHT) {
-							ApplyDynLight(ep);
-						} else {
-							ep->tv[0].color=ep->v[0].color;	
-							ep->tv[1].color=ep->v[1].color;	
-							ep->tv[2].color=ep->v[2].color;		
-						}
+						ApplyDynLight(ep);
 					}
 				}
 				ManageLavaWater(ep,to,tim);
@@ -2215,13 +2179,7 @@ void ARX_SCENE_Render() {
 				}	
 			} else { // Improve Vision Activated
 				if(FRAME_COUNT <= 0) {
-					if(ModeLight & MODE_DYNAMICLIGHT) {
-						ApplyDynLight(ep);
-					} else {
-						ep->tv[0].color=ep->v[0].color;	
-						ep->tv[1].color=ep->v[1].color;	
-						ep->tv[2].color=ep->v[2].color;				
-					}
+					ApplyDynLight(ep);
 
 					for(long k=0; k<to; k++) {
 						long lr=(ep->tv[k].color>>16) & 255;
