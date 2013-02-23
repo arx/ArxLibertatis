@@ -1607,7 +1607,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						
 						float dd=(ep->tv[k].rhw*prec);
 
-						clamp(dd, 0.f, 1.f);
+						dd = clamp(dd, 0.f, 1.f);
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
 						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;
@@ -1991,9 +1991,9 @@ void ARX_SCENE_Render() {
 	Vec3f nrm;
 
 	long zsnap=ACTIVECAM->Zsnap;
-	clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
+	zsnap = clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
 	long xsnap=ACTIVECAM->Xsnap;
-	clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
+	xsnap = clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
 	for(long j=z0; j<=z1; j++) {
 		for(long i=x0; i<x1; i++) {
@@ -2126,7 +2126,7 @@ void ARX_SCENE_Render() {
 							
 						float dd=(ep->tv[k].p.z*prec);
 
-						clamp(dd, 0.f, 1.f);
+						dd = clamp(dd, 0.f, 1.f);
 						
 						float fb=((1.f-dd)*6.f + (EEfabs(ep->nrml[k].x)+EEfabs(ep->nrml[k].y)))*0.125f;
 						float fr=((.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);
