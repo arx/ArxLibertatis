@@ -733,7 +733,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					}
 				}
 
-				if(special_color_flag) {
 					if(special_color_flag & 1) {
 						r *= special_color.r;
 						g *= special_color.g;
@@ -747,7 +746,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						g += special_color.g;
 						b += special_color.b;
 					}
-				}
 
 				/* PACK color */
 				ir = clipByte255(r);
@@ -833,7 +831,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					b *= infra.b;
 				}
 
-				if(special_color_flag) {
 					if(special_color_flag & 1) {
 						r *= special_color.r;
 						g *= special_color.g;
@@ -847,7 +844,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						g += special_color.g;
 						b += special_color.b;
 					}
-				}
 
 				/* PACK color */
 				ir = clipByte255(r);
@@ -1379,7 +1375,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
 			}
 
-			if(special_color_flag) {
 				if(special_color_flag & 1) {
 					for(long j = 0; j < 3; j++) {
 						tv[j].color = 0xFF000000L
@@ -1392,7 +1387,6 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 						tv[j].color = 0xFFFF0000;
 					}
 				}
-			}
 			
 			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
