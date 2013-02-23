@@ -1543,15 +1543,12 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 				*pIndicesCurr++=ep->uslInd[1];
 				*pIndicesCurr++=ep->uslInd[2];
 
-				if(to&4)
-				{
+				if(to&4) {
 					*pIndicesCurr++=ep->uslInd[3];
 					*pIndicesCurr++=ep->uslInd[2];
 					*pIndicesCurr++=ep->uslInd[1];
 					*pNumIndices+=6;
-				}
-				else
-				{
+				} else {
 					*pNumIndices+=3;
 				}
 				pMyVertexCurr=&pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
@@ -1570,7 +1567,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 								ApplyDynLight(ep);
 						}
 
-						ManageLava_VertexBuffer(ep,to,tim,pMyVertexCurr);
+						ManageLava_VertexBuffer(ep, to, tim, pMyVertexCurr);
 
 						vPolyLava.push_back(ep);
 
@@ -1582,30 +1579,22 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 							pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
 						}
 					} else {
-						if((FRAME_COUNT<=0)&&(!(ep->type&POLY_TRANS))) {
-
-									ApplyDynLight_VertexBuffer_2(	ep,pEPDATA->px,pEPDATA->py,
-																pMyVertexCurr,
-																ep->uslInd[0],
-																ep->uslInd[1],
-																ep->uslInd[2],
-																ep->uslInd[3]);
+						if(FRAME_COUNT <= 0 && !(ep->type & POLY_TRANS)) {
+							ApplyDynLight_VertexBuffer_2(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
 						}
 
-						if(ep->type&POLY_WATER) {
+						if(ep->type & POLY_WATER) {
 							ManageWater_VertexBuffer(ep,to,tim,pMyVertexCurr);
 							vPolyWater.push_back(ep);
 						}
 					}
 				}
 
-				if ((ViewMode & VIEWMODE_WIRE))
-				{
-					if (EERIERTPPoly(ep))
-						EERIEPOLY_DrawWired(ep);
-				}
+				if((ViewMode & VIEWMODE_WIRE) && EERIERTPPoly(ep))
+					EERIEPOLY_DrawWired(ep);
+
 			} else { // Improve Vision Activated
-				if(FRAME_COUNT <= 0 && !(ep->type&POLY_TRANS)) {
+				if(FRAME_COUNT <= 0 && !(ep->type & POLY_TRANS)) {
 					if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
 						continue; 
 					}
@@ -1653,23 +1642,18 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 		int iNbTex=portals->room[room_num].usNbTextures;
 		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
 
-		while(iNbTex--)
-		{
+		while(iNbTex--) {
 			TextureContainer *pTexCurr=*ppTexCurr;
 
-			if (ViewMode & VIEWMODE_FLAT) 
+			if(ViewMode & VIEWMODE_FLAT)
 				GRenderer->ResetTexture(0);
 			else
 				GRenderer->SetTexture(0, pTexCurr);
 
-			if(pTexCurr->userflags&POLY_METAL)
-			{
+			if(pTexCurr->userflags & POLY_METAL)
 				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate2X);
-			}
 			else
-			{
 				GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
-			}
 			
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull)
 			{
