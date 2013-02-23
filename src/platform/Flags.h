@@ -51,7 +51,7 @@ public:
 	}
 	
 	inline bool has(Enum flag) const {
-		return (bool)(flags & (u32)flag);
+		return !!(flags & (u32)flag);
 	}
 	
 	inline bool hasAll(Flags o) const {
