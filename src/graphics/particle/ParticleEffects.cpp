@@ -236,8 +236,6 @@ static void ARX_PARTICLES_Spawn_Blood3(const Vec3f & pos, float dmgs, Color col,
 	
 }
 
-#define SPLAT_MULTIPLY 1.f
-
 void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	
 	if (BoomCount > (MAX_POLYBOOM >> 2) - 30) return;
@@ -286,21 +284,21 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	if (flags & 1) py=poss->y;
 
 	EERIEPOLY TheoricalSplat; // clockwise
-	TheoricalSplat.v[0].p.x=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[0].p.x=-splatsize;
 	TheoricalSplat.v[0].p.y = py; 
-	TheoricalSplat.v[0].p.z=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[0].p.z=-splatsize;
 
-	TheoricalSplat.v[1].p.x=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[1].p.x=-splatsize;
 	TheoricalSplat.v[1].p.y = py; 
-	TheoricalSplat.v[1].p.z=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[1].p.z=+splatsize;
 
-	TheoricalSplat.v[2].p.x=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[2].p.x=+splatsize;
 	TheoricalSplat.v[2].p.y = py; 
-	TheoricalSplat.v[2].p.z=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[2].p.z=+splatsize;
 
-	TheoricalSplat.v[3].p.x=+splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[3].p.x=+splatsize;
 	TheoricalSplat.v[3].p.y = py; 
-	TheoricalSplat.v[3].p.z=-splatsize*SPLAT_MULTIPLY;
+	TheoricalSplat.v[3].p.z=-splatsize;
 	TheoricalSplat.type=POLY_QUAD;
 
 	Vec3f RealSplatStart(-size, py, -size);
