@@ -833,7 +833,8 @@ EERIEPOLY * CheckArrowPolyCollision(Vec3f * start, Vec3f * end) {
 	long iz = std::max(pz - 2, 0L);
 	long az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
 	
-	for(long zz = iz; zz <= az; zz++) for(long xx = ix; xx <= ax; xx++) {
+	for(long zz = iz; zz <= az; zz++)
+		for(long xx = ix; xx <= ax; xx++) {
 		
 		FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[xx][zz];
 		
@@ -1638,14 +1639,14 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 	long px = x * ACTIVEBKG->Xmul;
 	long pz = z * ACTIVEBKG->Zmul;
 
-	long ix, iz, ax, az;
-	long n;
-	n = obj->pbox->radius * ( 1.0f / 100 );
+	long n = obj->pbox->radius * ( 1.0f / 100 );
 	n = min(1L, n + 1);
-	ix = max(px - n, 0L);
-	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
-	iz = max(pz - n, 0L);
-	az = min(pz + n, ACTIVEBKG->Zsize - 1L);
+
+	long ix = std::max(px - n, 0L);
+	long ax = std::min(px + n, ACTIVEBKG->Xsize - 1L);
+	long iz = std::max(pz - n, 0L);
+	long az = std::min(pz + n, ACTIVEBKG->Zsize - 1L);
+
 	LAST_COLLISION_POLY = NULL;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;

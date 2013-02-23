@@ -1059,12 +1059,13 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 	long px = sphere->origin.x * ACTIVEBKG->Xmul;
 	long pz = sphere->origin.z * ACTIVEBKG->Zmul;
 
+	long spx = std::max(px - rad, 0L);
+	long epx = std::min(px + rad, ACTIVEBKG->Xsize - 1L);
+	long spz = std::max(pz - rad, 0L);
+	long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
+
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
-	long spx=max(px-rad,0L);
-	long epx=min(px+rad,ACTIVEBKG->Xsize-1L);
-	long spz=max(pz-rad,0L);
-	long epz=min(pz+rad,ACTIVEBKG->Zsize-1L);
 
 	for (long j=spz;j<=epz;j++)
 	for (long i=spx;i<=epx;i++) 
@@ -1816,12 +1817,11 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 
 		if(px >= ACTIVEBKG->Xsize)
 			goto fini;
-		else if(px < 0)
+		if(px < 0)
 			goto fini;
-
 		if(pz >= ACTIVEBKG->Zsize)
 			goto fini;
-		else if(pz < 0)
+		if(pz < 0)
 			goto fini;
 
 			feg=&ACTIVEBKG->fastdata[px][pz];

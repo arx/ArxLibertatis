@@ -106,13 +106,10 @@ bool IsValidPos3(Vec3f * pos)
 
 	if(px >= ACTIVEBKG->Xsize)
 		return false;
-
 	if(px < 0)
 		return false;
-
 	if(pz >= ACTIVEBKG->Zsize)
 		return false;
-
 	if(pz < 0)
 		return false;
 
