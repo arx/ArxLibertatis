@@ -2107,30 +2107,22 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 	paf[1] = eobj->facelist[ii].vid[1];
 	paf[2] = eobj->facelist[ii].vid[2];
 
-	for (long i = 0; i < 3; i++)
-	{
+	for(long i = 0; i < 3; i++) {
 		Color3f tempColor;
-		long ir, ig, ib;
 
-		if ((io) && (io->ioflags & (IO_NPC | IO_ITEM)))
-		{
-			tempColor = Color3f(NPC_ITEMS_AMBIENT_VALUE_255, NPC_ITEMS_AMBIENT_VALUE_255, NPC_ITEMS_AMBIENT_VALUE_255);
-		}
+		if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+			tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 		else
-		{
 			tempColor = ACTIVEBKG->ambient255;
-		}
 
 		Vec3f * posVert = &eobj->vertexlist3[paf[i]].v;
 
-		for (int l = 0 ; l != MAX_LLIGHTS; l++)
-		{
+		for(int l = 0; l != MAX_LLIGHTS; l++) {
 			EERIE_LIGHT * Cur_llights = llights[l];
 
-			if (Cur_llights)
-			{
-				float	cosangle;
-				float		oolength = 1.f / fdist(*posVert, Cur_llights->pos);
+			if(Cur_llights) {
+				float cosangle;
+				float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
 				vLight = (llights[l]->pos - *posVert) * oolength;
 
 				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
@@ -2141,8 +2133,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 				            eobj->facelist[ii].norm.z * Cur_vLights->z) * ( 1.0f / 2 );
 
 				// If light visible
-				if (cosangle > 0.f)
-				{
+				if(cosangle > 0.f) {
 					float distance = fdist(*posVert, Cur_llights->pos);
 
 					// Evaluate its intensity depending on the distance Light<->Object
@@ -2167,23 +2158,21 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 				break;
 		}
 
-		if (eobj->drawflags & DRAWFLAG_HIGHLIGHT)
-		{
+		if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
 			tempColor.r += iHighLight;
 			tempColor.g += iHighLight;
 			tempColor.b += iHighLight;
 		}
 
-		if (Project.improve)
-		{
+		if (Project.improve) {
 			tempColor.r *= infra->r;
 			tempColor.g *= infra->g;
 			tempColor.b *= infra->b;
 		}
 
-		ir = clipByte255(tempColor.r);
-		ig = clipByte255(tempColor.g);
-		ib = clipByte255(tempColor.b);
+		long ir = clipByte255(tempColor.r);
+		long ig = clipByte255(tempColor.g);
+		long ib = clipByte255(tempColor.b);
 		eobj->vertexlist3[paf[i]].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 	}
 }
