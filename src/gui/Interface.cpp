@@ -1284,8 +1284,8 @@ bool ArxGame::manageEditorControls() {
 				if(t-SLID_START > 10000.f) {
 					SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
 
-					if (SLID_VALUE>100.f)
-						SLID_VALUE=100.f;
+					if(SLID_VALUE > 100.f)
+						SLID_VALUE = 100.f;
 
 					lSLID_VALUE = SLID_VALUE;
 				} else {
@@ -1297,8 +1297,8 @@ bool ArxGame::manageEditorControls() {
 		if(bOk) {
 			SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
 
-			if(SLID_VALUE<0.f)
-				SLID_VALUE=0.f;
+			if(SLID_VALUE < 0.f)
+				SLID_VALUE = 0.f;
 
 			lSLID_VALUE = SLID_VALUE;
 		}
@@ -1321,48 +1321,35 @@ bool ArxGame::manageEditorControls() {
 		}
 	}
 
+	if(SMOOTHSLID == 1) {
+		SLID_VALUE += (float)Original_framedelay*( 1.0f / 10 );
 
-	if (SMOOTHSLID==1)
-	{
-		SLID_VALUE+=(float)Original_framedelay*( 1.0f / 10 );
-
-		if (SLID_VALUE > 100.f)
-		{
+		if(SLID_VALUE > 100.f) {
 			SLID_VALUE = 100.f;
 			SMOOTHSLID = 0;
 		}
-
 		lSLID_VALUE = SLID_VALUE;
-	}
-	else if (SMOOTHSLID==-1)
-	{
-		SLID_VALUE-=(float)Original_framedelay*( 1.0f / 10 );
+	} else if(SMOOTHSLID == -1) {
+		SLID_VALUE -= (float)Original_framedelay*( 1.0f / 10 );
 
-		if (SLID_VALUE < 0.f)
-		{
+		if (SLID_VALUE < 0.f) {
 			SLID_VALUE = 0.f;
 			SMOOTHSLID = 0;
 		}
-
 		lSLID_VALUE = SLID_VALUE;
 	}
 
-	if (CINEMA_INC==1)
-	{
+	if(CINEMA_INC == 1) {
 		CINEMA_DECAL+=(float)Original_framedelay*( 1.0f / 10 );
 
-		if (CINEMA_DECAL > 100.f)
-		{
+		if(CINEMA_DECAL > 100.f) {
 			CINEMA_DECAL = 100.f;
 			CINEMA_INC = 0;
 		}
-	}
-	else if (CINEMA_INC==-1)
-	{
+	} else if(CINEMA_INC == -1) {
 		CINEMA_DECAL-=(float)Original_framedelay*( 1.0f / 10 );
 
-		if (CINEMA_DECAL < 0.f)
-		{
+		if(CINEMA_DECAL < 0.f) {
 			CINEMA_DECAL = 0.f;
 			CINEMA_INC = 0;
 		}
