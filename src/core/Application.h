@@ -68,7 +68,7 @@ DECLARE_FLAGS_OPERATORS(ViewModeFlags);
 enum LightModeFlag {
 	MODE_STATICLIGHT  = (1<<0),
 	MODE_DEPTHCUEING  = (1<<1),
-	MODE_DYNAMICLIGHT = (1<<2),
+	MODE_DYNAMICLIGHT = (1<<2), //TODO remove
 	MODE_NORMALS      = (1<<3),
 	MODE_RAYLAUNCH    = (1<<4),
 	MODE_SMOOTH       = (1<<5)

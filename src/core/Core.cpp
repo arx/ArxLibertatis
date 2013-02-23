@@ -601,7 +601,7 @@ static bool initializeGame() {
 	}
 	
 	LogDebug("LSV Init");
-	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
+	ModeLight = MODE_DEPTHCUEING;
 	
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
