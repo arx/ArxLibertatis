@@ -1663,15 +1663,15 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 					pTexCurr->tMatRoom[room_num].uslNbIndiceCull);
 				GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
 				
-				EERIEDrawnPolys+=pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
-				pTexCurr->tMatRoom[room_num].uslNbIndiceCull=0;
-						}
+				EERIEDrawnPolys += pTexCurr->tMatRoom[room_num].uslNbIndiceCull;
+				pTexCurr->tMatRoom[room_num].uslNbIndiceCull = 0;
+			}
 						
 			ppTexCurr++;
 		}
 
 		//////////////////////////////
-		//ZMapp
+		// ZMapp
 		GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::OpModulate);
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1680,33 +1680,25 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
 		
-		while ( iNbTex-- ) //For each tex in portals->room[room_num]
-		{
+		// For each tex in portals->room[room_num]
+		while(iNbTex--) {
 			TextureContainer * pTexCurr	= *ppTexCurr;
 
-			if ( pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size() )
-			{
-					//---------------------------------------------------------------------------
-					//																		 INIT
+			if(pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size()) {
 				
 				GRenderer->SetTexture(0, pTexCurr->TextureRefinement);
 				
 				dynamicVertices.lock();
-				unsigned short * pussInd = dynamicVertices.indices;
+				unsigned short *pussInd = dynamicVertices.indices;
 				unsigned short iNbIndice = 0;
 
-				vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
-	
+				vector<EERIEPOLY *>::iterator it = pTexCurr->TextureRefinement->vPolyZMap.begin();
 
-				
-				//---------------------------------------------------------------------------
-				//																		 LOOP
-				for (; it != pTexCurr->TextureRefinement->vPolyZMap.end(); ++it)
-				{
+				for(;it != pTexCurr->TextureRefinement->vPolyZMap.end(); ++it) {
 					EERIEPOLY * ep = *it;
 					
 					unsigned short iNbVertex = (ep->type & POLY_QUAD) ? 4 : 3;
-					SMY_VERTEX3 * pVertex = dynamicVertices.append(iNbVertex);
+					SMY_VERTEX3 *pVertex = dynamicVertices.append(iNbVertex);
 					
 					if(!pVertex) {
 						dynamicVertices.unlock();
@@ -1720,8 +1712,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						pVertex = dynamicVertices.append(iNbVertex);
 					}
 					
-					//-----------------------------------------------------------------------
-					//																PRECALCUL
+					// PRECALCUL
 					float tu[4];
 					float tv[4];
 					float _fTransp[4];
@@ -1733,15 +1724,11 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						||	(EEfabs(ep->nrml[2].y)>=0.9f)	)
 						nrm=1;
 					
-					for (nu=0;nu<iNbVertex;nu++)
-					{
-						if (nrm)
-						{
+					for(nu = 0; nu < iNbVertex; nu++) {
+						if(nrm) {
 							tu[nu]=(ep->v[nu].p.x*( 1.0f / 50 ));
 							tv[nu]=(ep->v[nu].p.z*( 1.0f / 50 ));
-						}
-						else
-						{
+						} else {
 							tu[nu]=ep->v[nu].uv.x*4.f;
 							tv[nu]=ep->v[nu].uv.y*4.f;						
 						}
@@ -1751,36 +1738,32 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
 						
 						if (_fTransp[nu] < 0.f)
-							_fTransp[nu]		=	0.f;
+							_fTransp[nu] = 0.f;
 						// t cannot be greater than 1.f (b should be negative for that)
 					}
 					
-					//-----------------------------------------------------------------------
-					//																FILL DATA
-					for ( int idx = 0  ; idx < iNbVertex ; ++idx )
-					{
-						pVertex->p.x				=	ep->v[idx].p.x;
-						pVertex->p.y				=	- ep->v[idx].p.y;
-						pVertex->p.z				=	ep->v[idx].p.z;
-						pVertex->color = Color::gray(_fTransp[idx]).toBGR();
-						pVertex->uv[0].x				=	tu[idx]; 
-						pVertex->uv[0].y				=	tv[idx]; 
+					// FILL DATA
+					for(int idx = 0; idx < iNbVertex; ++idx) {
+						pVertex->p.x     =  ep->v[idx].p.x;
+						pVertex->p.y     = -ep->v[idx].p.y;
+						pVertex->p.z     =  ep->v[idx].p.z;
+						pVertex->color   = Color::gray(_fTransp[idx]).toBGR();
+						pVertex->uv[0].x = tu[idx];
+						pVertex->uv[0].y = tv[idx];
 						pVertex++;
 						
-						*pussInd++				=	iNbIndice++;
+						*pussInd++ = iNbIndice++;
 						dynamicVertices.nbindices++;
 					}
 					
-					if(iNbVertex&4) {
-						*pussInd++=iNbIndice-2;
-						*pussInd++=iNbIndice-3;
+					if(iNbVertex & 4) {
+						*pussInd++ = iNbIndice-2;
+						*pussInd++ = iNbIndice-3;
 						dynamicVertices.nbindices += 2;
 					}
-					
 				}
 
-					//---------------------------------------------------------------------------
-					//														   CLEAR CURRENT ZMAP
+				// CLEAR CURRENT ZMAP
 				pTexCurr->TextureRefinement->vPolyZMap.clear();
 				
 				dynamicVertices.unlock();
@@ -1792,7 +1775,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 			}
 			
 			ppTexCurr++;
-		} //END  while ( iNbTex-- ) ----------------------------------------------------------
+		}
 		
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
