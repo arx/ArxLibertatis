@@ -3666,19 +3666,17 @@ void ArxGame::manageKeyMouse() {
 			if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
-					if (eyeball.angle.a < 70.f) {
-						if (eyeball.angle.a + ia < 70.f)
+					if(eyeball.angle.a < 70.f) {
+						if(eyeball.angle.a + ia < 70.f)
 							eyeball.angle.a += ia;
-					} else if (eyeball.angle.a > 300.f) {
-						if (eyeball.angle.a + ia > 300.f)
+					} else if(eyeball.angle.a > 300.f) {
+						if(eyeball.angle.a + ia > 300.f)
 							eyeball.angle.a += ia;
 					}
-					eyeball.angle.a = MAKEANGLE(eyeball.angle.a);
 
+					eyeball.angle.a = MAKEANGLE(eyeball.angle.a);
 					eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-					if(entities.player() && EEfabs(ia)>2.f)
-						entities.player()->lastanimtime = 0;
 
 					float iangle = player.angle.a;
 
@@ -3687,18 +3685,22 @@ void ArxGame::manageKeyMouse() {
 					player.desiredangle.a = MAKEANGLE(player.desiredangle.a);
 
 					if(player.desiredangle.a >= 74.9f && player.desiredangle.a <= 301.f) {
-						if (iangle<75.f)
+						if(iangle < 75.f)
 							player.desiredangle.a = 74.9f; //69
 						else
 							player.desiredangle.a = 301.f;
 					}
 
-					if(ib!=0.f)
+					if(entities.player() && EEfabs(ia)>2.f)
+						entities.player()->lastanimtime = 0;
+
+					if(ib != 0.f)
 						player.Current_Movement|=PLAYER_ROTATE;
 
-					player.desiredangle.b=player.angle.b;
-					player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);
-					PLAYER_ROTATION=ib;
+					PLAYER_ROTATION = ib;
+
+					player.desiredangle.b = player.angle.b;
+					player.desiredangle.b = MAKEANGLE(player.desiredangle.b - ib);
 			}
 			}
 		}
