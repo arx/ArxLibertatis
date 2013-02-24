@@ -1957,16 +1957,12 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 	}
 		
 		for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			float r, g, b;
+			Color3f tempColor;
 
 			if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-				r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
+				tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
 			else
-			{
-				r = ACTIVEBKG->ambient255.r;
-				g = ACTIVEBKG->ambient255.g;
-				b = ACTIVEBKG->ambient255.b;
-			}
+				tempColor = ACTIVEBKG->ambient255;
 
 			Vec3f * posVert = &eobj->vertexlist3[i].v;
 
@@ -2003,9 +1999,9 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 								cosangle *= p * Cur_llights->precalc;
 						}
 
-						r += Cur_llights->rgb255.r * cosangle;
-						g += Cur_llights->rgb255.g * cosangle;
-						b += Cur_llights->rgb255.b * cosangle;
+						tempColor.r += Cur_llights->rgb255.r * cosangle;
+						tempColor.g += Cur_llights->rgb255.g * cosangle;
+						tempColor.b += Cur_llights->rgb255.b * cosangle;
 					}
 				}
 				else
@@ -2013,24 +2009,24 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 			}
 
 			if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-				r += iHighLight; 
-				g += iHighLight; 
-				b += iHighLight; 
+				tempColor.r += iHighLight;
+				tempColor.g += iHighLight;
+				tempColor.b += iHighLight;
 			}
 
 			if(Project.improve && !io) {
-				r *= infra->r;
-				g *= infra->g;
-				b *= infra->b;
+				tempColor.r *= infra->r;
+				tempColor.g *= infra->g;
+				tempColor.b *= infra->b;
 
-				r += infra->r * 512.f;
-				g += infra->g;
-				b += infra->b * 400.f;
+				tempColor.r += infra->r * 512.f;
+				tempColor.g += infra->g;
+				tempColor.b += infra->b * 400.f;
 			}
 
-			long ir = clipByte255(r);
-			long ig = clipByte255(g);
-			long ib = clipByte255(b);
+			long ir = clipByte255(tempColor.r);
+			long ig = clipByte255(tempColor.g);
+			long ib = clipByte255(tempColor.b);
 			eobj->vertexlist3[i].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 		}
 }
