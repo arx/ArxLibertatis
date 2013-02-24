@@ -2749,8 +2749,6 @@ void ComputeRoomDistance() {
 	free(ptr);
 }
 
-long NEED_ANCHORS = 1;
-
 static void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx) {
 	
 	portals->room[nr].epdata = (EP_DATA *)realloc(portals->room[nr].epdata, sizeof(EP_DATA) * (portals->room[nr].nb_polys + 1));
@@ -3370,9 +3368,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) {
 		EERIEPOLY_Compute_PolyIn();
 		EERIE_PORTAL_Blend_Portals_And_Rooms();
 		
-		if(NEED_ANCHORS) {
-			AnchorData_Create(ACTIVEBKG);
-		}
+		AnchorData_Create(ACTIVEBKG);
 		
 		FastSceneSave(ftemp.string());
 		ComputePortalVertexBuffer();
