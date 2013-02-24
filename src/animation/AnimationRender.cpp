@@ -1956,79 +1956,79 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 		QuatFromAngles(&qInvert, &vt1);
 	}
 		
-		for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
-			Color3f tempColor;
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
+		Color3f tempColor;
 
-			if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
-				tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
-			else
-				tempColor = ACTIVEBKG->ambient255;
+		if(io && (io->ioflags & (IO_NPC | IO_ITEM)))
+			tempColor = Color3f::gray(NPC_ITEMS_AMBIENT_VALUE_255);
+		else
+			tempColor = ACTIVEBKG->ambient255;
 
-			Vec3f * posVert = &eobj->vertexlist3[i].v;
+		Vec3f * posVert = &eobj->vertexlist3[i].v;
 
-			for(long l = 0; l != MAX_LLIGHTS; l++) {
-				EERIE_LIGHT * Cur_llights = llights[l];
+		for(long l = 0; l != MAX_LLIGHTS; l++) {
+			EERIE_LIGHT * Cur_llights = llights[l];
 
-				if(Cur_llights) {
-					float	cosangle;
-					
-					vLight = (llights[l]->pos - *posVert).getNormalized();
+			if(Cur_llights) {
+				float	cosangle;
 
-					TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
-					Vec3f * Cur_vLights = &vTLights[l];
+				vLight = (llights[l]->pos - *posVert).getNormalized();
 
-					// Get cos angle between light and vertex norm
-					cosangle = (eobj->vertexlist[i].norm.x * Cur_vLights->x +
-					            eobj->vertexlist[i].norm.y * Cur_vLights->y +
-					            eobj->vertexlist[i].norm.z * Cur_vLights->z);
+				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
+				Vec3f * Cur_vLights = &vTLights[l];
 
-					// If light visible
-					if(cosangle > 0.f) {
-						float distance = fdist(*posVert, Cur_llights->pos);
+				// Get cos angle between light and vertex norm
+				cosangle = (eobj->vertexlist[i].norm.x * Cur_vLights->x +
+							eobj->vertexlist[i].norm.y * Cur_vLights->y +
+							eobj->vertexlist[i].norm.z * Cur_vLights->z);
 
-						// Evaluate its intensity depending on the distance Light<->Object
-						if (distance <= Cur_llights->fallstart)
-							cosangle *= Cur_llights->precalc; 
+				// If light visible
+				if(cosangle > 0.f) {
+					float distance = fdist(*posVert, Cur_llights->pos);
+
+					// Evaluate its intensity depending on the distance Light<->Object
+					if (distance <= Cur_llights->fallstart)
+						cosangle *= Cur_llights->precalc;
+					else
+					{
+						float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+
+						if (p <= 0.f)
+							cosangle = 0.f;
 						else
-						{
-							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
-
-							if (p <= 0.f)
-								cosangle = 0.f;
-							else
-								cosangle *= p * Cur_llights->precalc;
-						}
-
-						tempColor.r += Cur_llights->rgb255.r * cosangle;
-						tempColor.g += Cur_llights->rgb255.g * cosangle;
-						tempColor.b += Cur_llights->rgb255.b * cosangle;
+							cosangle *= p * Cur_llights->precalc;
 					}
+
+					tempColor.r += Cur_llights->rgb255.r * cosangle;
+					tempColor.g += Cur_llights->rgb255.g * cosangle;
+					tempColor.b += Cur_llights->rgb255.b * cosangle;
 				}
-				else
-					break;
 			}
-
-			if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-				tempColor.r += iHighLight;
-				tempColor.g += iHighLight;
-				tempColor.b += iHighLight;
-			}
-
-			if(Project.improve && !io) {
-				tempColor.r *= infra->r;
-				tempColor.g *= infra->g;
-				tempColor.b *= infra->b;
-
-				tempColor.r += infra->r * 512.f;
-				tempColor.g += infra->g;
-				tempColor.b += infra->b * 400.f;
-			}
-
-			long ir = clipByte255(tempColor.r);
-			long ig = clipByte255(tempColor.g);
-			long ib = clipByte255(tempColor.b);
-			eobj->vertexlist3[i].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
+			else
+				break;
 		}
+
+		if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
+			tempColor.r += iHighLight;
+			tempColor.g += iHighLight;
+			tempColor.b += iHighLight;
+		}
+
+		if(Project.improve && !io) {
+			tempColor.r *= infra->r;
+			tempColor.g *= infra->g;
+			tempColor.b *= infra->b;
+
+			tempColor.r += infra->r * 512.f;
+			tempColor.g += infra->g;
+			tempColor.b += infra->b * 400.f;
+		}
+
+		long ir = clipByte255(tempColor.r);
+		long ig = clipByte255(tempColor.g);
+		long ib = clipByte255(tempColor.b);
+		eobj->vertexlist3[i].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
+	}
 }
 
 void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, long ii) {
