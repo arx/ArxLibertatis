@@ -360,23 +360,24 @@ void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
 	float pour;
 	long tim;
 	
-	if ((!eobj)
-		|| (!eanim))
+	if(!eobj || !eanim)
 		return;
 
-	if (eanim->flags & EA_PAUSED) time=0;
+	if(eanim->flags & EA_PAUSED)
+		time = 0;
 
-	if ((io) && (io->ioflags & IO_FREEZESCRIPT)) time=0;
+	if(io && (io->ioflags & IO_FREEZESCRIPT))
+		time = 0;
 
-	if (eanim->altidx_cur>= eanim->cur_anim->alt_nb) eanim->altidx_cur=0;
+	if(eanim->altidx_cur >= eanim->cur_anim->alt_nb)
+		eanim->altidx_cur = 0;
 
-	if (!(eanim->flags & EA_EXCONTROL))
-		eanim->ctime+=time;
+	if(!(eanim->flags & EA_EXCONTROL))
+		eanim->ctime += time;
 
-	eanim->flags&=~EA_ANIMEND;
+	eanim->flags &= ~EA_ANIMEND;
 
-	if ((eanim->flags & EA_STOPEND)
-		&& (eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time))
+	if((eanim->flags & EA_STOPEND) && eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time)
 	{
 		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 	}
@@ -385,30 +386,28 @@ void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
 	   || (io && ((eanim->cur_anim == io->anims[ANIM_WALK])
 	              || (eanim->cur_anim == io->anims[ANIM_WALK2])
 	              || (eanim->cur_anim == io->anims[ANIM_WALK3])
-	              || (eanim->cur_anim==io->anims[ANIM_RUN])
-	              || (eanim->cur_anim==io->anims[ANIM_RUN2])
-	              || (eanim->cur_anim==io->anims[ANIM_RUN3])))) {
+				  || (eanim->cur_anim == io->anims[ANIM_RUN])
+				  || (eanim->cur_anim == io->anims[ANIM_RUN2])
+				  || (eanim->cur_anim == io->anims[ANIM_RUN3])))) {
 		
 		if(eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
 			
 			long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
 
-			if(eanim->next_anim==NULL) {
-				
+			if(!eanim->next_anim) {
 				long t = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 				eanim->ctime= eanim->ctime % t;
 
-					if (io) FinishAnim(io,eanim->cur_anim);
-					
-				}
-			else
-			{
+				if(io)
+					FinishAnim(io,eanim->cur_anim);
+			} else {
 				if(io) {
-					
 					FinishAnim(io,eanim->cur_anim);
 
-					if (io->lastanimtime!=0) AcquireLastAnim(io);
-					else io->lastanimtime=1;
+					if(io->lastanimtime != 0)
+						AcquireLastAnim(io);
+					else
+						io->lastanimtime = 1;
 				}
 
 				eanim->cur_anim=eanim->next_anim;
@@ -421,20 +420,17 @@ void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
 				goto suite;
 			}
 		}
-	}
-	else if (eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time)
-	{
-		if (io)
-		{
+	} else if (eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
+		if(io) {
 			long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
 
-			if (eanim->next_anim!=NULL)
-			{
-				
+			if(eanim->next_anim) {
 				FinishAnim(io,eanim->cur_anim);
 
-				if (io->lastanimtime!=0) AcquireLastAnim(io);
-				else io->lastanimtime=1;
+				if (io->lastanimtime!=0)
+					AcquireLastAnim(io);
+				else
+					io->lastanimtime=1;
 
 				eanim->cur_anim=eanim->next_anim;
 				eanim->altidx_cur=ANIM_GetAltIdx(eanim->next_anim,eanim->altidx_cur);
@@ -444,16 +440,14 @@ void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
 				eanim->flags=eanim->nextflags;
 				eanim->flags&=~EA_ANIMEND;
 				goto suite;
-			}
-			else
-			{
+			} else {
 				eanim->ctime=(long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 				eanim->flags&=~EA_ANIMEND;
 			}
 		}
 
-		eanim->flags|=EA_ANIMEND;
-		eanim->ctime=(unsigned long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+		eanim->flags |= EA_ANIMEND;
+		eanim->ctime = (unsigned long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 	}
 
 suite:
