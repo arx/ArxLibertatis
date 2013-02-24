@@ -352,13 +352,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim, long alt_idx, Vec3f * pos) {
 //  unsigned long time    Time increment to current animation in Ms
 //  Entity * io  Referrence to Interactive Object (NULL if no IO)
 //  long typ              Misc Type 0=World View 1=1st Person View
-void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
-                 Entity * io) {
-	
-	long tcf,tnf;
-	long fr;
-	float pour;
-	long tim;
+void PrepareAnim(EERIE_3DOBJ *eobj, ANIM_USE *eanim, unsigned long time, Entity *io) {
 	
 	if(!eobj || !eanim)
 		return;
@@ -455,6 +449,7 @@ suite:
 	if (!eanim->cur_anim)
 		return;
 
+	long tim;
 	if (eanim->flags & EA_REVERSE)
 		tim=(unsigned long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time - eanim->ctime;
 	else
@@ -463,10 +458,11 @@ suite:
 	eanim->fr=eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames-2;
 	eanim->pour=1.f;
 
+	long fr;
 	for (long i=1;i<eanim->cur_anim->anims[eanim->altidx_cur]->nb_key_frames;i++)
 	{
-		tcf=(long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i-1].time;
-		tnf=(long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i].time;
+		long tcf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i-1].time;
+		long tnf = (long)eanim->cur_anim->anims[eanim->altidx_cur]->frames[i].time;
 
 		if (tcf == tnf) return;
 
@@ -475,7 +471,7 @@ suite:
 			
 			fr=i-1;
 			tim-=tcf;
-			pour=(float)((float)tim/((float)tnf-(float)tcf));
+			float pour = (float)((float)tim/((float)tnf-(float)tcf));
 			
 			// Frame Sound Management
 			if(!(eanim->flags & EA_ANIMEND) && time
