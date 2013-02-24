@@ -1938,31 +1938,23 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 	Vec3f vTLights[32];
 	EERIE_QUAT qInvert;
 
-	if (BIGMAT != NULL)
-	{
+	if(BIGMAT) {
 		QuatFromMatrix(qInvert, *BIGMAT);
-	}
-	else
-	{
-			Anglef vt1;
+	} else {
+		Anglef vt1;
 
-			if (angle)
-			{
-				vt1 = *angle;
-			}
+		if(angle) {
+			vt1 = *angle;
+		} else {
+			if (io)
+				vt1 = io->angle;
 			else
-			{
-				if (io) 
-					vt1 = io->angle;
-				else
-					vt1 = eobj->angle;
-			}
+				vt1 = eobj->angle;
+		}
 
-			vt1 = Anglef(radians(MAKEANGLE(-vt1.g)), radians(MAKEANGLE(vt1.b)), radians(MAKEANGLE(vt1.a)));
-			QuatFromAngles(&qInvert, &vt1);
+		vt1 = Anglef(radians(MAKEANGLE(-vt1.g)), radians(MAKEANGLE(vt1.b)), radians(MAKEANGLE(vt1.a)));
+		QuatFromAngles(&qInvert, &vt1);
 	}
-
-
 		
 		for (size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			float r, g, b;
@@ -2049,33 +2041,27 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 	Vec3f vTLights[32];
 	EERIE_QUAT qInvert;
 
-	if (BIGMAT != NULL)
-	{
+	if(BIGMAT) {
 		QuatFromMatrix(qInvert, *BIGMAT);
-	}
-	else
-	{
-			Anglef vt1;
+	} else {
+		Anglef vt1;
 
-			if (angle)
-			{
-				vt1 = *angle;
-			}
+		if(angle) {
+			vt1 = *angle;
+		} else {
+			if (io)
+				vt1 = io->angle;
 			else
-			{
-				if (io) 
-					vt1 = io->angle;
-				else
-					vt1 = eobj->angle;
-			}
+				vt1 = eobj->angle;
+		}
 
-			vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
-			QuatFromAngles(&qInvert, &vt1);
+		vt1 = Anglef(radians(vt1.a), radians(vt1.b), radians(vt1.g));
+		QuatFromAngles(&qInvert, &vt1);
 	}
 
 	Vec3f tv = *pos;
 
-	if ((io) && (io->ioflags & IO_ITEM))
+	if(io && (io->ioflags & IO_ITEM))
 		tv.y -= 60.f;
 	else
 		tv.y -= 90.f;
