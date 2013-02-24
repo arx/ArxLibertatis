@@ -3666,7 +3666,6 @@ void ArxGame::manageKeyMouse() {
 			if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
-				if(mouseDiffY != 0) {
 					if (eyeball.angle.a < 70.f) {
 						if (eyeball.angle.a + ia < 70.f)
 							eyeball.angle.a += ia;
@@ -3675,13 +3674,9 @@ void ArxGame::manageKeyMouse() {
 							eyeball.angle.a += ia;
 					}
 					eyeball.angle.a = MAKEANGLE(eyeball.angle.a);
-				}
 
-				if(mouseDiffX != 0) {
 					eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
-				}
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
-				if(mouseDiffY != 0) {
 					if(entities.player() && EEfabs(ia)>2.f)
 						entities.player()->lastanimtime = 0;
 
@@ -3697,16 +3692,13 @@ void ArxGame::manageKeyMouse() {
 						else
 							player.desiredangle.a = 301.f;
 					}
-				}
 
-				if(mouseDiffX != 0) {
 					if(ib!=0.f)
 						player.Current_Movement|=PLAYER_ROTATE;
 
 					player.desiredangle.b=player.angle.b;
 					player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);
 					PLAYER_ROTATION=ib;
-				}
 			}
 			}
 		}
