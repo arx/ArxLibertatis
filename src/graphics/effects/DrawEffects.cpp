@@ -575,13 +575,10 @@ void ARXDRAW_DrawAllTransPolysPos() {
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	long i, to = 0; 
+	long to = 0;
 
-	EERIEPOLY * ep;
-
-	for ( i = 0 ; i < TRANSPOLYSPOS ; i++ ) 
-	{
-		ep = TransPol[i];
+	for(long i = 0 ; i < TRANSPOLYSPOS; i++ ) {
+		EERIEPOLY *ep = TransPol[i];
 
 		{
 			if ( ep->type & POLY_DOUBLESIDED ) GRenderer->SetCulling(Renderer::CullNone);
