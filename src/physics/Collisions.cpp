@@ -1096,12 +1096,9 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 	long rad = sphere->radius*ACTIVEBKG->Xmul;
 	rad+=2;
-	long px,pz;
-	px = sphere->origin.x*ACTIVEBKG->Xmul;
-	pz = sphere->origin.z*ACTIVEBKG->Zmul;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	long px = sphere->origin.x*ACTIVEBKG->Xmul;
+	long pz = sphere->origin.z*ACTIVEBKG->Zmul;
 
 	if (!(flags & CAS_NO_BACKGROUND_COL))
 	{
@@ -1113,11 +1110,11 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 		for (long j=spz;j<=epz;j++)
 		for (long i=spx;i<=epx;i++) 
 		{
-			feg=&ACTIVEBKG->fastdata[i][j];
+			FAST_BKG_DATA *feg=&ACTIVEBKG->fastdata[i][j];
 
 			for (long k=0;k<feg->nbpoly;k++)
 			{
-				ep=&feg->polydata[k];	
+				EERIEPOLY *ep=&feg->polydata[k];
 
 				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
 

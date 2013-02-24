@@ -102,7 +102,7 @@ void ARXDRAW_DrawInterShadows()
 			long xx = io->pos.x * ACTIVEBKG->Xmul;
 			long yy = io->pos.z * ACTIVEBKG->Zmul;
 
-			if(xx >= 1 && yy >= 1 && (xx<ACTIVEBKG->Xsize-1) && (yy<ACTIVEBKG->Zsize-1)) {
+			if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
 				FAST_BKG_DATA *feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
 
 				if(!feg->treat)
