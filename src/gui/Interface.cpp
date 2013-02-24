@@ -3659,12 +3659,14 @@ void ArxGame::manageKeyMouse() {
 			if(INVERTMOUSE)
 				mouseSensitivityY *= -1.f;
 
+			float ia = (float)mouseDiffY * mouseSensitivityY;
+			float ib = (float)mouseDiffX * mouseSensitivityX;
+
+
 			if(PLAYER_MOUSELOOK_ON || bKeySpecialMove) {
 
 			if(eyeball.exist == 2) {
 				if(mouseDiffY != 0) {
-					float ia = (float)mouseDiffY * mouseSensitivityY;
-
 					if (eyeball.angle.a < 70.f) {
 						if (eyeball.angle.a + ia < 70.f)
 							eyeball.angle.a += ia;
@@ -3676,14 +3678,10 @@ void ArxGame::manageKeyMouse() {
 				}
 
 				if(mouseDiffX != 0) {
-					float ib = (float)mouseDiffX * mouseSensitivityX;
-
 					eyeball.angle.b = MAKEANGLE(eyeball.angle.b - ib);
 				}
 			} else if(ARXmenu.currentmode != AMCM_NEWQUEST) {
 				if(mouseDiffY != 0) {
-					float ia = (float)mouseDiffY * mouseSensitivityY;
-
 					if(entities.player() && EEfabs(ia)>2.f)
 						entities.player()->lastanimtime = 0;
 
@@ -3699,12 +3697,9 @@ void ArxGame::manageKeyMouse() {
 						else
 							player.desiredangle.a = 301.f;
 					}
-
 				}
 
 				if(mouseDiffX != 0) {
-					float ib = (float)mouseDiffX * mouseSensitivityX;
-
 					if(ib!=0.f)
 						player.Current_Movement|=PLAYER_ROTATE;
 
