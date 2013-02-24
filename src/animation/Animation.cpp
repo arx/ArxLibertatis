@@ -918,7 +918,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		long xx = pos.x * ACTIVEBKG->Xmul;
 		long yy = pos.z * ACTIVEBKG->Zmul;
 		
-		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize - 1 && yy < ACTIVEBKG->Zsize - 1) {
+		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
 			bool ok = 0;
 
 			for(long ky = yy - 1; ky <= yy + 1; ky++) {

@@ -1727,14 +1727,11 @@ static bool Cedric_IO_Visible(Entity * io) {
 		long xx = io->pos.x * ACTIVEBKG->Xmul;
 		long yy = io->pos.z * ACTIVEBKG->Zmul;
 
-		if ((xx >= 1) && (yy >= 1) && (xx < ACTIVEBKG->Xsize - 1) && (yy < ACTIVEBKG->Zsize - 1))
-		{
-			for (long ky = yy - 1; ky <= yy + 1; ky++)
-				for (long kx = xx - 1; kx <= xx + 1; kx++)
-				{
+		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
+			for(long ky = yy - 1; ky <= yy + 1; ky++)
+				for(long kx = xx - 1; kx <= xx + 1; kx++) {
 					FAST_BKG_DATA * feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[kx][ky];
-
-					if (feg->treat)
+					if(feg->treat)
 						return true;
 				}
 

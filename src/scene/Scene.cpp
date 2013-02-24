@@ -1436,12 +1436,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 		
 		unsigned short *pIndices=portals->room[room_num].pussIndice;
 
-		FAST_BKG_DATA * feg;
-		EERIEPOLY * ep;
 		EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
 
 		for(long lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++) {
-			feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
 
 			if(!feg->treat) {
 				long ix=max(0,pEPDATA->px-1);
@@ -1465,7 +1463,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 				}
 			}
 
-			ep=&feg->polydata[pEPDATA->idx];
+			EERIEPOLY *ep = &feg->polydata[pEPDATA->idx];
 
 			if(!ep->tex) {
 				continue;
@@ -1949,9 +1947,6 @@ void ARX_SCENE_Render() {
 	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))
 		FRAME_COUNT=0;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-
 	unsigned long tim = (unsigned long)(arxtime);
 	
 	WATEREFFECT+=0.0005f*framedelay;
@@ -1997,8 +1992,8 @@ void ARX_SCENE_Render() {
 
 	for(long j=z0; j<=z1; j++) {
 		for(long i=x0; i<x1; i++) {
-			feg=&ACTIVEBKG->fastdata[i][j];
-			feg->treat=0;
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
+			feg->treat = 0;
 		}
 	}
 
@@ -2038,14 +2033,14 @@ void ARX_SCENE_Render() {
 		if(i > x1)
 			continue;
 	
-		feg = &ACTIVEBKG->fastdata[i][j];
+		FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
 		if(!feg->treat)
 			continue;
 
 		for(long lll = 0; lll < feg->nbpoly; lll++) {
 			//SPECIFIC INTEL COMPILER  
-			ep=&feg->polydata[lll];
+			EERIEPOLY *ep = &feg->polydata[lll];
 
 			if(ep->type & (POLY_IGNORE | POLY_NODRAW))
 				continue;
