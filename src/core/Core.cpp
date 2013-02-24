@@ -249,7 +249,6 @@ TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
 
 #ifdef BUILD_EDIT_LOADSAVE
-extern long NEED_ANCHORS;
 EERIE_MULTI3DSCENE * mse = NULL;
 long ADDED_IO_NOT_SAVED = 0;
 #endif
