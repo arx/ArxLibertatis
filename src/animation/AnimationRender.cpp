@@ -1970,8 +1970,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 			EERIE_LIGHT * Cur_llights = llights[l];
 
 			if(Cur_llights) {
-				float	cosangle;
-
+				float cosangle;
 				vLight = (llights[l]->pos - *posVert).getNormalized();
 
 				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
@@ -2177,18 +2176,15 @@ void ApplyDynLight(EERIEPOLY * ep)
 		epb[i] = (float)(c & 255);
 	}
 
-	for (i = 0; i < TOTPDL; i++)
-	{
+	for(i = 0; i < TOTPDL; i++) {
 		EERIE_LIGHT * el = PDL[i];
 
-		if (el->fallend + 35.f < 0)
-		{
+		if(el->fallend + 35.f < 0) {
 			TSU_TEST_NB_LIGHT ++;
 			continue;
 		}
 
-		if (distSqr(el->pos, ep->center) <= square(el->fallend + 35.f))
-		{
+		if(distSqr(el->pos, ep->center) <= square(el->fallend + 35.f)) {
 			if(Project.improve) {
 				rgb.r = el->rgb255.r * 4.f;
 				rgb.g = rgb.b = 0.2f;
@@ -2196,38 +2192,31 @@ void ApplyDynLight(EERIEPOLY * ep)
 				rgb = el->rgb255;
 			}
 
-			for (j = 0; j < nbvert; j++)
-			{
-				Vec3f v(ep->v[j].p.x,ep->v[j].p.y, ep->v[j].p.z);
-				if (el->fallend < 0)
-				{
+			for(j = 0; j < nbvert; j++) {
+				Vec3f v(ep->v[j].p.x, ep->v[j].p.y, ep->v[j].p.z);
+				if(el->fallend < 0) {
 					TSU_TEST_NB ++;
 					continue;
 				}
 
 				float d = fdist(el->pos, ep->v[j].p);
 
-				if (d <= el->fallend)
-				{
+				if(d <= el->fallend) {
 					float divd = 1.f / d;
 					float nvalue;
 
-					Vec3f v1;
-					v1 = (el->pos - ep->v[j].p) * divd;
+					Vec3f v1 = (el->pos - ep->v[j].p) * divd;
 					nvalue = dot(v1, ep->nrml[j]) * (1.0f / 2);
 
-					if (nvalue > 1.f) nvalue = 1.f;
-					else if (nvalue < 0.f) nvalue = 0.f;
+					if(nvalue > 1.f)
+						nvalue = 1.f;
+					else if(nvalue < 0.f)
+						nvalue = 0.f;
 
-					if (nvalue > 0.f)
-					{
-						////
-						if (d <= el->fallstart)
-						{
+					if(nvalue > 0.f) {
+						if (d <= el->fallstart) {
 							d = nvalue * el->precalc;
-						}
-						else
-						{
+						} else {
 							d -= el->fallstart;
 							d = (el->falldiff - d) * el->falldiffmul * nvalue * el->precalc;
 						}
@@ -2237,22 +2226,17 @@ void ApplyDynLight(EERIEPOLY * ep)
 						epb[j] += rgb.b * d;
 					}
 				}
-				else if (d > el->fallend + 100.f) break;
+				else if(d > el->fallend + 100.f)
+					break;
 			}
 		}
 	}
 
-	long lepr, lepg, lepb;
-
-	for (j = 0; j < nbvert; j++)
-	{
-		lepr = clipByte255(epr[j]);
-		lepg = clipByte255(epg[j]);
-		lepb = clipByte255(epb[j]);
-		ep->tv[j].color = (0xFF000000L  |
-		                   (lepr << 16) |
-		                   (lepg << 8) |
-		                   (lepb));
+	for(j = 0; j < nbvert; j++) {
+		long lepr = clipByte255(epr[j]);
+		long lepg = clipByte255(epg[j]);
+		long lepb = clipByte255(epb[j]);
+		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
 }
 
