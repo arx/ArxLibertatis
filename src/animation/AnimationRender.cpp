@@ -1934,7 +1934,6 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 	if(io && (io->ioflags & IO_ANGULAR))
 		return;
 
-	Vec3f vLight;
 	Vec3f vTLights[32];
 	EERIE_QUAT qInvert;
 
@@ -1946,7 +1945,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 		if(angle) {
 			vt1 = *angle;
 		} else {
-			if (io)
+			if(io)
 				vt1 = io->angle;
 			else
 				vt1 = eobj->angle;
@@ -1971,7 +1970,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 
 			if(Cur_llights) {
 				float cosangle;
-				vLight = (llights[l]->pos - *posVert).getNormalized();
+				Vec3f vLight = (llights[l]->pos - *posVert).getNormalized();
 
 				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
 				Vec3f * Cur_vLights = &vTLights[l];
@@ -1986,7 +1985,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 					float distance = fdist(*posVert, Cur_llights->pos);
 
 					// Evaluate its intensity depending on the distance Light<->Object
-					if (distance <= Cur_llights->fallstart)
+					if(distance <= Cur_llights->fallstart)
 						cosangle *= Cur_llights->precalc;
 					else
 					{
@@ -2030,9 +2029,8 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 	}
 }
 
-void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, long ii) {
-	
-	Vec3f vLight;
+void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3DOBJ *eobj, EERIEMATRIX *BIGMAT, long ii) {
+
 	Vec3f vTLights[32];
 	EERIE_QUAT qInvert;
 
@@ -2044,7 +2042,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 		if(angle) {
 			vt1 = *angle;
 		} else {
-			if (io)
+			if(io)
 				vt1 = io->angle;
 			else
 				vt1 = eobj->angle;
@@ -2063,7 +2061,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 	
 	for(long l = 0; l != MAX_LLIGHTS; l++) {
 		if(llights[l]) {
-			vLight = (llights[l]->pos - tv) / dists[l];
+			Vec3f vLight = (llights[l]->pos - tv) / dists[l];
 			TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
 		} else {
 			break;
@@ -2091,7 +2089,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 			if(Cur_llights) {
 				float cosangle;
 				float oolength = 1.f / fdist(*posVert, Cur_llights->pos);
-				vLight = (llights[l]->pos - *posVert) * oolength;
+				Vec3f vLight = (llights[l]->pos - *posVert) * oolength;
 
 				TransformInverseVertexQuat(&qInvert, &vLight, &vTLights[l]);
 				Vec3f * Cur_vLights = &vTLights[l];
@@ -2105,7 +2103,7 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 					float distance = fdist(*posVert, Cur_llights->pos);
 
 					// Evaluate its intensity depending on the distance Light<->Object
-					if (distance <= Cur_llights->fallstart)
+					if(distance <= Cur_llights->fallstart)
 						cosangle *= Cur_llights->precalc; 
 					else
 					{
@@ -2214,7 +2212,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 						nvalue = 0.f;
 
 					if(nvalue > 0.f) {
-						if (d <= el->fallstart) {
+						if(d <= el->fallstart) {
 							d = nvalue * el->precalc;
 						} else {
 							d -= el->fallstart;
