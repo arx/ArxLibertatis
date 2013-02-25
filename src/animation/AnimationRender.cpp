@@ -715,11 +715,12 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 				/* Dynamic lights */
 				for(int l = 0; l != MAX_LLIGHTS; l++) {
-					EERIE_LIGHT * Cur_llights = llights[l];
+					EERIE_LIGHT *Cur_llights = llights[l];
 
-					if(Cur_llights) {
+					if(!Cur_llights)
+						break;
+
 					if(USEINTERNORM) {
-
 						Vec3f &Cur_vTLights = vTLights[l];
 						Vec3f tl;
 						tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
@@ -776,10 +777,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						r += Cur_llights->rgb255.r * cosangle;
 						g += Cur_llights->rgb255.g * cosangle;
 						b += Cur_llights->rgb255.b * cosangle;
-					}
-
-					} else {
-						break;
 					}
 				}
 
