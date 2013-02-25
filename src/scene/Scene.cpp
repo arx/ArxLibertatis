@@ -402,10 +402,8 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 	}
 	
 	if(USE_PORTALS && portals) {
-		Vec3f posi;
-		posi.x=io->pos.x;
-		posi.y=io->pos.y-20;
-		posi.z=io->pos.z;
+		Vec3f posi = io->pos;
+		posi.y -= 20.f;
 
 		if(io->room_flags & 1)
 			UpdateIORoom(io);
