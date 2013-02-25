@@ -714,7 +714,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						float distance = fdist(Cur_llights->pos, *posVert);
 
 						/* Evaluate its intensity depending on the distance Light<->Object */
-						if (distance <= Cur_llights->fallstart) {
+						if(distance <= Cur_llights->fallstart) {
 							cosangle = Cur_llights->intensity * GLOBAL_LIGHT_FACTOR;
 						} else {
 							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
@@ -807,7 +807,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 								} else {
 									float p = ((Cur_llights->fallend - dista) * Cur_llights->falldiffmul);
 
-									if (p <= 0.f)
+									if(p <= 0.f)
 										cosangle = 0.f;
 									else
 										cosangle *= p * Cur_llights->precalc; 
