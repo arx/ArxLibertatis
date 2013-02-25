@@ -404,56 +404,56 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 	if(!(USE_PORTALS && portals))
 		return false;
 
-		Vec3f posi = io->pos;
-		posi.y -= 20.f;
+	Vec3f posi = io->pos;
+	posi.y -= 20.f;
 
-		if(io->room_flags & 1)
-			UpdateIORoom(io);
+	if(io->room_flags & 1)
+		UpdateIORoom(io);
 
-		long room_num = io->room; 
+	long room_num = io->room;
 
-			if(room_num == -1) {
-				posi.y = io->pos.y-120;
-				room_num=ARX_PORTALS_GetRoomNumForPosition(&posi);
-			}
+	if(room_num == -1) {
+		posi.y = io->pos.y-120;
+		room_num=ARX_PORTALS_GetRoomNumForPosition(&posi);
+	}
 
-			if(room_num >= 0 && RoomDraw && RoomDraw[room_num].count) {
-					float yOffset = 0.f;
-					float radius = 0.f;
-					if(io->ioflags & IO_ITEM) {
-						yOffset = -40.f;
-						if(io->ioflags & IO_MOVABLE)
-							radius = 160.f;
-						else
-							radius = 75.f;
-					} else if(io->ioflags & IO_FIX) {
-						yOffset = -60.f;
-						radius = 340.f;
-					} else if(io->ioflags & IO_NPC) {
-						yOffset = -120.f;
-						radius = 120.f;
-					}
+	if(room_num >= 0 && RoomDraw && RoomDraw[room_num].count) {
+		float yOffset = 0.f;
+		float radius = 0.f;
+		if(io->ioflags & IO_ITEM) {
+			yOffset = -40.f;
+			if(io->ioflags & IO_MOVABLE)
+				radius = 160.f;
+			else
+				radius = 75.f;
+		} else if(io->ioflags & IO_FIX) {
+			yOffset = -60.f;
+			radius = 340.f;
+		} else if(io->ioflags & IO_NPC) {
+			yOffset = -120.f;
+			radius = 120.f;
+		}
 
-					EERIE_SPHERE sphere;
+		EERIE_SPHERE sphere;
 
-					if(radius != 0.f) {
-						sphere.origin.x=io->pos.x;
-						sphere.origin.y=io->pos.y + yOffset;
-						sphere.origin.z=io->pos.z;
-						sphere.radius=radius;
-					}
-						
-					EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
+		if(radius != 0.f) {
+			sphere.origin.x=io->pos.x;
+			sphere.origin.y=io->pos.y + yOffset;
+			sphere.origin.z=io->pos.z;
+			sphere.radius=radius;
+		}
 
-					if (FrustrumsClipSphere(frustrums,&sphere)) {
-						io->bbox1.x=(short)-1;
-						io->bbox2.x=(short)-1;
-						io->bbox1.y=(short)-1;
-						io->bbox2.y=(short)-1;
-						return true;
-					}
-			}
-			return false;
+		EERIE_FRUSTRUM_DATA * frustrums=&RoomDraw[room_num].frustrum;
+
+		if (FrustrumsClipSphere(frustrums,&sphere)) {
+			io->bbox1.x=(short)-1;
+			io->bbox2.x=(short)-1;
+			io->bbox1.y=(short)-1;
+			io->bbox2.y=(short)-1;
+			return true;
+		}
+	}
+	return false;
 }
 
 // USAGE/FUNCTION
