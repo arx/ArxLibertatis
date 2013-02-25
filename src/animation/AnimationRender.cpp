@@ -676,102 +676,33 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
 	}
 
-	if(!USEINTERNORM) {
 		/* Apply light on all vertices */
 		for(int i = 0; i != obj->nb_bones; i++) {
-			/* Get light value for each vertex */
-			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-				Vec3f *posVert;
-				float r, g, b;
-				long  ir, ig, ib;
 
-				if(io)
-					posVert = &io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-				else
-					posVert = &eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-
-				/* Ambient light */
-				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
-					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
-				} else {
-					r = ACTIVEBKG->ambient255.r;
-					g = ACTIVEBKG->ambient255.g;
-					b = ACTIVEBKG->ambient255.b;
-				}
-
-				/* Dynamic lights */
-				for(int l = 0; l != MAX_LLIGHTS; l++) {
-					EERIE_LIGHT * Cur_llights = llights[l];
-
-					if(Cur_llights) {
-						// tsu
-						if(Cur_llights->fallend < 0) {
-							TSU_TEST_NB_LIGHT ++;
-							continue;
-						}
-
-						float cosangle;
-						float distance = fdist(Cur_llights->pos, *posVert);
-
-						/* Evaluate its intensity depending on the distance Light<->Object */
-						if(distance <= Cur_llights->fallstart) {
-							cosangle = Cur_llights->intensity * GLOBAL_LIGHT_FACTOR;
-						} else {
-							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
-
-							if(p <= 0.f)
-								cosangle = 0.f;
-							else
-								cosangle = p * Cur_llights->precalc;
-						}
-
-						r += Cur_llights->rgb255.r * cosangle;
-						g += Cur_llights->rgb255.g * cosangle;
-						b += Cur_llights->rgb255.b * cosangle;
-					} else {
-						break;
-					}
-				}
-
-				if(special_color_flag & 1) {
-					r *= special_color.r;
-					g *= special_color.g;
-					b *= special_color.b;
-				} else if(special_color_flag & 2) {
-					r = 1.f;
-					g = 0.f;
-					b = 0.f;
-				} else if(special_color_flag & 4) { // HIGHLIGHT
-					r += special_color.r;
-					g += special_color.g;
-					b += special_color.b;
-				}
-
-				/* PACK color */
-				ir = clipByte255(r);
-				ig = clipByte255(g);
-				ib = clipByte255(b);
-	
-				eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
-			}
-		}
-	} else {
-		/* Apply light on all vertices */
-		for(int i = 0; i != obj->nb_bones; i++) {
-			EERIE_QUAT qt1;
-		
 			EERIEMATRIX matrix;//,omatrix;
-			Quat_Copy(&qt1, &obj->bones[i].quatanim);
-			Quat_Reverse(&qt1);
-			MatrixFromQuat(&matrix, &qt1);
-			//	FMatrixInvert(matrix,omatrix);
+
+			if(USEINTERNORM) {
+				EERIE_QUAT qt1;
+				Quat_Copy(&qt1, &obj->bones[i].quatanim);
+				Quat_Reverse(&qt1);
+				MatrixFromQuat(&matrix, &qt1);
+				//	FMatrixInvert(matrix,omatrix);
+			}
 
 			/* Get light value for each vertex */
 			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
 				float r, g, b;
 				long  ir, ig, ib;
 
-				Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+				Vec3f posVert;
+				if(USEINTERNORM) {
+					posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+				} else {
+					if(io)
+						posVert = io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+					else
+						posVert = eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
+				}
 
 				/* Ambient light */
 				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
@@ -787,6 +718,8 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					EERIE_LIGHT * Cur_llights = llights[l];
 
 					if(Cur_llights) {
+					if(USEINTERNORM) {
+
 						Vec3f &Cur_vTLights = vTLights[l];
 						Vec3f tl;
 						tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
@@ -819,15 +752,44 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 							}
 						}
 					} else {
+						// tsu
+						if(Cur_llights->fallend < 0) {
+							TSU_TEST_NB_LIGHT ++;
+							continue;
+						}
+
+						float cosangle;
+						float distance = fdist(Cur_llights->pos, posVert);
+
+						/* Evaluate its intensity depending on the distance Light<->Object */
+						if(distance <= Cur_llights->fallstart) {
+							cosangle = Cur_llights->intensity * GLOBAL_LIGHT_FACTOR;
+						} else {
+							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
+
+							if(p <= 0.f)
+								cosangle = 0.f;
+							else
+								cosangle = p * Cur_llights->precalc;
+						}
+
+						r += Cur_llights->rgb255.r * cosangle;
+						g += Cur_llights->rgb255.g * cosangle;
+						b += Cur_llights->rgb255.b * cosangle;
+					}
+
+					} else {
 						break;
 					}
 				}
 
-				/* Fake adjust */
-				if(Project.improve) {
-					r *= infra.r;
-					g *= infra.g;
-					b *= infra.b;
+				if(USEINTERNORM) {
+					/* Fake adjust */
+					if(Project.improve) {
+						r *= infra.r;
+						g *= infra.g;
+						b *= infra.b;
+					}
 				}
 
 				if(special_color_flag & 1) {
@@ -852,7 +814,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
 			}
 		}
-	}
 
 	return true;
 }
