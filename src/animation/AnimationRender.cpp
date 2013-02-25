@@ -768,11 +768,10 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 			/* Get light value for each vertex */
 			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-				EERIE_3DPAD *inVert;
 				float r, g, b;
 				long  ir, ig, ib;
 
-				inVert = (EERIE_3DPAD *)&eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
+				Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
 				/* Ambient light */
 				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
@@ -798,7 +797,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 							VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 
-							float cosangle = dot(*inVert, Cur_vTLights);
+							float cosangle = dot(posVert, Cur_vTLights);
 
 							/* If light visible */
 							if(cosangle > 0.0f) {
