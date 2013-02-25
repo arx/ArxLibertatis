@@ -3203,16 +3203,17 @@ void RenderInter(float from, float to) {
 #ifdef BUILD_EDITOR
 			if((io->obj) && (io->obj->pbox) && DEBUGNPCMOVE)
 				EERIE_PHYSICS_BOX_Show(io->obj);
-#endif				
-			if(io->animlayer[0].cur_anim) {
-				temp.a = io->angle.a;
-				if(io->ioflags & IO_NPC) {
-					temp.b = MAKEANGLE(180.f - io->angle.b);
-				} else {
-					temp.b = MAKEANGLE(270.f - io->angle.b);
-				}
-				temp.g = io->angle.g;
+#endif
 
+			temp.a = io->angle.a;
+			if(io->ioflags & IO_NPC) {
+				temp.b = MAKEANGLE(180.f - io->angle.b);
+			} else {
+				temp.b = MAKEANGLE(270.f - io->angle.b);
+			}
+			temp.g = io->angle.g;
+
+			if(io->animlayer[0].cur_anim) {
 				if(io->animlayer[0].flags & EA_PAUSED)
 					diff = 0;
 				else
@@ -3240,15 +3241,7 @@ void RenderInter(float from, float to) {
 			} else {
 				if(!EDITMODE && ARX_SCENE_PORTAL_Basic_ClipIO(io))
 					continue;
-				
-				temp.a = io->angle.a;
-				if(io->ioflags & IO_NPC) {
-					temp.b = MAKEANGLE(180.f - io->angle.b);
-				} else {
-					temp.b = MAKEANGLE(270.f - io->angle.b);
-				}
-				temp.g = io->angle.g;
-				
+								
 				if((io->ioflags & IO_GOLD) && io->obj) {
 					if(io->_itemdata->price <= 3) {
 						io->obj = GoldCoinsObj[io->_itemdata->price-1];
