@@ -401,29 +401,23 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 		return false;
 	}
 	
-	if (USE_PORTALS && portals)
-	{
+	if(USE_PORTALS && portals) {
 		Vec3f posi;
 		posi.x=io->pos.x;
 		posi.y=io->pos.y-20;
 		posi.z=io->pos.z;
 
-		if (io->room_flags & 1)
+		if(io->room_flags & 1)
 			UpdateIORoom(io);
 
 		long room_num = io->room; 
 
-		{
-			if (room_num==-1)
-			{
-				posi.y=io->pos.y-120;
+			if(room_num == -1) {
+				posi.y = io->pos.y-120;
 				room_num=ARX_PORTALS_GetRoomNumForPosition(&posi);
 			}
 
-			if (	(room_num>=0) 
-				&&	(RoomDraw)
-				&&	(RoomDraw[room_num].count))
-			{
+			if(room_num >= 0 && RoomDraw && RoomDraw[room_num].count) {
 					float yOffset = 0.f;
 					float radius = 0.f;
 					if(io->ioflags & IO_ITEM) {
@@ -460,7 +454,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 					}
 			}
 			else return false;
-		}
+
 	}
 
 	return false;
