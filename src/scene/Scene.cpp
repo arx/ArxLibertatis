@@ -401,7 +401,9 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 		return false;
 	}
 	
-	if(USE_PORTALS && portals) {
+	if(!(USE_PORTALS && portals))
+		return false;
+
 		Vec3f posi = io->pos;
 		posi.y -= 20.f;
 
@@ -451,11 +453,7 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(Entity * io) {
 						return true;
 					}
 			}
-			else return false;
-
-	}
-
-	return false;
+			return false;
 }
 
 // USAGE/FUNCTION
