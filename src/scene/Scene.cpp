@@ -1839,12 +1839,10 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	}
 }
 
-long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,long prec,long tim)
+void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,long prec,long tim)
 {
-	long portals_count=0;
-
 	if(!portals)
-		return 0;
+		return;
 
 	if(RoomDraw[room_num].count == 0)
 		RoomDrawListAdd(room_num);
@@ -1888,8 +1886,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			continue;
 		}
 
-		portals_count++;
-
 		EERIERTPPoly2(epp);
 
 		bool Cull = !(fRes<0.f);
@@ -1913,8 +1909,6 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute,&fd,prec,tim);
 		}
 	}
-
-	return portals_count; 
 }
 
 extern long SPECIAL_DRAGINTER_RENDER;
