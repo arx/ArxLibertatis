@@ -1328,6 +1328,8 @@ void RenderLava() {
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
 void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 	
+	arx_assert(USE_PORTALS);
+
 	GRenderer->SetFogColor(Color::none);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1336,13 +1338,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT() {
 
 	GRenderer->SetAlphaFunc(Renderer::CmpGreater, .5f);
 	
-	for (long i=0;i<NbRoomDrawList;i++)
-	{
-		if(USE_PORTALS) {
-			ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
-		} else {
-			LogWarning << "unimplemented";
-		}
+	for(long i=0; i<NbRoomDrawList; i++) {
+		ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(RoomDrawList[i]);
 	}
 	
 	GRenderer->SetAlphaFunc(Renderer::CmpNotEqual, 0.f);
