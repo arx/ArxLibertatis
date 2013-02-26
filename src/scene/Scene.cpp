@@ -793,7 +793,7 @@ bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 	return false;
 
 }
-bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum)
+bool IsInFrustrum(Vec3f * point, EERIE_FRUSTRUM *frustrum)
 {
 	if (	((point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d)>0)
 		&&	((point->x*frustrum->plane[1].a + point->y*frustrum->plane[1].b + point->z*frustrum->plane[1].c + frustrum->plane[1].d)>0)
@@ -805,7 +805,7 @@ bool IsInFrustrum(Vec3f * point,EERIE_FRUSTRUM * frustrum)
 }
 
 
-bool IsSphereInFrustrum(float radius,Vec3f * point,EERIE_FRUSTRUM * frustrum)
+bool IsSphereInFrustrum(float radius, Vec3f *point, EERIE_FRUSTRUM *frustrum)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -823,19 +823,17 @@ bool IsSphereInFrustrum(float radius,Vec3f * point,EERIE_FRUSTRUM * frustrum)
 	
 }
 
-bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
-{
-	for (long i=0;i<frustrums->nb_frustrums;i++)
-	{
-		if (IsSphereInFrustrum(ep->v[0].rhw, &ep->center, &frustrums->frustrums[i]))
+bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA *frustrums, EERIEPOLY *ep){
+	for(long i=0; i<frustrums->nb_frustrums; i++) {
+		if(IsSphereInFrustrum(ep->v[0].rhw, &ep->center, &frustrums->frustrums[i]))
 			return false;
-			}
+	}
 
 	return true;
 }
  
  
-void ARX_PORTALS_BlendBBox(long room_num,EERIE_2D_BBOX * bbox) {
+void ARX_PORTALS_BlendBBox(long room_num, EERIE_2D_BBOX *bbox) {
 	if(RoomDraw[room_num].count == 0) {
 		RoomDraw[room_num].bbox.min = bbox->min;
 		RoomDraw[room_num].bbox.max = bbox->max;
