@@ -1962,7 +1962,6 @@ void ARX_SCENE_Render() {
 	
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
-	Vec3f nrm;
 
 	long zsnap=ACTIVECAM->Zsnap;
 	zsnap = clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
@@ -2031,7 +2030,7 @@ void ARX_SCENE_Render() {
 			if(ep->type & POLY_DOUBLESIDED) {
 				GRenderer->SetCulling(Renderer::CullNone);
 			} else {
-				nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
+				Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
 				if(ep->type & POLY_QUAD) {
 					if(dot(ep->norm ,nrm) > 0.f && dot(ep->norm2, nrm) > 0.f)
 						continue;
