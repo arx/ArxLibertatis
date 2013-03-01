@@ -1254,16 +1254,16 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 		pz = (long)(z * ACTIVEBKG->Zmul);
 
 		if(px > ACTIVEBKG->Xsize - 1)
-			goto fini;
+			break;
 
 		if(px < 0)
-			goto fini;
+			break;
 
 		if(pz > ACTIVEBKG->Zsize - 1)
-			goto fini;
+			break;
 
 		if(pz < 0)
-			goto fini;
+			break;
 
 		eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
 
@@ -1285,9 +1285,6 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 			}
 		}
 	}
-
-fini:
-	;
 
 	if(!found_ep)
 		return true;
