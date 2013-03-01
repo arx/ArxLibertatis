@@ -256,7 +256,7 @@ void CArmor::Create(long _ulDuration) {
 
 		Entity * io = entities[spells[spellinstance].caster];
 
-		if ((io) && (!io->halo.flags & HALO_ACTIVE))
+		if ((io) && !(io->halo.flags & HALO_ACTIVE))
 		{
 			io->halo.flags |= HALO_ACTIVE;
 			io->halo.color.r = 0.5f;
