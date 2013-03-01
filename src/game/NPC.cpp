@@ -2977,7 +2977,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	float _dist = std::numeric_limits<float>::max();
-	long CHANGE = 0;
+
 
 	Vec3f ForcedMove;
 	
@@ -3195,6 +3195,8 @@ static void ManageNPCMovement(Entity * io)
 
 		if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY) ause0->altidx_cur = 0;
 	}
+
+	long CHANGE = 0;
 
 	// Can only change direction during some specific animations
 	if (((ause0->cur_anim == alist[ANIM_DEFAULT]) && (ause0->altidx_cur == 0))
