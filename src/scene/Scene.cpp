@@ -1855,7 +1855,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		}
 
 		if((ucVisibilityFar & 4) || (ucVisibilityNear & 4)) {
-			portals->portals[portals->room[room_num].portals[lll]].useportal=2;
+			po->useportal=2;
 			continue;
 		}
 
@@ -1886,7 +1886,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		}
 
 		if(computeRoom) {
-			portals->portals[portals->room[room_num].portals[lll]].useportal=1;
+			po->useportal=1;
 			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute,&fd,prec,tim);
 		}
 	}
