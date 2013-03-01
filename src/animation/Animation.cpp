@@ -1505,37 +1505,37 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 	if(dist > threshold)
 		return;
 
-		float val = dist - el->fallend; 
+	float val = dist - el->fallend;
 
-		if (val<0) val=0;
+	if (val<0) val=0;
 
-		for (long i=0;i<MAX_LLIGHTS;i++) 
-		{			
-			if (llights[i]==NULL)
-			{
-				llights[i]=el;
-				dists[i]=dist;
-				values[i]=val;
-				return;
-			}
-			else if (val <= values[i])  // Inserts light at the right place
-			{				
-				for (long j=MAX_LLIGHTS-2;j>=i;j--)
-				{
-					if (llights[j])
-					{
-						llights[j+1]=llights[j];
-						dists[j+1]=dists[j];
-						values[j+1]=values[j];
-					}
-				}
-
-				llights[i]=el;
-				dists[i]=dist;
-				values[i]=val;
-				return;
-			}
+	for (long i=0;i<MAX_LLIGHTS;i++)
+	{
+		if (llights[i]==NULL)
+		{
+			llights[i]=el;
+			dists[i]=dist;
+			values[i]=val;
+			return;
 		}
+		else if (val <= values[i])  // Inserts light at the right place
+		{
+			for (long j=MAX_LLIGHTS-2;j>=i;j--)
+			{
+				if (llights[j])
+				{
+					llights[j+1]=llights[j];
+					dists[j+1]=dists[j];
+					values[j+1]=values[j];
+				}
+			}
+
+			llights[i]=el;
+			dists[i]=dist;
+			values[i]=val;
+			return;
+		}
+	}
 }
 
 // Precalcs some misc things for lights
