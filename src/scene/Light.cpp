@@ -488,8 +488,6 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 //*************************************************************************************
 void TreatBackgroundDynlights()
 {
-	long n;
-
 	for (size_t i = 0; i < MAX_LIGHTS; i++)
 	{
 		if ((GLight[i] != NULL) && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
@@ -540,7 +538,7 @@ void TreatBackgroundDynlights()
 					GLight[i]->tl = GetFreeDynLight();
 				}
 				
-				n = GLight[i]->tl;
+				long n = GLight[i]->tl;
 				if(n != -1) {
 					DynLight[n].pos = GLight[i]->pos;
 					DynLight[n].exist		=	1;
