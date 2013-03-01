@@ -920,7 +920,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	}
 
 	TexturedVertex vert_list_static[4];
-	long k;
 	
 	long lfr, lfg, lfb;
 	Vec3f temporary3D;
@@ -1236,8 +1235,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		// Treat WATER Polys (modify UVs)
 		if (eobj->facelist[i].facetype & POLY_WATER)
 		{
-			for (k=0;k<3;k++) 
-			{ 
+			for(long k=0; k<3; k++) {
 				vert_list[k].uv.x=eobj->facelist[i].u[k];
 				vert_list[k].uv.y=eobj->facelist[i].v[k];
 				ApplyWaterFXToVertex(&eobj->vertexlist[eobj->facelist[i].vid[k]].v, &vert_list[k], 0.3f);
