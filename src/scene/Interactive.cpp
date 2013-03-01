@@ -1178,7 +1178,7 @@ void ARX_INTERACTIVE_ClearAllDynData() {
 
 static void RestoreIOInitPos(Entity * io) {
 	if(io) {
-		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
+		ARX_INTERACTIVE_Teleport(io, &io->initpos);
 		io->pos = io->lastpos = io->initpos;
 		io->move = Vec3f::ZERO;
 		io->lastmove = Vec3f::ZERO;
@@ -1272,7 +1272,7 @@ void RestoreInitialIOStatusOfIO(Entity * io)
 		io->room = -1;
 		io->room_flags = 1;
 		RestoreIOInitPos(io);
-		ARX_INTERACTIVE_Teleport(io, &io->initpos, 0);
+		ARX_INTERACTIVE_Teleport(io, &io->initpos);
 		io->lastanimtime = 1;
 		io->secretvalue = -1;
 
@@ -1597,7 +1597,7 @@ void ComputeVVPos(Entity * io)
 	}
 }
 
-void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 	
 	if(!io) {
 		return;
@@ -1613,7 +1613,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags) {
 	}
 	
 	// In case it is being dragged... (except for drag teleport update)
-	if((!flags & 1) && io == DRAGINTER) { // TODO probably wrong
+	if((!flag & 1) && io == DRAGINTER) { // TODO probably wrong
 		Set_DragInter(NULL);
 	}
 	

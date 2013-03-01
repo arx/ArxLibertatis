@@ -6544,7 +6544,7 @@ void ARX_SPELLS_Update()
 									spells[i].longinfo = io->index();
 									io->scriptload=1;
 									
-									ARX_INTERACTIVE_Teleport(io,&phys.origin,0);
+									ARX_INTERACTIVE_Teleport(io, &phys.origin);
 									SendInitScriptEvent(io);
 
 									if(ValidIONum(spells[i].caster)) {
