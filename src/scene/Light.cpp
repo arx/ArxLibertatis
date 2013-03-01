@@ -117,7 +117,8 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
 
 void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	
-	if (ep->type & POLY_IGNORE)  return;
+	if(ep->type & POLY_IGNORE)
+		return;
 
 	float epr[4];
 	float epg[4];
@@ -128,22 +129,17 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 	epb[3] = epb[2] = epb[1] = epb[0] = 0; 
 
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		
 		EERIE_LIGHT * el = GLight[i];
 
-		if ((el) && (el->treat) && (el->exist) && (el->status) 
-		        && !(el->extras & EXTRAS_SEMIDYNAMIC))
-		{
+		if(el && el->treat && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
 			if(closerThan(el->pos, ep->center, el->fallend + 100.f)) {
 				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
 			}
 		}
 	}
 
-	for (size_t i = 0; i < MAX_ACTIONS; i++)
-	{
-		if ((actions[i].exist) && ((actions[i].type == ACT_FIRE2) || (actions[i].type == ACT_FIRE)))
-		{
+	for(size_t i = 0; i < MAX_ACTIONS; i++) {
+		if(actions[i].exist && (actions[i].type == ACT_FIRE2 || actions[i].type == ACT_FIRE)) {
 			if(closerThan(actions[i].light.pos, ep->center, actions[i].light.fallend + 100.f)) {
 				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light);
 			}
@@ -152,8 +148,10 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 
 	long nbvert;
 
-	if (ep->type & POLY_QUAD) nbvert = 4;
-	else nbvert = 3;
+	if(ep->type & POLY_QUAD)
+		nbvert = 4;
+	else
+		nbvert = 3;
 
 	for(long i = 0; i < nbvert; i++) {
 		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
