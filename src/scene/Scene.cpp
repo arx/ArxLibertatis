@@ -637,7 +637,7 @@ long ARX_PORTALS_GetRoomNumForPosition2(Vec3f * pos,long flag,float * height)
 long ARX_PORTALS_GetRoomNumForCamera(float * height)
 {
 	EERIEPOLY * ep; 
-	ep=CheckInPolyPrecis(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
+	ep = CheckInPolyPrecis(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
 
 	if(ep && ep->room > -1) {
 		if(height)
@@ -646,7 +646,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 		return ep->room;
 	}
 
-	ep=GetMinPoly(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
+	ep = GetMinPoly(ACTIVECAM->orgTrans.pos.x,ACTIVECAM->orgTrans.pos.y,ACTIVECAM->orgTrans.pos.z);
 
 	if(ep && ep->room > -1) {
 		if(height)
@@ -657,8 +657,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 
 	float dist=0.f;
 
-	while (dist<=20.f)
-	{		
+	while(dist<=20.f) {
 		float vvv=radians(ACTIVECAM->angle.b);
 		ep=CheckInPolyPrecis(	ACTIVECAM->orgTrans.pos.x+EEsin(vvv)*dist,
 								ACTIVECAM->orgTrans.pos.y,
@@ -671,7 +670,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 			return ep->room;
 		}
 
-		dist+=5.f;
+		dist += 5.f;
 	}
 
 	return -1;
@@ -683,39 +682,32 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 	long num;
 	float height;
 
-	if (flag & 1)
+	if(flag & 1)
 		num=ARX_PORTALS_GetRoomNumForCamera(&height);
 	else
 		num=ARX_PORTALS_GetRoomNumForPosition2(pos,flag,&height);
 
-	if (num > -1)
-	{
-		long nearest=-1;
-		float nearest_dist=99999.f;
+	if(num > -1) {
+		long nearest = -1;
+		float nearest_dist = 99999.f;
 
-		for (long n=0;n<portals->nb_rooms;n++)
-		{
-			for (long lll=0;lll<portals->room[n].nb_portals;lll++)
-			{
-				EERIE_PORTALS * po=	&portals->portals[portals->room[n].portals[lll]];
-				EERIEPOLY *		epp=&po->poly;
+		for(long n = 0; n < portals->nb_rooms; n++) {
+			for(long lll = 0; lll < portals->room[n].nb_portals; lll++) {
+				EERIE_PORTALS *po = &portals->portals[portals->room[n].portals[lll]];
+				EERIEPOLY *epp = &po->poly;
 
-				if (PointIn2DPolyXZ(epp, pos->x, pos->z)) 
-				{
+				if(PointIn2DPolyXZ(epp, pos->x, pos->z)) {
 					float yy;
 
-					if (GetTruePolyY(epp,pos,&yy))
-					{
-						if (height>yy)
-						{
-							if ((yy>=pos->y) && (yy-pos->y<nearest_dist))
-							{
-								if (epp->norm.y>0)
-									nearest=po->room_2;
+					if(GetTruePolyY(epp,pos,&yy)) {
+						if(height > yy) {
+							if(yy >= pos->y && yy-pos->y < nearest_dist) {
+								if(epp->norm.y>0)
+									nearest = po->room_2;
 								else
-									nearest=po->room_1;
+									nearest = po->room_1;
 
-								nearest_dist=yy-pos->y;						
+								nearest_dist = yy - pos->y;
 							}
 						}
 					}
@@ -723,12 +715,12 @@ long ARX_PORTALS_GetRoomNumForPosition(Vec3f * pos,long flag)
 			}
 		}
 
-		if (nearest>-1)
-		num=nearest;
+		if(nearest>-1)
+			num = nearest;
 	}
 	
 	return num;
-			}
+}
 			
 void ARX_PORTALS_InitDrawnRooms()
 {
