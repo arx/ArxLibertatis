@@ -5856,6 +5856,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
+		FORCE_NO_HIDE=0;
 
 		if(ARXmenu.currentmode == AMCM_NEWQUEST) {
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
@@ -5875,7 +5876,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		entities.player()->obj->vertexlist3 = vertexlist;
 		vertexlist.clear();
-		FORCE_NO_HIDE=0;
+
 		Project.improve=ti;
 
 		GRenderer->SetViewport(Rect(DANAESIZX, DANAESIZY));
