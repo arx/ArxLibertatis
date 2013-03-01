@@ -82,25 +82,20 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
 	}
 	
 	// Lastpos optim
-	if(closerThan(*pos, lastpos, 100.f)) {
+	if(closerThan(*pos, lastpos, 100.f))
 		return;
-	}
 	
 	lastpos = *pos;
 	
 	TOTIOPDL = 0;
 	
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		
 		EERIE_LIGHT * el = GLight[i];
 
-		if ((el)  && (el->exist) && (el->status)
-		        && !(el->extras & EXTRAS_SEMIDYNAMIC))
-		{
-			if ((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
+		if(el && el->exist && el->status && !(el->extras & EXTRAS_SEMIDYNAMIC)) {
+			if((el->pos.x >= pos->x - radius) && (el->pos.x <= pos->x + radius)
 			        && (el->pos.z >= pos->z - radius) && (el->pos.z <= pos->z + radius))
 			{
-				
 				el->rgb255 = el->rgb * 255.f;
 				el->falldiff = el->fallend - el->fallstart;
 				el->falldiffmul = 1.f / el->falldiff;
@@ -109,7 +104,8 @@ void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
 			
 				TOTIOPDL++;
 
-				if ((size_t)TOTIOPDL >= MAX_DYNLIGHTS) TOTIOPDL--;
+				if((size_t)TOTIOPDL >= MAX_DYNLIGHTS)
+					TOTIOPDL--;
 			}
 		}
 	}
