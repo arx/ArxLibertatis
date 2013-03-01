@@ -3063,9 +3063,7 @@ void UpdateCameras() {
 						io->_camdata->cam.setTargetCamera(smoothtarget.x, smoothtarget.y, smoothtarget.z);
 						io->_camdata->cam.lasttarget = smoothtarget;
 					} else {
-						if( !(io->target == io->_camdata->cam.orgTrans.pos))
-							io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
-
+						io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
 						io->_camdata->cam.lasttarget = io->target;
 					}
 
