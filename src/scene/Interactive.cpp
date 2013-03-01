@@ -3062,16 +3062,15 @@ void UpdateCameras() {
 
 						io->_camdata->cam.setTargetCamera(smoothtarget.x, smoothtarget.y, smoothtarget.z);
 						io->_camdata->cam.lasttarget = smoothtarget;
-						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 					} else {
 						if( !(io->target == io->_camdata->cam.orgTrans.pos))
 							io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
 
 						io->_camdata->cam.lasttarget = io->target;
-						io->_camdata->cam.lastinfovalid = true;
-						io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 					}
+
+					io->_camdata->cam.lastinfovalid = true;
+					io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 
 					io->_camdata->cam.angle.b -= 180.f;
 					io->_camdata->cam.angle.a = -io->_camdata->cam.angle.a;
