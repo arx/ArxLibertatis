@@ -664,9 +664,7 @@ void EERIE_LIGHT_ChangeLighting()
 //*************************************************************************************
 
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
-{
-	EERIE_BKG_INFO * eg;
- 
+{ 
 	if (minx < 0) minx = 0;
 	else if (minx >= ACTIVEBKG->Xsize) minx = ACTIVEBKG->Xsize - 1;
 
@@ -703,7 +701,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	{
 		for (long i = minx; i <= maxx; i++)
 		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 			for (long k = 0; k < eg->nbpoly; k++)
 			{
