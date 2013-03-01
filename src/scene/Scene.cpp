@@ -1522,21 +1522,21 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 
 			SMY_VERTEX *pMyVertexCurr;
 
-				*pIndicesCurr++=ep->uslInd[0];
-				*pIndicesCurr++=ep->uslInd[1];
+			*pIndicesCurr++=ep->uslInd[0];
+			*pIndicesCurr++=ep->uslInd[1];
+			*pIndicesCurr++=ep->uslInd[2];
+
+			if(to&4) {
+				*pIndicesCurr++=ep->uslInd[3];
 				*pIndicesCurr++=ep->uslInd[2];
+				*pIndicesCurr++=ep->uslInd[1];
+				*pNumIndices+=6;
+			} else {
+				*pNumIndices+=3;
+			}
 
-				if(to&4) {
-					*pIndicesCurr++=ep->uslInd[3];
-					*pIndicesCurr++=ep->uslInd[2];
-					*pIndicesCurr++=ep->uslInd[1];
-					*pNumIndices+=6;
-				} else {
-					*pNumIndices+=3;
-				}
-				pMyVertexCurr=&pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
+			pMyVertexCurr = &pMyVertex[ep->tex->tMatRoom[room_num].uslStartVertex];
 		
-
 			if (!Project.improve)  // Normal View...			
 			{
 				if(ep->type & POLY_GLOW) {
