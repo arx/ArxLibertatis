@@ -1047,7 +1047,7 @@ struct SavedCamera {
 	f32 Zsin;
 	f32 focal;
 	f32 use_focal;
-	f32 Zmul;
+	f32 Zmul; //TODO Remove
 	f32 posleft; //TODO Remove
 	f32 postop; //TODO Remove
 	
@@ -1093,7 +1093,6 @@ struct SavedCamera {
 		a.orgTrans.zcos = Zcos;
 		a.orgTrans.zsin = Zsin;
 		a.focal = focal;
-		a.Zmul = Zmul;
 		
 		a.angle = angle;
 		
@@ -1131,7 +1130,7 @@ struct SavedCamera {
 		postop  = b.orgTrans.mod.y;
 
 		focal = b.focal;
-		Zmul = b.Zmul;
+		Zmul = 0.f;
 
 
 		xmod = 0.f, ymod = 0.f;

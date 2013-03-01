@@ -506,7 +506,6 @@ void InitializeDanae() {
 	subj.center = subj.clip.center();
 	subj.focal = BASE_FOCAL;
 	subj.Zdiv = 3000.f;
-	subj.Zmul = 1.f / subj.Zdiv;
 	subj.clip3D = 60;
 	subj.bkgcolor = Color::none;
 	

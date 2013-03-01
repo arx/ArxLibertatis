@@ -780,7 +780,7 @@ static void camEE_RTP(TexturedVertex * in, TexturedVertex * out, EERIE_CAMERA * 
 	}
 
 	tout.rhw = cam->orgTrans.use_focal * out->rhw;
-	out->p.z = out->p.z * cam->Zmul;
+	out->p.z = out->p.z * cam->Zmul();
 	out->p.x = cam->orgTrans.mod.x + (tout.p.x * tout.rhw);
 	out->p.y = cam->orgTrans.mod.y + (tout.p.y * tout.rhw) ;
 }
@@ -1893,7 +1893,6 @@ void PrepareCamera(EERIE_CAMERA * cam)
 void SetCameraDepth(float depth) {
 	ACTIVECAM->cdepth = depth;
 	ACTIVECAM->Zdiv = depth * 1.2f;
-	ACTIVECAM->Zmul = 1.f / ACTIVECAM->Zdiv;
 	long l = depth * 0.42f;
 	ACTIVECAM->clip3D = (l / (long)BKG_SIZX) + 1;
 }

@@ -1940,7 +1940,7 @@ void ARX_SCENE_Render() {
 	z1 = clamp(z1, 0, ACTIVEBKG->Xsize-2);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
-	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul);
+	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul());
 	
 	// Temporary Hack...
 	long LAST_FC = FRAME_COUNT;
