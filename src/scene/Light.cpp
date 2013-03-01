@@ -455,21 +455,18 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 	in.p = _pL->pos;
 	EERIETreatPoint(&in, &out);
 	
-	if ((out.p.z > 0.f) && (out.p.z < 1000.f) && (out.rhw > 0))
-	{
-		float t;
+	if(out.p.z > 0.f && out.p.z < 1000.f && out.rhw > 0) {
 		float siz = 50;
 		float fMaxdist = 300;
 
 		if (Project.telekinesis) fMaxdist = 850;
 
-		t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
+		float t = siz * (1.0f - 1.0f / (out.rhw * fMaxdist)) + 10;
 
 		_pL->maxs.x = out.p.x + t;
 		_pL->mins.x = out.p.x - t;
 		_pL->maxs.y = out.p.y + t;
 		_pL->mins.y = out.p.y - t;
-
 
 		if (0)
 			if ((_pL->mins.x >= -200.f) && (_pL->mins.x <= 1000.f))
