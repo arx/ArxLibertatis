@@ -1266,30 +1266,30 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 			goto fini;
 
 		{
-			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
+		eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
 
-			for (long k = 0; k < eg->nbpolyin; k++)
-			{
-				ep = eg->polyin[k];
+		for (long k = 0; k < eg->nbpolyin; k++)
+		{
+			ep = eg->polyin[k];
 
-				if (ep)
-					if ((ep->min.y - pas < y) && (ep->max.y + pas > y))
-						if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
-							if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
+			if (ep)
+				if ((ep->min.y - pas < y) && (ep->max.y + pas > y))
+					if ((ep->min.x - pas < x) && (ep->max.x + pas > x))
+						if ((ep->min.z - pas < z) && (ep->max.z + pas > z))
+						{
+							if (RayCollidingPoly(orgn, dest, ep, hit))
 							{
-								if (RayCollidingPoly(orgn, dest, ep, hit))
-								{
-									dd = fdist(*orgn, *hit);
+								dd = fdist(*orgn, *hit);
 
-									if (dd < nearest)
-									{
-										nearest		=	dd;
-										found_ep	=	ep;
-										found_hit = *hit;
-									}
+								if (dd < nearest)
+								{
+									nearest		=	dd;
+									found_ep	=	ep;
+									found_hit = *hit;
 								}
 							}
-			}
+						}
+		}
 		}
 	}
 
