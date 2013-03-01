@@ -3069,9 +3069,6 @@ void UpdateCameras() {
 						io->_camdata->cam.lasttarget = io->target;
 					}
 
-					io->_camdata->cam.lastinfovalid = true;
-					io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
-
 					io->_camdata->cam.angle.b -= 180.f;
 					io->_camdata->cam.angle.a = -io->_camdata->cam.angle.a;
 					io->angle.a = 0.f; 
@@ -3086,9 +3083,10 @@ void UpdateCameras() {
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
 					io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
 					io->_camdata->cam.lasttarget = io->target;
-					io->_camdata->cam.lastinfovalid = true;
-					io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 				}
+
+				io->_camdata->cam.lastinfovalid = true;
+				io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
 			}
 		}
 	}
