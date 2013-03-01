@@ -1153,7 +1153,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	}
 
 	float prec;
-	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
+	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul());
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];

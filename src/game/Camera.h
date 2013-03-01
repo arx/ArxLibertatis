@@ -57,7 +57,6 @@ struct EERIE_CAMERA {
 	EERIE_TRANSFORM orgTrans;
 
 	float focal;
-	float Zmul;
 
 	Anglef angle;
 
@@ -73,6 +72,9 @@ struct EERIE_CAMERA {
 
 	float smoothing;
 	float Zdiv;
+	float Zmul() {
+		return 1.f / Zdiv;
+	}
 
 	long clip3D;
 	Color bkgcolor; // TODO was BGR!
