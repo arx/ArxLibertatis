@@ -1480,8 +1480,6 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	
-	EERIE_BKG_INFO * eg;
-	
 	if (eb == NULL) return 0;
 
 	if(eb->exist) {
@@ -1510,7 +1508,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 
 	for (int i = 0; i < eb->Xsize * eb->Zsize; i++)
 	{
-		eg = &eb->Backg[i];
+		EERIE_BKG_INFO *eg = &eb->Backg[i];
 		eg->treat = 0;
 		eg->nothing = 1;
 		eg->nbianchors = 0;
