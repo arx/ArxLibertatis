@@ -1613,7 +1613,7 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 	}
 	
 	// In case it is being dragged... (except for drag teleport update)
-	if((!flag & 1) && io == DRAGINTER) { // TODO probably wrong
+	if(!flag && io == DRAGINTER) {
 		Set_DragInter(NULL);
 	}
 	
