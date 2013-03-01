@@ -5364,35 +5364,31 @@ void ARX_INTERFACE_ManageOpenedBook()
 			pTextManage->Clear();
 			OLD_FLYING_OVER=FLYING_OVER;
 
+			std::string toDisplay;
+
 			// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
 			if (FLYING_OVER == WND_XP)
 			{
 				std::stringstream ss;
 				ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
-				UNICODE_ARXDrawTextCenteredScroll( hFontInGame,
-					                                (DANAESIZX*0.5f),
-					                                4,
-					                                (DANAECENTERX)*0.82f,
-					                                ss.str(),
-					                                Color(232+t,204+t,143+t),
-					                                1000,
-					                                0.01f,
-					                                3,
-					                                0);
+
+				toDisplay = ss.str();
 			}
 			else
 			{
-				UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-					(DANAESIZX*0.5f),
-					4,
-					(DANAECENTERX)*0.82f,
-					ARXmenu.mda->flyover[FLYING_OVER],
-					Color(232+t,204+t,143+t),
-					1000,
-					0.01f,
-					3,
-					0);
+				toDisplay = ARXmenu.mda->flyover[FLYING_OVER];
 			}
+
+			UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+				(DANAESIZX*0.5f),
+				4,
+				(DANAECENTERX)*0.82f,
+				toDisplay,
+				Color(232+t,204+t,143+t),
+				1000,
+				0.01f,
+				3,
+				0);
 		}
 		else
 		{
