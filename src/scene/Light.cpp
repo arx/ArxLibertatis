@@ -579,14 +579,11 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 	float fx1 = ACTIVEBKG->Xdiv * (float)x1;
 	float fz1 = ACTIVEBKG->Zdiv * (float)z1;
 
-	for (size_t i = 0; i < MAX_DYNLIGHTS; i++)
-	{
+	for(size_t i = 0; i < MAX_DYNLIGHTS; i++) {
 		EERIE_LIGHT * el = &DynLight[i];
 
-		if ((el->exist) && (el->rgb.r >= 0.f))
-		{
-
-			bool bDist = (distSqr(el->pos, ACTIVECAM->orgTrans.pos) < square(ACTIVECAM->cdepth));
+		if(el->exist && el->rgb.r >= 0.f) {
+			bool bDist = distSqr(el->pos, ACTIVECAM->orgTrans.pos) < square(ACTIVECAM->cdepth);
 
 			if ((el->pos.x >= fx0) && (el->pos.x <= fx1)
 			        && (el->pos.z >= fz0) && (el->pos.z <= fz1)
@@ -600,34 +597,33 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 				PDL[TOTPDL] = el;
 				TOTPDL++;
 
-				if ((size_t)TOTPDL >= MAX_DYNLIGHTS) TOTPDL--;
+				if((size_t)TOTPDL >= MAX_DYNLIGHTS)
+					TOTPDL--;
 			}
-			else if (el->treat) el->treat = 0;
+			else if(el->treat)
+				el->treat = 0;
 
-			if (el->duration)
-			{
-				float tim = ((float)float(arxtime) - (float)el->time_creation);
+			if(el->duration) {
+				float tim = (float)float(arxtime) - (float)el->time_creation;
 				float duration = (float)el->duration;
 
-				if (tim >= duration)
-				{
-
-
+				if(tim >= duration) {
 					float sub = framedelay * 0.001f;
+
 					el->rgb.r -= sub;
-
-					if (el->rgb.r < 0) el->rgb.r = 0.f;
-
 					el->rgb.g -= sub;
-
-					if (el->rgb.g < 0) el->rgb.g = 0.f;
-
 					el->rgb.b -= sub;
 
-					if (el->rgb.b < 0) el->rgb.b = 0.f;
+					if(el->rgb.r < 0)
+						el->rgb.r = 0.f;
 
-					if (el->rgb.r + el->rgb.g + el->rgb.b == 0)
-					{
+					if(el->rgb.g < 0)
+						el->rgb.g = 0.f;
+
+					if(el->rgb.b < 0)
+						el->rgb.b = 0.f;
+
+					if(el->rgb.r + el->rgb.g + el->rgb.b == 0) {
 						el->exist = 0;
 						el->duration = 0;
 					}
