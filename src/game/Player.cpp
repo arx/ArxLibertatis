@@ -2245,7 +2245,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 		target = io->pos;
 	}
 
-	tcam.setTargetCamera(target.x, target.y, target.z);
+	tcam.setTargetCamera(target);
 	player.angle.a = MAKEANGLE(-tcam.angle.a);
 	player.angle.b = MAKEANGLE(tcam.angle.b - 180.f);
 	player.angle.g = 0;

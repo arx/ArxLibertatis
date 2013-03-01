@@ -3060,10 +3060,10 @@ void UpdateCameras() {
 						float f2 = 1.f - f1;
 						smoothtarget = io->target * f2 + io->_camdata->cam.lasttarget * f1;
 
-						io->_camdata->cam.setTargetCamera(smoothtarget.x, smoothtarget.y, smoothtarget.z);
+						io->_camdata->cam.setTargetCamera(smoothtarget);
 						io->_camdata->cam.lasttarget = smoothtarget;
 					} else {
-						io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
+						io->_camdata->cam.setTargetCamera(io->target);
 						io->_camdata->cam.lasttarget = io->target;
 					}
 
@@ -3079,7 +3079,7 @@ void UpdateCameras() {
 					io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;
-					io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
+					io->_camdata->cam.setTargetCamera(io->target);
 					io->_camdata->cam.lasttarget = io->target;
 				}
 

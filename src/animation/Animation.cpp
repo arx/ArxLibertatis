@@ -1547,7 +1547,7 @@ void Preparellights(Vec3f * pos) {
 		EERIE_LIGHT * el = llights[i];
 		if(el) {
 			TCAM[i].orgTrans.pos = el->pos;
-			TCAM[i].setTargetCamera(pos->x,pos->y,pos->z);
+			TCAM[i].setTargetCamera(*pos);
 			F_PrepareCamera(&TCAM[i]);
 		}
 	}

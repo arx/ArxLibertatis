@@ -82,6 +82,10 @@ struct EERIE_CAMERA {
 
 	Anglef size;
 
+	void setTargetCamera(const Vec3f &target) {
+		setTargetCamera(target.x, target.y, target.z);
+	}
+
 	void setTargetCamera(float x, float y, float z)
 	{
 		if(orgTrans.pos.x == x && orgTrans.pos.y == y && orgTrans.pos.z == z)
