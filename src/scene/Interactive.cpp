@@ -3145,8 +3145,6 @@ EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 // from camera position.
 //*************************************************************************************
 void RenderInter(float from, float to) {
-	Anglef temp;
-	long diff;
 
 	if(entities.player() && (entities.player()->ignition > 0.f)){
 		ManageIgnition(entities.player());
@@ -3183,6 +3181,7 @@ void RenderInter(float from, float to) {
 				EERIE_PHYSICS_BOX_Show(io->obj);
 #endif
 
+			Anglef temp;
 			temp.a = io->angle.a;
 			if(io->ioflags & IO_NPC) {
 				temp.b = MAKEANGLE(180.f - io->angle.b);
@@ -3192,6 +3191,7 @@ void RenderInter(float from, float to) {
 			temp.g = io->angle.g;
 
 			if(io->animlayer[0].cur_anim) {
+				long diff;
 				if(io->animlayer[0].flags & EA_PAUSED)
 					diff = 0;
 				else
