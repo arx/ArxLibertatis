@@ -78,7 +78,6 @@ struct EERIE_CAMERA {
 
 	long clip3D;
 	Color bkgcolor; // TODO was BGR!
-	long nbdrawn;
 	float cdepth;
 
 	Anglef size;
