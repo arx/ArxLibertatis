@@ -7195,7 +7195,7 @@ long Manage3DCursor(long flags)
 	if(iterating == -1 && closerThan(player.pos, pos, 300.f)) {
 		if(flags & 1) {
 			io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
-			ARX_INTERACTIVE_Teleport( io, &pos, 1 );
+			ARX_INTERACTIVE_Teleport(io, &pos, true);
 
 			int iOldFrameCount	=	FRAME_COUNT;
 			FRAME_COUNT			=	0;
@@ -7253,7 +7253,7 @@ long Manage3DCursor(long flags)
 			} else {
 				ARX_PLAYER_Remove_Invisibility();
 				ARX_SOUND_PlayInterface(SND_INVSTD);
-				ARX_INTERACTIVE_Teleport(io,&pos,1);
+				ARX_INTERACTIVE_Teleport(io, &pos, true);
 
 				io->angle.a=temp.a;
 				io->angle.b=270.f-temp.b;

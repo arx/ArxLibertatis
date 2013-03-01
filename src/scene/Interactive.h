@@ -129,7 +129,7 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo);
 void ARX_INTERACTIVE_MEMO_TWEAK(Entity * io, TweakType type, const res::path & param1, const res::path & param2);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(Entity * io);
 bool ARX_INTERACTIVE_USEMESH(Entity * io, const res::path & temp);
-void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, long flags = 0);
+void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag = false);
 
 bool IsEquipedByPlayer(const Entity * io);
 void CleanScriptLoadedIO();
