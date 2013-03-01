@@ -1922,21 +1922,24 @@ void ARX_SCENE_Render() {
 	{
 	PrepareActiveCamera();
 
-	ACTIVECAM->Xsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-	ACTIVECAM->Zsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-	ACTIVECAM->Xsnap = clamp(ACTIVECAM->Xsnap, 0, ACTIVEBKG->Xsize-1);
-	ACTIVECAM->Zsnap = clamp(ACTIVECAM->Zsnap, 0, ACTIVEBKG->Zsize-1);
+	long camXsnap;
+	long camZsnap;
 
-	long x0 = ACTIVECAM->Xsnap - lcval;
-	long x1 = ACTIVECAM->Xsnap + lcval;
-	long z0 = ACTIVECAM->Zsnap - lcval;
-	long z1 = ACTIVECAM->Zsnap + lcval;
+	camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
+	camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+	camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize-1);
+	camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize-1);
+
+	long x0 = camXsnap - lcval;
+	long x1 = camXsnap + lcval;
+	long z0 = camZsnap - lcval;
+	long z1 = camZsnap + lcval;
 	x0 = clamp(x0, 0, ACTIVEBKG->Xsize-1);
 	x1 = clamp(x1, 0, ACTIVEBKG->Xsize-1);
 	z0 = clamp(z0, 0, ACTIVEBKG->Zsize-2);
 	z1 = clamp(z1, 0, ACTIVEBKG->Xsize-2);
 
-	ACTIVEBKG->Backg[ACTIVECAM->Xsnap+ACTIVECAM->Zsnap * ACTIVEBKG->Xsize].treat = 1;
+	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
 	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul);
 	
 	// Temporary Hack...
@@ -1949,9 +1952,9 @@ void ARX_SCENE_Render() {
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 
-	long zsnap=ACTIVECAM->Zsnap;
+	long zsnap=camZsnap;
 	zsnap = clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
-	long xsnap=ACTIVECAM->Xsnap;
+	long xsnap=camXsnap;
 	xsnap = clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
 	for(long j=z0; j<=z1; j++) {

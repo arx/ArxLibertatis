@@ -72,8 +72,6 @@ struct EERIE_CAMERA {
 	Vec2i center;
 
 	float smoothing;
-	long Xsnap;
-	long Zsnap;
 	float Zdiv;
 
 	long clip3D;
