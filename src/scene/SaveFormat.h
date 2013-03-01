@@ -1080,7 +1080,7 @@ struct SavedCamera {
 	s32 clip3D;
 	s32 type; //TODO Remove
 	s32 bkgcolor;
-	s32 nbdrawn;
+	s32 nbdrawn; //TODO Remove
 	f32 cdepth;
 	
 	SavedAnglef size;
@@ -1108,7 +1108,6 @@ struct SavedCamera {
 		
 		a.clip3D = clip3D;
 		a.bkgcolor = Color::fromBGRA(bkgcolor);
-		a.nbdrawn = nbdrawn;
 		a.cdepth = cdepth;
 		
 		a.size = size;
@@ -1155,7 +1154,7 @@ struct SavedCamera {
 		clip3D = b.clip3D;
 		type = CAM_SUBJVIEW;
 		bkgcolor = b.bkgcolor.toBGRA();
-		nbdrawn = b.nbdrawn;
+		nbdrawn = 0;
 		cdepth = b.cdepth;
 		
 		size = b.size;
