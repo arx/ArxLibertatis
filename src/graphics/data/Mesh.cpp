@@ -1033,7 +1033,7 @@ static int RayIn3DPolyNoCull(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp) {
 	EERIEPOLY ep;
 	memcpy(&ep, epp, sizeof(EERIEPOLY));
 	raycam.orgTrans.pos = *orgn;
-	raycam.setTargetCamera(dest->x, dest->y, dest->z);
+	raycam.setTargetCamera(*dest);
 	SP_PrepareCamera(&raycam);
 	EERIERTPPolyCam(&ep, &raycam);
 

@@ -961,7 +961,7 @@ void ArxGame::updateConversationCamera() {
 				sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
 
 			conversationcamera.orgTrans.pos = sourcepos;
-			conversationcamera.setTargetCamera(targetpos.x,targetpos.y,targetpos.z);
+			conversationcamera.setTargetCamera(targetpos);
 			subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 			subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
 			subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
@@ -1030,7 +1030,7 @@ void ArxGame::speechControlledCinematic() {
 				conversationcamera.orgTrans.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
 				conversationcamera.orgTrans.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
 				conversationcamera.orgTrans.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;
-				conversationcamera.setTargetCamera(targetpos.x,targetpos.y,targetpos.z);
+				conversationcamera.setTargetCamera(targetpos);
 				subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 				subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 				subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
@@ -1071,7 +1071,7 @@ void ArxGame::speechControlledCinematic() {
 					conversationcamera.orgTrans.pos.x=targetpos.x+vect2.x;
 					conversationcamera.orgTrans.pos.y=targetpos.y+vect2.y+acs->f2;
 					conversationcamera.orgTrans.pos.z=targetpos.z+vect2.z;
-					conversationcamera.setTargetCamera(targetpos.x,targetpos.y,targetpos.z);
+					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
@@ -1117,7 +1117,7 @@ void ArxGame::speechControlledCinematic() {
 					}
 
 					conversationcamera.orgTrans.pos = vect + targetpos + vect2;
-					conversationcamera.setTargetCamera(targetpos.x,targetpos.y,targetpos.z);
+					conversationcamera.setTargetCamera(targetpos);
 					subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
@@ -1166,7 +1166,7 @@ void ArxGame::handlePlayerDeath() {
 			conversationcamera.orgTrans.pos.z=entities.player()->obj->vertexlist3[id2].v.z;
 		}
 
-		conversationcamera.setTargetCamera(targetpos.x,targetpos.y,targetpos.z);
+		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos=conversationcamera.orgTrans.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
@@ -1204,7 +1204,7 @@ void ArxGame::handleCameraController() {
 		conversationcamera.orgTrans.pos.y=targetpos.y+40.f;
 		conversationcamera.orgTrans.pos.z=targetpos.z-(float)EEcos(t)*160.f;
 
-		conversationcamera.setTargetCamera(targetpos.x,targetpos.y,targetpos.z);
+		conversationcamera.setTargetCamera(targetpos);
 		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
