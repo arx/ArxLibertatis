@@ -3974,8 +3974,7 @@ void ManageIgnition(Entity * io)
 	// Torch Management
 	Entity * plw = NULL;
 
-	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
-	        &&	(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])))
+	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 	
 	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
