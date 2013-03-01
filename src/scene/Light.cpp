@@ -183,14 +183,13 @@ void EERIE_LIGHT_UnselectAll() {
 	}
 }
 
-void EERIE_LIGHT_ClearByIndex(long num)
-{
+void EERIE_LIGHT_ClearByIndex(long num) {
 	if(num >= 0 && ((size_t)num < MAX_LIGHTS) && GLight[num]) {
+		if(GLight[num]->tl != -1)
+			DynLight[GLight[num]->tl].exist = 0;
 
-			if (GLight[num]->tl != -1) DynLight[GLight[num]->tl].exist = 0;
-
-			free(GLight[num]);
-			GLight[num] = NULL;
+		free(GLight[num]);
+		GLight[num] = NULL;
 	}
 }
 
