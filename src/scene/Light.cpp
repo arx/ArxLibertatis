@@ -70,10 +70,7 @@ static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float
 
 bool ValidDynLight(long num)
 {
-	if(num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist)
-		return true;
-
-	return false;
+	return num >= 0 && ((size_t)num < MAX_DYNLIGHTS) && DynLight[num].exist;
 }
 
 void PrecalcIOLighting(const Vec3f * pos, float radius, long flags) {
