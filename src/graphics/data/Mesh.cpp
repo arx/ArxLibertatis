@@ -1177,9 +1177,6 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 // Computes the visibility from a point to another... (sort of...)
 bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 {
-	float			x, y, z; //current ray pos
-	float			dx, dy, dz; // ray incs
-	float			adx, ady, adz; // absolute ray incs
 	float			ix, iy, iz;
 	long			px, pz;
 	EERIEPOLY	*	ep;
@@ -1189,64 +1186,52 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	EERIEPOLY	*	found_ep	=	NULL;
 	float iter, t;
 	
-	x	=	orgn->x;
-	y	=	orgn->y;
-	z	=	orgn->z;
+	//current ray pos
+	float x = orgn->x;
+	float y = orgn->y;
+	float z = orgn->z;
 
-	float			distance;
-	float			nearest		=	distance	=	fdist(*orgn, *dest);
+	float distance;
+	float nearest = distance = fdist(*orgn, *dest);
 
-	if (distance < pas) pas	=	distance * .5f;
+	if(distance < pas)
+		pas = distance * .5f;
 
-	dx	=	(dest->x - orgn->x);
-	adx	=	EEfabs(dx);
-	dy	=	(dest->y - orgn->y);
-	ady	=	EEfabs(dy);
-	dz	=	(dest->z - orgn->z);
-	adz	=	EEfabs(dz);
+	// ray incs
+	float dx = (dest->x - orgn->x);
+	float dy = (dest->y - orgn->y);
+	float dz = (dest->z - orgn->z);
 
-	if ((adx >= ady) && (adx >= adz))
-	{
-		if (adx != dx)
-		{
+	// absolute ray incs
+	float adx = EEfabs(dx);
+	float ady = EEfabs(dy);
+	float adz = EEfabs(dz);
+
+	if(adx >= ady && adx >= adz) {
+		if(adx != dx)
 			ix = -pas;
-		}
 		else
-		{
 			ix = pas;
-		}
 
 		iter = adx / pas;
 		t = 1.f / (iter);
 		iy = dy * t;
 		iz = dz * t;
-	}
-	else if ((ady >= adx) && (ady >= adz))
-	{
-		if (ady != dy)
-		{
+	} else if(ady >= adx && ady >= adz) {
+		if(ady != dy)
 			iy = -pas;
-		}
 		else
-		{
 			iy = pas;
-		}
 
 		iter = ady / pas;
 		t = 1.f / (iter);
 		ix = dx * t;
 		iz = dz * t;
-	}
-	else
-	{
-		if (adz != dz)
-		{
+	} else {
+		if(adz != dz)
 			iz = -pas;
-		}
 		else
-		{
 			iz = pas;
-		}
 
 		iter = adz / pas;
 		t = 1.f / (iter);
@@ -1259,8 +1244,7 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 	y -= iy;
 	z -= iz;
 
-	while (iter > 0.f)
-	{
+	while(iter > 0.f) {
 		iter -= 1.f;
 		x += ix;
 		y += iy;
@@ -1312,9 +1296,11 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 fini:
 	;
 
-	if (!found_ep) return true;
+	if(!found_ep)
+		return true;
 
-	if (found_ep == epp) return true;
+	if(found_ep == epp)
+		return true;
 	
 	*hit = found_hit;
 	
