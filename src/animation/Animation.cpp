@@ -1176,19 +1176,18 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 
 		TexturedVertex * vert_list;
-		TextureContainer * pTex;
 
 		if(eobj->facelist[i].texid<0)
 			continue;
 
-		pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+		TextureContainer *pTex = eobj->texturecontainer[eobj->facelist[i].texid];
 		if(!pTex)
 			continue;
 
-		if ((io) && (io->ioflags & IO_ANGULAR))
-			MakeCLight2(io,&infra,angle,&pos,eobj,mat,i);
+		if(io && (io->ioflags & IO_ANGULAR))
+			MakeCLight2(io, &infra, angle, &pos, eobj, mat, i);
 
-		float			fTransp = 0.f;
+		float fTransp = 0.f;
 
 		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
 			if(invisibility > 0.f)
@@ -1477,7 +1476,8 @@ finish:
 
 void ResetAnim(ANIM_USE * eanim)
 {
-	if (eanim==NULL) return;
+	if(!eanim)
+		return;
 
 	eanim->ctime=0;
 	eanim->lastframe=-1;
@@ -1498,12 +1498,13 @@ void llightsInit() {
 // Inserts Light in the List of Nearest Lights
 void Insertllight(EERIE_LIGHT * el,float dist)
 {	
-	if (el==NULL) return;
+	if(!el)
+		return;
 
-	float threshold=el->fallend+560.f;
-	if (dist > threshold) return; 
+	float threshold = el->fallend + 560.f;
+	if(dist > threshold)
+		return;
 
-	{
 		float val = dist - el->fallend; 
 
 		if (val<0) val=0;
@@ -1535,7 +1536,6 @@ void Insertllight(EERIE_LIGHT * el,float dist)
 				return;
 			}
 		}
-	}
 }
 
 // Precalcs some misc things for lights
