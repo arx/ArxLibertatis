@@ -921,7 +921,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 	TexturedVertex vert_list_static[4];
 	
-	long lfr, lfg, lfb;
 	Vec3f temporary3D;
 	EERIE_CAMERA Ncam;
 	Color3f infra;
@@ -1372,9 +1371,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			tot+=power;
 			
 			_ffr[o]=power;
-			lfr = io->halo.color.r * power;
-			lfg = io->halo.color.g * power;
-			lfb = io->halo.color.b * power;
+			long lfr = io->halo.color.r * power;
+			long lfg = io->halo.color.g * power;
+			long lfb = io->halo.color.b * power;
 			workon[o].color = (0xFF << 24) | ((lfr & 0xFF) << 16) | ((lfg & 0xFF) << 8) | (lfb & 0xFF);
 		}
 
