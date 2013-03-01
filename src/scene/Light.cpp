@@ -753,21 +753,18 @@ void RecalcLightZone(float x, float z, long siz) {
 }
 
 void EERIERemovePrecalcLights() {
-	
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
- 
+
 	for(size_t i = 0; i < MAX_LIGHTS; i++) {
-		if (GLight[i] != NULL) GLight[i]->treat = 1;
+		if(GLight[i] != NULL)
+			GLight[i]->treat = 1;
 	}
 	
 	for(int j = 0; j < ACTIVEBKG->Zsize; j++) {
 		for(int i = 0; i < ACTIVEBKG->Xsize; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 			
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-			
-			for (long k = 0; k < eg->nbpoly; k++) {
-				ep = &eg->polydata[k];
+			for(long k = 0; k < eg->nbpoly; k++) {
+				EERIEPOLY *ep = &eg->polydata[k];
 				ep->v[3].color = ep->v[2].color = ep->v[1].color = ep->v[0].color = Color::white.toBGR();
 			}
 		}
