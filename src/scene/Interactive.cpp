@@ -2945,42 +2945,35 @@ void UpdateCameras() {
 		Entity * io = entities[i];
 		
 		if(io) {
-			
 			// interpolate & send events
 			if(io->usepath) {
 
 				ARX_USE_PATH * aup = io->usepath;
 				float diff = float(arxtime) - aup->_curtime;
 
-				if (aup->aupflags & ARX_USEPATH_FORWARD)
-				{
+				if(aup->aupflags & ARX_USEPATH_FORWARD) {
 					if (aup->aupflags & ARX_USEPATH_FLAG_FINISHED)
-					{
-					}
+					{}
 					else aup->_curtime += diff;
 				}
 
-				if (aup->aupflags & ARX_USEPATH_BACKWARD)
-				{
+				if(aup->aupflags & ARX_USEPATH_BACKWARD) {
 					aup->_starttime += diff * 2;
 					aup->_curtime += diff;
 
-					if (aup->_starttime >= aup->_curtime)
+					if(aup->_starttime >= aup->_curtime)
 						aup->_curtime = aup->_starttime + 1;
 				}
 
-				if (aup->aupflags & ARX_USEPATH_PAUSE)
-				{
+				if(aup->aupflags & ARX_USEPATH_PAUSE) {
 					aup->_starttime += diff;
 					aup->_curtime += diff;
 				}
 
 				long last = ARX_PATHS_Interpolate(aup, &io->pos);
 
-				if (aup->lastWP != last)
-				{
-					if (last == -2)
-					{
+				if(aup->lastWP != last) {
+					if(last == -2) {
 						char str[16];
 						sprintf(str, "%ld", aup->path->nb_pathways - 1);
 						EVENT_SENDER = NULL;
@@ -2989,9 +2982,7 @@ void UpdateCameras() {
 						SendIOScriptEvent(io, SM_NULL, "", str);
 						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
-					}
-					else
-					{
+					} else {
 						last--;
 						long _from = aup->lastWP;
 						long _to = last;
@@ -3009,8 +3000,7 @@ void UpdateCameras() {
 						sprintf(str, "waypoint%ld", ii);
 						SendIOScriptEvent(io, SM_NULL, "", str);
 
-						if (ii == aup->path->nb_pathways)
-						{
+						if(ii == aup->path->nb_pathways) {
 							SendIOScriptEvent(io, SM_PATHEND);
 						}
 						
@@ -3018,24 +3008,19 @@ void UpdateCameras() {
 					}
 				}
 
-				if ((io->damager_damages > 0)
-				        &&	(io->show == SHOW_FLAG_IN_SCENE))
-				{
+				if(io->damager_damages > 0 && io->show == SHOW_FLAG_IN_SCENE) {
 					for(size_t ii = 0; ii < entities.size(); ii++) {
 						Entity * ioo = entities[ii];
 
-						if ((ioo)
-						        &&	(ii != i)
+						if(ioo && ii != i
 						        &&	(ioo->show == SHOW_FLAG_IN_SCENE)
 						        &&	(ioo->ioflags & IO_NPC)
 						        &&	closerThan(io->pos, ioo->pos, 600.f))
 						{
 							bool Touched = false;
 
-							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
-							{
-								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
-								{
+							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3) {
+								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3) {
 									if(closerThan(io->obj->vertexlist3[ri].v, ioo->obj->vertexlist3[rii].v, 20.f)) {
 										Touched = true;
 										ri = io->obj->vertexlist.size();
@@ -3044,7 +3029,7 @@ void UpdateCameras() {
 								}
 							}
 
-							if (Touched)
+							if(Touched)
 								ARX_DAMAGES_DealDamages(ii, io->damager_damages, i, io->damager_type, &ioo->pos);
 						}
 					}
@@ -3055,13 +3040,11 @@ void UpdateCameras() {
 				
 				entities[i]->_camdata->cam.orgTrans.pos = io->pos;
 
-				if (io->targetinfo != TARGET_NONE) // Follows target
-				{
+				if(io->targetinfo != TARGET_NONE) { // Follows target
 					GetTargetPos(io, (unsigned long)entities[i]->_camdata->cam.smoothing);
 					io->target += io->_camdata->cam.translatetarget;
 
-					if ((io->_camdata->cam.lastinfovalid) && (io->_camdata->cam.smoothing != 0.f))
-					{
+					if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
 						Vec3f smoothtarget;
  
 						float vv = (float)io->_camdata->cam.smoothing;
@@ -3081,10 +3064,8 @@ void UpdateCameras() {
 						io->_camdata->cam.lasttarget = smoothtarget;
 						io->_camdata->cam.lastinfovalid = true;
 						io->_camdata->cam.lastpos = io->_camdata->cam.orgTrans.pos;
-					}
-					else
-					{
-						if ( !(io->target == io->_camdata->cam.orgTrans.pos))
+					} else {
+						if( !(io->target == io->_camdata->cam.orgTrans.pos))
 							io->_camdata->cam.setTargetCamera(io->target.x, io->target.y, io->target.z);
 
 						io->_camdata->cam.lasttarget = io->target;
