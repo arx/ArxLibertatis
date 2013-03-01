@@ -3038,10 +3038,10 @@ void UpdateCameras() {
 			
 			if(io->ioflags & IO_CAMERA) {
 				
-				entities[i]->_camdata->cam.orgTrans.pos = io->pos;
+				io->_camdata->cam.orgTrans.pos = io->pos;
 
 				if(io->targetinfo != TARGET_NONE) { // Follows target
-					GetTargetPos(io, (unsigned long)entities[i]->_camdata->cam.smoothing);
+					GetTargetPos(io, (unsigned long)io->_camdata->cam.smoothing);
 					io->target += io->_camdata->cam.translatetarget;
 
 					if(io->_camdata->cam.lastinfovalid && io->_camdata->cam.smoothing != 0.f) {
