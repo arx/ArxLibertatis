@@ -292,11 +292,10 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 	LocalSin = (float)sin(radians(angzgrille));
 	LocalCos = (float)cos(radians(angzgrille));
 
-	if ((fx & 0x0000FF00) == FX_DREAM)
-	{
+	if((fx & 0x0000FF00) == FX_DREAM) {
 		float * dream = DreamTable;
 
-		while (nb--) {
+		while(nb--) {
 			TexturedVertex vtemp;
 			Vec3f t;
 			t.x = v->x + *dream++;
@@ -316,13 +315,9 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 			v++;
 			d3dv++;
 		}
-	}
-	else
-	{
-		if (light)
-		{
-			while (nb--)
-			{
+	} else {
+		if(light) {
+			while(nb--) {
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(&vtemp, d3dv);
@@ -332,11 +327,8 @@ void DrawGrille(CinematicGrid * grille, int col, int fx, CinematicLight * light,
 				v++;
 				d3dv++;
 			}
-		}
-		else
-		{
-			while (nb--)
-			{
+		} else {
+			while(nb--) {
 				TexturedVertex vtemp;
 				TransformLocalVertex(v, &vtemp);
 				EE_RTP(&vtemp, d3dv);
