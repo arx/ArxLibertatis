@@ -299,28 +299,25 @@ void ARXDRAW_DrawEyeBall()
 {
 	Anglef angle;
 	Vec3f pos;
-	Vec3f scale;
 	
 	float d;
 
-	if (eyeball.exist<0) 
-	{
-		d=(float)(-eyeball.exist)*( 1.0f / 100 );
+	if(eyeball.exist < 0) {
+		d = (float)(-eyeball.exist)*( 1.0f / 100 );
 		eyeball.exist++;		
+	} else if(eyeball.exist > 2) {
+		d = (float)(eyeball.exist)*( 1.0f / 100 );
 	}
-	else if (eyeball.exist>2) 
-	{		
-		d=(float)(eyeball.exist)*( 1.0f / 100 );
-	}
-	else return;
+	else
+		return;
 
 	angle.a = eyeball.angle.a; 
-	angle.b=MAKEANGLE(180.f-eyeball.angle.b);
-	angle.g=eyeball.angle.g;
+	angle.b = MAKEANGLE(180.f-eyeball.angle.b);
+	angle.g = eyeball.angle.g;
 	pos.x=eyeball.pos.x;
 	pos.y=eyeball.pos.y+eyeball.floating;
 	pos.z=eyeball.pos.z;
-	scale = Vec3f::repeat(d);
+	Vec3f scale = Vec3f::repeat(d);
 	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
