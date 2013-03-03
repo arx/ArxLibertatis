@@ -1174,9 +1174,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 		return;
 
 	float ddist = 0.f;
-	long need_halo;
-
-	need_halo = 0;
+	long need_halo = 0;
 
 	Entity *hio_helmet	= NULL;
 	Entity *hio_armor = NULL;
@@ -1360,15 +1358,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			}
 #endif
 
-			if ((io) && (io->ioflags & IO_ZMAP))
-			{
+			if(io && (io->ioflags & IO_ZMAP))
 				CalculateInterZMapp(eobj, i, paf, pTex, tv);
-			}
 
 			////////////////////////////////////////////////////////////////////////
 			// HALO HANDLING START
-			if ( need_halo && io )
-			{
+			if(need_halo && io) {
 				long	lfr, lfg, lfb;
 				float	ffr, ffg, ffb;
 				float	tot	=	0;
@@ -1385,60 +1380,40 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 				else
 					max_c = 1;
 
-				for (long cnt = 0 ; cnt < max_c ; cnt++)
-				{
-					switch (cnt)
-					{
+				for(long cnt = 0; cnt < max_c; cnt++) {
+					switch (cnt) {
 						case 0:
-
-							if (use_io == entities.player())
-							{
-								if (hio_player)
-								{
+							if(use_io == entities.player()) {
+								if(hio_player) {
 									memcpy(&curhalo, &use_io->halo, sizeof(IO_HALO));
 									++curhaloInitialized;
 								}
 								else continue;
-							}
-							else
-							{
+							} else {
 								memcpy(&curhalo, &io->halo, sizeof(IO_HALO));
 								++curhaloInitialized;
 							}
-
 							break;
 						case 1:
-
-							if ((hio_helmet)
-							        &&	(IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0))
-							{
+							if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
 								memcpy(&curhalo, &hio_helmet->halo, sizeof(IO_HALO));
 								++curhaloInitialized;
 							}
 							else continue;
-
 							break;
 						case 2:
-
-							if ((hio_armor)
-							        &&	(IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0))
-							{
+							if(hio_armor && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0) {
 								memcpy(&curhalo, &hio_armor->halo, sizeof(IO_HALO));
 								++curhaloInitialized;
 							}
 							else continue;
-
 							break;
 						case 3:
-
-							if ((hio_leggings)
-							        &&	(IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0))
-							{
+							if(hio_leggings && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0){
 								memcpy(&curhalo, &hio_leggings->halo, sizeof(IO_HALO)) ;
 								++curhaloInitialized;
 							}
 							else continue;
-
 							break;
 					}
 
@@ -1447,10 +1422,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					TexturedVertex * workon;
 					workon	= tv;
 
-					long o;
-
-					for (o = 0 ; o < 3 ; o++)
-					{
+					for(long o = 0; o < 3; o++) {
 						float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
 						float power	=	255.f - (float)(255.f * tttz);
 						power		*=	(1.f - invisibility);
@@ -1470,52 +1442,38 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					}
 
 					//GRenderer->SetCulling(Renderer::CullNone);
-					if (tot > 260)   //260.f)
-					{
+					if(tot > 260) {  //260.f)
 						long first;
 						long second;
 						long third;
 
-						if ((_ffr[0] >= _ffr[1]) && (_ffr[1] >= _ffr[2]))
-						{
+						if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
 							first = 0;
 							second = 1;
 							third = 2;
-						}
-						else if ((_ffr[0] >= _ffr[2]) && (_ffr[2] >= _ffr[1]))
-						{
+						} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
 							first = 0;
 							second = 2;
 							third = 1;
-						}
-						else if ((_ffr[1] >= _ffr[0]) && (_ffr[0] >= _ffr[2]))
-						{
+						} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
 							first = 1;
 							second = 0;
 							third = 2;
-						}
-						else if ((_ffr[1] >= _ffr[2]) && (_ffr[2] >= _ffr[0]))
-						{
+						} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
 							first = 1;
 							second = 2;
 							third = 0;
-						}
-						else if ((_ffr[2] >= _ffr[0]) && (_ffr[0] >= _ffr[1]))
-						{
+						} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
 							first = 2;
 							second = 0;
 							third = 1;
-						}
-						else
-						{
+						} else {
 							first = 2;
 							second = 1;
 							third = 0;
 						}
 
-
-						if ((_ffr[first] > 150.f) && (_ffr[second] > 110.f)) 
-						{
+						if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
 							Vec3f		vect1, vect2;
 							TexturedVertex *	vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
@@ -1530,7 +1488,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 							float siz = ddist * (curhalo.radius * (EEsin((float)(arxtime.get_frame_time() + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
-							if ((io == entities.player()) && (ddist > 0.8f) && !EXTERNALVIEW)
+							if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
 								siz *= 1.5f;
 
 							vect1.x = workon[first].p.x - workon[third].p.x;
@@ -1546,7 +1504,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 							float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
-							if (vect2.x < 0.f) len2 *= 1.2f;
+							if(vect2.x < 0.f)
+								len2 *= 1.2f;
 
 							vect2.x		*= len2;
 							vect2.y		*= len2;
@@ -1559,7 +1518,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							               + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));   
 							valll = 0.0001f + valll * ( 1.0f / 10 );
 
-							if (valll < 0.f) valll = 0.f;
+							if(valll < 0.f)
+								valll = 0.f;
 
 							vert[1].p.z	+= valll;
 							vert[2].p.z	+= valll;
@@ -1576,7 +1536,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 							vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 
-							if (curhalo.flags & HALO_NEGATIVE)
+							if(curhalo.flags & HALO_NEGATIVE)
 								vert[2].color = 0x00000000;
 							else
 								vert[2].color = 0xFF000000;
@@ -1584,9 +1544,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					}
 				}
 
-				for (long o = 0 ; o < 3 ; o++)
-				{
-					paf[o]		= eface->vid[o];
+				for(long o = 0; o < 3; o++) {
+					paf[o] = eface->vid[o];
 					tv[o].color = eobj->vertexlist3[paf[o]].vert.color;
 				}
 			}
@@ -1595,12 +1554,9 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			// HALO HANDLING END
 			////////////////////////////////////////////////////////////////////////
 
-			if (special_color_flag & 2)
-			{
-				TexturedVertex * tv2;
-				{
-					tv2 = PushVertexInTableCull(&TexSpecialColor);
-				}
+			if(special_color_flag & 2) {
+				TexturedVertex * tv2 = PushVertexInTableCull(&TexSpecialColor);
+
 				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
 
 				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
