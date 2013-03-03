@@ -459,29 +459,26 @@ void ARX_SPEECH_Update() {
 	
 	unsigned long tim = (unsigned long)(arxtime);
 
-	if (CINEMASCOPE || BLOCK_PLAYER_CONTROLS) ARX_CONVERSATION_CheckAcceleratedSpeech();
+	if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS)
+		ARX_CONVERSATION_CheckAcceleratedSpeech();
 
-	for (size_t i = 0 ; i < MAX_ASPEECH ; i++)
-	{
-		if (aspeech[i].exist)
-		{
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		if(aspeech[i].exist) {
 			Entity * io = aspeech[i].io;
 
 			// updates animations
-			if (io)
-			{
-				if (aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
+			if(io) {
+				if(aspeech[i].flags & ARX_SPEECH_FLAG_OFFVOICE)
 					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample);
 				else
 					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
 
-				if (((io != entities.player()) || ((io == entities.player())  && (EXTERNALVIEW)))
-						&&	ValidIOAddress(io))
+				if((io != entities.player() || (io == entities.player() && EXTERNALVIEW)) && ValidIOAddress(io))
 				{
-					if (io->anims[aspeech[i].mood] == NULL)	aspeech[i].mood = ANIM_TALK_NEUTRAL;
+					if(!io->anims[aspeech[i].mood])
+						aspeech[i].mood = ANIM_TALK_NEUTRAL;
 
-					if (io->anims[aspeech[i].mood] != NULL)
-					{
+					if(io->anims[aspeech[i].mood]) {
 						if ((io->animlayer[2].cur_anim != io->anims[aspeech[i].mood])
 								||	(io->animlayer[2].flags & EA_ANIMEND))
 						{
