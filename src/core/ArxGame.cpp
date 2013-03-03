@@ -1471,7 +1471,8 @@ void ArxGame::renderLevel() {
 
 	ARX_GLOBALMODS_Apply();
 
-	if (EDITMODE) GRenderer->SetRenderState(Renderer::Fog, false);
+	if(EDITMODE)
+		GRenderer->SetRenderState(Renderer::Fog, false);
 
 	// Set Listener Position
 	{
@@ -1485,38 +1486,37 @@ void ArxGame::renderLevel() {
 	}
 
 	// Reset Transparent Polys Idx
-	TRANSPOLYSPOS=0;
+	TRANSPOLYSPOS = 0;
 
 	// Check For Hiding/unHiding Player Gore
-	if ((EXTERNALVIEW) || (player.life<=0))
-	{
+	if(EXTERNALVIEW || player.life <= 0) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(),0);
 	}
 
-	if (!EXTERNALVIEW)
-	{
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(),1);
+	if(!EXTERNALVIEW) {
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 
 	// NOW DRAW the player (Really...)
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
-		float restore=ACTIVECAM->orgTrans.use_focal;
+		float restore = ACTIVECAM->orgTrans.use_focal;
 
 		if(!EXTERNALVIEW) {
 			if(!BOW_FOCAL)
-				ACTIVECAM->orgTrans.use_focal=PLAYER_ARMS_FOCAL*Xratio;
+				ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
 
-			FORCE_FRONT_DRAW=1;
+			FORCE_FRONT_DRAW = 1;
 		}
 
-		if (entities.player()->invisibility>0.9f) entities.player()->invisibility=0.9f;
+		if(entities.player()->invisibility > 0.9f)
+			entities.player()->invisibility = 0.9f;
 
-		arx_assert(entities.player()->obj != NULL);
+		arx_assert(entities.player()->obj);
 		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
 			&entities.player()->pos, 0, entities.player());
 
-		ACTIVECAM->orgTrans.use_focal=restore;
-		FORCE_FRONT_DRAW=0;
+		ACTIVECAM->orgTrans.use_focal = restore;
+		FORCE_FRONT_DRAW = 0;
 	}
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
@@ -1526,13 +1526,12 @@ void ArxGame::renderLevel() {
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
 
-	if (FRAME_COUNT<=0)
-			PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
+	if(FRAME_COUNT <= 0)
+		PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 
-	if (uw_mode)
-	{
+	if(uw_mode) {
 		float val=10.f;
 		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
 		ARX_SCENE_Render();
