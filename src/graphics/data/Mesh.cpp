@@ -2990,6 +2990,9 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
 
 		vlist[0].color = vlist[1].color = vlist[2].color = Color::white.toBGR();
+
+		TextureContainer *tex = NULL;
+		bool addToBackground = true;
 		if (eobj->facelist[i].facetype & POLY_NO_SHADOW)
 		{
 			vlist[0].uv.x = eobj->facelist[i].u[0];
@@ -2999,11 +3002,14 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 			vlist[2].uv.x = eobj->facelist[i].u[2];
 			vlist[2].uv.y = eobj->facelist[i].v[2];
 
-			if (eobj->facelist[i].texid >= 0)
-				EERIEAddPolyToBackground(vlist, eobj->texturecontainer[eobj->facelist[i].texid], eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
-		} else {
-			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
+			if(eobj->facelist[i].texid >= 0)
+				tex = eobj->texturecontainer[eobj->facelist[i].texid];
+			else
+				addToBackground = false;
 		}
+
+		if(addToBackground)
+			EERIEAddPolyToBackground(vlist, tex, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 	}
 }
 
