@@ -2163,22 +2163,21 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		return;
 	}
 
-	long i, j;
 	float epr[4];
 	float epg[4];
 	float epb[4];
 	
-	for(i = 0; i < nbvert; i++) {
+	for(long i = 0; i < nbvert; i++) {
 		long c = ep->v[i].color;
 		epr[i] = (float)(long)((c >> 16) & 255);
 		epg[i] = (float)(long)((c >> 8) & 255);
 		epb[i] = (float)(long)(c & 255);
 	}
 
-	for(i = 0; i < tls->num; i++) {
+	for(long i = 0; i < tls->num; i++) {
 		EERIE_LIGHT * el = tls->el[i];
 	
-		for (j = 0; j < nbvert; j++) {
+		for(long j = 0; j < nbvert; j++) {
 			float d = fdist(el->pos, ep->v[j].p);
 
 			if (d < el->fallend) {
@@ -2189,8 +2188,8 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 				             +	(el->pos.z - ep->v[j].p.z) * ep->nrml[j].z
 				         ) * 0.5f / d; 
 				
-				if (nvalue > 0.f) {
-					if (d <= el->fallstart) {
+				if(nvalue > 0.f) {
+					if(d <= el->fallstart) {
 						d = el->precalc * nvalue; 
 					} else {
 						d -= el->fallstart;
