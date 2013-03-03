@@ -900,69 +900,69 @@ void ArxGame::updateConversationCamera() {
 				}
 			}
 
-			long is=main_conversation.current;
+		long is=main_conversation.current;
 
-			if (ARX_CONVERSATION_LASTIS!=is) ARX_CONVERSATION_MODE=-1;
+		if (ARX_CONVERSATION_LASTIS!=is) ARX_CONVERSATION_MODE=-1;
 
-			ARX_CONVERSATION_LASTIS=is;
+		ARX_CONVERSATION_LASTIS=is;
 
-			if(ARX_CONVERSATION_MODE == -1) {
-				ARX_CONVERSATION_MODE = 0;
-				if(rnd() > 0.5f) {
-					conversationcamera.size = Anglef(MAKEANGLE(170.f + rnd() * 20.f), 0.f, 0.f);
-					conversationcamera.d_angle = Anglef(0.f, 0.f, 0.08f);
-				} else {
-					conversationcamera.size = Anglef(rnd() * 50.f, 0.f, rnd() * 50.f);
-					conversationcamera.d_angle = Anglef::ZERO;
-					if(rnd() > 0.4f) {
-						conversationcamera.d_angle.a = (1.f - rnd() * 2.f) * (1.f / 30);
-					}
-					if(rnd() > 0.4f) {
-						conversationcamera.d_angle.b = (1.f - rnd() * 1.2f) * 0.2f;
-					}
-					if(rnd() > 0.4f) {
-						conversationcamera.d_angle.g = (1.f - rnd() * 2.f) * 0.025f;
-					}
+		if(ARX_CONVERSATION_MODE == -1) {
+			ARX_CONVERSATION_MODE = 0;
+			if(rnd() > 0.5f) {
+				conversationcamera.size = Anglef(MAKEANGLE(170.f + rnd() * 20.f), 0.f, 0.f);
+				conversationcamera.d_angle = Anglef(0.f, 0.f, 0.08f);
+			} else {
+				conversationcamera.size = Anglef(rnd() * 50.f, 0.f, rnd() * 50.f);
+				conversationcamera.d_angle = Anglef::ZERO;
+				if(rnd() > 0.4f) {
+					conversationcamera.d_angle.a = (1.f - rnd() * 2.f) * (1.f / 30);
 				}
-			} else {
-				conversationcamera.size += conversationcamera.d_angle * FrameDiff;
+				if(rnd() > 0.4f) {
+					conversationcamera.d_angle.b = (1.f - rnd() * 1.2f) * 0.2f;
+				}
+				if(rnd() > 0.4f) {
+					conversationcamera.d_angle.g = (1.f - rnd() * 2.f) * 0.025f;
+				}
 			}
+		} else {
+			conversationcamera.size += conversationcamera.d_angle * FrameDiff;
+		}
 
-			Vec3f sourcepos,targetpos;
+		Vec3f sourcepos,targetpos;
 
-			if(ApplySpeechPos(&conversationcamera, is)) {
-				targetpos = conversationcamera.d_pos;
-				sourcepos = conversationcamera.orgTrans.pos;
-			} else {
-				targetpos = player.pos;
-				float t=radians(player.angle.b);
-				sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
-				sourcepos.y=targetpos.y;
-				sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
-			}
+		if(ApplySpeechPos(&conversationcamera, is)) {
+			targetpos = conversationcamera.d_pos;
+			sourcepos = conversationcamera.orgTrans.pos;
+		} else {
+			targetpos = player.pos;
+			float t=radians(player.angle.b);
+			sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
+			sourcepos.y=targetpos.y;
+			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
+		}
 
-			Vec3f vec2;
-			Vec3f vect = targetpos - sourcepos;
-			fnormalize(vect);
-			float dist=250.f-conversationcamera.size.g;
+		Vec3f vec2;
+		Vec3f vect = targetpos - sourcepos;
+		fnormalize(vect);
+		float dist=250.f-conversationcamera.size.g;
 
-			if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
-			else if (dist<90.f) dist=90.f;
+		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
+		else if (dist<90.f) dist=90.f;
 
-			YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
+		YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
 
-			sourcepos = targetpos - vec2 * dist;
+		sourcepos = targetpos - vec2 * dist;
 
-			if (conversationcamera.size.b!=0.f)
-				sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
+		if (conversationcamera.size.b!=0.f)
+			sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
 
-			conversationcamera.orgTrans.pos = sourcepos;
-			conversationcamera.setTargetCamera(targetpos);
-			subj.orgTrans.pos = conversationcamera.orgTrans.pos;
-			subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
-			subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
-			subj.angle.g = 0.f;
-			EXTERNALVIEW = 1;
+		conversationcamera.orgTrans.pos = sourcepos;
+		conversationcamera.setTargetCamera(targetpos);
+		subj.orgTrans.pos = conversationcamera.orgTrans.pos;
+		subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
+		subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
+		subj.angle.g = 0.f;
+		EXTERNALVIEW = 1;
 	}
 	else
 	{
