@@ -378,21 +378,15 @@ void Cinematic::Render(float FDIFF) {
 	LargeurRender = DANAESIZX;
 	HauteurRender = DANAESIZY;
 
-	if (projectload)
-	{
+	if(projectload) {
 		GRenderer->Clear(Renderer::ColorBuffer);
 		GRenderer->BeginScene();
 
 		GereTrack(this, FDIFF);
 
 		//sound
-		if (changekey)
-		{
-			if (idsound >= 0)
-			{
-				PlaySoundKeyFramer(idsound);
-			}
-		}
+		if(changekey && idsound >= 0)
+			PlaySoundKeyFramer(idsound);
 
 		//draw
 		GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
@@ -408,8 +402,7 @@ void Cinematic::Render(float FDIFF) {
 		//fx
 		int col = 0x00FFFFFF;
 
-		switch (fx & 0x000000FF)
-		{
+		switch(fx & 0x000000FF) {
 			case FX_FADEIN:
 				col = FX_FadeIN(a, color, colord);
 				break;
@@ -424,8 +417,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 
 		//fx precalculation
-		switch (fx & 0x0000ff00)
-		{
+		switch(fx & 0x0000ff00) {
 			case FX_DREAM:
 
 				if ((this->fxsuiv & 0x0000ff00) == FX_DREAM)
@@ -450,15 +442,14 @@ void Cinematic::Render(float FDIFF) {
 
 		int alpha = ((int)(a * 255.f)) << 24;
 
-		if (force ^ 1) alpha = 0xFF000000;
+		if(force ^ 1)
+			alpha = 0xFF000000;
 
 		col |= alpha;
 
 		CinematicLight lightt, *l = NULL;
 
-		if ((this->light.intensity >= 0.f) &&
-		        (this->lightd.intensity >= 0.f))
-		{
+		if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 			lightt = this->light;
 			lightt.pos.x += (float)(LargeurRender >> 1);
 			lightt.pos.y += (float)(HauteurRender >> 1);
@@ -470,18 +461,18 @@ void Cinematic::Render(float FDIFF) {
 
 			LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
-			if (LightRND > 1.f) LightRND = 1.f;
+			if(LightRND > 1.f)
+				LightRND = 1.f;
 
 			l = &lightt;
 		}
 
-		if (tb->grid.nbvertexs) DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
+		if(tb->grid.nbvertexs)
+			DrawGrille(&tb->grid, col, fx, l, &posgrille, angzgrille);
 
 		//PASS #2
-		if (force & 1)
-		{
-			switch (ti)
-			{
+		if(force & 1) {
+			switch(ti) {
 				case INTERP_NO:
 					m_camera.orgTrans.pos = possuiv;
 					m_camera.setTargetCamera(m_camera.orgTrans.pos.x, m_camera.orgTrans.pos.y, 0.f);
@@ -503,20 +494,20 @@ void Cinematic::Render(float FDIFF) {
 
 			l = NULL;
 
-			if ((this->light.intensity >= 0.f) &&
-			        (this->lightd.intensity >= 0.f))
-			{
+			if(this->light.intensity >= 0.f && this->lightd.intensity >= 0.f) {
 				lightt = this->lightd;
 				lightt.pos.x += (float)(LargeurRender >> 1);
 				lightt.pos.y += (float)(HauteurRender >> 1);
 				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
-				if (LightRND > 1.f) LightRND = 1.f;
+				if(LightRND > 1.f)
+					LightRND = 1.f;
 
 				l = &lightt;
 			}
 
-			if (tb->grid.nbvertexs) DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
+			if(tb->grid.nbvertexs)
+				DrawGrille(&tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
 		//effets qui continuent avec le temps
@@ -545,8 +536,7 @@ void Cinematic::Render(float FDIFF) {
 		}
 		
 		//post fx
-		switch (fx & 0x00ff0000)
-		{
+		switch(fx & 0x00ff0000) {
 			case FX_FLASH:
 				FlashBlancEnCours = FX_FlashBlanc((float)LargeurRender, (float)HauteurRender, speed, colorflash, GetTrackFPS(), FPS);
 				break;
