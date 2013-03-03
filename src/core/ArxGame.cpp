@@ -817,23 +817,21 @@ void ArxGame::updateFirstPersonCamera() {
 		&& (useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_PART_2])
 		&& (useanim->cur_anim!=alist[ANIM_MISSILE_STRIKE_CYCLE]))
 	{
-		BOW_FOCAL-=Original_framedelay;
+		BOW_FOCAL -= Original_framedelay;
 
-		if (BOW_FOCAL<0) BOW_FOCAL=0;
+		if(BOW_FOCAL < 0)
+			BOW_FOCAL = 0;
 	}
 
 	if(eyeball.exist == 2) {
 		subj.d_pos = eyeball.pos;
 		subj.d_angle = eyeball.angle;
 		EXTERNALVIEW = 1;
-	}
-	else if (EXTERNALVIEW)
-	{
+	} else if(EXTERNALVIEW) {
 		float t=radians(player.angle.b);
 		Vec3f tt;
 
-		for (long l=0;l<250;l+=10)
-		{
+		for(long l=0; l < 250; l += 10) {
 			tt.x=player.pos.x+(float)EEsin(t)*(float)l;
 			tt.y=player.pos.y-50.f;
 			tt.z=player.pos.z-(float)EEcos(t)*(float)l;
@@ -844,18 +842,16 @@ void ArxGame::updateFirstPersonCamera() {
 			else break;
 		}
 
-		subj.d_angle.a=player.angle.a+30.f;
+		subj.d_angle.a=player.angle.a + 30.f;
 		subj.d_angle.b=player.angle.b;
 		subj.d_angle.g=player.angle.g;
-		
 	} else {
-	
 		subj.angle = player.angle;
 		
-		if (entities.player()) {
+		if(entities.player()) {
 			long id = entities.player()->obj->fastaccess.view_attach;
 
-			if (id!=-1) {
+			if(id!=-1) {
 				subj.orgTrans.pos = entities.player()->obj->vertexlist3[id].v;
 				Vec3f vect;
 				vect.x = subj.orgTrans.pos.x - player.pos.x;
@@ -863,7 +859,7 @@ void ArxGame::updateFirstPersonCamera() {
 				vect.z = subj.orgTrans.pos.z - player.pos.z;
 				float len = ffsqrt(vect.lengthSqr());
 
-				if (len>46.f) {
+				if(len > 46.f) {
 					float div = 46.f / len;
 					vect.x *= div;
 					vect.z *= div;
@@ -876,7 +872,7 @@ void ArxGame::updateFirstPersonCamera() {
 		}
 	}
 
-	if (EXTERNALVIEW) {
+	if(EXTERNALVIEW) {
 		subj.orgTrans.pos = (subj.orgTrans.pos + subj.d_pos) * 0.5f;
 		subj.angle = interpolate(subj.angle, subj.d_angle, 0.1f);
 	}
