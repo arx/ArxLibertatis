@@ -204,10 +204,7 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 			animuse->fr = eanim->nb_key_frames - 2;
 			animuse->pour = 1.f;
 		}
-		else if(animuse->pour > 1.f)
-			animuse->pour = 1.f;
-		else if(animuse->pour < 0.f)
-			animuse->pour = 0.f;
+		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
 
 
 		// FRAME TRANSLATE : Gives the Virtual pos of Main Object
