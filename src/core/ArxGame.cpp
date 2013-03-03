@@ -1902,17 +1902,15 @@ void ArxGame::goFor2DFX()
 	if(!needed)
 		return;
 
-
 	Entity* pTableIO[256];
 	int nNbInTableIO = 0;
 
-	float temp_increase=framedelay*( 1.0f / 1000 )*4.f;
+	float temp_increase = framedelay * (1.0f/1000) * 4.f;
 
 	bool bComputeIO = false;
 
-	for (int i=0;i<TOTPDL;i++)
-	{
-		EERIE_LIGHT * el=PDL[i];
+	for(int i=0; i < TOTPDL; i++) {
+		EERIE_LIGHT *el = PDL[i];
 
 		long lPosx=(long)(float)(el->pos.x*ACTIVEBKG->Xmul);
 		long lPosz=(long)(float)(el->pos.z*ACTIVEBKG->Zmul);
@@ -1931,10 +1929,9 @@ void ArxGame::goFor2DFX()
 		{
 			lv.p = el->pos;
 			EE_RTP(&lv,&ltvv);
-			el->temp-=temp_increase;
+			el->temp -= temp_increase;
 
-			if (!(player.Interface & INTER_COMBATMODE)
-				&& (player.Interface & INTER_MAP))
+			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
 				continue;
 
 			if ((ltvv.rhw > 0.f) &&
@@ -1959,10 +1956,8 @@ void ArxGame::goFor2DFX()
 				ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
 				ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
 
-
-				if( !bComputeIO )
-				{
-					GetFirstInterAtPos(&ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO );
+				if(!bComputeIO) {
+					GetFirstInterAtPos(&ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO);
 					bComputeIO = true;
 				}
 
@@ -1996,32 +1991,29 @@ void ArxGame::goFor2DFX()
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetFogColor(Color::none);
 
-	for (int i=0;i<TOTPDL;i++)
-	{
-		EERIE_LIGHT * el=PDL[i];
+	for (int i=0; i < TOTPDL; i++) {
+		EERIE_LIGHT *el = PDL[i];
 
-		if ((!el->exist) || (!el->treat)) continue;
+		if(!el->exist || !el->treat)
+			continue;
 
-		if (el->extras & EXTRAS_FLARE)
-		{
-			if (el->temp>0.f)
-			{
+		if(el->extras & EXTRAS_FLARE) {
+			if (el->temp > 0.f) {
 				lv.p = el->pos;
 				lv.rhw = 1.f;
 				EE_RT(&lv, &ltvv.p);
 				float v=el->temp;
 
-				if (FADEDIR)
-				{
-					v*=1.f-LAST_FADEVALUE;
+				if(FADEDIR) {
+					v *= 1.f - LAST_FADEVALUE;
 				}
 
 				float siz;
 
-				if (el->extras & EXTRAS_FIXFLARESIZE)
-					siz=el->ex_flaresize;
+				if(el->extras & EXTRAS_FIXFLARESIZE)
+					siz = el->ex_flaresize;
 				else
-					siz=-el->ex_flaresize;
+					siz = -el->ex_flaresize;
 
 				EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
 
