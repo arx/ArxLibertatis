@@ -470,13 +470,12 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL) {
 //*************************************************************************************
 void TreatBackgroundDynlights()
 {
-	for (size_t i = 0; i < MAX_LIGHTS; i++)
-	{
-		if ((GLight[i] != NULL) && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC))
-		{
-			float fMaxdist = 300;
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		if(GLight[i] && (GLight[i]->extras & EXTRAS_SEMIDYNAMIC)) {
 
-			if (Project.telekinesis) fMaxdist = 850;
+			float fMaxdist = 300;
+			if(Project.telekinesis)
+				fMaxdist = 850;
 
 			if(!fartherThan(GLight[i]->pos, ACTIVECAM->orgTrans.pos, fMaxdist)) {
 				ComputeLight2DPos(GLight[i]);
@@ -484,7 +483,7 @@ void TreatBackgroundDynlights()
 
 			if (GLight[i]->status == 0)
 			{
-				// vient de s'éteindre
+				// just extinguished
 				if (GLight[i]->tl > 0)
 				{
 					DynLight[GLight[i]->tl].exist = 0;
@@ -503,7 +502,7 @@ void TreatBackgroundDynlights()
 			}
 			else
 			{
-				// vient de s'allumer
+				// just light up
 				if (GLight[i]->tl <= 0)
 				{
 					Vec3f _pos2;
