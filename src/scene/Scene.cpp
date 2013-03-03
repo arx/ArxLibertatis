@@ -213,7 +213,7 @@ static void ApplyLavaGlowToVertex(Vec3f * odtv,TexturedVertex * dtv, float power
 	f = ((dtv->color) & 255) * power;
 	lb = clipByte(f);
 
-	dtv->color=0xFF000000L | (lr << 16) | (lg << 8) | lb;
+	dtv->color = (0xFF000000L | (lr << 16) | (lg << 8) | (lb));
 }
 
 void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
@@ -1587,10 +1587,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						fr=min(fr,255.f);
 						fb*=255.f;
 						fb=min(fb,255.f);
-						long lfr = fr;
-						long lfb = fb;
+						u8 lfr = fr;
+						u8 lfb = fb;
 				
-						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
+						ep->tv[k].color = (0xff001E00L | (lfr << 16) | (lfb));
 					}
 
 					pMyVertexCurr[ep->uslInd[0]].color=ep->tv[0].color;
@@ -2097,9 +2097,9 @@ void ARX_SCENE_Render() {
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						long lfb = fb;
-						long lfr = fr;
-						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
+						u8 lfb = fb;
+						u8 lfr = fr;
+						ep->tv[k].color = (0xff001E00L | (lfr << 16) | (lfb));
 						//GG component locked at 0x1E
 					}
 				}
