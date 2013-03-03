@@ -1777,21 +1777,20 @@ void ArxGame::render() {
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 
-	PULSATE=EEsin(arxtime.get_frame_time() / 800);
-	EERIEDrawnPolys=0;
+	PULSATE = EEsin(arxtime.get_frame_time() / 800);
+	EERIEDrawnPolys = 0;
 
 	// EditMode Specific code
-	if (EDITMODE)
-	{
-		TOTIOPDL=0;
-		BLOCK_PLAYER_CONTROLS=0;
+	if(EDITMODE) {
+		TOTIOPDL = 0;
+		BLOCK_PLAYER_CONTROLS = 0;
 	}
 
 	// Checks for Keyboard & Moulinex
 	{
-		ARX_MOUSE_OVER=0;
+		ARX_MOUSE_OVER = 0;
 
-		if (!EDITMODE && (ARXmenu.currentmode == AMCM_OFF)) // Playing Game
+		if(!EDITMODE && ARXmenu.currentmode == AMCM_OFF) // Playing Game
 		{
 			// Checks Clicks in Book Interface
 			if (ARX_INTERFACE_MouseInBook())
@@ -1812,14 +1811,10 @@ void ArxGame::render() {
 				ARX_MOUSE_OVER|=ARX_MOUSE_OVER_INVENTORY;
 		}
 
-		if ( (player.Interface & INTER_COMBATMODE)
-			|| (PLAYER_MOUSELOOK_ON) )
-		{
+		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
 			FlyingOverIO = NULL; // Avoid to check with those modes
-		}
-		else
-		{
-			if ((DRAGINTER == NULL) && (FRAME_COUNT<=0))
+		} else {
+			if(!DRAGINTER && FRAME_COUNT <= 0)
 			{
 				if (!BLOCK_PLAYER_CONTROLS && !TRUE_PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 					&& (eMouseState != MOUSE_IN_NOTE)
@@ -1830,17 +1825,14 @@ void ArxGame::render() {
 			}
 		}
 
-		if ( (!PLAYER_PARALYSED)
-			|| (ARXmenu.currentmode != AMCM_OFF) )
-
-		{
-			if (!STOP_KEYBOARD_INPUT)
+		if(!PLAYER_PARALYSED || ARXmenu.currentmode != AMCM_OFF) {
+			if(!STOP_KEYBOARD_INPUT) {
 				manageKeyMouse();
-			else
-			{
+			} else {
 				STOP_KEYBOARD_INPUT++;
 
-				if (STOP_KEYBOARD_INPUT>2) STOP_KEYBOARD_INPUT=0;
+				if(STOP_KEYBOARD_INPUT > 2)
+					STOP_KEYBOARD_INPUT = 0;
 			}
 		}
 	}
