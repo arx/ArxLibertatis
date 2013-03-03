@@ -2923,7 +2923,6 @@ static void EERIEAddPolyToBackground(TexturedVertex * vert2, TextureContainer * 
 static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	
 	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	Vec3f      p, rp;
 
 	TexturedVertex vlist[3];
 	float tempAngle;
@@ -2940,7 +2939,8 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		//Local Transform
-		p = eobj->vertexlist[i].v - eobj->point0;
+		Vec3f p = eobj->vertexlist[i].v - eobj->point0;
+		Vec3f rp;
 		YRotatePoint(&p, &rp, Ycos, Ysin);
 		XRotatePoint(&rp, &p, Xcos, Xsin);
 		ZRotatePoint(&p, &rp, Zcos, Zsin);
