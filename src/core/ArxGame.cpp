@@ -1907,7 +1907,7 @@ void ArxGame::goFor2DFX()
 		int nNbInTableIO = 0;
 
 		float temp_increase=framedelay*( 1.0f / 1000 )*4.f;
-		{
+
 			bool bComputeIO = false;
 
 			for (int i=0;i<TOTPDL;i++)
@@ -1985,11 +1985,10 @@ void ArxGame::goFor2DFX()
 					else if (el->temp>.8f) el->temp=.8f;
 				}
 			}
-		}
 
 		// End 2D Pass ***************************************************************************
 
-		{
+
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -2031,7 +2030,7 @@ void ArxGame::goFor2DFX()
 			}
 
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
-		}
+
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
