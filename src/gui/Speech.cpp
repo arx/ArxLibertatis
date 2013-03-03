@@ -493,47 +493,39 @@ void ARX_SPEECH_Update() {
 			}
 
 			// checks finished speech
-			if (tim >= aspeech[i].time_creation + aspeech[i].duration)
-			{
-				EERIE_SCRIPT	*	es		= aspeech[i].es;
-				Entity	* io		= aspeech[i].ioscript;
-				long				scrpos	= aspeech[i].scrpos;
+			if(tim >= aspeech[i].time_creation + aspeech[i].duration) {
+				EERIE_SCRIPT *es = aspeech[i].es;
+				Entity *io = aspeech[i].ioscript;
+				long scrpos = aspeech[i].scrpos;
 				ARX_SPEECH_Release(i);
 
-				if ((es)
-						&&	(ValidIOAddress(io)))
+				if(es && ValidIOAddress(io))
 					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 		}
 	}
 
-	for (size_t i = 0 ; i < MAX_ASPEECH ; i++)
-	{
-		ARX_SPEECH * speech = &aspeech[i];
+	for(size_t i = 0; i < MAX_ASPEECH; i++) {
+		ARX_SPEECH *speech = &aspeech[i];
 
-		if (speech->exist)
-		{
-			if (!speech->text.empty())
-			{
-				if ((ARX_CONVERSATION) && (speech->io))
-				{
+		if(speech->exist) {
+			if(!speech->text.empty()) {
+				if(ARX_CONVERSATION && speech->io) {
 					long ok = 0;
 
-					for (long j = 0 ; j < main_conversation.actors_nb ; j++)
-					{
-						if (main_conversation.actors[j] >= 0)
-							if (speech->io == entities[main_conversation.actors[j]])
-							{
+					for(long j = 0; j < main_conversation.actors_nb; j++) {
+						if(main_conversation.actors[j] >= 0)
+							if(speech->io == entities[main_conversation.actors[j]]) {
 								ok = 1;
 							}
 					}
 
-					if (!ok) goto next;
+					if(!ok)
+						goto next;
 				}
 
 				if(CINEMASCOPE) {
-					if (CINEMA_DECAL >= 100.f)
-					{
+					if(CINEMA_DECAL >= 100.f) {
 						Vec2i sSize = hFontInBook->getTextSize(speech->text);
 						
 						float fZoneClippHeight	=	static_cast<float>(sSize.y * 3);
@@ -570,14 +562,11 @@ void ARX_SPEECH_Update() {
 						
 						iTaille += (int)fZoneClippHeight;
 
-						if (((int)speech->fDeltaY) <= iTaille)
-						{
+						if(((int)speech->fDeltaY) <= iTaille) {
 							//vitesse du scroll
 							float fDTime;
 
-							if (speech->sample)
-							{
-								
+							if(speech->sample) {
 								float duration = ARX_SOUND_GetDuration(speech->sample);
 								if(duration == 0.0f) {
 									duration = 4000.0f;
@@ -586,19 +575,15 @@ void ARX_SPEECH_Update() {
 								fDTime = ((float)iTaille * (float)FrameDiff) / duration; //speech->duration;
 								float fTimeOneLine = ((float)sSize.y) * fDTime;
 
-								if (((float)speech->iTimeScroll) >= fTimeOneLine)
-								{
+								if(((float)speech->iTimeScroll) >= fTimeOneLine) {
 									float fResteLine = (float)sSize.y - speech->fPixelScroll;
 									float fTimePlus = ((float)fResteLine * (float)FrameDiff) / duration;
 									fDTime -= fTimePlus;
 									speech->fPixelScroll = 0.f;
 									speech->iTimeScroll = 0;
 								}
-
 								speech->iTimeScroll	+= checked_range_cast<int>(FrameDiff);
-							}
-							else
-							{
+							} else {
 								fDTime = ((float)iTaille * (float)FrameDiff) / 4000.0f;
 							}
 
