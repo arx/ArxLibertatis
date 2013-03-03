@@ -116,12 +116,6 @@ static float LastTime;
 
 bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 {
-	int			nb;
-	Vec3f	* pos;
-	float	*	az;
-	float		alpha, dalpha;
-	int			col;
-
 	if(c->numbitmap < 0 || !tb)
 		return false;
 
@@ -138,11 +132,11 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 		TotOldPos++;
 	}
 
-	alpha = 32.f;
-	dalpha = (127.f / NBOLDPOS);
-	pos = OldPos;
-	az = OldAz;
-	nb = TotOldPos;
+	float alpha = 32.f;
+	float dalpha = (127.f / NBOLDPOS);
+	Vec3f *pos = OldPos;
+	float *az = OldAz;
+	int nb = TotOldPos;
 
 	while(nb) {
 		camera.orgTrans.pos = *pos;
@@ -151,7 +145,7 @@ bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 		camera.angle.g = *az;
 		PrepareCamera(&camera);
 
-		col = (int)alpha;
+		int col = (int)alpha;
 		col = (col << 24) | 0x00FFFFFF;
 		DrawGrille(&tb->grid, col, 0, NULL, &c->posgrille, c->angzgrille);
 
