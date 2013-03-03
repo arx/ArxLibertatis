@@ -1941,26 +1941,22 @@ long GetFreeDynLight() {
 
 //*************************************************************************************
 //*************************************************************************************
-long CountBkgVertex()
-{
-	long i, j;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
+long CountBkgVertex() {
+
 	long count = 0;
 
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j*ACTIVEBKG->Xsize];
 
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
+			for(long l = 0; l < eg->nbpoly; l++) {
+				EERIEPOLY *ep = &eg->polydata[l];
 
-				if (ep != NULL)
-				{
-					if (ep->type & POLY_QUAD) count += 4;
-					else count += 3;
+				if(ep) {
+					if(ep->type & POLY_QUAD)
+						count += 4;
+					else
+						count += 3;
 				}
 			}
 		}
