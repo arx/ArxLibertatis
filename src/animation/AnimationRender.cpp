@@ -1424,11 +1424,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 					for(long o = 0; o < 3; o++) {
 						float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
-						float power	=	255.f - (float)(255.f * tttz);
-						power		*=	(1.f - invisibility);
+						float power = 255.f - (float)(255.f * tttz);
+						power *= (1.f - invisibility);
 
-						if (power > 255.f) power = 255.f;
-						else if (power < 0.f) power = 0.f;
+						power = clamp(power, 0.f, 255.f);
 
 						ffr			=	curhalo.color.r * power;
 						ffg			=	curhalo.color.g * power;
