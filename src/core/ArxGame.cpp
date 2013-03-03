@@ -880,21 +880,17 @@ void ArxGame::updateFirstPersonCamera() {
 
 void ArxGame::updateConversationCamera() {
 
-	if ((ARX_CONVERSATION) && (main_conversation.actors_nb))
-	{
+	if(ARX_CONVERSATION && main_conversation.actors_nb) {
 		// Decides who speaks !!
-		if (main_conversation.current<0)
-			for (long j=0;j<main_conversation.actors_nb;j++)
-			{
-				if (main_conversation.actors[j]>=0)
-				{
+		if(main_conversation.current < 0)
+			for(long j=0; j < main_conversation.actors_nb; j++) {
+				if(main_conversation.actors[j] >= 0) {
 					for(size_t k = 0 ; k < MAX_ASPEECH; k++) {
-						if (aspeech[k].exist)
-							if (aspeech[k].io==entities[main_conversation.actors[j]])
-							{
-								main_conversation.current=k;
-								j=main_conversation.actors_nb+1;
-								k=MAX_ASPEECH+1;
+						if(aspeech[k].exist)
+							if(aspeech[k].io == entities[main_conversation.actors[j]]) {
+								main_conversation.current = k;
+								j = main_conversation.actors_nb + 1;
+								k = MAX_ASPEECH+1;
 							}
 					}
 				}
