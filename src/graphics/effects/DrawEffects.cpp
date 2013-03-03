@@ -295,11 +295,7 @@ void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 extern Entity * CAMERACONTROLLER;
 extern long ARX_CONVERSATION;
 
-void ARXDRAW_DrawEyeBall()
-{
-	Anglef angle;
-	Vec3f pos;
-	
+void ARXDRAW_DrawEyeBall() {
 	float d;
 
 	if(eyeball.exist < 0) {
@@ -311,12 +307,12 @@ void ARXDRAW_DrawEyeBall()
 	else
 		return;
 
-	angle.a = eyeball.angle.a; 
-	angle.b = MAKEANGLE(180.f-eyeball.angle.b);
-	angle.g = eyeball.angle.g;
-	pos.x=eyeball.pos.x;
-	pos.y=eyeball.pos.y+eyeball.floating;
-	pos.z=eyeball.pos.z;
+	Anglef angle = eyeball.angle;
+	angle.b = MAKEANGLE(180.f - angle.b);
+
+	Vec3f pos = eyeball.pos;
+	pos.y += eyeball.floating;
+
 	Vec3f scale = Vec3f::repeat(d);
 	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
