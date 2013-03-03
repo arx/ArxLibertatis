@@ -292,8 +292,7 @@ static	void	Cedric_AnimateObject(Entity * io, EERIE_3DOBJ * eobj, ANIM_USE * ani
 			animuse->fr = eanim->nb_key_frames - 2;
 			animuse->pour = 1.f;
 		}
-		else if (animuse->pour > 1.f) animuse->pour = 1.f;
-		else if (animuse->pour < 0.f) animuse->pour = 0.f;
+		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
 		l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
