@@ -1888,22 +1888,21 @@ void ArxGame::goFor2DFX()
 
 	long needed = 0;
 
-	for (long i=0;i<TOTPDL;i++)
-	{
-		EERIE_LIGHT * el=PDL[i];
+	for (long i=0; i < TOTPDL; i++) {
+		EERIE_LIGHT *el = PDL[i];
 
-		if (el->extras & EXTRAS_FLARE)
-		{
+		if(el->extras & EXTRAS_FLARE) {
 			if(distSqr(ACTIVECAM->orgTrans.pos, el->pos) < square(2200)) {
-				needed=1;
+				needed = 1;
 				break;
 			}
 		}
 	}
 
-	if (!needed) return;
+	if(!needed)
+		return;
 
-					{
+
 		Entity* pTableIO[256];
 		int nNbInTableIO = 0;
 
@@ -2033,7 +2032,6 @@ void ArxGame::goFor2DFX()
 
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 		}
-	}
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
