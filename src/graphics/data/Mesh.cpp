@@ -3000,7 +3000,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 			vlist[2].uv.y = eobj->facelist[i].v[2];
 
 			if (eobj->facelist[i].texid >= 0)
-				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
+				EERIEAddPolyToBackground(vlist, eobj->texturecontainer[eobj->facelist[i].texid], eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 		} else {
 			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 		}
