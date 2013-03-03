@@ -178,53 +178,47 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 
 
 	// Fill frame translate values with multi-layer translate informations...
-	for (int count = MAX_ANIM_LAYERS - 1; count >= 0; count--)
-	{
-		EERIE_ANIM	*	eanim;
+	for(int count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 
-		if (!io)
-		{
+		if(!io)
 			count = -1;
-		}
 		else
-		{
 			animuse = &io->animlayer[count];
-		}
 
-		if (!animuse) continue;
+		if(!animuse)
+			continue;
 
-		if (!animuse->cur_anim) continue;
+		if(!animuse->cur_anim)
+			continue;
 
-		eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+		EERIE_ANIM	*eanim = animuse->cur_anim->anims[animuse->altidx_cur];
 
-		if (!eanim) continue;
+		if(!eanim)
+			continue;
 
 		//Avoiding impossible cases
-		if (animuse->fr < 0)
-		{
+		if(animuse->fr < 0) {
 			animuse->fr = 0;
 			animuse->pour = 0.f;
-		}
-		else if (animuse->fr >= eanim->nb_key_frames - 1)
-		{
+		} else if(animuse->fr >= eanim->nb_key_frames - 1) {
 			animuse->fr = eanim->nb_key_frames - 2;
 			animuse->pour = 1.f;
 		}
-		else if (animuse->pour > 1.f) animuse->pour = 1.f;
-		else if (animuse->pour < 0.f) animuse->pour = 0.f;
+		else if(animuse->pour > 1.f)
+			animuse->pour = 1.f;
+		else if(animuse->pour < 0.f)
+			animuse->pour = 0.f;
 
 
 		// FRAME TRANSLATE : Gives the Virtual pos of Main Object
-		if (((eanim->frames[animuse->fr].f_translate) && (!(animuse->flags & EA_STATICANIM))))
-		{
-			EERIE_FRAME * sFrame = &eanim->frames[animuse->fr];
-			EERIE_FRAME * eFrame = &eanim->frames[animuse->fr+1];
+		if(eanim->frames[animuse->fr].f_translate && !(animuse->flags & EA_STATICANIM)) {
+			EERIE_FRAME *sFrame = &eanim->frames[animuse->fr];
+			EERIE_FRAME *eFrame = &eanim->frames[animuse->fr+1];
 
 			// Linear interpolation of object translation (MOVE)
 			ftr = sFrame->translate + (eFrame->translate - sFrame->translate) * animuse->pour;
 
 			if(io && update_movement) {
-				
 				ftr *= scale;
 
 				float temp;
