@@ -1364,9 +1364,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 			////////////////////////////////////////////////////////////////////////
 			// HALO HANDLING START
 			if(need_halo && io) {
-				long	lfr, lfg, lfb;
-				float	ffr, ffg, ffb;
-				float	tot	=	0;
+
 				float	_ffr[3];
 
 				IO_HALO curhalo;
@@ -1422,6 +1420,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 					TexturedVertex * workon;
 					workon	= tv;
 
+					float tot = 0;
 					for(long o = 0; o < 3; o++) {
 						float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
 						float power = 255.f - (float)(255.f * tttz);
@@ -1429,14 +1428,14 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 						power = clamp(power, 0.f, 255.f);
 
-						ffr			=	curhalo.color.r * power;
-						ffg			=	curhalo.color.g * power;
-						ffb			=	curhalo.color.b * power;
+						float ffr			=	curhalo.color.r * power;
+						float ffg			=	curhalo.color.g * power;
+						float ffb			=	curhalo.color.b * power;
 						tot			+=	power;
 						_ffr[o]		=	power;
-						lfr = ffr;
-						lfg = ffg;
-						lfb = ffb;
+						long lfr = ffr;
+						long lfg = ffg;
+						long lfb = ffb;
 						tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | ((lfb) & 255);
 					}
 
