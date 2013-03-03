@@ -114,7 +114,7 @@ int FX_FadeOUT(float a, int color, int colord)
 
 static float LastTime;
 
-bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera)
+bool FX_Blur(Cinematic *c, CinematicBitmap *tb, EERIE_CAMERA &camera)
 {
 	int			nb;
 	Vec3f	* pos;
@@ -122,18 +122,16 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera)
 	float		alpha, dalpha;
 	int			col;
 
-	if (c->numbitmap < 0 || tb == 0)
+	if(c->numbitmap < 0 || !tb)
 		return false;
 
-	if (TotOldPos == NBOLDPOS)
-	{
+	if(TotOldPos == NBOLDPOS) {
 		TotOldPos--;
 		std::copy(OldPos + 1, OldPos + 1 + TotOldPos, OldPos);
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
 
-	if ((GetTimeKeyFramer() - LastTime) < 0.40f)
-	{
+	if((GetTimeKeyFramer() - LastTime) < 0.40f) {
 		LastTime = GetTimeKeyFramer();
 		OldPos[TotOldPos] = c->pos;
 		OldAz[TotOldPos] = c->angz;
@@ -146,8 +144,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera)
 	az = OldAz;
 	nb = TotOldPos;
 
-	while (nb)
-	{
+	while(nb) {
 		camera.orgTrans.pos = *pos;
 		camera.setTargetCamera(camera.orgTrans.pos.x, camera.orgTrans.pos.y, 0.f);
 		camera.angle.b = 0;
@@ -157,6 +154,7 @@ bool FX_Blur(Cinematic * c, CinematicBitmap * tb, EERIE_CAMERA &camera)
 		col = (int)alpha;
 		col = (col << 24) | 0x00FFFFFF;
 		DrawGrille(&tb->grid, col, 0, NULL, &c->posgrille, c->angzgrille);
+
 		alpha += dalpha;
 		pos++;
 		az++;
