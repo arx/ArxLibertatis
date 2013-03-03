@@ -1903,133 +1903,133 @@ void ArxGame::goFor2DFX()
 		return;
 
 
-		Entity* pTableIO[256];
-		int nNbInTableIO = 0;
+	Entity* pTableIO[256];
+	int nNbInTableIO = 0;
 
-		float temp_increase=framedelay*( 1.0f / 1000 )*4.f;
+	float temp_increase=framedelay*( 1.0f / 1000 )*4.f;
 
-			bool bComputeIO = false;
+	bool bComputeIO = false;
 
-			for (int i=0;i<TOTPDL;i++)
+	for (int i=0;i<TOTPDL;i++)
+	{
+		EERIE_LIGHT * el=PDL[i];
+
+		long lPosx=(long)(float)(el->pos.x*ACTIVEBKG->Xmul);
+		long lPosz=(long)(float)(el->pos.z*ACTIVEBKG->Zmul);
+
+		if( (lPosx<0)||
+			(lPosx>=ACTIVEBKG->Xsize)||
+			(lPosz<0)||
+			(lPosz>=ACTIVEBKG->Zsize)||
+			(!ACTIVEBKG->fastdata[lPosx][lPosz].treat) )
+		{
+			el->treat=0;
+			continue;
+		}
+
+		if (el->extras & EXTRAS_FLARE)
+		{
+			lv.p = el->pos;
+			EE_RTP(&lv,&ltvv);
+			el->temp-=temp_increase;
+
+			if (!(player.Interface & INTER_COMBATMODE)
+				&& (player.Interface & INTER_MAP))
+				continue;
+
+			if ((ltvv.rhw > 0.f) &&
+				(ltvv.p.x>0.f) &&
+				(ltvv.p.y>(CINEMA_DECAL*Yratio)) &&
+				(ltvv.p.x<DANAESIZX) &&
+				(ltvv.p.y<(DANAESIZY-(CINEMA_DECAL*Yratio)))
+				)
 			{
-				EERIE_LIGHT * el=PDL[i];
+				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
+				lv.p -= vector * (50.f / vector.length());
+				TexturedVertex ltvv2;
+				EE_RTP(&lv, &ltvv2);
 
-				long lPosx=(long)(float)(el->pos.x*ACTIVEBKG->Xmul);
-				long lPosz=(long)(float)(el->pos.z*ACTIVEBKG->Zmul);
+				float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
-				if( (lPosx<0)||
-					(lPosx>=ACTIVEBKG->Xsize)||
-					(lPosz<0)||
-					(lPosz>=ACTIVEBKG->Zsize)||
-					(!ACTIVEBKG->fastdata[lPosx][lPosz].treat) )
+				Vec3f hit;
+				EERIEPOLY *tp=NULL;
+				Vec2s ees2dlv;
+				Vec3f ee3dlv = lv.p;
+
+				ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
+				ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
+
+
+				if( !bComputeIO )
 				{
-					el->treat=0;
-					continue;
+					GetFirstInterAtPos(&ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO );
+					bComputeIO = true;
 				}
 
-				if (el->extras & EXTRAS_FLARE)
+				if(
+					(ltvv.p.z>fZFar)||
+					EERIELaunchRay3(&ACTIVECAM->orgTrans.pos,&ee3dlv,&hit,tp,1)||
+					GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
+					)
 				{
-					lv.p = el->pos;
-					EE_RTP(&lv,&ltvv);
-					el->temp-=temp_increase;
-
-					if (!(player.Interface & INTER_COMBATMODE)
-						&& (player.Interface & INTER_MAP))
-						continue;
-
-					if ((ltvv.rhw > 0.f) &&
-						(ltvv.p.x>0.f) &&
-						(ltvv.p.y>(CINEMA_DECAL*Yratio)) &&
-						(ltvv.p.x<DANAESIZX) &&
-						(ltvv.p.y<(DANAESIZY-(CINEMA_DECAL*Yratio)))
-						)
-					{
-						Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
-						lv.p -= vector * (50.f / vector.length());
-						TexturedVertex ltvv2;
-						EE_RTP(&lv, &ltvv2);
-
-						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
-
-						Vec3f hit;
-						EERIEPOLY *tp=NULL;
-						Vec2s ees2dlv;
-						Vec3f ee3dlv = lv.p;
-
-						ees2dlv.x = checked_range_cast<short>(ltvv.p.x);
-						ees2dlv.y = checked_range_cast<short>(ltvv.p.y);
-
-
-						if( !bComputeIO )
-						{
-							GetFirstInterAtPos(&ees2dlv, 2, &ee3dlv, pTableIO, &nNbInTableIO );
-							bComputeIO = true;
-						}
-
-						if(
-							(ltvv.p.z>fZFar)||
-							EERIELaunchRay3(&ACTIVECAM->orgTrans.pos,&ee3dlv,&hit,tp,1)||
-							GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
-							)
-						{
-							el->temp-=temp_increase*2.f;
-						}
-						else
-						{
-							el->temp+=temp_increase*2.f;
-						}
-
-					}
-
-					if (el->temp<0.f) el->temp=0.f;
-					else if (el->temp>.8f) el->temp=.8f;
+					el->temp-=temp_increase*2.f;
 				}
+				else
+				{
+					el->temp+=temp_increase*2.f;
+				}
+
 			}
 
-		// End 2D Pass ***************************************************************************
+			if (el->temp<0.f) el->temp=0.f;
+			else if (el->temp>.8f) el->temp=.8f;
+		}
+	}
+
+	// End 2D Pass ***************************************************************************
 
 
-			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GRenderer->SetRenderState(Renderer::DepthWrite, false);
-			GRenderer->SetCulling(Renderer::CullNone);
-			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			GRenderer->SetFogColor(Color::none);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
+	GRenderer->SetFogColor(Color::none);
 
-			for (int i=0;i<TOTPDL;i++)
+	for (int i=0;i<TOTPDL;i++)
+	{
+		EERIE_LIGHT * el=PDL[i];
+
+		if ((!el->exist) || (!el->treat)) continue;
+
+		if (el->extras & EXTRAS_FLARE)
+		{
+			if (el->temp>0.f)
 			{
-				EERIE_LIGHT * el=PDL[i];
+				lv.p = el->pos;
+				lv.rhw = 1.f;
+				EE_RT(&lv, &ltvv.p);
+				float v=el->temp;
 
-				if ((!el->exist) || (!el->treat)) continue;
-
-				if (el->extras & EXTRAS_FLARE)
+				if (FADEDIR)
 				{
-					if (el->temp>0.f)
-					{
-						lv.p = el->pos;
-						lv.rhw = 1.f;
-						EE_RT(&lv, &ltvv.p);
-						float v=el->temp;
-
-						if (FADEDIR)
-						{
-							v*=1.f-LAST_FADEVALUE;
-						}
-
-						float siz;
-
-						if (el->extras & EXTRAS_FIXFLARESIZE)
-							siz=el->ex_flaresize;
-						else
-							siz=-el->ex_flaresize;
-
-						EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
-
-					}
+					v*=1.f-LAST_FADEVALUE;
 				}
-			}
 
-			GRenderer->SetRenderState(Renderer::DepthTest, true);
+				float siz;
+
+				if (el->extras & EXTRAS_FIXFLARESIZE)
+					siz=el->ex_flaresize;
+				else
+					siz=-el->ex_flaresize;
+
+				EERIEDrawSprite(&lv, siz, tflare, (el->rgb * v).to<u8>(), ltvv.p.z);
+
+			}
+		}
+	}
+
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
