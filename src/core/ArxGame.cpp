@@ -1616,23 +1616,22 @@ void ArxGame::renderLevel() {
 		DrawImproveVisionInterface();
 	else
 	{
-		if ((subj.focal<BASE_FOCAL))
+		if(subj.focal < BASE_FOCAL)
 		{
 			static const float INC_FOCAL = 75.0f;
-			subj.focal+=INC_FOCAL;
+			subj.focal += INC_FOCAL;
 
-			if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
+			if(subj.focal > BASE_FOCAL)
+				subj.focal = BASE_FOCAL;
 		}
-		else if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
+		else if(subj.focal > BASE_FOCAL)
+			subj.focal = BASE_FOCAL;
 	}
 
-	if (eyeball.exist!=0)
-	{
+	if(eyeball.exist != 0)
 		DrawMagicSightInterface();
-	}
 
-	if (PLAYER_PARALYSED)
-	{
+	if(PLAYER_PARALYSED) {
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -1642,10 +1641,8 @@ void ArxGame::renderLevel() {
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
-	if (FADEDIR)
-	{
+	if(FADEDIR)
 		ManageFade();
-	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
@@ -1705,30 +1702,28 @@ finish:
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
-	if (!EDITMODE)
-	{
+	if(!EDITMODE) {
 		ARX_SPEECH_Check();
 		ARX_SPEECH_Update();
 	}
 
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
-	if(pTextManage && !pTextManage->Empty())
-	{
+	if(pTextManage && !pTextManage->Empty()) {
 		pTextManage->Update(FrameDiff);
 		pTextManage->Render();
 	}
 
 	if(SHOW_INGAME_MINIMAP
-		&& (PLAY_LOADED_CINEMATIC == 0) 
-		&& (!CINEMASCOPE) 
-		&& (!BLOCK_PLAYER_CONTROLS) 
+		&& PLAY_LOADED_CINEMATIC == 0
+		&& !CINEMASCOPE
+		&& !BLOCK_PLAYER_CONTROLS
 		&& !(player.Interface & INTER_MAP))
 	{
 		long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
-		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(SHOWLEVEL,1,1);
+		if(SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+			ARX_MINIMAP_Show(SHOWLEVEL, 1, 1);
 	}
 
 	//-------------------------------------------------------------------------
@@ -1736,8 +1731,7 @@ finish:
 	// CURSOR Rendering
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if (DRAGINTER)
-	{
+	if(DRAGINTER) {
 		ARX_INTERFACE_RenderCursor();
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1747,16 +1741,14 @@ finish:
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 		ARX_INTERFACE_HALO_Flush();
-	}
-	else
-	{
+	} else {
 		ARX_INTERFACE_HALO_Flush();
 		ARX_INTERFACE_RenderCursor();
 	}
 
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
-	if (sp_max_start)
+	if(sp_max_start)
 		Manage_sp_max();
 
 	GRenderer->EndScene();
