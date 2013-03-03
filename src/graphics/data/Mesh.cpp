@@ -2926,15 +2926,16 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 	Vec3f      p, rp;
 
 	TexturedVertex vlist[3];
-	Zsin = radians(eobj->angle.a);
-	Xcos = (float)EEcos(Zsin);
-	Xsin = (float)EEsin(Zsin);
-	Zsin = radians(eobj->angle.b);
-	Ycos = (float)EEcos(Zsin);
-	Ysin = (float)EEsin(Zsin);
-	Zsin = radians(eobj->angle.g);
-	Zcos = (float)EEcos(Zsin);
-	Zsin = (float)EEsin(Zsin);
+	float tempAngle;
+	tempAngle = radians(eobj->angle.a);
+	Xcos = (float)EEcos(tempAngle);
+	Xsin = (float)EEsin(tempAngle);
+	tempAngle = radians(eobj->angle.b);
+	Ycos = (float)EEcos(tempAngle);
+	Ysin = (float)EEsin(tempAngle);
+	tempAngle = radians(eobj->angle.g);
+	Zcos = (float)EEcos(tempAngle);
+	Zsin = (float)EEsin(tempAngle);
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
