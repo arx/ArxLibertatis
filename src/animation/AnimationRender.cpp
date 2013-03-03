@@ -1595,16 +1595,13 @@ void Cedric_SaveBlendData(Entity * io) {
  
 void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 {
-	for (long i = 0; i != obj->c_data->nb_bones; i++)
-	{
+	for(long i = 0; i != obj->c_data->nb_bones; i++) {
 		Quat_Init(&obj->c_data->bones[i].quatinit);
 		obj->c_data->bones[i].transinit = obj->c_data->bones[i].transinit_global;
 	}
 
-	if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->ex_rotate))
-	{
-		for (long k = 0; k < MAX_EXTRA_ROTATE; k++)
-		{
+	if(io && (io->ioflags & IO_NPC) && io->_npcdata->ex_rotate) {
+		for(long k = 0; k < MAX_EXTRA_ROTATE; k++) {
 			long i = io->_npcdata->ex_rotate->group_number[k];
 
 			if(i >= 0) {
@@ -1621,10 +1618,11 @@ void Cedric_ManageExtraRotationsFirst(Entity * io, EERIE_3DOBJ * obj)
 }
 
 static bool Cedric_IO_Visible(Entity * io) {
-	if (io == entities.player()) return true;
+	if(io == entities.player())
+		return true;
 
 	if(ACTIVEBKG && io) {	
-		if (distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
+		if(distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(ACTIVECAM->cdepth) * square(0.6f))
 			return false;
 
 		long xx = io->pos.x * ACTIVEBKG->Xmul;
