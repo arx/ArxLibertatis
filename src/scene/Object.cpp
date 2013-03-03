@@ -285,7 +285,7 @@ EERIE_ANIM * TheaToEerie(const char * adr, size_t size, const res::path & file) 
 	eerie->groups = allocStructZero<EERIE_GROUP>(th->nb_key_frames * th->nb_groups);
 	eerie->voidgroups = allocStructZero<unsigned char>(th->nb_groups);
 	
-	eerie->anim_time = 0.f;
+	eerie->anim_time = 0;
 	
 	// Go For Keyframes read
 	for(long i = 0; i < th->nb_key_frames; i++) {

@@ -536,8 +536,7 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 		distSqr(io->pos, ACTIVECAM->orgTrans.pos) > square(2500.f))
 	{
 
-		io->animlayer[num].ctime =
-		    checked_range_cast<long>(io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1.f);
+		io->animlayer[num].ctime = io->animlayer[num].cur_anim->anims[io->animlayer[num].altidx_cur]->anim_time - 1;
 	}
 }
 
