@@ -563,7 +563,7 @@ struct EERIE_GROUP
 #define EA_EXCONTROL	128	// ctime externally set, no update.
 struct EERIE_ANIM
 {
-	float		anim_time;
+	long		anim_time;
 	unsigned long	flag;
 	long		nb_groups;
 	long		nb_key_frames;

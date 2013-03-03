@@ -416,7 +416,7 @@ void PrepareAnim(EERIE_3DOBJ *eobj, ANIM_USE *eanim, unsigned long time, Entity 
 		}
 	} else if (eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time) {
 		if(io) {
-			long lost = eanim->ctime - long(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time);
+			long lost = eanim->ctime - eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 
 			if(eanim->next_anim) {
 				FinishAnim(io,eanim->cur_anim);
@@ -435,13 +435,13 @@ void PrepareAnim(EERIE_3DOBJ *eobj, ANIM_USE *eanim, unsigned long time, Entity 
 				eanim->flags&=~EA_ANIMEND;
 				goto suite;
 			} else {
-				eanim->ctime=(long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+				eanim->ctime=eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 				eanim->flags&=~EA_ANIMEND;
 			}
 		}
 
 		eanim->flags |= EA_ANIMEND;
-		eanim->ctime = (unsigned long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
+		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 	}
 
 suite:
@@ -451,7 +451,7 @@ suite:
 
 	long tim;
 	if (eanim->flags & EA_REVERSE)
-		tim=(unsigned long)eanim->cur_anim->anims[eanim->altidx_cur]->anim_time - eanim->ctime;
+		tim=eanim->cur_anim->anims[eanim->altidx_cur]->anim_time - eanim->ctime;
 	else
 		tim=eanim->ctime;
 
