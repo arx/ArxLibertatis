@@ -1771,7 +1771,8 @@ bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
 
 void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 	
-	if (!portals) return;
+	if(!portals)
+		return;
 
 	for (long num = 0; num < portals->nb_total; num++)
 	{
@@ -1781,8 +1782,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		long to = 3;
 		float divide = ( 1.0f / 3 );
 
-		if (ep->type & POLY_QUAD)
-		{
+		if(ep->type & POLY_QUAD) {
 			to = 4;
 			divide = ( 1.0f / 4 );
 		}
@@ -1797,17 +1797,14 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		ep->center *= divide;
 		float d = 0.f;
 
-		for (long ii = 0; ii < to; ii++)
-		{
+		for(long ii = 0; ii < to; ii++) {
 			d = max(d, dist(ep->center, ep->v[ii].p));
 		}
 
 		ep->norm2.x = d;
 
-		for (long nroom = 0; nroom <= portals->nb_rooms; nroom++)
-		{
-			if ((nroom == portals->portals[num].room_1)
-					||	(nroom == portals->portals[num].room_2))
+		for(long nroom = 0; nroom <= portals->nb_rooms; nroom++) {
+			if(nroom == portals->portals[num].room_1 || nroom == portals->portals[num].room_2)
 			{
 				portals->room[nroom].portals = (long *)realloc(portals->room[nroom].portals, sizeof(long) * (portals->room[nroom].nb_portals + 1));
 				portals->room[nroom].portals[portals->room[nroom].nb_portals] = num;
@@ -1819,9 +1816,8 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 
 static void EERIE_PORTAL_Release() {
 	
-	if(!portals) {
+	if(!portals)
 		return;
-	}
 	
 	free(portals->portals), portals->portals = NULL;
 	
