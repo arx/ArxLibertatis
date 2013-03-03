@@ -2210,35 +2210,22 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 	lepr = clipByte255(epr[0]);
 	lepg = clipByte255(epg[0]);
 	lepb = clipByte255(epb[0]);
-	ep->tv[0].color = _pVertex[_usInd0].color =	(0xFF000000L  |
-	                  (lepr << 16) |
-	                  (lepg << 8) |
-	                  (lepb));
+	ep->tv[0].color = _pVertex[_usInd0].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
+
 	lepr = clipByte255(epr[1]);
 	lepg = clipByte255(epg[1]);
 	lepb = clipByte255(epb[1]);
-	ep->tv[1].color = _pVertex[_usInd1].color =	(0xFF000000L  |
-	                  (lepr << 16) |
-	                  (lepg << 8) |
-	                  (lepb));
+	ep->tv[1].color = _pVertex[_usInd1].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 
 	lepr = clipByte255(epr[2]);
 	lepg = clipByte255(epg[2]);
 	lepb = clipByte255(epb[2]);
-	ep->tv[2].color = _pVertex[_usInd2].color =	(0xFF000000L  |
-	                  (lepr << 16) |
-	                  (lepg << 8) |
-	                  (lepb));
+	ep->tv[2].color = _pVertex[_usInd2].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 
-	if (nbvert & 4)
-	{
+	if(nbvert & 4) {
 		lepr = clipByte255(epr[3]);
 		lepg = clipByte255(epg[3]);
 		lepb = clipByte255(epb[3]);
-		ep->tv[3].color = _pVertex[_usInd3].color =	(0xFF000000L  |
-		                  (lepr << 16) |
-		                  (lepg << 8) |
-		                  (lepb));
+		ep->tv[3].color = _pVertex[_usInd3].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
-
 }
