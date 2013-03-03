@@ -1920,10 +1920,10 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 			tempColor.b += infra->b * 400.f;
 		}
 
-		long ir = clipByte255(tempColor.r);
-		long ig = clipByte255(tempColor.g);
-		long ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[i].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
+		u8 ir = clipByte255(tempColor.r);
+		u8 ig = clipByte255(tempColor.g);
+		u8 ib = clipByte255(tempColor.b);
+		eobj->vertexlist3[i].vert.color = (0xff000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 
@@ -2034,10 +2034,10 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 			tempColor.b *= infra->b;
 		}
 
-		long ir = clipByte255(tempColor.r);
-		long ig = clipByte255(tempColor.g);
-		long ib = clipByte255(tempColor.b);
-		eobj->vertexlist3[paf[i]].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
+		u8 ir = clipByte255(tempColor.r);
+		u8 ig = clipByte255(tempColor.g);
+		u8 ib = clipByte255(tempColor.b);
+		eobj->vertexlist3[paf[i]].vert.color = (0xff000000L | (ir << 16) | (ig << 8) | (ib));
 	}
 }
 
@@ -2129,9 +2129,9 @@ void ApplyDynLight(EERIEPOLY * ep)
 	}
 
 	for(j = 0; j < nbvert; j++) {
-		long lepr = clipByte255(epr[j]);
-		long lepg = clipByte255(epg[j]);
-		long lepb = clipByte255(epb[j]);
+		u8 lepr = clipByte255(epr[j]);
+		u8 lepg = clipByte255(epg[j]);
+		u8 lepb = clipByte255(epb[j]);
 		ep->tv[j].color = (0xFF000000L | (lepr << 16) | (lepg << 8) | (lepb));
 	}
 }
@@ -2205,7 +2205,7 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_VERTEX
 		}	
 	}
 
-	long lepr, lepg, lepb;
+	u8 lepr, lepg, lepb;
 
 	lepr = clipByte255(epr[0]);
 	lepg = clipByte255(epg[0]);
