@@ -631,25 +631,20 @@ void EERIEDrawSprite(TexturedVertex * in, float siz, TextureContainer * tex, Col
 		float use_focal=BASICFOCAL*Xratio;
 		float t;
 
-		if (siz < 0)
-		{
-			t=-siz;
-		}
-		else
-		{
-			t=siz*((out.rhw-1.f)*use_focal*0.001f);
+		if(siz < 0) {
+			t = -siz;
+		} else {
+			t = siz * ((out.rhw-1.f)*use_focal*0.001f);
 
-			if (t<=0.f) t=0.00000001f;
+			if(t <= 0.f)
+				t = 0.00000001f;
 		}
 		
-		if (Zpos<=1.f)
-		{
+		if(Zpos <= 1.f) {
 			out.p.z = Zpos;
-			out.rhw=1.f-out.p.z;
-		}
-		else
-		{
-			out.rhw*=(1.f/3000.f);
+			out.rhw = 1.f - out.p.z;
+		} else {
+			out.rhw *= (1.f/3000.f);
 		}
 
 		SPRmaxs.x=out.p.x+t;
