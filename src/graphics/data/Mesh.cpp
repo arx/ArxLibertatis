@@ -1779,13 +1779,13 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		CalcFaceNormal(&portals->portals[num].poly, portals->portals[num].poly.v);
 		EERIEPOLY * ep = &portals->portals[num].poly;
 		ep->center = ep->v[0].p;
-		long to = 3;
-		float divide = ( 1.0f / 3 );
 
+		long to = 3;
 		if(ep->type & POLY_QUAD) {
 			to = 4;
-			divide = ( 1.0f / 4 );
 		}
+
+		float divide = ( 1.0f / to );
 		
 		ep->max = ep->min = ep->v[0].p;
 		for(long i = 1; i < to; i++) {
