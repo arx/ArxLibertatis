@@ -1287,9 +1287,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					fr=min(fr,255.f);
 					fb*=255.f;
 					fb=min(fb,255.f);
-					long lfr = fr;
-					long lfb = fb;
-					vert_list[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
+					u8 lfr = fr;
+					u8 lfb = fb;
+					vert_list[k].color = (0xff001E00L | (lfr << 16) | (lfb));
 				}
 			}
 		}
@@ -1370,10 +1370,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			tot+=power;
 			
 			_ffr[o]=power;
-			long lfr = io->halo.color.r * power;
-			long lfg = io->halo.color.g * power;
-			long lfb = io->halo.color.b * power;
-			workon[o].color = (0xFF << 24) | ((lfr & 0xFF) << 16) | ((lfg & 0xFF) << 8) | (lfb & 0xFF);
+			u8 lfr = io->halo.color.r * power;
+			u8 lfg = io->halo.color.g * power;
+			u8 lfb = io->halo.color.b * power;
+			workon[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 		}
 
 		if (tot>150.f) {

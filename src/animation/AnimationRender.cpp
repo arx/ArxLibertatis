@@ -1432,10 +1432,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 						float ffb			=	curhalo.color.b * power;
 						tot			+=	power;
 						_ffr[o]		=	power;
-						long lfr = ffr;
-						long lfg = ffg;
-						long lfb = ffb;
-						tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | ((lfb) & 255);
+						u8 lfr = ffr;
+						u8 lfg = ffg;
+						u8 lfb = ffb;
+						tv[o].color = (0xFF000000L | (lfr << 16) | (lfg << 8) | (lfb));
 					}
 
 					//GRenderer->SetCulling(Renderer::CullNone);
