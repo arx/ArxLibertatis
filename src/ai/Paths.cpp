@@ -1715,14 +1715,9 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		oldpos[kk] = pv->pos;
 		pv->inertia = Vec3f::ZERO;
 
-		if (pv->velocity.x > VELOCITY_THRESHOLD) pv->velocity.x = VELOCITY_THRESHOLD;
-		else if (pv->velocity.x < -VELOCITY_THRESHOLD) pv->velocity.x = -VELOCITY_THRESHOLD;
-
-		if (pv->velocity.y > VELOCITY_THRESHOLD) pv->velocity.y = VELOCITY_THRESHOLD;
-		else if (pv->velocity.y < -VELOCITY_THRESHOLD) pv->velocity.y = -VELOCITY_THRESHOLD;
-
-		if (pv->velocity.z > VELOCITY_THRESHOLD) pv->velocity.z = VELOCITY_THRESHOLD;
-		else if (pv->velocity.z < -VELOCITY_THRESHOLD) pv->velocity.z = -VELOCITY_THRESHOLD;
+		pv->velocity.x = clamp(pv->velocity.x, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
+		pv->velocity.y = clamp(pv->velocity.y, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
+		pv->velocity.z = clamp(pv->velocity.z, -VELOCITY_THRESHOLD, VELOCITY_THRESHOLD);
 	}
 	
 	CUR_COLLISION_MATERIAL = MATERIAL_STONE;
