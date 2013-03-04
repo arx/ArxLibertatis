@@ -2559,16 +2559,14 @@ void ComputeRoomDistance() {
 	memset(ptr, 0, sizeof(*ptr)*nb_anchors);
 
 
-	for (long i = 0; i < NbRoomDistance; i++)
-	{
+	for(long i = 0; i < NbRoomDistance; i++) {
 		GetRoomCenter(i, &ad[i].pos);
 		ptr[i] = (void *)&portals->room[i];
 	}
 
 	long curpos = NbRoomDistance;
 
-	for (int i = 0; i < portals->nb_total; i++)
-	{
+	for(int i = 0; i < portals->nb_total; i++) {
 		// Add 4 portal vertices
 		for(int nn = 0; nn < 4; nn++) {
 			ad[curpos].pos = portals->portals[i].poly.v[nn].p;
@@ -2582,8 +2580,7 @@ void ComputeRoomDistance() {
 		curpos++;
 
 		// Add V centers;
-		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
-		{
+		for(int nn = 0, nk = 3; nn < 4; nk = nn++) {
 			ad[curpos].pos = (portals->portals[i].poly.v[nn].p
 			                + portals->portals[i].poly.v[nk].p) * 0.5f;
 			ptr[curpos] = (void *)&portals->portals[i];
@@ -2592,17 +2589,12 @@ void ComputeRoomDistance() {
 	}
 
 	// Link Room Centers to all its Room portals...
-	for (int i = 0; i <= portals->nb_rooms; i++)
-	{
-		for (long j = 0; j < portals->nb_total; j++)
-		{
-			if ((portals->portals[j].room_1 == i)
-					||	(portals->portals[j].room_2 == i))
-			{
-				for (long tt = 0; tt < nb_anchors; tt++)
-				{
-					if (ptr[tt] == (void *)(&portals->portals[j]))
-					{
+	for(int i = 0; i <= portals->nb_rooms; i++) {
+		for(long j = 0; j < portals->nb_total; j++) {
+			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
+				for(long tt = 0; tt < nb_anchors; tt++) {
+
+					if(ptr[tt] == (void *)(&portals->portals[j])) {
 						AddAData(&ad[tt], i);
 						AddAData(&ad[i], tt);
 					}
@@ -2612,37 +2604,30 @@ void ComputeRoomDistance() {
 	}
 
 	// Link All portals of a room to all other portals of that room
-	for (int i = 0; i <= portals->nb_rooms; i++)
-	{
-		for (long j = 0; j < portals->nb_total; j++)
-		{
-			if (((portals->portals[j].room_1 == i)
-					|| (portals->portals[j].room_2 == i)))
-				for (long jj = 0; jj < portals->nb_total; jj++)
-				{
-					if ((jj != j)
-							&&	((portals->portals[jj].room_1 == i)
-								 ||	(portals->portals[jj].room_2 == i)))
+	for(int i = 0; i <= portals->nb_rooms; i++) {
+		for(long j = 0; j < portals->nb_total; j++) {
+			if(portals->portals[j].room_1 == i || portals->portals[j].room_2 == i) {
+				for(long jj = 0; jj < portals->nb_total; jj++) {
+					if(jj != j && (portals->portals[jj].room_1 == i || portals->portals[jj].room_2 == i))
 					{
 						long p1 = -1;
 						long p2 = -1;
 
-						for (long tt = 0; tt < nb_anchors; tt++)
-						{
-							if (ptr[tt] == (void *)(&portals->portals[jj]))
+						for(long tt = 0; tt < nb_anchors; tt++) {
+							if(ptr[tt] == (void *)(&portals->portals[jj]))
 								p1 = tt;
 
-							if (ptr[tt] == (void *)(&portals->portals[j]))
+							if(ptr[tt] == (void *)(&portals->portals[j]))
 								p2 = tt;
 						}
 
-						if ((p1 >= 0) && (p2 >= 0))
-						{
+						if(p1 >= 0 && p2 >= 0) {
 							AddAData(&ad[p1], p2);
 							AddAData(&ad[p2], p1);
 						}
 					}
 				}
+			}
 		}
 	}
 
