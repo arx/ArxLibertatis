@@ -2714,13 +2714,14 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 	
 	long type, val1, val2;
 
-	if (!GetNameInfo(name, type, val1, val2)) return;
+	if(!GetNameInfo(name, type, val1, val2))
+		return;
 
-	if (portals == NULL)
-	{
+	if(portals == NULL) {
 		portals = (EERIE_PORTAL_DATA *)malloc(sizeof(EERIE_PORTAL_DATA));
 
-		if (!portals) return;
+		if(!portals)
+			return;
 
 		portals->nb_rooms = 0;
 		portals->room = NULL;
@@ -2729,8 +2730,7 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		USE_PORTALS = true;
 	}
 
-	if (type == TYPE_PORTAL) //portal_def
-	{
+	if(type == TYPE_PORTAL) {
 		portals->portals = (EERIE_PORTALS *)realloc(portals->portals, sizeof(EERIE_PORTALS) * (portals->nb_total + 1));
 		portals->portals[portals->nb_total].room_1 = val1;
 		portals->portals[portals->nb_total].room_2 = val2;
@@ -2757,21 +2757,17 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 		portals->portals[portals->nb_total].poly.v[0].rhw = fDistMin;
 
 		portals->nb_total++;
-	}
-	else if (type == TYPE_ROOM)
-	{
-		if (val1 > portals->nb_rooms)
-		{
+	} else if(type == TYPE_ROOM) {
+		if(val1 > portals->nb_rooms) {
 			portals->room = (EERIE_ROOM_DATA *)realloc(portals->room, sizeof(EERIE_ROOM_DATA) * (val1 + 1));
 
-			if (portals->nb_rooms == 0)
-			{
+			if(portals->nb_rooms == 0) {
 				memset(portals->room, 0, sizeof(EERIE_ROOM_DATA)*(val1 + 1));
-			}
-			else for (long i = portals->nb_rooms + 1; i <= val1; i++)
-				{
+			} else {
+				for(long i = portals->nb_rooms + 1; i <= val1; i++) {
 					memset(&portals->room[i], 0, sizeof(EERIE_ROOM_DATA));
 				}
+			}
 
 			portals->nb_rooms = val1;
 		}
