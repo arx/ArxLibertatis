@@ -1930,8 +1930,6 @@ void ARX_PrepareBackgroundNRMLs()
 	Vec3f nrml;
 	Vec3f cur_nrml;
 	float count;
-	long nbvert;
-	long nbvert2;
 
 	for (j = 0; j < ACTIVEBKG->Zsize; j++)
 		for (i = 0; i < ACTIVEBKG->Xsize; i++)
@@ -1942,8 +1940,7 @@ void ARX_PrepareBackgroundNRMLs()
 			{
 				ep = &eg->polydata[l];
 
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 				for (k = 0; k < nbvert; k++)
 				{
@@ -1985,8 +1982,7 @@ void ARX_PrepareBackgroundNRMLs()
 							{
 								ep2 = &eg2->polydata[kr];
 
-								if (ep2->type & POLY_QUAD) nbvert2 = 4;
-								else nbvert2 = 3;
+								long nbvert2 = (ep2->type & POLY_QUAD) ? 4 : 3;
 
 								if (ep != ep2)
 
@@ -2041,8 +2037,7 @@ void ARX_PrepareBackgroundNRMLs()
 			{
 				ep = &eg->polydata[l];
 
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 				for(k = 0; k < nbvert; k++) {
 					ep->nrml[k] = ep->tv[k].p;

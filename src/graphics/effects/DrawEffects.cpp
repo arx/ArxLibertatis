@@ -582,8 +582,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 			else	
 				GRenderer->SetTexture(0, ep->tex);
 
-			if ( ep->type & POLY_QUAD ) to = 4;
-			else to = 3;
+			to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 			float ttt = ep->transval;
 

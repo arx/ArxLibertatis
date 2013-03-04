@@ -2044,10 +2044,9 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 
 void ApplyDynLight(EERIEPOLY * ep)
 {
-	long nbvert, i;
+	long i;
 
-	if (ep->type & POLY_QUAD) nbvert = 4;
-	else nbvert = 3;
+	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	if (TOTPDL == 0)
 	{
