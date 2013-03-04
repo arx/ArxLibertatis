@@ -1228,7 +1228,8 @@ void CRuban::Create(int _iNumThrow, int _iDuration)
 void CRuban::AddRubanDef(int origin, float size, int dec, float r, float g, float b,
                          float r2, float g2, float b2) {
 	
-	if (nbrubandef > 255) return;
+	if(nbrubandef > 255)
+		return;
 
 	trubandef[nbrubandef].first = -1;
 	trubandef[nbrubandef].origin = origin;
@@ -1247,9 +1248,9 @@ int CRuban::GetFreeRuban()
 {
 	int nb = 2048;
 
-	while (nb--)
-	{
-		if (!truban[nb].actif) return nb;
+	while(nb--) {
+		if(!truban[nb].actif)
+			return nb;
 	}
 
 	return -1;
@@ -1259,41 +1260,32 @@ void CRuban::AddRuban(int * f, int dec) {
 	
 	int num = GetFreeRuban();
 
-	if (num >= 0)
-	{
+	if(num >= 0) {
 		truban[num].actif = 1;
-
 		truban[num].pos = Thrown[iNumThrow].position;
 
-		if (*f < 0)
-		{
+		if(*f < 0) {
 			*f = num;
 			truban[num].next = -1;
-		}
-		else
-		{
+		} else {
 			truban[num].next = *f;
 			*f = num;
 		}
 
 		int nb = 0, oldnum = 0;
 
-		while (num != -1)
-		{
+		while(num != -1) {
 			nb++;
 			oldnum = num;
 			num = truban[num].next;
 		}
 
-		if (nb > dec)
-		{
-
+		if(nb > dec) {
 			truban[oldnum].actif = 0;
 			num = *f;
 			nb -= 2;
 
-			while (nb--)
-			{
+			while(nb--) {
 				num = truban[num].next;
 			}
 
@@ -1303,16 +1295,13 @@ void CRuban::AddRuban(int * f, int dec) {
 }
 
 void CRuban::Update() {
-	
-	int nb, num;
+	if(arxtime.is_paused())
+		return;
 
-	if (arxtime.is_paused()) return;
+	int num = 0;
+	int nb = nbrubandef;
 
-	num = 0;
-	nb = nbrubandef;
-
-	while (nb--)
-	{
+	while(nb--) {
 		AddRuban(&trubandef[num].first, trubandef[num].dec);
 		num++;
 	}
@@ -1334,12 +1323,10 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b,
 	int dg = (gg2 - g1) / dec;
 	int db = (bb2 - b1) / dec;
 
-	for (;;)
-	{
+	for(;;) {
 		numsuiv = truban[num].next;
 
-		if ((num >= 0) && (numsuiv >= 0))
-		{
+		if(num >= 0 && numsuiv >= 0) {
 			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size,
 			               Color(r1 >> 16, g1 >> 16, b1 >> 16, 0),
 			               Color((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
@@ -1347,9 +1334,7 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b,
 			g1 += dg;
 			b1 += db;
 			size -= dsize;
-		}
-		else
-		{
+		} else {
 			break;
 		}
 
@@ -1364,8 +1349,7 @@ float CRuban::Render()
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->ResetTexture(0);
 
-	for (int i = 0; i < nbrubandef; i++)
-	{
+	for(int i = 0; i < nbrubandef; i++) {
 		this->DrawRuban(trubandef[i].first,
 		                trubandef[i].size,
 		                trubandef[i].dec,
