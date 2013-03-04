@@ -142,12 +142,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
 		}
 	}
 
-	long nbvert;
-
-	if(ep->type & POLY_QUAD)
-		nbvert = 4;
-	else
-		nbvert = 3;
+	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	for(long i = 0; i < nbvert; i++) {
 		epr[i] = clamp(epr[i], ACTIVEBKG->ambient.r, 1.f);
@@ -326,8 +321,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 				if (!(ep->type & POLY_WATER) &&  !(ep->type & POLY_TRANS))
 				{
 
-					long nbvert;
-					(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
+					long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 					long a, b;
 
@@ -361,14 +355,14 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
 {
 	int		i;				// iterator
-	int		nbvert;			// number or vertices per face (3 or 4)
 	float	distance[4];	// distance from light to each vertex
 	float	fRes;			// value of light intensity for a given vertex
 
 	if (ep->type & POLY_IGNORE)
 		return;
 
-	(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
+	// number or vertices per face (3 or 4)
+	int nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	// compute light - vertex distance
 	for(i = 0; i < nbvert; i++) {

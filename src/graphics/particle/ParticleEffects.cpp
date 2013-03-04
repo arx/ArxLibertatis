@@ -385,11 +385,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 			if((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER))
 				continue;
 
-			long nbvert;
-			if(ep->type & POLY_QUAD)
-				nbvert=4;
-			else
-				nbvert=3;
+			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 			long oki=0;
 

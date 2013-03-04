@@ -89,10 +89,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 	if (maxf<ep->min.y) return 999999.f;
 	
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	float nearest = 99999999.f;
 
@@ -240,10 +237,7 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 	if (ep->area<100.f) return false;
 
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	long r=to-1;
 	Vec3f center;

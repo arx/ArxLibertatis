@@ -865,19 +865,9 @@ float GetColorz(float x, float y, float z) {
 		float _ffr = 0;
 		float _ffg = 0;
 		float _ffb = 0;
-		long to;
-		float div;
 
-		if (ep->type & POLY_QUAD)
-		{
-			to = 4;
-			div = ( 1.0f / 4 );
-		}
-		else
-		{
-			to = 3;
-			div = ( 1.0f / 3 );
-		}
+		long to = (ep->type & POLY_QUAD) ? 4 : 3;
+		float div = (1.0f / to);
 
 		ApplyDynLight(ep);
 
@@ -1637,8 +1627,7 @@ void EERIEPOLY_Compute_PolyIn()
 							continue;
 						}
 
-						if (ep2->type & POLY_QUAD) nbvert = 4;
-						else nbvert = 3;
+						nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
 
 						if (PointInBBox(&ep2->center, &bb))
 						{
@@ -1780,10 +1769,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms() {
 		EERIEPOLY * ep = &portals->portals[num].poly;
 		ep->center = ep->v[0].p;
 
-		long to = 3;
-		if(ep->type & POLY_QUAD) {
-			to = 4;
-		}
+		long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 		float divide = ( 1.0f / to );
 		

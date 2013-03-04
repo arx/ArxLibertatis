@@ -754,12 +754,8 @@ void ARX_PORTALS_InitDrawnRooms()
 bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 {
 	EERIE_2D_BBOX n_bbox;
-	long nbv;
 
-	if (ep->type & POLY_QUAD)
-		nbv=4;
-	else
-		nbv=3;
+	long nbv = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	n_bbox.max.x=n_bbox.min.x=ep->tv[0].p.x;
 	n_bbox.max.y=n_bbox.min.y=ep->tv[0].p.y;	
@@ -1458,24 +1454,21 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 			fDist-=ep->v[0].rhw;
 
 			Vec3f nrm = ep->v[2].p - ACTIVECAM->orgTrans.pos;
-			int to;
-			if(ep->type&POLY_QUAD) {
+			int to = (ep->type & POLY_QUAD) ? 4 : 3;
+
+			if(to == 4) {
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
 					(dot( ep->norm , nrm )>0.f)&&
 					(dot( ep->norm2 , nrm )>0.f) )
 				{
 					continue;
 				}
-
-				to=4;
 			} else {
 				if(	(!(ep->type&POLY_DOUBLESIDED))&&
 					(dot( ep->norm , nrm )>0.f) )
 				{
 					continue;
 				}
-
-				to=3;
 			}
 
 			unsigned short *pIndicesCurr;
@@ -2034,15 +2027,11 @@ void ARX_SCENE_Render() {
 			if(!EERIERTPPoly(ep))
 				continue;
 
-			long to;
-			if(ep->type & POLY_QUAD) {
-				if(FRAME_COUNT <= 0)
-					ep->tv[3].color=ep->v[3].color;
+			long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
-				to=4;
-			} else {
-				to=3;
-			}
+			if(to == 4 && FRAME_COUNT <= 0)
+				ep->tv[3].color=ep->v[3].color;
+
 
 			if(ep->type & POLY_TRANS) {
 				ManageLavaWater(ep,to,tim);

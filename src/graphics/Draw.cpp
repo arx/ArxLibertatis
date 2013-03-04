@@ -261,8 +261,6 @@ void Delayed_FlushAll() {
     {
 		if ((ptcTexture->delayed_nb) && ptcTexture->delayed)
 		{
-			long to;
-
 			if (ViewMode & VIEWMODE_FLAT)
 				GRenderer->ResetTexture(0);
 			else 
@@ -279,9 +277,7 @@ void Delayed_FlushAll() {
 				else 
 					GRenderer->SetCulling(Renderer::CullNone);
 				
-				if (ep->type & POLY_QUAD)
-					to=4;
-				else to=3;
+				long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 				EERIEDRAWPRIM(Renderer::TriangleStrip, ep->tv, to, true);
 					
@@ -383,22 +379,19 @@ void Delayed_FlushAll() {
 						DELAYED_PRIM * del=(DELAYED_PRIM *)ptcTexture->delayed;
 						EERIEPOLY * ep=del[i].data;
 
-						if (ep->type & POLY_QUAD) 
-						{
+						long to = (ep->type & POLY_QUAD) ? 4 : 3;
+
+						if(to == 4) {
 							if ( (ep->tv[0].p.z>0.048f) 
 								&& (ep->tv[1].p.z>0.048f)
 								&& (ep->tv[2].p.z>0.048f) 
 							        && (ep->tv[3].p.z > 0.048f)) continue; 
-
-							to=4;
 						}
 						else 
 						{
 							if ( (ep->tv[0].p.z>0.048f) 
 								&& (ep->tv[1].p.z>0.048f)
 							        && (ep->tv[2].p.z > 0.048f)) continue; 
-
-							to=3;	
 						}					
 
 						if (!(ep->type & POLY_DOUBLESIDED))
@@ -732,10 +725,7 @@ void EERIEPOLY_DrawWired(EERIEPOLY * ep, Color color) {
 	ltv[3] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	memcpy(ltv,ep->tv,sizeof(TexturedVertex)*to);							
 	ltv[0].p.z-=0.0002f;
@@ -773,10 +763,7 @@ void EERIEPOLY_DrawNormals(EERIEPOLY * ep) {
 	ltv[4] = TexturedVertex(Vec3f(0, 0, 0.5), 1.f, 1, 1, Vec2f::Y_AXIS);
 	
 	TexturedVertex lv;
-	long to;
-
-	if (ep->type & POLY_QUAD) to=4;
-	else to=3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	lv.p = ep->center;
 	EE_RTP(&lv,&ltv[0]);

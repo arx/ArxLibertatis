@@ -1213,7 +1213,6 @@ void RestoreLastLoadedLightning()
 	bcount = LastLoadedLightningNb;
 
 	EERIEPOLY * ep;
-	long nbvert;
 
 	for (long j = 0; j < eb->Zsize; j++)
 		for (long i = 0; i < eb->Xsize; i++)
@@ -1224,8 +1223,7 @@ void RestoreLastLoadedLightning()
 			{
 				ep = &eg->polydata[l];
 
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
+				long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 				for (long k = 0; k < nbvert; k++)
 				{

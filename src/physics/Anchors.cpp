@@ -180,10 +180,7 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 
 	if (maxf < ep->min.y) return 999999.f;
 
-	long to;
-
-	if (ep->type & POLY_QUAD) to = 4;
-	else to = 3;
+	long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	long r = to - 1;
 	float anything = 999999.f;
