@@ -1795,11 +1795,14 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	VELOCITY_THRESHOLD = 400.f;
 	long ret = 0;
 
-	if ((!obj) || (!obj->pbox)) return ret;
+	if(!obj || !obj->pbox)
+		return ret;
 
-	if (obj->pbox->active == 2) return ret;
+	if(obj->pbox->active == 2)
+		return ret;
 
-	if (framediff == 0.f) return ret;
+	if(framediff == 0.f)
+		return ret;
 
 	PHYSVERT * pv;
 
@@ -1812,19 +1815,14 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	float timing = obj->pbox->storedtiming + framediff * rubber * 0.0055f;
 	float t_threshold = 0.18f;
 
-	if (timing < t_threshold)
-	{
+	if(timing < t_threshold) {
 		obj->pbox->storedtiming = timing;
 		return 1;
-	}
-	else
-	{
-
+	} else {
 		while(timing >= t_threshold) {
-
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), source))
+			if(!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), source))
 				ret = 1;
 
 			timing -= t_threshold;
@@ -1833,14 +1831,13 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 		obj->pbox->storedtiming = timing;
 	}
 
-
-	if (obj->pbox->stopcount < 16) return ret;
+	if(obj->pbox->stopcount < 16)
+		return ret;
 
 	obj->pbox->active = 2;
 	obj->pbox->stopcount = 0;
 
-	if (ValidIONum(source))
-	{
+	if(ValidIONum(source)) {
 		entities[source]->soundcount = 0;
 		entities[source]->soundtime = (unsigned long)(arxtime) + 2000;
 	}
