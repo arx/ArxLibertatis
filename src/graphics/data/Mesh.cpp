@@ -2284,15 +2284,8 @@ static bool loadFastScene(const res::path & file, const char * data,
 					ep2->tv[kk].color = 0xFF000000;
 				}
 				
-				long to;
-				float div;
-				if(ep->type & POLY_QUAD) {
-					to = 4;
-					div = 0.25f;
-				} else {
-					to = 3;
-					div = 0.333333333333f;
-				}
+				long to = (ep->type & POLY_QUAD) ? 4 : 3;
+				float div = 1.f / to;
 				
 				ep2->center = Vec3f::ZERO;
 				for(long h = 0; h < to; h++) {
