@@ -2537,9 +2537,8 @@ void ComputeRoomDistance() {
 	free(RoomDistance), RoomDistance = NULL;
 	NbRoomDistance = 0;
 	
-	if(portals == NULL) {
+	if(!portals)
 		return;
-	}
 	
 	NbRoomDistance = portals->nb_rooms + 1;
 	RoomDistance =
@@ -2633,11 +2632,9 @@ void ComputeRoomDistance() {
 
 	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
 
-	for (int i = 0; i < NbRoomDistance; i++)
-		for (long j = 0; j < NbRoomDistance; j++)
-		{
-			if (i == j)
-			{
+	for(int i = 0; i < NbRoomDistance; i++) {
+		for(long j = 0; j < NbRoomDistance; j++) {
+			if(i == j) {
 				SetRoomDistance(i, j, -1, NULL, NULL);
 				continue;
 			}
@@ -2646,37 +2643,33 @@ void ComputeRoomDistance() {
 
 			bool found = pathfinder.move(i, j, rl);
 
-			if (found)
-			{
+			if(found) {
 				float d = 0.f;
 
-				for (size_t id = 1; id < rl.size() - 1; id++)
-				{
-					d += dist(ad[rl[id-1]].pos, ad[rl[id]].pos);
+				for(size_t id = 1; id < rl.size() - 1; id++) {
+					d += dist(ad[rl[id - 1]].pos, ad[rl[id]].pos);
 				}
 
-				if (d < 0.f) d = 0.f;
+				if(d < 0.f)
+					d = 0.f;
 
 				float old = GetRoomDistance(i, j, NULL, NULL);
 
-				if (((d < old) || (old < 0.f)) && rl.size() >= 2)
+				if((d < old || old < 0.f) && rl.size() >= 2)
 					SetRoomDistance(i, j, d, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
 			}
-
 		}
+	}
 
 	// Don't use this for contiguous rooms !
-	for (int i = 0; i < portals->nb_total; i++)
-	{
+	for(int i = 0; i < portals->nb_total; i++) {
 		SetRoomDistance(portals->portals[i].room_1, portals->portals[i].room_2, -1, NULL, NULL);
 		SetRoomDistance(portals->portals[i].room_2, portals->portals[i].room_1, -1, NULL, NULL);
 	}
 
 	// Release our temporary Pathfinder data
-	for (int ii = 0; ii < nb_anchors; ii++)
-	{
-		if (ad[ii].nblinked)
-		{
+	for(int ii = 0; ii < nb_anchors; ii++) {
+		if(ad[ii].nblinked) {
 			free(ad[ii].linked);
 		}
 	}
