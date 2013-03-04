@@ -1102,63 +1102,52 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						Thrown[i].position = original_pos;
 						j = 200;
 						need_kill = 1;
-					}
-					else
-						for (float precision = 0.5f; precision <= 6.f; precision += 0.5f)
-						{
+					} else {
+						for(float precision = 0.5f; precision <= 6.f; precision += 0.5f) {
 							EERIE_SPHERE sphere;
 							sphere.origin = *v0 + Thrown[i].vector * precision * 4.5f;
 							sphere.radius = rad + 3.f;
 							
-							if (CheckEverythingInSphere(&sphere, Thrown[i].source, -1))
-							{
-								for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
-								{
+							if(CheckEverythingInSphere(&sphere, Thrown[i].source, -1)) {
+								for(size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++) {
 
-									if ((ValidIONum(EVERYTHING_IN_SPHERE[jj])
-									        && (EVERYTHING_IN_SPHERE[jj] != Thrown[i].source)))
+									if(ValidIONum(EVERYTHING_IN_SPHERE[jj])
+											&& EVERYTHING_IN_SPHERE[jj] != Thrown[i].source)
 									{
 
 										Entity * target = entities[EVERYTHING_IN_SPHERE[jj]];
 
-										if (target->ioflags & IO_NPC)
-										{
+										if(target->ioflags & IO_NPC) {
 											Vec3f pos;
 											Color color = Color::none;
 											long hitpoint = -1;
 											float curdist = 999999.f;
 
-											for (size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++)
-											{
-												if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
+											for(size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++) {
+												if(target->obj->facelist[ii].facetype & POLY_HIDE)
+													continue;
 												
 												short vid = target->obj->facelist[ii].vid[0];
 												float d = dist(sphere.origin, target->obj->vertexlist3[vid].v);
 
-												if (d < curdist)
-												{
+												if(d < curdist) {
 													hitpoint = target->obj->facelist[ii].vid[0];
 													curdist = d;
 												}
 											}
 
-											if (hitpoint >= 0)
-											{
+											if(hitpoint >= 0) {
 												color = target->_npcdata->blood_color;
 												pos = target->obj->vertexlist3[hitpoint].v;
 											}
 
-											if (Thrown[i].source == 0)
-											{
-												float damages = ARX_THROWN_ComputeDamages(i, Thrown[i].source,
-												                                          EVERYTHING_IN_SPHERE[jj]);
+											if(Thrown[i].source == 0) {
+												float damages = ARX_THROWN_ComputeDamages(i, Thrown[i].source, EVERYTHING_IN_SPHERE[jj]);
 
-												if (damages > 0.f)
-												{
+												if(damages > 0.f) {
 													arx_assert(hitpoint >= 0);
 
-													if (target->ioflags & IO_NPC)
-													{
+													if(target->ioflags & IO_NPC) {
 														target->_npcdata->SPLAT_TOT_NB = 0;
 														ARX_PARTICLES_Spawn_Blood2(original_pos, damages, color, target);
 													}
@@ -1166,31 +1155,26 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 													ARX_PARTICLES_Spawn_Blood2(pos, damages, color, target);
 													ARX_DAMAGES_DamageNPC(target, damages, Thrown[i].source, 0, &pos);
 
-													if (rnd() * 100.f > target->_npcdata->resist_poison)
-													{
+													if(rnd() * 100.f > target->_npcdata->resist_poison) {
 														target->_npcdata->poisonned += Thrown[i].poisonous;
 													}
 
 													CheckExp(i);
-												}
-												else
-												{
+												} else {
 													ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
 													ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 												}
 											}
-										}
-										else // not NPC
-										{
-											if (target->ioflags & IO_FIX)
-											{
-												if (ValidIONum(Thrown[i].source))
+										} else {
+											// not NPC
+											if(target->ioflags & IO_FIX) {
+												if(ValidIONum(Thrown[i].source))
 													ARX_DAMAGES_DamageFIX(target, 0.1f, Thrown[i].source, 0);
 											}
 
 											ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
 
-											if (ValidIONum(Thrown[i].source))
+											if(ValidIONum(Thrown[i].source))
 												ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 
 											CheckExp(i);
@@ -1206,9 +1190,11 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 								}
 							}
 						}
+					}
 				}
 
-				if (need_kill) ARX_THROWN_OBJECT_Kill(i);
+				if(need_kill)
+					ARX_THROWN_OBJECT_Kill(i);
 			}
 		}
 	}
