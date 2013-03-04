@@ -899,49 +899,47 @@ extern long FRAME_COUNT;
 
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
-	if (Thrown_Count <= 0) return;
+	if(Thrown_Count <= 0)
+		return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
-	for (size_t i = 0; i < MAX_THROWN_OBJECTS; i++)
-	{
-		if (Thrown[i].flags & ATO_EXIST)
-		{
+	for(size_t i = 0; i < MAX_THROWN_OBJECTS; i++) {
+		if(Thrown[i].flags & ATO_EXIST) {
 			// Is Object Visible & Near ?
-			if(fartherThan(ACTIVECAM->orgTrans.pos, Thrown[i].position, ACTIVECAM->cdepth * fZFogEnd + 50.f)) {
-				continue;
-			}
-
-			long xx, yy;
-			xx = (Thrown[i].position.x)*ACTIVEBKG->Xmul;
-			yy = (Thrown[i].position.z)*ACTIVEBKG->Zmul;
-
-			if (xx < 0)
+			if(fartherThan(ACTIVECAM->orgTrans.pos, Thrown[i].position, ACTIVECAM->cdepth * fZFogEnd + 50.f))
 				continue;
 
-			if (xx >= ACTIVEBKG->Xsize)
+			long xx = Thrown[i].position.x * ACTIVEBKG->Xmul;
+			long yy = Thrown[i].position.z * ACTIVEBKG->Zmul;
+
+			if(xx < 0)
 				continue;
 
-			if (yy < 0)
+			if(xx >= ACTIVEBKG->Xsize)
 				continue;
 
-			if (yy >= ACTIVEBKG->Zsize)
+			if(yy < 0)
+				continue;
+
+			if(yy >= ACTIVEBKG->Zsize)
 				continue;
 
 			FAST_BKG_DATA * feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
 
-			if (!feg->treat)
+			if(!feg->treat)
 				continue;
 
 			// Now render object !
-			if (!Thrown[i].obj)
+			if(!Thrown[i].obj)
 				continue;
 
 			EERIEMATRIX mat;
 			MatrixFromQuat(&mat, &Thrown[i].quat);
 			long ccount = FRAME_COUNT;
 			FRAME_COUNT = 0;
+
 			DrawEERIEInter(Thrown[i].obj, NULL, &Thrown[i].position, NULL, &mat);
 
 			if((Thrown[i].flags & ATO_FIERY) && (Thrown[i].flags & ATO_MOVING)
@@ -962,28 +960,25 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 				float p = 3.f;
 
-				while (p > 0.f)
-				{
+				while(p > 0.f) {
 					p -= 0.5f;
 
-					if (Thrown[i].obj)
-					{
+					if(Thrown[i].obj) {
 						Vec3f pos;
 						long notok = 10;
 						std::vector<EERIE_FACE>::iterator it;
 
-						while (notok-- > 0)
-						{
+						while(notok-- > 0) {
 							it = Random::getIterator(Thrown[i].obj->facelist);
 							arx_assert(it != Thrown[i].obj->facelist.end());
 
-							if (it->facetype & POLY_HIDE) continue;
+							if(it->facetype & POLY_HIDE)
+								continue;
 
 							notok = -1;
 						}
 
-						if (notok < 0)
-						{
+						if(notok < 0) {
 							pos = Thrown[i].obj->vertexlist3[it->vid[0]].v;
 
 							for(long nn = 0; nn < 2; nn++) {
@@ -1009,26 +1004,20 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 								pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 								pd->delay = nn * 180;
 							}
-
 						}
-
 					}
 				}
 			}
 
-			if (Thrown[i].pRuban)
-			{
-
+			if(Thrown[i].pRuban) {
 				Thrown[i].pRuban->Update();
-
 				Thrown[i].pRuban->Render();
 			}
 
 			FRAME_COUNT = ccount;
 			Vec3f original_pos;
 
-			if (Thrown[i].flags & ATO_MOVING)
-			{
+			if(Thrown[i].flags & ATO_MOVING) {
 				long need_kill = 0;
 				float mod = (float)time_offset * Thrown[i].velocity;
 				original_pos = Thrown[i].position;
@@ -1047,16 +1036,12 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				wpos.y += 20.f;
 				EERIEPOLY * ep = EEIsUnderWater(&wpos);
 
-				if (Thrown[i].flags & ATO_UNDERWATER)
-				{
-					if (ep == NULL)
-					{
+				if(Thrown[i].flags & ATO_UNDERWATER) {
+					if(!ep) {
 						Thrown[i].flags &= ~ATO_UNDERWATER;
 						ARX_SOUND_PlaySFX(SND_PLOUF, &Thrown[i].position);
 					}
-				}
-				else if (ep != NULL)
-				{
+				} else if(ep) {
 					Thrown[i].flags |= ATO_UNDERWATER;
 					ARX_SOUND_PlaySFX(SND_PLOUF, &Thrown[i].position);
 				}
@@ -1064,25 +1049,24 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				// Check for collision MUST be done after DRAWING !!!!
 				long nbact = Thrown[i].obj->actionlist.size();
 
-				for (long j = 0; j < nbact; j++)
-				{ // TODO iterator
+				for(long j = 0; j < nbact; j++) {
 					float rad = -1;
 					rad = GetHitValue(Thrown[i].obj->actionlist[j].name);
 					rad *= .5f;
 
-					if (rad == -1) continue;
+					if(rad == -1)
+						continue;
 
 					Vec3f * v0 = &Thrown[i].obj->vertexlist3[Thrown[i].obj->actionlist[j].idx].v;
 					Vec3f dest = original_pos + Thrown[i].vector * 95.f;
 					Vec3f orgn = original_pos - Thrown[i].vector * 25.f;
 					EERIEPOLY * ep = CheckArrowPolyCollision(&orgn, &dest);
 
-					if (ep)
-					{
+					if(ep) {
 						ARX_PARTICLES_Spawn_Spark(v0, 14, 0);
 						CheckExp(i);
 
-						if (ValidIONum(Thrown[i].source))
+						if(ValidIONum(Thrown[i].source))
 							ARX_NPC_SpawnAudibleSound(v0, entities[Thrown[i].source]);
 
 						Thrown[i].flags &= ~ATO_MOVING;
@@ -1090,19 +1074,16 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						char weapon_material[64] = "dagger";
 						string bkg_material = "earth";
 
-						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
+						if(ep && ep->tex && !ep->tex->m_texName.empty())
 							bkg_material = GetMaterialString(ep->tex->m_texName);
 
-						if (ValidIONum(Thrown[i].source))
+						if(ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0,
 							                        entities[Thrown[i].source]);
 
 						Thrown[i].position = original_pos;
 						j = 200;
-
-					}
-					else if (IsPointInField(v0))
-					{
+					} else if(IsPointInField(v0)) {
 						ARX_PARTICLES_Spawn_Spark(v0, 24, 0);
 						CheckExp(i);
 
