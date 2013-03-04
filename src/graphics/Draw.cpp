@@ -394,36 +394,25 @@ void Delayed_FlushAll() {
 							        && (ep->tv[2].p.z > 0.048f)) continue; 
 						}					
 
-						if (!(ep->type & POLY_DOUBLESIDED))
+						if(!(ep->type & POLY_DOUBLESIDED))
 							GRenderer->SetCulling(Renderer::CullCW);			
-						else GRenderer->SetCulling(Renderer::CullNone);
-						
-						
-						long tmp;
+						else
+							GRenderer->SetCulling(Renderer::CullNone);
 
 						for(long j = 0; j < to; j++) {
-							
 							verts[j].p = ep->tv[j].p;
 							verts[j].uv = ep->tv[j].uv * 4.f;
 							verts[j].rhw = ep->tv[j].rhw;
 							
 							float val = (0.038f - verts[j].p.z); 
-							if (val<=0.f) 
-							{
-								verts[j].color=0xFF000000;
+							if(val<=0.f) {
+								verts[j].color = 0xFF000000;
+							} else if(val > 0.0175) {
+								verts[j].color = 0xFFB2B2B2;
+							} else {
+								long tmp = val*10200;
+								verts[j].color = 0xFF000000 | (tmp<<16) | (tmp<<8) | tmp;
 							}
-							else 
-							{
-								if (val>0.0175) 
-								{
-									verts[j].color=0xFFB2B2B2;
-								}
-								else 
-								{
-									tmp = val*10200;
-									verts[j].color=0xFF000000 | (tmp<<16) | (tmp<<8) | tmp;
-								}			
-							}				
 						}
 
 						EERIEDRAWPRIM(Renderer::TriangleStrip, verts, to, true);
