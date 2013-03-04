@@ -1704,14 +1704,12 @@ static bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj) {
 
 static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
 	
-	PHYSVERT * pv;
 	Vec3f oldpos[32];
 	long COUNT = 0;
 	COUNT++;
 
-	for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-	{
-		pv = &obj->pbox->vert[kk];
+	for(long kk = 0; kk < obj->pbox->nb_physvert; kk++) {
+		PHYSVERT *pv = &obj->pbox->vert[kk];
 		oldpos[kk] = pv->pos;
 		pv->inertia = Vec3f::ZERO;
 
@@ -1725,17 +1723,15 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 	RK4Integrate(obj, framediff);
 
 	EERIE_SPHERE sphere;
-	pv = &obj->pbox->vert[0];
+	PHYSVERT *pv = &obj->pbox->vert[0];
 	sphere.origin = pv->pos;
 	sphere.radius = obj->pbox->radius;
 	long colidd = 0;
 
-	for (int kk = 0; kk < obj->pbox->nb_physvert; kk += 2)
-	{
+	for(int kk = 0; kk < obj->pbox->nb_physvert; kk += 2) {
 		pv = &obj->pbox->vert[kk];
 
-		if (!IsValidPos3(&pv->pos))
-		{
+		if(!IsValidPos3(&pv->pos)) {
 			colidd = 1;
 			break;
 		}
@@ -1753,31 +1749,21 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		               + EEfabs(obj->pbox->vert[0].velocity.z)) * .01f;
 
 
-		if (ValidIONum(source) && (entities[source]->ioflags & IO_BODY_CHUNK))
-		{
-		}
-		else
+		if(!(ValidIONum(source) && (entities[source]->ioflags & IO_BODY_CHUNK)))
 			ARX_TEMPORARY_TrySound(0.4f + power);
 
-
 		if(!LAST_COLLISION_POLY) {
-			
 			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
 				pv = &obj->pbox->vert[k];
 
-				{
-					pv->velocity.x *= -0.3f;
-					pv->velocity.z *= -0.3f;
-					pv->velocity.y *= -0.4f;
-				}
+				pv->velocity.x *= -0.3f;
+				pv->velocity.z *= -0.3f;
+				pv->velocity.y *= -0.4f;
 
 				pv->pos = oldpos[k];
 			}
-			
 		} else {
-			
 			for(long k = 0; k < obj->pbox->nb_physvert; k++) {
-				
 				pv = &obj->pbox->vert[k];
 				
 				float t = dot(LAST_COLLISION_POLY->norm, pv->velocity);
@@ -1792,15 +1778,12 @@ static bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, lo
 		}
 	}
 
-	if (colidd)
-	{
+	if(colidd) {
 		obj->pbox->stopcount += 1;
-	}
-	else
-	{
+	} else {
 		obj->pbox->stopcount -= 2;
 
-		if (obj->pbox->stopcount < 0)
+		if(obj->pbox->stopcount < 0)
 			obj->pbox->stopcount = 0;
 	}
 
