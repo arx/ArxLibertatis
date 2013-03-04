@@ -2935,42 +2935,34 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 	long type, val1, val2;
 
-	if (GetNameInfo(eobj->name, type, val1, val2))
-	{
-		if (type == TYPE_PORTAL)
-		{
+	if(GetNameInfo(eobj->name, type, val1, val2)) {
+		if(type == TYPE_PORTAL) {
 			EERIEPOLY ep;
 			EERIEPOLY epp;
 
-			for (size_t i = 0; i < eobj->facelist.size(); i++)
-			{
-				for (long kk = 0; kk < 3; kk++)
-				{
+			for(size_t i = 0; i < eobj->facelist.size(); i++) {
+				for(long kk = 0; kk < 3; kk++) {
 					memcpy(&ep.v[kk], &eobj->vertexlist[eobj->facelist[i].vid[kk]].vert, sizeof(TexturedVertex));
 				}
 
-				if (i == 0)
-				{
+				if(i == 0) {
 					memcpy(&epp, &ep, sizeof(EERIEPOLY));
 					epp.type = 0;
 				}
-				else if (i == 1)
-				{
+				else if(i == 1)
 					EERIEPOLY_FillMissingVertex(&epp, &ep);
-				}
-				else break;
+				else
+					break;
 			}
 
-			if(!eobj->facelist.empty()) {
+			if(!eobj->facelist.empty())
 				EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
-			}
 
 			return;
 		}
 	}
 
-	for (size_t i = 0; i < eobj->facelist.size(); i++)
-	{
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		vlist[0] = eobj->vertexlist[eobj->facelist[i].vid[0]].vert;
 		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;
 		vlist[2] = eobj->vertexlist[eobj->facelist[i].vid[2]].vert;
@@ -2979,8 +2971,7 @@ static void SceneAddObjToBackground(EERIE_3DOBJ * eobj) {
 
 		TextureContainer *tex = NULL;
 		bool addToBackground = true;
-		if (eobj->facelist[i].facetype & POLY_NO_SHADOW)
-		{
+		if(eobj->facelist[i].facetype & POLY_NO_SHADOW) {
 			vlist[0].uv.x = eobj->facelist[i].u[0];
 			vlist[0].uv.y = eobj->facelist[i].v[0];
 			vlist[1].uv.x = eobj->facelist[i].u[1];
