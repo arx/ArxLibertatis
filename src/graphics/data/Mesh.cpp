@@ -1693,22 +1693,17 @@ float GetTileMaxY(long i, long j)
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
-bool GetNameInfo(const string & name, long& type, long& val1, long& val2)
+bool GetNameInfo(const string &name, long &type, long &val1, long &val2)
 {
-
-	if (name[0] == 'r')
-	{
-		if (name[1] == '_')
-		{
+	if(name[0] == 'r') {
+		if(name[1] == '_') {
 			type = TYPE_ROOM;
 			val1 = atoi(name.c_str() + 2);
 			val2 = 0;
 			return true;
 		}
 
-		if ((name[1] == 'o') && (name[2] == 'o')
-				&& (name[3] == 'm') && (name[4] == '_'))
-		{
+		if(name[1] == 'o' && name[2] == 'o' && name[3] == 'm' && name[4] == '_') {
 			type = TYPE_ROOM;
 			val1 = atoi(name.c_str() + 5);
 			val2 = 0;
