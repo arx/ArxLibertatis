@@ -1336,8 +1336,9 @@ void ReleaseBKG_INFO(EERIE_BKG_INFO * eg) {
 
 void AddAData(ANCHOR_DATA * ad, long linked)
 {
-	for (long i=0;i<ad->nblinked;i++)
-		if (ad->linked[i] == linked) return;
+	for(long i=0; i < ad->nblinked; i++)
+		if(ad->linked[i] == linked)
+			return;
 
 	ad->linked = (long *)realloc(ad->linked, sizeof(long) * (ad->nblinked + 1));
 
@@ -1352,7 +1353,7 @@ void UpdateIORoom(Entity * io)
 
 	long roo = ARX_PORTALS_GetRoomNumForPosition(&pos, 2);
 
-	if (roo >= 0)
+	if(roo >= 0)
 		io->room = checked_range_cast<short>(roo);
 
 	io->room_flags &= ~1;
@@ -1360,9 +1361,8 @@ void UpdateIORoom(Entity * io)
 
 bool GetRoomCenter(long room_num, Vec3f * center) {
 	
-	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0) {
+	if(!portals || room_num > portals->nb_rooms || portals->room[room_num].nb_polys <= 0)
 		return false;
-	}
 	
 	EERIE_3D_BBOX bbox;
 	bbox.min = Vec3f::repeat(99999999.f);
@@ -1388,49 +1388,53 @@ static long NbRoomDistance = 0;
 
 static void SetRoomDistance(long i, long j, float val, const Vec3f * p1, const Vec3f * p2) {
 	
-	if((i < 0) || (j < 0) || (i >= NbRoomDistance) || (j >= NbRoomDistance) || !RoomDistance) {
+	if(i < 0 || j < 0 || i >= NbRoomDistance || j >= NbRoomDistance || !RoomDistance)
 		return;
-	}
 	
 	long offs = i + j * NbRoomDistance;
 	
-	if (p1) RoomDistance[offs].startpos = *p1;
+	if(p1)
+		RoomDistance[offs].startpos = *p1;
 
-	if (p2) RoomDistance[offs].endpos = *p2;
+	if(p2)
+		RoomDistance[offs].endpos = *p2;
 
 	RoomDistance[offs].distance = val;
 }
+
 static float GetRoomDistance(long i, long j, Vec3f * p1, Vec3f * p2)
 {
-	if ((i < 0) || (j < 0) || (i >= NbRoomDistance) || (j >= NbRoomDistance))
+	if(i < 0 || j < 0 || i >= NbRoomDistance || j >= NbRoomDistance)
 		return -1.f;
 
 	long offs = i + j * NbRoomDistance;
 
-	if (p1) *p1 = RoomDistance[offs].startpos;
+	if(p1)
+		*p1 = RoomDistance[offs].startpos;
 
-	if (p2) *p2 = RoomDistance[offs].endpos;
+	if(p2)
+		*p2 = RoomDistance[offs].endpos;
 
-	return (RoomDistance[offs].distance);
+	return RoomDistance[offs].distance;
 }
+
 float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 {
 	float dst = fdist(*pos, *c_pos);
 
-	if (dst < 150.f) return dst;
-
-	if ((!portals) || (!RoomDistance))
+	if(dst < 150.f)
 		return dst;
 
-	long Room=io_room;
+	if(!portals || !RoomDistance)
+		return dst;
 
-	if (Room >= 0)
-	{
+	long Room = io_room;
+
+	if(Room >= 0) {
 		Vec3f p1, p2;
 		float v = GetRoomDistance(Cam_Room, Room, &p1, &p2);
 
-		if (v > 0.f)
-		{
+		if(v > 0.f) {
 			v += fdist(*pos, p2);
 			v += fdist(*c_pos, p1);
 			return v;
@@ -1443,9 +1447,8 @@ float SP_GetRoomDist(Vec3f * pos, Vec3f * c_pos, long io_room, long Cam_Room)
 // Clears a background of its infos
 void ClearBackground(EERIE_BACKGROUND * eb) {
 	
-	if(eb == NULL) {
+	if(!eb)
 		return;
-	}
 	
 	AnchorData_ClearAll(eb);
 	
@@ -1462,7 +1465,8 @@ void ClearBackground(EERIE_BACKGROUND * eb) {
 
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	
-	if (eb == NULL) return 0;
+	if(!eb)
+		return 0;
 
 	if(eb->exist) {
 		EERIE_PORTAL_Release();
@@ -1486,10 +1490,9 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 	//todo free
 	eb->Backg = (EERIE_BKG_INFO *)malloc(sizeof(EERIE_BKG_INFO) * sx * sz);
 
-	memset(eb->Backg, 0, sizeof(EERIE_BKG_INFO)*sx * sz);
+	memset(eb->Backg, 0, sizeof(EERIE_BKG_INFO) * sx * sz);
 
-	for (int i = 0; i < eb->Xsize * eb->Zsize; i++)
-	{
+	for(int i = 0; i < eb->Xsize * eb->Zsize; i++) {
 		EERIE_BKG_INFO *eg = &eb->Backg[i];
 		eg->treat = 0;
 		eg->nothing = 1;
@@ -1497,18 +1500,16 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv) {
 		eg->ianchors = NULL;
 	}
 
-	for (long j = 0; j < eb->Zsize; j++)
-		for (int i = 0; i < eb->Xsize; i++)
-		{
-			FAST_BKG_DATA * feg = &eb->fastdata[i][j];
+	for(long j = 0; j < eb->Zsize; j++)
+		for(int i = 0; i < eb->Xsize; i++) {
+			FAST_BKG_DATA *feg = &eb->fastdata[i][j];
 			memset(feg, 0, sizeof(FAST_BKG_DATA));
 		}
 
 	//todo free
 	eb->minmax = (EERIE_SMINMAX *)malloc(sizeof(EERIE_SMINMAX) * eb->Zsize);
 
-	for (int i = 0; i < eb->Zsize; i++)
-	{
+	for(int i = 0; i < eb->Zsize; i++) {
 		eb->minmax[i].min = 9999;
 		eb->minmax[i].max = -1;
 	}
@@ -1549,10 +1550,9 @@ void DeclareEGInfo(float x, float z)
 
 void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
 {
-	for (long i = 0; i < eg->nbpolyin; i++)
-	{
-		if (eg->polyin[i] == ep) return;
-	}
+	for(long i = 0; i < eg->nbpolyin; i++)
+		if(eg->polyin[i] == ep)
+			return;
 
 	eg->polyin = (EERIEPOLY **)realloc(eg->polyin, sizeof(EERIEPOLY) * (eg->nbpolyin + 1));
 
