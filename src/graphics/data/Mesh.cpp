@@ -1291,14 +1291,11 @@ bool Visible(Vec3f * orgn, Vec3f * dest, EERIEPOLY * epp, Vec3f * hit)
 //*************************************************************************************
 // Counts total number of polys in a background
 //*************************************************************************************
-long BKG_CountPolys(EERIE_BACKGROUND * eb)
-{
+long BKG_CountPolys(EERIE_BACKGROUND * eb) {
 	long count = 0;
-	EERIE_BKG_INFO * eg;
 
-	for (long i = 0; i < eb->Xsize * eb->Zsize; i++)
-	{
-		eg = &eb->Backg[i];
+	for(long i = 0; i < eb->Xsize * eb->Zsize; i++) {
+		EERIE_BKG_INFO *eg = &eb->Backg[i];
 		count += eg->nbpoly;
 	}
 
@@ -1309,21 +1306,16 @@ long BKG_CountPolys(EERIE_BACKGROUND * eb)
 // Counts number of ignored polys in a background
 //*************************************************************************************
 
-long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb)
-{
+long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb) {
 	long count = 0;
-	EERIE_BKG_INFO * eg;
-	EERIEPOLY * pol = NULL;
 
-	for (long i = 0; i < eb->Xsize * eb->Zsize; i++)
-	{
-		eg = &eb->Backg[i];
+	for(long i = 0; i < eb->Xsize * eb->Zsize; i++) {
+		EERIE_BKG_INFO *eg = &eb->Backg[i];
 
-		for (long k = 0; k < eg->nbpoly; k++)
-		{
-			pol = &eg->polydata[k];
+		for(long k = 0; k < eg->nbpoly; k++){
+			EERIEPOLY *pol = &eg->polydata[k];
 
-			if (pol->type & POLY_IGNORE)
+			if(pol->type & POLY_IGNORE)
 				count++;
 		}
 	}
