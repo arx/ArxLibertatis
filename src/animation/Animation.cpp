@@ -1289,7 +1289,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					fb=min(fb,255.f);
 					u8 lfr = fr;
 					u8 lfb = fb;
-					vert_list[k].color = (0xff001E00L | (lfr << 16) | (lfb));
+					u8 lfg = 0x1E;
+					vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 				}
 			}
 		}

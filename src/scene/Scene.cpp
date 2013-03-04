@@ -1589,8 +1589,9 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						fb=min(fb,255.f);
 						u8 lfr = fr;
 						u8 lfb = fb;
+						u8 lfg = 0x1E;
 				
-						ep->tv[k].color = (0xff001E00L | (lfr << 16) | (lfb));
+						ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 					}
 
 					pMyVertexCurr[ep->uslInd[0]].color=ep->tv[0].color;
@@ -2099,7 +2100,9 @@ void ARX_SCENE_Render() {
 						fb*=255.f;
 						u8 lfb = fb;
 						u8 lfr = fr;
-						ep->tv[k].color = (0xff001E00L | (lfr << 16) | (lfb));
+						u8 lfg = 0x1E;
+
+						ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 						//GG component locked at 0x1E
 					}
 				}
