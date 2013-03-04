@@ -1596,37 +1596,26 @@ void EERIEPOLY_Compute_PolyIn()
 			bbcenter.x = (bb.min.x + bb.max.x) * .5f;
 			bbcenter.z = (bb.min.y + bb.max.y) * .5f;
 
-			for (long cj = ij; cj < aj; cj++)
-				for (long ci = ii; ci < ai; ci++)
-				{
-
+			for(long cj = ij; cj < aj; cj++)
+				for(long ci = ii; ci < ai; ci++) {
 					EERIE_BKG_INFO *eg2 = &ACTIVEBKG->Backg[ci+cj*ACTIVEBKG->Xsize];
 
-					for (long l = 0; l < eg2->nbpoly; l++)
-					{
-
+					for(long l = 0; l < eg2->nbpoly; l++) {
 						EERIEPOLY *ep2 = &eg2->polydata[l];
 
-						if(fartherThan(Vec2f(bbcenter.x, bbcenter.z), Vec2f(ep2->center.x, ep2->center.z), 120.f)) {
+						if(fartherThan(Vec2f(bbcenter.x, bbcenter.z), Vec2f(ep2->center.x, ep2->center.z), 120.f))
 							continue;
-						}
 
 						long nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
 
-						if (PointInBBox(&ep2->center, &bb))
-						{
+						if(PointInBBox(&ep2->center, &bb)) {
 							EERIEPOLY_Add_PolyIn(eg, ep2);
-						}
-						else
-							for (long k = 0; k < nbvert; k++)
-							{
-
+						} else {
+							for(long k = 0; k < nbvert; k++) {
 								if(PointInBBox(&ep2->v[k].p, &bb)) {
 									EERIEPOLY_Add_PolyIn(eg, ep2);
 									break;
-									
 								} else {
-									
 									Vec3f pt = (ep2->v[k].p + ep2->center) * .5f;
 									if(PointInBBox(&pt, &bb)) {
 										EERIEPOLY_Add_PolyIn(eg, ep2);
@@ -1634,23 +1623,24 @@ void EERIEPOLY_Compute_PolyIn()
 									}
 								}
 							}
+						}
 					}
 				}
 
-			if (eg->nbpolyin) eg->nothing = 0;
-			else eg->nothing = 1;
+			if(eg->nbpolyin)
+				eg->nothing = 0;
+			else
+				eg->nothing = 1;
 		}
 
-	for (int j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (long i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
+	for(int j = 0; j < ACTIVEBKG->Zsize; j++)
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 			eg->tile_miny = 999999999.f;
 			eg->tile_maxy = -999999999.f;
 
-			for (long kk = 0; kk < eg->nbpolyin; kk++)
-			{
-				EERIEPOLY * ep = eg->polyin[kk];
+			for(long kk = 0; kk < eg->nbpolyin; kk++) {
+				EERIEPOLY *ep = eg->polyin[kk];
 				eg->tile_miny = min(eg->tile_miny, ep->min.y);
 				eg->tile_maxy = max(eg->tile_maxy, ep->max.y);
 			}
