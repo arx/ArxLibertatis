@@ -2778,21 +2778,18 @@ static void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const std::string& name, long 
 
 static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	
-	long j, posx, posz, posy;
-	float cx, cy, cz;
-	EERIE_BKG_INFO * eg;
-	long type, val1;
-	type = -1;
-	val1 = -1;
+	long type = -1;
+	long val1 = -1;
 
-	if (TryToQuadify(ep, eobj)) return 0;
+	if(TryToQuadify(ep, eobj))
+		return 0;
 
-	cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
-	cy = (ep->v[0].p.y + ep->v[1].p.y + ep->v[2].p.y);
-	cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
-	posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul); 
-	posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul); 
-	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f); 
+	float cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
+	float cy = (ep->v[0].p.y + ep->v[1].p.y + ep->v[2].p.y);
+	float cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
+	long posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul);
+	long posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul);
+	long posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * .5f);
 
 	if (posy < 0) return 0;
 	else if (posy >= ACTIVEBKG->Xsize) return 0;
@@ -2803,7 +2800,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	if (posz < 0) return 0;
 	else if (posz >= ACTIVEBKG->Zsize) return 0;
 
-	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 
 	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
 	DeclareEGInfo(ep->v[0].p.x, ep->v[0].p.z);
@@ -2829,7 +2826,7 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 	
 	EERIEPOLY * epp = &eg->polydata[eg->nbpoly];
 	
-	for(j = 0; j < 3; j++) {
+	for(long j = 0; j < 3; j++) {
 		epp->tv[j].uv = epp->v[j].uv;
 		epp->tv[j].color = epp->v[j].color;
 		epp->tv[j].rhw = 1.f;
@@ -2868,17 +2865,14 @@ static int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj) {
 
 	eg->treat = 0;
 
-	if (ep != NULL)
-		if (ep->tex != NULL)
-			if ( !ep->tex->m_texName.empty() )
-			{
+	if(ep && ep->tex && !ep->tex->m_texName.empty()) {
 				if ( ep->tex->m_texName.string().find("stone") != std::string::npos )         ep->type |= POLY_STONE;
 				else if ( ep->tex->m_texName.string().find("pierre") != std::string::npos )   ep->type |= POLY_STONE;
 				else if ( ep->tex->m_texName.string().find("wood") != std::string::npos )     ep->type |= POLY_WOOD;
 				else if ( ep->tex->m_texName.string().find("bois") != std::string::npos )     ep->type |= POLY_STONE;
 				else if ( ep->tex->m_texName.string().find("gavier") != std::string::npos )   ep->type |= POLY_GRAVEL;
 				else if ( ep->tex->m_texName.string().find("earth") != std::string::npos )    ep->type |= POLY_EARTH;
-			}
+	}
 
 	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
 	return 1;
@@ -2890,7 +2884,7 @@ static void EERIEAddPolyToBackground(TexturedVertex * vert2, TextureContainer * 
 	
 	memset(ep.tv, 0, sizeof(TexturedVertex) * 3);
 	
-	if(vert2 != NULL) {
+	if(vert2) {
 		memcpy(ep.v, vert2, sizeof(TexturedVertex) * 3);
 	} else {
 		memset(ep.tv, 0, sizeof(TexturedVertex) * 3);
