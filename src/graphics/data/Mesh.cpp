@@ -1574,26 +1574,18 @@ bool PointInBBox(Vec3f * point, EERIE_2D_BBOX * bb)
 
 void EERIEPOLY_Compute_PolyIn()
 {
-	EERIE_BKG_INFO * eg;
-	EERIE_BKG_INFO * eg2;
-	EERIEPOLY * ep2;
-
-	long ii, ij;
-	long ai, aj;
-	long nbvert;
-
 	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
 		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
 			
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 			
 			free(eg->polyin), eg->polyin = NULL;
 			eg->nbpolyin = 0;
 			
-			ii = max(i - 2, 0L);
-			ij = max(j - 2, 0L);
-			ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
-			aj = min(j + 2, ACTIVEBKG->Zsize - 1L);
+			long ii = max(i - 2, 0L);
+			long ij = max(j - 2, 0L);
+			long ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
+			long aj = min(j + 2, ACTIVEBKG->Zsize - 1L);
 
 			EERIE_2D_BBOX bb;
 			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10;
@@ -1608,18 +1600,18 @@ void EERIEPOLY_Compute_PolyIn()
 				for (long ci = ii; ci < ai; ci++)
 				{
 
-					eg2 = &ACTIVEBKG->Backg[ci+cj*ACTIVEBKG->Xsize];
+					EERIE_BKG_INFO *eg2 = &ACTIVEBKG->Backg[ci+cj*ACTIVEBKG->Xsize];
 
 					for (long l = 0; l < eg2->nbpoly; l++)
 					{
 
-						ep2 = &eg2->polydata[l];
+						EERIEPOLY *ep2 = &eg2->polydata[l];
 
 						if(fartherThan(Vec2f(bbcenter.x, bbcenter.z), Vec2f(ep2->center.x, ep2->center.z), 120.f)) {
 							continue;
 						}
 
-						nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
+						long nbvert = (ep2->type & POLY_QUAD) ? 4 : 3;
 
 						if (PointInBBox(&ep2->center, &bb))
 						{
@@ -1652,7 +1644,7 @@ void EERIEPOLY_Compute_PolyIn()
 	for (int j = 0; j < ACTIVEBKG->Zsize; j++)
 		for (long i = 0; i < ACTIVEBKG->Xsize; i++)
 		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 			eg->tile_miny = 999999999.f;
 			eg->tile_maxy = -999999999.f;
 
