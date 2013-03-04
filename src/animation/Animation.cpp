@@ -836,8 +836,8 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 	
 	SMY_ZMAPPINFO sZMappInfo;
 
-	if( (!ZMAPMODE)||
-		(!_pTex->TextureRefinement) ) return;
+	if(!ZMAPMODE || !_pTex->TextureRefinement)
+		return;
 
 	bool bUp = false;
 
@@ -847,26 +847,24 @@ void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd,
 		bUp = true;
 	}
 
-	for(int iI=0;iI<3;iI++)
-	{
-		if(bUp)
-		{
+	for(int iI=0; iI<3; iI++) {
+		if(bUp) {
 			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*( 1.0f / 50 ));
 			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*( 1.0f / 50 ));
-		}
-		else
-		{
+		} else {
 			sZMappInfo.uv[iI<<1]=(_pobj3dObj->facelist[lIdList].u[iI]*4.f);
 			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->facelist[lIdList].v[iI]*4.f);
 		}
 
-		float fDist=fdist(ACTIVECAM->orgTrans.pos, _pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
+		float fDist = fdist(ACTIVECAM->orgTrans.pos, _pobj3dObj->vertexlist3[_piInd[iI]].v) - 80.f;
 
-		if (fDist<10.f) fDist=10.f;
+		if(fDist < 10.f)
+			fDist = 10.f;
 
 		sZMappInfo.color[iI] = (150.f - fDist) * 0.006666666f;
 
-		if (sZMappInfo.color[iI]<0.f) sZMappInfo.color[iI]=0.f;
+		if(sZMappInfo.color[iI] < 0.f)
+			sZMappInfo.color[iI] = 0.f;
 	
 		sZMappInfo.pVertex[iI]=_pVertex[iI];
 	}
