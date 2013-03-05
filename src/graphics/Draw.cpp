@@ -85,27 +85,28 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 	long common=-1;
 	long common2=-1;
 	
-	
 	long ep_notcommon=-1;
 	long ep2_notcommon=-1;
 	
-	if (ep2->type & POLY_QUAD)
-					{
-	return false;
-}
+	if(ep2->type & POLY_QUAD)
+		return false;
 	
-	if (ep->tex != ep2->tex) return false;
+	if(ep->tex != ep2->tex)
+		return false;
 
 	long typ1=ep->type&(~POLY_QUAD);
 	long typ2=ep2->type&(~POLY_QUAD);
 
-	if (typ1!=typ2) return false;
+	if(typ1!=typ2)
+		return false;
 
-	if ((ep->type & POLY_TRANS) && (ep->transval!=ep2->transval)) return false;
+	if((ep->type & POLY_TRANS) && ep->transval != ep2->transval)
+		return false;
 
 	CalcFaceNormal(ep,ep->v);
 
-	if (fabs(dot(ep->norm, ep2->norm)) < 1.f - tolerance) return false;
+	if(fabs(dot(ep->norm, ep2->norm)) < 1.f - tolerance)
+		return false;
 	
 	for (long i=0;i<3;i++)
 	{
@@ -189,19 +190,15 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 #define TYPE_ROOM	2
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
-	long posx,posz;
-	float cx,cz;
-	EERIE_BKG_INFO * eg;
-	cx=(ep->v[0].p.x+ep->v[1].p.x+ep->v[2].p.x);
-	cz=(ep->v[0].p.z+ep->v[1].p.z+ep->v[2].p.z);
-	posx = cx*( 1.0f / 3 )*ACTIVEBKG->Xmul;
-	posz = cz*( 1.0f / 3 )*ACTIVEBKG->Zmul;
+	float cx = (ep->v[0].p.x + ep->v[1].p.x + ep->v[2].p.x);
+	float cz = (ep->v[0].p.z + ep->v[1].p.z + ep->v[2].p.z);
+	long posx = cx * (1.0f/3) * ACTIVEBKG->Xmul;
+	long posz = cz * (1.0f/3) * ACTIVEBKG->Zmul;
 	
-	long dx,dz,fx,fz;
-	dx=std::max(0L,posx-1);
-	fx=std::min(posx+1,ACTIVEBKG->Xsize-1L);
-	dz=std::max(0L,posz-1);
-	fz=std::min(posz+1,ACTIVEBKG->Zsize-1L);
+	long dx = std::max(0L, posx - 1);
+	long fx = std::min(posx + 1, ACTIVEBKG->Xsize - 1L);
+	long dz = std::max(0L, posz - 1);
+	long fz = std::min(posz + 1, ACTIVEBKG->Zsize - 1L);
 	float tolerance=0.1f;
 
 	for (long kl = 0; kl < 2; kl++)
@@ -217,24 +214,28 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 		if (type!=TYPE_ROOM)
 			return false;
 
-		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
 
 		if (eg)
 		for (long n=0;n<eg->nbpoly;n++)
 		{
-			EERIEPOLY * ep2=(EERIEPOLY *)&eg->polydata[n];
+			EERIEPOLY *ep2 = (EERIEPOLY *)&eg->polydata[n];
 
-			if (ep2->room!=val1) continue;
+			if(ep2->room != val1)
+				continue;
 			
-			if (ep==ep2) continue;
+			if(ep == ep2)
+				continue;
 
-			if ((kl==0) && (ep2->type & POLY_QUAD) )
+			if(kl == 0 && (ep2->type & POLY_QUAD) )
 			{
-				if (Quadable(ep,ep2,tolerance)) return true;
+				if(Quadable(ep,ep2,tolerance))
+					return true;
 			}
-			else if ((kl==1) && !(ep2->type & POLY_QUAD) )
+			else if(kl == 1 && !(ep2->type & POLY_QUAD) )
 			{
-				if (Quadable(ep,ep2,tolerance)) return true;
+				if(Quadable(ep,ep2,tolerance))
+					return true;
 			}
 		}
 	}
