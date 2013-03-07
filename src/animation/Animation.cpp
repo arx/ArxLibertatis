@@ -1070,7 +1070,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 
 		if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
-			if (io->show==SHOW_FLAG_TELEPORTING) {
+			if(io->show == SHOW_FLAG_TELEPORTING) {
 				float fCalc = io->sfx_time + FrameDiff;
 				io->sfx_time = checked_range_cast<unsigned long>(fCalc);
 
@@ -1086,7 +1086,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 						special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 						AddRandomSmoke(io, 1);
 					} else if(elapsed < 6000.f) { // 5 seconds to White
-						float ratio = ( elapsed - 3000.f ) * ( 1.0f / 3000 );
+						float ratio = (elapsed - 3000.f) * (1.0f / 3000);
 						special_color = Color3f(1.f, ratio, ratio);
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
