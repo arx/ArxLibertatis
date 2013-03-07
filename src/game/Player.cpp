@@ -2210,8 +2210,7 @@ void ARX_PLAYER_InitPlayer() {
 // Forces player orientation to look at an IO
 void ForcePlayerLookAtIO(Entity * io) {
 	
-	// Validity Check
-	if (!io) return;
+	arx_assert(io);
 
 	EERIE_CAMERA tcam;
 	Vec3f target;
