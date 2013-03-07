@@ -895,8 +895,6 @@ void CheckExp(long i) {
 	}
 }
 
-extern long FRAME_COUNT;
-
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	if(Thrown_Count <= 0)
@@ -937,8 +935,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 			EERIEMATRIX mat;
 			MatrixFromQuat(&mat, &Thrown[i].quat);
-			long ccount = FRAME_COUNT;
-			FRAME_COUNT = 0;
 
 			DrawEERIEInter(Thrown[i].obj, NULL, &Thrown[i].position, NULL, &mat);
 
@@ -1014,7 +1010,6 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				Thrown[i].pRuban->Render();
 			}
 
-			FRAME_COUNT = ccount;
 			Vec3f original_pos;
 
 			if(Thrown[i].flags & ATO_MOVING) {

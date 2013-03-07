@@ -97,7 +97,6 @@ extern long BOOKBUTTON;
 extern long OLD_FLYING_OVER;
 extern long FLYING_OVER;
 extern long BOOKZOOM;
-extern long FRAME_COUNT;
 extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern bool bFadeInOut;
@@ -410,8 +409,6 @@ bool ARX_Menu_Render() {
 	if(ARXmenu.currentmode == AMCM_OFF) {
 		return false;
 	}
-
-	FRAME_COUNT = 0;
 
 	bool br = Menu2_Render();
 

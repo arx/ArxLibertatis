@@ -94,7 +94,6 @@ extern bool	bFadeInOut;
 extern int iFadeAction;
 
 extern long ZMAPMODE;
-extern long FRAME_COUNT;
 
 void ARX_SOUND_PushAnimSamples();
 void ARX_SOUND_PopAnimSamples();

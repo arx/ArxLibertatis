@@ -145,7 +145,6 @@ extern long CHANGE_LEVEL_ICON;
 extern long REFUSE_GAME_RETURN;
 extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
-extern long FRAME_COUNT;
 extern long PLAYER_PARALYSED;
 extern long STOP_KEYBOARD_INPUT;
 extern long USEINTERNORM;
@@ -1336,7 +1335,6 @@ void ArxGame::renderLevel() {
 
 	ARX_PLAYER_Manage_Visual();
 
-	if (FRAME_COUNT<=0)
 		ARX_MINIMAP_ValidatePlayerPos();
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
@@ -1517,7 +1515,6 @@ void ArxGame::renderLevel() {
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
 
-	if(FRAME_COUNT <= 0)
 		PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
 	ACTIVECAM->fadecolor = current.depthcolor;
@@ -1805,7 +1802,7 @@ void ArxGame::render() {
 		if((player.Interface & INTER_COMBATMODE) || PLAYER_MOUSELOOK_ON) {
 			FlyingOverIO = NULL; // Avoid to check with those modes
 		} else {
-			if(!DRAGINTER && FRAME_COUNT <= 0)
+			if(!DRAGINTER)
 			{
 				if (!BLOCK_PLAYER_CONTROLS && !TRUE_PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 					&& (eMouseState != MOUSE_IN_NOTE)

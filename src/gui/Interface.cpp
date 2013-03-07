@@ -7001,7 +7001,6 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 }
 
-extern long FRAME_COUNT;
 extern Entity * DESTROYED_DURING_RENDERING;
 extern float STARTED_ANGLE;
 long SPECIAL_DRAGINTER_RENDER=0;
@@ -7197,8 +7196,6 @@ long Manage3DCursor(long flags)
 			io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;
 			ARX_INTERACTIVE_Teleport(io, &pos, true);
 
-			int iOldFrameCount	=	FRAME_COUNT;
-			FRAME_COUNT			=	0;
 			io->gameFlags		&=	~GFLAG_NOCOMPUTATION;
 
 			float old			=	io->invisibility;
@@ -7219,7 +7216,6 @@ long Manage3DCursor(long flags)
 			}
 
 			PrecalcIOLighting(NULL,0,1);
-			FRAME_COUNT=iOldFrameCount;
 
 			if(!SPECIAL_DRAGINTER_RENDER && !DESTROYED_DURING_RENDERING){
 				io->obj->drawflags&=~DRAWFLAG_HIGHLIGHT;

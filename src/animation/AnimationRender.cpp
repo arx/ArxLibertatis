@@ -466,7 +466,6 @@ long special_color_flag = 0;
 Color3f special_color;
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
-extern long FRAME_COUNT;
 
 extern float GLOBAL_LIGHT_FACTOR;
 
@@ -632,10 +631,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
 		special_color_flag	=	4;
 		special_color = Color3f::gray(float(iHighLight));
-	}
-	
-	if(FRAME_COUNT > 0) {
-		return true;
 	}
 	
 	if(Project.improve) {
