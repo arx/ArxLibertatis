@@ -1756,14 +1756,11 @@ void FirstFrameHandling() {
 		LoadLevelScreen();
 	}
 
-	if (CURRENT_TORCH)
-	{
+	if(CURRENT_TORCH) {
 		ARX_SOUND_PlaySFX(SND_TORCH_LOOP, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
-		SHOW_TORCH=1;
-	}
-	else
-	{
-		SHOW_TORCH=0;
+		SHOW_TORCH = 1;
+	} else {
+		SHOW_TORCH = 0;
 	}
 	
 	Kam = &subj;
@@ -1778,7 +1775,7 @@ void FirstFrameHandling() {
 	PROGRESS_BAR_COUNT+=1.f;
 	LoadLevelScreen();
 
-	if (!LOAD_N_DONT_ERASE)
+	if(!LOAD_N_DONT_ERASE)
 		SetEditMode(0);
 
 	PROGRESS_BAR_COUNT+=1.f;
@@ -1794,7 +1791,7 @@ void FirstFrameHandling() {
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	
-	if (!NO_TIME_INIT)
+	if(!NO_TIME_INIT)
 		arxtime.init();
 	
 	arxtime.update_last_frame_time();
@@ -1816,20 +1813,17 @@ void FirstFrameHandling() {
 	player.desiredangle.a=player.angle.a=0.f;
 	ARX_PLAYER_RectifyPosition();
 
-	if (entities.player())
-		entities.player()->_npcdata->vvpos=-99999;
+	if(entities.player())
+		entities.player()->_npcdata->vvpos = -99999;
 
 	SendGameReadyMsg();
 	PLAYER_MOUSELOOK_ON = false;
 	player.Interface &= ~INTER_NOTE;
 
-	if (NO_TIME_INIT)
-	{
+	if(NO_TIME_INIT) {
 		arxtime.force_time_restore(FORCE_TIME_RESTORE);
 		arxtime.force_frame_time_restore(FORCE_TIME_RESTORE);
-	}
-	else
-	{
+	} else {
 		arxtime.resume();
 	}
 
@@ -1857,8 +1851,8 @@ void FirstFrameHandling() {
 	
 	ResetVVPos(entities.player());
 	
- PROGRESS_BAR_COUNT+=1.f;
- LoadLevelScreen();
+	PROGRESS_BAR_COUNT+=1.f;
+	LoadLevelScreen();
 	LoadLevelScreen(-2);
 	
 	if (	(!CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
