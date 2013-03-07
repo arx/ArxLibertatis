@@ -3896,7 +3896,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal) {
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 {
-	fDecPulse += FrameDiff * 0.5f;
+	fDecPulse += framedelay * 0.5f;
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35) + _iX ;
 	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + _iY;
@@ -6950,7 +6950,7 @@ void ArxGame::drawAllInterface() {
 						}
 					}
 
-					lTimeToDrawMecanismCursor += static_cast<long>(FrameDiff);
+					lTimeToDrawMecanismCursor += static_cast<long>(framedelay);
 					EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
 				}
 
@@ -6960,7 +6960,7 @@ void ArxGame::drawAllInterface() {
 					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
 					Color lcolor = Color::gray(.5f);
 					static float fArrowMove=0.f;
-					fArrowMove+=.5f*FrameDiff;
+					fArrowMove+=.5f*framedelay;
 
 					if (fArrowMove > 180.f)
 						fArrowMove=0.f;
@@ -7353,7 +7353,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			{
 				if(FlyingOverIO||DRAGINTER)
 				{
-					fHighLightAng+=(float)(FrameDiff*0.5);
+					fHighLightAng+=(float)(framedelay*0.5);
 
 					if(fHighLightAng>90.f) fHighLightAng=90.f;
 
@@ -7673,7 +7673,7 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 			if(FlyingOverIO||DRAGINTER)
 			{
-				fHighLightAng+=(float)(FrameDiff*0.5f);
+				fHighLightAng+=(float)(framedelay*0.5f);
 
 				if(fHighLightAng>90.f) fHighLightAng=90.f;
 

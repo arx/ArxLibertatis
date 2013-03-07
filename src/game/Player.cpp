@@ -378,7 +378,7 @@ static void ARX_PLAYER_ManageTorch() {
 	if (CURRENT_TORCH)
 	{
 		CURRENT_TORCH->ignition = 0;
-		CURRENT_TORCH->durability -= FrameDiff * ( 1.0f / 10000 );
+		CURRENT_TORCH->durability -= framedelay * ( 1.0f / 10000 );
 
 		if (CURRENT_TORCH->durability <= 0)
 		{
@@ -1637,16 +1637,16 @@ void ARX_PLAYER_Manage_Visual() {
 			io->halo.color = Color3f::red;
 			io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 			io->halo.radius = 20.f;
-			player.life += float(FrameDiff) * 0.1f;
+			player.life += float(framedelay) * 0.1f;
 			player.life = std::min(player.life, player.maxlife);
-			player.mana += float(FrameDiff) * 0.1f;
+			player.mana += float(framedelay) * 0.1f;
 			player.mana = std::min(player.mana, player.maxmana);
 		}
 		
 		if(cur_mr == 3) {
-			player.life += float(FrameDiff) * 0.05f;
+			player.life += float(framedelay) * 0.05f;
 			player.life = std::min(player.life, player.maxlife);
-			player.mana += float(FrameDiff) * 0.05f;
+			player.mana += float(framedelay) * 0.05f;
 			player.mana = std::min(player.mana, player.maxmana);
 		}
 		
@@ -2495,8 +2495,8 @@ void PlayerMovementIterate(float DeltaTime) {
 		
 	}
 	
-	if(entities.player()->_npcdata->climb_count != 0.f && FrameDiff > 0) {
-		entities.player()->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * FrameDiff * 0.1f;
+	if(entities.player()->_npcdata->climb_count != 0.f && framedelay > 0) {
+		entities.player()->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * framedelay * 0.1f;
 		if(entities.player()->_npcdata->climb_count < 0) {
 			entities.player()->_npcdata->climb_count = 0.f;
 		}
@@ -2709,7 +2709,7 @@ void PlayerMovementIterate(float DeltaTime) {
 					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - player.baseHeight()))
 					                   * (1.0f / 30));
 					const float LAVA_DAMAGE = 10.f;
-					float damages = LAVA_DAMAGE * FrameDiff * 0.01f * mul;
+					float damages = LAVA_DAMAGE * framedelay * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
@@ -2895,7 +2895,7 @@ void PlayerMovementIterate(float DeltaTime) {
 			Vec3f vect = moveto - player.pos;
 			float divv = vect.length();
 			if(divv > 0.f) {
-				float mul = (float)FrameDiff * 0.001f * 200.f;
+				float mul = (float)framedelay * 0.001f * 200.f;
 				divv = mul / divv;
 				vect *= divv;
 				moveto = player.pos + vect;
@@ -2930,11 +2930,11 @@ lasuite:
 	// Get Player position color
 	float grnd_color = GetColorz(player.pos.x, player.pos.y + 90, player.pos.z) - 15.f;
 	if(CURRENT_PLAYER_COLOR < grnd_color) {
-		CURRENT_PLAYER_COLOR += FrameDiff * (1.0f / 8);
+		CURRENT_PLAYER_COLOR += framedelay * (1.0f / 8);
 		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, grnd_color);
 	}
 	if(CURRENT_PLAYER_COLOR > grnd_color) {
-		CURRENT_PLAYER_COLOR -= FrameDiff * (1.0f / 4);
+		CURRENT_PLAYER_COLOR -= framedelay * (1.0f / 4);
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
 	
@@ -2943,12 +2943,12 @@ lasuite:
 		if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic >= 2) || (InventoryDir == -1))
 		{
 			if (InventoryX > -160)
-				InventoryX -= INTERFACE_RATIO(FrameDiff * ( 1.0f / 3 ));
+				InventoryX -= INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
 		}
 		else
 		{
 			if (InventoryX < 0)
-				InventoryX += InventoryDir * INTERFACE_RATIO(FrameDiff * ( 1.0f / 3 ));
+				InventoryX += InventoryDir * INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
 		}
 
 		if (InventoryX <= -160)

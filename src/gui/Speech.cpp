@@ -569,19 +569,19 @@ void ARX_SPEECH_Update() {
 									duration = 4000.0f;
 								}
 								
-								fDTime = ((float)iTaille * (float)FrameDiff) / duration; //speech->duration;
+								fDTime = ((float)iTaille * (float)framedelay) / duration; //speech->duration;
 								float fTimeOneLine = ((float)sSize.y) * fDTime;
 
 								if(((float)speech->iTimeScroll) >= fTimeOneLine) {
 									float fResteLine = (float)sSize.y - speech->fPixelScroll;
-									float fTimePlus = ((float)fResteLine * (float)FrameDiff) / duration;
+									float fTimePlus = ((float)fResteLine * (float)framedelay) / duration;
 									fDTime -= fTimePlus;
 									speech->fPixelScroll = 0.f;
 									speech->iTimeScroll = 0;
 								}
-								speech->iTimeScroll	+= checked_range_cast<int>(FrameDiff);
+								speech->iTimeScroll	+= checked_range_cast<int>(framedelay);
 							} else {
-								fDTime = ((float)iTaille * (float)FrameDiff) / 4000.0f;
+								fDTime = ((float)iTaille * (float)framedelay) / 4000.0f;
 							}
 
 							speech->fDeltaY			+= fDTime;

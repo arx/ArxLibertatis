@@ -61,7 +61,7 @@ using std::max;
 using std::vector;
 
 //-----------------------------------------------------------------------------
-extern float FrameDiff;
+extern float framedelay;
 long ON_PLATFORM=0;
 //-----------------------------------------------------------------------------
 size_t MAX_IN_SPHERE_Pos = 0;

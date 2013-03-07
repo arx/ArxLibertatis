@@ -1071,7 +1071,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 			if(io->show == SHOW_FLAG_TELEPORTING) {
-				float fCalc = io->sfx_time + FrameDiff;
+				float fCalc = io->sfx_time + framedelay;
 				io->sfx_time = checked_range_cast<unsigned long>(fCalc);
 
 				if (io->sfx_time >= (unsigned long)(arxtime))
