@@ -136,7 +136,6 @@ void ARXMenu_Options_Video_SetFogDistance(int _iFog) {
 	config.video.fogDistance = clamp(_iFog, 0, 10);
 }
 
-extern long MAX_FRAME_COUNT;
 extern long USEINTERNORM;
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
@@ -152,19 +151,16 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 		case 0:
 			ZMAPMODE = 0;
 			MAX_LLIGHTS = 6; 
-			MAX_FRAME_COUNT = 3;
 			USEINTERNORM = 1; 
 			break;
 		case 1:
 			ZMAPMODE = 1;
 			MAX_LLIGHTS = 10; 
-			MAX_FRAME_COUNT = 2;
 			USEINTERNORM = 1; 
 			break;
 		case 2:
 			ZMAPMODE = 1;
 			MAX_LLIGHTS = 15; 
-			MAX_FRAME_COUNT = 1;
 			USEINTERNORM = 1; 
 			break;
 	}

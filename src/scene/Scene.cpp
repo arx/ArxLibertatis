@@ -1886,7 +1886,6 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 }
 
 extern long SPECIAL_DRAGINTER_RENDER;
-long MAX_FRAME_COUNT=0;
 //*************************************************************************************
 // Main Background Rendering Proc.
 // ie: Big Mess
