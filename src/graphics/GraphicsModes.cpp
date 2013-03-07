@@ -77,15 +77,12 @@ void ARX_GLOBALMODS_Reset() {
 
 float Approach(float current, float desired, float increment)
 {
-	if (desired > current)
-	{
+	if(desired > current) {
 		current += increment;
 
 		if (desired < current)
 			current = desired;
-	}
-	else if (desired < current)
-	{
+	} else if (desired < current) {
 		current -= increment;
 
 		if (desired > current)
@@ -100,36 +97,31 @@ void ARX_GLOBALMODS_Stack() {
 	desired.depthcolor = Color3f::black;
 	desired.zclip = DEFAULT_ZCLIP;
 }
+
 void ARX_GLOBALMODS_UnStack()
 {
 	memcpy(&desired, &stacked, sizeof(GLOBAL_MODS));
 }
 
-void ARX_GLOBALMODS_Apply()
-{
-	if (EDITMODE) return;
+void ARX_GLOBALMODS_Apply() {
+	if(EDITMODE)
+		return;
 
 	float baseinc = framedelay;
 	float incdiv1000 = framedelay * ( 1.0f / 1000 );
 
-	if (desired.flags & GMOD_ZCLIP)
-	{
+	if (desired.flags & GMOD_ZCLIP) {
 		current.zclip = Approach(current.zclip, desired.zclip, baseinc * 2);
-	}
-	else // return to default...
-	{
+	} else { // return to default...
 		desired.zclip = current.zclip = Approach(current.zclip, DEFAULT_ZCLIP, baseinc * 2);
 	}
 
 	// Now goes for RGB mods
-	if (desired.flags & GMOD_DCOLOR)
-	{
+	if(desired.flags & GMOD_DCOLOR) {
 		current.depthcolor.r = Approach(current.depthcolor.r, desired.depthcolor.r, incdiv1000);
 		current.depthcolor.g = Approach(current.depthcolor.g, desired.depthcolor.g, incdiv1000);
 		current.depthcolor.b = Approach(current.depthcolor.b, desired.depthcolor.b, incdiv1000);
-	}
-	else
-	{
+	} else {
 		current.depthcolor.r = Approach(current.depthcolor.r, 0, incdiv1000);
 		current.depthcolor.g = Approach(current.depthcolor.g, 0, incdiv1000);
 		current.depthcolor.b = Approach(current.depthcolor.b, 0, incdiv1000);
