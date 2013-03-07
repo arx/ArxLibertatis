@@ -2718,125 +2718,94 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_PRECAST1))
-	{
-		if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
-			if (Precast[0].typ != -1)
+	if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST1)) {
+		if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
+			if(Precast[0].typ != -1)
 				ARX_SPELLS_Precast_Launch(0);
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_PRECAST2))
-	{
-		if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
-			if (Precast[1].typ != -1)
+	if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST2)) {
+		if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
+			if(Precast[1].typ != -1)
 				ARX_SPELLS_Precast_Launch(1);
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_PRECAST3))
-	{
-		if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
-			if (Precast[2].typ != -1)
+	if(GInput->actionNowPressed(CONTROLS_CUST_PRECAST3)) {
+		if(((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
+			if(Precast[2].typ != -1)
 				ARX_SPELLS_Precast_Launch(2);
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
-	{
+	if(GInput->actionNowPressed(CONTROLS_CUST_WEAPON) || lChangeWeapon) {
 		bool bGo = true; 
 
-		if (lChangeWeapon > 0)
-		{
-			if (lChangeWeapon == 2)
-			{
+		if(lChangeWeapon > 0) {
+			if(lChangeWeapon == 2) {
 				lChangeWeapon--;
-			}
-			else
-			{
-				if(	(entities.player()->animlayer[1].cur_anim==NULL)||
-					(entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT]))
+			} else {
+				if(!entities.player()->animlayer[1].cur_anim ||
+					entities.player()->animlayer[1].cur_anim == entities.player()->anims[ANIM_WAIT])
 				{
 					lChangeWeapon--;
 
-					if (pIOChangeWeapon)
-					{
+					if(pIOChangeWeapon) {
 						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
 						pIOChangeWeapon=NULL;
 					}
-				}
-				else
-				{
+				} else {
 					bGo=false;
 				}
 			}
 		}
 
-		if (bGo)
-		{
-			if (player.Interface & INTER_COMBATMODE)
-			{
+		if(bGo) {
+			if(player.Interface & INTER_COMBATMODE) {
 				ARX_INTERFACE_Combat_Mode(0);
 				bGToggleCombatModeWithKey=false;
 				SPECIAL_DRAW_WEAPON=0;
 
-				if (config.input.mouseLookToggle)
+				if(config.input.mouseLookToggle)
 					TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
-			}
-			else
-			{
+			} else {
 				MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
 				SPECIAL_DRAW_WEAPON=1;
 				TRUE_PLAYER_MOUSELOOK_ON = true;
 				SLID_START=float(arxtime);
 				ARX_INTERFACE_Combat_Mode(2);
 				bGToggleCombatModeWithKey=true;
-
 			}
 		}
 	}
 
-	if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
+	if(EERIEMouseButton & 1)
+		bGToggleCombatModeWithKey = false;
 
-	if(bForceEscapeFreeLook)
-	{
+	if(bForceEscapeFreeLook) {
 		TRUE_PLAYER_MOUSELOOK_ON = false;
 
-		if (!GInput->actionPressed(CONTROLS_CUST_FREELOOK))
-		{
+		if(!GInput->actionPressed(CONTROLS_CUST_FREELOOK)) {
 			bForceEscapeFreeLook=false;
 		}
-	}
-	else
-	{
-		if(eMouseState!=MOUSE_IN_INVENTORY_ICON)
-		{
-			if (!config.input.mouseLookToggle)
-			{
-				if (GInput->actionPressed(CONTROLS_CUST_FREELOOK))
-				{
-					if (!TRUE_PLAYER_MOUSELOOK_ON)
-					{
+	} else {
+		if(eMouseState!=MOUSE_IN_INVENTORY_ICON) {
+			if(!config.input.mouseLookToggle) {
+				if(GInput->actionPressed(CONTROLS_CUST_FREELOOK)) {
+					if(!TRUE_PLAYER_MOUSELOOK_ON) {
 						TRUE_PLAYER_MOUSELOOK_ON = true;
 						SLID_START=float(arxtime);
 					}
-				}
-				else
-				{
+				} else {
 					TRUE_PLAYER_MOUSELOOK_ON = false;
 				}
-			}
-			else
-			{
-				if (GInput->actionNowPressed(CONTROLS_CUST_FREELOOK))
-				{
-					if (!TRUE_PLAYER_MOUSELOOK_ON)
-					{
+			} else {
+				if(GInput->actionNowPressed(CONTROLS_CUST_FREELOOK)) {
+					if(!TRUE_PLAYER_MOUSELOOK_ON) {
 						TRUE_PLAYER_MOUSELOOK_ON = true;
 						SLID_START=float(arxtime);
-					}
-					else
-					{
+					} else {
 						TRUE_PLAYER_MOUSELOOK_ON = false;
 
-						if (player.Interface & INTER_COMBATMODE)
+						if(player.Interface & INTER_COMBATMODE)
 							ARX_INTERFACE_Combat_Mode(0);			
 					}
 				}
