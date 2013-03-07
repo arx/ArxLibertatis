@@ -1851,9 +1851,8 @@ void ARX_PLAYER_Manage_Visual() {
 
 		}
 
-		if (ChangeMoveAnim == NULL)
-		{
-			if (EXTERNALVIEW)
+		if(!ChangeMoveAnim) {
+			if(EXTERNALVIEW)
 				ChangeMoveAnim = alist[ANIM_WAIT];
 			else
 				ChangeMoveAnim = alist[ANIM_WAIT_SHORT];
