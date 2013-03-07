@@ -118,9 +118,18 @@ inline	static	void	Cedric_ResetBoundingBox(Entity * io)
 
 extern float INVISIBILITY_OVERRIDE;
 extern bool EXTERNALVIEW;
-void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
+float Cedric_GetScale(Entity * io) {
 	if(io) {
-		invisibility = io->invisibility;
+		// Scaling Value for this object (Movements will also be scaled)
+		return io->scale;
+	} else {
+		return 1.f;
+	}
+}
+
+float Cedric_GetInvisibility(Entity *io) {
+	if(io) {
+		float invisibility = io->invisibility;
 
 		if (invisibility > 1.f)
 			invisibility -= 1.f;
@@ -137,12 +146,9 @@ void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
 				}
 			}
 		}
-
-		// Scaling Value for this object (Movements will also be scaled)
-		scale = io->scale;
+		return invisibility;
 	} else {
-		invisibility = 0.f;
-		scale = 1.f;
+		return 0.f;
 	}
 }
 
@@ -1651,9 +1657,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	Cedric_ResetBoundingBox(io);
 	
 	// Set scale and invisibility factors
-	float scale;
-	float invisibility;
-	Cedric_GetScale(scale, invisibility, io);
+	float scale = Cedric_GetScale(io);
+	float invisibility = Cedric_GetInvisibility(io);
 	
 	if(!io) {
 		if(INVISIBILITY_OVERRIDE != 0.f) {
