@@ -2937,26 +2937,20 @@ lasuite:
 		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, grnd_color);
 	}
 	
-	if (InventoryDir != 0)
-	{
-		if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic >= 2) || (InventoryDir == -1))
-		{
-			if (InventoryX > -160)
+	if (InventoryDir != 0) {
+		if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2 || InventoryDir == -1) {
+			if(InventoryX > -160)
 				InventoryX -= INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
-		}
-		else
-		{
-			if (InventoryX < 0)
+		} else {
+			if(InventoryX < 0)
 				InventoryX += InventoryDir * INTERFACE_RATIO(framedelay * ( 1.0f / 3 ));
 		}
 
-		if (InventoryX <= -160)
-		{
+		if(InventoryX <= -160) {
 			InventoryX = -160;
 			InventoryDir = 0;
 
-			if (player.Interface & INTER_STEAL || ioSteal)
-			{
+			if(player.Interface & INTER_STEAL || ioSteal) {
 				SendIOScriptEvent(ioSteal, SM_STEAL, "off");
 				player.Interface &= ~INTER_STEAL;
 				ioSteal = NULL;
@@ -2965,9 +2959,7 @@ lasuite:
 			SecondaryInventory = NULL;
 			TSecondaryInventory = NULL;
 			InventoryDir = 0;
-		}
-		else if (InventoryX >= 0)
-		{
+		} else if(InventoryX >= 0) {
 			InventoryX = 0;
 			InventoryDir = 0;
 		}
