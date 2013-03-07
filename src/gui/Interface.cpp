@@ -4392,19 +4392,12 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						if (necklace.runes[i]->angle.b<0.f) necklace.runes[i]->angle.b=0.f;
 
 						DynLight[0].exist=0;
-						float tt;
 						
 						bookcam.center.x = (382 + xpos * 45 + BOOKDECX + 3) * Xratio;
 						bookcam.center.y = (100 + ypos * 64 + BOOKDECY + 2) * Yratio;
 						SetActiveCamera(&bookcam);
 						PrepareCamera(&bookcam);
 
-						tt=angle.b;
-						angle.b=-20.f;
-						angle.b=tt;
-						angle.b-=20.f;
-
-						angle.b+=20.f;
 						GRenderer->SetRenderState(Renderer::DepthWrite, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						DynLight[0].exist=1;	
