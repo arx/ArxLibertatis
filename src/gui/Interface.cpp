@@ -2661,76 +2661,56 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_BOOKCHARSHEET))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKCHARSHEET)) {
+		if(!(player.Interface & INTER_MAP)) {
 			Book_Mode = BOOKMODE_STATS;
 			ARX_INTERFACE_BookOpenClose(0);
-		}
-		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_STATS))
+		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_STATS)) {
 			Book_Mode = BOOKMODE_STATS;
-		else
-		{
+		} else {
 			ARX_INTERFACE_BookOpenClose(2);
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_BOOKSPELL))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
-			if (player.rune_flags)
-			{
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKSPELL)) {
+		if(!(player.Interface & INTER_MAP)) {
+			if(player.rune_flags) {
 				Book_Mode = BOOKMODE_SPELLS;
 				ARX_INTERFACE_BookOpenClose(0);
 			}
-		}
-		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_SPELLS))
+		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_SPELLS)) {
 			Book_Mode = BOOKMODE_SPELLS;
-		else
-		{
+		} else {
 			ARX_INTERFACE_BookOpenClose(2);
 		}	  
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_BOOKMAP))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKMAP)) {
+		if (!(player.Interface & INTER_MAP)) {
 			Book_Mode = BOOKMODE_MINIMAP;
 			ARX_INTERFACE_BookOpenClose(0);
-		}
-		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_MINIMAP))
+		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_MINIMAP)) {
 			Book_Mode = BOOKMODE_MINIMAP;
-		else
-		{
+		} else {
 			ARX_INTERFACE_BookOpenClose(2);
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_BOOKQUEST))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOKQUEST)) {
+		if(!(player.Interface & INTER_MAP)) {
 			Book_Mode = BOOKMODE_QUESTS;
 			ARX_INTERFACE_BookOpenClose(0);
-		}
-		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_QUESTS))
+		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_QUESTS)) {
 			Book_Mode = BOOKMODE_QUESTS;
-		else
-		{
+		} else {
 			ARX_INTERFACE_BookOpenClose(2);
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL))
-	{
-		for (long i=MAX_SPELLS-1;i>=0;i--)
-		{
-			if ((spells[i].exist) && (spells[i].caster==0))
-				if (spellicons[spells[i].type].bDuration)
-				{
+	if(GInput->actionNowPressed(CONTROLS_CUST_CANCELCURSPELL)) {
+		for(long i = MAX_SPELLS - 1; i >= 0; i--) {
+			if(spells[i].exist && spells[i].caster == 0)
+				if(spellicons[spells[i].type].bDuration) {
 					ARX_SPELLS_AbortSpellSound();
 					spells[i].tolive=0;
 					break;
