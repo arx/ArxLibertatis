@@ -2813,34 +2813,29 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-
-	if(	(player.Interface&INTER_COMBATMODE)&&
-		(GInput->actionNowReleased(CONTROLS_CUST_FREELOOK)) )
-	{
+	if((player.Interface & INTER_COMBATMODE) && GInput->actionNowReleased(CONTROLS_CUST_FREELOOK)) {
 		ARX_INTERFACE_Combat_Mode(0);
 	}
 
-	if (EDITMODE) return;//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	if(EDITMODE)
+		return;
 
 	// Checks INVENTORY Key Status.
-	if (GInput->actionNowPressed(CONTROLS_CUST_INVENTORY))
-	{
-		if (player.Interface & INTER_COMBATMODE)
-		{
+	if(GInput->actionNowPressed(CONTROLS_CUST_INVENTORY)) {
+		if(player.Interface & INTER_COMBATMODE) {
 			ARX_INTERFACE_Combat_Mode(0);
 		}
 
 		bInverseInventory=!bInverseInventory;
 		lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 
-		if (!config.input.mouseLookToggle)
-		{
+		if(!config.input.mouseLookToggle) {
 			bForceEscapeFreeLook=true;
 		}
 	}
 
 	// Checks BOOK Key Status.
-	if (GInput->actionNowPressed(CONTROLS_CUST_BOOK))
+	if(GInput->actionNowPressed(CONTROLS_CUST_BOOK))
 		ARX_INTERFACE_BookOpenClose(0);
 
 	//	Check For Combat Mode ON/OFF
@@ -2858,39 +2853,29 @@ void ArxGame::managePlayerControls()
 		&& (config.input.autoReadyWeapon))
 		)
 	{
-		if (!(LastMouseClick & 1))
-		{
+		if (!(LastMouseClick & 1)) {
 			COMBAT_MODE_ON_START_TIME = (unsigned long)(arxtime);
-		}
-		else 
-		{
-			if (float(arxtime) - COMBAT_MODE_ON_START_TIME>10)
-			{
+		} else {
+			if(float(arxtime) - COMBAT_MODE_ON_START_TIME > 10) {
 				ARX_INTERFACE_Combat_Mode(1);
 
-				if (! config.input.autoReadyWeapon)
+				if(!config.input.autoReadyWeapon)
 					bGToggleCombatModeWithKey=true;
 			}
 		}
 	}
 
-	if	(lOldTruePlayerMouseLook!=TRUE_PLAYER_MOUSELOOK_ON)
-	{
+	if(lOldTruePlayerMouseLook != TRUE_PLAYER_MOUSELOOK_ON) {
 		bInverseInventory=false;
 
-		if (TRUE_PLAYER_MOUSELOOK_ON)
-		{
-			if (!CSEND)
-			{
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
+			if(!CSEND) {
 				CSEND=1;
 				SendIOScriptEvent(entities.player(),SM_EXPLORATIONMODE);
 			}
 		}
-	}
-	else				
-	{
-		if (CSEND)
-		{
+	} else {
+		if(CSEND) {
 			CSEND=0;
 			SendIOScriptEvent(entities.player(),SM_CURSORMODE);
 		}
@@ -2898,51 +2883,37 @@ void ArxGame::managePlayerControls()
 
 	static long lOldInterfaceTemp=0;
 
-	if (TRUE_PLAYER_MOUSELOOK_ON)
-	{
-		if(bInverseInventory)
-		{
+	if(TRUE_PLAYER_MOUSELOOK_ON) {
+		if(bInverseInventory) {
 			bRenderInCursorMode=true;
 
-			if(MAGICMODE<0)
-			{
+			if(MAGICMODE < 0) {
 				InventoryOpenClose(1);
 			}
-		}
-		else
-		{
-			if(!bInventoryClosing)
-			{
-
+		} else {
+			if(!bInventoryClosing) {
 				lTimeToDrawMecanismCursor=0;
 				lNbToDrawMecanismCursor=0;
 
-				if (player.Interface & INTER_INVENTORYALL)
-				{
+				if(player.Interface & INTER_INVENTORYALL) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 					bInventoryClosing = true;
 					lOldInterfaceTemp=INTER_INVENTORYALL;
 				}
 
-
 				bRenderInCursorMode=false;
 				InventoryOpenClose(2);
 
-				if((player.Interface &INTER_INVENTORY))
-				{
+				if(player.Interface &INTER_INVENTORY) {
 					Entity * io = NULL;
 
-					if (SecondaryInventory!=NULL)
-					{
+					if(SecondaryInventory!=NULL) {
 						io = (Entity *)SecondaryInventory->io;
-					}
-					else if (player.Interface & INTER_STEAL)
-					{
+					} else if (player.Interface & INTER_STEAL) {
 						io = ioSteal;
 					}
 
-					if (io!=NULL)
-					{
+					if(io) {
 						InventoryDir=-1;
 						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 						TSecondaryInventory=SecondaryInventory;
@@ -2950,40 +2921,29 @@ void ArxGame::managePlayerControls()
 					}
 				}
 
-				if(config.input.mouseLookToggle)
-				{
+				if(config.input.mouseLookToggle) {
 					TRUE_PLAYER_MOUSELOOK_ON = true;
 					SLID_START=float(arxtime);
 				}
 			}
 		}
-	}
-	else
-	{
-		if(bInverseInventory)
-		{
-			if(!bInventoryClosing)
-			{
-
+	} else {
+		if(bInverseInventory) {
+			if(!bInventoryClosing) {
 				bRenderInCursorMode=false;
 
 				InventoryOpenClose(2);
 
-				if((player.Interface &INTER_INVENTORY))
-				{
+				if(player.Interface &INTER_INVENTORY) {
 					Entity * io = NULL;
 
-					if (SecondaryInventory!=NULL)
-					{
+					if (SecondaryInventory!=NULL) {
 						io = (Entity *)SecondaryInventory->io;
-					}
-					else if (player.Interface & INTER_STEAL)
-					{
+					} else if (player.Interface & INTER_STEAL) {
 						io = ioSteal;
 					}
 
-					if (io!=NULL)
-					{
+					if(io){
 						InventoryDir=-1;
 						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 						TSecondaryInventory=SecondaryInventory;
@@ -2991,30 +2951,22 @@ void ArxGame::managePlayerControls()
 					}
 				}
 
-				if(config.input.mouseLookToggle)
-				{
+				if(config.input.mouseLookToggle) {
 					TRUE_PLAYER_MOUSELOOK_ON = true;
 					SLID_START=float(arxtime);
 				}
 			}
-		}
-		else
-		{
-
+		} else {
 			bRenderInCursorMode=true;
 
-			if(MAGICMODE<0)
-			{
-
-				if(lOldInterfaceTemp)
-				{
+			if(MAGICMODE<0) {
+				if(lOldInterfaceTemp) {
 					lOldInterface=lOldInterfaceTemp;
 					lOldInterfaceTemp=0;
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 				}
 
-				if(lOldInterface)
-				{
+				if(lOldInterface) {
 					player.Interface|=lOldInterface;
 					player.Interface&=~INTER_INVENTORY;
 				}
@@ -3023,14 +2975,11 @@ void ArxGame::managePlayerControls()
 			}
 		}
 
-		if (bRenderInCursorMode)
-		{
-			if (eyeball.exist != 0)
-			{
+		if(bRenderInCursorMode) {
+			if(eyeball.exist != 0) {
 				long lNumSpell=ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
 
-				if (lNumSpell >= 0)
-				{
+				if(lNumSpell >= 0) {
 					ARX_SPELLS_Kill(lNumSpell);
 				}
 			}
