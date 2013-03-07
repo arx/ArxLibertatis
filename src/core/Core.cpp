@@ -177,7 +177,6 @@ extern EERIE_3DOBJ * fogobj;
 extern float	InventoryX;
 extern float	PROGRESS_BAR_COUNT;
 extern float	PROGRESS_BAR_TOTAL;
-extern long		FistParticles;
 extern long		DONT_WANT_PLAYER_INZONE;
 extern long		TOTPDL;
 extern long		COLLIDED_CLIMB_POLY;
@@ -2088,21 +2087,14 @@ void ManageCombatModeAnimations()
 									sphere.origin = io->obj->vertexlist3[id].v;
 									sphere.radius = 25.f;
 
-									if (FistParticles & 2) sphere.radius*=2.f;
-
 									long num;
 
 									if (CheckAnythingInSphere(&sphere,0,0,&num))
 									{
 										float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
 
-										if (FistParticles & 2) dmgs*=1.5f;
-
 										if (ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v,dmgs,40,0))
 										{
-											if (FistParticles & 2)
-												ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &io->obj->vertexlist3[id].v);
-
 											PlayerWeaponBlocked=useanim->ctime;
 										}
 
@@ -2129,21 +2121,14 @@ void ManageCombatModeAnimations()
 									sphere.origin = io->obj->vertexlist3[id].v;
 									sphere.radius = 25.f;
 
-									if (FistParticles & 2) sphere.radius*=2.f;
-
 									long num;
 
 									if (CheckAnythingInSphere(&sphere,0,0,&num))
 									{
 										float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
 
-										if (FistParticles & 2) dmgs*=1.5f;
-
 										if (ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v,dmgs,40,0))
 										{
-											if (FistParticles & 2)
-												ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START, &io->obj->vertexlist3[id].v);
-
 											PlayerWeaponBlocked=useanim->ctime;
 										}
 
