@@ -2040,9 +2040,8 @@ void ARX_PLAYER_Manage_Visual() {
 		} else if(player.jumpphase != NotJumping) {
 			
 			switch(player.jumpphase) {
-				
-				case NotJumping: break;
-				
+				case NotJumping:
+				break;
 				case JumpStart: { // Anticipation
 					FALLING_TIME = 0;
 					player.jumpphase = JumpAscending;
@@ -2076,8 +2075,7 @@ void ARX_PLAYER_Manage_Visual() {
 				
 				case JumpEnd: { // Post-synch
 					LAST_JUMP_ENDTIME = (unsigned long)(arxtime);
-					if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2]
-					   && (ause0->flags & EA_ANIMEND)) {
+					if(ause0->cur_anim == alist[ANIM_JUMP_END_PART2] && (ause0->flags & EA_ANIMEND)) {
 						AcquireLastAnim(io);
 						player.jumpphase = NotJumping;
 						goto retry;
@@ -2093,11 +2091,9 @@ void ARX_PLAYER_Manage_Visual() {
 					}
 					break;
 				}
-				
 			}
 
-			if ((ChangeMoveAnim) && (ChangeMoveAnim != ause0->cur_anim))
-			{
+			if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
 				AcquireLastAnim(io);
 				ResetAnim(ause0);
 				ause0->cur_anim = ChangeMoveAnim;
@@ -2110,39 +2106,36 @@ void ARX_PLAYER_Manage_Visual() {
 					ause0->flags |= EA_EXCONTROL;
 			}
 
-			if ((ChangeMoveAnim2) && (ChangeMoveAnim2 != ause3->cur_anim))
-			{
+			if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
 				AcquireLastAnim(io);
 				ResetAnim(ause3);
 				ause3->cur_anim = ChangeMoveAnim2;
 				ause3->flags = EA_STATICANIM;
 			}
-		}
-		else
-		{
+		} else {
 		makechanges:
 			;
 
-			if ((ChangeMoveAnim) && (ChangeMoveAnim != ause0->cur_anim))
-			{
+			if(ChangeMoveAnim && ChangeMoveAnim != ause0->cur_anim) {
 				AcquireLastAnim(io);
 				ResetAnim(ause0);
 				ause0->cur_anim = ChangeMoveAnim;
 				ause0->flags = EA_STATICANIM;
 
-				if (ChangeMA_Loop)		ause0->flags |= EA_LOOP;
+				if(ChangeMA_Loop)
+					ause0->flags |= EA_LOOP;
 
-				if (ChangeMA_Stopend)	ause0->flags |= EA_STOPEND;
+				if(ChangeMA_Stopend)
+					ause0->flags |= EA_STOPEND;
 
-				if ((ChangeMoveAnim == alist[ANIM_U_TURN_LEFT])
-				        ||	(ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT])
-				        ||	(ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT])
-				        ||	(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT]))
+				if(ChangeMoveAnim == alist[ANIM_U_TURN_LEFT]
+						||	ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT]
+						||	ChangeMoveAnim == alist[ANIM_U_TURN_RIGHT_FIGHT]
+						||	ChangeMoveAnim == alist[ANIM_U_TURN_LEFT_FIGHT])
 					ause0->flags |= EA_EXCONTROL;
 			}
 
-			if ((ChangeMoveAnim2) && (ChangeMoveAnim2 != ause3->cur_anim))
-			{
+			if(ChangeMoveAnim2 && ChangeMoveAnim2 != ause3->cur_anim) {
 				AcquireLastAnim(io);
 				ResetAnim(ause3);
 				ause3->cur_anim = ChangeMoveAnim2;
@@ -2157,16 +2150,13 @@ nochanges:
 	;
 	player.Last_Movement = player.Current_Movement;
 
-	if (!light)
-	{
-		if (special[2] != -1)
-		{
+	if(!light) {
+		if(special[2] != -1) {
 			DynLight[special[2]].exist = 0;
 			special[2] = -1;
 		}
 
-		if (special[1] != -1)
-		{
+		if(special[1] != -1) {
 			DynLight[special[1]].exist = 0;
 			special[1] = -1;
 		}
