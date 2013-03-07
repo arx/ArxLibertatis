@@ -2513,43 +2513,31 @@ void ArxGame::managePlayerControls()
 	}
 	
 	// MAGIC
-	if (GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
-	{
-		if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS)
-			&& (ARXmenu.currentmode==AMCM_OFF))
-		{
-			if (!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
+	if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
+		if(!(player.Current_Movement & PLAYER_CROUCH) && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == AMCM_OFF) {
+			if(!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
 				ARX_SOUND_PlaySFX(SND_MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
 		}
-	}
-	else
-	{
+	} else {
 		ARX_SOUND_Stop(SND_MAGIC_AMBIENT);
 		ARX_SOUND_Stop(SND_MAGIC_DRAW);
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
-	{
+	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONLIFE)) {
 		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_life", SM_INVENTORYUSE);
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
-	{
+	if(GInput->actionNowPressed(CONTROLS_CUST_DRINKPOTIONMANA)) {
 		SendInventoryObjectCommand("graph/obj3d/textures/item_potion_mana", SM_INVENTORYUSE);
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_TORCH))
-	{
-		if (CURRENT_TORCH)
-		{
+	if(GInput->actionNowPressed(CONTROLS_CUST_TORCH)) {
+		if(CURRENT_TORCH) {
 			ARX_PLAYER_KillTorch();
-		}
-		else
-		{
+		} else {
 			Entity * io = ARX_INVENTORY_GetTorchLowestDurability();
 
 			if(io) {
-				
 				Entity * ioo = io;
 				
 				if(io->_itemdata->count > 1) {
@@ -2565,71 +2553,52 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_MINIMAP))
-	{
-		SHOW_INGAME_MINIMAP=!SHOW_INGAME_MINIMAP;
+	if(GInput->actionNowPressed(CONTROLS_CUST_MINIMAP)) {
+		SHOW_INGAME_MINIMAP =! SHOW_INGAME_MINIMAP;
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS))
-	{
-		if (eMouseState == MOUSE_IN_BOOK)
-		{
-			if (player.Interface & INTER_MAP)
-			{
-				if (Book_Mode > BOOKMODE_STATS)
-				{
-					if (Book_Mode == BOOKMODE_QUESTS)
+	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
+		if(eMouseState == MOUSE_IN_BOOK) {
+			if(player.Interface & INTER_MAP) {
+				if(Book_Mode > BOOKMODE_STATS) {
+					if(Book_Mode == BOOKMODE_QUESTS)
 						Book_Mode = BOOKMODE_MINIMAP;
-					else if (Book_Mode == BOOKMODE_MINIMAP)
+					else if(Book_Mode == BOOKMODE_MINIMAP)
 						Book_Mode = BOOKMODE_SPELLS;
-					else if (Book_Mode == BOOKMODE_SPELLS)
+					else if(Book_Mode == BOOKMODE_SPELLS)
 						Book_Mode = BOOKMODE_STATS;
+
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				}
 			}
-		}
-		else if (InPlayerInventoryPos(&DANAEMouse))
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory > 0)
-						{
+		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+				if(player.Interface & INTER_INVENTORY) {
+					if(player.bag) {
+						if(sActiveInventory > 0) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory --;
 						}
 					}
 				}
 			}
-		}
-		else
-		{
-			if (player.Interface & INTER_MAP)
-			{
-				if (Book_Mode > BOOKMODE_STATS)
-				{
-					if (Book_Mode == BOOKMODE_QUESTS)
+		} else {
+			if(player.Interface & INTER_MAP) {
+				if(Book_Mode > BOOKMODE_STATS) {
+					if(Book_Mode == BOOKMODE_QUESTS)
 						Book_Mode = BOOKMODE_MINIMAP;
-					else if (Book_Mode == BOOKMODE_MINIMAP)
+					else if(Book_Mode == BOOKMODE_MINIMAP)
 						Book_Mode = BOOKMODE_SPELLS;
-					else if (Book_Mode == BOOKMODE_SPELLS)
+					else if(Book_Mode == BOOKMODE_SPELLS)
 						Book_Mode = BOOKMODE_STATS;
+
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				}
-			}
-			else
-			{
-				if (!PLAYER_INTERFACE_HIDE_COUNT)
-				{
-					if ((player.Interface & INTER_INVENTORY))
-					{
-						if (player.bag)
-						{
-							if (sActiveInventory > 0)
-							{
+			} else {
+				if(!PLAYER_INTERFACE_HIDE_COUNT) {
+					if(player.Interface & INTER_INVENTORY) {
+						if(player.bag) {
+							if(sActiveInventory > 0) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								sActiveInventory --;
 							}
