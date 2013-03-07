@@ -1321,13 +1321,12 @@ void ArxGame::renderCinematic() {
 
 void ArxGame::renderLevel() {
 
-	if (!PLAYER_PARALYSED)
-	{
-		if (manageEditorControls()) goto finish;
+	if(!PLAYER_PARALYSED) {
+		if(manageEditorControls())
+			goto finish;
 	}
 
-	if ((!BLOCK_PLAYER_CONTROLS) && (!PLAYER_PARALYSED))
-	{
+	if(!BLOCK_PLAYER_CONTROLS && !PLAYER_PARALYSED) {
 		managePlayerControls();
 	}
 
@@ -1335,17 +1334,15 @@ void ArxGame::renderLevel() {
 
 	ARX_PLAYER_Manage_Visual();
 
-		ARX_MINIMAP_ValidatePlayerPos();
+	ARX_MINIMAP_ValidatePlayerPos();
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
 	// Clear screen & Z buffers
 	if(desired.flags & GMOD_DCOLOR) {
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, current.depthcolor.to<u8>());
-	}
-	else
-	{
-		subj.bkgcolor=ulBKGColor;
+	} else {
+		subj.bkgcolor = ulBKGColor;
 		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
 	}
 
@@ -1369,8 +1366,7 @@ void ArxGame::renderLevel() {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	if ( (entities.player()) && (entities.player()->animlayer[0].cur_anim) )
-	{
+	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();
 		long old=USEINTERNORM;
 		USEINTERNORM=0;
@@ -1479,7 +1475,7 @@ void ArxGame::renderLevel() {
 
 	// Check For Hiding/unHiding Player Gore
 	if(EXTERNALVIEW || player.life <= 0) {
-		ARX_INTERACTIVE_Show_Hide_1st(entities.player(),0);
+		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
 	}
 
 	if(!EXTERNALVIEW) {
@@ -1515,7 +1511,7 @@ void ArxGame::renderLevel() {
 	PrepareIOTreatZone();
 	ARX_PHYSICS_Apply();
 
-		PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
+	PrecalcIOLighting(&ACTIVECAM->orgTrans.pos, ACTIVECAM->cdepth * 0.6f);
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 
@@ -1649,7 +1645,7 @@ finish:
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	// Manage Death visual & Launch menu...
-	if (DeadTime>2000)
+	if(DeadTime > 2000)
 		ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
@@ -1667,8 +1663,7 @@ finish:
 		drawAllInterface();
 		drawAllInterfaceFinish();
 
-		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)
-       && flarenum) {
+		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE) && flarenum) {
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 			FRAMETICKS = (unsigned long)(arxtime);
 		}
