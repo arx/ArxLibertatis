@@ -2008,11 +2008,7 @@ void ARX_PLAYER_Manage_Visual() {
 						el->exist = 1;
 						el->fallend = 180.f;
 						el->fallstart = 50.f;
-						if(FistParticles & 2) {
-							el->rgb = Color3f(1.f, 0.3f, 0.2f);
-						} else {
-							el->rgb = Color3f(0.7f, 0.3f, 1.f);
-						}
+						el->rgb = Color3f(0.7f, 0.3f, 1.f);
 						el->pos = eobj->vertexlist3[id].v;
 					} else {
 						LogWarning << "Maximum number of dynamic lights exceeded.";
@@ -2035,12 +2031,7 @@ void ARX_PLAYER_Manage_Visual() {
 						pd->sourceionum = 0;
 						pd->source = &eobj->vertexlist3[id].v;
 						pd->fparam = 0.0000001f;
-						if(FistParticles & 2) {
-							pd->move.y *= 2.f;
-							pd->rgb = Color3f(1.f - rnd() * .1f, .3f + rnd() * .1f, .2f - rnd() * .1f);
-						} else {
-							pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
-						}
+						pd->rgb = Color3f(.7f - rnd() * .1f, .3f - rnd() * .1f, 1.f - rnd() * .1f);
 					}
 				}
 			}
