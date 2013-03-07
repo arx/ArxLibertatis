@@ -828,12 +828,12 @@ void ArxGame::updateFirstPersonCamera() {
 		EXTERNALVIEW = 1;
 	} else if(EXTERNALVIEW) {
 		float t=radians(player.angle.b);
-		Vec3f tt;
 
 		for(long l=0; l < 250; l += 10) {
-			tt.x=player.pos.x+(float)EEsin(t)*(float)l;
-			tt.y=player.pos.y-50.f;
-			tt.z=player.pos.z-(float)EEcos(t)*(float)l;
+			Vec3f tt = player.pos;
+			tt.x += (float)EEsin(t)*(float)l;
+			tt.y -= 50.f;
+			tt.z -= (float)EEcos(t)*(float)l;
 			EERIEPOLY * ep = EECheckInPoly(&tt);
 			if(ep) {
 				subj.d_pos = tt;
