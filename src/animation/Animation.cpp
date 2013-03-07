@@ -919,9 +919,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	Vec3f temporary3D;
 	EERIE_CAMERA Ncam;
 	Color3f infra;
-	float invisibility;
-	float scale;
 
+	float scale;
+	float invisibility;
 	Cedric_GetScale(scale, invisibility, io);
 
 	if(!io && INVISIBILITY_OVERRIDE != 0.f)
