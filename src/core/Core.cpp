@@ -1655,9 +1655,7 @@ void FirstFrameProc() {
 			ARX_PLAYER_InitPlayer();
 
 		SLID_VALUE=0.f;
-	}
-	
-	if(!LOAD_N_DONT_ERASE) {
+
 		player.life = player.maxlife;
 		player.mana = player.maxmana;
 		if(!DONT_ERASE_PLAYER) {
