@@ -61,6 +61,7 @@ void ARX_DrawPrimitive(TexturedVertex *, TexturedVertex *, TexturedVertex *, flo
 void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT);
 void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE_3DOBJ * eobj, EERIEMATRIX * BIGMAT, long i);
 
-void Cedric_GetScale(float &scale, float &invisibility, Entity *io);
+float Cedric_GetScale(Entity *io);
+float Cedric_GetInvisibility(Entity *io);
 
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H
