@@ -2218,58 +2218,42 @@ void ArxGame::managePlayerControls()
 		&& (eMouseState != MOUSE_IN_NOTE)
 		)
 	{
-		Entity * t;
+		Entity *t = InterClick(&DANAEMouse);
 
-		t=InterClick(&DANAEMouse);
-
-		if (t!=NULL)
-		{
-			if (t->ioflags & IO_NPC)
-			{
-				if (t->script.data!=NULL)
-				{
-					if (t->_npcdata->life>0.f)
-					{
+		if(t) {
+			if(t->ioflags & IO_NPC) {
+				if(t->script.data) {
+					if(t->_npcdata->life>0.f) {
 						SendIOScriptEvent(t,SM_CHAT);
 						EERIEMouseButton&=~4;
 
-						if (DRAGGING) DRAGGING = 0;
-					}
-					else
-					{
-						if (t->inventory!=NULL)
-						{
-							if (player.Interface & INTER_STEAL)
-								if (ioSteal && t != ioSteal)
-								{
+						if(DRAGGING)
+							DRAGGING = 0;
+					} else {
+						if(t->inventory) {
+							if(player.Interface & INTER_STEAL)
+								if(ioSteal && t != ioSteal) {
 									SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 									player.Interface &= ~INTER_STEAL;
 								}
 
 								ARX_INVENTORY_OpenClose(t);
 
-								if (player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL))
-								{
+								if(player.Interface & (INTER_INVENTORY | INTER_INVENTORYALL)) {
 									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								}
 
-								if (SecondaryInventory)
-								{
+								if(SecondaryInventory) {
 									bForceEscapeFreeLook=true;
 									lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 								}
 						}
 					}
 				}
-			}
-			else
-			{
-				if (t->inventory!=NULL)
-				{
-					if (player.Interface & INTER_STEAL)
-					{
-						if (ioSteal && t != ioSteal)
-						{
+			} else {
+				if(t->inventory) {
+					if(player.Interface & INTER_STEAL) {
+						if(ioSteal && t != ioSteal) {
 							SendIOScriptEvent(ioSteal, SM_STEAL,"off");
 							player.Interface &= ~INTER_STEAL;
 						}
@@ -2277,20 +2261,18 @@ void ArxGame::managePlayerControls()
 
 					ARX_INVENTORY_OpenClose(t);
 
-					if (SecondaryInventory)
-					{
+					if(SecondaryInventory) {
 						bForceEscapeFreeLook=true;
 						lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 					}
-				}
-				else if (t->script.data!=NULL)
-				{
+				} else if (t->script.data) {
 					SendIOScriptEvent(t,SM_ACTION);
 				}
 
 				EERIEMouseButton&=~4;
 
-				if (DRAGGING) DRAGGING = 0;
+				if(DRAGGING)
+					DRAGGING = 0;
 
 				EERIEMouseButton = 0;
 			}
