@@ -546,11 +546,11 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 				if(elapsed > 0.f) {
 					if(elapsed < 3000.f) { // 5 seconds to red
-						float ratio = elapsed * ( 1.0f / 3000 );
+						float ratio = elapsed * (1.0f / 3000);
 						special_color = Color3f(1.f, 1.f - ratio, 1.f - ratio);
 						AddRandomSmoke(io, 1);
 					} else if(elapsed < 6000.f) { // 5 seconds to White
-						float ratio = (elapsed - 3000.f) * ( 1.0f / 3000 );
+						float ratio = (elapsed - 3000.f) * (1.0f / 3000);
 						special_color.r = ratio;
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
