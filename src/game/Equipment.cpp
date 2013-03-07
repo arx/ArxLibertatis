@@ -309,12 +309,9 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	ARX_PLAYER_Restore_Skin();
 	HERO_SHOW_1ST = -1;
 
-	if (EXTERNALVIEW)
-	{
+	if(EXTERNALVIEW) {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 0);
-	}
-	else 
-	{
+	} else {
 		ARX_INTERACTIVE_Show_Hide_1st(entities.player(), 1);
 	}
 
