@@ -1647,16 +1647,12 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
                               bool render,
                               bool update_movement) {
 	
-	float 				invisibility;
-	float 				scale;
-	float				timm;
-	Vec3f			ftr;
-	EERIE_C_DATA	*	obj;
-	
 	// Init some data
 	Cedric_ResetBoundingBox(io);
 	
 	// Set scale and invisibility factors
+	float scale;
+	float invisibility;
 	Cedric_GetScale(scale, invisibility, io);
 	
 	if(!io) {
@@ -1672,6 +1668,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	//Cedric_FlagLinkedObjects(eobj); ???
 	
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
+	float timm;
 	Cedric_GetTime(timm, io);
 	
 	// Buffer size check
@@ -1683,6 +1680,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	
 	memset(grps, 0, eobj->nbgroups);
 	
+	Vec3f ftr;
 	Cedric_AnimCalcTranslation(io, animuse, scale, ftr, update_movement);
 	
 	if(!Cedric_IO_Visible(io))
@@ -1708,7 +1706,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	Cedric_ConcatenateTM(io, eobj->c_data, angle, pos, ftr, scale);
 
 	/* Display the object */
-	obj = eobj->c_data;
+	EERIE_C_DATA *obj = eobj->c_data;
 
 	if(!obj)
 		return;
