@@ -1972,18 +1972,15 @@ void ARX_PLAYER_Manage_Visual() {
 	retry:
 		;
 
-		if (ARX_SPELLS_ExistAnyInstance(SPELL_FLYING_EYE))
-		{
+		if(ARX_SPELLS_ExistAnyInstance(SPELL_FLYING_EYE))
 			FistParticles |= 1;
-		}
-		else FistParticles &= ~1;
+		else
+			FistParticles &= ~1;
 
-		if (FistParticles)
-		{
+		if(FistParticles) {
 			light = 1;
 
-			if (FistParticles & 1)
-			{
+			if(FistParticles & 1) {
 				ChangeMoveAnim = alist[ANIM_MEDITATION];
 				ChangeMA_Loop = 1;
 			}
@@ -1991,11 +1988,10 @@ void ARX_PLAYER_Manage_Visual() {
 			EERIE_3DOBJ * eobj = io->obj;
 			long pouet = 2;
 
-			while (pouet)
-			{
+			while(pouet) {
 				long id;
 
-				if (pouet == 2)
+				if(pouet == 2)
 					id = io->obj->fastaccess.primary_attach;
 				else
 					id = GetActionPointIdx(io->obj, "left_attach");
@@ -2003,7 +1999,6 @@ void ARX_PLAYER_Manage_Visual() {
 				pouet--;
 
 				if(id != -1) {
-					
 					if(special[pouet] == -1) {
 						special[pouet] = GetFreeDynLight();
 					}
