@@ -97,7 +97,7 @@ using audio::FLAG_PITCH;
 using audio::FLAG_RELATIVE;
 using audio::FLAG_AUTOFREE;
 
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 extern Entity * CAMERACONTROLLER;
 
 

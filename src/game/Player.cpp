@@ -1606,7 +1606,7 @@ float LASTPLAYERA = 0;
 extern long ON_PLATFORM;
 long LAST_ON_PLATFORM = 0;
 extern long MOVE_PRECEDENCE;
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 
 // Manages Player visual
 // Choose the set of animations to use to represent current player

@@ -118,7 +118,6 @@ using std::vector;
 
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
-extern long EXTERNALVIEW;
 
 ARX_NODES nodes;
 static float TREATZONE_LIMIT = 1800.f;

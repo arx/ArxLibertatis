@@ -195,7 +195,7 @@ TextureContainer * Movable = NULL;   // TextureContainer for Movable Items (Red 
 
 long BOOKBUTTON=0;
 long LASTBOOKBUTTON=0;
-long EXTERNALVIEW=0;
+bool EXTERNALVIEW = false;
 long ARX_CONVERSATION=0;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
@@ -825,7 +825,7 @@ void ArxGame::updateFirstPersonCamera() {
 	if(eyeball.exist == 2) {
 		subj.d_pos = eyeball.pos;
 		subj.d_angle = eyeball.angle;
-		EXTERNALVIEW = 1;
+		EXTERNALVIEW = true;
 	} else if(EXTERNALVIEW) {
 		float t=radians(player.angle.b);
 
@@ -956,7 +956,7 @@ void ArxGame::updateConversationCamera() {
 		subj.angle.a = MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
 		subj.angle.g = 0.f;
-		EXTERNALVIEW = 1;
+		EXTERNALVIEW = true;
 	}
 	else
 	{
@@ -1008,7 +1008,7 @@ void ArxGame::speechControlledCinematic() {
 				subj.angle.a=acs->pos2.x;
 				subj.angle.b=acs->pos2.y;
 				subj.angle.g=acs->pos2.z;
-				EXTERNALVIEW=1;
+				EXTERNALVIEW = true;
 				break;
 									   }
 			case ARX_CINE_SPEECH_ZOOM: {
@@ -1025,7 +1025,7 @@ void ArxGame::speechControlledCinematic() {
 				subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 				subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 				subj.angle.g=0.f;
-				EXTERNALVIEW=1;
+				EXTERNALVIEW = true;
 				break;
 									   }
 			case ARX_CINE_SPEECH_SIDE_LEFT:
@@ -1066,7 +1066,7 @@ void ArxGame::speechControlledCinematic() {
 					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 					subj.angle.g=0.f;
-					EXTERNALVIEW=1;
+					EXTERNALVIEW = true;
 				}
 
 				break;
@@ -1112,7 +1112,7 @@ void ArxGame::speechControlledCinematic() {
 					subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 					subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 					subj.angle.g=0.f;
-					EXTERNALVIEW=1;
+					EXTERNALVIEW = true;
 				}
 
 				break;
@@ -1161,7 +1161,7 @@ void ArxGame::handlePlayerDeath() {
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g = 0;
-		EXTERNALVIEW=1;
+		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS=1;
 	}
 	else
@@ -1199,7 +1199,7 @@ void ArxGame::handleCameraController() {
 		subj.angle.a=MAKEANGLE(-conversationcamera.angle.a);
 		subj.angle.b=MAKEANGLE(conversationcamera.angle.b-180.f);
 		subj.angle.g=0.f;
-		EXTERNALVIEW=1;
+		EXTERNALVIEW = true;
 	}
 
 	lastCAMERACONTROLLER=CAMERACONTROLLER;
@@ -1221,7 +1221,7 @@ void ArxGame::updateActiveCamera() {
 		if (MasterCamera.cam->focal<100.f) MasterCamera.cam->focal=350.f;
 
 		SetActiveCamera(MasterCamera.cam);
-		EXTERNALVIEW=1;
+		EXTERNALVIEW = true;
 	}
 	else
 	{
@@ -1822,7 +1822,7 @@ void ArxGame::render() {
 	}
 
 	// Updates Externalview
-	EXTERNALVIEW = 0;
+	EXTERNALVIEW = false;
 
 	if(isInMenu()) {
 		renderMenu();
