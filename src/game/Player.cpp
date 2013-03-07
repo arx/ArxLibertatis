@@ -2227,9 +2227,7 @@ void ForcePlayerLookAtIO(Entity * io) {
 
 	if(id != -1) {
 		target = io->obj->vertexlist3[id].v;
-	}
-	else
-	{
+	} else {
 		target = io->pos;
 	}
 
@@ -2275,8 +2273,7 @@ void ARX_PLAYER_Frame_Update()
 	player.angle = player.desiredangle;
 
 	// Updates player Extra-Rotate Informations
-	Entity * io;
-	io = entities.player();
+	Entity *io = entities.player();
 
 	if(io && io->_npcdata->ex_rotate) {
 		float v = player.angle.a;
@@ -2331,14 +2328,12 @@ static void ARX_PLAYER_MakeStepNoise() {
 		return;
 	}
 	
-	if(USE_PLAYERCOLLISIONS) {
-		
+	if(USE_PLAYERCOLLISIONS) {	
 		float volume = ARX_NPC_AUDIBLE_VOLUME_DEFAULT;
 		float factor = ARX_NPC_AUDIBLE_FACTOR_DEFAULT;
 		
 		if(player.Current_Movement & PLAYER_MOVE_STEALTH) {
-			float skill_stealth;
-			skill_stealth = player.Full_Skill_Stealth / ARX_PLAYER_SKILL_STEALTH_MAX;
+			float skill_stealth = player.Full_Skill_Stealth / ARX_PLAYER_SKILL_STEALTH_MAX;
 			volume -= ARX_NPC_AUDIBLE_VOLUME_RANGE * skill_stealth;
 			factor += ARX_NPC_AUDIBLE_FACTOR_RANGE * skill_stealth;
 		}
@@ -2452,7 +2447,6 @@ void PlayerMovementIterate(float DeltaTime) {
 	
 	// A jump is requested so let's go !
 	if(REQUEST_JUMP) {
-		
 		if((player.Current_Movement & PLAYER_CROUCH)
 		   || player.physics.cyl.height > player.baseHeight()) {
 			float old = player.physics.cyl.height;
@@ -2485,7 +2479,6 @@ void PlayerMovementIterate(float DeltaTime) {
 				player.jumpphase = JumpStart;
 			}
 		}
-		
 	}
 	
 	if(entities.player()->_npcdata->climb_count != 0.f && framedelay > 0) {
@@ -2498,14 +2491,12 @@ void PlayerMovementIterate(float DeltaTime) {
 	float d = 0;
 	
 	if(!EDITMODE && USE_PLAYERCOLLISIONS) {
-		
 		CollisionFlags levitate = 0;
 		if(player.climbing) {
 			levitate = CFLAG_LEVITATE;
 		}
 		
 		if(player.levitate) {
-			
 			if(player.physics.cyl.height != player.levitateHeight()) {
 				float old = player.physics.cyl.height;
 				player.physics.cyl.height = player.levitateHeight();
@@ -2694,23 +2685,20 @@ void PlayerMovementIterate(float DeltaTime) {
 			
 			// Check for LAVA Damage !!!
 			float epcentery;
-			EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y + 150.f, player.pos.z,
-			                             &epcentery);
+			EERIEPOLY *ep = CheckInPoly(player.pos.x, player.pos.y + 150.f, player.pos.z, &epcentery);
 			if(ep) {
-				if((ep->type & POLY_LAVA)
-				   && EEfabs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
-					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - player.baseHeight()))
-					                   * (1.0f / 30));
+				if((ep->type & POLY_LAVA) && EEfabs(epcentery - (player.pos.y - player.baseHeight())) < 30) {
+					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - player.baseHeight())) * (1.0f / 30));
 					const float LAVA_DAMAGE = 10.f;
 					float damages = LAVA_DAMAGE * framedelay * 0.01f * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(entities.player(), damages);
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
+
 					Vec3f pos = player.basePosition();
 					ARX_PARTICLES_Spawn_Lava_Burn(&pos, entities.player());
 				}
 			}
-			
 		}
 		
 		// Apply velocity damping (natural velocity attenuation, stands for friction)
