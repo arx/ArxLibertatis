@@ -171,7 +171,7 @@ Entity * CURRENT_TORCH = NULL;
 static unsigned long FALLING_TIME = 0;
 
 vector<STRUCT_QUEST> PlayerQuest;
-long FistParticles = 0;
+
 void Manage_sp_max();
 bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
@@ -1972,18 +1972,11 @@ void ARX_PLAYER_Manage_Visual() {
 	retry:
 		;
 
-		if(ARX_SPELLS_ExistAnyInstance(SPELL_FLYING_EYE))
-			FistParticles |= 1;
-		else
-			FistParticles &= ~1;
-
-		if(FistParticles) {
+		if(ARX_SPELLS_ExistAnyInstance(SPELL_FLYING_EYE)) {
 			light = 1;
 
-			if(FistParticles & 1) {
-				ChangeMoveAnim = alist[ANIM_MEDITATION];
-				ChangeMA_Loop = 1;
-			}
+			ChangeMoveAnim = alist[ANIM_MEDITATION];
+			ChangeMA_Loop = 1;
 
 			EERIE_3DOBJ * eobj = io->obj;
 			long pouet = 2;
