@@ -657,22 +657,19 @@ void EERIEDrawRotatedSprite(TexturedVertex * in, float siz, TextureContainer * t
 	TexturedVertex out;
 	EERIETreatPoint(in, &out, 3000.f);
 	
-	if ((out.p.z>0.f) && (out.p.z<1000.f))
-	{
-		float use_focal=BASICFOCAL*Xratio;
+	if(out.p.z > 0.f && out.p.z < 1000.f) {
+		float use_focal = BASICFOCAL * Xratio;
 	
 		float t = siz * ((out.rhw - 1.f) * use_focal * 0.001f); 
 
-		if (t<=0.f) t=0.00000001f;
+		if(t <= 0.f)
+			t = 0.00000001f;
 
-		if (Zpos<=1.f)
-		{
+		if(Zpos<=1.f) {
 			out.p.z = Zpos; 
-			out.rhw=1.f-out.p.z;
-		}
-		else
-		{
-			out.rhw*=(1.f/3000.f);
+			out.rhw = 1.f - out.p.z;
+		} else {
+			out.rhw *= (1.f/3000.f);
 		}
 
 		ColorBGRA col = color.toBGRA();
