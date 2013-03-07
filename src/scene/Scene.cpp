@@ -97,7 +97,6 @@ EERIE_PORTAL_DATA * portals = NULL;
 static float WATEREFFECT = 0.f;
 
 long TRANSPOLYSPOS=0;
-long FRAME_COUNT=0;
 
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
@@ -1525,7 +1524,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 					}
 				} else {
 					if(ep->type & POLY_LAVA) {
-						if(FRAME_COUNT<=0 && !(ep->type & POLY_TRANS)) {
+						if(!(ep->type & POLY_TRANS)) {
 								ApplyDynLight(ep);
 						}
 
@@ -1541,7 +1540,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 							pMyVertexCurr[ep->uslInd[3]].color=ep->tv[3].color;
 						}
 					} else {
-						if(FRAME_COUNT <= 0 && !(ep->type & POLY_TRANS)) {
+						if(!(ep->type & POLY_TRANS)) {
 							ApplyDynLight_VertexBuffer_2(ep, pEPDATA->px, pEPDATA->py, pMyVertexCurr, ep->uslInd[0], ep->uslInd[1], ep->uslInd[2], ep->uslInd[3]);
 						}
 
@@ -1556,7 +1555,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 					EERIEPOLY_DrawWired(ep);
 
 			} else { // Improve Vision Activated
-				if(FRAME_COUNT <= 0 && !(ep->type & POLY_TRANS)) {
+				if(!(ep->type & POLY_TRANS)) {
 					if(!EERIERTPPoly(ep)) { // RotTransProject Vertices
 						continue; 
 					}
@@ -1894,17 +1893,6 @@ long MAX_FRAME_COUNT=0;
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
 void ARX_SCENE_Render() {
-	
-	FRAME_COUNT++;
-
-	if(FRAME_COUNT > MAX_FRAME_COUNT)
-		FRAME_COUNT=0;
-
-	if(EDITMODE)
-		FRAME_COUNT=0;
-
-	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE))
-		FRAME_COUNT=0;
 
 	unsigned long tim = (unsigned long)(arxtime);
 	
@@ -1935,12 +1923,7 @@ void ARX_SCENE_Render() {
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
 	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul());
-	
-	// Temporary Hack...
-	long LAST_FC = FRAME_COUNT;
-	FRAME_COUNT = 0;
 
-	if(FRAME_COUNT <= 0)
 		PrecalcDynamicLighting(x0, z0, x1, z1);
 	
 	// Go for a growing-square-spirallike-render around the camera position
@@ -2029,7 +2012,7 @@ void ARX_SCENE_Render() {
 
 			long to = (ep->type & POLY_QUAD) ? 4 : 3;
 
-			if(to == 4 && FRAME_COUNT <= 0)
+			if(to == 4)
 				ep->tv[3].color=ep->v[3].color;
 
 
@@ -2054,9 +2037,7 @@ void ARX_SCENE_Render() {
 				if(ep->type & POLY_GLOW) {
 					ep->tv[0].color=ep->tv[1].color=ep->tv[2].color=ep->tv[3].color=0xFFFFFFFF;
 				} else {
-					if(FRAME_COUNT <= 0) {
 						ApplyDynLight(ep);
-					}
 				}
 				ManageLavaWater(ep,to,tim);
 				Delayed_EERIEDRAWPRIM(ep);
@@ -2069,7 +2050,6 @@ void ARX_SCENE_Render() {
 						EERIEPOLY_DrawNormals(ep);
 				}	
 			} else { // Improve Vision Activated
-				if(FRAME_COUNT <= 0) {
 					ApplyDynLight(ep);
 
 					for(long k=0; k<to; k++) {
@@ -2094,7 +2074,6 @@ void ARX_SCENE_Render() {
 						ep->tv[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 						//GG component locked at 0x1E
 					}
-				}
 
 				Delayed_EERIEDRAWPRIM(ep);
 			}			
@@ -2107,8 +2086,6 @@ void ARX_SCENE_Render() {
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
 	}
-
-	FRAME_COUNT=LAST_FC;
 
 	if(!USE_PORTALS)
 		Delayed_FlushAll();

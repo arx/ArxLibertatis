@@ -2703,7 +2703,7 @@ void ComputeTolerance(Entity * io, long targ, float * dst) {
 	// Now fill our return value with TOLERANCE
 	*dst = TOLERANCE;
 }
-extern long FRAME_COUNT;
+
 //now APOS is computed in Anim but used here and mustn't be used elsewhere...
 //***********************************************************************************************
 //***********************************************************************************************
@@ -3357,8 +3357,7 @@ static void ManageNPCMovement(Entity * io)
 	}
 
 	// Checks if pathfind final target is still locked on true target
-	if ((FRAME_COUNT <= 0)
-	        &&	(!io->_npcdata->pathfind.pathwait)
+	if ((!io->_npcdata->pathfind.pathwait)
 	        && !(io->_npcdata->pathfind.flags & PATHFIND_ONCE)
 	        && !(io->_npcdata->pathfind.flags & PATHFIND_NO_UPDATE)
 	        &&	(io->_npcdata->pathfind.listnb > 0)

@@ -108,7 +108,6 @@ long MAX_LLIGHTS = 18;
 //-----------------------------------------------------------------------------
 extern EERIE_CAMERA TCAM[32];
 extern QUAKE_FX_STRUCT QuakeFx;
-extern long FRAME_COUNT;
 extern Color ulBKGColor;
 extern long ZMAPMODE;
 
@@ -998,9 +997,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 	
 	
 	// Precalc local lights for this object then interpolate
-	if(FRAME_COUNT <= 0) {
 		MakeCLight(io,&infra,angle,&pos,eobj,mat);
-	}
 
 	float ddist;
 	ddist=0;
@@ -1238,8 +1235,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 
-	if (FRAME_COUNT<=0)
-	{
 		if (io)
 		{
 			// Frozen status override all other colors
@@ -1321,13 +1316,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				vert_list[j].color = color.toBGR();
 			}
 		}
-		
-	}
 	
-	if (FRAME_COUNT!=0)
-	for (long j=0;j<3;j++)
-		vert_list[j].color = eobj->facelist[i].color[j].toBGRA();
-	else 
 	for (long j=0;j<3;j++)
 		eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 

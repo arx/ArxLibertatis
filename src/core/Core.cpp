@@ -186,7 +186,6 @@ extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern long		REFUSE_GAME_RETURN;
 extern bool		PLAYER_MOUSELOOK_ON;
-extern long		FRAME_COUNT;
 extern bool bFadeInOut;
 extern 	bool bFade;			//active le fade
 extern float OLD_PROGRESS_BAR_COUNT;
@@ -1793,7 +1792,6 @@ void FirstFrameHandling() {
 	LoadLevelScreen();
 
 	FirstFrame=false;
-	FRAME_COUNT=0;
 	PrepareIOTreatZone(1);
 	CURRENTLEVEL=GetLevelNumByName(LastLoadedScene.string());
 	

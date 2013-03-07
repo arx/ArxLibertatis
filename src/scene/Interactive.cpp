@@ -116,8 +116,6 @@ using std::min;
 using std::string;
 using std::vector;
 
-extern long FRAME_COUNT;
-
 extern Entity * CAMERACONTROLLER;
 extern TextureContainer * Movable;
 extern long EXTERNALVIEW;
@@ -1533,7 +1531,6 @@ void ARX_INTERACTIVE_TeleportBehindTarget(Entity * io)
 			ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 			MakeCoolFx(&io->pos);
 			io->gameFlags |= GFLAG_INVISIBILITY;
-			FRAME_COUNT = 0;
 		}
 	}
 }
@@ -1602,7 +1599,6 @@ void ARX_INTERACTIVE_Teleport(Entity * io, Vec3f * target, bool flag) {
 		return;
 	}
 	
-	FRAME_COUNT = -1;
 	io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 	io->room_flags |= 1;
 	io->room = -1;

@@ -1730,14 +1730,8 @@ void RestoreAllLightsInitialStatus() {
 	}
 }
 
-extern long FRAME_COUNT;
-
 // Draws Flame Particles
 void TreatBackgroundActions() {
-	
-	if(FRAME_COUNT > 0) {
-		return;
-	}
 	
 	float fZFar = square(ACTIVECAM->cdepth * fZFogEnd * 1.3f);
 	
