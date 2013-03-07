@@ -2374,37 +2374,31 @@ void ArxGame::managePlayerControls()
 		float t;
 		float multi;
 
-		if (EDITMODE || arxtime.is_paused()) FD=40.f;
+		if(EDITMODE || arxtime.is_paused())
+			FD = 40.f;
 
 		bool left=GInput->actionPressed(CONTROLS_CUST_STRAFELEFT);
 
-		if(!left)
-		{
-			if(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT))
-			{
-				left=true;
+		if(!left) {
+			if(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNLEFT)) {
+				left = true;
 			}
 		}
 
 		bool right=GInput->actionPressed(CONTROLS_CUST_STRAFERIGHT);
 
-		if(!right)
-		{
-			if(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT))
-			{
-				right=true;
+		if(!right) {
+			if(GInput->actionPressed(CONTROLS_CUST_STRAFE)&&GInput->actionPressed(CONTROLS_CUST_TURNRIGHT)) {
+				right = true;
 			}
 		}
 
 		// Checks WALK_BACKWARD Key Status.
-		if (	GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)
-			&&	!NOMOREMOVES	)
-		{
+		if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) && !NOMOREMOVES) {
 			CurrFightPos=3;
 			multi = 1;
 
-			if (left || right)
-			{
+			if(left || right) {
 				multi = 0.8f;
 			}
 
@@ -2413,8 +2407,7 @@ void ArxGame::managePlayerControls()
 			tm.x+=(float)EEsin(t)*multi;
 			tm.z-=(float)EEcos(t)*multi;
 
-			if(!USE_PLAYERCOLLISIONS)
-			{
+			if(!USE_PLAYERCOLLISIONS) {
 				t=radians(player.angle.a);
 				tm.y-=(float)EEsin(t)*multi;
 			}
@@ -2424,17 +2417,15 @@ void ArxGame::managePlayerControls()
 			if (GInput->actionNowPressed(CONTROLS_CUST_WALKBACKWARD) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_BACKWARD;
 		}
-		else if (MOVE_PRECEDENCE==PLAYER_MOVE_WALK_BACKWARD) MOVE_PRECEDENCE=0;
+		else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_BACKWARD)
+			MOVE_PRECEDENCE = 0;
 
 		// Checks WALK_FORWARD Key Status.
-		if (GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)
-			&& !NOMOREMOVES)
-		{
+		if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) && !NOMOREMOVES) {
 			CurrFightPos=2;
 			multi = 1;
 
-			if (left || right)
-			{
+			if(left || right) {
 				multi=0.8f;
 			}
 
@@ -2454,11 +2445,11 @@ void ArxGame::managePlayerControls()
 			if (GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_FORWARD;
 		}
-		else if (MOVE_PRECEDENCE==PLAYER_MOVE_WALK_FORWARD) MOVE_PRECEDENCE=0;
+		else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
+			MOVE_PRECEDENCE = 0;
 
 		// Checks STRAFE_LEFT Key Status.
-		if (left && !NOMOREMOVES)
-		{
+		if(left && !NOMOREMOVES) {
 			CurrFightPos=0;
 			t=radians(MAKEANGLE(player.angle.b+90.f));
 			multi=6.f*(float)FD*MoveDiv;
@@ -2470,11 +2461,11 @@ void ArxGame::managePlayerControls()
 			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFELEFT) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_LEFT;
 		}
-		else if (MOVE_PRECEDENCE==PLAYER_MOVE_STRAFE_LEFT) MOVE_PRECEDENCE=0;
+		else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_LEFT)
+			MOVE_PRECEDENCE = 0;
 
 		// Checks STRAFE_RIGHT Key Status.
-		if ( right && !NOMOREMOVES)
-		{
+		if(right && !NOMOREMOVES) {
 			CurrFightPos=1;
 			t=radians(MAKEANGLE(player.angle.b-90.f));
 			multi=6.f*(float)FD*MoveDiv;
@@ -2486,7 +2477,8 @@ void ArxGame::managePlayerControls()
 			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT) )
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_RIGHT;
 		}
-		else if (MOVE_PRECEDENCE==PLAYER_MOVE_STRAFE_RIGHT) MOVE_PRECEDENCE=0;
+		else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
+			MOVE_PRECEDENCE = 0;
 
 		moveto = player.pos + tm;
 	}
