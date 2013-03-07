@@ -171,13 +171,15 @@ float AM_LASTPOS_x = -999999.f;
 float AM_LASTPOS_z = -999999.f;
 void ARX_MINIMAP_ValidatePlayerPos()
 {
-	if (BLOCK_PLAYER_CONTROLS) return;
+	if(BLOCK_PLAYER_CONTROLS)
+		return;
 
 	float req;
 
-	if ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP))
+	if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE) && Book_Mode == BOOKMODE_MINIMAP)
 		req = 20.f;
-	else req = 80.f;
+	else
+		req = 80.f;
 
 	if(fartherThan(Vec2f(AM_LASTPOS_x, AM_LASTPOS_z), Vec2f(player.pos.x, player.pos.z), req)) {
 		AM_LASTPOS_x = player.pos.x;
