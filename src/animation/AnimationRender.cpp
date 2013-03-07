@@ -117,7 +117,7 @@ inline	static	void	Cedric_ResetBoundingBox(Entity * io)
 }
 
 extern float INVISIBILITY_OVERRIDE;
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 void Cedric_GetScale(float & scale, float & invisibility, Entity * io) {
 	if(io) {
 		invisibility = io->invisibility;
@@ -1637,8 +1637,6 @@ static bool Cedric_IO_Visible(Entity * io) {
 
 	return true;
 }
-
-extern long EXTERNALVIEW;
 
 /* Apply animation and draw object */
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,

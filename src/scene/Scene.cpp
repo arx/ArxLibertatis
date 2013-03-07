@@ -84,7 +84,6 @@ using std::vector;
 
 //-----------------------------------------------------------------------------
 extern EERIE_3DOBJ * eyeballobj;
-extern long EXTERNALVIEW;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
 extern long ZMAPMODE;

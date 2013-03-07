@@ -83,7 +83,7 @@ using std::transform;
 
 extern TextureContainer *	arx_logo_tc;
 extern long ARX_CONVERSATION;
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 
 ARX_SPEECH aspeech[MAX_ASPEECH];

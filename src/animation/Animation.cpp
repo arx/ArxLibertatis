@@ -128,8 +128,6 @@ static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1
 
 static TexturedVertex tTexturedVertexTab2[4000];
 
-extern long EXTERNALVIEW;
-
 // ANIMATION HANDLES handling
 
 short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {

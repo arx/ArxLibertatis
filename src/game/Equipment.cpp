@@ -105,7 +105,7 @@ struct EQUIP_INFO
 
 extern Vec3f PUSH_PLAYER_FORCE;
 extern long HERO_SHOW_1ST;
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 
 extern EERIE_3DOBJ * arrowobj;
 

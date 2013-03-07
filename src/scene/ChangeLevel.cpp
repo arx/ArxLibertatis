@@ -105,7 +105,7 @@ extern float PROGRESS_BAR_TOTAL;
 extern long NO_PLAYER_POSITION_RESET;
 extern float InventoryDir;
 extern long HERO_SHOW_1ST;
-extern long EXTERNALVIEW;
+extern bool EXTERNALVIEW;
 extern long LOAD_N_DONT_ERASE;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long NO_TIME_INIT;
