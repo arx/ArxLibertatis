@@ -2414,20 +2414,20 @@ void PlayerMovementIterate(float DelatTime);
 void ARX_PLAYER_Manage_Movement() {
 	
 	// Is our player able to move ?
-	if ((CINEMASCOPE)
-	        ||	(BLOCK_PLAYER_CONTROLS)
-	        ||	(entities.player() == NULL))
+	if(CINEMASCOPE || BLOCK_PLAYER_CONTROLS || !entities.player())
 		return;
 
-	float speedfactor;
 	// Compute current player speedfactor
-	speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
+	float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
 
-	if (speedfactor < 0) speedfactor = 0;
+	if(speedfactor < 0)
+		speedfactor = 0;
 
-	if (cur_mr == 3) speedfactor += 0.5f;
+	if(cur_mr == 3)
+		speedfactor += 0.5f;
 
-	if (cur_rf == 3) speedfactor += 1.5f;
+	if(cur_rf == 3)
+		speedfactor += 1.5f;
 
 	static float StoredTime = 0;
 	// Compute time things
