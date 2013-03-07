@@ -2609,66 +2609,48 @@ void ArxGame::managePlayerControls()
 		}
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_NEXT))
-	{
-		if (eMouseState == MOUSE_IN_BOOK)
-		{
-			if (player.Interface & INTER_MAP)
-			{
-				if (Book_Mode < BOOKMODE_QUESTS)
-				{
-					if (Book_Mode == BOOKMODE_STATS)
+	if(GInput->actionNowPressed(CONTROLS_CUST_NEXT)) {
+		if(eMouseState == MOUSE_IN_BOOK) {
+			if(player.Interface & INTER_MAP) {
+				if(Book_Mode < BOOKMODE_QUESTS) {
+					if(Book_Mode == BOOKMODE_STATS)
 						Book_Mode = BOOKMODE_SPELLS;
-					else if (Book_Mode == BOOKMODE_SPELLS)
+					else if(Book_Mode == BOOKMODE_SPELLS)
 						Book_Mode = BOOKMODE_MINIMAP;
-					else if (Book_Mode == BOOKMODE_MINIMAP)
+					else if(Book_Mode == BOOKMODE_MINIMAP)
 						Book_Mode = BOOKMODE_QUESTS;
+
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				}
 			}
-		}
-		else if (InPlayerInventoryPos(&DANAEMouse))
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory < player.bag - 1)
-						{
+		} else if(InPlayerInventoryPos(&DANAEMouse)) {
+			if(!PLAYER_INTERFACE_HIDE_COUNT) {
+				if(player.Interface & INTER_INVENTORY) {
+					if(player.bag) {
+						if(sActiveInventory < player.bag - 1) {
 							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 							sActiveInventory ++;
 						}
 					}
 				}
 			}
-		}
-		else
-		{
-			if (player.Interface & INTER_MAP)
-			{
-				if (Book_Mode < BOOKMODE_QUESTS)
-				{
-					if (Book_Mode == BOOKMODE_STATS)
+		} else {
+			if(player.Interface & INTER_MAP) {
+				if(Book_Mode < BOOKMODE_QUESTS) {
+					if(Book_Mode == BOOKMODE_STATS)
 						Book_Mode = BOOKMODE_SPELLS;
-					else if (Book_Mode == BOOKMODE_SPELLS)
+					else if(Book_Mode == BOOKMODE_SPELLS)
 						Book_Mode = BOOKMODE_MINIMAP;
-					else if (Book_Mode == BOOKMODE_MINIMAP)
+					else if(Book_Mode == BOOKMODE_MINIMAP)
 						Book_Mode = BOOKMODE_QUESTS;
+
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 				}
-			}
-			else
-			{
-				if (!PLAYER_INTERFACE_HIDE_COUNT)
-				{
-					if ((player.Interface & INTER_INVENTORY))
-					{
-						if (player.bag)
-						{
-							if (sActiveInventory < player.bag - 1)
-							{
+			} else {
+				if(!PLAYER_INTERFACE_HIDE_COUNT) {
+					if(player.Interface & INTER_INVENTORY) {
+						if(player.bag) {
+							if(sActiveInventory < player.bag - 1) {
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								sActiveInventory ++;
 							}
