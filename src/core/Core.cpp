@@ -2147,14 +2147,12 @@ void ManageCombatModeAnimations()
 											PlayerWeaponBlocked=useanim->ctime;
 										}
 
-										{
 										ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
 
 											if (ValidIONum(num))
 											{
 												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
 											}
-										}
 
 									}
 								}
