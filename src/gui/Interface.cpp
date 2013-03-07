@@ -2298,9 +2298,8 @@ void ArxGame::managePlayerControls()
 		long NOMOREMOVES=0;
 		float FD = 1.f;
 
-		if (eyeball.exist==2)
-		{
-			FD=18.f;
+		if(eyeball.exist == 2) {
+			FD = 18.f;
 			Vec3f old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
@@ -2356,22 +2355,18 @@ void ArxGame::managePlayerControls()
 			bool npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
 			float val=CheckAnythingInCylinder(&phys.cyl,entities.player(),CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 
-			if ((val > -40.f))
-			{
-				if (val <= 70.f)
-				{
-					eyeball.pos.y+=val-70.f;
+			if(val > -40.f) {
+				if(val <= 70.f) {
+					eyeball.pos.y += val-70.f;
 				}
 
-				if (!npc)
-				{
+				if(!npc) {
 					MagicSightFader+=framedelay*( 1.0f / 200 );
 
-					if (MagicSightFader>1.f) MagicSightFader=1.f;
+					if(MagicSightFader > 1.f)
+						MagicSightFader = 1.f;
 				}
-			}
-			else
-			{
+			} else {
 				eyeball.pos = old;
 			}
 		}
