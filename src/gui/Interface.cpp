@@ -2484,36 +2484,27 @@ void ArxGame::managePlayerControls()
 	}
 
 	// Checks CROUCH Key Status.
-	if (GInput->actionNowPressed(CONTROLS_CUST_CROUCHTOGGLE))
-	{
-		bGCroucheToggle=!bGCroucheToggle;
+	if(GInput->actionNowPressed(CONTROLS_CUST_CROUCHTOGGLE)) {
+		bGCroucheToggle = !bGCroucheToggle;
 	}
 
-	if(	GInput->actionPressed(CONTROLS_CUST_CROUCH)||
-		bGCroucheToggle )
-	{
-		player.Current_Movement|=PLAYER_CROUCH;
+	if(GInput->actionPressed(CONTROLS_CUST_CROUCH) || bGCroucheToggle) {
+		player.Current_Movement |= PLAYER_CROUCH;
 	}
 
-	if (GInput->actionNowPressed(CONTROLS_CUST_UNEQUIPWEAPON))
-	{
+	if(GInput->actionNowPressed(CONTROLS_CUST_UNEQUIPWEAPON)) {
 		ARX_EQUIPMENT_UnEquipPlayerWeapon();
 	}
 
 	// Can only lean outside of combat mode
-	if (!(player.Interface & INTER_COMBATMODE))
-	{
+	if (!(player.Interface & INTER_COMBATMODE)) {
 		// Checks LEAN_LEFT Key Status.
-		if (GInput->actionPressed(CONTROLS_CUST_LEANLEFT) )
-		{
-			player.Current_Movement|=PLAYER_LEAN_LEFT;
-		}
+		if(GInput->actionPressed(CONTROLS_CUST_LEANLEFT))
+			player.Current_Movement |= PLAYER_LEAN_LEFT;
 
 		// Checks LEAN_RIGHT Key Status.
-		if (GInput->actionPressed(CONTROLS_CUST_LEANRIGHT) )
-		{
-			player.Current_Movement|=PLAYER_LEAN_RIGHT;
-		}
+		if(GInput->actionPressed(CONTROLS_CUST_LEANRIGHT))
+			player.Current_Movement |= PLAYER_LEAN_RIGHT;
 	}
 	
 	// Checks JUMP Key Status.
