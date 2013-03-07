@@ -5670,7 +5670,7 @@ void ARX_SPELLS_Update()
 
 		if (spells[i].exist) 
 		{
-			if (spells[i].bDuration && !CanPayMana(i,spells[i].fManaCostPerSecond * (float)FrameDiff * ( 1.0f / 1000 ), false))
+			if (spells[i].bDuration && !CanPayMana(i,spells[i].fManaCostPerSecond * (float)framedelay * ( 1.0f / 1000 ), false))
 				ARX_SPELLS_Fizzle(i);
 
 			framediff=spells[i].timcreation+spells[i].tolive-tim;
@@ -6042,7 +6042,7 @@ void ARX_SPELLS_Update()
 							pMMM->CheckCollision();
 						
 						// Update
-						pCSpellFX->Update(FrameDiff);
+						pCSpellFX->Update(framedelay);
 
 						if (pCSpellFX->Render()==-1)
 							spells[i].tolive=0;
@@ -6057,7 +6057,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 				}
 			} 
 			break;
@@ -6075,7 +6075,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 
@@ -6122,7 +6122,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			} 
@@ -6135,7 +6135,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			} 
@@ -6184,7 +6184,7 @@ void ARX_SPELLS_Update()
 					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
-					cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
+					cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 					spells[i].fdata=cabalangle.b;
 
 							cabalangle.g = 0.f; 
@@ -6288,7 +6288,7 @@ void ARX_SPELLS_Update()
 						ARX_NPC_SpawnAudibleSound(&sphere.origin, entities[spells[i].caster]);
 								}
 
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					ARX_SOUND_RefreshPosition(spells[i].snd_loop, &pCF->eCurPos);
 				}
 			}
@@ -6298,7 +6298,7 @@ void ARX_SPELLS_Update()
 
 			if (spells[i].pSpellFx)
 			{
-				spells[i].pSpellFx->Update(FrameDiff);
+				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 
 				if (spells[i].caster == 0) ARX_SOUND_RefreshPosition(spells[i].snd_loop);
@@ -6312,7 +6312,7 @@ void ARX_SPELLS_Update()
 
 			if (spells[i].pSpellFx)
 			{
-				spells[i].pSpellFx->Update(FrameDiff);
+				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 			}
 
@@ -6342,7 +6342,7 @@ void ARX_SPELLS_Update()
 						}
 					}
 
-					spells[i].pSpellFx->Update(FrameDiff);
+					spells[i].pSpellFx->Update(framedelay);
 					spells[i].pSpellFx->Render();
 				}
 			}
@@ -6363,7 +6363,7 @@ void ARX_SPELLS_Update()
 					else target.y+=entities[spells[i].target]->physics.cyl.height-30.f;
 				}
 				
-				curse->Update(checked_range_cast<unsigned long>(FrameDiff));
+				curse->Update(checked_range_cast<unsigned long>(framedelay));
 				
 				curse->eTarget = target;
 				curse->Render();
@@ -6373,12 +6373,12 @@ void ARX_SPELLS_Update()
 			break;
 			//-----------------------------------------------------------------------------------------
 			case SPELL_FIRE_PROTECTION:
-				spells[i].pSpellFx->Update(FrameDiff);
+				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 			break;
 			//-----------------------------------------------------------------------------------------
 			case SPELL_COLD_PROTECTION:
-				spells[i].pSpellFx->Update(FrameDiff);
+				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 			break;
 			//-----------------------------------------------------------------------------------------
@@ -6389,7 +6389,7 @@ void ARX_SPELLS_Update()
 			{
 				if (spells[i].pSpellFx)
 				{
-					spells[i].pSpellFx->Update(FrameDiff);
+					spells[i].pSpellFx->Update(framedelay);
 					spells[i].pSpellFx->Render();					
 				}
 			}
@@ -6399,7 +6399,7 @@ void ARX_SPELLS_Update()
 			{
 				if (spells[i].pSpellFx)
 				{
-					spells[i].pSpellFx->Update(FrameDiff);
+					spells[i].pSpellFx->Update(framedelay);
 					spells[i].pSpellFx->Render();
 					CRuneOfGuarding * pCRG=(CRuneOfGuarding *)spells[i].pSpellFx;
 
@@ -6425,7 +6425,7 @@ void ARX_SPELLS_Update()
 			{
 				if (spells[i].pSpellFx)
 				{
-					spells[i].pSpellFx->Update(FrameDiff);
+					spells[i].pSpellFx->Update(framedelay);
 					spells[i].pSpellFx->Render();					
 
 					if (spells[i].target == 0)
@@ -6438,7 +6438,7 @@ void ARX_SPELLS_Update()
 
 			if (spells[i].pSpellFx)
 			{
-				spells[i].pSpellFx->Update(FrameDiff);
+				spells[i].pSpellFx->Update(framedelay);
 				spells[i].pSpellFx->Render();
 						}
 
@@ -6469,7 +6469,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 					GRenderer->SetCulling(Renderer::CullNone);
 				}
@@ -6492,7 +6492,7 @@ void ARX_SPELLS_Update()
 
 					spells[i].tolive+=200;
 				
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 							pCSpellFX->Render();
 
 					if (pCSpellFX->lLightId > -1)
@@ -6593,7 +6593,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}					
 			}
@@ -6621,7 +6621,7 @@ void ARX_SPELLS_Update()
 							spells[i].tolive=0;
 						}
 					
-						pCSpellFX->Update(FrameDiff);
+						pCSpellFX->Update(framedelay);
 
 						if (VisibleSphere(ccf->eSrc.x,ccf->eSrc.y-120.f,ccf->eSrc.z,400.f))					
 							pCSpellFX->Render();
@@ -6639,7 +6639,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			}
@@ -6652,7 +6652,7 @@ void ARX_SPELLS_Update()
 				if (pCSpellFX)
 				{
 					CFireField *pf = (CFireField *) pCSpellFX;
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					
 					if (spells[i].longinfo2==-1)
 						spells[i].longinfo2=GetFreeDynLight();
@@ -6678,7 +6678,7 @@ void ARX_SPELLS_Update()
 					if(VisibleSphere(pf->pos.x, pf->pos.y - 120.f, pf->pos.z, 350.f)) {
 						
 						pCSpellFX->Render();
-						float fDiff = FrameDiff / 8.f;
+						float fDiff = framedelay / 8.f;
 						int nTime = checked_range_cast<int>(fDiff);
 						
 						for(long nn=0;nn<=nTime+1;nn++) {
@@ -6721,7 +6721,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					
 					CIceField *pf = (CIceField *) pCSpellFX;
 
@@ -6764,7 +6764,7 @@ void ARX_SPELLS_Update()
 
 					if (pCSpellFX)
 					{
-						pCSpellFX->Update(FrameDiff);
+						pCSpellFX->Update(framedelay);
 						pCSpellFX->Render();
 					}
 						}
@@ -6778,7 +6778,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			}
@@ -6852,7 +6852,7 @@ void ARX_SPELLS_Update()
 
 						if (pCSpellFX)
 						{
-							pCSpellFX->Update(FrameDiff);
+							pCSpellFX->Update(framedelay);
 							pCSpellFX->Render();
 						}	
 
@@ -6993,7 +6993,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}					
 			}
@@ -7017,7 +7017,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			}
@@ -7038,7 +7038,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 			}
@@ -7058,7 +7058,7 @@ void ARX_SPELLS_Update()
 
 				if (pCSpellFX)
 				{
-					pCSpellFX->Update(FrameDiff);
+					pCSpellFX->Update(framedelay);
 					pCSpellFX->Render();
 				}
 				
@@ -7197,7 +7197,7 @@ void ARX_SPELLS_Update()
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
-						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
+						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 						spells[i].fdata=cabalangle.b;
 
 							cabalangle.g = 0.f; 
@@ -7296,7 +7296,7 @@ void ARX_SPELLS_Update()
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
-						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
+						cabalangle.b=spells[i].fdata+(float)framedelay*0.1f;
 						spells[i].fdata=cabalangle.b;
 							cabalangle.g = 0.f;
 							cabalcolor.r = 0.8f;

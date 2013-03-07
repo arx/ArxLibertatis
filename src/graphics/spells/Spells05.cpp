@@ -963,7 +963,7 @@ float CMultiPoisonProjectile::Render()
 			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
 			damages[t].damages	= v * ( 1.0f / 1000 ) * framedelay;
 			damages[t].area		= DAMAGE_FULL;
-			damages[t].duration	= static_cast<long>(FrameDiff);
+			damages[t].duration	= static_cast<long>(framedelay);
 			damages[t].source	= spells[spellinstance].caster;
 			damages[t].flags	= 0;
 			damages[t].type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;

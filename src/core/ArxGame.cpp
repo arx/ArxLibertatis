@@ -919,7 +919,7 @@ void ArxGame::updateConversationCamera() {
 				}
 			}
 		} else {
-			conversationcamera.size += conversationcamera.d_angle * FrameDiff;
+			conversationcamera.size += conversationcamera.d_angle * framedelay;
 		}
 
 		Vec3f sourcepos,targetpos;
@@ -1130,9 +1130,9 @@ void ArxGame::handlePlayerDeath() {
 
 	if (player.life<=0)
 	{
-		DeadTime += static_cast<long>(FrameDiff);
+		DeadTime += static_cast<long>(framedelay);
 		float mdist = EEfabs(player.physics.cyl.height)-60;
-		DeadCameraDistance+=(float)FrameDiff*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
+		DeadCameraDistance+=(float)framedelay*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
 
 		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
 
@@ -1184,7 +1184,7 @@ void ArxGame::handleCameraController() {
 		Vec3f targetpos = CAMERACONTROLLER->pos + player.baseOffset();
 
 		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
-		float delta_angle_t = delta_angle * FrameDiff * ( 1.0f / 1000 );
+		float delta_angle_t = delta_angle * framedelay * ( 1.0f / 1000 );
 
 		if (EEfabs(delta_angle_t) > EEfabs(delta_angle)) delta_angle_t = delta_angle;
 
@@ -1261,9 +1261,6 @@ void ArxGame::updateTime() {
 	// limit fps above 10fps
 	const float max_framedelay = 1000.0f / 10.0f;
 	framedelay = framedelay > max_framedelay ? max_framedelay : framedelay;
-
-	// TODO eliminate FrameDiff == framedelay (replace)
-	FrameDiff = framedelay;
 }
 
 void ArxGame::updateInput() {
@@ -1528,7 +1525,7 @@ void ArxGame::renderLevel() {
 	// Begin Particles
 	
 	if(pParticleManager) {
-		pParticleManager->Update(static_cast<long>(FrameDiff));
+		pParticleManager->Update(static_cast<long>(framedelay));
 		pParticleManager->Render();
 	}
 	
@@ -1693,7 +1690,7 @@ finish:
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
 
 	if(pTextManage && !pTextManage->Empty()) {
-		pTextManage->Update(FrameDiff);
+		pTextManage->Update(framedelay);
 		pTextManage->Render();
 	}
 

@@ -94,7 +94,7 @@ using std::max;
 using std::string;
 
 extern long CHANGE_LEVEL_ICON;
-extern float FrameDiff;
+extern float framedelay;
 static bool IsPointInField(Vec3f * pos);
 ARX_PATH ** ARXpaths = NULL;
 MASTER_CAMERA_STRUCT MasterCamera;
@@ -208,7 +208,7 @@ void ARX_PATH_UpdateAllZoneInOutInside() {
 	
 	static size_t count = 1;
 	
-	long f = clamp(static_cast<long>(FrameDiff), 10, 50);
+	long f = clamp(static_cast<long>(framedelay), 10, 50);
 	
 	if(count >= entities.size()) {
 		count = 1;
@@ -882,7 +882,7 @@ void CheckExp(long i) {
 		ARX_NPC_SpawnAudibleSound(&Thrown[i].position, entities.player());
 		long id = GetFreeDynLight();
 		
-		if(id != -1 && FrameDiff > 0) {
+		if(id != -1 && framedelay > 0) {
 			DynLight[id].exist = 1;
 			DynLight[id].intensity = 3.9f;
 			DynLight[id].fallstart = 400.f;
@@ -942,7 +942,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			   && !(Thrown[i].flags & ATO_UNDERWATER)) {
 				
 				long id = GetFreeDynLight();
-				if(id != -1 && FrameDiff > 0) {
+				if(id != -1 && framedelay > 0) {
 					DynLight[id].exist = 1;
 					DynLight[id].intensity = 1.f;
 					DynLight[id].fallstart = 100.f;
@@ -951,7 +951,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					DynLight[id].pos = Thrown[i].position;
 					DynLight[id].ex_flaresize = 40.f;
 					DynLight[id].extras |= EXTRAS_FLARE;
-					DynLight[id].duration = static_cast<long>(FrameDiff * 0.5f);
+					DynLight[id].duration = static_cast<long>(framedelay * 0.5f);
 				}
 
 				float p = 3.f;

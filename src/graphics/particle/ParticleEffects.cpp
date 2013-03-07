@@ -590,7 +590,7 @@ void ARX_PARTICLES_Spawn_Spark(Vec3f * pos, float dmgs, long flags) {
 	if(SPARK_COUNT < 1000) {
 		SPARK_COUNT += spawn_nb * 25;
 	} else {
-		SPARK_COUNT -= static_cast<long>(FrameDiff);
+		SPARK_COUNT -= static_cast<long>(framedelay);
 		return;
 	}
 	

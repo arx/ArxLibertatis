@@ -288,7 +288,7 @@ static std::string LAST_LAUNCHED_CINE;
 float BASE_FOCAL=350.f;
 float STRIKE_AIMTIME=0.f;
 float SLID_VALUE=0.f;
-float framedelay;
+float framedelay=0.f;
 
 static float LASTfps2 = 0;
 static float fps2 = 0;
@@ -309,7 +309,6 @@ long PLAY_LOADED_CINEMATIC=0;
 float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
-float FrameDiff=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
 long STRIKE_TIME		= 0;

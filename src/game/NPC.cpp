@@ -1085,7 +1085,7 @@ void ARX_PHYSICS_Apply()
 			if (io->ioflags & IO_NPC)
 			{
 				const float LAVA_DAMAGE = 10.f;
-				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ), -1, 0, NULL);
+				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), -1, 0, NULL);
 			}
 		}
 
@@ -1098,7 +1098,7 @@ void ARX_PHYSICS_Apply()
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
-				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, treatio[i].num))
+				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)framedelay, io->rubber, treatio[i].num))
 				{
 					if (io->damagedata >= 0)
 					{
@@ -1157,9 +1157,9 @@ void ARX_PHYSICS_Apply()
 		if ((io->ioflags & IO_NPC)
 		        &&	(!EDITMODE))
 		{
-			if ((io->_npcdata->climb_count != 0.f) && (FrameDiff > 0))
+			if ((io->_npcdata->climb_count != 0.f) && (framedelay > 0))
 			{
-				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * ( 1.0f / 1000 );
+				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)framedelay * ( 1.0f / 1000 );
 
 				if (io->_npcdata->climb_count < 0)
 					io->_npcdata->climb_count = 0.f;
@@ -2220,7 +2220,7 @@ void TryAndCheckAnim(Entity * io, long animnum, long layer)
 //***********************************************************************************************
 void ARX_NPC_Manage_Anims(Entity * io, float TOLERANCE)
 {
-	io->_npcdata->strike_time += (short)FrameDiff;
+	io->_npcdata->strike_time += (short)framedelay;
 	ANIM_USE * ause = &io->animlayer[0];
 	ANIM_USE * ause1 = &io->animlayer[1];
 	float tdist = std::numeric_limits<float>::max();
@@ -3243,7 +3243,7 @@ static void ManageNPCMovement(Entity * io)
 	if(io->forcedmove == Vec3f::ZERO) {
 		ForcedMove = Vec3f::ZERO;
 	} else {
-		float dd = min(1.f, (float)FrameDiff * ( 1.0f / 6 ) / io->forcedmove.length());
+		float dd = min(1.f, (float)framedelay * ( 1.0f / 6 ) / io->forcedmove.length());
 		ForcedMove = io->forcedmove * dd;
 	}
 
@@ -3267,7 +3267,7 @@ static void ManageNPCMovement(Entity * io)
 
 		if (anything >= 0) 
 		{
-			io->physics.targetpos.y = io->pos.y + (float)FrameDiff * 1.5f + ForcedMove.y;
+			io->physics.targetpos.y = io->pos.y + (float)framedelay * 1.5f + ForcedMove.y;
 		}
 		else io->physics.targetpos.y = io->pos.y + ForcedMove.y;
 
@@ -3412,7 +3412,7 @@ static void ManageNPCMovement(Entity * io)
 				{
 
 
-					float fCalc = io->_npcdata->walk_start_time + FrameDiff ;
+					float fCalc = io->_npcdata->walk_start_time + framedelay ;
 
 					io->_npcdata->walk_start_time = checked_range_cast<short>(fCalc);
 
@@ -4026,7 +4026,7 @@ void ManageIgnition(Entity * io)
 	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
 		
 		io->ignition = 25.f;
-		io->durability -= FrameDiff * ( 1.0f / 10000 );
+		io->durability -= framedelay * ( 1.0f / 10000 );
 
 		if (io->durability <= 0.F)
 		{

@@ -1565,7 +1565,7 @@ void ComputeVVPos(Entity * io)
 
 			if ((eediff < 15.f))
 			{
-				float val = (float)FrameDiff * ( 1.0f / 4 ) * mul;
+				float val = (float)framedelay * ( 1.0f / 4 ) * mul;
 
 				if (eediff < 10.f)
 					val *= ( 1.0f / 10 );
@@ -1579,7 +1579,7 @@ void ComputeVVPos(Entity * io)
 			}
 			else
 			{
-				fdiff -= (float)FrameDiff * ( 1.0f / 4 ) * mul;
+				fdiff -= (float)framedelay * ( 1.0f / 4 ) * mul;
 			}
 		}
 
@@ -3188,7 +3188,7 @@ void RenderInter(float from, float to) {
 				if(io->animlayer[0].flags & EA_PAUSED)
 					diff = 0;
 				else
-					diff = static_cast<long>(FrameDiff);
+					diff = static_cast<long>(framedelay);
 
 				if(io == FlyingOverIO && !(io->ioflags & IO_NPC) && io->obj)
 					io->obj->drawflags |= DRAWFLAG_HIGHLIGHT;

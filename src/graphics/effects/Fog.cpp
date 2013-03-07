@@ -163,7 +163,7 @@ void AddPoisonFog(Vec3f * pos, float power) {
 	
 	arxtime.update();
 	
-	long count = std::max(1l, checked_range_cast<long>(FrameDiff / flDiv));
+	long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
 	while(count--) {
 		
 		if(rnd() * 2000.f >= power) {
@@ -206,7 +206,7 @@ void ARX_FOGS_Render() {
 			continue;
 		}
 		
-		long count = std::max(1l, checked_range_cast<long>(FrameDiff / flDiv));
+		long count = std::max(1l, checked_range_cast<long>(framedelay / flDiv));
 		while(count--) {
 			
 			if(rnd() * 2000.f >= fogs[i].frequency) {

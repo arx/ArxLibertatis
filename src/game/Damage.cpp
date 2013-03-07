@@ -178,11 +178,11 @@ void ARX_DAMAGE_Show_Hit_Blood()
 			}
 
 			if (duration > Blood_Duration)
-				Blood_Pos += (float)FrameDiff * ( 1.0f / 300 );
+				Blood_Pos += (float)framedelay * ( 1.0f / 300 );
 
-			duration += static_cast<long>(FrameDiff);
+			duration += static_cast<long>(framedelay);
 		}
-		else Blood_Pos += (float)FrameDiff * ( 1.0f / 40 );
+		else Blood_Pos += (float)framedelay * ( 1.0f / 40 );
 	}
 
 	Last_Blood_Pos = Blood_Pos;
@@ -1062,7 +1062,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 		else if (damages[j].duration == -1) dmg = damages[j].damages;
 		else
 		{
-			float FD = (float)FrameDiff;
+			float FD = (float)framedelay;
 
 			if (tim > damages[j].start_time + damages[j].duration)
 				FD -= damages[j].start_time + damages[j].duration - tim;

@@ -728,7 +728,7 @@ bool ARX_Menu_Render() {
 
 	if (pTextManage)
 	{
-		pTextManage->Update(FrameDiff);
+		pTextManage->Update(framedelay);
 		pTextManage->Render();
 	}
 

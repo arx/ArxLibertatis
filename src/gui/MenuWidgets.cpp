@@ -174,7 +174,7 @@ void ARX_QuickSave() {
 
 void ARX_DrawAfterQuickLoad() {
 	
-	iTimeToDrawD7 -= checked_range_cast<int>(FrameDiff);
+	iTimeToDrawD7 -= checked_range_cast<int>(framedelay);
 	
 	float fColor;
 

@@ -333,7 +333,7 @@ void IncrementPolyWithNormalOutput(EERIEPOLY *_pPoly,TexturedVertex *_pOut) {
 	}
 }
 
-extern float FrameDiff;
+extern float framedelay;
 void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];
@@ -352,15 +352,15 @@ void ARXDRAW_DrawPolyBoom()
 		{
 			if ( polyboom[i].type & 128 )
 			{	
-				if (polyboom[i].timecreation - FrameDiff > 0)
+				if (polyboom[i].timecreation - framedelay > 0)
 				{
-					float fCalc	=	polyboom[i].timecreation - FrameDiff;
+					float fCalc	=	polyboom[i].timecreation - framedelay;
 					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 
-				if (polyboom[i].timecreation - FrameDiff > 0)
+				if (polyboom[i].timecreation - framedelay > 0)
 				{
-					float fCalc	= 	polyboom[i].timecreation - FrameDiff;
+					float fCalc	= 	polyboom[i].timecreation - framedelay;
 					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 

@@ -535,7 +535,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 		if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 			if(io->show == SHOW_FLAG_TELEPORTING) {
-				float fTime = io->sfx_time + FrameDiff;
+				float fTime = io->sfx_time + framedelay;
 				io->sfx_time = checked_range_cast<unsigned long>(fTime);
 
 				if (io->sfx_time >= (unsigned long)(arxtime))
