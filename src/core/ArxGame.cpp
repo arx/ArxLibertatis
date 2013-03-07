@@ -1959,8 +1959,7 @@ void ArxGame::goFor2DFX()
 
 			}
 
-			if (el->temp<0.f) el->temp=0.f;
-			else if (el->temp>.8f) el->temp=.8f;
+			el->temp = clamp(el->temp, 0.f, .8f);
 		}
 	}
 
