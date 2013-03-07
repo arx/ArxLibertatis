@@ -1605,12 +1605,10 @@ long NO_GMOD_RESET=0;
 
 void FirstFrameProc() {
 	
-	if (pParticleManager == NULL)
-	{
+	if(!pParticleManager)
 		pParticleManager = new ParticleManager();
-	}
 
-	if (!NO_GMOD_RESET)
+	if(!NO_GMOD_RESET)
 		ARX_GLOBALMODS_Reset();
 
 	NO_GMOD_RESET = 0;
@@ -1619,7 +1617,8 @@ void FirstFrameProc() {
 	DANAEMouse = Vec2s::ZERO;
 	bookclick = Vec2s(-1, -1);
 	
-	if (!LOAD_N_DONT_ERASE) arxtime.init();
+	if(!LOAD_N_DONT_ERASE)
+		arxtime.init();
 
 	ARX_BOOMS_ClearAllPolyBooms();
 	ARX_DAMAGES_Reset();
@@ -1628,8 +1627,7 @@ void FirstFrameProc() {
 	ARX_SPELLS_ClearAllSymbolDraw();
 	ARX_PARTICLES_ClearAll();
 
-	if (!LOAD_N_DONT_ERASE)
-	{
+	if(!LOAD_N_DONT_ERASE) {
 		CleanScriptLoadedIO();
 		RestoreInitialIOStatus();
 		DRAGINTER=NULL;
@@ -1639,9 +1637,7 @@ void FirstFrameProc() {
 	
 	FirstTimeThings();
 
-	if (!LOAD_N_DONT_ERASE)
-	{
-
+	if(!LOAD_N_DONT_ERASE) {
 		CleanInventory();
 		ARX_SCRIPT_Timer_ClearAll();
 		UnlinkAllLinkedObjects();
@@ -1652,11 +1648,11 @@ void FirstFrameProc() {
 	TSecondaryInventory=NULL;
 	ARX_FOGS_Render();
 
-	if (!LOAD_N_DONT_ERASE)
-	{
+	if(!LOAD_N_DONT_ERASE) {
 		arxtime.init();
 
-		if (!DONT_ERASE_PLAYER) ARX_PLAYER_InitPlayer();
+		if(!DONT_ERASE_PLAYER)
+			ARX_PLAYER_InitPlayer();
 
 		SLID_VALUE=0.f;
 	}
