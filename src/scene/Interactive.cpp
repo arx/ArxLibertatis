@@ -331,24 +331,19 @@ void ARX_INTERACTIVE_Detach(long n_source, long n_target)
 
 void ARX_INTERACTIVE_Show_Hide_1st(Entity * io, long state)
 {
-	if ((!io)
-	        ||	(HERO_SHOW_1ST == state))
+	if(!io || HERO_SHOW_1ST == state)
 		return;
 
 	HERO_SHOW_1ST = state;
 	long grp = EERIE_OBJECT_GetSelection(io->obj, "1st");
 
-	if (grp != -1)
-	{
-		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-		{
+	if(grp != -1) {
+		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 			EERIE_FACE * ef = &io->obj->facelist[nn];
 
-			for (long jj = 0; jj < 3; jj++)
-			{
-				if (IsInSelection(io->obj, ef->vid[jj], grp) != -1)
-				{
-					if (state)
+			for(long jj = 0; jj < 3; jj++) {
+				if(IsInSelection(io->obj, ef->vid[jj], grp) != -1) {
+					if(state)
 						ef->facetype |= POLY_HIDE;
 					else
 						ef->facetype &= ~POLY_HIDE;
@@ -400,33 +395,28 @@ void ARX_INTERACTIVE_HideGore(Entity * io, long flag)
 	if (!io || !io->obj || io->obj->texturecontainer.empty())
 		return;
 
-	if ((io == entities.player()) && (!flag & 1))
+	if(io == entities.player() && (!flag & 1)) //TODO this looks like a broken flag check
 		return;
 
 	long gorenum = -1;
 
-	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
-	{
-		if (io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != string::npos)
-		{
+	for(size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++) {
+		if(io->obj->texturecontainer[nn] && io->obj->texturecontainer[nn]->m_texName.string().find("gore") != string::npos) {
 			gorenum = nn;
 			break;
 		}
 	}
 
-	if (gorenum > -1)
-	{
-		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
-		{
+	if(gorenum > -1) {
+		for(size_t nn = 0; nn < io->obj->facelist.size(); nn++) {
 			//Hide Gore Polys...
-			if (io->obj->facelist[nn].texid == gorenum)
+			if(io->obj->facelist[nn].texid == gorenum)
 				io->obj->facelist[nn].facetype |= POLY_HIDE;
-			else if (!flag & 1)
+			else if(!flag & 1) //TODO this looks like a broken flag check
 				io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 		}
 	}
 }
-
 
 bool ForceNPC_Above_Ground(Entity * io) {
 	
