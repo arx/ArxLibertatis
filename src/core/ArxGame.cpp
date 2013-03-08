@@ -1383,20 +1383,20 @@ void ArxGame::renderLevel() {
 		if(!EXTERNALVIEW && !BOW_FOCAL)
 			ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
 
-			float val = (float)tFrameDiff * speedfactor;
+		float val = (float)tFrameDiff * speedfactor;
 
-			if (entities.player()->ioflags & IO_FREEZESCRIPT)
-				val=0;
+		if (entities.player()->ioflags & IO_FREEZESCRIPT)
+			val=0;
 
-			arx_assert(entities.player()->obj != NULL);
-			EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
-				&entities.player()->pos, checked_range_cast<unsigned long>(val), entities.player(), false, false);
+		arx_assert(entities.player()->obj != NULL);
+		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
+			&entities.player()->pos, checked_range_cast<unsigned long>(val), entities.player(), false, false);
 
-			if ((player.Interface & INTER_COMBATMODE) && (entities.player()->animlayer[1].cur_anim != NULL))
-				ManageCombatModeAnimations();
+		if ((player.Interface & INTER_COMBATMODE) && (entities.player()->animlayer[1].cur_anim != NULL))
+			ManageCombatModeAnimations();
 
-			if (entities.player()->animlayer[1].cur_anim!=NULL)
-				ManageCombatModeAnimationsEND();
+		if (entities.player()->animlayer[1].cur_anim!=NULL)
+			ManageCombatModeAnimationsEND();
 
 		ACTIVECAM->orgTrans.use_focal = restore;
 		USEINTERNORM = old;
