@@ -1862,20 +1862,18 @@ void FirstFrameHandling() {
 
 void ManageNONCombatModeAnimations()
 {
-	Entity * io=entities.player();
+	Entity *io = entities.player();
 
-	if (!io) return;
+	if(!io)
+		return;
 
 	ANIM_USE * useanim3=&io->animlayer[3];
 	ANIM_HANDLE ** alist=io->anims;
 
-	// FIRST SHIELD Management !
-	if (	(player.Current_Movement & PLAYER_LEAN_LEFT)
-		||	(player.Current_Movement & PLAYER_LEAN_RIGHT)			)
-	{
-	}
-	else if ((player.equiped[EQUIP_SLOT_SHIELD] != 0) && !BLOCK_PLAYER_CONTROLS)
-	{
+	if(player.Current_Movement & (PLAYER_LEAN_LEFT | PLAYER_LEAN_RIGHT))
+		return;
+
+	if(player.equiped[EQUIP_SLOT_SHIELD] != 0 && !BLOCK_PLAYER_CONTROLS) {
 		if ( (useanim3->cur_anim==NULL)  ||
 			( (useanim3->cur_anim!=alist[ANIM_SHIELD_CYCLE])
 			&& (useanim3->cur_anim!=alist[ANIM_SHIELD_HIT])
@@ -1883,25 +1881,16 @@ void ManageNONCombatModeAnimations()
 		{
 			AcquireLastAnim(io);
 			ANIM_Set(useanim3,alist[ANIM_SHIELD_START]);
-		}
-		else if ((useanim3->cur_anim==alist[ANIM_SHIELD_START])
-			&& (useanim3->flags & EA_ANIMEND))
-		{
+		} else if(useanim3->cur_anim==alist[ANIM_SHIELD_START] && (useanim3->flags & EA_ANIMEND)) {
 			AcquireLastAnim(io);
 			ANIM_Set(useanim3,alist[ANIM_SHIELD_CYCLE]);
 			useanim3->flags|=EA_LOOP;
 		}
-	}
-	else
-	{
-		if (useanim3->cur_anim==alist[ANIM_SHIELD_CYCLE])
-		{
+	} else {
+		if(useanim3->cur_anim==alist[ANIM_SHIELD_CYCLE]) {
 			AcquireLastAnim(io);
 			ANIM_Set(useanim3,alist[ANIM_SHIELD_END]);
-		}
-		else if ((useanim3->cur_anim==alist[ANIM_SHIELD_END])
-			&& (useanim3->flags & EA_ANIMEND))
-		{
+		} else if(useanim3->cur_anim == alist[ANIM_SHIELD_END] && (useanim3->flags & EA_ANIMEND)) {
 			useanim3->cur_anim=NULL;
 		}
 	}
