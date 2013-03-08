@@ -143,7 +143,7 @@ void LinkObjToMe(Entity * io, Entity * io2, const std::string & attach);
  *
  * We should instead use a proper weak pointer!
  */
-long ValidIONum(long num);
+bool ValidIONum(long num);
 long ValidIOAddress(const Entity * io);
 
 void RestoreInitialIOStatusOfIO(Entity * io);
