@@ -1377,13 +1377,11 @@ void ArxGame::renderLevel() {
 		if(speedfactor < 0)
 			speedfactor = 0;
 
-		long tFrameDiff = Original_framedelay;
-
 		float restore=ACTIVECAM->orgTrans.use_focal;
 		if(!EXTERNALVIEW && !BOW_FOCAL)
 			ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
 
-		float val = (float)tFrameDiff * speedfactor;
+		float val = Original_framedelay * speedfactor;
 
 		if (entities.player()->ioflags & IO_FREEZESCRIPT)
 			val=0;
