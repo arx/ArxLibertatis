@@ -154,24 +154,23 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 }
 
 //-----------------------------------------------------------------------------
-void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim)
+void ANIM_Set(ANIM_USE *au, ANIM_HANDLE *anim)
 {
-	if ((!au)
-		|| (!anim) )
+	if(!au || !anim)
 		return;
 
-	au->cur_anim=anim;
-	au->altidx_cur=ANIM_GetAltIdx(anim,au->altidx_cur);
+	au->cur_anim = anim;
+	au->altidx_cur = ANIM_GetAltIdx(anim, au->altidx_cur);
 
-	if (au->altidx_cur>au->cur_anim->alt_nb)
-		au->altidx_cur=0;
+	if(au->altidx_cur > au->cur_anim->alt_nb)
+		au->altidx_cur = 0;
 
-	au->ctime=0;
-	au->lastframe=-1;
-	au->flags&=~EA_PAUSED;
-	au->flags&=~EA_ANIMEND;
-	au->flags&=~EA_LOOP;
-	au->flags&=~EA_FORCEPLAY;
+	au->ctime = 0;
+	au->lastframe = -1;
+	au->flags &= ~EA_PAUSED;
+	au->flags &= ~EA_ANIMEND;
+	au->flags &= ~EA_LOOP;
+	au->flags &= ~EA_FORCEPLAY;
 }
 
 ANIM_HANDLE::ANIM_HANDLE() : path() {
