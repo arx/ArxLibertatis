@@ -1125,21 +1125,20 @@ void ArxGame::speechControlledCinematic() {
 }
 
 void ArxGame::handlePlayerDeath() {
-
-	if (player.life<=0)
-	{
+	if(player.life <= 0) {
 		DeadTime += static_cast<long>(framedelay);
 		float mdist = EEfabs(player.physics.cyl.height)-60;
-		DeadCameraDistance+=(float)framedelay*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
+		DeadCameraDistance += (float)framedelay*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
 
-		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
+		if(DeadCameraDistance > mdist)
+			DeadCameraDistance = mdist;
 
 		Vec3f targetpos = player.pos;
 
 		long id  = entities.player()->obj->fastaccess.view_attach;
-		long id2 = GetActionPointIdx( entities.player()->obj, "chest2leggings" );
+		long id2 = GetActionPointIdx(entities.player()->obj, "chest2leggings");
 
-		if (id!=-1) {
+		if(id != -1) {
 			targetpos = entities.player()->obj->vertexlist3[id].v;
 		}
 
@@ -1147,8 +1146,7 @@ void ArxGame::handlePlayerDeath() {
 		conversationcamera.orgTrans.pos.y = targetpos.y - DeadCameraDistance;
 		conversationcamera.orgTrans.pos.z = targetpos.z;
 
-		if (id2!=-1)
-		{
+		if(id2 != -1) {
 			conversationcamera.orgTrans.pos.x=entities.player()->obj->vertexlist3[id2].v.x;
 			conversationcamera.orgTrans.pos.y=entities.player()->obj->vertexlist3[id2].v.y-DeadCameraDistance;
 			conversationcamera.orgTrans.pos.z=entities.player()->obj->vertexlist3[id2].v.z;
@@ -1161,9 +1159,7 @@ void ArxGame::handlePlayerDeath() {
 		subj.angle.g = 0;
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS=1;
-	}
-	else
-	{
+	} else {
 		DeadCameraDistance=0;
 	}
 }
