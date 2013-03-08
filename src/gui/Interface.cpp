@@ -5645,12 +5645,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		IN_BOOK_DRAW=1;
 		std::vector<EERIE_VERTEX> vertexlist = entities.player()->obj->vertexlist3;
 
-		if(player.useanim.cur_anim != NULL) {
-			EERIEDrawAnimQuat(entities.player()->obj, &player.useanim, &ePlayerAngle, &pos,
-			                  checked_range_cast<unsigned long>(Original_framedelay), NULL);
-		} else {
-			DrawEERIEInter(entities.player()->obj, &ePlayerAngle, &pos, NULL);
-		}
+		arx_assert(player.useanim.cur_anim);
+
+		EERIEDrawAnimQuat(entities.player()->obj, &player.useanim, &ePlayerAngle, &pos,
+						  checked_range_cast<unsigned long>(Original_framedelay), NULL);
 
 		INVISIBILITY_OVERRIDE=0;
 		IN_BOOK_DRAW=0;
