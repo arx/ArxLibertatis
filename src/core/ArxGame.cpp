@@ -1383,23 +1383,22 @@ void ArxGame::renderLevel() {
 
 		float val = Original_framedelay * speedfactor;
 
-		if (entities.player()->ioflags & IO_FREEZESCRIPT)
-			val=0;
+		if(entities.player()->ioflags & IO_FREEZESCRIPT)
+			val = 0;
 
-		arx_assert(entities.player()->obj != NULL);
+		arx_assert(entities.player()->obj);
 		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
 			&entities.player()->pos, checked_range_cast<unsigned long>(val), entities.player(), false, false);
 
-		if ((player.Interface & INTER_COMBATMODE) && (entities.player()->animlayer[1].cur_anim != NULL))
+		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimations();
 
-		if (entities.player()->animlayer[1].cur_anim!=NULL)
+		if(entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimationsEND();
 
 		ACTIVECAM->orgTrans.use_focal = restore;
 		USEINTERNORM = old;
 	}
-
 
 	updateFirstPersonCamera();
 	updateConversationCamera();
@@ -1538,11 +1537,7 @@ void ArxGame::renderLevel() {
 		ManageTorch();
 
 		// Renders Magical Flares
-		if ( !((player.Interface & INTER_MAP )
-			&& (!(player.Interface & INTER_COMBATMODE)))
-			&& flarenum
-			)
-		{
+		if(!((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) && flarenum) {
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 			FRAMETICKS = (unsigned long)(arxtime);
 		}
@@ -1567,20 +1562,18 @@ void ArxGame::renderLevel() {
 	// Checks some specific spell FX
 	CheckMr();
 
-	if (Project.improve)
+	if(Project.improve) {
 		DrawImproveVisionInterface();
-	else
-	{
-		if(subj.focal < BASE_FOCAL)
-		{
+	} else {
+		if(subj.focal < BASE_FOCAL) {
 			static const float INC_FOCAL = 75.0f;
 			subj.focal += INC_FOCAL;
 
 			if(subj.focal > BASE_FOCAL)
 				subj.focal = BASE_FOCAL;
-		}
-		else if(subj.focal > BASE_FOCAL)
+		} else if(subj.focal > BASE_FOCAL) {
 			subj.focal = BASE_FOCAL;
+		}
 	}
 
 	if(eyeball.exist != 0)
@@ -1592,6 +1585,7 @@ void ArxGame::renderLevel() {
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.0001f, NULL, Color(71, 71, 255));
+
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
