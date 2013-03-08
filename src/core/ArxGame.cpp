@@ -840,9 +840,8 @@ void ArxGame::updateFirstPersonCamera() {
 			else break;
 		}
 
-		subj.d_angle.a=player.angle.a + 30.f;
-		subj.d_angle.b=player.angle.b;
-		subj.d_angle.g=player.angle.g;
+		subj.d_angle = player.angle;
+		subj.d_angle.a += 30.f;
 	} else {
 		subj.angle = player.angle;
 		
