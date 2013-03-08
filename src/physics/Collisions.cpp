@@ -1120,7 +1120,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 	if (flags & CAS_NO_NPC_COL) return false;
 
-	long validsource=0;
+	bool validsource = false;
 
 	if (flags & CAS_NO_SAME_GROUP) validsource=ValidIONum(source);
 

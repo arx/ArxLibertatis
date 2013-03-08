@@ -151,13 +151,13 @@ void Set_DragInter(Entity * io)
 }
 
 // Checks if an IO index number is valid
-long ValidIONum(long num) {
+bool ValidIONum(long num) {
 	
 	if(num < 0 || num >= long(entities.size()) || !entities[num]) {
-		return 0;
+		return false;
 	}
 	
-	return 1;
+	return true;
 }
 
 long ValidIOAddress(const Entity * io) {

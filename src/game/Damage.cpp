@@ -1070,7 +1070,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim) {
 			dmg = damages[j].damages * FD * ( 1.0f / 1000 );
 		}
 
-		long validsource = ValidIONum(damages[j].source);
+		bool validsource = ValidIONum(damages[j].source);
 		float divradius = 1.f / damages[j].radius;
 
 		// checking for IO damages
@@ -1467,7 +1467,7 @@ bool DoSphericDamage(Vec3f * pos, float dmg, float radius, DamageArea flags, Dam
 	if (radius <= 0.f) return damagesdone;
 
 	float rad = 1.f / radius;
-	long validsource = ValidIONum(numsource);
+	bool validsource = ValidIONum(numsource);
 
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * ioo = entities[i];
