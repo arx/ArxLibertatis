@@ -1561,16 +1561,15 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh(){
 
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player());
 }
+
 float Falling_Height = 0;
 void ARX_PLAYER_StartFall()
 {
 	FALLING_TIME = 1;
 	Falling_Height = 50.f;
-	float yy;
-	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &yy);
+	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z);
 
-	if (ep)
-	{
+	if(ep) {
 		Falling_Height = player.pos.y;
 	}
 }
