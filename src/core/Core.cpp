@@ -310,7 +310,6 @@ long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
-long STRIKE_TIME		= 0;
 long STOP_KEYBOARD_INPUT= 0;
 long REQUEST_SPEECH_SKIP= 0;
 long CURRENTLEVEL		= -1;
@@ -1989,7 +1988,6 @@ void strikeSpeak(Entity * io) {
 
 void ManageCombatModeAnimations()
 {
-	STRIKE_TIME=0;
 	Entity * io=entities.player();
 
 	if (!io) return;
@@ -2067,7 +2065,6 @@ void ManageCombatModeAnimations()
 						{
 							if (useanim->cur_anim==alist[ANIM_BARE_STRIKE_LEFT])
 							{
-								STRIKE_TIME=1;
 							long id = io->obj->fastaccess.left_attach;
 
 								if (id!=-1)
@@ -2101,7 +2098,6 @@ void ManageCombatModeAnimations()
 							}
 							else  // Strike Right
 							{
-								STRIKE_TIME=1;
 							long id = io->obj->fastaccess.primary_attach;
 
 								if (id!=-1)
@@ -2177,8 +2173,6 @@ void ManageCombatModeAnimations()
 					if (	(useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
 						&&	(useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 					{
-						STRIKE_TIME=1;
-
 						if ((PlayerWeaponBlocked==-1)
 						&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)))
 						{
@@ -2246,8 +2240,6 @@ void ManageCombatModeAnimations()
 						if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
 							&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 						{
-							STRIKE_TIME=1;
-
 							if ((PlayerWeaponBlocked==-1)
 								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 							{
@@ -2318,8 +2310,6 @@ void ManageCombatModeAnimations()
 						if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
 							&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 						{
-							STRIKE_TIME=1;
-
 							if ((PlayerWeaponBlocked==-1)
 								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 							{
