@@ -150,7 +150,6 @@ extern long STOP_KEYBOARD_INPUT;
 extern long USEINTERNORM;
 extern long cur_mr;
 extern long cur_rf;
-extern long STRIKE_TIME;
 extern long DeadTime;
 extern long TRANSPOLYSPOS;
 extern long FORCE_FRONT_DRAW;
