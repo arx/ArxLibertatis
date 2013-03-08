@@ -4547,7 +4547,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Level = getLocalised("system_charsheet_player_lvl");
 		ITC.Xp = getLocalised("system_charsheet_player_xp");
 		
-		ANIM_Set(&player.useanim,herowaitbook);
+		ANIM_Set(&player.useanim, herowaitbook);
 
 		player.useanim.flags |= EA_LOOP;
 
