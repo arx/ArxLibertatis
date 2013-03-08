@@ -5683,32 +5683,22 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GRenderer->SetCulling(Renderer::CullNone);
 		SetActiveCamera(oldcam);
 
-		Entity * io=entities.player();
+		Entity *io = entities.player();
 
-		if (io)
-		{
+		if(io) {
 			player.useanim.cur_anim = herowaitbook;
 
-			if (	(player.equiped[EQUIP_SLOT_WEAPON]!=0)
-				&&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]	))
-			{
-				if (entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H)
-				{
+			if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
+				if(entities[player.equiped[EQUIP_SLOT_WEAPON]]->type_flags & OBJECT_TYPE_2H) {
 					player.useanim.cur_anim = herowait_2h;
 				}
 			}
 
 			GRenderer->SetCulling(Renderer::CullNone);
 
-			if (	(player.equiped[EQUIP_SLOT_ARMOR]!=0)
-				&&	ValidIONum(player.equiped[EQUIP_SLOT_ARMOR]	))
-			{
-				Entity * tod=entities[player.equiped[EQUIP_SLOT_ARMOR]];
-
-				if (tod)
-				{
-
-
+			if(player.equiped[EQUIP_SLOT_ARMOR] && ValidIONum(player.equiped[EQUIP_SLOT_ARMOR])) {
+				Entity *tod = entities[player.equiped[EQUIP_SLOT_ARMOR]];
+				if(tod) {
 					tod->bbox1.x = 195;
 					tod->bbox1.y = 116;
 					tod->bbox2.x = 284;
@@ -5728,15 +5718,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 			}
 
-			if (	(player.equiped[EQUIP_SLOT_LEGGINGS]!=0)
-				&&	ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS]	))
-			{
-				Entity * tod=entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
-
-				if (tod)
-				{
-
-
+			if(player.equiped[EQUIP_SLOT_LEGGINGS] && ValidIONum(player.equiped[EQUIP_SLOT_LEGGINGS])) {
+				Entity *tod = entities[player.equiped[EQUIP_SLOT_LEGGINGS]];
+				if(tod) {
 					tod->bbox1.x = 218;
 					tod->bbox1.y = 183;
 					tod->bbox2.x = 277;
@@ -5752,19 +5736,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 					tod->bbox1.y = checked_range_cast<short>(fY1);
 					tod->bbox2.y = checked_range_cast<short>(fY2);
 
-					tod->ioflags|=IO_ICONIC;
+					tod->ioflags |= IO_ICONIC;
 				}
 			}
 
-			if (	(player.equiped[EQUIP_SLOT_HELMET]!=0)
-				&&	ValidIONum(player.equiped[EQUIP_SLOT_HELMET]	))
-			{
-				Entity * tod=entities[player.equiped[EQUIP_SLOT_HELMET]];
-
-				if (tod)
-				{
-
-
+			if(player.equiped[EQUIP_SLOT_HELMET] && ValidIONum(player.equiped[EQUIP_SLOT_HELMET])) {
+				Entity *tod = entities[player.equiped[EQUIP_SLOT_HELMET]];
+				if(tod) {
 					tod->bbox1.x = 218;
 					tod->bbox1.y = 75;
 					tod->bbox2.x = 260;
@@ -5788,17 +5766,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 			TextureContainer * tc2=NULL;
 			GRenderer->SetCulling(Renderer::CullNone);
 
-			if (	(player.equiped[EQUIP_SLOT_RING_LEFT]!=0)
-				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT]	))
-			{
-				Entity * todraw=entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
+			if(player.equiped[EQUIP_SLOT_RING_LEFT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_LEFT])) {
+				Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_LEFT]];
 
-				tc=todraw->inv;
+				tc = todraw->inv;
 
-				if (NeedHalo(todraw)) tc2 = todraw->inv->getHalo();
+				if(NeedHalo(todraw))
+					tc2 = todraw->inv->getHalo();
 
-				if (tc)
-				{
+				if(tc) {
 					todraw->bbox1.x=146;
 					todraw->bbox1.y=312;
 
@@ -5834,17 +5810,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 			tc2=NULL;
 
-			if (	(player.equiped[EQUIP_SLOT_RING_RIGHT]!=0)
-				&&	ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT]	))
-			{
-				Entity * todraw=entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
+			if(player.equiped[EQUIP_SLOT_RING_RIGHT] && ValidIONum(player.equiped[EQUIP_SLOT_RING_RIGHT])) {
+				Entity *todraw = entities[player.equiped[EQUIP_SLOT_RING_RIGHT]];
 
-				tc=todraw->inv;
+				tc = todraw->inv;
 
-				if (NeedHalo(todraw)) tc2=todraw->inv->getHalo();
+				if(NeedHalo(todraw))
+					tc2 = todraw->inv->getHalo();
 
-				if (tc)
-				{
+				if(tc) {
 					todraw->bbox1.x=296;
 					todraw->bbox1.y=312;
 
@@ -5879,33 +5853,31 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 			}
 
-			if (!BOOKZOOM)
+			if(!BOOKZOOM)
 				ARX_EQUIPMENT_AttachPlayerWeaponToBack();
 
 			//blue halo rendering (keyword : BLUE HALO RENDERING HIGHLIGHT AURA)
-			if (HALOCUR>0)
-			{
+			if(HALOCUR > 0) {
 				GRenderer->ResetTexture(0);
 				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 				GRenderer->SetCulling(Renderer::CullNone);
 				GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-				for (int i=0;i<HALOCUR;i++)
-				{
-					TexturedVertex * vert=&LATERDRAWHALO[(i<<2)];
+				for(int i=0; i < HALOCUR; i++) {
+					TexturedVertex *vert = &LATERDRAWHALO[(i<<2)];
 
-					if (vert[2].color == 0)
-					{
+					if(vert[2].color == 0) {
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						vert[2].color =0xFF000000;
 						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 						GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);
+					} else {
+						EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 					}
-					else EERIEDRAWPRIM(Renderer::TriangleFan, vert, 4); //>>> DO NOT USE VERTEX BUFFER HERE <<<
 				}
 
-				HALOCUR=0;
+				HALOCUR = 0;
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
