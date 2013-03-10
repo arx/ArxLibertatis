@@ -55,23 +55,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class Entity;
 
-void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
-
-
 struct ANIM_HANDLE {
 	
 	ANIM_HANDLE();
 	
 	res::path path; // empty path means an unallocated slot
-	
 	EERIE_ANIM ** anims;
 	short alt_nb;
-	
 	long locks;
-	
 };
-
-
 
 struct EERIE_BKG_INFO
 {
