@@ -578,7 +578,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,Entity * ioo,long flags) {
 
 	float tempo;
 	
-	ep=CheckInPolyPrecis(cyl->origin.x,cyl->origin.y+cyl->height,cyl->origin.z,&tempo);
+	ep=CheckInPoly(cyl->origin.x,cyl->origin.y+cyl->height,cyl->origin.z,&tempo);
 	
 	if (ep) 
 		{

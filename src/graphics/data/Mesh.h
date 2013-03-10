@@ -159,7 +159,6 @@ EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
 EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);
 EERIEPOLY * EECheckInPoly(const Vec3f * pos,float * needY = NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
-EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
 
 /*!
  * Check if the given condition is under water.

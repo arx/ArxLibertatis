@@ -1653,7 +1653,7 @@ void ARX_PLAYER_Manage_Visual() {
 		
 		if(player.jumpphase == NotJumping && !LAST_ON_PLATFORM) {
 			float t;
-			EERIEPOLY * ep = CheckInPolyPrecis(player.pos.x, player.pos.y, player.pos.z, &t);
+			EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &t);
 			if(ep && io->pos.y > t - 30.f && io->pos.y < t) {
 				player.onfirmground = 1;
 			}
@@ -2716,7 +2716,7 @@ void PlayerMovementIterate(float DeltaTime) {
 		}
 		
 		float posy;
-		EERIEPOLY * ep = CheckInPolyPrecis(player.pos.x, player.pos.y, player.pos.z, &posy);
+		EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &posy);
 		if(ep == NULL) {
 			player.physics.velocity.y = 0;
 		} else if(!player.climbing && player.pos.y >= posy) {
