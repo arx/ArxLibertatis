@@ -529,21 +529,19 @@ void PrepareIOTreatZone(long flag)
 	static long status = -1;
 	static Vec3f lastpos;
 
-	if ((flag)
-	        ||	(status == -1))
-	{
+	if(flag || status == -1) {
 		status = 0;
 		lastpos = ACTIVECAM->orgTrans.pos;
-	}
-	else if (status == 3) status = 0;
+	} else if(status == 3)
+		status = 0;
 
-	if (distSqr(ACTIVECAM->orgTrans.pos, lastpos) > square(100.f))
-	{
+	if(distSqr(ACTIVECAM->orgTrans.pos, lastpos) > square(100.f)) {
 		status = 0;
 		lastpos = ACTIVECAM->orgTrans.pos;
 	}
 
-	if (status++) return;
+	if(status++)
+		return;
 
 	TREATZONE_Clear();
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos, 1);
@@ -552,39 +550,35 @@ void PrepareIOTreatZone(long flag)
 
 	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i]))
-		{
-			Entity * toequip = entities[player.equiped[i]];
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
+			Entity *toequip = entities[player.equiped[i]];
 
-			if (toequip)
-			{
+			if(toequip) {
 				toequip->room = sGlobalPlayerRoom;
 				toequip->room_flags = 0;
 			}
 		}
 	}
 
-	if (DRAGINTER) TREATZONE_AddIO(DRAGINTER);
+	if(DRAGINTER)
+		TREATZONE_AddIO(DRAGINTER);
 
 	TREATZONE_LIMIT = 3200; 
 
-	if (RoomDistance)
-	{
+	if(RoomDistance) {
 		TREATZONE_LIMIT += 600; 
 
-		if (CURRENTLEVEL == 4)
+		if(CURRENTLEVEL == 4)
 			TREATZONE_LIMIT += 1200;
 
-		if (ACTIVECAM->cdepth > 3000)
+		if(ACTIVECAM->cdepth > 3000)
 			TREATZONE_LIMIT += 500;
 
-		if (ACTIVECAM->cdepth > 4000)
+		if(ACTIVECAM->cdepth > 4000)
 			TREATZONE_LIMIT += 500;
 
-		if (ACTIVECAM->cdepth > 6000)
+		if(ACTIVECAM->cdepth > 6000)
 			TREATZONE_LIMIT += 500;
 	}
 	
@@ -598,39 +592,28 @@ void PrepareIOTreatZone(long flag)
 		             ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		             ||	(io->show == SHOW_FLAG_HIDDEN)))   
 		{
-			if ((io->ioflags & IO_CAMERA) && (!EDITMODE))
+			if ((io->ioflags & IO_CAMERA) && !EDITMODE) {
 				treat = 0;
-			else if ((io->ioflags & IO_MARKER) && (!EDITMODE))
+			} else if ((io->ioflags & IO_MARKER) && !EDITMODE) {
 				treat = 0;
-			else if ((io->ioflags & IO_NPC) 
-			         && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS))
-			{
+			} else if ((io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags & PATHFIND_ALWAYS)) {
 				treat = 1;
-			}
-			else
-			{
+			} else {
 				float dists;
 
-				if (Cam_Room >= 0)
-				{
-					if (io->show == SHOW_FLAG_TELEPORTING)
-					{
+				if(Cam_Room >= 0) {
+					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
 						dists = distSqr(ACTIVECAM->orgTrans.pos, pos);
-					}
-					else
-					{
-						if (io->room_flags & 1)
+					} else {
+						if(io->room_flags & 1)
 							UpdateIORoom(io);
 
 						dists = square(SP_GetRoomDist(&io->pos, &ACTIVECAM->orgTrans.pos, io->room, Cam_Room));
 					}
-				}
-				else
-				{
-					if (io->show == SHOW_FLAG_TELEPORTING)
-					{
+				} else {
+					if(io->show == SHOW_FLAG_TELEPORTING) {
 						Vec3f pos;
 						GetItemWorldPosition(io, &pos);
 						dists = distSqr(ACTIVECAM->orgTrans.pos, pos); //&io->pos,&pos);
@@ -639,17 +622,17 @@ void PrepareIOTreatZone(long flag)
 						dists = distSqr(io->pos, ACTIVECAM->orgTrans.pos);
 				}
 		
-				if (dists < square(TREATZONE_LIMIT)) treat = 1;
-				else treat = 0;
-				
+				if(dists < square(TREATZONE_LIMIT))
+					treat = 1;
+				else
+					treat = 0;
 			}
 
-			if (!treat)
-			{
-				if (io == CAMERACONTROLLER)
+			if(!treat) {
+				if(io == CAMERACONTROLLER)
 					treat = 1;
 
-				if (io == DRAGINTER)
+				if(io == DRAGINTER)
 					treat = 1;
 			}
 			
@@ -686,9 +669,8 @@ void PrepareIOTreatZone(long flag)
 				//going away;
 				io->gameFlags |= GFLAG_ISINTREATZONE;
 
-				if (SendIOScriptEvent(io, SM_TREATOUT) != REFUSE)
-				{
-					if (io->ioflags & IO_NPC)
+				if(SendIOScriptEvent(io, SM_TREATOUT) != REFUSE) {
+					if(io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
 
 					io->gameFlags &= ~GFLAG_ISINTREATZONE;
@@ -702,28 +684,24 @@ void PrepareIOTreatZone(long flag)
 	for(size_t i = 1; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if ((io != NULL)
-		        &&	!(io->gameFlags & GFLAG_ISINTREATZONE)
+		if(io && !(io->gameFlags & GFLAG_ISINTREATZONE)
 		        && ((io->show == SHOW_FLAG_IN_SCENE)
 		            ||	(io->show == SHOW_FLAG_TELEPORTING)
 		            ||	(io->show == SHOW_FLAG_ON_PLAYER)
 		            ||	(io->show == SHOW_FLAG_HIDDEN)))   // show 5 = ininventory; 15 = destroyed
 		{
-			if ((io->ioflags & IO_CAMERA)
+			if((io->ioflags & IO_CAMERA)
 			        ||	(io->ioflags & IO_ITEM)
 			        ||	(io->ioflags & IO_MARKER))
 				continue;
 
 			long toadd = 0;
 
-			for (long ii = 1; ii < M_TREAT; ii++)
-			{
+			for(long ii = 1; ii < M_TREAT; ii++) {
 				Entity * ioo = treatio[ii].io;
 
-				if (ioo)
-				{
-					if (distSqr(io->pos, ioo->pos) < square(300.f))
-					{
+				if(ioo) {
+					if(distSqr(io->pos, ioo->pos) < square(300.f)) {
 						toadd = 1;
 						break;
 					}
