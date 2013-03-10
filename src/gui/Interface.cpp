@@ -6976,7 +6976,7 @@ long Manage3DCursor(long flags)
 			}
 
 			if(SPECIAL_DRAGINTER_RENDER) {
-			if( (lastanything<0.f && EEfabs(lastanything) > EEfabs(height)) || lastanything > EEfabs(height)){
+			if(EEfabs(lastanything) > EEfabs(height)) {
 				float old = io->invisibility;
 				io->invisibility = 0.5f;
 				DrawEERIEInter(io->obj,&temp,&collidpos,io);
