@@ -6780,52 +6780,52 @@ long CANNOT_PUT_IT_HERE=0;
 
 long Manage3DCursor(long flags)
 {
-	if (BLOCK_PLAYER_CONTROLS)
+	if(BLOCK_PLAYER_CONTROLS)
 		return 0;
 
-	float ag=player.angle.a;
+	float ag = player.angle.a;
 
-	if (ag>180) ag=ag-360;
+	if(ag > 180)
+		ag = ag - 360;
 
 	float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
 
-	if ((DANAEMouse.y<drop_miny) && (!EDITMODE))
+	if(DANAEMouse.y < drop_miny && !EDITMODE)
 		return 0;
 
-	Entity * io=DRAGINTER;
-
-	if (!io) return 0;
+	Entity * io = DRAGINTER;
+	if(!io)
+		return 0;
 
 	Anglef temp;
 
-	if (io->ioflags & IO_INVERTED)
-	{
-		temp.a=180.f;
+	if(io->ioflags & IO_INVERTED) {
+		temp.a = 180.f;
 		temp.b = -MAKEANGLE(io->angle.b - ((player.angle.b) - (STARTED_ANGLE + 90)));
-	}
-	else
-	{
+	} else {
 		temp.a = 0;
 		temp.b = MAKEANGLE(io->angle.b - ((player.angle.b) - (STARTED_ANGLE + 90)));
 	}
 
 	temp.g = 0;
-	Vec3f pos;
+
 	float angle=radians(MAKEANGLE(player.angle.b));
 	float angle2=radians(MAKEANGLE(player.angle.b-90.f));
 				
 	float zrange=(DANAESIZY-DANAEMouse.y)/(DANAESIZY-drop_miny); //between 0 (bottom) and 1 (top)
 	float va=player.angle.a;
 
-	if (va>180) va=0;
+	if(va > 180)
+		va = 0;
 				
 	float vd=(100.f-va)*( 1.0f / 90 );
 	float mod=va-50.f;
 
-	if (mod<0) mod=0;
+	if(mod < 0)
+		mod = 0;
 
-	mod*=( 1.0f / 20 );
-	va = (vd) * (1.3f + 0.3f * mod);
+	mod *= (1.f / 20);
+	va = vd * (1.3f + 0.3f * mod);
 
 	vd=((1.f-zrange)*0.6f-vd)*150.f;
 
@@ -6838,6 +6838,7 @@ long Manage3DCursor(long flags)
 		mx = MemoMouse.x;
 	}
 
+	Vec3f pos;
 	pos.x=player.pos.x+EEsin(angle2)*(DANAECENTERX-mx)*0.7f*va - EEsin(angle)*(va*zrange*400.f+vd);
 	pos.z=player.pos.z-EEcos(angle2)*(DANAECENTERX-mx)*0.7f*va + EEcos(angle)*(va*zrange*400.f+vd);
 	pos.y=player.pos.y;
