@@ -2839,26 +2839,21 @@ void DrawMagicSightInterface()
 void RenderAllNodes() {
 	
 	Anglef angle(Anglef::ZERO);
-	float xx, yy;
 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	
-	for(long i=0;i<nodes.nbmax;i++)
-	{
-		if (nodes.nodes[i].exist)
-		{
+	for(long i=0; i<nodes.nbmax; i++) {
+		if (nodes.nodes[i].exist) {
+			DrawEERIEInter(nodeobj, &angle,&nodes.nodes[i].pos, NULL);
 
-			DrawEERIEInter(nodeobj,
-				&angle,&nodes.nodes[i].pos,NULL);
 			nodes.nodes[i].bboxmin.x=(short)BBOXMIN.x;
 			nodes.nodes[i].bboxmin.y=(short)BBOXMIN.y;
 			nodes.nodes[i].bboxmax.x=(short)BBOXMAX.x;
 			nodes.nodes[i].bboxmax.y=(short)BBOXMAX.y;
 
-			if ((nodeobj->vertexlist[nodeobj->origin].vert.p.z>0.f) && (nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f))
-			{
-				xx=nodeobj->vertexlist[nodeobj->origin].vert.p.x-40.f;
-				yy=nodeobj->vertexlist[nodeobj->origin].vert.p.y-40.f;
+			if(nodeobj->vertexlist[nodeobj->origin].vert.p.z > 0.f && nodeobj->vertexlist[nodeobj->origin].vert.p.z<0.9f) {
+				float xx = nodeobj->vertexlist[nodeobj->origin].vert.p.x - 40.f;
+				float yy = nodeobj->vertexlist[nodeobj->origin].vert.p.y - 40.f;
 				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, Color::yellow); //font
 			}
 
