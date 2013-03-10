@@ -1060,9 +1060,7 @@ void ARX_PHYSICS_Apply() {
 		{
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
-			if (cnt < 2) cnt = 2;
-
-			if (cnt > 10) cnt = 10;
+			cnt = clamp(cnt, 2, 10);
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
