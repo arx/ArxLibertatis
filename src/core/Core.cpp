@@ -2048,58 +2048,58 @@ void ManageCombatModeAnimations()
 								&&	(useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.8f)
 								&&	(PlayerWeaponBlocked==-1) )
 					{
-							if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
-								long id = io->obj->fastaccess.left_attach;
+						if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
+							long id = io->obj->fastaccess.left_attach;
 
-								if(id != -1) {
-									EERIE_SPHERE sphere;
-									sphere.origin = io->obj->vertexlist3[id].v;
-									sphere.radius = 25.f;
+							if(id != -1) {
+								EERIE_SPHERE sphere;
+								sphere.origin = io->obj->vertexlist3[id].v;
+								sphere.radius = 25.f;
 
-									long num;
+								long num;
 
-									if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
-										float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
+								if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
+									float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
 
-										if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
-											PlayerWeaponBlocked=useanim->ctime;
-										}
-
-										ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
-
-											if(ValidIONum(num)) {
-												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
-											}
-
+									if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
+										PlayerWeaponBlocked=useanim->ctime;
 									}
+
+									ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
+
+									if(ValidIONum(num)) {
+										ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
+									}
+
 								}
-							} else { // Strike Right
-								long id = io->obj->fastaccess.primary_attach;
+							}
+						} else { // Strike Right
+							long id = io->obj->fastaccess.primary_attach;
 
-								if(id != -1) {
-									EERIE_SPHERE sphere;
-									sphere.origin = io->obj->vertexlist3[id].v;
-									sphere.radius = 25.f;
+							if(id != -1) {
+								EERIE_SPHERE sphere;
+								sphere.origin = io->obj->vertexlist3[id].v;
+								sphere.radius = 25.f;
 
-									long num;
+								long num;
 
-									if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
-										float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
+								if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
+									float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
 
-										if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
-											PlayerWeaponBlocked=useanim->ctime;
-										}
-
-										ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
-
-											if(ValidIONum(num)) {
-												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
-											}
-
+									if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
+										PlayerWeaponBlocked=useanim->ctime;
 									}
+
+									ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
+
+									if(ValidIONum(num)) {
+										ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
+									}
+
 								}
 							}
 						}
+					}
 				}
 			}
 
@@ -2200,30 +2200,30 @@ void ManageCombatModeAnimations()
 				}
 				else if (useanim->cur_anim==alist[ANIM_1H_STRIKE_LEFT+j*3])
 				{
-						if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
-							&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
+					if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
+						&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
+					{
+						if ((PlayerWeaponBlocked==-1)
+							&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 						{
-							if ((PlayerWeaponBlocked==-1)
-								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
-							{
-								PlayerWeaponBlocked=useanim->ctime;
-							}
+							PlayerWeaponBlocked=useanim->ctime;
 						}
+					}
 
-						if (useanim->flags & EA_ANIMEND)
-						{
-							AcquireLastAnim(io);
-							ANIM_Set(useanim,alist[ANIM_1H_WAIT]);
-							useanim->flags&=~(EA_PAUSED | EA_REVERSE);
-							useanim->flags|=EA_LOOP;
-							CurrFightPos=0;
-							AimTime=0;
-							PlayerWeaponBlocked=-1;
-						}
+					if (useanim->flags & EA_ANIMEND)
+					{
+						AcquireLastAnim(io);
+						ANIM_Set(useanim,alist[ANIM_1H_WAIT]);
+						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
+						useanim->flags|=EA_LOOP;
+						CurrFightPos=0;
+						AimTime=0;
+						PlayerWeaponBlocked=-1;
+					}
 
-						if ((PlayerWeaponBlocked!=-1)
-							&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
-							ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
+					if ((PlayerWeaponBlocked!=-1)
+						&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
+						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
 
 				}
 			}
@@ -2270,30 +2270,30 @@ void ManageCombatModeAnimations()
 				}
 				else if (useanim->cur_anim==alist[ANIM_2H_STRIKE_LEFT+j*3])
 				{
-						if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
-							&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
+					if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
+						&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
+					{
+						if ((PlayerWeaponBlocked==-1)
+							&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
 						{
-							if ((PlayerWeaponBlocked==-1)
-								&& (ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,0)) )
-							{
-								PlayerWeaponBlocked=useanim->ctime;
-							}
+							PlayerWeaponBlocked=useanim->ctime;
 						}
+					}
 
-						if (useanim->flags & EA_ANIMEND)
-						{
-							AcquireLastAnim(io);
-							ANIM_Set(useanim,alist[ANIM_2H_WAIT]);
-							useanim->flags&=~(EA_PAUSED | EA_REVERSE);
-							useanim->flags|=EA_LOOP;
-							CurrFightPos=0;
-							AimTime=0;
-							PlayerWeaponBlocked=-1;
-						}
+					if (useanim->flags & EA_ANIMEND)
+					{
+						AcquireLastAnim(io);
+						ANIM_Set(useanim,alist[ANIM_2H_WAIT]);
+						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
+						useanim->flags|=EA_LOOP;
+						CurrFightPos=0;
+						AimTime=0;
+						PlayerWeaponBlocked=-1;
+					}
 
-						if ((PlayerWeaponBlocked!=-1)
-							&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
-							ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
+					if ((PlayerWeaponBlocked!=-1)
+						&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
+						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
 
 				}
 			}
