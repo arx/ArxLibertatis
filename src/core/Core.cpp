@@ -1988,56 +1988,44 @@ void strikeSpeak(Entity * io) {
 
 void ManageCombatModeAnimations()
 {
-	Entity * io=entities.player();
-
-	if (!io) return;
+	Entity *io = entities.player();
+	if(!io)
+		return;
 
 	ANIM_USE * useanim=&io->animlayer[1];
 
 	ANIM_HANDLE ** alist=io->anims;
-	long j;
-	long weapontype=ARX_EQUIPMENT_GetPlayerWeaponType();
+	long weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	if ((weapontype==WEAPON_BARE) && (LAST_WEAPON_TYPE!=weapontype))
-	{
-		if (useanim->cur_anim!=alist[ANIM_BARE_WAIT])
-		{
+	if(weapontype == WEAPON_BARE && LAST_WEAPON_TYPE != weapontype) {
+		if(useanim->cur_anim != alist[ANIM_BARE_WAIT]) {
 			AcquireLastAnim(io);
-			ANIM_Set(useanim,alist[ANIM_BARE_WAIT]);
-			AimTime=0;
+			ANIM_Set(useanim, alist[ANIM_BARE_WAIT]);
+			AimTime = 0;
 		}
 	}
 
-	switch (weapontype)
-	{
+	switch(weapontype) {
 		case WEAPON_BARE:	// BARE HANDS PLAYER MANAGEMENT
 
-			if (useanim->cur_anim==alist[ANIM_BARE_WAIT])
-			{
-				AimTime=0;
+			if(useanim->cur_anim == alist[ANIM_BARE_WAIT]) {
+				AimTime = 0;
 
-				if (EERIEMouseButton & 1)
-				{
+				if(EERIEMouseButton & 1) {
 					AcquireLastAnim(io);
-					ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT_START+CurrFightPos*3]);
+					ANIM_Set(useanim, alist[ANIM_BARE_STRIKE_LEFT_START+CurrFightPos*3]);
 					io->isHit = false;
 				}
 			}
 
 			// Now go for strike cycle...
-			for (j=0;j<4;j++)
-			{
-				if (	(useanim->cur_anim==alist[ANIM_BARE_STRIKE_LEFT_START+j*3])
-					&&	(useanim->flags & EA_ANIMEND)	)
-				{
+			for(long j = 0; j < 4; j++) {
+				if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3]);
 					AimTime = (unsigned long)(arxtime);
 					useanim->flags|=EA_LOOP;
-				}
-				else if (	(useanim->cur_anim==alist[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
-						&& !(EERIEMouseButton & 1)  )
-				{
+				} else if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_BARE_STRIKE_LEFT+j*3]);
 
@@ -2047,11 +2035,8 @@ void ManageCombatModeAnimations()
 					PlayerWeaponBlocked=-1;
 					CurrFightPos=0;
 					AimTime=0;
-				}
-				else if (useanim->cur_anim==alist[ANIM_BARE_STRIKE_LEFT+j*3])
-				{
-					if (useanim->flags & EA_ANIMEND)
-					{
+				} else if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT+j*3]) {
+					if(useanim->flags & EA_ANIMEND) {
 						AcquireLastAnim(io);
 						ANIM_Set(useanim,alist[ANIM_BARE_WAIT]);
 						useanim->flags|=EA_LOOP;
@@ -2062,65 +2047,52 @@ void ManageCombatModeAnimations()
 					else if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.2f)
 								&&	(useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.8f)
 								&&	(PlayerWeaponBlocked==-1) )
-						{
-							if (useanim->cur_anim==alist[ANIM_BARE_STRIKE_LEFT])
-							{
-							long id = io->obj->fastaccess.left_attach;
+					{
+							if(useanim->cur_anim == alist[ANIM_BARE_STRIKE_LEFT]) {
+								long id = io->obj->fastaccess.left_attach;
 
-								if (id!=-1)
-								{
+								if(id != -1) {
 									EERIE_SPHERE sphere;
 									sphere.origin = io->obj->vertexlist3[id].v;
 									sphere.radius = 25.f;
 
 									long num;
 
-									if (CheckAnythingInSphere(&sphere,0,0,&num))
-									{
+									if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
 										float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
 
-										if (ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v,dmgs,40,0))
-										{
+										if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
 											PlayerWeaponBlocked=useanim->ctime;
 										}
 
-										{
 										ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
 
-											if (ValidIONum(num))
-											{
+											if(ValidIONum(num)) {
 												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
 											}
-										}
 
 									}
 								}
-							}
-							else  // Strike Right
-							{
-							long id = io->obj->fastaccess.primary_attach;
+							} else { // Strike Right
+								long id = io->obj->fastaccess.primary_attach;
 
-								if (id!=-1)
-								{
+								if(id != -1) {
 									EERIE_SPHERE sphere;
 									sphere.origin = io->obj->vertexlist3[id].v;
 									sphere.radius = 25.f;
 
 									long num;
 
-									if (CheckAnythingInSphere(&sphere,0,0,&num))
-									{
+									if(CheckAnythingInSphere(&sphere, 0, 0, &num)) {
 										float dmgs=(player.Full_damages+1)*STRIKE_AIMTIME;
 
-										if (ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v,dmgs,40,0))
-										{
+										if(ARX_DAMAGES_TryToDoDamage(&io->obj->vertexlist3[id].v, dmgs, 40, 0)) {
 											PlayerWeaponBlocked=useanim->ctime;
 										}
 
 										ARX_PARTICLES_Spawn_Spark(&sphere.origin, dmgs, 2);
 
-											if (ValidIONum(num))
-											{
+											if(ValidIONum(num)) {
 												ARX_SOUND_PlayCollision(entities[num]->material,MATERIAL_FLESH, 1.f, 1.f, &sphere.origin, NULL);
 											}
 
@@ -2134,12 +2106,10 @@ void ManageCombatModeAnimations()
 		break;
 		case WEAPON_DAGGER: // DAGGER PLAYER MANAGEMENT
 			// Waiting and receiving Strike Impulse
-			if (useanim->cur_anim==alist[ANIM_DAGGER_WAIT])
-			{
+			if(useanim->cur_anim==alist[ANIM_DAGGER_WAIT]) {
 				AimTime = 0;
 
-				if (EERIEMouseButton & 1)
-				{
+				if(EERIEMouseButton & 1) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_DAGGER_STRIKE_LEFT_START+CurrFightPos*3]);
 					io->isHit = false;
@@ -2147,7 +2117,7 @@ void ManageCombatModeAnimations()
 			}
 
 			// Now go for strike cycle...
-			for (j=0;j<4;j++)
+			for (long j=0;j<4;j++)
 			{
 				if ((useanim->cur_anim==alist[ANIM_DAGGER_STRIKE_LEFT_START+j*3])&& (useanim->flags & EA_ANIMEND))
 				{
@@ -2201,12 +2171,10 @@ void ManageCombatModeAnimations()
 		break;
 		case WEAPON_1H: // 1HANDED PLAYER MANAGEMENT
 			// Waiting and Received Strike Impulse
-			if (useanim->cur_anim==alist[ANIM_1H_WAIT])
-			{
+			if(useanim->cur_anim==alist[ANIM_1H_WAIT]) {
 				AimTime = 0;
 
-				if (EERIEMouseButton & 1)
-				{
+				if(EERIEMouseButton & 1) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
 					io->isHit = false;
@@ -2214,18 +2182,13 @@ void ManageCombatModeAnimations()
 			}
 
 			// Now go for strike cycle...
-			for (j=0;j<4;j++)
-			{
-				if ((useanim->cur_anim==alist[ANIM_1H_STRIKE_LEFT_START+j*3])&& (useanim->flags & EA_ANIMEND))
-				{
+			for(long j = 0; j < 4; j++) {
+				if(useanim->cur_anim == alist[ANIM_1H_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3]);
 					AimTime = (unsigned long)(arxtime);
 					useanim->flags|=EA_LOOP;
-				}
-				else if ((useanim->cur_anim==alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])
-						 && !(EERIEMouseButton & 1))
-				{
+				} else if(useanim->cur_anim == alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT+j*3]);
 
@@ -2282,7 +2245,7 @@ void ManageCombatModeAnimations()
 			}
 
 			// Now go for strike cycle...
-			for (j=0;j<4;j++)
+			for (long j=0;j<4;j++)
 			{
 				if (	(useanim->cur_anim==alist[ANIM_2H_STRIKE_LEFT_START+j*3])
 					&&	(useanim->flags & EA_ANIMEND))
