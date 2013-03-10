@@ -978,15 +978,13 @@ void ArxGame::speechControlledCinematic() {
 	long valid=-1;
 
 	for(size_t i = 0; i < MAX_ASPEECH; i++) {
-		if ((aspeech[i].exist) && (aspeech[i].cine.type>0))
-		{
-			valid=i;
+		if(aspeech[i].exist && aspeech[i].cine.type > 0) {
+			valid = i;
 			break;
 		}
 	}
 
-	if (valid>=0)
-	{
+	if(valid >= 0) {
 		CinematicSpeech * acs=&aspeech[valid].cine;
 		Entity * io=aspeech[valid].io;
 		float rtime=(float)(arxtime.get_updated()-aspeech[valid].time_creation)/(float)aspeech[valid].duration;
@@ -995,12 +993,10 @@ void ArxGame::speechControlledCinematic() {
 
 		float itime=1.f-rtime;
 
-		if ((rtime>=0.f) && (rtime<=1.f) && io)
-		{
+		if(rtime >= 0.f && rtime <= 1.f && io) {
 			float alpha,beta,distance,_dist;
 
-			switch (acs->type)
-			{
+			switch (acs->type) {
 			case ARX_CINE_SPEECH_KEEP: {
 				subj.orgTrans.pos = acs->pos1;
 				subj.angle.a=acs->pos2.x;
@@ -1028,22 +1024,16 @@ void ArxGame::speechControlledCinematic() {
 									   }
 			case ARX_CINE_SPEECH_SIDE_LEFT:
 			case ARX_CINE_SPEECH_SIDE: {
-
-				if (ValidIONum(acs->ionum))
-				{
-
+				if(ValidIONum(acs->ionum)) {
 					const Vec3f & from = acs->pos1;
 					const Vec3f & to = acs->pos2;
 
 					Vec3f vect = (to - from).getNormalized();
 
 					Vec3f vect2;
-					if (acs->type==ARX_CINE_SPEECH_SIDE_LEFT)
-					{
+					if(acs->type==ARX_CINE_SPEECH_SIDE_LEFT) {
 						Vector_RotateY(&vect2,&vect,-90);
-					}
-					else
-					{
+					} else {
 						Vector_RotateY(&vect2,&vect,90);
 					}
 
@@ -1073,10 +1063,8 @@ void ArxGame::speechControlledCinematic() {
 			case ARX_CINE_SPEECH_CCCLISTENER_L:
 			case ARX_CINE_SPEECH_CCCTALKER_R:
 			case ARX_CINE_SPEECH_CCCTALKER_L: {
-
 				//need to compute current values
-				if (ValidIONum(acs->ionum))
-				{
+				if(ValidIONum(acs->ionum)) {
 					Vec3f targetpos;
 					if(acs->type == ARX_CINE_SPEECH_CCCLISTENER_L
 						 || acs->type == ARX_CINE_SPEECH_CCCLISTENER_R) {
