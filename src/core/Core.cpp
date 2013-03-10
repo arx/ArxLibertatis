@@ -1847,7 +1847,7 @@ void FirstFrameHandling() {
 	LoadLevelScreen();
 	LoadLevelScreen(-2);
 	
-	if (	(!CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
+	if (	(!CheckInPoly(player.pos.x,player.pos.y,player.pos.z))
 		&&	(LastValidPlayerPos.x!=0.f)
 		&&	(LastValidPlayerPos.y!=0.f)
 		&&	(LastValidPlayerPos.z!=0.f)) {
@@ -3254,7 +3254,7 @@ void ShowInfoText() {
 	mainApp->outputText(70, 32, tex);
 
 	float poss=-666.66f;
-	EERIEPOLY * ep=CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z);
+	EERIEPOLY * ep=CheckInPoly(player.pos.x,player.pos.y,player.pos.z);
 	float tempo=0.f;
 
 	if ((ep) && (GetTruePolyY(ep,&player.pos,&tempo)))

@@ -150,7 +150,7 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 		}
 	}
 
-	if (!found) return CheckInPolyPrecis(x, y, z);
+	if (!found) return CheckInPoly(x, y, z);
 
 	return found;
 }
