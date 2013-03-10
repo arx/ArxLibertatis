@@ -996,12 +996,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		return;
 	
 	// Precalc local lights for this object then interpolate
-		MakeCLight(io,&infra,angle,&pos,eobj,mat);
+	MakeCLight(io, &infra, angle, &pos, eobj, mat);
 
-	float ddist;
-	ddist=0;
-	long need_halo;
-	need_halo=0;
+	float ddist = 0;
+	long need_halo = 0;
 
 	if(io && (io->halo.flags & HALO_ACTIVE)) {
 		
@@ -1144,8 +1142,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 	}
 
-	float prec;
-	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul());
+	float prec = 1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul());
 
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];
@@ -1166,7 +1163,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			normFace.y=(normV10.z*normV20.x)-(normV10.x*normV20.z);
 			normFace.z=(normV10.x*normV20.y)-(normV10.y*normV20.x);
 
-			if((dot( normFace , nrm )>0.f) ) continue;
+			if(dot(normFace ,nrm) > 0.f)
+				continue;
 		}
 
 		TexturedVertex * vert_list;
@@ -1225,8 +1223,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 
 		// Treat WATER Polys (modify UVs)
-		if (eobj->facelist[i].facetype & POLY_WATER)
-		{
+		if(eobj->facelist[i].facetype & POLY_WATER) {
 			for(long k=0; k<3; k++) {
 				vert_list[k].uv.x=eobj->facelist[i].u[k];
 				vert_list[k].uv.y=eobj->facelist[i].v[k];
@@ -1234,26 +1231,16 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 
-		if (io)
-		{
-			// Frozen status override all other colors
-			if (io->ioflags & IO_FREEZESCRIPT)
-			{
+		if(io) {
+			if(io->ioflags & IO_FREEZESCRIPT) { // Frozen status override all other colors
 				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xFF0000FF;
-			}
-			// Is it a Glowing Poly ?
-			else if (eobj->facelist[i].facetype & POLY_GLOW)
+			} else if(eobj->facelist[i].facetype & POLY_GLOW) { // Is it a Glowing Poly ?
 				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
-			// Are we using Normal Illuminations ?
-			else if (USEINTERNORM) 
-			{
-				for (long j=0;j<3;j++)
-				{			
+			} else if(USEINTERNORM) { // Are we using Normal Illuminations ?
+				for(long j=0;j<3;j++) {
 					vert_list[j].color=eobj->vertexlist3[paf[j]].vert.color;
 				}					
-			}
-			// Are we using IMPROVED VISION view ?
-			else if(Project.improve) {
+			} else if(Project.improve) { // Are we using IMPROVED VISION view ?
 				vert_list[0].color = vert_list[1].color = vert_list[2].color = io->infracolor.toBGR();
 			} else {
 				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
@@ -1266,7 +1253,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					long lr=(vert_list[k].color>>16) & 255;
 					float ffr=(float)(lr);
 					
-					float dd=(vert_list[k].rhw*prec);
+					float dd = vert_list[k].rhw * prec;
 
 					dd = clamp(dd, 0.f, 1.f);
 					
@@ -1285,23 +1272,17 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 				}
 			}
-		}
-		else
-		{
-			// Treating GLOWING POLY (unaffected by light)
-			if (eobj->facelist[i].facetype & POLY_GLOW)
+		} else {
+			if(eobj->facelist[i].facetype & POLY_GLOW) { // Treating GLOWING POLY (unaffected by light)
 				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
-				else if (USEINTERNORM) // using INTERNORM lighting
-			{
-				for (long j=0;j<3;j++) {
+			} else if(USEINTERNORM) { // using INTERNORM lighting
+				for(long j=0;j<3;j++) {
 					vert_list[j].color = eobj->vertexlist3[paf[j]].vert.color; 
 				}
-			} else if(Project.improve) {
-				// using IMPROVED VISION view
+			} else if(Project.improve) { // using IMPROVED VISION view
 				vert_list[2].color = Color3f(.6f, 0.f, 1.f).toBGR();
 				vert_list[0].color = vert_list[1].color = vert_list[2].color;
-			} else {
-				// using default white
+			} else { // using default white
 				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 		}
@@ -1316,7 +1297,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 	
-	for (long j=0;j<3;j++)
+	for(long j=0; j<3; j++)
 		eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 
 	// Transparent poly: storing info to draw later
@@ -1324,7 +1305,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::gray(fTransp).toBGR();
 	}
 
-	if((io)&&(io->ioflags&IO_ZMAP)) {
+	if(io && (io->ioflags & IO_ZMAP)) {
 		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
 	}
 
