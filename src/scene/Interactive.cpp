@@ -3159,14 +3159,13 @@ void RenderInter(float from, float to) {
 				EERIE_PHYSICS_BOX_Show(io->obj);
 #endif
 
-			Anglef temp;
-			temp.a = io->angle.a;
+			Anglef temp = io->angle;
+
 			if(io->ioflags & IO_NPC) {
-				temp.b = MAKEANGLE(180.f - io->angle.b);
+				temp.b = MAKEANGLE(180.f - temp.b);
 			} else {
-				temp.b = MAKEANGLE(270.f - io->angle.b);
+				temp.b = MAKEANGLE(270.f - temp.b);
 			}
-			temp.g = io->angle.g;
 
 			if(io->animlayer[0].cur_anim) {
 				long diff;
