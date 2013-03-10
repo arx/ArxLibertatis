@@ -981,14 +981,19 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 	}
 	
-	if(BBOXMAX.x <= 1 || BBOXMIN.x >= DANAESIZX - 1
-	   || BBOXMAX.y <= 1 || BBOXMIN.y >= DANAESIZY - 1) {
-		goto finish;
+	if(BBOXMAX.x <= 1 || BBOXMIN.x >= DANAESIZX - 1 || BBOXMAX.y <= 1 || BBOXMIN.y >= DANAESIZY - 1) {
+		// storing 2D Bounding Box info
+		if(io) {
+			io->bbox1.x=(short)BBOXMIN.x;
+			io->bbox2.x=(short)BBOXMAX.x;
+			io->bbox1.y=(short)BBOXMIN.y;
+			io->bbox2.y=(short)BBOXMAX.y;
+		}
+		return;
 	}
 
 	if(!modinfo && ARX_SCENE_PORTAL_ClipIO(io,&pos))
 		return;
-	
 	
 	// Precalc local lights for this object then interpolate
 		MakeCLight(io,&infra,angle,&pos,eobj,mat);
@@ -1444,11 +1449,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 // HALO HANDLING END
 ////////////////////////////////////////////////////////////////////////
 	}
-finish:
 
 	// storing 2D Bounding Box info
-	if (io) 
-	{
+	if(io) {
 		io->bbox1.x=(short)BBOXMIN.x;
 		io->bbox2.x=(short)BBOXMAX.x;
 		io->bbox1.y=(short)BBOXMIN.y;
