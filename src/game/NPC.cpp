@@ -3840,15 +3840,13 @@ void ARX_NPC_NeedStepSound(Entity * io, Vec3f * pos, const float volume, const f
 	const string * step_material = &_step_material;
 	string floor_material = "earth";
 
-	if (EEIsUnderWater(pos))
+	if(EEIsUnderWater(pos)) {
 		floor_material = "water";
-	else
-	{
-		EERIEPOLY * ep;
-		ep = CheckInPoly(pos->x, pos->y - 100.0F, pos->z);
+	} else {
+		EERIEPOLY *ep = CheckInPoly(pos->x, pos->y - 100.0F, pos->z);
 
-		if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-			floor_material = GetMaterialString( ep->tex->m_texName );
+		if(ep && ep->tex && !ep->tex->m_texName.empty())
+			floor_material = GetMaterialString(ep->tex->m_texName);
 	}
 	
 	if(io && !io->stepmaterial.empty()) {
