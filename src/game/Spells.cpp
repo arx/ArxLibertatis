@@ -2315,14 +2315,14 @@ static void ARX_SPELLS_Analyse() {
 	}
 }
 
-void ARX_SPELLS_ManageMagic()
-{
-	if (ARXmenu.currentmode!=AMCM_OFF)
+void ARX_SPELLS_ManageMagic() {
+	if(ARXmenu.currentmode!=AMCM_OFF)
 		return;
 
-	Entity * io=entities.player();
+	Entity *io = entities.player();
 
-	if (!io) return;
+	if(!io)
+		return;
 
 	if ((io->animlayer[1].cur_anim == io->anims[ANIM_BARE_UNREADY]) ||
 		(io->animlayer[1].cur_anim == io->anims[ANIM_DAGGER_UNREADY_PART_1]) ||
@@ -2337,52 +2337,44 @@ void ARX_SPELLS_ManageMagic()
 
 	snip++;
 
-	if ((!(player.Current_Movement & PLAYER_CROUCH)) && (!BLOCK_PLAYER_CONTROLS && 
-		(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))) && (!PLAYER_PARALYSED))
+	if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS &&
+		(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))) && !PLAYER_PARALYSED)
 	{
-		
-		if (player.Interface & INTER_COMBATMODE)
-		{
+		if(player.Interface & INTER_COMBATMODE) {
 			WILLRETURNTOCOMBATMODE=1;
 
 			ARX_INTERFACE_Combat_Mode(0);
 			bGToggleCombatModeWithKey=false;
 
-			
 			ResetAnim(&entities.player()->animlayer[1]);
 			entities.player()->animlayer[1].flags&=~EA_LOOP;
 		}
 
-		if (TRUE_PLAYER_MOUSELOOK_ON)
-		{
+		if(TRUE_PLAYER_MOUSELOOK_ON) {
 			WILLRETURNTOFREELOOK = 1;
 			TRUE_PLAYER_MOUSELOOK_ON = false;
 		}
 
-		if (player.doingmagic!=2)
-		{
+		if(player.doingmagic != 2) {
 			player.doingmagic=2;
 
-			if (entities.player()->anims[ANIM_CAST_START])
-			{
+			if(entities.player()->anims[ANIM_CAST_START]) {
 				AcquireLastAnim(entities.player());
 				ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST_START]);
 				MAGICMODE = 1;
 			}
 		}
 		
-		if (snip >= 2)
-		{	
-			if (!(EERIEMouseButton & 1) && (ARX_FLARES_broken==0))
-			{
+		if(snip >= 2) {
+			if(!(EERIEMouseButton & 1) && ARX_FLARES_broken == 0) {
 				ARX_FLARES_broken=2;
 				PIPOrgb++;
 
-				if (PIPOrgb>2) PIPOrgb=0;			
+				if(PIPOrgb > 2)
+					PIPOrgb = 0;
 			}
 			
 			if(EERIEMouseButton & 1) {
-				
 				Vec2s pos = DANAEMouse;
 				if(TRUE_PLAYER_MOUSELOOK_ON) {
 					pos = MemoMouse;
@@ -2390,10 +2382,13 @@ void ARX_SPELLS_ManageMagic()
 				
 				Vec2s pos2 = Lm;
 				
-				if (!ARX_FLARES_broken) FlareLine(&pos2,&pos);
+				if(!ARX_FLARES_broken)
+					FlareLine(&pos2,&pos);
 
-				if (rnd()>0.6) AddFlare(&pos,1.f,-1);
-				else AddFlare(&pos,1.f,3);
+				if(rnd()>0.6)
+					AddFlare(&pos,1.f,-1);
+				else
+					AddFlare(&pos,1.f,3);
 				
 				OPIPOrgb = PIPOrgb;
 				
@@ -2404,30 +2399,25 @@ void ARX_SPELLS_ManageMagic()
 				
 				ARX_FLARES_broken=0;
 				
-				if (!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))
+				if(!ARX_SOUND_IsPlaying(SND_MAGIC_DRAW))
 					ARX_SOUND_PlaySFX(SND_MAGIC_DRAW, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
-			}
-			else
-			{
+			} else {
 				ARX_SOUND_Stop(SND_MAGIC_DRAW);				
 			}
 			
 			snip=0;
 		}
-	}
-	else
-	{
+	} else {
 		ARX_FLARES_broken=1;
 		PIPOrgb++;
 
-		if (PIPOrgb>2) PIPOrgb=0;
+		if(PIPOrgb > 2)
+			PIPOrgb = 0;
 
-		if (player.doingmagic!=0)//==2) 
-		{
-			player.doingmagic=0;//1
+		if(player.doingmagic != 0) { //==2)
+			player.doingmagic = 0;//1
 
-			if (entities.player()->anims[ANIM_CAST_END])
-			{
+			if(entities.player()->anims[ANIM_CAST_END]) {
 				AcquireLastAnim(entities.player());
 				ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST_END]);
 			}
@@ -2437,39 +2427,35 @@ void ARX_SPELLS_ManageMagic()
 	}
 	
 
-	if (ARX_FLARES_broken==3)
-	{
+	if(ARX_FLARES_broken == 3) {
 		cur_arm=0;
 		cur_mega=0;
 		passwall=0;
 
-		if (cur_mr!=3)
+		if(cur_mr != 3)
 			cur_mr=0;
 
-		if (cur_mx!=3)
+		if(cur_mx != 3)
 			cur_mx=0;
 
-		if (cur_rf!=3)
+		if(cur_rf != 3)
 			cur_rf=0;
 
-		if (cur_pom!=3)
+		if(cur_pom != 3)
 			cur_pom=0;
 
-		if (cur_pnux<3)
+		if(cur_pnux < 3)
 			cur_pnux=0;
 
-		if (cur_sm<3)
+		if(cur_sm < 3)
 			cur_sm=0;
 
 		cur_bh=0;
 		cur_sos=0;
 
-		if (CurrSpellSymbol != 0)
-		{
-			if (!ARX_SPELLS_AnalyseSPELL())
-			{
-				if (entities.player()->anims[ANIM_CAST])
-				{
+		if(CurrSpellSymbol != 0) {
+			if(!ARX_SPELLS_AnalyseSPELL()) {
+				if(entities.player()->anims[ANIM_CAST]) {
 					AcquireLastAnim(entities.player());
 					ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_CAST]);
 				}
@@ -2478,8 +2464,7 @@ void ARX_SPELLS_ManageMagic()
 
 		ARX_FLARES_broken=1;
 
-		if (WILLRETURNTOCOMBATMODE)
-		{
+		if(WILLRETURNTOCOMBATMODE) {
 			player.Interface|=INTER_COMBATMODE;
 			player.Interface|=INTER_NO_STRIKE;
 
@@ -2491,20 +2476,17 @@ void ARX_SPELLS_ManageMagic()
 			bRenderInCursorMode=false;
 		}
 
-		if (WILLRETURNTOFREELOOK)
-		{
+		if(WILLRETURNTOFREELOOK) {
 			TRUE_PLAYER_MOUSELOOK_ON = true;
 			WILLRETURNTOFREELOOK = 0;
 		}
 
 		ARX_SPELLS_ResetRecognition();
-	}
-	else if (ARX_FLARES_broken==2)
-	{
+	} else if(ARX_FLARES_broken == 2) {
 		ARX_SPELLS_Analyse();
 
-		if (!SpellMoves.empty()) 
-		 ARX_SPELLS_AnalyseSYMBOL();
+		if(!SpellMoves.empty())
+			ARX_SPELLS_AnalyseSYMBOL();
 	
 		ARX_FLARES_broken = 1;
 	}
@@ -2811,16 +2793,13 @@ void ARX_SPELLS_Precast_Launch(long num) {
 		}
 	}
 }
-void ARX_SPELLS_Precast_Check()
-{
-	for (size_t i = 0; i < MAX_PRECAST; i++)
-	{
-		if ((Precast[i].typ != SPELL_NONE) && (Precast[i].launch_time>0) &&(float(arxtime) >= Precast[i].launch_time))
-		{
+
+void ARX_SPELLS_Precast_Check() {
+	for(size_t i = 0; i < MAX_PRECAST; i++) {
+		if(Precast[i].typ != SPELL_NONE && Precast[i].launch_time > 0 && float(arxtime) >= Precast[i].launch_time) {
 			ANIM_USE *ause1 = &entities.player()->animlayer[1];
 			
-			if (player.Interface & INTER_COMBATMODE)
-			{
+			if(player.Interface & INTER_COMBATMODE) {
 				WILLRETURNTOCOMBATMODE=1;
 				ARX_INTERFACE_Combat_Mode(0);
 				bGToggleCombatModeWithKey=false;
@@ -2828,9 +2807,8 @@ void ARX_SPELLS_Precast_Check()
 				entities.player()->animlayer[1].flags&=~EA_LOOP;
 			}
 
-			if ((ause1->cur_anim) && (ause1->cur_anim==entities.player()->anims[ANIM_CAST]))
-			{
-				if (ause1->ctime>ause1->cur_anim->anims[ause1->altidx_cur]->anim_time-550)
+			if(ause1->cur_anim && ause1->cur_anim == entities.player()->anims[ANIM_CAST]) {
+				if(ause1->ctime > ause1->cur_anim->anims[ause1->altidx_cur]->anim_time - 550)
 				{
 					ARX_SPELLS_Launch(	Precast[i].typ,
 										0,
@@ -2840,10 +2818,8 @@ void ARX_SPELLS_Precast_Check()
 										Precast[i].duration);
 					Precast[i].typ = SPELL_NONE;
 
-					for (size_t li=i; li < MAX_PRECAST - 1; li++)
-					{
-						if (Precast[li + 1].typ != SPELL_NONE)
-						{
+					for(size_t li = i; li < MAX_PRECAST - 1; li++) {
+						if(Precast[li + 1].typ != SPELL_NONE) {
 							memcpy(&Precast[li], &Precast[li + 1], sizeof(PRECAST_STRUCT));
 							Precast[li + 1].typ = SPELL_NONE;
 						}
