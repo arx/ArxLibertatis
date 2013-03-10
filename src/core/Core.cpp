@@ -2197,9 +2197,7 @@ void ManageCombatModeAnimations()
 					SendIOScriptEvent(io,SM_STRIKE,"1h");
 					CurrFightPos=0;
 					AimTime=0;
-				}
-				else if (useanim->cur_anim==alist[ANIM_1H_STRIKE_LEFT+j*3])
-				{
+				} else if(useanim->cur_anim == alist[ANIM_1H_STRIKE_LEFT+j*3]) {
 					if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
 						&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 					{
@@ -2210,8 +2208,7 @@ void ManageCombatModeAnimations()
 						}
 					}
 
-					if (useanim->flags & EA_ANIMEND)
-					{
+					if(useanim->flags & EA_ANIMEND) {
 						AcquireLastAnim(io);
 						ANIM_Set(useanim,alist[ANIM_1H_WAIT]);
 						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
@@ -2221,44 +2218,31 @@ void ManageCombatModeAnimations()
 						PlayerWeaponBlocked=-1;
 					}
 
-					if ((PlayerWeaponBlocked!=-1)
-						&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
+					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f)
 						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
-
 				}
 			}
-
 		break;
 		case WEAPON_2H: // 2HANDED PLAYER MANAGEMENT
 			// Waiting and Receiving Strike Impulse
-			if (useanim->cur_anim==alist[ANIM_2H_WAIT])
-			{
+			if(useanim->cur_anim == alist[ANIM_2H_WAIT]) {
 				AimTime = 0;
 
-				if (EERIEMouseButton & 1)
-				{
+				if(EERIEMouseButton & 1) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT_START+CurrFightPos*3]);
-
 					io->isHit = false;
 				}
 			}
 
 			// Now go for strike cycle...
-			for (long j=0;j<4;j++)
-			{
-				if (	(useanim->cur_anim==alist[ANIM_2H_STRIKE_LEFT_START+j*3])
-					&&	(useanim->flags & EA_ANIMEND))
-				{
+			for(long j = 0; j < 4; j++) {
+				if(useanim->cur_anim == alist[ANIM_2H_STRIKE_LEFT_START+j*3] && (useanim->flags & EA_ANIMEND)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT_CYCLE+j*3]);
 					AimTime = (unsigned long)(arxtime);
 					useanim->flags|=EA_LOOP;
-				}
-				else if (	(useanim->cur_anim==alist[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])
-						&&	!(EERIEMouseButton & 1) )
-				{
-
+				} else if(useanim->cur_anim == alist[ANIM_2H_STRIKE_LEFT_CYCLE+j*3] && !(EERIEMouseButton & 1)) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_2H_STRIKE_LEFT+j*3]);
 
@@ -2267,9 +2251,7 @@ void ManageCombatModeAnimations()
 					SendIOScriptEvent(io,SM_STRIKE,"2h");
 					CurrFightPos=0;
 					AimTime=0;
-				}
-				else if (useanim->cur_anim==alist[ANIM_2H_STRIKE_LEFT+j*3])
-				{
+				} else if(useanim->cur_anim == alist[ANIM_2H_STRIKE_LEFT+j*3]) {
 					if ((useanim->ctime > useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.3f)
 						&& (useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.7f))
 					{
@@ -2280,8 +2262,7 @@ void ManageCombatModeAnimations()
 						}
 					}
 
-					if (useanim->flags & EA_ANIMEND)
-					{
+					if(useanim->flags & EA_ANIMEND) {
 						AcquireLastAnim(io);
 						ANIM_Set(useanim,alist[ANIM_2H_WAIT]);
 						useanim->flags&=~(EA_PAUSED | EA_REVERSE);
@@ -2291,62 +2272,49 @@ void ManageCombatModeAnimations()
 						PlayerWeaponBlocked=-1;
 					}
 
-					if ((PlayerWeaponBlocked!=-1)
-						&& (useanim->ctime<useanim->cur_anim->anims[useanim->altidx_cur]->anim_time*0.9f))
+					if(PlayerWeaponBlocked != -1 && useanim->ctime < useanim->cur_anim->anims[useanim->altidx_cur]->anim_time * 0.9f)
 						ARX_EQUIPMENT_Strike_Check(io,entities[player.equiped[EQUIP_SLOT_WEAPON]],STRIKE_AIMTIME,1);
-
 				}
 			}
-
 		break;
-
 		case WEAPON_BOW: // MISSILE PLAYER MANAGEMENT
-
 			if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE]) {
-				if (GLOBAL_SLOWDOWN!=1.f)
-					BOW_FOCAL+=Original_framedelay;
+				if(GLOBAL_SLOWDOWN != 1.f)
+					BOW_FOCAL += Original_framedelay;
 				else
 					BOW_FOCAL += framedelay;
 
-				if (BOW_FOCAL>710) BOW_FOCAL=710;
+				if(BOW_FOCAL > 710)
+					BOW_FOCAL = 710;
 			}
 
 			// Waiting and Receiving Strike Impulse
-			if (useanim->cur_anim==alist[ANIM_MISSILE_WAIT])
-			{
+			if(useanim->cur_anim == alist[ANIM_MISSILE_WAIT]) {
 				AimTime = (unsigned long)(arxtime);
 
-				if ((EERIEMouseButton & 1) && (Player_Arrow_Count()>0))
-				{
+				if((EERIEMouseButton & 1) && Player_Arrow_Count() > 0) {
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_PART_1]);
 					io->isHit = false;
 				}
 			}
 
-			if ((useanim->cur_anim==alist[ANIM_MISSILE_STRIKE_PART_1])&& (useanim->flags & EA_ANIMEND))
-			{
+			if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_1] && (useanim->flags & EA_ANIMEND)) {
 				AimTime = 0;
 				AcquireLastAnim(io);
 				ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_PART_2]);
 
 				EERIE_LINKEDOBJ_LinkObjectToObject(io->obj, arrowobj, "left_attach", "attach", NULL);
-
 			}
 
 			// Now go for strike cycle...
-			if ((useanim->cur_anim==alist[ANIM_MISSILE_STRIKE_PART_2])&& (useanim->flags & EA_ANIMEND))
-			{
+			if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_PART_2] && (useanim->flags & EA_ANIMEND)) {
 				AcquireLastAnim(io);
 				ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE_CYCLE]);
 				AimTime = (unsigned long)(arxtime);
 
 				useanim->flags|=EA_LOOP;
-			}
-			else if ((useanim->cur_anim==alist[ANIM_MISSILE_STRIKE_CYCLE])
-				&& !(EERIEMouseButton & 1))
-			{
-
+			} else if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE_CYCLE] && !(EERIEMouseButton & 1)) {
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				AcquireLastAnim(io);
 				ANIM_Set(useanim,alist[ANIM_MISSILE_STRIKE]);
@@ -2356,39 +2324,36 @@ void ManageCombatModeAnimations()
 				Entity * ioo=Player_Arrow_Count_Decrease();
 				float poisonous=0.f;
 
-				if (ioo)
-				{
-					if (ioo->poisonous_count>0)
-					{
+				if(ioo) {
+					if(ioo->poisonous_count>0) {
 						poisonous=ioo->poisonous;
 						ioo->poisonous_count--;
 
-						if (ioo->poisonous_count<=0)
+						if(ioo->poisonous_count <= 0)
 							ioo->poisonous=0;
 					}
-					else poisonous=ioo->poisonous;
+					else
+						poisonous=ioo->poisonous;
 
 					ARX_DAMAGES_DurabilityLoss(ioo,1.f);
 
-					if (ValidIOAddress(ioo))
-					{
-						if (ioo->durability<=0.f)
+					if(ValidIOAddress(ioo)) {
+						if(ioo->durability <= 0.f)
 							ARX_INTERACTIVE_DestroyIO(ioo);
 					}
 				}
 
 				float aimratio = STRIKE_AIMTIME;
 
-				if ((sp_max) && (poisonous<3.f))
-					poisonous=3.f;
+				if(sp_max && poisonous < 3.f)
+					poisonous = 3.f;
 
 				Vec3f orgPos;
 				orgPos.x=player.pos.x;
 				orgPos.y=player.pos.y+40.f;
 				orgPos.z=player.pos.z;
 
-				if (entities.player()->obj->fastaccess.left_attach>=0)
-				{
+				if(entities.player()->obj->fastaccess.left_attach >= 0) {
 					orgPos = entities.player()->obj->vertexlist3[entities.player()->obj->fastaccess.left_attach].v;
 				}
 
@@ -2396,8 +2361,7 @@ void ManageCombatModeAnimations()
 
 				PlayerLaunchArrow_Test(aimratio,poisonous, &orgPos, &orgAngle);
 
-				if (sp_max)
-				{
+				if(sp_max) {
 					Anglef angle;
 					Vec3f pos;
 					pos.x=player.pos.x;
@@ -2419,15 +2383,13 @@ void ManageCombatModeAnimations()
 				}
 
 				AimTime=0;
-			}
-			else if (useanim->cur_anim==alist[ANIM_MISSILE_STRIKE])
-			{
-				BOW_FOCAL-=Original_framedelay;
+			} else if(useanim->cur_anim == alist[ANIM_MISSILE_STRIKE]) {
+				BOW_FOCAL -= Original_framedelay;
 
-				if (BOW_FOCAL<0) BOW_FOCAL=0;
+				if(BOW_FOCAL < 0)
+					BOW_FOCAL = 0;
 
-				if (useanim->flags & EA_ANIMEND)
-				{
+				if(useanim->flags & EA_ANIMEND) {
 					BOW_FOCAL=0;
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_MISSILE_WAIT]);
@@ -2437,12 +2399,12 @@ void ManageCombatModeAnimations()
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
 				}
 			}
-
 		break;
 	}
 
 	LAST_WEAPON_TYPE=weapontype;
 }
+
 void ManageCombatModeAnimationsEND()
 {
 	Entity * io=entities.player();
