@@ -1156,19 +1156,17 @@ void ArxGame::handleCameraController() {
 
 	static float currentbeta = 0.f;
 
-	if (CAMERACONTROLLER!=NULL)
-	{
-		if (lastCAMERACONTROLLER!=CAMERACONTROLLER)
-		{
-			currentbeta=CAMERACONTROLLER->angle.b;
-		}
+	if(CAMERACONTROLLER) {
+		if(lastCAMERACONTROLLER != CAMERACONTROLLER)
+			currentbeta = CAMERACONTROLLER->angle.b;
 
 		Vec3f targetpos = CAMERACONTROLLER->pos + player.baseOffset();
 
 		float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
 		float delta_angle_t = delta_angle * framedelay * ( 1.0f / 1000 );
 
-		if (EEfabs(delta_angle_t) > EEfabs(delta_angle)) delta_angle_t = delta_angle;
+		if(EEfabs(delta_angle_t) > EEfabs(delta_angle))
+			delta_angle_t = delta_angle;
 
 		currentbeta += delta_angle_t;
 		float t=radians(MAKEANGLE(currentbeta));
