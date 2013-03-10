@@ -3257,8 +3257,8 @@ void ShowInfoText() {
 	EERIEPOLY * ep=CheckInPoly(player.pos.x,player.pos.y,player.pos.z);
 	float tempo=0.f;
 
-	if ((ep) && (GetTruePolyY(ep,&player.pos,&tempo)))
-		poss=tempo;
+	if(ep && GetTruePolyY(ep, &player.pos, &tempo))
+		poss = tempo;
 
 	sprintf(tex,"Position  x:%7.0f y:%7.0f [%7.0f] z:%6.0f a%3.0f b%3.0f FOK %3.0f",player.pos.x,player.pos.y+player.size.y,poss,player.pos.z,player.angle.a,player.angle.b,ACTIVECAM->focal);
 	mainApp->outputText( 70, 48, tex );
@@ -3272,12 +3272,10 @@ void ShowInfoText() {
 	mainApp->outputText( 70, 80, tex );
 	Entity * io=ARX_SCRIPT_Get_IO_Max_Events();
 
-	if (io==NULL)
+	if(!io)
 		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",ScriptEvent::totalCount,ARX_SCRIPT_CountTimers());
-	else 
-	{
+	else
 		sprintf(tex,"Events %ld (IOmax %s %d) Timers %ld",ScriptEvent::totalCount, io->long_name().c_str(), io->stat_count,ARX_SCRIPT_CountTimers());
-	}
 
 	mainApp->outputText( 70, 94, tex );
 
@@ -3289,12 +3287,10 @@ void ShowInfoText() {
 	}
 
 	float slope=0.f;
-	ep=CheckInPoly(player.pos.x,player.pos.y-10.f,player.pos.z);
+	ep = CheckInPoly(player.pos.x, player.pos.y-10.f, player.pos.z);
 
-	if (ep)
-	{
-		slope=ep->norm.y;
-	}
+	if(ep)
+		slope = ep->norm.y;
 
 	sprintf(tex,"Velocity %3.0f %3.0f %3.0f Slope %3.3f",player.physics.velocity.x,player.physics.velocity.y,player.physics.velocity.z,slope);
 	mainApp->outputText( 70, 128, tex );
