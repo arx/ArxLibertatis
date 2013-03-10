@@ -132,22 +132,20 @@ static TexturedVertex tTexturedVertexTab2[4000];
 
 short ANIM_GetAltIdx(ANIM_HANDLE * ah, long old) {
 
-	if (ah->alt_nb == 1) return 0;
+	if(ah->alt_nb == 1)
+		return 0;
 
-	float tot=(float)anim_power[0];
+	long tot = anim_power[0];
 
-	for (long i=1;i<ah->alt_nb;i++)
-	{
-		tot+=anim_power[min(i,14L)];
+	for(long i = 1; i < ah->alt_nb; i++) {
+		tot += anim_power[min(i, 14L)];
 	}
 
-	while (1)
-	{
-		for (short i=0;i<ah->alt_nb;i++)
-		{
-			float r = rnd()*tot;
+	while(1) {
+		for(short i = 0; i < ah->alt_nb; i++) {
+			float r = rnd() * tot;
 
-			if ((r < anim_power[min((int)i,14)]) && (i!=old))
+			if(r < anim_power[min((int)i,14)] && i != old)
 				return i;
 		}
 	}
