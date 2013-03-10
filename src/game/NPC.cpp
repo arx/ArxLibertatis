@@ -1062,8 +1062,7 @@ void ARX_PHYSICS_Apply() {
 
 			cnt = clamp(cnt, 2, 10);
 
-			for (long nn = 0; nn < cnt; nn++)
-			{
+			for(long nn = 0; nn < cnt; nn++) {
 				std::vector<EERIE_VERTEX>::iterator it = Random::getIterator(io->obj->vertexlist);
 				
 				ARX_PARTICLES_Spawn_Splat(it->v, 20.f, Color::red);
@@ -1076,14 +1075,10 @@ void ARX_PHYSICS_Apply() {
 
 		EERIEPOLY * ep = EECheckInPoly(&io->pos);
 
-		if ((ep)
-		        &&	(ep->type & POLY_LAVA)
-		        &&	(EEfabs(ep->center.y - io->pos.y) < 40))
-		{
+		if(ep && (ep->type & POLY_LAVA) && EEfabs(ep->center.y - io->pos.y) < 40) {
 			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);
 
-			if (io->ioflags & IO_NPC)
-			{
+			if(io->ioflags & IO_NPC) {
 				const float LAVA_DAMAGE = 10.f;
 				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * framedelay * ( 1.0f / 100 ), -1, 0, NULL);
 			}
@@ -1092,16 +1087,13 @@ void ARX_PHYSICS_Apply() {
 		CheckUnderWaterIO(io);
 		
 		if(io->obj && io->obj->pbox) {
-			
 			io->gameFlags &= ~GFLAG_NOCOMPUTATION;
 
 			if(io->obj->pbox->active == 1) {
 				PHYSICS_CURIO = io;
 
-				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)framedelay, io->rubber, treatio[i].num))
-				{
-					if (io->damagedata >= 0)
-					{
+				if(ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)framedelay, io->rubber, treatio[i].num)) {
+					if(io->damagedata >= 0) {
 						damages[io->damagedata].active = 1;
 						ARX_DAMAGES_UpdateDamage(io->damagedata, float(arxtime));
 						damages[io->damagedata].exist = 0;
@@ -1126,68 +1118,57 @@ void ARX_PHYSICS_Apply() {
 			}
 		}
 
-		if (IsDeadNPC(io)) continue;
+		if(IsDeadNPC(io))
+			continue;
 
-		if (io->ioflags & IO_PHYSICAL_OFF)
-		{
-			if (io->ioflags & IO_NPC)
-			{
+		if(io->ioflags & IO_PHYSICAL_OFF) {
+			if(io->ioflags & IO_NPC) {
 				ANIM_USE * ause0 = &io->animlayer[0];
 
-				if ((ause0->cur_anim == 0) || (ause0->flags & EA_ANIMEND))
-				{
+				if(!ause0->cur_anim || (ause0->flags & EA_ANIMEND)) {
 					ANIM_Set(ause0, io->anims[ANIM_WAIT]);
 					ause0->altidx_cur = 0;
 				}
 
 				GetTargetPos(io);
 
-				if ((!arxtime.is_paused()) && (!(ause0->flags & EA_FORCEPLAY)))
-				{
-					if (io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
+				if(!arxtime.is_paused() && !(ause0->flags & EA_FORCEPLAY)) {
+					if(io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
 						StareAtTarget(io);
-					else	FaceTarget2(io);
+					else
+						FaceTarget2(io);
 				}
 			}
-
 			continue;
 		}
 
-
-		if ((io->ioflags & IO_NPC)
-		        &&	(!EDITMODE))
-		{
-			if ((io->_npcdata->climb_count != 0.f) && (framedelay > 0))
-			{
+		if((io->ioflags & IO_NPC) && !EDITMODE) {
+			if(io->_npcdata->climb_count != 0.f && framedelay > 0) {
 				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)framedelay * ( 1.0f / 1000 );
 
-				if (io->_npcdata->climb_count < 0)
+				if(io->_npcdata->climb_count < 0)
 					io->_npcdata->climb_count = 0.f;
 			}
 
-			if (io->_npcdata->pathfind.pathwait) // Waiting For Pathfinder Answer
-			{
+			if(io->_npcdata->pathfind.pathwait) { // Waiting For Pathfinder Answer
 #ifdef BUILD_EDITOR
 				if ((ValidIONum(LastSelectedIONum)) &&
 				        (io == entities[LastSelectedIONum])) ShowIOPath(io);
 #endif
-				if (io->_npcdata->pathfind.listnb == 0) // Not Found
-				{
+				if(io->_npcdata->pathfind.listnb == 0) { // Not Found
 					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
 
-					if (io->_npcdata->pathfind.list)
+					if(io->_npcdata->pathfind.list)
 						ARX_NPC_ReleasePathFindInfo(io);
 
 					io->_npcdata->pathfind.listnb = -2;
-				}
-				else if (io->_npcdata->pathfind.listnb > 0) // Found
-				{
+				} else if (io->_npcdata->pathfind.listnb > 0) { // Found
 					SendIOScriptEvent(io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
 
-					if (io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb)
+					if(io->_npcdata->pathfind.listpos >= io->_npcdata->pathfind.listnb)
 						io->_npcdata->pathfind.listpos = 0;
 				}
 			}
@@ -1195,7 +1176,8 @@ void ARX_PHYSICS_Apply() {
 			ManageNPCMovement(io);
 			CheckNPC(io);
 
-			if (CURRENT_DETECT == i) CheckNPCEx(io);
+			if(CURRENT_DETECT == i)
+				CheckNPCEx(io);
 		}
 	}
 }
