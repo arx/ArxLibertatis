@@ -143,37 +143,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, Color color) {
 	pd->rgb = color.to<float>();
 }
 
-void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
-                             float _fZNear, float _fZFar) {
-	
-	float fAspect = _fHeight / _fWidth;
-	float fFOV = radians(_fFOV);
-	float fFarPlane = _fZFar;
-	float fNearPlane = _fZNear;
-	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	float Q = fFarPlane / (fFarPlane - fNearPlane);
-	
-	memset(&ProjectionMatrix, 0, sizeof(EERIEMATRIX));
-	ProjectionMatrix._11 = w;
-	ProjectionMatrix._22 = h;
-	ProjectionMatrix._33 = Q;
-	ProjectionMatrix._43 = (-Q * fNearPlane);
-	ProjectionMatrix._34 = 1.f;
-	GRenderer->SetProjectionMatrix(ProjectionMatrix);
-	
-	// Set view matrix to identity
-	EERIEMATRIX mat;
-	mat.setToIdentity();
-	GRenderer->SetViewMatrix(mat);
-	
-	ProjectionMatrix._11 *= _fWidth * .5f;
-	ProjectionMatrix._22 *= _fHeight * .5f;
-	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
-	ProjectionMatrix._43 = Q;
-	
-	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
-}
+
 
 static bool IntersectLinePlane(const Vec3f & l1, const Vec3f & l2, const EERIEPOLY * ep, Vec3f * intersect) {
 	
@@ -1811,6 +1781,38 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 		return (-.045f * _fOldFocal + 69.5f);
 	else
 		return 33.5f;
+}
+
+void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV,
+							 float _fZNear, float _fZFar) {
+
+	float fAspect = _fHeight / _fWidth;
+	float fFOV = radians(_fFOV);
+	float fFarPlane = _fZFar;
+	float fNearPlane = _fZNear;
+	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
+	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
+	float Q = fFarPlane / (fFarPlane - fNearPlane);
+
+	memset(&ProjectionMatrix, 0, sizeof(EERIEMATRIX));
+	ProjectionMatrix._11 = w;
+	ProjectionMatrix._22 = h;
+	ProjectionMatrix._33 = Q;
+	ProjectionMatrix._43 = (-Q * fNearPlane);
+	ProjectionMatrix._34 = 1.f;
+	GRenderer->SetProjectionMatrix(ProjectionMatrix);
+
+	// Set view matrix to identity
+	EERIEMATRIX mat;
+	mat.setToIdentity();
+	GRenderer->SetViewMatrix(mat);
+
+	ProjectionMatrix._11 *= _fWidth * .5f;
+	ProjectionMatrix._22 *= _fHeight * .5f;
+	ProjectionMatrix._33 = -(fFarPlane * fNearPlane) / (fFarPlane - fNearPlane);	//HYPERBOLIC
+	ProjectionMatrix._43 = Q;
+
+	GRenderer->SetViewport(Rect(static_cast<s32>(_fWidth), static_cast<s32>(_fHeight)));
 }
 
 void PrepareActiveCamera() {	
