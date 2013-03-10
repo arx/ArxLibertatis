@@ -291,8 +291,8 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		pza = sPz;
 	}
 
-	(void)checked_range_cast<short>(px - 1);
 	(void)checked_range_cast<short>(px + 1);
+	(void)checked_range_cast<short>(px - 1);
 	short sPx = static_cast<short>(px);
 
 	if (rx < -40.f)
@@ -300,7 +300,6 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		pxi = sPx - 1;
 		pxa = sPx - 1;
 	}
-
 	else if (rx < 40.f)
 	{
 		pxi = sPx - 1;
