@@ -2234,8 +2234,7 @@ void MakeIOIdent(Entity * io) {
 
 extern EERIE_3DOBJ	* arrowobj;
 
-Entity * AddItem(const res::path & classPath_, EntityInstance instance,
-                 AddInteractiveFlags flags) {
+Entity * AddItem(const res::path & classPath_, EntityInstance instance, AddInteractiveFlags flags) {
 	
 	EntityFlags type = IO_ITEM;
 
@@ -2280,14 +2279,10 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	io->_itemdata->food_value = 0;
 	io->_itemdata->LightValue = -1;
 
-	if (io->ioflags & IO_GOLD)
-	{
+	if(io->ioflags & IO_GOLD)
 		io->_itemdata->price = 1;
-	}
 	else
-	{
 		io->_itemdata->price = 10;
-	}
 
 	io->_itemdata->playerstacksize = 1;
 
@@ -2307,18 +2302,16 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	EERIEPOLY * ep;
 	ep = CheckInPoly(io->pos.x, io->pos.y - 60.f, io->pos.z);
 
-	if (ep)
-	{
+	if(ep) {
 		float tempo;
 
-		if (GetTruePolyY(ep, &io->pos, &tempo))
+		if(GetTruePolyY(ep, &io->pos, &tempo))
 			io->lastpos.y = io->initpos.y = io->pos.y = tempo; 
 	}
 
 	ep = CheckInPoly(io->pos.x, player.pos.y, io->pos.z);
 
-	if (ep)
-	{
+	if(ep) {
 		io->pos.y = min(ep->v[0].p.y, ep->v[1].p.y);
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].p.y);
 	}
@@ -2328,7 +2321,7 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	}
 	
 	if(!io->obj && !(flags & NO_MESH)) {
-			io->obj = loadObject(object);
+		io->obj = loadObject(object);
 	}
 	
 	TextureContainer * tc;
@@ -2339,12 +2332,12 @@ Entity * AddItem(const res::path & classPath_, EntityInstance instance,
 	} else {
 		tc = TextureContainer::LoadUI(icon, TextureContainer::Level);
 	}
+
 	if(!tc) {
 		tc = TextureContainer::LoadUI("graph/interface/misc/default[icon]");
 	}
 	
-	if (tc)
-	{
+	if(tc) {
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
 
