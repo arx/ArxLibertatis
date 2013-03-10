@@ -1026,34 +1026,36 @@ static void ManageNPCMovement(Entity * io);
 
 extern float MAX_ALLOWED_PER_SECOND;
 
-void ARX_PHYSICS_Apply()
-{
-
+void ARX_PHYSICS_Apply() {
 	static long CURRENT_DETECT = 0;
 
 	CURRENT_DETECT++;
 
-	if (CURRENT_DETECT > TREATZONE_CUR) CURRENT_DETECT = 1;
+	if(CURRENT_DETECT > TREATZONE_CUR)
+		CURRENT_DETECT = 1;
 
-	for (long i = 1; i < TREATZONE_CUR; i++) // We don't manage Player(0) this way
-	{
-		if (treatio[i].show != 1) continue;
-
-		if (treatio[i].ioflags & (IO_FIX | IO_JUST_COLLIDE))
+	// We don't manage Player(0) this way
+	for (long i = 1; i < TREATZONE_CUR; i++) {
+		if(treatio[i].show != 1)
 			continue;
 
-		Entity * io = treatio[i].io;
+		if(treatio[i].ioflags & (IO_FIX | IO_JUST_COLLIDE))
+			continue;
 
-		if (!io) continue;
+		Entity *io = treatio[i].io;
 
-		if ((io->ioflags & IO_NPC) && (io->_npcdata->poisonned > 0.f)) ARX_NPC_ManagePoison(io);
+		if(!io)
+			continue;
 
-		if ((io->ioflags & IO_ITEM)
-		        &&	(io->show != SHOW_FLAG_DESTROYED)
-		        &&	((io->gameFlags & GFLAG_GOREEXPLODE)
-		             &&	(float(arxtime) - io->lastanimtime > 300))
-		        &&	((io->obj)
-		             &&	!io->obj->vertexlist.empty())
+		if((io->ioflags & IO_NPC) && io->_npcdata->poisonned > 0.f)
+			ARX_NPC_ManagePoison(io);
+
+		if((io->ioflags & IO_ITEM)
+				&& (io->show != SHOW_FLAG_DESTROYED)
+				&& (io->gameFlags & GFLAG_GOREEXPLODE)
+				&& float(arxtime) - io->lastanimtime > 300
+				&& io->obj
+				&& !io->obj->vertexlist.empty()
 		   )
 		{
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
