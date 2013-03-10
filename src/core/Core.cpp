@@ -2908,14 +2908,12 @@ void AddQuakeFX(float intensity,float duration,float period,long flags)
 		if (QuakeFx.intensity>220) QuakeFx.intensity=220;
 	}
 }
-void ManageQuakeFX()
-{
-	if (QuakeFx.intensity>0.f)
-	{
+
+void ManageQuakeFX() {
+	if(QuakeFx.intensity>0.f) {
 		float tim=(float)arxtime.get_frame_time()-(float)QuakeFx.start;
 
-		if (tim >= QuakeFx.duration)
-		{
+		if(tim >= QuakeFx.duration) {
 			QuakeFx.intensity=0.f;
 			return;
 		}
@@ -2923,7 +2921,7 @@ void ManageQuakeFX()
 		float itmod=1.f-(tim/QuakeFx.duration);
 		float periodicity=EEsin((float)arxtime.get_frame_time()*QuakeFx.frequency*( 1.0f / 100 ));
 
-		if ((periodicity>0.5f) && (QuakeFx.flags & 1))
+		if(periodicity > 0.5f && (QuakeFx.flags & 1))
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
 		float truepower = periodicity * QuakeFx.intensity * itmod * 0.01f;
