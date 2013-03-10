@@ -7053,33 +7053,26 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 
 	TextureContainer * surf;
 
-	if (!SPECIAL_DRAGINTER_RENDER)
-	{
-		if (LOOKING_FOR_SPELL_TARGET)
-		{
-			if (float(arxtime) > LOOKING_FOR_SPELL_TARGET_TIME+7000)
-			{
+	if(!SPECIAL_DRAGINTER_RENDER) {
+		if(LOOKING_FOR_SPELL_TARGET) {
+			if(float(arxtime) > LOOKING_FOR_SPELL_TARGET_TIME + 7000) {
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 				ARX_SPELLS_CancelSpellTarget();
 			}
 
-			if (	(FlyingOverIO)
-				&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
-				|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
-			{
+			if(FlyingOverIO
+				&& (((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
+				||  ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM)))
+			){
 				surf=ITC.Get("target_on");
 
-				if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-				{
+				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 					ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
 				}
-			}
-			else
-			{
+			} else {
 				surf=ITC.Get("target_off");
 
-				if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
-				{
+				if(GInput->actionPressed(CONTROLS_CUST_MAGICMODE)) {
 					ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
 					ARX_SPELLS_CancelSpellTarget();
 				}
@@ -7088,12 +7081,10 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			float POSX=DANAEMouse.x;
 			float POSY=DANAEMouse.y;
 
-			if (TRUE_PLAYER_MOUSELOOK_ON)
-			{
+			if(TRUE_PLAYER_MOUSELOOK_ON) {
 				POSX = MemoMouse.x;
 				POSY = MemoMouse.y;
 			}
-
 
 			float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 			float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
@@ -7104,18 +7095,15 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 		}
 	}
 
-	if (flag || ((!BLOCK_PLAYER_CONTROLS) &&
-		(!PLAYER_INTERFACE_HIDE_COUNT)))
-	{
-
-		if (!SPECIAL_DRAGINTER_RENDER)
+	if(flag || (!BLOCK_PLAYER_CONTROLS && !PLAYER_INTERFACE_HIDE_COUNT)) {
+		if(!SPECIAL_DRAGINTER_RENDER)
 			GRenderer->SetCulling(Renderer::CullNone);
 
-		if ((COMBINE) || (COMBINEGOLD))
-		{
-			if (SpecialCursor==CURSOR_INTERACTION_ON)
-				SpecialCursor=CURSOR_COMBINEON;
-			else SpecialCursor=CURSOR_COMBINEOFF;
+		if(COMBINE || COMBINEGOLD) {
+			if(SpecialCursor == CURSOR_INTERACTION_ON)
+				SpecialCursor = CURSOR_COMBINEON;
+			else
+				SpecialCursor = CURSOR_COMBINEOFF;
 		}
 
 		if ((SpecialCursor) || !PLAYER_MOUSELOOK_ON || (DRAGINTER!=NULL)
@@ -7127,93 +7115,73 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 			|| ((MAGICMODE==1) && PLAYER_MOUSELOOK_ON))
 		{
 
-			if (!SPECIAL_DRAGINTER_RENDER)
-			{
-				if(FlyingOverIO||DRAGINTER)
-				{
-					fHighLightAng+=(float)(framedelay*0.5);
+			if(!SPECIAL_DRAGINTER_RENDER) {
+				if(FlyingOverIO || DRAGINTER) {
+					fHighLightAng += (float)(framedelay*0.5);
 
-					if(fHighLightAng>90.f) fHighLightAng=90.f;
+					if(fHighLightAng>90.f)
+						fHighLightAng=90.f;
 
-
-					float fHLight	= 100.f*sin(radians(fHighLightAng));
+					float fHLight = 100.f * sin(radians(fHighLightAng));
 
 					iHighLight = checked_range_cast<int>(fHLight);
-
-
-				}
-				else
-				{
-					 fHighLightAng=0.f;
+				} else {
+					fHighLightAng = 0.f;
 					iHighLight = 0;
 				}
 			}
 
-
 			CANNOT_PUT_IT_HERE=0;
 			float ag=player.angle.a;
 
-			if (ag>180) ag=ag-360;
+			if(ag > 180)
+				ag = ag - 360;
 
 			float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
 
-			if ((DANAEMouse.y>drop_miny) && DRAGINTER && !InInventoryPos(&DANAEMouse)
-			        && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
-			{
-				if (Manage3DCursor(1)==0)
+			if(DANAEMouse.y > drop_miny && DRAGINTER && !InInventoryPos(&DANAEMouse) && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) {
+				if(Manage3DCursor(1) == 0)
 					CANNOT_PUT_IT_HERE = -1;
 
-				if (SPECIAL_DRAGINTER_RENDER)
-				{
-
+				if(SPECIAL_DRAGINTER_RENDER) {
 					CANNOT_PUT_IT_HERE=0;
 					return;
 				}
-
 			}
 			else CANNOT_PUT_IT_HERE = -1;
 
-			if (SPECIAL_DRAGINTER_RENDER)
+			if(SPECIAL_DRAGINTER_RENDER)
 				return;
 
-			float POSX,POSY;
+			float POSX=(float)DANAEMouse.x;
+			float POSY=(float)DANAEMouse.y;
 
-			POSX=(float)DANAEMouse.x;
-			POSY=(float)DANAEMouse.y;
-
-
-			if ((SpecialCursor) && (!DRAGINTER))
-			{
-				if (((COMBINE!=NULL) && (COMBINE->inv!=NULL)) || COMBINEGOLD)
-				{
-					if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon))
-					{
+			if(SpecialCursor && !DRAGINTER) {
+				if((COMBINE && COMBINE->inv) || COMBINEGOLD) {
+					if(TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon)) {
 						POSX = MemoMouse.x;
 						POSY = MemoMouse.y;
 					}
 
 					TextureContainer * tc;
 
-					if (COMBINEGOLD) tc=GoldCoinsTC[5];
-					else tc=COMBINE->inv;
+					if(COMBINEGOLD)
+						tc = GoldCoinsTC[5];
+					else
+						tc = COMBINE->inv;
 
 					float MODIF=0.f;
-
 
 					float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
 					float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
 
-
-					if (SpecialCursor==CURSOR_COMBINEON)
-					{
+					if(SpecialCursor == CURSOR_COMBINEON) {
 						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, .00001f, tc, Color::white);
 
-						if ((FlyingOverIO!=NULL) && (FlyingOverIO->ioflags & IO_BLACKSMITH))
-						{
+						if(FlyingOverIO && (FlyingOverIO->ioflags & IO_BLACKSMITH)) {
 							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
 
-							if (v>0.f)
-							{								
+							if(v > 0.f) {
 								long t = v;
 								ARX_INTERFACE_DrawNumber(POSX + MODIF - 16, POSY + MODIF - 10, t, 6, Color::cyan);
 							}
@@ -7223,25 +7191,22 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						EERIEDrawBitmap(POSX + MODIF, POSY + MODIF, fTexSizeX, fTexSizeY, 0.00001f, tc, Color::fromBGRA(0xFFFFAA66));
 				}
 
-				switch (SpecialCursor)
-				{
+				switch(SpecialCursor) {
 				case CURSOR_REDIST:
-					{
-						surf = ITC.Get("ptexcursorredist");
-					}
+					surf = ITC.Get("ptexcursorredist");
 					break;
 				case CURSOR_COMBINEOFF:
 					surf=ITC.Get("target_off");
-						POSX -= 16.f;
-						POSY -= 16.f;
+					POSX -= 16.f;
+					POSY -= 16.f;
 					break;
 				case CURSOR_COMBINEON:
 					surf=ITC.Get("target_on");
 
-					if (surf)
-							POSX -= 16.f;
+					if(surf)
+						POSX -= 16.f;
 
-						POSY -= 16.f;
+					POSY -= 16.f;
 					break;
 				case CURSOR_FIREBALLAIM: {
 					surf=ITC.Get("target_on");
@@ -7259,57 +7224,46 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					break;
 				}
 				case CURSOR_INTERACTION_ON:
-
 					CURCURTIME += checked_range_cast<long>(Original_framedelay);
 
-
-					if (CURCURPOS!=3)
-					{
-						while(CURCURTIME>CURCURDELAY)
-						{
-							CURCURTIME-=CURCURDELAY;
+					if(CURCURPOS!=3) {
+						while(CURCURTIME > CURCURDELAY) {
+							CURCURTIME -= CURCURDELAY;
 							CURCURPOS++;
 						}
 					}
 
-					if (CURCURPOS>7) CURCURPOS=0;
+					if(CURCURPOS > 7)
+						CURCURPOS = 0;
 
 					surf=scursor[CURCURPOS];
 					break;
 				default:
-					if (CURCURPOS!=0)
-					{
-
+					if(CURCURPOS) {
 						CURCURTIME += checked_range_cast<long>(Original_framedelay);
 
-						while(CURCURTIME>CURCURDELAY)
-						{
-							CURCURTIME-=CURCURDELAY;
+						while(CURCURTIME > CURCURDELAY) {
+							CURCURTIME -= CURCURDELAY;
 							CURCURPOS++;
 						}
 					}
 
-					if (CURCURPOS>7) CURCURPOS=0;
+					if(CURCURPOS > 7)
+						CURCURPOS = 0;
 
 					surf=scursor[CURCURPOS];
 					break;
 				}
 
-				if (surf)
-				{
-
-					if (SpecialCursor == CURSOR_REDIST)
-					{
+				if(surf) {
+					if(SpecialCursor == CURSOR_REDIST) {
 						EERIEDrawBitmap(POSX, POSY, surf->m_dwWidth * Xratio, surf->m_dwHeight * Yratio,
 						                0.f, surf, Color::white);
 						
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
 						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), Color::black);
-					}
-					else
-					{
-
+					} else {
 						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
@@ -7318,20 +7272,15 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 				}
 
 				SpecialCursor=0;
-			}
-			else
-			{
+			} else {
 				if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS
 					&& (GInput->actionPressed(CONTROLS_CUST_MAGICMODE)))
 					&& (ARXmenu.currentmode==AMCM_OFF))
 				{
-					if (MAGICMODE<0)
-					{
-						if (player.Interface & INTER_MAP )
-						{
+					if(MAGICMODE < 0) {
+						if(player.Interface & INTER_MAP) {
 							ARX_INTERFACE_BookOpenClose(2); // Forced Closing
 						}
-
 						MAGICMODE=1;
 					}
 
@@ -7340,43 +7289,36 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					float POSX=DANAEMouse.x;
 					float POSY=DANAEMouse.y;
 
-					if (TRUE_PLAYER_MOUSELOOK_ON)
-					{
+					if(TRUE_PLAYER_MOUSELOOK_ON) {
 						POSX = MemoMouse.x;
 						POSY = MemoMouse.y;
 					}
 
-
 					float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
 					float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
 
-
 					EERIEDrawBitmap(POSX - (fTexSizeX*0.5f), POSY - (fTexSizeY*0.5f), fTexSizeX, fTexSizeY,
 					                0.f, surf, Color::white);
-				}
-				else
-				{
-					if (MAGICMODE>-1)
-					{
+				} else {
+					if(MAGICMODE > -1) {
 						ARX_SOUND_Stop(SND_MAGIC_DRAW);
 						MAGICMODE=-1;
 					}
 
-					if ((DRAGINTER!=NULL) && (DRAGINTER->inv!=NULL))
-					{
+					if(DRAGINTER && DRAGINTER->inv) {
 						TextureContainer * tc;
 						TextureContainer * tc2=NULL;
 						tc=DRAGINTER->inv;
 
-						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
+						if(NeedHalo(DRAGINTER))
+							tc2 = DRAGINTER->inv->getHalo();//>_itemdata->halo_tc;
 
 						Color color = (DRAGINTER->poisonous && DRAGINTER->poisonous_count != 0) ? Color::green : Color::white;
 
 						float mx = POSX;
 						float my = POSY;
 
-						if (TRUE_PLAYER_MOUSELOOK_ON && (config.input.autoReadyWeapon))
-						{
+						if(TRUE_PLAYER_MOUSELOOK_ON && config.input.autoReadyWeapon) {
 							mx = MemoMouse.x;
 							my = MemoMouse.y;
 						}
@@ -7384,45 +7326,35 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 						float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
 						float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
 
-
-						if (!(DRAGINTER->ioflags & IO_MOVABLE))
-						{
+						if(!(DRAGINTER->ioflags & IO_MOVABLE)) {
 							EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 
-							if ((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count!=1))
+							if((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count != 1)
 								ARX_INTERFACE_DrawNumber(mx + 2.f, my + 13.f, DRAGINTER->_itemdata->count, 3, Color::white);
-						}
-						else
-						{
-							if ((InInventoryPos(&DANAEMouse) || InSecondaryInventoryPos(&DANAEMouse))
-								|| (CANNOT_PUT_IT_HERE != -1)) {
+						} else {
+							if((InInventoryPos(&DANAEMouse) || InSecondaryInventoryPos(&DANAEMouse)) || CANNOT_PUT_IT_HERE != -1) {
 								EERIEDrawBitmap(mx, my, fTexSizeX, fTexSizeY, .00001f, tc, color);
 							}
 						}
 
 						//cross not over inventory icon
-						if ((CANNOT_PUT_IT_HERE!=0) && (eMouseState != MOUSE_IN_INVENTORY_ICON))
-						{
-							if (!InInventoryPos(&DANAEMouse) && !InSecondaryInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook())
-							{
+						if(CANNOT_PUT_IT_HERE && (eMouseState != MOUSE_IN_INVENTORY_ICON)) {
+							if(!InInventoryPos(&DANAEMouse) && !InSecondaryInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
 								TextureContainer * tcc=Movable;
 
-								if (CANNOT_PUT_IT_HERE==-1)
+								if(CANNOT_PUT_IT_HERE==-1)
 									tcc=ThrowObject;
 
-								if ((tcc) && (tcc!=tc)) // to avoid movable double red cross...
+								if(tcc && tcc != tc) // to avoid movable double red cross...
 									EERIEDrawBitmap(mx + 16, my, INTERFACE_RATIO_DWORD(tcc->m_dwWidth),
 									                INTERFACE_RATIO_DWORD(tcc->m_dwHeight), 0.00001f, tcc, Color::white);
 							}
 						}
 
-						if (tc2)
-						{
+						if(tc2) {
 							ARX_INTERFACE_HALO_Draw(DRAGINTER,tc,tc2,mx,my, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 						}
-					}
-					else
-					{
+					} else {
 						if(CURCURPOS != 0) {
 							CURCURTIME += checked_range_cast<long>(Original_framedelay);
 							while(CURCURTIME > CURCURDELAY) {
@@ -7431,35 +7363,30 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 							}
 						}
 
-							if (CURCURPOS>7) CURCURPOS=0;
+						if(CURCURPOS > 7)
+							CURCURPOS = 0;
 
-							surf=scursor[CURCURPOS];
+						surf=scursor[CURCURPOS];
 
-						if (surf)
-						{
+						if(surf) {
 							EERIEDrawBitmap(POSX, POSY, INTERFACE_RATIO_DWORD(surf->m_dwWidth),
 							                INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f, surf, Color::white);
 						}
 					}
 				}
 			}
-		}
-		else //mode system shock
-		{
-			if (SPECIAL_DRAGINTER_RENDER)
+		} else { //mode system shock
+			if(SPECIAL_DRAGINTER_RENDER)
 				return;
 
-			if(FlyingOverIO||DRAGINTER)
-			{
+			if(FlyingOverIO || DRAGINTER) {
 				fHighLightAng+=(float)(framedelay*0.5f);
 
 				if(fHighLightAng>90.f) fHighLightAng=90.f;
 
 				float fHLight	= 100.f*sin(radians(fHighLightAng));
 				iHighLight = checked_range_cast<int>(fHLight);
-			}
-			else
-			{
+			} else {
 				fHighLightAng=0.f;
 				iHighLight = 0;
 			}
@@ -7472,7 +7399,6 @@ void ARX_INTERFACE_RenderCursorInternal(long flag)
 					surf = pTCCrossHair ? pTCCrossHair : ITC.Get("target_off");
 					
 					if(surf) {
-						
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						
