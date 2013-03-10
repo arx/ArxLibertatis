@@ -6970,18 +6970,16 @@ long Manage3DCursor(long flags)
 
 			io->gameFlags		&=	~GFLAG_NOCOMPUTATION;
 
-			float old			=	io->invisibility;
-
-
 			if( bCollidposNoInit ) {
 				ARX_DEAD_CODE();
 			}
 
 			if(SPECIAL_DRAGINTER_RENDER) {
 			if( (lastanything<0.f && EEfabs(lastanything) > EEfabs(height)) || lastanything > EEfabs(height)){
+				float old = io->invisibility;
 				io->invisibility = 0.5f;
 				DrawEERIEInter(io->obj,&temp,&collidpos,io);
-				io->invisibility=old;
+				io->invisibility = old;
 			}
 			else
 				DrawEERIEInter(io->obj, &temp, &pos, io);
