@@ -85,14 +85,28 @@ struct IO_PHYSICS {
 	Vec3f forces;
 };
 
+// Animation playing flags
+enum AnimUseTypeFlag {
+	EA_LOOP			= 1,	// Must be looped at end (indefinitely...)
+	EA_REVERSE		= 2,	// Is played reversed (from end to start)
+	EA_PAUSED		= 4,	// Is paused
+	EA_ANIMEND		= 8,	// Has just finished
+	EA_STATICANIM	= 16,	// Is a static Anim (no movement offset returned).
+	EA_STOPEND		= 32,	// Must Be Stopped at end.
+	EA_FORCEPLAY	= 64,	// User controlled... MUST be played...
+	EA_EXCONTROL	= 128	// ctime externally set, no update.
+};
+DECLARE_FLAGS(AnimUseTypeFlag, AnimUseType)
+DECLARE_FLAGS_OPERATORS(AnimUseType)
+
 struct ANIM_USE {
 	ANIM_HANDLE * next_anim;
 	ANIM_HANDLE * cur_anim;
 	short altidx_next; // idx to alternate anims...
 	short altidx_cur; // idx to alternate anims...
 	long ctime;
-	unsigned long flags;
-	unsigned long nextflags;
+	AnimUseType flags;
+	AnimUseType nextflags;
 	long lastframe;
 	float pour;
 	long fr;

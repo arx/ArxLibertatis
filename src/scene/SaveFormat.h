@@ -517,8 +517,8 @@ struct SavedAnimUse {
 		a.altidx_next = altidx_next;
 		a.altidx_cur = altidx_cur;
 		a.ctime = ctime;
-		a.flags = flags;
-		a.nextflags = nextflags;
+		a.flags.load(flags);
+		a.nextflags.load(nextflags);
 		a.lastframe = lastframe;
 		a.pour = pour;
 		a.fr = fr;

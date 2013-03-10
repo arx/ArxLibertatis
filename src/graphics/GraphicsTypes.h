@@ -552,15 +552,6 @@ struct EERIE_GROUP
 	Vec3f	zoom;
 };
 
-// Animation playing flags
-#define EA_LOOP			1	// Must be looped at end (indefinitely...)
-#define EA_REVERSE		2	// Is played reversed (from end to start)
-#define EA_PAUSED		4	// Is paused
-#define EA_ANIMEND		8	// Has just finished
-#define	EA_STATICANIM	16	// Is a static Anim (no movement offset returned).
-#define	EA_STOPEND		32	// Must Be Stopped at end.
-#define EA_FORCEPLAY	64	// User controlled... MUST be played...
-#define EA_EXCONTROL	128	// ctime externally set, no update.
 struct EERIE_ANIM
 {
 	long		anim_time;
