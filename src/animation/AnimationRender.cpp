@@ -256,16 +256,12 @@ static void Cedric_AnimCalcTranslation(Entity * io, ANIM_USE * animuse, float sc
 
 
 // Animate skeleton
-static	void	Cedric_AnimateObject(Entity * io, EERIE_3DOBJ * eobj, ANIM_USE * animuse)
+static void Cedric_AnimateObject(Entity *io, EERIE_3DOBJ *eobj, ANIM_USE *animuse)
 {
-	int				j, l;
 	EERIE_C_DATA	* obj = eobj->c_data;
 
-	for (long count = MAX_ANIM_LAYERS - 1; count >= 0; count--)
-	{
+	for(long count = MAX_ANIM_LAYERS - 1; count >= 0; count--) {
 		EERIE_QUAT		t, temp;
-		Vec3f		vect;
-		Vec3f		scale;
 
 		if(!io) {
 			count = -1;
@@ -273,54 +269,44 @@ static	void	Cedric_AnimateObject(Entity * io, EERIE_3DOBJ * eobj, ANIM_USE * ani
 			animuse = &io->animlayer[count];
 		}
 		
-		if(!animuse) {
+		if(!animuse || !animuse->cur_anim)
 			continue;
-		}
-		
-		if(!animuse->cur_anim) {
-			continue;
-		}
-		
-		EERIE_ANIM * eanim = animuse->cur_anim->anims[animuse->altidx_cur];
-		
-		if (!eanim) continue;
 
-		if (animuse->fr < 0)
-		{
+		EERIE_ANIM *eanim = animuse->cur_anim->anims[animuse->altidx_cur];
+		if(!eanim)
+			continue;
+
+		if(animuse->fr < 0) {
 			animuse->fr = 0;
 			animuse->pour = 0.f;
-		}
-		else if (animuse->fr >= eanim->nb_key_frames - 1)
-		{
+		} else if(animuse->fr >= eanim->nb_key_frames - 1) {
 			animuse->fr = eanim->nb_key_frames - 2;
 			animuse->pour = 1.f;
 		}
 		animuse->pour = clamp(animuse->pour, 0.f, 1.f);
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
+		int l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
 
-		for (j = l; j >= 0; j--)
-		{
-			if (grps[j])
+		for(int j = l; j >= 0; j--) {
+			if(grps[j])
 				continue;
 
 			EERIE_GROUP * sGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)];
 			EERIE_GROUP * eGroup = &eanim->groups[j+(animuse->fr*eanim->nb_groups)+eanim->nb_groups];
 
-			if (!eanim->voidgroups[j])
+			if(!eanim->voidgroups[j])
 				grps[j] = 1;
 
-			if (eanim->nb_key_frames != 1)
-			{
+			if(eanim->nb_key_frames != 1) {
 				Quat_Slerp(&t, &sGroup->quat, &eGroup->quat, animuse->pour);
 				Quat_Copy(&temp, &obj->bones[j].quatinit);
 				Quat_Multiply(&obj->bones[j].quatinit, &temp, &t);
 
-				vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
+				Vec3f vect = sGroup->translate + (eGroup->translate - sGroup->translate) * animuse->pour;
 				obj->bones[j].transinit = vect + obj->bones[j].transinit_global;
 
-				scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
+				Vec3f scale = sGroup->zoom + (eGroup->zoom - sGroup->zoom) * animuse->pour;
 				if(BH_MODE && j == eobj->fastaccess.head_group) {
 					scale += Vec3f::ONE;
 				}
