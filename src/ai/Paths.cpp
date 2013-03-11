@@ -1019,8 +1019,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				Thrown[i].position.x += Thrown[i].vector.x * mod;
 				float gmod = 1.f - Thrown[i].velocity;
 
-				if (gmod > 1.f) gmod = 1.f;
-				else if (gmod < 0.f) gmod = 0.f;
+				gmod = clamp(gmod, 0.f, 1.f);
 
 				Thrown[i].position.y += Thrown[i].vector.y * mod + (time_offset * gmod);
 				Thrown[i].position.z += Thrown[i].vector.z * mod;
