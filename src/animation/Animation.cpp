@@ -507,33 +507,27 @@ suite:
 }
 Entity * DESTROYED_DURING_RENDERING=NULL;
 
-void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
-                       ANIM_USE * eanim,
-                       Anglef * angle,
-                       Vec3f * pos,
-                       unsigned long time,
-                       Entity * io,
-                       bool render,
-                       bool update_movement) {
+void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
 	
 	if(io && io != entities.player()) {
-		
-		float speedfactor = io->basespeed+io->speed_modif;
+		float speedfactor = io->basespeed + io->speed_modif;
 
-		if (speedfactor < 0) speedfactor = 0;
+		if(speedfactor < 0)
+			speedfactor = 0;
 
-		float tim=(float)time*(speedfactor);
+		float tim=(float)time * speedfactor;
 
-		if (tim<=0.f) time=0;
-		else time=(unsigned long)tim;
+		if(tim<=0.f)
+			time=0;
+		else
+			time=(unsigned long)tim;
 
-		io->frameloss+=tim-time;
+		io->frameloss += tim - time;
 
-		if (io->frameloss>1.f) // recover lost time...
-		{
+		if(io->frameloss > 1.f) { // recover lost time...
 			long tt = io->frameloss;
-			io->frameloss-=tt;
-			time+=tt;
+			io->frameloss -= tt;
+			time += tt;
 		}
 	}
 
@@ -544,8 +538,8 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ * eobj,
 
 		if(io) {
 			for(long count=1; count<MAX_ANIM_LAYERS; count++) {
-				ANIM_USE * animuse=&io->animlayer[count];
-				if (animuse->cur_anim)
+				ANIM_USE *animuse = &io->animlayer[count];
+				if(animuse->cur_anim)
 					PrepareAnim(eobj,animuse,time,io);
 			}
 		}
