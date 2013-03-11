@@ -152,14 +152,13 @@ float Cedric_GetInvisibility(Entity *io) {
 	}
 }
 
-static void Cedric_GetTime(float & timm, Entity * io) {
+static float Cedric_GetTime(Entity * io) {
 	
 	if(!io || !io->nb_lastanimvertex) {
-		timm = 0.f;
-		return;
+		return 0.f;
 	}
 	
-	timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
+	float timm = (arxtime.get_frame_time() - io->lastanimtime) + 0.0001f;
 	
 	if(timm >= 300.f) {
 		timm = 0.f;
@@ -172,6 +171,7 @@ static void Cedric_GetTime(float & timm, Entity * io) {
 			timm = 0.f;
 		}
 	}
+	return timm;
 }
 
 /* Evaluate main entity translation */
@@ -1650,8 +1650,7 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	//Cedric_FlagLinkedObjects(eobj); ???
 	
 	// Is There any Between-Animations Interpolation to make ? timm>0.f
-	float timm;
-	Cedric_GetTime(timm, io);
+	float timm = Cedric_GetTime(io);
 	
 	// Buffer size check
 	if(eobj->nbgroups > max_grps) {
