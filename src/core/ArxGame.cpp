@@ -152,7 +152,6 @@ extern long cur_mr;
 extern long cur_rf;
 extern long DeadTime;
 extern long TRANSPOLYSPOS;
-extern long FORCE_FRONT_DRAW;
 extern int iTimeToDrawD7;
 extern long LaunchDemo;
 
@@ -1437,8 +1436,6 @@ void ArxGame::renderLevel() {
 		if(!EXTERNALVIEW) {
 			if(!BOW_FOCAL)
 				ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
-
-			FORCE_FRONT_DRAW = 1;
 		}
 
 		if(entities.player()->invisibility > 0.9f)
@@ -1449,7 +1446,6 @@ void ArxGame::renderLevel() {
 			&entities.player()->pos, 0, entities.player());
 
 		ACTIVECAM->orgTrans.use_focal = restore;
-		FORCE_FRONT_DRAW = 0;
 	}
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
