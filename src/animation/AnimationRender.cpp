@@ -324,10 +324,7 @@ static void Cedric_ConcatenateTM(Entity *io, EERIE_C_DATA *obj, Anglef *angle, V
 		return;
 
 	for(int i = 0; i != obj->nb_bones; i++) {
-		EERIE_QUAT	qt2;
-
-		if (obj->bones[i].father >= 0) // Child Bones
-		{
+		if(obj->bones[i].father >= 0) { // Child Bones
 			// Rotation
 			Quat_Multiply(&obj->bones[i].quatanim, &obj->bones[obj->bones[i].father].quatanim, &obj->bones[i].quatinit);
 
@@ -338,13 +335,11 @@ static void Cedric_ConcatenateTM(Entity *io, EERIE_C_DATA *obj, Anglef *angle, V
 
 			/* Scale */
 			obj->bones[i].scaleanim = (obj->bones[i].scaleinit + Vec3f::ONE) * obj->bones[obj->bones[i].father].scaleanim;
+		} else { // Root Bone
+			EERIE_QUAT	qt2;
 
-		}
-		else // Root Bone
-		{
 			// Rotation
-			if ((io) && !(io->ioflags & IO_NPC))
-			{
+			if(io && !(io->ioflags & IO_NPC)) {
 				// To correct invalid angle in Animated FIX/ITEMS
 				Anglef ang = *angle;
 				ang.a = (360 - ang.a);
@@ -362,16 +357,14 @@ static void Cedric_ConcatenateTM(Entity *io, EERIE_C_DATA *obj, Anglef *angle, V
 				MatrixSetByVectors(&mat, &vect, &up);
 				QuatFromMatrix(qt2, mat);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
-			}
-			else
-			{
+			} else {
 				Anglef vt1 = Anglef(radians(angle->a), radians(angle->b), radians(angle->g));
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
 
 			// Translation
-			Vec3f	vt1 = obj->bones[i].transinit + ftr;
+			Vec3f vt1 = obj->bones[i].transinit + ftr;
 			TransformVertexQuat(&qt2, &vt1, &obj->bones[i].transanim);
 			obj->bones[i].transanim *= g_scale;
 			obj->bones[i].transanim = *pos + obj->bones[i].transanim;
