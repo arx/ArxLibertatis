@@ -1683,12 +1683,10 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 	// Check for Animation Blending in Local space
 	if(io) {
-		if(timm > 0.f) {
+		if(timm > 0.f)
 			Cedric_BlendAnimation(eobj, timm);
-			Cedric_SaveBlendData(io);
-		}
-		else
-			Cedric_SaveBlendData(io);
+
+		Cedric_SaveBlendData(io);
 	}
 
 	// Build skeleton in Object Space
