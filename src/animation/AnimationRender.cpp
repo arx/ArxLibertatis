@@ -1132,8 +1132,6 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 	EERIEDRAWPRIM(Renderer::TriangleList, pPointAdd);
 }
 
-long FORCE_FRONT_DRAW = 0;
-
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 
