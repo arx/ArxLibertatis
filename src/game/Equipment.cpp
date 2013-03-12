@@ -160,14 +160,10 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-void ARX_EQUIPMENT_Release(long id)
-{
-	if (id)
-	{
-		for (long i = 0; i < MAX_EQUIPED; i++)
-		{
-			if (player.equiped[i] == id)
-			{
+void ARX_EQUIPMENT_Release(long id) {
+	if(id) {
+		for(long i = 0; i < MAX_EQUIPED; i++) {
+			if(player.equiped[i] == id) {
 				player.equiped[i] = 0;
 			}
 		}
@@ -176,12 +172,12 @@ void ARX_EQUIPMENT_Release(long id)
 
 // Releases Equipment Structure
 void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
-	
 	if(!io || !(io->ioflags & IO_ITEM)) {
 		return;
 	}
 	
-	free(io->_itemdata->equipitem), io->_itemdata->equipitem = NULL;
+	free(io->_itemdata->equipitem);
+	io->_itemdata->equipitem = NULL;
 }
 
 extern long EXITING;
@@ -248,18 +244,16 @@ static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selecti
 
 void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	
-	if(EXITING) {
+	if(EXITING)
 		return;
-	}
 	
 	Entity * io = entities.player();
-	if(!io) {
+	if(!io)
 		return;
-	}
 	
-	if(io->obj != hero) {
+	if(io->obj != hero)
 		delete io->obj;
-	}
+
 	io->obj = loadObject("graph/obj3d/interactive/npc/human_base/human_base.teo", false);
 	
 	applyTweak(EQUIP_SLOT_HELMET, TWEAK_HEAD, "head");
@@ -306,12 +300,9 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	ARX_INTERACTIVE_RemoveGoreOnIO(entities.player()); 
 }
 
-void ARX_EQUIPMENT_UnEquipAllPlayer()
-{
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i]) && (ValidIONum(player.equiped[i])))
-		{
+void ARX_EQUIPMENT_UnEquipAllPlayer() {
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			ARX_EQUIPMENT_UnEquip(entities.player(), entities[player.equiped[i]]);
 		}
 	}
@@ -319,24 +310,19 @@ void ARX_EQUIPMENT_UnEquipAllPlayer()
 	ARX_PLAYER_ComputePlayerFullStats();
 }
 
-
 bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO)
 {
 	Entity * io = entities.player();
-
-	if (io == NULL) return false;
+	if(!io)
+		return false;
 
 	if (io != entities.player()) return false;
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0) &&
-		        ValidIONum(player.equiped[i]))
-		{
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
 
-			if (toequip == _pIO)
-			{
+			if(toequip == _pIO) {
 				return true;
 			}
 		}
@@ -410,27 +396,21 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 {
 	Entity * target = entities.player();
-	Entity * toequip = NULL;
 
 	if (!target) return;
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i]))
-		{
-			toequip = entities[player.equiped[i]];
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
+			Entity *toequip = entities[player.equiped[i]];
 
-			if (toequip)
-			{
+			if(toequip) {
 				if ((toequip->type_flags & OBJECT_TYPE_DAGGER)
 				        ||	(toequip->type_flags & OBJECT_TYPE_1H)
 				        ||	(toequip->type_flags & OBJECT_TYPE_2H)
 				        ||	(toequip->type_flags & OBJECT_TYPE_BOW)
 				   )
 				{
-					if (toequip->type_flags & OBJECT_TYPE_BOW)
-					{
+					if(toequip->type_flags & OBJECT_TYPE_BOW) {
 						EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
 						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "test", toequip); //
 						return;
@@ -449,23 +429,24 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 long ARX_EQUIPMENT_GetPlayerWeaponType()
 {
 	Entity * io = entities.player();
+	if(!io)
+		return WEAPON_BARE;
 
-	if (!io) return WEAPON_BARE;
-
-	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
-	        &&	ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
-	{
+	if(player.equiped[EQUIP_SLOT_WEAPON] && ValidIONum(player.equiped[EQUIP_SLOT_WEAPON])) {
 		Entity * toequip = entities[player.equiped[EQUIP_SLOT_WEAPON]];
 
-		if (toequip)
-		{
-			if (toequip->type_flags & OBJECT_TYPE_DAGGER)	return WEAPON_DAGGER;
+		if(toequip) {
+			if(toequip->type_flags & OBJECT_TYPE_DAGGER)
+				return WEAPON_DAGGER;
 
-			if (toequip->type_flags & OBJECT_TYPE_1H)		return WEAPON_1H;
+			if(toequip->type_flags & OBJECT_TYPE_1H)
+				return WEAPON_1H;
 
-			if (toequip->type_flags & OBJECT_TYPE_2H)		return WEAPON_2H;
+			if(toequip->type_flags & OBJECT_TYPE_2H)
+				return WEAPON_2H;
 
-			if (toequip->type_flags & OBJECT_TYPE_BOW)		return WEAPON_BOW;
+			if(toequip->type_flags & OBJECT_TYPE_BOW)
+				return WEAPON_BOW;
 		}
 	}
 
@@ -476,14 +457,13 @@ long ARX_EQUIPMENT_GetPlayerWeaponType()
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 {
 	Entity * io = entities.player();
-
-	if (!io) return;
+	if(!io)
+		return;
 
 	ANIM_HANDLE * anim;
 	long type = ARX_EQUIPMENT_GetPlayerWeaponType();
 
-	switch (type)
-	{
+	switch(type) {
 		case WEAPON_DAGGER:
 			anim = io->anims[ANIM_DAGGER_UNREADY_PART_1];
 			break;
@@ -494,15 +474,11 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 			anim = io->anims[ANIM_2H_UNREADY_PART_1];
 			break;
 		case WEAPON_BOW:
-		{
 			anim = io->anims[ANIM_MISSILE_UNREADY_PART_1];
 
-			if (arrowobj) 
-			{
+			if(arrowobj)
 				EERIE_LINKEDOBJ_UnLinkObjectFromObject(io->obj, arrowobj);
-			}
-		}
-		break;
+			break;
 		default:
 			anim = io->anims[ANIM_BARE_UNREADY];
 			break;
@@ -518,14 +494,11 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 	EVENT_SENDER = io_source;
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
-	if ((!io_source)
-	        ||	(!io_target))
+	if(!io_source || !io_target)
 		return 0.f;
 
-	if (!(io_target->ioflags & IO_NPC))
-	{
-		if (io_target->ioflags & IO_FIX)
-		{
+	if(!(io_target->ioflags & IO_NPC)) {
+		if(io_target->ioflags & IO_FIX) {
 			if (io_source == entities.player())
 				ARX_DAMAGES_DamageFIX(io_target, player.Full_damages, 0, 0);
 			else if (io_source->ioflags & IO_NPC)
@@ -559,33 +532,31 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		attack = player.Full_damages;
 
-		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
+		if(rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
+			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
-		else critical = false;
+		else
+			critical = false;
 
 		damages = attack * ratioaim; 
 
-		if (io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB)
-		{
-			if (rnd() * 100.f <= player.Full_Skill_Stealth * ( 1.0f / 2 ))
-			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
+		if(io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB) {
+			if(rnd() * 100.f <= player.Full_Skill_Stealth * ( 1.0f / 2 )) {
+				if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f; 
 			}
 		}
-	}
-	else
-	{
-		if (!(io_source->ioflags & IO_NPC)) return 0.f; // no NPC source...
+	} else {
+		if(!(io_source->ioflags & IO_NPC)) // no NPC source...
+			return 0.f;
 
-		if(!io_source->weaponmaterial.empty()){
+		if(!io_source->weaponmaterial.empty()) {
 			wmat = &io_source->weaponmaterial;
 		}
 		
-		if(io_source->_npcdata->weapon != NULL) {
+		if(io_source->_npcdata->weapon) {
 			Entity * iow = io_source->_npcdata->weapon;
 			if(!iow->weaponmaterial.empty()) {
 				wmat = &iow->weaponmaterial;
@@ -598,40 +569,34 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 		long value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
 
-		if (value >= 0)
-		{
+		if(value >= 0) {
 			damages *= (spells[value].caster_level * 0.05f);
 		}
 
-		if (rnd() * 100 <= io_source->_npcdata->critical) 
-		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
+		if(rnd() * 100 <= io_source->_npcdata->critical) {
+			if(SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
-		else critical = false;
+		else
+			critical = false;
 
-		if (rnd() * 100.f <= (float)io_source->_npcdata->backstab_skill)
-		{
-			if (SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
+		if(rnd() * 100.f <= (float)io_source->_npcdata->backstab_skill) {
+			if(SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f; 
 		}
 	}
 
 	float absorb;
 
-	if (io_target == entities.player())
-	{
+	if(io_target == entities.player()) {
 		ac = player.Full_armor_class;
 		absorb = player.Full_Skill_Defense * ( 1.0f / 2 );
-	}
-	else
-	{
+	} else {
 		ac = ARX_INTERACTIVE_GetArmorClass(io_target);
 		absorb = io_target->_npcdata->absorb;
 		long value = ARX_SPELLS_GetSpellOn(io_target, SPELL_CURSE);
 
-		if (value >= 0)
-		{
+		if(value >= 0) {
 			float modif = (spells[value].caster_level * 0.05f);
 			ac *= modif;
 			absorb *= modif;
@@ -705,13 +670,12 @@ float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float
 
 static float ARX_EQUIPMENT_GetSpecialValue(Entity * io, long val) {
 	
-	if ((!io) || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem) return -1;
+	if(!io || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem)
+		return -1;
 
-	for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
-	{
-		if (io->_itemdata->equipitem->elements[i].special == val)
-		{
-			return (io->_itemdata->equipitem->elements[i].value);
+	for(long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++) {
+		if(io->_itemdata->equipitem->elements[i].special == val) {
+			return io->_itemdata->equipitem->elements[i].value;
 		}
 	}
 
