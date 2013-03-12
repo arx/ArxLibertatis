@@ -1812,7 +1812,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 	}
 }
 
-void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,long prec,long tim)
+void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum, long tim)
 {
 	if(!portals)
 		return;
@@ -1879,7 +1879,7 @@ void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 
 		if(computeRoom) {
 			po->useportal=1;
-			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute,&fd,prec,tim);
+			ARX_PORTALS_Frustrum_ComputeRoom(roomToCompute, &fd, tim);
 		}
 	}
 }
@@ -1948,7 +1948,7 @@ void ARX_SCENE_Render() {
 			long lprec = checked_range_cast<long>(prec);
 			EERIE_FRUSTRUM frustrum;
 			CreateScreenFrustrum(&frustrum);
-			ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum, lprec, tim);
+			ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum, tim);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			for(long i=0; i<NbRoomDrawList; i++) {
 				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, lprec, tim);
