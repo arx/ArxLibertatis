@@ -1733,11 +1733,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 				}
 			}
 
-			if(ioo) {
-				if((ioo->ignition > 0.f) || (ioo->ioflags & IO_FIERY))
-					ManageIgnition(ioo);
-			}
-
 			// specific check to avoid drawing player weapon on its back when in subjective view
 			if(io == entities.player() &&
 				eobj->linked[k].lidx == entities.player()->obj->fastaccess.weapon_attach &&

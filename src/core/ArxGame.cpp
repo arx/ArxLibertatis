@@ -1309,6 +1309,13 @@ void ArxGame::renderLevel() {
 
 	ARX_MINIMAP_ValidatePlayerPos();
 
+	for(size_t i = 0; i < entities.size(); i++) {
+		Entity *entity = entities[i];
+
+		if(entity && (entity->ignition > 0.f || (entity->ioflags & IO_FIERY)))
+			ManageIgnition(entity);
+	}
+
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
 	// Clear screen & Z buffers

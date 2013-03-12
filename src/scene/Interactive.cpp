@@ -3095,10 +3095,6 @@ EERIEMATRIX convertToMatrixForDrawEERIEInter(const PHYSICS_BOX_DATA &box) {
 //*************************************************************************************
 void RenderInter(float from, float to) {
 
-	if(entities.player() && (entities.player()->ignition > 0.f)){
-		ManageIgnition(entities.player());
-	}
-
 	for(size_t i = 1; i < entities.size(); i++) { // Player isn't rendered here...		
 		Entity * io = entities[i];
 		if(io && (io != DRAGINTER) && (io->gameFlags & GFLAG_ISINTREATZONE)) {
@@ -3207,9 +3203,6 @@ void RenderInter(float from, float to) {
 					}
 				}
 			}
-
-			if(io->ignition > 0.f || (io->ioflags & IO_FIERY))
-				ManageIgnition(io);
 
 			if(EDITMODE) {
 				Color color = Color::blue;
