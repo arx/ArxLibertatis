@@ -109,10 +109,7 @@ void ARXDRAW_DrawInterShadows()
 				continue;
 		}
 
-		if (!( io->ioflags & IO_NOSHADOW ) )
-		if ( io->show==SHOW_FLAG_IN_SCENE )
-		if ( !(io->ioflags & IO_GOLD) )
-		{
+		if(!(io->ioflags & IO_NOSHADOW) && io->show==SHOW_FLAG_IN_SCENE && !(io->ioflags & IO_GOLD)) {
 			EERIEPOLY * ep;
 			TexturedVertex in;
 
