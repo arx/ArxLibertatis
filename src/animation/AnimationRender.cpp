@@ -1637,12 +1637,8 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	float scale = Cedric_GetScale(io);
 	float invisibility = Cedric_GetInvisibility(io);
 	
-	if(!io && INVISIBILITY_OVERRIDE != 0.f) {
+	if(!io && INVISIBILITY_OVERRIDE != 0.f)
 		invisibility = INVISIBILITY_OVERRIDE;
-
-		if(invisibility > 1.f)
-			invisibility -= 1.f;
-	}
 
 	// Flag linked objects
 	//Cedric_FlagLinkedObjects(eobj); ???
