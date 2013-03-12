@@ -506,7 +506,7 @@ void InitializeDanae() {
 	subj.bkgcolor = Color::none;
 	
 	SetActiveCamera(&subj);
-	SetCameraDepth(2100.f);
+	SetCameraDepth(subj, 2100.f);
 	memcpy(&bookcam, &subj, sizeof(EERIE_CAMERA));
 	memcpy(&raycam, &subj, sizeof(EERIE_CAMERA));
 	memcpy(&conversationcamera, &subj, sizeof(EERIE_CAMERA));
