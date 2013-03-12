@@ -1814,8 +1814,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 void ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum)
 {
-	if(!portals)
-		return;
+	arx_assert(portals);
 
 	if(RoomDraw[room_num].count == 0)
 		RoomDrawListAdd(room_num);
