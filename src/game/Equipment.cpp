@@ -111,11 +111,7 @@ extern EERIE_3DOBJ * arrowobj;
 
 EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 
-//***********************************************************************************************
-// Returns the object type flag corresponding to a string
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
+//! \brief Returns the object type flag corresponding to a string
 ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
 	
 	if(temp.empty()) {
@@ -155,11 +151,8 @@ ItemType ARX_EQUIPMENT_GetObjectTypeFlag(const string & temp) {
 	
 	return 0;
 }
-//***********************************************************************************************
-// Releases Equiped Id from player
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
+
+//! \brief Releases Equiped Id from player
 void ARX_EQUIPMENT_Release(long id) {
 	if(id) {
 		for(long i = 0; i < MAX_EQUIPED; i++) {
@@ -170,7 +163,7 @@ void ARX_EQUIPMENT_Release(long id) {
 	}
 }
 
-// Releases Equipment Structure
+//! \brief Releases Equipment Structure
 void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 	if(!io || !(io->ioflags & IO_ITEM)) {
 		return;
@@ -182,7 +175,7 @@ void ARX_EQUIPMENT_ReleaseAll(Entity * io) {
 
 extern long EXITING;
 
-// Recreates player mesh from scratch
+//! \brief Recreates player mesh from scratch
 static void applyTweak(EquipmentSlot equip, TweakType tw, const string & selection) {
 	
 	if(!player.equiped[equip] || !ValidIONum(player.equiped[equip])) {
@@ -369,8 +362,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 	if(tounequip->type_flags & (OBJECT_TYPE_HELMET | OBJECT_TYPE_ARMOR | OBJECT_TYPE_LEGGINGS))
 		ARX_EQUIPMENT_RecreatePlayerMesh();
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 {
 	Entity * target = entities.player();
@@ -391,8 +383,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 		}
 	}
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 {
 	Entity * target = entities.player();
@@ -424,8 +415,7 @@ void ARX_EQUIPMENT_AttachPlayerWeaponToBack()
 		}
 	}
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 long ARX_EQUIPMENT_GetPlayerWeaponType()
 {
 	Entity * io = entities.player();
@@ -452,8 +442,7 @@ long ARX_EQUIPMENT_GetPlayerWeaponType()
 
 	return WEAPON_BARE;
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 {
 	Entity * io = entities.player();
@@ -487,8 +476,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 	AcquireLastAnim(io);
 	ANIM_Set(&io->animlayer[1], anim);
 }
-//***********************************************************************************************
-//***********************************************************************************************
+
 float ARX_EQUIPMENT_ComputeDamages(Entity * io_source, Entity * io_target, float ratioaim, Vec3f * position)
 {
 	EVENT_SENDER = io_source;
@@ -959,9 +947,6 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 	return ret;
 }
 
-//***********************************************************************************************
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
 void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
 {
 	Entity * io = entities.player();
@@ -1000,10 +985,6 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon()
 	ANIM_Set(&io->animlayer[1], anim);
 }
 
-//***********************************************************************************************
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
-
 void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 {
 	if ((player.equiped[EQUIP_SLOT_WEAPON] != 0)
@@ -1025,9 +1006,6 @@ void ARX_EQUIPMENT_UnEquipPlayerWeapon()
 
 bool bRing = false;
 
-//***********************************************************************************************
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
 void ARX_EQUIPMENT_Equip(Entity * target, Entity * toequip)
 {
 	if (!target) return;
@@ -1192,11 +1170,7 @@ bool ARX_EQUIPMENT_SetObjectType(Entity & io, const string & temp, bool set) {
 	return (flag != 0);
 }
 
-//***********************************************************************************************
-// Initializes Equipment infos
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
+//! \brief Initializes Equipment infos
 void ARX_EQUIPMENT_Init()
 {
 	// IO_EQUIPITEM_ELEMENT_... are Defined in EERIEPOLY.h
@@ -1231,11 +1205,7 @@ void ARX_EQUIPMENT_Init()
 	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_4].name, "special4");
 }
 
-//***********************************************************************************************
-// Removes All special equipement properties
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
+//! \brief Removes All special equipement properties
 void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 {
 	if (!io) return;
@@ -1247,10 +1217,8 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_3].special = IO_SPECIAL_ELEM_NONE;
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_4].special = IO_SPECIAL_ELEM_NONE;
 }
-//***********************************************************************************************
-// Sets an equipment property
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
+
+//! \brief Sets an equipment property
 float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
                           float trueval) {
 	
@@ -1363,7 +1331,6 @@ void ARX_EQUIPMENT_SetEquip(Entity * io, bool special,
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_EQUIPMENT_IdentifyAll()
 {
 	Entity * io = entities.player();
