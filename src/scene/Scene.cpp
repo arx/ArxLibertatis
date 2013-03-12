@@ -1927,10 +1927,6 @@ void ARX_SCENE_Render() {
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
 
-	long zsnap=camZsnap;
-	zsnap = clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
-	long xsnap=camXsnap;
-	xsnap = clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
 
 	for(long j=z0; j<=z1; j++) {
 		for(long i=x0; i<x1; i++) {
@@ -1960,6 +1956,11 @@ void ARX_SCENE_Render() {
 			}
 		}
 	} else {
+		long zsnap=camZsnap;
+		zsnap = clamp(zsnap, 1, ACTIVEBKG->Zsize-1);
+		long xsnap=camXsnap;
+		xsnap = clamp(xsnap, 1, ACTIVEBKG->Xsize-1);
+
 	for(long n=0; n<=lcval; n++) {
 	for(long j=zsnap-n; j<=zsnap+n; j++) {
 	for(long i=xsnap-n; i<=xsnap+n; i++) {
