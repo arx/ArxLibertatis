@@ -1706,27 +1706,15 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 
 			eobj->linked[k].modinfo.rot = Anglef::ZERO;
 
-			float old = 0.f;
+
 			Entity * ioo = (Entity *)eobj->linked[k].io;
 			EERIE_3DOBJ * obj = (EERIE_3DOBJ *) eobj->linked[k].obj;
 
 			// Store item invisibility flag
-			if(io && ioo) {
+			float old = 0.f;
+			if(ioo) {
 				old = ioo->invisibility;
-
-				if(io == entities.player()) {
-					ioo->invisibility = INVISIBILITY_OVERRIDE;
-				} else {
-					INVISIBILITY_OVERRIDE = 0.f;
-					ioo->invisibility = invisibility;
-				}
-			} else {
-				if(ioo) {
-					INVISIBILITY_OVERRIDE = 0.f;
-					ioo->invisibility = invisibility;
-				} else {
-					INVISIBILITY_OVERRIDE = invisibility;
-				}
+				ioo->invisibility = invisibility;
 			}
 
 			// specific check to avoid drawing player weapon on its back when in subjective view
@@ -1748,7 +1736,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 			MatrixFromQuat(&matrix, &quat);
 			DrawEERIEInter(obj, NULL, posi, ioo, &matrix, &eobj->linked[k].modinfo);
 
-			INVISIBILITY_OVERRIDE = 0.f;
 			// Restore item invisibility flag
 			if(ioo)
 				ioo->invisibility = old;
