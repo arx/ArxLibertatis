@@ -2466,9 +2466,8 @@ void ManageCombatModeAnimationsEND()
 				}
 
 			break;
-			case WEAPON_DAGGER:
+			case WEAPON_DAGGER: // DAGGER ANIMS end
 
-				// DAGGER ANIMS end
 				if (alist[ANIM_DAGGER_READY_PART_1])
 				{
 					if (useanim->cur_anim==alist[ANIM_DAGGER_READY_PART_1])
@@ -2504,7 +2503,7 @@ void ManageCombatModeAnimationsEND()
 			break;
 			case WEAPON_1H:	// 1H ANIMS end
 
-				if (alist[ANIM_1H_READY_PART_1]!=NULL)
+				if (alist[ANIM_1H_READY_PART_1])
 				{
 					if (useanim->cur_anim==alist[ANIM_1H_READY_PART_1])
 					{
@@ -2523,7 +2522,7 @@ void ManageCombatModeAnimationsEND()
 							useanim->flags|=EA_LOOP;
 						}
 						else
-						ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
+							ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT_START+CurrFightPos*3]);
 
 						AimTime = (unsigned long)(arxtime);
 						io->isHit = false;
