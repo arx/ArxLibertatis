@@ -388,27 +388,17 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 void ARX_EQUIPMENT_AttachPlayerWeaponToHand()
 {
 	Entity * target = entities.player();
-	Entity * toequip = NULL;
+	if(!target)
+		return;
 
-	if (!target) return;
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
+			Entity *toequip = entities[player.equiped[i]];
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i]))
-		{
-			toequip = entities[player.equiped[i]];
-
-			if (toequip)
-			{
-				if ((toequip->type_flags & OBJECT_TYPE_DAGGER)
-				        ||	(toequip->type_flags & OBJECT_TYPE_1H)
-				        ||	(toequip->type_flags & OBJECT_TYPE_2H)
-				        ||	(toequip->type_flags & OBJECT_TYPE_BOW)
-				   )
-				{
+			if(toequip) {
+				if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 					EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, toequip->obj);
-					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "primary_attach", "primary_attach", toequip); //
+					EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "primary_attach", "primary_attach", toequip);
 					return;
 				}
 			}
