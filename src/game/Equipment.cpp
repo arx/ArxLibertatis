@@ -275,7 +275,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 			Entity *toequip = entities[player.equiped[i]];
 
 			if(toequip) {
-				if(toequip->type_flags & (OBJECT_TYPE_DAGGER |OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
+				if(toequip->type_flags & (OBJECT_TYPE_DAGGER | OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
 					if(player.Interface & INTER_COMBATMODE) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
 					} else {
@@ -351,25 +351,21 @@ bool ARX_EQUIPMENT_IsPlayerEquip(Entity * _pIO)
 //***********************************************************************************************
 void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 {
-	if (target == NULL) return;
+	if(!target || !tounequip)
+		return;
 
-	if (tounequip == NULL) return;
+	if(target != entities.player())
+		return;
 
-	if (target != entities.player()) return;
-
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i])
-		        &&	(entities[player.equiped[i]] == tounequip))
-		{
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i]) && entities[player.equiped[i]] == tounequip) {
 			EERIE_LINKEDOBJ_UnLinkObjectFromObject(target->obj, tounequip->obj);
 			ARX_EQUIPMENT_Release(player.equiped[i]);
 			target->bbox1.x = 9999;
 			target->bbox2.x = -9999;
 			
 			if(!flags & 1) {
-				if(DRAGINTER == NULL) {
+				if(!DRAGINTER) {
 					ARX_SOUND_PlayInterface(SND_INVSTD);
 					Set_DragInter(tounequip);
 				} else {
@@ -384,9 +380,7 @@ void ARX_EQUIPMENT_UnEquip(Entity * target, Entity * tounequip, long flags)
 		}
 	}
 
-	if ((tounequip->type_flags & OBJECT_TYPE_HELMET)
-	        ||	(tounequip->type_flags & OBJECT_TYPE_ARMOR)
-	        ||	(tounequip->type_flags & OBJECT_TYPE_LEGGINGS))
+	if(tounequip->type_flags & (OBJECT_TYPE_HELMET | OBJECT_TYPE_ARMOR | OBJECT_TYPE_LEGGINGS))
 		ARX_EQUIPMENT_RecreatePlayerMesh();
 }
 //***********************************************************************************************
