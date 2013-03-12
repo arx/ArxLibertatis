@@ -1896,8 +1896,7 @@ void ARX_SCENE_Render() {
 	
 	WATEREFFECT+=0.0005f*framedelay;
 	
-	float cval=(float)ACTIVECAM->clip3D+4;
-	long lcval = cval;
+	long lcval = ACTIVECAM->clip3D + 4;
 
 	{
 	PrepareActiveCamera();
