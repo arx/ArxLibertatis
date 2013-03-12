@@ -140,32 +140,27 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 
 bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const std::string& actiontext, const std::string& actiontext2, Entity * io)
 {
-	long group = -1;
-
 	long ni = GetActionPointIdx(obj, actiontext);
-
-	if (ni < 0)
-	{
+	if(ni < 0)
 		return false; 
-	}
 
 	long n = EERIE_LINKEDOBJ_Create(obj);
+	if(n == -1)
+		return false;
 
-	if (n == -1) return false;
-
-	group = GetActionPointGroup(obj, ni);
-
-	if (group < 0) return false; 
+	long group = GetActionPointGroup(obj, ni);
+	if(group < 0)
+		return false;
 
 	long ni2 = GetActionPointIdx(tolink, actiontext2);
-
-	if (ni2 < 0) return false; 
+	if(ni2 < 0)
+		return false;
 
 	obj->linked[n].lidx2 = ni2;
 	obj->linked[n].lidx = ni;
 	obj->linked[n].lgroup = group;
 	obj->linked[n].obj = tolink;
 	obj->linked[n].io = io;
-	return true;
 
+	return true;
 }
