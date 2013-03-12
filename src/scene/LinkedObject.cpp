@@ -99,16 +99,10 @@ static long EERIE_LINKEDOBJ_Create(EERIE_3DOBJ * obj)
 // Removes a linked object Data field from an object
 static void EERIE_LINKEDOBJ_Remove(EERIE_3DOBJ * obj, long num)
 {
-	if (obj == NULL) return;
+	if(!obj || !obj->linked || num < 0 || num >= obj->nblinked)
+		return;
 
-	if (obj->linked == NULL) return;
-
-	if (num < 0) return;
-
-	if (num >= obj->nblinked) return;
-
-	if (obj->nblinked == 1)
-	{
+	if(obj->nblinked == 1) {
 		free(obj->linked);
 		obj->linked = NULL;
 		obj->nblinked = 0;
