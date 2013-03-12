@@ -2325,15 +2325,14 @@ void ManageCombatModeAnimations()
 				float poisonous=0.f;
 
 				if(ioo) {
-					if(ioo->poisonous_count>0) {
-						poisonous=ioo->poisonous;
+					poisonous = ioo->poisonous;
+					if(ioo->poisonous_count>0) {	
 						ioo->poisonous_count--;
 
 						if(ioo->poisonous_count <= 0)
 							ioo->poisonous=0;
 					}
-					else
-						poisonous=ioo->poisonous;
+
 
 					ARX_DAMAGES_DurabilityLoss(ioo,1.f);
 
