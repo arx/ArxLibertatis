@@ -99,126 +99,126 @@ void ARXDRAW_DrawInterShadows()
 		if(!io->obj || (io->ioflags & IO_JUST_COLLIDE))
 			continue;
 
-			long xx = io->pos.x * ACTIVEBKG->Xmul;
-			long yy = io->pos.z * ACTIVEBKG->Zmul;
+		long xx = io->pos.x * ACTIVEBKG->Xmul;
+		long yy = io->pos.z * ACTIVEBKG->Zmul;
 
-			if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
-				FAST_BKG_DATA *feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
+		if(xx >= 1 && yy >= 1 && xx < ACTIVEBKG->Xsize-1 && yy < ACTIVEBKG->Zsize-1) {
+			FAST_BKG_DATA *feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
 
-				if(!feg->treat)
-					continue;
-			}
+			if(!feg->treat)
+				continue;
+		}
 
-			if (!( io->ioflags & IO_NOSHADOW ) )
-			if ( io->show==SHOW_FLAG_IN_SCENE ) 
-			if ( !(io->ioflags & IO_GOLD) ) 
+		if (!( io->ioflags & IO_NOSHADOW ) )
+		if ( io->show==SHOW_FLAG_IN_SCENE )
+		if ( !(io->ioflags & IO_GOLD) )
+		{
+			EERIEPOLY * ep;
+			TexturedVertex in;
+
+			TexturedVertex ltv[4];
+			ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.3f));
+			ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.3f));
+			ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
+			ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
+
+			if (io->obj->nbgroups<=1)
 			{
-				EERIEPOLY * ep;
-				TexturedVertex in;
-				
-				TexturedVertex ltv[4];
-				ltv[0] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.3f));
-				ltv[1] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.3f));
-				ltv[2] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.7f, 0.7f));
-				ltv[3] = TexturedVertex(Vec3f(0, 0, 0.001f), 1.f, 0, 1, Vec2f(0.3f, 0.7f));
-				
-				if (io->obj->nbgroups<=1)
+				for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
 				{
-					for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
+					ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
+
+					if (ep!=NULL)
 					{
-						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
+						in.p.y=ep->min.y-3.f;
+						float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
+						r-=io->invisibility;
+						r*=io->scale;
 
-						if (ep!=NULL)
+						if (r<=0.f) continue;
+
+						float s1=16.f*io->scale;
+						float s2=s1*( 1.0f / 2 );
+						in.p.x=io->obj->vertexlist3[k].v.x-s2;
+						in.p.z=io->obj->vertexlist3[k].v.z-s2;
+
+						r*=255.f;
+						long lv = r;
+						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
+
+						if (first)
 						{
-							in.p.y=ep->min.y-3.f;
-							float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.p.y))*( 1.0f / 500 );
-							r-=io->invisibility;
-							r*=io->scale;
-
-							if (r<=0.f) continue;
-							
-							float s1=16.f*io->scale;
-							float s2=s1*( 1.0f / 2 );
-							in.p.x=io->obj->vertexlist3[k].v.x-s2;						
-							in.p.z=io->obj->vertexlist3[k].v.z-s2;
-
-							r*=255.f;
-							long lv = r;
-							ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-
-							if (first)
-							{
-								first=0;
-								GRenderer->SetRenderState(Renderer::DepthWrite, false);
-								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								GRenderer->SetTexture(0, Boom);
-							}
-
-							EE_RT2(&in,&ltv[0]);
-							in.p.x+=s1;
-							EE_RT2(&in,&ltv[1]);
-							in.p.z+=s1;
-							EE_RT2(&in,&ltv[2]);
-							in.p.x-=s1;
-							EE_RT2(&in,&ltv[3]);
-
-							if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
-								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
-								ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
-							}
+							first=0;
+							GRenderer->SetRenderState(Renderer::DepthWrite, false);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							GRenderer->SetTexture(0, Boom);
 						}
-					}	
-				}
-				else 
-				{
-					for (long k=0;k<io->obj->nbgroups;k++)
-					{
-						long origin=io->obj->grouplist[k].origin;
-						ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
 
-						if (ep!=NULL)
-						{
-							in.p.y=ep->min.y-3.f;
-							float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
-							r*=io->obj->grouplist[k].siz;
-							r-=io->invisibility;
+						EE_RT2(&in,&ltv[0]);
+						in.p.x+=s1;
+						EE_RT2(&in,&ltv[1]);
+						in.p.z+=s1;
+						EE_RT2(&in,&ltv[2]);
+						in.p.x-=s1;
+						EE_RT2(&in,&ltv[3]);
 
-							if (r<=0.f) continue;
-
-							float s1=io->obj->grouplist[k].siz*44.f;
-							float s2=s1*( 1.0f / 2 );
-							in.p.x=io->obj->vertexlist3[origin].v.x-s2;						
-							in.p.z=io->obj->vertexlist3[origin].v.z-s2;
-
-							r*=255.f;
-							long lv = r;
-							ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
-
-							if (first)
-							{
-								first=0;
-								GRenderer->SetRenderState(Renderer::DepthWrite, false);
-								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-								GRenderer->SetTexture(0, Boom);
-							}
-
-							EE_RT2(&in,&ltv[0]);
-							in.p.x+=s1;
-							EE_RT2(&in,&ltv[1]);
-							in.p.z+=s1;
-							EE_RT2(&in,&ltv[2]);
-							in.p.x-=s1;
-							EE_RT2(&in,&ltv[3]);
-							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+						if(ltv[0].p.z > 0.f && ltv[1].p.z > 0.f && ltv[2].p.z > 0.f) {
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2], 50.0f);
+							ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3], 50.0f);
 						}
 					}
 				}
 			}
-		
+			else
+			{
+				for (long k=0;k<io->obj->nbgroups;k++)
+				{
+					long origin=io->obj->grouplist[k].origin;
+					ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
+
+					if (ep!=NULL)
+					{
+						in.p.y=ep->min.y-3.f;
+						float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.p.y))*( 1.0f / 500 );
+						r*=io->obj->grouplist[k].siz;
+						r-=io->invisibility;
+
+						if (r<=0.f) continue;
+
+						float s1=io->obj->grouplist[k].siz*44.f;
+						float s2=s1*( 1.0f / 2 );
+						in.p.x=io->obj->vertexlist3[origin].v.x-s2;
+						in.p.z=io->obj->vertexlist3[origin].v.z-s2;
+
+						r*=255.f;
+						long lv = r;
+						ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
+
+						if (first)
+						{
+							first=0;
+							GRenderer->SetRenderState(Renderer::DepthWrite, false);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+							GRenderer->SetTexture(0, Boom);
+						}
+
+						EE_RT2(&in,&ltv[0]);
+						in.p.x+=s1;
+						EE_RT2(&in,&ltv[1]);
+						in.p.z+=s1;
+						EE_RT2(&in,&ltv[2]);
+						in.p.x-=s1;
+						EE_RT2(&in,&ltv[3]);
+						ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+						ARX_DrawPrimitive(&ltv[0], &ltv[2], &ltv[3]);
+					}
+				}
+			}
 		}
+
+	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
