@@ -267,40 +267,24 @@ void ARX_EQUIPMENT_RecreatePlayerMesh() {
 	applyTweak(EQUIP_SLOT_LEGGINGS, TWEAK_LEGS, "leggings");
 	
 	Entity * target = entities.player();
-	Entity * toequip = NULL;
+	if(!target)
+		return;
 
-	if (!target) return;
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
+			Entity *toequip = entities[player.equiped[i]];
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i]))
-		{
-			toequip = entities[player.equiped[i]];
-
-			if (toequip)
-			{
-				if (toequip->type_flags & (OBJECT_TYPE_DAGGER
-				                           |	OBJECT_TYPE_1H
-				                           |	OBJECT_TYPE_2H
-				                           |	OBJECT_TYPE_BOW))
-				{
-					if (player.Interface & INTER_COMBATMODE)	
-					{
+			if(toequip) {
+				if(toequip->type_flags & (OBJECT_TYPE_DAGGER |OBJECT_TYPE_1H | OBJECT_TYPE_2H | OBJECT_TYPE_BOW)) {
+					if(player.Interface & INTER_COMBATMODE) {
 						ARX_EQUIPMENT_AttachPlayerWeaponToHand();
+					} else {
+						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip);
 					}
-					else
-					{
-						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "weapon_attach", "primary_attach", toequip); //
-					}
-				}
-				else if (toequip->type_flags & OBJECT_TYPE_SHIELD)
-				{
-					if (player.equiped[EQUIP_SLOT_SHIELD] != 0)
-					{
+				} else if(toequip->type_flags & OBJECT_TYPE_SHIELD) {
+					if(player.equiped[EQUIP_SLOT_SHIELD] != 0) {
 						EERIE_LINKEDOBJ_LinkObjectToObject(target->obj, toequip->obj, "shield_attach", "shield_attach", toequip);
 					}
-
 				}
 			}
 		}
