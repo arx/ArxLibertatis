@@ -152,6 +152,8 @@ void Cinematic::OneTimeSceneReInit() {
 	m_camera.Zdiv = 3000.f;
 	m_camera.clip3D = 60;
 	m_camera.bkgcolor = Color::none;
+
+	SetCameraDepth(m_camera, 2500.f);
 	
 	numbitmap = -1;
 	numbitmapsuiv = -1;
