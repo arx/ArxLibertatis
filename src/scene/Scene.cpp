@@ -1915,7 +1915,7 @@ void ARX_SCENE_Render() {
 	x0 = clamp(x0, 0, ACTIVEBKG->Xsize-1);
 	x1 = clamp(x1, 0, ACTIVEBKG->Xsize-1);
 	z0 = clamp(z0, 0, ACTIVEBKG->Zsize-2);
-	z1 = clamp(z1, 0, ACTIVEBKG->Xsize-2);
+	z1 = clamp(z1, 0, ACTIVEBKG->Zsize-2);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
 
