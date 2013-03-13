@@ -1132,8 +1132,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 	}
 
-	float prec = 1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul());
-
 	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
@@ -1237,7 +1235,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					long lr=(vert_list[k].color>>16) & 255;
 					float ffr=(float)(lr);
 					
-					float dd = vert_list[k].rhw * prec;
+					float dd = vert_list[k].rhw;
 
 					dd = clamp(dd, 0.f, 1.f);
 					

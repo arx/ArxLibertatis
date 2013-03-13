@@ -1388,7 +1388,7 @@ void ClearTileLights() {
 	}
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA *frustrums, long prec, long tim) {
+void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA *frustrums, long tim) {
 	if(RoomDraw[room_num].count) {
 		if(!portals->room[room_num].pVertexBuffer) {
 			// No need to spam this for every frame as there will already be an
@@ -1565,7 +1565,7 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 						
-						float dd=(ep->tv[k].rhw*prec);
+						float dd= ep->tv[k].rhw;
 
 						dd = clamp(dd, 0.f, 1.f);
 						
@@ -1918,13 +1918,11 @@ void ARX_SCENE_Render() {
 	z1 = clamp(z1, 0, ACTIVEBKG->Xsize-2);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
-	float prec = 1.f / (ACTIVECAM->cdepth * ACTIVECAM->Zmul());
 
 		PrecalcDynamicLighting(x0, z0, x1, z1);
 	
 	// Go for a growing-square-spirallike-render around the camera position
 	// (To maximize Z-Buffer efficiency)
-
 
 	for(long j=z0; j<=z1; j++) {
 		for(long i=x0; i<x1; i++) {
@@ -1944,13 +1942,12 @@ void ARX_SCENE_Render() {
 		long room_num=ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos,1);
 		if(room_num>-1) {
 			ARX_PORTALS_InitDrawnRooms();
-			long lprec = checked_range_cast<long>(prec);
 			EERIE_FRUSTRUM frustrum;
 			CreateScreenFrustrum(&frustrum);
 			ARX_PORTALS_Frustrum_ComputeRoom(room_num, &frustrum);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			for(long i=0; i<NbRoomDrawList; i++) {
-				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, lprec, tim);
+				ARX_PORTALS_Frustrum_RenderRoomTCullSoft(RoomDrawList[i], &RoomDraw[RoomDrawList[i]].frustrum, tim);
 			}
 		}
 	} else {
@@ -2053,7 +2050,7 @@ void ARX_SCENE_Render() {
 						long lr=(ep->tv[k].color>>16) & 255;
 						float ffr=(float)(lr);
 							
-						float dd=(ep->tv[k].p.z*prec);
+						float dd = ep->tv[k].p.z;
 
 						dd = clamp(dd, 0.f, 1.f);
 						
