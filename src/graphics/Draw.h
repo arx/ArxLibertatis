@@ -58,9 +58,6 @@ extern Vec3f SPRmaxs;
 void MDL_AddMetalDrawLater(TexturedVertex * tv);
 void MDL_FlushAll();
 
-
-void Delayed_FlushAll();
-
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
 
 void EERIEDrawCircle(float x0, float y0, float r, Color col, float z);
