@@ -27,10 +27,6 @@
 #include <sys/wait.h>
 #endif
 
-#ifdef ARX_HAVE_UNAME
-#include <sys/utsname.h>
-#endif
-
 #ifdef ARX_HAVE_GETRUSAGE
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -49,11 +45,6 @@
 
 #ifdef ARX_HAVE_CRASHHANDLER_POSIX
 #include <signal.h>
-#endif
-
-// yes, we need stdio.h, POSIX doesn't know about cstdio
-#ifdef ARX_HAVE_POPEN
-#include <stdio.h>
 #endif
 
 // Qt
@@ -85,6 +76,7 @@
 #include "crashreporter/tbg/TBG.h"
 
 #include "platform/Architecture.h"
+#include "platform/OS.h"
 
 ErrorReport::ErrorReport(const QString& sharedMemoryName)
 	: m_RunningTimeSec(0)
@@ -164,24 +156,6 @@ bool ErrorReport::GetCrashDump(const fs::path & fileName) {
 	
 #endif // !ARX_HAVE_WINAPI
 }
-
-#if defined(ARX_HAVE_POPEN) && defined(ARX_HAVE_PCLOSE)
-static QString getOutputOf(const char * command) {
-	FILE * pipe = popen(command, "r");
-	if(!pipe) {
-		return QString();
-	}
-	char buffer[1024];
-	QByteArray result;
-	while(!feof(pipe)) {
-		if(size_t count = fread(buffer, 1, ARRAY_SIZE(buffer), pipe)) {
-			result.append(QByteArray(buffer, count));
-		}
-	}
-	pclose(pipe);
-	return result;
-}
-#endif
 
 #ifndef ARX_HAVE_WINAPI
 
@@ -268,125 +242,6 @@ void getResourceUsage(int pid, quint64 & memoryUsage, double & runningTimeSec) {
 	
 #endif
 	
-}
-
-QString getLinuxDistribution() {
-	
-#if defined(ARX_HAVE_POPEN) && defined(ARX_HAVE_PCLOSE)
-	{
-		QString distro(getOutputOf("lsb_release -d").trimmed());
-		QString prefix("Description:");
-		if(distro.startsWith(prefix)) {
-			distro = distro.mid(prefix.length()).trimmed();
-		}
-		if(!distro.isEmpty()) {
-			
-			QString codename(getOutputOf("lsb_release -c").trimmed());
-			QString prefix("Codename:");
-			if(codename.startsWith(prefix)) {
-				codename = codename.mid(prefix.length()).trimmed();
-			}
-			
-			if(!codename.isEmpty() && codename != "n/a" && !distro.contains(codename)) {
-				distro += " (";
-				distro += codename;
-				distro += ")";
-			}
-			
-			return distro;
-		}
-	}
-#endif
-	
-	// Fallback for older / non-LSB-compliant distros.
-	// Release file list taken from http://linuxmafia.com/faq/Admin/release-files.html
-	
-	const char * release_files[] = {
-		"/etc/annvix-release",
-		"/etc/arch-release",
-		"/etc/arklinux-release",
-		"/etc/aurox-release",
-		"/etc/blackcat-release",
-		"/etc/cobalt-release",
-		"/etc/conectiva-release",
-		"/etc/fedora-release",
-		"/etc/gentoo-release",
-		"/etc/immunix-release",
-		"/etc/lfs-release",
-		"/etc/linuxppc-release",
-		"/etc/mandriva-release",
-		"/etc/mandrake-release",
-		"/etc/mandakelinux-release",
-		"/etc/mklinux-release",
-		"/etc/nld-release",
-		"/etc/pld-release",
-		"/etc/slackware-release",
-		"/etc/e-smith-release",
-		"/etc/release",
-		"/etc/sun-release",
-		"/etc/SuSE-release",
-		"/etc/novell-release",
-		"/etc/sles-release",
-		"/etc/tinysofa-release",
-		"/etc/turbolinux-release",
-		"/etc/ultrapenguin-release",
-		"/etc/UnitedLinux-release",
-		"/etc/va-release",
-		"/etc/yellowdog-release",
-		"/etc/debian_release",
-		"/etc/redhat-release",
-	};
-	
-	const char * version_files[][2] = {
-		{ "/etc/debian_version", "Debian " },
-		{ "/etc/knoppix_version", "Knoppix " },
-		{ "/etc/redhat_version", "RedHat " },
-		{ "/etc/slackware-version", "Slackware " },
-	};
-	
-	const char * lsb_release = "/etc/lsb-release";
-	
-	for(size_t i = 0; i < ARRAY_SIZE(release_files); i++) {
-		QFile file(release_files[i]);
-		if(file.exists()) {
-			file.open(QIODevice::ReadOnly);
-			QString distro(QString(file.readAll()).trimmed());
-			file.close();
-			if(!distro.isEmpty()) {
-				return distro;
-			}
-		}
-	}
-	
-	for(size_t i = 0; i < ARRAY_SIZE(version_files); i++) {
-		QFile file(version_files[i][0]);
-		if(file.exists()) {
-			file.open(QIODevice::ReadOnly);
-			QString distro(version_files[i][1] + QString(file.readAll()).trimmed());
-			file.close();
-			if(!distro.isEmpty()) {
-				return distro;
-			}
-		}
-	}
-	
-	QFile file(lsb_release);
-	if(file.exists()) {
-		file.open(QIODevice::ReadOnly);
-		QString distro(QString(file.readAll()).trimmed());
-		file.close();
-		QString prefix("DISTRIB_ID=\"");
-		QString suffix("\"");
-		if(distro.startsWith(prefix) && distro.endsWith(suffix)) {
-			distro = distro.mid(
-				prefix.length(),
-				distro.length() - prefix.length() - suffix.length()
-			).trimmed();
-		}
-		return distro;
-	}
-	
-	return QString();
 }
 
 #endif // !defined(ARX_HAVE_WINAPI)
@@ -640,6 +495,10 @@ bool ErrorReport::GetMiscCrashInfo() {
 	
 	m_ProcessArchitecture = ARX_ARCH_NAME;
 	
+	m_OSName = QString::fromUtf8(platform::getOSName().c_str());
+	m_OSArchitecture = QString::fromUtf8(platform::getOSArchitecture().c_str());
+	m_OSDistribution = QString::fromUtf8(platform::getOSDistribution().c_str());
+	
 #ifdef ARX_HAVE_WINAPI
 	
 	// Open parent process handle
@@ -676,18 +535,6 @@ bool ErrorReport::GetMiscCrashInfo() {
 		m_DetailedError = QString("Unable to obtain an handle to the crashed process (Error %1).").arg(QString::number(GetLastError()));
 		return false;
 	}
-
-	// Get operating system friendly name from registry.
-	char OSNameBuf[256];
-	if(!GetWindowsVersionName(OSNameBuf, 256))
-	{
-		m_DetailedError = QString("A failure occured when obtaining Windows version name (Error %1).").arg(QString::number(GetLastError()));
-		return false;
-	}
-	m_OSName = OSNameBuf;
-
-	// Determine if Windows is 64-bit.
-	m_OSArchitecture = Is64BitWindows() ? ARX_ARCH_NAME_X86_64 : ARX_ARCH_NAME_X86;
 	
 	if(m_pCrashInfo->exceptionCode != 0)
 	{
@@ -731,16 +578,6 @@ bool ErrorReport::GetMiscCrashInfo() {
 #else // !ARX_HAVE_WINAPI
 	
 	getResourceUsage(m_pCrashInfo->processId, m_ProcessMemoryUsage, m_RunningTimeSec);
-	
-#ifdef ARX_HAVE_UNAME
-	struct utsname buf;
-	if(uname(&buf) == 0) {
-		m_OSName = QString(buf.sysname) + " " + buf.release;
-		m_OSArchitecture = buf.machine;
-	}
-#endif
-	
-	m_OSDistribution = getLinuxDistribution();
 	
 #endif // !ARX_HAVE_WINAPI
 

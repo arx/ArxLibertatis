@@ -174,7 +174,7 @@ Unicode readUTF8(In & it, In end, Unicode replacement = REPLACEMENT_CHAR) {
 				
 				if(chr & (1 << (3 + 6 + 6 + 6))) {
 					// Illegal UTF-8 byte
-					chr = replacement;
+					return replacement;
 				}
 				
 			}

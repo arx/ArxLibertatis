@@ -112,6 +112,13 @@ bool rename(const path & old_p, const path & new_p, bool overwrite = false);
  */
 char * read_file(const path & p, size_t & size);
 
+/*!
+ * Read a file into an std::string
+ * @param p The file to load.
+ * @return a string containing the file's contents
+ */
+std::string read(const path & p);
+
 //! @return the current working directory
 path current_path();
 

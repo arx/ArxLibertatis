@@ -653,6 +653,7 @@ set(PLATFORM_SOURCES
 	src/platform/Dialog.cpp
 	src/platform/Environment.cpp
 	src/platform/Lock.cpp
+	src/platform/OS.cpp
 	src/platform/Platform.cpp
 	src/platform/Time.cpp
 )
