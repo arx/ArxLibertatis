@@ -282,17 +282,17 @@ bool DInput8Backend::init() {
 	DI_MouseState = NULL;
 
 	if(!getKeyboardInputDevice(DXI_MODE_NONEXCLUSIF_OURMSG)) {
-		LogError << "could not grab the keyboeard";
+		LogError << "Could not grab the keyboeard";
 		return false;
 	}
 	
 	if(!getMouseInputDevice(DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
-		LogError << "could not grab the mouse";
+		LogError << "Could not grab the mouse";
 		return false;
 	}
 	
 	if(!setMouseRelative()) {
-		LogError << "could not set mouse relative mode";
+		LogError << "Could not set mouse relative mode";
 		return false;
 	}
 

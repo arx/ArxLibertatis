@@ -215,7 +215,7 @@ bool ARX_Changelevel_CurGame_Clear() {
 	// If there's a left over current game file, clear it
 	if(fs::is_regular_file(CURRENT_GAME_FILE)) {
 		if(!fs::remove(CURRENT_GAME_FILE)) {
-			LogError << "failed to remove current game file " << CURRENT_GAME_FILE;
+			LogError << "Failed to remove current game file " << CURRENT_GAME_FILE;
 			return false;
 		}
 	}
@@ -242,7 +242,7 @@ void ARX_Changelevel_CurGame_Open() {
 	
 	GLOBAL_pSaveB = new SaveBlock(CURRENT_GAME_FILE);
 	if(!GLOBAL_pSaveB->open()) {
-		LogError << "cannot read cur game save file" << CURRENT_GAME_FILE;
+		LogError << "Cannot read cur game save file" << CURRENT_GAME_FILE;
 	}
 }
 
@@ -306,7 +306,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	if(!pSaveBlock->open(true)) {
-		LogError << "error writing to save block " << CURRENT_GAME_FILE;
+		LogError << "Error writing to save block " << CURRENT_GAME_FILE;
 		return;
 	}
 	
@@ -315,7 +315,7 @@ void ARX_CHANGELEVEL_Change(const string & level, const string & target, long an
 	LogDebug("After  ARX_CHANGELEVEL_PushLevel");
 	
 	if(!pSaveBlock->flush("pld")) {
-		LogError << "could not complete the save.";
+		LogError << "Could not complete the save.";
 	}
 	delete pSaveBlock, pSaveBlock = NULL;
 	
@@ -1637,7 +1637,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	if(size < sizeof(ARX_CHANGELEVEL_PLAYER)) {
-		LogError << "truncated data";
+		LogError << "Truncated data";
 		return -1;
 	}
 	
@@ -1791,7 +1791,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	if(size < pos + (asp->nb_PlayerQuest * 80)) {
-		LogError << "truncated data";
+		LogError << "Truncated data";
 		return -1;
 	}
 	ARX_PLAYER_Quest_Init();
@@ -1801,7 +1801,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	if(size < pos + (asp->keyring_nb * SAVED_KEYRING_SLOT_SIZE)) {
-		LogError << "truncated data";
+		LogError << "Truncated data";
 		return -1;
 	}
 	ARX_KEYRING_Init();
@@ -1812,7 +1812,7 @@ static long ARX_CHANGELEVEL_Pop_Player() {
 	}
 	
 	if(size < pos + (asp->Nb_Mapmarkers * sizeof(SavedMapMarkerData))) {
-		LogError << "truncated data";
+		LogError << "Truncated data";
 		return -1;
 	}
 	ARX_MAPMARKER_Init();
@@ -1869,7 +1869,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 		strcpy(var[i].name, name.c_str());
 		
 		if(name.find_first_not_of("abcdefghijklmnopqrstuvwxyz_0123456789", 1) != string::npos) {
-			LogWarning << "unexpected variable name \"" << name.substr(1) << '"';
+			LogWarning << "Unexpected variable name \"" << name.substr(1) << '"';
 		}
 		
 		VariableType type;
@@ -1882,7 +1882,7 @@ static bool loadScriptVariables(SCRIPT_VAR * var, long & n, const char * dat, si
 		} else if(avs->name[0] == '#' || avs->name[0] == 's') {
 			type = tlong;
 		} else {
-			LogError << "unknown script variable type: " << avs->type;
+			LogError << "Unknown script variable type: " << avs->type;
 			n = i;
 			return false;
 		}
@@ -2078,7 +2078,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			
 			io->anims[i] = EERIE_ANIMMANAGER_Load(path);
 			if(!io->anims[i]) {
-				LogWarning << "error loading animation " << path;
+				LogWarning << "Error loading animation " << path;
 			}
 		}
 		
@@ -2095,7 +2095,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			} else {
 				io->animlayer[k].cur_anim = io->anims[nn];
 				if(io->animlayer[k].cur_anim && io->animlayer[k].altidx_cur >= io->animlayer[k].cur_anim->alt_nb) {
-					LogWarning << "out of bounds animation alternative index " << io->animlayer[k].altidx_cur << " for " << io->animlayer[k].cur_anim->path << ", resetting to 0";
+					LogWarning << "Out of bounds animation alternative index " << io->animlayer[k].altidx_cur << " for " << io->animlayer[k].cur_anim->path << ", resetting to 0";
 					io->animlayer[k].altidx_cur = 0;
 				}
 			}
@@ -2106,7 +2106,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 			} else {
 				io->animlayer[k].next_anim = io->anims[nn];
 				if(io->animlayer[k].next_anim && io->animlayer[k].altidx_next >= io->animlayer[k].next_anim->alt_nb) {
-					LogWarning << "out of bounds animation alternative index " << io->animlayer[k].altidx_next << " for " << io->animlayer[k].next_anim->path << ", resetting to 0";
+					LogWarning << "Out of bounds animation alternative index " << io->animlayer[k].altidx_next << " for " << io->animlayer[k].next_anim->path << ", resetting to 0";
 					io->animlayer[k].altidx_next = 0;
 				}
 			}
@@ -2157,7 +2157,7 @@ static Entity * ARX_CHANGELEVEL_Pop_IO(const string & ident, long num) {
 		}
 		
 		if(!loadScriptData(io->script, dat, pos) || !loadScriptData(io->over_script, dat, pos)) {
-				LogError << "save file is corrupted, trying to fix " << ident;
+				LogError << "Save file is corrupted, trying to fix " << ident;
 				free(dat);
 				io->inventory = NULL;
 				RestoreInitialIOStatusOfIO(io);
@@ -2580,7 +2580,7 @@ static void ARX_CHANGELEVEL_Pop_Globals() {
 	
 	bool ret = loadScriptVariables(svar, NB_GLOBALS, dat, pos, TYPE_G_TEXT, TYPE_G_LONG, TYPE_G_FLOAT);
 	if(!ret) {
-		LogError << "error loading globals";
+		LogError << "Error loading globals";
 	}
 	
 	free(dat);
@@ -2800,14 +2800,14 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 	pSaveBlock = new SaveBlock(CURRENT_GAME_FILE);
 	
 	if(!pSaveBlock->open(true)) {
-		LogError << "opening savegame " << CURRENT_GAME_FILE;
+		LogError << "Opening savegame " << CURRENT_GAME_FILE;
 		return false;
 	}
 	
 	// Save the current level
 	
 	if(!ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, CURRENTLEVEL)) {
-		LogWarning << "could not save the level";
+		LogWarning << "Could not save the level";
 		return false;
 	}
 	
@@ -2826,7 +2826,7 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 	// Close the savegame file
 	
 	if(!pSaveBlock->flush("pld")) {
-		LogError << "could not complete the save";
+		LogError << "Could not complete the save";
 		return false;
 	}
 	delete pSaveBlock, pSaveBlock = NULL;
@@ -2835,7 +2835,7 @@ bool ARX_CHANGELEVEL_Save(const string & name, const fs::path & savefile) {
 	
 	// Copy the savegame and screenshot to the final destination, overwriting previous files
 	if(!fs::copy_file(CURRENT_GAME_FILE, savefile, true)) {
-		LogWarning << "failed to copy save " << CURRENT_GAME_FILE <<" to " << savefile;
+		LogWarning << "Failed to copy save " << CURRENT_GAME_FILE <<" to " << savefile;
 		return false;
 	}
 	
@@ -2893,7 +2893,7 @@ long ARX_CHANGELEVEL_Load(const fs::path & savefile) {
 	
 	// Copy SavePath to Current Game
 	if(!fs::copy_file(savefile, CURRENT_GAME_FILE)) {
-		LogWarning << "failed to create copy savegame " << savefile << " to " << CURRENT_GAME_FILE;
+		LogWarning << "Failed to create copy savegame " << savefile << " to " << CURRENT_GAME_FILE;
 		return -1;
 	}
 	

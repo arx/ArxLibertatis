@@ -210,7 +210,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 			char * uncompressed = blastMemAlloc(buf, storedSize, size);
 			free(buf);
 			if(!uncompressed) {
-				LogError << "error decompressing imploded " << name;
+				LogError << "Error decompressing imploded " << name;
 				return NULL;
 			}
 			arx_assert(uncompressedSize == (size_t)-1 || size == uncompressedSize);
@@ -223,14 +223,14 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 			char * uncompressed = (char*)malloc(uncompressedSize);
 			int ret = uncompress((Bytef*)uncompressed, &decompressedSize, (const Bytef*)buf, storedSize);
 			if(ret != Z_OK) {
-				LogError << "error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
+				LogError << "Error decompressing deflated " << name << ": " << zError(ret) << " (" << ret << ')';
 				free(buf);
 				free(uncompressed);
 				size = 0;
 				return NULL;
 			}
 			if(decompressedSize != uncompressedSize) {
-				LogError << "unexpedect uncompressed size " << decompressedSize << " while loading "
+				LogError << "Unexpedect uncompressed size " << decompressedSize << " while loading "
 				         << name << ", expected " << uncompressedSize;
 			}
 			size = decompressedSize;
@@ -239,7 +239,7 @@ char * SaveBlock::File::loadData(std::istream & handle, size_t & size, const std
 		}
 		
 		default: {
-			LogError << "error decompressing " << name << ": unknown format";
+			LogError << "Error decompressing " << name << ": unknown format";
 			free(buf);
 			size = 0;
 			return NULL;
@@ -261,7 +261,7 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	if(handle.seekg(fatOffset + 4).fail()) {
-		LogError << "cannot seek to FAT";
+		LogError << "Cannot seek to FAT";
 		return false;
 	}
 	totalSize = fatOffset;
@@ -271,7 +271,7 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
-		LogWarning << "unexpected savegame version: " << (version >> 16) << '.' << (version & 0xffff) << " for " << savefile;
+		LogWarning << "Unexpected savegame version: " << (version >> 16) << '.' << (version & 0xffff) << " for " << savefile;
 	}
 	
 	u32 nFiles;
@@ -373,14 +373,14 @@ bool SaveBlock::open(bool writable) {
 			handle.open(savefile, mode | fs::fstream::trunc);
 		}
 		if(!handle.is_open()) {
-			LogError << "could not open " << savefile << " for "
+			LogError << "Could not open " << savefile << " for "
 			         << (writable ? "reading/writing" : "reading");
 			return false;
 		}
 	}
 	
 	if(handle.tellg() > 0 && !loadFileTable()) {
-		LogError << "broken save file";
+		LogError << "Broken save file";
 		return false;
 	}
 	
@@ -459,14 +459,14 @@ bool SaveBlock::defragment() {
 	if(tempFile.fail()) {
 		fs::remove(tempFileName);
 		handle.close(), files.clear();
-		LogWarning << "defragmenting failed: " << tempFileName;
+		LogWarning << "Defragmenting failed: " << tempFileName;
 		return false;
 	}
 	
 	tempFile.flush(), tempFile.close(), handle.close();
 	
 	if(!fs::rename(tempFileName, savefile, true)) {
-		LogWarning << "failed to move defragmented savegame " << tempFileName << " to " << savefile;
+		LogWarning << "Failed to move defragmented savegame " << tempFileName << " to " << savefile;
 		return false;
 	}
 	
@@ -579,7 +579,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 	
 	fs::ifstream handle(savefile, fs::fstream::in | fs::fstream::binary);
 	if(!handle.is_open()) {
-		LogWarning << "cannot open save file " << savefile;
+		LogWarning << "Cannot open save file " << savefile;
 		return NULL;
 	}
 	
@@ -588,7 +588,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 		return NULL;
 	}
 	if(handle.seekg(fatOffset + 4).fail()) {
-		LogError << "cannot seek to FAT";
+		LogError << "Cannot seek to FAT";
 		return NULL;
 	}
 	
@@ -597,7 +597,7 @@ char * SaveBlock::load(const fs::path & savefile, const std::string & filename, 
 		return NULL;
 	}
 	if(version != SAV_VERSION_DEFLATE && version != SAV_VERSION_RELEASE && version != SAV_VERSION_NOEXT) {
-		LogWarning << "unexpected savegame version: " << version << " for " << savefile;
+		LogWarning << "Unexpected savegame version: " << version << " for " << savefile;
 	}
 	
 	u32 nFiles;

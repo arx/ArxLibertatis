@@ -498,7 +498,7 @@ void ScriptEvent::registerCommand(script::Command * command) {
 	Res res = commands.insert(std::make_pair(command->getName(), command));
 	
 	if(!res.second) {
-		LogError << "duplicate script command name: " + command->getName();
+		LogError << "Duplicate script command name: " + command->getName();
 		delete command;
 	}
 	
@@ -535,7 +535,7 @@ void ScriptEvent::init() {
 	registerCommand(new script::ObsoleteCommand("setinternalname", 1));
 	registerCommand(new script::ObsoleteCommand("detachnpcfromplayer"));
 	
-	LogInfo << "scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
+	LogInfo << "Scripting system initialized with " << commands.size() << " commands and " << count << " suppressions";
 }
 
 ScriptEvent::Commands ScriptEvent::commands;

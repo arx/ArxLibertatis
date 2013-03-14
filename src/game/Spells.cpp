@@ -2047,7 +2047,7 @@ static void addSpell(const Rune symbols[MAX_SPELL_SYMBOLS], Spell spell, const s
 	typedef std::pair<SpellNames::const_iterator, bool> Res;
 	Res res = spellNames.insert(std::make_pair(name, spell));
 	if(!res.second) {
-		LogWarning << "duplicate spell name: " + name;
+		LogWarning << "Duplicate spell name: " + name;
 	}
 	
 	if(symbols[0] == RUNE_NONE) {

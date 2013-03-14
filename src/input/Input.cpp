@@ -251,7 +251,7 @@ bool Input::init() {
 		
 		
 		if(first && !matched) {
-			LogError << "unknown backend: " << config.input.backend;
+			LogError << "Unknown backend: " << config.input.backend;
 		}
 	}
 	

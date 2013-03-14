@@ -86,7 +86,7 @@ PakDirectory * PakDirectory::getDirectory(const res::path & path) {
 	if(path.empty()) {
 		return this;
 	} else if(path.is_up()) {
-		LogWarning << "bad path: " << path;
+		LogWarning << "Bad path: " << path;
 	}
 	
 	PakDirectory * dir = this;
@@ -124,7 +124,7 @@ PakFile * PakDirectory::getFile(const res::path & path) {
 	if(path.empty()) {
 		return NULL;
 	} else if(path.is_up()) {
-		LogWarning << "bad path: " << path;
+		LogWarning << "Bad path: " << path;
 	}
 	
 	PakDirectory * dir = this;

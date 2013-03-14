@@ -714,7 +714,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			PROGRESS_BAR_COUNT += 20.f;
 			LoadLevelScreen();
 #else
-			LogError << "fast loading scene failed";
+			LogError << "Fast loading scene failed";
 #endif
 		}
 		

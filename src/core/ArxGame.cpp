@@ -312,7 +312,7 @@ bool ArxGame::initWindow(RenderWindow * window) {
 			mode = *i;
 		}
 		if(config.video.resolution != mode.resolution || unsigned(config.video.bpp) != mode.depth) {
-			LogWarning << "fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y 	<< '@' << mode.depth << " instead";
+			LogWarning << "Fullscreen mode " << config.video.resolution.x << 'x' << config.video.resolution.y << '@' << config.video.bpp << " not supported, using " << mode.resolution.x << 'x' << mode.resolution.y 	<< '@' << mode.depth << " instead";
 		}
 		
 	}
@@ -376,7 +376,7 @@ bool ArxGame::InitWindow() {
 		#endif
 		
 		if(first && !matched) {
-			LogError << "unknown windowing framework: " << config.window.framework;
+			LogError << "Unknown windowing framework: " << config.window.framework;
 		}
 	}
 	
@@ -541,13 +541,13 @@ void ArxGame::onResizeWindow(const Window & window) {
 	
 	if(window.isFullScreen()) {
 		if(config.video.resolution == Vec2i::ZERO) {
-			LogInfo << "auto selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
+			LogInfo << "Auto-selected fullscreen resolution " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
 		} else {
-			LogInfo << "changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
+			LogInfo << "Changed fullscreen resolution to " << window.getSize().x << 'x' << window.getSize().y << '@' << window.getDepth();
 			config.video.resolution = window.getSize();
 		}
 	} else {
-		LogInfo << "changed window size to " << window.getSize().x << 'x' << window.getSize().y;
+		LogInfo << "Changed window size to " << window.getSize().x << 'x' << window.getSize().y;
 		config.window.size = window.getSize();
 	}
 }

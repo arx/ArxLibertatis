@@ -151,7 +151,7 @@ static bool migrateFilenames(fs::path path, bool is_dir) {
 		
 		fs::path dst = path.parent() / lowercase;
 		
-		LogInfo << "renaming " << path << " to " << dst.filename() << "";
+		LogInfo << "Renaming " << path << " to " << dst.filename() << "";
 		
 		if(fs::rename(path, dst)) {
 			path = dst;
@@ -171,7 +171,7 @@ static bool migrateFilenames(fs::path path, bool is_dir) {
 
 static bool migrateFilenames(const fs::path & configFile) {
 	
-	LogInfo << "changing filenames to lowercase...";
+	LogInfo << "Changing filenames to lowercase...";
 	
 	static const char * files[] = { "cfg.ini", "cfg_default.ini",
 	 "sfx.pak", "loc.pak", "data2.pak", "data.pak", "speech.pak", "loc_default.pak", "speech_default.pak",
@@ -219,7 +219,7 @@ bool Application::InitConfig() {
 				LogWarning << "Could not move " << oldConfigFile << " to "
 				           << configFile;
 			} else {
-				LogInfo << "moved " << oldConfigFile << " to " << configFile;
+				LogInfo << "Moved " << oldConfigFile << " to " << configFile;
 			}
 		}
 	}
@@ -250,7 +250,7 @@ bool Application::InitConfig() {
 	}
 	
 	if(!fs::create_directories(fs::paths.user / "save")) {
-		LogWarning << "failed to create save directory";
+		LogWarning << "Failed to create save directory";
 	}
 	
 	return true;

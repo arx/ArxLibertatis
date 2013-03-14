@@ -220,7 +220,7 @@ bool SaveGameList::save(const string & name, iterator overwrite, const Image & t
 	}
 	
 	if(thumbnail.IsValid() && !thumbnail.save(savefile.parent() / SAVEGAME_THUMBNAIL)) {
-		LogWarning << "failed to save screenshot to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
+		LogWarning << "Failed to save screenshot to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
 	}
 	
 	update();
