@@ -59,7 +59,6 @@ void MDL_AddMetalDrawLater(TexturedVertex * tv);
 void MDL_FlushAll();
 
 
-void Delayed_EERIEDRAWPRIM(EERIEPOLY * ep);
 void Delayed_FlushAll();
 
 void EERIEDRAWPRIM(Renderer::Primitive primitive, const TexturedVertex * vertices, size_t count = 3, bool nocount = false);
