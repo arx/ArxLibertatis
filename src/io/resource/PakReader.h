@@ -21,7 +21,7 @@
 #define ARX_IO_RESOURCE_PAKREADER_H
 
 #include <vector>
-#include <iostream>
+#include <istream>
 
 #include <boost/noncopyable.hpp>
 
