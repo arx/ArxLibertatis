@@ -7258,12 +7258,12 @@ long Manage3DCursor(long flags)
 	if (io->ioflags & IO_INVERTED)
 	{
 		temp.a=180.f;
-		temp.b = -MAKEANGLE(io->angle.b - ((player.angle.b) - (STARTED_ANGLE + 90)));
+		temp.b = -MAKEANGLE(270.f - io->angle.b - (player.angle.b - STARTED_ANGLE));
 	}
 	else
 	{
 		temp.a = 0;
-		temp.b = MAKEANGLE(io->angle.b - ((player.angle.b) - (STARTED_ANGLE + 90)));
+		temp.b = MAKEANGLE(270.f - io->angle.b - (player.angle.b - STARTED_ANGLE));
 	}
 
 	temp.g = 0;
