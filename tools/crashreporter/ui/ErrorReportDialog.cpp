@@ -191,13 +191,11 @@ void ErrorReportDialog::onShowFileContent(const QItemSelection& newSelection, co
 	{
 		QFile textFile(fileName.string().c_str());
 		textFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
+		
 		QByteArray data;
 		data = textFile.readAll();
-
-		QString textFileContent(data);
-
-		ui->fileViewText->setText(textFileContent);
+		
+		ui->fileViewText->setText(QString::fromUtf8(data));
 		ui->stackedFileViews->setCurrentIndex(0);
 	}
 	else if(ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".png" || ext == ".gif")
