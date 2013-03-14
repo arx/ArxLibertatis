@@ -134,7 +134,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 	CrashHandler::setVariable("OpenAL renderer", renderer);
 	CrashHandler::setVariable("OpenAL version", version);
 	
-	LogInfo << "Vendor: " << alGetString(AL_VENDOR);
+	LogInfo << " └─ Vendor: " << alGetString(AL_VENDOR);
 	CrashHandler::setVariable("OpenAL vendor", alGetString(AL_VENDOR));
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));

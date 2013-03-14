@@ -145,7 +145,7 @@ void SaveGameList::update(bool verbose) {
 	for(size_t i = 0; i < savelist.size(); i++) {
 		
 		// print new savegames
-		if(i >= old_count || found[i] == SaveGameChanged) {
+		if(verbose || i >= old_count || found[i] == SaveGameChanged) {
 			
 			std::ostringstream oss;
 			if(savelist[i].quicksave) {
@@ -155,7 +155,16 @@ void SaveGameList::update(bool verbose) {
 						<< std::setw(max_name_length - savelist[i].name.length() + 1) << ' ';
 			}
 			
-			LogInfo << "Found save " << oss.str() << "  " << savelist[i].time;
+			const char * lead = """Found save ";
+			if(verbose) {
+				if(i + 1 == savelist.size()) {
+					lead = " └─ ";
+				} else {
+					lead = " ├─ ";
+				}
+			}
+			
+			LogInfo << lead << oss.str() << "  " << savelist[i].time;
 		}
 		
 		if(i >= old_count || found[i] != SaveGameRemoved) {

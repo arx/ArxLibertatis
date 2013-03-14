@@ -123,10 +123,10 @@ void OpenGLRenderer::Initialize() {
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
 	CrashHandler::setVariable("OpenGL version", glGetString(GL_VERSION));
 	
-	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
+	LogInfo << " ├─ Vendor: " << glGetString(GL_VENDOR);
 	CrashHandler::setVariable("OpenGL vendor", glGetString(GL_VENDOR));
 	
-	LogInfo << "Device: " << glGetString(GL_RENDERER);
+	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
 	
 	reinit();
