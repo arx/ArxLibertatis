@@ -96,7 +96,7 @@ class InventoryCommand : public Command {
 		Res res = commands.insert(std::make_pair(command->getCommand(), command));
 		
 		if(!res.second) {
-			LogError << "duplicate script inventory command name: " + command->getCommand();
+			LogError << "Duplicate script inventory command name: " + command->getCommand();
 			delete command;
 		}
 		

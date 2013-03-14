@@ -54,7 +54,7 @@ public:
 	typedef std::vector<SaveGame>::const_iterator iterator;
 	
 	//! Update the savegame list. This is automatically called by save() and remove()
-	void update();
+	void update(bool verbose = false);
 	
 	/*! Save the current game state
 	 * @param name The name of the new savegame.

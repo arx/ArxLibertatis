@@ -22,11 +22,6 @@
 
 #include "platform/Platform.h"
 
-// Link statically with GLEW
-#if ARX_COMPILER_MSVC
-	#define GLEW_STATIC
-#endif
-
 #include <GL/glew.h>
 
 #include <io/log/Logger.h>

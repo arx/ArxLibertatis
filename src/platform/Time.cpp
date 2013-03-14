@@ -42,7 +42,7 @@ void init() {
 	}
 #endif
 	
-	LogWarning << "falling back to CLOCK_REALTIME, time will jump if adjusted by other processes";
+	LogWarning << "Falling back to CLOCK_REALTIME, time will jump if adjusted by other processes";
 }
 
 u32 getMs() {
@@ -96,7 +96,7 @@ static clock_serv_t clock_ref;
 
 void init() {
 	if(host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &clock_ref) != KERN_SUCCESS) {
-		LogWarning << "error getting system clock";
+		LogWarning << "Error getting system clock";
 	}
 }
 

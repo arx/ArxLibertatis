@@ -100,19 +100,19 @@ aalError DSoundBackend::init(bool enableEax) {
 	hasEAX = enableEax;
 	if(!enableEax || FAILED(CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void**)&device))) {
 		if(FAILED(h = CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void**)&device))) {
-			LogError << "error creating DirectSound instance: " << h;
+			LogError << "Error creating DirectSound instance: " << h;
 			return AAL_ERROR_SYSTEM;
 		}
 		hasEAX = false;
 	}
 	
 	if(FAILED(h = device->Initialize(NULL))) {
-		LogError << "error initializing DirectSound: " << h;
+		LogError << "Error initializing DirectSound: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	
-	if(FAILED(h = device->SetCooperativeLevel((HWND)mainApp->getWindow()->getHandle(), DSSCL_PRIORITY))) {
-		LogError << "error setting cooperative level: " << h;
+	if(FAILED(h = device->SetCooperativeLevel((HWND)mainApp->GetWindow()->getHandle(), DSSCL_PRIORITY))) {
+		LogError << "Error setting cooperative level: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	
@@ -122,11 +122,11 @@ aalError DSoundBackend::init(bool enableEax) {
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_CTRL3D;
 	if(FAILED(h = device->CreateSoundBuffer(&desc, &primary, NULL))) {
-		LogError << "error creating primary buffer: " << h;
+		LogError << "Error creating primary buffer: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	if(FAILED(h = primary->Play(0, 0, DSBPLAY_LOOPING))) {
-		LogError << "error playing primary buffer: " << h;
+		LogError << "Error playing primary buffer: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	WAVEFORMATEX formatex;
@@ -138,12 +138,12 @@ aalError DSoundBackend::init(bool enableEax) {
 	formatex.nBlockAlign = (WORD)(globalFormat.channels * globalFormat.quality / 8);
 	formatex.nAvgBytesPerSec = formatex.nBlockAlign * globalFormat.frequency;
 	if(FAILED(h = primary->SetFormat(&formatex))) {
-		LogError << "error setting output format: " << h;
+		LogError << "Error setting output format: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	
 	if(FAILED(h = primary->QueryInterface(IID_IDirectSound3DListener, (void **)&listener))) {
-		LogError << "error getting listener object: " << h;
+		LogError << "Error getting listener object: " << h;
 		return AAL_ERROR_SYSTEM;
 	}
 	

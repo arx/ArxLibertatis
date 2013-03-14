@@ -55,12 +55,12 @@ EntityManager::EntityManager() : minfree(0) { }
 
 EntityManager::~EntityManager() {
 	
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 	for(size_t i = 0; i < size(); i++) {
 		arx_assert_msg(entries[i] == NULL,
 		               "object %lu not cleared", (unsigned long)i);
 	}
-#endif // _DEBUG
+#endif
 	
 }
 

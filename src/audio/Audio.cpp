@@ -119,7 +119,7 @@ aalError init(const string & backendName, bool enableEAX) {
 		#endif
 		
 		if(first && !matched) {
-			LogError << "unknown backend: " << backendName;
+			LogError << "Unknown backend: " << backendName;
 		}
 	}
 	
@@ -128,7 +128,7 @@ aalError init(const string & backendName, bool enableEAX) {
 	#endif
 	
 	if(!backend) {
-		LogError << "no working backend available";
+		LogError << "No working backend available";
 		return error;
 	}
 	

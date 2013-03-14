@@ -289,7 +289,7 @@ void GLTextureStage::apply() {
 			GLTextureStage * stage = renderer->GetTextureStage(i);
 			if(stage->tex == tex && stage->isEnabled()) {
 				apply = false;
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 				if(stage->wrapMode != wrapMode || stage->minFilter != minFilter || stage->magFilter != magFilter || stage->mipFilter != mipFilter) {
 					static bool warned = false;
 					if(!warned) {

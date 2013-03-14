@@ -20,6 +20,7 @@
 #ifndef ARX_IO_LOG_LOGBACKEND_H
 #define ARX_IO_LOG_LOGBACKEND_H
 
+#include <stddef.h>
 #include <ostream>
 
 #include "io/log/Logger.h"
@@ -39,6 +40,8 @@ struct Source {
 class Backend {
 	
 public:
+	
+	static const size_t alignment = 24;
 	
 	virtual ~Backend() { }
 	

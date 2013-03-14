@@ -174,7 +174,7 @@ public:
 		
 		string text;
 		MakeGlobalText(text);
-		LogInfo << "global vars:\n" << text;
+		LogInfo << "Global vars:\n" << text;
 		
 		return Success;
 	}
@@ -193,7 +193,7 @@ public:
 		
 		string text;
 		MakeLocalText(context.getScript(), text);
-		LogInfo << "local vars:\n" << text;
+		LogInfo << "Local vars:\n" << text;
 		
 		return Success;
 	}
@@ -214,7 +214,7 @@ public:
 		MakeGlobalText(text);
 		text += "--------------------------\n";
 		MakeLocalText(context.getScript(), text);
-		LogInfo << "vars:\n" << text;
+		LogInfo << "Vars:\n" << text;
 		
 		return Success;
 	}

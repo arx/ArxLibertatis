@@ -59,13 +59,13 @@ OpenALBackend::~OpenALBackend() {
 		
 		ALenum error = alcGetError(device);
 		if(error != AL_NO_ERROR) {
-			LogError << "error destroying OpenAL context: " << error << " = " << getAlcErrorString(error);
+			LogError << "Error destroying OpenAL context: " << error << " = " << getAlcErrorString(error);
 		}
 	}
 	
 	if(device) {
 		if(alcCloseDevice(device) == ALC_FALSE) {
-			LogError << "error closing device";
+			LogError << "Error closing device";
 		}
 	}
 }
@@ -83,14 +83,14 @@ aalError OpenALBackend::init(bool enableEffects) {
 	device = alcOpenDevice(NULL);
 	if(!device) {
 		ALenum error = alcGetError(NULL);
-		LogError << "error opening device: " << error << " = " << getAlcErrorString(error);
+		LogError << "Error opening device: " << error << " = " << getAlcErrorString(error);
 		return AAL_ERROR_SYSTEM;
 	}
 	
 	context = alcCreateContext(device, NULL);
 	if(!context) {
 		ALenum error = alcGetError(device);
-		LogError << "error creating OpenAL context: " << error << " = " << getAlcErrorString(error);
+		LogError << "Error creating OpenAL context: " << error << " = " << getAlcErrorString(error);
 		return AAL_ERROR_SYSTEM;
 	}
 	alcMakeContextCurrent(context);
@@ -98,7 +98,7 @@ aalError OpenALBackend::init(bool enableEffects) {
 #ifdef ARX_HAVE_OPENAL_EFX
 	hasEFX = enableEffects && alcIsExtensionPresent(device, "ALC_EXT_EFX");
 	if(enableEffects && !hasEFX) {
-		LogWarning << "cannot enable effects, missing the EFX extension";
+		LogWarning << "Cannot enable effects, missing the EFX extension";
 	}
 	if(hasEFX) {
 		alGenEffects = (LPALGENEFFECTS)alGetProcAddress("alGenEffects");
@@ -131,9 +131,11 @@ aalError OpenALBackend::init(bool enableEffects) {
 		prefix = "OpenAL ";
 	}
 	LogInfo << "Using " << prefix << renderer << ' ' << version << efx_ver;
-	
 	CrashHandler::setVariable("OpenAL renderer", renderer);
 	CrashHandler::setVariable("OpenAL version", version);
+	
+	LogInfo << " └─ Vendor: " << alGetString(AL_VENDOR);
+	CrashHandler::setVariable("OpenAL vendor", alGetString(AL_VENDOR));
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
 	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));

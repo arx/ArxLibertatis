@@ -41,7 +41,7 @@ inline bool is_path_up(const std::string & str, size_t pos) {
 
 }
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 
 void path::check() const {
 	
@@ -74,7 +74,7 @@ void path::check() const {
 	
 }
 
-#endif // _DEBUG
+#endif // ARX_DEBUG
 
 path path::resolve(const path & a, const path & b) {
 	

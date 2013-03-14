@@ -273,7 +273,7 @@ void Credits::render() {
 				break ; //it's useless to continue because next phrase will not be inside the viewport
 		}
 	} else {
-		LogWarning << "error initializing credits";
+		LogWarning << "Error initializing credits";
 	}
 
 

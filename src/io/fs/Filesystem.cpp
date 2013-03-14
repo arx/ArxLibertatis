@@ -42,4 +42,22 @@ char * read_file(const path & p, size_t & size) {
 	return buf;
 }
 
+std::string read(const path & p) {
+	
+	size_t size;
+	char * data = read_file(p, size);
+	
+	if(data) {
+		try {
+			std::string result(data, size);
+			delete[] data;
+			return result;
+		} catch(...) {
+			delete[] data;
+		}
+	}
+	
+	return std::string();
+}
+
 } // namespace fs

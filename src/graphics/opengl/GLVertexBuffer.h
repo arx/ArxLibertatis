@@ -185,7 +185,7 @@ public:
 				GLboolean ret = glUnmapBuffer(GL_ARRAY_BUFFER);
 				if(ret == GL_FALSE) {
 					// TODO handle GL_FALSE return (buffer invalidated)
-					LogWarning << "vertex buffer invalidated";
+					LogWarning << "Vertex buffer invalidated";
 				}
 				
 			}
@@ -260,7 +260,7 @@ public:
 		
 		if(ret == GL_FALSE) {
 			// TODO handle GL_FALSE return (buffer invalidated)
-			LogWarning << "vertex buffer invalidated";
+			LogWarning << "Vertex buffer invalidated";
 		}
 		
 		CHECK_GL;

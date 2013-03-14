@@ -341,7 +341,7 @@ aalError OpenALSource::fillBuffer(size_t i, size_t size) {
 	
 	const PCMFormat & f = sample->getFormat();
 	if((f.channels != 1 && f.channels != 2) || (f.quality != 8 && f.quality != 16)) {
-		LogError << "unsupported audio format: quality=" << f.quality << " channels=" << f.channels;
+		LogError << "Unsupported audio format: quality=" << f.quality << " channels=" << f.channels;
 		return AAL_ERROR_SYSTEM;
 	}
 	
@@ -691,7 +691,7 @@ aalError OpenALSource::updateBuffers() {
 		size_t i = 0;
 		if(streaming) {
 			for(; buffers[i] != buffer; i++) {
-				arx_assert(i < NBUFFERS);
+				arx_assert(i + 1 < NBUFFERS);
 			}
 		}
 		

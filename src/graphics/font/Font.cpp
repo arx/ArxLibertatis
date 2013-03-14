@@ -21,7 +21,6 @@
 
 #include <sstream>
 #include <iomanip>
-#include <iostream>
 #include <iterator>
 
 #include <ft2build.h>
@@ -37,8 +36,6 @@
 #include "io/log/Logger.h"
 
 #include "util/Unicode.h"
-
-using std::string;
 
 Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face) 
 	: info(fontFile, fontSize)

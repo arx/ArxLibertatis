@@ -3021,11 +3021,11 @@ void LaunchWaitingCine() {
 			
 			LAST_LAUNCHED_CINE = WILL_LAUNCH_CINE;
 		} else {
-			LogWarning << "error loading cinematic " << cinematic;
+			LogWarning << "Error loading cinematic " << cinematic;
 		}
 		
 	} else {
-		LogWarning << "could not find cinematic " << cinematic;
+		LogWarning << "Could not find cinematic " << cinematic;
 	}
 	
 	WILL_LAUNCH_CINE.clear();
