@@ -375,6 +375,7 @@ if(NOT MSVC)
 	check_symbol_exists(pclose "stdio.h" ARX_HAVE_PCLOSE)
 	
 	check_symbol_exists(getexecname "stdlib.h" ARX_HAVE_GETEXECNAME)
+	check_symbol_exists(setenv "stdlib.h" ARX_HAVE_SETENV)
 	
 	find_library(LIBRT_LIBRARY rt)
 	

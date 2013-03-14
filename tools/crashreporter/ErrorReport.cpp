@@ -47,6 +47,10 @@
 #include <signal.h>
 #endif
 
+#ifdef ARX_HAVE_SETENV
+#include <stdlib.h>
+#endif
+
 // Qt
 #include <QApplication>
 #include <QMessageBox>
@@ -392,6 +396,11 @@ bool ErrorReport::getCrashDescription() {
 		char pid_buf[30];
 		memset(&pid_buf, 0, sizeof(pid_buf));
 		sprintf(pid_buf, "%d", m_pCrashInfo->processId);
+		
+		// Turn off localization for the backtrace output
+		#ifdef ARX_HAVE_SETENV
+		setenv("LANG", "C", 1);
+		#endif
 		
 		// Try to execute gdb to get a very detailed stack trace.
 		execlp("gdb", "gdb", "--batch", "-n", "-ex", "thread", "-ex", "set confirm off", "-ex", "set print frame-arguments all", "-ex", "set print static-members off", "-ex", "info threads", "-ex", "thread apply all bt full", m_pCrashInfo->execFullName, pid_buf, NULL);
