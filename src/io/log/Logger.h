@@ -25,7 +25,7 @@
 
 #include "platform/Platform.h"
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 //! Log a Debug message. Arguments are only evaluated if their results will be used.
 #define LogDebug(...)    \
 	if(::Logger::isEnabled(__FILE__, ::Logger::Debug)) \

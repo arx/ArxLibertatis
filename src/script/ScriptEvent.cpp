@@ -245,7 +245,7 @@ public:
 
 #define ScriptEventWarning Logger(__FILE__,__LINE__, isSuppressed(context, word) ? Logger::Debug : Logger::Warning) << ScriptContextPrefix(context) << (((size_t)msg < ARRAY_SIZE(AS_EVENT) - 1 && msg != SM_NULL) ? AS_EVENT[msg].name : "on " + evname) << ": "
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 static const char * toString(ScriptResult ret) {
 	switch(ret) {
 		case ACCEPT: return "accept";

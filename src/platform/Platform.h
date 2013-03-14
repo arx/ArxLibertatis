@@ -187,17 +187,17 @@ typedef double f64; // 64 bits double float
 void assertionFailed(const char * expression, const char * file, unsigned line,
                      const char * message = NULL, ...) ARX_FORMAT_PRINTF(4, 5);
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 	#define arx_assert_impl(Expression, File, Line, ...) { \
 			if(!(Expression)) { \
 				assertionFailed(#Expression, File, Line, ##__VA_ARGS__); \
 				ARX_DEBUG_BREAK(); \
 			} \
 		}
-#else // _DEBUG
+#else // ARX_DEBUG
 	#define arx_assert_impl(Expression, File, Line, ...) \
 		ARX_DISCARD(Expression, File, Line, Message, ##__VA_ARGS__)
-#endif // _DEBUG
+#endif // ARX_DEBUG
 
 #define arx_assert_msg(Expression, Message, ...) \
 	arx_assert_impl(Expression, (__FILE__), __LINE__, Message, ##__VA_ARGS__)

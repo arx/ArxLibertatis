@@ -96,7 +96,7 @@ public:
 		
 		main_conversation.actors_nb = nb_people;
 		
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 		std::ostringstream oss;
 		oss << ' ' << nbpeople << ' ' << enabled;
 #endif
@@ -106,14 +106,14 @@ public:
 			string target = context.getWord();
 			Entity * t = entities.getById(target, context.getEntity());
 			
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 			oss << ' ' << target;
 #endif
 			
 			main_conversation.actors[j] = (t == NULL) ? -1 : t->index();
 		}
 		
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 		DebugScript(oss.rdbuf());
 #endif
 		

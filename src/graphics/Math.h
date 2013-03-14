@@ -332,7 +332,7 @@ inline T1 clamp(T1 value, T2 min, T3 max) {
 	return (value <= min) ? min : ((value >= max) ? max : value);
 }
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 #define checked_range_cast boost::numeric_cast
 #else
 #define checked_range_cast static_cast

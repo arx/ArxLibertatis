@@ -70,7 +70,7 @@ static const u32 SAV_COMP_DEFLATE = 2;
 
 static const u32 SAV_SIZE_UNKNOWN = 0xffffffff;
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 static const char BADSAVCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\/.";
 #endif
 

@@ -691,7 +691,7 @@ aalError OpenALSource::updateBuffers() {
 		size_t i = 0;
 		if(streaming) {
 			for(; buffers[i] != buffer; i++) {
-				arx_assert(i < NBUFFERS);
+				arx_assert(i + 1 < NBUFFERS);
 			}
 		}
 		

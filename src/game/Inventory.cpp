@@ -689,7 +689,7 @@ public:
 		std::sort(items.begin(), items.end(), ItemSizeComaparator());
 		
 		LogDebug("sorting");
-	#ifdef _DEBUG
+	#ifdef ARX_DEBUG
 		BOOST_FOREACH(const Entity * item, items) {
 			LogDebug(" - " << item->long_name() << ": "
 							<< int(item->sizex) << 'x' << int(item->sizey));

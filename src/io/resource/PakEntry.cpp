@@ -74,7 +74,7 @@ PakDirectory * PakDirectory::addDirectory(const res::path & path) {
 	
 }
 
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 static const char BADPATHCHAR[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\\";
 #endif
 

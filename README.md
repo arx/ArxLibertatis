@@ -81,11 +81,13 @@ Getting all the dependencies set up for Windows is more tricky. Pre-build depend
 * `BUILD_CRASHREPORTER` (default=ON): Build the Qt crash reporter gui (default OFF for Mac)
 * `UNITY_BUILD` (default=OFF): Unity build (faster build, better optimizations but no incremental build)
 * `CMAKE_BUILD_TYPE` (default=Release): Set to `Debug` for debug binaries
+* `DEBUG` (default=OFF^1): Enable debug output and runtime checks
 * `DEBUG_EXTRA` (default=OFF): Expensive debug options
 * `USE_OPENAL` (default=ON): Build the OpenAL audio backend
 * `USE_OPENGL` (default=ON): Build the OpenGL renderer backend
 * `USE_SDL` (default=ON): Build the SDL windowing and input backends
 * `USE_NATIVE_FS` (default=ON): Use the native filesystem backend (POSIX / Win32) if available and not boost::filesystem.
+1. Enabled automatically if `CMAKE_BUILD_TYPE` is set to `Debug`.
 
 Windows-only options (always `OFF` for non-windows platforms):
 
