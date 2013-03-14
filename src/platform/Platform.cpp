@@ -24,6 +24,14 @@
 
 #include "io/log/Logger.h"
 
+#if ARX_PLATFORM == ARX_PLATFORM_UNKNOWN
+#warning "Unknown target platform"
+#endif
+
+#if ARX_COMPILER == ARX_COMPILER_UNKNOWN
+#warning "Unknown compiler"
+#endif
+
 void assertionFailed(const char * expr, const char * file, unsigned int line,
                      const char * msg, ...) {
 	

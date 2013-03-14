@@ -24,12 +24,12 @@
 
 #include "platform/PlatformConfig.h"
 
+#define ARX_STR_HELPER(x) # x
+#define ARX_STR(x) ARX_STR_HELPER(x)
+
 /* ---------------------------------------------------------
                           Platforms
 ------------------------------------------------------------*/
-
-#define ARX_STR_HELPER(x) # x
-#define ARX_STR(x) ARX_STR_HELPER(x)
 
 #define ARX_PLATFORM_UNKNOWN 0
 #define ARX_PLATFORM_WIN32   1
@@ -49,16 +49,14 @@
 	#define ARX_PLATFORM ARX_PLATFORM_BSD
 #elif defined(__unix__) || defined(__unix) || defined(unix)
 	#define ARX_PLATFORM ARX_PLATFORM_UNIX
-#endif
-
-#ifndef ARX_PLATFORM
-	#warning "Unknown target platform"
+#else
 	#define ARX_PLATFORM ARX_PLATFORM_UNKNOWN
 #endif
 
 /* ---------------------------------------------------------
                           Compilers
 ------------------------------------------------------------*/
+
 #define ARX_COMPILER_UNKNOWN 0
 #define ARX_COMPILER_VC9     1
 #define ARX_COMPILER_VC10    2
@@ -94,10 +92,7 @@
 	#endif
 	#define ARX_COMPILER_VERSION        _MSC_VER
 	#define ARX_COMPILER_VERNAME        ARX_COMPILER_NAME " " ARX_STR(ARX_COMPILER_VERSION)
-#endif
-
-#ifndef ARX_COMPILER
-	#warning "Unknown compiler"
+#else
 	#define ARX_COMPILER                ARX_COMPILER_UNKNOWN
 	#define ARX_COMPILER_NAME           "Unknown"
 	#define ARX_COMPILER_VERSION        0
