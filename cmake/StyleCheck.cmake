@@ -69,20 +69,28 @@ set(STYLE_FILTER ${STYLE_FILTER},-runtime/threadsafe_fn)
 # Very much known...
 set(STYLE_FILTER ${STYLE_FILTER},-readability/fn_size)
 
+# Add a target that runs cpplint.py
+#
+# Parameters:
+# - TARGET_NAME the name of the target to add
+# - SOURCES_LIST a complete list of source files to check
+# - INCLUDES_LIST a complete list of include files to check
 function(add_style_check_target TARGET_NAME SOURCES_LIST INCLUDES_LIST)
 	
-	if(PYTHONINTERP_FOUND)
-		
-		add_custom_target(${TARGET_NAME}
-			COMMAND "${CMAKE_COMMAND}" -E chdir
-				"${CMAKE_SOURCE_DIR}"
-				"${PYTHON_EXECUTABLE}"
-				"${CMAKE_SOURCE_DIR}/scripts/cpplint.py"
-				"--filter=${STYLE_FILTER}"
-				${SOURCES_LIST} ${INCLUDES_LIST}
-			DEPENDS ${SOURCES_LIST} ${INCLUDES_LIST} VERBATIM
-		)
-		
+	if(NOT PYTHONINTERP_FOUND)
+		return()
 	endif()
+	
+	add_custom_target(${TARGET_NAME}
+		COMMAND "${CMAKE_COMMAND}" -E chdir
+			"${CMAKE_SOURCE_DIR}"
+			"${PYTHON_EXECUTABLE}"
+			"${CMAKE_SOURCE_DIR}/scripts/cpplint.py"
+			"--filter=${STYLE_FILTER}"
+			${SOURCES_LIST} ${INCLUDES_LIST}
+		DEPENDS ${SOURCES_LIST} ${INCLUDES_LIST}
+		COMMENT "Checking code style."
+		VERBATIM
+	)
 	
 endfunction(add_style_check_target)
