@@ -60,6 +60,14 @@ option(USE_STATIC_LIBS       "Statically link libraries" ${default_USE_STATIC_LI
 option(GLEW_USE_STATIC_LIBS  "Statically link GLEW"      ${USE_STATIC_LIBS})
 option(Boost_USE_STATIC_LIBS "Statically link Boost"     ${USE_STATIC_LIBS})
 
+# Make optional dependencies required
+option(STRICT_USE "Abort if there are missing optional dependencies"  OFF)
+if(STRICT_USE)
+	set(OPTIONAL_DEPENDENCY REQUIRED)
+else()
+	set(OPTIONAL_DEPENDENCY)
+endif()
+
 # Install destinations
 if(CMAKE_VERSION VERSION_LESS 2.8.5)
 	set(CMAKE_INSTALL_DATAROOTDIR "share" CACHE
@@ -244,8 +252,8 @@ list(APPEND ARX_LIBRARIES ${ZLIB_LIBRARIES})
 
 # OpenGL
 if(USE_OPENGL)
-	find_package(OpenGL)
-	find_package(GLEW)
+	find_package(OpenGL ${OPTIONAL_DEPENDENCY})
+	find_package(GLEW ${OPTIONAL_DEPENDENCY})
 	if(NOT MSVC AND OPENGL_FOUND AND GLEW_FOUND)
 		check_link_library(OpenGL OPENGL_gl_LIBRARY)
 		check_link_library(GLEW GLEW_LIBRARIES)
@@ -254,7 +262,7 @@ endif()
 
 # OpenAL
 if(USE_OPENAL)
-	find_package(OpenAL 1.1)
+	find_package(OpenAL 1.1 ${OPTIONAL_DEPENDENCY})
 	find_package(OpenALEFX)
 	if(NOT MSVC AND OPENAL_FOUND)
 		check_link_library(OpenAL OPENAL_LIBRARY)
@@ -268,7 +276,7 @@ if(USE_SDL)
 		# due to the need to have NSApplication correctly setup by SDLmain.
 		set(SDL_BUILDING_LIBRARY 1)
 	endif()
-	find_package(SDL 1.2)
+	find_package(SDL 1.2 ${OPTIONAL_DEPENDENCY})
 	if(SDL_FOUND)
 		if(NOT MSVC)
 			check_link_library(SDL SDL_LIBRARY)
@@ -311,10 +319,10 @@ list(APPEND ARX_LIBRARIES ${Boost_LIBRARIES})
 set(ARX_HAVE_CRASHREPORTER 0)
 if(BUILD_CRASHREPORTER)
 	# Needed by the crash reporter
-	find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork)
+	find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork ${OPTIONAL_DEPENDENCY})
 	if(QT_FOUND)
 		if(MSVC)
-			find_package(DbgHelp)
+			find_package(DbgHelp ${OPTIONAL_DEPENDENCY})
 			if(DBGHELP_FOUND)
 				set(ARX_HAVE_CRASHREPORTER 1)
 			endif()
@@ -445,6 +453,8 @@ if(NOT MSVC)
 			 AND ((((ARX_HAVE_DIRFD AND ARX_HAVE_FPATHCONF) OR ARX_HAVE_PATHCONF)
 			       AND ARX_HAVE_PC_NAME_MAX) OR ARX_HAVE_NAME_MAX))
 			set(ARX_HAVE_POSIX_FILESYSTEM 1)
+		elseif(STRICT_USE)
+			message(FATAL_ERROR "Missing dependencies for native filesystem backend.")
 		endif()
 		
 	endif(USE_NATIVE_FS)
