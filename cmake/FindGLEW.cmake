@@ -20,10 +20,17 @@
 # Adapted from:
 #	http://nvidia-texture-tools.googlecode.com/svn-history/r96/trunk/cmake/FindGLEW.cmake
 
+if(UNIX)
+	find_package(PkgConfig QUIET)
+	pkg_check_modules(_PC_GLEW glew)
+endif()
+
 include(UseStaticLibs)
-use_static_libs(GLEW)
+use_static_libs(GLEW _PC_GLEW)
 
 find_path(GLEW_INCLUDE_DIR GL/glew.h
+	HINTS
+		${_PC_GLEW_INCLUDE_DIRS}
 	PATHS
 		/usr/include
 		/usr/local/include
@@ -49,6 +56,7 @@ string(REGEX REPLACE "(.*)/include/?" "\\1" GLEW_BASE_DIR ${GLEW_INCLUDE_DIR})
 find_library(GLEW_LIBRARY
 	NAMES ${_glew_library_names}
 	HINTS
+		${_PC_GLEW_LIBRARY_DIRS}
 		"${GLEW_BASE_DIR}/lib"
 	PATHS
 		/usr/lib64
