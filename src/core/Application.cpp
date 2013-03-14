@@ -224,6 +224,7 @@ bool Application::InitConfig() {
 		}
 	}
 	
+	LogInfo << "Using config file " << configFile;
 	if(!config.init(configFile)) {
 		
 		fs::path file = fs::paths.find("cfg_default.ini");
