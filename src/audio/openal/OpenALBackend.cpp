@@ -131,9 +131,11 @@ aalError OpenALBackend::init(bool enableEffects) {
 		prefix = "OpenAL ";
 	}
 	LogInfo << "Using " << prefix << renderer << ' ' << version << efx_ver;
-	
 	CrashHandler::setVariable("OpenAL renderer", renderer);
 	CrashHandler::setVariable("OpenAL version", version);
+	
+	LogInfo << "Vendor: " << alGetString(AL_VENDOR);
+	CrashHandler::setVariable("OpenAL vendor", alGetString(AL_VENDOR));
 	
 	LogDebug("AL extensions: " << alGetString(AL_EXTENSIONS));
 	LogDebug("ALC extensions: " << alcGetString(device, ALC_EXTENSIONS));
