@@ -3012,8 +3012,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		if ( level == -1 )
 		{
 			Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
-			Player_Magic_Level = std::max( 1.0f, Player_Magic_Level * ( 1.0f / 10 ) );
-			Player_Magic_Level = std::min( 10.0f, Player_Magic_Level );
+			Player_Magic_Level = clamp(Player_Magic_Level * 0.1f, 1.0f, 10.0f);
 		}
 		else 
 		{
@@ -3164,7 +3163,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		spells[i].caster_pos = player.pos;
 	} else {
 		// IO source
-		spells[i].caster_level = level < 1 ? 1 : level > 10 ? 10 : static_cast<float>(level);
+		spells[i].caster_level = (float)clamp(level, 1l, 10l);
 		spells[i].caster_pos = entities[source]->pos;
 	}
 
