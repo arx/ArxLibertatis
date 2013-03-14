@@ -89,13 +89,9 @@ extern TextureContainer *enviro;
 extern long ZMAPMODE;
 extern Color ulBKGColor;
 
-EERIEPOLY * TransPol[MAX_TRANSPOL];
-
 EERIE_PORTAL_DATA * portals = NULL;
 
 static float WATEREFFECT = 0.f;
-
-long TRANSPOLYSPOS=0;
 
 CircularVertexBuffer<SMY_VERTEX3> * pDynamicVertexBuffer;
 
@@ -1965,8 +1961,6 @@ void ARX_SCENE_Render() {
 
 	if(USE_PORTALS && portals)
 		ARX_PORTALS_Frustrum_RenderRooms_TransparencyT();
-	else if(TRANSPOLYSPOS)
-		ARXDRAW_DrawAllTransPolysPos();
 
 	if(HALOCUR>0) {
 		GRenderer->ResetTexture(0);

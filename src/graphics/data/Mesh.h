@@ -133,8 +133,6 @@ struct EERIE_BACKGROUND
 
 struct ANIM_USE;
 
-#define MAX_TRANSPOL 512
-
 extern long EERIEDrawnPolys;
 extern Vec3f BBOXMIN,BBOXMAX;
 extern EERIE_BACKGROUND * ACTIVEBKG;
