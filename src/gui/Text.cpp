@@ -301,7 +301,7 @@ static Font * createFont(const res::path & fontFace,
 
 	Font * newFont = FontCache::getFont(fontFace, fontSize);
 	if(!newFont) {
-		LogError << "error loading font: " << fontFace << " of size " << fontSize;
+		LogError << "Error loading font: " << fontFace << " of size " << fontSize;
 	}
 	
 	return newFont;

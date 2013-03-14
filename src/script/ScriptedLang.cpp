@@ -566,7 +566,7 @@ class IfCommand : public Command {
 		Res res = operators.insert(std::make_pair(op->getOperator(), op));
 		
 		if(!res.second) {
-			LogError << "duplicate script 'if' operator name: " + op->getOperator();
+			LogError << "Duplicate script 'if' operator name: " + op->getOperator();
 			delete op;
 		}
 		

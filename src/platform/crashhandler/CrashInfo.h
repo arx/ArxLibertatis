@@ -78,15 +78,13 @@ struct CrashInfoBase {
 
 struct CrashInfo : public CrashInfoBase {
 	
-	CrashInfo() : crashBrokerLock(0) { }
+	CrashInfo() { }
 	
 	int signal;
 	int code;
 	
 	char execFullName[512];
 	void * backtrace[100];
-	
-	boost::interprocess::interprocess_semaphore	crashBrokerLock;
 	
 };
 

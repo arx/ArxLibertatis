@@ -110,18 +110,7 @@ bool CrashHandlerPOSIX::initialize() {
 	prctl(PR_SET_PTRACER, getpid());
 #endif
 	
-	// pre-fork the crash handler
-	if(!fork()) {
-		crashBroker();
-	}
-	
 	return true;
-}
-
-void CrashHandlerPOSIX::shutdown() {
-	if(m_pCrashInfo) {
-		m_pCrashInfo->crashBrokerLock.post();
-	}
 }
 
 CrashHandlerPOSIX::~CrashHandlerPOSIX() {
@@ -218,28 +207,34 @@ void CrashHandlerPOSIX::unregisterThreadCrashHandlers() {
 	// All POSIX signals are process wide, so no thread specific actions are needed
 }
 
-void CrashHandlerPOSIX::crashBroker() {
+void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	
-	// Give this process a unique name
-#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_NAME)
-		prctl(PR_SET_NAME, reinterpret_cast<unsigned long>("arxcrashhandler"));
-#endif
+	// Remove crash handlers so we don't end in an infinite crash loop
+	removeCrashHandlers(m_pPreviousCrashHandlers);
 	
-	// Automatically terminate the crash handler if the main process exits
-#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
-	prctl(PR_SET_PDEATHSIG, SIGTERM);
-#endif
-	
-	m_pCrashInfo->crashBrokerLock.wait();
-	
-	if(m_pCrashInfo->signal == 0) {
-		exit(0);
+	// Run the callbacks
+	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
+	    it != m_crashCallbacks.end(); ++it) {
+		(*it)();
 	}
 	
-	// The main process crashed, ignore when it exits
-#if defined(ARX_HAVE_PRCTL) && defined(PR_SET_PDEATHSIG) && defined(SIGTERM)
-	prctl(PR_SET_PDEATHSIG, 0);
-#endif
+	m_pCrashInfo->signal = signal;
+	m_pCrashInfo->code = code;
+	
+	// Store the backtrace in the shared crash info
+	#ifdef ARX_HAVE_BACKTRACE
+		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
+	#endif
+	
+	// Using fork() in a signal handler is bad, but we are already crashing anyway
+	// Maybe we should use the fork() syscall directly, like google breakpad does.
+	// TODO Or better yet, switch to using google breakpad!
+	if(fork() > 0) {
+		while(true) {
+			// Busy wait so we don't enter any additional stack frames
+			// and keep the backtrace clean.
+		}
+	}
 	
 	char arguments[256];
 	strcpy(arguments, "-crashinfo=");
@@ -260,8 +255,6 @@ void CrashHandlerPOSIX::crashBroker() {
 	
 	// Something went wrong - the crash reporter failed to start!
 	
-	// TODO(crash-handler) start fallback in-process crash handler and dump everything to file
-	
 	std::cerr << "Arx Libertatis crashed with signal " << m_pCrashInfo->signal
 	          << ", but " << m_CrashHandlerApp << " could not be found.\n";
 	std::cerr << "arx.log might contain more information.\n";
@@ -272,30 +265,5 @@ void CrashHandlerPOSIX::crashBroker() {
 	kill(m_pCrashInfo->processId, SIGKILL);
 	
 	exit(0);
-}
-
-void CrashHandlerPOSIX::handleCrash(int signal, int code) {
 	
-	// Remove crash handlers so we don't end in an infinite crash loop
-	removeCrashHandlers(m_pPreviousCrashHandlers);
-	
-	// Run the callbacks
-	for(std::vector<CrashHandler::CrashCallback>::iterator it = m_crashCallbacks.begin();
-	    it != m_crashCallbacks.end(); ++it) {
-		(*it)();
-	}
-	
-	m_pCrashInfo->signal = signal;
-	m_pCrashInfo->code = code;
-	
-	// Store the backtrace in the shared crash info
-	#ifdef ARX_HAVE_BACKTRACE
-		backtrace(m_pCrashInfo->backtrace, ARRAY_SIZE(m_pCrashInfo->backtrace));
-	#endif
-	
-	m_pCrashInfo->crashBrokerLock.post();
-	
-	while(true) {
-		// Busy wait so we don't enter any additional stack frames and keep the backtrace clean.
-	}
 }

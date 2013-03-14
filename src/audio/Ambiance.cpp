@@ -548,7 +548,7 @@ aalError Ambiance::Track::load(PakFileHandle * file, u32 version) {
 	}
 	Sample * sample = new Sample(res::path::load(sampleName));
 	if(sample->load() || (s_id = _sample.add(sample)) == INVALID_ID) {
-		LogError << "ambiance \"" << ambiance->name
+		LogError << "Ambiance \"" << ambiance->name
 		         << "\": missing sample \"" << sampleName << '"';
 		delete sample;
 		return AAL_ERROR_FILEIO;

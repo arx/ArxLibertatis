@@ -200,10 +200,10 @@ void ARX_Menu_Resources_Create() {
 	
 	if(!credits) {
 		if(!englishCreditsFile.empty() && englishCreditsFile != creditsFile) {
-			LogWarning << "unable to read credits files " << creditsFile
+			LogWarning << "Unable to read credits files " << creditsFile
 			           << " and " << englishCreditsFile;
 		} else {
-			LogWarning << "unable to read credits file " << creditsFile;
+			LogWarning << "Unable to read credits file " << creditsFile;
 		}
 	} else {
 		

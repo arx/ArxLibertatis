@@ -838,7 +838,7 @@ long ARX_SOUND_PlayCinematic(const res::path & name, bool isSpeech) {
 	
 	s32 sample_id = audio::createSample(file);
 	if(sample_id == INVALID_ID) {
-		LogError << "cannot load sound for cinematic: " << file;
+		LogError << "Cannot load sound for cinematic: " << file;
 		return INVALID_ID;
 	}
 	
@@ -1640,7 +1640,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 		size_t fileSize;
 		char * data = resources->readAlloc(file, fileSize);
 		if(!data) {
-			LogWarning << "could not find collision map " << file;
+			LogWarning << "Could not find collision map " << file;
 			return;
 		}
 		
@@ -1649,7 +1649,7 @@ static void ARX_SOUND_CreateCollisionMaps() {
 		
 		IniReader reader;
 		if(!reader.read(iss)) {
-			LogWarning << "errors while parsing collision map " << file;
+			LogWarning << "Errors while parsing collision map " << file;
 		}
 		
 		for(IniReader::iterator si = reader.begin(); si != reader.end(); ++si) {
@@ -1789,7 +1789,7 @@ static void ARX_SOUND_CreatePresenceMap() {
 	size_t fileSize;
 	char * data = resources->readAlloc(file, fileSize);
 	if(!data) {
-		LogWarning << "could not find presence map " << file;
+		LogWarning << "Could not find presence map " << file;
 		return;
 	}
 	
@@ -1798,12 +1798,12 @@ static void ARX_SOUND_CreatePresenceMap() {
 	
 	IniReader reader;
 	if(!reader.read(iss)) {
-		LogWarning << "errors while parsing presence map " << file;
+		LogWarning << "Errors while parsing presence map " << file;
 	}
 	
 	const IniSection * section = reader.getSection(Section::presence);
 	if(!section) {
-		LogWarning << "no [" << Section::presence << "] section in presence map " << file;
+		LogWarning << "No [" << Section::presence << "] section in presence map " << file;
 		return;
 	}
 	

@@ -19,18 +19,28 @@
 
 #include "io/log/LogBackend.h"
 
+#include <iomanip>
+
 #include "platform/Platform.h"
 
-void logger::Backend::format(std::ostream & os, const logger::Source & file, int line, Logger::LogLevel level, const std::string & str) {
+void logger::Backend::format(std::ostream & os, const Source & file,
+                             int line, Logger::LogLevel level, const std::string & str) {
 	
+	size_t length = 3;
 	switch(level) {
-		case Logger::Debug:   os << "[D]"; break;
-		case Logger::Info:    os << "[I]"; break;
-		case Logger::Warning: os << "[W]"; break;
-		case Logger::Error:   os << "[E]"; break;
-		case Logger::Critical:   os << "[CRITICAL]"; break;
+		case Logger::Debug:    os << "[D]"; break;
+		case Logger::Info:     os << "[I]"; break;
+		case Logger::Warning:  os << "[W]"; break;
+		case Logger::Error:    os << "[E]"; break;
+		case Logger::Critical: os << "[CRITICAL]", length = 10; break;
 		case Logger::None: ARX_DEAD_CODE();
 	}
+	os << ' ' << file.name << ':';
 	
-	os << ' ' << file.name << ':' << line << "  " << str << std::endl;
+	length += 1 + file.name.length() + 1;
+	if(length < alignment) {
+		os << std::left << std::setfill(' ') << std::setw(alignment - length);
+	}
+	
+	os << line << "  " << str << std::endl;
 }

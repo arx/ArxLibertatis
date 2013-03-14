@@ -163,9 +163,6 @@ else(MSVC)
 	if(CMAKE_BUILD_TYPE STREQUAL "")
 		set(CMAKE_BUILD_TYPE "Release")
 	endif()
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		add_definitions(-D_DEBUG)
-	endif()
 	
 	if(SET_OPTIMIZATION_FLAGS)
 		

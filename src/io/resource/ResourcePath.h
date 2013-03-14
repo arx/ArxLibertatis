@@ -31,7 +31,7 @@ private:
 	
 	std::string pathstr;
 	
-#ifdef _DEBUG
+#ifdef ARX_DEBUG
 	void check() const;
 #else
 	inline void check() const { }

@@ -53,7 +53,7 @@ static int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
 
 SaveGameList savegames;
 
-void SaveGameList::update() {
+void SaveGameList::update(bool verbose) {
 	
 	LogDebug("SaveGameList::update()");
 	
@@ -66,6 +66,10 @@ void SaveGameList::update() {
 	
 	fs::path savedir = fs::paths.user / SAVEGAME_DIR;
 	
+	if(verbose) {
+		LogInfo << "Using save game dir " << savedir;
+	}
+	
 	for(fs::directory_iterator it(savedir); !it.end(); ++it) {
 		
 		fs::path dirname = it.name();
@@ -73,7 +77,7 @@ void SaveGameList::update() {
 		
 		std::time_t stime = fs::last_write_time(path);
 		if(stime == 0) {
-			LogDebug("ignoring directory without " << SAVEGAME_NAME << ": " << path);
+			LogDebug("Ignoring directory without " << SAVEGAME_NAME << ": " << path);
 			continue;
 		}
 		
@@ -93,7 +97,7 @@ void SaveGameList::update() {
 		long level;
 		unsigned long ignored;
 		if(ARX_CHANGELEVEL_GetInfo(path, name, version, level, ignored) == -1) {
-			LogWarning << "unable to get save file info for " << path;
+			LogWarning << "Unable to get save file info for " << path;
 			continue;
 		}
 		
@@ -141,7 +145,7 @@ void SaveGameList::update() {
 	for(size_t i = 0; i < savelist.size(); i++) {
 		
 		// print new savegames
-		if(i >= old_count || found[i] == SaveGameChanged) {
+		if(verbose || i >= old_count || found[i] == SaveGameChanged) {
 			
 			std::ostringstream oss;
 			if(savelist[i].quicksave) {
@@ -151,7 +155,16 @@ void SaveGameList::update() {
 						<< std::setw(max_name_length - savelist[i].name.length() + 1) << ' ';
 			}
 			
-			LogInfo << "found save " << oss.str() << "  " << savelist[i].time;
+			const char * lead = """Found save ";
+			if(verbose) {
+				if(i + 1 == savelist.size()) {
+					lead = " └─ ";
+				} else {
+					lead = " ├─ ";
+				}
+			}
+			
+			LogInfo << lead << oss.str() << "  " << savelist[i].time;
 		}
 		
 		if(i >= old_count || found[i] != SaveGameRemoved) {
@@ -167,7 +180,7 @@ void SaveGameList::update() {
 		std::sort(savelist.begin(), savelist.end(), saveTimeCompare);
 	}
 	
-	LogDebug("found " << savelist.size() << " savegames");
+	LogDebug("Found " << savelist.size() << " savegames");
 }
 
 void SaveGameList::remove(iterator save) {
@@ -207,7 +220,7 @@ bool SaveGameList::save(const string & name, iterator overwrite, const Image & t
 	}
 	
 	if(thumbnail.IsValid() && !thumbnail.save(savefile.parent() / SAVEGAME_THUMBNAIL)) {
-		LogWarning << "failed to save screenshot to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
+		LogWarning << "Failed to save screenshot to " << (savefile.parent() / SAVEGAME_THUMBNAIL);
 	}
 	
 	update();

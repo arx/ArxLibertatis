@@ -1117,7 +1117,7 @@ static EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie_Impl(const res::path & dirr) {
 				es->nb_scenes++;
 				free(adr);
 			} else {
-				LogError << "could not read scene " << dirr << '/' << i->first;
+				LogError << "Could not read scene " << dirr << '/' << i->first;
 			}
 			
 			loaded = true;

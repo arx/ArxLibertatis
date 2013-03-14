@@ -197,7 +197,7 @@ void ARX_MINIMAP_Load_Offsets()
 	
 	PakFile * file = resources->getFile(INI_MINI_OFFSETS);
 	if(!file) {
-		LogError << "missing " << INI_MINI_OFFSETS;
+		LogError << "Missing " << INI_MINI_OFFSETS;
 		return;
 	}
 	

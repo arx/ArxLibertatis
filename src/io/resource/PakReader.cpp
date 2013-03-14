@@ -243,7 +243,7 @@ void CompressedFile::read(void * buf) const {
 	
 	int r = blast(blastInFile, &in, blastOutMem, &out);
 	if(r) {
-		LogError << "blast error " << r << " outSize=" << size();
+		LogError << "Blast error " << r << " outSize=" << size();
 	}
 	
 	arx_assert(!archive.fail());
@@ -305,7 +305,7 @@ size_t CompressedFileHandle::read(void * buf, size_t size) {
 	}
 	
 	if(size < file.size() || offset != 0) {
-		LogWarning << "partially reading a compressed file - inefficent: size=" << size
+		LogWarning << "Partially reading a compressed file - inefficent: size=" << size
 		           << " offset=" << offset << " total=" << file.size();
 	}
 	

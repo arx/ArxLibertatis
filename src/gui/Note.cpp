@@ -200,7 +200,7 @@ bool Note::allocate() {
 		
 		long pageSize = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, buffer, _textArea);
 		if(pageSize <= 0) {
-			LogWarning << "error splitting note text into pages";
+			LogWarning << "Error splitting note text into pages";
 			pages.push_back(buffer);
 			break;
 		}

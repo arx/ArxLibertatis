@@ -43,6 +43,9 @@ std::string loadString(const char (&data)[N]) {
  */
 std::string escapeString(const std::string & text, const char * escapeChars);
 
+//! Remove surrounding quotes and replace escape code with their values.
+std::string unescapeString(const std::string & text);
+
 } // namespace util
 
 #endif // ARX_UTIL_STRING_H

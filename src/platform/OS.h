@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2012 Arx Libertatis Team (see the AUTHORS file)
+ * Copyright 2013 Arx Libertatis Team (see the AUTHORS file)
  *
  * This file is part of Arx Libertatis.
  *
@@ -17,26 +17,29 @@
  * along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "io/IniWriter.h"
+/*!
+ * Defines and functions to identify the host operating system.
+ */
+#ifndef ARX_PLATFORM_OS_H
+#define ARX_PLATFORM_OS_H
 
-#include <ios>
+#include <string>
 
-void IniWriter::beginSection(const std::string & section) {
-	output << '\n' << '[' << section << ']' << '\n';
-}
+namespace platform {
 
-void IniWriter::writeKey(const std::string & key, const std::string & value) {
-	output << key << '=' << '"' << value << '"' << '\n';
-}
+//! @return the name and version of the runtime host operating system
+std::string getOSName();
 
-void IniWriter::writeKey(const std::string & key, int value) {
-	output << key << '=' << value << '\n';
-}
+//! @return a string identifying the runtime host operating system's architecture
+std::string getOSArchitecture();
 
-void IniWriter::writeKey(const std::string & key, float value) {
-	output << key << '=' << value << '\n';
-}
+/*!
+ * Get the distribution name and version of the runtime host operating system.
+ *
+ * @return the distribution name and version or an empty string if not applicable.
+ */
+std::string getOSDistribution();
 
-void IniWriter::writeKey(const std::string & key, bool value) {
-	output << key << '=' << std::boolalpha << value << '\n';
-}
+} // namespace platform
+
+#endif // ARX_PLATFORM_OS_H

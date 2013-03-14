@@ -249,10 +249,10 @@ void D3D9Renderer::Initialize() {
 	Clear(ColorBuffer | DepthBuffer);
 	
 	LogInfo << "Using Direct3D 9";
-	LogInfo << "Device: " << window->getInfo().adapterIdentifier.Description;
+	LogInfo << " ├─ Device: " << window->getInfo().adapterIdentifier.Description;
 	CrashHandler::setVariable("D3D9 Device Name", window->getInfo().adapterIdentifier.Description);
 
-	LogInfo << "Driver: " << window->getInfo().adapterIdentifier.Driver;
+	LogInfo << " ├─ Driver: " << window->getInfo().adapterIdentifier.Driver;
 	CrashHandler::setVariable("D3D9 Device Driver", window->getInfo().adapterIdentifier.Driver);
 
 	std::stringstream ss;
@@ -261,7 +261,7 @@ void D3D9Renderer::Initialize() {
 	   << "." << HIWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart) 
 	   << " build " << LOWORD(window->getInfo().adapterIdentifier.DriverVersion.LowPart);
 
-	LogInfo << "Version: " << ss.str();
+	LogInfo << " └─ Version: " << ss.str();
 	CrashHandler::setVariable("D3D9 Device Driver Version", ss.str());
 }
 

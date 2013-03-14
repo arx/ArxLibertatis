@@ -175,7 +175,7 @@ bool IniReader::read(istream & is) {
 		}
 		
 		if(!section) {
-			LogWarning << "ignoring non-empty line " << line << " outside a section: " << str;
+			LogWarning << "Ignoring non-empty line " << line << " outside a section: " << str;
 			ok = false;
 			continue;
 		}
@@ -183,11 +183,11 @@ bool IniReader::read(istream & is) {
 		size_t nameEnd = str.find_first_not_of(ALPHANUM, start);
 		if(nameEnd == string::npos) {
 			ok = false;
-			LogWarning << "missing '=' separator @ line " << line << ": " << str;
+			LogWarning << "Missing '=' separator @ line " << line << ": " << str;
 			continue;
 		} else if(nameEnd == start) {
 			ok = false;
-			LogWarning << "empty key name @ line " << line << ": " << str;
+			LogWarning << "Empty key name @ line " << line << ": " << str;
 			continue;
 		}
 		
@@ -201,7 +201,7 @@ bool IniReader::read(istream & is) {
 				quoted = true;
 			} else {
 				ok = false;
-				LogWarning << "missing '=' separator @ line " << line << ": " << str;
+				LogWarning << "Missing '=' separator @ line " << line << ": " << str;
 				continue;
 			}
 		}

@@ -130,19 +130,19 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size);
 
 bool loadCinematic(Cinematic * c, const res::path & file) {
 	
-	LogInfo << "loading cinematic " << file;
+	LogInfo << "Loading cinematic " << file;
 	
 	size_t size;
 	char * data = resources->readAlloc(file, size);
 	if(!data) {
-		LogError << "cinematic " << file << " not found";
+		LogError << "Cinematic " << file << " not found";
 		return false;
 	}
 	
 	bool ret = parseCinematic(c, data, size);
 	std::free(data);
 	if(!ret) {
-		LogError << "loading cinematic " << file;
+		LogError << "Could not load cinematic " << file;
 		c->New();
 	}
 	
@@ -153,28 +153,28 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	const char * cinematicId = safeGetString(data, size);
 	if(!cinematicId) {
-		LogError << "error parsing file magic number";
+		LogError << "Error parsing file magic number";
 		return false;
 	}
 	
 	if(std::strcmp(cinematicId, "KFA")) {
-		LogError << "wrong magic number";
+		LogError << "Wrong magic number";
 		return false;
 	}
 	
 	s32 version;
 	if(!safeGet(version, data, size)) {
-		LogError << "error reading file version";
+		LogError << "Error reading file version";
 		return false;
 	}
 	LogDebug("version " << version);
 	
 	if(version < CINEMATIC_VERSION_1_75) {
-		LogError << "too old version " << version << " expected at least " << CINEMATIC_VERSION_1_75;
+		LogError << "Too old version " << version << " expected at least " << CINEMATIC_VERSION_1_75;
 	}
 	
 	if(version > CINEMATIC_VERSION_1_76) {
-		LogError << "wrong version " << version << " expected max " << CINEMATIC_VERSION_1_76;
+		LogError << "Wrong version " << version << " expected max " << CINEMATIC_VERSION_1_76;
 		return false;
 	}
 	
@@ -184,7 +184,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	// Load bitmaps.
 	s32 nbitmaps;
 	if(!safeGet(nbitmaps, data, size)) {
-		LogError << "error reading bitmap count";
+		LogError << "Error reading bitmap count";
 		return false;
 	}
 	LogDebug(nbitmaps << " images:");
@@ -195,13 +195,13 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		
 		s32 scale = 0;
 		if(!safeGet(scale, data, size)) {
-			LogError << "error reading bitmap scale";
+			LogError << "Error reading bitmap scale";
 			return false;
 		}
 		
 		const char * str = safeGetString(data, size);
 		if(!str) {
-			LogError << "error reading bitmap path";
+			LogError << "Error reading bitmap path";
 			return false;
 		}
 		LogDebug(" - " << i << ": \"" << str << '"');
@@ -218,7 +218,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	// Load sounds.
 	s32 nsounds;
 	if(!safeGet(nsounds, data, size)) {
-		LogError << "error reading sound count";
+		LogError << "Error reading sound count";
 		return false;
 	}
 	
@@ -228,14 +228,14 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		if(version >= CINEMATIC_VERSION_1_76) {
 			s16 ignored;
 			if(!safeGet(ignored, data, size)) {
-				LogError << "error reading sound id";
+				LogError << "Error reading sound id";
 				return false;
 			}
 		}
 		
 		const char * str = safeGetString(data, size);
 		if(!str) {
-			LogError << "error reading sound path";
+			LogError << "Error reading sound path";
 			return false;
 		}
 		LogDebug(" - " << i << ": \"" << str << '"');
@@ -249,7 +249,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	
 	SavedCinematicTrack t;
 	if(!safeGet(t, data, size)) {
-		LogError << "error reading track";
+		LogError << "Error reading track";
 		return false;
 	}
 	AllocTrack(t.startframe, t.endframe, t.fps);
@@ -264,7 +264,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 			C_KEY_1_75 k175;
 			if(!safeGet(k175, data, size)) {
-				LogError << "error reading key v1.75";
+				LogError << "Error reading key v1.75";
 				return false;
 			}
 			
@@ -290,7 +290,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			
 			C_KEY_1_76 k176;
 			if(!safeGet(k176, data, size)) {
-				LogError << "error reading key v1.76";
+				LogError << "Error reading key v1.76";
 				return false;
 			}
 			

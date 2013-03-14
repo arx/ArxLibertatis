@@ -225,7 +225,7 @@ bool TextureContainer::LoadFile(const res::path & strPathname) {
 	}
 	
 	if(!m_pTexture->Init(tempPath, flags)) {
-		LogError << "error creating texture " << tempPath;
+		LogError << "Error creating texture " << tempPath;
 		return false;
 	}
 	

@@ -19,21 +19,16 @@
 
 #include "io/IniSection.h"
 
-#include <ctype.h>
 #include <sstream>
-#include <algorithm>
-#include <iostream>
+#include <ios>
+
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "io/log/Logger.h"
 
-using std::string;
-using std::transform;
-using std::istringstream;
-using std::boolalpha;
-
 int IniKey::getValue(int defaultValue) const {
 	
-	istringstream iss(value);
+	std::istringstream iss(value);
 	
 	int val = defaultValue;
 	if((iss >> val).fail()) {
@@ -45,7 +40,7 @@ int IniKey::getValue(int defaultValue) const {
 
 float IniKey::getValue(float defaultValue) const {
 	
-	istringstream iss(value);
+	std::istringstream iss(value);
 	
 	float val;
 	if((iss >> val).fail()) {
@@ -57,11 +52,11 @@ float IniKey::getValue(float defaultValue) const {
 
 bool IniKey::getValue(bool defaultValue) const {
 	
-	istringstream iss(value);
+	std::istringstream iss(value);
 	
 	// Support either boolean specified as strings (true, false) or 0, 1
 	bool val;
-	if((iss >> boolalpha >> val).fail()) {
+	if((iss >> std::boolalpha >> val).fail()) {
 		iss.clear();
 		int intVal;
 		if((iss >> intVal).fail()) {
@@ -86,14 +81,14 @@ const IniKey * IniSection::getKey(const std::string & name) const {
 	return NULL;
 }
 
-void IniSection::addKey(const string & key, const string & value) {
+void IniSection::addKey(const std::string & key, const std::string & value) {
 	
 	keys.resize(keys.size() + 1);
 	
 	keys.back().name = key;
 	keys.back().value = value;
 	
-	transform(keys.back().name.begin(), keys.back().name.end(), keys.back().name.begin(), ::tolower);
+	boost::to_lower(keys.back().name);
 	
 	LogDebug("found key " << key << "=\"" << value << "\"");
 };

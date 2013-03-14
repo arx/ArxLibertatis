@@ -69,7 +69,7 @@ static bool checkShader(GLuint object, const char * op, GLuint check) {
 		glGetObjectParameterivARB(object, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength);
 		char * log = new char[logLength];
 		glGetInfoLogARB(object, logLength, NULL, log);
-		LogWarning << "failed to " << op << " vertex shader: " << log;
+		LogWarning << "Failed to " << op << " vertex shader: " << log;
 		delete[] log;
 		return false;
 	}
@@ -81,13 +81,13 @@ static GLuint loadVertexShader(const char * source) {
 	
 	GLuint shader = glCreateProgramObjectARB();
 	if(!shader) {
-		LogWarning << "failed to create program object";
+		LogWarning << "Failed to create program object";
 		return 0;
 	}
 	
 	GLuint obj = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
 	if(!obj) {
-		LogWarning << "failed to create shader object";
+		LogWarning << "Failed to create shader object";
 		glDeleteObjectARB(shader);
 		return 0;
 	}
@@ -123,10 +123,10 @@ void OpenGLRenderer::Initialize() {
 	LogInfo << "Using OpenGL " << glGetString(GL_VERSION);
 	CrashHandler::setVariable("OpenGL version", glGetString(GL_VERSION));
 	
-	LogInfo << "Vendor: " << glGetString(GL_VENDOR);
+	LogInfo << " ├─ Vendor: " << glGetString(GL_VENDOR);
 	CrashHandler::setVariable("OpenGL vendor", glGetString(GL_VENDOR));
 	
-	LogInfo << "Device: " << glGetString(GL_RENDERER);
+	LogInfo << " └─ Device: " << glGetString(GL_RENDERER);
 	CrashHandler::setVariable("OpenGL device", glGetString(GL_RENDERER));
 	
 	reinit();
@@ -386,7 +386,7 @@ void OpenGLRenderer::SetRenderState(RenderState renderState, bool enable) {
 		}
 		
 		default:
-			LogWarning << "unsupported render state: " << renderState;
+			LogWarning << "Unsupported render state: " << renderState;
 	}
 	
 	CHECK_GL;

@@ -3102,7 +3102,7 @@ static bool FastSceneSave(const fs::path & partial_path) {
 	char * compressed = implodeAlloc(dat + compressedstart, pos - compressedstart, compressedSize);
 	delete[] dat;
 	if(!compressed) {
-		LogError << "error compressing scene";
+		LogError << "Error compressing scene";
 		return false;
 	}
 	
@@ -3278,7 +3278,7 @@ void ComputePortalVertexBuffer() {
 		
 		
 		if(!vertexCount) {
-			LogWarning << "no visible vertices in room " << i << ": "
+			LogWarning << "No visible vertices in room " << i << ": "
 			           << ignored << " ignored, " << hidden << " hidden, "
 			           << notex << " untextured";
 			continue;

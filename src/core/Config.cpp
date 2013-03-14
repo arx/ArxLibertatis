@@ -270,7 +270,7 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	if(k0) {
 		InputKeyId id = Input::getKeyId(k0->getValue());
 		if(id == -1 && !k0->getValue().empty() && k0->getValue() != Input::KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[0]) << "\"";
+			LogWarning << "Error parsing key name for " <<  key << "_k0: \"" << k0->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[0]) << "\"";
 		} else {
 			action_key.key[0] = id;
 		}
@@ -280,7 +280,7 @@ ActionKey ConfigReader::getActionKey(const string & section, ControlAction index
 	if(k1) {
 		InputKeyId id = Input::getKeyId(k1->getValue());
 		if(id == -1 && !k1->getValue().empty() && k1->getValue() != Input::KEY_NONE) {
-			LogWarning << "error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[1]) << "\"";
+			LogWarning << "Error parsing key name for " <<  key << "_k1: \"" << k1->getValue() << "\", resetting to \"" << Input::getKeyName(action_key.key[1]) << "\"";
 		} else {
 			action_key.key[1] = id;
 		}
@@ -433,7 +433,7 @@ static Vec2i parseResolution(const string & resolution) {
 	iss >> x;
 	iss >> res.y;
 	if(iss.fail() || x != 'x' || res.x <= 0 || res.y <= 0) {
-		LogWarning << "bad resolution string: " << resolution;
+		LogWarning << "Bad resolution string: " << resolution;
 		return Vec2i(ARX_DEFAULT_WIDTH, ARX_DEFAULT_HEIGHT);
 	} else {
 		return res;
@@ -449,7 +449,7 @@ bool Config::init(const fs::path & file) {
 	ConfigReader reader;
 	
 	if(!reader.read(ifs)) {
-		LogWarning << "errors while parsing config file";
+		LogWarning << "Errors while parsing config file";
 	}
 	
 	// Get locale language
