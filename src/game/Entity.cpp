@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "scene/LoadLevel.h"
 
+extern Entity * pIOChangeWeapon;
+
 Entity::Entity(const res::path & classPath)
 	: m_index(size_t(-1)),
 	  m_classPath(classPath) {
@@ -290,6 +292,10 @@ Entity::~Entity() {
 	
 	if(m_index != size_t(-1)) {
 		entities.remove(m_index);
+	}
+	
+	if(pIOChangeWeapon == this) {
+		pIOChangeWeapon = NULL; // TODO we really need a proper weak_ptr
 	}
 }
 
