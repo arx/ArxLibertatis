@@ -153,11 +153,10 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	
 	std::vector<path> result;
 	
-	// Use the user diretcory as the highes-priority data directory
+	// Use the user diretcory as the highest-priority data directory
 	if(!user.empty()) {
 		result.push_back(user);
 	}
-	
 	
 	// Use paths specifed on the command-line
 	BOOST_FOREACH(const path & dir, addData_) {
@@ -172,6 +171,16 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 		return result;
 	}
 	
+	// Check paths specified in environment variables
+	path exepath = getExecutablePath();
+	if(!exepath.empty()) {
+		std::string var = "${" + exepath.basename() + "_PATH}";
+		std::vector<path> paths = fs::getSearchPaths(var.c_str());
+		BOOST_FOREACH(const path & p, paths) {
+			addSearchPath(result, p, filter);
+		}
+	}
+	
 	// Check system settings (windows registry)
 	std::string temp;
 	if(getSystemConfiguration("DataDir", temp)) {
@@ -184,7 +193,6 @@ std::vector<path> SystemPaths::getSearchPaths(bool filter) const {
 	}
 	
 	// Search the executable directory
-	path exepath = getExecutablePath();
 	if(!exepath.empty()) {
 		path dir = canonical(exepath.parent());
 		bool ignored = false;
@@ -336,6 +344,8 @@ void SystemPaths::list(std::ostream & os, const std::string & forceUser,
 	if(!forceData.empty()) {
 		os << forceData;
 	}
+	path exepath = getExecutablePath();
+	os << " - Paths specifed in ${" << exepath.basename() << "_PATH}\n";
 	os << " - The directory containing the game executable\n";
 	listDirectoriesFor(os, "DataDir", data_dir_prefixes, data_dir);
 	os << "selected:";
