@@ -1930,9 +1930,6 @@ void ARX_SCENE_Render() {
 	if(!Project.improve) {
 		ARXDRAW_DrawInterShadows();
 	}
-
-	if(!USE_PORTALS)
-		Delayed_FlushAll();
 		
 	ARX_THROWN_OBJECT_Manage(checked_range_cast<unsigned long>(framedelay));
 		
@@ -1948,9 +1945,6 @@ void ARX_SCENE_Render() {
 	if(DRAGINTER) {
 		SPECIAL_DRAGINTER_RENDER=1;
 		ARX_INTERFACE_RenderCursor();
-
-		if(!USE_PORTALS)
-			Delayed_FlushAll();
 
 		SPECIAL_DRAGINTER_RENDER=0;
 	}
