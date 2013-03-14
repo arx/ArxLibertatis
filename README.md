@@ -13,7 +13,7 @@ GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Contact
 
-Website: [http://arx-libertatis.org](http://arx-libertatis.org)
+Website: [http://arx-libertatis.org/](http://arx-libertatis.org/)
 
 Bug Tracker: [https://bugs.arx-libertatis.org/](https://bugs.arx-libertatis.org/)
 
@@ -132,13 +132,11 @@ By default, user, config and data files will be loaded from and saved to standar
 
 Arx will also try to load data files from the directory containing the game executable.
 
-To use the current working directory for load user, config and data files (e.g. for a portable install) run the game as
+To use the current working directory for user, config and data files (e.g. for a portable install) run the game as
 
     $ arx --no-data-dir --user-dir=. --config-dir=.
 
 See the `arx --help` and `man arx` output for more details.
-
-The default directories can be adjusted with additional build options described in OPTIONS.md.
 
 ## Run
 
