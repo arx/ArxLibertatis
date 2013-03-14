@@ -884,7 +884,7 @@ Thank you!</string>
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>&lt;a href=&quot;http://arx-libertatis.org&quot;&gt;http://arx-libertatis.org&lt;/a&gt;</string>
+        <string>&lt;a href=&quot;http://arx-libertatis.org/&quot;&gt;http://arx-libertatis.org/&lt;/a&gt;</string>
        </property>
        <property name="margin">
         <number>5</number>
