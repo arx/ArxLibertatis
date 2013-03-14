@@ -151,7 +151,6 @@ extern long USEINTERNORM;
 extern long cur_mr;
 extern long cur_rf;
 extern long DeadTime;
-extern long TRANSPOLYSPOS;
 extern int iTimeToDrawD7;
 extern long LaunchDemo;
 
@@ -1423,9 +1422,6 @@ void ArxGame::renderLevel() {
 		Vec3f up(0.f, 1.f, 0.f);
 		ARX_SOUND_SetListener(&ACTIVECAM->orgTrans.pos, &front, &up);
 	}
-
-	// Reset Transparent Polys Idx
-	TRANSPOLYSPOS = 0;
 
 	// Check For Hiding/unHiding Player Gore
 	if(EXTERNALVIEW || player.life <= 0) {

@@ -57,6 +57,5 @@ void ARXDRAW_DrawInterShadows();
 void ARXDRAW_DrawPolyBoom();
 void ARXDRAW_DrawAllLights(long x0, long z0, long x1, long z1);
 void ARXDRAW_DrawEyeBall();
-void ARXDRAW_DrawAllTransPolysPos();
 
 #endif // ARX_GRAPHICS_EFFECTS_DRAWEFFECTS_H
