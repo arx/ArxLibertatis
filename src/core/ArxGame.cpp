@@ -420,7 +420,7 @@ bool ArxGame::InitGameData() {
 
 	ARX_SOUND_LoadData();
 	
-	savegames.update();
+	savegames.update(true);
 	
 	return init;
 }
