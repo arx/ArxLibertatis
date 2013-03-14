@@ -433,23 +433,6 @@ void Delayed_FlushAll() {
     }	
 }
 
-void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
-{
-	TextureContainer * tc=ep->tex; 
-
-	if (!tc) return;
-
-	if (tc->delayed_nb>=tc->delayed_max)
-	{
-		tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
-		tc->delayed_max=tc->delayed_nb+1;
-	}
-
-	DELAYED_PRIM * del=(DELAYED_PRIM *)tc->delayed;
-	del[tc->delayed_nb].data=ep;
-	tc->delayed_nb++;
-}
-
 void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, Color col) {
 	
 	TexturedVertex v[2];
