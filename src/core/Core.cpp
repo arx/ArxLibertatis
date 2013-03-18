@@ -501,8 +501,6 @@ void InitializeDanae() {
 	subj.clip = Rect(0, 0, 640, 480);
 	subj.center = subj.clip.center();
 	subj.focal = BASE_FOCAL;
-	subj.Zdiv = 3000.f;
-	subj.clip3D = 60;
 	subj.bkgcolor = Color::none;
 	
 	SetActiveCamera(&subj);
