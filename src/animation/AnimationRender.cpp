@@ -1684,7 +1684,10 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	if(!obj)
 		return;
 
-	if(!(Cedric_TransformVerts(io, eobj, obj, pos) && render))
+	if(!Cedric_TransformVerts(io, eobj, obj, pos))
+		return;
+
+	if(!render)
 		return;
 
 	if(!Cedric_ApplyLighting(eobj, obj, io, pos))
