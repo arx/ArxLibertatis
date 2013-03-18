@@ -1106,7 +1106,6 @@ struct SavedCamera {
 		a.smoothing = smoothing;
 		a.Zdiv = Zdiv;
 		
-		a.clip3D = clip3D;
 		a.bkgcolor = Color::fromBGRA(bkgcolor);
 		a.cdepth = cdepth;
 		
@@ -1151,7 +1150,7 @@ struct SavedCamera {
 		Zsnap = 0;
 		Zdiv = b.Zdiv;
 		
-		clip3D = b.clip3D;
+		clip3D = 0;
 		type = CAM_SUBJVIEW;
 		bkgcolor = b.bkgcolor.toBGRA();
 		nbdrawn = 0;
