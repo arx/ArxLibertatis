@@ -1621,6 +1621,8 @@ static bool Cedric_IO_Visible(Entity * io) {
 	return true;
 }
 
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io);
+
 /* Apply animation and draw object */
 void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
                               ANIM_USE * animuse,
@@ -1635,10 +1637,6 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	
 	// Set scale and invisibility factors
 	float scale = Cedric_GetScale(io);
-	float invisibility = Cedric_GetInvisibility(io);
-	
-	if(!io && INVISIBILITY_OVERRIDE != 0.f)
-		invisibility = INVISIBILITY_OVERRIDE;
 
 	// Flag linked objects
 	//Cedric_FlagLinkedObjects(eobj); ???
@@ -1687,7 +1685,20 @@ void Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
 	if(!Cedric_TransformVerts(io, eobj, obj, pos))
 		return;
 
-	if(!render)
+	if(render)
+		Cedric_AnimateDrawEntityRender(eobj, pos, ftr, io);
+}
+
+void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, Entity *io) {
+
+	float invisibility = Cedric_GetInvisibility(io);
+
+	if(!io && INVISIBILITY_OVERRIDE != 0.f)
+		invisibility = INVISIBILITY_OVERRIDE;
+
+	EERIE_C_DATA *obj = eobj->c_data;
+
+	if(!obj)
 		return;
 
 	if(!Cedric_ApplyLighting(eobj, obj, io, pos))
