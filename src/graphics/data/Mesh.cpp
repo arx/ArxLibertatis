@@ -1735,8 +1735,6 @@ void PrepareCamera(EERIE_CAMERA * cam)
 void SetCameraDepth(EERIE_CAMERA &cam, float depth) {
 	cam.cdepth = depth;
 	cam.Zdiv = depth * 1.2f;
-	long l = depth * 0.42f;
-	cam.clip3D = (l / (long)BKG_SIZX) + 1;
 }
 
 void RecalcLight(EERIE_LIGHT * el) {

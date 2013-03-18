@@ -1864,7 +1864,9 @@ void ARX_SCENE_Render() {
 	
 	WATEREFFECT+=0.0005f*framedelay;
 	
-	long lcval = ACTIVECAM->clip3D + 4;
+	long l = ACTIVECAM->cdepth * 0.42f;
+	long clip3D = (l / (long)BKG_SIZX) + 1;
+	long lcval = clip3D + 4;
 
 	{
 	PrepareActiveCamera();
