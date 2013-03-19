@@ -5594,6 +5594,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetActiveCamera(&bookcam);
 		PrepareCamera(&bookcam);
 
+		ePlayerAngle.a=0.f;
+		ePlayerAngle.g=0.f;
+
 		if(BOOKZOOM) {
 			Rect vp;
 			vp.left = static_cast<int>(rec.left + 52.f * Xratio);
@@ -5601,30 +5604,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 			vp.right = static_cast<int>(rec.right - 21.f * Xratio);
 			vp.bottom = static_cast<int>(rec.bottom - 17.f * Yratio);
 			GRenderer->SetViewport(vp);
-		} else {
-			GRenderer->SetViewport(rec);
-		}
 
-		ePlayerAngle.a=0.f;
-		ePlayerAngle.g=0.f;
-
-		if (BOOKZOOM)
-		{
 			pos.x=8;
 			pos.y=162.f;
 			pos.z=75.f;
 			eLight1.pos.z=-90.f;
-		}
-		else
-		{
+		} else {
+			GRenderer->SetViewport(rec);
+
 			ePlayerAngle.b=-20.f;
 			pos.x=20.f;
 			pos.y=96.f;
 			pos.z=260.f;
-		}
 
-		if (!BOOKZOOM)
 			ARX_EQUIPMENT_AttachPlayerWeaponToHand();
+		}
 
 		long ti=Project.improve;
 		Project.improve=0;
