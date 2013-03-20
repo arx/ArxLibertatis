@@ -109,13 +109,7 @@ bool CanPurge(Vec3f * pos)
 	long px = pos->x * ACTIVEBKG->Xmul;
 	long pz = pos->z * ACTIVEBKG->Zmul;
 
-	if(px > ACTIVEBKG->Xsize - 3)
-		return true;
-	if(px < 2)
-		return true;
-	if(pz > ACTIVEBKG->Zsize - 3)
-		return true;
-	if(pz < 2)
+	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
 		return true;
 
 	EERIE_BKG_INFO * eg;
