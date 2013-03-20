@@ -94,8 +94,7 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL) {
 		sprintf(LevelMap, "graph/levels/level%s/map", name);
 		minimap[SHOWLEVEL].tc = TextureContainer::Load(LevelMap);
 
-		if (minimap[SHOWLEVEL].tc) // 4 pix/meter
-		{
+		if (minimap[SHOWLEVEL].tc) { // 4 pix/meter
 			//TODO-RENDERING: SpecialBorderSurface...
 			//SpecialBorderSurface(minimap[SHOWLEVEL].tc, minimap[SHOWLEVEL].tc->m_dwWidth, minimap[SHOWLEVEL].tc->m_dwHeight);
 
@@ -106,21 +105,15 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL) {
 			float maxx = std::numeric_limits<float>::min();
 			float miny = std::numeric_limits<float>::max();
 			float maxy = std::numeric_limits<float>::min();
-			EERIEPOLY * ep;
-			EERIE_BKG_INFO * eg;
 
-			for (long j = 0; j < ACTIVEBKG->Zsize; j++)
-			{
-				for (long i = 0; i < ACTIVEBKG->Xsize; i++)
-				{
-					eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
+				for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+					EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
 
-					for (long k = 0; k < eg->nbpoly; k++)
-					{
-						ep = &eg->polydata[k];
+					for(long k = 0; k < eg->nbpoly; k++) {
+						EERIEPOLY *ep = &eg->polydata[k];
 
-						if (ep)
-						{
+						if(ep) {
 							minx = min(minx, ep->min.x);
 							maxx = max(maxx, ep->max.x);
 							miny = min(miny, ep->min.z);
@@ -133,8 +126,7 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL) {
 				minimap[SHOWLEVEL].xratio = minx;
 				minimap[SHOWLEVEL].yratio = miny;
 
-				for (long iii = 0; iii < 32; iii++)
-				{
+				for(long iii = 0; iii < 32; iii++) {
 					minimap[iii].offsetx = 0;
 					minimap[iii].offsety = 0;
 				}
