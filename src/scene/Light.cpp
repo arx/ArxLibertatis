@@ -289,13 +289,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 	long px = x * ACTIVEBKG->Xmul;
 	long pz = z * ACTIVEBKG->Zmul;
 
-	if(px > ACTIVEBKG->Xsize - 3)
-		return 0;
-	if(px < 2)
-		return 0;
-	if(pz > ACTIVEBKG->Zsize - 3)
-		return 0;
-	if(pz < 2)
+	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
 		return 0;
 
 	float nb_shadowvertexinpoly = 0.0f;
