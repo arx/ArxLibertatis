@@ -362,13 +362,8 @@ static FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
 	long px = x * ACTIVEBKG->Xmul;
 	long pz = z * ACTIVEBKG->Zmul;
 
-	if(px < 0 || px >= ACTIVEBKG->Xsize) {
+	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
-	}
-	
-	if(pz < 0 || pz >= ACTIVEBKG->Zsize) {
-		return NULL;
-	}
 	
 	return &ACTIVEBKG->fastdata[px][pz];
 }
