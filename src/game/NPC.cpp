@@ -3755,7 +3755,6 @@ void CheckNPC(Entity * io)
 		io->animlayer[3].next_anim = NULL;
 	}
 }
-extern long GLOBAL_Player_Room;
 
 // Checks an NPC Visibility Field (Player Detect)
 // NECESSARY:
@@ -3780,14 +3779,12 @@ void CheckNPCEx(Entity * io) {
 			UpdateIORoom(io);
 		}
 		
-		if(GLOBAL_Player_Room == -1) {
-			GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
-		}
+		long playerRoom = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
 		
-		float fdist = SP_GetRoomDist(&io->pos, &player.pos, io->room, GLOBAL_Player_Room);
+		float fdist = SP_GetRoomDist(&io->pos, &player.pos, io->room, playerRoom);
 		
 		// Use Portal Room Distance for Extra Visibility Clipping.
-		if(GLOBAL_Player_Room > -1 && io->room > -1 && fdist > 2000.f) {
+		if(playerRoom > -1 && io->room > -1 && fdist > 2000.f) {
 			// nothing to do
 		} else if(ds < square(GetIORadius(io) + GetIORadius(entities.player()) + 15.f)
 		          && EEfabs(player.pos.y - io->pos.y) < 200.f) {
