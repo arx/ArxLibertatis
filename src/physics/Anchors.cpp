@@ -117,15 +117,12 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return NULL;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
+	EERIEPOLY *found = NULL;
 
-	feg = &ACTIVEBKG->fastdata[px][pz];
+	FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[px][pz];
 
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
+	for(long k = 0; k < feg->nbpolyin; k++) {
+		EERIEPOLY *ep = feg->polyin[k];
 
 		if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
 		        &&	(ep->max.y >= y)
@@ -133,12 +130,13 @@ static EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z) {
 		        &&	((ep->norm.y < 0.f) || ((ep->type & POLY_QUAD) && (ep->norm2.y < 0.f)))
 		        &&	(PointIn2DPolyXZ(ep, x, z)))
 		{
-			if ((found == NULL) || ((found != NULL) && (ep->min.y < found->min.y)))
+			if(!found || (found && ep->min.y < found->min.y))
 				found = ep;
 		}
 	}
 
-	if (!found) return CheckInPoly(x, y, z);
+	if(!found)
+		return CheckInPoly(x, y, z);
 
 	return found;
 }
