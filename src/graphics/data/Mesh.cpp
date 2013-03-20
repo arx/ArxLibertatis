@@ -973,12 +973,7 @@ int EERIELaunchRay3(Vec3f * orgn, Vec3f * dest,  Vec3f * hit, EERIEPOLY * epp, l
 		px = long(p.x * ACTIVEBKG->Xmul);
 		pz = long(p.z * ACTIVEBKG->Zmul);
 		
-		if(px > ACTIVEBKG->Xsize - 1 || px < 0) {
-			*hit = p;
-			return -1;
-		}
-		
-		if(pz > ACTIVEBKG->Zsize - 1 || pz < 0) {
+		if(px < 0 || px > ACTIVEBKG->Xsize - 1 || pz < 0 || pz > ACTIVEBKG->Zsize - 1) {
 			*hit = p;
 			return -1;
 		}
