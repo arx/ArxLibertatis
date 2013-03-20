@@ -1258,7 +1258,10 @@ plusloin:
 					break;
 			}
 
-			if (modd) RecalcLightZone(actions[i].pos.x, actions[i].pos.z, (long)((float)(DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul) + 5.f));
+			if(modd) {
+				long size = DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul + 5.f;
+				RecalcLightZone(actions[i].pos.x, actions[i].pos.z, size);
+			}
 		}
 	}
 }
