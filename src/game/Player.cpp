@@ -3092,7 +3092,6 @@ void ARX_PLAYER_Rune_Add_All()
 
 extern unsigned long LAST_PRECAST_TIME;
 extern long sp_wep;
-extern long GLOBAL_Player_Room;
 extern long cur_mx, cur_pom;
 extern long sp_arm, cur_arm;
 extern float sp_max_start;
@@ -3127,7 +3126,6 @@ void ARX_GAME_Reset(long type) {
 
 	if(entities.player())entities.player()->gameFlags &= ~GFLAG_INVISIBILITY;
 	ARX_PLAYER_Invulnerability(0);
-	GLOBAL_Player_Room = -1;
 	PLAYER_PARALYSED = 0;
 
 	ARX_PLAYER_Reset_Fall();

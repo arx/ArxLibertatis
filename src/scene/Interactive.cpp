@@ -523,7 +523,6 @@ void CheckSetAnimOutOfTreatZone(Entity * io, long num)
 	}
 }
 
-long GLOBAL_Player_Room = -1;
 void PrepareIOTreatZone(long flag)
 {
 	static long status = -1;
@@ -545,10 +544,10 @@ void PrepareIOTreatZone(long flag)
 
 	TREATZONE_Clear();
 	long Cam_Room = ARX_PORTALS_GetRoomNumForPosition(&ACTIVECAM->orgTrans.pos, 1);
-	GLOBAL_Player_Room = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
+	long PlayerRoom = ARX_PORTALS_GetRoomNumForPosition(&player.pos, 1);
 	TREATZONE_AddIO(entities.player());
 
-	short sGlobalPlayerRoom = checked_range_cast<short>(GLOBAL_Player_Room);
+	short sGlobalPlayerRoom = checked_range_cast<short>(PlayerRoom);
 
 	for(long i = 0; i < MAX_EQUIPED; i++) {
 		if(player.equiped[i] != 0 && ValidIONum(player.equiped[i])) {
