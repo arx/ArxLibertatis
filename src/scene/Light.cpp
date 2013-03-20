@@ -624,17 +624,10 @@ void EERIE_LIGHT_ChangeLighting()
 
 void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 { 
-	if (minx < 0) minx = 0;
-	else if (minx >= ACTIVEBKG->Xsize) minx = ACTIVEBKG->Xsize - 1;
-
-	if (maxx < 0) maxx = 0;
-	else if (maxx >= ACTIVEBKG->Xsize) maxx = ACTIVEBKG->Xsize - 1;
-
-	if (minz < 0) minz = 0;
-	else if (minz >= ACTIVEBKG->Zsize) minz = ACTIVEBKG->Zsize - 1;
-
-	if (maxz < 0) maxz = 0;
-	else if (maxz >= ACTIVEBKG->Zsize) maxz = ACTIVEBKG->Zsize - 1;
+	minx = clamp(minx, 0, ACTIVEBKG->Xsize - 1);
+	maxx = clamp(maxx, 0, ACTIVEBKG->Xsize - 1);
+	minz = clamp(minz, 0, ACTIVEBKG->Zsize - 1);
+	maxz = clamp(maxz, 0, ACTIVEBKG->Zsize - 1);
 
 	for (size_t i = 0; i < MAX_LIGHTS; i++)
 	{
