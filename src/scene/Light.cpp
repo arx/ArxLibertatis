@@ -602,21 +602,21 @@ void PrecalcDynamicLighting(long x0, long z0, long x1, long z1) {
 
 void EERIE_LIGHT_ChangeLighting()
 {
-	for(long j = 0; j < ACTIVEBKG->Zsize; j++)
-		for(long i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	for(long j = 0; j < ACTIVEBKG->Zsize; j++) {
+		for(long i = 0; i < ACTIVEBKG->Xsize; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
 
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
+			for(long k = 0; k < eg->nbpoly; k++) {
 				EERIEPOLY *ep = &eg->polydata[k];
 				ep->tv[0].color = ep->v[0].color;
 				ep->tv[1].color = ep->v[1].color;
 				ep->tv[2].color = ep->v[2].color;
 
-				if (ep->type & POLY_QUAD) ep->tv[3].color = ep->v[3].color;
+				if(ep->type & POLY_QUAD)
+					ep->tv[3].color = ep->v[3].color;
 			}
 		}
+	}
 }
 
 //*************************************************************************************
