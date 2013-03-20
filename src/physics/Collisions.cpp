@@ -1096,10 +1096,10 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,CASFlags flags,long
 
 	if (!(flags & CAS_NO_BACKGROUND_COL))
 	{
-		long spz=max(pz-rad,0L);
-		long epz=min(pz+rad,ACTIVEBKG->Zsize-1L);
-		long spx=max(px-rad,0L);
-		long epx=min(px+rad,ACTIVEBKG->Xsize-1L);
+		long spx = std::max(px - rad, 0L);
+		long epx = std::min(px + rad, ACTIVEBKG->Xsize - 1L);
+		long spz = std::max(pz - rad, 0L);
+		long epz = std::min(pz + rad, ACTIVEBKG->Zsize - 1L);
 
 		for (long j=spz;j<=epz;j++)
 		for (long i=spx;i<=epx;i++) 
