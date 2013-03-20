@@ -912,16 +912,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			long xx = Thrown[i].position.x * ACTIVEBKG->Xmul;
 			long yy = Thrown[i].position.z * ACTIVEBKG->Zmul;
 
-			if(xx < 0)
-				continue;
-
-			if(xx >= ACTIVEBKG->Xsize)
-				continue;
-
-			if(yy < 0)
-				continue;
-
-			if(yy >= ACTIVEBKG->Zsize)
+			if(xx < 0 || xx >= ACTIVEBKG->Xsize || yy < 0 || yy >= ACTIVEBKG->Zsize)
 				continue;
 
 			FAST_BKG_DATA * feg = (FAST_BKG_DATA *)&ACTIVEBKG->fastdata[xx][yy];
