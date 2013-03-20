@@ -1416,7 +1416,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)  {
 		if(!(part->type & PARTICLE_2D)) {
 			long xx = part->ov.x * ACTIVEBKG->Xmul;
 			long yy = part->ov.z * ACTIVEBKG->Zmul;
-			if(xx < 0 || yy < 0 || xx > ACTIVEBKG->Xsize || yy > ACTIVEBKG->Zsize) {
+			if(xx < 0 || xx > ACTIVEBKG->Xsize || yy < 0 || yy > ACTIVEBKG->Zsize) {
 				part->exist = false;
 				ParticleCount--;
 				continue;
