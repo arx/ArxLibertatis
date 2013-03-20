@@ -670,31 +670,13 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 void RecalcLightZone(float x, float z, long siz) {
 	
-	long i = x * ACTIVEBKG->Xmul;
-	long j = z * ACTIVEBKG->Zmul;
+	long px = x * ACTIVEBKG->Xmul;
+	long pz = z * ACTIVEBKG->Zmul;
 	
-	long x0 = i - siz;
-	long z0 = j - siz;
-	long x1 = i + siz;
-	long z1 = j + siz;
-	
-	if(x0 < 2)
-		x0 = 2;
-	if(x0 >= ACTIVEBKG->Xsize - 2)
-		x0 = ACTIVEBKG->Xsize - 3;
-	if(z0 < 2)
-		z0 = 0;
-	if(z0 >= ACTIVEBKG->Zsize - 2)
-		z0 = ACTIVEBKG->Zsize - 3;
-	
-	if(x1 < 2)
-		x1 = 0;
-	if(x1 >= ACTIVEBKG->Xsize - 2)
-		x1 = ACTIVEBKG->Xsize - 3;
-	if(z1 < 2)
-		z1 = 0;
-	if(z1 >= ACTIVEBKG->Zsize - 2)
-		z1 = ACTIVEBKG->Zsize - 3;
+	long x0 = std::max(px - siz, 0L);
+	long x1 = std::min(px + siz, ACTIVEBKG->Xsize - 1L);
+	long z0 = std::max(pz - siz, 0L);
+	long z1 = std::min(pz + siz, ACTIVEBKG->Zsize - 1L);
 	
 	LightMode oldml = ModeLight;
 	ModeLight &= ~MODE_RAYLAUNCH;
