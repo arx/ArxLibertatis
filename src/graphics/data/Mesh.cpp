@@ -1388,22 +1388,12 @@ bool LittleAngularDiff(Vec3f * norm, Vec3f * norm2) {
 void DeclareEGInfo(float x, float z)
 {
 	long posx = x * ACTIVEBKG->Xmul;
-	long posz = (long)(float)(z * ACTIVEBKG->Zmul);
+	long posz = z * ACTIVEBKG->Zmul;
 
-	if(posx < 0)
+	if(posx < 0 || posx >= ACTIVEBKG->Xsize || posz < 0 || posz >= ACTIVEBKG->Zsize)
 		return;
 
-	if(posx >= ACTIVEBKG->Xsize)
-		return;
-
-	if(posz < 0)
-		return;
-
-	if(posz >= ACTIVEBKG->Zsize)
-		return;
-
-	EERIE_BKG_INFO * eg;
-	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 	eg->nothing = 0;
 }
 
