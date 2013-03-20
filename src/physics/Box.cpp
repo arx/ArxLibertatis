@@ -107,14 +107,9 @@ bool IsValidPos3(Vec3f * pos)
 	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return false;
 
-	EERIE_BKG_INFO * eg;
+	EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[px + pz * ACTIVEBKG->Xsize];
 
-	eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-	if (eg->nbpolyin <= 0)
-		return false;
-
-	if (pos->y > eg->tile_maxy)
+	if(eg->nbpolyin <= 0 || pos->y > eg->tile_maxy)
 		return false;
 
 	return true;
