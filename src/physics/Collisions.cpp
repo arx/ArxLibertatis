@@ -1806,13 +1806,7 @@ bool IO_Visible(Vec3f * orgn, Vec3f * dest,EERIEPOLY * epp,Vec3f * hit)
 		px=(long)(x* ACTIVEBKG->Xmul);
 		pz=(long)(z* ACTIVEBKG->Zmul);
 
-		if(px >= ACTIVEBKG->Xsize)
-			goto fini;
-		if(px < 0)
-			goto fini;
-		if(pz >= ACTIVEBKG->Zsize)
-			goto fini;
-		if(pz < 0)
+		if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 			goto fini;
 
 			feg=&ACTIVEBKG->fastdata[px][pz];
