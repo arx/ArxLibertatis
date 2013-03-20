@@ -104,13 +104,7 @@ bool IsValidPos3(Vec3f * pos)
 	long px = pos->x * ACTIVEBKG->Xmul;
 	long pz = pos->z * ACTIVEBKG->Zmul;
 
-	if(px >= ACTIVEBKG->Xsize)
-		return false;
-	if(px < 0)
-		return false;
-	if(pz >= ACTIVEBKG->Zsize)
-		return false;
-	if(pz < 0)
+	if(px < 0 || px >= ACTIVEBKG->Xsize || pz < 0 || pz >= ACTIVEBKG->Zsize)
 		return false;
 
 	EERIE_BKG_INFO * eg;
