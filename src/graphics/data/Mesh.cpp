@@ -249,10 +249,7 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	long px = poss.x * ACTIVEBKG->Xmul;
 	long pz = poss.z * ACTIVEBKG->Zmul;
 
-	if ((pz >= ACTIVEBKG->Zsize - 1)
-			||	(pz <= 0)
-			||	(px >= ACTIVEBKG->Xsize - 1)
-			||	(px <= 0))
+	if(pz <= 0 || pz >= ACTIVEBKG->Zsize - 1 || px <= 0 || px >= ACTIVEBKG->Xsize - 1)
 		return NULL;
 
 	float rx, rz;
