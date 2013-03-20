@@ -67,13 +67,7 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 	long px = x * ACTIVEBKG->Xmul;
 	long pz = z * ACTIVEBKG->Zmul;
 
-	if(px >= ACTIVEBKG->Xsize - 1)
-		return NULL;
-	if(px <= 0)
-		return NULL;
-	if(pz >= ACTIVEBKG->Zsize - 1)
-		return NULL;
-	if(pz <= 0)
+	if(px <= 0 || px >= ACTIVEBKG->Xsize - 1 || pz <= 0 || pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
 
 	EERIEPOLY * ep;
