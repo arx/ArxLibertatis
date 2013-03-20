@@ -1871,22 +1871,15 @@ void ARX_SCENE_Render() {
 	{
 	PrepareActiveCamera();
 
-	long camXsnap;
-	long camZsnap;
+	long camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
+	long camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
+	camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize - 1L);
+	camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize - 1L);
 
-	camXsnap = ACTIVECAM->orgTrans.pos.x * ACTIVEBKG->Xmul;
-	camZsnap = ACTIVECAM->orgTrans.pos.z * ACTIVEBKG->Zmul;
-	camXsnap = clamp(camXsnap, 0, ACTIVEBKG->Xsize-1);
-	camZsnap = clamp(camZsnap, 0, ACTIVEBKG->Zsize-1);
-
-	long x0 = camXsnap - lcval;
-	long x1 = camXsnap + lcval;
-	long z0 = camZsnap - lcval;
-	long z1 = camZsnap + lcval;
-	x0 = clamp(x0, 0, ACTIVEBKG->Xsize-1);
-	x1 = clamp(x1, 0, ACTIVEBKG->Xsize-1);
-	z0 = clamp(z0, 0, ACTIVEBKG->Zsize-2);
-	z1 = clamp(z1, 0, ACTIVEBKG->Zsize-2);
+	long x0 = std::max(camXsnap - lcval, 0L);
+	long x1 = std::min(camXsnap + lcval, ACTIVEBKG->Xsize - 1L);
+	long z0 = std::max(camZsnap - lcval, 0L);
+	long z1 = std::min(camZsnap + lcval, ACTIVEBKG->Zsize - 1L);
 
 	ACTIVEBKG->Backg[camXsnap + camZsnap * ACTIVEBKG->Xsize].treat = 1;
 
