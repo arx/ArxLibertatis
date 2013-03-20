@@ -1376,10 +1376,10 @@ void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num, EERIE_FRUSTRUM_DATA
 			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
 
 			if(!feg->treat) {
-				long ix=max(0,pEPDATA->px-1);
-				long ax=min(ACTIVEBKG->Xsize-1,pEPDATA->px+1);
-				long iz=max(0,pEPDATA->py-1);
-				long az=min(ACTIVEBKG->Zsize-1,pEPDATA->py+1);
+				long ix = std::max(pEPDATA->px - 1, 0);
+				long ax = std::min(pEPDATA->px + 1, ACTIVEBKG->Xsize - 1);
+				long iz = std::max(pEPDATA->py - 1, 0);
+				long az = std::min(pEPDATA->py + 1, ACTIVEBKG->Zsize - 1);
 				
 				(void)checked_range_cast<short>(iz);
 				(void)checked_range_cast<short>(ix);
