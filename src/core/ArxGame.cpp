@@ -1837,14 +1837,11 @@ void ArxGame::goFor2DFX()
 	for(int i=0; i < TOTPDL; i++) {
 		EERIE_LIGHT *el = PDL[i];
 
-		long lPosx=(long)(float)(el->pos.x*ACTIVEBKG->Xmul);
-		long lPosz=(long)(float)(el->pos.z*ACTIVEBKG->Zmul);
+		long lPosx = el->pos.x * ACTIVEBKG->Xmul;
+		long lPosz = el->pos.z * ACTIVEBKG->Zmul;
 
-		if( (lPosx<0)||
-			(lPosx>=ACTIVEBKG->Xsize)||
-			(lPosz<0)||
-			(lPosz>=ACTIVEBKG->Zsize)||
-			(!ACTIVEBKG->fastdata[lPosx][lPosz].treat) )
+		if(lPosx < 0 || lPosx >= ACTIVEBKG->Xsize || lPosz < 0 || lPosz >= ACTIVEBKG->Zsize ||
+			!ACTIVEBKG->fastdata[lPosx][lPosz].treat)
 		{
 			el->treat=0;
 			continue;
