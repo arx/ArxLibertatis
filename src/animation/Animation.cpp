@@ -1056,6 +1056,11 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			special_color = Color3f(1.f - secretpercent, 1.f - secretpercent, secretpercent);
 		}
 
+		if(io->ioflags & IO_FREEZESCRIPT) {
+			special_color = Color3f::blue;
+			special_color_flag = 1;
+		}
+
 		if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 			if(io->show == SHOW_FLAG_TELEPORTING) {
 				float fTime = io->sfx_time + framedelay;
@@ -1075,10 +1080,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = (elapsed - 3000.f) * (1.0f / 3000);
 						special_color = Color3f(1.f, ratio, ratio);
-						special_color_flag = 2;
-						AddRandomSmoke(io, 2);
-					} else if (elapsed < 8000.f) { // 5 seconds to White
-						special_color = Color3f::gray((elapsed - 6000.f) * (1.f / 2000));
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
 					} else { // SFX finish
@@ -1111,17 +1112,27 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 								io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 								long num = ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
 
-								while(num>=0) {
+								if(num < 0)
+									num = ARX_SPELLS_GetSpellOn(io, SPELL_MASS_INCINERATE);
+
+								if(num >= 0) {
 									spells[num].tolive = 0;
-									ARX_DAMAGES_DamageNPC(io,20,0,1,&entities.player()->pos);
-									num=ARX_SPELLS_GetSpellOn(io, SPELL_INCINERATE);
+									float damages = 20 * spells[num].caster_level;
+									damages = ARX_SPELLS_ApplyFireProtection(io, damages);
+
+									if (ValidIONum(spells[num].caster))
+										ARX_DAMAGES_DamageNPC(io, damages, spells[num].caster, 1, &entities[spells[num].caster]->pos);
+									else
+										ARX_DAMAGES_DamageNPC(io, damages, spells[num].caster, 1, &io->pos);
+
+									ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &io->pos);
 								}
 							} else {
 								io->sfx_flag &= ~SFX_TYPE_YLSIDE_DEATH;
 								ARX_INTERACTIVE_DestroyIO(io);
 								DESTROYED_DURING_RENDERING = io;
 								return;
-							}	
+							}
 						}
 					}
 				}
