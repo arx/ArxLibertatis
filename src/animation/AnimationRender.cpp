@@ -528,7 +528,7 @@ static bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_c
 						AddRandomSmoke(io, 1);
 					} else if(elapsed < 6000.f) { // 5 seconds to White
 						float ratio = (elapsed - 3000.f) * (1.0f / 3000);
-						special_color.r = ratio;
+						special_color = Color3f(1.f, ratio, ratio);
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
 					} else { // SFX finish
