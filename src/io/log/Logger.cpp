@@ -25,7 +25,7 @@
 #include <algorithm>
 
 #include <boost/foreach.hpp>
-#include <boost/unordered/unordered_map.hpp>
+#include <boost/unordered_map.hpp>
 
 #include "io/log/ConsoleLogger.h"
 #include "io/log/LogBackend.h"
