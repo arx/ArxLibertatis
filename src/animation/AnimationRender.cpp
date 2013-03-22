@@ -454,9 +454,8 @@ extern long TRAP_SECRET;
 extern float GLOBAL_LIGHT_FACTOR;
 
 //TODO Move somewhere else
-static bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
+bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag, bool createLight) {
 
-	//TODO copy-paste
 	if(io) {
 		float poisonpercent = 0.f;
 		float trappercent = 0.f;
@@ -556,6 +555,7 @@ static bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_c
 								sp.radius = rnd() * 100.f + 100.f;
 							}
 
+							if(createLight) {
 							long nn = GetFreeDynLight();
 
 							if(nn >= 0) {
@@ -570,6 +570,7 @@ static bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_c
 								DynLight[nn].pos.y = io->pos.y - 80.f;
 								DynLight[nn].pos.z = io->pos.z;
 								DynLight[nn].duration = 600;
+							}
 							}
 
 							if(io->sfx_flag & SFX_TYPE_INCINERATE) {
@@ -1706,7 +1707,7 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	long special_color_flag = 0;
 	Color3f special_color;
 
-	if(!Cedric_ApplyLightingFirstPartRefactor(io, special_color, special_color_flag))
+	if(!Cedric_ApplyLightingFirstPartRefactor(io, special_color, special_color_flag, true))
 		return;
 
 	if(!Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag))
