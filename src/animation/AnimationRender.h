@@ -64,4 +64,6 @@ void MakeCLight2(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERI
 float Cedric_GetScale(Entity *io);
 float Cedric_GetInvisibility(Entity *io);
 
+bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag, bool createLight);
+
 #endif // ARX_ANIMATION_ANIMATIONRENDER_H
