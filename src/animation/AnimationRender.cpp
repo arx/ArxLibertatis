@@ -447,22 +447,14 @@ int Cedric_TransformVerts(Entity *io, EERIE_3DOBJ *eobj, EERIE_C_DATA *obj, Vec3
 	return true;
 }
 extern Entity * DESTROYED_DURING_RENDERING;
-long special_color_flag = 0;
-Color3f special_color;
+
 extern long TRAP_DETECT;
 extern long TRAP_SECRET;
 
 extern float GLOBAL_LIGHT_FACTOR;
 
-/* Object dynamic lighting */
-static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos) {
-	
-	Color3f infra = Color3f::black;
-
-	Vec3f tv;
-	Vec3f vTLights[32]; /* Same as above but in bone space (for faster calculation) */
-
-	special_color_flag = 0;
+//TODO Move somewhere else
+static bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, long &special_color_flag) {
 
 	//TODO copy-paste
 	if(io) {
@@ -612,7 +604,17 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			}
 		}
 	}
+	return true;
+}
+
+/* Object dynamic lighting */
+static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Color3f &special_color, long &special_color_flag) {
 	
+	Color3f infra = Color3f::black;
+
+	Vec3f tv;
+	Vec3f vTLights[32]; /* Same as above but in bone space (for faster calculation) */
+
 	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
 		special_color_flag	=	4;
 		special_color = Color3f::gray(float(iHighLight));
@@ -1136,7 +1138,7 @@ void ARX_DrawPrimitive(TexturedVertex * _pVertex1, TexturedVertex * _pVertex2, T
 extern long IN_BOOK_DRAW;
 
 /* Render object */
-static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Vec3f & ftr, float invisibility) {
+static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Vec3f & ftr, float invisibility, Color3f &special_color, long &special_color_flag) {
 	
 	float MAX_ZEDE = 0.f;
 
@@ -1701,10 +1703,16 @@ void Cedric_AnimateDrawEntityRender(EERIE_3DOBJ *eobj, Vec3f *pos, Vec3f &ftr, E
 	if(!obj)
 		return;
 
-	if(!Cedric_ApplyLighting(eobj, obj, io, pos))
+	long special_color_flag = 0;
+	Color3f special_color;
+
+	if(!Cedric_ApplyLightingFirstPartRefactor(io, special_color, special_color_flag))
 		return;
 
-	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
+	if(!Cedric_ApplyLighting(eobj, obj, io, pos, special_color, special_color_flag))
+		return;
+
+	Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility, special_color, special_color_flag);
 
 	if(io) {
 		io->bbox1.x = (short)BBOXMIN.x;
