@@ -1092,9 +1092,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 		}
 
 		if(io) {
-			if(io->ioflags & IO_FREEZESCRIPT) { // Frozen status override all other colors
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xFF0000FF;
-			} else if(eobj->facelist[i].facetype & POLY_GLOW) { // Is it a Glowing Poly ?
+			if(eobj->facelist[i].facetype & POLY_GLOW) { // Is it a Glowing Poly ?
 				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
 			} else if(USEINTERNORM) { // Are we using Normal Illuminations ?
 				for(long j=0;j<3;j++) {
