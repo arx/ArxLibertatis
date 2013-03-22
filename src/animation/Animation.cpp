@@ -1091,19 +1091,24 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 
-		if(io) {
-			if(eobj->facelist[i].facetype & POLY_GLOW) { // Is it a Glowing Poly ?
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
-			} else if(USEINTERNORM) { // Are we using Normal Illuminations ?
-				for(long j=0;j<3;j++) {
-					vert_list[j].color=eobj->vertexlist3[paf[j]].vert.color;
-				}					
-			} else if(Project.improve) { // Are we using IMPROVED VISION view ?
-				vert_list[0].color = vert_list[1].color = vert_list[2].color = io->infracolor.toBGR();
-			} else {
-				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
+		if(eobj->facelist[i].facetype & POLY_GLOW) { // unaffected by light
+			vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
+		} else if(USEINTERNORM) { // Normal Illuminations
+			for(long j=0;j<3;j++) {
+				vert_list[j].color=eobj->vertexlist3[paf[j]].vert.color;
 			}
+		} else if(Project.improve) { // IMPROVED VISION view ?
+			if(io)
+				vert_list[2].color = io->infracolor.toBGR();
+			else
+				vert_list[2].color = Color3f(.6f, 0.f, 1.f).toBGR();
 
+			vert_list[0].color = vert_list[1].color = vert_list[2].color;
+		} else { // default white
+			vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
+		}
+
+		if(io) {
 			if(Project.improve) {
 				int to=3;
 
@@ -1129,19 +1134,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 					u8 lfg = 0x1E;
 					vert_list[k].color = (0xff000000L | (lfr << 16) | (lfg << 8) | (lfb));
 				}
-			}
-		} else {
-			if(eobj->facelist[i].facetype & POLY_GLOW) { // Treating GLOWING POLY (unaffected by light)
-				vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
-			} else if(USEINTERNORM) { // using INTERNORM lighting
-				for(long j=0;j<3;j++) {
-					vert_list[j].color = eobj->vertexlist3[paf[j]].vert.color; 
-				}
-			} else if(Project.improve) { // using IMPROVED VISION view
-				vert_list[2].color = Color3f(.6f, 0.f, 1.f).toBGR();
-				vert_list[0].color = vert_list[1].color = vert_list[2].color;
-			} else { // using default white
-				vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 			}
 		}
 		
