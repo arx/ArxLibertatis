@@ -1058,8 +1058,8 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		if(io->sfx_flag & SFX_TYPE_YLSIDE_DEATH) {
 			if(io->show == SHOW_FLAG_TELEPORTING) {
-				float fCalc = io->sfx_time + framedelay;
-				io->sfx_time = checked_range_cast<unsigned long>(fCalc);
+				float fTime = io->sfx_time + framedelay;
+				io->sfx_time = checked_range_cast<unsigned long>(fTime);
 
 				if (io->sfx_time >= (unsigned long)(arxtime))
 					io->sfx_time = (unsigned long)(arxtime);
@@ -1124,9 +1124,6 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 							}	
 						}
 					}
-				} else {
-					ARX_DEAD_CODE();
-					//To avoid using special_color when it is not defined, currently equal 0
 				}
 			}
 		}
