@@ -418,9 +418,12 @@ void CFireProtection::Create(long _ulDuration)
 	{
 		io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.4f;
+		/*io->halo.color.r = 0.4f;
 		io->halo.color.g = 0.4f;
-		io->halo.color.b = 0.125f;
+		io->halo.color.b = 0.125f;*/ // excluded by Dimoks
+		io->halo.color.r = 1; // © Dimoks
+		io->halo.color.g = 0.65f; // © Dimoks
+		io->halo.color.b = 0; // © Dimoks
 		io->halo.radius = 45.f;
 		io->halo.dynlight = -1;
 	}
@@ -438,9 +441,12 @@ void CFireProtection::Update(unsigned long _ulTime)
 	{
 		io = entities[iNpc];
 		io->halo.flags = HALO_ACTIVE;
-		io->halo.color.r = 0.4f;
+		/*io->halo.color.r = 0.4f;
 		io->halo.color.g = 0.4f;
-		io->halo.color.b = 0.125f;
+		io->halo.color.b = 0.125f;*/ // excluded by Dimoks
+		io->halo.color.r = 1; // © Dimoks
+		io->halo.color.g = 0.65f; // © Dimoks
+		io->halo.color.b = 0; // © Dimoks
 		io->halo.radius = 45.f;
 		io->halo.dynlight = -1;
 	}

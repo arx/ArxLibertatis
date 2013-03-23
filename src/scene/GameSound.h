@@ -160,13 +160,19 @@ extern audio::SampleId SND_SPELL_FIRE_FIELD;
 extern audio::SampleId SND_SPELL_FIRE_HIT;
 extern audio::SampleId SND_SPELL_FIRE_LAUNCH;
 extern audio::SampleId SND_SPELL_FIRE_PROTECTION;
+extern audio::SampleId SND_SPELL_FIRE_PROTECTION_LOOP; // © Dimoks
+extern audio::SampleId SND_SPELL_FIRE_PROTECTION_END; // © Dimoks
 extern audio::SampleId SND_SPELL_FIRE_WIND;
 extern audio::SampleId SND_SPELL_FREEZETIME;
 extern audio::SampleId SND_SPELL_HARM;
 extern audio::SampleId SND_SPELL_HEALING;
 extern audio::SampleId SND_SPELL_ICE_FIELD;
+extern audio::SampleId SND_SPELL_ICE_FIELD_LOOP; // © Dimoks
+extern audio::SampleId SND_SPELL_ICE_FIELD_END; // © Dimoks
 extern audio::SampleId SND_SPELL_ICE_PROJECTILE_LAUNCH;
 extern audio::SampleId SND_SPELL_INCINERATE;
+extern audio::SampleId SND_SPELL_INCINERATE_LOOP; // © Dimoks
+extern audio::SampleId SND_SPELL_INCINERATE_END; // © Dimoks
 extern audio::SampleId SND_SPELL_IGNITE;
 extern audio::SampleId SND_SPELL_INVISIBILITY_START;
 extern audio::SampleId SND_SPELL_INVISIBILITY_END;
@@ -175,7 +181,7 @@ extern audio::SampleId SND_SPELL_LIGHTNING;
 extern audio::SampleId SND_SPELL_LIGHTNING_START;
 extern audio::SampleId SND_SPELL_LIGHTNING_LOOP;
 extern audio::SampleId SND_SPELL_LIGHTNING_END;
-
+extern audio::SampleId SND_SPELL_LOWER_ARMOR; // © Dimoks
 extern audio::SampleId SND_SPELL_FIRE_FIELD_START;
 extern audio::SampleId SND_SPELL_FIRE_FIELD_LOOP;
 extern audio::SampleId SND_SPELL_FIRE_FIELD_END;
@@ -197,6 +203,7 @@ extern audio::SampleId SND_SPELL_RAISE_DEAD;
 extern audio::SampleId SND_SPELL_REPEL_UNDEAD;
 extern audio::SampleId SND_SPELL_REPEL_UNDEAD_LOOP;
 extern audio::SampleId SND_SPELL_RUNE_OF_GUARDING;
+extern audio::SampleId SND_SPELL_RUNE_OF_GUARDING_END; // © Dimoks
 extern audio::SampleId SND_SPELL_SLOW_DOWN;
 extern audio::SampleId SND_SPELL_SPARK;
 extern audio::SampleId SND_SPELL_SPEED_START;
