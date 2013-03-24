@@ -6229,12 +6229,8 @@ void ArxGame::drawAllInterface() {
 			}
 		}
 
-		if ((FlyingOverIO && !PLAYER_MOUSELOOK_ON && !(player.Interface & INTER_COMBATMODE)
-			&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
-			|| 
-			(FlyingOverIO && (config.input.autoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
-			&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
-			)
+		if(FlyingOverIO && !(player.Interface & INTER_COMBATMODE) && !GInput->actionPressed(CONTROLS_CUST_MAGICMODE) &&
+				(!PLAYER_MOUSELOOK_ON || !config.input.autoReadyWeapon))
 		{
 			if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER)
 				if(SecondaryInventory) {
