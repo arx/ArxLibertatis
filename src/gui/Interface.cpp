@@ -6466,13 +6466,14 @@ void ArxGame::drawAllInterface() {
 
 			count = std::max(count, count2);
 			Vec3f pos;
-			pos.x = DANAESIZX - ((count) * INTERFACE_RATIO(32));
+			pos.x = DANAESIZX - (count * INTERFACE_RATIO(32));
 
-			if (CHANGE_LEVEL_ICON>-1) pos.x -= INTERFACE_RATIO(32);
+			if(CHANGE_LEVEL_ICON > -1)
+				pos.x -= INTERFACE_RATIO(32);
 
 			pos.y = 0;
 
-			for (int i=  0; i < 6; i++) {
+			for(int i = 0; i < 6; i++) {
 				bool bHalo = false;
 
 				if(SpellSymbol[i] != RUNE_NONE) {
@@ -6516,22 +6517,19 @@ void ArxGame::drawAllInterface() {
 			}
 		}
 
-		if (player.Interface & INTER_LIFE_MANA)
-		{
+		if(player.Interface & INTER_LIFE_MANA) {
 			TexturedVertex v[4];
-			float px, py;
 			v[0] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::ZERO);
 			v[1] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::X_AXIS);
 			v[2] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f(1.f, 1.f));
 			v[3] = TexturedVertex(Vec3f(0, 0, .001f), 1.f, Color::white.toBGR(), 1, Vec2f::Y_AXIS);
 
-			px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
-			py = DANAESIZY - INTERFACE_RATIO(81);
+			float px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
+			float py = DANAESIZY - INTERFACE_RATIO(81);
 			ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
 
 			float fnl=(float)player.life/(float)player.Full_maxlife;
 			float fnm=(float)player.mana/(float)player.Full_maxmana;
-
 
 			//---------------------------------------------------------------------
 			//RED GAUGE
@@ -6549,12 +6547,10 @@ void ArxGame::drawAllInterface() {
 				INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight),
 				0.f, ITC.Get("filled_gauge_red"), ulcolor, (1.f - fnl));
 
-			if (!(player.Interface & INTER_COMBATMODE))
-			{
-				if (MouseInRect(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), DANAESIZY - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
+			if(!(player.Interface & INTER_COMBATMODE)) {
+				if(MouseInRect(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), DANAESIZY - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
 				{
-					if(	(EERIEMouseButton & 1)&&
-						(!(LastMouseClick & 1)) ) {
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 							std::stringstream ss;
 							ss << checked_range_cast<int>(player.life);
 							ARX_SPEECH_Add(ss.str());
@@ -6579,12 +6575,10 @@ void ArxGame::drawAllInterface() {
 				DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f,
 				ITC.Get("filled_gauge_blue"), Color::white, (1.f - fnm));
 
-			if (!(player.Interface & INTER_COMBATMODE))
-			{
+			if(!(player.Interface & INTER_COMBATMODE)) {
 				if(MouseInRect(DANAESIZX - INTERFACE_RATIO(33) + lSLID_VALUE,DANAESIZY - INTERFACE_RATIO(81),DANAESIZX - INTERFACE_RATIO(33) + lSLID_VALUE+LARGG,DANAESIZY - INTERFACE_RATIO(81)+HAUTT))
 				{
-					if(	(EERIEMouseButton & 1)&&
-						(!(LastMouseClick & 1)) ) {
+					if((EERIEMouseButton & 1) && !(LastMouseClick & 1)) {
 							std::stringstream ss;
 							ss << checked_range_cast<int>(player.mana);
 							ARX_SPEECH_Add(ss.str());
@@ -6594,13 +6588,11 @@ void ArxGame::drawAllInterface() {
 
 			//---------------------------------------------------------------------
 			//END BLUE GAUGE
-			if (bRenderInCursorMode)
-			{
+			if(bRenderInCursorMode) {
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-				if (mecanism_tc && (MAGICMODE < 0) && (lNbToDrawMecanismCursor < 3))
-				{
+				if(mecanism_tc && MAGICMODE < 0 && lNbToDrawMecanismCursor < 3) {
 					Color lcolorMecanism = Color::white;
 					if(lTimeToDrawMecanismCursor > 300) {
 						lcolorMecanism = Color::black;
@@ -6614,15 +6606,14 @@ void ArxGame::drawAllInterface() {
 					EERIEDrawBitmap(0, 0, INTERFACE_RATIO_DWORD(mecanism_tc->m_dwWidth), INTERFACE_RATIO_DWORD(mecanism_tc->m_dwHeight), 0.01f, mecanism_tc, lcolorMecanism);
 				}
 
-				if (arrow_left_tc)
-				{
+				if(arrow_left_tc) {
 					float fSizeX=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwWidth);
 					float fSizeY=INTERFACE_RATIO_DWORD(arrow_left_tc->m_dwHeight);
 					Color lcolor = Color::gray(.5f);
 					static float fArrowMove=0.f;
 					fArrowMove+=.5f*framedelay;
 
-					if (fArrowMove > 180.f)
+					if(fArrowMove > 180.f)
 						fArrowMove=0.f;
 
 					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
