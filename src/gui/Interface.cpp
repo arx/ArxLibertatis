@@ -6464,7 +6464,7 @@ void ArxGame::drawAllInterface() {
 					count2 ++;
 			}
 
-			count = (count2>count)?count2:count;
+			count = std::max(count, count2);
 			Vec3f pos;
 			pos.x = DANAESIZX - ((count) * INTERFACE_RATIO(32));
 
