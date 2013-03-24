@@ -2974,7 +2974,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	if ( cur_rf == 3 )
 	{ 
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
-		level += 2;
 	}
 
 	if ( sp_max ) 
@@ -3037,9 +3036,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		return true;
 	}
 
-	if ( flags & SPELLCAST_FLAG_NOMANA )
+	if ( cur_rf == 3 ) 
 	{
-		Player_Magic_Level = static_cast<float>(level);
+		level += 2;
 	}
 
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
