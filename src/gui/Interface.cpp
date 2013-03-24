@@ -6441,30 +6441,26 @@ void ArxGame::drawAllInterface() {
 			}
 		}
 
-
 		// Draw stealth gauge
-		if (SPLASH_THINGS_STAGE<11)
+		if(SPLASH_THINGS_STAGE < 11)
 			ARX_INTERFACE_Draw_Stealth_Gauge();
 
 		// book
-		if ((player.Interface & INTER_MAP )&&  (!(player.Interface & INTER_COMBATMODE)))
-		{
+		if((player.Interface & INTER_MAP) && !(player.Interface & INTER_COMBATMODE)) {
 			ARX_INTERFACE_ManageOpenedBook();
 			ARX_INTERFACE_ManageOpenedBook_Finish();
 		}
 
 
-		if (CurrSpellSymbol || player.SpellToMemorize.bSpell)
-		{
+		if(CurrSpellSymbol || player.SpellToMemorize.bSpell) {
 			int count = 0;
 			int count2 = 0;
 
-			for (long j=0;j<6;j++)
-			{
-				if (player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE)
+			for(long j = 0; j < 6; j++) {
+				if(player.SpellToMemorize.iSpellSymbols[j] != RUNE_NONE)
 					count++;
 
-				if (SpellSymbol[j] != RUNE_NONE)
+				if(SpellSymbol[j] != RUNE_NONE)
 					count2 ++;
 			}
 
@@ -6476,50 +6472,38 @@ void ArxGame::drawAllInterface() {
 
 			pos.y = 0;
 
-			for (int i=0; i<6; i++)
-			{
+			for (int i=  0; i < 6; i++) {
 				bool bHalo = false;
 
-				if (SpellSymbol[i] != RUNE_NONE)
-				{
-					if (SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i])
-					{
+				if(SpellSymbol[i] != RUNE_NONE) {
+					if(SpellSymbol[i] == player.SpellToMemorize.iSpellSymbols[i]) {
 						bHalo = true;
-					}
-					else
-					{
+					} else {
 						player.SpellToMemorize.iSpellSymbols[i] = SpellSymbol[i];
 
-						for (int j=i+1; j<6; j++)
-						{
+						for(int j = i+1; j < 6; j++) {
 							player.SpellToMemorize.iSpellSymbols[j] = RUNE_NONE;
 						}
 					}
 				}
 
-				if (player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE)
-				{
+				if(player.SpellToMemorize.iSpellSymbols[i] != RUNE_NONE) {
 					EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
 						necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]], Color::white);
 
-					if (bHalo)
-					{
+					if(bHalo) {
 						TextureContainer *tc = necklace.pTexTab[player.SpellToMemorize.iSpellSymbols[i]];
 						TextureContainer *halo = tc->getHalo();
 
-						if (halo)
-						{
+						if(halo)
 							ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, pos.x, pos.y, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-						}
 					}
 
-					if (!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i])))
-					{
+					if(!(player.rune_flags & (RuneFlag)(1<<player.SpellToMemorize.iSpellSymbols[i]))) {
 						GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-						EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0,
-							Movable, Color::gray(.8f));
+						EERIEDrawBitmap2(pos.x, pos.y, INTERFACE_RATIO(32), INTERFACE_RATIO(32), 0, Movable, Color::gray(.8f));
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 
@@ -6527,8 +6511,7 @@ void ArxGame::drawAllInterface() {
 				}
 			}
 
-			if (float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000)
-			{
+			if(float(arxtime) - player.SpellToMemorize.lTimeCreation > 30000) {
 				player.SpellToMemorize.bSpell = false;
 			}
 		}
