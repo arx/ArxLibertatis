@@ -6319,11 +6319,11 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw / Manage Pick All - Close Secondary inventory icon
-				if (!PLAYER_INTERFACE_HIDE_COUNT && (TSecondaryInventory!=NULL))
+				if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory)
 				{
 					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
 					py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
-					Entity * temp=(Entity *)TSecondaryInventory->io;
+					Entity *temp = TSecondaryInventory->io;
 
 					if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
 					{
@@ -6352,7 +6352,7 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw/Manage Advancement Icon
-				if ((player.Skill_Redistribute) || (player.Attribute_Redistribute))
+				if(player.Skill_Redistribute || player.Attribute_Redistribute)
 				{
 					px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 					py=DANAESIZY - INTERFACE_RATIO(218);
@@ -6368,8 +6368,7 @@ void ArxGame::drawAllInterface() {
 				}
 
 				// Draw/Manage Gold Purse Icon
-				if (player.gold>0)
-				{
+				if(player.gold > 0) {
 					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
 					py = DANAESIZY - INTERFACE_RATIO(183);
 					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
@@ -6385,58 +6384,44 @@ void ArxGame::drawAllInterface() {
 					}
 				}
 
-				if (bGoldHalo)
-				{
+				if(bGoldHalo) {
 					float fCalc = ulGoldHaloTime + Original_framedelay;
 					ulGoldHaloTime = checked_range_cast<unsigned long>(fCalc);
 
 
-					if (ulGoldHaloTime >= 1000) //1seconde
-					{
+					if(ulGoldHaloTime >= 1000) // ms
 						bGoldHalo = false;
-					}
 
 					TextureContainer *tc = ITC.Get("gold");
 					TextureContainer *halo = tc->getHalo();
 
-					if (halo)
-					{
+					if(halo)
 						ARX_INTERFACE_HALO_Render(0.9f, 0.9f, 0.1f, HALO_ACTIVE, halo, px, py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-					}
 				}
 
-				if (bBookHalo)
-				{
-
-
+				if(bBookHalo) {
 					float fCalc = ulBookHaloTime + Original_framedelay;
 					ulBookHaloTime = checked_range_cast<unsigned long>(fCalc);
 
 
-					if (ulBookHaloTime >= 3000) //3secondes
-					{
+					if(ulBookHaloTime >= 3000) // ms
 						bBookHalo = false;
-					}
 
 					float POSX = DANAESIZX-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
 					float POSY = DANAESIZY-INTERFACE_RATIO(148);
 					TextureContainer *tc = ITC.Get("book");
 					TextureContainer *halo = tc->getHalo();
 
-					if (halo)
-					{
+					if(halo)
 						ARX_INTERFACE_HALO_Render(0.2f, 0.4f, 0.8f, HALO_ACTIVE, halo, POSX, POSY, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
-					}
 				}
 			}
 
-			if (CURRENT_TORCH)
+			if(CURRENT_TORCH)
 				ARX_INTERFACE_DrawCurrentTorch();
 		}
 
-		if ((CHANGE_LEVEL_ICON>-1) && (ChangeLevel) )
-		{
-
+		if(CHANGE_LEVEL_ICON > -1 && ChangeLevel) {
 			//Setting px and py as float to avoid warning on function ARX_INTERFACE_DrawItem and MouseInRect
 			float px = DANAESIZX - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 			float py = 0;
@@ -6448,14 +6433,12 @@ void ArxGame::drawAllInterface() {
 
 			ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
 
-			if (MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
+			if(MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 			{
 				SpecialCursor=CURSOR_INTERACTION_ON;
 
-				if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-				{
-					CHANGE_LEVEL_ICON=200;
-				}
+				if(!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+					CHANGE_LEVEL_ICON = 200;
 			}
 		}
 
