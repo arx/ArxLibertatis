@@ -1432,9 +1432,8 @@ void ArxGame::renderLevel() {
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		float restore = ACTIVECAM->orgTrans.use_focal;
 
-		if(!EXTERNALVIEW) {
-			if(!BOW_FOCAL)
-				ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
+		if(!EXTERNALVIEW && !BOW_FOCAL) {
+			ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
 		}
 
 		if(entities.player()->invisibility > 0.9f)
@@ -1458,15 +1457,13 @@ void ArxGame::renderLevel() {
 
 	ACTIVECAM->fadecolor = current.depthcolor;
 
-	if(uw_mode) {
-		float val=10.f;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-		ARX_SCENE_Render();
-		val=-0.3f;
-		GRenderer->GetTextureStage(0)->SetMipMapLODBias(val);
-	} else {
-		ARX_SCENE_Render();
-	}
+	if(uw_mode)
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(10.f);
+
+	ARX_SCENE_Render();
+
+	if(uw_mode)
+		GRenderer->GetTextureStage(0)->SetMipMapLODBias(-0.3f);
 
 	// Begin Particles
 	
