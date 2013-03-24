@@ -1127,14 +1127,12 @@ void ArxGame::handlePlayerDeath() {
 			targetpos = entities.player()->obj->vertexlist3[id].v;
 		}
 
-		conversationcamera.orgTrans.pos.x = targetpos.x;
-		conversationcamera.orgTrans.pos.y = targetpos.y - DeadCameraDistance;
-		conversationcamera.orgTrans.pos.z = targetpos.z;
+		conversationcamera.orgTrans.pos = targetpos;
+		conversationcamera.orgTrans.pos.y -= DeadCameraDistance;
 
 		if(id2 != -1) {
-			conversationcamera.orgTrans.pos.x=entities.player()->obj->vertexlist3[id2].v.x;
-			conversationcamera.orgTrans.pos.y=entities.player()->obj->vertexlist3[id2].v.y-DeadCameraDistance;
-			conversationcamera.orgTrans.pos.z=entities.player()->obj->vertexlist3[id2].v.z;
+			conversationcamera.orgTrans.pos = entities.player()->obj->vertexlist3[id2].v;
+			conversationcamera.orgTrans.pos.y -= DeadCameraDistance;
 		}
 
 		conversationcamera.setTargetCamera(targetpos);
