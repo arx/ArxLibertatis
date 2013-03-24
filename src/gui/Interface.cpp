@@ -5995,8 +5995,7 @@ void ArxGame::drawAllInterface() {
 					j=at/aim;
 				}
 
-				if (j>1.f) j=1.f;
-				else if (j<0.2f) j=0.2f;
+				j = clamp(j, 0.2f, 1.f);
 			}
 
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
