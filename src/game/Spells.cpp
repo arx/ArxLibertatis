@@ -4056,7 +4056,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 2000000; // TODO should respect user-supplied duration
+			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
