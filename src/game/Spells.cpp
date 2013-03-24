@@ -3555,8 +3555,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			if(spells[i].caster == 0 && !(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-				ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+				if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
+					ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
+				}
 			}
 			
 			spells[i].snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
@@ -3570,6 +3573,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = 60000;
 			spells[i].fManaCostPerSecond = 0.4f;
 			spells[i].bDuration = true;
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			break;
 		}
@@ -5740,9 +5745,10 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].caster==0)
 					{
-						Project.improve=0;
 						ARX_SOUND_Stop(spells[i].snd_loop);
 					}					
+
+					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
 				break;					
 				//----------------------------------------------------------------------------
