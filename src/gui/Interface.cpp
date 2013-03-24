@@ -5973,25 +5973,19 @@ void ArxGame::drawAllInterface() {
 	GRenderer->GetTextureStage(0)->SetMagFilter(TextureStage::FilterNearest);
 	GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 
-	if (!EDITMODE)
-	{
-		//---------------------------------------------------------------------
-		if (player.Interface & INTER_COMBATMODE)
-		{
+	if(!EDITMODE) {
+		if (player.Interface & INTER_COMBATMODE) {
 			float j;
 
-			if (AimTime==0) j=0.2f;
-			else
-			{
-				if (BOW_FOCAL)
-				{
+			if(AimTime == 0) {
+				j = 0.2f;
+			} else {
+				if(BOW_FOCAL) {
 					j=(float)(BOW_FOCAL)/710.f;
-				}
-				else
-				{
+				} else {
 					float at=float(arxtime)-(float)AimTime;
 
-					if (at>0.f)
+					if(at > 0.f)
 						bIsAiming = true;
 					else
 						bIsAiming = false;
@@ -6003,7 +5997,6 @@ void ArxGame::drawAllInterface() {
 
 				if (j>1.f) j=1.f;
 				else if (j<0.2f) j=0.2f;
-
 			}
 
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -6023,14 +6016,12 @@ void ArxGame::drawAllInterface() {
 			}
 		}
 
-		if (bHitFlash)
-		{
-			float fCalc = ulHitFlash + Original_framedelay ;
+		if(bHitFlash) {
+			float fCalc = ulHitFlash + Original_framedelay;
 
 			ulHitFlash = checked_range_cast<unsigned long>(fCalc);
 
-			if (ulHitFlash >= 500)
-			{
+			if(ulHitFlash >= 500) {
 				bHitFlash = false;
 				ulHitFlash = 0;
 			}
@@ -6039,121 +6030,89 @@ void ArxGame::drawAllInterface() {
 		//---------------------------------------------------------------------
 		Entity * io = NULL;
 
-		if (SecondaryInventory!=NULL)
-		{
-			io = (Entity *)SecondaryInventory->io;
-		}
-		else if (player.Interface & INTER_STEAL)
-		{
+		if(SecondaryInventory) {
+			io = SecondaryInventory->io;
+		} else if(player.Interface & INTER_STEAL) {
 			io = ioSteal;
 		}
 
-		if (io!=NULL)
-		{
+		if(io) {
 			float dist = fdist(io->pos, player.pos + (Vec3f::Y_AXIS * 80.f));
 
-			if (Project.telekinesis)
-			{
-				if (dist > 900.f)
-				{
-					if (InventoryDir != -1)
-					{
+			if(Project.telekinesis) {
+				if(dist > 900.f) {
+					if(InventoryDir != -1) {
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
 						InventoryDir=-1;
 						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 						TSecondaryInventory=SecondaryInventory;
 						SecondaryInventory=NULL;
-					}
-					else
-					{
-						if (player.Interface & INTER_STEAL)
-						{
+					} else {
+						if(player.Interface & INTER_STEAL) {
 							player.Interface &= ~INTER_STEAL;
 						}
 					}
 				}
-			}
-			else if (dist > 350.f)
-			{
-				if (InventoryDir != -1)
-				{
+			} else if(dist > 350.f) {
+				if(InventoryDir != -1) {
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
 					InventoryDir=-1;
 					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
-				}
-				else
-				{
-					if (player.Interface & INTER_STEAL)
-					{
+				} else {
+					if(player.Interface & INTER_STEAL) {
 						player.Interface &= ~INTER_STEAL;
 					}
 				}
 			}
-		}
-		else if (InventoryDir != -1)
-		{
+		} else if(InventoryDir != -1) {
 			InventoryDir = -1;
 		}
 
-		if (!PLAYER_INTERFACE_HIDE_COUNT && (TSecondaryInventory != NULL))
-		{
+		if(!PLAYER_INTERFACE_HIDE_COUNT && TSecondaryInventory) {
 			ARX_INTERFACE_DrawSecondaryInventory((bool)((player.Interface & INTER_STEAL) != 0));
 		}
 
-		if (!PLAYER_INTERFACE_HIDE_COUNT)
-		{
-			if ((player.Interface & INTER_INVENTORY))
-			{
-
-				if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
-				{
-					long t = Original_framedelay * ( 1.0f / 5 ) + 2;
+		if(!PLAYER_INTERFACE_HIDE_COUNT) {
+			if(player.Interface & INTER_INVENTORY) {
+				if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+					long t = Original_framedelay * (1.f/5) + 2;
 					InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
-					if ( InventoryY > INTERFACE_RATIO( 110.f ) ) InventoryY = static_cast<long>( INTERFACE_RATIO( 110.f ) );
-
-
-				}
-				else
-				{
-					if (bInventoryClosing)
-					{
-						long t = Original_framedelay * ( 1.0f / 5 ) + 2;
+					if(InventoryY > INTERFACE_RATIO(110.f))
+						InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
+				} else {
+					if(bInventoryClosing) {
+						long t = Original_framedelay * (1.f/5) + 2;
 						InventoryY += static_cast<long>(INTERFACE_RATIO_LONG(t));
 
-						if (InventoryY > INTERFACE_RATIO(110))
-						{
-							InventoryY = static_cast<long>( INTERFACE_RATIO( 110.f ) );
+						if(InventoryY > INTERFACE_RATIO(110)) {
+							InventoryY = static_cast<long>(INTERFACE_RATIO(110.f));
 							bInventoryClosing = false;
 
 							player.Interface &=~ INTER_INVENTORY;
 
-							if (bInventorySwitch)
-							{
+							if(bInventorySwitch) {
 								bInventorySwitch = false;
 								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 								player.Interface |= INTER_INVENTORYALL;
 								ARX_INTERFACE_NoteClose();
-								InventoryY = static_cast<long>( INTERFACE_RATIO( 121.f ) * (player.bag) );
+								InventoryY = static_cast<long>(INTERFACE_RATIO(121.f) * player.bag);
 								lOldInterface=INTER_INVENTORYALL;
 							}
 						}
-					}
-					else if (InventoryY>0)
-					{
-						InventoryY -= static_cast<long>( INTERFACE_RATIO( ( Original_framedelay * ( 1.0f / 5 ) ) + 2.f ) );
+					} else if(InventoryY > 0) {
+						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * (1.f/5)) + 2.f));
 
-
-						if (InventoryY<0) InventoryY=0;
+						if(InventoryY < 0)
+							InventoryY = 0;
 					}
 				}
 
-				if (player.bag)
-				{
+				if(player.bag) {
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
 					arx_assert(ITC.Get("hero_inventory") != NULL);
@@ -6163,12 +6122,10 @@ void ArxGame::drawAllInterface() {
 					float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
 					float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
 
-					if (sActiveInventory > 0)
-					{
+					if(sActiveInventory > 0) {
 						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
 
-						if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
-						{
+						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							SpecialCursor=CURSOR_INTERACTION_ON;
@@ -6177,30 +6134,26 @@ void ArxGame::drawAllInterface() {
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
 							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && (DRAGINTER!=NULL)))
+								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
 							{
-								if (sActiveInventory > 0)
-								{
+								if(sActiveInventory > 0) {
 									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 									sActiveInventory --;
 								}
 
-								EERIEMouseButton &=~1;
+								EERIEMouseButton &= ~1;
 							}
 						}
 					}
 
-					if (sActiveInventory < player.bag-1)
-					{
-
+					if(sActiveInventory < player.bag-1) {
 						float fRatio = INTERFACE_RATIO(32 + 5);
 
 						posy += checked_range_cast<int>(fRatio);
 
 						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 
-						if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
-						{
+						if(MouseInRect(posx, posy, posx + INTERFACE_RATIO(32), posy + INTERFACE_RATIO(32))) {
 							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
@@ -6208,76 +6161,61 @@ void ArxGame::drawAllInterface() {
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
 							if (((EERIEMouseButton & 1)  && !(LastMouseClick & 1))
-								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && (DRAGINTER!=NULL)))
+								|| ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && DRAGINTER))
 							{
-								if (sActiveInventory < player.bag-1)
-								{
+								if(sActiveInventory < player.bag-1) {
 									ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 									sActiveInventory ++;
 								}
 
-								EERIEMouseButton &=~1;
+								EERIEMouseButton &= ~1;
 							}
 						}
 					}
 				}
-			}
-			else if ((player.Interface & INTER_INVENTORYALL) || bInventoryClosing)
-			{
-				float fSpeed = ( 1.0f / 3 );
+			} else if((player.Interface & INTER_INVENTORYALL) || bInventoryClosing) {
+				float fSpeed = (1.f/3);
 
-				if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
-				{
-					if (InventoryY < INTERFACE_RATIO(121)*player.bag)
-					{
+				if((player.Interface & INTER_COMBATMODE) || player.doingmagic >= 2) {
+					if(InventoryY < INTERFACE_RATIO(121) * player.bag) {
 
 						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
 					}
-				}
-				else
-				{
-					if (bInventoryClosing)
-					{
+				} else {
+					if(bInventoryClosing) {
 						InventoryY += static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
 
-						if ( InventoryY > INTERFACE_RATIO(121) * player.bag )
-						{
+						if(InventoryY > INTERFACE_RATIO(121) * player.bag) {
 							bInventoryClosing = false;
 
-							if (player.Interface & INTER_INVENTORYALL)
-							{
-								player.Interface &=~ INTER_INVENTORYALL;
+							if(player.Interface & INTER_INVENTORYALL) {
+								player.Interface &= ~INTER_INVENTORYALL;
 							}
 
 							lOldInterface=0;
 						}
-					}
-					else if (InventoryY>0)
-					{
+					} else if(InventoryY > 0) {
 						InventoryY -= static_cast<long>(INTERFACE_RATIO((Original_framedelay * fSpeed) + 2.f));
 
-						if (InventoryY<0)
-						{
-							InventoryY=0;
-						}
+						if(InventoryY < 0)
+							InventoryY = 0;
 					}
 				}
 
-				const float fBag		= (player.bag-1)*INTERFACE_RATIO(-121);
-				float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320+35);
-				float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
-				const float fOffsetY	= INTERFACE_RATIO(121);
+				const float fBag = (player.bag-1) * INTERFACE_RATIO(-121);
+				float fCenterX = DANAECENTERX + INTERFACE_RATIO(-320+35);
+				float fSizY = DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3.f + 25 - 32);
+				const float fOffsetY = INTERFACE_RATIO(121);
 
 				int iOffsetY = checked_range_cast<int>(fBag + fOffsetY);
 				int posx = checked_range_cast<int>(fCenterX);
 				int posy = checked_range_cast<int>(fSizY);
 
-				for (int i=0; i<player.bag; i++)
-				{
+				for(int i = 0; i < player.bag; i++) {
 					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), static_cast<float>(posy + iOffsetY)) ;
 
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx+INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx+INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 
 					iOffsetY += checked_range_cast<int>(fOffsetY);
 				}
@@ -6288,54 +6226,45 @@ void ArxGame::drawAllInterface() {
 					ARX_INTERFACE_DrawInventory(i, 0, iOffsetY);
 					iOffsetY += checked_range_cast<int>(fOffsetY);
 				}
-
 			}
 		}
 
-		if (((FlyingOverIO) && !(PLAYER_MOUSELOOK_ON) && !(player.Interface & INTER_COMBATMODE)
-			&& (!GInput->actionPressed(CONTROLS_CUST_MAGICMODE)))
+		if ((FlyingOverIO && !PLAYER_MOUSELOOK_ON && !(player.Interface & INTER_COMBATMODE)
+			&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
 			|| 
-			(((FlyingOverIO) && (config.input.autoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
-			&& (!GInput->actionPressed(CONTROLS_CUST_MAGICMODE))))
+			(FlyingOverIO && (config.input.autoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
+			&& !GInput->actionPressed(CONTROLS_CUST_MAGICMODE))
 			)
 		{
-			if ((FlyingOverIO->ioflags & IO_ITEM) && (!DRAGINTER))
-				if (SecondaryInventory!=NULL)
-				{
-					Entity * temp=(Entity *)SecondaryInventory->io;
+			if((FlyingOverIO->ioflags & IO_ITEM) && !DRAGINTER)
+				if(SecondaryInventory) {
+					Entity *temp = SecondaryInventory->io;
 
-					if (temp->ioflags & IO_SHOP)
-					{
-						float px	=	DANAEMouse.x;
-						float py	=	static_cast<float>(DANAEMouse.y - 10);
+					if(temp->ioflags & IO_SHOP) {
+						float px = DANAEMouse.x;
+						float py = static_cast<float>(DANAEMouse.y - 10);
 
-						if (InSecondaryInventoryPos(&DANAEMouse))
-						{
+						if(InSecondaryInventoryPos(&DANAEMouse)) {
 							long amount=ARX_INTERACTIVE_GetPrice(FlyingOverIO,temp);
 							// achat
-							float famount	= amount - amount * ( (float)player.Full_Skill_Intuition ) * 0.005f;
+							float famount = amount - amount * player.Full_Skill_Intuition * 0.005f;
 							// check should always be OK because amount is supposed positive
 							amount = checked_range_cast<long>(famount);
 
-
-							if ( amount <= player.gold )
+							if(amount <= player.gold)
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 							else
 								ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
-						}
-						else if (InPlayerInventoryPos(&DANAEMouse))
-						{
+						} else if(InPlayerInventoryPos(&DANAEMouse)) {
 							long amount = static_cast<long>( ARX_INTERACTIVE_GetPrice( FlyingOverIO, temp ) / 3.0f );
 							// achat
-							float famount	= amount + amount * ( (float) player.Full_Skill_Intuition ) * 0.005f;
+							float famount = amount + amount * player.Full_Skill_Intuition * 0.005f;
 							// check should always be OK because amount is supposed positive
 							amount = checked_range_cast<long>( famount );
 
-
-							if (amount)
-							{
-								if (temp->shop_category.empty() ||
-									FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end())
+							if(amount) {
+								if(temp->shop_category.empty() ||
+										FlyingOverIO->groups.find(temp->shop_category) != FlyingOverIO->groups.end())
 									ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::green);
 								else
 									ARX_INTERFACE_DrawNumber(px, py, amount, 6, Color::red);
@@ -6349,10 +6278,8 @@ void ArxGame::drawAllInterface() {
 
 		ARX_INTERFACE_DrawDamagedEquipment();
 
-		if ((!(player.Interface & INTER_COMBATMODE)))
-		{
-			if (player.Interface & INTER_MINIBACK)
-			{
+		if(!(player.Interface & INTER_COMBATMODE)) {
+			if(player.Interface & INTER_MINIBACK) {
 				// Draw/Manage Book Icon
 				float px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 				float py=DANAESIZY - INTERFACE_RATIO(148);
