@@ -6428,8 +6428,7 @@ void ArxGame::drawAllInterface() {
 
 			float vv = 0.9f - EEsin(arxtime.get_frame_time()*( 1.0f / 50 ))*0.5f+rnd()*( 1.0f / 10 );
 
-			if ( vv < 0.f ) vv = 0;
-			else if ( vv > 1.f ) vv = 1.f;
+			vv = clamp(vv, 0.f, 1.f);
 
 			ARX_INTERFACE_DrawItem(ChangeLevel, px, py, 0.0001f, Color::gray(vv));
 
