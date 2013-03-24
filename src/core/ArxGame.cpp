@@ -934,17 +934,19 @@ void ArxGame::updateConversationCamera() {
 		Vec3f vec2;
 		Vec3f vect = targetpos - sourcepos;
 		fnormalize(vect);
-		float dist=250.f-conversationcamera.size.g;
 
-		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
-		else if (dist<90.f) dist=90.f;
+		float dist = 250.f - conversationcamera.size.g;
+		if(dist < 0.f)
+			dist = 90.f - dist * (1.f/20);
+		else if(dist < 90.f)
+			dist = 90.f;
 
-		YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
+		YRotatePoint(&vect, &vec2, EEcos(radians(conversationcamera.size.a)), EEsin(radians(conversationcamera.size.a)));
 
 		sourcepos = targetpos - vec2 * dist;
 
-		if (conversationcamera.size.b!=0.f)
-			sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
+		if(conversationcamera.size.b != 0.f)
+			sourcepos.y += 120.f - conversationcamera.size.b * (1.f/10);
 
 		conversationcamera.orgTrans.pos = sourcepos;
 		conversationcamera.setTargetCamera(targetpos);
@@ -953,14 +955,11 @@ void ArxGame::updateConversationCamera() {
 		subj.angle.b = MAKEANGLE(conversationcamera.angle.b - 180.f);
 		subj.angle.g = 0.f;
 		EXTERNALVIEW = true;
-	}
-	else
-	{
+	} else {
 		ARX_CONVERSATION_MODE=-1;
 		ARX_CONVERSATION_LASTIS=-1;
 
-		if (LAST_CONVERSATION)
-		{
+		if(LAST_CONVERSATION) {
 			AcquireLastAnim(entities.player());
 			ANIM_Set(&entities.player()->animlayer[1],entities.player()->anims[ANIM_WAIT]);
 			entities.player()->animlayer[1].flags|=EA_LOOP;
