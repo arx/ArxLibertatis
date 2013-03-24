@@ -1248,8 +1248,7 @@ void ArxGame::updateInput() {
 		setFullscreen(!getWindow()->isFullScreen());
 	}
 
-	if (GInput->isKeyPressedNowPressed(Keyboard::Key_F12))
-	{
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_F12)) {
 		EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 		ComputePortalVertexBuffer();
 	}
@@ -1262,8 +1261,8 @@ void ArxGame::updateInput() {
 		GetSnapShot();
 	}
 
-	if (GInput->isKeyPressedNowPressed(Keyboard::Key_Spacebar)) {
-		CAMERACONTROLLER=NULL;
+	if(GInput->isKeyPressedNowPressed(Keyboard::Key_Spacebar)) {
+		CAMERACONTROLLER = NULL;
 	}
 }
 
