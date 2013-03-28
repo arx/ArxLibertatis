@@ -61,7 +61,7 @@ if(DEBUG)
 endif()
 
 # Static libs
-set(default_USE_STATIC_LIBS OF)
+set(default_USE_STATIC_LIBS OFF)
 if(WIN32)
 	set(default_USE_STATIC_LIBS ON)
 endif()
@@ -214,6 +214,7 @@ if(WIN32)
 	else()
 		# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
 		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
+		add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
 	endif()
 	add_definitions(-DNOMINMAX)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
@@ -362,6 +363,7 @@ if(NOT MSVC)
 		# Older Boost versions don't work with C++11
 	elseif(USE_CXX11)
 		add_cxxflag("-std=c++11")
+		add_definitions(-U__STRICT_ANSI__) # __argc and __argv
 	endif()
 	
 	# Don't expose internal symbols to the outside world by default
@@ -872,7 +874,7 @@ set(ARX_SOURCES
 )
 
 # Set the icon for the Windows executable by adding this resource file to the sources
-if(MSVC)
+if(MSVC OR MINGW)
 	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
 endif()
 
