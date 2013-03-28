@@ -1353,10 +1353,6 @@ void ArxGame::renderLevel() {
 		if(speedfactor < 0)
 			speedfactor = 0;
 
-		float restore=ACTIVECAM->orgTrans.use_focal;
-		if(!EXTERNALVIEW && !BOW_FOCAL)
-			ACTIVECAM->orgTrans.use_focal = PLAYER_ARMS_FOCAL * Xratio;
-
 		float val = Original_framedelay * speedfactor;
 
 		if(entities.player()->ioflags & IO_FREEZESCRIPT)
@@ -1371,8 +1367,6 @@ void ArxGame::renderLevel() {
 
 		if(entities.player()->animlayer[1].cur_anim)
 			ManageCombatModeAnimationsEND();
-
-		ACTIVECAM->orgTrans.use_focal = restore;
 	}
 
 	updateFirstPersonCamera();
