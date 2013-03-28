@@ -46,6 +46,8 @@
 #include "platform/Platform.h"
 #include "util/String.h"
 
+#include "crashreporter/Win32Utilities.h"
+
 namespace platform {
 
 	
