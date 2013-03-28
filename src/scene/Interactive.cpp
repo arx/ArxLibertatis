@@ -3218,32 +3218,30 @@ void RenderInter(float from, float to) {
 
 void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 {
-	if (ioo)
-	{
-		if (ioo->show == SHOW_FLAG_DESTROYED)
+	if(!ioo)
+		return;
+
+		if(ioo->show == SHOW_FLAG_DESTROYED)
 			return;
 
 		ARX_INTERACTIVE_ForceIOLeaveZone(ioo, 0);
 
-		if (DRAGINTER == ioo)
+		if(DRAGINTER == ioo)
 			Set_DragInter(NULL);
 
-		if (FlyingOverIO == ioo)
+		if(FlyingOverIO == ioo)
 			FlyingOverIO = NULL;
 
-		if (COMBINE == ioo)
+		if(COMBINE == ioo)
 			COMBINE = NULL;
 
-		if ((ioo->ioflags & IO_ITEM) && (ioo->_itemdata->count > 1))
-		{
+		if((ioo->ioflags & IO_ITEM) && ioo->_itemdata->count > 1) {
 			ioo->_itemdata->count--;
-		}
-		else
-		{
+		} else {
 			// Kill all spells
 			long numm = ioo->index();
 
-			if (ValidIONum(numm))
+			if(ValidIONum(numm))
 				ARX_SPELLS_FizzleAllSpellsFromCaster(numm);
 
 			// Need To Kill timers
@@ -3251,23 +3249,19 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 			ioo->show = SHOW_FLAG_DESTROYED;
 			ioo->gameFlags &= ~GFLAG_ISINTREATZONE;
 
-			if (!FAST_RELEASE)
+			if(!FAST_RELEASE)
 				RemoveFromAllInventories(ioo);
 
-			if (ioo->obj)
-			{
+			if(ioo->obj) {
 				EERIE_3DOBJ * eobj = ioo->obj;
 
-				while (eobj->nblinked)
-				{
+				while(eobj->nblinked) {
 					long k = 0;
 
-					if ((eobj->linked[k].lgroup != -1) && eobj->linked[k].obj)
-					{
+					if(eobj->linked[k].lgroup != -1 && eobj->linked[k].obj) {
 						Entity * iooo = (Entity *)eobj->linked[k].io;
 
-						if ((iooo) && ValidIOAddress(iooo))
-						{
+						if(iooo && ValidIOAddress(iooo)) {
 							EERIE_LINKEDOBJ_UnLinkObjectFromObject(ioo->obj, iooo->obj);
 							ARX_INTERACTIVE_DestroyIO(iooo);
 						}
@@ -3281,7 +3275,6 @@ void ARX_INTERACTIVE_DestroyIO(Entity * ioo)
 				delete ioo;
 			}
 		}
-	}
 }
 
 //*************************************************************************************
