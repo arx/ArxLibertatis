@@ -1828,8 +1828,7 @@ void ArxGame::goFor2DFX()
 			continue;
 		}
 
-		if (el->extras & EXTRAS_FLARE)
-		{
+		if(el->extras & EXTRAS_FLARE) {
 			lv.p = el->pos;
 			EE_RTP(&lv,&ltvv);
 			el->temp -= temp_increase;
@@ -1837,11 +1836,11 @@ void ArxGame::goFor2DFX()
 			if(!(player.Interface & INTER_COMBATMODE) && (player.Interface & INTER_MAP))
 				continue;
 
-			if ((ltvv.rhw > 0.f) &&
-				(ltvv.p.x>0.f) &&
-				(ltvv.p.y>(CINEMA_DECAL*Yratio)) &&
-				(ltvv.p.x<DANAESIZX) &&
-				(ltvv.p.y<(DANAESIZY-(CINEMA_DECAL*Yratio)))
+			if(ltvv.rhw > 0.f &&
+				ltvv.p.x > 0.f &&
+				ltvv.p.y > (CINEMA_DECAL*Yratio) &&
+				ltvv.p.x < DANAESIZX &&
+				ltvv.p.y < (DANAESIZY-(CINEMA_DECAL*Yratio))
 				)
 			{
 				Vec3f vector = lv.p - ACTIVECAM->orgTrans.pos;
@@ -1864,19 +1863,15 @@ void ArxGame::goFor2DFX()
 					bComputeIO = true;
 				}
 
-				if(
-					(ltvv.p.z>fZFar)||
-					EERIELaunchRay3(&ACTIVECAM->orgTrans.pos,&ee3dlv,&hit,tp,1)||
+				if(ltvv.p.z > fZFar ||
+					EERIELaunchRay3(&ACTIVECAM->orgTrans.pos, &ee3dlv, &hit, tp, 1) ||
 					GetFirstInterAtPos(&ees2dlv, 3, &ee3dlv, pTableIO, &nNbInTableIO )
 					)
 				{
 					el->temp-=temp_increase*2.f;
-				}
-				else
-				{
+				} else {
 					el->temp+=temp_increase*2.f;
 				}
-
 			}
 
 			el->temp = clamp(el->temp, 0.f, .8f);
