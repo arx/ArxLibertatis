@@ -1343,8 +1343,6 @@ void ArxGame::renderLevel() {
 
 	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
 		ManageNONCombatModeAnimations();
-		long old=USEINTERNORM;
-		USEINTERNORM=0;
 
 		float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
 		if(cur_mr==3)
@@ -1376,7 +1374,6 @@ void ArxGame::renderLevel() {
 			ManageCombatModeAnimationsEND();
 
 		ACTIVECAM->orgTrans.use_focal = restore;
-		USEINTERNORM = old;
 	}
 
 	updateFirstPersonCamera();
