@@ -147,7 +147,6 @@ extern bool PLAYER_MOUSELOOK_ON;
 extern bool TRUE_PLAYER_MOUSELOOK_ON;
 extern long PLAYER_PARALYSED;
 extern long STOP_KEYBOARD_INPUT;
-extern long USEINTERNORM;
 extern long cur_mr;
 extern long cur_rf;
 extern long DeadTime;

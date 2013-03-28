@@ -119,7 +119,6 @@ long FORCE_NO_HIDE = 0;
 extern unsigned char * grps;
 long TRAP_DETECT = -1;
 long TRAP_SECRET = -1;
-long USEINTERNORM = 1;
 long HALOCUR = 0;
 
 static const long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
@@ -1093,19 +1092,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 		if(eobj->facelist[i].facetype & POLY_GLOW) { // unaffected by light
 			vert_list[0].color=vert_list[1].color=vert_list[2].color=0xffffffff;
-		} else if(USEINTERNORM) { // Normal Illuminations
+		} else { // Normal Illuminations
 			for(long j=0;j<3;j++) {
 				vert_list[j].color=eobj->vertexlist3[paf[j]].vert.color;
 			}
-		} else if(Project.improve) { // IMPROVED VISION view ?
-			if(io)
-				vert_list[2].color = io->infracolor.toBGR();
-			else
-				vert_list[2].color = Color3f(.6f, 0.f, 1.f).toBGR();
-
-			vert_list[0].color = vert_list[1].color = vert_list[2].color;
-		} else { // default white
-			vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::white.toBGR();
 		}
 
 		if(io) {
