@@ -201,7 +201,7 @@ static int zenityCommand(DialogType type, const std::string & message,
 		                               " --cancel-label=\"Cancel\""; break;
 	}
 	
-	boost::format command("zenity %1% --text=\"%2%\" --title=\"%3%\"");
+	boost::format command("zenity %1% --no-wrap --text=\"%2%\" --title=\"%3%\"");
 	command = command % options;
 	command = command % escape(formatAsHtml(message, true));
 	command = command % escape(dialogTitle);
