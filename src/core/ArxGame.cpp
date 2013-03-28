@@ -1310,6 +1310,35 @@ void ArxGame::renderLevel() {
 			ManageIgnition(entity);
 	}
 
+	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
+		ManageNONCombatModeAnimations();
+
+		float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
+		if(cur_mr==3)
+			speedfactor+=0.5f;
+
+		if(cur_rf==3)
+			speedfactor+=1.5f;
+
+		if(speedfactor < 0)
+			speedfactor = 0;
+
+		float val = Original_framedelay * speedfactor;
+
+		if(entities.player()->ioflags & IO_FREEZESCRIPT)
+			val = 0;
+
+		arx_assert(entities.player()->obj);
+		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
+			&entities.player()->pos, checked_range_cast<unsigned long>(val), entities.player(), false, false);
+
+		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
+			ManageCombatModeAnimations();
+
+		if(entities.player()->animlayer[1].cur_anim)
+			ManageCombatModeAnimationsEND();
+	}
+
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 
 	// Clear screen & Z buffers
@@ -1339,35 +1368,6 @@ void ArxGame::renderLevel() {
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-
-	if(entities.player() && entities.player()->animlayer[0].cur_anim) {
-		ManageNONCombatModeAnimations();
-
-		float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
-		if(cur_mr==3)
-			speedfactor+=0.5f;
-
-		if(cur_rf==3)
-			speedfactor+=1.5f;
-
-		if(speedfactor < 0)
-			speedfactor = 0;
-
-		float val = Original_framedelay * speedfactor;
-
-		if(entities.player()->ioflags & IO_FREEZESCRIPT)
-			val = 0;
-
-		arx_assert(entities.player()->obj);
-		EERIEDrawAnimQuat(entities.player()->obj, &entities.player()->animlayer[0], &entities.player()->angle,
-			&entities.player()->pos, checked_range_cast<unsigned long>(val), entities.player(), false, false);
-
-		if((player.Interface & INTER_COMBATMODE) && entities.player()->animlayer[1].cur_anim)
-			ManageCombatModeAnimations();
-
-		if(entities.player()->animlayer[1].cur_anim)
-			ManageCombatModeAnimationsEND();
-	}
 
 	updateFirstPersonCamera();
 	updateConversationCamera();
