@@ -90,7 +90,6 @@ using std::max;
 unsigned char * grps = NULL;
 static long max_grps = 0;
 extern long FORCE_NO_HIDE;
-extern long USEINTERNORM;
 
 extern float dists[];
 extern long BH_MODE;
@@ -654,13 +653,11 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 
 			EERIEMATRIX matrix;//,omatrix;
 
-			if(USEINTERNORM) {
 				EERIE_QUAT qt1;
 				Quat_Copy(&qt1, &obj->bones[i].quatanim);
 				Quat_Reverse(&qt1);
 				MatrixFromQuat(&matrix, &qt1);
 				//	FMatrixInvert(matrix,omatrix);
-			}
 
 			/* Get light value for each vertex */
 			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
@@ -668,14 +665,9 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				long  ir, ig, ib;
 
 				Vec3f posVert;
-				if(USEINTERNORM) {
+
 					posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
-				} else {
-					if(io)
-						posVert = io->obj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-					else
-						posVert = eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
-				}
+
 
 				/* Ambient light */
 				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
@@ -693,7 +685,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 					if(!Cur_llights)
 						break;
 
-					if(USEINTERNORM) {
+
 						Vec3f &Cur_vTLights = vTLights[l];
 						Vec3f tl;
 						tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
@@ -725,42 +717,15 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 								b += Cur_llights->rgb255.b * cosangle;
 							}
 						}
-					} else {
-						// tsu
-						if(Cur_llights->fallend < 0) {
-							TSU_TEST_NB_LIGHT ++;
-							continue;
-						}
 
-						float cosangle;
-						float distance = fdist(Cur_llights->pos, posVert);
-
-						/* Evaluate its intensity depending on the distance Light<->Object */
-						if(distance <= Cur_llights->fallstart) {
-							cosangle = Cur_llights->intensity * GLOBAL_LIGHT_FACTOR;
-						} else {
-							float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
-
-							if(p <= 0.f)
-								cosangle = 0.f;
-							else
-								cosangle = p * Cur_llights->precalc;
-						}
-
-						r += Cur_llights->rgb255.r * cosangle;
-						g += Cur_llights->rgb255.g * cosangle;
-						b += Cur_llights->rgb255.b * cosangle;
-					}
 				}
 
-				if(USEINTERNORM) {
 					/* Fake adjust */
 					if(Project.improve) {
 						r *= infra.r;
 						g *= infra.g;
 						b *= infra.b;
 					}
-				}
 
 				if(special_color_flag & 1) {
 					r *= special_color.r;
