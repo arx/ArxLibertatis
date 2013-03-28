@@ -2652,15 +2652,18 @@ void ManageCombatModeAnimationsEND()
 float LAST_FADEVALUE=1.f;
 void ManageFade()
 {
-	float tim = (arxtime.get_updated() - (float)FADESTART);
+	float tim = arxtime.get_updated() - (float)FADESTART;
 
-	if (tim<=0.f) return;
+	if(tim <= 0.f)
+		return;
 
-	float Visibility=tim/(float)FADEDURATION;
+	float Visibility = tim / (float)FADEDURATION;
 
-	if (FADEDIR>0) Visibility=1.f-Visibility;
+	if(FADEDIR > 0)
+		Visibility = 1.f - Visibility;
 
-	if (Visibility>1.f) Visibility=1.f;
+	if(Visibility > 1.f)
+		Visibility = 1.f;
 
 	if(Visibility < 0.f) {
 		FADEDIR = 0;
