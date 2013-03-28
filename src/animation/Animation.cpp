@@ -502,6 +502,10 @@ suite:
 		}
 	}
 }
+
+extern long cur_mr;
+extern long cur_rf;
+
 Entity * DESTROYED_DURING_RENDERING=NULL;
 
 void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f *pos, unsigned long time, Entity *io, bool render, bool update_movement) {
@@ -526,6 +530,23 @@ void EERIEDrawAnimQuat(EERIE_3DOBJ *eobj, ANIM_USE *eanim, Anglef *angle, Vec3f 
 			io->frameloss -= tt;
 			time += tt;
 		}
+	}
+
+	if(!render && !update_movement) {
+		float speedfactor = entities.player()->basespeed + entities.player()->speed_modif;
+		if(cur_mr==3)
+			speedfactor+=0.5f;
+
+		if(cur_rf==3)
+			speedfactor+=1.5f;
+
+		if(speedfactor < 0)
+			speedfactor = 0;
+
+		time = Original_framedelay * speedfactor;
+
+		if(entities.player()->ioflags & IO_FREEZESCRIPT)
+			time = 0;
 	}
 
 	if(time > 0) {
