@@ -345,13 +345,12 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 	float vratio=size*( 1.0f / 40 );
 
-	for(long j=z0; j<=z1; j++)
-	for(long i=x0; i<=x1; i++)
-	{
-		EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	for(long j = z0; j <= z1; j++)
+	for(long i = x0; i <= x1; i++) {
+		EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
 
 		for(long l = 0; l < eg->nbpolyin; l++) {
-			ep = eg->polyin[l];
+			EERIEPOLY *ep = eg->polyin[l];
 
 			if((flags & 2) && !(ep->type & POLY_WATER))
 				continue;
@@ -364,14 +363,14 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 			bool oki = false;
 
 			for(long k = 0; k < nbvert; k++) {
-				if((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z))
+				if(PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z)
 					&& fabs(ep->v[k].p.y-py) < 100.f)
 				{
 					oki = true;
 					break;
 				}
 
-				if((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f))
+				if(PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f)
 					&& fabs(ep->v[k].p.y-py) < 100.f)
 				{
 					oki = true;
