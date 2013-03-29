@@ -895,6 +895,8 @@ void CheckExp(long i) {
 	}
 }
 
+extern void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor);
+
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	if(Thrown_Count <= 0)
@@ -968,29 +970,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						if(notok < 0) {
 							pos = Thrown[i].obj->vertexlist3[it->vid[0]].v;
 
-							for(long nn = 0; nn < 2; nn++) {
-								
-								if(rnd() >= 0.4f) {
-									continue;
-								}
-								
-								PARTICLE_DEF * pd = createParticle();
-								if(!pd) {
-									break;
-								}
-								
-								pd->ov = pos;
-								pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(),
-								                 2.f - 4.f * rnd());
-								pd->siz = 7.f;
-								pd->tolive = Random::get(500, 1500);
-								pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-								pd->tc = fire2;
-								pd->fparam = 0.1f - rnd() * 0.2f;
-								pd->scale = Vec3f::repeat(-8.f);
-								pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-								pd->delay = nn * 180;
-							}
+							createFireParticles(pos, 2, 180);
 						}
 					}
 				}
