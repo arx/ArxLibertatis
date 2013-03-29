@@ -323,8 +323,6 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	float hdiv,vdiv;
 	hdiv=vdiv=1.f/(size*2);
 
-	long n;
-	EERIE_BKG_INFO * eg;
 	unsigned long tim = (unsigned long)(arxtime);
 
 	for(long i = 0; i < MAX_POLYBOOM; i++) {
@@ -350,7 +348,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	for(long j=z0; j<=z1; j++)
 	for(long i=x0; i<=x1; i++)
 	{
-		eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+		EERIE_BKG_INFO *eg = (EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 		for(long l = 0; l < eg->nbpolyin; l++) {
 			ep = eg->polyin[l];
@@ -363,40 +361,36 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 			long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
-			long oki=0;
+			bool oki = false;
 
-			for(long k=0; k<nbvert; k++) {
-				if ((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z))
-					&& ((float)fabs(ep->v[k].p.y-py) < 100.f) )
+			for(long k = 0; k < nbvert; k++) {
+				if((PointIn2DPolyXZ(&TheoricalSplat, ep->v[k].p.x, ep->v[k].p.z))
+					&& fabs(ep->v[k].p.y-py) < 100.f)
 				{
-					oki=1;
+					oki = true;
 					break;
 				}
 
-				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x)*( 1.0f / 2 ), (ep->v[k].p.z+ep->center.z)*( 1.0f / 2 )))
-					&& ((float)fabs(ep->v[k].p.y-py) < 100.f) )
+				if((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].p.x+ep->center.x) * 0.5f, (ep->v[k].p.z+ep->center.z) * 0.5f))
+					&& fabs(ep->v[k].p.y-py) < 100.f)
 				{
-					oki=1;
+					oki = true;
 					break;
 				}
 			}
 
-			if (!oki && (PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z))
-					&& (EEfabs(ep->center.y-py)<100.f) )
-					oki=1;
+			if(!oki && PointIn2DPolyXZ(&TheoricalSplat, ep->center.x, ep->center.z) && EEfabs(ep->center.y-py) < 100.f)
+				oki = true;
 
-			
-			if (oki)
-			{
-				n=ARX_BOOMS_GetFree();
+			if(oki) {
+				long n = ARX_BOOMS_GetFree();
 
-				if (n>=0) 
-				{
+				if(n >= 0) {
 					BoomCount++;
-					POLYBOOM * pb=&polyboom[n];
+					POLYBOOM *pb = &polyboom[n];
 					pb->type=1;	
 
-					if (flags & 2)
+					if(flags & 2)
 						pb->type=2;	
 
 					pb->exist=1;
@@ -409,12 +403,12 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 					
 					int t = checked_range_cast<int>(fRandom);
 
-					if (flags & 2)
+					if(flags & 2)
 						pb->tc = water_splat[t];
 
 					pb->tolive=(long)(float)(16000*vratio);
 
-					if (flags & 2)
+					if(flags & 2)
 						pb->tolive=1500;
 					
 					pb->timecreation=tim;
@@ -424,21 +418,21 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 					pb->rgb = *col;
 
-					for (int k=0;k<nbvert;k++) 
-					{
+					for(int k = 0; k < nbvert; k++) {
 						float vdiff=EEfabs(ep->v[k].p.y-RealSplatStart.y);
 						pb->u[k]=(ep->v[k].p.x-RealSplatStart.x)*hdiv;
 
-						if (pb->u[k]<0.5f)
+						if(pb->u[k]<0.5f)
 							pb->u[k]-=vdiff*hdiv;
-						else pb->u[k]+=vdiff*hdiv;
+						else
+							pb->u[k]+=vdiff*hdiv;
 
 						pb->v[k]=(ep->v[k].p.z-RealSplatStart.z)*vdiv;
 
-						if (pb->v[k]<0.5f)
+						if(pb->v[k]<0.5f)
 							pb->v[k]-=vdiff*vdiv;
-						else pb->v[k]+=vdiff*vdiv;
-
+						else
+							pb->v[k]+=vdiff*vdiv;
 					}
 
 					pb->nbvert=(short)nbvert;
