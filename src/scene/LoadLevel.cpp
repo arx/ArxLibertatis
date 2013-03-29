@@ -831,7 +831,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 				el->pos = dlight->pos;
 				el->rgb = dlight->rgb;
 				
-				el->extras = checked_range_cast<short>(dlight->extras);
+				el->extras = ExtrasType::load(dlight->extras);
 				
 				el->ex_flicker = dlight->ex_flicker;
 				el->ex_radius = dlight->ex_radius;
@@ -1033,7 +1033,7 @@ long DanaeLoadLevel(const res::path & file, bool loadEntities) {
 			
 			el->rgb = dlight->rgb;
 			
-			el->extras = checked_range_cast<short>(dlight->extras);
+			el->extras = ExtrasType::load(dlight->extras);
 			
 			el->ex_flicker = dlight->ex_flicker;
 			el->ex_radius = dlight->ex_radius;
