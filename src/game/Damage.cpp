@@ -1382,12 +1382,12 @@ bool ARX_DAMAGES_TryToDoDamage(Vec3f * pos, float dmg, float radius, long source
 
 void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 	
-	if (!(flag & 1))
-		for (size_t i = 0; i < MAX_LIGHTS; i++)
-		{
+	if(!(flag & 1))
+		for(size_t i = 0; i < MAX_LIGHTS; i++) {
 			EERIE_LIGHT * el = GLight[i];
 
-			if (el == NULL) continue;
+			if(el == NULL)
+				continue;
 
 			if ((el->extras & EXTRAS_EXTINGUISHABLE)
 			        &&
@@ -1395,16 +1395,14 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 			         || (el->extras & EXTRAS_SPAWNFIRE)
 			         || (el->extras & EXTRAS_SPAWNSMOKE)))
 			{
-				if ((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
+				if((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
 					continue;
 
 				if(distSqr(*pos, el->pos) <= square(radius)) {
 					if(mode) {
 						if (!(el->extras & EXTRAS_NO_IGNIT))
 							el->status = 1;
-					}
-					else
-					{
+					} else {
 						el->status = 0;
 					}
 				}
@@ -1415,38 +1413,27 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 	for(size_t i = 0; i < entities.size(); i++) {
 		Entity * io = entities[i];
 
-		if ((io)
-		        &&	(io->show == 1)
-		        &&	(io->obj)
-		        &&  !(io->ioflags & IO_UNDERWATER)
-		        &&	(io->obj->fastaccess.fire >= 0)
-		   )
-		{
+		if(io && io->show == 1 && io->obj && !(io->ioflags & IO_UNDERWATER) && io->obj->fastaccess.fire >= 0) {
 			
 			if(distSqr(*pos, io->obj->vertexlist3[io->obj->fastaccess.fire].v) < square(radius)) {
 
-				if ((mode) && (io->ignition <= 0) && (io->obj->fastaccess.fire >= 0))
-				{
+				if(mode && io->ignition <= 0 && io->obj->fastaccess.fire >= 0) {
 					io->ignition = 1;
-				}
-				else if ((!mode) && (io->ignition > 0))
-				{
-					if (io->obj->fastaccess.fire >= 0)
-					{
+				} else if(!mode && io->ignition > 0) {
+					if(io->obj->fastaccess.fire >= 0) {
 						io->ignition = 0; 
 
-						if (ValidDynLight(io->ignit_light))
+						if(ValidDynLight(io->ignit_light))
 							DynLight[io->ignit_light].exist = 0;
 
 						io->ignit_light = -1;
 
-						if (io->ignit_sound != audio::INVALID_ID)
-						{
+						if(io->ignit_sound != audio::INVALID_ID) {
 							ARX_SOUND_Stop(io->ignit_sound);
 							io->ignit_sound = audio::INVALID_ID;
 						}
 					}
-					else if (!(flag & 2))
+					else if(!(flag & 2))
 						io->ignition = 0.00001f;
 				}
 			}
