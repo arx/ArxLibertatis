@@ -346,12 +346,12 @@ void ARXDRAW_DrawPolyBoom()
 		if(polyboom[i].exist) {
 			if(polyboom[i].type & 128) {
 				if(polyboom[i].timecreation - framedelay > 0) {
-					float fCalc	=	polyboom[i].timecreation - framedelay;
+					float fCalc = polyboom[i].timecreation - framedelay;
 					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 
 				if(polyboom[i].timecreation - framedelay > 0) {
-					float fCalc	= 	polyboom[i].timecreation - framedelay;
+					float fCalc =  polyboom[i].timecreation - framedelay;
 					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 			}
@@ -364,13 +364,12 @@ void ARXDRAW_DrawPolyBoom()
 				continue;
 			}
 			
-			{
 			long typp = polyboom[i].type;
 			typp &= ~128;
 
 			switch(typp) {
 			case 0:
-				tt	=	(float)t / (float)polyboom[i].tolive * 0.8f;
+				tt = t / (float)polyboom[i].tolive * 0.8f;
 
 				IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
 				EE_RT2(&ltv[0],&ltv[0]);
@@ -391,9 +390,9 @@ void ARXDRAW_DrawPolyBoom()
 				}
 
 				GRenderer->SetTexture(0, Boom);
-				ARX_DrawPrimitive( &ltv[0], &ltv[1], &ltv[2]);
+				ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
-				if(polyboom[i].nbvert&4) {
+				if(polyboom[i].nbvert & 4) {
 					EE_RT2(&ltv[3],&ltv[3]);
 					ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 				}
@@ -404,7 +403,8 @@ void ARXDRAW_DrawPolyBoom()
 				tt=(float)t*div;
 				float tr = tt * 2 - 0.5f;
 
-				if (tr<1.f) tr=1.f;
+				if(tr < 1.f)
+					tr = 1.f;
 
 				ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
 
@@ -420,13 +420,9 @@ void ARXDRAW_DrawPolyBoom()
 				EE_RT2(&ltv[1],&ltv[1]);
 				EE_RT2(&ltv[2],&ltv[2]);
 
-				if(polyboom[i].nbvert&4)
-				{
+				if(polyboom[i].nbvert & 4) {
 					EE_RT2(&ltv[3],&ltv[3]);
 				}
-
-
-				{
 
 				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
@@ -449,8 +445,7 @@ void ARXDRAW_DrawPolyBoom()
 				}
 
 				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-				}
-				}
+			}
 			break;
 			case 2: // WATER
 			{
@@ -511,10 +506,8 @@ void ARXDRAW_DrawPolyBoom()
 				}
 
 				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
-
 			}
 			break;
-			}
 			}
 		}
 	}
