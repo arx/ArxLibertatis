@@ -74,12 +74,30 @@ struct EERIE_2D_BBOX {
 	Vec2f max;
 };
 
+enum EERIE_TYPES_EXTRAS_MODE
+{
+	EXTRAS_SEMIDYNAMIC       = 0x00000001,
+	EXTRAS_EXTINGUISHABLE    = 0x00000002,
+	EXTRAS_STARTEXTINGUISHED = 0x00000004,
+	EXTRAS_SPAWNFIRE         = 0x00000008,
+	EXTRAS_SPAWNSMOKE        = 0x00000010,
+	EXTRAS_OFF               = 0x00000020,
+	EXTRAS_COLORLEGACY       = 0x00000040,
+	EXTRAS_NOCASTED          = 0x00000080,
+	EXTRAS_FIXFLARESIZE      = 0x00000100,
+	EXTRAS_FIREPLACE         = 0x00000200,
+	EXTRAS_NO_IGNIT          = 0x00000400,
+	EXTRAS_FLARE	         = 0x00000800
+};
+DECLARE_FLAGS(EERIE_TYPES_EXTRAS_MODE, ExtrasType)
+DECLARE_FLAGS_OPERATORS(ExtrasType)
+
 struct EERIE_LIGHT {
 	char exist;
 	char type;
 	char treat;
 	char selected;
-	short extras;
+	ExtrasType extras;
 	short status; // on/off 1/0
 	Vec3f pos;
 	float fallstart;
@@ -105,22 +123,6 @@ struct EERIE_LIGHT {
 	unsigned long time_creation;
 	long duration; // will start to fade before the end of duration...
 	audio::SourceId sample;
-};
-
-enum EERIE_TYPES_EXTRAS_MODE
-{
-	EXTRAS_SEMIDYNAMIC       = 0x00000001,
-	EXTRAS_EXTINGUISHABLE    = 0x00000002,
-	EXTRAS_STARTEXTINGUISHED = 0x00000004,
-	EXTRAS_SPAWNFIRE         = 0x00000008,
-	EXTRAS_SPAWNSMOKE        = 0x00000010,
-	EXTRAS_OFF               = 0x00000020,
-	EXTRAS_COLORLEGACY       = 0x00000040,
-	EXTRAS_NOCASTED          = 0x00000080,
-	EXTRAS_FIXFLARESIZE      = 0x00000100,
-	EXTRAS_FIREPLACE         = 0x00000200,
-	EXTRAS_NO_IGNIT          = 0x00000400,
-	EXTRAS_FLARE	         = 0x00000800
 };
 
 #define TYP_SPECIAL1 1

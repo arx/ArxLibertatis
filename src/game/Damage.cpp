@@ -1389,11 +1389,7 @@ void CheckForIgnition(Vec3f * pos, float radius, bool mode, long flag) {
 			if(el == NULL)
 				continue;
 
-			if ((el->extras & EXTRAS_EXTINGUISHABLE)
-			        &&
-			        ((el->extras & EXTRAS_SEMIDYNAMIC)
-			         || (el->extras & EXTRAS_SPAWNFIRE)
-			         || (el->extras & EXTRAS_SPAWNSMOKE)))
+			if((el->extras & EXTRAS_EXTINGUISHABLE) && (el->extras & (EXTRAS_SEMIDYNAMIC | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE)))
 			{
 				if((el->extras & EXTRAS_FIREPLACE) && (flag & 2))
 					continue;
