@@ -347,11 +347,6 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 
 	float vratio=size*( 1.0f / 40 );
 
-	(void)checked_range_cast<short>(z0);
-	(void)checked_range_cast<short>(x0);
-	(void)checked_range_cast<short>(z1);
-	(void)checked_range_cast<short>(x1);
-
 	for(long j=z0; j<=z1; j++)
 	for(long i=x0; i<=x1; i++)
 	{
