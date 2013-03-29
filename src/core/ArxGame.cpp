@@ -598,35 +598,31 @@ void ArxGame::doFrame() {
 		return;
 
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
-	if (START_NEW_QUEST)
-	{
+	if(START_NEW_QUEST) {
 		LogDebug("start quest");
 		DANAE_StartNewQuest();
 	}
 
 	// Are we being teleported ?
-	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
-	{
-		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
-					<< TELEPORT_TO_ANGLE);
-		CHANGE_LEVEL_ICON=-1;
+	if(TELEPORT_TO_LEVEL[0] && CHANGE_LEVEL_ICON == 200) {
+		LogDebug("teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " " << TELEPORT_TO_ANGLE);
+		CHANGE_LEVEL_ICON = -1;
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE);
 		memset(TELEPORT_TO_LEVEL,0,64);
 		memset(TELEPORT_TO_POSITION,0,64);
 	}
 
-	if (LOADQUEST_SLOT != -1) {
+	if(LOADQUEST_SLOT != -1) {
 		ARX_SlotLoad(LOADQUEST_SLOT);
 		LOADQUEST_SLOT = -1;
 	}
 
-	if ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
-	{
-		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
+	if(PLAY_LOADED_CINEMATIC == 0 && !CINEMASCOPE && !BLOCK_PLAYER_CONTROLS && ARXmenu.currentmode == AMCM_OFF) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKLOAD)) {
 			ARX_QuickLoad();
 		}
 
-		if (GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE)) {
+		if(GInput->actionNowPressed(CONTROLS_CUST_QUICKSAVE)) {
 			iTimeToDrawD7=2000;
 			GRenderer->getSnapshot(savegame_thumbnail, 160, 100);
 			ARX_QuickSave();
