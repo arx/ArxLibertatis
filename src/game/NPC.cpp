@@ -3954,6 +3954,10 @@ void ManageIgnition(Entity * io)
 
 	if(ValidIONum(player.equiped[EQUIP_SLOT_WEAPON]))
 		plw = entities[player.equiped[EQUIP_SLOT_WEAPON]];
+
+	int particlesToCreate = 0;
+	int particleDelayFactor = 1;
+	Vec3f pos;
 	
 	if((io->ioflags & IO_FIERY) && (!(io->type_flags & OBJECT_TYPE_BOW))
 	   && (io->show == SHOW_FLAG_IN_SCENE || io == plw)) {
@@ -3979,25 +3983,10 @@ void ManageIgnition(Entity * io)
 			if(notok >= 0) {
 				continue;
 			}
-			
-			if(rnd() >= 0.4f) {
-				continue;
-			}
-			
-			PARTICLE_DEF * pd = createParticle();
-			if(!pd) {
-				break;
-			}
-			
-			pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
-			pd->siz = 7.f;
-			pd->tolive = Random::get(500, 1500);
-			pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-			pd->tc = fire2;
-			pd->fparam = 0.1f - rnd() * 0.2f;
-			pd->scale = Vec3f::repeat(-8.f);
-			pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+
+			particlesToCreate = 1;
+			particleDelayFactor = 1;
+			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 		}
 		
 	} else if(io->obj && io->obj->fastaccess.fire >= 0 && io->ignition > 0.f) {
@@ -4033,33 +4022,10 @@ void ManageIgnition(Entity * io)
 			return;
 		}
 		
-		Vec3f pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
-		
-		for(long nn = 0; nn < 2; nn++) {
-			
-			if(rnd() >= 0.4f) {
-				continue;
-			}
-			
-			PARTICLE_DEF * pd = createParticle();
-			if(!pd) {
-				break;
-			}
-			
-			pd->ov = pos;
-			pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
-			pd->siz = 7.f;
-			pd->tolive = Random::get(500, 1500);
-			pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-			pd->tc = fire2;
-			pd->fparam = 0.1f - rnd() * 0.2f;
-			pd->scale = Vec3f::repeat(-8.f);
-			pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-			pd->delay = nn * 2;
-		}
-		
+		particlesToCreate = 2;
+		particleDelayFactor = 2;
+		pos = io->obj->vertexlist3[io->obj->fastaccess.fire].v;
 	} else {
-		
 		io->ignition -= framedelay * 0.01f;
 		if(!io->obj) {
 			return;
@@ -4088,31 +4054,33 @@ void ManageIgnition(Entity * io)
 				continue;
 			}
 			
-			for(long nn = 0 ; nn < 6 ; nn++) {
-				
-				if(rnd() >= 0.4f) {
-					continue;
-				}
-				
-				PARTICLE_DEF * pd = createParticle();
-				if(!pd) {
-					break;
-				}
-				
-				pd->ov = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
-				pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
-				pd->siz = 7.f;
-				pd->tolive = Random::get(500, 1500);
-				pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
-				pd->tc = fire2;
-				pd->fparam = 0.1f - rnd() * 0.2f;
-				pd->scale = Vec3f::repeat(-8.f);
-				pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
-				pd->delay = nn * 180;
-			}
-			
+			particlesToCreate = 6;
+			particleDelayFactor = 180;
+			pos = io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v;
 		}
-		
+	}
+
+	for(long nn = 0 ; nn < particlesToCreate; nn++) {
+
+		if(rnd() >= 0.4f) {
+			continue;
+		}
+
+		PARTICLE_DEF * pd = createParticle();
+		if(!pd) {
+			break;
+		}
+
+		pd->ov = pos;
+		pd->move = Vec3f(2.f - 4.f * rnd(), 2.f - 22.f * rnd(), 2.f - 4.f * rnd());
+		pd->siz = 7.f;
+		pd->tolive = Random::get(500, 1500);
+		pd->special = FIRE_TO_SMOKE | ROTATING | MODULATE_ROTATION;
+		pd->tc = fire2;
+		pd->fparam = 0.1f - rnd() * 0.2f;
+		pd->scale = Vec3f::repeat(-8.f);
+		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
+		pd->delay = nn * particleDelayFactor;
 	}
 	
 	ManageIgnition_2(io);
