@@ -346,171 +346,171 @@ void ARXDRAW_DrawPolyBoom()
 		if(!polyboom[i].exist)
 			continue;
 
-			if(polyboom[i].type & 128) {
-				if(polyboom[i].timecreation - framedelay > 0) {
-					float fCalc = polyboom[i].timecreation - framedelay;
-					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
-				}
-
-				if(polyboom[i].timecreation - framedelay > 0) {
-					float fCalc =  polyboom[i].timecreation - framedelay;
-					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
-				}
+		if(polyboom[i].type & 128) {
+			if(polyboom[i].timecreation - framedelay > 0) {
+				float fCalc = polyboom[i].timecreation - framedelay;
+				polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 			}
 
-			float t = (float)polyboom[i].timecreation + (float)polyboom[i].tolive - (float)tim;
-
-			if(t <= 0) {
-				polyboom[i].exist=0;
-				BoomCount--;
-				continue;
+			if(polyboom[i].timecreation - framedelay > 0) {
+				float fCalc =  polyboom[i].timecreation - framedelay;
+				polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 			}
-			
-			long typp = polyboom[i].type;
-			typp &= ~128;
+		}
 
-			switch(typp) {
-			case 0:
-				tt = t / (float)polyboom[i].tolive * 0.8f;
+		float t = (float)polyboom[i].timecreation + (float)polyboom[i].tolive - (float)tim;
 
-				IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
-				EE_RT2(&ltv[0],&ltv[0]);
-				EE_RT2(&ltv[1],&ltv[1]);
-				EE_RT2(&ltv[2],&ltv[2]);
+		if(t <= 0) {
+			polyboom[i].exist=0;
+			BoomCount--;
+			continue;
+		}
 
-				for(long k = 0; k < polyboom[i].nbvert; k++) {
-					ltv[k].uv.x=polyboom[i].u[k];
-					ltv[k].uv.y=polyboom[i].v[k];
-					ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
-					ltv[k].specular = Color::black.toBGR();
-				}
+		long typp = polyboom[i].type;
+		typp &= ~128;
 
-				if(Project.improve) {
-					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				} else {
-					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-				}
+		switch(typp) {
+		case 0:
+			tt = t / (float)polyboom[i].tolive * 0.8f;
 
-				GRenderer->SetTexture(0, Boom);
-				ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+			IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
+			EE_RT2(&ltv[0],&ltv[0]);
+			EE_RT2(&ltv[1],&ltv[1]);
+			EE_RT2(&ltv[2],&ltv[2]);
 
-				if(polyboom[i].nbvert & 4) {
-					EE_RT2(&ltv[3],&ltv[3]);
-					ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
-				}
-				break;
-			case 1:	// Blood
-			{
-				float div=1.f/(float)polyboom[i].tolive;
-				tt=(float)t*div;
-				float tr = tt * 2 - 0.5f;
+			for(long k = 0; k < polyboom[i].nbvert; k++) {
+				ltv[k].uv.x=polyboom[i].u[k];
+				ltv[k].uv.y=polyboom[i].v[k];
+				ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
+				ltv[k].specular = Color::black.toBGR();
+			}
 
-				if(tr < 1.f)
-					tr = 1.f;
-
-				ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
-
-				for(long k = 0; k < polyboom[i].nbvert; k++) {
-					ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
-					ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
-					ltv[k].color=col;
-					ltv[k].specular=0xFF000000;
-				}
-
-				IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
-				EE_RT2(&ltv[0],&ltv[0]);
-				EE_RT2(&ltv[1],&ltv[1]);
-				EE_RT2(&ltv[2],&ltv[2]);
-
-				if(polyboom[i].nbvert & 4) {
-					EE_RT2(&ltv[3],&ltv[3]);
-				}
-
-				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			if(Project.improve) {
 				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-				GRenderer->SetTexture(0, polyboom[i].tc);
-
-				ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-
-				if(polyboom[i].nbvert & 4) {
-					ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
-				}
-
-				ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
-
+			} else {
 				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+			}
 
-				ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+			GRenderer->SetTexture(0, Boom);
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
-				if(polyboom[i].nbvert & 4) {
-					ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
-				}
-
-				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			if(polyboom[i].nbvert & 4) {
+				EE_RT2(&ltv[3],&ltv[3]);
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 			}
 			break;
-			case 2: // WATER
-			{
-				float div=1.f/(float)polyboom[i].tolive;
-				tt=(float)t*div;
-				float tr = (tt * 2 - 0.5f);
+		case 1:	// Blood
+		{
+			float div=1.f/(float)polyboom[i].tolive;
+			tt=(float)t*div;
+			float tr = tt * 2 - 0.5f;
 
-				if (tr<1.f) tr=1.f;
+			if(tr < 1.f)
+				tr = 1.f;
 
-				float ttt=tt*0.5f;
-				ColorBGRA col = (polyboom[i].rgb * ttt).toBGR();
+			ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
 
-				for(long k = 0; k < polyboom[i].nbvert; k++) {
-					ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
-					ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
-					ltv[k].color=col;
-					ltv[k].specular=0xFF000000;
-				}
-
-				if (	(ltv[0].uv.x<0.f)
-					&&	(ltv[1].uv.x<0.f)
-					&&	(ltv[2].uv.x<0.f)
-					&&	(ltv[3].uv.x<0.f) )
-					break;
-
-				if (	(ltv[0].uv.y<0.f)
-					&&	(ltv[1].uv.y<0.f)
-					&&	(ltv[2].uv.y<0.f)
-					&&	(ltv[3].uv.y<0.f) )
-					break;
-
-				if (	(ltv[0].uv.x>1.f)
-					&&	(ltv[1].uv.x>1.f)
-					&&	(ltv[2].uv.x>1.f)
-					&&	(ltv[3].uv.x>1.f) )
-					break;
-
-				if (	(ltv[0].uv.y>1.f)
-					&&	(ltv[1].uv.y>1.f)
-					&&	(ltv[2].uv.y>1.f)
-					&&	(ltv[3].uv.y>1.f) )
-					break;
-
-				IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
-				EE_RT2(&ltv[0],&ltv[0]);
-				EE_RT2(&ltv[1],&ltv[1]);
-				EE_RT2(&ltv[2],&ltv[2]);
-
-				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
-				GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
-				GRenderer->SetTexture(0, polyboom[i].tc);
-
-				ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
-
-				if(polyboom[i].nbvert & 4) {
-					EE_RT2(&ltv[3],&ltv[3]);
-					ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
-				}
-
-				GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+			for(long k = 0; k < polyboom[i].nbvert; k++) {
+				ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
+				ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
+				ltv[k].color=col;
+				ltv[k].specular=0xFF000000;
 			}
-			break;
+
+			IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
+			EE_RT2(&ltv[0],&ltv[0]);
+			EE_RT2(&ltv[1],&ltv[1]);
+			EE_RT2(&ltv[2],&ltv[2]);
+
+			if(polyboom[i].nbvert & 4) {
+				EE_RT2(&ltv[3],&ltv[3]);
 			}
+
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
+			GRenderer->SetTexture(0, polyboom[i].tc);
+
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+
+			if(polyboom[i].nbvert & 4) {
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
+
+			ltv[0].color = ltv[1].color = ltv[2].color = ltv[3].color = Color::gray(tt).toBGR();
+
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+
+			if(polyboom[i].nbvert & 4) {
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
+
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		}
+		break;
+		case 2: // WATER
+		{
+			float div=1.f/(float)polyboom[i].tolive;
+			tt=(float)t*div;
+			float tr = (tt * 2 - 0.5f);
+
+			if (tr<1.f) tr=1.f;
+
+			float ttt=tt*0.5f;
+			ColorBGRA col = (polyboom[i].rgb * ttt).toBGR();
+
+			for(long k = 0; k < polyboom[i].nbvert; k++) {
+				ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
+				ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
+				ltv[k].color=col;
+				ltv[k].specular=0xFF000000;
+			}
+
+			if (	(ltv[0].uv.x<0.f)
+				&&	(ltv[1].uv.x<0.f)
+				&&	(ltv[2].uv.x<0.f)
+				&&	(ltv[3].uv.x<0.f) )
+				break;
+
+			if (	(ltv[0].uv.y<0.f)
+				&&	(ltv[1].uv.y<0.f)
+				&&	(ltv[2].uv.y<0.f)
+				&&	(ltv[3].uv.y<0.f) )
+				break;
+
+			if (	(ltv[0].uv.x>1.f)
+				&&	(ltv[1].uv.x>1.f)
+				&&	(ltv[2].uv.x>1.f)
+				&&	(ltv[3].uv.x>1.f) )
+				break;
+
+			if (	(ltv[0].uv.y>1.f)
+				&&	(ltv[1].uv.y>1.f)
+				&&	(ltv[2].uv.y>1.f)
+				&&	(ltv[3].uv.y>1.f) )
+				break;
+
+			IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
+			EE_RT2(&ltv[0],&ltv[0]);
+			EE_RT2(&ltv[1],&ltv[1]);
+			EE_RT2(&ltv[2],&ltv[2]);
+
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapClamp);
+			GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
+			GRenderer->SetTexture(0, polyboom[i].tc);
+
+			ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
+
+			if(polyboom[i].nbvert & 4) {
+				EE_RT2(&ltv[3],&ltv[3]);
+				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
+			}
+
+			GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
+		}
+		break;
+		}
 	}
 
 	SetZBias(0);
