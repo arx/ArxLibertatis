@@ -3928,6 +3928,9 @@ void ARX_NPC_SpawnAudibleSound(Vec3f * pos, Entity * source, const float factor,
 		}
 }
 extern Entity * CURRENT_TORCH;
+
+void createFireParticles(Vec3f &pos,const int particlesToCreate, const int particleDelayFactor);
+
 //-------------------------------------------------------------------------
 void ManageIgnition(Entity * io)
 {
@@ -4060,6 +4063,12 @@ void ManageIgnition(Entity * io)
 		}
 	}
 
+	createFireParticles(pos, particlesToCreate, particleDelayFactor);
+	
+	ManageIgnition_2(io);
+}
+
+void createFireParticles(Vec3f &pos, const int particlesToCreate, const int particleDelayFactor) {
 	for(long nn = 0 ; nn < particlesToCreate; nn++) {
 
 		if(rnd() >= 0.4f) {
@@ -4082,8 +4091,6 @@ void ManageIgnition(Entity * io)
 		pd->rgb = Color3f(0.71f, 0.43f, 0.29f);
 		pd->delay = nn * particleDelayFactor;
 	}
-	
-	ManageIgnition_2(io);
 }
 
 void ManageIgnition_2(Entity * io) {
