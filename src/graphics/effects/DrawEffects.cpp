@@ -343,7 +343,9 @@ void ARXDRAW_DrawPolyBoom()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for(long i = 0; i < MAX_POLYBOOM; i++) {
-		if(polyboom[i].exist) {
+		if(!polyboom[i].exist)
+			continue;
+
 			if(polyboom[i].type & 128) {
 				if(polyboom[i].timecreation - framedelay > 0) {
 					float fCalc = polyboom[i].timecreation - framedelay;
@@ -509,7 +511,6 @@ void ARXDRAW_DrawPolyBoom()
 			}
 			break;
 			}
-		}
 	}
 
 	SetZBias(0);
