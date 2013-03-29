@@ -340,29 +340,10 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 	x0 = x0 - 3;
 	z0 = z0 - 3;
 
-	if(x0 < 0)
-		x0=0;
-
-	if(x0 >= ACTIVEBKG->Xsize)
-		x0 = ACTIVEBKG->Xsize-1;
-
-	if(x1 < 0)
-		x1 = 0;
-
-	if(x1 >= ACTIVEBKG->Xsize)
-		x1 = ACTIVEBKG->Xsize-1;
-
-	if(z0 < 0)
-		z0 = 0;
-
-	if(z0 >= ACTIVEBKG->Zsize)
-		z0 = ACTIVEBKG->Zsize-1;
-
-	if(z1 < 0)
-		z1 = 0;
-
-	if(z1 >= ACTIVEBKG->Zsize)
-		z1 = ACTIVEBKG->Zsize-1;
+	x0 = clamp(x0, 0, ACTIVEBKG->Xsize - 1);
+	x1 = clamp(x1, 0, ACTIVEBKG->Xsize - 1);
+	z0 = clamp(z0, 0, ACTIVEBKG->Zsize - 1);
+	z1 = clamp(z1, 0, ACTIVEBKG->Zsize - 1);
 
 	float vratio=size*( 1.0f / 40 );
 
