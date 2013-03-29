@@ -335,7 +335,6 @@ void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];
 
-	long i,k;
 	float tt;
 
 	SetZBias(8);
@@ -343,41 +342,33 @@ void ARXDRAW_DrawPolyBoom()
 	unsigned long tim = (unsigned long)(arxtime);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )
-	{
-		if ( polyboom[i].exist )
-		{
-			if ( polyboom[i].type & 128 )
-			{	
-				if (polyboom[i].timecreation - framedelay > 0)
-				{
+	for(long i = 0; i < MAX_POLYBOOM; i++) {
+		if(polyboom[i].exist) {
+			if(polyboom[i].type & 128) {
+				if(polyboom[i].timecreation - framedelay > 0) {
 					float fCalc	=	polyboom[i].timecreation - framedelay;
 					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
 
-				if (polyboom[i].timecreation - framedelay > 0)
-				{
+				if(polyboom[i].timecreation - framedelay > 0) {
 					float fCalc	= 	polyboom[i].timecreation - framedelay;
 					polyboom[i].timecreation = checked_range_cast<unsigned long>(fCalc);
 				}
-
 			}
 
-			float t	=	(float)polyboom[i].timecreation + (float)polyboom[i].tolive - (float)tim;
+			float t = (float)polyboom[i].timecreation + (float)polyboom[i].tolive - (float)tim;
 
-			if ( t <= 0 ) 
-			{
+			if(t <= 0) {
 				polyboom[i].exist=0;
 				BoomCount--;
 				continue;
 			}
 			
 			{
-				long typp	=	polyboom[i].type;
-				typp		&=	~128;
+				long typp = polyboom[i].type;
+				typp &= ~128;
 
-				switch (typp) 
-				{
+				switch(typp) {
 					case 0:	
 					tt	=	(float)t / (float)polyboom[i].tolive * 0.8f;
 
@@ -386,7 +377,7 @@ void ARXDRAW_DrawPolyBoom()
 					EE_RT2(&ltv[1],&ltv[1]);
 					EE_RT2(&ltv[2],&ltv[2]);
 
-					for(k=0;k<polyboom[i].nbvert;k++) {
+					for(long k = 0; k < polyboom[i].nbvert; k++) {
 						ltv[k].uv.x=polyboom[i].u[k];
 						ltv[k].uv.y=polyboom[i].v[k];
 						ltv[k].color = (Project.improve ? (Color3f::red * (tt*.5f)) : Color3f::gray(tt)).toBGR();
@@ -400,16 +391,11 @@ void ARXDRAW_DrawPolyBoom()
 						}
 
 						GRenderer->SetTexture(0, Boom);
-						ARX_DrawPrimitive(	&ltv[0],
-														&ltv[1],
-														&ltv[2]);
+						ARX_DrawPrimitive( &ltv[0], &ltv[1], &ltv[2]);
 
-						if(polyboom[i].nbvert&4)
-						{
+						if(polyboom[i].nbvert&4) {
 							EE_RT2(&ltv[3],&ltv[3]);
-							ARX_DrawPrimitive(	&ltv[1],
-															&ltv[2],
-															&ltv[3]);
+							ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 						}
 					break;
 					case 1:	// Blood
@@ -422,14 +408,12 @@ void ARXDRAW_DrawPolyBoom()
 
 						ColorBGRA col = (polyboom[i].rgb * tt).toBGR();
 
-						for (k=0;k<polyboom[i].nbvert;k++) 
-						{
+						for(long k = 0; k < polyboom[i].nbvert; k++) {
 							ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
 							ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
 							ltv[k].color=col;
 							ltv[k].specular=0xFF000000;
 						}	
-
 
 							IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
 							EE_RT2(&ltv[0],&ltv[0]);
@@ -448,15 +432,10 @@ void ARXDRAW_DrawPolyBoom()
 								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							GRenderer->SetTexture(0, polyboom[i].tc); 
 
- 									ARX_DrawPrimitive(		&ltv[0],
- 																		&ltv[1],
- 																		&ltv[2]);
+							ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
- 									if(polyboom[i].nbvert&4)
- 									{
-  										ARX_DrawPrimitive(	&ltv[1],
-  																		&ltv[2],
- 																		&ltv[3]);
+									if(polyboom[i].nbvert & 4) {
+										ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 									}
 
 
@@ -464,15 +443,10 @@ void ARXDRAW_DrawPolyBoom()
 								
 								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
-									ARX_DrawPrimitive(	&ltv[0],
-																	&ltv[1],
-																	&ltv[2]);
+									ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
-									if(polyboom[i].nbvert&4)
-									{
-										ARX_DrawPrimitive(	&ltv[1],
-																		&ltv[2],
-																		&ltv[3]);
+									if(polyboom[i].nbvert & 4) {
+										ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 									}
 								
 								GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
@@ -490,7 +464,7 @@ void ARXDRAW_DrawPolyBoom()
 						float ttt=tt*0.5f;
 						ColorBGRA col = (polyboom[i].rgb * ttt).toBGR();
 
-						for(k=0;k<polyboom[i].nbvert;k++) {
+						for(long k = 0; k < polyboom[i].nbvert; k++) {
 							ltv[k].uv.x=(polyboom[i].u[k]-0.5f)*(tr)+0.5f;
 							ltv[k].uv.y=(polyboom[i].v[k]-0.5f)*(tr)+0.5f;
 							ltv[k].color=col;
@@ -530,16 +504,11 @@ void ARXDRAW_DrawPolyBoom()
 								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 						GRenderer->SetTexture(0, polyboom[i].tc); 
 				
-								ARX_DrawPrimitive(	&ltv[0],
-																&ltv[1],
-																&ltv[2]);
+								ARX_DrawPrimitive(&ltv[0], &ltv[1], &ltv[2]);
 
-								if(polyboom[i].nbvert&4)
-								{
+								if(polyboom[i].nbvert & 4) {
 									EE_RT2(&ltv[3],&ltv[3]);
-									ARX_DrawPrimitive(	&ltv[1],
-																	&ltv[2],
-																	&ltv[3]);
+									ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 								}
 
 						GRenderer->GetTextureStage(0)->SetWrapMode(TextureStage::WrapRepeat);
