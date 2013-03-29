@@ -2211,10 +2211,10 @@ extern unsigned long REQUEST_JUMP;
 //-----------------------------------------------------------------------------
 void ArxGame::managePlayerControls()
 {
-	if (((EERIEMouseButton & 4) && (!EDITMODE) && !(player.Interface & INTER_COMBATMODE))
-		&& (!player.doingmagic)
-		&& (!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
-		&& (eMouseState != MOUSE_IN_NOTE)
+	if(((EERIEMouseButton & 4) && !EDITMODE && !(player.Interface & INTER_COMBATMODE))
+		&& !player.doingmagic
+		&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+		&& eMouseState != MOUSE_IN_NOTE
 		)
 	{
 		Entity *t = InterClick(&DANAEMouse);
@@ -2286,12 +2286,12 @@ void ArxGame::managePlayerControls()
 	Vec3f tm = Vec3f::ZERO;
 	
 	// Checks STEALTH Key Status.
-	if (GInput->actionPressed(CONTROLS_CUST_STEALTHMODE) )
-	{
+	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
 		MoveDiv=0.02f;
 		player.Current_Movement|=PLAYER_MOVE_STEALTH;
+	} else {
+		MoveDiv=0.0333333f;
 	}
-	else MoveDiv=0.0333333f;
 
 	{
 		long NOMOREMOVES=0;
@@ -2302,8 +2302,7 @@ void ArxGame::managePlayerControls()
 			Vec3f old = eyeball.pos;
 
 			// Checks WALK_FORWARD Key Status.
-			if (GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) )
-			{
+			if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD)) {
 				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
@@ -2311,8 +2310,7 @@ void ArxGame::managePlayerControls()
 			}
 
 			// Checks WALK_BACKWARD Key Status.
-			if (GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) )
-			{
+			if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD)) {
 				float tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
@@ -2433,15 +2431,14 @@ void ArxGame::managePlayerControls()
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
 
-			if(!USE_PLAYERCOLLISIONS)
-			{
+			if(!USE_PLAYERCOLLISIONS) {
 				t=radians(player.angle.a);
 				tm.y+=(float)EEsin(t)*multi;
 			}
 
 			player.Current_Movement|=PLAYER_MOVE_WALK_FORWARD;
 
-			if (GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD) )
+			if(GInput->actionNowPressed(CONTROLS_CUST_WALKFORWARD))
 				MOVE_PRECEDENCE=PLAYER_MOVE_WALK_FORWARD;
 		}
 		else if(MOVE_PRECEDENCE == PLAYER_MOVE_WALK_FORWARD)
@@ -2473,7 +2470,7 @@ void ArxGame::managePlayerControls()
 
 			player.Current_Movement|=PLAYER_MOVE_STRAFE_RIGHT;
 
-			if (GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT) )
+			if(GInput->actionNowPressed(CONTROLS_CUST_STRAFERIGHT))
 				MOVE_PRECEDENCE=PLAYER_MOVE_STRAFE_RIGHT;
 		}
 		else if(MOVE_PRECEDENCE == PLAYER_MOVE_STRAFE_RIGHT)
@@ -2496,7 +2493,7 @@ void ArxGame::managePlayerControls()
 	}
 
 	// Can only lean outside of combat mode
-	if (!(player.Interface & INTER_COMBATMODE)) {
+	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Checks LEAN_LEFT Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_LEANLEFT))
 			player.Current_Movement |= PLAYER_LEAN_LEFT;
@@ -2553,7 +2550,7 @@ void ArxGame::managePlayerControls()
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_MINIMAP)) {
-		SHOW_INGAME_MINIMAP =! SHOW_INGAME_MINIMAP;
+		SHOW_INGAME_MINIMAP = !SHOW_INGAME_MINIMAP;
 	}
 
 	if(GInput->actionNowPressed(CONTROLS_CUST_PREVIOUS)) {
@@ -2664,7 +2661,7 @@ void ArxGame::managePlayerControls()
 		if(!(player.Interface & INTER_MAP)) {
 			Book_Mode = BOOKMODE_STATS;
 			ARX_INTERFACE_BookOpenClose(0);
-		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_STATS)) {
+		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_STATS) {
 			Book_Mode = BOOKMODE_STATS;
 		} else {
 			ARX_INTERFACE_BookOpenClose(2);
@@ -2677,7 +2674,7 @@ void ArxGame::managePlayerControls()
 				Book_Mode = BOOKMODE_SPELLS;
 				ARX_INTERFACE_BookOpenClose(0);
 			}
-		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_SPELLS)) {
+		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_SPELLS) {
 			Book_Mode = BOOKMODE_SPELLS;
 		} else {
 			ARX_INTERFACE_BookOpenClose(2);
@@ -2688,7 +2685,7 @@ void ArxGame::managePlayerControls()
 		if (!(player.Interface & INTER_MAP)) {
 			Book_Mode = BOOKMODE_MINIMAP;
 			ARX_INTERFACE_BookOpenClose(0);
-		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_MINIMAP)) {
+		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP) {
 			Book_Mode = BOOKMODE_MINIMAP;
 		} else {
 			ARX_INTERFACE_BookOpenClose(2);
@@ -2699,7 +2696,7 @@ void ArxGame::managePlayerControls()
 		if(!(player.Interface & INTER_MAP)) {
 			Book_Mode = BOOKMODE_QUESTS;
 			ARX_INTERFACE_BookOpenClose(0);
-		} else if((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_QUESTS)) {
+		} else if((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_QUESTS) {
 			Book_Mode = BOOKMODE_QUESTS;
 		} else {
 			ARX_INTERFACE_BookOpenClose(2);
@@ -2852,7 +2849,7 @@ void ArxGame::managePlayerControls()
 		&& (config.input.autoReadyWeapon))
 		)
 	{
-		if (!(LastMouseClick & 1)) {
+		if(!(LastMouseClick & 1)) {
 			COMBAT_MODE_ON_START_TIME = (unsigned long)(arxtime);
 		} else {
 			if(float(arxtime) - COMBAT_MODE_ON_START_TIME > 10) {
@@ -2906,8 +2903,8 @@ void ArxGame::managePlayerControls()
 				if(player.Interface &INTER_INVENTORY) {
 					Entity * io = NULL;
 
-					if(SecondaryInventory!=NULL) {
-						io = (Entity *)SecondaryInventory->io;
+					if(SecondaryInventory) {
+						io = SecondaryInventory->io;
 					} else if (player.Interface & INTER_STEAL) {
 						io = ioSteal;
 					}
@@ -2936,8 +2933,8 @@ void ArxGame::managePlayerControls()
 				if(player.Interface &INTER_INVENTORY) {
 					Entity * io = NULL;
 
-					if (SecondaryInventory!=NULL) {
-						io = (Entity *)SecondaryInventory->io;
+					if (SecondaryInventory) {
+						io = SecondaryInventory->io;
 					} else if (player.Interface & INTER_STEAL) {
 						io = ioSteal;
 					}
