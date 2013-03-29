@@ -885,23 +885,16 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 			}
 		}
 
-
 		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
-		if (ep)
-		{
-			if (io_source == entities.player())
-			{
+		if(ep) {
+			if(io_source == entities.player()) {
 				if(!io_source->isHit) {
-					
 					ARX_DAMAGES_DurabilityCheck(io_weapon, 1.f);
 					io_source->isHit = true;
 
-					if (!ValidIONum(weapon))
-					{
+					if(!ValidIONum(weapon)) {
 						io_weapon = NULL;
-					}
-					else
-					{
+					} else {
 						string _weapon_material = "metal";
 						const string * weapon_material = &_weapon_material;
 						if(io_weapon && !io_weapon->weaponmaterial.empty()) {
@@ -910,8 +903,8 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 						std::string bkg_material = "earth";
 
-						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
-							bkg_material = GetMaterialString( ep->tex->m_texName );
+						if(ep && ep->tex && !ep->tex->m_texName.empty())
+							bkg_material = GetMaterialString(ep->tex->m_texName);
 
 						ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
 					}
