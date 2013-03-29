@@ -1123,9 +1123,8 @@ void ARX_EQUIPMENT_Init()
 //! \brief Removes All special equipement properties
 void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 {
-	if (!io) return;
-
-	if (!(io->ioflags & IO_ITEM)) return;
+	if(!io || !(io->ioflags & IO_ITEM))
+		return;
 
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_1].special = IO_SPECIAL_ELEM_NONE;
 	io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_SPECIAL_2].special = IO_SPECIAL_ELEM_NONE;
@@ -1134,27 +1133,21 @@ void ARX_EQUIPMENT_Remove_All_Special(Entity * io)
 }
 
 //! \brief Sets an equipment property
-float ARX_EQUIPMENT_Apply(Entity * io, EquipmentModifierType ident,
-                          float trueval) {
+float ARX_EQUIPMENT_Apply(Entity *io, EquipmentModifierType ident, float trueval) {
 	
-	if (io == NULL) return trueval;
-
-	if (io != entities.player()) return trueval;
+	if(!io || io != entities.player())
+		return trueval;
 
 	float toadd = 0;
 
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		if ((player.equiped[i] != 0)
-		        &&	ValidIONum(player.equiped[i]))
-		{
+	for(long i = 0; i < MAX_EQUIPED; i++) {
+		if(player.equiped[i] && ValidIONum(player.equiped[i])) {
 			Entity * toequip = entities[player.equiped[i]];
 
-			if ((toequip) && (toequip->ioflags & IO_ITEM) && (toequip->_itemdata->equipitem))
-			{
+			if(toequip && (toequip->ioflags & IO_ITEM) && toequip->_itemdata->equipitem) {
 				IO_EQUIPITEM_ELEMENT * elem = &toequip->_itemdata->equipitem->elements[ident];
 
-				if (!(elem->flags & IO_ELEMENT_FLAG_PERCENT)) 
+				if(!(elem->flags & IO_ELEMENT_FLAG_PERCENT))
 					toadd += elem->value;
 			}
 		}
