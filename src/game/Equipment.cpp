@@ -692,50 +692,51 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 	for (long j = 0; j < nbact; j++) // TODO iterator
 	{
-		if (!ValidIONum(weapon)) return false;
+		if(!ValidIONum(weapon))
+			return false;
 
 		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
-		if (rad == -1) continue;
+		if(rad == -1)
+			continue;
 		
 		v0 = &io_weapon->obj->vertexlist3[io_weapon->obj->actionlist[j].idx].v;
 		sphere.origin = *v0;
 		
 		sphere.radius = rad; 
 
-		if (source != 0) sphere.radius += 15.f;
+		if(source != 0)
+			sphere.radius += 15.f;
 
-		if (CheckEverythingInSphere(&sphere, source, targ))
-		{
-			for (size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++)
-			{
-				if (ValidIONum(EVERYTHING_IN_SPHERE[jj])
-				        && (!(entities[EVERYTHING_IN_SPHERE[jj]]->ioflags & IO_BODY_CHUNK)))
+		if(CheckEverythingInSphere(&sphere, source, targ)) {
+			for(size_t jj = 0; jj < MAX_IN_SPHERE_Pos; jj++) {
+				if(ValidIONum(EVERYTHING_IN_SPHERE[jj])
+						&& !(entities[EVERYTHING_IN_SPHERE[jj]]->ioflags & IO_BODY_CHUNK))
 				{
 					long HIT_SPARK = 0;
 					EXCEPTIONS_LIST[EXCEPTIONS_LIST_Pos] = EVERYTHING_IN_SPHERE[jj];
 					EXCEPTIONS_LIST_Pos++;
 
-					if (EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE) EXCEPTIONS_LIST_Pos--;
+					if(EXCEPTIONS_LIST_Pos >= MAX_IN_SPHERE)
+						EXCEPTIONS_LIST_Pos--;
 
 					Entity * target = entities[EVERYTHING_IN_SPHERE[jj]];
 			
-					Vec3f	pos;
+					Vec3f pos;
 					Color color = Color::white;
-					long		hitpoint	=	-1;
-					float		curdist		=	999999.f;
+					long hitpoint = -1;
+					float curdist = 999999.f;
 					
 					Vec3f vector = (sphere.origin - target->pos) * Vec3f(1.f, 0.5f, 1.f);
 					vector.normalize();
 
-					for (size_t ii = 0; ii < target->obj->facelist.size(); ii++)
-					{
-						if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
+					for(size_t ii = 0; ii < target->obj->facelist.size(); ii++) {
+						if(target->obj->facelist[ii].facetype & POLY_HIDE)
+							continue;
 
 						float d = dist(sphere.origin, target->obj->vertexlist3[target->obj->facelist[ii].vid[0]].v);
 
-						if (d < curdist)
-						{
+						if(d < curdist) {
 							hitpoint = target->obj->facelist[ii].vid[0];
 							curdist = d;
 						}
@@ -748,58 +749,44 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 					else ARX_DEAD_CODE(); 
 					
 					float dmgs = 0.f;
-					if (!(flags & 1))
-					{
+					if(!(flags & 1)) {
 						Vec3f posi;
 
-						if (hitpoint >= 0)
-						{
+						if(hitpoint >= 0) {
 							posi = target->obj->vertexlist3[hitpoint].v;
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
-
-						}
-						else
-						{
+						} else {
 							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim);
-
 						}
 
-						if (target->ioflags & IO_NPC)
-						{
+						if(target->ioflags & IO_NPC) {
 							ret = true;
 							target->spark_n_blood = 0;
 							target->_npcdata->SPLAT_TOT_NB = 0;
 
-							if (drain_life > 0.f)
-							{
+							if(drain_life > 0.f) {
 								float life_gain = min(dmgs, drain_life);
 								life_gain = min(life_gain, target->_npcdata->life);
 								life_gain = max(life_gain, 0.f);
 								ARX_DAMAGES_HealInter(io_source, life_gain);
 							}
 
-							if (paralyse > 0.f)
-							{
+							if(paralyse > 0.f) {
 								float ptime = min(dmgs * 1000.f, paralyse);
 								ARX_SPELLS_Launch(SPELL_PARALYSE, weapon, SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST
 								                  , 5, EVERYTHING_IN_SPHERE[jj], (long)(ptime));
 							}
 						}
 
-						if (io_source == entities.player())
-						{
+						if(io_source == entities.player())
 							ARX_DAMAGES_DurabilityCheck(io_weapon, 0.2f);
-						}
 					}
 
-					if ((dmgs > 0.f) || ((target->ioflags & IO_NPC) && (target->spark_n_blood == SP_BLOODY)))
-					{
-						if (target->ioflags & IO_NPC)
-						{
+					if(dmgs > 0.f || ((target->ioflags & IO_NPC) && target->spark_n_blood == SP_BLOODY)) {
+						if(target->ioflags & IO_NPC) {
 							target->spark_n_blood = SP_BLOODY;
 
-							if (!(flags & 1))
-							{
+							if(!(flags & 1)) {
 								ARX_PARTICLES_Spawn_Splat(pos, dmgs, color);
 
 								EERIE_SPHERE sp;
@@ -823,52 +810,45 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 							ARX_PARTICLES_Spawn_Blood2(pos, dmgs, color, target);
 
-							if (!ValidIONum(weapon)) io_weapon = NULL;
-						}
-						else
-						{
-							if (target->ioflags & IO_ITEM)
+							if(!ValidIONum(weapon))
+								io_weapon = NULL;
+						} else {
+							if(target->ioflags & IO_ITEM)
 								ARX_PARTICLES_Spawn_Spark(&pos, rnd() * 3.f, 0);
 							else
 								ARX_PARTICLES_Spawn_Spark(&pos, rnd() * 30.f, 0);
 
 							ARX_NPC_SpawnAudibleSound(&pos, io_source);
 
-							if (io_source == entities.player())
+							if(io_source == entities.player())
 								HIT_SPARK = 1;
 						}
-					}
-					else if ((target->ioflags & IO_NPC)
-					         &&	((dmgs <= 0.f) || (target->spark_n_blood == SP_SPARKING)))
-					{
+					} else if((target->ioflags & IO_NPC) && (dmgs <= 0.f || target->spark_n_blood == SP_SPARKING)) {
 						long nb;
 
-						if (target->spark_n_blood == SP_SPARKING) 
+						if(target->spark_n_blood == SP_SPARKING)
 							nb = Random::get(0, 3);
 						else
 							nb = 30;
 
-						if (target->ioflags & IO_ITEM)
+						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
 						ARX_PARTICLES_Spawn_Spark(&pos, (float)nb, 0); 
 						ARX_NPC_SpawnAudibleSound(&pos, io_source);
 						target->spark_n_blood = SP_SPARKING;
 
-						if (!(target->ioflags & IO_NPC))
+						if(!(target->ioflags & IO_NPC))
 							HIT_SPARK = 1;
-					}
-					else if ((dmgs <= 0.f)
-					         &&	((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM)))
-					{
+					} else if(dmgs <= 0.f && ((target->ioflags & IO_FIX) || (target->ioflags & IO_ITEM))) {
 						long  nb;
 
-						if (target->spark_n_blood == SP_SPARKING)
+						if(target->spark_n_blood == SP_SPARKING)
 							nb = Random::get(0, 3);
 						else
 							nb = 30;
 
-						if (target->ioflags & IO_ITEM)
+						if(target->ioflags & IO_ITEM)
 							nb = 1;
 
 						ARX_PARTICLES_Spawn_Spark(&pos, (float)nb, 0);
@@ -896,12 +876,11 @@ bool ARX_EQUIPMENT_Strike_Check(Entity * io_source, Entity * io_weapon, float ra
 
 								char bkg_material[128];
 
-								if (ARX_MATERIAL_GetNameById(target->material, bkg_material))
+								if(ARX_MATERIAL_GetNameById(target->material, bkg_material))
 									ARX_SOUND_PlayCollision(*weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, NULL);
 							}
 						}
 					}
-
 				}
 			}
 		}
