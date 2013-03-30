@@ -1723,54 +1723,42 @@ bool ArxGame::manageEditorControls() {
 
 
 	// Single Click On Object
-	if ( ( LastMouseClick & 1 ) && ( !( EERIEMouseButton & 1 ) ) )
-	{
-		if ( FlyingOverIO && ( !DRAGINTER ) )
-		{
-			SendIOScriptEvent( FlyingOverIO, SM_CLICKED );
+	if((LastMouseClick & 1) && !(EERIEMouseButton & 1)) {
+		if(FlyingOverIO && !DRAGINTER) {
+			SendIOScriptEvent(FlyingOverIO, SM_CLICKED);
 			bool bOk = true;
 
-			if ( SecondaryInventory != NULL )
-			{
-				Entity * temp = (Entity *)SecondaryInventory->io;
+			if(SecondaryInventory) {
+				Entity *temp = SecondaryInventory->io;
 
-				if (IsInSecondaryInventory(FlyingOverIO))
-					if ( temp->ioflags & IO_SHOP )
-						bOk = false;
+				if(IsInSecondaryInventory(FlyingOverIO) && (temp->ioflags & IO_SHOP))
+					bOk = false;
 			}
 
-			if ( !( FlyingOverIO->ioflags & IO_MOVABLE ) )
-				if ( ( FlyingOverIO->ioflags & IO_ITEM ) && bOk )
-				{
-					if ( GInput->actionPressed( CONTROLS_CUST_STEALTHMODE ) )
-					{
-						if ( !InPlayerInventoryPos( &DANAEMouse ) && !ARX_INTERFACE_MouseInBook() )
-						{
-							long sx, sy;
+			if(!(FlyingOverIO->ioflags & IO_MOVABLE)) {
+				if((FlyingOverIO->ioflags & IO_ITEM) && bOk) {
+					if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE)) {
+						if(!InPlayerInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook()) {
+							long sx = 0;
+							long sy = 0;
 							bool bSecondary = false;
 
-							sx = sy = 0 ;
-
-							if ( TSecondaryInventory && IsInSecondaryInventory( FlyingOverIO ) )
-							{
-								if ( SecondaryInventory )
-								{
+							if(TSecondaryInventory && IsInSecondaryInventory(FlyingOverIO)) {
+								if(SecondaryInventory) {
 									bool bfound = true;
 
-									for ( long j = 0 ; j < SecondaryInventory->sizey && bfound ; j++ )
-									{
-										for ( long i = 0 ; i < SecondaryInventory->sizex && bfound ; i++ )
-										{
-											if ( SecondaryInventory->slot[i][j].io == FlyingOverIO )
-											{
-												sx		= i;
-												sy		= j;
-												bfound	= false;
+									for(long j = 0; j < SecondaryInventory->sizey && bfound; j++) {
+										for (long i = 0; i < SecondaryInventory->sizex && bfound; i++) {
+											if(SecondaryInventory->slot[i][j].io == FlyingOverIO) {
+												sx = i;
+												sy = j;
+												bfound = false;
 											}
 										}
 									}
 
-									if (bfound) ARX_DEAD_CODE();
+									if(bfound)
+										ARX_DEAD_CODE();
 								}
 
 								bSecondary = true;
@@ -1779,17 +1767,13 @@ bool ArxGame::manageEditorControls() {
 							RemoveFromAllInventories( FlyingOverIO );
 							FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
 
-							if ( FlyingOverIO->ioflags & IO_GOLD )
-							{
-								ARX_SOUND_PlayInterface( SND_GOLD );
-							}
+							if(FlyingOverIO->ioflags & IO_GOLD)
+								ARX_SOUND_PlayInterface(SND_GOLD);
 
-							ARX_SOUND_PlayInterface( SND_INVSTD );
+							ARX_SOUND_PlayInterface(SND_INVSTD);
 
 							if(!playerInventory.insert(FlyingOverIO)) {
-								
-								if ( TSecondaryInventory && bSecondary )
-								{
+								if(TSecondaryInventory && bSecondary) {
 									extern short sInventory, sInventoryX, sInventoryY;
 									sInventory = 2;
 									sInventoryX = checked_range_cast<short>(sx);
@@ -1798,53 +1782,37 @@ bool ArxGame::manageEditorControls() {
 									CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
 								}
 
-								if ( !bSecondary )
-								{
+								if(!bSecondary)
 									FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
-								}
 							}
 
-							if (DRAGINTER == FlyingOverIO)
-							{
+							if(DRAGINTER == FlyingOverIO)
 								DRAGINTER = NULL;
-							}
 
 							FlyingOverIO = NULL;
 						}
 					}
 				}
+			}
 		}
 	}
 
-	if (!(player.Interface & INTER_COMBATMODE))
-	{
+	if(!(player.Interface & INTER_COMBATMODE)) {
 		// Dropping an Interactive Object that has been dragged
-		if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && (DRAGINTER!=NULL))
-		{
+		if(!(EERIEMouseButton & 1) && (LastMouseClick & 1) && DRAGINTER) {
 			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
-			if (InInventoryPos(&DANAEMouse)) // Attempts to put it in inventory
-			{
-				if (!PutInInventory())
-				{
-				}
-			}
-			else if (eMouseState == MOUSE_IN_INVENTORY_ICON)
-			{
-				if (!PutInInventory())
-				{
-				}
-			}
-			else if (ARX_INTERFACE_MouseInBook())
-			{
-				if (Book_Mode == BOOKMODE_STATS)
-				{
+			if(InInventoryPos(&DANAEMouse)) {// Attempts to put it in inventory
+				PutInInventory();
+			} else if(eMouseState == MOUSE_IN_INVENTORY_ICON) {
+				PutInInventory();
+			} else if(ARX_INTERFACE_MouseInBook()) {
+				if(Book_Mode == BOOKMODE_STATS) {
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
-			} else if (DRAGINTER->ioflags & IO_GOLD) {
+			} else if(DRAGINTER->ioflags & IO_GOLD) {
 				ARX_PLAYER_AddGold(DRAGINTER);
 				Set_DragInter(NULL);
-				
 			} else if(DRAGINTER) {
 #ifdef BUILD_EDITOR
 				if (!EDITMODE) // test for NPC & FIX
