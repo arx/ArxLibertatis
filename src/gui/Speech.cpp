@@ -82,7 +82,7 @@ using std::string;
 using std::transform;
 
 extern TextureContainer *	arx_logo_tc;
-extern long ARX_CONVERSATION;
+extern bool ARX_CONVERSATION;
 extern bool EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 

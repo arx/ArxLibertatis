@@ -112,7 +112,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-extern long		ARX_CONVERSATION;
+extern bool		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
 extern long		REQUEST_SPEECH_SKIP;
 extern long		CHANGE_LEVEL_ICON;
@@ -3197,7 +3197,7 @@ void ARX_GAME_Reset(long type) {
 
 	// Conversations
 	ARX_CONVERSATION_Reset();
-	ARX_CONVERSATION = 0;
+	ARX_CONVERSATION = false;
 
 	// Speech Things
 	REQUEST_SPEECH_SKIP = 0;

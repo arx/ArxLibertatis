@@ -290,7 +290,6 @@ void ARXDRAW_DrawAllLights(long x0,long z0,long x1,long z1) {
 	}
 }
 extern Entity * CAMERACONTROLLER;
-extern long ARX_CONVERSATION;
 
 void ARXDRAW_DrawEyeBall() {
 	float d;
