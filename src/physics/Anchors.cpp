@@ -225,12 +225,13 @@ float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl,
 	return anything;
 }
 
-
-//-----------------------------------------------------------------------------
-// Returns 0 if nothing in cyl
-// Else returns Y Offset to put cylinder in a proper place
-static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl,
-                                            CollisionFlags flags) {
+/*!
+ * \brief Check if anything is in a cylinder
+ * \param cyl the cylinder to check
+ * \param flags collision flags
+ * \return 0 if nothing in cyl else returns Y Offset to put cylinder in a proper place
+ */
+static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags flags) {
 	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
