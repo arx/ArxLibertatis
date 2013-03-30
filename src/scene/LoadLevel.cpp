@@ -112,15 +112,14 @@ bool CanPurge(Vec3f * pos)
 	if(px < 2 || px > ACTIVEBKG->Xsize - 3 || pz < 2 || pz > ACTIVEBKG->Zsize - 3)
 		return true;
 
-	EERIE_BKG_INFO * eg;
+	for(long j = pz - 1; j <= pz + 1; j++) {
+		for(long i = px - 1; i <= px + 1; i++) {
+			EERIE_BKG_INFO *eg = &ACTIVEBKG->Backg[i + j * ACTIVEBKG->Xsize];
 
-	for (long j = pz - 1; j <= pz + 1; j++)
-		for (long i = px - 1; i <= px + 1; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
-			if (eg->nbpoly) return false;
+			if(eg->nbpoly)
+				return false;
 		}
+	}
 
 	return true;
 }
