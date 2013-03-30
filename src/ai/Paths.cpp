@@ -1812,7 +1812,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 void ARX_PrepareBackgroundNRMLs()
 {
-	long i, j, k, mai, maj, mii, mij;
+	long i, j, k;
 	long i2, j2, k2;
 	EERIE_BKG_INFO * eg;
 	EERIE_BKG_INFO * eg2;
@@ -1851,18 +1851,10 @@ void ARX_PrepareBackgroundNRMLs()
 
 					cur_nrml = nrml * ttt;
 
-					mai = i + 4;
-					maj = j + 4;
-					mii = i - 4;
-					mij = j - 4;
-
-					if (mij < 0) mij = 0;
-
-					if (mii < 0) mii = 0;
-
-					if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
-
-					if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
+					long mii = std::max(i - 4, 0L);
+					long mai = std::min(i + 4, ACTIVEBKG->Xsize - 1L);
+					long mij = std::max(j - 4, 0L);
+					long maj = std::min(j + 4, ACTIVEBKG->Zsize - 1L);
 
 					for (j2 = mij; j2 < maj; j2++)
 						for (i2 = mii; i2 < mai; i2++)
