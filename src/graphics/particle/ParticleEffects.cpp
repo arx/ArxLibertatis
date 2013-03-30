@@ -330,20 +330,13 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 			polyboom[i].type |= 128;
 	}
 
-	long x0 = static_cast<long>(poss->x * ACTIVEBKG->Xmul);
-	long z0 = static_cast<long>(poss->z * ACTIVEBKG->Zmul);
+	long px = poss->x * ACTIVEBKG->Xmul;
+	long pz = poss->z * ACTIVEBKG->Zmul;
 
-	long x1 = x0 + 3;
-	long z1 = z0 + 3;
-	x0 = x0 - 3;
-	z0 = z0 - 3;
-
-	x0 = clamp(x0, 0, ACTIVEBKG->Xsize - 1);
-	x1 = clamp(x1, 0, ACTIVEBKG->Xsize - 1);
-	z0 = clamp(z0, 0, ACTIVEBKG->Zsize - 1);
-	z1 = clamp(z1, 0, ACTIVEBKG->Zsize - 1);
-
-	float vratio=size*( 1.0f / 40 );
+	long x0 = clamp(px - 3, 0, ACTIVEBKG->Xsize - 1);
+	long x1 = clamp(px + 3, 0, ACTIVEBKG->Xsize - 1);
+	long z0 = clamp(pz - 3, 0, ACTIVEBKG->Zsize - 1);
+	long z1 = clamp(pz + 3, 0, ACTIVEBKG->Zsize - 1);
 
 	for(long j = z0; j <= z1; j++)
 	for(long i = x0; i <= x1; i++) {
@@ -405,7 +398,7 @@ void ARX_POLYSPLAT_Add(Vec3f * poss, Color3f * col, float size, long flags) {
 					if(flags & 2)
 						pb->tc = water_splat[t];
 
-					pb->tolive=(long)(float)(16000*vratio);
+					pb->tolive=(long)(float)(16000 * size * (1.0f/40));
 
 					if(flags & 2)
 						pb->tolive=1500;
