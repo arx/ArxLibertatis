@@ -173,6 +173,7 @@ on_exit() {
 # Run exit runctions.
 cleanup() {
 	_cleanup_functions="$cleanup_functions" ; cleanup_functions=''
+	[ -z "$_cleanup_functions" ] && return
 	eval "for func in $_cleanup_functions ; do \"\$func\" \"\$@\" ; done"
 }
 
@@ -244,6 +245,7 @@ lines_to_list() {
 # Usage: list_contains <list-var> <needle>
 list_contains() {
 	eval "_list_contents=\"\$$1\""
+	[ -z "$_list_contents" ] && return $false
 	eval "for entry in $_list_contents ; do" \
 		" [ \"\$entry\" = \"\$2\" ] && return \$true ; done"
 	return $false
@@ -328,6 +330,7 @@ probe_file() {
 # Usage: probe_file <command> <list> [comment]
 # Will call `command <file>` for each file found.
 probe_files() {
+	[ -z "$2" ] && return $false
 	eval "for file in $2 ; do probe_file \"\$1\" \"\$file\" \"\$3\" && return \$true ; done"
 	return $false
 }
@@ -1562,7 +1565,8 @@ probe_wine_path() {
 		find "$1/" -mindepth 1 -maxdepth 1 -iname "$(escape "$_wine_path_dir")" -print \
 			| lines_to_list
 	)"
-	_wine_path_call='probe_wine_path "$_wine_path_prefix" "$_wine_path" && return'
+	[ -z "$_wine_paths" ] && return $false
+	_wine_path_call='probe_wine_path "$_wine_path_prefix" "$_wine_path" && return $true'
 	eval "for _wine_path_prefix in $_wine_paths ; do $_wine_path_call ; done"
 }
 
@@ -1894,7 +1898,9 @@ extract_cdrom() {
 		
 		# Older versions of bsdtar don't always get the names right - fix them
 		_extrac_cdrom_f="$(find "$PWD" -depth -iname '*;1' | lines_to_list)"
-		eval "for f in $_extrac_cdrom_f ; do mv \"\$f\" \"\$(print \"\$f\" | sed 's:;1$::')\" ; done"
+		if [ ! -z "$_extrac_cdrom_f" ] ; then
+			eval "for f in $_extrac_cdrom_f ; do mv \"\$f\" \"\$(print \"\$f\" | sed 's:;1$::')\" ; done"
+		fi
 		
 		# For some iso files bsdtar just does nothing - at least let the user know
 		if [ ! -d "$PWD/bin" ] || ! icontains "$PWD/bin" 'arx.ttf' ; then
@@ -2074,6 +2080,7 @@ download() {
 # Download a file from a list of mirrors.
 # Usage: download_any <mirror-list> <destination>
 download_any() {
+	[ -z "$1" ] && return $false
 	eval "for url in $1 ; do download \"\$url\" \"\$2\" && return $true ; done"
 	return $false
 }
