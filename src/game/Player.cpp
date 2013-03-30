@@ -1349,24 +1349,21 @@ long PLAYER_PARALYSED = 0;
 void ARX_PLAYER_FrameCheck(float Framedelay)
 {
 	//	ARX_PLAYER_QuickGeneration();
-	if (Framedelay > 0)
-	{
+	if(Framedelay > 0) {
 		UpdateIOInvisibility(entities.player());
 		// Natural LIFE recovery
 		float inc = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 ) + player.Full_Skill_Defense) * ( 1.0f / 50 );
 
-		if (player.life > 0.f)
-		{
+		if(player.life > 0.f) {
 			float inc_hunger = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 )) * ( 1.0f / 50 );
 
 			// Check for player hungry sample playing
-			if (((player.hunger > 10.f) && (player.hunger - inc_hunger <= 10.f))
-			        || ((player.hunger < 10.f) && (float(arxtime) > LastHungerSample + 180000)))
+			if((player.hunger > 10.f && player.hunger - inc_hunger <= 10.f)
+					|| (player.hunger < 10.f && float(arxtime) > LastHungerSample + 180000))
 			{
 				LastHungerSample = (unsigned long)(arxtime);
 
-				if (!BLOCK_PLAYER_CONTROLS)
-				{
+				if(!BLOCK_PLAYER_CONTROLS) {
 					bool bOk = true;
 
 					for(size_t i = 0; i < MAX_ASPEECH; i++) {
@@ -1375,53 +1372,60 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 						}
 					}
 
-					if (bOk)
+					if(bOk)
 						ARX_SPEECH_AddSpeech(entities.player(), "player_off_hungry", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 
 			player.hunger -= inc_hunger * .5f; //*.7f;
 
-			if (player.hunger < -10.f) player.hunger = -10.f;
+			if(player.hunger < -10.f)
+				player.hunger = -10.f;
 
-			if (!BLOCK_PLAYER_CONTROLS)
-			{
-				if (player.hunger < 0.f) player.life -= inc * ( 1.0f / 2 );
-				else player.life += inc;
+			if(!BLOCK_PLAYER_CONTROLS) {
+				if(player.hunger < 0.f)
+					player.life -= inc * ( 1.0f / 2 );
+				else
+					player.life += inc;
 			}
 
 			// Natural MANA recovery
 			player.mana += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //framedelay*( 1.0f / 1000 );
 
-			if (player.mana > player.Full_maxmana) player.mana = player.Full_maxmana;
+			if(player.mana > player.Full_maxmana)
+				player.mana = player.Full_maxmana;
 		}
 
 		//float pmaxlife=(float)player.Full_Attribute_Constitution*(float)(player.level+2);
-		if (player.life > player.Full_maxlife) player.life = player.Full_maxlife;
+		if(player.life > player.Full_maxlife)
+			player.life = player.Full_maxlife;
 
 		// Now Checks Poison Progression
-		if (!BLOCK_PLAYER_CONTROLS)
-			if (player.poison > 0.f)
-			{
+		if(!BLOCK_PLAYER_CONTROLS)
+			if(player.poison > 0.f) {
 				float cp = player.poison;
 				cp *= ( 1.0f / 2 ) * Framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 				float faster = 10.f - player.poison;
 
-				if (faster < 0.f) faster = 0.f;
+				if(faster < 0.f)
+					faster = 0.f;
 
-				if (rnd() * 100.f > player.resist_poison + faster)
-				{
+				if(rnd() * 100.f > player.resist_poison + faster) {
 					float dmg = cp * ( 1.0f / 3 );
 
-					if (player.life - dmg <= 0.f) ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1);
-					else player.life -= dmg;
+					if(player.life - dmg <= 0.f)
+						ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1);
+					else
+						player.life -= dmg;
 
 					player.poison -= cp * ( 1.0f / 10 );
+				} else {
+					player.poison -= cp;
 				}
-				else player.poison -= cp;
 			}
 
-		if (player.poison < 0.1f) player.poison = 0.f;
+		if(player.poison < 0.1f)
+			player.poison = 0.f;
 	}
 }
 TextureContainer * PLAYER_SKIN_TC = NULL;
