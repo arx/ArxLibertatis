@@ -874,7 +874,6 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 	
 	EERIE_BKG_INFO * eg;
 	EERIE_BKG_INFO * eg2;
-	long ii, ia, ji, ja;
 	Vec3f p1, p2; 
 	long count = 0;
 	long per;
@@ -910,15 +909,10 @@ static void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb) {
 
 			for (long k = 0; k < eg->nbianchors; k++)
 			{
-				ii = i - 2;
-				ia = i + 2;
-				ji = j - 2;
-				ja = j + 2;
-
-				ii = clamp(ii, 0, eb->Xsize - 1);
-				ia = clamp(ia, 0, eb->Xsize - 1);
-				ji = clamp(ji, 0, eb->Zsize - 1);
-				ja = clamp(ja, 0, eb->Zsize - 1);
+				long ii = clamp(i - 2, 0, eb->Xsize - 1);
+				long ia = clamp(i + 2, 0, eb->Xsize - 1);
+				long ji = clamp(j - 2, 0, eb->Zsize - 1);
+				long ja = clamp(j + 2, 0, eb->Zsize - 1);
 
 				for (long j2 = ji; j2 <= ja; j2++)
 					for (long i2 = ii; i2 <= ia; i2++)
