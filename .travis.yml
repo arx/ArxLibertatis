@@ -1,0 +1,17 @@
+language: cpp
+compiler:
+  - gcc
+before_script:
+  - cmake .
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -qq build-essential cmake zlib1g-dev libfreetype6-dev libopenal1 libopenal-dev mesa-common-dev libgl1-mesa-dev libboost-all-dev libsdl1.2-dev libglew-dev qt-sdk gdb
+branches:
+  only:
+    - master
+notifications:
+  recipients:
+    - hennr@hennr.name
+  email:
+    on_success: change
+    on_failure: always
