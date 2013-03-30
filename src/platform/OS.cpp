@@ -47,8 +47,10 @@
 #include "platform/Platform.h"
 #include "util/String.h"
 
-// windows specific functions
-//#ifdef ARX_HAVE_WINAPI
+namespace platform {
+
+// Windows-specific functions
+#ifdef ARX_HAVE_WINAPI
 
 // stolen from WinNT.h (last updated from 8.0 SDK)
 // Product types
@@ -163,64 +165,72 @@
 
 #define PRODUCT_UNLICENSED                          0xABCDABCD
 
+	
 typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
 typedef BOOL (WINAPI *PGPI)(DWORD, DWORD, DWORD, DWORD, PDWORD);
 
-static bool GetWindowsVersionName(char* str, int bufferSize)
-{
+static std::string getWindowsVersionName() {
+	
 	OSVERSIONINFOEX osvi;
 	SYSTEM_INFO si;
 	BOOL bOsVersionInfoEx;
-
-	DWORD dwType; 
+	
+	DWORD dwType;
 	
 	ZeroMemory(&si, sizeof(SYSTEM_INFO));
-	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX)); 
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	bOsVersionInfoEx = GetVersionEx((OSVERSIONINFO*) &osvi); 
+	bOsVersionInfoEx = GetVersionEx((OSVERSIONINFO *)&osvi);
 	
-	if(bOsVersionInfoEx == 0)
-		return false; // Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
+	if(bOsVersionInfoEx == 0) {
+		return "Windows"; // Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
+	}
 	
-	PGNSI pGNSI = (PGNSI) GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetNativeSystemInfo");
-	if(NULL != pGNSI)
+	PGNSI pGNSI = (PGNSI) GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")),
+	                                     "GetNativeSystemInfo");
+	if(NULL != pGNSI) {
 		pGNSI(&si);
-	else 
+	} else {
 		GetSystemInfo(&si); // Check for unsupported OS
+	}
 	
-	if (VER_PLATFORM_WIN32_NT != osvi.dwPlatformId || osvi.dwMajorVersion <= 4 )
-		return false;
+	if(VER_PLATFORM_WIN32_NT != osvi.dwPlatformId || osvi.dwMajorVersion <= 4) {
+		return "Windows";
+	}
 	
 	std::stringstream os;
 	os << "Microsoft "; // Test for the specific product. 
 	
-	if ( osvi.dwMajorVersion == 6 ) {
-
-		if( osvi.dwMinorVersion == 0 ) {
-			if( osvi.wProductType == VER_NT_WORKSTATION )
+	if(osvi.dwMajorVersion == 6) {
+		
+		if(osvi.dwMinorVersion == 0) {
+			if(osvi.wProductType == VER_NT_WORKSTATION) {
 				os << "Windows Vista ";
-			else
+			} else {
 				os << "Windows Server 2008 ";
-		} else if ( osvi.dwMinorVersion == 1 ) {
-			if( osvi.wProductType == VER_NT_WORKSTATION )
+			}
+		} else if(osvi.dwMinorVersion == 1) {
+			if(osvi.wProductType == VER_NT_WORKSTATION) {
 				os << "Windows 7 ";
-			else
+			} else {
 				os << "Windows Server 2008 R2 ";
-		} else if ( osvi.dwMinorVersion == 2 ) {
-			if( osvi.wProductType == VER_NT_WORKSTATION )
+			}
+		} else if(osvi.dwMinorVersion == 2) {
+			if(osvi.wProductType == VER_NT_WORKSTATION) {
 				os << "Windows 8 ";
-			else
+			} else {
 				os << "Windows Server 2012 ";
+			}
 		} else {
-			os << " Windows Version " << osvi.dwMajorVersion << "." << osvi.dwMinorVersion << " ";
+			os << " Windows Version " << osvi.dwMajorVersion
+			   << "." << osvi.dwMinorVersion << " ";
 		}
-
 		
-		PGPI pGPI = (PGPI) GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")), "GetProductInfo");
-		pGPI( osvi.dwMajorVersion, osvi.dwMinorVersion, 0, 0, &dwType); 
+		PGPI pGPI = (PGPI)GetProcAddress(GetModuleHandle(TEXT("kernel32.dll")),
+		                                 "GetProductInfo");
+		pGPI(osvi.dwMajorVersion, osvi.dwMinorVersion, 0, 0, &dwType);
 		
-		switch( dwType )
-		{
+		switch(dwType) {
 		case PRODUCT_BUSINESS:
 			os << "Business";
 			break;
@@ -452,8 +462,8 @@ static bool GetWindowsVersionName(char* str, int bufferSize)
 		case PRODUCT_UNDEFINED:
 			os << "An unknown product";
 			break;
-		// just use unknown here since we do not care.
 		case PRODUCT_UNLICENSED:
+			// just use unknown here since we do not care.
 			os << "An unknown product";
 			break;
 		case PRODUCT_ULTIMATE:
@@ -472,121 +482,104 @@ static bool GetWindowsVersionName(char* str, int bufferSize)
 			os << "Web Server (core installation)";
 			break;
 		}
-
-	} else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 ) {
-
-		if( GetSystemMetrics(SM_SERVERR2) )
-			os <<  "Windows Server 2003 R2, ";
-		else if ( osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER )
-			os <<  "Windows Storage Server 2003";
-		else if ( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
-			os <<  "Windows Home Server";
-		else if( osvi.wProductType == VER_NT_WORKSTATION && si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
-			os <<  "Windows XP Professional x64 Edition";
-		else 
-			os << "Windows Server 2003, ";  // Test for the server type.
-
-		if ( osvi.wProductType != VER_NT_WORKSTATION )
-		{
-			if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64 )
-			{
-				if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-					os <<  "Datacenter Edition for Itanium-based Systems";
-				else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-					os <<  "Enterprise Edition for Itanium-based Systems";
-			}   
-			else if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 )
-			{
-				if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-					os <<  "Datacenter x64 Edition";
-				else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-					os <<  "Enterprise x64 Edition";
-				else 
-					os <<  "Standard x64 Edition";
-			}  
-			else
-			{
-				if ( osvi.wSuiteMask & VER_SUITE_COMPUTE_SERVER )
-					os <<  "Compute Cluster Edition";
-				else if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-					os <<  "Datacenter Edition";
-				else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-					os <<  "Enterprise Edition";
-				else if ( osvi.wSuiteMask & VER_SUITE_BLADE )
-					os <<  "Web Edition";
-				else 
-					os <<  "Standard Edition";
+		
+	} else if(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2) {
+		
+		if(GetSystemMetrics(SM_SERVERR2)) {
+			os << "Windows Server 2003 R2, ";
+		} else if(osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER) {
+			os << "Windows Storage Server 2003";
+		} else if(osvi.wSuiteMask & VER_SUITE_WH_SERVER) {
+			os << "Windows Home Server";
+		} else if(osvi.wProductType == VER_NT_WORKSTATION
+		          && si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+			os << "Windows XP Professional x64 Edition";
+		} else {
+			os << "Windows Server 2003, "; // Test for the server type.
+		}
+		
+		if(osvi.wProductType != VER_NT_WORKSTATION) {
+			if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64 ) {
+				if(osvi.wSuiteMask & VER_SUITE_DATACENTER) {
+					os << "Datacenter Edition for Itanium-based Systems";
+				} else if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE) {
+					os << "Enterprise Edition for Itanium-based Systems";
+				}
+			} else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+				if(osvi.wSuiteMask & VER_SUITE_DATACENTER) {
+					os << "Datacenter x64 Edition";
+				} else if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE) {
+					os << "Enterprise x64 Edition";
+				} else {
+					os << "Standard x64 Edition";
+				}
+			} else {
+				if(osvi.wSuiteMask & VER_SUITE_COMPUTE_SERVER) {
+					os << "Compute Cluster Edition";
+				} else if(osvi.wSuiteMask & VER_SUITE_DATACENTER) {
+					os << "Datacenter Edition";
+				} else if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE) {
+					os << "Enterprise Edition";
+				} else if(osvi.wSuiteMask & VER_SUITE_BLADE) {
+					os << "Web Edition";
+				} else {
+					os << "Standard Edition";
+				}
 			}
 		}
-	} else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 ) {
-
-		os << "Windows XP ";
-		if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-			os <<  "Home Edition";
-		else 
-			os <<  "Professional";
-
-	} else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 ) {
-
-		os << "Windows 2000 ";  
+	} else if(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1) {
 		
-		if ( osvi.wProductType == VER_NT_WORKSTATION ) {
-			os <<  "Professional";
+		os << "Windows XP ";
+		if(osvi.wSuiteMask & VER_SUITE_PERSONAL) {
+			os << "Home Edition";
 		} else {
-			if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-				os <<  "Datacenter Server";
-			else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-				os <<  "Advanced Server";
-			else 
-				os <<  "Server";
+			os << "Professional";
+		}
+		
+	} else if(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0) {
+		
+		os << "Windows 2000 ";
+		
+		if(osvi.wProductType == VER_NT_WORKSTATION) {
+			os << "Professional";
+		} else {
+			if(osvi.wSuiteMask & VER_SUITE_DATACENTER) {
+				os << "Datacenter Server";
+			} else if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE) {
+				os << "Advanced Server";
+			} else {
+				os << "Server";
+			}
 		}
 	} else {
 		os << " Windows Version " << osvi.dwMajorVersion << "." << osvi.dwMinorVersion;
 	}
 	
 	// Include service pack (if any) and build number.
-	if(strlen(osvi.szCSDVersion) > 0) 
+	if(strlen(osvi.szCSDVersion) > 0) {
 		os << " " << osvi.szCSDVersion;
+	}
 	
 	os << " (build " << osvi.dwBuildNumber << ")";
-	if ( osvi.dwMajorVersion >= 6 )
-	{
-		if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 )
-			os <<  ", 64-bit";
-		else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_INTEL )
+	if(osvi.dwMajorVersion >= 6) {
+		if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+			os << ", 64-bit";
+		} else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
 			os << ", 32-bit";
-	} 
+		}
+	}
 	
-	strncpy(str, os.str().c_str(), bufferSize);
-	return true; 
+	return os.str();
 }
 
-static bool Is64BitWindows()
-{
-#if defined(_WIN64)
-	return true;  // 64-bit programs run only on Win64
-#elif defined(_WIN32)
-	// 32-bit programs run on both 32-bit and 64-bit Windows
-	BOOL f64 = FALSE;
-	return IsWow64Process(GetCurrentProcess(), &f64) && f64;
-#else
-	return false;
-#endif
-}
+#endif // ARX_HAVE_WINAPI
 
-//#endif // ARX_HAVE_WINAPI
 
-namespace platform {
-
-	
 std::string getOSName() {
 	
 	#ifdef ARX_HAVE_WINAPI
 	// Get operating system friendly name from registry.
-	char buffer[256];
-	if(GetWindowsVersionName(buffer, ARRAY_SIZE(buffer))) {
-		return buffer;
-	}
+	return getWindowsVersionName();
 	#endif
 	
 	#ifdef ARX_HAVE_UNAME
@@ -614,9 +607,17 @@ std::string getOSName() {
 
 std::string getOSArchitecture() {
 	
-	#ifdef ARX_HAVE_WINAPI
 	// Determine if Windows is 64-bit.
-	return Is64BitWindows() ? ARX_ARCH_NAME_X86_64 : ARX_ARCH_NAME_X86;
+	#if defined(_WIN64)
+	return ARX_ARCH_NAME_X86_64; // 64-bit programs run only on Win64
+	#elif defined(_WIN32)
+	// 32-bit programs run on both 32-bit and 64-bit Windows
+	BOOL f64 = FALSE;
+	if(IsWow64Process(GetCurrentProcess(), &f64) && f64) {
+		return ARX_ARCH_NAME_X86_64;
+	} else {
+		return ARX_ARCH_NAME_X86;
+	}
 	#endif
 	
 	#ifdef ARX_HAVE_UNAME
