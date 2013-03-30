@@ -334,8 +334,6 @@ void ARXDRAW_DrawPolyBoom()
 {
 	TexturedVertex ltv[4];
 
-	float tt;
-
 	SetZBias(8);
 	GRenderer->SetFogColor(Color::none);
 	unsigned long tim = (unsigned long)(arxtime);
@@ -370,7 +368,8 @@ void ARXDRAW_DrawPolyBoom()
 
 		switch(typp) {
 		case 0:
-			tt = t / (float)polyboom[i].tolive * 0.8f;
+		{
+			float tt = t / (float)polyboom[i].tolive * 0.8f;
 
 			IncrementPolyWithNormalOutput(polyboom[i].ep,ltv);
 			EE_RT2(&ltv[0],&ltv[0]);
@@ -397,11 +396,12 @@ void ARXDRAW_DrawPolyBoom()
 				EE_RT2(&ltv[3],&ltv[3]);
 				ARX_DrawPrimitive(&ltv[1], &ltv[2], &ltv[3]);
 			}
-			break;
+		}
+		break;
 		case 1:	// Blood
 		{
 			float div=1.f/(float)polyboom[i].tolive;
-			tt=(float)t*div;
+			float tt=(float)t*div;
 			float tr = tt * 2 - 0.5f;
 
 			if(tr < 1.f)
@@ -451,7 +451,7 @@ void ARXDRAW_DrawPolyBoom()
 		case 2: // WATER
 		{
 			float div=1.f/(float)polyboom[i].tolive;
-			tt=(float)t*div;
+			float tt=(float)t*div;
 			float tr = (tt * 2 - 0.5f);
 
 			if (tr<1.f) tr=1.f;
