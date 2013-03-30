@@ -70,41 +70,31 @@ static EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z) {
 	if(px <= 0 || px >= ACTIVEBKG->Xsize - 1 || pz <= 0 || pz >= ACTIVEBKG->Zsize - 1)
 		return NULL;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 	EERIEPOLY * found = NULL;
 	float foundY = 9999999.f;
 
-	for (long j = pz - 1; j <= pz + 1; j++)
-		for (long i = px - 1; i <= px + 1; i++)
-		{
-			feg = &ACTIVEBKG->fastdata[i][j];
+	for(long j = pz - 1; j <= pz + 1; j++) {
+		for(long i = px - 1; i <= px + 1; i++) {
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
-			for (long k = 0; k < feg->nbpolyin; k++)
-			{
-				ep = feg->polyin[k];
+			for(long k = 0; k < feg->nbpolyin; k++) {
+				EERIEPOLY *ep = feg->polyin[k];
 
-				if (!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-				        &&	(PointIn2DPolyXZ(ep, x, z))
-				   )
-				{
+				if(!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) && PointIn2DPolyXZ(ep, x, z)) {
 					Vec3f poss;
 					poss.x = x;
 					poss.y = y;
 					poss.z = z;
 					float yy;
 
-					if ((GetTruePolyY(ep, &poss, &yy))
-					        &&	(yy >= y)
-					        &&	((found == NULL) || ((found != NULL) && (yy <= foundY)))
-					   )
-					{
+					if(GetTruePolyY(ep, &poss, &yy) && yy >= y && (!found || (found && (yy <= foundY)))) {
 						found = ep;
 						foundY = yy;
 					}
 				}
 			}
 		}
+	}
 
 	return found;
 }
