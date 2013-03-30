@@ -761,7 +761,6 @@ std::string getOSDistribution() {
 			if(!distro.empty()) {
 				return distro;
 			}
-			
 		}
 	}
 	
@@ -847,13 +846,15 @@ std::string getOSDistribution() {
 	
 	// Fallback: parse /etc/lsb-release ourselves
 	{
-		fs::ifstream iss("/etc/lsb-release");
-		const char * keys[] = {
-			"DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME"
-		};
-		std::string distro = parseDistributionName(iss, '=', keys, ARRAY_SIZE(keys));
-		if(!distro.empty()) {
-			return distro;
+		fs::ifstream ifs("/etc/lsb-release");
+		if(ifs.is_open()) {
+			const char * keys[] = {
+				"DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME"
+			};
+			std::string distro = parseDistributionName(ifs, '=', keys, ARRAY_SIZE(keys));
+			if(!distro.empty()) {
+				return distro;
+			}
 		}
 	}
 	
