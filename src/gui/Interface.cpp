@@ -2332,9 +2332,6 @@ void ArxGame::managePlayerControls()
 			}
 		}
 
-		float t;
-		float multi;
-
 		if(EDITMODE || arxtime.is_paused())
 			FD = 40.f;
 
@@ -2357,13 +2354,13 @@ void ArxGame::managePlayerControls()
 		// Checks WALK_BACKWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKBACKWARD) && !NOMOREMOVES) {
 			CurrFightPos=3;
-			multi = 1;
+			float multi = 1;
 
 			if(left || right) {
 				multi = 0.8f;
 			}
 
-			t=radians(player.angle.b);
+			float t = radians(player.angle.b);
 			multi=5.f*(float)FD*MoveDiv*multi;
 			tm.x+=(float)EEsin(t)*multi;
 			tm.z-=(float)EEcos(t)*multi;
@@ -2384,13 +2381,13 @@ void ArxGame::managePlayerControls()
 		// Checks WALK_FORWARD Key Status.
 		if(GInput->actionPressed(CONTROLS_CUST_WALKFORWARD) && !NOMOREMOVES) {
 			CurrFightPos=2;
-			multi = 1;
+			float multi = 1;
 
 			if(left || right) {
 				multi=0.8f;
 			}
 
-			t=radians(player.angle.b);
+			float t = radians(player.angle.b);
 			multi=10.f*(float)FD*MoveDiv*multi;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
@@ -2411,8 +2408,8 @@ void ArxGame::managePlayerControls()
 		// Checks STRAFE_LEFT Key Status.
 		if(left && !NOMOREMOVES) {
 			CurrFightPos=0;
-			t=radians(MAKEANGLE(player.angle.b+90.f));
-			multi=6.f*(float)FD*MoveDiv;
+			float t = radians(MAKEANGLE(player.angle.b+90.f));
+			float multi=6.f*(float)FD*MoveDiv;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
 
@@ -2427,8 +2424,8 @@ void ArxGame::managePlayerControls()
 		// Checks STRAFE_RIGHT Key Status.
 		if(right && !NOMOREMOVES) {
 			CurrFightPos=1;
-			t=radians(MAKEANGLE(player.angle.b-90.f));
-			multi=6.f*(float)FD*MoveDiv;
+			float t = radians(MAKEANGLE(player.angle.b-90.f));
+			float multi=6.f*(float)FD*MoveDiv;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
 
