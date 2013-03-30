@@ -195,7 +195,7 @@ bool EXTERNALVIEW = false;
 bool ARX_CONVERSATION = false;
 long ARX_CONVERSATION_MODE=-1;
 long ARX_CONVERSATION_LASTIS=-1;
-static long LAST_CONVERSATION = 0;
+static bool LAST_CONVERSATION = 0;
 long SHOW_INGAME_MINIMAP= 1;
 static unsigned long FRAMETICKS=0;
 
@@ -960,6 +960,8 @@ void ArxGame::updateConversationCamera() {
 			entities.player()->animlayer[1].flags|=EA_LOOP;
 		}
 	}
+
+	LAST_CONVERSATION=ARX_CONVERSATION;
 }
 
 void ArxGame::speechControlledCinematic() {
@@ -1361,9 +1363,7 @@ void ArxGame::renderLevel() {
 
 	handlePlayerDeath();
 
-
 	/////////////////////////////////////
-	LAST_CONVERSATION=ARX_CONVERSATION;
 
 	handleCameraController();
 
