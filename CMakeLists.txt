@@ -208,14 +208,12 @@ endif()
 
 # Win32 API
 if(WIN32)
-	if(MSVC)
-		# Ensure we aren't using functionalities not found under Window XP SP1
-		add_definitions(-D_WIN32_WINNT=0x0502)
-	else()
-		# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
-		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
-		add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
-	endif()
+	# Ensure we aren't using functionalities not found under Window XP SP1
+	add_definitions(-D_WIN32_WINNT=0x0502)
+	# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
+	add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
+	add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
+	
 	add_definitions(-DNOMINMAX)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
@@ -363,7 +361,10 @@ if(NOT MSVC)
 		# Older Boost versions don't work with C++11
 	elseif(USE_CXX11)
 		add_cxxflag("-std=c++11")
-		add_definitions(-U__STRICT_ANSI__) # __argc and __argv
+		
+		if(WIN32)
+			add_definitions(-U__STRICT_ANSI__) # __argc and __argv
+		endif()
 	endif()
 	
 	# Don't expose internal symbols to the outside world by default
@@ -874,7 +875,7 @@ set(ARX_SOURCES
 )
 
 # Set the icon for the Windows executable by adding this resource file to the sources
-if(MSVC OR MINGW)
+if(WIN32)
 	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
 endif()
 
