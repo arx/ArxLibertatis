@@ -210,9 +210,12 @@ endif()
 if(WIN32)
 	# Ensure we aren't using functionalities not found under Window XP SP1
 	add_definitions(-D_WIN32_WINNT=0x0502)
-	# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
-	add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
-	add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
+	
+	if(MINGW)
+		# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
+		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
+		add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
+	endif()
 	
 	add_definitions(-DNOMINMAX)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
