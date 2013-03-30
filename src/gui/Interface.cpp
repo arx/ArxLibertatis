@@ -1857,20 +1857,16 @@ bool ArxGame::manageEditorControls() {
 				}
 #endif
 
-				if (!((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count > 1)))
-					if ((DRAGINTER->obj) && (DRAGINTER->obj->pbox))
-					{
-
-						if (
-							(!InInventoryPos(&DANAEMouse))) //Put object in fromt of player
-						{
-							if (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+				if(!((DRAGINTER->ioflags & IO_ITEM) && DRAGINTER->_itemdata->count > 1))
+					if(DRAGINTER->obj && DRAGINTER->obj->pbox) {
+						//Put object in fromt of player
+						if(!InInventoryPos(&DANAEMouse)) {
+							if(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
 								 goto suivant2;
 
-							long res=Manage3DCursor(0);
-
-						if (res==0) // Throw Object
-						{
+						long res = Manage3DCursor(0);
+						// Throw Object
+						if(res==0) {
 							Entity * io=DRAGINTER;
 							ARX_PLAYER_Remove_Invisibility();
 							io->obj->pbox->active=1;
@@ -1891,13 +1887,13 @@ bool ArxGame::manageEditorControls() {
 							io->show=SHOW_FLAG_IN_SCENE;
 							Set_DragInter(NULL);
 						}
-				}
 						}
+					}
 
 			suivant2:
 				;
-						}
-					}
+			}
+		}
 
 	if (COMBINE)
 	{
