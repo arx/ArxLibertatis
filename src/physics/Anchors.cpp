@@ -249,9 +249,6 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags 
 
 	float anything = 999999.f; 
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-
 	/* TO KEEP...
 		EERIE_BKG_INFO * eg=&ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
 		if (	(cyl->origin.y+cyl->height < eg->tile_miny)
@@ -263,36 +260,34 @@ static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER *cyl, CollisionFlags 
 		}
 		*/
 
-	for (long j = pz - rad; j <= pz + rad; j++)
-		for (long i = px - rad; i <= px + rad; i++)
-		{
-			feg = &ACTIVEBKG->fastdata[i][j];
+	for(long j = pz - rad; j <= pz + rad; j++) {
+		for(long i = px - rad; i <= px + rad; i++) {
+			FAST_BKG_DATA *feg = &ACTIVEBKG->fastdata[i][j];
 
-			for (long k = 0; k < feg->nbpoly; k++)
-			{
-				ep = &feg->polydata[k];
+			for(long k = 0; k < feg->nbpoly; k++) {
+				EERIEPOLY *ep = &feg->polydata[k];
 
-				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
+				if(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+					continue;
 
-				if (ep->min.y < anything)
-				{
+				if(ep->min.y < anything) {
 					float minanything = std::min(anything, ANCHOR_IsPolyInCylinder(ep, cyl, flags));
 
-					if (anything != minanything)
-					{
+					if(anything != minanything)
 						anything = minanything;
-					}
 				}
 			}
 		}
+	}
 
-	ep = ANCHOR_CheckInPolyPrecis(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z);
+	EERIEPOLY *ep = ANCHOR_CheckInPolyPrecis(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z);
 
-	if (ep) anything = std::min(anything, ep->min.y);
+	if(ep)
+		anything = std::min(anything, ep->min.y);
 
 	float tempo;
 
-	if ((ep) && (GetTruePolyY(ep, &cyl->origin, &tempo)))
+	if(ep && GetTruePolyY(ep, &cyl->origin, &tempo))
 		anything = std::min(anything, tempo);
 
 	anything = anything - cyl->origin.y;
