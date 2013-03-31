@@ -34,6 +34,7 @@ endif()
 option(BUILD_CRASHREPORTER "Build the crash reporter" ${def_BUILD_CRASHREPORTER})
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
+option(INSTALL_SCRIPTS "Install the data install script" ON)
 
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
@@ -109,10 +110,13 @@ set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
     STRING "Install location for .desktop files (relative to prefix).")
 set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Install location for game executables (relative to prefix).")
+set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
+    STRING "Where to install the data install script (relative to prefix).")
 mark_as_advanced(
 	ICONDIR
 	APPDIR
 	GAMESBINDIR
+	SCRIPTDIR
 )
 
 # Default runtime user and data directories
@@ -1071,6 +1075,11 @@ if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
 
+
+# Install the data install script
+if(INSTALL_SCRIPTS AND NOT WIN32)
+	install(PROGRAMS scripts/arx-install-data DESTINATION "${SCRIPTDIR}")
+endif()
 
 # Install icon and desktop entry
 if(NOT WIN32 AND NOT MACOSX)

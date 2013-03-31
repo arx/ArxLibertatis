@@ -65,6 +65,9 @@ The following options can be used to customize where `make install` puts the var
 * `CMAKE_INSTALL_BINDIR` (default: `bin`): Where to install user executables
 * `GAMESBINDIR` (default: `${BINDIR}`): Where to install game executables
 * `CMAKE_INSTALL_LIBEXECDIR` (default: `libexec`): Where to install non-user executables
+* `SCRIPTDIR` (default: `${BINDIR}`): Where to install the data install script
+
+* `INSTALL_SCRIPTS` (default: `ON`): Install the data install script. There is no data install script on Windows, so there this option does nothing.
 
 ### Optional dependencies
 
