@@ -3035,12 +3035,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		ARX_SPELLS_Precast_Add( typ, l, flgs, duration);
 		return true;
 	}
-
-	if ( cur_rf == 3 ) 
-	{
+	
+	if(cur_rf == 3) {
 		level += 2;
+		Player_Magic_Level += 2;
 	}
-
+	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 
 
