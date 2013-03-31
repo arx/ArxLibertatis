@@ -128,6 +128,7 @@ else
 fi
 tempdir="${TMPDIR:-"/tmp"}"
 eval "data_path=\"\$${scommand}_PATH\""
+[ -z "$data_path" ] && data_path="$arx_PATH"
 
 
 ##########################################################################################

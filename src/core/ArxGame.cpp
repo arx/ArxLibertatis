@@ -452,8 +452,15 @@ bool ArxGame::AddPaks() {
 		missing.push_back(i);
 	}
 	
-	// Construct an informative error message about missing files
 	if(!missing.empty()) {
+		
+		// Try to launch the data file installer on non-Windows systems
+		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+		int ret = system("nohup arx-install-data >/dev/null 2>&1 &");
+		(void)ret; // we really don't care!
+		#endif
+		
+		// Construct an informative error message about missing files
 		std::ostringstream oss;
 		oss << "Could not load required ";
 		oss << (missing.size() == 1 ? "file" : "files");
@@ -489,7 +496,11 @@ bool ArxGame::AddPaks() {
 		oss << "\nSee  " << url::help_get_data;
 		oss << "  and  " << url::help_install_data << "\n";
 		oss << "\nThe search path can be adjusted with command-line parameters.\n";
+		#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+		oss << "\nWe will now try to launch the data install script for you...\n";
+		#endif
 		LogCritical << oss.str();
+		
 		return false;
 	}
 	
