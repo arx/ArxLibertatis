@@ -3603,10 +3603,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			if(spells[i].caster == 0) {
-				spells[i].target = spells[i].caster;
-			}
-			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].target_pos);
 			}
@@ -3616,10 +3612,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
-			spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			if(duration > -1) {
 				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			}
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+			}
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
 				
@@ -3669,10 +3671,12 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			spells[i].exist = true;
-			spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			if(duration > -1) {
 				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			}
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
 			
@@ -4055,14 +4059,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			/*
-			 * TODO Ideally this should respect the user-supplied duration!
-			 *
-			 * However some scripts specify a duration that differs from this default,
-			 * thus changing the code to respect that would change the balance of the game.
-			 * Wait until we can fix the scripts to use this duration before fixing the code.
-			 */
-			spells[i].tolive = 2000000;
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 2000000 : 20000;
+			}
 			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
@@ -4113,13 +4114,18 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START);
 			
+			spells[i].exist = true;
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 2000000 : 20000;
+			}
+			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
 			}
 			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
 			
