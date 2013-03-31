@@ -34,6 +34,7 @@ endif()
 option(BUILD_CRASHREPORTER "Build the crash reporter" ${def_BUILD_CRASHREPORTER})
 option(BUILD_EDITOR "Build editor" OFF)
 option(BUILD_EDIT_LOADSAVE "Build save/load functions only used by the editor" ON)
+option(INSTALL_SCRIPTS "Install the data install script" ON)
 
 # Optional dependencies
 option(USE_OPENAL "Build the OpenAL audio backend" ON)
@@ -61,7 +62,7 @@ if(DEBUG)
 endif()
 
 # Static libs
-set(default_USE_STATIC_LIBS OF)
+set(default_USE_STATIC_LIBS OFF)
 if(WIN32)
 	set(default_USE_STATIC_LIBS ON)
 endif()
@@ -109,10 +110,13 @@ set(APPDIR "${CMAKE_INSTALL_DATAROOTDIR}/applications" CACHE
     STRING "Install location for .desktop files (relative to prefix).")
 set(GAMESBINDIR "${CMAKE_INSTALL_BINDIR}" CACHE
     STRING "Install location for game executables (relative to prefix).")
+set(SCRIPTDIR "${CMAKE_INSTALL_BINDIR}" CACHE
+    STRING "Where to install the data install script (relative to prefix).")
 mark_as_advanced(
 	ICONDIR
 	APPDIR
 	GAMESBINDIR
+	SCRIPTDIR
 )
 
 # Default runtime user and data directories
@@ -208,13 +212,14 @@ endif()
 
 # Win32 API
 if(WIN32)
-	if(MSVC)
-		# Ensure we aren't using functionalities not found under Window XP SP1
-		add_definitions(-D_WIN32_WINNT=0x0502)
-	else()
-		# We need to define WINVER for MinGW32 when requiring anything newer than Win95/WinNT
+	# Ensure we aren't using functionalities not found under Window XP SP1
+	add_definitions(-D_WIN32_WINNT=0x0502)
+	if(NOT MSVC)
+		# We need to define WINVER for MinGW when requiring anything newer than Win95/WinNT
 		add_definitions(-DWINVER=0x0500) # Require at least Windows 2000
+		add_definitions(-D_WIN32_IE=0x0500) # Required for "SHGFP_TYPE_CURRENT"
 	endif()
+	
 	add_definitions(-DNOMINMAX)
 	add_definitions(-DWIN32_LEAN_AND_MEAN)
 	list(APPEND ARX_LIBRARIES gdi32 shell32 comdlg32 ole32 comctl32)
@@ -362,6 +367,10 @@ if(NOT MSVC)
 		# Older Boost versions don't work with C++11
 	elseif(USE_CXX11)
 		add_cxxflag("-std=c++11")
+		
+		if(WIN32)
+			add_definitions(-U__STRICT_ANSI__) # __argc and __argv
+		endif()
 	endif()
 	
 	# Don't expose internal symbols to the outside world by default
@@ -872,7 +881,7 @@ set(ARX_SOURCES
 )
 
 # Set the icon for the Windows executable by adding this resource file to the sources
-if(MSVC)
+if(WIN32)
 	SET(ARX_SOURCES ${ARX_SOURCES} data/icons/arx-libertatis.rc)
 endif()
 
@@ -1066,6 +1075,11 @@ if(BUILD_TESTS)
 	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
 endif()
 
+
+# Install the data install script
+if(INSTALL_SCRIPTS AND NOT WIN32)
+	install(PROGRAMS scripts/arx-install-data DESTINATION "${SCRIPTDIR}")
+endif()
 
 # Install icon and desktop entry
 if(NOT WIN32 AND NOT MACOSX)

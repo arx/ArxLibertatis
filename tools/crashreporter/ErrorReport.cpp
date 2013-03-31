@@ -400,6 +400,7 @@ bool ErrorReport::getCrashDescription() {
 		// Turn off localization for the backtrace output
 		#ifdef ARX_HAVE_SETENV
 		setenv("LANG", "C", 1);
+		setenv("LC_ALL", "C", 1);
 		#endif
 		
 		// Try to execute gdb to get a very detailed stack trace.

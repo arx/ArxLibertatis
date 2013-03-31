@@ -28,6 +28,7 @@
 
 #ifdef ARX_HAVE_WINAPI
 #include <windows.h>
+#include <cstring>
 #endif
 
 #ifdef ARX_HAVE_UNAME
@@ -48,15 +49,105 @@
 
 namespace platform {
 
+// Windows-specific functions
+#ifdef ARX_HAVE_WINAPI
+
+typedef void (WINAPI *PGNSI)(LPSYSTEM_INFO);
+
+//! Get a string describing the Windows version
+static std::string getWindowsVersionName() {
 	
+	OSVERSIONINFOEX osvi;
+	SYSTEM_INFO si;
+	
+	ZeroMemory(&si, sizeof(SYSTEM_INFO));
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	if(GetVersionEx((OSVERSIONINFO *)&osvi) == 0) {
+		return "Windows";
+	}
+	
+	// Call GetNativeSystemInfo if supported or GetSystemInfo otherwise.
+	HMODULE kernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+	PGNSI pGNSI = (PGNSI) GetProcAddress(kernel32, "GetNativeSystemInfo");
+	if(NULL != pGNSI) {
+		pGNSI(&si);
+	} else {
+		GetSystemInfo(&si); // Check for unsupported OS
+	}
+	
+	if(VER_PLATFORM_WIN32_NT != osvi.dwPlatformId || osvi.dwMajorVersion <= 4) {
+		return "Windows";
+	}
+	
+	std::stringstream os;
+	os << "Microsoft "; // Test for the specific product
+	
+	bool isServer = (osvi.wProductType != VER_NT_WORKSTATION);
+	
+	#define ARX_WINVER(x, y) ((u64(x) << 32) | u64(y))
+	switch(ARX_WINVER(osvi.dwMajorVersion, osvi.dwMinorVersion)) {
+		case ARX_WINVER(6, 2): {
+			os << (isServer ? "Windows Server 2012" : "Windows 8");
+			break;
+		}
+		case ARX_WINVER(6, 1): {
+			os << (isServer ? "Windows Server 2008 R2" : "Windows 7");
+			break;
+		}
+		case ARX_WINVER(6, 0): {
+			os << (isServer ? "Windows Server 2008" : "Windows Vista");
+			break;
+		}
+		case ARX_WINVER(5, 2): {
+			if(GetSystemMetrics(SM_SERVERR2)) {
+				os << "Windows Server 2003 R2";
+			} else if(!isServer && si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+				os << "Windows XP Professional x64 Edition";
+			} else {
+				os << "Windows Server 2003";
+			}
+			break;
+		}
+		case ARX_WINVER(5, 1): {
+			os << "Windows XP";
+			break;
+		}
+		case ARX_WINVER(5, 0): {
+			os << (isServer ? "Windows 2000 Server" : "Windows 2000");
+			break;
+		}
+		default: {
+			os << " Windows Version " << osvi.dwMajorVersion << "." << osvi.dwMinorVersion;
+		}
+	}
+	#undef ARX_WINVER
+	
+	// Include service pack (if any) and build number
+	if(strlen(osvi.szCSDVersion) > 0) {
+		os << " " << osvi.szCSDVersion;
+	}
+	
+	os << " (build " << osvi.dwBuildNumber << ")";
+	if(osvi.dwMajorVersion >= 6) {
+		if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64) {
+			os << ", 64-bit";
+		} else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL) {
+			os << ", 32-bit";
+		}
+	}
+	
+	return os.str();
+}
+
+#endif // ARX_HAVE_WINAPI
+
+
 std::string getOSName() {
 	
 	#ifdef ARX_HAVE_WINAPI
 	// Get operating system friendly name from registry.
-	char buffer[256];
-	if(GetWindowsVersionName(buffer, ARRAY_SIZE(buffer))) {
-		return buffer;
-	}
+	return getWindowsVersionName();
 	#endif
 	
 	#ifdef ARX_HAVE_UNAME
@@ -84,9 +175,17 @@ std::string getOSName() {
 
 std::string getOSArchitecture() {
 	
-	#ifdef ARX_HAVE_WINAPI
 	// Determine if Windows is 64-bit.
-	return Is64BitWindows() ? ARX_ARCH_NAME_X86_64 : ARX_ARCH_NAME_X86;
+	#if defined(_WIN64)
+	return ARX_ARCH_NAME_X86_64; // 64-bit programs run only on Win64
+	#elif defined(_WIN32)
+	// 32-bit programs run on both 32-bit and 64-bit Windows
+	BOOL f64 = FALSE;
+	if(IsWow64Process(GetCurrentProcess(), &f64) && f64) {
+		return ARX_ARCH_NAME_X86_64;
+	} else {
+		return ARX_ARCH_NAME_X86;
+	}
 	#endif
 	
 	#ifdef ARX_HAVE_UNAME
@@ -231,7 +330,6 @@ std::string getOSDistribution() {
 			if(!distro.empty()) {
 				return distro;
 			}
-			
 		}
 	}
 	
@@ -317,13 +415,15 @@ std::string getOSDistribution() {
 	
 	// Fallback: parse /etc/lsb-release ourselves
 	{
-		fs::ifstream iss("/etc/lsb-release");
-		const char * keys[] = {
-			"DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME"
-		};
-		std::string distro = parseDistributionName(iss, '=', keys, ARRAY_SIZE(keys));
-		if(!distro.empty()) {
-			return distro;
+		fs::ifstream ifs("/etc/lsb-release");
+		if(ifs.is_open()) {
+			const char * keys[] = {
+				"DISTRIB_DESCRIPTION", "DISTRIB_ID", "DISTRIB_RELEASE", "(DISTRIB_CODENAME"
+			};
+			std::string distro = parseDistributionName(ifs, '=', keys, ARRAY_SIZE(keys));
+			if(!distro.empty()) {
+				return distro;
+			}
 		}
 	}
 	

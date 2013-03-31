@@ -230,6 +230,11 @@ public:
 		
 		string target = context.getWord();
 		Entity * t = entities.getById(target, context.getEntity());
+		if(!t) {
+			// Some scripts have a bogus (or no) target for spellcast commands.
+			// The original game used the current entity in that case, so we must as well.
+			t = context.getEntity();
+		}
 		
 		if(!t || spellid == SPELL_NONE) {
 			return Failed;

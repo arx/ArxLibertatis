@@ -1,8 +1,11 @@
 
-function(check_compiler_flag RESULT FLAG)
+function(check_compile RESULT FILE FLAG TYPE)
 	
-	if(DEFINED CHECK_COMPILER_FLAG_${FLAG})
-		if(CHECK_COMPILER_FLAG_${FLAG})
+	string(REGEX REPLACE "[^a-zA-Z0-9_][^a-zA-Z0-9_]*" "-" cachevar "${TYPE}-${FLAG}")
+	set(cahevar "CHECK_COMPILE_${cahevar}")
+	
+	if(DEFINED ${cachevar})
+		if(${cachevar})
 			set(${RESULT} "${FLAG}" PARENT_SCOPE)
 		else()
 			set(${RESULT} "" PARENT_SCOPE)
@@ -34,29 +37,39 @@ function(check_compiler_flag RESULT FLAG)
 		"WARNING: unknown flag:"                       # Open64
 	)
 	
-	set(compile_test_file "${CMAKE_CURRENT_BINARY_DIR}/compile_flag_test.cpp")
-	file(WRITE ${compile_test_file} "__attribute__((const)) int main(){ return 0; }\n")
-	
-	if("${ARGV2}" STREQUAL LINKER)
-		# check linker flags
-		try_compile(CHECK_COMPILER_FLAG ${CMAKE_BINARY_DIR} ${compile_test_file}
-		            CMAKE_FLAGS "-DCMAKE_EXE_LINKER_FLAGS=\"${FLAG}\""
-		                        "-DCMAKE_SHARED_LINKER_FLAGS=\"${FLAG}\""
-		                        "-DCMAKE_MODULE_LINKER_FLAGS=\"${FLAG}\""
-		            OUTPUT_VARIABLE ERRORLOG)
-		set(type "linker")
-	else()
-		# check compiler flags
-		try_compile(CHECK_COMPILER_FLAG ${CMAKE_BINARY_DIR} ${compile_test_file}
-		            COMPILE_DEFINITIONS "${FLAG}" OUTPUT_VARIABLE ERRORLOG)
-		set(type "compiler")
+	# Set the flags to check
+	set(old_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	set(old_CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+	set(old_CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
+	set(old_CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
+	if("${TYPE}" STREQUAL "linker flag")
+		set(CMAKE_EXE_LINKER_FLAGS "${old_CMAKE_EXE_LINKER_FLAGS} ${FLAG}")
+		set(CMAKE_SHARED_LINKER_FLAGS "${old_CMAKE_SHARED_LINKER_FLAGS} ${FLAG}")
+		set(CMAKE_MODULE_LINKER_FLAGS "${old_CMAKE_MODULE_LINKER_FLAGS} ${FLAG}")
+	elseif("${TYPE}" STREQUAL "compiler flag")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAG}")
 	endif()
 	
+	# Check if we can compile and link a simple file with the new flags
+	try_compile(
+		check_compiler_flag ${CMAKE_BINARY_DIR} ${FILE}
+		CMAKE_FLAGS "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
+		            "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
+		            "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
+		            "-DCMAKE_MODULE_LINKER_FLAGS=${CMAKE_MODULE_LINKER_FLAGS}"
+		OUTPUT_VARIABLE ERRORLOG
+	)
 	
-	if(NOT CHECK_COMPILER_FLAG)
-		message(STATUS "Checking ${type} flag: ${FLAG} - unsupported")
+	# Restore the old flags
+	set(CMAKE_CXX_FLAGS "${old_CMAKE_CXX_FLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS "${old_CMAKE_EXE_LINKER_FLAGS}")
+	set(CMAKE_SHARED_LINKER_FLAGS "${old_CMAKE_SHARED_LINKER_FLAGS}")
+	set(CMAKE_MODULE_LINKER_FLAGS "${old_CMAKE_MODULE_LINKER_FLAGS}")
+	
+	if(NOT check_compiler_flag)
+		message(STATUS "Checking ${TYPE}: ${FLAG} - unsupported")
 		set(${RESULT} "" PARENT_SCOPE)
-		set("CHECK_COMPILER_FLAG_${FLAG}" 0 CACHE INTERNAL "...")
+		set("${cachevar}" 0 CACHE INTERNAL "...")
 	else()
 		
 		set(has_warning 0)
@@ -67,21 +80,33 @@ function(check_compiler_flag RESULT FLAG)
 		endforeach()
 		
 		if(has_warning)
-			message(STATUS "Checking ${type} flag: ${FLAG} - unsupported (warning)")
+			message(STATUS "Checking ${TYPE}: ${FLAG} - unsupported (warning)")
 			set(${RESULT} "" PARENT_SCOPE)
-			set("CHECK_COMPILER_FLAG_${FLAG}" 0 CACHE INTERNAL "...")
+			set("${cachevar}" 0 CACHE INTERNAL "...")
 		else()
-			message(STATUS "Checking ${type} flag: ${FLAG}")
+			message(STATUS "Checking ${TYPE}: ${FLAG}")
 			set(${RESULT} "${FLAG}" PARENT_SCOPE)
-			set("CHECK_COMPILER_FLAG_${FLAG}" 1 CACHE INTERNAL "...")
+			set("${cachevar}" 1 CACHE INTERNAL "...")
 		endif()
 		
 	endif()
 	
+endfunction(check_compile)
+
+function(check_flag RESULT FLAG TYPE)
+	set(compile_test_file "${CMAKE_CURRENT_BINARY_DIR}/compile_flag_test.cpp")
+	file(WRITE ${compile_test_file} "__attribute__((const)) int main(){ return 0; }\n")
+	check_compile(result "${compile_test_file}" "${FLAG}" "${TYPE} flag")
+	set(${RESULT} "${result}" PARENT_SCOPE)
+endfunction(check_flag)
+
+function(check_compiler_flag RESULT FLAG)
+	check_flag(result "${FLAG}" compiler)
+	set(${RESULT} "${result}" PARENT_SCOPE)
 endfunction(check_compiler_flag)
 
 function(check_linker_flag RESULT FLAG)
-	check_compiler_flag(result "${FLAG}" LINKER)
+	check_flag(result "${FLAG}" linker)
 	set(${RESULT} "${result}" PARENT_SCOPE)
 endfunction(check_linker_flag)
 
@@ -90,6 +115,12 @@ function(add_cxxflag FLAG)
 	check_compiler_flag(RESULT "${FLAG}")
 	
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RESULT}" PARENT_SCOPE)
+	
+	if("${RESULT}" STREQUAL "")
+		set(FLAG_FOUND 0 PARENT_SCOPE)
+	else()
+		set(FLAG_FOUND 1 PARENT_SCOPE)
+	endif()
 	
 endfunction(add_cxxflag)
 
@@ -101,6 +132,12 @@ function(add_ldflag FLAG)
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
 	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${RESULT}" PARENT_SCOPE)
 	
+	if("${RESULT}" STREQUAL "")
+		set(FLAG_FOUND 0 PARENT_SCOPE)
+	else()
+		set(FLAG_FOUND 1 PARENT_SCOPE)
+	endif()
+	
 endfunction(add_ldflag)
 
 function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
@@ -110,8 +147,15 @@ function(try_link_library LIBRARY_NAME LIBRARY_FILE ERROR_VAR)
 	if(CMAKE_THREAD_LIBS_INIT)
 		list(APPEND LIBRARY_FILE "${CMAKE_THREAD_LIBS_INIT}")
 	endif()
-	try_compile(CHECK_${LIBRARY_NAME}_LINK "${CMAKE_BINARY_DIR}" "${link_test_file}"
-	            CMAKE_FLAGS "-DLINK_LIBRARIES=${LIBRARY_FILE}" OUTPUT_VARIABLE ERRORLOG)
+	try_compile(
+		CHECK_${LIBRARY_NAME}_LINK "${CMAKE_BINARY_DIR}" "${link_test_file}"
+		CMAKE_FLAGS "-DLINK_LIBRARIES=${LIBRARY_FILE}"
+		            "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
+		            "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
+		            "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
+		            "-DCMAKE_MODULE_LINKER_FLAGS=${CMAKE_MODULE_LINKER_FLAGS}"
+		OUTPUT_VARIABLE ERRORLOG
+	)
 	set(${ERROR_VAR} "${ERRORLOG}" PARENT_SCOPE)
 endfunction(try_link_library)
 
