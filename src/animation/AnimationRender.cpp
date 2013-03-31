@@ -1381,11 +1381,10 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 						u8 lfr = ffr;
 						u8 lfg = ffg;
 						u8 lfb = ffb;
-						tv[o].color = (0xFF000000L | (lfr << 16) | (lfg << 8) | (lfb));
+						tv[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 					}
 
-					//GRenderer->SetCulling(Renderer::CullNone);
-					if(tot > 260) {  //260.f)
+					if(tot > 260) {
 						long first;
 						long second;
 						long third;
