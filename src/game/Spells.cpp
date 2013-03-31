@@ -4056,7 +4056,14 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 2000000; // TODO should respect user-supplied duration
+			/*
+			 * TODO Ideally this should respect the user-supplied duration!
+			 *
+			 * However some scripts specify a duration that differs from this default,
+			 * thus changing the code to respect that would change the balance of the game.
+			 * Wait until we can fix the scripts to use this duration before fixing the code.
+			 */
+			spells[i].tolive = 2000000;
 			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
