@@ -1158,138 +1158,138 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			}
 		}
 	
-	for(long j=0; j<3; j++)
-		eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
+		for(long j=0; j<3; j++)
+			eobj->facelist[i].color[j]=Color::fromBGRA(vert_list[j].color);
 
-	// Transparent poly: storing info to draw later
-	if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
-		vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::gray(fTransp).toBGR();
-	}
-
-	if(io && (io->ioflags & IO_ZMAP)) {
-		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
-	}
-
-	////////////////////////////////////////////////////////////////////////
-	// HALO HANDLING START
-	if(need_halo) {
-		Ncam.orgTrans.updateFromAngle(subj.angle);
-
-		Ncam.orgTrans.xcos = 1.f;
-		Ncam.orgTrans.xsin = 0.f;
-		Ncam.orgTrans.zcos = 1.f;
-		Ncam.orgTrans.zsin = 0.f;
-
-		float tot=0;
-		float _ffr[3];
-			
-		TexturedVertex * workon=vert_list;
-
-		for(long o = 0; o < 3; o++) {
-			if(mat) {
-				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, mat);
-			} else {
-				YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
-			}
-	
-			float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
-
-			power = clamp(power, 0.f, 255.f);
-
-			tot += power;
-			_ffr[o] = power;
-
-			u8 lfr = io->halo.color.r * power;
-			u8 lfg = io->halo.color.g * power;
-			u8 lfb = io->halo.color.b * power;
-			workon[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+		// Transparent poly: storing info to draw later
+		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+			vert_list[0].color = vert_list[1].color = vert_list[2].color = Color::gray(fTransp).toBGR();
 		}
 
-		if(tot > 150.f) {
-			long first;
-			long second;
-			long third;
+		if(io && (io->ioflags & IO_ZMAP)) {
+			CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
+		}
 
-			if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
-				first = 0;
-				second = 1;
-				third = 2;
-			} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
-				first = 0;
-				second = 2;
-				third = 1;
-			} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
-				first = 1;
-				second = 0;
-				third = 2;
-			} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
-				first = 1;
-				second = 2;
-				third = 0;
-			} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
-				first = 2;
-				second = 0;
-				third = 1;
-			} else {
-				first = 2;
-				second = 1;
-				third = 0;
-			}
+		////////////////////////////////////////////////////////////////////////
+		// HALO HANDLING START
+		if(need_halo) {
+			Ncam.orgTrans.updateFromAngle(subj.angle);
 
-			if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
-				TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
+			Ncam.orgTrans.xcos = 1.f;
+			Ncam.orgTrans.xsin = 0.f;
+			Ncam.orgTrans.zcos = 1.f;
+			Ncam.orgTrans.zsin = 0.f;
 
-				if(HALOCUR < ((long)HALOMAX) - 1) {
-					HALOCUR++;
+			float tot=0;
+			float _ffr[3];
+
+			TexturedVertex * workon=vert_list;
+
+			for(long o = 0; o < 3; o++) {
+				if(mat) {
+					VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, mat);
+				} else {
+					YXZRotatePoint(&eobj->vertexlist[paf[o]].norm, &temporary3D, &Ncam);
 				}
 
-				memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
-				memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
-				memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
-				memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
+				float power = 255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
-				float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
+				power = clamp(power, 0.f, 255.f);
 
-				Vec3f vect1;
-				vect1.x = workon[first].p.x - workon[third].p.x;
-				vect1.y = workon[first].p.y - workon[third].p.y;
-				float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+				tot += power;
+				_ffr[o] = power;
 
-				if(vect1.x < 0.f)
-					len1 *= 1.2f;
-
-				vect1.x *= len1;
-				vect1.y *= len1;
-
-				Vec3f vect2;
-				vect2.x = workon[second].p.x - workon[third].p.x;
-				vect2.y = workon[second].p.y - workon[third].p.y;
-				float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
-
-				if(vect2.x < 0.f)
-					len2 *= 1.2f;
-
-				vect2.x *= len2;
-				vect2.y *= len2;
-
-				vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
-				vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-				vert[1].color = 0xFF000000;
-
-				vert[0].p.z += 0.0001f;
-				vert[3].p.z += 0.0001f;
-				vert[1].rhw *= .8f;
-				vert[2].rhw *= .8f;
-
-				vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
-				vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
-
-				if(io->halo.flags & HALO_NEGATIVE)
-					vert[2].color = 0x00000000;
-				else
-					vert[2].color = 0xFF000000;
+				u8 lfr = io->halo.color.r * power;
+				u8 lfg = io->halo.color.g * power;
+				u8 lfb = io->halo.color.b * power;
+				workon[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 			}
-		}
+
+			if(tot > 150.f) {
+				long first;
+				long second;
+				long third;
+
+				if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
+					first = 0;
+					second = 1;
+					third = 2;
+				} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
+					first = 0;
+					second = 2;
+					third = 1;
+				} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
+					first = 1;
+					second = 0;
+					third = 2;
+				} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
+					first = 1;
+					second = 2;
+					third = 0;
+				} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
+					first = 2;
+					second = 0;
+					third = 1;
+				} else {
+					first = 2;
+					second = 1;
+					third = 0;
+				}
+
+				if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
+					TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
+
+					if(HALOCUR < ((long)HALOMAX) - 1) {
+						HALOCUR++;
+					}
+
+					memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
+					memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
+					memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
+					memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
+
+					float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
+
+					Vec3f vect1;
+					vect1.x = workon[first].p.x - workon[third].p.x;
+					vect1.y = workon[first].p.y - workon[third].p.y;
+					float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+
+					if(vect1.x < 0.f)
+						len1 *= 1.2f;
+
+					vect1.x *= len1;
+					vect1.y *= len1;
+
+					Vec3f vect2;
+					vect2.x = workon[second].p.x - workon[third].p.x;
+					vect2.y = workon[second].p.y - workon[third].p.y;
+					float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+
+					if(vect2.x < 0.f)
+						len2 *= 1.2f;
+
+					vect2.x *= len2;
+					vect2.y *= len2;
+
+					vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+					vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
+					vert[1].color = 0xFF000000;
+
+					vert[0].p.z += 0.0001f;
+					vert[3].p.z += 0.0001f;
+					vert[1].rhw *= .8f;
+					vert[2].rhw *= .8f;
+
+					vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+					vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
+
+					if(io->halo.flags & HALO_NEGATIVE)
+						vert[2].color = 0x00000000;
+					else
+						vert[2].color = 0xFF000000;
+				}
+			}
 		}
 	}
 
