@@ -648,107 +648,107 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
 	}
 
-		/* Apply light on all vertices */
-		for(int i = 0; i != obj->nb_bones; i++) {
+	/* Apply light on all vertices */
+	for(int i = 0; i != obj->nb_bones; i++) {
 
-			EERIEMATRIX matrix;//,omatrix;
+		EERIEMATRIX matrix;//,omatrix;
 
-				EERIE_QUAT qt1;
-				Quat_Copy(&qt1, &obj->bones[i].quatanim);
-				Quat_Reverse(&qt1);
-				MatrixFromQuat(&matrix, &qt1);
-				//	FMatrixInvert(matrix,omatrix);
+		EERIE_QUAT qt1;
+		Quat_Copy(&qt1, &obj->bones[i].quatanim);
+		Quat_Reverse(&qt1);
+		MatrixFromQuat(&matrix, &qt1);
+		//	FMatrixInvert(matrix,omatrix);
 
-			/* Get light value for each vertex */
-			for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
-				float r, g, b;
-				long  ir, ig, ib;
+		/* Get light value for each vertex */
+		for(int v = 0; v != obj->bones[i].nb_idxvertices; v++) {
+			float r, g, b;
+			long  ir, ig, ib;
 
-				Vec3f posVert;
+			Vec3f posVert;
 
-					posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
-
-
-				/* Ambient light */
-				if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
-					r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
-				} else {
-					r = ACTIVEBKG->ambient255.r;
-					g = ACTIVEBKG->ambient255.g;
-					b = ACTIVEBKG->ambient255.b;
-				}
-
-				/* Dynamic lights */
-				for(int l = 0; l != MAX_LLIGHTS; l++) {
-					EERIE_LIGHT *Cur_llights = llights[l];
-
-					if(!Cur_llights)
-						break;
+				posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
 
-						Vec3f &Cur_vTLights = vTLights[l];
-						Vec3f tl;
-						tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
-						float dista = ffsqrt(tl.lengthSqr());
+			/* Ambient light */
+			if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
+				r = g = b = NPC_ITEMS_AMBIENT_VALUE_255;
+			} else {
+				r = ACTIVEBKG->ambient255.r;
+				g = ACTIVEBKG->ambient255.g;
+				b = ACTIVEBKG->ambient255.b;
+			}
 
-						if(dista < Cur_llights->fallend) {
-							tl *= 1.f / dista;
+			/* Dynamic lights */
+			for(int l = 0; l != MAX_LLIGHTS; l++) {
+				EERIE_LIGHT *Cur_llights = llights[l];
 
-							VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
+				if(!Cur_llights)
+					break;
 
-							float cosangle = dot(posVert, Cur_vTLights);
 
-							/* If light visible */
-							if(cosangle > 0.0f) {
-								/* Evaluate its intensity depending on the distance Light<->Object */
-								if(dista <= Cur_llights->fallstart) {
-									cosangle *= Cur_llights->precalc; 
-								} else {
-									float p = ((Cur_llights->fallend - dista) * Cur_llights->falldiffmul);
+				Vec3f &Cur_vTLights = vTLights[l];
+				Vec3f tl;
+				tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
+				float dista = ffsqrt(tl.lengthSqr());
 
-									if(p <= 0.f)
-										cosangle = 0.f;
-									else
-										cosangle *= p * Cur_llights->precalc; 
-								}
+				if(dista < Cur_llights->fallend) {
+					tl *= 1.f / dista;
 
-								r += Cur_llights->rgb255.r * cosangle;
-								g += Cur_llights->rgb255.g * cosangle;
-								b += Cur_llights->rgb255.b * cosangle;
-							}
+					VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
+
+					float cosangle = dot(posVert, Cur_vTLights);
+
+					/* If light visible */
+					if(cosangle > 0.0f) {
+						/* Evaluate its intensity depending on the distance Light<->Object */
+						if(dista <= Cur_llights->fallstart) {
+							cosangle *= Cur_llights->precalc;
+						} else {
+							float p = ((Cur_llights->fallend - dista) * Cur_llights->falldiffmul);
+
+							if(p <= 0.f)
+								cosangle = 0.f;
+							else
+								cosangle *= p * Cur_llights->precalc;
 						}
 
-				}
-
-					/* Fake adjust */
-					if(Project.improve) {
-						r *= infra.r;
-						g *= infra.g;
-						b *= infra.b;
+						r += Cur_llights->rgb255.r * cosangle;
+						g += Cur_llights->rgb255.g * cosangle;
+						b += Cur_llights->rgb255.b * cosangle;
 					}
-
-				if(special_color_flag & 1) {
-					r *= special_color.r;
-					g *= special_color.g;
-					b *= special_color.b;
-				} else if(special_color_flag & 2) {
-					r = 1.f;
-					g = 0.f;
-					b = 0.f;
-				} else if(special_color_flag & 4) { // HIGHLIGHT
-					r += special_color.r;
-					g += special_color.g;
-					b += special_color.b;
 				}
 
-				/* PACK color */
-				ir = clipByte255(r);
-				ig = clipByte255(g);
-				ib = clipByte255(b);
-
-				eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
 			}
+
+			/* Fake adjust */
+			if(Project.improve) {
+				r *= infra.r;
+				g *= infra.g;
+				b *= infra.b;
+			}
+
+			if(special_color_flag & 1) {
+				r *= special_color.r;
+				g *= special_color.g;
+				b *= special_color.b;
+			} else if(special_color_flag & 2) {
+				r = 1.f;
+				g = 0.f;
+				b = 0.f;
+			} else if(special_color_flag & 4) { // HIGHLIGHT
+				r += special_color.r;
+				g += special_color.g;
+				b += special_color.b;
+			}
+
+			/* PACK color */
+			ir = clipByte255(r);
+			ig = clipByte255(g);
+			ib = clipByte255(b);
+
+			eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
 		}
+	}
 
 	return true;
 }
