@@ -610,21 +610,18 @@ bool Cedric_ApplyLightingFirstPartRefactor(Entity *io, Color3f &special_color, l
 /* Object dynamic lighting */
 static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity * io, Vec3f * pos, Color3f &special_color, long &special_color_flag) {
 	
-	Color3f infra = Color3f::black;
-
-	Vec3f tv;
-
 	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
-		special_color_flag	=	4;
+		special_color_flag = 4;
 		special_color = Color3f::gray(float(iHighLight));
 	}
 	
+	Color3f infra = Color3f::black;
 	if(Project.improve) {
 		infra = (io) ? io->infracolor : Color3f(0.6f, 0.f, 1.f);
 	}
 	
 	/* Get nearest lights */
-	tv = *pos;
+	Vec3f tv = *pos;
 	
 	if(io && io->obj->fastaccess.view_attach >= 0 && io->obj->fastaccess.head_group_origin != -1)
 		tv.y = io->obj->vertexlist3[io->obj->fastaccess.head_group_origin].v.y + 10;
