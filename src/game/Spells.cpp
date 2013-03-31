@@ -3036,11 +3036,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		return true;
 	}
 	
-	if(cur_rf == 3) {
-		level += 2;
-		Player_Magic_Level += 2;
-	}
-	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 
 
@@ -3155,7 +3150,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	if(spells[i].hand_group != -1) {
 		spells[i].hand_pos = entities[spells[i].caster]->obj->vertexlist3[spells[i].hand_group].v;
 	}
-
+	
 	if(source == 0) {
 		// Player source
 		spells[i].caster_level = Player_Magic_Level; // Level of caster
@@ -3168,6 +3163,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
 		spells[i].caster_level = static_cast<float>(level);
+	}
+	
+	if(cur_rf == 3) {
+		spells[i].caster_level += 2;
 	}
 
 	// Checks target TODO if ( target < 0 ) is already handled above!
