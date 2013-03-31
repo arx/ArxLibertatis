@@ -1425,7 +1425,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
 							memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
-							float siz = ddist * (curhalo.radius * (EEsin((float)(arxtime.get_frame_time() + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
+							float siz = ddist * (curhalo.radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
 
 							if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
 								siz *= 1.5f;
@@ -1473,8 +1473,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							vert[0].rhw	*= .98f;
 							vert[3].rhw	*= .98f;
 
-							vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
-							vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
+							vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+							vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
 							vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
 							vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );

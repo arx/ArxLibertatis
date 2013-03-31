@@ -1248,7 +1248,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
 				memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
-				float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time()+i) * .01f) * .1f + .7f)) * .6f;
+				float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + .7f)) * .6f;
 
 				Vec3f vect1;
 				vect1.x = workon[first].p.x - workon[third].p.x;
@@ -1284,10 +1284,10 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
 				vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
-				if (io->halo.flags & HALO_NEGATIVE)
-					vert[2].color=0x00000000;
+				if(io->halo.flags & HALO_NEGATIVE)
+					vert[2].color = 0x00000000;
 				else
-					vert[2].color=0xFF000000;
+					vert[2].color = 0xFF000000;
 			}
 		}
 		}
