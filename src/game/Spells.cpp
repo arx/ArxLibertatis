@@ -2135,7 +2135,6 @@ static void ARX_SPELLS_Fizzle(long num) {
 
 static bool ARX_SPELLS_AnalyseSPELL() {
 	
-	long caster = 0; // Local Player
 	SpellcastFlags flags = 0;
 	
 	if(GInput->actionPressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell) {
@@ -2167,7 +2166,7 @@ static bool ARX_SPELLS_AnalyseSPELL() {
 		return false;
 	}
 	
-	return ARX_SPELLS_Launch(spell, caster, flags);
+	return ARX_SPELLS_Launch(spell, 0 /* player */, flags);
 	
 }
 
