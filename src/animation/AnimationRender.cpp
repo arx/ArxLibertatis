@@ -613,7 +613,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 	Color3f infra = Color3f::black;
 
 	Vec3f tv;
-	Vec3f vTLights[32]; /* Same as above but in bone space (for faster calculation) */
 
 	if(eobj->drawflags & DRAWFLAG_HIGHLIGHT) {
 		special_color_flag	=	4;
@@ -682,13 +681,13 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				if(!Cur_llights)
 					break;
 
-				Vec3f &Cur_vTLights = vTLights[l];
 				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				float dista = ffsqrt(tl.lengthSqr());
 
 				if(dista < Cur_llights->fallend) {
 					tl *= 1.f / dista;
 
+					Vec3f Cur_vTLights;
 					VectorMatrixMultiply(&Cur_vTLights, &tl, &matrix);
 
 					float cosangle = dot(posVert, Cur_vTLights);
