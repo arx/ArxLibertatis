@@ -28,8 +28,6 @@
 #include <windows.h>
 #include <string>
 
-bool GetWindowsVersionName(char* str, int bufferSize);
-bool Is64BitWindows();
 ULONG64 ConvertSystemTimeToULONG64( const SYSTEMTIME& st );
 
 bool GetCallStackInfo(HANDLE hProcess, HANDLE hThread, PCONTEXT pContext, std::string& callstack, std::string& callstackTop, u32& callstackCrc);

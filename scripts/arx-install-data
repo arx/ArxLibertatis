@@ -1,0 +1,2774 @@
+#!/bin/sh
+
+# Copyright 2013 Arx Libertatis Team (see the AUTHORS file)
+#
+# This file is part of Arx Libertatis.
+#
+# Arx Libertatis is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Arx Libertatis is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Arx Libertatis.  If not, see <http://www.gnu.org/licenses/>.
+
+##########################################################################################
+# Install script for Arx Fatalis data files to be used with Arx Libertatis
+# Usage: just run the damned script, maybe check --help
+
+# This scripts targets Linux and FreeBSD, but may also work on other UNIX-like systems.
+
+# Is this a multi-thousand-line bas^H^H^HPOSIX shell script?
+#  Sure looks like it.
+# Am I mad?
+#  Most likely.
+
+# If you want to edit the required files and checksums, scroll to the end.
+
+
+##########################################################################################
+# Colors
+
+disable_color() {
+	red='' ; green='' ; yellow='' ; blue='' ; pink='' ; cyan='' ; white=''
+	dim_red='' ; dim_green='' ; dim_yellow='' ; dim_blue='' ; dim_pink=''
+	dim_cyan='' ; dim_white='' ; reset=''
+}
+disable_color
+if [ -t 1 ] && [ "$(tput colors 2> /dev/null)" != -1 ] ; then
+	
+	       red="$(printf '\033[1;31m')"
+	     green="$(printf '\033[1;32m')"
+	    yellow="$(printf '\033[1;33m')"
+	      blue="$(printf '\033[1;34m')"
+	      pink="$(printf '\033[1;35m')"
+	      cyan="$(printf '\033[1;36m')"
+	     white="$(printf '\033[1;37m')"
+	
+	   dim_red="$(printf '\033[0;31m')"
+	 dim_green="$(printf '\033[0;32m')"
+	dim_yellow="$(printf '\033[0;33m')"
+	  dim_blue="$(printf '\033[0;34m')"
+	  dim_pink="$(printf '\033[0;35m')"
+	  dim_cyan="$(printf '\033[0;36m')"
+	 dim_white="$(printf '\033[0;37m')"
+	
+	     reset="$(printf '\033[0m')"
+fi
+
+
+##########################################################################################
+# Constants
+
+# Name and download locations for the 1.21 patch
+patch_ver='1.21'
+patch_name="ArxFatalis_${patch_ver}_MULTILANG.exe"
+patch_name_localized="ArxFatalis_${patch_ver}_%s.exe"
+patch_url_path="arxfatalis/patches/${patch_ver}/${patch_name}"
+patch_url_master="http://cdn.bethsoft.com/${patch_url_path}"
+patch_urls="http://arx.vg/${patch_name} ${patch_url_master}"
+patch_urls="$patch_urls http://download.zenimax.com/${patch_url_path}"
+patch_urls="$patch_urls http://web.archive.org/web/${patch_url_master}"
+
+# Name and download locations for the Japanese 1.02j patch
+patch_jp_ver='1.02j'
+patch_jp_name="arx_jpn_patch_${patch_jp_ver}.exe"
+patch_jp_url_master="http://www.capcom.co.jp/pc/arx/patch/${patch_jp_name}"
+patch_jp_urls="http://arx.vg/${patch_jp_name}" # master URL is no longer available
+patch_jp_urls="$patch_jp_urls http://web.archive.org/web/${patch_jp_url_master}"
+
+# Name and store page for the GOG.com download
+gog_names='setup_arx_fatalis.exe'
+gog_url='http://www.gog.com/gamecard/arx_fatalis'
+
+# Store page for the Steam download
+steam_url='http://store.steampowered.com/app/1700/'
+
+# Name and wiki page for the demo download
+demo_names="arx_demo_english.zip arxdemoenglish.zip arx_jpn_demo.exe"
+demo_url='http://arx.vg/Getting_the_game_data#Demo'
+
+bug_tracker_url='http://bugs.arx-libertatis.org/'
+
+cabextract_url='http://www.cabextract.org.uk/'
+innoextract_url='http://constexpr.org/innoextract/'
+
+
+##########################################################################################
+# Standard directories
+
+user_pwd="$PWD"
+platform="$(uname)"
+command="$(basename "$0")"
+scommand="$(printf '%s' "$command" | tr - _)"
+if [ "$platform" = 'Darwin' ] ; then
+	# Mac OS X
+	data_dirs='/Applications'
+	data_home="$HOME/Library/Application Support"
+	config_home="$HOME/Library/Application Support"
+	data_dir_suffixes='ArxLibertatis'
+	user_dir_suffixes='ArxLibertatis'
+	config_dir_suffixes='ArxLibertatis'
+	downloads_dir="$HOME/Downloads"
+else
+	# Linux, FreeBSD, ...
+	data_dirs="${XDG_DATA_DIRS:-"/usr/local/share/:/usr/share/"}:/opt"
+	data_home="${XDG_DATA_HOME:-"$HOME/.local/share"}"
+	config_home="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+	data_dir_suffixes='games/arx:arx'
+	user_dir_suffixes='arx'
+	config_dir_suffixes='arx'
+	[ -f "${config_home}/user-dirs.dirs" ] && . "${config_home}/user-dirs.dirs"
+	downloads_dir="${XDG_DOWNLOAD_DIR:-"$HOME/Downloads"}"
+fi
+tempdir="${TMPDIR:-"/tmp"}"
+eval "data_path=\"\$${scommand}_PATH\""
+[ -z "$data_path" ] && data_path="$arx_PATH"
+
+
+##########################################################################################
+# Helper functions
+
+exec 4>&2  # fd to the original stderr (we redirect output to a log file in some cases)
+logfile='' # log file receiving sdout and stderr
+
+true=0  # Return value / exit status that evaluates to true
+false=1 # Return value / exit status that evaluates to false
+
+# 1 if the script is being run as root, false otherwise
+if [ "$(id -u)" = 0 ] ; then is_root=1 ; else is_root=0 ; fi
+
+# Print one line of text, without escape codes or other shell-specific shenanigans.
+# Seriously, shells, you can't even agree on a consistent implementation of echo?
+# Usage: print <text>
+print() {
+	printf '%s\n' "$1"
+}
+
+# Make a path absolute no matter if it is relative or not
+# Usage: abspath <path>
+# Too bad we can't just use readlink -m
+abspath() {
+	case "$1" in
+		/*) print "$1" ;;
+		 *) print "$PWD/$1" ;;
+	esac
+}
+
+cleanup_functions='' # List of functions to be run on exit
+
+# Add a function to ron on exit.
+# Functions are un in the order they are added.
+# Usage: on_exit <code>
+# Cleanup functions will receive one argument: the exit message if any or an empty string.
+on_exit() {
+	[ -z "$cleanup_functions" ] || cleanup_functions=" $cleanup_functions"
+	cleanup_functions="$1$cleanup_functions"
+}
+
+# Run exit runctions.
+cleanup() {
+	_cleanup_functions="$cleanup_functions" ; cleanup_functions=''
+	[ -z "$_cleanup_functions" ] && return
+	eval "for func in $_cleanup_functions ; do \"\$func\" \"\$@\" ; done"
+}
+
+# Register our cleanup handler.
+trap "cleanup" EXIT
+# Some shells don't have their own (non-libc) SIGINT handler, but the EXIT trap
+# won't trigger if there is none!
+trap 'print >&4 ; quit 1' INT
+
+# Run cleanup functions with a possible message and then exit.
+# Usage: quit <status> [<message>]
+quit() {
+	cleanup "$2"
+	exit $1
+}
+
+# Exit with a non-zero status and optionally print a message.
+# Usage: die [<message>...]
+die() {
+	_die_message=''
+	if [ $# -gt 0 ] ; then
+		_die_message="$1" ; shift
+		for arg ; do _die_message="$_die_message $arg" ; done
+		_die_message="$_die_message
+
+If you think this is a bug in the install script
+please report the complete output at
+  $bug_tracker_url"
+		if [ ! -z "$logfile" ] && [ -f "$logfile" ] ; then
+			_die_message="$_die_message
+
+Also attach the contents of
+  $logfile"
+			logfile='' # so that we don't remove it on exit
+			printf "${red}%s${reset}\\n" "$_die_message" >&4 # also print to priginal stdout
+			printf '\nPreserving log file.\n' >&4
+		fi
+	
+		printf "${red}%s${reset}\\n" "$_die_message"
+	fi
+	quit 1 "$_die_message"
+}
+
+# Escape a string from stdin for use in a whitespace-seperated list.
+# Usage: print <string> | escape_pipe
+escape_pipe() {
+	sed "s:[^a-zA-Z0-9/_.$1]:\\\\&:g"
+}
+
+# Escape a string for use in a whitespace-seperated list.
+# Usage: escape <string>
+escape() {
+	print "$1" | escape_pipe "$2"
+}
+
+# Convert a colon-seperated list into an escaped whitespace-seperated list.
+# Usage: to_list <colon-list>
+to_list() {
+	escape "$1" | sed 's/\\:/ /g'
+}
+
+# Line-based output into a list
+# Usage: ls | lines_to_list
+lines_to_list() {
+	escape_pipe | tr '\n' ' '
+}
+
+# Check if a whitespace separated list contains a string.
+# Usage: list_contains <list-var> <needle>
+list_contains() {
+	eval "_list_contents=\"\$$1\""
+	[ -z "$_list_contents" ] && return $false
+	eval "for entry in $_list_contents ; do" \
+		" [ \"\$entry\" = \"\$2\" ] && return \$true ; done"
+	return $false
+}
+
+# Append a string to a whitespace separated list.
+# Usage: list_append <list-var> <string> [comment]
+# Whitespace seperated lists can be loaded into the argument list using:
+#  eval "set -- $var"
+list_append() {
+	_list_entry="$(escape "$2")"
+	eval "_list_contents=\"\$$1\""
+	if [ -z "$_list_contents" ]
+		then eval "$1=\"\$_list_entry\""
+		else eval "$1=\"\$_list_contents \$_list_entry\""
+	fi
+	eval "[ -z \"\$$1__list_count\" ] && $1__list_count=0"
+	eval "_list_count=\$$1__list_count"
+	eval "$1__list_comment_$_list_count=\"\$3\""
+	eval "$1__list_count=\$((\$$1__list_count + 1))"
+}
+
+# Get a comment associated with alist entry
+# Usage: list_comment <list-var> <index>
+list_comment() {
+	eval "print \"\$$1__list_comment_$2\""
+}
+
+# Append a string to a whitespace separated list if it isn't already in the list.
+# Usage: set_append <list-var> <string> [comment]
+set_append() {
+	if ! list_contains "$1" "$2" ; then
+		list_append "$1" "$2" "$3"
+	fi
+}
+
+# Check if a directory contains a file while ignoring case differences.
+# Usage: icontains <dir> <filename>
+icontains() {
+	[ ! -z "$(find "$1" -mindepth 1 -maxdepth 1 -iname "$2")" ]
+}
+
+# Check if a directory or file is writable or can be created.
+# Usage: is_writable <path>
+is_writable() {
+	[ -w "$1" ] && return $true
+	[ ! -e "$1" ] && is_writable "$(dirname "$1")"
+}
+
+# Create a directory and die with a message on error.
+# Usage: create_dir <path> <type>
+create_dir() {
+	mkdir -p "$1" || die "Could not create $2 directory: $1"
+}
+
+disabled_commands=' ' # List of commands that should not be used, even if they exist
+
+# Check if a command is available.
+# Usage: have <command>
+# Return: $true if the command is available, $false otherwise
+have() {
+	case "$disabled_commands" in *" $1 "*) return $false ; esac
+	command -v "$1" > /dev/null 2>&1
+}
+
+# Make `have` return false for a comand
+# Usage: disable_command <command>
+disable_command() {
+	disabled_commands="$disabled_commands$1 "
+}
+
+# Find a file in standard directories.
+# Usage: probe_file <command> <filename> [comment]
+# Will call `command <file>` for each file found.
+probe_file() {
+	for d in "$user_pwd" "$downloads_dir" "$HOME" "$tempdir" ; do
+		[ -f "$d/$2" ] && $1 "$d/$2" "$3" && return $true
+	done
+}
+
+# Find files in standard directories.
+# Usage: probe_file <command> <list> [comment]
+# Will call `command <file>` for each file found.
+probe_files() {
+	[ -z "$2" ] && return $false
+	eval "for file in $2 ; do probe_file \"\$1\" \"\$file\" \"\$3\" && return \$true ; done"
+	return $false
+}
+
+
+##########################################################################################
+# Parse command-line arguments
+
+printf '%s %s\n' "${white}Welome to the ${green}Arx Fatalis${white} ${patch_ver} data" \
+     "install script for UNIX-like systems!${reset}"
+
+patchfile=''      # Main patch file
+patchfile_jp=''   # Japanese patch file
+sourcefile=''     # Source file or directory
+datadir=''        # Output data directory
+batch=0           # Never wait for user input
+gui=0             # Display a graphical user interface (command-line interface otherwise)
+install=1         # Install new non-patch files
+installed_stuff=0 # Have we already installed anything?
+patch=1           # Install patch files if needed
+probe_patch=1     # Look for patch files in standard locations and download if needed
+
+# Enable compatiblity with old install-* scripts.
+# Usage: enable_compat_mode <help-flag> <sourcefile> <patchfile> <datadir>
+enable_compat_mode() {
+	print \
+		"${yellow}Enabling compatibility mode for ${pink}$command${yellow}.${reset}
+
+${dim_yellow}The individual ${dim_pink}install-*${dim_yellow} scripts have been merged.
+Rename this script to something else (like ${dim_pink}arx-install-data${dim_yellow}) to unlock its full power!${reset}
+" >&2
+	batch=1
+	probe_patch=0
+	if [ -z "$1" ] || [ "$1" = '--help' ] || [ "$1" = '-h' ] ; then
+		printf '%s\n\n%s\n' "$5" \
+			"${yellow}More options are available in the non-compatiblity mode.${reset}"
+		exit $false
+	fi
+	if [ -z "$2" ] ; then install=0           ; else sourcefile="$2" ; fi
+	if [ -z "$3" ] ; then patch=0             ; else patchfile="$3"  ; fi
+	if [ -z "$4" ] ; then datadir="$user_pwd" ; else datadir="$4"    ; fi
+}
+
+case "$command" in
+
+install-cd)
+[ "$1" = "--no-progress" ] && shift # ignore - not supported
+enable_compat_mode "$1" "$1" "$2" "$3" "\
+Usage: $command path/to/mount/point/ path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]
+or     $command path/to/cd.iso path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]" ;;
+
+install-copy)
+enable_compat_mode "$1" "$1" '' "$2" "\
+Usage: $command path/to/ArxFatalis/ [output_dir]" ;;
+
+install-demo)
+enable_compat_mode "$1" "$1" '' "$2" "\
+Usage: $command path/to/arx_demo_english.zip [output_dir]" ;;
+
+install-gog)
+[ "$1" = "--no-progress" ] && shift # ignore - not supported
+enable_compat_mode "$1" "$1" '' "$2" "\
+Usage: $command path/to/setup_arx_fatalis.exe [output_dir]" ;;
+
+install-verify)
+enable_compat_mode "$1" '' '' "$1" "\
+Usage: $command [directory]" ;;
+
+*) # non-compatibility mode
+
+# Print elements in a list, joined by ' or '
+# Usage: print_help_or <list-var>
+print_help_or() {
+	_print_help_or_first=1
+	eval "set -- $1"
+	for entry ; do
+		if [ $_print_help_or_first = 1 ]
+			then _print_help_or_first=0
+			else printf ' or '
+		fi
+		printf '%s' "$entry"
+	done
+}
+
+# Print elements in a list, one per line.
+# Usage: print_help_list <prefix-format> <list-var>
+# prefi-format will receive one argument: the list index starting at 1
+print_help_list() {
+	_print_help_list_prefix="$1"
+	eval "set -- $2"
+	_print_help_list_i=1
+	for entry ; do
+		printf "$_print_help_list_prefix" $_print_help_list_i
+		printf "%s${reset}\n" "$entry"
+		_print_help_list_i=$(($_print_help_list_i + 1))
+	done
+}
+
+# Print help output.
+# Usage: print_help [<error-message>]
+print_help() {
+	[ -z "${1-}" ] || ( printf '%s\n\n' "${red}$1${reset}" )
+	print "
+${white}Simply start the script without any arguments to select paths interactively:
+       \$ $command${reset}
+
+Usage: $command [--source] source [--patch patchfile] [[--data-dir] datadir]
+       $command [--patch patchfile] [--data-dir datadir]
+       $command --verify [[--data-dir] datadir]
+
+ ${green}-s, --source PATH${reset}   Path to the source file or directory
+ ${cyan}-d, --data-dir DIR${reset}  Where to install the data
+ ${blue}-p, --patch FILE${reset}    Path to the ${patch_ver} patch file
+ --patch-jp FILE     Path to the ${patch_jp_ver} Japanese patch file
+ -v, --verify        Only verify the files in the data-dir, don't install new ones,
+                     except for patch files.
+ -n, --no-patch      Don't use a patch file unless explicitly specified.
+ -h, --help          Print this message and maybe more
+ -b, --batch         Never ask the user questions
+ -g, --gui           Show a GUI asking the user what to do
+                     Requires ${dim_pink}KDialog${reset}, ${dim_pink}Zenity${reset}, or ${dim_pink}Xmessage${reset}.
+                     If none of them are available the script is re-launched
+                     in a terminal emulator.
+ -c, --cli           Interactively ask the user to select files/directories (no GUI)
+ --disable-COMMAND   Don't use the given tool, even if it exists.
+                     Valid values are unzip, bsdtar, cabextract, isoinfo,
+                     fuseiso, fusermount, mount, umount and innoextract,
+                     wget, curl, fetch, unshield, kdialog, zenity, Xdialog,
+                     qdbus, dcop, x-terminal-emulator, urxvt, gtkterm, aterm,
+                     rxvt, gnome-terminal, konsole, xterm, gxmessage, xmessage,
+                     md5sum, md5.
+
+--gui is enabled by default if there are no arguments
+"
+	[ ! -z "${1-}" ] && exit $false
+	help_innosetup="${dim_pink}innoextract${reset}"
+	help_cdrom="${dim_pink}bsdtar${reset} (libarchive) *or* ${dim_pink}isoinfo${reset} *or* ${dim_pink}fuseiso${reset} *or* root access"
+	help_cab="${dim_pink}bsdtar${reset} with libarchive 3.1+ *or* ${dim_pink}cabextract${reset}"
+	help_zip="${dim_pink}bsdtar${reset} *or* ${dim_pink}unzip${reset}"
+	help_unshield="${dim_pink}unshield${reset}"
+	help_optpatch="may use the 1.21 patch file and require ${help_innosetup} if not already patched"
+	help_probe_file_dirst="
+   a) the current working directory  (\$PWD):              $user_pwd
+   b) the user's downloads directory (\$HOME):             $HOME
+   c) the user's home directory      (\$XDG_DOWNLOAD_DIR): $downloads_dir
+   d) the temp directory             (\$TMPDIR):           $tempdir"
+	print "
+The ${pink}dependencies${reset} required by the ${command} script depend on the source files.
+However, you always need either ${dim_pink}md5sum${reset} or ${dim_pink}md5${reset}.
+
+
+The ${green}source${reset} can be one of many things:
+
+ * ${white}Mounted Arx Fatalis ${green}cdrom${reset}
+   requires:
+    - ${help_cab}
+    - ${help_innosetup}
+   needs the 1.21 patch file
+
+ * ${white}Arx Fatalis cdrom ${green}ISO${white} image / device file${reset}
+   requires:
+    - ${help_cdrom}
+    - ${help_cab}
+    - ${help_innosetup}
+   needs the 1.21 patch file
+
+ * ${white}Arx Fatalis installer from ${green}GOG.com${white}${reset} ($(print_help_or "$gog_names"))
+   requires:
+    - ${help_innosetup}
+   never uses the 1.21 patch file
+   get it from ${dim_green}${gog_url}${reset}
+
+ * ${green}Installed${white} copy of Arx Fatalis${reset} (for example from ${green}Steam${reset})
+   ${help_optpatch}
+   get it from ${dim_green}${steam_url}${reset}
+
+ * ${white}Arx Fatalis ${green}demo${white} zip${reset} ($(print_help_or "$demo_names"))
+   requires:
+    - ${help_zip}
+    - ${help_cab}
+   never uses the 1.21 patch file
+   get it from ${dim_green}${demo_url}${reset}
+
+ * ${white}Extracted Arx Fatalis demo installer${reset}
+   requires:
+    - ${help_cab}
+   never uses the 1.21 patch file
+
+ * ${white}Installed copy of the Arx Fatalis demo${reset}
+   never uses the 1.21 patch file
+
+If no source is specified, these files will be probed:
+1. The following files in${help_probe_file_dirst}
+$(print_help_list "   1.%d ${green}" "$gog_names $demo_names")
+2. If \$WINEPREFIX is set, any installation in there
+3. Any installation in the default WINEPREFIX (${green}~/.wine${reset})
+4. Any mounted ${green}cdrom${reset} or ISO file
+
+
+If no ${blue}patch${reset} file is specified, but is needed and
+the --no-patch option wasn't specified specified:
+1. Try to find the following files in${help_probe_file_dirst}
+   1.1. ${blue}${patch_name}${reset}
+   1.2. $(printf "$patch_name_localized" '<LANG>')
+        Where <LANG> is one of EN, ES, FR, GE, IT, RU,
+        depending on the language of the data files.
+2. Downloaded from:
+$(print_help_list " - ${dim_blue}" "$patch_urls")
+Extracting the ${patch_ver} patch file requires ${help_innosetup}.
+
+For the Japanese version, if no ${blue}patch-jp${reset} file is specified,
+but is needed and the --no-patch option wasn't specified specified:
+1. Try to find ${blue}${patch_jp_name}${reset} in${help_probe_file_dirst}
+2. Downloaded from:
+$(print_help_list " - ${dim_blue}" "$patch_jp_urls")
+Extracting the Japanese patch file requires:
+    - ${help_unshield}
+    - ${help_cab}.
+
+
+If no ${cyan}data-dir${reset} to install into is specified,
+one is automatically selected similarly to how Arx Libertatis would:
+If --verify and --no-patch (and --no-patch) are give, use the first existing
+directory of the following, otherwise, use the first existing writable directory
+or, if none exists, the first directory that can be created:
+1. Any path in \$${scommand}_PATH (for use in wrapper scripts)
+2. \"\${XDG_DATA_DIRS:-\"/usr/local/share/:/usr/share/\"}:/opt\" / \"$data_dir_suffixes\":"
+	i=1
+	eval "set -- $(to_list "$data_dirs")"
+	for prefix in "$@" ; do
+		eval "set -- $(to_list "$data_dir_suffixes")"
+		for suffix ; do
+			printf "   2.%d. ${dim_cyan}%s${reset}\\n" $i "$prefix/$suffix"
+			i=$(($i + 1))
+		done
+	done
+print "3. \"\${XDG_DATA_HOME:-\"\$HOME/.local/share\"}\" / \"$user_dir_suffixes\""
+	i=1
+	eval "set -- $(to_list "$user_dir_suffixes")"
+	for suffix ; do
+		printf "   3.%d. ${dim_cyan}%s${reset}\\n" $i "$data_home/$suffix"
+			i=$(($i + 1))
+	done
+	printf '\n%s\n' "
+If needed, ${help_innosetup} can be downloaded from ${innoextract_url}"
+	exit $true
+}
+
+user_is_sane=1
+[ $# = 0 ] && gui=1
+while [ $# -gt 0 ] ; do
+	case "$1" in
+		--source=*)               sourcefile="${1#--source=}"   ; install=1 ;;
+		-s|--source)      shift ; sourcefile="$1"               ; install=1 ;;
+		--data-dir=*)             datadir="${1#--data-dir=}"                ;;
+		-d|--data-dir)    shift ; datadir="$1"                              ;;
+		--patch=*)                patchfile="${1#--patch=}"       ; patch=1 ;;
+		-p|--patch)       shift ; patchfile="$1"                  ; patch=1 ;;
+		--patch-jp=*)             patchfile_jp="${1#--patch-jp=}" ; patch=1 ;;
+		--patch-jp)       shift ; patchfile_jp="$1"               ; patch=1 ;;
+		-v|--verify)                                              install=0 ;;
+		-n|--no-patch)    [ -z "$patchfile" ] && [ -z "$patchfile_jp" ] && patch=0
+		                  probe_patch=0   ;;
+		-b|--batch)       batch=1         ;;
+		-g|--gui)                   gui=1 ;;
+		-c|--cui|--cli)   batch=0 ; gui=0 ;;
+		--i-am-insane)    user_is_sane=0  ;;
+		--disable-*)              disable_command "${1#--disable-}" ;;
+		--disable)        shift ; disable_command "${1#--disable-}" ;;
+		-h|--help)        print_help                     ;;
+		-*)               print_help "Uknown option: $1" ;;
+		*)
+			if [ -z "${sourcefile-}" ] && [ $install = 1 ] ; then sourcefile="$1"
+			else if [ -z "${datadir-}"    ] ; then datadir="$1"
+			else print_help "Too many options: $1" ; fi ;fi
+	esac
+	[ -z "${1-}" ] && print_help "Expected more options"
+	shift;
+done
+
+print "See \`${dim_pink}$command --help${reset}\` for available options."
+
+esac
+
+# Make user-provided paths absolute
+[ ! -z "$sourcefile" ] && sourcefile="$(abspath "$sourcefile")"
+[ ! -z "$datadir" ]    && datadir="$(abspath "$datadir")"
+[ ! -z "$patchfile" ]  && patchfile="$(abspath "$patchfile")"
+
+# Sanity check
+[ $install = 1 ] && [ $batch = 1 ] && [ -z "$sourcefile" ] && [ $user_is_sane = 1 ] \
+	&& die "You have used --batch without providing a source file!
+This would just pick the first source file found, which is a bad idea™.
+If you really want this, add the --i-am-insane option."
+
+
+##########################################################################################
+# User interface abstraction
+
+_dialog_title="Arx Fatalis ${patch_ver} data installer"
+
+# Handle magic environment variable to tell the script that it has been launched
+# in its own terminal and should not try to create a GUI.
+if [ $batch = 0 ] && [ "$_arx_install_data_force_cli" = 1 ] ; then
+	trap '_arx_install_data_force_cli=0 ; quit 1' INT
+	printf "\n${yellow}Note: Install KDialog, Zenity or Xdialog for a better GUI\n\n${reset}"
+	wait_exit() {
+		[ "$_arx_install_data_force_cli" = 1 ] && print 'Press enter to exit...' && read f
+		exit $false
+	}
+	on_exit wait_exit
+	gui=0
+	for var in batch install patch probe_patch sourcefile datadir \
+		patchfile patchfile_jp disabled_commands; do
+		eval "$var=\"\$_arx_install_data_force_$var\""
+	done
+fi
+
+# Select the dialog backend to use
+if [ $gui = 1 ] ; then
+	
+	# Detect if we are running in a KDE session
+	is_kde=0
+	case "$DESKTOP_SESSION" in *kde*|*KDE*) is_kde=1 ; esac
+	[ -z "$KDE_FULL_SESSION" ]           || is_kde=1
+	[ -z "$KDE_SESSION_UID" ]            || is_kde=1
+	[ -z "$KDE_SESSION_VERSION" ]        || is_kde=1
+	
+	# Select the GUI backend, prefer kdialog for KDE sessions, zenity otherwise
+	if [ $is_kde = 1 ] ; then preferred=kdialog ; else preferred=zenity ; fi
+	for backend in $preferred zenity kdialog Xdialog ; do
+		have $backend && gui=$backend && break
+	done
+	
+	if [ $gui = 1 ] ; then
+		
+		# No dialog backend available
+		# Try opening a graphical terminal and launching the script in there.
+		print 'No GUI dialog backend is available - trying to launch a terminal emulator'
+		term_cmd="$(readlink -f "$(command -v "$0" 2> /dev/null)")"
+		# Not all terminals accept command arguments in the same way.
+		# Instead of hacking terminal-specific code, use a magic environment
+		# variable to tell the sub-process how to behave.
+		export _arx_install_data_force_cli=1
+		for var in batch install patch probe_patch sourcefile datadir \
+			patchfile patchfile_jp disabled_commands ; do
+			eval "export _arx_install_data_force_$var=\"\$$var\""
+		done
+		if [ $is_kde = 1 ] ; then preferred=konsole ; else preferred=x-terminal-emulator ; fi
+		for backend in x-terminal-emulator $preferred \
+			aterm urxvt rxvt konsole xterm gnome-terminal
+		do
+			if have $backend ; then
+				$backend -e "$term_cmd" || continue
+				exit $true
+			fi
+		done
+		
+		# Hm, that didn't work either - bail
+		message="No GUI dialog backend is available"
+		message="$message - install KDialog, Zenity or Xdialog, or use the --cli option."
+		# Final attempt to let the user know what happened
+		for backend in gxmessage xmessage ; do
+			if have $backend ; then
+				$backend -center -buttons OK "$_dialog_title
+
+$message"
+				break
+			fi
+		done
+		die "$message"
+		
+	fi
+	
+	# We don't need colors for the UI, but they may cause problems - get rit of them
+	disable_color
+	
+	# Redirect all further output into a log file
+	logfile="$(readlink -f "$(mktemp -t arx-install-data-XXXXX.log)")"
+	clean_logfile() {
+		[ -z "$logfile" ] || rm "$logfile"
+	}
+	on_exit clean_logfile
+	print "Enabling GUI mode, standard output/error saved to $logfile"
+	print "Use the --cli option for an interactive command-line interface."
+	exec > "$logfile" 2>&1
+	
+fi
+
+#----------------------------------------------------------------------------------------#
+# Functions for controlling an asynchronous process via stdin
+
+pipe_file=''
+pipe_pid=0
+
+# Run a command in the background and open a pipe to pass commmands to it
+# Usage: pipe_create <command> [<args>...]
+pipe_create() {
+	
+	pipe_destroy
+	
+	# Pipe commands via a FIFO or, if that fails, via a regular file
+	pipe_file="$(mktemp -u -t "arx-install-data-XXXXX.pipe")"
+	if mkfifo -m 600 "$pipe_file" 2> /dev/null ; then
+		# Fast communication via a FIFO
+		cat "$pipe_file" | "$@" &
+		pipe_pid="$!"
+	else
+		# Fallback via regular file, may use polling
+		pipe_file="$(mktemp -t "arx-install-data-XXXXX.pipe")"
+		[ -z "$pipe_file" ] && return $false
+		tail -f "$pipe_file" | "$@" &
+		pipe_pid="$!"
+	fi
+	
+	# Open fd 3 for writing into the pipe
+	exec 3> "$pipe_file"
+	
+	return $true
+}
+
+# Kill the program created via pipe_create and cleanup files
+# Usage: pipe_destroy
+pipe_destroy() {
+	
+	# Close fd pointing to the pipe
+	exec 3<&-
+	
+	# Remove the FIFO or temp file
+	[ -z "$pipe_file" ] || rm -f "$pipe_file" > /dev/null 2>&1
+	pipe_file=''
+	
+	# Terminate the remote process
+	[ "$pipe_pid" = 0 ] || kill "$pipe_pid" > /dev/null 2>&1
+	pipe_pid=0
+	
+	return $true
+}
+
+# Check if the remote process is running
+# Usage: pipe_exists || print 'oh noes'
+pipe_exists() {
+	[ -z "$pipe_file" ] && return $false
+	[ "$pipe_pid" = 0 ] && return $false
+	kill -0 "$pipe_pid" > /dev/null 2>&1
+}
+
+# Send a message to the remote process
+# Usage: pipe_write <command>
+pipe_write() {
+	[ -z "$pipe_file" ] || print "$1" >&3
+}
+
+#----------------------------------------------------------------------------------------#
+# Code for the different GUI/CLI implementations
+# Each implementation exposes dialog_* primitives that are used by generic functions.
+
+case $gui in
+
+#----------------------------------------------------------------------------------------#
+zenity)
+
+# Helper functions
+
+# Run Zenity
+# Usage: zenity_run <title-prefix> <dialog-type> [<args>...]
+zenity_run() {
+	_zenity_run_t="$1" ; shift
+	[ -z "$_zenity_run_t" ] || _zenity_run_t="$_zenity_run_t - "
+	zenity --title "$_zenity_run_t$_dialog_title" "$@"
+}
+
+# Dialog abstraction
+
+# Create the main progress window.
+# Usage: dialog_create
+dialog_create() {
+	pipe_create zenity  --title "$_dialog_title$1" --width 450 --progress
+}
+
+# Destroy the main progress window.
+# Usage: dialog_destroy
+dialog_destroy() {
+	pipe_destroy
+}
+
+# Show an error dialog.
+# Usage: dialog_error <message>
+dialog_error() {
+	zenity_run 'Error' --error --no-wrap --text="$1"
+}
+
+# Show a message box.
+# Usage: dialog_message <message>
+dialog_message() {
+	zenity_run 'Status' --info --no-wrap --text="$1"
+}
+
+# Ask a yes/no question.
+# Usage: dialog_ask <question>
+dialog_ask() {
+	zenity_run 'Confirm' --question --no-wrap --ok-label=Yes --cancel-label=No --text="$1"
+}
+
+# Has the user quested to cancel the operation?
+# Usage: dialog_cancelled && print "cancelled"
+dialog_cancelled() {
+	! pipe_exists
+}
+
+# Set the status text.
+# Usage: dialog_set_text <text>
+dialog_set_text() {
+	pipe_write "#$1"
+}
+
+# Set if the progress bar should continously animate instead of showing the value.
+# Usage: dialog_set_pulsate <enable>
+dialog_set_pulsate() {
+	if [ $1 = 1 ]
+		then pipe_write "pulsate:true"
+		else pipe_write "pulsate:false"
+	fi
+}
+
+# Set the current progress value.
+# Usage: dialog_set_value <percentage>
+dialog_set_value() {
+	pipe_write "$1"
+}
+
+# Select an entry in a list.
+# Usage dialog_select_entry <var> <label> <tag1> <item1> [ <tag2> < item2> ... ]
+dialog_select_entry() {
+	_zenity_select_entry_v="$1" ; shift
+	_zenity_select_entry_t="$1" ; shift
+	_zenity_select_entry_r="$(
+		zenity_run 'Select path' --width 550 --height 300 \
+			--list --text="$_zenity_select_entry_t" \
+			--column '#'  --column 'Path' --hide-column=1 "$@" --hide-header
+	)"
+	[ -z "$_zenity_select_entry_r" ] && return $false
+	eval "$_zenity_select_entry_v=\"\$_zenity_select_entry_r\""
+	return $true
+}
+
+# dialog_select_path does not support the --any flag
+dialog_select_path_any=0
+
+# Let the user select a path.
+# Usage: dialog_select_path (--file|--dir|--any) <result-var> <label>
+# Any is only supported if $dialog_select_path_any is 1.
+dialog_select_path() {
+	case "$1" in
+		--any) die 'not implemented' ;;
+		--file) _zenity_select_path_f='--file-selection' ;;
+		--dir)  _zenity_select_path_f='--file-selection --directory' ;;
+	esac
+	_zenity_select_path="$(
+		eval "zenity_run \"\$3\" $_zenity_select_path_f" 2> /dev/null
+	)"
+	[ -z "$_zenity_select_path" ] && return $false
+	eval "$2=\"\$_zenity_select_path\""
+	return $true
+}
+
+;;
+
+#----------------------------------------------------------------------------------------#
+kdialog)
+
+# Helper functions
+
+kdialog_handle='' # dbus/dcop handle for the main progress window
+
+# Send a message to the main KDialog instance non-_q variants hide all output
+kdialog_qdbus_q() { have qdbus && eval "qdbus $kdialog_handle \"\$@\"" 2> /dev/null ; }
+kdialog_qdbus()   { kdialog_qdbus_q "$@" > /dev/null                                ; }
+kdialog_dcop_q()  { have dcop  && eval "dcop  $kdialog_handle \"\$@\"" 2> /dev/null ; }
+kdialog_dcop()    { kdialog_dcop_q  "$@" > /dev/null                                ; }
+kdialog_cmd_q()   { kdialog_qdbus_q "$@" || kdialog_dcop_q "$@"                     ; }
+kdialog_cmd()     { kdialog_cmd_q "$@" > /dev/null                                  ; }
+
+# Run KDialog
+# Usage: kdialog_run <title-prefix> <dialog-type> [<args>...]
+kdialog_run() {
+	_kdialog_run_t="$1" ; shift
+	[ -z "$_kdialog_run_t" ] || _kdialog_run_t="$_kdialog_run_t - "
+	kdialog --icon arx-libertatis --title "$_kdialog_run_t$_dialog_title" "$@"
+}
+
+# Dialog abstraction
+
+# Create the main progress window.
+# Usage: dialog_create
+dialog_create() {
+	dialog_destroy
+	_kdialog_force_width='WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW'
+	kdialog_handle="$(kdialog_run '' --progressbar "$_kdialog_force_width" 0)"
+	[ -z "$kdialog_handle" ] && return $false
+	kdialog_cmd showCancelButton true
+	return $true
+}
+
+# Destroy the main progress window.
+# Usage: dialog_destroy
+dialog_destroy() {
+	[ -z "$kdialog_handle" ] && return $true
+	kdialog_cmd close
+	kdialog_handle=''
+}
+
+# Show an error dialog.
+# Usage: dialog_error <message>
+dialog_error() {
+	kdialog_run 'Error' --error "$1" > /dev/null 2> /dev/null
+}
+
+# Show a message box.
+# Usage: dialog_message <message>
+dialog_message() {
+	kdialog_run 'Status' --msgbox "$1" > /dev/null 2> /dev/null
+}
+
+# Ask a yes/no question.
+# Usage: dialog_ask <question>
+dialog_ask() {
+	kdialog_run 'Confirm' --warningyesno "$1" > /dev/null 2> /dev/null
+}
+
+# Has the user quested to cancel the operation?
+# Usage: dialog_cancelled && print "cancelled"
+dialog_cancelled() {
+	[ "$(kdialog_cmd_q wasCancelled || print true)" = true ]
+}
+
+# Set the status text.
+# Usage: dialog_set_text <text>
+dialog_set_text() {
+	kdialog_qdbus setLabelText "$1" || kdialog_dcop setLabel "$1"
+}
+
+# Set if the progress bar should continously animate instead of showing the value.
+# Usage: dialog_set_pulsate <enable>
+dialog_set_pulsate() {
+	_kdialog_max=100
+	[ $1 = 1 ] && _kdialog_max=0
+	kdialog_qdbus Set "" maximum $_kdialog_max || kdialog_dcop setMaximum $_kdialog_max
+}
+
+# Set the current progress value.
+# Usage: dialog_set_value <percentage>
+dialog_set_value() {
+	kdialog_qdbus Set "" value "$1" || kdialog_dcop setProgress "$1"
+	[ $1 = 100 ] && kdialog_cmd showCancelButton true
+}
+
+# Select an entry in a list.
+# Usage dialog_select_entry <var> <label> <tag1> <item1> [ <tag2> < item2> ... ]
+dialog_select_entry() {
+	_kdialog_select_entry_v="$1" ; shift
+	_kdialog_select_entry_t="$1" ; shift
+	_kdialog_select_entry_w="                                   "
+	_kdialog_select_entry_w="$_kdialog_select_entry_w$_kdialog_select_entry_w"
+	_kdialog_select_entry_r="$(
+		kdialog_run 'Select path' \
+			--menu "$_kdialog_select_entry_t$_kdialog_select_entry_w" "$@" 2> /dev/null
+	)"
+	[ -z "$_kdialog_select_entry_r" ] && return $false
+	eval "$_kdialog_select_entry_v=\"\$_kdialog_select_entry_r\""
+	return $true
+}
+
+# dialog_select_path does not support the --any flag
+dialog_select_path_any=0
+
+# Let the user select a path.
+# Usage: dialog_select_path (--file|--dir|--any) <result-var> <label>
+# Any is only supported if $dialog_select_path_any is 1.
+dialog_select_path() {
+	case "$1" in
+		--any) die 'not implemented' ;;
+		--file) _kdialog_select_path_f=--getopenfilename ;;
+		--dir)  _kdialog_select_path_f=--getexistingdirectory ;;
+	esac
+	_kdialog_select_path="$(
+		kdialog_run "$3" $_kdialog_select_path_f "$HOME" 2> /dev/null
+	)"
+	[ -z "$_kdialog_select_path" ] && return $false
+	eval "$2=\"\$_kdialog_select_path\""
+	return $true
+}
+
+;;
+
+#----------------------------------------------------------------------------------------#
+Xdialog)
+
+# Helper functions
+
+# Run Xdialog
+# Usage: Xdialog_run <title-prefix> <dialog-type> [<args>...]
+Xdialog_run() {
+	_Xdialog_run_t="$1" ; shift
+	[ -z "$_Xdialog_run_t" ] || _Xdialog_run_t="$_Xdialog_run_t - "
+	Xdialog --left --title "$_Xdialog_run_t$_dialog_title" "$@"
+}
+
+# Dialog abstraction
+
+# Create the main progress window.
+# Usage: dialog_create
+dialog_create() {
+	_Xdialog_width='WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW'
+	pipe_create Xdialog --left --title "$_dialog_title$1" --gauge "$_Xdialog_width" 0 0
+}
+
+# Destroy the main progress window.
+# Usage: dialog_destroy
+dialog_destroy() {
+	pipe_destroy
+}
+
+# Show an error dialog.
+# Usage: dialog_error <message>
+dialog_error() {
+	dialog_message "$1" # no dedicated error box for Xdialog
+}
+
+# Show a message box.
+# Usage: dialog_message <message>
+dialog_message() {
+	Xdialog_run 'Status' --msgbox "$1" 0 0
+}
+
+# Ask a yes/no question.
+# Usage: dialog_ask <question>
+dialog_ask() {
+	Xdialog_run 'Confirm' --yesno "$1" 0 0
+}
+
+# Has the user quested to cancel the operation?
+# Usage: dialog_cancelled && print "cancelled"
+dialog_cancelled() {
+	! pipe_exists
+}
+
+# Set the status text.
+# Usage: dialog_set_text <text>
+dialog_set_text() {
+	pipe_write 'XXX'
+	pipe_write "$1"
+	pipe_write 'XXX'
+}
+
+# Set if the progress bar should continously animate instead of showing the value.
+# Usage: dialog_set_pulsate <enable>
+dialog_set_pulsate() {
+	true # Pulsate is not supported by Xdialog
+}
+
+# Set the current progress value.
+# Usage: dialog_set_value <percentage>
+dialog_set_value() {
+	pipe_write "$1"
+}
+
+# Select an entry in a list.
+# Usage dialog_select_entry <var> <label> <tag1> <item1> [ <tag2> < item2> ... ]
+dialog_select_entry() {
+	_Xdialog_select_entry_v="$1" ; shift
+	_Xdialog_select_entry_t="$1" ; shift
+	_Xdialog_select_entry_r="$(
+		Xdialog_run 'Select path' \
+			--menubox "$_Xdialog_select_entry_t" 20 80 10 "$@" 2>&1
+	)"
+	[ -z "$_Xdialog_select_entry_r" ] && return $false
+	eval "$_Xdialog_select_entry_v=\"\$_Xdialog_select_entry_r\""
+	return $true
+}
+
+# dialog_select_path does not support the --any flag
+dialog_select_path_any=0
+
+# Let the user select a path.
+# Usage: dialog_select_path (--file|--dir|--any) <result-var> <label>
+# Any is only supported if $dialog_select_path_any is 1.
+dialog_select_path() {
+	case "$1" in
+		--any) die 'not implemented' ;;
+		--file) _Xdialog_select_path_f=--fselect ;;
+		--dir)  _Xdialog_select_path_f=--dselect ;;
+	esac
+	_Xdialog_select_path="$(
+		Xdialog_run "$3" $_Xdialog_select_path_f "$HOME" 0 0 2>&1
+	)"
+	[ -z "$_Xdialog_select_path" ] && return $false
+	eval "$2=\"\$_Xdialog_select_path\""
+	return $true
+}
+
+;;
+
+#----------------------------------------------------------------------------------------#
+0) # command-line
+
+# Dialog abstraction
+
+# Create the main progress window.
+# Usage: dialog_create
+dialog_create() {
+	true
+}
+
+# Destroy the main progress window.
+# Usage: dialog_destroy
+dialog_destroy() {
+	true
+}
+
+# Show an error dialog.
+# Usage: dialog_error <message>
+dialog_error() {
+	true # error messages are always printed to stdout
+}
+
+# Show a message box.
+# Usage: dialog_message <message>
+dialog_message() {
+	true
+}
+
+# Ask a yes/no question.
+# Usage: dialog_ask <question>
+dialog_ask() {
+	die 'unimplemented'
+}
+
+# Has the user quested to cancel the operation?
+# Usage: dialog_cancelled && print "cancelled"
+dialog_cancelled() {
+	false # never cancelled SIGINT is not trapped
+}
+
+# Set the status text.
+# Usage: dialog_set_text <text>
+dialog_set_text() {
+	true
+}
+
+# Set if the progress bar should continously animate instead of showing the value.
+# Usage: dialog_set_pulsate <enable>
+dialog_set_pulsate() {
+	true
+}
+
+# Set the current progress value.
+# Usage: dialog_set_value <percentage>
+dialog_set_value() {
+	true
+}
+
+# Select an entry in a list.
+# Usage dialog_select_entry <var> <label> <tag1> <item1> [ <tag2> < item2> ... ]
+dialog_select_entry() {
+	_cli_select_entry_var="$1" ; shift
+	
+	# Print a list for the user to select from
+	print "$1:" ; shift
+	_cli_select_entry_min=$1
+	_cli_select_entry_max=$1
+	_cli_select_entry_f=' [default]'
+	while [ $# -gt 0 ] ; do
+		_cli_select_entry_i=$1 ; shift
+		_cli_select_entry_t="$1" ; shift
+		if [ $_cli_select_entry_i -lt $_cli_select_entry_min ] ; then
+			_cli_select_entry_min=$_cli_select_entry_i
+		fi
+		if [ $_cli_select_entry_i -gt $_cli_select_entry_max ] ; then
+			_cli_select_entry_max=$_cli_select_entry_i
+		fi
+		printf ' %d) %s%s\n' $_cli_select_entry_i \
+			"$_cli_select_entry_t" "$_cli_select_entry_f"
+		_cli_select_entry_f=''
+	done
+	
+	# Read a number (or empty string for the first entry)
+	while true ; do
+		
+		printf '> #'
+		read -r _cli_select_entry_r
+		
+		[ -z "$_cli_select_entry_r" ] && _cli_select_entry_r=1
+		
+		case "$_cli_select_entry_r" in
+			'quit') ;; 'q') ;; 'exit') ;; 'abort') ;;
+			*)
+			if [ ! "$_cli_select_entry_r" -lt $_cli_select_entry_min ] 2> /dev/null \
+			   && [ ! "$_cli_select_entry_r" -gt $_cli_select_entry_max ] 2> /dev/null
+			then
+				eval "$_cli_select_entry_var=\"\$_cli_select_entry_r\""
+				return $true
+			else
+				printf "Please enter a number between %d and %d.\n" \
+					$_cli_select_entry_min $_cli_select_entry_max
+				continue
+			fi
+		esac
+		die
+		
+	done
+	
+	return $true
+}
+
+# dialog_select_path supports the --any flag
+dialog_select_path_any=1
+
+# Let the user select a path.
+# Usage: dialog_select_path (--file|--dir|--any) <result-var> <label>
+# Any is only supported if $dialog_select_path_any is 1.
+dialog_select_path() {
+	_cli_select_path_var="$2"
+	print "$3:" ; shift
+	printf '> '
+	read -r _cli_select_path_r
+	[ -z "$_cli_select_path_r" ] && return $false
+	eval "$_cli_select_path_var=\"\$_cli_select_path_r\""
+	return $true
+}
+
+esac
+
+
+##########################################################################################
+# Common user interface implementation
+
+# Ask the user if the setup should really be cancelled.
+handle_cancel() {
+	_handle_cancel_message="Are you sure you want to exit the Arx Fatalis data installer?"
+	if [ $installed_stuff = 1 ] ; then
+		_handle_cancel_message="$_handle_cancel_message
+
+Already installed files will not be removed!"
+	fi
+	dialog_ask "$_handle_cancel_message" && print 'Aborted by user' && die
+}
+
+# Update the status.
+# Usage: status (<percent>|--temp) [<message>]
+_status_text="Initializing..."
+_status_cur=''
+_status_pulsate=default
+status() {
+	
+	if [ "$1" = '--temp' ] ; then
+		_status_value=0
+		_status_temp=1
+	else
+		_status_value=$1
+		_status_temp=0
+	fi
+	_status_new="${2:-$_status_text}"
+	
+	# Handle the cancel and close buttons
+	if dialog_cancelled ; then
+		handle_cancel
+		dialog_create || die "Could not re-create progress window."
+		_status_cur=''
+		_status_pulsate=default
+	fi
+	
+	# Update the progress text if one was provided
+	if [ ! "$_status_cur" = "$_status_new" ] ; then
+		_status_cur="$_status_new"
+		print "$_status_new"
+		dialog_set_text "$_status_new"
+	fi
+	[ $_status_temp = 0 ] && _status_text="$_status_new"
+	
+	# Set the maximum progress value
+	if [ $_status_value = 0 ] ; then _new_status_pulsate=1 ; else _new_status_pulsate=0 ; fi
+	if [ ! "$_status_pulsate" = $_new_status_pulsate ] ; then
+		_status_pulsate="$_new_status_pulsate"
+		dialog_set_pulsate $_status_pulsate
+	fi
+	
+	# Update the progress value
+	[ $_status_pulsate = 0 ] && dialog_set_value $_status_value
+	
+}
+
+# Print an error message and show an error dialog if we have a GUI/
+# Usage: error <message>
+error() {
+	print "${dim_red}$1${reset}"
+	dialog_error "$1"
+}
+
+# Let the user select an item from a list or enter a custom one.
+# In batch mode, select the first one if --first is given, die otherwise.
+# Usage: user_select_entry (--existing|--writable) (--any|--file|--dir) \
+#                          <list> <result-var> <desc> <desc-color> <list-color>
+user_select_entry() {
+	
+	_user_select_entry_access="$1"
+	_user_select_entry_t="$2"
+	_user_select_entry_lname="$3"
+	eval "_user_select_entry_list=\"\$$_user_select_entry_lname\""
+	_user_select_entry_var="$4"
+	_user_select_entry_desc="$5"
+	_user_select_entry_color1="$6"
+	_user_select_entry_color2="$7"
+	
+	# Select the first element if in batch mode
+	eval "_user_select_entry_current=\"\$$_user_select_entry_var\""
+	if [ $batch = 1 ] || [ ! -z "$_user_select_entry_current" ] ; then
+		_user_select_entry_=''
+		eval "set -- $_user_select_entry_list"
+		for _user_select_entry ; do
+			_user_select_entry_="$_user_select_entry"
+			break
+		done
+		[ -z "$_user_select_entry_" ] && die "Missing $_user_select_entry_desc!"
+		eval "$_user_select_entry_var=\"\$_user_select_entry_\""
+		return $true
+	fi
+	
+	if [ $gui = 0 ]
+		then print
+		else status --temp "Select a ${_user_select_entry_desc}"
+	fi
+	
+	_user_select_entry_i=1
+	_user_select_entry_nolist=0
+	if [ -z "$_user_select_entry_list" ] \
+	&& [ ! $_user_select_entry_t = --any ] \
+	&& [ ! $dialog_select_path_any = 1 ] ; then
+		
+		# No entries detected - direclty promt the user
+		_user_select_entry_num=1
+		_user_select_entry_nolist=1
+		
+	else
+		
+		_user_select_entry_tlist=''
+		
+		# Format the list entries in a user friendly way
+		eval "set -- $_user_select_entry_list"
+		for _user_select_entry ; do
+			
+			# Use 'command (file)' if comment available or 'file' otherwise
+			_user_select_entry_comment="$(
+				list_comment "$_user_select_entry_lname" "$(($_user_select_entry_i - 1))"
+			)"
+			if [ -z "$_user_select_entry_comment" ] ; then
+				_user_select_entry_label="$_user_select_entry_color2$_user_select_entry$reset"
+			else
+				_user_select_entry_label="$_user_select_entry_color2$_user_select_entry_comment$reset"
+				_user_select_entry_label="$_user_select_entry_label: $_user_select_entry"
+			fi
+			
+			# Add the tag and label to the arguments
+			list_append _user_select_entry_tlist $_user_select_entry_i
+			list_append _user_select_entry_tlist "$_user_select_entry_label"
+			
+			# Remeber the file for the tag
+			eval "_user_select_entry_$_user_select_entry_i=\"\$_user_select_entry\""
+			
+			_user_select_entry_i=$(($_user_select_entry_i + 1))
+		done
+		
+		# Add entries for custom files/diectories
+		if [ $_user_select_entry_t = --any ] && [ $dialog_select_path_any = 1 ] ; then
+			list_append _user_select_entry_tlist $_user_select_entry_i
+			list_append _user_select_entry_tlist "Use another file or directory"
+		else
+			_user_select_entry_ii=$_user_select_entry_i
+			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --file ] ; then
+				list_append _user_select_entry_tlist $_user_select_entry_ii
+				list_append _user_select_entry_tlist "Use another file"
+				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
+			fi
+			if [ $_user_select_entry_t = --any ] || [ $_user_select_entry_t = --dir ] ; then
+				list_append _user_select_entry_tlist $_user_select_entry_ii
+				list_append _user_select_entry_tlist "Use another directory"
+				_user_select_entry_ii=$(($_user_select_entry_ii + 1))
+			fi
+		fi
+		
+	fi
+	
+	# Loop until we have selected a value
+	while true ; do
+		
+		if [ $_user_select_entry_nolist = 0 ] ; then
+			
+			# Ask the user to select an entry
+			eval "set -- $_user_select_entry_tlist"
+			while true ; do
+				if dialog_select_entry _user_select_entry_num \
+					"${_user_select_entry_color1}Select a ${_user_select_entry_desc}${reset}" "$@"
+				then
+					break
+				else
+					handle_cancel
+				fi
+			done
+			
+		fi
+		
+		if [ $_user_select_entry_num -lt $_user_select_entry_i ] ; then
+			
+			# User selected an entry -- return that
+			eval "$_user_select_entry_var=\"\$_user_select_entry_$_user_select_entry_num\""
+			return $true
+			
+		fi
+		
+		# Loop until we have selected a path of the correct type
+		while true ; do
+			
+			# Adjust type based on user selection
+			if [ $_user_select_entry_t = --any ] && [ ! $dialog_select_path_any = 1 ] ; then
+				if [ $_user_select_entry_num = $_user_select_entry_i ]
+					then _user_select_entry_type=--file
+					else _user_select_entry_type=--dir
+				fi
+			else
+				_user_select_entry_type=$_user_select_entry_t
+			fi
+			
+			_user_select_entry_c="Select a custom source " 
+			
+			if ! dialog_select_path "$_user_select_entry_type" _user_select_entry_path \
+				"${_user_select_entry_color1}Choose a custom ${_user_select_entry_desc}${reset}" \
+				"$@" ; then
+				
+				# User cancelled the dialog - return to the main selection, unless there is none
+				if [ $_user_select_entry_nolist = 1 ] ; then
+					handle_cancel
+					continue # let the user try again
+				fi
+				break # return to list selection
+				
+			fi
+			
+			_user_select_entry_path="$(abspath "$_user_select_entry_path")"
+			
+			# The user selected a path, now check if it exists our criteria.
+			case "$_user_select_entry_access" in
+				--existing)
+				if [ ! -e "$_user_select_entry_path" ]  ; then
+					error "$_user_select_entry_path does not exist!"
+					continue # let the user try again
+				fi ;;
+				--writable)
+				if ! is_writable "$_user_select_entry_path" ; then
+					error "$_user_select_entry_path is not writable!"
+					continue # let the user try again
+				fi ;;
+			esac
+			case "$_user_select_entry_t" in
+				--any) ;; # anything goes
+				--file)
+				if [ -e "$_user_select_entry_path" ] && [ -d "$_user_select_entry_path" ] ; then
+					error "$_user_select_entry_path is is a directory, but we need a file!"
+					continue
+				fi ;;
+				--dir)
+				if [ -e "$_user_select_entry_path" ] && [ ! -d "$_user_select_entry_path" ] ; then
+					error "$_user_select_entry_path is is a file, but we need a directory!"
+					continue
+				fi ;;
+			esac
+			
+			# Everything went better than expected - save the result
+			eval "$_user_select_entry_var=\"\$_user_select_entry_path\""
+			return $true
+			
+		done
+		
+	done
+	
+}
+
+# Show error message and close windows on exit
+ui_cleanup() {
+	[ -z "$1" ] || dialog_error "$1"
+	dialog_destroy
+}
+on_exit ui_cleanup
+
+# Initilize the UI
+dialog_create || die "
+Could not create main window.
+
+You could try the --cli option.
+"
+[ $gui = 0 ] || status --temp "$_status_text"
+
+
+##########################################################################################
+# Autodetect source file/dir
+
+sourcefiles='' # List of source file/directory candidates
+
+# Add a source file or directory to the list of candidates.
+# Usage: found_source_file <file> [comment]
+# Return: $true if more source files should be probed, $false otherwise.
+found_source_file() {
+	set_append sourcefiles "$(readlink -f "$1")" "$2"
+	if [ $batch = 1 ] ; then return $true ; else return $false ; fi
+}
+
+# Find a match for a case insensitive path containing arx.exe
+# Usage: probe_wine_path <baseprefix> <ipath>
+probe_wine_path() {
+	[ -d "$1" ] || return $false
+	if [ -z "$2" ] ; then
+		if icontains "$1" 'arx.exe' ; then
+			found_source_file "$1" "Wine"
+		fi
+		return $false
+	fi
+	_wine_path_dir="${2%%\\*}"
+	if [ "$_wine_path_dir" = "$2" ]
+		then _wine_path=''
+		else _wine_path="${2#*\\}"
+	fi
+	_wine_paths="$(
+		find "$1/" -mindepth 1 -maxdepth 1 -iname "$(escape "$_wine_path_dir")" -print \
+			| lines_to_list
+	)"
+	[ -z "$_wine_paths" ] && return $false
+	_wine_path_call='probe_wine_path "$_wine_path_prefix" "$_wine_path" && return $true'
+	eval "for _wine_path_prefix in $_wine_paths ; do $_wine_path_call ; done"
+}
+
+# Find possible source directories from a registry key.
+# Usage: probe_wine_registry <key> <variable>
+# Return: $true if more source files should be probed, $false otherwise.
+probe_wine_registry() {
+	
+	# This is intentionally implemented without calling wine as we don't want to
+	# modify the source.
+	
+	# Get candidate paths from the registry file
+	_wine_pattern='Software\\\\(Wow6432Node\\\\)?'
+	_wine_pattern="$_wine_pattern$(print "$1" | sed 's/\\/\\\\/g' | escape_pipe '()|')"
+	_wine_paths="$(
+		# The --after is just an arbitrary limit
+		# We verify the paths by checking for arx.exe, but for effiency we still want
+		# to avoid false positives.
+		cat "$_wine_prefix"/*.reg \
+			| grep -iPA 20 "^\\[$_wine_pattern\\]" 2> /dev/null \
+			| grep -iP "^\"?$2\"?=" 2> /dev/null \
+			| sed 's/^[^=]*="\([^"]*\)".*$/\1/;s/\\\(.\)/\1/g' \
+			| lines_to_list
+	)"
+	
+	# For each candidate, find a case-insensitive match and check if it contains arx.exe
+	eval "set -- $_wine_paths"
+	for _wine_path ; do
+		probe_wine_path "$_wine_prefix/dosdevices" "$_wine_path" && return $true
+	done
+	
+	return $false
+}
+
+# Find possible source directories from uninstall registry entries.
+# Usage: probe_wine_uninstall_info <id>
+# Return: $true if more source files should be probed, $false otherwise.
+probe_wine_uninstall_info() {
+	probe_wine_registry "Microsoft\\Windows\\CurrentVersion\\Uninstall\\$1" \
+	                    'InstallLocation'
+}
+
+# Find possible source directories in a WINEPREFIX.
+# Usage: probe_wineprefix <wineprefix>
+# Return: $true if more source files should be probed, $false otherwise.
+probe_wineprefix() {
+	
+	[ -d "$1" ] || return $false
+	[ -e "$1/system.reg" ] || [ -e "$1/user.reg" ] || return $false
+	_wine_prefix="$1"
+	
+	# Normal install
+	probe_wine_registry 'Arkane Studios\Installed Apps\Arx Fatalis' 'Folder' && return $true
+	
+	# GOG version
+	probe_wine_registry 'GOG.com\GOGARXFATALIS' 'PATH' && return $true
+	
+	# Probe uninstall entries - combined for effiency
+	_wine_uninstall='Microsoft\Windows\CurrentVersion\Uninstall\'
+	# Steam
+	_wine_steam='Steam App 1700'
+	# Original game
+	_wine_orig='{96443F45-13E2-11D6-AC87-00D0B7A9E540}'
+	# 1.21 patch
+	_wine_patch='{171251E0-4EED-4EA1-A46D-3213A226F2B3}_is1'
+	probe_wine_registry "$_wine_uninstall($_wine_steam|$_wine_orig|$_wine_patch)" \
+		'InstallLocation' && return $true
+	
+}
+
+# Check a mounte point if it's an Arx Fatalis cd
+# Usage: probe_cd <mountpoint> <fstype>
+# Return: $true if more source files should be probed, $false otherwise
+probe_cd() {
+	node="$1"
+	mountpoint="$2"
+	fstype="$3"
+	
+	case "$fstype" in
+		cd9660) ;; iso9660) ;; udf) ;; *fuseiso) ;;
+		*) return $true
+	esac
+	
+	if [ -d "$mountpoint/bin" ] && icontains "$mountpoint/bin" 'arx.ttf' 2> /dev/null ; then
+		found_source_file "$mountpoint" "CDROM at $node" && return $true
+	fi
+	
+}
+
+# Find mounted Arx Fatalis CDs
+# Usage: probe_cdrom
+# Return: $true if more source files should be probed, $false otherwise
+probe_cdrom() {
+	
+	_probe_cdrom_mountpoints="$(
+		cat /proc/mounts 2> /dev/null | lines_to_list # Linux - use /proc/mounts
+		mount -p 2> /dev/null | lines_to_list         # Hope that mount has a -p option
+	)"
+	
+	eval "set -- $_probe_cdrom_mountpoints"
+	for line ; do
+		eval "probe_cd $(escape "$line" ' ' | sed 's/\\\\\040/\\ /g')"  # space-separated
+		eval "probe_cd $(print "$line" | tr '\t' '\n' | lines_to_list)" # tab-separated
+	done
+	
+}
+
+# Find possible source files/directories
+# Usage: probe_source_files
+# If sourcefile is already set, uses that.
+probe_source_files() {
+	
+	if [ ! -z "$sourcefile" ] ; then
+		
+		# Trust the user
+		found_source_file "$sourcefile" && return $true
+		
+		# But also allow to refile the dir in non-batch mode if it is a wineprefix
+		[ -d "$sourcefile" ] && probe_wineprefix "$sourcefile"
+		
+		[ "$sourcefiles" = "$sourcefile" ] || sourcefile=''
+		
+		return $true
+	fi
+	
+	status 5 "Searching for source files..."
+	
+	# Find by filename
+	probe_files found_source_file "$gog_names" 'GOG.com setup'
+	probe_files found_source_file "$demo_names" 'Demo'
+	
+	# Find an Arx Fatalis installation in $WINEPREFIX
+	[ ! -z "${WINEPREFIX-}" ] && probe_wineprefix "$WINEPREFIX" && return $true
+	
+	# Find an Arx Fatalis installation in ~/.wine
+	[ ! "${WINEPREFIX-}" = "$HOME/.wine" ] && probe_wineprefix "$HOME/.wine" && return $true
+	
+	# Find an Arx Fatalis cdrom
+	probe_cdrom && return $true
+	
+	# Just in case it will ever be installable under non-Windows systems
+	steam_source_path="$HOME/.steam/root/SteamApps/common/Arx Fatalis"
+	[ -d "$steam_source_path" ] && found_source_file "$steam_source_path" 'Steam'
+	
+}
+
+
+##########################################################################################
+# Autodetect destination dir
+
+datadirs='' # List of destination data directory candidate
+
+# Add a destination data directory to the list of candidates.
+# Usage: found_data_dir <dir> [comment]
+# Return: $true if more data directories should be probed, $false otherwise.
+found_data_dir() {
+	set_append datadirs "$(abspath "$1")" "$2"
+	if [ $batch = 1 ] ; then return $true ; else return $false ; fi
+}
+
+# Add a destination data directory to the list of candidates if it is writable.
+# In verify mode, also existing read-only directories are added.
+# Usage: probe_data_dir <must-exists> <dir> [comment]
+# Return: $true if more data directories should be probed, $false otherwise.
+probe_data_dir() {
+	[ "$1" = 1 ] && [ ! -e "$2" ] && return $false
+	[ $install = 0 ] && [ ! -e "$2" ] && return $false
+	if [ $install = 1 ] || [ $patch = 1 ] ; then is_writable "$2" || return $false ; fi
+	found_data_dir "$2" "$3"
+}
+
+# Find possible destination data directories
+# Usage: probe_data_dirs
+# If datadir is already set, uses that.
+probe_data_dirs() {
+	
+	if [ ! -z "$datadir" ] ; then
+		found_data_dir "$datadir"
+		return $true
+	fi
+	
+	status 10 "Searching for destination directories..."
+	
+	for must_exists in 1 0 ; do
+		
+		# Try paths supplied by wrapper scripts
+		if [ ! -z "$data_path" ] ; then
+			eval "set -- $(to_list "$data_path")"
+			for path ; do
+				probe_data_dir $must_exists "$path" "portable" && return $true
+			done
+		fi
+		
+		# Try system paths
+		eval "set -- $(to_list "$data_dirs")"
+		for prefix in "$@" ; do
+			eval "set -- $(to_list "$data_dir_suffixes")"
+			for suffix ; do
+				probe_data_dir $must_exists "$prefix/$suffix" "system" && return $true
+			done
+		done
+		
+		# Try user paths
+		if [ $is_root = 0 ] ; then
+			eval "set -- $(to_list "$user_dir_suffixes")"
+			for suffix ; do
+				probe_data_dir $must_exists "$data_home/$suffix" "user" && return $true
+			done
+		fi
+		
+	done
+	
+}
+
+
+##########################################################################################
+# Extract helpers and other utility abstractions
+
+# Calculate the MD5 checksum of a file.
+# Usage: checksum <result-var> <file>
+checksum() {
+	
+	if have md5sum ; then
+		_checksum_result="$(md5sum -b "$2" | sed 's/ .*//g')"
+		eval "$1=\"\$_checksum_result\""
+		return $true
+	fi
+	
+	if have md5 ; then
+		_checksum_result="$(md5 -q "$2")"
+		eval "$1=\"\$_checksum_result\""
+		return $true
+	fi
+	
+	die "You need either md5sum or md5."
+}
+
+# Extract a .zip file to the current directory.
+# Usage: extract_zip <zipfile>
+extract_zip() {
+	
+	if have bsdtar ; then
+		printf 'Extracting %s using bsdtar\n' "$1"
+		bsdtar xvf "$1"
+		return $?
+	fi
+	
+	if have unzip ; then
+		printf 'unzip: '
+		unzip "$1"
+		return $?
+	fi
+	
+	die "You need either bsdtar or unzip to install from zip files: $1"
+}
+
+# Mount a .iso file or CDROM using fuseiso if available  or normal mount if root.
+# Usage: mount_cdrom <cdromfile> <mountpoint>
+mount_cdrom() {
+	
+	if have fuseiso && have fusermount &&  fuseiso "$1" "$2" ; then
+		printf 'Mounted %s at %s using fuseiso\n' "$1" "$2"
+		return $true
+	fi
+	
+	if have mount && have umount && [ $is_root = 1 ] && mount -o loop,ro "$1" "$2" ; then
+		printf 'Mounted %s at %s\n' "$1" "$2"
+		return $true
+	fi
+	
+	return $false
+}
+
+# Unmount a CDROM that was mounted using mount_cdrom.
+# Usage: unmount_cdrom <mountpoint>
+unmount_cdrom() {
+	have fusermount && fusermount -u "$1" > /dev/null 2>&1
+	have umount && [ $is_root = 1 ] && umount "$1" > /dev/null 2>&1
+}
+
+# isoinfo wrapper to extract all files to the current directory
+extract_isoinfo() {
+	_extract_isoinfo_file="$1"
+	
+	# Get a list of all files in the ISO image
+	_extract_isoinfo_files="$(
+		isoinfo -i "$_extract_isoinfo_file" -J -f | grep ';1$' | lines_to_list
+	)"
+	[ -z "$_extract_isoinfo_files" ] && return $false
+	
+	eval "set -- $_extract_isoinfo_files"
+	for _extract_isoinfo_e ; do
+		
+		# Remove leading / and trailing ;1 from filenames
+		_extract_isoinfo_f="$(print "$_extract_isoinfo_e" | sed 's:^/*::;s:;1$::')"
+		[ -z "$_extract_isoinfo_f" ] && continue
+		printff ' - %s\n' "$_extract_isoinfo_f"
+		
+		# Create subdirectories as needed
+		_extract_isoinfo_d="$(dirname "$_extract_isoinfo_f")"
+		[ -z "$_extract_isoinfo_d" ] || mkdir -p "$_extract_isoinfo_d" || return $false
+		
+		# Extract the file
+		isoinfo -i "$_extract_isoinfo_file" -J -x "$_extract_isoinfo_e" \
+			> "$_extract_isoinfo_f" || return $false
+		
+		# Don't rely on isoinfo setting a non-zero return code, check that we got something
+		[ -s "$_extract_isoinfo_f" ] || return $false
+		
+	done
+	
+	return $true
+}
+
+# Extract a .iso file or CDROM to the current directory.
+# Usage: extract_cdrom <cdromfile>
+extract_cdrom() {
+	
+	if have isoinfo ; then
+		printf 'Extracting %s using isoinfo\n' "$1"
+		extract_isoinfo "$1"
+		return $?
+	fi
+	
+	if have bsdtar ; then
+		printf 'Extracting %s using bsdtar\n' "$1"
+		bsdtar xvf "$1"
+		ret="$?"
+		
+		# Older versions of bsdtar don't always get the names right - fix them
+		_extrac_cdrom_f="$(find "$PWD" -depth -iname '*;1' | lines_to_list)"
+		if [ ! -z "$_extrac_cdrom_f" ] ; then
+			eval "for f in $_extrac_cdrom_f ; do mv \"\$f\" \"\$(print \"\$f\" | sed 's:;1$::')\" ; done"
+		fi
+		
+		# For some iso files bsdtar just does nothing - at least let the user know
+		if [ ! -d "$PWD/bin" ] || ! icontains "$PWD/bin" 'arx.ttf' ; then
+			print "${yellow}It looks like bsdtar didn't do what it was supposed to!${reset}"
+			printf '%s%s\n' "You might have better luck with ${dim_pink}isoinfo${reset}" \
+			     " or ${dim_pink}fuseiso${reset}, or by manually mounting the CD/ISO."
+		fi
+		
+		return $ret
+	fi
+	
+	return $false
+}
+
+extract_ms_cab_reqs="bsdtar with libarchive 3.1+, or cabextract ($cabextract_url)"
+have_extract_ms_cab() {
+	have bsdtar || have cabextract
+}
+# Extract a microsoft .cab or .exe file to the current directory.
+# Usage: extract_ms_cab <cabfile>
+extract_ms_cab() {
+	
+	if have bsdtar ; then
+		case "$(bsdtar --version)" in
+			# These versions have bugs that cause corrupted files
+			'') ;;
+			*'libarchive 1.'*) ;;
+			*'libarchive 2.'*) ;;
+			*'libarchive 3.0') ;;
+			*'libarchive 3.0.'*) ;;
+			# Newer versions should work fine
+			*)
+			printf 'Extracting %s using bsdtar\n' "$1"
+			bsdtar xvf "$1"
+			return 
+		esac
+	fi
+	
+	if have cabextract ; then
+		printf 'cabextract: '
+		cabextract "$1"
+		return $?
+	fi
+	
+	die "You need either $extract_ms_cab_reqs to install from cdrom / demo files: $1"
+}
+
+extract_installshield_reqs="unshield"
+have_extract_installshield() {
+	have unshield
+}
+# Extract an InstallShield .cab or .exe file to the current directory.
+# Usage: extract_installshield <cabfile>
+extract_installshield() {
+	
+	if have unshield ; then
+		printf 'unshield: '
+		unshield x "$1"
+		return $?
+	fi
+	
+	die "You need $extract_installshield_reqs to install from Japanse patch files: $1"
+}
+
+extract_innosetup_reqs="innoextract ($innoextract_url)"
+have_extract_innosetup() {
+	have innoextract
+}
+# Extract an Inno Setup .exe file to the current directory.
+# Usage: extract_innosetup <exefile>
+extract_innosetup() {
+	
+	if have innoextract ; then
+		printf 'innoextract: '
+		innoextract --color=off "$@"
+		return $?
+	fi
+	
+	die "You need innoextract to install from GOG.com or patch files: $1"
+}
+
+# Extract an unknown file to the current directory.
+# Usage: extract_any <file> <types>...
+extract_any() {
+	_extract_exe_file="$1" ; shift
+	
+	_extract_exe_missing=''
+	_extract_exe_sep=''
+	for type ; do
+		
+		if "have_extract_$type" ; then
+			"extract_$type" "$_extract_exe_file" && return "$true"
+		else
+			eval "_extract_exe_reqs=\"\$extract_${type}_reqs\""
+			_extract_exe_missing="$_extract_exe_missing$_extract_exe_sep$_extract_exe_reqs"
+			_extract_exe_sep=' and/or '
+		fi
+		
+	done
+	
+	if [ ! -z "$_extract_exe_missing" ] ; then
+		die "Could not extract $_extract_exe_file - try installing $_extract_exe_missing."
+	fi
+}
+
+# Extract all .cab files in a directory.
+# Usage: extract_cab_files <sourcedir> <destdir>
+extract_cab_files() {
+	
+	_extract_cab_files_i=0
+	_extract_cab_files_files="$(
+		find "$1/" -mindepth 1 -type f -iname '*.cab' -print \
+		| lines_to_list
+	)"
+	eval "set -- $_extract_cab_files_files"
+	for _extract_cab_files_cabfile ; do
+		[ -z "$_extract_cab_files_cabfile" ] && continue
+		
+		while true ; do
+			_extract_cab_files_cabdir="$sourcedir/cab.$_extract_cab_files_i"
+			if [ -e "$_extract_cab_files_cabdir" ] ; then
+				_extract_cab_files_i=$(($_extract_cab_files_i + 1))
+				continue
+			fi
+			create_dir "$_extract_cab_files_cabdir" "cab #$i work"
+			break
+		done
+		
+		cd "$_extract_cab_files_cabdir"
+		case "$(basename "$_extract_cab_files_cabfile")" in
+			data*) extract_any "$_extract_cab_files_cabfile" installshield ms_cab ;;
+			*)     extract_any "$_extract_cab_files_cabfile" ms_cab installshield ;;
+		esac
+		
+		_extract_cab_files_i=$(($_extract_cab_files_i + 1))
+	done
+	
+}
+
+download_impl() {
+	
+	if have wget ; then
+		wget -O "$2" "$1"
+		return $?
+	fi
+	
+	if have curl ; then 
+		curl --location --fail -o "$2" "$1"
+		return $?
+	fi
+	
+	if have fetch ; then
+		fetch -o "$2" "$1"
+		return $?
+	fi
+	
+	die "Could now download $1. Install wget, curl or fetch - or manually download it."
+	
+}
+# Download a file.
+# Usage: download <url> <destination>
+download() {
+	
+	download_impl "$1" "$2" || return $false
+	
+	# Check that we got something useful
+	case "$(file --dereference --brief --mime-type "$2" 2> /dev/null)" in
+		*/html*) ;;
+		*/xml*) ;;
+		*) return $true
+	esac
+	
+	rm -f "$2"
+	return $false;
+}
+
+# Download a file from a list of mirrors.
+# Usage: download_any <mirror-list> <destination>
+download_any() {
+	[ -z "$1" ] && return $false
+	eval "for url in $1 ; do download \"\$url\" \"\$2\" && return $true ; done"
+	return $false
+}
+
+
+##########################################################################################
+# Unpack source
+
+workdir=''
+cleanup_workdir() {
+	[ ! -z "$workdir" ] && [ -e "$workdir" ] && rm -rf "$workdir"
+}
+# Create the work directory if it doesn't exist.
+# Also regiter a cleanup function to remove the work directory on exit.
+# Usage: create_workdir
+create_workdir() {
+	[ -z "$workdir" ] || return $true
+	workdir="$datadir/$command-temp"
+	cleanup_workdir
+	on_exit cleanup_workdir
+	create_dir "$workdir" 'work'
+}
+
+# Extract setup*.cab files from a source directory into $sourcedir/cab.*.
+# Usage: extract_source_dir <sourcedir>
+extract_source_dir() {
+	extract_cab_files "$1" "$sourcedir"
+}
+
+# Extract a source executable into $sourcedir/exe.
+# Usage: extract_source_exe <sourcefile>
+extract_source_exe() {
+	
+	sourcedir_exe="$sourcedir/exe"
+	create_dir "$sourcedir_exe" 'exe work'
+	
+	cd "$sourcedir_exe" || die
+	case "$(basename "$1")" in
+		arx_jpn_*.exe) extract_any "$1" ms_cab installshield innosetup ;; # Japanese demo
+		*)             extract_any "$1" innosetup ms_cab installshield ;; # GOG.com setup
+	esac
+	[ $? = $true ] || die "Could not extract source exe!"
+	
+	extract_source_dir "$sourcedir_exe"
+	
+}
+
+cdromdir=''
+cleanup_cdrom() {
+	[ ! -z "$cdromdir" ] && [ -e "$cdromdir" ] && unmount_cdrom "$cdromdir"
+}
+# Mount a source CDROM/ISO and adjust $sourcefile or extract it into $sourcedir/cdrom.
+# Usage: extract_source_cdrom <sourcefile>
+extract_source_cdrom() {
+	
+	# Try to mount the cdrom to avoid unneeded copies
+	# Keep the mount point out of $sourcedir so we don't try to mv files from it
+	cdromdir="$workdir/cdrom"
+	cleanup_cdrom
+	on_exit cleanup_cdrom
+	create_dir "$cdromdir" 'mount work'
+	if mount_cdrom "$1" "$cdromdir" ; then
+		# Pretent the mountpoint is the original source
+		sourcefile="$workdir/cdrom"
+		# Extract any cab files on the CDROM
+		extract_source_dir "$sourcefile"
+		return $true
+	fi
+	
+	# Otherwise, extract the files from the CDROM if the have the required tools
+	sourcedir_cdrom="$sourcedir/cdrom"
+	create_dir "$sourcedir_cdrom" 'cdrom work'
+	cd "$sourcedir_cdrom" || die
+	if extract_cdrom "$1" ; then
+		# Extract any cab files on the CDROM
+		extract_source_dir "$sourcedir_cdrom"
+		return $true
+	fi
+	
+	die "You need either bsdtar, isoinfo, fuseiso, or root access" \
+		"to install from cdrom / iso files: $1"
+}
+
+# Extract a source executable into $sourcedir/zip.
+# Also extracts contained setup*.cab files into $sourcedir/cab.*.
+# Usage: extract_source_zip <sourcefile>
+extract_source_zip() {
+	
+	sourcedir_zip="$sourcedir/zip"
+	create_dir "$sourcedir_zip" 'zip work'
+	
+	cd "$sourcedir_zip" || die
+	extract_zip "$1" || die "Could not extract source zip!"
+	
+	extract_source_dir "$sourcedir_zip"
+}
+
+sourcedir=''
+# Extract the source file or directory if it hansn't been extracted already.
+# Usage: extract_source
+extract_source() {
+	[ -z "$sourcedir" ] || return $true
+	
+	status --temp "${white}Extracting source...${reset}"
+	
+	create_workdir
+	sourcedir="$workdir/source"
+	create_dir "$sourcedir" 'source work'
+	
+	if [ -d "$sourcefile" ] ; then
+		extract_source_dir "$sourcefile"
+	else if [ -f "$sourcefile" ] ; then
+		case "$sourcefile" in
+			*.zip) extract_source_zip "$sourcefile" ;;
+			*.exe) extract_source_exe "$sourcefile" ;;
+			*.iso) extract_source_cdrom "$sourcefile" ;;
+			*)
+			case "$(file --dereference --brief --mime-type "$sourcefile" 2> /dev/null)" in
+				application/zip)             extract_source_zip "$sourcefile" ;;
+				application/x-dosexec)       extract_source_exe "$sourcefile" ;;
+				application/x-iso9660-image) extract_source_cdrom "$sourcefile" ;;
+				*) die "Unknown source file type: $sourcefile"
+			esac
+		esac
+	else
+		extract_source_cdrom "$sourcefile"
+	fi ; fi
+	
+	print
+}
+
+
+##########################################################################################
+# Detect data language
+
+find_file_impl() {
+	_patchable="$1"
+	
+	# Search for both file.ext and file_default.ext
+	_file="$(escape "$(basename "$2")")"
+	_file_d="$(print "$_file" | sed 's/^\(.*\)\(\.[^.]*\)$/\1_default\2/')"
+	
+	# Prefer files from the patch - if availbale, they are most likely the correct ones
+	set -- -iname "$_file" -print -o -iname "$_file_d" -print
+	[ "$_patchable" = 1 ] && [ ! -z "$patchdir" ]  && find "$patchdir" "$@"
+	
+	# Find the file in the source
+	[ ! -z "$sourcedir" ] && find "$sourcedir" "$@"
+	[ -d "$sourcefile" ]  && find "$sourcefile" "$@"
+	
+	# Also find the file if it is already in the data directory, but don't ignore case
+	find "$datadir" -path '*-temp' -prune -o \
+		-name "$_file" -print -o -name "$_file_d" -print
+	
+}
+# Find a file in patch, source and data directories.
+# Usage: find_file <is-patchable> <return-list-var> <filename/path>
+find_file() {
+	eval "$2=\"\$(find_file_impl \"\$1\" \"\$3\" | lines_to_list)\""
+}
+
+# Copy/move a file to the data diectory.
+# Usage: use_file <file> <data-path>
+# Action taken depends on the source directory.
+use_file() {
+	_in="$1"
+	_out="$datadir/$2"
+	
+	# Don't change anything on verify-only mode
+	[ $install = 0 ] && [ $patch = 0 ] && return $true
+	
+	# Don't try to copy/move a file onto itself
+	[ "$_in" = "$_out" ] && return $true
+	
+	# Create directories as needed
+	_outdir="$(dirname "$_out")"
+	create_dir "$_outdir" 'output'
+	
+	# Copy or move the file
+	if [ "${_in#"$sourcefile"}" = "$_in" ]
+		then mv "$_in" "$_out" || die "Could not move $_in to $_out!"
+		else cp "$_in" "$_out" || die "Could not copy $_in to $_out!"
+	fi
+	installed_stuff=1
+	
+	# Fix permissions
+	chmod --reference="$_outdir" "$_out" > /dev/null 2>&1
+	chmod -x "$_out" > /dev/null 2>&1
+}
+
+data_lang=''      # Data language/tipe ID
+data_lang_desc='' # Friendly data language/type label
+
+# Detect the data language and type
+# Usage: detect_data_langauge <callback>
+# <callback> receives a speech.pak checksum and sets data_lang and data_lang_desc
+detect_data_langauge() {
+	callback="$1"
+	
+	if [ $install = 1 ]
+		then _detect_data_langauge_status=40
+		else _detect_data_langauge_status=10
+	fi
+	[ $gui = 0 ] || status $_detect_data_langauge_status 'Detecting data language...'
+	printf "${white}Detecting data language..."
+	
+	_speech_checksums=''
+	
+	find_file 0 _speech_files 'speech.pak'
+	eval "set -- $_speech_files"
+	for _speech_file ; do
+		
+		checksum _speech_checksum "$_speech_file"
+		
+		data_lang=''
+		"$callback" "$_speech_checksum"
+		
+		if [ -z "$data_lang" ] ; then
+			list_append _speech_checksums "$_speech_checksum"
+		else
+			use_file "$_speech_file" 'speech.pak'
+			break
+		fi
+		
+	done
+	
+	if [ -z "$data_lang" ] ; then
+		printf '\n'
+		case "$_speech_checksums" in
+			'') die "speech*.pak not found" ;;
+			*)  die "Unsupported data language - speech*.pak checksum: $_speech_checksums" ;;
+		esac
+	fi
+	
+	printf " ${green}${data_lang_desc}${reset}\n\n"
+	
+}
+
+
+##########################################################################################
+# Get the patch file
+
+# Download a patch file into the working directory.
+# Usage: download_patch <callback> <url-list> <filename>
+# <callback> receives a path to the downloaded file
+download_patch() {
+	_download_patch_func="$1"
+	_download_patch_urls="$2"
+	_download_patch_name="$3"
+	
+	status --temp "${white}Downloading patch ${blue}${_download_patch_name}${reset}..."
+	
+	create_workdir
+	_download_patch_path="$workdir/$_download_patch_name"
+	if download_any "$_download_patch_urls" "$_download_patch_path" ; then
+		"$_download_patch_func" "$_download_patch_path" && return $true
+	fi
+	
+	die "Could not download ${_download_patch_name}!"
+}
+
+# Warn if the user-supplied patch file has a suspicious name.
+# Usage: patch_check_file_name <file> <expected-name-list>
+patch_check_file_name() {
+	_user_patch_name="$(basename "$1")"
+	if ! list_contains "$2" "$_user_patch_name" ; then
+		printf "${yellow}Warning: unexpected patch file name: %s" "$_user_patch_name" >&2
+		printf "Expected %s${reset}\n" "$(print_help_or "$2")" >&2
+	fi
+}
+
+# Find or download a patch file.
+# Usage: probe_patch_file_impl <user-supplied-file> <expected-name-list> <callback> \
+#                              <url-list> <name>
+# <callback> will be called with the patch file
+probe_patch_file_impl() {
+	
+	if [ ! -z "$1" ] ; then
+		
+		# Check the filename of user-supplied patchse
+		patch_check_file_name "$1" "$2"
+		
+		"$3" "$1"
+		return $true
+	fi
+	
+	[ $probe_patch = 0 ] && return $true
+	
+	probe_files "$3" "$2" && return $true
+	
+	download_patch "$3" "$4" "$5" && return $true
+	
+}
+
+# Callback for the japanese patch.
+patch_jp_found() {
+	patchfile_jp="$(readlink -f "$1")"
+	printf "Using Japanese %s patch: ${blue}%s${reset}\n" \
+		"$patch_jp_ver" "$patchfile_jp"
+	return $true
+}
+
+# Callback for the main patch.
+patch_found() {
+	patchfile="$(readlink -f "$1")"
+	printf "Using %s patch: ${blue}%s${reset}\n" "$patch_ver" "$patchfile"
+	return $true
+}
+
+# Find the patch file(s) for a specific language.
+# Usage: probe_patch_file <language>
+# If patchfile is already set, uses that.
+probe_patch_file() {
+	
+	_patch_file_lang=''
+	case "$1" in
+		'german')   _patch_file_lang='GE' ;;
+		'english')  _patch_file_lang='EN' ;;
+		'spanish')  _patch_file_lang='ES' ;;
+		'french')   _patch_file_lang='FR' ;;
+		'italian')  _patch_file_lang='IT' ;;
+		'russian')  _patch_file_lang='RU' ;;
+		'japanese')
+			_patch_jp_names=''
+			list_append _patch_jp_names "$patch_jp_name"
+			probe_patch_file_impl "$patchfile_jp" "$_patch_jp_names" patch_jp_found \
+			                      "$patch_jp_urls" "$patch_jp_name"
+		;;
+	esac
+	_patch_names=''
+	list_append _patch_names "$patch_name"
+	if [ ! -z "$_patch_file_lang" ] ; then
+		list_append _patch_names "$(printf "$patch_name_localized" "$_patch_file_lang")"
+	fi
+	
+	probe_patch_file_impl "$patchfile" "$_patch_names" patch_found \
+	                      "$patch_urls" "$patch_name"
+	
+}
+
+patchdir='' # Directory where the patch file(s) are extracted
+
+# Extract all patch files for a specific language.
+# Usage: extract_patch <language>
+# Does nothing if the patch files are already extracted.
+extract_patch() {
+	[ -z "$patchdir" ] || return $true
+	_extract_patch_lang="$1"
+	
+	print
+	
+	# Search for and download the patch files if needed
+	probe_patch_file "$_extract_patch_lang"
+	
+	status --temp "${white}Extracting patch...${reset}"
+	
+	create_workdir
+	patchdir="$workdir/patch"
+	create_dir "$patchdir" 'patch work'
+	
+	# Extract the main patch file
+	if [ ! -z "$patchfile" ] ; then
+		_patchdir_main="$patchdir/main"
+		create_dir "$_patchdir_main" 'main patch work'
+		cd "$_patchdir_main"
+		extract_innosetup "$patchfile" --language="$_extract_patch_lang" \
+			|| die "Could not extract patch file!"
+	fi
+	
+	if [ ! -z "$patchfile_jp" ] ; then
+		
+		# Extract the Japanese patch file
+		_patchdir_jp="$patchdir/main"
+		create_dir "$_patchdir_jp" 'jp patch work'
+		cd "$_patchdir_jp"
+		extract_ms_cab "$patchfile_jp" || die "Could not extract jp patch file!"
+		
+		# Also extract contained files
+		extract_cab_files "$_patchdir_jp" "$patchdir"
+		
+	fi
+	
+	print
+	status --temp
+}
+
+
+##########################################################################################
+# Copy and verify files
+
+checksum_failed=0 # Was there any mismatched checksum or missing file so far?
+
+# Handle a required file: find, compare checksum and copy/move if needed.
+# Usage: required_file <is-patchable> <filepath> <checksums>
+required_file() {
+	
+	_patchable="$1"
+	_name="$2"
+	_valid="$3"
+	
+	find_file 1 _files "$_name"
+	eval "set -- $_files"
+	_checksums=''
+	for _file ; do
+		checksum _checksum "$_file"
+		
+		if list_contains _valid "$_checksum" ; then
+			# We found a match - use it
+			printf ' - %s\n' "$_name"
+			use_file "$_file" "$_name"
+			return $true
+		fi
+		
+		# Remember mismatched checksums so we can output debug info if none matched
+		list_append _checksums "$_checksum"
+		continue
+		
+	done
+	
+	# No matching file found!
+	
+	# If we didn't use the patch yet, fetch it and try again!
+	if [ $patch = 1 ] && [ $_patchable = 1 ] && [ -z "$patchdir" ] ; then
+		extract_patch "$data_lang"
+		if [ ! -z "$patchdir" ] ; then
+			required_file "$_patchable" "$_name" "$_valid"
+			return $?
+		fi
+	fi
+	
+	# Let the user know that something is wrong!
+	if [ -z "$_checksums" ] ; then
+		printf "${red}Missing ${dim_red}%s${red}!${reset}\n" "$_name" >&2
+	else
+		printf "${red}Checksum failed for ${dim_red}%s${reset}:\n" "$_name" >&2
+		printf "  expected: ${dim_red}%s${reset}\n" "$(print_help_or "$_valid")" >&2
+		printf "  actual:   ${dim_red}%s${reset}\n" "$(print_help_or "$_checksums")" >&2
+	fi
+	
+	# Be optimistic, copy the first result even if the checksum doesn't match!
+	# We will display an error at the end (end exit with $false), but it may still work.
+	eval "set -- $_files"
+	for _file ; do
+		use_file "$_file" "$_name"
+		break
+	done
+	
+	checksum_failed=1
+	return $false
+}
+
+# Handle an optional file: find and copy/move if it exists.
+# Usage: optional_file <filepath>
+optional_file() {
+	_name="$1"
+	find_file 1 _files "$_name"
+	eval "set -- $_files"
+	for _file ; do
+		# There is no checksum, just copy the first file
+		printf ' - %s\n' "$_name"
+		use_file "$_file" "$_name"
+		break
+	done
+}
+
+
+##########################################################################################
+# Setup
+
+# Select source file / directory
+if [ $install = 1 ] ; then
+	probe_source_files
+	if [ $batch = 0 ] ; then
+		list_append sourcefiles 'Patch existing install' ''
+		list_append sourcefiles 'Verify existing install only' ''
+	fi
+	user_select_entry --existing --any sourcefiles sourcefile \
+		"source file or directory to install from" "$green" "$dim_green"
+	case "$sourcefile" in
+		'Patch existing install')      install=0 ; patch=1 ;;
+		'Verify existing install only') install=0 ; patch=0 ;;
+		*) [ -e "$sourcefile" ] || die "Missing source file: $sourcefile"
+	esac
+fi
+
+# Select destination data directory
+probe_data_dirs
+if [ $install = 1 ]
+	then verb='install to' ; access=--writable
+	else verb='verify'     ; access=--existing
+fi
+user_select_entry $access --dir datadirs datadir \
+	"data directory to $verb" "$cyan" "$dim_cyan"
+[ -z "$datadir" ] && die "Missing data dir."
+if [ $install = 1 ] ; then
+	create_dir "$datadir" 'data'
+else
+	[ -d "$datadir" ] || die "Missing data dir: $datadir"
+fi
+
+# Extract source files
+if [ $install = 1 ] ; then
+	printf "\nInstalling Arx Fatalis data files \nfrom %s\nto   %s\n\n" \
+		"${green}$sourcefile${reset}" "${cyan}$datadir${reset}"
+	extract_source
+else
+	printf "\nVerifying Arx Fatalis data files \nin %s\n\n" "${cyan}$datadir${reset}"
+fi
+
+
+##########################################################################################
+# Required files
+
+# Detect language
+determine_language() {
+	speech_checksum="$1" # speech.pak
+	
+	case "$speech_checksum" in
+		'4e8f962d8204bcfd79ce6f3226d6d6de') data_lang='english'       ;;
+		'4c3fdb1f702700255924afde49081b6e') data_lang='german'        ;;
+		'ab8a93161688d793a7c78fbefd7d133e') data_lang='german'        ;;
+		'2f88c67ae1537919e69386d27583125b') data_lang='spanish'       ;;
+		'4edf9f8c799190590b4cd52cfa5f91b1') data_lang='french'        ;;
+		'81f05dea47c52d43f01c9b44dd8fe962') data_lang='italian'       ;;
+		'677163bc319cd1e9aa1b53b5fb3e9402') data_lang='russian'       ;;
+		'235b86700fc80b3eb86731d748013a38') data_lang='japanese'      ;;
+		'62ca7b1751c0615ee131a94f0856b389') data_lang='english-demo'  ;;
+		'eeacbd9a845ecc00054934e82e9d7dd3') data_lang='japanese-demo' ;;
+	esac
+	
+	case "$data_lang" in
+		'english')       data_lang_desc='English' ;;
+		'german')        data_lang_desc='German' ;;
+		'spanish')       data_lang_desc='Spanish' ;;
+		'french')        data_lang_desc='French' ;;
+		'italian')       data_lang_desc='Italian' ;;
+		'russian')       data_lang_desc='Russian' ;;
+		'japanese')      data_lang_desc='Japanese' ;;
+		'english-demo')  data_lang_desc='English (demo)' ;;
+		'japanese-demo') data_lang_desc='Japanese (demo)' ;;
+	esac
+	
+}
+detect_data_langauge determine_language
+
+if [ $install = 1 ] ; then
+	progress=50
+	status $progress "${white}Copying and verifying files...${reset}"
+	case "$data_lang" in *-demo) increment=8 ;; *) increment=1 ;; esac
+else
+	progress=15
+	status $progress "${white}Verifying files...${reset}"
+	case "$data_lang" in *-demo) increment=14 ;; *) increment=2 ;; esac
+fi
+print " - speech.pak"
+
+# Usage: f <is-patchable> <file> <checksums>...
+f() {
+	
+	# Update progress bar
+	progress=$(($progress + $increment))
+	status $progress
+	
+	# Verify & copy file
+	required_file "$@"
+}
+
+# speech.pak - already copied in detect_data_langauge
+
+# loc.pak contains the localized text, so it's different for each language!
+case "$data_lang" in
+	german)        loc_checksum='31bc35bca48e430e108db1b8bcc2621d' ;;
+	english)       loc_checksum='a47b192493afb5794e2161a62d35b69f' ;;
+	spanish)       loc_checksum='121f99608814a2c9c5857cfadb665553' ;;
+	french)        loc_checksum='f8fc448fea12469ed94f417c313fe5ea' ;;
+	italian)       loc_checksum='a9e162f2916f5737a95bd8c5bd8a979e' ;;
+	russian)       loc_checksum='a131bf2398ee70a9c22a2bbffd9d0d99' ;;
+	japanese)      loc_checksum='9dcb0f5d7a517be4f1d9190419900892' ;;
+	english-demo)  loc_checksum='2ae16d3925c597dca70f960f175def3a' ;;
+	japanese-demo) loc_checksum='9d84cede805b13fdf7fce856ecc15b19' ;;
+	*)             loc_checksum=''
+esac
+if [ ! -z "$loc_checksum" ] ; then
+	f 1 'loc.pak' "$loc_checksum"
+fi
+
+# misc/arx.ttf is the same for everything except japanese
+# there are also separate misc/arx_russian.ttf and misc/arx_taiwanese.ttf handled later
+case "$data_lang" in
+	japanese*)    font_checksum='58eab00842d8adea8d553ae1f66b0c9b' ;;
+	*)            font_checksum='9a95ff96795c034524ba1c2e94ea12c7' ;;
+esac
+if [ ! -z "$font_checksum" ] ; then
+	f 1 'misc/arx.ttf' "$font_checksum"
+fi
+
+case "$data_lang" in
+	
+	english-demo)
+	f 0 'data2.pak'                                        958b78f8f370b06d769843137138c461
+	f 0 'data.pak'                                         5d7ba6e6c79ebf7fbb232eaced9e8ad9
+	f 0 'misc/logo.bmp'                                    aa3dfbd4bc9c863d10a0c5345ae5a4c9
+	f 0 'sfx.pak'                                          ea1b3e6d6f4906905d4a34f07e9a59ac
+	;;
+	
+	japanese-demo)
+	f 0 'data2.pak'                                        958b78f8f370b06d769843137138c461
+	f 0 'data.pak'                                         903dfe1878a0cedff3b941fd3aa22ba9
+	f 0 'misc/logo.bmp'                                    aa3dfbd4bc9c863d10a0c5345ae5a4c9
+	f 0 'sfx.pak'                                          ea1b3e6d6f4906905d4a34f07e9a59ac
+	;;
+	
+	*) # full game
+	
+	f 1 'graph/interface/misc/arkane.bmp'                  afff1099c01ffeb03b9a351f7b5966b6
+	f 1 'graph/interface/misc/quit1.bmp'                   41445d3792a1f8818d950aca47254488
+	f 1 'graph/obj3d/textures/fixinter_barrel.jpg'         8419274acbff7346c3661b18d6aad6dc
+	f 1 'graph/obj3d/textures/fixinter_bell.bmp'           5743b9047c9ad65540c318dfcc98123a
+	f 1 'graph/obj3d/textures/fixinter_metal_door.jpg'     f246eff6b19c9c710313b4a4dce96a69
+	f 1 'graph/obj3d/textures/fixinter_public_notice.bmp'  f81394abbb9006ce0950843b7909db33
+	f 1 'graph/obj3d/textures/item_bread.bmp'              544448f8eedc912aa231a6a04fffb7c5
+	f 1 'graph/obj3d/textures/item_club.jpg'               7e26c4199ddaca494c8b369294306b0b
+	f 1 'graph/obj3d/textures/item_long_sword.jpg'         3a6196fe9b7666c7d80d82be06f6de86
+	f 1 'graph/obj3d/textures/item_mauld_sabre.jpg'        18492c25ebac02f83e2f0ebda61ecb00
+	f 1 'graph/obj3d/textures/item_mauldsword.jpg'         503a5c2f23668040c675aefdde6dbbe5
+	f 1 'graph/obj3d/textures/item_mirror.jpg'             c0a22b4f7a7a6461da68206e94928637
+	f 1 'graph/obj3d/textures/item_ring_casting.bmp'       348f9add709bacee08556d1f8cf10f3f
+	f 1 'graph/obj3d/textures/item_rope.bmp'               ff05de281c8b380ee98f6e123d3d51cb
+	f 1 'graph/obj3d/textures/item_spell_sheet.jpg'        024ccbb520020f92fba5a5a4f0270cea
+	f 1 'graph/obj3d/textures/item_torch2.jpg'             027951899b4829599ca611010ea3484f
+	f 1 'graph/obj3d/textures/item_torch.jpg'              9ada166f23ddcb775ac20836e752187e
+	f 1 'graph/obj3d/textures/item_zohark.bmp'             cd206a4027f86c6e57b7710c94049efa
+	f 1 'graph/obj3d/textures/l7_dwarf_[wood]_board08.jpg' 79ccc81adb7c37b98f40b478ef1fccd4
+	f 1 'graph/obj3d/textures/l7_dwarf_[wood]_board80.jpg' 691611087b13d38ef02bb9dfd6a2518e
+	f 1 'graph/obj3d/textures/npc_dog.bmp'                 116bd374c14ae8c387a4da1899e1dca7
+	f 1 'graph/obj3d/textures/npc_pig.bmp'                 b7a4d0d3d230b2d1470176909004e38b
+	f 1 'graph/obj3d/textures/npc_pig_dirty.bmp'           76034d8d74056c8a982479d36321c228
+	f 1 'graph/obj3d/textures/npc_rat_base.bmp'            00c585ec9ebe8006d7ca72993de7b51b
+	f 1 'graph/obj3d/textures/npc_rat_base_cm.bmp'         cae38facbf77db742180b9e58d0eb42f
+	f 1 'graph/obj3d/textures/npc_worm_body_part1.jpg'     0b220bffaedc89fa663f08d12630c342
+	f 1 'graph/obj3d/textures/npc_worm_body_part2.bmp'     20797cb78f6393a0fb5405969ba9f805
+	f 1 'graph/obj3d/textures/[wood]_light_door.jpg'       00d0b018e995e7d013d6e52e92126901
+	f 1 'misc/arx_russian.ttf'                             921561e83786efcd25f92147b60a13db
+	f 1 'misc/arx_taiwanese.ttf'                           da59198061cef0761c6b2fca113f76f6
+	f 1 'misc/logo.avi'                                    63ed31a4eb3d226c23e58cfaa974d484
+	f 1 'misc/logo.bmp'                                    afff1099c01ffeb03b9a351f7b5966b6
+	f 1 'data2.pak'                                        f7e0ce700bf963429ac535ca86f8a7b4
+	
+	f 0 'sfx.pak'                                          2efc9a74c517fd1ee9919900cf4091d2
+	
+	# data.pak is censored in some versions (presumably has less gore)
+	# At least the original german and italian CDs have the censored version.
+	# The censored version has different level files and a different
+	# human_female_villager model.
+	# There are also minor differences in the scripts, but those are
+	# overwritten by data2.pak from the 1.21 patch.
+	data_checksum_original='a91a0b39a046233debbb10b4850e13eb'
+	data_checksum_censored='a88d239dc7919ab113ff45483cb4ad46'
+	f 0 'data.pak' "$data_checksum_original $data_checksum_censored"
+	
+esac
+
+# Optional files - we don't need them, but copy them anyway if available
+optional_file 'manual.pdf'
+optional_file 'map.pdf'
+
+print
+
+
+##########################################################################################
+# Print a summary
+
+if [ $install = 1 ] ; then verb='Installed' ; else verb='Verified' ; fi
+printf "${white}%s Arx Fatalis %s data: ${green}%s${reset}\n" "$verb" \
+	"$patch_ver" "$data_lang_desc"
+
+if [ $checksum_failed = 1 ] ; then
+	[ $gui = 0 ] || status 100 "Error!"
+	die "There are wrong or missing files!${reset}
+
+The game may run fine, or it may fail - good luck!" >&2
+fi
+
+status 100 "${dim_green}All good!${reset}"
+if [ $install = 1 ] ; then verb='Installation' ; else verb='Verification' ; fi
+dialog_message "$verb complete: $data_lang_desc
+
+Have fun playing Arx Fatalis!"
+
+quit $true

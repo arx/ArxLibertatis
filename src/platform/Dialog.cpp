@@ -42,8 +42,8 @@ namespace dialog {
 	
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
 
-bool showDialog(DialogType type, const std::string & message,
-                const std::string & dialogTitle) {
+static bool showDialog(DialogType type, const std::string & message,
+                       const std::string & dialogTitle) {
 	
 	UINT flags;
 	switch(type) {
@@ -187,8 +187,8 @@ static std::string formatAsHtml(const std::string & text, bool newline, bool ul 
 	return oss.str();
 }
 
-int zenityCommand(DialogType type, const std::string & message,
-                  const std::string & dialogTitle) {
+static int zenityCommand(DialogType type, const std::string & message,
+                         const std::string & dialogTitle) {
 	
 	const char * options = "";
 	switch(type) {
@@ -201,7 +201,7 @@ int zenityCommand(DialogType type, const std::string & message,
 		                               " --cancel-label=\"Cancel\""; break;
 	}
 	
-	boost::format command("zenity %1% --text=\"%2%\" --title=\"%3%\"");
+	boost::format command("zenity %1% --no-wrap --text=\"%2%\" --title=\"%3%\"");
 	command = command % options;
 	command = command % escape(formatAsHtml(message, true));
 	command = command % escape(dialogTitle);
@@ -209,8 +209,8 @@ int zenityCommand(DialogType type, const std::string & message,
 	return system(command.str().c_str());
 }
 
-int kdialogCommand(DialogType type, const std::string & message,
-                   const std::string & dialogTitle) {
+static int kdialogCommand(DialogType type, const std::string & message,
+                          const std::string & dialogTitle) {
 	
 	const char * options = "";
 	switch(type) {
@@ -230,8 +230,8 @@ int kdialogCommand(DialogType type, const std::string & message,
 	return system(command.str().c_str());
 }
 
-int gxmessageCommand(DialogType type, const std::string & message,
-                    const std::string & dialogTitle) {
+static int gxmessageCommand(DialogType type, const std::string & message,
+                            const std::string & dialogTitle) {
 	
 	const char * options = "";
 	switch(type) {
@@ -248,8 +248,27 @@ int gxmessageCommand(DialogType type, const std::string & message,
 	return system(command.str().c_str());
 }
 
-int xmessageCommand(DialogType type, const std::string & message,
-                    const std::string & dialogTitle) {
+static int xdialogCommand(DialogType type, const std::string & message,
+                          const std::string & dialogTitle) {
+	
+	const char * options = "";
+	switch(type) {
+		default:             options = "--msgbox"; break;
+		case DialogYesNo:    options = "--yesno"; break;
+		case DialogOkCancel: options = "--ok-label OK --cancel-label Cancel --yesno"; break;
+	}
+	
+	boost::format command("Xdialog --left --title \"%3%\""
+	                      " %1% \"%2%\" 0 0");
+	command = command % options;
+	command = command % escape(message);
+	command = command % escape(dialogTitle);
+	
+	return system(command.str().c_str());
+}
+
+static int xmessageCommand(DialogType type, const std::string & message,
+                           const std::string & dialogTitle) {
 	
 	ARX_UNUSED(dialogTitle);
 	
@@ -267,8 +286,8 @@ int xmessageCommand(DialogType type, const std::string & message,
 	return system(command.str().c_str());
 }
 
-bool showDialog(DialogType type, const std::string & message,
-                const std::string & dialogTitle) {
+static bool showDialog(DialogType type, const std::string & message,
+                       const std::string & dialogTitle) {
 	
 	typedef int (*dialogCommand_t)(DialogType type, const std::string & message,
 	                               const std::string & dialogTitle);
@@ -284,6 +303,7 @@ bool showDialog(DialogType type, const std::string & message,
 		usingKDE ? &kdialogCommand : &zenityCommand,
 		usingKDE ? &zenityCommand : &kdialogCommand,
 		&gxmessageCommand,
+		&xdialogCommand,
 		&xmessageCommand
 	};
 	

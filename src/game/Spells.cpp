@@ -2913,7 +2913,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	if ( cur_rf == 3 )
 	{ 
 		flags |= SPELLCAST_FLAG_NOCHECKCANCAST | SPELLCAST_FLAG_NOMANA;	
-		level += 2;
 	}
 
 	if ( sp_max ) 
@@ -2975,12 +2974,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 		ARX_SPELLS_Precast_Add( typ, l, flgs, duration);
 		return true;
 	}
-
-	if ( flags & SPELLCAST_FLAG_NOMANA )
-	{
-		Player_Magic_Level = static_cast<float>(level);
-	}
-
+	
 	static TextureContainer * tc4 = TextureContainer::Load("graph/particles/smoke");
 
 
@@ -3095,7 +3089,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 	if(spells[i].hand_group != -1) {
 		spells[i].hand_pos = entities[spells[i].caster]->obj->vertexlist3[spells[i].hand_group].v;
 	}
-
+	
 	if(source == 0) {
 		// Player source
 		spells[i].caster_level = Player_Magic_Level; // Level of caster
@@ -3108,6 +3102,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 
 	if(flags & SPELLCAST_FLAG_LAUNCHPRECAST) {
 		spells[i].caster_level = static_cast<float>(level);
+	}
+	
+	if(cur_rf == 3) {
+		spells[i].caster_level += 2;
 	}
 
 	// Checks target TODO if ( target < 0 ) is already handled above!
@@ -3495,8 +3493,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			if(spells[i].caster == 0 && !(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-				ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+				if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
+					ARX_SOUND_PlayInterface(SND_SPELL_DETECT_TRAP);
+				}
 			}
 			
 			spells[i].snd_loop = SND_SPELL_DETECT_TRAP_LOOP;
@@ -3510,6 +3511,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = 60000;
 			spells[i].fManaCostPerSecond = 0.4f;
 			spells[i].bDuration = true;
+			
+			ARX_SPELLS_AddSpellOn(spells[i].target, i);
 			
 			break;
 		}
@@ -3539,10 +3542,6 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 				spells[iCancel].tolive = 0;
 			}
 			
-			if(spells[i].caster == 0) {
-				spells[i].target = spells[i].caster;
-			}
-			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
 				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].target_pos);
 			}
@@ -3552,10 +3551,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
-			spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			if(duration > -1) {
 				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			}
+			
+			if(spells[i].caster == 0) {
+				spells[i].target = spells[i].caster;
+			}
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
 				
@@ -3601,14 +3606,16 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			if(!(spells[i].flags & SPELLCAST_FLAG_NOSOUND)) {
-				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].caster_pos);
+				ARX_SOUND_PlaySFX(SND_SPELL_LOWER_ARMOR, &spells[i].caster_pos);
 			}
 			
 			spells[i].exist = true;
-			spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			if(duration > -1) {
 				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 20000000 : 20000;
 			}
+			
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.2f * spells[i].caster_level;
 			
@@ -3754,7 +3761,7 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 20000; // TODO probbaly never read
+			spells[i].tolive = 20000; // TODO probably never read
 			
 			CFireBall * effect = new CFireBall();
 			effect->spellinstance = i;
@@ -3991,7 +3998,11 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = 2000000; // TODO should respect user-supplied duration
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 2000000 : 20000;
+			}
 			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
@@ -4007,6 +4018,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].tolive = effect->GetDuration();
 			
 			ARX_SPELLS_AddSpellOn(spells[i].target, i);
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_LOOP, 
+			                                       &spells[i].caster_pos, 1.f, 
+			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			break;
 		}
@@ -4038,13 +4053,18 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_COLD_PROTECTION_START);
 			
+			spells[i].exist = true;
+			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
+			if(duration > -1) {
+				spells[i].tolive = duration;
+			} else {
+				spells[i].tolive = (spells[i].caster == 0) ? 2000000 : 20000;
+			}
+			
 			if(spells[i].caster == 0) {
 				spells[i].target = 0;
 			}
 			
-			spells[i].exist = true;
-			spells[i].lastupdate = spells[i].timcreation = (unsigned long)(arxtime);
-			spells[i].tolive = (duration > -1) ? duration : 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
 			
@@ -4697,6 +4717,10 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			spells[i].pSpellFx = effect;
 			spells[i].tolive = effect->GetDuration();
 			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX( SND_SPELL_ICE_FIELD_LOOP, 
+			                                       &target, 1.f, 
+			                                       ARX_SOUND_PLAY_LOOPED );
+			
 			break;
 		}
 		
@@ -5102,8 +5126,9 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
-			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE,
-			                                       &spells[i].caster_pos, 1.f,
+			
+			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
+			                                       &spells[i].caster_pos, 1.f, 
 			                                       ARX_SOUND_PLAY_LOOPED);
 			
 			spells[i].exist = true;
@@ -5323,8 +5348,8 @@ bool ARX_SPELLS_Launch(Spell typ, long source, SpellcastFlags flagss, long level
 			}
 			
 			if(nb_targets) {
-				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_FIREPLACE,
-				                                       &spells[i].caster_pos, 1.f,
+				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_LOOP, 
+				                                       &spells[i].caster_pos, 1.f, 
 				                                       ARX_SOUND_PLAY_LOOPED);
 			} else {
 				spells[i].snd_loop = -1;
@@ -5486,6 +5511,12 @@ void ARX_SPELLS_Kill(long i) {
 			ARX_SOUND_Stop(spells[i].snd_loop);
 			ARX_SOUND_PlaySFX(SND_SPELL_FIRE_FIELD_END);
 			break;
+		}
+		
+		case SPELL_ICE_FIELD: {
+			ARX_SOUND_Stop(spells[i].snd_loop); 
+			ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD_END); 
+			break; 
 		}
 		
 		case SPELL_MASS_PARALYSE: {
@@ -5680,9 +5711,10 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].caster==0)
 					{
-						Project.improve=0;
 						ARX_SOUND_Stop(spells[i].snd_loop);
 					}					
+
+					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);
 
 				break;					
 				//----------------------------------------------------------------------------
@@ -5731,7 +5763,7 @@ void ARX_SPELLS_Update()
 
 					if (spells[i].caster == 0) ARX_SOUND_Stop(spells[i].snd_loop);
 
-					ARX_SOUND_PlaySFX(SND_SPELL_INVISIBILITY_END, &spells[i].caster_pos);
+					ARX_SOUND_PlaySFX(SND_SPELL_SPEED_END, &spells[i].caster_pos);
 				break;
 				//----------------------------------------------------------------------------------
 				case SPELL_FIREBALL:
@@ -5756,6 +5788,8 @@ void ARX_SPELLS_Update()
 					ARX_SOUND_PlaySFX(SND_SPELL_TELEKINESIS_END, &spells[i].caster_pos);					
 				break;
 				case SPELL_FIRE_PROTECTION:
+					ARX_SOUND_Stop(spells[i].snd_loop);
+					ARX_SOUND_PlaySFX(SND_SPELL_FIRE_PROTECTION_END);
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);;
 
 					if (ValidIONum(spells[i].target))
@@ -5944,6 +5978,7 @@ void ARX_SPELLS_Update()
 				case SPELL_INCINERATE:
 					ARX_SPELLS_RemoveSpellOn(spells[i].target,i);					
 					ARX_SOUND_Stop(spells[i].snd_loop);
+					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
 				break;
 				//----------------------------------------------------------------------------------
 				//**********************************************************************************
@@ -5957,6 +5992,7 @@ void ARX_SPELLS_Update()
 				case SPELL_MASS_INCINERATE:
 					ARX_SPELLS_RemoveMultiSpellOn(i);
 					ARX_SOUND_Stop(spells[i].snd_loop);
+					ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE_END, &spells[i].caster_pos);
 				break;
 				default: break;
 				//----------------------------------------------------------------------------------
@@ -6363,7 +6399,7 @@ void ARX_SPELLS_Update()
 							LaunchFireballBoom(&pCRG->eSrc,(float)spells[i].caster_level);
 							DoSphericDamage(&pCRG->eSrc,4.f*spells[i].caster_level,30.f*spells[i].caster_level,DAMAGE_AREA,DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL,spells[i].caster);
 							spells[i].tolive=0;
-							ARX_SOUND_PlaySFX(SND_SPELL_FIRE_HIT, &sphere.origin);
+							ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING_END, &sphere.origin);
 						}
 					}
 				}

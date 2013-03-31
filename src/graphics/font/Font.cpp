@@ -37,6 +37,9 @@
 
 #include "util/Unicode.h"
 
+//! Pre-load all visible characters below this one when creating a font object
+static const Font::Char FONT_PRELOAD_LIMIT = 127;
+
 Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face) 
 	: info(fontFile, fontSize)
 	, referenceCount(0)
@@ -54,7 +57,7 @@ Font::Font(const res::path & fontFile, unsigned int fontSize, FT_Face face)
 	insertGlyph(util::REPLACEMENT_CHAR);
 	
 	// Pre-load glyphs for displayable ASCII characters
-	for(Char chr = 32; chr < 127; ++chr) {
+	for(Char chr = 32; chr < FONT_PRELOAD_LIMIT; ++chr) {
 		if(chr != '?') {
 			insertGlyph(chr);
 		}
@@ -73,7 +76,7 @@ Font::~Font() {
 
 void Font::insertPlaceholderGlyph(Char character) {
 	
-	// Glyp does not exist - insert something so we don't look it up for every render pass
+	// Glyph does not exist - insert something so we don't look it up for every render pass
 	if(character == util::REPLACEMENT_CHAR) {
 		
 		// Use '?' as a fallback replacement character
@@ -206,7 +209,7 @@ bool Font::insertMissingGlyphs(text_iterator begin, text_iterator end) {
 	
 	for(text_iterator it = begin; (chr = util::readUTF8(it, end)) != util::INVALID_CHAR; ) {
 		if(glyphs.find(chr) == glyphs.end()) {
-			if(chr >= 256 && insertGlyph(chr)) {
+			if(chr >= FONT_PRELOAD_LIMIT && insertGlyph(chr)) {
 				changed = true;
 			}
 		}
@@ -227,8 +230,8 @@ Font::glyph_iterator Font::getNextGlyph(text_iterator & it, text_iterator end) {
 		return glyph; // an existing glyph
 	}
 	
-	if(chr < 256) {
-		// We pre-load all glyphs for charactres < 256, se there is no point in checking again
+	if(chr < FONT_PRELOAD_LIMIT) {
+		// We pre-load all glyphs for ASCII characters, so there is no point in checking again
 		return glyphs.end();
 	}
 	
@@ -283,7 +286,7 @@ Vec2i Font::process(int x, int y, text_iterator start, text_iterator end, Color 
 	int endX = 0;
 	
 	if(DoDraw) {
-		// Substract one line height (since we flipped the Y origin to be like GDI)
+		// Subtract one line height (since we flipped the Y origin to be like GDI)
 		penY += face->size->metrics.ascender >> 6;
 	}
 	
