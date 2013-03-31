@@ -146,7 +146,7 @@ Provided the data files are installed at the correct location, you can simply pl
 
     $ arx
 
-The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - you can use the install-copy script.
+The game will try to automatically rename all used files in the user directory (but not the data directory) to lowercase on the first run if possible. System-wide installations with case-sensitive filesystems always need to manually rename the files to lowercase - you can use the `arx-install-data` script.
 
 ## Tools
 
@@ -160,21 +160,15 @@ The game will try to automatically rename all used files in the user directory (
 
 ## Scripts
 
-The `scripts` directory contains shell scripts that allow to extract/install the game data under Linux without Wine from the CD, demo, GOG.com installer or any fully patched Arx Fatalis install respectively. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
+The `arx-install-data` script can extract and install the game data under Linux and FreeBSD from the CD, demo, [GOG.com](http://www.gog.com/) installer or any Arx Fatalis install (such as on Steam) respectively - simply run it and you follow the GUI dialogs. Also see the [wiki page on installing the game data under Linux](http://wiki.arx-libertatis.org/Installing_the_game_data_under_Linux).
 
-* `scripts/install-cd path/to/cd path/to/ArxFatalis_1.21_MULTILANG.exe [output_dir]`<br>
-  requires [cabextract](http://www.cabextract.org.uk/) and [innoextract](http://constexpr.org/innoextract/)<br>
-  `ArxFatalis_1.21_MULTILANG.exe` can be downloaded from [the official Arx Fatalis website](http://www.arkane-studios.com/uk/arx_downloads.php).
+Or, if you prefer a command-line interface, run it as
 
-* `scripts/install-demo path/to/arx_demo_english.zip [output_dir]`<br>
-  requires [unzip](http://www.info-zip.org/) and [cabextract](http://www.cabextract.org.uk/)
+    $ arx-install-data --cli
 
-* `scripts/install-gog path/to/setup_arx_fatalis.exe [output_dir]`<br>
-  requires [innoextract](http://constexpr.org/innoextract/)<br>
-  `setup_arx_fatalis.exe` can be downloaded from your [GOG.com](http://www.gog.com/) account after buying Arx Fatalis
+More options and required tools (depending on the source file) are documented in the help output:
 
-* `scripts/install-copy path/to/ArxFatalis/ [output_dir]`<br>
-  `path/to/ArxFatalis/` should point to a fully pached (1.21) Arx Fatalis installation, such as the one from Steam
+    $ arx-install-data --help
 
 ## Developer information
 
