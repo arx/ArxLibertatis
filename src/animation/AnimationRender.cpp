@@ -1442,8 +1442,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							vect1.y *= len1;
 
 							Vec3f vect2;
-							vect2.x	 = workon[second].p.x - workon[third].p.x;
-							vect2.y	 = workon[second].p.y - workon[third].p.y;
+							vect2.x = workon[second].p.x - workon[third].p.x;
+							vect2.y = workon[second].p.y - workon[third].p.y;
 							float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
 
 							if(vect2.x < 0.f)
@@ -1452,8 +1452,8 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 							vect2.x *= len2;
 							vect2.y *= len2;
 
-							vert[1].p.x	+= (vect1.x + 0.2f - rnd() * 0.1f) * siz;  
-							vert[1].p.y	+= (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
+							vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+							vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
 							vert[1].color = 0xFF000000;
 
 							float valll;
@@ -1466,6 +1466,7 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 							vert[1].p.z	+= valll;
 							vert[2].p.z	+= valll;
+
 							vert[0].p.z	+= 0.0001f;
 							vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
 							vert[1].rhw	*= .98f;

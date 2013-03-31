@@ -1278,9 +1278,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 				vert[0].p.z += 0.0001f;
 				vert[3].p.z += 0.0001f;
+				vert[1].rhw *= .8f;
+				vert[2].rhw *= .8f;
 
-				vert[1].rhw*=.8f;
-				vert[2].rhw*=.8f;
 				vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
 				vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
 
