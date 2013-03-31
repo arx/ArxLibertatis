@@ -1373,14 +1373,12 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 
 						power = clamp(power, 0.f, 255.f);
 
-						float ffr			=	curhalo.color.r * power;
-						float ffg			=	curhalo.color.g * power;
-						float ffb			=	curhalo.color.b * power;
-						tot			+=	power;
-						_ffr[o]		=	power;
-						u8 lfr = ffr;
-						u8 lfg = ffg;
-						u8 lfb = ffb;
+						tot += power;
+						_ffr[o] = power;
+
+						u8 lfr = curhalo.color.r * power;
+						u8 lfg = curhalo.color.g * power;
+						u8 lfb = curhalo.color.b * power;
 						tv[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 					}
 
