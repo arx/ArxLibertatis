@@ -1785,7 +1785,7 @@ void MakeCLight(Entity * io, Color3f * infra, Anglef * angle, Vec3f * pos, EERIE
 
 		Vec3f * posVert = &eobj->vertexlist3[i].v;
 
-		for(long l = 0; l != MAX_LLIGHTS; l++) {
+		for(int l = 0; l != MAX_LLIGHTS; l++) {
 			EERIE_LIGHT * Cur_llights = llights[l];
 
 			if(Cur_llights) {
@@ -1916,7 +1916,9 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 	
 				cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
 				            eobj->facelist[ii].norm.y * Cur_vLights->y +
-				            eobj->facelist[ii].norm.z * Cur_vLights->z) * ( 1.0f / 2 );
+							eobj->facelist[ii].norm.z * Cur_vLights->z);
+
+				cosangle *= 0.5f;
 
 				// If light visible
 				if(cosangle > 0.f) {
@@ -1924,7 +1926,7 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 
 					// Evaluate its intensity depending on the distance Light<->Object
 					if(distance <= Cur_llights->fallstart)
-						cosangle *= Cur_llights->precalc; 
+						cosangle *= Cur_llights->precalc;
 					else
 					{
 						float p = ((Cur_llights->fallend - distance) * Cur_llights->falldiffmul);
@@ -1932,7 +1934,7 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 						if (p <= 0.f)
 							cosangle = 0.f;
 						else
-							cosangle *= p * Cur_llights->precalc; 
+							cosangle *= p * Cur_llights->precalc;
 					}
 
 					tempColor.r += Cur_llights->rgb255.r * cosangle;
@@ -1950,7 +1952,7 @@ void MakeCLight2(Entity *io, Color3f *infra, Anglef *angle, Vec3f *pos, EERIE_3D
 			tempColor.b += iHighLight;
 		}
 
-		if (Project.improve) {
+		if(Project.improve) {
 			tempColor.r *= infra->r;
 			tempColor.g *= infra->g;
 			tempColor.b *= infra->b;
