@@ -635,14 +635,14 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 	llightsInit();
 
 	for(int i = 0; i < TOTIOPDL; i++) {
-		if (IO_PDL[i]->fallend + 500.f < 0)
+		if(IO_PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(IO_PDL[i], dist(IO_PDL[i]->pos, tv));
 	}
 
 	for(int i = 0; i < TOTPDL; i++) {
-		if (PDL[i]->fallend + 500.f < 0)
+		if(PDL[i]->fallend + 500.f < 0)
 			continue;
 
 		Insertllight(PDL[i], dist(PDL[i]->pos, tv));
@@ -664,10 +664,7 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 			float r, g, b;
 			long  ir, ig, ib;
 
-			Vec3f posVert;
-
-				posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
-
+			Vec3f posVert = eobj->vertexlist[obj->bones[i].idxvertices[v]].norm;
 
 			/* Ambient light */
 			if(io && (io->ioflags & (IO_NPC | IO_ITEM))) {
@@ -685,10 +682,8 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 				if(!Cur_llights)
 					break;
 
-
 				Vec3f &Cur_vTLights = vTLights[l];
-				Vec3f tl;
-				tl = (Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v);
+				Vec3f tl = Cur_llights->pos - eobj->vertexlist3[obj->bones[i].idxvertices[v]].v;
 				float dista = ffsqrt(tl.lengthSqr());
 
 				if(dista < Cur_llights->fallend) {
@@ -717,7 +712,6 @@ static bool Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity 
 						b += Cur_llights->rgb255.b * cosangle;
 					}
 				}
-
 			}
 
 			/* Fake adjust */
