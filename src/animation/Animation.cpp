@@ -1205,28 +1205,28 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			workon[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
 		}
 
-		if (tot>150.f) {
+		if(tot > 150.f) {
 			long first;
 			long second;
 			long third;
 
-			if( (_ffr[0]>=_ffr[1]) && (_ffr[1]>=_ffr[2])) {
+			if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
 				first = 0;
 				second = 1;
 				third = 2;
-			} else if( (_ffr[0]>=_ffr[2]) && (_ffr[2]>=_ffr[1])) {
+			} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
 				first = 0;
 				second = 2;
 				third = 1;
-			} else if( (_ffr[1]>=_ffr[0]) && (_ffr[0]>=_ffr[2])) {
+			} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
 				first = 1;
 				second = 0;
 				third = 2;
-			} else if( (_ffr[1]>=_ffr[2]) && (_ffr[2]>=_ffr[0])) {
+			} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
 				first = 1;
 				second = 2;
 				third = 0;
-			} else if( (_ffr[2]>=_ffr[0]) && (_ffr[0]>=_ffr[1])) {
+			} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
 				first = 2;
 				second = 0;
 				third = 1;
