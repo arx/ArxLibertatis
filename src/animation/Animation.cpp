@@ -1185,7 +1185,7 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 			
 		TexturedVertex * workon=vert_list;
 
-		for(long o=0; o<3; o++) {
+		for(long o = 0; o < 3; o++) {
 			if(mat) {
 				VectorMatrixMultiply(&temporary3D, &eobj->vertexlist[paf[o]].norm, mat);
 			} else {
@@ -1196,9 +1196,9 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 
 			power = clamp(power, 0.f, 255.f);
 
-			tot+=power;
-			
-			_ffr[o]=power;
+			tot += power;
+			_ffr[o] = power;
+
 			u8 lfr = io->halo.color.r * power;
 			u8 lfg = io->halo.color.g * power;
 			u8 lfb = io->halo.color.b * power;
@@ -1230,46 +1230,51 @@ void DrawEERIEInter(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *poss, Entity *io, E
 				first = 2;
 				second = 0;
 				third = 1;
-			}else{
+			} else {
 				first = 2;
 				second = 1;
 				third = 0;
 			}
 
-			if((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) {
-				Vec3f vect1,vect2;
-				TexturedVertex * vert=&LATERDRAWHALO[(HALOCUR<<2)];
+			if(_ffr[first] > 70.f && _ffr[second] > 60.f) {
+				TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
 
 				if(HALOCUR < ((long)HALOMAX) - 1) {
 					HALOCUR++;
 				}
 
-				memcpy(&vert[0],&workon[first],sizeof(TexturedVertex));
-				memcpy(&vert[1],&workon[first],sizeof(TexturedVertex));
-				memcpy(&vert[2],&workon[second],sizeof(TexturedVertex));
-				memcpy(&vert[3],&workon[second],sizeof(TexturedVertex));
+				memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
+				memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
+				memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
+				memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
 
-				float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time()+i) * .01f) * .1f
-															   + .7f)) * .6f;
-				vect1.x=workon[first].p.x-workon[third].p.x;
-				vect1.y=workon[first].p.y-workon[third].p.y;
-				float len1=1.f/ffsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
+				float siz = ddist * (io->halo.radius * 1.5f * (EEsin((arxtime.get_frame_time()+i) * .01f) * .1f + .7f)) * .6f;
 
-				if (vect1.x<0.f) len1*=1.2f;
+				Vec3f vect1;
+				vect1.x = workon[first].p.x - workon[third].p.x;
+				vect1.y = workon[first].p.y - workon[third].p.y;
+				float len1 = 1.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
 
-				vect1.x*=len1;
-				vect1.y*=len1;
-				vect2.x=workon[second].p.x-workon[third].p.x;
-				vect2.y=workon[second].p.y-workon[third].p.y;
-				float len2=1.f/ffsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
+				if(vect1.x < 0.f)
+					len1 *= 1.2f;
 
-				if (vect2.x<0.f) len2*=1.2f;
+				vect1.x *= len1;
+				vect1.y *= len1;
 
-				vect2.x*=len2;
-				vect2.y*=len2;
+				Vec3f vect2;
+				vect2.x = workon[second].p.x - workon[third].p.x;
+				vect2.y = workon[second].p.y - workon[third].p.y;
+				float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+
+				if(vect2.x < 0.f)
+					len2 *= 1.2f;
+
+				vect2.x *= len2;
+				vect2.y *= len2;
+
 				vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
 				vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-				vert[1].color=0xFF000000;
+				vert[1].color = 0xFF000000;
 
 				vert[0].p.z += 0.0001f;
 				vert[3].p.z += 0.0001f;
