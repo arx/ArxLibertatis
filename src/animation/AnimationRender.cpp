@@ -1183,329 +1183,329 @@ static void Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, Entity *
 	}
 
 	{
-		for(size_t i = 0; i < eobj->facelist.size(); i++) {
-			TexturedVertex *tv = NULL;
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
+		TexturedVertex *tv = NULL;
 
-			long paf[3];
+		long paf[3];
 
-			EERIE_FACE *eface = &eobj->facelist[i];
+		EERIE_FACE *eface = &eobj->facelist[i];
 
-			if((eface->facetype & POLY_HIDE) && !FORCE_NO_HIDE)
+		if((eface->facetype & POLY_HIDE) && !FORCE_NO_HIDE)
+			continue;
+
+		//CULL3D
+		Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
+
+		if(!(eface->facetype & POLY_DOUBLESIDED)) {
+			Vec3f normV10;
+			Vec3f normV20;
+			normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
+			normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
+			Vec3f normFace;
+			normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
+			normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
+			normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
+
+			if(dot(normFace, nrm) > 0.f)
 				continue;
+		}
 
-			//CULL3D
-			Vec3f nrm = eobj->vertexlist3[eface->vid[0]].v - ACTIVECAM->orgTrans.pos;
-			
-			if(!(eface->facetype & POLY_DOUBLESIDED)) {
-				Vec3f normV10;
-				Vec3f normV20;
-				normV10 = eobj->vertexlist3[eface->vid[1]].v - eobj->vertexlist3[eface->vid[0]].v;
-				normV20 = eobj->vertexlist3[eface->vid[2]].v - eobj->vertexlist3[eface->vid[0]].v;
-				Vec3f normFace;
-				normFace.x = (normV10.y * normV20.z) - (normV10.z * normV20.y);
-				normFace.y = (normV10.z * normV20.x) - (normV10.x * normV20.z);
-				normFace.z = (normV10.x * normV20.y) - (normV10.y * normV20.x);
+		if(eobj->facelist[i].texid < 0)
+			continue;
 
-				if(dot(normFace, nrm) > 0.f)
-					continue;
+		TextureContainer *pTex = eobj->texturecontainer[eobj->facelist[i].texid];
+		if(!pTex)
+			continue;
+
+		float fTransp = 0;
+
+		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+
+			fTransp = (invisibility > 0.f) ? 2.f - invisibility : eobj->facelist[i].transval;
+
+			if(fTransp >= 2.f) { //MULTIPLICATIVE
+				fTransp *= (1.f/2);
+				fTransp += .5f;
+				tv = PushVertexInTableCull_TMultiplicative(pTex);
+			} else if(fTransp >= 1.f) { //ADDITIVE
+				fTransp -= 1.f;
+				tv = PushVertexInTableCull_TAdditive(pTex);
+			} else if(fTransp > 0.f) { //NORMAL TRANS
+				fTransp = 1.f - fTransp;
+				tv = PushVertexInTableCull_TNormalTrans(pTex);
+			} else { //SUBTRACTIVE
+				fTransp = 1.f - fTransp;
+				tv = PushVertexInTableCull_TSubstractive(pTex);
 			}
+		} else {
+			tv = PushVertexInTableCull(pTex);
+		}
 
-			if(eobj->facelist[i].texid < 0)
-				continue;
+		for(long n = 0 ; n < 3 ; n++) {
+			paf[n] = eface->vid[n];
+			tv[n].p = eobj->vertexlist3[paf[n]].vert.p;
 
-			TextureContainer *pTex = eobj->texturecontainer[eobj->facelist[i].texid];
-			if(!pTex)
-				continue;
+			// Nuky - this code takes 20% of the whole game performance O_O
+			//        AFAIK it allows to correctly display the blue magic effects
+			//        when one's hands are inside a wall. I've only managed to do that
+			//        while in combat mode, looking straight down, and touching a wall
+			//        So, for the greater good I think it's best to simply skip this test
+			//const float IN_FRONT_DIVIDER = 0.75f;
+			//const float IN_FRONT_DIVIDER_FEET = 0.998f;
+			//if (FORCE_FRONT_DRAW)
+			//{
+			//	if (IsInGroup(eobj, paf[n], 1) != -1)
+			//		tv[n].sz *= IN_FRONT_DIVIDER;
+			//	else
+			//		tv[n].sz *= IN_FRONT_DIVIDER_FEET;
+			//}
 
-			float fTransp = 0;
+			tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
+			tv[n].uv.x	= eface->u[n];
+			tv[n].uv.y	= eface->v[n];
+			tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
+		}
 
-			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
-				
-				fTransp = (invisibility > 0.f) ? 2.f - invisibility : eobj->facelist[i].transval;
-				
-				if(fTransp >= 2.f) { //MULTIPLICATIVE
-					fTransp *= (1.f/2);
-					fTransp += .5f;
-					tv = PushVertexInTableCull_TMultiplicative(pTex);
-				} else if(fTransp >= 1.f) { //ADDITIVE
-					fTransp -= 1.f;
-					tv = PushVertexInTableCull_TAdditive(pTex);
-				} else if(fTransp > 0.f) { //NORMAL TRANS
-					fTransp = 1.f - fTransp;
-					tv = PushVertexInTableCull_TNormalTrans(pTex);
-				} else { //SUBTRACTIVE
-					fTransp = 1.f - fTransp;
-					tv = PushVertexInTableCull_TSubstractive(pTex);
-				}
-			} else {
-				tv = PushVertexInTableCull(pTex);
+		if(special_color_flag & 1) {
+			for(long j = 0; j < 3; j++) {
+				tv[j].color = 0xFF000000L
+							   | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
+							   | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
+							   | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 			}
-
-			for(long n = 0 ; n < 3 ; n++) {
-				paf[n] = eface->vid[n];
-				tv[n].p = eobj->vertexlist3[paf[n]].vert.p;
-
-				// Nuky - this code takes 20% of the whole game performance O_O
-				//        AFAIK it allows to correctly display the blue magic effects
-				//        when one's hands are inside a wall. I've only managed to do that
-				//        while in combat mode, looking straight down, and touching a wall
-				//        So, for the greater good I think it's best to simply skip this test
-				//const float IN_FRONT_DIVIDER = 0.75f;
-				//const float IN_FRONT_DIVIDER_FEET = 0.998f;
-				//if (FORCE_FRONT_DRAW)
-				//{
-				//	if (IsInGroup(eobj, paf[n], 1) != -1)
-				//		tv[n].sz *= IN_FRONT_DIVIDER;
-				//	else
-				//		tv[n].sz *= IN_FRONT_DIVIDER_FEET;
-				//}
-
-				tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
-				tv[n].uv.x	= eface->u[n];
-				tv[n].uv.y	= eface->v[n];
-				tv[n].color = eobj->vertexlist3[paf[n]].vert.color;
-			}
-
-			if(special_color_flag & 1) {
-				for(long j = 0; j < 3; j++) {
-					tv[j].color = 0xFF000000L
-								   | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
-								   | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-								   | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
-				}
-			} else if(special_color_flag & 2) {
-				for (long j = 0; j < 3; j++) {
-					tv[j].color = 0xFFFF0000;
-				}
-			}
-			
-			if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
-				tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
-			}
-			
-#ifdef USE_SOFTWARE_CLIPPING
-			if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
-			                                   &eobj->vertexlist3[paf[1]],
-			                                   &eobj->vertexlist3[paf[2]],
-			                                   &tv,
-			                                   eface,
-			                                   invisibility,
-			                                   pTex,
-			                                   (io) && (io->ioflags & IO_ZMAP),
-			                                   eobj,
-			                                   i,
-			                                   paf,
-			                                   NULL,
-			                                   true,
-			                                   special_color_flag,
-			                                   &special_color)))
-			{
-				continue;
-			}
-#endif
-
-			if(io && (io->ioflags & IO_ZMAP))
-				CalculateInterZMapp(eobj, i, paf, pTex, tv);
-
-			////////////////////////////////////////////////////////////////////////
-			// HALO HANDLING START
-			if(need_halo && io) {
-
-				float	_ffr[3];
-
-				IO_HALO curhalo;
-				memcpy(&curhalo, &io->halo, sizeof(IO_HALO));
-				int curhaloInitialized = 0;
-
-				long max_c;
-
-				if (use_io == entities.player())
-					max_c = 4;
-				else
-					max_c = 1;
-
-				for(long cnt = 0; cnt < max_c; cnt++) {
-					switch (cnt) {
-						case 0:
-							if(use_io == entities.player()) {
-								if(hio_player) {
-									memcpy(&curhalo, &use_io->halo, sizeof(IO_HALO));
-									++curhaloInitialized;
-								}
-								else continue;
-							} else {
-								memcpy(&curhalo, &io->halo, sizeof(IO_HALO));
-								++curhaloInitialized;
-							}
-							break;
-						case 1:
-							if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
-								memcpy(&curhalo, &hio_helmet->halo, sizeof(IO_HALO));
-								++curhaloInitialized;
-							}
-							else continue;
-							break;
-						case 2:
-							if(hio_armor && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0) {
-								memcpy(&curhalo, &hio_armor->halo, sizeof(IO_HALO));
-								++curhaloInitialized;
-							}
-							else continue;
-							break;
-						case 3:
-							if(hio_leggings && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0){
-								memcpy(&curhalo, &hio_leggings->halo, sizeof(IO_HALO)) ;
-								++curhaloInitialized;
-							}
-							else continue;
-							break;
-					}
-
-					arx_assert(curhaloInitialized > 0);
-
-					TexturedVertex *workon	= tv;
-
-					float tot = 0;
-					for(long o = 0; o < 3; o++) {
-						float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
-						float power = 255.f - (float)(255.f * tttz);
-						power *= (1.f - invisibility);
-
-						power = clamp(power, 0.f, 255.f);
-
-						tot += power;
-						_ffr[o] = power;
-
-						u8 lfr = curhalo.color.r * power;
-						u8 lfg = curhalo.color.g * power;
-						u8 lfb = curhalo.color.b * power;
-						tv[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
-					}
-
-					if(tot > 260) {
-						long first;
-						long second;
-						long third;
-
-						if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
-							first = 0;
-							second = 1;
-							third = 2;
-						} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
-							first = 0;
-							second = 2;
-							third = 1;
-						} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
-							first = 1;
-							second = 0;
-							third = 2;
-						} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
-							first = 1;
-							second = 2;
-							third = 0;
-						} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
-							first = 2;
-							second = 0;
-							third = 1;
-						} else {
-							first = 2;
-							second = 1;
-							third = 0;
-						}
-
-						if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
-							TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
-
-							if(HALOCUR < ((long)HALOMAX) - 1) {
-								HALOCUR++;
-							}
-
-							memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
-							memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
-							memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
-							memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
-
-							float siz = ddist * (curhalo.radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
-
-							if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
-								siz *= 1.5f;
-
-							Vec3f vect1;
-							vect1.x = workon[first].p.x - workon[third].p.x;
-							vect1.y = workon[first].p.y - workon[third].p.y;
-							float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
-
-							if(vect1.x < 0.f)
-								len1 *= 1.2f;
-
-							vect1.x *= len1;
-							vect1.y *= len1;
-
-							Vec3f vect2;
-							vect2.x = workon[second].p.x - workon[third].p.x;
-							vect2.y = workon[second].p.y - workon[third].p.y;
-							float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
-
-							if(vect2.x < 0.f)
-								len2 *= 1.2f;
-
-							vect2.x *= len2;
-							vect2.y *= len2;
-
-							vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
-							vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
-							vert[1].color = 0xFF000000;
-
-							float valll;
-							valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
-							               + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));   
-							valll = 0.0001f + valll * ( 1.0f / 10 );
-
-							if(valll < 0.f)
-								valll = 0.f;
-
-							vert[1].p.z	+= valll;
-							vert[2].p.z	+= valll;
-
-							vert[0].p.z	+= 0.0001f;
-							vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
-							vert[1].rhw	*= .98f;
-							vert[2].rhw	*= .98f;
-							vert[0].rhw	*= .98f;
-							vert[3].rhw	*= .98f;
-
-							vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
-							vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
-
-							vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-							vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
-
-							if(curhalo.flags & HALO_NEGATIVE)
-								vert[2].color = 0x00000000;
-							else
-								vert[2].color = 0xFF000000;
-						}
-					}
-				}
-
-				for(long o = 0; o < 3; o++) {
-					paf[o] = eface->vid[o];
-					tv[o].color = eobj->vertexlist3[paf[o]].vert.color;
-				}
-			}
-
-			////////////////////////////////////////////////////////////////////////
-			// HALO HANDLING END
-			////////////////////////////////////////////////////////////////////////
-
-			if(special_color_flag & 2) {
-				TexturedVertex * tv2 = PushVertexInTableCull(&TexSpecialColor);
-
-				memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
-
-				tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
+		} else if(special_color_flag & 2) {
+			for (long j = 0; j < 3; j++) {
+				tv[j].color = 0xFFFF0000;
 			}
 		}
+
+		if((eobj->facelist[i].facetype & POLY_TRANS) || invisibility > 0.f) {
+			tv[0].color = tv[1].color = tv[2].color = Color::gray(fTransp).toBGR();
+		}
+
+#ifdef USE_SOFTWARE_CLIPPING
+		if (!(ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
+										   &eobj->vertexlist3[paf[1]],
+										   &eobj->vertexlist3[paf[2]],
+										   &tv,
+										   eface,
+										   invisibility,
+										   pTex,
+										   (io) && (io->ioflags & IO_ZMAP),
+										   eobj,
+										   i,
+										   paf,
+										   NULL,
+										   true,
+										   special_color_flag,
+										   &special_color)))
+		{
+			continue;
+		}
+#endif
+
+		if(io && (io->ioflags & IO_ZMAP))
+			CalculateInterZMapp(eobj, i, paf, pTex, tv);
+
+		////////////////////////////////////////////////////////////////////////
+		// HALO HANDLING START
+		if(need_halo && io) {
+
+			float	_ffr[3];
+
+			IO_HALO curhalo;
+			memcpy(&curhalo, &io->halo, sizeof(IO_HALO));
+			int curhaloInitialized = 0;
+
+			long max_c;
+
+			if (use_io == entities.player())
+				max_c = 4;
+			else
+				max_c = 1;
+
+			for(long cnt = 0; cnt < max_c; cnt++) {
+				switch (cnt) {
+					case 0:
+						if(use_io == entities.player()) {
+							if(hio_player) {
+								memcpy(&curhalo, &use_io->halo, sizeof(IO_HALO));
+								++curhaloInitialized;
+							}
+							else continue;
+						} else {
+							memcpy(&curhalo, &io->halo, sizeof(IO_HALO));
+							++curhaloInitialized;
+						}
+						break;
+					case 1:
+						if(hio_helmet && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_head) >= 0) {
+							memcpy(&curhalo, &hio_helmet->halo, sizeof(IO_HALO));
+							++curhaloInitialized;
+						}
+						else continue;
+						break;
+					case 2:
+						if(hio_armor && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_chest) >= 0) {
+							memcpy(&curhalo, &hio_armor->halo, sizeof(IO_HALO));
+							++curhaloInitialized;
+						}
+						else continue;
+						break;
+					case 3:
+						if(hio_leggings && IsInSelection(use_io->obj, paf[0], use_io->obj->fastaccess.sel_leggings) >= 0){
+							memcpy(&curhalo, &hio_leggings->halo, sizeof(IO_HALO)) ;
+							++curhaloInitialized;
+						}
+						else continue;
+						break;
+				}
+
+				arx_assert(curhaloInitialized > 0);
+
+				TexturedVertex *workon	= tv;
+
+				float tot = 0;
+				for(long o = 0; o < 3; o++) {
+					float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
+					float power = 255.f - (float)(255.f * tttz);
+					power *= (1.f - invisibility);
+
+					power = clamp(power, 0.f, 255.f);
+
+					tot += power;
+					_ffr[o] = power;
+
+					u8 lfr = curhalo.color.r * power;
+					u8 lfg = curhalo.color.g * power;
+					u8 lfb = curhalo.color.b * power;
+					tv[o].color = ((0xFF << 24) | (lfr << 16) | (lfg << 8) | (lfb));
+				}
+
+				if(tot > 260) {
+					long first;
+					long second;
+					long third;
+
+					if(_ffr[0] >= _ffr[1] && _ffr[1] >= _ffr[2]) {
+						first = 0;
+						second = 1;
+						third = 2;
+					} else if(_ffr[0] >= _ffr[2] && _ffr[2] >= _ffr[1]) {
+						first = 0;
+						second = 2;
+						third = 1;
+					} else if(_ffr[1] >= _ffr[0] && _ffr[0] >= _ffr[2]) {
+						first = 1;
+						second = 0;
+						third = 2;
+					} else if(_ffr[1] >= _ffr[2] && _ffr[2] >= _ffr[0]) {
+						first = 1;
+						second = 2;
+						third = 0;
+					} else if(_ffr[2] >= _ffr[0] && _ffr[0] >= _ffr[1]) {
+						first = 2;
+						second = 0;
+						third = 1;
+					} else {
+						first = 2;
+						second = 1;
+						third = 0;
+					}
+
+					if(_ffr[first] > 150.f && _ffr[second] > 110.f) {
+						TexturedVertex *vert = &LATERDRAWHALO[(HALOCUR << 2)];
+
+						if(HALOCUR < ((long)HALOMAX) - 1) {
+							HALOCUR++;
+						}
+
+						memcpy(&vert[0], &workon[first], sizeof(TexturedVertex));
+						memcpy(&vert[1], &workon[first], sizeof(TexturedVertex));
+						memcpy(&vert[2], &workon[second], sizeof(TexturedVertex));
+						memcpy(&vert[3], &workon[second], sizeof(TexturedVertex));
+
+						float siz = ddist * (curhalo.radius * (EEsin((arxtime.get_frame_time() + i) * .01f) * .1f + 1.f)) * .6f;
+
+						if(io == entities.player() && ddist > 0.8f && !EXTERNALVIEW)
+							siz *= 1.5f;
+
+						Vec3f vect1;
+						vect1.x = workon[first].p.x - workon[third].p.x;
+						vect1.y = workon[first].p.y - workon[third].p.y;
+						float len1 = 2.f / ffsqrt(vect1.x * vect1.x + vect1.y * vect1.y);
+
+						if(vect1.x < 0.f)
+							len1 *= 1.2f;
+
+						vect1.x *= len1;
+						vect1.y *= len1;
+
+						Vec3f vect2;
+						vect2.x = workon[second].p.x - workon[third].p.x;
+						vect2.y = workon[second].p.y - workon[third].p.y;
+						float len2 = 1.f / ffsqrt(vect2.x * vect2.x + vect2.y * vect2.y);
+
+						if(vect2.x < 0.f)
+							len2 *= 1.2f;
+
+						vect2.x *= len2;
+						vect2.y *= len2;
+
+						vert[1].p.x += (vect1.x + 0.2f - rnd() * 0.1f) * siz;
+						vert[1].p.y += (vect1.y + 0.2f - rnd() * 0.1f) * siz;
+						vert[1].color = 0xFF000000;
+
+						float valll;
+						valll = 0.005f + (EEfabs(workon[first].p.z) - EEfabs(workon[third].p.z))
+									   + (EEfabs(workon[second].p.z) - EEfabs(workon[third].p.z));
+						valll = 0.0001f + valll * ( 1.0f / 10 );
+
+						if(valll < 0.f)
+							valll = 0.f;
+
+						vert[1].p.z	+= valll;
+						vert[2].p.z	+= valll;
+
+						vert[0].p.z	+= 0.0001f;
+						vert[3].p.z	+= 0.0001f;//*( 1.0f / 2 );
+						vert[1].rhw	*= .98f;
+						vert[2].rhw	*= .98f;
+						vert[0].rhw	*= .98f;
+						vert[3].rhw	*= .98f;
+
+						vert[2].p.x += (vect2.x + 0.2f - rnd() * 0.1f) * siz;
+						vert[2].p.y += (vect2.y + 0.2f - rnd() * 0.1f) * siz;
+
+						vert[1].p.z = (vert[1].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+						vert[2].p.z = (vert[2].p.z + MAX_ZEDE) * ( 1.0f / 2 );
+
+						if(curhalo.flags & HALO_NEGATIVE)
+							vert[2].color = 0x00000000;
+						else
+							vert[2].color = 0xFF000000;
+					}
+				}
+			}
+
+			for(long o = 0; o < 3; o++) {
+				paf[o] = eface->vid[o];
+				tv[o].color = eobj->vertexlist3[paf[o]].vert.color;
+			}
+		}
+
+		////////////////////////////////////////////////////////////////////////
+		// HALO HANDLING END
+		////////////////////////////////////////////////////////////////////////
+
+		if(special_color_flag & 2) {
+			TexturedVertex * tv2 = PushVertexInTableCull(&TexSpecialColor);
+
+			memcpy(tv2, tv, sizeof(TexturedVertex) * 3);
+
+			tv2[0].color = tv2[1].color = tv2[2].color = Color::gray(special_color.r).toBGR();
+		}
+	}
 	}
 }
 
