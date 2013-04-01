@@ -615,37 +615,32 @@ void ARX_DAMAGES_PushIO(Entity * io_target, long source, float power)
 
 float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType flags, Vec3f * pos)
 {
-	if ((!ValidIONum(target))
-	        ||	(!ValidIONum(source)))
+	if(!ValidIONum(target) || !ValidIONum(source))
 		return 0;
 
 	Entity * io_target = entities[target];
 	Entity * io_source = entities[source];
 	float damagesdone;
 
-	if (flags & DAMAGE_TYPE_PER_SECOND)
-	{
+	if(flags & DAMAGE_TYPE_PER_SECOND) {
 		dmg = dmg * framedelay * ( 1.0f / 1000 );
 	}
 
-	if (target == 0)
-	{
-		if (flags & DAMAGE_TYPE_POISON)
-		{
-			if (rnd() * 100.f > player.resist_poison)
-			{
+	if(target == 0) {
+		if(flags & DAMAGE_TYPE_POISON) {
+			if(rnd() * 100.f > player.resist_poison) {
 				damagesdone = dmg;
 				player.poison += damagesdone;
+			} else {
+				damagesdone = 0;
 			}
-			else damagesdone = 0;
 
 			goto dodamage;
 		}
 
-		if (flags & DAMAGE_TYPE_DRAIN_MANA)
+		if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 			damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
-		else
-		{
+		} else {
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
 			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
 		}
@@ -653,86 +648,63 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, DamageType fl
 	dodamage:
 		;
 
-		if (flags & DAMAGE_TYPE_FIRE)
-		{
+		if(flags & DAMAGE_TYPE_FIRE)
 			ARX_DAMAGES_IgnitIO(io_target, damagesdone);
-		}
 
-		if (flags & DAMAGE_TYPE_DRAIN_LIFE)
-		{
+		if(flags & DAMAGE_TYPE_DRAIN_LIFE)
 			ARX_DAMAGES_HealInter(io_source, damagesdone);
-		}
 
-		if (flags & DAMAGE_TYPE_DRAIN_MANA)
-		{
+		if(flags & DAMAGE_TYPE_DRAIN_MANA)
 			ARX_DAMAGES_HealManaInter(io_source, damagesdone);
-		}
 
-		if (flags & DAMAGE_TYPE_PUSH)
-		{
+		if(flags & DAMAGE_TYPE_PUSH)
 			ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
-		}
 
-		if ((flags & DAMAGE_TYPE_MAGICAL)
-		        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
-		{
+		if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
 			damagesdone -= player.Full_resist_magic * ( 1.0f / 100 ) * damagesdone;
 			damagesdone = max(0.0f, damagesdone);
 		}
 
 		return damagesdone;
-	}
-	else
-	{
-		if (io_target->ioflags & IO_NPC)
-		{
-			if (flags & DAMAGE_TYPE_POISON)
-			{
-				if (rnd() * 100.f > io_target->_npcdata->resist_poison)
-				{
+	} else {
+		if(io_target->ioflags & IO_NPC) {
+			if(flags & DAMAGE_TYPE_POISON) {
+				if(rnd() * 100.f > io_target->_npcdata->resist_poison) {
 					damagesdone = dmg;
 					io_target->_npcdata->poisonned += damagesdone;
+				} else {
+					damagesdone = 0;
 				}
-				else damagesdone = 0;
 
 				goto dodamage2;
 			}
 
-			if (flags & DAMAGE_TYPE_FIRE)
-			{
-				if (rnd() * 100.f <= io_target->_npcdata->resist_fire)
+			if(flags & DAMAGE_TYPE_FIRE) {
+				if(rnd() * 100.f <= io_target->_npcdata->resist_fire)
 					dmg = 0;
 
 				ARX_DAMAGES_IgnitIO(io_target, dmg);
 			}
 
-			if (flags & DAMAGE_TYPE_DRAIN_MANA)
-			{
+			if(flags & DAMAGE_TYPE_DRAIN_MANA) {
 				damagesdone = ARX_DAMAGES_DrainMana(io_target, dmg);
+			} else {
+				damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, 1, pos);
 			}
-			else damagesdone = ARX_DAMAGES_DamageNPC(io_target, dmg, source, 1, pos);
 
 		dodamage2:
 			;
 
-			if (flags & DAMAGE_TYPE_DRAIN_LIFE)
-			{
+			if(flags & DAMAGE_TYPE_DRAIN_LIFE)
 				ARX_DAMAGES_HealInter(io_source, damagesdone);
-			}
 
-			if (flags & DAMAGE_TYPE_DRAIN_MANA)
-			{
+			if(flags & DAMAGE_TYPE_DRAIN_MANA)
 				ARX_DAMAGES_HealManaInter(io_source, damagesdone);
-			}
 
-			if (flags & DAMAGE_TYPE_PUSH)
-			{
+			if(flags & DAMAGE_TYPE_PUSH)
 				ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
-			}
 
-			if ((flags & DAMAGE_TYPE_MAGICAL)
-			        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
-			{
+			if((flags & DAMAGE_TYPE_MAGICAL) && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD))) {
 				damagesdone -= io_target->_npcdata->resist_magic * ( 1.0f / 100 ) * damagesdone;
 				damagesdone = max(0.0f, damagesdone);
 			}
