@@ -105,18 +105,18 @@ float Blood_Pos = 0.f;
 long Blood_Duration = 0;
 static void ARX_DAMAGES_IgnitIO(Entity * io, float dmg)
 {
-	if ((!io)
-	        ||	(io->ioflags & IO_INVULNERABILITY))
+	if(!io || (io->ioflags & IO_INVULNERABILITY))
 		return;
 
-	if ((io->ignition <= 0.f) && (io->ignition + dmg > 1.f))
-	{
+	if(io->ignition <= 0.f && io->ignition + dmg > 1.f)
 		SendIOScriptEvent(io, SM_ENTERZONE, "cook_s");
-	}
 
-	if (io->ioflags & IO_FIX) io->ignition += dmg * ( 1.0f / 10 );
-	else if (io->ioflags & IO_ITEM) io->ignition += dmg * ( 1.0f / 8 );
-	else if (io->ioflags & IO_NPC) io->ignition += dmg * ( 1.0f / 4 );
+	if(io->ioflags & IO_FIX)
+		io->ignition += dmg * ( 1.0f / 10 );
+	else if(io->ioflags & IO_ITEM)
+		io->ignition += dmg * ( 1.0f / 8 );
+	else if(io->ioflags & IO_NPC)
+		io->ignition += dmg * ( 1.0f / 4 );
 }
  
 void ARX_DAMAGE_Reset_Blood_Info()
