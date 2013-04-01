@@ -564,10 +564,9 @@ void ArxGame::onToggleFullscreen(const Window & window) {
 	wasResized = true;
 }
 
-//*************************************************************************************
-// run()
-// Message-processing loop. Idle time is used to render the scene.
-//*************************************************************************************
+/*!
+ * \brief Message-processing loop. Idle time is used to render the scene.
+ */
 void ArxGame::run() {
 	
 	beforeRun();
@@ -588,10 +587,9 @@ void ArxGame::run() {
 	}
 }
 
-//*************************************************************************************
-// doFrame()
-// Draws the scene.
-//*************************************************************************************
+/*!
+ * \brief Draws the scene.
+ */
 void ArxGame::doFrame() {
 		
 	updateTime();
@@ -650,10 +648,9 @@ void ArxGame::doFrame() {
 	}
 }
 
-//*************************************************************************************
-// Cleanup3DEnvironment()
-// Cleanup scene objects
-//*************************************************************************************
+/*!
+ * \brief Cleanup scene objects
+ */
 void ArxGame::cleanup3DEnvironment() {
 	
 	if(getWindow()) {
@@ -662,21 +659,25 @@ void ArxGame::cleanup3DEnvironment() {
 	
 }
 
-//*************************************************************************************
-// OutputText()
-// Draws text on the window.
-//*************************************************************************************
+/*!
+ * \brief Draws text on the window.
+ * \param x
+ * \param y
+ * \param str
+ */
 void ArxGame::outputText(int x, int y, const string & str) {
 	if (m_bReady) {
 		hFontInGame->draw(x, y, str, Color(255, 255, 0));
 	}
 }
 
-//*************************************************************************************
-// OutputText()
-// Draws text on the window using selected font and color
-// at position defined by column,row.
-//*************************************************************************************
+/*!
+ * \brief Draws text on the window using selected font and color at position defined by column, row.
+ * \param column
+ * \param row
+ * \param text
+ * \param color
+ */
 void ArxGame::outputTextGrid(float column, float row, const std::string &text, const Color &color)
 {
 	Font *selected_font = hFontInGame;
