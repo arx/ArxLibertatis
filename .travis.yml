@@ -10,7 +10,7 @@ branches:
     - master
 notifications:
   recipients:
-    - hennr@hennr.name
+    - your@devMailingList.here
   email:
-    on_success: always
+    on_success: change
     on_failure: always
