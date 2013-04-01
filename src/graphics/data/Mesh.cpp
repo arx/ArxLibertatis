@@ -1845,15 +1845,17 @@ void DrawEERIEObjExEx(EERIE_3DOBJ *eobj, Anglef *angle, Vec3f *pos, Vec3f *scale
 
 Vec3f BBOXMIN, BBOXMAX;
 
-//*************************************************************************************
-// Memorizes information for animation to animation smoothing interpolation
-//*************************************************************************************
+/*!
+ * \brief Memorizes information for animation to animation smoothing interpolation
+ * \param io the animated Entity
+ */
 void AcquireLastAnim(Entity * io)
 {
-	if ((!io->animlayer[0].cur_anim)
-			&&	(!io->animlayer[1].cur_anim)
-			&&	(!io->animlayer[2].cur_anim)
-			&&	(!io->animlayer[3].cur_anim)) return;
+	if(!io->animlayer[0].cur_anim
+		&& !io->animlayer[1].cur_anim
+		&& !io->animlayer[2].cur_anim
+		&& !io->animlayer[3].cur_anim)
+		return;
 
 	// Stores Frametime and number of vertex for later interpolation
 	io->lastanimtime = checked_range_cast<unsigned long>(arxtime.get_frame_time());
@@ -1876,16 +1878,16 @@ void FinishAnim(Entity * io, ANIM_HANDLE * eanim) {
 	return;
 }
 
-bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
-{
-	
-	if (eobj == NULL) return false;
+bool IsVertexIdxInGroup(EERIE_3DOBJ *eobj, long idx, long grs) {
 
-	for (size_t i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
-	{
+	if(!eobj)
+		return false;
+
+	for(size_t i = 0; i < eobj->grouplist[grs].indexes.size(); i++) {
 		long ii = eobj->grouplist[grs].indexes[i];
 
-		if (ii == idx) return true;
+		if(ii == idx)
+			return true;
 	}
 
 	return false;
