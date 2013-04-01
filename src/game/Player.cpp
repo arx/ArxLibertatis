@@ -273,10 +273,8 @@ void ARX_PLAYER_KillTorch() {
 
 void ARX_PLAYER_ClickedOnTorch(Entity * io)
 {
-	if (io == NULL)
-	{
+	if(!io)
 		return;
-	}
 
 	if(CURRENT_TORCH == io) {
 		ARX_PLAYER_KillTorch();
@@ -286,18 +284,14 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 	if(CURRENT_TORCH)
 		ARX_PLAYER_KillTorch();
 
-
-	if (io->durability > 0)
-	{
-		if (io->ignition > 0)
-		{
-			if (ValidDynLight(io->ignit_light))
+	if(io->durability > 0) {
+		if(io->ignition > 0) {
+			if(ValidDynLight(io->ignit_light))
 				DynLight[io->ignit_light].exist = 0;
 
 			io->ignit_light = -1;
 
-			if (io->ignit_sound != audio::INVALID_ID)
-			{
+			if(io->ignit_sound != audio::INVALID_ID) {
 				ARX_SOUND_Stop(io->ignit_sound);
 				io->ignit_sound = audio::INVALID_ID;
 			}
@@ -312,10 +306,8 @@ void ARX_PLAYER_ClickedOnTorch(Entity * io)
 		CURRENT_TORCH = io;
 		io->show = SHOW_FLAG_ON_PLAYER;
 
-		if (DRAGINTER == io)
-		{
+		if(DRAGINTER == io)
 			DRAGINTER = NULL;
-		}
 	}
 }
 
