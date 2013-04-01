@@ -2872,6 +2872,9 @@ lasuite:
  */
 void ARX_PLAYER_Manage_Death()
 {
+	if(DeadTime <= 2000)
+		return;
+
 	PLAYER_PARALYSED = 0;
 	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
 

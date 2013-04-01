@@ -1562,8 +1562,7 @@ finish:
 	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	// Manage Death visual & Launch menu...
-	if(DeadTime > 2000)
-		ARX_PLAYER_Manage_Death();
+	ARX_PLAYER_Manage_Death();
 
 	// INTERFACE
 	// Remove the Alphablend State if needed : NO Z Clear
