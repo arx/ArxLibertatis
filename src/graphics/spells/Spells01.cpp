@@ -449,7 +449,7 @@ float CMagicMissile::Render()
 	stitescale = Vec3f::ONE;
 	{
 		if ((smissile))
-			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 
 	eCurPos = lastpos;

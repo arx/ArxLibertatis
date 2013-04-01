@@ -313,7 +313,7 @@ void ARXDRAW_DrawEyeBall() {
 	Color3f rgb = Color3f::gray(d);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, &rgb);	
+	DrawEERIEObjEx(eyeballobj, &angle, &pos, &scale, rgb);
 }
 
 // This used to add a bias when the "forceZbias" config option was activated, but it

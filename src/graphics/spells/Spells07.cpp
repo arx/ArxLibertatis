@@ -672,7 +672,7 @@ float CConfuse::Render() {
 	Anglef stiteangle = Anglef(0.f, -degrees(arxtime.get_updated() * ( 1.0f / 500 )), 0.f);
 	Color3f stitecolor = Color3f::white;
 	Vec3f stitescale = Vec3f::ONE;
-	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(spapi, &stiteangle, &stitepos, &stitescale, stitecolor);
 	
 	for(i = 0; i < 6; i++) {
 		
@@ -1093,9 +1093,9 @@ float CIceField::Render()
 		stitescale.x = tSize[i].z;
 
 		if (tType[i] == 0)
-			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, stitecolor);
 		else
-			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	for(i = 0; i < iMax * 0.5f; i++) {
