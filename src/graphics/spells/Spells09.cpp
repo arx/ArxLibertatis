@@ -812,11 +812,11 @@ float CNegateMagic::Render() {
 	Anglef stiteangle(0.f, -(float) ulCurrentTime * fOneOnDuration * 120, 0.f);
 	Color3f stitecolor = Color3f::gray(.4f);
 	Vec3f stitescale = Vec3f::repeat(3.f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	stitecolor = Color3f(.5f, 0.f, .5f);
 	stitescale = Vec3f::repeat(3.1f);
-	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 
 	return 1;
 }

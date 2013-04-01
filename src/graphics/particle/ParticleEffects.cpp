@@ -1005,7 +1005,7 @@ void UpdateObjFx() {
 		Vec3f scale = Vec3f::ONE + objfx[i].scale * val;
 		Anglef angle = Anglef::ZERO;
 		
-		DrawEERIEObjEx(objfx[i].obj, &angle, &pos, &scale, &color);
+		DrawEERIEObjEx(objfx[i].obj, &angle, &pos, &scale, color);
 		
 		if(objfx[i].dynlight != -1) {
 			DynLight[objfx[i].dynlight].fallend = 250.f + 450.f * val;

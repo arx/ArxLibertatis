@@ -408,7 +408,7 @@ float CRuneOfGuarding::Render()
 	Vec3f stitescale = Vec3f(1.f, -0.1f, 1.f);
 	
 	if(slight) {
-		DrawEERIEObjEx(slight, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(slight, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	stiteangle.b = stiteangleb;
@@ -418,7 +418,7 @@ float CRuneOfGuarding::Render()
 	stitescale = Vec3f::repeat(2.f);
 	
 	if(ssol) {
-		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	stitecolor.r = 0.6f;
@@ -427,7 +427,7 @@ float CRuneOfGuarding::Render()
 	stitescale = Vec3f::repeat(1.8f);
 	
 	if(srune) {
-		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
 	}
 	
 	for(int n = 0; n < 4; n++) {
@@ -1090,7 +1090,7 @@ float CRepelUndead::Render() {
 	eObjScale.x = vv;
 	
 	if(ssol) {
-		DrawEERIEObjEx(ssol, &eObjAngle, &eObjPos, &eObjScale, &rgbObjColor);
+		DrawEERIEObjEx(ssol, &eObjAngle, &eObjPos, &eObjScale, rgbObjColor);
 	}
 	
 	vv *= 100.f;

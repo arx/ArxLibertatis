@@ -1885,7 +1885,7 @@ float CDisarmTrap::Render() {
 	stitescale.z = 1.8f;
 	stitescale.y = 1.8f;
 	stitescale.x = 1.8f;
-	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, stitecolor);
 
 	return 1;
 }
