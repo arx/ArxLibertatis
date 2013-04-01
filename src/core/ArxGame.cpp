@@ -1122,10 +1122,13 @@ void ArxGame::handlePlayerDeath() {
 	if(player.life <= 0) {
 		DeadTime += static_cast<long>(framedelay);
 		float mdist = EEfabs(player.physics.cyl.height)-60;
-		DeadCameraDistance += (float)framedelay*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
 
-		if(DeadCameraDistance > mdist)
-			DeadCameraDistance = mdist;
+		float startDistance = 40.f;
+
+		float startTime = 2000.f;
+		float endTime = 7000.f;
+
+		float DeadCameraDistance = startDistance + (mdist - startDistance) * ((DeadTime - startTime) / (endTime - startTime));
 
 		Vec3f targetpos = player.pos;
 
@@ -1151,8 +1154,6 @@ void ArxGame::handlePlayerDeath() {
 		subj.angle.g = 0;
 		EXTERNALVIEW = true;
 		BLOCK_PLAYER_CONTROLS=1;
-	} else {
-		DeadCameraDistance=0;
 	}
 }
 
