@@ -2835,20 +2835,14 @@ void ARX_PLAYER_Manage_Death()
 	PLAYER_PARALYSED = 0;
 	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
 
-	if (ratio >= 1.f) ratio = 1.f;
-
-	if (ratio == 1.f)
-	{
+	if(ratio >= 1.f) {
 		ARX_MENU_Launch();
 		DeadTime = 0;
 	}
 
-	{
-		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-		EERIEDrawBitmap( 0.f, 0.f, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.000091f, NULL, Color::gray(ratio));
-
-	}
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	EERIEDrawBitmap(0.f, 0.f, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY), 0.000091f, NULL, Color::gray(ratio));
 }
 
 /*!
